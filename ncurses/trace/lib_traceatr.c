@@ -27,7 +27,7 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas Dickey 1996-2003                                         *
+ *  Author: Thomas Dickey                           1996-on                 *
  *     and: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
@@ -39,7 +39,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.48 2004/01/25 22:31:38 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.49 2004/10/16 21:43:13 tom Exp $")
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
@@ -261,6 +261,7 @@ _tracecchar_t2 (int bufnum, const cchar_t *ch)
 	    attr &= ~A_ALTCHARSET;
 	} else if (isnac(CHDEREF(ch))) {
 	    (void) _nc_trace_bufcat(bufnum, "{NAC}");
+	    attr &= ~WA_NAC;
 	} else {
 	    PUTC_DATA;
 	    int n;

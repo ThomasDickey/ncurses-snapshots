@@ -40,16 +40,17 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_get_wstr.c,v 1.7 2004/09/25 20:59:57 tom Exp $")
+MODULE_ID("$Id: lib_get_wstr.c,v 1.8 2004/10/16 21:55:36 tom Exp $")
 
 static int
 wadd_wint(WINDOW *win, wint_t *src)
 {
     cchar_t tmp;
-    wchar_t wch;
+    wchar_t wch[2];
 
-    wch = *src;
-    setcchar(&tmp, &wch, A_NORMAL, 0, NULL);
+    wch[0] = *src;
+    wch[1] = 0;
+    setcchar(&tmp, wch, A_NORMAL, 0, NULL);
     return wadd_wch(win, &tmp);
 }
 
