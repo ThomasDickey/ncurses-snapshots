@@ -22,12 +22,14 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.5 $
+--  $Revision: 1.6 $
 ------------------------------------------------------------------------------
 with Interfaces.C;
 with Terminal_Interface.Curses.Aux; use Terminal_Interface.Curses.Aux;
 with Ada.Unchecked_Deallocation;
 with Ada.Unchecked_Conversion;
+with Terminal_Interface.Curses.Forms.Field_Types.User;
+with Terminal_Interface.Curses.Forms.Field_Types.User.Choice;
 --  |
 --  |=====================================================================
 --  | man page form_fieldtype.3x
@@ -61,10 +63,10 @@ package body Terminal_Interface.Curses.Forms.Field_Types is
       if Low_Level = Null_Field_Type then
          return null;
       else
-         if Low_Level = C_Builtin_Router or else
-           Low_Level = C_Generic_Type or else
-           Low_Level = C_Choice_Router or else
-           Low_Level = C_Generic_Choice then
+         if Low_Level = M_Builtin_Router or else
+           Low_Level = M_Generic_Type or else
+           Low_Level = M_Choice_Router or else
+           Low_Level = M_Generic_Choice then
             Arg := To_Argument_Access (Get_Arg (Fld));
             if Arg = null then
                raise Form_Exception;
@@ -209,41 +211,65 @@ package body Terminal_Interface.Curses.Forms.Field_Types is
       end if;
    end Prev_Router;
 
-begin
-   C_Builtin_Router := New_Fieldtype (Field_Check_Router'Access,
-                                      Char_Check_Router'Access);
-   C_Choice_Router := New_Fieldtype (Field_Check_Router'Access,
-                                      Char_Check_Router'Access);
-   if C_Builtin_Router = Null_Field_Type
-     or else C_Choice_Router = Null_Field_Type then
-      raise Form_Exception;
-   end if;
-
-   declare
+   --  -----------------------------------------------------------------------
+   --
+   function C_Builtin_Router return C_Field_Type
+   is
       Res : Eti_Error;
+      T   : C_Field_Type;
    begin
-      Res := Set_Fieldtype_Arg (C_Builtin_Router,
-                                Make_Arg'Access,
-                                Copy_Arg'Access,
-                                Free_Arg'Access);
-      if Res /= E_Ok then
-         Eti_Exception (Res);
+      if M_Builtin_Router = Null_Field_Type then
+         T := New_Fieldtype (Field_Check_Router'Access,
+                             Char_Check_Router'Access);
+         if T = Null_Field_Type then
+            raise Form_Exception;
+         else
+            Res := Set_Fieldtype_Arg (T,
+                                      Make_Arg'Access,
+                                      Copy_Arg'Access,
+                                      Free_Arg'Access);
+            if Res /= E_Ok then
+               Eti_Exception (Res);
+            end if;
+         end if;
+         M_Builtin_Router := T;
       end if;
+      pragma Assert (M_Builtin_Router /= Null_Field_Type);
+      return M_Builtin_Router;
+   end C_Builtin_Router;
 
-      Res := Set_Fieldtype_Arg (C_Choice_Router,
-                                Make_Arg'Access,
-                                Copy_Arg'Access,
-                                Free_Arg'Access);
-      if Res /= E_Ok then
-         Eti_Exception (Res);
-      end if;
+   --  -----------------------------------------------------------------------
+   --
+   function C_Choice_Router return C_Field_Type
+   is
+      Res : Eti_Error;
+      T   : C_Field_Type;
+   begin
+      if M_Choice_Router = Null_Field_Type then
+         T := New_Fieldtype (Field_Check_Router'Access,
+                             Char_Check_Router'Access);
+         if T = Null_Field_Type then
+            raise Form_Exception;
+         else
+            Res := Set_Fieldtype_Arg (T,
+                                      Make_Arg'Access,
+                                      Copy_Arg'Access,
+                                      Free_Arg'Access);
+            if Res /= E_Ok then
+               Eti_Exception (Res);
+            end if;
 
-      Res := Set_Fieldtype_Choice (C_Choice_Router,
-                                   Next_Router'Access,
-                                   Prev_Router'Access);
-      if Res /= E_Ok then
-         Eti_Exception (Res);
+            Res := Set_Fieldtype_Choice (T,
+                                         Next_Router'Access,
+                                         Prev_Router'Access);
+            if Res /= E_Ok then
+               Eti_Exception (Res);
+            end if;
+         end if;
+         M_Choice_Router := T;
       end if;
-   end;
+      pragma Assert (M_Choice_Router /= Null_Field_Type);
+      return M_Choice_Router;
+   end C_Choice_Router;
 
 end Terminal_Interface.Curses.Forms.Field_Types;

@@ -22,9 +22,10 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.5 $
+--  $Revision: 1.6 $
 ------------------------------------------------------------------------------
 private package Terminal_Interface.Curses.Text_IO.Aux is
+   --  pragma Preelaborate (Aux);
 
    --  This routine is called from the Text_IO output routines for numeric
    --  and enumeration types.

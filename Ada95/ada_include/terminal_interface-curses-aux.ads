@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.5 $
+--  $Revision: 1.6 $
 ------------------------------------------------------------------------------
 with System;
 with Interfaces.C;
@@ -30,6 +30,7 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 with Unchecked_Conversion;
 
 package Terminal_Interface.Curses.Aux is
+   pragma Preelaborate (Aux);
 
    use type Interfaces.C.Int;
 

@@ -25,12 +25,13 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.8 $
+--  $Revision: 1.9 $
 ------------------------------------------------------------------------------
 include(`Mouse_Base_Defs')
 with System;
 
 package Terminal_Interface.Curses.Mouse is
+   pragma Preelaborate (Mouse);
 
    --  MANPAGE(`curs_mouse.3x')
    --  Please note, that in ncurses-1.9.9e documentation mouse support

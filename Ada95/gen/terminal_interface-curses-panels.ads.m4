@@ -25,12 +25,12 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.3 $
+--  $Revision: 1.4 $
 ------------------------------------------------------------------------------
 with System;
 
 package Terminal_Interface.Curses.Panels is
-
+   pragma Preelaborate (Panels);
 include(`Panel_Linker_Options')
 
    type Panel is private;

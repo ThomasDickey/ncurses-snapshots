@@ -25,7 +25,7 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.10 $
+--  $Revision: 1.11 $
 ------------------------------------------------------------------------------
 include(`Form_Base_Defs')
 with System;
@@ -33,7 +33,7 @@ with Ada.Characters.Latin_1;
 with Interfaces.C;
 
 package Terminal_Interface.Curses.Forms is
-
+   pragma Preelaborate (Forms);
 include(`Form_Linker_Options')
 
    Space : Character renames Ada.Characters.Latin_1.Space;
@@ -51,13 +51,15 @@ include(`Form_Linker_Options')
 
 include(`Field_Rep')
 
-   Default_Field_Options : Field_Option_Set;
+   function Default_Field_Options return Field_Option_Set;
    --  The initial defaults for the field options.
+   pragma Inline (Default_Field_Options);
 
 include(`Form_Opt_Rep')
 
-   Default_Form_Options : Form_Option_Set;
+   function Default_Form_Options return Form_Option_Set;
    --  The initial defaults for the form options.
+   pragma Inline (Default_Form_Options);
 
    type Buffer_Number is new Natural;
 
@@ -618,8 +620,5 @@ private
 
    Null_Field        : constant Field        := Field (System.Null_Address);
    Null_Form         : constant Form         := Form  (System.Null_Address);
-
-   Generation_Bit_Order : constant System.Bit_Order := System.M4_BIT_ORDER;
-   --  This constant may be different on your system.
 
 end Terminal_Interface.Curses.Forms;

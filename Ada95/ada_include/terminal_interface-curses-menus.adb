@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.9 $
+--  $Revision: 1.10 $
 ------------------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
 with Terminal_Interface.Curses.Aux; use Terminal_Interface.Curses.Aux;
@@ -996,11 +996,17 @@ package body Terminal_Interface.Curses.Menus is
    end Free;
 
 -------------------------------------------------------------------------------
-begin
-   if Generation_Bit_Order /= System.Default_Bit_Order then
-      raise Constraint_Error;
-   end if;
+   function Default_Menu_Options return Menu_Option_Set
+   is
+   begin
+      return Get_Options (Null_Menu);
+   end Default_Menu_Options;
 
-   Default_Menu_Options  := Get_Options (Null_Menu);
-   Default_Item_Options  := Get_Options (Null_Item);
+   function Default_Item_Options return Item_Option_Set
+   is
+   begin
+      return Get_Options (Null_Item);
+   end Default_Item_Options;
+-------------------------------------------------------------------------------
+
 end Terminal_Interface.Curses.Menus;

@@ -24,14 +24,14 @@ include(M4MACRO)----------------------------------------------------------------
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.9 $
+--  $Revision: 1.10 $
 ------------------------------------------------------------------------------
 include(`Base_Defs')
 with System;
 with Interfaces.C;   --  We need this for some assertions.
 
 package Terminal_Interface.Curses is
-
+   pragma Preelaborate (Curses);
 include(`Linker_Options')
    type Window is private;
    Null_Window : constant Window;
@@ -1194,8 +1194,5 @@ include(`ACS_Map')
 private
    type Window is new System.Address;
    Null_Window : constant Window := Window (System.Null_Address);
-
-   Generation_Bit_Order : constant System.Bit_Order := System.M4_BIT_ORDER;
-   --  This constant may be different on your system.
 
 end Terminal_Interface.Curses;

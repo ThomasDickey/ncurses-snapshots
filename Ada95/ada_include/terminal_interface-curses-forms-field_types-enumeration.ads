@@ -22,11 +22,12 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.1 $
+--  $Revision: 1.2 $
 ------------------------------------------------------------------------------
 with Interfaces.C.Strings;
 
 package Terminal_Interface.Curses.Forms.Field_Types.Enumeration is
+   pragma Preelaborate (Enumeration);
 
    type String_Access is access String;
 

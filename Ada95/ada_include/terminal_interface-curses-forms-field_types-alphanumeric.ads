@@ -22,9 +22,10 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.1 $
+--  $Revision: 1.2 $
 ------------------------------------------------------------------------------
 package Terminal_Interface.Curses.Forms.Field_Types.AlphaNumeric is
+   pragma Preelaborate (AlphaNumeric);
 
    type AlphaNumeric_Field is new Field_Type
      with record

@@ -1,8 +1,8 @@
 ------------------------------------------------------------------------------
 --                                                                          --
---                           GNAT ncurses Binding                           --
+--                       GNAT ncurses Binding Samples                       --
 --                                                                          --
---            Terminal_Interface.Curses.Forms.Field_Types.IntField          --
+--                                  Status                                  --
 --                                                                          --
 --                                 S P E C                                  --
 --                                                                          --
@@ -21,20 +21,21 @@
 --                                                                          --
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
---  Version Control:
---  $Revision: 1.2 $
+--  Version Control
+--  $Revision: 1.1 $
 ------------------------------------------------------------------------------
-package Terminal_Interface.Curses.Forms.Field_Types.IntField is
-   pragma Preelaborate (IntField);
+--  This package has been contributed by Laurent Pautet <pautet@gnat.com>   --
+--                                                                          --
+with Ada.Interrupts.Names;
 
-   type Integer_Field is new Field_Type with
-      record
-         Precision   : Natural;
-         Lower_Limit : Integer;
-         Upper_Limit : Integer;
-      end record;
+package Status is
 
-   procedure Set_Field_Type (Fld : in Field;
-                             Typ : in Integer_Field);
+   protected Process is
+      procedure Stop;
+      function Continue return Boolean;
+      pragma Attach_Handler (Stop, Ada.Interrupts.Names.SIGINT);
+   private
+      Done : Boolean := False;
+   end Process;
 
-end Terminal_Interface.Curses.Forms.Field_Types.IntField;
+end Status;

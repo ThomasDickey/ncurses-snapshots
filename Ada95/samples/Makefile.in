@@ -19,7 +19,7 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.10 $
+#  $Revision: 1.11 $
 #
 .SUFFIXES:
 
@@ -77,7 +77,7 @@ ABASE        = $(ALIB)-curses
 CARGS        =-cargs $(ADAFLAGS)
 LARGS        =-largs -L../../lib $(LD_FLAGS)
 
-PROGS        = tour
+PROGS        = tour rain
 
 TOUR_OBJS    =	tour.o sample.o sample-curses_demo.o sample-explanation.o 	\
 		sample-form_demo.o sample-function_key_setting.o 		\
@@ -87,7 +87,9 @@ TOUR_OBJS    =	tour.o sample.o sample-curses_demo.o sample-explanation.o 	\
 		sample-curses_demo-attributes.o sample-curses_demo-mouse.o	\
 		sample-form_demo-aux.o sample-my_field_type.o
 
-all ::  demo1
+RAIN_OBJS    =	rain.o status.o
+
+all ::  demo1 rainy_day
 	@
 
 install ::
@@ -98,6 +100,9 @@ demo1:	explain.msg
 
 explain.msg:	$(srcdir)/explain.txt
 	cp $(srcdir)/explain.txt $@
+
+rainy_day:
+	$(ADAMAKE) $(ADAMAKEFLAGS) rain $(CARGS) $(LARGS)
 
 clean ::
 	rm -f *.o *.ali b_t*.* *.s $(PROGS) a.out core b_*_test.c *.xr[bs] explain.msg

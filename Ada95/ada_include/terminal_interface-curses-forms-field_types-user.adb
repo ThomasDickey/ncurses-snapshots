@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.1 $
+--  $Revision: 1.2 $
 ------------------------------------------------------------------------------
 with Ada.Unchecked_Conversion;
 with Interfaces.C;
@@ -87,23 +87,31 @@ package body Terminal_Interface.Curses.Forms.Field_Types.User is
       return C_Int (Boolean'Pos (Result));
    end Generic_Char_Check;
 
-begin
-   C_Generic_Type := New_Fieldtype (Generic_Field_Check'Access,
-                                    Generic_Char_Check'Access);
-   if C_Generic_Type = Null_Field_Type then
-      Eti_Exception (E_System_Error);
-   end if;
-
-   declare
+   --  -----------------------------------------------------------------------
+   --
+   function C_Generic_Type return C_Field_Type
+   is
       Res : Eti_Error;
+      T   : C_Field_Type;
    begin
-      Res := Set_Fieldtype_Arg (C_Generic_Type,
-                                Make_Arg'Access,
-                                Copy_Arg'Access,
-                                Free_Arg'Access);
-      if Res /= E_Ok then
-         Eti_Exception (Res);
+      if M_Generic_Type = Null_Field_Type then
+         T := New_Fieldtype (Generic_Field_Check'Access,
+                             Generic_Char_Check'Access);
+         if T = Null_Field_Type then
+            raise Form_Exception;
+         else
+            Res := Set_Fieldtype_Arg (T,
+                                      Make_Arg'Access,
+                                      Copy_Arg'Access,
+                                      Free_Arg'Access);
+            if Res /= E_Ok then
+               Eti_Exception (Res);
+            end if;
+         end if;
+         M_Generic_Type := T;
       end if;
-   end;
+      pragma Assert (M_Generic_Type /= Null_Field_Type);
+      return M_Generic_Type;
+   end C_Generic_Type;
 
 end Terminal_Interface.Curses.Forms.Field_Types.User;
