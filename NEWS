@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.668 2002/02/03 00:58:38 tom Exp $
+-- $Id: NEWS,v 1.669 2002/02/10 01:20:10 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020209
+	+ implement wide-acs characters for UTF-8 locales.  When in UTF-8
+	  locale, ignore narrow version of acs.  Add 'F' test to test/ncurses.c
+	  to demonstrate.
+	+ correct prototype in keybound manpage (noted from a Debian mailing
+	  list item).
 
 20020202
 	+ add several cases to the wscanw() example in testcurs.c, showing the
