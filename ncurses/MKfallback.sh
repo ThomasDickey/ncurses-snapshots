@@ -59,6 +59,6 @@ else
 fi
 
 cat <<EOF
-	return((TERMTYPE *)NULL);
+	return((TERMTYPE *)0);
 }
 EOF

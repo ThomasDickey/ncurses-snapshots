@@ -21,12 +21,24 @@ typedef struct
 #undef RETURN
 static int reg_errno;
 
-#define INIT 		register char *sp = instring; reg_errno=0;
+static char *RegEx_Init(char *instring)
+{
+	reg_errno = 0;
+	return instring;
+}
+
+static char *RegEx_Error(int code)
+{
+	reg_errno = code;
+	return 0;
+}
+
+#define INIT 		register char *sp = RegEx_Init(instring);
 #define GETC()		(*sp++)
 #define PEEKC()		(*sp)
 #define UNGETC(c)	(--sp)
 #define RETURN(c)	return(c)
-#define ERROR(c)	reg_errno=(c)
+#define ERROR(c)	return RegEx_Error(c)
 
 #include <regexp.h>
 

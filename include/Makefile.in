@@ -44,8 +44,8 @@ install.libs \
 install.includes : term.h $(includedir)
 	$(INSTALL_DATA) term.h $(includedir)/term.h
 	$(INSTALL_DATA) curses.h $(includedir)/curses.h
-	$(INSTALL_DATA) $(srcdir)/unctrl.h $(includedir)/unctrl.h
-	$(INSTALL_DATA) $(srcdir)/termcap.h $(includedir)/termcap.h
+	$(INSTALL_DATA) unctrl.h $(includedir)/unctrl.h
+	$(INSTALL_DATA) termcap.h $(includedir)/termcap.h
 	@echo "Make sure you delete any old header files!"
 
 $(includedir) :

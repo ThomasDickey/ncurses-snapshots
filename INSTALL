@@ -49,14 +49,14 @@ INSTALLATION PROCEDURE:
 
     If you want to put the terminal descriptions in, for example,
     /usr/share/lib/terminfo, you can either make that a symbolic link to
-    /usr/lib/terminfo, or type `configure --with-datadir=/usr/share/lib/terminfo'.
+    /usr/lib/terminfo, or type `./configure --with-datadir=/usr/share/lib/terminfo'.
     This is particularly useful if your system already has a terminfo database.
     This option allows you to place ncurses' terminfo in an alternate location.
     You can use TERMINFO to point to the appropriate directory.
 
-2.  Type `configure' to configure ncurses for your operating system and create
+2.  Type `./configure' to configure ncurses for your operating system and create
     the Makefiles.  Various configuration options are available to customize
-    the installation; use `configure --help' to list the available options.
+    the installation; use `./configure --help' to list the available options.
 
     It will create your Makefiles.  If your operating system is not supported,
     read the PORTABILITY section in the file ncurses/README for information on
@@ -76,7 +76,7 @@ INSTALLATION PROCEDURE:
     If you do not specify any models, the normal and debug libraries will be
     configured.  This is equivalent to
 
-    	configure --with-normal --with-debug
+    	./configure --with-normal --with-debug
 
     Rules for generating shared libraries are highly dependent upon the choice
     of host system and compiler.  We've been testing shared libraries on linux
@@ -95,7 +95,26 @@ INSTALLATION PROCEDURE:
     do), some test programs, and the panels and menus libraries.
     Read the file test/README for details on the test programs.
 
-4.  IF YOU HAVE ROOT: You can type `make install' to install the libraries,
+4.  Run ncurses and several other test programs in the test directory to
+    verify that ncurses functions correctly before overwriting any system
+    files.
+
+    The ncurses program is designed specifically to test the ncurses library.
+    You can use it to verify that the screen highlights work correctly, that
+    cursor addressing and window scrolling works OK, etc.
+
+5.  If you are running SLS, Slackware, or any Linux distribution based on
+    them, you may already have an older version of ncurses installed.  If so,
+    you must remove the old files from /usr/include and the old libraries
+    from /usr/lib before installing ncurses.  Otherwise, you may have
+    compilation errors or linkage problems because you're picking up the old
+    files.
+
+    If you have BSD curses installed in your system and you accidentally
+    compile using its curses.h you'll end up with a large number of
+    undefined symbols at link time. _waddbytes is one of them.
+
+6.  IF YOU HAVE ROOT: You can type `make install' to install the libraries,
     the programs, the terminfo database and the man pages.  Alternately, you
     can type `make install' in each directory you want to install.  In the
     top-level directory, you can do a partial install using these commands:
@@ -156,25 +175,9 @@ INSTALLATION PROCEDURE:
     directory.  Note: this will go away next time you do `make install.data'
     and you'll have to redo it. 
 
-9.  Run ncurses and several other test programs (see the test directory).
-
-    The ncurses program is designed specifically to test the ncurses library.
-    You can use it to verify that the screen highlights work correctly, that
-    cursor addressing and window scrolling works OK, etc.
-
-NOTES:
-	If you have SLS or anything based on it (slackware is OK) PLEASE
-	remove everything related to ncurses before re-installing it.
-
-	If you have BSD curses installed in your system and you accidentally
-	compile using its curses.h you'll end up with a large number of
-	undefined symbols at link time. _waddbytes is one of them.
-
-	The include files will normally be installed in /usr/include/ncurses. 
-	To arrange for your programs to see them by default, copy or link them
-	to /usr/include from there.
-
 IF YOU ARE A SYSTEM INTEGRATOR:
+
+    Configuration and Installation:
 
 	Configure with --prefix=/usr to make the install productions put
 	libraries and headers in the correct locations (overwriting any
@@ -188,6 +191,32 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 	emulation that queries the terminfo database, so even applications 
 	that use raw termcap to query terminal characteristics will win 
 	(providing you recompile and relink them!).
+
+    Keyboard Mapping:
+
+	Some Linux console keyboard mappings as of 1995 are sub-optimal; a
+	bit of tweaking would allow terminfo to make useful distinctions and
+	conform better to the ANSI/ECMA-48 standard.  The following specific
+	things should be changed:
+
+	* Backspace should generate ^H, not ^?.
+	* Shift-tab should generate \E[Z, not ^I.
+
+	The terminfo master file assumes these mappings from version 9.11.3 up.
+	Here are the loadkeys -d mappings that will set these up:
+
+		keycode  14 = BackSpace       BackSpace
+			alt     keycode  14 = Meta_BackSpace
+		keycode  15 = Tab             Tab             
+			alt     keycode  15 = Meta_Tab        
+			shift	keycode  15 = F26
+		string F26 ="\033[Z"
+
+	but this is a kluge that uses up the F26 function key binding when
+	it shouldn't.  The compiled-in defaults in the keyboard driver should
+	be changed using the loadkeys -m option.
+
+    Naming the Console Terminal
 
 	In various Linuxes (and possibly elsewhere) there has been a practice
 	of designating the system console driver type as `console'.  Please

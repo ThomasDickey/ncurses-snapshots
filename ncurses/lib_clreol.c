@@ -38,7 +38,8 @@ int	y, x, minx;
 
 	y = win->_cury;
 	x = win->_curx;
-	if (y > win->_maxy
+	if (win->_flags & _NEED_WRAP
+	 || y > win->_maxy
 	 || x > win->_maxx)
 	 	return ERR;
 

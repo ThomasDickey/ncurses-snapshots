@@ -25,7 +25,9 @@
  *	write_entry.c -- write a terminfo structure onto the file system
  */
 
-#include <progs.priv.h>
+#include <curses.priv.h>
+
+#include <stdlib.h>
 
 #include <errno.h>
 #include <sys/types.h>

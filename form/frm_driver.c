@@ -1295,7 +1295,6 @@ static int IFN_Next_Word(FORM * form)
   char  *bp    = Address_Of_Current_Position_In_Buffer(form);
   char  *s;
   char  *t;
-  bool  again  = FALSE;
 
   /* We really need access to the data, so we have to synchronize */
   Synchronize_Buffer(form);

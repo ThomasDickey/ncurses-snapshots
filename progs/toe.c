@@ -24,10 +24,10 @@
  *
  */
 
-#include <string.h>
-#include <dirent.h>
+#include <progs.priv.h>
 
-#include "progs.priv.h"
+#include <string.h>
+
 #include "tic.h"
 #include "term.h"
 #include "dump_entry.h"
@@ -148,12 +148,12 @@ int main (int argc, char *argv[])
     else
     {
 	char	*explicit, *home, *eargv[3];
-	int	i;
+	int	j;
 	extern char	*getenv(const char *);
 
-	i = 0;
+	j = 0;
 	if ((explicit = getenv("TERMINFO")) != (char *)NULL)
-	    eargv[i++] = explicit;
+	    eargv[j++] = explicit;
 	else
 	{
 	    if ((home = getenv("HOME")) != (char *)NULL)
@@ -162,13 +162,13 @@ int main (int argc, char *argv[])
 
 		(void) sprintf(personal, PRIVATE_INFO, home);
 		if (access(personal, F_OK) == 0)
-		    eargv[i++] = personal;
+		    eargv[j++] = personal;
 	    }
-	    eargv[i++] = TERMINFO;
+	    eargv[j++] = TERMINFO;
 	}
-	eargv[i] = (char *)NULL;
+	eargv[j] = (char *)NULL;
 
-	typelist(i, eargv, header, deschook);
+	typelist(j, eargv, header, deschook);
     }
 
     exit(0);
@@ -211,31 +211,37 @@ static void typelist(int eargc, char *eargv[],
 
 	while ((subdir = readdir(termdir)) != NULL)
 	{
+	    size_t	len = NAMLEN(subdir);
 	    char	buf[PATH_MAX];
+	    char	name_1[PATH_MAX];
 	    DIR	*entrydir;
 	    struct dirent *entry;
 
-	    if (!strcmp(subdir->d_name, ".")
-		|| !strcmp(subdir->d_name, ".."))
+	    strncpy(name_1, subdir->d_name, len)[len] = '\0';
+	    if (!strcmp(name_1, ".")
+		|| !strcmp(name_1, ".."))
 		continue;
 
 	    (void) strcpy(buf, eargv[i]);
 	    (void) strcat(buf, "/");
-	    (void) strcat(buf, subdir->d_name);
+	    (void) strcat(buf, name_1);
 	    (void) strcat(buf, "/");
 	    chdir(buf);
 	    entrydir = opendir(".");
 	    while ((entry = readdir(entrydir)) != NULL)
 	    {
+		char		name_2[PATH_MAX];
 		TERMTYPE	lterm;
 		char		*cn;
 		int		status;
 
-		if (!strcmp(entry->d_name, ".")
-		    || !strcmp(entry->d_name, ".."))
+		len = NAMLEN(entry);
+		strncpy(name_2, entry->d_name, len)[len] = '\0';
+		if (!strcmp(name_2, ".")
+		    || !strcmp(name_2, ".."))
 		    continue;
 
-		status = _nc_read_file_entry(entry->d_name, &lterm);
+		status = _nc_read_file_entry(name_2, &lterm);
 		if (status == -1)
 		{
 		    (void) fprintf(stderr,
@@ -247,13 +253,13 @@ static void typelist(int eargc, char *eargv[],
 		{
 		    (void) fprintf(stderr,
 				   "infocmp: couldn't open terminfo file %s.\n",
-				   entry->d_name);
+				   name_2);
 		    return;
 		}
 
 		/* only visit things once, by primary name */
 		cn = _nc_first_name(lterm.term_names);
-		if (strcmp(cn, entry->d_name))
+		if (strcmp(cn, name_2))
 		    continue;
 
 		/* apply the selected hook function */

@@ -318,8 +318,6 @@ int _nc_capcmp(const char *s, const char *t)
 	/* else *s == *t but one is not NUL, so continue */
 	s++, t++;
     }
-
-    return(0);
 }
 
 /*

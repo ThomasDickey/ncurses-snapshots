@@ -1,6 +1,3 @@
-'\" t
-.\" Note: this must be run through tbl before nroff.
-.\" The magic cookie on the first line triggers this under some man programs.
 .TH TERMINFO 5 "" "" "File Formats"
 .ds n 5
 .ds d @TERMINFO@
@@ -50,18 +47,19 @@ l l l.
 \fBSuffix	Meaning	Example\fP
 -\fInn\fP	Number of lines on the screen	aaa-60
 -\fIn\fPp	Number of pages of memory	c100-4p
--am	With auto. margins (usually default)	vt100-am
--m	Mono mode.  Suppress color.     	ansi-m
+-am	With automargins (usually the default)	vt100-am
+-m	Mono mode; suppress color       	ansi-m
 -mc	Magic cookie; spaces when highlighting	wy30-mc
 -na	No arrow keys (leave them in local)	c100-na
 -nam	Without automatic margins       	vt100-nam
--nl	No status line.                 	att4415-nl
--ns	No status line.         	  	hp2626-ns
+-nl	No status line                  	att4415-nl
+-ns	No status line                  	hp2626-ns
 -rv	Reverse video                   	c100-rv
 -s	Enable status line              	vt100-s
--vb	Use visible bell instead of flash.	wy370-vb
--w	Wide mode (more than 80 columns)	vt100-w
+-vb	Use visible bell instead of beep	wy370-vb
+-w	Wide mode (> 80 columns, usually 132)	vt100-w
 .TE
 For more on terminal naming conventions, see the \fBterm(7)\fR manual page.
 .SS Capabilities
 .\" Head of terminfo man page ends here
+.ps -1

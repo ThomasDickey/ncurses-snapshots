@@ -29,7 +29,7 @@ LONGER-TERM TO-DO ITEMS:
 1. Extended mouse support via gpm integration
 
 We have mouse support under xterm now, implemented and documented.  The
-next step is to add code to lib_getch.c that can detect Alessandro Rubini's
+next step is to add code to lib_mouse.c that can detect Alessandro Rubini's
 GPM server and use it to implement the same interface.
 
 2. Extended COSE conformance

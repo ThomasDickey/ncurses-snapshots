@@ -128,6 +128,18 @@ CaselessCmp(char *a, char *b)	/* strcasecmp isn't portable */
 	return LOWERCASE(*a) - LOWERCASE(*b);
 }
 
+#ifndef HAVE_STRDUP
+static char *strdup (char *s)
+{
+  char *p;
+
+  p = malloc((unsigned)(strlen(s)+1));
+  if (p)
+    strcpy(p,s);
+  return(p);
+}
+#endif /* not HAVE_STRDUP */
+
 static void
 err(const char *fmt, ...)
 {
@@ -545,11 +557,11 @@ found:	if ((p = getenv("TERMCAP")) != NULL && *p != '/') {
 #define CKILL	CTRL('U')
 #if defined(CLNEXT)
 #undef CLNEXT
-#define CLNEXT('v')
+#define CLNEXT  CTRL('v')
 #endif
 #if defined(CRPRNT)
 #undef CRPRNT
-#define CRPRNT('r')
+#define CRPRNT  CTRL('r')
 #endif
 #define CQUIT	CTRL('\\')
 #define CSTART	CTRL('Q')

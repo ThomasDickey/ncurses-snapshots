@@ -142,6 +142,7 @@ AC_CHECK_LIB(bsd, gettimeofday)dnl CLIX: bzero, select, gettimeofday
 
 ###	Checks for header files.
 AC_STDC_HEADERS
+AC_HEADER_DIRENT
 
 dnl These are some other potentially nonportable headers.
 AC_CHECK_HEADERS( \
@@ -189,6 +190,7 @@ getttynam \
 setbuffer \
 setvbuf \
 sigaction \
+strdup \
 strerror \
 usleep \
 vsscanf \

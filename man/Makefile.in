@@ -50,7 +50,7 @@ install.man_db : terminfo.5
 # We compose terminfo.5 from the real sources...
 CAPLIST=$(srcdir)/../include/Caps
 terminfo.5: terminfo.head $(CAPLIST) terminfo.tail Makefile MKterminfo.sh
-	sh MKterminfo.sh terminfo.head $(CAPLIST) terminfo.tail >terminfo.5
+	sh $(srcdir)/MKterminfo.sh $(srcdir)/terminfo.head $(CAPLIST) $(srcdir)/terminfo.tail >terminfo.5
 
 clean mostlyclean:
 	rm -f terminfo.5

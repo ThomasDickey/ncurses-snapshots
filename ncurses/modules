@@ -63,7 +63,7 @@ lib_vidattr	lib		$(srcdir)	../include/term.h
 lib_window	lib		$(srcdir)
 names		lib		.
 read_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
-fallback	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
+fallback	lib		.		../include/term.h $(INCDIR)/tic.h
 read_termcap	lib		$(srcdir)	../include/term.h 
 write_entry	progs		$(srcdir)	../include/term.h $(INCDIR)/tic.h 
 
