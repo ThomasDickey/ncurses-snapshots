@@ -1,10 +1,15 @@
--- $Id: NEWS,v 1.697 2002/07/20 19:34:10 tom Exp $
+-- $Id: NEWS,v 1.698 2002/07/28 00:36:53 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020727
+	+ finish no-leak checking in cardfile.c, using this for testing changes
+	  to resizeterm(). 
+	+ simplify _nc_freeall() using delscreen().
 
 20020720
 	+ check error-return from _nc_set_tty_mode() in _nc_initscr() and

@@ -2,7 +2,7 @@
 <!-- 
   * t
   ****************************************************************************
-  * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+  * Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.              *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
   * copy of this software and associated documentation files (the            *
@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: tput.1,v 1.16 2000/09/09 20:43:33 tom Exp @
+  * @Id: tput.1,v 1.17 2002/07/20 19:13:00 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -74,7 +74,7 @@
        see  <STRONG><A HREF="sh.1.html">sh(1)</A></STRONG>]  to  be sure it is <STRONG>0</STRONG>.  (See the <STRONG>EXIT</STRONG> <STRONG>CODES</STRONG> and
        <STRONG>DIAGNOSTICS</STRONG> sections.)  For a complete list  of  capabili-
        ties  and  the  <EM>capname</EM>  associated  with  each,  see <STRONG>ter-</STRONG>
-       <STRONG><A HREF="terminfo.5.html">minfo(5)</A></STRONG>.
+       <STRONG><A HREF="terminfo.1.html">minfo(1)</A></STRONG>.
 
        <STRONG>-T</STRONG><EM>type</EM> indicates the  <EM>type</EM>  of  terminal.   Normally  this
               option is unnecessary, because the default is taken
@@ -144,7 +144,7 @@
             minal in the environmental variable <STRONG>TERM</STRONG>.  This  com-
             mand  should be included in everyone's .profile after
             the environmental variable <STRONG>TERM</STRONG> has been exported, as
-            illustrated on the <STRONG><A HREF="profile.4.html">profile(4)</A></STRONG> manual page.
+            illustrated on the <STRONG><A HREF="profile.5.html">profile(5)</A></STRONG> manual page.
 
        <STRONG>tput</STRONG> <STRONG>-T5620</STRONG> <STRONG>reset</STRONG>
             Reset  an  AT&amp;T 5620 terminal, overriding the type of
@@ -214,41 +214,44 @@
               priate   to  be  output  to  the  terminal  (escape
               sequences that set  margins  and  tabs);  for  more
               information, see the "Tabs and Initialization" sec-
-              tion of <STRONG><A HREF="terminfo.4.html">terminfo(4)</A></STRONG>
-
-
-</PRE>
-<H2>SEE ALSO</H2><PRE>
-       <STRONG><A HREF="clear.1.html">clear(1)</A></STRONG>, <STRONG><A HREF="stty.1.html">stty(1)</A></STRONG>, <STRONG><A HREF="tabs.5.html">tabs(5)</A></STRONG>.   <STRONG><A HREF="profile.5.html">profile(5)</A></STRONG>,  <STRONG><A HREF="terminfo.4.html">terminfo(4)</A></STRONG>  in
-       the  <EM>System</EM>  <EM>Administrator</EM>'<EM>s</EM> <EM>Reference</EM> <EM>Manual</EM>.  Chapter 10
-       of the <EM>Programmer</EM>'<EM>s</EM> <EM>Guide</EM>.
+              tion of <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>
 
 
 </PRE>
 <H2>EXIT CODES</H2><PRE>
-       If <EM>capname</EM> is of type boolean, a value of  <STRONG>0</STRONG>  is  set  for
-       TRUE and <STRONG>1</STRONG> for FALSE unless the <STRONG>-S</STRONG> option is used.
+       If the <STRONG>-S</STRONG> option is used, tput checks for errors from each
+       line,  and if any errors are found, will set the exit code
+       to 4 plus the number of lines with errors.  If  no  errors
+       are  found,  the  exit  code is <STRONG>0</STRONG>.  No indication of which
+       line failed can be given so exit code <STRONG>1</STRONG> will never appear.
+       Exit  codes <STRONG>2</STRONG>, <STRONG>3</STRONG>, and <STRONG>4</STRONG> retain their usual interpretation.
+       If the <STRONG>-S</STRONG> option is not used, the exit code depends on the
+       type of <EM>capname</EM>:
 
-       If  <EM>capname</EM>  is of type string, a value of <STRONG>0</STRONG> is set if the
-       <EM>capname</EM> is defined for this terminal <EM>type</EM>  (the  value  of
-       <EM>capname</EM>  is  returned on standard output); a value of <STRONG>1</STRONG> is
-       set if <EM>capname</EM> is not defined for this  terminal  <EM>type</EM>  (a
-       null value is returned on standard output).
+            <EM>boolean</EM>
+                   a  value of <STRONG>0</STRONG> is set for TRUE and <STRONG>1</STRONG> for FALSE.
 
-       If  <EM>capname</EM> is of type boolean or string and the <STRONG>-S</STRONG> option
-       is used, a value of <STRONG>0</STRONG> is returned  to  indicate  that  all
-       lines were successful.  No indication of which line failed
-       can be given so exit code <STRONG>1</STRONG> will never appear.  Exit codes
-       <STRONG>2</STRONG>, <STRONG>3</STRONG>, and <STRONG>4</STRONG> retain their usual interpretation.
+            <EM>string</EM> a value of <STRONG>0</STRONG> is set if the <EM>capname</EM> is  defined
+                   for  this  terminal <EM>type</EM> (the value of <EM>capname</EM>
+                   is returned on standard output); a value of  <STRONG>1</STRONG>
+                   is set if <EM>capname</EM> is not defined for this ter-
+                   minal <EM>type</EM> (nothing  is  written  to  standard
+                   output).
 
-       If <EM>capname</EM> is of type integer, a value of <STRONG>0</STRONG> is always set,
-       whether or not <EM>capname</EM> is defined for this terminal  <EM>type</EM>.
-       To determine if <EM>capname</EM> is defined for this terminal <EM>type</EM>,
-       the user must test the value of standard output.  A  value
-       of  <STRONG>-1</STRONG> means that <EM>capname</EM> is not defined for this terminal
-       <EM>type</EM>.
+            <EM>integer</EM>
+                   a  value  of  <STRONG>0</STRONG>  is always set, whether or not
+                   <EM>capname</EM> is defined for this terminal <EM>type</EM>.  To
+                   determine  if <EM>capname</EM> is defined for this ter-
+                   minal <EM>type</EM>, the user must test the value writ-
+                   ten  to  standard output.  A value of <STRONG>-1</STRONG> means
+                   that <EM>capname</EM> is not defined for this  terminal
+                   <EM>type</EM>.
 
-       Any other exit code indicates an error; see  the  DIAGNOS-
+            <EM>other</EM>  <STRONG>reset</STRONG>  or  <STRONG>init</STRONG> may fail to find their respec-
+                   tive files.  In that case, the  exit  code  is
+                   set to 4 + <STRONG>errno</STRONG>.
+
+       Any  other  exit code indicates an error; see the DIAGNOS-
        TICS section.
 
 
@@ -257,23 +260,74 @@
        <STRONG>tput</STRONG> prints the following error messages and sets the cor-
        responding exit codes.
 
+
+
+
+
+
+
+
+
+
+
+
        exit code   error message
        ---------------------------------------------------------------------
-       <STRONG>0</STRONG>           (<EM>capname</EM> is a numeric variable that is not specified  in
-                   the  <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>  database  for this terminal type, e.g.
+       <STRONG>0</STRONG>           (<EM>capname</EM>  is a numeric variable that is not specified in
+                   the <STRONG><A HREF="terminfo.1.html">terminfo(1)</A></STRONG> database for this  terminal  type,  e.g.
                    <STRONG>tput</STRONG> <STRONG>-T450</STRONG> <STRONG>lines</STRONG> and <STRONG>tput</STRONG> <STRONG>-T2621</STRONG> <STRONG>xmc</STRONG>)
        <STRONG>1</STRONG>           no error message is printed, see the <STRONG>EXIT</STRONG> <STRONG>CODES</STRONG> section.
        <STRONG>2</STRONG>           usage error
        <STRONG>3</STRONG>           unknown terminal <EM>type</EM> or no <STRONG>terminfo</STRONG> database
        <STRONG>4</STRONG>           unknown <STRONG>terminfo</STRONG> capability <EM>capname</EM>
+       <STRONG>&gt;4</STRONG>          error occurred in -S
        ---------------------------------------------------------------------
 
 
 </PRE>
 <H2>PORTABILITY</H2><PRE>
-       The <STRONG>longname</STRONG> and <STRONG>-S</STRONG> options, and  the  parameter-substitu-
-       tion  features  used in the <STRONG>cup</STRONG> example, are not supported
+       The  <STRONG>longname</STRONG>  and <STRONG>-S</STRONG> options, and the parameter-substitu-
+       tion features used in the <STRONG>cup</STRONG> example, are  not  supported
        in BSD curses or in AT&amp;T/USL curses before SVr4.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <STRONG><A HREF="clear.1.html">clear(1)</A></STRONG>, <STRONG><A HREF="stty.1.html">stty(1)</A></STRONG>, <STRONG><A HREF="tabs.1.html">tabs(1)</A></STRONG>, <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </PRE>
 <HR>

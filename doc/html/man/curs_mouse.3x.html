@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_mouse.3x,v 1.19 2002/02/16 22:39:04 tom Exp @
+  * @Id: curs_mouse.3x,v 1.20 2002/07/20 14:52:14 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -65,7 +65,7 @@
        <STRONG>int</STRONG> <STRONG>getmouse(MEVENT</STRONG> <STRONG>*event);</STRONG>
        <STRONG>int</STRONG> <STRONG>ungetmouse(MEVENT</STRONG> <STRONG>*event);</STRONG>
        <STRONG>mmask_t</STRONG> <STRONG>mousemask(mmask_t</STRONG> <STRONG>newmask,</STRONG> <STRONG>mmask_t</STRONG> <STRONG>*oldmask);</STRONG>
-       <STRONG>bool</STRONG> <STRONG>wenclose(WINDOW</STRONG> <STRONG>*win,</STRONG> <STRONG>int</STRONG> <STRONG>y,</STRONG> <STRONG>int</STRONG> <STRONG>x);</STRONG>
+       <STRONG>bool</STRONG> <STRONG>wenclose(const</STRONG> <STRONG>WINDOW</STRONG> <STRONG>*win,</STRONG> <STRONG>int</STRONG> <STRONG>y,</STRONG> <STRONG>int</STRONG> <STRONG>x);</STRONG>
        <STRONG>bool</STRONG> <STRONG>mouse_trafo(int*</STRONG> <STRONG>pY,</STRONG> <STRONG>int*</STRONG> <STRONG>pX,</STRONG> <STRONG>bool</STRONG> <STRONG>to_screen);</STRONG>
        <STRONG>bool</STRONG> <STRONG>wmouse_trafo(const</STRONG> <STRONG>WINDOW*</STRONG> <STRONG>win,</STRONG> <STRONG>int*</STRONG> <STRONG>pY,</STRONG> <STRONG>int*</STRONG> <STRONG>pX,</STRONG>
             <STRONG>bool</STRONG> <STRONG>to_screen);</STRONG>

@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: cardfile.c,v 1.14 2002/07/14 00:32:54 tom Exp $
+ * $Id: cardfile.c,v 1.16 2002/07/27 23:34:07 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text forms the content.
  */
@@ -328,6 +328,17 @@ show_legend(void)
     addstr("Arrow keys move left/right within a field, up/down between fields");
 }
 
+static void
+free_form_fields(FIELD ** f)
+{
+    int n;
+
+    for (n = 0; f[n] != 0; ++n) {
+	free_field(f[n]);
+    }
+    free(f);
+}
+
 /*******************************************************************************/
 
 static void
@@ -426,6 +437,7 @@ cardfile(char *fname)
 		     */
 		    werase(win);
 
+		    unpost_form(p->form);
 		    free_form(p->form);
 
 		    p->form = new_form(make_fields(p, form_high, form_wide));
@@ -434,7 +446,7 @@ cardfile(char *fname)
 						 1, 1));
 		    post_form(p->form);
 
-		    free(oldf);
+		    free_form_fields(oldf);
 		    delwin(olds);
 
 		    box(win, 0, 0);
@@ -462,18 +474,18 @@ cardfile(char *fname)
     while (all_cards != 0) {
 	FIELD **f;
 	int count;
-	int n;
 
 	p = all_cards;
 	all_cards = all_cards->link;
 
 	f = form_fields(p->form);
 	count = field_count(p->form);
-	for (n = 0; n < count; ++n)
-	    free_field(f[n]);
-	free(f);
 
-	free_form(p->form);
+	unpost_form(p->form);	/* ...so we can free it */
+	free_form(p->form);	/* this also disconnects the fields */
+
+	free_form_fields(f);
+
 	del_panel(p->panel);
 	free(p->title);
 	free(p->content);
