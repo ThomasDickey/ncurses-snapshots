@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.205 2001/09/15 21:34:06 tom Exp $
+ * $Id: curses.priv.h,v 1.207 2001/10/20 19:28:03 tom Exp $
  *
  *	curses.priv.h
  *
@@ -646,6 +646,7 @@ typedef	struct {
 #define T(a)		TR(TRACE_CALLS, a)
 #define TPUTS_TRACE(s)	_nc_tputs_trace = s;
 #define TRACE_RETURN(value,type) return _nc_retrace_##type(value)
+#define _trace_key(ch) ((ch > KEY_MIN) ? keyname(ch) : _tracechar((unsigned char)ch))
 #define returnAttr(code) TRACE_RETURN(code,attr_t)
 #define returnChar(code) TRACE_RETURN(code,chtype)
 #define returnCode(code) TRACE_RETURN(code,int)
@@ -658,10 +659,15 @@ extern NCURSES_EXPORT(WINDOW *) _nc_retrace_win (WINDOW *);
 extern NCURSES_EXPORT(attr_t) _nc_retrace_attr_t (attr_t);
 extern NCURSES_EXPORT(attr_t) _nc_retrace_chtype (chtype);
 extern NCURSES_EXPORT(char *) _nc_retrace_ptr (char *);
+extern NCURSES_EXPORT(char *) _nc_varargs (const char *, va_list);
 extern NCURSES_EXPORT(int) _nc_retrace_int (int);
 extern NCURSES_EXPORT(void) _nc_fifo_dump (void);
 extern NCURSES_EXPORT_VAR(const char *) _nc_tputs_trace;
 extern NCURSES_EXPORT_VAR(long) _nc_outchars;
+extern NCURSES_EXPORT_VAR(unsigned) _nc_tracing;
+#if USE_WIDEC_SUPPORT
+extern NCURSES_EXPORT(const char *) _nc_viswbuf2 (int, const wchar_t *);
+#endif
 #else
 #define T(a)
 #define TR(n, a)
@@ -675,14 +681,12 @@ extern NCURSES_EXPORT_VAR(long) _nc_outchars;
 #define returnWin(code)  return code
 #endif
 
-extern NCURSES_EXPORT_VAR(unsigned) _nc_tracing;
+#define empty_module(name) \
+extern	NCURSES_EXPORT(void) name (void); \
+	NCURSES_EXPORT(void) name (void) { }
+
+/* used in _nc_visbuf() whether or not we're tracing */
 extern NCURSES_EXPORT(const char *) _nc_visbuf2 (int, const char *);
-
-#if USE_WIDEC_SUPPORT
-extern NCURSES_EXPORT(const char *) _nc_viswbuf2 (int, const wchar_t *);
-#endif
-
-#define _trace_key(ch) ((ch > KEY_MIN) ? keyname(ch) : _tracechar((unsigned char)ch))
 
 #define ALL_BUT_COLOR ((chtype)~(A_COLOR))
 #define IGNORE_COLOR_OFF FALSE
@@ -919,10 +923,9 @@ extern NCURSES_EXPORT_VAR(SCREEN *) SP;
 #endif
 
 /*
- * We don't want to use the lines or columns capabilities internally,
- * because if the application is running multiple screens under
- * X windows, it's quite possible they could all have type xterm
- * but have different sizes!  So...
+ * We don't want to use the lines or columns capabilities internally, because
+ * if the application is running multiple screens under X, it's quite possible
+ * they could all have type xterm but have different sizes!  So...
  */
 #define screen_lines	SP->_lines
 #define screen_columns	SP->_columns

@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_printw.c,v 1.10 2001/09/22 22:22:40 tom Exp $")
+MODULE_ID("$Id: lib_printw.c,v 1.12 2001/10/20 20:33:46 tom Exp $")
 
 NCURSES_EXPORT(int)
 printw(NCURSES_CONST char *fmt,...)
@@ -47,13 +47,18 @@ printw(NCURSES_CONST char *fmt,...)
     va_list argp;
     int code;
 
-    T((T_CALLED("printw(%s,...)"), _nc_visbuf(fmt)));
+#ifdef TRACE
+    va_start(argp, fmt);
+    T((T_CALLED("printw(%s%s)"),
+       _nc_visbuf(fmt), _nc_varargs(fmt, argp)));
+    va_end(argp);
+#endif
 
     va_start(argp, fmt);
     code = vwprintw(stdscr, fmt, argp);
     va_end(argp);
 
-    return code;
+    returnCode(code);
 }
 
 NCURSES_EXPORT(int)
@@ -62,7 +67,12 @@ wprintw(WINDOW *win, NCURSES_CONST char *fmt,...)
     va_list argp;
     int code;
 
-    T((T_CALLED("wprintw(%p,%s,...)"), win, _nc_visbuf(fmt)));
+#ifdef TRACE
+    va_start(argp, fmt);
+    T((T_CALLED("wprintw(%p,%s%s)"),
+       win, _nc_visbuf(fmt), _nc_varargs(fmt, argp)));
+    va_end(argp);
+#endif
 
     va_start(argp, fmt);
     code = vwprintw(win, fmt, argp);
@@ -77,7 +87,12 @@ mvprintw(int y, int x, NCURSES_CONST char *fmt,...)
     va_list argp;
     int code;
 
-    T((T_CALLED("mvprintw(%d,%d,%s,...)"), y, x, _nc_visbuf(fmt)));
+#ifdef TRACE
+    va_start(argp, fmt);
+    T((T_CALLED("mvprintw(%d,%d,%s%s)"),
+       y, x, _nc_visbuf(fmt), _nc_varargs(fmt, argp)));
+    va_end(argp);
+#endif
 
     if ((code = move(y, x)) != ERR) {
 	va_start(argp, fmt);
@@ -93,9 +108,14 @@ mvwprintw(WINDOW *win, int y, int x, NCURSES_CONST char *fmt,...)
     va_list argp;
     int code;
 
-    T((T_CALLED("mvwprintw(%d,%d,%p,%s,...)"), y, x, win, _nc_visbuf(fmt)));
+#ifdef TRACE
+    va_start(argp, fmt);
+    T((T_CALLED("mvwprintw(%d,%d,%p,%s%s)"),
+       y, x, win, _nc_visbuf(fmt), _nc_varargs(fmt, argp)));
+    va_end(argp);
+#endif
 
-    if ((code = move(y, x)) != ERR) {
+    if ((code = wmove(win, y, x)) != ERR) {
 	va_start(argp, fmt);
 	code = vwprintw(win, fmt, argp);
 	va_end(argp);
@@ -108,6 +128,9 @@ vwprintw(WINDOW *win, NCURSES_CONST char *fmt, va_list argp)
 {
     char *buf;
     int code = ERR;
+
+    T((T_CALLED("wprintw(%p,%s,%p)"),
+       win, _nc_visbuf(fmt), argp));
 
     if ((buf = _nc_printf_string(fmt, argp)) != 0) {
 	code = waddstr(win, buf);

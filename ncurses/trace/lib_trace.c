@@ -40,16 +40,18 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.47 2001/09/22 18:34:13 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.48 2001/10/20 20:35:25 tom Exp $")
 
 NCURSES_EXPORT_VAR(unsigned)
 _nc_tracing = 0;		/* always define this */
 
 #ifdef TRACE
-NCURSES_EXPORT_VAR(const char *) _nc_tputs_trace = "";
-NCURSES_EXPORT_VAR(long) _nc_outchars = 0;
+NCURSES_EXPORT_VAR(const char *)
+_nc_tputs_trace = "";
+NCURSES_EXPORT_VAR(long)
+_nc_outchars = 0;
 
-static FILE *tracefp;	/* default to writing to stderr */
+     static FILE *tracefp;	/* default to writing to stderr */
 
 NCURSES_EXPORT(void)
 trace(const unsigned int tracelevel GCC_UNUSED)
@@ -82,116 +84,7 @@ trace(const unsigned int tracelevel GCC_UNUSED)
 	_tracef("tracelevel=%#x", tracelevel);
     }
 }
-#endif
 
-static char *
-_nc_vischar(char *tp, chtype c)
-{
-    if (c == '"' || c == '\\') {
-	*tp++ = '\\';
-	*tp++ = c;
-    } else if (is7bits(c) && (isgraph(c) || c == ' ')) {
-	*tp++ = c;
-    } else if (c == '\n') {
-	*tp++ = '\\';
-	*tp++ = 'n';
-    } else if (c == '\r') {
-	*tp++ = '\\';
-	*tp++ = 'r';
-    } else if (c == '\b') {
-	*tp++ = '\\';
-	*tp++ = 'b';
-    } else if (c == '\033') {
-	*tp++ = '\\';
-	*tp++ = 'e';
-    } else if (is7bits(c) && iscntrl(UChar(c))) {
-	*tp++ = '\\';
-	*tp++ = '^';
-	*tp++ = '@' + c;
-    } else {
-	sprintf(tp, "\\%03o", UChar(c));
-	tp += strlen(tp);
-    }
-    return tp;
-}
-
-NCURSES_EXPORT(const char *)
-_nc_visbuf2(int bufnum, const char *buf)
-/* visibilize a given string */
-{
-    char *vbuf;
-    char *tp;
-    int c;
-
-    if (buf == 0)
-	return ("(null)");
-    if (buf == CANCELLED_STRING)
-	return ("(cancelled)");
-
-#ifdef TRACE
-    tp = vbuf = _nc_trace_buf(bufnum, (strlen(buf) * 4) + 5);
-#else
-    {
-	static char *mybuf[2];
-	mybuf[bufnum] = _nc_doalloc(mybuf[bufnum], (strlen(buf) * 4) + 5);
-	tp = vbuf = mybuf[bufnum];
-    }
-#endif
-    *tp++ = '"';
-    while ((c = *buf++) != '\0') {
-	tp = _nc_vischar(tp, UChar(c));
-    }
-    *tp++ = '"';
-    *tp++ = '\0';
-    return (vbuf);
-}
-
-NCURSES_EXPORT(const char *)
-_nc_visbuf(const char *buf)
-{
-    return _nc_visbuf2(0, buf);
-}
-
-#ifdef TRACE
-#if USE_WIDEC_SUPPORT
-NCURSES_EXPORT(const char *)
-_nc_viswbuf2(int bufnum, const wchar_t * buf)
-/* visibilize a given string */
-{
-    char *vbuf;
-    char *tp;
-    int c;
-
-    if (buf == 0)
-	return ("(null)");
-
-#ifdef TRACE
-    tp = vbuf = _nc_trace_buf(bufnum, (wcslen(buf) * 4) + 5);
-#else
-    {
-	static char *mybuf[2];
-	mybuf[bufnum] = _nc_doalloc(mybuf[bufnum], (wcslen(buf) * 4) + 5);
-	tp = vbuf = mybuf[bufnum];
-    }
-#endif
-    *tp++ = '"';
-    while ((c = *buf++) != '\0') {
-	tp = _nc_vischar(tp, UChar(c));
-    }
-    *tp++ = '"';
-    *tp++ = '\0';
-    return (vbuf);
-}
-
-NCURSES_EXPORT(const char *)
-_nc_viswbuf(const wchar_t * buf)
-{
-    return _nc_viswbuf2(0, buf);
-}
-#endif
-#endif /* TRACE */
-
-#ifdef TRACE
 NCURSES_EXPORT(void)
 _tracef(const char *fmt,...)
 {
@@ -258,7 +151,7 @@ _nc_retrace_ptr(char *code)
 
 /* Trace 'SCREEN *' return-values */
 NCURSES_EXPORT(SCREEN *)
-_nc_retrace_sp(SCREEN *code)
+_nc_retrace_sp(SCREEN * code)
 {
     T((T_RETURN("%p"), code));
     return code;

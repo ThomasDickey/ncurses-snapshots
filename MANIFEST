@@ -820,6 +820,8 @@
 ./ncurses/trace/trace_buf.c
 ./ncurses/trace/trace_tries.c
 ./ncurses/trace/trace_xnames.c
+./ncurses/trace/varargs.c
+./ncurses/trace/visbuf.c
 ./ncurses/tty/MKexpanded.sh
 ./ncurses/tty/hardscroll.c
 ./ncurses/tty/hashmap.c
