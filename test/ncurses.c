@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.181 2002/10/19 22:12:02 tom Exp $
+$Id: ncurses.c,v 1.183 2003/01/05 21:59:54 tom Exp $
 
 ***************************************************************************/
 
@@ -3743,12 +3743,80 @@ my_form_driver(FORM * form, int c)
     }
 }
 
+/*
+ * Allow a middle initial, optionally with a '.' to end it.
+ */
+static bool
+mi_field_check(FIELD *fld, const void *data GCC_UNUSED)
+{
+    char *s = field_buffer(fld, 0);
+    int state = 0;
+    int n;
+
+    for (n = 0; s[n] != '\0'; ++n) {
+	switch (state) {
+	case 0:
+	    if (s[n] == '.') {
+		if (n != 1)
+		    return FALSE;
+		state = 2;
+	    } else if (isspace(s[n])) {
+		state = 2;
+	    }
+	    break;
+	case 2:
+	    if (!isspace(s[n]))
+		return FALSE;
+	    break;
+	}
+    }
+
+    /* force the form to display a leading capital */
+    if (islower(s[0])) {
+	s[0] = toupper(s[0]);
+	set_field_buffer(fld, 0, s);
+    }
+    return TRUE;
+}
+
+static bool
+mi_char_check(int ch, const void *data GCC_UNUSED)
+{
+  return ((isalpha(ch) || ch == '.') ? TRUE : FALSE);
+}
+
+/*
+ * Passwords should be at least 6 characters.
+ */
+static bool
+pw_field_check(FIELD *fld, const void *data GCC_UNUSED)
+{
+    char *s = field_buffer(fld, 0);
+    int n;
+
+    for (n = 0; s[n] != '\0'; ++n) {
+	if (isspace(s[n])) {
+	    if (n < 6)
+		return FALSE;
+	}
+    }
+    return TRUE;
+}
+
+static bool
+pw_char_check(int ch, const void *data GCC_UNUSED)
+{
+  return (isgraph(ch) ? TRUE : FALSE);
+}
+
 static void
 demo_forms(void)
 {
     WINDOW *w;
     FORM *form;
     FIELD *f[12], *secure;
+    FIELDTYPE *fty_middle = new_fieldtype(mi_field_check, mi_char_check);
+    FIELDTYPE *fty_passwd = new_fieldtype(pw_field_check, pw_char_check);
     int finished = 0, c;
     unsigned n = 0;
 
@@ -3771,17 +3839,26 @@ demo_forms(void)
 
     /* describe the form */
     f[n++] = make_label(0, 15, "Sample Form");
+
     f[n++] = make_label(2, 0, "Last Name");
     f[n++] = make_field(3, 0, 1, 18, FALSE);
+    set_field_type(f[n-1], TYPE_ALPHA, 1);
+
     f[n++] = make_label(2, 20, "First Name");
     f[n++] = make_field(3, 20, 1, 12, FALSE);
+    set_field_type(f[n-1], TYPE_ALPHA, 1);
+
     f[n++] = make_label(2, 34, "Middle Name");
     f[n++] = make_field(3, 34, 1, 12, FALSE);
+    set_field_type(f[n-1], fty_middle);
+
     f[n++] = make_label(5, 0, "Comments");
     f[n++] = make_field(6, 0, 4, 46, FALSE);
+
     f[n++] = make_label(5, 20, "Password:");
     secure =
 	f[n++] = make_field(5, 30, 1, 9, TRUE);
+    set_field_type(f[n-1], fty_passwd);
     f[n++] = (FIELD *) 0;
 
     form = new_form(f);

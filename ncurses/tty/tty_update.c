@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -73,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.187 2002/12/31 14:37:14 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.192 2003/01/05 23:55:00 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -393,25 +393,29 @@ PutChar(const ARG_CH_T ch)
 static inline bool
 can_clear_with(ARG_CH_T ch)
 {
-    if (!back_color_erase && SP->_coloron) {
+    if (ISBLANK(CHDEREF(ch))) {
+	/* Tests for bce, non-bce terminals */
+	if (!back_color_erase && SP->_coloron) {
 #if NCURSES_EXT_FUNCS
-	if (!SP->_default_color)
-	    return FALSE;
-	if (SP->_default_fg != C_MASK || SP->_default_bg != C_MASK)
-	    return FALSE;
-	if (AttrOfD(ch) & A_COLOR) {
-	    short fg, bg;
-	    pair_content(PAIR_NUMBER(AttrOfD(ch)), &fg, &bg);
-	    if (fg != C_MASK || bg != C_MASK)
+	    if (!SP->_default_color)
 		return FALSE;
-	}
+	    if (SP->_default_fg != C_MASK || SP->_default_bg != C_MASK)
+		return FALSE;
+	    if (AttrOfD(ch) & A_COLOR) {
+		short fg, bg;
+		pair_content(PAIR_NUMBER(AttrOfD(ch)), &fg, &bg);
+		if (fg != C_MASK || bg != C_MASK)
+		    return FALSE;
+	    }
 #else
-	if (AttrOfD(ch) & A_COLOR)
-	    return FALSE;
+	    if (AttrOfD(ch) & A_COLOR)
+		return FALSE;
 #endif
+	}
+	if ((AttrOfD(ch) & ~(NONBLANK_ATTR | A_COLOR)) != 0)
+	    return TRUE;
     }
-    return (ISBLANK(CHDEREF(ch)) &&
-	    (AttrOfD(ch) & ~(NONBLANK_ATTR | A_COLOR)) == BLANK_ATTR);
+    return FALSE;
 }
 
 /*
@@ -483,7 +487,8 @@ EmitRange(const NCURSES_CH_T * ntext, int num)
 		    rep_count--;
 
 		UpdateAttrs(AttrOf(ntext0));
-		putp(tparm(repeat_char, CharOf(ntext0), rep_count));
+		tputs(tparm(repeat_char, CharOf(ntext0), rep_count),
+		      rep_count, _nc_outch);
 		SP->_curscol += rep_count;
 
 		if (wrap_possible)
@@ -915,12 +920,12 @@ ClrToEOL(NCURSES_CH_T blank, bool needclear)
     if (needclear) {
 	UpdateAttrs(AttrOf(blank));
 	TPUTS_TRACE("clr_eol");
-	if (SP->_el_cost > (screen_columns - SP->_curscol)) {
+	if (clr_eol && SP->_el_cost <= (screen_columns - SP->_curscol)) {
+	    putp(clr_eol);
+	} else {
 	    int count = (screen_columns - SP->_curscol);
 	    while (count-- > 0)
 		PutChar(CHREF(blank));
-	} else {
-	    putp(clr_eol);
 	}
     }
 }
@@ -986,17 +991,16 @@ ClrBottom(int total)
 	}
 
 	/* don't use clr_eos for just one line if clr_eol available */
-	if (top < total - 1 || (top < total && !clr_eol && !clr_bol)) {
+	if (top < total) {
 	    GoTo(top, 0);
 	    ClrToEOS(blank);
-	    total = top;
 	    if (SP->oldhash && SP->newhash) {
 		for (row = top; row < screen_lines; row++)
 		    SP->oldhash[row] = SP->newhash[row];
 	    }
 	}
     }
-    return total;
+    return top;
 }
 
 #if USE_XMC_SUPPORT
@@ -1341,7 +1345,7 @@ ClearScreen(NCURSES_CH_T blank)
 
 	    UpdateAttrs(AttrOf(blank));
 	    TPUTS_TRACE("clr_eos");
-	    putp(clr_eos);
+	    tputs(clr_eos, screen_lines, _nc_outch);
 	} else if (clr_eol) {
 	    SP->_cursrow = SP->_curscol = -1;
 
@@ -1652,6 +1656,14 @@ scroll_idl(int n, int del, int ins, NCURSES_CH_T blank)
     return OK;
 }
 
+/*
+ * Note:  some terminals require the cursor to be within the scrolling margins
+ * before setting them.  Generally, the cursor must be at the appropriate end
+ * of the scrolling margins when issuing an indexing operation (it is not
+ * apparent whether it must also be at the left margin; we do this just to be
+ * safe).  To make the related cursor movement a little faster, we use the
+ * save/restore cursor capabilities if the terminal has them.
+ */
 NCURSES_EXPORT(int)
 _nc_scrolln(int n, int top, int bot, int maxy)
 /* scroll region from top to bot by n lines */
@@ -1688,7 +1700,7 @@ _nc_scrolln(int n, int top, int bot, int maxy)
 		putp(save_cursor);
 	    }
 	    TPUTS_TRACE("change_scroll_region");
-	    tputs(tparm(change_scroll_region, top, bot), bot + 1 - top, _nc_outch);
+	    putp(tparm(change_scroll_region, top, bot));
 	    if (cursor_saved) {
 		TPUTS_TRACE("restore_cursor");
 		putp(restore_cursor);

@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.234 2002/12/28 20:11:24 tom Exp $
+ * $Id: curses.priv.h,v 1.235 2003/01/05 23:42:10 tom Exp $
  *
  *	curses.priv.h
  *
@@ -750,7 +750,7 @@ extern	NCURSES_EXPORT(void) name (void); \
 
 #define ALL_BUT_COLOR ((chtype)~(A_COLOR))
 #define IGNORE_COLOR_OFF FALSE
-#define NONBLANK_ATTR (A_BOLD|A_DIM|A_BLINK)
+#define NONBLANK_ATTR (A_NORMAL|A_BOLD|A_DIM|A_BLINK)
 #define XMC_CHANGES(c) ((c) & SP->_xmc_suppress)
 
 #define toggle_attr_on(S,at) {\
