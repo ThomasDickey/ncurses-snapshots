@@ -66,7 +66,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 {
     int			token_type;
     struct name_table_entry	const *entry_ptr;
-    char			*ptr, *bp, buf[MAX_TERMCAP_LENGTH];
+    char			*ptr, buf[MAX_TERMCAP_LENGTH];
 
     token_type = _nc_get_token();
 
@@ -90,11 +90,6 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
     }
 
     entryp->tterm.str_table = entryp->tterm.term_names = _nc_save_str(ptr);
-
-    (void) strcpy(buf, ptr);
-    if ((bp = strchr(buf, '|')) != (char *)NULL)
-	*bp = '\0';
-    _nc_set_type(buf);
 
     DEBUG(1, ("Starting '%s'", buf));
 
@@ -314,7 +309,7 @@ int _nc_capcmp(const char *s, const char *t)
  * string which is the value of that capability.  
  */
 typedef struct {char *from; char *to;} assoc;
-static assoc ko_xlate[] =
+static assoc const ko_xlate[] =
 {
     {"al",	"kil1"},	/* insert line key  -> KEY_IL    */
     {"bt",	"kcbt"},	/* back tab         -> KEY_BTAB  */
@@ -343,10 +338,10 @@ static assoc ko_xlate[] =
  * It was lifted from Ross Ridge's mytinfo package.
  */
 
-static char *C_CR = "\r";
-static char *C_LF = "\n";
-static char *C_BS = "\b";
-static char *C_HT = "\t";
+static char *const C_CR = "\r";
+static char *const C_LF = "\n";
+static char *const C_BS = "\b";
+static char *const C_HT = "\t";
 
 /*
  * Note that WANTED and PRESENT are not simple inverses!  If a capability
@@ -509,7 +504,7 @@ void postprocess_termcap(TERMTYPE *tp)
 	char	*dp, *cp = strtok(other_non_function_keys, ",");
 	struct name_table_entry	const *from_ptr;
 	struct name_table_entry	const *to_ptr;
-	assoc	*ap;
+	assoc	const *ap;
 	char	buf2[MAX_TERMINFO_LENGTH];
 	bool	foundim;
 

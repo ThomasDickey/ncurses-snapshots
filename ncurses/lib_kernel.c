@@ -198,7 +198,7 @@ struct speed {
 	int sp;
 };
 
-static struct speed speeds[] = {
+static struct speed const speeds[] = {
 	{B0, 0},
 	{B50, 50},
 	{B75, 75},

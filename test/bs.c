@@ -609,8 +609,9 @@ static int getcoord(int atcpu)
 		    continue;
 		}
 	    }
-
+	    /* no fall through */
 #endif /* NCURSES_MOUSE_VERSION */
+
 	default:
 	    if (atcpu)
 		(void) mvaddstr(CYBASE + BDEPTH + 1, CXBASE + 11, "      ");

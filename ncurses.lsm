@@ -1,6 +1,6 @@
 Begin3
 Title:		ncurses
-Version:	1.9
+Version:	1.9.x
 Entered-date:	Fri Jul 21 13:34:36 EDT 1995
 Description:	SVr4 and XSI-Curses compatible curses library and terminfo
 		tools including tic, infocmp, captoinfo.  The library can
@@ -17,7 +17,7 @@ Author: 	zmbenhal@netcom.com (Zeyd Ben-Halim)
 Maintained-by:	zmbenhal@netcom.com (Zeyd Ben-Halim)
 		esr@snark.thyrsus.com (Eric S. Raymond)
 Primary-site:	ftp.netcom.com /pub/zm/zmbenhal/ncurses
-		ncurses-1.9.tar.gz
+		ncurses-1.9.x.tar.gz
 Platform:	Portable to any ANSI/POSIX system.
 Alternate-site: locke.ccil.org /pub
 Alternate-site: prep.ai.mit.edu /pub/gnu

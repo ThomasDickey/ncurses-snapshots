@@ -14,27 +14,24 @@ INSTALL_DATA	= @INSTALL_DATA@
 
 all:
 
-install install.man :
-	$(srcdir)/../mkinstalldirs $(mandir) $(mandir)/man3 $(mandir)/man5 $(mandir)/man1
-	@cd $(srcdir); for i in *.3x; do \
-		sed 's,@TERMINFO@,$(datadir),' < $$i >/tmp/man.tmp; \
+install install.man : terminfo.5
+	$(srcdir)/../mkinstalldirs $(mandir)
+	@cd $(srcdir); for i in *.[0-9]*; do \
+		if [ ! -d $(mandir)/man$${section} ]; then $(srcdir)/../mkinstalldirs $(mandir)/man$$section]; fi; \
+		section=`expr "$$i" : '.*\\.\\([0-9]\\)[xm]*'`; \
+		sed -e 's,@TERMINFO@,$(datadir),' < $$i >/tmp/man.tmp; \
 		echo installing man page $$i;\
-		$(INSTALL_DATA) /tmp/man.tmp $(mandir)/man3/$$i; \
+		$(INSTALL_DATA) /tmp/man.tmp $(mandir)/man$${section}/$$i; \
 	done 
-	@cd $(srcdir); for i in *.1 *.1m; do \
-		sed 's,@TERMINFO@,$(datadir),' < $$i >/tmp/man.tmp; \
-		echo installing man page $$i;\
-		$(INSTALL_DATA) /tmp/man.tmp $(mandir)/man1/$$i; \
-	done
-	-ln -s $(mandir)/man1/tset.1 $(mandir)/man1/reset.1
-	@cd $(srcdir); for i in *.5; do \
-		sed 's,@TERMINFO@,$(datadir),' < $$i >/tmp/man.tmp; \
-		echo installing man page $$i;\
-		$(INSTALL_DATA) /tmp/man.tmp $(mandir)/man5/$$i; \
-	done
 	rm -f /tmp/man.tmp
 
+# We compose terminfo.5 from the real sources...
+CAPLIST=$(srcdir)/../include/Caps
+terminfo.5: terminfo.head $(CAPLIST) terminfo.tail Makefile MKterminfo.sh
+	sh MKterminfo.sh terminfo.head $(CAPLIST) terminfo.tail >terminfo.5
+
 clean mostlyclean:
+	rm -f terminfo.5
 
 distclean realclean: clean
 	rm -f Makefile

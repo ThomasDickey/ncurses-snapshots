@@ -34,7 +34,7 @@ The libraries are:
 
 The ncurses libraries implement the curses API.  The panel, menu and forms
 libraries implement clones of the SVr4 panel, menu and forms APIs.  The
-source code for these lives in the `ncurses', `panels', and `menu', and
+source code for these lives in the `ncurses', `panel', `menu', and
 `form' directories respectively.
 
 In the `c++' directory, you'll find code that defines an interface to the

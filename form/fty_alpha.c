@@ -125,7 +125,7 @@ static bool Check_Alpha_Character(int c, const void * argp)
   return (isalpha(c) ? TRUE : FALSE);
 }
 
-static FIELDTYPE typeALPHA = {
+static FIELDTYPE const typeALPHA = {
   _HAS_ARGS | _RESIDENT,
   1,
   (FIELDTYPE *)0,
@@ -139,6 +139,6 @@ static FIELDTYPE typeALPHA = {
   NULL
 };
 
-FIELDTYPE* TYPE_ALPHA = &typeALPHA;
+FIELDTYPE const * TYPE_ALPHA = &typeALPHA;
 
 /* fty_alpha.c ends here */

@@ -46,10 +46,10 @@
 char	*_nc_progname;
 
 static int	width = 60;
-static int	infodump = 0;		/* running as captoinfo? */
-static int	capdump = 0;		/* running as infotocap? */
+static bool	infodump = FALSE;	/* running as captoinfo? */
+static bool	capdump = FALSE;	/* running as infotocap? */
 static char	*source_file = "terminfo";
-static char	*usage_string = "tic [-v[n]] source-file\n";
+static char	*const usage_string = "tic [-v[n]] source-file\n";
 static char	check_only = 0;
 
 int main (int argc, char *argv[])
@@ -78,10 +78,10 @@ ENTRY	*qp;
 				_nc_tracing = (1 << debug_level) - 1;
 				break;
 		    	case 'I':
-				infodump = 1;
+				infodump = TRUE;
 				break;
 		    	case 'C':
-				capdump = 1;
+				capdump = TRUE;
 				break;
 			case 'N':
 				smart_defaults = FALSE;
@@ -115,7 +115,7 @@ ENTRY	*qp;
 	}
 
 	if (argflag == FALSE) {
-		if (infodump == 1) {
+		if (infodump == TRUE) {
 			/* captoinfo's no-argument case */
 			termcap = "/etc/termcap";
 			if ((termcap = getenv("TERMCAP")) != NULL) {

@@ -40,7 +40,7 @@ static int tracelevel;		/* level of debug output */
 
 /* indirection pointers for implementing sort and display modes */
 static const int *bool_indirect, *num_indirect, *str_indirect;
-static char **bool_names, **num_names, **str_names;
+static char * const *bool_names, * const *num_names, * const *str_names;
 
 static char *separator, *trailer;
 

@@ -80,5 +80,3 @@ comp_parse	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 comp_scan	lib		$(srcdir)
 parse_entry	lib		$(srcdir)	../include/term.h ../include/parametrized.h
 
-# Extensions
-lib_resize	lib		$(srcdir)

@@ -160,7 +160,7 @@ extern void _nc_panic_mode(char);
 extern int _nc_curr_line;
 extern long _nc_curr_file_pos;
 extern long _nc_comment_start, _nc_comment_end;
-extern bool _nc_syntax;
+extern int _nc_syntax;
 #define SYN_TERMINFO	0
 #define SYN_TERMCAP	1
 

@@ -37,7 +37,7 @@ CPPFLAGS	= @INCLUDES@ \
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 
 CFLAGS_NORMAL	= $(CCFLAGS)
-CFLAGS_DEBUG	= $(CCFLAGS) -g -DTRACE
+CFLAGS_DEBUG	= $(CCFLAGS) @CC_G_OPT@ -DTRACE
 CFLAGS_PROFILE	= $(CCFLAGS) -pg
 # Juergen Pfeifer reports:
 # "Unfortunately -O crashes my linker on Linix and -O2 works"

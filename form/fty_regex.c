@@ -118,7 +118,7 @@ static bool Check_RegularExpression_Field(FIELD * field, const void  * argp)
 #endif
 }
 
-static FIELDTYPE typeREGEXP = {
+static FIELDTYPE const typeREGEXP = {
   _HAS_ARGS | _RESIDENT,
   1,
   (FIELDTYPE *)0,
@@ -132,6 +132,6 @@ static FIELDTYPE typeREGEXP = {
   NULL
 };
 
-FIELDTYPE* TYPE_REGEXP = &typeREGEXP;
+FIELDTYPE const * TYPE_REGEXP = &typeREGEXP;
 
 /* fty_regex.c ends here */

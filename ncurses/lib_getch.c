@@ -227,8 +227,12 @@ int	ch;
 		ch = fifo_pull();
 	}
 
-	/* strip 8th-bit if so desired */
-	if (ch & 0x80)
+	/* Strip 8th-bit if so desired.  We do this only for characters that
+	 * are in the range 128-255, to provide compatibility with terminals
+	 * that display only 7-bit characters.  Note that 'ch' may be a
+	 * function key at this point, so we mustn't strip _those_.
+	 */
+	if ((ch < KEY_MIN) && (ch & 0x80))
 		if (!SP->_use_meta)
 			ch &= 0x7f;
 

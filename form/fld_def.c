@@ -21,6 +21,7 @@
 
 #include "form.priv.h"
 
+/* this can't be readonly */
 static FIELD default_field = {
   0,                       /* status */
   0,                       /* rows   */
@@ -173,7 +174,7 @@ static void Free_Argument(const FIELDTYPE * typ, TypeArgument * argp)
 |   Return Values :  TRUE       - copy worked
 |                    FALSE      - error occured
 +--------------------------------------------------------------------------*/
-static bool Copy_Type(FIELD *new, FIELD *old)
+static bool Copy_Type(FIELD *new, FIELD const *old)
 {
   int err = 0;
 

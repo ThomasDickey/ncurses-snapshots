@@ -274,7 +274,7 @@ static bool Previous_Enum(FIELD * field, const void * argp)
 }
 
 
-static FIELDTYPE typeENUM = {
+static FIELDTYPE const typeENUM = {
   _HAS_ARGS | _HAS_CHOICE | _RESIDENT,
   1,
   (FIELDTYPE *)0,
@@ -288,6 +288,6 @@ static FIELDTYPE typeENUM = {
   Previous_Enum
 };
 
-FIELDTYPE* TYPE_ENUM = &typeENUM;
+FIELDTYPE const * TYPE_ENUM = &typeENUM;
 
 /* fty_enum.c ends here */

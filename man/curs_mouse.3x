@@ -1,7 +1,7 @@
 .TH curs_mouse 3X ""
 .SH NAME
 \fBcurs_mouse\fR: \fBgetmouse\fR, \fBungetmouse\fR,
-\fBmousemask\fR - mouse interface through \fBcurses\fR
+\fBmousemask\fR - mouse interface through curses
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>\fR
@@ -114,9 +114,14 @@ upon successful completion.
 These calls were designed for \fBncurses\fR(3x), and are not found in SVr4
 curses, 4.4BSD curses, or any other previous version of curses.
 
-The feature macro NCURSES_MOUSE_VERSION is provided so the preprocessor can be
-used to test whether these features are present (its value is 1).  NOTE: THIS
-INTERFACE IS EXPERIMENTAL AND IS SUBJECT TO CHANGE WITHOUT NOTICE!
+The feature macro \fBNCURSES_MOUSE_VERSION\fR is provided so the preprocessor
+can be used to test whether these features are present (its value is 1).  NOTE:
+THIS INTERFACE IS EXPERIMENTAL AND IS SUBJECT TO CHANGE WITHOUT NOTICE!  If the
+interface is changed, the value of \fBNCURSES_MOUSE_VERSION\fR will be
+incremented.
+
+The order of the \fBMEVENT\fR structure members is not guaranteed.  
+Additional fields may be added to the structure in the future.
 
 Under \fBncurses\fR(3x), these calls are implemented using either
 xterm's built-in mouse-tracking API or Alessandro Rubini's gpm server.

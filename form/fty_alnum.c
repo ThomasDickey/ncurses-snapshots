@@ -124,7 +124,7 @@ static bool Check_AlphaNumeric_Character(int c, const void * argp)
   return (isalnum(c) ? TRUE : FALSE);
 }
 
-static FIELDTYPE typeALNUM = {
+static FIELDTYPE const typeALNUM = {
   _HAS_ARGS | _RESIDENT,
   1,
   (FIELDTYPE *)0,
@@ -138,6 +138,6 @@ static FIELDTYPE typeALNUM = {
   NULL
 };
 
-FIELDTYPE* TYPE_ALNUM = &typeALNUM;
+FIELDTYPE const * TYPE_ALNUM = &typeALNUM;
 
 /* fty_alnum.c ends here */

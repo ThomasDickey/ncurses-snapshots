@@ -1678,6 +1678,7 @@ static int form_virtualize(WINDOW *w)
 	return(REQ_DEL_CHAR);
 
     case CTRL('H'):
+    case KEY_BACKSPACE:
 	return(REQ_DEL_PREV);
     case CTRL('Y'):
 	return(REQ_DEL_LINE);
@@ -1736,7 +1737,7 @@ static void demo_forms(void)
     addstr("^W   -- go to next word        ^T  -- go to previous word\n");
     addstr("^S   -- go to start of field   ^E  -- go to end of field\n");
     addstr("^H   -- delete previous char   ^Y  -- delete line\n");
-    addstr("^G   -- delete previous word   ^C  -- clear to end of line\n");
+    addstr("^G   -- delete current word    ^C  -- clear to end of line\n");
     addstr("^K   -- clear to end of field  ^X  -- clear field\n");
     addstr("Arrow keys move within a field as you would expect.");
     refresh();

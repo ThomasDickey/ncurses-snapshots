@@ -139,7 +139,7 @@ bool _nc_mouse_inline(SCREEN *sp)
 	(void) read(sp->_ifd, &kbuf, 3);
 	kbuf[3] = '\0';
 
-	T(("_nc_mouse_inline sees the following xterm data: %s", kbuf));
+	T(("_nc_mouse_inline sees the following xterm data: '%s'", kbuf));
 
 	eventp->id = 0;		/* there's only one mouse... */
 
@@ -148,18 +148,22 @@ bool _nc_mouse_inline(SCREEN *sp)
 	switch (kbuf[0] & 0x3)
 	{
 	case 0x0:
+	    T(("...mouse button-1 pressed"));
 	    eventp->bstate = BUTTON1_PRESSED;
 	    break;
 
 	case 0x1:
+	    T(("...mouse button-2 pressed"));
 	    eventp->bstate = BUTTON2_PRESSED;
 	    break;
 
 	case 0x2:
+	    T(("...mouse button-3 pressed"));
 	    eventp->bstate = BUTTON3_PRESSED;
 	    break;
 
 	case 0x3:
+	    T(("...mouse button released"));
 	    /*
 	     * Release events aren't reported for individual buttons,
 	     * just for the button set as a whole...
@@ -186,15 +190,22 @@ bool _nc_mouse_inline(SCREEN *sp)
 	    }
 	    break;
 	}
-	if (kbuf[0] & 4)
+	if (kbuf[0] & 4) {
+	    T(("mouse event: SHIFT"));
 	    eventp->bstate |= BUTTON_SHIFT;
-	if (kbuf[0] & 8)
+	}
+	if (kbuf[0] & 8) {
+	    T(("mouse event: ALT"));
 	    eventp->bstate |= BUTTON_ALT;
-	if (kbuf[0] & 16)
+	}
+	if (kbuf[0] & 16) {
+	    T(("mouse event: CTRL"));
 	    eventp->bstate |= BUTTON_CTRL;
+	}
 
 	eventp->x = (kbuf[1] - ' ') - 1; 
 	eventp->y = (kbuf[2] - ' ') - 1; 
+	T(("mouse-event at (%d,%d)", eventp->y, eventp->x));
 
 	/* bump the next-free pointer into the circular list */
 	eventp = NEXT(eventp);
