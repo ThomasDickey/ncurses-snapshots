@@ -1,10 +1,14 @@
--- $Id: NEWS,v 1.791 2004/01/18 01:14:10 tom Exp $
+-- $Id: NEWS,v 1.792 2004/01/24 19:44:33 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040124 5.4 release for upload to ftp.gnu.org
+	+ modify configure script check for ranlib to use AC_CHECK_TOOL, since
+	  that works better for cross-compiling.
 
 20040117 pre-release
 	+ modify lib_get_wch.c to prefer mblen/mbtowc over mbrlen/mbrtowc to
@@ -1136,7 +1140,8 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ implement key_name().
 	+ remove const's in lib_box.c incorrectly leftover after splitting off
 	  lib_box_set.c
-	+ update llib-lncurses, llib-ncursesw, fix configure script related to these.
+	+ update llib-lncurses, llib-ncursesw, fix configure script related to
+	  these.
 
 20020218
 	+ remove quotes on "SYNOPSIS" in man/curs_box_set.3x, which resulted
