@@ -1,5 +1,5 @@
 # Test-Program modules
-# $Id: modules,v 1.17 2002/11/24 00:05:44 tom Exp $
+# $Id: modules,v 1.18 2002/11/30 20:57:02 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -35,7 +35,8 @@
 blue		progs		$(srcdir)	../include/term.h
 bs		progs		$(srcdir)
 cardfile	progs		$(srcdir)	../include/panel.h ../include/menu.h ../include/form.h
-define_key	progs		$(srcdir)
+demo_defkey	progs		$(srcdir)
+demo_keyok	progs		$(srcdir)
 ditto		progs		$(srcdir)
 dots		progs		$(srcdir)	../include/term.h
 filter		progs		$(srcdir)
@@ -47,7 +48,6 @@ hashtest	progs		$(srcdir)
 ins_wide	progs		$(srcdir)
 inserts		progs		$(srcdir)
 keynames	progs		$(srcdir)
-keyok		progs		$(srcdir)
 knight		progs		$(srcdir)
 lrtest		progs		$(srcdir)
 ncurses		progs		$(srcdir)	../include/panel.h ../include/menu.h ../include/form.h

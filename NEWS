@@ -1,10 +1,35 @@
--- $Id: NEWS,v 1.720 2002/11/24 00:51:39 tom Exp $
+-- $Id: NEWS,v 1.722 2002/12/08 01:13:30 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20021206
+	+ modify CF_GNAT_VERSION to print gnatmake's version, and to allow for
+	  possible gnat versions such as 3.2 (report by Chris Lingard
+	  <chris@stockwith.co.uk>).
+	+ modify #define's for CKILL and other default control characters in
+	  tset to use the system's default values if they are defined.
+	+ correct interchanged defaults for kill and interrupt characters
+	  in tset, which caused it to report unnecessarily (Debian #171583).
+	+ repair check for missing C++ compiler, which is broken in autoconf
+	  2.5x by hardcoding it to g++ (report by Martin Mokrejs).
+	+ update config.guess, config.sub (2002-11-30)
+	+ modify configure script to skip --with-shared, etc., when the
+	  --with-libtool option is given, since they would be ignored anyway.
+	+ fix to allow "configure --with-libtool --with-termlib" to build.
+	+ modify configure script to show version number of libtool, to help
+	  with bug reports.  libtool still gets confused if the installed
+	  ncurses libraries are old, since it ignores the -L options at some
+	  point (tested with libtool 1.3.3 and 1.4.3).
+	+ reorder configure script's updating of $CPPFLAGS and $CFLAGS to
+	  prevent -I options in the user's environment from introducing
+	  conflicts with the build -I options (may be related to reports by 
+	  Patrick Ash and George Goffe).
+	+ rename test/define_key.c to test/demo_defkey.c, test/keyok.c to
+	  test/demo_keyok.c to allow building these with libtool.
 
 20021123
 	+ add example program test/define_key.c for define_key().
