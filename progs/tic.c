@@ -44,7 +44,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.88 2001/03/31 23:51:52 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.90 2001/04/15 00:21:31 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -912,8 +912,15 @@ similar_sgr(char *a, char *b)
 {
     while (*b != 0) {
 	while (*a != *b) {
-	    if (*a == 0)
+	    if (*a == 0) {
+		if (b[0] == '$'
+		    && b[1] == '<') {
+		    _nc_warning("Did not find delay %s", _nc_visbuf(b));
+		} else {
+		    _nc_warning("Unmatched portion %s", _nc_visbuf(b));
+		}
 		return FALSE;
+	    }
 	    a++;
 	}
 	a++;

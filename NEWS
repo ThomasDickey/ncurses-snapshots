@@ -1,10 +1,23 @@
--- $Id: NEWS,v 1.622 2001/04/07 22:35:52 tom Exp $
+-- $Id: NEWS,v 1.623 2001/04/15 00:08:01 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010414
+	+ add secondary check in tic.c, similar_sgr() to see if the reason
+	  for mismatch was that the individual capabilities used a time-delay
+	  while sgr did not.  Used this to cleanup mismatches, e.g., in vt100,
+	  and remove time-delay from Apple_Terminal entries.
+	+ add Apple_Terminal terminfo entries (Benjamin C W Sittler
+	  <bsittler@iname.com>).
+	+ correct definitions of shifted editing keys for xterm-xfree86 -TD
+	+ fix a bug in test/bs.c from 20010407 (patch by Erik Sigra).
+	+ prevent relative_move() from doing an overwrite if it detects 8-bit
+	  characters when configured for UTF-8 (reported by Sven Verdoolaege
+	  <skimo@kotnet.org>).
 
 20010407
 	+ add configure checks for strstream.h vscan function, and similar

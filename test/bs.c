@@ -7,7 +7,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.28 2001/04/07 20:02:53 tom Exp $
+ * $Id: bs.c,v 1.29 2001/04/14 22:36:05 Erik.Sigra Exp $
  */
 
 #include <test.priv.h>
@@ -316,8 +316,8 @@ randomplace(int b, ship_t * ss)
 
     do {
 	ss->dir = rnd(2) ? E : S;
-	ss->y = rnd(BWIDTH - (ss->dir == E ? ss->length : 0));
-	ss->x = rnd(BDEPTH - (ss->dir == S ? ss->length : 0));
+	ss->x = rnd(BWIDTH - (ss->dir == E ? ss->length : 0));
+	ss->y = rnd(BDEPTH - (ss->dir == S ? ss->length : 0));
     } while
 	(!checkplace(b, ss, FALSE));
 }

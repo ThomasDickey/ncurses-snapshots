@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -152,7 +152,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.77 2000/12/10 03:04:30 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.78 2001/04/14 22:26:14 tom Exp $")
 
 #define CURRENT_ROW	SP->_cursrow	/* phys cursor row */
 #define CURRENT_COLUMN	SP->_curscol	/* phys cursor column */
@@ -598,11 +598,18 @@ relative_move(string_desc * target, int from_y, int from_x, int to_y, int
 		if (ovw) {
 		    int i;
 
-		    for (i = 0; i < n; i++)
-			if ((WANT_CHAR(to_y, from_x + i) & A_ATTRIBUTES) != CURRENT_ATTR) {
+		    for (i = 0; i < n; i++) {
+			chtype ch = WANT_CHAR(to_y, from_x + i);
+			if ((ch & A_ATTRIBUTES) != CURRENT_ATTR
+#if USE_WIDEC_SUPPORT
+			    || (TextOf(ch) >= 0x80
+				&& SP->_outch == _nc_utf8_outch)
+#endif
+			    ) {
 			    ovw = FALSE;
 			    break;
 			}
+		    }
 		}
 		if (ovw) {
 		    int i;
