@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.86 1997/04/26 20:40:20 tom Exp $
+$Id: ncurses.c,v 1.91 1997/05/10 18:19:48 tom Exp $
 
 ***************************************************************************/
 
@@ -174,7 +174,7 @@ int y, x;
 
     refresh();
 
-#ifdef NCURSES_VERSION
+#ifdef NCURSES_MOUSE_VERSION
     mousemask(ALL_MOUSE_EVENTS, (mmask_t *)0);
 #endif
 
@@ -197,7 +197,7 @@ int y, x;
 	if (firsttime++)
 	{
 	    printw("Key pressed: %04o ", c);
-#ifdef NCURSES_VERSION
+#ifdef NCURSES_MOUSE_VERSION
 	    if (c == KEY_MOUSE)
 	    {
 		MEVENT	event;
@@ -206,7 +206,7 @@ int y, x;
 		printw("KEY_MOUSE, %s\n", _tracemouse(&event));
 	    }
 	    else
-#endif	/* NCURSES_VERSION */
+#endif	/* NCURSES_MOUSE_VERSION */
 	     if (c >= KEY_MIN)
 	    {
 		(void) addstr(keyname(c));
@@ -264,7 +264,7 @@ int y, x;
 	    }
     }
 
-#ifdef NCURSES_VERSION
+#ifdef NCURSES_MOUSE_VERSION
     mousemask(0, (mmask_t *)0);
 #endif
     timeout(-1);
@@ -865,15 +865,82 @@ typedef struct
 }
 pair;
 
-struct frame
+#define FRAME struct frame
+FRAME
 {
-	struct frame	*next, *last;
-	bool		flag;
+	FRAME		*next, *last;
+	bool		do_scroll;
+	bool		do_keypad;
 	WINDOW		*wind;
 };
 
-static void transient(struct frame *curp, NCURSES_CONST char *msg)
+/* We need to know if these flags are actually set, so don't look in FRAME.
+ * These names are known to work with SVr4 curses as well as ncurses.
+ */
+static bool HaveKeypad(FRAME *curp)
 {
+	WINDOW *win = (curp ? curp->wind : stdscr);
+	return win->_use_keypad;
+}
+
+static bool HaveScroll(FRAME *curp)
+{
+	WINDOW *win = (curp ? curp->wind : stdscr);
+	return win->_scroll;
+}
+
+static void newwin_legend(FRAME *curp)
+{
+	static const struct {
+		const char *msg;
+		int code;
+	} legend[] = {
+		{ "^C = create window",		0 },
+		{ "^N = next window",		0 },
+		{ "^P = previous window",	0 },
+		{ "^F = scroll forward",	0 },
+		{ "^B = scroll backward",	0 },
+		{ "^K = keypad(%s)",		1 },
+		{ "^S = scrollok(%s)",		2 },
+		{ "^W = save window to file",	0 },
+		{ "^R = restore window",	0 },
+#ifdef NCURSES_VERSION
+		{ "^X = resize",		0 },
+#endif
+		{ "^Q%s = exit",		3 }
+	};
+	size_t n;
+	int y, x;
+	bool do_keypad = HaveKeypad(curp);
+	bool do_scroll = HaveScroll(curp);
+	char buf[BUFSIZ];
+
+	move(LINES-4, 0);
+	for (n = 0; n < SIZEOF(legend); n++) {
+		switch (legend[n].code) {
+		default:
+			strcpy(buf, legend[n].msg);
+			break;
+		case 1:
+			sprintf(buf, legend[n].msg, do_keypad ? "yes" : "no");
+			break;
+		case 2:
+			sprintf(buf, legend[n].msg, do_scroll ? "yes" : "no");
+			break;
+		case 3:
+			sprintf(buf, legend[n].msg, do_keypad ? "/ESC" : "");
+			break;
+		}
+		getyx(stdscr, y, x);
+		addstr((COLS < (x + 3 + (int)strlen(buf))) ? "\n" : (n ? ", " : ""));
+		addstr(buf);
+	}
+	clrtoeol();
+}
+
+static void transient(FRAME *curp, NCURSES_CONST char *msg)
+{
+    newwin_legend(curp);
     if (msg)
     {
 	mvaddstr(LINES - 1, 0, msg);
@@ -882,13 +949,13 @@ static void transient(struct frame *curp, NCURSES_CONST char *msg)
     }
 
     move(LINES-1, 0);
-    printw("All other characters are echoed, window should %sscroll.",
-	((curp != 0) && curp->flag) ? "" : "not " );
+    printw("%s characters are echoed, window should %sscroll.",
+	HaveKeypad(curp) ? "Non-arrow" : "All other",
+	HaveScroll(curp) ? "" : "not " );
     clrtoeol();
-    refresh();
 }
 
-static void newwin_report(struct frame *curp)
+static void newwin_report(FRAME *curp)
 /* report on the cursor's current position, then restore it */
 {
 	WINDOW *win = (curp != 0) ? curp->wind : stdscr;
@@ -918,7 +985,7 @@ static pair *selectcell(int uli, int ulj, int lri, int lrj)
     for (;;)
     {
 	move(uli + i, ulj + j);
-	newwin_report((struct frame *)0);
+	newwin_report((FRAME *)0);
 
 	switch(Getchar())
 	{
@@ -928,6 +995,22 @@ static pair *selectcell(int uli, int ulj, int lri, int lrj)
 	case KEY_RIGHT:	j++; break;
 	case QUIT:
 	case ESCAPE:	return((pair *)0);
+#ifdef NCURSES_MOUSE_VERSION
+	case KEY_MOUSE:
+	    {
+		MEVENT	event;
+
+		getmouse(&event);
+		if (event.y > uli && event.x > ulj) {
+			i = event.y - uli;
+			j = event.x - ulj;
+		} else {
+			beep();
+			break;
+		}
+	    }
+	    /* FALLTHRU */
+#endif
 	default:	res.y = uli + i; res.x = ulj + j; return(&res);
 	}
 	i %= si;
@@ -979,22 +1062,7 @@ static WINDOW *getwindow(void)
     return(rwindow);
 }
 
-static void newwin_legend(void)
-{
-	static const char *const legend[] = {
-	"^C = create window, ^N = next window, ^P = previous window,",
-	"^F = scroll forward, ^B = scroll backward, ^S toggle scrollok",
-	"^W = save window to file, ^R = restore window, ^X = resize, ^Q/ESC = exit"
-	};
-	size_t n;
-	for (n = 0; n < SIZEOF(legend); n++) {
-		int line = LINES - SIZEOF(legend) - 1 + n;
-		mvprintw(line, 0, legend[n]);
-		clrtoeol();
-	}
-}
-
-static void newwin_move(struct frame *curp, int dy, int dx)
+static void newwin_move(FRAME *curp, int dy, int dx)
 {
 	WINDOW *win = (curp != 0) ? curp->wind : stdscr;
 	int cur_y, cur_x;
@@ -1013,9 +1081,9 @@ static void newwin_move(struct frame *curp, int dy, int dx)
 	wmove(win, cur_y, cur_x);
 }
 
-static struct frame *delete_framed(struct frame *fp, bool showit)
+static FRAME *delete_framed(FRAME *fp, bool showit)
 {
-	struct frame *np;
+	FRAME *np;
 
 	fp->last->next = fp->next;
 	fp->next->last = fp->last;
@@ -1036,20 +1104,22 @@ static void acs_and_scroll(void)
 {
     int	c, i;
     FILE *fp;
-    struct frame *current = (struct frame *)0, *neww;
+    FRAME *current = (FRAME *)0, *neww;
+    WINDOW *usescr = stdscr;
 
 #define DUMPFILE	"screendump"
 
-    newwin_legend();
-    transient((struct frame *)0, (char *)0);
-
+#ifdef NCURSES_MOUSE_VERSION
+    mousemask(BUTTON1_CLICKED, (mmask_t *)0);
+#endif
     c = CTRL('C');
     raw();
     do {
+	transient((FRAME *)0, (char *)0);
 	switch(c)
 	{
 	case CTRL('C'):
-	    neww = (struct frame *) calloc(1, sizeof(struct frame));
+	    neww = (FRAME *) calloc(1, sizeof(FRAME));
 	    if ((neww->wind = getwindow()) == (WINDOW *)0)
 		goto breakout;
 
@@ -1066,9 +1136,8 @@ static void acs_and_scroll(void)
 		neww->next->last = neww;
 	    }
 	    current = neww;
-	    keypad(neww->wind, TRUE);
-	    scrollok(current->wind, current->flag = TRUE);
-	    transient(current, (char *)0);
+	    current->do_keypad = HaveKeypad(current);
+	    current->do_scroll = HaveScroll(current);
 	    break;
 
 	case CTRL('N'):		/* go to next window */
@@ -1091,12 +1160,18 @@ static void acs_and_scroll(void)
 		wscrl(current->wind, -1);
 	    break;
 
+	case CTRL('K'):		/* toggle keypad mode for current */
+	    if (current) {
+		current->do_keypad = !current->do_keypad;
+		keypad(current->wind, current->do_keypad);
+	    }
+	    break;
+
 	case CTRL('S'):
 	    if (current) {
-		current->flag = !current->flag;
-		scrollok(current->wind, current->flag);
+		current->do_scroll = !current->do_scroll;
+		scrollok(current->wind, current->do_scroll);
 	    }
-	    transient(current, (char *)0);
 	    break;
 
 	case CTRL('W'):		/* save and delete window */
@@ -1118,7 +1193,7 @@ static void acs_and_scroll(void)
 		transient(current, "Can't open screen dump file");
 	    else
 	    {
-		neww = (struct frame *) calloc(1, sizeof(struct frame));
+		neww = (FRAME *) calloc(1, sizeof(FRAME));
 
 		neww->next = current->next;
 		neww->last = current;
@@ -1236,16 +1311,21 @@ static void acs_and_scroll(void)
 	    break;
 	}
 	newwin_report(current);
-	wrefresh(current ? current->wind : stdscr);
+	usescr = (current ? current->wind : stdscr);
+	wrefresh(usescr);
     } while
-	((c = wGetchar(current ? current->wind : stdscr)) != QUIT
-	 && (c != ESCAPE)
+	((c = wGetchar(usescr))
+	 && !((c == ESCAPE) && (usescr->_use_keypad))
 	 && (c != ERR));
 
  breakout:
     while (current != 0)
     	current = delete_framed(current, FALSE);
+
     scrollok(stdscr, TRUE);	/* reset to driver's default */
+#ifdef NCURSES_MOUSE_VERSION
+    mousemask(0, (mmask_t *)0);
+#endif
     noraw();
     erase();
     endwin();

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.27 1997/05/04 00:56:13 tom Exp $
+# $Id: Makefile.in,v 1.29 1997/05/10 16:23:07 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -43,7 +43,7 @@ CFLAGS_SHARED	= $(CCFLAGS) @CC_SHARED_OPTS@
 
 CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
-ABI_VERSION	= @ABI_VERSION@
+ABI_VERSION	= @nc_cv_abi_version@
 LOCAL_LIBS	= @TEST_DEPS@
 
 LD		= @LD@
@@ -123,7 +123,7 @@ clean ::
 	-rm -rf *.o trace screendump *.atac *.lis core $(TESTS)
 
 distclean :: clean
-	-rm -f Makefile config.*
+	-rm -f Makefile ncurses_cfg.h config.*
 
 mostlyclean :: clean
 

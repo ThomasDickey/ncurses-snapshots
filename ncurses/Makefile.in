@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.27 1997/05/03 20:04:11 tom Exp $
+# $Id: Makefile.in,v 1.28 1997/05/10 20:21:06 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -131,7 +131,7 @@ make_hash : \
 	$(CC) -o $@ $(CCFLAGS) -DMAIN_PROGRAM $(srcdir)/comp_hash.c $(LDFLAGS)
 
 ./expanded.c : $(srcdir)/MKexpanded.sh
-	sh $(srcdir)/MKexpanded.sh "$(CPP)"
+	sh $(srcdir)/MKexpanded.sh "$(CPP)" $(CPPFLAGS)
 
 ./comp_captab.c: \
 		make_hash \

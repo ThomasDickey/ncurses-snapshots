@@ -191,7 +191,7 @@ extern char *_nc_infotocap(char *const, char *, int const);
 extern const char *_nc_progname;
 
 /* read_entry.c */
-extern char *_nc_tic_dir(char *);
+extern const char *_nc_tic_dir(const char *);
 
 /* write_entry.c */
 extern int _nc_tic_written(void);

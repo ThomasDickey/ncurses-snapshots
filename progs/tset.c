@@ -92,7 +92,7 @@ char *ttyname(int fd);
 #include <curses.h>	/* for bool typedef */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.22 1997/04/26 18:16:28 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.23 1997/05/10 17:44:47 tom Exp $")
 
 extern char **environ;
 
@@ -112,7 +112,7 @@ static int	tlines, tcolumns;		/* window size */
 #define LOWERCASE(c) ((isalpha(c) && isupper(c)) ? tolower(c) : (c))
 
 static int
-CaselessCmp(char *a, char *b)	/* strcasecmp isn't portable */
+CaselessCmp(const char *a, const char *b) /* strcasecmp isn't portable */
 {
 	while (*a && *b) {
 		int cmp = LOWERCASE(*a) - LOWERCASE(*b);
@@ -181,8 +181,8 @@ outc(int c)
 }
 
 /* Prompt the user for a terminal type. */
-static char *
-askuser(char *dflt)
+static const char *
+askuser(const char *dflt)
 {
 	static char answer[256];
 	char *p;
@@ -199,8 +199,8 @@ askuser(char *dflt)
 			(void)fprintf(stderr, "Terminal type? ");
 		(void)fflush(stderr);
 
-		if (fgets(answer, sizeof(answer), stdin) == NULL) {
-			if (dflt == NULL) {
+		if (fgets(answer, sizeof(answer), stdin) == 0) {
+			if (dflt == 0) {
 				(void)fprintf(stderr, "\n");
 				exit(EXIT_FAILURE);
 			}
@@ -211,7 +211,7 @@ askuser(char *dflt)
 			*p = '\0';
 		if (answer[0])
 			return (answer);
-		if (dflt != NULL)
+		if (dflt != 0)
 			return (dflt);
 	}
 }
@@ -232,8 +232,8 @@ askuser(char *dflt)
 
 typedef struct map {
 	struct map *next;	/* Linked list of maps. */
-	char *porttype;		/* Port type, or "" for any. */
-	char *type;		/* Terminal type to select. */
+	const char *porttype;	/* Port type, or "" for any. */
+	const char *type;	/* Terminal type to select. */
 	int conditional;	/* Baud rate conditionals bitmask. */
 	int speed;		/* Baud rate to compare against. */
 } MAP;
@@ -241,7 +241,7 @@ typedef struct map {
 static MAP *cur, *maplist;
 
 typedef struct speeds {
-	char	*string;
+	const char *string;
 	int	speed;
 } SPEEDS;
 
@@ -295,17 +295,19 @@ tbaudrate(char *rate)
  * The baud rate tests are: >, <, @, =, !
  */
 static void
-add_mapping(char *port, char *arg)
+add_mapping(const char *port, char *arg)
 {
 	MAP *mapp;
-	char *copy, *p, *termp;
+	char *copy, *p;
+	const char *termp;
+	char *base = 0;
 
 	copy = strdup(arg);
 	mapp = malloc((u_int)sizeof(MAP));
-	if (copy == NULL || mapp == NULL)
+	if (copy == 0 || mapp == 0)
 		failed("malloc");
-	mapp->next = NULL;
-	if (maplist == NULL)
+	mapp->next = 0;
+	if (maplist == 0)
 		cur = maplist = mapp;
 	else {
 		cur->next = mapp;
@@ -317,16 +319,16 @@ add_mapping(char *port, char *arg)
 
 	arg = strpbrk(arg, "><@=!:");
 
-	if (arg == NULL) {			/* [?]term */
+	if (arg == 0) {			/* [?]term */
 		mapp->type = mapp->porttype;
-		mapp->porttype = NULL;
+		mapp->porttype = 0;
 		goto done;
 	}
 
 	if (arg == mapp->porttype)		/* [><@=! baud]:term */
-		termp = mapp->porttype = NULL;
+		termp = mapp->porttype = 0;
 	else
-		termp = arg;
+		termp = base = arg;
 
 	for (;; ++arg)				/* Optional conditionals. */
 		switch(*arg) {
@@ -357,20 +359,20 @@ next:	if (*arg == ':') {
 		++arg;
 	} else {				/* Optional baudrate. */
 		arg = strchr(p = arg, ':');
-		if (arg == NULL)
+		if (arg == 0)
 			goto badmopt;
 		*arg++ = '\0';
 		mapp->speed = tbaudrate(p);
 	}
 
-	if (arg == (char *)NULL)		/* Non-optional type. */
+	if (arg == (char *)0)		/* Non-optional type. */
 		goto badmopt;
 
 	mapp->type = arg;
 
 	/* Terminate porttype, if specified. */
-	if (termp != NULL)
-		*termp = '\0';
+	if (termp != 0)
+		*base = '\0';
 
 	/* If a NOT conditional, reverse the test. */
 	if (mapp->conditional & NOT)
@@ -407,14 +409,14 @@ badmopt:		err("illegal -m option format: %s", copy);
  * by the first applicable mapping in 'map'.  If no mappings apply, return
  * 'type'.
  */
-static char *
-mapped(char *type)
+static const char *
+mapped(const char *type)
 {
 	MAP *mapp;
 	int match;
 
 	for (mapp = maplist; mapp; mapp = mapp->next)
-		if (mapp->porttype == NULL || !strcmp(mapp->porttype, type)) {
+		if (mapp->porttype == 0 || !strcmp(mapp->porttype, type)) {
 			switch (mapp->conditional) {
 			case 0:			/* No test specified. */
 				match = TRUE;
@@ -454,11 +456,12 @@ mapped(char *type)
  * Figure out what kind of terminal we're dealing with, and then read in
  * its termcap entry.
  */
-static char *
+static const char *
 get_termcap_entry(char *userarg)
 {
 	int rval, errret;
-	char *p, *ttype;
+	char *p;
+	const char *ttype;
 #if HAVE_GETTTYNAM
 	struct ttyent *t;
 	char *ttypath;
@@ -501,7 +504,7 @@ map:	ttype = mapped(ttype);
 	 * real entry from /etc/termcap.  This prevents us from being fooled
 	 * by out of date stuff in the environment.
 	 */
-found:	if ((p = getenv("TERMCAP")) != NULL && *p != '/') {
+found:	if ((p = getenv("TERMCAP")) != 0 && *p != '/') {
 		/* 'unsetenv("TERMCAP")' is not portable.
 		 * The 'environ' array is better.
 		 */
@@ -524,19 +527,19 @@ found:	if ((p = getenv("TERMCAP")) != NULL && *p != '/') {
 		if (ttype[1] != '\0')
 			ttype = askuser(ttype + 1);
 		else
-			ttype = askuser(NULL);
+			ttype = askuser(0);
 
 	/* Find the terminfo entry.  If it doesn't exist, ask the user. */
 	while ((rval = setupterm(ttype, STDOUT_FILENO, &errret)) != OK) {
 		if (errret == 0) {
 			(void)fprintf(stderr, "tset: unknown terminal type %s\n",
 			    ttype);
-			ttype = NULL;
+			ttype = 0;
 		}
 		else {
 			(void)fprintf(stderr, "tset: can't initialize terminal\
 			    type %s (error %d)\n", ttype, errret);
-			ttype = NULL;
+			ttype = 0;
 		}
 		ttype = askuser(ttype);
 	}
@@ -725,9 +728,9 @@ set_control_chars(void)
 
 	bp = buf;
 	p = tgetstr("kb", &bp);
-	if (p == NULL || p[1] != '\0')
+	if (p == 0 || p[1] != '\0')
 		p = tgetstr("bc", &bp);
-	if (p != NULL && p[1] == '\0')
+	if (p != 0 && p[1] == '\0')
 		bs_char = p[0];
 	else if (tgetflag("bs"))
 		bs_char = CTRL('h');
@@ -744,7 +747,7 @@ set_control_chars(void)
   	/* the real erasechar logic used now */
 	char bs_char = 0;
 
-	if (key_backspace != (char *)NULL)
+	if (key_backspace != (char *)0)
 		bs_char = key_backspace[0];
 
 	if (terasechar <= 0)
@@ -812,7 +815,7 @@ set_conversions(void)
 #endif /* OXTABS */
 
 	/* test used to be tgetflag("NL") */
-	if (newline != (char *)NULL && newline[0] == '\n' && !newline[1]) {
+	if (newline != (char *)0 && newline[0] == '\n' && !newline[1]) {
 		/* Newline, not linefeed. */
 #ifdef ONLCR
 		mode.c_oflag &= ~ONLCR;
@@ -840,7 +843,7 @@ set_init(void)
 	bool settle;
 
 #ifdef __OBSOLETE__
-	if (pad_char != (char *)NULL)		/* Get/set pad character. */
+	if (pad_char != (char *)0)		/* Get/set pad character. */
 		PC = pad_char[0];
 #endif /* OBSOLETE */
 
@@ -920,7 +923,7 @@ set_tabs()
  * Tell the user if a control key has been changed from the default value.
  */
 static void
-report(char *name, int which, u_int def)
+report(const char *name, int which, u_int def)
 {
 #ifdef TERMIOS
 	u_int old, new;
@@ -960,7 +963,7 @@ obsolete(char **argv)
 
 		if (parm[0] == '-' && parm[1] == '\0')
 		{
-		    argv[0] = "-q";
+		    argv[0] = strdup("-q");
 		    continue;
 		}
 
@@ -971,13 +974,13 @@ obsolete(char **argv)
 			continue;
 		switch(argv[0][1]) {
 		case 'e':
-			argv[0] = "-e^H";
+			argv[0] = strdup("-e^H");
 			break;
 		case 'i':
-			argv[0] = "-i^C";
+			argv[0] = strdup("-i^C");
 			break;
 		case 'k':
-			argv[0] = "-k^U";
+			argv[0] = strdup("-k^U");
 			break;
 		}
 	}
@@ -998,7 +1001,8 @@ main(int argc, char **argv)
 	struct winsize win;
 #endif
 	int ch, noinit, noset, quiet, Sflag, sflag, showterm;
-	char *p, *ttype;
+	const char *p;
+	const char *ttype;
 
 #ifdef TERMIOS
 	if (tcgetattr(STDERR_FILENO, &mode) < 0)
@@ -1055,7 +1059,7 @@ main(int argc, char **argv)
 			    optarg[0];
 			break;
 		case 'm':		/* map identifier to type */
-			add_mapping(NULL, optarg);
+			add_mapping(0, optarg);
 			break;
 		case 'n':		/* OBSOLETE: set new tty driver */
 			break;

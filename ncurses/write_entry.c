@@ -37,7 +37,7 @@
 #define S_ISDIR(mode) ((mode & S_IFMT) == S_IFDIR)
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.15 1997/02/15 20:52:18 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.16 1997/05/10 17:33:12 tom Exp $")
 
 static int total_written;
 
@@ -48,12 +48,12 @@ static int write_object(FILE *, TERMTYPE *);
  *
  *	Make a directory if it doesn't exist.
  */
-static int make_directory(char *path)
+static int make_directory(const char *path)
 {
 int	rc;
 struct	stat	statbuf;
 char	fullpath[PATH_MAX];
-char	*destination = _nc_tic_dir(0);
+const char *destination = _nc_tic_dir(0);
 
 	if (path == destination || *path == '/')
 		(void)strcpy(fullpath, path);
@@ -75,7 +75,7 @@ char	*destination = _nc_tic_dir(0);
 void  _nc_set_writedir(char *dir)
 /* set the write directory for compiled entries */
 {
-    char *destination;
+    const char *destination;
 
     if (dir != 0)
 	(void) _nc_tic_dir(dir);
@@ -90,8 +90,9 @@ void  _nc_set_writedir(char *dir)
 	/* ncurses extension...fall back on user's private directory */
 	if ((home = getenv("HOME")) != (char *)NULL)
 	{
-	    destination = malloc(sizeof(PRIVATE_INFO) + strlen(home));
-	    (void) sprintf(destination, PRIVATE_INFO, home);
+	    char *temp = malloc(sizeof(PRIVATE_INFO) + strlen(home));
+	    (void) sprintf(temp, PRIVATE_INFO, home);
+	    destination = temp;
 
 	    if (make_directory(destination) < 0)
 		_nc_err_abort("%s: permission denied (errno %d)",

@@ -18,7 +18,7 @@
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR    #
 # PERFORMANCE OF THIS SOFTWARE.                                                #
 ################################################################################
-# $Id: MKexpanded.sh,v 1.3 1997/04/05 23:38:22 tom Exp $
+# $Id: MKexpanded.sh,v 1.4 1997/05/10 20:21:58 tom Exp $
 #
 # Script to generate 'expanded.c', a dummy source that contains functions
 # corresponding to complex macros used in this library.  By making functions,
@@ -29,7 +29,12 @@ preprocessor="$1"
 else
 preprocessor="cc -E"
 fi
-preprocessor="$preprocessor -DHAVE_CONFIG_H -I. -I../include"
+shift
+if test $# != 0 ; then
+	preprocessor="$preprocessor $*"
+else
+	preprocessor="$preprocessor -DHAVE_CONFIG_H -I. -I../include"
+fi
 
 TMP=gen$$.c
 trap "rm -f $TMP" 0 1 2 5 15

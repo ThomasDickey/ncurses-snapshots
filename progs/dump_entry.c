@@ -27,7 +27,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include "parametrized.h"	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.16 1997/02/15 18:54:40 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.17 1997/05/10 17:35:30 tom Exp $")
 
 #define INDENT			8
 
@@ -189,7 +189,7 @@ void dump_init(const char *version, int mode, int sort, int twidth, int traceval
 		       _nc_progname, width, tversion, outform);
 }
 
-static int trailing_spaces(char *src)
+static int trailing_spaces(const char *src)
 {
 	while (*src == ' ')
 		src++;
@@ -197,7 +197,7 @@ static int trailing_spaces(char *src)
 }
 
 /* this deals with differences over whether 0x7f and 0x80..0x9f are controls */
-#define CHAR_OF(s) (*(unsigned char *)(s))
+#define CHAR_OF(s) (*(unsigned const char *)(s))
 #define REALCTL(s) (CHAR_OF(s) < 127 && iscntrl(CHAR_OF(s)))
 #define REALPRINT(s) (CHAR_OF(s) < 127 && isprint(CHAR_OF(s)))
 
@@ -205,7 +205,7 @@ char *expand(char *srcp)
 {
 static char	buffer[1024];
 int		bufp;
-char		*ptr, *str = (srcp == ABSENT_STRING
+const char	*ptr, *str = (srcp == ABSENT_STRING
 			   || srcp == CANCELLED_STRING) ? "" : srcp;
 bool		islong = (strlen(str) > 3);
 

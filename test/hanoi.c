@@ -14,7 +14,7 @@
  *
  *	Date: 05.Nov.90
  *
- * $Id: hanoi.c,v 1.13 1997/03/02 01:22:01 tom Exp $
+ * $Id: hanoi.c,v 1.14 1997/05/06 23:07:55 tom Exp $
  */
 
 #include <test.priv.h>
@@ -129,6 +129,7 @@ unsigned char AutoFlag = 0;
 		} while(!Solved(NTiles));
 		sleep(2);
 	} else {
+		echo();
 		for(;;) {
 			if(GetMove(&FromCol, &ToCol))
 				break;

@@ -32,7 +32,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.19 1997/05/02 17:36:01 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.20 1997/05/06 11:07:27 tom Exp $")
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
@@ -59,12 +59,12 @@ char * _nc_trace_buf(int bufnum, size_t want)
 	{
 		list[bufnum].text = malloc(want);
 		list[bufnum].size = want;
-		*(list[bufnum].text) = '\0';
 	}
 	else if (want > list[bufnum].size) {
 		list[bufnum].text = realloc(list[bufnum].text, want);
 		list[bufnum].size = want;
 	}
+	*(list[bufnum].text) = '\0';
 	return list[bufnum].text;
 }
 
@@ -218,7 +218,7 @@ char	*found = 0;
 	(void) strcat(buf, _tracechar(TextOf(ch)));
 
     if (AttrOf(ch) != A_NORMAL)
-	(void) sprintf(buf + strlen(buf), " | %s", _traceattr(AttrOf(ch)));
+	(void) sprintf(buf + strlen(buf), " | %s", _traceattr2(bufnum+20,AttrOf(ch)));
 
     strcat(buf, "}");
     return(buf);

@@ -17,14 +17,45 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.60 1997/05/05 16:52:20 tom Exp $
+dnl $Id: configure.in,v 1.64 1997/05/10 15:26:07 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12)
-AC_REVISION($Revision: 1.60 $)
+AC_REVISION($Revision: 1.64 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
 NC_SYSTYPE
+
+# We need a configure script only when compiling as part of GNU C library.
+# Here we have to generate one of the files we need while compiling.
+#
+# The only problem is that users of the package might think they have to
+# run configure themself and find it irritating when nothing happens.
+#
+# So we try here to find out whether we are called from the glibc configure
+# or by a user.
+#
+dnl Check if we are a drop-in addition to glibc.
+AC_ARG_ENABLE(add-ons, dnl
+[  --enable-add-ons=DIR... used to check if we are a glibc add-on.],
+		[glibc_add_on=yes],
+		[glibc_add_on=])
+
+dnl We need to use [ and ] for other purposes for a while now.
+changequote(,)dnl
+if test x"$glibc_add_on" = "xyes" ; then
+if test -f $srcdir/../glibcbug.in; then
+  rm -f $srcdir/Banner
+  # We are in glibc.
+  rm -f $srcdir/Makefile
+  cp $srcdir/Makefile.glibc $srcdir/Makefile
+  echo "ncurses `grep \"^[ 	]*ncurses-version[ 	]*=.*$\" \
+		$srcdir/Makefile | sed -e \
+		's/^[ 	]*ncurses-version[ 	]*=[ 	]*\([^	^ ]*\)[ 	]*$/\1/'`" > $srcdir/Banner
+  exit 0
+fi
+fi
+changequote([,])dnl
 
 ###	Save the given $CFLAGS to allow user-override.
 nc_user_CFLAGS="$CFLAGS"
@@ -494,9 +525,9 @@ fi
 if test "$ac_cv_prog_CXX_EXISTS" = yes; then
 	AC_LANG_CPLUSPLUS
 	NC_CXX_LIBRARY
+	AC_CHECK_HEADERS(builtin.h typeinfo)
 	NC_BOOL_DECL
 	NC_BOOL_SIZE
-	AC_CHECK_HEADERS(builtin.h typeinfo)
 else
 	nc_cxx_library=no
 	AC_CACHE_VAL(nc_cv_builtin_bool,[nc_cv_builtin_bool=0])

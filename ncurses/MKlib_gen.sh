@@ -2,7 +2,7 @@
 #
 # MKlib_gen.sh -- generate sources from curses.h macro definitions
 #
-# ($Id: MKlib_gen.sh,v 1.8 1997/04/20 02:08:07 tom Exp $)
+# ($Id: MKlib_gen.sh,v 1.9 1997/05/10 23:48:19 tom Exp $)
 #
 # The XSI Curses standard requires all curses entry points to exist as
 # functions, even though many definitions would normally be shadowed
@@ -77,6 +77,12 @@ sed -n -e "/^extern.*generated/s/^extern \([^;]*\);.*/\1/p" \
 				argcount++;
 	}
 
+	# suppress trace-code for functions that we cannot do properly here,
+	# since they return data.
+	dotrace = 1;
+	if ($2 == "innstr")
+		dotrace = 0;
+
 	call = "%%T((T_CALLED(\""
 	args = ""
 	comma = ""
@@ -139,12 +145,17 @@ sed -n -e "/^extern.*generated/s/^extern \([^;]*\);.*/\1/p" \
 	if (args != "")
 		call = call ", " args
 	call = call ")); "
-	printf "%s", call
+
+	if (dotrace)
+		printf "%s", call
 
 	if (match($0, "^void"))
 		call = ""
-	else
+	else if (dotrace)
 		call = "returnCode( ";
+	else
+		call = "%%return ";
+
 	call = call $2 "(";
 	for (i = 1; i < argcount; i++)
 		call = call "a" i ", ";
@@ -152,8 +163,9 @@ sed -n -e "/^extern.*generated/s/^extern \([^;]*\);.*/\1/p" \
 		call = call "z";
 	if (!match($0, "^void"))
 		call = call ") ";
-	call = call ");";
-	print call
+	if (dotrace)
+		call = call ")";
+	print call ";"
 
 	if (match($0, "^void"))
 		print "%%returnVoid;"
