@@ -41,17 +41,15 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.57 2001/06/03 00:20:16 skimo Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.58 2001/09/01 21:42:59 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
  * historical reasons.  So we assign them in start_color() and also in
  * set_term()'s screen-switching logic.
  */
-NCURSES_EXPORT_VAR(int)
-COLOR_PAIRS = 0;
-NCURSES_EXPORT_VAR(int)
-COLORS = 0;
+NCURSES_EXPORT_VAR(int) COLOR_PAIRS = 0;
+NCURSES_EXPORT_VAR(int) COLORS = 0;
 
 /*
  * Given a RGB range of 0..1000, we'll normally set the individual values
@@ -92,8 +90,8 @@ static const color_t hls_palette[] =
  * These are called from _nc_do_color(), which in turn is called from
  * vidattr - so we have to assume that SP may be null.
  */
-     static int
-       default_fg(void)
+static int
+default_fg(void)
 {
     return (SP != 0) ? SP->_default_fg : COLOR_WHITE;
 }
@@ -113,8 +111,8 @@ default_bg(void)
  * to maintain compatibility with a pre-ANSI scheme.  The same scheme is
  * also used in the FreeBSD syscons.
  */
-     static int
-       toggled_colors(int c)
+static int
+toggled_colors(int c)
 {
     if (c < 16) {
 	static const int table[] =
@@ -259,8 +257,7 @@ rgb2hls(short r, short g, short b, short *h, short *l, short *s)
  * values.
  */
 NCURSES_EXPORT(int)
-init_pair
-(short pair, short f, short b)
+init_pair(short pair, short f, short b)
 {
     unsigned result;
 
@@ -339,8 +336,7 @@ init_pair
 }
 
 NCURSES_EXPORT(int)
-init_color
-(short color, short r, short g, short b)
+init_color(short color, short r, short g, short b)
 {
     T((T_CALLED("init_color(%d,%d,%d,%d)"), color, r, g, b));
 
@@ -390,8 +386,7 @@ has_colors(void)
 }
 
 NCURSES_EXPORT(int)
-color_content
-(short color, short *r, short *g, short *b)
+color_content(short color, short *r, short *g, short *b)
 {
     T((T_CALLED("color_content(%d,%p,%p,%p)"), color, r, g, b));
     if (color < 0 || color >= COLORS)
@@ -407,8 +402,7 @@ color_content
 }
 
 NCURSES_EXPORT(int)
-pair_content
-(short pair, short *f, short *b)
+pair_content(short pair, short *f, short *b)
 {
     T((T_CALLED("pair_content(%d,%p,%p)"), pair, f, b));
 
@@ -423,8 +417,7 @@ pair_content
 }
 
 NCURSES_EXPORT(void)
-_nc_do_color
-(int old_pair, int pair, bool reverse, int (*outc) (int))
+_nc_do_color(int old_pair, int pair, bool reverse, int (*outc) (int))
 {
     NCURSES_COLOR_T fg = C_MASK, bg = C_MASK;
     NCURSES_COLOR_T old_fg, old_bg;
