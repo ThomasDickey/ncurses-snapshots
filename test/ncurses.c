@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.233 2004/11/07 00:34:23 tom Exp $
+$Id: ncurses.c,v 1.235 2004/12/19 01:12:16 tom Exp $
 
 ***************************************************************************/
 
@@ -1064,18 +1064,18 @@ cycle_color_attr(int ch, int *fg, int *bg, int *tx)
 	    error = TRUE;
 	    break;
 	}
-	if (*fg >= max_colors)
+	if (*fg >= COLORS)
 	    *fg = min_colors;
 	if (*fg < min_colors)
-	    *fg = max_colors - 1;
-	if (*bg >= max_colors)
+	    *fg = COLORS - 1;
+	if (*bg >= COLORS)
 	    *bg = min_colors;
 	if (*bg < min_colors)
-	    *bg = max_colors - 1;
-	if (*tx >= max_colors)
+	    *bg = COLORS - 1;
+	if (*tx >= COLORS)
 	    *tx = -1;
 	if (*tx < -1)
-	    *tx = max_colors - 1;
+	    *tx = COLORS - 1;
     } else {
 	beep();
 	error = TRUE;
@@ -1639,62 +1639,312 @@ static NCURSES_CONST char *the_color_names[] =
 };
 
 static void
-show_color_name(int y, int x, int color)
+show_color_name(int y, int x, int color, bool wide)
 {
-    if (max_colors > 8)
-	mvprintw(y, x, "%02d   ", color);
-    else
-	mvaddstr(y, x, the_color_names[color]);
+    if (move(y, x) != ERR) {
+	char temp[80];
+	int width = 8;
+
+	if (wide) {
+	    sprintf(temp, "%02d", color);
+	    width = 4;
+	} else if (color >= 8) {
+	    sprintf(temp, "[%02d]", color);
+	} else {
+	    strcpy(temp, the_color_names[color]);
+	}
+	printw("%-*.*s", width, width, temp);
+    }
 }
 
 static void
-color_test(void)
-/* generate a color test pattern */
+color_legend(WINDOW *helpwin)
 {
+    int row = 1;
+    int col = 1;
+
+    mvwprintw(helpwin, row++, col,
+	      "q or ESC to exit.");
+    ++row;
+    mvwprintw(helpwin, row++, col,
+	      "Use up/down arrow to scroll through the display if it is");
+    mvwprintw(helpwin, row++, col,
+	      "longer than one screen.");
+    ++row;
+    mvwprintw(helpwin, row++, col,
+	      "Toggles:");
+    mvwprintw(helpwin, row++, col,
+	      "  b/B     toggle bold off/on");
+    mvwprintw(helpwin, row++, col,
+	      "  n/N     toggle text/number on/off");
+    mvwprintw(helpwin, row++, col,
+	      "  w/W     toggle width between 8/16 colors");
+}
+
+#define set_color_test(name, value) if (name != value) { name = value; base_row = 0; }
+
+/* generate a color test pattern */
+static void
+color_test(void)
+{
+    int c;
     int i;
-    int base, top, width;
+    int top = 0, width;
+    int base_row = 0;
+    int grid_top = top + 3;
+    int pairs_max = PAIR_NUMBER(A_COLOR) + 1;
+    int row_limit;
+    int per_row;
+    char numbered[80];
     const char *hello;
+    bool done = FALSE;
+    bool opt_bold = FALSE;
+    bool opt_wide = FALSE;
+    bool opt_nums = FALSE;
+    WINDOW *helpwin;
 
-    refresh();
-    (void) printw("There are %d color pairs\n", COLOR_PAIRS);
+    if (pairs_max > COLOR_PAIRS)
+	pairs_max = COLOR_PAIRS;
 
-    width = (max_colors > 8) ? 4 : 8;
-    hello = (max_colors > 8) ? "Test" : "Hello";
+    while (!done) {
+	/* this assumes an 80-column line */
+	if (opt_wide) {
+	    width = 4;
+	    hello = "Test";
+	    per_row = (COLORS > 8) ? 16 : 8;
+	} else {
+	    width = 8;
+	    hello = "Hello";
+	    per_row = 8;
+	}
 
-    for (base = 0; base < 2; base++) {
-	top = (max_colors > 8) ? 0 : base * (max_colors + 3);
+	row_limit = (pairs_max + per_row - 1) / per_row;
+
+	move(0, 0);
+	(void) printw("There are %d color pairs and %d colors\n",
+		      pairs_max, COLORS);
+
 	clrtobot();
 	(void) mvprintw(top + 1, 0,
-			"%dx%d matrix of foreground/background colors, bright *%s*\n",
-			max_colors, max_colors,
-			base ? "on" : "off");
-	for (i = 0; i < max_colors; i++)
-	    show_color_name(top + 2, (i + 1) * width, i);
-	for (i = 0; i < max_colors; i++)
-	    show_color_name(top + 3 + i, 0, i);
-	for (i = 1; i < max_pairs; i++) {
-	    init_pair(i, i % max_colors, i / max_colors);
-	    attron((attr_t) COLOR_PAIR(i));
-	    if (base)
-		attron((attr_t) A_BOLD);
-#if 1
-	    mvaddstr(top + 3 + (i / max_colors),
-		     (i % max_colors + 1) * width,
-		     hello);
-#else
-	    mvprintw(top + 3 + (i / max_colors),
-		     (i % max_colors + 1) * width,
-		     "{%d}", i);
-#endif
-	    attrset(A_NORMAL);
+			"%dx%d matrix of foreground/background colors, bold *%s*\n",
+			row_limit,
+			per_row,
+			opt_bold ? "on" : "off");
+
+	/* show color names/numbers across the top */
+	for (i = 0; i < per_row; i++)
+	    show_color_name(top + 2, (i + 1) * width, i, opt_wide);
+
+	/* show a grid of colors, with color names/ numbers on the left */
+	for (i = (base_row * per_row); i < pairs_max; i++) {
+	    int row = grid_top + (i / per_row) - base_row;
+	    int col = (i % per_row + 1) * width;
+	    int pair = i + 1;
+
+	    if (move(row, col) != ERR) {
+		init_pair(pair, i % COLORS, i / COLORS);
+		attron((attr_t) COLOR_PAIR(pair));
+		if (opt_bold)
+		    attron((attr_t) A_BOLD);
+
+		if (opt_nums) {
+		    sprintf(numbered, "{%02X}", i);
+		    hello = numbered;
+		}
+		printw("%-*.*s", width, width, hello);
+		attrset(A_NORMAL);
+
+		if ((i % per_row) == 0 && (i % COLORS) == 0) {
+		    show_color_name(row, 0, i / COLORS, opt_wide);
+		}
+	    }
 	}
-	if ((max_colors > 8) || base)
-	    Pause();
+
+	switch (c = wGetchar(stdscr)) {
+	case 'b':
+	    opt_bold = FALSE;
+	    break;
+	case 'B':
+	    opt_bold = TRUE;
+	    break;
+	case 'n':
+	    opt_nums = FALSE;
+	    break;
+	case 'N':
+	    opt_nums = TRUE;
+	    break;
+	case ESCAPE:
+	case 'q':
+	    done = TRUE;
+	    continue;
+	case 'w':
+	    set_color_test(opt_wide, FALSE);
+	    break;
+	case 'W':
+	    set_color_test(opt_wide, TRUE);
+	    break;
+	case KEY_UP:
+	    if (base_row <= 0) {
+		beep();
+	    } else {
+		base_row -= 1;
+	    }
+	    break;
+	case KEY_DOWN:
+	    if (base_row + (LINES - grid_top) >= row_limit) {
+		beep();
+	    } else {
+		base_row += 1;
+	    }
+	    break;
+	case '?':
+	    if ((helpwin = newwin(LINES - 1, COLS - 2, 0, 0)) != 0) {
+		box(helpwin, 0, 0);
+		color_legend(helpwin);
+		wGetchar(helpwin);
+		delwin(helpwin);
+	    }
+	    break;
+	default:
+	    beep();
+	    continue;
+	}
     }
 
     erase();
     endwin();
 }
+
+#if USE_WIDEC_SUPPORT
+/* generate a color test pattern */
+static void
+wide_color_test(void)
+{
+    int c;
+    int i;
+    int top = 0, width;
+    int base_row = 0;
+    int grid_top = top + 3;
+    int pairs_max = COLOR_PAIRS;
+    int row_limit;
+    int per_row;
+    char numbered[80];
+    const char *hello;
+    bool done = FALSE;
+    bool opt_bold = FALSE;
+    bool opt_wide = FALSE;
+    bool opt_nums = FALSE;
+    WINDOW *helpwin;
+
+    while (!done) {
+	/* this assumes an 80-column line */
+	if (opt_wide) {
+	    width = 4;
+	    hello = "Test";
+	    per_row = (COLORS > 8) ? 16 : 8;
+	} else {
+	    width = 8;
+	    hello = "Hello";
+	    per_row = 8;
+	}
+
+	row_limit = (pairs_max + per_row - 1) / per_row;
+
+	move(0, 0);
+	(void) printw("There are %d color pairs and %d colors\n",
+		      pairs_max, COLORS);
+
+	clrtobot();
+	(void) mvprintw(top + 1, 0,
+			"%dx%d matrix of foreground/background colors, bold *%s*\n",
+			row_limit,
+			per_row,
+			opt_bold ? "on" : "off");
+
+	/* show color names/numbers across the top */
+	for (i = 0; i < per_row; i++)
+	    show_color_name(top + 2, (i + 1) * width, i, opt_wide);
+
+	/* show a grid of colors, with color names/ numbers on the left */
+	for (i = (base_row * per_row); i < pairs_max; i++) {
+	    int row = grid_top + (i / per_row) - base_row;
+	    int col = (i % per_row + 1) * width;
+	    int pair = i + 1;
+
+	    if (move(row, col) != ERR) {
+		init_pair(pair, i % COLORS, i / COLORS);
+		color_set(pair, NULL);
+		if (opt_bold)
+		    attr_on((attr_t) A_BOLD, NULL);
+
+		if (opt_nums) {
+		    sprintf(numbered, "{%02X}", i);
+		    hello = numbered;
+		}
+		printw("%-*.*s", width, width, hello);
+		attr_set(A_NORMAL, 0, NULL);
+
+		if ((i % per_row) == 0 && (i % COLORS) == 0) {
+		    show_color_name(row, 0, i / COLORS, opt_wide);
+		}
+	    }
+	}
+
+	switch (c = wGetchar(stdscr)) {
+	case 'b':
+	    opt_bold = FALSE;
+	    break;
+	case 'B':
+	    opt_bold = TRUE;
+	    break;
+	case 'n':
+	    opt_nums = FALSE;
+	    break;
+	case 'N':
+	    opt_nums = TRUE;
+	    break;
+	case ESCAPE:
+	case 'q':
+	    done = TRUE;
+	    continue;
+	case 'w':
+	    set_color_test(opt_wide, FALSE);
+	    break;
+	case 'W':
+	    set_color_test(opt_wide, TRUE);
+	    break;
+	case KEY_UP:
+	    if (base_row <= 0) {
+		beep();
+	    } else {
+		base_row -= 1;
+	    }
+	    break;
+	case KEY_DOWN:
+	    if (base_row + (LINES - grid_top) >= row_limit) {
+		beep();
+	    } else {
+		base_row += 1;
+	    }
+	    break;
+	case '?':
+	    if ((helpwin = newwin(LINES - 1, COLS - 2, 0, 0)) != 0) {
+		box(helpwin, 0, 0);
+		color_legend(helpwin);
+		wGetchar(helpwin);
+		delwin(helpwin);
+	    }
+	    break;
+	default:
+	    beep();
+	    continue;
+	}
+    }
+
+    erase();
+    endwin();
+}
+#endif /* USE_WIDEC_SUPPORT */
 
 static void
 change_color(int current, int field, int value, int usebase)
@@ -1726,7 +1976,7 @@ static void
 init_all_colors(void)
 {
     int c;
-    for (c = 0; c < max_colors; ++c)
+    for (c = 0; c < COLORS; ++c)
 	init_color(c,
 		   all_colors[c].red,
 		   all_colors[c].green,
@@ -2036,13 +2286,13 @@ slk_test(void)
 #if HAVE_SLK_COLOR
 	case 'F':
 	    if (has_colors()) {
-		fg = (fg + 1) % max_colors;
+		fg = (fg + 1) % COLORS;
 		new_color = TRUE;
 	    }
 	    break;
 	case 'B':
 	    if (has_colors()) {
-		bg = (bg + 1) % max_colors;
+		bg = (bg + 1) % COLORS;
 		new_color = TRUE;
 	    }
 	    break;
@@ -2172,13 +2422,13 @@ wide_slk_test(void)
 
 	case 'F':
 	    if (has_colors()) {
-		fg = (fg + 1) % max_colors;
+		fg = (fg + 1) % COLORS;
 		new_color = TRUE;
 	    }
 	    break;
 	case 'B':
 	    if (has_colors()) {
-		bg = (bg + 1) % max_colors;
+		bg = (bg + 1) % COLORS;
 		new_color = TRUE;
 	    }
 	    break;
@@ -4976,6 +5226,15 @@ do_single_test(const char c)
 	    color_test();
 	break;
 
+#if USE_WIDEC_SUPPORT
+    case 'C':
+	if (!has_colors())
+	    Cannot("does not support color.");
+	else
+	    wide_color_test();
+	break;
+#endif
+
     case 'd':
 	if (!has_colors())
 	    Cannot("does not support color.");
@@ -5146,6 +5405,9 @@ main_menu(bool top)
 	(void) puts("B = wide-character attribute test");
 #endif
 	(void) puts("c = color test pattern");
+#if USE_WIDEC_SUPPORT
+	(void) puts("C = color test pattern using wide-character calls");
+#endif
 	if (top)
 	    (void) puts("d = edit RGB color values");
 	(void) puts("e = exercise soft keys");
