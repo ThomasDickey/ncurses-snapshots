@@ -16,7 +16,7 @@
 <I>--  Version 00.91                                                           --</I>
 <I>--                                                                          --</I>
 <I>--  The ncurses Ada95 binding is copyrighted 1996 by                        --</I>
-<I>--  <A HREF="http://home.t-online.de/home/Juergen.Pfeifer">Juergen Pfeifer</A>, Email: <A HREF="mailto:Juergen.Pfeifer@T-Online.de">Juergen.Pfeifer@T-Online.de</A>                     --</I>
+<I>--  <A HREF="http://home.t-online.de/home/Juergen.Pfeifer">J&uuml;rgen Pfeifer</A>, Email: <A HREF="mailto:Juergen.Pfeifer@T-Online.de">Juergen.Pfeifer@T-Online.de</A>                      --</I>
 <I>--                                                                          --</I>
 <I>--  Permission is hereby granted to reproduce and distribute this           --</I>
 <I>--  binding by any means and for any fee, whether alone or as part          --</I>
@@ -29,7 +29,7 @@
 <I>--  This binding comes AS IS with no warranty, implied or expressed.        --</I>
 <I>------------------------------------------------------------------------------</I>
 <I>--  Version Control:</I>
-<I>--  $Revision: 1.3 $</I>
+<I>--  $Revision: 1.4 $</I>
 <I>------------------------------------------------------------------------------</I>
 
 <B>generic</B>
@@ -47,19 +47,19 @@
    <I>--  the low level user pointer of an Ada created form.</I>
    <I>--</I>
    <I>--  |=====================================================================</I>
-   <I>--  | Man page form_userptr.3x</I>
+   <I>--  | Man page <A HREF="form_userptr.3x.html">form_userptr.3x</A></I>
    <I>--  |=====================================================================</I>
 
    <I>--  <A NAME="AFU_1">|</I>
    <B>procedure</B> Set_User_Data (Frm  : <B>in</B> Form;
                             Data : <B>in</B> User_Access);
-   <I>--  AKA: set_form_userptr</I>
+   <I>--  AKA: <A HREF="form_userptr.3x.html">set_form_userptr</A></I>
    <B>pragma</B> Convention (C, Set_User_Data);
 
    <I>--  <A NAME="AFU_2">|</I>
    <B>procedure</B> Get_User_Data (Frm  : <B>in</B>  Form;
                             Data : <B>out</B> User_Access);
-   <I>--  AKA: form_userptr</I>
+   <I>--  AKA: <A HREF="form_userptr.3x.html">form_userptr</A></I>
    <B>pragma</B> Convention (C, Get_User_Data);
 
 <B>end</B> Terminal_Interface.Curses.Forms.Form_User_Data;
