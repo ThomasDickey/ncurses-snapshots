@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.644 2001/09/08 23:53:48 tom Exp $
+-- $Id: NEWS,v 1.645 2001/09/16 00:51:36 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010915
+	+ add label to test/view.c, showing the name of the last key or signal
+	  that made the screen repaint, to make it clearer when a sigwinch
+	  does this.
+	+ use ExitProgram() consistently in the test-programs to make it
+	  simpler to test leaks with dmalloc, etc.
+	+ move hashtab static data out of hashmap.c into SCREEN struct.
+	+ make NO_LEAK code compile with revised WINDOWLIST structs.
 
 20010908
 	+ modify tgetent() to check if exit_attribute_mode resets the alternate

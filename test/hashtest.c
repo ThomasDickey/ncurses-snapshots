@@ -3,7 +3,7 @@
  *
  * Generate timing statistics for vertical-motion optimization.
  *
- * $Id: hashtest.c,v 1.18 2001/07/01 01:26:05 tom Exp $
+ * $Id: hashtest.c,v 1.19 2001/09/15 21:42:27 tom Exp $
  */
 
 #ifdef TRACE
@@ -43,7 +43,7 @@ static RETSIGTYPE
 finish(int sig GCC_UNUSED)
 {
     cleanup();
-    exit(EXIT_FAILURE);
+    ExitProgram(EXIT_FAILURE);
 }
 
 static void
@@ -154,7 +154,7 @@ usage(void)
 
     for (n = 0; n < SIZEOF(tbl); n++)
 	fprintf(stderr, "%s\n", tbl[n]);
-    exit(EXIT_FAILURE);
+    ExitProgram(EXIT_FAILURE);
 }
 
 int
@@ -223,6 +223,6 @@ main(int argc, char *argv[])
     }
 
     cleanup();			/* we're done */
-    return (EXIT_SUCCESS);
+    ExitProgram(EXIT_SUCCESS);
 }
 /* hashtest.c ends here */

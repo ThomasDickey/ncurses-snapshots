@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1998,2001 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /*
  * Author:  Thomas E. Dickey <dickey@clark.net> 1998
  *
- * $Id: filter.c,v 1.5 2001/02/24 22:11:58 tom Exp $
+ * $Id: filter.c,v 1.6 2001/09/15 22:40:21 tom Exp $
  */
 #include <test.priv.h>
 
@@ -104,5 +104,5 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
     printw("done");
     refresh();
     endwin();
-    return 0;
+    ExitProgram(EXIT_SUCCESS);
 }

@@ -7,7 +7,7 @@
  * This can't be part of the ncurses test-program, because ncurses rips off the
  * bottom line to do labels.
  *
- * $Id: lrtest.c,v 0.15 2000/12/31 02:09:42 tom Exp $
+ * $Id: lrtest.c,v 0.16 2001/09/15 21:19:21 tom Exp $
  */
 
 #include <test.priv.h>
@@ -139,7 +139,7 @@ main(
 
     curs_set(1);
     endwin();
-    return 0;
+    ExitProgram(EXIT_SUCCESS);
 }
 
 /* lrtest.c ends here */

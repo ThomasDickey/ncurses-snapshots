@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.40 2001/09/02 00:16:26 tom Exp $
+ * $Id: view.c,v 1.43 2001/09/16 00:45:31 tom Exp $
  */
 
 #include <string.h>
@@ -55,7 +55,7 @@
 #endif
 
 static RETSIGTYPE finish(int sig) GCC_NORETURN;
-static void show_all(void);
+static void show_all(char *tag);
 
 #if defined(SIGWINCH) && defined(TIOCGWINSZ) && HAVE_RESIZETERM
 #define CAN_RESIZE 1
@@ -98,7 +98,7 @@ usage(void)
     size_t n;
     for (n = 0; n < SIZEOF(msg); n++)
 	fprintf(stderr, "%s\n", msg[n]);
-    exit(EXIT_FAILURE);
+    ExitProgram(EXIT_FAILURE);
 }
 
 static int
@@ -191,6 +191,7 @@ main(int argc, char *argv[])
 #if CAN_RESIZE
     bool nonposix_resize = FALSE;
 #endif
+    char *my_label = "Input";
 
     setlocale(LC_ALL, "");
 
@@ -229,7 +230,7 @@ main(int argc, char *argv[])
     fname = argv[optind];
     if ((fp = fopen(fname, "r")) == 0) {
 	perror(fname);
-	return EXIT_FAILURE;
+	ExitProgram(EXIT_FAILURE);
     }
 
     (void) signal(SIGINT, finish);	/* arrange interrupts to terminate */
@@ -297,7 +298,7 @@ main(int argc, char *argv[])
 	int n, c;
 
 	if (!got_number)
-	    show_all();
+	    show_all(my_label);
 
 	n = 0;
 	for (;;) {
@@ -325,6 +326,8 @@ main(int argc, char *argv[])
 	    n = 1;
 	}
 
+	if (c != ERR)
+	    my_label = keyname(c);
 	switch (c) {
 	case KEY_DOWN:
 	case 'n':
@@ -363,15 +366,16 @@ main(int argc, char *argv[])
 
 	case 'r':
 	case KEY_RIGHT:
-	    shift++;
+	    shift += n;
 	    break;
 
 	case 'l':
 	case KEY_LEFT:
-	    if (shift)
-		shift--;
-	    else
+	    shift -= n;
+	    if (shift < 0) {
+		shift = 0;
 		beep();
+	    }
 	    break;
 
 	case 'q':
@@ -415,7 +419,7 @@ static RETSIGTYPE
 finish(int sig)
 {
     endwin();
-    exit(sig != 0 ? EXIT_FAILURE : EXIT_SUCCESS);
+    ExitProgram(sig != 0 ? EXIT_FAILURE : EXIT_SUCCESS);
 }
 
 #if CAN_RESIZE
@@ -439,7 +443,7 @@ adjust(int sig)
 	if (ioctl(fileno(stdout), TIOCGWINSZ, &size) == 0) {
 	    resizeterm(size.ws_row, size.ws_col);
 	    wrefresh(curscr);	/* Linux needs this */
-	    show_all();
+	    show_all(sig ? "SIGWINCH" : "interrupt");
 	}
 	interrupted = FALSE;
     } else {
@@ -450,7 +454,7 @@ adjust(int sig)
 #endif /* CAN_RESIZE */
 
 static void
-show_all(void)
+show_all(char *tag)
 {
     int i;
     char temp[BUFSIZ];
@@ -458,7 +462,7 @@ show_all(void)
     time_t this_time;
 
 #if CAN_RESIZE
-    sprintf(temp, "(%3dx%3d) col %d ", LINES, COLS, shift);
+    sprintf(temp, "%s (%3dx%3d) col %d ", tag, LINES, COLS, shift);
     i = strlen(temp);
     sprintf(temp + i, "view %.*s", (int) (sizeof(temp) - 7 - i), fname);
 #else

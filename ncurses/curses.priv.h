@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.204 2001/08/26 00:22:11 tom Exp $
+ * $Id: curses.priv.h,v 1.205 2001/09/15 21:34:06 tom Exp $
  *
  *	curses.priv.h
  *
@@ -279,6 +279,12 @@ typedef struct {
         chtype attr;             /* soft label attribute */
 } SLK;
 
+typedef struct {
+	unsigned long hashval;
+	int oldcount, newcount;
+	int oldindex, newindex;
+} HASHMAP;
+
 struct screen {
 	int             _ifd;           /* input file ptr for screen        */
 	FILE            *_ofp;          /* output file ptr for screen       */
@@ -430,6 +436,8 @@ struct screen {
 
 	/* hashes for old and new lines */
 	unsigned long	*oldhash, *newhash;
+	HASHMAP 	*hashtab;
+	int		hashtab_len;
 
 	bool            _cleanup;	/* cleanup after int/quit signal */
 	int             (*_outch)(int);	/* output handler if not putc */

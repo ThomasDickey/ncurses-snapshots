@@ -2,7 +2,7 @@
  * Date:  1997/03/17
  * From:  bayern@morpheus.cis.yale.edu
  *
- * $Id: testscanw.c,v 1.7 2001/06/18 18:45:16 tom Exp $
+ * $Id: testscanw.c,v 1.8 2001/09/15 21:41:45 tom Exp $
  */
 #include <test.priv.h>
 #include <ctype.h>
@@ -35,5 +35,5 @@ main(int argc, char *argv[])
 	scanw("%20ld", response);	/* yes, it's a pointer */
     }
     endwin();
-    return EXIT_SUCCESS;
+    ExitProgram(EXIT_SUCCESS);
 }

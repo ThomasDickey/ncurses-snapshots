@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1999,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1999,2000,2001 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: cardfile.c,v 1.7 2001/06/18 18:44:59 tom Exp $
+ * $Id: cardfile.c,v 1.8 2001/09/15 21:55:11 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text forms the content.
  */
@@ -416,5 +416,5 @@ main(int argc, char *argv[])
 
     endwin();
 
-    return EXIT_SUCCESS;
+    ExitProgram(EXIT_SUCCESS);
 }

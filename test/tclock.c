@@ -226,5 +226,5 @@ main(
 
     curs_set(1);
     endwin();
-    return 0;
+    ExitProgram(EXIT_SUCCESS);
 }

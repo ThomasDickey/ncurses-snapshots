@@ -70,7 +70,7 @@ AUTHOR
 #include <curses.priv.h>
 #include <term.h>		/* for back_color_erase */
 
-MODULE_ID("$Id: hashmap.c,v 1.43 2001/08/25 21:00:44 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.44 2001/09/16 00:49:05 tom Exp $")
 
 #ifdef HASHDEBUG
 
@@ -97,8 +97,10 @@ static chtype oldtext[MAXLINES][TEXTWIDTH], newtext[MAXLINES][TEXTWIDTH];
 
 #endif /* !HASHDEBUG */
 
-#define oldhash	(SP->oldhash)
-#define newhash	(SP->newhash)
+#define oldhash		(SP->oldhash)
+#define newhash		(SP->newhash)
+#define hashtab		(SP->hashtab)
+#define lines_alloc	(SP->hashtab_len)
 
 #if USE_WIDEC_SUPPORT
 #define HASH_VAL(ch) (ch.chars[0])
@@ -132,6 +134,7 @@ update_cost(NCURSES_CH_T * from, NCURSES_CH_T * to)
 
     return cost;
 }
+
 static int
 update_cost_from_blank(NCURSES_CH_T * to)
 {
@@ -176,15 +179,6 @@ cost_effective(const int from, const int to, const bool blank)
 		 : update_cost(OLDTEXT(new_from), NEWTEXT(from)))
 		+ update_cost(OLDTEXT(from), NEWTEXT(to)))) ? TRUE : FALSE;
 }
-
-typedef struct {
-    unsigned long hashval;
-    int oldcount, newcount;
-    int oldindex, newindex;
-} sym;
-
-static sym *hashtab = 0;
-static int lines_alloc = 0;
 
 static void
 grow_hunks(void)
@@ -273,14 +267,14 @@ grow_hunks(void)
 NCURSES_EXPORT(void)
 _nc_hash_map(void)
 {
-    sym *sp;
+    HASHMAP *sp;
     register int i;
     int start, shift, size;
 
     if (screen_lines > lines_alloc) {
 	if (hashtab)
 	    free(hashtab);
-	hashtab = typeMalloc(sym, (screen_lines + 1) * 2);
+	hashtab = typeMalloc(HASHMAP, (screen_lines + 1) * 2);
 	if (!hashtab) {
 	    if (oldhash) {
 		FreeAndNull(oldhash);
@@ -393,11 +387,6 @@ _nc_hash_map(void)
 
     /* After clearing invalid hunks, try grow the rest. */
     grow_hunks();
-
-#if NO_LEAKS
-    FreeAndNull(hashtab);
-    lines_alloc = 0;
-#endif
 }
 
 NCURSES_EXPORT(void)
