@@ -1,6 +1,6 @@
 // * This makes emacs happy -*-Mode: C++;-*-
 /****************************************************************************
- * Copyright (c) 1998-2001,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -30,7 +30,7 @@
 #ifndef NCURSES_CURSESW_H_incl
 #define NCURSES_CURSESW_H_incl 1
 
-// $Id: cursesw.h,v 1.30 2004/02/08 00:11:54 tom Exp $
+// $Id: cursesw.h,v 1.31 2005/03/05 23:51:01 tom Exp $
 
 #include <etip.h>
 #include <stdarg.h>
@@ -715,7 +715,7 @@ private:
   NCursesWindow(WINDOW* win, int cols);
 
 protected:
-  void           err_handler(const char *) const THROWS(NCursesException);
+  virtual void   err_handler(const char *) const THROWS(NCursesException);
   // Signal an error with the given message text.
 
   static long count;        // count of all active windows:

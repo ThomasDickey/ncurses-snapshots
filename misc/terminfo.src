@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.260 $
-#	$Date: 2005/02/26 23:46:26 $
+#	$Revision: 1.259 $
+#	$Date: 2005/02/26 23:36:55 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -13446,10 +13446,6 @@ jaixterm|IBM Kanji Aixterm Terminal Eemulator,
 jaixterm-m|IBM Kanji AIXterm Monochrome Terminal Emulator, 
 	acsc@, use=aixterm-m, 
 
-# This flavor is adapted from xterm, in turn from aixterm documentation -TD
-aixterm-16color|IBM Aixterm Terminal Emulator with 16 colors, 
-	use=ibm+16color, use=aixterm, 
-
 #### Infoton/General Terminal Corp.
 #
 
@@ -20950,7 +20946,6 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2005-02-26
 #	* modify sgr/sgr0 in xterm-new to improve tgetent's derived "me" -TD
-#	* add aixterm-16color to demonstrate 16-color capability -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

@@ -1,4 +1,3 @@
-
 /*
  * THIS CODE IS SPECIFICALLY EXEMPTED FROM THE NCURSES PACKAGE COPYRIGHT.
  * You may freely copy it for use as a template for your own field types.
@@ -13,65 +12,63 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_alpha.c,v 1.16 2005/02/26 15:21:27 tom Exp $")
+MODULE_ID("$Id: fty_alpha.c,v 1.18 2005/03/05 21:42:00 tom Exp $")
 
 typedef struct
   {
     int width;
   }
-alphaARG;
+thisARG;
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
-|   Function      :  static void *Make_Alpha_Type(va_list *ap)
+|   Function      :  static void *Make_This_Type(va_list *ap)
 |
 |   Description   :  Allocate structure for alpha type argument.
 |
 |   Return Values :  Pointer to argument structure or NULL on error
 +--------------------------------------------------------------------------*/
 static void *
-Make_Alpha_Type(va_list *ap)
+Make_This_Type(va_list *ap)
 {
-  alphaARG *argp = (alphaARG *) malloc(sizeof(alphaARG));
+  thisARG *argp = (thisARG *) malloc(sizeof(thisARG));
 
   if (argp)
-    {
-      argp->width = va_arg(*ap, int);
-    }
+    argp->width = va_arg(*ap, int);
+
   return ((void *)argp);
 }
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
-|   Function      :  static void *Copy_Alpha_Type(const void * argp)
+|   Function      :  static void *Copy_This_Type(const void * argp)
 |
 |   Description   :  Copy structure for alpha type argument.
 |
 |   Return Values :  Pointer to argument structure or NULL on error.
 +--------------------------------------------------------------------------*/
 static void *
-Copy_Alpha_Type(const void *argp)
+Copy_This_Type(const void *argp)
 {
-  const alphaARG *ap = (const alphaARG *)argp;
-  alphaARG *result = (alphaARG *) malloc(sizeof(alphaARG));
+  const thisARG *ap = (const thisARG *)argp;
+  thisARG *result = (thisARG *) malloc(sizeof(thisARG));
 
   if (result)
-    {
-      *result = *ap;
-    }
+    *result = *ap;
+
   return ((void *)result);
 }
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
-|   Function      :  static void Free_Alpha_Type( void * argp )
+|   Function      :  static void Free_This_Type(void *argp)
 |
 |   Description   :  Free structure for alpha type argument.
 |
 |   Return Values :  -
 +--------------------------------------------------------------------------*/
 static void
-Free_Alpha_Type(void *argp)
+Free_This_Type(void *argp)
 {
   if (argp)
     free(argp);
@@ -79,9 +76,9 @@ Free_Alpha_Type(void *argp)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
-|   Function      :  static bool Check_Alpha_Character(
+|   Function      :  static bool Check_This_Character(
 |                                      int c,
-|                                      const void * argp)
+|                                      const void *argp)
 |
 |   Description   :  Check a character for the alpha type.
 |
@@ -89,7 +86,7 @@ Free_Alpha_Type(void *argp)
 |                    FALSE - character is invalid
 +--------------------------------------------------------------------------*/
 static bool
-Check_Alpha_Character(int c, const void *argp GCC_UNUSED)
+Check_This_Character(int c, const void *argp GCC_UNUSED)
 {
 #if USE_WIDEC_SUPPORT
   if (iswalpha(c))
@@ -100,9 +97,9 @@ Check_Alpha_Character(int c, const void *argp GCC_UNUSED)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
-|   Function      :  static bool Check_Alpha_Field(
-|                                      FIELD * field,
-|                                      const void * argp)
+|   Function      :  static bool Check_This_Field(
+|                                      FIELD *field,
+|                                      const void *argp)
 |
 |   Description   :  Validate buffer content to be a valid alpha value
 |
@@ -110,79 +107,31 @@ Check_Alpha_Character(int c, const void *argp GCC_UNUSED)
 |                    FALSE - field is invalid
 +--------------------------------------------------------------------------*/
 static bool
-Check_Alpha_Field(FIELD *field, const void *argp)
+Check_This_Field(FIELD *field, const void *argp)
 {
-  int width = ((const alphaARG *)argp)->width;
+  int width = ((const thisARG *)argp)->width;
   unsigned char *bp = (unsigned char *)field_buffer(field, 0);
   bool result = (width < 0);
 
-  while (*bp && *bp == ' ')
-    bp++;
-  if (*bp)
-    {
-#if USE_WIDEC_SUPPORT
-      bool blank = FALSE;
-      int len;
-      int n;
-      wchar_t *list = _nc_Widen_String((char *)bp, &len);
-
-      if (list != 0)
-	{
-	  result = TRUE;
-	  for (n = 0; n < len; ++n)
-	    {
-	      if (blank)
-		{
-		  if (list[n] != ' ')
-		    {
-		      result = FALSE;
-		      break;
-		    }
-		}
-	      else if (list[n] == ' ')
-		{
-		  blank = TRUE;
-		  result = (n + 1 >= width);
-		}
-	      else if (!Check_Alpha_Character(list[n], NULL))
-		{
-		  result = FALSE;
-		  break;
-		}
-	    }
-	  free(list);
-	}
-#else
-      unsigned char *s = bp;
-      int l = -1;
-
-      while (*bp && isalpha(UChar(*bp)))
-	bp++;
-      l = (int)(bp - s);
-      while (*bp && *bp == ' ')
-	bp++;
-      result = ((*bp || (l < width)) ? FALSE : TRUE);
-#endif
-    }
+  Check_CTYPE_Field(result, bp, width, Check_This_Character);
   return (result);
 }
 
-static FIELDTYPE typeALPHA =
+static FIELDTYPE typeTHIS =
 {
   _HAS_ARGS | _RESIDENT,
   1,				/* this is mutable, so we can't be const */
   (FIELDTYPE *)0,
   (FIELDTYPE *)0,
-  Make_Alpha_Type,
-  Copy_Alpha_Type,
-  Free_Alpha_Type,
-  Check_Alpha_Field,
-  Check_Alpha_Character,
+  Make_This_Type,
+  Copy_This_Type,
+  Free_This_Type,
+  Check_This_Field,
+  Check_This_Character,
   NULL,
   NULL
 };
 
-NCURSES_EXPORT_VAR(FIELDTYPE *)
-TYPE_ALPHA = &typeALPHA;
+NCURSES_EXPORT_VAR(FIELDTYPE*) TYPE_ALPHA = &typeTHIS;
 
 /* fty_alpha.c ends here */

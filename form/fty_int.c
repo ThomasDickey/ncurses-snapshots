@@ -1,4 +1,3 @@
-
 /*
  * THIS CODE IS SPECIFICALLY EXEMPTED FROM THE NCURSES PACKAGE COPYRIGHT.
  * You may freely copy it for use as a template for your own field types.
@@ -13,7 +12,13 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_int.c,v 1.15 2004/05/29 19:14:13 tom Exp $")
+MODULE_ID("$Id: fty_int.c,v 1.17 2005/03/06 00:20:48 tom Exp $")
+
+#if USE_WIDEC_SUPPORT
+#define isDigit(c) (iswdigit(c) || isdigit(UChar(c)))
+#else
+#define isDigit(c) isdigit(UChar(c))
+#endif
 
 typedef struct
   {
@@ -21,20 +26,20 @@ typedef struct
     long low;
     long high;
   }
-integerARG;
+thisARG;
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
-|   Function      :  static void *Make_Integer_Type( va_list * ap )
+|   Function      :  static void *Make_This_Type( va_list * ap )
 |   
 |   Description   :  Allocate structure for integer type argument.
 |
 |   Return Values :  Pointer to argument structure or NULL on error
 +--------------------------------------------------------------------------*/
 static void *
-Make_Integer_Type(va_list *ap)
+Make_This_Type(va_list *ap)
 {
-  integerARG *argp = (integerARG *) malloc(sizeof(integerARG));
+  thisARG *argp = (thisARG *) malloc(sizeof(thisARG));
 
   if (argp)
     {
@@ -47,21 +52,21 @@ Make_Integer_Type(va_list *ap)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
-|   Function      :  static void *Copy_Integer_Type(const void * argp)
+|   Function      :  static void *Copy_This_Type(const void * argp)
 |   
 |   Description   :  Copy structure for integer type argument.  
 |
 |   Return Values :  Pointer to argument structure or NULL on error.
 +--------------------------------------------------------------------------*/
 static void *
-Copy_Integer_Type(const void *argp)
+Copy_This_Type(const void *argp)
 {
-  const integerARG *ap = (const integerARG *)argp;
-  integerARG *result = (integerARG *) 0;
+  const thisARG *ap = (const thisARG *)argp;
+  thisARG *result = (thisARG *) 0;
 
   if (argp)
     {
-      result = (integerARG *) malloc(sizeof(integerARG));
+      result = (thisARG *) malloc(sizeof(thisARG));
       if (result)
 	*result = *ap;
     }
@@ -70,14 +75,14 @@ Copy_Integer_Type(const void *argp)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
-|   Function      :  static void Free_Integer_Type(void * argp)
+|   Function      :  static void Free_This_Type(void * argp)
 |   
 |   Description   :  Free structure for integer type argument.
 |
 |   Return Values :  -
 +--------------------------------------------------------------------------*/
 static void
-Free_Integer_Type(void *argp)
+Free_This_Type(void *argp)
 {
   if (argp)
     free(argp);
@@ -85,9 +90,9 @@ Free_Integer_Type(void *argp)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
-|   Function      :  static bool Check_Integer_Field(
-|                                                    FIELD * field,
-|                                                    const void * argp)
+|   Function      :  static bool Check_This_Field(
+|                                                 FIELD * field,
+|                                                 const void * argp)
 |   
 |   Description   :  Validate buffer content to be a valid integer value
 |
@@ -95,9 +100,9 @@ Free_Integer_Type(void *argp)
 |                    FALSE - field is invalid
 +--------------------------------------------------------------------------*/
 static bool
-Check_Integer_Field(FIELD *field, const void *argp)
+Check_This_Field(FIELD *field, const void *argp)
 {
-  const integerARG *argi = (const integerARG *)argp;
+  const thisARG *argi = (const thisARG *)argp;
   long low = argi->low;
   long high = argi->high;
   int prec = argi->precision;
@@ -105,6 +110,7 @@ Check_Integer_Field(FIELD *field, const void *argp)
   char *s = (char *)bp;
   long val;
   char buf[100];
+  bool result = FALSE;
 
   while (*bp && *bp == ' ')
     bp++;
@@ -112,6 +118,41 @@ Check_Integer_Field(FIELD *field, const void *argp)
     {
       if (*bp == '-')
 	bp++;
+#if USE_WIDEC_SUPPORT
+      if (*bp)
+	{
+	  bool blank = FALSE;
+	  int len;
+	  int n;
+	  wchar_t *list = _nc_Widen_String((char *)bp, &len);
+
+	  if (list != 0)
+	    {
+	      result = TRUE;
+	      for (n = 0; n < len; ++n)
+		{
+		  if (blank)
+		    {
+		      if (list[n] != ' ')
+			{
+			  result = FALSE;
+			  break;
+			}
+		    }
+		  else if (list[n] == ' ')
+		    {
+		      blank = TRUE;
+		    }
+		  else if (!isDigit(list[n]))
+		    {
+		      result = FALSE;
+		      break;
+		    }
+		}
+	      free(list);
+	    }
+	}
+#else
       while (*bp)
 	{
 	  if (!isdigit(UChar(*bp)))
@@ -120,25 +161,29 @@ Check_Integer_Field(FIELD *field, const void *argp)
 	}
       while (*bp && *bp == ' ')
 	bp++;
-      if (*bp == '\0')
+      result = (*bp == '\0');
+#endif
+      if (result)
 	{
 	  val = atol(s);
 	  if (low < high)
 	    {
 	      if (val < low || val > high)
-		return FALSE;
+		result = FALSE;
 	    }
-	  sprintf(buf, "%.*ld", (prec > 0 ? prec : 0), val);
-	  set_field_buffer(field, 0, buf);
-	  return TRUE;
+	  if (result)
+	    {
+	      sprintf(buf, "%.*ld", (prec > 0 ? prec : 0), val);
+	      set_field_buffer(field, 0, buf);
+	    }
 	}
     }
-  return FALSE;
+  return (result);
 }
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
-|   Function      :  static bool Check_Integer_Character(
+|   Function      :  static bool Check_This_Character(
 |                                      int c,
 |                                      const void * argp)
 |   
@@ -148,26 +193,26 @@ Check_Integer_Field(FIELD *field, const void *argp)
 |                    FALSE - character is invalid
 +--------------------------------------------------------------------------*/
 static bool
-Check_Integer_Character(int c, const void *argp GCC_UNUSED)
+Check_This_Character(int c, const void *argp GCC_UNUSED)
 {
-  return ((isdigit(UChar(c)) || (c == '-')) ? TRUE : FALSE);
+  return ((isDigit(UChar(c)) || (c == '-')) ? TRUE : FALSE);
 }
 
-static FIELDTYPE typeINTEGER =
+static FIELDTYPE typeTHIS =
 {
   _HAS_ARGS | _RESIDENT,
   1,				/* this is mutable, so we can't be const */
   (FIELDTYPE *)0,
   (FIELDTYPE *)0,
-  Make_Integer_Type,
-  Copy_Integer_Type,
-  Free_Integer_Type,
-  Check_Integer_Field,
-  Check_Integer_Character,
+  Make_This_Type,
+  Copy_This_Type,
+  Free_This_Type,
+  Check_This_Field,
+  Check_This_Character,
   NULL,
   NULL
 };
 
-NCURSES_EXPORT_VAR(FIELDTYPE*) TYPE_INTEGER = &typeINTEGER;
+NCURSES_EXPORT_VAR(FIELDTYPE*) TYPE_INTEGER = &typeTHIS;
 
 /* fty_int.c ends here */
