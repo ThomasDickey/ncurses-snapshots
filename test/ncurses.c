@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.228 2004/09/26 00:10:24 tom Exp $
+$Id: ncurses.c,v 1.230 2004/10/02 23:44:22 tom Exp $
 
 ***************************************************************************/
 
@@ -978,6 +978,98 @@ get_wch_test(void)
 static char attr_test_string[MAX_ATTRSTRING + 1];
 
 static void
+attr_legend(WINDOW *helpwin)
+{
+    int row = 1;
+    int col = 1;
+
+    mvwprintw(helpwin, row++, col,
+	      "q or ESC to exit.");
+    mvwprintw(helpwin, row++, col,
+	      "^L repaints.");
+    ++row;
+    mvwprintw(helpwin, row++, col,
+	      "Modify the test strings:");
+    mvwprintw(helpwin, row++, col,
+	      "  A digit sets gaps on each side of displayed attributes");
+    mvwprintw(helpwin, row++, col,
+	      "  </> shifts the text left/right. ");
+    ++row;
+    mvwprintw(helpwin, row++, col,
+	      "Toggles:");
+    if (has_colors()) {
+	mvwprintw(helpwin, row++, col,
+		  "  f/F/b/F toggle foreground/background background color");
+	mvwprintw(helpwin, row++, col,
+		  "  t/T     toggle text/background color attribute");
+    }
+    mvwprintw(helpwin, row++, col,
+	      "  a/A     toggle ACS (alternate character set) mapping");
+    mvwprintw(helpwin, row++, col,
+	      "  v/V     toggle video attribute to combine with each line");
+}
+
+static void
+show_color_attr(int fg, int bg, int tx)
+{
+    if (has_colors()) {
+	printw("  Colors (fg %d, bg %d", fg, bg);
+	if (tx >= 0)
+	    printw(", text %d", tx);
+	printw("),");
+    }
+}
+
+static bool
+cycle_color_attr(int ch, int *fg, int *bg, int *tx)
+{
+    bool error = FALSE;
+
+    if (has_colors()) {
+	switch (ch) {
+	case 'f':
+	    *fg = (*fg + 1);
+	    break;
+	case 'F':
+	    *fg = (*fg - 1);
+	    break;
+	case 'b':
+	    *bg = (*bg + 1);
+	    break;
+	case 'B':
+	    *bg = (*bg - 1);
+	    break;
+	case 't':
+	    *tx = (*tx + 1);
+	    break;
+	case 'T':
+	    *tx = (*tx - 1);
+	    break;
+	default:
+	    beep();
+	    error = TRUE;
+	    break;
+	}
+	if (*fg >= max_colors)
+	    *fg = min_colors;
+	if (*fg < min_colors)
+	    *fg = max_colors - 1;
+	if (*bg >= max_colors)
+	    *bg = min_colors;
+	if (*bg < min_colors)
+	    *bg = max_colors - 1;
+	if (*tx >= max_colors)
+	    *tx = -1;
+	if (*tx < -1)
+	    *tx = max_colors - 1;
+    } else {
+	beep();
+	error = TRUE;
+    }
+    return error;
+}
+
+static void
 adjust_attr_string(int adjust)
 {
     int first = ((int) UChar(attr_test_string[0])) + adjust;
@@ -1094,7 +1186,7 @@ static const struct {
 /* *INDENT-ON* */
 
 static bool
-attr_getc(int *skip, int *fg, int *bg, int *ac, unsigned *kc)
+attr_getc(int *skip, int *fg, int *bg, int *tx, int *ac, unsigned *kc)
 {
     bool result = TRUE;
     bool error = FALSE;
@@ -1115,30 +1207,8 @@ attr_getc(int *skip, int *fg, int *bg, int *ac, unsigned *kc)
 		break;
 	    case '?':
 		if ((helpwin = newwin(LINES - 1, COLS - 2, 0, 0)) != 0) {
-		    int col = 1;
-		    int row = 1;
 		    box(helpwin, 0, 0);
-		    mvwprintw(helpwin, row++, col,
-			      "q or ESC to exit.");
-		    mvwprintw(helpwin, row++, col,
-			      "^L repaints.");
-		    ++row;
-		    mvwprintw(helpwin, row++, col,
-			      "Modify the test strings:");
-		    mvwprintw(helpwin, row++, col,
-			      "  A digit sets gaps on each side of displayed attributes");
-		    mvwprintw(helpwin, row++, col,
-			      "  </> shifts the text left/right. ");
-		    ++row;
-		    mvwprintw(helpwin, row++, col,
-			      "Toggles:");
-		    if (has_colors())
-			mvwprintw(helpwin, row++, col,
-				  "  f/F/b/F toggle foreground/background color");
-		    mvwprintw(helpwin, row++, col,
-			      "  a/A     toggle ACS (alternate character set) mapping");
-		    mvwprintw(helpwin, row++, col,
-			      "  v/V     toggle video attribute to combine with each line");
+		    attr_legend(helpwin);
 		    wGetchar(helpwin);
 		    delwin(helpwin);
 		}
@@ -1171,37 +1241,7 @@ attr_getc(int *skip, int *fg, int *bg, int *ac, unsigned *kc)
 		result = FALSE;
 		break;
 	    default:
-		if (has_colors()) {
-		    switch (ch) {
-		    case 'f':
-			*fg = (*fg + 1);
-			break;
-		    case 'F':
-			*fg = (*fg - 1);
-			break;
-		    case 'b':
-			*bg = (*bg + 1);
-			break;
-		    case 'B':
-			*bg = (*bg - 1);
-			break;
-		    default:
-			beep();
-			error = TRUE;
-			break;
-		    }
-		    if (*fg >= max_colors)
-			*fg = min_colors;
-		    if (*fg < min_colors)
-			*fg = max_colors - 1;
-		    if (*bg >= max_colors)
-			*bg = min_colors;
-		    if (*bg < min_colors)
-			*bg = max_colors - 1;
-		} else {
-		    beep();
-		    error = TRUE;
-		}
+		error = cycle_color_attr(ch, fg, bg, tx);
 		break;
 	    }
 	}
@@ -1217,6 +1257,7 @@ attr_test(void)
     int skip = tigetnum("xmc");
     int fg = COLOR_BLACK;	/* color pair 0 is special */
     int bg = COLOR_BLACK;
+    int tx = -1;
     int ac = 0;
     unsigned j, k;
 
@@ -1229,7 +1270,8 @@ attr_test(void)
 
     do {
 	int row = 2;
-	int normal = A_NORMAL | BLANK;
+	chtype normal = A_NORMAL | BLANK;
+	chtype extras = ac;
 
 	if (has_colors()) {
 	    int pair = (fg != COLOR_BLACK || bg != COLOR_BLACK);
@@ -1237,9 +1279,18 @@ attr_test(void)
 		pair = 1;
 		if (init_pair(pair, fg, bg) == ERR) {
 		    beep();
+		} else {
+		    normal |= COLOR_PAIR(pair);
 		}
 	    }
-	    normal |= COLOR_PAIR(pair);
+	    if (tx >= 0) {
+		pair = 2;
+		if (init_pair(pair, tx, bg) == ERR) {
+		    beep();
+		} else {
+		    extras |= COLOR_PAIR(pair);
+		}
+	    }
 	}
 	bkgd(normal);
 	bkgdset(normal);
@@ -1250,7 +1301,7 @@ attr_test(void)
 
 	for (j = 0; j < SIZEOF(attrs_to_test); ++j) {
 	    row = show_attr(row, n, j == k,
-			    ac |
+			    extras |
 			    attrs_to_test[j].attr |
 			    attrs_to_test[k].attr,
 			    attrs_to_test[j].name);
@@ -1260,12 +1311,11 @@ attr_test(void)
 		 "This terminal does %shave the magic-cookie glitch",
 		 tigetnum("xmc") > -1 ? "" : "not ");
 	mvprintw(row + 1, 8, "Enter '?' for help.");
-	if (has_colors())
-	    printw("  Foreground/background color (%d/%d),", fg, bg);
+	show_color_attr(fg, bg, tx);
 	printw("  ACS (%d)", ac != 0);
 
 	refresh();
-    } while (attr_getc(&n, &fg, &bg, &ac, &k));
+    } while (attr_getc(&n, &fg, &bg, &tx, &ac, &k));
 
     bkgdset(A_NORMAL | BLANK);
     erase();
@@ -1314,7 +1364,7 @@ set_wide_background(short pair)
 
     blank[0] = ' ';
     blank[1] = 0;
-    setcchar(&normal, blank, A_NORMAL, COLOR_PAIR(pair), 0);
+    setcchar(&normal, blank, A_NORMAL, pair, 0);
     bkgrnd(&normal);
     bkgrndset(&normal);
 }
@@ -1362,13 +1412,17 @@ wide_show_attr(int row, int skip, bool arrow, chtype attr, short pair, const cha
 	    wchar_t fill[2];
 	    fill[0] = *s;
 	    fill[1] = L'\0';
-	    setcchar(&ch, fill, attr, 0, 0);
+	    setcchar(&ch, fill, attr, pair, 0);
 	    add_wch(&ch);
 	}
     } else {
+	attr_t old_attr;
+	short old_pair;
+
+	attr_get(&old_attr, &old_pair, 0);
 	attr_set(attr, pair, 0);
 	addwstr(wide_attr_test_string);
-	attr_off(attr, 0);
+	attr_set(old_attr, old_pair, 0);
     }
     if (skip)
 	printw("%*s", skip, " ");
@@ -1410,7 +1464,7 @@ wide_show_attr(int row, int skip, bool arrow, chtype attr, short pair, const cha
 }
 
 static bool
-wide_attr_getc(int *skip, int *fg, int *bg, int *ac, unsigned *kc)
+wide_attr_getc(int *skip, int *fg, int *bg, int *tx, int *ac, unsigned *kc)
 {
     bool result = TRUE;
     bool error = FALSE;
@@ -1431,30 +1485,8 @@ wide_attr_getc(int *skip, int *fg, int *bg, int *ac, unsigned *kc)
 		break;
 	    case '?':
 		if ((helpwin = newwin(LINES - 1, COLS - 2, 0, 0)) != 0) {
-		    int col = 1;
-		    int row = 1;
 		    box_set(helpwin, 0, 0);
-		    mvwprintw(helpwin, row++, col,
-			      "q or ESC to exit.");
-		    mvwprintw(helpwin, row++, col,
-			      "^L repaints.");
-		    ++row;
-		    mvwprintw(helpwin, row++, col,
-			      "Modify the test strings:");
-		    mvwprintw(helpwin, row++, col,
-			      "  A digit sets gaps on each side of displayed attributes");
-		    mvwprintw(helpwin, row++, col,
-			      "  </> shifts the text left/right. ");
-		    ++row;
-		    mvwprintw(helpwin, row++, col,
-			      "Toggles:");
-		    if (has_colors())
-			mvwprintw(helpwin, row++, col,
-				  "  f/F/b/F toggle foreground/background color");
-		    mvwprintw(helpwin, row++, col,
-			      "  a/A     toggle ACS (alternate character set) mapping");
-		    mvwprintw(helpwin, row++, col,
-			      "  v/V     toggle video attribute to combine with each line");
+		    attr_legend(helpwin);
 		    wGetchar(helpwin);
 		    delwin(helpwin);
 		}
@@ -1487,37 +1519,7 @@ wide_attr_getc(int *skip, int *fg, int *bg, int *ac, unsigned *kc)
 		result = FALSE;
 		break;
 	    default:
-		if (has_colors()) {
-		    switch (ch) {
-		    case 'f':
-			*fg = (*fg + 1);
-			break;
-		    case 'F':
-			*fg = (*fg - 1);
-			break;
-		    case 'b':
-			*bg = (*bg + 1);
-			break;
-		    case 'B':
-			*bg = (*bg - 1);
-			break;
-		    default:
-			beep();
-			error = TRUE;
-			break;
-		    }
-		    if (*fg >= max_colors)
-			*fg = min_colors;
-		    if (*fg < min_colors)
-			*fg = max_colors - 1;
-		    if (*bg >= max_colors)
-			*bg = min_colors;
-		    if (*bg < min_colors)
-			*bg = max_colors - 1;
-		} else {
-		    beep();
-		    error = TRUE;
-		}
+		error = cycle_color_attr(ch, fg, bg, tx);
 		break;
 	    }
 	}
@@ -1533,6 +1535,7 @@ wide_attr_test(void)
     int skip = tigetnum("xmc");
     int fg = COLOR_BLACK;	/* color pair 0 is special */
     int bg = COLOR_BLACK;
+    int tx = -1;
     int ac = 0;
     unsigned j, k;
 
@@ -1545,13 +1548,21 @@ wide_attr_test(void)
 
     do {
 	int row = 2;
-	int pair = 0;
+	short pair = 0;
+	short extras = 0;
 
 	if (has_colors()) {
 	    pair = (fg != COLOR_BLACK || bg != COLOR_BLACK);
 	    if (pair != 0) {
 		pair = 1;
 		if (init_pair(pair, fg, bg) == ERR) {
+		    beep();
+		}
+	    }
+	    extras = pair;
+	    if (tx >= 0) {
+		extras = 2;
+		if (init_pair(extras, tx, bg) == ERR) {
 		    beep();
 		}
 	    }
@@ -1567,7 +1578,7 @@ wide_attr_test(void)
 				 ac |
 				 attrs_to_test[j].attr |
 				 attrs_to_test[k].attr,
-				 pair,
+				 extras,
 				 attrs_to_test[j].name);
 	}
 
@@ -1575,12 +1586,11 @@ wide_attr_test(void)
 		 "This terminal does %shave the magic-cookie glitch",
 		 tigetnum("xmc") > -1 ? "" : "not ");
 	mvprintw(row + 1, 8, "Enter '?' for help.");
-	if (has_colors())
-	    printw("  Foreground/background color (%d/%d),", fg, bg);
+	show_color_attr(fg, bg, tx);
 	printw("  ACS (%d)", ac != 0);
 
 	refresh();
-    } while (wide_attr_getc(&n, &fg, &bg, &ac, &k));
+    } while (wide_attr_getc(&n, &fg, &bg, &tx, &ac, &k));
 
     set_wide_background(0);
     erase();
@@ -2355,7 +2365,7 @@ show_upper_widechars(int first, int repeat)
 }
 
 static int
-show_1_wacs(int n, const char *name, const cchar_t * code)
+show_1_wacs(int n, const char *name, const cchar_t *code)
 {
     const int height = 16;
     int row = 4 + (n % height);

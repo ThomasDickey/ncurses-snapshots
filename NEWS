@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.838 2004/09/25 23:31:09 tom Exp $
+-- $Id: NEWS,v 1.839 2004/10/03 00:47:31 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20041002
+	+ correct logic for color pair in setcchar() and getcchar() (patch by
+	  Marcin 'Qrczak' Kowalczyk).
+	+ add t/T commands to ncurses b/B tests to allow a different color to
+	  be tested for the attrset part of the test than is used in the
+	  background color.
 
 20040925
 	+ fix to make setcchar() to work when its wchar_t* parameter is

@@ -1,4 +1,4 @@
--- $Id: README,v 1.20 2004/09/11 23:57:41 tom Exp $
+-- $Id: README,v 1.21 2004/10/02 23:42:00 tom Exp $
 -------------------------------------------------------------------------------
 
 The programs in this directory are designed to test your newest toy :-)
@@ -206,7 +206,7 @@ addnwstr			-
 addstr				test: blue bs cardfile gdc hanoi lrtest ncurses
 addwstr				test: ncurses
 assume_default_colors		test: ncurses
-attr_get			-
+attr_get			test: ncurses
 attr_off			test: ncurses
 attr_on				test: ncurses
 attr_set			test: ncurses
