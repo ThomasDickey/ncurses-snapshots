@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.752 2003/06/14 21:15:33 tom Exp $
+-- $Id: NEWS,v 1.753 2003/06/16 00:25:46 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030621
+	+ write getyx() and related 2-return macros in terms of getcury(),
+	  getcurx(), etc.
+	+ modify waddch_literal() in case an application passes bytes of a
+	  multibyte character directly to waddch().  In this case, waddch()
+	  must reassemble the bytes into a wide-character (report by Tomohiro
+	  KUBOTA <kubota@debian.org>).
 
 20030614
 	+ modify waddch_literal() in case a multibyte value occupies more than

@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.246 2003/06/14 19:22:41 tom Exp $
+ * $Id: curses.priv.h,v 1.247 2003/06/16 00:10:05 tom Exp $
  *
  *	curses.priv.h
  *
@@ -504,20 +504,18 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #include <nomacros.h>
 #endif
 
-/*
- * The margins are used in resizeterm() to retain the original layout after
- * resizing.
- */
 	WINDOWLIST {
+	WINDOW	win;	/* first, so WINDOW_EXT() works */
 	WINDOWLIST *next;
-#if HAVE_RESIZETERM
-	int	l_margin;
-	int	r_margin;
-	int	t_margin;
-	int	b_margin;
+#ifdef _XOPEN_SOURCE_EXTENDED
+	char addch_work[(MB_LEN_MAX * 9) + 1];
+	int addch_used;
+	int addch_x;
+	int addch_y;
 #endif
-	WINDOW	win;
 };
+
+#define WINDOW_EXT(win,field) (((WINDOWLIST *)(win))->field)
 
 /* The terminfo source is assumed to be 7-bit ASCII */
 #define is7bits(c)	((unsigned)(c) < 128)

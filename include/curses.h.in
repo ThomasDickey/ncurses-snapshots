@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey 1996-on                                        *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.144 2003/06/07 22:49:02 tom Exp $ */
+/* $Id: curses.h.in,v 1.145 2003/06/15 23:42:18 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -823,10 +823,11 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 #define nocrmode()		nocbreak()
 #define gettmode()
 
-#define getyx(win,y,x)   	(y = (win)?(win)->_cury:ERR, x = (win)?(win)->_curx:ERR)
-#define getbegyx(win,y,x)	(y = (win)?(win)->_begy:ERR, x = (win)?(win)->_begx:ERR)
-#define getmaxyx(win,y,x)	(y = (win)?((win)->_maxy + 1):ERR, x = (win)?((win)->_maxx + 1):ERR)
-#define getparyx(win,y,x)	(y = (win)?(win)->_pary:ERR, x = (win)?(win)->_parx:ERR)
+#define getyx(win,y,x)   	(y = getcury(win), x = getcurx(win))
+#define getbegyx(win,y,x)	(y = getbegy(win), x = getbegx(win))
+#define getmaxyx(win,y,x)	(y = getmaxy(win), x = getmaxx(win))
+#define getparyx(win,y,x)	(y = getpary(win), x = getparx(win))
+
 #define getsyx(y,x) do { if(newscr->_leaveok) (y)=(x)=-1; \
 			 else getyx(newscr,(y),(x)); \
 		    } while(0)
