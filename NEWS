@@ -1,10 +1,23 @@
--- $Id: NEWS,v 1.515 1999/12/12 02:31:46 tom Exp $
+-- $Id: NEWS,v 1.516 1999/12/19 01:54:25 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+19991218
+	+ reorder tests during mouse initialization to allow for gpm to run in
+	  xterm, or for xterm to be used under OS/2 EMX.  Also drop test for
+	  $DISPLAY in favor of kmous=\E[M or $TERM containing "xterm" (report
+	  by Christian Weisgerber <naddy@mips.rhein-neckar.de>).
+	+ modify raw() and noraw() to clear/restore IEXTEN flag which affects
+	  stty lnext on systems such as FreeBSD (report by Bruce Evans
+	  <bde@zeta.org.au>, via Jason Evans <jasone@canonware.com>).
+	+ fix a potential (but unlikely) buffer overflow in failed() function
+	  of tset.c (reported by Todd Miller).
+	+ add manual-page for ncurses extensions, documented curses_version(),
+	  use_extended_names().
 
 19991211
 	+ treat as untranslatable to termcap those terminfo strings which

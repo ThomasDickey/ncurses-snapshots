@@ -1,11 +1,9 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
 # This version of terminfo.src is distributed with ncurses.
-# Report bugs to
-#	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 1999/12/12 02:06:06 $
+#	$Date: 1999/12/12 00:46:42 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)

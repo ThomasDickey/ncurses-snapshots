@@ -103,7 +103,7 @@ char *ttyname(int fd);
 #include <curses.h>	/* for bool typedef */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.37 1999/03/14 12:30:02 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.38 1999/12/18 23:29:32 tom Exp $")
 
 extern char **environ;
 
@@ -156,7 +156,7 @@ static void
 failed(const char *msg)
 {
 	char	temp[BUFSIZ];
-	perror(strcat(strcpy(temp, "tset: "), msg));
+	perror(strncat(strcpy(temp, "tset: "), msg, sizeof(temp)-10));
 	exit(EXIT_FAILURE);
 	/* NOTREACHED */
 }
