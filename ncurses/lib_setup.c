@@ -47,7 +47,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.41 1998/08/22 16:22:15 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.42 1998/09/05 22:15:14 tom Exp $")
 
 /****************************************************************************
  *
@@ -88,8 +88,6 @@ MODULE_ID("$Id: lib_setup.c,v 1.41 1998/08/22 16:22:15 tom Exp $")
 #  define WINSIZE_COLS(n) (int)n.ws_col
 # endif
 #endif
-
-extern TERMINAL *cur_term;
 
 static int _use_env = TRUE;
 

@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.366 1998/08/30 00:27:23 tom Exp $
+-- $Id: NEWS,v 1.369 1998/09/06 00:22:45 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980905
+	+ modify MKterminfo.sh to generate terminfo.5 with tables sorted by
+	  capability name, as in SVr4.
+	+ modified term.h, termcap.h headers to avoid redundant declarations.
+	+ change 'u_int' type in tset.c to unsigned, making this compile on
+	  Sequent PRX 4.1 (reported by Michael Sterrett <msterret@coat.com>).
 
 980829
 	+ corrections to mailing addresses, and moving the magic line that
