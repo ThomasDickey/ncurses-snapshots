@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.531 2000/02/13 02:20:41 tom Exp $
+-- $Id: NEWS,v 1.532 2000/02/20 01:27:22 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000219
+	+ store default-color code consistently as C_MASK, even if given as
+	  -1 for convenience (adapted from patches by Alexander Lukyanov).
+	> patches by Alexander Lukyanov:
+	+ change can_clear_with() macro to accommodate logic for
+	  assume_default_colors(), making most of the FILL_BCE logic
+	  unnecessary.  Made can_clear_with() an inline function to make it
+	  simpler to read.
 
 20000212
 	+ corrected form of recent copyright dates.

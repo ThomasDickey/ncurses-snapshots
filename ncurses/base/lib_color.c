@@ -41,11 +41,11 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.43 2000/02/13 00:59:39 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.44 2000/02/20 01:18:02 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
- * hystorical reasons.  So we assign them in start_color() and also in
+ * historical reasons.  So we assign them in start_color() and also in
  * set_term()'s screen-switching logic.
  */
 int COLOR_PAIRS = 0;
@@ -89,13 +89,13 @@ static const color_t hls_palette[] =
 static int
 default_fg(void)
 {
-    return (SP->_default_fg >= 0) ? SP->_default_fg : COLOR_WHITE;
+    return (SP->_default_fg != C_MASK) ? SP->_default_fg : COLOR_WHITE;
 }
 
 static int
 default_bg(void)
 {
-    return (SP->_default_bg >= 0) ? SP->_default_bg : COLOR_BLACK;
+    return (SP->_default_bg != C_MASK) ? SP->_default_bg : COLOR_BLACK;
 }
 #else
 #define default_fg() COLOR_WHITE
@@ -418,37 +418,48 @@ _nc_do_color(int pair, bool reverse, int (*outc) (int))
 	    !SP->_default_color ||
 #endif
 	    !set_original_colors()) {
-	    set_foreground_color(default_fg(), outc);
-	    set_background_color(default_bg(), outc);
+	    fg = default_fg();
+	    bg = default_bg();
 	}
     } else {
 	if (set_color_pair) {
 	    TPUTS_TRACE("set_color_pair");
 	    tputs(tparm(set_color_pair, pair), 1, outc);
+	    return;
 	} else {
 	    pair_content(pair, &fg, &bg);
-	    if (reverse) {
-		short xx = fg;
-		fg = bg;
-		bg = xx;
+#ifdef NCURSES_EXT_FUNCS
+	    if (SP->_default_color) {
+		if (fg == C_MASK)
+		    fg = SP->_default_fg;
+		if (bg == C_MASK)
+		    bg = SP->_default_bg;
 	    }
-
-	    T(("setting colors: pair = %d, fg = %d, bg = %d", pair, fg, bg));
-
-	    if (fg == C_MASK || bg == C_MASK) {
-		if (set_original_colors() != TRUE) {
-		    if (fg == C_MASK)
-			set_foreground_color(default_fg(), outc);
-		    if (bg == C_MASK)
-			set_background_color(default_bg(), outc);
-		}
-	    }
-	    if (fg != C_MASK) {
-		set_foreground_color(fg, outc);
-	    }
-	    if (bg != C_MASK) {
-		set_background_color(bg, outc);
-	    }
+#endif
 	}
+    }
+
+    if (fg == C_MASK || bg == C_MASK) {
+	if (set_original_colors() != TRUE) {
+	    if (fg == C_MASK)
+		fg = default_fg();
+	    if (bg == C_MASK)
+		bg = default_bg();
+	}
+    }
+
+    if (reverse) {
+	short xx = fg;
+	fg = bg;
+	bg = xx;
+    }
+
+    T(("setting colors: pair = %d, fg = %d, bg = %d", pair, fg, bg));
+
+    if (fg != C_MASK) {
+	set_foreground_color(fg, outc);
+    }
+    if (bg != C_MASK) {
+	set_background_color(bg, outc);
     }
 }
