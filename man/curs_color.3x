@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.21 2005/01/02 01:31:34 tom Exp $
+.\" $Id: curs_color.3x,v 1.22 2005/01/08 16:50:56 tom Exp $
 .TH curs_color 3X ""
 .SH NAME
 \fBstart_color\fR,
@@ -96,8 +96,10 @@ must be between \fB1\fR and \fBCOLOR_PAIRS-1\fR.
 .TP 5
 -
 The value of the second and
-third arguments must be between 0 and \fBCOLORS\fR (the 0 color pair is wired
-to white on black and cannot be changed).
+third arguments must be between 0 and \fBCOLORS\fR.
+Color pair 0 is assumed to be white on black,
+but is actually whatever the terminal implements before color is initialized.
+It cannot be modified by the application.
 .PP
 If the color-pair was previously
 initialized, the screen is refreshed and all occurrences of that color-pair
