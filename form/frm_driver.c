@@ -1158,6 +1158,7 @@ static int Set_Current_Field(FORM  *form, FIELD *newfield)
 
       form->current = field;
       form->w       = new_window;
+      form->status &= ~_WINDOW_MODIFIED;
       Set_Field_Window_Attributes(field,form->w);
 
       if (Has_Invisible_Parts(field))
@@ -2102,11 +2103,16 @@ static int Field_Editing(int (* const fct) (FORM *), FORM * form)
     }
   else
     {
-      if ((fct==FE_New_Line)                   && 
-	  (form->opts & O_NL_OVERLOAD)         &&
-	  First_Position_In_Current_Field(form) )
+      if (fct==FE_New_Line)
 	{
-	  res = Inter_Field_Navigation(FN_Next_Field,form);
+	  if ((form->opts & O_NL_OVERLOAD)         &&
+	      First_Position_In_Current_Field(form))
+	    {
+	      res = Inter_Field_Navigation(FN_Next_Field,form);
+	    }
+	  else
+	    /* FE_New_Line deals itself with the _WINDOW_MODIFIED flag */
+	    res = fct(form);
 	}
       else
 	{
@@ -2167,6 +2173,7 @@ static int FE_New_Line(FORM * form)
 	  wclrtoeol(form->w);
 	  form->currow++;
 	  form->curcol = 0;
+	  form->status |= _WINDOW_MODIFIED;
 	  return(E_OK);
 	}
     }
@@ -2196,6 +2203,7 @@ static int FE_New_Line(FORM * form)
 	  wmove(form->w,form->currow,form->curcol);
 	  winsertln(form->w);
 	  waddnstr(form->w,bp,(int)(t-bp));
+	  form->status |= _WINDOW_MODIFIED;
 	  return E_OK;
 	}
     }
@@ -3413,11 +3421,10 @@ static int Data_Entry(FORM * form, int c)
 
   if (field->opts & O_EDIT)
     {
-      if ( (form->currow==0) && 
-	   (form->curcol==0) && 
-	   (field->opts & O_BLANK) &&
-	  !(form->status & _FCHECK_REQUIRED) && 
-	  !(form->status & _WINDOW_MODIFIED) )
+      if ( (field->opts & O_BLANK) &&
+	   First_Position_In_Current_Field(form) &&
+	   !(form->status & _FCHECK_REQUIRED) && 
+	   !(form->status & _WINDOW_MODIFIED) )
 	werase(form->w);
 
       if (form->status & _OVLMODE)

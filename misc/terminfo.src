@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 9.13.11
+#	Version 9.13.12
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -799,65 +799,96 @@ ibmpcx|xenix|ibmx|IBM PC xenix console display,
 # optimization.  Bug: The <op> capability resets attributes.
 # From: Michael Hunter <mphunter@qnx.com> 30 Jul 1996
 qnx|qnx4|qnx console, 
-	am, daisy, km, mir, msgr, xenl, xhpa, xt, 
-	colors#8, cols#80, it#8, lines#25, ncv#3, pairs#8, vt#3, 
-	acsc=llmmkkjjuuttvvwwqqxxnnoosspprr``aaffgg~~..--++\054\054hhII00yyzz, 
-	bel=^G, blink=\E[5m, bold=\E[1m, civis=\Ey0, 
-	clear=\E[H\E[J, cnorm=\Ey1, cr=^M, csr=\E[%i%p1%d;%p2%dr, 
-	cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=\E[B, 
-	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
-	cuu=\E[%p1%dA, cuu1=\E[A, cvvis=\Ey2, dch=\E[%p1%dP, 
-	dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, 
-	el1=\E[1K, home=\E[H, ht=^I, hts=\EH, ich=\E[%p1%d@, 
-	ich1=\Ee, il=\E[%p1%dL, il1=\E[L, ind=\ED, indn=\E[%p1%dS, 
-	is1=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, kBEG=\377\356, 
-	kCAN=\377\263, kCMD=\377\267, kCPY=\377\363, 
-	kCRT=\377\364, kDL=\377\366, kEND=\377\301, 
-	kEOL=\377\311, kEXT=\377\367, kFND=\377\370, 
-	kHLP=\377\371, kHOM=\377\260, kIC=\377\340, 
-	kLFT=\377\264, kMOV=\377\306, kMSG=\377\304, 
-	kNXT=\377\272, kOPT=\377\372, kPRT=\377\275, 
-	kPRV=\377\262, kRDO=\377\315, kRES=\377\374, 
-	kRIT=\377\266, kRPL=\377\373, kSAV=\377\307, 
-	kSPD=\377\303, kUND=\377\337, kbeg=\377\300, kbs=\177, 
-	kcan=\377\243, kcbt=\377\200, kclo=\377\343, 
-	kclr=\377\341, kcmd=\377\245, kcpy=\377\265, 
-	kcrt=\377\305, kctab=\377\237, kcub1=\EOD, kcud1=\EOB, 
-	kcuf1=\EOC, kcuu1=\EOA, kdch1=\E[3~, kdl1=\377\274, 
-	ked=\377\314, kel=\377\310, kend=\377\250, kent=\377\320, 
-	kext=\377\270, kf1=\E[17~, kf10=\377\212, kf11=\377\256, 
-	kf12=\377\257, kf13=\377\213, kf14=\377\214, 
-	kf15=\377\215, kf16=\377\216, kf17=\377\217, 
-	kf18=\377\220, kf19=\377\221, kf2=\E[18~, kf20=\377\222, 
+	daisy, km, mir, msgr, xhpa, xt, 
+	colors#8, cols#80, it#4, lines#25, ncv#3, pairs#8, 
+	acsc=l\332m\300k\277j\331q\304x\263u\264t\303n\305v\301w\302O\333a\261o\337s\334, 
+	bel=^G, blink=\E{, bold=\E<, civis=\Ey0, clear=\EH\EJ, 
+	cnorm=\Ey1, cr=^M, cub1=^H, cud1=^J, cuf1=\EC, 
+	cup=\EY%p1%' '%+%c%p2%' '%+%c, cuu1=\EA, cvvis=\Ey2, 
+	dch1=\Ef, dl1=\EF, ed=\EJ, el=\EK, home=\EH, ht=^I, ich1=\Ee, 
+	il1=\EE, ind=^J, kBEG=\377\356, kCAN=\377\263, 
+	kCMD=\377\267, kCPY=\377\363, kCRT=\377\364, 
+	kDL=\377\366, kEND=\377\301, kEOL=\377\311, 
+	kEXT=\377\367, kFND=\377\370, kHLP=\377\371, 
+	kHOM=\377\260, kIC=\377\340, kLFT=\377\264, 
+	kMOV=\377\306, kMSG=\377\304, kNXT=\377\272, 
+	kOPT=\377\372, kPRT=\377\275, kPRV=\377\262, 
+	kRDO=\377\315, kRES=\377\374, kRIT=\377\266, 
+	kRPL=\377\373, kSAV=\377\307, kSPD=\377\303, 
+	kUND=\377\337, kbeg=\377\300, kcan=\377\243, 
+	kcbt=\377\200, kclo=\377\343, kclr=\377\341, 
+	kcmd=\377\245, kcpy=\377\265, kcrt=\377\305, 
+	kctab=\377\237, kcub1=\377\244, kcud1=\377\251, 
+	kcuf1=\377\246, kcuu1=\377\241, kdch1=\377\254, 
+	kdl1=\377\274, ked=\377\314, kel=\377\310, kend=\377\250, 
+	kent=\377\320, kext=\377\270, kf1=\377\201, 
+	kf10=\377\212, kf11=\377\256, kf12=\377\257, 
+	kf13=\377\213, kf14=\377\214, kf15=\377\215, 
+	kf16=\377\216, kf17=\377\217, kf18=\377\220, 
+	kf19=\377\221, kf2=\377\202, kf20=\377\222, 
 	kf21=\377\223, kf22=\377\224, kf23=\377\333, 
 	kf24=\377\334, kf25=\377\225, kf26=\377\226, 
-	kf27=\377\227, kf28=\377\230, kf29=\377\231, kf3=\E[19~, 
-	kf30=\377\232, kf31=\377\233, kf32=\377\234, 
-	kf33=\377\235, kf34=\377\236, kf35=\377\276, 
-	kf36=\377\277, kf37=\377\321, kf38=\377\322, 
-	kf39=\377\323, kf4=\E[20~, kf40=\377\324, kf41=\377\325, 
-	kf42=\377\326, kf43=\377\327, kf44=\377\330, 
-	kf45=\377\331, kf46=\377\332, kf47=\377\316, 
-	kf48=\377\317\n\n\npcvtXX|pcvt vt200 emulator (DEC VT220), 
-	kf5=\E[21~, kf6=\E[23~, kf7=\E[24~, kf8=\E[25~, 
-	kf9=\377\211, kfnd=\377\346, khlp=\377\350, khome=\E[1~, 
-	khts=\377\342, kich1=\E[2~, kil1=\377\273, kind=\377\261, 
-	kll=\E[4~, kmov=\377\351, kmrk=\377\355, kmsg=\377\345, 
-	knp=\E[6~, knxt=\377\312, kopn=\377\357, kopt=\377\353, 
-	kpp=\E[5~, kprt=\377\255, kprv=\377\302, krdo=\377\336, 
-	kref=\377\354, kres=\377\360, krfr=\377\347, 
-	kri=\377\271, krmir=\377\313, krpl=\377\362, 
-	krst=\377\352, ksav=\377\361, kslt=\377\247, 
-	kspd=\377\335, ktbc=\377\344, kund=\377\365, 
-	mvpa=\E!%p1%02d, nel=\EE, op=\ER, rc=\E8, 
-	rep=\Eg%p2%' '%+%c%p1%c, rev=\E[7m, 
-	rf=/usr/share/tabset/vt100, ri=\EM, rin=\E[%p1%dT, 
-	rmacs=\E(B, rmam=\E[?7l, rmcup=\Eh\ER, rmir=\E[4l, 
+	kf27=\377\227, kf28=\377\230, kf29=\377\231, 
+	kf3=\377\203, kf30=\377\232, kf31=\377\233, 
+	kf32=\377\234, kf33=\377\235, kf34=\377\236, 
+	kf35=\377\276, kf36=\377\277, kf37=\377\321, 
+	kf38=\377\322, kf39=\377\323, kf4=\377\204, 
+	kf40=\377\324, kf41=\377\325, kf42=\377\326, 
+	kf43=\377\327, kf44=\377\330, kf45=\377\331, 
+	kf46=\377\332, kf47=\377\316, kf48=\377\317, 
+	kf5=\377\205, kf6=\377\206, kf7=\377\207, kf8=\377\210, 
+	kf9=\377\211, kfnd=\377\346, khlp=\377\350, 
+	khome=\377\240, khts=\377\342, kich1=\377\253, 
+	kil1=\377\273, kind=\377\261, kmov=\377\351, 
+	kmrk=\377\355, kmsg=\377\345, knp=\377\252, 
+	knxt=\377\312, kopn=\377\357, kopt=\377\353, 
+	kpp=\377\242, kprt=\377\255, kprv=\377\302, 
+	krdo=\377\336, kref=\377\354, kres=\377\360, 
+	krfr=\377\347, kri=\377\271, krmir=\377\313, 
+	krpl=\377\362, krst=\377\352, ksav=\377\361, 
+	kslt=\377\247, kspd=\377\335, ktbc=\377\344, 
+	kund=\377\365, mvpa=\E!%p1%02d, op=\ER, 
+	rep=\Eg%p2%' '%+%c%p1%c, rev=\E(, ri=\EI, rmcup=\Eh\ER, 
+	rmso=\E), rmul=\E], rs1=\ER, setb=\E@%p1%Pb%gb%gf%d%d, 
+	setf=\E@%p1%Pf%gb%gf%d%d, 
+	sgr=%?%p1%t\E<%;%p2%t\E[%;%p3%t\E(%;%p4%t\E{%;%p6%t\E<%;, 
+	sgr0=\E}\E]\E>\E), smcup=\Ei, smso=\E(, smul=\E[, 
+
+#### NetBSD consoles
+#
+# pcvt termcap database entries (corresponding to release 3.31)
+# Author's last edit-date: [Fri Sep 15 20:29:10 1995]
+#
+# (For the terminfo master file, I translated these into terminfo syntax.
+# Then I dropped all the pseudo-HP entries. we don't want and can't use
+# the :Xs: flag. Then I split :is: into a size-independent <is1> and a
+# size-dependent <is2>.  Finally, I added <rmam>/<smam> -- esr)
+
+# NOTE: because the 386BSD "vi"/"elvis" seems to have a bug if
+# both <ich1> and <smir> are specified (an original VT220 
+# shows the same buggy behaviour!), <ich1> has been taken
+# out of this entry. for reference, it should be <ich1=\E[@>.
+pcvtXX|pcvt vt200 emulator (DEC VT220), 
+	am, km, mir, msgr, xenl, 
+	it#8, vt#3, 
+	acsc=llmmkkjjuuttvvwwqqxxnnoosspprr``aaffgg~~..--++\054\054hhII00yyzz, 
+	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[H\E[J, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
+	cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, 
+	el=\E[K, el1=\E[1K, home=\E[H, ht=^I, hts=\EH, ich=\E[%p1%d@, 
+	il=\E[%p1%dL, il1=\E[L, ind=\ED, indn=\E[%p1%dS, 
+	is1=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, kbs=\177, 
+	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
+	kdch1=\E[3~, kf1=\E[17~, kf2=\E[18~, kf3=\E[19~, 
+	kf4=\E[20~, kf5=\E[21~, kf6=\E[23~, kf7=\E[24~, kf8=\E[25~, 
+	khome=\E[1~, kich1=\E[2~, kll=\E[4~, knp=\E[6~, kpp=\E[5~, 
+	nel=\EE, rc=\E8, rev=\E[7m, rf=/usr/share/tabset/vt100, 
+	ri=\EM, rin=\E[%p1%dT, rmacs=\E(B, rmam=\E[?7l, rmir=\E[4l, 
 	rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m, 
 	rs1=\Ec\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, sc=\E7, 
-	setb=\E@%p1%Pb%gb%gf%d%d, setf=\E@%p1%Pf%gb%gf%d%d, 
-	sgr=%?%p1%t\E<%;%p2%t\E[%;%p3%t\E(%;%p4%t\E{%;%p6%t\E<%;, 
-	sgr0=\E[m, smacs=\E(0, smam=\E[?7h, smcup=\Ei, smir=\E[4h, 
+	sgr0=\E[m, smacs=\E(0, smam=\E[?7h, smir=\E[4h, 
 	smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
 
 #	NetBSD/FreeBSD vt220 terminal emulator console (pc keyboard & monitor)
@@ -2737,6 +2768,28 @@ hpex|hp extended capabilites,
 	kcub1=^H, kcud1=^J, nel=^M^J, rmir=\ER, rmul=\E&d@, smir=\EQ, 
 	smul=\E&dD, vpa=\E&a%p1%dY, 
 	use=hpsub, 
+
+# From: Ville Sulko <Ville.Sulko@bip.atk.tpo.fi>, 05 Aug 1996
+hp2|hpex2|hewlett-packard extended capabilities newer version, 
+	am, da, db, mir, xhp, 
+	cols#80, lh#2, lines#24, lm#0, lw#8, nlab#8, xmc#0, 
+	bel=^G, clear=\E&a0y0C\EJ, cr=^M, cub1=^H, cud1=\EB, 
+	cuf1=\EC, cup=\E&a%p1%dy%p2%dC, cuu1=\EA, dch1=\EP, 
+	dl1=\EM, ed=\EJ, el=\EK, hpa=\E&a%p1%dC, ht=^I, hts=\E1, 
+	il1=\EL, ind=^J, kbs=^H, kclr=\EJ, kctab=\E2, kcub1=\ED, 
+	kcud1=\EB, kcuf1=\EC, kcuu1=\EA, kdch1=\EP, kdl1=\EM, 
+	ked=\EJ, kel=\EK, kf1=\Ep, kf2=\Eq, kf3=\Er, kf4=\Es, kf5=\Et, 
+	kf6=\Eu, kf7=\Ev, kf8=\Ew, khome=\Eh, khts=\E1, kich1=\EQ, 
+	kil1=\EL, kind=\ES, kll=\EF, knp=\EU, kpp=\EV, kri=\ET, 
+	krmir=\ER, ktbc=\E3, meml=\El, memu=\Em, 
+	pfkey=\E&f%p1%dk%p2%l%dL%p2%s, 
+	pfloc=\E&f1a%p1%dk%p2%l%dL%p2%s, 
+	pfx=\E&f2a%p1%dk%p2%l%dL%p2%s, 
+	pln=\E&f%p1%dk%p2%l%dd0L%p2%s, rmir=\ER, rmkx=\E&s0A, 
+	rmln=\E&j@, rmso=\E&d@, rmul=\E&d@, 
+	sgr=\E&d%?%p7%t%'s'%c%;%p1%p3%|%p6%|%{2}%*%p2%{4}%*%+%p4%+%p5%{8}%*%+%'@'%+%c%?%p9%t%'\016'%c%e%'\017'%c%;, 
+	sgr0=\E&d@, smir=\EQ, smkx=\E&s1A, smln=\E&jB, smso=\E&dB, 
+	smul=\E&dD, tbc=\E3, vpa=\E&a%p1%dY, 
 
 # HP 236 console
 # From: <ddavis@ic.berkeley.edu>
@@ -13259,10 +13312,12 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* Paired-attribute fixes to various terminals.
 #	* Sun entry corrections from A. Lukyanov & Gert-Jan Vons.
 #	* xterm entry corrections from Thomas Dickey.
-# 9.13.11:
-#	* Commented out broken color support in qnx entry.
+# 9.13.11 (Tue Jul 30 16:42:58 EDT 1996):
 #	* Added t916 entry, translated from a termcap in SCO's support area.
 #	* New qnx entry from Michael Hunter.
+# 9.13.12 (Mon Aug  5 14:31:11 EDT 1996):
+#	* Added hpex2 from Ville Sulko.
+#	* Fixed a bug that ran the qnx and pcvtXX together.
 #
 
 ######## REORDER

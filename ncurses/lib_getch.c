@@ -30,7 +30,7 @@
 
 #include <string.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.12 1996/07/21 00:04:12 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.13 1996/08/10 20:16:17 tom Exp $")
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail
@@ -258,6 +258,12 @@ int	ch;
 	    T(("wgetch returning ERR"));
 	    return(ERR);
 	}
+
+	/*
+	 * Simulate ICRNL mode
+	 */
+	if ((ch == '\r') && SP->_nl)
+		ch = '\n';
 
 	/* Strip 8th-bit if so desired.  We do this only for characters that
 	 * are in the range 128-255, to provide compatibility with terminals

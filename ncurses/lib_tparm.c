@@ -30,6 +30,8 @@
 #include <string.h>
 #include <term.h>
 
+MODULE_ID("$Id: lib_tparm.c,v 1.9 1996/08/04 10:46:11 tom Exp $")
+
 /*
  *	char *
  *	tparm(string, ...)
@@ -226,8 +228,8 @@ register char	*cp;
 	stack_ptr = 0;
 	if (popcount == 0) {
 		popcount = number;
-		for (i = 1; i <= number; i++)
-			npush(param[i - 1]);
+		for (i = number - 1; i >= 0; i--)
+			npush(param[i]);
 	}
 
 #ifdef TRACE

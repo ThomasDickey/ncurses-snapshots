@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.44 1996/07/28 01:13:48 tom Exp $
+$Id: ncurses.c,v 1.46 1996/08/10 21:21:11 tom Exp $
 
 ***************************************************************************/
 /*LINTLIBRARY */
@@ -39,7 +39,7 @@ $Id: ncurses.c,v 1.44 1996/07/28 01:13:48 tom Exp $
 #include <panel.h>
 #endif
 
-#if HAVE_MENU_H
+#if HAVE_MENU_H && HAVE_LIBMENU
 #include <menu.h>
 #endif
 
@@ -151,27 +151,28 @@ int incount = 0, firsttime = 0;
 bool blocking = TRUE;
 int y, x;
 
-     refresh();
+    refresh();
 
 #ifdef NCURSES_VERSION
-     mousemask(ALL_MOUSE_EVENTS, (mmask_t *)NULL);
+    mousemask(ALL_MOUSE_EVENTS, (mmask_t *)NULL);
 #endif
 
-     (void) printw("Delay in 10ths of a second (<CR> for blocking input)? ");
-     echo();
-     getstr(buf);
-     noecho();
+    (void) printw("Delay in 10ths of a second (<CR> for blocking input)? ");
+    echo();
+    getstr(buf);
+    noecho();
+    nonl();
 
-     if (isdigit(buf[0]))
-     {
+    if (isdigit(buf[0]))
+    {
 	timeout(atoi(buf) * 100);
 	blocking = FALSE;
-     }
+    }
 
-     c = '?';
-     raw();
-     for (;;)
-     {
+    c = '?';
+    raw();
+    for (;;)
+    {
 	if (firsttime++)
 	{
 	    printw("Key pressed: %04o ", c);
@@ -248,6 +249,8 @@ int y, x;
 #endif
     timeout(-1);
     erase();
+    noraw();
+    nl();
     endwin();
 }
 
@@ -1886,7 +1889,7 @@ static void input_test(WINDOW *win)
      */
     mvwaddstr(win, 6, 2, "Enter a number then a string separated by space");
     echo();
-    if (mvwscanw(win, 7, 6, "%d %s", &num,buffer) == OK)
+    if (mvwscanw(win, 7, 6, "%d %s", &num,buffer) != ERR)
 	mvwprintw(win, 8, 6, "String: %s Number: %d", buffer,num);
 #endif /* HAVE_VSSCANF */
 
@@ -2363,6 +2366,7 @@ static void demo_forms(void)
     erase_form(form);
 
     free_form(form);
+    noraw();
 }
 #endif	/* HAVE_FORM_H */
 
@@ -2640,6 +2644,7 @@ main(int argc, char *argv[])
     cbreak();
     noecho();
     scrollok(stdscr, TRUE);
+    idlok(stdscr, TRUE);
     keypad(stdscr, TRUE);
 
     /*

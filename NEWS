@@ -3,6 +3,20 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+960810	- snapshot
+	+ correct nl()/nonl() to work as per SVr4 & XSI.
+	+ minor fixes to ncurses.c (use 'noraw()', mvscanw return-code)
+	+ refine configure-test for -g option (Tim Mooney).
+	+ correct interaction between O_BLANK and NEW_LINE request in form
+	  library (Juergen Pfeifer)
+
+960804
+	+ revised fix to tparm; previous fix reversed parameter order.
+	> patch 312 by eric:
+	  correct terminfo.src corrupted by #310
+	> patch 311 by eric:
+	+ fix idlok() and idcok() and the default of the idlok switch.
+
 960803	- snapshot
 	+ corrected tparm to handle capability strings without explicit pop
 	  (reported by William P Setzer)

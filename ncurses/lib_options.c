@@ -32,7 +32,7 @@
 #include <term.h>	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
 
-MODULE_ID("$Id: lib_options.c,v 1.13 1996/08/04 00:46:31 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.14 1996/08/06 00:24:06 esr Exp $")
 
 int has_ic(void)
 {
@@ -52,7 +52,7 @@ int idlok(WINDOW *win,  bool flag)
 {
 	T(("idlok(%p,%d) called", win, flag));
 
-	win->_idlok = flag && (has_il() || change_scroll_region);
+	_nc_idlok = win->_idlok = flag && (has_il() || change_scroll_region);
 	return OK;
 }
 
@@ -61,7 +61,7 @@ void idcok(WINDOW *win, bool flag)
 {
 	T(("idcok(%p,%d) called", win, flag));
 
-	win->_idcok = flag && has_ic();
+	_nc_idcok = win->_idcok = flag && has_ic();
 }
 
 

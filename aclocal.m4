@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.31 1996/07/14 01:07:59 tom Exp $
+dnl $Id: aclocal.m4,v 1.32 1996/08/10 20:36:24 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -913,6 +913,7 @@ do
 		if test -f $srcdir/${nc_dir}/${nc_dir}.h; then
 			NC_UPPERCASE($nc_dir,nc_have_include)
 			AC_DEFINE_UNQUOTED(HAVE_${nc_have_include}_H)
+			AC_DEFINE_UNQUOTED(HAVE_LIB${nc_have_include})
 			TEST_DEPS="${LIB_PREFIX}${nc_dir}${DFT_DEP_SUFFIX} $TEST_DEPS"
 		fi
 	fi

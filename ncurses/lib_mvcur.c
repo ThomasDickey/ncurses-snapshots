@@ -140,7 +140,7 @@
 #include <string.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.17 1996/07/31 00:08:34 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.18 1996/08/06 00:24:06 esr Exp $")
 
 #define NLMAPPING	SP->_nl			/* nl() on? */
 #define RAWFLAG		SP->_raw		/* raw() on? */
@@ -953,13 +953,13 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 	    TPUTS_TRACE("parm_index");
 	    tputs(tparm(parm_index, n, 0), n, _nc_outch);
 	}
-	else if (parm_delete_line)
+	else if (_nc_idlok && parm_delete_line)
 	{
 	    onscreen_mvcur(oy, ox, top, 0, TRUE);
 	    TPUTS_TRACE("parm_delete_line");
 	    tputs(tparm(parm_delete_line, n, 0), n, _nc_outch);
 	}
-	else if (delete_line)
+	else if (_nc_idlok && delete_line)
 	{
 	    onscreen_mvcur(oy, ox, top, 0, TRUE);
 	    for (i = 0; i < n; i++)
@@ -981,13 +981,13 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 	    return(ERR);
 
 	/* Push down the bottom region. */
-	if (parm_insert_line)
+	if (_nc_idlok && parm_insert_line)
 	{
 	    onscreen_mvcur(top, 0, bot - n + 1, 0, FALSE);
 	    TPUTS_TRACE("parm_insert_line");
 	    tputs(tparm(parm_insert_line, n, 0), n, _nc_outch);
 	}
-	else if (insert_line)
+	else if (_nc_idlok && insert_line)
 	{
 	    onscreen_mvcur(top, 0, bot - n + 1, 0, FALSE);
 	    for (i = 0; i < n; i++)
@@ -1043,12 +1043,12 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 	    TPUTS_TRACE("parm_rindex");
 	    tputs(tparm(parm_rindex, -n, 0), -n, _nc_outch);
 	}
-	else if (parm_delete_line)
+	else if (_nc_idlok && parm_delete_line)
 	{
 	    TPUTS_TRACE("parm_delete_line");
 	    tputs(tparm(parm_delete_line, -n, 0), -n, _nc_outch);
 	}
-	else if (delete_line)
+	else if (_nc_idlok && delete_line)
 	    for (i = n; i < 0; i++)
 	    {
 		TPUTS_TRACE("delete_line");
@@ -1064,13 +1064,13 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 	    return(ERR);
 
 	/* Scroll the block down. */
-	if (parm_insert_line)
+	if (_nc_idlok && parm_insert_line)
 	{
 	    onscreen_mvcur(bot + n + 1, 0, top, 0, FALSE);
 	    TPUTS_TRACE("parm_insert_line");
 	    tputs(tparm(parm_insert_line, -n, 0), -n, _nc_outch);
 	}
-	else if (insert_line)
+	else if (_nc_idlok && insert_line)
 	{
 	    onscreen_mvcur(bot + n + 1, 0, top, 0, FALSE);
 	    for (i = n; i < 0; i++)
