@@ -2,7 +2,7 @@
 #ifndef _CURSESW_H
 #define _CURSESW_H
 
-// $Id: cursesw.h,v 1.17 1999/09/11 23:28:08 tom Exp $
+// $Id: cursesw.h,v 1.18 1999/10/23 15:16:53 tom Exp $
 
 #include <etip.h>
 #include <stdio.h>
@@ -1263,7 +1263,7 @@ protected:
 
   NCursesWindow* Win(void) const {
     // Get the window into which the pad should be copied (if any)
-    return (viewSub?viewSub:(viewWin?viewWin:NULL));
+    return (viewSub?viewSub:(viewWin?viewWin:0));
   }
 
   NCursesWindow* getWindow(void) const {

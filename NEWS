@@ -1,10 +1,45 @@
--- $Id: NEWS,v 1.494 1999/10/16 21:40:26 tom Exp $
+-- $Id: NEWS,v 1.504 1999/10/24 00:31:05 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+19991023 5.0 release for upload to ftp.gnu.org
+	+ effective with release of 5.0, change NCURSES_VERSION_PATCH to
+	  4-digit year.
+	+ add function curses_version(), to return ncurses library version
+	  (request by Bob van der Poel).
+	+ remove rmam, smam from cygwin terminfo entry.
+	+ modify FreeBSD cons25 terminfo entry to add cnorm and cvvis, as well
+	  as update ncv to indicate that 'dim' conflicts with colors.
+	+ modify configure script to use symbolic links for FreeBSD shared
+	  libraries by default.
+	+ correct ranf() function in rain and worm programs to ensure it does
+	  not return 1.0
+	+ hide the cursor in hanoi.c if it is running automatically.
+	+ amend lrtest.c to account for optimizations that exploit margin
+	  wrapping.
+	+ add a simple terminfo demo, dots.c
+	+ modify SIGINT/SIGQUIT handler to set a flag used in _nc_outch() to
+	  tell it to use write() rather than putc(), since the latter is not
+	  safe in a signal handler according to POSIX.
+	+ add/use internal macros _nc_flush() and NC_OUTPUT to hide details
+	  of output-file pointer in ncurses library.
+	+ uncomment CC_SHARED_OPTS (see 971115), since they are needed for SCO
+	  OpenServer.
+	+ correct CC_SHARED_OPTS for building shared libraries for SCO
+	  OpenServer.
+	+ remove usleep() from alternatives in napms(), since it may interact
+	  with alarm(), causing a process to be interrupted by SIGALRM (with
+	  advice from Bela Lubkin).
+	+ modify terminal_interface-curses-forms.ads.m4 to build/work with
+	  GNAT 3.10 (patch by Juergen Pfeifer).
+	+ remove part of CF_GPP_LIBRARY configure-script macro, which did not
+	  work with gcc 2.7.2.3
+	+ minor fix to test/tclock.c to avoid beeping more than once per second
+	+ add 's' and ' ' decoding to test/rain.c
 
 991016	pre-release
 	+ corrected BeOS code for lib_twait.c, making nodelay() function work.

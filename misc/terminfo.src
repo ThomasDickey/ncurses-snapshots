@@ -3,7 +3,7 @@
 # This version of terminfo.src is distributed with ncurses.
 #
 #	Version 10.2.1
-#	$Date: 1999/10/02 23:12:57 $
+#	$Date: 1999/10/24 00:28:48 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -1258,22 +1258,23 @@ rcons-color|BSD rasterconsole with ANSI color,
 # Note that this disables standout with color.
 cons25w|ansiw|ansi80x25-raw|freebsd console (25-line raw mode), 
 	am, bce, bw, eo, msgr, npc, 
-	colors#8, cols#80, it#8, lines#25, ncv#5, pairs#64, 
+	colors#8, cols#80, it#8, lines#25, ncv#21, pairs#64, 
 	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, clear=\E[H\E[J, 
-	cr=^M, cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=\E[B, 
-	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
-	cuu=\E[%p1%dA, cuu1=\E[A, dch=\E[%p1%dP, dch1=\E[P, 
-	dim=\E[30;1m, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, 
-	home=\E[H, hpa=\E[%i%p1%d`, ht=^I, ich=\E[%p1%d@, 
-	ich1=\E[@, il=\E[%p1%dL, il1=\E[L, ind=\E[S, 
-	indn=\E[%p1%dS, kb2=\E[E, kbs=^H, kcbt=\E[Z, kcub1=\E[D, 
-	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\177, kend=\E[F, 
-	kf1=\E[M, kf10=\E[V, kf11=\E[W, kf12=\E[X, kf2=\E[N, 
-	kf3=\E[O, kf4=\E[P, kf5=\E[Q, kf6=\E[R, kf7=\E[S, kf8=\E[T, 
-	kf9=\E[U, khome=\E[H, kich1=\E[L, knp=\E[G, kpp=\E[I, 
-	nel=\E[E, op=\E[x, rev=\E[7m, ri=\E[T, rin=\E[%p1%dT, 
-	rmso=\E[m, rs1=\E[x\E[m\Ec, setab=\E[4%p1%dm, 
-	setaf=\E[3%p1%dm, sgr0=\E[m, smso=\E[7m, vpa=\E[%i%p1%dd, 
+	cnorm=\E[=0C, cr=^M, cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, 
+	cud1=\E[B, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	cvvis=\E[=1C, dch=\E[%p1%dP, dch1=\E[P, dim=\E[30;1m, 
+	dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, home=\E[H, 
+	hpa=\E[%i%p1%d`, ht=^I, ich=\E[%p1%d@, ich1=\E[@, 
+	il=\E[%p1%dL, il1=\E[L, ind=\E[S, indn=\E[%p1%dS, kb2=\E[E, 
+	kbs=^H, kcbt=\E[Z, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, 
+	kcuu1=\E[A, kdch1=\177, kend=\E[F, kf1=\E[M, kf10=\E[V, 
+	kf11=\E[W, kf12=\E[X, kf2=\E[N, kf3=\E[O, kf4=\E[P, kf5=\E[Q, 
+	kf6=\E[R, kf7=\E[S, kf8=\E[T, kf9=\E[U, khome=\E[H, 
+	kich1=\E[L, knp=\E[G, kpp=\E[I, nel=\E[E, op=\E[x, rev=\E[7m, 
+	ri=\E[T, rin=\E[%p1%dT, rmso=\E[m, rs1=\E[x\E[m\Ec, 
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, sgr0=\E[m, 
+	smso=\E[7m, vpa=\E[%i%p1%dd, 
 cons25|ansis|ansi80x25|freebsd console (25-line ansi mode), 
 	acsc=-\030.^Y0\333`\004a\260f\370g\361h\261i\025j\331k\277l\332m\300n\305q\304t\303u\264v\301w\302x\263y\363z\362~\371, 
 	use=cons25w, 
@@ -2782,11 +2783,7 @@ screen3|older VT 100/ANSI X3.64 virtual terminal,
 #         answerback string: "ncsa-vt220-8"
 #         setup keys: all disabled
 #
-# Application mode is not used.  The documented function-key mapping refers to
-# the Apple Extended Keyboard (e.g., NCSA Telnet's F1 corresponds to a VT220
-# F6).  We use the VT220-style codes, however, since the numeric keypad (VT100)
-# PF1-PF4 are available on some keyboards and many applications require these
-# as F1-F4.
+# Application mode is not used.
 #
 # Other special mappings:
 #	Apple		VT220
@@ -2803,7 +2800,7 @@ screen3|older VT 100/ANSI X3.64 virtual terminal,
 # The status-line manipulation is a mapping of the xterm-compatible control
 # sequences for setting the window-title.  So you must use tsl and fsl in
 # pairs, since the latter ends the string that is loaded to the window-title.
-ncsa-m|ncsa-vt220|ncsa-vt220-8|NCSA Telnet 2.6 for Macintosh in vt220-8 mode, 
+ncsa-m|ncsa-vt220-8|NCSA Telnet 2.6 for Macintosh in vt220-8 mode, 
 	am, hs, km, mir, msgr, xenl, 
 	acsc=``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
 	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
@@ -2815,14 +2812,13 @@ ncsa-m|ncsa-vt220|ncsa-vt220-8|NCSA Telnet 2.6 for Macintosh in vt220-8 mode,
 	dsl=\E]0;\007, ed=\E[J, el=\E[K, el1=\E[1K, enacs=\E)0, 
 	flash=\E[?5h\E[?5l, fsl=^G, home=\E[H, ht=^I, hts=\EH, 
 	ich=\E[%p1%d@, if=/usr/share/tabset/vt100, 
-	il=\E[%p1%dL, il1=\E[L, ind=^J, 
+	il=\E[%p1%dL, il1=\E[L, ind=\n$<150*>, 
 	is2=\E7\E[r\E[m\E[?7h\E[?1;4;6l\E[4l\E8\E>, kbs=^H, 
 	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
-	kdch1=\E[4~, kend=\E[5~, kf1=\EOP, kf10=\E[21~, 
-	kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, 
-	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, 
-	kf19=\E[33~, kf2=\EOQ, kf20=\E[34~, kf3=\EOR, kf4=\EOS, 
-	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, khlp=\E[1~, 
+	kdch1=\E[4~, kend=\E[5~, kf1=\E[17~, kf10=\E[28~, 
+	kf11=\E[29~, kf12=\E[31~, kf13=\E[32~, kf14=\E[33~, 
+	kf15=\E[34~, kf2=\E[18, kf3=\E[19~, kf4=\E[20~, kf5=\E[21~, 
+	kf6=\E23~, kf7=\E[24~, kf8=\E[25~, kf9=\E[26~, khlp=\E[1~, 
 	khome=\E[2~, knp=\E[6~, kpp=\E[3~, mc4=\E[4i, mc5=\E[5i, 
 	rc=\E8, rev=\E[7m, rf=/usr/share/tabset/vt100, ri=\EM, 
 	rmacs=^O, rmam=\E[?7l, rmcup=\E[2J\E8, rmir=\E[4l, 
@@ -2840,6 +2836,19 @@ ncsa-ns|NCSA Telnet 2.7 for Macintosh in vt220-8 mode,
 ncsa-m-ns|NCSA Telnet 2.6 for Macintosh in vt220-8 mode, 
 	hs@, 
 	dsl@, fsl@, tsl@, use=ncsa-m, 
+# alternate -TD:
+# The documented function-key mapping refers to the Apple Extended Keyboard
+# (e.g., NCSA Telnet's F1 corresponds to a VT220 F6).  We use the VT220-style
+# codes, however, since the numeric keypad (VT100) PF1-PF4 are available on
+# some keyboards and many applications require these as F1-F4.
+#
+ncsa-vt220|NCSA Telnet using vt220-compatible function keys, 
+	kf1=\EOP, kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, 
+	kf13=\E[25~, kf14=\E[26~, kf15=\E[28~, kf16=\E[29~, 
+	kf17=\E[31~, kf18=\E[32~, kf19=\E[33~, kf2=\EOQ, 
+	kf20=\E[34~, kf3=\EOR, kf4=\EOS, kf6=\E[17~, kf7=\E[18~, 
+	kf8=\E[19~, kf9=\E[20~, 
+	use=ncsa, 
 
 #### Pilot Pro Palm-Top
 #
@@ -3267,7 +3276,7 @@ cygwin|ansi emulation for cygwin32,
 	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, 
 	kf19=\E[33~, kf2=\E[[B, kf20=\E[34~, kf3=\E[[C, kf4=\E[[D, 
 	kf5=\E[[E, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
-	khome=\E[1~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, 
+	khome=\E[1~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, rmam@, smam@, 
 	use=ansi.sys, 
 
 # This entry fits the Windows NT console when the _POSIX_TERM environment
@@ -17327,6 +17336,12 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 1999/10/2
 #	* corrected scoansi entry's acsc, some function keys, add color -TD
+#
+# 1999/10/23
+#	* add cnorm, cvvis to cons25w, and modify ncv to add 'dim' -TD
+#	* reorder ncsa entries to make ncsa-vt220 use the alternate function
+#	  key mapping, leaving Potorti's entries more like he named them -TD
+#	* remove enter/exit am-mode from cygwin -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

@@ -6,10 +6,11 @@
  * This can't be part of the ncurses test-program, because ncurses rips off the
  * bottom line to do labels.
  *
- * $Id: lrtest.c,v 0.13 1999/10/16 21:46:45 tom Exp $
+ * $Id: lrtest.c,v 0.14 1999/10/23 19:44:35 tom Exp $
  */
 
 #include <test.priv.h>
+#include <term.h>
 
 typedef struct {
     int y, x, mode, dir, inc;
@@ -80,7 +81,10 @@ main(
   restart:
 #endif
     move(LINES / 2 - 1, 4);
-    if (!has_ic()) {
+    if (!(has_ic()
+    /* see PutCharLR() */
+	    || auto_right_margin
+	    || (enter_am_mode && exit_am_mode))) {
 	addstr("Your terminal lacks the capabilities needed to address the\n");
 	move(LINES / 2, 4);
 	addstr("lower-right-hand corner of the screen.\n");

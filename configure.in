@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.176 1999/09/26 01:26:40 tom Exp $
+dnl $Id: configure.in,v 1.179 1999/10/24 00:32:42 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.176 $)
+AC_REVISION($Revision: 1.179 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -333,7 +333,6 @@ AC_ARG_ENABLE(rpath,
 AC_MSG_RESULT($cf_cv_ld_rpath)
 
 CF_SHARED_OPTS
-
 if test "$CC_SHARED_OPTS" = "unknown"; then
 	for model in $cf_list_models; do
 		if test "$model" = "shared"; then
@@ -753,11 +752,11 @@ strstr \
 tcgetattr \
 tcgetpgrp \
 times \
-usleep \
 vfscanf \
 vsnprintf \
 vsscanf \
 )
+
 
 if test "$with_getcap" = "yes" ; then
 	CF_CGETENT
@@ -805,6 +804,12 @@ if test -n "$CXX" ; then
 	CF_BOOL_SIZE
 	CF_ETIP_DEFINES
 	CF_CPP_PARAM_INIT
+	case $cf_cv_system_name in #(vi
+	sco3.2v5*)
+	    CXXLDFLAGS="-u main"
+	    ;;
+	esac
+	AC_SUBST(CXXLDFLAGS)
 else
 	cf_cxx_library=no
 	cf_cv_builtin_bool=1

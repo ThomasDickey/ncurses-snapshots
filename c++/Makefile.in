@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.49 1999/09/01 22:36:43 tom Exp $
+# $Id: Makefile.in,v 1.51 1999/10/23 20:13:02 tom Exp $
 ##############################################################################
-# Copyright (c) 1998 Free Software Foundation, Inc.                          #
+# Copyright (c) 1998,1999 Free Software Foundation, Inc.                     #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -67,14 +67,14 @@ CCFLAGS		= $(CPPFLAGS) $(CXXFLAGS)
 CFLAGS_NORMAL	= $(CCFLAGS)
 CFLAGS_DEBUG	= $(CCFLAGS) @CXX_G_OPT@ -DTRACE
 CFLAGS_PROFILE	= $(CCFLAGS) -pg
-CFLAGS_SHARED	= $(CCFLAGS) # @CC_SHARED_OPTS@
+CFLAGS_SHARED	= $(CCFLAGS) @CC_SHARED_OPTS@
 
 CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
 REL_VERSION     = @cf_cv_rel_version@
 ABI_VERSION	= @cf_cv_abi_version@
 
-LINK		= @LINK_PROGS@ $(CXX)
+LINK		= @LINK_PROGS@ $(CXX) @CXXLDFLAGS@
 
 LIBROOT	= ncurses++
 LIBNAME	= @LIB_PREFIX@$(LIBROOT).a

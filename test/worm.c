@@ -34,7 +34,7 @@ Options:
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.25 1999/10/09 20:44:53 tom Exp $
+  $Id: worm.c,v 1.26 1999/10/23 01:31:40 tom Exp $
 */
 
 #include <test.priv.h>
@@ -175,12 +175,8 @@ onsig(int sig GCC_UNUSED)
 static float
 ranf(void)
 {
-    float rv;
-    long r = rand();
-
-    r &= 077777;
-    rv = ((float) r / 32767.);
-    return rv;
+    long r = (rand() & 077777);
+    return ((float) r / 32768.);
 }
 
 int

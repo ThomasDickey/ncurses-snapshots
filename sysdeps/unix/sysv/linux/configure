@@ -248,7 +248,6 @@ CEOF
   cat >> conftest.frag <<CEOF
 #define HAVE_TYPEINFO 1
 #define HAVE_UNISTD_H 1
-#define HAVE_USLEEP 1
 #define HAVE_VALUES_H 1
 #define HAVE_VFSCANF 1
 #define HAVE_VSNPRINTF 1

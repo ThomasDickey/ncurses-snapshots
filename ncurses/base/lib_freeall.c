@@ -39,7 +39,7 @@
 extern int malloc_errfd;	/* FIXME */
 #endif
 
-MODULE_ID("$Id: lib_freeall.c,v 1.14 1999/04/03 23:17:06 tom Exp $")
+MODULE_ID("$Id: lib_freeall.c,v 1.15 1999/10/22 21:40:10 tom Exp $")
 
 static void free_slk(SLK *p)
 {
@@ -101,8 +101,6 @@ void _nc_freeall(void)
 	    	free_slk(SP->_slk);
 		FreeIfNeeded(SP->_color_pairs);
 		FreeIfNeeded(SP->_color_table);
-		/* it won't free buffer anyway */
-/*		_nc_set_buffer(SP->_ofp, FALSE);*/
 #if !BROKEN_LINKER
 		FreeAndNull(SP);
 #endif
