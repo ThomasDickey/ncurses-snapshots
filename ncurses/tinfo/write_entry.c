@@ -49,7 +49,7 @@
 #define S_ISDIR(mode) ((mode & S_IFMT) == S_IFDIR)
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.33 1998/09/19 21:24:11 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.34 1998/12/20 02:49:27 tom Exp $")
 
 static int total_written;
 
@@ -108,6 +108,7 @@ void  _nc_set_writedir(char *dir)
 /* set the write directory for compiled entries */
 {
     const char *destination;
+    char actual[PATH_MAX];
 
     if (dir != 0)
 	(void) _nc_tic_dir(dir);
@@ -133,8 +134,10 @@ void  _nc_set_writedir(char *dir)
      * Note: because of this code, this logic should be exercised
      * *once only* per run.
      */
-    if (chdir(_nc_tic_dir(destination)) < 0)
+    if (chdir(_nc_tic_dir(destination)) < 0
+     || getcwd(actual, sizeof(actual)) == 0)
 	_nc_err_abort("%s: not a directory", destination);
+    _nc_keep_tic_dir(strcpy(malloc(strlen(actual)+1), actual));
 }
 
 /*

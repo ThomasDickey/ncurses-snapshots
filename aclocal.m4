@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.149 1998/11/14 23:51:14 tom Exp $
+dnl $Id: aclocal.m4,v 1.150 1998/12/20 01:23:54 Uchiyama.Yasushi Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -910,7 +910,7 @@ AC_DEFUN([CF_LIB_SUFFIX],
 	profile) $2='_p.a' ;;
 	shared)
 		case $cf_cv_system_name in
-		openbsd*|netbsd*|freebsd*)
+		openbsd*|netbsd*|freebsd*|gnu*)
 			$2='.so.$(REL_VERSION)' ;;
 		hpux*)	$2='.sl'  ;;
 		*)	$2='.so'  ;;
@@ -1369,7 +1369,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 			LD_SHARED_OPTS='-Xlinker +b -Xlinker $(libdir)'
 		else
 			CC_SHARED_OPTS='+Z'
-			LD_SHARED_OPTS='-Wl,+b,$(libdir)' 
+			LD_SHARED_OPTS='-Wl,+b,$(libdir)'
 		fi
 		MK_SHARED_LIB='$(LD) +b $(libdir) -b +h `basename $[@]` -o $[@]'
 		# HP-UX shared libraries must be executable, and should be
@@ -1384,7 +1384,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 			LD_SHARED_OPTS='-Xlinker +b -Xlinker $(libdir)'
 		else
 			CC_SHARED_OPTS='+Z'
-			LD_SHARED_OPTS='-Wl,+b,$(libdir)' 
+			LD_SHARED_OPTS='-Wl,+b,$(libdir)'
 		fi
 		MK_SHARED_LIB='$(LD) +b $(libdir) -b -o $[@]'
 		# HP-UX shared libraries must be executable, and should be
@@ -1416,7 +1416,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		CC_SHARED_OPTS='-fpic -DPIC'
 		MK_SHARED_LIB='$(LD) -Bshareable -soname,`basename $[@].$(ABI_VERSION)` -o $[@]'
 		;;
-	openbsd*|netbsd*|freebsd*)
+	openbsd*|netbsd*|freebsd*|gnu*)
 		CC_SHARED_OPTS='-fpic -DPIC'
 		MK_SHARED_LIB='$(LD) -Bshareable -o $[@]'
 		;;
@@ -1679,7 +1679,7 @@ done
 
 if test -n "$ADA_SUBDIRS"; then
    for cf_dir in $ADA_SUBDIRS
-   do	
+   do
       SUB_MAKEFILES="$SUB_MAKEFILES Ada95/$cf_dir/Makefile"
    done
    AC_SUBST(ADA_SUBDIRS)

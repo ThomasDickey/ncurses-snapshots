@@ -75,7 +75,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.109 1998/10/03 19:08:33 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.109 1998/10/03 19:08:33 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a

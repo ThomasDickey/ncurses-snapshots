@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.57 1998/11/15 00:27:34 tom Exp $
+# $Id: Makefile.in,v 1.59 1998/12/20 01:24:04 Uchiyama.Yasushi Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -84,7 +84,7 @@ CPPFLAGS	= -I../ncurses -I$(srcdir) @CPPFLAGS@ \
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 
-HOSTCC		= @CC@
+HOSTCC		= @BUILD_CC@
 HOSTCCFLAGS	= @CFLAGS@ $(CPPFLAGS)
 HOSTLDFLAGS	= @LDFLAGS@ @LIBS@
 
@@ -164,8 +164,8 @@ $(INSTALL_PREFIX)$(libdir) :
 	sh $(base)/MKlib_gen.sh "$(CPP)" "$(AWK)" <../include/curses.h | \
 		fgrep undef >$@
 
-keys.tries: make_keys$x $(tinfo)/keys.list 
-	./make_keys $(tinfo)/keys.list > keys.tries
+keys.tries: make_keys$x $(tinfo)/keys.list
+	./make_keys $(tinfo)/keys.list > $@
 
 make_keys$x : \
 		$(tinfo)/make_keys.c \
@@ -178,7 +178,7 @@ make_hash$x : \
 	$(HOSTCC) -o $@ $(HOSTCCFLAGS) -DMAIN_PROGRAM $(tinfo)/comp_hash.c $(HOSTLDFLAGS)
 
 ./expanded.c : $(serial)/MKexpanded.sh
-	sh $(serial)/MKexpanded.sh "$(CPP)" $(CPPFLAGS)
+	sh $(serial)/MKexpanded.sh "$(CPP)" $(CPPFLAGS) > $@
 
 ./comp_captab.c: \
 		make_hash$x \

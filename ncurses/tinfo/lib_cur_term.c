@@ -39,25 +39,9 @@
 #include <curses.priv.h>
 #include <term.h>	/* TTY, cur_term */
 
-MODULE_ID("$Id: lib_cur_term.c,v 1.3 1998/09/19 19:21:05 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_cur_term.c,v 1.4 1998/12/20 00:16:40 tom Exp $")
 
 TERMINAL *cur_term;
-
-int _nc_get_curterm(TTY *buf)
-{
-	if (cur_term == 0
-	 || GET_TTY(cur_term->Filedes, buf) != 0)
-		return(ERR);
-	return (OK);
-}
-
-int _nc_set_curterm(TTY *buf)
-{
-	if (cur_term == 0
-	 || SET_TTY(cur_term->Filedes, buf) != 0)
-		return(ERR);
-	return (OK);
-}
 
 TERMINAL *set_curterm(TERMINAL *term)
 {

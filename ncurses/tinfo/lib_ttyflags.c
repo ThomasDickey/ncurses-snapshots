@@ -26,118 +26,136 @@
  * authorization.                                                           *
  ****************************************************************************/
 
-/****************************************************************************
- *  Author: Thomas E. Dickey <dickey@clark.net> 1996,1997                   *
- ****************************************************************************/
+/*
+ *		def_prog_mode()
+ *		def_shell_mode()
+ *		reset_prog_mode()
+ *		reset_shell_mode()
+ *		savetty()
+ *		resetty()
+ */
 
 #include <curses.priv.h>
-#include <term.h>
+#include <term.h>	/* cur_term */
 
-#if HAVE_NC_FREEALL
+MODULE_ID("$Id: lib_ttyflags.c,v 1.1 1998/12/20 00:49:19 tom Exp $")
 
-#if HAVE_LIBDBMALLOC
-extern int malloc_errfd;	/* FIXME */
+#undef tabs
+
+#ifdef TAB3
+# define tabs TAB3
+#else
+# ifdef XTABS
+#  define tabs XTABS
+# else
+#  ifdef OXTABS
+#   define tabs OXTABS
+#  else
+#   define tabs 0
+#  endif
+# endif
 #endif
 
-MODULE_ID("$Id: lib_freeall.c,v 1.13 1998/11/12 19:42:42 Alexander.V.Lukyanov Exp $")
-
-static void free_slk(SLK *p)
+int _nc_get_tty_mode(TTY *buf)
 {
-	if (p != 0) {
-		FreeIfNeeded(p->ent);
-		FreeIfNeeded(p->buffer);
-		free(p);
-	}
+	if (cur_term == 0
+	 || GET_TTY(cur_term->Filedes, buf) != 0)
+		return(ERR);
+	return (OK);
 }
 
-void _nc_free_termtype(struct termtype *p, int base)
+int _nc_set_tty_mode(TTY *buf)
 {
-	if (p != 0) {
-		FreeIfNeeded(p->term_names);
-		FreeIfNeeded(p->str_table);
-		if (base)
-			free(p);
-	}
+	if (cur_term == 0
+	 || SET_TTY(cur_term->Filedes, buf) != 0)
+		return(ERR);
+	return (OK);
 }
 
-static void free_tries(struct tries *p)
+int def_shell_mode(void)
 {
-	struct tries *q;
+	T((T_CALLED("def_shell_mode()")));
 
-	while (p != 0) {
-		q = p->sibling;
-		if (p->child != 0)
-			free_tries(p->child);
-		free(p);
-		p = q;
+	/*
+	 * Turn off the XTABS bit in the tty structure if it was on.  If XTABS
+	 * was on, remove the tab and backtab capabilities.
+	 */
+
+	if (_nc_get_tty_mode(&cur_term->Ottyb) != OK)
+		returnCode(ERR);
+#ifdef TERMIOS
+	if (cur_term->Ottyb.c_oflag & tabs)
+		tab = back_tab = NULL;
+#else
+	if (cur_term->Ottyb.sg_flags & XTABS)
+		tab = back_tab = NULL;
+#endif
+	returnCode(OK);
+}
+
+int def_prog_mode(void)
+{
+	T((T_CALLED("def_prog_mode()")));
+
+	if (_nc_get_tty_mode(&cur_term->Nttyb) != OK)
+		returnCode(ERR);
+#ifdef TERMIOS
+	cur_term->Nttyb.c_oflag &= ~tabs;
+#else
+	cur_term->Nttyb.sg_flags &= ~XTABS;
+#endif
+	returnCode(OK);
+}
+
+int reset_prog_mode(void)
+{
+	T((T_CALLED("reset_prog_mode()")));
+
+	if (cur_term != 0) {
+		_nc_set_tty_mode(&cur_term->Nttyb);
+		if (SP) {
+			if (stdscr && stdscr->_use_keypad)
+				_nc_keypad(TRUE);
+			NC_BUFFERED(TRUE);
+		}
+		returnCode(OK);
 	}
+	returnCode(ERR);
+}
+
+int reset_shell_mode(void)
+{
+	T((T_CALLED("reset_shell_mode()")));
+
+	if (cur_term != 0) {
+		if (SP)
+		{
+			_nc_keypad(FALSE);
+			fflush(SP->_ofp);
+			NC_BUFFERED(FALSE);
+		}
+		returnCode(_nc_set_tty_mode(&cur_term->Ottyb));
+	}
+	returnCode(ERR);
 }
 
 /*
- * Free all ncurses data.  This is used for testing only (there's no practical
- * use for it as an extension).
- */
-void _nc_freeall(void)
+**	savetty()  and  resetty()
+**
+*/
+
+static TTY   buf;
+
+int savetty(void)
 {
-	WINDOWLIST *p, *q;
+	T((T_CALLED("savetty()")));
 
-#if NO_LEAKS
-	_nc_free_tparm();
-#endif
-	while (_nc_windows != 0) {
-		/* Delete only windows that're not a parent */
-		for (p = _nc_windows; p != 0; p = p->next) {
-			bool found = FALSE;
-
-			for (q = _nc_windows; q != 0; q = q->next) {
-				if ((p != q)
-				 && (q->win->_flags & _SUBWIN)
-				 && (p->win == q->win->_parent)) {
-					found = TRUE;
-					break;
-				}
-			}
-
-			if (!found) {
-				delwin(p->win);
-				break;
-			}
-		}
-	}
-
-	if (SP != 0) {
-		free_tries (SP->_keytry);
-		free_tries (SP->_key_ok);
-	    	free_slk(SP->_slk);
-		FreeIfNeeded(SP->_color_pairs);
-		FreeIfNeeded(SP->_color_table);
-		/* it won't free buffer anyway */
-/*		_nc_set_buffer(SP->_ofp, FALSE);*/
-#if !BROKEN_LINKER
-		FreeAndNull(SP);
-#endif
-	}
-
-	if (cur_term != 0) {
-		_nc_free_termtype(&(cur_term->type), TRUE);
-	}
-
-#ifdef TRACE
-	(void) _nc_trace_buf(-1, 0);
-#endif
-#if HAVE_LIBDBMALLOC
-	malloc_dump(malloc_errfd);
-#elif HAVE_LIBDMALLOC
-#elif HAVE_PURIFY
-	purify_all_inuse();
-#endif
+	returnCode(_nc_get_tty_mode(&buf));
 }
 
-void _nc_free_and_exit(int code)
+int resetty(void)
 {
-	_nc_freeall();
-	exit(code);
+	T((T_CALLED("resetty()")));
+
+	returnCode(_nc_set_tty_mode(&buf));
 }
-#else
-void _nc_freeall(void) { }
-#endif

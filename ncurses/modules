@@ -1,4 +1,4 @@
-# $Id: modules,v 1.55 1998/11/15 00:25:25 tom Exp $
+# $Id: modules,v 1.59 1998/12/20 00:45:32 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -48,7 +48,6 @@ lib_color	lib		$(base)		../include/term.h
 lib_colorset	lib		$(base)
 lib_delch	lib		$(base)
 lib_delwin	lib		$(base)
-lib_doupdate	lib		$(base)		../include/term.h
 lib_echo	lib		$(base)
 lib_endwin	lib		$(base)
 lib_erase	lib		$(base)
@@ -85,6 +84,7 @@ lib_scrollok	lib		$(base)
 lib_scrreg	lib		$(base)
 lib_set_term	lib		$(base)		../include/term.h
 lib_slk 	lib		$(base)		../include/term.h
+lib_slkatr_set	lib		$(base)
 lib_slkatrof 	lib		$(base)
 lib_slkatron 	lib		$(base)
 lib_slkatrset 	lib		$(base)
@@ -96,7 +96,6 @@ lib_slklab	lib		$(base)
 lib_slkrefr	lib		$(base)		../include/term.h
 lib_slkset	lib		$(base)
 lib_slktouch	lib		$(base)
-lib_slkatr_set	lib		$(base)
 lib_touch	lib		$(base)
 lib_traceatr	lib		$(trace)
 lib_tracedmp	lib		$(trace)
@@ -111,6 +110,7 @@ lib_winch	lib		$(base)
 lib_window	lib		$(base)
 nc_panel	lib		$(base)
 safe_sprintf	lib		$(base)
+tty_update	lib		$(serial)	../include/term.h
 
 # Modules for porting
 memmove		lib		$(base)
@@ -150,6 +150,7 @@ lib_acs 	lib		$(tinfo)	../include/term.h
 lib_baudrate	lib		$(tinfo)	../include/term.h
 lib_cur_term	lib		$(tinfo)
 lib_data	lib		$(tinfo)
+lib_has_cap	lib		$(tinfo)	../include/term.h
 lib_keyname	lib		.		../include/term.h
 lib_kernel	lib		$(tinfo)	../include/term.h
 lib_longname	lib		$(tinfo)
@@ -159,13 +160,15 @@ lib_raw 	lib		$(tinfo)	../include/term.h
 lib_restart	lib		$(tinfo)
 lib_setup	lib		$(tinfo)	../include/term.h
 lib_termcap	lib		$(tinfo)	../include/term.h $(INCDIR)/tic.h
+lib_termname	lib		$(tinfo)	$(INCDIR)/tic.h
 lib_ti		lib		$(tinfo)	../include/term.h $(INCDIR)/tic.h
 lib_tparm	lib		$(tinfo)	../include/term.h $(INCDIR)/tic.h
 lib_tputs	lib		$(tinfo)	../include/term.h $(INCDIR)/tic.h
 lib_trace	lib		$(trace)	$(INCDIR)/tic.h
 lib_tracebits	lib		$(trace)
 lib_tracechr	lib		$(trace)
-lib_twait	lib		$(tinfo)
+lib_ttyflags	lib		$(tinfo)	../include/term.h
+lib_twait	lib		$(serial)
 name_match	lib		$(tinfo)	../include/term.h $(INCDIR)/tic.h
 names		lib		.
 parse_entry	lib		$(tinfo)	../include/term.h $(INCDIR)/tic.h ../include/parametrized.h

@@ -42,7 +42,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_getstr.c,v 1.19 1998/02/11 12:13:53 tom Exp $")
+MODULE_ID("$Id: lib_getstr.c,v 1.20 1998/12/20 00:16:01 tom Exp $")
 
 /*
  * This wipes out the last character, no matter whether it was a tab, control
@@ -84,7 +84,7 @@ int	y, x;
 	if (!win)
 	  returnCode(ERR);
 
-	_nc_get_curterm(&buf);
+	_nc_get_tty_mode(&buf);
 
 	oldnl = SP->_nl;
 	oldecho = SP->_echo;
@@ -180,7 +180,7 @@ int	y, x;
 	SP->_raw = oldraw;
 	SP->_cbreak = oldcbreak;
 
-	_nc_set_curterm(&buf);
+	_nc_set_tty_mode(&buf);
 
 	*str = '\0';
 	if (ch == ERR)

@@ -99,7 +99,6 @@ libncurses-routines	= \
 			base/lib_delch \
 			base/lib_delwin \
 			base/lib_dft_fgbg \
-			base/lib_doupdate \
 			base/lib_echo \
 			base/lib_endwin \
 			base/lib_erase \
@@ -185,6 +184,7 @@ libncurses-routines	= \
 			tinfo/lib_baudrate \
 			tinfo/lib_cur_term \
 			tinfo/lib_data \
+			tinfo/lib_has_cap \
 			tinfo/lib_kernel \
 			tinfo/lib_longname \
 			tinfo/lib_napms \
@@ -194,10 +194,11 @@ libncurses-routines	= \
 			tinfo/lib_restart \
 			tinfo/lib_setup \
 			tinfo/lib_termcap \
+			tinfo/lib_termname \
 			tinfo/lib_ti \
 			tinfo/lib_tparm \
 			tinfo/lib_tputs \
-			tinfo/lib_twait \
+			tinfo/lib_ttyflags \
 			tinfo/name_match \
 			tinfo/parse_entry \
 			tinfo/read_entry \
@@ -216,6 +217,8 @@ libncurses-routines	= \
 			tty/lib_mvcur \
 			tty/lib_tstp \
 			tty/lib_vidattr \
+			tty/lib_twait \
+			tty/tty_update \
 			unctrl
 
 libmenu-routines	= \

@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.123 1998/10/03 23:35:34 tom Exp $
+ * $Id: curses.priv.h,v 1.124 1998/12/20 02:46:06 tom Exp $
  *
  *	curses.priv.h
  *
@@ -680,6 +680,7 @@ extern void _nc_do_color(int, bool, int (*)(int));
 extern void _nc_freeall(void);
 extern void _nc_freewin(WINDOW *win);
 extern void _nc_hash_map(void);
+extern void _nc_keep_tic_dir(const char *);
 extern void _nc_make_oldhash(int i);
 extern void _nc_outstr(const char *str);
 extern void _nc_scroll_oldhash(int n, int top, int bot);

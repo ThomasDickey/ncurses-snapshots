@@ -36,7 +36,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_print.c,v 1.9 1998/02/11 12:13:53 tom Exp $")
+MODULE_ID("$Id: lib_print.c,v 1.10 1998/10/13 14:47:53 Alexander.V.Lukyanov Exp $")
 
 int mcprint(char *data, int len)
 /* ship binary character data to the printer via mc4/mc5/mc5p */
@@ -45,7 +45,7 @@ int mcprint(char *data, int len)
     size_t	onsize,	offsize, res;
 
     errno = 0;
-    if (!prtr_non && (!prtr_on || !prtr_off))
+    if (!cur_term || (!prtr_non && (!prtr_on || !prtr_off)))
     {
 	errno = ENODEV;
 	return(ERR);

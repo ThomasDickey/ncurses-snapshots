@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.152 1998/11/14 23:15:31 tom Exp $ 
+dnl $Id: configure.in,v 1.153 1998/12/20 01:23:19 Uchiyama.Yasushi Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.152 $) 
+AC_REVISION($Revision: 1.153 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -82,6 +82,9 @@ AC_PROG_CC
 if test -n "$GCC" ; then
 AC_MSG_CHECKING(version of gcc)
 eval "$CC --version"
+fi
+if test $host != $build; then
+  AC_CHECK_PROGS(BUILD_CC, gcc cc)
 fi
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
@@ -802,12 +805,12 @@ end conftest;],[cf_cv_prog_gnat_correct=yes],[cf_cv_prog_gnat_correct=no])
 fi
 if test	"$cf_cv_prog_gnat_correct" = yes; then
    ADAFLAGS="-O3 $ADAFLAGS"
- 
-   AC_ARG_WITH(ada-compiler, 
-	[  --with-ada-compiler=CMD Specify Ada95 compiler command (default \$(CC))], 
-	[cf_ada_compiler=$withval], 
-	[cf_ada_compiler=[$]CC]) 
- 
+
+   AC_ARG_WITH(ada-compiler,
+	[  --with-ada-compiler=CMD Specify Ada95 compiler command (default \$(CC))],
+	[cf_ada_compiler=$withval],
+	[cf_ada_compiler=[$]CC])
+
    cf_ada_package=terminal_interface
 
    AC_SUBST(cf_ada_make)

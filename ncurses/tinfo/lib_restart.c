@@ -47,58 +47,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_restart.c,v 1.16 1998/02/11 12:13:57 tom Exp $")
-
-#undef tabs
-
-#ifdef TAB3
-# define tabs TAB3
-#else
-# ifdef XTABS
-#  define tabs XTABS
-# else
-#  ifdef OXTABS
-#   define tabs OXTABS
-#  else
-#   define tabs 0
-#  endif
-# endif
-#endif
-
-int def_shell_mode(void)
-{
-	T((T_CALLED("def_shell_mode()")));
-
-	/*
-	 * Turn off the XTABS bit in the tty structure if it was on.  If XTABS
-	 * was on, remove the tab and backtab capabilities.
-	 */
-
-	if (_nc_get_curterm(&cur_term->Ottyb) != OK)
-		returnCode(ERR);
-#ifdef TERMIOS
-	if (cur_term->Ottyb.c_oflag & tabs)
-		tab = back_tab = NULL;
-#else
-	if (cur_term->Ottyb.sg_flags & XTABS)
-		tab = back_tab = NULL;
-#endif
-	returnCode(OK);
-}
-
-int def_prog_mode(void)
-{
-	T((T_CALLED("def_prog_mode()")));
-
-	if (_nc_get_curterm(&cur_term->Nttyb) != OK)
-		returnCode(ERR);
-#ifdef TERMIOS
-	cur_term->Nttyb.c_oflag &= ~tabs;
-#else
-	cur_term->Nttyb.sg_flags &= ~XTABS;
-#endif
-	returnCode(OK);
-}
+MODULE_ID("$Id: lib_restart.c,v 1.17 1998/12/20 00:49:23 tom Exp $")
 
 int restartterm(const char *term, int filenum, int *errret)
 {
