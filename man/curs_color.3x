@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1998 Free Software Foundation, Inc.                        *
+.\" Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,13 +26,16 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.10 1998/03/11 21:12:53 juergen Exp $
+.\" $Id: curs_color.3x,v 1.12 2000/07/04 22:35:05 tom Exp $
 .TH curs_color 3X ""
 .SH NAME
-\fBstart_color\fR, \fBinit_pair\fR,
-\fBinit_color\fR, \fBhas_colors\fR, \fBcan_change_color\fR,
-\fBcolor_content\fR, \fBpair_content\fR - \fBcurses\fR color
-manipulation routines
+\fBstart_color\fR,
+\fBinit_pair\fR,
+\fBinit_color\fR,
+\fBhas_colors\fR,
+\fBcan_change_color\fR,
+\fBcolor_content\fR,
+\fBpair_content\fR - \fBcurses\fR color manipulation routines
 .SH SYNOPSIS
 \fB# include <curses.h>\fR
 .br
@@ -160,15 +163,18 @@ the background color used when parts of a window are blanked by erasing or
 scrolling operations, see \fBcurs_bkgd\fR(3X).
 
 Several caveats apply on 386 and 486 machines with VGA-compatible graphics:
-
+.TP 5
+-
 COLOR_YELLOW is actually brown.  To get yellow, use COLOR_YELLOW combined with
 the \fBA_BOLD\fR attribute.
-
+.TP 5
+-
 The A_BLINK attribute should in theory cause the background to go bright.  This
 often fails to work, and even some cards for which it mostly works (such as the
 Paradise and compatibles) do the wrong thing when you try to set a bright
 "yellow" background (you get a blinking yellow foreground instead).
-
+.TP 5
+-
 Color RGB values are not settable.
 .SH PORTABILITY
 This implementation satisfies XSI Curses's minimum maximums
@@ -177,6 +183,11 @@ for \fBCOLORS\fR and \fBCOLOR_PAIRS\fR.
 The \fBinit_pair\fP routine accepts negative values of foreground
 and background color to support the \fBuse_default_colors\fP extension,
 but only if that routine has been first invoked.
+.PP
+The assumption that \fBCOLOR_BLACK\fR is the default
+background color for all terminals can be modified using the
+\fBassume_default_colors\fP extension,
+..
 .SH SEE ALSO
 \fBcurses\fR(3X),
 \fBcurs_initscr\fR(3X),

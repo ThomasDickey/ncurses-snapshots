@@ -28,7 +28,7 @@
 .\"
 .\" Author: Thomas E. Dickey <dickey@clark.net> 1997,1999
 .\"
-.\" $Id: dft_fgbg.3x,v 1.10 2000/07/01 16:33:31 tom Exp $
+.\" $Id: dft_fgbg.3x,v 1.12 2000/07/04 22:31:56 tom Exp $
 .TH use_default_colors 3X ""
 .SH NAME
 \fBdft_fgbg\fR:
@@ -54,7 +54,15 @@ default value (e.g., with SGR 39 or SGR 49).
 .PP
 Applications that paint a colored background over the whole screen
 do not take advantage of SGR 39 and SGR 49.
-Some applications are designed to work with the default background.
+Some applications are designed to work with the default background,
+using colors only for text.
+For example, there are several implementations of the \fBls\fP program
+which use colors to denote different file types or permissions.
+These "color ls" programs do not necessarily modify the background color,
+typically using only the \fIsetaf\fP terminfo capability to set the
+foreground color.
+Full-screen applications that use default colors can achieve similar
+visual effects.
 .PP
 The first function,
 .I use_default_colors()
@@ -65,7 +73,10 @@ initialize pair x as default foreground on blue.
 .PP
 The other,
 .I assume_default_colors()
-is a refinement which tells which colors to paint for color pair 0, and -1 means default terminal color.
+is a refinement which tells which colors to paint for color pair 0.
+This function recognizes a special color number -1,
+which denotes the default terminal color.
+.PP
 The following are equivalent:
 .RS
 .br
@@ -74,9 +85,21 @@ The following are equivalent:
 .I assume_default_colors(-1,-1);
 .RE
 .PP
-This is a ncurses extension and for other curses implementations color
+These are ncurses extensions.
+For other curses implementations, color
 number -1 does not mean anything, just as for ncurses before a
-successful call of use_default_colors or assume_default_colors.
+successful call of \fIuse_default_colors()\fP or \fIassume_default_colors()\fP.
+.PP
+Other curses implementations do not allow an application to modify color pair 0.
+They assume that the background is COLOR_BLACK,
+but do not ensure that the color pair 0 is painted to match the
+assumption.
+If your application does not use either
+.I use_default_colors()
+or
+.I assume_default_colors()
+ncurses will paint a white foreground (text) with black background
+for color pair 0.
 ..
 .SH RETURN VALUE
 These functions return the integer \fBERR\fP upon failure and \fBOK\fP on success.
