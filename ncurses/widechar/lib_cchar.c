@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2001-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 2001-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -35,17 +35,20 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_cchar.c,v 1.8 2003/05/25 00:07:41 tom Exp $")
+MODULE_ID("$Id: lib_cchar.c,v 1.9 2004/09/25 23:35:12 tom Exp $")
 
 /* 
  * The SuSv2 description leaves some room for interpretation.  We'll assume wch
- * is L'\0' terminated, contains at most one character with strictly positive
- * width, which must be the first, and contains no characters of negative
- * width.
+ * points to a string which is L'\0' terminated, contains at least one
+ * character with strictly positive width, which must be the first, and
+ * contains no characters of negative width.
  */
 NCURSES_EXPORT(int)
-setcchar(cchar_t * wcval, const wchar_t * wch, const attr_t attrs,
-	 short color_pair, const void *opts)
+setcchar(cchar_t *wcval,
+	 const wchar_t *wch,
+	 const attr_t attrs,
+	 short color_pair,
+	 const void *opts)
 {
     int i;
     int len;
@@ -54,10 +57,13 @@ setcchar(cchar_t * wcval, const wchar_t * wch, const attr_t attrs,
     TR(TRACE_CCALLS, (T_CALLED("setcchar(%p,%s,%ld,%d,%p)"),
 		      wcval, _nc_viswbuf(wch), attrs, color_pair, opts));
 
-    if (opts != NULL || (len = wcslen(wch)) > CCHARW_MAX
+    len = wcslen(wch);
+    if (opts != NULL
 	|| (len > 1 && wcwidth(wch[0]) < 0)) {
 	code = ERR;
     } else {
+	if (len > CCHARW_MAX)
+	    len = CCHARW_MAX;
 
 	/*
 	 * If we have a following spacing-character, stop at that point.  We
@@ -85,8 +91,11 @@ setcchar(cchar_t * wcval, const wchar_t * wch, const attr_t attrs,
 }
 
 NCURSES_EXPORT(int)
-getcchar(const cchar_t * wcval, wchar_t * wch, attr_t * attrs,
-	 short *color_pair, void *opts)
+getcchar(const cchar_t *wcval,
+	 wchar_t *wch,
+	 attr_t *attrs,
+	 short *color_pair,
+	 void *opts)
 {
     wchar_t *wp;
     int len;

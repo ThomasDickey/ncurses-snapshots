@@ -46,7 +46,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: sysdep.c,v 1.11 2002/04/21 19:40:43 tom Exp $")
+MODULE_ID("$Id: sysdep.c,v 1.12 2004/09/25 19:42:36 tom Exp $")
 
 #if DECL_ERRNO
 extern int errno;
@@ -179,8 +179,8 @@ tty_set(void)
 #endif	/* NL1 */
 		break;
 	}
-	if (!(new_modes.c_oflag & ~OPOST))
-		new_modes.c_oflag &= ~OPOST;
+	if (!(new_modes.c_oflag & (unsigned long) ~OPOST))
+		new_modes.c_oflag &= (unsigned long) ~OPOST;
 #else
 	new_modes.sg_flags |= RAW;
 	if (not_a_tty)
@@ -396,7 +396,7 @@ read_key(char *buf, int max)
 		if (ask > max) {
 			ask = max;
 		}
-		if ((got = read(fileno(stdin), s, ask))) {
+		if ((got = read(fileno(stdin), s, (unsigned) ask))) {
 			s += got;
 		} else {
 			break;
@@ -497,5 +497,5 @@ set_alarm_clock(
 {
 	signal(SIGALRM, alarm_event);
 	no_alarm_event = 1;
-	(void) alarm(seconds);
+	(void) alarm((unsigned) seconds);
 }

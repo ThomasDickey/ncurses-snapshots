@@ -44,7 +44,7 @@
 
 #include <term_entry.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.45 2004/07/07 23:53:17 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.46 2004/09/25 19:21:27 tom Exp $")
 
 #define CSI       233
 #define ESC       033		/* ^[ */
@@ -94,8 +94,8 @@ similar_sgr(char *a, char *b)
     bool result = FALSE;
     int csi_a = is_csi(a);
     int csi_b = is_csi(b);
-    int len_a;
-    int len_b;
+    unsigned len_a;
+    unsigned len_b;
 
     TR(TRACE_DATABASE, ("similar_sgr:\n\t%s\n\t%s",
 			_nc_visbuf2(1, a),
@@ -122,8 +122,8 @@ similar_sgr(char *a, char *b)
     return result;
 }
 
-static int
-chop_out(char *string, int i, int j)
+static unsigned
+chop_out(char *string, unsigned i, unsigned j)
 {
     TR(TRACE_DATABASE, ("chop_out %d..%d from %s", i, j, _nc_visbuf(string)));
     while (string[j] != '\0') {

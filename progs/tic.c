@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.115 2004/07/24 22:26:22 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.116 2004/09/25 19:24:54 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -1305,12 +1305,12 @@ check_termtype(TERMTYPE *tp, bool literal)
 			    conflict = TRUE;
 			}
 			fprintf(stderr, "... %s is the same as %s",
-				keyname(_nc_tinfo_fkeys[j].code),
-				keyname(_nc_tinfo_fkeys[k].code));
+				keyname((int) _nc_tinfo_fkeys[j].code),
+				keyname((int) _nc_tinfo_fkeys[k].code));
 			first = FALSE;
 		    } else {
 			fprintf(stderr, ", %s",
-				keyname(_nc_tinfo_fkeys[k].code));
+				keyname((int) _nc_tinfo_fkeys[k].code));
 		    }
 		}
 	    }

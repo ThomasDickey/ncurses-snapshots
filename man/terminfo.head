@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: terminfo.head,v 1.11 2004/05/23 01:02:43 tom Exp $
+.\" $Id: terminfo.head,v 1.12 2004/09/25 19:07:11 tom Exp $
 .TH TERMINFO 5 "" "" "File Formats"
 .ds n 5
 .ds d @TERMINFO@
@@ -66,7 +66,7 @@ will move comments so they occur only between entries.
 .PP
 Newlines and leading tabs may be used for formatting entries for readability.
 These are removed from parsed entries.
-The \fIinfocmp\ \-f\fP option relies on this to format if-then-else expressions:
+The \fIinfocmp\ -f\fP option relies on this to format if-then-else expressions:
 the result can be read by \fItic\fP.
 .PP
 Terminal names (except for the last, verbose entry) should

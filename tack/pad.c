@@ -21,7 +21,7 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: pad.c,v 1.3 2003/10/18 22:11:29 tom Exp $")
+MODULE_ID("$Id: pad.c,v 1.4 2004/09/25 19:38:22 tom Exp $")
 
 /* test the pad counts on the terminal */
 
@@ -1759,7 +1759,7 @@ pad_csr_cup(
 			put_str(every_line);
 		}
 		tt_putparm(change_scroll_region, 1, 0, lines - 1);
-		tt_putparm(cursor_address, 1, lines - 1, strlen(every_line));
+		tt_putparm(cursor_address, 1, lines - 1, (int) strlen(every_line));
 	} while(still_testing());
 	pad_test_shutdown(t, 0);
 	put_str("  ");

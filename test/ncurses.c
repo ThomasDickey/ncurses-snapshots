@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.226 2004/09/19 00:27:22 tom Exp $
+$Id: ncurses.c,v 1.228 2004/09/26 00:10:24 tom Exp $
 
 ***************************************************************************/
 
@@ -243,7 +243,7 @@ wGetstring(WINDOW *win, char *buffer, int limit)
 
 #if USE_WIDEC_SUPPORT
 static int
-wGet_wchar(WINDOW *win, wint_t * result)
+wGet_wchar(WINDOW *win, wint_t *result)
 {
     int c;
 #ifdef TRACE
@@ -268,7 +268,7 @@ wGet_wchar(WINDOW *win, wint_t * result)
 
 /* replaces wgetn_wstr(), since we want to be able to edit values */
 static void
-wGet_wstring(WINDOW *win, wchar_t * buffer, int limit)
+wGet_wstring(WINDOW *win, wchar_t *buffer, int limit)
 {
     int y0, x0, x;
     wint_t ch;
@@ -301,14 +301,14 @@ wGet_wstring(WINDOW *win, wchar_t * buffer, int limit)
 	    case KEY_RIGHT:
 		break;
 	    default:
-		ch = (wint_t) - 1;
+		ch = (wint_t) -1;
 		break;
 	    }
 	    break;
 	case OK:
 	    break;
 	default:
-	    ch = (wint_t) - 1;
+	    ch = (wint_t) -1;
 	    break;
 	}
 
@@ -797,7 +797,7 @@ resize_wide_boxes(int level, WINDOW *win)
 #endif /* KEY_RESIZE */
 
 static char *
-wcstos(const wchar_t * src)
+wcstos(const wchar_t *src)
 {
     int need;
     mbstate_t state;
@@ -819,7 +819,8 @@ wcstos(const wchar_t * src)
 static void
 wget_wch_test(int level, WINDOW *win, int delay)
 {
-    wchar_t buf[BUFSIZ];
+    wchar_t wchar_buf[BUFSIZ];
+    wint_t wint_buf[BUFSIZ];
     int first_y, first_x;
     wint_t c;
     int incount = 0;
@@ -862,13 +863,21 @@ wget_wch_test(int level, WINDOW *win, int delay)
 	} else if (c == 'g') {
 	    waddstr(win, "getstr test: ");
 	    echo();
-	    wgetn_wstr(win, (wint_t *) buf, sizeof(buf) - 1);
+	    code = wgetn_wstr(win, wint_buf, sizeof(wint_buf) - 1);
 	    noecho();
-	    if ((temp = wcstos(buf)) != 0) {
-		wprintw(win, "I saw %d characters:\n\t`%s'.", wcslen(buf), temp);
-		free(temp);
+	    if (code == ERR) {
+		wprintw(win, "wgetn_wstr returns an error.");
 	    } else {
-		wprintw(win, "I saw %d characters (cannot convert).", wcslen(buf));
+		int n;
+		for (n = 0; (wchar_buf[n] = wint_buf[n]) != 0; ++n) ;
+		if ((temp = wcstos(wchar_buf)) != 0) {
+		    wprintw(win, "I saw %d characters:\n\t`%s'.",
+			    wcslen(wchar_buf), temp);
+		    free(temp);
+		} else {
+		    wprintw(win, "I saw %d characters (cannot convert).",
+			    wcslen(wchar_buf));
+		}
 	    }
 	    wclrtoeol(win);
 	    wgetch_wrap(win, first_y);
@@ -1301,9 +1310,10 @@ static void
 set_wide_background(short pair)
 {
     cchar_t normal;
+    wchar_t blank[2];
 
-    static wchar_t blank[] = L" ";
-
+    blank[0] = ' ';
+    blank[1] = 0;
     setcchar(&normal, blank, A_NORMAL, COLOR_PAIR(pair), 0);
     bkgrnd(&normal);
     bkgrndset(&normal);
