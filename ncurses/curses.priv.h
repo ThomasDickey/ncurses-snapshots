@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.140 1999/06/12 21:19:47 tom Exp $
+ * $Id: curses.priv.h,v 1.141 1999/06/26 22:00:49 tom Exp $
  *
  *	curses.priv.h
  *
@@ -668,6 +668,11 @@ extern int _nc_scrolln(int, int, int, int);
 extern void _nc_screen_init(void);
 extern void _nc_screen_resume(void);
 extern void _nc_screen_wrap(void);
+
+#if !HAVE_STRSTR
+#define strstr _nc_strstr
+extern char *_nc_strstr(const char *, const char *);
+#endif
 
 /* lib_mouse.c */
 extern int _nc_has_mouse(void);
