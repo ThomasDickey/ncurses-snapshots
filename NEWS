@@ -1,10 +1,24 @@
--- $Id: NEWS,v 1.857 2005/01/16 01:09:58 tom Exp $
+-- $Id: NEWS,v 1.860 2005/01/22 22:06:59 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050122
+	+ add a null-pointer check in wgetch() in case it is called without
+	  first calling initscr().
+	+ add some null-pointer checks for SP, which is not set by libtinfo.
+	+ modify misc/shlib to ensure that absolute pathnames are used.
+	+ modify test/Makefile.in, etc., to link test programs only against the
+	  libraries needed, e.g., omit form/menu/panel library for the ones
+	  that are curses-specific.
+	+ change SP->_current_attr to a pointer, adjust ifdef's to ensure that
+	  libtinfo.so and libtinfow.so have the same ABI.  The reason for this
+	  is that the corresponding data which belongs to the upper-level
+	  ncurses library has a different size in each model (report by
+	  Stanislav Ievlev).
 
 20050115
 	+ minor fixes to allow test-compiles with g++.

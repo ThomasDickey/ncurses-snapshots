@@ -65,7 +65,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.42 2005/01/02 01:25:58 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.44 2005/01/22 22:15:44 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -105,7 +105,7 @@ vidputs(chtype newmode, int (*outc) (int))
 
     /* this allows us to go on whether or not newterm() has been called */
     if (SP)
-	previous_attr = AttrOf(SP->_current_attr);
+	previous_attr = AttrOf(SCREEN_ATTRS(SP));
 
     TR(TRACE_ATTRS, ("previous attribute was %s", _traceattr(previous_attr)));
 
@@ -245,7 +245,7 @@ vidputs(chtype newmode, int (*outc) (int))
 	newmode |= A_REVERSE;
 
     if (SP)
-	SetAttr(SP->_current_attr, newmode);
+	SetAttr(SCREEN_ATTRS(SP), newmode);
     else
 	previous_attr = newmode;
 

@@ -41,7 +41,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: comp_error.c,v 1.27 2005/01/16 00:34:44 tom Exp $")
+MODULE_ID("$Id: comp_error.c,v 1.28 2005/01/22 21:31:48 tom Exp $")
 
 NCURSES_EXPORT_VAR(bool) _nc_suppress_warnings = FALSE;
 NCURSES_EXPORT_VAR(int) _nc_curr_line = 0; /* current line # in input */
@@ -77,7 +77,8 @@ _nc_get_type(char *name)
 	return;
     }
 #endif
-    strcpy(name, termtype != 0 ? termtype : "");
+    if (name != 0)
+	strcpy(name, termtype != 0 ? termtype : "");
 }
 
 static inline void

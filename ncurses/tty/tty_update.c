@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.214 2005/01/15 20:16:22 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.216 2005/01/22 22:16:13 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -1810,7 +1810,7 @@ NCURSES_EXPORT(void)
 _nc_screen_resume(void)
 {
     /* make sure terminal is in a sane known state */
-    SetAttr(SP->_current_attr, A_NORMAL);
+    SetAttr(SCREEN_ATTRS(SP), A_NORMAL);
     newscr->_clear = TRUE;
 
     /* reset color pairs and definitions */
@@ -1881,7 +1881,7 @@ _nc_screen_wrap(void)
 NCURSES_EXPORT(void)
 _nc_do_xmc_glitch(attr_t previous)
 {
-    attr_t chg = XMC_CHANGES(previous ^ AttrOf(SP->_current_attr));
+    attr_t chg = XMC_CHANGES(previous ^ AttrOf(SCREEN_ATTRS(SP)));
 
     while (chg != 0) {
 	if (chg & 1) {

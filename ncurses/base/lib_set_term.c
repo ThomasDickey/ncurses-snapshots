@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -44,7 +44,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.83 2004/11/28 01:16:01 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.85 2005/01/22 17:36:01 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN *screenp)
@@ -117,6 +117,8 @@ delscreen(SCREEN *sp)
 
     _nc_free_keytry(sp->_key_ok);
     sp->_key_ok = 0;
+
+    FreeIfNeeded(sp->_current_attr);
 
     FreeIfNeeded(sp->_color_table);
     FreeIfNeeded(sp->_color_pairs);
@@ -224,6 +226,9 @@ _nc_setupscreen(short slines, short const scolumns, FILE *output)
     T(("created SP %p", SP));
     SP->_next_screen = _nc_screen_chain;
     _nc_screen_chain = SP;
+
+    if ((SP->_current_attr = typeCalloc(NCURSES_CH_T, 1)) == 0)
+	returnCode(ERR);
 
 #ifdef __DJGPP__
     T(("setting output mode to binary"));

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.350 2005/01/02 01:26:26 tom Exp $
+dnl $Id: aclocal.m4,v 1.351 2005/01/22 20:27:25 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -3331,7 +3331,7 @@ if test "$cf_cv_sizechange" != no ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SRC_MODULES version: 16 updated: 2004/02/14 20:18:37
+dnl CF_SRC_MODULES version: 17 updated: 2005/01/22 15:26:37
 dnl --------------
 dnl For each parameter, test if the source-directory exists, and if it contains
 dnl a 'modules' file.  If so, add to the list $cf_cv_src_modules which we'll
@@ -3350,9 +3350,6 @@ if test "$DFT_LWR_MODEL" = "libtool"; then
 else
 	TEST_ARGS="-l${LIB_NAME}${DFT_ARG_SUFFIX} $TEST_ARGS"
 fi
-
-# dependencies and linker-arguments for utility-programs
-test "$with_termlib" = no && PROG_ARGS="$TEST_ARGS"
 
 cf_cv_src_modules=
 for cf_dir in $1
@@ -3396,9 +3393,6 @@ AC_MSG_RESULT($cf_cv_src_modules)
 TEST_ARGS="-L${LIB_DIR} $TEST_ARGS"
 AC_SUBST(TEST_DEPS)
 AC_SUBST(TEST_ARGS)
-
-PROG_ARGS="-L${LIB_DIR} $PROG_ARGS"
-AC_SUBST(PROG_ARGS)
 
 SRC_SUBDIRS="man include"
 for cf_dir in $cf_cv_src_modules

@@ -155,7 +155,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.100 2005/01/02 01:32:55 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.102 2005/01/22 22:15:45 tom Exp $")
 
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
 #define BAUDRATE	cur_term->_baudrate	/* bits per second */
@@ -609,7 +609,7 @@ relative_move(string_desc * target, int from_y, int from_x, int to_y, int
 
 		    for (i = 0; i < n; i++) {
 			NCURSES_CH_T ch = WANT_CHAR(to_y, from_x + i);
-			if (!SameAttrOf(ch, SP->_current_attr)
+			if (!SameAttrOf(ch, SCREEN_ATTRS(SP))
 #if USE_WIDEC_SUPPORT
 			    || !Charable(ch)
 #endif
@@ -875,7 +875,7 @@ mvcur(int yold, int xold, int ynew, int xnew)
 	 * character set -- these have a strong tendency to screw up the CR &
 	 * LF used for local character motions!
 	 */
-	oldattr = SP->_current_attr;
+	oldattr = SCREEN_ATTRS(SP);
 	if ((AttrOf(oldattr) & A_ALTCHARSET)
 	    || (AttrOf(oldattr) && !move_standout_mode)) {
 	    TR(TRACE_CHARPUT, ("turning off (%#lx) %s before move",
@@ -930,7 +930,7 @@ mvcur(int yold, int xold, int ynew, int xnew)
 	/*
 	 * Restore attributes if we disabled them before moving.
 	 */
-	if (!SameAttrOf(oldattr, SP->_current_attr)) {
+	if (!SameAttrOf(oldattr, SCREEN_ATTRS(SP))) {
 	    TR(TRACE_CHARPUT, ("turning on (%#lx) %s after move",
 			       AttrOf(oldattr), _traceattr(AttrOf(oldattr))));
 	    (void) VIDATTR(AttrOf(oldattr), GetPair(oldattr));

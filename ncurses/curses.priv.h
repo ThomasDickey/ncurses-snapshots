@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.272 2005/01/16 01:02:23 tom Exp $
+ * $Id: curses.priv.h,v 1.274 2005/01/22 22:17:29 tom Exp $
  *
  *	curses.priv.h
  *
@@ -269,8 +269,9 @@ color_t;
 #define SameAttrOf(a,b)		(AttrOf(a) == AttrOf(b))
 #define VIDATTR(attr, pair)	vidattr(attr)
 
-#define GET_SCREEN_PAIR(s)	GetPair((s)->_current_attr)
-#define SET_SCREEN_PAIR(s,p)	SetPair((s)->_current_attr, p)
+#define SCREEN_ATTRS(s)		(*((s)->_current_attr))
+#define GET_SCREEN_PAIR(s)	GetPair(SCREEN_ATTRS(s))
+#define SET_SCREEN_PAIR(s,p)	SetPair(SCREEN_ATTRS(s), p)
 
 struct ldat
 {
@@ -292,8 +293,27 @@ typedef enum {
 } MouseType;
 
 /*
- * Structure for soft labels.
+ * Structures for scrolling.
  */
+
+typedef struct {
+	unsigned long hashval;
+	int oldcount, newcount;
+	int oldindex, newindex;
+} HASHMAP;
+
+/*
+ * Structures for soft labels.
+ */
+
+struct _SLK;
+
+#ifdef USE_TERMLIB
+
+#undef NCURSES_CH_T		/* this is not a termlib feature */
+#define NCURSES_CH_T void	/* ...but we need a pointer in SCREEN */
+
+#else
 
 typedef struct
 {
@@ -304,7 +324,7 @@ typedef struct
 	char visible;           /* field is visible */
 } slk_ent;
 
-typedef struct {
+typedef struct _SLK {
 	char dirty;             /* all labels have changed */
 	char hidden;            /* soft labels are hidden */
 	WINDOW *win;
@@ -315,17 +335,17 @@ typedef struct {
 	NCURSES_CH_T attr;      /* soft label attribute */
 } SLK;
 
-typedef struct {
-	unsigned long hashval;
-	int oldcount, newcount;
-	int oldindex, newindex;
-} HASHMAP;
+#endif
 
 typedef	struct {
 	int	line;           /* lines to take, < 0 => from bottom*/
 	int	(*hook)(WINDOW *, int); /* callback for user        */
 	WINDOW *w;              /* maybe we need this for cleanup   */
 } ripoff_t;
+
+/*
+ * The SCREEN structure.
+ */
 
 struct screen {
 	int             _ifd;           /* input file ptr for screen        */
@@ -359,7 +379,7 @@ struct screen {
 	                _fifohold;      /* set if breakout marked           */
 
 	int             _endwin;        /* are we out of window mode?       */
-	NCURSES_CH_T	_current_attr;  /* holds current attributes set     */
+	NCURSES_CH_T	*_current_attr; /* holds current attributes set     */
 	int             _coloron;       /* is color enabled?                */
 	int		_color_defs;	/* are colors modified		    */
 	int             _cursor;        /* visibility of the cursor         */
@@ -372,7 +392,7 @@ struct screen {
 	                                /* > 1 if in halfdelay mode         */
 	int             _echo;          /* True if echo on                  */
 	int             _use_meta;      /* use the meta key?                */
-	SLK             *_slk;          /* ptr to soft key struct / NULL    */
+	struct _SLK     *_slk;          /* ptr to soft key struct / NULL    */
         int             slk_format;     /* selected format for this screen  */
 	/* cursor movement costs; units are 10ths of milliseconds */
 #if NCURSES_NO_PADDING
@@ -880,11 +900,11 @@ extern	NCURSES_EXPORT(void) name (void); \
 		    : INFINITY)))
 
 #if USE_XMC_SUPPORT
-#define UpdateAttrs(c)	if (!SameAttrOf(SP->_current_attr, c)) { \
-				attr_t chg = AttrOf(SP->_current_attr); \
+#define UpdateAttrs(c)	if (!SameAttrOf(SCREEN_ATTRS(SP), c)) { \
+				attr_t chg = AttrOf(SCREEN_ATTRS(SP)); \
 				VIDATTR(AttrOf(c), GetPair(c)); \
 				if (magic_cookie_glitch > 0 \
-				 && XMC_CHANGES((chg ^ AttrOf(SP->_current_attr)))) { \
+				 && XMC_CHANGES((chg ^ AttrOf(SCREEN_ATTRS(SP))))) { \
 					T(("%s @%d before glitch %d,%d", \
 						__FILE__, __LINE__, \
 						SP->_cursrow, \
@@ -893,7 +913,7 @@ extern	NCURSES_EXPORT(void) name (void); \
 				} \
 			}
 #else
-#define UpdateAttrs(c)	if (!SameAttrOf(SP->_current_attr, c)) \
+#define UpdateAttrs(c)	if (!SameAttrOf(SCREEN_ATTRS(SP), c)) \
 				VIDATTR(AttrOf(c), GetPair(c));
 #endif
 
@@ -1037,7 +1057,6 @@ extern NCURSES_EXPORT(int) _nc_remove_key (struct tries **, unsigned short);
 extern NCURSES_EXPORT(int) _nc_remove_string (struct tries **, const char *);
 
 /* elsewhere ... */
-extern NCURSES_EXPORT(NCURSES_CH_T) _nc_render (WINDOW *, NCURSES_CH_T);
 extern NCURSES_EXPORT(WINDOW *) _nc_makenew (int, int, int, int, int);
 extern NCURSES_EXPORT(char *) _nc_home_terminfo (void);
 extern NCURSES_EXPORT(char *) _nc_trace_buf (int, size_t);
@@ -1051,7 +1070,6 @@ extern NCURSES_EXPORT(int) _nc_ospeed (int);
 extern NCURSES_EXPORT(int) _nc_outch (int);
 extern NCURSES_EXPORT(int) _nc_setupscreen (short, short const, FILE *);
 extern NCURSES_EXPORT(int) _nc_timed_wait(int, int, int * EVENTLIST_2nd(_nc_eventlist *));
-extern NCURSES_EXPORT(int) _nc_waddch_nosync (WINDOW *, const NCURSES_CH_T);
 extern NCURSES_EXPORT(void) _nc_do_color (int, int, bool, int (*)(int));
 extern NCURSES_EXPORT(void) _nc_flush (void);
 extern NCURSES_EXPORT(void) _nc_freeall (void);
@@ -1061,11 +1079,16 @@ extern NCURSES_EXPORT(void) _nc_keep_tic_dir (const char *);
 extern NCURSES_EXPORT(void) _nc_make_oldhash (int i);
 extern NCURSES_EXPORT(void) _nc_scroll_oldhash (int n, int top, int bot);
 extern NCURSES_EXPORT(void) _nc_scroll_optimize (void);
-extern NCURSES_EXPORT(void) _nc_scroll_window (WINDOW *, int const, short const, short const, NCURSES_CH_T);
 extern NCURSES_EXPORT(void) _nc_set_buffer (FILE *, bool);
 extern NCURSES_EXPORT(void) _nc_signal_handler (bool);
 extern NCURSES_EXPORT(void) _nc_synchook (WINDOW *);
 extern NCURSES_EXPORT(void) _nc_trace_tries (struct tries *);
+
+#ifndef USE_TERMLIB
+extern NCURSES_EXPORT(NCURSES_CH_T) _nc_render (WINDOW *, NCURSES_CH_T);
+extern NCURSES_EXPORT(int) _nc_waddch_nosync (WINDOW *, const NCURSES_CH_T);
+extern NCURSES_EXPORT(void) _nc_scroll_window (WINDOW *, int const, short const, short const, NCURSES_CH_T);
+#endif
 
 #if USE_WIDEC_SUPPORT
 #ifdef linux

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1999,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1999-2000,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 			/* cursor_visible,cursor_normal,cursor_invisible */
 #include <tic.h>		/* struct tinfo_fkeys */
 
-MODULE_ID("$Id: init_keytry.c,v 1.5 2000/12/10 02:55:07 tom Exp $")
+MODULE_ID("$Id: init_keytry.c,v 1.6 2005/01/22 21:17:40 tom Exp $")
 
 /*
 **      _nc_init_keytry()
@@ -69,12 +69,14 @@ _nc_init_keytry(void)
      * mouse_activate() (which will call keyok()) are first called.
      */
 
-    for (n = 0; _nc_tinfo_fkeys[n].code; n++)
-	if (_nc_tinfo_fkeys[n].offset < STRCOUNT)
-	    _nc_add_to_try(&(SP->_keytry),
-			   CUR Strings[_nc_tinfo_fkeys[n].offset],
-			   _nc_tinfo_fkeys[n].code);
+    if (SP != 0) {
+	for (n = 0; _nc_tinfo_fkeys[n].code; n++)
+	    if (_nc_tinfo_fkeys[n].offset < STRCOUNT)
+		_nc_add_to_try(&(SP->_keytry),
+			       CUR Strings[_nc_tinfo_fkeys[n].offset],
+			       _nc_tinfo_fkeys[n].code);
 #ifdef TRACE
-    _nc_trace_tries(SP->_keytry);
+	_nc_trace_tries(SP->_keytry);
 #endif
+    }
 }
