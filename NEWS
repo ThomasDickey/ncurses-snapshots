@@ -1,6 +1,31 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970524
+	+ add description of xterm-16color.
+	+ modify name of shared-library on *BSD to end with $(REL_VERSION)
+	  rather than $(ABI_VERSION) to match actual convention on FreeBSD
+	  (cf: 960713).
+	+ add OpenBSD to shared-library case, same as NetBSD and FreeBSD
+	  (reported by Hugh Daniel <hugh@rat.toad.com>).
+	+ corrected include-dependency in menu/Makefile so that "make install"
+	  works properly w/o first doing "make".
+	+ add fallback definition for isascii, used in infocmp.
+	+ modify xmas to use color, and to exit right away when a key is
+	  pressed.
+	+ modify gdc so that the scrolled digits function as described (there
+	  was no time delay between the stages, and the digits overwrote the
+	  bounding box without tidying up).
+	+ modify lib_color.c to use setaf/setab only for the ANSI color codes
+	  0 through 7.  Using 16 colors requires setf/setb.
+	+ modify ncurses 'c' test to work with 16 colors, as well as the normal
+	  8 colors.
+	+ remove const qualifier from user data pointer in forms and menus
+	  libraries (patch by Juergen Pfeifer).
+	+ rewrote 'waddchnstr()' to avoid using the _nc_waddch_nosync()
+	  function, thereby not interpreting tabs, etc., as per spec (patch by
+	  Alexander V. Lukyanov).
+
 970517
 	+ suppress check for pre-existing ncurses header if the --prefix
 	  option is specified.

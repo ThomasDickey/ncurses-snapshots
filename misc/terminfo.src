@@ -1851,16 +1851,16 @@ xterm-xf86-v32|xterm terminal emulator (X Window System),
 	is2=\E7\E[r\E[m\E[?7h\E[?1;3;4;6l\E[4l\E8\E>, 
 	ka1=\EOw, ka3=\EOu, kb2=\EOy, kbeg=\EOE, kbs=^H, kc1=\EOq, 
 	kc3=\EOs, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
-	kdch1=\177, kend=\EOF, kent=\EOM, kf1=\E[11~, kf10=\E[21~, 
+	kdch1=\177, kend=\EOF, kent=\EOM, kf1=\EOP, kf10=\E[21~, 
 	kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, 
 	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, 
-	kf19=\E[33~, kf2=\E[12~, kf20=\E[34~, kf3=\E[13~, 
-	kf4=\E[14~, kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, 
-	kf9=\E[20~, kfnd=\E[1~, khome=\EOH, kich1=\E[2~, 
-	kmous=\E[M, knp=\E[6~, kpp=\E[5~, kslt=\E[4~, meml=\El, 
-	memu=\Em, op=\E[39;49m, rc=\E8, rev=\E[7m, ri=\EM, rmacs=^O, 
-	rmam=\E[?7l, rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, 
-	rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m, rs1=^O, 
+	kf19=\E[33~, kf2=\EOQ, kf20=\E[34~, kf3=\EOR, kf4=\EOS, 
+	kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
+	kfnd=\E[1~, khome=\EOH, kich1=\E[2~, kmous=\E[M, knp=\E[6~, 
+	kpp=\E[5~, kslt=\E[4~, meml=\El, memu=\Em, op=\E[39;49m, 
+	rc=\E8, rev=\E[7m, ri=\EM, rmacs=^O, rmam=\E[?7l, 
+	rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, rmkx=\E[?1l\E>, 
+	rmso=\E[27m, rmul=\E[24m, rs1=^O, 
 	rs2=\E7\E[r\E[m\E[?7h\E[?1;3;4;6l\E[4l\E8\E>, sc=\E7, 
 	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
 	setb=\E[4%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
@@ -1869,13 +1869,19 @@ xterm-xf86-v32|xterm terminal emulator (X Window System),
 	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smcup=\E7\E[?47h, 
 	smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
 	tbc=\E[3g, vpa=\E[%i%p1%dd, 
-
+# This is one of the variants from XFree86 3.3 (T.Dickey)
+xterm-16color|xterm with 16 colors like aixterm, 
+	colors#16, ncv#32, pairs#256, 
+	setab@, setaf@, 
+	setb=%p1%{8}%/%{6}%*%{4}%+\E[%d%p1%{8}%m%Pa%?%ga%{1}%=%t4%e%ga%{3}%=%t6%e%ga%{4}%=%t1%e%ga%{6}%=%t3%e%ga%d%;m, 
+	setf=%p1%{8}%/%{6}%*%{3}%+\E[%d%p1%{8}%m%Pa%?%ga%{1}%=%t4%e%ga%{3}%=%t6%e%ga%{4}%=%t1%e%ga%{6}%=%t3%e%ga%d%;m, 
+	use=xterm-xf86-v32, 
 # This is xterm for ncurses. It mainly adds mappings for more high-half
 # characters.  Note that these will only work for fixed-width fonts.
 # Once XFree86 3.2 is established, we'll switch this to use=xterm-xf86-v32
 xterm|vs100|xterms|xterm terminal emulator (X Window System), 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~..--++\,\,II00, 
-	u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
+	kmous=\E[M, u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
 	use=xterm-r6, 
 
 # These entries allow access to the X titlebar and icon name as a status line. 
@@ -13902,6 +13908,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 10.1.1 (Sat May  3 21:41:27 EDT 1997):
 #	* Use setaf/setab consistently with SVr4.
 #	* Remove ech, el1 from cons25w, they do not work in FreeBSD 2.1.5
+# 10.1.2 (Sat May 24 21:10:57 EDT 1997)
+#	* update xterm-xf86-v32 to match XFree86 3.2A (changes F1-F4)
+#	* add xterm-16color, for XFree86 3.3
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

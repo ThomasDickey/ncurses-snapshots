@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.11 1997/03/08 21:38:52 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.12 1997/05/20 15:56:32 Alexander.V.Lukyanov Exp $")
 
 int
 waddnstr(WINDOW *win, const char *const astr, int n)
@@ -62,29 +62,38 @@ int code = ERR;
 int
 waddchnstr(WINDOW *win, const chtype *const astr, int n)
 {
-short oy = win->_cury;
-short ox = win->_curx;
-const chtype *str = (const chtype *)astr;
+short y = win->_cury;
+short x = win->_curx;
 int code = OK;
 
-	T((T_CALLED("waddchnstr(%p,%p,%d)"), win, str, n));
+	T((T_CALLED("waddchnstr(%p,%p,%d)"), win, astr, n));
 
 	if (n < 0) {
+		const chtype *str;
 		n = 0;
-		while (*str++ != 0)
+		for (str=(const chtype *)astr; *str!=0; str++)
 			n++;
-		str = (const chtype *)astr;
 	}
+	if (n > win->_maxx - x + 1)
+		n = win->_maxx - x + 1;
+	if (n == 0)
+		returnCode(code);
 
-	while(n-- > 0) {
-		if (_nc_waddch_nosync(win, *str++) == ERR) {
-			code = ERR;
-			break;
-		}
+	if (win->_line[y].firstchar == _NOCHANGE)
+	{
+		win->_line[y].firstchar = x;
+		win->_line[y].lastchar = x+n-1;
 	}
+	else
+	{
+		if (x < win->_line[y].firstchar)
+			win->_line[y].firstchar = x;
+		if (x+n-1 > win->_line[y].lastchar)
+			win->_line[y].lastchar = x+n-1;
+	}
+	
+	memcpy(win->_line[y].text+x, astr, n*sizeof(*astr));
 
-	win->_curx = ox;
-	win->_cury = oy;
 	_nc_synchook(win);
 	returnCode(code);
 }

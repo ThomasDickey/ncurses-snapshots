@@ -66,7 +66,6 @@
 
 #include <errno.h>
 #include <stdio.h>
-#include <ctype.h>
 #include <termcap.h>
 #include <fcntl.h>
 
@@ -92,7 +91,7 @@ char *ttyname(int fd);
 #include <curses.h>	/* for bool typedef */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.23 1997/05/10 17:44:47 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.24 1997/05/24 22:19:02 tom Exp $")
 
 extern char **environ;
 

@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.65 1997/05/18 01:56:50 tom Exp $
+dnl $Id: aclocal.m4,v 1.66 1997/05/25 00:50:45 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -118,7 +118,7 @@ AC_MSG_CHECKING(for prefix)
 if test "x$prefix" = "xNONE" ; then
 	case "$nc_cv_systype" in
 		# non-vendor systems don't have a conflict
-	NetBSD|FreeBSD|Linux)	prefix=/usr
+	OpenBSD|NetBSD|FreeBSD|Linux)	prefix=/usr
 		;;
 	*)	prefix=$ac_default_prefix
 		;;
@@ -571,8 +571,8 @@ AC_DEFUN([NC_LIB_SUFFIX],
 	profile) $2='_p.a' ;;
 	shared)
 		case $nc_cv_systype in
-		NetBSD|FreeBSD)
-			$2='.so.$(ABI_VERSION)' ;;
+		OpenBSD|NetBSD|FreeBSD)
+			$2='.so.$(REL_VERSION)' ;;
 		HP_UX)	$2='.sl'  ;;
 		*)	$2='.so'  ;;
 		esac
@@ -942,7 +942,7 @@ AC_DEFUN([NC_SHARED_OPTS],
 		fi
 		nc_cv_do_symlinks=yes
 		;;
-	NetBSD|FreeBSD)
+	OpenBSD|NetBSD|FreeBSD)
 		CC_SHARED_OPTS='-fpic -DPIC'
 		MK_SHARED_LIB='$(LD) -Bshareable -o $[@]'
 		;;

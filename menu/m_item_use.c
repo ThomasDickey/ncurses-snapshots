@@ -27,18 +27,18 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_use.c,v 1.5 1997/05/01 16:47:26 juergen Exp $")
+MODULE_ID("$Id: m_item_use.c,v 1.6 1997/05/23 23:32:07 juergen Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
-|   Function      :  int set_item_userptr(ITEM *item, const void *userptr)
+|   Function      :  int set_item_userptr(ITEM *item, void *userptr)
 |   
 |   Description   :  Set the pointer that is reserved in any item to store
 |                    application relevant informations.  
 |
 |   Return Values :  E_OK               - success
 +--------------------------------------------------------------------------*/
-int set_item_userptr(ITEM * item, const void * userptr)
+int set_item_userptr(ITEM * item, void * userptr)
 {
   Normalize_Item(item)->userptr = userptr;
   RETURN( E_OK );
@@ -46,7 +46,7 @@ int set_item_userptr(ITEM * item, const void * userptr)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
-|   Function      :  const void *item_userptr(const ITEM *item)
+|   Function      :  void *item_userptr(const ITEM *item)
 |   
 |   Description   :  Return the pointer that is reserved in any item to store
 |                    application relevant informations.
@@ -54,7 +54,7 @@ int set_item_userptr(ITEM * item, const void * userptr)
 |   Return Values :  Value of the pointer. If no such pointer has been set,
 |                    NULL is returned.
 +--------------------------------------------------------------------------*/
-const void *item_userptr(const ITEM * item)
+void *item_userptr(const ITEM * item)
 {
   return Normalize_Item(item)->userptr;
 }

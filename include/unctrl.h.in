@@ -24,14 +24,9 @@
  * Display a printable version of a control character.
  * Control characters are displayed in caret notation (^x), DELETE is displayed
  * as ^?. Printable characters are displayed as is.
- *
- * The returned pointer points to a static buffer which gets overwritten by
- * each call. Therefore, you must copy the resulting string to a safe place
- * before calling unctrl() again.
- *
  */
 
-/* $Id: unctrl.h.in,v 1.5 1997/04/26 23:04:09 tom Exp $ */
+/* $Id: unctrl.h.in,v 1.6 1997/05/25 00:00:16 tom Exp $ */
 
 #ifndef _UNCTRL_H
 #define _UNCTRL_H	1
