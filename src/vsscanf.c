@@ -1,7 +1,6 @@
 /*
  * This function is needed to support vwscanw
  */
-#include "system.h"
 
 #if !HAVE_VSSCANF
 #include <stdarg.h>

@@ -31,7 +31,7 @@
 #include "curses.priv.h"
 #include <ctype.h>
 
-int winsnstr(WINDOW *win, char *const str, int n)
+int winsnstr(WINDOW *win, const char *str, int n)
 {
 int oy = win->_cury;
 int ox = win->_curx;
@@ -39,7 +39,7 @@ char	*cp;
 
 	T(("winsstr(%p,'%s',%d) called", win, str, n));
 
-	for (cp = str; *cp && (n > 0 || (cp - str) >= n); cp++) {
+	for (cp = (char *)str; *cp && (n > 0 || (cp - str) >= n); cp++) {
 		if (*cp == '\n' || *cp == '\r' || *cp == '\t' || *cp == '\b')
 			addch((chtype)(*cp));
 		else if (isascii(*cp) && iscntrl(*cp)) {

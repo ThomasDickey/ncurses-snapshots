@@ -212,7 +212,7 @@ void _tracedump(char *name, WINDOW *win)
 	    }
 	if (havecolors)
 	{
-	    (void) sprintf(buf, "%*s[%2d]='", strlen(name), "colors", n);
+	    (void) sprintf(buf, "%*s[%2d]='", (int)strlen(name), "colors", n);
 	    ep = buf + strlen(buf);
 	    for (j = 0; j <= win->_maxx; j++)
 		ep[j] = ((win->_line[n].text[j] >> 8) & 0xff) + ' ';
@@ -235,7 +235,7 @@ void _tracedump(char *name, WINDOW *win)
 		}
 	    if (haveattrs)
 	    {
-		(void) sprintf(buf, "%*s%d[%2d]='", strlen(name)-1, "attrs", i, n);
+		(void) sprintf(buf, "%*s%d[%2d]='", (int)strlen(name)-1, "attrs", i, n);
 		ep = buf + strlen(buf);
 		for (j = 0; j <= win->_maxx; j++)
 		    ep[j] = hex[(win->_line[n].text[j] & mask) >> ((i + 4) * 4)];

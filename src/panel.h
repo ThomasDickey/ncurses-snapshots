@@ -1,4 +1,3 @@
-/* panel.h -- interface file for panels library */
 
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
@@ -21,6 +20,8 @@
 *        panels comes AS IS with no warranty, implied or expressed.        *
 *                                                                          *
 ***************************************************************************/
+
+/* panel.h -- interface file for panels library */
 
 #ifndef _PANEL_H
 #define _PANEL_H

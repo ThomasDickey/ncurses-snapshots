@@ -354,7 +354,7 @@ int deal;
     refresh();
 }
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     (void) signal(SIGINT, die);
     initscr();
@@ -394,6 +394,7 @@ main(int argc, char *argv[])
     game_finished(deal_number);
 
     die(0);
+    /*NOTREACHED*/
 }
 
 /* blue.c ends here */

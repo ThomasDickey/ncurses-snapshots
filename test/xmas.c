@@ -1193,7 +1193,7 @@ int reindeer()
 
 
 
-void done()
+void done(int sig)
 {
   signal(SIGINT,done);
   signal(SIGTERM,done);

@@ -158,11 +158,11 @@ slk_restore(void)
  */
 
 int
-slk_set(int i, char *const astr, int format)
+slk_set(int i, const char *astr, int format)
 {
 SLK *slk = SP->_slk;
 size_t len;
-char *str = astr;
+const char *str = astr;
 
 	T(("slk_set(%d, \"%s\", %d)", i, str, format));
 

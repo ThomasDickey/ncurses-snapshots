@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -18,8 +17,6 @@
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
 ***************************************************************************/
-
-
 
 /*
  *	comp_scan.c --- Lexical scanner for terminfo compiler.
@@ -58,7 +55,7 @@ static FILE *yyin;		/* scanner's input file descriptor */
 static int pushtype;		/* type of pushback token */
 
 static void reset_to(char);
-static char next_char(void);
+static int  next_char(void);
 static char trans_string(char *);
 
 /*
@@ -144,6 +141,9 @@ long		token_start;
 			while ((ch = next_char())=='.' || iswhite(ch))
 			    continue;
 	    }
+
+	    if (ch == EOF)
+		goto end_of_token;
 
 	    /* have to make some punctuation chars legal for terminfo */
 	    if (!isalnum(ch) && !strchr("@%&*!#", ch)) {
@@ -272,6 +272,8 @@ long		token_start;
 				type = STRING;
 				break;
 
+			case EOF:
+				break;
 			default:
 				/* just to get rid of the compiler warning */
 				type = UNDEF;
@@ -281,6 +283,7 @@ long		token_start;
 		} /* end else (first_column == FALSE) */
 	} /* end else (ch != EOF) */
 
+end_of_token:
 	if (dot_flag == TRUE)
 	    DEBUG(8, ("Commented out "));
 
@@ -355,7 +358,7 @@ void push_token(int class)
 }
 
 /*
- * 	char *next_char()
+ * 	int next_char()
  *
  *	Returns the next character in the input stream.  Comments and leading
  *	white space are stripped.
@@ -372,7 +375,7 @@ void push_token(int class)
 static int	curr_column = -1;
 static char	line[LEXBUFSIZ];
 
-static char
+static int
 next_char(void)
 {
 	char		*rtn_value;

@@ -31,7 +31,7 @@ static void finish(int sig);
 
 static char        *lines[MAXLINES];
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 FILE        *fp;
 char        buf[BUFSIZ];

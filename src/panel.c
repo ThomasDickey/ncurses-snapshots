@@ -175,10 +175,9 @@ __free_obscure(pan)
 PANEL *pan;
 {
 PANELCONS *tobs = pan->obscure;				/* "this" one */
-PANELCONS *nobs;								/* "next" one */
+PANELCONS *nobs;					/* "next" one */
 
-	while(tobs)
-	{
+	while(tobs) {
 		nobs = tobs->above;
 		free((char *)tobs);
 		tobs = nobs;
@@ -241,17 +240,14 @@ register PANELCONS *tobs;			/* "this" one */
 PANELCONS *lobs = (PANELCONS *)0;		/* last one */
 
 	pan = __bottom_panel;
-	while(pan)
-	{
+	while(pan) {
 		if(pan->obscure)
 			__free_obscure(pan);
 		dBug(("--> __calculate_obscure %s",pan->user));
 		lobs = (PANELCONS *)0;		/* last one */
 		pan2 = __bottom_panel;
-		while(pan2)
-		{
-			if(__panels_overlapped(pan,pan2))
-			{
+		while(pan2) {
+			if(__panels_overlapped(pan,pan2)) {
 				if(!(tobs = (PANELCONS *)malloc(sizeof(PANELCONS))))
 					return;
 				tobs->pan = pan2;
@@ -280,8 +276,7 @@ PANEL *pan;
 {
 register PANEL *pan2 = __bottom_panel;
 
-	while(pan2)
-	{
+	while(pan2) {
 		if(pan2 == pan)
 			return(1);
 		pan2 = pan2->above;
@@ -305,8 +300,7 @@ PANEL *pan;
 
 	pan->above = (PANEL *)0;
 	pan->below = (PANEL *)0;
-	if(__top_panel)
-	{
+	if(__top_panel) {
 		__top_panel->above = pan;
 		pan->below = __top_panel;
 	}
@@ -334,8 +328,7 @@ PANEL *pan;
 
 	pan->above = (PANEL *)0;
 	pan->below = (PANEL *)0;
-	if(__bottom_panel)
-	{
+	if(__bottom_panel) {
 		__bottom_panel->below = pan;
 		pan->above = __bottom_panel;
 	}
@@ -369,8 +362,7 @@ register PANEL *next;
 	prev = pan->below;
 	next = pan->above;
 
-	if(prev)		/* if non-zero, we will not update the list head */
-	{
+	if(prev) {		/* if non-zero, we will not update the list head */
 		prev->above = next;
 		if(next)
 			next->below = prev;
@@ -410,8 +402,7 @@ PANEL *pan;
 
 	dBug(("--> update_panels"));
 	pan = __bottom_panel;
-	while(pan)
-	{
+	while(pan) {
 		__override(pan,-1);
 		pan = pan->above;
 	}
@@ -419,10 +410,8 @@ PANEL *pan;
 	if(is_wintouched(stdscr) || (stdscr->_flags & _HASMOVED))
 		Wnoutrefresh(&__stdscr_pseudo_panel);
 	
-	if(__bottom_panel)
-	{
-		for (pan = __bottom_panel; pan; pan = pan->above)
-		{
+	if(__bottom_panel) {
+		for (pan = __bottom_panel; pan; pan = pan->above) {
 			if(is_wintouched(pan->win))
 				Wnoutrefresh(pan);
 		}
@@ -442,8 +431,7 @@ register PANEL *pan;
 
 	dBug(("--> hide_panel %s",pan->user));
 
-	if(!__panel_is_linked(pan))
-	{
+	if(!__panel_is_linked(pan)) {
 		pan->above = (PANEL *)0;
 		pan->below = (PANEL *)0;
 		return(ERR);
@@ -530,8 +518,7 @@ WINDOW *win;
 {
 PANEL *pan = (PANEL *)malloc(sizeof(PANEL));
 
-	if(!__stdscr_pseudo_panel.win)
-	{
+	if(!__stdscr_pseudo_panel.win) {
 		__stdscr_pseudo_panel.win = stdscr;
 		__stdscr_pseudo_panel.wstarty = 0;
 		__stdscr_pseudo_panel.wstartx = 0;
@@ -541,8 +528,7 @@ PANEL *pan = (PANEL *)malloc(sizeof(PANEL));
 		__stdscr_pseudo_panel.obscure = (PANELCONS *)0;
 	}
 
-	if(pan)
-	{
+	if(pan) {
 		pan->win = win;
 		pan->above = (PANEL *)0;
 		pan->below = (PANEL *)0;

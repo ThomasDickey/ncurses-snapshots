@@ -30,7 +30,7 @@
 
 #include "curses.priv.h"
 
-int printw(char *fmt, ...)
+int printw(const char *fmt, ...)
 {
 va_list argp;
 char buf[BUFSIZ];
@@ -45,7 +45,7 @@ char buf[BUFSIZ];
 
 
 
-int wprintw(WINDOW *win, char *fmt, ...)
+int wprintw(WINDOW *win, const char *fmt, ...)
 {
 va_list argp;
 char buf[BUFSIZ];
@@ -60,7 +60,7 @@ char buf[BUFSIZ];
 
 
 
-int mvprintw(int y, int x, char *fmt, ...)
+int mvprintw(int y, int x, const char *fmt, ...)
 {
 va_list argp;
 char buf[BUFSIZ];
@@ -73,7 +73,7 @@ char buf[BUFSIZ];
 
 
 
-int mvwprintw(WINDOW *win, int y, int x, char *fmt, ...)
+int mvwprintw(WINDOW *win, int y, int x, const char *fmt, ...)
 {
 va_list argp;
 char buf[BUFSIZ];
@@ -84,7 +84,7 @@ char buf[BUFSIZ];
 	return(wmove(win, y, x) == OK ? waddstr(win, buf) : ERR);
 }
 
-int vwprintw(WINDOW *win, char *fmt, va_list argp)
+int vwprintw(WINDOW *win, const char *fmt, va_list argp)
 {
 char buf[BUFSIZ];
 

@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <assert.h>
+#include <time.h>
 
 #ifndef SIGIOT
 #define SIGIOT SIGABRT
@@ -430,7 +431,6 @@ static void initgame()
 
     ss = (ship_t *)NULL;
     do {
-	static int getcoord();
 	char c, docked[SHIPTYPES + 2], *cp = docked;
 
 	/* figure which ships still wait to be placed */
@@ -1207,7 +1207,7 @@ int who;
     return(shots);
 }
 
-main(argc, argv)
+int main(argc, argv)
 int argc;
 char *argv[];
 {

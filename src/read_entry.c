@@ -26,6 +26,7 @@
  *
  */
 
+#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #if HAVE_UNISTD_H
@@ -192,7 +193,7 @@ char namebuf[128];
  *	if it exists.
  */
 
-int read_entry(char *tn, TERMTYPE *tp)
+int read_entry(const char *tn, TERMTYPE *tp)
 {
 char		filename[1024];
 char		*directory = TERMINFO;
