@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- *     and: Thomas E. Dickey 1996-2004                                      *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 /*-----------------------------------------------------------------
@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.207 2004/04/03 22:33:43 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.208 2004/04/24 20:17:54 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -203,7 +203,7 @@ PutAttrChar(CARG_CH_T ch)
 
 	if (is8bits(CharOf(CHDEREF(ch)))
 	    && (isprint(CharOf(CHDEREF(ch)))
-		|| (SP->_posix_locale && CharOf(CHDEREF(ch)) >= 160))) {
+		|| (SP->_legacy_coding && CharOf(CHDEREF(ch)) >= 160))) {
 	    ;
 	} else {
 	    ch = CHREF(blank);

@@ -32,6 +32,7 @@
 
 #include <curses.priv.h>
 #include <term_entry.h>
+#include <tic.h>
 
 #if HAVE_NC_FREEALL
 
@@ -39,7 +40,7 @@
 extern int malloc_errfd;	/* FIXME */
 #endif
 
-MODULE_ID("$Id: lib_freeall.c,v 1.27 2004/04/17 22:09:18 tom Exp $")
+MODULE_ID("$Id: lib_freeall.c,v 1.28 2004/04/24 18:39:10 tom Exp $")
 
 /*
  * Free all ncurses data.  This is used for testing only (there's no practical

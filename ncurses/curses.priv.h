@@ -29,12 +29,12 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- *     and: Thomas E. Dickey 1996-2002                                      *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 
 /*
- * $Id: curses.priv.h,v 1.257 2004/04/03 20:37:36 tom Exp $
+ * $Id: curses.priv.h,v 1.258 2004/04/24 20:18:07 tom Exp $
  *
  *	curses.priv.h
  *
@@ -493,7 +493,7 @@ struct screen {
 	 * UTF-8, but do not permit ACS at the same time (see tty_update.c).
 	 */
 #if USE_WIDEC_SUPPORT
-	bool		_posix_locale;
+	bool		_legacy_coding;
 	bool		_screen_acs_fix;
 #endif
 };
@@ -641,7 +641,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define WA_NAC		1
 #define isnac(ch)	(AttrOf(ch) & WA_NAC)
 #define if_WIDEC(code)  code
-#define Charable(ch)	((SP != 0 && SP->_posix_locale)			\
+#define Charable(ch)	((SP != 0 && SP->_legacy_coding)		\
 			 || (AttrOf(ch) & A_ALTCHARSET)			\
 			 || (!isnac(ch) &&				\
 			     (ch).chars[1] == L'\0' &&			\
