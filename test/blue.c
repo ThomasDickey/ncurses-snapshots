@@ -13,11 +13,9 @@
  * results, use the ncurses(3) library.  On non-Intel machines, SVr4 curses is
  * just as good.
  *
- * $Id: blue.c,v 1.20 2001/09/15 21:59:58 tom Exp $
+ * $Id: blue.c,v 1.22 2002/03/23 22:17:24 tom Exp $
  */
 
-#include <string.h>
-#include <signal.h>
 #include <time.h>
 
 #include <test.priv.h>

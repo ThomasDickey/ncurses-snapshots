@@ -3,7 +3,7 @@
  *
  * Generate timing statistics for vertical-motion optimization.
  *
- * $Id: hashtest.c,v 1.19 2001/09/15 21:42:27 tom Exp $
+ * $Id: hashtest.c,v 1.21 2002/03/23 22:17:24 tom Exp $
  */
 
 #ifdef TRACE
@@ -14,9 +14,7 @@
 #define USE_TRACE 0
 #endif
 
-#include <string.h>
 #include <ctype.h>
-#include <signal.h>
 
 #include <test.priv.h>
 

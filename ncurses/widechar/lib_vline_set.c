@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_vline_set.c,v 1.1 2002/02/16 21:59:18 tom Exp $")
+MODULE_ID("$Id: lib_vline_set.c,v 1.2 2002/03/23 21:36:01 tom Exp $")
 
 NCURSES_EXPORT(int)
 wvline_set(WINDOW *win, const cchar_t * ch, int n)
@@ -59,7 +59,7 @@ wvline_set(WINDOW *win, const cchar_t * ch, int n)
 	    end = win->_maxy;
 
 	if (ch == 0)
-	    wch = WACS_VLINE;
+	    wch = *WACS_VLINE;
 	else
 	    wch = *ch;
 	wch = _nc_render(win, wch);

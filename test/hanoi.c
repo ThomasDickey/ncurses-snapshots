@@ -14,17 +14,15 @@
  *
  *	Date: 05.Nov.90
  *
- * $Id: hanoi.c,v 1.21 2001/09/15 22:37:15 tom Exp $
+ * $Id: hanoi.c,v 1.23 2002/03/24 00:40:01 tom Exp $
  */
 
 #include <test.priv.h>
 
-#include <string.h>
-
 #define NPEGS			3	/* This is not configurable !! */
 #define MINTILES		3
 #define MAXTILES		9
-#define DEFAULTTILES	7
+#define DEFAULTTILES		7
 #define TOPLINE			6
 #define BASELINE		16
 #define STATUSLINE		(LINES-3)
@@ -70,7 +68,7 @@ int
 main(int argc, char **argv)
 {
     int NTiles, FromCol, ToCol;
-    unsigned char AutoFlag = 0;
+    bool AutoFlag = 0;
 
     switch (argc) {
     case 1:
@@ -295,7 +293,7 @@ Solved(int NumTiles)
 }
 
 static void
-Usage()
+Usage(void)
 {
     fprintf(stderr, "Usage: hanoi [<No Of Tiles>] [a]\n");
     fprintf(stderr,

@@ -2,12 +2,10 @@
  *  newdemo.c	-	A demo program using PDCurses. The program illustrate
  *  	 		the use of colours for text output.
  *
- * $Id: newdemo.c,v 1.21 2001/09/15 22:37:49 tom Exp $
+ * $Id: newdemo.c,v 1.23 2002/03/23 22:17:24 tom Exp $
  */
 
-#include <signal.h>
 #include <time.h>
-#include <string.h>
 
 #include <test.priv.h>
 

@@ -1,7 +1,6 @@
 /*
- * $Id: firework.c,v 1.19 2001/09/15 21:46:35 tom Exp $
+ * $Id: firework.c,v 1.20 2002/03/23 21:41:42 tom Exp $
  */
-#include <signal.h>
 #include <time.h>
 
 #include <test.priv.h>

@@ -40,15 +40,13 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.164 2002/03/17 16:49:15 tom Exp $
+$Id: ncurses.c,v 1.166 2002/03/24 01:33:09 tom Exp $
 
 ***************************************************************************/
 
 #include <stdio.h>
 #include <ctype.h>
-#include <string.h>
 #include <assert.h>
-#include <signal.h>
 
 #include <test.priv.h>
 
@@ -93,21 +91,25 @@ static int save_trace = TRACE_ORDINARY | TRACE_CALLS;
 extern int _nc_tracing;
 #endif
 
-#if !defined(HAVE_NAPMS)
-#define HAVE_NAPMS 1
-#endif
-
 #else
 
 #define mmask_t chtype		/* not specified in XSI */
-#define attr_t chtype		/* not specified in XSI */
-#define ACS_S3          (acs_map['p'])	/* scan line 3 */
-#define ACS_S7          (acs_map['r'])	/* scan line 7 */
-#define ACS_LEQUAL      (acs_map['y'])	/* less/equal */
-#define ACS_GEQUAL      (acs_map['z'])	/* greater/equal */
-#define ACS_PI          (acs_map['{'])	/* Pi */
-#define ACS_NEQUAL      (acs_map['|'])	/* not equal */
-#define ACS_STERLING    (acs_map['}'])	/* UK pound sign */
+
+#define ACS_S3          (CURSES_ACS_ARRAY['p'])		/* scan line 3 */
+#define ACS_S7          (CURSES_ACS_ARRAY['r'])		/* scan line 7 */
+#define ACS_LEQUAL      (CURSES_ACS_ARRAY['y'])		/* less/equal */
+#define ACS_GEQUAL      (CURSES_ACS_ARRAY['z'])		/* greater/equal */
+#define ACS_PI          (CURSES_ACS_ARRAY['{'])		/* Pi */
+#define ACS_NEQUAL      (CURSES_ACS_ARRAY['|'])		/* not equal */
+#define ACS_STERLING    (CURSES_ACS_ARRAY['}'])		/* UK pound sign */
+
+#define WACS_S3         (&(CURSES_WACS_ARRAY['p']))	/* scan line 3 */
+#define WACS_S7         (&(CURSES_WACS_ARRAY['r']))	/* scan line 7 */
+#define WACS_LEQUAL     (&(CURSES_WACS_ARRAY['y']))	/* less/equal */
+#define WACS_GEQUAL     (&(CURSES_WACS_ARRAY['z']))	/* greater/equal */
+#define WACS_PI         (&(CURSES_WACS_ARRAY['{']))	/* Pi */
+#define WACS_NEQUAL     (&(CURSES_WACS_ARRAY['|']))	/* not equal */
+#define WACS_STERLING   (&(CURSES_WACS_ARRAY['}']))	/* UK pound sign */
 
 #endif
 
@@ -314,7 +316,8 @@ wgetch_help(WINDOW *win, bool flags[])
     for (n = 0; n < SIZEOF(help); ++n) {
 	int row = 1 + (n % chk);
 	int col = (n >= chk) ? COLS / 2 : 0;
-	int flg = (strstr(help[n], "toggle") != 0) && flags[UChar(*help[n])];
+	int flg = ((strstr(help[n], "toggle") != 0)
+		   && (flags[UChar(*help[n])] != FALSE));
 	if (flg)
 	    standout();
 	mvprintw(row, col, "%s", help[n]);
@@ -680,7 +683,7 @@ show_attr(int row, int skip, chtype attr, const char *name)
 	const char *s = string;
 	while (*s) {
 	    int ch = *s++;
-	    if ((ch = acs_map[ch]) == 0)
+	    if ((ch = CURSES_ACS_ARRAY[ch]) == 0)
 		ch = ' ';
 	    addch(ch);
 	}
@@ -1372,7 +1375,7 @@ static void
 show_upper_widechars(int first)
 {
     cchar_t temp;
-    int code;
+    wchar_t code;
     int last = first + 31;
 
     erase();
@@ -1384,11 +1387,11 @@ show_upper_widechars(int first)
     for (code = first; code <= last; code++) {
 	int row = 4 + ((code - first) % 16);
 	int col = ((code - first) / 16) * COLS / 2;
+	attr_t attrs = A_NORMAL;
 	char tmp[80];
 	sprintf(tmp, "%3d (0x%x)", code, code);
 	mvprintw(row, col, "%*s: ", COLS / 4, tmp);
-	memset(&temp, 0, sizeof(temp));
-	temp.chars[0] = code;
+	setcchar(&temp, &code, attrs, 0, 0);
 	echo_wchar(&temp);
     }
 }
@@ -1410,7 +1413,8 @@ show_wacs_chars(void)
 {
     int n;
 
-#define BOTH2(name) #name, &(name)
+/*#define BOTH2(name) #name, &(name) */
+#define BOTH2(name) #name, name
 
     erase();
     attron(A_BOLD);
@@ -1467,13 +1471,13 @@ show_wbox_chars(void)
     refresh();
     box_set(stdscr, 0, 0);
     /* *INDENT-OFF* */
-    mvhline_set(LINES / 2, 0,        &WACS_HLINE, COLS);
-    mvvline_set(0,         COLS / 2, &WACS_VLINE, LINES);
-    mvadd_wch(0,           COLS / 2, &WACS_TTEE);
-    mvadd_wch(LINES / 2,   COLS / 2, &WACS_PLUS);
-    mvadd_wch(LINES - 1,   COLS / 2, &WACS_BTEE);
-    mvadd_wch(LINES / 2,   0,        &WACS_LTEE);
-    mvadd_wch(LINES / 2,   COLS - 1, &WACS_RTEE);
+    mvhline_set(LINES / 2, 0,        WACS_HLINE, COLS);
+    mvvline_set(0,         COLS / 2, WACS_VLINE, LINES);
+    mvadd_wch(0,           COLS / 2, WACS_TTEE);
+    mvadd_wch(LINES / 2,   COLS / 2, WACS_PLUS);
+    mvadd_wch(LINES - 1,   COLS / 2, WACS_BTEE);
+    mvadd_wch(LINES / 2,   0,        WACS_LTEE);
+    mvadd_wch(LINES / 2,   COLS - 1, WACS_RTEE);
     /* *INDENT-ON* */
 
 }
@@ -1494,8 +1498,6 @@ show_utf8_chars(void)
 /* display the wide-ACS character set */
 {
     int n;
-
-#define BOTH2(name) #name, &(name)
 
     erase();
     attron(A_BOLD);

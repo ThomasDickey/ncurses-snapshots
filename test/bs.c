@@ -7,29 +7,20 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.32 2001/09/15 21:57:30 tom Exp $
+ * $Id: bs.c,v 1.34 2002/03/24 00:44:26 tom Exp $
  */
 
-#include <signal.h>
 #include <ctype.h>
-#include <string.h>
 #include <assert.h>
 #include <time.h>
 
 #include <test.priv.h>
 
+#include <term.h>
+
 #ifndef SIGIOT
 #define SIGIOT SIGABRT
 #endif
-
-#ifndef A_UNDERLINE		/* BSD curses */
-#define	beep()	write(1,"\007",1);
-#define	cbreak	crmode
-#define	saveterm savetty
-#define	resetterm resetty
-#define	nocbreak nocrmode
-#define strchr	index
-#endif /* !A_UNDERLINE */
 
 static int getcoord(int);
 
@@ -122,8 +113,8 @@ typedef struct {
     int hits;			/* how many times has this ship been hit? */
     char symbol;		/* symbol for game purposes */
     int length;			/* length of ship */
-    char x, y;			/* coordinates of ship start point */
-    unsigned char dir;		/* direction of `bow' */
+    int x, y;			/* coordinates of ship start point */
+    int dir;			/* direction of `bow' */
     bool placed;		/* has it been placed on the board? */
 } ship_t;
 
