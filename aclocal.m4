@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996-2003
 dnl
-dnl $Id: aclocal.m4,v 1.299 2003/02/23 01:35:47 tom Exp $
+dnl $Id: aclocal.m4,v 1.300 2003/03/22 19:13:43 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -554,7 +554,7 @@ for cf_math in "" MATH_H
 do
 for cf_excp in "" MATH_EXCEPTION
 do
-	CXXFLAGS="$cf_save_CXXFLAGS -I${srcdir}/c++ -I${srcdir}/menu"
+	CXXFLAGS="$cf_save_CXXFLAGS -I${srcdir}/c++ -I${srcdir}/menu -I${srcdir}/include"
 	test -n "$cf_math" && CXXFLAGS="$CXXFLAGS -DETIP_NEEDS_${cf_math}"
 	test -n "$cf_excp" && CXXFLAGS="$CXXFLAGS -DETIP_NEEDS_${cf_excp}"
 AC_TRY_COMPILE([

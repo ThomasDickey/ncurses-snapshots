@@ -961,6 +961,7 @@
 ./test/inserts.c
 ./test/keynames.c
 ./test/knight.c
+./test/listused.sh
 ./test/lrtest.c
 ./test/modules
 ./test/ncurses.c
