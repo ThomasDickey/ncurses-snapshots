@@ -11,7 +11,14 @@
 #include <curses.h>
 #include <signal.h>
 #include <ctype.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 #include <assert.h>
+
+#ifndef SIGIOT
+#define SIGIOT SIGABRT
+#endif
 
 #ifndef A_UNDERLINE	/* BSD curses */
 #define	beep()	write(1,"\007",1);
@@ -23,10 +30,14 @@
 #endif /* !A_UNDERLINE */
 
 #ifdef isxdigit		/* aha, must be an AT&T system... */
+
+#if !defined(__386BSD__) && !defined(__bsdi__)
 #define srand(n)	srand48(n)
 #define rand()		lrand48()
 extern long lrand48();
 extern void srand48();
+#endif
+
 #define bzero(s, n)	(void)memset((char *)(s), '\0', n)
 extern char *memset();
 /*
@@ -130,7 +141,7 @@ typedef struct
     char symbol;	/* symbol for game purposes */
     char length;	/* length of ship */
     char x, y;		/* coordinates of ship start point */
-    char dir;		/* direction of `bow' */
+    unsigned char dir;	/* direction of `bow' */
     bool placed;	/* has it been placed on the board? */
 }
 ship_t;
@@ -212,7 +223,7 @@ static void intro()
     if(signal(SIGQUIT,SIG_IGN) != SIG_IGN)
 	(void)signal(SIGQUIT,uninitgame);
 
-    if(tmpname = getlogin())
+    if((tmpname = getlogin()) != 0)
     {
 	(void)strcpy(name,tmpname);
 	name[0] = toupper(name[0]);
@@ -626,7 +637,7 @@ int y, x;
     int	collide;
 
     /* anything on the square */
-    if (collide = IS_SHIP(board[b][x][y]))
+    if ((collide = IS_SHIP(board[b][x][y])) != 0)
 	return(collide);
 
     /* anything on the neighbors */
@@ -792,7 +803,7 @@ static int plyturn()
 {
     ship_t *ss;
     bool hit;
-    char *m;
+    char *m = NULL;
 
     prompt(1, "Where do you want to shoot? ");
     for (;;)
@@ -940,12 +951,12 @@ static bool cpufire(x, y)
 int	x, y;
 {
     bool hit, sunk;
-    ship_t *ss;
+    ship_t *ss = NULL;
 
     hits[COMPUTER][x][y] = (hit = (board[PLAYER][x][y])) ? MARK_HIT : MARK_MISS;
     (void) mvprintw(PROMPTLINE, 0,
 	"I shoot at %c%d. I %s!", y + 'A', x, hit ? "hit" : "miss");
-    if (sunk = (hit && (ss = hitship(x, y))))
+    if ((sunk = (hit && (ss = hitship(x, y)))))
 	(void) printw(" I've sunk your %s", ss->name);
     (void)clrtoeol();
 
@@ -1094,7 +1105,7 @@ static bool cputurn()
     return(hit);
 }
 
-playagain()
+int playagain()
 {
     int j;
     ship_t *ss;

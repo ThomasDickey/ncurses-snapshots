@@ -12,7 +12,7 @@ LIBOBJS= lib_setup.o lib_kernel.o lib_tparm.o read_entry.o lib_tputs.o lib_pad.o
 	lib_insdel.o lib_getstr.o lib_mvwin.o lib_longname.o lib_tstp.o \
 	lib_newterm.o lib_set_term.o lib_overlay.o lib_screen.o lib_scrreg.o \
 	lib_color.o lib_instr.o lib_insstr.o lib_termcap.o lib_twait.o \
-	hardscroll.o sigaction.o lib_window.o names.o \
+	hardscroll.o sigaction.o lib_window.o names.o strerror.o\
 	read_termcap.o names.o captoinfo.o comp_captab.o comp_hash.o \
 	comp_scan.o comp_error.o comp_parse.o alloc_entry.o parse_entry.o
 
@@ -27,7 +27,7 @@ DLIBOBJS= lib_setup.d lib_kernel.d lib_tparm.d read_entry.d lib_tputs.d lib_pad.
 	lib_insdel.d lib_getstr.d lib_mvwin.d lib_longname.d lib_tstp.d \
 	lib_newterm.d lib_set_term.d lib_overlay.d lib_screen.d lib_scrreg.d \
 	lib_color.d lib_instr.d lib_insstr.d lib_termcap.d lib_twait.d \
-	hardscroll.d sigaction.d lib_window.d names.d \
+	hardscroll.d sigaction.d lib_window.d names.d strerror.d\
 	read_termcap.d names.d captoinfo.d comp_captab.d comp_hash.d \
 	comp_scan.d comp_error.d comp_parse.d alloc_entry.d parse_entry.d
 

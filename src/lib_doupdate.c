@@ -66,6 +66,9 @@ void position_check(int expected_y, int expected_x, char *legend)
     static char  buf[9];
     int y, x;
 
+    if (_tracing)
+	return;
+
     memset(buf, '\0', sizeof(buf));
     (void) write(1, "\033[6n", 4);	/* only works on ANSI-compatibles */
     (void) read(0, (void *)buf, 8);

@@ -16,6 +16,9 @@
  */
 
 #include <curses.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
 #define NPEGS			3	/* This is not configurable !! */
 #define MINTILES		3
@@ -52,6 +55,9 @@ int TileColour[] = {
 int NMoves = 0;
 
 void InitTiles(), DisplayTiles(), MakeMove(), AutoMove(), Usage();
+int Solved(int NumTiles);
+int GetMove(int *From, int *To);
+int InvalidMove(int From, int To);
 
 int
 main(int argc, char **argv)
@@ -134,6 +140,7 @@ unsigned char AutoFlag = 0;
 	}
 	curs_set(1);
 	endwin();
+	exit(0);
 }
 
 int

@@ -4,8 +4,10 @@
 #include <signal.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
-#ifdef __386BSD__
+#if defined(__386BSD__) || defined(__bsdi__)
 #define srand48 srandom
 #define lrand48 random
 #endif
@@ -256,6 +258,7 @@ endgame ()                      /* check for filled board or not */
 }
 
 #ifndef abs
+int
 abs(num)
 int	num;
 {

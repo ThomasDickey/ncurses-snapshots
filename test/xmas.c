@@ -93,6 +93,8 @@
 
 #include <curses.h>
 #include <signal.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #define FROMWHO "Mark Hessling - (M.Hessling@gu.edu.au)"
 
@@ -109,6 +111,21 @@ WINDOW
        *lookdeer0, *lookdeer1, *lookdeer2, *lookdeer3, *lookdeer4,
        *w_holiday,
        *w_del_msg;
+
+int boxit();
+int seas();
+int greet();
+int fromwho();
+int tree();
+int balls();
+int star();
+int strng1();
+int strng2();
+int strng3();
+int strng4();
+int strng5();
+int reindeer();
+int blinkit();
 
 void main()
 {
@@ -603,7 +620,7 @@ void main()
   done();
 }
 
-boxit()
+int boxit()
 {
  int x = 0;
 
@@ -632,7 +649,7 @@ boxit()
   return( 0 );
 }
 
-seas()
+int seas()
 {
   mvaddch(4, 1, 'S');
   mvaddch(6, 1, 'E');
@@ -647,7 +664,7 @@ seas()
 }
 
 
-greet()
+int greet()
 {
   mvaddch(3, 5, 'G');
   mvaddch(5, 5, 'R');
@@ -663,14 +680,14 @@ greet()
 }
 
 
-fromwho()
+int fromwho()
 {
   mvaddstr(21, 13, FROMWHO);
   return( 0 );
 }
 
 
-del_msg()
+int del_msg()
 {
   mvwaddstr(w_del_msg, 0, 0, "Hit any key to quit");
   wrefresh(w_del_msg);
@@ -681,7 +698,7 @@ del_msg()
 }
 
 
-tree()
+int tree()
 {
   mvwaddch(treescrn, 1, 11, (chtype)'/');
   mvwaddch(treescrn, 2, 11, (chtype)'/');
@@ -726,7 +743,7 @@ tree()
 }
 
 
-balls()
+int balls()
 {
 
   overlay(treescrn, treescrn2);
@@ -754,7 +771,7 @@ balls()
 }
 
 
-star()
+int star()
 {
   wstandout(treescrn2);
   mvwaddch(treescrn2, 0, 12, (chtype)'*');
@@ -766,7 +783,7 @@ star()
 }
 
 
-strng1()
+int strng1()
 {
   mvwaddch(treescrn2, 3, 13, (chtype)'\'');
   mvwaddch(treescrn2, 3, 12, (chtype)':');
@@ -778,7 +795,7 @@ strng1()
 }
 
 
-strng2()
+int strng2()
 {
   mvwaddch(treescrn2, 5, 14, (chtype)'\'');
   mvwaddch(treescrn2, 5, 13, (chtype)':');
@@ -793,7 +810,7 @@ strng2()
 }
 
 
-strng3()
+int strng3()
 {
   mvwaddch(treescrn2, 7, 16, (chtype)'\'');
   mvwaddch(treescrn2, 7, 15, (chtype)':');
@@ -810,7 +827,7 @@ strng3()
 }
 
 
-strng4()
+int strng4()
 {
   mvwaddch(treescrn2, 9, 17, (chtype)'\'');
   mvwaddch(treescrn2, 9, 16, (chtype)':');
@@ -832,7 +849,7 @@ strng4()
 }
 
 
-strng5()
+int strng5()
 {
   mvwaddch(treescrn2, 11, 19, (chtype)'\'');
   mvwaddch(treescrn2, 11, 18, (chtype)':');
@@ -853,7 +870,7 @@ strng5()
 
 
 
-blinkit()
+int blinkit()
 {
  static int cycle;
 
@@ -917,11 +934,10 @@ blinkit()
 }
 
 
-reindeer()
+int reindeer()
 {
  int looper;
-
-  y_pos = 0;
+ y_pos = 0;
 
 
   for(x_pos = 70; x_pos > 62; x_pos--)

@@ -46,9 +46,7 @@ char *_tputs_trace;
 
 static int	tracefd = 2;	/* default to writing to stderr */
 
-void _tracef(char *fmt, ...);
-
-void _init_trace()
+void trace(const unsigned int tracelevel)
 {
 static int	been_here = 0;
 
@@ -63,11 +61,7 @@ static int	been_here = 0;
 	   	}
 	   	_tracef("TRACING NCURSES version %s", NCURSES_VERSION);
 	}
-}
 
-
-void trace(const unsigned int tracelevel)
-{
    	_tracing = tracelevel;
 }
 

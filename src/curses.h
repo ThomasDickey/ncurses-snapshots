@@ -29,7 +29,9 @@
 #include <unctrl.h>
 #include <stdarg.h>
 
+#if ! defined(__cplusplus)
 typedef char	bool;
+#endif
 #ifndef TRUE
 #  define TRUE    (1)
 #  define FALSE   (0)
@@ -231,7 +233,6 @@ extern char ttytype[];		/* needed for backward compatibility */
 
 /* Debugging : use with libdcurses.a */
 
-extern void _init_trace(void);
 extern void _tracef(char *, ...) __attribute__((format(printf,1,2)));
 extern void _tracedump(char *, WINDOW *);
 extern char *_traceattr(attr_t mode);

@@ -1,15 +1,17 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <signal.h>
 #include <curses.h>
 #include <ctype.h>
 #include <time.h>
 
+int get_colour();
 void explode();
 
 int main()
 {
-int start,end,row,diff,flag,direction,seed;
+int start,end,row,diff,flag = 0,direction,seed;
 
        initscr();
        if (has_colors())

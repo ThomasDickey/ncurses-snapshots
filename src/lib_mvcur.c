@@ -140,7 +140,7 @@
 #define CURRENT_COLUMN	SP->_curscol		/* phys cursor column */
 #define REAL_ATTR	SP->_current_attr	/* phys current attribute */
 #define REAL_CHAR(y, x)	SP->_curscr->_line[y].text[x]	/* phys screen data */
-#define BAUDRATE	SP->_baudrate;		/* bits per secound */
+#define BAUDRATE	SP->_baudrate		/* bits per secound */
 
 /****************************************************************************
  *
@@ -215,9 +215,12 @@ void mvcur_init(SCREEN *sp)
     /*
      * 9 = 7 bits + 1 parity + 1 stop.
      */
-    SP->_char_padding = (9 * 1000 * 10) / BAUDRATE;
+    if (BAUDRATE != 0)
+    	SP->_char_padding = (9 * 1000 * 10) / BAUDRATE;
+    else
+    	SP->_char_padding = 9 * 1000 * 10 / 9600; /* use some default if baudrate == 0 */
 
-    /* non-parameterized local-motion strings */
+         /* non-parameterized local-motion strings */
     SP->_cr_cost = cost(carriage_return, 0);
     SP->_home_cost = cost(cursor_home, 0);
     SP->_ll_cost = cost(cursor_to_ll, 0);
