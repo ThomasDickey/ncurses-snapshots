@@ -40,7 +40,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.52 2003/08/09 22:15:44 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.53 2003/11/23 00:39:30 tom Exp $")
 
 NCURSES_EXPORT_VAR(unsigned) _nc_tracing = 0;	/* always define this */
 
@@ -54,16 +54,24 @@ NCURSES_EXPORT(void)
 trace(const unsigned int tracelevel)
 {
     static bool been_here = FALSE;
-    static char my_name[] = "trace";
+    static char my_name[PATH_MAX];
 
     if ((tracefp == 0) && tracelevel) {
 	const char *mode = been_here ? "ab" : "wb";
+
+	if (*my_name == '\0') {
+	    if (getcwd(my_name, sizeof(my_name) - 10) == 0) {
+		perror("curses: Can't get working directory");
+		exit(EXIT_FAILURE);
+	    }
+	    strcat(my_name, "/trace");
+	}
 
 	been_here = TRUE;
 	_nc_tracing = tracelevel;
 	if (_nc_access(my_name, W_OK) < 0
 	    || (tracefp = fopen(my_name, mode)) == 0) {
-	    perror("curses: Can't open 'trace' file: ");
+	    perror("curses: Can't open 'trace' file");
 	    exit(EXIT_FAILURE);
 	}
 	/* Try to set line-buffered mode, or (failing that) unbuffered,

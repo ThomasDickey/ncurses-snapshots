@@ -44,7 +44,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.80 2003/11/08 21:58:03 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.81 2003/11/15 23:57:01 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN * screenp)
@@ -224,6 +224,11 @@ _nc_setupscreen(short slines, short const scolumns, FILE *output)
     SP->_next_screen = _nc_screen_chain;
     _nc_screen_chain = SP;
 
+#ifdef __DJGPP__
+    T(("setting output mode to binary"));
+    fflush(output);
+    setmode(output, O_BINARY);
+#endif
     _nc_set_buffer(output, TRUE);
     SP->_term = cur_term;
     SP->_lines = slines;

@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.774 2003/11/08 22:03:47 tom Exp $
+-- $Id: NEWS,v 1.776 2003/11/23 01:43:04 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20031122
+	+ add linux-vt terminfo entry (Andrey V Lukyanov <land@long.yar.ru>).
+	+ allow "\|" escape in terminfo; tic should not warn about this.
+	+ save the full pathname of the trace-file the first time it is opened,
+	  to avoid creating it in different directories if the application
+	  opens and closes it while changing its working directory.
+	+ modify configure script to provide a non-empty default for
+	  $BROKEN_LINKER
 
 20031108
 	+ add DJGPP to special case of DOS-style drive letters potentially

@@ -50,7 +50,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.64 2003/05/31 23:27:20 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.65 2003/11/23 00:26:52 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -607,6 +607,8 @@ _nc_trans_string(char *ptr, char *last)
 		default:
 		    _nc_warning("Illegal character %s in \\ sequence",
 				unctrl(ch));
+		    /* FALLTHRU */
+		case '|':
 		    *(ptr++) = (char) ch;
 		}		/* endswitch (ch) */
 	    }			/* endelse (ch < '0' ||  ch > '7') */
