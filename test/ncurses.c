@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.200 2003/12/06 18:10:34 tom Exp $
+$Id: ncurses.c,v 1.202 2004/02/07 20:24:08 tom Exp $
 
 ***************************************************************************/
 
@@ -1877,7 +1877,7 @@ acs_display(void)
 
 #if USE_WIDEC_SUPPORT
 static void
-show_upper_widechars(int first)
+show_upper_widechars(int first, int repeat)
 {
     cchar_t temp;
     wchar_t code;
@@ -1887,7 +1887,6 @@ show_upper_widechars(int first)
     attron(A_BOLD);
     mvprintw(0, 20, "Display of Character Codes %d to %d", first, last);
     attroff(A_BOLD);
-    refresh();
 
     for (code = first; code <= last; code++) {
 	int row = 4 + ((code - first) % 16);
@@ -1895,13 +1894,22 @@ show_upper_widechars(int first)
 	wchar_t codes[10];
 	attr_t attrs = A_NORMAL;
 	char tmp[80];
+	int count = repeat;
 
 	memset(&codes, 0, sizeof(codes));
 	codes[0] = code;
 	sprintf(tmp, "%3ld (0x%lx)", (long) code, (long) code);
 	mvprintw(row, col, "%*s: ", COLS / 4, tmp);
 	setcchar(&temp, codes, attrs, 0, 0);
-	echo_wchar(&temp);
+	do {
+	    /*
+	     * This could use add_wch(), but is done for comparison with the
+	     * normal 'f' test (and to make a test-case for echo_wchar()).
+	     * The screen will flicker because the erase() at the top of the
+	     * function is met by the builtin refresh() in echo_wchar().
+	     */
+	    echo_wchar(&temp);
+	} while (--count > 0);
     }
 }
 
@@ -2064,6 +2072,8 @@ static void
 wide_acs_display(void)
 {
     int c = 'a';
+    int digit = 0;
+    int repeat = 0;
 
     do {
 	switch (c) {
@@ -2078,11 +2088,24 @@ wide_acs_display(void)
 	    break;
 	default:
 	    if (isdigit(c))
-		show_upper_widechars((c - '0') * 32 + 128);
+		digit = (c - '0');
+	    else if (c == '+')
+		++digit;
+	    else if (c == '-' && digit > 0)
+		--digit;
+	    else if (c == '>')
+		++repeat;
+	    else if (c == '<' && repeat > 0)
+		--repeat;
+	    else {
+		beep();
+		break;
+	    }
+	    show_upper_widechars(digit * 32 + 128, repeat);
 	    break;
 	}
 	mvprintw(LINES - 2, 0,
-		 "Select: a WACS, b box, u UTF-8, 0-9 non-ASCII characters, q=quit");
+		 "Select: a WACS, b box, u UTF-8, 0-9,+/- non-ASCII, </> repeat, q=quit");
 	refresh();
     } while ((c = Getchar()) != 'x' && c != 'q');
 

@@ -30,11 +30,11 @@
 #ifndef NCURSES_CURSESW_H_incl
 #define NCURSES_CURSESW_H_incl 1
 
-// $Id: cursesw.h,v 1.29 2004/01/10 20:14:41 tom Exp $
+// $Id: cursesw.h,v 1.30 2004/02/08 00:11:54 tom Exp $
 
 #include <etip.h>
-#include <stdio.h>
 #include <stdarg.h>
+#include <stdio.h>
 
 #if HAVE_STRSTREAM_H && (USE_STRSTREAM_VSCAN||USE_STRSTREAM_VSCAN_CAST)
 #include <strstream.h>

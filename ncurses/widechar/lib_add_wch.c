@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_add_wch.c,v 1.1 2004/01/03 21:04:41 tom Exp $")
+MODULE_ID("$Id: lib_add_wch.c,v 1.2 2004/02/07 17:53:33 tom Exp $")
 
 NCURSES_EXPORT(int)
 wadd_wch(WINDOW *win, const cchar_t * wch)
@@ -54,6 +54,8 @@ wadd_wch(WINDOW *win, const cchar_t * wch)
 		break;
 	    if ((PUTC_n = wcrtomb(PUTC_buf, PUTC_ch, &PUT_st)) <= 0) {
 		code = ERR;
+		if (PUTC_ch < 256)
+		    code = waddch(win, UChar(PUTC_ch));
 		break;
 	    }
 	    for (n = 0; n < PUTC_n; n++) {
@@ -87,16 +89,19 @@ wecho_wchar(WINDOW *win, const cchar_t * wch)
 		break;
 	    if ((PUTC_n = wcrtomb(PUTC_buf, PUTC_ch, &PUT_st)) <= 0) {
 		code = ERR;
+		if (PUTC_ch < 256)
+		    code = waddch(win, UChar(PUTC_ch));
 		break;
 	    }
 	    for (n = 0; n < PUTC_n; n++) {
-		if ((code = wechochar(win, UChar(PUTC_buf[n]))) == ERR) {
+		if ((code = waddch(win, UChar(PUTC_buf[n]))) == ERR) {
 		    break;
 		}
 	    }
 	    if (code == ERR)
 		break;
 	}
+	wrefresh(win);
     }
 
     TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_RETURN("%d"), code));
