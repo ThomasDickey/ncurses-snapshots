@@ -1,4 +1,4 @@
-.\" $Id: terminfo.tail,v 1.22 1998/12/26 19:59:23 tom Exp $
+.\" $Id: terminfo.tail,v 1.26 1999/01/17 03:43:38 tom Exp $
 .\" Beginning of terminfo.tail file
 .ps +1
 .PP
@@ -17,7 +17,7 @@ of what a \fBterminfo\fR entry for a modern terminal typically looks like.
         cub=\\E[%p1%dD, cud=\\E[%p1%dB, cuf=\\E[%p1%dC,
         cuu=\\E[%p1%dA, dch=\\E[%p1%dP, dl=\\E[%p1%dM,
         ech=\\E[%p1%dX, el1=\\E[1K, hpa=\\E[%p1%dG, ht=\\E[I,
-        ich=\\E[%p1%d@, il=\\E[%p1%dL, indn=\\E[%p1%dS,
+        ich=\\E[%p1%d@, il=\\E[%p1%dL, indn=\\E[%p1%dS, .indn=\\E[%p1%dT,
         kbs=^H, kcbt=\\E[Z, kcub1=\\E[D, kcud1=\\E[B,
         kcuf1=\\E[C, kcuu1=\\E[A, kf1=\\E[M, kf10=\\E[V,
         kf11=\\E[W, kf12=\\E[X, kf2=\\E[N, kf3=\\E[O, kf4=\\E[P,
@@ -668,6 +668,69 @@ Not all modes need be supported by
 .BR sgr ,
 only those for which corresponding separate attribute commands exist.
 .PP
+For example, the DEC vt220 supports most of the modes:
+.PP
+.TS
+center;
+l c c
+l c c
+lw28 lw6 lw2 lw20.
+\fBtparm parameter	attribute	escape sequence\fP
+
+none	none	\\E[0m
+p1	standout	\\E[0;1;7m
+p2	underline	\\E[0;4m
+p3	reverse	\\E[0;7m
+p4	blink	\\E[0;5m
+p5	dim	not available
+p6	bold	\\E[0;1m
+p7	invis	\\E[0;8m
+p8	protect	not used
+p9	altcharset	^O (off) ^N (on)
+.TE
+.PP
+We begin each escape sequence by turning off any existing modes, since
+there is no quick way to determine whether they are active.
+Standout is set up to be the combination of reverse and bold.
+The vt220 terminal has a protect mode,
+though it is not commonly used in sgr
+because it protects characters on the screen from the host's erasures.
+The altcharset mode also is different in that it is either ^O or ^N,
+depending on whether it is off or on.
+If all modes are turned on, the resulting sequence is \\E[0;1;4;5;7;8m^N.
+.PP
+Some sequences are common to different modes.
+For example, ;7 is output when either p1 or p3 is true, that is, if
+either standout or reverse modes are turned on.
+.PP
+Writing out the above sequences, along with their dependencies yields
+.PP
+.TS
+center;
+l c c
+l c c
+lw28 lw6 lw2 lw20.
+\fBsequence	when to output	terminfo translation\fP
+
+\\E[0	always	\\E[0
+;1	if p1 or p6	%?%p1%p6%|%t;1%;
+;4	if p2	%?%p2%|%t;4%;
+;5	if p4	%?%p4%|%t;5%;
+;7	if p1 or p3	%?%p1%p3%|%t;7%;
+;8	if p7	%?%p7%|%t;8%;
+m	always	m
+^N or ^O	if p9 ^N, else ^O	%?%p9%t^N%e^O%;
+.TE
+.PP
+Putting this all together into the sgr sequence gives:
+.PP
+.nf
+    sgr=\\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;
+        %?%p4%t;5%;%?%p7%t;8%;m%?%p9%t\\016%e\\017%;,
+.fi
+.PP
+Remember that if you specify sgr, you must also specify sgr0.
+.PP
 Terminals with the ``magic cookie'' glitch
 .RB ( xmc )
 deposit special ``cookies'' when they receive mode-setting sequences,
@@ -836,20 +899,30 @@ and \fBif\fR, the name of a file containing long initialization strings.
 These strings are expected to set the terminal into modes consistent
 with the rest of the terminfo description.
 They are normally sent to the terminal, by the
-.IR tset
+.I init
+option of the
+.IR tput
 program, each time the user logs in.
 They will be printed in the following order:
+run the program
+.BR iprog ;
+output
 .BR is1 ;
 .BR is2 ;
-setting tabs using
+set the margins using
+.BR mgc ,
+.BR smgl and
+.BR smgr ;
+set tabs using
 .B tbc
 and
 .BR hts ;
+print the file
 .BR if ;
-running the program
-.BR iprog ;
 and finally
+output
 .BR is3 .
+.PP
 Most initialization is done with
 .BR is2 .
 Special terminal modes can be set up without duplicating strings

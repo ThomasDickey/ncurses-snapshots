@@ -39,6 +39,10 @@
 #ifndef _TERM_ENTRY_H
 #define _TERM_ENTRY_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define MAX_USES	32
 
 typedef struct entry {
@@ -84,6 +88,8 @@ extern bool _nc_entry_match(char *, char *);
 extern int _nc_resolve_uses(void);
 extern void _nc_free_entries(ENTRY *);
 
-#endif /* _TERM_ENTRY_H */
+#ifdef __cplusplus
+}
+#endif
 
-/* term_entry.h ends here */
+#endif /* _TERM_ENTRY_H */

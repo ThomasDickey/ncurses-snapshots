@@ -150,9 +150,9 @@ A Brief History of Curses
    
 Scope of This Document
 
-   This document describes ncurses, a freeware implementation of the
-   System V curses API with some clearly marked extensions. It includes
-   the following System V curses features:
+   This document describes ncurses, a free implementation of the System V
+   curses API with some clearly marked extensions. It includes the
+   following System V curses features:
    
      * Support for multiple screen highlights (BSD curses could only
        handle one `standout' highlight, usually reverse-video).
@@ -529,7 +529,7 @@ static void finish(int sig)
    Presently, mouse event reporting works in the following environments:
      * xterm and similar programs such as rxvt.
      * Linux console, when configured with gpm(1), Alessandro Rubini's
-       freeware mouse server.
+       mouse server.
      * OS/2 EMX
        
    The mouse interface is very simple. To activate it, you use the
@@ -756,9 +756,9 @@ Hints, Tips, and Tricks
    fragile, and poorly documented. The ncurses library is not yet an
    exception to this rule.
    
-   There is a freeware panels library included in the ncurses
-   distribution that does a pretty good job of strengthening the
-   overlapping-windows facilities.
+   There is a panels library included in the ncurses distribution that
+   does a pretty good job of strengthening the overlapping-windows
+   facilities.
    
    Try to avoid using the global variables LINES and COLS. Use getmaxyx()
    on the stdscr context instead. Reason: your code may be ported to run
@@ -970,7 +970,7 @@ XSI Curses Conformance
    panels library.
    
    The panel library first appeared in AT&T System V. The version
-   documented here is the freeware panel code distributed with ncurses.
+   documented here is the panel code distributed with ncurses.
    
 Compiling With the Panels Library
 
@@ -1074,7 +1074,7 @@ Miscellaneous Other Facilities
    flexible interface.
    
    The menu library first appeared in AT&T System V. The version
-   documented here is the freeware menu code distributed with ncurses.
+   documented here is the menu code distributed with ncurses.
    
 Compiling With the menu Library
 
@@ -1266,7 +1266,7 @@ Miscellaneous Other Features
    of on-screen forms for data entry and program control.
    
    The form library first appeared in AT&T System V. The version
-   documented here is the freeware form code distributed with ncurses.
+   documented here is the form code distributed with ncurses.
    
 Compiling With the form Library
 

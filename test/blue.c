@@ -9,11 +9,11 @@
  *****************************************************************************/
 
 /*
- * Compile this with the command `cc -O blue.c -lcurses -o blue'. For best
- * results, use the portable freeware ncurses(3) library.  On non-Intel
- * machines, SVr4 curses is just as good.
+ * Compile this with the command `cc -O blue.c -lcurses -o blue'.  For best
+ * results, use the ncurses(3) library.  On non-Intel machines, SVr4 curses is
+ * just as good.
  *
- * $Id: blue.c,v 1.17 1998/09/19 18:11:21 tom Exp $
+ * $Id: blue.c,v 1.18 1999/01/17 00:11:56 tom Exp $
  */
 
 #include <test.priv.h>
