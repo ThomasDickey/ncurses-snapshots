@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.737 2003/03/08 22:47:46 tom Exp $
+-- $Id: NEWS,v 1.738 2003/03/16 01:07:20 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030315
+	+ minor fixes for cardfile.c, to make it write the updated fields to
+	  a file when ^W is given.
+	+ add/use _nc_trace_bufcat() to eliminate some fixed buffer limits in
+	  trace code.
 
 20030308
 	+ correct a case in _nc_remove_string(), used by define_key(), to avoid

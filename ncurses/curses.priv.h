@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.236 2003/01/25 23:08:41 tom Exp $
+ * $Id: curses.priv.h,v 1.237 2003/03/15 20:26:57 tom Exp $
  *
  *	curses.priv.h
  *
@@ -971,11 +971,12 @@ extern NCURSES_EXPORT(int) _nc_remove_key (struct tries **, unsigned short);
 extern NCURSES_EXPORT(int) _nc_remove_string (struct tries **, char *);
 
 /* elsewhere ... */
+extern NCURSES_EXPORT(NCURSES_CH_T) _nc_render (WINDOW *, NCURSES_CH_T);
 extern NCURSES_EXPORT(WINDOW *) _nc_makenew (int, int, int, int, int);
 extern NCURSES_EXPORT(char *) _nc_home_terminfo (void);
 extern NCURSES_EXPORT(char *) _nc_trace_buf (int, size_t);
-extern NCURSES_EXPORT(NCURSES_CH_T) _nc_render (WINDOW *, NCURSES_CH_T);
-extern NCURSES_EXPORT(int)  _nc_access (const char *, int);
+extern NCURSES_EXPORT(char *) _nc_trace_bufcat (int, const char *);
+extern NCURSES_EXPORT(int) _nc_access (const char *, int);
 extern NCURSES_EXPORT(int) _nc_baudrate (int);
 extern NCURSES_EXPORT(int) _nc_freewin (WINDOW *);
 extern NCURSES_EXPORT(int) _nc_getenv_num (const char *);
