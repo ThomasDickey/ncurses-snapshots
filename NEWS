@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.461 1999/06/16 09:46:44 tom Exp $
+-- $Id: NEWS,v 1.462 1999/06/19 23:10:44 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990619	pre-release
+	+ modified ifdef's for sigaction and sigvec to ensure we do not try to
+	  handle SIGTSTP if neither is available (from report by Philippe De
+	  Muyter).
+	> patch by Philippe De Muyter:
+	+ in tic.c, use `unlink' if `remove' is not available. 
+	+ use only `unsigned' as fallback value for `speed_t'.  Some files used
+	  `short' instead. 
 
 990616	pre-release
 	+ fix some compiler warnings in tack.
