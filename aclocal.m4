@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.259 2001/11/15 00:36:50 tom Exp $
+dnl $Id: aclocal.m4,v 1.260 2001/12/02 01:39:28 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -155,6 +155,9 @@ dnl Treat the configuration-variable specially here, since we're directly
 dnl substituting its value (i.e., 1/0).
 AC_DEFUN([CF_BOOL_DECL],
 [
+AC_CHECK_HEADER(stdbool.h,
+	cf_cv_header_stdbool_h=1,
+	cf_cv_header_stdbool_h=0)
 AC_MSG_CHECKING([for builtin bool type])
 AC_CACHE_VAL(ifelse($1,,cf_cv_builtin_bool,[$1]),[
 	AC_TRY_COMPILE([
@@ -172,6 +175,9 @@ fi
 dnl ---------------------------------------------------------------------------
 dnl Test for the size of 'bool' in the configured C++ compiler (e.g., a type).
 dnl Don't bother looking for bool.h, since it's been deprecated.
+dnl
+dnl If the current compiler is C rather than C++, we get the bool definition
+dnl from <stdbool.h>.
 AC_DEFUN([CF_BOOL_SIZE],
 [
 AC_MSG_CHECKING([for size of bool])
@@ -180,6 +186,9 @@ AC_CACHE_VAL(cf_cv_type_of_bool,[
 	AC_TRY_RUN([
 #include <stdlib.h>
 #include <stdio.h>
+
+#if defined(__cplusplus)
+
 #ifdef HAVE_GXX_BUILTIN_H
 #include <g++/builtin.h>
 #elif HAVE_GPP_BUILTIN_H
@@ -187,6 +196,15 @@ AC_CACHE_VAL(cf_cv_type_of_bool,[
 #elif HAVE_BUILTIN_H
 #include <builtin.h>
 #endif
+
+#else
+
+#if $cf_cv_header_stdbool_h
+#include <stdbool.h>
+#endif
+
+#endif
+
 main()
 {
 	FILE *fp = fopen("cf_test.out", "w");
@@ -210,8 +228,11 @@ main()
 	rm -f cf_test.out
 AC_MSG_RESULT($cf_cv_type_of_bool)
 if test "$cf_cv_type_of_bool" = unknown ; then
-	AC_MSG_WARN(Assuming unsigned for type of bool)
-	cf_cv_type_of_bool=unsigned
+	case .$NCURSES_BOOL in #(vi
+	.auto|.) NCURSES_BOOL=unsigned;;
+	esac
+	AC_MSG_WARN(Assuming $NCURSES_BOOL for type of bool)
+	cf_cv_type_of_bool=$NCURSES_BOOL
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
@@ -2498,6 +2519,7 @@ AC_SUBST(cf_cv_rel_version)
 AC_SUBST(cf_cv_abi_version)
 AC_SUBST(cf_cv_cc_bool_type)
 AC_SUBST(cf_cv_builtin_bool)
+AC_SUBST(cf_cv_header_stdbool_h)
 AC_SUBST(cf_cv_type_of_bool)dnl
 ])dnl
 dnl ---------------------------------------------------------------------------

@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.115 2001/11/03 15:10:04 tom Exp $ */
+/* $Id: curses.h.in,v 1.116 2001/12/02 01:13:21 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -88,6 +88,13 @@ typedef unsigned @cf_cv_typeof_chtype@ chtype;
 /* XSI and SVr4 specify that curses implements 'bool'.  However, C++ may also
  * implement it.  If so, we must use the C++ compiler's type to avoid conflict
  * with other interfaces.
+ *
+ * A further complication is that <stdbool.h> may declare 'bool' to be a
+ * different type, such as an enum which is not necessarily compatible with
+ * C++.  If we have <stdbool.h>, make 'bool' a macro, so users may #undef it.
+ * Otherwise, let it remain a typedef to avoid conflicts with other #define's.
+ * In either case, make a typedef for NCURSES_BOOL which can be used if needed
+ * from either C or C++.
  */
 
 #undef TRUE
@@ -96,10 +103,23 @@ typedef unsigned @cf_cv_typeof_chtype@ chtype;
 #undef FALSE
 #define FALSE   0
 
+typedef @cf_cv_type_of_bool@ NCURSES_BOOL;
+
 #if (!defined(__cplusplus) || !@cf_cv_builtin_bool@) && (!@cf_cv_cc_bool_type@)
+
+#if @cf_cv_header_stdbool_h@
+#include <stdbool.h>
+#endif
+
 #undef bool
+
+#if @cf_cv_header_stdbool_h@
+#define bool NCURSES_BOOL
+#else
 typedef @cf_cv_type_of_bool@ bool;
 #endif
+
+#endif /* !__cplusplus, etc. */
 
 #ifdef __cplusplus
 extern "C" {
@@ -274,14 +294,14 @@ struct _win_st
 
 	/* option values set by user */
 	bool	_notimeout;	/* no time out on function-key entry? */
-	bool    _clear;		/* consider all data in the window invalid? */
-	bool    _leaveok;	/* OK to not reset cursor on exit? */
-	bool    _scroll;	/* OK to scroll this window? */
-	bool    _idlok;		/* OK to use insert/delete line? */
-	bool    _idcok;		/* OK to use insert/delete char? */
+	bool	_clear;		/* consider all data in the window invalid? */
+	bool	_leaveok;	/* OK to not reset cursor on exit? */
+	bool	_scroll;	/* OK to scroll this window? */
+	bool	_idlok;		/* OK to use insert/delete line? */
+	bool	_idcok;		/* OK to use insert/delete char? */
 	bool	_immed;		/* window in immed mode? (not yet used) */
 	bool	_sync;		/* window in sync mode? */
-	bool    _use_keypad;    /* process function keys into KEY_ symbols? */
+	bool	_use_keypad;	/* process function keys into KEY_ symbols? */
 	int	_delay;		/* 0 = nodelay, <0 = blocking, >0 = delay */
 
 	struct ldat *_line;	/* the actual line data */

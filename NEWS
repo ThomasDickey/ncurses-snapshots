@@ -1,10 +1,22 @@
--- $Id: NEWS,v 1.656 2001/11/25 02:15:52 tom Exp $
+-- $Id: NEWS,v 1.657 2001/12/02 02:09:19 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20011201
+	+ modify script that generates fallbacks.c to compile a temporary
+	  copy of the terminfo source in case the host does not contain all of
+	  the entries requested for fallbacks (request by Greg Roelofs).
+	+ modify configure script to accommodate systems such as Mac OS X whose
+	  <stdbool.h> header defines a 'bool' type inconsistent with ncurses,
+	  which normally makes 'bool' consistent with C++.  Include <stdbool.h>
+	  from curses.h to force consistent usage, define a new type
+	  NCURSES_BOOL and related that to the exported 'bool' as either a
+	  typedef or definition, according to whether <stdbool.h> is present
+	  (based on a bug report for tin 1.5.9 by Aaron Adams <adamsa@mac.com>).
 
 20011124
 	+ added/updated terminfo entries for M$ telnet and KDE konsole -TD
