@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgd.3x,v 1.16 2002/02/16 22:38:32 tom Exp $
+.\" $Id: curs_bkgd.3x,v 1.17 2002/07/20 14:50:13 tom Exp $
 .TH curs_bkgd 3X ""
 .SH NAME
 \fBbkgdset\fR, \fBwbkgdset\fR,
@@ -36,13 +36,13 @@
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 
-\fBvoid bkgdset(const chtype ch);\fR
+\fBvoid bkgdset(chtype ch);\fR
 .br
-\fBvoid wbkgdset(WINDOW *win, const chtype ch);\fR
+\fBvoid wbkgdset(WINDOW *win, chtype ch);\fR
 .br
-\fBint bkgd(const chtype ch);\fR
+\fBint bkgd(chtype ch);\fR
 .br
-\fBint wbkgd(WINDOW *win, const chtype ch);\fR
+\fBint wbkgd(WINDOW *win, chtype ch);\fR
 .br
 \fBchtype getbkgd(WINDOW *win);\fR
 .br

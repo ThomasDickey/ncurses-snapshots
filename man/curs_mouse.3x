@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.19 2002/02/16 22:39:04 tom Exp $
+.\" $Id: curs_mouse.3x,v 1.20 2002/07/20 14:52:14 tom Exp $
 .TH curs_mouse 3X ""
 .SH NAME
 \fBgetmouse\fR, \fBungetmouse\fR,
@@ -55,7 +55,7 @@ MEVENT;\fR
 .br
 \fBmmask_t mousemask(mmask_t newmask, mmask_t *oldmask);\fR
 .br
-\fBbool wenclose(WINDOW *win, int y, int x);\fR
+\fBbool wenclose(const WINDOW *win, int y, int x);\fR
 .br
 \fBbool mouse_trafo(int* pY, int* pX, bool to_screen);\fR
 .br

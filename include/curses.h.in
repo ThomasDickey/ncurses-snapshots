@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey 1996-on                                        *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.130 2002/07/06 20:00:22 tom Exp $ */
+/* $Id: curses.h.in,v 1.131 2002/07/20 14:49:12 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -658,18 +658,18 @@ extern NCURSES_EXPORT(int) vw_printw (WINDOW *, NCURSES_CONST char *,va_list);	/
 extern NCURSES_EXPORT(int) vwscanw (WINDOW *, NCURSES_CONST char *,va_list);	/* implemented */
 extern NCURSES_EXPORT(int) vw_scanw (WINDOW *, NCURSES_CONST char *,va_list);	/* generated */
 extern NCURSES_EXPORT(int) waddch (WINDOW *, const chtype);		/* implemented */
-extern NCURSES_EXPORT(int) waddchnstr (WINDOW *,const chtype *const,int); /* implemented */
+extern NCURSES_EXPORT(int) waddchnstr (WINDOW *,const chtype *,int);	/* implemented */
 extern NCURSES_EXPORT(int) waddchstr (WINDOW *,const chtype *);		/* generated */
-extern NCURSES_EXPORT(int) waddnstr (WINDOW *,const char *const,int);	/* implemented */
+extern NCURSES_EXPORT(int) waddnstr (WINDOW *,const char *,int);	/* implemented */
 extern NCURSES_EXPORT(int) waddstr (WINDOW *,const char *);		/* generated */
 extern NCURSES_EXPORT(int) wattron (WINDOW *, int);			/* generated */
 extern NCURSES_EXPORT(int) wattroff (WINDOW *, int);			/* generated */
 extern NCURSES_EXPORT(int) wattrset (WINDOW *, int);			/* generated */
 extern NCURSES_EXPORT(int) wattr_get (WINDOW *, attr_t *, short *, void *);	/* generated */
-extern NCURSES_EXPORT(int) wattr_on (WINDOW *, NCURSES_CONST attr_t, void *);	/* implemented */
-extern NCURSES_EXPORT(int) wattr_off (WINDOW *, NCURSES_CONST attr_t, void *);	/* implemented */
-extern NCURSES_EXPORT(int) wattr_set (WINDOW *, attr_t, short, void *);		/* generated */
-extern NCURSES_EXPORT(int) wbkgd (WINDOW *,const chtype);		/* implemented */
+extern NCURSES_EXPORT(int) wattr_on (WINDOW *, attr_t, void *);		/* implemented */
+extern NCURSES_EXPORT(int) wattr_off (WINDOW *, attr_t, void *);	/* implemented */
+extern NCURSES_EXPORT(int) wattr_set (WINDOW *, attr_t, short, void *);	/* generated */
+extern NCURSES_EXPORT(int) wbkgd (WINDOW *, chtype);			/* implemented */
 extern NCURSES_EXPORT(void) wbkgdset (WINDOW *,chtype);			/* implemented */
 extern NCURSES_EXPORT(int) wborder (WINDOW *,chtype,chtype,chtype,chtype,chtype,chtype,chtype,chtype);	/* implemented */
 extern NCURSES_EXPORT(int) wchgat (WINDOW *, int, attr_t, short, const void *);/* implemented */

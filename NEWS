@@ -1,10 +1,33 @@
--- $Id: NEWS,v 1.696 2002/07/13 21:47:30 tom Exp $
+-- $Id: NEWS,v 1.697 2002/07/20 19:34:10 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020720
+	+ check error-return from _nc_set_tty_mode() in _nc_initscr() and
+	  reset_prog_mode() (report/patch by Philippe Blain).
+	+ regenerate configure using patch for autoconf 2.52, to address
+	  problem with identifying C++ bool type.
+	+ correct/improve logic to produce an exit status for errors in tput,
+	  which did not exit with an error when told to put a string not in the
+	  current terminfo entry (report by David Gomez <david@pleyades.net>).
+	+ modify configure script AC_OUTPUT() call to work around defect in
+	  autoconf 2.52 which adds an ifdef'd include to the generated
+	  configure definitions.
+	+ remove fstat() check from scr_init(), which also fixes a missing
+	  include for <sys/stat.h> from 20020713 (reported by David Ellement,
+	  fix suggested by Philippe Blain).
+	+ update curs_scanw.3x manpage to note that XSI curses differs from
+	  SVr4 curses: return-values are incompatible.
+	+ correct several prototypes in manpages which used const
+	  inconsistently with the curses.h file, and removed spurious const's
+	  in a few places from curses.h, e.g., for wbkgd() (report by Glenn
+	  Maynard <glenn@zewt.org>).
+	+ change internal type used by tparm() to long, to work with LP64 model.
+	+ modify nc_alloc.h to allow building with g++, for testing.
 
 20020713
 	+ add resize-handling to cardfile.c test program.

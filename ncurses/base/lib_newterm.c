@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -47,7 +47,7 @@
 #include <term.h>		/* clear_screen, cup & friends, cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.52 2001/08/04 16:47:48 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.53 2002/07/20 22:17:11 Philippe.Blain Exp $")
 
 #ifndef ONLCR			/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -64,18 +64,25 @@ MODULE_ID("$Id: lib_newterm.c,v 1.52 2001/08/04 16:47:48 tom Exp $")
 static inline int
 _nc_initscr(void)
 {
+    int result = ERR;
+
     /* for extended XPG4 conformance requires cbreak() at this point */
     /* (SVr4 curses does this anyway) */
-    cbreak();
+    if (cbreak() == OK) {
+	TTY buf;
 
+	buf = cur_term->Nttyb;
 #ifdef TERMIOS
-    cur_term->Nttyb.c_lflag &= ~(ECHO | ECHONL);
-    cur_term->Nttyb.c_iflag &= ~(ICRNL | INLCR | IGNCR);
-    cur_term->Nttyb.c_oflag &= ~(ONLCR);
+	buf.c_lflag &= ~(ECHO | ECHONL);
+	buf.c_iflag &= ~(ICRNL | INLCR | IGNCR);
+	buf.c_oflag &= ~(ONLCR);
 #else
-    cur_term->Nttyb.sg_flags &= ~(ECHO | CRMOD);
+	buf.sg_flags &= ~(ECHO | CRMOD);
 #endif
-    return _nc_set_tty_mode(&cur_term->Nttyb);
+	if ((result = _nc_set_tty_mode(&buf)) == OK)
+	    cur_term->Nttyb = buf;
+    }
+    return result;
 }
 
 /*
@@ -95,8 +102,7 @@ filter(void)
 }
 
 NCURSES_EXPORT(SCREEN *)
-newterm
-(NCURSES_CONST char *name, FILE * ofp, FILE * ifp)
+newterm(NCURSES_CONST char *name, FILE * ofp, FILE * ifp)
 {
     int errret;
     int slk_format = _nc_slk_format;

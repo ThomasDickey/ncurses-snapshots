@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+.\" Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -27,10 +27,10 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.16 2000/09/09 20:43:33 tom Exp $
+.\" $Id: tput.1,v 1.17 2002/07/20 19:13:00 tom Exp $
 .TH tput 1 ""
 .ds d @TERMINFO@
-.ds n 5
+.ds n 1
 .SH NAME
 \fBtput\fR, \fBreset\fR - initialize a terminal or query terminfo database
 .SH SYNOPSIS
@@ -126,7 +126,7 @@ Initialize the terminal according to the type of
 terminal in the environmental variable \fBTERM\fR.  This
 command should be included in everyone's .profile after
 the environmental variable \fBTERM\fR has been exported, as
-illustrated on the \fBprofile\fR(4) manual page.
+illustrated on the \fBprofile\fR(5) manual page.
 .TP 5
 \fBtput -T5620 reset\fR
 Reset an AT&T 5620 terminal, overriding the type of
@@ -196,39 +196,50 @@ tab settings for some terminals, in a format
 appropriate to be output to the terminal (escape
 sequences that set margins and tabs); for more
 information, see the "Tabs and Initialization"
-section of \fBterminfo\fR(4)
-.SH SEE ALSO
-\fB@CLEAR@\fR(1), \fBstty\fR(1), \fBtabs\fR(\*n).  \fBprofile\fR(\*n),
-\fBterminfo\fR(4) in the \fISystem\fR \fIAdministrator\fR'\fIs\fR
-\fIReference\fR \fIManual\fR.  Chapter 10 of the
-\fIProgrammer\fR'\fIs\fR \fIGuide\fR.
+section of \fBterminfo\fR(5)
 .SH EXIT CODES
-If \fIcapname\fR is of type boolean, a value of \fB0\fR is set for
-TRUE and \fB1\fR for FALSE unless the \fB-S\fR option is used.
-.PP
-If \fIcapname\fR is of type string, a value of \fB0\fR is set if the
-\fIcapname\fR is defined for this terminal \fItype\fR (the value of
-\fIcapname\fR is returned on standard output); a value of \fB1\fR is
-set if \fIcapname\fR is not defined for this terminal \fItype\fR (a
-null value is returned on standard output).
-.PP
-If \fIcapname\fR is of type boolean or string and the \fB-S\fR option
-is used, a value of \fB0\fR is returned to indicate that all lines
-were successful.  No indication of which line failed can be given so
+If the \fB-S\fR option is used,
+tput checks for errors from each line,
+and if any errors are found, will set the exit code to 4 plus the
+number of lines with errors.
+If no errors are found, the exit code is \fB0\fR.
+No indication of which line failed can be given so
 exit code \fB1\fR will never appear.  Exit codes \fB2\fR, \fB3\fR, and
 \fB4\fR retain their usual interpretation.
-.PP
-If \fIcapname\fR is of type integer, a value of \fB0\fR is always set,
+If the \fB-S\fR option is not used,
+the exit code depends on the type of \fIcapname\fR:
+.RS 5
+.TP
+.I boolean
+a value of \fB0\fR is set for TRUE and \fB1\fR for FALSE.
+.TP
+.I string
+a value of \fB0\fR is set if the
+\fIcapname\fR is defined for this terminal \fItype\fR (the value of
+\fIcapname\fR is returned on standard output);
+a value of \fB1\fR is set if \fIcapname\fR
+is not defined for this terminal \fItype\fR
+(nothing is written to standard output).
+.TP
+.I integer
+a value of \fB0\fR is always set,
 whether or not \fIcapname\fR is defined for this terminal \fItype\fR.
 To determine if \fIcapname\fR is defined for this terminal \fItype\fR,
-the user must test the value of standard output.  A value of \fB-1\fR
+the user must test the value written to standard output.
+A value of \fB-1\fR
 means that \fIcapname\fR is not defined for this terminal \fItype\fR.
+.TP
+.I other
+\fBreset\fR or \fBinit\fR may fail to find their respective files.
+In that case, the exit code is set to 4 + \fBerrno\fR.
+.RE
 .PP
 Any other exit code indicates an error; see the DIAGNOSTICS section.
 .SH DIAGNOSTICS
 \fBtput\fR prints the following error messages and sets the corresponding exit
 codes.
 .PP
+.ne 15
 .TS
 l l.
 exit code	error message
@@ -242,12 +253,15 @@ T}
 \fB2\fR	usage error
 \fB3\fR	unknown terminal \fItype\fR or no \fBterminfo\fR database
 \fB4\fR	unknown \fBterminfo\fR capability \fIcapname\fR
+\fB>4\fR	error occurred in -S
 =
 .TE
 .SH PORTABILITY
 The \fBlongname\fR and \fB-S\fR options, and the parameter-substitution
 features used in the \fBcup\fR example, are not supported in BSD curses or in
 AT&T/USL curses before SVr4.
+.SH SEE ALSO
+\fB@CLEAR@\fR(1), \fBstty\fR(1), \fBtabs\fR(\*n), \fBterminfo\fR(5).
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:
