@@ -38,7 +38,7 @@ static int width = 60;		/* max line width for listings */
 static int tracelevel;		/* level of debug output */
 
 /* indirection pointers for implementing sort and display modes */
-static int *bool_indirect, *num_indirect, *str_indirect;
+static const int *bool_indirect, *num_indirect, *str_indirect;
 static char **bool_names, **num_names, **str_names;
 
 static char *separator, *trailer;
@@ -394,6 +394,16 @@ int	predval, len = 0;
 	}
     }
 
+    /*
+     * kluge: trim off trailing \n\t to avoid an extra blank line
+     * in infocmp -u output when there are no string differences
+     */
+    if ((j = strlen(outbuf)) >= 2)
+    {
+	if (outbuf[j-1] == '\t' && outbuf[j-2] == '\n')
+	    outbuf[j-2] = '\0';
+    }
+
 #if 0
     fprintf(stderr, "term_names=%s, len=%d, strlen(outbuf)=%d, outbuf=%s\n",
 	    tterm->term_names, len, strlen(outbuf), outbuf);
@@ -461,7 +471,7 @@ void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int idx))
     (void) fputs(outbuf, stdout);
 }
 
-void compare_entry(void (*hook)(int t, int i, char *name))
+void compare_entry(void (*hook)(int t, int i, const char *name))
 /* compare two entries */
 {
     int	i, j;

@@ -119,7 +119,7 @@ bool	wide;
 		if (wide) {
 		    int	oind = oline->oldindex;
 
-		    nline->oldindex = (oind == NEWINDEX) ? NEWINDEX : begy + oind;
+		    nline->oldindex = (oind == _NEWINDEX) ? _NEWINDEX : begy + oind;
 		}
 
 		oline->firstchar = oline->lastchar = _NOCHANGE;
@@ -131,7 +131,7 @@ bool	wide;
 	   	newscr->_clear = TRUE;
 	}
 
-	if (! win->_leave) {
+	if (! win->_leaveok) {
 	   	newscr->_cury = win->_cury + win->_begy;
 	   	newscr->_curx = win->_curx + win->_begx;
 	}

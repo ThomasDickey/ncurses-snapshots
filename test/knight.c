@@ -3,7 +3,8 @@
  *
  * The original of this game was anonymous.  It had an unbelievably bogus
  * interface, you actually had to enter square coordinates!  Redesign by
- * Eric S. Raymond <esr@snark.thyrsus.com> July 22 1995.
+ * Eric S. Raymond <esr@snark.thyrsus.com> July 22 1995.  Mouse support
+ * added September 20th 1995.
  */
 
 #include <curses.h>
@@ -33,7 +34,11 @@
 #define PLUS_COLOR	2
 #define MINUS_COLOR	3
 
-#define cellmove(y, x)	wmove(boardwin, 1 + 2*(y), 2 + 4 * (x))
+#define CX(x)	(2 + 4 * (x))
+#define CY(y)	(1 + 2 * (y))
+#define cellmove(y, x)	wmove(boardwin, CY(y), CX(x))
+#define CXINV(x)	(((x) - 1) / 4)
+#define CYINV(y)	(((y) - 2) / 2)
 
 typedef struct
 {
@@ -97,6 +102,10 @@ static void init (void)
 	minus |= COLOR_PAIR(MINUS_COLOR);
     }
 
+#ifdef NCURSES_MOUSE_VERSION
+    (void) mousemask(BUTTON1_CLICKED, (mmask_t *)NULL);
+#endif /* NCURSES_MOUSE_VERSION*/
+
     oldch = minus;
 }
 
@@ -131,7 +140,9 @@ static void help2(void)
 
     (void)waddstr(helpwin, "You can move around with the arrow keys or\n");
     (void)waddstr(helpwin, "with the rogue/hack movement keys.  Other\n");
-    (void)waddstr(helpwin, "commands allow you to undo moves or redraw.\n\n");
+    (void)waddstr(helpwin, "commands allow you to undo moves or redraw.\n");
+    (void)waddstr(helpwin, "Your mouse may work; try left-button to\n");
+    (void)waddstr(helpwin, "move to the square under the pointer.\n\n");
 
     (void)waddstr(helpwin, "x,q -- exit             y k u    7 8 9\n");
     (void)waddstr(helpwin, "r -- redraw screen       \\|/      \\|/ \n");
@@ -141,9 +152,7 @@ static void help2(void)
 
     (void)waddstr(helpwin,"\nYou can place your knight on the selected\n");
     (void)waddstr(helpwin, "square with spacebar, Enter, or the keypad\n");
-    (void)waddstr(helpwin, "center key.\n\n");
-
-    (void)waddstr(helpwin, "You can quit with `x' or `q'.\n");
+    (void)waddstr(helpwin, "center key.  You can quit with `x' or `q'.\n");
 
     (void)mvwaddstr(helpwin, NOTIFYY-INSTRY, 0,
 		    "Press `?' to go to game explanation"); 
@@ -245,6 +254,28 @@ static void play (void)
 	       case KEY_C3:
 		   ny = rw+1;        nx = col+1;
 		   break;
+
+#ifdef NCURSES_MOUSE_VERSION
+	       case KEY_MOUSE:
+		   {
+		       MEVENT	myevent;
+
+		       getmouse(&myevent);
+		       if (myevent.y >= CY(0) && myevent.y <= CY(BDEPTH)
+			   && myevent.x >= CX(0) && myevent.x <= CX(BWIDTH))
+		       {
+			   nx = CXINV(myevent.x);
+			   ny = CYINV(myevent.y);
+			   ungetch('\n');
+			   break;
+		       }
+		       else
+		       {
+			   beep();
+			   continue;
+		       }
+		   }
+#endif /* NCURSES_MOUSE_VERSION */
 
 	       case KEY_B2:
 	       case '\n':

@@ -109,9 +109,6 @@ static inline void GoTo(int row, int col)
 	 * CR & LF used for local character motions!
 	 */
 	if ((oldattr & A_ALTCHARSET)
-#ifdef A_PCCHARSET
-	    || (oldattr & A_PCCHARSET)
-#endif /* A_PCCHARSET */
 	    || (oldattr && !move_standout_mode))
 	{
        		TR(TRACE_CHARPUT, ("turning off (%lx) %s before move",

@@ -160,8 +160,15 @@ ENTRY	*qp;
 		for_entry_list(qp)
 		    if (qp->nuses)
 		    {
-			(void) fputs(qp->tterm.term_names, stderr);
-			(void) fputc('\n', stderr);
+			for (i = 0; i < qp->nuses; i++)
+			{
+			    (void) fputs(canonical_name((char *)qp->uses[i], (char *)NULL),
+					 stderr);
+			    (void) fputc(' ', stderr);
+			}    
+			(void) fprintf(stderr,
+				       "in %s\n",
+				      canonical_name(qp->tterm.term_names, (char *)NULL));
 		   }
 		if (!check_only)
 		    exit(1);
@@ -206,9 +213,9 @@ ENTRY	*qp;
 		    dump_entry(&qp->tterm, NULL);
 		    for (j = 0; j < qp->nuses; j++)
 			if (infodump)
-			    (void) printf("use=%s,", qp->uses[j]);
+			    (void) printf("use=%s,", (char *)(qp->uses[j]));
 			else
-			    (void) printf("tc=%s:", qp->uses[j]);
+			    (void) printf("tc=%s:", (char *)(qp->uses[j]));
 		    (void) putchar('\n');
 		}
 		(void) fseek(stdin, _nc_tail->cend, SEEK_SET);

@@ -36,29 +36,31 @@
 |                    default menu.
 |
 |   Return Values :  NULL on error
-|
 +--------------------------------------------------------------------------*/
 MENU *new_menu(ITEM ** items)
 {
-    MENU *menu = (MENU *)calloc(1,sizeof(MENU));
+  MENU *menu = (MENU *)calloc(1,sizeof(MENU));
   
-    if (menu)
+  if (menu)
     {
-	*menu = _nc_Default_Menu;
-	menu->rows = menu->frows;
-	menu->cols = menu->fcols;
-	if (items && *items)
+      *menu = _nc_Default_Menu;
+      menu->rows = menu->frows;
+      menu->cols = menu->fcols;
+      if (items && *items)
 	{
-	    if (!_nc_Connect_Items(menu,items))
+	  if (!_nc_Connect_Items(menu,items))
 	    {
-		free(menu);
-		menu = (MENU *)0;
+	      free(menu);
+	      menu = (MENU *)0;
 	    }
 	}
     }
-    return(menu);
-}
 
+  if (!menu)
+    SET_ERROR(E_SYSTEM_ERROR);
+
+  return(menu);
+}
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -70,20 +72,20 @@ MENU *new_menu(ITEM ** items)
 |   Return Values :  E_OK               - success
 |                    E_BAD_ARGUMENT     - Invalid menu pointer passed
 |                    E_POSTED           - Menu is already posted
-|
 +--------------------------------------------------------------------------*/
 int free_menu(MENU * menu)
 {
-    if (!menu)
-	RETURN(E_BAD_ARGUMENT);
-
-    ASSERT_NOT_POSTED( menu );
-
-    if (menu->items) 
-	_nc_Disconnect_Items(menu);
-
-    free(menu);
-    RETURN(E_OK);
+  if (!menu)
+    RETURN(E_BAD_ARGUMENT);
+  
+  if ( menu->status & _POSTED )
+    RETURN(E_POSTED);
+  
+  if (menu->items) 
+    _nc_Disconnect_Items(menu);
+  
+  free(menu);
+  RETURN(E_OK);
 }
 
-/* menu_new.c ends here */
+/* m_new.c ends here */

@@ -128,7 +128,7 @@ int i;
 
 	nwin->_clear	   = win->_clear; 
 	nwin->_scroll	   = win->_scroll;
-	nwin->_leave	   = win->_leave;
+	nwin->_leaveok	   = win->_leaveok;
 	nwin->_use_keypad  = win->_use_keypad;
 	nwin->_delay   	   = win->_delay;
 	nwin->_immed	   = win->_immed;

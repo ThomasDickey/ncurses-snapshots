@@ -25,6 +25,10 @@
  *	_nc_get_token()
  *	_nc_panic_mode()
  *	int _nc_syntax;
+ *	int _nc_curr_line;
+ *	long _nc_curr_file_pos;
+ *	long _nc_comment_start;
+ *	long _nc_comment_end;
  */
 
 #include "curses.priv.h"
@@ -48,16 +52,21 @@ long	_nc_curr_file_pos;	/* file offset of current line */
 long	_nc_comment_start;	/* start of comment range before name */
 long	_nc_comment_end;	/* end of comment range before name */
 
-static int first_column;	/* See 'next_char()' below */
-static char separator = ',';	/* capability separator */
-static FILE *yyin;		/* scanner's input file descriptor */
-static char *bufptr;		/* otherwise, the input buffer pointer */
-static char *bufstart;		/* start of buffer so we can compute offsets */
+/*****************************************************************************
+ *
+ * Token-grabbing machinery
+ *
+ *****************************************************************************/
+
+static bool first_column;	/* See 'next_char()' below */
+static char separator;		/* capability separator */
 static int pushtype;		/* type of pushback token */
 
-static void reset_to(char);
 static int  next_char(void);
+static long stream_pos(void);
+static bool end_of_stream(void);
 static char trans_string(char *);
+static void push_back(char c);
 
 /*
  *	int
@@ -115,10 +124,10 @@ long		token_start;
 	    return(retval);
 	}
 
-	if (bufptr ? (*bufptr == '\0') : feof(yyin))
+	if (end_of_stream())
 	    return(EOF);
 
-	token_start = bufptr ? (bufptr - bufstart) : ftell(yyin);
+	token_start = stream_pos();
 	while ((ch = next_char()) == '\n'  ||  iswhite(ch))
 	    continue;
 
@@ -162,62 +171,56 @@ long		token_start;
 			_nc_comment_start = token_start;
 			_nc_comment_end = _nc_curr_file_pos;
 
-	    		/*
-			 * This is hairy.  We're parsing the first line of the
-			 * entry, trying to figure out if it uses termcap or
-			 * terminfo syntax.  We use the following rules:
-			 * 
-			 * 1. If the last character before the newline is
-			 *    is `\' or '$', it's a multiline termcap entry
-			 *    (the $ case copes with some broken entries in
-			 *    the SVr4 termcap file).
-			 *
-			 * 2. If the last character before the newline is
-			 *    a `:', it's a single-line termcap entry.
-			 *
-			 * 3. If the last character before the newline is
-			 *    a ',', it's a terminfo entry.
-			 *
-			 * 4. If the last character before the newline is
-			 *    none of the above, but the first line does
-			 *    contain a comma, it's a one-line terminfo entry.
-			 *
-			 * 5. Anything else is an error.
-			 *
-			 */
-			while ((ch = next_char()) != '\n' && ch != EOF)
-			    *(ptr++) = ch;
-			--ptr;
+			_nc_syntax = ERR;
+			while ((ch = next_char()) != '\n')
+			{
+			    if (ch == EOF)
+				_nc_err_abort("Premature EOF");
+			    else if (ch == ':')
+			    {
+				_nc_syntax = SYN_TERMCAP;
+				separator = ':';
+				break;
+			    }
+			    else if (ch == ',')
+			    {
+				_nc_syntax = SYN_TERMINFO;
+				separator = ',';
+				/*
+				 * Fall-through here is not an accident.
+				 * The idea is that if we see a comma, we
+				 * figure this is terminfo unless we 
+				 * subsequently run into a colon -- but
+				 * we don't stop looking for that colon until
+				 * hitting a newline.  This allows commas to
+				 * be embedded in description fields of
+				 * either syntax.
+				 */
+				/* FALL THROUGH */
+			    }
 
-			if (isspace(*ptr))
-			    ptr--;
-
-			if (ch == EOF)
-			    _nc_err_abort("Premature EOF");
-			else if (ptr[0] == '\\' || ptr[0] == '$')
-			{
-			    _nc_syntax = SYN_TERMCAP;
-			    reset_to(separator = ':');
-			    --ptr;
+			    *ptr++ = ch;
 			}
-			else if (ptr[0] == ':')	/* one-line termcap */
-			{
-			    _nc_syntax = SYN_TERMCAP;
-			    reset_to(separator = ':');
-			}
-			else if (ptr[0] == ',')	/* normal terminfo */
-			{
-			    _nc_syntax = SYN_TERMINFO;
-			    separator = ',';
-			}
-			else if (strchr(buffer, ','))	/* one-line terminfo */
-			{
-			    _nc_syntax = SYN_TERMINFO;
-			    reset_to(separator = ',');
-			}
-			else
-			    _nc_err_abort("Can't determine the entry format");
 			ptr[0] = '\0';
+			if (_nc_syntax == ERR)
+			{
+			    /*
+			     * Grrr...what we ought to do here is barf, 
+			     * complaining that the entry is malformed.
+			     * But because a couple of name fields in the 
+			     * 8.2 termcap file end with |\, we just have
+			     * to assume it's termcap syntax.
+			     */
+			    _nc_syntax = SYN_TERMCAP;
+			    separator = ':';
+			}
+			else if (_nc_syntax == SYN_TERMINFO)
+			{
+			    /* throw away trailing /, *$/ */
+			    for (--ptr; iswhite(*ptr) || *ptr == ','; ptr--)
+				continue;
+			    ptr[1] = '\0';
+			}
 
 			/*
 			 * Whitespace in a name field other than the long name
@@ -349,128 +352,6 @@ end_of_token:
 	return(type);
 }
 
-
-/*
- *	_nc_push_token()
- *
- *	Push a token of given type so that it will be reread by the next
- *	get_token() call.
- */
-
-void _nc_push_token(int class)
-{
-    /*
-     * This implementation is kind of bogus, it will fail if we ever do
-     * more than one pushback at a time between get_token() calls.  It
-     * relies on the fact that curr_tok is static storage that nothing 
-     * but get_token() touches.
-     */
-    pushtype = class;
-
-    DEBUG(3, ("pushing token: `%s', class %d",
-	      _nc_curr_token.tk_name, pushtype));
-}
-
-/*
- * 	int next_char()
- *
- *	Returns the next character in the input stream.  Comments and leading
- *	white space are stripped.
- *
- *	The global state variable 'firstcolumn' is set TRUE if the character
- * 	returned is from the first column of the input line.
- *
- *	The global variable _nc_curr_line is incremented for each new line.
- *	The global variable _nc_curr_file_pos is set to the file offset of the
- *	beginning of each line.
- */
-#define LEXBUFSIZ	1024
-
-static int	curr_column = -1;
-static char	line[LEXBUFSIZ];
-
-static int
-next_char(void)
-{
-	char		*rtn_value;
-
-	if (curr_column < 0 || curr_column >= LEXBUFSIZ || line[curr_column] == '\0')
-	{
-	    do {
-		_nc_curr_file_pos = bufptr ? (bufptr - bufstart) : ftell(yyin);
-
-		if (bufptr)
-		{
-		    if ((rtn_value = strchr(bufptr, '\n')) != NULL)
-		    {
-			memcpy(line, bufptr,
-			       (unsigned)(rtn_value + 1 - bufptr));
-			bufptr = rtn_value + 1;
-			_nc_curr_line++;
-		    }
-		}
-		else
-		{
-		    if ((rtn_value = fgets(line, LEXBUFSIZ, yyin)) != NULL)
-			_nc_curr_line++;
-		}
-	    } while
-		(rtn_value != NULL && line[0] == '#');
-
-	    if (rtn_value == NULL)
-		return (EOF);
-
-	    curr_column = 0;
-	    while (iswhite(line[curr_column]))
-		curr_column++;
-	}
-
-	if (curr_column == 0  &&  line[0] != '\n')
-	    first_column = TRUE;
-	else
-	    first_column = FALSE;
-	
-	return (line[curr_column++]);
-}
-
-static void reset_to(char ch)
-/* roll back the buffer pointer to just after the first instance of ch */
-{
-    char	*backto = strchr(line, ch);
-
-    if (backto)
-	curr_column = (backto - line + 1);
-
-}
-
-static
-void backspace(void)
-{
-	curr_column--;
-
-	if (curr_column < 0)
-	    _nc_syserr_abort("Backspaced off beginning of line");
-}
-
-
-/*
- *	_nc_reset_input()
- *
- *	Resets the input-reading routines.  Used on initialization,
- *	or after a seek has been done.
- */
-
-void _nc_reset_input(FILE *fp, char *buf)
-{
-	curr_column = -1;
-	pushtype = NO_PUSHBACK;
-	yyin = fp;
-	bufptr = bufstart = buf;
-	_nc_curr_file_pos = 0L;
-	_nc_curr_line = 0;
-}
-
-
 /*
  *	char
  *	trans_string(ptr)
@@ -524,7 +405,7 @@ chtype	ch, last_ch = '\0';
 			    _nc_err_abort("Premature EOF");
 			
 			if (ch < '0'  ||  ch > '7') {
-			    backspace();
+			    push_back(ch);
 			    break;
 			}
 
@@ -589,6 +470,27 @@ chtype	ch, last_ch = '\0';
 }
 
 /*
+ *	_nc_push_token()
+ *
+ *	Push a token of given type so that it will be reread by the next
+ *	get_token() call.
+ */
+
+void _nc_push_token(int class)
+{
+    /*
+     * This implementation is kind of bogus, it will fail if we ever do
+     * more than one pushback at a time between get_token() calls.  It
+     * relies on the fact that curr_tok is static storage that nothing 
+     * but get_token() touches.
+     */
+    pushtype = class;
+
+    DEBUG(3, ("pushing token: `%s', class %d",
+	      _nc_curr_token.tk_name, pushtype));
+}
+
+/*
  * Panic mode error recovery - skip everything until a "ch" is found.
  */
 void _nc_panic_mode(char ch)
@@ -603,3 +505,108 @@ void _nc_panic_mode(char ch)
 			return;
 	}
 }
+
+/*****************************************************************************
+ *
+ * Character-stream handling
+ *
+ *****************************************************************************/
+
+#define LEXBUFSIZ	1024
+
+static char *bufptr;		/* otherwise, the input buffer pointer */
+static char *bufstart;		/* start of buffer so we can compute offsets */
+static FILE *yyin;		/* scanner's input file descriptor */
+
+/*
+ *	_nc_reset_input()
+ *
+ *	Resets the input-reading routines.  Used on initialization,
+ *	or after a seek has been done.  Exactly one argument must be
+ *	non-null.
+ */
+
+void _nc_reset_input(FILE *fp, char *buf)
+{
+	pushtype = NO_PUSHBACK;
+	yyin = fp;
+	bufstart = bufptr = buf;
+	_nc_curr_file_pos = 0L;
+	_nc_curr_line = 0;
+}
+
+/*
+ * 	int next_char()
+ *
+ *	Returns the next character in the input stream.  Comments and leading
+ *	white space are stripped.
+ *
+ *	The global state variable 'firstcolumn' is set TRUE if the character
+ * 	returned is from the first column of the input line.
+ *
+ *	The global variable _nc_curr_line is incremented for each new line.
+ *	The global variable _nc_curr_file_pos is set to the file offset of the
+ *	beginning of each line.
+ */
+
+static int
+next_char(void)
+{
+    if (!yyin)
+    {
+	if (*bufptr == '\0')
+	    return(EOF);
+    }
+    else if (!bufptr || !*bufptr)
+    {
+	/*
+	 * In theory this could be recoded to do its I/O one
+	 * character at a time, saving the buffer space.  In
+	 * practice, this turns out to be quite hard to get
+	 * completely right.  Try it and see.  If you succeed,
+	 * don't forget to hack push_back() correspondingly.
+	 */
+	static char line[LEXBUFSIZ];
+
+	do {
+	       _nc_curr_file_pos = ftell(yyin);
+
+	       if ((bufstart = fgets(line, LEXBUFSIZ, yyin)) != NULL)
+		   _nc_curr_line++;
+	       bufptr = bufstart;
+	   } while
+	       (bufstart != NULL && line[0] == '#');
+
+	if (bufstart == NULL)
+	    return (EOF);
+
+	while (iswhite(*bufptr))
+	    bufptr++;
+    }
+
+    first_column = (bufptr == bufstart);
+
+    return(*bufptr++);
+}
+
+static void push_back(char c)
+/* push a character back onto the input stream */
+{
+    if (bufptr == bufstart)
+	    _nc_syserr_abort("Can't backspace off beginning of line");
+    *--bufptr = c;
+}
+
+static long stream_pos(void)
+/* return our current character position in the input stream */
+{
+    return (yyin ? ftell(yyin) : (bufptr ? bufptr - bufstart : 0));
+}
+
+static bool end_of_stream(void)
+/* are we at end of input? */
+{
+    return (yyin ? feof(yyin) : (bufptr && *bufptr == '\0'));
+}
+
+/* comp_scan.c ends here */

@@ -168,7 +168,7 @@ int	pmaxcol;
 	 * Use the pad's current position, if it will be visible.
 	 * If not, don't do anything; it's not an error.
 	 */
-	if (win->_leave == FALSE
+	if (win->_leaveok == FALSE
 	 && win->_cury  >= pminrow
 	 && win->_curx  >= pmincol
 	 && win->_cury  <= pmaxrow

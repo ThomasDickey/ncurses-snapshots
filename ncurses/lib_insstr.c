@@ -39,7 +39,7 @@ char	*cp;
 
 	T(("winsstr(%p,'%s',%d) called", win, str, n));
 
-	for (cp = (char *)str; *cp && (n > 0 || (cp - str) >= n); cp++) {
+	for (cp = (char *)str; *cp && (n <= 0 || (cp - str) < n); cp++) {
 		if (*cp == '\n' || *cp == '\r' || *cp == '\t' || *cp == '\b')
 			_nc_waddch_nosync(win, (chtype)(*cp), FALSE);
 		else if (is7bits(*cp) && iscntrl(*cp)) {

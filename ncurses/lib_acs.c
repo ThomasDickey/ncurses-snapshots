@@ -60,6 +60,14 @@ void init_acs(void)
 	ACS_BOARD    = '#';	/* should be board of squares */
 	ACS_LANTERN  = '#';	/* should be lantern symbol */
 	ACS_BLOCK    = '#';	/* should be solid square block */
+	/* these defaults were invented for ncurses */
+	ACS_S3       = '-';	/* should be scan line 3 */  
+	ACS_S7       = '-';	/* should be scan line 7 */
+	ACS_LEQUAL   = '<';	/* should be less-than-or-equal-to */
+	ACS_GEQUAL   = '>';	/* should be greater-than-or-equal-to */
+	ACS_PI       = '*';	/* should be greek pi */
+        ACS_NEQUAL   = '!';	/* should be not-equal */
+        ACS_STERLING = 'f';	/* should be pound-sterling symbol */
 
 #ifdef ena_acs
 	if (ena_acs != NULL)
@@ -84,7 +92,8 @@ void init_acs(void)
 			case 's':case '`':case 'a':case 'f':
 			case 'g':case '~':case ',':case '+':
 			case '.':case '-':case 'h':case 'I':
-			case '0': 
+			case '0':case 'p':case 'r':case 'y':
+			case 'z':case '{':case '|':case '}':
 				acs_map[(unsigned int)acs_chars[i]] = 
 					ALTCHAR(acs_chars[i+1]);
 				i++;

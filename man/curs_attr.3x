@@ -101,7 +101,6 @@ characters passed to \fBaddch\fR.
 \fBA_PROTECT\fR      Protected mode
 \fBA_INVIS\fR        Invisible or blank mode
 \fBA_ALTCHARSET\fR   Alternate character set
-\fBA_PCCHARSET\fR    Enable PC ROM graphics 0-31 (PC clones only)
 \fBA_CHARTEXT\fR     Bit-mask to extract a character
 \fBCOLOR_PAIR(\fR\fIn\fR\fB)\fR  Color-pair number \fIn\fR
 .fi
@@ -120,11 +119,6 @@ The SVr4 manual page claims (falsely) that these routines always return \fB1\fR.
 .SH NOTES
 Note that \fBattroff\fR, \fBwattroff\fR, \fBattron\fR, \fBwattron\fR,
 \fBattrset\fR, \fBwattrset\fR, \fBstandend\fR and \fBstandout\fR may be macros.
-.SH EXTENSIONS
-The \fBA_PCCHARSET\fR highlight is available only on PC clones (and is not 
-part of the XSI standard).  For
-portability, wrap any code that uses it in #ifdef A_PCCHARSET/#endif.
-See the EXTENSIONS sections of \fBcurs_addch\fR(3x) for details.
 .SH PORTABILITY
 All these functions are supported in the XSI Curses standard, Issue 4.  The
 standard defined the dedicated type for highlights, \fBattr_t\fR, which is not
@@ -158,10 +152,10 @@ The XSI curses standard specifies that each pair of corresponding \fBA_\fR
 and \fBWA_\fR-using functions operates on the same current-highlight
 information.  
 
-The XSI standard does not support \fBA_PCCHARSET\fR.  The extended
-conformance level adds new highlights \fBA_HORIZONTAL\fR, \fBA_LEFT\fR,
-\fBA_LOW\fR, \fBA_RIGHT\fR, \fBA_TOP\fR, \fBA_VERTICAL\fR (and corresponding
-\fBWA_\fR macros for each) which this curses does not yet support.
+The XSI standard extended conformance level adds new highlights
+\fBA_HORIZONTAL\fR, \fBA_LEFT\fR, \fBA_LOW\fR, \fBA_RIGHT\fR, \fBA_TOP\fR,
+\fBA_VERTICAL\fR (and corresponding \fBWA_\fR macros for each) which this
+curses does not yet support.
 .SH SEE ALSO
 \fBcurses\fR(3X), \fBcurs_addch\fR(3X), \fBcurs_addstr\fR(3X),
 \fBcurs_printw\fR(3X)

@@ -35,48 +35,51 @@
 |                    will be recalculated. This operation is forbidden if
 |                    the menu is already posted.
 |
-|   Return Values :  E_OK           - on success
+|   Return Values :  E_OK           - success
+|                    E_BAD_ARGUMENT - invalid menu options
 |                    E_POSTED       - menu is already posted
-|
 +--------------------------------------------------------------------------*/
-int set_menu_opts(MENU * menu, Menu_Options  opts)
+int set_menu_opts(MENU * menu, Menu_Options opts)
 {
-    ITEM **item;
+  if (opts & ~ALL_MENU_OPTS)
+    RETURN(E_BAD_ARGUMENT);
   
-    if (menu)
+  if (menu)
     {
-	ASSERT_NOT_POSTED( menu );
+      if ( menu->status & _POSTED )
+	RETURN(E_POSTED);
       
-	if ( (opts&O_ROWMAJOR) != (menu->opt&O_ROWMAJOR))
+      if ( (opts&O_ROWMAJOR) != (menu->opt&O_ROWMAJOR))
 	{
-	    /* we need this only if the layout really changed ... */
-	    if (menu->items && menu->items[0])
+	  /* we need this only if the layout really changed ... */
+	  if (menu->items && menu->items[0])
 	    {
-		menu->toprow  = 0;
-		menu->curitem = menu->items[0];
-		assert(menu->curitem);
-		set_menu_format( menu, menu->frows, menu->fcols );
+	      menu->toprow  = 0;
+	      menu->curitem = menu->items[0];
+	      assert(menu->curitem);
+	      set_menu_format( menu, menu->frows, menu->fcols );
 	    }
 	}			
       
-	menu->opt = opts;
+      menu->opt = opts;
       
-	if (opts & O_ONEVALUE)
+      if (opts & O_ONEVALUE)
 	{
-	    if ( (item=menu->items) )
-		for(;*item;item++) 
-		    (*item)->value = 0;
-	}
-
-	if (opts & O_SHOWDESC)	/* this also changes the geometry */
-	    _nc_Calculate_Item_Length_and_Width( menu );
-    }
-    else
-	_nc_Default_Menu.opt = opts;
+	  ITEM **item;
   
-    RETURN(E_OK);
+	  if ( (item=menu->items) )
+	    for(;*item;item++) 
+	      (*item)->value = FALSE;
+	}
+      
+      if (opts & O_SHOWDESC)	/* this also changes the geometry */
+	_nc_Calculate_Item_Length_and_Width( menu );
+    }
+  else
+    _nc_Default_Menu.opt = opts;
+  
+  RETURN(E_OK);
 }
-
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -87,19 +90,24 @@ int set_menu_opts(MENU * menu, Menu_Options  opts)
 |                    will be recalculated. This operation is forbidden if
 |                    the menu is already posted.
 |
-|   Return Values :  E_OK           - on success
+|   Return Values :  E_OK           - success
+|                    E_BAD_ARGUMENT - invalid options
 |                    E_POSTED       - menu is already posted
-|
 +--------------------------------------------------------------------------*/
 int menu_opts_off(MENU *menu, Menu_Options  opts)
 {
-    MENU *cmenu = menu;
+  MENU *cmenu = menu; /* use a copy because set_menu_opts must detect
+                         NULL menu itself to adjust its behaviour */
   
-    CDEFMENU(cmenu);
-    opts = cmenu->opt & ~opts;
-    return set_menu_opts( menu, opts );
+  if (opts & ~ALL_MENU_OPTS)
+    RETURN(E_BAD_ARGUMENT);
+  else
+    {
+      Normalize_Menu(cmenu);
+      opts = cmenu->opt & ~opts;
+      return set_menu_opts( menu, opts );
+    }
 }	
-
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -110,19 +118,24 @@ int menu_opts_off(MENU *menu, Menu_Options  opts)
 |                    will be recalculated. This operation is forbidden if
 |                    the menu is already posted.
 |
-|   Return Values :  E_OK           - on success
+|   Return Values :  E_OK           - success
+|                    E_BAD_ARGUMENT - invalid menu options
 |                    E_POSTED       - menu is already posted
-|
 +--------------------------------------------------------------------------*/
 int menu_opts_on(MENU * menu, Menu_Options opts)
 {
-    MENU *cmenu = menu;
+  MENU *cmenu = menu; /* use a copy because set_menu_opts must detect
+                         NULL menu itself to adjust its behaviour */
   
-    CDEFMENU(cmenu);
-    opts = cmenu->opt | opts;
-    return set_menu_opts(menu, opts);
-}	
-
+  if (opts & ~ALL_MENU_OPTS)
+    RETURN(E_BAD_ARGUMENT);
+  else
+    {
+      Normalize_Menu(cmenu);
+      opts = cmenu->opt | opts;
+      return set_menu_opts(menu, opts);
+    }	
+}
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -131,12 +144,10 @@ int menu_opts_on(MENU * menu, Menu_Options opts)
 |   Description   :  Return the options for this menu.
 |
 |   Return Values :  Menu options
-|
 +--------------------------------------------------------------------------*/
 Menu_Options menu_opts(const MENU *menu)
 {
-    CDEFMENU( menu );
-    return(menu->opt);
+  return (ALL_MENU_OPTS & Normalize_Menu( menu )->opt);
 }
 
-/* menu_opts.c ends here */
+/* m_opts.c ends here */

@@ -5,9 +5,9 @@
 .SH SYNOPSIS
 \fB#include <menu.h>\fR
 .br
-char *new_item(char *name, char *description);
+ITEM *new_item(char *name, char *description);
 .br
-char *free_item(ITEM *item);
+int free_item(ITEM *item);
 .br
 .SH DESCRIPTION
 The function \fBnew_item\fR allocates a new item and initializes it from the

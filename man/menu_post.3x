@@ -7,7 +7,7 @@
 .br
 int post_menu(MENU *menu);
 .br
-int post_menu(MENU *menu);
+int unpost_menu(MENU *menu);
 .br
 .SH DESCRIPTION
 The function \fBpost_menu\fR displays a menu to its associated subwindow.  To
@@ -32,7 +32,7 @@ Routine detected an incorrect or out-of-range argument.
 The menu has already been posted.
 .TP 5
 \fBE_BAD_STATE\fR
-Routine was called from an initialization and termination function.
+Routine was called from an initialization or termination function.
 .TP 5
 \fBE_NO_ROOM\fR
 Menu is too large for its window.

@@ -731,13 +731,13 @@ int main(int argc, char *argv[])
 
 	if (tc)
 	{
-	    char	*cp = infotocap("to termcap", buf, 1);
+	    char	*cp = _nc_infotocap("to termcap", buf, 1);
 
 	    if (cp)
 		(void) fputs(cp, stdout);
 	}
 	else
-	    (void) fputs(captoinfo("to terminfo", buf, 1), stdout);
+	    (void) fputs(_nc_captoinfo("to terminfo", buf, 1), stdout);
 	(void) putchar('\n');
     }
     return(0);

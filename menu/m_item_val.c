@@ -36,58 +36,52 @@
 |                    If the item is connected to a posted menu, the menu
 |                    will be redisplayed.  
 |
-|   Return Values :  E_OK              - on success
+|   Return Values :  E_OK              - success
 |                    E_REQUEST_DENIED  - not selectable or single valued menu
 +--------------------------------------------------------------------------*/
-int set_item_value(ITEM *item, int value)
+int set_item_value(ITEM *item, bool value)
 {
-    MENU *menu;
+  MENU *menu;
   
-    /* we always normalize the value */
-    if (value)    
-	value = 1;
-
-    if (item)
+  if (item)
     {
-	menu = item->imenu;
-
-	if ((!(item->opt & O_SELECTABLE)) ||
-		(menu && (menu->opt & O_ONEVALUE))) 
-	    RETURN(E_REQUEST_DENIED);
+      menu = item->imenu;
       
-	if (item->value != value)
+      if ((!(item->opt & O_SELECTABLE)) ||
+	  (menu && (menu->opt & O_ONEVALUE))) 
+	RETURN(E_REQUEST_DENIED);
+      
+      if (item->value ^ value)
 	{
-	    item->value = value;
-	    if (menu)
+	  item->value = value ? TRUE : FALSE;
+	  if (menu)
 	    {
-		if (menu->status & _POSTED)
+	      if (menu->status & _POSTED)
 		{
-		    MOVE_AND_POSTITEM(menu,item);
-		    _nc_Show_Menu(menu);
+		  Move_And_Post_Item(menu,item);
+		  _nc_Show_Menu(menu);
 		}
 	    }
 	}
     }
-    else
-	_nc_Default_Item.value = value;
+  else
+    _nc_Default_Item.value = value;
   
-    RETURN(E_OK);
+  RETURN(E_OK);
 }
-
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
-|   Function      :  int item_value(const ITEM *item)
+|   Function      :  bool item_value(const ITEM *item)
 |   
 |   Description   :  Return the selection value of the item
 |
-|   Return Values :  The items selection value
-|
+|   Return Values :  TRUE   - if item is selected
+|                    FALSE  - if item is not selected
 +--------------------------------------------------------------------------*/
-int item_value(const ITEM *item)
+bool item_value(const ITEM *item)
 {
-    CDEFITEM(item);
-    return (item->value ? 1 : 0);
+  return ((Normalize_Item(item)->value) ? TRUE : FALSE);
 }
 
-/* menu_item_val.c ends here */
+/* m_item_val.c ends here */

@@ -31,7 +31,7 @@
 #include "term.h"
 #include "hashsize.h"
 
-static  int hash_function(char *);
+static  int hash_function(const char *);
 
 /*
  *	_nc_make_hash_table()
@@ -75,8 +75,7 @@ int	collisions = 0;
 
 static
 int
-hash_function(string)
-char	*string;
+hash_function(const char *string)
 {
 long	sum = 0;
 
@@ -101,7 +100,7 @@ long	sum = 0;
  */
 
 struct name_table_entry *
-_nc_find_entry(char *string, struct name_table_entry **hash_table)
+_nc_find_entry(const char *string, struct name_table_entry **hash_table)
 {
 int	hashvalue;
 struct name_table_entry	*ptr;
@@ -128,7 +127,9 @@ struct name_table_entry	*ptr;
  */
 
 struct name_table_entry *
-_nc_find_type_entry(char *string, int type, struct name_table_entry *table)
+_nc_find_type_entry(const char *string,
+		    int type,
+		    struct name_table_entry *table)
 {
 struct name_table_entry	*ptr;
 

@@ -8,7 +8,7 @@ BEGIN		{
 			print  ""				> "boolnames"
 			print  "#if BROKEN_LINKER"		> "boolnames"
 			print  "#include <term.h>"		> "boolnames"
-			print  "#define DCL(it) static IT data##it[]" > "boolnames"
+			print  "#define DCL(it) static const IT data##it[]" > "boolnames"
 			print  "#else"				> "boolnames"
 			print  "#define DCL(it) IT it[]"	> "boolnames"
 			print  "#endif"				> "boolnames"

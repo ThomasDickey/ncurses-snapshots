@@ -40,7 +40,17 @@ char	*name = getenv("TERM");
   		fprintf(stderr, "Error opening terminal: %s.\n", name);
   		exit(1);
 	}
+
 	def_shell_mode();
+
+	/* follow the XPG4 requirement to turn echo off at this point */
+	noecho();
+
+#ifdef XPG4_EXTENDED
+	/* for extended XPG4 conformance requires cbreak() at this point */
+	cbreak();
+#endif /* XPG4_EXTENDED */
+
 	def_prog_mode();
 	return(stdscr);
 }

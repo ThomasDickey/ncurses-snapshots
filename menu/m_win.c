@@ -28,28 +28,27 @@
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
-|   Function      :  int set_menu_win(MENU *menu, WINDOW *w)
+|   Function      :  int set_menu_win(MENU *menu, WINDOW *win)
 |   
 |   Description   :  Sets the window of the menu.
 |
 |   Return Values :  E_OK               - success
 |                    E_POSTED           - menu is already posted
-|
 +--------------------------------------------------------------------------*/
-int set_menu_win(MENU *menu, WINDOW *w)
+int set_menu_win(MENU *menu, WINDOW *win)
 {
-    if (menu)
+  if (menu)
     {
-	ASSERT_NOT_POSTED( menu );
-	menu->userwin = w;
-	_nc_Calculate_Item_Length_and_Width(menu);
+      if ( menu->status & _POSTED )
+	RETURN(E_POSTED);
+      menu->userwin = win;
+      _nc_Calculate_Item_Length_and_Width(menu);
     }
-    else
-	_nc_Default_Menu.userwin = w;
+  else
+    _nc_Default_Menu.userwin = win;
   
-    RETURN(E_OK);
+  RETURN(E_OK);
 }
-
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -58,37 +57,35 @@ int set_menu_win(MENU *menu, WINDOW *w)
 |   Description   :  Returns pointer to the window of the menu
 |
 |   Return Values :  NULL on error, otherwise pointer to window
-|
 +--------------------------------------------------------------------------*/
 WINDOW *menu_win(const MENU *menu)
 {
-    return menu ? menu->userwin : _nc_Default_Menu.userwin;
+  return Normalize_Menu(menu)->userwin;
 }
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
-|   Function      :  int set_menu_sub(MENU *menu, WINDOW *w)
+|   Function      :  int set_menu_sub(MENU *menu, WINDOW *win)
 |   
 |   Description   :  Sets the subwindow of the menu.
 |
 |   Return Values :  E_OK           - success
 |                    E_POSTED       - menu is already posted
-|
 +--------------------------------------------------------------------------*/
-int set_menu_sub(MENU *menu, WINDOW *w)
+int set_menu_sub(MENU *menu, WINDOW *win)
 {
-    if (menu)
+  if (menu)
     {
-	ASSERT_NOT_POSTED(menu);
-	menu->usersub = w;
-	_nc_Calculate_Item_Length_and_Width(menu);
+      if ( menu->status & _POSTED )
+	RETURN(E_POSTED);
+      menu->usersub = win;
+      _nc_Calculate_Item_Length_and_Width(menu);
     }
-    else
-	_nc_Default_Menu.usersub = w;
+  else
+    _nc_Default_Menu.usersub = win;
   
-    RETURN(E_OK);
+  RETURN(E_OK);
 }
-
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -97,11 +94,10 @@ int set_menu_sub(MENU *menu, WINDOW *w)
 |   Description   :  Returns a pointer to the subwindow of the menu
 |
 |   Return Values :  NULL on error, otherwise a pointer to the window
-|
 +--------------------------------------------------------------------------*/
 WINDOW *menu_sub(const MENU * menu)
 {
-    return menu ? menu->usersub : _nc_Default_Menu.usersub;
+  return Normalize_Menu(menu)->usersub;
 }
 
 /*---------------------------------------------------------------------------
@@ -114,23 +110,22 @@ WINDOW *menu_sub(const MENU * menu)
 |   Return Values :  E_OK                  - success
 |                    E_BAD_ARGUMENT        - invalid menu pointer
 |                    E_NOT_CONNECTED       - no items are connected to menu
-|
 +--------------------------------------------------------------------------*/
 int scale_menu(const MENU *menu, int *rows, int *cols)
 {
-    if (!menu) 
-	RETURN( E_BAD_ARGUMENT );
-
-    if (menu->items && *(menu->items))
+  if (!menu) 
+    RETURN( E_BAD_ARGUMENT );
+  
+  if (menu->items && *(menu->items))
     {
-	if (rows)
-	    *rows = menu->height;
-	if (cols)
-	    *cols = menu->width;
-	RETURN(E_OK);
+      if (rows)
+	*rows = menu->height;
+      if (cols)
+	*cols = menu->width;
+      RETURN(E_OK);
     }
-    else
-	RETURN( E_NOT_CONNECTED );
+  else
+    RETURN( E_NOT_CONNECTED );
 }
 
-/* menu_win.c ends here */
+/* m_win.c ends here */

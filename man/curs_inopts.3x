@@ -157,10 +157,22 @@ specifies only "an integer value other than \fBERR\fR") upon successful
 completion, unless otherwise noted in the preceding routine descriptions.
 .SH PORTABILITY
 These functions are described in the XSI Curses standard, Issue 4.
+
+The ncurses library obeys the XPG4 standard and the historical practice of the
+AT&T curses implementations, in that the echo bit is cleared when curses
+initializes the terminal state.  BSD curses differed from this slightly; it
+left the echo bit on at initialization, but the BSD \fBraw\fR call turned it
+off as a side-effect.  For best portability, set echo or noecho explicitly 
+just after initialization, even if your program remains in cooked mode.
 .SH NOTES
 Note that \fBecho\fR, \fBnoecho\fR, \fBhalfdelay\fR, \fBintrflush\fR,
 \fBmeta\fR, \fBnodelay\fR, \fBnotimeout\fR, \fBnoqiflush\fR,
 \fBqiflush\fR, \fBtimeout\fR, and \fBwtimeout\fR may be macros.
+
+The \fBnoraw\fR and \fBnocbreak\fR calls follow historical practice in that
+they attempt to restore to normal (`cooked') mode from raw and cbreak modes
+respectively.  Mixing raw/noraw and cbreak/nocbreak calls leads to tty driver
+control states that are hard to predict or understand; it is not recommended.
 .SH SEE ALSO
 \fBcurses\fR(3X), \fBcurs_getch\fR(3X), \fBcurs_initscr\fR(3X), \fBtermio\fR(7)
 .\"#

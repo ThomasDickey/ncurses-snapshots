@@ -16,6 +16,7 @@ CPPFLAGS	= @INCLUDES@ -DHAVE_CONFIG_H
 CCFLAGS		= $(CFLAGS) $(CPPFLAGS)
 
 LIB_DEPS	= \
+		../lib/libform@DFT_DEP_SUFFIX@ \
 		../lib/libmenu@DFT_DEP_SUFFIX@ \
 		../lib/libpanel@DFT_DEP_SUFFIX@ \
 		../lib/libncurses@DFT_DEP_SUFFIX@

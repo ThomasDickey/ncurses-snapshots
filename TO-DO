@@ -2,6 +2,12 @@ SHORT-TERM TO-DO ITEMS:
 
 Bugs:
 
+* Calling the compiler three times in a row on the same terminal type
+  produces name collision errors.  This can happen if you're reading
+  your terminal descriptions from /etc/termcap or a TERMCAP environment
+  variable and call newterm() three times (nvi does this when resizing
+  a window).
+
 * There is a known problem with the signal-handling code which may result
   in abrupt termination of ncurses applications following resume from a ^Z
   suspend (this problem was first seen in lynx).  You will not see this problem
@@ -9,18 +15,11 @@ Bugs:
   NetBSD, or BSDI.  You may see it under System Vs.  For details, see the
   analysis in ncurses/lib_tstp.c.
 
-* It doesn't work on a DEC Alpha in 64-bit mode.  Brooks Smith
-  <brooks@csd.uwm.edu> reports:
+* We need a portable vsscanf() implementation.  Currently the library links
+  a stub.
 
-  >                                It almost works. :-)  The tests run
-  > but after every character ncurses libraries write to the screen the
-  > string of letters 'lqkxjmwuvtn' follows on the same line on the screen.
-  > 
-  > The DEC alpha has a 64bit pointer size and a 32 bit int size.  The only
-  > place I found a union that might be a problem is in lib_tparm.c.  But
-  > that possibilty is only for obscure term types, I think.
-
-  We have no idea what's going on here yet...
+* The narrative description of the form library in misc/ncurses-intro.html
+  is incomplete.  ESR is working on this.
 
 Tweaks:
 

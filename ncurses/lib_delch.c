@@ -32,6 +32,7 @@ int wdelch(WINDOW *win)
 {
 chtype	*temp1, *temp2;
 chtype	*end;
+chtype	blank = _nc_render(win, ' ', BLANK | win->_attrs);
 
 	T(("wdelch(%p) called", win));
 
@@ -42,7 +43,7 @@ chtype	*end;
 	while (temp1 < end)
 	    *temp1++ = *temp2++;
 
-	*temp1 = ' ' | win->_attrs;
+	*temp1 = blank;
 
 	win->_line[win->_cury].lastchar = win->_maxx;
 

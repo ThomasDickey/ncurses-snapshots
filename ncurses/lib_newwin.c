@@ -154,7 +154,7 @@ WINDOW	*win;
 	win->_idlok      = FALSE;
 	win->_idcok      = TRUE;
 	win->_scroll     = FALSE;
-	win->_leave      = FALSE;
+	win->_leaveok    = FALSE;
 	win->_use_keypad = FALSE;
 	win->_delay    	 = -1;   
 	win->_immed	 = FALSE;

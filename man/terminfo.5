@@ -581,8 +581,8 @@ l l l l.
 \fBBooleans	name	Code\fR
 .\".TH
 \s-1label_format,	fln	Lf	??\s+1
-\s-1set_clock,	sclk	SC	Set time-of-day clock\s+1
-\s-1display_clock,	dclk	DK	Display time-of-day clock\s+1
+\s-1set_clock,	sclk	SC	Set time-of-day clock, #1 hrs #2 mins #3 secs\s+1
+\s-1display_clock,	dclk	DK	Display time-of-day clock at (#1,#2)\s+1
 \s-1remove_clock,	rmclk	RC	Remove time-of-day clock??\s+1
 \s-1create_window,	cwin	CW	Define win #1 to go from #2,#3 to #4,#5\s+1
 \s-1goto_window,	wingo	WG	Goto window #1\s+1
@@ -1889,8 +1889,8 @@ implementation uses it to enable/disable ROM character display.
 SVr4/XPG4 do not specify whether \fBmsgr\fR licenses movement while in
 an alternate-character-set mode (such modes may, among other things, map
 CR and NL to characters that don't trigger local motions).
-The \fBncurses\fR implementation ignores \fBmsgr\fR in \fBALTCHARSET\fR and
-\fBA_PCCHARSET\fR modes.  This raises the possibility that an XPG4 
+The \fBncurses\fR implementation ignores \fBmsgr\fR in \fBALTCHARSET\fR
+mode.  This raises the possibility that an XPG4 
 implementation making the opposite interpretation may need terminfo
 entries made for \fBncurses\fR to have \fBmsgr\fR turned off.
 .PP
@@ -1928,6 +1928,14 @@ PU	kP	XENIX	key_ppage
 RT	@8	XENIX	kent
 UP	ku	XENIX	kcuu1
 .TE
+.PP
+The parameter substitutions for \fBset_clock\fR and \fBdisplay_clock\fR are
+not documented in SVr4 or the XSI Curses standard.  They are deduced from the
+documentation for the AT&T 505 terminal.
+.PP
+Be careful assigning the \fBkmous\fR capability.  The \fBncurses\fR wants to
+interpret it as \fBKEY_MOUSE\fR, for use by terminals and emulators like xterm
+that can return mouse-traking information in the keyboard-input stream.
 .SH FILES
 .TP 25
 \*d/?/*

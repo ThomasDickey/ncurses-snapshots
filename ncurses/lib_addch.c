@@ -140,11 +140,6 @@ int		newx;
 	    	return(ERR);
 	}
 
-#ifdef A_PCCHARSET
-	if (ch & A_PCCHARSET)
-		goto noctrl;
-#endif /* A_PCCHARSET */
-
 	if (ch & A_ALTCHARSET)
 		goto noctrl;
 
@@ -187,7 +182,15 @@ int		newx;
 			TR(TRACE_MOVE, ("new char when NEED_WRAP set at %d,%d",y,x));
 			DO_NEWLINE
 		}
-		ch = render_char(win, win->_line[y].text[x], ch);
+
+		/*
+		 * We used to pass in
+		 *	win->_line[y].text[x]
+		 * as a second argument, but the value of the old character
+		 * is not relevant here.
+		 */
+		ch = render_char(win, 0, ch);
+
 		TR(TRACE_VIRTPUT, ("win attr = %s", _traceattr(win->_attrs)));
 		ch |= win->_attrs;
 

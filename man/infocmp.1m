@@ -56,9 +56,9 @@ If no \fItermnames\fR are given, the environment variable \fBTERM\fR will be
 used for the terminal name.
 
 The source produced by the \fB-C\fR option may be used directly as a
-\fBtermcap\fR entry, but not all of the parameterized strings may be changed to
+\fBtermcap\fR entry, but not all parameterized strings can be changed to
 the \fBtermcap\fR format.  \fBinfocmp\fR will attempt to convert most of the
-parameterized information, but anything not converted will be plainly marked in
+parameterized information, and anything not converted will be plainly marked in
 the output and commented out.  These should be edited by hand.
 
 All padding information for strings will be collected together and placed
@@ -97,7 +97,7 @@ l l l.
 .TE
 .SS Use= Option [-u]
 The \fB-u\fR option produces a \fBterminfo\fR source description of the first
-terminal fItermname\fR which is relative to the sum of the descriptions given
+terminal f\Itermname\fR which is relative to the sum of the descriptions given
 by the entries for the other terminals \fItermnames\fR.  It does this by
 analyzing the differences between the first \fItermname\fR and the other
 \fItermnames\fR and producing a description with \fBuse=\fR fields for the
@@ -194,7 +194,9 @@ created by different people.
 \*d
 Compiled terminal description database.
 .SH EXTENSIONS
-The -F option is not supported in SVr4 curses.
+The -F option is not supported in SVr4 curses.  (It is primarily intended
+to help infocmp's author, while wearing his terminfo/termcap maintainer hat,
+merge termcap/terminfo files from various sources into the master.)
 
 The \fB-r\fR option's notion of `termcap' capabilities is BSD 4.4's.  Older
 versions may have a more restricted set.

@@ -24,103 +24,64 @@
 * Top level private header file for all libnmenu modules                   *
 ***************************************************************************/
 
-#include <config.h>
-
-#include <stdlib.h>
-#include <assert.h>
-#include <errno.h>
-#if !HAVE_EXTERN_ERRNO
-extern int errno;
-#endif
-
-#ifdef HAVE_EXTERN_ERRNO
-#include <errno.h>
-#endif
-
+#include "mf_common.h"
 #include "menu.h"
 
 /* Backspace code */
 #define BS (8)
 
-/* Maximum regular 8-bit character code */
-#define MAX_REGULAR_CHARACTER (0xff)
-
 extern ITEM _nc_Default_Item;
 extern MENU _nc_Default_Menu;
 
-#define RETURN(code) return( errno=(code) )
-
 /* Normalize item to default if none was given */
-#define CDEFITEM( item ) if (!(item)) item = &_nc_Default_Item
+#define Normalize_Item( item ) ((item)=(item)?(item):&_nc_Default_Item)
 
 /* Normalize menu to default if none was given */
-#define CDEFMENU( menu ) if (!(menu)) menu = &_nc_Default_Menu
+#define Normalize_Menu( menu ) ((menu)=(menu)?(menu):&_nc_Default_Menu)
 
 /* Normalize menu window */
-#define CDEFWIN(  menu ) \
-   ( menu->usersub  ? menu->usersub  : (\
-     menu->userwin  ? menu->userwin  : stdscr ))
+#define Get_Menu_Window(  menu ) \
+   ( (menu)->usersub  ? (menu)->usersub  : (\
+     (menu)->userwin  ? (menu)->userwin  : stdscr ))
 
-/* Call menu handler */
-#define CALL_HANDLER( menu, handler ) \
-   if ( (menu) && ((menu)->handler) )\
-   {\
-	(menu)->status |= _IN_DRIVER;\
-	(menu)->handler(menu);\
-	(menu)->status &= ~_IN_DRIVER;\
-   }
+#define ALL_MENU_OPTS (                 \
+		       O_ONEVALUE     | \
+		       O_SHOWDESC     | \
+		       O_ROWMAJOR     | \
+		       O_IGNORECASE   | \
+		       O_SHOWMATCH    | \
+		       O_NONCYCLIC    )
 
-/* This macro should be called to assert that one is not in the
-   middle of a hook
-*/
-#define ASSERT_NOT_IN_HOOK( menu ) \
-   if ( (menu)->status & _IN_DRIVER )\
-      RETURN(E_BAD_STATE)
-
-/* This macro asserts that the menu is not already posted */
-#define ASSERT_NOT_POSTED( menu ) \
-   if ( (menu)->status & _POSTED )\
-      RETURN(E_POSTED)
-
-/* This macro asserts, that the menu is posted */
-#define ASSERT_POSTED( menu ) \
-   if ( !( (menu)->status & _POSTED ) )\
-      RETURN(E_NOT_POSTED)
+#define ALL_ITEM_OPTS (O_SELECTABLE)
 
 /* Move to the window position of an item and draw it */
-#define MOVE_AND_POSTITEM(menu,item) \
-   wmove((menu)->win,(item)->y,((menu)->itemlen+1)*(item)->x);\
-   _nc_Post_Item((menu),(item))
+#define Move_And_Post_Item(menu,item) \
+  {wmove((menu)->win,(item)->y,((menu)->itemlen+1)*(item)->x);\
+   _nc_Post_Item((menu),(item));}
 
-#define MOVE_TO_CURRENT_ITEM(menu,item) \
-   if ( (item) != (menu)->curitem)\
-   {\
-      MOVE_AND_POSTITEM(menu,item);\
-      MOVE_AND_POSTITEM(menu,(menu)->curitem);\
-   }
+#define Move_To_Current_Item(menu,item) \
+  if ( (item) != (menu)->curitem)\
+    {\
+      Move_And_Post_Item(menu,item);\
+      Move_And_Post_Item(menu,(menu)->curitem);\
+    }
 
 /* This macro ensures, that the item becomes visible, if possible with the
    specified row as the top row of the window. If this is not possible,
    the top row will be adjusted and the value is stored in the row argument. 
 */
-#define ADJUST_CURRENT_ITEM(menu,row,item) \
-   if ((item)->y < row) \
+#define Adjust_Current_Item(menu,row,item) \
+  { if ((item)->y < row) \
       row = (item)->y;\
-   if ( (item)->y >= (row + (menu)->height) )\
-       row = ( (item)->y < ((menu)->rows - row) ) ? \
-	                    (item)->y : (menu)->rows - (menu)->height;\
-   _nc_New_TopRow_and_CurrentItem(menu,row,item)
+    if ( (item)->y >= (row + (menu)->height) )\
+      row = ( (item)->y < ((menu)->rows - row) ) ? \
+            (item)->y : (menu)->rows - (menu)->height;\
+    _nc_New_TopRow_and_CurrentItem(menu,row,item); }
 
-#define RESET_PATTERN(menu) \
-   (menu)->pindex = 0; \
-   (menu)->pattern[0] = '\0'
-
-#define REMOVE_CHARACTER_FROM_PATTERN(menu) \
-   (menu)->pattern[--((menu)->pindex)] = '\0'
-
-#define ADD_CHARACTER_TO_PATTERN(menu,ch) \
-    (menu)->pattern[((menu)->pindex)++] = (ch);\
-    (menu)->pattern[(menu)->pindex] = '\0'
+/* Reset the match pattern buffer */
+#define Reset_Pattern(menu) \
+  { (menu)->pindex = 0; \
+    (menu)->pattern[0] = '\0'; }
 
 /* Internal functions. */						
 extern void _nc_Draw_Menu(const MENU *);

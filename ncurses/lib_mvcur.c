@@ -316,10 +316,11 @@ void _nc_mvcur_init(SCREEN *sp)
 	 * Send us a patch if you care.
 	 */
 	(void) setvbuf(SP->_ofp, malloc(bufsiz), _IOFBF, bufsiz);
-#endif /* HAVE_SETVBUF */
+#else
 #if HAVE_SETBUFFER
 	(void) setbuffer(SP->_ofp, malloc(bufsiz), (int)bufsiz);
 #endif /* HAVE_SETBUFFER */
+#endif /* HAVE_SETVBUF */
     }
 #endif /* defined(HAVE_SETVBUF) || defined(HAVE_SETBUFFER) */
 
@@ -1156,6 +1157,12 @@ int putp(char *string)
     return(tputs(string, 1, _nc_outch));
 }
 
+int _nc_outch(int ch)
+{
+    putc(ch, stdout);
+    return OK;
+}
+
 static char	tname[BUFSIZ];
 
 static void load_term(void)
@@ -1179,12 +1186,26 @@ int main(int argc, char *argv[])
     load_term();
     _nc_setupscreen(lines, columns);
     _nc_make_hash_table(_nc_get_table(FALSE), _nc_info_hash_table);
+    baudrate();
+
+    _nc_mvcur_init(SP);
+#if defined(HAVE_SETVBUF) || defined(HAVE_SETBUFFER)
+    /*
+     * Undo the effects of our optimization hack, otherwise our interactive
+     * prompts don't flush properly.
+     */
+#if HAVE_SETVBUF
+    (void) setvbuf(SP->_ofp, malloc(BUFSIZ), _IOLBF, BUFSIZ);
+#else
+#if HAVE_SETBUFFER
+    (void) setbuffer(SP->_ofp, malloc(BUFSIZ), BUFSIZ);
+#endif /* HAVE_SETBUFFER */
+#endif /* HAVE_SETVBUF */
+#endif /* defined(HAVE_SETVBUF) || defined(HAVE_SETBUFFER) */
 
     (void) puts("The mvcur tester.  Type ? for help");
 
     fputs("smcup:", stdout);
-    baudrate();
-    _nc_mvcur_init(SP);
     putchar('\n');
 
     for (;;)

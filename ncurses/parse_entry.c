@@ -29,6 +29,7 @@
  */
 
 #include <stdio.h>
+#include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
 #include "tic.h"
@@ -103,7 +104,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
     {
 	if (strcmp(_nc_curr_token.tk_name, "use") == 0
 	    || strcmp(_nc_curr_token.tk_name, "tc") == 0) {
-	    entryp->uses[entryp->nuses++] = _nc_save_str(_nc_curr_token.tk_valstring);
+	    entryp->uses[entryp->nuses++] = (void *)_nc_save_str(_nc_curr_token.tk_valstring);
 	} else {
 	    /* normal token lookup */
 	    entry_ptr = _nc_find_entry(_nc_curr_token.tk_name,
@@ -119,7 +120,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 	     */
 	    if (_nc_syntax && entry_ptr == NOTFOUND)
 	    {
-		struct alias	*ap;
+		const struct alias	*ap;
 
 		for (ap = _nc_alias_table; ap->from; ap++)
 		    if (strcmp(ap->from, _nc_curr_token.tk_name) == 0)
@@ -224,13 +225,81 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
      * If this is a termcap entry, try to deduce as much as possible
      * from obsolete termcap capabilities.
      */
-    if (_nc_syntax == SYN_TERMCAP && !literal && !entryp->nuses)
+    if (_nc_syntax == SYN_TERMCAP && !literal)
 	set_termcap_defaults(&entryp->tterm);
 
     _nc_wrap_entry(entryp);
 
     return(OK);
 }
+
+int _nc_capcmp(const char *s, const char *t)
+/* compare two string capabilities, stripping out padding */
+{
+    if (!s && !t)
+	return(0);
+    else if (!s || !t)
+	return(1);
+
+    for (;;)
+    {
+	if (s[0] == '$' && s[1] == '<')
+	{
+	    for (s += 2; ; s++)
+		if (!(isdigit(*s) || *s=='.' || *s=='*' || *s=='/' || *s=='>'))
+		    break;
+	}
+
+	if (t[0] == '$' && t[1] == '<')
+	{
+	    for (t += 2; ; t++)
+		if (!(isdigit(*t) || *t=='.' || *t=='*' || *t=='/' || *t=='>'))
+		    break;
+	}
+
+	/* we've now pushed s and t past any padding they were pointing at */
+
+	if (*s == '\0' && *t == '\0')
+		return(0);
+
+	if (*s != *t)
+	    return(*t - *s);
+
+	/* else *s == *t but one is not NUL, so continue */
+	s++, t++;
+    }
+
+    return(0);
+}
+
+/*
+ * The ko capability, if present, consists of a comma-separated capability
+ * list.  For each capability, we may assume there is a keycap that sends the
+ * string which is the value of that capability.  
+ */
+typedef struct {char *from; char *to;} assoc;
+static assoc ko_xlate[] =
+{
+    {"al",	"kil1"},	/* insert line key  -> KEY_IL    */
+    {"bt",	"kcbt"},	/* back tab         -> KEY_BTAB  */
+    {"cd",	"ked"},		/* clear-to-eos key -> KEY_EOL   */
+    {"ce",	"kel"},		/* clear-to-eol key -> KEY_EOS   */
+    {"cl",	"kclr"},	/* clear key        -> KEY_CLEAR */
+    {"ct",	"tbc"},		/* clear all tabs   -> KEY_CATAB */
+    {"dc",	"kdch1"},	/* delete char      -> KEY_DC    */
+    {"dl",	"kdl1"},	/* delete line      -> KEY_DL    */
+    {"do",	"kcud1"},	/* down key         -> KEY_DOWN  */
+    {"ei",	"krmir"},	/* exit insert key  -> KEY_EIC   */
+    {"ho",	"khome"},	/* home key         -> KEY_HOME  */
+    {"ic",	"kich1"},	/* insert char key  -> KEY_IC    */
+    {"im",	"kIC"},		/* insert-mode key  -> KEY_SIC   */
+    {"nd",	"kcuf1"},	/* nd space key     -> KEY_RIGHT */
+    {"nl",	"kent"},	/* new line key     -> KEY_ENTER */
+    {"st",	"khts"},	/* set-tab key      -> KEY_STAB  */
+    {"ta",	CANCELLED_STRING},
+    {"up",	"kcuu1"},	/* up-arrow key     -> KEY_UP    */
+    {(char *)NULL, (char *)NULL},
+};
 
 /*
  * This routine fills in string caps that either had defaults under
@@ -243,7 +312,12 @@ static char *C_LF = "\n";
 static char *C_BS = "\b";
 static char *C_HT = "\t";
 
-#define NOTSET(s)	((s) == (char *)NULL)
+/*
+ * Note that WANTED and PRESENT are not simple inverses!  If a capability
+ * has been explicitly cancelled, it's not considered WANTED.
+ */
+#define WANTED(s)	((s) == (char *)NULL)
+#define PRESENT(s)	(((s) != (char *)NULL) && ((s) != CANCELLED_STRING))
 
 /*
  * This bit of legerdemain turns all the terminfo variable names into
@@ -260,31 +334,31 @@ void set_termcap_defaults(TERMTYPE *tp)
 {
     char buf[MAX_LINE * 2 + 2];
 
-    if (NOTSET(init_3string) && termcap_init2)
+    if (WANTED(init_3string) && termcap_init2)
 	init_3string = _nc_save_str(termcap_init2);
 
-    if (NOTSET(reset_1string) && termcap_reset)
+    if (WANTED(reset_1string) && termcap_reset)
 	reset_1string = _nc_save_str(termcap_reset);
 
-    if (NOTSET(carriage_return)) {
+    if (WANTED(carriage_return)) {
 	if (carriage_return_delay > 0) {
 	    sprintf(buf, "%s$<%d>", C_CR, carriage_return_delay);
 	    carriage_return = _nc_save_str(buf);
 	} else
 	    carriage_return = _nc_save_str(C_CR);
     }
-    if (NOTSET(cursor_left)) {
+    if (WANTED(cursor_left)) {
 	if (backspace_delay > 0) {
 	    sprintf(buf, "%s$<%d>", C_BS, backspace_delay);
 	    cursor_left = _nc_save_str(buf);
 	} else if (backspaces_with_bs == 1)
 	    cursor_left = _nc_save_str(C_BS);
-	else if (!NOTSET(backspace_if_not_bs))
+	else if (PRESENT(backspace_if_not_bs))
 	    cursor_left = backspace_if_not_bs;
     }
     /* vi doesn't use "do", but it does seems to use nl (or '\n') instead */
-    if (NOTSET(cursor_down)) {
-	if (!NOTSET(linefeed_if_not_lf)) 
+    if (WANTED(cursor_down)) {
+	if (PRESENT(linefeed_if_not_lf)) 
 	    cursor_down = linefeed_if_not_lf;
 	else if (linefeed_is_newline != 1) {
 	    if (new_line_delay > 0) {
@@ -294,8 +368,8 @@ void set_termcap_defaults(TERMTYPE *tp)
 		cursor_down = _nc_save_str(C_LF);
 	}
     }
-    if (NOTSET(scroll_forward) && crt_without_scrolling != 1) {
-	if (!NOTSET(linefeed_if_not_lf)) 
+    if (WANTED(scroll_forward) && crt_without_scrolling != 1) {
+	if (PRESENT(linefeed_if_not_lf)) 
 	    cursor_down = linefeed_if_not_lf;
 	else if (linefeed_is_newline != 1) {
 	    if (new_line_delay > 0) {
@@ -305,20 +379,20 @@ void set_termcap_defaults(TERMTYPE *tp)
 		scroll_forward = _nc_save_str(C_LF);
 	}
     }
-    if (NOTSET(newline)) {
+    if (WANTED(newline)) {
 	if (linefeed_is_newline == 1) {
 	    if (new_line_delay > 0) {
 		sprintf(buf, "%s$<%d>", C_LF, new_line_delay);
 		newline = _nc_save_str(buf);
 	    } else
 		newline = _nc_save_str(C_LF);
-	} else if (!NOTSET(carriage_return) && !NOTSET(scroll_forward)) {
+	} else if (PRESENT(carriage_return) && PRESENT(scroll_forward)) {
 	    strncpy(buf, carriage_return, MAX_LINE-2);
 	    buf[MAX_LINE-1] = '\0';
 	    strncat(buf, scroll_forward, MAX_LINE-strlen(buf)-1);
 	    buf[MAX_LINE] = '\0';
 	    newline = _nc_save_str(buf);
-	} else if (!NOTSET(carriage_return) && !NOTSET(cursor_down)) {
+	} else if (PRESENT(carriage_return) && PRESENT(cursor_down)) {
 	    strncpy(buf, carriage_return, MAX_LINE-2);
 	    buf[MAX_LINE-1] = '\0';
 	    strncat(buf, cursor_down, MAX_LINE-strlen(buf)-1);
@@ -336,27 +410,138 @@ void set_termcap_defaults(TERMTYPE *tp)
 	carriage_return = NULL;
 
     /*
-     * supposedly most termcap entries have ta now and '\t' is no longer a
+     * Supposedly most termcap entries have ta now and '\t' is no longer a
      * default, but it doesn't seem to be true...
      */
-    if (NOTSET(tab)) {
+    if (WANTED(tab)) {
 	if (horizontal_tab_delay > 0) {
 	    sprintf(buf, "%s$<%d>", C_HT, horizontal_tab_delay);
 	    tab = _nc_save_str(buf);
 	} else
 	    tab = _nc_save_str(C_HT);
     }
-
     if (init_tabs == -1 && has_hardware_tabs == 1)
 	init_tabs = 8;
 
+    /*
+     * Assume we can beep with ^G unless we're given bl@.
+     */
+    if (WANTED(bell))
+	bell = _nc_save_str("\007");
+
+    /*
+     * Translate the old termcap :pt: capability to it#8 + ht=\t
+     */
+    if (has_hardware_tabs)
+	if (init_tabs != 8)
+	    _nc_warning("hardware tabs with a width other than 8");
+        else
+	{
+	    if (tab && _nc_capcmp(tab, C_HT))
+		_nc_warning("hardware tabs with a non-^I tab string `%s'",
+			    _nc_visbuf(tab));
+	    else
+	    {
+		if (WANTED(tab))
+		    tab = _nc_save_str(C_HT);
+		init_tabs = 8;
+	    }
+	}
+
+    /*
+     * Now translate the ko capability, if there is one.  This
+     * isn't from mytinfo...
+     */
+    if (PRESENT(other_non_function_keys))
+    {
+	char	*dp, *cp = strtok(other_non_function_keys, ",");
+	struct name_table_entry	*from_ptr, *to_ptr;
+	assoc	*ap;
+	char	buf2[MAX_TERMINFO_LENGTH];
+	bool	foundim;
+
+	/* we're going to use this for a special case later */
+	dp = strchr(other_non_function_keys, 'i');
+	foundim = dp && dp[1] == 'm';
+
+	/* look at each comma-separated capability in the ko string... */
+	do {
+	    for (ap = ko_xlate; ap->from; ap++)
+		if (strcmp(ap->from, cp) == 0)
+		    break;
+	    if (!ap->to)
+	    {
+		_nc_warning("unknown capability `%s' in ko string", cp);
+		continue;
+	    }
+	    else if (ap->to == CANCELLED_STRING)	/* ignore it */
+		continue;
+
+	    /* now we know we found a match in ko_table, so... */
+
+	    from_ptr = _nc_find_entry(ap->from, _nc_cap_hash_table);
+	    to_ptr   = _nc_find_entry(ap->to,   _nc_info_hash_table);
+
+	    if (!from_ptr || !to_ptr)	/* should never happen! */
+		_nc_err_abort("ko translation table is invalid, I give up");
+
+	    if (tp->Strings[to_ptr->nte_index])
+	    {
+		_nc_warning("%s already has an explicit value, ignoring ko",
+			    ap->to);
+		continue;
+	    }
+
+	    if (WANTED(tp->Strings[from_ptr->nte_index]))
+	    {
+		_nc_warning("no value for ko capability %s", ap->from);
+		continue;
+	    }
+
+	    /* 
+	     * The magic moment -- copy the mapped key string over,
+	     * stripping out padding.
+	     */
+	    dp = buf2;
+	    for (cp = tp->Strings[from_ptr->nte_index]; *cp; cp++)
+	    {
+		if (cp[0] == '$' && cp[1] == '<')
+		{
+		    while (*cp && *cp != '>')
+			if (!*cp)
+			    break;
+		        else
+			    ++cp;
+		}
+		else
+		    *dp++ = *cp;
+	    }
+	    *dp++ = '\0';
+		    
+	    tp->Strings[to_ptr->nte_index] = _nc_save_str(buf2);
+	} while
+	    ((cp = strtok((char *)NULL, ",")) != 0);
+
+	/*
+	 * Note: ko=im and ko=ic both want to grab the `Insert'
+	 * keycap.  There's a kich1 but no ksmir, so the ic capability
+	 * got mapped to kich1 and im to kIC to avoid a collision.
+	 * If the description has im but not ic, hack kIC back to kich1.
+	 */
+	if (foundim && WANTED(key_ic) && key_sic)
+	{
+	    key_ic = key_sic;
+	    key_sic = ABSENT_STRING;
+	}
+    }
+
     if (!hard_copy)
     {
-	if (NOTSET(key_backspace))
+	if (WANTED(key_backspace))
 	    key_backspace = _nc_save_str(C_BS);
-	if (NOTSET(key_left))
+	if (WANTED(key_left))
 	    key_left = _nc_save_str(C_BS);
-	if (NOTSET(key_down))
+	if (WANTED(key_down))
 	    key_down = _nc_save_str(C_LF);
     }
 }

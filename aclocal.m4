@@ -4,16 +4,21 @@ dnl ---------------------------------------------------------------------------
 dnl Test if 'bool' is a builtin type in the configured C++ compiler.  Some
 dnl older compilers (e.g., gcc 2.5.8) don't support 'bool' directly; gcc
 dnl 2.6.3 does, in anticipation of the ANSI C++ standard.
+dnl
+dnl Treat the configuration-variable specially here, since we're directly
+dnl substituting its value (i.e., 1/0).
 AC_DEFUN([NC_BOOL_DECL],
 [
 AC_MSG_CHECKING([for builtin c++ bool type])
 AC_CACHE_VAL(nc_cv_builtin_bool,[
 	AC_TRY_COMPILE([],[bool x = false],
-		[nc_cv_builtin_bool=yes],
-		[nc_cv_builtin_bool=no])
+		[nc_cv_builtin_bool=1],
+		[nc_cv_builtin_bool=0])
 	])
-AC_MSG_RESULT($nc_cv_builtin_bool)
-test $nc_cv_builtin_bool = yes && AC_DEFINE(CXX_BUILTIN_BOOL)
+if test $nc_cv_builtin_bool = 1
+then	AC_MSG_RESULT(yes)
+else	AC_MSG_RESULT(no)
+fi
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Test for the size of 'bool' in the configured C++ compiler.
@@ -44,7 +49,6 @@ main()
 	])
 	rm -f nc_test.out
 AC_MSG_RESULT($nc_cv_sizeof_bool)
-test $nc_cv_sizeof_bool != unknown && AC_DEFINE_UNQUOTED(CXX_TYPE_OF_BOOL,$nc_cv_sizeof_bool)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl If we're trying to use g++, test if libg++ is installed (a rather common
@@ -576,4 +580,6 @@ AC_MSG_RESULT(Configuring NCURSES $nc_cv_rel_version ABI $nc_cv_abi_version (`da
 dnl We need these values in the generated makefiles
 AC_SUBST(nc_cv_rel_version)
 AC_SUBST(nc_cv_abi_version)
+AC_SUBST(nc_cv_builtin_bool)
+AC_SUBST(nc_cv_sizeof_bool)
 ])dnl

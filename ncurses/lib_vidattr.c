@@ -43,14 +43,6 @@
  *	NOTE that this algorithm won't achieve the desired mix of attributes
  *	in some cases, but those are probably just those cases in which it is
  *	actually impossible, anyway, so...
- *
- *	Special nasty kluge for Intel boxes: Currently, the A_PCCHARSET
- *	highlight is identified with A_PROTECT (this is to avoid taking
- *	up attr_t bits above 9, which the XSI Curses standard uses for
- *	internationalization attributes).  In case this ever ceases to 
- *	be true, explicit A_PCCHARSET code has been left in place which
- *	will only be compiled if A_PCCHARSET != A_PROTECT.
- *
  */
 
 #include "curses.priv.h"
@@ -97,24 +89,6 @@ chtype	turn_on  = (newmode & ~previous_attr) & (chtype)(~A_COLOR);
 				(newmode & A_INVIS) != 0,
 				(newmode & A_PROTECT) != 0,
 				(newmode & A_ALTCHARSET) != 0), 1, outc);
-#if defined(A_PCCHARSET) && (A_PCCHARSET != A_PROTECT)
-			/*
-			 * exit_pc_charset_mode is a defined SVr4 terminfo
-			 * A_PCCHARSET is an ncurses invention to invoke it
-			 */
-			if ((turn_off & A_PCCHARSET)  &&  exit_pc_charset_mode) {
-				TPUTS_TRACE("exit_pc_charset_mode");
-				tputs(exit_pc_charset_mode, 1, outc);
-			}
-			/*
-			 * enter_pc_charset_mode is a defined SVr4 terminfo
-			 * A_PCCHARSET is an ncurses invention to invoke it
-			 */
-			if ((newmode & A_PCCHARSET)  &&  enter_pc_charset_mode) {
-				TPUTS_TRACE("enter_pc_charset_mode");
-				tputs(enter_pc_charset_mode, 1, outc);
-			}
-#endif /* A_PCCHARSET */
 			/*
 			 * Setting attributes in this way tends to unset the
 			 * ones (such as color) that weren't specified.
@@ -149,17 +123,6 @@ chtype	turn_on  = (newmode & ~previous_attr) & (chtype)(~A_COLOR);
 			turn_on  |= (newmode & (chtype)(~A_COLOR));
 			turn_off |= A_COLOR;
 		}
-
-#if defined(A_PCCHARSET) && (A_PCCHARSET != A_PROTECT)
-		/*
-		 * exit_pc_charset_mode is a defined SVr4 terminfo
-		 * A_PCCHARSET is an ncurses invention to invoke it
-		 */
-		if ((turn_off & A_PCCHARSET)  &&  exit_pc_charset_mode) {
-			TPUTS_TRACE("exit_pc_charset_mode");
-			tputs(exit_pc_charset_mode, 1, outc);
-		}
-#endif /* A_PCCHARSET */
 
 		T(("turning %s on", _traceattr(turn_on)));
 
@@ -237,18 +200,6 @@ chtype	turn_on  = (newmode & ~previous_attr) & (chtype)(~A_COLOR);
 			TPUTS_TRACE("enter_vertical_hl_mode");
 			tputs(enter_vertical_hl_mode, 1, outc);
 		}
-
-#if defined(A_PCCHARSET) && (A_PCCHARSET != A_PROTECT)
-		/*
-		 * enter_pc_charset_mode is a defined SVr4 terminfo
-		 * A_PCCHARSET is an ncurses invention to invoke it
-		 */
-		if ((turn_on & A_PCCHARSET)  &&  enter_pc_charset_mode) {
-			TPUTS_TRACE("enter_pc_charset_mode");
-			tputs(enter_pc_charset_mode, 1, outc);
-		}
-#endif /* A_PCCHARSET */
-
 	}
 
 	if (SP->_coloron) {

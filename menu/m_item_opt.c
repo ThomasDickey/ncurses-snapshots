@@ -34,35 +34,37 @@
 |                    changes, the item is connected and the menu is posted,
 |                    the menu will be redisplayed.
 |
-|   Return Values :  E_OK      - on success
-|
+|   Return Values :  E_OK            - success
+|                    E_BAD_ARGUMENT  - invalid item options
 +--------------------------------------------------------------------------*/
 int set_item_opts(ITEM *item, Item_Options opts)
 { 
-    if (item)
+  if (opts & ~ALL_ITEM_OPTS)
+    RETURN(E_BAD_ARGUMENT);
+  
+  if (item)
     {
-	if (item->opt != opts)
+      if (item->opt != opts)
 	{		
-	    MENU *menu = item->imenu;
+	  MENU *menu = item->imenu;
 	  
-	    item->opt = opts;
-
-	    if ((!(opts & O_SELECTABLE)) && (item->value!=0))
-		item->value = 0;
+	  item->opt = opts;
 	  
-	    if (menu && (menu->status & _POSTED))
+	  if ((!(opts & O_SELECTABLE)) && item->value)
+	    item->value = FALSE;
+	  
+	  if (menu && (menu->status & _POSTED))
 	    {
-		MOVE_AND_POSTITEM( menu, item );
-		_nc_Show_Menu(menu);
+	      Move_And_Post_Item( menu, item );
+	      _nc_Show_Menu(menu);
 	    }
 	}
     }
-    else
-	_nc_Default_Item.opt = opts;
+  else
+    _nc_Default_Item.opt = opts;
   
-    RETURN(E_OK);
+  RETURN(E_OK);
 }
-
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -70,16 +72,22 @@ int set_item_opts(ITEM *item, Item_Options opts)
 |   
 |   Description   :  Switch of the options for this item.
 |
-|   Return Values :  E_OK     - on success
-|
+|   Return Values :  E_OK            - success
+|                    E_BAD_ARGUMENT  - invalid options
 +--------------------------------------------------------------------------*/
 int item_opts_off(ITEM *item, Item_Options  opts)
-{
-    ITEM *citem = item;
-  
-    CDEFITEM(citem);
-    opts = citem->opt & ~opts;
-    return set_item_opts( item, opts );
+{ 
+  ITEM *citem = item; /* use a copy because set_item_opts must detect
+                         NULL item itself to adjust its behaviour */
+
+  if (opts & ~ALL_ITEM_OPTS)
+    RETURN(E_BAD_ARGUMENT);
+  else
+    {
+      Normalize_Item(citem);
+      opts = citem->opt & ~opts;
+      return set_item_opts( item, opts );
+    }
 }
 
 /*---------------------------------------------------------------------------
@@ -88,18 +96,23 @@ int item_opts_off(ITEM *item, Item_Options  opts)
 |   
 |   Description   :  Switch on the options for this item.
 |
-|   Return Values :  E_OK     - on success
-|
+|   Return Values :  E_OK            - success
+|                    E_BAD_ARGUMENT  - invalid options
 +--------------------------------------------------------------------------*/
 int item_opts_on(ITEM *item, Item_Options opts)
 {
-    ITEM *citem = item;
+  ITEM *citem = item; /* use a copy because set_item_opts must detect
+                         NULL item itself to adjust its behaviour */
   
-    CDEFITEM(citem);
-    opts = citem->opt | opts;
-    return set_item_opts( item, opts );
+  if (opts & ~ALL_ITEM_OPTS)
+    RETURN(E_BAD_ARGUMENT);
+  else
+    {
+      Normalize_Item(citem);
+      opts = citem->opt | opts;
+      return set_item_opts( item, opts );
+    }
 }
-
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -108,12 +121,10 @@ int item_opts_on(ITEM *item, Item_Options opts)
 |   Description   :  Switch of the options for this item.
 |
 |   Return Values :  Items options
-|
 +--------------------------------------------------------------------------*/
 Item_Options item_opts(const ITEM * item)
 {
-    CDEFITEM(item);
-    return item->opt;
+  return (ALL_ITEM_OPTS & Normalize_Item(item)->opt);
 }
 
-/* menu_item_opt.c ends here */
+/* m_item_opt.c ends here */

@@ -100,6 +100,13 @@ return \fBOK\fR.
 .SH PORTABILITY
 These functions are described in the XSI Curses standard, Issue 4.
 
+The XSI Curses standard is ambiguous on the question of whether \fBraw\fR()
+should disable the CRLF translations controlled by \fBnl\fR() and \fBnonl\fR().
+BSD curses did turn off these translations; AT&T curses (at least as late as
+SVr1) did not.  We choose to do so, on the theory that a programmer requesting
+raw input wants a clean (ideally 8-bit clean) connection that the operating
+system does not mess with.
+
 Some historic curses implementations had, as an undocumented feature, the
 ability to do the equivalent of \fBclearok(..., 1)\fR by saying
 \fBtouchwin(stdscr)\fR or \fBclear(stdscr)\fR.  This will not work under

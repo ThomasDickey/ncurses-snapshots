@@ -10,7 +10,7 @@ BEGIN {
 	print "\tint code;"
 	print "};"
 	print ""
-	print "struct kn key_names[] = {"
+	print "const struct kn key_names[] = {"
 }
 
 {printf "\t{\"%s\", %s,},\n", $1, $2;}

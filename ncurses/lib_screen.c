@@ -60,7 +60,7 @@ WINDOW *getwin(FILE *filep)
 
 	nwin->_clear      = try._clear;
 	nwin->_scroll     = try._scroll;
-	nwin->_leave      = try._leave;
+	nwin->_leaveok    = try._leaveok;
 	nwin->_use_keypad = try._use_keypad;
 	nwin->_delay   	  = try._delay;
 	nwin->_immed	  = try._immed;

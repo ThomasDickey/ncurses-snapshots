@@ -39,7 +39,10 @@ CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 CFLAGS_NORMAL	= $(CCFLAGS)
 CFLAGS_DEBUG	= $(CCFLAGS) -g -DTRACE
 CFLAGS_PROFILE	= $(CCFLAGS) -pg
-CFLAGS_SHARED	= $(CCFLAGS) @CC_SHARED_OPTS@
+# Juergen Pfeifer reports:
+# "Unfortunately -O crashes my linker on Linix and -O2 works"
+# If your linker coughs and dies, try uncommenting the -O2
+CFLAGS_SHARED	= $(CCFLAGS) @CC_SHARED_OPTS@ # -O2
 
 CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
@@ -55,7 +58,7 @@ RANLIB		= @RANLIB@
 LIBRARIES	= @LIBS_TO_MAKE@
 
 ################################################################################
-all ::	../include/menu.h ../include/eti.h $(LIBRARIES)
+all ::	../include/menu.h ../include/eti.h ../include/mf_common.h $(LIBRARIES)
 
 install :: install.libs
 
@@ -75,7 +78,9 @@ $(libdir) :
 ../include/eti.h : $(srcdir)/eti.h
 	-rm -f $@
 	cp $(srcdir)/eti.h $@
-
+../include/mf_common.h : $(srcdir)/mf_common.h
+	-rm -f $@
+	cp $(srcdir)/mf_common.h $@
 tags:
 	ctags *.[ch]
 
@@ -83,7 +88,8 @@ TAGS:
 	etags *.[ch]
 
 clean ::
-	-rm -f tags TAGS *~ ../include/menu.h ../include/eti.h
+	-rm -f tags TAGS *~ ../include/menu.h ../include/eti.h \
+	       ../include/mf_common.h
 
 distclean: clean
 	-rm -f Makefile

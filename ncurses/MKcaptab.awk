@@ -22,6 +22,10 @@ BEGIN		{
 		    tablesize = 0;
 		}
 
+		# skip #-led comments
+/^#/		{
+		    next;
+		}
 
 $3 == "bool"	{
 		    printf "\t{ 0,%15s,\tBOOLEAN,\t%3d },\n", $2, BoolCount++
@@ -41,7 +45,7 @@ $3 == "str"	{
 cat <<'EOF'
 };
 
-struct alias _nc_alias_table[] =
+const struct alias _nc_alias_table[] =
 {
 EOF
 
@@ -65,6 +69,11 @@ BEGIN		{
 		    BoolCount = NumCount = StrCount = 0;
 		}
 
+
+		# skip #-led comments
+/^#/		{
+		    next;
+		}
 
 $3 == "bool"	{
 		    printf "\t{ 0,%15s,\tBOOLEAN,\t%3d },\n", $4, BoolCount++

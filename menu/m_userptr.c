@@ -33,14 +33,12 @@
 |   Description   :  Set the pointer that is reserved in any menu to store
 |                    application relevant informations.
 |
-|   Return Values :  E_OK         - on success
-|
+|   Return Values :  E_OK         - success
 +--------------------------------------------------------------------------*/
 int set_menu_userptr(MENU * menu, char * userptr)
 {
-    CDEFMENU(menu);
-    menu->userptr = userptr;
-    RETURN( E_OK );
+  Normalize_Menu(menu)->userptr = userptr;
+  RETURN( E_OK );
 }
 
 /*---------------------------------------------------------------------------
@@ -52,12 +50,10 @@ int set_menu_userptr(MENU * menu, char * userptr)
 |
 |   Return Values :  Value of the pointer. If no such pointer has been set,
 |                    NULL is returned
-|
 +--------------------------------------------------------------------------*/
 char *menu_userptr(const MENU * menu)
 {
-    CDEFMENU(menu);
-    return( menu->userptr);
+  return( Normalize_Menu(menu)->userptr);
 }
 
-/* menu_userptr.c ends here */
+/* m_userptr.c ends here */

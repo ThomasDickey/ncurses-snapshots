@@ -41,59 +41,56 @@
 |                    E_BAD_ARGUMENT         - invalid values passed
 |                    E_NOT_CONNECTED        - there are no items connected
 |                    E_POSTED               - the menu is already posted
-|
 +--------------------------------------------------------------------------*/
 int set_menu_format(MENU *menu, int rows, int cols)
 {
-    int total_rows, total_cols;
+  int total_rows, total_cols;
   
-    if (rows<0 || cols<0) 
-	RETURN(E_BAD_ARGUMENT);
-
-    if (menu)
+  if (rows<0 || cols<0) 
+    RETURN(E_BAD_ARGUMENT);
+  
+  if (menu)
     {
-	ASSERT_NOT_POSTED( menu );
-    
-	if (!(menu->items))
-	    RETURN(E_NOT_CONNECTED);
-
-	if (rows==0) 
-	    rows = menu->frows;
-	if (cols==0) 
-	    cols = menu->fcols;
-    
-	if (menu->pattern)
-	{
-	    RESET_PATTERN(menu);
-	}
-    
-	menu->frows = rows;
-	menu->fcols = cols;
-    
-	assert(rows>0 && cols>0);
-	total_rows = (menu->nitems - 1)/cols + 1;
-	total_cols = (menu->status & O_ROWMAJOR) ? 
-	    minimum(menu->nitems,cols) :
-	(menu->nitems-1)/total_rows + 1;
-    
-	menu->rows    = total_rows;
-	menu->cols    = total_cols;
-	menu->height  = minimum(total_rows,rows); 
-	menu->toprow  = 0;	
-	menu->curitem = *(menu->items);
-	assert(menu->curitem);
-	menu->status |= _LINK_NEEDED;
-	_nc_Calculate_Item_Length_and_Width(menu);
+      if ( menu->status & _POSTED )
+	RETURN(E_POSTED);
+      
+      if (!(menu->items))
+	RETURN(E_NOT_CONNECTED);
+      
+      if (rows==0) 
+	rows = menu->frows;
+      if (cols==0) 
+	cols = menu->fcols;
+      
+      if (menu->pattern)
+	Reset_Pattern(menu);
+      
+      menu->frows = rows;
+      menu->fcols = cols;
+      
+      assert(rows>0 && cols>0);
+      total_rows = (menu->nitems - 1)/cols + 1;
+      total_cols = (menu->status & O_ROWMAJOR) ? 
+	minimum(menu->nitems,cols) :
+	  (menu->nitems-1)/total_rows + 1;
+      
+      menu->rows    = total_rows;
+      menu->cols    = total_cols;
+      menu->height  = minimum(total_rows,rows); 
+      menu->toprow  = 0;	
+      menu->curitem = *(menu->items);
+      assert(menu->curitem);
+      menu->status |= _LINK_NEEDED;
+      _nc_Calculate_Item_Length_and_Width(menu);
     }
-    else
+  else
     {
-	if (rows>0) _nc_Default_Menu.frows = rows;
-	if (cols>0) _nc_Default_Menu.fcols = cols;
+      if (rows>0) _nc_Default_Menu.frows = rows;
+      if (cols>0) _nc_Default_Menu.fcols = cols;
     }
   
-    RETURN(E_OK);
+  RETURN(E_OK);
 }
-
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -103,14 +100,13 @@ int set_menu_format(MENU *menu, int rows, int cols)
 |                    be displayed at one time on menu.
 |
 |   Return Values :  -
-|
 +--------------------------------------------------------------------------*/
 void menu_format(const MENU *menu, int *rows, int *cols)
 {
-    if (rows)
-	*rows = menu ? menu->frows : _nc_Default_Menu.frows;
-    if (cols)
-	*cols = menu ? menu->fcols : _nc_Default_Menu.fcols;
+  if (rows)
+    *rows = Normalize_Menu(menu)->frows;
+  if (cols)
+    *cols = Normalize_Menu(menu)->fcols;
 }
 
-/* menu_format.c ends here */
+/* m_format.c ends here */
