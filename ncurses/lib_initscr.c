@@ -45,7 +45,7 @@
 #include <sys/termio.h>	/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.22 1998/04/18 21:51:33 tom Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.23 1998/08/09 00:18:48 tom Exp $")
 
 WINDOW *initscr(void)
 {
@@ -67,7 +67,7 @@ NCURSES_CONST char *name;
 
 		/* allow user to set maximum escape delay from the environment */
 		if ((name = getenv("ESCDELAY")) != 0)
-			ESCDELAY = atoi(getenv("ESCDELAY"));
+			ESCDELAY = atoi(name);
 
 		/* def_shell_mode - done in newterm/_nc_setupscreen */
 		def_prog_mode();

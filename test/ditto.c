@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1998
  *
- * $Id: ditto.c,v 1.1 1998/08/01 20:35:53 tom Exp $
+ * $Id: ditto.c,v 1.2 1998/08/09 02:35:43 tom Exp $
  *
  * The program illustrates how to set up multiple screens from a single
  * program.  Invoke the program by specifying another terminal on the same
@@ -38,6 +38,7 @@
  */
 #include <test.priv.h>
 #include <sys/stat.h>
+#include <errno.h>
 
 typedef struct {
 	FILE *input;

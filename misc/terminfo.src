@@ -1,7 +1,7 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
 #	Version 10.2.1
-#	$Date: 1998/07/25 23:02:42 $
+#	$Date: 1998/08/06 20:00:24 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -1072,6 +1072,38 @@ pcvt43w|dec vt220 emulation with 43 lines and 132 cols,
 pcvt50w|dec vt220 emulation with 50 lines and 132 cols, 
 	cols#132, lines#50, 
 	is2=\E[1;50r\E[50;1H, use=pcvtXX, 
+
+# Terminfo entries to enable the use of the ncurses library in colour on a
+# NetBSD-arm32 console (only tested on a RiscPC).
+# Created by Dave Millen <dmill@globalnet.co.uk> 22.07.98
+# modified codes for setf/setb to setaf/setab, then to klone+color, corrected
+# typo in invis - TD
+arm100|arm100-am|Arm(RiscPC) ncurses compatible (for 640x480), 
+	am, bce, msgr, xenl, xon, 
+	cols#80, it#8, lines#30, 
+	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+	bel=^G, blink=\E[5m$<2>, bold=\E[1m$<2>, 
+	clear=\E[H\E[J$<50>, cr=^M, csr=\E[%i%p1%d;%p2%dr, 
+	cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=^J, 
+	cuf=\E[%p1%dC, cuf1=\E[C$<2>, 
+	cup=\E[%i%p1%d;%p2%dH$<5>, cuu=\E[%p1%dA, 
+	cuu1=\E[A$<2>, ed=\E[J$<50>, el=\E[K$<3>, el1=\E[1K$<3>, 
+	enacs=\E(B\E)0, home=\E[H, ht=^I, hts=\EH, ind=^J, 
+	invis=\E[8m$<2>, ka1=\E[q, ka3=\E[s, kb2=\E[r, kbs=^H, 
+	kc1=\E[p, kc3=\E[n, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, 
+	kcuu1=\E[A, kent=\E[M, kf0=\E[y, kf1=\E[P, kf10=\E[x, 
+	kf2=\E[Q, kf3=\E[R, kf4=\E[S, kf5=\E[t, kf6=\E[u, kf7=\E[v, 
+	kf8=\E[l, kf9=\E[w, rc=\E8, rev=\E[6m$<2>, ri=\EM$<5>, 
+	rmacs=^O, rmam=\E[?7l, rmkx=\E[?1l\E>, rmso=\E[m$<2>, 
+	rmul=\E[m$<2>, rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, 
+	sc=\E7, 
+	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
+	sgr0=\E[m\017$<2>, smacs=^N, smam=\E[?7h, smkx=\E[?1h\E=, 
+	smso=\E[7m$<2>, smul=\E[4m$<2>, tbc=\E[3g, 
+	use=ecma+sgr, use=klone+color, 
+
+arm100-w|arm100-wam|Arm(RiscPC) ncurses compatible (for 1024x768), 
+	cols#132, lines#50, use=arm100, 
 
 # NetBSD/x68k console vt200 emulator. This port runs on a 68K machine
 # manufactured by Sharp for the Japenese market.
@@ -2477,6 +2509,52 @@ screen3|older VT 100/ANSI X3.64 virtual terminal,
 	rmir=\E[4l, rmkx=\E>, rmso=\E[23m, rmul=\E[24m, rs1=\Ec, 
 	sc=\E7, sgr0=\E[m, smir=\E[4h, smkx=\E=, smso=\E[3m, 
 	smul=\E[4m, tbc=\E[3g, 
+
+# Francesco Potorti <F.Potorti@cnuce.cnr.it>:
+# NCSA telnet is one of the most used telnet clients for the Macintosh.  It has
+# been maintained until recently by the National Center for Supercomputer
+# Applications, and it is feature rich, stable and free.  It can be downloaded
+# from www.ncsa.edu.  This terminfo description file is based on xterm-vt220,
+# xterm+sl, and the docs at NCSA.  It works well.
+#
+# NCSA Telnet 2.6 for Macintosh in vt220 8-bit emulation mode
+# The terminal options should be set as follows:
+#         Xterm sequences ON
+#         use VT wrap mode ON
+#         use Emacs arrow keys OFF
+#         CTRL-COMND is Emacs meta ON
+#         8 bit mode ON
+#         answerback string: "ncsa-vt220-8"
+#         setup keys: all disabled
+#
+# Application mode is not used.  The function-key mapping refers to the Apple
+# Extended Keyboard (e.g., NCSA Telnet's F1 corresponds to a VT220 F6).
+ncsa|ncsa-vt220|ncsa-vt220-8|NCSA Telnet 2.6 for Macintosh in vt220-8 mode, 
+	am, hs, km, mir, msgr, xenl, 
+	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
+	clear=\E[H\E[2J, cnorm=\E[?25h, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
+	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, 
+	dsl=\E]0;\007, ed=\E[J, el=\E[K, enacs=\E)0, fsl=^G, 
+	home=\E[H, ht=^I, if=/usr/share/tabset/vt100, 
+	il=\E[%p1%dL, il1=\E[L, ind=^J, 
+	is2=\E7\E[r\E[m\E[?7h\E[?1;4;6l\E[4l\E8\E>, kbs=^H, 
+	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
+	kdch1=\E[4~, kf1=\E[17~, kf10=\E[28~, kf11=\E[29~, 
+	kf12=\E[31~, kf13=\E[32~, kf14=\E[33~, kf15=\E[34~, 
+	kf2=\E[18, kf3=\E[19~, kf4=\E[20~, kf5=\E[21~, kf6=\E23~, 
+	kf7=\E[24~, kf8=\E[25~, kf9=\E[26~, khome=\E[2~, 
+	kich1=\E[1~, kll=\E[5~, knp=\E[6~, kpp=\E[3~, rc=\E8, 
+	rev=\E[7m, rf=/usr/share/tabset/vt100, ri=\EM, rmacs=^O, 
+	rmam=\E[?7l, rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, 
+	rmso=\E[27m, rmul=\E[24m, 
+	rs2=\E7\E[r\E[m\E[?7h\E[?1;4;6l\E[4l\E8\E>, sc=\E7, 
+	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p4%t;5%;%?%p1%p3%|%t;7%;m%?%p9%t\E(0%e\E(B%;, 
+	sgr0=\E[m, smacs=^N, smam=\E[?7h', smcup=\E7\E[?47h, 
+	smir=\E[4h, smso=\E[7m, smul=\E[4m, tbc=\E[3g, tsl=\E]0;, 
 
 #### Pilot Pro Palm-Top
 #
@@ -16034,6 +16112,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 1998/7/25
 #	* Added minitel1 entries from Alexander Montaron.
 #	* Added qnxt2 from Federico Bianchi.
+#	* Added arm100 terminfo entries from Dave Millen.
+#
+# 1998/8/6
+#	* Added ncsa telnet entries Francesco Potorti
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
