@@ -25,7 +25,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_win.c,v 1.2 1996/11/19 15:23:53 juergen Exp $")
+MODULE_ID("$Id: frm_win.c,v 1.3 1997/04/16 22:29:04 juergen Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -51,11 +51,12 @@ int set_form_win(FORM * form, WINDOW * win)
 |   
 |   Description   :  Retrieve the window of the form.
 |
-|   Return Values :  The pointer to the Window or NULL if there is none.
+|   Return Values :  The pointer to the Window or stdscr if there is none.
 +--------------------------------------------------------------------------*/
 WINDOW *form_win(const FORM * form)
 {
-  return Normalize_Form( form )->win;
+  const FORM* f = Normalize_Form( form );
+  return (f->win ? f->win : stdscr);
 }
 
 /*---------------------------------------------------------------------------
@@ -82,11 +83,12 @@ int set_form_sub(FORM * form, WINDOW * win)
 |   
 |   Description   :  Retrieve the window of the form.
 |
-|   Return Values :  The pointer to the Window or NULL if there is none.
+|   Return Values :  The pointer to the Subwindow.
 +--------------------------------------------------------------------------*/
 WINDOW *form_sub(const FORM * form)
 {
-  return Normalize_Form( form )->sub;
+  const FORM* f = Normalize_Form( form );
+  return Get_Form_Window(f);
 }
 
 /* frm_win.c ends here */

@@ -2,7 +2,7 @@
 #
 # MKlib_gen.sh -- generate sources from curses.h macro definitions
 #
-# ($Id: MKlib_gen.sh,v 1.7 1997/04/12 22:24:07 tom Exp $)
+# ($Id: MKlib_gen.sh,v 1.8 1997/04/20 02:08:07 tom Exp $)
 #
 # The XSI Curses standard requires all curses entry points to exist as
 # functions, even though many definitions would normally be shadowed
@@ -32,6 +32,7 @@ TMP=gen$$.c
 trap "rm -f $TMP" 0 1 2 5 15
 
 (cat <<EOF
+#include <ncurses_cfg.h>
 #include <curses.h>
 
 DECLARATIONS
@@ -88,18 +89,25 @@ sed -n -e "/^extern.*generated/s/^extern \([^;]*\);.*/\1/p" \
 			pointer = 1;
 		else if ( ch == "va_list" )
 			pointer = 1;
+		else if ( ch == "char" )
+			argtype = "char";
 		else if ( ch == "int" )
 			argtype = "int";
 		else if ( ch == "short" )
 			argtype = "short";
 		else if ( ch == "chtype" )
 			argtype = "chtype";
-		else if ( ch == "attr_t" )
+		else if ( ch == "attr_t" || ch == "NCURSES_ATTR_T" )
 			argtype = "attr";
 
 		if ( ch == "," || ch == ")" ) {
 			if (pointer) {
-				call = call "%p"
+				if ( argtype == "char" ) {
+					call = call "%s"
+					comma = comma "_nc_visbuf2(" num ","
+					pointer = 0;
+				} else
+					call = call "%p"
 			} else if (argcount != 0) {
 				if ( argtype == "int" || argtype == "short" ) {
 					call = call "%d"

@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_num.c,v 1.8 1997/02/15 20:47:19 tom Exp $")
+MODULE_ID("$Id: fty_num.c,v 1.9 1997/04/19 17:26:38 juergen Exp $")
 
 #if HAVE_LOCALE_H
 #include <locale.h>
@@ -141,7 +141,7 @@ static bool Check_Numeric_Field(FIELD * field, const void * argp)
 	    {
 	      if (val<low || val>high) return FALSE;
 	    }
-	  sprintf(buf,"%.*f",prec,val);
+	  sprintf(buf,"%.*f",(prec>0?prec:0),val);
 	  set_field_buffer(field,0,buf);
 	  return TRUE;
 	}

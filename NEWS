@@ -1,6 +1,14 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970419
+	+ change type of precision-parameter of form types TYPE_NUMERIC and
+	  TYPE_INTEGER to long to match SVr4 documentation (patch by Juergen
+	  Pfeifer, reported by Bryan Henderson).
+	+ set the form window to stdscr in set_form_win() so that form_win()
+	  won't return null (patch by Juergen Pfeifer, reported by Bryan
+	  Henderson <bryanh@giraffe.netgate.net>).
+
 970412
 	+ corrected ifdef'ing of inline (from 970321) for TRACE vs C++.
 	+ corrected toggle_attr_off() macro (patch by Andries.Brouwer).

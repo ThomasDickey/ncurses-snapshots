@@ -18,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.43 1997/04/12 18:13:08 tom Exp $ */
+/* $Id: curses.h.in,v 1.44 1997/04/20 01:32:08 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -33,6 +33,14 @@
 /* This is defined in more than one ncurses header, for identification */
 #undef  NCURSES_VERSION
 #define NCURSES_VERSION "@NCURSES_MAJOR@.@NCURSES_MINOR@"
+
+#ifdef NCURSES_NOMACROS
+#define NCURSES_ATTR_T attr_t
+#endif
+
+#ifndef NCURSES_ATTR_T
+#define NCURSES_ATTR_T int
+#endif
 
 #ifndef NCURSES_CONST
 #define NCURSES_CONST /* nothing */
@@ -348,13 +356,13 @@ extern int add_wch(const cchar_t *);			/* missing */
 extern int add_wchnstr(const cchar_t *, int);		/* missing */
 extern int add_wchstr(const cchar_t *);			/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
-extern int attroff(int);				/* generated */
-extern int attron(int);					/* generated */
-extern int attrset(int);				/* generated */
+extern int attroff(NCURSES_ATTR_T);			/* generated */
+extern int attron(NCURSES_ATTR_T);			/* generated */
+extern int attrset(NCURSES_ATTR_T);			/* generated */
 extern int attr_get(void);				/* generated */
-extern int attr_off(int);				/* generated */
-extern int attr_on(int);				/* generated */
-extern int attr_set(int);				/* generated */
+extern int attr_off(NCURSES_ATTR_T);			/* generated */
+extern int attr_on(NCURSES_ATTR_T);			/* generated */
+extern int attr_set(NCURSES_ATTR_T);			/* generated */
 extern int baudrate(void);				/* implemented */
 extern int beep(void);					/* implemented */
 extern int bkgd(chtype);				/* generated */

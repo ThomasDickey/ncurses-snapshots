@@ -13,12 +13,12 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_int.c,v 1.6 1997/02/15 17:30:09 tom Exp $")
+MODULE_ID("$Id: fty_int.c,v 1.7 1997/04/19 15:22:40 juergen Exp $")
 
 typedef struct {
   int precision;
-  int low;
-  int high;
+  long low;
+  long high;
 } integerARG;
 
 /*---------------------------------------------------------------------------
@@ -36,8 +36,8 @@ static void *Make_Integer_Type(va_list * ap)
   if (argp)
     {
       argp->precision = va_arg(*ap,int);
-      argp->low       = va_arg(*ap,int);
-      argp->high      = va_arg(*ap,int);
+      argp->low       = va_arg(*ap,long);
+      argp->high      = va_arg(*ap,long);
     }
   return (void *)argp;
 }
@@ -92,8 +92,8 @@ static void Free_Integer_Type(void * argp)
 static bool Check_Integer_Field(FIELD * field, const void * argp)
 {
   const integerARG *argi = (const integerARG *)argp;
-  int low           = argi->low;
-  int high          = argi->high;
+  long low          = argi->low;
+  long high         = argi->high;
   int prec          = argi->precision;
   unsigned char *bp = (unsigned char *)field_buffer(field,0);
   char *s           = (char *)bp;
@@ -117,7 +117,7 @@ static bool Check_Integer_Field(FIELD * field, const void * argp)
 	    {
 	      if (val<low || val>high) return FALSE;
 	    }
-	  sprintf(buf,"%.*ld",prec,val);
+	  sprintf(buf,"%.*ld",(prec>0?prec:0),val);
 	  set_field_buffer(field,0,buf);
 	  return TRUE;
 	}

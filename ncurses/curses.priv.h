@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.59 1997/04/12 22:34:05 Andries.Brouwer Exp $
+ * $Id: curses.priv.h,v 1.60 1997/04/20 02:08:34 tom Exp $
  *
  *	curses.priv.h
  *
@@ -331,6 +331,7 @@ extern WINDOW * _nc_retrace_win(WINDOW *);
 extern char *_nc_retrace_ptr(char *);
 extern const char *_nc_tputs_trace;
 extern const char *_nc_visbuf(const char *);
+extern const char *_nc_visbuf2(int, const char *);
 extern int _nc_retrace_int(int);
 extern long _nc_outchars;
 #else
@@ -465,6 +466,7 @@ extern int _nc_mouse_fd(void);
 extern WINDOW *_nc_makenew(int, int, int, int, int);
 extern chtype _nc_background(WINDOW *);
 extern chtype _nc_render(WINDOW *, chtype);
+extern char *_nc_trace_buf(int, size_t);
 extern int _nc_initscr(void);
 extern int _nc_keypad(bool);
 extern int _nc_outch(int);
