@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 10.1.1
+#	Version 10.1.5
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -4639,7 +4639,7 @@ wy50-mc|wyse50-mc|wyse 50 with magic cookies,
 	msgr@, 
 	ma@, xmc#1, 
 	blink=\EG2, dim=\EGp, prot=\EG0\E), rmacs=\EG0\EH\003, 
-	rmcup=\EG0, 
+	rmcup=\EG0, rmso=\EG0, 
 	sgr=\EG%'0'%?%p2%p6%|%t%{8}%|%;%?%p1%p3%|%p6%|%t%{4}%|%;%?%p4%t%{2}%|%;%?%p1%p5%|%t%{64}%|%;%?%p7%t%{1}%|%;%c%?%p8%t\E)%e\E(%;%?%p9%t\EH\002%e\EH\003%;, 
 	sgr0=\EG0\E(\EH\003, smacs=\EG0\EH\002, smcup=, 
 	smso=\EGt, use=wy50, 
@@ -14004,6 +14004,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* remove spurious newlines from several entries (hp+color, wy50,
 #	  wy350, wy370-nk, wy99gt-tek, wy370-tek, ibm3161, tek4205, ctrm,
 #	  gs6300)
+# 10.1.6 (Sat Jul  5 15:08:16 EDT 1997)
+#	* correct rmso capability of wy50-mc
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

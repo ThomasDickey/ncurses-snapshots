@@ -36,7 +36,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.32 1997/06/01 00:18:58 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.33 1997/07/06 00:23:35 tom Exp $")
 
 /*
  *	int
@@ -155,6 +155,11 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 
     if (str_count)
     {
+	if (str_count*2 >= MAX_ENTRY_SIZE)
+	{
+	    close(fd);
+	    return(0);
+	}
 	/* grab the string offsets */
 	numread = read(fd, buf, (unsigned)(str_count*2));
 	if (numread < str_count*2)
@@ -164,6 +169,8 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 	}
 	for (i = 0; i < numread/2; i++)
 	{
+	    if (i >= STRCOUNT)
+		break;
 	    if (IS_NEG1(buf + 2*i))
 		ptr->Strings[i] = ABSENT_STRING;
 	    else if (IS_NEG2(buf + 2*i))

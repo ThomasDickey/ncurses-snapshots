@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_raw.c,v 1.17 1997/06/14 22:59:17 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.18 1997/07/05 18:00:36 tom Exp $")
 
 #ifdef SVR4_TERMIO
 #define _POSIX_SOURCE
@@ -65,7 +65,7 @@ MODULE_ID("$Id: lib_raw.c,v 1.17 1997/06/14 22:59:17 tom Exp $")
 
 typedef struct {unsigned int val; const char *name;} BITNAMES;
 
-static void lookup_bits(char *buf, const BITNAMES *table, char *label, unsigned int val)
+static void lookup_bits(char *buf, const BITNAMES *table, const char *label, unsigned int val)
 {
 	const BITNAMES *sp;
 

@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.95 1997/05/31 21:22:37 tom Exp $
+$Id: ncurses.c,v 1.96 1997/07/05 20:01:58 tom Exp $
 
 ***************************************************************************/
 
@@ -274,10 +274,11 @@ int y, x;
     endwin();
 }
 
-static int show_attr(int row, chtype attr, const char *name, bool once, const char *capname)
+static int show_attr(int row, int skip, chtype attr, const char *name, bool once, const char *capname)
 {
     mvprintw(row, 8, "%s mode:", name);
     mvprintw(row, 24, "|");
+    if (skip) printw("%*s", skip, " ");
     if (once)
 	attron(attr);
     else
@@ -285,6 +286,7 @@ static int show_attr(int row, chtype attr, const char *name, bool once, const ch
     addstr("abcde fghij klmno pqrst uvwxy z");
     if (once)
 	attroff(attr);
+    if (skip) printw("%*s", skip, " ");
     printw("|");
     if (capname != 0 && tigetstr(capname) == 0)
 	printw(" (N/A)");
@@ -294,28 +296,43 @@ static int show_attr(int row, chtype attr, const char *name, bool once, const ch
 static void attr_test(void)
 /* test text attributes */
 {
-    int row = 2;
-    refresh();
+    int n;
+    int skip = tigetnum("xmc");
 
-    mvaddstr(0, 20, "Character attribute test display");
+    if (skip < 0)
+    	skip = 0;
 
-    row = show_attr(row, A_STANDOUT,  "STANDOUT",  TRUE, "smso");
-    row = show_attr(row, A_REVERSE,   "REVERSE",   TRUE, "rev");
-    row = show_attr(row, A_BOLD,      "BOLD",      TRUE, "bold");
-    row = show_attr(row, A_UNDERLINE, "UNDERLINE", TRUE, "smul");
-    row = show_attr(row, A_DIM,       "DIM",       TRUE, "dim");
-    row = show_attr(row, A_BLINK,     "BLINK",     TRUE, "blink");
-    row = show_attr(row, A_PROTECT,   "PROTECT",   TRUE, "prot");
-    row = show_attr(row, A_INVIS,     "INVISIBLE", TRUE, "invis");
-    row = show_attr(row, A_NORMAL,    "NORMAL",    FALSE,0);
+    n = skip;	/* make it easy */
 
-    mvprintw(row, 8,
+    do {
+	int row = 2;
+
+	/* If we're looping, the screen contents may be trashed */
+	erase();
+	refresh();
+	touchwin(stdscr);
+	touchwin(curscr);
+
+	mvaddstr(0, 20, "Character attribute test display");
+
+	row = show_attr(row, n, A_STANDOUT,  "STANDOUT",  TRUE, "smso");
+	row = show_attr(row, n, A_REVERSE,   "REVERSE",   TRUE, "rev");
+	row = show_attr(row, n, A_BOLD,      "BOLD",      TRUE, "bold");
+	row = show_attr(row, n, A_UNDERLINE, "UNDERLINE", TRUE, "smul");
+	row = show_attr(row, n, A_DIM,       "DIM",       TRUE, "dim");
+	row = show_attr(row, n, A_BLINK,     "BLINK",     TRUE, "blink");
+	row = show_attr(row, n, A_PROTECT,   "PROTECT",   TRUE, "prot");
+	row = show_attr(row, n, A_INVIS,     "INVISIBLE", TRUE, "invis");
+	row = show_attr(row, n, A_NORMAL,    "NORMAL",    FALSE,0);
+
+	mvprintw(row, 8,
 	     "This terminal does %shave the magic-cookie glitch",
 	     tigetnum("xmc") > -1 ? "" : "not ");
+	mvprintw(row+1, 8,
+	     "Enter a digit to set gaps on each side of displayed attributes");
 
-    refresh();
-
-    Pause();
+	refresh();
+    } while ((n = (Getchar() - '0')) >= 0 && n <= 9);
 
     erase();
     endwin();
@@ -352,7 +369,7 @@ static void color_test(void)
 {
     int i;
     int base, top, width;
-    char *hello;
+    NCURSES_CONST char *hello;
 
     refresh();
     (void) printw("There are %d color pairs\n", COLOR_PAIRS);
@@ -1949,7 +1966,7 @@ int padgetch(WINDOW *win)
 {
     int	c;
 
-    while(1)
+    for(;;)
     switch(c = wGetchar(win))
     {
     case '!': ShellOut(FALSE); return KEY_REFRESH;

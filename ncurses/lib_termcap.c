@@ -27,7 +27,7 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <term.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.14 1997/06/15 11:16:53 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.15 1997/07/05 18:12:54 tom Exp $")
 
 /*
    some of the code in here was contributed by:
@@ -62,7 +62,7 @@ speed_t speed;
 #endif
 
 	T(("calling tgetent"));
-	setupterm((char *)name, STDOUT_FILENO, &errcode);
+	setupterm(name, STDOUT_FILENO, &errcode);
 
 	if (errcode != 1)
 		return(errcode);
@@ -222,5 +222,5 @@ int i;
 
 char *tgoto(const char *string, int x, int y)
 {
-	return(tparm((char *)string, y, x));
+	return(tparm(string, y, x));
 }

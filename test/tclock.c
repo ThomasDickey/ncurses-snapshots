@@ -138,7 +138,7 @@ main(
 	mvaddstr(0,0,"ASCII Clock by Howard Jones (ha.jones@ic.ac.uk),1994");
 
 	sradius=8;
-	while(1)
+	for(;;)
 	  {
 	    sleep(1);
 
