@@ -44,6 +44,8 @@
 #include "term.h"
 #include "term_entry.h"
 
+MODULE_ID("$Id: comp_parse.c,v 1.12 1996/07/28 00:11:46 tom Exp $")
+
 static void sanity_check(TERMTYPE *);
 
 /****************************************************************************
@@ -435,39 +437,55 @@ int _nc_resolve_uses(void)
 
 static void sanity_check(TERMTYPE *tp)
 {
+#ifdef __UNUSED__	/* this casts too wide a net */
     bool       terminal_entry = !strchr(tp->term_names, '+');
+#endif
 
     if (!PRESENT(exit_attribute_mode))
     {
 #ifdef __UNUSED__	/* this casts too wide a net */
 	if (terminal_entry &&
 		(PRESENT(set_attributes)
-		|| PRESENT(enter_standout_mode) 
-		|| PRESENT(enter_underline_mode) 
-		|| PRESENT(enter_blink_mode) 
-		|| PRESENT(enter_bold_mode) 
-		|| PRESENT(enter_dim_mode) 
-		|| PRESENT(enter_secure_mode) 
-		|| PRESENT(enter_protected_mode) 
+		|| PRESENT(enter_standout_mode)
+		|| PRESENT(enter_underline_mode)
+		|| PRESENT(enter_blink_mode)
+		|| PRESENT(enter_bold_mode)
+		|| PRESENT(enter_dim_mode)
+		|| PRESENT(enter_secure_mode)
+		|| PRESENT(enter_protected_mode)
 		|| PRESENT(enter_reverse_mode)))
 	    _nc_warning("no exit_attribute_mode");
 #endif /* __UNUSED__ */
-	PAIRED(enter_alt_charset_mode,  exit_alt_charset_mode)
 	PAIRED(enter_standout_mode,     exit_standout_mode)
 	PAIRED(enter_underline_mode,    exit_underline_mode)
     }
 
-    /* allow entries like guru+s to hack rmcup but not smcup */
-    if (terminal_entry)
-	ANDMISSING(exit_ca_mode,                enter_ca_mode)
+     /* listed in structure-member order of first argument */
+#ifdef __UNUSED__
+     ANDMISSING(cursor_invisible,            cursor_normal)
+     ANDMISSING(cursor_visible,              cursor_normal)
+#endif /* __UNUSED__ */
+     PAIRED(enter_alt_charset_mode,          exit_alt_charset_mode)
+     ANDMISSING(enter_alt_charset_mode,      acs_chars)
+     ANDMISSING(exit_alt_charset_mode,       acs_chars)
+     ANDMISSING(enter_blink_mode,            exit_attribute_mode)
+     ANDMISSING(enter_bold_mode,             exit_attribute_mode)
+     PAIRED(exit_ca_mode,                    enter_ca_mode)
+     PAIRED(enter_delete_mode,               exit_delete_mode)
+     ANDMISSING(enter_dim_mode,              exit_attribute_mode)
+     PAIRED(enter_insert_mode,               exit_insert_mode)
+     ANDMISSING(enter_secure_mode,           exit_attribute_mode)
+     ANDMISSING(enter_protected_mode,        exit_attribute_mode)
+     ANDMISSING(enter_reverse_mode,          exit_attribute_mode)
+     PAIRED(from_status_line,                to_status_line)
+     PAIRED(meta_off,                        meta_on)
 
-    PAIRED(from_status_line,                to_status_line)
-    PAIRED(prtr_on,                         prtr_off)
-    PAIRED(enter_xon_mode,                  exit_xon_mode)
-    ANDMISSING(label_off,                   label_on)
-    PAIRED(display_clock,                   remove_clock)
-    ANDMISSING(enter_alt_charset_mode,      acs_chars)
-    ANDMISSING(exit_alt_charset_mode,       acs_chars)
+     PAIRED(prtr_on,                         prtr_off)
+     PAIRED(save_cursor,                     restore_cursor)
+     PAIRED(enter_xon_mode,                  exit_xon_mode)
+     PAIRED(enter_am_mode,                   exit_am_mode)
+     ANDMISSING(label_off,                   label_on)
+     PAIRED(display_clock,                   remove_clock)
 #undef PAIRED
 #undef ANDMISSING
 }

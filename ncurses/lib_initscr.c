@@ -27,8 +27,39 @@
 */
 
 #include <curses.priv.h>
+#include <term.h>	/* cur_term */
 
 #include <string.h>
+
+#if HAVE_SYS_TERMIO_H
+#include <sys/termio.h>	/* needed for ISC */
+#endif
+
+MODULE_ID("$Id: lib_initscr.c,v 1.9 1996/07/28 00:06:55 tom Exp $")
+
+/*
+ * SVr4/XSI Curses specify that hardware echo is turned off in initscr, and not
+ * restored during the curses session.  The library simulates echo in software.
+ * (The behavior is unspecified if the application enables hardware echo).
+ */
+static int _nc_initscr(void)
+{
+	/* for extended XPG4 conformance requires cbreak() at this point */
+	/* (SVr4 curses does this anyway) */
+	cbreak();
+
+#ifdef TERMIOS
+	cur_term->Nttyb.c_lflag &= ~(ECHO|ECHONL);
+	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
+		return ERR;
+	else
+		return OK;
+#else
+	cur_term->Nttyb.sg_flags &= ~ECHO;
+	stty(cur_term->Filedes, &cur_term->Nttyb);
+	return OK;
+#endif
+}
 
 WINDOW *initscr(void)
 {
@@ -46,13 +77,9 @@ char	*name = getenv("TERM");
 	    ESCDELAY = atoi(getenv("ESCDELAY"));
 
 	def_shell_mode();
-
-#ifdef _XOPEN_SOURCE_EXTENDED
-	/* for extended XPG4 conformance requires cbreak() at this point */
-	cbreak();
-#endif /* _XOPEN_SOURCE_EXTENDED */
-
+	_nc_initscr();
 	def_prog_mode();
+
 	return(stdscr);
 }
 

@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.42 1996/07/21 00:24:15 tom Exp $
+$Id: ncurses.c,v 1.44 1996/07/28 01:13:48 tom Exp $
 
 ***************************************************************************/
 /*LINTLIBRARY */
@@ -1886,11 +1886,12 @@ static void input_test(WINDOW *win)
      */
     mvwaddstr(win, 6, 2, "Enter a number then a string separated by space");
     echo();
-    mvwscanw(win, 7, 6, "%d %s", &num,buffer);
-    mvwprintw(win, 8, 6, "String: %s Number: %d", buffer,num);
+    if (mvwscanw(win, 7, 6, "%d %s", &num,buffer) == OK)
+	mvwprintw(win, 8, 6, "String: %s Number: %d", buffer,num);
 #endif /* HAVE_VSSCANF */
 
     Continue(win);
+    cbreak();
 }
 
 /****************************************************************************
