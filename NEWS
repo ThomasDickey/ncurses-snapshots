@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.472 1999/08/15 01:46:58 tom Exp $
+-- $Id: NEWS,v 1.474 1999/08/22 00:12:43 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990821	pre-release
+	+ updated configure macros CF_MAKEFLAGS, CF_CHECK_ERRNO
+	+ minor corrections to beterm terminfo entry.
+	+ modify lib_setup.c to reject values of $TERM which have a '/' in them.
+	+ add ifdef's to guard against CS5, CS6, CS7, CS8 being zero, as more
+	  than one is on BeOS.  That would break a switch statement.
+	+ add configure macro CF_LINK_FUNCS to detect and work around BeOS's
+	  nonfunctional link().
+	+ improved configure macros CF_BOOL_DECL and CF_BOOL_SIZE to detect
+	  BeOS's bool, which is declared as an unsigned char.
 
 990814	pre-release
 	+ add ms-vt100 terminfo entry -TD

@@ -21,7 +21,7 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: ansi.c,v 1.1 1998/01/10 00:32:51 tom Exp $")
+MODULE_ID("$Id: ansi.c,v 1.2 1999/08/21 23:11:57 tom Exp $")
 
 /*
  * Standalone tests for ANSI terminals.  Three entry points:
@@ -103,24 +103,24 @@ struct request_control {
 /* Request control function selection or setting */
 static const struct request_control rqss[] = {
 	{"Data sent to screen", "0", "$}", "\033[0$}", 0},
-	{"Data sent to disabled status line", "0", "$}"},
-	{"\033[0$~\033[1$}", "\033[0$}"},
-	{"Data sent to enabled status line", "1", "$}"},
-	{"\033[2$~\033[1$}", "\033[0$}"},
+	{"Data sent to disabled status line", "0", "$}", 0, 0},
+	{"\033[0$~\033[1$}", "\033[0$}", 0, 0, 0},
+	{"Data sent to enabled status line", "1", "$}", 0, 0},
+	{"\033[2$~\033[1$}", "\033[0$}", 0, 0, 0},
 	{"Disbale status line", "0", "$~", "\033[0$~", 0},
 	{"Top status line", "1", "$~", "\033[1$~", 0},
 	{"Bottom status line", "2", "$~", "\033[2$~", 0},
 	{"Eraseable character", "0", "\"q", "\033[0\"q", 0},
 	{"Noneraseable character", "1", "\"q", "\033[1\"q", "\033[0\"q"},
-	{"Top and bottom margins", "3;10", "r", "\0337\033[3;10r"},
-	{"\033[r\0338"},
+	{"Top and bottom margins", "3;10", "r", "\0337\033[3;10r", 0},
+	{"\033[r\0338", 0, 0, 0, 0},
 	{"Top and bottom margins", "default", "r", "\0337\033[r", "\0338"},
 	{"Character attributes, dim, bold", "1", "m", "\033[2;1m", "\033[m"},
 	{"Character attributes, bold, dim", "2", "m", "\033[1;2m", "\033[m"},
 	{"Character attributes, under, rev", "4;7", "m", "\033[4;7m", "\033[m"},
 	{"Character attributes, color", "35;42", "m", "\033[35;42m", "\033[m"},
-	{"All character attributes", "", "m", "\033[1;2;3;4;5;6;7;8;9m"},
-	{"\033[m"},
+	{"All character attributes", "", "m", "\033[1;2;3;4;5;6;7;8;9m", 0},
+	{"\033[m", 0, 0, 0, 0},
 	{0, 0, 0, 0, 0}
 };
 

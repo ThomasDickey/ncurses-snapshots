@@ -7,7 +7,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.23 1998/04/04 19:09:32 juergen Exp $
+ * $Id: bs.c,v 1.24 1999/08/21 23:14:38 tom Exp $
  */
 
 #include <test.priv.h>
@@ -129,22 +129,24 @@ ship_t;
 
 static bool checkplace(int b, ship_t *ss, int vis);
 
+#define SHIPIT(name, symbol, length) { name, 0, symbol, length, 0,0, 0, FALSE }
+
 static ship_t plyship[SHIPTYPES] =
 {
-    { carrier,	0, 'A', 5},
-    { battle,	0, 'B', 4},
-    { destroy,	0, 'D', 3},
-    { sub,	0, 'S', 3},
-    { ptboat,	0, 'P', 2},
+    SHIPIT(carrier,	'A', 5),
+    SHIPIT(battle,	'B', 4),
+    SHIPIT(destroy,	'D', 3),
+    SHIPIT(sub,		'S', 3),
+    SHIPIT(ptboat,	'P', 2),
 };
 
 static ship_t cpuship[SHIPTYPES] =
 {
-    { carrier,	0, 'A', 5},
-    { battle,	0, 'B', 4},
-    { destroy,	0, 'D', 3},
-    { sub,	0, 'S', 3},
-    { ptboat,	0, 'P', 2},
+    SHIPIT(carrier,	'A', 5),
+    SHIPIT(battle,	'B', 4),
+    SHIPIT(destroy,	'D', 3),
+    SHIPIT(sub,		'S', 3),
+    SHIPIT(ptboat,	'P', 2),
 };
 
 /* "Hits" board, and main board. */

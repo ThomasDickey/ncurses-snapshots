@@ -22,7 +22,7 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: scan.c,v 1.1 1998/01/10 00:30:44 tom Exp $")
+MODULE_ID("$Id: scan.c,v 1.2 1999/08/21 23:09:35 tom Exp $")
 
 int scan_max;			/* length of longest scan code */
 char **scan_up, **scan_down, **scan_name;
@@ -239,15 +239,17 @@ scan_key(void)
 					shift_state ^= SHIFT_KEY;
 				if (ch >= 256)
 					break;
-				if (shift_state & SHIFT_KEY)
+				if (shift_state & SHIFT_KEY) {
 					if (ch >= 0x60)
 						ch -= 0x20;
 					else if (ch >= 0x30 && ch <= 0x3f)
 						ch -= 0x10;
-				if (shift_state & CONTROL_KEY)
+				}
+				if (shift_state & CONTROL_KEY) {
 					if ((ch | 0x20) >= 0x60 &&
 						(ch | 0x20) <= 0x7f)
 						ch = (ch | 0x20) - 0x60;
+				}
 				if (shift_state & META_KEY)
 					ch |= 0x80;
 				return ch;

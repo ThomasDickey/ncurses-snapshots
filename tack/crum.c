@@ -21,7 +21,7 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: crum.c,v 1.1 1998/01/10 00:28:06 tom Exp $")
+MODULE_ID("$Id: crum.c,v 1.2 1999/08/21 23:09:08 tom Exp $")
 
 /*
  * Test cursor movement.
@@ -135,16 +135,18 @@ move_to(
 			}
 	}
 	/* last chance */
-	if (rf > rt)
+	if (rf > rt) {
 		if (can_go_home) {	/* a bit drastic but ... */
 			go_home();
 			cf = 0;
 			rf = 0;
-		} else if (cursor_up)
+		} else if (cursor_up) {
 			while (rf > rt) {
 				tc_putp(cursor_up);
 				rf--;
 			}
+		}
+	}
 	if (ct == 0 && rt > rf) {
 		put_crlf();
 		cf = 0;
