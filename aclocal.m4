@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.313 2003/09/06 23:46:28 tom Exp $
+dnl $Id: aclocal.m4,v 1.315 2003/09/20 22:17:07 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -2102,13 +2102,23 @@ ifelse($1,,[
 fi
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_MIXEDCASE_FILENAMES version: 2 updated: 2000/10/04 09:18:40
+dnl CF_MIXEDCASE_FILENAMES version: 3 updated: 2003/09/20 17:07:55
 dnl ----------------------
 dnl Check if the file-system supports mixed-case filenames.  If we're able to
 dnl create a lowercase name and see it as uppercase, it doesn't support that.
 AC_DEFUN([CF_MIXEDCASE_FILENAMES],
 [
 AC_CACHE_CHECK(if filesystem supports mixed-case filenames,cf_cv_mixedcase,[
+if test "$cross_compiling" = yes ; then
+	case $target_alias in #(vi
+	*-os2-emx*|*-msdosdjgpp*|*-cygwin*|*-mingw32*|*-uwin*) #(vi
+		cf_cv_mixedcase=no
+		;;
+	*)
+		cf_cv_mixedcase=yes
+		;;
+	esac
+else
 	rm -f conftest CONFTEST
 	echo test >conftest
 	if test -f CONFTEST ; then
@@ -2117,6 +2127,7 @@ AC_CACHE_CHECK(if filesystem supports mixed-case filenames,cf_cv_mixedcase,[
 		cf_cv_mixedcase=yes
 	fi
 	rm -f conftest CONFTEST
+fi
 ])
 test "$cf_cv_mixedcase" = yes && AC_DEFINE(MIXEDCASE_FILENAMES)
 ])dnl
@@ -2168,6 +2179,25 @@ int main()
 ])
 if test "$cf_cv_func_mkstemp" = yes ; then
 	AC_DEFINE(HAVE_MKSTEMP)
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_NUMBER_SYNTAX version: 1 updated: 2003/09/20 18:12:49
+dnl ----------------
+dnl Check if the given variable is a number.  If not, report an error.
+dnl $1 is the variable
+dnl $2 is the message
+AC_DEFUN([CF_NUMBER_SYNTAX],[
+if test -n "$1" ; then
+  case $1 in #(vi
+  [[0-9]]*) #(vi
+ 	;;
+  *)
+	AC_MSG_ERROR($2 is not a number: $1)
+ 	;;
+  esac
+else
+  AC_MSG_ERROR($2 value is empty)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
@@ -2308,6 +2338,26 @@ case $INSTALL in
   INSTALL=`cd $cf_dir && pwd`/`echo $INSTALL | sed -e 's%^.*/%%'`
   ;;
 esac
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_PROG_LDCONFIG version: 1 updated: 2003/09/20 17:07:55
+dnl ----------------
+dnl Check for ldconfig, needed to fixup shared libraries that would be built
+dnl and then used in the install.
+AC_DEFUN([CF_PROG_LDCONFIG],[
+if test "$cross_compiling" = yes ; then
+  LDCONFIG=:
+else
+case "$cf_cv_system_name" in #(vi
+freebsd*) #(vi
+  test -z "$LDCONFIG" && LDCONFIG="/sbin/ldconfig -R"
+  ;;
+*) LDPATH=$PATH:/sbin:/usr/sbin
+  AC_PATH_PROG(LDCONFIG,ldconfig,,$LDPATH)
+  ;;
+esac
+fi
+AC_SUBST(LDCONFIG)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_REGEX version: 3 updated: 1997/11/01 14:26:01
@@ -3100,6 +3150,26 @@ fi
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_WITH_ABI_VERSION version: 1 updated: 2003/09/20 18:12:49
+dnl -------------------
+dnl Allow library's ABI to be overridden.  Generally this happens when a
+dnl packager has incremented the ABI past that used in the original package,
+dnl and wishes to keep doing this.
+dnl
+dnl $1 is the package name, if any, to derive a corresponding {package}_ABI
+dnl symbol.
+AC_DEFUN([CF_WITH_ABI_VERSION],[
+test -z "$cf_cv_abi_version" && cf_cv_abi_version=0
+AC_ARG_WITH(abi-version,
+[  --with-abi-version=XXX  override derived ABI version],
+[AC_MSG_WARN(overriding ABI version $cf_cv_abi_version to $withval)
+ cf_cv_abi_version=$withval])
+ CF_NUMBER_SYNTAX($cf_cv_abi_version,ABI version)
+ifelse($1,,,[
+$1_ABI=$cf_cv_abi_version
+])
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl CF_WITH_DBMALLOC version: 2 updated: 2002/12/29 21:11:45
 dnl ----------------
 dnl Configure-option for dbmalloc
@@ -3282,6 +3352,31 @@ cf_dst_path=`echo "$cf_dst_path" | sed -e 's/\\\\/\\\\\\\\/g'`
 eval '$3="$cf_dst_path"'
 AC_SUBST($3)dnl
 
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_WITH_REL_VERSION version: 1 updated: 2003/09/20 18:12:49
+dnl -------------------
+dnl Allow library's release-version to be overridden.  Generally this happens when a
+dnl packager has incremented the release-version past that used in the original package,
+dnl and wishes to keep doing this.
+dnl
+dnl $1 is the package name, if any, to derive corresponding {package}_MAJOR
+dnl and {package}_MINOR symbols
+dnl symbol.
+AC_DEFUN([CF_WITH_REL_VERSION],[
+test -z "$cf_cv_rel_version" && cf_cv_rel_version=0.0
+AC_ARG_WITH(rel-version,
+[  --with-rel-version=XXX  override derived release version],
+[AC_MSG_WARN(overriding release version $cf_cv_rel_version to $withval)
+ cf_cv_rel_version=$withval])
+ifelse($1,,[
+ CF_NUMBER_SYNTAX($cf_cv_rel_version,Release version)
+],[
+ $1_MAJOR=`echo "$cf_cv_rel_version" | sed -e 's/\..*//'`
+ $1_MINOR=`echo "$cf_cv_rel_version" | sed -e 's/^[[^.]]*//' -e 's/^\.//' -e 's/\..*//'`
+ CF_NUMBER_SYNTAX([$]$1_MAJOR,Release major-version)
+ CF_NUMBER_SYNTAX([$]$1_MINOR,Release minor-version)
+])
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_WITH_SYSMOUSE version: 2 updated: 2003/03/22 19:13:43

@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.767 2003/09/13 23:18:03 tom Exp $
+-- $Id: NEWS,v 1.768 2003/09/21 00:00:41 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030920
+	+ add --with-rel-version option to allow workaround to allow making
+	  libtool on Darwin generate the "same" library names as with the
+	  --with-shared option.  The Darwin ld program does not work well
+	  with a zero as the minor-version value (request by Chris Zubrzycki).
+	+ modify CF_MIXEDCASE_FILENAMES macro to work with cross-compiling.
+	+ modify tack to allow it to run from fallback terminfo data.
+	> Philippe Blain:
+	+ improve PutRange() by adjusting call to EmitRange() and corresponding
+	  return-value to not emit unchanged characters on the end of the
+	  range.
+	+ improve a check for changed-attribute by exiting a loop when the
+	  change is found.
+	+ improve logic in TransformLine(), eliminating a duplicated comparison
+	  in the clr_bol logic.
 
 20030913
 	> Philippe Blain:
