@@ -70,7 +70,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.136 2000/05/20 23:28:00 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.139 2000/06/24 23:45:17 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -410,14 +410,14 @@ EmitRange(const chtype * ntext, int num)
 
 	    /*
 	     * The cost expression in the middle isn't exactly right.
-	     * _cup_cost is an upper bound on the cost for moving to the
+	     * _cup_ch_cost is an upper bound on the cost for moving to the
 	     * end of the erased area, but not the cost itself (which we
 	     * can't compute without emitting the move).  This may result
 	     * in erase_chars not getting used in some situations for
 	     * which it would be marginally advantageous.
 	     */
 	    if (erase_chars
-		&& runcount > SP->_ech_cost + SP->_cup_cost
+		&& runcount > SP->_ech_cost + SP->_cup_ch_cost
 		&& can_clear_with(ntext0)) {
 		UpdateAttrs(ntext0);
 		putp(tparm(erase_chars, runcount));
@@ -475,18 +475,17 @@ PutRange(
     int first, int last)
 {
     int j, run;
-    int cost = min(SP->_cup_ch_cost, SP->_hpa_ch_cost);
 
     TR(TRACE_CHARPUT, ("PutRange(%p, %p, %d, %d, %d)",
 	    otext, ntext, row, first, last));
 
     if (otext != ntext
-	&& (last - first + 1) > cost) {
+	&& (last - first + 1) > SP->_inline_cost) {
 	for (j = first, run = 0; j <= last; j++) {
 	    if (otext[j] == ntext[j]) {
 		run++;
 	    } else {
-		if (run > cost) {
+		if (run > SP->_inline_cost) {
 		    int before_run = (j - run);
 		    EmitRange(ntext + first, before_run - first);
 		    GoTo(row, first = j);
@@ -1005,6 +1004,39 @@ TransformLine(int const lineno)
     /* copy new hash value to old one */
     if (SP->oldhash && SP->newhash)
 	SP->oldhash[lineno] = SP->newhash[lineno];
+
+#define ColorOf(n) ((n) & A_COLOR)
+#define unColor(n) ((n) & ALL_BUT_COLOR)
+    /*
+     * If we have colors, there is the possibility of having two color pairs
+     * that display as the same colors.  For instance, Lynx does this.  Check
+     * for this case, and update the old line with the new line's colors when
+     * they are equivalent.
+     */
+    if (SP->_coloron) {
+	chtype oldColor;
+	chtype newColor;
+	int oldPair;
+	int newPair;
+
+	for (n = 0; n < screen_columns; n++) {
+	    if (newLine[n] != oldLine[n]) {
+		oldColor = ColorOf(oldLine[n]);
+		newColor = ColorOf(newLine[n]);
+		if (oldColor != newColor
+		    && unColor(oldLine[n]) == unColor(newLine[n])) {
+		    oldPair = PAIR_NUMBER(oldColor);
+		    newPair = PAIR_NUMBER(newColor);
+		    if (oldPair < COLOR_PAIRS
+			&& newPair < COLOR_PAIRS
+			&& SP->_color_pairs[oldPair] == SP->_color_pairs[newPair]) {
+			oldLine[n] &= ~A_COLOR;
+			oldLine[n] |= ColorOf(newLine[n]);
+		    }
+		}
+	    }
+	}
+    }
 
     if (ceol_standout_glitch && clr_eol) {
 	firstChar = 0;

@@ -43,7 +43,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.52 2000/05/27 23:22:36 tom Exp $");
+MODULE_ID("$Id: lib_set_term.c,v 1.53 2000/06/24 18:48:10 tom Exp $");
 
 SCREEN *
 set_term(SCREEN * screenp)
@@ -198,6 +198,7 @@ _nc_setupscreen(short slines, short const scolumns, FILE * output)
     SP->_cursor = -1;		/* cannot know real cursor shape */
 #ifdef NCURSES_NO_PADDING
     SP->_no_padding = getenv("NCURSES_NO_PADDING") != 0;
+    TR(TRACE_CHARPUT | TRACE_MOVE, ("padding will%s be used", SP->_no_padding ? " not" : ""));
 #endif
 #ifdef NCURSES_EXT_FUNCS
     SP->_default_color = FALSE;
