@@ -1,4 +1,4 @@
-# $Id: dist.mk,v 1.306 2002/06/15 17:13:40 tom Exp $
+# $Id: dist.mk,v 1.308 2002/06/22 21:25:04 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -10,7 +10,7 @@ SHELL = /bin/sh
 # These define the major/minor/patch versions of ncurses.
 NCURSES_MAJOR = 5
 NCURSES_MINOR = 2
-NCURSES_PATCH = 20020615
+NCURSES_PATCH = 20020622
 
 # We don't append the patch to the version, since this only applies to releases
 VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)
@@ -68,8 +68,10 @@ manhtml: MANIFEST
 	@echo 's/<\/B>/<\/STRONG>/g' >> subst.tmp
 	@echo 's/<I>/<EM>/g'         >> subst.tmp
 	@echo 's/<\/I>/<\/EM>/g'     >> subst.tmp
-	@echo 's/<\/TITLE>/<\/TITLE><link rev=made href="mailto:bug-ncurses@gnu.org">/' >> subst.tmp
 	@sort < subst.tmp | uniq > subst.sed
+	@echo '/<\/TITLE>/a\' >> subst.sed
+	@echo '<link rev=made href="mailto:bug-ncurses@gnu.org">\' >> subst.sed
+	@echo '<meta http-equiv="Content-Type" content="text\/html; charset=iso-8859-1">' >> subst.sed
 	@rm -f subst.tmp
 	@for f in man/*.[0-9]* ; do \
 	   m=`basename $$f` ;\

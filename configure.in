@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.268 2002/06/15 17:40:45 tom Exp $
+dnl $Id: configure.in,v 1.269 2002/06/22 19:52:14 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.268 $)
+AC_REVISION($Revision: 1.269 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -417,7 +417,7 @@ AC_MSG_CHECKING(if you wish to install ncurses overwriting curses)
 AC_ARG_ENABLE(overwrite,
 	[  --disable-overwrite     leave out the link to -lcurses],
 	[with_overwrite=$enableval],
-	[if test "$prefix" != "/usr/local" ; then with_overwrite=yes; else with_overwrite=no; fi])
+	[if test "$prefix" = "/usr" ; then with_overwrite=yes; else with_overwrite=no; fi])
 AC_MSG_RESULT($with_overwrite)
 
 AC_MSG_CHECKING(if external terminfo-database is used)

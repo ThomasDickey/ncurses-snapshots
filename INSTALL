@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.52 2002/01/12 22:56:44 tom Exp $
+-- $Id: INSTALL,v 1.53 2002/06/23 00:05:31 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -452,6 +452,12 @@ SUMMARY OF CONFIGURE OPTIONS:
 	NOTE: applications compiled with this configuration are not compatible
 	with those built for 8-bit characters.  You cannot simply make a
 	symbolic link to equate libncurses.so with libncursesw.so
+
+	NOTE: the Ada95 binding may be built against either version of the the
+	ncurses library, but you must decide which:  the binding installs the
+	same set of files for either version.  Currently (2002/6/22) it does
+	not use the extended features from the wide-character code, so it is
+	probably better to not install the binding for that configuration.
 
     --enable-xmc-glitch
 	Compile-in support experimental xmc (magic cookie) code.
