@@ -23,8 +23,6 @@
 #include "form.h"
 
 /* form  status values */
-#define _POSTED		 (0x01) /* Form is posted                         */  
-#define _IN_DRIVER       (0x02) /* Form is in init/term routine           */
 #define _OVLMODE         (0x04) /* Form is in overlay mode                */
 #define _WINDOW_MODIFIED (0x10) /* Current field window has been modified */
 #define _FCHECK_REQUIRED (0x20) /* Current field needs validation         */

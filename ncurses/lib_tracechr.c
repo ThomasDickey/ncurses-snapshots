@@ -22,7 +22,7 @@
 
 
 /*
- *	lib_trace.c - Tracing/Debugging routines
+ *	lib_tracechr.c - Tracing/Debugging routines
  */
 
 #ifndef TRACE

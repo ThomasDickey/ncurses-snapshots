@@ -186,7 +186,7 @@ done
 cat >> Makefile <<NC_EOF
 
 install.libs \\
-install.include ::
+install.includes ::
 	cd include; \$(MAKE) \$(NC_MFLAGS) \[$]@
 
 install.data ::

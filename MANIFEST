@@ -269,6 +269,7 @@
 ./ncurses/lib_traceatr.c
 ./ncurses/lib_tracechr.c
 ./ncurses/lib_tracedmp.c
+./ncurses/lib_tracemse.c
 ./ncurses/lib_tstp.c
 ./ncurses/lib_twait.c
 ./ncurses/lib_unctrl.c

@@ -44,6 +44,9 @@ extern MENU _nc_Default_Menu;
    ( (menu)->usersub  ? (menu)->usersub  : (\
      (menu)->userwin  ? (menu)->userwin  : stdscr ))
 
+/* menu specific status flags */
+#define _LINK_NEEDED    (0x04)
+
 #define ALL_MENU_OPTS (                 \
 		       O_ONEVALUE     | \
 		       O_SHOWDESC     | \

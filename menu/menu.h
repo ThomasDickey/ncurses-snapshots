@@ -68,11 +68,6 @@ typedef struct tagITEM
 
 } ITEM;
 
-/* menu status flags */
-#define _POSTED         (0x1)
-#define _IN_DRIVER      (0x2)
-#define _LINK_NEEDED    (0x4)
-
 typedef void (*Menu_Hook)(struct tagMENU *);
 
 typedef struct tagMENU 

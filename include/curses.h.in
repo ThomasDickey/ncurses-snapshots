@@ -287,29 +287,6 @@ extern char ttytype[];		/* needed for backward compatibility */
 #define __attribute__(p) /* nothing */
 #endif
 
-/* Debugging : use with libncurses_g.a */
-
-extern void _tracef(const char *, ...) __attribute__((format(printf,1,2)));
-extern void _tracedump(char *, WINDOW *);
-extern char *_traceattr(attr_t mode);
-extern char *_tracechar(const unsigned char);
-extern void trace(const unsigned int tracelevel);
-
-/* trace masks */
-#define TRACE_DISABLE	0x00	/* turn off tracing */
-#define TRACE_UPDATE	0x01	/* trace update actions, old & new screens */
-#define TRACE_MOVE	0x02	/* trace cursor moves and scrolls */
-#define TRACE_CHARPUT	0x04	/* trace all character outputs */
-#define TRACE_ORDINARY	0x07	/* trace all update actions */
-#define TRACE_CALLS	0x08	/* trace all curses calls */
-#define TRACE_VIRTPUT	0x10	/* trace virtual character puts */
-#define TRACE_FIFO	0x20	/* also fifo actions by getch() */
-#define TRACE_MAXIMUM	0xff	/* maximum trace level */
-
-#ifdef TRACE
-extern bool no_optimize;	/* suppress optimization */
-#endif /* TRACE */
-
 /*
  * Function prototypes.  This is the complete XSI Curses list of required
  * functions.  Those marked `generated' will have sources generated from the
@@ -1197,5 +1174,29 @@ int ungetmouse(MEVENT *event);
 mmask_t mousemask(mmask_t newmask, mmask_t *oldmask);
 bool wenclose(WINDOW *win, int y, int x);
 int mouseinterval(int);
+
+/* Debugging : use with libncurses_g.a */
+
+extern void _tracef(const char *, ...) __attribute__((format(printf,1,2)));
+extern void _tracedump(char *, WINDOW *);
+extern char *_traceattr(attr_t mode);
+extern char *_tracechar(const unsigned char);
+extern char *_tracemouse(const MEVENT *);
+extern void trace(const unsigned int tracelevel);
+
+/* trace masks */
+#define TRACE_DISABLE	0x00	/* turn off tracing */
+#define TRACE_UPDATE	0x01	/* trace update actions, old & new screens */
+#define TRACE_MOVE	0x02	/* trace cursor moves and scrolls */
+#define TRACE_CHARPUT	0x04	/* trace all character outputs */
+#define TRACE_ORDINARY	0x07	/* trace all update actions */
+#define TRACE_CALLS	0x08	/* trace all curses calls */
+#define TRACE_VIRTPUT	0x10	/* trace virtual character puts */
+#define TRACE_FIFO	0x20	/* also fifo actions by getch() */
+#define TRACE_MAXIMUM	0xff	/* maximum trace level */
+
+#ifdef TRACE
+extern bool no_optimize;	/* suppress optimization */
+#endif /* TRACE */
 
 #endif /* __NCURSES_H */

@@ -25,8 +25,6 @@
 #define GEN_HOOK_SET_FUNCTION( typ, name ) \
 int set_ ## typ ## _ ## name (FORM *form, Form_Hook func)\
 {\
-   if (form && (form->status & _POSTED))\
-      RETURN(E_POSTED);\
    (Normalize_Form( form ) -> typ ## name) = func ;\
    RETURN(E_OK);\
 }
@@ -47,7 +45,6 @@ Form_Hook typ ## _ ## name ( const FORM *form )\
 |                    the current field changes.
 |
 |   Return Values :  E_OK      - success
-|                    E_POSTED  - form is posted
 +--------------------------------------------------------------------------*/
 GEN_HOOK_SET_FUNCTION(field,init)
 
@@ -70,7 +67,6 @@ GEN_HOOK_GET_FUNCTION(field,init)
 |                    the current field changes.
 |
 |   Return Values :  E_OK      - success
-|                    E_POSTED  - form is posted
 +--------------------------------------------------------------------------*/
 GEN_HOOK_SET_FUNCTION(field,term)
 
@@ -93,7 +89,6 @@ GEN_HOOK_GET_FUNCTION(field,term)
 |                    a page change.
 |
 |   Return Values :  E_OK       - success
-|                    E_POSTED   - form is posted
 +--------------------------------------------------------------------------*/
 GEN_HOOK_SET_FUNCTION(form,init)
 
@@ -116,7 +111,6 @@ GEN_HOOK_GET_FUNCTION(form,init)
 |                    a page change.
 |
 |   Return Values :  E_OK       - success
-|                    E_POSTED   - form is posted
 +--------------------------------------------------------------------------*/
 GEN_HOOK_SET_FUNCTION(form,term)
 

@@ -119,6 +119,11 @@ All other routines return the integer \fBERR\fR upon failure and an \fBOK\fR
 (SVr4 specifies only "an integer value other than \fBERR\fR") upon successful
 completion.
 .SH NOTES
+Note that setting an implicit background color via a color pair affects only
+character cells that a character write operation explicitly touches.  To change
+the background color used when parts of a window are blanked by erasing or
+scrolling operastions, see \fBcurs_bkgd\fR(3x).
+
 Several caveats apply on 386 and 486 machines with VGA-compatible graphics:
 
 COLOR_YELLOW is actually brown.  To get yellow, use COLOR_YELLOW combined with

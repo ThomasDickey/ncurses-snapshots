@@ -151,7 +151,7 @@ static int FE_Delete_Previous(FORM *);
    (((field)->just != NO_JUSTIFICATION)  && \
     (Single_Line_Field(field))           && \
     (((field)->dcols == (field)->cols)   && \
-    ((field)->status & O_STATIC))           )
+    ((field)->opts & O_STATIC))           )
 
 /* Logic to determine whether or not a dynamic field may still grow */
 #define Growable(field) ((field)->status & _MAY_GROW)
@@ -1135,6 +1135,7 @@ static int Set_Current_Field(FORM  *form, FIELD *newfield)
 		{
 		  if (Justification_Allowed(field))
 		    {
+		      Window_To_Buffer(form->w,field);
 		      werase(form->w);
 		      Perform_Justification(field,form->w);
 		      wsyncup(form->w);
@@ -2644,7 +2645,7 @@ static bool Internal_Validation(FORM *form)
   
   Synchronize_Buffer(form);
   if ((form->status & _FCHECK_REQUIRED) ||
-      (!(field->status & O_PASSOK)))
+      (!(field->opts & O_PASSOK)))
     {
       if (!Check_Field(field->type,field,(TypeArgument *)(field->arg)))
 	return FALSE;
