@@ -48,7 +48,7 @@
 #define _POSIX_SOURCE
 #endif
 
-MODULE_ID("$Id: lib_tstp.c,v 1.26 2001/09/23 00:20:05 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.27 2001/10/01 22:49:01 tom Exp $")
 
 #if defined(SIGTSTP) && (HAVE_SIGACTION || HAVE_SIGVEC)
 #define USE_SIGTSTP 1
@@ -85,10 +85,6 @@ signal_name(int sig)
     case SIGWINCH:
 	return "SIGWINCH";
 #endif
-    case SIG_DFL:
-	return "SIG_DFL";
-    case SIG_IGN:
-	return "SIG_IGN";
     default:
 	return "unknown signal";
     }
