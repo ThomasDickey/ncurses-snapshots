@@ -61,16 +61,20 @@
  * SUCH DAMAGE.
  */
 
-#include <config.h>
+#include <progs.priv.h>
 
 #include <sys/types.h>
-#include <sys/ioctl.h>
-#include <termios.h>
-#include <errno.h>
-#if HAVE_UNISTD_H
-#include <unistd.h>
+#if HAVE_TERMIOS_H
+# include <termios.h>
+# ifndef TERMIOS
+#  define TERMIOS 1
+# endif
+#else
+# include <sgtty.h>
+# include <sys/ioctl.h>
 #endif
-#include <stdlib.h>
+
+#include <errno.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
@@ -93,18 +97,10 @@
 #include <term.h>
 #include <dump_entry.h>
 
-#if HAVE_GETOPT_H
-#include <getopt.h>
-#else
-extern char *optarg;
-extern int optind;
-#endif
-
 extern char **environ;
 
-#ifndef CTRL
+#undef CTRL
 #define CTRL(x)	((x) & 0x1f)
-#endif /* CTRL */
 
 char *_nc_progname = "tset";
 
@@ -127,6 +123,7 @@ CaselessCmp(char *a, char *b)	/* strcasecmp isn't portable */
 		int cmp = LOWERCASE(*a) - LOWERCASE(*b);
 		if (cmp != 0)
 			break;
+		a++, b++;
 	}
 	return LOWERCASE(*a) - LOWERCASE(*b);
 }
@@ -546,6 +543,14 @@ found:	if ((p = getenv("TERMCAP")) != NULL && *p != '/') {
 #define CERASE	CTRL('H')
 #define CINTR	127		/* ^? */
 #define CKILL	CTRL('U')
+#if defined(CLNEXT)
+#undef CLNEXT
+#define CLNEXT('v')
+#endif
+#if defined(CRPRNT)
+#undef CRPRNT
+#define CRPRNT('r')
+#endif
 #define CQUIT	CTRL('\\')
 #define CSTART	CTRL('Q')
 #define CSTOP	CTRL('S')
@@ -666,7 +671,7 @@ set_control_chars(void)
 #ifdef __OBSOLETE__
 	/*
 	 * 4.4BSD logic for setting erasechar, left here in case there is some
-	 * necessary subtletly missed in the production code below that really
+	 * necessary subtlety missed in the production code below that really
 	 * needs to be added someday (in particular, I don't understand what
 	 * the second if-statement involving the os flag is doing, and it makes
 	 * my head hurt when I try and follow out all the combinations).
@@ -1047,7 +1052,7 @@ main(int argc, char **argv)
 	}
 
 	/* Get the terminal name from the entry. */
-	ttype = canonical_name(cur_term->type.term_names, (char *)NULL);
+	ttype = _nc_first_name(cur_term->type.term_names);
 
 	if (noset)
 		(void)printf("%s\n", ttype);

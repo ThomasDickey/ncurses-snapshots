@@ -15,7 +15,7 @@ SHELL = /bin/sh
 # 1.9a, 1.9b, 1.9foobar, ... when the ncurses release version changes
 # If a new ncurses has an incompatible application binary interface than
 # previous one, the ABI version should be changed.
-VERSION = 1.9.6
+VERSION = 1.9.7
 SHARED_ABI = 2.0
 
 dist: ANNOUNCE INTRO
@@ -26,9 +26,9 @@ distclean:
 
 # Don't mess with announce.html.in unless you have lynx available!
 ANNOUNCE: announce.html
-	lynx -dump $^ >ANNOUNCE
+	lynx -dump announce.html >ANNOUNCE
 announce.html: announce.html.in
-	sed 's,@VERSION@,$(VERSION),' <$^ >announce.html
+	sed 's,@VERSION@,$(VERSION),' <announce.html.in >announce.html
 
 INTRO: misc/ncurses-intro.html
 	lynx -dump $^ > misc/ncurses-intro.doc
@@ -38,7 +38,7 @@ vcprepare:
 	find . -type d -exec mkdir {}/RCS \;
 
 # Write-lock almost all files not under version control.
-EXCEPTIONS = "announce.html\\|ANNOUNCE\\|misc/ncurses-intro.doc"
+EXCEPTIONS = "announce.html\\|ANNOUNCE\\|misc/ncurses-intro.doc\\|man/terminfo.5"
 writelock:
 	for x in `grep -v $(EXCEPTIONS) MANIFEST`; do if [ ! -f `dirname $$x`/RCS/`basename $$x`,v ]; then chmod a-w $${x}; fi; done
 

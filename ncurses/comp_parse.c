@@ -24,7 +24,7 @@
 /*
  *	comp_parse.c -- parser driver loop and use handling.
  *
- *	_nc_read_entry_source(FILE *, literal, bool)
+ *	_nc_read_entry_source(FILE *, literal, bool, bool (*hook)())
  *	_nc_resolve_uses(void)
  *	_nc_free_entries(void)
  *
@@ -42,26 +42,6 @@
 #include "tic.h"
 #include "term.h"
 #include "term_entry.h"
-
-/****************************************************************************
- *
- * Debugging support
- *
- ****************************************************************************/
-
-char *_nc_first_name(TERMTYPE *tp)
-/* get the first name of the given terminal */
-{
-    static char	buf[NAMESIZE], *cp;
-
-    (void) strcpy(buf, tp->term_names);
-
-    cp = strchr(buf, '|');
-    if (cp)
-	*cp = '\0';
-
-    return(buf);
-}
 
 /****************************************************************************
  *
@@ -104,44 +84,26 @@ static void enqueue(ENTRY *ep)
 	    newp->last->next = newp;
 }
 
-void _nc_read_entry_source(FILE *fp, char *buf,
-			   int literal, bool silent,
-			   bool (*hook)(ENTRY *))
-/* slurp all entries in the given file into core */
+void _nc_free_entries(ENTRY *head)
+/* free the allocated storage consumed by list entries */
 {
-    ENTRY	thisentry;
-    bool	oldsuppress = _nc_suppress_warnings;
+    ENTRY	*ep, *next;
 
-    if (silent)
-	_nc_suppress_warnings = TRUE;	/* shut the lexer up, too */
-
-    for (_nc_reset_input(fp, buf); _nc_parse_entry(&thisentry, literal, silent) != ERR; )
+    for (ep = head; ep; ep = next)
     {
-	if (!isalnum(thisentry.tterm.term_names[0]))
-	    _nc_err_abort("terminal names must start with letter or digit");
-
 	/*
-	 * This can be used for immediate compilation of entries with no
-	 * use references to disk, so as to avoid chewing up a lot of
-	 * core when the resolution code could fetch entries off disk.
+	 * This conditional lets us disconnect storage from the list.
+	 * To do this, copy an entry out of the list, then null out
+	 * the string-table member in the original and any use entries
+	 * it references.
 	 */
-	if (hook == NULLHOOK || !(*hook)(&thisentry))
-	    enqueue(&thisentry);
+	if (ep->tterm.str_table)
+	    free(ep->tterm.str_table);
+
+	next = ep->next;
+
+	free(ep);
     }
-
-    if (_nc_tail)
-    {
-	/* set up the head pointer */
-	for (_nc_head = _nc_tail; _nc_head->last; _nc_head = _nc_head->last)
-	    continue;
-
-	DEBUG(1, ("head = %s", _nc_head->tterm.term_names));
-	DEBUG(1, ("tail = %s", _nc_tail->tterm.term_names));
-    }
-    else
-	DEBUG(1, ("no entries parsed"));
-
-    _nc_suppress_warnings = oldsuppress;
 }
 
 bool _nc_entry_match(char *n1, char *n2)
@@ -173,6 +135,55 @@ bool _nc_entry_match(char *n1, char *n2)
     	return(FALSE);
 }
 
+/****************************************************************************
+ *
+ * Entry compiler and resolution logic
+ *
+ ****************************************************************************/
+
+void _nc_read_entry_source(FILE *fp, char *buf,
+			   int literal, bool silent,
+			   bool (*hook)(ENTRY *))
+/* slurp all entries in the given file into core */
+{
+    ENTRY	thisentry;
+    bool	oldsuppress = _nc_suppress_warnings;
+    int		immediate = 0;
+
+    if (silent)
+	_nc_suppress_warnings = TRUE;	/* shut the lexer up, too */
+
+    for (_nc_reset_input(fp, buf); _nc_parse_entry(&thisentry, literal, silent) != ERR; )
+    {
+	if (!isalnum(thisentry.tterm.term_names[0]))
+	    _nc_err_abort("terminal names must start with letter or digit");
+
+	/*
+	 * This can be used for immediate compilation of entries with no
+	 * use references to disk, so as to avoid chewing up a lot of
+	 * core when the resolution code could fetch entries off disk.
+	 */
+	if (hook != NULLHOOK && (*hook)(&thisentry))
+	    immediate++;
+	else
+	    enqueue(&thisentry);
+    }
+
+    if (_nc_tail)
+    {
+	/* set up the head pointer */
+	for (_nc_head = _nc_tail; _nc_head->last; _nc_head = _nc_head->last)
+	    continue;
+
+	DEBUG(1, ("head = %s", _nc_head->tterm.term_names));
+	DEBUG(1, ("tail = %s", _nc_tail->tterm.term_names));
+    }
+    else if (!immediate)
+	DEBUG(1, ("no entries parsed"));
+
+    _nc_suppress_warnings = oldsuppress;
+}
+
 int _nc_resolve_uses(void)
 /* try to resolve all use capabilities */
 {
@@ -191,25 +202,26 @@ int _nc_resolve_uses(void)
 	int matchcount = 0;
 
 	for_entry_list(rp)
-	    if (_nc_entry_match(qp->tterm.term_names, rp->tterm.term_names))
+	    if (qp > rp
+		&& _nc_entry_match(qp->tterm.term_names, rp->tterm.term_names))
 	    {
-		if (matchcount == 2)
+		matchcount++;
+		if (matchcount == 1)
 		{
-		    (void) fprintf(stderr, "Name collision: %s",
-			   _nc_first_name(&qp->tterm));
+		    (void) fprintf(stderr, "Name collision between %s",
+			   _nc_first_name(qp->tterm.term_names));
 		    multiples++;
 		}
-		if (matchcount >= 2)
-		    (void) fprintf(stderr, " %s", _nc_first_name(&rp->tterm));
-		matchcount++;
+		if (matchcount >= 1)
+		    (void) fprintf(stderr, " %s", _nc_first_name(rp->tterm.term_names));
 	    }
-	if (matchcount >= 2)
+	if (matchcount >= 1)
 	    (void) putc('\n', stderr);
     }
     if (multiples > 0)
 	return(FALSE);
 
-    DEBUG(2, ("NO MULTIPLE NAME OCCURRANCES"));
+    DEBUG(2, ("NO MULTIPLE NAME OCCURRENCES"));
 
     /*
      * First resolution stage: replace names in use arrays with entry
@@ -233,7 +245,7 @@ int _nc_resolve_uses(void)
 		    && _nc_name_match(rp->tterm.term_names, lookfor, "|"))
 		{
 		    DEBUG(2, ("%s: resolving use=%s (in core)",
-			      _nc_first_name(&qp->tterm), lookfor));
+			      _nc_first_name(qp->tterm.term_names), lookfor));
 
 		    qp->uses[i] = rp;
 		    foundit = TRUE;
@@ -243,11 +255,12 @@ int _nc_resolve_uses(void)
 	    if (!foundit)
 	    {
 		TERMTYPE	thisterm;
+		char		filename[256];
 
-		if (_nc_read_entry(lookfor, &thisterm) == 1)
+		if (_nc_read_entry(lookfor, filename, &thisterm) == 1)
 		{
 		    DEBUG(2, ("%s: resolving use=%s (compiled)",
-			      _nc_first_name(&qp->tterm), lookfor));
+			      _nc_first_name(qp->tterm.term_names), lookfor));
 
 		    rp = (ENTRY *)malloc(sizeof(ENTRY));
 		    memcpy(&rp->tterm, &thisterm, sizeof(TERMTYPE));
@@ -271,7 +284,7 @@ int _nc_resolve_uses(void)
 		    if (unresolved == 1)
 			(void) fprintf(stderr,
 			   "%s: use resolution failed on",
-			   _nc_first_name(&qp->tterm));
+			   _nc_first_name(qp->tterm.term_names));
 		    (void) fputc(' ', stderr);
 		    (void) fputs(lookfor, stderr);
 		}
@@ -303,7 +316,7 @@ int _nc_resolve_uses(void)
 	for_entry_list(qp)
 	    if (qp->nuses > 0)
 	    {
-		DEBUG(2, ("%s: attempting merge", _nc_first_name(&qp->tterm)));
+		DEBUG(2, ("%s: attempting merge", _nc_first_name(qp->tterm.term_names)));
 		/*
 		 * If any of the use entries we're looking for is
 		 * incomplete, punt.  We'll catch this entry on a
@@ -313,7 +326,7 @@ int _nc_resolve_uses(void)
 		    if (((ENTRY *)qp->uses[i])->nuses)
 		    {
 			DEBUG(2, ("%s: use entry %d unresolved",
-				  _nc_first_name(&qp->tterm), i));
+				  _nc_first_name(qp->tterm.term_names), i));
 			goto incomplete;
 		    }
 
@@ -372,32 +385,14 @@ int _nc_resolve_uses(void)
 		qp->tterm.Strings[j] = ABSENT_STRING;
     }
 
-    /* free entries read in off disk */
-    _nc_free_entries(lastread);
+    /*
+     * We'd like to free entries read in off disk at this point, but can't.
+     * The merge_entry() code doesn't copy the strings in the use entries,
+     * it just aliases them.  If this ever changes, do a 
+     * free_entries(lastread) here.
+     */
 
     DEBUG(2, ("RESOLUTION FINISHED"));
 
     return(TRUE);
-}
-
-void _nc_free_entries(ENTRY *head)
-/* free the allocated storage consumed by list entries */
-{
-    ENTRY	*ep, *next;
-
-    for (ep = head; ep; ep = next)
-    {
-	/*
-	 * This conditional lets us disconnect storage from the list.
-	 * To do this, copy an entry out of the list, then null out
-	 * the string-table member in the original and any use entries
-	 * it references.
-	 */
-	if (ep->tterm.str_table)
-	    free(ep->tterm.str_table);
-
-	next = ep->next;
-
-	free(ep);
-    }
 }

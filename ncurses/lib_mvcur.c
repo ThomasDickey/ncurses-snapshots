@@ -1155,7 +1155,7 @@ int tputs(const char *string, int affcnt, int (*outc)(int))
     return(OK);
 }
 
-int putp(char *string)
+int putp(const char *string)
 {
     return(tputs(string, 1, _nc_outch));
 }
@@ -1282,7 +1282,7 @@ int main(int argc, char *argv[])
 	}
 	else if (sscanf(buf, "d %s", capname) == 1)
 	{
-	    struct name_table_entry	*np = _nc_find_entry(capname,
+	    struct name_table_entry const	*np = _nc_find_entry(capname,
 							 _nc_info_hash_table);
 
 	    if (np == NULL)
@@ -1313,7 +1313,7 @@ int main(int argc, char *argv[])
 	}
 	else if (buf[0] == 'i')
 	{
-	     dump_init(F_TERMINFO, S_TERMINFO, 70, 0);
+	     dump_init((char *)NULL, F_TERMINFO, S_TERMINFO, 70, 0);
 	     dump_entry(&cur_term->type, NULL);
 	     putchar('\n');
 	}

@@ -63,7 +63,7 @@ char	addrbuf[17];
 	_nc_tputs_trace = (char *)NULL;
 #endif /* TRACE */
 
-	if (string == NULL)
+	if (string == (char *)0 || string == (char *)-1)
 		return ERR;
 
 	while (*string) {

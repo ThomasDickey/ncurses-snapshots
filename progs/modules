@@ -6,4 +6,3 @@ dump_entry	progs		$(srcdir)	../include/term.h $(INCDIR)/tic.h $(srcdir)/dump_ent
 infocmp		progs		$(srcdir)	../include/term.h $(INCDIR)/tic.h $(srcdir)/dump_entry.h
 tput		progs		$(srcdir)	../include/term.h
 tset		progs		$(srcdir)	../include/term.h
-write_entry	progs		$(srcdir)	../include/term.h $(INCDIR)/tic.h 

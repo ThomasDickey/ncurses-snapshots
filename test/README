@@ -14,4 +14,8 @@ tclock.c   - analog/digital clock
 testcurs.c - a test from the PDCurses people (uses color)
 worm.c     - worms run all over your screen (uses color)
 xmas.c     - Xmas greeting card
+
+The bs and knight games demonstrate processing of mouse events under xterm.
+This directory also contains:
+
 tracemunch - Perl script to crunch trace scripts to make them easier to read

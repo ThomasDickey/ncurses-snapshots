@@ -85,6 +85,7 @@ else
 	echo "I'm creating your private terminfo directory at $HOME/.terminfo"
 	mkdir $HOME/.terminfo
 	# Ensure that that's where tic's compilation results.
+	# This isn't strictly necessary with a 1.9.7 or later tic.
 	TERMINFO="$HOME/.terminfo"; export TERMINFO
 fi
 echo "";
@@ -145,35 +146,9 @@ sed -n $master \
 for x in tsplit$$.*; do $tic -v $x; done
 rm tsplit$$.*
 #
-echo "You now have a private tree under $HOME/.terminfo"
-
-# Hack the user's .profile or .login file
-if [ -f $HOME/.profile ]
-then
-	echo "The equate TERMINFO=$TERMINFO must be part of youe shell environment."
-	echo -n  "May I append it to your .profile [y/n]? "
-	read ans
-	if [ "$ans" = "y" ]
-	then
-		echo 'TERMINFO=$HOME/.terminfo" >>$HOME/.profile
-		echo "Done."
-	else
-		echo "OK, I'll leave you to arrange this manually."
-	fi
-fi
-if [ -f $HOME/.login ]
-then
-	echo "The equate TERMINFO=$TERMINFO must be part of youe shell environment."
-	echo -n  "May I append it to your .login [y/n]? "
-	read ans
-	if [ "$ans" = "y" ]
-	then
-		echo 'set TERMINFO $HOME/.terminfo" >>$HOME/.login
-		echo "Done."
-	else
-		echo "OK, I'll leave you to arrange this manually."
-	fi
-fi
+echo "You now have a private tree under $HOME/.terminfo;"
+echo "the ncurses library will automatically read from it,"
+echo "and ncurses tic will automatically compile entries to it." 
 
 # We're done unless user has a .termcap file or equivalent named by TERMCAP
 if [ "$TERMCAP" = "" ]

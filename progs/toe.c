@@ -24,35 +24,26 @@
  *
  */
 
-#include <config.h>
-
-#include <stdlib.h>
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #include <string.h>
 #include <dirent.h>
 
+#include "progs.priv.h"
 #include "tic.h"
 #include "term.h"
 #include "dump_entry.h"
 #include "term_entry.h"
 
-#if HAVE_GETOPT_H
-#include <getopt.h>
-#else
-extern char *optarg;
-extern int optind;
-#endif /* HAVE_GETOPT_H */
-
 char	*_nc_progname;
 
-static void typelist(int eargc, char *eargv[]);
+static void typelist(int eargc, char *eargv[], bool,
+		     void (*)(const char *, TERMTYPE *));
+static void deschook(const char *, TERMTYPE *);
 
 int main (int argc, char *argv[])
 {
     bool	direct_dependencies = FALSE;
     bool	invert_dependencies = FALSE;
+    bool	header = FALSE;
     int		i, c, debug_level = 0;
 
     if ((_nc_progname = strrchr(argv[0], '/')) == NULL)
@@ -60,9 +51,12 @@ int main (int argc, char *argv[])
     else
 	_nc_progname++;
 
-    while ((c = getopt(argc, argv, "u:v:U:V")) != EOF)
+    while ((c = getopt(argc, argv, "hu:v:U:V")) != EOF)
 	switch (c)
 	{
+	case 'h':
+	    header = TRUE;
+	    break;
 	case 'u':
 	    direct_dependencies = TRUE;
 	    break;
@@ -106,7 +100,7 @@ int main (int argc, char *argv[])
 	    {
 		int		j;
 
-		(void) printf("%s:", _nc_first_name(&qp->tterm));
+		(void) printf("%s:", _nc_first_name(qp->tterm.term_names));
 		for (j = 0; j < qp->nuses; j++)
 		    (void) printf(" %s", (char *)(qp->uses[j]));
 		putchar('\n');
@@ -134,9 +128,9 @@ int main (int argc, char *argv[])
 		    {
 			if (matchcount++ == 0)
 			    (void) printf("%s:",
-					  _nc_first_name(&qp->tterm));
+					  _nc_first_name(qp->tterm.term_names));
 			(void) printf(" %s", 
-				      _nc_first_name(&rp->tterm));
+				      _nc_first_name(rp->tterm.term_names));
 		    }
 	    }
 	    if (matchcount)
@@ -150,24 +144,53 @@ int main (int argc, char *argv[])
      * If we get this far, user wants a simple terminal type listing.
      */
     if (optind < argc)
-	typelist(argc-optind, argv+optind);	/* user supplied args */
+	typelist(argc-optind, argv+optind, header, deschook);
     else
     {
-	char	*eargv[2];
+	char	*explicit, *home, *eargv[3];
+	int	i;
 	extern char	*getenv(const char *);
 
-	if ((eargv[0] = getenv("TERMINFO")) == (char *)NULL)
-	    eargv[0] = TERMINFO;
-	eargv[1] = (char *)NULL;
+	i = 0;
+	if ((explicit = getenv("TERMINFO")) != (char *)NULL)
+	    eargv[i++] = explicit;
+	else
+	{
+	    if ((home = getenv("HOME")) != (char *)NULL)
+	    {
+		char	personal[PATH_MAX];
 
-	typelist(1, eargv);
+		(void) sprintf(personal, PRIVATE_INFO, home);
+		if (access(personal, F_OK) == 0)
+		    eargv[i++] = personal;
+	    }
+	    eargv[i++] = TERMINFO;
+	}
+	eargv[i] = (char *)NULL;
+
+	typelist(i, eargv, header, deschook);
     }
 
     exit(0);
 }
 
-static void typelist(int eargc, char *eargv[])
-/* summary listing of all given terminfo directories */
+static void deschook(const char *cn, TERMTYPE *tp)
+/* display a description for the type */
+{
+    char	*desc;
+
+    if ((desc = strrchr(tp->term_names, '|')) == (char *)NULL)
+	desc = "(No description)";
+    else
+	++desc;
+
+    (void) printf("%-10s\t%s\n", cn, desc);
+}
+
+static void typelist(int eargc, char *eargv[],
+		     bool verbosity,
+		     void  (*hook)(const char *, TERMTYPE *tp))
+/* apply a function to each entry in given terminfo directories */
 {
     int	i;
 
@@ -183,10 +206,12 @@ static void typelist(int eargc, char *eargv[])
 			   _nc_progname, eargv[i]);
 	    exit(1);
 	}
+	else if (verbosity)
+	    (void) printf("#\n#%s:\n#\n", eargv[i]);
 
 	while ((subdir = readdir(termdir)) != NULL)
 	{
-	    char	buf[256];
+	    char	buf[PATH_MAX];
 	    DIR	*entrydir;
 	    struct dirent *entry;
 
@@ -203,7 +228,7 @@ static void typelist(int eargc, char *eargv[])
 	    while ((entry = readdir(entrydir)) != NULL)
 	    {
 		TERMTYPE	lterm;
-		char	*cn, *desc;
+		char		*cn;
 		int		status;
 
 		if (!strcmp(entry->d_name, ".")
@@ -226,21 +251,16 @@ static void typelist(int eargc, char *eargv[])
 		    return;
 		}
 
-		/* only list things once, by primary name */
-		cn = canonical_name(lterm.term_names, (char *)NULL);
+		/* only visit things once, by primary name */
+		cn = _nc_first_name(lterm.term_names);
 		if (strcmp(cn, entry->d_name))
 		    continue;
 
-		/* get a description for the type */
-		if ((desc = strrchr(lterm.term_names,'|')) == (char *)NULL)
-		    desc = "(No description)";
-		else
-		    ++desc;
-
-		(void) printf("%-10s\t%s\n", cn, desc);
+		/* apply the selected hook function */
+		(*hook)(cn, &lterm);
 	    }
 	}
-
-	exit(0);
     }
+
+    exit(0);
 }

@@ -9,7 +9,16 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
   one `use' capability.
 * corrected the screen-size calculation at startup time to alter the
   numeric capabilities as per SVr4, not just LINES and COLS.
-* toe(1)introduced.
+* toe(1) introduced; does what infocmp -T used to.
+* tic(1) can now translate AIX box1 and font[0123] capabilities.
+* tic uses much less core, the dotic.sh kluge can go away now.
+* fix read_entry() and write_entry() to pass through cancelled capabilities OK.
+* Add $HOME/.terminfo as source/target directory for terminfo entries.
+* termcap compilation now automatically dumps an entry to $HOME/.terminfo.
+* added -h option to toe(1).
+* added -R option to tic(1) and infocmp(1).
+* added fallback-entry-list feature.
+* added -i option to infocmp(1)
 
 ### ncurses-1.9.5 -> 1.9.6
 

@@ -12,7 +12,11 @@ should be several subdirectories, including `c++', `form', `man', `menu',
 for a roadmap to the package.
 
 If you are a Linux or FreeBSD or NetBSD distribution integrator or packager,
-please read and act on the note addressed to you below.
+please read and act on the section titled IF YOU ARE A SYSTEM INTEGRATOR
+below.
+
+If you are converting from BSD curses and do not have root access, be sure
+to read the BSD CONVERSION NOTES section below.
 
 REQUIREMENTS:
 
@@ -29,10 +33,7 @@ INSTALLATION PROCEDURE:
 1.  IF YOU HAVE ROOT: First, decide where you want to put the object files of
     terminal descriptions. (If you don't have root, you may skip this step.)
     The default is /usr/lib/terminfo.  If your system already has a
-    terminfo database, you can put it somewhere else.  Keep in mind that 
-    this directory should probably be in your root filesystem so that 
-    programs which use terminfo can be used even when the system is only up
-    single-user.
+    terminfo database, you can put it somewhere else.
 
     The --prefix option to configure changes the root directory for installing
     ncurses; the default is in subdirectories of /usr/, unless the
@@ -114,15 +115,6 @@ INSTALLATION PROCEDURE:
   #  this purpose.  Don't forget to run tic on the file once you're done.    #
   ############################################################################
 
-    Also note that `tic misc/terminfo.src' uses large amounts of core.
-    on machines with less than 16 megabytes of physical RAM and slow disks,
-    paging overhead has been known to slow the running time from a few
-    minutes to a couple of hours!
- 
-    We have attacked this problem by breaking the file in half, cutting 
-    each section's core requirements drastically (the cut point was chosen
-    so there are no `use' references that cross the cut going forward).  
-
     The terminfo(5) manual page wants to be preprocessed with tbl(1) before
     being formatted by nroff(1).  Modern man(1) implementations tend to do
     this by default, but you may want to look at your version's man page
@@ -142,6 +134,8 @@ INSTALLATION PROCEDURE:
     If more than one user at your site does this, the space for the duplicate
     trees is wasted.  Try to get your site administrators to install a system-
     wide terminfo tree instead.
+
+    See the BSD CONVERSION NOTES section below for a few more details.
 
 7.  The c++ directory has C++ classes that are built on top of ncurses and
     panels.  You need to have c++ (and its libraries) installed before you can
@@ -221,9 +215,98 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 	to us explaining why you don't want to, so we can work out nomenclature
 	that will make users' lives easier rather than harder.
 
+CONFIGURING FALLBACK ENTRIES
+	In order to support operation of ncurses programs before the terminfo
+	tree is accessible (that is, in single-user mode or at OS installation
+	time) the ncurses library can be compiled to include an array of 
+	pre-fetched fallback entries.
+
+	These entries are checked by setupterm() only when the conventional
+	fetches from the terminfo tree and the termcap fallback (if configured)
+	have been tried and failed.  Thus, the presence of a fallback will not
+	shadow modifications to the on-disk entry for the same type, when that
+	entry is accessible.
+
+	By default, there are no entries on the fallback list.  After you
+	have built the ncurses suite for the first time, you can change
+	the list (the process needs infocmp(1)).  To do so, use the
+	script MKfallback.sh.
+
+	If you wanted (say) to have linux, vt100, and xterm fallbacks, you
+	would use the commands
+
+		cd ncurses;
+		MKfallback.sh linux vt100 xterm >fallback.c
+
+	Then just rebuild and reinstall the library as you would normally.
+	You can restore the default empty fallback list with
+
+		MKfallback.sh >fallback.c
+
+	The overhead for an empty fallback list is one trivial stub function.
+	Any non-empty fallback list is consted and therefore lives in sharable
+	text space.  You can look at the comment trailing each initializer in
+	the generated ncurses/fallback.c file to see the core cost of the
+	fallbacks.  A good rule of thumb for modern vt100-like entries is that
+	each one will cost about 2.5K of text space.
+
+BSD CONVERSION NOTES:
+	(If you are distributing ncurses as a support-library component of
+	an application you probably want to put the remainder of this section
+	in the package README file.)
+
+------------------------------- CUT HERE --------------------------------
+
+If you are installing this application privately (either because you
+have no root access or want to experiment with it before doing a root
+installation), there are a couple of details you need to be aware of.
+They have to do with the ncurses library, which uses terminfo rather
+than termcap for describing terminal characteristics.
+
+Though the ncurses library is terminfo-based, it will interpret your
+TERMCAP variable (if present), any local termcap files you reference
+through it, and the system termcap file.  However, in order to avoid
+slowing down your application startup, it will only do this once per
+terminal type!
+
+The first time you load a given terminal type from your termcap
+database, the library initialization code will automatically write it
+in terminfo format to a subdirectory under $HOME/.terminfo.  After
+that, the initialization code will find it there and do a (much
+faster) terminfo fetch.
+
+Usually, all this means is that your home directory will silently grow
+an invisible .terminfo subdirectory which will get filled in with
+terminfo descriptions of terminal types as you invoke them.  If anyone
+ever installs a global terminfo tree on your system, this will quietly
+stop happening and your $HOME/.terminfo will become redundant.
+
+The objective of all this logic is to make converting from BSD termcap
+as painless as possible without slowing down your application (termcap
+compilation is expensive).
+
+If you don't have a TERMCAP variable or custom personal termcap file,
+you can skip the rest of this dissertation.
+
+If you *do* have a TERMCAP variable and/or a custom personal termcap file
+that defines a terminal type, that definition will stop being visible
+to this application after the first time you run it, because it will
+instead see the terminfo entry that it wrote to $HOME/terminfo the
+first time around.
+
+Subsequently, editing the TERMCAP variable or personal TERMCAP file
+will have no effect unless you explicitly remove the terminfo entry
+under $HOME/terminfo.  If you do that, the entry will be recompiled 
+from your termcap resources the next time it is invoked.
+
+To avoid these complications, use infocmp(1) and tic(1) to edit the
+terminfo directory directly. 
+
+------------------------------- CUT HERE --------------------------------
+
 BUGS:
 	Send any feedback to the ncurses mailing list at
 	ncurses-list@netcom.com. To subscribe send mail to
 	listserv@netcom.com with body that reads:
-	subscribe ncurses-list <you-email-address-here>
+	subscribe ncurses-list <your-email-address-here>
 

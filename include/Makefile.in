@@ -58,7 +58,7 @@ MKterm.h.awk: $(srcdir)/MKterm.h.awk.in Makefile
 	-@rm -f $@
 	sed <$(srcdir)/$@.in >$@ -e "/@VERSION@/s//$(VERSION)/"
 
-curses.h: $(srcdir)/MKcurses.sh Makefile
+curses.h: $(srcdir)/MKcurses.sh curses.h.in Makefile
 	-@rm -f $@
 	sh $(srcdir)/MKcurses.sh $(VERSION) $(BUILTIN_BOOL) $(TYPE_OF_BOOL) $(srcdir)
 

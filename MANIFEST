@@ -51,6 +51,7 @@
 ./include/curses.h.in
 ./include/edit_cfg.sh
 ./include/parametrized.sh
+./include/progs.priv.h
 ./include/term_entry.h
 ./include/termcap.h.in
 ./include/tic.h
@@ -181,7 +182,7 @@
 ./menu/mf_common.h
 ./menu/modules
 ./misc/Makefile.in
-./misc/dotic.in
+./misc/hackguide.html
 ./misc/ncurses-intro.doc
 ./misc/ncurses-intro.html
 ./misc/terminfo.src
@@ -190,6 +191,7 @@
 ./mkinstalldirs
 ./ncurses.lsm
 ./ncurses/MKcaptab.awk
+./ncurses/MKfallback.sh
 ./ncurses/MKkeyname.awk
 ./ncurses/MKkeys.awk
 ./ncurses/MKnames.awk
@@ -198,6 +200,7 @@
 ./ncurses/SigAction.h
 ./ncurses/alloc_entry.c
 ./ncurses/captoinfo.c
+./ncurses/fallback.c
 ./ncurses/comp_error.c
 ./ncurses/comp_hash.c
 ./ncurses/comp_parse.c
@@ -269,6 +272,7 @@
 ./ncurses/parse_entry.c
 ./ncurses/read_entry.c
 ./ncurses/read_termcap.c
+./ncurses/write_entry.c
 ./ncurses/sigaction.c
 ./ncurses/strerror.c
 ./ncurses/vsscanf.c
@@ -289,7 +293,6 @@
 ./progs/toe.c
 ./progs/tput.c
 ./progs/tset.c
-./progs/write_entry.c
 ./shlib
 ./test/Makefile.in
 ./test/README

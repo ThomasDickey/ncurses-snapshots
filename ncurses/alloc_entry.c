@@ -27,7 +27,6 @@
  *	_nc_save_str()
  *	_nc_merge_entry();
  *	_nc_wrap_entry();
- *	_nc_free_entry();
  *
  */
 
@@ -127,7 +126,7 @@ void _nc_merge_entry(TERMTYPE *to, TERMTYPE *from)
 
 	if (mergebool == CANCELLED_BOOLEAN)
 	    to->Booleans[i] = FALSE;
-	else if (mergebool != ABSENT_BOOLEAN)
+	else if (mergebool == TRUE)
 	    to->Booleans[i] = mergebool;
     }
 

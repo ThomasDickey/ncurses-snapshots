@@ -71,6 +71,11 @@ $2 == "%%-STOP-HERE-%%"	{
 			printf "#define NUMWRITE  %d\n", NumberCount
 			printf "#define STRWRITE  %d\n", StringCount
 			print  ""
+			print  "/* older synonyms for some booleans */"
+			print  "#define beehive_glitch	no_esc_ctlc"
+			print  "#define teleray_glitch	dest_tabs_magic_smso"
+			print  "#define micro_col_size	micro_char_size"
+			print  ""
 			print  "#ifdef __INTERNAL_CAPS_VISIBLE"
 		}
 
@@ -148,11 +153,12 @@ END		{
 			print "#endif"
 			print ""
 			print "/* internals */"
-			print "extern int _nc_read_entry(const char *, TERMTYPE *);"
-			print "extern int _nc_read_file_entry(char *, TERMTYPE *);"
-			print "extern int _nc_must_swap(void);"
+			print "extern int _nc_read_entry(const char *, char *, TERMTYPE *);"
+			print "extern int _nc_read_file_entry(const char *, TERMTYPE *);"
+			print "extern char *_nc_first_name(const char *);"
 			print "extern int _nc_name_match(char *, const char *, const char *);"
 			print "extern int _nc_read_termcap_entry(const char *, TERMTYPE *);"
+			print "extern const TERMTYPE *_nc_fallback(const char *);"
 			print  ""
 			print "/* entry points */"
 			print "extern TERMINAL *set_curterm(TERMINAL *);"

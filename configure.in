@@ -148,8 +148,11 @@ AC_CHECK_HEADERS( \
 fcntl.h \
 getopt.h \
 libc.h \
+limits.h \
 regex.h \
+regexp.h \
 sys/ioctl.h \
+sys/param.h \
 sys/select.h \
 sys/time.h \
 termios.h \

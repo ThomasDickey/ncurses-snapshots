@@ -94,7 +94,6 @@ $(bindir) :
 DEPS_TIC = \
 	$(MODEL)/comp_main.o \
 	$(MODEL)/dump_entry.o \
-	$(MODEL)/write_entry.o \
 	$(LIB_CURSES)
 tic: $(DEPS_TIC)
 	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(DEPS_TIC) $(LDFLAGS) -o $@

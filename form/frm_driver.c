@@ -64,6 +64,23 @@
 
 #include "form.priv.h"
 
+/*
+Some options that may effect compatibility in behavior to SVr4 forms,
+but they are here to allow a more intuitive and user friendly behaviour of
+our form implementation. This doesn't affect the API, so we feel it is
+uncritical.
+
+The initial implementation tries to stay very close with the behaviour
+of the original SVr4 implementation, although in some areas it is quite
+clear that this isn't the most appropriate way. As far as possible this
+sources will allow you to build a forms lib that behaves quite similar
+to SVr4, but now and in the future we will give you better options. 
+Perhaps at some time we will make this configurable at runtime.
+*/
+
+/* Implement a more user-friendly previous/next word behaviour */
+#define FRIENDLY_PREV_NEXT_WORD (1)
+
 /*----------------------------------------------------------------------------
   Forward references to some internally used static functions
   --------------------------------------------------------------------------*/
@@ -1278,6 +1295,7 @@ static int IFN_Next_Word(FORM * form)
   char  *bp    = Address_Of_Current_Position_In_Buffer(form);
   char  *s;
   char  *t;
+  bool  again  = FALSE;
 
   /* We really need access to the data, so we have to synchronize */
   Synchronize_Buffer(form);
@@ -1287,12 +1305,15 @@ static int IFN_Next_Word(FORM * form)
     next non-blank data */
   s = Get_First_Whitespace_Character(bp,Buffer_Length(field) -
 				     (int)(bp - field->buf));
+
   /* Find the start of the next word */
   t = Get_Start_Of_Data(s,Buffer_Length(field) -
 			(int)(s - field->buf));
+#if !FRIENDLY_PREV_NEXT_WORD
   if (s==t) 
     return(E_REQUEST_DENIED);
   else
+#endif
     {
       Adjust_Cursor_Position(form,t);
       return(E_OK);
@@ -1332,15 +1353,18 @@ static int IFN_Previous_Word(FORM * form)
      of the previous word. 
   */
   t = After_Last_Whitespace_Character(field->buf,(int)(s - field->buf));
+#if !FRIENDLY_PREV_NEXT_WORD
   if (s==t) 
     return(E_REQUEST_DENIED);
-
+#endif
   if (again)
     { /* and do it again, replacing bp by t */
       s = After_End_Of_Data(field->buf,(int)(t - field->buf));
       t = After_Last_Whitespace_Character(field->buf,(int)(s - field->buf));
+#if !FRIENDLY_PREV_NEXT_WORD
       if (s==t) 
 	return(E_REQUEST_DENIED);
+#endif
     }
   Adjust_Cursor_Position(form,t);
   return(E_OK);

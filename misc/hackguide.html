@@ -1,0 +1,479 @@
+<HTML>
+<HEAD>
+<TITLE>A Hacker's Guide to Ncurses Internals</TITLE>
+<link rev="made" href="mailto:esr@snark.thyrsus.com">
+</HEAD>
+<BODY>
+
+<H1>A Hacker's Guide to NCURSES</H1>
+
+<H1>Contents</H1>
+<UL>
+<LI> <A HREF="#abstract">Abstract</A>
+<P>
+<LI> <A HREF="#objective">Objective of the Package</A>
+<UL>
+<LI> <A HREF="#whysvr4">Why System V Curses?</A>
+<LI> <A HREF="#extensions">How to Design Extensions</A>
+</UL>
+<LI> <A HREF="#portability">Portability and Configuration</A>
+<LI> <A HREF="#documentation">Documentation Conventions</A>
+<P>
+<LI> <A HREF="#ncurslib">A Tour of the Ncurses Library</A>
+<UL>
+<LI> <A HREF="#loverview">Library Overview</A>
+<LI> <A HREF="#engine">The Engine Room</A>
+<LI> <A HREF="#input">Keyboard Input</A>
+<LI> <A HREF="#mouse">Mouse Events</A>
+<LI> <A HREF="#output">Output and Screen Updating</A>
+</UL>
+<LI> <A HREF="#fmnote">The Forms and Menu Libraries</A>
+<P>
+<LI> <A HREF="#tic">A Tour of the Terminfo Compiler</A>
+<UL>
+<LI> <A HREF="#nonuse">Translation of Non-<B>use</B> Capabilities</A>
+<LI> <A HREF="#uses">Use Capability Resolution</A>
+<LI> <A HREF="#translation">Source-Form Translation</A>
+</UL>
+<LI> <A HREF="#utils">Other Utilities</A>
+<P>
+<LI> <A HREF="#style">Style Tips for Developers</A>
+</UL>
+
+<H1><A NAME="abstract">Abstract</A></H1>
+
+This document is a hacker's tour of the <B>ncurses</B> library and utilities.
+It discusses design philosophy, implementation methods, and the
+conventions used for coding and documentation.  It is recommended
+reading for anyone who is interested in porting, extending or improving the
+package. <P>
+
+<H1><A NAME="objective">Objective of the Package</A></H1>
+
+The objective of the <B>ncurses</B> package is to provide a freeware API for
+character-cell terminals and terminal emulators with the following 
+characteristics: <P>
+
+<UL>
+<LI> Source-compatible with historical curses implementations (including
+     the original BSD curses and System V curses.
+<P>
+<LI> Conformant with the XSI Curses standard issued as part of XPG4 by
+     X/Open. 
+<P>
+<LI> High-quality -- stable and reliable code, wide portability, good
+     packaging, superior documentation.
+<P>
+<LI> Featureful -- should eliminate as much of the drudgery of C interface
+     programming as possible, freeing programmers to think at a higher
+     level of design.
+</UL>
+
+These objectives are in priority order.  So, for example, source
+compatibility with older version must trump featurefulness -- we cannot
+add features if it means breaking the portion of the API corresponding
+to historical curses versions. <P>
+
+<H2><A NAME="whysvr4">Why System V Curses?</A></H2>
+
+We used System V curses as a model, reverse-engineering their API, in
+order to fulfill the first two objectives. <P>
+
+System V curses implementations can support BSD curses programs with
+just a recompilation, so by capturing the System V API we also
+capture BSD's. <P>
+
+More importantly for the future, the XSI Curses standard issued by X/Open
+is explicitly and closely modelled on System V.  So conformance with
+System V took us most of the way to base-level XSI conformance. <P>
+
+<H2><A NAME="extensions">How to Design Extensions</A></H2>
+
+The third objective (standards conformance) requires that it be easy to
+condition source code using <B>ncurses</B> so that the absence of nonstandard
+extensions does not break the code. <P>
+
+Accordingly, we have a policy of associating with each nonstandard extension
+a feature macro, so that ncurses client code can use this macro to condition
+in or out the code that requires the <B>ncurses</B> extension. <P>
+
+For example, there is a macro <TT>NCURSES_MOUSE_VERSION</TT> which XSI Curses
+does not define, but which is defined in the <B>ncurses</B> library header.
+You can use this to condition the calls to the mouse API calls. <P>
+
+<H1><A NAME="portability">Portability and Configuration</A></H1>
+
+Code written for <B>ncurses</B> may assume an ANSI-standard C compiler and
+POSIX-compatible OS interface.  It may also assume the presence of a
+System-V-compatible <I>select(2)</I> call. <P>
+
+We encourage (but do not require) developers to make the code friendly
+to less-capable UNIX environments wherever possible. <P>
+
+We encourage developers to support OS-specific optimizations and methods
+not available under POSIX/ANSI, provided only that:  <P>
+
+<UL>
+<LI> All such code is properly conditioned so the build process does not
+     attempt to compile it under a plain ANSI/POSIX environment.
+<P>
+<LI> Adding such implementation methods does not introduce incompatibilities
+     in the <B>ncurses</B> API between platforms.
+<P>
+</UL>
+
+We use GNU <TT>autoconf(1)</TT> as a tool to deal with portability issues.  
+The right way to leverage an OS-specific feature is to modify the autoconf
+specification files (configure.in and aclocal.m4) to set up a new feature
+macro, which you then use to condition your code. <P>
+
+<H1><A NAME="documentation">Documentation Conventions</A></H1>
+
+There are three kinds of documentation associated with this package.  Each
+has a different preferred format: <P>
+
+<UL>
+<LI> Package-internal files (README, INSTALL, TO-DO etc.)
+<LI> Manual pages.
+<LI> Everything else (i.e., narrative documentation).
+</UL>
+
+Our conventions are simple: <P>
+<OL>
+<LI> <B>Maintain package-internal files in plain text.</B>
+     The expected viewer for them <I>more(1)</I> or an editor window; there's
+     no point in elaborate markup. <P>
+
+<LI> <B>Mark up manual pages in the man macros.</B>  These have to be viewable
+     through traditional <I>man(1)</I> programs. <P>
+
+<LI> <B>Write everything else in HTML.</B> <P>
+</OL>
+
+When in doubt, HTMLize a master and use <I>lynx(1)</I> to generate
+plain ASCII (as we do for the annoucement document). <P>
+
+The reason for choosing HTML is that it's (a) well-adapted for on-line
+browsing through viewers that are everywhere; (b) more easily readable
+as plain text than most other markups, if you don't have a viewer; and (c)
+carries enough information that you can generate a nice-looking printed
+version from it.  Also, of course, it make exporting things like the 
+announcement document to WWW pretty trivial.<P>
+
+<H1><A NAME="ncurslib">A Tour of the Ncurses Library</A></H1>
+
+<H2><A NAME="loverview">Library Overview</A></H2>
+
+Most of the library is superstructure -- fairly trivial convenience
+interfaces to a small set of basic functions and data structures used
+to manipulate the virtual screen (in particular, none of this code
+does any I/O except through calls to more fundamental modules
+described below).  The files <TT>lib_addch.c</TT>,
+<TT>lib_bkgnd.c</TT>, <TT>lib_box.c</TT>, <TT>lib_clear.c</TT>,
+<TT>lib_clrbot.c</TT>, <TT>lib_clreol.c</TT>, <TT>lib_data.c</TT>,
+<TT>lib_delch.c</TT>, <TT>lib_delwin.c</TT>, <TT>lib_erase.c</TT>,
+<TT>lib_getstr.c</TT>, <TT>lib_inchstr.c</TT>, <TT>lib_insch.c</TT>,
+<TT>lib_insdel.c</TT>, <TT>lib_insstr.c</TT>, <TT>lib_instr.c</TT>,
+<TT>lib_isendwin.c</TT>, <TT>lib_keyname.c</TT>, <TT>lib_move.c</TT>,
+<TT>lib_mvwin.c</TT>, <TT>lib_overlay.c</TT>, <TT>lib_pad.c</TT>,
+<TT>lib_printw.c</TT>, <TT>lib_scanw.c</TT>, <TT>lib_screen.c</TT>,
+<TT>lib_scroll.c</TT>, <TT>lib_scrreg.c</TT>, <TT>lib_set_term.c</TT>,
+<TT>lib_slk.c</TT>, <TT>lib_touch.c</TT>, <TT>lib_unctrl.c</TT>, and
+<TT>lib_window.c</TT> are all in this category.  They are very
+unlikely to need change, barring bugs or some fundamental
+reorganization in the underlying data structures. <P>
+
+The <TT>lib_trace.c</TT>, <TT>lib_traceatr.c</TT>, and
+<TT>lib_tracechr.c</TT> file are used only for debugging support. 
+It is rather unlikely you will ever need to change these, unless
+you want to introduce a new debug trace level for some reasoon.<P>
+
+There is another group of files that do direct I/O via <I>tputs()</I>,
+computations on the terminal capabilities, or queries to the OS
+environment, but nevertheless have only fairly low complexity.  These
+include: <TT>lib_acs.c</TT>, <TT>lib_beep.c</TT>,
+<TT>lib_color.c</TT>, <TT>lib_endwin.c</TT>, <TT>lib_initscr.c</TT>,
+<TT>lib_longname.c</TT>, <TT>lib_newterm.c</TT>,
+<TT>lib_options.c</TT>, <TT>lib_termcap.c</TT>, <TT>lib_ti.c</TT>,
+<TT>lib_tparm.c</TT>, <TT>lib_tputs.c</TT>, <TT>lib_vidattr.c</TT>,
+and <TT>read_entry.c</TT>.  These are likely to need revision only if
+ncurses is being ported to an environment without an underlying
+terminfo capability representation. <P>
+
+The files <TT>lib_kernel.c</TT>, <TT>lib_raw.c</TT>,
+<TT>lib_tstp.c</TT>, and <TT>lib_twait.c</TT> have serious hooks into
+the tty driver and signal facilities.  If you run into porting snafus
+moving the package to another UNIX, the problem is likely to be in one
+of these files. <P>
+
+Almost all of the real work is done in the files <TT>hardscroll.c</TT>,
+<TT>lib_addch.c</TT>, <TT>lib_doupdate.c</TT>, <TT>lib_mvcur.c</TT>,
+<TT>lib_getch.c</TT>, <TT>lib_mouse.c</TT>, <TT>lib_refresh.c</TT>,
+and <TT>lib_setup.c</TT>.  Most of the algorithmic complexity in the
+library lives in these files.  If there is a real bug in <B>ncurses</B>
+itself, it's probably here.  We'll tour some of these files in detail
+below (see <A HREF="#engine">The Engine Room</A></H2>). <P>
+
+Finally, there is a group of files that is actually most of the
+terminfo compiler.  The reason this code lives in the <B>ncurses</B>
+library is to support fallback to /etc/termcap.  These files include
+<TT>alloc_entry.c</TT>, <TT>captoinfo.c</TT>, <TT>comp_captab.c</TT>,
+<TT>comp_error.c</TT>, <TT>comp_hash.c</TT>, <TT>comp_parse.c</TT>,
+<TT>comp_scan.c</TT>, and <TT>parse_entry.c</TT>,
+<TT>read_termcap.c</TT>, and <TT>write_entry.c</TT>.  We'll discuss these
+in the compiler tour. <P>
+
+<H2><A NAME="engine">The Engine Room</A></H2>
+
+<H3><A NAME="input">Keyboard Input</A></H3>
+
+All <TT>ncurses</TT> input funnels through the function
+<TT>wgetch()</TT>, defined in <TT>lib_getch.c</TT>.  This function is
+tricky; it has to poll for keyboard and mouse events and do a running
+match of incoming input against the set of defined special keys. <P>
+
+The central data structure in this module is a FIFO queue, used to
+match multiple-character input sequences against special-key
+capabilities; also to implement pushback via <TT>ungetch()</TT>. <P>
+
+The <TT>wgetch()</TT> code distinguishes between function key
+sequences and the same sequences typed manually by doing a timed wait
+after each input character that could lead a function key sequence.
+If the entire sequence takes less than 1 second, it is assumed to have
+been generated by a function key press. <P>
+
+Hackers bruised by previous encounters with variant <TT>select(2)</TT>
+calls may find the code in <TT>lib_twait.c</TT> interesting.  It deals
+with the problem that some BSD selects don't return a reliable
+time-left value.  The function <TT>timed_wait()</TT> effectively
+simulates a System V select. <P>
+
+<H3><A NAME="mouse">Mouse Events</A></H3>
+
+If the mouse interface is active, <TT>wgetch()</TT> polls for mouse
+events each call, before it goes to the keyboard for input.  It is
+up to <TT>lib_mouse.c</TT> how the polling is accomplished; it may vary
+for different devices. <P>
+
+Under xterm, however, mouse event notifications come in via the keyboard
+input stream.  They are recognized by having the <B>kmous</B> capability
+as a prefix.  This is kind of klugey, but trying to wire in recognition of
+a mouse key prefix without going through the function-key machinery would
+be just too painful, and this turns out to imply having the prefix somewhere
+in the function-key capabilities at terminal-type initiialization. <P>
+
+This kluge only works because <B>kmous</B> isn't actually used by any
+historic terminal type or curses implementation we know of.  Best
+guess is it's a relic of some forgotten experiment in-house at Bell
+Labs that didn't leave any traces in the publicly-distributed System V
+terminfo files.  If System V or XPG4 ever gets serious about using it
+again, this kluge may have to change. <P>
+
+Here are some more details about mouse event handling: <P>
+
+The <TT>lib_mouse()</TT>code is logically split into a lower level that
+accepts event reports in a device-dependent format and an upper level that
+parses mouse gestures and filters events.  The mediating data structure is a
+circular queue of event structures. <P>
+
+Functionally, the lower level's job is to pick up primitive events and
+put them on the circular queue.  This can happen in one of two ways:
+either (a) <TT>_nc_mouse_event()</TT> detects a series of incoming
+mouse reports and queues them, or (b) code in <TT>lib_getch.c</TT> detects the
+<B>kmous</B> prefix in the keyboard input stream and calls _nc_mouse_inline
+to queue up a series of adjacent mouse reports. <P>
+
+In either case, <TT>_nc_mouse_parse()</TT> should be called after the
+series is accepted to parse the digested mouse reports (low-level
+events) into a gesture (a high-level or composite event). <P>
+
+<H3><A NAME="output">Output and Screen Updating</A></H3>
+
+With the single exception of character echoes during a <TT>wgetnstr()</TT>
+call (which simulates cooked-mode line editing in an ncurses window), 
+the library normally does all its output at refresh time. <P>
+
+The main job is to go from the current state of the screen (as represented
+in the <TT>curscr</TT> window structure) to the desired new state (as 
+represented in the <TT>newscr</TT> window structure), while doing as
+little I/O as possible. <P>
+
+The brains of this operation are the modules <TT>hardscroll.c</TT> and
+<TT>lib_doupdate.c</TT>; both use <TT>lib_mvcur.c</TT>.  Essentially,
+what happens looks like this: <P>
+
+The <TT>hardscroll.c</TT> module tries to detect vertical motion
+changes between the real and virtual screens.  It does so by comparing
+line number vectors between <TT>curscr</TT> and <TT>newscr</TT>; both
+are modified by vertical-motion and clear operations, and both are
+re-initialized after each update. <P>
+
+The <TT>hardscroll.c</TT> module computes an optimum set of scroll,
+insertion, and deletion operations to make the vectors match.  It calls
+<TT>_nc_mvcur_scrolln()</TT> in <TT>lib_mvcur.c</TT> to do those motions. <P>
+
+Then <TT>lib_doupdate.c</TT> goes to work.  Its job is to do line-by-line
+transformations of <TT>curscr</TT> lines to <TT>newscr</TT> lines.  Its main
+tool is the routine <TT>mvcur()</TT> in <TT>lib_mvcur.c</TT>.  This routine
+does cursor-movement optimization, attempting to get from given screen 
+location A to given location B in the fewest output characters posible. <P>
+
+<H1><A HNAME="fmnote">The Forms and Menu Libraries</A></H1>
+
+The forms and menu libraries should work reliably in any environment you
+can port ncurses to. The only portability issue anywhere in them is what
+flavor of regular expressions the built-in form field type TYPE_REGEXP
+will recognize. <P>
+
+The configuration code prefers the POSIX regex facility, modeled on
+System V's, but will settle for BSD regexps if the former isn't available. <P>
+
+<H1><A NAME="tic">A Tour of the Terminfo Compiler</A></H1>
+
+The <B>ncurses</B> implementation of <B>tic</B> is rather complex
+internally; it has to do a trying combination of missions. This starts
+with the fact that, in addition to its normal duty of compiling
+terminfo sources into loadable terminfo binaries, it has to be able to
+handle termcap syntax and compile that too into terminfo entries. <P>
+
+The implementation therefore starts with a table-driven, dual-mode
+lexical analyzer (in <TT>comp_scan.c</TT>).  The lexer chooses its
+mode (termcap or terminfo) based on the first `,' or `:' it finds in
+each entry.  The lexer does all the work of recognizing capability
+names and values; the grammar above it is trivial, just "parse entries
+till you run out of file". <P>
+
+<H2><A NAME="nonuse">Translation of Non-<B>use</B> Capabilities</A></H2>
+
+Translation of most things besides <B>use</B> capabilities is pretty
+straightforward.  The lexical analyzer's tokenizer hands each capability
+name to a hash function, which drives a table lookup.  The table entry
+yields an index which is used to look up the token type in another table,
+and controls interpretation of the value. <P>
+
+One possibly interesting aspect of the implementation is the way the
+compiler tables are initialized.  All the tables are generated by various
+awk/sed/sh scripts from a master table <TT>include/Caps</TT>; these 
+scripts actually write C initializers which are linked to the compiler. 
+Furthermore, the hash table is generated in the same way, so it doesn't
+have to be generated at compiler startup time (another benefit of this
+organization is that the hash table can be in shareable text space). <P>
+
+Thus, adding a new capability is usually pretty trivial, just a matter
+of adding one line to the <TT>include/Caps</TT> file.  We'll have more
+to say about this in the section on <A HREF="#translation">Source-Form
+Translation</A>. <P>
+
+<H2><A NAME="uses">Use Capability Resolution</A></H2>
+
+The background problem that makes <B>tic</B> tricky isn't the capability
+translation itself, it's the resolution of <B>use</B> capabilities.  Older
+versions would not handle forward <B>use</B> references for this reason 
+(that is, a using terminal always had to follow its use target in the
+source file).  By doing this, they got away with a simple implementation
+tactic; compile everything as it blows by, then resolve uses from compiled
+entries. <P>
+
+This won't do for <B>ncurses</B>.  The problem is that that the whole
+compilation process has to be embeddable in the <B>ncurses</B> library
+so that it can be called by the startup code to translate termcap
+entries on the fly.  The embedded version can't go promiscuously writing
+everything it translates out to disk -- for one thing, it will typically
+be running with non-root permissions. <P> 
+
+So our <B>tic</B> is designed to parse an entire terminfo file into a
+doubly-linked circular list of entry structures in-core, and then do
+<B>use</B> resolution in-memory before writing everything out.  This
+design has other advantages: it makes forward and back use-references
+equally easy (so we get the latter for free), and it makes checking for
+name collisions before they're written out easy to do. <P>
+
+And this is exactly how the embedded version works.  But the standalone
+user-accessible version of <B>tic</B> partly reverts to the historical
+strategy; it writes to disk (not keeping in core) any entry with no
+<B>use</B> references. <P>
+
+This is strictly a core-economy kluge, implemented because the
+terminfo master file is large enough that some core-poor systems swap
+like crazy when you compile it all in memory...there have been reports of
+this process taking <B>three hours</B>, rather than the twenty seconds
+or less typical on the author's development box. <P>
+
+So.  The executable <B>tic</B> passes the entry-parser a hook that
+<EM>immediately</EM> writes out the referenced entry if it has no use
+capabilities.  The compiler main loop refrains from adding the entry
+to the in-core list when this hook fires.  If some other entry later
+needs to reference an entry that got written immediately, that's OK;
+the resolution code will fetch it off disk when it can't find it in
+core. <P>
+
+Name collisions will still be detected, just not as cleanly.  The
+<TT>write_entry()</TT> code complains before overwriting an entry that
+postdates the time of <B>tic</B>'s first call to
+<TT>write_entry()</TT>, Thus it will complain about overwriting
+entries newly made during the <B>tic</B> run, but not about
+overwriting ones that predate it. <P>
+
+<H2><A NAME="translation">Source-Form Translation</A></H2>
+
+Another use of <B>tic</B> is to do source translation between various termcap
+and terminfo formats.  There are more variants out there than you might
+think; the ones we know about are described in the <B>captoinfo(1)</B>
+manual page. <P>
+
+The translation output code (<TT>dump_entry()</TT> in
+<TT>ncurses/dump_entry.c</TT>) is shared with the <B>infocmp(1)</B>
+utility.  It takes the same internal representation used to generate
+the binary form and dumps it to standard output in a specified
+format. <P>
+
+The <TT>include/Caps</TT> file has a header comment describing ways you
+can specify source translations for nonstandard capabilities just by
+altering the master table.  It's possible to set up capability aliasing 
+or tell the compiler to plain ignore a given capability without writing
+any C code at all. <P>
+
+For circumstances where you need to do algorithmic translation, there
+are functions in <TT>parse_entry.c</TT> called after the parse of each
+entry that are specifically intended to encapsulate such
+translations.  This, for example, is where the AIX <B>box1</B> capability
+get translated to an <B>acsc</B> string.<P>
+
+<H1><A NAME="utils">Other Utilities</A></H1>
+
+The <B>infocmp</B> utility is just a wrapper around the same
+entry-dumping code used by <B>tic</B> for source translation.  Perhaps
+the one interesting aspect of the code is the use of a predicate
+function passed in to <TT>dump_entry()</TT> to control which
+capabilities are dumped.  This is necessary in order to handle both
+the ordinary decompilation case and entry difference reporting. <P>
+
+The <B>tput</B> and <B>clear</B> utilities just do an entry load 
+followed by a <TT>tputs()</TT> of a selected capability. <P>
+
+<H1><A NAME="style">Style Tips for Developers</A></H1>
+
+See the TO-DO file in the top-level directory of the source distribution
+for additions that would be particularly useful. <P>
+
+Please join the ncurses mailing list.  See the INSTALL file in the
+top level of the distribution for details on the list. <P>
+
+Look for the string <TT>FIXME</TT> in source files to tag minor bugs
+and potential problems that could use fixing. <P>
+
+Don't try to auto-detect OS features in the main body of the C code.
+That's the job of the configuration system. <P>
+
+To hold down complexity, do make your code data-driven.  Especially,
+if you can drive logic from a table filtered out of
+<TT>include/Caps</TT>, do it.  If you find you need to augment the
+data in that file in order to generate the proper table, that's still
+preferable to ad-hoc code -- that's why the fifth field (flags) is
+there. <P>
+
+Have fun! <P>
+
+<HR>
+<ADDRESS>Eric S. Raymond &lt;esr@snark.thyrsus.com&gt;</ADDRESS> </BODY>
+</HTML>

@@ -5,10 +5,15 @@ See the file INSTALL for instructions on how to build and install ncurses.
 See the file NEWS for a release history and bug-fix notes.
 See the file TO-DO for things that still need doing, including known bugs.
 
+Browse the file misc/ncurses-intro.html for narrative descriptions of how
+to use ncurses and the panel, menu, and form libraries.
+ 
+Browse the file misc/hackguide.html for a tour of the package internals.
+
 ROADMAP AND PACKAGE OVERVIEW:
 
 You should be reading this file in a directory called: ncurses-d.d.d, where
-d.d.d is the current version number (see the Makefile.in file in this
+d.d.d is the current version number (see the dist.mk file in this
 directory for that).  There should be several subdirectories, including `c++',
 `form', `man', `menu', `misc', `ncurses', `panel', `progs', and `test'.
 

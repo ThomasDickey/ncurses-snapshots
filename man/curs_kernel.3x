@@ -19,9 +19,9 @@
 .br
 \fBint savetty(void);\fR
 .br
-\fBint getsyx(int y, int x);\fR
+\fBvoid getsyx(int y, int x);\fR
 .br
-\fBint setsyx(int y, int x);\fR
+\fBvoid setsyx(int y, int x);\fR
 .br
 \fBint ripoffline(int line, int (*init)(WINDOW *, int));\fR
 .br
@@ -108,6 +108,10 @@ on the correctness of the return value anywhere else.
 .SH PORTABILITY
 The functions \fBsetsyx\fR and \fBgetsyx\fR are not described in the XSI
 Curses standard, Issue 4.  All other functions are as described in XSI Curses.
+
+The SVr4 documentation describes \fBsetsyx\fR and \fBgetsyx\fR as having return
+type int. This is misleading, as they are macros with no documented semantics
+for the return value.
 .SH SEE ALSO
 \fBcurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_outopts\fR(3X), \fBcurs_refresh\fR(3X),
 \fBcurs_scr_dump\fR(3X), \fBcurs_slk\fR(3X)

@@ -1,23 +1,10 @@
 
-/***************************************************************************
-*                            COPYRIGHT NOTICE                              *
-****************************************************************************
-*                ncurses is copyright (C) 1992-1995                        *
-*                          Zeyd M. Ben-Halim                               *
-*                          zmbenhal@netcom.com                             *
-*                          Eric S. Raymond                                 *
-*                          esr@snark.thyrsus.com                           *
-*                                                                          *
-*        Permission is hereby granted to reproduce and distribute ncurses  *
-*        by any means and for any fee, whether alone or as part of a       *
-*        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, and is not    *
-*        removed from any of its header files. Mention of ncurses in any   *
-*        applications linked with it is highly appreciated.                *
-*                                                                          *
-*        ncurses comes AS IS with no warranty, implied or expressed.       *
-*                                                                          *
-***************************************************************************/
+/*
+ * THIS CODE IS SPECIFICALLY EXEMPTED FROM THE NCURSES PACKAGE COPYRIGHT.
+ * You may freely copy it for use as a template for your own field types.
+ * If you develop a field type that might be of general use, please send
+ * it back to the ncurses maintainers for inclusion in the next version.
+ */
 
 #include "form.priv.h"
 
@@ -274,9 +261,9 @@ static bool Previous_Enum(FIELD * field, const void * argp)
 }
 
 
-static FIELDTYPE const typeENUM = {
+static FIELDTYPE typeENUM = {
   _HAS_ARGS | _HAS_CHOICE | _RESIDENT,
-  1,
+  1,                           /* this is mutable, so we can't be const */
   (FIELDTYPE *)0,
   (FIELDTYPE *)0,
   Make_Enum_Type,
@@ -288,6 +275,6 @@ static FIELDTYPE const typeENUM = {
   Previous_Enum
 };
 
-FIELDTYPE const * TYPE_ENUM = &typeENUM;
+FIELDTYPE* TYPE_ENUM = &typeENUM;
 
 /* fty_enum.c ends here */

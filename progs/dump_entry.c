@@ -19,9 +19,8 @@
 *                                                                          *
 ***************************************************************************/
 
+#include <progs.priv.h>
 
-#include <stdlib.h>
-#include <sys/param.h>		/* for MAXPATHLEN */
 #include <string.h>
 #include <ctype.h>
 #include "tic.h"
@@ -33,6 +32,7 @@
 
 #define INDENT			8
 
+static int tversion;		/* terminfo version */
 static int outform;		/* output format to use */
 static int sortmode;		/* sort mode to use */
 static int width = 60;		/* max line width for listings */
@@ -44,13 +44,32 @@ static char * const *bool_names, * const *num_names, * const *str_names;
 
 static char *separator, *trailer;
 
+/* cover various ports and variants of terminfo */
+#define V_ALLCAPS	0	/* all capabilities (SVr4, XSI, ncurses) */
+#define V_SVR1		1	/* SVR1, Ultrix */
+#define V_HPUX		2	/* HP/UX */
+#define V_AIX		3	/* AIX */
+
 #define OBSOLETE(n) (n[0] == 'O' && n[1] == 'T')
 
-void dump_init(int mode, int sort, int twidth, int traceval)
+void dump_init(char *version, int mode, int sort, int twidth, int traceval)
 /* set up for entry display */
 {
     width = twidth;
     tracelevel = traceval;
+
+    /* versions */
+    if (version == (char *)NULL)
+	tversion = V_ALLCAPS;
+    else if (!strcmp(version, "SVr1") || !strcmp(version, "SVR1")
+					|| !strcmp(version, "Ultrix"))
+	tversion = V_SVR1;
+    else if (!strcmp(version, "HP"))
+	tversion = V_HPUX;
+    else if (!strcmp(version, "AIX"))
+	tversion = V_AIX;
+    else
+	tversion = V_ALLCAPS;
 
     /* implement display modes */
     switch (outform = mode)
@@ -129,6 +148,7 @@ void dump_init(int mode, int sort, int twidth, int traceval)
 /* this deals with differences over whether 0x7f and 0x80..0x9f are controls */
 #define CHAR_OF(s) (*(unsigned char *)s)
 #define REALCTL(s) (CHAR_OF(s) < 127 && iscntrl(CHAR_OF(s)))
+#define REALPRINT(s) (CHAR_OF(s) < 127 && isprint(CHAR_OF(s)))
 
 char *expand(char *srcp)
 {
@@ -153,7 +173,7 @@ bool		islong = (strlen(srcp) > 3);
 	    		buffer[bufp++] = '\\';
 	    		buffer[bufp++] = '^';
 		}
-		else if (isprint(*str) && (*str != ',' && *str != ':'))
+		else if (REALPRINT(str) && (*str != ',' && *str != ':'))
 		    	buffer[bufp++] = *str;
 		else if (*str == '\r' && (islong || (strlen(srcp) > 2 && str[1] == '\0'))) {
 	    		buffer[bufp++] = '\\';
@@ -179,22 +199,6 @@ bool		islong = (strlen(srcp) > 3);
 
     	buffer[bufp] = '\0';
     	return(buffer);
-}
-
-char *canonical_name(char *ptr, char *buf)
-/* extract the terminal type's primary name */
-{
-    static char	mycopy[NAMESIZE];
-    char	*bp;
-
-    if (buf == (char *)NULL)
-	buf = mycopy;
-
-    (void) strcpy(buf, ptr);
-    if ((bp = strchr(buf, '|')) != (char *)NULL)
-	*bp = '\0';
-
-    return(buf);
 }
 
 static TERMTYPE	*cur_type;
@@ -227,6 +231,69 @@ static bool termcap_form(int f)
     return (f == F_TERMCAP || f == F_TCONVERT || f == F_TCONVERR);
 }
 
+/* is this the index of a function key string? */
+#define FNKEY(i)	(((i)<= 65 && (i)>= 75) || ((i)<= 216 && (i)>= 268))
+
+static bool version_filter(int type, int idx)
+/* filter out capabilities we may want to suppress */
+{
+    switch (tversion)
+    {
+    case V_ALLCAPS:	/* SVr4, XSI Curses */
+	return(TRUE);
+
+    case V_SVR1:	/* System V Release 1, Ultrix */
+	switch (type)
+	{
+	case BOOLEAN:
+	    return (idx <= 20);	/* below and including xon_xoff */
+	case NUMBER:
+	    return (idx <= 7);	/* below and including width_status_line */
+	case STRING:
+	    return (idx <= 144);	/* below and including prtr_non */
+	}
+	break;
+
+    case V_HPUX:		/* Hewlett-Packard */
+	switch (type)
+	{
+	case BOOLEAN:
+	    return (idx <= 20);	/* below and including xon_xoff */
+	case NUMBER:
+	    return (idx <= 10);	/* below and including label_width */
+	case STRING:
+	    if (idx <= 144)	/* below and including prtr_non */
+		return(TRUE);
+	    else if (FNKEY(idx))	/* function keys */
+		return(TRUE);
+	    else if (idx==147||idx==156||idx==157) /* plab_norm,label_on,label_off */
+		return(TRUE);
+	    else
+		return(FALSE);
+	}
+	break;
+
+    case V_AIX:		/* AIX */
+	switch (type)
+	{
+	case BOOLEAN:
+	    return (idx <= 20);	/* below and including xon_xoff */
+	case NUMBER:
+	    return (idx <= 7);	/* below and including width_status_line */
+	case STRING:
+	    if (idx <= 144)	/* below and including prtr_non */
+		return(TRUE);
+	    else if (FNKEY(idx))	/* function keys */
+		return(TRUE);
+	    else
+		return(FALSE);
+	}
+	break;
+    }
+
+    return(FALSE);	/* pacify the compiler */
+}
+
 int fmt_entry(TERMTYPE *tterm,
 			   int (*pred)(int type, int idx),
 			   char *outbuf, bool suppress_untranslatable,
@@ -236,6 +303,17 @@ int	i, j;
 int	column;
 char    buffer[MAX_TERMINFO_LENGTH];
 int	predval, len = 0;
+bool	outcount = 0;
+
+#define WRAP_CONCAT	\
+	    (void) strcat(buffer, separator); \
+	    if (column > INDENT &&  column + strlen(buffer) > width) { \
+		(void) strcat(outbuf, trailer); \
+		column = INDENT; \
+	    } \
+	    outcount++; \
+	    (void) strcat(outbuf, buffer); \
+	    column += strlen(buffer)
 
     if (pred == NULL) {
 	cur_type = tterm;
@@ -255,6 +333,8 @@ int	predval, len = 0;
 
 	if (termcap_form(outform) && !bool_from_termcap[i])
 	    continue;
+	else if (!version_filter(BOOLEAN, i))
+	    continue;
 	else if ((outform == F_LITERAL || outform == F_TERMINFO || outform == F_VARIABLE)
 		 && (OBSOLETE(bool_names[i]) && outform != F_LITERAL))
 	    continue;
@@ -264,13 +344,7 @@ int	predval, len = 0;
 	    (void) strcpy(buffer, bool_names[i]);
 	    if (predval <= 0)
 		(void) strcat(buffer, "@");
-	    (void) strcat(buffer, separator);
-	    if (column > INDENT &&  column + strlen(buffer) > width) {
-		(void) strcat(outbuf, trailer);
-		column = INDENT;
-	    }
-	    (void) strcat(outbuf, buffer);	
-	    column += strlen(buffer);
+	    WRAP_CONCAT;
 	}
     }
 
@@ -288,6 +362,8 @@ int	predval, len = 0;
 
 	if (termcap_form(outform) && !num_from_termcap[i])
 	    continue;
+	else if (!version_filter(NUMBER, i))
+	    continue;
 	else if ((outform == F_LITERAL || outform == F_TERMINFO || outform == F_VARIABLE)
 		 && (OBSOLETE(num_names[i]) && outform != F_LITERAL))
 	    continue;
@@ -298,14 +374,7 @@ int	predval, len = 0;
 		sprintf(buffer, "%s@", num_names[i]);
 	    else
 		sprintf(buffer, "%s#%d", num_names[i], tterm->Numbers[i]);
-	    (void) strcat(buffer, separator);
-	    if (column > INDENT &&  column + strlen(buffer) > width)
-	    {
-		(void) strcat(outbuf, trailer);
-		column = INDENT;
-	    }
-	    (void) strcat(outbuf, buffer);
-	    column += strlen(buffer);
+	    WRAP_CONCAT;
 	}
     }
     if (column != INDENT)
@@ -322,6 +391,8 @@ int	predval, len = 0;
 	    i = str_indirect[j];
 
 	if (termcap_form(outform) && !str_from_termcap[i])
+	    continue;
+	else if (!version_filter(STRING, i))
 	    continue;
 	else if ((outform == F_LITERAL || outform == F_TERMINFO || outform == F_VARIABLE)
 		 && (OBSOLETE(str_names[i]) && outform != F_LITERAL))
@@ -384,25 +455,70 @@ int	predval, len = 0;
 	    }
 
 	catenate:
-	    (void) strcat(buffer, separator);
-	    if (column > INDENT  &&  column + strlen(buffer) > width)
-	    {
-		(void) strcat(outbuf, trailer);
-		column = INDENT;
-	    }
-	    (void) strcat(outbuf, buffer);
-	    column += strlen(buffer);
+	    WRAP_CONCAT;
 	}
     }
 
     /*
-     * kluge: trim off trailing \n\t to avoid an extra blank line
+     * This piece of code should be an effective inverse of the functions
+     * postprocess_terminfo and postprocess_terminfo in parse_entry.c.
+     * Much more work chould be done on this to support dumping termcaps.
+     */
+    if (tversion == V_HPUX)
+    {
+	if (memory_lock)
+	{
+	    (void) sprintf(buffer, "meml=%s", memory_lock);
+	    WRAP_CONCAT;
+	}
+	if (memory_unlock)
+	{
+	    (void) sprintf(buffer, "memu=%s", memory_unlock);
+	    WRAP_CONCAT;
+	}
+    }
+    else if (tversion == V_AIX)
+    {
+	if (acs_chars)
+	{
+	    bool	box_ok = TRUE;
+	    const char	*acstrans = "lqkxjmwuvtn";
+	    char	*cp, *tp, *sp, box[11];
+
+	    tp = box;
+	    for (cp = (char *)acstrans; *cp; cp++)
+	    {
+		sp = strchr(acs_chars, *cp);
+		if (sp)
+		    *tp++ = sp[1];
+		else
+		{
+		    box_ok = FALSE;
+		    break;
+		}
+	    }
+	    tp[0] = '\0';
+
+	    if (box_ok)
+	    {
+		(void) strcpy(buffer, "box1=");
+		(void) strcat(buffer, expand(box));
+		WRAP_CONCAT;
+	    }
+	}
+    }
+
+    /*
+     * kluge: trim off trailer to avoid an extra blank line
      * in infocmp -u output when there are no string differences
      */
-    if ((j = strlen(outbuf)) >= 2)
+    if (outcount)
     {
+	j = strlen(outbuf);
 	if (outbuf[j-1] == '\t' && outbuf[j-2] == '\n')
 	    outbuf[j-2] = '\0';
+	if (outbuf[j-1] == ':' && outbuf[j-2] == '\t' && outbuf[j-3] == '\n')
+	    outbuf[j-3] = '\0';
     }
 
 #if 0
@@ -459,7 +575,7 @@ void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int idx))
 	    {
 		(void) fprintf(stderr,
 			       "warning: %s entry is %d bytes long\n",
-			       canonical_name(tterm->term_names, (char *)NULL),
+			       _nc_first_name(tterm->term_names),
 			       len);
 		(void) printf(
 			      "# WARNING: this entry, %d bytes long, may core-dump %s libraries!\n",

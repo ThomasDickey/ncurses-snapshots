@@ -6,17 +6,17 @@
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 .br
-\fBint attroff(attr_t attrs);\fR
+\fBint attroff(int attrs);\fR
 .br
-\fBint wattroff(WINDOW *win, attr_t attrs);\fR
+\fBint wattroff(WINDOW *win, int attrs);\fR
 .br
-\fBint attron(attr_t attrs);\fR
+\fBint attron(int attrs);\fR
 .br
-\fBint wattron(WINDOW *win, attr_t attrs);\fR
+\fBint wattron(WINDOW *win, int attrs);\fR
 .br
-\fBint attrset(attr_t attrs);\fR
+\fBint attrset(int attrs);\fR
 .br
-\fBint wattrset(WINDOW *win, attr_t attrs);\fR
+\fBint wattrset(WINDOW *win, int attrs);\fR
 .br
 \fBint standend(void);\fR
 .br
@@ -34,7 +34,7 @@
 .br
 \fBint attr_set(attr_t attrs);\fR
 .br
-\fBint wattr_get(WINDOW *);\fR
+\fBattr_t wattr_get(WINDOW *);\fR
 .br
 \fBint wattr_off(WINDOW *, attr_t attrs);\fR
 .br
@@ -133,8 +133,8 @@ SVr4 curses, these functions correctly manipulate all other highlights
 (specifically, \fBA_ALTCHARSET\fR, \fBA_PROTECT\fR, and \fBA_INVIS\fR).
 
 XSI Curses added the new entry points, \fBattr_get\fR, \fBattr_on\fR,
-\fBattr_off\fR, \fBattr_get\fR, \fBwattr_on\fR, \fBwattr_off\fR,
-\fBwattr_get\fR, \fBwattr_get\fR.  These are intended to work with
+\fBattr_off\fR, \fBattr_set\fR, \fBwattr_on\fR, \fBwattr_off\fR,
+\fBwattr_get\fR, \fBwattr_set\fR.  These are intended to work with
 a new series of highlight macros prefixed with \fBWA_\fR.
 
 .nf

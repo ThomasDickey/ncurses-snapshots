@@ -42,14 +42,14 @@ Whenever one of these automatic translations is done, the program
 will issue an notification to stderr, inviting the user to check that
 it has not mistakenly translated a completely unknown and random
 capability and/or syntax error.
+.PP
 .TS H
-center;
 c c c c
 c c c c
 l l l l.
 Nonstd	Std	From	Terminfo
 name	name		capability
-.\".TH
+_
 BO	mr	AT&T	enter_reverse_mode
 CI	vi	AT&T	cursor_invisible
 CV	ve	AT&T	cursor_normal
@@ -70,14 +70,16 @@ PU	kP	XENIX	key_ppage
 RT	@8	XENIX	kent
 UP	ku	XENIX	kcuu1
 .TE
+.PP
 XENIX termcap also used to have a set of extension capabilities
 for forms drawing, designed to take advantage of the IBM PC
 high-half graphics.  They were as follows:
+.PP
 .TS H
-center;
-c c
 c c
 l l.
+Cap	Graphic
+_
 G2	upper left
 G3	lower left
 G1	upper right
@@ -102,14 +104,34 @@ Gv	vertical line
 Gc	intersection
 GG	acs magic cookie count
 .TE
+.PP
 If the single-line capabilities occur in an entry, they will automatically
 be composed into an \fBacsc\fR string.  The double-line capabilities and
 \fBGG\fR are discarded with a warning message.
 .PP
 IBM's AIX has a terminfo facility descended from SVr1 terminfo but incompatible
-with the SVr4 format.  Two of its extension capabilities \fBksel\fR and
-\fBkbtab\fR, will automatically be translated to their standard equivalents
-(\fBkslt\fR and \fBkcbt\fR).
+with the SVr4 format. The following AIX extensions are automatically
+translated:
+.PP
+.TS
+c c
+l l.
+IBM	XSI
+_
+ksel	kslt
+kbtab	kcbt
+font0	s0ds
+font1	s1ds
+font2	s2ds
+font3	s3ds
+.TE
+.PP
+Additionally, the AIX \fBbox1\fR capability will be automatically translated to
+an \fBacsc\fR string.
+.PP
+Hewlett-Packard's terminfo library supports two nonstandard terminfo 
+capabilities \fBmeml\ffR (memory lock) and \fBmemu\ffR (memory unlock).
+These will be discarded with a warning message.
 .SH NOTES
 This utility is actually a link to \fItic\fR(1M), running in \fI-I\fR mode.
 

@@ -26,17 +26,10 @@
  *
  */
 
-#include <config.h>
+#include "curses.priv.h"
 
-#include <stdio.h>
 #include <stdlib.h>
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#else
-# if HAVE_LIBC_H
-# include <libc.h> 
-# endif
-#endif
+
 #if HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
@@ -47,15 +40,11 @@
 #if !HAVE_EXTERN_ERRNO
 extern int errno;
 #endif
-#include <curses.h>
 
 #include "term.h"
 #include "tic.h"
 
 TERMINAL *cur_term;
-
-#define min(a, b)	((a) > (b)  ?  (b)  :  (a))
-#define max(a, b)	((a) < (b)  ?  (b)  :  (a))
 
 /*
  *	int
@@ -67,9 +56,10 @@ TERMINAL *cur_term;
  */
 
 #define IS_NEG1(p)	(((p)[0] == 0377) && ((p)[1] == 0377))
+#define IS_NEG2(p)	(((p)[0] == 0376) && ((p)[1] == 0377))
 #define LOW_MSB(p)	((p)[0] + 256*(p)[1])
 
-int _nc_read_file_entry(char *filename, TERMTYPE *ptr)
+int _nc_read_file_entry(const char *filename, TERMTYPE *ptr)
 /* return 1 if read, 0 if not found or garbled, -1 if database inaccessible */
 {
     int			name_size, bool_count, num_count, str_count, str_size;
@@ -145,6 +135,8 @@ int _nc_read_file_entry(char *filename, TERMTYPE *ptr)
     {
 	if (IS_NEG1(buf + 2*i))
 	    ptr->Numbers[i] = -1;
+	else if (IS_NEG2(buf + 2*i))
+	    ptr->Numbers[i] = -2;
 	else
 	    ptr->Numbers[i] = LOW_MSB(buf + 2*i);
     }
@@ -163,8 +155,12 @@ int _nc_read_file_entry(char *filename, TERMTYPE *ptr)
     }
     for (i = 0; i < numread/2; i++)
     {
-	ptr->Strings[i] =
-	    IS_NEG1(buf + 2*i) ? 0 : (LOW_MSB(buf+2*i) + ptr->str_table);
+	if (IS_NEG1(buf + 2*i))
+	    ptr->Strings[i] = (char *)0;
+	else if (IS_NEG2(buf + 2*i))
+	    ptr->Strings[i] = (char *)-1;
+	else
+	    ptr->Strings[i] = (LOW_MSB(buf+2*i) + ptr->str_table);
     }
     if (str_count > STRCOUNT)
 	lseek(fd, (off_t) (2 * (str_count - STRCOUNT)), 1);
@@ -182,30 +178,75 @@ int _nc_read_file_entry(char *filename, TERMTYPE *ptr)
 }
 
 /*
- *	_nc_read_entry(char *tn, TERMTYPE *tp)
+ *	_nc_read_entry(char *tn, char *filename, TERMTYPE *tp)
  *
  *	Find and read the compiled entry for a given terminal type,
- *	if it exists.
+ *	if it exists.  We take pains here to make sure no combination
+ *	of environment variables and terminal type name can be used to
+ *	overrun the file buffer.
  */
 
-int _nc_read_entry(const char *tn, TERMTYPE *tp)
+int _nc_read_entry(const char *tn, char *filename, TERMTYPE *tp)
 {
-char		filename[1024];
-char		*directory = TERMINFO;
-char		*terminfo;
-int		status;
+char		*envp;
+char		ttn[MAX_ALIAS + 1];
 
-	if ((terminfo = getenv("TERMINFO")) != NULL)
-	    	directory = terminfo;
+/* maximum safe length of terminfo root directory name */
+#define MAX_TPATH	(PATH_MAX - MAX_ALIAS - 6)
 
-	/* try a local directory */
-	(void) sprintf(filename, "%s/%c/%s", directory, tn[0], tn);
-	if ((status = _nc_read_file_entry(filename, tp)) == 1)
-		return(1);
+	/* truncate the terminal name to prevent dangerous buffer airline */
+	(void) strncpy(ttn, tn, MAX_ALIAS);
+	ttn[MAX_ALIAS] = '\0';
+
+	/* this is System V behavior */
+	if ((envp = getenv("TERMINFO")) != NULL)
+	{
+		char	terminfo[PATH_MAX];
+
+		(void) strncpy(terminfo, envp, MAX_TPATH);
+		terminfo[MAX_TPATH] = '\0';
+		(void) sprintf(filename, "%s/%c/%s", terminfo, ttn[0], ttn);
+		if (_nc_read_file_entry(filename, tp) == 1)
+			return(1);
+	}
+
+	/* this is an ncurses extension */
+	else if ((envp = getenv("HOME")) != NULL)
+	{
+		char	home[MAX_TPATH + 1];
+
+		(void) strncpy(home, envp, MAX_TPATH - strlen(PRIVATE_INFO));
+		home[MAX_TPATH - strlen(PRIVATE_INFO)] = '\0';
+		(void) sprintf(filename, PRIVATE_INFO, home);
+		(void) sprintf(filename + strlen(filename), "/%c/%s",ttn[0],ttn);
+		if (_nc_read_file_entry(filename, tp) == 1)
+			return(1);
+	}
 
 	/* try the system directory */
-	(void) sprintf(filename, "%s/%c/%s", TERMINFO, tn[0], tn);
+	(void) sprintf(filename, "%s/%c/%s", TERMINFO, ttn[0], ttn);
 	return(_nc_read_file_entry(filename, tp));
+}
+
+/*
+ *	_nc_first_name(char *names)
+ *
+ *	Extract the primary name from a compiled entry.
+ */
+
+char *_nc_first_name(const char *sp)
+/* get the first name from the given name list */
+{
+    static char	buf[MAX_NAME_SIZE];
+    register char *cp;
+
+    (void) strcpy(buf, sp);
+
+    cp = strchr(buf, '|');
+    if (cp)
+	*cp = '\0';
+
+    return(buf);
 }
 
 /*
@@ -217,7 +258,7 @@ int		status;
 int _nc_name_match(char *namelst, const char *name, const char *delim)
 /* microtune this, it occurs in several critical loops */
 {
-char namecopy[2048];
+char namecopy[MAX_ENTRY_SIZE];	/* this may get called on a TERMCAP value */
 register char *cp;
 
 	if (namelst == NULL)

@@ -24,15 +24,9 @@
  * clear.c --  clears the terminal's screen
  */
 
-#include <config.h>
+#include <progs.priv.h>
 
 #include <curses.h>
-#include <stdlib.h>
-
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
 #include <term.h>
 
 static int putch(int c)
