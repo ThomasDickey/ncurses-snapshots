@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.550 2000/04/16 02:12:32 tom Exp $
+-- $Id: NEWS,v 1.551 2000/04/22 23:37:39 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000422
+	+ add mgterm terminfo entry from NetBSD, minor adjustments to sun-ss5,
+	  aixterm entries -TD
+	+ modify tack/ansi.c to make it more tolerant of bad ANSI replies.  An
+	  example of an illegal ANSI resonse can be found using Microsoft's
+	  Telnet client.  A correct display can be found using a VT-4xx
+	  terminal or XFree86 xterm with:
+		XTerm*VT100*decTerminalID:  450
+	  (patch by Daniel Weaver).
+	+ modify gdc.c to recognize 'q' for quit, 's' for single-step and ' '
+	  for resume.  Add '-n' option to force gdc's standard input to
+	  /dev/null, to both illustrate the use of newterm() for specifying
+	  alternate inputs as well as for testing signal handling.
+	+ minor fix for configure option --with-manpage-symlinks, for target
+	  directories that contain a period ('.') (reported by Larry Virden).
 
 20000415
 	+ minor additions to beterm entry (feedback from Rico Tudor) -TD

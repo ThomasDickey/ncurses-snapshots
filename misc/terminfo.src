@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2000/04/16 02:04:25 $
+#	$Date: 2000/04/22 23:33:41 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -1354,6 +1354,30 @@ rcons-color|BSD rasterconsole with ANSI color,
 	colors#8, pairs#64, 
 	op=\E[m, setab=\E[4%dm, setaf=\E[3%dm, use=rcons, 
 
+# mgterm -- MGL/MGL2, MobileGear Graphic Library
+# for PocketBSD,PocketLinux,NetBSD/{hpcmips,mac68k}
+# -- the setf/setb are probably incorrect, more likely setaf/setab -TD
+# -- compare with cons25w
+mgterm, 
+	OTbs, OTpt, am, bce, bw, eo, km, msgr, npc, 
+	colors#8, cols#80, it#8, lines#18, pairs#64, 
+	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, clear=\E[H\E[J, 
+	cr=^M, csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
+	cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	dch=\E[%p1%dP, dch1=\E[P, dim=\E[30;1m, dl=\E[%p1%dM, 
+	dl1=\E[M, ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K, 
+	home=\E[H, hpa=\E[%i%p1%d`, ht=^I, ich=\E[%p1%d@, 
+	ich1=\E[@, il=\E[%p1%dL, il1=\E[L, ind=\E[S, 
+	indn=\E[%p1%dS, kb2=\E[E, kbs=^H, kcbt=\E[Z, kcub1=\E[D, 
+	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\177, kend=\E[F, 
+	kf1=\E[M, kf10=\E[V, kf11=\E[W, kf12=\E[X, kf2=\E[N, 
+	kf3=\E[O, kf4=\E[P, kf5=\E[Q, kf6=\E[R, kf7=\E[S, kf8=\E[T, 
+	kf9=\E[U, khome=\E[H, kich1=\E[L, knp=\E[G, kpp=\E[I, 
+	nel=\E[E, op=\E[x, rc=\E8, rev=\E[7m, ri=\E[T, rin=\E[%p1%dT, 
+	rmso=\E[m, rs2=\E[x\E[m\Ec, sc=\E7, setb=\E[4%p1%dm, 
+	setf=\E[3%p1%dm, sgr0=\E[m, smso=\E[7m, vpa=\E[%i%p1%dd, 
+
 #### FreeBSD console entries
 #
 # From: Andrey Chernov <ache@astral.msk.su> 29 Mar 1996
@@ -1393,7 +1417,7 @@ cons25w|ansiw|ansi80x25-raw|freebsd console (25-line raw mode),
 	kf11=\E[W, kf12=\E[X, kf2=\E[N, kf3=\E[O, kf4=\E[P, kf5=\E[Q, 
 	kf6=\E[R, kf7=\E[S, kf8=\E[T, kf9=\E[U, khome=\E[H, 
 	kich1=\E[L, knp=\E[G, kpp=\E[I, nel=\E[E, op=\E[x, rev=\E[7m, 
-	ri=\E[T, rin=\E[%p1%dT, rmso=\E[m, rs1=\E[x\E[m\Ec, 
+	ri=\E[T, rin=\E[%p1%dT, rmso=\E[m, rs2=\E[x\E[m\Ec, 
 	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, sgr0=\E[m, 
 	smso=\E[7m, vpa=\E[%i%p1%dd, 
 cons25|ansis|ansi80x25|freebsd console (25-line ansi mode), 
@@ -3161,9 +3185,10 @@ sun-il|Sun Microsystems console with working insert-line,
 	kund=\E[195z, rev=\E[7m, rmso=\E[m, rmul@, rs2=\E[s, 
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m, 
 	sgr0=\E[m, smso=\E[7m, smul@, u8=\E[1t, u9=\E[11t, 
-# On a SparcStation 5, <il1>/<il> flake out on the last line.
-# Unfortunately, without them the terminal has no way to scroll.
-sun-ss5|Sun SparcStation 5 console, 
+# On some versions of CGSIX framebuffer firmware (SparcStation 5), <il1>/<il>
+# flake out on the last line.  Unfortunately, without them the terminal has no
+# way to scroll.
+sun-cgsix|sun-ss5|Sun SparcStation 5 console, 
 	il@, il1@, use=sun-il, 
 # If you are using an SS5, change the sun definition to use sun-ss5.
 sun|sun1|sun2|Sun Microsystems Inc. workstation console, 
@@ -11525,10 +11550,11 @@ ibm8514-c|IBM 8514 color display with standout and underline,
 
 #
 # AIX entries.  IBM ships these with AIX 3.2.5. 
+# -- added rc, sc based on manpage -TD
 aixterm|IBM Aixterm Terminal Emulator, 
 	eslok, hs, 
 	acsc=jjkkllmmnnqqttuuvvwwxx, bold=\E[1m, dsl=\E[?E, 
-	fsl=\E[?F, ri@, s0ds=\E(B, s1ds=\E(0, 
+	fsl=\E[?F, rc=\E8, ri@, s0ds=\E(B, s1ds=\E(0, sc=\E7, 
 	sgr=\E[%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;m%?%p9%t\E(0%e\E(B%;, 
 	sgr0=\E[0;10m\E(B, tsl=\E[?%p1%dT, use=ibm6154, 
 aixterm-m|IBM AIXterm Monochrome Terminal Emulator, 
@@ -18262,6 +18288,12 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add cud, ech, etc., to beterm based on feedback from Rico Tudor -TD
 #	* correct color definition for ibm3164, make minor changes to other
 #	  IBM terminal definitions based on recent terminfo descriptions -TD
+#
+# 2000/4/22
+#	* add mgterm, from NetBSD -TD
+#	* add alias sun-cgsix for sun-ss5 as per NetBSD
+#	* change cons25w to use rs2 for reset rather than rs1 -TD
+#	* add rc/sc to aixterm based on manpage -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
