@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: ncurses.3x,v 1.57 2002/03/10 23:51:16 tom Exp @
+  * @Id: ncurses.3x,v 1.58 2002/03/17 14:58:29 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -299,6 +299,7 @@
               filter                  <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
               flash                   <STRONG><A HREF="curs_beep.3x.html">curs_beep(3x)</A></STRONG>
               flushinp                <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
+              get_wch                 <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
               getbegyx                <STRONG><A HREF="curs_getyx.3x.html">curs_getyx(3x)</A></STRONG>
               getbkgd                 <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>
               getbkgrnd               <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
@@ -313,8 +314,8 @@
               getwin                  <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
               getyx                   <STRONG><A HREF="curs_getyx.3x.html">curs_getyx(3x)</A></STRONG>
               halfdelay               <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
-              has_colors              <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
 
+              has_colors              <STRONG><A HREF="curs_color.3x.html">curs_color(3x)</A></STRONG>
               has_ic                  <STRONG><A HREF="curs_termattrs.3x.html">curs_termattrs(3x)</A></STRONG>
               has_il                  <STRONG><A HREF="curs_termattrs.3x.html">curs_termattrs(3x)</A></STRONG>
               has_key                 <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>*
@@ -367,14 +368,15 @@
               mvaddchnstr             <STRONG><A HREF="curs_addchstr.3x.html">curs_addchstr(3x)</A></STRONG>
               mvaddchstr              <STRONG><A HREF="curs_addchstr.3x.html">curs_addchstr(3x)</A></STRONG>
               mvaddnstr               <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
-              mvaddnwstr              <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
 
+              mvaddnwstr              <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
               mvaddstr                <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
               mvaddwstr               <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
               mvchgat                 <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
               mvcur                   <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
               mvdelch                 <STRONG><A HREF="curs_delch.3x.html">curs_delch(3x)</A></STRONG>
               mvderwin                <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
+              mvget_wch               <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
               mvgetch                 <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
               mvgetnstr               <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
               mvgetstr                <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
@@ -410,6 +412,7 @@
               mvwaddwstr              <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
               mvwchgat                <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
               mvwdelch                <STRONG><A HREF="curs_delch.3x.html">curs_delch(3x)</A></STRONG>
+              mvwget_wch              <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
               mvwgetch                <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
               mvwgetnstr              <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
               mvwgetstr               <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
@@ -419,10 +422,10 @@
               mvwin_wch               <STRONG><A HREF="curs_in_wch.3x.html">curs_in_wch(3x)</A></STRONG>
               mvwinch                 <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>
               mvwinchnstr             <STRONG><A HREF="curs_inchstr.3x.html">curs_inchstr(3x)</A></STRONG>
+
               mvwinchstr              <STRONG><A HREF="curs_inchstr.3x.html">curs_inchstr(3x)</A></STRONG>
               mvwinnstr               <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>
               mvwinnwstr              <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>
-
               mvwins_nwstr            <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>
               mvwins_wch              <STRONG><A HREF="curs_ins_wch.3x.html">curs_ins_wch(3x)</A></STRONG>
               mvwins_wstr             <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>
@@ -473,10 +476,10 @@
               scr_restore             <STRONG><A HREF="curs_scr_dump.3x.html">curs_scr_dump(3x)</A></STRONG>
               scr_set                 <STRONG><A HREF="curs_scr_dump.3x.html">curs_scr_dump(3x)</A></STRONG>
               scrl                    <STRONG><A HREF="curs_scroll.3x.html">curs_scroll(3x)</A></STRONG>
+
               scroll                  <STRONG><A HREF="curs_scroll.3x.html">curs_scroll(3x)</A></STRONG>
               scrollok                <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
               set_curterm             <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
-
               set_term                <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
               setcchar                <STRONG><A HREF="curs_getcchar.3x.html">curs_getcchar(3x)</A></STRONG>
               setscrreg               <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
@@ -524,13 +527,14 @@
               trace                   <STRONG><A HREF="curs_trace.3x.html">curs_trace(3x)</A></STRONG>*
               typeahead               <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
               unctrl                  <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
+              unget_wch               <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
               ungetch                 <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
               ungetmouse              <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>*
+
               untouchwin              <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>
               use_default_colors      <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>*
               use_env                 <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
               use_extended_names      <STRONG><A HREF="curs_extend.3x.html">curs_extend(3x)</A></STRONG>*
-
               vidattr                 <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
               vidputs                 <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
               vline                   <STRONG><A HREF="curs_border.3x.html">curs_border(3x)</A></STRONG>
@@ -574,17 +578,18 @@
               wechochar               <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
               wenclose                <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>*
               werase                  <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>
+              wget_wch                <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
               wgetbkgrnd              <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
               wgetch                  <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
               wgetnstr                <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
               wgetstr                 <STRONG><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></STRONG>
               whline                  <STRONG><A HREF="curs_border.3x.html">curs_border(3x)</A></STRONG>
+
               whline_set              <STRONG><A HREF="curs_border_set.3x.html">curs_border_set(3x)</A></STRONG>
               win_wch                 <STRONG><A HREF="curs_in_wch.3x.html">curs_in_wch(3x)</A></STRONG>
               winch                   <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>
               winchnstr               <STRONG><A HREF="curs_inchstr.3x.html">curs_inchstr(3x)</A></STRONG>
               winchstr                <STRONG><A HREF="curs_inchstr.3x.html">curs_inchstr(3x)</A></STRONG>
-
               winnstr                 <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>
               winnwstr                <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>
               wins_nwstr              <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>
@@ -800,7 +805,6 @@
                is searched first.
 
             -  the directory specified by the TERMINFO symbol
-
             -  $HOME/.terminfo
 
             -  directories listed in the TERMINFO_DIRS symbol
@@ -865,6 +869,7 @@
        See  the  <STRONG><A HREF="resizeterm.3x.html">resizeterm(3x)</A></STRONG>  and <STRONG><A HREF="wresize.3x.html">wresize(3x)</A></STRONG> manual pages for
        details.  In addition, the library may be configured  with
        a SIGWINCH handler.
+
        The  <STRONG>ncurses</STRONG> library extends the fixed set of function key
        capabilities of  terminals  by  allowing  the  application
        designer  to  define  additional key sequences at runtime.
@@ -893,12 +898,12 @@
        of  the EXTENDED XSI Curses functionality (including color
        support) are supported.  The following EXTENDED XSI Curses
        calls  in  support  of wide (multibyte) characters are not
-       yet implemented: <STRONG>erasewchar</STRONG>, <STRONG>get_wch</STRONG>, <STRONG>get_wstr</STRONG>, <STRONG>getn_wstr</STRONG>,
-       <STRONG>in_wchnstr</STRONG>,  <STRONG>in_wchstr</STRONG>,  <STRONG>killwchar</STRONG>, <STRONG>mvget_wch</STRONG>, <STRONG>mvget_wstr</STRONG>,
-       <STRONG>mvgetn_wstr</STRONG>,   <STRONG>mvin_wchnstr</STRONG>,   <STRONG>mvin_wchstr</STRONG>,    <STRONG>mvwget_wch</STRONG>,
-       <STRONG>mvwget_wstr</STRONG>,  <STRONG>mvwgetn_wstr</STRONG>,  <STRONG>mvwin_wchnstr</STRONG>,  <STRONG>mvwin_wchstr</STRONG>,
-       <STRONG>pecho_wchar</STRONG>, <STRONG>slk_wset</STRONG>,  <STRONG>term_attrs</STRONG>,  <STRONG>unget_wch</STRONG>,  <STRONG>vid_puts</STRONG>,
-       <STRONG>wget_wch</STRONG>, <STRONG>wget_wstr</STRONG>, <STRONG>wgetn_wstr</STRONG>, <STRONG>win_wchnstr</STRONG>, <STRONG>win_wchstr</STRONG>,
+       yet   implemented:   <STRONG>erasewchar</STRONG>,   <STRONG>get_wstr</STRONG>,    <STRONG>getn_wstr</STRONG>,
+       <STRONG>in_wchnstr</STRONG>, <STRONG>in_wchstr</STRONG>, <STRONG>killwchar</STRONG>, <STRONG>mvget_wstr</STRONG>, <STRONG>mvgetn_wstr</STRONG>,
+       <STRONG>mvin_wchnstr</STRONG>,  <STRONG>mvin_wchstr</STRONG>,   <STRONG>mvwget_wstr</STRONG>,   <STRONG>mvwgetn_wstr</STRONG>,
+       <STRONG>mvwin_wchnstr</STRONG>,    <STRONG>mvwin_wchstr</STRONG>,   <STRONG>pecho_wchar</STRONG>,   <STRONG>slk_wset</STRONG>,
+       <STRONG>term_attrs</STRONG>, <STRONG>vid_puts</STRONG>, <STRONG>wget_wstr</STRONG>, <STRONG>wgetn_wstr</STRONG>,  <STRONG>win_wchnstr</STRONG>,
+       <STRONG>win_wchstr</STRONG>,
 
        A  small  number of local differences (that is, individual
        differences between the XSI Curses and <STRONG>ncurses</STRONG> calls)  are
@@ -916,7 +921,6 @@
        <STRONG>mouseinterval</STRONG>,  and <STRONG>wenclose</STRONG> relating to mouse interfacing
        are not part of XPG4, nor are they present in  SVr4.   See
        the <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG> manual page for details.
-
        The routine <STRONG>mcprint</STRONG> was not present in any previous curses
        implementation.  See the <STRONG><A HREF="curs_print.3x.html">curs_print(3x)</A></STRONG>  manual  page  for
        details.
@@ -962,10 +966,6 @@
 <H2>AUTHORS</H2><PRE>
        Zeyd M. Ben-Halim, Eric  S.  Raymond,  Thomas  E.  Dickey.
        Based on pcurses by Pavel Curtis.
-
-
-
-
 
 
 

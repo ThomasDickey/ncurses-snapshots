@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 2002 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,65 +27,50 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
- *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *  Author: Thomas E. Dickey 2002                                           *
  ****************************************************************************/
+
+/*
+**	lib_unget_wch.c
+**
+**	The routine unget_wch().
+**
+*/
 
 #include <curses.priv.h>
 
-#include <term.h>
-
-MODULE_ID("$Id: lib_print.c,v 1.14 2002/03/16 21:45:08 tom Exp $")
+MODULE_ID("$Id: lib_unget_wch.c,v 1.2 2002/03/17 00:01:38 tom Exp $")
 
 NCURSES_EXPORT(int)
-mcprint(char *data, int len)
-/* ship binary character data to the printer via mc4/mc5/mc5p */
+unget_wch(const wchar_t wch)
 {
-    char *mybuf, *switchon;
-    size_t onsize, offsize, res;
+    int result = OK;
+    mbstate_t state;
+    size_t length;
+    int n;
 
-    errno = 0;
-    if (!cur_term || (!prtr_non && (!prtr_on || !prtr_off))) {
-	errno = ENODEV;
-	return (ERR);
-    }
+    T((T_CALLED("unget_wch(%d)"), wch));
 
-    if (prtr_non) {
-	switchon = tparm(prtr_non, len);
-	onsize = strlen(switchon);
-	offsize = 0;
+    memset(&state, 0, sizeof(state));
+    length = wcrtomb(0, wch, &state);
+
+    if (length != (size_t) (-1)
+	&& length != 0) {
+	char *string = malloc(length);
+
+	memset(&state, 0, sizeof(state));
+	wcrtomb(string, wch, &state);
+
+	for (n = (int) (length - 1); n >= 0; --n) {
+	    if (ungetch(string[n]) != OK) {
+		result = ERR;
+		break;
+	    }
+	}
+	free(string);
     } else {
-	switchon = prtr_on;
-	onsize = strlen(prtr_on);
-	offsize = strlen(prtr_off);
+	result = ERR;
     }
 
-    if ((mybuf = typeMalloc(char, onsize + len + offsize + 1)) == (char *) 0) {
-	errno = ENOMEM;
-	return (ERR);
-    }
-
-    (void) strcpy(mybuf, switchon);
-    memcpy(mybuf + onsize, data, (unsigned) len);
-    if (offsize)
-	(void) strcpy(mybuf + onsize + len, prtr_off);
-
-    /*
-     * We're relying on the atomicity of UNIX writes here.  The
-     * danger is that output from a refresh() might get interspersed
-     * with the printer data after the write call returns but before the
-     * data has actually been shipped to the terminal.  If the write(2)
-     * operation is truly atomic we're protected from this.
-     */
-    res = write(cur_term->Filedes, mybuf, onsize + len + offsize);
-
-    /*
-     * By giving up our scheduler slot here we increase the odds that the
-     * kernel will ship the contiguous clist items from the last write
-     * immediately.
-     */
-    (void) sleep(0);
-
-    free(mybuf);
-    return (res);
+    returnCode(result);
 }

@@ -38,8 +38,9 @@ DESCRIPTION
 
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
+           Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.157 2002/02/17 00:21:42 tom Exp $
+$Id: ncurses.c,v 1.164 2002/03/17 16:49:15 tom Exp $
 
 ***************************************************************************/
 
@@ -166,6 +167,33 @@ wGetchar(WINDOW *win)
 }
 #define Getchar() wGetchar(stdscr)
 
+#if defined(_XOPEN_SOURCE_EXTENDED) && defined(WACS_ULCORNER)
+static int
+wGet_wchar(WINDOW *win, wint_t * result)
+{
+    int c;
+#ifdef TRACE
+    while ((c = wget_wch(win, result)) == CTRL('T')) {
+	if (_nc_tracing) {
+	    save_trace = _nc_tracing;
+	    _tracef("TOGGLE-TRACING OFF");
+	    _nc_tracing = 0;
+	} else {
+	    _nc_tracing = save_trace;
+	}
+	trace(_nc_tracing);
+	if (_nc_tracing)
+	    _tracef("TOGGLE-TRACING ON");
+    }
+#else
+    c = wget_wch(win, result);
+#endif
+    return c;
+}
+#define Get_wchar(result) wGet_wchar(stdscr, result)
+
+#endif
+
 static void
 Pause(void)
 {
@@ -249,35 +277,66 @@ mouse_decode(MEVENT const *ep)
  ****************************************************************************/
 
 static void
-wgetch_help(WINDOW *win, bool is_keypad)
+setup_getch(WINDOW *win, bool flags[])
+{
+    keypad(win, flags['k']);	/* should be redundant, but for testing */
+    meta(win, flags['m']);	/* force this to a known state */
+    if (flags['e'])
+	echo();
+    else
+	noecho();
+}
+
+static void
+wgetch_help(WINDOW *win, bool flags[])
 {
     static const char *help[] =
     {
-	"g -- triggers a getstr test"
+	"e -- toggle echo mode"
+	,"g -- triggers a getstr test"
 	,"k -- toggle keypad/literal mode"
-	,"s -- shell out\n"
+	,"m -- toggle meta (7-bit/8-bit) mode"
 	,"q -- quit (x also exits)"
+	,"s -- shell out\n"
 	,"w -- create a new window"
 #ifdef SIGTSTP
 	,"z -- suspend this process"
 #endif
     };
     int y, x;
+    unsigned chk = ((SIZEOF(help) + 1) / 2);
     unsigned n;
 
     getyx(win, y, x);
     move(0, 0);
     printw("Type any key to see its %s value.  Also:\n",
-	   is_keypad ? "keypad" : "literal");
+	   flags['k'] ? "keypad" : "literal");
     for (n = 0; n < SIZEOF(help); ++n) {
-	mvprintw(
-		    1 + n % (SIZEOF(help) / 2),
-		    (n >= SIZEOF(help) / 2) ? COLS / 2 : 0,
-		    "%s", help[n]);
-	clrtoeol();
+	int row = 1 + (n % chk);
+	int col = (n >= chk) ? COLS / 2 : 0;
+	int flg = (strstr(help[n], "toggle") != 0) && flags[UChar(*help[n])];
+	if (flg)
+	    standout();
+	mvprintw(row, col, "%s", help[n]);
+	if (col == 0)
+	    clrtoeol();
+	if (flg)
+	    standend();
     }
     wrefresh(stdscr);
     wmove(win, y, x);
+}
+
+static void
+wgetch_wrap(WINDOW *win, int first_y)
+{
+    int last_y = getmaxy(win) - 1;
+    int y = getcury(win) + 1;
+
+    if (y >= last_y)
+	y = first_y;
+    wmove(win, y, 0);
+    wclrtoeol(win);
 }
 
 static void
@@ -288,15 +347,18 @@ wgetch_test(WINDOW *win, int delay)
     int last_y = getmaxy(win) - 1;
     int c;
     int incount = 0;
+    bool flags[256];
     bool blocking = (delay < 0);
-    bool is_keypad = (win == stdscr);
     int y, x;
 
-    keypad(win, is_keypad);	/* should be redundant, but for testing */
+    memset(flags, FALSE, sizeof(flags));
+    flags['k'] = (win == stdscr);
+
+    setup_getch(win, flags);
     wtimeout(win, delay);
     getyx(win, first_y, first_x);
 
-    wgetch_help(win, is_keypad);
+    wgetch_help(win, flags);
     wsetscrreg(win, first_y, last_y);
     scrollok(win, TRUE);
 
@@ -304,24 +366,38 @@ wgetch_test(WINDOW *win, int delay)
 	while ((c = wGetchar(win)) == ERR) {
 	    incount++;
 	    if (blocking) {
-		(void) wprintw(win, "%05d: input error\n", incount);
+		(void) wprintw(win, "%05d: input error", incount);
 		break;
 	    } else {
-		(void) wprintw(win, "%05d: input timed out\n", incount);
+		(void) wprintw(win, "%05d: input timed out", incount);
 	    }
+	    wgetch_wrap(win, first_y);
 	}
-	if (c == 'x' || c == 'q' || (c == ERR && blocking)) {
+	if (c == ERR && blocking) {
+	    wprintw(win, "ERR");
+	    wgetch_wrap(win, first_y);
+	} else if (c == 'x' || c == 'q') {
 	    break;
+	} else if (c == 'e') {
+	    flags['e'] = !flags['e'];
+	    setup_getch(win, flags);
+	    wgetch_help(win, flags);
 	} else if (c == 'g') {
 	    waddstr(win, "getstr test: ");
 	    echo();
 	    wgetnstr(win, buf, sizeof(buf) - 1);
 	    noecho();
-	    wprintw(win, "I saw %d characters:\n\t`%s'.\n", strlen(buf), buf);
+	    wprintw(win, "I saw %d characters:\n\t`%s'.", strlen(buf), buf);
+	    wclrtoeol(win);
+	    wgetch_wrap(win, first_y);
 	} else if (c == 'k') {
-	    is_keypad = !is_keypad;
-	    keypad(win, is_keypad);
-	    wgetch_help(win, is_keypad);
+	    flags['k'] = !flags['k'];
+	    setup_getch(win, flags);
+	    wgetch_help(win, flags);
+	} else if (c == 'm') {
+	    flags['m'] = !flags['m'];
+	    setup_getch(win, flags);
+	    wgetch_help(win, flags);
 	} else if (c == 's') {
 	    ShellOut(TRUE);
 	} else if (c == 'w') {
@@ -343,7 +419,7 @@ wgetch_test(WINDOW *win, int delay)
 		delwin(wi);
 		delwin(wb);
 
-		wgetch_help(win, is_keypad);
+		wgetch_help(win, flags);
 		wmove(win, old_y, old_x);
 		touchwin(win);
 		wrefresh(win);
@@ -359,7 +435,7 @@ wgetch_test(WINDOW *win, int delay)
 		MEVENT event;
 
 		getmouse(&event);
-		wprintw(win, "KEY_MOUSE, %s\n", mouse_decode(&event));
+		wprintw(win, "KEY_MOUSE, %s", mouse_decode(&event));
 		getyx(win, y, x);
 		move(event.y, event.x);
 		addch('*');
@@ -368,33 +444,29 @@ wgetch_test(WINDOW *win, int delay)
 #endif /* NCURSES_MOUSE_VERSION */
 	    if (c >= KEY_MIN) {
 		(void) waddstr(win, keyname(c));
-		waddch(win, '\n');
 	    } else if (c > 0x80) {
 		int c2 = (c & 0x7f);
 		if (isprint(c2))
 		    (void) wprintw(win, "M-%c", c2);
 		else
 		    (void) wprintw(win, "M-%s", unctrl(c2));
-		waddstr(win, " (high-half character)\n");
+		waddstr(win, " (high-half character)");
 	    } else {
 		if (isprint(c))
-		    (void) wprintw(win, "%c (ASCII printable character)\n", c);
+		    (void) wprintw(win, "%c (ASCII printable character)", c);
 		else
-		    (void) wprintw(win, "%s (ASCII control character)\n",
+		    (void) wprintw(win, "%s (ASCII control character)",
 				   unctrl(c));
 	    }
-	    y = getcury(win);
-	    if (y >= last_y)
-		wmove(win, first_y, 0);
-	    wclrtoeol(win);
+	    wgetch_wrap(win, first_y);
 	}
     }
 
     wtimeout(win, -1);
 }
 
-static void
-getch_test(void)
+static int
+begin_getch_test(void)
 {
     char buf[BUFSIZ];
     int delay;
@@ -418,8 +490,12 @@ getch_test(void)
     }
     raw();
     move(5, 0);
-    wgetch_test(stdscr, delay);
+    return delay;
+}
 
+static void
+finish_getch_test(void)
+{
 #ifdef NCURSES_MOUSE_VERSION
     mousemask(0, (mmask_t *) 0);
 #endif
@@ -428,6 +504,151 @@ getch_test(void)
     nl();
     endwin();
 }
+
+static void
+getch_test(void)
+{
+    int delay = begin_getch_test();
+    wgetch_test(stdscr, delay);
+    finish_getch_test();
+}
+
+#if defined(_XOPEN_SOURCE_EXTENDED) && defined(WACS_ULCORNER)
+static void
+wget_wch_test(WINDOW *win, int delay)
+{
+    char buf[BUFSIZ];
+    int first_y, first_x;
+    int last_y = getmaxy(win) - 1;
+    wint_t c;
+    int incount = 0;
+    bool flags[256];
+    bool blocking = (delay < 0);
+    int y, x, code;
+
+    memset(flags, FALSE, sizeof(flags));
+    flags['k'] = (win == stdscr);
+
+    setup_getch(win, flags);
+    wtimeout(win, delay);
+    getyx(win, first_y, first_x);
+
+    wgetch_help(win, flags);
+    wsetscrreg(win, first_y, last_y);
+    scrollok(win, TRUE);
+
+    for (;;) {
+	while ((code = wGet_wchar(win, &c)) == ERR) {
+	    incount++;
+	    if (blocking) {
+		(void) wprintw(win, "%05d: input error", incount);
+		break;
+	    } else {
+		(void) wprintw(win, "%05d: input timed out", incount);
+	    }
+	    wgetch_wrap(win, first_y);
+	}
+	if (code == ERR && blocking) {
+	    wprintw(win, "ERR");
+	    wgetch_wrap(win, first_y);
+	} else if (c == 'x' || c == 'q') {
+	    break;
+	} else if (c == 'e') {
+	    flags['e'] = !flags['e'];
+	    setup_getch(win, flags);
+	    wgetch_help(win, flags);
+	} else if (c == 'g') {
+	    waddstr(win, "getstr test: ");
+	    echo();
+	    wgetnstr(win, buf, sizeof(buf) - 1);
+	    noecho();
+	    wprintw(win, "I saw %d characters:\n\t`%s'.", strlen(buf), buf);
+	    wclrtoeol(win);
+	    wgetch_wrap(win, first_y);
+	} else if (c == 'k') {
+	    flags['k'] = !flags['k'];
+	    setup_getch(win, flags);
+	    wgetch_help(win, flags);
+	} else if (c == 'm') {
+	    flags['m'] = !flags['m'];
+	    setup_getch(win, flags);
+	    wgetch_help(win, flags);
+	} else if (c == 's') {
+	    ShellOut(TRUE);
+	} else if (c == 'w') {
+	    int high = last_y - first_y + 1;
+	    int wide = getmaxx(win) - first_x;
+	    int old_y, old_x;
+	    int new_y = first_y + getbegy(win);
+	    int new_x = first_x + getbegx(win);
+
+	    getyx(win, old_y, old_x);
+	    if (high > 2 && wide > 2) {
+		WINDOW *wb = newwin(high, wide, new_y, new_x);
+		WINDOW *wi = newwin(high - 2, wide - 2, new_y + 1, new_x + 1);
+
+		box_set(wb, 0, 0);
+		wrefresh(wb);
+		wmove(wi, 0, 0);
+		wget_wch_test(wi, delay);
+		delwin(wi);
+		delwin(wb);
+
+		wgetch_help(win, flags);
+		wmove(win, old_y, old_x);
+		touchwin(win);
+		wrefresh(win);
+	    }
+#ifdef SIGTSTP
+	} else if (c == 'z') {
+	    kill(getpid(), SIGTSTP);
+#endif
+	} else {
+	    wprintw(win, "Key pressed: %04o ", c);
+#ifdef NCURSES_MOUSE_VERSION
+	    if (c == KEY_MOUSE) {
+		MEVENT event;
+
+		getmouse(&event);
+		wprintw(win, "KEY_MOUSE, %s", mouse_decode(&event));
+		getyx(win, y, x);
+		move(event.y, event.x);
+		addch('*');
+		wmove(win, y, x);
+	    } else
+#endif /* NCURSES_MOUSE_VERSION */
+	    if (code == KEY_CODE_YES) {
+		(void) waddstr(win, key_name(c));
+	    } else {
+		if (c < 256 && iscntrl(c)) {
+		    (void) wprintw(win, "%s (control character)", unctrl(c));
+		} else {
+		    wchar_t c2 = c;
+		    waddnwstr(win, &c2, 1);
+		    (void) wprintw(win, " = %#x (printable character)", c);
+		}
+	    }
+	    wgetch_wrap(win, first_y);
+	}
+    }
+
+    wtimeout(win, -1);
+}
+
+static void
+get_wch_test(void)
+{
+    int delay = begin_getch_test();
+    wget_wch_test(stdscr, delay);
+    finish_getch_test();
+}
+#endif
+
+/****************************************************************************
+ *
+ * Character attributes test
+ *
+ ****************************************************************************/
 
 static int
 show_attr(int row, int skip, chtype attr, const char *name)
@@ -3578,6 +3799,12 @@ do_single_test(const char c)
 	getch_test();
 	break;
 
+#if defined(_XOPEN_SOURCE_EXTENDED) && defined(WACS_ULCORNER)
+    case 'A':
+	get_wch_test();
+	break;
+#endif
+
     case 'b':
 	attr_test();
 	break;
@@ -3867,6 +4094,9 @@ main(int argc, char *argv[])
     do {
 	(void) puts("This is the ncurses main menu");
 	(void) puts("a = keyboard and mouse input test");
+#if defined(_XOPEN_SOURCE_EXTENDED) && defined(WACS_ULCORNER)
+	(void) puts("A = wide-character keyboard and mouse input test");
+#endif
 	(void) puts("b = character attribute test");
 	(void) puts("c = color test pattern");
 	(void) puts("d = edit RGB color values");

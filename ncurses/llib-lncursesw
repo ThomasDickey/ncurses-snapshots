@@ -94,12 +94,6 @@ int	wechochar(
 		const chtype ch)
 		{ return(*(int *)0); }
 
-#undef wins_wch
-int	wins_wch(
-		WINDOW	*win, 
-		const cchar_t *wch)
-		{ return(*(int *)0); }
-
 #undef wadd_wch
 int	wadd_wch(
 		WINDOW	*win, 
@@ -1142,6 +1136,11 @@ int	echo_wchar(
 		const cchar_t *z)
 		{ return(*(int *)0); }
 
+#undef get_wch
+int	get_wch(
+		wint_t *z)
+		{ return(*(int *)0); }
+
 #undef getbkgrnd
 int	getbkgrnd(
 		cchar_t	*z)
@@ -1220,6 +1219,13 @@ int	mvaddwstr(
 		int	a1, 
 		int	a2, 
 		const wchar_t *z)
+		{ return(*(int *)0); }
+
+#undef mvget_wch
+int	mvget_wch(
+		int	a1, 
+		int	a2, 
+		wint_t *z)
 		{ return(*(int *)0); }
 
 #undef mvhline_set
@@ -1324,6 +1330,14 @@ int	mvwaddwstr(
 		const wchar_t *z)
 		{ return(*(int *)0); }
 
+#undef mvwget_wch
+int	mvwget_wch(
+		WINDOW	*a1, 
+		int	a2, 
+		int	a3, 
+		wint_t *z)
+		{ return(*(int *)0); }
+
 #undef mvwhline_set
 int	mvwhline_set(
 		WINDOW	*a1, 
@@ -1392,6 +1406,11 @@ int	mvwvline_set(
 		int	z)
 		{ return(*(int *)0); }
 
+#undef unget_wch
+int	unget_wch(
+		const wchar_t z)
+		{ return(*(int *)0); }
+
 #undef vline_set
 int	vline_set(
 		const cchar_t *a1, 
@@ -1429,6 +1448,13 @@ NCURSES_BOOL mouse_trafo(
 
 #undef ESCDELAY
 int	ESCDELAY;
+
+#undef _nc_wgetch
+int	_nc_wgetch(
+		WINDOW	*win, 
+		unsigned long *result, 
+		int	use_meta)
+		{ return(*(int *)0); }
 
 #undef wgetch
 int	wgetch(
@@ -2385,6 +2411,14 @@ int	getcchar(
 		void	*opts)
 		{ return(*(int *)0); }
 
+/* ./widechar/lib_get_wch.c */
+
+#undef wget_wch
+int	wget_wch(
+		WINDOW	*win, 
+		wint_t *result)
+		{ return(*(int *)0); }
+
 /* ./widechar/lib_hline_set.c */
 
 #undef whline_set
@@ -2411,6 +2445,14 @@ int	wins_nwstr(
 		int	n)
 		{ return(*(int *)0); }
 
+/* ./widechar/lib_ins_wch.c */
+
+#undef wins_wch
+int	wins_wch(
+		WINDOW	*win, 
+		const cchar_t *wch)
+		{ return(*(int *)0); }
+
 /* ./widechar/lib_inwstr.c */
 
 #undef winnwstr
@@ -2424,6 +2466,13 @@ int	winnwstr(
 int	winwstr(
 		WINDOW	*win, 
 		wchar_t *wstr)
+		{ return(*(int *)0); }
+
+/* ./widechar/lib_unget_wch.c */
+
+#undef unget_wch
+int	unget_wch(
+		const wchar_t wch)
 		{ return(*(int *)0); }
 
 /* ./widechar/lib_vline_set.c */
