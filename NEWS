@@ -1,6 +1,9 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970515	4.1 release for upload to prep.ai.mit.edu
+	+ re-tag changes since 970505 as 4.1 release.
+
 970510
 	+ modify ncurses 'g' test to allow mouse input
 	+ modify default xterm description to include mouse.
@@ -27,7 +30,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	+ modify configure script to cache LD, AR, AR_OPTS (patch by H.J.Lu
 	  <hjl@lucon.org>)
 
-970505	4.1 release
+970505	4.1 pre-release
 	+ regenerate the misc directory html dumps without the link list, which
 	  is not useful.
 	+ correct dependency in form directory makefile which caused unnecessary
