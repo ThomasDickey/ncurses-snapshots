@@ -1,5 +1,7 @@
 LIBRARY menu4 INITINSTANCE TERMINSTANCE
-DESCRIPTION "NCurses-4-2-981121, module menu"
+DESCRIPTION "NCurses-4-2-981212, module menu"
+CODE LOADONCALL
+DATA LOADONCALL NONSHARED MULTIPLE
 EXPORTS
 	"_nc_Calculate_Item_Length_and_Width"	@11	NONAME
 	"_nc_Connect_Items"	@38	NONAME
@@ -15,6 +17,7 @@ EXPORTS
 	"_nc_ada_normalize_item_opts"	@72	NONAME
 	"_nc_ada_normalize_menu_opts"	@73	NONAME
 	"_nc_get_item"	@74	NONAME
+	"_nc_menu_cursor_pos"	@75	NONAME
 	"current_item"	@2	NONAME
 	"free_item"	@23	NONAME
 	"free_menu"	@24	NONAME
@@ -43,9 +46,9 @@ EXPORTS
 	"menu_opts_on"	@31	NONAME
 	"menu_pad"	@32	NONAME
 	"menu_pattern"	@17	NONAME
-	"menu_request_by_name"	@75	NONAME
-	"menu_request_name"	@76	NONAME
-	"menu_spacing"	@77	NONAME
+	"menu_request_by_name"	@76	NONAME
+	"menu_request_name"	@77	NONAME
+	"menu_spacing"	@78	NONAME
 	"menu_sub"	@12	NONAME
 	"menu_term"	@10	NONAME
 	"menu_userptr"	@19	NONAME
@@ -71,7 +74,7 @@ EXPORTS
 	"set_menu_opts"	@50	NONAME
 	"set_menu_pad"	@51	NONAME
 	"set_menu_pattern"	@52	NONAME
-	"set_menu_spacing"	@78	NONAME
+	"set_menu_spacing"	@79	NONAME
 	"set_menu_sub"	@53	NONAME
 	"set_menu_term"	@54	NONAME
 	"set_menu_userptr"	@55	NONAME

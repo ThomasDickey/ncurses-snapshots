@@ -31,10 +31,10 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: termcap.h.in,v 1.7 1998/09/05 22:20:45 tom Exp $ */
+/* $Id: termcap.h.in,v 1.8 1998/12/13 03:07:08 tom Exp $ */
 
-#ifndef _TERMCAP_H
-#define _TERMCAP_H	1
+#ifndef _NCU_TERMCAP_H
+#define _NCU_TERMCAP_H	1
 
 #undef  NCURSES_VERSION
 #define NCURSES_VERSION "@NCURSES_MAJOR@.@NCURSES_MINOR@"
@@ -52,7 +52,7 @@ extern char *UP;
 extern char *BC;
 extern @OSPEED_TYPE@ ospeed; 
 
-#if !defined(__NCURSES_H) && !defined(_TERM_H)
+#if !defined(_NCU_TERM_H)
 extern char *tgetstr(const char *, char **);
 extern char *tgoto(const char *, int, int);
 extern int tgetent(char *, const char *);
@@ -65,4 +65,4 @@ extern int tputs(const char *, int, int (*)(int));
 }
 #endif
 
-#endif /* _TERMCAP_H */
+#endif /* _NCU_TERMCAP_H */
