@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.482 1999/09/12 01:59:55 tom Exp $
+-- $Id: NEWS,v 1.485 1999/09/19 00:10:02 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990918	pre-release
+	+ add acsc string to HP 70092 terminfo entry (patch by Joerg Wunsch
+	  <j@interface-business.de>).
+	+ add top-level uninstall.data and uninstall.man makefile rules.
+	+ correct logic of CF_LINK_FUNCS configure script, from BeOS changes so
+	  that hard-links work on Unix again.
+	+ change default value of cf_cv_builtin_bool to 1 as suggested by
+	  Jeremy Buhler, making it less likely that a conflicting declaration
+	  of bool will be seen when compiling with C++.
 
 990911	pre-release
 	+ improved configure checks for builtin.h

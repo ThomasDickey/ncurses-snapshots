@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.8 1999/09/01 22:37:22 tom Exp $
+# $Id: Makefile.in,v 1.9 1999/09/18 23:33:48 tom Exp $
 # Makefile for tack
 #
 # The variable 'srcdir' refers to the source-distribution, and can be set with
@@ -73,6 +73,8 @@ DEPS_CURSES = ../lib/libncurses@DFT_DEP_SUFFIX@
 
 ################################################################################
 all:	$(PROGS)
+
+sources:
 
 install: install.tack
 uninstall: uninstall.tack

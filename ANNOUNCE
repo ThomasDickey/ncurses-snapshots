@@ -63,8 +63,8 @@
             %x, %o as per XSI.
      * We made additional changes to reduce impact by future interface
        changes:
-          + change key_names[] array to static since it is not part of
-            the curses interface.
+          + rename key_names[] array to _nc_key_names since it is not
+            part of the curses interface.
           + move macro winch to a function, to hide details of struct
             ldat
      * modify configure script to embed ABI in shared libraries for HP-UX
