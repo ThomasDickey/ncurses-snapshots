@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.195 2001/06/10 00:07:24 skimo Exp $
+ * $Id: curses.priv.h,v 1.196 2001/06/18 18:15:31 skimo Exp $
  *
  *	curses.priv.h
  *
@@ -526,7 +526,7 @@ typedef	struct {
 #define CARG_CH_T	const NCURSES_CH_T *
 #define PUTC_DATA	char PUTC_buf[MB_LEN_MAX]; int PUTC_i, PUTC_n; \
 			mbstate_t PUT_st; wchar_t PUTC_ch
-#define PUTC(ch,b)	do { if(!isnac(ch))					    \
+#define PUTC(ch,b)	do { if(!isnac(ch)) { 					    \
 			    memset (&PUT_st, '\0', sizeof (PUT_st));		    \
 			    PUTC_i = 0;						    \
 			    do {						    \
@@ -541,7 +541,7 @@ typedef	struct {
 				fwrite(PUTC_buf, PUTC_n, 1, b);			    \
 				++PUTC_i;					    \
 			    } while (PUTC_ch != L'\0');				    \
-			} while (0)
+			} } while (0)
 
 #define BLANK		{ WA_NORMAL, ' ' }
 #define ISBLANK(ch)	((ch).chars[0] == L' ' && (ch).chars[1] == L'\0')

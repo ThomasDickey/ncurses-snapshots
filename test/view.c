@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.35 2001/01/14 01:39:24 tom Exp $
+ * $Id: view.c,v 1.36 2001/06/18 18:29:38 skimo Exp $
  */
 
 #include <test.priv.h>
@@ -32,6 +32,7 @@
 #include <ctype.h>
 #include <signal.h>
 #include <time.h>
+#include <locale.h>
 
 #if HAVE_TERMIOS_H
 # include <termios.h>
@@ -67,11 +68,10 @@ static int interrupted;
 
 static int waiting;
 static int shift;
-static int utf8_mode = FALSE;
 
 static char *fname;
-static chtype **lines;
-static chtype **lptr;
+static NCURSES_CH_T **lines;
+static NCURSES_CH_T **lptr;
 
 static void
 usage(void)
@@ -98,11 +98,19 @@ usage(void)
 }
 
 static int
-ch_len(chtype * src)
+ch_len(NCURSES_CH_T * src)
 {
     int result = 0;
+#if USE_WIDEC_SUPPORT
+#endif
+
+#if USE_WIDEC_SUPPORT
+    while (getcchar(src++, NULL, NULL, NULL, NULL) > 1)
+	result++;
+#else
     while (*src++)
 	result++;
+#endif
     return result;
 }
 
@@ -110,78 +118,56 @@ ch_len(chtype * src)
  * Allocate a string into an array of chtype's.  If UTF-8 mode is
  * active, translate the string accordingly.
  */
-static chtype *
+static NCURSES_CH_T *
 ch_dup(char *src)
 {
     unsigned len = strlen(src);
-    chtype *dst = typeMalloc(chtype, len + 1);
+    NCURSES_CH_T *dst = typeMalloc(NCURSES_CH_T, len + 1);
     unsigned j, k;
-    unsigned utf_count = 0;
-    unsigned utf_char = 0;
+#if USE_WIDEC_SUPPORT
+    wchar_t wstr[CCHARW_MAX + 1];
+    wchar_t wch;
+    int l = 0;
+    mbstate_t state;
+    size_t rc;
+    int width;
+#endif
 
-#define UCS_REPL 0xfffd
-
+#if USE_WIDEC_SUPPORT
+    memset(&state, 0, sizeof(state));
+#endif
     for (j = k = 0; j < len; j++) {
-	if (utf8_mode) {
-	    unsigned c = CharOf(src[j]);
-	    /* Combine UTF-8 into Unicode */
-	    if (c < 0x80) {
-		/* We received an ASCII character */
-		if (utf_count > 0)
-		    dst[k++] = UCS_REPL;	/* prev. sequence incomplete */
-		dst[k++] = c;
-		utf_count = 0;
-	    } else if (c < 0xc0) {
-		/* We received a continuation byte */
-		if (utf_count < 1) {
-		    dst[k++] = UCS_REPL;	/* ... unexpectedly */
-		} else {
-		    if (!utf_char && !((c & 0x7f) >> (7 - utf_count))) {
-			utf_char = UCS_REPL;
-		    }
-		    /* characters outside UCS-2 become UCS_REPL */
-		    if (utf_char > 0x03ff) {
-			/* value would be >0xffff */
-			utf_char = UCS_REPL;
-		    } else {
-			utf_char <<= 6;
-			utf_char |= (c & 0x3f);
-		    }
-		    utf_count--;
-		    if (utf_count == 0)
-			dst[k++] = utf_char;
-		}
-	    } else {
-		/* We received a sequence start byte */
-		if (utf_count > 0)
-		    dst[k++] = UCS_REPL;	/* prev. sequence incomplete */
-		if (c < 0xe0) {
-		    utf_count = 1;
-		    utf_char = (c & 0x1f);
-		    if (!(c & 0x1e))
-			utf_char = UCS_REPL;	/* overlong sequence */
-		} else if (c < 0xf0) {
-		    utf_count = 2;
-		    utf_char = (c & 0x0f);
-		} else if (c < 0xf8) {
-		    utf_count = 3;
-		    utf_char = (c & 0x07);
-		} else if (c < 0xfc) {
-		    utf_count = 4;
-		    utf_char = (c & 0x03);
-		} else if (c < 0xfe) {
-		    utf_count = 5;
-		    utf_char = (c & 0x01);
-		} else {
-		    dst[k++] = UCS_REPL;
-		    utf_count = 0;
-		}
-	    }
-	} else {
-	    dst[k++] = src[j];
+#if USE_WIDEC_SUPPORT
+	rc = mbrtowc(&wch, src + j, len - j, &state);
+	if (rc == -1 || rc == -2)
+	    break;
+	j += rc - 1;
+	if ((width = wcwidth(wch)) < 0)
+	    break;
+	if ((width > 0 && l > 0) || l == CCHARW_MAX) {
+	    wstr[l] = L'\0';
+	    l = 0;
+	    if (setcchar(dst + k, wstr, 0, 0, NULL) != OK)
+		break;
+	    ++k;
 	}
+	if (width == 0 && l == 0)
+	    wstr[l++] = L' ';
+	wstr[l++] = wch;
+#else
+	dst[k++] = src[j];
+#endif
     }
+#if USE_WIDEC_SUPPORT
+    if (l > 0) {
+	wstr[l] = L'\0';
+	if (setcchar(dst + k, wstr, 0, 0, NULL) == OK)
+	    ++k;
+    }
+    setcchar(dst + k, L"", 0, 0, NULL);
+#else
     dst[k] = 0;
+#endif
     return dst;
 }
 
@@ -193,7 +179,7 @@ main(int argc, char *argv[])
     char buf[BUFSIZ];
     int i;
     int my_delay = 0;
-    chtype **olptr;
+    NCURSES_CH_T **olptr;
     int length = 0;
     int value = 0;
     bool done = FALSE;
@@ -201,6 +187,8 @@ main(int argc, char *argv[])
 #if CAN_RESIZE
     bool use_resize = TRUE;
 #endif
+
+    setlocale(LC_ALL, "");
 
     while ((i = getopt(argc, argv, "n:rtT:u")) != EOF) {
 	switch (i) {
@@ -221,9 +209,6 @@ main(int argc, char *argv[])
 	    trace(TRACE_CALLS);
 	    break;
 #endif
-	case 'u':
-	    utf8_mode = TRUE;
-	    break;
 	default:
 	    usage();
 	}
@@ -231,7 +216,7 @@ main(int argc, char *argv[])
     if (optind + 1 != argc)
 	usage();
 
-    if ((lines = typeMalloc(chtype *, MAXLINES + 2)) == 0)
+    if ((lines = typeMalloc(NCURSES_CH_T *, MAXLINES + 2)) == 0)
 	usage();
 
     fname = argv[optind];
@@ -263,7 +248,11 @@ main(int argc, char *argv[])
 		col = (col | 7) + 1;
 		while ((d - temp) != col)
 		    *d++ = ' ';
-	    } else if (isprint(CharOf(*d)) || utf8_mode) {
+	    } else
+#if USE_WIDEC_SUPPORT
+		col++, d++;
+#else
+	    if (isprint(CharOf(*d))) {
 		col++;
 		d++;
 	    } else {
@@ -271,6 +260,7 @@ main(int argc, char *argv[])
 		d += strlen(d);
 		col = (d - temp);
 	    }
+#endif
 	}
 	*lptr = ch_dup(temp);
     }
@@ -441,7 +431,7 @@ show_all(void)
 {
     int i;
     char temp[BUFSIZ];
-    chtype *s;
+    NCURSES_CH_T *s;
     time_t this_time;
 
 #if CAN_RESIZE
@@ -470,7 +460,11 @@ show_all(void)
 	if ((s = lptr[i - 1]) != 0) {
 	    int len = ch_len(s);
 	    if (len > shift)
+#if USE_WIDEC_SUPPORT
+		add_wchstr(s + shift);
+#else
 		addchstr(s + shift);
+#endif
 	}
     }
     setscrreg(1, LINES - 1);

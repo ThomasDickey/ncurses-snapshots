@@ -21,7 +21,7 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: charset.c,v 1.7 2001/06/16 17:53:57 tom Exp $")
+MODULE_ID("$Id: charset.c,v 1.8 2001/06/18 18:44:26 tom Exp $")
 
 /*
 	Menu definitions for alternate character set and SGR tests.
@@ -435,12 +435,12 @@ test_acs(
 					break;
 				}
 				if (glyph[j].name[0] == '\0') {
-					if (isgraph(CharOf(acs_chars[i]))) {
+					if (isgraph(UChar(acs_chars[i]))) {
 						sprintf(temp, "    %c",
 							acs_chars[i]);
 					} else {
 						sprintf(temp, " 0x%02x",
-							CharOf(acs_chars[i]));
+							UChar(acs_chars[i]));
 					}
 					strcpy(&temp[5], " *** has no mapping ***");
 					putln(temp);

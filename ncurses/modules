@@ -1,4 +1,4 @@
-# $Id: modules,v 1.75 2001/06/03 01:46:56 skimo Exp $
+# $Id: modules,v 1.76 2001/06/18 18:22:39 skimo Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -39,6 +39,7 @@ lib_addstr	lib		$(base)
 lib_beep	lib		$(base)		../include/term.h
 lib_bkgd	lib		$(base)
 lib_box 	lib		$(base)
+lib_cchar	lib		$(base)
 lib_chgat	lib		$(base)
 lib_clear	lib		$(base)
 lib_clearok	lib		$(base)

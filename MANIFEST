@@ -680,6 +680,7 @@
 ./ncurses/base/lib_beep.c
 ./ncurses/base/lib_bkgd.c
 ./ncurses/base/lib_box.c
+./ncurses/base/lib_cchar.c
 ./ncurses/base/lib_chgat.c
 ./ncurses/base/lib_clear.c
 ./ncurses/base/lib_clearok.c

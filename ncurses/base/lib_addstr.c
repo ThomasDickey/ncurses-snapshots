@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.26 2001/06/10 00:32:39 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.27 2001/06/18 18:23:32 skimo Exp $")
 
 #if USE_WIDEC_SUPPORT
 #define CONV_DATA   mbstate_t state; wchar_t cached; int clen = 0
@@ -154,6 +154,57 @@ waddchnstr(WINDOW *win, const chtype * const astr, int n)
 }
 
 #if USE_WIDEC_SUPPORT
+
+NCURSES_EXPORT(int)
+wadd_wchnstr(WINDOW *win, const cchar_t * const astr, int n)
+{
+    NCURSES_SIZE_T y = win->_cury;
+    NCURSES_SIZE_T x = win->_curx;
+    int code = OK;
+    struct ldat *line;
+    int i, start, end;
+
+    T((T_CALLED("waddchnstr(%p,%p,%d)"), win, astr, n));
+
+    if (!win)
+	returnCode(ERR);
+
+    if (n < 0) {
+	const cchar_t *str;
+	n = 0;
+	for (str = (const cchar_t *) astr; CharOf(*str) != L'\0'; str++)
+	    n++;
+    }
+    if (n > win->_maxx - x + 1)
+	n = win->_maxx - x + 1;
+    if (n == 0)
+	returnCode(code);
+
+    line = &(win->_line[y]);
+    start = x;
+    end = x + n - 1;
+    if (isnac(line->text[x])) {
+	line->text[x - 1] = _nc_background(win);
+	--start;
+    }
+    for (i = 0; i < n && x <= win->_maxx; ++i) {
+	line->text[x++] = astr[i];
+	if (wcwidth(CharOf(astr[i])) > 1) {
+	    if (x <= win->_maxx)
+		AddAttr(line->text[x++], WA_NAC);
+	    else
+		line->text[x - 1] = _nc_background(win);
+	}
+    }
+    if (x <= win->_maxx && isnac(line->text[x])) {
+	line->text[x] = _nc_background(win);
+	++end;
+    }
+    CHANGED_RANGE(line, start, end);
+
+    _nc_synchook(win);
+    returnCode(code);
+}
 
 NCURSES_EXPORT(int)
 waddnwstr(WINDOW *win, const wchar_t * str, int n)

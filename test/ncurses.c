@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.143 2001/05/12 23:49:04 tom Exp $
+$Id: ncurses.c,v 1.144 2001/06/18 18:45:05 tom Exp $
 
 ***************************************************************************/
 
@@ -270,7 +270,7 @@ getch_test(void)
     noecho();
     nonl();
 
-    if (isdigit(CharOf(buf[0]))) {
+    if (isdigit(UChar(buf[0]))) {
 	timeout(atoi(buf) * 100);
 	blocking = FALSE;
     }
@@ -3581,7 +3581,7 @@ main(int argc, char *argv[])
 		if (command == 0)
 		    command = 'q';
 		break;
-	    } else if (command == 0 && !isspace(CharOf(ch))) {
+	    } else if (command == 0 && !isspace(UChar(ch))) {
 		command = ch;
 	    } else if (ch == '\n' || ch == '\r') {
 		if (command != 0)
