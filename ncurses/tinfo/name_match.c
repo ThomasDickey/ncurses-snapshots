@@ -34,7 +34,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: name_match.c,v 1.14 2005/01/16 00:34:52 tom Exp $")
+MODULE_ID("$Id: name_match.c,v 1.15 2005/01/22 21:47:25 tom Exp $")
 
 /*
  *	_nc_first_name(char *names)
@@ -50,8 +50,9 @@ _nc_first_name(const char *const sp)
     register unsigned n;
 
 #if NO_LEAKS
-    if (sp == 0 && buf != 0) {
-	FreeAndNull(buf);	/* for leak-testing */
+    if (sp == 0) {
+	if (buf != 0)
+	    FreeAndNull(buf);	/* for leak-testing */
 	return 0;
     }
 #endif
