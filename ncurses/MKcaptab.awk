@@ -13,7 +13,7 @@ cat <<'EOF'
 #include "term.h"
 #include "hashsize.h"
 
-struct name_table_entry	_nc_info_table[] =
+static	struct name_table_entry	_nc_info_table[] =
 {
 EOF
 
@@ -55,7 +55,7 @@ cat <<'EOF'
 	{(char *)NULL, (char *)NULL}
 };
 
-struct name_table_entry	_nc_cap_table[] =
+static	struct name_table_entry	_nc_cap_table[] =
 {
 EOF
 
@@ -94,5 +94,10 @@ END	{
 	    print  "#error	--> term.h and comp_captab.c disagree about the <--"
 	    print  "#error	--> numbers of booleans, numbers and/or strings <--"
 	    print  "#endif"
+	    print  ""
+	    print  "struct name_table_entry *_nc_get_table(bool termcap)"
+	    print  "{"
+	    print  "	return termcap ? _nc_cap_table: _nc_info_table ;"
+	    print  "}"
 	}
 '

@@ -32,10 +32,10 @@
 #include <sys/param.h>		/* for MAXPATHLEN */
 #include <string.h>
 #include <ctype.h>
-#include <curses.h>	/* solely for the ncurses version number define */
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
 #endif /* HAVE_GETOPT_H */
+
 #include "term.h"
 #include "tic.h"
 #include "term_entry.h"
@@ -105,7 +105,6 @@ static int use_predicate(int type, int idx)
 			else
 				return(FAIL);
 		}
-		break;
 
 	case NUMBER: {
 		int	value = -1;
@@ -126,7 +125,6 @@ static int use_predicate(int type, int idx)
 		else
 			return(FAIL);
 		}
-		break;
 
 	case STRING: {
 		char *termstr, *usestr = (char *)NULL;
@@ -151,8 +149,7 @@ static int use_predicate(int type, int idx)
 			return(TRUE);
 		else
 			return(FAIL);
-		break;
-	}
+	    }
 	}
 
 	return(FALSE);	/* pacify compiler */
@@ -557,8 +554,8 @@ int main(int argc, char *argv[])
 	    ENTRY	*tails[2];
 	    ENTRY	*qp, *rp;
 
-	    _nc_make_hash_table(_nc_info_table, _nc_info_hash_table);
-	    _nc_make_hash_table(_nc_cap_table, _nc_cap_hash_table);
+	    _nc_make_hash_table(_nc_get_table(FALSE), _nc_info_hash_table);
+	    _nc_make_hash_table(_nc_get_table(TRUE),  _nc_cap_hash_table);
 	    dump_init(F_LITERAL, S_TERMINFO, 0, itrace);
 
 	    for (saveoptind = optind; optind < argc; optind++)

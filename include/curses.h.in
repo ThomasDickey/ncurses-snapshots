@@ -153,8 +153,13 @@ extern 	chtype acs_map[];
 #define ACS_LANTERN	(acs_map['I'])	/* lantern symbol */
 #define ACS_BLOCK	(acs_map['0'])	/* solid square block */
 
+#if	!defined(ERR) || ((ERR) != -1)
 #define ERR     (-1)
+#endif
+
+#if	!defined(OK) || ((OK) != 0)
 #define OK      (0)
+#endif
 
 /* values for the _flags member */
 #define _SUBWIN         0x01	/* is this a sub-window? */

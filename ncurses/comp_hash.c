@@ -27,7 +27,6 @@
  */
 
 #include <string.h>
-#include <curses.h>	/* solely for the _tracef() prototype */
 #include "tic.h"
 #include "term.h"
 #include "hashsize.h"

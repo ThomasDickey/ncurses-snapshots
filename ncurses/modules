@@ -10,6 +10,7 @@ lib_clear	lib		$(srcdir)
 lib_clrbot	lib		$(srcdir)
 lib_clreol	lib		$(srcdir)
 lib_color	lib		$(srcdir)	../include/term.h
+lib_data	lib		$(srcdir)
 lib_delch	lib		$(srcdir)
 lib_delwin	lib		$(srcdir)
 lib_doupdate	lib		$(srcdir)	../include/term.h
@@ -22,6 +23,7 @@ lib_insch	lib		$(srcdir)
 lib_insdel	lib		$(srcdir)
 lib_insstr	lib		$(srcdir)
 lib_instr	lib		$(srcdir)
+lib_isendwin	lib		$(srcdir)
 lib_kernel	lib		$(srcdir)	../include/term.h
 lib_keyname	lib		.		../include/term.h
 lib_longname	lib		$(srcdir)
@@ -49,6 +51,9 @@ lib_touch	lib		$(srcdir)
 lib_tparm	lib		$(srcdir)	../include/term.h
 lib_tputs	lib		$(srcdir)	../include/term.h 
 lib_trace	lib		$(srcdir)
+lib_traceatr	lib		$(srcdir)
+lib_tracechr	lib		$(srcdir)
+lib_tracedmp	lib		$(srcdir)
 lib_tstp	lib		$(srcdir)
 lib_twait	lib		$(srcdir)
 lib_unctrl	lib		$(srcdir)

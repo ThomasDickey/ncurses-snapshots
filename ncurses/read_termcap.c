@@ -133,8 +133,8 @@ int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
     }
 
     /* get the data from all designated files or the buffer */
-    _nc_make_hash_table(_nc_info_table, _nc_info_hash_table);
-    _nc_make_hash_table(_nc_cap_table, _nc_cap_hash_table);
+    _nc_make_hash_table(_nc_get_table(FALSE), _nc_info_hash_table);
+    _nc_make_hash_table(_nc_get_table(TRUE),  _nc_cap_hash_table);
 
     /* parse the sources */
     if (use_buffer)

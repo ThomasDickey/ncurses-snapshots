@@ -20,28 +20,18 @@
 ***************************************************************************/
 
 
+/*
+**	lib_endwin.c
+**
+**	The routine endwin().
+**
+*/
 
-#include <unctrl.h>
+#include "curses.priv.h"
 
-char *unctrl(register unsigned char uch)
+int isendwin(void)
 {
-    static char buffer[3] = "^x";
-
-    if ((uch & 0x60) != 0 && uch != 0x7F) {
-	/*
-	 * Printable character. Simply return the character as a one-character
-	 * string.
-	 */
-	buffer[1] = uch;
-	return &buffer[1];
-    }
-    /*
-     * It is a control character. DEL is handled specially (^?). All others
-     * use ^x notation, where x is the character code for the control character
-     * with 0x40 ORed in. (Control-A becomes ^A etc.).
-     */
-    buffer[1] = (uch == 0x7F ? '?' : (uch | 0x40));
-
-    return buffer;
-
+	if (SP == NULL)
+		return FALSE;
+	return SP->_endwin;
 }

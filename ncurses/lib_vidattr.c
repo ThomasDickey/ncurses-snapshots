@@ -59,14 +59,13 @@
 
 static void do_color(int pair, int  (*outc)(int))
 {
-int fg, bg;
+short fg, bg;
 
 	if ( pair == 0 ) {
 		TPUTS_TRACE("orig_pair");
 		tputs(orig_pair, 1, outc);
 	} else {
-		fg = FG(color_pairs[pair]);
-		bg = BG(color_pairs[pair]);
+		pair_content(pair, &fg, &bg);
 
 		T(("setting colors: pair = %d, fg = %d, bg = %d\n", pair, fg, bg));
 

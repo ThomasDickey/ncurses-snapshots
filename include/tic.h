@@ -19,28 +19,16 @@
 *                                                                          *
 ***************************************************************************/
 
-
 /*
  *	tic.h - Global variables and structures for the terminfo
  *			compiler.
  *
  */
 
-#include <stdio.h>
+#ifndef __TIC_H
+#define __TIC_H
 
-#ifndef TRUE
-#define TRUE	1
-#define FALSE	0
-#endif
-
-#ifndef bool
-#define bool unsigned char
-#endif
-
-#ifndef OK
-#define OK	(0)
-#define ERR	(-1)
-#endif
+#include <curses.h>	/* for the _tracef() prototype, ERR/OK, bool defs */
 
 #define DEBUG(n, a)	if (_nc_tracing & (1 << (n - 1))) _tracef a 
 extern int _nc_tracing;
@@ -100,11 +88,11 @@ struct alias
 };
 
 
-extern struct name_table_entry	_nc_info_table[];
 extern struct name_table_entry	*_nc_info_hash_table[];
-extern struct name_table_entry	_nc_cap_table[];
 extern struct name_table_entry	*_nc_cap_hash_table[];
 extern struct alias _nc_alias_table[];
+
+extern struct name_table_entry	*_nc_get_table(bool);
 
 #define NOTFOUND	((struct name_table_entry *) 0)
 
@@ -141,7 +129,7 @@ extern void _nc_panic_mode(char);
 extern int _nc_curr_line;
 extern long _nc_curr_file_pos;
 extern long _nc_comment_start, _nc_comment_end;
-extern int _nc_syntax;
+extern bool _nc_syntax;
 #define SYN_TERMINFO	0
 #define SYN_TERMCAP	1
 
@@ -153,8 +141,10 @@ extern void _nc_err_abort(const char *,...);
 extern void _nc_warning(const char *,...);
 
 /* captoinfo.c: capability conversion */
-extern char *_nc_captoinfo(char *, char *, int);
-extern char *_nc_infotocap(char *, char *, int);
+extern char *_nc_captoinfo(char *, char *, bool);
+extern char *_nc_infotocap(char *, char *, bool);
 
 /* comp_main.c: compiler main */
 extern char	*_nc_progname;
+
+#endif /* __TIC_H */

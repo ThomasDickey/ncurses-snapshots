@@ -45,8 +45,7 @@ extern int errno;
 #include <sys/stat.h>
 #include <stdio.h>
 #include <string.h>
-#include <curses.h>	/* solely for the _tracef() prototype */
-#include "tic.h"
+#include <tic.h>
 #include "term.h"
 #include "term_entry.h"
 #include "object.h"

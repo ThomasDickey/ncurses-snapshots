@@ -21,27 +21,33 @@
 
 
 
-#include <unctrl.h>
+/*
+ *	lib_trace.c - Tracing/Debugging routines
+ */
 
-char *unctrl(register unsigned char uch)
+#ifndef TRACE
+#define TRACE			/* turn on internal defs for this module */
+#endif
+
+#include "curses.priv.h"
+
+#include <stdlib.h>
+#include <ctype.h>
+
+char *_tracechar(const unsigned char ch)
 {
-    static char buffer[3] = "^x";
-
-    if ((uch & 0x60) != 0 && uch != 0x7F) {
-	/*
-	 * Printable character. Simply return the character as a one-character
-	 * string.
-	 */
-	buffer[1] = uch;
-	return &buffer[1];
-    }
-    /*
-     * It is a control character. DEL is handled specially (^?). All others
-     * use ^x notation, where x is the character code for the control character
-     * with 0x40 ORed in. (Control-A becomes ^A etc.).
+    static char crep[20];
+    /* 
+     * We can show the actual character if it's either an ordinary printable
+     * or one of the high-half characters.
      */
-    buffer[1] = (uch == 0x7F ? '?' : (uch | 0x40));
-
-    return buffer;
-
+    if (isprint(ch) || (ch & 0x80))
+    {
+	crep[0] = '\'';
+	crep[1] = ch;	/* necessary; printf tries too hard on metachars */
+	(void) sprintf(crep + 2, "' = 0x%02x", (unsigned)ch);
+    }
+    else
+	(void) sprintf(crep, "0x%02x", (unsigned)ch);
+    return(crep);
 }

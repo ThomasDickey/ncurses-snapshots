@@ -24,8 +24,14 @@
 * Top level private header file for all libnmenu modules                   *
 ***************************************************************************/
 
+#include <config.h>
+
 #include <stdlib.h>
 #include <assert.h>
+
+#ifdef HAVE_EXTERN_ERRNO
+#include <errno.h>
+#endif
 
 #include "menu.h"
 

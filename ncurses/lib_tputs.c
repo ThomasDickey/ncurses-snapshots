@@ -30,6 +30,15 @@
 #include <ctype.h>
 #include "term.h"	/* padding_baud_rate, xon_xoff */
 
+int _nc_outch(int ch)
+{
+	if (SP != NULL)
+		putc(ch, SP->_ofp);
+	else
+		putc(ch, stdout);
+	return OK;
+}
+
 int putp(char *string)
 {
 	return tputs(string, 1, _nc_outch);
