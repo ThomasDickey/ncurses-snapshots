@@ -1,10 +1,31 @@
--- $Id: NEWS,v 1.319 1998/03/08 01:04:48 tom Exp $
+-- $Id: NEWS,v 1.321 1998/03/15 00:44:43 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980314
+	+ correct limits and window in wredrawln function (reported/analysis by 
+	  Alexander V. Lukyanov).
+	+ correct sed expression in configure script for --with-fallback
+	  option (patch by Jesse Thilo).
+	+ correct some places in configure script where $enableval was used
+	  rather than $withval (patch by Darryl Miles <dlm@g7led.demon.co.uk>).
+	+ modify some man-pages so no '.' or '..' falls between TH and SH
+	  macros, to accommodate man_db program (reported by Ian T. Zimmerman
+	  <itz@rahul.net>).
+	+ terminfo.src 10.2.1 from Eric's webpage.
+	> several changes by Juergen Pfeifer:
+	+ add copyright notices (and rcs id's) on remaining man-pages.
+	+ corrected prototypes for slk_* functions, using chtype rather than
+	  attr_t.
+	+ implemented the wcolor_set() and slk_color() functions 
+	+ the slk_attr_{set,off,on} functions need an additional void*
+	  parameter according to XSI. 
+	+ fix the C++ and Ada95 binding as well as the man pages to 
+    	  reflect above enhancements. 
 
 980307
 	+ use 'stat()' rather than 'access()' in toe.c to check for the

@@ -1,4 +1,4 @@
-# $Id: modules,v 1.42 1998/02/11 12:13:57 tom Exp $
+# $Id: modules,v 1.43 1998/03/11 19:26:16 juergen Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -47,6 +47,7 @@ lib_clearok	lib		$(srcdir)
 lib_clrbot	lib		$(srcdir)
 lib_clreol	lib		$(srcdir)
 lib_color	lib		$(srcdir)	../include/term.h
+lib_colorset	lib		$(srcdir)
 lib_data	lib		$(srcdir)
 lib_delch	lib		$(srcdir)
 lib_delwin	lib		$(srcdir)
@@ -96,11 +97,13 @@ lib_slkatron 	lib		$(srcdir)
 lib_slkatrset 	lib		$(srcdir)
 lib_slkattr 	lib		$(srcdir)
 lib_slkclear 	lib		$(srcdir)
+lib_slkcolor 	lib		$(srcdir)
 lib_slkinit 	lib		$(srcdir)
 lib_slklab	lib		$(srcdir)
 lib_slkrefr	lib		$(srcdir)	../include/term.h
 lib_slkset	lib		$(srcdir)
 lib_slktouch	lib		$(srcdir)
+lib_slkatr_set	lib		$(srcdir)
 lib_touch	lib		$(srcdir)
 lib_traceatr	lib		$(srcdir)
 lib_tracedmp	lib		$(srcdir)

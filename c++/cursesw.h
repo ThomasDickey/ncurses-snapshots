@@ -2,7 +2,7 @@
 #ifndef _CURSESW_H
 #define _CURSESW_H
 
-// $Id: cursesw.h,v 1.13 1998/01/20 16:53:50 Fred.Fish Exp $
+// $Id: cursesw.h,v 1.14 1998/03/11 20:02:21 juergen Exp $
 
 #include <etip.h>
 #include <stdio.h>
@@ -72,6 +72,12 @@ inline int UNDEF(attroff)(chtype at) { return attroff(at); }
 inline chtype UNDEF(attrset)(chtype at) { return attrset(at); }
 #undef attrset
 #define attrset UNDEF(attrset)
+#endif
+
+#ifdef color_set
+inline chtype UNDEF(color_set)(short p,void* opts) { return color_set(p,opts); }
+#undef color_set
+#define color_set UNDEF(color_set)
 #endif
 
 #ifdef border
@@ -951,6 +957,10 @@ public:
 
   int            attrset(chtype at) { return ::wattrset(w, at); }
   // Set the window attributes;
+
+  int            color_set(short color_pair_number, void* opts=NULL) {
+    return ::wcolor_set(w, color_pair_number, opts); }
+  // Set the window color attribute;
 
   int            chgat(int n,attr_t attr, short color, const void *opts=NULL) {
     return ::wchgat(w,n,attr,color,opts); }

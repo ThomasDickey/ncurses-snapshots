@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.127 1998/03/07 23:25:12 tom Exp $
+dnl $Id: configure.in,v 1.129 1998/03/14 23:57:35 Jesse.Thilo Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.127 $)
+AC_REVISION($Revision: 1.129 $)
 AC_INIT(ncurses/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -201,7 +201,7 @@ AC_MSG_RESULT($with_termlib)
 AC_MSG_CHECKING(if you want to link with dbmalloc for testing)
 AC_ARG_WITH(dbmalloc,
 	[  --with-dbmalloc         test: use Conor Cahill's dbmalloc library],
-	[with_dbmalloc=yes],
+	[with_dbmalloc=$withval],
 	[with_dbmalloc=no])
 AC_MSG_RESULT($with_dbmalloc)
 if test $with_dbmalloc = yes ; then
@@ -211,7 +211,7 @@ fi
 AC_MSG_CHECKING(if you want to link with dmalloc for testing)
 AC_ARG_WITH(dmalloc,
 	[  --with-dmalloc          test: use Gray Watson's dmalloc library],
-	[with_dmalloc=yes],
+	[with_dmalloc=$withval],
 	[with_dmalloc=no])
 AC_MSG_RESULT($with_dmalloc)
 if test $with_dmalloc = yes ; then
@@ -221,7 +221,7 @@ fi
 AC_MSG_CHECKING(if you want to link with the gpm mouse library)
 AC_ARG_WITH(gpm,
 	[  --with-gpm              use Alessandro Rubini's GPM library],
-	[with_gpm=yes],
+	[with_gpm=$withval],
 	[with_gpm=no])
 AC_MSG_RESULT($with_gpm)
 if test $with_gpm = yes ; then
@@ -344,7 +344,7 @@ AC_ARG_WITH(fallbacks,
 	[with_fallback=$withval],
 	[with_fallback=])
 AC_MSG_RESULT($with_fallback)
-FALLBACK_LIST=`echo $with_fallback|sed -e 's/,/ /'`
+FALLBACK_LIST=`echo $with_fallback|sed -e 's/,/ /g'`
 AC_SUBST(FALLBACK_LIST)
 
 if test $with_database = no ; then
@@ -457,7 +457,7 @@ test "$with_ext_const" = yes && AC_DEFINE(NCURSES_CONST,const)
 AC_MSG_CHECKING(if RCS identifiers should be compiled-in)
 AC_ARG_WITH(rcs-ids,
 	[  --with-rcs-ids          compile-in RCS identifiers],
-	[with_rcs_ids=$enableval],
+	[with_rcs_ids=$withval],
 	[with_rcs_ids=no])
 AC_MSG_RESULT($with_rcs_ids)
 test "$with_rcs_ids" = yes && AC_DEFINE(USE_RCS_IDS)
