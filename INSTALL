@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.51 2001/12/02 01:43:08 tom Exp $
+-- $Id: INSTALL,v 1.52 2002/01/12 22:56:44 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -497,7 +497,9 @@ SUMMARY OF CONFIGURE OPTIONS:
 	configure script look for "include/Caps.XXX".  A few systems, e.g.,
 	AIX 4.x use the same overall file-format as ncurses for terminfo
 	data, but use different alignments within the tables to support
-	legacy applications.
+	legacy applications.  For those systems, you can configure ncurses
+	to use a terminfo database which is compatible with the native
+	applications.
 
     --with-database=XXX
 	Specify the terminfo source file to install.  Usually you will wish

@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.119 2001/12/23 00:32:48 tom Exp $ */
+/* $Id: curses.h.in,v 1.121 2002/01/12 23:46:17 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -263,7 +263,18 @@ typedef struct _win_st WINDOW;
 
 typedef	chtype	attr_t;		/* ...must be at least as wide as chtype */
 
-@NCURSES_libutf8_h@
+#if @NCURSES_LIBUTF8@
+#ifdef mblen			/* libutf8.h defines it w/o undefining first */
+#undef mblen
+#endif
+#include <libutf8.h>
+#define _WCHAR_T
+#define _WINT_T
+#define NCURSES_LIBUTF8
+#else
+#undef  NCURSES_LIBUTF8
+#endif
+
 #ifdef _XOPEN_SOURCE_EXTENDED
 #ifndef _WCHAR_T
 typedef unsigned long wchar_t;
@@ -353,6 +364,7 @@ extern NCURSES_EXPORT_VAR(char) ttytype[];	/* needed for backward compatibility 
 /*
  * These functions are extensions - not in XSI Curses.
  */
+#if @NCURSES_EXT_FUNCS@
 extern NCURSES_EXPORT(char *) keybound (int, int);
 extern NCURSES_EXPORT(const char *) curses_version (void);
 extern NCURSES_EXPORT(int) assume_default_colors (int, int);
@@ -362,6 +374,9 @@ extern NCURSES_EXPORT(int) resizeterm (int, int);
 extern NCURSES_EXPORT(int) use_default_colors (void);
 extern NCURSES_EXPORT(int) use_extended_names (bool);
 extern NCURSES_EXPORT(int) wresize (WINDOW *, int, int);
+#else
+#define curses_version() NCURSES_VERSION
+#endif
 
 /*
  * GCC (and some other compilers) define '__attribute__'; we're using this

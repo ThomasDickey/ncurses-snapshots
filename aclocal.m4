@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000,2001
 dnl
-dnl $Id: aclocal.m4,v 1.268 2001/12/29 20:22:44 tom Exp $
+dnl $Id: aclocal.m4,v 1.269 2002/01/12 23:15:18 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -1255,6 +1255,9 @@ test "\$NAME" = "curses.h" && NAME=ncurses.h
 CF_EOF
 fi
 cat >>headers.sh <<CF_EOF
+# Just in case someone gzip'd manpages, remove the conflicting copy.
+test -f \$DST/\$NAME.gz && rm -f \$DST/\$NAME.gz
+
 eval \$PRG \$TMPSRC \$DST/\$NAME
 rm -f \$TMPSRC \$TMPSED
 CF_EOF

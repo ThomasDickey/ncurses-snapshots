@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.257 2001/12/23 00:32:08 tom Exp $
+dnl $Id: configure.in,v 1.259 2002/01/12 23:45:03 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20000819)
-AC_REVISION($Revision: 1.257 $)
+AC_REVISION($Revision: 1.259 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -646,13 +646,17 @@ AC_ARG_ENABLE(ext-funcs,
 	[with_ext_funcs=yes])
 AC_MSG_RESULT($with_ext_funcs)
 if test "$with_ext_funcs" = yes ; then
+	NCURSES_EXT_FUNCS=1
 	AC_DEFINE(HAVE_CURSES_VERSION)
 	AC_DEFINE(HAVE_HAS_KEY)
 	AC_DEFINE(HAVE_RESIZETERM)
 	AC_DEFINE(HAVE_USE_DEFAULT_COLORS)
 	AC_DEFINE(HAVE_WRESIZE)
 	AC_DEFINE(NCURSES_EXT_FUNCS)
+else
+	NCURSES_EXT_FUNCS=0
 fi
+AC_SUBST(NCURSES_EXT_FUNCS)
 
 ###   use option --enable-const to turn on use of const beyond that in XSI.
 AC_MSG_CHECKING(for extended use of const keyword)
@@ -783,7 +787,7 @@ fi
 
 ###   use option --enable-widec to turn on use of wide-character support
 NCURSES_CH_T=chtype
-NCURSES_libutf8_h=""
+NCURSES_LIBUTF8=0
 AC_MSG_CHECKING(if you want experimental wide-character code)
 AC_ARG_ENABLE(widec,
 	[  --enable-widec          compile with experimental wide-char/UTF-8 code],
@@ -803,14 +807,14 @@ if test "$ac_cv_func_putwc" != yes ; then
 	LIBS="-lutf8 $LIBS"
 AC_TRY_LINK([
 #include <libutf8.h>],[putwc(0,0);],
-	[NCURSES_libutf8_h="#include <libutf8.h>"
+	[NCURSES_LIBUTF8=1
 	AC_MSG_RESULT(yes)],
 	[LIBS="$cf_save_LIBS"
 	AC_MSG_RESULT(no)])
 fi
 fi
 AC_SUBST(NCURSES_CH_T)
-AC_SUBST(NCURSES_libutf8_h)
+AC_SUBST(NCURSES_LIBUTF8)
 
 AC_MSG_CHECKING(for terminal capabilities file)
 AC_ARG_WITH(caps,

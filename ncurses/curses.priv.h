@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.212 2001/12/19 01:05:15 tom Exp $
+ * $Id: curses.priv.h,v 1.213 2002/01/05 23:00:09 tom Exp $
  *
  *	curses.priv.h
  *
@@ -449,8 +449,18 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #include <nomacros.h>
 #endif
 
+/*
+ * The margins are used in resizeterm() to retain the original layout after
+ * resizing.
+ */
 	WINDOWLIST {
 	WINDOWLIST *next;
+#if HAVE_RESIZETERM
+	int	l_margin;
+	int	r_margin;
+	int	t_margin;
+	int	b_margin;
+#endif
 	WINDOW	win;
 };
 
@@ -829,11 +839,11 @@ typedef struct {
 } string_desc;
 
 /* strings.c */
-extern NCURSES_EXPORT(string_desc *) _nc_str_init (string_desc * dst, char *src, size_t len);
-extern NCURSES_EXPORT(string_desc *) _nc_str_null (string_desc * dst, size_t len);
-extern NCURSES_EXPORT(string_desc *) _nc_str_copy (string_desc * dst, string_desc * src);
-extern NCURSES_EXPORT(bool) _nc_safe_strcat (string_desc * dst, const char *src);
-extern NCURSES_EXPORT(bool) _nc_safe_strcpy (string_desc * dst, const char *src);
+extern NCURSES_EXPORT(string_desc *) _nc_str_init (string_desc *, char *, size_t);
+extern NCURSES_EXPORT(string_desc *) _nc_str_null (string_desc *, size_t);
+extern NCURSES_EXPORT(string_desc *) _nc_str_copy (string_desc *, string_desc *);
+extern NCURSES_EXPORT(bool) _nc_safe_strcat (string_desc *, const char *);
+extern NCURSES_EXPORT(bool) _nc_safe_strcpy (string_desc *, const char *);
 
 extern NCURSES_EXPORT(void) _nc_mvcur_init (void);
 extern NCURSES_EXPORT(void) _nc_mvcur_resume (void);
@@ -851,13 +861,13 @@ extern NCURSES_EXPORT(char *) _nc_strstr (const char *, const char *);
 #endif
 
 /* safe_sprintf.c */
-extern NCURSES_EXPORT(char *) _nc_printf_string (const char *fmt, va_list ap);
+extern NCURSES_EXPORT(char *) _nc_printf_string (const char *, va_list);
 
 /* tries.c */
-extern NCURSES_EXPORT(void) _nc_add_to_try (struct tries **tree, const char *str, unsigned short code);
-extern NCURSES_EXPORT(char *) _nc_expand_try (struct tries *tree, unsigned short code, int *count, size_t len);
-extern NCURSES_EXPORT(int) _nc_remove_key (struct tries **tree, unsigned short code);
-extern NCURSES_EXPORT(int) _nc_remove_string (struct tries **tree, char *string);
+extern NCURSES_EXPORT(void) _nc_add_to_try (struct tries **, const char *, unsigned short);
+extern NCURSES_EXPORT(char *) _nc_expand_try (struct tries *, unsigned short, int *, size_t);
+extern NCURSES_EXPORT(int) _nc_remove_key (struct tries **, unsigned short);
+extern NCURSES_EXPORT(int) _nc_remove_string (struct tries **, char *);
 
 /* elsewhere ... */
 extern NCURSES_EXPORT(WINDOW *) _nc_makenew (int, int, int, int, int);
@@ -866,7 +876,7 @@ extern NCURSES_EXPORT(char *) _nc_trace_buf (int, size_t);
 extern NCURSES_EXPORT(NCURSES_CH_T) _nc_render (WINDOW *, NCURSES_CH_T);
 extern NCURSES_EXPORT(int)  _nc_access (const char *, int);
 extern NCURSES_EXPORT(int) _nc_baudrate (int);
-extern NCURSES_EXPORT(int) _nc_freewin (WINDOW *win);
+extern NCURSES_EXPORT(int) _nc_freewin (WINDOW *);
 extern NCURSES_EXPORT(int) _nc_getenv_num (const char *);
 extern NCURSES_EXPORT(int) _nc_keypad (bool);
 extern NCURSES_EXPORT(int) _nc_ospeed (int);
@@ -887,11 +897,17 @@ extern NCURSES_EXPORT(void) _nc_scroll_optimize (void);
 extern NCURSES_EXPORT(void) _nc_scroll_window (WINDOW *, int const, short const, short const, NCURSES_CH_T);
 extern NCURSES_EXPORT(void) _nc_set_buffer (FILE *, bool);
 extern NCURSES_EXPORT(void) _nc_signal_handler (bool);
-extern NCURSES_EXPORT(void) _nc_synchook (WINDOW *win);
-extern NCURSES_EXPORT(void) _nc_trace_tries (struct tries *tree);
+extern NCURSES_EXPORT(void) _nc_synchook (WINDOW *);
+extern NCURSES_EXPORT(void) _nc_trace_tries (struct tries *);
 
 #if USE_SIZECHANGE
 extern NCURSES_EXPORT(void) _nc_update_screensize (void);
+#endif
+
+#if HAVE_RESIZETERM
+extern NCURSES_EXPORT(void) _nc_resize_margins (WINDOW *);
+#else
+#define _nc_resize_margins(wp) /* nothing */
 #endif
 
 /*

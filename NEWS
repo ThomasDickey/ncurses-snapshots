@@ -1,10 +1,37 @@
--- $Id: NEWS,v 1.662 2001/12/30 00:08:27 tom Exp $
+-- $Id: NEWS,v 1.663 2002/01/12 23:52:35 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020112
+	+ add Caps.osf1r5, as an example.
+	+ modify behavior of can_clear_with() so that if an application is
+	  running in a non-bce terminals with default colors enabled, it
+	  returns true, allowing the user to select/paste text without picking
+	  up extraneous trailing blanks (adapted from patch by Daniel
+	  Jacobowitz <dmj+@andrew.cmu.edu>).
+	+ modify generated curses.h to ifdef-out prototypes for extensions if
+	  they are disabled, and to define curses_version() as a string in that
+	  case.  This is needed to make the programs such as tic build in that
+	  configuration.
+	+ modified generated headers.sh to remove a gzip'd version of the
+	  target file if it exists, in case non-gzip'd manpages are installed
+	  into a directory where gzip'd ones exist.  In that case, the latter
+	  would be found.
+	+ corrected a redundant initialization of signal handlers from 20010923
+	  changes.
+	+ clarified bug-reporting address in terminfo.src (report by John H
+	  DuBois III <spcecdt@armory.com>).
+	> several fixes from Robert Joop:
+	+ do not use "-v" option of awk in MKkey_defs.sh because it does not
+	  work with SunOS nawk.
+	+ modify definitions for libutf8 in curses.h to avoid redefinition
+	  warnings for mblen
+	+ quoted references to compiler in shell command in misc/Makefile, in
+	  case it uses multiple tokens.
 
 20011229
 	+ restore special case from 20010923 changes to omit SA_RESTART when
