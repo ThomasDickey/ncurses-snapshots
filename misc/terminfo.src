@@ -3,7 +3,7 @@
 # This version of terminfo.src is distributed with ncurses.
 #
 #	Version 10.2.1
-#	$Date: 1999/07/31 21:55:35 $
+#	$Date: 1999/08/15 01:42:52 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2096,6 +2096,14 @@ teraterm|Tera Term Pro,
 	smul=\E[4m, u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
 	vpa=\E[%i%p1%dd, 
 	use=klone+color, use=vt100, 
+
+# Tested with WinNT 4.0, the telnet application assumes the screensize is
+# 25x80.  This entry uses the 'Terminal' font, to get line-drawing characters.
+ms-vt100|MS telnet imitating dec vt100, 
+	lines#25, 
+	acsc=+\020\,\021-\030.^Y0\333`\004a\261f\370g\361h\260i\316j\331k\277l\332m\300n\305o~p\304q\304r\304s_t\303u\264v\301w\302x\263y\363z\362{\343|\330}\234~\376, 
+	tbc@, u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?6c, u9=\E[c, 
+	use=vt100, 
 
 #### X terminal emulators
 #
@@ -17231,6 +17239,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 1999/7/31
 #	* corrected cnorm, added el1 in 'screen' description -TD
+#
+# 1999/8/14
+#	* add ms-vt100 -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
