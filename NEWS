@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.876 2005/03/12 21:04:36 tom Exp $
+-- $Id: NEWS,v 1.877 2005/03/19 23:23:04 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050319
+	+ modify ncurses.c 'd' test to make it work with 88-color
+	  configuration, i.e., by implementing scrolling.
+	+ improve scrolling in ncurses.c 'c' and 'C' tests, e.g., for 88-color
+	  configuration.
 
 20050312
 	+ change tracemunch to use strict checking.

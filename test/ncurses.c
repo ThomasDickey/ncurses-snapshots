@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.243 2005/03/12 20:36:52 tom Exp $
+$Id: ncurses.c,v 1.245 2005/03/19 23:21:46 tom Exp $
 
 ***************************************************************************/
 
@@ -1691,7 +1691,11 @@ color_legend(WINDOW *helpwin)
     mvwprintw(helpwin, row++, col,
 	      "Use up/down arrow to scroll through the display if it is");
     mvwprintw(helpwin, row++, col,
-	      "longer than one screen.");
+	      "longer than one screen. Control/N and Control/P can be used");
+    mvwprintw(helpwin, row++, col,
+	      "in place up up/down arrow.  Use pageup/pagedown to scroll a");
+    mvwprintw(helpwin, row++, col,
+	      "full screen; control/B and control/F can be used here.");
     ++row;
     mvwprintw(helpwin, row++, col,
 	      "Toggles:");
@@ -1714,6 +1718,7 @@ color_test(void)
     int top = 0, width;
     int base_row = 0;
     int grid_top = top + 3;
+    int page_size = (LINES - grid_top);
     int pairs_max = PAIR_NUMBER(A_COLOR) + 1;
     int row_limit;
     int per_row;
@@ -1810,6 +1815,7 @@ color_test(void)
 	case 'W':
 	    set_color_test(opt_wide, TRUE);
 	    break;
+	case CTRL('p'):
 	case KEY_UP:
 	    if (base_row <= 0) {
 		beep();
@@ -1817,11 +1823,35 @@ color_test(void)
 		base_row -= 1;
 	    }
 	    break;
+	case CTRL('n'):
 	case KEY_DOWN:
-	    if (base_row + (LINES - grid_top) >= row_limit) {
+	    if (base_row + page_size >= row_limit) {
 		beep();
 	    } else {
 		base_row += 1;
+	    }
+	    break;
+	case CTRL('b'):
+	case KEY_PREVIOUS:
+	case KEY_PPAGE:
+	    if (base_row <= 0) {
+		beep();
+	    } else {
+		base_row -= (page_size - 1);
+		if (base_row < 0)
+		    base_row = 0;
+	    }
+	    break;
+	case CTRL('f'):
+	case KEY_NEXT:
+	case KEY_NPAGE:
+	    if (base_row + page_size >= row_limit) {
+		beep();
+	    } else {
+		base_row += page_size - 1;
+		if (base_row + page_size >= row_limit) {
+		    base_row = row_limit - page_size - 1;
+		}
 	    }
 	    break;
 	case '?':
@@ -1852,6 +1882,7 @@ wide_color_test(void)
     int top = 0, width;
     int base_row = 0;
     int grid_top = top + 3;
+    int page_size = (LINES - grid_top);
     int pairs_max = COLOR_PAIRS;
     int row_limit;
     int per_row;
@@ -1945,6 +1976,7 @@ wide_color_test(void)
 	case 'W':
 	    set_color_test(opt_wide, TRUE);
 	    break;
+	case CTRL('p'):
 	case KEY_UP:
 	    if (base_row <= 0) {
 		beep();
@@ -1952,11 +1984,35 @@ wide_color_test(void)
 		base_row -= 1;
 	    }
 	    break;
+	case CTRL('n'):
 	case KEY_DOWN:
-	    if (base_row + (LINES - grid_top) >= row_limit) {
+	    if (base_row + page_size >= row_limit) {
 		beep();
 	    } else {
 		base_row += 1;
+	    }
+	    break;
+	case CTRL('b'):
+	case KEY_PREVIOUS:
+	case KEY_PPAGE:
+	    if (base_row <= 0) {
+		beep();
+	    } else {
+		base_row -= (page_size - 1);
+		if (base_row < 0)
+		    base_row = 0;
+	    }
+	    break;
+	case CTRL('f'):
+	case KEY_NEXT:
+	case KEY_NPAGE:
+	    if (base_row + page_size >= row_limit) {
+		beep();
+	    } else {
+		base_row += page_size - 1;
+		if (base_row + page_size >= row_limit) {
+		    base_row = row_limit - page_size - 1;
+		}
 	    }
 	    break;
 	case '?':
@@ -2023,6 +2079,8 @@ color_edit(void)
 {
     int i, this_c = 0, value = 0, current = 0, field = 0;
     int last_c;
+    int top_color = 0;
+    int page_size = (LINES - 6);
 
     init_all_colors();
     refresh();
@@ -2039,11 +2097,15 @@ color_edit(void)
 	mvaddstr(0, 20, "Color RGB Value Editing");
 	attroff(A_BOLD);
 
-	for (i = 0; i < max_colors; i++) {
-	    mvprintw(2 + i, 0, "%c %-8s:",
+	for (i = top_color;
+	     (i - top_color < page_size)
+	     && (i < max_colors); i++) {
+	    char numeric[80];
+	    sprintf(numeric, "[%d]", i);
+	    mvprintw(2 + i - top_color, 0, "%c %-8s:",
 		     (i == current ? '>' : ' '),
 		     (i < (int) SIZEOF(the_color_names)
-		      ? the_color_names[i] : ""));
+		      ? the_color_names[i] : numeric));
 	    attrset(COLOR_PAIR(i));
 	    addstr("        ");
 	    attrset(A_NORMAL);
@@ -2074,12 +2136,12 @@ color_edit(void)
 		   scaled_rgb(blue));
 	}
 
-	mvaddstr(max_colors + 3, 0,
+	mvaddstr(LINES - 3, 0,
 		 "Use up/down to select a color, left/right to change fields.");
-	mvaddstr(max_colors + 4, 0,
+	mvaddstr(LINES - 2, 0,
 		 "Modify field by typing nnn=, nnn-, or nnn+.  ? for help.");
 
-	move(2 + current, 0);
+	move(2 + current - top_color, 0);
 
 	last_c = this_c;
 	this_c = Getchar();
@@ -2087,10 +2149,28 @@ color_edit(void)
 	    value = 0;
 
 	switch (this_c) {
+	case CTRL('b'):
+	case KEY_PPAGE:
+	    if (current > 0)
+		current -= (page_size - 1);
+	    else
+		beep();
+	    break;
+
+	case CTRL('f'):
+	case KEY_NPAGE:
+	    if (current < (max_colors - 1))
+		current += (page_size - 1);
+	    else
+		beep();
+	    break;
+
+	case CTRL('p'):
 	case KEY_UP:
 	    current = (current == 0 ? (max_colors - 1) : current - 1);
 	    break;
 
+	case CTRL('n'):
 	case KEY_DOWN:
 	    current = (current == (max_colors - 1) ? 0 : current + 1);
 	    break;
@@ -2162,7 +2242,17 @@ color_edit(void)
 	    beep();
 	    break;
 	}
-	mvprintw(LINES - 2, 0, "Number: %d", value);
+
+	if (current < 0)
+	    current = 0;
+	if (current >= max_colors)
+	    current = max_colors - 1;
+	if (current < top_color)
+	    top_color = current;
+	if (current - top_color >= page_size)
+	    top_color = current - (page_size - 1);
+
+	mvprintw(LINES - 1, 0, "Number: %d", value);
 	clrtoeol();
     } while
 	(this_c != 'x' && this_c != 'q');
