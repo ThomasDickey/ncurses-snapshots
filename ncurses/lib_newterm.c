@@ -51,7 +51,7 @@ int	errret;
 char *t = getenv("NCURSES_TRACE");
 
 	if (t)
-               trace(strtol(t, 0, 0));
+               trace((unsigned) strtol(t, 0, 0));
 #endif
 
 	T(("newterm(\"%s\",%p,%p) called", term, ofp, ifp));

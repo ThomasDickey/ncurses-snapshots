@@ -108,7 +108,8 @@ bool _nc_mouse_inline(SCREEN *sp)
     {
 	char	kbuf[4];
 	MEVENT	*prev;
-	int	grabbed, res;
+	size_t	grabbed;
+	int	res;
 
 	/* This code requires that your xterm entry contain the kmous
 	 * capability and that it be set to the \E[M documented in the

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makellib,v 1.1 1996/06/01 19:51:23 tom Exp $
+# $Id: makellib,v 1.2 1996/07/07 23:28:28 tom Exp $
 # System-dependent wrapper for 'lint' that creates a lint-library via the
 # following method (XXX is the name of the library):
 #	a.  If the file llib-lXXX doesn't exist, create it using the make-rule
@@ -76,6 +76,11 @@ rm -f $llib.ln $llib.c
 TARGET=$LLIB
 
 case "$ARCH" in
+AIX)
+	CREATE="-uvxo$llib -Nn4000"
+	TARGET=$llib.c
+	ln $llib $TARGET
+	;;
 Solaris)
 	CREATE="-C$llib"
 	TARGET=$llib.c

@@ -3,6 +3,15 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+960707
+	+ rollback Eric's #305 change to terminfo.src (it breaks existing
+	  applications, e.g., 'less 290').
+	+ correct path of edit_man.sh, and fix typo that made all man-pages
+	  preformatted.
+	+ restore man/menu_requestname.3x omitted in Zeyd's resync (oops).
+	+ auto-configure the GCC_PRINTFLIKE/GCC_SCANFLIKE macros (reported by
+	  Philippe De Muyter).
+
 960706	- snapshot
 	+ make lib_vidattr.c more readable using macros.
 	+ filter out rmul, rmso that conflict with sgr0 when reading terminal

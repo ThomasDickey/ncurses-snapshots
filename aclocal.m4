@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.26 1996/07/06 18:36:34 tom Exp $
+dnl $Id: aclocal.m4,v 1.29 1996/07/08 00:24:57 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -108,6 +108,12 @@ dnl compiler warnings.  Though useful, not all are supported -- and contrary
 dnl to documentation, unrecognized directives cause older compilers to barf.
 AC_DEFUN([NC_GCC_ATTRIBUTES],
 [cat > conftest.i <<EOF
+#ifndef	GCC_PRINTF
+#define	GCC_PRINTF 0
+#endif
+#ifndef	GCC_SCANF
+#define	GCC_SCANF 0
+#endif
 #ifndef GCC_NORETURN
 #define GCC_NORETURN /* nothing */
 #endif
@@ -124,18 +130,39 @@ cat > conftest.$ac_ext <<EOF
 #include "confdefs.h"
 #include "conftest.h"
 #include "conftest.i"
+#if	GCC_PRINTF
+#define GCC_PRINTFLIKE(fmt,var) __attribute__((format(printf,fmt,var)))
+#else
+#define GCC_PRINTFLIKE(fmt,var) /*nothing*/
+#endif
+#if	GCC_SCANF
+#define GCC_SCANFLIKE(fmt,var)  __attribute__((format(scanf,fmt,var)))
+#else
+#define GCC_SCANFLIKE(fmt,var)  /*nothing*/
+#endif
+extern void wow(char *,...) GCC_SCANFLIKE(1,2);
+extern void oops(char *,...) GCC_PRINTFLIKE(1,2) GCC_NORETURN;
 extern void foo(void) GCC_NORETURN;
 int main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED) { return 0; }
 EOF
 	changequote([,])dnl
-	for nc_attribute in unused noreturn
+	for nc_attribute in scanf printf unused noreturn
 	do
 		NC_UPPERCASE($nc_attribute,NC_ATTRIBUTE)
 		nc_directive="__attribute__(($nc_attribute))"
 		echo "checking for gcc $nc_directive" 1>&AC_FD_CC
+		case $nc_attribute in
+		scanf|printf)
+		cat >conftest.h <<EOF
+#define GCC_$NC_ATTRIBUTE 1
+EOF
+			;;
+		*)
 		cat >conftest.h <<EOF
 #define GCC_$NC_ATTRIBUTE $nc_directive
 EOF
+			;;
+		esac
 		if AC_TRY_EVAL(ac_compile); then
 			test -n "$verbose" && AC_MSG_RESULT(... $nc_attribute)
 			cat conftest.h >>confdefs.h
@@ -636,7 +663,7 @@ cat >>man/edit_man.sh <<NC_EOF
 	sed -e 's,@DATADIR@,\$datadir,' < \$i | sed -f edit_man.sed >\$TMP
 NC_EOF
 fi
-if test "$nc_format" ; then
+if test $nc_format = yes ; then
 cat >>man/edit_man.sh <<NC_EOF
 	nroff -man \$TMP >\$TMP.out
 	mv \$TMP.out \$TMP
@@ -676,6 +703,7 @@ esac
 done 
 NC_EOF
 changequote([,])dnl
+chmod 755 man/edit_man.sh
 AC_MSG_RESULT($nc_form)
 ])dnl
 dnl ---------------------------------------------------------------------------
@@ -792,7 +820,7 @@ AC_DEFUN([NC_SHARED_OPTS],
 		MK_SHARED_LIB="ld -Bshareable -o \$[@].\$(REL_VERSION)"
 		nc_cv_do_symlinks=yes
 		;;
-	OSF1)
+	OSF1|MLS+)
 		# tested with OSF/1 V3.2 and 'cc'
 		# tested with OSF/1 V3.2 and gcc 2.6.3 (but the c++ demo didn't
 		# link with shared libs).
