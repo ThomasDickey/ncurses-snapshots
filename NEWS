@@ -1,10 +1,42 @@
--- $Id: NEWS,v 1.371 1998/09/13 01:33:50 tom Exp $
+-- $Id: NEWS,v 1.375 1998/09/20 04:01:18 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980919
+	+ make test_progs compile (but hashmap does not function).
+	+ correct NC_BUFFERED macro, used in lib_mvcur test-driver, modify
+	  associated logic to avoid freeing the SP->_setbuf data.
+	+ add modules home_terminfo and getenv_num to libtinfo.
+	+ move write_entry to libtinfo, to work with termcap caching.
+	+ minor fixes to blue.c to build with atac.
+	+ remove softscroll.c module; no longer needed for testing.
+	> patches by Todd C Miller:
+	+ use strtol(3) instead of atoi(3) when parsing env variables so we can
+	  detect a bogus (non-numeric) value. 
+	+ check for terminal names > MAX_NAME_SIZE in a few more places when
+	  dealing with env variables again. 
+	+ fix a MAX_NAME_SIZE that should be MAX_NAME_SIZE+1 
+	+ use sizeof instead of strlen(3) on PRIVATE_INFO since it is a fixed
+	  string #define (compile time vs runtime). 
+	+ when setting errno to ENOMEM, set it right before the return, not
+	  before code that could, possibly, set errno to a different value. 
+ 	> patches by Alexander V Lukyanov:
+	+ use default background in update_cost_from_blank()
+	+ disable scroll-hints when hashmap is configured.
+	+ improve integration of hashmap scrolling code, by adding oldhash and
+	  newhash data to SP struct.
+	+ invoke del_curterm from delscreen.
+	+ modify del_curterm to set cur_term to null if it matches the function's
+	  parameter which is deleted.
+	+ modify lib_doupdate to prefer parm_ich to the enter_insert_mode and
+	  exit_insert_mode combination, adjusting InsCharCost to check
+	  enter_insert_mode, exit_insert_mode and insert_padding.  Add
+	  insert_padding in insert mode after each char.  This adds new costs
+	  to the SP struct.
 
 980912
 	+ modify test-driver in lib_mvcur.s to use _nc_setbuffer, for consistent

@@ -44,7 +44,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.40 1998/09/12 23:16:41 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.42 1998/09/20 03:58:06 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -106,10 +106,15 @@ void _nc_set_buffer(FILE *ofp, bool buffered)
 	unsigned buf_len;
 	char *buf_ptr;
 
-	if (buffered) {
+	fflush(ofp);
+	if ((SP->_buffered = buffered) != 0) {
 		buf_len = min(LINES * (COLS + 6), 2800);
-		if ((buf_ptr = malloc(buf_len)) == NULL)
-			return;
+	 	if ((buf_ptr = SP->_setbuf) == 0) {
+			if ((buf_ptr = malloc(buf_len)) == NULL)
+				return;
+			SP->_setbuf = buf_ptr;
+			/* Don't try to free this! */
+		}
 	} else {
 		buf_len = 0;
 		buf_ptr = 0;
@@ -124,11 +129,6 @@ void _nc_set_buffer(FILE *ofp, bool buffered)
 #elif HAVE_SETBUFFER
 	(void) setbuffer(ofp, buf_ptr, (int)buf_len);
 #endif
-
-	if (!buffered) {
-		FreeIfNeeded(SP->_setbuf);
-	}
-	SP->_setbuf = buf_ptr;
 
 #endif /* HAVE_SETVBUF || HAVE_SETBUFFER */
 }
@@ -190,6 +190,11 @@ void delscreen(SCREEN *sp)
 
 	FreeIfNeeded(sp->_color_table);
 	FreeIfNeeded(sp->_color_pairs);
+
+	FreeIfNeeded(sp->oldhash);
+	FreeIfNeeded(sp->newhash);
+
+	del_curterm(sp->_term);
 
 	free(sp);
 
@@ -303,6 +308,9 @@ size_t	i;
 	_nc_idlok = FALSE;
 
 	_nc_windows = 0; /* no windows yet */
+
+	SP->oldhash = 0;
+	SP->newhash = 0;
 
 	T(("creating newscr"));
 	if ((newscr = newwin(slines, scolumns, 0, 0)) == 0)

@@ -45,7 +45,7 @@
 #include <term.h>	/* padding_baud_rate, xon_xoff */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.32 1998/05/09 23:01:25 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.33 1998/09/19 20:35:49 tom Exp $")
 
 #define OUTPUT ((SP != 0) ? SP->_ofp : stdout)
 
@@ -109,7 +109,7 @@ int	trailpad;
 #endif /* BSD_TPUTS */
 
 #ifdef TRACE
-char	addrbuf[17];
+char	addrbuf[32];
 
 	if (_nc_tracing & TRACE_TPUTS)
 	{

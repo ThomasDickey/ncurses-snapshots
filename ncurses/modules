@@ -1,4 +1,4 @@
-# $Id: modules,v 1.48 1998/08/15 22:59:15 tom Exp $
+# $Id: modules,v 1.50 1998/09/19 21:07:39 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -114,7 +114,6 @@ lib_wattron	lib		$(srcdir)
 lib_window	lib		$(srcdir)
 nc_panel	lib		$(srcdir)
 safe_sprintf	lib		$(srcdir)
-write_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 
 # Modules for porting
 sigaction	lib		$(srcdir)
@@ -130,7 +129,6 @@ lib_dft_fgbg	lib		$(srcdir)
 lib_freeall	lib		$(srcdir)
 lib_print	lib		$(srcdir)	../include/term.h
 resizeterm	lib		$(srcdir)	../include/term.h
-softscroll	lib		$(srcdir)
 wresize		lib		$(srcdir)	../include/term.h
 
 # Support for termcap (and tic, etc.), which can be a separate library
@@ -147,6 +145,8 @@ comp_parse	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 comp_scan	lib		$(srcdir)	$(INCDIR)/tic.h
 doalloc		lib		$(srcdir)
 fallback	lib		.		../include/term.h $(INCDIR)/tic.h
+getenv_num	lib		$(srcdir)
+home_terminfo	lib		$(srcdir)
 lib_cur_term	lib		$(srcdir)
 lib_data	lib		$(srcdir)
 lib_kernel	lib		$(srcdir)	../include/term.h
@@ -170,3 +170,4 @@ read_termcap	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 trace_buf	lib		$(srcdir)
 tries		lib		$(srcdir)
 unctrl		lib		.
+write_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h

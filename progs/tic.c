@@ -42,7 +42,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.30 1998/03/28 20:04:11 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.31 1998/09/19 16:23:10 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -218,7 +218,7 @@ static const char **make_namelist(char *src)
 	const char **dst = 0;
 
 	char *s, *base;
-	size_t pass, n, nn;
+	unsigned pass, n, nn;
 	char buffer[BUFSIZ];
 
 	if (strchr(src, '/') != 0) {	/* a filename */

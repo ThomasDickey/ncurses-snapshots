@@ -153,7 +153,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.52 1998/09/12 23:03:26 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.53 1998/09/19 18:07:21 Alexander.V.Lukyanov Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -284,7 +284,7 @@ void _nc_mvcur_resume(void)
      */
     reset_scroll_region();
     SP->_cursrow = SP->_curscol = -1;
-    
+
     /* restore cursor shape */
     if (SP->_cursor != -1)
     {
@@ -317,6 +317,13 @@ void _nc_mvcur_init(void)
     SP->_cuf1_cost = CostOf(cursor_right, 0);
     SP->_cud1_cost = CostOf(cursor_down, 0);
     SP->_cuu1_cost = CostOf(cursor_up, 0);
+
+    SP->_smir_cost = CostOf(enter_insert_mode, 0);
+    SP->_rmir_cost = CostOf(exit_insert_mode, 0);
+    SP->_ip_cost = 0;
+    if (insert_padding) {
+	SP->_ip_cost = CostOf(insert_padding, 0);
+    }
 
     /*
      * Assumption: if the terminal has memory_relative addressing, the
@@ -597,7 +604,7 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 			*sp++ = WANT_CHAR(to_y, from_x + i);
 		    *sp = '\0';
 		    lhcost += n * SP->_char_padding;
-	        }
+		}
 		else
 #endif /* defined(REAL_ATTR) && defined(WANT_CHAR) */
 		{

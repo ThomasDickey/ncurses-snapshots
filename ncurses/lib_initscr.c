@@ -45,12 +45,13 @@
 #include <sys/termio.h>	/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.23 1998/08/09 00:18:48 tom Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.25 1998/09/19 21:39:25 tom Exp $")
 
 WINDOW *initscr(void)
 {
 static	bool initialized = FALSE;
 NCURSES_CONST char *name;
+int value;
 
 	T((T_CALLED("initscr()")));
 	/* Portable applications must not call initscr() more than once */
@@ -66,8 +67,9 @@ NCURSES_CONST char *name;
 		}
 
 		/* allow user to set maximum escape delay from the environment */
-		if ((name = getenv("ESCDELAY")) != 0)
-			ESCDELAY = atoi(name);
+		if ((value = _nc_getenv_num("ESCDELAY")) >= 0) {
+			ESCDELAY = value;
+		}
 
 		/* def_shell_mode - done in newterm/_nc_setupscreen */
 		def_prog_mode();

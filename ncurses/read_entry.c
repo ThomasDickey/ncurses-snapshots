@@ -47,7 +47,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.42 1998/08/09 11:59:36 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.44 1998/09/19 21:22:47 tom Exp $")
 
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -305,19 +305,10 @@ char		ttn[MAX_ALIAS + 3];
 	 && _nc_read_tic_entry(filename, _nc_tic_dir(envp), ttn, tp) == 1)
 		return 1;
 
-	/* this is an ncurses extension */
-	if ((envp = getenv("HOME")) != 0)
-	{
-		char *home = malloc(strlen(envp) + strlen(PRIVATE_INFO) + 2);
-
-		if (home == 0)
-			return(0);
-		(void) sprintf(home, PRIVATE_INFO, envp);
-		if (_nc_read_tic_entry(filename, home, ttn, tp) == 1) {
-			free(home);
+	if ((envp = _nc_home_terminfo()) != 0) {
+		if (_nc_read_tic_entry(filename, envp, ttn, tp) == 1) {
 			return(1);
 		}
-		free(home);
 	}
 
 	/* this is an ncurses extension */

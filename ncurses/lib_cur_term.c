@@ -39,7 +39,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* TTY, cur_term */
 
-MODULE_ID("$Id: lib_cur_term.c,v 1.2 1998/02/11 12:13:55 tom Exp $")
+MODULE_ID("$Id: lib_cur_term.c,v 1.3 1998/09/19 19:21:05 Alexander.V.Lukyanov Exp $")
 
 TERMINAL *cur_term;
 
@@ -75,6 +75,8 @@ int del_curterm(TERMINAL *term)
 		FreeIfNeeded(term->type.str_table);
 		FreeIfNeeded(term->type.term_names);
 		free(term);
+		if (term == cur_term)
+			cur_term = 0;
 		returnCode(OK);
 	}
 	returnCode(ERR);

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.49 1998/04/04 00:50:09 tom Exp $
+# $Id: Makefile.in,v 1.51 1998/09/20 02:38:17 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -223,17 +223,17 @@ realclean :: distclean
 test_progs : $(TEST_PROGS)
 
 captoinfo$x : $(srcdir)/captoinfo.c $(TEST_DEPS)
-	@ECHO_LINK@ $(CC) -o $@ $(CCFLAGS) -DMAIN $(srcdir)/captoinfo.c $(TEST_LDFLAGS)
+	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DMAIN $(srcdir)/captoinfo.c $(TEST_LDFLAGS)
 
 hardscroll$x : $(srcdir)/hardscroll.c $(TEST_DEPS)
-	@ECHO_LINK@ $(CC) -o $@ $(CCFLAGS) -DSCROLLDEBUG $(srcdir)/hardscroll.c $(TEST_LDFLAGS)
+	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DSCROLLDEBUG $(srcdir)/hardscroll.c $(TEST_LDFLAGS)
 
 hashmap$x : $(srcdir)/hashmap.c $(TEST_DEPS)
-	@ECHO_LINK@ $(CC) -o $@ $(CCFLAGS) -DHASHDEBUG $(srcdir)/hashmap.c $(TEST_LDFLAGS)
+	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DHASHDEBUG $(srcdir)/hashmap.c $(srcdir)/hardscroll.c $(TEST_LDFLAGS)
 
 lib_mvcur$x : $(srcdir)/lib_mvcur.c $(TEST_DEPS) \
 		../@DFT_OBJ_SUBDIR@/dump_entry.o
-	@ECHO_LINK@ $(CC) -o $@ $(CCFLAGS) -DNCURSES_TEST -I$(srcdir)/../progs $(srcdir)/lib_mvcur.c ../@DFT_OBJ_SUBDIR@/dump_entry.o $(TEST_LDFLAGS)
+	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DNCURSES_TEST -I$(srcdir)/../progs $(srcdir)/lib_mvcur.c ../@DFT_OBJ_SUBDIR@/dump_entry.o $(TEST_LDFLAGS)
 
 ../@DFT_OBJ_SUBDIR@/dump_entry.o:
 	cd ../progs && $(MAKE) ../@DFT_OBJ_SUBDIR@/dump_entry.o:
