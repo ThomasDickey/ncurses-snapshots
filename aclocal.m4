@@ -1,5 +1,5 @@
 dnl*****************************************************************************
-dnl Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                      *
+dnl Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                 *
 dnl All Rights Reserved.                                                       *
 dnl                                                                            *
 dnl Permission to use, copy, modify, and distribute this software and its      *
@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.40 1997/01/04 23:53:13 tom Exp $
+dnl $Id: aclocal.m4,v 1.42 1997/01/26 01:02:22 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -839,7 +839,8 @@ AC_DEFUN([NC_REGEX],
 [
 AC_MSG_CHECKING([for regular-expression headers])
 AC_CACHE_VAL(nc_cv_regex,[
-AC_TRY_LINK([#include <regex.h>],[
+AC_TRY_LINK([#include <sys/types.h>
+#include <regex.h>],[
 	regex_t *p;
 	int x = regcomp(p, "", 0);
 	int y = regexec(p, "", 0, 0, 0);
@@ -848,8 +849,7 @@ AC_TRY_LINK([#include <regex.h>],[
 	AC_TRY_LINK([#include <regexp.h>],[
 		char *p = compile("", "", "", 0);
 		int x = step("", "");
-	],[nc_cv_regex="regexp.h"])
-	])
+	],[nc_cv_regex="regexp.h"])])
 ])
 AC_MSG_RESULT($nc_cv_regex)
 case $nc_cv_regex in

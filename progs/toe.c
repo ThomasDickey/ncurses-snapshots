@@ -29,13 +29,24 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: toe.c,v 0.12 1996/12/30 02:34:14 tom Exp $")
+MODULE_ID("$Id: toe.c,v 0.14 1997/01/26 01:32:05 tom Exp $")
 
 const char *_nc_progname;
 
-static void typelist(int eargc, char *eargv[], bool,
+static int typelist(int eargc, char *eargv[], bool,
 		     void (*)(const char *, TERMTYPE *));
 static void deschook(const char *, TERMTYPE *);
+
+#ifdef NO_LEAKS
+#undef ExitProgram
+static void ExitProgram(int code) GCC_NORETURN;
+static void ExitProgram(int code)
+{
+	_nc_free_entries(_nc_head);
+	_nc_leaks_dump_entry();
+	_nc_free_and_exit(code);
+}
+#endif
 
 int main (int argc, char *argv[])
 {
@@ -43,6 +54,7 @@ int main (int argc, char *argv[])
     bool	invert_dependencies = FALSE;
     bool	header = FALSE;
     int		i, c, debug_level = 0;
+    int		code;
 
     if ((_nc_progname = strrchr(argv[0], '/')) == NULL)
 	_nc_progname = argv[0];
@@ -68,10 +80,10 @@ int main (int argc, char *argv[])
 	case 'V':
 	    (void) fputs(NCURSES_VERSION, stdout);
 	    putchar('\n');
-	    return EXIT_SUCCESS;
+	    ExitProgram(EXIT_SUCCESS);
 	default:
 	    (void) fprintf (stderr, "usage: toe [-huUV] [-v n] [file...]\n");
-	    return EXIT_FAILURE;
+	    ExitProgram(EXIT_FAILURE);
 	}
 
     if (direct_dependencies || invert_dependencies)
@@ -79,7 +91,7 @@ int main (int argc, char *argv[])
 	if (freopen(argv[optind], "r", stdin) == NULL)
 	{
 	    fprintf(stderr, "%s: can't open %s\n", _nc_progname, argv[optind]);
-	    return EXIT_FAILURE;
+	    ExitProgram(EXIT_FAILURE);
 	}
 
 	/* parse entries out of the source file */
@@ -105,7 +117,7 @@ int main (int argc, char *argv[])
 		putchar('\n');
 	    }
 
-	return EXIT_SUCCESS;
+	ExitProgram(EXIT_SUCCESS);
     }
 
     /* maybe we want a reverse-dependency listing? */
@@ -136,16 +148,15 @@ int main (int argc, char *argv[])
 		putchar('\n');
 	}
 
-	return EXIT_SUCCESS;
+	ExitProgram(EXIT_SUCCESS);
     }
 
     /*
      * If we get this far, user wants a simple terminal type listing.
      */
-    if (optind < argc)
-	typelist(argc-optind, argv+optind, header, deschook);
-    else
-    {
+    if (optind < argc) {
+	code = typelist(argc-optind, argv+optind, header, deschook);
+    } else {
 	char	*explicit, *home, *eargv[3];
 	int	j;
 
@@ -166,10 +177,10 @@ int main (int argc, char *argv[])
 	}
 	eargv[j] = (char *)NULL;
 
-	typelist(j, eargv, header, deschook);
+	code = typelist(j, eargv, header, deschook);
     }
 
-    return EXIT_SUCCESS;
+    ExitProgram(code);
 }
 
 static void deschook(const char *cn, TERMTYPE *tp)
@@ -185,7 +196,7 @@ static void deschook(const char *cn, TERMTYPE *tp)
     (void) printf("%-10s\t%s\n", cn, desc);
 }
 
-static void typelist(int eargc, char *eargv[],
+static int typelist(int eargc, char *eargv[],
 		     bool verbosity,
 		     void  (*hook)(const char *, TERMTYPE *tp))
 /* apply a function to each entry in given terminfo directories */
@@ -202,7 +213,7 @@ static void typelist(int eargc, char *eargv[],
 	    (void) fprintf(stderr,
 			   "%s: can't open terminfo directory %s\n",
 			   _nc_progname, eargv[i]);
-	    exit(EXIT_FAILURE);
+	    return(EXIT_FAILURE);
 	}
 	else if (verbosity)
 	    (void) printf("#\n#%s:\n#\n", eargv[i]);
@@ -245,7 +256,7 @@ static void typelist(int eargc, char *eargv[],
 		    (void) fprintf(stderr,
 				   "toe: couldn't open terminfo file %s.\n",
 				   name_2);
-		    return;
+		    return(EXIT_FAILURE);
 		}
 
 		/* only visit things once, by primary name */
@@ -255,15 +266,19 @@ static void typelist(int eargc, char *eargv[],
 		    /* apply the selected hook function */
 		    (*hook)(cn, &lterm);
 		}
-		if (lterm.term_names)
+		if (lterm.term_names) {
 		    free(lterm.term_names);
-		if (lterm.str_table)
+		    lterm.term_names = NULL;
+		}
+		if (lterm.str_table) {
 		    free(lterm.str_table);
+		    lterm.str_table = NULL;
+		}
 	    }
 	    closedir(entrydir);
 	}
 	closedir(termdir);
     }
 
-    exit(EXIT_SUCCESS);
+    return(EXIT_SUCCESS);
 }

@@ -32,7 +32,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.25 1996/12/30 02:28:12 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.26 1997/01/26 00:43:13 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -801,7 +801,7 @@ int main(int argc, char *argv[])
 	/* where is the terminfo database location going to default to? */
 	restdir = firstdir = 0;
 
-	while ((c = getopt(argc, argv, "decCFinlLprR:s:uv:Vw:A:B:1T")) != EOF)
+	while ((c = getopt(argc, argv, "decCFIinlLprR:s:uv:Vw:A:B:1T")) != EOF)
 		switch (c)
 		{
 		case 'd':
