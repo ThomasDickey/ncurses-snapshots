@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.37 2004/07/05 13:07:57 tom Exp $
+.\" $Id: infocmp.1m,v 1.38 2004/08/14 23:49:58 tom Exp $
 .TH infocmp 1M ""
 .ds n 5
 .ds d @TERMINFO@
@@ -368,12 +368,9 @@ Higher values of n induce greater verbosity.
 changes the output to \fIwidth\fR characters.
 .TP
 \fB-x\fR
-Treat unknown capabilities as user-defined.
-That is, if you supply a capability name which \fBtic\fP does not recognize,
-it will infer its type (boolean, number or string) from the syntax and
-make an extended table entry for that.
-If the source is termcap, accept the 2-character names required by version 6.
-Otherwise these are ignored.
+print information for user-defined capabilities.
+These are extensions to the terminfo repertoire which can be loaded
+using the \fB-x\fR option of \fBtic\fP.
 .SH FILES
 .TP 20
 \*d

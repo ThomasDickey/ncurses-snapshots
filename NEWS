@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.830 2004/08/07 23:18:19 tom Exp $
+-- $Id: NEWS,v 1.831 2004/08/14 22:43:58 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040814
+	+ fake a SIGWINCH in newterm() to accommodate buggy terminal emulators
+	  and window managers (Debian #265631).
+	> terminfo updates -TD
+	+ remove dch/dch1 from rxvt because they are implemented inconsistently
+	  with the common usage of bce/ech
+	+ remove khome from vt220 (vt220's have no home key)
+	+ add rxvt+pcfkeys
 
 20040807
 	+ modify test/ncurses.c 'b' test, adding v/V toggles to cycle through

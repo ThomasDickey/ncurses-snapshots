@@ -53,7 +53,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.84 2004/05/08 16:51:35 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.85 2004/08/14 20:13:37 tom Exp $")
 
 /****************************************************************************
  *
@@ -213,11 +213,24 @@ _nc_get_screensize(int *linep, int *colp)
 NCURSES_EXPORT(void)
 _nc_update_screensize(void)
 {
-    int my_lines, my_cols;
+    int old_lines = lines;
+    int new_lines;
+    int old_cols = columns;
+    int new_cols;
 
-    _nc_get_screensize(&my_lines, &my_cols);
-    if (SP != 0 && SP->_resize != 0)
-	SP->_resize(my_lines, my_cols);
+    _nc_get_screensize(&new_lines, &new_cols);
+
+    /*
+     * See is_term_resized() and resizeterm().
+     * We're doing it this way because those functions belong to the upper
+     * ncurses library, while this resides in the lower terminfo library.
+     */
+    if (SP != 0
+	&& SP->_resize != 0) {
+	if ((new_lines != old_lines) || (new_cols != old_cols))
+	    SP->_resize(new_lines, new_cols);
+	SP->_sig_winch = FALSE;
+    }
 }
 #endif
 
@@ -245,7 +258,7 @@ _nc_update_screensize(void)
 
 #if USE_DATABASE || USE_TERMCAP
 static int
-grab_entry(const char *const tn, TERMTYPE * const tp)
+grab_entry(const char *const tn, TERMTYPE *const tp)
 /* return 1 if entry found, 0 if not found, -1 if database not accessible */
 {
 #if USE_DATABASE
