@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 10.1.7
+#	Version 10.1.8
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -318,7 +318,7 @@ klone+sgr-dumb|attribute control for ansi.sys displays (no ESC [ 11 m),
 # KOI8 (RFC1489) alternate character set 
 # From: Qing Long <qinglong@Bolizm.ihep.su>, 24 Feb 1996.
 klone+koi8acs|alternate character set for ansi.sys displays with KOI8 charset, 
-	acsc=l\202m\204k\203j\205u\207t\206v\210w\211q\200x\201n\212o\213s\214p\216r\217`\004a\237f\234g\232~\225.\037-\036+\020\,\021h\222I\2200\215y\230z\231{\267}L|\274, 
+	acsc=l\202m\204k\203j\205u\207t\206v\210w\211q\200x\201n\212o\213s\214p\216r\217`\004a\237f\234g\232~\225.\037-\036+\020\,\021h\222i\2200\215y\230z\231{\267}L|\274, 
 	rmacs=\E[10m, smacs=\E[11m, 
 
 # ANSI.SYS color control.  The setab/setaf caps depend on the coincidence
@@ -901,7 +901,7 @@ qnx|qnx4|qnx console,
 pcvtXX|pcvt vt200 emulator (DEC VT220), 
 	am, km, mir, msgr, xenl, 
 	it#8, vt#3, 
-	acsc=llmmkkjjuuttvvwwqqxxnnoosspprr``aaffgg~~..--++\,\,hhII00yyzz, 
+	acsc=llmmkkjjuuttvvwwqqxxnnoosspprr``aaffgg~~..--++\,\,hhii00yyzz, 
 	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[H\E[J, cr=^M, 
 	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
 	cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC, cuf1=\E[C, 
@@ -1011,7 +1011,7 @@ cons25w|ansiw|ansi80x25-raw|freebsd console (25-line raw mode),
 	rmso=\E[m, rs1=\E[x\E[m\Ec, setab=\E[4%p1%dm, 
 	setaf=\E[3%p1%dm, sgr0=\E[m, smso=\E[7m, vpa=\E[%i%p1%dd, 
 cons25|ansis|ansi80x25|freebsd console (25-line ansi mode), 
-	acsc=l\332m\300k\277j\331u\264t\303v\301w\302q\304x\263n\305`\004a\260f\370g\361~\371.\031-\030h\261I^U0\333y\363z\362, 
+	acsc=l\332m\300k\277j\331u\264t\303v\301w\302q\304x\263n\305`\004a\260f\370g\361~\371.\031-\030h\261i^U0\333y\363z\362, 
 	use=cons25w, 
 cons25-m|ansis-mono|ansi80x25-mono|freebsd console (25-line mono ansi mode), 
 	colors@, pairs@, 
@@ -1033,7 +1033,7 @@ cons60|ansi80x60|freebsd console (60-line ansi mode),
 cons60-m|ansi80x60-mono|freebsd console (60-line mono ansi mode), 
 	lines#60, use=cons25-m, 
 cons25r|pc3r|ibmpc3r|cons25-koi8-r|freebsd console w/koi8-r cyrillic, 
-	acsc=q\200x\201m\204v\211j\205t\206n\212u\207l\202w\210k\203y\230z\231f\234~\225a\220h\221`\004.\031-\030I^U0\215, 
+	acsc=q\200x\201m\204v\211j\205t\206n\212u\207l\202w\210k\203y\230z\231f\234~\225a\220h\221`\004.\031-\030i^U0\215, 
 	use=cons25w, 
 cons25r-m|pc3r-m|ibmpc3r-mono|cons25-koi8r-m|freebsd console w/koi8-r cyrillic (mono), 
 	colors@, pairs@, 
@@ -1048,7 +1048,7 @@ cons60r-m|cons60-koi8r-m|freebsd console w/koi8-r cyrillic (60-line mono),
 	lines#60, use=cons25r-m, 
 # ISO 8859-1 FreeBSD console
 cons25l1|cons25-iso8859|freebsd console w/iso 8859-1 chars, 
-	acsc=l\215m\216k\214j\213u\226t\225v\227w\230q\222x\231n\217o\220s\224p\221r\223`\201a\202f\207g\210~\237.\031-\030+\253\,\273I\247y\232z\233, 
+	acsc=l\215m\216k\214j\213u\226t\225v\227w\230q\222x\231n\217o\220s\224p\221r\223`\201a\202f\207g\210~\237.\031-\030+\253\,\273i\247y\232z\233, 
 	use=cons25w, 
 cons25l1-m|cons25-iso-m|freebsd console w/iso 8859-1 chars (mono), 
 	colors@, pairs@, 
@@ -1906,7 +1906,7 @@ xterm-16color|xterm with 16 colors like aixterm,
 # This is xterm for ncurses. It mainly adds mappings for more high-half
 # characters.  Note that these will only work for fixed-width fonts.
 xterm|vs100|xterms|xterm terminal emulator (X Window System), 
-	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~..--++\,\,II00, 
+	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~..--++\,\,ii00, 
 	kmous=\E[M, u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
 	use=xterm-r6, 
 
@@ -2178,7 +2178,7 @@ eterm|gnu emacs term.el terminal emulation,
 screen|VT 100/ANSI X3.64 virtual terminal, 
 	am, km, mir, msgr, xenl, 
 	colors#8, cols#80, it#8, lines#24, pairs#64, 
-	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~..--++\,\,hhII00, 
+	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~..--++\,\,hhii00, 
 	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, civis=\E[?25l, 
 	clear=\E[H\E[J, cnorm=\E[?25h, cr=^M, 
 	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
@@ -12736,7 +12736,7 @@ digilog|digilog 333,
 dwk|dwk-vt|dwk terminal, 
 	am, 
 	cols#80, it#8, lines#24, 
-	acsc=lJmFkCjXtEuPv\\wKqUxWnNo~s_`+a\:f'g#~_\\\,Q+\^.M-Sh#I#0\177, 
+	acsc=lJmFkCjXtEuPv\\wKqUxWnNo~s_`+a\:f'g#~_\\\,Q+\^.M-Sh#i#0\177, 
 	bel=^G, clear=\EH\EJ, cr=^M, cub1=^H, cud1=^J, cuf1=\EC, 
 	cup=\EY%p1%' '%+%c%p2%' '%+%c, cuu1=\EA, dch1=\EP, 
 	ed=\EJ, el=\EK, home=\EH, ht=^I, ich1=\EQ, ind=^J, kbs=\177, 
@@ -14021,6 +14021,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  'xterm' is derived from xterm-xf86-v32, which implements ech and
 #	  other capabilities not in xterm-r6.
 #	* remove alternate character set from kterm entry.
+# 10.1.8 (Sat Aug  2 18:43:18 EDT 1997)
+#	* correct acsc entries for ACS_LANTERN, which is 'i', not 'I'.
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

@@ -91,7 +91,7 @@ char *ttyname(int fd);
 #include <curses.h>	/* for bool typedef */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.27 1997/07/26 22:46:46 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.28 1997/08/02 22:20:32 tom Exp $")
 
 extern char **environ;
 
@@ -160,7 +160,7 @@ static void
 cat(char *file)
 {
 	register int fd, nr, nw;
-	char buf[1024];
+	char buf[BUFSIZ];
 
 	if ((fd = open(file, O_RDONLY, 0)) < 0)
 		failed(file);

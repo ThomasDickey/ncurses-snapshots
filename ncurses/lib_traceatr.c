@@ -32,7 +32,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.20 1997/05/06 11:07:27 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.21 1997/08/02 22:12:34 tom Exp $")
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
@@ -179,7 +179,7 @@ char	*found = 0;
 	    {'.', "ACS_DARROW"},	/* arrow pointing down */
 	    {'-', "ACS_UARROW"},	/* arrow pointing up */
 	    {'h', "ACS_BOARD"},		/* board of squares */
-	    {'I', "ACS_LANTERN"},	/* lantern symbol */
+	    {'i', "ACS_LANTERN"},	/* lantern symbol */
 	    {'0', "ACS_BLOCK"},		/* solid square block */
 	    {'p', "ACS_S3"},		/* scan line 3 */
 	    {'r', "ACS_S7"},		/* scan line 7 */

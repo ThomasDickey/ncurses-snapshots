@@ -24,7 +24,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* ena_acs, acs_chars */
 
-MODULE_ID("$Id: lib_acs.c,v 1.9 1997/06/15 11:16:16 tom Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.10 1997/08/02 22:12:35 tom Exp $")
 
 chtype acs_map[128];
 
@@ -92,7 +92,7 @@ void init_acs(void)
 			case 'q':case 'x':case 'n':case 'o':
 			case 's':case '`':case 'a':case 'f':
 			case 'g':case '~':case ',':case '+':
-			case '.':case '-':case 'h':case 'I':
+			case '.':case '-':case 'h':case 'i':
 			case '0':case 'p':case 'r':case 'y':
 			case 'z':case '{':case '|':case '}':
 				acs_map[(unsigned int)acs_chars[i]] =
