@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.107 1998/02/11 12:14:05 tom Exp $
+$Id: ncurses.c,v 1.108 1998/02/28 01:11:47 tom Exp $
 
 ***************************************************************************/
 
@@ -50,6 +50,10 @@ $Id: ncurses.c,v 1.107 1998/02/11 12:14:05 tom Exp $
 #include <string.h>
 #include <assert.h>
 #include <signal.h>
+
+#if HAVE_LOCALE_H
+#include <locale.h>
+#endif
 
 #if HAVE_GETTIMEOFDAY
 #if HAVE_SYS_TIME_H && HAVE_SYS_TIME_SELECT
@@ -2955,6 +2959,10 @@ main(int argc, char *argv[])
 {
     int		command, c;
     int		my_e_param = 1;
+
+#if HAVE_LOCALE_H
+    setlocale(LC_CTYPE, "");
+#endif
 
     while ((c = getopt(argc, argv, "e:fhs:t:")) != EOF) {
 	switch (c) {
