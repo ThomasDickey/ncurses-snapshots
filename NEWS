@@ -1,10 +1,25 @@
--- $Id: NEWS,v 1.604 2000/11/05 01:41:09 tom Exp $
+-- $Id: NEWS,v 1.605 2000/11/12 01:36:52 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20001111
+	+ minor optimization in comp_error.c and lib_termname.c, using
+	  strncat() to replace strncpy() (patch by Solar Designer).
+	+ add a use_terminfo_vars() check for $HOME/.termcap, and check for
+	  geteuid() to use_terminfo_vars() (patch by Solar Designer
+	  <solar@false.com>).
+	+ improved cygwin terminfo entry, based on patch by
+	  <ernie_boyd@yahoo.com>.
+	+ modify _nc_write_entry() to allow for the possibility that linking
+	  aliases on a filesystem that ignores case would not succeed because
+	  the source and destination differ only by case, e.g., NCR260VT300WPP0
+	  on cygwin (report by Neil Zanella).
+	+ fix a typo in the curs_deleteln.3x man page (patch by Bernhard
+	  Rosenkraenzer <bero@redhat.de>).
 
 20001104
 	+ add configure option --with-ospeed to assist packagers in transition
