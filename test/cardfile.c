@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1999-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1999-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,9 +27,9 @@
  ****************************************************************************/
 
 /*
- * Author: Thomas E. Dickey <dickey@clark.net> 1999
+ * Author: Thomas E. Dickey
  *
- * $Id: cardfile.c,v 1.26 2004/07/31 23:13:35 tom Exp $
+ * $Id: cardfile.c,v 1.27 2004/11/06 19:33:39 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text is content.
  */
@@ -527,7 +527,7 @@ cardfile(char *fname)
 	p = all_cards;
 	all_cards = all_cards->link;
 
-	if (isVisble(p)) {
+	if (isVisible(p)) {
 	    f = form_fields(p->form);
 	    count = field_count(p->form);
 

@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.231 2004/10/23 21:40:18 tom Exp $
+$Id: ncurses.c,v 1.233 2004/11/07 00:34:23 tom Exp $
 
 ***************************************************************************/
 
@@ -283,11 +283,19 @@ wGet_wstring(WINDOW *win, wchar_t *buffer, int limit)
     while (!done) {
 	if (x > (int) wcslen(buffer))
 	    x = (int) wcslen(buffer);
+
+	/* clear the "window' */
+	wmove(win, y0, x0);
+	wprintw(win, "%*s", limit, " ");
+
+	/* write the existing buffer contents */
 	wmove(win, y0, x0);
 	waddnwstr(win, buffer, limit);
-	if (x < limit)
-	    wprintw(win, "%*s", limit - x, " ");
-	wmove(win, y0, x0 + x);
+
+	/* positions the cursor past character 'x' */
+	wmove(win, y0, x0);
+	waddnwstr(win, buffer, x);
+
 	switch (wGet_wchar(win, &ch)) {
 	case KEY_CODE_YES:
 	    fkey = TRUE;
@@ -310,6 +318,7 @@ wGet_wstring(WINDOW *win, wchar_t *buffer, int limit)
 	    }
 	    break;
 	case OK:
+	    fkey = FALSE;
 	    break;
 	default:
 	    ch = (wint_t) -1;
@@ -338,7 +347,7 @@ wGet_wstring(WINDOW *win, wchar_t *buffer, int limit)
 	    if (x > 0) {
 		--x;
 	    } else {
-		flash();
+		beep();
 	    }
 	    break;
 	case KEY_RIGHT:
@@ -354,7 +363,7 @@ wGet_wstring(WINDOW *win, wchar_t *buffer, int limit)
 		}
 		buffer[x++] = ch;
 	    } else {
-		flash();
+		beep();
 	    }
 	}
     }
@@ -2051,12 +2060,13 @@ slk_test(void)
 }
 
 #if USE_WIDEC_SUPPORT
+#define SLKLEN 8
 static void
 wide_slk_test(void)
 /* exercise the soft keys */
 {
     int c, fmt = 1;
-    wchar_t buf[9];
+    wchar_t buf[SLKLEN + 1];
     char *s;
     short fg = COLOR_BLACK;
     short bg = COLOR_WHITE;
@@ -2126,14 +2136,30 @@ wide_slk_test(void)
 	    (void) mvaddstr(SLK_WORK, 0, "Please enter the label value: ");
 	    *buf = 0;
 	    if ((s = slk_label(c - '0')) != 0) {
-		int j;
-		for (j = 0; j < 8; ++j) {
-		    if ((buf[j] = UChar(s[j])) == 0)
+		char *temp = strdup(s);
+		size_t used = strlen(temp);
+		size_t want = SLKLEN;
+		size_t test;
+		mbstate_t state;
+
+		buf[0] = L'\0';
+		while (want > 0 && used != 0) {
+		    const char *base = s;
+		    memset(&state, 0, sizeof(state));
+		    test = mbsrtowcs(0, &base, 0, &state);
+		    if (test == (size_t) -1) {
+			temp[--used] = 0;
+		    } else if (test > want) {
+			temp[--used] = 0;
+		    } else {
+			memset(&state, 0, sizeof(state));
+			mbsrtowcs(buf, &base, want, &state);
 			break;
+		    }
 		}
-		buf[j] = 0;
+		free(temp);
 	    }
-	    wGet_wstring(stdscr, buf, 8);
+	    wGet_wstring(stdscr, buf, SLKLEN);
 	    slk_wset((c - '0'), buf, fmt);
 	    slk_refresh();
 	    move(SLK_WORK, 0);
