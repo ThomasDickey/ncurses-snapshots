@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.286 2003/02/23 01:34:26 tom Exp $
+dnl $Id: configure.in,v 1.288 2003/04/19 21:38:53 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.286 $)
+AC_REVISION($Revision: 1.288 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1263,6 +1263,9 @@ fi
 PROG_DEPS="$TEST_DEPS"
 PROG_ARGS="$TEST_ARGS"
 
+### predefined stuff for the test programs
+AC_DEFINE(HAVE_SLK_COLOR)
+
 ### Construct the list of subdirectories for which we'll customize makefiles
 ### with the appropriate compile-rules.
 
@@ -1272,7 +1275,7 @@ CF_DIRS_TO_MAKE
 AC_DEFINE_UNQUOTED(NCURSES_PATHSEP,'$PATHSEP')
 
 ### Now that we're done running tests, add the compiler-warnings, if any
-CFLAGS="$CFLAGS $EXTRA_CFLAGS"
+CF_ADD_CFLAGS($EXTRA_CFLAGS)
 
 ################################################################################
 test "$use_database" = yes && SUB_MAKEFILES="$SUB_MAKEFILES misc/run_tic.sh:misc/run_tic.in"

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,16 +29,12 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.39 2003/03/02 00:29:18 tom Exp $ */
+/* $Id: test.priv.h,v 1.43 2003/04/19 22:41:48 tom Exp $ */
 
-#if HAVE_CONFIG_H
+#ifndef __TEST_PRIV_H
+#define __TEST_PRIV_H 1
+
 #include <ncurses_cfg.h>
-#else
-#define HAVE_CURSES_VERSION 0
-#define HAVE_RESIZETERM 0
-#define HAVE_USE_DEFAULT_COLORS 0
-#define HAVE_WRESIZE 0
-#endif
 
 /*
  * Fix ifdef's that look for the form/menu/panel libraries, if we are building
@@ -97,6 +93,10 @@
 
 #ifndef HAVE_PANEL_H
 #define HAVE_PANEL_H 0
+#endif
+
+#ifndef HAVE_SLK_COLOR
+#define HAVE_SLK_COLOR 0
 #endif
 
 #ifndef HAVE_WRESIZE
@@ -245,3 +245,21 @@ extern int optind;
 #ifndef NCURSES_CONST
 #define NCURSES_CONST /* nothing */
 #endif
+
+/* out-of-band values for representing absent capabilities */
+#define ABSENT_BOOLEAN		(-1)		/* 255 */
+#define ABSENT_NUMERIC		(-1)
+#define ABSENT_STRING		(char *)0
+
+/* out-of-band values for representing cancels */
+#define CANCELLED_BOOLEAN	(char)(-2)	/* 254 */
+#define CANCELLED_NUMERIC	(-2)
+#define CANCELLED_STRING	(char *)(-1)
+
+#define VALID_BOOLEAN(s) ((unsigned char)(s) <= 1) /* reject "-1" */
+#define VALID_NUMERIC(s) ((s) >= 0)
+#define VALID_STRING(s)  ((s) != CANCELLED_STRING && (s) != ABSENT_STRING)
+
+#define VT_ACSC "``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~"
+
+#endif /* __TEST_PRIV_H */
