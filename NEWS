@@ -1,10 +1,27 @@
--- $Id: NEWS,v 1.409 1999/01/17 01:01:24 tom Exp $
+-- $Id: NEWS,v 1.411 1999/01/24 03:48:01 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990123
+	+ modify fty_regex.c to compile on HAVE_REGEXPR_H_FUNCS machine (patch
+	  by Kimio Ishii <ishii@csl.sony.co.jp>).
+	+ rename BSDI console terminfo entries:  bsdos to bsdos-pc-nobold, and
+	  bsdos-bold to bsdos-pc (patch by Jeffrey C Honig).
+	+ modify tput to accept termcap names as an alternative to terminfo
+	  names (patch by Jeffrey C Honig).
+	+ correct a typo in term.7 (Todd Miller).
+	+ add configure --with-shlib-version option to allow installing shared
+	  libraries named according to release or ABI versions.  This
+	  parameterizes some existing logic in the configure script, and is
+	  intended for compatiblity upgrades on Digital Unix, which used
+	  versioned libraries in ncurses 4.2, but no longer does (cf:  980425).
+	+ resync configure script against autoconf 2.13 + patches
+	+ minor improvements for teraterm terminfo entry based on the program's
+	  source distribution.
 
 990116
 	+ change default for configure --enable-big-core to assume machines do
@@ -79,7 +96,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 
 981219
 	+ modify _nc_set_writedir() to set a flag in _nc_tic_dir() to prevent
-	  it from changing the terminfo directory after chdir'ing to it. 
+	  it from changing the terminfo directory after chdir'ing to it.
 	  Otherwise, a relative path in $TERMINFO would confuse tic (from a
 	  Debian bug report).
 	+ correct/update ncsa terminfo entry (report by Larry Virden).
@@ -89,7 +106,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ modify configure script for GNU/Hurd share-library support, introduce
 	  BUILD_CC variable for cross compiling (patch by Uchiyama Yasushi
 	  <uch@nop.or.jp>)
-	 
+
 981212
 	+ add environment variable NCURSES_NO_SETBUF to allow disabling the
 	  setbuf feature, for testing purposes.
@@ -114,14 +131,14 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  or asterisk (reported by Larry Virden).
 	> patches by Juergen Pfeifer:
 	+ fix a typo in m_driver.c mouse handling and improves the error
-	  handling. 
+	  handling.
 	+ fix broken mouse handling in the Ada95 binding
 	+ make the Ada95 sample application menus work with the new menu mouse
 	  support
 	+ improve the mouse handling introduced by Ilya; it now handles menus
-	  with spacing. 
+	  with spacing.
 	+ repair a minor bug in the menu_driver code discovered during this
-	  rework. 
+	  rework.
 	+ add new function wmouse_trafo() to hide implementation details of
 	  _yoffset member of WINDOW struct needed for mouse coordinate
 	  transformation.

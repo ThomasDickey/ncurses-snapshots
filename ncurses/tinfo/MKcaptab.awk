@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: MKcaptab.awk,v 1.10 1997/09/11 17:40:46 tom Exp $
+# $Id: MKcaptab.awk,v 1.11 1999/01/24 02:46:42 Jeffrey.C.Honig Exp $
 AWK=${1-awk}
 DATA=${2-../include/Caps}
 
@@ -61,5 +61,10 @@ cat <<'EOF'
 const struct name_table_entry *_nc_get_table(bool termcap)
 {
 	return termcap ? _nc_cap_table: _nc_info_table ;
+}
+
+const struct name_table_entry * const * _nc_get_hash_table(bool termcap)
+{
+	return termcap ? _nc_cap_hash_table: _nc_info_hash_table ;
 }
 EOF

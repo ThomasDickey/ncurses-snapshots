@@ -40,8 +40,11 @@
  */
 
 #include <progs.priv.h>
+#ifndef	PURE_TERMINFO
+#include <termsort.c>
+#endif
 
-MODULE_ID("$Id: tput.c,v 1.12 1998/09/05 22:02:59 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.13 1999/01/24 02:56:39 Jeffrey.C.Honig Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -68,16 +71,18 @@ static void usage(void)
 
 static int tput(int argc, char *argv[])
 {
+char *name;
 char *s;
 int i, j, c;
 int reset, status;
 FILE *f;
 
 	reset = 0;
-	if (strcmp(argv[0], "reset") == 0) {
+	name = argv[0];
+	if (strcmp(name, "reset") == 0) {
 		reset = 1;
 	}
-	if (reset || strcmp(argv[0], "init") == 0) {
+	if (reset || strcmp(name, "init") == 0) {
 		if (init_prog != NULL) {
 			system(init_prog);
 		}
@@ -89,14 +94,14 @@ FILE *f;
 			PUTS(init_1string);
 		}
 		FLUSH;
-	
+
 		if (reset && reset_2string != NULL) {
 			PUTS(reset_2string);
 		} else if (init_2string != NULL) {
 			PUTS(init_2string);
 		}
 		FLUSH;
-	
+
 		if (set_lr_margin != NULL) {
 			PUTS(tparm(set_lr_margin, 0, columns - 1));
 		} else if (set_left_margin_parm != NULL
@@ -127,14 +132,14 @@ FILE *f;
 			}
 		}
 		FLUSH;
-	
+
 		if (init_tabs != 8) {
 			if (clear_all_tabs != NULL && set_tab != NULL) {
 				for(i = 0; i < columns - 1; i += 8) {
 					if (parm_right_cursor) {
 						PUTS(tparm(parm_right_cursor, 8));
 					} else {
-						for(j = 0; j < 8; j++) 
+						for(j = 0; j < 8; j++)
 							PUTCHAR(' ');
 					}
 					PUTS(set_tab);
@@ -142,7 +147,7 @@ FILE *f;
 				FLUSH;
 			}
 		}
-	
+
 		if (reset && reset_file != NULL) {
 			f = fopen(reset_file, "r");
 			if (f == NULL) {
@@ -163,7 +168,7 @@ FILE *f;
 			fclose(f);
 		}
 		FLUSH;
-	
+
 		if (reset && reset_3string != NULL) {
 			PUTS(reset_3string);
 		} else if (init_2string != NULL) {
@@ -172,20 +177,45 @@ FILE *f;
 		FLUSH;
 		return 0;
 	}
-	
-	if (strcmp(argv[0], "longname") == 0) {
+
+	if (strcmp(name, "longname") == 0) {
 		PUTS(longname());
 		return 0;
 	}
 
-	if ((status = tigetflag(argv[0])) != -1)
+#ifndef	PURE_TERMINFO
+	{
+		const struct name_table_entry 	*np;
+
+		if ((np = _nc_find_entry(name, _nc_get_hash_table(1))) != 0)
+			switch(np->nte_type)
+			{
+			case BOOLEAN:
+				if (bool_from_termcap[np->nte_index])
+					name = boolnames[np->nte_index];
+				break;
+
+			case NUMBER:
+				if (num_from_termcap[np->nte_index])
+					name = numnames[np->nte_index];
+				break;
+
+			case STRING:
+				if (str_from_termcap[np->nte_index])
+					name = strnames[np->nte_index];
+				break;
+			}
+	}
+#endif
+
+	if ((status = tigetflag(name)) != -1)
 		return(status != 0);
-	else if ((status = tigetnum(argv[0])) != CANCELLED_NUMERIC) {
+	else if ((status = tigetnum(name)) != CANCELLED_NUMERIC) {
 		(void) printf("%d\n", status);
 		return(0);
 	}
-	else if ((s = tigetstr(argv[0])) == CANCELLED_STRING)
-		quit(4, "%s: unknown terminfo capability '%s'", prg_name, argv[0]);
+	else if ((s = tigetstr(name)) == CANCELLED_STRING)
+		quit(4, "%s: unknown terminfo capability '%s'", prg_name, name);
 	else if (s != (char *)NULL) {
 		if (argc > 1) {
 		int k;

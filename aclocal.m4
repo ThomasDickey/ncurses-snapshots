@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.150 1998/12/20 01:23:54 Uchiyama.Yasushi Exp $
+dnl $Id: aclocal.m4,v 1.154 1999/01/24 02:20:30 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1349,6 +1349,9 @@ dnl
 dnl The variable 'cf_cv_do_symlinks' is used to control whether we configure
 dnl to install symbolic links to the rel/abi versions of shared libraries.
 dnl
+dnl The variable 'cf_cv_shlib_version' controls whether we use the rel or abi
+dnl version when making symbolic links.
+dnl
 dnl Some loaders leave 'so_locations' lying around.  It's nice to clean up.
 AC_DEFUN([CF_SHARED_OPTS],
 [
@@ -1359,6 +1362,22 @@ AC_DEFUN([CF_SHARED_OPTS],
 	INSTALL_LIB="-m 644"
 
 	cf_cv_do_symlinks=no
+
+	AC_MSG_CHECKING(if release/abi version should be used for shared libs)
+	AC_ARG_WITH(shlib-version,
+	[  --with-shlib-version=X  Specify rel or abi version for shared libs],
+	[test -z "$withval" && withval=auto
+	case $withval in #(vi
+	rel|abi|auto|no) #(vi
+		cf_cv_shlib_version=$withval
+		;;
+	*)
+		AC_ERROR([option value must be one of: rel, abi, auto or no])
+		;;
+	esac
+	],[cf_cv_shlib_version=auto])
+	AC_MSG_RESULT($cf_cv_shlib_version)
+
 	cf_cv_rm_so_locs=no
 
 	case $cf_cv_system_name in
@@ -1404,13 +1423,17 @@ AC_DEFUN([CF_SHARED_OPTS],
 	linux*)
 		# tested with Linux 2.0.29 and gcc 2.7.2 (ELF)
 		CC_SHARED_OPTS='-fpic'
- 		MK_SHARED_LIB='gcc -o $[@].$(REL_VERSION) -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)`,-stats,-lc'
 		test $cf_cv_ld_rpath = yes && cf_ld_rpath_opt="-Wl,-rpath,"
 		if test $DFT_LWR_MODEL = "shared" ; then
  			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
  			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'
 		fi
-		cf_cv_do_symlinks=yes
+		test $cf_cv_shlib_version = auto && cf_cv_shlib_version=rel
+		if test $cf_cv_shlib_version = no ; then
+			MK_SHARED_LIB='gcc -shared -Wl,-stats,-lc -o $[@]'
+		else
+			MK_SHARED_LIB='gcc -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)`,-stats,-lc -o $[@]'
+		fi
 		;;
 	openbsd2*)
 		CC_SHARED_OPTS='-fpic -DPIC'
@@ -1425,18 +1448,18 @@ AC_DEFUN([CF_SHARED_OPTS],
 		# tested with OSF/1 V3.2 and gcc 2.6.3 (but the c++ demo didn't
 		# link with shared libs).
 		CC_SHARED_OPTS=''
- 		MK_SHARED_LIB='$(LD) -o $[@] -set_version $(REL_VERSION):$(ABI_VERSION) -expect_unresolved "*" -shared -soname `basename $[@]`'
+ 		MK_SHARED_LIB='$(LD) -set_version $(REL_VERSION):$(ABI_VERSION) -expect_unresolved "*" -shared -soname `basename $[@]`'
 		test $cf_cv_ld_rpath = yes && cf_ld_rpath_opt="-rpath"
 		case $host_os in
 		osf4*)
  			MK_SHARED_LIB="${MK_SHARED_LIB} -msym"
 			;;
 		esac
+		MK_SHARED_LIB="${MK_SHARED_LIB} -o $[@]"
 		if test $DFT_LWR_MODEL = "shared" ; then
  			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
  			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'
 		fi
-		cf_cv_do_symlinks=no
 		cf_cv_rm_so_locs=yes
 		;;
 	sco3.2v5*)  # (also uw2* and UW7) hops 13-Apr-98
@@ -1446,12 +1469,12 @@ AC_DEFUN([CF_SHARED_OPTS],
 		else
 			CC_SHARED_OPTS='-KPIC'
 		fi
-		MK_SHARED_LIB='$(LD) -dy -G -h `basename [$]@.$(ABI_VERSION)` -o [$]@.$(REL_VERSION)'
+		MK_SHARED_LIB='$(LD) -dy -G -h `basename [$]@.$(ABI_VERSION)` -o [$]@'
 		if test $cf_cv_ld_rpath = yes ; then
 			# only way is to set LD_RUN_PATH but no switch for it
 			RUN_PATH=$libdir
 		fi
-		cf_cv_do_symlinks=yes
+		test $cf_cv_shlib_version = auto && cf_cv_shlib_version=rel
 		LINK_PROGS='LD_RUN_PATH=$(libdir)'
 		LINK_TESTS='Pwd=`pwd`;LD_RUN_PATH=`dirname $${Pwd}`/lib'
 		;;
@@ -1462,8 +1485,8 @@ AC_DEFUN([CF_SHARED_OPTS],
 		else
 			CC_SHARED_OPTS='-KPIC'
 		fi
-		MK_SHARED_LIB='$(LD) -assert pure-text -o $[@].$(REL_VERSION)'
-		cf_cv_do_symlinks=yes
+		MK_SHARED_LIB='$(LD) -assert pure-text -o $[@]'
+		test $cf_cv_shlib_version = auto && cf_cv_shlib_version=rel
 		;;
 	solaris2*)
 		# tested with SunOS 5.5.1 (solaris 2.5.1) and gcc 2.7.2
@@ -1472,12 +1495,12 @@ AC_DEFUN([CF_SHARED_OPTS],
 		else
 			CC_SHARED_OPTS='-KPIC'
 		fi
-		MK_SHARED_LIB='$(LD) -dy -G -h `basename $[@].$(ABI_VERSION)` -o $[@].$(REL_VERSION)'
+		MK_SHARED_LIB='$(LD) -dy -G -h `basename $[@].$(ABI_VERSION)` -o $[@]'
 		if test $cf_cv_ld_rpath = yes ; then
 			cf_ld_rpath_opt="-R"
 			EXTRA_LDFLAGS="-R ../lib:\$(libdir) $EXTRA_LDFLAGS"
 		fi
-		cf_cv_do_symlinks=yes
+		test $cf_cv_shlib_version = auto && cf_cv_shlib_version=rel
 		;;
 	unix_sv*)
 		# tested with UnixWare 1.1.2
@@ -1487,6 +1510,28 @@ AC_DEFUN([CF_SHARED_OPTS],
 	*)
 		CC_SHARED_OPTS='unknown'
 		MK_SHARED_LIB='echo unknown'
+		;;
+	esac
+
+	# This works if the last tokens in $MK_SHARED_LIB are the -o target.
+	case "$cf_cv_shlib_version" in #(vi
+	rel|abi)
+		case "$MK_SHARED_LIB" in #(vi
+		*'-o $[@]')
+			if test "$cf_cv_do_symlinks" = reverse ; then
+				AC_ERROR(cannot use --with-shlib-version with this platform)
+			fi
+			if test "$cf_cv_shlib_version" = rel ; then
+				MK_SHARED_LIB="$MK_SHARED_LIB"'.$(REL_VERSION)'
+			else
+				MK_SHARED_LIB="$MK_SHARED_LIB"'.$(ABI_VERSION)'
+			fi
+			cf_cv_do_symlinks=yes
+			;;
+		*)
+			AC_MSG_WARN(ignored --with-shlib-version)
+			;;
+		esac
 		;;
 	esac
 
