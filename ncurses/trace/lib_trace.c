@@ -40,7 +40,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.46 2001/08/12 00:31:12 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.47 2001/09/22 18:34:13 tom Exp $")
 
 NCURSES_EXPORT_VAR(unsigned)
 _nc_tracing = 0;		/* always define this */
@@ -104,7 +104,7 @@ _nc_vischar(char *tp, chtype c)
     } else if (c == '\033') {
 	*tp++ = '\\';
 	*tp++ = 'e';
-    } else if (is7bits(c) && iscntrl(c)) {
+    } else if (is7bits(c) && iscntrl(UChar(c))) {
 	*tp++ = '\\';
 	*tp++ = '^';
 	*tp++ = '@' + c;

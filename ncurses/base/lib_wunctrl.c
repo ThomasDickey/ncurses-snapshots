@@ -37,7 +37,7 @@
 
 #if USE_WIDEC_SUPPORT
 
-MODULE_ID("$Id: lib_wunctrl.c,v 1.5 2001/06/23 23:34:36 tom Exp $")
+MODULE_ID("$Id: lib_wunctrl.c,v 1.6 2001/09/22 19:18:02 tom Exp $")
 
 NCURSES_EXPORT(wchar_t *)
 wunctrl(cchar_t * wc)
@@ -45,7 +45,7 @@ wunctrl(cchar_t * wc)
     static wchar_t str[5], *sp;
 
     if (Charable(*wc)) {
-	char *p;
+	const char *p;
 	for (p = unctrl(wctob(CharOf(*wc))), sp = str; *p;)
 	    *sp++ = btowc(*p++);
 	return str;

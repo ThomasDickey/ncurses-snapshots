@@ -45,7 +45,7 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.58 2001/06/02 22:44:42 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.59 2001/09/22 18:35:23 tom Exp $")
 
 NCURSES_EXPORT_VAR(char)
 PC = 0;				/* used by termcap library */
@@ -162,19 +162,19 @@ tputs
      * (like nethack) actually do the likes of tputs("50") to get delays.
      */
     trailpad = 0;
-    if (isdigit(*string)) {
-	while (isdigit(*string)) {
+    if (isdigit(UChar(*string))) {
+	while (isdigit(UChar(*string))) {
 	    trailpad = trailpad * 10 + (*string - '0');
 	    string++;
 	}
 	trailpad *= 10;
 	if (*string == '.') {
 	    string++;
-	    if (isdigit(*string)) {
+	    if (isdigit(UChar(*string))) {
 		trailpad += (*string - '0');
 		string++;
 	    }
-	    while (isdigit(*string))
+	    while (isdigit(UChar(*string)))
 		string++;
 	}
 

@@ -43,7 +43,7 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <term_entry.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.41 2001/09/08 23:35:49 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.42 2001/09/22 19:17:31 tom Exp $")
 
 #define CSI       233
 #define ESC       033		/* ^[ */
@@ -58,7 +58,7 @@ static char *fix_me = 0;
 static char *
 set_attribute_9(int flag)
 {
-    char *result;
+    const char *result;
 
     if ((result = tparm(set_attributes, 0, 0, 0, 0, 0, 0, 0, 0, flag)) == 0)
 	result = "";
@@ -81,7 +81,7 @@ skip_zero(char *s)
     if (s[0] == '0') {
 	if (s[1] == ';')
 	    s += 2;
-	else if (isalpha(s[1]))
+	else if (isalpha(UChar(s[1])))
 	    s += 1;
     }
     return s;

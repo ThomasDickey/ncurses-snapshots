@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas Dickey 1995-2001                                         *
  ****************************************************************************/
 
 /*
@@ -47,12 +48,51 @@
 #define _POSIX_SOURCE
 #endif
 
-MODULE_ID("$Id: lib_tstp.c,v 1.25 2001/07/01 01:21:50 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.26 2001/09/23 00:20:05 tom Exp $")
 
 #if defined(SIGTSTP) && (HAVE_SIGACTION || HAVE_SIGVEC)
 #define USE_SIGTSTP 1
 #else
 #define USE_SIGTSTP 0
+#endif
+
+#ifdef TRACE
+static const char *
+signal_name(int sig)
+{
+    switch (sig) {
+    case SIGALRM:
+	return "SIGALRM";
+#ifdef SIGCONT
+    case SIGCONT:
+	return "SIGCONT";
+#endif
+    case SIGINT:
+	return "SIGINT";
+    case SIGQUIT:
+	return "SIGQUIT";
+    case SIGTERM:
+	return "SIGTERM";
+#ifdef SIGTSTP
+    case SIGTSTP:
+	return "SIGTSTP";
+#endif
+#ifdef SIGTTOU
+    case SIGTTOU:
+	return "SIGTTOU";
+#endif
+#ifdef SIGWINCH
+    case SIGWINCH:
+	return "SIGWINCH";
+#endif
+    case SIG_DFL:
+	return "SIG_DFL";
+    case SIG_IGN:
+	return "SIG_IGN";
+    default:
+	return "unknown signal";
+    }
+}
 #endif
 
 /*
@@ -215,7 +255,7 @@ cleanup(int sig)
 	sigemptyset(&act.sa_mask);
 	act.sa_flags = 0;
 	act.sa_handler = SIG_IGN;
-	if (sigaction(sig, &act, (sigaction_t *) 0) == 0)
+	if (sigaction(sig, &act, NULL) == 0)
 #else
 	if (signal(sig, SIG_IGN) != SIG_ERR)
 #endif
@@ -255,28 +295,34 @@ sigwinch(int sig GCC_UNUSED)
  * If the given signal is still in its default state, set it to the given
  * handler.
  */
-#if HAVE_SIGACTION || HAVE_SIGVEC
 static int
-CatchIfDefault(int sig, sigaction_t * act)
+CatchIfDefault(int sig, RETSIGTYPE(*handler) (int))
 {
+    int result;
+#if HAVE_SIGACTION || HAVE_SIGVEC
     sigaction_t old_act;
+    sigaction_t new_act;
 
-    if (sigaction(sig, (sigaction_t *) 0, &old_act) == 0
+    memset(&new_act, 0, sizeof(new_act));
+    sigemptyset(&new_act.sa_mask);
+#ifdef SA_RESTART
+    new_act.sa_flags |= SA_RESTART;
+#endif /* SA_RESTART */
+    new_act.sa_handler = handler;
+
+    if (sigaction(sig, NULL, &old_act) == 0
 	&& (old_act.sa_handler == SIG_DFL
 #if USE_SIGWINCH
 	    || (sig == SIGWINCH && old_act.sa_handler == SIG_IGN)
 #endif
 	)) {
-	(void) sigaction(sig, act, (sigaction_t *) 0);
-	return TRUE;
+	(void) sigaction(sig, &new_act, NULL);
+	result = TRUE;
+    } else {
+	result = FALSE;
     }
-    return FALSE;
-}
-#else
-static int
-CatchIfDefault(int sig, RETSIGTYPE(*handler) (int))
-{
-    void (*ohandler) (int);
+#else /* !HAVE_SIGACTION */
+    RETSIGTYPE(*ohandler) (int);
 
     ohandler = signal(sig, SIG_IGN);
     if (ohandler == SIG_DFL
@@ -285,13 +331,16 @@ CatchIfDefault(int sig, RETSIGTYPE(*handler) (int))
 #endif
 	) {
 	signal(sig, handler);
-	return TRUE;
+	result = TRUE;
     } else {
 	signal(sig, ohandler);
-	return FALSE;
+	result = FALSE;
     }
-}
 #endif
+    T(("CatchIfDefault - will %scatch %s",
+       result ? "" : "not ", signal_name(sig)));
+    return result;
+}
 
 /*
  * This is invoked once at the beginning (e.g., from 'initscr()'), to
@@ -308,59 +357,35 @@ NCURSES_EXPORT(void)
 _nc_signal_handler(bool enable)
 {
 #if USE_SIGTSTP			/* Xenix 2.x doesn't have SIGTSTP, for example */
-    static sigaction_t act, oact;
-    static int ignore;
+    static bool ignore_tstp = FALSE;
 
-    if (!ignore) {
+    if (!ignore_tstp) {
+	static sigaction_t act, oact;
+
 	if (!enable) {
 	    act.sa_handler = SIG_IGN;
 	    sigaction(SIGTSTP, &act, &oact);
-	} else if (act.sa_handler) {
+	} else if (act.sa_handler != SIG_DFL) {
 	    sigaction(SIGTSTP, &oact, NULL);
-	} else {		/*initialize */
+	} else if (sigaction(SIGTSTP, NULL, &oact) == 0
+		   && (oact.sa_handler == SIG_DFL)) {
 	    sigemptyset(&act.sa_mask);
-	    act.sa_flags = 0;
-#if USE_SIGWINCH
-	    act.sa_handler = sigwinch;
-	    CatchIfDefault(SIGWINCH, &act);
-#endif
-
 #ifdef SA_RESTART
 	    act.sa_flags |= SA_RESTART;
 #endif /* SA_RESTART */
-	    act.sa_handler = cleanup;
-	    CatchIfDefault(SIGINT, &act);
-	    CatchIfDefault(SIGTERM, &act);
-
 	    act.sa_handler = tstp;
-	    if (!CatchIfDefault(SIGTSTP, &act))
-		ignore = TRUE;
+	    (void) sigaction(SIGTSTP, &act, NULL);
+	} else {
+	    ignore_tstp = TRUE;
 	}
     }
-#else /* !USE_SIGTSTP */
+#endif /* !USE_SIGTSTP */
+
     if (enable) {
-#if HAVE_SIGACTION || HAVE_SIGVEC
-	static sigaction_t act;
-	sigemptyset(&act.sa_mask);
-#if USE_SIGWINCH
-	act.sa_handler = sigwinch;
-	CatchIfDefault(SIGWINCH, &act);
-#endif
-#ifdef SA_RESTART
-	act.sa_flags |= SA_RESTART;
-#endif /* SA_RESTART */
-	act.sa_handler = cleanup;
-	CatchIfDefault(SIGINT, &act);
-	CatchIfDefault(SIGTERM, &act);
-
-#else /* !(HAVE_SIGACTION || HAVE_SIGVEC) */
-
 	CatchIfDefault(SIGINT, cleanup);
 	CatchIfDefault(SIGTERM, cleanup);
 #if USE_SIGWINCH
 	CatchIfDefault(SIGWINCH, sigwinch);
 #endif
-#endif /* !(HAVE_SIGACTION || HAVE_SIGVEC) */
     }
-#endif /* !USE_SIGTSTP */
 }
