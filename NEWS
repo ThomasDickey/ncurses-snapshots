@@ -1,10 +1,32 @@
--- $Id: NEWS,v 1.469 1999/07/24 22:51:49 tom Exp $
+-- $Id: NEWS,v 1.471 1999/07/31 23:21:48 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990731	pre-release
+	+ minor correction for 'screen' terminfo entry.
+	+ clarify description of errret values for setupterm in manpage.
+	+ modify tput to allow it to emit capabilities for hardcopy terminals
+	  (patch by Goran Uddeborg <goeran@uddeborg.pp.se>).
+	+ modify the 'o' (panel) test in ncurses.c to show the panels in color
+	  or at least in bold, to test Juergen's change to wrefresh().
+	> patches by Juergen Pfeifer:
+	+ Fixes a problem using wbkgdset() with panels.  It has actually
+	  nothing to with panels but is a problem in the implementation of
+	  wrefresh().  Whenever a window changes its background attribute to
+	  something different than newscr's background attribute, the whole
+	  window is touched to force a copy to newscr.  This is an unwanted
+	  side-effect of wrefresh() and it is actually not necessary.  A changed
+	  background attribute affects only further outputs of background it
+	  doesn't mean anything to the current content of the window.  So there
+	  is no need to force a copy.  (reported by Frank Heckenbach
+	  <frank@g-n-u.de>).
+	+ an upward compatible enhancement of the NCursesPad class in the C++
+	  binding.  It allows one to add a "viewport" window to a pad and then
+	  to use panning to view the pad through the viewport window.
 
 990724	pre-release
 	+ suppress a call to def_prog_mode() in the SIGTSTP handler if the

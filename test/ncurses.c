@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.116 1999/07/24 20:47:27 tom Exp $
+$Id: ncurses.c,v 1.117 1999/07/31 21:00:47 tom Exp $
 
 ***************************************************************************/
 
@@ -1516,17 +1516,6 @@ static void acs_and_scroll(void)
  ****************************************************************************/
 
 #if USE_LIBPANEL
-static PANEL *p1;
-static PANEL *p2;
-static PANEL *p3;
-static PANEL *p4;
-static PANEL *p5;
-static WINDOW *w1;
-static WINDOW *w2;
-static WINDOW *w3;
-static WINDOW *w4;
-static WINDOW *w5;
-
 static unsigned long nap_msec = 1;
 
 static NCURSES_CONST char *mod[] =
@@ -1575,17 +1564,24 @@ saywhat(NCURSES_CONST char *text)
 	mkpanel(rows,cols,tly,tlx) - alloc a win and panel and associate them
 --------------------------------------------------------------------------*/
 static PANEL *
-mkpanel(int rows, int cols, int tly, int tlx)
+mkpanel(int color, int rows, int cols, int tly, int tlx)
 {
-WINDOW *win = newwin(rows,cols,tly,tlx);
-PANEL *pan;
+WINDOW *win;
+PANEL *pan = 0;
 
-	if(!win)
-		return((PANEL *)0);
-	if((pan = new_panel(win)))
-		return(pan);
-	delwin(win);
-	return((PANEL *)0);
+	if ((win = newwin(rows, cols, tly, tlx)) != 0) {
+		if ((pan = new_panel(win)) == 0) {
+			delwin(win);
+		} else if (has_colors()) {
+			int fg = (color == COLOR_BLUE) ? COLOR_WHITE : COLOR_BLACK;
+			int bg = color;
+			init_pair(color, fg, bg);
+			wbkgdset(win, COLOR_PAIR(color) | ' ');
+		} else {
+			wbkgdset(win, A_BOLD | ' ');
+		}
+	}
+	return pan;
 }	/* end of mkpanel */
 
 /*+-------------------------------------------------------------------------
@@ -1619,9 +1615,10 @@ WINDOW *win = panel_window(pan);
 int num = ((const char *)panel_userptr(pan))[1];
 int y,x;
 
-	box(win, 0, 0);
 	wmove(win,1,1);
 	wprintw(win,"-pan%c-", num);
+	wclrtoeol(win);
+	box(win, 0, 0);
 	for(y = 2; y < getmaxy(win) - 1; y++)
 	{
 		for(x = 1; x < getmaxx(win) - 1; x++)
@@ -1646,24 +1643,25 @@ register int y,x;
 	}
 	for(y = 0; y < 5; y++)
 	{
-		p1 = mkpanel(LINES/2 - 2, COLS/8 + 1, 0, 0);
-		w1 = panel_window(p1);
+		PANEL *p1;
+		PANEL *p2;
+		PANEL *p3;
+		PANEL *p4;
+		PANEL *p5;
+
+		p1 = mkpanel(COLOR_RED, LINES/2 - 2, COLS/8 + 1, 0, 0);
 		set_panel_userptr(p1,"p1");
 
-		p2 = mkpanel(LINES/2 + 1, COLS/7, LINES/4, COLS/10);
-		w2 = panel_window(p2);
+		p2 = mkpanel(COLOR_GREEN, LINES/2 + 1, COLS/7, LINES/4, COLS/10);
 		set_panel_userptr(p2,"p2");
 
-		p3 = mkpanel(LINES/4, COLS/10, LINES/2, COLS/9);
-		w3 = panel_window(p3);
+		p3 = mkpanel(COLOR_YELLOW, LINES/4, COLS/10, LINES/2, COLS/9);
 		set_panel_userptr(p3,"p3");
 
-		p4 = mkpanel(LINES/2 - 2, COLS/8, LINES/2 - 2, COLS/3);
-		w4 = panel_window(p4);
+		p4 = mkpanel(COLOR_BLUE, LINES/2 - 2, COLS/8, LINES/2 - 2, COLS/3);
 		set_panel_userptr(p4,"p4");
 
-		p5 = mkpanel(LINES/2 - 2, COLS/8, LINES/2, COLS/2 - 2);
-		w5 = panel_window(p5);
+		p5 = mkpanel(COLOR_MAGENTA, LINES/2 - 2, COLS/8, LINES/2, COLS/2 - 2);
 		set_panel_userptr(p5,"p5");
 
 		fill_panel(p1);
@@ -1754,6 +1752,9 @@ register int y,x;
 
 		for(itmp = 0; itmp < 6; itmp++)
 		{
+			WINDOW *w4 = panel_window(p4);
+			WINDOW *w5 = panel_window(p5);
+
 			saywhat("m4; press any key to continue");
 			wmove(w4, LINES/8, 1);
 			waddstr(w4,mod[itmp]);
@@ -1762,6 +1763,7 @@ register int y,x;
 			waddstr(w5,mod[itmp]);
 			pflush();
 			wait_a_while(nap_msec);
+
 			saywhat("m5; press any key to continue");
 			wmove(w4, LINES/6, 1);
 			waddstr(w4,mod[itmp]);
