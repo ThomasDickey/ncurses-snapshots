@@ -73,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.118 1999/11/14 02:40:11 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.122 1999/11/28 03:07:38 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -870,7 +870,11 @@ bool	needclear = FALSE;
 	{
 	    UpdateAttrs(blank);
 	    TPUTS_TRACE("clr_eol");
-	    if (SP->_el_cost > (screen_columns - SP->_curscol))
+	    if (SP->_el_cost > (screen_columns - SP->_curscol)
+#ifdef NCURSES_EXT_FUNCS
+	    || (SP->_coloron && !SP->_default_color && !back_color_erase)
+#endif
+	    )
 	    {
 		int count = (screen_columns - SP->_curscol);
 		while (count-- > 0)
@@ -891,13 +895,30 @@ static void ClrToEOS(chtype blank)
 {
 int row, col;
 
-	UpdateAttrs(blank);
-	TPUTS_TRACE("clr_eos");
 	row = SP->_cursrow;
-	tputs(clr_eos, screen_lines-row, _nc_outch);
+	col = SP->_curscol;
 
-	for (col = SP->_curscol; col < screen_columns; col++)
-		curscr->_line[row].text[col] = blank;
+#ifdef NCURSES_EXT_FUNCS
+	if (SP->_coloron && !SP->_default_color && !back_color_erase) {
+		int i, j, k = col;
+		for (i = row; i < screen_lines; i++) {
+			GoTo(i, k);
+			UpdateAttrs(blank);
+			for (j = k; j < screen_columns; j++)
+				PutChar(blank);
+			k = 0;
+		}
+		GoTo(row, col);
+	} else
+#endif
+	{
+		UpdateAttrs(blank);
+		TPUTS_TRACE("clr_eos");
+		tputs(clr_eos, screen_lines-row, _nc_outch);
+	}
+
+	while (col < screen_columns)
+		curscr->_line[row].text[col++] = blank;
 
 	for (row++; row < screen_lines; row++)
 	{
@@ -957,8 +978,9 @@ chtype	blank  = newscr->_line[total-1].text[last-1]; /* lower right char */
 		}
 	}
 #if NO_LEAKS
-	if (tstLine != 0)
+	if (tstLine != 0) {
 		FreeAndNull(tstLine);
+	}
 #endif
 	return total;
 }
@@ -1233,38 +1255,45 @@ bool	attrchanged = FALSE;
 static void ClearScreen(chtype blank)
 {
 	int	i, j;
+	bool	fast_clear = (clear_screen || clr_eos || clr_eol);
 
 	T(("ClearScreen() called"));
 
 #ifdef NCURSES_EXT_FUNCS
 	if (SP->_coloron
-	 && !SP->_default_color)
+	 && !SP->_default_color) {
 		_nc_do_color(0, FALSE, _nc_outch);
+		if (!back_color_erase) {
+			fast_clear = FALSE;
+		}
+	}
 #endif
 
-	if (clear_screen) {
-		UpdateAttrs(blank);
-		TPUTS_TRACE("clear_screen");
-		putp(clear_screen);
-		SP->_cursrow = SP->_curscol = 0;
-		position_check(SP->_cursrow, SP->_curscol, "ClearScreen");
-	} else if (clr_eos) {
-		SP->_cursrow = SP->_curscol = -1;
-		GoTo(0,0);
-
-		UpdateAttrs(blank);
-		TPUTS_TRACE("clr_eos");
-		putp(clr_eos);
-	} else if (clr_eol) {
-		SP->_cursrow = SP->_curscol = -1;
-
-		for (i = 0; i < screen_lines; i++) {
-			GoTo(i, 0);
+	if (fast_clear) {
+		if (clear_screen) {
 			UpdateAttrs(blank);
-			TPUTS_TRACE("clr_eol");
-			putp(clr_eol);
+			TPUTS_TRACE("clear_screen");
+			putp(clear_screen);
+			SP->_cursrow = SP->_curscol = 0;
+			position_check(SP->_cursrow, SP->_curscol, "ClearScreen");
+		} else if (clr_eos) {
+			SP->_cursrow = SP->_curscol = -1;
+			GoTo(0,0);
+
+			UpdateAttrs(blank);
+			TPUTS_TRACE("clr_eos");
+			putp(clr_eos);
+		} else if (clr_eol) {
+			SP->_cursrow = SP->_curscol = -1;
+
+			for (i = 0; i < screen_lines; i++) {
+				GoTo(i, 0);
+				UpdateAttrs(blank);
+				TPUTS_TRACE("clr_eol");
+				putp(clr_eol);
+			}
+			GoTo(0,0);
 		}
-		GoTo(0,0);
 	} else {
 		for (i = 0; i < screen_lines; i++) {
 			GoTo(i, 0);
@@ -1407,7 +1436,7 @@ void _nc_outstr(const char *str)
 /* Try to scroll up assuming given csr (miny, maxy). Returns ERR on failure */
 static int scroll_csr_forward(int n, int top, int bot, int miny, int maxy, chtype blank)
 {
-    int i;
+    int i, j;
 
     if (n == 1 && scroll_forward && top == miny && bot == maxy)
     {
@@ -1460,6 +1489,15 @@ static int scroll_csr_forward(int n, int top, int bot, int miny, int maxy, chtyp
     else
 	return ERR;
 
+#ifdef NCURSES_EXT_FUNCS
+    if (SP->_coloron && !SP->_default_color && !back_color_erase) {
+	for (i = 0; i < n; i++) {
+	    GoTo(bot-i, 0);
+	    for (j = 0; j < screen_columns; j++)
+		PutChar(blank);
+	}
+    }
+#endif
     return OK;
 }
 
@@ -1467,7 +1505,7 @@ static int scroll_csr_forward(int n, int top, int bot, int miny, int maxy, chtyp
 /* n > 0 */
 static int scroll_csr_backward(int n, int top, int bot, int miny, int maxy, chtype blank)
 {
-    int i;
+    int i, j;
 
     if (n == 1 && scroll_reverse && top == miny && bot == maxy)
     {
@@ -1520,6 +1558,15 @@ static int scroll_csr_backward(int n, int top, int bot, int miny, int maxy, chty
     else
 	return ERR;
 
+#ifdef NCURSES_EXT_FUNCS
+    if (SP->_coloron && !SP->_default_color && !back_color_erase) {
+	for (i = 0; i < n; i++) {
+	    GoTo(top+i, 0);
+	    for (j = 0; j < screen_columns; j++)
+		PutChar(blank);
+	}
+    }
+#endif
     return OK;
 }
 

@@ -1,10 +1,36 @@
--- $Id: NEWS,v 1.508 1999/11/14 03:00:59 tom Exp $
+-- $Id: NEWS,v 1.510 1999/11/28 03:09:09 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+19991127
+	+ additional fixes for non-bce terminals (handling of clear_screen,
+	  clr_eol, clr_eos, scrolling) to work when assume_default_colors() is
+	  not specified.
+	+ several small changes to xterm terminfo entries -TD.
+	+ move logic for _nc_windows in lib_freeall.c inside check for nonnull
+	  SP, since it is part of that struct.
+	+ remove obsolete shlib-versions, which was unintentionally re-added
+	  in 970927.
+	+ modify infocmp -e, -E options to ensure that generated fallback.c
+	  type for Booleans agrees with term.h (reported by Eric Norum
+	  <eric@cls.usask.ca>).
+	+ correct configure script's use of $LIB_PREFIX, which did not work
+	  for installing the c++ directory if $libdir did not end with "/lib"
+	  (reported by Huy Le <huyle@ugcs.caltech.edu>).
+	+ modify infocmp so -L and -f options work together.
+	+ modify the initialization of SP->_color_table[] in start_color() so
+	  that color_content() will return usable values for COLORS greater
+	  than 8.
+	+ modify ncurses 'd' test in case COLORS is greater than 16, e.g., for
+	  xterm-88color, to limit the displayed/computed colors to 16.
+	> patch by Juergen Pfeifer:
+	+ simplify coding of the panel library according to suggestions by
+	  Philippe Blain.
+	+ improve macro coding for a few macros in curses.priv.h
 
 19991113
 	+ modify treatment of color pair 0 so that if ncurses is configured
@@ -44,7 +70,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ explicitly initialize to zero several data items which were
 	  implicitly initialized, e.g., cur_term.  If not explicitly
 	  initialized, their storage type is C (common), and causes problems
-	  linking on Rhapsody 5.5 using gcc 2.7.2.1 (reported by Nelson H. F. 
+	  linking on Rhapsody 5.5 using gcc 2.7.2.1 (reported by Nelson H. F.
 	  Beebe).
 	+ modify Ada95 binding to not include the linker option for Ada
 	  bindings in the Ada headers, but in the Makefiles instead (patch by

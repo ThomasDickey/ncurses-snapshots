@@ -733,7 +733,6 @@
 ./progs/toe.c
 ./progs/tput.c
 ./progs/tset.c
-./shlib-versions
 ./sysdeps/unix/sysv/linux/Makefile
 ./sysdeps/unix/sysv/linux/alpha/configure
 ./sysdeps/unix/sysv/linux/configure

@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.121 1999/11/13 23:48:03 tom Exp $
+$Id: ncurses.c,v 1.122 1999/11/27 21:29:05 tom Exp $
 
 ***************************************************************************/
 
@@ -501,7 +501,15 @@ static NCURSES_CONST char *color_names[] =
     "blue",
     "magenta",
     "cyan",
-    "white"
+    "white",
+    "BLACK",
+    "RED",
+    "GREEN",
+    "YELLOW",
+    "BLUE",
+    "MAGENTA",
+    "CYAN",
+    "WHITE"
 };
 
 static void show_color_name(int y, int x, int color)
@@ -584,10 +592,11 @@ static void color_edit(void)
 {
     int	i, this_c = 0, value = 0, current = 0, field = 0;
     int last_c;
+    int max_colors = COLORS > 16 ? 16 : COLORS;
 
     refresh();
 
-    for (i = 0; i < COLORS; i++)
+    for (i = 0; i < max_colors; i++)
 	init_pair(i, COLOR_WHITE, i);
 
     mvprintw(LINES-2, 0, "Number: %d", value);
@@ -599,7 +608,7 @@ static void color_edit(void)
 	mvaddstr(0, 20, "Color RGB Value Editing");
 	attroff(A_BOLD);
 
-	for (i = 0; i < COLORS; i++)
+	for (i = 0; i < max_colors; i++)
         {
 	    mvprintw(2 + i, 0, "%c %-8s:",
 		     (i == current ? '>' : ' '),
@@ -634,9 +643,9 @@ static void color_edit(void)
 	    addstr(")");
 	}
 
-	mvaddstr(COLORS + 3, 0,
+	mvaddstr(max_colors + 3, 0,
 	    "Use up/down to select a color, left/right to change fields.");
-	mvaddstr(COLORS + 4, 0,
+	mvaddstr(max_colors + 4, 0,
 	    "Modify field by typing nnn=, nnn-, or nnn+.  ? for help.");
 
 	move(2 + current, 0);
@@ -649,11 +658,11 @@ static void color_edit(void)
 	switch (this_c)
 	{
 	case KEY_UP:
-	    current = (current == 0 ? (COLORS - 1) : current - 1);
+	    current = (current == 0 ? (max_colors - 1) : current - 1);
 	    break;
 
 	case KEY_DOWN:
-	    current = (current == (COLORS - 1) ? 0 : current + 1);
+	    current = (current == (max_colors - 1) ? 0 : current + 1);
 	    break;
 
 	case KEY_RIGHT:
