@@ -1,7 +1,7 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
 #	Version 10.2.1
-#	$Date: 1998/12/20 03:20:38 $
+#	$Date: 1998/12/29 16:00:57 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -581,7 +581,7 @@ beterm|BeOS Terminal,
 #
 linux|linux console, 
 	am, bce, eo, mir, msgr, xenl, xon, 
-	it#8, ncv@, 
+	it#8, ncv#2, 
 	acsc=+\020\,\021-\030.^Y0\333`\004a\261f\370g\361h\260i\316j\331k\277l\332m\300n\305o~p\304q\304r\304s_t\303u\264v\301w\302x\263y\363z\362{\343|\330}\234~\376, 
 	bel=^G, civis=\E[?25l, clear=\E[H\E[J, cnorm=\E[?25h, 
 	cr=^M, csr=\E[%i%p1%d;%p2%dr, cub1=^H, cud1=^J, cuf1=\E[C, 
@@ -17049,6 +17049,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* update xterm-xfree86 to current (patch 90), smcur/rmcur changes - TD
 #	* add Mathew Vernon's mach console entries
 #	* corrections for ncsa function-keys (report by Larry Virden)
+#
+# 1998/12/19
+#	* change linux to use ncv#2, since underline does not work with color - TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

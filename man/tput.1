@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.10 1998/11/29 01:13:12 Rick.Ohnemus Exp $
+.\" $Id: tput.1,v 1.11 1998/12/26 01:56:02 tom Exp $
 .TH tput 1 ""
 .ds d @DATADIR@/terminfo
 .ds n 5
@@ -55,8 +55,9 @@ the attribute is of type boolean, \fBtput\fR simply sets the exit code
 (\fB0\fR for TRUE if the terminal has the capability, \fB1\fR for
 FALSE if it does not), and produces no output.  Before using a value
 returned on standard output, the user should test the exit code
-[\fB$?\fR, see \fBsh\fR(1)] to be sure it is \fB0\fR.  (See the \fBEXIT
-CODES\fR and \fBDIAGNOSTICS\fR sections.)  For a complete list of capabilities
+[\fB$?\fR, see \fBsh\fR(1)] to be sure it is \fB0\fR.
+(See the \fBEXIT CODES\fR and \fBDIAGNOSTICS\fR sections.)
+For a complete list of capabilities
 and the \fIcapname\fR associated with each, see \fBterminfo\fR(\*n).
 .TP
 \fB-T\fR\fItype\fR

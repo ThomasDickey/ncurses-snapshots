@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_border.3x,v 1.9 1998/03/11 21:12:53 juergen Exp $
+.\" $Id: curs_border.3x,v 1.10 1998/12/26 20:07:03 tom Exp $
 .TH curs_border 3X ""
 .SH NAME
 \fBborder\fR, \fBwborder\fR, \fBbox\fR,
@@ -35,12 +35,12 @@
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 .br
-\fBint border(chtype ls, chtype rs, chtype ts, chtype bs,
-   chtype tl, chtype tr, chtype bl, chtype br);\fR
+\fBint border(chtype ls, chtype rs, chtype ts, chtype bs,\fR
+   \fBchtype tl, chtype tr, chtype bl, chtype br);\fR
 .br
-\fBint wborder(WINDOW *win, chtype ls, chtype rs,
-   chtype ts, chtype bs, chtype tl, chtype tr,
-   chtype bl, chtype br);\fR
+\fBint wborder(WINDOW *win, chtype ls, chtype rs,\fR
+   \fBchtype ts, chtype bs, chtype tl, chtype tr,\fR
+   \fBchtype bl, chtype br);\fR
 .br
 \fBint box(WINDOW *win, chtype verch, chtype horch);\fR
 .br

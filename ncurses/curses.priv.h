@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.124 1998/12/20 02:46:06 tom Exp $
+ * $Id: curses.priv.h,v 1.125 1998/12/27 03:48:18 tom Exp $
  *
  *	curses.priv.h
  *
@@ -283,6 +283,9 @@ struct screen {
 	SLK             *_slk;          /* ptr to soft key struct / NULL    */
 
 	/* cursor movement costs; units are 10ths of milliseconds */
+#ifdef NCURSES_NO_PADDING
+	int             _no_padding;    /* flag to set if padding disabled  */
+#endif
 	int             _char_padding;  /* cost of character put            */
 	int             _cr_cost;       /* cost of (carriage_return)        */
 	int             _cup_cost;      /* cost of (cursor_address)         */

@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.398 1998/12/20 14:35:07 tom Exp $
+-- $Id: NEWS,v 1.400 1998/12/27 03:43:06 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+981226
+	+ miscellaneous corrections for curses.h to match XSI.
+	+ change --enable-no-padding configure option to be normally enabled.
+	+ add section to ncurses manpage for environment variables.
+	+ investigated Debian bug report that pertains to screen 3.7.4/3.7.6
+	  changes, found no sign of problems on Linux (or on SunOS, Solaris)
+	  running screen built with ncurses.
+	+ check if tmp_fp is opened in tic.c before closing it (patch by Pavel
+	  Roskin <pavel_roskin@geocities.com>).
+	+ correct several font specification typos in man-pages.
 
 981220
 	+ correct default value for BUILD_CC (reported by Larry Virden).
