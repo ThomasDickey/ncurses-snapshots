@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.115 1999/07/11 01:02:00 tom Exp $
+$Id: ncurses.c,v 1.116 1999/07/24 20:47:27 tom Exp $
 
 ***************************************************************************/
 
@@ -351,6 +351,8 @@ int y, x;
 
 static int show_attr(int row, int skip, chtype attr, const char *name, bool once)
 {
+    int ncv = tigetnum("ncv");
+
     mvprintw(row, 8, "%s mode:", name);
     mvprintw(row, 24, "|");
     if (skip) printw("%*s", skip, " ");
@@ -363,8 +365,34 @@ static int show_attr(int row, int skip, chtype attr, const char *name, bool once
 	attroff(attr);
     if (skip) printw("%*s", skip, " ");
     printw("|");
-    if (attr != A_NORMAL && !(termattrs() & attr))
-	printw(" (N/A)");
+    if (attr != A_NORMAL) {
+	if (!(termattrs() & attr)) {
+	    printw(" (N/A)");
+	} else if (ncv && (getbkgd(stdscr) & A_COLOR)) {
+	    static const attr_t table[] = {
+		A_STANDOUT,
+		A_UNDERLINE,
+		A_REVERSE,
+		A_BLINK,
+		A_DIM,
+		A_BOLD,
+		A_INVIS,
+		A_PROTECT,
+		A_ALTCHARSET
+	    };
+	    unsigned n;
+	    bool found = FALSE;
+	    for (n = 0; n < sizeof(table)/sizeof(table[0]); n++) {
+		if ((table[n] & attr) != 0
+		 && ((1 << n) & ncv) != 0) {
+		    found = TRUE;
+		    break;
+		}
+	    }
+	    if (found)
+		printw(" (NCV)");
+	}
+    }
     return row + 2;
 }
 
@@ -402,7 +430,7 @@ static void attr_test(void)
 {
     int n;
     int skip = tigetnum("xmc");
-    int fg = COLOR_WHITE;
+    int fg = COLOR_BLACK;	/* color pair 0 is special */
     int bg = COLOR_BLACK;
     bool *pairs = (bool *)calloc(COLOR_PAIRS, sizeof(bool));
     pairs[0] = TRUE;

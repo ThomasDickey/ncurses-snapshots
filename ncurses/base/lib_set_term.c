@@ -42,16 +42,16 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.45 1999/03/06 22:29:13 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.46 1999/07/24 20:05:49 tom Exp $")
 
-SCREEN * set_term(SCREEN *screen)
+SCREEN * set_term(SCREEN *screenp)
 {
 SCREEN	*oldSP;
 
-	T((T_CALLED("set_term(%p)"), screen));
+	T((T_CALLED("set_term(%p)"), screenp));
 
 	oldSP = SP;
-	_nc_set_screen(screen);
+	_nc_set_screen(screenp);
 
 	set_curterm(SP->_term);
 	curscr      = SP->_curscr;

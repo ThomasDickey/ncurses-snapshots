@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.31 1999/03/14 01:34:44 tom Exp $
+-- $Id: INSTALL,v 1.32 1999/07/24 21:06:24 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -298,7 +298,8 @@ RECENT XTERM VERSIONS
 	earlier X11R5 entry (xterm-r5) is provided as well.
 
 	If you are running XFree86 version 3.2 (actually 3.1.2F and up), you
-	should consider using the xterm-xf86-v32 entry, which adds ANSI color
+	should consider using the xterm-xf86-v32 (or later, the most recent
+	version is always named "xterm-xfree86") entry, which adds ANSI color
 	and the VT220 capabilities which have been added in XFree86.  If you
 	are running a mixed network, however, where this terminal description
 	may be used on an older xterm, you may have problems, since

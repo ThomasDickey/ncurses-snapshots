@@ -1,10 +1,36 @@
--- $Id: NEWS,v 1.467 1999/07/10 22:30:27 tom Exp $
+-- $Id: NEWS,v 1.469 1999/07/24 22:51:49 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990724	pre-release
+	+ suppress a call to def_prog_mode() in the SIGTSTP handler if the
+	  signal was received while not in curses mode, e.g., endwin() was
+	  called in preparation for spawning a shell command (reported by Frank
+	  Heckenbach <frank@g-n-u.de>)
+	+ corrected/enhanced xterm-r5, xterm+sl, xterm+sl-twm terminfo entries.
+	+ change test for xterm mouse capability:  it now checks only if the
+	  user's $DISPLAY variable is set in conjunction with the kmous
+	  capability being present in the terminfo.  Before, it checked if any
+	  of "xterm", "rxvt" or "kterm" were substrings of the terminal name.
+	  However, some emulators which are incompatible with xterm in other
+	  ways do support the xterm mouse capability.
+	+ reviewed and made minor changes in ncurses to quiet g++ warnings
+	  about shadowed or uninitialized variables.  g++ incorrectly warns
+	  about uninitialized variables because it does not take into account
+	  short-circuit expression evaluation.
+	+ change ncurses 'b' test to start in color pair 0 and to show in the
+	  right margin those attributes which are suppressed by no_color_video,
+	  i.e., "(NCV)".
+	+ modify ifdef's in curses.h so that __attribute__ is not redefined
+	  when compiling with g++, but instead disabled the macros derived for
+	  __attribute__ since g++ does not consistently recognize the same
+	  keywords as gcc (reported by Stephan K Zitz <zitz@erf.net>).
+	+ update dependencies for term.h in ncurses/modules (reported by
+	  Ilya Zakharevich).
 
 990710	pre-release
 	+ modify the form demo in ncurses.c to illustrate how to manipulate the

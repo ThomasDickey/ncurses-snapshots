@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.41 1998/06/28 00:10:21 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.42 1999/07/24 20:01:05 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -169,8 +169,8 @@ int waddch_nosync(WINDOW *win, const chtype ch)
 /* the workhorse function -- add a character to the given window */
 {
 	int	x, y;
-	int	t;
-	const char *s;
+	int	t = 0;
+	const char *s = 0;
 
 	if ((ch & A_ALTCHARSET)
 	    || ((t = TextOf(ch)) > 127)
