@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.154 1999/01/24 02:20:30 tom Exp $
+dnl $Id: aclocal.m4,v 1.155 1999/01/29 19:21:29 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1368,6 +1368,9 @@ AC_DEFUN([CF_SHARED_OPTS],
 	[  --with-shlib-version=X  Specify rel or abi version for shared libs],
 	[test -z "$withval" && withval=auto
 	case $withval in #(vi
+	yes) #(vi
+		cf_cv_shlib_version=auto
+		;;
 	rel|abi|auto|no) #(vi
 		cf_cv_shlib_version=$withval
 		;;
@@ -1455,7 +1458,7 @@ AC_DEFUN([CF_SHARED_OPTS],
  			MK_SHARED_LIB="${MK_SHARED_LIB} -msym"
 			;;
 		esac
-		MK_SHARED_LIB="${MK_SHARED_LIB} -o $[@]"
+		MK_SHARED_LIB="${MK_SHARED_LIB}"' -o $[@]'
 		if test $DFT_LWR_MODEL = "shared" ; then
  			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
  			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'

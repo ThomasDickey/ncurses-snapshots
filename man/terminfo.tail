@@ -1,4 +1,4 @@
-.\" $Id: terminfo.tail,v 1.26 1999/01/17 03:43:38 tom Exp $
+.\" $Id: terminfo.tail,v 1.27 1999/01/31 02:07:54 tom Exp $
 .\" Beginning of terminfo.tail file
 .ps +1
 .PP
@@ -1178,6 +1178,9 @@ A_ALTCHARSET	8	256
 For example, on many IBM PC consoles, the underline attribute collides with the
 foreground color blue and is not available in color mode.  These should have
 an \fBncv\fR capability of 2.
+.PP
+SVr4 curses does nothing with \fBncv\fR, ncurses recognizes it and optimizes
+the output in favor of colors.
 .PP
 .SS Miscellaneous
 .PP
