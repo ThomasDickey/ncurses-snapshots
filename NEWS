@@ -1,7 +1,25 @@
--- $Id: NEWS,v 1.216 1997/06/22 00:45:20 tom Exp $
+-- $Id: NEWS,v 1.218 1997/06/29 01:58:10 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+970628
+	+ modify change from 970101 to ClrUpdate() in lib_doupdate.c so that
+	  pending changes to both curscr and newscr are flushed properly.
+	  This fixes a case where the first scrolling operation in nvi would
+	  cause the screen to be cleared unnecessarily and repainted before
+	  doing the indexing (i.e., by repeatedly pressing 'j').
+	+ correct error in trans_string() which added embedded newlines in a
+	  terminfo description to the stored strings.
+	+ remove spurious newlines from sgr in wyse50 (and several other)
+	  terminfo descriptions.
+	+ add configure option for experimental xmc (magic cookie) code,
+	  "--enable-xmc-glitch".  When disabled (the default), attributes that
+	  would store a magic cookie are suppressed in vidputs().  The magic
+	  cookie code is far from workable at this stage; the configuration
+	  option is a stopgap.
+	+ move _nc_initscr() from lib_initscr.c to lib_newterm.c
+	+ correct path for invoking make_keys (a missing "./").
 
 970621
 	+ correct sign-extension problem with "infocmp -e", which corrupted
@@ -487,7 +505,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	> contrary to comments, some scrolling cases were tested after the
 	  insert/delete line method.
 	+ modify _tracedump() to show first/last changes.
-	+ modify param of ClrUpdate() in lib_doupdate.c to 'curscr', fixes
+	+ modify param of ClrUpdate() in lib_doupdate.c to 'newscr', fixes
 	  refresh problem (reported by Peter Wemm) that caused nvi to not show
 	  result of ":r !ls" until a ^L was typed.
 

@@ -17,10 +17,10 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.69 1997/05/31 23:43:03 tom Exp $
+dnl $Id: configure.in,v 1.70 1997/06/27 09:53:13 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12)
-AC_REVISION($Revision: 1.69 $)
+AC_REVISION($Revision: 1.70 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
@@ -331,6 +331,15 @@ AC_ARG_ENABLE(const,
 	[with_ext_const=no])
 AC_MSG_RESULT($with_ext_const)
 test "$with_ext_const" = yes && AC_DEFINE(NCURSES_CONST,const)
+
+###   use option --enable-const to turn on use of const beyond that in XSI.
+AC_MSG_CHECKING(for use of experimental xmc code)
+AC_ARG_ENABLE(xmc-glitch,
+	[  --enable-xmc-glitch     compile with experimental xmc code],
+	[with_xmc_glitch=$enableval],
+	[with_xmc_glitch=no])
+AC_MSG_RESULT($with_xmc_glitch)
+test "$with_xmc_glitch" = yes && AC_DEFINE(USE_XMC_SUPPORT)
 
 ### Enable compiling-in rcs id's
 AC_MSG_CHECKING(if RCS identifiers should be compiled-in)

@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.64 1997/06/15 11:17:01 tom Exp $
+ * $Id: curses.priv.h,v 1.65 1997/06/28 22:13:23 tom Exp $
  *
  *	curses.priv.h
  *
@@ -242,6 +242,9 @@ struct screen {
 	unsigned short  *_color_pairs;  /* screen's color pair list          */
 	int             _pair_count;    /* count of color pairs              */
 	int             _default_color; /* use default colors                */
+#if !USE_XMC_SUPPORT
+	unsigned long   _xmc_suppress;  /* attributes to suppress if xmc     */
+#endif
 };
 
 /* Ncurses' public interface follows the internal types */
@@ -482,7 +485,6 @@ extern WINDOW *_nc_makenew(int, int, int, int, int);
 extern chtype _nc_background(WINDOW *);
 extern chtype _nc_render(WINDOW *, chtype);
 extern char *_nc_trace_buf(int, size_t);
-extern int _nc_initscr(void);
 extern int _nc_keypad(bool);
 extern int _nc_outch(int);
 extern int _nc_setupscreen(short, short const, FILE *);
