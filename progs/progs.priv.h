@@ -20,7 +20,7 @@
 ***************************************************************************/
 
 /*
- * $Id: progs.priv.h,v 1.8 1997/02/08 21:57:15 tom Exp $
+ * $Id: progs.priv.h,v 1.9 1997/04/05 23:38:08 tom Exp $
  *
  *	progs.priv.h
  *
@@ -28,7 +28,7 @@
  *
  */
 
-#include <config.h>
+#include <ncurses_cfg.h>
 
 #ifdef USE_RCS_IDS
 #define MODULE_ID(id) static const char Ident[] = id;

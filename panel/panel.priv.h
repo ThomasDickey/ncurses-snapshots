@@ -1,10 +1,10 @@
-/* $Id: panel.priv.h,v 1.3 1997/02/08 21:57:07 tom Exp $ */
+/* $Id: panel.priv.h,v 1.4 1997/04/05 23:38:02 tom Exp $ */
 
 #ifndef _PANEL_PRIV_H
 #define _PANEL_PRIV_H
 
 #if HAVE_CONFIG_H
-#  include <config.h>
+#  include <ncurses_cfg.h>
 #endif
 
 #include <stdlib.h>

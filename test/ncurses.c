@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.84 1997/03/30 01:09:29 tom Exp $
+$Id: ncurses.c,v 1.85 1997/04/06 01:43:22 tom Exp $
 
 ***************************************************************************/
 
@@ -350,7 +350,7 @@ static void attr_test(void)
  *
  ****************************************************************************/
 
-static CONST char *colors[] =
+static NCURSES_CONST char *colors[] =
 {
     "black",
     "red",
@@ -895,7 +895,7 @@ struct frame
 	WINDOW		*wind;
 };
 
-static void transient(struct frame *curp, CONST char *msg)
+static void transient(struct frame *curp, NCURSES_CONST char *msg)
 {
     if (msg)
     {
@@ -1294,7 +1294,7 @@ static WINDOW *w5;
 
 static unsigned long nap_msec = 1;
 
-static CONST char *mod[] =
+static NCURSES_CONST char *mod[] =
 {
 	"test ",
 	"TEST ",
@@ -1329,7 +1329,7 @@ wait_a_while(unsigned long msec GCC_UNUSED)
 	saywhat(text)
 --------------------------------------------------------------------------*/
 static void
-saywhat(CONST char *text)
+saywhat(NCURSES_CONST char *text)
 {
 	wmove(stdscr,LINES - 1,0);
 	wclrtoeol(stdscr);
@@ -2284,7 +2284,7 @@ static void trace_set(void)
  *
  ****************************************************************************/
 #if USE_LIBFORM
-static FIELD *make_label(int frow, int fcol, CONST char *label)
+static FIELD *make_label(int frow, int fcol, NCURSES_CONST char *label)
 {
     FIELD	*f = new_field(1, strlen(label), frow, fcol, 0, 0);
 

@@ -1,7 +1,7 @@
-# $Id: MKkeyname.awk,v 1.5 1996/12/30 00:32:51 tom Exp $
+# $Id: MKkeyname.awk,v 1.6 1997/04/05 23:38:17 tom Exp $
 BEGIN {
 	print ""
-	print "#include <config.h>"
+	print "#include <ncurses_cfg.h>"
 	print "#include <stdlib.h>"
 	print "#include <term.h>"
 	print "#include <curses.h>"

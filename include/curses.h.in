@@ -18,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.41 1997/02/15 22:35:42 tom Exp $ */
+/* $Id: curses.h.in,v 1.42 1997/04/06 01:40:57 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -33,6 +33,10 @@
 /* This is defined in more than one ncurses header, for identification */
 #undef  NCURSES_VERSION
 #define NCURSES_VERSION "@NCURSES_MAJOR@.@NCURSES_MINOR@"
+
+#ifndef NCURSES_CONST
+#define NCURSES_CONST /* nothing */
+#endif
 
 #ifndef _UNCTRL_H
 typedef unsigned long  chtype;
@@ -302,7 +306,7 @@ extern char ttytype[];		/* needed for backward compatibility */
 #endif
 
 /*
- * We cannot define these in config.h, since they require parameters to be
+ * We cannot define these in ncurses_cfg.h, since they require parameters to be
  * passed (that's non-portable).
  */
 #if	GCC_PRINTF

@@ -1136,7 +1136,7 @@ int	resetty(void)
 
 /* ./lib_keyname.c */
 
-#include <config.h>
+#include <ncurses_cfg.h>
 #include <stdlib.h>
 
 struct kn {

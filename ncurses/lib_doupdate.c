@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.56 1997/03/15 22:30:18 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.57 1997/04/05 21:15:48 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -1061,7 +1061,7 @@ bool	attrchanged = FALSE;
 			 && newLine[nLastChar] == oldLine[nLastChar])
 				nLastChar--;
 
-			if (nLastChar > firstChar) {
+			if (nLastChar >= firstChar) {
 				GoTo(lineno, firstChar);
 				PutRange(oldLine, newLine, lineno, firstChar, nLastChar);
 				memcpy( oldLine + firstChar,

@@ -18,7 +18,7 @@
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR    #
 # PERFORMANCE OF THIS SOFTWARE.                                                #
 ################################################################################
-# $Id: MKexpanded.sh,v 1.2 1997/03/15 22:43:48 tom Exp $
+# $Id: MKexpanded.sh,v 1.3 1997/04/05 23:38:22 tom Exp $
 #
 # Script to generate 'expanded.c', a dummy source that contains functions
 # corresponding to complex macros used in this library.  By making functions,
@@ -42,8 +42,8 @@ cat >expanded.c <<EOF
 EOF
 
 cat >$TMP <<EOF
-#include <config.h>
-#undef NCURSES_EXPANDED /* this probably is set in config.h */
+#include <ncurses_cfg.h>
+#undef NCURSES_EXPANDED /* this probably is set in ncurses_cfg.h */
 #include <curses.priv.h>
 /* these are names we'd like to see */
 #undef ALL_BUT_COLOR

@@ -18,7 +18,7 @@
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
  ******************************************************************************/
 /*
- * This is a template-file used to generate the "config.h" file.
+ * This is a template-file used to generate the "ncurses_cfg.h" file.
  *
  * Rather than list every definition, the configuration script substitutes
  * the definitions that it finds using 'sed'.
