@@ -41,7 +41,7 @@
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.2 2001/11/02 22:15:43 tom Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.3 2001/11/10 23:47:51 tom Exp $")
 
 static char *
 _nc_vischar(char *tp, unsigned c)
@@ -192,7 +192,7 @@ _nc_viscbuf2(int bufnum, const cchar_t * buf, int len)
 		    if (PUTC_n <= 0)
 			break;
 		    for (n = 0; n < PUTC_n; n++) {
-			tp = _nc_vischar(tp, PUTC_buf[n]);
+			tp = _nc_vischar(tp, UChar(PUTC_buf[n]));
 		    }
 		    ++PUTC_i;
 		} while (PUTC_ch != L'\0');
