@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_ipv4.c,v 1.3 2000/11/04 22:55:45 tom Exp $")
+MODULE_ID("$Id: fty_ipv4.c,v 1.4 2000/12/09 23:46:12 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -76,6 +76,6 @@ static FIELDTYPE typeIPV4 = {
   NULL
 };
 
-FIELDTYPE* TYPE_IPV4 = &typeIPV4;
+NCURSES_EXPORT_VAR(FIELDTYPE*) TYPE_IPV4 = &typeIPV4;
 
 /* fty_ipv4.c ends here */

@@ -40,9 +40,9 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_clreol.c,v 1.17 2000/10/28 22:28:36 tom Exp $")
+MODULE_ID("$Id: lib_clreol.c,v 1.19 2000/12/10 02:43:26 tom Exp $")
 
-int
+NCURSES_EXPORT(int)
 wclrtoeol(WINDOW *win)
 {
     int code = ERR;

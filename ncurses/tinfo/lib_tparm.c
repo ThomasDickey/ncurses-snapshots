@@ -42,7 +42,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.49 2000/11/04 22:50:16 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.51 2000/12/10 02:55:08 tom Exp $")
 
 /*
  *	char *
@@ -126,7 +126,7 @@ static size_t out_size;
 static size_t out_used;
 
 #if NO_LEAKS
-void
+NCURSES_EXPORT(void)
 _nc_free_tparm(void)
 {
     if (out_buff != 0) {
@@ -724,8 +724,9 @@ tparam_internal(const char *string, va_list ap)
     return (out_buff);
 }
 
-char *
-tparm(NCURSES_CONST char *string,...)
+NCURSES_EXPORT(char *)
+tparm
+(NCURSES_CONST char *string,...)
 {
     va_list ap;
     char *result;

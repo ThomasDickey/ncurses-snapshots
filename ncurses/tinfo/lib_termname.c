@@ -29,9 +29,9 @@
 #include <curses.priv.h>
 #include <tic.h>		/* for MAX_ALIAS */
 
-MODULE_ID("$Id: lib_termname.c,v 1.4 2000/11/12 01:28:00 tom Exp $")
+MODULE_ID("$Id: lib_termname.c,v 1.6 2000/12/10 02:55:08 tom Exp $")
 
-char *
+NCURSES_EXPORT(char *)
 termname(void)
 {
     char *name = getenv("TERM");

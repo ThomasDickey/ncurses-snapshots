@@ -35,7 +35,7 @@
 #include <ctype.h>
 #include <termcap.h>
 
-MODULE_ID("$Id: lib_tgoto.c,v 1.4 2000/11/25 22:27:10 tom Exp $")
+MODULE_ID("$Id: lib_tgoto.c,v 1.5 2000/12/10 01:33:16 tom Exp $")
 
 #if !PURE_TERMINFO
 static bool
@@ -185,8 +185,9 @@ tgoto_internal(const char *string, int x, int y)
  * Retained solely for upward compatibility.  Note the intentional reversing of
  * the last two arguments when invoking tparm().
  */
-char *
-tgoto(const char *string, int x, int y)
+NCURSES_EXPORT(char *)
+tgoto
+(const char *string, int x, int y)
 {
     char *result;
 

@@ -41,9 +41,9 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insstr.c,v 1.15 2000/10/28 21:13:38 tom Exp $")
+MODULE_ID("$Id: lib_insstr.c,v 1.17 2000/12/10 02:43:27 tom Exp $")
 
-int
+NCURSES_EXPORT(int)
 winsnstr(WINDOW *win, const char *s, int n)
 {
     int code = ERR;

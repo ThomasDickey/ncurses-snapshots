@@ -40,9 +40,9 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_pad.c,v 1.30 2000/10/28 21:11:28 tom Exp $")
+MODULE_ID("$Id: lib_pad.c,v 1.32 2000/12/10 02:43:27 tom Exp $")
 
-WINDOW *
+NCURSES_EXPORT(WINDOW *)
 newpad(int l, int c)
 {
     WINDOW *win;
@@ -70,8 +70,9 @@ newpad(int l, int c)
     returnWin(win);
 }
 
-WINDOW *
-subpad(WINDOW *orig, int l, int c, int begy, int begx)
+NCURSES_EXPORT(WINDOW *)
+subpad
+(WINDOW *orig, int l, int c, int begy, int begx)
 {
     WINDOW *win = (WINDOW *) 0;
 
@@ -85,22 +86,24 @@ subpad(WINDOW *orig, int l, int c, int begy, int begx)
     returnWin(win);
 }
 
-int
-prefresh(WINDOW *win, int pminrow, int pmincol,
-    int sminrow, int smincol, int smaxrow, int smaxcol)
+NCURSES_EXPORT(int)
+prefresh
+(WINDOW *win, int pminrow, int pmincol,
+ int sminrow, int smincol, int smaxrow, int smaxcol)
 {
     T((T_CALLED("prefresh()")));
     if (pnoutrefresh(win, pminrow, pmincol, sminrow, smincol, smaxrow,
-	    smaxcol) != ERR
+		     smaxcol) != ERR
 	&& doupdate() != ERR) {
 	returnCode(OK);
     }
     returnCode(ERR);
 }
 
-int
-pnoutrefresh(WINDOW *win, int pminrow, int pmincol,
-    int sminrow, int smincol, int smaxrow, int smaxcol)
+NCURSES_EXPORT(int)
+pnoutrefresh
+(WINDOW *win, int pminrow, int pmincol,
+ int sminrow, int smincol, int smaxrow, int smaxcol)
 {
     NCURSES_SIZE_T i, j;
     NCURSES_SIZE_T m, n;
@@ -114,7 +117,7 @@ pnoutrefresh(WINDOW *win, int pminrow, int pmincol,
 #endif
 
     T((T_CALLED("pnoutrefresh(%p, %d, %d, %d, %d, %d, %d)"),
-	    win, pminrow, pmincol, sminrow, smincol, smaxrow, smaxcol));
+       win, pminrow, pmincol, sminrow, smincol, smaxrow, smaxcol));
 
     if (win == 0)
 	returnCode(ERR);
@@ -186,8 +189,8 @@ pnoutrefresh(WINDOW *win, int pminrow, int pmincol,
 #endif
 
     for (i = pminrow, m = sminrow + win->_yoffset;
-	i <= pmaxrow && m <= newscr->_maxy;
-	i++, m++) {
+	 i <= pmaxrow && m <= newscr->_maxy;
+	 i++, m++) {
 	register struct ldat *nline = &newscr->_line[m];
 	register struct ldat *oline = &win->_line[i];
 
@@ -234,7 +237,7 @@ pnoutrefresh(WINDOW *win, int pminrow, int pmincol,
     for (i = pminrow - 1; (i >= 0) && (win->_line[i].oldindex >= 0); i--)
 	win->_line[i].oldindex = _NEWINDEX;
     for (i = pmaxrow + 1; (i <= win->_maxy)
-	&& (win->_line[i].oldindex >= 0); i++)
+	 && (win->_line[i].oldindex >= 0); i++)
 	win->_line[i].oldindex = _NEWINDEX;
 #endif
 
@@ -276,7 +279,7 @@ pnoutrefresh(WINDOW *win, int pminrow, int pmincol,
     returnCode(OK);
 }
 
-int
+NCURSES_EXPORT(int)
 pechochar(WINDOW *pad, const chtype ch)
 {
     T((T_CALLED("pechochar(%p, %s)"), pad, _tracechtype(ch)));
@@ -289,11 +292,11 @@ pechochar(WINDOW *pad, const chtype ch)
 
     waddch(pad, ch);
     prefresh(pad, pad->_pad._pad_y,
-	pad->_pad._pad_x,
-	pad->_pad._pad_top,
-	pad->_pad._pad_left,
-	pad->_pad._pad_bottom,
-	pad->_pad._pad_right);
+	     pad->_pad._pad_x,
+	     pad->_pad._pad_top,
+	     pad->_pad._pad_left,
+	     pad->_pad._pad_bottom,
+	     pad->_pad._pad_right);
 
     returnCode(OK);
 }

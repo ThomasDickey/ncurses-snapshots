@@ -48,7 +48,7 @@
 #define DEBUG(level, params)	/*nothing */
 #endif
 
-MODULE_ID("$Id: comp_hash.c,v 1.22 2000/11/05 00:06:35 tom Exp $")
+MODULE_ID("$Id: comp_hash.c,v 1.24 2000/12/10 02:55:07 tom Exp $")
 
 static int hash_function(const char *);
 
@@ -127,8 +127,9 @@ hash_function(const char *string)
  */
 
 #ifndef MAIN_PROGRAM
-struct name_table_entry const *
-_nc_find_entry(const char *string, const struct name_table_entry *const *hash_table)
+NCURSES_EXPORT(struct name_table_entry const *)
+_nc_find_entry
+(const char *string, const struct name_table_entry *const *hash_table)
 {
     int hashvalue;
     struct name_table_entry const *ptr;
@@ -157,10 +158,11 @@ _nc_find_entry(const char *string, const struct name_table_entry *const *hash_ta
  *	in the table or 0 if not found.
  */
 
-struct name_table_entry const *
-_nc_find_type_entry(const char *string,
-		    int type,
-		    const struct name_table_entry *table)
+NCURSES_EXPORT(struct name_table_entry const *)
+_nc_find_type_entry
+(const char *string,
+ int type,
+ const struct name_table_entry *table)
 {
     struct name_table_entry const *ptr;
 

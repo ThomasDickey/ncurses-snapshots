@@ -40,9 +40,9 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.26 2000/10/28 21:09:56 tom Exp $")
+MODULE_ID("$Id: lib_refresh.c,v 1.28 2000/12/10 02:43:27 tom Exp $")
 
-int
+NCURSES_EXPORT(int)
 wrefresh(WINDOW *win)
 {
     int code;
@@ -67,7 +67,7 @@ wrefresh(WINDOW *win)
     returnCode(code);
 }
 
-int
+NCURSES_EXPORT(int)
 wnoutrefresh(WINDOW *win)
 {
     NCURSES_SIZE_T limit_x;
@@ -136,8 +136,8 @@ wnoutrefresh(WINDOW *win)
 	limit_x = win->_maxx;
 
     for (i = 0, m = begy + win->_yoffset;
-	i <= win->_maxy && m <= newscr->_maxy;
-	i++, m++) {
+	 i <= win->_maxy && m <= newscr->_maxy;
+	 i++, m++) {
 	register struct ldat *nline = &newscr->_line[m];
 	register struct ldat *oline = &win->_line[i];
 

@@ -40,17 +40,20 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.36 2000/11/05 01:38:28 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.38 2000/12/10 03:02:45 tom Exp $")
 
-unsigned _nc_tracing = 0;	/* always define this */
+NCURSES_EXPORT_VAR(unsigned)
+_nc_tracing = 0;		/* always define this */
 
 #ifdef TRACE
-const char *_nc_tputs_trace = "";
-long _nc_outchars = 0;
+NCURSES_EXPORT_VAR(const char *)
+_nc_tputs_trace = "";
+NCURSES_EXPORT_VAR(long)
+_nc_outchars = 0;
 
-static FILE *tracefp;		/* default to writing to stderr */
+     static FILE *tracefp;	/* default to writing to stderr */
 
-void
+NCURSES_EXPORT(void)
 trace(const unsigned int tracelevel GCC_UNUSED)
 {
     static bool been_here = FALSE;
@@ -79,7 +82,7 @@ trace(const unsigned int tracelevel GCC_UNUSED)
 }
 #endif
 
-const char *
+NCURSES_EXPORT(const char *)
 _nc_visbuf2(int bufnum, const char *buf)
 /* visibilize a given string */
 {
@@ -134,14 +137,14 @@ _nc_visbuf2(int bufnum, const char *buf)
     return (vbuf);
 }
 
-const char *
+NCURSES_EXPORT(const char *)
 _nc_visbuf(const char *buf)
 {
     return _nc_visbuf2(0, buf);
 }
 
 #ifdef TRACE
-void
+NCURSES_EXPORT(void)
 _tracef(const char *fmt,...)
 {
     static const char Called[] = T_CALLED("");
@@ -190,7 +193,7 @@ _tracef(const char *fmt,...)
 }
 
 /* Trace 'int' return-values */
-int
+NCURSES_EXPORT(int)
 _nc_retrace_int(int code)
 {
     T((T_RETURN("%d"), code));
@@ -198,7 +201,7 @@ _nc_retrace_int(int code)
 }
 
 /* Trace 'char*' return-values */
-char *
+NCURSES_EXPORT(char *)
 _nc_retrace_ptr(char *code)
 {
     T((T_RETURN("%s"), _nc_visbuf(code)));
@@ -206,7 +209,7 @@ _nc_retrace_ptr(char *code)
 }
 
 /* Trace 'WINDOW *' return-values */
-WINDOW *
+NCURSES_EXPORT(WINDOW *)
 _nc_retrace_win(WINDOW *code)
 {
     T((T_RETURN("%p"), code));

@@ -35,7 +35,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_expand.c,v 1.14 2000/11/05 00:22:49 tom Exp $")
+MODULE_ID("$Id: comp_expand.c,v 1.15 2000/12/10 01:30:10 tom Exp $")
 
 static int
 trailing_spaces(const char *src)
@@ -50,8 +50,9 @@ trailing_spaces(const char *src)
 #define REALCTL(s) (CHAR_OF(s) < 127 && iscntrl(CHAR_OF(s)))
 #define REALPRINT(s) (CHAR_OF(s) < 127 && isprint(CHAR_OF(s)))
 
-char *
-_nc_tic_expand(const char *srcp, bool tic_format, int numbers)
+NCURSES_EXPORT(char *)
+_nc_tic_expand
+(const char *srcp, bool tic_format, int numbers)
 {
     static char *buffer;
     static size_t length;

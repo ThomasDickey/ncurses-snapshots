@@ -41,20 +41,21 @@
 #include <ctype.h>
 #include <term.h>		/* num_labels, label_*, plab_norm */
 
-MODULE_ID("$Id: lib_slk.c,v 1.18 2000/10/28 22:04:35 tom Exp $")
+MODULE_ID("$Id: lib_slk.c,v 1.20 2000/12/10 02:43:27 tom Exp $")
 
 /*
  * We'd like to move these into the screen context structure, but cannot,
  * because slk_init() is called before initscr()/newterm().
  */
-int _nc_slk_format = 0;		/* one more than format specified in slk_init() */
+NCURSES_EXPORT_VAR(int)
+_nc_slk_format = 0;		/* one more than format specified in slk_init() */
 
 /*
  * Paint the info line for the PC style SLK emulation.
  *
  */
-static void
-slk_paint_info(WINDOW *win)
+     static void
+       slk_paint_info(WINDOW *win)
 {
     if (win && SP->slk_format == 4) {
 	int i;
@@ -80,7 +81,7 @@ slk_paint_info(WINDOW *win)
  * Initialize soft labels.
  * Called from newterm()
  */
-int
+NCURSES_EXPORT(int)
 _nc_slk_initialize(WINDOW *stwin, int cols)
 {
     int i, x;
@@ -185,7 +186,7 @@ _nc_slk_initialize(WINDOW *stwin, int cols)
 /*
  * Restore the soft labels on the screen.
  */
-int
+NCURSES_EXPORT(int)
 slk_restore(void)
 {
     T((T_CALLED("slk_restore()")));

@@ -47,7 +47,7 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.49 2000/11/05 00:13:03 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.51 2000/12/10 02:55:08 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -195,8 +195,9 @@ _nc_extend_names(ENTRY * entryp, char *name, int token_type)
  *	push back token
  */
 
-int
-_nc_parse_entry(struct entry *entryp, int literal, bool silent)
+NCURSES_EXPORT(int)
+_nc_parse_entry
+(struct entry *entryp, int literal, bool silent)
 {
     int token_type;
     struct name_table_entry const *entry_ptr;
@@ -469,7 +470,7 @@ _nc_parse_entry(struct entry *entryp, int literal, bool silent)
     return (OK);
 }
 
-int
+NCURSES_EXPORT(int)
 _nc_capcmp(const char *s, const char *t)
 /* compare two string capabilities, stripping out padding */
 {
