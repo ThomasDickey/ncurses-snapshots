@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.445 1999/03/28 01:12:35 tom Exp $
+-- $Id: NEWS,v 1.446 1999/04/03 23:41:41 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,7 +6,17 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
-990327	pre-release
+990403	pre-release
+	+ remove conflicting _nc_free_termtype() function from test module
+	  lib_freeall.c
+	+ use _nc_access check in read_termcap.c for termpaths[] array (noted
+	  by Jeremy Buhler, indicating that Alan Cox made a similar patch).
+	> patch by Juergen Pfeifer:
+	+ modify menu creation to not inherit status flag from the default menu
+	  which says that the associated marker string has been allocated and
+	  should be freed (bug reported by Marek Paliwoda" <paliwoda@kki.net.pl>)
+
+990327	pre-release (alpha.gnu.org:/gnu/ncurses-5.0-beta1.tar.gz)
 	+ minor fixes to xterm-xfree86 terminfo entry - TD.
 	+ split up an expression in configure script check for ldconfig to
 	  workaround limitation of BSD/OS sh (reported by Jeff Haas

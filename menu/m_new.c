@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_new.c,v 1.7 1998/02/11 12:13:49 tom Exp $")
+MODULE_ID("$Id: m_new.c,v 1.8 1999/03/28 18:10:31 juergen Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -57,6 +57,7 @@ MENU *new_menu(ITEM ** items)
   if (menu)
     {
       *menu = _nc_Default_Menu;
+      menu->status = 0;
       menu->rows = menu->frows;
       menu->cols = menu->fcols;
       if (items && *items)
