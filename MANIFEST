@@ -380,6 +380,7 @@
 ./man/curs_color.3x
 ./man/curs_delch.3x
 ./man/curs_deleteln.3x
+./man/curs_extend.3x
 ./man/curs_getch.3x
 ./man/curs_getstr.3x
 ./man/curs_getyx.3x
