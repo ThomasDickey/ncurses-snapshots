@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.689 2002/06/01 22:59:54 tom Exp $
+-- $Id: NEWS,v 1.690 2002/06/16 00:31:21 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020615
+	+ modify wgetch() to allow returning ungetch'd KEY_RESIZE as a function
+	  key code in get_wch().
+	+ extended resize-handling in test/ncurses 'a' menu to the entire
+	  stack of windows created with 'w' commands.
+	+ improve $COLORFGBG feature by interpreting an out-of-range color
+	  value as an SGR 39 or 49, for foreground/background respectively.
+	+ correct a typo in configure --enable-colorfgbg option, and move it
+	  to the experimental section (cf: 20011208).
 
 20020601
 	+ add logic to dump_entry.c to remove function-key definitions that do
