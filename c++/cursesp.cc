@@ -8,7 +8,7 @@
 
 #include "internal.h"
 
-MODULE_ID("$Id: cursesp.cc,v 1.6 1997/05/04 01:02:08 tom Exp $")
+MODULE_ID("$Id: cursesp.cc,v 1.7 1997/05/25 09:21:34 juergen Exp $")
 
 #pragma  implementation
 #include "cursesp.h"
@@ -27,7 +27,7 @@ NCursesPanel::NCursesPanel(int lines,
     hook->m_user  = NULL;
     hook->m_back  = this;
     hook->m_owner = p;
-    ::set_panel_userptr(p, (const void *)hook);
+    ::set_panel_userptr(p, (void *)hook);
 }
 
 

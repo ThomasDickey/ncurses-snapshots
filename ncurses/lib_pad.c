@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_pad.c,v 1.18 1997/04/12 17:42:52 tom Exp $")
+MODULE_ID("$Id: lib_pad.c,v 1.19 1997/05/31 16:36:29 Kriang.Lerdsuwanakij Exp $")
 
 WINDOW *newpad(int l, int c)
 {
@@ -153,7 +153,7 @@ bool	wide;
 	 * windows).  Note that changing this formula will not break any code,
 	 * merely change the costs of various update cases.
 	 */
-	wide = (sminrow <= 1 && win->_maxx >= (newscr->_maxx - 1));
+	wide = (smincol <= 1 && smaxcol >= (newscr->_maxx - 1));
 
 	for (i = pminrow, m = sminrow + win->_yoffset;
 		i <= pmaxrow && m <= newscr->_maxy;
@@ -239,7 +239,7 @@ int pechochar(WINDOW *pad, chtype ch)
 {
 	T((T_CALLED("pechochar(%p, %s)"), pad, _tracechtype(ch)));
 
-	if (pad->_flags & _ISPAD)
+	if (!(pad->_flags & _ISPAD))
 		returnCode(ERR);
 
 	waddch(curscr, ch);

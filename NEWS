@@ -1,6 +1,63 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970531
+	+ add configure option --disable-database to force the library to
+	  use only the fallback data.
+	+ add configure option --with-fallbacks, to specify list of fallback
+	  terminal descriptions.
+	+ add a symbolic link for ncurses.h during install; too many programs
+	  still assume there's an ncurses.h
+	+ add new terminfo.src entry for xterm-xf86-v33.
+	+ restore terminfo.src entry for emu to using setf/setb, since it is
+	  not, after all, generating ANSI sequences.  Corrected missing comma
+	  that caused setf/setb entries to merge.
+	+ modify mousemask() to use keyok() to enable/disable KEY_MOUSE, so
+	  that applications can disable ncurses' mouse and supply their own
+	  handler.
+	+ add extensions keyok() and define_key().  These are designed to allow
+	  the user's application better control over the use of function keys,
+	  e.g., disabling the ncurses KEY_MOUSE.  (The define_key idea was from
+	  a mailing-list thread started by kjahds@kjahds.com Nov'1995).
+	+ restore original behavior in ncurses 'g' test, i.e., explicitly
+	  set the keypad mode rather than use the default, since it confuses
+	  people.
+	+ rewrote the newdemo banner so it's readable (reported by Hugh Daniel).
+	+ tidy up exit from hashtest (reported by Hugh Daniel).
+	+ restore check for ^Q in ncurses 'g' test broken in 970510 (reported
+	  by Hugh Daniel)
+	+ correct tput program, checking return-value of setupterm (patch by
+	  Florian La Roche).
+	+ correct logic in pnoutrefresh() and pechochar() functions (reported
+	  by Kriang Lerdsuwanakij <lerdsuwa@scf.usc.edu>).  The computation
+	  of 'wide' date to eric's #283 (1.9.9), and the pechochar bug to the
+	  original implementation (1.9.6).
+	+ correct typo in vt102-w terminfo.src entry (patch by Robert Wuest
+	  <rwuest@sire.vt.com>)
+	+ move calls of _nc_background() out of various loops, as its return
+	  value will be the same for the whole window being operated on (patch
+	  by J.T.Conklin).
+	+ add macros getcur[xy] getbeg[xy] getpar[xy], which are defined in
+	  SVr4 headers (patch by J.T.Conklin <jtc@NetBSD.ORG>)
+	+ modify glibc addon-configure scripts (patch by H.J.Lu).
+	+ correct a bug in hashmap.c: the size used for clearing the hashmap
+	  table was incorrect, causing stack corruption for large values of
+	  LINES, e.g., >MAXLINES/2 (patch by Alexander V. Lukyanov).
+	+ eric's terminfo 9.13.23 & 9.13.24 changes: replaced minitel-2 entry,
+	  added MGR, ansi-nt (note: the changes described for 9.13.24 have not
+	  been applied).
+	> several changes by Juergen Pfeifer:
+	+ correct a missing error-return in form_driver.c when wrapping of a
+	  field is not possible.
+	+ correct login in form_driver.c for configurations that do not have
+	  memccpy().
+	+ change several c++ binding functions to inline.
+	+ modify c++ menu binding to inherit from panels, for proper
+	  initialization.
+	+ correct freeing of menu items in c++ binding.
+	+ modify c++ binding to reflect removal of const from user data pointer
+	  in forms/menus libraries.
+
 970524
 	+ add description of xterm-16color.
 	+ modify name of shared-library on *BSD to end with $(REL_VERSION)

@@ -1,25 +1,25 @@
 // * This makes emacs happy -*-Mode: C++;-*-
-/*-----------------------------------------------------------------------------+
-|            The ncurses menu C++ binding is Copyright (C) 1997                |
-|             by Juergen Pfeifer <Juergen.Pfeifer@T-Online.de>                 |
-|                          All Rights Reserved.                                |
-|                                                                              |
-| Permission to use, copy, modify, and distribute this software and its        |
-| documentation for any purpose and without fee is hereby granted, provided    |
-| that the above copyright notice appear in all copies and that both that      |
-| copyright notice and this permission notice appear in supporting             |
-| documentation, and that the name of the above listed copyright holder(s) not |
-| be used in advertising or publicity pertaining to distribution of the        |
-| software without specific, written prior permission.                         | 
-|                                                                              |
-| THE ABOVE LISTED COPYRIGHT HOLDER(S) DISCLAIM ALL WARRANTIES WITH REGARD TO  |
-| THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FIT-  |
-| NESS, IN NO EVENT SHALL THE ABOVE LISTED COPYRIGHT HOLDER(S) BE LIABLE FOR   |
-| ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RE- |
-| SULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, |
-| NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH    |
-| THE USE OR PERFORMANCE OF THIS SOFTWARE.                                     |
-+-----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------+
+|            The ncurses menu C++ binding is Copyright (C) 1997               |
+|             by Juergen Pfeifer <Juergen.Pfeifer@T-Online.de>                |
+|                          All Rights Reserved.                               |
+|                                                                             |
+| Permission to use, copy, modify, and distribute this software and its       |
+| documentation for any purpose and without fee is hereby granted, provided   |
+| that the above copyright notice appear in all copies and that both that     |
+| copyright notice and this permission notice appear in supporting            |
+| documentation, and that the name of the above listed copyright holder(s)    |
+| not be used in advertising or publicity pertaining to distribution of the   |
+| software without specific, written prior permission.                        |
+|                                                                             |
+| THE ABOVE LISTED COPYRIGHT HOLDER(S) DISCLAIM ALL WARRANTIES WITH REGARD TO |
+| THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FIT- |
+| NESS, IN NO EVENT SHALL THE ABOVE LISTED COPYRIGHT HOLDER(S) BE LIABLE FOR  |
+| ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER    |
+| RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CON-   |
+| TRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION |
+| WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                               |
++----------------------------------------------------------------------------*/
 #ifndef _CURSESM_H
 #define _CURSESM_H
 
@@ -32,15 +32,13 @@ extern "C" {
 }
 
 // This wraps the ITEM type of <menu.h>
-class NCursesMenuItem 
-{
+class NCursesMenuItem {
   friend class NCursesMenu;
-
+  
 protected:
   ITEM *item;
 
-  void OnError (int err) const THROWS(NCursesMenuException)
-  {
+  inline void OnError (int err) const THROWS(NCursesMenuException) {
     if (err != E_OK)
       THROW(new NCursesMenuException (err));
   }
@@ -50,77 +48,65 @@ public:
   // item is constructed which can be used to terminate a list of
   // NCursesMenu objects.
   NCursesMenuItem (const char* p_name     = NULL,
-		   const char* p_descript = NULL )
-  { 
+		   const char* p_descript = NULL ) { 
     item = p_name ? ::new_item (p_name, p_descript) : (ITEM*)0; 
     if (p_name && !item)
       OnError (E_SYSTEM_ERROR);
   }
   
   // Release the items memory
-  virtual ~NCursesMenuItem ()
-  {
+  virtual ~NCursesMenuItem () {
     if (item)
       ::free_item (item);
   }
 
   // Name of the item
-  inline const char* name () const
-  {
+  inline const char* name () const {
     return ::item_name (item);
   }
 
   // Description of the item
-  inline const char* description () const
-  {
+  inline const char* description () const {
     return ::item_description (item);
   }
-
+  
   // index of the item in an item array (or -1)
-  inline int index (void) const
-  {
+  inline int index (void) const {
     return ::item_index (item);
   }
 
   // switch on an item's option
-  inline void options_on (Item_Options options)
-  {
+  inline void options_on (Item_Options options) {
     OnError (::item_opts_on (item, options));
   }
 
   // switch off an item's option
-  inline void options_off (Item_Options options)
-  {
+  inline void options_off (Item_Options options) {
     OnError (::item_opts_off (item, options));
   }
 
   // return the item's options
-  inline Item_Options options () const
-  {
+  inline Item_Options options () const {
     return ::item_opts (item);
   }
 
   // set the item's options
-  inline void set_options (Item_Options options)
-  {
+  inline void set_options (Item_Options options) {
     OnError (::set_item_opts (item, options));
   }
 
   // set/reset the item's selection state
-  inline void set_value (bool f)
-  {
+  inline void set_value (bool f) {
     OnError (::set_item_value (item,f));
   }
 
   // return the item's selection state
-  inline bool value () const
-  {
+  inline bool value () const {
     return ::item_value (item);
   }
   
   // return visibility of the item
-  inline bool visible () const
-  {
+  inline bool visible () const {
     return ::item_visible (item);
   }
 
@@ -139,8 +125,7 @@ typedef bool ITEMCALLBACK(NCursesMenuItem&);
 // If you don't like to create a child class for individual items to
 // overload action(), you may use this class and provide a callback
 // function pointer for items.
-class NCursesMenuCallbackItem : public NCursesMenuItem
-{
+class NCursesMenuCallbackItem : public NCursesMenuItem {
 private:
   const ITEMCALLBACK* p_fct;
 
@@ -181,14 +166,13 @@ private:
   // This structure is used for the menu's user data field to link the
   // MENU* to the C++ object and to provide extra space for a user pointer.
   typedef struct {
-    const void*        m_user;      // the pointer for the user's data
+    void*              m_user;      // the pointer for the user's data
     const NCursesMenu* m_back;      // backward pointer to C++ object
     const MENU*        m_owner;
   } UserHook;
 
   // Get the backward pointer to the C++ object from a MENU
-  static inline NCursesMenu* getHook(const MENU *m)
-  {
+  static inline NCursesMenu* getHook(const MENU *m) {
     UserHook* hook = (UserHook*)::menu_userptr(m);
     assert(hook && hook->m_owner==m);
     return (NCursesMenu*)(hook->m_back);
@@ -207,44 +191,47 @@ private:
   
 protected:
   // internal routines 
-  void set_user(const void *user)
-  {
+  void set_user(void *user) {
     UserHook* uptr = (UserHook*)::menu_userptr (menu);
     assert (uptr && uptr->m_back==this && uptr->m_owner==menu);
     uptr->m_user = user;
   }
 
-  const void *get_user()
-  {
+  void *get_user() {
     UserHook* uptr = (UserHook*)::menu_userptr (menu);
     assert (uptr && uptr->m_back==this && uptr->m_owner==menu);
     return uptr->m_user;
-  }
+  }  
+  
+  void InitMenu (NCursesMenuItem* menu[], bool with_frame);
 
-
-  void InitMenu (NCursesMenuItem* menu[], bool with_frame=FALSE);
-
-  void OnError (int err) const THROWS(NCursesMenuException)
-  {
+  inline void OnError (int err) const THROWS(NCursesMenuException) {
     if (err != E_OK)
       THROW(new NCursesMenuException (this, err));
   }
   
   // this wraps the menu_driver call.
   virtual int driver (int c) ;
-
+  
 public:
   // make a full window size menu
-  NCursesMenu (NCursesMenuItem* menu[]);
+  NCursesMenu (NCursesMenuItem* Items[],
+	       bool with_frame=FALSE)
+    : NCursesPanel() {
+      InitMenu(Items, with_frame);
+  }
 
   // make a menu with a window of this size.
-  NCursesMenu (NCursesMenuItem* menu[], 
+  NCursesMenu (NCursesMenuItem* Items[], 
 	       int  lines, 
 	       int  cols, 
-	       int  begin_y, 
-	       int  begin_x,
-	       bool with_frame=FALSE);
-  
+	       int  begin_y = 0, 
+	       int  begin_x = 0,
+	       bool with_frame=FALSE)
+    : NCursesPanel(lines, cols, begin_y, begin_x) {
+      InitMenu(Items, with_frame);
+  }
+
   virtual ~NCursesMenu ();
 
   // Retrieve the menus subwindow
@@ -257,77 +244,67 @@ public:
   void setSubWindow(NCursesWindow& sub);
 
   // Set these items for the menu
-  void setItems(NCursesMenuItem* nitems[]);
+  inline void setItems(NCursesMenuItem* Items[]) {
+    OnError(::set_menu_items(menu,mapItems(Items)));    
+  }
 
   // Remove the menu from the screen
-  inline void unpost (void)
-  { 
+  inline void unpost (void) { 
     OnError (::unpost_menu (menu)); 
   }
   
   // Post the menu to the screen if flag is true, unpost it otherwise
-  inline void post(bool flag = TRUE)
-  {
+  inline void post(bool flag = TRUE) {
     flag ? OnError (::post_menu(menu)) : OnError (::unpost_menu (menu)); 
   }
 
   // Get the numer of rows and columns for this menu
-  inline void scale (int& mrows, int& mcols) const 
-  {
+  inline void scale (int& mrows, int& mcols) const  {
     OnError (::scale_menu (menu, &mrows, &mcols));
   }
 
   // Set the format of this menu
-  inline void set_format(int mrows, int mcols)
-  {
+  inline void set_format(int mrows, int mcols) {
     OnError (::set_menu_format(menu, mrows, mcols));
   }
   
   // Get the format of this menu
-  void menu_format(int& rows,int& cols)
-  { 
+  inline void menu_format(int& rows,int& cols) { 
     ::menu_format(menu,&rows,&cols); 
   }
   
   // item things
-  NCursesMenuItem* items() const
-  {
+  inline NCursesMenuItem* items() const {
     return *my_items; 
   }
 
   // Get the number of items in this menu
-  int count() const
-  {
+  inline int count() const {
     return ::item_count(menu); 
   }
 
   // Get the current item (i.e. the one the cursor is located)
-  NCursesMenuItem& current_item() const
-  {
+  inline NCursesMenuItem& current_item() const {
     return *(my_items[::item_index(::current_item(menu))]);
   }
   
   // Get the marker string
-  inline const char* mark() const
-  {
+  inline const char* mark() const {
     return ::menu_mark(menu);
   }
 
   // Set the marker string
-  inline void set_mark(const char *mark)
-  {
+  inline void set_mark(const char *mark) {
     OnError (::set_menu_mark (menu, mark));
   }
 
   // Get the name of the request code c
-  inline static const char* request_name(int c)
-  {
+  inline static const char* request_name(int c) {
     return ::menu_request_name(c);
   }
 
   // Get the current pattern
-  inline char* pattern() const
-  {
+  inline char* pattern() const {
     return ::menu_pattern(menu);
   }
 
@@ -339,91 +316,76 @@ public:
   virtual void setDefaultAttributes();
 
   // Get the menus background attributes
-  chtype back() const
-  {
+  inline chtype back() const {
     return ::menu_back(menu);
   }
 
   // Get the menus foreground attributes
-  chtype fore() const
-  {
+  inline chtype fore() const {
     return ::menu_fore(menu);
   }
 
   // Get the menus grey attributes (used for unselectable items)
-  chtype grey() const
-  {
+  inline chtype grey() const {
     return ::menu_grey(menu);
   }
 
   // Set the menus background attributes
-  chtype set_background(chtype a)
-  {
+  inline chtype set_background(chtype a) {
     return ::set_menu_back(menu,a);
   }
 
   // Set the menus foreground attributes
-  chtype foreground(chtype a)
-  {
+  inline chtype set_foreground(chtype a) {
     return ::set_menu_fore(menu,a);
   }
 
   // Set the menus grey attributes (used for unselectable items)
-  chtype set_grey(chtype a)
-  {
+  inline chtype set_grey(chtype a) {
     return ::set_menu_grey(menu,a);
   }
-
-  inline void options_on (Menu_Options opts)
-  {
+  
+  inline void options_on (Menu_Options opts) {
     OnError (::menu_opts_on (menu,opts));
   }
 
-  inline void options_off(Menu_Options opts)
-  {
+  inline void options_off(Menu_Options opts) {
     OnError (::menu_opts_off(menu,opts));
   }
 
   inline Menu_Options options() const {
     return ::menu_opts(menu);
   }
-
-  inline void set_options (Menu_Options opts)
-  {
+  
+  inline void set_options (Menu_Options opts) {
     OnError (::set_menu_opts (menu,opts));
   }
 
-  inline int pad() const
-  {
+  inline int pad() const {
     return ::menu_pad(menu);
   }
 
-  inline void set_pad (int padch)
-  {
+  inline void set_pad (int padch) {
     OnError (::set_menu_pad (menu, padch));
   }
-
+  
   // Position the cursor to the current item
-  inline void position_cursor () const
-  {
+  inline void position_cursor () const {
     OnError (::pos_menu_cursor (menu));
   }
 
   // Set the current item
-  inline void set_current(NCursesMenuItem& I)
-  {
+  inline void set_current(NCursesMenuItem& I) {
     OnError (::set_current_item(menu, I.item));
   }
 
   // Get the current top row of the menu
-  inline int top_row (void) const
-  {
+  inline int top_row (void) const {
     return ::top_row (menu);
   }
 
   // Set the current top row of the menu
-  inline void set_top_row (int row)
-  {
+  inline void set_top_row (int row) {
     OnError (::set_top_row (menu, row));
   }
 
@@ -437,7 +399,7 @@ public:
 			       spc_rows,
 			       spc_columns));
   }
-
+  
   // Get the spacing info for the menu
   inline void Spacing(int& spc_description,
 		      int& spc_rows,
@@ -462,7 +424,7 @@ public:
     else
       OnError(E_SYSTEM_ERROR);
   }
-
+  
   void label(const char *topLabel, const char *bottomLabel) {
     if (b_framed)
       NCursesPanel::label(topLabel,bottomLabel);
@@ -476,26 +438,22 @@ public:
 
   // Called after the menu gets repositioned in its window.
   // This is especially true if the menu is posted.
-  virtual void On_Menu_Init()
-  {
+  virtual void On_Menu_Init() {
   }
 
   // Called before the menu gets repositioned in its window.
   // This is especially true if the menu is unposted.
-  virtual void On_Menu_Termination()
-  {
+  virtual void On_Menu_Termination() {
   }
 
   // Called after the item became the current item
-  virtual void On_Item_Init(NCursesMenuItem& item)
-  {
+  virtual void On_Item_Init(NCursesMenuItem& item) {
   }
 
   // Called before this item is left as current item.
-  virtual void On_Item_Termination(NCursesMenuItem& item)
-  {
+  virtual void On_Item_Termination(NCursesMenuItem& item) {
   }
-
+  
   // Provide a default key virtualization. Translate the keyboard
   // code c into a menu request code.
   // The default implementation provides a hopefully straightforward
@@ -504,8 +462,7 @@ public:
 
 
   // Operators
-  NCursesMenuItem& operator[](int i) const
-  {
+  inline NCursesMenuItem& operator[](int i) const {
     if ( (i < 0) || (i >= ::item_count (menu)) )
       OnError (E_BAD_ARGUMENT);
     return *(my_items[i]);
@@ -551,28 +508,26 @@ template<class T> class NCursesUserItem : public NCursesMenuItem
 public:
   NCursesUserItem (const char* p_name     = NULL,
 		   const char* p_descript = NULL )
-    : NCursesMenuItem (p_name, p_descript) 
-  {};
+    : NCursesMenuItem (p_name, p_descript) {
+  };
 
   NCursesUserItem (const T*    p_UserData,
 		   const char* p_name,
 		   const char* p_descript = NULL )
-    : NCursesMenuItem (p_name, p_descript)
-  {
-    if (item)
-      OnError (::set_item_userptr (item, (const void *)p_UserData));
+    : NCursesMenuItem (p_name, p_descript) {
+      if (item)
+	OnError (::set_item_userptr (item, (void *)p_UserData));
   };
-
+  
   virtual ~NCursesUserItem() {};
 
-  const T* UserData (void) const
-  {
+  inline const T* UserData (void) const {
     return (const T*)::item_userptr (item);
   };
 
   virtual void setUserData(const T* p_UserData) {
     if (item)
-      OnError (::set_item_userptr (item, (const void *)p_UserData));
+      OnError (::set_item_userptr (item, (void *)p_UserData));
   }
 };
 
@@ -580,41 +535,40 @@ public:
 template<class T> class NCursesUserMenu : public NCursesMenu
 {
 public:
-  NCursesUserMenu (NCursesMenuItem menu[])
-    : NCursesMenu (menu)
-   {};
-
-  NCursesUserMenu (const T* p_UserData,
-		   NCursesMenuItem menu[])
-    : NCursesMenu (menu)
-  {
-    if (m)
-      set_user ((const void *)p_UserData);
+  NCursesUserMenu (NCursesMenuItem Items[], bool with_frame=FALSE)
+    : NCursesMenu (Items, with_frame) {
   };
 
   NCursesUserMenu (const T* p_UserData,
-		   NCursesMenuItem menu[],
+		   NCursesMenuItem Items[],
+		   bool with_frame=FALSE)
+    : NCursesMenu (Items, with_frame) {
+      if (menu)
+	set_user ((void *)p_UserData);
+  };
+  
+  NCursesUserMenu (const T* p_UserData,
+		   NCursesMenuItem Items[],
 		   int lines, 
 		   int cols, 
-		   int begin_y, 
-		   int begin_x,
+		   int begin_y = 0, 
+		   int begin_x = 0,
 		   bool with_frame=FALSE)
-    : NCursesMenu (menu, lines, cols, begin_y, begin_x, with_frame)
-  {
-    if (m)
-      set_user ((const void *)p_UserData);
+    : NCursesMenu (Items, lines, cols, begin_y, begin_x, with_frame) {
+      if (menu)
+	set_user ((void *)p_UserData);
   };  
-
-  virtual ~NCursesUserMenu() {};
-
-  const T* UserData (void) const
-  {
-    return (const T*)get_user ();
+  
+  virtual ~NCursesUserMenu() {
+  };
+  
+  inline T* UserData (void) const {
+    return (T*)get_user ();
   };
 
   virtual void setUserData (const T* p_UserData) {
-    if (m)
-      set_user ((const void *)p_UserData);
+    if (menu)
+      set_user ((void *)p_UserData);
   }
 };
 

@@ -9,10 +9,10 @@ Known Problems:
 * Ncurses cursor movement does not make effective use of hard tabs, as SVr4
   does.
 
-* Scrolling optimization has holes: for example, the ncurses 'p' test, which
-  exercises scrolling in a pad does not (1996/12/24) use scrolling regions.
-  Also, running other tests shows that scrolling optimization forces repaints
-  of the screen between calls to refresh().
+* Scrolling optimization has holes: for example, a single-line scrolling
+  region should be repainted, but is not.  Also, running other tests shows that
+  scrolling optimization forces repaints of the screen between calls to
+  refresh().
 
 * The stacking order of windows on the screen does not match that implemented
   in SVr4 (e.g., Solaris curses).  XSI doesn't specify a stacking order, so
@@ -33,13 +33,6 @@ Known Problems:
   actual code that does this is in ncurses/lib_options.c:add_keytry().
   This is a legacy terminfo property we can't mess with.
 
-* Recognition of xterm mouse reports is implemented by setting the kmous 
-  capability to the mouse-report prefix.  As a result, the kmous sequence is
-  eaten even when mouse recognition is disabled.  This could be fixed if 
-  necessary with special code that pokes the kmous value back into the
-  input FIFO when KEY_MOUSE is seen and the mousemask is zero, but that would
-  be kind of ugly.
-
 * The window classes defined in the c++ subdirectory need documentation.
   Some C++ programmer could earn a lot of good karma by doing this...
 
@@ -58,7 +51,7 @@ Portability (or lack thereof):
   varargs.h, it has the newer X/Open-standard stdargs.h equivalent. So
   these functions use stdargs instead.  This is unlikely to be a problem 
   unless you're building ncurses on a System V old enough to only have
-  varargs.h.
+  varargs.h.  (Solaris 2.5.1 uses the stdarg.h binding as well).
 
 * If you're using a BSD earlier than 4.4BSD, or a Linux old enough not to
   have a native vsscanf(3) in its library, vwscanw() will not work.  You lose.

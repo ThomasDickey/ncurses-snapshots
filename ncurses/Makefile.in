@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.28 1997/05/10 20:21:06 tom Exp $
+# $Id: Makefile.in,v 1.29 1997/05/31 23:23:17 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -92,6 +92,8 @@ LINT		= @LINT@
 LINT_OPTS	= @LINT_OPTS@
 LINT_LIBS	= -lncurses @LIBS@
 
+FALLBACK_LIST	= @FALLBACK_LIST@
+
 AUTO_SRC = \
 	../include/nomacros.h \
 	./comp_captab.c \
@@ -113,7 +115,7 @@ $(INSTALL_PREFIX)$(libdir) :
 ../lib : ; mkdir $@
 
 ./fallback.c : $(srcdir)/MKfallback.sh
-	sh $(srcdir)/MKfallback.sh >$@
+	sh $(srcdir)/MKfallback.sh $(FALLBACK_LIST) >$@
 
 ./lib_gen.c : $(srcdir)/MKlib_gen.sh ../include/curses.h
 	sh $(srcdir)/MKlib_gen.sh "$(CPP)" "$(AWK)" <../include/curses.h >$@

@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,58 +18,55 @@
 *                                                                          *
 ***************************************************************************/
 
+#include <curses.priv.h>
+#include <term.h>
+#include <tic.h>
+
+MODULE_ID("$Id: name_match.c,v 1.1 1997/06/01 00:18:48 tom Exp $")
 
 /*
-**	lib_clreol.c
-**
-**	The routine wclrtoeol().
-**
-*/
+ *	_nc_first_name(char *names)
+ *
+ *	Extract the primary name from a compiled entry.
+ */
 
-#include <curses.priv.h>
-
-MODULE_ID("$Id: lib_clreol.c,v 1.10 1997/05/28 09:01:48 J.T.Conklin Exp $")
-
-int  wclrtoeol(WINDOW *win)
+char *_nc_first_name(const char *const sp)
+/* get the first name from the given name list */
 {
-chtype	blank = _nc_background(win);
-chtype	*maxx, *ptr, *end;
-short	y, x, minx;
+    static char	buf[MAX_NAME_SIZE];
+    register char *cp;
 
-	T((T_CALLED("wclrtoeol(%p)"), win));
+    (void) strcpy(buf, sp);
 
-	y = win->_cury;
-	x = win->_curx;
+    cp = strchr(buf, '|');
+    if (cp)
+	*cp = '\0';
 
-	/*
-	 * We don't want to clear if we just wrapped the cursor.  There's no
-	 * point in clearing if we're not on a legal position, either.
-	 */
-	if (win->_flags & _WRAPPED
-	 || y > win->_maxy
-	 || x > win->_maxx)
-		returnCode(ERR);
+    return(buf);
+}
 
-	end = &win->_line[y].text[win->_maxx];
-	minx = _NOCHANGE;
-	maxx = &win->_line[y].text[x];
+/*
+ *	bool _nc_name_match(namelist, name, delim)
+ *
+ *	Is the given name matched in namelist?
+ */
 
-	for (ptr = maxx; ptr <= end; ptr++) {
-	    if (*ptr != blank) {
-			maxx = ptr;
-			if (minx == _NOCHANGE)
-			    minx = ptr - win->_line[y].text;
-			*ptr = blank;
-	    }
+int _nc_name_match(const char *const namelst, const char *const name, const char *const delim)
+/* microtune this, it occurs in several critical loops */
+{
+char namecopy[MAX_ENTRY_SIZE];	/* this may get called on a TERMCAP value */
+register char *cp;
+
+	if (namelst == 0)
+		return(FALSE);
+	(void) strcpy(namecopy, namelst);
+	if ((cp = strtok(namecopy, delim)) != 0) {
+		do {
+			/* avoid strcmp() function-call cost if possible */
+			if (cp[0] == name[0] && strcmp(cp, name) == 0)
+			    return(TRUE);
+		} while
+		    ((cp = strtok((char *)0, delim)) != 0);
 	}
-
-	if (minx != _NOCHANGE) {
-	    if (win->_line[y].firstchar > minx || win->_line[y].firstchar == _NOCHANGE)
-			win->_line[y].firstchar = minx;
-
-	    if (win->_line[y].lastchar < maxx - win->_line[y].text)
-			win->_line[y].lastchar = maxx - win->_line[y].text;
-	}
-	_nc_synchook(win);
-	returnCode(OK);
+	return(FALSE);
 }

@@ -520,6 +520,16 @@ nansi.sysk|nansisysk|PC-DOS Public Domain NANSI.SYS with keypad redefined for vi
 	is2=U4 PC-DOS Public Domain NANSI.SYS with keypad redefined for vi 9-29-86\n\E[;75;8p, 
 	use=ansi.sysk, 
 
+# From: Federico Bianchi <bianchi@magna.cisid.unipi.it>, 15 Jan 1997
+ansi-nt|psx_ansi|Windows NT POSIX console, 
+	am, bw, msgr, 
+	cols#80, it#8, lines#25, 
+	bel=^G, clear=\E[2J, cr=^M, cub1=^H, cud1=^J, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, ed=\E[J, el=\E[K, 
+	home=\E[H, ht=^I, ind=\E[S, kbs=^H, kcub1=\E[D, kcud1=\E[V, 
+	kcuf1=\E[C, kcuu1=\E[A, nel=\r\E[S, rc=\E[u, rev=\E[7m, 
+	ri=\E[T, rmso=\E[m, sc=\E[s, sgr0=\E[0m, smso=\E[7m, 
+
 #### ANSI console types
 #
 
@@ -1125,7 +1135,8 @@ ibmpc3|pc3-bold|IBM PC BSD/386 Console with bold instead of underline,
 # are kept available at ftp://gatekeeper.dec.com/pub/DEC/termcaps.
 #
 # In October 1995 DEC sold its terminals business, including the VT and Dorio
-# line and trademark, to SunRiver Data Systems.
+# line and trademark, to SunRiver Data Systems.  SunRiver has since changed
+# its name to Boundless Technologies; see http://www.boundless.com.
 #
 # (The <acsc>, <rmacs>, and <smacs> capabilities aren't in DEC's official
 # entry -- esr)
@@ -1290,7 +1301,7 @@ vt102|dec vt102,
 	mir, 
 	dch1=\E[P, dl1=\E[M, il1=\E[L, rmir=\E[4l, smir=\E[4h, use=vt100, 
 vt102-w|dec vt102 in wide mode, 
-	lines#132, 
+	cols#132, 
 	rs3=\E[?3h, use=vt102, 
 
 # Many brain-dead PC comm programs that pretend to be `vt100-compatible'
@@ -1851,16 +1862,16 @@ xterm-xf86-v32|xterm terminal emulator (X Window System),
 	is2=\E7\E[r\E[m\E[?7h\E[?1;3;4;6l\E[4l\E8\E>, 
 	ka1=\EOw, ka3=\EOu, kb2=\EOy, kbeg=\EOE, kbs=^H, kc1=\EOq, 
 	kc3=\EOs, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
-	kdch1=\177, kend=\EOF, kent=\EOM, kf1=\EOP, kf10=\E[21~, 
+	kdch1=\177, kend=\EOF, kent=\EOM, kf1=\E[11~, kf10=\E[21~, 
 	kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, 
 	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, 
-	kf19=\E[33~, kf2=\EOQ, kf20=\E[34~, kf3=\EOR, kf4=\EOS, 
-	kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
-	kfnd=\E[1~, khome=\EOH, kich1=\E[2~, kmous=\E[M, knp=\E[6~, 
-	kpp=\E[5~, kslt=\E[4~, meml=\El, memu=\Em, op=\E[39;49m, 
-	rc=\E8, rev=\E[7m, ri=\EM, rmacs=^O, rmam=\E[?7l, 
-	rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, rmkx=\E[?1l\E>, 
-	rmso=\E[27m, rmul=\E[24m, rs1=^O, 
+	kf19=\E[33~, kf2=\E[12~, kf20=\E[34~, kf3=\E[13~, 
+	kf4=\E[14~, kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, 
+	kf9=\E[20~, kfnd=\E[1~, khome=\EOH, kich1=\E[2~, 
+	kmous=\E[M, knp=\E[6~, kpp=\E[5~, kslt=\E[4~, meml=\El, 
+	memu=\Em, op=\E[39;49m, rc=\E8, rev=\E[7m, ri=\EM, rmacs=^O, 
+	rmam=\E[?7l, rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, 
+	rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m, rs1=^O, 
 	rs2=\E7\E[r\E[m\E[?7h\E[?1;3;4;6l\E[4l\E8\E>, sc=\E7, 
 	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
 	setb=\E[4%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
@@ -1869,16 +1880,22 @@ xterm-xf86-v32|xterm terminal emulator (X Window System),
 	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smcup=\E7\E[?47h, 
 	smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
 	tbc=\E[3g, vpa=\E[%i%p1%dd, 
+
+# This is the stock xterm entry supplied with XFree86 3.3, which uses VT100
+# codes for F1-F4 except while in VT220 mode.
+xterm-xf86-v33|xterm terminal emulator (X Window System), 
+	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, 
+	use=xterm-xf86-v32, 
 # This is one of the variants from XFree86 3.3 (T.Dickey)
 xterm-16color|xterm with 16 colors like aixterm, 
 	colors#16, ncv#32, pairs#256, 
 	setab@, setaf@, 
 	setb=%p1%{8}%/%{6}%*%{4}%+\E[%d%p1%{8}%m%Pa%?%ga%{1}%=%t4%e%ga%{3}%=%t6%e%ga%{4}%=%t1%e%ga%{6}%=%t3%e%ga%d%;m, 
 	setf=%p1%{8}%/%{6}%*%{3}%+\E[%d%p1%{8}%m%Pa%?%ga%{1}%=%t4%e%ga%{3}%=%t6%e%ga%{4}%=%t1%e%ga%{6}%=%t3%e%ga%d%;m, 
-	use=xterm-xf86-v32, 
+	use=xterm-xf86-v33, 
+
 # This is xterm for ncurses. It mainly adds mappings for more high-half
 # characters.  Note that these will only work for fixed-width fonts.
-# Once XFree86 3.2 is established, we'll switch this to use=xterm-xf86-v32
 xterm|vs100|xterms|xterm terminal emulator (X Window System), 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~..--++\,\,II00, 
 	kmous=\E[M, u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
@@ -2044,7 +2061,8 @@ xterm-sun|xterm with sunFunctionKeys true,
 xterms-sun|small (80x24) xterm with sunFunctionKeys true, 
 	cols#80, lines#24, use=xterm-sun, 
 
-# This is for the extensible terminal emulator on the X11R6 contrib tape (emu).
+# This is for the extensible terminal emulator on the X11R6 contrib tape.
+# (emu: I changed <setab>/<setaf> to <setb>/<setf> -- esr)
 emu|emu native mode, 
 	mir, msgr, xon, 
 	colors#15, cols#80, it#8, lines#24, pairs#64, vt#200, 
@@ -2065,9 +2083,45 @@ emu|emu native mode,
 	kf7=\EF07, kf8=\EF08, kf9=\EF09, kfnd=\Efind, kich1=\Eins, 
 	knp=\Enext, kpp=\Eprior, kslt=\Esel, oc=\Es0;\Er0;, 
 	rev=\ES\ET, ri=\EF, rmacs=\200, rmir=\EX, rmso=\ES, rmul=\ES, 
-	rs2=\ES\Es0;\Er0;, 
-	setab=\Es%i%p1%d; setaf=\Er%i%p1%d;, sgr0=\ES, 
-	smacs=\200, smir=\EY, smso=\ES\ET, smul=\ES\EV, tbc=\Ej, 
+	rs2=\ES\Es0;\Er0;, setb=\Es%i%p1%d;, setf=\Er%i%p1%d;, 
+	sgr0=\ES, smacs=\200, smir=\EY, smso=\ES\ET, smul=\ES\EV, 
+	tbc=\Ej, 
+
+######## MGR
+#
+# MGR is a Bell Labs window system lighter-weight than X.
+# These entries describe MGR's xterm-equivalent. 
+# They are courtesy of Vincent Broman <broman@nosc.mil> 14 Jan 1997 
+#
+
+mgr|Bellcore MGR (non X) window system terminal emulation, 
+	am, km, 
+	bel=^G, bold=\E2n, civis=\E9h, clear=^L, cnorm=\Eh, cr=^M, 
+	csr=\E%p1%d;%p2%dt, cub1=^H, cud1=\Ef, cuf1=\Er, 
+	cup=\E%p2%d;%p1%dM, cuu1=\Eu, cvvis=\E0h, 
+	dch=\E%p1%dE$<5>, dch1=\EE, dl=\E%p1%dd$<3*>, 
+	dl1=\Ed$<3>, ed=\EC, el=\Ec, hd=\E1;2f, ht=^I, hu=\E1;2u, 
+	ich=\E%p1%dA$<5>, ich1=\EA, il=\E%p1%da$<3*>, 
+	il1=\Ea$<3>, ind=^J, kbs=^H, kcub1=\E[D, kcud1=\E[B, 
+	kcuf1=\E[C, kcuu1=\E[A, nel=^M^J, rev=\E1n, rmam=\E5S, 
+	rmso=\E0n, rmul=\E0n, sgr0=\E0n, smam=\E5s, smso=\E1n, 
+	smul=\E4n, 
+mgr-sun|Mgr window with Sun keyboard, 
+	ka1=\E[214z, ka3=\E[216z, kb2=\E[218z, kc1=\E[220z, 
+	kc3=\E[222z, kcpy=\E197z, kend=\E[220z, kent=\E[250z, 
+	kf1=\E[224z, kf10=\E[233z, kf11=\E[234z, kf12=\E[235z, 
+	kf2=\E[225z, kf3=\E[226z, kf4=\E[227z, kf5=\E[228z, 
+	kf6=\E[229z, kf7=\E[230z, kf8=\E[231z, kf9=\E[232z, 
+	kfnd=\E[200z, khlp=\E[207z, khome=\E[214z, knp=\E[222z, 
+	kopn=\E[198z, kpp=\E[216z, kund=\E[195z, 
+	use=mgr, 
+mgr-linux|Mgr window with Linux keyboard, 
+	ka1=\E[H, ka3=\E[5~, kb2=\E[G, kc1=\E[Y, kc3=\E[6~, 
+	kdch1=\E[3~, kend=\E[4~, kf0=\E[[J, kf1=\E[[A, kf10=\E[21~, 
+	kf11=\E[23~, kf12=\E[24~, kf2=\E[[B, kf3=\E[[C, kf4=\E[[D, 
+	kf5=\E[[E, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
+	khome=\E[1~, knp=\E[6~, kpp=\E[5~, 
+	use=mgr, 
 
 ######## UNIX VIRTUAL TERMINALS AND VIRTUAL CONSOLES
 #
@@ -5794,8 +5848,9 @@ avatar|avatar1|avatar terminal emulator level 1,
 #
 # This section also includes Teletype-branded VDTs.
 #
-# The AT&T/Teletype terminals group was sold to SunRiver Data Systems; for
-# details, see the header comment on the ADDS section.
+# The AT&T/Teletype terminals group was sold to SunRiver Data Systems (now
+# Boundless Technologies); for details, see the header comment on the ADDS
+# section.
 #
 # These are AT&T's official terminfo entries.  All-caps aliases have been
 # removed.
@@ -7336,17 +7391,18 @@ aaa-rv-unk|ann arbor unknown type,
 # ADDS itself is long gone.  ADDS was bought by NCR, and the same group made
 # ADDS and NCR terminals.  When AT&T and NCR merged, the engineering for
 # terminals was merged again.  Then AT&T sold the terminal business to
-# SunRiver.  The engineers from Teletype, AT&T terminals, ADDS,
-# and NCR (who are still there as of early 1995) are at:
+# SunRiver, which later changed its  name to Boundless Technologies.  The
+# engineers from Teletype, AT&T terminals, ADDS, and NCR (who are still there
+# as of early 1995) are at:
 #
-#	SunRiver Data Systems
+#	Boundless Technologies
 #	100 Marcus Boulevard
 #	Hauppauge, NY 11788-3762
 #	Vox: (800)-231-5445
 #	Fax: (516)-342-7378
 #
 # Their voice mail used to describe the place as "SunRiver (formerly ADDS)". 
-# In 1995 SunRiver acquired DEC's terminals business.
+# In 1995 Boundless acquired DEC's terminals business.  
 #
 
 # Regent: lowest common denominator, works on all regents.
@@ -10849,9 +10905,11 @@ minix|minix console (v1.7),
 	kf5=\E[G, khome=\E[H, lf0=End, lf1=PgUp, lf2=PgDn, lf3=Num +, 
 	lf4=Num -, lf5=Num 5, nel=^M^J, rev=\E[7m, ri=\EM, 
 	rmso=\E[0m, rmul=\E[0m, sgr0=\E[0m, smso=\E[7m, smul=\E[4m, 
+# Corrected Jan 14, 1997 by Vincent Broman <broman@nosc.mil>
 minix-old|minix console (v1.5), 
+	xon, 
 	cols#80, it#8, lines#25, 
-	blink=\E[5m, bold=\E[1m, clear=\E[H\E[0J, cr=^M, 
+	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[H\E[0J, cr=^M, 
 	cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=\E[B, 
 	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
 	cuu=\E[%p1%dA, cuu1=\E[A, dch=\E[%p1%dP, dch1=\E[P, 
@@ -10861,6 +10919,10 @@ minix-old|minix console (v1.5),
 	kf0=\E[Y, kf1=\E[V, kf2=\E[U, kf3=\E[T, kf4=\E[S, kf5=\E[G, 
 	khome=\E[H, nel=^M^J, rev=\E[7m, ri=\EM, rmso=\E[0m, 
 	rmul=\E[0m, sgr0=\E[0m, smso=\E[7m, smul=\E[4m, 
+# The linewrap option can be specified by editing /usr/include/minix/config.h
+# before recompiling the minix 1.5 kernel.
+minix-old-am|minix console with linewrap, 
+	am, use=minix-old, 
 
 pc-minix|minix console on an Intel box, 
 	use=klone+acs, use=minix, 
@@ -10922,20 +10984,36 @@ xerox820|x820|Xerox 820,
 #### Videotex and teletext
 #
 
-# standard-issue France Telecom minitel terminal (made by Philips)
-# (m2-nam: had unknown :zd=\E[1m:zb=\E[5m:zc=lkmjqxtuwvn:; also deleted
-# unnecessary :ug#0:sg#0: and added <acsc> to quiet tic. -- esr)
-m2-nam|minitel|minitel-2|minitel-2-nam|France Telecom Minitel, 
-	xenl, 
-	cols#80, it#8, lines#24, 
-	acsc=, clear=\E[H\E[J, cub1=^H, cuf1=\E[C, 
-	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, dch1=\E[P, dl1=\E[M, 
-	ed=\E[J, el=\E[K, home=\E[H, ht=^I, il1=\E[L, ind=^J, ip=$<7/>, 
-	is2=\E[1;24r\E[24;1H, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, 
-	kcuu1=\E[A, kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, 
-	khome=\E[H, ri=\EM, rmacs=\E(B, rmir=\E[4l, rmso=\E[m, 
-	rmul=\E[m, sgr0=\E[m, smacs=\E(0, smir=\E[4h, smso=\E[7m, 
-	smul=\E[4m, 
+# \E\:1}	switch to te'le'informatique mode (ascii terminal/ISO 6429)
+# \E[?3l	80 columns
+# \E[?4l	scrolling on
+# \E[12h	local echo off
+# \Ec		reset: G0 U.S. charset (to get #,@,{,},...), 80 cols, clear screen
+# \E)0		G1 DEC set (line graphics)
+#
+# From: Igor Tamitegama <igor@ppp1493-ft.teaser.fr>, 18 Jan 1997
+m2-nam|minitel|minitel-2|minitel-2-nam|France Telecom Minitel 2 mode te'le'informatique, 
+	eslok, hs, xenl, 
+	cols#80, it#8, lines#24, wsl#72, xmc#0, 
+	acsc=aaffggjjkkllmmnnooqqssttuuvvwwxx, bel=^G, 
+	blink=\E[5m, bold=\E[1m, civis=\E[<1h, clear=\E[H\E[J, 
+	cnorm=\E[<1l, cr=^M, csr=\E[%i%p1%d;%p2%dr, 
+	cub=\E[%p1%dD, cub1=\E[D, cud=\E[%p1%dB, cud1=\E[B, 
+	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
+	cuu=\E[%p1%dA, cuu1=\E[A, dch=\E[%p1%dP, dch1=\E[P, 
+	dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, flash=^G, fsl=^J, 
+	home=\E[H, ht=^I, il=\E[%p1%dL, il1=\E[L, ind=^J, indn=^J, 
+	ip=$<7/>, is1=\E\:1}\Ec\E[?4l\E[12h, is2=\Ec\E[12h\E)0, 
+	is3=\E[?3l kbs=\010, kclr=\E[2J, kcub1=\E[D, kcud1=\E[B, 
+	kcuf1=\E[C, kcuu1=\E[A, kdch1=\E[P, kdl1=\E[M, kf0=\EOp, 
+	kf1=\EOq, kf10=\EOp, kf2=\EOr, kf3=\EOs, kf4=\EOt, kf5=\EOu, 
+	kf6=\EOv, kf7=\EOw, kf8=\EOx, kf9=\EOy, khome=\E[H, 
+	kich1=\E[4h, kil1=\E[4l, knp=\EOn, kpp=\EOR, ll=\E[24;80H, 
+	mc0=\E[i, nel=^M^J, rc=\E8, rev=\E[7m, ri=\EM, rin=\EM, 
+	rmacs=^O, rmir=\E[4l, rmso=\E[27m, rmul=\E[24m, 
+	rs1=\Ec\E[?4l\E[12h, rs2=\Ec\E)0, sc=\E7, sgr0=\E[m, 
+	smacs=^N, smir=\E[4h, smso=\E[7m, smul=\E[4m, tsl=^_@A, 
+	u6=\E[%i%d;%dR, u7=\E[6n, 
 
 ######## OBSOLETE VDT TYPES
 #
@@ -11197,7 +11275,6 @@ dw2|decwriter|dw|decwriter II,
 	hc, os, 
 	cols#132, 
 	bel=^G, cr=^M, cub1=^H, cud1=^J, ind=^J, kbs=^H, 
-
 # \E(B		Use U.S. character set (otherwise # => british pound !)
 # \E[20l	Disable "linefeed newline" mode (else puts \r after \n,\f,\v)
 # \E[w   	10 char/in pitch
@@ -13900,17 +13977,27 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* Back off the xterm entry to use r6 as a base.
 # 9.13.22 (Sat Nov 30 11:51:31 EST 1996):
 #	* Added dec-vt220 at Adrian Garside's request.
-#
-# 10.1.0 (Sun Dec 29 02:36:31 EST 1996):
+# 10.1.0 (Sun Dec 29 02:36:31 EST 1996): withdrawn
 #	* Minor corrections to xterm entries.
 #	* Replaced EWAN telnet entry.
 #	* Dropped the reorder script generator.  It was a fossil.
+# 9.13.23 (Fri Feb 21 16:36:06 EST 1997):
+#	* Replaced minitel-2 entry.
+#	* Added MGR, ansi-nt.
+# 9.13.24 (Sun Feb 23 20:55:23 EST 1997):
+#	* Thorsten Lockert added termcap `bs' to a lot of types, working from
+#	  the 4.4BSD Lite2 file.
+#
 # 10.1.1 (Sat May  3 21:41:27 EDT 1997):
 #	* Use setaf/setab consistently with SVr4.
 #	* Remove ech, el1 from cons25w, they do not work in FreeBSD 2.1.5
 # 10.1.2 (Sat May 24 21:10:57 EDT 1997)
 #	* update xterm-xf86-v32 to match XFree86 3.2A (changes F1-F4)
 #	* add xterm-16color, for XFree86 3.3
+# 10.1.3 (Sat May 31 12:21:05 EDT 1997)
+#	* correct typo in emu
+#	* correct typo in vt102-w (Robert Wuest)
+#	* make new entry xterm-xf86-v33, restored xterm-xf86-v32.
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

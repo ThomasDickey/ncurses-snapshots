@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.17 1997/04/05 23:38:51 tom Exp $
+# $Id: Makefile.in,v 1.18 1997/05/31 23:12:08 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -41,6 +41,7 @@ INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
 
 AWK		= @AWK@
+LN_S		= @LN_S@
 
 VERSION		= @nc_cv_rel_version@
 

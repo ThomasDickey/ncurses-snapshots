@@ -1,0 +1,59 @@
+.\"*****************************************************************************
+.\" Copyright 1997 by Thomas E. Dickey <dickey@clark.net>                      *
+.\" All Rights Reserved.                                                       *
+.\"                                                                            *
+.\" Permission to use, copy, modify, and distribute this software and its      *
+.\" documentation for any purpose and without fee is hereby granted, provided  *
+.\" that the above copyright notice appear in all copies and that both that    *
+.\" copyright notice and this permission notice appear in supporting           *
+.\" documentation, and that the name of the above listed copyright holder(s)   *
+.\" not be used in advertising or publicity pertaining to distribution of the  *
+.\" software without specific, written prior permission. THE ABOVE LISTED      *
+.\" COPYRIGHT HOLDER(S) DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,  *
+.\" INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO     *
+.\" EVENT SHALL THE ABOVE LISTED COPYRIGHT HOLDER(S) BE LIABLE FOR ANY         *
+.\" SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER       *
+.\" RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
+.\" CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
+.\" CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
+.\"*****************************************************************************
+.\" $Id: keyok.3x,v 1.1 1997/05/29 10:58:59 tom Exp $
+.TH keyok 3X ""
+.
+.SH NAME
+\fBkeyok\fP \- enable or disable a keycode
+.
+.SH SYNOPSIS
+\fB#include <curses.h>\fP
+
+\fBint keyok(int keycode, bool enable);\fP
+.
+.SH DESCRIPTION
+This is an extension to the curses library.
+It permits an application to disable specific keycodes, rather than
+use the \fIkeypad\fP function to disable all keycodes.
+Keys that have been disabled can be reenabled.
+.
+.SH RETURN VALUE
+The keycode must be greater than zero, else ERR is returned.
+If it does not correspond to a defined key, then ERR is returned.
+If the \fIenable\fP parameter is true, then the key must have been disabled,
+and vice versa.
+Otherwise, the function returns OK.
+.
+.SH PORTABILITY
+These routines are specific to ncurses.  They were not supported on
+Version 7, BSD or System V implementations.  It is recommended that
+any code depending on them be conditioned using NCURSES_VERSION.
+.
+.SH SEE ALSO
+\fBdefine_key\fP(3x).
+.
+.SH AUTHOR
+Thomas Dickey.
+.\"#
+.\"# The following sets edit modes for GNU EMACS
+.\"# Local Variables:
+.\"# mode:nroff
+.\"# fill-column:79
+.\"# End:

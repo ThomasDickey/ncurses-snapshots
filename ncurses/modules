@@ -1,4 +1,4 @@
-# $Id: modules,v 1.25 1997/04/26 21:59:59 tom Exp $
+# $Id: modules,v 1.27 1997/06/01 00:16:35 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -19,15 +19,16 @@
 # PERFORMANCE OF THIS SOFTWARE.                                                #
 ################################################################################
 # Library objects
+codes		lib		.
 fallback	lib		.		../include/term.h $(INCDIR)/tic.h
-hashmap		lib		$(srcdir)
 hardscroll	lib		$(srcdir)
+hashmap		lib		$(srcdir)
 lib_acs 	lib		$(srcdir)	../include/term.h
 lib_addch	lib		$(srcdir)
 lib_addstr	lib		$(srcdir)
+lib_baudrate	lib		$(srcdir)	../include/term.h
 lib_beep	lib		$(srcdir)	../include/term.h
 lib_bkgd	lib		$(srcdir)
-lib_baudrate	lib		$(srcdir)	../include/term.h
 lib_box 	lib		$(srcdir)
 lib_clear	lib		$(srcdir)
 lib_clrbot	lib		$(srcdir)
@@ -88,10 +89,11 @@ lib_twait	lib		$(srcdir)
 lib_vidattr	lib		$(srcdir)	../include/term.h
 lib_window	lib		$(srcdir)
 names		lib		.
-codes		lib		.
-unctrl		lib		.
+name_match	lib		$(srcdir)	../include/term.h ../include/tic.h
 read_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 read_termcap	lib		$(srcdir)	../include/term.h
+tries		lib		$(srcdir)
+unctrl		lib		.
 write_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 
 # Modules for porting
@@ -109,9 +111,11 @@ comp_scan	lib		$(srcdir)
 parse_entry	lib		$(srcdir)	../include/term.h ../include/parametrized.h
 
 # Extensions
+define_key	lib		$(srcdir)
+expanded	lib		.
+keyok		lib		$(srcdir)
+lib_adabind	lib		$(srcdir)
 lib_dft_fgbg	lib		$(srcdir)
 lib_freeall	lib		$(srcdir)
 resizeterm	lib		$(srcdir)	../include/term.h
 wresize		lib		$(srcdir)	../include/term.h
-lib_adabind	lib		$(srcdir)
-expanded	lib		.

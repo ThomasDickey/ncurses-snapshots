@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.17 1997/05/01 23:46:18 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.18 1997/05/29 10:23:56 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -136,6 +136,7 @@ void delscreen(SCREEN *sp)
 	_nc_freewin(sp->_newscr);
 	_nc_freewin(sp->_stdscr);
 	_nc_free_keytry(sp->_keytry);
+	_nc_free_keytry(sp->_key_ok);
 
 	FreeIfNeeded(sp->_color_table);
 	FreeIfNeeded(sp->_color_pairs);
@@ -176,21 +177,13 @@ int	bottom_stolen = 0, i;
 	SP->_columns     = scolumns;
 	SP->_cursrow     = -1;
 	SP->_curscol     = -1;
-	SP->_keytry      = UNINITIALISED;
 	SP->_nl          = TRUE;
 	SP->_raw         = FALSE;
 	SP->_cbreak      = FALSE;
 	SP->_echo        = FALSE;
 	SP->_fifohead    = -1;
-	SP->_fifotail    = 0;
-	SP->_fifopeek    = 0;
 	SP->_endwin      = TRUE;
 	SP->_ofp         = output;
-	SP->_coloron     = 0;
-	SP->_curscr      = 0;
-	SP->_newscr      = 0;
-	SP->_stdscr      = 0;
-	SP->_topstolen   = 0;
 	SP->_cursor      = -1;	/* cannot know real cursor shape */
 
 	init_acs();

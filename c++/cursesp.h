@@ -19,19 +19,19 @@ private:
   // This structure is used for the panel's user data field to link the
   // PANEL* to the C++ object and to provide extra space for a user pointer.
   typedef struct {
-    const void*         m_user;      // the pointer for the user's data
+    void*               m_user;      // the pointer for the user's data
     const NCursesPanel* m_back;      // backward pointer to C++ object
     const PANEL*        m_owner;     // the panel itself
   } UserHook;
 
 protected:
-  void set_user(const void *user) {
+  void set_user(void *user) {
     UserHook* uptr = (UserHook*)::panel_userptr (p);
     assert (uptr && uptr->m_back==this && uptr->m_owner==p);
     uptr->m_user = user;
   }
   
-  const void *get_user() {
+  void *get_user() {
     UserHook* uptr = (UserHook*)::panel_userptr (p);
     assert (uptr && uptr->m_back==this && uptr->m_owner==p);
     return uptr->m_user;
@@ -112,18 +112,18 @@ public:
 		    int begin_x = 0)
     : NCursesPanel (lines, cols, begin_y, begin_x) {
       if (p)
-	set_user ((const void *)p_UserData);
+	set_user ((void *)p_UserData);
   };
   
   virtual ~NCursesUserPanel() {};
 
-  const T* UserData (void) const {
-    return (const T*)get_user ();
+  T* UserData (void) const {
+    return (T*)get_user ();
   };
 
   virtual void setUserData (const T* p_UserData) {
     if (p)
-      set_user ((const void *)p_UserData);
+      set_user ((void *)p_UserData);
   }
 };
 

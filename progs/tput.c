@@ -31,7 +31,7 @@
 
 #include <curses.h>
 
-MODULE_ID("$Id: tput.c,v 1.9 1997/05/24 23:03:19 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.10 1997/05/30 10:07:06 florian Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -208,6 +208,8 @@ int main(int argc, char **argv)
 char *s, *term;
 int errret, cmdline = 1;
 int c;
+char	buf[BUFSIZ];
+int errors = 0;
 
 	prg_name = argv[0];
 	s = strrchr(prg_name, '/');
@@ -238,19 +240,14 @@ int c;
 		/* NOTREACHED */
 	}
 
-	if (term == NULL || *term == '\0') {
+	if (term == NULL || *term == '\0')
 		quit(2, "No value for $TERM and no -T specified");
-	}
 
-	setupterm(term, STDOUT_FILENO, &errret);
-	if (errret == ERR)
-	quit(3, "unknown terminal \"%s\"", term);
+	if (setupterm(term, STDOUT_FILENO, &errret) != OK)
+		quit(3, "unknown terminal \"%s\"", term);
 
 	if (cmdline)
-	return(tput(argc, argv));
-	else {
-	char	buf[BUFSIZ];
-	int errors = 0;
+		return tput(argc, argv);
 
 	while (fgets(buf, sizeof(buf), stdin) != (char *)NULL) {
 		char	*argvec[16];	/* command, 9 parms, null, & slop */
@@ -259,18 +256,17 @@ int c;
 
 		/* crack the argument list into a dope vector */
 		for (cp = buf; *cp; cp++) {
-		if (isspace(*cp))
-			*cp = '\0';
-		else if (cp == buf || cp[-1] == 0)
-			argvec[argnum++] = cp;
+			if (isspace(*cp))
+				*cp = '\0';
+			else if (cp == buf || cp[-1] == 0)
+				argvec[argnum++] = cp;
 		}
 		argvec[argnum] = (char *)NULL;
 
 		if (tput(argnum, argvec) != 0)
-		errors++;
+			errors++;
 	}
 
-	return(errors > 0);
-	}
+	return errors > 0;
 }
 

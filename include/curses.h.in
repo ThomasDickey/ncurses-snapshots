@@ -18,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.44 1997/04/20 01:32:08 tom Exp $ */
+/* $Id: curses.h.in,v 1.46 1997/05/31 13:45:39 J.T.Conklin Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -298,9 +298,11 @@ extern int	LINES, COLS, TABSIZE;
 extern int ESCDELAY;	/* ESC expire time in milliseconds */
 
 /* non-XSI extensions (dickey@clark.net) */
+extern int define_key (char *, int);
+extern int keyok (int, bool);
 extern int resizeterm (int, int);
-extern int wresize (WINDOW *, int, int);
 extern int use_default_colors (void);
+extern int wresize (WINDOW *, int, int);
 
 extern char ttytype[];		/* needed for backward compatibility */
 
@@ -868,8 +870,14 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 
 /* It seems older SYSV curses versions define these */
 #define getattrs(win)		((win)->_attrs)
+#define getcurx(win)		((win)->_curx)
+#define getcury(win)		((win)->_cury)
+#define getbegx(win)		((win)->_begx)
+#define getbegy(win)		((win)->_begy)
 #define getmaxx(win)		((win)->_maxx + 1)
 #define getmaxy(win)		((win)->_maxy + 1)
+#define getparx(win)		((win)->_parx)
+#define getpary(win)		((win)->_pary)
 
 #define winch(win)       	((win)->_line[(win)->_cury].text[(win)->_curx])
 #define wstandout(win)      	(wattr_set(win,A_STANDOUT))

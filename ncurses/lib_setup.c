@@ -35,7 +35,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.24 1997/03/08 21:25:44 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.25 1997/06/01 00:11:01 tom Exp $")
 
 /****************************************************************************
  *
@@ -46,6 +46,8 @@ MODULE_ID("$Id: lib_setup.c,v 1.24 1997/03/08 21:25:44 tom Exp $")
 #if !defined(sun) || !HAVE_TERMIOS_H
 #include <sys/ioctl.h>
 #endif
+
+TERMINAL *cur_term;
 
 static int _use_env = TRUE;
 
@@ -165,6 +167,7 @@ char		*rows, *cols;
 					    exit(EXIT_FAILURE);\
 					}
 
+#if USE_DATABASE
 static int grab_entry(const char *const tn, TERMTYPE *const tp)
 /* return 1 if entry found, 0 if not found, -1 if database not accessible */
 {
@@ -185,6 +188,7 @@ static int grab_entry(const char *const tn, TERMTYPE *const tp)
 
 	return(status);
 }
+#endif
 
 char ttytype[NAMESIZE];
 
@@ -215,7 +219,11 @@ int status;
 
 	if (term_ptr == NULL)
 		ret_error0(-1, "Not enough memory to create terminal structure.\n") ;
+#if USE_DATABASE
 	status = grab_entry(tname, &term_ptr->type);
+#else
+	status = 0;
+#endif
 
 	/* try fallback list if entry on disk */
 	if (status != 1)

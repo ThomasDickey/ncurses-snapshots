@@ -128,12 +128,13 @@ rm -f conftest.s*
 SYS_NAME=`uname -a`
 if test -z "$SYS_NAME"; then SYS_NAME=unknown;fi
 
-AWK=awk
-CC="gcc -I${glibc_nc_srcdir}/ncurses -Incurses -I${glibc_nc_srcdir}/include"
-CPP="${CC} -E"
+NC_AWK=awk
+CC=${CC-gcc}
+NC_CC="${CC} -I${glibc_nc_srcdir}/ncurses -Incurses -I${glibc_nc_srcdir}/include"
+NC_CPP="${NC_CC} -E"
 NC_LIST_MODELS="normal"
-WITH_ECHO="yes"
-WITH_OVERWRITE="yes"
+#WITH_ECHO="yes"
+#WITH_OVERWRITE="yes"
 nc_cxx_library="yes"
 nc_cv_systype="Linux"
 nc_cv_rel_version="4.1"
@@ -225,7 +226,7 @@ echo removing ncurses/config_h
 rm ncurses/config_h
 
 echo creating ncurses/term.h
-${AWK} -f ncurses/MKterm.h.awk ${glibc_nc_srcdir}/include/Caps > ncurses/term.h
+${NC_AWK} -f ncurses/MKterm.h.awk ${glibc_nc_srcdir}/include/Caps > ncurses/term.h
 sh ${glibc_nc_srcdir}/include/edit_cfg.sh ncurses/ncurses_cfg.h ncurses/term.h
 
 echo creating ncurses/hashsize.h
@@ -235,39 +236,39 @@ echo creating ncurses/parametrized.h
 sh ${glibc_nc_srcdir}/include/MKparametrized.sh ${glibc_nc_srcdir}/include/Caps > ncurses/parametrized.h
 
 echo creating ncurses/termsort.c
-sh ${glibc_nc_srcdir}/progs/MKtermsort.sh "${AWK}" ${glibc_nc_srcdir}/include/Caps > ncurses/termsort.c
+sh ${glibc_nc_srcdir}/progs/MKtermsort.sh "${NC_AWK}" ${glibc_nc_srcdir}/include/Caps > ncurses/termsort.c
 
 echo creating ncurses/fallback.c
 sh ${glibc_nc_srcdir}/ncurses/MKfallback.sh > ncurses/fallback.c
 
 echo creating ncurses/lib_gen.c
-sh ${glibc_nc_srcdir}/ncurses/MKlib_gen.sh "${CPP}" "${AWK}" < ncurses/curses.h > ncurses/lib_gen.c
+sh ${glibc_nc_srcdir}/ncurses/MKlib_gen.sh "${NC_CPP}" "${NC_AWK}" < ncurses/curses.h > ncurses/lib_gen.c
 
 echo creating ncurses/nomacros.h
-sh ${glibc_nc_srcdir}/ncurses/MKlib_gen.sh "${CPP}" "${AWK}" < ncurses/curses.h | fgrep undef > ncurses/nomacros.h
+sh ${glibc_nc_srcdir}/ncurses/MKlib_gen.sh "${NC_CPP}" "${NC_AWK}" < ncurses/curses.h | fgrep undef > ncurses/nomacros.h
 
 echo creating ncurses/keys.tries
-${AWK} -f ${glibc_nc_srcdir}/ncurses/MKkeys.awk ${glibc_nc_srcdir}/ncurses/keys.list > ncurses/keys.tries
+${NC_AWK} -f ${glibc_nc_srcdir}/ncurses/MKkeys.awk ${glibc_nc_srcdir}/ncurses/keys.list > ncurses/keys.tries
 
 echo creating ncurses/expanded.c
-sh ${glibc_nc_srcdir}/ncurses/MKexpanded.sh "${CPP}"
+sh ${glibc_nc_srcdir}/ncurses/MKexpanded.sh "${NC_CPP}"
 mv expanded.c ncurses/expanded.c
 
 echo creating ncurses/comp_captab.c
-${CC} -o make_hash -DMAIN_PROGRAM ${glibc_nc_srcdir}/ncurses/comp_hash.c
-sh ${glibc_nc_srcdir}/ncurses/MKcaptab.awk "${AWK}" ${glibc_nc_srcdir}/include/Caps > ncurses/comp_captab.c
+${NC_CC} -o make_hash -DMAIN_PROGRAM ${glibc_nc_srcdir}/ncurses/comp_hash.c
+sh ${glibc_nc_srcdir}/ncurses/MKcaptab.awk "${NC_AWK}" ${glibc_nc_srcdir}/include/Caps > ncurses/comp_captab.c
 rm -f make_hash
 
 echo creating ncurses/lib_keyname.c
-${AWK} -f ${glibc_nc_srcdir}/ncurses/MKkeyname.awk ${glibc_nc_srcdir}/ncurses/keys.list > ncurses/lib_keyname.c
+${NC_AWK} -f ${glibc_nc_srcdir}/ncurses/MKkeyname.awk ${glibc_nc_srcdir}/ncurses/keys.list > ncurses/lib_keyname.c
 
 echo creating ncurses/names.c and ncurses/codes.c
-${AWK} -f ${glibc_nc_srcdir}/ncurses/MKnames.awk ${glibc_nc_srcdir}/include/Caps
+${NC_AWK} -f ${glibc_nc_srcdir}/ncurses/MKnames.awk ${glibc_nc_srcdir}/include/Caps
 cat namehdr boolnames boolfnames numnames numfnames strnames strfnames nameftr >ncurses/names.c
 cat namehdr boolcodes numcodes strcodes codeftr > ncurses/codes.c
 rm -f namehdr nameftr codeftr boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes
 
 echo creating ncurses/unctrl.c
-echo | ${AWK} -f ${glibc_nc_srcdir}/ncurses/MKunctrl.awk > ncurses/unctrl.c
+echo | ${NC_AWK} -f ${glibc_nc_srcdir}/ncurses/MKunctrl.awk > ncurses/unctrl.c
 echo creating ncurses/terminfo.5
 sh ${glibc_nc_srcdir}/man/MKterminfo.sh ${glibc_nc_srcdir}/man/terminfo.head ${glibc_nc_srcdir}/include/Caps ${glibc_nc_srcdir}/man/terminfo.tail > ncurses/terminfo.5

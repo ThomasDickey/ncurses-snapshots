@@ -29,11 +29,12 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_erase.c,v 1.7 1997/02/01 23:18:18 tom Exp $")
+MODULE_ID("$Id: lib_erase.c,v 1.8 1997/05/28 09:01:48 J.T.Conklin Exp $")
 
 int  werase(WINDOW	*win)
 {
 int	y;
+chtype	blank = _nc_background(win);
 chtype	*sp, *end, *start, *maxx = NULL;
 short	minx;
 
@@ -49,7 +50,7 @@ short	minx;
 			maxx = sp;
 			if (minx == _NOCHANGE)
 					minx = sp - start;
-			*sp = _nc_background(win);
+			*sp = blank;
 		}
 
 		if (minx != _NOCHANGE) {
