@@ -22,7 +22,7 @@
 //  This binding comes AS IS with no warranty, implied or expressed.        --
 //----------------------------------------------------------------------------
     Version Control
-    $Revision: 1.4 $
+    $Revision: 1.5 $
   --------------------------------------------------------------------------*/
 /*
   This program generates various record structures and constants from the
@@ -152,7 +152,9 @@ static void gen_reps ( const name_attribute_pair *nap,
       printf("         %-*s at 0 range %2d .. %2d;\n",width,RES_NAME,l,l);
     }
   printf("      end record;\n");
-  printf("   for %s'Size use Interfaces.C.int'Size%s;", name, suffix);
+  printf("   for %s'Size use Interfaces.C.int'Size%s;\n", name, suffix);
+  printf("   --  Please note: this rep. clause is generated and may be\n");
+  printf("   --               different on your system.");
 }
 
 
@@ -173,6 +175,8 @@ static void gen_chtype_rep(const char *name)
   chtype_rep("Color",A_COLOR);
   chtype_rep("Attr",(A_ATTRIBUTES&~A_COLOR));
   printf("      end record;\n   for %s'Size use Interfaces.C.int'Size;\n",name);
+  printf("      --  Please note: this rep. clause is generated and may be\n");
+  printf("      --               different on your system.\n");
 }
 
 
@@ -212,6 +216,8 @@ static void gen_mrep_rep(const char *name)
   mrep_rep("Bstate",&x);
 
   printf("      end record;\n");
+  printf("      --  Please note: this rep. clause is generated and may be\n");
+  printf("      --               different on your system.\n");
 }
 
 static void gen_attr_set( const char *name )

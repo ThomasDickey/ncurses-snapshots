@@ -29,9 +29,9 @@
 <I>--  This binding comes AS IS with no warranty, implied or expressed.        --</I>
 <I>------------------------------------------------------------------------------</I>
 <I>--  Version Control:</I>
-<I>--  $Revision: 1.5 $</I>
+<I>--  $Revision: 1.6 $</I>
 <I>------------------------------------------------------------------------------</I>
-<I>--  mouse binding, generated at Mon Oct 28 14:33:06 1996</I>
+<I>--  mouse binding, generated at Fri Nov  1 02:21:10 1996</I>
 <I>--  This module is generated. Please don't change it manually!</I>
 <I>--  Run the generator instead.</I>
 <I>--  |</I>
@@ -50,10 +50,10 @@
    No_Events  : <B>constant</B> Event_Mask;
    All_Events : <B>constant</B> Event_Mask;
 
-   type Mouse_Button <B>is</B> (Left,     <I>-- AKA: <A HREF="curs_mouse.3x.html">CFUNAME</A>: Button 1</I>
-                         Middle,   <I>-- AKA: <A HREF="curs_mouse.3x.html">CFUNAME</A>: Button 2</I>
-                         Right,    <I>-- AKA: <A HREF="curs_mouse.3x.html">CFUNAME</A>: Button 3</I>
-                         Button4,  <I>-- AKA: <A HREF="curs_mouse.3x.html">CFUNAME</A>: Button 4</I>
+   type Mouse_Button <B>is</B> (Left,     <I>-- aka: Button 1</I>
+                         Middle,   <I>-- aka: Button 2</I>
+                         Right,    <I>-- aka: Button 3</I>
+                         Button4,  <I>-- aka: Button 4</I>
                          Control,  <I>-- Control Key</I>
                          Shift,    <I>-- Shift Key</I>
                          Alt);     <I>-- ALT Key</I>
@@ -137,6 +137,8 @@
          Z       <B>at</B> 0 <B>range</B>  96 .. 127;
          Bstate  <B>at</B> 0 <B>range</B> 128 .. 159;
       <B>end</B> <B>record</B>;
+      <I>--  Please note: this rep. clause is generated and may be</I>
+      <I>--               different on your system.</I>
 
    Generation_Bit_Order : <B>constant</B> System.Bit_Order := System.Low_Order_First;
    <I>--  This constant may be different on your system.</I>

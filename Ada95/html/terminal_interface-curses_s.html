@@ -30,9 +30,9 @@
 <I>--  This binding comes AS IS with no warranty, implied or expressed.        --</I>
 <I>------------------------------------------------------------------------------</I>
 <I>--  Version Control:</I>
-<I>--  $Revision: 1.5 $</I>
+<I>--  $Revision: 1.6 $</I>
 <I>------------------------------------------------------------------------------</I>
-<I>--  curses binding, generated at Mon Oct 28 14:33:04 1996</I>
+<I>--  curses binding, generated at Fri Nov  1 02:21:08 1996</I>
 <I>--  This module is generated. Please don't change it manually!</I>
 <I>--  Run the generator instead.</I>
 <I>--  |</I>
@@ -42,6 +42,7 @@
 <B>package</B> Terminal_Interface.Curses <B>is</B>
 
    <B>pragma</B> Linker_Options ("-lncurses");
+   <B>pragma</B> Linker_Options ("-lncwrap");
 
    type Window <B>is</B> <B>private</B>;
    Null_Window : <B>constant</B> Window;
@@ -333,6 +334,8 @@
          Reserved                <B>at</B> 0 <B>range</B> 15 .. 15;
       <B>end</B> <B>record</B>;
    <B>for</B> Character_Attribute_Set'Size <B>use</B> Interfaces.C.int'Size / 2;
+   <I>--  Please note: this rep. clause is generated and may be</I>
+   <I>--               different on your system.</I>
    <I>--  (n)curses uses half of an integer for attributes.</I>
 
    Normal_Video : <B>constant</B> Character_Attribute_Set := (<B>others</B> =&gt; False);
@@ -353,6 +356,8 @@
          Attr  <B>at</B> 0 <B>range</B> 16 .. 31;
       <B>end</B> <B>record</B>;
    <B>for</B> Attributed_Character'Size <B>use</B> Interfaces.C.int'Size;
+      <I>--  Please note: this rep. clause is generated and may be</I>
+      <I>--               different on your system.</I>
 
    Default_Character : <B>constant</B> Attributed_Character
      := (Ch    => Character'First,
