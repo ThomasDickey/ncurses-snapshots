@@ -22,7 +22,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_def.c,v 1.5 1997/08/26 12:54:38 juergen Exp $")
+MODULE_ID("$Id: frm_def.c,v 1.6 1997/10/21 13:24:19 juergen Exp $")
 
 /* this can't be readonly */
 static FORM default_form = {
@@ -361,32 +361,6 @@ FIELD **form_fields(const FORM * form)
 int field_count(const FORM * form)
 {
   return (Normalize_Form( form )->maxfield);
-}
-
-/*---------------------------------------------------------------------------
-|   Facility      :  libnform  
-|   Function      :  int scale_form( const FORM *form, int *rows, int *cols )
-|   
-|   Description   :  Retrieve size of form
-|
-|   Return Values :  E_OK              - no error
-|                    E_BAD_ARGUMENT    - invalid form pointer
-|                    E_NOT_CONNECTED   - no fields connected to form
-+--------------------------------------------------------------------------*/
-int scale_form(const FORM * form, int * rows, int * cols)
-{
-  if ( !form )
-    RETURN(E_BAD_ARGUMENT);
-
-  if ( !(form->field) )
-    RETURN(E_NOT_CONNECTED);
-  
-  if (rows) 
-    *rows = form->rows;
-  if (cols) 
-    *cols = form->cols;
-  
-  RETURN(E_OK);
 }
 
 /* frm_def.c ends here */

@@ -21,13 +21,13 @@
 +-----------------------------------------------------------------------------*/
 
 /***************************************************************************
-* Module menu_hook                                                         *
+* Module m_hook                                                            *
 * Assign application specific routines for automatic invocation by menus   *
 ***************************************************************************/
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_hook.c,v 1.4 1997/05/01 16:47:26 juergen Exp $")
+MODULE_ID("$Id: m_hook.c,v 1.5 1997/10/21 08:44:31 juergen Exp $")
 
 /* "Template" macro to generate function to set application specific hook */
 #define GEN_HOOK_SET_FUNCTION( typ, name ) \

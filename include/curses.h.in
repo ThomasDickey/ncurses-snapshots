@@ -18,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.57 1997/10/18 19:20:55 tom Exp $ */
+/* $Id: curses.h.in,v 1.58 1997/10/25 19:08:05 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -1304,6 +1304,7 @@ extern void trace(const unsigned int);
 
 #if defined(TRACE) || defined(NCURSES_TEST)
 extern int _nc_optimize_enable;		/* enable optimizations */
+extern const char *_nc_visbuf(const char *);
 #define OPTIMIZE_MVCUR		0x01	/* cursor movement optimization */
 #define OPTIMIZE_HASHMAP	0x02	/* diff hashing to detect scrolls */
 #define OPTIMIZE_SCROLL		0x04	/* scroll optimization */

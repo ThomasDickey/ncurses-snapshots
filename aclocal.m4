@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.93 1997/10/19 00:18:31 tom Exp $
+dnl $Id: aclocal.m4,v 1.95 1997/10/25 22:46:10 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -117,15 +117,17 @@ AC_DEFUN([CF_CFG_DEFAULTS],
 [
 AC_MSG_CHECKING(for prefix)
 if test "x$prefix" = "xNONE" ; then
-	case "$cf_cv_systype" in
+	case "$cf_cv_system_name" in
 		# non-vendor systems don't have a conflict
-	OpenBSD|NetBSD|FreeBSD|Linux)	prefix=/usr
+	openbsd*|netbsd*|freebsd*|linux*)
+		prefix=/usr
 		;;
 	*)	prefix=$ac_default_prefix
 		;;
 	esac
 fi
 AC_MSG_RESULT($prefix)
+
 if test "x$prefix" = "xNONE" ; then
 AC_MSG_CHECKING(for default include-directory)
 test -n "$verbose" && echo 1>&6
@@ -150,6 +152,34 @@ do
 	test -n "$verbose"  && echo "	tested $cf_dir" 1>&6
 done
 AC_MSG_RESULT($includedir)
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Check if we're accidentally using a cache from a different machine.
+dnl Derive the system name, as a check for reusing the autoconf cache.
+dnl
+dnl If we've packaged config.guess and config.sub, run that (since it does a
+dnl better job than uname). 
+AC_DEFUN([CF_CHECK_CACHE],
+[
+if test -f $srcdir/config.guess ; then
+	AC_CANONICAL_HOST
+	system_name="$host_os"
+else
+	system_name="`(uname -s -r) 2>/dev/null`"
+	if test -z "$system_name" ; then
+		system_name="`(hostname) 2>/dev/null`"
+	fi
+fi
+test -n "$system_name" && AC_DEFINE_UNQUOTED(SYSTEM_NAME,"$system_name")
+AC_CACHE_VAL(cf_cv_system_name,[cf_cv_system_name="$system_name"])
+
+test -z "$system_name" && system_name="$cf_cv_system_name"
+test -n "$cf_cv_system_name" && AC_MSG_RESULT("Configuring for $cf_cv_system_name")
+
+if test ".$system_name" != ".$cf_cv_system_name" ; then
+	AC_MSG_RESULT(Cached system name ($system_name) does not agree with actual ($cf_cv_system_name))
+	AC_ERROR("Please remove config.cache and try again.")
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
@@ -399,7 +429,6 @@ dnl	lib<name>.so.<major>	->
 dnl	lib<name>.so.<maj>.<minor>
 AC_DEFUN([CF_LIB_RULES],
 [
-AC_REQUIRE([CF_SYSTYPE])
 AC_REQUIRE([CF_SUBST_NCURSES_VERSION])
 for cf_dir in $SRC_SUBDIRS
 do
@@ -608,17 +637,16 @@ dnl $1 = model name
 dnl $2 = variable to set
 AC_DEFUN([CF_LIB_SUFFIX],
 [
-	AC_REQUIRE([CF_SYSTYPE])
 	AC_REQUIRE([CF_SUBST_NCURSES_VERSION])
 	case $1 in
 	normal)  $2='.a'   ;;
 	debug)   $2='_g.a' ;;
 	profile) $2='_p.a' ;;
 	shared)
-		case $cf_cv_systype in
-		OpenBSD|NetBSD|FreeBSD)
+		case $cf_cv_system_name in
+		openbsd*|netbsd*|freebsd*)
 			$2='.so.$(REL_VERSION)' ;;
-		HP_UX)	$2='.sl'  ;;
+		hpux*)	$2='.sl'  ;;
 		*)	$2='.so'  ;;
 		esac
 	esac
@@ -1022,8 +1050,6 @@ dnl
 dnl Some loaders leave 'so_locations' lying around.  It's nice to clean up.
 AC_DEFUN([CF_SHARED_OPTS],
 [
-	AC_REQUIRE([CF_SYSTYPE])
-	AC_REQUIRE([CF_SYSRELV])
 	AC_REQUIRE([CF_SUBST_NCURSES_VERSION])
  	LOCAL_LDFLAGS=
  	LOCAL_LDFLAGS2=
@@ -1032,8 +1058,8 @@ AC_DEFUN([CF_SHARED_OPTS],
 	cf_cv_do_symlinks=no
 	cf_cv_rm_so_locs=no
 
-	case $cf_cv_systype in
-	HP_UX)
+	case $cf_cv_system_name in
+	hpux*)
 		# (tested with gcc 2.7.2 -- I don't have c89)
 		if test "${CC}" = "gcc"; then
 			CC_SHARED_OPTS='-fPIC'
@@ -1044,7 +1070,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		fi
 		MK_SHARED_LIB='$(LD) -b -o $[@]'
 		;;
-	IRIX*)
+	irix*)
 		# tested with IRIX 5.2 and 'cc'.
 		if test "${CC}" = "gcc"; then
 			CC_SHARED_OPTS='-fPIC'
@@ -1054,10 +1080,10 @@ AC_DEFUN([CF_SHARED_OPTS],
 		MK_SHARED_LIB='$(LD) -shared -rdata_shared -soname `basename $[@]` -o $[@]'
 		cf_cv_rm_so_locs=yes
 		;;
-	Linux)
-		# tested with Linux 1.2.8 and gcc 2.7.0 (ELF)
+	linux*)
+		# tested with Linux 2.0.29 and gcc 2.7.2 (ELF)
 		CC_SHARED_OPTS='-fPIC'
- 		MK_SHARED_LIB='gcc -o $[@].$(REL_VERSION) -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)`,-stats,-lc'
+ 		MK_SHARED_LIB='gcc -o $[@].$(REL_VERSION) -L../lib -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)`,-stats,$(SHLIB_LIST)-lc'
 		test $cf_cv_ld_rpath = yes && MK_SHARED_LIB="$MK_SHARED_LIB -Wl,-rpath,\$(libdir)"
 		if test $DFT_LWR_MODEL = "shared" ; then
  			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
@@ -1065,19 +1091,19 @@ AC_DEFUN([CF_SHARED_OPTS],
 		fi
 		cf_cv_do_symlinks=yes
 		;;
-	OpenBSD|NetBSD|FreeBSD)
+	openbsd*|netbsd*|freebsd*)
 		CC_SHARED_OPTS='-fpic -DPIC'
-		MK_SHARED_LIB='$(LD) -Bshareable -o $[@]'
+		MK_SHARED_LIB='$(LD) -Bshareable -o $[@].$(REL_VERSION)'
 		;;
-	OSF1|MLS+)
+	osf*|mls+*)
 		# tested with OSF/1 V3.2 and 'cc'
 		# tested with OSF/1 V3.2 and gcc 2.6.3 (but the c++ demo didn't
 		# link with shared libs).
 		CC_SHARED_OPTS=''
  		MK_SHARED_LIB='$(LD) -o $[@].$(REL_VERSION) -set_version $(ABI_VERSION):$(REL_VERSION) -expect_unresolved "*" -shared -soname `basename $[@].$(ABI_VERSION)`'
 		test $cf_cv_ld_rpath = yes && MK_SHARED_LIB="$MK_SHARED_LIB -rpath \$(libdir)"
-		case $cf_cv_sysrelv in
-		V4.*)
+		case $host_os in
+		osf4*)
  			MK_SHARED_LIB="${MK_SHARED_LIB} -msym"
 			;;
 		esac
@@ -1088,25 +1114,27 @@ AC_DEFUN([CF_SHARED_OPTS],
 		cf_cv_do_symlinks=yes
 		cf_cv_rm_so_locs=yes
 		;;
-	SunOS)
+	sunos4*)
 		# tested with SunOS 4.1.1 and gcc 2.7.0
-		# tested with SunOS 5.3 (solaris 2.3) and gcc 2.7.0
 		if test $ac_cv_prog_gcc = yes; then
 			CC_SHARED_OPTS='-fpic'
 		else
 			CC_SHARED_OPTS='-KPIC'
 		fi
-		case $cf_cv_sysrelv in
-		4.*)
-			MK_SHARED_LIB='$(LD) -assert pure-text -o $[@].$(REL_VERSION)'
-			;;
-		5.*)
-			MK_SHARED_LIB='$(LD) -d y -G -h `basename $[@].$(ABI_VERSION)` -o $[@].$(REL_VERSION)'
-			;;
-		esac
+		MK_SHARED_LIB='$(LD) -assert pure-text -o $[@].$(REL_VERSION)'
 		cf_cv_do_symlinks=yes
 		;;
-	UNIX_SV)
+	solaris2*)
+		# tested with SunOS 5.5.1 (solaris 2.5.1) and gcc 2.7.2
+		if test $ac_cv_prog_gcc = yes; then
+			CC_SHARED_OPTS='-fpic'
+		else
+			CC_SHARED_OPTS='-KPIC'
+		fi
+		MK_SHARED_LIB='$(LD) -d y -G -h `basename $[@].$(ABI_VERSION)` -o $[@].$(REL_VERSION)'
+		cf_cv_do_symlinks=yes
+		;;
+	unix_sv*)
 		# tested with UnixWare 1.1.2
 		CC_SHARED_OPTS='-KPIC'
 		MK_SHARED_LIB='$(LD) -d y -G -o $[@]'
@@ -1308,42 +1336,6 @@ AC_SUBST(cf_cv_rel_version)
 AC_SUBST(cf_cv_abi_version)
 AC_SUBST(cf_cv_builtin_bool)
 AC_SUBST(cf_cv_type_of_bool)
-])dnl
-dnl ---------------------------------------------------------------------------
-dnl Derive the system-release (our secondary clue to the method of building
-dnl shared libraries).
-AC_DEFUN([CF_SYSRELV],
-[
-AC_MSG_CHECKING(for system release version)
-AC_CACHE_VAL(cf_cv_sysrelv,[
-AC_ARG_WITH(system-release,
-[  --with-system-relv=XXX  test: override derived host system-release version],
-[cf_cv_sysrelv=$withval],
-[
-changequote(,)dnl
-cf_cv_sysrelv="`(uname -r || echo unknown) 2>/dev/null |sed -e s'/[:\/-]/_/'g  | sed 1q`"
-changequote([,])dnl
-if test -z "$cf_cv_sysrelv"; then cf_cv_sysrelv=unknown;fi
-])])
-AC_MSG_RESULT($cf_cv_sysrelv)
-])dnl
-dnl ---------------------------------------------------------------------------
-dnl Derive the system-type (our main clue to the method of building shared
-dnl libraries).
-AC_DEFUN([CF_SYSTYPE],
-[
-AC_MSG_CHECKING(for system type)
-AC_CACHE_VAL(cf_cv_systype,[
-AC_ARG_WITH(system-type,
-[  --with-system-type=XXX  test: override derived host system-type],
-[cf_cv_systype=$withval],
-[
-changequote(,)dnl
-cf_cv_systype="`(uname -s || hostname || echo unknown) 2>/dev/null |sed -e s'/[:\/.-]/_/'g  | sed 1q`"
-changequote([,])dnl
-if test -z "$cf_cv_systype"; then cf_cv_systype=unknown;fi
-])])
-AC_MSG_RESULT($cf_cv_systype)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Determine the type we should use for chtype (and attr_t, which is treated

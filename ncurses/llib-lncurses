@@ -335,6 +335,11 @@ void	_nc_screen_init(void)
 void	_nc_screen_wrap(void)
 		{ /* void */ }
 
+#undef _nc_do_xmc_glitch
+void	_nc_do_xmc_glitch(
+		attr_t	previous)
+		{ /* void */ }
+
 /* ./lib_endwin.c */
 
 #undef endwin
@@ -913,6 +918,21 @@ int	setscrreg(
 		int	z)
 		{ return(*(int *)0); }
 
+#undef slk_attr_off
+int	slk_attr_off(
+		attr_t	z)
+		{ return(*(int *)0); }
+
+#undef slk_attr_on
+int	slk_attr_on(
+		attr_t	z)
+		{ return(*(int *)0); }
+
+#undef slk_attr_set
+int	slk_attr_set(
+		attr_t	z)
+		{ return(*(int *)0); }
+
 #undef standout
 int	standout(void)
 		{ return(*(int *)0); }
@@ -929,6 +949,11 @@ int	timeout(
 #undef untouchwin
 int	untouchwin(
 		WINDOW	*z)
+		{ return(*(int *)0); }
+
+#undef vid_attr
+int	vid_attr(
+		attr_t	z)
 		{ return(*(int *)0); }
 
 #undef vline
@@ -1043,13 +1068,10 @@ int	wstandend(
 
 /* ./lib_getch.c */
 
+#include <fifo_defs.h>
+
 #undef ESCDELAY
 int	ESCDELAY;
-
-#undef ungetch
-int	ungetch(
-		int	ch)
-		{ return(*(int *)0); }
 
 #undef wgetch
 int	wgetch(
@@ -1757,11 +1779,6 @@ void	delscreen(
 		SCREEN	*sp)
 		{ /* void */ }
 
-#undef rippedoff
-ripoff_t rippedoff[5];
-#undef rsp
-ripoff_t *rsp;
-
 #undef _nc_setupscreen
 int	_nc_setupscreen(
 		short	slines, 
@@ -1801,8 +1818,8 @@ int	COLS;
 #undef TABSIZE
 int	TABSIZE;
 
-#undef _nc_get_screensize
-void	_nc_get_screensize(void)
+#undef _nc_update_screensize
+void	_nc_update_screensize(void)
 		{ /* void */ }
 
 #undef ttytype
@@ -1820,10 +1837,64 @@ int	setupterm(
 #undef _nc_slk_format
 int	_nc_slk_format;
 
+#undef _nc_slk_initialize
+int	_nc_slk_initialize(
+		WINDOW	*stwin, 
+		int	cols)
+		{ return(*(int *)0); }
+
+#undef slk_restore
+int	slk_restore(void)
+		{ return(*(int *)0); }
+
+/* ./lib_slkatrof.c */
+
+#undef slk_attroff
+int	slk_attroff(
+		const attr_t attr)
+		{ return(*(int *)0); }
+
+/* ./lib_slkatron.c */
+
+#undef slk_attron
+int	slk_attron(
+		const attr_t attr)
+		{ return(*(int *)0); }
+
+/* ./lib_slkatrset.c */
+
+#undef slk_attrset
+int	slk_attrset(
+		const attr_t attr)
+		{ return(*(int *)0); }
+
+/* ./lib_slkattr.c */
+
+#undef slk_attr
+attr_t	slk_attr(void)
+		{ return(*(attr_t *)0); }
+
+/* ./lib_slkclear.c */
+
+#undef slk_clear
+int	slk_clear(void)
+		{ return(*(int *)0); }
+
+/* ./lib_slkinit.c */
+
+#undef slk_init
+int	slk_init(
+		int	format)
+		{ return(*(int *)0); }
+
+/* ./lib_slklab.c */
+
 #undef slk_label
 char	*slk_label(
 		int	n)
 		{ return(*(char **)0); }
+
+/* ./lib_slkrefr.c */
 
 #undef slk_noutrefresh
 int	slk_noutrefresh(void)
@@ -1833,9 +1904,7 @@ int	slk_noutrefresh(void)
 int	slk_refresh(void)
 		{ return(*(int *)0); }
 
-#undef slk_restore
-int	slk_restore(void)
-		{ return(*(int *)0); }
+/* ./lib_slkset.c */
 
 #undef slk_set
 int	slk_set(
@@ -1844,43 +1913,11 @@ int	slk_set(
 		int	format)
 		{ return(*(int *)0); }
 
+/* ./lib_slktouch.c */
+
 #undef slk_touch
 int	slk_touch(void)
 		{ return(*(int *)0); }
-
-#undef slk_clear
-int	slk_clear(void)
-		{ return(*(int *)0); }
-
-#undef _nc_slk_initialize
-int	_nc_slk_initialize(
-		WINDOW	*stwin, 
-		int	cols)
-		{ return(*(int *)0); }
-
-#undef slk_init
-int	slk_init(
-		int	format)
-		{ return(*(int *)0); }
-
-#undef slk_attrset
-int	slk_attrset(
-		const attr_t attr)
-		{ return(*(int *)0); }
-
-#undef slk_attron
-int	slk_attron(
-		const attr_t attr)
-		{ return(*(int *)0); }
-
-#undef slk_attroff
-int	slk_attroff(
-		const attr_t attr)
-		{ return(*(int *)0); }
-
-#undef slk_attr
-attr_t	slk_attr(void)
-		{ return(*(attr_t *)0); }
 
 /* ./lib_termcap.c */
 
@@ -2073,6 +2110,11 @@ char	*_traceattr(
 		attr_t	newmode)
 		{ return(*(char **)0); }
 
+#undef _nc_retrace_attr_t
+attr_t	_nc_retrace_attr_t(
+		attr_t	code)
+		{ return(*(attr_t *)0); }
+
 #undef _tracechtype2
 char	*_tracechtype2(
 		int	bufnum, 
@@ -2123,6 +2165,13 @@ int	_nc_timed_wait(
 		int	mode, 
 		int	milliseconds, 
 		int	*timeleft)
+		{ return(*(int *)0); }
+
+/* ./lib_ungetch.c */
+
+#undef ungetch
+int	ungetch(
+		int	ch)
 		{ return(*(int *)0); }
 
 /* ./lib_vidattr.c */
@@ -2236,6 +2285,12 @@ int	_nc_name_match(
 		const char *const name, 
 		const char *const delim)
 		{ return(*(int *)0); }
+
+/* ./nc_panel.c */
+
+#undef _nc_panelhook
+struct panelhook *_nc_panelhook(void)
+		{ return(*(struct panelhook **)0); }
 
 /* ./read_entry.c */
 
@@ -2510,7 +2565,7 @@ char	_nc_trans_string(
 
 #undef _nc_push_token
 void	_nc_push_token(
-		int	class)
+		int	tokclass)
 		{ /* void */ }
 
 #undef _nc_panic_mode
@@ -2650,10 +2705,6 @@ int	_nc_ada_mouse_mask(
 		int	state, 
 		mmask_t	*mask)
 		{ return(*(int *)0); }
-
-#undef _nc_ada_unregister_mouse
-void	_nc_ada_unregister_mouse(void)
-		{ /* void */ }
 
 /* ./lib_dft_fgbg.c */
 

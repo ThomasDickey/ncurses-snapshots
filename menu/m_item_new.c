@@ -21,14 +21,14 @@
 +-----------------------------------------------------------------------------*/
 
 /***************************************************************************
-* Module menu_item_new                                                     *
+* Module m_item_new                                                        *
 * Create and destroy menu items                                            *
-* Set and get marker string for menu
+* Set and get marker string for menu                                       *
 ***************************************************************************/
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_new.c,v 1.6 1997/06/15 09:35:35 juergen Exp $")
+MODULE_ID("$Id: m_item_new.c,v 1.7 1997/10/21 08:44:31 juergen Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  

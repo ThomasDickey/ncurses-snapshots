@@ -28,7 +28,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term, pad_char */
 
-MODULE_ID("$Id: lib_baudrate.c,v 1.8 1997/07/26 16:57:59 tom Exp $")
+MODULE_ID("$Id: lib_baudrate.c,v 1.9 1997/10/25 23:34:13 tom Exp $")
 
 /*
  *	int
@@ -119,12 +119,12 @@ char *debug_rate;
 #endif
 	if(ret < 0 || (speed_t)ret > speeds[SIZEOF(speeds)-1].s)
 		returnCode(ERR);
-	SP->_baudrate = ERR;
+	cur_term->_baudrate = ERR;
 	for (i = 0; i < SIZEOF(speeds); i++)
 		if (speeds[i].s == (speed_t)ret)
 		{
-			SP->_baudrate = speeds[i].sp;
+			cur_term->_baudrate = speeds[i].sp;
 			break;
 		}
-	returnCode(SP->_baudrate);
+	returnCode(cur_term->_baudrate);
 }

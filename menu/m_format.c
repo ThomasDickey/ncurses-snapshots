@@ -21,13 +21,13 @@
 +-----------------------------------------------------------------------------*/
 
 /***************************************************************************
-* Module menu_format                                                       *
+* Module m_format                                                          *
 * Set and get maximum numbers of rows and columns in menus                 *
 ***************************************************************************/
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_format.c,v 1.5 1997/05/01 16:47:26 juergen Exp $")
+MODULE_ID("$Id: m_format.c,v 1.6 1997/10/21 08:44:31 juergen Exp $")
 
 #define minimum(a,b) ((a)<(b) ? (a): (b))
 

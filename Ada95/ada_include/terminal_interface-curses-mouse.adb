@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.5 $
+--  $Revision: 1.6 $
 ------------------------------------------------------------------------------
 with System;
 
@@ -104,6 +104,13 @@ package body Terminal_Interface.Curses.Mouse is
       R := MMask (Mask_To_CInt (Mask));
       return CInt_To_Mask (R);
    end Start_Mouse;
+
+   procedure End_Mouse
+   is
+      Old : constant Event_Mask := Start_Mouse (No_Events);
+   begin
+      null;
+   end End_Mouse;
 
    procedure Get_Event (Event  : in  Mouse_Event;
                         Y      : out Line_Position;

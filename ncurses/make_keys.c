@@ -25,9 +25,11 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: make_keys.c,v 1.2 1997/09/02 23:52:08 tom Exp $")
+MODULE_ID("$Id: make_keys.c,v 1.3 1997/10/25 21:08:34 tom Exp $")
 
 #include <names.c>
+
+#define UNKNOWN (SIZEOF(strnames) + SIZEOF(strfnames))
 
 static size_t lookup(const char *name)
 {
@@ -47,7 +49,7 @@ static size_t lookup(const char *name)
 			}
 		}
 	}
-	return n;
+	return found ? n : UNKNOWN;
 }
 
 static void make_keys(FILE *ifp, FILE *ofp)
@@ -58,11 +60,16 @@ static void make_keys(FILE *ifp, FILE *ofp)
 	int maxlen = 16;
 
 	while (fgets(buffer, sizeof(buffer), ifp) != 0) {
-		if (sscanf(buffer, "%s %s", from, to) == 2) {
+		if (*buffer == '#')
+			continue;
+		if (sscanf(buffer, "%s %s", to, from) == 2) {
+			int code = lookup(from);
+			if (code == UNKNOWN)
+				continue;
 			if ((int)strlen(from) > maxlen)
 				maxlen = strlen(from);
 			fprintf(ofp, "\t{ %4d, %-*.*s },\t/* %s */\n",
-				lookup(from),
+				code,
 				maxlen, maxlen,
 				to,
 				from);

@@ -45,38 +45,119 @@ libform-routines	= fld_def fld_stat fld_type fld_user \
 				fty_alnum fty_alpha fty_enum fty_int \
 				fty_ipv4 fty_num fty_regex
 
-libncurses-routines	= alloc_entry captoinfo comp_error comp_hash \
-				comp_parse comp_scan define_key \
-				hardscroll hashmap keyok lib_acs \
-				lib_adabind lib_addch \
-				lib_addstr lib_baudrate \
-				lib_beep lib_bkgd lib_box lib_clear \
-				lib_clrbot lib_clreol lib_color \
-				lib_cur_term \
-				lib_data lib_delch lib_delwin \
-				lib_dft_fgbg lib_doupdate lib_endwin \
-				lib_erase lib_freeall lib_getch \
-				lib_getstr lib_inchstr lib_initscr \
-				lib_insch lib_insdel lib_insstr \
-				lib_instr lib_isendwin lib_kernel \
-				lib_longname lib_mouse lib_move \
-				lib_mvcur lib_mvwin lib_newterm \
-				lib_newwin lib_options lib_overlay \
-				lib_pad lib_print lib_printw lib_raw \
-				lib_refresh lib_restart lib_scanw \
-				lib_screen lib_scroll lib_scrreg \
-				lib_set_term lib_setup lib_slk \
-				lib_termcap lib_ti lib_touch \
-				lib_tparm lib_tputs lib_trace \
-				lib_traceatr lib_tracechr \
-				lib_tracedmp lib_tracemse lib_tstp \
-				lib_twait lib_vidattr lib_window \
-				name_match parse_entry read_entry \
-				read_termcap resizeterm safe_sprintf \
-				softscroll trace_buf \
-				tries wresize write_entry \
-				codes comp_captab expanded fallback \
-				lib_gen lib_keyname names unctrl
+libncurses-routines	= \
+			alloc_entry \
+			captoinfo \
+			codes \
+			comp_captab \
+			comp_error \
+			comp_hash \
+			comp_parse \
+			comp_scan \
+			define_key \
+			expanded \
+			fallback \
+			hardscroll \
+			hashmap \
+			keyok \
+			lib_acs \
+			lib_adabind \
+			lib_addch \
+			lib_addstr \
+			lib_baudrate \
+			lib_beep \
+			lib_bkgd \
+			lib_box \
+			lib_clear \
+			lib_clrbot \
+			lib_clreol \
+			lib_color \
+			lib_cur_term \
+			lib_data \
+			lib_delch \
+			lib_delwin \
+			lib_dft_fgbg \
+			lib_doupdate \
+			lib_endwin \
+			lib_erase \
+			lib_flash \
+			lib_freeall \
+			lib_gen \
+			lib_getch \
+			lib_getstr \
+			lib_hline \
+			lib_inchstr \
+			lib_initscr \
+			lib_insch \
+			lib_insdel \
+			lib_insstr \
+			lib_instr \
+			lib_isendwin \
+			lib_kernel \
+			lib_keyname \
+			lib_longname \
+			lib_mouse \
+			lib_move \
+			lib_mvcur \
+			lib_mvwin \
+			lib_newterm \
+			lib_newwin \
+			lib_options \
+			lib_overlay \
+			lib_pad \
+			lib_print \
+			lib_printw \
+			lib_raw \
+			lib_refresh \
+			lib_restart \
+			lib_scanw \
+			lib_screen \
+			lib_scroll \
+			lib_scrreg \
+			lib_set_term \
+			lib_setup \
+			lib_slk \
+			lib_slkatrof \
+			lib_slkatron \
+			lib_slkatrset \
+			lib_slkattr \
+			lib_slkclear \
+			lib_slkinit \
+			lib_slklab \
+			lib_slkrefr \
+			lib_slkset \
+			lib_slktouch \
+			lib_termcap \
+			lib_ti \
+			lib_touch \
+			lib_tparm \
+			lib_tputs \
+			lib_trace \
+			lib_traceatr \
+			lib_tracechr \
+			lib_tracedmp \
+			lib_tracemse \
+			lib_tstp \
+			lib_twait \
+			lib_ungetch \
+			lib_vidattr \
+			lib_vline \
+			lib_wattroff \
+			lib_wattron \
+			lib_window \
+			name_match \
+			names \
+			parse_entry \
+			read_entry \
+			read_termcap \
+			resizeterm \
+			safe_sprintf \
+			softscroll \
+			trace_buf \
+			tries \
+			unctrl \
+			wresize \
+			write_entry
 
 libmenu-routines	= m_adabind m_attribs m_cursor m_driver \
 				m_format m_global m_hook m_item_cur \
@@ -85,12 +166,28 @@ libmenu-routines	= m_adabind m_attribs m_cursor m_driver \
 				m_items m_new m_opts m_post \
 				m_req_name m_spacing m_userptr m_win
 
-libpanel-routines	= panel
+libpanel-routines	= panel \
+			p_above \
+			p_below \
+			p_bottom \
+			p_delete \
+			p_hidden \
+			p_hide \
+			p_move \
+			p_new \
+			p_replace \
+			p_show \
+			p_top \
+			p_update \
+			p_user \
+			p_win \
 
 headers = curses.h eti.h form.h menu.h panel.h term.h termcap.h \
 	  unctrl.h
 others = clear infocmp tic toe tput tset
 install-bin = $(others)
+
+include ../Rules
 
 clear-objs = clear.o
 infocmp-objs = infocmp.o dump_entry.o
@@ -110,8 +207,6 @@ mvcur-objs = mvcur.o dump_entry.o
 tctest-objs = tctest.o
 thardscroll-objs = thardscroll.o
 thashmap-objs = thashmap.o hhardscroll.o
-
-include ../Rules
 
 ifndef tabsetdir
 tabsetdir		= $(datadir)/tabset
@@ -136,7 +231,7 @@ inst_mandir		= $(install_root)/$(mandir)
 endif
 
 CPPFLAGS += -DTERMINFO='"$(terminfodir)"' -Iinclude -Iform -Incurses \
-	-Imenu -Ipanel -Iprogs -Itest -I$(objpfx)
+	-Imenu -Ipanel -Iprogs -Itest
 
 LDLIBS-tclock = math/libm
 
