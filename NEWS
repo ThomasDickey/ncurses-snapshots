@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.698 2002/07/28 00:36:53 tom Exp $
+-- $Id: NEWS,v 1.699 2002/08/04 00:04:35 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020803
+	+ fix an off-by-one in lib_pad.c check for limits of pad (patch by
+	  Philippe Blain).
+	+ revise logic for BeOS in lib_twait.c altered in 20011013 to restore
+	  logic used by lib_getch.c's support for GPM or EMX mouse (report by
+	  Philippe Blain)
+	+ remove NCURSES_CONST from several prototypes in curses.wide, to make
+	  the --enable-const --enable-widec configure options to work together
+	  (report by George Goffe <grgoffe@yahoo.com>).
 
 20020727
 	+ finish no-leak checking in cardfile.c, using this for testing changes

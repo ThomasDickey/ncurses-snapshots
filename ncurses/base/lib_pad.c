@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_pad.c,v 1.37 2002/05/23 23:39:26 tom Exp $")
+MODULE_ID("$Id: lib_pad.c,v 1.38 2002/08/03 23:29:26 Philippe.Blain Exp $")
 
 NCURSES_EXPORT(WINDOW *)
 newpad(int l, int c)
@@ -153,8 +153,8 @@ pnoutrefresh
 	pmaxcol = pmincol + smaxcol - smincol;
     }
 
-    if (smaxrow > screen_lines
-	|| smaxcol > screen_columns
+    if (smaxrow >= screen_lines
+	|| smaxcol >= screen_columns
 	|| sminrow > smaxrow
 	|| smincol > smaxcol)
 	returnCode(ERR);
