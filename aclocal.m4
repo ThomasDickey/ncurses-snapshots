@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.159 1999/06/16 01:24:58 tom Exp $
+dnl $Id: aclocal.m4,v 1.160 1999/06/19 21:46:48 Philippe.De.Muyter Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1633,14 +1633,14 @@ OSPEED_INCLUDES=
 AC_TRY_COMPILE([#include <sys/types.h>],
 	[speed_t some_variable = 0],
 	[OSPEED_TYPE=speed_t],
-	[OSPEED_TYPE=short])
+	[OSPEED_TYPE=unsigned])
 AC_TRY_COMPILE([#include <termios.h>],
 	[speed_t some_variable = 0],
 	[OSPEED_TYPE=speed_t
 	 OSPEED_INCLUDES="#include <termios.h>"],[])
 AC_SUBST(OSPEED_TYPE)
 AC_SUBST(OSPEED_INCLUDES)
-if test "$OSPEED_TYPE" = "short" ; then
+if test "$OSPEED_TYPE" = "unsigned" ; then
 	AC_MSG_RESULT(no)
 	AC_DEFINE(speed_t,unsigned)
 else

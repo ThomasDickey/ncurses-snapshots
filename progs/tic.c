@@ -42,7 +42,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.50 1999/03/16 01:12:04 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.51 1999/06/19 21:35:36 Philippe.De.Muyter Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -60,8 +60,13 @@ static void cleanup(void)
 {
 	if (tmp_fp != 0)
 		fclose(tmp_fp);
-	if (to_remove != 0)
+	if (to_remove != 0) {
+#if HAVE_REMOVE
 		remove(to_remove);
+#else
+		unlink(to_remove);
+#endif
+	}
 }
 
 static void failed(const char *msg)
