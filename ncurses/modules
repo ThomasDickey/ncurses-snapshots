@@ -1,4 +1,4 @@
-# $Id: modules,v 1.81 2002/02/16 23:07:40 tom Exp $
+# $Id: modules,v 1.82 2002/03/09 23:32:41 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -124,6 +124,7 @@ vsscanf 	lib		$(base)
 lib_box_set	lib		$(wide)
 lib_cchar	lib		$(wide)
 lib_hline_set	lib		$(wide)
+lib_inwstr	lib		$(wide)
 lib_vline_set	lib		$(wide)
 lib_wacs	lib		$(wide)
 lib_wunctrl	lib		$(wide)

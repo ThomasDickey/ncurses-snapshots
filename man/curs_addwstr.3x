@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+.\" Copyright (c) 2002 Free Software Foundation, Inc.                        *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,59 +26,63 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addstr.3x,v 1.10 2002/03/09 23:09:29 tom Exp $
-.TH curs_addstr 3X ""
+.\" $Id: curs_addwstr.3x,v 1.2 2002/03/09 23:16:59 tom Exp $
+.TH curs_addwstr 3X ""
 .SH NAME
-\fBaddstr\fR,
-\fBaddnstr\fR,
-\fBwaddstr\fR,
-\fBwaddnstr\fR,
-\fBmvaddstr\fR,
-\fBmvaddnstr\fR,
-\fBmvwaddstr\fR,
-\fBmvwaddnstr\fR - add a string of characters to a \fBcurses\fR window and advance cursor
+\fBaddwstr\fR,
+\fBaddnwstr\fR,
+\fBwaddwstr\fR,
+\fBwaddnwstr\fR,
+\fBmvaddwstr\fR,
+\fBmvaddnwstr\fR,
+\fBmvwaddwstr\fR,
+\fBmvwaddnwstr\fR \- add a string of wide characters to a \fBcurses\fR window and advance cursor
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>\fR
 
-\fBint addstr(const char *\fR\fIstr\fR\fB);\fR
+\fBint addwstr(const wchar_t *\fR\fIwstr\fR\fB);\fR
 .br
-\fBint addnstr(const char *\fR\fIstr\fR\fB, int \fR\fIn\fR\fB);\fR
+\fBint addnwstr(const wchar_t *\fR\fIwstr\fR\fB, int \fR\fIn\fR\fB);\fR
 .br
-\fBint waddstr(WINDOW *\fR\fIwin\fR\fB, const char *\fR\fIstr\fR\fB);\fR
+\fBint waddwstr(WINDOW *\fR\fIwin\fR\fB, const wchar_t *\fR\fIwstr\fR\fB);\fR
 .br
-\fBint waddnstr(WINDOW *\fR\fIwin\fR\fB, const char *\fR\fIstr\fR\fB, int \fR\fIn\fR\fB);\fR
+\fBint waddnwstr(WINDOW *\fR\fIwin\fR\fB, const wchar_t *\fR\fIwstr\fR\fB, int \fR\fIn\fR\fB);\fR
 .br
-\fBint mvaddstr(int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, const char *\fR\fIstr\fR\fB);\fR
+\fBint mvaddwstr(int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, const wchar_t *\fR\fIwstr\fR\fB);\fR
 .br
-\fBint mvaddnstr(int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, const char *\fR\fIstr\fR\fB, int \fR\fIn\fR\fB);\fR
+\fBint mvaddnwstr(int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, const wchar_t *\fR\fIwstr\fR\fB, int \fR\fIn\fR\fB);\fR
 .br
-\fBint mvwaddstr(WINDOW *\fR\fIwin\fR\fB, int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, const char *\fR\fIstr\fR\fB);\fR
+\fBint mvwaddwstr(WINDOW *\fR\fIwin\fR\fB, int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, const wchar_t *\fR\fIwstr\fR\fB);\fR
 .br
-\fBint mvwaddnstr(WINDOW *\fR\fIwin\fR\fB, int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, const char *\fR\fIstr, int \fR\fIn\fR\fB);\fR
+\fBint mvwaddnwstr(WINDOW *\fR\fIwin\fR\fB, int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, const wchar_t *\fR\fIwstr\fR\fB, int \fR\fIn\fR\fB);\fR
 .fi
 .SH DESCRIPTION
-These routines write the characters of the (null-terminated) character string
-\fIstr\fR on the given window.
-It is similar to calling \fBwaddch\fR once for each character in the string.
+These routines write the characters of the (null-terminated) \fBwchar_t\fRcharacter string
+\fIwstr\fR on the given window.
+It is similar to constructing a \fBcchar_t\fR for each wchar_t in the string,
+then calling \fBwadd_wch\fR for the resulting \fBcchar_t\fR.
+.PP
+The \fImv\fR routines perform cursor movement once, before writing any
+characters.
+Thereafter, the cursor is advanced as a side-effect of writing to the window.
+.PP
 The four routines with \fIn\fR as the last argument
-write at most \fIn\fR characters.
+write at most \fIn\fR \fBwchar_t\fR characters.
 If \fIn\fR is -1, then the entire string will be added,
 up to the maximum number of characters that will fit on the line,
 or until a terminating null is reached.
-.SH RETURN VALUE
-All routines return the integer \fBERR\fR upon failure and \fBOK\fR on success
-(the SVr4 manuals specify only "an integer value other than \fBERR\fR") upon
-successful completion.
+.SH RETURN VALUES
+All routines return the integer \fBERR\fR upon failure and \fBOK\fR on success.
 .SH NOTES
-Note that all of these routines except \fBwaddstr\fR and \fBwaddnstr\fR may be
-macros.
+Note that all of these routines except \fBwaddnwstr\fR may be macros.
 .SH PORTABILITY
-All these entry points are described in the XSI Curses standard, Issue 4.  The
-XSI errors EILSEQ and EOVERFLOW, associated with extended-level conformance,
-are not yet detected.
+All these entry points are described in the XSI Curses standard, Issue 4.
 .SH SEE ALSO
-\fBcurses\fR(3X), \fBcurs_addch\fR(3X).
+.PP
+Functions:
+\fBcurses\fR(3X),
+\fBcurs_add_wch\fR(3X)
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:
