@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.41 2000/07/08 01:56:25 tom Exp $
+# $Id: Makefile.in,v 1.42 2000/07/15 23:04:27 china Exp $
 ##############################################################################
 # Copyright (c) 1998-2000 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -63,6 +63,7 @@ ticdir		= $(datadir)/terminfo
 
 INSTALL		= @INSTALL@
 INSTALL_PROGRAM	= @INSTALL_PROGRAM@
+transform	= @program_transform_name@
 
 AWK		= @AWK@
 LN_S		= @LN_S@
@@ -124,21 +125,21 @@ install.libs \
 uninstall.libs:
 
 install.progs: $(PROGS) $(INSTALL_PREFIX)$(bindir)
-	$(INSTALL_PROGRAM) tic$x     $(INSTALL_PREFIX)$(bindir)/tic$x
-	$(INSTALL_PROGRAM) toe$x     $(INSTALL_PREFIX)$(bindir)/toe$x
-	$(INSTALL_PROGRAM) infocmp$x $(INSTALL_PREFIX)$(bindir)/infocmp$x
-	$(INSTALL_PROGRAM) clear$x   $(INSTALL_PREFIX)$(bindir)/clear$x
-	$(INSTALL_PROGRAM) tput$x    $(INSTALL_PREFIX)$(bindir)/tput$x
-	$(INSTALL_PROGRAM) tset$x    $(INSTALL_PREFIX)$(bindir)/tset$x
-	@echo "linking captoinfo to tic"
-	-@rm -f $(INSTALL_PREFIX)$(bindir)/captoinfo$x
-	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) tic$x captoinfo$x)
-	@echo "linking infotocap to tic"
-	-@rm -f $(INSTALL_PREFIX)$(bindir)/infotocap$x
-	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) tic$x infotocap$x)
-	@echo "linking reset to tset"
-	-@rm -f $(INSTALL_PREFIX)$(bindir)/reset$x
-	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) tset$x reset$x)
+	$(INSTALL_PROGRAM) tic$x     $(INSTALL_PREFIX)$(bindir)/`echo tic$x|sed 's/$x$$//'|sed '$(transform)'|sed 's/$$/$x/'`
+	$(INSTALL_PROGRAM) toe$x     $(INSTALL_PREFIX)$(bindir)/`echo toe$x|sed 's/$x$$//'|sed '$(transform)'|sed 's/$$/$x/'`
+	$(INSTALL_PROGRAM) infocmp$x $(INSTALL_PREFIX)$(bindir)/`echo infocmp$x|sed 's/$x$$//'|sed '$(transform)'|sed 's/$$/$x/'`
+	$(INSTALL_PROGRAM) clear$x   $(INSTALL_PREFIX)$(bindir)/`echo clear$x|sed 's/$x$$//'|sed '$(transform)'|sed 's/$$/$x/'`
+	$(INSTALL_PROGRAM) tput$x    $(INSTALL_PREFIX)$(bindir)/`echo tput$x|sed 's/$x$$//'|sed '$(transform)'|sed 's/$$/$x/'`
+	$(INSTALL_PROGRAM) tset$x    $(INSTALL_PREFIX)$(bindir)/`echo tset$x|sed 's/$x$$//'|sed '$(transform)'|sed 's/$$/$x/'`
+	@echo "linking `echo captoinfo|sed '$(transform)'` to `echo tic|sed '$(transform)'`"
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/`echo captoinfo$x|sed 's/$x$$//'|sed '$(transform)'|sed 's/$$/$x/'`
+	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) `echo tic$x|sed 's/$x$$//'|sed '$(transform)'|sed 's/$$/$x/'` `echo captoinfo$x|sed 's/$x$$//'|sed '$(transform)'|sed 's/$$/$x/'`)
+	@echo "linking `echo infotocap|sed '$(transform)'` to `echo tic|sed '$(transform)'`"
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/`echo infotocap$x|sed 's/$x$$//'|sed '$(transform)'|sed 's/$$/$x/'`
+	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) `echo tic$x|sed 's/$x$$//'|sed '$(transform)'|sed 's/$$/$x/'` `echo infotocap$x|sed 's/$x$$//'|sed '$(transform)'|sed 's/$$/$x/'`)
+	@echo "linking `echo reset|sed '$(transform)'` to `echo tset|sed '$(transform)'`"
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/`echo reset$x|sed 's/$x$$//'|sed '$(transform)'|sed 's/$$/$x/'`
+	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) `echo tset$x|sed 's/$x$$//'|sed '$(transform)'|sed 's/$$/$x/'` `echo reset$x|sed 's/$x$$//'|sed '$(transform)'|sed 's/$$/$x/'`)
 
 uninstall.progs:
 	-@rm -f $(INSTALL_PREFIX)$(bindir)/tic$x

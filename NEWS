@@ -1,10 +1,27 @@
--- $Id: NEWS,v 1.577 2000/07/08 20:59:25 tom Exp $
+-- $Id: NEWS,v 1.579 2000/07/16 01:09:34 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000715
+	+ correct man_links.sed script to avoid using ERE "\+", which is not
+	  understood by older versions of sed (patch by Albert Chin-A-Young).
+	+ implement configure script options that transform installed program
+	  names, e.g., --program-prefix, including the manpage names and cross
+	  references (patch by Albert Chin-A-Young <china@thewrittenword.com>).
+	+ correct several mismatches between manpage filename and ".TH"
+	  directives, renaming dft_fgbg.3x to default_colors.3x and
+	  menu_attribs.3x to menu_attributes.3x (report by Todd C Miller).
+	+ correct missing includes for <string.h> in several places, including
+	  the C++ binding.  This is not noted by gcc unless we use the
+	  -fno-builtin option (reported by Igor Schein <igor@txc.com>).
+	+ modified progs/tset.c and tack/sysdep.c to build with sgttyb
+	  interface if neither termio or termios is available.  Tested this
+	  with FreeBSD 2.1.5 (which does have termios - but the sgttyb does
+	  work).
 
 20000708 5.1 release for upload to ftp.gnu.org
 	+ document configure options in INSTALL.
