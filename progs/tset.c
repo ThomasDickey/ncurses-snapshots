@@ -92,7 +92,7 @@ char *ttyname(int fd);
 #include <curses.h>	/* for bool typedef */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.21 1997/03/21 11:52:20 djm Exp $")
+MODULE_ID("$Id: tset.c,v 0.22 1997/04/26 18:16:28 tom Exp $")
 
 extern char **environ;
 
@@ -128,7 +128,7 @@ static char *strdup (char *s)
 {
   char *p;
 
-  p = malloc((unsigned)(strlen(s)+1));
+  p = malloc(strlen(s)+1);
   if (p)
     strcpy(p,s);
   return(p);

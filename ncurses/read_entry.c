@@ -36,7 +36,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.29 1996/12/30 00:46:01 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.30 1997/04/26 16:07:48 tom Exp $")
 
 TERMINAL *cur_term;
 
@@ -86,6 +86,8 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 
     if ((fd = open(filename, O_RDONLY)) < 0)
 	return(0);
+
+    T(("read terminfo %s", filename));
 
     /* grab the header */
     (void) read(fd, buf, 12);

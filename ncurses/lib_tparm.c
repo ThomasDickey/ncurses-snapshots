@@ -29,7 +29,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.17 1997/03/24 11:29:51 Andreas.Schwab Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.18 1997/04/26 18:37:50 tom Exp $")
 
 /*
  *	char *
@@ -247,7 +247,7 @@ register const char *cp;
 	if (_nc_tracing & TRACE_CALLS) {
 		for (i = 0; i < popcount; i++)
 			save_number(", %d", param[i]);
-		_tracef(T_CALLED("%s(%s,%s)"), tname, _nc_visbuf(string), out_buff);
+		_tracef(T_CALLED("%s(%s%s)"), tname, _nc_visbuf(string), out_buff);
 		out_used = 0;
  	}
 #endif /* TRACE */

@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.60 1997/04/20 02:08:34 tom Exp $
+ * $Id: curses.priv.h,v 1.61 1997/04/26 20:54:54 tom Exp $
  *
  *	curses.priv.h
  *
@@ -212,7 +212,7 @@ struct screen {
 	int             _cuu_cost;      /* cost of (parm_cursor_up)         */
 	int             _hpa_cost;      /* cost of (column_address)         */
 	int             _vpa_cost;      /* cost of (row_address)            */
-	/* used in lib_doupdate.c */
+	/* used in lib_doupdate.c, must be chars */
 	int             _ed_cost;       /* cost of (clr_eos)                */
 	int             _el_cost;       /* cost of (clr_eol)                */
 	int             _el1_cost;      /* cost of (clr_bol)                */
@@ -222,6 +222,8 @@ struct screen {
 	int             _ich_cost;      /* cost of (parm_ich)               */
 	int             _ech_cost;      /* cost of (erase_chars)            */
 	int             _rep_cost;      /* cost of (repeat_char)            */
+	int             _hpa_ch_cost;   /* cost of (column_address)         */
+	int             _cup_ch_cost;   /* cost of (cursor_address)         */
 	/* used in lib_mvcur.c */
 	char *          _address_cursor;
 	int             _carriage_return_length;

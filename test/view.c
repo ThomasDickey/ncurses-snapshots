@@ -22,7 +22,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.19 1997/04/06 01:09:20 tom Exp $
+ * $Id: view.c,v 1.20 1997/04/26 18:16:38 tom Exp $
  */
 
 #include <test.priv.h>
@@ -77,7 +77,7 @@ static char *strdup (char *s)
 {
   char *p;
 
-  p = malloc((unsigned)(strlen(s)+1));
+  p = malloc(strlen(s)+1);
   if (p)
     strcpy(p,s);
   return(p);

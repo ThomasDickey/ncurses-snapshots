@@ -431,6 +431,7 @@
 ./ncurses/MKkeys.awk
 ./ncurses/MKlib_gen.sh
 ./ncurses/MKnames.awk
+./ncurses/MKunctrl.awk
 ./ncurses/Makefile.in
 ./ncurses/README
 ./ncurses/SigAction.h
@@ -508,7 +509,6 @@
 ./ncurses/lib_tracemse.c
 ./ncurses/lib_tstp.c
 ./ncurses/lib_twait.c
-./ncurses/lib_unctrl.c
 ./ncurses/lib_vidattr.c
 ./ncurses/lib_window.c
 ./ncurses/llib-lncurses

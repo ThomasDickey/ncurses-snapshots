@@ -143,7 +143,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.32 1997/01/01 22:20:41 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.36 1997/04/26 22:47:17 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -165,6 +165,8 @@ static float diff;
 
 static void save_curs(void);
 static void restore_curs(void);
+static int cost_of(const char *const cap, int affcnt);
+static int normalized_cost(const char *const cap, int affcnt);
 
 /****************************************************************************
  *
@@ -172,7 +174,33 @@ static void restore_curs(void);
  *
  ****************************************************************************/
 
-static int CostOf(const char *const cap, int affcnt)
+#ifdef TRACE
+static int
+trace_cost_of(const char *capname, const char *cap, int affcnt)
+{
+	int result = cost_of(cap,affcnt);
+	TR(TRACE_CHARPUT|TRACE_MOVE, ("CostOf %s %d", capname, result));
+	return result;
+}
+#define CostOf(cap,affcnt) trace_cost_of(#cap,cap,affcnt);
+
+static int
+trace_normalized_cost(const char *capname, const char *cap, int affcnt)
+{
+	int result = normalized_cost(cap,affcnt);
+	TR(TRACE_CHARPUT|TRACE_MOVE, ("NormalizedCost %s %d", capname, result));
+	return result;
+}
+#define NormalizedCost(cap,affcnt) trace_normalized_cost(#cap,cap,affcnt);
+
+#else
+
+#define CostOf(cap,affcnt) cost_of(cap,affcnt);
+#define NormalizedCost(cap,affcnt) normalized_cost(cap,affcnt);
+
+#endif
+
+static int cost_of(const char *const cap, int affcnt)
 /* compute the cost of a given operation */
 {
     if (cap == 0)
@@ -209,10 +237,10 @@ static int CostOf(const char *const cap, int affcnt)
     }
 }
 
-static int NormalizedCost(const char *const cap, int affcnt)
+static int normalized_cost(const char *const cap, int affcnt)
 /* compute the effective character-count for an operation (round up) */
 {
-	int cost = CostOf(cap, affcnt);
+	int cost = cost_of(cap, affcnt);
 	if (cost != INFINITY)
 		cost = (cost + SP->_char_padding - 1) / SP->_char_padding;
 	return cost;
@@ -259,12 +287,10 @@ void _nc_mvcur_init(void)
     /*
      * 9 = 7 bits + 1 parity + 1 stop.
      */
-    if (BAUDRATE > 0)
-	SP->_char_padding = (9 * 1000 * 10) / BAUDRATE;
-    else
-	SP->_char_padding = 9 * 1000 * 10 / 9600; /* use some default if baudrate == 0 */
+    SP->_char_padding = (9 * 1000 * 10) / (BAUDRATE > 0 ? BAUDRATE : 9600);
     if (SP->_char_padding <= 0)
 	SP->_char_padding = 1;	/* must be nonzero */
+    TR(TRACE_CHARPUT|TRACE_MOVE, ("char_padding %d msecs", SP->_char_padding));
 
     /* non-parameterized local-motion strings */
     SP->_cr_cost   = CostOf(carriage_return, 0);
@@ -331,6 +357,9 @@ void _nc_mvcur_init(void)
     SP->_ich_cost  = NormalizedCost(tparm(parm_ich, 23), 1);
     SP->_ech_cost  = NormalizedCost(tparm(erase_chars, 23), 1);
     SP->_rep_cost  = NormalizedCost(tparm(repeat_char, ' ', 23), 1);
+
+    SP->_cup_ch_cost = NormalizedCost(tparm(SP->_address_cursor, 23, 23), 1);
+    SP->_hpa_ch_cost = NormalizedCost(tparm(column_address, 23), 1);
 
     /* pre-compute some capability lengths */
     SP->_carriage_return_length = STRLEN(carriage_return);

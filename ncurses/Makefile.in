@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.24 1997/03/15 23:11:30 tom Exp $
+# $Id: Makefile.in,v 1.25 1997/04/26 21:59:43 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -101,7 +101,8 @@ AUTO_SRC = \
 	lib_keyname.c \
 	lib_gen.c \
 	codes.c \
-	names.c
+	names.c \
+	unctrl.c
 
 ################################################################################
 all ::	../lib $(AUTO_SRC) $(LIBRARIES)
@@ -146,6 +147,9 @@ names.c codes.c: $(srcdir)/MKnames.awk
 	cat namehdr boolnames boolfnames numnames numfnames strnames strfnames nameftr >names.c
 	cat namehdr boolcodes numcodes strcodes codeftr >codes.c
 	-rm -f namehdr nameftr codeftr boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes
+
+unctrl.c: $(srcdir)/MKunctrl.awk
+	echo | $(AWK) -f $(srcdir)/MKunctrl.awk >$@
 
 tags:
 	ctags *.[ch]

@@ -1,4 +1,4 @@
-# $Id: modules,v 1.24 1997/02/16 02:56:23 tom Exp $
+# $Id: modules,v 1.25 1997/04/26 21:59:59 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -85,11 +85,11 @@ lib_tracedmp	lib		$(srcdir)
 lib_tracemse	lib		$(srcdir)
 lib_tstp	lib		$(srcdir)
 lib_twait	lib		$(srcdir)
-lib_unctrl	lib		$(srcdir)
 lib_vidattr	lib		$(srcdir)	../include/term.h
 lib_window	lib		$(srcdir)
 names		lib		.
 codes		lib		.
+unctrl		lib		.
 read_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 read_termcap	lib		$(srcdir)	../include/term.h
 write_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h

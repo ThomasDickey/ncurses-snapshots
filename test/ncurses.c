@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.85 1997/04/06 01:43:22 tom Exp $
+$Id: ncurses.c,v 1.86 1997/04/26 20:40:20 tom Exp $
 
 ***************************************************************************/
 
@@ -274,67 +274,44 @@ int y, x;
     endwin();
 }
 
+static int show_attr(int row, chtype attr, const char *name, bool once, const char *capname)
+{
+    mvprintw(row, 8, "%s mode:", name);
+    mvprintw(row, 24, "|");
+    if (once)
+	attron(attr);
+    else
+    	attrset(attr);
+    addstr("abcde fghij klmno pqrst uvwxy z");
+    if (once)
+	attroff(attr);
+    printw("|");
+    if (capname != 0 && tigetstr(capname) == 0)
+	printw(" (N/A)");
+    return row + 2;
+}
+
 static void attr_test(void)
 /* test text attributes */
 {
+    int row = 2;
     refresh();
 
     mvaddstr(0, 20, "Character attribute test display");
 
-    mvaddstr(2,8,"This is STANDOUT mode: ");
-    attron(A_STANDOUT);
-    addstr("abcde fghij klmno pqrst uvwxy z");
-    attroff(A_STANDOUT);
+    row = show_attr(row, A_STANDOUT,  "STANDOUT",  TRUE, "smso");
+    row = show_attr(row, A_REVERSE,   "REVERSE",   TRUE, "rev");
+    row = show_attr(row, A_BOLD,      "BOLD",      TRUE, "bold");
+    row = show_attr(row, A_UNDERLINE, "UNDERLINE", TRUE, "smul");
+    row = show_attr(row, A_DIM,       "DIM",       TRUE, "dim");
+    row = show_attr(row, A_BLINK,     "BLINK",     TRUE, "blink");
+    row = show_attr(row, A_PROTECT,   "PROTECT",   TRUE, "prot");
+    row = show_attr(row, A_INVIS,     "INVISIBLE", TRUE, "invis");
+    row = show_attr(row, A_NORMAL,    "NORMAL",    FALSE,0);
 
-    mvaddstr(4,8,"This is REVERSE mode: ");
-    attron(A_REVERSE);
-    addstr("abcde fghij klmno pqrst uvwxy z");
-    attroff(A_REVERSE);
-
-    mvaddstr(6,8,"This is BOLD mode: ");
-    attron(A_BOLD);
-    addstr("abcde fghij klmno pqrst uvwxy z");
-    attroff(A_BOLD);
-
-    mvaddstr(8,8,"This is UNDERLINE mode: ");
-    attron(A_UNDERLINE);
-    addstr("abcde fghij klmno pqrst uvwxy z");
-    attroff(A_UNDERLINE);
-
-    mvaddstr(10,8,"This is DIM mode: ");
-    attron(A_DIM);
-    addstr("abcde fghij klmno pqrst uvwxy z");
-    attroff(A_DIM);
-
-    mvaddstr(12,8,"This is BLINK mode: ");
-    attron(A_BLINK);
-    addstr("abcde fghij klmno pqrst uvwxy z");
-    attroff(A_BLINK);
-
-    mvaddstr(14,8,"This is PROTECT mode: ");
-    attron(A_PROTECT);
-    addstr("abcde fghij klmno pqrst uvwxy z");
-    attroff(A_PROTECT);
-
-    mvaddstr(16,8,"This is INVISIBLE mode: ");
-    attrset(A_INVIS);
-    addstr("abcde fghij klmno pqrst uvwxy z");
-    attrset(A_NORMAL);
-
-    mvaddstr(18,8,"This is NORMAL mode: ");
-    addstr("abcde fghij klmno pqrst uvwxy z");
-
-    mvprintw(20, 8,
+    mvprintw(row, 8,
 	     "This terminal does %shave the magic-cookie glitch",
 	     tigetnum("xmc") > -1 ? "" : "not ");
-
-    move(21, 8);
-    printw("|");
-    attron(A_STANDOUT);
-    printw("This text between bars should %sbe highlighted",
-	     tigetnum("xmc") > -1 ? "not " : "");
-    attroff(A_STANDOUT);
-    printw("|");
 
     refresh();
 

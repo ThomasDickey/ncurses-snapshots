@@ -37,7 +37,7 @@
 #define DEBUG(level, params) /*nothing*/
 #endif
 
-MODULE_ID("$Id: comp_hash.c,v 1.14 1997/02/15 20:49:17 tom Exp $")
+MODULE_ID("$Id: comp_hash.c,v 1.15 1997/04/26 18:16:19 tom Exp $")
 
 static  int hash_function(const char *);
 
@@ -173,7 +173,7 @@ static char *strdup (char *s)
 {
   char *p;
 
-  p = malloc((unsigned)(strlen(s)+1));
+  p = malloc(strlen(s)+1);
   if (p)
     strcpy(p,s);
   return(p);

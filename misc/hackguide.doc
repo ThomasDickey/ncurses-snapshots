@@ -3,28 +3,28 @@
                                        
                                    Contents
                                        
-     * Abstract
-     * Objective of the Package
-          + Why System V Curses?
-          + How to Design Extensions
-     * Portability and Configuration
-          + If autoconf Fails
-     * Documentation Conventions
-     * How to Report Bugs
-     * A Tour of the Ncurses Library
-          + Library Overview
-          + The Engine Room
-          + Keyboard Input
-          + Mouse Events
-          + Output and Screen Updating
-     * The Forms and Menu Libraries
-     * A Tour of the Terminfo Compiler
-          + Translation of Non-use Capabilities
-          + Use Capability Resolution
-          + Source-Form Translation
-     * Other Utilities
-     * Style Tips for Developers
-     * Porting Hints
+     * [1]Abstract
+     * [2]Objective of the Package
+          + [3]Why System V Curses?
+          + [4]How to Design Extensions
+     * [5]Portability and Configuration
+          + [6]If autoconf Fails
+     * [7]Documentation Conventions
+     * [8]How to Report Bugs
+     * [9]A Tour of the Ncurses Library
+          + [10]Library Overview
+          + [11]The Engine Room
+          + [12]Keyboard Input
+          + [13]Mouse Events
+          + [14]Output and Screen Updating
+     * [15]The Forms and Menu Libraries
+     * [16]A Tour of the Terminfo Compiler
+          + [17]Translation of Non-use Capabilities
+          + [18]Use Capability Resolution
+          + [19]Source-Form Translation
+     * [20]Other Utilities
+     * [21]Style Tips for Developers
+     * [22]Porting Hints
        
                                    Abstract
                                        
@@ -162,12 +162,11 @@ If autoconf Fails
    
                               How to Report Bugs
                                        
-   The reporting address for bugs is ncurses-list@netcom.com. This is a
-   majordomo list; to join, write to listserv@netcom.com with a message
-   containing the line:
-   
+   The reporting address for bugs is [23]ncurses@bsdi.com. This is a
+   majordomo list; to join, write to ncurses-request@mailgate.bsdi.com
+   with a message containing the line:
 
-             subscribe ncurses-list &lt;name&gt;@&lt;host.domain&gt;
+             subscribe <name>@<host.domain>
 
    The ncurses code is maintained by a small group of volunteers. While
    we try our best to fix bugs promptly, we simply don't have a lot of
@@ -205,9 +204,9 @@ If autoconf Fails
     3. Generate and examine a trace file for the broken behavior.
        Recompile your program with the debugging versions of the
        libraries. Insert a trace() call with the argument set to
-       TRACE_UPDATE. (See "Writing Programs with NCURSES" for details on
-       trace levels.) Reproduce your bug, then look at the trace file to
-       see what the library was actually doing.
+       TRACE_UPDATE. (See [24]"Writing Programs with NCURSES" for details
+       on trace levels.) Reproduce your bug, then look at the trace file
+       to see what the library was actually doing.
        Another frequent cause of apparent bugs is application coding
        errors that cause the wrong things to be put on the virtual
        screen. Looking at the virtual-screen dumps in the trace file will
@@ -313,7 +312,7 @@ Library Overview
    lib_mouse.c, lib_refresh.c, and lib_setup.c. Most of the algorithmic
    complexity in the library lives in these files. If there is a real bug
    in ncurses itself, it's probably here. We'll tour some of these files
-   in detail below (see The Engine Room).
+   in detail below (see [25]The Engine Room).
    
    Finally, there is a group of files that is actually most of the
    terminfo compiler. The reason this code lives in the ncurses library
@@ -481,7 +480,7 @@ Translation of Non-use Capabilities
    
    Thus, adding a new capability is usually pretty trivial, just a matter
    of adding one line to the include/Caps file. We'll have more to say
-   about this in the section on Source-Form Translation.
+   about this in the section on [26]Source-Form Translation.
    
 Use Capability Resolution
 
@@ -716,10 +715,39 @@ lib_twait.c     -- gettimeofday(), select().
         _nc_timed_wait()        -- timed wait for input
 
    The package kernel could be made smaller.
-   
      _________________________________________________________________
-                                      
+   
    
     Eric S. Raymond <esr@snark.thyrsus.com>
     
-   (Note: This is not the bug address!)
+   (Note: This is not the [27]bug address!)
+
+References
+
+   1. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#abstract
+   2. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#objective
+   3. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#whysvr4
+   4. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#extensions
+   5. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#portability
+   6. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#fooup
+   7. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#documentation
+   8. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#bugtrack
+   9. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#ncurslib
+  10. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#loverview
+  11. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#engine
+  12. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#input
+  13. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#mouse
+  14. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#output
+  15. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#fmnote
+  16. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#tic
+  17. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#nonuse
+  18. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#uses
+  19. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#translation
+  20. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#utils
+  21. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#style
+  22. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#port
+  23. mailto:ncurses@bsdi.com
+  24. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#debugging
+  25. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#engine
+  26. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#translation
+  27. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/hackguide.html#bugreports
