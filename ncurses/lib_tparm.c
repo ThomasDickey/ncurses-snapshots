@@ -29,7 +29,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.20 1997/08/09 18:07:47 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.21 1998/01/31 20:36:02 tom Exp $")
 
 /*
  *	char *
@@ -176,14 +176,16 @@ static inline char *spop(void)
 
 static inline char *tparam_internal(const char *string, va_list ap)
 {
+#define NUM_VARS 26
 int	param[9];
 int	popcount;
-int	variable[26];
+int	variable[NUM_VARS];
 char	len;
 int	number;
 int	level;
 int	x, y;
 int	i;
+int	varused = -1;
 register const char *cp;
 
 	out_used = 0;
@@ -331,14 +333,22 @@ register const char *cp;
 
 			case 'P':
 				string++;
-				if (*string >= 'a'  &&  *string <= 'z')
-					variable[*string - 'a'] = npop();
+				i = (*string - 'a');
+				if (i >= 0 && i < NUM_VARS) {
+					while (varused < i)
+						variable[++varused] = 0;
+					variable[i] = npop();
+				}
 				break;
 
 			case 'g':
 				string++;
-				if (*string >= 'a'  &&  *string <= 'z')
-					npush(variable[*string - 'a']);
+				i = (*string - 'a');
+				if (i >= 0 && i < NUM_VARS) {
+					while (varused < i)
+						variable[++varused] = 0;
+					npush(variable[i]);
+				}
 				break;
 
 			case '\'':
@@ -497,6 +507,11 @@ register const char *cp;
 
 		string++;
 	} /* endwhile (*string) */
+
+	if (out_buff == 0)
+		out_buff = calloc(1,1);
+	if (out_used == 0)
+		*out_buff = '\0';
 
 	T((T_RETURN("%s"), _nc_visbuf(out_buff)));
 	return(out_buff);

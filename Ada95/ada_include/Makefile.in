@@ -19,7 +19,7 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.11 $
+#  $Revision: 1.12 $
 #
 .SUFFIXES:
 
@@ -157,7 +157,9 @@ sources :
 	@
 
 install ::
+install.libs ::
 uninstall ::
+uninstall.libs ::
 
 generics: $(GENALIS)
 	@
@@ -258,7 +260,7 @@ $(ADA_OBJDIR)/$(ABASE)-forms-field_types.ali: $(ADA_OBJDIR)/$(ABASE)-forms-field
 	fi
 
 $(ADA_OBJDIR)/$(ABASE)-forms-field_types-alpha.o: \
-		$(ABASE)-forms-field_types-alpha.ads \
+		$(srcdir)/$(ABASE)-forms-field_types-alpha.ads \
 		$(srcdir)/$(ABASE)-forms-field_types-alpha.adb $(BASEDEPS)
 	$(ADA) $(ADAFLAGS) -c -o $@ $(srcdir)/$(ABASE)-forms-field_types-alpha.adb
 
@@ -269,7 +271,7 @@ $(ADA_OBJDIR)/$(ABASE)-forms-field_types-alpha.ali: $(ADA_OBJDIR)/$(ABASE)-forms
 	fi
 
 $(ADA_OBJDIR)/$(ABASE)-forms-field_types-alphanumeric.o: \
-		$(ABASE)-forms-field_types-alphanumeric.ads \
+		$(srcdir)/$(ABASE)-forms-field_types-alphanumeric.ads \
 		$(srcdir)/$(ABASE)-forms-field_types-alphanumeric.adb $(BASEDEPS)
 	$(ADA) $(ADAFLAGS) -c -o $@ $(srcdir)/$(ABASE)-forms-field_types-alphanumeric.adb
 
@@ -280,7 +282,7 @@ $(ADA_OBJDIR)/$(ABASE)-forms-field_types-alphanumeric.ali: $(ADA_OBJDIR)/$(ABASE
 	fi
 
 $(ADA_OBJDIR)/$(ABASE)-forms-field_types-intfield.o: \
-		$(ABASE)-forms-field_types-intfield.ads \
+		$(srcdir)/$(ABASE)-forms-field_types-intfield.ads \
 		$(srcdir)/$(ABASE)-forms-field_types-intfield.adb $(BASEDEPS)
 	$(ADA) $(ADAFLAGS) -c -o $@ $(srcdir)/$(ABASE)-forms-field_types-intfield.adb
 
@@ -291,7 +293,7 @@ $(ADA_OBJDIR)/$(ABASE)-forms-field_types-intfield.ali: $(ADA_OBJDIR)/$(ABASE)-fo
 	fi
 
 $(ADA_OBJDIR)/$(ABASE)-forms-field_types-numeric.o: \
-		$(ABASE)-forms-field_types-numeric.ads \
+		$(srcdir)/$(ABASE)-forms-field_types-numeric.ads \
 		$(srcdir)/$(ABASE)-forms-field_types-numeric.adb $(BASEDEPS)
 	$(ADA) $(ADAFLAGS) -c -o $@ $(srcdir)/$(ABASE)-forms-field_types-numeric.adb
 
@@ -302,7 +304,7 @@ $(ADA_OBJDIR)/$(ABASE)-forms-field_types-numeric.ali: $(ADA_OBJDIR)/$(ABASE)-for
 	fi
 
 $(ADA_OBJDIR)/$(ABASE)-forms-field_types-regexp.o: \
-		$(ABASE)-forms-field_types-regexp.ads \
+		$(srcdir)/$(ABASE)-forms-field_types-regexp.ads \
 		$(srcdir)/$(ABASE)-forms-field_types-regexp.adb $(BASEDEPS)
 	$(ADA) $(ADAFLAGS) -c -o $@ $(srcdir)/$(ABASE)-forms-field_types-regexp.adb
 
@@ -312,7 +314,7 @@ $(ADA_OBJDIR)/$(ABASE)-forms-field_types-regexp.ali: $(ADA_OBJDIR)/$(ABASE)-form
 	   rm -f $(ABASE)-forms-field_types-regexp.ali ;\
 	fi
 $(ADA_OBJDIR)/$(ABASE)-forms-field_types-enumeration.o: \
-		$(ABASE)-forms-field_types-enumeration.ads \
+		$(srcdir)/$(ABASE)-forms-field_types-enumeration.ads \
 		$(srcdir)/$(ABASE)-forms-field_types-enumeration.adb $(BASEDEPS)
 	$(ADA) $(ADAFLAGS) -c -o $@ $(srcdir)/$(ABASE)-forms-field_types-enumeration.adb
 
@@ -323,7 +325,7 @@ $(ADA_OBJDIR)/$(ABASE)-forms-field_types-enumeration.ali: $(ADA_OBJDIR)/$(ABASE)
 	fi
 
 $(ADA_OBJDIR)/$(ABASE)-forms-field_types-ipv4_address.o: \
-		$(ABASE)-forms-field_types-ipv4_address.ads \
+		$(srcdir)/$(ABASE)-forms-field_types-ipv4_address.ads \
 		$(srcdir)/$(ABASE)-forms-field_types-ipv4_address.adb $(BASEDEPS)
 	$(ADA) $(ADAFLAGS) -c -o $@ $(srcdir)/$(ABASE)-forms-field_types-ipv4_address.adb
 
@@ -334,7 +336,7 @@ $(ADA_OBJDIR)/$(ABASE)-forms-field_types-ipv4_address.ali: $(ADA_OBJDIR)/$(ABASE
 	fi
 
 $(ADA_OBJDIR)/$(ABASE)-forms-field_types-user.o: \
-		$(ABASE)-forms-field_types-user.ads \
+		$(srcdir)/$(ABASE)-forms-field_types-user.ads \
 		$(srcdir)/$(ABASE)-forms-field_types-user.adb $(BASEDEPS)
 	$(ADA) $(ADAFLAGS) -c -o $@ $(srcdir)/$(ABASE)-forms-field_types-user.adb
 
@@ -345,7 +347,7 @@ $(ADA_OBJDIR)/$(ABASE)-forms-field_types-user.ali: $(ADA_OBJDIR)/$(ABASE)-forms-
 	fi
 
 $(ADA_OBJDIR)/$(ABASE)-forms-field_types-user-choice.o: \
-		$(ABASE)-forms-field_types-user-choice.ads \
+		$(srcdir)/$(ABASE)-forms-field_types-user-choice.ads \
 		$(srcdir)/$(ABASE)-forms-field_types-user-choice.adb $(BASEDEPS)
 	$(ADA) $(ADAFLAGS) -c -o $@ $(srcdir)/$(ABASE)-forms-field_types-user-choice.adb
 
@@ -378,7 +380,7 @@ $(ADA_OBJDIR)/$(ABASE)-text_io-aux.ali: $(ADA_OBJDIR)/$(ABASE)-text_io-aux.o
 	fi
 
 $(ADA_OBJDIR)/$(ABASE)-menus-menu_user_data.o: \
-		$(srcdir)/$(ABASE)-menus-menu_user_data.ads \
+		$(ABASE)-menus-menu_user_data.ads \
 		$(srcdir)/$(ABASE)-menus-menu_user_data.adb $(BASEDEPS)
 	$(ADA) $(ADAFLAGS) -c -o $@ $(srcdir)/$(ABASE)-menus-menu_user_data.adb
 
@@ -390,7 +392,7 @@ $(ADA_OBJDIR)/$(ABASE)-menus-menu_user_data.ali: \
 	fi
 
 $(ADA_OBJDIR)/$(ABASE)-menus-item_user_data.o: \
-		$(srcdir)/$(ABASE)-menus-item_user_data.ads \
+		$(ABASE)-menus-item_user_data.ads \
 		$(srcdir)/$(ABASE)-menus-item_user_data.adb $(BASEDEPS)
 	$(ADA) $(ADAFLAGS) -c -o $@ $(srcdir)/$(ABASE)-menus-item_user_data.adb
 
@@ -402,7 +404,7 @@ $(ADA_OBJDIR)/$(ABASE)-menus-item_user_data.ali: \
 	fi
 
 $(ADA_OBJDIR)/$(ABASE)-forms-form_user_data.o: \
-		$(srcdir)/$(ABASE)-forms-form_user_data.ads \
+		$(ABASE)-forms-form_user_data.ads \
 		$(srcdir)/$(ABASE)-forms-form_user_data.adb $(BASEDEPS)
 	$(ADA) $(ADAFLAGS) -c -o $@ $(srcdir)/$(ABASE)-forms-form_user_data.adb
 
@@ -414,7 +416,7 @@ $(ADA_OBJDIR)/$(ABASE)-forms-form_user_data.ali: \
 	fi
 
 $(ADA_OBJDIR)/$(ABASE)-forms-field_user_data.o: \
-		$(srcdir)/$(ABASE)-forms-field_user_data.ads \
+		$(ABASE)-forms-field_user_data.ads \
 		$(srcdir)/$(ABASE)-forms-field_user_data.adb $(BASEDEPS)
 	$(ADA) $(ADAFLAGS) -c -o $@ $(srcdir)/$(ABASE)-forms-field_user_data.adb
 
@@ -438,7 +440,7 @@ $(ADA_OBJDIR)/$(ABASE)-forms-field_types-enumeration-ada.ali: \
 	fi
 
 $(ADA_OBJDIR)/$(ABASE)-panels-user_data.o: \
-		$(srcdir)/$(ABASE)-panels-user_data.ads \
+		$(ABASE)-panels-user_data.ads \
 		$(srcdir)/$(ABASE)-panels-user_data.adb $(BASEDEPS)
 	$(ADA) $(ADAFLAGS) -c -o $@ $(srcdir)/$(ABASE)-panels-user_data.adb
 

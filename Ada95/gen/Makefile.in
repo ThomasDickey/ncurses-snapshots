@@ -19,7 +19,7 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.16 $
+#  $Revision: 1.17 $
 #
 .SUFFIXES:
 
@@ -142,6 +142,7 @@ install \
 install.libs :: $(ADA_INCLUDE)
 	@echo installing package $(ABASE) in $(ADA_INCLUDE)
 	@$(top_srcdir)/tar-copy.sh '$(ABASE)[-.]*' $(ADA_SRCDIR) $(ADA_INCLUDE)
+	@test $(srcdir) != ./ && $(top_srcdir)/tar-copy.sh '$(ABASE)[-.]*' $(srcdir)/../ada_include $(ADA_INCLUDE)
 
 install \
 install.libs :: $(ADA_OBJECTS)

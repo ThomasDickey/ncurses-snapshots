@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.38 1997/12/20 22:22:57 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.39 1998/01/31 21:24:57 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -154,7 +154,7 @@ int	ch;
 			wrefresh(win);
 
 		ch = fifo_pull();
-    		T(("wgetch returning (pre-cooked): %#x = %s", ch, _trace_key(ch));)
+		T(("wgetch returning (pre-cooked): %#x = %s", ch, _trace_key(ch));)
 		returnCode(ch);
 	}
 
@@ -274,7 +274,7 @@ int	ch;
 	if (SP->_echo && ch < KEY_MIN && !(win->_flags & _ISPAD))
 		wechochar(win, (chtype)ch);
 
-	T(("wgetch returning : %#x = %s", ch, _trace_key(ch));)
+	T(("wgetch returning : %#x = %s", ch, _trace_key(ch)));
 
 	returnCode(ch);
 }

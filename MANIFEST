@@ -692,6 +692,7 @@
 ./test/lrtest.c
 ./test/modules
 ./test/ncurses.c
+./test/ncurses_tst.hin
 ./test/newdemo.c
 ./test/rain.c
 ./test/tclock.c

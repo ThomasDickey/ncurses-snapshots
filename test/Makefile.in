@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.42 1998/01/24 19:40:05 J.J.G.Ripoll Exp $
+# $Id: Makefile.in,v 1.44 1998/02/01 00:07:48 tom Exp $
 ################################################################################
 # Copyright 1996,1997,1998 by Thomas E. Dickey <dickey@clark.net>              #
 # All Rights Reserved.                                                         #
@@ -19,6 +19,9 @@
 # PERFORMANCE OF THIS SOFTWARE.                                                #
 ################################################################################
 # Makefile for ncurses tests.
+
+# turn off _all_ suffix rules; we'll generate our own
+.SUFFIXES:
 
 SHELL		= /bin/sh
 
@@ -58,7 +61,7 @@ LDFLAGS		= @LD_MODEL@ @TEST_ARGS@ @LIBS@ @EXTRA_LIBS@ @LOCAL_LDFLAGS@ @LDFLAGS@
 LDFLAGS_NORMAL	= $(LDFLAGS)
 LDFLAGS_DEBUG	= $(LDFLAGS) @CC_G_OPT@
 LDFLAGS_PROFILE	= $(LDFLAGS) -pg
-LDFLAGS_SHARED	= $(LDFLAGS) @CC_SHARED_OPTS@ @LD_SHARED_OPTS@
+LDFLAGS_SHARED	= $(LDFLAGS) @CC_SHARED_OPTS@ # @LD_SHARED_OPTS@
 
 LDFLAGS_DEFAULT	= $(LDFLAGS_@DFT_UPR_MODEL@)
 
@@ -92,43 +95,61 @@ all: $(TESTS)
 sources:
 
 blue$x: $(MODEL)/blue.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/blue.o $(LDFLAGS_DEFAULT)
+
 bs$x: $(MODEL)/bs.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/bs.o $(LDFLAGS_DEFAULT)
+
 firework$x: $(MODEL)/firework.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/firework.o $(LDFLAGS_DEFAULT)
+
 firstlast$x: $(MODEL)/firstlast.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/firstlast.o $(LDFLAGS_DEFAULT)
+
 gdc$x: $(MODEL)/gdc.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/gdc.o $(LDFLAGS_DEFAULT)
+
 hanoi$x: $(MODEL)/hanoi.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/hanoi.o $(LDFLAGS_DEFAULT)
+
 hashtest$x: $(MODEL)/hashtest.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/hashtest.o $(LDFLAGS_DEFAULT)
+
 knight$x: $(MODEL)/knight.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/knight.o $(LDFLAGS_DEFAULT)
+
 lrtest$x: $(MODEL)/lrtest.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/lrtest.o $(LDFLAGS_DEFAULT)
+
 ncurses$x: $(MODEL)/ncurses.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/ncurses.o $(LDFLAGS_DEFAULT)
+
 newdemo$x: $(MODEL)/newdemo.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/newdemo.o $(LDFLAGS_DEFAULT)
+
 rain$x: $(MODEL)/rain.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/rain.o $(LDFLAGS_DEFAULT)
+
 tclock$x: $(MODEL)/tclock.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT) $(MATH_LIB)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/tclock.o $(LDFLAGS_DEFAULT) $(MATH_LIB)
+
 testaddch$x: $(MODEL)/testaddch.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/testaddch.o $(LDFLAGS_DEFAULT)
+
 testcurs$x: $(MODEL)/testcurs.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/testcurs.o $(LDFLAGS_DEFAULT)
+
 testscanw$x: $(MODEL)/testscanw.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/testscanw.o $(LDFLAGS_DEFAULT)
+
 view$x: $(MODEL)/view.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/view.o $(LDFLAGS_DEFAULT)
+
 worm$x: $(MODEL)/worm.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/worm.o $(LDFLAGS_DEFAULT)
+
 xmas$x: $(MODEL)/xmas.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/xmas.o $(LDFLAGS_DEFAULT)
 
 install:
 install.libs:
@@ -151,3 +172,9 @@ realclean :: distclean
 
 lint:
 	sh -c 'for N in $(TESTS); do echo LINT:$$N; $(LINT) $(LINT_OPTS) $(CPPFLAGS) $(srcdir)/$$N.c $(LINT_LIBS); done'
+
+# Use this to get a list of test-programs for the standalone configure script.
+echo_tests :
+	@echo "$(TESTS)"
+echo_suffix :
+	@echo "$x"

@@ -292,7 +292,7 @@ inst_mandir		= $(install_root)/$(mandir)
 endif
 
 CPPFLAGS += -DTERMINFO='"$(terminfodir)"' -Iinclude -Iform -Incurses \
-	-Imenu -Ipanel -Iprogs -Itest
+	-Imenu -Ipanel -Iprogs -Itest -I$(objpfx)
 
 LDLIBS-tclock = math/libm
 
@@ -355,10 +355,17 @@ $(test-srcs:%=$(objpfx)%): $(objpfx)libform.a $(objpfx)libmenu.a \
 # a statically-linked program that hasn't already loaded it.
 $(extras:%=$(objpfx)lib%.so): $(common-objpfx)libc.so
 
-subdir_install: $(inst_libdir)/libtermcap.a $(inst_libdir)/libcurses.a
+subdir_install: $(inst_libdir)/libtermcap.a $(inst_libdir)/libcurses.a \
+	$(inst_bindir)/reset $(inst_bindir)/captoinfo
 
 $(inst_libdir)/libtermcap.a $(inst_libdir)/libcurses.a: \
 		$(inst_libdir)/libncurses.a
+	$(make-link)
+
+$(inst_bindir)/reset: $(inst_bindir)/tset
+	$(make-link)
+
+$(inst_bindir)/captoinfo: $(inst_bindir)/tic
 	$(make-link)
 
 ifeq (yes,$(build-shared))

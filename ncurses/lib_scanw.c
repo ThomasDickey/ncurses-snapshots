@@ -30,10 +30,14 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_scanw.c,v 1.5 1997/08/30 23:49:19 tom Exp $")
+MODULE_ID("$Id: lib_scanw.c,v 1.6 1998/01/31 20:25:32 tom Exp $")
 
 #if !HAVE_VSSCANF
+#if defined(__QNX__)
+extern int vsscanf(const char *str, const char *format, __va_list __arg);
+#else
 extern int vsscanf(const char *str, const char *format, ...);
+#endif
 #endif
 
 int vwscanw(WINDOW *win, const char *fmt, va_list argp)

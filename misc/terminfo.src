@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 10.1.20
+#	Version 10.1.21
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -977,7 +977,6 @@ qnx|qnx4|qnx console,
 	rep=\Eg%p2%' '%+%c%p1%c, rev=\E(, ri=\EI, rmcup=\Eh\ER, 
 	rmso=\E), rmul=\E], rs1=\ER, setb=\E@%p1%Pb%gb%gf%d%d, 
 	setf=\E@%p1%Pf%gb%gf%d%d, 
-	sgr=%?%p1%t\E<%;%p2%t\E[%;%p3%t\E(%;%p4%t\E{%;%p6%t\E<%;, 
 	sgr0=\E}\E]\E>\E), smcup=\Ei, smso=\E(, smul=\E[, 
 
 #### NetBSD consoles
@@ -1088,9 +1087,12 @@ x68k|x68k-ite|NetBSD/x68k ITE,
 # Bug? The ech and el1 attributes appear to move the cursor in some cases; for
 # instance el1 does if the cursor is moved to the right margin first.  Removed
 # by T.Dickey 97/5/3 (ech=\E[%p1%dX, el1=\E[1K)
+#
+# Setting colors turns off reverse; we cannot guarantee order, so use ncv.
+# Note that this disables standout with color.
 cons25w|ansiw|ansi80x25-raw|freebsd console (25-line raw mode), 
 	am, bce, bw, eo, msgr, npc, 
-	colors#8, cols#80, it#8, lines#25, pairs#64, 
+	colors#8, cols#80, it#8, lines#25, ncv#5, pairs#64, 
 	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, clear=\E[H\E[J, 
 	cr=^M, cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=\E[B, 
 	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
@@ -14725,6 +14727,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add beterm entry (Fred Fish)
 #	* add irix-color/xwsh entry.
 #	* turn ncv off for linux.
+# 10.1.21 (Sat Jan 31 17:39:16 EST 1998)
+#	* set ncv for FreeBSD console (treat colors with reverse specially).
+#	* remove sgr string from qnx based on report by Xiaodan Tang
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:
