@@ -19,7 +19,7 @@ Author: 	zmbenhal@netcom.com (Zeyd Ben-Halim)
 		dickey@clark.net (Thomas Dickey)
 		esr@snark.thyrsus.com (Eric S. Raymond)
 		juergen.pfeifer@T-Online.de (Juergen Pfeifer)
-Maintained-by:	ncurses@bsdi.com
+Maintained-by:	bug-ncurses@gnu.org (Florian La Roche)
 Primary-site:   prep.ai.mit.edu /pub/gnu
 		ncurses-4.2.tar.gz
 Alternate-site:	ftp.clark.net /pub/dickey/ncurses

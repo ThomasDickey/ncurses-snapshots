@@ -21,7 +21,7 @@
 #
 subdir	:= ncurses
 
-ncurses-version	= 4.1
+ncurses-version	= 4.2
 form-version	= $(ncurses-version)
 menu-version	= $(ncurses-version)
 panel-version	= $(ncurses-version)

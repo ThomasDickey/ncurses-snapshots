@@ -504,7 +504,6 @@
 ./mk-1st.awk
 ./mk-2nd.awk
 ./mkinstalldirs
-./ncurses.lsm
 ./ncurses/MKcaptab.awk
 ./ncurses/MKexpanded.sh
 ./ncurses/MKfallback.sh

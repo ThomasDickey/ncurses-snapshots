@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.310 1998/02/12 00:23:52 tom Exp $
+-- $Id: NEWS,v 1.313 1998/02/15 00:57:39 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,8 +6,14 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
-980211	pre-release
+980214	pre-release
+	+ remove ncurses.lsm from MANIFEST so that it won't be used in FSF
+	  distributions, though it is retained in development.
+	+ correct scaling of milliseconds to nanoseconds in lib_napms.c (patch
+	  by Jeremy Buhler).
+	+ update mailing-list information (bug-ncurses@gnu.org).
 	+ update announcement for upcoming 4.2 release.
+	+ modify -lm test to check for 'sin()' rather than 'floor()'
 	+ remove spurious commas from terminfo.src descriptions.
 	+ change copyright notices to Free Software Foundation
 
