@@ -43,7 +43,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.38 1999/02/27 20:08:22 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.39 1999/06/06 00:04:55 tom Exp $")
 
 /*
  *	char *
@@ -438,13 +438,13 @@ static	int static_vars[NUM_VARS];
 			case '/':
 				y = npop();
 				x = npop();
-				npush(x / y);
+				npush(y ? (x / y) : 0);
 				break;
 
 			case 'm':
 				y = npop();
 				x = npop();
-				npush(x % y);
+				npush(y ? (x % y) : 0);
 				break;
 
 			case 'A':
