@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.32 1997/10/18 20:55:39 tom Exp $
+# $Id: Makefile.in,v 1.33 1997/10/27 00:08:42 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -116,7 +116,7 @@ $(INSTALL_PREFIX)$(libdir) :
 	$(srcdir)/../mkinstalldirs $@
 
 install \
-install.libs:: $(INSTALL_PREFIX)$(libdir)
+install.libs:: $(LIBNAME) $(INSTALL_PREFIX)$(libdir)
 	$(INSTALL) $(LIBNAME) $(INSTALL_PREFIX)$(libdir)/$(LIBNAME)
 
 uninstall \

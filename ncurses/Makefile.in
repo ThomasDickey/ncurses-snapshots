@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.40 1997/10/25 21:17:27 tom Exp $
+# $Id: Makefile.in,v 1.41 1997/10/26 18:30:40 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -72,7 +72,7 @@ CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 
 HOSTCC		= @CC@
 HOSTCCFLAGS	= @CFLAGS@ $(CPPFLAGS)
-HOSTLDFLAGS	= @LDFLAGS@
+HOSTLDFLAGS	= @LDFLAGS@ @LIBS@
 
 CFLAGS_NORMAL	= $(CCFLAGS)
 CFLAGS_DEBUG	= $(CCFLAGS) @CC_G_OPT@ -DTRACE

@@ -27,7 +27,7 @@
 extern int malloc_errfd;	/* FIXME */
 #endif
 
-MODULE_ID("$Id: lib_freeall.c,v 1.9 1997/05/29 01:16:49 tom Exp $")
+MODULE_ID("$Id: lib_freeall.c,v 1.10 1997/10/26 22:10:04 tom Exp $")
 
 static void free_slk(SLK *p)
 {
@@ -109,6 +109,9 @@ void _nc_freeall(void)
 		_nc_free_termtype(&(cur_term->type), TRUE);
 	}
 
+#ifdef TRACE
+	(void) _nc_trace_buf(-1, 0);
+#endif
 #if HAVE_LIBDBMALLOC
 	malloc_dump(malloc_errfd);
 #elif HAVE_LIBDMALLOC
