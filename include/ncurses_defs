@@ -1,4 +1,4 @@
-# $Id: ncurses_defs,v 1.23 2004/05/08 16:52:03 tom Exp $
+# $Id: ncurses_defs,v 1.24 2004/06/26 22:08:37 tom Exp $
 ##############################################################################
 # Copyright (c) 2000-2003,2004 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -80,7 +80,6 @@ HAVE_MBLEN
 HAVE_MBRLEN
 HAVE_MBRTOWC
 HAVE_MBTOWC
-HAVE_MEMCCPY
 HAVE_MENU_H
 HAVE_MKSTEMP
 HAVE_NANOSLEEP

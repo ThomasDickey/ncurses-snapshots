@@ -1,10 +1,28 @@
--- $Id: NEWS,v 1.819 2004/06/19 23:58:47 tom Exp $
+-- $Id: NEWS,v 1.820 2004/06/27 00:31:14 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040626
+	+ correct BUILD_CPPFLAGS substitution in ncurses/Makefile.in, to allow
+	  cross-compiling from a separate directory tree (report/patch by
+	  Dan Engel).
+	+ modify is_term_resized() to ensure that window sizes are nonzero,
+	  as documented in the manpage (report by Ian Collier).
+	+ modify CF_XOPEN_SOURCE configure macro to make Hurd port build
+	  (Debian #249214, report/patch by Jeff Bailey).
+	+ configure-script mods from xterm, e.g., updates to CF_ADD_CFLAGS
+	+ update config.guess, config.sub
+	> terminfo updates -TD
+	  + add mlterm
+	  + add xterm-xf86-v44
+	  + modify xterm-new aka xterm-xfree86 to accommodate luit, which
+	    relies on G1 being used via an ISO-2022 escape sequence (report by
+	    Juliusz Chroboczek)
+	  + add 'hurd' entry
 
 20040619
 	+ reconsidered winsnstr(), decided after comparing other

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: resizeterm.c,v 1.15 2002/12/28 01:21:34 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.16 2004/06/26 23:33:44 tom Exp $")
 
 #define stolen_lines (screen_lines - SP->_lines_avail)
 
@@ -51,8 +51,10 @@ static int current_cols;
 NCURSES_EXPORT(bool)
 is_term_resized(int ToLines, int ToCols)
 {
-    return (ToLines != screen_lines
-	    || ToCols != screen_columns);
+    return (ToLines > 0
+	    && ToCols > 0
+	    && (ToLines != screen_lines
+		|| ToCols != screen_columns));
 }
 
 /*
