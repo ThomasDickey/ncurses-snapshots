@@ -38,7 +38,6 @@
    The objective of the ncurses package is to provide a free software API
    for character-cell terminals and terminal emulators with the following
    characteristics:
-   
      * Source-compatible with historical curses implementations
        (including the original BSD curses and System V curses.
      * Conformant with the XSI Curses standard issued as part of XPG4 by
@@ -93,7 +92,6 @@ How to Design Extensions
    
    We encourage developers to support OS-specific optimizations and
    methods not available under POSIX/ANSI, provided only that:
-   
      * All such code is properly conditioned so the build process does
        not attempt to compile it under a plain ANSI/POSIX environment.
      * Adding such implementation methods does not introduce
@@ -108,13 +106,11 @@ How to Design Extensions
                                        
    There are three kinds of documentation associated with this package.
    Each has a different preferred format:
-   
      * Package-internal files (README, INSTALL, TO-DO etc.)
      * Manual pages.
      * Everything else (i.e., narrative documentation).
        
    Our conventions are simple:
-   
     1. Maintain package-internal files in plain text. The expected viewer
        for them more(1) or an editor window; there's no point in
        elaborate mark-up.
@@ -150,7 +146,6 @@ How to Design Extensions
    show us they've taken these steps at the head of our queue. This means
    that if you don't, you'll probably end up at the tail end and have to
    wait a while.
-   
     1. Develop a recipe to reproduce the bug.
        Bugs we can reproduce are likely to be fixed very quickly, often
        within days. The most effective single thing you can do to get a

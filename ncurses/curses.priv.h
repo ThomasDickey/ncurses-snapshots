@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.155 2000/03/18 22:35:28 tom Exp $
+ * $Id: curses.priv.h,v 1.157 2000/03/26 01:01:14 tom Exp $
  *
  *	curses.priv.h
  *
@@ -338,7 +338,8 @@ struct screen {
 	unsigned short  *_color_pairs;  /* screen's color pair list          */
 	int             _pair_count;    /* count of color pairs              */
 #ifdef NCURSES_EXT_FUNCS
-	int             _default_color; /* use default colors                */
+	bool            _default_color; /* use default colors                */
+	bool            _has_sgr_39_49; /* has ECMA default color support    */
 	int             _default_fg;    /* assumed default foreground        */
 	int             _default_bg;    /* assumed default background        */
 #endif
@@ -717,7 +718,7 @@ extern int _nc_outch(int);
 extern int _nc_setupscreen(short, short const, FILE *);
 extern int _nc_timed_wait(int, int, int *);
 extern int _nc_waddch_nosync(WINDOW *, const chtype);
-extern void _nc_do_color(int, bool, int (*)(int));
+extern void _nc_do_color(int, int, bool, int (*)(int));
 extern void _nc_freeall(void);
 extern void _nc_freewin(WINDOW *win);
 extern void _nc_hash_map(void);
