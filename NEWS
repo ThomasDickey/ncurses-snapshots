@@ -1,10 +1,39 @@
--- $Id: NEWS,v 1.641 2001/08/12 00:42:59 tom Exp $
+-- $Id: NEWS,v 1.642 2001/08/26 01:14:47 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010825
+	+ move calls to def_shell_mode() and def_prog_mode() before loop with
+	  callbacks in lib_set_term.c, since the c++ demo otherwise initialized
+	  the tty modes before saving them (patch by John David Anglin
+	  <dave@hiauly1.hia.nrc.ca>).
+	+ duplicate logic used to initialize trace in newterm(), in initscr()
+	  to avoid confusing trace of initscr().
+	+ simplify allocation of WINDOW and WINDOWLIST structs by making the
+	  first a part of the second rather than storing a pointer.  This saves
+	  a call to malloc for each window (discussion with Philippe Blain).
+	+ remove unused variable 'used_ncv' from lib_vidattr.c (Philippe Blain).
+	+ modify c++/Makefile.in to accommodate archive programs that are
+	  different for C++ than for C, and add cases for vendor's C++
+	  compilers on Solaris and IRIX (report by Albert Chin-A-Young).
+	+ correct manpage description of criteria for deciding if the terminal
+	  supports xterm mouse controls.
+	+ add several configure script options to aid with cross-compiling: 
+	  --with-build-cc, --with-build-cflags, --with-build-ldflags, and
+	  --with-build-libs (request by Greg Roelofs).
+	+ change criteria for deciding if configure is cross-compiling from
+	  host/build mismatch to host/target mismatch (request by Greg Roelofs
+	  <greg.roelofs@philips.com>).
+	+ correct logic for infocmp -e and -E options which writes the data for
+	  the ext_Names[] array.  This is needed if one constructs a fallback
+	  table for a terminfo entry which uses extended termcap names, e.g.,
+	  AX in a color xterm.
+	+ fix undefined NCURSES_PATHSEP when configure --disable-database
+	  option is given.
 
 20010811
 	+ fix for VALID_BOOLEAN() macro when char is not signed.

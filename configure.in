@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.243 2001/07/01 01:41:25 tom Exp $
+dnl $Id: configure.in,v 1.246 2001/08/25 23:54:37 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20000819)
-AC_REVISION($Revision: 1.243 $)
+AC_REVISION($Revision: 1.246 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -84,12 +84,34 @@ if test "$GCC" = yes ; then
 	AC_MSG_CHECKING(version of gcc)
 	eval "$CC --version"
 fi
-if test "$host" != $build; then
-	AC_CHECK_PROGS(BUILD_CC, $CC gcc cc)
-else
-	BUILD_CC="$CC"
+
+# If we're cross-compiling, allow the user to override the tools and their
+# options.  The configure script is oriented toward identifying the target
+# compiler, etc., but we need a host compiler to generate parts of the source.
+BUILD_CC='$(CC)'
+BUILD_CFLAGS='$(CFLAGS)'
+BUILD_LDFLAGS='$(LDFLAGS)'
+BUILD_LIBS='$(LIBS)'
+if test "$host_alias" != "$target_alias" ; then
+	AC_ARG_WITH(build-cc,
+		[  --with-build-cc=XXX     if cross-compiling, the host C compiler (\$BUILD_CC)],
+		[BUILD_CC="$withval"],
+		[AC_CHECK_PROGS(BUILD_CC, $CC gcc cc)])
+	AC_ARG_WITH(build-cflags,
+		[  --with-build-cflags=XXX if cross-compiling, the host C compiler-flags],
+		[BUILD_CFLAGS="$withval"])
+	AC_ARG_WITH(build-ldflags,
+		[  --with-build-ldflags=XXX if cross-compiling, the host linker-flags],
+		[BUILD_LDFLAGS="$withval"])
+	AC_ARG_WITH(build-libs,
+		[  --with-build-libs=XXX   if cross-compiling, the host libraries],
+		[BUILD_LIBS="$withval"])
 fi
 AC_SUBST(BUILD_CC)
+AC_SUBST(BUILD_CFLAGS)
+AC_SUBST(BUILD_LDFLAGS)
+AC_SUBST(BUILD_LIBS)
+
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
 AC_ISC_POSIX
@@ -195,7 +217,7 @@ dnl adjust the location into which the actual install is done, so that an
 dnl archive can be built without modifying the host system's configuration.
 AC_MSG_CHECKING(if you have specified an install-prefix)
 AC_ARG_WITH(install-prefix,
-	[  --with-install-prefix   prefixes actual install-location],
+	[  --with-install-prefix   prefixes actual install-location (\$DESTDIR)],
 	[case "$withval" in #(vi
 	yes|no) #(vi
 		;;
@@ -409,6 +431,7 @@ os2*) #(vi
 esac
 AC_SUBST(TERMINFO_SRC)
 
+CF_PATHSEP
 if test "$use_database" != no ; then
 	AC_DEFINE(USE_DATABASE)
 	AC_MSG_CHECKING(which terminfo source-file will be installed)
@@ -984,12 +1007,28 @@ if test -n "$CXX" ; then
 	CF_CPP_PARAM_INIT
 	CF_CPP_VSCAN_FUNC
 
+	CXX_AR='$(AR)'
+	CXX_AR_OPTS='$(AR_OPTS)'
 	case $cf_cv_system_name in #(vi
-	sco3.2v5*)
+	irix*) #(vi
+	    if test "$GXX" != yes ; then
+		CXX_AR='$(CXX)'
+		CXX_AR_OPTS='-ar -o'
+	    fi
+	    ;;
+	sco3.2v5*) #(vi
 	    CXXLDFLAGS="-u main"
+	    ;;
+	solaris2*)
+	    if test "$GXX" != yes ; then
+		CXX_AR='$(CXX)'
+		CXX_AR_OPTS='-xar -o'
+	    fi
 	    ;;
 	esac
 	AC_SUBST(CXXLDFLAGS)
+	AC_SUBST(CXX_AR)
+	AC_SUBST(CXX_AR_OPTS)
 else
 	cf_cxx_library=no
 	cf_cv_builtin_bool=1

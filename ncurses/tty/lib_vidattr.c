@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -64,7 +64,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.38 2001/08/04 20:41:04 William.Setzer Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.39 2001/08/26 00:40:46 Philippe.Blain Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -94,7 +94,6 @@ vidputs
     attr_t turn_on, turn_off;
     int pair;
     bool reverse = FALSE;
-    bool used_ncv = FALSE;
     bool can_color = (SP == 0 || SP->_coloron);
 #if NCURSES_EXT_FUNCS
     bool fix_pair0 = (SP != 0 && SP->_coloron && !SP->_default_color);
@@ -182,7 +181,7 @@ vidputs
 	}
 
 	SetColorsIf((pair != 0) || fix_pair0, previous_attr);
-    } else if (set_attributes && !used_ncv) {
+    } else if (set_attributes) {
 	if (turn_on || turn_off) {
 	    TPUTS_TRACE("set_attributes");
 	    tputs(tparm(set_attributes,
