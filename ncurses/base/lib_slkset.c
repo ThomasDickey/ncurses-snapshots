@@ -42,7 +42,7 @@
 #include <wctype.h>
 #endif
 
-MODULE_ID("$Id: lib_slkset.c,v 1.11 2004/11/06 22:32:11 tom Exp $")
+MODULE_ID("$Id: lib_slkset.c,v 1.12 2004/11/20 21:54:50 tom Exp $")
 
 NCURSES_EXPORT(int)
 slk_set(int i, const char *astr, int format)
@@ -74,7 +74,8 @@ slk_set(int i, const char *astr, int format)
 	mbstate_t state;
 	wchar_t wc;
 	size_t need;
-	memset(&state, 0, sizeof(state));
+
+	init_mb(state);
 	need = mbrtowc(0, p, strlen(p), &state);
 	if (need == (size_t) -1)
 	    break;
