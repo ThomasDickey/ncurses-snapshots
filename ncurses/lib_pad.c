@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_pad.c,v 1.14 1997/01/18 23:05:18 tom Exp $")
+MODULE_ID("$Id: lib_pad.c,v 1.15 1997/02/02 01:59:20 tom Exp $")
 
 WINDOW *newpad(int l, int c)
 {
@@ -37,52 +37,48 @@ WINDOW *win;
 chtype *ptr;
 int i;
 
-	T(("newpad(%d, %d) called", l, c));
+	T((T_CALLED("newpad(%d, %d)"), l, c));
 
 	if (l <= 0 || c <= 0)
-		return NULL;
+		returnWin(0);
 
 	if ((win = _nc_makenew(l,c,0,0,_ISPAD)) == NULL)
-		return NULL;
+		returnWin(0);
 
 	for (i = 0; i < l; i++) {
 	    win->_line[i].oldindex = _NEWINDEX;
 	    if ((win->_line[i].text = typeCalloc(chtype, ((size_t)c))) == 0) {
 		_nc_freewin(win);
-		return 0;
+		returnWin(0);
 	    }
 	    for (ptr = win->_line[i].text; ptr < win->_line[i].text + c; )
 		*ptr++ = ' ';
 	}
 
-	T(("newpad: returned window is %p", win));
-
-	return(win);
+	returnWin(win);
 }
 
 WINDOW *subpad(WINDOW *orig, int l, int c, int begy, int begx)
 {
 WINDOW	*win;
 
-	T(("subpad(%d, %d) called", l, c));
+	T((T_CALLED("subpad(%d, %d)"), l, c));
 
 	if (!(orig->_flags & _ISPAD) || ((win = derwin(orig, l, c, begy, begx)) == NULL))
-	    return NULL;
+	    returnWin(0);
 
-	T(("subpad: returned window is %p", win));
-
-	return(win);
+	returnWin(win);
 }
 
 int prefresh(WINDOW *win, int pminrow, int pmincol,
 	int sminrow, int smincol, int smaxrow, int smaxcol)
 {
-	T(("prefresh() called"));
+	T((T_CALLED("prefresh()")));
 	if (pnoutrefresh(win, pminrow, pmincol, sminrow, smincol, smaxrow, smaxcol) != ERR
 	 && doupdate() != ERR) {
-		return OK;
+		returnCode(OK);
 	}
-	return ERR;
+	returnCode(ERR);
 }
 
 int pnoutrefresh(WINDOW *win, int pminrow, int pmincol,
@@ -95,14 +91,14 @@ short	pmaxcol;
 short	displaced;
 bool	wide;
 
-	T(("pnoutrefresh(%p, %d, %d, %d, %d, %d, %d) called",
+	T((T_CALLED("pnoutrefresh(%p, %d, %d, %d, %d, %d, %d)"),
 		win, pminrow, pmincol, sminrow, smincol, smaxrow, smaxcol));
 
 	if (win == 0)
-		return ERR;
+		returnCode(ERR);
 
 	if (!(win->_flags & _ISPAD))
-		return ERR;
+		returnCode(ERR);
 
 	/* negative values are interpreted as zero */
 	if (pminrow < 0) pminrow = 0;
@@ -132,7 +128,7 @@ bool	wide;
 	 || smaxcol > screen_columns
 	 || sminrow > smaxrow
 	 || smincol > smaxcol)
-		return ERR;
+		returnCode(ERR);
 
 	T(("pad being refreshed"));
 
@@ -236,7 +232,7 @@ bool	wide;
 	win->_pad._pad_bottom = smaxrow;
 	win->_pad._pad_right  = smaxcol;
 
-	return OK;
+	returnCode(OK);
 }
 
 int pechochar(WINDOW *pad, chtype ch)
@@ -244,10 +240,10 @@ int pechochar(WINDOW *pad, chtype ch)
 	T(("echochar(%p, %lx)", pad, ch));
 
 	if (pad->_flags & _ISPAD)
-		return ERR;
+		returnCode(ERR);
 
 	waddch(curscr, ch);
 	doupdate();
-	return OK;
+	returnCode(OK);
 }
 

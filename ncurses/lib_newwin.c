@@ -30,7 +30,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.15 1997/01/18 23:04:42 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.16 1997/02/02 01:47:50 tom Exp $")
 
 void _nc_freewin(WINDOW *win)
 {
@@ -70,10 +70,10 @@ WINDOW	*win;
 chtype	*ptr;
 int	i;
 
-	T(("newwin(%d,%d,%d,%d) called", num_lines, num_columns, begy, begx));
+	T((T_CALLED("newwin(%d,%d,%d,%d)"), num_lines, num_columns, begy, begx));
 
 	if (begy < 0 || begx < 0 || num_lines < 0 || num_columns < 0)
-	  return NULL;
+		returnWin(0);
 
 	if (num_lines == 0)
 	    num_lines = SP->_lines_avail - begy;
@@ -81,15 +81,15 @@ int	i;
 	    num_columns = screen_columns - begx;
 
 	if (num_columns + begx > SP->_columns || num_lines + begy > SP->_lines_avail)
-		return NULL;
+		returnWin(0);
 
 	if ((win = _nc_makenew(num_lines, num_columns, begy, begx, 0)) == NULL)
-		return NULL;
+		returnWin(0);
 
 	for (i = 0; i < num_lines; i++) {
 	    if ((win->_line[i].text = typeCalloc(chtype, (unsigned)num_columns)) == 0) {
 		_nc_freewin(win);
-		return NULL;
+		returnWin(0);
 	    }
 	    for (ptr = win->_line[i].text; ptr < win->_line[i].text + num_columns; )
 		*ptr++ = ' ';
@@ -97,7 +97,7 @@ int	i;
 
 	T(("newwin: returned window is %p", win));
 
-	return(win);
+	returnWin(win);
 }
 
 WINDOW * derwin(WINDOW *orig, int num_lines, int num_columns, int begy, int begx)
@@ -106,16 +106,16 @@ WINDOW	*win;
 int	i;
 int     flags = _SUBWIN;
 
-	T(("derwin(%p, %d,%d,%d,%d) called", orig, num_lines, num_columns, begy, begx));
+	T((T_CALLED("derwin(%p,%d,%d,%d,%d)"), orig, num_lines, num_columns, begy, begx));
 
 	/*
 	** make sure window fits inside the original one
 	*/
 	if ( begy < 0 || begx < 0 || orig==NULL || num_lines < 0 || num_columns < 0)
-		return NULL;
+	    returnWin(0);
 	if ( begy + num_lines > orig->_maxy + 1
 		|| begx + num_columns > orig->_maxx + 1)
-	    return NULL;
+	    returnWin(0);
 
 	if (num_lines == 0)
 	    num_lines = orig->_maxy - begy;
@@ -127,7 +127,7 @@ int     flags = _SUBWIN;
 	  flags |= _ISPAD;
 
 	if ((win = _nc_makenew(num_lines, num_columns, orig->_begy + begy, orig->_begx + begx, flags)) == NULL)
-	    return NULL;
+	    returnWin(0);
 
 	win->_pary = begy;
 	win->_parx = begx;
@@ -141,16 +141,16 @@ int     flags = _SUBWIN;
 
 	T(("derwin: returned window is %p", win));
 
-	return(win);
+	returnWin(win);
 }
 
 
 WINDOW *subwin(WINDOW *w, int l, int c, int y, int x)
 {
-	T(("subwin(%p, %d, %d, %d, %d) called", w, l, c, y, x));
+	T((T_CALLED("subwin(%p, %d, %d, %d, %d)"), w, l, c, y, x));
 	T(("parent has begy = %d, begx = %d", w->_begy, w->_begx));
 
-	return derwin(w, l, c, y - w->_begy, x - w->_begx);
+	returnWin(derwin(w, l, c, y - w->_begy, x - w->_begx));
 }
 
 WINDOW *

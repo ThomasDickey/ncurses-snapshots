@@ -28,14 +28,14 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_clrbot.c,v 1.8 1996/07/21 00:15:19 tom Exp $")
+MODULE_ID("$Id: lib_clrbot.c,v 1.9 1997/02/01 23:18:18 tom Exp $")
 
 int wclrtobot(WINDOW *win)
 {
 chtype	*ptr, *end, *maxx = NULL;
 short	y, startx, minx;
 
-	T(("wclrtobot(%p) called", win));
+	T((T_CALLED("wclrtobot(%p)"), win));
 
 	startx = win->_curx;
 
@@ -68,5 +68,5 @@ short	y, startx, minx;
 		startx = 0;
 	}
 	_nc_synchook(win);
-	return OK;
+	returnCode(OK);
 }

@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_delch.c,v 1.4 1996/07/21 00:17:20 tom Exp $")
+MODULE_ID("$Id: lib_delch.c,v 1.5 1997/02/01 23:18:18 tom Exp $")
 
 int wdelch(WINDOW *win)
 {
@@ -36,7 +36,7 @@ chtype	*temp1, *temp2;
 chtype	*end;
 chtype	blank = _nc_background(win);
 
-	T(("wdelch(%p) called", win));
+	T((T_CALLED("wdelch(%p)"), win));
 
 	end = &win->_line[win->_cury].text[win->_maxx];
 	temp2 = &win->_line[win->_cury].text[win->_curx + 1];
@@ -54,5 +54,5 @@ chtype	blank = _nc_background(win);
 	    win->_line[win->_cury].firstchar = win->_curx;
 
 	_nc_synchook(win);
-	return OK;
+	returnCode(OK);
 }

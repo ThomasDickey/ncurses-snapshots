@@ -32,7 +32,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_scroll.c,v 1.10 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_scroll.c,v 1.11 1997/02/01 23:22:54 tom Exp $")
 
 void _nc_scroll_window(WINDOW *win, int const n, short const top, short const bottom)
 {
@@ -91,21 +91,21 @@ size_t	to_copy = (size_t)(sizeof(chtype) * (win->_maxx + 1));
 int
 wscrl(WINDOW *win, int n)
 {
-	T(("wscrl(%p,%d) called", win, n));
+	T((T_CALLED("wscrl(%p,%d)"), win, n));
 
 	if (! win->_scroll)
-		return ERR;
+		returnCode(ERR);
 
 	if (n == 0)
-		return OK;
+		returnCode(OK);
 
 	if ((n > (win->_regbottom - win->_regtop)) || 
 	    (-n > (win->_regbottom - win->_regtop)))
-	    return ERR;
+	    returnCode(ERR);
 
 	_nc_scroll_window(win, n, win->_regtop, win->_regbottom);
 	touchline(win, win->_regtop, (int)(win->_regbottom - win->_regtop + 1));
 
 	_nc_synchook(win);
-    	return OK;
+    	returnCode(OK);
 }

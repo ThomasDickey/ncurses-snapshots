@@ -32,113 +32,117 @@
 #include <term.h>	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
 
-MODULE_ID("$Id: lib_options.c,v 1.18 1996/11/28 00:09:00 juergen Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.20 1997/02/02 02:36:15 tom Exp $")
 
 int has_ic(void)
 {
-	T(("has_ic() called"));
-	return (insert_character || parm_ich
+	T((T_CALLED("has_ic()")));
+	returnCode((insert_character || parm_ich
 	   ||  (enter_insert_mode && exit_insert_mode))
-	   &&  (delete_character || parm_dch);
+	   &&  (delete_character || parm_dch));
 }
 
 int has_il(void)
 {
-	T(("has_il() called"));
-	return (insert_line || parm_insert_line)
-		&& (delete_line || parm_delete_line);
+	T((T_CALLED("has_il()")));
+	returnCode((insert_line || parm_insert_line)
+		&& (delete_line || parm_delete_line));
 }
 
 int idlok(WINDOW *win,  bool flag)
 {
-	T(("idlok(%p,%d) called", win, flag));
+	T((T_CALLED("idlok(%p,%d)"), win, flag));
 
 	_nc_idlok = win->_idlok = flag && (has_il() || change_scroll_region);
-	return OK;
+	returnCode(OK);
 }
 
 
 void idcok(WINDOW *win, bool flag)
 {
-	T(("idcok(%p,%d) called", win, flag));
+	T((T_CALLED("idcok(%p,%d)"), win, flag));
 
 	_nc_idcok = win->_idcok = flag && has_ic();
+
+	returnVoid;
 }
 
 
 int clearok(WINDOW *win, bool flag)
 {
-	T(("clearok(%p,%d) called", win, flag));
+	T((T_CALLED("clearok(%p,%d)"), win, flag));
 
 	win->_clear = flag;
-	return OK;
+	returnCode(OK);
 }
 
 
 void immedok(WINDOW *win, bool flag)
 {
-	T(("immedok(%p,%d) called", win, flag));
+	T((T_CALLED("immedok(%p,%d)"), win, flag));
 
 	win->_immed = flag;
+
+	returnVoid;
 }
 
 int leaveok(WINDOW *win, bool flag)
 {
-	T(("leaveok(%p,%d) called", win, flag));
+	T((T_CALLED("leaveok(%p,%d)"), win, flag));
 
 	win->_leaveok = flag;
 	if (flag == TRUE)
 		curs_set(0);
 	else
 		curs_set(1);
-	return OK;
+	returnCode(OK);
 }
 
 
 int scrollok(WINDOW *win, bool flag)
 {
-	T(("scrollok(%p,%d) called", win, flag));
+	T((T_CALLED("scrollok(%p,%d)"), win, flag));
 
 	win->_scroll = flag;
-	return OK;
+	returnCode(OK);
 }
 
 int halfdelay(int t)
 {
-	T(("halfdelay(%d) called", t));
+	T((T_CALLED("halfdelay(%d)"), t));
 
 	if (t < 1 || t > 255)
-		return ERR;
+		returnCode(ERR);
 
 	cbreak();
 	SP->_cbreak = t+1;
-	return OK;
+	returnCode(OK);
 }
 
 int nodelay(WINDOW *win, bool flag)
 {
-	T(("nodelay(%p,%d) called", win, flag));
+	T((T_CALLED("nodelay(%p,%d)"), win, flag));
 
 	if (flag == TRUE)
 		win->_delay = 0;
 	else win->_delay = -1;
-	return OK;
+	returnCode(OK);
 }
 
 int notimeout(WINDOW *win, bool f)
 {
-	T(("notimout(%p,%d) called", win, f));
+	T((T_CALLED("notimout(%p,%d)"), win, f));
 
 	win->_notimeout = f;
-	return OK;
+	returnCode(OK);
 }
 
 int wtimeout(WINDOW *win, int delay)
 {
-	T(("wtimeout(%p,%d) called", win, delay));
+	T((T_CALLED("wtimeout(%p,%d)"), win, delay));
 
 	win->_delay = delay;
-	return OK;
+	returnCode(OK);
 }
 
 static void init_keytry(void);
@@ -168,21 +172,21 @@ int _nc_keypad(bool flag)
 
 	if (SP->_keytry == UNINITIALISED)
 	    init_keytry();
-	return OK;
+	return(OK);
 }
 
 int keypad(WINDOW *win, bool flag)
 {
-	T(("keypad(%p,%d) called", win, flag));
+	T((T_CALLED("keypad(%p,%d)"), win, flag));
 
 	win->_use_keypad = flag;
-	return (_nc_keypad(flag));
+	returnCode(_nc_keypad(flag));
 }
 
 
 int meta(WINDOW *win GCC_UNUSED, bool flag)
 {
-	T(("meta(%p,%d) called", win, flag));
+	T((T_CALLED("meta(%p,%d)"), win, flag));
 
 	SP->_use_meta = flag;
 
@@ -196,7 +200,7 @@ int meta(WINDOW *win GCC_UNUSED, bool flag)
 	    TPUTS_TRACE("meta_off");
 	    putp(meta_off);
 	}
-	return OK;
+	returnCode(OK);
 }
 
 /* curs_set() moved here to narrow the kernel interface */
@@ -205,10 +209,10 @@ int curs_set(int vis)
 {
 int cursor = SP->_cursor;
 
-	T(("curs_set(%d)", vis));
+	T((T_CALLED("curs_set(%d)"), vis));
 
 	if (vis < 0 || vis > 2)
-		return ERR;
+		returnCode(ERR);
 
 	switch(vis) {
 	case 2:
@@ -235,7 +239,8 @@ int cursor = SP->_cursor;
 	}
 	SP->_cursor = vis;
 	(void) fflush(SP->_ofp);
-	return cursor;
+
+	returnCode(cursor);
 }
 
 /*
@@ -358,10 +363,9 @@ struct try      *ptr, *savedptr;
 
 int typeahead(int fd)
 {
-
-	T(("typeahead(%d) called", fd));
+	T((T_CALLED("typeahead(%d)"), fd));
 	SP->_checkfd = fd;
-	return OK;
+	returnCode(OK);
 }
 
 /*
@@ -385,5 +389,6 @@ static int has_key_internal(int keycode, struct try *tp)
 
 int has_key(int keycode)
 {
-    return(has_key_internal(keycode, SP->_keytry));
+    T((T_CALLED("has_key(%d)"), keycode));
+    returnCode(has_key_internal(keycode, SP->_keytry));
 }

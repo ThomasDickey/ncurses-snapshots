@@ -21,7 +21,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_bkgd.c,v 1.4 1996/12/15 23:41:32 tom Exp $")
+MODULE_ID("$Id: lib_bkgd.c,v 1.5 1997/02/02 01:04:49 tom Exp $")
 
 int wbkgd(WINDOW *win, const chtype ch)
 {
@@ -29,7 +29,8 @@ int x, y;
 chtype old_bkgd = getbkgd(win);
 chtype new_bkgd = ch;
 
-	T(("wbkgd(%p, %lx) called", win, new_bkgd));
+	T((T_CALLED("wbkgd(%p, %lx)"), win, new_bkgd));
+
 	if (TextOf(new_bkgd) == 0)
 		new_bkgd |= BLANK;
 	wbkgdset(win, new_bkgd);
@@ -47,5 +48,5 @@ chtype new_bkgd = ch;
 	}
 	touchwin(win);
 	_nc_synchook(win);
-	return OK;
+	returnCode(OK);
 }

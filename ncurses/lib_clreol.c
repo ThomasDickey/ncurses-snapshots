@@ -29,14 +29,14 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_clreol.c,v 1.8 1996/07/21 00:15:27 tom Exp $")
+MODULE_ID("$Id: lib_clreol.c,v 1.9 1997/02/01 23:22:54 tom Exp $")
 
 int  wclrtoeol(WINDOW *win)
 {
 chtype	*maxx, *ptr, *end;
 short	y, x, minx;
 
-	T(("wclrtoeol(%p) called", win));
+	T((T_CALLED("wclrtoeol(%p)"), win));
 
 	y = win->_cury;
 	x = win->_curx;
@@ -48,7 +48,7 @@ short	y, x, minx;
 	if (win->_flags & _WRAPPED
 	 || y > win->_maxy
 	 || x > win->_maxx)
-		return ERR;
+		returnCode(ERR);
 
 	end = &win->_line[y].text[win->_maxx];
 	minx = _NOCHANGE;
@@ -73,5 +73,5 @@ short	y, x, minx;
 			win->_line[y].lastchar = maxx - win->_line[y].text;
 	}
 	_nc_synchook(win);
-	return(OK);
+	returnCode(OK);
 }

@@ -35,7 +35,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.21 1997/01/18 23:05:32 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.22 1997/02/02 02:05:46 tom Exp $")
 
 /****************************************************************************
  *
@@ -151,7 +151,7 @@ char		*rows, *cols;
 
 #define ret_error(code, fmt, arg)	if (errret) {\
 					    *errret = code;\
-					    return(ERR);\
+					    returnCode(ERR);\
 					} else {\
 					    fprintf(stderr, fmt, arg);\
 					    exit(EXIT_FAILURE);\
@@ -159,7 +159,7 @@ char		*rows, *cols;
 
 #define ret_error0(code, msg)		if (errret) {\
 					    *errret = code;\
-					    return(ERR);\
+					    returnCode(ERR);\
 					} else {\
 					    fprintf(stderr, msg);\
 					    exit(EXIT_FAILURE);\
@@ -201,7 +201,7 @@ int setupterm(const char *tname, int Filedes, int *errret)
 struct term	*term_ptr;
 int status;
 
-	T(("setupterm(%s,%d,%p) called", tname, Filedes, errret));
+	T((T_CALLED("setupterm(\"%s\",%d,%p)"), tname, Filedes, errret));
 
 	if (tname == NULL) {
 		tname = getenv("TERM");
@@ -263,7 +263,7 @@ int status;
 
 	if (errret)
 		*errret = 1;
-	return(OK);
+	returnCode(OK);
 
 }
 

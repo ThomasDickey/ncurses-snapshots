@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.14 1996/12/30 01:39:04 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.15 1997/02/02 00:04:27 tom Exp $")
 
 #include <ctype.h>
 #if HAVE_FCNTL_H
@@ -63,14 +63,25 @@ static bool	been_here = FALSE;
 const char *_nc_visbuf(const char *buf)
 /* visibilize a given string */
 {
-static char vbuf[BUFSIZ];
+static size_t have;
+static char *vbuf;
+size_t need;
 char *tp = vbuf;
 
-	if (buf == (char *)NULL)
+	if (buf == 0)
 	    return("(null)");
 
+	if ((need = ((strlen(buf) * 4) + 5)) > have) {
+		free(vbuf);
+		tp = vbuf = malloc(have = need);
+	}
+
+	*tp++ = '"';
     	while (*buf) {
-		if (is7bits(*buf) && (isgraph(*buf) || *buf == ' '))
+		if (*buf == '"') {
+			*tp++ = '\\';
+			*tp++ = '"';
+		} else if (is7bits(*buf) && (isgraph(*buf) || *buf == ' '))
 			*tp++ = *buf++;
 		else if (*buf == '\n') {
 			*tp++ = '\\'; *tp++ = 'n';
@@ -92,9 +103,10 @@ char *tp = vbuf;
 			sprintf(tp, "\\0x%02x", *buf++);
 			tp += strlen(tp);
 		}
-    }
-    *tp++ = '\0';
-    return(vbuf);
+	}
+	*tp++ = '"';
+	*tp++ = '\0';
+	return(vbuf);
 }
 
 void
@@ -109,4 +121,18 @@ char buffer[BUFSIZ];
 		write(tracefd, buffer, strlen(buffer));
 		write(tracefd, "\n", 1);
 	}
+}
+
+/* Trace 'int' return-values */
+int _nc_retrace_int(int code)
+{
+	T((T_RETURN("%d"), code));
+	return code;
+}
+
+/* Trace 'WINDOW *' return-values */
+WINDOW *_nc_retrace_win(WINDOW *code)
+{
+	T((T_RETURN("%p"), code));
+	return code;
 }

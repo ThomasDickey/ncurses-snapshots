@@ -30,14 +30,14 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_insch.c,v 1.4 1996/07/21 00:17:01 tom Exp $")
+MODULE_ID("$Id: lib_insch.c,v 1.5 1997/02/02 00:19:40 tom Exp $")
 
 int  winsch(WINDOW *win, chtype c)
 {
 chtype	*temp1, *temp2;
 chtype	*end;
 
-	T(("winsch(%p,'%lx') called", win, c));
+	T((T_CALLED("winsch(%p,%lx)"), win, c));
 
 	end = &win->_line[win->_cury].text[win->_curx];
 	temp1 = &win->_line[win->_cury].text[win->_maxx];
@@ -52,5 +52,5 @@ chtype	*end;
 	if (win->_line[win->_cury].firstchar == _NOCHANGE
 	    			||  win->_line[win->_cury].firstchar > win->_curx)
 	    win->_line[win->_cury].firstchar = win->_curx;
-	return OK;
+	returnCode(OK);
 }

@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_raw.c,v 1.15 1996/12/30 00:45:00 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.16 1997/02/02 00:02:32 tom Exp $")
 
 #ifdef SVR4_TERMIO
 #define _POSIX_SOURCE
@@ -241,7 +241,7 @@ cflags[] =
 
 int raw(void)
 {
-	T(("raw() called"));
+	T((T_CALLED("raw()")));
 
 	SP->_raw = TRUE;
 	SP->_cbreak = TRUE;
@@ -257,13 +257,13 @@ int raw(void)
 	cur_term->Nttyb.sg_flags |= RAW;
 #endif
 	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
-		return ERR;
-	return OK;
+		returnCode(ERR);
+	returnCode(OK);
 }
 
 int cbreak(void)
 {
-	T(("cbreak() called"));
+	T((T_CALLED("cbreak()")));
 
 	SP->_cbreak = TRUE;
 
@@ -279,33 +279,33 @@ int cbreak(void)
 	cur_term->Nttyb.sg_flags |= CBREAK;
 #endif
 	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
-		return ERR;
-	return OK;
+		returnCode(ERR);
+	returnCode(OK);
 }
 
 int echo(void)
 {
-	T(("echo() called"));
+	T((T_CALLED("echo()")));
 
 	SP->_echo = TRUE;
 
-	return OK;
+	returnCode(OK);
 }
 
 
 int nl(void)
 {
-	T(("nl() called"));
+	T((T_CALLED("nl()")));
 
 	SP->_nl = TRUE;
 
-	return OK;
+	returnCode(OK);
 }
 
 
 int qiflush(void)
 {
-	T(("qiflush() called"));
+	T((T_CALLED("qiflush()")));
 
 	/*
 	 * Note: this implementation may be wrong.  See the comment under
@@ -317,18 +317,18 @@ int qiflush(void)
 	cur_term->Nttyb.c_lflag &= ~(NOFLSH);
 	AFTER("qiflush");
 	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
-		return ERR;
+		returnCode(ERR);
 	else
-		return OK;
+		returnCode(OK);
 #else
-	return ERR;
+	returnCode(ERR);
 #endif
 }
 
 
 int noraw(void)
 {
-	T(("noraw() called"));
+	T((T_CALLED("noraw()")));
 
 	SP->_raw = FALSE;
 	SP->_cbreak = FALSE;
@@ -342,14 +342,14 @@ int noraw(void)
 	cur_term->Nttyb.sg_flags &= ~(RAW|CBREAK);
 #endif
 	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
-		return ERR;
-	return OK;
+		returnCode(ERR);
+	returnCode(OK);
 }
 
 
 int nocbreak(void)
 {
-	T(("nocbreak() called"));
+	T((T_CALLED("nocbreak()")));
 
 	SP->_cbreak = 0;
 
@@ -362,30 +362,30 @@ int nocbreak(void)
 	cur_term->Nttyb.sg_flags &= ~CBREAK;
 #endif
 	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
-		return ERR;
-	return OK;
+		returnCode(ERR);
+	returnCode(OK);
 }
 
 int noecho(void)
 {
-	T(("noecho() called"));
+	T((T_CALLED("noecho()")));
 	SP->_echo = FALSE;
-	return OK;
+	returnCode(OK);
 }
 
 
 int nonl(void)
 {
-	T(("nonl() called"));
+	T((T_CALLED("nonl()")));
 
 	SP->_nl = FALSE;
 
-	return OK;
+	returnCode(OK);
 }
 
 int noqiflush(void)
 {
-	T(("noqiflush() called"));
+	T((T_CALLED("noqiflush()")));
 
 	/*
 	 * Note: this implementation may be wrong.  See the comment under
@@ -397,17 +397,17 @@ int noqiflush(void)
 	cur_term->Nttyb.c_lflag |= NOFLSH;
 	AFTER("noqiflush");
 	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
-		return ERR;
+		returnCode(ERR);
 	else
-		return OK;
+		returnCode(OK);
 #else
-	return ERR;
+	returnCode(ERR);
 #endif
 }
 
 int intrflush(WINDOW *win GCC_UNUSED, bool flag)
 {
-	T(("intrflush(%d) called", flag));
+	T((T_CALLED("intrflush(%d)"), flag));
 
 	/*
 	 * This call does the same thing as the qiflush()/noqiflush()
@@ -426,10 +426,10 @@ int intrflush(WINDOW *win GCC_UNUSED, bool flag)
 		cur_term->Nttyb.c_lflag |= (NOFLSH);
 	AFTER("intrflush");
 	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
-		return ERR;
+		returnCode(ERR);
 	else
-		return OK;
+		returnCode(OK);
 #else
-	return ERR;
+	returnCode(ERR);
 #endif
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                      *
+ * Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                 *
  * All Rights Reserved.                                                       *
  *                                                                            *
  * Permission to use, copy, modify, and distribute this software and its      *
@@ -21,7 +21,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: wresize.c,v 1.4 1996/12/14 21:26:53 tom Exp $")
+MODULE_ID("$Id: wresize.c,v 1.5 1997/02/01 23:22:54 tom Exp $")
 
 /*
  * Reallocate a curses WINDOW struct to either shrink or grow to the specified
@@ -50,7 +50,7 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 	struct ldat *pline = (win->_flags & _SUBWIN) ? win->_parent->_line : 0;
 
 #ifdef TRACE
-	T(("wresize(win=%p, lines=%d, cols=%d) called", win, ToLines, ToCols));
+	T((T_CALLED("wresize(%p,%d,%d)"), win, ToLines, ToCols));
 	TR(TRACE_UPDATE, ("...beg (%d, %d), max(%d,%d), reg(%d,%d)",
 		win->_begy, win->_begx,
 		win->_maxy, win->_maxx,
@@ -60,14 +60,14 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 #endif
 
 	if (--ToLines < 0 || --ToCols < 0)
-		return ERR;
+		returnCode(ERR);
 
 	size_x = win->_maxx;
 	size_y = win->_maxy;
 
 	if (ToLines == size_y
 	 && ToCols  == size_x)
-		return OK;
+		returnCode(OK);
 
 	/*
 	 * If the number of lines has changed, adjust the size of the overall
@@ -81,7 +81,7 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 
 		win->_line = ld_ALLOC(win->_line, ToLines+1);
 		if (win->_line == 0)
-			return ERR;
+			returnCode(ERR);
 
 		for (row = size_y+1; row <= ToLines; row++) {
 			win->_line[row].text      = 0;
@@ -109,7 +109,7 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 			if (! (win->_flags & _SUBWIN)) {
 				win->_line[row].text = s = c_ALLOC(s, ToCols+1);
 				if (win->_line[row].text == 0)
-					return ERR;
+					returnCode(ERR);
 			} else if (s == 0) {
 				win->_line[row].text = s =
 	    			&pline[win->_begy + row].text[win->_begx];
@@ -155,5 +155,5 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 	if (_nc_tracing & TRACE_UPDATE)
 		_tracedump("...after:", win);
 #endif
-	return OK;
+	returnCode(OK);
 }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                      *
+ * Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                 *
  * All Rights Reserved.                                                       *
  *                                                                            *
  * Permission to use, copy, modify, and distribute this software and its      *
@@ -29,7 +29,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: resizeterm.c,v 1.2 1996/12/08 01:16:46 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.3 1997/02/02 01:03:06 tom Exp $")
 
 /*
  * This function reallocates NCURSES window structures.  It is invoked in
@@ -45,9 +45,10 @@ resizeterm(int ToLines, int ToCols)
 	int stolen = screen_lines - SP->_lines_avail;
 	int bottom = screen_lines + SP->_topstolen - stolen;
 
-#ifdef TRACE
-	T(("resizeterm called (%d,%d) to (%d,%d)", screen_lines, screen_columns, ToLines, ToCols));
-#endif
+	T((T_CALLED("resizeterm(%d,%d) old(%d,%d)"),
+		ToLines, ToCols,
+		screen_lines, screen_columns));
+
 	if (ToLines != screen_lines
 	 || ToCols  != screen_columns) {
 		WINDOWLIST *wp;
@@ -78,7 +79,7 @@ resizeterm(int ToLines, int ToCols)
 			 	myCols = ToCols;
 
 			if (wresize(win, myLines, myCols) != OK)
-				return ERR;
+				returnCode(ERR);
 		}
 
 		screen_lines   = lines    = ToLines;
@@ -94,5 +95,5 @@ resizeterm(int ToLines, int ToCols)
 	LINES = ToLines - stolen;
 	COLS  = ToCols;
 
-	return OK;
+	returnCode(OK);
 }

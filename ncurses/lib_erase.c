@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_erase.c,v 1.6 1996/07/21 00:15:35 tom Exp $")
+MODULE_ID("$Id: lib_erase.c,v 1.7 1997/02/01 23:18:18 tom Exp $")
 
 int  werase(WINDOW	*win)
 {
@@ -37,7 +37,7 @@ int	y;
 chtype	*sp, *end, *start, *maxx = NULL;
 short	minx;
 
-	T(("werase(%p) called", win));
+	T((T_CALLED("werase(%p)"), win));
 
 	for (y = 0; y <= win->_maxy; y++) {
 		minx = _NOCHANGE;
@@ -64,5 +64,5 @@ short	minx;
 	win->_curx = win->_cury = 0;
 	win->_flags &= ~_WRAPPED;
 	_nc_synchook(win);
-	return OK;
+	returnCode(OK);
 }

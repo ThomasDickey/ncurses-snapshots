@@ -1,6 +1,18 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970201
+	+ add/modify traces for called/return values to simplify extraction
+	  for test scripts.
+	+ changed _nc_visbuf to quote its result, and to dynamically allocate
+	  the returned buffer.
+	+ invoke ldconfig after installing shared library
+	+ modify install so that overwrite applies to shared library -lcurses
+	  in preference to static library (reported by Zeyd 960928).
+	+ correct missing ';' in 961221 mod to overwrite option use of $(LN_S).
+	+ fixes to allow "make install" to work without first doing a "make
+	  all" (suggested by Larry Virden).
+
 970125
 	+ correct order of #ifdef for TABS_OK.
 	+ instrumented toe.c to test memory-leaks.
@@ -39,7 +51,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	+ add a missing wclear() to test/testcurs.c (patch by Jeremy Buhler
 	  <jbuhler@cs.washington.edu>)
 	+ modify headers to accommodate compilers that don't allow duplicate
-	  "#define" lines for NCURSES_VERSION (reported by Larry W.  Virden
+	  "#define" lines for NCURSES_VERSION (reported by Larry W. Virden
 	  <lvirden@cas.org>)
 	+ fix formatting glitch in curs_getch.3x (patch by Jesse Thilo).
 	+ modify lib_doupdate to make el, el1 and ed optimization use the

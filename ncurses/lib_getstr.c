@@ -30,7 +30,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_getstr.c,v 1.10 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_getstr.c,v 1.11 1997/02/01 23:22:54 tom Exp $")
 
 /*
  * This wipes out the last character, no matter whether it was a tab, control
@@ -67,7 +67,7 @@ char	*oldstr;
 int ch;
 int	y, x;
 
-	T(("wgetnstr(%p,%p, %d) called", win, str, maxlen));
+	T((T_CALLED("wgetnstr(%p,%p, %d)"), win, str, maxlen));
 
 	GET_TTY(cur_term->Filedes, &buf);
 
@@ -154,9 +154,9 @@ int	y, x;
 
 	*str = '\0';
 	if (ch == ERR)
-		return ERR;
+		returnCode(ERR);
 
-	T(("wgetnstr returns \"%s\"", _nc_visbuf(oldstr)));
+	T(("wgetnstr returns %s", _nc_visbuf(oldstr)));
 
-	return(OK);
+	returnCode(OK);
 }
