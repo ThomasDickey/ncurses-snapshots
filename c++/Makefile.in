@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.20 1997/05/04 21:15:38 tom Exp $
+# $Id: Makefile.in,v 1.22 1997/05/18 00:09:06 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -48,6 +48,8 @@ CFLAGS_SHARED	= $(CCFLAGS) @CC_SHARED_OPTS@
 
 CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
+ABI_VERSION	= @nc_cv_abi_version@
+
 LINK		= $(CXX)
 LDFLAGS		= -L../lib \
 	-lmenu@DFT_ARG_SUFFIX@ \
@@ -55,6 +57,13 @@ LDFLAGS		= -L../lib \
 	-lncurses@DFT_ARG_SUFFIX@ \
 	@LDFLAGS@ \
 	@LD_MODEL@ @LIBS@ @EXTRA_LIBS@ @LOCAL_LDFLAGS@ $(CXXLIBS)
+
+LDFLAGS_NORMAL	= $(LDFLAGS)
+LDFLAGS_DEBUG	= $(LDFLAGS) @CC_G_OPT@
+LDFLAGS_PROFILE	= $(LDFLAGS) -pg
+LDFLAGS_SHARED	= $(LDFLAGS) @CC_SHARED_OPTS@ @LD_SHARED_OPTS@
+
+LDFLAGS_DEFAULT	= $(LDFLAGS_@DFT_UPR_MODEL@)
 
 all: demo
 
@@ -68,7 +77,7 @@ demo:	$(OBJS_DEMO) \
 	../lib/libmenu@DFT_DEP_SUFFIX@ \
 	../lib/libpanel@DFT_DEP_SUFFIX@ \
 	../lib/libncurses@DFT_DEP_SUFFIX@
-	@ECHO_LINK@ $(LINK) -o $@ $(OBJS_DEMO) $(LDFLAGS)
+	@ECHO_LINK@ $(LINK) -o $@ $(OBJS_DEMO) $(LDFLAGS_DEFAULT)
 
 install:
 install.libs:

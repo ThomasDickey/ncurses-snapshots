@@ -61,8 +61,12 @@
      * (PC-clone boxes only) Support for access to the IBM PC ROM
        characters 0-32 through the highlight A_ALTCHARSET.
      * Support for mouse event reporting under xterm.
+     * Extended mouse support via Alessandro Rubini's gpm package.
      * The function wresize() allows you to resize windows, preserving
        their data.
+     * The function use_default_colors() allows you to use the terminal's
+       default colors for the default color pair, achieving the effect of
+       transparent colors.
      * Better cursor-movement optimization. The package now features a
        cursor-local-movement computation more efficient than either BSD's
        or System V's.
@@ -175,7 +179,7 @@ Who's Who and What's What
    Unfortunately, he can only work on the package part time. As a result,
    since 1.8.1, much of the enhancement work and documentation has been
    done by [8]Eric S. Raymond. The current primary maintainers are
-   [9]Thomas Dickey and [10]Juergen Pfeifer.
+   [9]Thomas Dickey and [10]Jürgen Pfeifer.
    
    There is an ncurses mailing list. It is a majordomo list; to join,
    write to ncurses-request@mailgate.bsdi.com with a message containing
@@ -191,7 +195,6 @@ Who's Who and What's What
    
 Future Plans
 
-     * Extended mouse support via Alessandro Rubini's gpm package.
      * Extended-level XPG4 conformance, with internationalization
        support.
      * Ports to more systems, including DOS and Windows.

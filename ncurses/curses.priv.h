@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.61 1997/04/26 20:54:54 tom Exp $
+ * $Id: curses.priv.h,v 1.62 1997/05/17 21:46:58 tom Exp $
  *
  *	curses.priv.h
  *
@@ -484,7 +484,7 @@ extern void _nc_get_screensize(void);
 extern void _nc_hash_map(void);
 extern void _nc_outstr(const char *str);
 extern void _nc_scroll_optimize(void);
-extern void _nc_scroll_window(WINDOW *, int const, short const, short const);
+extern void _nc_scroll_window(WINDOW *, int const, short const, short const, chtype);
 extern void _nc_set_buffer(FILE *ofp, bool buffered);
 extern void _nc_signal_handler(bool);
 extern void _nc_synchook(WINDOW *win);
