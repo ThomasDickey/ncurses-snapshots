@@ -81,28 +81,17 @@ libform-routines	= \
 			fty_regex
 
 libncurses-routines	= \
-			access \
-			alloc_entry \
-			captoinfo \
 			codes \
 			comp_captab \
-			comp_error \
-			comp_expand \
-			comp_hash \
-			comp_parse \
-			comp_scan \
 			define_key \
-			doalloc \
 			expanded \
 			fallback \
 			hardscroll \
 			hashmap \
 			keyok \
-			lib_acs \
 			lib_adabind \
 			lib_addch \
 			lib_addstr \
-			lib_baudrate \
 			lib_beep \
 			lib_bkgd \
 			lib_box \
@@ -113,8 +102,6 @@ libncurses-routines	= \
 			lib_clreol \
 			lib_color \
 			lib_colorset \
-			lib_cur_term \
-			lib_data \
 			lib_delch \
 			lib_delwin \
 			lib_dft_fgbg \
@@ -136,34 +123,26 @@ libncurses-routines	= \
 			lib_insstr \
 			lib_instr \
 			lib_isendwin \
-			lib_kernel \
 			lib_keyname \
 			lib_leaveok \
-			lib_longname \
 			lib_mouse \
 			lib_move \
 			lib_mvcur \
 			lib_mvwin \
-			lib_napms \
 			lib_newterm \
 			lib_newwin \
 			lib_nl \
-			lib_options \
 			lib_overlay \
 			lib_pad \
-			lib_print \
 			lib_printw \
-			lib_raw \
 			lib_redrawln \
 			lib_refresh \
-			lib_restart \
 			lib_scanw \
 			lib_screen \
 			lib_scroll \
 			lib_scrollok \
 			lib_scrreg \
 			lib_set_term \
-			lib_setup \
 			lib_slk \
 			lib_slkatr_set \
 			lib_slkatrof \
@@ -177,37 +156,67 @@ libncurses-routines	= \
 			lib_slkrefr \
 			lib_slkset \
 			lib_slktouch \
-			lib_termcap \
-			lib_ti \
 			lib_touch \
-			lib_tparm \
-			lib_tputs \
-			lib_trace \
-			lib_traceatr \
-			lib_tracechr \
-			lib_tracedmp \
-			lib_tracemse \
 			lib_tstp \
-			lib_twait \
 			lib_ungetch \
 			lib_vidattr \
 			lib_vline \
 			lib_wattroff \
 			lib_wattron \
 			lib_window \
-			name_match \
+			memmove \
 			names \
 			nc_panel \
-			parse_entry \
-			read_entry \
-			read_termcap \
 			resizeterm \
 			safe_sprintf \
-			trace_buf \
+			sigaction \
+			tinfo/access \
+			tinfo/add_tries \
+			tinfo/alloc_entry \
+			tinfo/captoinfo \
+			tinfo/comp_error \
+			tinfo/comp_expand \
+			tinfo/comp_hash \
+			tinfo/comp_parse \
+			tinfo/comp_scan \
+			tinfo/doalloc \
+			tinfo/getenv_num \
+			tinfo/home_terminfo \
+			tinfo/lib_acs \
+			tinfo/lib_baudrate \
+			tinfo/lib_cur_term \
+			tinfo/lib_data \
+			tinfo/lib_kernel \
+			tinfo/lib_longname \
+			tinfo/lib_napms \
+			tinfo/lib_options \
+			tinfo/lib_print \
+			tinfo/lib_raw \
+			tinfo/lib_restart \
+			tinfo/lib_setup \
+			tinfo/lib_termcap \
+			tinfo/lib_ti \
+			tinfo/lib_tparm \
+			tinfo/lib_tputs \
+			tinfo/lib_twait \
+			tinfo/make_keys \
+			tinfo/name_match \
+			tinfo/parse_entry \
+			tinfo/read_entry \
+			tinfo/read_termcap \
+			tinfo/setbuf \
+			tinfo/write_entry \
+			trace/lib_trace \
+			trace/lib_traceatr \
+			trace/lib_tracebits \
+			trace/lib_tracechr \
+			trace/lib_tracedmp \
+			trace/lib_tracemse \
+			trace/trace_buf \
 			tries \
 			unctrl \
-			wresize \
-			write_entry
+			vsscanf \
+			wresize
 
 libmenu-routines	= \
 			m_adabind \

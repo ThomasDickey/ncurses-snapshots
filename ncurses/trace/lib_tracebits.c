@@ -31,25 +31,10 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-
-/*
- *	raw.c
- *
- *	Routines:
- *		raw()
- *		cbreak()
- *		noraw()
- *		nocbreak()
- *		qiflush()
- *		noqiflush()
- *		intrflush()
- *
- */
-
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_raw.c,v 1.26 1998/04/11 23:00:07 tom Exp $")
+MODULE_ID("$Id: lib_tracebits.c,v 1.1 1998/11/08 00:20:32 tom Exp $")
 
 #if defined(SVR4_TERMIO) && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
@@ -71,8 +56,6 @@ MODULE_ID("$Id: lib_raw.c,v 1.26 1998/04/11 23:00:07 tom Exp $")
 #ifndef IEXTEN
 #define IEXTEN 0
 #endif
-
-#define COOKED_INPUT	(IXON|BRKINT|PARMRK)
 
 #ifdef TRACE
 
@@ -96,7 +79,7 @@ static void lookup_bits(char *buf, const BITNAMES *table, const char *label, uns
 	(void) strcat(buf,"} ");
 }
 
-char *_tracebits(void)
+char *_nc_tracebits(void)
 /* describe the state of the terminal control bits exactly */
 {
 char	*buf;
@@ -229,168 +212,6 @@ cflags[] =
 #endif
     return(buf);
 }
-
-#define BEFORE(N)	if (_nc_tracing&TRACE_BITS) _tracef("%s before bits: %s", N, _tracebits())
-#define AFTER(N)	if (_nc_tracing&TRACE_BITS) _tracef("%s after bits: %s", N, _tracebits())
 #else
-#define BEFORE(s)
-#define AFTER(s)
+char *_nc_tracebits(void) { return ""; }
 #endif /* TRACE */
-
-int raw(void)
-{
-	T((T_CALLED("raw()")));
-	if (SP != 0 && cur_term != 0) {
-
-		SP->_raw = TRUE;
-		SP->_cbreak = TRUE;
-
-#ifdef __EMX__
-		setmode(SP->_ifd, O_BINARY);
-#endif
-
-#ifdef TERMIOS
-		BEFORE("raw");
-		cur_term->Nttyb.c_lflag &= ~(ICANON|ISIG);
-		cur_term->Nttyb.c_iflag &= ~(COOKED_INPUT);
-		cur_term->Nttyb.c_cc[VMIN] = 1;
-		cur_term->Nttyb.c_cc[VTIME] = 0;
-		AFTER("raw");
-#else
-		cur_term->Nttyb.sg_flags |= RAW;
-#endif
-		returnCode(_nc_set_curterm(&cur_term->Nttyb));
-	}
-	returnCode(ERR);
-}
-
-int cbreak(void)
-{
-	T((T_CALLED("cbreak()")));
-
-	SP->_cbreak = TRUE;
-
-#ifdef __EMX__
-	setmode(SP->_ifd, O_BINARY);
-#endif
-
-#ifdef TERMIOS
-	BEFORE("cbreak");
-	cur_term->Nttyb.c_lflag &= ~ICANON;
-	cur_term->Nttyb.c_iflag &= ~ICRNL;
-	cur_term->Nttyb.c_lflag |= ISIG;
-	cur_term->Nttyb.c_cc[VMIN] = 1;
-	cur_term->Nttyb.c_cc[VTIME] = 0;
-	AFTER("cbreak");
-#else
-	cur_term->Nttyb.sg_flags |= CBREAK;
-#endif
-	returnCode(_nc_set_curterm( &cur_term->Nttyb));
-}
-
-void qiflush(void)
-{
-	T((T_CALLED("qiflush()")));
-
-	/*
-	 * Note: this implementation may be wrong.  See the comment under
-	 * intrflush().
-	 */
-
-#ifdef TERMIOS
-	BEFORE("qiflush");
-	cur_term->Nttyb.c_lflag &= ~(NOFLSH);
-	AFTER("qiflush");
-	(void)_nc_set_curterm( &cur_term->Nttyb);
-	returnVoid;
-#endif
-}
-
-
-int noraw(void)
-{
-	T((T_CALLED("noraw()")));
-
-	SP->_raw = FALSE;
-	SP->_cbreak = FALSE;
-
-#ifdef __EMX__
-	setmode(SP->_ifd, O_TEXT);
-#endif
-
-#ifdef TERMIOS
-	BEFORE("noraw");
-	cur_term->Nttyb.c_lflag |= ISIG|ICANON;
-	cur_term->Nttyb.c_iflag |= COOKED_INPUT;
-	AFTER("noraw");
-#else
-	cur_term->Nttyb.sg_flags &= ~(RAW|CBREAK);
-#endif
-	returnCode(_nc_set_curterm( &cur_term->Nttyb));
-}
-
-
-int nocbreak(void)
-{
-	T((T_CALLED("nocbreak()")));
-
-	SP->_cbreak = FALSE;
-
-#ifdef __EMX__
-	setmode(SP->_ifd, O_TEXT);
-#endif
-
-#ifdef TERMIOS
-	BEFORE("nocbreak");
-	cur_term->Nttyb.c_lflag |= ICANON;
-	cur_term->Nttyb.c_iflag |= ICRNL;
-	AFTER("nocbreak");
-#else
-	cur_term->Nttyb.sg_flags &= ~CBREAK;
-#endif
-	returnCode(_nc_set_curterm( &cur_term->Nttyb));
-}
-
-void noqiflush(void)
-{
-	T((T_CALLED("noqiflush()")));
-
-	/*
-	 * Note: this implementation may be wrong.  See the comment under
-	 * intrflush().
-	 */
-
-#ifdef TERMIOS
-	BEFORE("noqiflush");
-	cur_term->Nttyb.c_lflag |= NOFLSH;
-	AFTER("noqiflush");
-	(void)_nc_set_curterm( &cur_term->Nttyb);
-	returnVoid;
-#endif
-}
-
-int intrflush(WINDOW *win GCC_UNUSED, bool flag)
-{
-	T((T_CALLED("intrflush(%d)"), flag));
-
-	/*
-	 * This call does the same thing as the qiflush()/noqiflush()
-	 * pair.  We know for certain that SVr3 intrflush() tweaks the
-	 * NOFLSH bit; on the other hand, the match (in the SVr4 man
-	 * pages) between the language describing NOFLSH in termio(7)
-	 * and the language describing qiflush()/noqiflush() in
-	 * curs_inopts(3x) is too exact to be coincidence.
-	 */
-
-#ifdef TERMIOS
-	BEFORE("intrflush");
-	if (flag)
-		cur_term->Nttyb.c_lflag &= ~(NOFLSH);
-	else
-		cur_term->Nttyb.c_lflag |= (NOFLSH);
-	AFTER("intrflush");
-	returnCode(_nc_set_curterm( &cur_term->Nttyb));
-#else
-	returnCode(ERR);
-#endif
-}
