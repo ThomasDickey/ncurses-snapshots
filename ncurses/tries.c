@@ -27,9 +27,10 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: tries.c,v 1.5 1997/10/26 21:55:15 tom Exp $")
+MODULE_ID("$Id: tries.c,v 1.6 1997/12/28 00:15:04 tom Exp $")
 
 #define SET_TRY(dst,src) if ((dst->ch = *src++) == 128) dst->ch = '\0'
+#define CMP_TRY(a,b) ((a)? (a == b) : (b == 128))
 
 void _nc_add_to_try(struct tries **tree, char *str, unsigned short code)
 {
@@ -37,7 +38,7 @@ void _nc_add_to_try(struct tries **tree, char *str, unsigned short code)
 	struct tries    *ptr, *savedptr;
 	unsigned char	*txt = (unsigned char *)str;
 
-	if (txt == 0 || out_of_memory || code == 0)
+	if (txt == 0 || *txt == '\0' || out_of_memory || code == 0)
 		return;
 
 	if ((*tree) != 0) {
@@ -46,11 +47,11 @@ void _nc_add_to_try(struct tries **tree, char *str, unsigned short code)
 		for (;;) {
 			unsigned char cmp = *txt;
 
-			while (ptr->ch != cmp
+			while (!CMP_TRY(ptr->ch, cmp)
 			       &&  ptr->sibling != 0)
 				ptr = ptr->sibling;
 	
-			if (ptr->ch == cmp) {
+			if (CMP_TRY(ptr->ch, cmp)) {
 				if (*(++txt) == '\0') {
 					ptr->value = code;
 					return;

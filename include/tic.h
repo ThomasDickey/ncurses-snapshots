@@ -28,6 +28,10 @@
 #ifndef __TIC_H
 #define __TIC_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <curses.h>	/* for the _tracef() prototype, ERR/OK, bool defs */
 
 /*
@@ -212,5 +216,9 @@ extern const char *_nc_tic_dir(const char *);
 
 /* write_entry.c */
 extern int _nc_tic_written(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __TIC_H */

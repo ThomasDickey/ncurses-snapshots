@@ -26,7 +26,7 @@
 #include <time.h>
 #include <term.h>	/* exit_ca_mode, non_rev_rmcup */
 
-MODULE_ID("$Id: lib_screen.c,v 1.9 1997/10/18 19:22:52 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.10 1997/12/27 19:48:58 tom Exp $")
 
 static time_t	dumptime;
 
@@ -117,7 +117,7 @@ int scr_restore(const char *file)
 
 	T((T_CALLED("scr_restore(%s)"), _nc_visbuf(file)));
 
-	if ((fp = fopen(file, "r")) == 0)
+	if ((fp = fopen(file, "rb")) == 0)
 	    returnCode(ERR);
 	else
 	{
@@ -134,7 +134,7 @@ int scr_dump(const char *file)
 
 	T((T_CALLED("scr_dump(%s)"), _nc_visbuf(file)));
 
-	if ((fp = fopen(file, "w")) == 0)
+	if ((fp = fopen(file, "wb")) == 0)
 	    returnCode(ERR);
 	else
 	{
@@ -157,7 +157,7 @@ int scr_init(const char *file)
 	    returnCode(ERR);
 #endif /* exit_ca_mode */
 
-	if ((fp = fopen(file, "r")) == 0)
+	if ((fp = fopen(file, "rb")) == 0)
 	    returnCode(ERR);
 	else if (fstat(STDOUT_FILENO, &stb) || stb.st_mtime > dumptime)
 	    returnCode(ERR);

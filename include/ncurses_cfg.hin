@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 1995 by Thomas E. Dickey <dickey@clark.net>                      *
+ * Copyright 1997 by Thomas E. Dickey <dickey@clark.net>                      *
  * All Rights Reserved.                                                       *
  *                                                                            *
  * Permission to use, copy, modify, and distribute this software and its      *
@@ -18,9 +18,27 @@
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
  ******************************************************************************/
 /*
+ * $Id: ncurses_cfg.hin,v 1.1 1997/12/24 12:26:32 tom Exp $
+ *
  * This is a template-file used to generate the "ncurses_cfg.h" file.
  *
  * Rather than list every definition, the configuration script substitutes
- * the definitions that it finds using 'sed'.
+ * the definitions that it finds using 'sed'.  You need a patch (971222)
+ * to autoconf 2.12 to do this.
  */
+#ifndef NC_CONFIG_H
+#define NC_CONFIG_H
 @DEFS@
+
+	/* The C compiler may not treat these properly but C++ has to */
+#ifdef __cplusplus
+#undef const
+#undef inline
+#else
+#if defined(lint) || defined(TRACE)
+#undef inline
+#define inline /* nothing */
+#endif
+#endif
+
+#endif /* NC_CONFIG_H */

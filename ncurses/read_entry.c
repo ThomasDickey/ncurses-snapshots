@@ -36,7 +36,11 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.33 1997/07/06 00:23:35 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.34 1997/12/27 21:24:43 tom Exp $")
+
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
 
 /*
  *	int
@@ -82,7 +86,7 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
     int		i, fd, numread;
     char	buf[MAX_ENTRY_SIZE];
 
-    if ((fd = open(filename, O_RDONLY)) < 0)
+    if ((fd = open(filename, O_RDONLY|O_BINARY)) < 0)
 	return(0);
 
     T(("read terminfo %s", filename));

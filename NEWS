@@ -1,7 +1,22 @@
--- $Id: NEWS,v 1.289 1997/12/20 22:08:44 tom Exp $
+-- $Id: NEWS,v 1.291 1997/12/28 00:33:27 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+971227
+	+ modify open/fopen calls to use binary mode, needed for EMX.
+	+ modify configure script to work with autoconf 2.10 mods for OS/2
+	  EMX from Juan Jose Garcia Ripoll.
+	+ generated ncurses_cfg.h with patch (971222) to autoconf 2.12 which
+	  bypasses limited sed buffer length.
+	> several changes from Juan Jose Garcia Ripoll <worm@arrakis.es> to
+	  support OS/2 EMX:
+	+ add a _scrolling flag to SP, to set when we encounter a terminal
+	  that simply cannot scroll.
+	+ corrected logic in _nc_add_to_try(), by ensuring that strings with
+	  embedded \200 characters are matched.
+	+ don't assume the host has 'link()' function, for linking terminfo
+	  entries.
 
 971220
 	+ if there's no ioctl's to support sigwinch handler, disable it.

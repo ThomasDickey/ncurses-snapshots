@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.95 1997/12/20 22:37:37 tom Exp $
+ * $Id: curses.priv.h,v 1.96 1997/12/27 23:41:30 tom Exp $
  *
  *	curses.priv.h
  *
@@ -275,6 +275,7 @@ struct screen {
 	int             _carriage_return_length;
 	int             _cursor_home_length;
 	int             _cursor_to_ll_length;
+	int             _scrolling;     /* 1 if terminal's smart enough to  */
 
 	/* used in lib_color.c */
 	color_t         *_color_table;  /* screen's color palette            */
