@@ -114,6 +114,7 @@ main(
     int mdx, mdy;
     int sdx, sdy;
     int ch;
+    int lastbeep = -1;
     time_t tim;
     struct tm *t;
     char szChar[10];
@@ -197,8 +198,11 @@ main(
 
 	mvaddstr(LINES - 2, 0, ctime(&tim));
 	refresh();
-	if ((t->tm_sec % 5) == 0)
+	if ((t->tm_sec % 5) == 0
+	 && t->tm_sec != lastbeep) {
+	    lastbeep = t->tm_sec;
 	    beep();
+	}
 
 	if ((ch = getch()) != ERR) {
 #ifdef KEY_RESIZE

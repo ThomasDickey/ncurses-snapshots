@@ -73,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.115 1999/10/10 00:32:26 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.117 1999/10/22 23:28:46 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -118,8 +118,8 @@ static void position_check(int expected_y, int expected_x, char *legend)
 	return;
 
     memset(buf, '\0', sizeof(buf));
-    fputs("\033[6n", SP->_ofp);	/* only works on ANSI-compatibles */
-    fflush(SP->_ofp);
+    putp("\033[6n");	/* only works on ANSI-compatibles */
+    _nc_flush();
     (void) read(0, buf, sizeof(buf)-1);
     _tracef("probe returned %s", _nc_visbuf(buf));
 
@@ -187,10 +187,14 @@ static inline void PutAttrChar(chtype ch)
 			  _tracechtype(ch),
 			   SP->_cursrow, SP->_curscol));
 	UpdateAttrs(ch);
-	putc((int)TextOf(ch), SP->_ofp);
+	if (SP->_cleanup) {
+		_nc_outch((int)TextOf(ch));
+	} else {
+		putc((int)TextOf(ch), SP->_ofp); /* macro's fastest... */
 #ifdef TRACE
-	_nc_outchars++;
+		_nc_outchars++;
 #endif /* TRACE */
+	}
 	SP->_curscol++;
 	if (char_padding) {
 		TPUTS_TRACE("char_padding");
@@ -252,7 +256,7 @@ static bool check_pending(void)
 	}
 	if (have_pending) {
 		SP->_fifohold = 5;
-		fflush(SP->_ofp);
+		_nc_flush();
 	}
 	return FALSE;
 }
@@ -777,7 +781,7 @@ struct tms before, after;
 	 */
 	UpdateAttrs(A_NORMAL);
 
-	fflush(SP->_ofp);
+	_nc_flush();
 	curscr->_attrs = newscr->_attrs;
 /*	curscr->_bkgd  = newscr->_bkgd; */
 
@@ -1353,14 +1357,8 @@ static void DelChar(int count)
 
 void _nc_outstr(const char *str)
 {
-    FILE *ofp = SP ? SP->_ofp : stdout;
-
-    (void) fputs(str, ofp);
-    (void) fflush(ofp);
-
-#ifdef TRACE
-    _nc_outchars += strlen(str);
-#endif /* TRACE */
+    (void) putp(str);
+    _nc_flush();
 }
 
 /*

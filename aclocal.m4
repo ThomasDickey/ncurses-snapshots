@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.176 1999/10/02 20:19:43 tom Exp $
+dnl $Id: aclocal.m4,v 1.179 1999/10/23 21:49:25 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -659,7 +659,7 @@ if test $ac_cv_prog_gxx = yes; then
 	AC_TRY_LINK([
 #include <$cf_gpp_libname/builtin.h>
 	],
-	[float foo=abs(1.0);
+	[//float foo=abs(1.0);
 	 two_arg_error_handler_t foo2 = lib_error_handler],
 	[cf_cxx_library=yes
 	 CXXLIBS="$CXXLIBS -l$cf_gpp_libname -lm"
@@ -671,7 +671,7 @@ if test $ac_cv_prog_gxx = yes; then
 	[AC_TRY_LINK([
 #include <builtin.h>
 	],
-	[float foo=abs(1.0);
+	[//float foo=abs(1.0);
 	 two_arg_error_handler_t foo2 = lib_error_handler],
 	[cf_cxx_library=yes
 	 CXXLIBS="$CXXLIBS -l$cf_gpp_libname -lm"
@@ -1607,6 +1607,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 	openbsd*|freebsd*)
 		CC_SHARED_OPTS='-fpic -DPIC'
 		MK_SHARED_LIB='$(LD) -Bshareable -o $[@]'
+		test $cf_cv_shlib_version = auto && cf_cv_shlib_version=rel
 		;;
 	netbsd*)
 		CC_SHARED_OPTS='-fpic -DPIC'
@@ -1643,9 +1644,9 @@ AC_DEFUN([CF_SHARED_OPTS],
 	sco3.2v5*)  # (also uw2* and UW7) hops 13-Apr-98
 		# tested with osr5.0.5
 		if test $ac_cv_prog_gcc = yes; then
-			CC_SHARED_OPTS='-melf -fpic'
+			CC_SHARED_OPTS='-fpic'
 		else
-			CC_SHARED_OPTS='-KPIC'
+			CC_SHARED_OPTS='-belf -KPIC'
 		fi
 		MK_SHARED_LIB='$(LD) -dy -G -h `basename [$]@.$(ABI_VERSION)` -o [$]@'
 		if test $cf_cv_ld_rpath = yes ; then
