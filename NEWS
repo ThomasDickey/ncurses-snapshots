@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.617 2001/02/24 22:20:34 tom Exp $
+-- $Id: NEWS,v 1.618 2001/03/03 23:13:29 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010303
+	+ modify interface of _nc_get_token() to pass 'silent' parameter to it,
+	  to make quieter loading of /etc/termcap (patch by Todd C Miller).
+	+ correct a few typos in curs_slk.3x and curs_outopts.3x manpages
+	  (patch by Todd C Miller).
 
 20010224
 	+ compiler-warning fixes (reported by Nelson Beebe).
