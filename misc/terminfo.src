@@ -1,9 +1,11 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
 # This version of terminfo.src is distributed with ncurses.
+# Report bugs to
+#	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 1999/12/05 01:28:27 $
+#	$Date: 1999/12/12 02:06:06 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2484,6 +2486,17 @@ color_xterm|cx|cx100|color_xterm color terminal emulator for X,
 nxterm|xterm-color|generic color xterm, 
 	ncv@, 
 	op=\E[m, use=xterm-r6, use=klone+color, 
+
+# this describes the alpha-version of Gnome terminal shipped with Redhat 6.0
+gnome|Gnome terminal, 
+	bce, 
+	kdch1=\177, kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, use=xterm-color, 
+
+# This is kvt 0-18.7, shipped with Redhat 6.0 (though whether it supports bce
+# or not is debatable).
+kvt|KDE terminal, 
+	bce, km@, 
+	kdch1=\177, kend=\E[F, khome=\E[H, use=xterm-color, 
 
 # From: Thomas Dickey <dickey@clark.net> 04 Oct 1997
 # Updated: Oezguer Kesim <kesim@math.fu-berlin.de> 02 Nov 1997
@@ -8695,7 +8708,8 @@ regent|Adds Regent Series,
 # down shift key it gets confused, so we avoid escape.
 regent100|Adds Regent 100, 
 	xmc#1, 
-	bel=^G, cup=\013%p1%{32}%+%c%p2%p2%{6}%*%+\020%c, 
+	bel=^G, 
+	cup=\013%p1%' '%+%c\020%p2%{10}%/%{16}%*%p2%{10}%m%+%c, 
 	kf0=^B1\r, kf1=^B2\r, kf2=^B3\r, kf3=^B4\r, kf4=^B5\r, 
 	kf5=^B6\r, kf6=^B7\r, kf7=^B8\r, lf0=F1, lf1=F2, lf2=F3, 
 	lf3=F4, lf4=F5, lf5=F6, lf6=F7, lf7=F8, rmso=\E0@, rmul=\E0@, 
@@ -17428,6 +17442,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 1999/12/4
 #	* add "obsolete" termcap strings -TD
+#	* add kvt and gnome entries -TD
+#
+# 1999/12/11
+#	* correct cup string for regent100 -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
