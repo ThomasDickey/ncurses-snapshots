@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.200 2001/07/08 00:37:57 tom Exp $
+ * $Id: curses.priv.h,v 1.201 2001/07/14 23:44:23 tom Exp $
  *
  *	curses.priv.h
  *
@@ -560,7 +560,7 @@ typedef	struct {
 #define CharOf(c)	ChCharOf(c)
 #define AttrOf(c)	ChAttrOf(c)
 #define AddAttr(c,a)	c |= a
-#define RemAttr(c,a)	c &= ~(a)
+#define RemAttr(c,a)	c &= ~(a & A_ATTRIBUTES)
 #define SetAttr(c,a)	c = (c & ~A_ATTRIBUTES) | a
 #define NewChar(ch)	(ch)
 #define NewChar2(c,a)	(c | a)

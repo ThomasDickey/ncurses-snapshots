@@ -25,7 +25,7 @@
 #include "internal.h"
 #include "cursesw.h"
 
-MODULE_ID("$Id: cursesw.cc,v 1.22 2001/06/09 20:51:59 tom Exp $")
+MODULE_ID("$Id: cursesw.cc,v 1.23 2001/07/15 01:18:34 tom Exp $")
 
 #define COLORS_NEED_INITIALIZATION  -1
 #define COLORS_NOT_INITIALIZED       0
@@ -46,14 +46,13 @@ int
 NCursesWindow::scanw(const char* fmt, ...)
 {
     int result = ERR;
-#if defined(__GNUG__)
     char buf[BUFSIZ];
 
     if (::wgetnstr(w, buf, sizeof(buf)) != ERR) {
 	va_list args;
 	va_start(args, fmt);
 #if USE_STDIO_VSCAN
-	if (::vscanf(fmt, args) != -1)
+	if (::vsscanf(buf, fmt, args) != -1)
 	    result = OK;
 #elif USE_STRSTREAM_VSCAN	/* powerpc, os390 */
 	strstreambuf ss(buf, sizeof(buf));
@@ -66,7 +65,6 @@ NCursesWindow::scanw(const char* fmt, ...)
 #endif
 	va_end(args);
     }
-#endif
     return result;
 }
 
@@ -75,7 +73,6 @@ int
 NCursesWindow::scanw(int y, int x, const char* fmt, ...)
 {
     int result = ERR;
-#if defined(__GNUG__)
     char buf[BUFSIZ];
 
     if (::wmove(w, y, x) != ERR) {
@@ -83,7 +80,7 @@ NCursesWindow::scanw(int y, int x, const char* fmt, ...)
 	    va_list args;
 	    va_start(args, fmt);
 #if USE_STDIO_VSCAN
-	    if (::vscanf(fmt, args) != -1)
+	    if (::vsscanf(buf, fmt, args) != -1)
 		result = OK;
 #elif USE_STRSTREAM_VSCAN	/* powerpc, os390 */
 	    strstreambuf ss(buf, sizeof(buf));
@@ -97,7 +94,6 @@ NCursesWindow::scanw(int y, int x, const char* fmt, ...)
 	    va_end(args);
 	}
     }
-#endif
     return result;
 }
 

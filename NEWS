@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.636 2001/07/08 01:00:50 tom Exp $
+-- $Id: NEWS,v 1.637 2001/07/15 01:21:58 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010714
+	+ implement a simple example in C++ demo to test scanw().
+	+ corrected stdio function used to implement scanw() in cursesw.cc
+	+ correct definition of RemAttr() macro from 20010602 changes, which
+	  caused C++ SillyDemo to not show line-drawing characters.
+	+ modify C++ binding, adding getKey() which can be overridden by user
+	  to substitute functions other than getch() for keyboard processing
+	  of forms and menus (patch by Juergen Pfeifer).
 
 20010707
 	+ fix some of the trace calls which needed modification to work with
