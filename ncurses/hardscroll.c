@@ -183,7 +183,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hardscroll.c,v 1.22 1997/08/09 12:51:05 tom Exp $")
+MODULE_ID("$Id: hardscroll.c,v 1.23 1997/08/16 15:49:29 tom Exp $")
 
 /* if only this number of lines is carried over, nuke the screen and redraw */
 #define CLEAR_THRESHOLD		3
@@ -386,7 +386,9 @@ main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 {
     char	line[BUFSIZ], *st;
 
+#ifdef TRACE
     _nc_tracing = TRACE_MOVE;
+#endif
     for (;;)
     {
 	int	n;

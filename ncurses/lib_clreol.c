@@ -29,13 +29,13 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_clreol.c,v 1.11 1997/08/02 23:10:08 tom Exp $")
+MODULE_ID("$Id: lib_clreol.c,v 1.12 1997/08/15 21:35:32 Alexander.V.Lukyanov Exp $")
 
 int  wclrtoeol(WINDOW *win)
 {
 chtype	blank = _nc_background(win);
-chtype	*maxx, *ptr, *end;
-short	y, x, minx;
+chtype	*ptr, *end;
+short	y, x;
 
 	T((T_CALLED("wclrtoeol(%p)"), win));
 
@@ -61,25 +61,16 @@ short	y, x, minx;
 		returnCode(ERR);
 
 	end = &win->_line[y].text[win->_maxx];
-	minx = _NOCHANGE;
-	maxx = &win->_line[y].text[x];
 
-	for (ptr = maxx; ptr <= end; ptr++) {
-	    if (*ptr != blank) {
-			maxx = ptr;
-			if (minx == _NOCHANGE)
-			    minx = ptr - win->_line[y].text;
-			*ptr = blank;
-	    }
-	}
+	for (ptr = &win->_line[y].text[x]; ptr <= end; ptr++)
+	    *ptr = blank;
 
-	if (minx != _NOCHANGE) {
-	    if (win->_line[y].firstchar > minx || win->_line[y].firstchar == _NOCHANGE)
-			win->_line[y].firstchar = minx;
+	if (win->_line[y].firstchar > win->_curx
+		|| win->_line[y].firstchar == _NOCHANGE)
+	    win->_line[y].firstchar = win->_curx;
 
-	    if (win->_line[y].lastchar < maxx - win->_line[y].text)
-			win->_line[y].lastchar = maxx - win->_line[y].text;
-	}
+	win->_line[y].lastchar = win->_maxx;
+
 	_nc_synchook(win);
 	returnCode(OK);
 }

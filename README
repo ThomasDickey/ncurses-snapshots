@@ -1,3 +1,5 @@
+-- $Id: README,v 1.15 1997/08/16 14:47:53 tom Exp $
+-------------------------------------------------------------------------------
 		README file for the ncurses package
 
 See the file ANNOUNCE for a summary of ncurses features and ports.
@@ -137,6 +139,9 @@ Juergen Pfeifer
 	panel.
 
 CONTRIBUTORS:
+
+Alexander V. Lukyanov
+	for numerous fixes and improvements to the optimization logic.
 
 David MacKenzie
 	for first-class bug-chasing and methodical testing.

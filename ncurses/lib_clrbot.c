@@ -28,13 +28,13 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_clrbot.c,v 1.10 1997/05/28 09:01:48 J.T.Conklin Exp $")
+MODULE_ID("$Id: lib_clrbot.c,v 1.11 1997/08/14 20:03:38 Alexander.V.Lukyanov Exp $")
 
 int wclrtobot(WINDOW *win)
 {
 chtype	blank = _nc_background(win);
-chtype	*ptr, *end, *maxx = NULL;
-short	y, startx, minx;
+chtype	*ptr, *end;
+short	y, startx;
 
 	T((T_CALLED("wclrtobot(%p)"), win));
 
@@ -43,26 +43,16 @@ short	y, startx, minx;
 	T(("clearing from y = %d to y = %d with maxx =  %d", win->_cury, win->_maxy, win->_maxx));
 
 	for (y = win->_cury; y <= win->_maxy; y++) {
-		minx = _NOCHANGE;
 		end = &win->_line[y].text[win->_maxx];
 
-		for (ptr = &win->_line[y].text[startx]; ptr <= end; ptr++) {
-			if (*ptr != blank) {
-				maxx = ptr;
-				if (minx == _NOCHANGE)
-					minx = ptr - win->_line[y].text;
-				*ptr = blank;
-			}
-		}
+		for (ptr = &win->_line[y].text[startx]; ptr <= end; ptr++)
+			*ptr = blank;
 
-		if (minx != _NOCHANGE) {
-			if (win->_line[y].firstchar > minx
-					||  win->_line[y].firstchar == _NOCHANGE)
-			    win->_line[y].firstchar = minx;
+		if (win->_line[y].firstchar > startx
+			||  win->_line[y].firstchar == _NOCHANGE)
+		    win->_line[y].firstchar = startx;
 
-			if (win->_line[y].lastchar < maxx - win->_line[y].text)
-			    win->_line[y].lastchar = maxx - win->_line[y].text;
-		}
+		win->_line[y].lastchar = win->_maxx;
 
 		startx = 0;
 	}

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.31 1997/08/10 00:29:57 tom Exp $
+# $Id: Makefile.in,v 1.32 1997/08/16 20:01:37 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -66,6 +66,7 @@ TESTS = \
 	blue \
 	bs \
 	firework \
+	firstlast \
 	gdc \
 	hanoi \
 	hashtest \
@@ -88,6 +89,8 @@ blue: $(MODEL)/blue.o $(LOCAL_LIBS)
 bs: $(MODEL)/bs.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
 firework: $(MODEL)/firework.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
+firstlast: $(MODEL)/firstlast.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
 gdc: $(MODEL)/gdc.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)

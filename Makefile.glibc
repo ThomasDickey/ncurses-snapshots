@@ -46,8 +46,9 @@ libform-routines	= fld_def fld_stat fld_type fld_user \
 				fty_ipv4 fty_num fty_regex
 
 libncurses-routines	= alloc_entry captoinfo comp_error comp_hash \
-				comp_parse comp_scan hardscroll \
-				hashmap lib_acs lib_adabind lib_addch \
+				comp_parse comp_scan define_key \
+				hardscroll hashmap keyok lib_acs \
+				lib_adabind lib_addch \
 				lib_addstr lib_baudrate \
 				lib_beep lib_bkgd lib_box lib_clear \
 				lib_clrbot lib_clreol lib_color \
@@ -68,12 +69,12 @@ libncurses-routines	= alloc_entry captoinfo comp_error comp_hash \
 				lib_tparm lib_tputs lib_trace \
 				lib_traceatr lib_tracechr \
 				lib_tracedmp lib_tracemse lib_tstp \
-				lib_twait lib_vidattr \
-				lib_window names parse_entry \
+				lib_twait lib_vidattr lib_window \
+				name_match parse_entry \
 				read_entry read_termcap resizeterm \
-				wresize write_entry \
+				softscroll tries wresize write_entry \
 				codes comp_captab expanded fallback \
-				lib_gen names lib_keyname unctrl
+				lib_gen lib_keyname names unctrl
 
 libmenu-routines	= m_adabind m_attribs m_cursor m_driver \
 				m_format m_global m_hook m_item_cur \
@@ -131,17 +132,37 @@ ifndef inst_mandir
 inst_mandir		= $(install_root)/$(mandir)
 endif
 
-CPPFLAGS += -DTERMINFO='"$(terminfodir)"' -Iinclude -Incurses \
-	-Imenu -Iprogs -Itest -I$(objpfx)
+CPPFLAGS += -DTERMINFO='"$(terminfodir)"' -Iinclude -Iform -Incurses \
+	-Imenu -Ipanel -Iprogs -Itest -I$(objpfx)
+
+LDLIBS-tclock = math/libm
+
+tests: $(test-srcs:%=$(objpfx)%) 
+
+$(objpfx)mvcur.d: ncurses/lib_mvcur.c
+	$(CC) -M $(CFLAGS) $(CPPFLAGS) -DTRACE -DMAIN $? | \
+		sed -e 's/^lib_mvcur.o/mvcur.o/' > $@
 
 $(objpfx)mvcur.o: ncurses/lib_mvcur.c
 	$(CC) -c -o $@ $(CFLAGS) $(CPPFLAGS) -DTRACE -DMAIN $?
 
+$(objpfx)tctest.d: ncurses/captoinfo.c
+	$(CC) -M $(CFLAGS) $(CPPFLAGS) -DTRACE -DMAIN $? | \
+		sed -e 's/^captoinfo.o/tctest.o/' > $@
+
 $(objpfx)tctest.o: ncurses/captoinfo.c
 	$(CC) -c -o $@ $(CFLAGS) $(CPPFLAGS) -DTRACE -DMAIN $?
 
+$(objpfx)thardscroll.d: ncurses/hardscroll.c
+	$(CC) -M $(CFLAGS) $(CPPFLAGS) -DTRACE -DSCROLLDEBUG $? | \
+		sed -e 's/^hardscroll.o/thardscroll.o/' > $@
+
 $(objpfx)thardscroll.o: ncurses/hardscroll.c
 	$(CC) -c -o $@ $(CFLAGS) $(CPPFLAGS) -DTRACE -DSCROLLDEBUG $?
+
+$(objpfx)thashmap.d: ncurses/hashmap.c
+	$(CC) -M $(CFLAGS) $(CPPFLAGS) -DTRACE -DHASHDEBUG $? | \
+		sed -e 's/^hashmap.o/thashmap.o/' > $@
 
 $(objpfx)thashmap.o: ncurses/hashmap.c
 	$(CC) -c -o $@ $(CFLAGS) $(CPPFLAGS) -DTRACE -DHASHDEBUG $?

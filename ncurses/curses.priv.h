@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.69 1997/08/09 17:21:44 tom Exp $
+ * $Id: curses.priv.h,v 1.71 1997/08/16 21:47:00 tom Exp $
  *
  *	curses.priv.h
  *
@@ -379,12 +379,6 @@ extern long _nc_outchars;
 #define IGNORE_COLOR_OFF FALSE
 #define NONBLANK_ATTR (A_BOLD|A_DIM|A_BLINK)
 
-/* Macro to put together character and attribute info and return it.
-   If colors are in the attribute, they have precedence. */
-#define ch_or_attr(ch,at) \
-    ((PAIR_NUMBER(at) > 0) ? \
-     ((((chtype)ch) & ALL_BUT_COLOR) | (at)) : ((((chtype)ch) | (at))))
-
 
 #define toggle_attr_on(S,at) \
    if (PAIR_NUMBER(at) > 0)\
@@ -450,10 +444,6 @@ extern long _nc_outchars;
 
 #ifdef NCURSES_EXPANDED
 
-#undef  ch_or_attr
-#define ch_or_attr(ch,at) _nc_ch_or_attr(ch,at)
-extern chtype _nc_ch_or_attr(chtype, attr_t);
-
 #undef  toggle_attr_on
 #define toggle_attr_on(S,at) _nc_toggle_attr_on(&(S), at)
 extern void _nc_toggle_attr_on(attr_t *, attr_t);
@@ -517,9 +507,7 @@ extern int _nc_mouse_fd(void);
 
 /* softscroll.c */
 extern void _nc_setup_scroll(void);
-
-/* softscroll.c */
-extern void _nc_setup_scroll(void);
+extern void _nc_perform_scroll(void);
 
 /* tries.c */
 extern void _nc_add_to_try(struct tries **tree, char *str, unsigned short code);

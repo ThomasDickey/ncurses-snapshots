@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.74 1997/08/09 20:53:36 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.75 1997/08/16 23:34:58 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -662,7 +662,11 @@ struct tms before, after;
 #if defined(TRACE) || defined(NCURSES_TEST)
 		if (_nc_optimize_enable & OPTIMIZE_SCROLL)
 #endif /*TRACE */
+#if USE_SCROLL_HINTS
 			_nc_scroll_optimize();
+#else
+			_nc_perform_scroll();
+#endif
 
 		if (clr_eos)
 			nonempty = ClrBottom(nonempty);
@@ -1612,7 +1616,7 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
     }
 
     /* this is mainly for doupdate not to skip those lines */
-    for (i = top; i >= bot; i++)
+    for (i = top; i <= bot; i++)
     {
 	curscr->_line[i].firstchar = 0;
 	curscr->_line[i].lastchar = curscr->_maxx;
