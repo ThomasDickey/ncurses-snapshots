@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.175 1999/09/23 10:46:15 tom Exp $
+dnl $Id: aclocal.m4,v 1.176 1999/10/02 20:19:43 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -486,7 +486,7 @@ cat > conftest.i <<EOF
 EOF
 if test -n "$GCC"
 then
-	AC_CHECKING([for gcc __attribute__ directives])
+	AC_CHECKING([for $CC __attribute__ directives])
 	changequote(,)dnl
 cat > conftest.$ac_ext <<EOF
 #line __oline__ "configure"
@@ -513,7 +513,7 @@ EOF
 	do
 		CF_UPPER(CF_ATTRIBUTE,$cf_attribute)
 		cf_directive="__attribute__(($cf_attribute))"
-		echo "checking for gcc $cf_directive" 1>&AC_FD_CC
+		echo "checking for $CC $cf_directive" 1>&AC_FD_CC
 		case $cf_attribute in
 		scanf|printf)
 		cat >conftest.h <<EOF
@@ -559,7 +559,7 @@ then
 int main(int argc, char *argv[]) { return (argv[argc-1] == 0) ; }
 EOF
 	changequote([,])dnl
-	AC_CHECKING([for gcc warning options])
+	AC_CHECKING([for $CC warning options])
 	cf_save_CFLAGS="$CFLAGS"
 	EXTRA_CFLAGS="-W -Wall"
 	cf_warn_CONST=""
@@ -1595,9 +1595,9 @@ AC_DEFUN([CF_SHARED_OPTS],
 		fi
 		test $cf_cv_shlib_version = auto && cf_cv_shlib_version=rel
 		if test $cf_cv_shlib_version = no ; then
-			MK_SHARED_LIB='gcc -shared -Wl,-stats,-lc -o $[@]'
+			MK_SHARED_LIB='$(CC) -shared -Wl,-stats,-lc -o $[@]'
 		else
-			MK_SHARED_LIB='gcc -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)`,-stats,-lc -o $[@]'
+			MK_SHARED_LIB='$(CC) -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)`,-stats,-lc -o $[@]'
 		fi
 		;;
 	openbsd2*)

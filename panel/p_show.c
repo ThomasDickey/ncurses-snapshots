@@ -36,7 +36,7 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_show.c,v 1.4 1999/09/18 11:15:08 juergen Exp $")
+MODULE_ID("$Id: p_show.c,v 1.5 1999/09/29 15:22:32 juergen Exp $")
 
 static void
 panel_link_top(PANEL *pan)
@@ -56,7 +56,6 @@ panel_link_top(PANEL *pan)
   pan->below = _nc_top_panel;  
   _nc_top_panel = pan;
   
-  _nc_calculate_obscure();
   dStack("<lt%d>",9,pan);
 }
 

@@ -36,7 +36,7 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_bottom.c,v 1.4 1999/09/18 11:15:08 juergen Exp $")
+MODULE_ID("$Id: p_bottom.c,v 1.5 1999/09/29 15:22:32 juergen Exp $")
 
 /*+-------------------------------------------------------------------------
 	__panel_link_bottom(pan) - link panel into stack at bottom
@@ -61,7 +61,6 @@ panel_link_bottom(PANEL *pan)
     pan->above->below = pan;
   _nc_bottom_panel->above = pan;
     
-  _nc_calculate_obscure();
   dStack("<lb%d>",9,pan);
 }
 
