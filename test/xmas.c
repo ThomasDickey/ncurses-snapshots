@@ -92,10 +92,8 @@
 /******************************************************************************/
 
 /*
- * $Id: xmas.c,v 1.17 2001/09/15 22:02:05 tom Exp $
+ * $Id: xmas.c,v 1.18 2002/03/23 21:46:58 tom Exp $
  */
-#include <signal.h>
-
 #include <test.priv.h>
 
 #define FROMWHO "Mark Hessling - (M.Hessling@gu.edu.au)"

@@ -1,10 +1,14 @@
--- $Id: NEWS,v 1.676 2002/03/17 15:04:13 tom Exp $
+-- $Id: NEWS,v 1.677 2002/03/24 00:32:39 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020323
+	+ modified test/configure to allow configuring against ncursesw.
+	+ change WACS_xxx definition to use address, to work like Tru64 curses.
 
 20020317
 	+ add 'e' and 'm' toggles to 'a', 'A' tests in ncurses.c to demonstrate

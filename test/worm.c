@@ -34,10 +34,8 @@ Options:
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.35 2001/09/15 22:36:35 tom Exp $
+  $Id: worm.c,v 1.36 2002/03/23 21:46:54 tom Exp $
 */
-
-#include <signal.h>
 
 #include <test.priv.h>
 

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1999,2000,2001 Free Software Foundation, Inc.              *
+ * Copyright (c) 1999-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,17 +29,18 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: cardfile.c,v 1.8 2001/09/15 21:55:11 tom Exp $
+ * $Id: cardfile.c,v 1.10 2002/03/23 22:17:24 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text forms the content.
  */
 
 #include <test.priv.h>
 
+#if HAVE_FORM_H && HAVE_PANEL_H
+
 #include <form.h>
 #include <panel.h>
 
-#include <string.h>
 #include <ctype.h>
 
 #define VISIBLE_CARDS 10
@@ -418,3 +419,11 @@ main(int argc, char *argv[])
 
     ExitProgram(EXIT_SUCCESS);
 }
+#else
+int
+main(void)
+{
+    printf("This program requires the curses form and panel libraries\n");
+    ExitProgram(EXIT_FAILURE);
+}
+#endif

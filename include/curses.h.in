@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.124 2002/02/02 19:04:13 tom Exp $ */
+/* $Id: curses.h.in,v 1.125 2002/03/23 23:15:10 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -227,13 +227,19 @@ extern NCURSES_EXPORT_VAR(chtype) acs_map[];
 #define ACS_SBSB	ACS_VLINE
 #define ACS_SSSS	ACS_PLUS
 
-#if	!defined(ERR) || ((ERR) != -1)
+#if	defined(ERR) && ((ERR) != -1)
 #undef	ERR
+#endif
+
+#if	!defined(ERR)
 #define ERR     (-1)
 #endif
 
-#if	!defined(OK) || ((OK) != 0)
+#if	defined(OK) && ((OK) != 0)
 #undef	OK
+#endif
+
+#if	!defined(OK)
 #define OK      (0)
 #endif
 

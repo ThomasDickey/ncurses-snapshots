@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_hline_set.c,v 1.1 2002/02/16 21:57:11 tom Exp $")
+MODULE_ID("$Id: lib_hline_set.c,v 1.2 2002/03/23 21:35:34 tom Exp $")
 
 NCURSES_EXPORT(int)
 whline_set(WINDOW *win, const cchar_t * ch, int n)
@@ -62,7 +62,7 @@ whline_set(WINDOW *win, const cchar_t * ch, int n)
 	CHANGED_RANGE(line, start, end);
 
 	if (ch == 0)
-	    wch = WACS_HLINE;
+	    wch = *WACS_HLINE;
 	else
 	    wch = *ch;
 	wch = _nc_render(win, wch);

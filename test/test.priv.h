@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.26 2002/02/16 18:06:28 tom Exp $ */
+/* $Id: test.priv.h,v 1.32 2002/03/24 01:25:46 tom Exp $ */
 
 #if HAVE_CONFIG_H
 #include <ncurses_cfg.h>
@@ -40,12 +40,44 @@
 #define HAVE_WRESIZE 0
 #endif
 
-#ifndef HAVE_NC_ALLOC_H
-#define HAVE_NC_ALLOC_H 0
+#ifndef HAVE_CURSES_VERSION
+#define HAVE_CURSES_VERSION 0
+#endif
+
+#ifndef HAVE_FORM_H
+#define HAVE_FORM_H 0
+#endif
+
+#ifndef HAVE_LIBFORM
+#define HAVE_LIBFORM 0
+#endif
+
+#ifndef HAVE_LIBMENU
+#define HAVE_LIBMENU 0
 #endif
 
 #ifndef HAVE_LOCALE_H
 #define HAVE_LOCALE_H 0
+#endif
+
+#ifndef HAVE_MENU_H
+#define HAVE_MENU_H 0
+#endif
+
+#ifndef HAVE_NAPMS
+#define HAVE_NAPMS 1
+#endif
+
+#ifndef HAVE_NC_ALLOC_H
+#define HAVE_NC_ALLOC_H 0
+#endif
+
+#ifndef HAVE_PANEL_H
+#define HAVE_PANEL_H 0
+#endif
+
+#ifndef HAVE_WRESIZE
+#define HAVE_WRESIZE 0
 #endif
 
 #ifndef NCURSES_NOMACROS
@@ -64,11 +96,9 @@
 #include <unistd.h>
 #endif
 
-#include <curses.h>
+#include <signal.h>	/* include before curses.h to work around glibc bug */
 
-#ifndef NCURSES_CH_T
-#define NCURSES_CH_T chtype
-#endif
+#include <curses.h>
 
 #if NCURSES_NOMACROS
 #include <nomacros.h>
@@ -89,6 +119,40 @@ extern int optind;
 #endif
 #ifndef GCC_UNUSED
 #define GCC_UNUSED /* nothing */
+#endif
+
+#ifndef CURSES_ACS_ARRAY
+#define CURSES_ACS_ARRAY acs_map
+#endif
+
+#ifndef HAVE_GETNSTR
+#define getnstr(s,n) getstr(s)
+#endif
+
+#ifndef USE_WIDEC_SUPPORT
+#ifdef _XOPEN_SOURCE_EXTENDED
+#define USE_WIDEC_SUPPORT 1
+#else
+#define USE_WIDEC_SUPPORT 0
+#endif
+#endif
+
+#ifndef HAVE_TYPE_ATTR_T
+#if !USE_WIDEC_SUPPORT
+#define attr_t long
+#endif
+#endif
+
+#ifndef NCURSES_CH_T
+#if !USE_WIDEC_SUPPORT
+#define NCURSES_CH_T chtype
+#else
+#define NCURSES_CH_T cchar_t
+#endif
+#endif
+
+#ifndef CCHARW_MAX
+#define CCHARW_MAX 5
 #endif
 
 #define UChar(c)    ((unsigned char)(c))

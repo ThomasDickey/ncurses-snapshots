@@ -6,12 +6,10 @@
  * Eric S. Raymond <esr@snark.thyrsus.com> July 22 1995.  Mouse support
  * added September 20th 1995.
  *
- * $Id: knight.c,v 1.22 2001/09/15 21:42:00 tom Exp $
+ * $Id: knight.c,v 1.24 2002/03/23 22:17:24 tom Exp $
  */
 
 #include <ctype.h>
-#include <signal.h>
-#include <string.h>
 
 #include <test.priv.h>
 
