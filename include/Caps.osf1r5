@@ -28,7 +28,7 @@
 #
 # Author: Thomas Dickey
 #
-# $Id: Caps.osf1r5,v 1.1 2002/01/12 22:26:04 tom Exp $
+# $Id: Caps.osf1r5,v 1.2 2002/04/20 15:43:58 tom Exp $
 #
 # This is an adaptation of ncurses' termcap/terminfo capability table, which
 # is designed to align with OSF/1 version 5 (Tru64) terminfo.
@@ -725,10 +725,10 @@ req_mouse_pos			reqmp	str	RQ	-		-	-----	Request mouse position
 remove_clock			rmclk	str	RC	-		-	-----	remove clock
 scancode_escape			scesc	str	S7	-		-	-----	Escape for scancode emulation
 select_char_set			scs	str	Zj	-		-	-----	Select character set, #1
-set0_des_seq			s0ds	str	s0	-		-	-----	Shift to code set 0 (EUC set 0, ASCII)
-set1_des_seq			s1ds	str	s1	-		-	-----	Shift to code set 1
-set2_des_seq			s2ds	str	s2	-		-	-----	Shift to code set 2
-set3_des_seq			s3ds	str	s3	-		-	-----	Shift to code set 3
+set0_des_seq			s0ds	str	s0	-		-	-----	Shift to codeset 0 (EUC set 0, ASCII)
+set1_des_seq			s1ds	str	s1	-		-	-----	Shift to codeset 1
+set2_des_seq			s2ds	str	s2	-		-	-----	Shift to codeset 2
+set3_des_seq			s3ds	str	s3	-		-	-----	Shift to codeset 3
 set_a_background		setab	str	AB	-		-	-----	Set background color to #1, using ANSI escape
 set_a_foreground		setaf	str	AF	-		-	-----	Set foreground color to #1, using ANSI escape
 set_background			setb	str	Sb	-		-	-----	Set background color #1

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.82 2002/02/16 16:13:52 skimo Exp $
+# $Id: Makefile.in,v 1.83 2002/04/20 22:02:39 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000,2001,2002 Free Software Foundation, Inc.      #
 #                                                                            #
@@ -138,6 +138,7 @@ AUTO_SRC = \
 	keys.list \
 	lib_gen.c \
 	lib_keyname.c \
+	link_test.c \
 	names.c \
 	unctrl.c
 
@@ -148,6 +149,7 @@ TEST_LDFLAGS	= @LD_MODEL@ $(TEST_ARGS) @LIBS@ @EXTRA_LIBS@ @LOCAL_LDFLAGS@ @LDFL
 TEST_PROGS = \
 	captoinfo$x \
 	hardscroll$x \
+	link_test$x \
 	hashmap$x \
 	lib_mvcur$x
 
@@ -173,10 +175,10 @@ fallback.c : $(tinfo)/MKfallback.sh
 	sh $(tinfo)/MKfallback.sh @TERMINFO@ @TERMINFO_SRC@ $(FALLBACK_LIST) >$@
 
 lib_gen.c : $(base)/MKlib_gen.sh ../include/curses.h
-	sh $(base)/MKlib_gen.sh "$(CPP) $(CPPFLAGS)" "$(AWK)" <../include/curses.h >$@
+	sh $(base)/MKlib_gen.sh "$(CPP) $(CPPFLAGS)" "$(AWK)" generated <../include/curses.h >$@
 
 ../include/nomacros.h : $(base)/MKlib_gen.sh ../include/curses.h
-	sh $(base)/MKlib_gen.sh "$(CPP) $(CPPFLAGS)" "$(AWK)" <../include/curses.h | \
+	sh $(base)/MKlib_gen.sh "$(CPP) $(CPPFLAGS)" "$(AWK)" generated <../include/curses.h | \
 		fgrep undef >$@
 
 init_keytry.h: make_keys$x keys.list
@@ -246,6 +248,9 @@ realclean :: distclean
 # These rules build test-programs for the modules that have test-drivers
 test_progs : $(TEST_PROGS)
 
+link_test.c : $(base)/MKlib_gen.sh ../include/curses.h
+	sh $(base)/MKlib_gen.sh "$(CPP) $(CPPFLAGS)" "$(AWK)" implemented <../include/curses.h >$@
+
 captoinfo$x : $(tinfo)/captoinfo.c $(TEST_DEPS)
 	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DMAIN $(tinfo)/captoinfo.c $(TEST_LDFLAGS)
 
@@ -258,6 +263,10 @@ hashmap$x : $(serial)/hashmap.c $(TEST_DEPS)
 lib_mvcur$x : $(serial)/lib_mvcur.c $(TEST_DEPS) \
 		../@DFT_OBJ_SUBDIR@/dump_entry.o
 	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DNCURSES_TEST -I$(serial)/../../progs $(serial)/lib_mvcur.c ../@DFT_OBJ_SUBDIR@/dump_entry.o $(TEST_LDFLAGS)
+
+link_test$x : link_test.c $(TEST_DEPS) \
+		../@DFT_OBJ_SUBDIR@/link_test.o
+	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) ../@DFT_OBJ_SUBDIR@/link_test.o $(TEST_LDFLAGS)
 
 ../@DFT_OBJ_SUBDIR@/dump_entry.o:
 	cd ../progs && $(MAKE) ../@DFT_OBJ_SUBDIR@/dump_entry.o
