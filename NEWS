@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.324 1998/03/21 23:20:30 tom Exp $
+-- $Id: NEWS,v 1.325 1998/03/29 00:08:10 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980328
+	+ modify lib_color.c to eliminate dependency on orig_colors and
+	  orig_pair, since SVr4 curses does not require these either, but
+	  uses them when they are available.
+	+ add detailed usage-message to infocmp.
+	+ correct a typo in att6386 entry (a "%?" which was "?").
+	+ add -f option to infocmp and tic, which formats the terminfo
+	  if/then/else/endif so that they are readable (with newlines and
+	  tabs).
+	+ fixes for glibc addon scripts (patch by H.J.Lu).
 
 980321
 	+ revise configure macro CF_SPEED_TYPE so that termcap.h has speed_t

@@ -41,7 +41,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.22 1998/02/11 12:13:54 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.23 1998/03/28 19:54:43 tom Exp $")
 
 /*
  *	char *
@@ -68,17 +68,18 @@ MODULE_ID("$Id: lib_tparm.c,v 1.22 1998/02/11 12:13:54 tom Exp $")
  *	     The % encodings have the following meanings:
  *	
  *	     %%        outputs `%'
- *	     %d        print pop() like %d in printf()
- *	     %2d       print pop() like %2d in printf()
  *	     %02d      print pop() like %02d in printf()
- *	     %3d       print pop() like %3d in printf()
- *	     %03d      print pop() like %03d in printf()
- *	     %2x       print pop() like %2x in printf()
  *	     %02x      print pop() like %02x in printf()
- *	     %3x       print pop() like %3x in printf()
+ *	     %03d      print pop() like %03d in printf()
  *	     %03x      print pop() like %03x in printf()
+ *	     %2d       print pop() like %2d in printf()
+ *	     %2x       print pop() like %2x in printf()
+ *	     %3d       print pop() like %3d in printf()
+ *	     %3x       print pop() like %3x in printf()
  *	     %c        print pop() like %c in printf()
+ *	     %d        print pop() like %d in printf()
  *	     %s        print pop() like %s in printf()
+ *	     %x        print pop() like %x in printf()
  *	
  *	     %p[1-9]   push ith parm
  *	     %P[a-z]   set variable [a-z] to pop()

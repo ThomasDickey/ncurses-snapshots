@@ -42,7 +42,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.34 1998/02/11 12:14:03 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.35 1998/03/28 17:50:31 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -602,7 +602,7 @@ static void file_comparison(int argc, char *argv[])
     ENTRY	*qp, *rp;
     int		i, n;
 
-    dump_init((char *)NULL, F_LITERAL, S_TERMINFO, 0, itrace);
+    dump_init((char *)NULL, F_LITERAL, S_TERMINFO, 0, itrace, FALSE);
 
     for (n = 0; n < argc && n < MAXCOMPARE; n++)
     {
@@ -778,8 +778,44 @@ static void file_comparison(int argc, char *argv[])
 
 static void usage(void)
 {
-	fprintf(stderr,
-"usage: infocmp [-dcnILCuvV1T] [-s d| i| l| c] [-w width] [-A directory] [-B directory] [termname...]\n");
+	static const char *tbl[] = {
+	     "Usage: infocmp [options] [-A directory] [-B directory] [termname...]"
+	    ,""
+	    ,"Options:"
+	    ,"  -1    print single-column"
+	    ,"  -C    use termcap-names"
+	    ,"  -F    compare terminfo-files"
+	    ,"  -I    use terminfo-names"
+	    ,"  -L    use long names"
+	    ,"  -R subset (see manpage)"
+	    ,"  -T    eliminate size limits (test)"
+	    ,"  -V    print version"
+	    ,"  -c    list common capabilities"
+	    ,"  -d    list different capabilities"
+	    ,"  -e    format output as C initializer"
+	    ,"  -f    with -1, format complex strings"
+	    ,"  -i    analyze initialization/reset"
+	    ,"  -l    output terminfo names"
+	    ,"  -n    list capabilities in neither"
+	    ,"  -p    ignore padding specifiers"
+	    ,"  -r    with -C, output in termcap form"
+	    ,"  -s [d|i|l|c] sort fields"
+	    ,"  -u    produce source with 'use='"
+	    ,"  -v number  (verbose)"
+	    ,"  -w number  (width)"
+	};
+	const size_t first = 3;
+	const size_t last = sizeof(tbl)/sizeof(tbl[0]);
+	const size_t left = (last - first + 1) / 2 + first;
+	size_t n;
+
+	for (n = 0; n < left; n++) {
+		size_t m = (n < first) ? last : n + left - first;
+		if (m < last)
+			fprintf(stderr, "%-40.40s%s\n", tbl[n], tbl[m]);
+		else
+			fprintf(stderr, "%s\n", tbl[n]);
+	}
 	exit(EXIT_FAILURE);
 }
 
@@ -796,6 +832,7 @@ int main(int argc, char *argv[])
 	/* Also avoid overflowing smaller stacks on systems like AmigaOS */
 	path *tfile = malloc(sizeof(path)*MAXTERMS);
 	int c, i, len;
+	bool formatted = FALSE;
 	bool filecompare = FALSE;
 	bool initdump = FALSE;
 	bool init_analyze = FALSE;
@@ -811,7 +848,7 @@ int main(int argc, char *argv[])
 	/* where is the terminfo database location going to default to? */
 	restdir = firstdir = 0;
 
-	while ((c = getopt(argc, argv, "decCFIinlLprR:s:uv:Vw:A:B:1T")) != EOF)
+	while ((c = getopt(argc, argv, "decCfFIinlLprR:s:uv:Vw:A:B:1T")) != EOF)
 		switch (c)
 		{
 		case 'd':
@@ -831,6 +868,10 @@ int main(int argc, char *argv[])
 			tversion = "BSD";
 			if (sortmode == S_DEFAULT)
 			    sortmode = S_TERMCAP;
+			break;
+
+		case 'f':
+			formatted = TRUE;
 			break;
 
 		case 'F':
@@ -920,6 +961,7 @@ int main(int argc, char *argv[])
 		case '1':
 			mwidth = 0;
 			break;
+
 		case 'T':
 			limited = FALSE;
 			break;
@@ -932,7 +974,7 @@ int main(int argc, char *argv[])
 		sortmode = S_TERMINFO;
 
 	/* set up for display */
-	dump_init(tversion, outform, sortmode, mwidth, itrace);
+	dump_init(tversion, outform, sortmode, mwidth, itrace, formatted);
 
 	/* make sure we have at least one terminal name to work with */
 	if (optind >= argc)

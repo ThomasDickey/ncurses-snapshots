@@ -268,15 +268,9 @@ tset-objs = tset.o dump_entry.o
 extra-objs = $(tic-objs) $(toe-objs) $(infocmp-objs) $(clear-objs) \
 		$(tput-objs) $(tset-objs)
 
-# mvcur won't compile
-test-srcs = tctest thardscroll thashmap \
-		blue bs firework firstlast gdc hanoi hashtest knight \
+test-srcs = blue bs firework firstlast gdc hanoi hashtest knight \ 
 		lrtest ncurses newdemo rain tclock testaddch testcurs \
 		testscanw view worm xmas
-mvcur-objs = mvcur.o dump_entry.o
-tctest-objs = tctest.o
-thardscroll-objs = thardscroll.o
-thashmap-objs = thashmap.o hhardscroll.o
 
 include ../Rules
 
@@ -312,42 +306,6 @@ endif
 LDLIBS-tclock = math/libm
 
 tests: $(test-srcs:%=$(objpfx)%) 
-
-$(objpfx)mvcur.d: ncurses/lib_mvcur.c
-	$(CC) -M $(CFLAGS) $(CPPFLAGS) -DTRACE -DMAIN $? | \
-		sed -e 's/^lib_mvcur.o/mvcur.o/' > $@
-
-$(objpfx)mvcur.o: ncurses/lib_mvcur.c
-	$(CC) -c -o $@ $(CFLAGS) $(CPPFLAGS) -DTRACE -DMAIN $?
-
-$(objpfx)tctest.d: ncurses/captoinfo.c
-	$(CC) -M $(CFLAGS) $(CPPFLAGS) -DTRACE -DMAIN $? | \
-		sed -e 's/^captoinfo.o/tctest.o/' > $@
-
-$(objpfx)tctest.o: ncurses/captoinfo.c
-	$(CC) -c -o $@ $(CFLAGS) $(CPPFLAGS) -DTRACE -DMAIN $?
-
-$(objpfx)thardscroll.d: ncurses/hardscroll.c
-	$(CC) -M $(CFLAGS) $(CPPFLAGS) -DTRACE -DSCROLLDEBUG $? | \
-		sed -e 's/^hardscroll.o/thardscroll.o/' > $@
-
-$(objpfx)thardscroll.o: ncurses/hardscroll.c
-	$(CC) -c -o $@ $(CFLAGS) $(CPPFLAGS) -DTRACE -DSCROLLDEBUG $?
-
-$(objpfx)thashmap.d: ncurses/hashmap.c
-	$(CC) -M $(CFLAGS) $(CPPFLAGS) -DTRACE -DHASHDEBUG $? | \
-		sed -e 's/^hashmap.o/thashmap.o/' > $@
-
-$(objpfx)thashmap.o: ncurses/hashmap.c
-	$(CC) -c -o $@ $(CFLAGS) $(CPPFLAGS) -DTRACE -DHASHDEBUG $?
-
-$(objpfx)hhardscroll.o: ncurses/hardscroll.c
-	$(CC) -c -o $@ $(CFLAGS) $(CPPFLAGS) -DTRACE -DHASHDEBUG $?
-
-$(objpfx)mvcur: $(addprefix $(objpfx),$(mvcur-objs))
-$(objpfx)tctest: $(addprefix $(objpfx),$(tctest-objs))
-$(objpfx)thardscroll: $(addprefix $(objpfx),$(thardscroll-objs))
-$(objpfx)thashmap: $(addprefix $(objpfx),$(thashmap-objs))
 
 $(objpfx)clear: $(addprefix $(objpfx),$(clear-objs))
 $(objpfx)infocmp: $(addprefix $(objpfx),$(infocmp-objs))

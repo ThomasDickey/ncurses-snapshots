@@ -41,7 +41,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.24 1998/02/11 12:13:58 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.25 1998/03/28 23:51:22 tom Exp $")
 
 /*
  * Only 8 ANSI colors are defined; the ISO 6429 control sequences work only
@@ -89,28 +89,76 @@ static const color_t hls_palette[] =
 	{0,	50,	100},	/* COLOR_WHITE */
 };
 
+/*
+ * SVr4 curses is known to interchange color codes (1,4) and (3,6), possibly
+ * to maintain compatibility with a pre-ANSI scheme.  The same scheme is
+ * also used in the FreeBSD syscons.
+ */
+static int toggled_colors(int c)
+{
+    if (c < 16) {
+	static const int table[] =
+		{ 0,  4,  2,  6,  1,  5,  3,  7,
+		  8, 12, 10, 14,  9, 13, 11, 15};
+	c = table[c];
+    }
+    return c;
+}
+
+static void set_background_color(int bg, int  (*outc)(int))
+{
+	if (set_a_background && bg <= MAX_ANSI_COLOR)
+	{
+	    TPUTS_TRACE("set_a_background");
+	    tputs(tparm(set_a_background, bg), 1, outc);
+	}
+	else
+	{
+	    TPUTS_TRACE("set_background");
+	    tputs(tparm(set_background, toggled_colors(bg)), 1, outc);
+	}
+}
+
+static void set_foreground_color(int fg, int  (*outc)(int))
+{
+	if (set_a_foreground && fg <= MAX_ANSI_COLOR)
+	{
+	    TPUTS_TRACE("set_a_foreground");
+	    tputs(tparm(set_a_foreground, fg), 1, outc);
+	}
+	else
+	{
+	    TPUTS_TRACE("set_foreground");
+	    tputs(tparm(set_foreground, toggled_colors(fg)), 1, outc);
+	}
+}
+
+static bool set_original_colors(void)
+{
+	if (orig_pair != 0) {
+		TPUTS_TRACE("orig_pair");
+		putp(orig_pair);
+		return TRUE;
+	}
+	else if (orig_colors != NULL)
+	{
+		TPUTS_TRACE("orig_colors");
+		putp(orig_colors);
+		return TRUE;
+	}
+	return FALSE;
+}
+
 int start_color(void)
 {
 	T((T_CALLED("start_color()")));
 
-#ifdef orig_pair
-	if (orig_pair != NULL)
+	if (set_original_colors() != TRUE)
 	{
-		TPUTS_TRACE("orig_pair");
-		putp(orig_pair);
+		set_foreground_color(COLOR_WHITE, _nc_outch);
+		set_background_color(COLOR_BLACK, _nc_outch);
 	}
-#endif /* orig_pair */
-#ifdef orig_colors
-	if (orig_colors != NULL)
-	{
-		TPUTS_TRACE("orig_colors");
-		putp(orig_colors);
-	}
-#endif /* orig_colors */
-#if defined(orig_pair) && defined(orig_colors)
-	if (!orig_pair && !orig_colors)
-		returnCode(ERR);
-#endif /* defined(orig_pair) && defined(orig_colors) */
+
 	if (max_pairs != -1)
 		COLOR_PAIRS = SP->_pair_count = max_pairs;
 	else
@@ -124,25 +172,16 @@ int start_color(void)
 	SP->_coloron = 1;
 
 	SP->_color_table = malloc(sizeof(color_t) * COLORS);
-#ifdef hue_lightness_saturation
 	if (hue_lightness_saturation)
 	    memcpy(SP->_color_table, hls_palette, sizeof(color_t) * COLORS);
 	else
-#endif /* hue_lightness_saturation */
 	    memcpy(SP->_color_table, cga_palette, sizeof(color_t) * COLORS);
-
-	if (orig_colors)
-	{
-	    TPUTS_TRACE("orig_colors");
-	    putp(orig_colors);
-	}
 
 	T(("started color: COLORS = %d, COLOR_PAIRS = %d", COLORS, COLOR_PAIRS));
 
 	returnCode(OK);
 }
 
-#ifdef hue_lightness_saturation
 /* This function was originally written by Daniel Weaver <danw@znyx.com> */
 static void rgb2hls(short r, short g, short b, short *h, short *l, short *s)
 /* convert RGB to HLS system */
@@ -178,7 +217,6 @@ static void rgb2hls(short r, short g, short b, short *h, short *l, short *s)
 
     *h = t % 360;
 }
-#endif /* hue_lightness_saturation */
 
 /*
  * Extension (1997/1/18) - Allow negative f/b values to set default color
@@ -216,7 +254,7 @@ int init_pair(short pair, short f, short b)
 
 	if (initialize_pair)
 	{
-	    const color_t	*tp = hue_lightness_saturation ? hls_palette : cga_palette;
+	    const color_t *tp = hue_lightness_saturation ? hls_palette : cga_palette;
 
 	    T(("initializing pair: pair = %d, fg=(%d,%d,%d), bg=(%d,%d,%d)",
 	       pair,
@@ -239,37 +277,32 @@ int init_pair(short pair, short f, short b)
 int init_color(short color, short r, short g, short b)
 {
 	T((T_CALLED("init_color(%d,%d,%d,%d)"), color, r, g, b));
-#ifdef initialize_color
+
 	if (initialize_color == NULL)
 		returnCode(ERR);
-#endif /* initialize_color */
 
 	if (color < 0 || color >= COLORS)
 		returnCode(ERR);
 	if (r < 0 || r > 1000 || g < 0 ||  g > 1000 || b < 0 || b > 1000)
 		returnCode(ERR);
 
-#ifdef hue_lightness_saturation
 	if (hue_lightness_saturation)
 	    rgb2hls(r, g, b,
 		      &SP->_color_table[color].red,
 		      &SP->_color_table[color].green,
 		      &SP->_color_table[color].blue);
 	else
-#endif /* hue_lightness_saturation */
 	{
 		SP->_color_table[color].red = r;
 		SP->_color_table[color].green = g;
 		SP->_color_table[color].blue = b;
 	}
 
-#ifdef initialize_color
 	if (initialize_color)
 	{
 		TPUTS_TRACE("initialize_color");
 		putp(tparm(initialize_color, color, r, g, b));
 	}
-#endif /* initialize_color */
 	returnCode(OK);
 }
 
@@ -282,8 +315,7 @@ bool can_change_color(void)
 bool has_colors(void)
 {
 	T((T_CALLED("has_colors()")));
-	returnCode (((orig_pair != NULL || orig_colors != NULL)
-		     && (max_colors != -1) && (max_pairs != -1)
+	returnCode (((max_colors != -1) && (max_pairs != -1)
 		     && (((set_foreground != NULL)
 			  && (set_background != NULL))
 			 || ((set_a_foreground != NULL)
@@ -315,23 +347,7 @@ int pair_content(short pair, short *f, short *b)
 	returnCode(OK);
 }
 
-/*
- * SVr4 curses is known to interchange color codes (1,4) and (3,6), possibly
- * to maintain compatibility with a pre-ANSI scheme.  The same scheme is
- * also used in the FreeBSD syscons.
- */
-static int toggled_colors(int c)
-{
-    if (c < 16) {
-	static const int table[] =
-		{ 0,  4,  2,  6,  1,  5,  3,  7,
-		  8, 12, 10, 14,  9, 13, 11, 15};
-	c = table[c];
-    }
-    return c;
-}
-
-void _nc_do_color(int pair, bool reverse, int  (*outc)(int))
+void _nc_do_color(int pair, bool reverse, int (*outc)(int))
 {
     short fg, bg;
 
@@ -344,6 +360,16 @@ void _nc_do_color(int pair, bool reverse, int  (*outc)(int))
 	{
 	    TPUTS_TRACE("orig_pair");
 	    tputs(orig_pair, 1, outc);
+	}
+	else if (set_color_pair)
+	{
+	    TPUTS_TRACE("set_color_pair");
+	    tputs(tparm(set_color_pair, pair), 1, outc);
+	}
+	else
+	{
+	    set_foreground_color(COLOR_WHITE, outc);
+	    set_background_color(COLOR_BLACK, outc);
 	}
     }
     else
@@ -366,42 +392,21 @@ void _nc_do_color(int pair, bool reverse, int  (*outc)(int))
 
 	    if (fg == C_MASK || bg == C_MASK)
 	    {
-		if (orig_pair)
+		if (set_original_colors() != TRUE)
 		{
-		    TPUTS_TRACE("orig_pair");
-		    tputs(orig_pair, 1, outc);
-		}
-		else
-		{
-		    TPUTS_TRACE("orig_colors");
-		    tputs(orig_colors, 1, outc);
+			if (fg == C_MASK)
+				set_foreground_color(COLOR_WHITE, outc);
+			if (bg == C_MASK)
+				set_background_color(COLOR_BLACK, outc);
 		}
 	    }
 	    if (fg != C_MASK)
 	    {
-		if (set_a_foreground && fg <= MAX_ANSI_COLOR)
-		{
-		    TPUTS_TRACE("set_a_foreground");
-		    tputs(tparm(set_a_foreground, fg), 1, outc);
-		}
-		else
-		{
-		    TPUTS_TRACE("set_foreground");
-		    tputs(tparm(set_foreground, toggled_colors(fg)), 1, outc);
-		}
+		set_foreground_color(fg, outc);
 	    }
 	    if (bg != C_MASK)
 	    {
-		if (set_a_background && bg <= MAX_ANSI_COLOR)
-		{
-		    TPUTS_TRACE("set_a_background");
-		    tputs(tparm(set_a_background, bg), 1, outc);
-		}
-		else
-		{
-		    TPUTS_TRACE("set_background");
-		    tputs(tparm(set_background, toggled_colors(bg)), 1, outc);
-		}
+		set_background_color(bg, outc);
 	    }
 	}
     }

@@ -38,7 +38,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include "parametrized.h"	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.25 1998/02/11 12:14:02 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.26 1998/03/28 19:30:43 tom Exp $")
 
 #define INDENT			8
 
@@ -49,6 +49,7 @@ static int width = 60;		/* max line width for listings */
 static int column;		/* current column, limited by 'width' */
 static int oldcol;		/* last value of column before wrap */
 static int tracelevel;		/* level of debug output */
+static bool pretty;		/* true if we format if-then-else strings */
 
 static char *outbuf;		/* the output-buffer */
 static size_t out_used;		/* ...its current length */
@@ -108,10 +109,11 @@ NCURSES_CONST char *nametrans(const char *name)
     return((char *)NULL);
 }
 
-void dump_init(const char *version, int mode, int sort, int twidth, int traceval)
+void dump_init(const char *version, int mode, int sort, int twidth, int traceval, bool formatted)
 /* set up for entry display */
 {
     width = twidth;
+    pretty = formatted;
     tracelevel = traceval;
 
     /* versions */
@@ -386,6 +388,66 @@ static int termcap_length(const char *src)
 #define termcap_length(src) strlen(src)
 #endif
 
+static char * fmt_complex(char *dst, char *src, int level)
+{
+	int percent = 0;
+	int n;
+
+	dst += strlen(dst);
+	while (*src != '\0') {
+		switch (*src) {
+		case '\\':
+			percent = 0;
+			*dst++ = *src++;
+			break;
+		case '%':
+			percent = 1;
+			break;
+		case '?':	/* "if" */
+		case 't':	/* "then" */
+		case 'e':	/* "else" */
+			if (percent) {
+				percent = 0;
+				dst[-1] = '\n';
+				for (n = 0; n <= level; n++)
+					*dst++ = '\t';
+				*dst++ = '%';
+				*dst++ = *src;
+				*dst   = '\0';
+				if (*src++ == '?') {
+					src = fmt_complex(dst, src, level+1);
+					dst += strlen(dst);
+				} else if (level == 1) {
+					_nc_warning("%%%c without %%?", *src);
+				}
+				continue;
+			}
+			break;
+		case ';':	/* "endif" */
+			if (percent) {
+				percent = 0;
+				if (level > 1) {
+					dst[-1] = '\n';
+					for (n = 0; n < level; n++)
+						*dst++ = '\t';
+					*dst++ = '%';
+					*dst++ = *src++;
+					*dst   = '\0';
+					return src;
+				}
+				_nc_warning("%%; without %%?");
+			}
+			break;
+		default:
+			percent = 0;
+			break;
+		}
+		*dst++ = *src++;
+	}
+	*dst = '\0';
+	return src;
+}
+
 int fmt_entry(TERMTYPE *tterm,
 			   int (*pred)(int type, int idx),
 			   bool suppress_untranslatable,
@@ -542,7 +604,12 @@ bool	outcount = 0;
 	    }
 	    else
 	    {
-		sprintf(buffer, "%s=%s", str_names[i], _nc_tic_expand(tterm->Strings[i], outform==F_TERMINFO));
+		char *src = _nc_tic_expand(tterm->Strings[i], outform==F_TERMINFO);
+		sprintf(buffer, "%s=", str_names[i]);
+		if (pretty && outform==F_TERMINFO)
+		    fmt_complex(buffer + strlen(buffer), src, 1);
+		else
+		    strcat(buffer, src);
 		len += strlen(tterm->Strings[i]) + 1;
 	    }
 
