@@ -231,6 +231,7 @@
 ./panel/panel.h
 ./progs/Makefile.in
 ./progs/clear.c
+./progs/capconvert
 ./progs/clear.sh
 ./progs/comp_main.c
 ./progs/dump_entry.c

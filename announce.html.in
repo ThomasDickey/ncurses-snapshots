@@ -61,9 +61,10 @@ a stack of windows with backing store, is included. <P>
 a uniform but flexible interface for menu programming, is included. <P>
 <LI> (PC-clone boxes only) Support for access to the IBM PC ROM characters
 through a new highlight, A_PCCHARSET. <P>
-<LI> Support for mouse event reporting under xterm.
+<LI> Support for mouse event reporting under xterm (requires terminfo
+master file version 9.9.0 or greater).
 <LI> Automatic fallback to the /etc/termcap file can be compiled in
-for systems withould a terminfo tree.  This feature is neither
+for systems without a terminfo tree.  This feature is neither
 fast nor cheap, you don't want to use it unless you have to,
 but it's there. <P>
 <LI> An HTML "Introduction to Programming with NCURSES" document. <P>
@@ -91,7 +92,7 @@ including: <P>
 <DT> vh-1.6
 <DD> Volks-Hypertext browser for the Jargon File
 <DT> blue
-<DD> Blue Moon solitare game
+<DD> Blue Moon solitaire game
 <DT> u386mon
 <DD> System performance monitor for SVr4
 <DT> nvi
@@ -121,7 +122,7 @@ testing of this package. <P>
 
 <H2>Future Plans</H2>
 <UL>
-<LI> Mouse support via Alessandro Rubini's gpm package.
+<LI> Extended mouse support via Alessandro Rubini's gpm package.
 <LI> Extended-level XPG4 conformance, with internationalization support. <P>
 <LI> Ports to more systems, including DOS and Windows.
 </UL>

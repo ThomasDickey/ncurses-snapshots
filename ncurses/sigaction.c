@@ -66,4 +66,6 @@ sigaddset (int * mask, int sig)
   *mask |= sigmask (sig);
   return 0;
 }
+#else
+void _nc_sigaction() { } /* nonempty for strict ANSI compilers */
 #endif

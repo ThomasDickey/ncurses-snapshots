@@ -39,6 +39,10 @@ can be reported; on complete failure it returns 0.  If oldmask is non-NULL,
 this function fills the indicated location with the previous value of the given
 window's mouse event mask.
 
+As a side effect, setting a zero mousemask may turn off the mouse pointer;
+setting a nonzero mask may turn it on.  Whether this happens is
+device-dependent.
+
 Here are the mouse event type masks:
 
 .TS
@@ -110,9 +114,9 @@ upon successful completion.
 These calls were designed for \fBncurses\fR(3x), and are not found in SVr4
 curses, 4.4BSD curses, or any other previous version of curses.
 
-The feature macro NCURSES_MOUSE_V1 is provided so the preprocessor can
-be used to test whether these features are present.  NOTE: THIS INTERFACE
-IS EXPERIMENTAL AND IS SUBJECT TO CHANGE WITHOUT NOTICE!
+The feature macro NCURSES_MOUSE_VERSION is provided so the preprocessor can be
+used to test whether these features are present (its value is 1).  NOTE: THIS
+INTERFACE IS EXPERIMENTAL AND IS SUBJECT TO CHANGE WITHOUT NOTICE!
 
 Under \fBncurses\fR(3x), these calls are implemented using either
 xterm's built-in mouse-tracking API or Alessandro Rubini's gpm server.

@@ -47,6 +47,8 @@ LINK		= $(CC)
 LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@
 
 MK_SHARED_LIB	= @MK_SHARED_LIB@
+REL_VERSION	= @nc_cv_rel_version@
+ABI_VERSION	= @nc_cv_abi_version@
 
 RANLIB		= @RANLIB@
 

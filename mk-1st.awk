@@ -4,6 +4,12 @@
 #	model (directory into which we compile, e.g., "obj")
 #	suffix (e.g., "_g.a", for debug libraries)
 #	MODEL (e.g., "DEBUG", uppercase; toupper is not portable)
+#	DoLinks ("yes" or "no", flag to add symbolic links)
+#	rmSoLocs ("yes" or "no", flag to add extra clean target)
+#
+# Notes:
+#	CLIX's nawk doesn't like underscores in command-line variable names.
+#	Mixed-case is ok.
 #
 function symlink(src,dst) {
 		if ( src != dst ) {
@@ -14,7 +20,7 @@ function symlink(src,dst) {
 function sharedlinks(directory) {
 		if ( end_name != lib_name ) {
 			printf "\tcd %s && (", directory
-			abi_name = sprintf("%s.%s", lib_name, ABI_VERSION);
+			abi_name = sprintf("%s.$(ABI_VERSION)", lib_name);
 			symlink(end_name, abi_name);
 			symlink(abi_name, lib_name);
 			printf ")\n"
@@ -26,8 +32,8 @@ function removelinks() {
 		}
 	}
 function installed_name() {
-		if ( SYSTYPE == "Linux" || SYSTYPE == "SunOS" ) {
-			return sprintf("%s.%s", lib_name, REL_VERSION);
+		if ( DO_LINKS == "yes" ) {
+			return sprintf("%s.$(REL_VERSION)", lib_name);
 		} else {
 			return lib_name;
 		}
@@ -58,7 +64,11 @@ END	{
 			lib_name = sprintf("lib%s%s", name, suffix)
 			if ( MODEL == "SHARED" )
 			{
-				end_name = installed_name();
+				if ( DoLinks == "yes" ) {
+					end_name = sprintf("%s.$(REL_VERSION)", lib_name);
+				} else {
+					end_name = lib_name;
+				}
 				printf "../lib/%s : $(%s_OBJS)\n", lib_name, MODEL
 				print  "\t@-rm -f $@"
 				printf "\t$(MK_SHARED_LIB) $(%s_OBJS)\n", MODEL
@@ -68,7 +78,7 @@ END	{
 				printf "\t@echo installing ../lib/%s as $(libdir)/%s \n", lib_name, end_name
 				printf "\t$(INSTALL_DATA) ../lib/%s $(libdir)/%s \n", lib_name, end_name
 				sharedlinks("$(libdir)")
-				if ( SYSTYPE == "IRIX" ) {
+				if ( rmSoLocs == "yes" ) {
 					print  ""
 					print  "clean ::"
 					printf "\t@-rm -f so_locations\n"

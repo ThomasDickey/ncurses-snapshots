@@ -151,9 +151,8 @@ do
 				MODEL=$NC_ITEM \
 				model=$nc_subdir \
 				suffix=$nc_suffix \
-				SYSTYPE=$nc_cv_systype \
-				REL_VERSION=$nc_cv_rel_version \
-				ABI_VERSION=$nc_cv_abi_version \
+				DoLinks=$nc_cv_do_symlinks \
+				rmSoLocs=$nc_cv_rm_so_locs \
 				$srcdir/$nc_dir/modules >>$nc_dir/Makefile
 			$AWK -f $srcdir/mk-2nd.awk \
 				name=$nc_dir \
@@ -316,42 +315,87 @@ dnl Note: $(LOCAL_LDFLAGS) is used to link executables that will run within the
 dnl build-tree, i.e., by making use of the libraries that are compiled in ../lib
 dnl We avoid compiling-in a ../lib path for the shared library since that can
 dnl lead to unexpected results at runtime.
+dnl
+dnl The variable 'nc_cv_do_symlinks' is used to control whether we configure
+dnl to install symbolic links to the rel/abi versions of shared libraries.
+dnl
+dnl Some loaders leave 'so_locations' lying around.  It's nice to clean up.
 AC_DEFUN([NC_SHARED_OPTS],
 [
 	AC_REQUIRE([NC_SYSTYPE])
 	AC_REQUIRE([NC_VERSION])
  	LOCAL_LDFLAGS=
+
+	nc_cv_do_symlinks=no
+	nc_cv_rm_so_locs=no
+
 	case $nc_cv_systype in
-	Linux)
-		CC_SHARED_OPTS='-fPIC'
- 		MK_SHARED_LIB="gcc -o \$[@].$nc_cv_rel_version -shared -Wl,-soname,\`basename \$[@].$nc_cv_abi_version\`,-stats"
-		if test $DFT_LWR_MODEL = "shared" ; then
- 			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
+	HP_UX)
+		# (untested: gcc 2.5.8 doesn't do PIC, and I don't have c89)
+		if test "${CC}" = "gcc"; then
+			CC_SHARED_OPTS='-fPIC'
+		else
+			CC_SHARED_OPTS='+Z'
 		fi
-		;;
-	UNIX_SV)
-		CC_SHARED_OPTS='-KPIC'
-		MK_SHARED_LIB='ld -d y -G -o $[@]'
+		MK_SHARED_LIB='ld -b -o $[@]'
 		;;
 	IRIX)
+		# tested with IRIX 5.2 and 'cc'.
 		if test "${CC}" = "gcc"; then
 			CC_SHARED_OPTS='-fPIC'
 		else
 			CC_SHARED_OPTS='-KPIC'
 		fi
 		MK_SHARED_LIB='ld -shared -rdata_shared -soname `basename $[@]` -o $[@]'
+		nc_cv_rm_so_locs=yes
+		;;
+	Linux)
+		# tested with Linux 1.2.8 and gcc 2.7.0 (ELF)
+		CC_SHARED_OPTS='-fPIC'
+ 		MK_SHARED_LIB="gcc -o \$[@].\$(REL_VERSION) -shared -Wl,-soname,\`basename \$[@].\$(ABI_VERSION)\`,-stats"
+		if test $DFT_LWR_MODEL = "shared" ; then
+ 			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
+		fi
+		nc_cv_do_symlinks=yes
 		;;
 	NetBSD)
 		CC_SHARED_OPTS='-fpic -DPIC'
 		MK_SHARED_LIB='ld -Bshareable -o $[@]'
 		;;
+	OSF1)
+		# tested with OSF/1 V3.2 and 'cc'
+		# tested with OSF/1 V3.2 and gcc 2.6.3 (but the c++ demo didn't
+		# link with shared libs).
+		CC_SHARED_OPTS=''
+ 		MK_SHARED_LIB="ld -o \$[@].\$(REL_VERSION) -shared -soname \`basename \$[@].\$(ABI_VERSION)\`"
+		if test $DFT_LWR_MODEL = "shared" ; then
+ 			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
+		fi
+		nc_cv_do_symlinks=yes
+		nc_cv_rm_so_locs=yes
+		;;
 	SunOS)
+		# tested with SunOS 4.1.1 and gcc 2.7.0
+		# tested with SunOS 5.3 (solaris 2.3) and gcc 2.7.0
 		if test $ac_cv_prog_gcc = yes; then
 			CC_SHARED_OPTS='-fpic'
 		else
 			CC_SHARED_OPTS='-pic'
 		fi
-		MK_SHARED_LIB="ld -assert pure-text -o \$[@].$nc_cv_rel_version"
+		case `uname -r` in
+		4.*)
+			MK_SHARED_LIB="ld -assert pure-text -o \$[@].\$(REL_VERSION)"
+			;;
+		5.*)
+			MK_SHARED_LIB="ld -d y -G -o \$[@].\$(REL_VERSION)"
+			;;
+		esac
+		nc_cv_do_symlinks=yes
+		;;
+	UNIX_SV)
+		# tested with UnixWare 1.1.2
+		CC_SHARED_OPTS='-KPIC'
+		MK_SHARED_LIB='ld -d y -G -o $[@]'
 		;;
 	*)
 		CC_SHARED_OPTS='unknown'
@@ -445,7 +489,9 @@ dnl libraries).
 AC_DEFUN([NC_SYSTYPE],
 [
 AC_CACHE_VAL(nc_cv_systype,[
-nc_cv_systype="`(uname -s || hostname) 2>/dev/null | sed 1q`"
+changequote(,)dnl
+nc_cv_systype="`(uname -s || hostname || echo unknown) 2>/dev/null |sed -e s'/[:\/.-]/_/'g  | sed 1q`"
+changequote([,])dnl
 if test -z "$nc_cv_systype"; then nc_cv_systype=unknown;fi
 ])
 AC_MSG_RESULT(System type is $nc_cv_systype)
@@ -527,4 +573,7 @@ nc_cv_abi_version=`egrep 'SHARED_ABI[ 	]*=' $srcdir/dist.mk | sed -e 's/^[^0-9]*
 changequote([,])dnl
 ])
 AC_MSG_RESULT(Configuring NCURSES $nc_cv_rel_version ABI $nc_cv_abi_version (`date`))
+dnl We need these values in the generated makefiles
+AC_SUBST(nc_cv_rel_version)
+AC_SUBST(nc_cv_abi_version)
 ])dnl

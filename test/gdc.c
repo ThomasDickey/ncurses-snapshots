@@ -11,6 +11,7 @@
 #include <signal.h>
 #include <curses.h>
 #include <stdlib.h>
+#include <string.h>
 #ifndef NONPOSIX
 #include <unistd.h>
 #endif
@@ -21,7 +22,7 @@
 #define YDEPTH	5
 
 /* it won't be */
-long now; /* yeah! */
+time_t now; /* yeah! */
 struct tm *tm;
 
 short disp[11] = {

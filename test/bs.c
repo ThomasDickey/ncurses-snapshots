@@ -5,6 +5,7 @@
  *		by Eric S. Raymond <esr@snark.thyrsus.com>
  * v1.2 with color support and minor portability fixes, November 1990
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
+ * v2.1 with ncurses mouse support, September 1995
  */
 #define _POSIX_SOURCE
 
@@ -70,6 +71,8 @@ static int getcoord(int);
 #define CXBASE	48
 #define CY(y)	(CYBASE + (y))
 #define CX(x)	(CXBASE + (x)*3)
+#define CYINV(y)	((y) - CYBASE)
+#define CXINV(x)	(((x) - CXBASE) / 3)
 #define cgoto(y, x)	(void)move(CY(y), CX(x))
 
 #define ONBOARD(x, y)	(x >= 0 && x < BWIDTH && y >= 0 && y < BDEPTH)
@@ -251,6 +254,9 @@ static void intro(void)
     init_pair(COLOR_YELLOW, COLOR_YELLOW, COLOR_BLACK);
 #endif /* A_COLOR */
 
+#ifdef NCURSES_MOUSE_VERSION
+    (void) mousemask(BUTTON1_CLICKED, (mmask_t *)NULL);
+#endif /* NCURSES_MOUSE_VERSION*/
 }		    
 
 /* VARARGS1 */
@@ -583,6 +589,28 @@ static int getcoord(int atcpu)
 	    (void)clearok(stdscr, TRUE);
 	    (void)refresh();
 	    break;
+#ifdef NCURSES_MOUSE_VERSION
+	case KEY_MOUSE:
+	    {
+		MEVENT	myevent;
+
+		getmouse(&myevent);
+		if (atcpu
+			&& myevent.y >= CY(0) && myevent.y <= CY(BDEPTH)
+			&& myevent.x >= CX(0) && myevent.x <= CX(BDEPTH))
+		{
+		    curx = CXINV(myevent.x);
+		    cury = CYINV(myevent.y);
+		    return(' ');
+		}
+		else
+		{
+		    beep();
+		    continue;
+		}
+	    }
+
+#endif /* NCURSES_MOUSE_VERSION */
 	default:
 	    if (atcpu)
 		(void) mvaddstr(CYBASE + BDEPTH + 1, CXBASE + 11, "      ");
