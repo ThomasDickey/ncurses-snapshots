@@ -25,7 +25,7 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.3 $
+--  $Revision: 1.4 $
 ------------------------------------------------------------------------------
 include(`Mouse_Base_Defs')
 with System;
@@ -41,10 +41,10 @@ package Terminal_Interface.Curses.Mouse is
    No_Events  : constant Event_Mask;
    All_Events : constant Event_Mask;
 
-   type Mouse_Button is (Left,     -- AKA: Button 1
-                         Middle,   -- AKA: Button 2
-                         Right,    -- AKA: Button 3
-                         Button4,  -- AKA: Button 4
+   type Mouse_Button is (Left,     -- aka: Button 1
+                         Middle,   -- aka: Button 2
+                         Right,    -- aka: Button 3
+                         Button4,  -- aka: Button 4
                          Control,  -- Control Key
                          Shift,    -- Shift Key
                          Alt);     -- ALT Key
