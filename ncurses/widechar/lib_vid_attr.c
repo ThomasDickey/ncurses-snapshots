@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2002 Free Software Foundation, Inc.                        *
+ * Copyright (c) 2002,2004 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,13 +27,13 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey 2002                                           *
+ *  Author: Thomas E. Dickey                                                *
  ****************************************************************************/
 
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vid_attr.c,v 1.1 2002/05/11 20:55:26 tom Exp $")
+MODULE_ID("$Id: lib_vid_attr.c,v 1.2 2004/10/23 20:43:55 tom Exp $")
 
 #define set_color(mode, pair) mode &= ~A_COLOR; mode |= COLOR_PAIR(pair)
 
@@ -54,41 +54,31 @@ vid_attr(attr_t newmode, short pair, void *opts GCC_UNUSED)
     returnCode(vidputs(newmode, _nc_outch));
 }
 
+/*
+ * This implementation uses the same mask values for A_xxx and WA_xxx, so
+ * we can use termattrs() for part of the logic.
+ */
 NCURSES_EXPORT(attr_t)
 term_attrs(void)
 {
-    attr_t attrs = WA_NORMAL;
+    attr_t attrs;
 
     T((T_CALLED("term_attrs()")));
-    if (enter_alt_charset_mode)
-	attrs |= WA_ALTCHARSET;
+    attrs = termattrs();
 
-    if (enter_blink_mode)
-	attrs |= WA_BLINK;
-
-    if (enter_bold_mode)
-	attrs |= WA_BOLD;
-
-    if (enter_dim_mode)
-	attrs |= WA_DIM;
-
-    if (enter_reverse_mode)
-	attrs |= WA_REVERSE;
-
-    if (enter_standout_mode)
-	attrs |= WA_STANDOUT;
-
-    if (enter_protected_mode)
-	attrs |= WA_PROTECT;
-
-    if (enter_secure_mode)
-	attrs |= WA_INVIS;
-
-    if (enter_underline_mode)
-	attrs |= WA_UNDERLINE;
-
-    if (SP->_coloron)
-	attrs |= A_COLOR;
+    /* these are only supported for wide-character mode */
+    if (enter_horizontal_hl_mode)
+	attrs |= WA_HORIZONTAL;
+    if (enter_left_hl_mode)
+	attrs |= WA_LEFT;
+    if (enter_low_hl_mode)
+	attrs |= WA_LOW;
+    if (enter_right_hl_mode)
+	attrs |= WA_RIGHT;
+    if (enter_top_hl_mode)
+	attrs |= WA_TOP;
+    if (enter_vertical_hl_mode)
+	attrs |= WA_VERTICAL;
 
     returnAttr(attrs);
 }

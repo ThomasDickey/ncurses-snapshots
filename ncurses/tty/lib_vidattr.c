@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -64,7 +64,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.39 2001/08/26 00:40:46 Philippe.Blain Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.40 2004/10/23 20:30:31 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -229,22 +229,12 @@ vidputs
 	TurnOn(A_PROTECT,	enter_protected_mode);
 	TurnOn(A_INVIS,		enter_secure_mode);
 	TurnOn(A_UNDERLINE,	enter_underline_mode);
-#ifdef enter_horizontal_hl_mode
+#if USE_WIDEC_SUPPORT
 	TurnOn(A_HORIZONTAL,	enter_horizontal_hl_mode);
-#endif
-#ifdef enter_left_hl_mode
 	TurnOn(A_LEFT,		enter_left_hl_mode);
-#endif
-#ifdef enter_low_hl_mode
 	TurnOn(A_LOW,		enter_low_hl_mode);
-#endif
-#ifdef enter_right_hl_mode
 	TurnOn(A_RIGHT,		enter_right_hl_mode);
-#endif
-#ifdef enter_top_hl_mode
 	TurnOn(A_TOP,		enter_top_hl_mode);
-#endif
-#ifdef enter_vertical_hl_mode
 	TurnOn(A_VERTICAL,	enter_vertical_hl_mode);
 #endif
 	/* *INDENT-ON* */

@@ -1,10 +1,24 @@
--- $Id: NEWS,v 1.842 2004/10/16 21:56:58 tom Exp $
+-- $Id: NEWS,v 1.843 2004/10/23 20:38:48 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20041023
+	+ modify term_attrs() to use termattrs(), add the extended attributes
+	  such as enter_horizontal_hl_mode for WA_HORIZONTAL to term_attrs().
+	+ add logic in waddch_literal() to clear orphaned cells when one
+	  multi-column character partly overwrites another.
+	+ improved logic for clearing cells when a multi-column character
+	  must be wrapped to a new line.
+	+ revise storage of cells for multi-column characters to correct a
+	  problem with repainting.  In the old scheme, it was possible for
+	  doupdate() to decide that only part of a multi-column character
+	  should be repainted since the filler cells stored only an attribute
+	  to denote them as fillers, rather than the character value and the
+	  attribute.
 
 20041016
 	+ minor fixes for traces.
