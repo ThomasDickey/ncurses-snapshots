@@ -25,7 +25,7 @@
 #include "cursesw.h"
 #include "internal.h"
 
-MODULE_ID("$Id: cursesw.cc,v 1.10 1997/10/20 21:26:35 juergen Exp $")
+MODULE_ID("$Id: cursesw.cc,v 1.11 1998/11/10 19:08:30 juergen Exp $")
 
 #define COLORS_NEED_INITIALIZATION  -1
 #define COLORS_NOT_INITIALIZED       0
@@ -35,6 +35,12 @@ MODULE_ID("$Id: cursesw.cc,v 1.10 1997/10/20 21:26:35 juergen Exp $")
 // declare static variables for the class
 long NCursesWindow::count = 0L;
 bool NCursesWindow::b_initialized = FALSE;
+
+#if defined(__GNUG__)
+#  ifndef _IO_va_list
+#    define _IO_va_list char *
+#  endif
+#endif
 
 int
 NCursesWindow::scanw(const char* fmt, ...)
@@ -46,7 +52,7 @@ NCursesWindow::scanw(const char* fmt, ...)
     int result = wgetstr(w, buf);
     if (result == OK) {
 	strstreambuf ss(buf, BUFSIZ);
-	result = ss.vscan(fmt, args);
+	result = ss.vscan(fmt, (_IO_va_list)args);
     }
     va_end(args);
     return result;
@@ -68,7 +74,7 @@ NCursesWindow::scanw(int y, int x, const char* fmt, ...)
 	result = wgetstr(w, buf);
 	if (result == OK) {
 	    strstreambuf ss(buf, BUFSIZ);
-	    result = ss.vscan(fmt, args);
+	    result = ss.vscan(fmt, (_IO_va_list)args);
 	}
     }
     va_end(args);

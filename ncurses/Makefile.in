@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.54 1998/11/08 00:07:39 tom Exp $
+# $Id: Makefile.in,v 1.57 1998/11/15 00:27:34 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -139,6 +139,8 @@ TEST_PROGS = \
 	hashmap$x \
 	lib_mvcur$x
 
+base	= $(srcdir)/base
+serial	= $(srcdir)/tty
 tinfo	= $(srcdir)/tinfo
 trace	= $(srcdir)/trace
 
@@ -155,11 +157,11 @@ $(INSTALL_PREFIX)$(libdir) :
 ./fallback.c : $(tinfo)/MKfallback.sh
 	sh $(tinfo)/MKfallback.sh $(FALLBACK_LIST) >$@
 
-./lib_gen.c : $(srcdir)/MKlib_gen.sh ../include/curses.h
-	sh $(srcdir)/MKlib_gen.sh "$(CPP)" "$(AWK)" <../include/curses.h >$@
+./lib_gen.c : $(base)/MKlib_gen.sh ../include/curses.h
+	sh $(base)/MKlib_gen.sh "$(CPP)" "$(AWK)" <../include/curses.h >$@
 
-../include/nomacros.h : $(srcdir)/MKlib_gen.sh ../include/curses.h
-	sh $(srcdir)/MKlib_gen.sh "$(CPP)" "$(AWK)" <../include/curses.h | \
+../include/nomacros.h : $(base)/MKlib_gen.sh ../include/curses.h
+	sh $(base)/MKlib_gen.sh "$(CPP)" "$(AWK)" <../include/curses.h | \
 		fgrep undef >$@
 
 keys.tries: make_keys$x $(tinfo)/keys.list 
@@ -175,8 +177,8 @@ make_hash$x : \
 		../include/hashsize.h
 	$(HOSTCC) -o $@ $(HOSTCCFLAGS) -DMAIN_PROGRAM $(tinfo)/comp_hash.c $(HOSTLDFLAGS)
 
-./expanded.c : $(srcdir)/MKexpanded.sh
-	sh $(srcdir)/MKexpanded.sh "$(CPP)" $(CPPFLAGS)
+./expanded.c : $(serial)/MKexpanded.sh
+	sh $(serial)/MKexpanded.sh "$(CPP)" $(CPPFLAGS)
 
 ./comp_captab.c: \
 		make_hash$x \
@@ -184,8 +186,8 @@ make_hash$x : \
 		$(tinfo)/MKcaptab.awk
 	sh $(tinfo)/MKcaptab.awk $(AWK) $(srcdir)/../include/Caps > $@
 
-./lib_keyname.c: $(tinfo)/keys.list $(srcdir)/MKkeyname.awk
-	$(AWK) -f $(srcdir)/MKkeyname.awk $(tinfo)/keys.list > $@
+./lib_keyname.c: $(tinfo)/keys.list $(base)/MKkeyname.awk
+	$(AWK) -f $(base)/MKkeyname.awk $(tinfo)/keys.list > $@
 
 ./names.c ./codes.c: $(tinfo)/MKnames.awk
 	$(AWK) -f $(tinfo)/MKnames.awk $(srcdir)/../include/Caps
@@ -193,8 +195,8 @@ make_hash$x : \
 	cat namehdr boolcodes numcodes strcodes codeftr >./codes.c
 	-rm -f namehdr nameftr codeftr boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes
 
-./unctrl.c: $(srcdir)/MKunctrl.awk
-	echo | $(AWK) -f $(srcdir)/MKunctrl.awk >$@
+./unctrl.c: $(base)/MKunctrl.awk
+	echo | $(AWK) -f $(base)/MKunctrl.awk >$@
 
 tags:
 	ctags *.[ch]
@@ -225,18 +227,18 @@ realclean :: distclean
 # These rules build test-programs for the modules that have test-drivers
 test_progs : $(TEST_PROGS)
 
-captoinfo$x : $(srcdir)/captoinfo.c $(TEST_DEPS)
-	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DMAIN $(srcdir)/captoinfo.c $(TEST_LDFLAGS)
+captoinfo$x : $(tinfo)/captoinfo.c $(TEST_DEPS)
+	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DMAIN $(tinfo)/captoinfo.c $(TEST_LDFLAGS)
 
-hardscroll$x : $(srcdir)/hardscroll.c $(TEST_DEPS)
-	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DSCROLLDEBUG $(srcdir)/hardscroll.c $(TEST_LDFLAGS)
+hardscroll$x : $(serial)/hardscroll.c $(TEST_DEPS)
+	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DSCROLLDEBUG $(serial)/hardscroll.c $(TEST_LDFLAGS)
 
-hashmap$x : $(srcdir)/hashmap.c $(TEST_DEPS)
-	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DHASHDEBUG $(srcdir)/hashmap.c $(srcdir)/hardscroll.c $(TEST_LDFLAGS)
+hashmap$x : $(serial)/hashmap.c $(TEST_DEPS)
+	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DHASHDEBUG $(serial)/hardscroll.c $(TEST_LDFLAGS)
 
-lib_mvcur$x : $(srcdir)/lib_mvcur.c $(TEST_DEPS) \
+lib_mvcur$x : $(serial)/lib_mvcur.c $(TEST_DEPS) \
 		../@DFT_OBJ_SUBDIR@/dump_entry.o
-	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DNCURSES_TEST -I$(srcdir)/../progs $(srcdir)/lib_mvcur.c ../@DFT_OBJ_SUBDIR@/dump_entry.o $(TEST_LDFLAGS)
+	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DNCURSES_TEST -I$(serial)/../progs $(serial)/lib_mvcur.c ../@DFT_OBJ_SUBDIR@/dump_entry.o $(TEST_LDFLAGS)
 
 ../@DFT_OBJ_SUBDIR@/dump_entry.o:
 	cd ../progs && $(MAKE) ../@DFT_OBJ_SUBDIR@/dump_entry.o

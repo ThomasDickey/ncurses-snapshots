@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.148 1998/10/18 00:08:26 tom Exp $
+dnl $Id: aclocal.m4,v 1.149 1998/11/14 23:51:14 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1154,9 +1154,9 @@ shift
 mandir=\{{$}}1
 shift
 
-for i in \{{$}}*
-do
+for i in \{{$}}* ; do
 case \$i in #(vi
+*.orig|*.rej) ;; #(vi
 *.[0-9]*)
 	section=\`expr "\$i" : '.*\\.\\([0-9]\\)[xm]*'\`;
 	if test \$verb = installing ; then

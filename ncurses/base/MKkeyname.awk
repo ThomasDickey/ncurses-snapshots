@@ -6,7 +6,6 @@ BEGIN {
 	print "#include <stdlib.h>"
 	print "#include <string.h>"
 	print "#include <curses.h>"
-	print "#include <term.h>"
 	print ""
 	print "struct kn {"
 	print "\tconst char *name;"

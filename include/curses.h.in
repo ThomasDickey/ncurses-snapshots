@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.70 1998/11/08 00:22:56 tom Exp $ */
+/* $Id: curses.h.in,v 1.71 1998/11/14 22:06:58 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -791,7 +791,7 @@ extern int whline(WINDOW *, chtype, int);		/* implemented */
 #ifdef _XOPEN_SOURCE_EXTENDED
 extern int whline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
-extern chtype winch(WINDOW *);				/* generated */
+extern chtype winch(WINDOW *);				/* implemented */
 extern int winchnstr(WINDOW *, chtype *, int);		/* implemented */
 extern int winchstr(WINDOW *, chtype *);		/* generated */
 extern int winnstr(WINDOW *, char *, int);		/* implemented */
@@ -915,7 +915,6 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define getparx(win)		((win)?(win)->_parx:ERR)
 #define getpary(win)		((win)?(win)->_pary:ERR)
 
-#define winch(win)       	((win)?(win)->_line[(win)->_cury].text[(win)->_curx]:0)
 #define wstandout(win)      	(wattrset(win,A_STANDOUT))
 #define wstandend(win)      	(wattrset(win,A_NORMAL))
 #define wattr_set(win,a,p,opts) ((win)->_attrs = (((a) & ~A_COLOR) | COLOR_PAIR(p)), OK)

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.24 1998/04/04 00:49:59 tom Exp $
+# $Id: Makefile.in,v 1.25 1998/11/10 19:08:30 juergen Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -74,10 +74,8 @@ CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 CFLAGS_NORMAL	= $(CCFLAGS)
 CFLAGS_DEBUG	= $(CCFLAGS) @CC_G_OPT@ -DTRACE
 CFLAGS_PROFILE	= $(CCFLAGS) -pg
-# Juergen Pfeifer reports:
-# "Unfortunately -O crashes my linker on Linux and -O2 works"
-# If your linker coughs and dies, try uncommenting the -O2
-CFLAGS_SHARED	= $(CCFLAGS) @CC_SHARED_OPTS@ # -O2
+
+CFLAGS_SHARED	= $(CCFLAGS) @CC_SHARED_OPTS@
 
 CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 

@@ -1,10 +1,27 @@
--- $Id: NEWS,v 1.386 1998/11/08 01:33:41 tom Exp $
+-- $Id: NEWS,v 1.389 1998/11/15 00:24:09 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+981114
+	+ modify install-script for manpages to skip over .orig and .rej files
+	  (request by Larry Virden).
+	> patches/discussion by Alexander Lukyanov:
+	+ move base-library sources into ncurses/base and tty (serial terminal)
+	  sources into ncurses/tty, as part of Alexander Lukyanov's proposed
+	  changes to ncurses library.
+	+ copy _tracemouse() into ncurses.c so that lib_tracemse.c need not
+	  be linked into the normal ncurses library.
+	+ move macro winch to a function, to hide details of struct ldat
+	> patches by Juergen Pfeifer:
+	+ fix a potential compile problem in cursesw.cc 
+	+ some Ada95 cosmetics 
+	+ fix a gen.c problem when compiling on 64-Bit machines 
+	+ fix Ada95/gen/Makefile.in "-L" linker switch 
+	+ modify Ada95 makefiles to use the INSTALL_PREFIX setting.
 
 981107
 	+ ifdef'd out lib_freeall.c when not configured.
