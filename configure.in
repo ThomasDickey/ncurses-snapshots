@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.263 2002/01/27 02:10:07 tom Exp $
+dnl $Id: configure.in,v 1.265 2002/02/16 18:59:15 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20000819)
-AC_REVISION($Revision: 1.263 $)
+AC_REVISION($Revision: 1.265 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -606,9 +606,9 @@ AC_SUBST(BROKEN_LINKER)
 
 ###   use option --with-bool to override bool's type
 AC_MSG_CHECKING(for type of bool)
-AC_ARG_WITH(ospeed,
+AC_ARG_WITH(bool,
 	[  --with-bool=TYPE        override fallback type of bool variable],
-	[NCURSES_BOOL=$withval],
+	[NCURSES_BOOL="$withval"],
 	[NCURSES_BOOL=auto])
 AC_MSG_RESULT($NCURSES_BOOL)
 AC_SUBST(NCURSES_BOOL)
@@ -617,7 +617,7 @@ AC_SUBST(NCURSES_BOOL)
 AC_MSG_CHECKING(for type of ospeed)
 AC_ARG_WITH(ospeed,
 	[  --with-ospeed=TYPE      override type of ospeed variable],
-	[NCURSES_OSPEED=$withval],
+	[NCURSES_OSPEED="$withval"],
 	[NCURSES_OSPEED=short])
 AC_MSG_RESULT($NCURSES_OSPEED)
 AC_SUBST(NCURSES_OSPEED)
@@ -1301,6 +1301,7 @@ LIB_SUBSETS="$LIB_SUBSETS"
 LIB_SUFFIX="$LIB_SUFFIX"
 LIB_TRACING="$LIB_TRACING"
 MAKE_TERMINFO="$MAKE_TERMINFO"
+NCURSES_OSPEED="$NCURSES_OSPEED"
 SRC_SUBDIRS="$SRC_SUBDIRS"
 TERMINFO="$TERMINFO"
 TINFO_NAME="$TINFO_NAME"

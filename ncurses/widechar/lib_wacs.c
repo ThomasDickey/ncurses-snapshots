@@ -33,7 +33,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_wacs.c,v 1.1 2002/02/10 01:18:42 tom Exp $")
+MODULE_ID("$Id: lib_wacs.c,v 1.2 2002/02/17 00:02:15 tom Exp $")
 
 NCURSES_EXPORT_VAR(cchar_t) * _nc_wacs = 0;
 
@@ -59,14 +59,14 @@ _nc_init_wacs(void)
 	int	value[2];
     } table[] = {
 	/* VT100 symbols */
-	{ 'l',	{ '+',	0x2514 }},	/* upper left corner */
-	{ 'm',	{ '+',	0x250c }},	/* lower left corner */
-	{ 'k',	{ '+',	0x2518 }},	/* upper right corner */
-	{ 'j',	{ '+',	0x2510 }},	/* lower right corner */
-	{ 't',	{ '+',	0x2524 }},	/* tee pointing left */
-	{ 'u',	{ '+',	0x251c }},	/* tee pointing right */
-	{ 'v',	{ '+',	0x252c }},	/* tee pointing up */
-	{ 'w',	{ '+',	0x2534 }},	/* tee pointing down */
+	{ 'l',	{ '+',	0x250c }},	/* upper left corner */
+	{ 'm',	{ '+',	0x2514 }},	/* lower left corner */
+	{ 'k',	{ '+',	0x2510 }},	/* upper right corner */
+	{ 'j',	{ '+',	0x2518 }},	/* lower right corner */
+	{ 't',	{ '+',	0x251c }},	/* tee pointing left */
+	{ 'u',	{ '+',	0x2524 }},	/* tee pointing right */
+	{ 'v',	{ '+',	0x2534 }},	/* tee pointing up */
+	{ 'w',	{ '+',	0x252c }},	/* tee pointing down */
 	{ 'q',	{ '-',	0x2500 }},	/* horizontal line */
 	{ 'x',	{ '|',	0x2502 }},	/* vertical line */
 	{ 'n',	{ '+',	0x253c }},	/* large plus or crossover */

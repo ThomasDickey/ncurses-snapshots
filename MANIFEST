@@ -320,6 +320,7 @@
 ./doc/html/man/curs_beep.3x.html
 ./doc/html/man/curs_bkgd.3x.html
 ./doc/html/man/curs_border.3x.html
+./doc/html/man/curs_border_set.3x.html
 ./doc/html/man/curs_clear.3x.html
 ./doc/html/man/curs_color.3x.html
 ./doc/html/man/curs_delch.3x.html
@@ -506,6 +507,7 @@
 ./man/curs_beep.3x
 ./man/curs_bkgd.3x
 ./man/curs_border.3x
+./man/curs_border_set.3x
 ./man/curs_clear.3x
 ./man/curs_color.3x
 ./man/curs_delch.3x
@@ -835,7 +837,10 @@
 ./ncurses/tty/tty_display.h
 ./ncurses/tty/tty_input.h
 ./ncurses/tty/tty_update.c
+./ncurses/widechar/lib_box_set.c
 ./ncurses/widechar/lib_cchar.c
+./ncurses/widechar/lib_hline_set.c
+./ncurses/widechar/lib_vline_set.c
 ./ncurses/widechar/lib_wacs.c
 ./ncurses/widechar/lib_wunctrl.c
 ./panel/Makefile.in
