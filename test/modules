@@ -1,5 +1,5 @@
 # Test-Program modules
-# $Id: modules,v 1.13 2000/02/13 01:05:13 tom Exp $
+# $Id: modules,v 1.14 2002/10/19 20:59:13 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -44,6 +44,7 @@ gdc		progs		$(srcdir)
 hanoi		progs		$(srcdir)
 hashtest	progs		$(srcdir)
 keynames	progs		$(srcdir)
+inserts		progs		$(srcdir)
 knight		progs		$(srcdir)
 lrtest		progs		$(srcdir)
 ncurses		progs		$(srcdir)	../include/panel.h ../include/menu.h ../include/form.h

@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: cardfile.c,v 1.19 2002/09/01 17:59:48 tom Exp $
+ * $Id: cardfile.c,v 1.20 2002/10/19 22:11:24 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text forms the content.
  */
@@ -41,14 +41,8 @@
 #include <form.h>
 #include <panel.h>
 
-#include <ctype.h>
-
 #define VISIBLE_CARDS 10
 #define OFFSET_CARD 2
-
-#ifndef CTRL
-#define CTRL(x)		((x) & 0x1f)
-#endif
 
 typedef struct _card {
     struct _card *link;

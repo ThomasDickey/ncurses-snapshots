@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.63 2002/02/03 00:54:10 china Exp $
+# $Id: Makefile.in,v 1.64 2002/10/19 20:59:41 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.           #
 #                                                                            #
@@ -97,6 +97,7 @@ TESTS = \
 	gdc$x \
 	hanoi$x \
 	hashtest$x \
+	inserts$x \
 	keynames$x \
 	knight$x \
 	lrtest$x \
@@ -148,6 +149,9 @@ hanoi$x: $(MODEL)/hanoi.o $(LOCAL_LIBS)
 
 hashtest$x: $(MODEL)/hashtest.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/hashtest.o $(LDFLAGS_DEFAULT)
+
+inserts$x: $(MODEL)/inserts.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/inserts.o $(LDFLAGS_DEFAULT)
 
 keynames$x: $(MODEL)/keynames.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/keynames.o $(LDFLAGS_DEFAULT)

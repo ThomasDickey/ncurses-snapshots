@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.228 2002/10/12 15:49:10 tom Exp $
+ * $Id: curses.priv.h,v 1.229 2002/10/26 22:14:37 tom Exp $
  *
  *	curses.priv.h
  *
@@ -433,6 +433,7 @@ struct screen {
 	void            (*_mouse_resume)(SCREEN *);
 	void            (*_mouse_wrap)  (SCREEN *);
 	int             _mouse_fd;      /* file-descriptor, if any */
+	char            *_mouse_xtermcap; /* string to enable/disable mouse */
 
 	/*
 	 * This supports automatic resizing

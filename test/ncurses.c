@@ -40,13 +40,9 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.180 2002/09/15 00:39:33 tom Exp $
+$Id: ncurses.c,v 1.181 2002/10/19 22:12:02 tom Exp $
 
 ***************************************************************************/
-
-#include <stdio.h>
-#include <ctype.h>
-#include <assert.h>
 
 #include <test.priv.h>
 

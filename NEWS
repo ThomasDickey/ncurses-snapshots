@@ -1,10 +1,59 @@
--- $Id: NEWS,v 1.714 2002/10/12 22:35:42 tom Exp $
+-- $Id: NEWS,v 1.718 2002/11/10 01:53:14 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20021109
+	+ split-out useful fragments in terminfo for vt100 and vt220 numeric
+	  keypad, i.e., vt100+keypad, vt100+pfkeys, vt100+fnkeys and
+	  vt220+keypad.  The last as embedded in various entries had ka3 and
+	  kb2 interchanged (report/discussion with Leonard den Ottolander
+	  <leonardjo@hetnet.nl>).
+	+ add check in tic for keypads consistent with vt100 layout.
+	+ improve checks in tic for color capabilities
+
+20021102
+	+ check for missing/empty/illegal terminfo name in _nc_read_entry()
+	  (report by Martin Mokrejs, where $TERM was set to an empty string).
+	+ rewrote lib_insch.c, combining it with lib_insstr.c so both handle
+	  tab and other control characters consistently (report by Philippe
+	  Blain).
+	+ remove an #undef for KEY_EVENT from curses.tail used in the
+	  experimental NCURSES_WGETCH_EVENTS feature.  The #undef confuses
+	  dpkg's build script (Debian #165897).
+	+ fix MKlib_gen.sh, working around the ironically named POSIXLY_CORRECT
+	  feature of GNU sed 4.0 (reported by Ervin Nemeth <airwin@inf.bme.hu>).
+
+20021026
+	+ implement logic in lib_mouse.c to handle position reports which are
+	  generated when XFree86 xterm is initialized with private modes 1002
+	  or 1003.  These are returned to the application as the
+	  REPORT_MOUSE_POSITION mask, which was not implemented.  Tested both
+	  with ncurses 'a' menu (prompted by discussion with Larry Riedel
+	  <Larry@Riedel.org>).
+	+ modify lib_mouse.c to look for "XM" terminfo string, which allows
+	  one to override the escape sequence used to enable/disable mouse
+	  mode.  In particular this works for XFree86 xterm private modes
+	  1002 and 1003.  If "XM" is missing (note that this is an extended
+	  name), lib_mouse uses the conventional private mode 1000.
+	+ correct NOT_LOCAL() macro in lib_mvcur.c to refer to screen_columns
+	  where it used screen_lines (report by Philippe Blain).
+	+ correct makefile rules for the case when both --with-libtool and
+	  --with-gpm are given (report by Mr E_T <troll@logi.net.au>).
+	+ add note to terminfo manpage regarding the differences between
+	  setaf/setab and setf/setb capabilities (report by Pavel Roskin).
+
+20021019
+	+ remove redundant initialization of TABSIZE in newterm(), since it is
+	  already done in setupterm() (report by Philippe Blain).
+	+ add test/inserts.c, to test winnstr() and winsch().
+	+ replace 'sort' in dist.mk with script that sets locale to POSIX.
+	+ update URLs in announce.html.in (patch by Frederic L W Meunier).
+	+ remove glibc add-on files, which are no longer needed (report by
+	  Frederic L W Meunier).
 
 20021012 5.3 release for upload to ftp.gnu.org
 	+ modify ifdef's in etip.h.in to allow the etip.h header to compile

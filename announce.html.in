@@ -1,11 +1,12 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
 <!--
-  $Id: announce.html.in,v 1.44 2002/10/12 23:35:32 tom Exp $
+  $Id: announce.html.in,v 1.48 2002/10/19 21:46:46 tom Exp $
 -->
 <HTML>
 <HEAD>
-<TITLE>Announcing ncurses @VERSION@ Pre-Release</TITLE>
+<TITLE>Announcing ncurses @VERSION@</TITLE>
 <link rev=made href="mailto:bug-ncurses@gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </HEAD>
 <BODY>
 
@@ -35,9 +36,9 @@ the library and tools.<P>
 
 The ncurses distribution is available via anonymous FTP at
 the GNU distribution site
-<A HREF="ftp://ftp.gnu.org/pub/gnu/ncurses">ftp://ftp.gnu.org/pub/gnu/ncurses</A>.
+<A HREF="ftp://ftp.gnu.org/gnu/ncurses/">ftp://ftp.gnu.org/gnu/ncurses/</A>&nbsp;.
 <br>It is also available at
-<A HREF="ftp://invisible-island.net/ncurses">ftp://invisible-island.net/ncurses</A>.
+<A HREF="ftp://invisible-island.net/ncurses/">ftp://invisible-island.net/ncurses/</A>&nbsp;.
 
 <H1>Release Notes</H1>
 
@@ -317,61 +318,61 @@ including (versions starting with those noted):
 <DT> cdk
 <DD> Curses Development Kit
 <br>
-<A HREF="http://invisible-island.net/cdk/cdk.html">http://invisible-island.net/cdk</A>.
+<A HREF="http://invisible-island.net/cdk/">http://invisible-island.net/cdk/</A>
 <br>
-<A HREF="http://www.vexus.ca/CDK.html">http://www.vexus.ca/CDK.html</a>
+<A HREF="http://www.vexus.ca/products/CDK/">http://www.vexus.ca/products/CDK/</a>
 <DT> ded
 <DD> directory-editor
 <br>
-<A HREF="http://invisible-island.net/ded/ded.html">http://invisible-island.net/ded</A>.
+<A HREF="http://invisible-island.net/ded/">http://invisible-island.net/ded/</A>
 <DT> dialog
 <DD> the underlying application used in Slackware's setup, and the basis
 for similar applications on GNU/Linux.
 <br>
-<A HREF="http://invisible-island.net/dialog/dialog.html">http://invisible-island.net/dialog</A>.
+<A HREF="http://invisible-island.net/dialog/">http://invisible-island.net/dialog/</A>
 <DT> lynx
 <DD> the character-screen WWW browser
 <br>
-<A HREF="http://lynx.isc.org/release/">http://lynx.isc.org/release</A>.
+<A HREF="http://lynx.isc.org/release/">http://lynx.isc.org/release/</A>
 <DT> Midnight Commander
 <DD> file manager
 <br>
-<A HREF="www.gnome.org/mc/">www.gnome.org/mc/</A>.
+<A HREF="http://www.ibiblio.org/mc/">http://www.ibiblio.org/mc/</A>
 <DT> mutt
 <DD> mail utility
 <br>
-<A HREF="http://www.mutt.org">http://www.mutt.org</A>.
+<A HREF="http://www.mutt.org/">http://www.mutt.org/</A>
 <DT> ncftp
 <DD> file-transfer utility
 <br>
-<A HREF="http://www.ncftp.com">http://www.ncftp.com</A>.
+<A HREF="http://www.ncftp.com/">http://www.ncftp.com/</A>
 <DT> nvi
 <DD> New vi versions 1.50 are able to use ncurses versions 1.9.7 and later.
 <br>
-<A HREF="http://www.bostic.com/vi/">http://www.bostic.com/vi/</A>.
+<A HREF="http://www.bostic.com/vi/">http://www.bostic.com/vi/</A>
 <DT> tin
 <DD> newsreader, supporting color, MIME
 <br>
-<A HREF="http://www.tin.org">http://www.tin.org</A>.
+<A HREF="http://www.tin.org/">http://www.tin.org/</A>
 <DT> taper
 <DD> tape archive utility
 <br>
-<A HREF="http://members.iinet.net.au/~yusuf/taper/">http://members.iinet.net.au/~yusuf/taper/</A>.
+<A HREF="http://taper.e-survey.net.au/">http://taper.e-survey.net.au/</A>
 <DT> vh-1.6
 <DD> Volks-Hypertext browser for the Jargon File
 <br>
-<A HREF="http://www.bg.debian.org/Packages/unstable/text/vh.html">http://www.bg.debian.org/Packages/unstable/text/vh.html</A>.
+<A HREF="http://www.debian.org/Packages/unstable/text/vh.html">http://www.debian.org/Packages/unstable/text/vh.html</A>
 </DL>
 as well as some that use ncurses for the terminfo support alone:
 <DL>
 <DT> minicom
 <DD> terminal emulator
 <br>
-<A HREF="http://www.pp.clinet.fi/~walker/minicom.html">http://www.pp.clinet.fi/~walker/minicom.html</A>.
+<A HREF="http://www.netsonic.fi/~walker/minicom.html">http://www.netsonic.fi/~walker/minicom.html</A>
 <DT> vile
 <DD> vi-like-emacs
 <br>
-<A HREF="http://invisible-island.net/vile/vile.html">http://invisible-island.net/vile</A>.
+<A HREF="http://invisible-island.net/vile/">http://invisible-island.net/vile/</A>
 </DL>
 <P>
 
@@ -382,7 +383,7 @@ a few games).
 
 The original developers of ncurses are <A
 HREF="mailto:zmbenhal@netcom.com">Zeyd Ben-Halim</A> and
-<A HREF="http://www.ccil.org/~esr/home.html">Eric S. Raymond</A>.
+<A HREF="http://www.tuxedo.org/~esr/">Eric S. Raymond</A>.
 Ongoing work is being done by
 <A HREF="mailto:dickey@herndon4.his.com">Thomas Dickey</A>
 and
@@ -404,7 +405,7 @@ This list is open to anyone interested in helping with the development and
 testing of this package.<P>
 
 Beta versions of ncurses and patches to the current release are made available at
-<A HREF="ftp://invisible-island.net/ncurses">ftp://invisible-island.net/ncurses</A>.
+<A HREF="ftp://invisible-island.net/ncurses/">ftp://invisible-island.net/ncurses/</A>&nbsp;.
 
 <H2>Future Plans</H2>
 <UL>
@@ -418,12 +419,12 @@ on them, please join the ncurses list.
 
 The distribution includes and uses a version of the terminfo-format
 terminal description file maintained by Eric Raymond.
-<A HREF="http://earthspace.net/~esr/terminfo">http://earthspace.net/~esr/terminfo</A>.<P>
+<A HREF="http://www.tuxedo.org/~esr/terminfo/">http://www.tuxedo.org/~esr/terminfo/</A>&nbsp;.<P>
 
 You can find lots of information on terminal-related topics
 not covered in the terminfo file at
 <A HREF="http://www.cs.utk.edu/~shuford/terminal_index.html">Richard Shuford's
-archive</A>.
+archive</A>&nbsp;.
 </BODY>
 </HTML>
 <!--

@@ -166,13 +166,11 @@
 ./Ada95/src/terminal_interface.ads
 ./INSTALL
 ./MANIFEST
-./Makefile.glibc
 ./Makefile.in
 ./Makefile.os2
 ./NEWS
 ./README
 ./README.emx
-./README.glibc
 ./TO-DO
 ./aclocal.m4
 ./announce.html.in
@@ -673,6 +671,7 @@
 ./misc/chkdef.cmd
 ./misc/cleantic.cmd
 ./misc/cmpdef.cmd
+./misc/csort
 ./misc/emx.src
 ./misc/form.def
 ./misc/form.ref
@@ -736,7 +735,6 @@
 ./ncurses/base/lib_initscr.c
 ./ncurses/base/lib_insch.c
 ./ncurses/base/lib_insdel.c
-./ncurses/base/lib_insstr.c
 ./ncurses/base/lib_instr.c
 ./ncurses/base/lib_isendwin.c
 ./ncurses/base/lib_leaveok.c
@@ -913,12 +911,6 @@
 ./progs/toe.c
 ./progs/tput.c
 ./progs/tset.c
-./sysdeps/unix/sysv/linux/Makefile
-./sysdeps/unix/sysv/linux/alpha/configure
-./sysdeps/unix/sysv/linux/configure
-./sysdeps/unix/sysv/linux/edit_man.sed
-./sysdeps/unix/sysv/linux/edit_man.sh
-./sysdeps/unix/sysv/linux/run_tic.sh
 ./tack/COPYING
 ./tack/HISTORY
 ./tack/Makefile.in
@@ -961,6 +953,7 @@
 ./test/gdc.c
 ./test/hanoi.c
 ./test/hashtest.c
+./test/inserts.c
 ./test/keynames.c
 ./test/knight.c
 ./test/lrtest.c

@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.55 2002/04/20 17:32:47 tom Exp $
+# $Id: mk-1st.awk,v 1.56 2002/10/26 19:25:10 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000,2002 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -277,13 +277,13 @@ END	{
 				}
 				end_name = lib_name;
 				printf "../lib/%s : $(%s_OBJS)\n", lib_name, OBJS
-				printf "\tcd ../lib && $(LIBTOOL) $(%s) -o %s $(%s_OBJS:.o=.lo) -rpath $(DESTDIR)$(libdir) -version-info $(NCURSES_MAJOR):$(NCURSES_MINOR)\n", compile, lib_name, OBJS
+				printf "\tcd ../lib && $(LIBTOOL) $(%s) -o %s $(%s_OBJS:.o=.lo) -rpath $(DESTDIR)$(libdir) -version-info $(NCURSES_MAJOR):$(NCURSES_MINOR) $(SHLIB_LIST)\n", compile, lib_name, OBJS
 				print  ""
 				print  "install \\"
 				print  "install.libs \\"
 				printf "install.%s :: $(DESTDIR)$(libdir) ../lib/%s\n", name, lib_name
 				printf "\t@echo installing ../lib/%s as $(DESTDIR)$(libdir)/%s\n", lib_name, lib_name
-				printf "\tcd ../lib; $(LIBTOOL) $(INSTALL_DATA) %s $(DESTDIR)$(libdir)\n", lib_name
+				printf "\tcd ../lib; $(LIBTOOL) $(INSTALL) %s $(DESTDIR)$(libdir)\n", lib_name
 				print  ""
 				print  "uninstall \\"
 				print  "uninstall.libs \\"

@@ -75,6 +75,7 @@
 
 #include <curses.priv.h>
 #include <term.h>
+#include <tic.h>
 
 #if USE_GPM_SUPPORT
 #ifndef LINT			/* don't need this for llib-lncurses */
@@ -84,9 +85,20 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.61 2002/09/28 16:08:58 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.63 2002/10/27 00:43:45 tom Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
+
+#define	MASK_RELEASE(x)		((001 << (6 * ((x) - 1))))
+#define	MASK_PRESS(x)		((002 << (6 * ((x) - 1))))
+#define	MASK_CLICK(x)		((004 << (6 * ((x) - 1))))
+#define	MASK_DOUBLE_CLICK(x)	((010 << (6 * ((x) - 1))))
+#define	MASK_TRIPLE_CLICK(x)	((020 << (6 * ((x) - 1))))
+#define	MASK_RESERVED_EVENT(x)	((040 << (6 * ((x) - 1))))
+
+#define BUTTON_CLICKED  (BUTTON1_CLICKED  | BUTTON2_CLICKED  | BUTTON3_CLICKED)
+#define BUTTON_PRESSED  (BUTTON1_PRESSED  | BUTTON2_PRESSED  | BUTTON3_PRESSED)
+#define BUTTON_RELEASED (BUTTON1_RELEASED | BUTTON2_RELEASED | BUTTON3_RELEASED)
 
 #define INVALID_EVENT	-1
 
@@ -234,6 +246,21 @@ server_state(const int state)
 static int initialized;
 
 static void
+init_xterm_mouse(void)
+{
+    mousetype = M_XTERM;
+    SP->_mouse_xtermcap = tigetstr("XM");
+    if (!VALID_STRING(SP->_mouse_xtermcap))
+	SP->_mouse_xtermcap = "\033[?1000%?%p1%{1}%=%th%el%;";
+}
+
+static void
+enable_xterm_mouse(int enable)
+{
+    putp(tparm(SP->_mouse_xtermcap, enable));
+}
+
+static void
 initialize_mousetype(void)
 {
     static const char *xterm_kmous = "\033[M";
@@ -297,12 +324,12 @@ initialize_mousetype(void)
     /* we know how to recognize mouse events under "xterm" */
     if (key_mouse != 0) {
 	if (!strcmp(key_mouse, xterm_kmous)) {
-	    mousetype = M_XTERM;
+	    init_xterm_mouse();
 	    return;
 	}
     } else if (strstr(cur_term->type.term_names, "xterm") != 0) {
 	(void) _nc_add_to_try(&(SP->_keytry), xterm_kmous, KEY_MOUSE);
-	mousetype = M_XTERM;
+	init_xterm_mouse();
 	return;
     }
 }
@@ -397,11 +424,13 @@ static bool
 _nc_mouse_inline(SCREEN * sp)
 /* mouse report received in the keyboard stream -- parse its info */
 {
+    bool result = FALSE;
+
     TR(MY_TRACE, ("_nc_mouse_inline() called"));
 
     if (mousetype == M_XTERM) {
 	unsigned char kbuf[4];
-	MEVENT *prev;
+	mmask_t prev;
 	size_t grabbed;
 	int res;
 
@@ -455,55 +484,60 @@ _nc_mouse_inline(SCREEN * sp)
 
 	/* processing code goes here */
 	eventp->bstate = 0;
+	prev = PREV(eventp)->bstate;
+
+#ifdef USE_EMX_MOUSE
+#define PRESS_POSITION(n) \
+	eventp->bstate = MASK_PRESS(n); \
+	if (kbuf[0] & 0x40) \
+	    eventp->bstate = MASK_RELEASE(n)
+#else
+#define PRESS_POSITION(n) \
+	eventp->bstate = (prev & MASK_PRESS(n) \
+			? REPORT_MOUSE_POSITION \
+			: MASK_PRESS(n))
+#endif
+
 	switch (kbuf[0] & 0x3) {
 	case 0x0:
-	    eventp->bstate = BUTTON1_PRESSED;
-#ifdef USE_EMX_MOUSE
-	    if (kbuf[0] & 0x40)
-		eventp->bstate = BUTTON1_RELEASED;
-#endif
+	    PRESS_POSITION(1);
 	    break;
 
 	case 0x1:
-	    eventp->bstate = BUTTON2_PRESSED;
-#ifdef USE_EMX_MOUSE
-	    if (kbuf[0] & 0x40)
-		eventp->bstate = BUTTON2_RELEASED;
-#endif
+	    PRESS_POSITION(2);
 	    break;
 
 	case 0x2:
-	    eventp->bstate = BUTTON3_PRESSED;
-#ifdef USE_EMX_MOUSE
-	    if (kbuf[0] & 0x40)
-		eventp->bstate = BUTTON3_RELEASED;
-#endif
+	    PRESS_POSITION(3);
 	    break;
 
 	case 0x3:
 	    /*
-	     * Release events aren't reported for individual buttons,
-	     * just for the button set as a whole...
+	     * Release events aren't reported for individual buttons, just for
+	     * the button set as a whole.  However, because there are normally
+	     * no mouse events under xterm that intervene between press and
+	     * release, we can infer the button actually released by looking at
+	     * the previous event.
 	     */
-	    eventp->bstate =
-		(BUTTON1_RELEASED |
-		 BUTTON2_RELEASED |
-		 BUTTON3_RELEASED);
-	    /*
-	     * ...however, because there are no kinds of mouse events under
-	     * xterm that can intervene between press and release, we can
-	     * deduce which buttons were actually released by looking at the
-	     * previous event.
-	     */
-	    prev = PREV(eventp);
-	    if (!(prev->bstate & BUTTON1_PRESSED))
-		eventp->bstate &= ~BUTTON1_RELEASED;
-	    if (!(prev->bstate & BUTTON2_PRESSED))
-		eventp->bstate &= ~BUTTON2_RELEASED;
-	    if (!(prev->bstate & BUTTON3_PRESSED))
-		eventp->bstate &= ~BUTTON3_RELEASED;
+	    if (prev & (BUTTON_PRESSED | BUTTON_RELEASED)) {
+		eventp->bstate = BUTTON_RELEASED;
+		if (!(prev & BUTTON1_PRESSED))
+		    eventp->bstate &= ~BUTTON1_RELEASED;
+		if (!(prev & BUTTON2_PRESSED))
+		    eventp->bstate &= ~BUTTON2_RELEASED;
+		if (!(prev & BUTTON3_PRESSED))
+		    eventp->bstate &= ~BUTTON3_RELEASED;
+	    } else {
+		/*
+		 * XFree86 xterm will return a stream of release-events to
+		 * let the application know where the mouse is going, if the
+		 * private mode 1002 or 1003 is enabled.
+		 */
+		eventp->bstate = REPORT_MOUSE_POSITION;
+	    }
 	    break;
 	}
+	result = (eventp->bstate & REPORT_MOUSE_POSITION) ? TRUE : FALSE;
 
 	if (kbuf[0] & 4) {
 	    eventp->bstate |= BUTTON_SHIFT;
@@ -529,7 +563,7 @@ _nc_mouse_inline(SCREEN * sp)
 #endif
     }
 
-    return (FALSE);
+    return (result);
 }
 
 static void
@@ -551,7 +585,7 @@ mouse_activate(bool on)
 #ifdef USE_EMX_MOUSE
 	    server_state(1);
 #else
-	    putp("\033[?1000h");
+	    enable_xterm_mouse(1);
 #endif
 	    break;
 #if USE_GPM_SUPPORT
@@ -577,7 +611,7 @@ mouse_activate(bool on)
 #ifdef USE_EMX_MOUSE
 	    server_state(0);
 #else
-	    putp("\033[?1000l");
+	    enable_xterm_mouse(0);
 #endif
 	    break;
 #if USE_GPM_SUPPORT
@@ -657,7 +691,7 @@ _nc_mouse_parse(int runcount)
 	merge = FALSE;
 	for (ep = runp; (next = NEXT(ep)) != eventp; ep = next) {
 	    if (ep->x == next->x && ep->y == next->y
-		&& (ep->bstate & (BUTTON1_PRESSED | BUTTON2_PRESSED | BUTTON3_PRESSED))
+		&& (ep->bstate & BUTTON_PRESSED)
 		&& (!(ep->bstate & BUTTON1_PRESSED)
 		    == !(next->bstate & BUTTON1_RELEASED))
 		&& (!(ep->bstate & BUTTON2_PRESSED)
@@ -729,10 +763,8 @@ _nc_mouse_parse(int runcount)
 		    continue;
 
 		/* merge click events forward */
-		if ((ep->bstate &
-		     (BUTTON1_CLICKED | BUTTON2_CLICKED | BUTTON3_CLICKED))
-		    && (follower->bstate &
-			(BUTTON1_CLICKED | BUTTON2_CLICKED | BUTTON3_CLICKED))) {
+		if ((ep->bstate & BUTTON_CLICKED)
+		    && (follower->bstate & BUTTON_CLICKED)) {
 		    if ((eventmask & BUTTON1_DOUBLE_CLICKED)
 			&& (follower->bstate & BUTTON1_CLICKED)) {
 			follower->bstate &= ~BUTTON1_CLICKED;
@@ -760,8 +792,7 @@ _nc_mouse_parse(int runcount)
 		     (BUTTON1_DOUBLE_CLICKED
 		      | BUTTON2_DOUBLE_CLICKED
 		      | BUTTON3_DOUBLE_CLICKED))
-		    && (follower->bstate &
-			(BUTTON1_CLICKED | BUTTON2_CLICKED | BUTTON3_CLICKED))) {
+		    && (follower->bstate & BUTTON_CLICKED)) {
 		    if ((eventmask & BUTTON1_TRIPLE_CLICKED)
 			&& (follower->bstate & BUTTON1_CLICKED)) {
 			follower->bstate &= ~BUTTON1_CLICKED;
@@ -919,12 +950,12 @@ mousemask(mmask_t newmask, mmask_t * oldmask)
     _nc_mouse_init();
     if (mousetype != M_NONE) {
 	eventmask = newmask &
-	    (BUTTON_ALT | BUTTON_CTRL | BUTTON_SHIFT
-	     | BUTTON1_PRESSED | BUTTON1_RELEASED | BUTTON1_CLICKED
+	    (REPORT_MOUSE_POSITION | BUTTON_ALT | BUTTON_CTRL | BUTTON_SHIFT
+	     | BUTTON_PRESSED
+	     | BUTTON_RELEASED
+	     | BUTTON_CLICKED
 	     | BUTTON1_DOUBLE_CLICKED | BUTTON1_TRIPLE_CLICKED
-	     | BUTTON2_PRESSED | BUTTON2_RELEASED | BUTTON2_CLICKED
 	     | BUTTON2_DOUBLE_CLICKED | BUTTON2_TRIPLE_CLICKED
-	     | BUTTON3_PRESSED | BUTTON3_RELEASED | BUTTON3_CLICKED
 	     | BUTTON3_DOUBLE_CLICKED | BUTTON3_TRIPLE_CLICKED);
 
 	mouse_activate(eventmask != 0);
