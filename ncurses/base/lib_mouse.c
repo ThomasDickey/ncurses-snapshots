@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -84,7 +84,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.48 2000/01/08 17:34:43 tom Exp $");
+MODULE_ID("$Id: lib_mouse.c,v 1.50 2000/02/13 00:59:39 tom Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 

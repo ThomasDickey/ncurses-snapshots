@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -152,7 +152,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.62 2000/01/01 16:54:37 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.63 2000/02/13 01:02:34 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 

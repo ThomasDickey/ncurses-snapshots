@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,7 +41,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.42 2000/01/01 16:42:37 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.43 2000/02/13 00:59:39 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -56,7 +56,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_napms.c,v 1.7 2000/02/06 01:57:10 tom Exp $")
+MODULE_ID("$Id: lib_napms.c,v 1.8 2000/02/13 01:01:26 tom Exp $")
 
 int napms(int ms)
 {
