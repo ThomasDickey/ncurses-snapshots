@@ -1,0 +1,7 @@
+/*
+ * This is a template-file used to generate the "config.h" file.
+ *
+ * Rather than list every definition, the configuration script substitutes
+ * the definitions that it finds using 'sed'.
+ */
+@DEFS@
