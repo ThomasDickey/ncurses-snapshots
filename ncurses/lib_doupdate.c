@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.57 1997/04/05 21:15:48 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.59 1997/04/26 20:55:22 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -362,7 +362,7 @@ static inline int EmitRange(const chtype *ntext, int num)
 		    rep_count--;
 
 		UpdateAttrs(ntext0);
-		putp(tparm(repeat_char, ntext0 & A_CHARTEXT, rep_count));
+		putp(tparm(repeat_char, TextOf(ntext0), rep_count));
 		SP->_curscol += rep_count;
 
 		if (wrap_possible)
@@ -399,7 +399,7 @@ static int PutRange(
 	int first, int last)
 {
 	int j, run;
-	int cost = min(SP->_cup_cost, SP->_hpa_cost);
+	int cost = min(SP->_cup_ch_cost, SP->_hpa_ch_cost);
 
 	TR(TRACE_CHARPUT, ("PutRange(%p, %p, %d, %d, %d)",
 			 otext, ntext, row, first, last));

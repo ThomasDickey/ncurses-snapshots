@@ -32,7 +32,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.16 1997/04/20 03:04:16 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.18 1997/04/24 23:22:42 tom Exp $")
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
@@ -100,6 +100,8 @@ colors[] =
 	{ COLOR_WHITE,		"COLOR_WHITE" },
     };
 size_t n;
+unsigned save_nc_tracing = _nc_tracing;
+	_nc_tracing = 0;
 
 	strcpy(tmp++, "{");
 
@@ -133,6 +135,7 @@ size_t n;
 		strcat(tmp, "A_NORMAL");
 	}
 
+	_nc_tracing = save_nc_tracing;
 	return (strcat(buf,"}"));
 }
 
@@ -144,7 +147,7 @@ char *_traceattr(attr_t newmode)
 char *_tracechtype2(int bufnum, chtype ch)
 {
 char	*buf = _nc_trace_buf(bufnum, BUFSIZ);
-bool	found = FALSE;
+char	*found = 0;
 
     strcpy(buf, "{");
     if (ch & A_ALTCHARSET)
@@ -157,15 +160,15 @@ bool	found = FALSE;
 	    {'m', "ACS_LLCORNER"},	/* lower left corner */
 	    {'k', "ACS_URCORNER"},	/* upper right corner */
 	    {'j', "ACS_LRCORNER"},	/* lower right corner */
-	    {'t', "ACS_LTEE"},	/* tee pointing right */
-	    {'u', "ACS_RTEE"},	/* tee pointing left */
-	    {'v', "ACS_BTEE"},	/* tee pointing up */
-	    {'w', "ACS_TTEE"},	/* tee pointing down */
-	    {'q', "ACS_HLINE"},	/* horizontal line */
-	    {'x', "ACS_VLINE"},	/* vertical line */
-	    {'n', "ACS_PLUS"},	/* large plus or crossover */
-	    {'o', "ACS_S1"},	/* scan line 1 */
-	    {'s', "ACS_S9"},	/* scan line 9 */
+	    {'t', "ACS_LTEE"},		/* tee pointing right */
+	    {'u', "ACS_RTEE"},		/* tee pointing left */
+	    {'v', "ACS_BTEE"},		/* tee pointing up */
+	    {'w', "ACS_TTEE"},		/* tee pointing down */
+	    {'q', "ACS_HLINE"},		/* horizontal line */
+	    {'x', "ACS_VLINE"},		/* vertical line */
+	    {'n', "ACS_PLUS"},		/* large plus or crossover */
+	    {'o', "ACS_S1"},		/* scan line 1 */
+	    {'s', "ACS_S9"},		/* scan line 9 */
 	    {'`', "ACS_DIAMOND"},	/* diamond */
 	    {'a', "ACS_CKBOARD"},	/* checker board (stipple) */
 	    {'f', "ACS_DEGREE"},	/* degree symbol */
@@ -175,32 +178,32 @@ bool	found = FALSE;
 	    {'+', "ACS_RARROW"},	/* arrow pointing right */
 	    {'.', "ACS_DARROW"},	/* arrow pointing down */
 	    {'-', "ACS_UARROW"},	/* arrow pointing up */
-	    {'h', "ACS_BOARD"},	/* board of squares */
+	    {'h', "ACS_BOARD"},		/* board of squares */
 	    {'I', "ACS_LANTERN"},	/* lantern symbol */
-	    {'0', "ACS_BLOCK"},	/* solid square block */
-	    {'p', "ACS_S3"},	/* scan line 3 */
-	    {'r', "ACS_S7"},	/* scan line 7 */
+	    {'0', "ACS_BLOCK"},		/* solid square block */
+	    {'p', "ACS_S3"},		/* scan line 3 */
+	    {'r', "ACS_S7"},		/* scan line 7 */
 	    {'y', "ACS_LEQUAL"},	/* less/equal */
 	    {'z', "ACS_GEQUAL"},	/* greater/equal */
-	    {'{', "ACS_PI"},	/* Pi */
+	    {'{', "ACS_PI"},		/* Pi */
 	    {'|', "ACS_NEQUAL"},	/* not equal */
 	    {'}', "ACS_STERLING"},	/* UK pound sign */
 	    {'\0',(char *)0}
 	},
 	*sp;
 
-	for (cp = acs_chars; *cp; cp++)
+	for (cp = acs_chars; cp[0] && cp[1]; cp += 2)
 	{
 	    if (TextOf(cp[1]) == TextOf(ch))
 	    {
-		ch = TextOf(cp[0]);
-		found = TRUE;
-		break;
+		found = cp;
+		/* don't exit from loop - there may be redefinitions */
 	    }
 	}
 
-	if (found)
+	if (found != 0)
 	{
+	    ch = TextOf(*found);
 	    for (sp = names; sp->val; sp++)
 		if (sp->val == ch)
 		{
@@ -211,7 +214,7 @@ bool	found = FALSE;
 	}
     }
 
-    if (!found)
+    if (found == 0)
 	(void) strcat(buf, _tracechar(TextOf(ch)));
 
     if (AttrOf(ch) != A_NORMAL)

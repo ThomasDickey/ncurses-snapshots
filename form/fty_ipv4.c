@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_ipv4.c,v 1.1 1996/11/26 10:06:58 juergen Exp $")
+MODULE_ID("$Id: fty_ipv4.c,v 1.2 1997/04/26 22:06:00 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -28,7 +28,7 @@ MODULE_ID("$Id: fty_ipv4.c,v 1.1 1996/11/26 10:06:58 juergen Exp $")
 +--------------------------------------------------------------------------*/
 static bool Check_IPV4_Field(FIELD * field, const void * argp GCC_UNUSED)
 {
-  unsigned char *bp = (unsigned char *)field_buffer(field,0);
+  char *bp = field_buffer(field,0);
   int num = 0, len;
   unsigned int d1, d2, d3, d4;
 

@@ -28,7 +28,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term, pad_char */
 
-MODULE_ID("$Id: lib_baudrate.c,v 1.6 1997/02/02 00:30:17 tom Exp $")
+MODULE_ID("$Id: lib_baudrate.c,v 1.7 1997/04/26 17:41:48 tom Exp $")
 
 /*
  *	int
@@ -96,8 +96,26 @@ baudrate(void)
 {
 size_t i;
 int ret;
+#ifdef TRACE
+char *debug_rate;
+#endif
 
 	T((T_CALLED("baudrate()")));
+
+	/*
+	 * In debugging, allow the environment symbol to override when we're
+	 * redirecting to a file, so we can construct repeatable test-cases
+	 * that take into account costs that depend on baudrate.
+	 */
+#ifdef TRACE
+	if (!isatty(fileno(SP->_ofp))
+	 && (debug_rate = getenv("BAUDRATE")) != 0) {
+		if (sscanf(debug_rate, "%d", &ret) != 1)
+			ret = 9600;
+		returnCode(ret);
+	}
+	else
+#endif
 
 #ifdef TERMIOS
 	ret = cfgetospeed(&cur_term->Nttyb);

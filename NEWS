@@ -1,10 +1,35 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970426
+	+ corrected cost computation in PutRange(), which was using
+	  milliseconds compared to characters by adding two new members to the
+	  SCREEN struct, _hpa_ch_cost and _cup_ch_cost.
+	+ drop ncurses/lib_unctrl.c, add ncurses/MKunctrl.awk to generate a
+	  const array of strings (suggested by Alexander V. Lukyanov, though
+	  with a perl script 970118).
+	+ rewrote ncurses 'b' test to better exercise magic-cookie (xmc), as
+	  well as noting the attributes that are not supported by a terminal.
+	+ trace the computation of cost values in lib_mvcur.c
+	+ modify _nc_visbuf() to use octal rather than hex, corrected sign
+	  extension bug in that function that caused buffer overflow.
+	+ modify trace in lib_acs.c to use _nc_visbuf().
+	+ suppress trace within _traceattr2().
+	+ correct logic of _tracechtype2(), which did not account for repeats
+	  or redefinition within an acsc string.
+	+ modify debug-library version baudrate() to use environment variable
+	  $BAUDRATE to override speed computation.  This is needed for
+	  regression testing.
+	+ correct problems shown by "weblint -pedantic".
+	+ update mailing-list information (now ncurses@bsdi.com).
+
 970419
-	+ change type of precision-parameter of form types TYPE_NUMERIC and
-	  TYPE_INTEGER to long to match SVr4 documentation (patch by Juergen
-	  Pfeifer, reported by Bryan Henderson).
+	+ Improve form_field_validation.3x manpage to better describe the
+	  precision parameter for TYPE_NUMERIC and TYPE_INTEGER.  Provide more
+	  precise information how the range checking can be avoided.  (patch by
+	  Juergen Pfeifer, reported by Bryan Henderson)
+	+ change type of min/max value of form types TYPE_INTEGER to long to
+	  match SVr4 documentation.
 	+ set the form window to stdscr in set_form_win() so that form_win()
 	  won't return null (patch by Juergen Pfeifer, reported by Bryan
 	  Henderson <bryanh@giraffe.netgate.net>).
@@ -327,9 +352,9 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	> patch by Juergen Pfeifer (mostly for panel):
 	+ cosmetic improvement for a few routines in the ncurses core library
 	  to avoid warning messages.
-    	+ the panel overlap detection was broken
-    	+ the panel_window() function was not fool-proof.
-    	+ Some inlining...
+	+ the panel overlap detection was broken
+	+ the panel_window() function was not fool-proof.
+	+ Some inlining...
 	+ Cosmetic changes (also to avoid warning messages when compiling with
 	  -DTRACE).
 
@@ -708,8 +733,8 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	  actual semantics.
 	+ added -s option to tic, to provide better diagnostics in run_tic.sh
 	+ improved error-recovery for tabset install.
-  	+ change ABI to 3.1 (dropped tparam, corrected getbkgd(), added
-  	  _yoffset to WINDOW).
+	+ change ABI to 3.1 (dropped tparam, corrected getbkgd(), added
+	  _yoffset to WINDOW).
 	+ modified initialization of SP->_ofp so that init_acs() is called with
 	  the "right" file pointer (reported by Rick Marshall <rjm@nlc.net.au>
 	+ documentation fixes (Juergen Pfeifer).

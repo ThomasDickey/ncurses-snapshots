@@ -24,7 +24,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* ena_acs, acs_chars */
 
-MODULE_ID("$Id: lib_acs.c,v 1.7 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.8 1997/04/24 11:04:07 tom Exp $")
 
 chtype acs_map[128];
 
@@ -79,7 +79,7 @@ void init_acs(void)
 #endif /* ena_acs */
 
 #ifdef acs_chars
-#define ALTCHAR(c)	((chtype)(c) & A_CHARTEXT) | A_ALTCHARSET
+#define ALTCHAR(c)	(TextOf(c) | A_ALTCHARSET)
 
 	if (acs_chars != NULL) {
 	    size_t i = 0;
@@ -105,8 +105,27 @@ void init_acs(void)
 			}
 	}
 #ifdef TRACE
-	else {
-		T(("acsc not defined, using default mapping"));
+#define SIZEOF(v) (sizeof(v)/sizeof(v[0]))
+	/* Show the equivalent mapping, noting if it does not match the
+	 * given attribute, whether by re-ordering or duplication.
+	 */
+	if (_nc_tracing & TRACE_CALLS) {
+		size_t n, m;
+		char show[SIZEOF(acs_map) + 1];
+		for (n = 1, m = 0; n < SIZEOF(acs_map); n++) {
+			if (acs_map[n] != 0) {
+				show[m++] = (char)n;
+				show[m++] = TextOf(acs_map[n]);
+			}
+		}
+		show[m] = 0;
+		_tracef("%s acs_chars %s",
+			(acs_chars == NULL)
+			? "NULL"
+			: (strcmp(acs_chars, show)
+				? "DIFF"
+				: "SAME"),
+			_nc_visbuf(show));
 	}
 #endif /* TRACE */
 #endif /* acs_char */

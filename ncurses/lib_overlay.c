@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_overlay.c,v 1.7 1997/02/02 00:35:27 tom Exp $")
+MODULE_ID("$Id: lib_overlay.c,v 1.8 1997/04/24 10:34:38 tom Exp $")
 
 static int overlap(const WINDOW *const s, WINDOW *const d, int const flag)
 {
@@ -88,7 +88,7 @@ int copywin(const WINDOW *src, WINDOW *dst,
 	int over)
 {
 int sx, sy, dx, dy;
-int touched;
+bool touched;
 
 	T((T_CALLED("copywin(%p, %p, %d, %d, %d, %d, %d, %d, %d)"),
 		src, dst, sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol, over));
@@ -109,23 +109,23 @@ int touched;
 	T(("rectangle fits in destination"));
 
 	for (dy = dminrow, sy = sminrow; dy <= dmaxrow; sy++, dy++) {
-	   touched=0;
+	   touched = FALSE;
 	   for(dx=dmincol, sx=smincol; dx <= dmaxcol; sx++, dx++)
 	   {
 		if (over)
 		{
-		   if (((src->_line[sy].text[sx] & A_CHARTEXT)!=' ') &&
+		   if ((TextOf(src->_line[sy].text[sx]) != ' ') &&
                        (dst->_line[dy].text[dx]!=src->_line[sy].text[sx]))
 		   {
 			dst->_line[dy].text[dx] = src->_line[sy].text[sx];
-			touched=1;
+			touched = TRUE;
 		   }
 	        }
 		else {
 		   if (dst->_line[dy].text[dx] != src->_line[sy].text[sx])
 		   {
 			dst->_line[dy].text[dx] = src->_line[sy].text[sx];
-			touched=1;
+			touched = TRUE;
                    }
                 }
            }

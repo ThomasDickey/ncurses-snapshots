@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.21 1997/04/20 02:08:56 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.22 1997/04/24 11:02:43 tom Exp $")
 
 #include <ctype.h>
 #if HAVE_FCNTL_H
@@ -97,7 +97,7 @@ int c;
 		} else if (is7bits(c) && iscntrl(c)) {
 			*tp++ = '\\'; *tp++ = '^'; *tp++ = '@' + c;
 		} else {
-			sprintf(tp, "\\0x%02x", c);
+			sprintf(tp, "\\%03o", c & 0xff);
 			tp += strlen(tp);
 		}
 	}

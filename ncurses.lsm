@@ -19,10 +19,10 @@ Author: 	zmbenhal@netcom.com (Zeyd Ben-Halim)
 		juergen.pfeifer@T-Online.de (Juergen Pfeifer)
 Maintained-by:	dickey@clark.net (Thomas Dickey)
 		juergen.pfeifer@T-Online.de (Juergen Pfeifer)
-Primary-site:	ftp.netcom.com /pub/zm/zmbenhal/ncurses
+Primary-site:	ftp.clark.net /pub/dickey/ncurses
 		ncurses-4.0.tar.gz
 Platform:	Portable to any ANSI/POSIX system.
-Alternate-site:	ftp.clark.net /pub/dickey/ncurses
+Alternate-site:	ftp.netcom.com /pub/zm/zmbenhal/ncurses
 Alternate-site: prep.ai.mit.edu /pub/gnu
 Copying-policy:	BSD-like.
 End
