@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -28,6 +28,7 @@
 
 /****************************************************************************
  *  Author:  Juergen Pfeifer, 1998                                          *
+ *     and:  Thomas E. Dickey 2005                                          *
  ****************************************************************************/
 
 /*
@@ -35,7 +36,7 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkcolor.c,v 1.9 2003/10/25 15:27:03 tom Exp $")
+MODULE_ID("$Id: lib_slkcolor.c,v 1.11 2005/01/08 23:02:36 tom Exp $")
 
 NCURSES_EXPORT(int)
 slk_color(short color_pair_number)
@@ -43,9 +44,12 @@ slk_color(short color_pair_number)
     T((T_CALLED("slk_color(%d)"), color_pair_number));
 
     if (SP != 0 && SP->_slk != 0 &&
-	color_pair_number >= 0 && color_pair_number < COLOR_PAIRS) {
-	T(("... current %ld", (long) PAIR_NUMBER(SP->_slk->attr)));
-	toggle_attr_on(SP->_slk->attr, COLOR_PAIR(color_pair_number));
+	color_pair_number < COLOR_PAIRS) {
+	TR(TRACE_ATTRS, ("... current is %s", _tracech_t(CHREF(SP->_slk->attr))));
+	if (color_pair_number != 0) {
+	    SetPair(SP->_slk->attr, color_pair_number);
+	}
+	TR(TRACE_ATTRS, ("new attribute is %s", _tracech_t(CHREF(SP->_slk->attr))));
 	returnCode(OK);
     } else
 	returnCode(ERR);

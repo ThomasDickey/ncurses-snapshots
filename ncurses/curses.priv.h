@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.270 2005/01/01 22:49:55 tom Exp $
+ * $Id: curses.priv.h,v 1.271 2005/01/08 21:07:48 tom Exp $
  *
  *	curses.priv.h
  *
@@ -260,7 +260,7 @@ color_t;
 #include <term.h>
 
 #define SetPair(value,p)	RemAttr(value, A_COLOR), \
-				SetAttr(value, (A_COLOR & COLOR_PAIR(p)))
+				SetAttr(value, AttrOf(value) | (A_COLOR & COLOR_PAIR(p)))
 #define GetPair(value)		PAIR_NUMBER(AttrOf(value))
 #define unColor(n)		(AttrOf(n) & ALL_BUT_COLOR)
 #define GET_WINDOW_PAIR(w)	PAIR_NUMBER((w)->_attrs)
@@ -312,7 +312,7 @@ typedef struct {
 	short  maxlab;          /* number of available labels */
 	short  labcnt;          /* number of allocated labels */
 	short  maxlen;          /* length of labels */
-	chtype attr;            /* soft label attribute */
+	NCURSES_CH_T attr;      /* soft label attribute */
 } SLK;
 
 typedef struct {

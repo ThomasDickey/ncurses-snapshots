@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -45,7 +45,7 @@
 #include <ctype.h>
 #include <term.h>		/* num_labels, label_*, plab_norm */
 
-MODULE_ID("$Id: lib_slk.c,v 1.29 2004/11/06 22:54:13 tom Exp $")
+MODULE_ID("$Id: lib_slk.c,v 1.30 2005/01/08 21:56:36 tom Exp $")
 
 /*
  * We'd like to move these into the screen context structure, but cannot,
@@ -113,9 +113,9 @@ _nc_slk_initialize(WINDOW *stwin, int cols)
      * work.
      */
     if ((no_color_video & 1) == 0)
-	SP->_slk->attr = A_STANDOUT;
+	SetAttr(SP->_slk->attr, A_STANDOUT);
     else
-	SP->_slk->attr = A_REVERSE;
+	SetAttr(SP->_slk->attr, A_REVERSE);
 
     SP->_slk->maxlab = ((num_labels > 0)
 			? num_labels
