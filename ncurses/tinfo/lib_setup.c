@@ -49,7 +49,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.77 2003/05/24 21:10:28 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.78 2003/11/01 23:03:03 tom Exp $")
 
 /****************************************************************************
  *
@@ -448,10 +448,14 @@ setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
 	    }
 	}
 
-	if (status == -1) {
-	    ret_error0(-1, "terminals database is inaccessible\n");
-	} else if (status == 0) {
-	    ret_error(0, "'%s': unknown terminal type.\n", tname);
+	if (status <= 0) {
+	    _nc_free_termtype(&term_ptr->type);
+	    free(term_ptr);
+	    if (status == -1) {
+		ret_error0(-1, "terminals database is inaccessible\n");
+	    } else if (status == 0) {
+		ret_error(0, "'%s': unknown terminal type.\n", tname);
+	    }
 	}
 
 	set_curterm(term_ptr);

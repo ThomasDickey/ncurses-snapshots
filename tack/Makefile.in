@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.30 2003/10/18 22:46:54 tom Exp $
+# $Id: Makefile.in,v 1.31 2003/11/01 22:46:24 tom Exp $
 # Makefile for tack
 #
 # The variable 'srcdir' refers to the source-distribution, and can be set with
@@ -15,7 +15,9 @@ THIS		= Makefile
 
 CF_MFLAGS 	= @cf_cv_makeflags@
 @SET_MAKE@
-x		= @PROG_EXT@
+
+x		= @EXEEXT@
+o		= .@OBJEXT@
 
 MODEL		= ../@DFT_OBJ_SUBDIR@
 DESTDIR		= @DESTDIR@
@@ -113,22 +115,22 @@ $(DESTDIR)$(mandir) :
 #
 
 DEPS_TACK = \
-	$(MODEL)/ansi.o \
-	$(MODEL)/charset.o \
-	$(MODEL)/color.o \
-	$(MODEL)/control.o \
-	$(MODEL)/crum.o \
-	$(MODEL)/edit.o \
-	$(MODEL)/fun.o \
-	$(MODEL)/init.o \
-	$(MODEL)/menu.o \
-	$(MODEL)/modes.o \
-	$(MODEL)/output.o \
-	$(MODEL)/pad.o \
-	$(MODEL)/scan.o \
-	$(MODEL)/sync.o \
-	$(MODEL)/sysdep.o \
-	$(MODEL)/tack.o
+	$(MODEL)/ansi$o \
+	$(MODEL)/charset$o \
+	$(MODEL)/color$o \
+	$(MODEL)/control$o \
+	$(MODEL)/crum$o \
+	$(MODEL)/edit$o \
+	$(MODEL)/fun$o \
+	$(MODEL)/init$o \
+	$(MODEL)/menu$o \
+	$(MODEL)/modes$o \
+	$(MODEL)/output$o \
+	$(MODEL)/pad$o \
+	$(MODEL)/scan$o \
+	$(MODEL)/sync$o \
+	$(MODEL)/sysdep$o \
+	$(MODEL)/tack$o
 
 tack$x: $(DEPS_TACK) $(DEPS_CURSES)
 	@ECHO_LINK@ $(LINK) $(DEPS_TACK) $(LDFLAGS_DEFAULT) -o $@

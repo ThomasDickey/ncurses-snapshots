@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.317 2003/10/18 23:21:04 tom Exp $
+dnl $Id: aclocal.m4,v 1.318 2003/11/01 21:10:58 Jonathan.Ward Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1473,7 +1473,7 @@ done
 
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_SUFFIX version: 12 updated: 2002/01/20 01:43:41
+dnl CF_LIB_SUFFIX version: 13 updated: 2003/11/01 16:09:07
 dnl -------------
 dnl Compute the library file-suffix from the given model name
 dnl $1 = model name
@@ -1491,7 +1491,12 @@ AC_DEFUN([CF_LIB_SUFFIX],
 		case $cf_cv_system_name in
 		cygwin*) $2='.dll' ;;
 		darwin*) $2='.dylib' ;;
-		hpux*)	$2='.sl'  ;;
+		hpux*)
+			case $target in
+			ia64*)	$2='.so' ;;
+			*)	$2='.sl' ;;
+			esac
+			;;
 		*)	$2='.so'  ;;
 		esac
 	esac

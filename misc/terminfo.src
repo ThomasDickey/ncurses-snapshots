@@ -4,15 +4,13 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.221 $
-#	$Date: 2003/10/25 23:13:07 $
-#
 # The original header is preserved below for reference.  It is noted that there
 # is a newer version which differs in some cosmetic details; we have decided
 # to not change the header unless there is also a change in content.
 #
 #------------------------------------------------------------------------------
 #	Version 10.2.1
+#	$Date: 2003/10/25 23:09:21 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)

@@ -1,6 +1,6 @@
-# $Id: mk-1st.awk,v 1.60 2003/08/30 20:48:52 tom Exp $
+# $Id: mk-1st.awk,v 1.61 2003/11/01 22:42:43 tom Exp $
 ##############################################################################
-# Copyright (c) 1998,2000,2002 Free Software Foundation, Inc.                #
+# Copyright (c) 1998,2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -27,7 +27,7 @@
 # authorization.                                                             #
 ##############################################################################
 #
-# Author: Thomas E. Dickey 1996,1997,2000,2002
+# Author: Thomas E. Dickey
 #
 # Generate list of objects for a given model library
 # Variables:
@@ -146,7 +146,7 @@ BEGIN	{
 				else
 					found = 2
 			}
-			printf " \\\n\t../%s/%s.o", model, $1
+			printf " \\\n\t../%s/%s$o", model, $1
 		}
 	}
 END	{
@@ -287,7 +287,7 @@ END	{
 				}
 				end_name = lib_name;
 				printf "../lib/%s : $(%s_OBJS)\n", lib_name, OBJS
-				printf "\tcd ../lib && $(LIBTOOL_LINK) $(%s) -o %s $(%s_OBJS:.o=.lo) -rpath $(DESTDIR)$(libdir) -version-info $(NCURSES_MAJOR):$(NCURSES_MINOR) $(SHLIB_LIST)\n", compile, lib_name, OBJS
+				printf "\tcd ../lib && $(LIBTOOL_LINK) $(%s) -o %s $(%s_OBJS:$o=.lo) -rpath $(DESTDIR)$(libdir) -version-info $(NCURSES_MAJOR):$(NCURSES_MINOR) $(SHLIB_LIST)\n", compile, lib_name, OBJS
 				print  ""
 				print  "install \\"
 				print  "install.libs \\"
@@ -309,7 +309,7 @@ END	{
 				printf "\t$(RANLIB) $@\n"
 				if ( host == "vxworks" )
 				{
-					printf "\t$(LD) $(LD_OPTS) $? -o $(@:.a=.o)\n"
+					printf "\t$(LD) $(LD_OPTS) $? -o $(@:.a=$o)\n"
 				}
 				print  ""
 				print  "install \\"
@@ -326,8 +326,8 @@ END	{
 				printf "\t$(RANLIB) $(DESTDIR)$(libdir)/%s\n", lib_name
 				if ( host == "vxworks" )
 				{
-					printf "\t@echo installing ../lib/lib%s.o as $(DESTDIR)$(libdir)/lib%s.o\n", name, name
-					printf "\t$(INSTALL_DATA) ../lib/lib%s.o $(DESTDIR)$(libdir)/lib%s.o\n", name, name
+					printf "\t@echo installing ../lib/lib%s$o as $(DESTDIR)$(libdir)/lib%s$o\n", name, name
+					printf "\t$(INSTALL_DATA) ../lib/lib%s$o $(DESTDIR)$(libdir)/lib%s$o\n", name, name
 				}
 				print  ""
 				print  "uninstall \\"
@@ -342,8 +342,8 @@ END	{
 				}
 				if ( host == "vxworks" )
 				{
-					printf "\t@echo uninstalling $(DESTDIR)$(libdir)/lib%s.o\n", name
-					printf "\t-@rm -f $(DESTDIR)$(libdir)/lib%s.o\n", name
+					printf "\t@echo uninstalling $(DESTDIR)$(libdir)/lib%s$o\n", name
+					printf "\t-@rm -f $(DESTDIR)$(libdir)/lib%s$o\n", name
 				}
 			}
 			print ""
@@ -353,7 +353,7 @@ END	{
 			print "mostlyclean::"
 			printf "\t-rm -f $(%s_OBJS)\n", OBJS
 			if ( MODEL == "LIBTOOL" ) {
-				printf "\t-$(LIBTOOL_CLEAN) rm -f $(%s_OBJS:.o=.lo)\n", OBJS
+				printf "\t-$(LIBTOOL_CLEAN) rm -f $(%s_OBJS:$o=.lo)\n", OBJS
 			}
 		}
 		else if ( found == 2 )
@@ -362,13 +362,13 @@ END	{
 			print "mostlyclean::"
 			printf "\t-rm -f $(%s_OBJS)\n", OBJS
 			if ( MODEL == "LIBTOOL" ) {
-				printf "\t-$(LIBTOOL_CLEAN) rm -f $(%s_OBJS:.o=.lo)\n", OBJS
+				printf "\t-$(LIBTOOL_CLEAN) rm -f $(%s_OBJS:$o=.lo)\n", OBJS
 			}
 			print ""
 			print "clean ::"
 			printf "\t-rm -f $(%s_OBJS)\n", OBJS
 			if ( MODEL == "LIBTOOL" ) {
-				printf "\t-$(LIBTOOL_CLEAN) rm -f $(%s_OBJS:.o=.lo)\n", OBJS
+				printf "\t-$(LIBTOOL_CLEAN) rm -f $(%s_OBJS:$o=.lo)\n", OBJS
 			}
 		}
 	}

@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.299 2003/10/18 19:59:45 tom Exp $
+dnl $Id: configure.in,v 1.300 2003/11/01 22:26:11 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.299 $)
+AC_REVISION($Revision: 1.300 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -185,6 +185,7 @@ CF_HELP_MESSAGE(Build-Tools Needed to Compile Temporary Applications for Cross-c
 : ${BUILD_CPPFLAGS:='$(CPPFLAGS)'}
 : ${BUILD_LDFLAGS:='$(LDFLAGS)'}
 : ${BUILD_LIBS:='$(LIBS)'}
+: ${BUILD_EXEEXT:='$x'}
 if test "$cross_compiling" = yes ; then
 	AC_ARG_WITH(build-cc,
 		[  --with-build-cc=XXX     the build C compiler ($BUILD_CC)],
@@ -202,12 +203,14 @@ if test "$cross_compiling" = yes ; then
 	AC_ARG_WITH(build-libs,
 		[  --with-build-libs=XXX   the build libraries],
 		[BUILD_LIBS="$withval"])
+	BUILD_EXEEXT=
 fi
 AC_SUBST(BUILD_CC)
 AC_SUBST(BUILD_CFLAGS)
 AC_SUBST(BUILD_CPPFLAGS)
 AC_SUBST(BUILD_LDFLAGS)
 AC_SUBST(BUILD_LIBS)
+AC_SUBST(BUILD_EXEEXT)
 
 ###############################################################################
 CF_HELP_MESSAGE(Options to Specify the Libraries Built/Used:)
