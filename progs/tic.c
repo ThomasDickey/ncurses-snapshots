@@ -42,7 +42,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.62 2000/02/27 03:49:39 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.63 2000/03/05 04:33:15 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -778,7 +778,6 @@ check_sgr(TERMTYPE * tp, char *zero, int num, char *cap, char *name)
 	} else if (strcmp(test, zero)) {
 	    _nc_warning("sgr(%d) present, but not %s", num, name);
 	}
-	free(test);
     } else if (PRESENT(cap)) {
 	_nc_warning("sgr(%d) missing, but %s present", num, name);
     }
@@ -867,6 +866,7 @@ check_termtype(TERMTYPE * tp)
     if (PRESENT(set_attributes)) {
 	char *zero = tparm(set_attributes, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
+	zero = strdup(zero);
 	CHECK_SGR(1, enter_standout_mode);
 	CHECK_SGR(2, enter_underline_mode);
 	CHECK_SGR(3, enter_reverse_mode);

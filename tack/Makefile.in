@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.14 2000/01/08 23:16:26 tom Exp $
+# $Id: Makefile.in,v 1.15 2000/03/04 20:23:15 tom Exp $
 # Makefile for tack
 #
 # The variable 'srcdir' refers to the source-distribution, and can be set with
@@ -54,14 +54,14 @@ CFLAGS_SHARED	= $(CCFLAGS) # @CC_SHARED_OPTS@
 CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
 LD		= @LD@
-LINK		= $(CC)
+LINK		= @LINK_PROGS@ $(CC)
 LDFLAGS		= @EXTRA_LDFLAGS@ \
 		@PROG_ARGS@ @LDFLAGS@ @LD_MODEL@ @LIBS@ @EXTRA_LIBS@
 
 LDFLAGS_NORMAL	= $(LDFLAGS)
 LDFLAGS_DEBUG	= $(LDFLAGS) @CC_G_OPT@
 LDFLAGS_PROFILE	= $(LDFLAGS) -pg
-LDFLAGS_SHARED	= $(LDFLAGS) @CC_SHARED_OPTS@ # @LD_SHARED_OPTS@
+LDFLAGS_SHARED	= $(LDFLAGS) @LD_SHARED_OPTS@
 
 LDFLAGS_DEFAULT	= $(LDFLAGS_@DFT_UPR_MODEL@)
 
@@ -72,7 +72,7 @@ LINT_LIBS	= -lncurses @LIBS@
 PROGS = tack$x
 
 # Default library, for linking applications
-DEPS_CURSES = ../lib/libncurses@DFT_DEP_SUFFIX@
+DEPS_CURSES = @LIB_PREFIX@ncurses@DFT_DEP_SUFFIX@
 
 ################################################################################
 all:	$(PROGS)

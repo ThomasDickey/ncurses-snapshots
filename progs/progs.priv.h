@@ -30,7 +30,7 @@
  *  Author: Thomas E. Dickey <dickey@clark.net> 1997,1998                   *
  ****************************************************************************/
 /*
- * $Id: progs.priv.h,v 1.20 2000/01/02 00:56:44 tom Exp $
+ * $Id: progs.priv.h,v 1.21 2000/03/05 04:32:47 tom Exp $
  *
  *	progs.priv.h
  *
@@ -170,3 +170,8 @@ extern int optind;
 #  define isascii(c) 1	/* not really ascii anyway */
 # endif
 #endif
+
+#if !HAVE_STRDUP
+#define strdup _nc_strdup
+extern char *_nc_strdup(const char *);
+#endif /* not HAVE_STRDUP */

@@ -21,7 +21,7 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: ansi.c,v 1.2 1999/08/21 23:11:57 tom Exp $")
+MODULE_ID("$Id: ansi.c,v 1.3 2000/03/04 21:08:23 tom Exp $")
 
 /*
  * Standalone tests for ANSI terminals.  Three entry points:
@@ -71,7 +71,7 @@ static struct ansi_reports report_list[] = {
 	{63, 0, "(DECRQSS) Top and bottom margins", "\033P$qr\033\\"},
 	{63, 0, "(DECRQSS) Character attributes", "\033P$qm\033\\"},
 	{63, 0, "(DECRQSS) Illegal request", "\033P$q@\033\\"},
-	{63, 0, "(DECRQUPSS) User pref suplemental set", "\033[&u"},
+	{63, 0, "(DECRQUPSS) User pref supplemental set", "\033[&u"},
 	{63, 0, "(DECRQPSR) Cursor information", "\033[1$w"},
 	{63, 0, "(DECRQPSR) Tab stop information", "\033[2$w"},
 	{64, 0, "(DA) Tertiary device attributes", "\033[=0c"},
@@ -107,11 +107,11 @@ static const struct request_control rqss[] = {
 	{"\033[0$~\033[1$}", "\033[0$}", 0, 0, 0},
 	{"Data sent to enabled status line", "1", "$}", 0, 0},
 	{"\033[2$~\033[1$}", "\033[0$}", 0, 0, 0},
-	{"Disbale status line", "0", "$~", "\033[0$~", 0},
+	{"Disable status line", "0", "$~", "\033[0$~", 0},
 	{"Top status line", "1", "$~", "\033[1$~", 0},
 	{"Bottom status line", "2", "$~", "\033[2$~", 0},
-	{"Eraseable character", "0", "\"q", "\033[0\"q", 0},
-	{"Noneraseable character", "1", "\"q", "\033[1\"q", "\033[0\"q"},
+	{"Erasable character", "0", "\"q", "\033[0\"q", 0},
+	{"Nonerasable character", "1", "\"q", "\033[1\"q", "\033[0\"q"},
 	{"Top and bottom margins", "3;10", "r", "\0337\033[3;10r", 0},
 	{"\033[r\0338", 0, 0, 0, 0},
 	{"Top and bottom margins", "default", "r", "\0337\033[r", "\0338"},
