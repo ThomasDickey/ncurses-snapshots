@@ -21,7 +21,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: wresize.c,v 1.7 1997/08/09 17:21:51 tom Exp $")
+MODULE_ID("$Id: wresize.c,v 1.8 1997/09/20 15:03:39 juergen Exp $")
 
 /*
  * Reallocate a curses WINDOW struct to either shrink or grow to the specified
@@ -45,22 +45,24 @@ static void *doalloc(void *p, size_t n)
 int
 wresize(WINDOW *win, int ToLines, int ToCols)
 {
-	register int	row;
-	int	size_x, size_y;
-	struct ldat *pline = (win->_flags & _SUBWIN) ? win->_parent->_line : 0;
-	chtype	blank;
+	register int row;
+	int size_x, size_y;
+	struct ldat *pline;
+	chtype blank;
 
 #ifdef TRACE
 	T((T_CALLED("wresize(%p,%d,%d)"), win, ToLines, ToCols));
-	TR(TRACE_UPDATE, ("...beg (%d, %d), max(%d,%d), reg(%d,%d)",
-		win->_begy, win->_begx,
-		win->_maxy, win->_maxx,
-		win->_regtop, win->_regbottom));
-	if (_nc_tracing & TRACE_UPDATE)
-		_tracedump("...before", win);
+	if (win) {
+	  TR(TRACE_UPDATE, ("...beg (%d, %d), max(%d,%d), reg(%d,%d)",
+			    win->_begy, win->_begx,
+			    win->_maxy, win->_maxx,
+			    win->_regtop, win->_regbottom));
+	  if (_nc_tracing & TRACE_UPDATE)
+	    _tracedump("...before", win);
+	}
 #endif
 
-	if (--ToLines < 0 || --ToCols < 0)
+	if (!win || --ToLines < 0 || --ToCols < 0)
 		returnCode(ERR);
 
 	size_x = win->_maxx;
@@ -69,6 +71,8 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 	if (ToLines == size_y
 	 && ToCols  == size_x)
 		returnCode(OK);
+
+	pline  = (win->_flags & _SUBWIN) ? win->_parent->_line : 0;
 
 	/*
 	 * If the number of lines has changed, adjust the size of the overall

@@ -30,16 +30,7 @@
 #include <curses.priv.h>
 
 #include <signal.h>
-
-#if HAVE_SIGACTION
-#if !HAVE_TYPE_SIGACTION
-typedef struct sigaction sigaction_t;
-#endif
-#else	/* !HAVE_SIGACTION */
-#if HAVE_SIGVEC
 #include <SigAction.h>
-#endif
-#endif
 
 #ifdef SVR4_ACTION
 #define _POSIX_SOURCE
@@ -49,7 +40,7 @@ typedef struct sigaction sigaction_t;
 #undef USE_SIGWINCH	/* FIXME: configure should resolve this */
 #endif
 
-MODULE_ID("$Id: lib_tstp.c,v 1.10 1997/09/07 03:20:55 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.11 1997/09/20 19:33:18 tom Exp $")
 
 /*
  * Note: This code is fragile!  Its problem is that different OSs

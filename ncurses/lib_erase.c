@@ -29,28 +29,33 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_erase.c,v 1.9 1997/08/14 20:03:38 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_erase.c,v 1.10 1997/09/20 15:02:34 juergen Exp $")
 
 int  werase(WINDOW	*win)
 {
+int     code = ERR;
 int	y;
-chtype	blank = _nc_background(win);
+chtype	blank;
 chtype	*sp, *end, *start;
 
 	T((T_CALLED("werase(%p)"), win));
 
-	for (y = 0; y <= win->_maxy; y++) {
-		start = win->_line[y].text;
-		end = &start[win->_maxx];
-
-		for (sp = start; sp <= end; sp++)
-			*sp = blank;
-
-		win->_line[y].firstchar = 0;
-		win->_line[y].lastchar = win->_maxx;
+	if (win) {
+	  blank = _nc_background(win);
+	  for (y = 0; y <= win->_maxy; y++) {
+	    start = win->_line[y].text;
+	    end = &start[win->_maxx];
+	    
+	    for (sp = start; sp <= end; sp++)
+	      *sp = blank;
+	    
+	    win->_line[y].firstchar = 0;
+	    win->_line[y].lastchar = win->_maxx;
+	  }
+	  win->_curx = win->_cury = 0;
+	  win->_flags &= ~_WRAPPED;
+	  _nc_synchook(win);
+	  code = OK;
 	}
-	win->_curx = win->_cury = 0;
-	win->_flags &= ~_WRAPPED;
-	_nc_synchook(win);
-	returnCode(OK);
+	returnCode(code);
 }

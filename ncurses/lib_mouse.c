@@ -61,7 +61,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 0.26 1997/09/09 00:14:40 juergen Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 0.27 1997/09/20 15:02:34 juergen Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -604,9 +604,9 @@ int getmouse(MEVENT *aevent)
 	    _tracemouse(prev), prev-events));
 
 	prev->id = INVALID_EVENT;	/* so the queue slot becomes free */
-	return(OK);
+	returnCode(OK);
     }
-    return(ERR);
+    returnCode(ERR);
 }
 
 int ungetmouse(MEVENT *aevent)

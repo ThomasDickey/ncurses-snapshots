@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.97 1997/09/06 20:30:52 tom Exp $
+$Id: ncurses.c,v 1.98 1997/09/20 15:05:39 tom Exp $
 
 ***************************************************************************/
 
@@ -1239,6 +1239,7 @@ static void acs_and_scroll(void)
 	    if (current)
 	    {
 		pair *tmp, ul, lr;
+		int mx, my;
 
 		move(0, 0); clrtoeol();
 		addstr("Use arrows to move cursor, anything else to mark new corner");
@@ -1260,15 +1261,16 @@ static void acs_and_scroll(void)
 		wnoutrefresh(stdscr);
 
 		/* strictly cosmetic hack for the test */
-		if (current->wind->_maxy > tmp->y - ul.y)
+		getmaxyx(current->wind, my, mx);
+		if (my > tmp->y - ul.y)
 		{
 		  getyx(current->wind, lr.y, lr.x);
 		  wmove(current->wind, tmp->y - ul.y + 1, 0);
 		  wclrtobot(current->wind);
 		  wmove(current->wind, lr.y, lr.x);
 		}
-		if (current->wind->_maxx > tmp->x - ul.x)
-		  for (i = 0; i < current->wind->_maxy; i++)
+		if (mx > tmp->x - ul.x)
+		  for (i = 0; i < my; i++)
 		  {
 		    wmove(current->wind, i, tmp->x - ul.x + 1);
 		    wclrtoeol(current->wind);
@@ -1965,7 +1967,6 @@ int padgetch(WINDOW *win)
 {
     int	c;
 
-    for(;;)
     switch(c = wGetchar(win))
     {
     case '!': ShellOut(FALSE); return KEY_REFRESH;
@@ -2051,10 +2052,8 @@ static void flushinp_test(WINDOW *win)
     WINDOW *subWin;
     wclear (win);
 
-    w  = win->_maxx;
-    h  = win->_maxy;
-    bx = win->_begx;
-    by = win->_begy;
+    getmaxyx(win, h,  w);
+    getbegyx(win, by, bx);
     sw = w / 3;
     sh = h / 3;
     if((subWin = subwin(win, sh, sw, by + h - sh - 2, bx + w - sw - 2)) == 0)
@@ -2603,11 +2602,13 @@ static void demo_forms(void)
 static void fillwin(WINDOW *win, char ch)
 {
     int y, x;
+    int y1, x1;
 
-    for (y = 0; y <= win->_maxy; y++)
+    getmaxyx(win, y1, x1);
+    for (y = 0; y < y1; y++)
     {
 	wmove(win, y, 0);
-	for (x = 0; x <= win->_maxx; x++)
+	for (x = 0; x < x1; x++)
 	    waddch(win, ch);
     }
 }
@@ -2615,12 +2616,14 @@ static void fillwin(WINDOW *win, char ch)
 static void crosswin(WINDOW *win, char ch)
 {
     int y, x;
+    int y1, x1;
 
-    for (y = 0; y <= win->_maxy; y++)
+    getmaxyx(win, y1, x1);
+    for (y = 0; y < y1; y++)
     {
-	for (x = 0; x <= win->_maxx; x++)
-	    if (((x > win->_maxx / 3) && (x <= 2 * win->_maxx / 3))
-			|| (((y > win->_maxy / 3) && (y <= 2 * win->_maxy / 3))))
+	for (x = 0; x < x1; x++)
+	    if (((x > (x1 - 1) / 3) && (x <= (2 * (x1 - 1)) / 3))
+	    || (((y > (y1 - 1) / 3) && (y <= (2 * (y1 - 1)) / 3))))
 	    {
 		wmove(win, y, x);
 		waddch(win, ch);

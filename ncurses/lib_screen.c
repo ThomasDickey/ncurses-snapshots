@@ -26,7 +26,7 @@
 #include <time.h>
 #include <term.h>	/* exit_ca_mode, non_rev_rmcup */
 
-MODULE_ID("$Id: lib_screen.c,v 1.7 1997/02/02 00:41:10 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.8 1997/09/20 15:02:34 juergen Exp $")
 
 static time_t	dumptime;
 
@@ -89,23 +89,26 @@ WINDOW *getwin(FILE *filep)
 
 int putwin(WINDOW *win, FILE *filep)
 {
-	int	n;
+        int code = ERR; 
+	int n;
 
 	T((T_CALLED("putwin(%p,%p)"), win, filep));
 
-	(void) fwrite(win, sizeof(WINDOW), 1, filep);
-	if (ferror(filep))
-		returnCode(ERR);
+	if (win) {
+	  (void) fwrite(win, sizeof(WINDOW), 1, filep);
+	  if (ferror(filep))
+	    returnCode(code);
 
-	for (n = 0; n < win->_maxy + 1; n++)
-	{
-		(void) fwrite(win->_line[n].text,
-			      sizeof(chtype), (size_t)(win->_maxx + 1), filep);
-		if (ferror(filep))
-			returnCode(ERR);
+	  for (n = 0; n < win->_maxy + 1; n++)
+	    {
+	      (void) fwrite(win->_line[n].text,
+			    sizeof(chtype), (size_t)(win->_maxx + 1), filep);
+	      if (ferror(filep))
+		returnCode(code);
+	    }
+	  code = OK;
 	}
-
-	returnCode(OK);
+	returnCode(code);
 }
 
 int scr_restore(const char *file)

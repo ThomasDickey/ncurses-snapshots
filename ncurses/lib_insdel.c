@@ -30,18 +30,21 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_insdel.c,v 1.6 1997/09/06 23:45:38 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_insdel.c,v 1.7 1997/09/20 15:02:34 juergen Exp $")
 
 int
 winsdelln(WINDOW *win, int n)
 {
+int code = ERR;
+
 	T((T_CALLED("winsdel(%p,%d)"), win, n));
 
-	if (n == 0)
-		returnCode(OK);
-
-	_nc_scroll_window(win, -n, win->_cury, win->_maxy, _nc_background(win));
-
-	_nc_synchook(win);
-	returnCode(OK);
+	if (win) {
+	  if (n != 0) {
+	    _nc_scroll_window(win, -n, win->_cury, win->_maxy, _nc_background(win));	  
+	    _nc_synchook(win);
+	  }
+	  code = OK;
+	}
+	returnCode(code);
 }

@@ -32,7 +32,7 @@
 #include <term.h>	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
 
-MODULE_ID("$Id: lib_options.c,v 1.25 1997/09/07 03:17:44 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.26 1997/09/20 15:02:34 juergen Exp $")
 
 int has_ic(void)
 {
@@ -53,8 +53,12 @@ int idlok(WINDOW *win,  bool flag)
 {
 	T((T_CALLED("idlok(%p,%d)"), win, flag));
 
-	_nc_idlok = win->_idlok = flag && (has_il() || change_scroll_region);
-	returnCode(OK);
+	if (win) {
+	  _nc_idlok = win->_idlok = flag && (has_il() || change_scroll_region);
+	  returnCode(OK);
+	}
+	else
+	  returnCode(ERR);
 }
 
 
@@ -62,7 +66,8 @@ void idcok(WINDOW *win, bool flag)
 {
 	T((T_CALLED("idcok(%p,%d)"), win, flag));
 
-	_nc_idcok = win->_idcok = flag && has_ic();
+	if (win)
+	  _nc_idcok = win->_idcok = flag && has_ic();
 
 	returnVoid;
 }
@@ -72,8 +77,12 @@ int clearok(WINDOW *win, bool flag)
 {
 	T((T_CALLED("clearok(%p,%d)"), win, flag));
 
-	win->_clear = flag;
-	returnCode(OK);
+	if (win) {
+	  win->_clear = flag;
+	  returnCode(OK);
+	}
+	else
+	  returnCode(ERR);
 }
 
 
@@ -81,7 +90,8 @@ void immedok(WINDOW *win, bool flag)
 {
 	T((T_CALLED("immedok(%p,%d)"), win, flag));
 
-	win->_immed = flag;
+	if (win)
+	  win->_immed = flag;
 
 	returnVoid;
 }
@@ -90,12 +100,16 @@ int leaveok(WINDOW *win, bool flag)
 {
 	T((T_CALLED("leaveok(%p,%d)"), win, flag));
 
-	win->_leaveok = flag;
-	if (flag == TRUE)
-		curs_set(0);
+	if (win) {
+	  win->_leaveok = flag;
+	  if (flag == TRUE)
+	    curs_set(0);
+	  else
+	    curs_set(1);
+	  returnCode(OK);
+	}
 	else
-		curs_set(1);
-	returnCode(OK);
+	  returnCode(ERR);
 }
 
 
@@ -103,8 +117,12 @@ int scrollok(WINDOW *win, bool flag)
 {
 	T((T_CALLED("scrollok(%p,%d)"), win, flag));
 
-	win->_scroll = flag;
-	returnCode(OK);
+	if (win) {
+	  win->_scroll = flag;
+	  returnCode(OK);
+	}
+	else
+	  returnCode(ERR);
 }
 
 int halfdelay(int t)
@@ -123,39 +141,56 @@ int nodelay(WINDOW *win, bool flag)
 {
 	T((T_CALLED("nodelay(%p,%d)"), win, flag));
 
-	if (flag == TRUE)
-		win->_delay = 0;
-	else win->_delay = -1;
-	returnCode(OK);
+	if (win) {
+	  if (flag == TRUE)
+	    win->_delay = 0;
+	  else win->_delay = -1;
+	  returnCode(OK);
+	}
+	else
+	  returnCode(ERR);
 }
 
 int notimeout(WINDOW *win, bool f)
 {
 	T((T_CALLED("notimout(%p,%d)"), win, f));
 
-	win->_notimeout = f;
-	returnCode(OK);
+	if (win) {
+	  win->_notimeout = f;
+	  returnCode(OK);
+	}
+	else
+	  returnCode(ERR);
 }
 
 int wtimeout(WINDOW *win, int delay)
 {
 	T((T_CALLED("wtimeout(%p,%d)"), win, delay));
 
-	win->_delay = delay;
-	returnCode(OK);
+	if (win) {
+	  win->_delay = delay;
+	  returnCode(OK);
+	}
+	else
+	  returnCode(ERR);
 }
 
 int keypad(WINDOW *win, bool flag)
 {
 	T((T_CALLED("keypad(%p,%d)"), win, flag));
 
-	win->_use_keypad = flag;
-	returnCode(_nc_keypad(flag));
+	if (win) {
+	  win->_use_keypad = flag;
+	  returnCode(_nc_keypad(flag));
+	}
+	else
+	  returnCode(ERR);
 }
 
 
 int meta(WINDOW *win GCC_UNUSED, bool flag)
 {
+        /* Ok, we stay relaxed and don't signal an error if win is NULL */
 	T((T_CALLED("meta(%p,%d)"), win, flag));
 
 	SP->_use_meta = flag;

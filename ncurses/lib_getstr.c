@@ -30,7 +30,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_getstr.c,v 1.17 1997/09/02 22:40:57 tom Exp $")
+MODULE_ID("$Id: lib_getstr.c,v 1.18 1997/09/20 15:02:34 juergen Exp $")
 
 /*
  * This wipes out the last character, no matter whether it was a tab, control
@@ -68,6 +68,9 @@ int ch;
 int	y, x;
 
 	T((T_CALLED("wgetnstr(%p,%p, %d)"), win, str, maxlen));
+
+	if (!win)
+	  returnCode(ERR);
 
 	_nc_get_curterm(&buf);
 

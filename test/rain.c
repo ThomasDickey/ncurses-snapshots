@@ -1,5 +1,5 @@
 /*
- * $Id: rain.c,v 1.10 1997/09/13 21:18:21 tom Exp $
+ * $Id: rain.c,v 1.11 1997/09/18 18:36:46 tom Exp $
  */
 #include <test.priv.h>
 
@@ -100,10 +100,12 @@ float c;
 	    curs_set(1);
 	    endwin();
 	    return(EXIT_SUCCESS);
+#ifdef KEY_RESIZE
 	case(KEY_RESIZE):
 	    r = (float)(LINES - 4);
 	    c = (float)(COLS - 4);
 	    break;
+#endif
 	}
 	napms(50);
     }

@@ -29,48 +29,54 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_clreol.c,v 1.12 1997/08/15 21:35:32 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_clreol.c,v 1.13 1997/09/20 15:02:34 juergen Exp $")
 
 int  wclrtoeol(WINDOW *win)
 {
-chtype	blank = _nc_background(win);
+int     code = ERR;
+chtype	blank;
 chtype	*ptr, *end;
 short	y, x;
 
 	T((T_CALLED("wclrtoeol(%p)"), win));
 
-	y = win->_cury;
-	x = win->_curx;
+	if (win) {
 
-	/*
-	 * If we have just wrapped the cursor, the clear applies to the new
-	 * line, unless we are at the lower right corner.
-	 */
-	if (win->_flags & _WRAPPED
-	 && y < win->_maxy) {
-		win->_flags &= ~_WRAPPED;
-	}
+	  y = win->_cury;
+	  x = win->_curx;
 
-	/*
-	 * There's no point in clearing if we're not on a legal position,
-	 * either.
-	 */
-	if (win->_flags & _WRAPPED
-	 || y > win->_maxy
-	 || x > win->_maxx)
-		returnCode(ERR);
-
-	end = &win->_line[y].text[win->_maxx];
-
-	for (ptr = &win->_line[y].text[x]; ptr <= end; ptr++)
+	  /*
+	   * If we have just wrapped the cursor, the clear applies to the new
+	   * line, unless we are at the lower right corner.
+	   */
+	  if (win->_flags & _WRAPPED
+	      && y < win->_maxy) {
+	    win->_flags &= ~_WRAPPED;
+	  }
+	  
+	  /*
+	   * There's no point in clearing if we're not on a legal position,
+	   * either.
+	   */
+	  if (win->_flags & _WRAPPED
+	      || y > win->_maxy
+	      || x > win->_maxx)
+	    returnCode(ERR);
+	  
+	  blank = _nc_background(win);
+	  end = &win->_line[y].text[win->_maxx];
+	  
+	  for (ptr = &win->_line[y].text[x]; ptr <= end; ptr++)
 	    *ptr = blank;
-
-	if (win->_line[y].firstchar > win->_curx
-		|| win->_line[y].firstchar == _NOCHANGE)
+	  
+	  if (win->_line[y].firstchar > win->_curx
+	      || win->_line[y].firstchar == _NOCHANGE)
 	    win->_line[y].firstchar = win->_curx;
-
-	win->_line[y].lastchar = win->_maxx;
-
-	_nc_synchook(win);
-	returnCode(OK);
+	  
+	  win->_line[y].lastchar = win->_maxx;
+	  
+	  _nc_synchook(win);
+	  code = OK;
+	}
+	returnCode(code);
 }

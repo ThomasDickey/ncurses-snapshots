@@ -35,7 +35,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.27 1997/09/13 23:31:52 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.29 1997/09/20 19:09:36 tom Exp $")
 
 /****************************************************************************
  *
@@ -43,7 +43,7 @@ MODULE_ID("$Id: lib_setup.c,v 1.27 1997/09/13 23:31:52 tom Exp $")
  *
  ****************************************************************************/
 
-#if defined(TIOCGWINSZ) && !BROKEN_TIOCGWINSZ
+#if HAVE_SIZECHANGE
 # if !defined(sun) || !HAVE_TERMIOS_H
 #  include <sys/ioctl.h>
 # endif
@@ -88,13 +88,19 @@ char		*rows, *cols;
 		COLS = atoi(cols);
 	    T(("screen size: environment LINES = %d COLUMNS = %d",LINES,COLS));
 
-#if defined(TIOCGWINSZ) && !BROKEN_TIOCGWINSZ
+#if HAVE_SIZECHANGE
 	    /* if that didn't work, maybe we can try asking the OS */
 	    if (LINES <= 0 || COLS <= 0)
 	    {
 		if (isatty(cur_term->Filedes))
 		{
+#ifdef TIOCGWINSZ
 		    struct winsize size;
+#else
+#ifdef TIOCGSIZE
+		    struct ttysize win;
+#endif
+#endif
 
 		    errno = 0;
 		    do {
@@ -104,13 +110,20 @@ char		*rows, *cols;
 		    } while
 			(errno == EINTR);
 
+#ifdef TIOCGWINSZ
 		    LINES = (int)size.ws_row;
 		    COLS  = (int)size.ws_col;
+#else
+#ifdef TIOCGSIZE
+		    LINES = (int)size.ts_lines;
+		    COLS  = (int)size.ts_cols;
+#endif
+#endif
 		}
 		/* FALLTHRU */
 	    failure:;
 	    }
-#endif /* defined(TIOCGWINSZ) && !defined(BROKEN_TIOCGWINSZ) */
+#endif /* HAVE_SIZECHANGE */
 
 	    /* if we can't get dynamic info about the size, use static */
 	    if (LINES <= 0 || COLS <= 0)

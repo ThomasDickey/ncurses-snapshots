@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.82 1997/09/13 22:41:32 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.84 1997/09/20 20:59:59 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -225,13 +225,15 @@ static void callPutChar(chtype const);
 #define callPutChar(ch) PutChar(ch)
 #endif
 
-static inline void PutChar(chtype const ch)
-/* insert character, handling automargin stuff */
+static inline void PutChar(chtype const ch);	/* forward declaration */
+
+/* put char at lower right corner */
+static void PutCharLR(chtype const ch)
 {
-    if (!(SP->_cursrow == screen_lines-1 && SP->_curscol == screen_columns-1
-		&& auto_right_margin && !eat_newline_glitch))
+    if (!auto_right_margin || eat_newline_glitch)
     {
-	PutAttrChar(ch);	/* normal case */
+	/* we can put the char directly */
+	PutAttrChar(ch);
     }
     else if (enter_am_mode && exit_am_mode)
     {
@@ -252,42 +254,53 @@ static inline void PutChar(chtype const ch)
 	GoTo(screen_lines-1,screen_columns-2);
 	InsStr(newscr->_line[screen_lines-1].text+screen_columns-2,1);
     }
-    else
-	return;
+}
 
-    if (SP->_curscol >= screen_columns)
+static void wrap_cursor(void)
+{
+    if (eat_newline_glitch)
     {
-	if (eat_newline_glitch)
-	{
-	    /*
-	     * xenl can manifest two different ways.  The vt100
-	     * way is that, when you'd expect the cursor to wrap,
-	     * it stays hung at the right margin (on top of the
-	     * character just emitted) and doesn't wrap until the
-	     * *next* graphic char is emitted.  The c100 way is
-	     * to ignore LF received just after an am wrap.
-	     *
-	     * An aggressive way to handle this would be to
-	     * emit CR/LF after the char and then assume the wrap
-	     * is done, you're on the first position of the next
-	     * line, and the terminal out of its weird state.
-	     * Here it's safe to just tell the code that the
-	     * cursor is in hyperspace and let the next mvcur()
-	     * call straighten things out.
-	     */
-	    SP->_curscol = -1;
-	    SP->_cursrow = -1;
-	}
-	else if (auto_right_margin)
-	{
-	    SP->_curscol = 0;
-	    SP->_cursrow++;
-	}
-	else
-	{
-	    SP->_curscol--;
-	}
+	/*
+	 * xenl can manifest two different ways.  The vt100
+	 * way is that, when you'd expect the cursor to wrap,
+	 * it stays hung at the right margin (on top of the
+	 * character just emitted) and doesn't wrap until the
+	 * *next* graphic char is emitted.  The c100 way is
+	 * to ignore LF received just after an am wrap.
+	 *
+	 * An aggressive way to handle this would be to
+	 * emit CR/LF after the char and then assume the wrap
+	 * is done, you're on the first position of the next
+	 * line, and the terminal out of its weird state.
+	 * Here it's safe to just tell the code that the
+	 * cursor is in hyperspace and let the next mvcur()
+	 * call straighten things out.
+	 */
+	SP->_curscol = -1;
+	SP->_cursrow = -1;
     }
+    else if (auto_right_margin)
+    {
+	SP->_curscol = 0;
+	SP->_cursrow++;
+    }
+    else
+    {
+	SP->_curscol--;
+    }
+}
+
+static inline void PutChar(chtype const ch)
+/* insert character, handling automargin stuff */
+{
+    if (SP->_cursrow == screen_lines-1 && SP->_curscol == screen_columns-1)
+	PutCharLR(ch);
+    else
+	PutAttrChar(ch);
+    
+    if (SP->_curscol >= screen_columns)
+	wrap_cursor();
+
 #ifdef POSITION_DEBUG
     position_check(SP->_cursrow, SP->_curscol, "PutChar");
 #endif /* POSITION_DEBUG */
@@ -305,7 +318,7 @@ static inline void PutChar(chtype const ch)
  *
  * This code is optimized using ech and rep.
  */
-static inline int EmitRange(const chtype *ntext, int num)
+static int EmitRange(const chtype *ntext, int num)
 {
     int	i;
 

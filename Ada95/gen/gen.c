@@ -22,7 +22,7 @@
 //  This binding comes AS IS with no warranty, implied or expressed.        --
 //----------------------------------------------------------------------------
     Version Control
-    $Revision: 1.10 $
+    $Revision: 1.11 $
   --------------------------------------------------------------------------*/
 /*
   This program generates various record structures and constants from the
@@ -663,6 +663,9 @@ static void gen_keydefs (int mode)
 #endif
 #ifdef KEY_MOUSE
   keydef("Key_Mouse","KEY_MOUSE",KEY_MOUSE,mode);
+#endif  
+#ifdef KEY_RESIZE
+  keydef("Key_Resize","KEY_RESIZE",KEY_RESIZE,mode);
 #endif  
 }
 

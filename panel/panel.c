@@ -24,7 +24,7 @@
 /* panel.c -- implementation of panels library */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: panel.c,v 1.11 1997/05/23 23:17:55 juergen Exp $")
+MODULE_ID("$Id: panel.c,v 1.12 1997/09/20 08:22:08 juergen Exp $")
 
 #ifdef TRACE
 extern char *_nc_visbuf(const char *);
@@ -151,17 +151,18 @@ __panels_overlapped(register const PANEL *pan1, register const PANEL *pan2)
 {
   if(!pan1 || !pan2)
     return(FALSE);
+
   dBug(("__panels_overlapped %s %s", USER_PTR(pan1->user), USER_PTR(pan2->user)));
   /* pan1 intersects with pan2 ? */
-  if((pan1->wstarty >= pan2->wstarty) && (pan1->wstarty < pan2->wendy) &&
-     (pan1->wstartx >= pan2->wstartx) && (pan1->wstartx < pan2->wendx))
-    return(TRUE);
-  /* or vice versa test */
-  if((pan2->wstarty >= pan1->wstarty) && (pan2->wstarty < pan1->wendy) &&
-     (pan2->wstartx >= pan1->wstartx) && (pan2->wstartx < pan1->wendx))
-    return(TRUE);
-  dBug(("  no"));
-  return(FALSE);
+  if( (((pan1->wstarty >= pan2->wstarty) && (pan1->wstarty < pan2->wendy)) ||
+       ((pan2->wstarty >= pan1->wstarty) && (pan2->wstarty < pan1->wendy))) &&
+      (((pan1->wstartx >= pan2->wstartx) && (pan1->wstartx < pan2->wendx)) ||
+       ((pan2->wstartx >= pan1->wstartx) && (pan2->wstartx < pan1->wendx)))
+      ) return(TRUE);
+  else {
+    dBug(("  no"));
+    return(FALSE);
+  }
 } /* end of __panels_overlapped */
 
 /*+-------------------------------------------------------------------------
@@ -533,11 +534,11 @@ bottom_panel(register PANEL *pan)
 PANEL *
 new_panel(WINDOW *win)
 {
-  PANEL *pan = (PANEL *)malloc(sizeof(PANEL));
+  PANEL *pan = (PANEL*)0;
 
   (void)__root_panel();
 
-  if(pan)
+  if (!(win->_flags & _ISPAD) && (pan = (PANEL*)malloc(sizeof(PANEL))))
     {
       pan->win = win;
       pan->above = (PANEL *)0;

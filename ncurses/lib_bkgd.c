@@ -21,46 +21,53 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_bkgd.c,v 1.9 1997/09/03 01:08:20 juergen Exp $")
+MODULE_ID("$Id: lib_bkgd.c,v 1.10 1997/09/20 15:02:34 juergen Exp $")
 
 void wbkgdset(WINDOW *win, chtype ch)
 {
-  chtype off = AttrOf(win->_bkgd);
-  chtype on  = AttrOf(ch);
-
   T((T_CALLED("wbkgdset(%p,%s)"), win, _tracechtype(ch)));
-
-  toggle_attr_off(win->_attrs,off);
-  toggle_attr_on (win->_attrs,on);
-
-  if (TextOf(ch)==0)
-    ch |= BLANK;
-  win->_bkgd = ch;
+    
+  if (win) {
+    chtype off = AttrOf(win->_bkgd);
+    chtype on  = AttrOf(ch);
+    
+    toggle_attr_off(win->_attrs,off);
+    toggle_attr_on (win->_attrs,on);
+    
+    if (TextOf(ch)==0)
+      ch |= BLANK;
+    win->_bkgd = ch;
+  }
 }
 
 int wbkgd(WINDOW *win, const chtype ch)
 {
+  int code = ERR;
   int x, y;
-  chtype old_bkgd = getbkgd(win);
   chtype new_bkgd = ch;
 
-	T((T_CALLED("wbkgd(%p,%s)"), win, _tracechtype(new_bkgd)));
+  T((T_CALLED("wbkgd(%p,%s)"), win, _tracechtype(new_bkgd)));
 
-	wbkgdset(win, new_bkgd);
-	wattrset(win, AttrOf(win->_bkgd));
+  if (win) {
+    chtype old_bkgd = getbkgd(win);
 
-	for (y = 0; y <= win->_maxy; y++) {
-		for (x = 0; x <= win->_maxx; x++) {
-			if (win->_line[y].text[x] == old_bkgd)
-				win->_line[y].text[x] = win->_bkgd;
-			else 
-			        win->_line[y].text[x] =
-			        _nc_render(win,(A_ALTCHARSET & 
-						AttrOf(win->_line[y].text[x])) 
-					   | TextOf(win->_line[y].text[x]));
-		}
-	}
-	touchwin(win);
-	_nc_synchook(win);
-	returnCode(OK);
+    wbkgdset(win, new_bkgd);
+    wattrset(win, AttrOf(win->_bkgd));
+    
+    for (y = 0; y <= win->_maxy; y++) {
+      for (x = 0; x <= win->_maxx; x++) {
+	if (win->_line[y].text[x] == old_bkgd)
+	  win->_line[y].text[x] = win->_bkgd;
+	else 
+	  win->_line[y].text[x] =
+	    _nc_render(win,(A_ALTCHARSET & 
+			    AttrOf(win->_line[y].text[x])) 
+		       | TextOf(win->_line[y].text[x]));
+      }
+    }
+    touchwin(win);
+    _nc_synchook(win);
+    code = OK;
+  }
+  returnCode(code);
 }

@@ -21,7 +21,7 @@
 | WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                               |
 +----------------------------------------------------------------------------*/
 
-// $Id: cursesm.h,v 1.7 1997/09/09 00:14:40 juergen Exp $
+// $Id: cursesm.h,v 1.8 1997/09/15 21:27:04 juergen Exp $
 
 #ifndef _CURSESM_H
 #define _CURSESM_H
@@ -48,74 +48,75 @@ protected:
   }
 
 public:
-  // Create an item. If you pass both parameters as NULL, a delimiter
-  // item is constructed which can be used to terminate a list of
-  // NCursesMenu objects.
   NCursesMenuItem (const char* p_name     = NULL,
 		   const char* p_descript = NULL ) { 
     item = p_name ? ::new_item (p_name, p_descript) : (ITEM*)0; 
     if (p_name && !item)
       OnError (E_SYSTEM_ERROR);
   }
+  // Create an item. If you pass both parameters as NULL, a delimiting
+  // item is constructed which can be used to terminate a list of
+  // NCursesMenu objects.
   
-  // Release the items memory
   virtual ~NCursesMenuItem ();
+  // Release the items memory
 
-  // Name of the item
   inline const char* name () const {
     return ::item_name (item);
   }
+  // Name of the item
 
-  // Description of the item
   inline const char* description () const {
     return ::item_description (item);
   }
+  // Description of the item
   
-  // Index of the item in an item array (or -1)
   inline int index (void) const {
     return ::item_index (item);
   }
+  // Index of the item in an item array (or -1)
 
-  // Switch on the items options
   inline void options_on (Item_Options options) {
     OnError (::item_opts_on (item, options));
   }
+  // Switch on the items options
 
-  // Switch off the item's option
   inline void options_off (Item_Options options) {
     OnError (::item_opts_off (item, options));
   }
+  // Switch off the item's option
 
-  // Retrieve the items options
   inline Item_Options options () const {
     return ::item_opts (item);
   }
+  // Retrieve the items options
 
-  // Set the items options
   inline void set_options (Item_Options options) {
     OnError (::set_item_opts (item, options));
   }
+  // Set the items options
 
-  // Set/Reset the items selection state
   inline void set_value (bool f) {
     OnError (::set_item_value (item,f));
   }
+  // Set/Reset the items selection state
 
-  // Retrieve the items selection state
   inline bool value () const {
     return ::item_value (item);
   }
+  // Retrieve the items selection state
   
-  // Retrieve visibility of the item
   inline bool visible () const {
     return ::item_visible (item);
   }
+  // Retrieve visibility of the item
 
+  virtual bool action();
   // Perform an action associated with this item; you may use this in an
   // user supplied driver for a menu; you may derive from this class and
   // overload action() to supply items with different actions.
-  // If an action returns true, the menu will be exited.
-  virtual bool action();
+  // If an action returns true, the menu will be exited. The default action
+  // is to do nothing.
 };
 
 // Prototype for an items callback function.

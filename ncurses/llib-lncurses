@@ -162,6 +162,12 @@ int	flash(void)
 
 /* ./lib_bkgd.c */
 
+#undef wbkgdset
+void	wbkgdset(
+		WINDOW	*win, 
+		chtype	ch)
+		{ /* void */ }
+
 #undef wbkgd
 int	wbkgd(
 		WINDOW	*win, 
@@ -1010,12 +1016,6 @@ int	wattr_set(
 		attr_t	z)
 		{ return(*(int *)0); }
 
-#undef wbkgdset
-void	wbkgdset(
-		WINDOW	*a1, 
-		chtype	z)
-		{ /* void */ }
-
 #undef wdeleteln
 int	wdeleteln(
 		WINDOW	*z)
@@ -1273,6 +1273,10 @@ bool	wenclose(
 #undef mouseinterval
 int	mouseinterval(
 		int	maxclick)
+		{ return(*(int *)0); }
+
+#undef _nc_has_mouse
+int	_nc_has_mouse(void)
 		{ return(*(int *)0); }
 
 /* ./lib_move.c */
@@ -1546,7 +1550,7 @@ int	pnoutrefresh(
 #undef pechochar
 int	pechochar(
 		WINDOW	*pad, 
-		chtype	ch)
+		const chtype ch)
 		{ return(*(int *)0); }
 
 /* ./lib_print.c */
@@ -2152,8 +2156,7 @@ char	*_tracemouse(
 /* ./lib_tstp.c */
 
 #include <signal.h>
-
-typedef struct sigaction sigaction_t;
+#include <SigAction.h>
 
 #undef _nc_signal_handler
 void	_nc_signal_handler(
@@ -2400,8 +2403,6 @@ char	*_nc_infotocap(
 
 /* ./comp_captab.c */
 
-#include <hashsize.h>
-
 #undef _nc_info_hash_table
 const struct name_table_entry *const _nc_info_hash_table[991] = {0};
 #undef _nc_cap_hash_table
@@ -2459,6 +2460,8 @@ void	_nc_syserr_abort(
 		{ /* void */ }
 
 /* ./comp_hash.c */
+
+#include <hashsize.h>
 
 #undef _nc_find_entry
 struct name_table_entry const *_nc_find_entry(

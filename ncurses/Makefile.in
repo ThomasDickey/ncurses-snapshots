@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.37 1997/09/13 23:59:38 tom Exp $
+# $Id: Makefile.in,v 1.38 1997/09/20 23:07:22 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -61,7 +61,6 @@ LD		= @LD@
 LN_S		= @LN_S@
 
 CC		= @CC@
-HOSTCC		= @CC@
 CPP		= @CPP@
 CFLAGS		= @CFLAGS@
 
@@ -70,6 +69,10 @@ CPPFLAGS	= -I../ncurses -I$(srcdir) @CPPFLAGS@ \
 		  -DHAVE_CONFIG_H -DTERMINFO=\"$(ticdir)\"
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
+
+HOSTCC		= @CC@
+HOSTCCFLAGS	= @CFLAGS@ $(CPPFLAGS)
+HOSTLDFLAGS	= @LDFLAGS@
 
 CFLAGS_NORMAL	= $(CCFLAGS)
 CFLAGS_DEBUG	= $(CCFLAGS) @CC_G_OPT@ -DTRACE
@@ -141,12 +144,12 @@ keys.tries: make_keys
 make_keys : \
 		$(srcdir)/make_keys.c \
 		./names.c
-	$(HOSTCC) -o $@ $(CCFLAGS) $(srcdir)/make_keys.c $(LDFLAGS)
+	$(HOSTCC) -o $@ $(HOSTCCFLAGS) $(srcdir)/make_keys.c $(HOSTLDFLAGS)
 
 make_hash : \
 		$(srcdir)/comp_hash.c \
 		../include/hashsize.h
-	$(HOSTCC) -o $@ $(CCFLAGS) -DMAIN_PROGRAM $(srcdir)/comp_hash.c $(LDFLAGS)
+	$(HOSTCC) -o $@ $(HOSTCCFLAGS) -DMAIN_PROGRAM $(srcdir)/comp_hash.c $(HOSTLDFLAGS)
 
 ./expanded.c : $(srcdir)/MKexpanded.sh
 	sh $(srcdir)/MKexpanded.sh "$(CPP)" $(CPPFLAGS)
