@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.196 2000/04/02 01:31:11 tom Exp $
+dnl $Id: aclocal.m4,v 1.197 2000/04/22 16:20:59 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1431,7 +1431,7 @@ CF_EOF
 esac
 cat >>man/edit_man.sh <<CF_EOF
 	echo \$verb \$target
-	suffix=\`echo \$target | sed -e 's/^[^.]*//'\`
+	suffix=\`basename \$target | sed -e 's/^[^.]*//'\`
 	if test \$verb = installing ; then
 		\$INSTALL_DATA \$TMP \$target
 		test -n "\$aliases" && (
