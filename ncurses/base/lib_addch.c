@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.65 2002/08/10 22:27:49 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.68 2002/09/28 17:48:13 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -128,11 +128,37 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 
     CHANGED_CELL(line, x);
 
+    /*
+     * Handle non-spacing characters
+     */
+    if_WIDEC({
+	if (wcwidth(CharOf(ch)) == 0) {
+	    int i;
+	    int y;
+	    if ((x > 0 && ((y = win->_cury) >= 0))
+		|| ((y = win->_cury - 1) >= 0 &&
+		    (x = win->_maxx) > 0)) {
+		wchar_t *chars = (win->_line[y].text[x - 1].chars);
+		for (i = 0; i < CCHARW_MAX; ++i) {
+		    if (chars[i] == 0) {
+			chars[i] = CharOf(ch);
+			break;
+		    }
+		}
+	    }
+	    goto testwrapping;
+	}
+    });
     line->text[x++] = ch;
+    /*
+     * Provide for multi-column characters
+     */
     if_WIDEC({
 	if (wcwidth(CharOf(ch)) > 1)
 	    AddAttr(line->text[x++], WA_NAC);
-    });
+    }
+  testwrapping:
+    );
 
     TR(TRACE_VIRTPUT, ("(%d, %d) = %s", win->_cury, x, _tracech_t(CHREF(ch))));
     if (x > win->_maxx) {

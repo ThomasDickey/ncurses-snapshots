@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1999,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1999-2000,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -43,7 +43,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: alloc_ttype.c,v 1.12 2000/12/10 02:55:07 tom Exp $")
+MODULE_ID("$Id: alloc_ttype.c,v 1.13 2002/09/28 15:28:43 tom Exp $")
 
 #if NCURSES_XNAMES
 /*
@@ -291,7 +291,7 @@ _nc_ins_ext_name(TERMTYPE * tp, char *name, int token_type)
 	int cmp = strcmp(name, tp->ext_Names[j]);
 	if (cmp == 0)
 	    /* already present */
-	    return _nc_ext_data_index(tp, j, token_type);
+	    return _nc_ext_data_index(tp, (int) j, token_type);
 	if (cmp < 0) {
 	    break;
 	}
@@ -301,7 +301,7 @@ _nc_ins_ext_name(TERMTYPE * tp, char *name, int token_type)
     for (k = total - 1; k > j; k--)
 	tp->ext_Names[k] = tp->ext_Names[k - 1];
     tp->ext_Names[j] = name;
-    j = _nc_ext_data_index(tp, j, token_type);
+    j = _nc_ext_data_index(tp, (int) j, token_type);
 
     switch (token_type) {
     case BOOLEAN:

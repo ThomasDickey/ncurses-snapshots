@@ -39,7 +39,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.42 2002/06/16 00:35:01 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.43 2002/09/28 12:37:03 tom Exp $")
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
@@ -237,8 +237,8 @@ _tracechtype (chtype ch)
 }
 
 /* Trace 'chtype' return-values */
-NCURSES_EXPORT(attr_t)
-_nc_retrace_chtype (attr_t code)
+NCURSES_EXPORT(chtype)
+_nc_retrace_chtype (chtype code)
 {
     T((T_RETURN("%s"), _tracechtype(code)));
     return code;

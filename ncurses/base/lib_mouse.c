@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2002 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -84,7 +84,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.60 2002/09/01 21:14:16 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.61 2002/09/28 16:08:58 tom Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -890,6 +890,8 @@ NCURSES_EXPORT(int)
 ungetmouse(MEVENT * aevent)
 /* enqueue a synthesized mouse event to be seen by the next wgetch() */
 {
+    T((T_CALLED("ungetmouse(%p)"), aevent));
+
     /* stick the given event in the next-free slot */
     *eventp = *aevent;
 
@@ -897,7 +899,7 @@ ungetmouse(MEVENT * aevent)
     eventp = NEXT(eventp);
 
     /* push back the notification event on the keyboard queue */
-    return ungetch(KEY_MOUSE);
+    returnCode(ungetch(KEY_MOUSE));
 }
 
 NCURSES_EXPORT(mmask_t)
@@ -912,7 +914,7 @@ mousemask(mmask_t newmask, mmask_t * oldmask)
 	*oldmask = eventmask;
 
     if (!newmask && !initialized)
-	returnCode(0);
+	returnBits(0);
 
     _nc_mouse_init();
     if (mousetype != M_NONE) {
@@ -930,21 +932,25 @@ mousemask(mmask_t newmask, mmask_t * oldmask)
 	result = eventmask;
     }
 
-    returnCode(result);
+    returnBits(result);
 }
 
 NCURSES_EXPORT(bool)
 wenclose(const WINDOW *win, int y, int x)
 /* check to see if given window encloses given screen location */
 {
-    if (win) {
+    bool result = FALSE;
+
+    T((T_CALLED("wenclose(%p,%d,%d)"), win, y, x));
+
+    if (win != 0) {
 	y -= win->_yoffset;
-	return ((win->_begy <= y &&
-		 win->_begx <= x &&
-		 (win->_begx + win->_maxx) >= x &&
-		 (win->_begy + win->_maxy) >= y) ? TRUE : FALSE);
+	result = ((win->_begy <= y &&
+		   win->_begx <= x &&
+		   (win->_begx + win->_maxx) >= x &&
+		   (win->_begy + win->_maxy) >= y) ? TRUE : FALSE);
     }
-    return FALSE;
+    returnBool(result);
 }
 
 NCURSES_EXPORT(int)
@@ -952,6 +958,8 @@ mouseinterval(int maxclick)
 /* set the maximum mouse interval within which to recognize a click */
 {
     int oldval;
+
+    T((T_CALLED("mouseinterval(%d)"), maxclick));
 
     if (SP != 0) {
 	oldval = SP->_maxclick;
@@ -961,7 +969,7 @@ mouseinterval(int maxclick)
 	oldval = DEFAULT_MAXCLICK;
     }
 
-    return (oldval);
+    returnCode(oldval);
 }
 
 /* This may be used by other routines to ask for the existence of mouse
@@ -973,10 +981,11 @@ _nc_has_mouse(void)
 }
 
 NCURSES_EXPORT(bool)
-wmouse_trafo
-(const WINDOW *win, int *pY, int *pX, bool to_screen)
+wmouse_trafo(const WINDOW *win, int *pY, int *pX, bool to_screen)
 {
     bool result = FALSE;
+
+    T((T_CALLED("wmouse_trafo(%p,%p,%p,%d)"), win, pY, pX, to_screen));
 
     if (win && pY && pX) {
 	int y = *pY;
@@ -999,7 +1008,7 @@ wmouse_trafo
 	    *pY = y;
 	}
     }
-    return (result);
+    returnBool(result);
 }
 
 /* lib_mouse.c ends here */

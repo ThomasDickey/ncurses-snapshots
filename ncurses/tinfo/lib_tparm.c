@@ -43,7 +43,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.60 2002/09/14 22:36:13 Philippe.Blain Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.61 2002/09/28 15:17:48 tom Exp $")
 
 /*
  *	char *
@@ -172,7 +172,7 @@ save_number(const char *fmt, int number, int len)
     if (len < 30)
 	len = 30;		/* actually log10(MAX_INT)+1 */
 
-    get_space(len + 1);
+    get_space((unsigned)len + 1);
 
     (void) sprintf(out_buff + out_used, fmt, number);
     out_used += strlen(out_buff + out_used);
@@ -544,7 +544,7 @@ tparam_internal(const char *string, va_list ap)
 		break;
 
 	    case 'l':
-		save_number("%d", strlen(spop()), 0);
+		save_number("%d", (int) strlen(spop()), 0);
 		break;
 
 	    case 's':

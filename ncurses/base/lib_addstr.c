@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.32 2002/07/20 17:07:16 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.33 2002/09/28 16:30:46 tom Exp $")
 
 #if USE_WIDEC_SUPPORT
 #define CONV_DATA   mbstate_t state; wchar_t cached; int clen = 0
@@ -88,7 +88,7 @@ waddnstr(WINDOW *win, const char *astr, int n)
     int code = ERR;
     CONV_DATA;
 
-    T((T_CALLED("waddnstr(%p,%s,%d)"), win, _nc_visbuf(astr), n));
+    T((T_CALLED("waddnstr(%p,%s,%d)"), win, _nc_visbufn(astr, n), n));
 
     if (win && (str != 0)) {
 	TR(TRACE_VIRTPUT | TRACE_ATTRS, ("... current %s", _traceattr(win->_attrs)));
@@ -219,7 +219,7 @@ waddnwstr(WINDOW *win, const wchar_t * str, int n)
     int code = ERR;
     int i;
 
-    T((T_CALLED("waddnwstr(%p,%s,%d)"), win, _nc_viswbuf(str), n));
+    T((T_CALLED("waddnwstr(%p,%s,%d)"), win, _nc_viswbufn(str,n), n));
 
     if (win && (str != 0)) {
 	TR(TRACE_VIRTPUT | TRACE_ATTRS, ("... current %s", _traceattr(win->_attrs)));

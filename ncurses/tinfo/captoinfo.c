@@ -92,7 +92,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.42 2002/09/07 20:07:13 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.43 2002/09/28 16:38:59 tom Exp $")
 
 #define MAX_PUSHED	16	/* max # args we can push onto the stack */
 
@@ -137,10 +137,10 @@ save_string(char *d, const char *const s)
 }
 
 static inline char *
-save_char(char *s, char c)
+save_char(char *s, int c)
 {
     static char temp[2];
-    temp[0] = c;
+    temp[0] = (char) c;
     return save_string(s, temp);
 }
 

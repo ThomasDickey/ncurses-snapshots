@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.224 2002/09/07 20:00:52 tom Exp $
+ * $Id: curses.priv.h,v 1.227 2002/09/28 20:13:13 tom Exp $
  *
  *	curses.priv.h
  *
@@ -231,7 +231,9 @@ struct tries {
 
 typedef struct
 {
-    short red, green, blue;
+    short red, green, blue;	/* what color_content() returns */
+    short r, g, b;		/* params to init_color() */
+    int init;			/* true if we called init_color() */
 }
 color_t;
 
@@ -333,6 +335,7 @@ struct screen {
 	int             _endwin;        /* are we out of window mode?       */
 	attr_t          _current_attr;  /* terminal attribute current set   */
 	int             _coloron;       /* is color enabled?                */
+	int		_color_defs;	/* are colors modified		    */
 	int             _cursor;        /* visibility of the cursor         */
 	int             _cursrow;       /* physical cursor row              */
 	int             _curscol;       /* physical cursor column           */
@@ -665,54 +668,69 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define T_RETURN(fmt) "return }" fmt
 
 #ifdef TRACE
+
 #define TR(n, a)	if (_nc_tracing & (n)) _tracef a
 #define T(a)		TR(TRACE_CALLS, a)
 #define TPUTS_TRACE(s)	_nc_tputs_trace = s;
 #define TRACE_RETURN(value,type) return _nc_retrace_##type(value)
+
 #define returnAttr(code) TRACE_RETURN(code,attr_t)
 #define returnChar(code) TRACE_RETURN(code,chtype)
+#define returnBool(code) TRACE_RETURN(code,bool)
+#define returnBits(code) TRACE_RETURN(code,unsigned)
 #define returnCode(code) TRACE_RETURN(code,int)
 #define returnPtr(code)  TRACE_RETURN(code,ptr)
 #define returnSP(code)   TRACE_RETURN(code,sp)
 #define returnVoid       T((T_RETURN(""))); return
 #define returnWin(code)  TRACE_RETURN(code,win)
-extern NCURSES_EXPORT(SCREEN *) _nc_retrace_sp (SCREEN *);
-extern NCURSES_EXPORT(WINDOW *) _nc_retrace_win (WINDOW *);
-extern NCURSES_EXPORT(attr_t) _nc_retrace_attr_t (attr_t);
-extern NCURSES_EXPORT(attr_t) _nc_retrace_chtype (chtype);
-extern NCURSES_EXPORT(char *) _nc_retrace_ptr (char *);
-extern NCURSES_EXPORT(char *) _nc_trace_ttymode(TTY *tty);
-extern NCURSES_EXPORT(char *) _nc_varargs (const char *, va_list);
-extern NCURSES_EXPORT(const char *) _nc_altcharset_name(attr_t, chtype);
-extern NCURSES_EXPORT(int) _nc_retrace_int (int);
-extern NCURSES_EXPORT(void) _nc_fifo_dump (void);
+
+extern NCURSES_EXPORT(NCURSES_BOOL)     _nc_retrace_bool (NCURSES_BOOL);
+extern NCURSES_EXPORT(SCREEN *)         _nc_retrace_sp (SCREEN *);
+extern NCURSES_EXPORT(WINDOW *)         _nc_retrace_win (WINDOW *);
+extern NCURSES_EXPORT(attr_t)           _nc_retrace_attr_t (attr_t);
+extern NCURSES_EXPORT(char *)           _nc_retrace_ptr (char *);
+extern NCURSES_EXPORT(char *)           _nc_trace_ttymode(TTY *tty);
+extern NCURSES_EXPORT(char *)           _nc_varargs (const char *, va_list);
+extern NCURSES_EXPORT(chtype)           _nc_retrace_chtype (chtype);
+extern NCURSES_EXPORT(const char *)     _nc_altcharset_name(attr_t, chtype);
+extern NCURSES_EXPORT(int)              _nc_retrace_int (int);
+extern NCURSES_EXPORT(unsigned)         _nc_retrace_unsigned (unsigned);
+extern NCURSES_EXPORT(void)             _nc_fifo_dump (void);
 extern NCURSES_EXPORT_VAR(const char *) _nc_tputs_trace;
-extern NCURSES_EXPORT_VAR(long) _nc_outchars;
-extern NCURSES_EXPORT_VAR(unsigned) _nc_tracing;
+extern NCURSES_EXPORT_VAR(long)         _nc_outchars;
+extern NCURSES_EXPORT_VAR(unsigned)     _nc_tracing;
+
 #if USE_WIDEC_SUPPORT
 extern NCURSES_EXPORT(const char *) _nc_viswbuf2 (int, const wchar_t *);
+extern NCURSES_EXPORT(const char *) _nc_viswbufn (const wchar_t *, int);
 extern NCURSES_EXPORT(const char *) _nc_viscbuf2 (int, const cchar_t *, int);
 extern NCURSES_EXPORT(const char *) _nc_viscbuf (const cchar_t *, int);
 #endif
-#else
+
+#else /* !TRACE */
+
 #define T(a)
 #define TR(n, a)
 #define TPUTS_TRACE(s)
+
 #define returnAttr(code) return code
+#define returnBits(code) return code
+#define returnBool(code) return code
 #define returnChar(code) return code
 #define returnCode(code) return code
 #define returnPtr(code)  return code
 #define returnSP(code)   return code
 #define returnVoid       return
 #define returnWin(code)  return code
-#endif
+
+#endif /* TRACE/!TRACE */
+
+extern NCURSES_EXPORT(const char *) _nc_visbuf2 (int, const char *);
+extern NCURSES_EXPORT(const char *) _nc_visbufn (const char *, int);
 
 #define empty_module(name) \
 extern	NCURSES_EXPORT(void) name (void); \
 	NCURSES_EXPORT(void) name (void) { }
-
-/* used in _nc_visbuf() whether or not we're tracing */
-extern NCURSES_EXPORT(const char *) _nc_visbuf2 (int, const char *);
 
 #define ALL_BUT_COLOR ((chtype)~(A_COLOR))
 #define IGNORE_COLOR_OFF FALSE
@@ -838,6 +856,9 @@ extern NCURSES_EXPORT(int) _nc_msec_cost (const char *const, int);  /* used by '
 #if USE_WIDEC_SUPPORT
 extern NCURSES_EXPORT(int) _nc_wchstrlen(const cchar_t *);
 #endif
+
+/* lib_color.c */
+extern NCURSES_EXPORT(bool) _nc_reset_colors(void);
 
 /* lib_getch.c */
 extern NCURSES_EXPORT(int) _nc_wgetch(WINDOW *, unsigned long *, int EVENTLIST_2nd(_nc_eventlist *));

@@ -32,7 +32,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: wresize.c,v 1.22 2002/08/04 23:41:59 tom Exp $")
+MODULE_ID("$Id: wresize.c,v 1.23 2002/09/28 15:15:51 tom Exp $")
 
 static int
 cleanup_lines(struct ldat *data, int length)
@@ -131,7 +131,7 @@ wresize(WINDOW *win, int ToLines, int ToCols)
      * the original window, in case an allocation fails.  Always allocate
      * (at least temporarily) the array pointing to the individual lines.
      */
-    new_lines = typeCalloc(struct ldat, ToLines + 1);
+    new_lines = typeCalloc(struct ldat, (unsigned) (ToLines + 1));
     if (new_lines == 0)
 	returnCode(ERR);
 
