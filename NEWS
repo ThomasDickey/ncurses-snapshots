@@ -1,10 +1,22 @@
--- $Id: NEWS,v 1.718 2002/11/10 01:53:14 tom Exp $
+-- $Id: NEWS,v 1.719 2002/11/17 00:04:24 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20021116
+	+ fix a boundary check in lib_insch.c (patch by Philippe Blain).
+	+ change type for *printw functions from NCURSES_CONST to const
+	  (prompted by comment by Pedro Palhoto Matos <plpm@mega.ist.utl.pt>,
+	  but really from a note on X/Open's website stating that either is
+	  acceptable, and the latter will be used in a future revision).
+	+ add xterm-1002, xterm-1003 terminfo entries to demonstrate changes in
+	  lib_mouse.c (20021026) -TD
+	+ add screen-bce, screen-s entries from screen 3.9.13 (report by
+	  Adam Lazur <zal@debian.org>) -TD
+	+ add mterm terminfo entries -TD
 
 20021109
 	+ split-out useful fragments in terminfo for vt100 and vt220 numeric

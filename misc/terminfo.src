@@ -10,7 +10,7 @@
 #
 #------------------------------------------------------------------------------
 #	Version 10.2.1
-#	$Date: 2002/11/10 01:41:44 $
+#	$Date: 2002/11/16 23:14:14 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -562,7 +562,7 @@ ansi-generic|generic ansi standard terminal,
 #
 # This completely describes the sequences specified in the DOS 2.1 ANSI.SYS
 # documentation (except for the keyboard key reassignment feature, which
-# doen't fit the <pfkey> model well).  The klone+acs sequences were valid
+# doesn't fit the <pfkey> model well).  The klone+acs sequences were valid
 # though undocumented.  The <pfkey> capability is untested but should work for
 # keys F1-F10 (%p1 values outside this range will yield unpredictable results).
 # From: Eric S. Raymond <esr@snark.thyrsus.com> Nov 7 1995
@@ -1468,7 +1468,9 @@ ofcons,
 	kf1=\2330P, kf10=\2330M, kf2=\2330Q, kf3=\2330W, 
 	kf4=\2330x, kf5=\2330t, kf6=\2330u, kf7=\2330q, kf8=\2330r, 
 	kf9=\2330p, knp=\233/, kpp=\233?, nel=^M^J, rev=\2337m, 
-	rmso=\2330m, rmul=\2330m, sgr0=\2330m, 
+	rmso=\2330m, rmul=\2330m, 
+	sgr=\2330%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m, 
+	sgr0=\2330m, 
 
 # NetBSD "wscons" emulator in vt220 mode
 # These are micro-minimal and probably need to be redone for real
@@ -1484,7 +1486,7 @@ wsvt25m|NetBSD wscons in 25 line DEC VT220 mode with Meta,
 # DECstation/pmax.
 rcons|BSD rasterconsole, 
 	use=sun-il, 
-# Color version of above. Color currenly only provided by NetBSD.
+# Color version of above. Color currently only provided by NetBSD.
 rcons-color|BSD rasterconsole with ANSI color, 
 	bce, 
 	colors#8, pairs#64, 
@@ -2786,8 +2788,8 @@ xterm-xf86-v40|xterm terminal emulator (XFree86 4.0 Window System),
 
 xterm-xfree86|xterm-new|xterm terminal emulator (XFree86 4.0 Window System), 
 	npc, 
-	kDC=\E[3;2~, kEND=\EO2F, kHOM=\EO2H, kIC=\E[2;2~, 
-	kLFT=\EO2D, kNXT=\E[6;2~, kPRV=\E[5;2~, kRIT=\EO2C, 
+	kDC=\E[3;2~, kEND=\E[1;2F, kHOM=\E[1;2H, kIC=\E[2;2~, 
+	kLFT=\E[1;2D, kNXT=\E[6;2~, kPRV=\E[5;2~, kRIT=\E[1;2C, 
 	kb2=\EOE, kcbt=\E[Z, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, 
 	kcuu1=\EOA, kend=\EOF, kent=\EOM, kf1=\EOP, kf10=\E[21~, 
 	kf11=\E[23~, kf12=\E[24~, kf13=\EO2P, kf14=\EO2Q, 
@@ -2852,6 +2854,14 @@ xterm-256color|xterm with 256 colors,
 	use=xterm-xfree86, 
 xterm-88color|xterm with 88 colors, 
 	colors#88, pairs#88, use=xterm-256color, 
+
+# These two are used to demonstrate the any-event mouse support, i.e., by
+# using an extended name "XM" which tells ncurses to put the terminal into
+# a special mode when initializing the xterm mouse.
+xterm-1002|testing xterm-mouse, 
+	XM=\E[?1002%?%p1%{1}%=%th%el%;, use=xterm-xfree86, 
+xterm-1003|testing xterm-mouse, 
+	XM=\E[?1003%?%p1%{1}%=%th%el%;, use=xterm-xfree86, 
 
 # This is another variant, for XFree86 4.0 xterm (T.Dickey)
 # This is an 8-bit version of xterm, which emulates DEC vt220 with ANSI color.
@@ -3361,7 +3371,7 @@ emu|emu native mode,
 # print interface, ANSI X3.64 colour escape sequences, etc.  Newsgroup postings
 # indicate that it emulates more than one terminal, but incompletely.
 # 
-# This is dapted from a FreeBSD bug-report by Daniel Rudy <dcrudy@pacbell.net>
+# This is adapted from a FreeBSD bug-report by Daniel Rudy <dcrudy@pacbell.net>
 # It is based on vt102's entry, with some subtle differences, but also
 #	has status line
 #	supports ANSI colors (except for 'op' string)
@@ -3390,6 +3400,59 @@ mvterm|vv100|SwitchTerm aka mvTERM,
 	sgr0=\E[m\017, smacs=^N, smcup=\E7\E[?47h, 
 	smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
 	tsl=\E[?E\E[?%i%p1%dT, use=vt100+fnkeys, 
+
+### MTERM
+#
+# This application is available by email from <mouse@Rodents.Montreal.QC.CA>.
+#
+# "mterm -type ansi" sets $TERM to "ansi"
+mterm-ansi|ANSI emulation, 
+	am, bw, mir, msgr, 
+	it#8, 
+	acsc=``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[H\E[J, cr=^M, 
+	cub=\E[%p1%dD, cub1=\E[D, cud=\E[%p1%dB, cud1=\E[B, 
+	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
+	cuu=\E[%p1%dA, cuu1=\E[A, dch=\E[%p1%dP, dch1=\E[P, 
+	dim=\E[2m, dl=\E[%p1%dM, dl1=\E[M, ech=\E[%p1%dX, ed=\E[J, 
+	el=\E[K, home=\E[H, hpa=\E[%i%p1%d`, ht=^I, ich1=, 
+	il=\E[%p1%dL, il1=\E[L, ind=\E[S, indn=\E[%p1%dS, 
+	invis=\E[8m, is2=\E)0\017, kbs=^H, nel=\EE, rev=\E[7m, 
+	ri=\E[T, rin=\E[%p1%dT, rmacs=^O, rmir=\E[4l, rmso=\E[27m, 
+	rmul=\E[24m, sgr0=\E[m, smacs=^N, smir=\E[4h, smso=\E[7m, 
+	smul=\E[4m, vpa=\E[%i%p1%dd, 
+# mterm normally sets $TERM to "mterm"
+mterm|mouse-sun|Der Mouse term, 
+	am, bw, mir, 
+	it#8, 
+	bel=^G, clear=^L, cr=^M, cub1=^H, cud1=^N, cuf1=^S, 
+	cup=\006%p1%d.%p2%d., cuu1=^X, dch1=^Y, dl1=^K, ed=^B, el=^C, 
+	home=^P, ht=^I, il1=^A, ind=^U, kbs=^H, ll=^R, nel=^M^U, ri=^W, 
+	rmir=^O, rmso=^T, smir=^Q, smso=^V, 
+# "mterm -type decansi" sets $TERM to "decansi"
+decansi|ANSI emulation with DEC compatibility hacks, 
+	am, mir, msgr, xenl, 
+	colors#8, it#8, pairs#64, 
+	acsc=``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
+	clear=\E[H\E[J, cnorm=\E[?25h, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=\E[D, 
+	cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	dch=\E[%p1%dP, dch1=\E[P, dim=\E[2m, dl=\E[%p1%dM, 
+	dl1=\E[M, ech=\E[%p1%dX, ed=\E[J, el=\E[K, enacs=\E(B\E)0, 
+	home=\E[H, hpa=\E[%i%p1%d`, ht=^I, ich1=, il=\E[%p1%dL, 
+	il1=\E[L, ind=\E[S, indn=\E[%p1%dS, invis=\E[8m, 
+	is2=\E)0\E[r\017, kbs=^H, kcub1=\EOD, kcud1=\EOB, 
+	kcuf1=\EOC, kcuu1=\EOA, nel=\EE, op=\E[0m, rc=\E8, rev=\E[7m, 
+	ri=\E[T, rin=\E[%p1%dT, rmacs=^O, rmam=\E[?7l, rmir=\E[4l, 
+	rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m, sc=\E7, 
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
+	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p7%t;8%;m%?%p9%t\016%e\017%;, 
+	sgr0=\E[m, smacs=^N, smam=\E[?7h, smir=\E[4h, 
+	smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, u6=\E[%i%d;%dR, 
+	u7=\E[6n, vpa=\E[%i%p1%dd, 
+
 #### MGR
 #
 # MGR is a Bell Labs window system lighter-weight than X.
@@ -3495,11 +3558,18 @@ screen|VT 100/ANSI X3.64 virtual terminal,
 	kf11=\E[23~, kf12=\E[24~, kf2=\EOQ, kf3=\EOR, kf4=\EOS, 
 	kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
 	khome=\E[1~, kich1=\E[2~, kmous=\E[M, knp=\E[6~, kpp=\E[5~, 
-	nel=\EE, rc=\E8, rev=\E[7m, ri=\EM, rmacs=^O, rmir=\E[4l, 
-	rmkx=\E[?1l\E>, rmso=\E[23m, rmul=\E[24m, rs2=\Ec, sc=\E7, 
-	sgr0=\E[m, smacs=^N, smir=\E[4h, smkx=\E[?1h\E=, 
-	smso=\E[3m, smul=\E[4m, tbc=\E[3g, E0=\E(B, S0=\E(%p1%c, 
+	nel=\EE, rc=\E8, rev=\E[7m, ri=\EM, rmacs=^O, 
+	rmcup=\E[?1049l, rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[23m, 
+	rmul=\E[24m, rs2=\Ec, sc=\E7, sgr0=\E[m, smacs=^N, 
+	smcup=\E[?1049h, smir=\E[4h, smkx=\E[?1h\E=, smso=\E[3m, 
+	smul=\E[4m, tbc=\E[3g, E0=\E(B, S0=\E(%p1%c, 
 	use=ecma+color, 
+# The bce and status-line entries are from screen 3.9.13 (and require some
+# changes to .screenrc).
+screen-bce|VT 100/ANSI X3.64 virtual terminal with bce, 
+	bce, use=screen, 
+screen-s|VT 100/ANSI X3.64 virtual terminal with hardstatus line, 
+	dsl=\E_\E\\, fsl=\E\\, tsl=\E_, use=screen, 
 
 # Read the fine manpage:
 #       When  screen  tries  to  figure  out  a  terminal name for
@@ -3791,6 +3861,9 @@ sun-e|sun-nic|sune|Sun Microsystems Workstation without insert character,
 sun-c|sun-cmd|Sun Microsystems Workstation console with scrollable history, 
 	lines#35, 
 	rmcup=\E[>4h, smcup=\E[>4l, use=sun, 
+sun-type4|Sun Workstation console with type 4 keyboard, 
+	kcub1=\E[217z, kcud1=\E[221z, kcuf1=\E[219z, 
+	kcuu1=\E[215z, use=sun-il, 
 
 #### Iris consoles
 #
@@ -13421,7 +13494,7 @@ ncr260wy325wpp|NCR 2900_260 wyse 325 wide mode,
 #
 ncr260wy350pp|NCR 2900_260 wyse 350, 
 	am, bw, hs, km, mc5i, mir, msgr, xon, 
-	colors#16, cols#80, lines#24, ncv#33, nlab#32, xmc#1, 
+	colors#16, cols#80, lines#24, ncv#33, nlab#32, pairs#16, xmc#1, 
 	acsc=07a?h;j5k3l2m1n8q\:t4u9v=w0x6, bel=^G, blink=\EG2, 
 	cbt=\EI, civis=\E`0, clear=\E+$<20>, cnorm=\E`1, cr=^M, 
 	cub1=\010$<5>, cud1=\n$<5>, cuf1=\014$<5>, 
@@ -17654,7 +17727,7 @@ masscomp2|masscomp large screen version 2,
 # respectively, to be able to restore them when color changes
 # (because any color change turns off ALL attributes)
 # 3. <bold> and <rev> sequences alternate modes,
-# rather then simply  entering them.  Thus we have to check the
+# rather than simply  entering them.  Thus we have to check the
 # static register B and H to determine the status, before sending the 
 # escape sequence.
 # 4. <sgr0> now must set the status of all 3 register (A,B,H) to zero
@@ -19551,6 +19624,14 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2002-11-09
 #	* split-out vt100+keypad and vt220+keypad, fix interchanged ka3/kb2
 #	  in the latter -TD
+#
+# 2002-11-16
+#	* add entries for mterm (mterm, mterm-ansi, decansi) -TD
+#	* ncr260wy350pp has only 16 color pairs -TD
+#	* add sun-type4 from NetBSD -TD
+#	* update xterm-xfree86 to current (patch 170) -TD
+#	* add screen-bce, screen-s entries -TD
+#	* add xterm-1002, xterm-1003 entries -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
