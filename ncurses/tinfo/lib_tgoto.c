@@ -35,7 +35,7 @@
 #include <ctype.h>
 #include <termcap.h>
 
-MODULE_ID("$Id: lib_tgoto.c,v 1.3 2000/11/05 00:22:57 tom Exp $")
+MODULE_ID("$Id: lib_tgoto.c,v 1.4 2000/11/25 22:27:10 tom Exp $")
 
 #if !PURE_TERMINFO
 static bool
@@ -43,20 +43,24 @@ is_termcap(const char *string)
 {
     bool result = TRUE;
 
-    while ((*string != '\0') && result) {
-	if (*string == '%') {
-	    switch (*++string) {
-	    case 'p':
+    if (string == 0 || *string == '\0') {
+	result = FALSE;		/* tparm() handles empty strings */
+    } else {
+	while ((*string != '\0') && result) {
+	    if (*string == '%') {
+		switch (*++string) {
+		case 'p':
+		    result = FALSE;
+		    break;
+		case '\0':
+		    string--;
+		    break;
+		}
+	    } else if (string[0] == '$' && string[1] == '<') {
 		result = FALSE;
-		break;
-	    case '\0':
-		string--;
-		break;
 	    }
-	} else if (string[0] == '$' && string[1] == '<') {
-	    result = FALSE;
+	    string++;
 	}
-	string++;
     }
     return result;
 }

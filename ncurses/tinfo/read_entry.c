@@ -41,7 +41,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.69 2000/10/10 00:57:40 Todd.Miller Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.70 2000/11/25 21:13:20 tom Exp $")
 
 #if !HAVE_TELL
 #define tell(fd) 0		/* lseek() is POSIX, but not tell() - odd... */
@@ -428,7 +428,7 @@ _nc_read_terminfo_dirs(const char *dirs, char *const filename, const char *const
 
     for (;;) {
 	int c = *a;
-	if (c == 0 || c == ':') {
+	if (c == 0 || c == NCURSES_PATHSEP) {
 	    *a = 0;
 	    if ((b + 1) >= a)
 		b = TERMINFO;

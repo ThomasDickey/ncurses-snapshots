@@ -1,10 +1,27 @@
--- $Id: NEWS,v 1.606 2000/11/18 23:31:19 tom Exp $
+-- $Id: NEWS,v 1.607 2000/11/25 22:42:04 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20001125
+	+ modify logic in lib_setup.c to allow either lines or columns value
+	  from terminfo to be used if the screen size cannot be determined
+	  dynamically rather than requiring both (patch by Ehud Karni
+	  <ehud@unix.simonwiesel.co.il>).
+	+ add check in lib_tgoto.c's is_termcap() function to reject null or
+	  empty strings (reported by Valentin Nechayev <netch@netch.kiev.ua> to
+	  freebsd-bugs).
+	+ add definition from configure script that denotes the path-separator,
+	  which is normally a colon.  The path-separator is a semicolon on
+	  OS/2 EMX and similar systems which may use a colon within pathnames.
+	+ alter logic to set default for --disable-overwrite option to set it
+	  to 'yes' if the --prefix/$prefix value is not /usr/local, thereby
+	  accommodating the most common cause of problems: gcc's nonstandard
+	  search rules.  Other locations such as /usr/local/ncurses will default
+	  to overwriting (report by Lars Hecking <lhecking@nmrc.ie>).
 
 20001118
 	+ modify default for --disable-overwrite configure option to disable
