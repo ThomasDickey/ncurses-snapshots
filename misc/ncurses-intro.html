@@ -1,7 +1,8 @@
 <HTML>
+<-- $Id: ncurses-intro.html,v 1.19 1996/12/24 20:36:42 tom Exp $ -->
 <HEAD>
 <TITLE>Writing Programs with NCURSES</TITLE>
-<link rev="made" href="mailto:esr@snark.thyrsus.com">
+<link rev="made" href="mailto:dickey@clark.net">
 </HEAD>
 <BODY>
 
@@ -106,7 +107,6 @@ by Eric S. Raymond and Zeyd M. Ben-Halim<BR>
 <LI> <A HREF="#ftype_regexp">TYPE_REGEXP</A>
 </UL>
 <LI> <A HREF="#fbuffer">Direct Field Buffer Manipulation</A>
-</UL>
 <LI> <A HREF="#formattrs">Attributes of Forms</A>
 <LI> <A HREF="#fdisplay">Control of Form Display</A>
 <LI> <A HREF="#fdriver">Input Processing in the Forms Driver</A>
@@ -128,7 +128,8 @@ by Eric S. Raymond and Zeyd M. Ben-Halim<BR>
 <LI> <A HREF="#fnewtypes">New Field Types</A>
 <LI> <A HREF="#fcheckargs">Validation Function Arguments</A>
 <LI> <A HREF="#fcustorder">Order Functions For Custom Types</A>
-<LI> <A NAME="#fcustprobs">Avoiding Problems</A>
+<LI> <A HREF="#fcustprobs">Avoiding Problems</A>
+</UL>
 </UL>
 </UL>
 
@@ -153,7 +154,7 @@ The <TT>curses</TT> package is a subroutine library for
 terminal-independent screen-painting and input-event handling which
 presents a high level screen model to the programmer, hiding differences
 between terminal types and doing automatic optimization of output to change
-one screenfull of text into another.  <TT>Curses</TT> uses terminfo, which
+one screen full of text into another.  <TT>Curses</TT> uses terminfo, which
 is a database format that can describe the capabilities of thousands of
 different terminals. <P>
 
@@ -169,8 +170,8 @@ X toolkit. <P>
 <H2><A NAME="history">A Brief History of Curses</A></H2>
 
 Historically, the first ancestor of <TT>curses</TT> was the routines written to
-provide screen-handling for the game <TT>rogue</TT>; these used the already-
-existing <TT>termcap</TT> database facility for describing terminal
+provide screen-handling for the game <TT>rogue</TT>; these used the
+already-existing <TT>termcap</TT> database facility for describing terminal
 capabilities.  These routines were abstracted into a documented library and
 first released with the early BSD UNIX versions. <P>
 
@@ -206,13 +207,23 @@ cookies'' on the screen to mark changes in attributes. <P>
 
 The <TT>ncurses</TT> package can also capture and use event reports from a
 mouse in some environments (notably, xterm under the X window system).  This
-document includes tips for using the mouse.
+document includes tips for using the mouse. <P>
 
-The <TT>ncurses</TT> package was originated by Pavel Curtis.  The primary
-maintainer of the package is <A HREF="mailto:zmbenhal@netcom.com">Zeyd Ben-Halim</A>
-&lt;zmbenhal@netcom.com&gt;. <A HREF="mailto:esr@snark.thyrsus.com">Eric S. Raymond</A> 
-&lt;esr@snark.thyrsus.com&gt; wrote many of the new features in versions after 1.8.1 
-and wrote most of this introduction. <P>
+The <TT>ncurses</TT> package was originated by Pavel Curtis.  The original
+maintainer of the package is
+<A HREF="mailto:zmbenhal@netcom.com">Zeyd Ben-Halim</A>
+&lt;zmbenhal@netcom.com&gt;.
+<A HREF="mailto:esr@snark.thyrsus.com">Eric S. Raymond</A> 
+&lt;esr@snark.thyrsus.com&gt;
+wrote many of the new features in versions after 1.8.1 
+and wrote most of this introduction.
+The current primary maintainers are
+<A HREF="mailto:dickey@clark.net">Thomas Dickey</A>
+&lt;dickey@clark.net&gt;
+and
+<A HREF="mailto:Juergen.Pfeifer@T-Online.de">Juergen Pfeifer</A>.
+&lt;Juergen.Pfeifer@T-Online.de&gt;
+<P>
 
 This document also describes the <A HREF="panels"></A> extension library,
 similarly modeled on the SVr4 panels facility.  This library allows you to
@@ -373,7 +384,7 @@ of general usefulness:
 <DT> <TT>FALSE</TT>
 <DD> boolean `false' flag (0).
 <DT> <TT>ERR</TT>
-<DD> error flag returned by routines on a fail (-1).
+<DD> error flag returned by routines on a failure (-1).
 <DT> <TT>OK</TT>
 <DD> error flag returned by routines when things go right.
 </DL>
@@ -576,7 +587,7 @@ feature macro NCURSES_MOUSE_VERSION so it will not be compiled and linked
 on non-ncurses systems.  <P>
 
 Presently, mouse event reporting works only under xterm.  In the
-future, ncurses will detect the presence of \fBgpm\fR(1), Alessandro
+future, ncurses will detect the presence of <TT>gpm</TT>(1), Alessandro
 Rubini's freeware mouse server for Linux systems, and accept mouse
 reports through it. <P>
 
@@ -603,7 +614,7 @@ to the event type being reported. <P>
 The mouse structure contains two additional fields which may be
 significant in the future as ncurses interfaces to new kinds of
 pointing device.  In addition to x and y coordinates, there is a slot
-for a z coordinate; this might be useful with touchscreens that can 
+for a z coordinate; this might be useful with touch-screens that can 
 return a pressure or duration parameter.  There is also a device ID
 field, which could be used to distinguish between multiple pointing
 devices. <P>
@@ -689,8 +700,8 @@ associated with a given <TT>SCREEN</TT> reference. <P>
 <DT> <TT>refresh()</TT> and <TT>wrefresh(win)</TT>
 <DD> These functions must be called to actually get any output on
 the  terminal,  as  other  routines  merely  manipulate data
-structures.  <TT>wrefresh()</TT> copies the named window  to the physi-
-cal  terminal screen,  taking  into account  what is already
+structures.  <TT>wrefresh()</TT> copies the named window  to the physical
+terminal screen,  taking  into account  what is already
 there in  order to  do optimizations.  <TT>refresh()</TT> does a
 refresh of <TT>stdscr()</TT>.   Unless <TT>leaveok()</TT> has been
 enabled, the physical cursor of the terminal is left at  the
@@ -901,7 +912,7 @@ enables display of both high-half ACS graphics and the PC ROM graphics
 
 The <TT>wresize()</TT> function allows you to resize a window in place. <P>
 
-<H2><A NAME="compat">Compatibility with Older Versions</H2>
+<H2><A NAME="compat">Compatibility with Older Versions</A></H2>
 
 Despite our best efforts, there are some differences between <TT>ncurses</TT>
 and the (undocumented!) behavior of older curses implementations.  These arise
@@ -976,7 +987,7 @@ the XSI Curses standard. <P>
 <H2><A NAME="xsifuncs">XSI Curses Conformance</A></H2>
 
 The <TT>ncurses</TT> library is intended to be base-level conformant with the
-XSI Curses standard from X/Open.  May extended-level features (in fact, almost 
+XSI Curses standard from X/Open.  Many extended-level features (in fact, almost 
 all features not directly concerned with wide characters and
 internationalization) are also supported. <P>
 
@@ -1016,7 +1027,7 @@ Your panels-using modules must import the panels library declarations with
 
 and must be linked explicitly with the panels library using an
 <CODE>-lpanel</CODE> argument.  Note that they must also link the
-<TT>ncurses</TT> library with <CODE>-lncurses</CODE>.  Most modern linkers
+<TT>ncurses</TT> library with <CODE>-lncurses</CODE>.  Many linkers
 are two-pass and will accept either order, but it is still good practice
 to put <CODE>-lpanel</CODE> first and <CODE>-lncurses</CODE> second.
 
@@ -1062,14 +1073,14 @@ The function <CODE>update_panels()</CODE> does all the
 Typically, you will want to call <CODE>update_panels()</CODE> and
 <TT>doupdate()</TT> just before accepting command input, once in each cycle
 of interaction with the user.  If you call <CODE>update_panels()</CODE> after
-each and every panel write, youll generate a lot of unnecessary refresh
+each and every panel write, you'll generate a lot of unnecessary refresh
 activity and screen flicker. <P>
 
 <H2><A NAME="pstdscr">Panels, Input, and the Standard Screen</A></H2>
 
 You shouldn't mix <CODE>wnoutrefresh()</CODE> or <CODE>wrefresh()</CODE>
 operations with panels code; this will work only if the argument window
-is either in the top panel or un-obscured by any other panels. <P>
+is either in the top panel or unobscured by any other panels. <P>
 
 The <CODE>stsdcr</CODE> window is a special case.  It is considered below all
 panels.  Because changes to panels may obscure parts of <CODE>stdscr</CODE>,
@@ -1078,7 +1089,7 @@ though, you should call <CODE>update_panels()</CODE> before
 
 Note that <CODE>wgetch</CODE> automatically calls <CODE>wrefresh</CODE>.
 Therefore, before requesting input from a panel window, you need to be sure
-that the panel is totally un-obscured. <P>
+that the panel is totally unobscured. <P>
 
 There is presently no way to display changes to one obscured panel without
 repainting all panels. <P>
@@ -1086,8 +1097,8 @@ repainting all panels. <P>
 <H2><A NAME="hiding">Hiding Panels</A></H2>
 
 It's possible to remove a panel from the deck temporarily; use
-<CODE>hide_panel</CODE> for this.  You can un-hide a panel with
-<CODE>show_panel()</CODE>.  The predicate function <CODE>panel_hidden</CODE>
+<CODE>hide_panel</CODE> for this.  Use <CODE>show_panel()</CODE> to render it
+visible again.  The predicate function <CODE>panel_hidden</CODE>
 tests whether or not a panel is hidden. <P>
 
 The <CODE>panel_update</CODE> code ignores hidden panels.  You cannot do
@@ -1127,7 +1138,7 @@ Your menu-using modules must import the menu library declarations with
 
 and must be linked explicitly with the menus library using an
 <CODE>-lmenu</CODE> argument.  Note that they must also link the
-<TT>ncurses</TT> library with <CODE>-lncurses</CODE>.  Most modern linkers
+<TT>ncurses</TT> library with <CODE>-lncurses</CODE>.  Many linkers
 are two-pass and will accept either order, but it is still good practice
 to put <CODE>-lmenu</CODE> first and <CODE>-lncurses</CODE> second.
 
@@ -1176,7 +1187,7 @@ by looping through the items applying the <CODE>item_value()</CODE>
 predicate function.  Your menu-processing code can use the function
 <CODE>set_item_value()</CODE> to flag the items in the select set. <P>
 
-Menu items can be made un-selectable using <CODE>set_item_opts()</CODE>
+Menu items can be made unselectable using <CODE>set_item_opts()</CODE>
 or <CODE>item_opts_off()</CODE> with the <CODE>O_SELECTABLE</CODE>
 argument.  This is the only option so far defined for menus, but it
 is good practice to code as though other option bits might be on. <P>
@@ -1224,7 +1235,7 @@ There are other menu display attributes including a select attribute,
 an attribute for selectable items, an attribute for unselectable items,
 and a pad character used to separate item name text from description
 text.  These have reasonable defaults which the library allows you to
-change (see the <CODE>menu_attribs(3x)</CODE>manual page. <P>
+change (see the <CODE>menu_attribs(3x)</CODE> manual page. <P>
 
 <H2><A NAME="mwindows">Menu Windows</A></H2>
 
@@ -1337,7 +1348,7 @@ Your form-using modules must import the form library declarations with
 
 and must be linked explicitly with the forms library using an
 <CODE>-lform</CODE> argument.  Note that they must also link the
-<TT>ncurses</TT> library with <CODE>-lncurses</CODE>.  Most modern linkers
+<TT>ncurses</TT> library with <CODE>-lncurses</CODE>.  Many linkers
 are two-pass and will accept either order, but it is still good practice
 to put <CODE>-lform</CODE> first and <CODE>-lncurses</CODE> second. <P>
 
@@ -1420,7 +1431,7 @@ this is zero, the entire field will always be displayed.  If it is
 nonzero, the form will be scrollable, with only one screen-full (initially 
 the top part) displayed at any given time.  If you make a field dynamic
 and grow it so it will no longer fit on the screen, the form will become
-scrollable even if the \fBoffscreen\fR argument was initially zero. <P>
+scrollable even if the <TT>offscreen</TT> argument was initially zero. <P>
 
 The forms library allocates one working buffer per field; the size of
 each buffer is <TT>((height + offscreen)*width + 1</TT>, one character
@@ -1484,7 +1495,7 @@ your form objects first. <P>
 
 Each form field has a number of location and size attributes
 associated with it. There are other field attributes used to control
-display and editing of the field.  Some (for example, the \fBO_STATIC\fR bit)
+display and editing of the field.  Some (for example, the <TT>O_STATIC</TT> bit)
 involve sufficient complications to be covered in sections of their own
 later on.  We cover the functions used to get and set several basic
 attributes here. <P>
@@ -1615,7 +1626,7 @@ You can turn off the O_PUBLIC bit to define password fields.
 <DT> O_EDIT
 <DD> Controls whether the field's data can be modified.  When this option is
 off, all editing requests except <TT>REQ_PREV_CHOICE</TT> and 
-<TT>REQ_NEXT_CHOICE</TT>will fail.  Such read-only fields may be useful for
+<TT>REQ_NEXT_CHOICE</TT> will fail.  Such read-only fields may be useful for
 help messages.
 <DT> O_WRAP
 <DD> Controls word-wrapping in multi-line fields.  Normally, when any
@@ -1902,7 +1913,7 @@ The check for regular-expression match is performed on exit.
 
 <H2><A NAME="fbuffer">Direct Field Buffer Manipulation</A></H2>
 
-The most central attribute of a field is its buffer contents.  When a form has
+The chief attribute of a field is its buffer contents.  When a form has
 been completed, your application usually needs to know the state of each
 field buffer.  You can find this out with: <P>
 
@@ -1945,7 +1956,7 @@ As with field attributes, form attributes inherit a default from a
 system default form structure.  These defaults can be queried or set by
 of these functions using a form-pointer argument of <TT>NULL</TT>. <P>
 
-The most important attribute of a form is its field list.  You can query
+The principal attribute of a form is its field list.  You can query
 and change this list with: <P>
 
 <PRE>
@@ -2508,9 +2519,9 @@ following things: <P>
 </UL>
 
 Here's how you do that: <P>
+<PRE>
 typedef int	(*HOOK)();       /* pointer to function returning int */
 
-<PRE>
 FIELDTYPE *new_fieldtype(HOOK f_validate, /* field validator */
                          HOOK c_validate) /* character validator */
 
@@ -2518,7 +2529,7 @@ FIELDTYPE *new_fieldtype(HOOK f_validate, /* field validator */
 int free_fieldtype(FIELDTYPE *ftype);     /* type to free */
 </PRE>
 
-At least one of the arguments of <TT>new_fieldtype()</TT>must be
+At least one of the arguments of <TT>new_fieldtype()</TT> must be
 non-NULL.  The forms driver will automatically call the new type's
 validation functions at appropriate points in processing a field of
 the new type. <P>
@@ -2527,7 +2538,7 @@ The function <TT>free_fieldtype()</TT> deallocates the argument
 fieldtype, freeing all storage associated with it. <P>
 
 Normally, a field validator is called when the user attempts to
-leave the field.  Its first argument is a field fointer, from which it
+leave the field.  Its first argument is a field pointer, from which it
 can get to field buffer 0 and test it.  If the function returns TRUE,
 the operation succeeds; if it returns FALSE, the edit cursor stays in
 the field. <P>
@@ -2616,18 +2627,10 @@ the pre-defined types seems to be closest to what you want. <P>
 
 Use that code as a model, and evolve it towards what you really want.
 You will avoid many problems and annoyances that way.  The code
-in the <TT>ncurses</TT> library has been specifically un-copyrighted
-to support this. <P>
+in the <TT>ncurses</TT> library has been specifically exempted from
+the package copyright to support this. <P>
 
 If your custom type defines order functions, have do something intuitive
 with a blank field.  A useful convention is to make the successor of a
 blank field the types minimum value, and its predecessor the maximum. <P>
-
-<HR>
-<P>
-THIS DOCUMENT IS STILL UNDER CONSTRUCTION.  Full descriptions of the form
-library entry points are available in the form_*.3x manual pages included with 
-the <TT>ncurses</TT> distributions. <P>
-<HR>
-<ADDRESS>Eric S. Raymond &lt;esr@snark.thyrsus.com&gt;</ADDRESS> </BODY>
 </HTML>

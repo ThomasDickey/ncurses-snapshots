@@ -2,9 +2,23 @@ SHORT-TERM TO-DO ITEMS:
 
 Known Problems:
 
+* The screen optimization has been tested only in an ad hoc manner.  We should
+  develop a good set of regression tests to cover lib_doupdate.c and
+  lib_mvcur.c.
+
+* Ncurses cursor movement does not make effective use of hard tabs, as SVr4
+  does.
+
+* Scrolling optimization has holes: for example, the ncurses 'p' test, which
+  exercises scrolling in a pad does not (1996/12/24) use scrolling regions.
+  Also, running other tests shows that scrolling optimization forces repaints
+  of the screen between calls to refresh().
+
 * The stacking order of windows on the screen does not match that implemented
   in SVr4 (e.g., Solaris curses).  XSI doesn't specify a stacking order, so
   full compatibility for this behavior must be achieved by testing/analysis.
+
+* SVr4 uses slightly different rules for determining when softkeys are shown.
 
 * The code departs from perfect 8-bit cleanness in one respect; you cannot
   specify a character \200 as part of a capability string, because the terminfo

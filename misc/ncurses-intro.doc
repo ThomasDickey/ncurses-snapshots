@@ -1,9 +1,9 @@
 
-                         WRITING PROGRAMS WITH NCURSES
+                         Writing Programs with NCURSES
                                        
      by Eric S. Raymond and Zeyd M. Ben-Halim
      
-                                   CONTENTS
+                                   Contents
                                        
      * Introduction
           + A Brief History of Curses
@@ -75,30 +75,29 @@
                o TYPE_NUMERIC
                o TYPE_REGEXP
           + Direct Field Buffer Manipulation
-     * Attributes of Forms
-     * Control of Form Display
-     * Input Processing in the Forms Driver
-          + Page Navigation Requests
-          + Inter-Field Navigation Requests
-          + Intra-Field Navigation Requests
-          + Scrolling Requests
-          + Field Editing Requests
-          + Order Requests
-          + Application Commands
-     * Field Change Hooks
-     * Field Change Commands
-     * Form Options
-     * Custom Validation Types
-          + Union Types
-          + New Field Types
-          + Validation Function Arguments
-          + Order Functions For Custom Types
-          + Avoiding Problems
-            
-   
+          + Attributes of Forms
+          + Control of Form Display
+          + Input Processing in the Forms Driver
+               o Page Navigation Requests
+               o Inter-Field Navigation Requests
+               o Intra-Field Navigation Requests
+               o Scrolling Requests
+               o Field Editing Requests
+               o Order Requests
+               o Application Commands
+          + Field Change Hooks
+          + Field Change Commands
+          + Form Options
+          + Custom Validation Types
+               o Union Types
+               o New Field Types
+               o Validation Function Arguments
+               o Order Functions For Custom Types
+               o Avoiding Problems
+       
      _________________________________________________________________
-   
-                                 INTRODUCTION
+                                      
+                                 Introduction
                                        
    This document is an introduction to programming with curses. It is not
    an exhaustive reference for the curses Application Programming
@@ -117,14 +116,14 @@
    The curses package is a subroutine library for terminal-independent
    screen-painting and input-event handling which presents a high level
    screen model to the programmer, hiding differences between terminal
-   types and doing automatic optimization of output to change one
-   screenfull of text into another. Curses uses terminfo, which is a
-   database format that can describe the capabilities of thousands of
-   different terminals.
+   types and doing automatic optimization of output to change one screen
+   full of text into another. Curses uses terminfo, which is a database
+   format that can describe the capabilities of thousands of different
+   terminals.
    
    The curses API may seem something of an archaism on UNIX desktops
    increasingly dominated by X, Motif, and Tcl/Tk. Nevertheless, UNIX
-   still supports tty lines and X supports _xterm(1)_; the curses API has
+   still supports tty lines and X supports xterm(1); the curses API has
    the advantage of (a) back-portability to character-cell terminals, and
    (b) simplicity. For an application that does not require bit-mapped
    graphics and multiple fonts, an interface implementation using curses
@@ -134,8 +133,8 @@
 A Brief History of Curses
 
    Historically, the first ancestor of curses was the routines written to
-   provide screen-handling for the game rogue; these used the already-
-   existing termcap database facility for describing terminal
+   provide screen-handling for the game rogue; these used the
+   already-existing termcap database facility for describing terminal
    capabilities. These routines were abstracted into a documented library
    and first released with the early BSD UNIX versions.
    
@@ -157,13 +156,9 @@ Scope of This Document
    
      * Support for multiple screen highlights (BSD curses could only
        handle one `standout' highlight, usually reverse-video).
-       
      * Support for line- and box-drawing using forms characters.
-       
      * Recognition of function keys on input.
-       
      * Color support.
-       
      * Support for pads (windows of larger than screen size on which the
        screen or a subwindow defines a viewport).
        
@@ -176,11 +171,14 @@ Scope of This Document
    
    The ncurses package can also capture and use event reports from a
    mouse in some environments (notably, xterm under the X window system).
-   This document includes tips for using the mouse. The ncurses package
-   was originated by Pavel Curtis. The primary maintainer of the package
-   is Zeyd Ben-Halim <zmbenhal@netcom.com>. Eric S. Raymond
-   <esr@snark.thyrsus.com> wrote many of the new features in versions
-   after 1.8.1 and wrote most of this introduction.
+   This document includes tips for using the mouse.
+   
+   The ncurses package was originated by Pavel Curtis. The original
+   maintainer of the package is Zeyd Ben-Halim <zmbenhal@netcom.com>.
+   Eric S. Raymond <esr@snark.thyrsus.com> wrote many of the new features
+   in versions after 1.8.1 and wrote most of this introduction. The
+   current primary maintainers are Thomas Dickey <dickey@clark.net> and
+   Juergen Pfeifer. <Juergen.Pfeifer@T-Online.de>
    
    This document also describes the extension library, similarly modeled
    on the SVr4 panels facility. This library allows you to associate
@@ -191,7 +189,7 @@ Scope of This Document
    Finally, this document describes in detail the menus and forms
    extension libraries, also cloned from System V, which support easy
    construction and sequences of menus and fill-in forms. This code was
-   contributed to the project by JÅrgen Pfeifer.
+   contributed to the project by J¸rgen Pfeifer.
    
 Terminology
 
@@ -214,15 +212,14 @@ Terminology
           The package's idea of what the terminal display currently looks
           like, i.e., what the user sees now. This is a special screen.
           
-                              THE CURSES LIBRARY
+                              The Curses Library
                                        
 An Overview of Curses
 
-  COMPILING PROGRAMS USING CURSES
+  Compiling Programs using Curses
   
    In order to use the library, it is necessary to have certain types and
    variables defined. Therefore, the programmer must have a line:
-   
 
           #include <curses.h>
 
@@ -234,7 +231,7 @@ An Overview of Curses
    your LDFLAGS or on the command line. There is no need for any other
    libraries.
    
-  UPDATING THE SCREEN
+  Updating the Screen
   
    In order to update the screen optimally, it is necessary for the
    routines to know what the screen currently looks like and what the
@@ -262,7 +259,7 @@ An Overview of Curses
    package implementation determine the most efficient way to repaint the
    screen.
    
-  STANDARD WINDOWS AND FUNCTION NAMING CONVENTIONS
+  Standard Windows and Function Naming Conventions
   
    As hinted above, the routines can use several windows, but two are
    automatically given: curscr, which knows what the terminal looks like,
@@ -285,36 +282,28 @@ An Overview of Curses
    order to avoid clumsiness, most I/O routines can be preceded by the
    prefix 'mv' and the desired (y, x) coordinates prepended to the
    arguments to the function. For example, the calls
-   
 
           move(y, x);
           addch(ch);
 
    can be replaced by
-   
-
           mvaddch(y, x, ch);
 
    and
-   
-
           wmove(win, y, x);
           waddch(win, ch);
 
    can be replaced by
-   
-
           mvwaddch(win, y, x, ch);
 
    Note that the window description pointer (win) comes before the added
    (y, x) coordinates. If a function requires a window pointer, it is
    always the first parameter passed.
    
-  VARIABLES
+  Variables
   
    The curses library sets some variables describing the terminal
    capabilities.
-   
 
       type   name      description
       ------------------------------------------------------------------
@@ -324,15 +313,20 @@ An Overview of Curses
    The curses.h also introduces some #define constants and types of
    general usefulness:
    
-   bool   boolean type, actually a `char' (e.g., bool doneit;)
+   bool
+          boolean type, actually a `char' (e.g., bool doneit;)
           
-   TRUE   boolean `true' flag (1).
+   TRUE
+          boolean `true' flag (1).
           
-   FALSE  boolean `false' flag (0).
+   FALSE
+          boolean `false' flag (0).
           
-   ERR    error flag returned by routines on a fail (-1).
+   ERR
+          error flag returned by routines on a failure (-1).
           
-   OK     error flag returned by routines when things go right.
+   OK
+          error flag returned by routines when things go right.
           
 Using the Library
 
@@ -343,7 +337,6 @@ Using the Library
    
    Here is a sample program to motivate the discussion:
    
-
 #include <curses.h>
 #include <signal.h>
 
@@ -397,7 +390,7 @@ static void finish(int sig)
     exit(0);
 }
 
-  STARTING UP
+  Starting up
   
    In order to use the screen package, the routines must know about
    terminal characteristics, and the space for curscr and stdscr must be
@@ -423,7 +416,7 @@ static void finish(int sig)
    of old windows. All the options described above can be applied to any
    window.
    
-  OUTPUT
+  Output
   
    Now that we have set things up, we will want to actually update the
    terminal. The basic functions used to change what will go on a window
@@ -452,7 +445,7 @@ static void finish(int sig)
    implementing a command which would redraw the screen in case it get
    messed up.
    
-  INPUT
+  Input
   
    The complementary function to addch() is getch() which, if echo is
    set, will call addch() to echo the character. Since the screen package
@@ -476,7 +469,7 @@ static void finish(int sig)
    curses.h The mapping from sequences to #define values is determined by
    key_ capabilities in the terminal's terminfo entry.
    
-  USING FORMS CHARACTERS
+  Using Forms Characters
   
    The addch() function (and some others, including box() and border())
    can accept some pseudo-character arguments which are specially defined
@@ -488,7 +481,7 @@ static void finish(int sig)
    the terminal does not have such characters, curses.h will map them to
    a recognizable (though ugly) set of ASCII defaults.
    
-  CHARACTER ATTRIBUTES AND COLOR
+  Character Attributes and Color
   
    The ncurses package supports screen highlights including standout,
    reverse-video, underline, and blink. It also supports color, which is
@@ -519,7 +512,7 @@ static void finish(int sig)
    combination. Note that COLOR_PAIR(N), for constant N, is itself a
    compile-time constant and can be used in initializers.
    
-  MOUSE INTERFACING
+  Mouse Interfacing
   
    The ncurses library also provides a mouse interface. Note: his
    facility is original to ncurses, it is not part of either the XSI
@@ -529,7 +522,7 @@ static void finish(int sig)
    linked on non-ncurses systems.
    
    Presently, mouse event reporting works only under xterm. In the
-   future, ncurses will detect the presence of \fBgpm\fR(1), Alessandro
+   future, ncurses will detect the presence of gpm(1), Alessandro
    Rubini's freeware mouse server for Linux systems, and accept mouse
    reports through it.
    
@@ -556,7 +549,7 @@ static void finish(int sig)
    The mouse structure contains two additional fields which may be
    significant in the future as ncurses interfaces to new kinds of
    pointing device. In addition to x and y coordinates, there is a slot
-   for a z coordinate; this might be useful with touchscreens that can
+   for a z coordinate; this might be useful with touch-screens that can
    return a pressure or duration parameter. There is also a device ID
    field, which could be used to distinguish between multiple pointing
    devices.
@@ -575,7 +568,7 @@ static void finish(int sig)
    
    Because mouse event reporting will not be available in all
    environments, it would be unwise to build ncurses applications that
-   _require_ the use of a mouse. Rather, you should use the mouse as a
+   require the use of a mouse. Rather, you should use the mouse as a
    shortcut for point-and-shoot commands your application would normally
    accept from the keyboard. Two of the test games in the ncurses
    distribution (bs and knight) contain code that illustrates how this
@@ -584,7 +577,7 @@ static void finish(int sig)
    See the manual page curs_mouse(3X) for full details of the
    mouse-interface functions.
    
-  FINISHING UP
+  Finishing Up
   
    In order to clean up after the ncurses routines, the routine endwin()
    is provided. It restores tty modes to what they were when initscr()
@@ -597,7 +590,7 @@ Function Descriptions
    We describe the detailed behavior of some important curses functions
    here, as a supplement to the manual page descriptions.
    
-  INITIALIZATION AND WRAPUP
+  Initialization and Wrapup
   
    initscr()
           The first function called should almost always be initscr().
@@ -616,7 +609,6 @@ Function Descriptions
           reset the terminal into the proper non-visual mode. Calling
           refresh() or doupdate() after a temporary escape from the
           program will restore the ncurses screen from before the escape.
-          
           
    newterm(type, ofp, ifp)
           A program which outputs to more than one terminal should use
@@ -639,14 +631,14 @@ Function Descriptions
           The inverse of newterm(); deallocates the data structures
           associated with a given SCREEN reference.
           
-  CAUSING OUTPUT TO THE TERMINAL
+  Causing Output to the Terminal
   
    refresh() and wrefresh(win)
           These functions must be called to actually get any output on
           the terminal, as other routines merely manipulate data
-          structures. wrefresh() copies the named window to the physi-
-          cal terminal screen, taking into account what is already there
-          in order to do optimizations. refresh() does a refresh of
+          structures. wrefresh() copies the named window to the physical
+          terminal screen, taking into account what is already there in
+          order to do optimizations. refresh() does a refresh of
           stdscr(). Unless leaveok() has been enabled, the physical
           cursor of the terminal is left at the location of the window's
           cursor.
@@ -669,7 +661,7 @@ Function Descriptions
           with fewer total characters transmitted (this also avoids a
           visually annoying flicker at each update).
           
-  LOW-LEVEL CAPABILITY ACCESS
+  Low-Level Capability Access
   
    setupterm(term, filenum, errret)
           This routine is called to initialize a terminal's description,
@@ -700,7 +692,7 @@ Function Descriptions
           this array, so you'll have to save it yourself if need be.
           
           
-  DEBUGGING
+  Debugging
   
    NOTE: These functions are not part of the standard curses API!
    
@@ -722,11 +714,11 @@ Function Descriptions
           to a file called trace in the current directory.
           
    Trace logs can be difficult to interpret due to the sheer volume of
-   data dumped in them. There is a script called _tracemunch_ included
-   with the ncurses distribution that can alleviate this problem
-   somewhat; it compacts long sequences of similar operations into more
-   succinct single-line pseudo-operations. These pseudo-ops can be
-   distinguished by the fact that they are named in capital letters.
+   data dumped in them. There is a script called tracemunch included with
+   the ncurses distribution that can alleviate this problem somewhat; it
+   compacts long sequences of similar operations into more succinct
+   single-line pseudo-operations. These pseudo-ops can be distinguished
+   by the fact that they are named in capital letters.
    
 Hints, Tips, and Tricks
 
@@ -734,7 +726,7 @@ Hints, Tips, and Tricks
    the remainder of this document, we discuss various useful methods that
    may not be obvious from the manual page descriptions.
    
-  SOME NOTES OF CAUTION
+  Some Notes of Caution
   
    If you find yourself thinking you need to use noraw() or nocbreak(),
    think again and move carefully. It's probably better design to use
@@ -768,7 +760,7 @@ Hints, Tips, and Tricks
    in an environment with window resizes, in which case several screens
    could be open with different sizes.
    
-  TEMPORARILY LEAVING NCURSES MODE
+  Temporarily Leaving ncurses Mode
   
    Sometimes you will want to write a program that spends most of its
    time in screen mode, but occasionally returns to ordinary `cooked'
@@ -785,10 +777,7 @@ Hints, Tips, and Tricks
    whether ncurses screen mode is active. It returns TRUE in the interval
    between an endwin() call and the following refresh(), FALSE otherwise.
    
-   
    Here is some sample code for shellout:
-   
-
     addstr("Shelling out...");
     def_prog_mode();           /* save current tty modes */
     endwin();                  /* restore original tty modes */
@@ -796,7 +785,7 @@ Hints, Tips, and Tricks
     addstr("returned.\n");     /* prepare return message */
     refresh();                 /* restore save modes, repaint screen */
 
-  USING NCURSES UNDER XTERM
+  Using ncurses Under xterm
   
    A resize operation in X sends SIGWINCH to the application running
    under xterm. The ncurses library does not catch this signal, because
@@ -808,7 +797,7 @@ Hints, Tips, and Tricks
    The refresh will pick up the new screen size from the xterm's
    environment.
    
-  HANDLING MULTIPLE TERMINAL SCREENS
+  Handling Multiple Terminal Screens
   
    The initscr() function actually calls a function named newterm() to do
    most of its work. If you are writing a program that opens multiple
@@ -820,7 +809,7 @@ Hints, Tips, and Tricks
    with the set_term call. Note that you will also have to call
    def_shell_mode and def_prog_mode on each tty yourself.
    
-  TESTING FOR TERMINAL CAPABILITIES
+  Testing for Terminal Capabilities
   
    Sometimes you may want to write programs that test for the presence of
    various capabilities before deciding whether to go into ncurses mode.
@@ -834,14 +823,14 @@ Hints, Tips, and Tricks
    can include the term.h file and test the value of the macro
    cursor_address.
    
-  TUNING FOR SPEED
+  Tuning for Speed
   
    Use the addchstr() family of functions for fast screen-painting of
    text when you know the text doesn't contain any control characters.
    Try to make attribute changes infrequent on your screens. Don't use
    the immedok() option!
    
-  SPECIAL FEATURES OF NCURSES
+  Special Features of ncurses
   
    When running on PC-clones, ncurses has enhanced support for the IBM
    high-half and ROM characters. The A_ALTCHARSET highlight, enables
@@ -857,7 +846,7 @@ Compatibility with Older Versions
    These arise from ambiguities or omissions in the documentation of the
    API.
    
-  REFRESH OF OVERLAPPING WINDOWS
+  Refresh of Overlapping Windows
   
    If you define two windows A and B that overlap, and then alternately
    scribble on and refresh them, the changes made to the overlapping
@@ -865,7 +854,7 @@ Compatibility with Older Versions
    precisely.
    
    To understand why this is a problem, remember that screen updates are
-   calculated between two representations of the _entire_ display. The
+   calculated between two representations of the entire display. The
    documentation says that when you refresh a window, it is first copied
    to to the virtual screen, and then changes are calculated to update
    the physical screen (and applied to the terminal). But "copied to" is
@@ -878,7 +867,7 @@ Compatibility with Older Versions
    copies to the virtual screen. Some implementations do "change copy",
    copying down only locations in the window that have changed (or been
    marked changed with wtouchln() and friends). Some implementations do
-   "entire copy", copying _all_ window locations to the virtual screen
+   "entire copy", copying all window locations to the virtual screen
    whether or not they have changed.
    
    The ncurses library itself has not always been consistent on this
@@ -907,15 +896,15 @@ Compatibility with Older Versions
    when you want a screen update, you do update_panels(), it will do all
    the necessary wnoutrfresh() calls for whatever panel stacking order
    you have defined. Then you can do one doupdate() and there will be a
-   _single_ burst of physical I/O that will do all your updates.
+   single burst of physical I/O that will do all your updates.
    
-  BACKGROUND ERASE
+  Background Erase
   
    If you have been using a very old versions of ncurses (1.8.7 or older)
    you may be surprised by the behavior of the erase functions. In older
    versions, erased areas of a window were filled with a blank modified
-   by the window's current attribute (as set by _wattrset()_,
-   _wattron()_, _wattroff()_ and friends).
+   by the window's current attribute (as set by wattrset(), wattron(),
+   wattroff() and friends).
    
    In newer versions, this is not so. Instead, the attribute of erased
    blanks is normal unless and until it is modified by the functions
@@ -927,9 +916,9 @@ Compatibility with Older Versions
 XSI Curses Conformance
 
    The ncurses library is intended to be base-level conformant with the
-   XSI Curses standard from X/Open. May extended-level features (in fact,
-   almost all features not directly concerned with wide characters and
-   internationalization) are also supported.
+   XSI Curses standard from X/Open. Many extended-level features (in
+   fact, almost all features not directly concerned with wide characters
+   and internationalization) are also supported.
    
    One effect of XSI conformance is the change in behavior described
    under "Background Erase -- Compatibility with Old Versions".
@@ -938,7 +927,7 @@ XSI Curses Conformance
    have a corresponding function which may be linked (and will be
    prototype-checked) if the macro definition is disabled with #undef.
    
-                              THE PANELS LIBRARY
+                              The Panels Library
                                        
    The ncurses library by itself provides good support for screen
    displays in which the windows are tiled (non-overlapping). In the more
@@ -959,15 +948,13 @@ Compiling With the Panels Library
 
    Your panels-using modules must import the panels library declarations
    with
-   
 
           #include <panel.h>
 
    and must be linked explicitly with the panels library using an -lpanel
    argument. Note that they must also link the ncurses library with
-   -lncurses. Most modern linkers are two-pass and will accept either
-   order, but it is still good practice to put -lpanel first and
-   -lncurses second.
+   -lncurses. Many linkers are two-pass and will accept either order, but
+   it is still good practice to put -lpanel first and -lncurses second.
    
 Overview of Panels
 
@@ -1009,14 +996,14 @@ Overview of Panels
    Typically, you will want to call update_panels() and doupdate() just
    before accepting command input, once in each cycle of interaction with
    the user. If you call update_panels() after each and every panel
-   write, youll generate a lot of unnecessary refresh activity and screen
-   flicker.
+   write, you'll generate a lot of unnecessary refresh activity and
+   screen flicker.
    
 Panels, Input, and the Standard Screen
 
    You shouldn't mix wnoutrefresh() or wrefresh() operations with panels
    code; this will work only if the argument window is either in the top
-   panel or un-obscured by any other panels.
+   panel or unobscured by any other panels.
    
    The stsdcr window is a special case. It is considered below all
    panels. Because changes to panels may obscure parts of stdscr, though,
@@ -1025,7 +1012,7 @@ Panels, Input, and the Standard Screen
    
    Note that wgetch automatically calls wrefresh. Therefore, before
    requesting input from a panel window, you need to be sure that the
-   panel is totally un-obscured.
+   panel is totally unobscured.
    
    There is presently no way to display changes to one obscured panel
    without repainting all panels.
@@ -1033,7 +1020,7 @@ Panels, Input, and the Standard Screen
 Hiding Panels
 
    It's possible to remove a panel from the deck temporarily; use
-   hide_panel for this. You can un-hide a panel with show_panel(). The
+   hide_panel for this. Use show_panel() to render it visible again. The
    predicate function panel_hidden tests whether or not a panel is
    hidden.
    
@@ -1052,7 +1039,7 @@ Miscellaneous Other Facilities
    code, to which you can attach application data. See the man page
    documentation of set_panel_userptr() and panel_userptr for details.
    
-                               THE MENU LIBRARY
+                               The Menu Library
                                        
    A menu is a screen display that assists the user to choose some subset
    of a given set of items. The menu library is a curses extension that
@@ -1065,15 +1052,13 @@ Miscellaneous Other Facilities
 Compiling With the menu Library
 
    Your menu-using modules must import the menu library declarations with
-   
 
           #include <menu.h>
 
    and must be linked explicitly with the menus library using an -lmenu
    argument. Note that they must also link the ncurses library with
-   -lncurses. Most modern linkers are two-pass and will accept either
-   order, but it is still good practice to put -lmenu first and -lncurses
-   second.
+   -lncurses. Many linkers are two-pass and will accept either order, but
+   it is still good practice to put -lmenu first and -lncurses second.
    
 Overview of Menus
 
@@ -1117,7 +1102,7 @@ Selecting items
    predicate function. Your menu-processing code can use the function
    set_item_value() to flag the items in the select set.
    
-   Menu items can be made un-selectable using set_item_opts() or
+   Menu items can be made unselectable using set_item_opts() or
    item_opts_off() with the O_SELECTABLE argument. This is the only
    option so far defined for menus, but it is good practice to code as
    though other option bits might be on.
@@ -1164,7 +1149,7 @@ Menu Display
    selectable items, an attribute for unselectable items, and a pad
    character used to separate item name text from description text. These
    have reasonable defaults which the library allows you to change (see
-   the menu_attribs(3x)manual page.
+   the menu_attribs(3x) manual page.
    
 Menu Windows
 
@@ -1249,8 +1234,7 @@ Miscellaneous Other Features
    Each item, and each menu, has an associated user pointer on which you
    can hang application data. See mitem_userptr(3x) and menu_userptr(3x).
    
-   
-                               THE FORMS LIBRARY
+                               The Forms Library
                                        
    The form library is a curses extension that supports easy programming
    of on-screen forms for data entry and program control.
@@ -1261,15 +1245,13 @@ Miscellaneous Other Features
 Compiling With the form Library
 
    Your form-using modules must import the form library declarations with
-   
 
           #include <form.h>
 
    and must be linked explicitly with the forms library using an -lform
    argument. Note that they must also link the ncurses library with
-   -lncurses. Most modern linkers are two-pass and will accept either
-   order, but it is still good practice to put -lform first and -lncurses
-   second.
+   -lncurses. Many linkers are two-pass and will accept either order, but
+   it is still good practice to put -lform first and -lncurses second.
    
 Overview of Forms
 
@@ -1324,7 +1306,6 @@ Creating and Freeing Fields and Forms
 
    The basic function for creating fields is new_field():
    
-
 FIELD *new_field(int height, int width,   /* new field size */
                  int top, int left,       /* upper left corner */
                  int offscreen,           /* number of offscreen rows */
@@ -1346,7 +1327,7 @@ FIELD *new_field(int height, int width,   /* new field size */
    nonzero, the form will be scrollable, with only one screen-full
    (initially the top part) displayed at any given time. If you make a
    field dynamic and grow it so it will no longer fit on the screen, the
-   form will become scrollable even if the \fBoffscreen\fR argument was
+   form will become scrollable even if the offscreen argument was
    initially zero.
    
    The forms library allocates one working buffer per field; the size of
@@ -1355,7 +1336,6 @@ FIELD *new_field(int height, int width,   /* new field size */
    number of additional data buffers to allocate for the field; your
    application can use them for its own purposes.
    
-
 FIELD *dup_field(FIELD *field,            /* field to copy */
                  int top, int left);      /* location of new copy */
 
@@ -1364,7 +1344,6 @@ FIELD *dup_field(FIELD *field,            /* field to copy */
    flags and status bits are not (see the form_field_new(3X) for
    details).
    
-
 FIELD *link_field(FIELD *field,           /* field to copy */
                   int top, int left);     /* location of new copy */
 
@@ -1387,14 +1366,13 @@ FIELD *link_field(FIELD *field,           /* field to copy */
    
    To connect fields to a form, use
    
-
 FORM *new_form(FIELD **fields);
 
    This function expects to see a NULL-terminated array of field
    pointers. Said fields are connected to a newly-allocated form object;
    its address is returned (or else NULL if the allocation fails).
    
-   Note that new_field() does _not_ copy the pointer array into private
+   Note that new_field() does not copy the pointer array into private
    storage; if you modify the contents of the pointer array during forms
    processing, all manner of bizarre things might happen. Also note that
    any given field may only be connected to one form.
@@ -1408,10 +1386,10 @@ Fetching and Changing Field Attributes
 
    Each form field has a number of location and size attributes
    associated with it. There are other field attributes used to control
-   display and editing of the field. Some (for example, the
-   \fBO_STATIC\fR bit) involve sufficient complications to be covered in
-   sections of their own later on. We cover the functions used to get and
-   set several basic attributes here.
+   display and editing of the field. Some (for example, the O_STATIC bit)
+   involve sufficient complications to be covered in sections of their
+   own later on. We cover the functions used to get and set several basic
+   attributes here.
    
    When a field is created, the attributes not specified by the new_field
    function are copied from an invisible system default field. In
@@ -1419,11 +1397,10 @@ Fetching and Changing Field Attributes
    to mean this field. Changes to it persist as defaults until your forms
    application terminates.
    
-  FETCHING SIZE AND LOCATION DATA
+  Fetching Size and Location Data
   
    You can retrieve field sizes and locations through:
    
-
 int field_info(FIELD *field,              /* field from which to fetch */
                int *height, *int width,   /* field size */
                int *top, int *left,       /* upper left corner */
@@ -1434,22 +1411,20 @@ int field_info(FIELD *field,              /* field from which to fetch */
    size and location attributes of a new field, it fetches them from an
    existing one.
    
-  CHANGING THE FIELD LOCATION
+  Changing the Field Location
   
    If is possible to move a field's location on the screen:
    
-
 int move_field(FIELD *field,              /* field to alter */
                int top, int left);        /* new upper-left corner */
 
    You can, of course. query the current location through field_info().
    
-  THE JUSTIFICATION ATTRIBUTE
+  The Justification Attribute
   
    One-line fields may be unjustified, justified right, justified left,
    or centered. Here is how you manipulate this attribute:
    
-
 int set_field_just(FIELD *field,          /* field to alter */
                    int justmode);         /* mode to set */
 
@@ -1459,7 +1434,7 @@ int field_just(FIELD *field);             /* fetch mode of field */
    preprocessor macros NO_JUSTIFICATION, JUSTIFY_RIGHT, JUSTIFY_LEFT, or
    JUSTIFY_CENTER.
    
-  FIELD DISPLAY ATTRIBUTES
+  Field Display Attributes
   
    For each field, you can set a foreground attribute for entered
    characters, a background attribute for the entire field, and a pad
@@ -1470,7 +1445,6 @@ int field_just(FIELD *field);             /* fetch mode of field */
    the field on the screen, without affecting in any way the data in the
    field buffer.
    
-
 int set_field_fore(FIELD *field,          /* field to alter */
                    chtype attr);          /* attribute to set */
 
@@ -1496,12 +1470,11 @@ chtype new_page(FIELD *field);            /* field to query */
    etc). The page bit of a field controls whether it is displayed at the
    start of a new form screen.
    
-  FIELD OPTION BITS
+  Field Option Bits
   
    There is also a large collection of field option bits you can set to
    control various aspects of forms processing. You can manipulate them
    with these functions:
-   
 
 int set_field_opts(FIELD *field,          /* field to alter */
                    int attr);             /* attribute to set */
@@ -1537,7 +1510,7 @@ int field_opts(FIELD *field);             /* field to query */
    O_EDIT
           Controls whether the field's data can be modified. When this
           option is off, all editing requests except REQ_PREV_CHOICE and
-          REQ_NEXT_CHOICEwill fail. Such read-only fields may be useful
+          REQ_NEXT_CHOICE will fail. Such read-only fields may be useful
           for help messages.
           
    O_WRAP
@@ -1590,7 +1563,6 @@ Field Status
    created and TRUE when the value in field buffer 0 changes. This flag
    can be queried and set directly:
    
-
 int set_field_status(FIELD *field,      /* field to alter */
                    int status);         /* mode to set */
 
@@ -1614,7 +1586,6 @@ Field User Pointer
    Each field structure contains one character pointer slot that is not
    used by the forms library. It is intended to be used by applications
    to store private per-field data. You can manipulate it with:
-   
 
 int set_field_userptr(FIELD *field,       /* field to alter */
                    char *userptr);        /* mode to set */
@@ -1648,7 +1619,6 @@ Variable-Sized Fields
    possible to set an upper limit on the size of a dynamic field. You do
    it with this function:
    
-
 int set_max_field(FIELD *field,     /* field to alter (may not be NULL) */
                    int max_size);   /* upper limit on field size */
 
@@ -1688,7 +1658,6 @@ Field Validation
    can examine and change field validation attributes with the following
    functions:
    
-
 int set_field_type(FIELD *field,          /* field to alter */
                    FIELDTYPE *ftype,      /* type to associate */
                    ...);                  /* additional arguments*/
@@ -1708,7 +1677,6 @@ FIELDTYPE *field_type(FIELD *field);      /* field to query */
    special characters (this is checked at character-entry time). It is
    set up with:
    
-
 int set_field_type(FIELD *field,          /* field to alter */
                    TYPE_ALPHA,            /* type to associate */
                    int width);            /* maximum width of field */
@@ -1724,7 +1692,6 @@ int set_field_type(FIELD *field,          /* field to alter */
    special characters (this is checked at character-entry time). It is
    set up with:
    
-
 int set_field_type(FIELD *field,          /* field to alter */
                    TYPE_ALNUM,            /* type to associate */
                    int width);            /* maximum width of field */
@@ -1740,7 +1707,6 @@ int set_field_type(FIELD *field,          /* field to alter */
    specified set of string values (for example, the two-letter postal
    codes for U.S. states). It is set up with:
    
-
 int set_field_type(FIELD *field,          /* field to alter */
                    TYPE_ENUM,             /* type to associate */
                    char **valuelist;      /* list of possible values */
@@ -1769,7 +1735,6 @@ int set_field_type(FIELD *field,          /* field to alter */
   
    This field type accepts an integer. It is set up as follows:
    
-
 int set_field_type(FIELD *field,          /* field to alter */
                    TYPE_INTEGER,          /* type to associate */
                    int padding,           /* # places to zero-pad to */
@@ -1789,16 +1754,16 @@ int set_field_type(FIELD *field,          /* field to alter */
   
    This field type accepts a decimal number. It is set up as follows:
    
-
-int set_field_type(FIELD *field,          /* field to alter */
-                   TYPE_NUMERIC,          /* type to associate */
-                   int padding,           /* # places of precision */
-                   int vmin, int vmax);   /* valid range */
+int set_field_type(FIELD *field,              /* field to alter */
+                   TYPE_NUMERIC,              /* type to associate */
+                   int padding,               /* # places of precision */
+                   double vmin, double vmax); /* valid range */
 
    Valid characters consist of an optional leading minus and digits.
-   possibly including a decimal point. The range check is performed on
-   exit. If the range maximum is less than or equal to the minimum, the
-   range is ignored.
+   possibly including a decimal point. If your system supports locale's,
+   the decimal point character used must be the one defined by your
+   locale. The range check is performed on exit. If the range maximum is
+   less than or equal to the minimum, the range is ignored.
    
    If the value passes its range check, it is padded with as many
    trailing zero digits as necessary to meet the padding argument.
@@ -1811,7 +1776,6 @@ int set_field_type(FIELD *field,          /* field to alter */
    This field type accepts data matching a regular expression. It is set
    up as follows:
    
-
 int set_field_type(FIELD *field,          /* field to alter */
                    TYPE_REGEXP,           /* type to associate */
                    char *regexp);         /* expression to match */
@@ -1821,11 +1785,10 @@ int set_field_type(FIELD *field,          /* field to alter */
    
 Direct Field Buffer Manipulation
 
-   The most central attribute of a field is its buffer contents. When a
-   form has been completed, your application usually needs to know the
-   state of each field buffer. You can find this out with:
+   The chief attribute of a field is its buffer contents. When a form has
+   been completed, your application usually needs to know the state of
+   each field buffer. You can find this out with:
    
-
 char *field_buffer(FIELD *field,          /* field to query */
                    int bufindex);         /* number of buffer to query */
 
@@ -1833,7 +1796,6 @@ char *field_buffer(FIELD *field,          /* field to query */
    by the user's editing actions on that field. It's sometimes useful to
    be able to set the value of the zero-numbered (or some other) buffer
    from your application:
-   
 
 int set_field_buffer(FIELD *field,        /* field to alter */
                    int bufindex,          /* number of buffer to alter */
@@ -1860,10 +1822,9 @@ Attributes of Forms
    system default form structure. These defaults can be queried or set by
    of these functions using a form-pointer argument of NULL.
    
-   The most important attribute of a form is its field list. You can
-   query and change this list with:
+   The principal attribute of a form is its field list. You can query and
+   change this list with:
    
-
 int set_form_fields(FORM *form,           /* form to alter */
                     FIELD **fields);      /* fields to connect */
 
@@ -1913,7 +1874,6 @@ Control of Form Display
    know the size of the form's bounding rectangle. You can get this
    information with:
    
-
 int scale_form(FORM *form,                /* form to query */
                int *rows,                 /* form rows */
                int *cols);                /* form cols */
@@ -1921,7 +1881,6 @@ int scale_form(FORM *form,                /* form to query */
    The form dimensions are passed back in the locations pointed to by the
    arguments. Once you have this information, you can use it to declare
    of windows, then use one of these functions:
-   
 
 int set_form_win(FORM *form,              /* form to alter */
                  WINDOW *win);            /* frame window to connect */
@@ -1940,7 +1899,6 @@ WINDOW *form_sub(FORM *form);             /* fetch form subwindow of form */
    scrollable field is actually displayed within the menu subwindow. Use
    these functions:
    
-
 int data_ahead(FORM *form);               /* form to be queried */
 
 int data_behind(FORM *form);              /* form to be queried */
@@ -1955,7 +1913,6 @@ int data_behind(FORM *form);              /* form to be queried */
    Finally, there is a function to restore the form window's cursor to
    the value expected by the forms driver:
    
-
 int pos_form_cursor(FORM *)               /* form to be queried */
 
    If your application changes the form window cursor, call this function
@@ -1968,7 +1925,6 @@ Input Processing in the Forms Driver
    navigation, editing, and validation requests, just as menu_driver does
    for menus (see the section on menu input handling).
    
-
 int form_driver(FORM *form,               /* form to pass input to */
                 int request);             /* form request code */
 
@@ -1981,7 +1937,7 @@ int form_driver(FORM *form,               /* form to pass input to */
    field-termination functions) with which your application code can
    check that the input taken by the driver matched what was expected.
    
-  PAGE NAVIGATION REQUESTS
+  Page Navigation Requests
   
    These requests cause page-level moves through the form, triggering
    display of a new form screen.
@@ -2002,7 +1958,7 @@ int form_driver(FORM *form,               /* form to pass input to */
    the last page goes to the first, and REQ_PREV_PAGE from the first page
    goes to the last.
    
-  INTER-FIELD NAVIGATION REQUESTS
+  Inter-Field Navigation Requests
   
    These requests handle navigation between fields on the same page.
    
@@ -2062,10 +2018,10 @@ int form_driver(FORM *form,               /* form to pass input to */
    For example, suppose you have a multi-line field B, and two
    single-line fields A and C on the same line with B, with A to the left
    of B and C to the right of B. A REQ_MOVE_RIGHT from A will go to B
-   only if A, B, and C _all_ share the same first line; otherwise it will
+   only if A, B, and C all share the same first line; otherwise it will
    skip over B to C.
    
-  INTRA-FIELD NAVIGATION REQUESTS
+  Intra-Field Navigation Requests
   
    These requests drive movement of the edit cursor within the currently
    selected field.
@@ -2112,11 +2068,11 @@ int form_driver(FORM *form,               /* form to pass input to */
    REQ_DOWN_CHAR
           Move down in field.
           
-   Each _word_ is separated from the previous and next characters by
+   Each word is separated from the previous and next characters by
    whitespace. The commands to move to beginning and end of line or field
    look for the first or last non-pad character in their ranges.
    
-  SCROLLING REQUESTS
+  Scrolling Requests
   
    Fields that are dynamic and have grown and fields explicitly created
    with offscreen rows are scrollable. One-line fields scroll
@@ -2124,8 +2080,6 @@ int form_driver(FORM *form,               /* form to pass input to */
    triggered by editing and intra-field movement (the library scrolls the
    field to keep the cursor visible). It is possible to explicitly
    request scrolling with the following requests:
-   
-   
    
    REQ_SCR_FLINE
           Scroll vertically forward a line.
@@ -2163,10 +2117,10 @@ int form_driver(FORM *form,               /* form to pass input to */
    REQ_SCR_HBHALF
           Scroll horizontally one half field width backward.
           
-   For scrolling purposes, a _page_ of a field is the height of its
-   visible part.
+   For scrolling purposes, a page of a field is the height of its visible
+   part.
    
-  EDITING REQUESTS
+  Editing Requests
   
    When you pass the forms driver an ASCII character, it is treated as a
    request to add the character to the field's data buffer. Whether this
@@ -2251,7 +2205,7 @@ int form_driver(FORM *form,               /* form to pass input to */
    See Form Options for discussion of how to set and clear the overload
    options.
    
-  ORDER REQUESTS
+  Order Requests
   
    If the type of your field is ordered, and has associated functions for
    getting the next and previous values of the type from a given value,
@@ -2268,7 +2222,7 @@ int form_driver(FORM *form,               /* form to pass input to */
    Custom Validation Types), you can associate our own ordering
    functions.
    
-  APPLICATION COMMANDS
+  Application Commands
   
    Form requests are represented as integers above the curses value
    greater than KEY_MAX and less than or equal to the constant
@@ -2281,7 +2235,6 @@ Field Change Hooks
    current field or form changes. Here are the functions that support
    this:
    
-
 typedef void    (*HOOK)();       /* pointer to function returning void */
 
 int set_form_init(FORM *form,    /* form to alter */
@@ -2347,7 +2300,6 @@ Field Change Commands
    ask which field it currently is in. The following functions help you
    accomplish this:
    
-
 int set_current_field(FORM *form,         /* form to alter */
                       FIELD *field);      /* field to shift to */
 
@@ -2365,7 +2317,6 @@ int field_index(FORM *form,               /* form to query */
    
    It is also possible to move around by pages.
    
-
 int set_form_page(FORM *form,             /* form to alter */
                   int page);              /* page to go to (0-origin) */
 
@@ -2379,7 +2330,6 @@ Form Options
    Like fields, forms may have control option bits. They can be changed
    or queried with these functions:
    
-
 int set_form_opts(FORM *form,             /* form to alter */
                   int attr);              /* attribute to set */
 
@@ -2416,12 +2366,11 @@ Custom Validation Types
    with the handling of the additional arguments within custom validation
    functions.
    
-  UNION TYPES
+  Union Types
   
    The simplest way to create a custom data type is to compose it from
    two preexisting ones:
    
-
 FIELD *link_fieldtype(FIELDTYPE *type1,
                       FIELDTYPE *type2);
 
@@ -2435,7 +2384,7 @@ FIELD *link_fieldtype(FIELDTYPE *type1,
    first type, then for the second, to figure what type the buffer
    contents should be treated as.
    
-  NEW FIELD TYPES
+  New Field Types
   
    To create a field type from scratch, you need to specify one or both
    of the following things:
@@ -2446,8 +2395,7 @@ FIELD *link_fieldtype(FIELDTYPE *type1,
        
    Here's how you do that:
    
-   typedef int (*HOOK)(); /* pointer to function returning int */
-   
+typedef int     (*HOOK)();       /* pointer to function returning int */
 
 FIELDTYPE *new_fieldtype(HOOK f_validate, /* field validator */
                          HOOK c_validate) /* character validator */
@@ -2455,16 +2403,15 @@ FIELDTYPE *new_fieldtype(HOOK f_validate, /* field validator */
 
 int free_fieldtype(FIELDTYPE *ftype);     /* type to free */
 
-   At least one of the arguments of new_fieldtype()must be non-NULL. The
+   At least one of the arguments of new_fieldtype() must be non-NULL. The
    forms driver will automatically call the new type's validation
    functions at appropriate points in processing a field of the new type.
-   
    
    The function free_fieldtype() deallocates the argument fieldtype,
    freeing all storage associated with it.
    
    Normally, a field validator is called when the user attempts to leave
-   the field. Its first argument is a field fointer, from which it can
+   the field. Its first argument is a field pointer, from which it can
    get to field buffer 0 and test it. If the function returns TRUE, the
    operation succeeds; if it returns FALSE, the edit cursor stays in the
    field.
@@ -2473,11 +2420,11 @@ int free_fieldtype(FIELDTYPE *ftype);     /* type to free */
    argument. It too should return TRUE if the character is valid, FALSE
    otherwise.
    
-  VALIDATION FUNCTION ARGUMENTS
+  Validation Function Arguments
   
    Your field- and character- validation functions will be passed a
    second argument as well. This second argument is the address of a
-   structure (which we'll call a _pile_) built from any of the
+   structure (which we'll call a pile) built from any of the
    field-type-specific arguments passed to set_field_type(). If no such
    arguments are defined for the field type, this pile pointer argument
    will be NULL.
@@ -2490,7 +2437,6 @@ int free_fieldtype(FIELDTYPE *ftype);     /* type to free */
    
    Here is how you make the association:
    
-
 typedef char    *(*PTRHOOK)();    /* pointer to function returning (char *) */
 typedef void    (*VOIDHOOK)();    /* pointer to function returning void */
 
@@ -2524,14 +2470,13 @@ int set_fieldtype_arg(FIELDTYPE *type,    /* type to alter */
    functions should never see a NULL file pointer and need not check
    specially for it.
    
-  ORDER FUNCTIONS FOR CUSTOM TYPES
+  Order Functions For Custom Types
   
    Some custom field types are simply ordered in the same well-defined
    way that TYPE_ENUM is. For such types, it is possible to define
    successor and predecessor functions to support the REQ_NEXT_CHOICE and
    REQ_PREV_CHOICE requests. Here's how:
    
-
 typedef int     (*INTHOOK)();     /* pointer to function returning int */
 
 int set_fieldtype_arg(FIELDTYPE *type,    /* type to alter */
@@ -2546,7 +2491,7 @@ int set_fieldtype_arg(FIELDTYPE *type,    /* type to alter */
    success (a legal next or previous value was set) or FALSE to indicate
    failure.
    
-  AVOIDING PROBLEMS
+  Avoiding Problems
   
    The interface for defining custom types is complicated and tricky.
    Rather than attempting to create a custom type entirely from scratch,
@@ -2555,23 +2500,10 @@ int set_fieldtype_arg(FIELDTYPE *type,    /* type to alter */
    
    Use that code as a model, and evolve it towards what you really want.
    You will avoid many problems and annoyances that way. The code in the
-   ncurses library has been specifically un-copyrighted to support this.
+   ncurses library has been specifically exempted from the package
+   copyright to support this.
    
    If your custom type defines order functions, have do something
    intuitive with a blank field. A useful convention is to make the
    successor of a blank field the types minimum value, and its
    predecessor the maximum.
-   
-   
-     _________________________________________________________________
-   
-   
-   
-   THIS DOCUMENT IS STILL UNDER CONSTRUCTION. Full descriptions of the
-   form library entry points are available in the form_*.3x manual pages
-   included with the ncurses distributions.
-   
-   
-     _________________________________________________________________
-   
-    Eric S. Raymond <esr@snark.thyrsus.com>
