@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.221 2000/08/19 19:07:36 tom Exp $
+dnl $Id: aclocal.m4,v 1.223 2000/08/26 22:03:25 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -266,11 +266,13 @@ dnl Check if we're accidentally using a cache from a different machine.
 dnl Derive the system name, as a check for reusing the autoconf cache.
 dnl
 dnl If we've packaged config.guess and config.sub, run that (since it does a
-dnl better job than uname).
+dnl better job than uname).  Normally we'll use AC_CANONICAL_HOST, but allow
+dnl an extra parameter that we may override, e.g., for AC_CANONICAL_SYSTEM
+dnl which is useful in cross-compiles.
 AC_DEFUN([CF_CHECK_CACHE],
 [
 if test -f $srcdir/config.guess ; then
-	AC_CANONICAL_HOST
+	ifelse([$1],,[AC_CANONICAL_HOST],[$1])
 	system_name="$host_os"
 else
 	system_name="`(uname -s -r) 2>/dev/null`"
@@ -1235,6 +1237,33 @@ AC_MSG_RESULT($cf_cv_makeflags)
 AC_SUBST(cf_cv_makeflags)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Generate tags/TAGS targets for makefiles.  Do not generate TAGS if we have
+dnl a monocase filesystem.
+AC_DEFUN([CF_MAKE_TAGS],[
+AC_REQUIRE([CF_MIXEDCASE_FILENAMES])
+AC_CHECK_PROG(MAKE_LOWER_TAGS, ctags, yes, no)
+
+if test "$cf_cv_mixedcase" = yes ; then
+	AC_CHECK_PROG(MAKE_UPPER_TAGS, etags, yes, no)
+else
+	MAKE_UPPER_TAGS=no
+fi
+
+if test "$MAKE_UPPER_TAGS" = yes ; then
+	MAKE_UPPER_TAGS=
+else
+	MAKE_UPPER_TAGS="#"
+fi
+AC_SUBST(MAKE_UPPER_TAGS)
+
+if test "$MAKE_LOWER_TAGS" = yes ; then
+	MAKE_LOWER_TAGS=
+else
+	MAKE_LOWER_TAGS="#"
+fi
+AC_SUBST(MAKE_LOWER_TAGS)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Option to allow user to override automatic configuration of manpage format.
 dnl There are several special cases.
 AC_DEFUN([CF_MANPAGE_FORMAT],
@@ -1574,6 +1603,23 @@ ifelse($1,,[
 ],[$1=-lm])
 fi
 ])
+dnl ---------------------------------------------------------------------------
+dnl Check if the file-system supports mixed-case filenames.  If we're able to
+dnl create a lowercase name and see it as uppercase, it doesn't support that.
+AC_DEFUN([CF_MIXEDCASE_FILENAMES],
+[
+AC_CACHE_CHECK(if filesystem supports mixed-case filenames,cf_cv_mixedcase,[
+	rm -f conftest CONFTEST
+	echo test >conftest
+	if test -f CONFTEST ; then
+		cf_cv_mixedcase=no
+	else
+		cf_cv_mixedcase=yes
+	fi
+	rm -f conftest CONFTEST
+])
+test "$cf_cv_mixedcase" = yes && AC_DEFINE(MIXEDCASE_FILENAMES)
+])dnl
 dnl ---------------------------------------------------------------------------
 dnl Compute the object-directory name from the given model name
 AC_DEFUN([CF_OBJ_SUBDIR],

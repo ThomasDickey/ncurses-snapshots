@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.21 2000/08/19 19:14:04 tom Exp $
+# $Id: Makefile.in,v 1.22 2000/08/26 21:51:23 tom Exp $
 # Makefile for tack
 #
 # The variable 'srcdir' refers to the source-distribution, and can be set with
@@ -131,8 +131,8 @@ tack$x: $(DEPS_TACK) $(DEPS_CURSES)
 tags:
 	ctags *.[ch]
 
-TAGS:
-	etags *.[ch]
+@MAKE_UPPER_TAGS@TAGS:
+@MAKE_UPPER_TAGS@	etags *.[ch]
 
 clean ::
 	-rm -f tags TAGS do.tic *~

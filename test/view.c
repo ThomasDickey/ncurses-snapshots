@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.29 2000/05/21 01:43:03 tom Exp $
+ * $Id: view.c,v 1.30 2000/08/26 22:09:49 tom Exp $
  */
 
 #include <test.priv.h>
@@ -433,7 +433,7 @@ show_all(void)
     scrollok(stdscr, FALSE);	/* prevent screen from moving */
     for (i = 1; i < LINES; i++) {
 	move(i, 0);
-	printw("%3d:", (lptr + i - lines));
+	printw("%3ld:", (long) (lptr + i - lines));
 	clrtoeol();
 	if ((s = lptr[i - 1]) != 0) {
 	    int len = ch_len(s);

@@ -410,6 +410,7 @@
 ./form/modules
 ./include/Caps
 ./include/MKhashsize.sh
+./include/MKncurses_def.sh
 ./include/MKparametrized.sh
 ./include/MKterm.h.awk.in
 ./include/Makefile.in
@@ -420,6 +421,7 @@
 ./include/nc_alloc.h
 ./include/nc_panel.h
 ./include/ncurses_cfg.hin
+./include/ncurses_defs
 ./include/term_entry.h
 ./include/termcap.h.in
 ./include/tic.h
@@ -589,7 +591,7 @@
 ./misc/ncurses.ref
 ./misc/panel.def
 ./misc/panel.ref
-./misc/run_tic.sh
+./misc/run_tic.in
 ./misc/shlib
 ./misc/tabset/std
 ./misc/tabset/stdcrt

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.47 2000/08/20 02:18:48 tom Exp $
+# $Id: Makefile.in,v 1.48 2000/08/26 21:51:26 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2000 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -227,8 +227,8 @@ termsort.c: $(srcdir)/MKtermsort.sh
 tags:
 	ctags *.[ch]
 
-TAGS:
-	etags *.[ch]
+@MAKE_UPPER_TAGS@TAGS:
+@MAKE_UPPER_TAGS@	etags *.[ch]
 
 mostlyclean ::
 	-rm -f core tags TAGS *~ *.ln *.atac trace

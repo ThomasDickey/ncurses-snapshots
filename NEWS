@@ -1,10 +1,34 @@
--- $Id: NEWS,v 1.584 2000/08/19 23:25:36 tom Exp $
+-- $Id: NEWS,v 1.585 2000/08/27 02:18:23 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000826
+	+ add QNX qansi entries to terminfo -TD
+	+ add os2 entry to misc/emx.src (<jmcoopr@webmail.bmi.net>).
+	+ add configure option --with-database to allow specifying a different
+	  terminfo source-file to install.  On OS/2 EMX, this defaults to
+	  misc/emx.src
+	+ change misc/run_tic.sh to derive it from misc/run_tic.in, to simplify
+	  setting .exe extension on OS/2 EMX.
+	+ add .exe extension in Ada95/gen/Makefile.in,
+	  Ada95/samples/Makefile.in, for OS/2 EMX (reported by
+	  <jmcoopr@webmail.bmi.net>).
+	+ add configure check for filesystems (such as OS/2 EMX) which do not
+	  distinguish between upper/lowercase filenames, use this to fix tags
+	  rules in makefiles.
+	+ initialize fds[] array to 0's in _nc_timed_wait(); apparently poll()
+	  only sets the revents members of that array when there is activity
+	  corresponding to the related file (report by Glenn Cooper
+	  <gcooper@qantas.com.au>, using Purify on Solaris 5.6).
+	+ change configure script to use AC_CANONICAL_SYSTEM rather than
+	  AC_CANONICAL_HOST, which means that configure --target will set
+	  a default program-prefix.
+	+ add note on cross-compiling to INSTALL (which does not rely on the
+	  AC_CANONICAL_* macros).
 
 20000819
 	+ add cases for EMX OS/2 to config.guess, config.sub

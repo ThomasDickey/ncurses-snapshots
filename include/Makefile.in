@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.24 2000/08/19 19:15:31 tom Exp $
+# $Id: Makefile.in,v 1.25 2000/08/26 21:51:39 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -88,8 +88,8 @@ parametrized.h: $(srcdir)/Caps $(srcdir)/MKparametrized.sh
 tags:
 	ctags *.[ch]
 
-TAGS:
-	etags *.[ch]
+@MAKE_UPPER_TAGS@TAGS:
+@MAKE_UPPER_TAGS@	etags *.[ch]
 
 mostlyclean ::
 	-rm -f core tags TAGS *~ *.ln *.atac trace

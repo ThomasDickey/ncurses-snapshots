@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.40 2000/08/13 00:05:49 tom Exp $
+-- $Id: INSTALL,v 1.42 2000/08/27 00:05:52 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -30,6 +30,9 @@ read the USING NCURSES WITH GPM section below.
 
 If you are running over the Andrew File System see the note below on
 USING NCURSES WITH AFS.
+
+If you are cross-compiling, see the note below on BUILDING NCURSES WITH A
+CROSS-COMPILER.
 
 If you want to build the Ada95 binding, go to the Ada95 directory and
 follow the instructions there.  The Ada95 binding is not covered below.
@@ -434,6 +437,12 @@ SUMMARY OF CONFIGURE OPTIONS:
 
     --with-ada-objects=DIR
 	Tell where to install the Ada objects (default:  PREFIX/lib/ada/adalib)
+
+    --with-database=XXX
+	Specify the terminfo source file to install.  Usually you will wish
+	to install ncurses' default (misc/terminfo.src).  Certain systems
+	have special requirements, e.g, OS/2 EMX has a customized terminfo
+	source file.
 
     --with-dbmalloc
 	For testing, compile and link with Conor Cahill's dbmalloc library.
@@ -982,6 +991,23 @@ USING NCURSES WITH GPM:
 	This patch is incorporated in gpm 1.12; however some integrators
 	are slow to update this library.  Current distributions of gpm can
 	be configured properly using the --without-curses option.
+
+BUILDING NCURSES WITH A CROSS-COMPILER
+	Ncurses can be built with a cross-compiler.  Some parts must be built
+	with the host's compiler since they are used for building programs
+	(e.g., ncurses/make_hash and ncurses/make_keys) that generate tables
+	that are compiled into the ncurses library.  You should set the
+	BUILD_CC environment variable to your host's compiler, and run the
+	configure script configuring for the cross-compiler.
+
+	Note that all of the generated source-files which are part of ncurses
+	will be made if you use
+
+		make sources
+
+	This would be useful in porting to an environment which has little
+	support for the tools used to generate the sources, e.g., sed, awk and
+	Bourne-shell.
 
 BUGS:
 	Send any feedback to the ncurses mailing list at

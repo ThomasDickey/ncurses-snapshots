@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.22 2000/08/19 19:16:06 tom Exp $
+# $Id: Makefile.in,v 1.27 2000/08/27 02:36:56 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -49,6 +49,7 @@ CF_MFLAGS 	= @cf_cv_makeflags@
 @SET_MAKE@
 
 DESTDIR		= @DESTDIR@
+top_srcdir	= @top_srcdir@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
@@ -58,6 +59,7 @@ datadir		= @datadir@
 
 tabsetdir	= $(datadir)/tabset
 ticdir		= @TERMINFO@
+source		= @TERMINFO_SRC@
 
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
@@ -72,9 +74,18 @@ install: install.data
 install.data:	$(DESTDIR)$(libdir) \
 		$(DESTDIR)$(ticdir) \
 		$(DESTDIR)$(tabsetdir)
-	sh $(srcdir)/run_tic.sh $(bindir) $(srcdir) $(ticdir) $(DESTDIR)
+	DESTDIR=${DESTDIR} \
+	prefix=${prefix} \
+	exec_prefix=${exec_prefix} \
+	bindir=${bindir} \
+	top_srcdir=${top_srcdir} \
+	srcdir=${srcdir} \
+	datadir=${datadir} \
+	ticdir=${ticdir} \
+	source=${source} \
+	$(SHELL) $(srcdir)/run_tic.sh
 	@cd $(srcdir)/tabset && \
-		sh -c 'for i in `echo * | fgrep -v CVS | fgrep -v RCS`; do \
+		$(SHELL) -c 'for i in `echo * | fgrep -v CVS | fgrep -v RCS`; do \
 		echo installing $$i; \
 		$(INSTALL_DATA) $$i $(DESTDIR)$(tabsetdir); done'
 
@@ -91,7 +102,7 @@ uninstall.data:
 
 tags:
 
-TAGS:
+@MAKE_UPPER_TAGS@TAGS:
 
 mostlyclean:
 	-rm -f core tags TAGS *~ *.ln *.atac trace
@@ -99,7 +110,7 @@ mostlyclean:
 clean :: mostlyclean
 
 distclean: clean
-	-rm -f Makefile
+	-rm -f Makefile run_tic.sh
 
 realclean: distclean
 
