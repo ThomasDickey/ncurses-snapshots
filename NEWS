@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.801 2004/03/07 01:20:16 tom Exp $
+-- $Id: NEWS,v 1.802 2004/03/13 21:53:41 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040313
+	+ fix a redefinition of CTRL() macro in test/view.c for AIX 5.2 (report
+	  by Jim Idle).
+	+ remove ".PP" after ".SH NAME" in a few manpages; this confuses
+	  some apropos script (Debian #237831).
 
 20040306
 	+ modify ncurses.c 'r' test so editing commands, like inserted text,

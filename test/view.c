@@ -23,12 +23,14 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.57 2003/05/17 21:58:43 tom Exp $
+ * $Id: view.c,v 1.58 2004/03/13 19:13:48 tom Exp $
  */
 
 #include <time.h>
 
 #include <test.priv.h>
+
+#undef CTRL			/* conflict on AIX 5.2 with <sys/ioctl.h> */
 
 #if HAVE_TERMIOS_H
 # include <termios.h>
