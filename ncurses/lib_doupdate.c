@@ -75,7 +75,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.107 1998/09/20 03:29:21 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.108 1998/09/27 00:20:38 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -215,13 +215,21 @@ static bool check_pending(void)
 #elif HAVE_SELECT
 		fd_set fdset;
 		struct timeval ktimeout;
+		int nums = SP->_checkfd+1;
 
 		ktimeout.tv_sec =
 		ktimeout.tv_usec = 0;
 
 		FD_ZERO(&fdset);
 		FD_SET(SP->_checkfd, &fdset);
-		if (select(SP->_checkfd+1, &fdset, NULL, NULL, &ktimeout) > 0)
+#ifdef USE_EMX_MOUSE
+		if (SP->_mouse_fd >= 0) {
+			FD_SET(SP->_mouse_fd, &fdset);
+			if (SP->_mouse_fd > SP->_checkfd)
+				nums = SP->_mouse_fd+1;
+		}
+#endif /* USE_EMX_MOUSE */
+		if (select(nums, &fdset, NULL, NULL, &ktimeout) != 0)
 		{
 			have_pending = TRUE;
 		}

@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.118 1998/09/20 04:05:51 tom Exp $
+ * $Id: curses.priv.h,v 1.122 1998/09/27 00:18:05 tom Exp $
  *
  *	curses.priv.h
  *
@@ -117,6 +117,11 @@ extern int errno;
 #define USE_QNX_MOUSE 0
 #endif
 
+/* EMX mouse support */
+#ifdef __EMX__
+#define USE_EMX_MOUSE
+#endif
+
 #define DEFAULT_MAXCLICK 166
 #define EV_MAX		8	/* size of mouse circular event queue */
 
@@ -132,6 +137,17 @@ extern int errno;
 #define USE_SIZECHANGE 1
 #else
 #undef USE_SIGWINCH
+#endif
+
+/*
+ * Not all platforms have memmove; some have an equivalent bcopy.  (Some may
+ * have neither).
+ */
+#if USE_OK_BCOPY
+#define memmove(d,s,n) bcopy(s,d,n)
+#elif USE_MY_MEMMOVE
+#define memmove(d,s,n) _nc_memmove(d,s,n)
+extern void * _nc_memmove(void *, const void *, size_t);
 #endif
 
 /*
@@ -173,6 +189,13 @@ struct tries {
 #define C_MASK  ((1 << C_SHIFT) - 1)
 
 #define PAIR_OF(fg, bg) ((((fg) & C_MASK) << C_SHIFT) | ((bg) & C_MASK))
+
+/*
+ * Common/troublesome character definitions
+ */
+#define L_BRACE '{'
+#define R_BRACE '}'
+#define S_QUOTE '\''
 
 /*
  * Structure for palette tables

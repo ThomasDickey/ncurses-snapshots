@@ -39,7 +39,7 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <term.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.21 1998/07/25 20:58:56 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.22 1998/09/26 12:27:03 tom Exp $")
 
 /*
    some of the code in here was contributed by:
@@ -176,8 +176,7 @@ int i;
 	if (cur_term != 0) {
 		for (i = 0; i < BOOLCOUNT; i++) {
 			if (!strncmp(id, boolcodes[i], 2)) {
-				if (!VALID_BOOLEAN(cur_term->type.Booleans[i]))
-					return 0;
+				/* setupterm forces invalid booleans to false */
 				return cur_term->type.Booleans[i];
 			}
 		}
@@ -230,8 +229,7 @@ int i;
 			T(("trying %s", strcodes[i]));
 			if (!strncmp(id, strcodes[i], 2)) {
 				T(("found match : %s", _nc_visbuf(cur_term->type.Strings[i])));
-				if (!VALID_STRING(cur_term->type.Strings[i]))
-					return 0;
+				/* setupterm forces cancelled strings to null */
 				return cur_term->type.Strings[i];
 			}
 		}

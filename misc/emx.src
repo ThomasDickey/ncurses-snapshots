@@ -1,4 +1,4 @@
-# $Id: emx.src,v 1.4 1998/02/01 00:03:44 tom Exp $
+# $Id: emx.src,v 1.5 1998/09/26 23:59:12 tom Exp $
 # This is a reformatted copy of the terminfo source for OS/2 EMX from
 # Juan Jose Garcia Ripoll <worm@arrakis.es>.
 # http://www.arrakis.es/~worm/
@@ -295,6 +295,7 @@ emx-base|DOS special keys,
 ansi|ANSI.SYS color,
 	blink=\E[5m,
 	bold=\E[1m,
+	kmous=\E[M,
 	rev=\E[7m,
 	rmcup=\E[0m,
 	rmso=\E[0m,

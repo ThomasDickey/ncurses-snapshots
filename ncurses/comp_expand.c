@@ -35,7 +35,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_expand.c,v 1.8 1998/08/15 23:01:54 tom Exp $")
+MODULE_ID("$Id: comp_expand.c,v 1.9 1998/09/26 13:41:40 tom Exp $")
 
 static int trailing_spaces(const char *src)
 {
@@ -49,7 +49,7 @@ static int trailing_spaces(const char *src)
 #define REALCTL(s) (CHAR_OF(s) < 127 && iscntrl(CHAR_OF(s)))
 #define REALPRINT(s) (CHAR_OF(s) < 127 && isprint(CHAR_OF(s)))
 
-char *_nc_tic_expand(const char *srcp, bool tic_format)
+char *_nc_tic_expand(const char *srcp, bool tic_format, bool numbers)
 {
 static char *	buffer;
 static size_t	length;
@@ -70,7 +70,52 @@ int		ch;
 	while ((ch = (*str & 0xff)) != 0) {
 		if (ch == '%' && REALPRINT(str+1)) {
 			buffer[bufp++] = *str++;
-			buffer[bufp++] = *str;
+			/*
+			 * Though the character literals are more compact, most
+			 * terminal descriptions use numbers and are not easy
+			 * to read in character-literal form.  This is the
+			 * default option for tic/infocmp.
+			 */
+			if (numbers
+			 && str[0] == S_QUOTE
+			 && str[1] != '\\'
+			 && REALPRINT(str+1)
+			 && str[2] == S_QUOTE) {
+				sprintf(buffer+bufp, "{%d}", str[1]);
+				bufp += strlen(buffer+bufp);
+				str += 2;
+			}
+			/*
+			 * If we have a "%{number}", try to translate it into
+			 * a "%'char'" form, since that will run a little faster
+			 * when we're interpreting it.  Also, having one form
+			 * for the constant makes it simpler to compare terminal
+			 * descriptions.
+			 */
+			else if (!numbers
+			 && str[0] == L_BRACE
+			 && isdigit(str[1])) {
+				char *dst = 0;
+				long value = strtol(str+1, &dst, 0);
+				if (dst != 0
+				 && *dst == R_BRACE
+				 && value < 127
+				 && value != '\\'	/* FIXME */
+				 && isprint((int)value)) {
+					ch = (int)value;
+					buffer[bufp++] = S_QUOTE;
+					if (ch == '\\'
+					 || ch == S_QUOTE)
+						buffer[bufp++] = '\\';
+					buffer[bufp++] = ch;
+					buffer[bufp++] = S_QUOTE;
+					str = dst;
+				} else {
+					buffer[bufp++] = *str;
+				}
+			} else {
+				buffer[bufp++] = *str;
+			}
 		}
 		else if (ch == 128) {
 			buffer[bufp++] = '\\';

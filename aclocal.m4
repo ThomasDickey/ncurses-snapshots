@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.144 1998/08/22 23:59:10 tom Exp $
+dnl $Id: aclocal.m4,v 1.145 1998/09/26 20:45:09 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -397,6 +397,40 @@ done
 AC_MSG_RESULT($cf_result)
 CXXFLAGS="$cf_save_CXXFLAGS"
 ])
+dnl ---------------------------------------------------------------------------
+dnl Check for memmove, or a bcopy that can handle overlapping copy.  If neither
+dnl is found, add our own version of memmove to the list of objects.
+AC_DEFUN([CF_FUNC_MEMMOVE],
+[
+if test ".$ac_cv_func_memmove" != .yes ; then
+	if test ".$ac_cv_func_bcopy" = ".yes" ; then
+		AC_MSG_CHECKING(if bcopy does overlapping moves)
+		AC_CACHE_VAL(cf_cv_good_bcopy,[
+			AC_TRY_RUN([
+int main() {
+	static char data[] = "abcdefghijklmnopqrstuwwxyz";
+	char temp[40];
+	bcopy(data, temp, sizeof(data));
+	bcopy(temp+10, temp, 15);
+	bcopy(temp+5, temp+15, 10);
+	exit (strcmp(temp, "klmnopqrstuwwxypqrstuwwxyz"));
+}
+		],
+		[cf_cv_good_bcopy=yes],
+		[cf_cv_good_bcopy=no],
+		[cf_cv_good_bcopy=unknown])
+		])
+		AC_MSG_RESULT($cf_cv_good_bcopy)
+	else
+		cf_cv_good_bcopy=no
+	fi
+	if test $cf_cv_good_bcopy = yes ; then
+		AC_DEFINE(USE_OK_BCOPY)
+	else
+		AC_DEFINE(USE_MY_MEMMOVE)
+	fi
+fi
+])dnl
 dnl ---------------------------------------------------------------------------
 dnl Test for availability of useful gcc __attribute__ directives to quiet
 dnl compiler warnings.  Though useful, not all are supported -- and contrary
@@ -986,6 +1020,99 @@ AC_MSG_RESULT($cf_cv_makeflags)
 AC_SUBST(cf_cv_makeflags)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Option to allow user to override automatic configuration of manpage format.
+dnl There are several special cases.
+AC_DEFUN([CF_MANPAGE_FORMAT],
+[ AC_MSG_CHECKING(format of man-pages)
+
+AC_ARG_WITH(manpage-format,
+	[  --with-manpage-format   specify manpage-format: gzip/compress/BSDI/normal and
+                          optionally formatted, e.g., gzip,formatted],
+	[cf_manpage_form=$withval],
+	[cf_manpage_form=unknown])
+
+case ".$cf_manpage_form" in
+.gzip|.compress|.BSDI|.normal|.formatted) # (vi
+  ;;
+.unknown|.) # (vi
+  if test -z "$MANPATH" ; then
+    MANPATH="/usr/man:/usr/share/man"
+  fi
+  # look for the 'date' man-page (it's most likely to be installed!)
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
+  cf_manpage_form=unknown
+  for cf_dir in $MANPATH; do
+    test -z "$cf_dir" && cf_dir=/usr/man
+changequote({{,}})dnl
+    for cf_name in $cf_dir/*/date.[01]* $cf_dir/*/date
+changequote([,])dnl
+    do
+       cf_test=`echo $cf_name | sed -e 's/*//'`
+       if test "x$cf_test" = "x$cf_name" ; then
+	  case "$cf_name" in
+	  *.gz) cf_manpage_form=gzip;;
+	  *.Z)  cf_manpage_form=compress;;
+	  *.0)	cf_manpage_form=BSDI,formatted;;
+	  *)    cf_manpage_form=normal;;
+	  esac
+	  break
+       fi
+    done
+    if test "$cf_manpage_form" != "unknown" ; then
+       break
+    fi
+  done
+  IFS="$ac_save_ifs"
+  ;;
+.*) # (vi
+  AC_MSG_WARN(Unexpected manpage-format)
+  ;;
+esac
+
+AC_MSG_RESULT($cf_manpage_form)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl The Debian people have their own naming convention for manpages.  This
+dnl option lets us override the name of the file containing renaming, or
+dnl disable it altogether.
+AC_DEFUN([CF_MANPAGE_RENAMES],
+[
+AC_MSG_CHECKING(for manpage renaming)
+
+AC_ARG_WITH(manpage-renames,
+	[  --with-manpage-renames  specify manpage-renaming],
+	[cf_manpage_renames=$withval],
+	[cf_manpage_renames=yes])
+
+case ".$cf_manpage_renames" in #(vi
+.no) #(vi
+  ;;
+.|.yes)
+  # Debian 'man' program?
+  if test -f /etc/debian_version ; then
+    cf_manpage_renames=`cd $srcdir && pwd`/man/man_db.renames
+  else
+    cf_manpage_renames=no
+  fi
+  ;;
+esac
+
+if test "$cf_manpage_renames" != no ; then
+  if test ! -f $cf_manpage_renames ; then
+    AC_MSG_ERROR(not a filename: $cf_manpage_renames)
+  fi
+
+  test ! -d man && mkdir man
+
+  # Construct a sed-script to perform renaming within man-pages
+  if test -n "$cf_manpage_renames" ; then
+    $srcdir/man/make_sed.sh $cf_manpage_renames >man/edit_man.sed
+  fi
+fi
+
+AC_MSG_RESULT($cf_manpage_renames)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Try to determine if the man-pages on the system are compressed, and if
 dnl so, what format is used.  Use this information to construct a script that
 dnl will install man-pages.
@@ -1108,99 +1235,6 @@ CF_EOF
 changequote([,])dnl
 chmod 755 man/edit_man.sh
 
-])dnl
-dnl ---------------------------------------------------------------------------
-dnl Option to allow user to override automatic configuration of manpage format.
-dnl There are several special cases.
-AC_DEFUN([CF_MANPAGE_FORMAT],
-[ AC_MSG_CHECKING(format of man-pages)
-
-AC_ARG_WITH(manpage-format,
-	[  --with-manpage-format   specify manpage-format: gzip/compress/BSDI/normal and
-                          optionally formatted, e.g., gzip,formatted],
-	[cf_manpage_form=$withval],
-	[cf_manpage_form=unknown])
-
-case ".$cf_manpage_form" in
-.gzip|.compress|.BSDI|.normal|.formatted) # (vi
-  ;;
-.unknown|.) # (vi
-  if test -z "$MANPATH" ; then
-    MANPATH="/usr/man:/usr/share/man"
-  fi
-  # look for the 'date' man-page (it's most likely to be installed!)
-  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
-  cf_manpage_form=unknown
-  for cf_dir in $MANPATH; do
-    test -z "$cf_dir" && cf_dir=/usr/man
-changequote({{,}})dnl
-    for cf_name in $cf_dir/*/date.[01]* $cf_dir/*/date
-changequote([,])dnl
-    do
-       cf_test=`echo $cf_name | sed -e 's/*//'`
-       if test "x$cf_test" = "x$cf_name" ; then
-	  case "$cf_name" in
-	  *.gz) cf_manpage_form=gzip;;
-	  *.Z)  cf_manpage_form=compress;;
-	  *.0)	cf_manpage_form=BSDI,formatted;;
-	  *)    cf_manpage_form=normal;;
-	  esac
-	  break
-       fi
-    done
-    if test "$cf_manpage_form" != "unknown" ; then
-       break
-    fi
-  done
-  IFS="$ac_save_ifs"
-  ;;
-.*) # (vi
-  AC_MSG_WARN(Unexpected manpage-format)
-  ;;
-esac
-
-AC_MSG_RESULT($cf_manpage_form)
-])dnl
-dnl ---------------------------------------------------------------------------
-dnl The Debian people have their own naming convention for manpages.  This
-dnl option lets us override the name of the file containing renaming, or
-dnl disable it altogether.
-AC_DEFUN([CF_MANPAGE_RENAMES],
-[
-AC_MSG_CHECKING(for manpage renaming)
-
-AC_ARG_WITH(manpage-renames,
-	[  --with-manpage-renames  specify manpage-renaming],
-	[cf_manpage_renames=$withval],
-	[cf_manpage_renames=yes])
-
-case ".$cf_manpage_renames" in #(vi
-.no) #(vi
-  ;;
-.|.yes)
-  # Debian 'man' program?
-  if test -f /etc/debian_version ; then
-    cf_manpage_renames=`cd $srcdir && pwd`/man/man_db.renames
-  else
-    cf_manpage_renames=no
-  fi
-  ;;
-esac
-
-if test "$cf_manpage_renames" != no ; then
-  if test ! -f $cf_manpage_renames ; then
-    AC_MSG_ERROR(not a filename: $cf_manpage_renames)
-  fi
-
-  test ! -d man && mkdir man
-
-  # Construct a sed-script to perform renaming within man-pages
-  if test -n "$cf_manpage_renames" ; then
-    $srcdir/man/make_sed.sh $cf_manpage_renames >man/edit_man.sed
-  fi
-fi
-
-AC_MSG_RESULT($cf_manpage_renames)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Compute the object-directory name from the given model name

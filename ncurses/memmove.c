@@ -26,33 +26,40 @@
  * authorization.                                                           *
  ****************************************************************************/
 
+#include <curses.priv.h>
+
+MODULE_ID("$Id: memmove.c,v 1.1 1998/09/26 21:08:23 tom Exp $")
+
 /****************************************************************************
- *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
- *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *  Author: Thomas E. Dickey <dickey@clark.net> 1998                        *
  ****************************************************************************/
 
-
-/*
- * clear.c --  clears the terminal's screen
- */
-
-#include <progs.priv.h>
-
-#include <curses.h>
-
-MODULE_ID("$Id: clear.c,v 1.8 1998/09/26 11:42:50 tom Exp $")
-
-static int putch(int c)
+#if USE_MY_MEMMOVE
+#define DST ((char *)s1)
+#define SRC ((const char *)s2)
+void * _nc_memmove(void * s1, const void * s2, size_t n)
 {
-	return putchar(c);
+	if (n != 0) {
+		if ((DST+n > SRC) && (SRC+n > DST)) {
+			static	char	*bfr;
+			static	size_t	length;
+			register size_t	j;
+			if (length < n) {
+				length = (n * 3) / 2;
+				bfr = (bfr != 0)
+					? (char *)realloc(bfr, length)
+					: (char *)malloc(length);
+			}
+			for (j = 0; j < n; j++)
+				bfr[j] = SRC[j];
+			SRC = bfr;
+		}
+		while (n-- != 0)
+			DST[n] = SRC[n];
+	}
+	return s1;
 }
-
-int main(
-	int argc GCC_UNUSED,
-	char *argv[] GCC_UNUSED)
-{
-	setupterm((char *) 0, STDOUT_FILENO, (int *) 0);
-	return (tputs(clear_screen, lines > 0 ? lines : 1, putch) == ERR)
-		? EXIT_FAILURE
-		: EXIT_SUCCESS;
-}
+#else
+extern void _nc_memmove(void);	/* quiet's gcc warning */
+void _nc_memmove(void) { } /* nonempty for strict ANSI compilers */
+#endif /* USE_MY_MEMMOVE */

@@ -638,6 +638,7 @@
 ./ncurses/lib_window.c
 ./ncurses/llib-lncurses
 ./ncurses/make_keys.c
+./ncurses/memmove.c
 ./ncurses/modules
 ./ncurses/name_match.c
 ./ncurses/nc_panel.c

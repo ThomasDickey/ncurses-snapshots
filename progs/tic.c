@@ -42,7 +42,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.31 1998/09/19 16:23:10 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.36 1998/09/26 16:01:30 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -64,6 +64,7 @@ static void usage(void)
 	"  -T         remove size-restrictions on compiled description",
 	"  -c         check only, validate input without compiling or translating",
 	"  -f         format complex strings for readability",
+	"  -g         format %'char' to %{number}",
 	"  -e<names>  translate/compile only entries named by comma-separated list",
 	"  -o<dir>    set output directory for compiled entry writes",
 	"  -r         force resolution of all use entries in source translation",
@@ -80,6 +81,59 @@ static void usage(void)
 	for (j = 0; j < sizeof(tbl)/sizeof(tbl[0]); j++)
 		puts(tbl[j]);
 	exit(EXIT_FAILURE);
+}
+
+#define L_BRACE '{'
+#define R_BRACE '}'
+#define S_QUOTE '\'';
+
+static void write_it(ENTRY *ep)
+{
+	unsigned n;
+	int ch;
+	char *s, *d, *t;
+	char result[MAX_ENTRY_SIZE];
+
+	/*
+	 * Look for strings that contain %{number}, convert them to %'char',
+	 * which is shorter and runs a little faster.
+	 */
+	for (n = 0; n < STRCOUNT; n++) {
+		s = ep->tterm.Strings[n];
+		if (VALID_STRING(s)
+		 && strchr(s, L_BRACE) != 0) {
+			d = result;
+			t = s;
+			while ((ch = *t++) != 0) {
+				*d++ = ch;
+				if (ch == '\\') {
+					*d++ = *t++;
+				} else if ((ch == '%')
+				 && (*t == L_BRACE)) {
+					char *v = 0;
+					long value = strtol(t+1, &v, 0);
+					if (v != 0
+					 && *v == R_BRACE
+					 && value > 0
+					 && value != '\\'	/* FIXME */
+					 && value < 127
+					 && isprint((int)value)) {
+						*d++ = S_QUOTE;
+						*d++ = (int)value;
+						*d++ = S_QUOTE;
+						t = (v + 1);
+					}
+				}
+			}
+			*d = 0;
+			if (strlen(result) < strlen(s))
+				strcpy(s, result);
+		}
+	}
+
+	_nc_set_type(_nc_first_name(ep->tterm.term_names));
+	_nc_curr_line = ep->startline;
+	_nc_write_entry(&ep->tterm);
 }
 
 static bool immedhook(ENTRY *ep)
@@ -123,9 +177,7 @@ static bool immedhook(ENTRY *ep)
     {
 	int	oldline = _nc_curr_line;
 
-	_nc_set_type(_nc_first_name(ep->tterm.term_names));
-	_nc_curr_line = ep->startline;
-	_nc_write_entry(&ep->tterm);
+	write_it(ep);
 	_nc_curr_line = oldline;
 	free(ep->tterm.str_table);
 	return(TRUE);
@@ -307,6 +359,7 @@ int	sortmode = S_TERMINFO;	/* sort_mode */
 
 int	width = 60;
 bool	formatted = FALSE;	/* reformat complex strings? */
+bool	numbers = TRUE;		/* format "%'char'" to "%{number}" */
 bool	infodump = FALSE;	/* running as captoinfo? */
 bool	capdump = FALSE;	/* running as infotocap? */
 bool	forceresolve = FALSE;	/* force resolution */
@@ -332,7 +385,7 @@ bool	check_only = FALSE;
 	 * design decision to allow the numeric values for -w, -v options to
 	 * be optional.
 	 */
-	while ((this_opt = getopt(argc, argv, "0123456789CILNR:TVce:fo:rsvw")) != EOF) {
+	while ((this_opt = getopt(argc, argv, "0123456789CILNR:TVce:fgo:rsvw")) != EOF) {
 		if (isdigit(this_opt)) {
 			switch (last_opt) {
 			case 'v':
@@ -385,6 +438,9 @@ bool	check_only = FALSE;
 			break;
 		case 'f':
 			formatted = TRUE;
+			break;
+		case 'g':
+			numbers = FALSE;
 			break;
 		case 'o':
 			outdir = optarg;
@@ -498,7 +554,7 @@ bool	check_only = FALSE;
 	    {
 		if (matches(namelst, qp->tterm.term_names))
 		{
-		    int	len = fmt_entry(&qp->tterm, NULL, TRUE, infodump);
+		    int	len = fmt_entry(&qp->tterm, NULL, TRUE, infodump, numbers);
 
 		    if (len>(infodump?MAX_TERMINFO_LENGTH:MAX_TERMCAP_LENGTH))
 			    (void) fprintf(stderr,
@@ -517,11 +573,7 @@ bool	check_only = FALSE;
 		_nc_set_writedir(outdir);
 		for_entry_list(qp)
 		    if (matches(namelst, qp->tterm.term_names))
-		    {
-			_nc_set_type(_nc_first_name(qp->tterm.term_names));
-			_nc_curr_line = qp->startline;
-			_nc_write_entry(&qp->tterm);
-		    }
+			write_it(qp);
 	    }
 	    else
 	    {
@@ -544,7 +596,7 @@ bool	check_only = FALSE;
 			    else
 				put_translate(getchar());
 
-			len = dump_entry(&qp->tterm, limited, NULL);
+			len = dump_entry(&qp->tterm, limited, numbers, NULL);
 			for (j = 0; j < qp->nuses; j++)
 			    len += dump_uses((char *)(qp->uses[j].parent), infodump);
 			(void) putchar('\n');

@@ -42,7 +42,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.35 1998/03/28 17:50:31 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.37 1998/09/26 13:57:53 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -65,6 +65,7 @@ static TERMTYPE term[MAXTERMS];	/* terminfo entries */
 static int termcount;		/* count of terminal entries */
 
 static const char *tversion;	/* terminfo version selected */
+static bool numbers = TRUE;	/* format "%'char'" to "%{number}" */
 static int outform;		/* output format */
 static int sortmode;		/* sort_mode */
 static int itrace;		/* trace flag for debugging */
@@ -220,6 +221,8 @@ static bool entryeq(TERMTYPE *t1, TERMTYPE *t2)
     return(TRUE);
 }
 
+#define TIC_EXPAND(result) _nc_tic_expand(result, outform==F_TERMINFO, numbers)
+
 static void compare_predicate(int type, int idx, const char *name)
 /* predicate function to use for entry difference reports */
 {
@@ -289,7 +292,7 @@ static void compare_predicate(int type, int idx, const char *name)
 				else
 				{
 					(void) strcpy(buf1, "'");
-					(void) strcat(buf1, _nc_tic_expand(s1, outform==F_TERMINFO));
+					(void) strcat(buf1, TIC_EXPAND(s1));
 					(void) strcat(buf1, "'");
 				}
 
@@ -298,18 +301,19 @@ static void compare_predicate(int type, int idx, const char *name)
 				else
 				{
 					(void) strcpy(buf2, "'");
-					(void) strcat(buf2, _nc_tic_expand(s2, outform==F_TERMINFO));
+					(void) strcat(buf2, TIC_EXPAND(s2));
 					(void) strcat(buf2, "'");
 				}
 
-				(void) printf("\t%s: %s, %s.\n",
-					      name, buf1, buf2);
+				if (strcmp(buf1, buf2))
+					(void) printf("\t%s: %s, %s.\n",
+						      name, buf1, buf2);
 			}
 			break;
 
 		case C_COMMON:
 			if (s1 && s2 && !capcmp(s1, s2))
-				(void) printf("\t%s= '%s'.\n", name, _nc_tic_expand(s1, outform==F_TERMINFO));
+				(void) printf("\t%s= '%s'.\n", name, TIC_EXPAND(s1));
 			break;
 
 		case C_NAND:
@@ -580,7 +584,7 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 	    /* couldn't match anything */
 	    buf2[0] = *sp;
 	    buf2[1] = '\0';
-	    (void) strcat(buf, _nc_tic_expand(buf2, outform==F_TERMINFO));
+	    (void) strcat(buf, TIC_EXPAND(buf2));
 	}
     }
     (void) printf("%s\n", buf);
@@ -794,6 +798,7 @@ static void usage(void)
 	    ,"  -d    list different capabilities"
 	    ,"  -e    format output as C initializer"
 	    ,"  -f    with -1, format complex strings"
+	    ,"  -g    format %'char' to %{number}"
 	    ,"  -i    analyze initialization/reset"
 	    ,"  -l    output terminfo names"
 	    ,"  -n    list capabilities in neither"
@@ -848,7 +853,7 @@ int main(int argc, char *argv[])
 	/* where is the terminfo database location going to default to? */
 	restdir = firstdir = 0;
 
-	while ((c = getopt(argc, argv, "decCfFIinlLprR:s:uv:Vw:A:B:1T")) != EOF)
+	while ((c = getopt(argc, argv, "decCfFgIinlLprR:s:uv:Vw:A:B:1T")) != EOF)
 		switch (c)
 		{
 		case 'd':
@@ -872,6 +877,10 @@ int main(int argc, char *argv[])
 
 		case 'f':
 			formatted = TRUE;
+			break;
+
+		case 'g':
+			numbers = FALSE;
 			break;
 
 		case 'F':
@@ -1173,7 +1182,7 @@ int main(int argc, char *argv[])
 				   tname[0]);
 		(void) printf("#\tReconstructed via infocmp from file: %s\n",
 			      tfile[0]);
-		len = dump_entry(&term[0], limited, NULL);
+		len = dump_entry(&term[0], limited, numbers, NULL);
 		putchar('\n');
 		if (itrace)
 		    (void)fprintf(stderr, "infocmp: length %d\n", len);
@@ -1205,7 +1214,7 @@ int main(int argc, char *argv[])
 	    case C_USEALL:
 		if (itrace)
 		    (void) fprintf(stderr, "infocmp: dumping use entry\n");
-		len = dump_entry(&term[0], limited, use_predicate);
+		len = dump_entry(&term[0], limited, numbers, use_predicate);
 		for (i = 1; i < termcount; i++)
 		    len += dump_uses(tname[i], !(outform==F_TERMCAP || outform==F_TCONVERR));
 		putchar('\n');

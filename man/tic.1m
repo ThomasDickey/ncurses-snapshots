@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.21 1998/05/17 00:23:46 tom Exp $
+.\" $Id: tic.1m,v 1.22 1998/09/26 13:49:12 tom Exp $
 .TH tic 1M ""
 .ds n 5
 .ds d @DATADIR@/terminfo
@@ -156,6 +156,10 @@ contains a '/'.
 Display complex terminfo strings which contain if/then/else/endif expressions
 indented for readability.
 .TP
+\fB-g\fR
+Display constant character literals in quoted form
+rather than their decimal equivalents.
+.TP
 \fB-s\fR
 Summarize the compile by showing the directory into which entries
 are written, and the number of entries which are compiled.
@@ -238,7 +242,19 @@ compiled entries.
 The error messages from this \fBtic\fR have the same format as GNU C
 error messages, and can be parsed by GNU Emacs's compile facility.
 
-The -o, -I, -C, -N, -R, -e, -f, -T, -r and -s options
+The
+\fB-o\fR,
+\fB-I\fR,
+\fB-C\fR,
+\fB-N\fR,
+\fB-R\fR,
+\fB-e\fR,
+\fB-f\fR,
+\fB-g\fR,
+\fB-T\fR,
+\fB-r and
+\fB-s\fR
+options
 are not supported under SVr4.
 The SVr4 -c mode does not report bad use links.
 
