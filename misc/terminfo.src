@@ -1875,7 +1875,7 @@ xterm-xf86-v32|xterm terminal emulator (X Window System),
 # Once XFree86 3.2 is established, we'll switch this to use=xterm-xf86-v32
 xterm|vs100|xterms|xterm terminal emulator (X Window System), 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~..--++\,\,II00, 
-	u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
+	kmous=\E[M, u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
 	use=xterm-r6, 
 
 # These entries allow access to the X titlebar and icon name as a status line. 

@@ -2,6 +2,12 @@
 
 glibc_nc_srcdir=${srcdir}/ncurses
 
+NCURSES_MAJOR="`egrep '^NCURSES_MAJOR[ 	]*=' $glibc_nc_srcdir/dist.mk | sed -e 's/^[^0-9]*//'`"
+NCURSES_MINOR="`egrep '^NCURSES_MINOR[ 	]*=' $glibc_nc_srcdir/dist.mk | sed -e 's/^[^0-9]*//'`"
+NCURSES_PATCH="`egrep '^NCURSES_PATCH[ 	]*=' $glibc_nc_srcdir/dist.mk | sed -e 's/^[^0-9]*//'`"
+nc_cv_abi_version=${NCURSES_MAJOR}
+nc_cv_rel_version=${NCURSES_MAJOR}.${NCURSES_MINOR}
+
 rm -f ncurses/codes.c \
 	ncurses/comp_captab.c \
 	ncurses/curses.h \
@@ -33,19 +39,19 @@ rm -f ncurses/codes.c \
 
 # Protect against being on the right side of a sed subst in config.status.
 sed 's/%@/@@/; s/@%/@@/; s/%g$/@g/; /@g$/s/[\\&%]/\\&/g;
- s/@@/%@/; s/@@/@%/; s/@g$/%g/' > conftest.subs <<\CEOF
+ s/@@/%@/; s/@@/@%/; s/@g$/%g/' > conftest.subs <<EOF
 
 
 s%@DEFS@% -DSYSTEM_NAME=\"Linux\ (glibc\ 2)\" -DPURE_TERMINFO=1 -DGCC_SCANF=1 -DGCC_PRINTF=1 -DGCC_UNUSED=__attribute__\(\(unused\)\) -DGCC_NORETURN=__attribute__\(\(noreturn\)\) -DHAVE_NC_ALLOC_H=1 -DHAVE_GETTIMEOFDAY=1 -DSTDC_HEADERS=1 -DHAVE_DIRENT_H=1 -DHAVE_REGEX_H=1 -DHAVE_FCNTL_H=1 -DHAVE_GETOPT_H=1 -DHAVE_LIMITS_H=1 -DHAVE_LOCALE_H=1 -DHAVE_SYS_IOCTL_H=1 -DHAVE_SYS_PARAM_H=1 -DHAVE_POLL_H=1 -DHAVE_SYS_SELECT_H=1 -DHAVE_SYS_TIME_H=1 -DHAVE_SYS_TIMES_H=1 -DHAVE_TERMIO_H=1 -DHAVE_TERMIOS_H=1 -DHAVE_TTYENT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_VALUES_H=1 -DCC_HAS_INLINE_FUNCS=1 -DHAVE_EXTERN_ERRNO=1 -DHAVE_EXTERN_SYS_ERRLIST=1 -DHAVE_GETTTYNAM=1 -DHAVE_MEMCCPY=1 -DHAVE_POLL=1 -DHAVE_SELECT=1 -DHAVE_SETBUF=1 -DHAVE_SETBUFFER=1 -DHAVE_SETVBUF=1 -DHAVE_SIGACTION=1 -DHAVE_SIGVEC=1 -DHAVE_STRDUP=1 -DHAVE_TCGETATTR=1 -DHAVE_TIMES=1 -DHAVE_USLEEP=1 -DHAVE_VFSCANF=1 -DHAVE_VSSCANF=1 -DRETSIGTYPE=void -DGOOD_SELECT=1 -DHAVE_BUILTIN_H=1 -DHAVE_TYPEINFO=1 -DHAVE_PANEL_H=1 -DHAVE_LIBPANEL=1 -DHAVE_MENU_H=1 -DHAVE_LIBMENU=1 -DHAVE_FORM_H=1 -DHAVE_LIBFORM=1 %g
-s%@NCURSES_MAJOR@%4%g
-s%@NCURSES_MINOR@%1%g
-s%@NCURSES_PATCH@%970505%g
-s%@nc_cv_rel_version@%4.1%g
-s%@nc_cv_abi_version@%4%g
+s%@NCURSES_MAJOR@%$NCURSES_MAJOR%g
+s%@NCURSES_MINOR@%$NCURSES_MINOR%g
+s%@NCURSES_PATCH@%$NCURSES_PATCH%g
+s%@nc_cv_rel_version@%$nc_cv_rel_version%g
+s%@nc_cv_abi_version@%$nc_cv_abi_version%g
 s%@nc_cv_builtin_bool@%1%g
 s%@nc_cv_type_of_bool@%char%g
 
-CEOF
+EOF
 
 # Split the substitutions into bite-sized pieces for seds with
 # small command number limits, like on Digital OSF/1 and HP-UX.
