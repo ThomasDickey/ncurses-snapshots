@@ -1,7 +1,7 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
 #	Version 10.2.1
-#	$Date: 1998/05/16 19:43:24 $
+#	$Date: 1998/05/16 19:59:08 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2183,10 +2183,9 @@ color_xterm|cx|cx100|color_xterm color terminal emulator for X,
 # SGR 39 or 49.  SGR 0 does reset colors (along with everything else).  This
 # description is "compatible" with color_xterm, rxvt and XFree86 xterm, except
 # that each of those implements the home, end, delete keys differently.
-nxterm|xterm-color|generic color xterm,
-	use=xterm-r6,
-	use=klone+color,
-	op=\E[m,
+nxterm|xterm-color|generic color xterm, 
+	op=\E[m, use=xterm-r6, 
+	use=klone+color, 
 
 # From: Thomas Dickey <dickey@clark.net> 04 Oct 1997
 # Updated: Oezguer Kesim <kesim@math.fu-berlin.de> 02 Nov 1997
@@ -2229,8 +2228,8 @@ rxvt-basic|rxvt terminal base (X Window System),
 	kf4=\E[14~, kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, 
 	kf9=\E[20~, kfnd=\E[1~, khome=\E[7~, kich1=\E[2~, 
 	kmous=\E[M, knp=\E[6~, kpp=\E[5~, kslt=\E[4~, rc=\E8, 
-	rev=\E[7m, ri=\EM, rmacs=^O, rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, 
-	rmkx=\E>, rmso=\E[27m, rmul=\E[24m, 
+	rev=\E[7m, ri=\EM, rmacs=^O, rmcup=\E[2J\E[?47l\E8, 
+	rmir=\E[4l, rmkx=\E>, rmso=\E[27m, rmul=\E[24m, 
 	rs1=\E>\E[1;3;4;5;6l\E[?7h\E[m\E[r\E[2J\E[H, 
 	rs2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l\E>, 
 	s0ds=\E(B, s1ds=\E(0, sc=\E7, sgr0=\E[0m\017, smacs=^N, 
@@ -2319,9 +2318,9 @@ emu|emu native mode,
 	kf7=\EF07, kf8=\EF08, kf9=\EF09, kfnd=\Efind, kich1=\Eins, 
 	knp=\Enext, kpp=\Eprior, kslt=\Esel, oc=\Es0;\Er0;, 
 	rev=\ES\ET, ri=\EF, rmacs=\0, rmir=\EX, rmso=\ES, rmul=\ES, 
-	rs2=\ES\Es0;\Er0;, setab=\Es%i%p1%d;, setaf=\Er%i%p1%d;, 
-	sgr0=\ES, smacs=\0, smir=\EY, smso=\ES\ET, smul=\ES\EV, 
-	tbc=\Ej, 
+	rs2=\ES\Es0;\Er0;, setab=\Es%i%p1%d;, 
+	setaf=\Er%i%p1%d;, sgr0=\ES, smacs=\0, smir=\EY, 
+	smso=\ES\ET, smul=\ES\EV, tbc=\Ej, 
 
 #### MGR
 #

@@ -35,12 +35,12 @@
 #include "cursesapp.h"
 #include "internal.h"
 
-MODULE_ID("$Id: cursslk.cc,v 1.2 1998/02/11 12:13:41 tom Exp $")
+MODULE_ID("$Id: cursslk.cc,v 1.3 1998/05/23 21:31:38 tom Exp $")
 
 void Soft_Label_Key_Set::Soft_Label_Key::operator=(char *text)  {
   delete[] label;
   label = new char[1 + ::strlen(text)];
-  ::strcpy(label,text);
+  (strcpy)(label,text);
 }
 
 long Soft_Label_Key_Set::count      = 0L;

@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.136 1998/05/09 23:06:00 tom Exp $
+dnl $Id: configure.in,v 1.137 1998/05/23 23:23:35 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.136 $)
+AC_REVISION($Revision: 1.137 $)
 AC_INIT(ncurses/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -353,6 +353,22 @@ AC_ARG_WITH(fallbacks,
 AC_MSG_RESULT($with_fallback)
 FALLBACK_LIST=`echo $with_fallback|sed -e 's/,/ /g'`
 AC_SUBST(FALLBACK_LIST)
+
+AC_MSG_CHECKING(for list of terminfo directories)
+AC_ARG_WITH(terminfo-dirs,
+	[  --with-terminfo-dirs=XXX specify list of terminfo directories],
+	[TERMINFO_DIRS=$withval],
+	[TERMINFO_DIRS=
+	 for ac_dir in \
+	 	/usr/lib/terminfo \
+	 	/usr/share/lib/terminfo \
+		/etc/terminfo
+	 do
+	 	test -d $ac_dir && TERMINFO_DIRS="${TERMINFO_DIRS}:${ac_dir}"
+	 done
+	 ])
+AC_MSG_RESULT($TERMINFO_DIRS)
+test -n "$TERMINFO_DIRS" && AC_DEFINE_UNQUOTED(TERMINFO_DIRS,"$TERMINFO_DIRS")
 
 if test $with_database = no ; then
 	if test -z $with_fallback ; then

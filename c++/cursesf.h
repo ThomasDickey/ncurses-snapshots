@@ -31,7 +31,7 @@
  *   Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1997             *
  ****************************************************************************/
 
-// $Id: cursesf.h,v 1.6 1998/02/11 12:13:41 tom Exp $
+// $Id: cursesf.h,v 1.7 1998/05/23 21:31:32 tom Exp $
 
 #ifndef _CURSESF_H
 #define _CURSESF_H
@@ -712,7 +712,7 @@ public:
   Regular_Expression_Field(const char *expr)
     : NCursesFieldType(TYPE_REGEXP) {
       regex = new char[1+::strlen(expr)];
-      strcpy(regex,expr);
+      (strcpy)(regex,expr);
   }
 
   ~Regular_Expression_Field() {
