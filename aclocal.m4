@@ -1,5 +1,5 @@
 dnl*****************************************************************************
-dnl Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                 *
+dnl Copyright 1996,1997,1998 by Thomas E. Dickey <dickey@clark.net>            *
 dnl All Rights Reserved.                                                       *
 dnl                                                                            *
 dnl Permission to use, copy, modify, and distribute this software and its      *
@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.116 1997/12/30 00:07:55 tom Exp $
+dnl $Id: aclocal.m4,v 1.118 1998/01/24 19:03:11 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -81,7 +81,9 @@ main()
 {
 	FILE *fp = fopen("cf_test.out", "w");
 	if (fp != 0) {
-		bool x = false;
+		bool x = true;
+		if ((-x) >= 0)
+			fputs("unsigned ", fp);
 		if (sizeof(x) == sizeof(int))       fputs("int",  fp);
 		else if (sizeof(x) == sizeof(char)) fputs("char", fp);
 		else if (sizeof(x) == sizeof(short))fputs("short",fp);
@@ -97,7 +99,7 @@ main()
 	])
 	rm -f cf_test.out
 AC_MSG_RESULT($cf_cv_type_of_bool)
-if test $cf_cv_type_of_bool = unknown ; then
+if test "$cf_cv_type_of_bool" = unknown ; then
 	AC_MSG_WARN(Assuming unsigned for type of bool)
 	cf_cv_type_of_bool=unsigned
 fi
@@ -130,7 +132,7 @@ AC_MSG_RESULT($prefix)
 
 if test "x$prefix" = "xNONE" ; then
 AC_MSG_CHECKING(for default include-directory)
-test -n "$verbose" && echo 1>&6
+test -n "$verbose" && echo 1>&AC_FD_MSG
 for cf_symbol in \
 	$includedir \
 	$includedir/ncurses \
@@ -145,11 +147,11 @@ do
 	if test -f $cf_dir/curses.h ; then
 	if ( fgrep NCURSES_VERSION $cf_dir/curses.h 2>&1 >/dev/null ) ; then
 		includedir="$cf_symbol"
-		test -n "$verbose"  && echo $ac_n "	found " 1>&6
+		test -n "$verbose"  && echo $ac_n "	found " 1>&AC_FD_MSG
 		break
 	fi
 	fi
-	test -n "$verbose"  && echo "	tested $cf_dir" 1>&6
+	test -n "$verbose"  && echo "	tested $cf_dir" 1>&AC_FD_MSG
 done
 AC_MSG_RESULT($includedir)
 fi
@@ -434,6 +436,19 @@ fi
 AC_SUBST(CPPFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Check if we have either a function or macro for 'isascii()'.
+AC_DEFUN([CF_ISASCII],
+[
+AC_MSG_CHECKING(for isascii)
+AC_CACHE_VAL(cf_cv_have_isascii,[
+	AC_TRY_LINK([#include <ctype.h>],[int x = isascii(' ')],
+	[cf_cv_have_isascii=yes],
+	[cf_cv_have_isascii=no])
+])dnl
+AC_MSG_RESULT($cf_cv_have_isascii)
+test $cf_cv_have_isascii = yes && AC_DEFINE(HAVE_ISASCII)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Append definitions and rules for the given models to the subdirectory
 dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
 dnl subdirectory is a library-source directory, modify the LIBRARIES list in
@@ -649,7 +664,7 @@ CF_EOF
 		echo "		$j" >>$cf_dir/Makefile
 		for i in `cat $srcdir/$cf_dir/headers |fgrep -v "#"`
 		do
-			echo "	@ (cd \$(INSTALL_PREFIX)\$(includedir) && rm -f $i) ; ../headers.sh \$(INSTALL_DATA) \$(INSTALL_PREFIX)\$(includedir) \$(srcdir) $i" >>$cf_dir/Makefile
+			echo "	@ (cd \$(INSTALL_PREFIX)\$(includedir) && rm -f `basename $i`) ; ../headers.sh \$(INSTALL_DATA) \$(INSTALL_PREFIX)\$(includedir) \$(srcdir) $i" >>$cf_dir/Makefile
 			test $i = curses.h && echo "	@ (cd \$(INSTALL_PREFIX)\$(includedir) && rm -f ncurses.h && \$(LN_S) curses.h ncurses.h)" >>$cf_dir/Makefile
 		done
 

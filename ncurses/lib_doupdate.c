@@ -54,9 +54,15 @@
 #endif
 #endif
 
+#ifdef __BEOS__
+/* BeOS select() only works on sockets.  Use the tty hack instead */
+#include <socket.h>
+#define select check_select
+#endif
+
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.96 1998/01/11 23:49:03 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.97 1998/01/20 16:53:50 Fred.Fish Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a

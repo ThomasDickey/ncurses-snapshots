@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.40 1997/12/20 16:00:10 tom Exp $
+# $Id: Makefile.in,v 1.42 1998/01/24 19:40:05 J.J.G.Ripoll Exp $
 ################################################################################
-# Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
+# Copyright 1996,1997,1998 by Thomas E. Dickey <dickey@clark.net>              #
 # All Rights Reserved.                                                         #
 #                                                                              #
 # Permission to use, copy, modify, and distribute this software and its        #
@@ -21,6 +21,8 @@
 # Makefile for ncurses tests.
 
 SHELL		= /bin/sh
+
+x		= @PROG_EXT@
 
 MODEL		= ../@DFT_OBJ_SUBDIR@
 srcdir		= @srcdir@
@@ -46,6 +48,7 @@ CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 REL_VERSION	= @cf_cv_rel_version@
 ABI_VERSION	= @cf_cv_abi_version@
 LOCAL_LIBS	= @TEST_DEPS@
+MATH_LIB	= @MATH_LIB@
 
 LD		= @LD@
 LINK		= $(CC)
@@ -64,67 +67,67 @@ LINT_OPTS	= @LINT_OPTS@
 LINT_LIBS	= -lform -lmenu -lpanel -lncurses @LIBS@
 
 TESTS = \
-	blue \
-	bs \
-	firework \
-	firstlast \
-	gdc \
-	hanoi \
-	hashtest \
-	knight \
-	lrtest \
-	ncurses \
-	newdemo \
-	rain \
-	tclock \
-	testaddch \
-	testcurs \
-	testscanw \
-	view \
-	worm \
-	xmas
+	blue$x \
+	bs$x \
+	firework$x \
+	firstlast$x \
+	gdc$x \
+	hanoi$x \
+	hashtest$x \
+	knight$x \
+	lrtest$x \
+	ncurses$x \
+	newdemo$x \
+	rain$x \
+	tclock$x \
+	testaddch$x \
+	testcurs$x \
+	testscanw$x \
+	view$x \
+	worm$x \
+	xmas$x
 
 all: $(TESTS)
 
 sources:
 
-blue: $(MODEL)/blue.o $(LOCAL_LIBS)
+blue$x: $(MODEL)/blue.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+bs$x: $(MODEL)/bs.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+firework$x: $(MODEL)/firework.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+firstlast$x: $(MODEL)/firstlast.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+gdc$x: $(MODEL)/gdc.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+hanoi$x: $(MODEL)/hanoi.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+hashtest$x: $(MODEL)/hashtest.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+knight$x: $(MODEL)/knight.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+lrtest$x: $(MODEL)/lrtest.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+ncurses$x: $(MODEL)/ncurses.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+newdemo$x: $(MODEL)/newdemo.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+rain$x: $(MODEL)/rain.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT)
+tclock$x: $(MODEL)/tclock.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $< $(LDFLAGS_DEFAULT) $(MATH_LIB)
+testaddch$x: $(MODEL)/testaddch.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-bs: $(MODEL)/bs.o $(LOCAL_LIBS)
+testcurs$x: $(MODEL)/testcurs.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-firework: $(MODEL)/firework.o $(LOCAL_LIBS)
+testscanw$x: $(MODEL)/testscanw.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-firstlast: $(MODEL)/firstlast.o $(LOCAL_LIBS)
+view$x: $(MODEL)/view.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-gdc: $(MODEL)/gdc.o $(LOCAL_LIBS)
+worm$x: $(MODEL)/worm.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-hanoi: $(MODEL)/hanoi.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-hashtest: $(MODEL)/hashtest.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-knight: $(MODEL)/knight.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-lrtest: $(MODEL)/lrtest.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-ncurses: $(MODEL)/ncurses.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-newdemo: $(MODEL)/newdemo.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-rain: $(MODEL)/rain.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-tclock: $(MODEL)/tclock.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT) -lm
-testaddch: $(MODEL)/testaddch.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-testcurs: $(MODEL)/testcurs.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-testscanw: $(MODEL)/testscanw.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-view: $(MODEL)/view.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-worm: $(MODEL)/worm.o $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
-xmas: $(MODEL)/xmas.o $(LOCAL_LIBS)
+xmas$x: $(MODEL)/xmas.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
 
 install:

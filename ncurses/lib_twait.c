@@ -45,7 +45,13 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.26 1997/11/30 01:09:23 tom Exp $")
+#ifdef __BEOS__
+/* BeOS select() only works on sockets.  Use the tty hack instead */
+#include <socket.h>
+#define select check_select
+#endif
+
+MODULE_ID("$Id: lib_twait.c,v 1.27 1998/01/20 16:53:50 Fred.Fish Exp $")
 
 /*
  * We want to define GOOD_SELECT if the last argument of select(2) is

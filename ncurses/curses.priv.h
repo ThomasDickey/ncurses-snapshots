@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.97 1998/01/03 19:57:54 tom Exp $
+ * $Id: curses.priv.h,v 1.98 1998/01/24 20:04:43 tom Exp $
  *
  *	curses.priv.h
  *
@@ -605,7 +605,7 @@ extern int _nc_outch(int);
 extern int _nc_setupscreen(short, short const, FILE *);
 extern int _nc_timed_wait(int, int, int *);
 extern int _nc_waddch_nosync(WINDOW *, const chtype);
-extern void _nc_do_color(int, int (*)(int));
+extern void _nc_do_color(int, bool, int (*)(int));
 extern void _nc_free_and_exit(int);
 extern void _nc_freeall(void);
 extern void _nc_freewin(WINDOW *win);

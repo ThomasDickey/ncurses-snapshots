@@ -19,7 +19,7 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.13 $
+#  $Revision: 1.14 $
 #
 .SUFFIXES:
 
@@ -66,7 +66,7 @@ ada_objdir=../ada_objects
 LD_FLAGS     = @LD_MODEL@ $(LOCAL_LIBS) @LDFLAGS@ @LIBS@ @LOCAL_LDFLAGS2@ $(LDFLAGS)
 
 ADA          = @cf_ada_compiler@
-ADAFLAGS     = @ADAFLAGS@ -gnatn -I$(srcdir)
+ADAFLAGS     = @ADAFLAGS@ -I$(srcdir)
 
 ADAMAKE      = @cf_ada_make@
 ADAMAKEFLAGS = -aI$(srcdir) -aI$(ada_srcdir) -aI$(srcdir)/$(ada_srcdir) -aO$(ada_objdir)

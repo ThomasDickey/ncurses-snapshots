@@ -141,7 +141,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.48 1997/10/25 23:34:11 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.49 1998/01/24 19:45:23 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -913,7 +913,7 @@ int _nc_outch(int ch)
     return OK;
 }
 
-static char	tname[BUFSIZ];
+static char	tname[MAX_ALIAS];
 
 static void load_term(void)
 {
@@ -932,7 +932,7 @@ static int roll(int n)
 
 int main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 {
-    (void) strcpy(tname, getenv("TERM"));
+    (void) strcpy(tname, termname());
     load_term();
     _nc_setupscreen(lines, columns, stdout);
     baudrate();
@@ -968,8 +968,7 @@ int main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 (void) puts("?                -- display this help message");
 (void) puts("fy fx ty tx      -- (4 numbers) display (fy,fx)->(ty,tx) move");
 (void) puts("s[croll] n t b m -- display scrolling sequence");
-(void) printf("r[eload]         -- reload terminal info for %s\n",
-	      getenv("TERM"));
+(void) printf("r[eload]         -- reload terminal info for %s\n", termname());
 (void) puts("l[oad] <term>    -- load terminal info for type <term>");
 (void) puts("d[elete] <cap>   -- delete named capability");
 (void) puts("i[nspect]        -- display terminal capabilities");
@@ -1006,7 +1005,7 @@ int main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 	}
 	else if (buf[0] == 'r')
 	{
-	    (void) strcpy(tname, getenv("TERM"));
+	    (void) strcpy(tname, termname());
 	    load_term();
 	}
 	else if (sscanf(buf, "l %s", tname) == 1)

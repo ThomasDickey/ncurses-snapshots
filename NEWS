@@ -1,31 +1,64 @@
--- $Id: NEWS,v 1.299 1998/01/18 01:42:49 tom Exp $
+-- $Id: NEWS,v 1.302 1998/01/25 02:30:26 tom Exp $
 
-This is a log of changes that ncurses has gone through since Zeyd
-started working with Pavel Curtis' original work, pcurses, in 1992:
+This is a log of changes that ncurses has gone through since Zeyd started
+working with Pavel Curtis' original work, pcurses, in 1992.
+
+Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
+Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980124 
+	+ add f/F/b/B commands to ncurses 'b' test to toggle colors, providing
+	  test for no_color_video.
+	+ adjusted emx.src to use no_color_video, now works with ncurses 'b'
+	  and 'k' tests.
+	+ implement no_color_video attribute, and as a special case, reverse
+	  colors when the reverse attribute cannot be combined with color.
+	+ check for empty string in $TERM variable (reported by Brett Michaels
+	  <brett@xylan.com>).
+	> from reports by Fred Fish:
+	+ add configure-test for isascii
+	+ add configure-test for -lm library.
+	+ modify CF_BOOL_SIZE to check if C++ bool types are unsigned.
+	> patches by J.J.G.Ripoll
+	+ add configure/makefile variables to support .exe extension on
+	  OS/2 EMX (requires additional autoconf patches).
+	+ explicitly initialize variables in lib_data.c to appease OS/2 linker
+	> patches by Fred Fish <fnf@ninemoons.com>
+	+ misc/Makefile.in (install.data):  Avoid trying to install the CVS
+	  directory.
+	+ aclocal.m4 (install.includes):  Remove files in the include directory
+	  where we are going to install new ones, not the original source
+	  files.
+	+ misc/terminfo.src:  Add entry for "beterm", derived from termcap
+	  distributed with BeOS PR2 using captoinfo.
+	+ aclocal.m4: Wrap $cf_cv_type_of_bool with quotes (contains space)
+	+ aclocal.m4: Assume bool types are unsigned.
+	+ progs/infocmp.c: workaround mwcc 32k function data limit
 
 980117
-	+ correct initialization of color-pair (from 970524) in xmas.c,
-	  which was using only one color-pair for all colors.
+	+ correct initialization of color-pair (from 970524) in xmas.c, which
+	  was using only one color-pair for all colors (reported by
+	  J.J.G.Ripoll).
 	+ add multithread options for objects build on EMX, for compatibility
 	  with XFree86.
 	+ split up an expression in MKlib_gen.sh to work around a problem on
-	  OS/2 EMX, with 'ash' (Juan Jose Garcia Ripoll).
-	+ change terminfo entries xterm (xterm-xf86-v40), xterm-8bit rs1 to
-	  use hard reset.
+	  OS/2 EMX, with 'ash' (patch by J.J.G.Ripoll).
+	+ change terminfo entries xterm (xterm-xf86-v40), xterm-8bit rs1 to use
+	  hard reset.
 	+ rename terminfo entry xterm-xf86-v39t to xterm-xf86-v40
 	+ remove bold/underline from sun console entries since they're not
 	  implemented.
-	+ correct _tracef calls in _tracedump(), which did not separate
-	  format from parameters.
+	+ correct _tracef calls in _tracedump(), which did not separate format
+	  from parameters.
 	+ correct getopt string for tic "-o" option, and add it to man-page
 	  synopsis (reported by Darren Hiebert <darren@hmi.com>).
-	+ correct typo in panel/Makefile.in, reversed if-statement in
-	  scrolling optimization (Alexander V. Lukyanov).
-	+ test for 'remove()', use 'unlink() if not found (patch by Philippe
-	  De Muyter <phdm@macqel.be>).
+	+ correct typo in panel/Makefile.in, reversed if-statement in scrolling
+	  optimization (Alexander V.  Lukyanov).
+	+ test for 'remove()', use 'unlink() if not found (patch by Philippe De
+	  Muyter <phdm@macqel.be>).
 	> patches by Juergen Pfeifer:
 	+ Improve a feature of the forms driver.  For invisible fields
-	  (O_VISIBLE off) only the contents but not the attributes are cleared. 
+	  (O_VISIBLE off) only the contents but not the attributes are cleared.
 	  We now clear both.  (Reported by Javier Kohan
 	  <jkohan@adan.fceia.unr.edu.ar>)
 	+ The man page form_field_opts.3x makes now clear, that invisible
@@ -41,18 +74,18 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	  cur_term is null, or if underlying I/O fails.
 	+ amend change to tputs() so that it does not return an error if
 	  cur_term is null, since some applications depend on being able to use
-	  tputs without initializing the terminal (reported by Christian J. 
+	  tputs without initializing the terminal (reported by Christian J.
 	  Robinson <infynity@cyberhighway.net>).
 
 980103
-	+ add a copy of emx.src from Ripoll's OS/2 EMX version of ncurses
+	+ add a copy of emx.src from J.J.G.Ripoll's OS/2 EMX version of ncurses
 	  1.9.9e, together with fixes/additions for the "ansi" terminal type.
 	+ add tic check for save/restore cursor if change_scroll_region is
 	  defined (from O'Reilly book).
 	+ modify read_termcap.c to handle EMX-style pathnames (reported by
-	  Juan Jose Garcia Ripoll).
-	+ modify lib_raw.c to use EMX's setmode (from Juan Jose Garcia Ripoll,
-	  who says EMX's curses does this).
+	  J.J.G.Ripoll).
+	+ modify lib_raw.c to use EMX's setmode (from J.J.G.Ripoll, who says
+	  EMX's curses does this).
 	+ modify _nc_tic_expand() to generate \0 rather than \200.
 	+ move/revise 'expand()' from dump_entry.c to ncurses library as
 	  _nc_tic_expand(), for use by tack.
@@ -71,11 +104,11 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 971227
 	+ modify open/fopen calls to use binary mode, needed for EMX.
 	+ modify configure script to work with autoconf 2.10 mods for OS/2
-	  EMX from Juan Jose Garcia Ripoll.
+	  EMX from J.J.G.Ripoll.
 	+ generated ncurses_cfg.h with patch (971222) to autoconf 2.12 which
 	  bypasses limited sed buffer length.
-	> several changes from Juan Jose Garcia Ripoll <worm@arrakis.es> to
-	  support OS/2 EMX:
+	> several changes from Juan Jose Garcia Ripoll <worm@arrakis.es>
+	  (J.J.G.Ripoll) to support OS/2 EMX:
 	+ add a _scrolling flag to SP, to set when we encounter a terminal
 	  that simply cannot scroll.
 	+ corrected logic in _nc_add_to_try(), by ensuring that strings with
@@ -142,12 +175,12 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	  not often used (from report by Alexander V. Lukyanov, 970825)
 	+ rewrote Dan Nelson's change to make it portable, as well as to
 	  correct logic for handling backslashes.
-	+ add code to _nc_tgetent() to make it work more like a real tgetent(). 
+	+ add code to _nc_tgetent() to make it work more like a real tgetent().
 	  It removes all empty fields, and removes all but the first in a group
 	  of duplicate caps.  The code was pulled from the BSD libtermcap code
 	  in termcap.c (patch by Dan Nelson <dnelson@emsphone.com>
 	+ don't include --enable-widec in the --with-develop configure option,
-	  since it is not binary-compatible with 4.1 (noted by Alexander V. 
+	  since it is not binary-compatible with 4.1 (noted by Alexander V.
 	  Lukyanov)
 	> patch by Juergen Pfeifer:
 	+ further improvements of the usage of elaboration pragmas in the Ada95
@@ -167,10 +200,10 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	+ rename xhpterm back to hpterm.
 	> patch by Juergen Pfeifer:
 	+ Improves the usage of elaboration pragmas for the Ada95 binding.
-	+ Adds a translation of the test/rain.c into Ada95 to the samples. 
+	+ Adds a translation of the test/rain.c into Ada95 to the samples.
 	  This has been contributed to the project by Laurent Pautet
 	  (pautet@gnat.com)
-	
+
 971115
 	+ increase MAX_NAME_SIZE to 512 to handle extremely long alias list
 	  in HP-UX terminfo.
@@ -300,7 +333,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	+ modify mouseinterval() so that a negative parameter queries the
 	  click-interval without modifying it.
 	+ modify ncurses 'i' test to work with ncurses' apparent extension from
-	  SVr4, i.e., allows nocbreak+noecho (analysis by Alexander V. 
+	  SVr4, i.e., allows nocbreak+noecho (analysis by Alexander V.
 	  Lukyanov).
 	+ add configure options --with-ada-includes and --with-ada-objects,
 	  to drive Ada95 binding install (not yet implemented).
@@ -353,7 +386,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	  by Alexander V. Lukyanov).
 	> patches by Alexander V. Lukyanov:
 	+ modify tactics 2 and 5 in onscreen_mvcur(), to allow them on the last
-	  line of the screen, since carriage return will not cause a newline. 
+	  line of the screen, since carriage return will not cause a newline.
 	+ remove clause from PutCharLR() that would try to use
 	  eat_newline_glitch since that apparently does not work on some
 	  terminals (e.g., M$ telnet).
@@ -426,7 +459,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	+ undo attempt to do recursive inlining for PutChar(), noting that it
 	  did not improve timing measurably, but inflated the size of
 	  lib_doupdate.o
-	
+
 970913
 	+ modify rain.c to use color.
 	+ correct scroll_csr_backward() to match scroll_csr_forward().
@@ -477,7 +510,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	  forms field by index.
 	+ Enhanced menu/m_adabind.c with function _nc_get_item() to get a menus
 	  item by index.
-	+ Fixed in curses.h.in:  make chtype argument for pechochar() constant. 
+	+ Fixed in curses.h.in:  make chtype argument for pechochar() constant.
 	  Mark wbkgdset() as implemented, remove wbkgdset macro, because it was
 	  broken (didn't handle colors correctly).
 	+ Enhanced lib_mouse.c: added _nc_has_mouse() function
@@ -486,7 +519,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	  streamlined implementation of wbkgd()
 	+ Modified lib_mvwin.c:  Disable move of a pad.  Implement (costly)
 	  move of subwindows.  Fixed update behaviour of movements of regular
-	  windows. 
+	  windows.
 	+ Fixed lib_pad.c:  make chtype argument of pechochar() const.
 	+ Fixed lib_window.c:  dupwin() is not(!) in every bit a really clone
 	  of the original.  Subwindows become regular windows by doing a
@@ -614,7 +647,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 970816
 	+ implement experimental _nc_perform_scroll().
 	+ modify newterm (actually _nc_setupscreen()) to emit an sgr0 when
-	  initializing the screen, as does SVr4 (reported by Alexander V. 
+	  initializing the screen, as does SVr4 (reported by Alexander V.
 	  Lukyanov).
 	+ added test_progs rule to ncurses/Makefile.
 	+ modify test/configure.in to check if initscr is already in $LIBS
@@ -642,7 +675,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	> patches by H.J.Lu for glibc integration:
 	+ add modules define_key, keyok, name_match, tries
 	+ add makefile rules for some of the unit tests in ncurses (mvcur,
-	  captoinfo, hardscroll, hashmap).   
+	  captoinfo, hardscroll, hashmap).
 	+ update Linux configure-script for wide-character definitions.
 
 970809
@@ -694,7 +727,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	+ modify tset to look in /etc/ttys or /etc/ttytype if the configuration
 	  does not have getttynam().
 	+ extend baudrate table in tset.c to match baudrate() function.
-	+ add table entries for 230400 and 460800 bd to baudrate() function. 
+	+ add table entries for 230400 and 460800 bd to baudrate() function.
 	+ improve breakout logic by allowing it before the first line updated,
 	  which is what SVr4 curses does (patch by Alexander V. Lukyanov).
 	+ correct initialization of vcost in relative_move(), for cursor-down
@@ -740,14 +773,14 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 970706
 	+ correct change from 970628 to ClrUpdate() in lib_doupdate.c so that
-	  contents of curscr are saved in newscr before clearing the screen. 
+	  contents of curscr are saved in newscr before clearing the screen.
 	  This is needed to make repainting work with the present logic of
 	  TransformLine().
 	+ use napms() rather than sleep() in tset.c to avoid interrupting I/O.
 
 970705
 	+ add limit checks to _nc_read_file_entry() to guard against overflow
-	  of buffer when reading incompatible terminfo format, e.g, from OSF/1. 
+	  of buffer when reading incompatible terminfo format, e.g, from OSF/1.
 	+ correct some loop-variable errors in xmc support in lib_doupdate.c
 	+ modify ncurses 'b' test to add gaps, specified by user, to allow
 	  investigation of interaction with xmc (magic cookie) code.
@@ -927,7 +960,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	  <ats@hubert.wustl.edu>).
 	+ drop unnecessary check for attribute-change in onscreen_mvcur() since
 	  mvcur() is the only caller within the library, and that check in turn
-	  is exercised only from lib_doupdate.c (patch by Alexander V. 
+	  is exercised only from lib_doupdate.c (patch by Alexander V.
 	  Lukyanov).
 	+ add 'blank' parameter to _nc_scroll_window() so _nc_mvcur_scrolln()
 	  can use the background of stdscr as a parameter to that function
@@ -939,7 +972,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	  further optimized/reduced by using ClearScreen() and TransformLine()
 	  to get rid of duplicate code (patch by Alexander V. Lukyanov).
 	+ modify scrolling algorithm in _nc_scroll_optimize() to reject hunks
-	  that are smaller than the distance to be moved (patch by Alexander V. 
+	  that are smaller than the distance to be moved (patch by Alexander V.
 	  Lukyanov).
 	+ correct a place where the panel library was not ifdef'd in ncurses.c
 	  (Juergen Pfeifer)
@@ -993,7 +1026,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	  rather than the strings which they (may) point to.
 	+ add check to ensure that C++ binding and demo are not built with g++
 	  versions below 2.7, since the binding uses templates.
-	+ modify c++ binding and demo to build and run with SGI's c++ compiler. 
+	+ modify c++ binding and demo to build and run with SGI's c++ compiler.
 	  (It also compiles with the Sun SparcWorks compiler, but the demo does
 	  not link, due to a vtbl problem).
 	+ corrections to demo.cc, to fix out-of-scope variables (Juergen
@@ -1119,7 +1152,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	+ add header dependencies so that "make install.libs" will succeed
 	  even if "make all" is not done first.
 	+ moved some macros from lib_doupdate.c to curses.priv.h to use in
-	  expanded functions with ATAC. 
+	  expanded functions with ATAC.
 	+ correct implementation of lib_instr.c; both XSI and SVr4 agree that
 	  the winnstr functions can return more characters than will fit on one
 	  line.

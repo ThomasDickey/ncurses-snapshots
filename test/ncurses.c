@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.105 1998/01/10 20:45:12 tom Exp $
+$Id: ncurses.c,v 1.106 1998/01/24 22:04:11 tom Exp $
 
 ***************************************************************************/
 
@@ -292,11 +292,44 @@ static int show_attr(int row, int skip, chtype attr, const char *name, bool once
     return row + 2;
 }
 
+static bool attr_getc(int *skip, int *fg, int *bg)
+{
+    int ch = Getchar();
+
+    if (isdigit(ch)) {
+	*skip = (ch - '0');
+	return TRUE;
+    } else if (ch == CTRL('L')) {
+	touchwin(stdscr);
+	touchwin(curscr);
+	return TRUE;
+    } else if (has_colors()) {
+	switch (ch) {
+	case 'f': *fg = (*fg + 1); break;
+	case 'F': *fg = (*fg - 1); break;
+	case 'b': *bg = (*bg + 1); break;
+	case 'B': *bg = (*bg - 1); break;
+	default:
+	    return FALSE;
+	}
+	if (*fg >= COLORS) *fg = 0;
+	if (*fg <  0)      *fg = COLORS - 1;
+	if (*bg >= COLORS) *bg = 0;
+	if (*bg <  0)      *bg = COLORS - 1;
+	return TRUE;
+    }
+    return FALSE;
+}
+
 static void attr_test(void)
 /* test text attributes */
 {
     int n;
     int skip = tigetnum("xmc");
+    int fg = COLOR_WHITE;
+    int bg = COLOR_BLACK;
+    bool *pairs = (bool *)calloc(COLOR_PAIRS, sizeof(bool));
+    pairs[0] = TRUE;
 
     if (skip < 0)
     	skip = 0;
@@ -305,12 +338,18 @@ static void attr_test(void)
 
     do {
 	int row = 2;
+	int normal = A_NORMAL | BLANK;
 
-	/* If we're looping, the screen contents may be trashed */
+	if (has_colors()) {
+	    int pair = (fg * COLORS) + bg;
+	    if (!pairs[pair]) {
+	        init_pair(pair, fg, bg);
+		pairs[pair] = TRUE;
+	    }
+	    normal |= COLOR_PAIR(pair);
+	}
+	bkgdset(normal);
 	erase();
-	refresh();
-	touchwin(stdscr);
-	touchwin(curscr);
 
 	mvaddstr(0, 20, "Character attribute test display");
 
@@ -329,10 +368,15 @@ static void attr_test(void)
 	     tigetnum("xmc") > -1 ? "" : "not ");
 	mvprintw(row+1, 8,
 	     "Enter a digit to set gaps on each side of displayed attributes");
+	mvprintw(row+2, 8,
+	     "^L = repaint");
+	if (has_colors())
+	    printw(".  f/F/b/F toggle colors (now %d/%d)", fg, bg);
 
-	refresh();
-    } while ((n = (Getchar() - '0')) >= 0 && n <= 9);
+        refresh();
+    } while (attr_getc(&n, &fg, &bg));
 
+    bkgdset(A_NORMAL | BLANK);
     erase();
     endwin();
 }

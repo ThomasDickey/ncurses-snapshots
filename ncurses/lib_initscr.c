@@ -27,12 +27,13 @@
 */
 
 #include <curses.priv.h>
+#include <tic.h>	/* for MAX_ALIAS */
 
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>	/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.19 1997/06/28 17:41:12 tom Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.20 1998/01/24 20:48:26 tom Exp $")
 
 WINDOW *initscr(void)
 {
@@ -44,7 +45,8 @@ const char *name;
 	if (!initialized) {
 		initialized = TRUE;
 
-		if ((name = getenv("TERM")) == 0)
+		if ((name = getenv("TERM")) == 0
+		 || *name == '\0')
 			name = "unknown";
 		if (newterm(name, stdout, stdin) == 0) {
 			fprintf(stderr, "Error opening terminal: %s.\n", name);
@@ -64,7 +66,7 @@ const char *name;
 char *termname(void)
 {
 char	*term = getenv("TERM");
-static char	ret[15];
+static char	ret[MAX_ALIAS];
 
 	T(("termname() called"));
 

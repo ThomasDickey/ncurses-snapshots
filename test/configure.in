@@ -1,5 +1,5 @@
 dnl*****************************************************************************
-dnl Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                 *
+dnl Copyright 1996,1997,1998 by Thomas E. Dickey <dickey@clark.net>            *
 dnl All Rights Reserved.                                                       *
 dnl                                                                            *
 dnl Permission to use, copy, modify, and distribute this software and its      *
@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.19 1998/01/10 17:12:26 tom Exp $
+dnl $Id: configure.in,v 1.21 1998/01/24 21:33:51 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -40,6 +40,8 @@ EXTRA_LIBS=""				AC_SUBST(EXTRA_LIBS)
 LIB_NAME=curses				AC_SUBST(LIB_NAME)
 LINT=lint				AC_SUBST(LINT)
 LINT_OPTS=""				AC_SUBST(LINT_OPTS)
+MATH_LIB="-lm"				AC_SUBST(MATH_LIB)
+PROG_EXT=""				AC_SUBST(PROG_EXT)
 TEST_ARGS=""				AC_SUBST(TEST_ARGS)
 
 dnl SunOS 4.x
