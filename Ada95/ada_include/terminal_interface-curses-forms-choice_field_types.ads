@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.4 $
+--  $Revision: 1.5 $
 ------------------------------------------------------------------------------
 --  You must instantiate this package for any user defined field type
 --  to make it visible to the runtime.
@@ -41,6 +41,6 @@ generic
 package Terminal_Interface.Curses.Forms.Choice_Field_Types is
 --
 --  Nothing public.
---
+--  But we need the body.
+    pragma Elaborate_Body;
 end Terminal_Interface.Curses.Forms.Choice_Field_Types;
-
