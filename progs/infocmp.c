@@ -315,6 +315,7 @@ static const assoc std_caps[] =
     {"\0338",	"RC"},		/* restore cursor */
     {"\033[r",	"RSR"},		/* not an X.364 mnemonic */
     {"\033[m",	"SGR0"},	/* not an X.364 mnemonic */
+    {"\033[2J",	"ED2"},		/* clear page */
 
     /* this group is specified by ISO 2022 */
     {"\033(0",	"ISO DEC G0"},	/* enable DEC graphics for G0 */
@@ -351,13 +352,34 @@ static const assoc ecma_highlights[] =
 {
     {"0",	"NORMAL"},	/* normal */
     {"1",	"+BOLD"},	/* bold on */
-    {"21",	"-BOLD"},	/* bold on */
+    {"2",	"+DIM"},	/* dim on */
+    {"3",	"+ITALIC"},	/* italic on */
     {"4",	"+UNDERLINE"},	/* underline on */
-    {"24",	"-UNDERLINE"},	/* underline on */
     {"5",	"+BLINK"},	/* blink on */
-    {"25",	"-BLINK"},	/* blink on */
+    {"6",	"+FASTBLINK"},	/* fastblink on */
     {"7",	"+REVERSE"},	/* reverse on */
-    {"27",	"-REVERSE"},	/* reverse on */
+    {"8",	"+INVISIBLE"},	/* invisible on */
+    {"9",	"+DELETED"},	/* deleted on */
+    {"10",	"MAIN-FONT"},	/* select primary font */
+    {"11",	"ALT-FONT-1"},	/* select alternate font 1 */
+    {"12",	"ALT-FONT-2"},	/* select alternate font 2 */
+    {"13",	"ALT-FONT-3"},	/* select alternate font 3 */
+    {"14",	"ALT-FONT-4"},	/* select alternate font 4 */
+    {"15",	"ALT-FONT-5"},	/* select alternate font 5 */
+    {"16",	"ALT-FONT-6"},	/* select alternate font 6 */
+    {"17",	"ALT-FONT-7"},	/* select alternate font 7 */
+    {"18",	"ALT-FONT-1"},	/* select alternate font 1 */
+    {"19",	"ALT-FONT-1"},	/* select alternate font 1 */
+    {"20",	"FRAKTUR"},	/* Fraktur font */
+    {"21",	"DOUBLEUNDER"},	/* double underline */
+    {"22",	"-DIM"},	/* dim off */
+    {"23",	"-ITALIC"},	/* italic off */
+    {"24",	"-UNDERLINE"},	/* underline off */
+    {"25",	"-BLINK"},	/* blink off */
+    {"26",	"-FASTBLINK"},	/* fastblink off */
+    {"27",	"-REVERSE"},	/* reverse off */
+    {"28",	"-INVISIBLE"},	/* invisible off */
+    {"29",	"-DELETED"},	/* deleted off */
     {(char *)0, (char *)0}
 };
 
@@ -1035,6 +1057,8 @@ int main(int argc, char *argv[])
 		analyze_string("rs1", reset_1string, &term[0]);
 		analyze_string("rs2", reset_2string, &term[0]);
 		analyze_string("rs3", reset_3string, &term[0]);
+		analyze_string("smcup", enter_ca_mode, &term[0]);
+		analyze_string("rmcup", exit_ca_mode, &term[0]);
 #undef CUR
 		return EXIT_SUCCESS;
 	    }

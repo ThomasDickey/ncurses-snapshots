@@ -38,9 +38,12 @@
  *
  */
 
-#include "curses.priv.h"
-#include "term.h"	/* cur_term */
+#include <curses.priv.h>
+#include <term.h>	/* cur_term */
+
 #include <string.h>
+
+MODULE_ID("$Id: lib_raw.c,v 1.9 1996/07/28 00:36:48 tom Exp $")
 
 #ifdef __QNX__		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -166,7 +169,7 @@ lflags[] =
 	for (sp = iflags; sp->val; sp++)
 	    if ((cur_term->Nttyb.c_iflag & sp->val) == sp->val)
 	    {
-	        (void) strcat(buf, sp->name);
+		(void) strcat(buf, sp->name);
 		(void) strcat(buf, ", ");
 	    }
 	if (buf[strlen(buf) - 2] == ',')
@@ -312,6 +315,7 @@ int cbreak(void)
 	BEFORE("cbreak");
 	cur_term->Nttyb.c_lflag &= ~ICANON;
 	cur_term->Nttyb.c_lflag |= ISIG;
+	cur_term->Nttyb.c_iflag &= ~ICRNL;
 	cur_term->Nttyb.c_cc[VMIN] = 1;
 	cur_term->Nttyb.c_cc[VTIME] = 0;
 	AFTER("cbreak");
@@ -332,19 +336,7 @@ int echo(void)
 
 	SP->_echo = TRUE;
 
-#ifdef TERMIOS
-	BEFORE("echo");
-	cur_term->Nttyb.c_lflag |= ECHO;
-	AFTER("echo");
-	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
-		return ERR;
-	else
-		return OK;
-#else
-	cur_term->Nttyb.sg_flags |= ECHO;
-	stty(cur_term->Filedes, &cur_term->Nttyb);
 	return OK;
-#endif
 }
 
 
@@ -430,6 +422,7 @@ int nocbreak(void)
 #ifdef TERMIOS
 	BEFORE("nocbreak");
 	cur_term->Nttyb.c_lflag |= ICANON;
+	cur_term->Nttyb.c_iflag |= ICRNL;
 	AFTER("nocbreak");
 	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
 		return ERR;
@@ -445,26 +438,8 @@ int nocbreak(void)
 int noecho(void)
 {
 	T(("noecho() called"));
-
 	SP->_echo = FALSE;
-
-#ifdef TERMIOS
-	/*
-	 * Turn off ECHONL to avoid having \n still be echoed when
-	 * cooked mode is in effect (that is, ICANON is on).
-	 */
-	BEFORE("noecho");
-	cur_term->Nttyb.c_lflag &= ~(ECHO|ECHONL);
-	AFTER("noecho");
-	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
-		return ERR;
-	else
-		return OK;
-#else
-	cur_term->Nttyb.sg_flags &= ~ECHO;
-	stty(cur_term->Filedes, &cur_term->Nttyb);
 	return OK;
-#endif
 }
 
 

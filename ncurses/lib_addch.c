@@ -30,7 +30,7 @@
 #include <ctype.h>
 #include <unctrl.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.17 1996/07/21 00:16:27 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.18 1996/07/27 23:46:41 tom Exp $")
 
 int wattr_on(WINDOW *win, const attr_t at)
 {
@@ -146,7 +146,7 @@ register int x, y;
 		 * whenever we move the cursor.  If we try to wrap at the
 		 * lower-right corner of a window, we cannot move the cursor
 		 * (since that wouldn't be legal).  So we return an error
-		 * (which is what svr4 does).  Unlike svr4, we can successfully
+		 * (which is what SVr4 does).  Unlike svr4, we can successfully
 		 * add a character to the lower-right corner.
 		 */
 		win->_flags |= _WRAPPED;
