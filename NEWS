@@ -1,7 +1,17 @@
--- $Id: NEWS,v 1.221 1997/07/06 21:53:55 tom Exp $
+-- $Id: NEWS,v 1.222 1997/07/13 00:46:39 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+970712
+	+ remove alternate character set from kterm terminfo entry; it uses the
+	  shift-out control for a purpose incompatible with curses, i.e., font
+	  switching.
+	+ disentangle 'xterm' terminfo entry from some derived entries that
+	  should be based on xterm-r6 instead.
+	+ add cbt to xterm-xf86-xv32 terminfo entry; I added the emulation for
+	  XFree86 3.1.2F, but overlooked its use in terminfo then - T.Dickey.
+	+ correct logic in lib_mvcur.c that uses back_tab.
 
 970706
 	+ correct change from 970628 to ClrUpdate() in lib_doupdate.c so that

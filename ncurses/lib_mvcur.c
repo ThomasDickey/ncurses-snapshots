@@ -143,7 +143,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.39 1997/07/05 19:06:19 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.40 1997/07/12 23:59:42 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -417,7 +417,12 @@ repeated_append (int total, int num, int repeat, char *dst, const char *src)
 
 #ifndef NO_OPTIMIZE
 #define NEXTTAB(fr)	(fr + init_tabs - (fr % init_tabs))
-#define LASTTAB(fr)	(fr - init_tabs + (fr % init_tabs))
+
+/*
+ * Assume back_tab (CBT) does not wrap backwards at the left margin, return
+ * a negative value at that point to simplify the loop.
+ */
+#define LASTTAB(fr)	((fr > 0) ? ((fr - 1) / init_tabs) * init_tabs : -1)
 
 /* Note: we'd like to inline this for speed, but GNU C barfs on the attempt. */
 
@@ -608,7 +613,7 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 				break;
 		    }
 
-		    n = to_x - fr;
+		    n = fr - to_x;
 		}
 #endif /* USE_HARD_TABS */
 

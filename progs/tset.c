@@ -91,7 +91,7 @@ char *ttyname(int fd);
 #include <curses.h>	/* for bool typedef */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.25 1997/07/06 19:46:28 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.26 1997/07/12 22:33:48 tom Exp $")
 
 extern char **environ;
 
@@ -491,7 +491,7 @@ get_termcap_entry(char *userarg)
 			goto map;
 		}
 	}
-#endif /* BSD */
+#endif /* HAVE_GETTTYNAM */
 
 	/* If still undefined, use "unknown". */
 	ttype = "unknown";
