@@ -38,7 +38,7 @@ include(M4MACRO)dnl
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.22 $
+--  $Revision: 1.23 $
 --  Binding Version 01.00
 ------------------------------------------------------------------------------
 include(`Form_Base_Defs')
@@ -688,11 +688,10 @@ include(`Form_Opt_Rep')Dnl
 
 ------------------------------------------------------------------------------
 private
+   type Field is new System.Storage_Elements.Integer_Address;
+   type Form  is new System.Storage_Elements.Integer_Address;
 
-   type Field        is new System.Address;
-   type Form         is new System.Address;
-
-   Null_Field        : constant Field        := Field (System.Null_Address);
-   Null_Form         : constant Form         := Form  (System.Null_Address);
+   Null_Field : constant Field := 0;
+   Null_Form  : constant Form  := 0;
 
 end Terminal_Interface.Curses.Forms;

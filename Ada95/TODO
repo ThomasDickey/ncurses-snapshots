@@ -1,8 +1,10 @@
+-- $Id: TODO,v 1.3 1999/10/09 19:14:05 tom Exp $
+
 --  Intensive testing
     Perhaps the delivery of the Beta will help a bit.
 
 --  Documentation
-    Like most WEB pages: under continous construction
+    Like most WEB pages: under continuous construction
 
 --  Style cleanup
     	
@@ -10,9 +12,9 @@
     Comfort purpose
 
 --  Sample program
-    Under continous construction (and it's not a WEB page!!!)
+    Under continuous construction (and it's not a WEB page!!!)
 
---  Make the binding objects a shared libray
+--  Make the binding objects a shared library
     They are rather large, so it would make sense, otherwise Ada95
     would look too large, although the generated code is as compact
     as C or C++. I'll wait a bit until the GNAT people provide some
@@ -23,3 +25,28 @@
 --  Check for memory leaks.
     Oh I would like it so much if the GNAT guys would put an optional
     GC into their system.
+
+===============================================================================
+
+You will have a problem building with GNAT 3.10, because an incompatible change
+was made to work with GNAT 3.11.  The following change is needed to build with
+GNAT 3.10:
+
+--- gen/terminal_interface-curses-forms.ads.m4.orig	Sat Oct  9 15:02:38 1999
++++ gen/terminal_interface-curses-forms.ads.m4	Sat Oct  2 18:36:48 1999
+@@ -688,10 +688,11 @@
+ 
+ ------------------------------------------------------------------------------
+ private
+-   type Field is new System.Storage_Elements.Integer_Address;
+-   type Form  is new System.Storage_Elements.Integer_Address;
+ 
+-   Null_Field : constant Field := 0;
+-   Null_Form  : constant Form  := 0;
++   type Field        is new System.Address;
++   type Form         is new System.Address;
++
++   Null_Field        : constant Field        := Field (System.Null_Address);
++   Null_Form         : constant Form         := Form  (System.Null_Address);
+ 
+ end Terminal_Interface.Curses.Forms;

@@ -770,6 +770,7 @@
 ./test/bs.c
 ./test/cardfile.c
 ./test/cardfile.dat
+./test/configure
 ./test/configure.in
 ./test/ditto.c
 ./test/filter.c
