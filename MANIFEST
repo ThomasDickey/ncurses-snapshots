@@ -254,7 +254,6 @@
 ./form/llib-lform
 ./form/modules
 ./include/Caps
-./include/MKcurses.sh
 ./include/MKhashsize.sh
 ./include/MKparametrized.sh
 ./include/MKterm.h.awk.in
@@ -555,6 +554,7 @@
 ./test/hashtest.c
 ./test/knight.c
 ./test/lrtest.c
+./test/modules
 ./test/ncurses.c
 ./test/newdemo.c
 ./test/rain.c

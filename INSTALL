@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.23 1997/01/26 01:55:16 tom Exp $
+-- $Id: INSTALL,v 1.24 1997/02/09 01:26:27 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -6,11 +6,10 @@
     * READ ALL OF THIS FILE BEFORE YOU TRY TO INSTALL NCURSES. *
     ************************************************************
 
-You should be reading the file INSTALL in a directory called
-ncurses-d.d.d, where d.d.d is the current version number.  There
-should be several subdirectories, including `c++', `form', `man', `menu',
-'misc', `ncurses', `panel', `progs', and `test'.  See the README file
-for a roadmap to the package.
+You should be reading the file INSTALL in a directory called ncurses-d.d, where
+d.d is the current version number.  There should be several subdirectories,
+including `c++', `form', `man', `menu', 'misc', `ncurses', `panel', `progs',
+and `test'.  See the README file for a roadmap to the package.
 
 If you are a Linux or FreeBSD or NetBSD distribution integrator or packager,
 please read and act on the section titled IF YOU ARE A SYSTEM INTEGRATOR
@@ -25,7 +24,7 @@ on RECENT XTERM VERSIONS below.
 If you are trying to build GNU Emacs using ncurses for terminal support,
 read the USING NCURSES WITH EMACS section below.
 
-If you are trying to build applications using gpm with ncurse,
+If you are trying to build applications using gpm with ncurses,
 read the USING NCURSES WITH GPM section below.
 
 If you are trying to build Elvis using ncurses for terminal support,
@@ -99,6 +98,18 @@ INSTALLATION PROCEDURE:
     configured.  Typing `configure' with no arguments is equivalent to:
 
     	./configure --with-normal --with-debug --enable-overwrite
+
+    Typing
+
+    	./configure --with-shared
+
+    makes the shared libraries the default, resulting in
+
+    	./configure --with-shared --with-normal --with-debug --enable-overwrite
+
+    If you want only shared libraries, type
+
+    	./configure --with-shared --without-normal --without-debug
 
     Rules for generating shared libraries are highly dependent upon the choice
     of host system and compiler.  We've been testing shared libraries on Linux

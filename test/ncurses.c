@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.78 1997/01/18 19:34:35 tom Exp $
+$Id: ncurses.c,v 1.79 1997/02/09 00:03:06 tom Exp $
 
 ***************************************************************************/
 
@@ -2121,6 +2121,7 @@ static char *levels[] =
     "TRACE_VIRTPUT",
     "TRACE_IEVENT",
     "TRACE_BITS",
+    "TRACE_ICALLS",
     "TRACE_MAXIMUM",
     (char *)NULL
 };
@@ -2138,6 +2139,7 @@ static int masks[] =	/* must parallel the array above */
     TRACE_VIRTPUT,
     TRACE_IEVENT,
     TRACE_BITS,
+    TRACE_ICALLS,
     TRACE_MAXIMUM,
 };
 

@@ -29,25 +29,27 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.24 1996/11/16 21:16:39 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.25 1997/02/09 00:37:50 tom Exp $")
 
 int wattr_on(WINDOW *win, const attr_t at)
 {
-	T(("wattr_on(%p,%s) current = %s", win, _traceattr(at), _traceattr(win->_attrs)));
+	T((T_CALLED("wattr_on(%p,%#lx) current %s"), win, at, _traceattr(win->_attrs)));
 	toggle_attr_on(win->_attrs,at);
-	return OK;
+	returnCode(OK);
 }
 
 int wattr_off(WINDOW *win, const attr_t at)
 {
-	T(("wattr_off(%p,%s) current = %s", win, _traceattr(at), _traceattr(win->_attrs)));
+	T((T_CALLED("wattr_off(%p,%#lx) current %s"), win, at, _traceattr(win->_attrs)));
 	toggle_attr_off(win->_attrs,at);
-	return OK;
+	returnCode(OK);
 }
 
 int wchgat(WINDOW *win, int n, attr_t attr, short color, const void *opts GCC_UNUSED)
 {
     int	i;
+
+    T((T_CALLED("wchgat(%p,%d,%#lx,%d) %s"), win, n, attr, color, _traceattr(attr)));
 
     toggle_attr_on(attr,COLOR_PAIR(color));
 
@@ -55,7 +57,7 @@ int wchgat(WINDOW *win, int n, attr_t attr, short color, const void *opts GCC_UN
 	win->_line[win->_cury].text[i]
 	    = ch_or_attr(TextOf(win->_line[win->_cury].text[i]),attr);
 
-    return OK;
+    returnCode(OK);
 }
 
 /*
@@ -75,7 +77,7 @@ static inline chtype render_char(WINDOW *win, chtype ch)
 		ch = ch_or_attr(ch, win->_bkgd);
 	else if (!(ch & A_ATTRIBUTES))
 		ch = ch_or_attr(ch, (win->_bkgd & A_ATTRIBUTES));
-	TR(TRACE_VIRTPUT, ("bkg = %lx -> ch = %lx", win->_bkgd, ch));
+	TR(TRACE_VIRTPUT, ("bkg = %#lx -> ch = %#lx", win->_bkgd, ch));
 
 	return(ch);
 }
@@ -266,31 +268,34 @@ int _nc_waddch_nosync(WINDOW *win, const chtype c)
 
 int waddch(WINDOW *win, const chtype ch)
 {
-	TR(TRACE_VIRTPUT, ("waddch(%p, %s) called", win, _tracechtype(ch)));
+	int code = ERR;
 
-	if (waddch_nosync(win, ch) == ERR)
-		return(ERR);
-	else
+	TR(TRACE_VIRTPUT|TRACE_CALLS, (T_CALLED("waddch(%p, %s)"), win, _tracechtype(ch)));
+
+	if (waddch_nosync(win, ch) != ERR)
 	{
 		_nc_synchook(win);
-		TR(TRACE_VIRTPUT, ("waddch() is done"));
-		return(OK);
+		code = OK;
 	}
+
+	TR(TRACE_VIRTPUT|TRACE_CALLS, (T_RETURN("%d"), code));
+	return(code);
 }
 
 int wechochar(WINDOW *win, const chtype ch)
 {
-	TR(TRACE_VIRTPUT, ("wechochar(%p, %s) called", win, _tracechtype(ch)));
+	int code = ERR;
 
-	if (waddch_literal(win, ch) == ERR)
-		return(ERR);
-	else
+	TR(TRACE_VIRTPUT, (T_CALLED("wechochar(%p, %s)"), win, _tracechtype(ch)));
+
+	if (waddch_literal(win, ch) != ERR)
 	{
 		bool	save_immed = win->_immed;
 		win->_immed = TRUE;
 		_nc_synchook(win);
 		win->_immed = save_immed;
-		TR(TRACE_VIRTPUT, ("wechochar() is done"));
-		return(OK);
+		code = OK;
 	}
+	TR(TRACE_VIRTPUT|TRACE_CALLS, (T_RETURN("%d"), code));
+	return(code);
 }

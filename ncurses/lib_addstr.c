@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.8 1997/02/02 01:27:21 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.9 1997/02/09 00:49:52 tom Exp $")
 
 int
 waddnstr(WINDOW *win, const char *const astr, int n)
@@ -46,7 +46,7 @@ int code = ERR;
 			n = (int)strlen(astr);
 
 		while((n-- > 0) && (*str != '\0')) {
-			TR(TRACE_VIRTPUT, ("*str = %x", *str));
+			TR(TRACE_VIRTPUT, ("*str = %#x", *str));
 			if (_nc_waddch_nosync(win, (chtype)*str++) == ERR) {
 				code = ERR;
 				break;

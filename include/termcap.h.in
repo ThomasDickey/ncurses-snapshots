@@ -18,11 +18,13 @@
 *                                                                          *
 ***************************************************************************/
 
+/* $Id: termcap.h.in,v 1.4 1997/02/08 21:50:39 tom Exp $ */
+
 #ifndef _TERMCAP_H
 #define _TERMCAP_H	1
 
 #undef  NCURSES_VERSION
-#define NCURSES_VERSION "@VERSION@"
+#define NCURSES_VERSION "@NCURSES_MAJOR@.@NCURSES_MINOR@"
 
 #ifdef __cplusplus
 extern "C"

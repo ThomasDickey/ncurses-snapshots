@@ -1,4 +1,4 @@
-# $Id: dist.mk,v 1.21 1996/12/07 20:30:16 tom Exp $
+# $Id: dist.mk,v 1.22 1997/02/08 21:09:19 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -7,23 +7,20 @@
 #
 SHELL = /bin/sh
 
-# Below are the ncurses release version and the ncurses ABI version
-# (the latter is used to build the shared library).  If two ncurses libraries
-# have the same ABI version, their application binary interface must be
-# identical or one must be a superset of the other.  The ABI version number
-# is independent of the ncurses release version. For ncurses release
-# version 1.9.5, the ABI version is 1.9.  We can have the ABI version
-# 1.9a, 1.9b, 1.9foobar, ... when the ncurses release version changes
-# If a new ncurses has an incompatible application binary interface than
-# previous one, the ABI version should be changed.
-VERSION = 4.0
-SHARED_ABI = 4
+# These define the major/minor/patch versions of ncurses.
+NCURSES_MAJOR = 4
+NCURSES_MINOR = 0
+NCURSES_PATCH = 970208
+
+# We don't append the patch to the version, since this only applies to releases
+VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)
+SHARED_ABI = $(NCURSES_MAJOR)
 
 dist: announce.html misc/ncurses-intro.doc misc/hackguide.doc
 	(cd ..;  tar cvf ncurses-$(VERSION).tar `sed <ncurses-$(VERSION)/MANIFEST 's/^./ncurses-$(VERSION)/'`;  gzip ncurses-$(VERSION).tar)
 
 distclean:
-	rm ANNOUNCE announce.html misc/ncurses-intro.doc misc/hackguide.doc
+	rm -f ANNOUNCE announce.html misc/ncurses-intro.doc misc/hackguide.doc
 
 # Don't mess with announce.html.in unless you have lynx available!
 announce.html: announce.html.in

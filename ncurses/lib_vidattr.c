@@ -48,7 +48,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.10 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.11 1997/02/09 00:42:14 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -63,7 +63,7 @@ int vidputs(attr_t newmode, int  (*outc)(int))
 static attr_t previous_attr = A_NORMAL;
 attr_t turn_on, turn_off;
 
-	T(("vidputs(%lx) called %s", newmode, _traceattr(newmode)));
+	T((T_CALLED("vidputs(%#lx) %s"), newmode, _traceattr(newmode)));
 
 	/* this allows us to go on whether or not newterm() has been called */
 	if (SP)
@@ -72,7 +72,7 @@ attr_t turn_on, turn_off;
 	T(("previous attribute was %s", _traceattr(previous_attr)));
 
 	if (newmode == previous_attr)
-		return OK;
+		returnCode(OK);
 
 	turn_off = (~newmode & previous_attr) & ALL_BUT_COLOR;
 	turn_on  = (newmode & ~previous_attr) & ALL_BUT_COLOR;
@@ -158,16 +158,14 @@ attr_t turn_on, turn_off;
 	else
 		previous_attr = newmode;
 
-	T(("vidputs finished"));
-	return OK;
+	returnCode(OK);
 }
 
 int vidattr(attr_t newmode)
 {
+	T((T_CALLED("vidattr(%#lx)"), newmode));
 
-	T(("vidattr(%lx) called", newmode));
-
-	return(vidputs(newmode, _nc_outch));
+	returnCode(vidputs(newmode, _nc_outch));
 }
 
 attr_t termattrs(void)

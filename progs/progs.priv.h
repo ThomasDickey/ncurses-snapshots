@@ -20,7 +20,7 @@
 ***************************************************************************/
 
 /*
- * $Id: progs.priv.h,v 1.7 1996/12/21 17:33:45 tom Exp $
+ * $Id: progs.priv.h,v 1.8 1997/02/08 21:57:15 tom Exp $
  *
  *	progs.priv.h
  *
@@ -28,9 +28,13 @@
  *
  */
 
-#define MODULE_ID(id) /*nothing*/
-
 #include <config.h>
+
+#ifdef USE_RCS_IDS
+#define MODULE_ID(id) static const char Ident[] = id;
+#else
+#define MODULE_ID(id) /*nothing*/
+#endif
 
 #include <stdlib.h>
 #include <string.h>
