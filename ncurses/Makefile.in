@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.93 2004/06/27 00:05:45 tom Exp $
+# $Id: Makefile.in,v 1.94 2004/08/14 17:20:11 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -231,10 +231,10 @@ unctrl.c: $(base)/MKunctrl.awk
 	echo | $(AWK) -f $(base)/MKunctrl.awk >$@
 
 tags:
-	ctags *.[ch]
+	ctags *.[ch] */*.[ch]
 
 @MAKE_UPPER_TAGS@TAGS:
-@MAKE_UPPER_TAGS@	etags *.[ch]
+@MAKE_UPPER_TAGS@	etags *.[ch] */*.[ch]
 
 mostlyclean ::
 	-rm -f core tags TAGS *~ *.bak *.i *.ln *.atac trace
