@@ -1,10 +1,15 @@
--- $Id: NEWS,v 1.625 2001/05/05 23:11:20 tom Exp $
+-- $Id: NEWS,v 1.626 2001/05/13 00:11:58 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010512
+	+ modify test/ncurses.c to work with xterm-256color, which has fewer
+	  color pairs than colors*colors (report by David Ellement
+	  <ellement@sdd.hp.com>).
 
 20010505
 	+ corrected screen.xterm-xfree86 entry.
