@@ -1,6 +1,14 @@
+-- $Id: TO-DO,v 1.32 1997/06/14 21:10:05 tom Exp $
+
 SHORT-TERM TO-DO ITEMS:
 
 Known Problems:
+
+* XPG4 specifies that the enhanced features are not available unless the
+  _XOPEN_SOURCE_EXTENDED test macro is defined by the application.  Ncurses uses
+  this macro (incorrectly) to address a dependency upon wchar_t.  The functions
+  which use wchar_t are not implemented, so the effect of the test macro is
+  pointless.
 
 * The screen optimization has been tested only in an ad hoc manner.  We should
   develop a good set of regression tests to cover lib_doupdate.c and

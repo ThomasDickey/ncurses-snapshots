@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.62 1997/05/17 21:45:57 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.64 1997/06/12 17:22:50 Alexander.V.Lukyanov Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -67,7 +67,7 @@ MODULE_ID("$Id: lib_doupdate.c,v 1.62 1997/05/17 21:45:57 tom Exp $")
  * Note: Input-check-and-abort is no longer done if the screen is being
  * updated from scratch.  This is a feature, not a bug.
  */
-#define CHECK_INTERVAL	6
+#define CHECK_INTERVAL	5
 
 /*
  * Enable checking to see if doupdate and friends are tracking the true
@@ -628,7 +628,7 @@ struct tms before, after;
 		ClrUpdate();
 		newscr->_clear = FALSE;
 	} else {
-		int changedlines;
+		int changedlines = 0;
 
 		nonempty = min(screen_lines, newscr->_maxy+1);
 #if 0		/* still 5% slower 960928 */
@@ -646,7 +646,7 @@ struct tms before, after;
 			nonempty = ClrBottom(nonempty);
 
 		T(("Transforming lines, nonempty %d", nonempty));
-		for (i = changedlines = 0; i < nonempty; i++) {
+		for (i = 0; i < nonempty; i++) {
 			/*
 			 * newscr->line[i].firstchar is normally set
 			 * by wnoutrefresh.  curscr->line[i].firstchar
@@ -669,9 +669,12 @@ struct tms before, after;
 			/*
 			 * Here is our line-breakout optimization.
 			 */
-			if ((changedlines % CHECK_INTERVAL) == CHECK_INTERVAL-1
-			 && check_pending())
+			if (changedlines == CHECK_INTERVAL)
+			{
+			    if(check_pending())
 				goto cleanup;
+	    		    changedlines = 0;
+			}
 		}
 	}
 
@@ -978,11 +981,11 @@ bool	attrchanged = FALSE;
 			nLastChar--;
 
 		if((nLastChar == firstChar)
-		 && (SP->_el_cost < (screen_columns - nLastChar))) {
+		 && (SP->_el_cost < (oLastChar - nLastChar))) {
 			GoTo(lineno, firstChar);
-			ClrToEOL(blank);
 			if(newLine[firstChar] != blank )
 				PutChar(newLine[firstChar]);
+			ClrToEOL(blank);
 		} else if( newLine[nLastChar] != oldLine[oLastChar]
 				|| !(_nc_idcok && has_ic()) ) {
 			GoTo(lineno, firstChar);
@@ -1085,8 +1088,8 @@ static void ClearScreen(chtype blank)
 	} else if (clr_eol) {
 		SP->_cursrow = SP->_curscol = -1;
 
-		while (SP->_cursrow < screen_lines) {
-			GoTo(SP->_cursrow, 0);
+		for (i = 0; i < screen_lines; i++) {
+			GoTo(i, 0);
 			UpdateAttrs(blank);
 			TPUTS_TRACE("clr_eol");
 			putp(clr_eol);

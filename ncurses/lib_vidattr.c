@@ -52,7 +52,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.14 1997/05/06 16:02:43 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.15 1997/06/14 20:15:32 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -176,9 +176,9 @@ int vidattr(attr_t newmode)
 	returnCode(vidputs(newmode, _nc_outch));
 }
 
-attr_t termattrs(void)
+chtype termattrs(void)
 {
-	int attrs = A_NORMAL;
+	chtype attrs = A_NORMAL;
 
 	if (enter_alt_charset_mode)
 		attrs |= A_ALTCHARSET;

@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_raw.c,v 1.16 1997/02/02 00:02:32 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.17 1997/06/14 22:59:17 tom Exp $")
 
 #ifdef SVR4_TERMIO
 #define _POSIX_SOURCE
@@ -62,11 +62,32 @@ MODULE_ID("$Id: lib_raw.c,v 1.16 1997/02/02 00:02:32 tom Exp $")
 #define COOKED_INPUT	(IXON|BRKINT|PARMRK)
 
 #ifdef TRACE
+
+typedef struct {unsigned int val; const char *name;} BITNAMES;
+
+static void lookup_bits(char *buf, const BITNAMES *table, char *label, unsigned int val)
+{
+	const BITNAMES *sp;
+
+	(void) strcat(buf, label);
+	(void) strcat(buf, ": {");
+	for (sp = table; sp->name; sp++)
+		if (sp->val != 0
+		&& (val & sp->val) == sp->val)
+		{
+			(void) strcat(buf, sp->name);
+			(void) strcat(buf, ", ");
+		}
+	if (buf[strlen(buf) - 2] == ',')
+		buf[strlen(buf) - 2] = '\0';
+	(void) strcat(buf,"} ");
+}
+
 char *_tracebits(void)
 /* describe the state of the terminal control bits exactly */
 {
-static char	buf[BUFSIZ];
-static const	struct {unsigned int val; const char *name;}
+char	*buf;
+static const	BITNAMES
 
 #ifdef TERMIOS
 iflags[] =
@@ -112,72 +133,30 @@ lflags[] =
 	{ICANON,	"ICANON"},
 	{ISIG,  	"ISIG"},
 	{NOFLSH,	"NOFLSH"},
-#if TOSTOP != 0
 	{TOSTOP,	"TOSTOP"},
-#endif
-#if IEXTEN != 0
 	{IEXTEN,	"IEXTEN"},
-#endif
 	{0,		NULL}
 #define ALLLOCAL	(ECHO|ECHONL|ICANON|ISIG|NOFLSH|TOSTOP|IEXTEN)
-    },
-    *sp;
+    };
+
+
+    buf = _nc_trace_buf(0,
+    	8 + sizeof(iflags) +
+    	8 + sizeof(oflags) +
+    	8 + sizeof(cflags) +
+    	8 + sizeof(lflags));
 
     if (cur_term->Nttyb.c_iflag & ALLIN)
-    {
-	(void) strcpy(buf, "iflags: {");
-	for (sp = iflags; sp->val; sp++)
-	    if ((cur_term->Nttyb.c_iflag & sp->val) == sp->val)
-	    {
-		(void) strcat(buf, sp->name);
-		(void) strcat(buf, ", ");
-	    }
-	if (buf[strlen(buf) - 2] == ',')
-	    buf[strlen(buf) - 2] = '\0';
-	(void) strcat(buf,"} ");
-    }
+	lookup_bits(buf, iflags, "iflags", cur_term->Nttyb.c_iflag);
 
     if (cur_term->Nttyb.c_oflag & ALLOUT)
-    {
-	(void) strcat(buf, "oflags: {");
-	for (sp = oflags; sp->val; sp++)
-	    if ((cur_term->Nttyb.c_oflag & sp->val) == sp->val)
-	    {
-		(void) strcat(buf, sp->name);
-		(void) strcat(buf, ", ");
-	    }
-	if (buf[strlen(buf) - 2] == ',')
-	    buf[strlen(buf) - 2] = '\0';
-	(void) strcat(buf,"} ");
-    }
+	lookup_bits(buf, oflags, "oflags", cur_term->Nttyb.c_oflag);
 
     if (cur_term->Nttyb.c_cflag & ALLCTRL)
-    {
-	(void) strcat(buf, "cflags: {");
-	for (sp = cflags; sp->val; sp++)
-	    if ((cur_term->Nttyb.c_cflag & sp->val) == sp->val)
-	    {
-		(void) strcat(buf, sp->name);
-		(void) strcat(buf, ", ");
-	    }
-	if (buf[strlen(buf) - 2] == ',')
-	    buf[strlen(buf) - 2] = '\0';
-	(void) strcat(buf,"} ");
-    }
+	lookup_bits(buf, cflags, "cflags", cur_term->Nttyb.c_cflag);
 
     if (cur_term->Nttyb.c_lflag & ALLLOCAL)
-    {
-	(void) strcat(buf, "lflags: {");
-	for (sp = lflags; sp->val; sp++)
-	    if ((cur_term->Nttyb.c_lflag & sp->val) == sp->val)
-	    {
-		(void) strcat(buf, sp->name);
-		(void) strcat(buf, ", ");
-	    }
-	if (buf[strlen(buf) - 2] == ',')
-	    buf[strlen(buf) - 2] = '\0';
-	(void) strcat(buf,"} ");
-    }
+	lookup_bits(buf, lflags, "lflags", cur_term->Nttyb.c_lflag);
 
 #else
     /* reference: ttcompat(4M) on SunOS 4.1 */
@@ -211,21 +190,14 @@ cflags[] =
 	{XTABS,		"XTABS"},
 	{0,		NULL}
 #define ALLCTRL	(CBREAK|CRMOD|ECHO|EVENP|LCASE|LLITOUT|ODDP|RAW|TANDEM|XTABS)
-    },
-    *sp;
+    };
+
+    buf = _nc_trace_buf(0,
+    	8 + sizeof(cflags));
 
     if (cur_term->Nttyb.sg_flags & ALLCTRL)
     {
-	(void) strcat(buf, "cflags: {");
-	for (sp = cflags; sp->val; sp++)
-	    if ((cur_term->Nttyb.sg_flags & sp->val) == sp->val)
-	    {
-		(void) strcat(buf, sp->name);
-		(void) strcat(buf, ", ");
-	    }
-	if (buf[strlen(buf) - 2] == ',')
-	    buf[strlen(buf) - 2] = '\0';
-	(void) strcat(buf,"} ");
+	lookup_bits(buf, cflags, "cflags", cur_term->Nttyb.sg_flags);
     }
 
 #endif

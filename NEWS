@@ -1,5 +1,28 @@
+-- $Id: NEWS,v 1.214 1997/06/15 01:26:47 tom Exp $
+
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+970614
+	+ remove ech capability from rxvt description because it does not work.
+	+ add missing case logic for infocmp -I option (reported by Lorenzo M.
+	  Catucci <lorenzo@argon.roma2.infn.it>)
+	+ correct old bug in pnoutrefresh() unmasked by fix in 970531; this
+	  caused glitches in the ncurses 'p' test since the area outside the
+	  pad was not compared when setting up indices for _nc_scroll_optimize.
+	+ rewrote tracebits() to workaround misdefinition of TOSTOP on Ultrix
+	  4.4, as well as to eliminate fixed-size buffer (reported by Chris
+	  Tanner <tannerc@aecl.ca>)
+	+ correct prototype for termattrs() as per XPG4 version 2.
+	+ add placeholder prototypes for color_set(), erasewchar(),
+	  term_attrs(), wcolor_set() as per XPG4 version 2.
+	+ correct attribution for progs/progs.priv.h and lib_twait.c
+	+ improve line-breakout logic by checking based on changed lines rather
+	  than total lines (patch by Alexander V. Lukyanov).
+	+ correct loop limits for table-lookup of enumerated value in form
+	  (patch by Juergen Pfeifer).
+	+ improve threshhold computation for determining when to call ClrToEOL
+	  (patch by Alexander V. Lukyanov).
 
 970531
 	+ add configure option --disable-database to force the library to

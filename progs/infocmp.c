@@ -30,7 +30,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.28 1997/05/24 22:18:55 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.29 1997/06/15 01:08:04 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -825,6 +825,13 @@ int main(int argc, char *argv[])
 			filecompare = TRUE;
 			break;
 
+		case 'I':
+			outform = F_TERMINFO;
+			if (sortmode == S_DEFAULT)
+			    sortmode = S_VARIABLE;
+			tversion = 0;
+			break;
+
 		case 'i':
 			init_analyze = TRUE;
 			break;
@@ -848,7 +855,7 @@ int main(int argc, char *argv[])
 			break;
 
 		case 'r':
-			tversion = (char *)NULL;
+			tversion = 0;
 			break;
 
 		case 'R':

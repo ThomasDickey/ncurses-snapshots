@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_enum.c,v 1.5 1997/02/15 17:33:59 tom Exp $")
+MODULE_ID("$Id: fty_enum.c,v 1.6 1997/06/09 22:15:30 juergen Exp $")
 
 typedef struct {
   char **kwds;
@@ -170,7 +170,7 @@ static bool Check_Enum_Field(FIELD * field, const void  * argp)
     {
       if ((res=Compare((unsigned char *)s,bp,ccase))!=NOMATCH)
 	{
-	  t=s;
+	  p=t=s; /* t is at least a partial match */
 	  if ((unique && res!=EXACT)) 
 	    {
 	      while( (p = *kwds++) )
@@ -181,16 +181,19 @@ static bool Check_Enum_Field(FIELD * field, const void  * argp)
 			{
 			  t = p;
 			  break;
-			}	
-		      t = (char *)0;
+			}
+		      else
+			t = (char *)0;
 		    }
 		}
-	    }
+	    }	  
 	  if (t)
 	    {
 	      set_field_buffer(field,0,t);
 	      return TRUE;
 	    }
+	  if (!p)
+	    break;
 	}
     }
   return FALSE;
