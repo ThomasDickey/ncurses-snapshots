@@ -1,17 +1,47 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970510
+	+ modify ncurses 'g' test to allow mouse input
+	+ modify default xterm description to include mouse.
+	+ modify configure script to add -Wwrite-strings if gcc warnings are
+	  enabled while configuring --enable-const (and fixed related warnings).
+	+ add toggle, status display for keypad mode to ncurses 'g' test to
+	  verify that keypad and scrollok are not inherited from parent window
+	  during a call to newwin.
+	+ correction to MKexpanded.sh to make it work when configure --srcdir is
+	  used (reported by H.J.Lu).
+	+ revise test for bool-type, ensuring that it checks if builtin.h is
+	  available before including it, adding test for sizeof(bool) equal
+	  to sizeof(short), and warning user if the size cannot be determined
+	  (reported by Alexander V. Lukyanov).
+	+ add files to support configuration of ncurses as an add-on library
+	  for GNU libc (patch by H.J.Lu <hjl@lucon.org>)
+
+970506
+	+ correct buffer overrun in lib_traceatr.c
+	+ modify change to lib_vidattr.c to avoid redundant orig_pair.
+	+ turn on 'echo()' in hanoi.c, since it is initially off.
+	+ rename local 'errno' variable in etip.h to avoid conflict with global
+	  (H.J.Lu).
+	+ modify configure script to cache LD, AR, AR_OPTS (patch by H.J.Lu
+	  <hjl@lucon.org>)
+
 970505	4.1 release
 	+ regenerate the misc directory html dumps without the link list, which
 	  is not useful.
 	+ correct dependency in form directory makefile which caused unnecessary
 	  recompiles.
+	+ correct substitution for ABI_VERSION in test-makefile
 	+ modify install rules for shared-library targets to remove the target
 	  before installing, since some install programs do not properly handle
 	  overwrite of symbolic links.
 	+ change order of top-level targets so that 'include' immediate
 	  precedes the 'ncurses' directory, reducing the time between new
 	  headers and new libraries (requested by Larry Virden).
+	+ modify lib_vidattr.c so that colors are turned off only before
+	  modifying other attributes, turned on after others.  This makes the
+	  hanoi.c program display correctly on FreeBSD console.
 	+ modify debug code in panel library to print user-data addresses
 	  rather than the strings which they (may) point to.
 	+ add check to ensure that C++ binding and demo are not built with g++

@@ -17,15 +17,15 @@ class NCursesForm;
 class NCursesException
 {
 public:
-  int errno;
+  int errorno;
   const char *message;
 
   NCursesException (const char* msg, int err)
-    : message(msg), errno (err)
+    : message(msg), errorno (err)
     {};
 
   NCursesException (const char* msg)
-    : message(msg), errno (E_SYSTEM_ERROR)
+    : message(msg), errorno (E_SYSTEM_ERROR)
     {};
 
   virtual const char *classname() const {

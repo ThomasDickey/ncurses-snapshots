@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.57 1997/05/04 19:21:08 tom Exp $
+dnl $Id: aclocal.m4,v 1.60 1997/05/10 15:56:16 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -64,14 +64,18 @@ fi
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Test for the size of 'bool' in the configured C++ compiler (e.g., a type).
+dnl Don't bother looking for bool.h, since it's been deprecated.
 AC_DEFUN([NC_BOOL_SIZE],
 [
 AC_MSG_CHECKING([for size of c++ bool])
 AC_CACHE_VAL(nc_cv_type_of_bool,[
 	rm -f nc_test.out
 	AC_TRY_RUN([
+#include <stdlib.h>
 #include <stdio.h>
+#if HAVE_BUILTIN_H
 #include <builtin.h>
+#endif
 main()
 {
 	FILE *fp = fopen("nc_test.out", "w");
@@ -79,6 +83,7 @@ main()
 		bool x = false;
 		if (sizeof(x) == sizeof(int))       fputs("int",  fp);
 		else if (sizeof(x) == sizeof(char)) fputs("char", fp);
+		else if (sizeof(x) == sizeof(short))fputs("short",fp);
 		else if (sizeof(x) == sizeof(long)) fputs("long", fp);
 		fclose(fp);
 	}
@@ -86,11 +91,15 @@ main()
 }
 		],
 		[nc_cv_type_of_bool=`cat nc_test.out`],
-		[nc_cv_type_of_bool=unsigned],
-		[nc_cv_type_of_bool=unsigned])
+		[nc_cv_type_of_bool=unknown],
+		[nc_cv_type_of_bool=unknown])
 	])
 	rm -f nc_test.out
 AC_MSG_RESULT($nc_cv_type_of_bool)
+if test $nc_cv_type_of_bool = unknown ; then
+	AC_MSG_WARN(Assuming unsigned for type of bool)
+	nc_cv_type_of_bool=unsigned
+fi
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Determine the default configuration into which we'll install ncurses.  This
@@ -273,7 +282,6 @@ dnl
 dnl	-Wconversion (useful in older versions of gcc, but not in gcc 2.7.x)
 dnl	-Wredundant-decls (system headers make this too noisy)
 dnl	-Wtraditional (combines too many unrelated messages, only a few useful)
-dnl	-Wwrite-strings (too noisy, but should review occasionally)
 dnl
 AC_DEFUN([NC_GCC_WARNINGS],
 [nc_warn_CFLAGS=""
@@ -288,6 +296,8 @@ EOF
 	AC_CHECKING([for gcc warning options])
 	nc_save_CFLAGS="$CFLAGS"
 	nc_warn_CFLAGS="-W -Wall"
+	nc_warn_CONST=""
+	test "$with_ext_const" = yes && nc_warn_CONST="Wwrite-strings"
 	for nc_opt in \
 		Wbad-function-cast \
 		Wcast-align \
@@ -298,7 +308,7 @@ EOF
 		Wnested-externs \
 		Wpointer-arith \
 		Wshadow \
-		Wstrict-prototypes
+		Wstrict-prototypes $nc_warn_CONST
 	do
 		CFLAGS="$nc_save_CFLAGS $nc_warn_CFLAGS -$nc_opt"
 		if AC_TRY_EVAL(ac_compile); then
@@ -1079,6 +1089,7 @@ test -z "[$]$2" && $2=$3
 AC_MSG_RESULT([$]$2)
 AC_SUBST($2)
 nc_cv_subst_$2=[$]$2])
+$2=${nc_cv_subst_$2}
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl	Check for declarion of sys_errlist in one of stdio.h and errno.h.  

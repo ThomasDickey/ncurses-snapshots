@@ -43,12 +43,16 @@
  *	NOTE that this algorithm won't achieve the desired mix of attributes
  *	in some cases, but those are probably just those cases in which it is
  *	actually impossible, anyway, so...
+ *
+ * 	NOTE that we cannot assume that there's no interaction between color
+ *	and other attribute resets.  So each time we reset color (or other
+ *	attributes) we'll have to be prepared to restore the other.
  */
 
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.13 1997/05/06 00:53:37 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.14 1997/05/06 16:02:43 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -86,6 +90,7 @@ int pair, current_pair;
 		T(("old pair = %d -- new pair = %d", current_pair, pair));
 		if (pair != current_pair) {
 			_nc_do_color(pair, outc);
+			previous_attr &= ~A_COLOR;
 		}
 	}
 
@@ -94,12 +99,9 @@ int pair, current_pair;
 			doPut(exit_alt_charset_mode);
 			previous_attr &= ~A_ALTCHARSET;
 		}
-		if (previous_attr & A_COLOR) {
-			doPut(orig_pair);
-			previous_attr &= ~A_COLOR;
-		}
 		if (previous_attr) {
 			doPut(exit_attribute_mode);
+			previous_attr &= ~A_COLOR;
 		}
 
 	} else if (set_attributes) {
@@ -115,11 +117,7 @@ int pair, current_pair;
 				(newmode & A_INVIS) != 0,
 				(newmode & A_PROTECT) != 0,
 				(newmode & A_ALTCHARSET) != 0), 1, outc);
-			/*
-			 * Setting attributes in this way tends to unset the
-			 * ones (such as color) that weren't specified.
-			 */
-			turn_off |= A_COLOR;
+			previous_attr &= ~A_COLOR;
 		}
 	} else {
 
@@ -132,7 +130,7 @@ int pair, current_pair;
 		if (turn_off && exit_attribute_mode) {
 			doPut(exit_attribute_mode);
 			turn_on  |= (newmode & (chtype)(~A_COLOR));
-			turn_off |= A_COLOR;
+			previous_attr &= ~A_COLOR;
 		}
 
 		T(("turning %s on", _traceattr(turn_on)));
@@ -156,8 +154,9 @@ int pair, current_pair;
 
 	/* if there is no current screen, assume we *can* do color */
 	if ((!SP || SP->_coloron) && pair != 0) {
+		current_pair = PAIR_NUMBER(previous_attr);
 		T(("old pair = %d -- new pair = %d", current_pair, pair));
-		if (pair != current_pair || (turn_off && pair)) {
+		if (pair != current_pair) {
 			_nc_do_color(pair, outc);
 		}
 	}

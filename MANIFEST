@@ -92,6 +92,7 @@
 ./Ada95/html/curs_touch.3x.html
 ./Ada95/html/curs_util.3x.html
 ./Ada95/html/curs_window.3x.html
+./Ada95/html/dft_fgbg.3x.html
 ./Ada95/html/form.3x.html
 ./Ada95/html/form_cursor.3x.html
 ./Ada95/html/form_data.3x.html
@@ -207,9 +208,11 @@
 ./Ada95/samples/tour.ads
 ./INSTALL
 ./MANIFEST
+./Makefile.glibc
 ./Makefile.in
 ./NEWS
 ./README
+./README.glibc
 ./TO-DO
 ./aclocal.m4
 ./announce.html
@@ -547,6 +550,11 @@
 ./progs/toe.c
 ./progs/tput.c
 ./progs/tset.c
+./sysdeps/unix/sysv/linux/Makefile
+./sysdeps/unix/sysv/linux/configure
+./sysdeps/unix/sysv/linux/edit_man.sed
+./sysdeps/unix/sysv/linux/edit_man.sh
+./sysdeps/unix/sysv/linux/run_tic.sh
 ./test/Makefile.in
 ./test/README
 ./test/blue.c

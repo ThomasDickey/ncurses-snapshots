@@ -36,7 +36,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.30 1997/04/26 16:07:48 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.31 1997/05/10 17:31:08 tom Exp $")
 
 TERMINAL *cur_term;
 
@@ -62,9 +62,9 @@ static bool have_tic_directory = FALSE;
  * Record the "official" location of the terminfo directory, according to
  * the place where we're writing to, or the normal default, if not.
  */
-char *_nc_tic_dir(char *path)
+const char *_nc_tic_dir(const char *path)
 {
-	static char *result = TERMINFO;
+	static const char *result = TERMINFO;
 
 	if (path != 0) {
 		result = path;
