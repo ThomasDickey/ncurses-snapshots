@@ -103,7 +103,7 @@ char *ttyname(int fd);
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tset.c,v 0.50 2001/06/16 11:21:04 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.51 2001/06/18 18:42:51 tom Exp $")
 
 extern char **environ;
 
@@ -120,7 +120,7 @@ static int intrchar = -1;	/* new interrupt character */
 static int tkillchar = -1;	/* new kill character */
 static int tlines, tcolumns;	/* window size */
 
-#define LOWERCASE(c) ((isalpha(CharOf(c)) && isupper(CharOf(c))) ? tolower(CharOf(c)) : (c))
+#define LOWERCASE(c) ((isalpha(UChar(c)) && isupper(UChar(c))) ? tolower(UChar(c)) : (c))
 
 static int
 CaselessCmp(const char *a, const char *b)
@@ -534,7 +534,7 @@ get_termcap_entry(char *userarg)
 
 	    while (fgets(buffer, sizeof(buffer) - 1, fp) != 0) {
 		for (s = buffer, t = d = 0; *s; s++) {
-		    if (isspace(CharOf(*s)))
+		    if (isspace(UChar(*s)))
 			*s = '\0';
 		    else if (t == 0)
 			t = s;

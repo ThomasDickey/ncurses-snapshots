@@ -27,30 +27,73 @@
  ****************************************************************************/
 
 /*
-**	lib_wunctrl.c
+**	lib_cchar.c
 **
-**	The routine wunctrl().
+**	The routines setcchar() and getcchar().
 **
 */
 
 #include <curses.priv.h>
 
-#if USE_WIDEC_SUPPORT && HAVE_BOTWC
+#if USE_WIDEC_SUPPORT
 
-MODULE_ID("$Id: lib_wunctrl.c,v 1.3 2001/06/18 18:39:30 skimo Exp $")
+MODULE_ID("$Id: lib_cchar.c,v 1.1 2001/06/18 18:23:18 skimo Exp $")
 
-NCURSES_EXPORT(wchar_t *)
-wunctrl(cchar_t * wc)
+/* 
+ * The SuSv2 description leaves some room for interpretation.
+ * We'll assume wch is L'\0' terminated, contains at most
+ * one character with strictly positive width, which must
+ * be the first, and contains no characters of negative 
+ * width.
+ */
+
+NCURSES_EXPORT(int)
+setcchar(cchar_t * wcval, const wchar_t * wch, const attr_t attrs,
+	 short color_pair, const void *opts)
 {
-    static wchar_t str[5], *sp;
+    int i, len;
 
-    if (Charable(*wc)) {
-	char *p;
-	for (p = unctrl(wctob(CharOf(*wc))), sp = str; *p;)
-	    *sp++ = btowc(*p++);
-	return str;
-    } else
-	return wc.chars;
+    if (opts != NULL || (len = wcslen(wch)) > CCHARW_MAX
+	|| (len > 0 && wcwidth(wch[0]) < 0))
+	returnCode(ERR);
+
+    for (i = 1; i < len; ++i)
+	if (wcwidth(wch[i]) != 0)
+	    returnCode(ERR);
+
+    memset(wcval, 0, sizeof(*wcval));
+
+    if (len == 0)
+	returnCode(OK);
+
+    SetAttr(*wcval, attrs | color_pair);
+    memcpy(&wcval->chars, wch, len * sizeof(wchar_t));
+
+    returnCode(OK);
+}
+
+NCURSES_EXPORT(int)
+getcchar(const cchar_t * wcval, wchar_t * wch, attr_t * attrs,
+	 short *color_pair, void *opts)
+{
+    wchar_t *wp;
+    int len;
+
+    if (opts != NULL)
+	returnCode(ERR);
+
+    len = (wp = wmemchr(wcval->chars, L'\0', CCHARW_MAX)) ? wp - wcval->chars
+	: CCHARW_MAX;
+
+    if (wch == NULL)
+	return len + 1;
+
+    *attrs = AttrOf(*wcval) & A_ATTRIBUTES;
+    *color_pair = AttrOf(*wcval) & A_COLOR;
+    wmemcpy(wch, wcval->chars, len);
+    wch[len] = L'\0';
+
+    returnCode(OK);
 }
 
 #endif

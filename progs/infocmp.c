@@ -41,7 +41,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.60 2001/02/24 22:03:12 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.61 2001/06/18 18:43:41 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -947,7 +947,7 @@ name_initializer(const char *type)
 
     (void) sprintf(initializer, "%s_data_%s", type, entries->tterm.term_names);
     for (s = initializer; *s != 0 && *s != '|'; s++) {
-	if (!isalnum(CharOf(*s)))
+	if (!isalnum(UChar(*s)))
 	    *s = '_';
     }
     *s = 0;
@@ -1027,13 +1027,13 @@ dump_initializers(TERMTYPE * term)
 	    for (sp = term->Strings[n];
 		 *sp != 0 && (tp - buf) < MAX_STRING - 6;
 		 sp++) {
-		if (isascii(CharOf(*sp))
-		    && isprint(CharOf(*sp))
+		if (isascii(UChar(*sp))
+		    && isprint(UChar(*sp))
 		    && *sp != '\\'
 		    && *sp != '"')
 		    *tp++ = *sp;
 		else {
-		    (void) sprintf(tp, "\\%03o", CharOf(*sp));
+		    (void) sprintf(tp, "\\%03o", UChar(*sp));
 		    tp += 4;
 		}
 	    }

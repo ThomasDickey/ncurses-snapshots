@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.110 2001/06/16 16:01:09 tom Exp $ */
+/* $Id: curses.h.in,v 1.111 2001/06/18 18:22:39 skimo Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -399,8 +399,8 @@ extern NCURSES_EXPORT(int) addstr (const char *);			/* generated */
 extern NCURSES_EXPORT(int) addnwstr (const wchar_t *, int);		/* generated:WIDEC */
 extern NCURSES_EXPORT(int) addwstr (const wchar_t *);			/* generated:WIDEC */
 extern NCURSES_EXPORT(int) add_wch (const cchar_t *);			/* generated:WIDEC */
-extern NCURSES_EXPORT(int) add_wchnstr (const cchar_t *, int);		/* missing */
-extern NCURSES_EXPORT(int) add_wchstr (const cchar_t *);		/* missing */
+extern NCURSES_EXPORT(int) add_wchnstr (const cchar_t *, int);		/* implemented */
+extern NCURSES_EXPORT(int) add_wchstr (const cchar_t *);		/* generated:WIDEC */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern NCURSES_EXPORT(int) attroff (NCURSES_ATTR_T);			/* generated */
 extern NCURSES_EXPORT(int) attron (NCURSES_ATTR_T);			/* generated */
@@ -462,7 +462,7 @@ extern NCURSES_EXPORT(int) flushinp (void);				/* implemented */
 extern NCURSES_EXPORT(chtype) getbkgd (WINDOW *);			/* @NCURSES_getbkgd_gen@ */
 #ifdef _XOPEN_SOURCE_EXTENDED
 extern NCURSES_EXPORT(int) getbkgrnd (cchar_t *);			/* generated:WIDEC */
-extern NCURSES_EXPORT(int) getcchar (const cchar_t *, wchar_t*, attr_t*, short*, void*);	/* missing */
+extern NCURSES_EXPORT(int) getcchar (const cchar_t *, wchar_t*, attr_t*, short*, void*);	/* implemented */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern NCURSES_EXPORT(int) getch (void);				/* generated */
 extern NCURSES_EXPORT(int) getnstr (char *, int);			/* generated */
@@ -542,7 +542,7 @@ extern NCURSES_EXPORT(int) mvaddnwstr (int, int, const wchar_t *, int);	/* gener
 extern NCURSES_EXPORT(int) mvaddwstr (int, int, const wchar_t *);	/* generated:WIDEC */
 extern NCURSES_EXPORT(int) mvadd_wch (int, int, const cchar_t *);	/* generated:WIDEC */
 extern NCURSES_EXPORT(int) mvadd_wchnstr (int, int, const cchar_t *, int);/* missing */
-extern NCURSES_EXPORT(int) mvadd_wchstr (int, int, const cchar_t *);	/* missing */
+extern NCURSES_EXPORT(int) mvadd_wchstr (int, int, const cchar_t *);	/* generated:WIDEC */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern NCURSES_EXPORT(int) mvchgat (int, int, int, attr_t, short, const void *);	/* generated */
 extern NCURSES_EXPORT(int) mvcur (int,int,int,int);			/* implemented */
@@ -602,7 +602,7 @@ extern NCURSES_EXPORT(int) mvwaddnwstr (WINDOW *, int, int, const wchar_t *, int
 extern NCURSES_EXPORT(int) mvwaddwstr (WINDOW *, int, int, const wchar_t *);	/* generated:WIDEC */
 extern NCURSES_EXPORT(int) mvwadd_wch (WINDOW *, int, int, const cchar_t *);	/* generated:WIDEC */
 extern NCURSES_EXPORT(int) mvwadd_wchnstr (WINDOW *, int, int, const cchar_t *, int); /* missing */
-extern NCURSES_EXPORT(int) mvwadd_wchstr (WINDOW *, int, int, const cchar_t *);	/* missing */
+extern NCURSES_EXPORT(int) mvwadd_wchstr (WINDOW *, int, int, const cchar_t *);	/* generated:WIDEC */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern NCURSES_EXPORT(int) mvwchgat (WINDOW *, int, int, int, attr_t, short, const void *);/* generated */
 extern NCURSES_EXPORT(int) mvwdelch (WINDOW *, int, int);		/* generated */
@@ -696,7 +696,7 @@ extern NCURSES_EXPORT(int) scrollok (WINDOW *,bool);			/* implemented */
 extern NCURSES_EXPORT(int) scr_restore (const char *);			/* implemented */
 extern NCURSES_EXPORT(int) scr_set (const char *);			/* implemented */
 #ifdef _XOPEN_SOURCE_EXTENDED
-extern NCURSES_EXPORT(int) setcchar (cchar_t *, const wchar_t *, const attr_t, short, const void *);	/* missing */
+extern NCURSES_EXPORT(int) setcchar (cchar_t *, const wchar_t *, const attr_t, short, const void *);	/* implemented */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern NCURSES_EXPORT(int) setscrreg (int,int);				/* generated */
 extern NCURSES_EXPORT(SCREEN *) set_term (SCREEN *);			/* implemented */
@@ -766,7 +766,7 @@ extern NCURSES_EXPORT(int) waddwstr (WINDOW *,const wchar_t *);		/* generated:WI
 extern NCURSES_EXPORT(int) waddnwstr (WINDOW *,const wchar_t *,int);	/* implemented:WIDEC */
 extern NCURSES_EXPORT(int) wadd_wch (WINDOW *,const cchar_t *);		/* implemented:WIDEC */
 extern NCURSES_EXPORT(int) wadd_wchnstr (WINDOW *,const cchar_t *,int);	/* missing */
-extern NCURSES_EXPORT(int) wadd_wchstr (WINDOW *,const cchar_t *);	/* missing */
+extern NCURSES_EXPORT(int) wadd_wchstr (WINDOW *,const cchar_t *);	/* generated:WIDEC */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern NCURSES_EXPORT(int) wattron (WINDOW *, int);			/* generated */
 extern NCURSES_EXPORT(int) wattroff (WINDOW *, int);			/* generated */
@@ -965,6 +965,7 @@ extern NCURSES_EXPORT(bool) mouse_trafo (int*, int*, bool);              /* gene
 #define winsstr(w, s)		winsnstr(w, s, -1)
 
 #define redrawwin(win)		wredrawln(win, 0, (win)->_maxy+1)
+#define wadd_wchstr(win,str)	wadd_wchnstr(win,str,-1)
 #define waddstr(win,str)	waddnstr(win,str,-1)
 #define waddchstr(win,str)	waddchnstr(win,str,-1)
 
@@ -972,6 +973,8 @@ extern NCURSES_EXPORT(bool) mouse_trafo (int*, int*, bool);              /* gene
  * pseudo functions for standard screen
  */
 
+#define add_wchnstr(str,n)	wadd_wchnstr(stdscr,str,n)
+#define add_wchstr(str)		wadd_wchstr(stdscr,str)
 #define addch(ch)      		waddch(stdscr,ch)
 #define addchnstr(str,n)	waddchnstr(stdscr,str,n)
 #define addchstr(str)		waddchstr(stdscr,str)

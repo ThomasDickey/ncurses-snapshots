@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.21 2001/06/16 18:00:01 tom Exp $ */
+/* $Id: test.priv.h,v 1.23 2001/06/18 18:45:10 tom Exp $ */
 
 #if HAVE_CONFIG_H
 #include <ncurses_cfg.h>
@@ -64,6 +64,10 @@
 #include <unistd.h>
 #endif
 
+#if USE_WIDEC_SUPPORT
+#define _XOPEN_SOURCE_EXTENDED
+#include <wchar.h>	/* we want mbstate_t */
+#endif
 #include <curses.h>
 
 #if NCURSES_NOMACROS
@@ -87,7 +91,7 @@ extern int optind;
 #define GCC_UNUSED /* nothing */
 #endif
 
-#define CharOf(c)    ((unsigned char)(c))
+#define UChar(c)    ((unsigned char)(c))
 
 #define SIZEOF(table)	(sizeof(table)/sizeof(table[0]))
 

@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.632 2001/06/16 18:02:54 tom Exp $
+-- $Id: NEWS,v 1.633 2001/06/18 18:46:07 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010618
+	+ change overlooked several CharOf/UChar instances.
+	> several patches from Sven Verdoolaege:
+	+ correct a typo in wunctrl(), which made it appear that botwc() was
+	  needed (no such function: use btowc()).
+	+ reimplement wide-character demo in test/view.c, using new functions.
+	+ implement getcchar(), setcchar(), wadd_wchnstr() and related macros.
+	+ fix a syntax problem with do/if/while in PUTC macro (curses.priv.h).
 
 20010616
 	+ add parentheses in macros for malloc in test.priv.h, fixes an

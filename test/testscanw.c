@@ -2,7 +2,7 @@
  * Date:  1997/03/17
  * From:  bayern@morpheus.cis.yale.edu
  *
- * $Id: testscanw.c,v 1.6 2000/11/04 23:32:56 tom Exp $
+ * $Id: testscanw.c,v 1.7 2001/06/18 18:45:16 tom Exp $
  */
 #include <test.priv.h>
 #include <ctype.h>
@@ -22,7 +22,7 @@ main(int argc, char *argv[])
     trace(TRACE_UPDATE | TRACE_CALLS);
 #endif
     while (argc > 1) {
-	if (isdigit(CharOf(*argv[1])))
+	if (isdigit(UChar(*argv[1])))
 	    move(atoi(argv[1]), 0);
 	else if (!strcmp(argv[1], "-k"))
 	    keypad(stdscr, TRUE);
