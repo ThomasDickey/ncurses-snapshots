@@ -33,7 +33,7 @@
 #include <curses.priv.h>
 #include <tic.h>
 
-MODULE_ID("$Id: access.c,v 1.4 2000/10/08 01:25:06 tom Exp $")
+MODULE_ID("$Id: access.c,v 1.5 2000/11/12 01:34:00 Solar.Designer Exp $")
 
 char *
 _nc_basename(char *path)
@@ -89,6 +89,6 @@ _nc_env_access(void)
      || getgid() != getegid())
 	return FALSE;
 #endif
-    return getuid() != 0;	/* ...finally, disallow root */
+    return getuid() != 0 && geteuid() != 0;	/* ...finally, disallow root */
 }
 #endif

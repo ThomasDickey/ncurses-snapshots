@@ -55,7 +55,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.51 2000/10/21 00:34:11 Philip.Guenther Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.52 2000/11/12 01:21:26 Solar.Designer Exp $")
 
 #if !PURE_TERMINFO
 
@@ -1013,7 +1013,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE * const tp)
 
 #define PRIVATE_CAP "%s/.termcap"
 
-	if ((h = getenv("HOME")) != NULL && *h != '\0'
+	if (use_terminfo_vars() && (h = getenv("HOME")) != NULL && *h != '\0'
 	    && (strlen(h) + sizeof(PRIVATE_CAP)) < PATH_MAX) {
 	    /* user's .termcap, if any, should override it */
 	    (void) strcpy(envhome, h);

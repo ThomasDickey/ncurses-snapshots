@@ -50,7 +50,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.49 2000/11/04 22:50:16 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.50 2000/11/11 21:05:40 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -458,7 +458,7 @@ char
 _nc_trans_string(char *ptr, char *last)
 {
     int count = 0;
-    int number;
+    int number = 0;
     int i, c;
     chtype ch, last_ch = '\0';
     bool ignored = FALSE;

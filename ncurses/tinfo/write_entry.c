@@ -52,7 +52,7 @@
 #define TRACE_OUT(p)		/*nothing */
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.53 2000/10/04 02:32:14 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.54 2000/11/11 21:30:56 tom Exp $")
 
 static int total_written;
 
@@ -164,7 +164,7 @@ check_writeable(int code)
     static bool verified[sizeof(dirnames)];
 
     char dir[2];
-    char *s;
+    char *s = 0;
 
     if (code == 0 || (s = strchr(dirnames, code)) == 0)
 	_nc_err_abort("Illegal terminfo subdirectory \"%c\"", code);
@@ -333,10 +333,15 @@ _nc_write_entry(TERMTYPE * const tp)
 		 */
 		if (code == 0 && errno == EEXIST)
 		    _nc_warning("can't link %s to %s", filename, linkname);
-		else if (code == 0 && errno == EPERM)
+		else if (code == 0 && (errno == EPERM || errno == ENOENT))
 		    write_file(linkname, tp);
-		else
+		else {
+#if MIXEDCASE_FILENAMES
 		    _nc_syserr_abort("can't link %s to %s", filename, linkname);
+#else
+		    _nc_warning("can't link %s to %s (errno=%d)", filename, linkname, errno);
+#endif
+		}
 	    } else {
 		DEBUG(1, ("Linked %s", linkname));
 	    }
