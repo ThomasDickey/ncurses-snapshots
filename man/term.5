@@ -54,14 +54,13 @@ Short integers are stored in two 8-bit bytes.
 The first byte contains the least significant 8 bits of the value,
 and the second byte contains the most significant 8 bits.
 (Thus, the value represented is 256*second+first.)
-The value \-1 is represented by 0377, 0377, other negative
-value are illegal.
-The
-\-1 generally means that a capability is missing from this terminal.
+The value \-1 is represented by the two bytes 0377, 0377; other negative
+values are illegal. This value generally 
+means that the corresponding capability is missing from this terminal.
 Note that this format corresponds to the hardware of the \s-1VAX\s+1
 and \s-1PDP\s+1-11 (that is, little-endian machines).
-Machines where this does not correspond to the hardware read the
-integers as two bytes and compute the result.
+Machines where this does not correspond to the hardware must read the
+integers as two bytes and compute the little-endian value.
 .PP
 The terminal names section comes next.
 It contains the first line of the terminfo description,
@@ -75,12 +74,15 @@ The capabilities are in the same order as the file <term.h>.
 .PP
 Between the boolean section and the number section,
 a null byte will be inserted, if necessary,
-to ensure that the number section begins on an even byte.
+to ensure that the number section begins on an even byte (this is a
+relic of the PDP-11's word-addessed architecture, originally
+designed in to avoid IOT traps induced by addressing a word on an
+odd byte boundary).
 All short integers are aligned on a short word boundary.
 .PP
 The numbers section is similar to the flags section.
 Each capability takes up two bytes,
-and is stored as a short integer.
+and is stored as a little-endian short integer.
 If the value represented is \-1, the capability is taken to be missing.
 .PP
 The strings section is also similar.
@@ -116,30 +118,40 @@ this is why the numbers and sizes are included.
 Also, new capabilities must always be added at the end of the lists
 of boolean, number, and string capabilities.
 .PP
-As an example, an octal dump of the description for the Microterm ACT 4
-is included:
+As an example, here is a hex dump of the description for the Lear-Siegler
+ADM-3, a popular though rather stupid early terminal:
 .nf
 .sp
-microterm|act4|microterm act iv,
-    cr=^M, cud1=^J, ind=^J, bel=^G, am, cub1=^H,
-    ed=^_, el=^^, clear=^L, cup=^T%p1%c%p2%c,
-    cols#80, lines#24, cuf1=^X, cuu1=^Z, home=^],
+adm3a|lsi adm3a, 
+        am, 
+        cols#80, lines#24, 
+        bel=^G, clear=\032$<1>, cr=^M, cub1=^H, cud1=^J, 
+        cuf1=^L, cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, 
+        home=^^, ind=^J, 
 .sp
 .ft CW
-\s-2000 032 001      \e0 025  \e0  \eb  \e0 212  \e0   "  \e0   m   i   c   r
-020   o   t   e   r   m   |   a   c   t   4   |   m   i   c   r   o
-040   t   e   r   m       a   c   t       i   v  \e0  \e0 001  \e0  \e0
-060  \e0  \e0  \e0  \e0  \e0  \e0  \e0  \e0  \e0  \e0  \e0  \e0  \e0  \e0  \e0  \e0
-100  \e0  \e0   P  \e0 377 377 030  \e0 377 377 377 377 377 377 377 377
-120 377 377 377 377  \e0  \e0 002  \e0 377 377 377 377 004  \e0 006  \e0
-140  \eb  \e0 377 377 377 377  \en  \e0 026  \e0 030  \e0 377 377 032  \e0
-160 377 377 377 377 034  \e0 377 377 036  \e0 377 377 377 377 377 377
-200 377 377 377 377 377 377 377 377 377 377 377 377 377 377 377 377
-*
-520 377 377 377 377      \e0 377 377 377 377 377 377 377 377 377 377
-540 377 377 377 377 377 377 007  \e0  \er  \e0  \ef  \e0 036  \e0 037  \e0
-560 024   %   p   1   %   c   %   p   2   %   c  \e0  \en  \e0 035  \e0
-600  \eb  \e0 030  \e0 032  \e0  \en  \e0\s+2
+\s-20000  1a 01 10 00 02 00 03 00  82 00 31 00 61 64 6d 33  ........ ..1.adm3
+0010  61 7c 6c 73 69 20 61 64  6d 33 61 00 00 01 50 00  a|lsi ad m3a...P.
+0020  ff ff 18 00 ff ff 00 00  02 00 ff ff ff ff 04 00  ........ ........
+0030  ff ff ff ff ff ff ff ff  0a 00 25 00 27 00 ff ff  ........ ..%.'...
+0040  29 00 ff ff ff ff 2b 00  ff ff 2d 00 ff ff ff ff  ).....+. ..-.....
+0050  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ........ ........
+0060  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ........ ........
+0070  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ........ ........
+0080  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ........ ........
+0090  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ........ ........
+00a0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ........ ........
+00b0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ........ ........
+00c0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ........ ........
+00d0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ........ ........
+00e0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ........ ........
+00f0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ........ ........
+0100  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ........ ........
+0110  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  ........ ........
+0120  ff ff ff ff ff ff 2f 00  07 00 0d 00 1a 24 3c 31  ....../. .....$<1
+0130  3e 00 1b 3d 25 70 31 25  7b 33 32 7d 25 2b 25 63  >..=%p1% {32}%+%c
+0140  25 70 32 25 7b 33 32 7d  25 2b 25 63 00 0a 00 1e  %p2%{32} %+%c....
+0150  00 08 00 0c 00 0b 00 0a  00                       ........ .\s+2
 .ft R
 .fi
 .sp

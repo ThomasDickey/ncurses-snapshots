@@ -76,7 +76,7 @@ unctrl.h: $(srcdir)/unctrl.h.in Makefile
 GETMEXCLUDE=bool
 
 Caps.filtered: ${srcdir}/Caps
-	grep -v '"getm"	*$(GETMEXCLUDE)' ${srcdir}/Caps >$@
+	grep -v 'getm	*$(GETMEXCLUDE)' ${srcdir}/Caps >$@
 
 term.h: Caps.filtered MKterm.h.awk
 	$(AWK) -f MKterm.h.awk Caps.filtered > $@

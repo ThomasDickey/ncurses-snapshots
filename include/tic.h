@@ -30,6 +30,38 @@
 
 #include <curses.h>	/* for the _tracef() prototype, ERR/OK, bool defs */
 
+/*
+** The format of compiled terminfo files is as follows:
+**
+**		Header (12 bytes), containing information given below
+**		Names Section, containing the names of the terminal
+**		Boolean Section, containing the values of all of the
+**				boolean capabilities
+**				A null byte may be inserted here to make
+**				sure that the Number Section begins on an
+**				even word boundary.
+**		Number Section, containing the values of all of the numeric
+**				capabilities, each as a short integer
+**		String Section, containing short integer offsets into the
+**				String Table, one per string capability
+**		String Table, containing the actual characters of the string
+**				capabilities.
+**
+**	NOTE that all short integers in the file are stored using VAX/PDP-style
+**	byte-order, i.e., least-significant byte first.
+**
+**	There is no structure definition here because it would only confuse
+**	matters.  Terminfo format is a raw byte layout, not a structure
+**	dump.  If you happen to be on a little-endian machine with 16-bit
+**	shorts that requires no padding between short members in a struct,
+**	then there is a natural C structure that captures the header, but
+**	not very helpfully.
+*/
+
+#define MAGIC		0432	/* first two bytes of a compiled entry */
+#define MAX_NAME_SIZE	127	/* maximum legal name size */
+#define MAX_ENTRY_SIZE	4096	/* maximum legal entry size */
+
 #define DEBUG(n, a)	if (_nc_tracing & (1 << (n - 1))) _tracef a 
 extern int _nc_tracing;
 extern void _nc_tracef(char *, ...);
@@ -67,32 +99,33 @@ struct token
 extern	struct token	_nc_curr_token;
 
 	/*
-	 *	The file comp_captab.c contains an array of these structures,
-	 *	one per possible capability.  These are then made into a hash
-	 *	table array of the same structures for use by the parser.
-	 *
+	 * The file comp_captab.c contains an array of these structures, one
+	 * per possible capability.  These are indexed by a hash table array of
+	 * pointers to the same structures for use by the parser.
 	 */
 
 struct name_table_entry
 {
-	struct name_table_entry *nte_link;
 	char	*nte_name;	/* name to hash on */
 	int	nte_type;	/* BOOLEAN, NUMBER or STRING */
 	short	nte_index;	/* index of associated variable in its array */
+	short	nte_link;	/* index in table of next hash, or -1 */
 };
 
 struct alias
 {
     char	*from;
     char	*to;
+    char	*source;
 };
 
+extern const struct name_table_entry * const _nc_info_hash_table[];
+extern const struct name_table_entry * const _nc_cap_hash_table[];
 
-extern struct name_table_entry	*_nc_info_hash_table[];
-extern struct name_table_entry	*_nc_cap_hash_table[];
-extern const struct alias _nc_alias_table[];
+extern const struct alias _nc_capalias_table[];
+extern const struct alias _nc_infoalias_table[];
 
-extern struct name_table_entry	*_nc_get_table(bool);
+extern const struct name_table_entry	*_nc_get_table(bool);
 
 #define NOTFOUND	((struct name_table_entry *) 0)
 
@@ -113,13 +146,11 @@ extern struct name_table_entry	*_nc_get_table(bool);
 #define MAX_TERMINFO_LENGTH	4096
 
 /* comp_hash.c: name lookup */
-extern void _nc_make_hash_table(struct name_table_entry *,
-			    struct name_table_entry **);
-struct name_table_entry	*_nc_find_entry(const char *,
-				    struct name_table_entry **);
-struct name_table_entry *_nc_find_type_entry(const char *,
+struct name_table_entry	const *_nc_find_entry(const char *,
+				    const struct name_table_entry *const *);
+struct name_table_entry const *_nc_find_type_entry(const char *,
 					 int,
-					 struct name_table_entry *);
+					 const struct name_table_entry *);
 
 /* comp_scan.c: lexical analysis */
 extern int  _nc_get_token(void);
@@ -142,8 +173,8 @@ extern void _nc_warning(const char *,...);
 extern bool _nc_suppress_warnings;
 
 /* captoinfo.c: capability conversion */
-extern char *_nc_captoinfo(char *, char *, bool);
-extern char *_nc_infotocap(char *, char *, bool);
+extern char *_nc_captoinfo(char *, char *, int);
+extern char *_nc_infotocap(char *, char *, int);
 
 /* comp_main.c: compiler main */
 extern char	*_nc_progname;

@@ -43,11 +43,12 @@
 #include <string.h>
 #include <curses.h>
 #include "term.h"
-#include "object.h"
+#include "tic.h"
 
-#define OFFSET_BUFSIZE	100
+TERMINAL *cur_term;
 
 #define min(a, b)	((a) > (b)  ?  (b)  :  (a))
+#define max(a, b)	((a) < (b)  ?  (b)  :  (a))
 
 /*
  *	int
@@ -55,136 +56,107 @@
  *
  *	Read the compiled terminfo entry in the given file into the
  *	structure pointed to by ptr, allocating space for the string
- *	table and placing its address in ptr->str_table.
- *
+ *	table.
  */
 
-#define swap(x)		(((x >> 8) & 0377) + 256 * (x & 0377))
-
-TERMINAL *cur_term;
+#define IS_NEG1(p)	(((p)[0] == 0377) && ((p)[1] == 0377))
+#define LOW_MSB(p)	((p)[0] + 256*(p)[1])
 
 int _nc_read_file_entry(char *filename, TERMTYPE *ptr)
 {
-int		fd;
-int		numread;
-int		num_strings;
-int		cur_string;
-int		i;
-struct header	header;
-unsigned char	bytebuf[2];
-char		ch;
-union {
-    short            number;
-    unsigned char    byte[2];
-} offset_buf[OFFSET_BUFSIZE];
-char namebuf[128];
+    int			name_size, bool_count, num_count, str_count, str_size;
+    int			i, fd, numread;
+    unsigned char 	buf[MAX_ENTRY_SIZE];
 
-	fd = open(filename, 0);
+    if ((fd = open(filename, 0)) < 0)
+	return(-1);
 
-	if (fd < 0) {
-	    return(-1);
-	}
-
-	read(fd, &header, sizeof(header));
-
-	if (_nc_must_swap()) {
-	    	header.magic = swap(header.magic);
-	    	header.name_size = swap(header.name_size);
-	    	header.bool_count = swap(header.bool_count);
-	    	header.num_count = swap(header.num_count);
-	    	header.str_count = swap(header.str_count);
-	    	header.str_size = swap(header.str_size);
-	}
-
-	if (header.magic != MAGIC)
-	{
-	    	close(fd);
-	    	return(-1);
-	}
-
-	read(fd, namebuf, min(127, (unsigned)header.name_size));
-	namebuf[127] = '\0';
-	ptr->term_names = calloc(sizeof(char), strlen(namebuf) + 1);
-	(void) strcpy(ptr->term_names, namebuf);
-	if (header.name_size > 127)
-	    	lseek(fd, (off_t) (header.name_size - 127), 1);
-
-	read(fd, ptr->Booleans, min(BOOLCOUNT, (unsigned)header.bool_count));
-	if (header.bool_count > BOOLCOUNT)
-	    	lseek(fd, (off_t) (header.bool_count - BOOLCOUNT), 1);
-	else
-	    	for (i=header.bool_count; i < BOOLCOUNT; i++)
-			ptr->Booleans[i] = 0;
-
-	if ((header.name_size + header.bool_count) % 2 != 0)
-	    	read(fd, &ch, 1);
-
-	if (!_nc_must_swap()) {
-	    	read(fd, ptr->Numbers, min(NUMCOUNT * 2, (unsigned)header.num_count * 2));
-	} else {
-	   	for (i=0; i < min(header.num_count, NUMCOUNT); i++) {
-			read(fd, bytebuf, 2);
-			if (bytebuf[0] == 0xff  &&  bytebuf[1] == 0xff)
-		    	ptr->Numbers[i] = -1;
-			else
-		    	ptr->Numbers[i] = bytebuf[0] + 256 * bytebuf[1];
-	   	}
-	}
-
-	if (header.num_count > NUMCOUNT)
-	   	lseek(fd, (off_t) (2 * (header.num_count - NUMCOUNT)), 1);
-	else
-	   	for (i=header.num_count; i < NUMCOUNT; i++)
-			ptr->Numbers[i] = -1;
-
-   	ptr->str_table = malloc((unsigned)header.str_size);
-   	if (ptr->str_table == NULL) {
-		close(fd);
-		return (-1);
-   	}
-
-	num_strings = min(STRCOUNT, header.str_count);
-	cur_string = 0;
-
-	while (num_strings > 0) {
-	    	numread = read(fd, offset_buf, (unsigned)(2*min(num_strings, OFFSET_BUFSIZE)));
-	    	if (numread <= 0) {
-			close(fd);
-			return(-1);
-	    	}
-
-	    	if (_nc_must_swap()) {
-			for (i = 0; i < numread / 2; i++) {
-		    		ptr->Strings[i + cur_string] =
-				(offset_buf[i].byte[0] == 0377
-			    &&  offset_buf[i].byte[1] == 0377) ? 0
-			: ((offset_buf[i].byte[0] + 256*offset_buf[i].byte[1])
-							      + ptr->str_table);
-			}
-	    	} else {
-			for (i = 0; i < numread / 2; i++) {
-		    		ptr->Strings[i + cur_string] =
-				(offset_buf[i].number == -1) ?  0
-				: offset_buf[i].number + ptr->str_table;
-			}
-	    	}
-
-	    	cur_string += numread / 2;
-	    	num_strings -= numread / 2;
-	}
-
-	if (header.str_count > STRCOUNT)
-	    	lseek(fd, (off_t) (2 * (header.str_count - STRCOUNT)), 1);
-	else
-	    	for (i=header.str_count; i < STRCOUNT; i++)
-			ptr->Strings[i] = 0;
-
-	numread = read(fd, ptr->str_table, (unsigned)header.str_size);
+    /* grab the header */
+    (void) read(fd, buf, 12);
+    if (LOW_MSB(buf) != MAGIC)
+    {
 	close(fd);
-	if (numread != header.str_size)
-	    	return(-1);
+	return(-1);
+    }
+    name_size  = LOW_MSB(buf + 2);
+    bool_count = LOW_MSB(buf + 4);
+    num_count  = LOW_MSB(buf + 6);
+    str_count  = LOW_MSB(buf + 8);
+    str_size   = LOW_MSB(buf + 10);
 
-	return(0);
+    /* try to allocate space for the string table */
+    ptr->str_table = malloc((unsigned)str_size);
+    if (ptr->str_table == NULL)
+    {
+	close(fd);
+	return (-1);
+    }
+
+    /* grab the name */
+    read(fd, buf, min(MAX_NAME_SIZE, (unsigned)name_size));
+    buf[MAX_NAME_SIZE] = '\0';
+    ptr->term_names = calloc(sizeof(char), strlen(buf) + 1);
+    (void) strcpy(ptr->term_names, buf);
+    if (name_size > MAX_NAME_SIZE)
+	lseek(fd, (off_t) (name_size - MAX_NAME_SIZE), 1);
+
+    /* grab the booleans */
+    read(fd, ptr->Booleans, min(BOOLCOUNT, (unsigned)bool_count));
+    if (bool_count > BOOLCOUNT)
+	lseek(fd, (off_t) (bool_count - BOOLCOUNT), 1);
+    else
+	for (i=bool_count; i < BOOLCOUNT; i++)
+	    ptr->Booleans[i] = 0;
+
+    /*
+     * If booleans end on an odd byte, skip it.  The machine they 
+     * originally wrote terminfo on must have been a 16-bit 
+     * word-oriented machine that would trap out if you tried a
+     * word access off a 2-byte boundary.
+     */
+    if ((name_size + bool_count) % 2 != 0)
+	read(fd, buf, 1);
+
+    /* grab the numbers */
+    (void) read(fd, buf, min(NUMCOUNT*2, (unsigned)num_count*2));
+    for (i = 0; i < min(num_count, NUMCOUNT); i++) 
+    {
+	if (IS_NEG1(buf + 2*i))
+	    ptr->Numbers[i] = -1;
+	else
+	    ptr->Numbers[i] = LOW_MSB(buf + 2*i);
+    }
+    if (num_count > NUMCOUNT)
+	lseek(fd, (off_t) (2 * (num_count - NUMCOUNT)), 1);
+    else
+	for (i=num_count; i < NUMCOUNT; i++)
+	    ptr->Numbers[i] = -1;
+
+    /* grab the string offsets */
+    numread = read(fd, buf, (unsigned)(str_count*2));
+    if (numread < str_count*2)
+    {
+	close(fd);
+	return(-1);
+    }
+    for (i = 0; i < numread/2; i++)
+    {
+	ptr->Strings[i] =
+	    IS_NEG1(buf + 2*i) ? 0 : (LOW_MSB(buf+2*i) + ptr->str_table);
+    }
+    if (str_count > STRCOUNT)
+	lseek(fd, (off_t) (2 * (str_count - STRCOUNT)), 1);
+    else
+	for (i = str_count; i < STRCOUNT; i++)
+	    ptr->Strings[i] = 0;
+
+    /* finally, grab the string table itself */
+    numread = read(fd, ptr->str_table, (unsigned)str_size);
+    close(fd);
+    if (numread != str_size)
+	return(-1);
+
+    return(0);
 }
 
 /*
@@ -214,26 +186,6 @@ char		*terminfo;
 		return(OK);
 
 	return(ERR);
-}
-
-/*
- *	int
- *	_nc_must_swap(void)
- *
- *	Test whether this machine will need byte-swapping
- *
- */
-
-int
-_nc_must_swap(void)
-{
-union {
-    short num;
-    unsigned char  byte[2];
-}test;
-
-	test.num = 1;
-	return(test.byte[1]);
 }
 
 /*

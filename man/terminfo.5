@@ -1898,37 +1898,6 @@ The (\fBncurses\fR) library handles insert-character and
 insert-character modes in a slightly non-standard way in order to get better
 update efficiency.  See the \fBInsert/Delete Character\fR subsection above.
 .PP
-The following obsolete nonstandard capabilities are automatically translated
-into terminfo capabilities:
-.TS H
-center;
-c c c c
-c c c c
-l l l l.
-Nonstd	Std	From	Terminfo
-name	name		capability
-.\".TH
-BO	mr	AT&T	enter_reverse_mode
-CI	vi	AT&T	cursor_invisible
-CV	ve	AT&T	cursor_normal
-DS	mh	AT&T	enter_dim_mode
-EE	me	AT&T	exit_attribute_mode	
-FE	LF	AT&T	label_on
-FL	LO	AT&T	label_off
-XS	mk	AT&T	enter_secure_mode
-EN	@7	XENIX	key_end
-GE	ae	XENIX	exit_alt_charset_mode
-GS	as	XENIX	enter_alt_charset_mode
-HM	kh	XENIX	key_home
-LD	kL	XENIX	key_dl
-PD	kN	XENIX	key_npage
-PN	po	XENIX	prtr_off
-PS	pf	XENIX	prtr_on
-PU	kP	XENIX	key_ppage
-RT	@8	XENIX	kent
-UP	ku	XENIX	kcuu1
-.TE
-.PP
 The parameter substitutions for \fBset_clock\fR and \fBdisplay_clock\fR are
 not documented in SVr4 or the XSI Curses standard.  They are deduced from the
 documentation for the AT&T 505 terminal.

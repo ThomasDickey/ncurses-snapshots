@@ -18,7 +18,7 @@ BEGIN {
 END {
 	print "};"
 	print ""
-	print "char *keyname(int c)"
+	print "const char *keyname(int c)"
 	print "{"
 	print "int i, size = sizeof(key_names)/sizeof(struct kn);"
 	print ""

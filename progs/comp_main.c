@@ -139,8 +139,6 @@ ENTRY	*qp;
 		exit (1);
 	}
 
-	_nc_make_hash_table(_nc_get_table(FALSE), _nc_info_hash_table);
-	_nc_make_hash_table(_nc_get_table(TRUE),  _nc_cap_hash_table);
 	if (infodump)
 		dump_init(smart_defaults ? F_TERMINFO : F_LITERAL,
 			  S_TERMINFO, width, debug_level);

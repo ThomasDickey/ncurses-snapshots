@@ -1185,7 +1185,6 @@ int main(int argc, char *argv[])
     (void) strcpy(tname, getenv("TERM"));
     load_term();
     _nc_setupscreen(lines, columns);
-    _nc_make_hash_table(_nc_get_table(FALSE), _nc_info_hash_table);
     baudrate();
 
     _nc_mvcur_init(SP);

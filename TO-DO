@@ -2,12 +2,6 @@ SHORT-TERM TO-DO ITEMS:
 
 Bugs:
 
-* Calling the compiler three times in a row on the same terminal type
-  produces name collision errors.  This can happen if you're reading
-  your terminal descriptions from /etc/termcap or a TERMCAP environment
-  variable and call newterm() three times (nvi does this when resizing
-  a window).
-
 * There is a known problem with the signal-handling code which may result
   in abrupt termination of ncurses applications following resume from a ^Z
   suspend (this problem was first seen in lynx).  You will not see this problem

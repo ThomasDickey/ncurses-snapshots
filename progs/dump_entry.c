@@ -25,6 +25,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "tic.h"
+#define __INTERNAL_CAPS_VISIBLE
 #include "term.h"
 #include "dump_entry.h"
 #include "termsort.c"		/* this C file is generated */
@@ -164,12 +165,12 @@ bool		islong = (strlen(srcp) > 3);
 		}
 		else if (REALCTL(str) && *str != '\\' && (!islong || isdigit(str[1])))
 		{
-			(void) sprintf(&buffer[bufp], "^%c", *str + '@');
+			(void) sprintf(&buffer[bufp], "^%c", (0xff & *str) + '@');
 			bufp += 2;
 		}
 		else
 		{
-			(void) sprintf(&buffer[bufp], "\\%03o", *str);
+			(void) sprintf(&buffer[bufp], "\\%03o", 0xff & *str);
 			bufp += 4;
 		}
 

@@ -100,27 +100,26 @@ static int	isreset;		/* invoked as reset */
 static int	tkillchar;		/* new kill character */
 static int	tlines, tcolumns;		/* window size */
 
-#if __STDC__
 #include <stdarg.h>
-#else
-#include <varargs.h>
-#endif
+
+#define LOWERCASE(c) ((isalpha(c) && isupper(c)) ? tolower(c) : (c))
+
+static int
+CaselessCmp(char *a, char *b)	/* strcasecmp isn't portable */
+{
+	while (*a && *b) {
+		int cmp = LOWERCASE(*a) - LOWERCASE(*b);
+		if (cmp != 0)
+			break;
+	}
+	return LOWERCASE(*a) - LOWERCASE(*b);
+}
 
 static void
-#if __STDC__
 err(const char *fmt, ...)
-#else
-err(fmt, va_alist)
-	char *fmt;
-        va_dcl
-#endif
 {
 	va_list ap;
-#if __STDC__
 	va_start(ap, fmt);
-#else
-	va_start(ap);
-#endif
 	(void)fprintf(stderr, "tset: ");
 	(void)vfprintf(stderr, fmt, ap);
 	va_end(ap);
@@ -251,7 +250,7 @@ tbaudrate(char *rate)
 		++rate;
 
 	for (sp = speeds; sp->string; ++sp) {
-		if (!strcasecmp(rate, sp->string)) {
+		if (!CaselessCmp(rate, sp->string)) {
 			found = TRUE;
 			break;
 		}
@@ -753,9 +752,11 @@ set_conversions(void)
 		mode.c_lflag &= ~ECHO;
 #endif /* __OBSOLETE__ */
 #ifdef OXTABS
+#ifdef __INTERNAL_CAPS_VISIBLE
 	/* test used to be tgetflag("pt") */
 	if (has_hardware_tabs)			/* Print tabs. */
 		mode.c_oflag &= ~OXTABS;
+#endif
 #endif /* OXTABS */
 	mode.c_lflag |= (ECHOE | ECHOK);
 }
@@ -894,12 +895,7 @@ obsolete(char **argv)
 }
 
 static void
-#if __STDC__
 usage(const char* pname)
-#else
-usage(void)
-    char* pname;
-#endif
 {
 	(void)fprintf(stderr,
 "usage: %s [-IQrs] [-] [-e ch] [-i ch] [-k ch] [-m mapping] [terminal]\n", pname);
@@ -925,7 +921,7 @@ main(int argc, char **argv)
 		++p;
 	else
 		p = *argv;
-	if (!strcasecmp(p, "reset")) {
+	if (!CaselessCmp(p, "reset")) {
 		isreset = 1;
 		reset_mode();
 	}

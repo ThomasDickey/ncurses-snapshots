@@ -43,5 +43,5 @@ char *strerror(int err)
 	return sys_errlist[err];
 }
 #else
-void _nc_strerror() { }	/* nonempty for strict ANSI compilers */
+void _nc_strerror(void) { }	/* nonempty for strict ANSI compilers */
 #endif

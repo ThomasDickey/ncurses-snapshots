@@ -133,10 +133,6 @@ int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
 	termpaths[filecount] = (char *)NULL;
     }
 
-    /* get the data from all designated files or the buffer */
-    _nc_make_hash_table(_nc_get_table(FALSE), _nc_info_hash_table);
-    _nc_make_hash_table(_nc_get_table(TRUE),  _nc_cap_hash_table);
-
     /* parse the sources */
     if (use_buffer)
     {
@@ -181,18 +177,18 @@ int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
     for_entry_list(ep)
 	if (_nc_name_match(ep->tterm.term_names, tn, "|:"))
 	{
+	    /*
+	     * Make a local copy of the terminal capabilities.  free
+	     * all entry storage except the string table for the
+	     * loaded type (which we disconnected from the list by
+	     * NULLing out ep->tterm.str_table above).
+	     */
 	    memcpy(tp, &ep->tterm, sizeof(TERMTYPE));
 	    ep->tterm.str_table = (char *)NULL;
+	    _nc_free_entries();
 	    return(OK);
 	}
 
-    /*
-     * Now that we have a local copy of the terminal capabilities.
-     * free all entry storage except the string table for the loaded
-     * type (which we disconnected from the list by NULLing out
-     * ep->tterm.str_table above).
-     */
     _nc_free_entries();
-
     return(ERR);
 }

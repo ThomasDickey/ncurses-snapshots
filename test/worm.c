@@ -45,7 +45,7 @@ short *ref[128];
 static chtype flavor[]={
     'O' , '*', '#', '$', '%', '0', '@',
 };
-#define MAXWORMS	sizeof(flavor)
+#define MAXWORMS	(sizeof(flavor)/sizeof(chtype))
 static short xinc[]={
      1,  1,  1,  0, -1, -1, -1,  0
 }, yinc[]={

@@ -26,7 +26,8 @@
 	 * generate offsets to different structures.  See the file Caps for
 	 * explanations of these conversions.
 	 *
-	 * Note: This code is the functional inverse of set_termcap_defaults().
+	 * Note: This code is the functional inverse of the first part
+	 * of postprocess_entry().
 	 */
 	{
 		char *sp;

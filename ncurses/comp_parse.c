@@ -260,14 +260,16 @@ int _nc_resolve_uses(void)
 	    {
 		if (matchcount == 2)
 		{
-		    (void) fprintf(stderr, "Name collision:\n\t%s\n",
-			   qp->tterm.term_names);
+		    (void) fprintf(stderr, "Name collision: %s",
+			   first_name(&qp->tterm));
 		    multiples++;
 		}
 		if (matchcount >= 2)
-		    (void) fprintf(stderr, "\t%s\n", rp->tterm.term_names);
+		    (void) fprintf(stderr, " %s", first_name(&rp->tterm));
 		matchcount++;
 	    }
+	if (matchcount >= 2)
+	    (void) putc('\n', stderr);
     }
 
     return(unresolved == 0 && multiples == 0);
@@ -292,4 +294,5 @@ void _nc_free_entries(void)
 
 	free(ep);
     }
+    _nc_head = _nc_tail = (ENTRY *)NULL;
 }

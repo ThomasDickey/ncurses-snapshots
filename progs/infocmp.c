@@ -521,8 +521,6 @@ int main(int argc, char *argv[])
 	    ENTRY	*tails[2];
 	    ENTRY	*qp, *rp;
 
-	    _nc_make_hash_table(_nc_get_table(FALSE), _nc_info_hash_table);
-	    _nc_make_hash_table(_nc_get_table(TRUE),  _nc_cap_hash_table);
 	    dump_init(F_LITERAL, S_TERMINFO, 0, itrace);
 
 	    for (saveoptind = optind; optind < argc; optind++)
