@@ -59,7 +59,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hashmap.c,v 1.14 1997/06/16 20:33:27 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.15 1997/07/15 18:12:23 Alexander.V.Lukyanov Exp $")
 
 #ifdef HASHDEBUG
 #define LINES	24
@@ -128,6 +128,44 @@ static inline unsigned long hash4(const void *key, size_t len)
 static inline unsigned long hash(chtype *text)
 {
     return(hash4(text, TEXTWIDTH*sizeof(*text)));
+}
+
+/* approximate update cost */
+static int update_cost(chtype *from,chtype *to)
+{
+    int cost=0;
+    int i;
+
+    for (i=TEXTWIDTH; i>0; i--)
+        if (*from++ != *to++)
+	    cost++;
+
+    return cost;
+}
+static int update_cost_from_blank(chtype *to)
+{
+    int cost=0;
+    int i;
+
+    /* FIXME: ClrBlank should be used */
+    for (i=TEXTWIDTH; i>0; i--)
+        if (BLANK != *to++)
+	    cost++;
+
+    return cost;
+}
+
+/* this is not very fair to claim effectiveness here */
+static inline bool cost_effective(int from,int to,bool blank)
+{
+    if (from == to)
+	return FALSE;
+
+    return (((blank ? update_cost_from_blank(NEWTEXT(to))
+		    : update_cost(OLDTEXT(to),NEWTEXT(to)))
+	     + update_cost(OLDTEXT(from),NEWTEXT(from)))
+	 >= (update_cost_from_blank(NEWTEXT(from))
+	     + update_cost(OLDTEXT(from),NEWTEXT(to))));
 }
 
 void _nc_hash_map(void)
@@ -233,32 +271,38 @@ void _nc_hash_map(void)
 	keepgoing = FALSE;
 
 	for (i = 0; i < LINES-1; i++)
+	{
 	    if (OLDNUM(i) != _NEWINDEX && OLDNUM(i+1) == _NEWINDEX)
 	    {
 		if (OLDNUM(i) + 1 < LINES
-			    && newhash[i+1] == oldhash[OLDNUM(i) + 1])
+		    && (newhash[i+1] == oldhash[OLDNUM(i) + 1]
+			|| cost_effective(OLDNUM(i)+1, i+1, OLDNUM(i)>i)))
 		{
 		    OLDNUM(i+1) = OLDNUM(i) + 1;
 		    TR(TRACE_UPDATE | TRACE_MOVE,
-		       ("new line %d is hash-identical to old line %d (forward continuation)",
+		       ("new line %d is hash/cost-identical to old line %d (forward continuation)",
 			i+1, OLDNUM(i) + 1));
 		    keepgoing = TRUE;
 		}
 	    }
+	}
 
 	for (i = 1; i < LINES; i++)
+	{
 	    if (OLDNUM(i) != _NEWINDEX && OLDNUM(i-1) == _NEWINDEX)
 	    {
 		if (OLDNUM(i) - 1 >= 0
-			    && newhash[i-1] == oldhash[OLDNUM(i) - 1])
+		    && (newhash[i-1] == oldhash[OLDNUM(i) - 1]
+			|| cost_effective(OLDNUM(i)-1, i-1, OLDNUM(i)<i)))
 		{
 		    OLDNUM(i-1) = OLDNUM(i) - 1;
 		    TR(TRACE_UPDATE | TRACE_MOVE,
-		       ("new line %d is hash-identical to old line %d (backward continuation)",
+		       ("new line %d is hash/cost-identical to old line %d (backward continuation)",
 			i-1, OLDNUM(i) - 1));
 		    keepgoing = TRUE;
 		}
 	    }
+	}
     } while
 	(keepgoing);
 

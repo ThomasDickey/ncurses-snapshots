@@ -55,10 +55,7 @@ public:
   }
   
   // Release the items memory
-  virtual ~NCursesMenuItem () {
-    if (item)
-      ::free_item (item);
-  }
+  virtual ~NCursesMenuItem ();
 
   // Name of the item
   inline const char* name () const {
@@ -114,9 +111,7 @@ public:
   // user supplied driver for a menu; you may derive from this class and
   // overload action() to supply items with different actions.
   // If an action returns true, the menu will be exited.
-  virtual bool action() {
-    return FALSE;
-  };
+  virtual bool action();
 };
 
 // Prototype for an items callback function.
@@ -137,15 +132,9 @@ public:
       p_fct (fct) {
   }
   
-  virtual ~NCursesMenuCallbackItem() {
-  };
+  virtual ~NCursesMenuCallbackItem();
 
-  bool action() {
-    if (p_fct)
-      return p_fct (*this);
-    else
-      return FALSE;
-  }
+  bool action();
 };
 
 
@@ -191,13 +180,13 @@ private:
   
 protected:
   // internal routines 
-  void set_user(void *user) {
+  inline void set_user(void *user) {
     UserHook* uptr = (UserHook*)::menu_userptr (menu);
     assert (uptr && uptr->m_back==this && uptr->m_owner==menu);
     uptr->m_user = user;
   }
 
-  void *get_user() {
+  inline void *get_user() {
     UserHook* uptr = (UserHook*)::menu_userptr (menu);
     assert (uptr && uptr->m_back==this && uptr->m_owner==menu);
     return uptr->m_user;
@@ -411,21 +400,21 @@ public:
   }
 
   // Decorations
-  void frame(const char *title=NULL, const char* btitle=NULL) {
+  inline void frame(const char *title=NULL, const char* btitle=NULL) {
     if (b_framed)
       NCursesPanel::frame(title,btitle);
     else
       OnError(E_SYSTEM_ERROR);
   }
 
-  void boldframe(const char *title=NULL, const char* btitle=NULL) {
+  inline void boldframe(const char *title=NULL, const char* btitle=NULL) {
     if (b_framed)
       NCursesPanel::boldframe(title,btitle);
     else
       OnError(E_SYSTEM_ERROR);
   }
   
-  void label(const char *topLabel, const char *bottomLabel) {
+  inline void label(const char *topLabel, const char *bottomLabel) {
     if (b_framed)
       NCursesPanel::label(topLabel,bottomLabel);
     else
@@ -438,21 +427,17 @@ public:
 
   // Called after the menu gets repositioned in its window.
   // This is especially true if the menu is posted.
-  virtual void On_Menu_Init() {
-  }
+  virtual void On_Menu_Init();
 
   // Called before the menu gets repositioned in its window.
   // This is especially true if the menu is unposted.
-  virtual void On_Menu_Termination() {
-  }
+  virtual void On_Menu_Termination();
 
   // Called after the item became the current item
-  virtual void On_Item_Init(NCursesMenuItem& item) {
-  }
+  virtual void On_Item_Init(NCursesMenuItem& item);
 
   // Called before this item is left as current item.
-  virtual void On_Item_Termination(NCursesMenuItem& item) {
-  }
+  virtual void On_Item_Termination(NCursesMenuItem& item);
   
   // Provide a default key virtualization. Translate the keyboard
   // code c into a menu request code.
@@ -478,24 +463,17 @@ public:
   // --------------------
 
   // Called if the request is denied
-  virtual void On_Request_Denied(int c) const {
-    beep();
-  }
+  virtual void On_Request_Denied(int c) const;
   
   // Called if the item is not selectable
-  virtual void On_Not_Selectable(int c) const {
-    beep();
-  }
+  virtual void On_Not_Selectable(int c) const;
 
   // Called if pattern doesn't match
-  virtual void On_No_Match(int c) const {
-    beep();
-  }
+  virtual void On_No_Match(int c) const;
 
   // Called if the command is unknown
-  virtual void On_Unknown_Command(int c) const {
-    beep();
-  }
+  virtual void On_Unknown_Command(int c) const;
+
 };
 
 
@@ -525,7 +503,7 @@ public:
     return (const T*)::item_userptr (item);
   };
 
-  virtual void setUserData(const T* p_UserData) {
+  inline virtual void setUserData(const T* p_UserData) {
     if (item)
       OnError (::set_item_userptr (item, (void *)p_UserData));
   }
@@ -566,7 +544,7 @@ public:
     return (T*)get_user ();
   };
 
-  virtual void setUserData (const T* p_UserData) {
+  inline virtual void setUserData (const T* p_UserData) {
     if (menu)
       set_user ((void *)p_UserData);
   }

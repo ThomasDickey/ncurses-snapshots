@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.20 1997/06/28 17:45:19 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.21 1997/07/19 16:30:27 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -181,7 +181,7 @@ size_t	i;
 	SP->_nl          = TRUE;
 	SP->_raw         = FALSE;
 	SP->_cbreak      = FALSE;
-	SP->_echo        = FALSE;
+	SP->_echo        = TRUE;
 	SP->_fifohead    = -1;
 	SP->_endwin      = TRUE;
 	SP->_ofp         = output;

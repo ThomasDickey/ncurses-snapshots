@@ -59,9 +59,24 @@
 */
 
 #define MAGIC		0432	/* first two bytes of a compiled entry */
+
+/*
+ * The "maximum" here is misleading; XSI guarantees minimum values, which a
+ * given implementation may exceed.
+ */
 #define MAX_NAME_SIZE	127	/* maximum legal name field size */
 #define MAX_ENTRY_SIZE	4096	/* maximum legal entry size */
-#define MAX_ALIAS	14	/* maximum size of individual name or alias */
+
+/* The maximum size of individual name or alias is guaranteed in XSI to
+ * be 14, since that corresponds to the older filename lengths.  Newer
+ * systems allow longer aliases, though not many terminal descriptions
+ * are written to use them.
+ */
+#if HAVE_LONG_FILE_NAMES
+#define MAX_ALIAS	32	/* POSIX minimum for PATH_MAX */
+#else
+#define MAX_ALIAS	14	/* SVr3 filename length */
+#endif
 
 /* location of user's personal info directory */
 #define PRIVATE_INFO	"%s/.terminfo"	/* plug getenv("HOME") into %s */

@@ -1,7 +1,29 @@
--- $Id: NEWS,v 1.222 1997/07/13 00:46:39 tom Exp $
+-- $Id: NEWS,v 1.224 1997/07/19 16:30:02 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+970719
+	+ corrected initial state of software echo (error in 970405, reported
+	  by Alexander V. Lukyanov).
+	+ reviewed/added messages to configure script, so that all non-test
+	  options should be accompanied by a message.
+	+ add configure check for long filenames, using this to determine if
+	  it is safe to allow long aliases for terminal descriptions as does
+	  SVr4.
+	+ add configure options for widec (wide character), hashmap (both
+	  experimental).
+	> patch by Alexander V. Lukyanov:
+	+ hashmap.c - improved by heuristic, so that scroll test works much
+	  better when csr is not available.
+	+ hardscroll.c - patched so that it continues to scroll other chunks
+	  after failure to scroll one.
+	+ lib_doupdate.c - _nc_mvcur_scrolln extended to handle more cases; csr
+	  is avoided as it is relative costly.  Fixed wrong coordinates in one
+	  case and wrong string in TRACE.
+	> patch by Juergen Pfeifer:
+	+ modify C++ binding to compile on AIX 4.x with the IBM C-SET++
+	  compiler.
 
 970712
 	+ remove alternate character set from kterm terminfo entry; it uses the
