@@ -87,6 +87,7 @@ int	stolen, topstolen;
 	SP->_fifopeek	= 0;
 	SP->_endwin	= TRUE;
 	SP->_ofp	= stdout;	/* (may be overridden later) */
+	SP->_coloron	= 0;
 
 	init_acs(); 
 

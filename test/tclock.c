@@ -3,6 +3,7 @@
 #include <float.h>
 #include <math.h>
 #include <time.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <curses.h>
 
@@ -38,8 +39,6 @@
 void
 plot(int x,int y,char col)
 {
-  int wid,hgt;
-
   mvaddch(y,x,col);
 }
  
@@ -104,6 +103,7 @@ dline(int x1,int y1,int x2,int y2,char ch)
 	}
 }
 
+int
 main()
 {
 	int i,cx,cy;

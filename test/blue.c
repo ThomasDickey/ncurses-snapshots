@@ -14,8 +14,13 @@
  * machines, SVr4 curses is just as good.
  */
 
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 #include <signal.h>
+#include <time.h>
 #include <curses.h>
+#include <term.h>
 
 #define NOCARD		(-1)
 

@@ -44,7 +44,6 @@ SCREEN * newterm(char *term, FILE *ofp, FILE *ifp)
 int	errret;
 
 #ifdef TRACE
-	_init_trace();
 	T(("newterm(\"%s\",%p,%p) called", term, ofp, ifp));
 #endif
 

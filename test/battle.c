@@ -4,6 +4,7 @@
  */
 
 #include <unistd.h>
+#include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <time.h>
@@ -362,7 +363,7 @@ int
 plyturn()
 {
 int c, res;
-char *m;
+char *m = NULL;
 
     prompt();
     addstr("Where do you want to shoot? ");
@@ -370,7 +371,7 @@ char *m;
     if(!(res = hits[turn][c])){
 	hits[turn][c] = res = (board[OTHER][c]) ? 'H' : 'M';
 	mvaddch(7+c/10,48+3*(c%10),(res=='H') ? 'H' : 'o');
-	if(c = hitship(c)){
+	if((c = hitship(c)) != 0){
 	    prompt();
 	    switch(rnd(3)){
 		case 0:
@@ -414,12 +415,13 @@ int sym, i, j;
 	    	return(i+1);
 	    return(0);
 	 }
+	return(0);
 }
 
 int 
 cputurn()
 {
-int c, res, x, y, i, d;
+int c = 0, res, x, y, i, d = 0;
 
 redo:
     if (cstart == -1){
@@ -524,7 +526,7 @@ fndir:	for(i=0, d=rnd(4); i++ < 4; d = (d+1) % 4){
 	    if(cdir == -2) cdir = -1;
 	}
     }
-    if(c=hitship(c)){
+    if((c=hitship(c)) != 0){
 	cstart = -1;
 	cpuhits -= plyship[c-1].length;
 	x = plyship[c-1].start;

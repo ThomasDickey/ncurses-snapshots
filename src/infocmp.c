@@ -158,6 +158,11 @@ static int use_predicate(int type, int index)
 static int capcmp(const char *s, const char *t)
 /* compare two string capabilities */
 {
+    if (!s && !t)
+	return(0);
+    else if (!s || !t)
+	return(1);
+
     for (; *s == '\0' || *t == '\0'; s++, t++)
     {
 	if (s[0] == '$' && s[1] == '<')
@@ -197,7 +202,7 @@ static bool entryeq(TERMTYPE *t1, TERMTYPE *t2)
 	    return(FALSE);
 
     for (i = 0; i < STRCOUNT; i++)
-	if (t1->Strings[i] && t2->Strings[i] && strcmp(t1->Strings[i], t2->Strings[i]))
+	if (capcmp(t1->Strings[i], t2->Strings[i]))
 	    return(FALSE);
 
     return(TRUE);
@@ -263,7 +268,7 @@ static void compare_predicate(int type, int index, char *name)
 		switch(compare)
 		{
 		case C_DIFFERENCE:
-			if ((s1 || s2) && (!s1 || !s2 || capcmp(s1, s2)))
+			if (capcmp(s1, s2))
 			{
 				char	buf1[BUFSIZ], buf2[BUFSIZ];
 

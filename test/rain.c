@@ -1,5 +1,7 @@
 #include <curses.h>
 #include <signal.h>
+#include <stdlib.h>
+
 /* rain 11/3/1980 EPS/CITHEP */
 
 #define cursor(col,row) move(row,col)
@@ -7,6 +9,7 @@
 float ranf();
 void onsig();
 
+void
 main(argc,argv)
 int argc;
 char *argv[];

@@ -1,6 +1,6 @@
 :1:linux:Linux 1.2.0/GCC 2.6.2/libc 4.6.27:NONE:NONE:NONE:NONE:NONE:/usr/lib/terminfo:gcc:-I. -Wall:NONE:/usr:install
 :2:386bsd:386BSD/netBSD/freeBSD:NONE:NONE:NONE:NONE:-DBSDTABS:/usr/local/lib/terminfo:gcc:-pipe -I. -Wall:NONE:/usr:install
-:3:bsdos:BSDI's BSD/OS:NONE:NONE:NONE:NONE:-DBSDTABS:/usr/local/lib/terminfo:gcc2:-pipe -I. -Wall:NONE:/usr:install
+:3:bsdos:BSDI's BSD/OS:NONE:NONE:NONE:NONE:-DBSDTABS:/usr/local/lib/terminfo:gcc2:-I. -Wall:NONE:/usr:install
 :4:sunos:SunOS 4.1.3/GCC:NONE:NONE:NONE:-DBRAINDEAD:NONE:/usr/lib/terminfo:gcc:-I. -Wall:-DNOSTRERROR -DSUNIOCTL:/usr:install
 :5:ultrix:Ultrix:NONE:NONE:NONE:-DBRAINDEAD:NONE:/usr/lib/terminfo:gcc:-I. -Wall:-DNOUSLEEP:/usr:install
 :6:hpux:HP-UX 9.0:NONE:NONE:NONE:-DBRAINDEAD:NONE:/usr/local/lib/terminfo:cc:-I. -Aa -Wc,-w1:-DBROKEN_TIOCGWINSZ -D_HPUX_SOURCE:/usr:install

@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>Writing Programs with NCURSES</TITLE>
-<link rev=made href=mailto:esr@snark.thyrsus.com>
+<link rev="made" href="mailto:esr@snark.thyrsus.com">
 </HEAD>
 <BODY>
 
@@ -13,7 +13,7 @@ by Zeyd M. ben-Halim and Eric S. Raymond<BR>
 </BLOCKQUOTE>
 
 <HR>
-<H1>Introduction</H1>
+<H2>Introduction</H2>
 
 This document is an introduction to programming with <TT>curses</TT>. It is 
 not an exhaustive reference for the curses Application Programming Interface
@@ -65,9 +65,9 @@ maintainer of the package is Zeyd ben-Halim &lt;zmbenhal@netcom.com&gt;.
 Eric S. Raymond &lt;esr@snark.thyrsus.com&gt; wrote many of the new
 features in versions after 1.8.1 and coauthored this introduction. <P>
 
-<H1>An Overview of the Package</H1>
+<H2>An Overview of the Package</H2>
 
-<H2>Terminology</H2>
+<H3>Terminology</H3>
 
 In this document, the following terminology is used with reasonable
 consistency:
@@ -89,7 +89,7 @@ The package's idea of what the terminal display currently looks like, i.e.,
 what the user sees now.  This is a special screen.
 </DL>
 
-<H2>Compiling Programs using the Package</H2>
+<H3>Compiling Programs using the Package</H3>
 
 In order to use the library, it is necessary to have certain types and
 variables defined.  Therefore, the programmer must have a line:
@@ -107,14 +107,14 @@ harmless) for the programmer to do these includes, too. In linking with
 <TT>curses</TT> you need to have <TT>-lncurses</TT> in your LDFLAGS or on the
 command line.  There is no need for any other libraries.
 
-<H2>Updating the Screen</H2>
+<H3>Updating the Screen</H3>
 
 In order to update the screen optimally, it is necessary for the routines to
 know what the screen currently looks like and what the programmer wants it to
 look like next. For this purpose, a data type (structure) named WINDOW is
 defined which describes a window image to the routines, including its starting
 position on the screen (the (y, x) coordinates of the upper left hand corner)
-and its size.  One of these (called </TT>curscr<TT>, for current screen) is a
+and its size.  One of these (called <TT>curscr</TT>, for current screen) is a
 screen image of what the terminal currently looks like.  Another screen (called
 <TT>stdscr</TT>, for standard screen) is provided by default to make changes
 on. <P>
@@ -134,7 +134,7 @@ without regard to motion efficiency.  Then, at will, the programmer can
 effectively say ``make it look like this,'' and let the package implementation
 determine the most efficient way to repaint the screen. <P>
 
-<H2>Standard Windows and Function Naming Conventions</H2>
+<H3>Standard Windows and Function Naming Conventions</H3>
 
 As hinted above, the routines can use several windows, but two are
 automatically given: <TT>curscr</TT>, which knows what the terminal looks like,
@@ -186,7 +186,7 @@ Note that the window description pointer (win) comes before the added (y, x)
 coordinates.  If a function requires a window pointer, it is always the first
 parameter passed. <P>
 
-<H1>Variables</H1>
+<H2>Variables</H2>
 
 The <TT>curses</TT> library sets some variables describing the terminal
 capabilities.
@@ -214,7 +214,7 @@ of general usefulness:
 <DD> error flag returned by routines when things go right.
 </DL>
 
-<H1>Using the Library</H1>
+<H2>Using the Library</H2>
 
 Now we describe how to actually use the screen package.  In it, we assume all
 updating, reading, etc. is applied to <TT>stdscr</TT>.  These instructions will
@@ -281,7 +281,7 @@ static void finish(int sig)
 
 </TT></PRE>
 
-<H2>Starting up</H2>
+<H3>Starting up</H3>
 
 In order to use the screen package, the routines must know about terminal
 characteristics, and the space for <TT>curscr</TT> and <TT>stdscr</TT> must be
@@ -308,7 +308,7 @@ You can create new windows of your own using the functions <TT>newwin()</TT>,
 allow you to get rid of old windows.  All the options described above can be
 applied to any window. <P>
 
-<H2>Output</H2>
+<H3>Output</H3>
 
 Now that we have set things up, we will want to actually update the terminal.
 The basic functions used to change what will go on a window are
@@ -336,7 +336,7 @@ make the screen look like <TT>curscr</TT> thinks it looks like.  This is useful
 for implementing a command which would redraw the screen in case it get messed
 up. <P>
 
-<H2>Input</H2>
+<H3>Input</H3>
 
 The complementary function to <TT>addch()</TT> is <TT>getch()</TT> which, if
 echo is set, will call <TT>addch()</TT> to echo the character.  Since the
@@ -360,7 +360,7 @@ function keys.  These sequences are returned as pseudo-character values.  The
 mapping from sequences to <TT>#define</TT> values is determined by
 <TT>key_</TT> capabilities in the terminal's terminfo entry. <P>
 
-<H2>Using Forms Characters</H2>
+<H3>Using Forms Characters</H3>
 
 The <TT>addch</TT> function (and some others, including <TT>box</TT> and
 <TT>border</TT>) can accept some pseudo-character arguments which are specially
@@ -373,7 +373,7 @@ use these to draw boxes and simple graphs on the screen.  If the terminal
 does not have such characters, <TT>ncurses.h</TT> will map them to a
 recognizable (though ugly) set of ASCII defaults. <P>
 
-<H2>Character Attributes and Color</H2>
+<H3>Character Attributes and Color</H3>
 
 The <TT>ncurses.h</TT> package supports screen highlights including standout,
 reverse-video, underline, and blink.  It also supports color, which is treated
@@ -405,7 +405,7 @@ use <TT>COLOR_PAIR(N)</TT> as a highlight that invokes that particular
 color combination.  Note that <TT>COLOR_PAIR(N)</TT>, for constant N,
 is itself a compile-time constant and can be used in initializers. <P>
 
-<H2>Finishing Up</H2>
+<H3>Finishing Up</H3>
 
 In order to clean up after the <TT>ncurses</TT> routines, the routine
 <TT>endwin()</TT> is provided.  It restores tty modes to what they were when
@@ -413,13 +413,13 @@ In order to clean up after the <TT>ncurses</TT> routines, the routine
 lower-left corner.  Thus, anytime after the call to initscr, <TT>endwin()</TT>
 should be called before exiting. <P>
 
-<H1>Hints, Tips, and Tricks</H1>
+<H2>Hints, Tips, and Tricks</H2>
 
 The <TT>ncurses</TT> manual pages are a complete reference for this library.
 In the remainder of this document, we discuss various useful methods that
 may not be obvious from the manual page descriptions. <P>
 
-<H2>Some Notes of Caution</H2>
+<H3>Some Notes of Caution</H3>
 
 You are much less likely to run into problems if you design your screen
 layouts to use tiled rather than overlapping windows.  Historically,
@@ -436,7 +436,7 @@ Try to avoid using the global variables LINES and COLS.  Use
 your code may be ported to run in an environment with window resizes,
 in which case several screens could be open with different sizes. <P>
 
-<H2>Temporarily Leaving <TT>ncurses</TT> Mode</H2>
+<H3>Temporarily Leaving <TT>ncurses</TT> Mode</H3>
 
 Sometimes you will want to write a program that spends most of its time in
 screen mode, but occasionally returns to ordinary `cooked' mode.  A common
@@ -454,7 +454,7 @@ test whether <TT>ncurses</TT> screen mode is active.  It returns <TT>TRUE</TT>
 in the interval between an <TT>endwin()</TT> call and the following
 <TT>refresh()</TT>, <TT>FALSE</TT> otherwise.  <P>
 
-<H2>Using <TT>ncurses</TT> With X</H2>
+<H3>Using <TT>ncurses</TT> With X</H3>
 
 A resize operation in X sends SIGWINCH to the running application.  The
 <TT>ncurses</TT> library does not catch this signal, because it cannot in
@@ -469,7 +469,7 @@ At minimum, your SIGWINCH handler should do a <TT>clearok()</TT>, followed by a
 efficiently, <TT>wnoutrefresh()</TT> on each one followed by
 <TT>doupdate()</TT>). <P>
 
-<H2>Handling Multiple Terminal Screens</H2>
+<H3>Handling Multiple Terminal Screens</H3>
 
 The <TT>initscr()</TT> function actually calls a function named
 <TT>newterm()</TT> to do most of its work.  If you are writing a program that
@@ -481,7 +481,7 @@ set to the last one allocated.  You will switch between screens with the
 <TT>set_term</TT> call.  Note that you will also have to call
 <TT>def_shell_mode</TT> and <TT>def_prog_mode</TT> on each tty yourself. <P>
 
-<H2>Testing for Terminal Capabilities</H2>
+<H3>Testing for Terminal Capabilities</H3>
 
 Sometimes you may want to write programs that test for the presence of various
 capabilities before deciding whether to go into <TT>ncurses</TT> mode.  An easy
@@ -489,14 +489,14 @@ way to do this is to call <TT>setupterm()</TT>, then use the functions
 <TT>tigetflag()</TT>, <TT>tigetnum()</TT>, and <TT>tigetstr()</TT> to do your
 testing. <P>
 
-<H2>Tuning for Speed</H2>
+<H3>Tuning for Speed</H3>
 
 Use the <TT>addchstr()</TT> family of functions for fast
 screen-painting of text when you know the text doesn't contain any
 control characters.  Try to make attribute changes infrequent on your
 screens.  Don't use the <TT>immedok()</TT> option! <P>
 
-<H1>Special Features of NCURSES</H1>
+<H2>Special Features of NCURSES</H2>
 
 When running on PC-clones, <TT>ncurses</TT> has enhanced support for the
 IBM high-half and ROM characters.  The ACS forms characters default not to

@@ -1,5 +1,6 @@
 #include <curses.h>
 
+int
 main()
 {
 WINDOW *win1, *win2;
@@ -35,5 +36,6 @@ int h, i;
 	getch();
 
 	endwin();
+	return 0;
 }
 

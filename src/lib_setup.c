@@ -224,7 +224,6 @@ struct term	*term_ptr;
 static void do_prototype(void);
 
 #ifdef TRACE
-	_init_trace();
 	T(("setupterm(%s,%d,%p) called", termname, Filedes, errret));
 #endif
 

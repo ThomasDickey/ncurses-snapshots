@@ -20,6 +20,9 @@
  * partial repaint.
  */
 #include <curses.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include <signal.h>
 
 #define MAXLINES        256        /* most lines we can handle */
@@ -59,6 +62,7 @@ char        **lptr;
     /* slurp the file */
     for (lptr = &lines[0]; fgets(buf, BUFSIZ, fp) != (char *)NULL; lptr++) {
         if (lptr - lines >= MAXLINES) {
+            endwin();
             (void) fprintf(stderr, "%s: %s is too large\n", argv[0], argv[1]);
             exit(1);
         }

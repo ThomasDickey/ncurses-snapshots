@@ -34,6 +34,7 @@ Options:
 */
 
 #include <curses.h>
+#include <stdlib.h>
 #include <signal.h>
 
 #define cursor(col,row) move(row,col)
@@ -230,13 +231,13 @@ int last, bottom;
 
     for (n=number, w= &worm[0];--n>=0;w++) {
 		w->orientation=w->head=0;
-		if (!(ip=(short *)malloc(length+1*sizeof (short)))) {
+		if (!(ip=(short *)malloc((length+1)*sizeof (short)))) {
 		    fprintf(stderr,"%s: out of memory\n",*argv);
 		    exit(1);
 		}
 		w->xpos=ip;
 		for (x=length;--x>=0;) *ip++ = -1;
-		if (!(ip=(short *)malloc(length+1*sizeof (short)))) {
+		if (!(ip=(short *)malloc((length+1)*sizeof (short)))) {
 		    fprintf(stderr,"%s: out of memory\n",*argv);
 		    exit(1);
 		}

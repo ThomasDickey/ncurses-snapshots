@@ -7,6 +7,8 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <curses.h>
 
 #ifdef __STDC__
@@ -52,6 +54,7 @@ COMMAND command[MAX_OPTIONS] =
 
 int     width, height;
 
+int
 main()
 {
 WINDOW  *win;
@@ -117,6 +120,7 @@ bool quit=FALSE;
     endwin();
     return 0;
 }
+
 #ifdef __STDC__
 void Continue (WINDOW *win)
 #else
@@ -156,6 +160,7 @@ WINDOW **win;
     {   endwin();
         return 1;
     }
+    return 0;
 }
 #ifdef __STDC__
 void introTest (WINDOW *win)
@@ -433,8 +438,6 @@ WINDOW *dummy;
 #endif
 {
     WINDOW *win1;
-    char Buffer [80];
-    chtype ch;
 
     savetty ();
 
