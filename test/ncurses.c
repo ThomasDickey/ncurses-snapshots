@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.225 2004/09/11 23:47:40 tom Exp $
+$Id: ncurses.c,v 1.226 2004/09/19 00:27:22 tom Exp $
 
 ***************************************************************************/
 
@@ -1011,31 +1011,24 @@ show_attr(int row, int skip, bool arrow, chtype attr, const char *name)
     mvprintw(row, 24, "|");
     if (skip)
 	printw("%*s", skip, " ");
-    attrset(attr);
     /*
-     * If we're to write a string in the alternate character set, it is not
-     * sufficient to just set A_ALTCHARSET.  We have to perform the mapping
-     * that corresponds.  This is not needed for vt100-compatible devices
-     * because the acs_map[] is 1:1, but for PC-style devices such as Linux
-     * console, the acs_map[] is scattered about the range.
-     *
-     * The addch/addstr functions do not themselves do this mapping, since it
-     * is possible to turn off the A_ALTCHARSET flag for the characters which
-     * are added, and it would be an unexpected result to have the mapped
-     * characters visible on the screen.
+     * Just for testing, write text using the alternate character set one
+     * character at a time (to pass its rendition directly), and use the
+     * string operation for the other attributes.
      */
     if (attr & A_ALTCHARSET) {
 	const char *s;
-	int ch;
+	chtype ch;
 
 	for (s = attr_test_string; *s != '\0'; ++s) {
 	    ch = UChar(*s);
-	    addch(ch);
+	    addch(ch | attr);
 	}
     } else {
+	attrset(attr);
 	addstr(attr_test_string);
+	attroff(attr);
     }
-    attroff(attr);
     if (skip)
 	printw("%*s", skip, " ");
     printw("|");
@@ -1345,19 +1338,11 @@ wide_show_attr(int row, int skip, bool arrow, chtype attr, short pair, const cha
     mvprintw(row, 24, "|");
     if (skip)
 	printw("%*s", skip, " ");
-    attr_set(attr, pair, 0);
 
     /*
-     * If we're to write a string in the alternate character set, it is not
-     * sufficient to just set WA_ALTCHARSET.  We have to perform the mapping
-     * that corresponds.  This is not needed for vt100-compatible devices
-     * because the acs_map[] is 1:1, but for PC-style devices such as Linux
-     * console, the acs_map[] is scattered about the range.
-     *
-     * The add_wch/addwstr functions do not themselves do this mapping, since it
-     * is possible to turn off the WA_ALTCHARSET flag for the characters which
-     * are added, and it would be an unexpected result to have the mapped
-     * characters visible on the screen.
+     * Just for testing, write text using the alternate character set one
+     * character at a time (to pass its rendition directly), and use the
+     * string operation for the other attributes.
      */
     if (attr & WA_ALTCHARSET) {
 	const wchar_t *s;
@@ -1367,13 +1352,14 @@ wide_show_attr(int row, int skip, bool arrow, chtype attr, short pair, const cha
 	    wchar_t fill[2];
 	    fill[0] = *s;
 	    fill[1] = L'\0';
-	    setcchar(&ch, fill, WA_NORMAL, 0, 0);
+	    setcchar(&ch, fill, attr, 0, 0);
 	    add_wch(&ch);
 	}
     } else {
+	attr_set(attr, pair, 0);
 	addwstr(wide_attr_test_string);
+	attr_off(attr, 0);
     }
-    attr_off(attr, 0);
     if (skip)
 	printw("%*s", skip, " ");
     printw("|");

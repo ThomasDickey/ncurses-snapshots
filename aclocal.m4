@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2004
 dnl
-dnl $Id: aclocal.m4,v 1.342 2004/08/28 17:27:37 tom Exp $
+dnl $Id: aclocal.m4,v 1.343 2004/09/18 21:54:53 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1310,7 +1310,7 @@ ifelse($1,,,[$1=$LIB_PREFIX])
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_RULES version: 33 updated: 2004/02/14 20:31:27
+dnl CF_LIB_RULES version: 35 updated: 2004/09/18 17:54:16
 dnl ------------
 dnl Append definitions and rules for the given models to the subdirectory
 dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
@@ -1342,13 +1342,33 @@ do
 				case "$cf_cv_shlib_version" in #(vi
 				rel) #(vi
 					case "$cf_cv_system_name" in #(vi
-					darwin*) cf_suffix='.$(REL_VERSION)'"$cf_suffix" ;; #(vi
+					darwin*)
+					case .${LIB_SUFFIX} in
+					.w*)
+						cf_suffix=`echo $cf_suffix | sed 's/^w//'`
+						cf_suffix=w'.$(REL_VERSION)'"$cf_suffix"
+						;;
+					*)
+						cf_suffix='.$(REL_VERSION)'"$cf_suffix"
+						;;
+					esac
+					;; #(vi
 					*) cf_suffix="$cf_suffix"'.$(REL_VERSION)' ;;
 					esac
 					;;
 				abi)
 					case "$cf_cv_system_name" in #(vi
-					darwin*) cf_suffix='.$(ABI_VERSION)'"$cf_suffix" ;; #(vi
+					darwin*)
+					case .${LIB_SUFFIX} in
+					.w*)
+						cf_suffix=`echo $cf_suffix | sed 's/^w//'`
+						cf_suffix=w'.$(ABI_VERSION)'"$cf_suffix"
+						;;
+					*)
+						cf_suffix='.$(ABI_VERSION)'"$cf_suffix"
+						;;
+					esac
+					;; #(vi
 					*) cf_suffix="$cf_suffix"'.$(ABI_VERSION)' ;;
 					esac
 					;;
@@ -1398,7 +1418,7 @@ do
 			CF_LIB_SUFFIX($cf_item,cf_suffix)
 			CF_OBJ_SUBDIR($cf_item,cf_subdir)
 
-			# Test for case where we build libinfo with a different name.
+			# Test for case where we build libtinfo with a different name.
 			cf_libname=$cf_dir
 			if test $cf_dir = ncurses ; then
 				case $cf_subset in
@@ -1429,8 +1449,22 @@ do
 				cf_depend="$cf_depend $cf_reldir/curses.priv.h"
 			fi
 
+ 			cf_dir_suffix=
+ 			old_cf_suffix="$cf_suffix"
+ 			if test "$cf_cv_shlib_version_infix" = yes ; then
+			if test -n "$LIB_SUFFIX" ; then
+				case $LIB_SUFFIX in
+				w*)
+					cf_libname=`echo $cf_libname | sed 's/w$//'`
+					cf_suffix=`echo $cf_suffix | sed 's/^w//'`
+					cf_dir_suffix=w
+					;;
+				esac
+			fi
+ 			fi
+
 			$AWK -f $srcdir/mk-1st.awk \
-				name=$cf_libname \
+				name=${cf_libname}${cf_dir_suffix} \
 				traces=$LIB_TRACING \
 				MODEL=$CF_ITEM \
 				model=$cf_subdir \
@@ -1446,6 +1480,9 @@ do
 				depend="$cf_depend" \
 				host="$host" \
 				$srcdir/$cf_dir/modules >>$cf_dir/Makefile
+
+			cf_suffix="$old_cf_suffix"
+
 			for cf_subdir2 in $cf_subdirs lib
 			do
 				test $cf_subdir = $cf_subdir2 && break

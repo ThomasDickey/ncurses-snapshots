@@ -1,10 +1,24 @@
--- $Id: NEWS,v 1.835 2004/09/11 23:51:03 tom Exp $
+-- $Id: NEWS,v 1.836 2004/09/19 01:16:26 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040918
+	+ remove check in wget_wch() added to fix an infinite loop, appears to
+	  have been working around a transitory glibc bug, and interferes
+	  with normal operation (report by Marcin 'Qrczak' Kowalczyk).
+	+ correct wadd_wch() and wecho_wch(), which did not pass the rendition
+	  information (report by Marcin 'Qrczak' Kowalczyk).
+	+ fix aclocal.m4 so that the wide-character version of ncurses gets
+	  compiled as libncursesw.5.dylib, instead of libncurses.5w.dylib
+	  (adapted from patch by James J Ramsey).
+	+ change configure script for --with-caps option to indicate that it
+	  is no longer experimental.
+	+ change configure script to reflect the fact that --enable-widec has
+	  not been "experimental" since 5.3 (report by Bruno Lustosa).
 
 20040911
 	+ add 'B' test to ncurses.c, to exercise some wide-character functions.
