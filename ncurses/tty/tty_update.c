@@ -73,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.196 2003/06/14 20:00:14 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.197 2003/06/21 21:55:46 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -190,6 +190,11 @@ PutAttrChar(CARG_CH_T ch)
 		       _tracech_t(ch),
 		       SP->_cursrow, SP->_curscol));
 #if USE_WIDEC_SUPPORT
+    /*
+     * If this is not a valid character, there is nothing more to do.
+     */
+    if (isnac(CHDEREF(ch)))
+	return;
     /*
      * Determine the number of character cells which the 'ch' value will use
      * on the screen.  It should be at least one.

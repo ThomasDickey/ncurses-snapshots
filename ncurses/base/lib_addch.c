@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.72 2003/06/14 21:36:22 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.74 2003/06/21 22:28:45 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -107,11 +107,13 @@ int
 waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 {
     int x;
+    int y;
     struct ldat *line;
 
     x = win->_curx;
+    y = win->_cury;
 
-    CHECK_POSITION(win, x, win->_cury);
+    CHECK_POSITION(win, x, y);
 
     /*
      * If we're trying to add a character at the lower-right corner more
@@ -126,11 +128,61 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 #endif
 
     ch = render_char(win, ch);
-    TR(TRACE_VIRTPUT, ("win attr = %s", _traceattr(win->_attrs)));
 
-    line = win->_line + win->_cury;
+    line = win->_line + y;
 
     CHANGED_CELL(line, x);
+
+    /*
+     * Build up multibyte characters until we have a wide-character.
+     *
+     * Note that waddnstr() splits up multibyte characters into bytes to call
+     * this function.  It is also possible that an application will do that
+     * too.  (dialog does, to work around bugs in old curses libraries).
+     */
+    if_WIDEC({
+	if (Charable(ch)) {
+	    WINDOW_EXT(win, addch_used) = 0;
+	} else {
+	    char *buffer = WINDOW_EXT(win, addch_work);
+	    int len;
+	    mbstate_t state;
+	    wchar_t result;
+
+	    if ((WINDOW_EXT(win, addch_used) != 0) &&
+		(WINDOW_EXT(win, addch_x) != x ||
+		 WINDOW_EXT(win, addch_y) != y)) {
+		/* discard the incomplete multibyte character */
+		WINDOW_EXT(win, addch_used) = 0;
+	    }
+	    WINDOW_EXT(win, addch_x) = x;
+	    WINDOW_EXT(win, addch_y) = y;
+
+	    memset(&state, 0, sizeof(state));
+	    buffer[WINDOW_EXT(win, addch_used)] = CharOf(ch);
+	    WINDOW_EXT(win, addch_used) += 1;
+	    buffer[WINDOW_EXT(win, addch_used)] = '\0';
+	    if ((len = mbrtowc(&result,
+			       buffer,
+			       WINDOW_EXT(win, addch_used), &state)) > 0) {
+		attr_t attrs = AttrOf(ch);
+		SetChar(ch, result, attrs);
+		WINDOW_EXT(win, addch_used) = 0;
+	    } else {
+		if (len == -1) {
+		    /*
+		     * An error occurred.  We could either discard everything,
+		     * or assume that the error was in the previous input.
+		     * Try the latter.
+		     */
+		    TR(TRACE_VIRTPUT, ("Alert! mbrtowc returns error"));
+		    buffer[0] = CharOf(ch);
+		    WINDOW_EXT(win, addch_used) = 1;
+		}
+		return OK;
+	    }
+	}
+    });
 
     /*
      * Handle non-spacing characters
@@ -138,8 +190,7 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
     if_WIDEC({
 	if (wcwidth(CharOf(ch)) == 0) {
 	    int i;
-	    int y;
-	    if ((x > 0 && ((y = win->_cury) >= 0))
+	    if ((x > 0 && y >= 0)
 		|| ((y = win->_cury - 1) >= 0 &&
 		    (x = win->_maxx) > 0)) {
 		wchar_t *chars = (win->_line[y].text[x - 1].chars);
@@ -168,7 +219,7 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 		return ERR;
 	    }
 	    AddAttr(line->text[x++], WA_NAC);
-	    TR(TRACE_VIRTPUT, ("added NAC %d", x-1));
+	    TR(TRACE_VIRTPUT, ("added NAC %d", x - 1));
 	}
     }
   testwrapping:
