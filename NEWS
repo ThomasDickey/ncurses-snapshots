@@ -1,10 +1,15 @@
--- $Id: NEWS,v 1.309 1998/02/08 01:30:49 tom Exp $
+-- $Id: NEWS,v 1.310 1998/02/12 00:23:52 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980211	pre-release
+	+ update announcement for upcoming 4.2 release.
+	+ remove spurious commas from terminfo.src descriptions.
+	+ change copyright notices to Free Software Foundation
 
 980207
 	+ minor fixes for autoconf macros CF_ERRNO, CF_HELP_MESSAGE and

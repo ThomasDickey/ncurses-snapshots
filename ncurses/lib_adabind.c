@@ -1,25 +1,36 @@
-/*----------------------------------------------------------------------------
-//                                                                          --
-//                           GNAT ncurses Binding                           --
-//                                                                          --
-//                              lib_adabind.c                               --
-//                                                                          --
-//                                 B O D Y                                  --
-//                                                                          --
-//                                                                          --
-//  The ncurses Ada95 binding is copyrighted 1996,1997 by                   --
-//  Juergen Pfeifer, Email: Juergen.Pfeifer@T-Online.de                     --
-//                                                                          --
-//  Permission is hereby granted to reproduce and distribute this           --
-//  binding by any means and for any fee, whether alone or as part          --
-//  of a larger distribution, in source or in binary form, PROVIDED         --
-//  this notice is included with any such distribution, and is not          --
-//  removed from any of its header files. Mention of ncurses and the        --
-//  author of this binding in any applications linked with it is            --
-//  highly appreciated.                                                     --
-//                                                                          --
-//  This binding comes AS IS with no warranty, implied or expressed.        --
-//----------------------------------------------------------------------------
+/****************************************************************************
+ * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ *                                                                          *
+ * Permission is hereby granted, free of charge, to any person obtaining a  *
+ * copy of this software and associated documentation files (the            *
+ * "Software"), to deal in the Software without restriction, including      *
+ * without limitation the rights to use, copy, modify, merge, publish,      *
+ * distribute, distribute with modifications, sublicense, and/or sell       *
+ * copies of the Software, and to permit persons to whom the Software is    *
+ * furnished to do so, subject to the following conditions:                 *
+ *                                                                          *
+ * The above copyright notice and this permission notice shall be included  *
+ * in all copies or substantial portions of the Software.                   *
+ *                                                                          *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS  *
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF               *
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.   *
+ * IN NO EVENT SHALL THE ABOVE COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,   *
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR    *
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR    *
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE.                               *
+ *                                                                          *
+ * Except as contained in this notice, the name(s) of the above copyright   *
+ * holders shall not be used in advertising or otherwise to promote the     *
+ * sale, use or other dealings in this Software without prior written       *
+ * authorization.                                                           *
+ ****************************************************************************/
+
+/****************************************************************************
+ *   Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996,1997        *
+ ****************************************************************************/
+
+/*
 //	lib_adabind.c
 //
 //	Some small wrappers to ease the implementation of an Ada95
@@ -30,7 +41,7 @@
 */
 #include "curses.priv.h"
 
-MODULE_ID("$Id: lib_adabind.c,v 1.6 1997/12/28 12:13:44 juergen Exp $")
+MODULE_ID("$Id: lib_adabind.c,v 1.7 1998/02/11 12:13:59 tom Exp $")
 
 /*  In (n)curses are a few functionalities that can't be expressed as 
 //  functions, because for historic reasons they use as macro argument
