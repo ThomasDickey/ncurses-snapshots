@@ -1,7 +1,7 @@
 #! /bin/sh
-# $Id: MKkey_defs.sh,v 1.5 2001/08/05 01:46:52 tom Exp $
+# $Id: MKkey_defs.sh,v 1.6 2002/01/12 22:27:12 Robert.Joop Exp $
 ##############################################################################
-# Copyright (c) 2001 Free Software Foundation, Inc.                          #
+# Copyright (c) 2001,2002 Free Software Foundation, Inc.                     #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -59,7 +59,7 @@ do
 
 output=pass${pass}_$$
 
-${AWK-awk} -v maxkey=$maxkey -v pass=$pass >$output <$data '
+${AWK-awk} >$output <$data '
 function print_cols(text,cols) {
 	printf "%s", text
 	len = length(text);
@@ -148,7 +148,7 @@ END	{
 			print " */";
 		}
 	}
-'
+' maxkey=$maxkey pass=$pass 
 if test $pass = 1 ; then
 	maxkey=`cat $pass1`
 fi

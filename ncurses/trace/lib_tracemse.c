@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,2000,2001,2002 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -37,7 +37,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracemse.c,v 1.9 2001/10/20 22:43:16 tom Exp $")
+MODULE_ID("$Id: lib_tracemse.c,v 1.10 2002/01/12 22:32:25 tom Exp $")
 
 #ifdef TRACE
 
@@ -49,39 +49,39 @@ _tracemouse(MEVENT const *ep)
     (void) sprintf(buf, "id %2d  at (%2d, %2d, %2d) state %4lx = {",
 		   ep->id, ep->x, ep->y, ep->z, ep->bstate);
 
-#define SHOW(m, s) if ((ep->bstate & m)==m) {strcat(buf,s); strcat(buf, ", ");}
-    SHOW(BUTTON1_RELEASED, "release-1")
-	SHOW(BUTTON1_PRESSED, "press-1")
-	SHOW(BUTTON1_CLICKED, "click-1")
-	SHOW(BUTTON1_DOUBLE_CLICKED, "doubleclick-1")
-	SHOW(BUTTON1_TRIPLE_CLICKED, "tripleclick-1")
-	SHOW(BUTTON1_RESERVED_EVENT, "reserved-1")
-	SHOW(BUTTON2_RELEASED, "release-2")
-	SHOW(BUTTON2_PRESSED, "press-2")
-	SHOW(BUTTON2_CLICKED, "click-2")
-	SHOW(BUTTON2_DOUBLE_CLICKED, "doubleclick-2")
-	SHOW(BUTTON2_TRIPLE_CLICKED, "tripleclick-2")
-	SHOW(BUTTON2_RESERVED_EVENT, "reserved-2")
-	SHOW(BUTTON3_RELEASED, "release-3")
-	SHOW(BUTTON3_PRESSED, "press-3")
-	SHOW(BUTTON3_CLICKED, "click-3")
-	SHOW(BUTTON3_DOUBLE_CLICKED, "doubleclick-3")
-	SHOW(BUTTON3_TRIPLE_CLICKED, "tripleclick-3")
-	SHOW(BUTTON3_RESERVED_EVENT, "reserved-3")
-	SHOW(BUTTON4_RELEASED, "release-4")
-	SHOW(BUTTON4_PRESSED, "press-4")
-	SHOW(BUTTON4_CLICKED, "click-4")
-	SHOW(BUTTON4_DOUBLE_CLICKED, "doubleclick-4")
-	SHOW(BUTTON4_TRIPLE_CLICKED, "tripleclick-4")
-	SHOW(BUTTON4_RESERVED_EVENT, "reserved-4")
-	SHOW(BUTTON_CTRL, "ctrl")
-	SHOW(BUTTON_SHIFT, "shift")
-	SHOW(BUTTON_ALT, "alt")
-	SHOW(ALL_MOUSE_EVENTS, "all-events")
-	SHOW(REPORT_MOUSE_POSITION, "position")
+#define SHOW(m, s) if ((ep->bstate & m) == m) strcat(strcat(buf, s), ", ")
+    SHOW(BUTTON1_RELEASED, "release-1");
+    SHOW(BUTTON1_PRESSED, "press-1");
+    SHOW(BUTTON1_CLICKED, "click-1");
+    SHOW(BUTTON1_DOUBLE_CLICKED, "doubleclick-1");
+    SHOW(BUTTON1_TRIPLE_CLICKED, "tripleclick-1");
+    SHOW(BUTTON1_RESERVED_EVENT, "reserved-1");
+    SHOW(BUTTON2_RELEASED, "release-2");
+    SHOW(BUTTON2_PRESSED, "press-2");
+    SHOW(BUTTON2_CLICKED, "click-2");
+    SHOW(BUTTON2_DOUBLE_CLICKED, "doubleclick-2");
+    SHOW(BUTTON2_TRIPLE_CLICKED, "tripleclick-2");
+    SHOW(BUTTON2_RESERVED_EVENT, "reserved-2");
+    SHOW(BUTTON3_RELEASED, "release-3");
+    SHOW(BUTTON3_PRESSED, "press-3");
+    SHOW(BUTTON3_CLICKED, "click-3");
+    SHOW(BUTTON3_DOUBLE_CLICKED, "doubleclick-3");
+    SHOW(BUTTON3_TRIPLE_CLICKED, "tripleclick-3");
+    SHOW(BUTTON3_RESERVED_EVENT, "reserved-3");
+    SHOW(BUTTON4_RELEASED, "release-4");
+    SHOW(BUTTON4_PRESSED, "press-4");
+    SHOW(BUTTON4_CLICKED, "click-4");
+    SHOW(BUTTON4_DOUBLE_CLICKED, "doubleclick-4");
+    SHOW(BUTTON4_TRIPLE_CLICKED, "tripleclick-4");
+    SHOW(BUTTON4_RESERVED_EVENT, "reserved-4");
+    SHOW(BUTTON_CTRL, "ctrl");
+    SHOW(BUTTON_SHIFT, "shift");
+    SHOW(BUTTON_ALT, "alt");
+    SHOW(ALL_MOUSE_EVENTS, "all-events");
+    SHOW(REPORT_MOUSE_POSITION, "position");
 #undef SHOW
 
-	if (buf[strlen(buf) - 1] == ' ')
+    if (buf[strlen(buf) - 1] == ' ')
 	buf[strlen(buf) - 2] = '\0';
     (void) strcat(buf, "}");
     return (buf);

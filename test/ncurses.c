@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.149 2001/12/16 00:09:52 tom Exp $
+$Id: ncurses.c,v 1.150 2002/01/12 23:49:26 tom Exp $
 
 ***************************************************************************/
 
@@ -3585,11 +3585,13 @@ main(int argc, char *argv[])
 	start_color();
 #ifdef NCURSES_VERSION_PATCH
 	max_colors = COLORS > 16 ? 16 : COLORS;
+#if HAVE_USE_DEFAULT_COLORS
 	if (default_colors)
 	    use_default_colors();
 #if NCURSES_VERSION_PATCH >= 20000708
 	else if (assumed_colors)
 	    assume_default_colors(default_fg, default_bg);
+#endif
 #endif
 #else /* normal SVr4 curses */
 	max_colors = COLORS > 8 ? 8 : COLORS;

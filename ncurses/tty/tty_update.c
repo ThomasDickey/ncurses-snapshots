@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998,1999,2000,2001,2002 Free Software Foundation, Inc.    *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -70,7 +70,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.171 2001/12/19 01:07:24 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.173 2002/01/12 22:22:27 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -365,12 +365,19 @@ static inline bool
 can_clear_with(ARG_CH_T ch)
 {
     if (!back_color_erase && SP->_coloron) {
-	if (AttrOfD(ch) & A_COLOR)
-	    return FALSE;
 #if NCURSES_EXT_FUNCS
 	if (!SP->_default_color)
 	    return FALSE;
 	if (SP->_default_fg != C_MASK || SP->_default_bg != C_MASK)
+	    return FALSE;
+	if (AttrOfD(ch) & A_COLOR) {
+	    short fg, bg;
+	    pair_content(PAIR_NUMBER(AttrOfD(ch)), &fg, &bg);
+	    if (fg != C_MASK || bg != C_MASK)
+		return FALSE;
+	}
+#else
+	if (AttrOfD(ch) & A_COLOR)
 	    return FALSE;
 #endif
     }

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998,1999,2000,2001,2002 Free Software Foundation, Inc.    *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -48,7 +48,7 @@
 #define _POSIX_SOURCE
 #endif
 
-MODULE_ID("$Id: lib_tstp.c,v 1.28 2001/12/30 00:02:12 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.29 2002/01/12 17:40:49 tom Exp $")
 
 #if defined(SIGTSTP) && (HAVE_SIGACTION || HAVE_SIGVEC)
 #define USE_SIGTSTP 1
@@ -355,6 +355,8 @@ CatchIfDefault(int sig, RETSIGTYPE(*handler) (int))
 NCURSES_EXPORT(void)
 _nc_signal_handler(bool enable)
 {
+    static bool initialized = FALSE;
+
     T((T_CALLED("_nc_signal_handler(%d)"), enable));
 #if USE_SIGTSTP			/* Xenix 2.x doesn't have SIGTSTP, for example */
     {
@@ -383,12 +385,15 @@ _nc_signal_handler(bool enable)
     }
 #endif /* !USE_SIGTSTP */
 
-    if (enable) {
-	CatchIfDefault(SIGINT, cleanup);
-	CatchIfDefault(SIGTERM, cleanup);
+    if (!initialized) {
+	if (enable) {
+	    CatchIfDefault(SIGINT, cleanup);
+	    CatchIfDefault(SIGTERM, cleanup);
 #if USE_SIGWINCH
-	CatchIfDefault(SIGWINCH, sigwinch);
+	    CatchIfDefault(SIGWINCH, sigwinch);
 #endif
+	    initialized = TRUE;
+	}
     }
     returnVoid;
 }
