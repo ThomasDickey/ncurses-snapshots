@@ -41,7 +41,7 @@
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.5 2002/09/28 17:41:19 tom Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.6 2002/10/06 00:03:43 tom Exp $")
 
 static char *
 _nc_vischar(char *tp, unsigned c)
@@ -90,11 +90,11 @@ _nc_visbuf2n(int bufnum, const char *buf, int len)
 	len = strlen(buf);
 
 #ifdef TRACE
-    tp = vbuf = _nc_trace_buf(bufnum, (unsigned)(len * 4) + 5);
+    tp = vbuf = _nc_trace_buf(bufnum, (unsigned) (len * 4) + 5);
 #else
     {
 	static char *mybuf[2];
-	mybuf[bufnum] = typeRealloc(char, (unsigned)(len * 4) + 5, mybuf[bufnum]);
+	mybuf[bufnum] = typeRealloc(char, (unsigned) (len * 4) + 5, mybuf[bufnum]);
 	tp = vbuf = mybuf[bufnum];
     }
 #endif
@@ -132,7 +132,7 @@ _nc_viswbuf2n(int bufnum, const wchar_t * buf, int len)
 {
     char *vbuf;
     char *tp;
-    int c;
+    wchar_t c;
 
     if (buf == 0)
 	return ("(null)");
@@ -151,7 +151,15 @@ _nc_viswbuf2n(int bufnum, const wchar_t * buf, int len)
 #endif
     *tp++ = D_QUOTE;
     while ((--len >= 0) && (c = *buf++) != '\0') {
-	tp = _nc_vischar(tp, ChCharOf(c));
+	char temp[CCHARW_MAX + 80];
+	int j = wctomb(temp, c), k;
+	if (j <= 0) {
+	    sprintf(temp, "\\u%08X", (wint_t) c);
+	    j = strlen(temp);
+	}
+	for (k = 0; k < j; ++k) {
+	    tp = _nc_vischar(tp, temp[k]);
+	}
     }
     *tp++ = D_QUOTE;
     *tp++ = '\0';
