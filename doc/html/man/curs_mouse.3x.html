@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_mouse.3x,v 1.20 2002/07/20 14:52:14 tom Exp @
+  * @Id: curs_mouse.3x,v 1.21 2002/10/27 00:58:08 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -213,29 +213,36 @@
        than  xterm  and  there  is  no gpm daemon running on your
        machine, mouse events will not be visible  to  <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
        (and the <STRONG>wmousemask</STRONG> function will always return <STRONG>0</STRONG>).
+       If  the  terminfo entry contains a <STRONG>XM</STRONG> string, this is used
+       in the xterm mouse driver to control the way the  terminal
+       is initialized for mouse operation.  The default, if <STRONG>XM</STRONG> is
+       not found, corresponds to private mode 1000 of xterm:
+
+           \E[?1000%?%p1%{1}%=%th%el%;
+
        The z member in the event structure is not presently used.
-       It is intended for use with touch screens  (which  may  be
+       It  is  intended  for use with touch screens (which may be
        pressure-sensitive)   or   with   3D-mice/trackballs/power
        gloves.
 
 
 </PRE>
 <H2>BUGS</H2><PRE>
-       Mouse events under xterm will not in fact be ignored  dur-
-       ing  cooked mode, if they have been enabled by <STRONG>wmousemask</STRONG>.
-       Instead, the xterm mouse report sequence  will  appear  in
+       Mouse  events under xterm will not in fact be ignored dur-
+       ing cooked mode, if they have been enabled by  <STRONG>wmousemask</STRONG>.
+       Instead,  the  xterm  mouse report sequence will appear in
        the string read.
 
        Mouse events under xterm will not be detected correctly in
-       a window with its keypad bit off, since  they  are  inter-
-       preted  as  a  variety  of  function  key.   Your terminfo
-       description must have <STRONG>kmous</STRONG> set to "\E[M"  (the  beginning
+       a  window  with  its keypad bit off, since they are inter-
+       preted as  a  variety  of  function  key.   Your  terminfo
+       description  must  have <STRONG>kmous</STRONG> set to "\E[M" (the beginning
        of the response from xterm for mouse clicks).
 
-       Because  there  are  no  standard  terminal responses that
-       would serve to identify terminals which support the  xterm
-       mouse  protocol,  <STRONG>ncurses</STRONG> assumes that if your $TERM envi-
-       ronment variable contains "xterm", or <STRONG>kmous</STRONG> is defined  in
+       Because there are  no  standard  terminal  responses  that
+       would  serve to identify terminals which support the xterm
+       mouse protocol, <STRONG>ncurses</STRONG> assumes that if your  $TERM  envi-
+       ronment  variable contains "xterm", or <STRONG>kmous</STRONG> is defined in
        the terminal description, then the terminal may send mouse
        events.
 
@@ -243,13 +250,6 @@
 </PRE>
 <H2>SEE ALSO</H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>.
-
-
-
-
-
-
-
 
 
 

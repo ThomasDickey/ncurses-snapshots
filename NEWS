@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.727 2003/01/05 23:49:26 tom Exp $
+-- $Id: NEWS,v 1.728 2003/01/12 01:55:48 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,13 +6,29 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
+20030111
+	+ improve mvcur() by checking if it is safe to move when video
+	  attributes are set (msgr), and if not, reset/restore attributes
+	  within that function rather than doing it separately in the GoTo()
+	  function in tty_update.c (suggested by Philippe Blain).
+	+ add a message in run_tic.in to explain more clearly what does not
+	  work when attempting to create a symbolic link for /usr/lib/terminfo
+	  on OS/2 and other platforms with no symbolic links (report by John
+	  Polterak).
+	+ change several sed scripts to avoid using "\+" since it is not a BRE
+	  (basic regular expression).  One instance caused terminfo.5 to be
+	  misformatted on FreeBSD (from a FreeBSD bug report by Kazuo Horikawa
+	  <horikawa@FreeBSD.org>).
+	+ correct misspelled 'wint_t' in curs_get_wch.3x (Michael Elkins).
+
 20030105
 	+ improve description of terminfo operators, especially static/dynamic
-	  variables (discussion with Mark I Manning IV <mark4th@earthlink.net>).
+	  variables (comments by Mark I Manning IV <mark4th@earthlink.net>).
 	+ demonstrate use of FIELDTYPE by modifying test/ncurses 'r' test to
 	  use the predefined TYPE_ALPHA field-type, and by defining a
 	  specialized type for the middle initial/name.
-	+ fix MKterminfo.sh, workaround for POSIXLY_CORRECT misfeature of sed 4.0
+	+ fix MKterminfo.sh, another workaround for POSIXLY_CORRECT misfeature
+	  of sed 4.0
 	> Philippe Blain:
 	+ optimize can_clear_with() a little by testing first if the parameter
 	  is indeed a "blank".
@@ -50,7 +66,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  by Philippe Blain).
 	+ use '%' as sed substitute delimiter in run_tic script to avoid
 	  problems with pathname delimiters such as ':' and '@' (report by John
-	  Polterak.
+	  Polterak).
 	+ implement a workaround so that line-drawing works with screen's
 	  crippled UTF-8 support (tested with 3.9.13).  This only works with
 	  the wide-character support (--enable-widec); the normal library will

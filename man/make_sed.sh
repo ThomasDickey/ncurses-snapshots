@@ -1,7 +1,7 @@
 #!/bin/sh
-# $Id: make_sed.sh,v 1.5 1998/02/11 12:13:48 tom Exp $
+# $Id: make_sed.sh,v 1.6 2003/01/11 22:23:11 tom Exp $
 ##############################################################################
-# Copyright (c) 1998 Free Software Foundation, Inc.                          #
+# Copyright (c) 1998,2003 Free Software Foundation, Inc.                     #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -47,7 +47,7 @@ RESULT=result$$
 rm -f $UPPER $SCRIPT $RESULT
 trap "rm -f $COL.* $INPUT $UPPER $SCRIPT $RESULT" 0 1 2 5 15
 fgrep -v \# $1 | \
-sed	-e 's/[	]\+/	/g' >$INPUT
+sed	-e 's/[	][	]*/	/g' >$INPUT
 
 for F in 1 2 3 4
 do
