@@ -1,10 +1,14 @@
--- $Id: NEWS,v 1.612 2001/01/14 00:53:19 tom Exp $
+-- $Id: NEWS,v 1.613 2001/01/14 23:05:28 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010114
+	+ correction to my merge of Tom Riddle's patch that broke tic in some
+	  conditions (reported by Enoch Wexler <enoch@wexler.co.il>) -TD
 
 20010113
 	+ modify view.c to test halfdelay().  Like other tests, this recognizes
