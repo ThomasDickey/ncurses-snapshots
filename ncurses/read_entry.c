@@ -37,11 +37,18 @@
 # include <libc.h> 
 # endif
 #endif
+#if HAVE_FCNTL_H
 #include <fcntl.h>
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <string.h>
+#include <errno.h>
+#if !HAVE_EXTERN_ERRNO
+extern int errno;
+#endif
 #include <curses.h>
+
 #include "term.h"
 #include "tic.h"
 
@@ -63,20 +70,35 @@ TERMINAL *cur_term;
 #define LOW_MSB(p)	((p)[0] + 256*(p)[1])
 
 int _nc_read_file_entry(char *filename, TERMTYPE *ptr)
+/* return 1 if read, 0 if not found or garbled, -1 if database inaccessible */
 {
     int			name_size, bool_count, num_count, str_count, str_size;
     int			i, fd, numread;
     unsigned char 	buf[MAX_ENTRY_SIZE];
 
     if ((fd = open(filename, 0)) < 0)
-	return(-1);
+    {
+	if (errno == ENOENT)
+	{  
+	    char	*slash;
+
+	    (void) strcpy(buf, filename);
+	    if ((slash = strrchr(buf, '/')) != (char *)NULL)
+		*slash = '\0';
+
+	    if (slash && access(buf, R_OK))
+		return(-1);
+	}
+
+	return(0);
+    }
 
     /* grab the header */
     (void) read(fd, buf, 12);
     if (LOW_MSB(buf) != MAGIC)
     {
 	close(fd);
-	return(-1);
+	return(0);
     }
     name_size  = LOW_MSB(buf + 2);
     bool_count = LOW_MSB(buf + 4);
@@ -89,7 +111,7 @@ int _nc_read_file_entry(char *filename, TERMTYPE *ptr)
     if (ptr->str_table == NULL)
     {
 	close(fd);
-	return (-1);
+	return(0);
     }
 
     /* grab the name */
@@ -137,7 +159,7 @@ int _nc_read_file_entry(char *filename, TERMTYPE *ptr)
     if (numread < str_count*2)
     {
 	close(fd);
-	return(-1);
+	return(0);
     }
     for (i = 0; i < numread/2; i++)
     {
@@ -154,9 +176,9 @@ int _nc_read_file_entry(char *filename, TERMTYPE *ptr)
     numread = read(fd, ptr->str_table, (unsigned)str_size);
     close(fd);
     if (numread != str_size)
-	return(-1);
+	return(0);
 
-    return(0);
+    return(1);
 }
 
 /*
@@ -171,21 +193,19 @@ int _nc_read_entry(const char *tn, TERMTYPE *tp)
 char		filename[1024];
 char		*directory = TERMINFO;
 char		*terminfo;
+int		status;
 
 	if ((terminfo = getenv("TERMINFO")) != NULL)
 	    	directory = terminfo;
 
 	/* try a local directory */
 	(void) sprintf(filename, "%s/%c/%s", directory, tn[0], tn);
-	if (_nc_read_file_entry(filename, tp) == OK)
-		return(OK);
+	if ((status = _nc_read_file_entry(filename, tp)) == 1)
+		return(1);
 
 	/* try the system directory */
 	(void) sprintf(filename, "%s/%c/%s", TERMINFO, tn[0], tn);
-	if (_nc_read_file_entry(filename, tp) == OK)
-		return(OK);
-
-	return(ERR);
+	return(_nc_read_file_entry(filename, tp));
 }
 
 /*
@@ -195,15 +215,18 @@ char		*terminfo;
  */
 
 int _nc_name_match(char *namelst, const char *name, const char *delim)
+/* microtune this, it occurs in several critical loops */
 {
-char *cp, namecopy[2048];
+char namecopy[2048];
+register char *cp;
 
 	if (namelst == NULL)
 		return(FALSE);
     	(void) strcpy(namecopy, namelst);
     	if ((cp = strtok(namecopy, delim)) != NULL)
     		do {
-			if (strcmp(cp, name) == 0)
+			/* avoid strcmp() function-call cost if possible */
+			if (cp[0] == name[0] && strcmp(cp, name) == 0)
 			    return(TRUE);
     		} while
 		    ((cp = strtok((char *)NULL, delim)) != NULL);

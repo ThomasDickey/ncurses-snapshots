@@ -2,9 +2,9 @@
 .ds n 5
 .ds d @TERMINFO@
 .SH NAME
-\fBtic\fR - \fIterminfo\fR compiler
+\fBtic\fR - the \fIterminfo\fR entry-description compiler
 .SH SYNOPSIS
-\fBtic\fR [\fB-v\fR[\fIn\fR]] [\fB-c\fR] \fIfile\fR
+\fBtic\fR [\fB-v\fR[\fIn\fR]] [\fB-cpICN\fR] \fIfile\fR
 .br
 .SH DESCRIPTION
 The command \fBtic\fR translates a \fBterminfo\fR file from source
@@ -130,12 +130,14 @@ compiled entries, or anywhere in the file tree routed at \fBTERMINFO\fR
 The error messages from this \fBtic\fR have the same format as GNU C
 error messages, and can be parsed by GNU Emacs's compile facility.
 
-The -I, -C, and -p options are not supported under SVr4.
+The -I, -C, -N, -u, and -p options are not supported under SVr4.
+The SVr4 -c mode does not report bad use links.
 .SH FILES
 .TP 5
 \fB\*d/?/*\fR
 Compiled terminal description database.
 .SH SEE ALSO
+\fBinfocmp\fR(1m), \fBcaptoinfo\fR(1m), \fBinfotocap\fR(1m), \fBtoe\fR(1m),
 \fBcurses\fR(3X), \fBterminfo\fR(\*n).
 .\"#
 .\"# The following sets edit modes for GNU EMACS

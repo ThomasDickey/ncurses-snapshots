@@ -71,6 +71,7 @@ The utilities are as follows:
 	clear           -- emits clear-screen for current terminal
 	tput            -- shell-script access to terminal capabilities.
 	tset            -- terminal-initialization utility
+	toe		-- table of entries utility
 
 The first two are used for manipulating terminfo descriptions; the next two
 are for use in shell scripts.  The last is provided for 4.4BSD compatibility.
@@ -103,11 +104,11 @@ Pavel Curtis:
 	wrote the original ncurses
 
 Zeyd M. Ben-Halim:
-	Port of original to Linux and many enhancements.
+	port of original to Linux and many enhancements.
 
 Eric S. Raymond:
 	the man pages, infocmp(1), tput(1), clear(1), captoinfo(1), tset(1),
-	most of tic(1), src/lib_twait.c, trace levels, the HTML intro,
+	toe(1), most of tic(1), src/lib_twait.c, trace levels, the HTML intro,
 	wgetnstr() and many other entry points,	the cursor-movement
 	optimization, the scroll-pack optimizer for vertical motions,
 	the mouse interface and xterm mouse support, and the ncurses

@@ -391,7 +391,7 @@ if a true
 .B ed
 is not available.)
 .PP
-.SS Insert/delete line
+.SS Insert/delete line and vertical motions
 .PP
 If the terminal can open a new blank line before the line where the cursor
 is, this should be given as \fBil1\fR; this is done only from the first
@@ -414,12 +414,23 @@ the command to set this can be described with the
 capability, which takes two parameters:
 the top and bottom lines of the scrolling region.
 The cursor position is, alas, undefined after using this command.
+.PP
 It is possible to get the effect of insert or delete line using
-this command \- the
+.B csr
+on a properly chosen region; the
 .B sc
 and
 .B rc
-(save and restore cursor) commands are also useful.
+(save and restore cursor) commands may be useful for ensuring that 
+your synthesized insert/delete string does not move the cursor.
+(Note that the \fBncurses\fR\fR(3x) library does this synthesis
+automatically, so you need not compose insert/delete strings for
+an entry with \fBcsr\fR).
+.PP
+Yet another way to construct insert and delete might be to use a combination of
+index with the memory-lock feature found on some terminals (like the HP-700/90
+series, which however also has insert/delete).
+.PP
 Inserting lines at the top or bottom of the screen can also be
 done using
 .B ri
@@ -822,40 +833,32 @@ described by this, the sequence can be placed in
 .B is2
 or
 .BR if .
+.SS Delays and Padding
 .PP
-Delays
+Many older and slower terminals don't support either XON/XOFF or DTR
+handshaking, including hardcopy terminals and some very archaic CRTs
+(including, for example, DEC VT100s).  These may require padding characters
+after certain cursor motions and screen changes.
 .PP
-Certain capabilities control padding in the teletype driver.
-These are primarily needed by hard copy terminals, and are used
-by the
-.IR tset
-program to set teletype modes appropriately.
-Delays embedded in the capabilities
-.BR cr ,
-.BR ind ,
-.BR cub1 ,
-.BR ff ,
-and
-.B tab
-will cause the appropriate delay bits to be set in the teletype driver.
+If the terminal uses xon/xoff handshaking for flow control (that is,
+it automatically emits ^S back to the host when its input buffers are
+close to full), set
+.BR xon .
+This capability suppresses the emission of padding.  You can also set it
+for memory-mapped console devices effectively that don't have a speed limit.
+Padding information should still be included so that routines can
+make better decisions about relative costs, but actual pad characters will
+not be transmitted.
 .PP
-.SS Delays
+If \fBpb\fR (padding baud rate) is given, padding is suppressed at baud rates
+below the value of \fBpb\fR.  If the entry has no padding baud rate, then
+whether padding is emitted or not is completely controlled by \fBxon\fR.
 .PP
-Slow terminals, including hardcopy terminals and some very archaic CRTs
-(including, for example, DEC VT100s), may require padding characters after
-certain cursor motions and screen changes.  In historic curses versions, delays
-embedded in the capabilities \fBcr\fR, \fBind\fR, \fBcub1\fR, \fBff\fR and
-\fBtab\fR activated corresponding delay bits in the UNIX tty driver.  In
-this implementation, all padding is done by NUL sends.  This method is slightly
-more expensive, but narrows the interface to the UNIX kernel significantly
-and increases the package's portability correspondingly.
-.PP
-If
-.B pb
-(padding baud rate)
-is given,
-these values can be ignored at baud rates below the value of
-.BR pb .
+If the terminal requires other than a null (zero) character as a pad,
+then this can be given as \fBpad\fR.
+Only the first character of the
+.B pad
+string is used.
 .PP
 .SS Status Lines
 Some terminals have an extra `status line' which is not normally used by
@@ -1003,12 +1006,6 @@ an \fBncv\fR capability of 2.
 .PP
 .SS Miscellaneous
 .PP
-If the terminal requires other than a null (zero) character as a pad,
-then this can be given as \fBpad\fR.
-Only the first character of the
-.B pad
-string is used.
-.PP
 If the terminal can move up or down half a line,
 this can be indicated with
 .B hu
@@ -1057,12 +1054,6 @@ how to talk to the terminal.
 (This capability does not apply to
 .I virtual
 terminal descriptions for which the escape sequences are known.)
-.PP
-If the terminal uses xon/xoff handshaking for flow control, give
-.BR xon .
-Padding information should still be included so that routines can
-make better decisions about costs, but actual pad characters will
-not be transmitted.
 .PP
 If the terminal has a ``meta key'' which acts as a shift key,
 setting the 8th bit of any character transmitted, this fact can

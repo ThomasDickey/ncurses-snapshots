@@ -61,36 +61,6 @@ void use_env(bool f)
 
 int LINES, COLS;
 
-/*
- * The given file-descriptor is for the output terminal.  If output is
- * redirected to a file, we won't be able to get a screen size (but we
- * shouldn't complain).
- *
- * Returns true if we cannot obtain the screen size.
- */
-static int resize(int fd)
-{
-#if defined(TIOCGWINSZ) && !defined(BROKEN_TIOCGWINSZ)
-struct winsize size;
-
-	errno = 0;
-	do {
-		if (ioctl(fd, TIOCGWINSZ, &size) < 0 && errno != EINTR) {
-			return TRUE;
-		}
-	} while
-	    (errno == EINTR);
-
-	LINES = size.ws_row;
-	COLS = size.ws_col;
-	if (LINES == 0 || COLS == 0)
-		return TRUE;
-	return FALSE;
-#else
-	return TRUE;
-#endif
-}
-
 static void get_screensize(void)
 /* set LINES and COLS from the environment and/or terminfo entry */
 {
@@ -98,41 +68,69 @@ char 		*rows, *cols;
 
 	/* figure out the size of the screen */
 	T(("screen size: terminfo lines = %d columns = %d", lines, columns));
-	
-	/* get value of LINES and COLUMNS environment variables */
-	LINES = COLS = 0;
-	rows = getenv("LINES");
-	if (rows != (char *)NULL)
+
+	if (!_use_env)
+	{
+	    LINES = lines;
+	    COLS = columns;
+	}
+	else	/* usually want to query LINES and COLUMNS from environment */
+	{
+	    LINES = COLS = 0;
+
+	    /* first, look for environment variables */
+	    rows = getenv("LINES");
+	    if (rows != (char *)NULL)
 		LINES = atoi(rows);
-	cols = getenv("COLUMNS");
-	if (cols != (char *)NULL)
+	    cols = getenv("COLUMNS");
+	    if (cols != (char *)NULL)
 		COLS = atoi(cols);
-	T(("screen size: environment LINES = %d COLUMNS = %d", LINES, COLS));
+	    T(("screen size: environment LINES = %d COLUMNS = %d",LINES,COLS));
 
-	/* if _use_env is false then override the environment */
-	if (_use_env == FALSE) 
-		if (lines > 0 && columns > 0) {
-			LINES = lines;
-			COLS  = columns; 
-		} 
+#if defined(TIOCGWINSZ) && !defined(BROKEN_TIOCGWINSZ)
+	    /* if that didn't work, maybe we can try asking the OS */
+	    if (LINES <= 0 || COLS <= 0)
+	    {
+		if (isatty(cur_term->Filedes))
+		{
+		    struct winsize size;
 
-	/* If _use_env is true but environment is undefined:
-	   If we can get window size, use it,
-	   else try lines/columns,
-	   else give up.
-	*/
+		    errno = 0;
+		    do {
+			if (ioctl(cur_term->Filedes, TIOCGWINSZ, &size) < 0
+				&& errno != EINTR)
+			    goto failure;
+		    } while
+			(errno == EINTR);
 
-	if (LINES <= 0 || COLS <= 0) {
-		if (!isatty(cur_term->Filedes) || resize(cur_term->Filedes)) {
-			/* no window size, our last hope is terminfo */
-			if (lines > 0 && columns > 0) {
-				LINES = lines;
-				COLS  = columns; 
-			} else {	/* (the ultimate fallback :-) */
-				LINES = 24;
-				COLS  = 80;
-			}
+		    LINES = size.ws_row;
+		    COLS = size.ws_col;
 		}
+	    failure:;
+	    }
+#endif /* defined(TIOCGWINSZ) && !defined(BROKEN_TIOCGWINSZ) */
+
+	    /* if we can't get dynamic info about the size, use static */
+	    if (LINES <= 0 || COLS <= 0)
+		if (lines > 0 && columns > 0)
+		{
+		    LINES = lines;
+		    COLS  = columns;		
+		}
+
+	    /* the ultimate fallback, assume fixed 24x80 size */
+	    if (LINES <= 0 || COLS <= 0)
+	    {
+		LINES = 24;
+		COLS  = 80;
+	    }
+
+	    /*
+	     * Put the derived values back in the screen-size caps, so
+	     * tigetnum() and tgetnum() will do the right thing.
+	     */
+	    lines = LINES;
+	    columns = COLS;
 	}
 
 	T(("screen size is %dx%d", LINES, COLS));
@@ -234,9 +232,12 @@ int def_prog_mode()
 					}
 
 static int grab_entry(const char *tn, TERMTYPE *tp)
+/* return 1 if entry found, 0 if not found, -1 if database not accessible */
 {
-	if (_nc_read_entry(tn, tp) == OK)
-	    return(OK);
+	int	status;
+
+	if ((status = _nc_read_entry(tn, tp)) == 1)
+	    return(1);
 
 #ifndef PURE_TERMINFO
 	/*
@@ -244,11 +245,10 @@ static int grab_entry(const char *tn, TERMTYPE *tp)
 	 * links the entire terminfo/termcap compiler into the startup code.
 	 * It's preferable to build a real terminfo database and use that.
 	 */
-	if (_nc_read_termcap_entry(tn, tp) == OK)
-		return(OK);
+	return(_nc_read_termcap_entry(tn, tp));
 #endif /* PURE_TERMINFO */
 
-	return(ERR);
+	return(status);
 }
 
 char ttytype[NAMESIZE];
@@ -276,7 +276,8 @@ struct term	*term_ptr;
 	T(("your terminal name is %s", tname));
 
 	if (_nc_name_match(ttytype, tname, "|") == FALSE || isendwin()) {
-	
+		int status;
+
 		if (isendwin()) {
 			T(("deleting cur_term"));
 			T(("must be resizing"));
@@ -287,15 +288,22 @@ struct term	*term_ptr;
 
 		if (term_ptr == NULL)
 	    		ret_error0(-1, "Not enough memory to create terminal structure.\n") ;
+		status = grab_entry(tname, &term_ptr->type);
 
-		if (grab_entry(tname, &term_ptr->type) < 0)
-		    	ret_error(-1, "'%s': Unknown terminal type.\n", tname);
+		if (status == -1)
+		{
+			ret_error0(-1, "terminals database is inaccessible\n");
+		}
+		else if (status == 0)
+		{
+		    	ret_error(0, "'%s': unknown terminal type.\n", tname);
+		}
 
 		cur_term = term_ptr;
 		if (generic_type)
-		    	ret_error(-1, "'%s': I need something more specific.\n", tname);
+		    	ret_error(0, "'%s': I need something more specific.\n", tname);
 		if (hard_copy)
-		    	ret_error(-1, "'%s': I can't handle hardcopy terminals.\n", tname);
+		    	ret_error(1, "'%s': I can't handle hardcopy terminals.\n", tname);
 
 		if (command_character  &&  getenv("CC"))
 		    	do_prototype();
@@ -321,7 +329,7 @@ struct term	*term_ptr;
 
 }
 
-int restartterm(char *term, int filenum, int *errret)
+int restartterm(const char *term, int filenum, int *errret)
 {
 int saveecho = SP->_echo;
 int savecbreak = SP->_cbreak;

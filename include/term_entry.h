@@ -44,6 +44,8 @@ extern ENTRY	*_nc_head, *_nc_tail;
 
 #define MAX_LINE	132
 
+#define NULLHOOK        (bool(*)(ENTRY *))0
+
 /* alloc_entry.c: elementary allocation code */
 extern void _nc_init_entry(TERMTYPE *tp);
 extern char *_nc_save_str(char *string);
@@ -58,10 +60,11 @@ extern int _nc_capcmp(const char *, const char *);
 extern void _nc_write_entry(TERMTYPE *tp);
 
 /* comp_parse.c: entry list handling */
-extern void _nc_read_entry_source(FILE *fp, char *, int, bool);
+extern char *_nc_first_name(TERMTYPE *);
+extern void _nc_read_entry_source(FILE *fp, char *, int, bool, bool (*hook)(ENTRY *));
 extern bool _nc_entry_match(char *, char *);
 extern int _nc_resolve_uses(void);
-extern void _nc_free_entries(void);
+extern void _nc_free_entries(ENTRY *);
 
 #endif /* _TERM_ENTRY_H */
 

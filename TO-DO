@@ -23,16 +23,6 @@ Bugs:
 
 Tweaks:
 
-* ^F in vi (which scrolls forward by LINES-2 in the file) exposes a weakness
-  in the update logic.  Ideally, the vertical motion optimization in
-  hardscroll.c should, cost its actions and then force a ClrUpdate() if that
-  would be faster than the scroll.  Unfortunately, this would be a serious
-  pain to arrange.  A simple hack to catch the important cases would be to
-  set a threshold N (probably 2 or 3) such that if vertical motion introduces
-  LINES-N new lines, you nuke the screen.  Keith Bostic argues that this
-  is a win on strictly visual grounds even if the resulting update is
-  theoretically sub-optimal.  He's probably right.
-
 * Ian Jackson reported on the Debian list that the update code seems to be
   using many  delete-character sequences to avoid a few character overwrites.
   This probably reflects poor cost computation in doupdate().

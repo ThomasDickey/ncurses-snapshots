@@ -516,6 +516,12 @@ AC_CACHE_VAL(nc_cv_use_tiocgwinsz,[
 #if HAVE_TERMIOS_H
 #include <termios.h>
 #endif
+#if SYSTEM_LOOKS_LIKE_SCO
+/* they neglected to define struct winsize in termios.h -- it's only
+   in termio.h	*/
+#include	<sys/stream.h>
+#include	<sys/ptem.h>
+#endif
 #if !defined(sun) || !defined(HAVE_TERMIOS_H)
 #include <sys/ioctl.h>
 #endif
@@ -537,7 +543,7 @@ int main()
 		[nc_cv_use_tiocgwinsz=unknown])
 	])
 AC_MSG_RESULT($nc_cv_use_tiocgwinsz)
-test $nc_cv_use_tiocgwinsz != yes && AC_DEFINE(BROKEN_TIOCGETWINSZ)
+test $nc_cv_use_tiocgwinsz != yes && AC_DEFINE(BROKEN_TIOCGWINSZ)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl

@@ -1,6 +1,16 @@
 This is a log of changes that ncurses has gone through since I
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+### ncurses-1.9.6 -> 1.9.7
+
+* corrected return values of setupterm()
+* Fixed some bugs in tput (it does padding now)
+* fixed a bug in tic that made it do the wrong thing on entries with more than
+  one `use' capability.
+* corrected the screen-size calculation at startup time to alter the
+  numeric capabilities as per SVr4, not just LINES and COLS.
+* toe(1)introduced.
+
 ### ncurses-1.9.5 -> 1.9.6
 
 * handling of TERMCAP environment variables now works correctly.

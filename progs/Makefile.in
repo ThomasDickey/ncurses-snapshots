@@ -55,7 +55,7 @@ LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@ @LOCAL_LDFLAGS@
 AUTO_SRC = \
 	termsort.c
 
-PROGS = tic infocmp clear tput tset
+PROGS = tic toe infocmp clear tput tset
 
 TESTPROGS = mvcur tctest hardscroll
 
@@ -72,6 +72,7 @@ install.libs:
 
 install.progs: $(PROGS) $(bindir)
 	$(INSTALL_PROGRAM) tic $(bindir)/tic
+	$(INSTALL_PROGRAM) toe $(bindir)/toe
 	$(INSTALL_PROGRAM) infocmp $(bindir)/infocmp
 	$(INSTALL_PROGRAM) clear $(bindir)/clear
 	$(INSTALL_PROGRAM) tput $(bindir)/tput
@@ -97,6 +98,13 @@ DEPS_TIC = \
 	$(LIB_CURSES)
 tic: $(DEPS_TIC)
 	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(DEPS_TIC) $(LDFLAGS) -o $@
+
+DEPS_TOE = \
+	$(MODEL)/toe.o \
+	$(MODEL)/dump_entry.o \
+	$(LIB_CURSES)
+toe: $(DEPS_TOE)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(DEPS_TOE) $(LDFLAGS) -o $@
 
 DEPS_CLEAR = \
 	$(MODEL)/clear.o \
@@ -149,9 +157,11 @@ tctest: $(DEPS_TCTEST)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) -DTRACE -DMAIN $(DEPS_TCTEST) $(LDFLAGS) -o $@
 
 # Demonstrator/tester for hardware-scrolling algorithm.
-hardscroll: \
-		$(srcdir)/../ncurses/hardscroll.c
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) -DMAINDEBUG $(srcdir)/../ncurses/hardscroll.c $(LDFLAGS) -o $@
+DEPS_HARDSCROLL = \
+	$(srcdir)/../ncurses/hardscroll.c \
+	$(MODEL)/lib_trace.o	
+hardscroll: 
+	@ECHO_LINK@ $(LINK) $(CCFLAGS) -DTRACE -DMAINDEBUG $(DEPS_HARDSCROLL) $(LDFLAGS) -o $@
 
 #
 # Utility productions start here

@@ -31,7 +31,9 @@
 #include "curses.priv.h"
 #include <stdlib.h>
 #include <sys/types.h>
+#if HAVE_SYS_TIME_H && ! SYSTEM_LOOKS_LIKE_SCO
 #include <sys/time.h>
+#endif
 #if HAVE_SYS_SELECT_H
 #include <sys/types.h>
 #include <sys/select.h>

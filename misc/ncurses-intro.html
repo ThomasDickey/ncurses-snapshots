@@ -102,6 +102,14 @@ by Eric S. Raymond and Zeyd M. Ben-Halim<BR>
 <LI> <A HREF="#fbuffer">Direct Field Buffer Manipulation</A>
 <LI> <A HREF="#fcustom">Custom Validation Types</A>
 </UL>
+<LI> <A HREF="#formattrs">Attributes of Forms</A>
+<LI> <A HREF="#fdisplay">Control of Form Display</A>
+<LI> <A HREF="#fdriver">Input Processing in the Forms Driver</A>
+<UL>
+<LI> <A HREF="#fpage">Page Navigation Requests</A>
+<LI> <A HREF="#ffield">Inter-Field Navigation Requests</A>
+<LI> <A HREF="#fifield">Intra-Field Navigation Requests</A>
+</UL>
 </UL>
 
 <HR>
@@ -819,6 +827,13 @@ way to do this is to call <TT>setupterm()</TT>, then use the functions
 <TT>tigetflag()</TT>, <TT>tigetnum()</TT>, and <TT>tigetstr()</TT> to do your
 testing. <P>
 
+A particularly useful case of this often comes up when you want to
+test whether a given terminal type should be treated as `smart'
+(cursor-addressable) or `stupid'.  The right way to test this is to see
+if the return value of <TT>tigetstr("cup")</TT> is non-NULL.  Alternatively,
+you can include the <TT>term.h</TT> file and test the value of the
+macro <TT>cursor_address</TT>. <P>
+
 <H3><A NAME="tuning">Tuning for Speed</A></H3>
 
 Use the <TT>addchstr()</TT> family of functions for fast
@@ -1071,13 +1086,11 @@ Each menu has, as mentioned previously, a pair of associated windows.
 Both these windows are painted when the menu is posted and erased when
 the menu is unposted. <P>
 
-The outer or frame window is not otherwise touched by the menu routines.
-It exists so the programmer can associate a title, a border, or
-perhaps help text with the menu and have it properly refreshed or erased
-at post/unpost time. <P>
-
-The inner window or <DFN>subwindow</DFN> is where the current menu page is
-displayed. <P>
+The outer or frame window is not otherwise touched by the menu
+routines.  It exists so the programmer can associate a title, a
+border, or perhaps help text with the menu and have it properly
+refreshed or erased at post/unpost time.  The inner window or
+<DFN>subwindow</DFN> is where the current menu page is displayed. <P>
 
 By default, both windows are <CODE>stdscr</CODE>.  You can set them with the
 functions in <CODE>menu_win(3x)</CODE>. <P>
@@ -1776,6 +1789,212 @@ check routine, (2) from the field's or form's initialization or termination
 hooks, or (3) just after a <TT>REQ_VALIDATION</TT> request has been processed
 by the forms driver. <P>
 
+<H2><A NAME="formattrs">Attributes of Forms</A></H2>
+
+As with field attributes, form attributes inherit a default from a
+system default form structure.  These defaults can be queried or set by
+of these functions using a form-pointer argument of <TT>NULL</TT>. <P>
+
+The most important attribute of a form is its field list.  You can query
+and change this list with: <P>
+
+<PRE>
+int set_form_fields(FORM *form,           /* form to alter */
+                    FIELD **fields);      /* fields to connect */
+
+char *form_fields(FORM *form);            /* fetch fields of form */
+
+int field_count(FORM *form);              /* count connect fields */
+</PRE>
+
+The second argument of <TT>set_form_fields()</TT> may be a
+NULL-terminated field pointer array like the one required by
+<TT>new_form()</TT>. In that case, the old fields of the form are
+disconnected but not freed (and eligible to be connected to other
+forms), then the new fields are connected. <P>
+
+It may also be null, in which case the old fields are disconnected
+(and not freed) but no new ones are connected. <P>
+
+The <TT>field_count()</TT> function simply counts the number of fields
+connected to a given from.  It returns -1 if the form-pointer argument
+is NULL. <P>
+
+<H2><A NAME="fdisplay">Control of Form Display</A></H2>
+
+In the overview section, you saw that to display a form you normally
+start by definining its size (and fields), posting it, and refreshing
+the screen.  There is an hidden step before posting, which is the
+association of the form with a frame window (actually, a pair of
+windows) within which it will be displayed.  By default, the forms
+library associates every form with the full-screen window
+<TT>stdscr</TT>. <P>
+
+By making this step explicit, you can associate a form with a declared
+frame window on your screen display.  This can be useful if you want to
+adapt the form display to different screen sizes, dynamically tile
+forms on the screen, or use a form as part of an interface layout
+managed by <A HREF="#panels">panels</A>. <P>
+
+The two windows associated with each form have the same functions as
+their analogues in the <A HREF="#menu">menu library</A>.  Both these
+windows are painted when the form is posted and erased when the form
+is unposted. <P>
+
+The outer or frame window is not otherwise touched by the form
+routines.  It exists so the programmer can associate a title, a
+border, or perhaps help text with the form and have it properly
+refreshed or erased at post/unpost time. The inner window or subwindow
+is where the current form page is actually displayed. <P>
+
+In order to declare your own frame window for a form, you'll need to
+know the size of the form's bounding rectangle.  You can get this
+information with: <P>
+
+<PRE>
+int scale_form(FORM *form,                /* form to query */
+               int *rows,                 /* form rows */
+               int *cols);                /* form cols */
+</PRE>
+
+The form dimensions are passed back in the locations pointed to by
+the arguments.  Once you have this information, you can use it to
+declare of windows, then use one of these functions:
+
+<PRE>
+int set_form_win(FORM *form,              /* form to alter */
+                 WINDOW *win);            /* frame window to connect */
+
+WINDOW *form_win(FORM *form);             /* fetch frame window of form */
+
+int set_form_sub(FORM *form,              /* form to alter */
+                 WINDOW *win);            /* form subwindow to connect */
+
+WINDOW *form_sub(FORM *form);             /* fetch form subwindow of form */
+</PRE>
+
+Note that curses operations, including <TT>refresh()</TT>, on the form,
+should be done on the frame window, not the form subwindow. <P>
+
+It is possible to check from your application whether all of a
+scrollable field is actually displayed within the menu subwindow.  Use
+these functions: <P>
+
+<PRE>
+int data_ahead(FORM *form);               /* form to be queried */ 
+
+int data_behind(FORM *form);              /* form to be queried */ 
+</PRE>
+
+The function <TT>data_ahead()</TT> returns TRUE if (a) the current
+field is one-line and has undisplayed data off to the right, (b) the current
+field is multi-line and there is data offscreen below it. <P>
+
+The function <TT>data_behind()</TT> returns TRUE if the first (upper
+left hand) character position is off-screen (not being displayed). <P>
+
+<H2><A NAME="fdriver">Input Processing in the Forms Driver</A></H2>
+
+The function <TT>form_driver()</TT> handles virtualized input requests
+for form navigation, editing, and validation requests, just as
+<TT>menu_driver</TT> does for menus (see the section on <A
+HREF="#minput">menu input handling</A>). <P>
+
+<PRE>
+int form_driver(FORM *form,               /* form to pass input to */
+                int request);             /* form request code */
+</PRE>
+
+Your input virtualization function needs to take input and then convert it
+to either an alphanumeric character (which is treated as data to be 
+entered in the currently-selected field), or a forms processing request. <P>
+
+The forms driver provides hooks (through input-validation and
+field-termination functions) with which your application code can check
+that the input taken by the driver matched what was expected. <P>
+
+<H3><A NAME="fpage">Page Navigation Requests</A></H3>
+
+These requests cause page-level moves through the form,
+triggering display of a new form screen. <P>
+
+<DL>
+<DT> <TT>REQ_NEXT_PAGE</TT>
+<DD> Move to the next form page.
+<DT> <TT>REQ_PREV_PAGE</TT>
+<DD> Move to the previous form page.
+<DT> <TT>REQ_FIRST_PAGE</TT>
+<DD> Move to the first form page.
+<DT> <TT>REQ_LAST_PAGE</TT>
+<DD> Move to the last form page.
+</DL>
+
+These requests treat the list as cyclic; that is, <TT>REQ_NEXT_PAGE</TT>
+from the last page goes to the first, and <TT>REQ_PREV_PAGE</TT> from
+the first page goes to the last. <P>
+
+<H3><A NAME="#ffield">Inter-Field Navigation Requests</A></H3>
+
+These requests handle navigation between fields on the same page. <P>
+
+<DL>
+<DT> <TT>REQ_NEXT_FIELD</TT>
+<DD> Move to next field.
+<DT> <TT>REQ_PREV_FIELD</TT>
+<DD> Move to previous field.
+<DT> <TT>REQ_FIRST_FIELD</TT>
+<DD> Move to the first field.
+<DT> <TT>REQ_LAST_FIELD</TT>
+<DD> Move to the last field.
+<P>
+<DT> <TT>REQ_SNEXT_FIELD</TT>
+<DD> Move to sorted next field.
+<DT> <TT>REQ_SPREV_FIELD</TT>
+<DD> Move to sorted previous field.
+<DT> <TT>REQ_SFIRST_FIELD</TT>
+<DD> Move to the sorted first field.
+<DT> <TT>REQ_SLAST_FIELD</TT>
+<DD> Move to the sorted last field.
+<P>
+<DT> <TT>REQ_LEFT_FIELD</TT>
+<DD> Move left to field.
+<DT> <TT>REQ_RIGHT_FIELD</TT>
+<DD> Move right to field.
+<DT> <TT>REQ_UP_FIELD</TT>
+<DD> Move up to field.
+<DT> <TT>REQ_DOWN_FIELD</TT>
+<DD> Move down to field.
+</DL>
+
+These requests treat the list of fields on a page as cyclic; that is,
+<TT>REQ_NEXT_FIELD</TT> from the last field goes to the first, and
+<TT>REQ_PREV_FIELD</TT> from the first field goes to the last. The
+order of the fields for these (and the <TT>REQ_FIRST_FIELD</TT> and
+<TT>REQ_LAST_FIELD</TT> requests) is simply the order of the field
+pointers in the form array (as set up by <TT>new_form()</TT> or
+<TT>set_form_fields()</TT> <P>
+
+It is also possible to traverse the fields as if they had been sorted in
+screen-position order, so the sequence goes left-to-right and top-to-bottom.
+To do this, use the second group of four sorted-movement requests.  <P>
+
+Finally, it is possible to move between fields using visual directions up,
+down, right, and left.  To accomplish this, use the third group of four
+requests.  Note, however, that the position of a form for purposes of these
+requests is its upper-left corner. <P>
+
+For example, suppose you have a multi-line field B, and two
+single-line fields A and C on the same line with B, with A to the left
+of B and C to the right of B.  A <TT>REQ_MOVE_RIGHT</TT> from A will
+go to B only if A, B, and C <EM>all</EM> share the same first line;
+otherwise it will skip over B to C. <P>
+
+<H3><A NAME="#fifield">Intra-Field Navigation Requests</A></H3>
+
+These requests drive movement of the edit cursor within the currently
+selected field. <P>
+
+
 <H2><A NAME="fcustom">Custom Validation Types</A></H2>
 
 The <TT>form</TT> library gives you the capability to define custom
@@ -1790,8 +2009,8 @@ preexisting ones:  <P>
 
 <HR>
 <P>
-THIS DOCUMENT IS STILL UNDER CONSTRUCTION.  Full descriptions of the menu
-library entry are available in the form_*.3x manual pages included with 
+THIS DOCUMENT IS STILL UNDER CONSTRUCTION.  Full descriptions of the form
+library entry points are available in the form_*.3x manual pages included with 
 the <TT>ncurses</TT> distributions. <P>
 <HR>
 <ADDRESS>Eric S. Raymond &lt;esr@snark.thyrsus.com&gt;</ADDRESS> </BODY>

@@ -61,17 +61,32 @@
  * SUCH DAMAGE.
  */
 
+#include <config.h>
+
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <termios.h>
 #include <errno.h>
+#if HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
 #include <termcap.h>
 #include <fcntl.h>
+
+#if HAVE_GETTTYNAM && HAVE_TTYENT_H
+#include <ttyent.h>
+#endif
+
+#if SYSTEM_LOOKS_LIKE_SCO
+/* they neglected to define struct winsize in termios.h -- it's only
+   in termio.h	*/
+#include	<sys/stream.h>
+#include	<sys/ptem.h>
+#endif
 
 #include <curses.h>	/* for bool typedef */
 #define __INTERNAL_CAPS_VISIBLE	/* we need to see has_hardware_tabs */
@@ -451,8 +466,8 @@ get_termcap_entry(char *userarg)
 	 * there's an /etc/ttys to look up device-to-type mappings in.
 	 * Try ttyname(3); check for dialup or other mapping.
 	 */
-	if (ttypath = ttyname(STDERR_FILENO)) {
-		if (p = strrchr(ttypath, '/'))
+	if ((ttypath = ttyname(STDERR_FILENO)) != 0) {
+		if ((p = strrchr(ttypath, '/')) != 0)
 			++p;
 		else
 			p = ttypath;

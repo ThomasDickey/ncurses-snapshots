@@ -101,6 +101,9 @@ when it is not possible to build a terminfo tree.  This feature is neither
 fast nor cheap, you don't want to use it unless you have to,
 but it's there. <P>
 
+<LI> The table-of-entries utility <B>toe</B> makes it easy for users to
+see exactly what terminal types are available on the system. <P>
+
 <LI> An HTML "Introduction to Programming with NCURSES" document provides
 a narrative introduction to the curses programming interface. <P>
 </UL>

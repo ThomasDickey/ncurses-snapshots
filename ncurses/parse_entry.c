@@ -66,7 +66,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 {
     int			token_type;
     struct name_table_entry	const *entry_ptr;
-    char			*ptr, buf[MAX_TERMCAP_LENGTH];
+    char			*ptr;
 
     token_type = _nc_get_token();
 
@@ -91,7 +91,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 
     entryp->tterm.str_table = entryp->tterm.term_names = _nc_save_str(ptr);
 
-    DEBUG(1, ("Starting '%s'", buf));
+    DEBUG(1, ("Starting '%s'", ptr));
 
     entryp->nuses = 0;
 

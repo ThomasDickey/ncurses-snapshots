@@ -72,6 +72,9 @@ int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
      *
      * However, this restriction is relaxed in ncurses; tc references to
      * previous files are permitted.
+     *
+     * This routine returns 1 if an entry is found, 0 if not found, and -1
+     * if the database is not accessable.
      */
     FILE	*fp;
     ENTRY	*ep;
@@ -104,7 +107,7 @@ int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
 		else if (cp == tc || cp[-1] == '\0')
 		{
 		    if (filecount >= MAXPATHS - 1)
-			return(ERR);
+			return(-1);
 
 		    termpaths[filecount++] = cp;
 		}
@@ -142,7 +145,7 @@ int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
 	 * We don't suppress warning messages here.  The presumption is
 	 * that since it's just a single entry, they won't be a pain.
 	 */
-	_nc_read_entry_source((FILE *)NULL, pathbuf, FALSE, FALSE);
+	_nc_read_entry_source((FILE *)NULL, pathbuf, FALSE, FALSE, NULLHOOK);
     }
     else
     {
@@ -160,7 +163,7 @@ int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
 		 * lines of crap from archaic termcap files as ncurses
 		 * complains about all the obsolete capabilities.
 		 */
-		_nc_read_entry_source(fp, (char*)NULL, FALSE, TRUE);
+		_nc_read_entry_source(fp, (char*)NULL, FALSE, TRUE, NULLHOOK);
 
 		(void) fclose(fp);
 	    }
@@ -168,7 +171,7 @@ int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
     }
 
     if (_nc_head == (ENTRY *)NULL)
-	return(ERR);
+	return(-1);
 
     /* resolve all use references */
     _nc_resolve_uses();
@@ -185,10 +188,10 @@ int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
 	     */
 	    memcpy(tp, &ep->tterm, sizeof(TERMTYPE));
 	    ep->tterm.str_table = (char *)NULL;
-	    _nc_free_entries();
-	    return(OK);
+	    _nc_free_entries(_nc_head);
+	    return(1);
 	}
 
-    _nc_free_entries();
-    return(ERR);
+    _nc_free_entries(_nc_head);
+    return(0);
 }
