@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: ncu-indent,v 1.7 2004/05/22 22:51:03 tom Exp $
+# $Id: ncu-indent,v 1.9 2004/06/09 00:02:43 tom Exp $
 NOOP=no
 OPTS='
 --blank-lines-after-procedures
@@ -25,13 +25,16 @@ OPTS='
 -T inline
 
 -T BUFFER
+-T CHARTYPE
 -T FILE
 -T GCC_NORETURN
 -T LINE
 -T MARK
 -T RETSIGTYPE 
+-T TBUFF
 -T WINDOW
 -T size_t
+-T va_list
 '
 for name in $*
 do

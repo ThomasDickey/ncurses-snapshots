@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.229 $
-#	$Date: 2004/05/22 23:55:21 $
+#	$Revision: 1.232 $
+#	$Date: 2004/06/27 00:23:58 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a newer version which differs in some cosmetic details; we have decided
@@ -792,6 +792,61 @@ mach-color|Mach Console with ANSI color,
 	colors#8, pairs#64, 
 	dim=\E[2m, invis=\E[8m, op=\E[37;40m, rmso=\E[27m, 
 	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, use=mach, 
+
+# From: Marcus Brinkmann
+# http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/hurd/hurd/console/
+#
+# Comments in the original are summarized here:
+#
+# hurd uses 8-bit characters (km).
+#
+# Although it doesn't do XON/XOFF, we don't want padding characters (xon).
+#
+# Regarding compatibility to vt100:  hurd doesn't specify <xenl>, as we don't
+# have the eat_newline_glitch.  It doesn't support setting or removing tab
+# stops (hts/tbc).
+#
+# hurd uses ^H instead \E[D for cub1, as only ^H implements <bw> and it is one
+# byte instead three.
+#
+# <ich1> is not included because hurd has insert mode.
+#
+# hurd doesn't use ^J for scrolling, because this could put things into the
+# scrollback buffer.
+#
+# gsbom/grbom are used to enable/disable real bold (not intensity bright) mode. 
+# This is a GNU extension.
+#
+# The original has commented-out ncv, but is restored here.
+hurd|The GNU Hurd console server, 
+	am, bce, bw, eo, km, mir, msgr, xon, 
+	colors#8, it#8, ncv#18, pairs#64, 
+	acsc=++\,\,--..00ii``aaffgghhjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, civis=\E[?25l, 
+	clear=\Ec, cnorm=\E[?25h, cr=^M, csr=\E[%i%p1%d;%p2%dr, 
+	cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=\E[B, 
+	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
+	cuu=\E[%p1%dA, cuu1=\E[A, cvvis=\E[34l, dch=\E[%p1%dP, 
+	dch1=\E[P, dim=\E[2m, dl=\E[%p1%dM, dl1=\E[M, 
+	ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K, flash=\Eg, 
+	home=\E[H, hpa=\E[%i%p1%dG, ht=^I, ich=\E[%p1%d@, 
+	il=\E[%p1%dL, il1=\E[L, ind=\E[S, indn=\E[%p1%dS, 
+	invis=\E[8m, kb2=\E[G, kbs=\177, kcbt=\E[Z, kcub1=\EOD, 
+	kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kdch1=\E[3~, 
+	kend=\E[4~, kf1=\EOP, kf10=\E[21~, kf11=\E[23~, 
+	kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, kf15=\E[28~, 
+	kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, kf19=\E[33~, 
+	kf2=\EOQ, kf20=\E[34~, kf3=\EOR, kf4=\EOS, kf5=\E[15~, 
+	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
+	khome=\E[1~, kich1=\E[2~, kmous=\E[M, knp=\E[6~, kpp=\E[5~, 
+	kspd=^Z, nel=^M^J, op=\E[39;49m, rc=\E8, rev=\E[7m, ri=\E[T, 
+	rin=\E[%p1%dT, ritm=\E[23m, rmacs=\E[10m, rmir=\E[4l, 
+	rmso=\E[27m, rmul=\E[24m, rs1=\EM, sc=\E7, 
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
+	sgr=\E[0%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m, 
+	sgr0=\E[0m, sitm=\E[3m, smacs=\E[11m, smir=\E[4h, 
+	smso=\E[7m, smul=\E[4m, vpa=\E[%i%p1%dd, grbom=\E[>1l, 
+	gsbom=\E[>1h, 
 
 #### OSF Unix
 #
@@ -2862,10 +2917,16 @@ xterm-xf86-v43|xterm terminal emulator (XFree86 4.3 Window System),
 	kich1=\E[2~, kmous=\E[M, knp=\E[6~, kpp=\E[5~, 
 	use=xterm-basic, 
 
-# This version is current (XFree86 xterm patch #180).
-xterm-xfree86|xterm-new|xterm terminal emulator (XFree86 4.4 Window System), 
+# This version was released in XFree86 4.4.
+xterm-xf86-v44|xterm terminal emulator (XFree86 4.4 Window System), 
 	cnorm=\E[?12l\E[?25h, cvvis=\E[?12;25h, indn=\E[%p1%dS, 
 	rin=\E[%p1%dT, use=xterm-xf86-v43, 
+
+# This version is current (XFree86 xterm patch #192).
+xterm-xfree86|xterm-new|modern xterm terminal emulator, 
+	enacs@, rmacs=\E(B, 
+	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m%?%p9%t\E(0%e\E(B%;, 
+	sgr0=\E[m\E(B, smacs=\E(0, use=xterm-xf86-v44, 
 #
 # This chunk is used for building the VT220/Sun/PC keyboard variants.
 xterm-basic|xterm terminal emulator - common (XFree86), 
@@ -2943,10 +3004,9 @@ xterm-8bit|xterm terminal emulator 8-bit controls (X Window System),
 	cup=\233%i%p1%d;%p2%dH, cuu=\233%p1%dA, cuu1=\233A, 
 	dch=\233%p1%dP, dch1=\233P, dl=\233%p1%dM, dl1=\233M, 
 	ech=\233%p1%dX, ed=\233J, el=\233K, el1=\2331K, 
-	enacs=\E(B\E)0, flash=\233?5h$<100/>\233?5l, 
-	home=\233H, hpa=\233%i%p1%dG, ht=^I, hts=\210, 
-	ich=\233%p1%d@, il=\233%p1%dL, il1=\233L, ind=^J, 
-	invis=\2338m, 
+	flash=\233?5h$<100/>\233?5l, home=\233H, 
+	hpa=\233%i%p1%dG, ht=^I, hts=\210, ich=\233%p1%d@, 
+	il=\233%p1%dL, il1=\233L, ind=^J, invis=\2338m, 
 	is2=\E7\E G\233r\233m\233?7h\233?1;3;4;6l\2334l\E8\E>, 
 	ka1=\217w, ka3=\217u, kb2=\217y, kbeg=\217E, kbs=^H, 
 	kc1=\217q, kc3=\217s, kcbt=\233Z, kcub1=\217D, kcud1=\217B, 
@@ -2959,18 +3019,18 @@ xterm-8bit|xterm terminal emulator 8-bit controls (X Window System),
 	kf9=\23320~, khome=\2331~, kich1=\2332~, kmous=\233M, 
 	knp=\2336~, kpp=\2335~, mc0=\233i, mc4=\2334i, mc5=\2335i, 
 	meml=\El, memu=\Em, op=\23339;49m, rc=\E8, rev=\2337m, 
-	ri=\215, rmacs=^O, rmam=\233?7l, rmcup=\233?1049l, 
+	ri=\215, rmacs=\E(B, rmam=\233?7l, rmcup=\233?1049l, 
 	rmir=\2334l, rmkx=\233?1l\E>, rmso=\23327m, rmul=\23324m, 
 	rs1=\Ec, 
 	rs2=\E[62"p\E G\E7\233r\E8\233m\233?7h\233?1;3;4;6l\2334l\E>, 
 	sc=\E7, setab=\2334%p1%dm, setaf=\2333%p1%dm, 
 	setb=\2334%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
 	setf=\2333%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
-	sgr=\2330%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m%?%p9%t\016%e\017%;, 
-	sgr0=\233m^O, smacs=^N, smam=\233?7h, smcup=\233?1049h, 
-	smir=\2334h, smkx=\233?1h\E=, smso=\2337m, smul=\2334m, 
-	tbc=\2333g, u6=\233[%i%d;%dR, u7=\E[6n, u8=\233[?1;2c, 
-	u9=\E[c, vpa=\233%i%p1%dd, 
+	sgr=\2330%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m%?%p9%t\E(0%e\E(B%;, 
+	sgr0=\233m\E(B, smacs=\E(0, smam=\233?7h, 
+	smcup=\233?1049h, smir=\2334h, smkx=\233?1h\E=, 
+	smso=\2337m, smul=\2334m, tbc=\2333g, u6=\233[%i%d;%dR, 
+	u7=\E[6n, u8=\233[?1;2c, u9=\E[c, vpa=\233%i%p1%dd, 
 
 xterm-hp|XFree86 xterm with hpterm function keys, 
 	kclr=\EJ, kcub1=\ED, kcud1=\EB, kcuf1=\EC, kcuu1=\EA, 
@@ -3240,6 +3300,43 @@ konsole-16color|klone of xterm-16color,
 # make a default entry for konsole
 konsole|KDE console window, 
 	use=konsole-linux, 
+
+# Based on mlterm 2.8.0's mlterm.ti, with corrections/additions from reading
+# the source code and running tack -TD
+#
+# This is nominally a vt102 emulator, with features borrowed from rxvt and
+# xterm.
+#
+# There are some problems with vttest:
+#	save/restore cursor doesn't restore character
+#	test of character sets leaves it in line-drawing mode.
+mlterm|multi lingual terminal emulator, 
+	am, eslok, km, mc5i, mir, msgr, npc, xenl, 
+	colors#8, cols#80, it#8, lines#24, pairs#64, 
+	acsc=00``aaffgghhjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+	bel=^G, bold=\E[1m, cbt=\E[Z, clear=\E[H\E[2J, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
+	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, 
+	ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K, enacs=, 
+	home=\E[H, hpa=\E[%i%p1%dG, ht=^I, hts=\EH, ich=\E[%p1%d@, 
+	ich1=\E[@, il=\E[%p1%dL, il1=\E[L, ind=^J, indn=\E[%p1%dS, 
+	is2=\E7\E[r\E[m\E[?7h\E[?1;3;4;6l\E[4l\E8\E>, 
+	kbs=\177, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
+	kdch1=\E[3~, kend=\EOF, kent=\EOM, kf1=\E[11~, kf10=\E[21~, 
+	kf11=\E[23~, kf12=\E[24~, kf2=\E[12~, kf3=\E[13~, 
+	kf4=\E[14~, kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, 
+	kf9=\E[20~, kfnd=\E[1~, khome=\EOH, kich1=\E[2~, 
+	kmous=\E[M, knp=\E[6~, kpp=\E[5~, kslt=\E[4~, mc0=\E[i, 
+	nel=\EE, op=\E[39;49m, rc=\E8, rev=\E[7m, ri=\EM, 
+	rin=\E[%p1%dT, rmacs=\E(B, rmcup=\E[2J\E[?47l\E8, 
+	rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, 
+	rs2=\E7\E[r\E8\E[m\E[?7h\E[?1;3;4;6l\E[4l\E>, sc=\E7, 
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, sgr0=\E[m, 
+	smacs=\E(0, smcup=\E7\E[?47h, smir=\E[4h, smkx=\E[?1h\E=, 
+	smso=\E[7m, smul=\E[4m, tbc=\E[3g, u6=\E[%i%d;%dR, 
+	u7=\E[6n, u8=\E[?1;2c, u9=\E[c, vpa=\E[%i%p1%dd, 
 
 # From: Thomas Dickey <dickey@clark.net> 04 Oct 1997
 # Updated: Oezguer Kesim <kesim@math.fu-berlin.de> 02 Nov 1997
@@ -20488,6 +20585,14 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2004-05-22
 #	* remove 'ncv' from xterm-256color (patch 188) -TD
+#
+# 2004-06-26
+#	* add mlterm -TD
+#	* add xterm-xf86-v44 -TD 
+#	* modify xterm-new aka xterm-xfree86 to accommodate luit, which relies
+#	  on G1 being used via an ISO-2022 escape sequence (report by
+#	  Juliusz Chroboczek) -TD
+#	* add 'hurd' entry -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
