@@ -1,10 +1,15 @@
--- $Id: NEWS,v 1.755 2003/07/05 22:49:47 tom Exp $
+-- $Id: NEWS,v 1.756 2003/07/12 22:58:37 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030712
+	+ update config.guess, config.sub
+	+ add triples for configuring shared libraries with the Debian
+	  GNU/FreeBSD packages (patch by Robert Millan <zeratul2@wanadoo.es>).
 
 20030705
 	+ modify CF_GCC_WARNINGS so it only applies to gcc, not g++.  Some
