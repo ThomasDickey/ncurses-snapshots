@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: setbuf.c,v 1.10 2003/09/13 23:21:43 tom Exp $")
+MODULE_ID("$Id: setbuf.c,v 1.11 2003/09/27 22:09:42 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -102,7 +102,7 @@ _nc_set_buffer(FILE *ofp, bool buffered)
 {
     /* optional optimization hack -- do before any output to ofp */
 #if HAVE_SETVBUF || HAVE_SETBUFFER
-    if (SP->_buffered != buffered) {
+    if (SP->_buffered != (int)buffered) {
 	unsigned buf_len;
 	char *buf_ptr;
 
