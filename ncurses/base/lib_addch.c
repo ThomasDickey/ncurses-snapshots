@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.87 2005/01/16 01:02:23 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.88 2005/01/29 21:54:32 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -49,29 +49,50 @@ MODULE_ID("$Id: lib_addch.c,v 1.87 2005/01/16 01:02:23 tom Exp $")
  */
 
 /* Return bit mask for clearing color pair number if given ch has color */
-#define COLOR_MASK(ch) (~(attr_t)((ch)&A_COLOR?A_COLOR:0))
+#define COLOR_MASK(ch) (~(attr_t)((ch) & A_COLOR ? A_COLOR : 0))
 
 static inline NCURSES_CH_T
 render_char(WINDOW *win, NCURSES_CH_T ch)
 /* compute a rendition of the given char correct for the current context */
 {
     attr_t a = win->_attrs;
+    int pair = GetPair(ch);
 
-    if (ISBLANK(ch) && AttrOf(ch) == A_NORMAL) {
-	/* color in attrs has precedence over bkgrnd */
+    if (ISBLANK(ch)
+	&& AttrOf(ch) == A_NORMAL
+	&& pair == 0) {
+	/* color/pair in attrs has precedence over bkgrnd */
 	ch = win->_nc_bkgd;
-	SetAttr(ch, a | (AttrOf(win->_nc_bkgd) & COLOR_MASK(a)));
+	SetAttr(ch, a | AttrOf(win->_nc_bkgd));
+	if ((pair = GET_WINDOW_PAIR(win)) == 0)
+	    pair = GetPair(win->_nc_bkgd);
+	SetPair(ch, pair);
     } else {
 	/* color in attrs has precedence over bkgrnd */
 	a |= AttrOf(win->_nc_bkgd) & COLOR_MASK(a);
 	/* color in ch has precedence */
+	if (pair == 0) {
+	    if ((pair = GET_WINDOW_PAIR(win)) == 0)
+		pair = GetPair(win->_nc_bkgd);
+	}
+#if 0
+	if (pair > 255) {
+	    NCURSES_CH_T fixme = ch;
+	    SetPair(fixme, pair);
+	}
+#endif
 	AddAttr(ch, (a & COLOR_MASK(AttrOf(ch))));
+	SetPair(ch, pair);
     }
 
-    TR(TRACE_VIRTPUT, ("render_char bkg %s, attrs %s -> ch %s",
-		       _tracech_t2(1, CHREF(win->_nc_bkgd)),
-		       _traceattr(win->_attrs),
-		       _tracech_t2(3, CHREF(ch))));
+    TR(TRACE_VIRTPUT,
+       ("render_char bkg %s (%d), attrs %s (%d) -> ch %s (%d)",
+	_tracech_t2(1, CHREF(win->_nc_bkgd)),
+	GetPair(win->_nc_bkgd),
+	_traceattr(win->_attrs),
+	GET_WINDOW_PAIR(win),
+	_tracech_t2(3, CHREF(ch)),
+	GetPair(ch)));
 
     return (ch);
 }

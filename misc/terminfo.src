@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.257 $
-#	$Date: 2004/11/21 01:15:54 $
+#	$Revision: 1.258 $
+#	$Date: 2005/01/29 22:38:14 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -3041,13 +3041,13 @@ xterm-16color|xterm with 16 colors like aixterm,
 # These variants of XFree86 3.9.16 xterm are built as a configure option.
 xterm-256color|xterm with 256 colors, 
 	ccc, 
-	colors#256, pairs#256, 
+	colors#256, pairs#32767, 
 	initc=\E]4;%p1%d;rgb\:%p2%{255}%*%{1000}%/%2.2X/%p3%{255}%*%{1000}%/%2.2X/%p4%{255}%*%{1000}%/%2.2X\E\\, 
 	setab=\E[48;5;%p1%dm, setaf=\E[38;5;%p1%dm, 
 	setb=\E[48;5;%p1%dm, setf=\E[38;5;%p1%dm, 
 	use=xterm-new, 
 xterm-88color|xterm with 88 colors, 
-	colors#88, pairs#88, use=xterm-256color, 
+	colors#88, pairs#7744, use=xterm-256color, 
 
 # These two are used to demonstrate the any-event mouse support, i.e., by
 # using an extended name "XM" which tells ncurses to put the terminal into
@@ -20939,6 +20939,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2004-11-20
 #	* update wsvt25 entry -TD
+#
+# 2005-01-29
+#	* update pairs for xterm-88color and xterm-256color to reflect the
+#	  ncurses extended-color support -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

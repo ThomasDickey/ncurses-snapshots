@@ -39,14 +39,32 @@
 #include <curses.priv.h>
 #include <term.h>		/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.50 2004/10/23 20:43:04 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.51 2005/01/29 00:50:23 tom Exp $")
 
-#define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
+#define COLOR_OF(c) ((c < 0) ? "default" : (c > 7 ? color_of(c) : colors[c].name))
 
 #ifdef TRACE
 
 static const char l_brace[] = {L_BRACE, 0};
 static const char r_brace[] = {R_BRACE, 0};
+
+static char *
+color_of(int c)
+{
+    static char buffer[2][80];
+    static int sel;
+    static int last = -1;
+
+    if (c != last) {
+	last = c;
+	sel = !sel;
+	if (c == COLOR_DEFAULT)
+	    strcpy(buffer[sel], "default");
+	else
+	    sprintf(buffer[sel], "color%d", c);
+    }
+    return buffer[sel];
+}
 
 NCURSES_EXPORT(char *)
 _traceattr2(int bufnum, attr_t newmode)

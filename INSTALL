@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.79 2004/10/09 16:56:33 tom Exp $
+-- $Id: INSTALL,v 1.80 2005/01/29 21:30:58 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -384,6 +384,17 @@ SUMMARY OF CONFIGURE OPTIONS:
     --enable-expanded
 	For testing, generate functions for certain macros to make them visible
 	as such to the debugger.  See also the --disable-macros option.
+
+    --enable-ext-colors
+	Extend the cchar_t structure to allow more than 16 colors to be
+	encoded.  This applies only to the wide-character (--enable-widec)
+	configuration.
+
+	NOTE: this option is not yet complete (2005/1/29).
+
+	NOTE:  using this option will make libraries which are not binary-
+	compatible with libncursesw 5.4.  None of the interfaces change, but
+	applications which have an array of cchar_t's must be recompiled.
 
     --enable-getcap
 	Use the 4.4BSD getcap code if available, or a bundled version of it to

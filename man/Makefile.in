@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.35 2003/12/20 18:41:10 tom Exp $
+# $Id: Makefile.in,v 1.36 2005/01/29 19:29:52 tom Exp $
 ##############################################################################
-# Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -49,6 +49,7 @@ INSTALL_DATA	= @INSTALL_DATA@
 all \
 sources :	terminfo.5
 depend :
+tags :
 
 $(DESTDIR)$(mandir) :
 	sh $(srcdir)/../mkinstalldirs $@

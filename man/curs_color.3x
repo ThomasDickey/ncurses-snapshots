@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.22 2005/01/08 16:50:56 tom Exp $
+.\" $Id: curs_color.3x,v 1.24 2005/01/29 14:34:56 tom Exp $
 .TH curs_color 3X ""
 .SH NAME
 \fBstart_color\fR,
@@ -167,6 +167,20 @@ or \fBFALSE\fR.
 All other routines return the integer \fBERR\fR upon failure and an \fBOK\fR
 (SVr4 specifies only "an integer value other than \fBERR\fR") upon successful
 completion.
+.PP
+X/Open defines no error conditions.
+This implementation will return \fBERR\fR on attempts to
+use color values outside the range 0 to COLORS-1
+(except for the default colors extension),
+or use color pairs outside the range 0 to COLOR_PAIR-1.
+Color values used in \fBinit_color\fP must be in the range 0 to 1000.
+.PP
+If the terminal does not support colors,
+\fBstart_color\fP returns ERR.
+If the screen has not been initialized, that is also an error.
+.PP
+An error is returned, e.g., from \fBinit_pair\fP, if \fBstart_color\fP was
+not first called.
 .SH NOTES
 In the \fIncurses\fR implementation, there is a separate color activation flag,
 color palette, color pairs table, and associated COLORS and COLOR_PAIRS counts
@@ -204,7 +218,11 @@ but only if that routine has been first invoked.
 The assumption that \fBCOLOR_BLACK\fR is the default
 background color for all terminals can be modified using the
 \fBassume_default_colors\fP extension.
-
+.PP
+This implementation checks the pointers,
+e.g., for the values returned by
+\fBcolor_content\fP and \fBpair_content\fP,
+and will treat those as optional parameters when null.
 .SH SEE ALSO
 \fBcurses\fR(3X),
 \fBcurs_initscr\fR(3X),

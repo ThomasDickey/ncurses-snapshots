@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,10 +29,10 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- *     and: Thomas E. Dickey 1996-on                                        *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.151 2004/06/19 22:26:53 tom Exp $ */
+/* $Id: curses.h.in,v 1.152 2005/01/29 21:34:05 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -317,6 +317,9 @@ typedef struct
 {
     attr_t	attr;
     wchar_t	chars[CCHARW_MAX];
+#if @NCURSES_EXT_COLORS@
+    int		ext_color;	/* color pair, must be more than 16-bits */
+#endif
 }
 cchar_t;
 
@@ -373,6 +376,9 @@ struct _win_st
 
 #ifdef _XOPEN_SOURCE_EXTENDED
 	cchar_t  _bkgrnd;	/* current background char/attribute pair */
+#if @NCURSES_EXT_COLORS@
+	int	_color;		/* current color-pair for non-space character */
+#endif
 #endif
 };
 
@@ -815,6 +821,9 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 #define A_TOP		NCURSES_BITS(@cf_cv_1UL@,21)
 #define A_VERTICAL	NCURSES_BITS(@cf_cv_1UL@,22)
 
+/*
+ * These apply to the first 256 color pairs.
+ */
 #define COLOR_PAIR(n)	NCURSES_BITS(n, 0)
 #define PAIR_NUMBER(a)	((int)(((a) & A_COLOR) >> NCURSES_ATTR_SHIFT))
 
@@ -858,11 +867,16 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 
 #define wstandout(win)      	(wattrset(win,A_STANDOUT))
 #define wstandend(win)      	(wattrset(win,A_NORMAL))
-#define wattr_set(win,a,p,opts) ((win)->_attrs = (((a) & ~A_COLOR) | COLOR_PAIR(p)), OK)
 
 #define wattron(win,at)		wattr_on(win, (attr_t) at, (void *)0)
 #define wattroff(win,at)	wattr_off(win, (attr_t) at, (void *)0)
+
+#if @NCURSES_EXT_COLORS@
+#define wattrset(win,at)	((win)->_color = PAIR_NUMBER(at), \
+				 (win)->_attrs = (at))
+#else
 #define wattrset(win,at)	((win)->_attrs = (at))
+#endif
 
 #define scroll(win)		wscrl(win,1)
 
@@ -979,16 +993,26 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 #define mvvline(y,x,c,n)		mvwvline(stdscr,y,x,c,n)
 
 /*
- * Some wide-character functions do not depend on the extensions.
+ * Some wide-character functions can be implemented without the extensions.
  */
 #define getbkgd(win)                    ((win)->_bkgd)
 
 #define slk_attr_off(a,v)		((v) ? ERR : slk_attroff(a))
 #define slk_attr_on(a,v)		((v) ? ERR : slk_attron(a))
 
+#if @NCURSES_EXT_COLORS@
+#define wattr_set(win,a,p,opts)		((win)->_attrs = ((a) & ~A_COLOR), \
+					 (win)->_color = (p), \
+					 OK)
+#define wattr_get(win,a,p,opts)		((void)((a) != 0 && (*(a) = (win)->_attrs)), \
+					 (void)((p) != 0 && (*(p) = (win)->_color)), \
+					 OK)
+#else
+#define wattr_set(win,a,p,opts)		((win)->_attrs = (((a) & ~A_COLOR) | COLOR_PAIR(p)), OK)
 #define wattr_get(win,a,p,opts)		((void)((a) != 0 && (*(a) = (win)->_attrs)), \
 					 (void)((p) != 0 && (*(p) = PAIR_NUMBER((win)->_attrs))), \
 					 OK)
+#endif
 
 /*
  * XSI curses deprecates SVr4 vwprintw/vwscanw, which are supposed to use

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.74 2005/01/22 20:11:48 tom Exp $
+# $Id: Makefile.in,v 1.75 2005/01/29 19:28:54 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -129,6 +129,9 @@ all ::		demo$x
 sources :	$(AUTO_SRC)
 
 depend :
+
+tags:
+	ctags *.[h] *.cc
 
 # Build a conventional library for installing, since a shared library would
 # pull in all of the ncurses libraries (panel, menu, form, ncurses) as direct

@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.860 2005/01/22 22:06:59 tom Exp $
+-- $Id: NEWS,v 1.866 2005/01/29 21:24:53 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050129
+	+ merge remaining development changes for extended colors (mostly
+	  complete, does not appear to break other configurations).
+	+ add xterm-88color.dat (part of extended colors testing).
+	+ improve _tracedump() handling of color pairs past 96. 
+	+ modify return-value from start_color() to return OK if colors have
+	  already been started.
+	+ modify curs_color.3x list error conditions for init_pair(),
+	  pair_content() and color_content().
+	+ modify pair_content() to return -1 for consistency with init_pair()
+	  if it corresponds to the default-color.
+	+ change internal representation of default-color to allow application
+	  to use color number 255.  This does not affect the total number of
+	  color pairs which are allowed.
+	+ add a top-level tags rule.
 
 20050122
 	+ add a null-pointer check in wgetch() in case it is called without

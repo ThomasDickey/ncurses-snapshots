@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.216 2005/01/22 22:16:13 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.218 2005/01/29 21:02:05 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -1073,7 +1073,7 @@ TransformLine(int const lineno)
     int n;
     bool attrchanged = FALSE;
 
-    TR(TRACE_UPDATE, ("TransformLine(%d) called", lineno));
+    TR(TRACE_UPDATE, (T_CALLED("TransformLine(%d)"), lineno));
 
     /* copy new hash value to old one */
     if (SP->oldhash && SP->newhash)
@@ -1221,8 +1221,9 @@ TransformLine(int const lineno)
 		firstChar++;
 	}
 	/* if there wasn't one, we're done */
-	if (firstChar >= screen_columns)
-	    return;
+	if (firstChar >= screen_columns) {
+	    TR(TRACE_UPDATE, (T_RETURN("")));
+	}
 
 	blank = newLine[screen_columns - 1];
 
@@ -1241,7 +1242,7 @@ TransformLine(int const lineno)
 		       newLine + firstChar,
 		       (nLastChar - firstChar + 1) * sizeof(NCURSES_CH_T));
 	    }
-	    return;
+	    TR(TRACE_UPDATE, (T_RETURN("")));
 	}
 
 	/* find last non-blank character on old line */
@@ -1336,6 +1337,7 @@ TransformLine(int const lineno)
 	memcpy(oldLine + firstChar,
 	       newLine + firstChar,
 	       (screen_columns - firstChar) * sizeof(NCURSES_CH_T));
+    TR(TRACE_UPDATE, (T_RETURN("")));
 }
 
 /*

@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.274 2005/01/22 22:17:29 tom Exp $
+ * $Id: curses.priv.h,v 1.277 2005/01/29 21:35:40 tom Exp $
  *
  *	curses.priv.h
  *
@@ -210,14 +210,6 @@ struct tries {
 };
 
 /*
- * Definitions for color pairs
- */
-#define C_SHIFT 8		/* we need more bits than there are colors */
-#define C_MASK  ((1 << C_SHIFT) - 1)
-
-#define PAIR_OF(fg, bg) ((((fg) & C_MASK) << C_SHIFT) | ((bg) & C_MASK))
-
-/*
  * Common/troublesome character definitions
  */
 #define L_BRACE '{'
@@ -259,6 +251,20 @@ color_t;
 #include <curses.h>	/* we'll use -Ipath directive to get the right one! */
 #include <term.h>
 
+#if NCURSES_EXT_COLORS && USE_WIDEC_SUPPORT
+#define if_EXT_COLORS(stmt)	stmt
+#define NetPair(value,p)	(value).ext_color = (p), \
+				AttrOf(value) &= ALL_BUT_COLOR, \
+				AttrOf(value) |= (A_COLOR & COLOR_PAIR((p > 255) ? 255 : p))
+#define SetPair(value,p)	(value).ext_color = (p)
+#define GetPair(value)		(value).ext_color
+#define unColor(n)		(AttrOf(n) & ALL_BUT_COLOR)
+#define GET_WINDOW_PAIR(w)	(w)->_color
+#define SET_WINDOW_PAIR(w,p)	(w)->_color = (p)
+#define SameAttrOf(a,b)		(AttrOf(a) == AttrOf(b) && GetPair(a) == GetPair(b))
+#define VIDATTR(attr, pair)	vid_attr(attr, pair, 0)
+#else
+#define if_EXT_COLORS(stmt)	/* nothing */
 #define SetPair(value,p)	RemAttr(value, A_COLOR), \
 				SetAttr(value, AttrOf(value) | (A_COLOR & COLOR_PAIR(p)))
 #define GetPair(value)		PAIR_NUMBER(AttrOf(value))
@@ -268,10 +274,22 @@ color_t;
 				(w)->_attrs |= (A_COLOR & COLOR_PAIR(p))
 #define SameAttrOf(a,b)		(AttrOf(a) == AttrOf(b))
 #define VIDATTR(attr, pair)	vidattr(attr)
+#endif
 
 #define SCREEN_ATTRS(s)		(*((s)->_current_attr))
 #define GET_SCREEN_PAIR(s)	GetPair(SCREEN_ATTRS(s))
 #define SET_SCREEN_PAIR(s,p)	SetPair(SCREEN_ATTRS(s), p)
+
+/*
+ * Definitions for color pairs
+ */
+typedef unsigned colorpair_t;	/* type big enough to store PAIR_OF() */
+#define C_SHIFT 9		/* we need more bits than there are colors */
+#define C_MASK 			((1 << C_SHIFT) - 1)
+#define PAIR_OF(fg, bg)		((((fg) & C_MASK) << C_SHIFT) | ((bg) & C_MASK))
+#define isDefaultColor(c)	((c) >= COLOR_DEFAULT || (c) < 0)
+
+#define COLOR_DEFAULT		C_MASK
 
 struct ldat
 {
@@ -442,7 +460,7 @@ struct screen {
 	/* used in lib_color.c */
 	color_t         *_color_table;  /* screen's color palette            */
 	int             _color_count;   /* count of colors in palette        */
-	unsigned short  *_color_pairs;  /* screen's color pair list          */
+	colorpair_t     *_color_pairs;  /* screen's color pair list          */
 	int             _pair_count;    /* count of color pairs              */
 #if NCURSES_EXT_FUNCS
 	bool            _default_color; /* use default colors                */
@@ -631,7 +649,12 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 
 #define init_mb(state)	memset(&state, 0, sizeof(state))
 
+#if NCURSES_EXT_COLORS
+#define NulColor	, 0
+#else
 #define NulColor	/* nothing */
+#endif
+
 #define NulChar		0,0,0,0	/* FIXME: see CCHARW_MAX */
 #define CharOf(c)	((c).chars[0])
 #define AttrOf(c)	((c).attr)
@@ -643,7 +666,10 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define CharEq(a,b)	(!memcmp(&a, &b, sizeof(a)))
 #define SetChar(ch,c,a)	do { 							    \
 			    NCURSES_CH_T *_cp = &ch;				    \
-			    memset(_cp,0,sizeof(ch)); _cp->chars[0] = c; _cp->attr = a; \
+			    memset(_cp, 0, sizeof(ch));				    \
+			    _cp->chars[0] = c;					    \
+			    _cp->attr = a;					    \
+			    if_EXT_COLORS(SetPair(ch, PAIR_NUMBER(a)));		    \
 			} while (0)
 #define CHREF(wch)	(&wch)
 #define CHDEREF(wch)	(*wch)

@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.23 2004/07/11 14:22:55 tom Exp $
+# $Id: Makefile.in,v 1.24 2005/01/29 19:30:06 tom Exp $
 ##############################################################################
-# Copyright (c) 1998 Free Software Foundation, Inc.                          #
+# Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -92,5 +92,6 @@ mostlyclean \
 realclean \
 depend \
 sources \
+tags \
 uninstall \
 install ::
