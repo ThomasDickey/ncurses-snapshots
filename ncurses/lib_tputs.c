@@ -32,8 +32,9 @@
 #include <string.h>
 #include <ctype.h>
 #include <term.h>	/* padding_baud_rate, xon_xoff */
+#include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.13 1996/07/31 00:19:43 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.14 1996/08/17 22:36:01 tom Exp $")
 
 int delay_output(int ms)
 {
@@ -100,7 +101,7 @@ char	addrbuf[17];
 	}
 #endif /* TRACE */
 
-	if (string == (char *)0 || string == (char *)-1)
+	if (string == ABSENT_STRING || string == CANCELLED_STRING)
 		return ERR;
 
 #ifdef BSD_TPUTS

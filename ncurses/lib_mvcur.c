@@ -140,7 +140,9 @@
 #include <string.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.18 1996/08/06 00:24:06 esr Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.19 1996/08/18 01:21:26 tom Exp $")
+
+#define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
 #define NLMAPPING	SP->_nl			/* nl() on? */
 #define RAWFLAG		SP->_raw		/* raw() on? */
@@ -163,12 +165,6 @@ static float diff;
 #endif /* MAIN */
 
 #define OPT_SIZE 512
-
-/* FIXME: these should be cached in SP */
-static char	*address_cursor;
-static int	carriage_return_length;
-static int	cursor_home_length;
-static int	cursor_to_ll_length;
 
 static void save_curs(void);
 static void restore_curs(void);
@@ -257,7 +253,7 @@ void _nc_mvcur_init(void)
      * can treat it like absolute screen addressing.  This seems to be true
      * for all cursor_mem_address terminal types in the terminfo database.
      */
-    address_cursor = cursor_address ? cursor_address : cursor_mem_address;
+    SP->_address_cursor = cursor_address ? cursor_address : cursor_mem_address;
 
     /*
      * Parametrized local-motion strings.  This static cost computation
@@ -283,7 +279,7 @@ void _nc_mvcur_init(void)
      * All these averages depend on the assumption that all parameter values
      * are equally probable.
      */
-    SP->_cup_cost  = CostOf(tparm(address_cursor, 23, 23), 1);
+    SP->_cup_cost  = CostOf(tparm(SP->_address_cursor, 23, 23), 1);
     SP->_cub_cost  = CostOf(tparm(parm_left_cursor, 23), 1);
     SP->_cuf_cost  = CostOf(tparm(parm_right_cursor, 23), 1);
     SP->_cud_cost  = CostOf(tparm(parm_down_cursor, 23), 1);
@@ -310,9 +306,9 @@ void _nc_mvcur_init(void)
     }
 
     /* pre-compute some capability lengths */
-    carriage_return_length = carriage_return ? strlen(carriage_return) : 0;
-    cursor_home_length     = cursor_home     ? strlen(cursor_home)     : 0;
-    cursor_to_ll_length    = cursor_to_ll    ? strlen(cursor_to_ll)    : 0;
+    SP->_carriage_return_length = STRLEN(carriage_return);
+    SP->_cursor_home_length     = STRLEN(cursor_home);
+    SP->_cursor_to_ll_length    = STRLEN(cursor_to_ll);
 }
 
 void _nc_mvcur_wrap(void)
@@ -347,10 +343,8 @@ static inline int
 repeated_append (int total, int num, int repeat, char *dst, const char *src)
 {
 	register size_t src_len = strlen(src);
-	register size_t dst_len = 0;
+	register size_t dst_len = STRLEN(dst);
 
-	if (dst)
-	    dst_len = strlen(dst);
 	if ((dst_len + repeat * src_len) < OPT_SIZE-1) {
 		total += (num * repeat);
 		if (dst) {
@@ -617,7 +611,7 @@ onscreen_mvcur(int yold,int xold,int ynew,int xnew, bool ovw)
 #endif /* MAIN */
 
     /* tactic #0: use direct cursor addressing */
-    sp = tparm(address_cursor, ynew, xnew);
+    sp = tparm(SP->_address_cursor, ynew, xnew);
     if (sp)
     {
 	tactic = 0;
@@ -715,19 +709,19 @@ onscreen_mvcur(int yold,int xold,int ynew,int xnew, bool ovw)
 	else if (tactic == 2)
 	{
 	    (void) strcpy(use, carriage_return);
-	    (void) relative_move(use + carriage_return_length,
+	    (void) relative_move(use + SP->_carriage_return_length,
 				 yold,0,ynew,xnew, ovw);
 	}
 	else if (tactic == 3)
 	{
 	    (void) strcpy(use, cursor_home);
-	    (void) relative_move(use + cursor_home_length,
+	    (void) relative_move(use + SP->_cursor_home_length,
 				 0, 0, ynew, xnew, ovw);
 	}
 	else if (tactic == 4)
 	{
 	    (void) strcpy(use, cursor_to_ll);
-	    (void) relative_move(use + cursor_to_ll_length,
+	    (void) relative_move(use + SP->_cursor_to_ll_length,
 				 screen_lines-1, 0, ynew, xnew, ovw);
 	}
 	else /* if (tactic == 5) */
@@ -802,28 +796,12 @@ int mvcur(int yold, int xold, int ynew, int xnew)
 	    }
 	    xold = 0;
 	}
-	if (yold > screen_lines - 1)
-	{
-	    ynew -= yold - (screen_lines - 1);
-	    yold = screen_lines - 1;
-	}
     }
 
-#ifdef CURSES_OVERRUN	/* not used, it takes us out of sync with curscr */
-    /*
-     * The destination line is offscreen. Try to scroll the screen to
-     * bring it onscreen.  Note: this is not a documented feature of the
-     * API.  It's here for compatibility with archaic curses code, a
-     * feature no one seems to have actually used in a long time.
-     */
-    if (ynew >= screen_lines)
-    {
-	if (mvcur_scrolln((ynew - (screen_lines - 1)), 0, screen_lines - 1, screen_lines - 1) == OK)
-	    ynew = screen_lines - 1;
-	else
-	    return(ERR);
-    }
-#endif /* CURSES_OVERRUN */
+    if (yold > screen_lines - 1)
+	yold = screen_lines - 1;
+    if (ynew > screen_lines - 1)
+	ynew = screen_lines - 1;
 
     /* destination location is on screen now */
     return(onscreen_mvcur(yold, xold, ynew, xnew, TRUE));

@@ -29,11 +29,13 @@
 
 #include <curses.priv.h>
 
+MODULE_ID("$Id: lib_pad.c,v 1.11 1996/08/18 01:37:38 tom Exp $")
+
 WINDOW *newpad(int l, int c)
 {
 WINDOW *win;
 chtype *ptr;
-int i, j;
+int i;
 
 	T(("newpad(%d, %d) called", l, c));
 
@@ -46,18 +48,12 @@ int i, j;
 	for (i = 0; i < l; i++) {
 	    win->_line[i].oldindex = _NEWINDEX;
 	    if ((win->_line[i].text = (chtype *) calloc((size_t)c, sizeof(chtype))) == NULL) {
-			for (j = 0; j < i; j++)
-			    free(win->_line[j].text);
-
-			free(win->_line);
-			free(win);
-
-			errno = ENOMEM;
-			return NULL;
+		_nc_freewin(win);
+		errno = ENOMEM;
+		return NULL;
 	    }
-	    else
-		for (ptr = win->_line[i].text; ptr < win->_line[i].text + c; )
-		    *ptr++ = ' ';
+	    for (ptr = win->_line[i].text; ptr < win->_line[i].text + c; )
+		*ptr++ = ' ';
 	}
 
 	T(("newpad: returned window is %p", win));

@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.28 1996/08/06 00:24:06 esr Exp $
+ * $Id: curses.priv.h,v 1.30 1996/08/18 01:17:31 tom Exp $
  *
  *	curses.priv.h
  *
@@ -173,6 +173,11 @@ struct screen {
 	int             _ich1_cost;     /* cost of (insert_character)       */
 	int             _dch_cost;      /* cost of (parm_dch)               */
 	int             _ich_cost;      /* cost of (parm_ich)               */
+	/* used in lib_mvcur.c */
+	char *          _address_cursor;
+	int             _carriage_return_length;
+	int             _cursor_home_length;
+	int             _cursor_to_ll_length;
 };
 
 /* Ncurses' public interface follows the internal types */
@@ -310,6 +315,7 @@ extern int _nc_timed_wait(int, int, int *);
 extern int _nc_waddch_nosync(WINDOW *, const chtype);
 extern void _nc_backspace(WINDOW *win);
 extern void _nc_do_color(int, int (*)(int));
+extern void _nc_freewin(WINDOW *win);
 extern void _nc_get_screensize(void);
 extern void _nc_hash_map(void);
 extern void _nc_outstr(char *str);

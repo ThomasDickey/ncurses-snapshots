@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 9.13.12
+#	Version 9.13.13
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2203,6 +2203,39 @@ nextshell|NeXT Shell application,
 	bel=^G, cr=^M, cub1=^H, cud1=^J, ht=^I, kbs=^H, kcub1=^H, 
 	kcud1=^J, nel=^M^J, 
 
+### Common Desktop Environment
+#
+
+# This ships with Sun's CDE in Solaris 2.5
+dtterm|CDE desktop terminal, 
+	am, mir, msgr, xenl, xon, 
+	colors#8, cols#80, it#8, lines#24, lm#0, pairs#8, 
+	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
+	clear=\E[H\E[J, cnorm=\E[?25h, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
+	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	dch=\E[%p1%dP, dch1=\E[P, dim=\E[2m, dl=\E[%p1%dM, 
+	dl1=\E[M, ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K, 
+	flash=\E[?5h$<200>\E[?5l, home=\E[H, ht=^I, hts=\EH, 
+	ich=\E[%p1%d@, il=\E[%p1%dL, il1=\E[L, ind=\ED, 
+	invis=\E[8m, is2=\E F\E>\E[?1l\E[?7h\E[?45l, kbs=^H, 
+	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
+	kdch1=\E[3~, kf1=\E[11~, kf10=\E[21~, kf11=\E[23~, 
+	kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, kf15=\E[28~, 
+	kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, kf19=\E[33~, 
+	kf2=\E[12~, kf20=\E[34~, kf3=\E[13~, kf4=\E[14~, 
+	kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
+	kfnd=\E[1~, khlp=\E[28~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, 
+	kslt=\E[4~, nel=\EE, op=\E[39;49m, rc=\E8, rev=\E[7m, ri=\EM, 
+	rmacs=^O, rmam=\E[?7l, rmir=\E[4l, rmso=\E[22;27m, 
+	rmul=\E[24m, sc=\E7, setab=\E[%p1%{40}%+%dm, 
+	setaf=\E[%p1%{30}%+%dm, 
+	sgr=\E[0%?%p1%t;2;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p6%t;1%;%?%p7%t;8%;m%?%p9%t\016%e\017%;, 
+	sgr0=\E[0m, smacs=^N, smam=\E[?7h, smir=\E[4h, 
+	smso=\E[2;7m, smul=\E[4m, tbc=\E[3g, 
+
 ######## COMMON TERMINAL TYPES
 #
 # This section describes terminal classes and maker brands that are still
@@ -2348,7 +2381,7 @@ hp262x|HP 262x terminals,
 	sgr=\E&d%'@'%?%p1%t%'B'%|%;%?%p2%t%'D'%|%;%?%p3%t%'B'%|%;%?%p4%t%'A'%|%;%c, 
 	sgr0=\E&d@, smkx=\E&s1A, smso=\E&dB, smul=\E&dD, 
 
-# Note: no <home> on HP's since that homes to top of memory, not screen.
+# Note: no <home> on HPs since that homes to top of memory, not screen.
 # Due to severe 2621 braindamage, the only way to get the arrow keys to
 # transmit anything at all is to turn on the function key labels
 # with <smkx>, and even then the user has to hold down shift!
@@ -7963,6 +7996,7 @@ excel62-rv|excel64-rv|datamedia Excel 62 in reverse video mode,
 #
 # Current Falco models as of 1995 are generally ANSI-compatible and support
 # emulations of DEC VT-series, Wyse, and Televideo types.
+#
 
 # Test version for Falco ts-1. See <arpavax.hickman@ucb> for info
 # This terminal was released around 1983 and was discontinued long ago.
@@ -13318,6 +13352,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 9.13.12 (Mon Aug  5 14:31:11 EDT 1996):
 #	* Added hpex2 from Ville Sulko.
 #	* Fixed a bug that ran the qnx and pcvtXX together.
+# 9.13.13 (Fri Aug  9 01:16:17 EDT 1996):
+#	* Added dtterm entry from Solaris CDE.
 #
 
 ######## REORDER

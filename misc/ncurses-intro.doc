@@ -804,8 +804,8 @@ Hints, Tips, and Tricks
    have to write the SIGWINCH handler yourself.
    
    The easiest way to code your SIGWINCH handler is to have it do an
-   endwin, followed by an initscr and a screen repaint you code yourself.
-   The initscr will pick up the new screen size from the xterm's
+   endwin, followed by an refresh and a screen repaint you code yourself.
+   The refresh will pick up the new screen size from the xterm's
    environment.
    
   HANDLING MULTIPLE TERMINAL SCREENS

@@ -24,8 +24,9 @@
 
 #include <string.h>
 #include <term.h>
+#include <tic.h>
 
-MODULE_ID("$Id: lib_ti.c,v 1.4 1996/07/30 22:49:24 tom Exp $")
+MODULE_ID("$Id: lib_ti.c,v 1.5 1996/08/17 22:51:09 tom Exp $")
 
 int tigetflag(const char *str)
 {
@@ -37,7 +38,7 @@ int i;
 		if (!strcmp(str, boolnames[i]))
 			return cur_term->type.Booleans[i];
 
-	return -1;
+	return CANCELLED_BOOLEAN;
 }
 
 int tigetnum(const char *str)
@@ -50,7 +51,7 @@ int i;
 		if (!strcmp(str, numnames[i]))
 			return cur_term->type.Numbers[i];
 
-	return -2;
+	return CANCELLED_NUMERIC;
 }
 
 char *tigetstr(const char *str)
@@ -63,5 +64,5 @@ int i;
 		if (!strcmp(str, strnames[i]))
 			return cur_term->type.Strings[i];
 
-	return (char *)-1;
+	return CANCELLED_STRING;
 }

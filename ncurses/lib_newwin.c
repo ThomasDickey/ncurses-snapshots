@@ -30,11 +30,27 @@
 
 #include <curses.priv.h>
 
+MODULE_ID("$Id: lib_newwin.c,v 1.10 1996/08/18 01:37:31 tom Exp $")
+
+void _nc_freewin(WINDOW *win)
+{
+int	i;
+
+	if (win != 0) {
+		if (! (win->_flags & _SUBWIN)) {
+			for (i = 0; i <= win->_maxy && win->_line[i].text; i++)
+				free(win->_line[i].text);
+		}
+		free(win->_line);
+		free(win);
+	}
+}
+
 WINDOW * newwin(int num_lines, int num_columns, int begy, int begx)
 {
 WINDOW	*win;
 chtype	*ptr;
-int	i, j;
+int	i;
 
 	T(("newwin(%d,%d,%d,%d) called", num_lines, num_columns, begy, begx));
 
@@ -54,17 +70,11 @@ int	i, j;
 
 	for (i = 0; i < num_lines; i++) {
 	    if ((win->_line[i].text = (chtype *) calloc((unsigned)num_columns, sizeof(chtype))) == NULL) {
-			for (j = 0; j < i; j++)
-			    free(win->_line[j].text);
-
-			free(win->_line);
-			free(win);
-
-			return NULL;
+		_nc_freewin(win);
+		return NULL;
 	    }
-	    else
-		for (ptr = win->_line[i].text; ptr < win->_line[i].text + num_columns; )
-		    *ptr++ = ' ';
+	    for (ptr = win->_line[i].text; ptr < win->_line[i].text + num_columns; )
+		*ptr++ = ' ';
 	}
 
 	T(("newwin: returned window is %p", win));

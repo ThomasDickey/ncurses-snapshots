@@ -19,6 +19,17 @@
 *                                                                          *
 ***************************************************************************/
 
+/*
+ * $Id: progs.priv.h,v 1.5 1996/08/17 22:43:26 tom Exp $
+ *
+ *	progs.priv.h
+ *
+ *	Header file for curses utility programs
+ *
+ */
+
+#define MODULE_ID(id) /*nothing*/
+
 #include <config.h>
 
 #include <stdlib.h>
@@ -69,12 +80,18 @@
 # endif
 #endif
 
+#include <errno.h>
+
+#if !HAVE_EXTERN_ERRNO
+extern int errno;
+#endif
+
 #if HAVE_GETOPT_H
 #include <getopt.h>
 #else
 /* 'getopt()' may be prototyped in <stdlib.h>, but declaring its
-* variables doesn't hurt.
-	 */
+ * variables doesn't hurt.
+ */
 extern char *optarg;
 extern int optind;
 #endif /* HAVE_GETOPT_H */

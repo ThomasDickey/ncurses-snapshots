@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.46 1996/08/10 21:21:11 tom Exp $
+$Id: ncurses.c,v 1.48 1996/08/17 23:01:31 tom Exp $
 
 ***************************************************************************/
 /*LINTLIBRARY */
@@ -1808,13 +1808,9 @@ static void Continue (WINDOW *win)
     wGetchar(win);
 }
 
-static void input_test(WINDOW *win)
+static void flushinp_test(WINDOW *win)
 /* Input test, adapted from John Burnell's PDCurses tester */
 {
-#if HAVE_VSSCANF
-    char buffer [80];
-    int num;
-#endif /* HAVE_VSSCANF */
     int w, h, bx, by, sw, sh, i;
 
     WINDOW *subWin;
@@ -1845,8 +1841,10 @@ static void input_test(WINDOW *win)
     wrefresh(win);
 
     nocbreak();
-    mvwaddstr(win, 1, 1, "Type random keys for 5 seconds.");
-    mvwaddstr(win, 2, 1,
+    mvwaddstr(win, 0, 1, "This is a test of the flushinp() call.");
+
+    mvwaddstr(win, 2, 1, "Type random keys for 5 seconds.");
+    mvwaddstr(win, 3, 1,
       "These should be discarded (not echoed) after the subwindow goes away.");
     wrefresh(win);
 
@@ -1864,7 +1862,13 @@ static void input_test(WINDOW *win)
     wrefresh(win);
     sleep(1);
 
-    mvwaddstr(win, 2, 1, "Press a key");
+    mvwaddstr(win, 2, 1,
+	      "If you were still typing when the window timer expired,");
+    mvwaddstr(win, 3, 1,
+	      "or else you typed nothing at all while it was running,");
+    mvwaddstr(win, 4, 1,
+	      "test was invalid.  You'll see garbage or nothing at all. ");
+    mvwaddstr(win, 6, 1, "Press a key");
     wmove(win, 9, 10);
     wrefresh(win);
     echo();
@@ -1883,17 +1887,6 @@ static void input_test(WINDOW *win)
 	    "What you typed should now have been deleted; if not, wdelch() failed.");
     Continue(win);
 
-#if HAVE_VSSCANF
-    /*
-     * This test won't be portable until vsscanf() is
-     */
-    mvwaddstr(win, 6, 2, "Enter a number then a string separated by space");
-    echo();
-    if (mvwscanw(win, 7, 6, "%d %s", &num,buffer) != ERR)
-	mvwprintw(win, 8, 6, "String: %s Number: %d", buffer,num);
-#endif /* HAVE_VSSCANF */
-
-    Continue(win);
     cbreak();
 }
 
@@ -2528,7 +2521,7 @@ do_single_test(const char c)
 	break;
 
     case 'i':
-	input_test(stdscr);
+	flushinp_test(stdscr);
 	break;
 
     case 'k':
@@ -2664,7 +2657,7 @@ main(int argc, char *argv[])
 	(void) puts("e = exercise soft keys");
 	(void) puts("f = display ACS characters");
 	(void) puts("g = display windows and scrolling");
-	(void) puts("i = subwindow input test");
+	(void) puts("i = test of flushinp()");
 	(void) puts("k = display character attributes");
 #if HAVE_MENU_H
 	(void) puts("m = menu code test");

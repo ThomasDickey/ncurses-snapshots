@@ -37,7 +37,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.20 1996/07/31 00:22:32 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.21 1996/08/17 22:56:36 tom Exp $")
 
 TERMINAL *cur_term;
 
@@ -72,7 +72,7 @@ char *_nc_tic_dir(char *path)
 		have_tic_directory = TRUE;
 	} else if (!have_tic_directory) {
 		char *envp;
-		if ((envp = getenv("TERMINFO")) != NULL)
+		if ((envp = getenv("TERMINFO")) != 0)
 			return _nc_tic_dir(envp);
 	}
 	return result;
@@ -92,7 +92,7 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 	    char	*slash;
 
 	    (void) strcpy(buf, filename);
-	    if ((slash = strrchr(buf, '/')) != (char *)NULL)
+	    if ((slash = strrchr(buf, '/')) != 0)
 		*slash = '\0';
 
 	    if (slash && access(buf, R_OK))
@@ -117,7 +117,7 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 
     /* try to allocate space for the string table */
     ptr->str_table = malloc((unsigned)str_size);
-    if (ptr->str_table == NULL)
+    if (ptr->str_table == 0)
     {
 	close(fd);
 	return(0);
@@ -153,9 +153,9 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
     for (i = 0; i < min(num_count, NUMCOUNT); i++)
     {
 	if (IS_NEG1(buf + 2*i))
-	    ptr->Numbers[i] = -1;
+	    ptr->Numbers[i] = ABSENT_NUMERIC;
 	else if (IS_NEG2(buf + 2*i))
-	    ptr->Numbers[i] = -2;
+	    ptr->Numbers[i] = CANCELLED_NUMERIC;
 	else
 	    ptr->Numbers[i] = LOW_MSB(buf + 2*i);
     }
@@ -163,7 +163,7 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 	lseek(fd, (off_t) (2 * (num_count - NUMCOUNT)), 1);
     else
 	for (i=num_count; i < NUMCOUNT; i++)
-	    ptr->Numbers[i] = -1;
+	    ptr->Numbers[i] = ABSENT_NUMERIC;
 
     /* grab the string offsets */
     numread = read(fd, buf, (unsigned)(str_count*2));
@@ -175,9 +175,9 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
     for (i = 0; i < numread/2; i++)
     {
 	if (IS_NEG1(buf + 2*i))
-	    ptr->Strings[i] = (char *)0;
+	    ptr->Strings[i] = ABSENT_STRING;
 	else if (IS_NEG2(buf + 2*i))
-	    ptr->Strings[i] = (char *)-1;
+	    ptr->Strings[i] = CANCELLED_STRING;
 	else
 	    ptr->Strings[i] = (LOW_MSB(buf+2*i) + ptr->str_table);
     }
@@ -185,7 +185,7 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 	lseek(fd, (off_t) (2 * (str_count - STRCOUNT)), 1);
     else
 	for (i = str_count; i < STRCOUNT; i++)
-	    ptr->Strings[i] = 0;
+	    ptr->Strings[i] = ABSENT_STRING;
 
     /* finally, grab the string table itself */
     numread = read(fd, ptr->str_table, (unsigned)str_size);
@@ -241,14 +241,16 @@ char		ttn[MAX_ALIAS + 3];
 	/* This is System V behavior, in conjunction with our requirements for
 	 * writing terminfo entries.
 	 */
-	if (have_tic_directory)
-		return _nc_read_tic_entry(filename, _nc_tic_dir(0), ttn, tp);
+	if (have_tic_directory
+	 && _nc_read_tic_entry(filename, _nc_tic_dir(0), ttn, tp) == 1)
+		return 1;
 
-	if ((envp = getenv("TERMINFO")) != NULL)
-		return _nc_read_tic_entry(filename, _nc_tic_dir(envp), ttn, tp);
+	if ((envp = getenv("TERMINFO")) != 0
+	 && _nc_read_tic_entry(filename, _nc_tic_dir(envp), ttn, tp) == 1)
+		return 1;
 
 	/* this is an ncurses extension */
-	if ((envp = getenv("HOME")) != NULL)
+	if ((envp = getenv("HOME")) != 0)
 	{
 		char *home = RoomFor(strlen(envp) + strlen(PRIVATE_INFO) + 1);
 
@@ -258,7 +260,7 @@ char		ttn[MAX_ALIAS + 3];
 	}
 
 	/* this is an ncurses extension */
-	if ((envp = getenv("TERMINFO_DIRS")) != NULL)
+	if ((envp = getenv("TERMINFO_DIRS")) != 0)
 	{
 	    /* strtok modifies its argument, so we must copy */
 	    char *cp = strtok(envp = strcpy(RoomFor(strlen(envp)), envp), ":");
@@ -269,7 +271,7 @@ char		ttn[MAX_ALIAS + 3];
 		if (_nc_read_tic_entry(filename, cp, ttn, tp) == 1)
 			return(1);
 	    } while
-		((cp = strtok(NULL, ":")) != (char *)NULL);
+		((cp = strtok((char *)0, ":")) != 0);
 	    return(0);
 	}
 
@@ -310,16 +312,16 @@ int _nc_name_match(const char *const namelst, const char *const name, const char
 char namecopy[MAX_ENTRY_SIZE];	/* this may get called on a TERMCAP value */
 register char *cp;
 
-	if (namelst == NULL)
+	if (namelst == 0)
 		return(FALSE);
 	(void) strcpy(namecopy, namelst);
-	if ((cp = strtok(namecopy, delim)) != NULL)
+	if ((cp = strtok(namecopy, delim)) != 0) {
 		do {
 			/* avoid strcmp() function-call cost if possible */
 			if (cp[0] == name[0] && strcmp(cp, name) == 0)
 			    return(TRUE);
 		} while
-		    ((cp = strtok((char *)NULL, delim)) != NULL);
-
+		    ((cp = strtok((char *)0, delim)) != 0);
+	}
 	return(FALSE);
 }

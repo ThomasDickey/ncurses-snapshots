@@ -32,15 +32,13 @@
 #include <ctype.h>
 
 #include <curses.h>
+#include <tic.h>
 #include <string.h>
 #include <ctype.h>
-#include <errno.h>
 
-#if !HAVE_EXTERN_ERRNO
-extern int errno;
-#endif
+#include <term.h>
 
-#include "term.h"
+MODULE_ID("$Id: tput.c,v 1.6 1996/08/17 22:42:51 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -179,11 +177,11 @@ FILE *f;
 
 	if ((status = tigetflag(argv[0])) != -1)
 		return(status != 0);
-	else if ((status = tigetnum(argv[0])) != -2) {
+	else if ((status = tigetnum(argv[0])) != CANCELLED_NUMERIC) {
 		(void) printf("%d\n", status);
 		return(0);
 	}
-	else if ((s = tigetstr(argv[0])) == (char *)-1)
+	else if ((s = tigetstr(argv[0])) == CANCELLED_STRING)
 		quit(4, "%s: unknown terminfo capability '%s'", prg_name, argv[0]);
 	else if (s != (char *)NULL) {
 		if (argc > 1) {
