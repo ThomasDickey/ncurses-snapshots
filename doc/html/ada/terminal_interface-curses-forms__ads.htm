@@ -40,7 +40,7 @@
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
 <FONT COLOR=green><EM>--  Author: <A HREF="http://home.t-online.de/home/Juergen.Pfeifer">J&uuml;rgen Pfeifer</A> &lt;<A HREF="mailto:juergen.pfeifer@gmx.net">&lt;juergen.pfeifer@gmx.net&gt;</A>&gt; 1996</EM></FONT>
 <FONT COLOR=green><EM>--  Version Control:</EM></FONT>
-<FONT COLOR=green><EM>--  @Revision: 1.24 @</EM></FONT>
+<FONT COLOR=green><EM>--  @Revision: 1.25 @</EM></FONT>
 <FONT COLOR=green><EM>--  Binding Version 01.00</EM></FONT>
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
 <FONT COLOR=green><EM>--  form binding.</EM></FONT>
@@ -431,40 +431,40 @@
 
    <FONT COLOR=green><EM>--  #1A NAME="AFU_17"#2|</EM></FONT>
    <b>procedure</b> Set_Foreground
-     (<FONT COLOR=red><A NAME="430_7">Fld</A></FONT>   : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#304_9">Field</A>;
-      <FONT COLOR=red><A NAME="431_7">Fore</A></FONT>  : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#296_9">Character_Attribute_Set</A> := Normal_Video;
+     (<FONT COLOR=red><A NAME="430_7">Fld</A></FONT>   : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#305_9">Field</A>;
+      <FONT COLOR=red><A NAME="431_7">Fore</A></FONT>  : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#297_9">Character_Attribute_Set</A> := Normal_Video;
       Color : <b>in</b> Color_Pair := Color_Pair'First);
    <FONT COLOR=green><EM>--  AKA: <A HREF="../man/form_field_attributes.3x.html">set_field_fore()</A></EM></FONT>
    <b>pragma</b> Inline (Set_Foreground);
 
    <FONT COLOR=green><EM>--  #1A NAME="AFU_18"#2|</EM></FONT>
-   <b>procedure</b> Foreground (<FONT COLOR=red><A NAME="437_26">Fld</A></FONT>  : <b>in</b>  <A HREF="terminal_interface-curses__ads.htm#304_9">Field</A>;
+   <b>procedure</b> Foreground (<FONT COLOR=red><A NAME="437_26">Fld</A></FONT>  : <b>in</b>  <A HREF="terminal_interface-curses__ads.htm#305_9">Field</A>;
                          Fore : <b>out</b> Character_Attribute_Set);
    <FONT COLOR=green><EM>--  AKA: <A HREF="../man/form_field_attributes.3x.html">field_fore()</A></EM></FONT>
 
    <FONT COLOR=green><EM>--  #1A NAME="AFU_19"#2|</EM></FONT>
-   <b>procedure</b> Foreground (<FONT COLOR=red><A NAME="442_26">Fld</A></FONT>   : <b>in</b>  <A HREF="terminal_interface-curses__ads.htm#304_9">Field</A>;
-                         <FONT COLOR=red><A NAME="443_26">Fore</A></FONT>  : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#296_9">Character_Attribute_Set</A>;
+   <b>procedure</b> Foreground (<FONT COLOR=red><A NAME="442_26">Fld</A></FONT>   : <b>in</b>  <A HREF="terminal_interface-curses__ads.htm#305_9">Field</A>;
+                         <FONT COLOR=red><A NAME="443_26">Fore</A></FONT>  : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#297_9">Character_Attribute_Set</A>;
                          Color : <b>out</b> Color_Pair);
    <FONT COLOR=green><EM>--  AKA: <A HREF="../man/form_field_attributes.3x.html">field_fore()</A></EM></FONT>
    <b>pragma</b> Inline (Foreground);
 
    <FONT COLOR=green><EM>--  #1A NAME="AFU_20"#2|</EM></FONT>
    <b>procedure</b> Set_Background
-     (<FONT COLOR=red><A NAME="450_7">Fld</A></FONT>   : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#304_9">Field</A>;
-      <FONT COLOR=red><A NAME="451_7">Back</A></FONT>  : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#296_9">Character_Attribute_Set</A> := Normal_Video;
+     (<FONT COLOR=red><A NAME="450_7">Fld</A></FONT>   : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#305_9">Field</A>;
+      <FONT COLOR=red><A NAME="451_7">Back</A></FONT>  : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#297_9">Character_Attribute_Set</A> := Normal_Video;
       Color : <b>in</b> Color_Pair := Color_Pair'First);
    <FONT COLOR=green><EM>--  AKA: <A HREF="../man/form_field_attributes.3x.html">set_field_back()</A></EM></FONT>
    <b>pragma</b> Inline (Set_Background);
 
    <FONT COLOR=green><EM>--  #1A NAME="AFU_21"#2|</EM></FONT>
-   <b>procedure</b> Background (<FONT COLOR=red><A NAME="457_26">Fld</A></FONT>  : <b>in</b>  <A HREF="terminal_interface-curses__ads.htm#304_9">Field</A>;
+   <b>procedure</b> Background (<FONT COLOR=red><A NAME="457_26">Fld</A></FONT>  : <b>in</b>  <A HREF="terminal_interface-curses__ads.htm#305_9">Field</A>;
                          Back : <b>out</b> Character_Attribute_Set);
    <FONT COLOR=green><EM>--  AKA: <A HREF="../man/form_field_attributes.3x.html">field_back()</A></EM></FONT>
 
    <FONT COLOR=green><EM>--  #1A NAME="AFU_22"#2|</EM></FONT>
-   <b>procedure</b> Background (<FONT COLOR=red><A NAME="462_26">Fld</A></FONT>   : <b>in</b>  <A HREF="terminal_interface-curses__ads.htm#304_9">Field</A>;
-                         <FONT COLOR=red><A NAME="463_26">Back</A></FONT>  : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#296_9">Character_Attribute_Set</A>;
+   <b>procedure</b> Background (<FONT COLOR=red><A NAME="462_26">Fld</A></FONT>   : <b>in</b>  <A HREF="terminal_interface-curses__ads.htm#305_9">Field</A>;
+                         <FONT COLOR=red><A NAME="463_26">Back</A></FONT>  : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#297_9">Character_Attribute_Set</A>;
                          Color : <b>out</b> Color_Pair);
    <FONT COLOR=green><EM>--  AKA: <A HREF="../man/form_field_attributes.3x.html">field_back()</A></EM></FONT>
    <b>pragma</b> Inline (Background);
@@ -770,6 +770,11 @@
    <b>function</b> Is_New_Page (Fld : Field) <b>return</b> Boolean;
    <FONT COLOR=green><EM>--  AKA: <A HREF="../man/form_new_page.3x.html">new_page()</A></EM></FONT>
    <b>pragma</b> Inline (Is_New_Page);
+
+   <FONT COLOR=green><EM>--  |=====================================================================</EM></FONT>
+   <FONT COLOR=green><EM>--  | Man page <A HREF="../man/form_requestname.3x.html">form_requestname.3x</A></EM></FONT>
+   <FONT COLOR=green><EM>--  |=====================================================================</EM></FONT>
+   <FONT COLOR=green><EM>--  Not Implemented: form_request_name, form_request_by_name</EM></FONT>
 
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
 <b>private</b>

@@ -38,7 +38,7 @@ include(M4MACRO)dnl
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.24 $
+--  $Revision: 1.25 $
 --  Binding Version 01.00
 ------------------------------------------------------------------------------
 include(`Form_Base_Defs')
@@ -684,6 +684,9 @@ include(`Form_Opt_Rep')Dnl
    function Is_New_Page (Fld : Field) return Boolean;
    --  AKA
    pragma Inline (Is_New_Page);
+
+   --  MANPAGE(`form_requestname.3x')
+   --  Not Implemented: form_request_name, form_request_by_name
 
 ------------------------------------------------------------------------------
 private

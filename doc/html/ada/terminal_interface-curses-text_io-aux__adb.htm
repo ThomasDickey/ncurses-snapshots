@@ -74,7 +74,7 @@
             <b>end</b> <b>if</b>;
 
             <b>pragma</b> Assert (Len &lt;= W);
-            <A HREF="terminal_interface-curses__ads.htm#1157_14">Get_Size</A> (<A HREF="terminal_interface-curses-text_io-aux__ads.htm#48_7">Win</A>, <A HREF="terminal_interface-curses-text_io-aux__adb.htm#53_7">LC</A>, <A HREF="terminal_interface-curses-text_io-aux__adb.htm#54_7">CC</A>);
+            <A HREF="terminal_interface-curses__ads.htm#1221_14">Get_Size</A> (<A HREF="terminal_interface-curses-text_io-aux__ads.htm#48_7">Win</A>, <A HREF="terminal_interface-curses-text_io-aux__adb.htm#53_7">LC</A>, <A HREF="terminal_interface-curses-text_io-aux__adb.htm#54_7">CC</A>);
             <b>if</b> <A HREF="terminal_interface-curses__ads.htm#64_12">Column_Count</A> (<A HREF="terminal_interface-curses-text_io-aux__adb.htm#51_7">Len</A>) &gt; <A HREF="terminal_interface-curses-text_io-aux__adb.htm#54_7">CC</A> <b>then</b>
                <b>if</b> <A HREF="terminal_interface-curses-text_io-aux__ads.htm#51_7">Signal</A> <b>then</b>
                   <b>raise</b> <A HREF="terminal_interface-curses-text_io__ads.htm#134_4">Layout_Error</A>;
@@ -90,7 +90,7 @@
                      <A HREF="terminal_interface-curses-text_io__ads.htm#116_14">Put</A> (<A HREF="terminal_interface-curses-text_io-aux__ads.htm#48_7">Win</A>, <A HREF="terminal_interface-curses-text_io-aux__adb.htm#83_22">Filler</A>);
                   <b>end</b>;
                <b>end</b> <b>if</b>;
-               <A HREF="terminal_interface-curses__ads.htm#1173_14">Get_Cursor_Position</A> (<A HREF="terminal_interface-curses-text_io-aux__ads.htm#48_7">Win</A>, <A HREF="terminal_interface-curses-text_io-aux__adb.htm#55_7">Y</A>, <A HREF="terminal_interface-curses-text_io-aux__adb.htm#56_7">X</A>);
+               <A HREF="terminal_interface-curses__ads.htm#1237_14">Get_Cursor_Position</A> (<A HREF="terminal_interface-curses-text_io-aux__ads.htm#48_7">Win</A>, <A HREF="terminal_interface-curses-text_io-aux__adb.htm#55_7">Y</A>, <A HREF="terminal_interface-curses-text_io-aux__adb.htm#56_7">X</A>);
                <b>if</b> (<A HREF="terminal_interface-curses-text_io-aux__adb.htm#56_7">X</A> + <A HREF="terminal_interface-curses__ads.htm#60_9">Column_Position</A> (<A HREF="terminal_interface-curses-text_io-aux__adb.htm#51_7">Len</A>)) &gt; <A HREF="terminal_interface-curses-text_io-aux__adb.htm#54_7">CC</A> <b>then</b>
                   <A HREF="terminal_interface-curses-text_io__ads.htm#87_14">New_Line</A> (<A HREF="terminal_interface-curses-text_io-aux__ads.htm#48_7">Win</A>);
                <b>end</b> <b>if</b>;

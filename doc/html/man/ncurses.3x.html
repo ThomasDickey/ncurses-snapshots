@@ -707,174 +707,174 @@
        TERMINFO_DIRS
             Specifies  a  list  of  directories  to  search   for
             terminal  descriptions.   The  list  is  separated by
-            colons (i.e., ":").  All of the terminal descriptions
-            are  in  terminfo  form,  which  makes a subdirectory
-            named for the first  letter  of  the  terminal  names
-            therein.
+            colons (i.e., ":") on Unix, semicolons on  OS/2  EMX.
+            All  of  the  terminal  descriptions  are in terminfo
+            form, which makes a subdirectory named for the  first
+            letter of the terminal names therein.
 
        TERMPATH
             If  TERMCAP  does  not  hold a file name then <B>ncurses</B>
             checks the  TERMPATH  symbol.   This  is  a  list  of
-            filenames  separated  by  colons (i.e., ":").  If the
-            TERMPATH symbol is not  set,  <B>ncurses</B>  looks  in  the
-            files   /etc/termcap,   /usr/share/misc/termcap   and
+            filenames  separated  by spaces or colons (i.e., ":")
+            on Unix, semicolons on OS/2  EMX.   If  the  TERMPATH
+            symbol  is  not  set,  <B>ncurses</B>  looks  in  the  files
+            /etc/termcap,       /usr/share/misc/termcap       and
             $HOME/.termcap, in that order.
 
-       The library may be configured to disregard  the  following
-       variables  when  the current user is the superuser (root),
-       or if the application uses setuid or  setgid  permissions:
+       The  library  may be configured to disregard the following
+       variables when the current user is the  superuser  (root),
+       or  if  the application uses setuid or setgid permissions:
        $TERMINFO, $TERMINFO_DIRS, $TERMPATH, as well as $HOME.
 
 
 </PRE>
 <H2>FILES</H2><PRE>
        /usr/share/tabset
-            directory  containing  initialization  files  for the
-            terminal  capability   database   /usr/share/terminfo
+            directory containing  initialization  files  for  the
+            terminal   capability   database  /usr/share/terminfo
             terminal capability database
 
 
 </PRE>
 <H2>SEE ALSO</H2><PRE>
-       <B><A HREF="terminfo.5.html">terminfo(5)</A></B>  and  3x  pages  whose names begin "curs_" for
+       <B><A HREF="terminfo.5.html">terminfo(5)</A></B> and 3x pages whose  names  begin  "curs_"  for
        detailed routine descriptions.
 
 
 </PRE>
 <H2>EXTENSIONS</H2><PRE>
        The  <B>ncurses</B>  library  can  be  compiled  with  an  option
-       (<B>-DUSE_GETCAP</B>)   that   falls   back   to   the  old-style
+       (<B>-DUSE_GETCAP</B>)  that   falls   back   to   the   old-style
        /etc/termcap file if the terminal setup code cannot find a
        terminfo entry corresponding to <B>TERM</B>.  Use of this feature
-       is not recommended, as it essentially includes  an  entire
-       termcap   compiler   in   the  <B>ncurses</B>  startup  code,  at
+       is  not  recommended, as it essentially includes an entire
+       termcap  compiler  in  the  <B>ncurses</B>   startup   code,   at
        significant cost in core and startup cycles.
 
-       The <B>ncurses</B>  library  includes  facilities  for  capturing
-       mouse  events  on certain terminals (including xterm). See
+       The  <B>ncurses</B>  library  includes  facilities  for capturing
+       mouse events on certain terminals (including  xterm).  See
        the <B><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></B> manual page for details.
 
-       The <B>ncurses</B> library includes facilities for responding  to
-       window  resizing  events,  e.g., when running in an xterm.
-       See the <B><A HREF="resizeterm.3x.html">resizeterm(3x)</A></B> and <B><A HREF="wresize.3x.html">wresize(3x)</A></B>  manual  pages  for
-       details.   In addition, the library may be configured with
+       The  <B>ncurses</B> library includes facilities for responding to
+       window resizing events, e.g., when running  in  an  xterm.
+       See  the  <B><A HREF="resizeterm.3x.html">resizeterm(3x)</A></B>  and <B><A HREF="wresize.3x.html">wresize(3x)</A></B> manual pages for
+       details.  In addition, the library may be configured  with
        a SIGWINCH handler.
 
-       The <B>ncurses</B> library extends the fixed set of function  key
-       capabilities  of  terminals  by  allowing  the application
-       designer to define additional key  sequences  at  runtime.
-       See  the  <B><A HREF="define_key.3x.html">define_key(3x)</A></B>  and  <B><A HREF="keyok.3x.html">keyok(3x)</A></B>  manual pages for
+       The  <B>ncurses</B> library extends the fixed set of function key
+       capabilities of  terminals  by  allowing  the  application
+       designer  to  define  additional key sequences at runtime.
+       See the <B><A HREF="define_key.3x.html">define_key(3x)</A></B>  and  <B><A HREF="keyok.3x.html">keyok(3x)</A></B>  manual  pages  for
        details.
 
        The  <B>ncurses</B>  library  can  exploit  the  capabilities  of
-       terminals  which  implement the ISO-6429 SGR 39 and SGR 49
+       terminals which implement the ISO-6429 SGR 39 and  SGR  49
        controls, which allow an application to reset the terminal
-       to  its  original  foreground and background colors.  From
-       the users' perspective, the application is  able  to  draw
-       colored   text   on   a  background  whose  color  is  set
-       independently,  providing  better   control   over   color
+       to its original foreground and  background  colors.   From
+       the  users'  perspective,  the application is able to draw
+       colored  text  on  a  background  whose   color   is   set
+       independently,   providing   better   control  over  color
        contrasts.  See the <B><A HREF="use_default_colors.3x.html">use_default_colors(3x)</A></B> manual page for
        details.
-       The <B>ncurses</B> library  includes  a  function  for  directing
-       application  output  to a printer attached to the terminal
+
+       The  <B>ncurses</B>  library  includes  a  function for directing
+       application output to a printer attached to  the  terminal
        device.  See the <B><A HREF="curs_print.3x.html">curs_print(3x)</A></B> manual page for details.
 
 
 </PRE>
 <H2>PORTABILITY</H2><PRE>
-       The  <B>ncurses</B>  library  is  intended   to   be   BASE-level
+       The   <B>ncurses</B>   library   is  intended  to  be  BASE-level
        conformant with the XSI Curses standard.  Certain portions
-       of the EXTENDED XSI Curses functionality (including  color
+       of  the EXTENDED XSI Curses functionality (including color
        support) are supported.  The following EXTENDED XSI Curses
-       calls in support of wide (multibyte)  characters  are  not
+       calls  in  support  of wide (multibyte) characters are not
        yet   implemented:   <B>add_wch</B>,   <B>add_wchnstr</B>,   <B>add_wchstr</B>,
        <B>addnwstr</B>, <B>addwstr</B>, <B>bkgrnd</B>, <B>bkgrndset</B>, <B>border_set</B>, <B>box_set</B>,
-       <B>echo_wchar</B>,   <B>erasewchar</B>,  <B>get_wch</B>,  <B>get_wstr</B>,  <B>getbkgrnd</B>,
-       <B>getcchar</B>,  <B>getn_wstr</B>,   <B>getwchtype</B>,   <B>hline_set</B>,   <B>in_wch</B>,
-       <B>in_wchnstr</B>,   <B>in_wchstr</B>,   <B>innwstr</B>,   <B>ins_nwstr</B>,  <B>ins_wch</B>,
-       <B>ins_wstr</B>,   <B>inwchnstr</B>,   <B>inwchstr</B>,    <B>inwstr</B>,    <B>key_name</B>,
-       <B>killwchar</B>,    <B>mvadd_wch</B>,    <B>mvadd_wchnstr</B>,   <B>mvadd_wchstr</B>,
+       <B>echo_wchar</B>,  <B>erasewchar</B>,  <B>get_wch</B>,  <B>get_wstr</B>,   <B>getbkgrnd</B>,
+       <B>getcchar</B>,   <B>getn_wstr</B>,   <B>getwchtype</B>,   <B>hline_set</B>,  <B>in_wch</B>,
+       <B>in_wchnstr</B>,  <B>in_wchstr</B>,   <B>innwstr</B>,   <B>ins_nwstr</B>,   <B>ins_wch</B>,
+       <B>ins_wstr</B>,    <B>inwchnstr</B>,    <B>inwchstr</B>,   <B>inwstr</B>,   <B>key_name</B>,
+       <B>killwchar</B>,   <B>mvadd_wch</B>,    <B>mvadd_wchnstr</B>,    <B>mvadd_wchstr</B>,
        <B>mvaddnwstr</B>, <B>mvaddwstr</B>, <B>mvget_wch</B>, <B>mvget_wstr</B>, <B>mvgetn_wstr</B>,
-       <B>mvhline_set</B>,  <B>mvin_wch</B>, <B>mvinnwstr</B>, <B>mvins_nwstr</B>, <B>mvins_wch</B>,
+       <B>mvhline_set</B>, <B>mvin_wch</B>, <B>mvinnwstr</B>, <B>mvins_nwstr</B>,  <B>mvins_wch</B>,
        <B>mvins_wstr</B>, <B>mvinwchnstr</B>, <B>mvinwchstr</B>, <B>mvinwchstr</B>, <B>mvinwstr</B>,
        <B>mvvline_set</B>,  <B>mvwadd_wch</B>,  <B>mvwadd_wchnstr</B>,  <B>mvwadd_wchstr</B>,
-       <B>mvwaddnwstr</B>,    <B>mvwaddwstr</B>,     <B>mvwget_ch</B>,     <B>mvwget_wch</B>,
-       <B>mvwget_wstr</B>,    <B>mvwgetn_wstr</B>,   <B>mvwhline_set</B>,   <B>mvwin_wch</B>,
-       <B>mvwin_wchnstr</B>,  <B>mvwin_wchstr</B>,  <B>mvwinnwstr</B>,   <B>mvwins_nwstr</B>,
-       <B>mvwins_wch</B>,    <B>mvwins_wstr</B>,    <B>mvwinwchnstr</B>.    <B>mvwinwstr</B>,
+       <B>mvwaddnwstr</B>,     <B>mvwaddwstr</B>,     <B>mvwget_ch</B>,    <B>mvwget_wch</B>,
+       <B>mvwget_wstr</B>,   <B>mvwgetn_wstr</B>,   <B>mvwhline_set</B>,    <B>mvwin_wch</B>,
+       <B>mvwin_wchnstr</B>,   <B>mvwin_wchstr</B>,  <B>mvwinnwstr</B>,  <B>mvwins_nwstr</B>,
+       <B>mvwins_wch</B>,   <B>mvwins_wstr</B>,    <B>mvwinwchnstr</B>.     <B>mvwinwstr</B>,
        <B>mvwvline_set</B>, <B>pecho_wchar</B>, <B>setcchar</B>, <B>slk_wset</B>, <B>term_attrs</B>,
-       <B>unget_wch</B>,   <B>vhline_set</B>,  <B>vid_attr</B>,  <B>vid_puts</B>,  <B>vline_set</B>,
-       <B>wadd_wch</B>, <B>wadd_wchnstr</B>, <B>wadd_wchstr</B>, <B>waddnwstr</B>,  <B>waddwstr</B>,
-       <B>waddwstr</B>,  <B>wbkgrnd</B>,  <B>wbkgrndset</B>,  <B>wbkgrndset</B>, <B>wborder_set</B>,
+       <B>unget_wch</B>,  <B>vhline_set</B>,  <B>vid_attr</B>,  <B>vid_puts</B>,   <B>vline_set</B>,
+       <B>wadd_wch</B>,  <B>wadd_wchnstr</B>, <B>wadd_wchstr</B>, <B>waddnwstr</B>, <B>waddwstr</B>,
+       <B>waddwstr</B>, <B>wbkgrnd</B>,  <B>wbkgrndset</B>,  <B>wbkgrndset</B>,  <B>wborder_set</B>,
        <B>wecho_wchar</B>, <B>wecho_wchar</B>, <B>wget_wch</B>, <B>wget_wstr</B>, <B>wgetbkgrnd</B>,
-       <B>wgetn_wstr</B>,  <B>whline_set</B>, <B>win_wch</B>, <B>win_wchnstr</B>, <B>win_wchstr</B>,
+       <B>wgetn_wstr</B>, <B>whline_set</B>, <B>win_wch</B>, <B>win_wchnstr</B>,  <B>win_wchstr</B>,
        <B>winnwstr</B>,  <B>wins_nwstr</B>,  <B>wins_wch</B>,  <B>wins_wstr</B>,  <B>winwchnstr</B>,
        <B>winwchstr</B>, <B>winwstr</B>, <B>wunctrl</B>, <B>wvline_set</B>,
 
-       A  small  number of local differences (that is, individual
-       differences between the XSI Curses and <B>ncurses</B> calls)  are
-       described  in  <B>PORTABILITY</B>  sections  of  the  library man
+       A small number of local differences (that  is,  individual
+       differences  between the XSI Curses and <B>ncurses</B> calls) are
+       described in  <B>PORTABILITY</B>  sections  of  the  library  man
        pages.
 
        The routine <B>has_key</B> is not part of XPG4, nor is it present
-       in  SVr4.  See the <B><A HREF="curs_getch.3x.html">curs_getch(3x)</A></B> manual page for details.
+       in SVr4.  See the <B><A HREF="curs_getch.3x.html">curs_getch(3x)</A></B> manual page for  details.
 
-       The routine <B>slk_attr</B> is  not  part  of  XPG4,  nor  is  it
-       present  in  SVr4.   See  the <B><A HREF="curs_slk.3x.html">curs_slk(3x)</A></B> manual page for
+       The  routine  <B>slk_attr</B>  is  not  part  of  XPG4, nor is it
+       present in SVr4.  See the  <B><A HREF="curs_slk.3x.html">curs_slk(3x)</A></B>  manual  page  for
        details.
 
-       The    routines    <B>getmouse</B>,    <B>mousemask</B>,     <B>ungetmouse</B>,
-       <B>mouseinterval</B>,  and <B>wenclose</B> relating to mouse interfacing
-       are not part of XPG4, nor are they present in  SVr4.   See
+       The     routines    <B>getmouse</B>,    <B>mousemask</B>,    <B>ungetmouse</B>,
+       <B>mouseinterval</B>, and <B>wenclose</B> relating to mouse  interfacing
+       are  not  part of XPG4, nor are they present in SVr4.  See
        the <B><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></B> manual page for details.
 
        The routine <B>mcprint</B> was not present in any previous curses
-       implementation.  See the <B><A HREF="curs_print.3x.html">curs_print(3x)</A></B>  manual  page  for
+       implementation.   See  the  <B><A HREF="curs_print.3x.html">curs_print(3x)</A></B> manual page for
        details.
+
        The routine <B>wresize</B> is not part of XPG4, nor is it present
        in SVr4.  See the <B><A HREF="wresize.3x.html">wresize(3x)</A></B> manual page for details.
 
        In  historic  curses  versions,  delays  embedded  in  the
-       capabilities   <B>cr</B>,   <B>ind</B>,   <B>cub1</B>,  <B>ff</B>  and  <B>tab</B>  activated
-       corresponding delay bits in the UNIX tty driver.  In  this
-       implementation,  all  padding  is done by NUL sends.  This
-       method  is  slightly  more  expensive,  but  narrows   the
-       interface  to  the UNIX kernel significantly and increases
+       capabilities  <B>cr</B>,  <B>ind</B>,  <B>cub1</B>,  <B>ff</B>   and   <B>tab</B>   activated
+       corresponding  delay bits in the UNIX tty driver.  In this
+       implementation, all padding is done by  NUL  sends.   This
+       method   is  slightly  more  expensive,  but  narrows  the
+       interface to the UNIX kernel significantly  and  increases
        the package's portability correspondingly.
 
-       In the XSI standard and  SVr4  manual  pages,  many  entry
+       In  the  XSI  standard  and  SVr4 manual pages, many entry
        points have prototype arguments of the for <B>char</B> <B>*const</B> (or
        <B>cchar_t</B>  <B>*const</B>,  or  <B>wchar_t</B>  <B>*const</B>,  or  <B>void</B>  <B>*const</B>).
-       Depending  on  one's interpretation of the ANSI C standard
-       (see section 3.5.4.1), these declarations are  either  (a)
-       meaningless,   or   (b)   meaningless  and  illegal.   The
-       declaration <B>const</B> <B>char</B>  <B>*x</B>  is  a  modifiable  pointer  to
-       unmodifiable  data,  but <B>char</B> <B>*const</B> <B>x</B>' is an unmodifiable
+       Depending on one's interpretation of the ANSI  C  standard
+       (see  section  3.5.4.1), these declarations are either (a)
+       meaningless,  or  (b)  meaningless   and   illegal.    The
+       declaration  <B>const</B>  <B>char</B>  <B>*x</B>  is  a  modifiable pointer to
+       unmodifiable data, but <B>char</B> <B>*const</B> <B>x</B>' is  an  unmodifiable
        pointer to modifiable data.  Given that C passes arguments
-       by  value,  <B>&lt;type&gt;</B>  <B>*const</B>  as  a  formal  type is at best
-       dubious.   Some  compilers  choke   on   the   prototypes.
-       Therefore,  in this implementation, they have been changed
+       by value, <B>&lt;type&gt;</B> <B>*const</B>  as  a  formal  type  is  at  best
+       dubious.    Some   compilers   choke  on  the  prototypes.
+       Therefore, in this implementation, they have been  changed
        to <B>const</B> <B>&lt;type&gt;</B> <B>*</B> globally.
 
 
 </PRE>
 <H2>NOTES</H2><PRE>
-       The header  file  <B>&lt;curses.h&gt;</B>  automatically  includes  the
+       The  header  file  <B>&lt;curses.h&gt;</B>  automatically  includes the
        header files <B>&lt;stdio.h&gt;</B> and <B>&lt;unctrl.h&gt;</B>.
 
-       If  standard  output from a <B>ncurses</B> program is re-directed
-       to something which is not a tty, screen  updates  will  be
-       directed  to  standard  error.   This  was an undocumented
+       If standard output from a <B>ncurses</B> program  is  re-directed
+       to  something  which  is not a tty, screen updates will be
+       directed to standard  error.   This  was  an  undocumented
        feature of AT&amp;T System V Release 3 curses.
 
 
 </PRE>
 <H2>AUTHORS</H2><PRE>
-       Zeyd M. Ben-Halim, Eric  S.  Raymond,  Thomas  E.  Dickey.
+       Zeyd  M.  Ben-Halim,  Eric  S.  Raymond, Thomas E. Dickey.
        Based on pcurses by Pavel Curtis.
-
-
-
 
 
 

@@ -13,10 +13,10 @@
 <H2>SYNOPSIS</H2><PRE>
        <B>#include</B> <B>&lt;curses.h&gt;</B>
        <B>#include</B> <B>&lt;term.h&gt;</B>
-       <B>int</B> <B>tgetent(const</B> <B>char</B> <B>*bp,</B> <B>char</B> <B>*name);</B>
-       <B>int</B> <B>tgetflag(const</B> <B>char</B> <B>*id);</B>
-       <B>int</B> <B>tgetnum(const</B> <B>char</B> <B>*id);</B>
-       <B>char</B> <B>*tgetstr(const</B> <B>char</B> <B>*id,</B> <B>char</B> <B>**area);</B>
+       <B>int</B> <B>tgetent(char</B> <B>*bp,</B> <B>const</B> <B>char</B> <B>*name);</B>
+       <B>int</B> <B>tgetflag(char</B> <B>*id);</B>
+       <B>int</B> <B>tgetnum(char</B> <B>*id);</B>
+       <B>char</B> <B>*tgetstr(char</B> <B>*id,</B> <B>char</B> <B>**area);</B>
        <B>char</B> <B>*tgoto(const</B> <B>char</B> <B>*cap,</B> <B>int</B> <B>col,</B> <B>int</B> <B>row);</B>
        <B>int</B> <B>tputs(const</B> <B>char</B> <B>*str,</B> <B>int</B> <B>affcnt,</B> <B>int</B> <B>(*putc)(int));</B>
 
@@ -47,11 +47,14 @@
        the  buffer pointed to by <I>area</I>, and the <I>area</I> value will be
        updated to point past the null ending this value.
 
-       The <B>tgoto</B> routine instantiates  the  parameters  into  the
-       given  capability.   The output from this routine is to be
+       Only the first two characters of the <B>id</B> parameter of <B>tget-</B>
+       <B>flag</B>, <B>tgetnum</B> and <B>tgetstr</B> are compared in lookups.
+
+       The  <B>tgoto</B>  routine  instantiates  the parameters into the
+       given capability.  The output from this routine is  to  be
        passed to <B>tputs</B>.
 
-       The <B>tputs</B> routine is described  on  the  <B><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></B>
+       The  <B>tputs</B>  routine  is described on the <B><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></B>
        manual page.  It can retrieve capabilities by either term-
        cap or terminfo name.
 
@@ -59,10 +62,10 @@
 
 </PRE>
 <H2>RETURN VALUE</H2><PRE>
-       Except where explicitly noted,  routines  that  return  an
-       integer  return  <B>ERR</B> upon failure and <B>OK</B> (SVr4 only speci-
-       fies "an integer value other than  <B>ERR</B>")  upon  successful
-       completion.
+       Except  where  explicitly  noted,  routines that return an
+       integer  return  <B>ERR</B>  upon  failure  and  <B>OK</B>  (SVr4   only
+       specifies "an integer value other than <B>ERR</B>") upon success-
+       ful completion.
 
        Routines that return pointers return <B>NULL</B> on error.
 
@@ -70,39 +73,36 @@
 </PRE>
 <H2>BUGS</H2><PRE>
        If you call <B>tgetstr</B> to fetch <B>ca</B> or any other parameterized
-       string, be aware that it  will  be  returned  in  terminfo
-       notation,  not  the older and not-quite-compatible termcap
+       string,  be  aware  that  it  will be returned in terminfo
+       notation, not the older and  not-quite-compatible  termcap
        notation.  This won't cause problems if all you do with it
-       is  call <B>tgoto</B> or <B>tparm</B>, which both expand terminfo-style.
+       is call <B>tgoto</B> or <B>tparm</B>, which both  expand  terminfo-style
+       strings  as  terminfo.  (The <B>tgoto</B> function, if configured
+       to support termcap, will check if  the  string  is  indeed
+       terminfo-style  by  looking for "%p" parameters or "$&lt;..&gt;"
+       delays, and invoke a termcap-style parser  if  the  string
+       does not appear to be terminfo).
 
-       Because terminfo conventions for representing  padding  in
-       string  capabilities  differ  from termcap's, <B>tputs("50");</B>
-       will put out a literal "50" rather than  busy-waiting  for
+       Because  terminfo  conventions for representing padding in
+       string capabilities differ  from  termcap's,  <B>tputs("50");</B>
+       will  put  out a literal "50" rather than busy-waiting for
        50 milliseconds.  Cope with it.
 
 
 </PRE>
 <H2>PORTABILITY</H2><PRE>
-       The  XSI  Curses  standard,  Issue 4 describes these func-
-       tions.  However, they are marked TO BE WITHDRAWN  and  may
+       The XSI Curses standard, Issue  4  describes  these  func-
+       tions.   However,  they are marked TO BE WITHDRAWN and may
        be removed in future versions.
 
-       Neither  the  XSI  Curses  standard nor the SVr4 man pages
-       documented the return values of <B>tgetent</B> correctly,  though
+       Neither the XSI Curses standard nor  the  SVr4  man  pages
+       documented  the return values of <B>tgetent</B> correctly, though
        all three were in fact returned ever since SVr1.
 
 
 </PRE>
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="terminfo.5.html">terminfo(5)</A></B>, <B><A HREF="putc.3S.html">putc(3S)</A></B>.
-
-
-
-
-
-
-
-
 
 
 

@@ -401,14 +401,14 @@
    <FONT COLOR=green><EM>--  |</EM></FONT>
    <b>procedure</b> <A HREF="terminal_interface-curses-forms__ads.htm#428_14">Set_Foreground</A><FONT COLOR=red><A NAME="398_14"></A></FONT>
      (<A HREF="terminal_interface-curses-forms__ads.htm#429_7">Fld</A>   : <b>in</b> <A HREF="terminal_interface-curses-forms__ads.htm#55_9">Field</A>;
-      <A HREF="terminal_interface-curses-forms__ads.htm#430_7">Fore</A>  : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#304_9">Character_Attribute_Set</A> := <A HREF="terminal_interface-curses__ads.htm#348_4">Normal_Video</A>;
-      <A HREF="terminal_interface-curses-forms__ads.htm#431_7">Color</A> : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#296_9">Color_Pair</A> := <A HREF="terminal_interface-curses__ads.htm#296_9">Color_Pair</A>'First)
+      <A HREF="terminal_interface-curses-forms__ads.htm#430_7">Fore</A>  : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#305_9">Character_Attribute_Set</A> := <A HREF="terminal_interface-curses__ads.htm#349_4">Normal_Video</A>;
+      <A HREF="terminal_interface-curses-forms__ads.htm#431_7">Color</A> : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#297_9">Color_Pair</A> := <A HREF="terminal_interface-curses__ads.htm#297_9">Color_Pair</A>'First)
    <b>is</b>
       <b>function</b> <FONT COLOR=red><A NAME="403_16">Set_Field_Fore</A></FONT> (<FONT COLOR=red><A NAME="403_32">Fld</A></FONT>  : <A HREF="terminal_interface-curses-forms__ads.htm#55_9">Field</A>;
                                <FONT COLOR=red><A NAME="404_32">Attr</A></FONT> : <A HREF="terminal_interface-curses-aux__ads.htm#63_12">C_Chtype</A>) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-forms__adb.htm#403_16">Set_Field_Fore</A>, "set_field_fore");
 
-      <FONT COLOR=red><A NAME="407_7">Ch</A></FONT> : <b>constant</b> <A HREF="terminal_interface-curses__ads.htm#350_9">Attributed_Character</A> := (Ch    =&gt; Character'First,
+      <FONT COLOR=red><A NAME="407_7">Ch</A></FONT> : <b>constant</b> <A HREF="terminal_interface-curses__ads.htm#351_9">Attributed_Character</A> := (Ch    =&gt; Character'First,
                                              Color =&gt; <A HREF="terminal_interface-curses-forms__ads.htm#431_7">Color</A>,
                                              Attr  =&gt; <A HREF="terminal_interface-curses-forms__ads.htm#430_7">Fore</A>);
       <FONT COLOR=red><A NAME="410_7">Res</A></FONT> : <b>constant</b> <A HREF="terminal_interface-curses-aux__ads.htm#78_12">Eti_Error</A> :=
@@ -422,37 +422,37 @@
    <FONT COLOR=green><EM>--  |</EM></FONT>
    <FONT COLOR=green><EM>--  |</EM></FONT>
    <b>procedure</b> <A HREF="terminal_interface-curses-forms__ads.htm#436_14">Foreground</A><FONT COLOR=red><A NAME="420_14"></A></FONT> (<A HREF="terminal_interface-curses-forms__ads.htm#436_26">Fld</A>  : <b>in</b>  <A HREF="terminal_interface-curses-forms__ads.htm#55_9">Field</A>;
-                         <A HREF="terminal_interface-curses-forms__ads.htm#437_26">Fore</A> : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#304_9">Character_Attribute_Set</A>)
+                         <A HREF="terminal_interface-curses-forms__ads.htm#437_26">Fore</A> : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#305_9">Character_Attribute_Set</A>)
    <b>is</b>
       <b>function</b> <FONT COLOR=red><A NAME="423_16">Field_Fore</A></FONT> (<FONT COLOR=red><A NAME="423_28">Fld</A></FONT> : <A HREF="terminal_interface-curses-forms__ads.htm#55_9">Field</A>) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#63_12">C_Chtype</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-forms__adb.htm#423_16">Field_Fore</A>, "field_fore");
    <b>begin</b>
-      <A HREF="terminal_interface-curses-forms__ads.htm#437_26">Fore</A> := <A HREF="terminal_interface-curses-aux__ads.htm#101_13">Chtype_To_AttrChar</A> (<A HREF="terminal_interface-curses-forms__adb.htm#423_16">Field_Fore</A> (<A HREF="terminal_interface-curses-forms__ads.htm#436_26">Fld</A>)).<A HREF="terminal_interface-curses__ads.htm#352_10">Attr</A>;
+      <A HREF="terminal_interface-curses-forms__ads.htm#437_26">Fore</A> := <A HREF="terminal_interface-curses-aux__ads.htm#101_13">Chtype_To_AttrChar</A> (<A HREF="terminal_interface-curses-forms__adb.htm#423_16">Field_Fore</A> (<A HREF="terminal_interface-curses-forms__ads.htm#436_26">Fld</A>)).<A HREF="terminal_interface-curses__ads.htm#353_10">Attr</A>;
    <b>end</b> Foreground;
 
    <b>procedure</b> <A HREF="terminal_interface-curses-forms__ads.htm#441_14">Foreground</A><FONT COLOR=red><A NAME="429_14"></A></FONT> (<A HREF="terminal_interface-curses-forms__ads.htm#441_26">Fld</A>   : <b>in</b>  <A HREF="terminal_interface-curses-forms__ads.htm#55_9">Field</A>;
-                         <A HREF="terminal_interface-curses-forms__ads.htm#442_26">Fore</A>  : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#304_9">Character_Attribute_Set</A>;
-                         <A HREF="terminal_interface-curses-forms__ads.htm#443_26">Color</A> : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#296_9">Color_Pair</A>)
+                         <A HREF="terminal_interface-curses-forms__ads.htm#442_26">Fore</A>  : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#305_9">Character_Attribute_Set</A>;
+                         <A HREF="terminal_interface-curses-forms__ads.htm#443_26">Color</A> : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#297_9">Color_Pair</A>)
    <b>is</b>
       <b>function</b> <FONT COLOR=red><A NAME="433_16">Field_Fore</A></FONT> (<FONT COLOR=red><A NAME="433_28">Fld</A></FONT> : <A HREF="terminal_interface-curses-forms__ads.htm#55_9">Field</A>) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#63_12">C_Chtype</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-forms__adb.htm#433_16">Field_Fore</A>, "field_fore");
    <b>begin</b>
-      <A HREF="terminal_interface-curses-forms__ads.htm#442_26">Fore</A>  := <A HREF="terminal_interface-curses-aux__ads.htm#101_13">Chtype_To_AttrChar</A> (<A HREF="terminal_interface-curses-forms__adb.htm#433_16">Field_Fore</A> (<A HREF="terminal_interface-curses-forms__ads.htm#441_26">Fld</A>)).<A HREF="terminal_interface-curses__ads.htm#352_10">Attr</A>;
-      <A HREF="terminal_interface-curses-forms__ads.htm#443_26">Color</A> := <A HREF="terminal_interface-curses-aux__ads.htm#101_13">Chtype_To_AttrChar</A> (<A HREF="terminal_interface-curses-forms__adb.htm#433_16">Field_Fore</A> (<A HREF="terminal_interface-curses-forms__ads.htm#441_26">Fld</A>)).<A HREF="terminal_interface-curses__ads.htm#353_10">Color</A>;
+      <A HREF="terminal_interface-curses-forms__ads.htm#442_26">Fore</A>  := <A HREF="terminal_interface-curses-aux__ads.htm#101_13">Chtype_To_AttrChar</A> (<A HREF="terminal_interface-curses-forms__adb.htm#433_16">Field_Fore</A> (<A HREF="terminal_interface-curses-forms__ads.htm#441_26">Fld</A>)).<A HREF="terminal_interface-curses__ads.htm#353_10">Attr</A>;
+      <A HREF="terminal_interface-curses-forms__ads.htm#443_26">Color</A> := <A HREF="terminal_interface-curses-aux__ads.htm#101_13">Chtype_To_AttrChar</A> (<A HREF="terminal_interface-curses-forms__adb.htm#433_16">Field_Fore</A> (<A HREF="terminal_interface-curses-forms__ads.htm#441_26">Fld</A>)).<A HREF="terminal_interface-curses__ads.htm#354_10">Color</A>;
    <b>end</b> Foreground;
    <FONT COLOR=green><EM>--  |</EM></FONT>
    <FONT COLOR=green><EM>--  |</EM></FONT>
    <FONT COLOR=green><EM>--  |</EM></FONT>
    <b>procedure</b> <A HREF="terminal_interface-curses-forms__ads.htm#448_14">Set_Background</A><FONT COLOR=red><A NAME="442_14"></A></FONT>
      (<A HREF="terminal_interface-curses-forms__ads.htm#449_7">Fld</A>   : <b>in</b> <A HREF="terminal_interface-curses-forms__ads.htm#55_9">Field</A>;
-      <A HREF="terminal_interface-curses-forms__ads.htm#450_7">Back</A>  : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#304_9">Character_Attribute_Set</A> := <A HREF="terminal_interface-curses__ads.htm#348_4">Normal_Video</A>;
-      <A HREF="terminal_interface-curses-forms__ads.htm#451_7">Color</A> : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#296_9">Color_Pair</A> := <A HREF="terminal_interface-curses__ads.htm#296_9">Color_Pair</A>'First)
+      <A HREF="terminal_interface-curses-forms__ads.htm#450_7">Back</A>  : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#305_9">Character_Attribute_Set</A> := <A HREF="terminal_interface-curses__ads.htm#349_4">Normal_Video</A>;
+      <A HREF="terminal_interface-curses-forms__ads.htm#451_7">Color</A> : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#297_9">Color_Pair</A> := <A HREF="terminal_interface-curses__ads.htm#297_9">Color_Pair</A>'First)
    <b>is</b>
       <b>function</b> <FONT COLOR=red><A NAME="447_16">Set_Field_Back</A></FONT> (<FONT COLOR=red><A NAME="447_32">Fld</A></FONT>  : <A HREF="terminal_interface-curses-forms__ads.htm#55_9">Field</A>;
                                <FONT COLOR=red><A NAME="448_32">Attr</A></FONT> : <A HREF="terminal_interface-curses-aux__ads.htm#63_12">C_Chtype</A>) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-forms__adb.htm#447_16">Set_Field_Back</A>, "set_field_back");
 
-      <FONT COLOR=red><A NAME="451_7">Ch</A></FONT> : <b>constant</b> <A HREF="terminal_interface-curses__ads.htm#350_9">Attributed_Character</A> := (Ch    =&gt; Character'First,
+      <FONT COLOR=red><A NAME="451_7">Ch</A></FONT> : <b>constant</b> <A HREF="terminal_interface-curses__ads.htm#351_9">Attributed_Character</A> := (Ch    =&gt; Character'First,
                                              Color =&gt; <A HREF="terminal_interface-curses-forms__ads.htm#451_7">Color</A>,
                                              Attr  =&gt; <A HREF="terminal_interface-curses-forms__ads.htm#450_7">Back</A>);
       <FONT COLOR=red><A NAME="454_7">Res</A></FONT> : <b>constant</b> <A HREF="terminal_interface-curses-aux__ads.htm#78_12">Eti_Error</A> :=
@@ -466,23 +466,23 @@
    <FONT COLOR=green><EM>--  |</EM></FONT>
    <FONT COLOR=green><EM>--  |</EM></FONT>
    <b>procedure</b> <A HREF="terminal_interface-curses-forms__ads.htm#456_14">Background</A><FONT COLOR=red><A NAME="464_14"></A></FONT> (<A HREF="terminal_interface-curses-forms__ads.htm#456_26">Fld</A>  : <b>in</b>  <A HREF="terminal_interface-curses-forms__ads.htm#55_9">Field</A>;
-                         <A HREF="terminal_interface-curses-forms__ads.htm#457_26">Back</A> : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#304_9">Character_Attribute_Set</A>)
+                         <A HREF="terminal_interface-curses-forms__ads.htm#457_26">Back</A> : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#305_9">Character_Attribute_Set</A>)
    <b>is</b>
       <b>function</b> <FONT COLOR=red><A NAME="467_16">Field_Back</A></FONT> (<FONT COLOR=red><A NAME="467_28">Fld</A></FONT> : <A HREF="terminal_interface-curses-forms__ads.htm#55_9">Field</A>) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#63_12">C_Chtype</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-forms__adb.htm#467_16">Field_Back</A>, "field_back");
    <b>begin</b>
-      <A HREF="terminal_interface-curses-forms__ads.htm#457_26">Back</A> := <A HREF="terminal_interface-curses-aux__ads.htm#101_13">Chtype_To_AttrChar</A> (<A HREF="terminal_interface-curses-forms__adb.htm#467_16">Field_Back</A> (<A HREF="terminal_interface-curses-forms__ads.htm#456_26">Fld</A>)).<A HREF="terminal_interface-curses__ads.htm#352_10">Attr</A>;
+      <A HREF="terminal_interface-curses-forms__ads.htm#457_26">Back</A> := <A HREF="terminal_interface-curses-aux__ads.htm#101_13">Chtype_To_AttrChar</A> (<A HREF="terminal_interface-curses-forms__adb.htm#467_16">Field_Back</A> (<A HREF="terminal_interface-curses-forms__ads.htm#456_26">Fld</A>)).<A HREF="terminal_interface-curses__ads.htm#353_10">Attr</A>;
    <b>end</b> Background;
 
    <b>procedure</b> <A HREF="terminal_interface-curses-forms__ads.htm#461_14">Background</A><FONT COLOR=red><A NAME="473_14"></A></FONT> (<A HREF="terminal_interface-curses-forms__ads.htm#461_26">Fld</A>   : <b>in</b>  <A HREF="terminal_interface-curses-forms__ads.htm#55_9">Field</A>;
-                         <A HREF="terminal_interface-curses-forms__ads.htm#462_26">Back</A>  : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#304_9">Character_Attribute_Set</A>;
-                         <A HREF="terminal_interface-curses-forms__ads.htm#463_26">Color</A> : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#296_9">Color_Pair</A>)
+                         <A HREF="terminal_interface-curses-forms__ads.htm#462_26">Back</A>  : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#305_9">Character_Attribute_Set</A>;
+                         <A HREF="terminal_interface-curses-forms__ads.htm#463_26">Color</A> : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#297_9">Color_Pair</A>)
    <b>is</b>
       <b>function</b> <FONT COLOR=red><A NAME="477_16">Field_Back</A></FONT> (<FONT COLOR=red><A NAME="477_28">Fld</A></FONT> : <A HREF="terminal_interface-curses-forms__ads.htm#55_9">Field</A>) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#63_12">C_Chtype</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-forms__adb.htm#477_16">Field_Back</A>, "field_back");
    <b>begin</b>
-      <A HREF="terminal_interface-curses-forms__ads.htm#462_26">Back</A>  := <A HREF="terminal_interface-curses-aux__ads.htm#101_13">Chtype_To_AttrChar</A> (<A HREF="terminal_interface-curses-forms__adb.htm#477_16">Field_Back</A> (<A HREF="terminal_interface-curses-forms__ads.htm#461_26">Fld</A>)).<A HREF="terminal_interface-curses__ads.htm#352_10">Attr</A>;
-      <A HREF="terminal_interface-curses-forms__ads.htm#463_26">Color</A> := <A HREF="terminal_interface-curses-aux__ads.htm#101_13">Chtype_To_AttrChar</A> (<A HREF="terminal_interface-curses-forms__adb.htm#477_16">Field_Back</A> (<A HREF="terminal_interface-curses-forms__ads.htm#461_26">Fld</A>)).<A HREF="terminal_interface-curses__ads.htm#353_10">Color</A>;
+      <A HREF="terminal_interface-curses-forms__ads.htm#462_26">Back</A>  := <A HREF="terminal_interface-curses-aux__ads.htm#101_13">Chtype_To_AttrChar</A> (<A HREF="terminal_interface-curses-forms__adb.htm#477_16">Field_Back</A> (<A HREF="terminal_interface-curses-forms__ads.htm#461_26">Fld</A>)).<A HREF="terminal_interface-curses__ads.htm#353_10">Attr</A>;
+      <A HREF="terminal_interface-curses-forms__ads.htm#463_26">Color</A> := <A HREF="terminal_interface-curses-aux__ads.htm#101_13">Chtype_To_AttrChar</A> (<A HREF="terminal_interface-curses-forms__adb.htm#477_16">Field_Back</A> (<A HREF="terminal_interface-curses-forms__ads.htm#461_26">Fld</A>)).<A HREF="terminal_interface-curses__ads.htm#354_10">Color</A>;
    <b>end</b> Background;
    <FONT COLOR=green><EM>--  |</EM></FONT>
    <FONT COLOR=green><EM>--  |</EM></FONT>
