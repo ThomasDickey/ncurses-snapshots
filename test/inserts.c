@@ -1,5 +1,5 @@
 /*
- * $Id: inserts.c,v 1.5 2003/08/09 22:07:06 tom Exp $
+ * $Id: inserts.c,v 1.6 2004/06/05 21:57:30 tom Exp $
  *
  * Demonstrate the winsstr() and winsch functions.
  * Thomas Dickey - 2002/10/19
@@ -71,6 +71,8 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
     char buffer[BUFSIZ];
     WINDOW *work;
     WINDOW *show;
+
+    setlocale(LC_ALL, "");
 
     putenv("TABSIZE=8");
     initscr();

@@ -1,5 +1,5 @@
 /*
- * $Id: demo_forms.c,v 1.6 2004/05/30 00:53:30 tom Exp $
+ * $Id: demo_forms.c,v 1.7 2004/06/05 21:57:30 tom Exp $
  *
  * Demonstrate a variety of functions from the form library.
  * Thomas Dickey - 2003/4/26
@@ -299,6 +299,8 @@ int
 main(int argc, char *argv[])
 {
     int ch;
+
+    setlocale(LC_ALL, "");
 
     while ((ch = getopt(argc, argv, "dm:o:")) != EOF) {
 	switch (ch) {
