@@ -1,10 +1,34 @@
--- $Id: NEWS,v 1.699 2002/08/04 00:04:35 tom Exp $
+-- $Id: NEWS,v 1.701 2002/08/11 00:31:36 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020810
+	+ add tic -A option to suppress capabilities which are commented out
+	  when translating to termcap.
+	+ add tic -u option to provide older behavior of "tc=" clauses.
+	+ modified tic to expand all but the final "tc=" clause in a termcap
+	  entry, to accommodate termcap libraries which do not handle multiple
+	  tc clauses.
+	+ correct typo in curs_inopts.3x regarding CS8/CS7 usage (report by
+	  Philippe Blain).
+	+ remove a couple of redundant uses of A_ATTRIBUTES in expressions
+	  using AttrOf(), which already incorporates that mask (report by
+	  Philippe Blain).
+	+ document TABSIZE variable.
+	+ add NCURSES_ASSUMED_COLORS environment variable, to allow users to
+	  override compiled-in default black-on-white assumption used in
+	  assume_default_colors().
+	+ correct an off-by-one comparison against max_colors in COLORFGBG
+	  logic.
+	+ correct a use of uninitialized memory found by valgrind (reported by
+	  Olaf Buddenhagen <olafBuddenhagen@web.de>).
+	+ modified wresize() to ensure that a failed realloc will not corrupt
+	  the window structure, and to make subwindows fit within the resized
+	  window (completes Debian #87678, #101699)
 
 20020803
 	+ fix an off-by-one in lib_pad.c check for limits of pad (patch by

@@ -6,7 +6,7 @@
  * modified 10-18-89 for curses (jrl)
  * 10-18-89 added signal handling
  *
- * $Id: gdc.c,v 1.22 2002/06/29 23:32:18 tom Exp $
+ * $Id: gdc.c,v 1.23 2002/08/10 19:20:14 tom Exp $
  */
 
 #include <time.h>
@@ -137,7 +137,6 @@ main(int argc, char *argv[])
 
     signal(SIGINT, sighndl);
     signal(SIGTERM, sighndl);
-    signal(SIGKILL, sighndl);
 
     while ((k = getopt(argc, argv, "sn")) != EOF) {
 	switch (k) {

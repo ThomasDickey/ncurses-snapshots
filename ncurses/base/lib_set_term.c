@@ -43,7 +43,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.67 2002/07/28 00:48:09 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.68 2002/08/10 19:53:06 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN * screenp)
@@ -271,6 +271,26 @@ _nc_setupscreen
     SP->_default_bg = C_MASK;
 #endif
 
+    /*
+     * Allow those assumed/default color assumptions to be overridden at
+     * runtime:
+     */
+    if (getenv("NCURSES_ASSUMED_COLORS") != 0) {
+	char *p = getenv("NCURSES_ASSUMED_COLORS");
+	int fg, bg;
+	char sep1, sep2;
+	int count = sscanf(p, "%d%c%d%c", &fg, &sep1, &bg, &sep2);
+	if (count >= 1) {
+	    SP->_default_fg = (fg >= 0 && fg < max_colors) ? fg : C_MASK;
+	    if (count >= 3) {
+		SP->_default_bg = (bg >= 0 && bg < max_colors) ? bg : C_MASK;
+	    }
+	    TR(TRACE_CHARPUT | TRACE_MOVE,
+	       ("from environment assumed fg=%d, bg=%d",
+		SP->_default_fg,
+		SP->_default_bg));
+	}
+    }
 #if USE_COLORFGBG
     /*
      * If rxvt's $COLORFGBG variable is set, use it to specify the assumed
@@ -287,7 +307,7 @@ _nc_setupscreen
 	    p = extract_fgbg(p, &(SP->_default_bg));
 	TR(TRACE_CHARPUT | TRACE_MOVE, ("decoded fg=%d, bg=%d",
 					SP->_default_fg, SP->_default_bg));
-	if (SP->_default_fg > max_colors) {
+	if (SP->_default_fg >= max_colors) {
 	    if (set_a_foreground != ABSENT_STRING
 		&& !strcmp(set_a_foreground, "\033[3%p1%dm")) {
 		set_a_foreground = "\033[3%?%p1%{8}%>%t9%e%p1%d%;m";
@@ -295,7 +315,7 @@ _nc_setupscreen
 		SP->_default_fg %= max_colors;
 	    }
 	}
-	if (SP->_default_bg > max_colors) {
+	if (SP->_default_bg >= max_colors) {
 	    if (set_a_background != ABSENT_STRING
 		&& !strcmp(set_a_background, "\033[4%p1%dm")) {
 		set_a_background = "\033[4%?%p1%{8}%>%t9%e%p1%d%;m";

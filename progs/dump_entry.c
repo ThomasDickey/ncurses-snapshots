@@ -39,7 +39,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.59 2002/07/06 22:41:14 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.62 2002/08/11 00:56:55 tom Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
@@ -501,6 +501,7 @@ fmt_complex(char *src, int level)
 int
 fmt_entry(TERMTYPE * tterm,
 	  int (*pred) (int type, int idx),
+	  bool content_only,
 	  bool suppress_untranslatable,
 	  bool infodump,
 	  int numbers)
@@ -526,10 +527,14 @@ fmt_entry(TERMTYPE * tterm,
     }
 
     strcpy_DYN(&outbuf, 0);
-    strcpy_DYN(&outbuf, tterm->term_names);
-    strcpy_DYN(&outbuf, separator);
-    column = outbuf.used;
-    force_wrap();
+    if (content_only) {
+	column = INDENT;	/* FIXME: workaround to prevent empty lines */
+    } else {
+	strcpy_DYN(&outbuf, tterm->term_names);
+	strcpy_DYN(&outbuf, separator);
+	column = outbuf.used;
+	force_wrap();
+    }
 
     for_each_boolean(j, tterm) {
 	i = BoolIndirect(j);
@@ -860,9 +865,19 @@ kill_fkeys(TERMTYPE * tterm, int target)
     return result;
 }
 
+#define FMT_ENTRY() \
+		fmt_entry(tterm, pred, \
+			(already_used > 0), \
+			suppress_untranslatable, \
+			infodump, numbers)
+
+#define SHOW_WHY if (!already_used) PRINTF
+
 int
 dump_entry(TERMTYPE * tterm,
+	   bool suppress_untranslatable,
 	   bool limited,
+	   int already_used,
 	   int numbers,
 	   int (*pred) (int type, int idx))
 /* dump a single entry */
@@ -881,12 +896,16 @@ dump_entry(TERMTYPE * tterm,
 	legend = "terminfo";
 	infodump = TRUE;
     }
+    critlen -= already_used;
 
-    if (((len = fmt_entry(tterm, pred, FALSE, infodump, numbers)) > critlen)
+    if (((len = FMT_ENTRY()) > critlen)
 	&& limited) {
-	PRINTF("# (untranslatable capabilities removed to fit entry within %d bytes)\n",
-	       critlen);
-	if ((len = fmt_entry(tterm, pred, TRUE, infodump, numbers)) > critlen) {
+	if (!suppress_untranslatable) {
+	    SHOW_WHY("# (untranslatable capabilities removed to fit entry within %d bytes)\n",
+		     critlen);
+	    suppress_untranslatable = TRUE;
+	}
+	if ((len = FMT_ENTRY()) > critlen) {
 	    /*
 	     * We pick on sgr because it's a nice long string capability that
 	     * is really just an optimization hack.  Another good candidate is
@@ -895,41 +914,40 @@ dump_entry(TERMTYPE * tterm,
 	    char *oldsgr = set_attributes;
 	    char *oldacsc = acs_chars;
 	    set_attributes = ABSENT_STRING;
-	    PRINTF("# (sgr removed to fit entry within %d bytes)\n",
-		   critlen);
-	    if ((len = fmt_entry(tterm, pred, TRUE, infodump, numbers)) > critlen) {
+	    SHOW_WHY("# (sgr removed to fit entry within %d bytes)\n",
+		     critlen);
+	    if ((len = FMT_ENTRY()) > critlen) {
 		acs_chars = ABSENT_STRING;
-		PRINTF("# (acsc removed to fit entry within %d bytes)\n",
-		       critlen);
+		SHOW_WHY("# (acsc removed to fit entry within %d bytes)\n",
+			 critlen);
 	    }
-	    if ((len = fmt_entry(tterm, pred, TRUE, infodump, numbers)) > critlen) {
+	    if ((len = FMT_ENTRY()) > critlen) {
 		int oldversion = tversion;
 
 		tversion = V_BSD;
-		PRINTF("# (terminfo-only capabilities suppressed to fit entry within %d bytes)\n",
-		       critlen);
+		SHOW_WHY("# (terminfo-only capabilities suppressed to fit entry within %d bytes)\n",
+			 critlen);
 
-		len = fmt_entry(tterm, pred, TRUE, infodump, numbers);
+		len = FMT_ENTRY();
 		if (len > critlen
 		    && kill_labels(tterm, len - critlen)) {
-		    PRINTF("# (some labels capabilities suppressed to fit entry within %d bytes)\n",
-			   critlen);
-		    len = fmt_entry(tterm, pred, TRUE, infodump, numbers);
+		    SHOW_WHY("# (some labels capabilities suppressed to fit entry within %d bytes)\n",
+			     critlen);
+		    len = FMT_ENTRY();
 		}
 		if (len > critlen
 		    && kill_fkeys(tterm, len - critlen)) {
-		    PRINTF("# (some function-key capabilities suppressed to fit entry within %d bytes)\n",
-			   critlen);
-		    len = fmt_entry(tterm, pred, TRUE, infodump, numbers);
+		    SHOW_WHY("# (some function-key capabilities suppressed to fit entry within %d bytes)\n",
+			     critlen);
+		    len = FMT_ENTRY();
 		}
 		if (len > critlen) {
 		    (void) fprintf(stderr,
 				   "warning: %s entry is %d bytes long\n",
 				   _nc_first_name(tterm->term_names),
 				   len);
-		    PRINTF(
-			      "# WARNING: this entry, %d bytes long, may core-dump %s libraries!\n",
-			      len, legend);
+		    SHOW_WHY("# WARNING: this entry, %d bytes long, may core-dump %s libraries!\n",
+			     len, legend);
 		}
 		tversion = oldversion;
 	    }
