@@ -33,9 +33,9 @@ typedef unsigned long  chtype;
 #include <stdio.h>   
 #include <unctrl.h>
 #include <stdarg.h>
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 #include <stddef.h>	/* we want wchar_t */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 
 /* XSI and SVr4 specify that curses implements 'bool'.  However, C++ may also
  * implement it.  If so, we must use the C++ compiler's type to avoid conflict
@@ -193,7 +193,7 @@ typedef struct _win_st WINDOW;
 
 typedef	chtype	attr_t;		/* ...must be at least as wide as chtype */
 
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 #ifndef _WCHAR_T
 typedef unsigned long wchar_t;
 #endif /* _WCHAR_T */
@@ -208,7 +208,7 @@ typedef struct
     wchar_t	chars[CCHARW_MAX];
 }
 cchar_t;
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 
 struct _win_st {
 	short   _cury, _curx;	/* current cursor position */
@@ -299,13 +299,13 @@ extern int addchnstr(const chtype *, int);		/* generated */
 extern int addchstr(const chtype *);			/* generated */
 extern int addnstr(const char *, int);			/* generated */
 extern int addstr(const char *);			/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int addnwstr(const wchar_t *, int);		/* missing */
 extern int addwstr(const wchar_t *);			/* missing */
 extern int add_wch(const cchar_t *);			/* missing */
 extern int add_wchnstr(const cchar_t *, int);		/* missing */
 extern int add_wchstr(const cchar_t *);			/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int attroff(int);				/* generated */
 extern int attron(int);					/* generated */
 extern int attrset(int);				/* generated */
@@ -317,18 +317,18 @@ extern int baudrate(void);				/* implemented */
 extern int beep(void);					/* implemented */
 extern int bkgd(chtype);				/* generated */
 extern void bkgdset(chtype);				/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int bkgrndset(const cchar_t *);			/* missing */
 extern int bkgrnd(const cchar_t *);			/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int border(chtype,chtype,chtype,chtype,chtype,chtype,chtype,chtype);	/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int border_set(cchar_t,cchar_t,cchar_t,cchar_t,cchar_t,cchar_t,cchar_t,cchar_t);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int box(WINDOW *, chtype, chtype);		/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int box_set(WINDOW *, cchar_t, cchar_t);		/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern bool can_change_color(void);			/* implemented */
 extern int cbreak(void);				/* implemented */
 extern int chgat(int, attr_t, short, const void *);	/* generated */
@@ -352,43 +352,43 @@ extern int doupdate(void);				/* implemented */
 extern WINDOW *dupwin(WINDOW *);			/* implemented */
 extern int echo(void);					/* implemented */
 extern int echochar(const chtype);			/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int echo_wchar(const cchar_t *);			/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int endwin(void);				/* implemented */
 extern char erasechar(void);				/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int erase_wchar(wchar_t *);			/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern void filter(void);				/* implemented */
 extern int flash(void);					/* implemented */
 extern int flushinp(void);				/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern chtype getbkgd(WINDOW *);			/* missing */
 extern int getbkgrnd(cchar_t *);			/* missing */
 extern int getcchar(const cchar_t *, wchar_t*, attr_t*, short*, void*);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int getch(void);					/* generated */
 extern int getnstr(char *, int);			/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int getn_wstr(wint_t *, int n);			/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int getstr(char *);				/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int get_wch(wint_t *);				/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern WINDOW *getwin(FILE *);				/* not in XPG4 */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int get_wstr(wint_t *);				/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int halfdelay(int);				/* implemented */
 extern int has_colors(void);				/* implemented */
 extern int has_ic(void);				/* implemented */
 extern int has_il(void);				/* implemented */
 extern int hline(chtype, int);				/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int hline_set(const cchar_t *, int);		/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int idcok(WINDOW *, bool);			/* implemented */
 extern int idlok(WINDOW *, bool);			/* implemented */
 extern int immedok(WINDOW *, bool);			/* implemented */
@@ -399,39 +399,39 @@ extern WINDOW *initscr(void);				/* implemented */
 extern int init_color(short,short,short,short);		/* implemented */
 extern int init_pair(short,short,short);		/* implemented */
 extern int innstr(char *, int);				/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int innwstr(wchar_t *, int);			/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int insch(chtype);				/* generated */
 extern int insdelln(int);				/* generated */
 extern int insertln(void);				/* generated */
 extern int insnstr(const char *, int);			/* generated */
 extern int insstr(const char *);			/* generated */
 extern int instr(char *);				/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int ins_nwstr(const wchar_t *, int);		/* missing */
 extern int ins_wch(const cchar_t *);			/* missing */
 extern int ins_wstr(const wchar_t *);			/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int intrflush(WINDOW *,bool);			/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int inwstr(wchar_t *);				/* missing */
 extern int in_wch(const cchar_t *);			/* missing */
 extern int in_wchstr(const cchar_t *);			/* missing */
 extern int in_wchntr(const cchar_t *, int);		/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int isendwin(void);				/* implemented */
 extern int is_linetouched(WINDOW *,int);		/* implemented */
 extern int is_wintouched(WINDOW *);			/* implemented */
 extern const char *keyname(int);			/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int key_name(wchar_t *);				/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int keypad(WINDOW *,bool);			/* implemented */
 extern char killchar(void);				/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int killwchar(wchar_t *);			/* missing */
-#endif /* XPG4_EXTENDED */	
+#endif /* _XOPEN_SOURCE_EXTENDED */	
 extern int leaveok(WINDOW *,bool);			/* implemented */
 extern char *longname(void);				/* implemented */
 extern int meta(WINDOW *,bool);				/* implemented */
@@ -441,45 +441,45 @@ extern int mvaddchnstr(int, int, const chtype *, int);	/* generated */
 extern int mvaddchstr(int, int, const chtype *);	/* generated */
 extern int mvaddnstr(int, int, const char *, int);	/* generated */
 extern int mvaddstr(int, int, const char *);		/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvaddnwstr(int, int, const wchar_t *, int);	/* missing */
 extern int mvaddwstr(int, int, const wchar_t *);	/* missing */
 extern int mvadd_wch(int, int, const cchar_t *);	/* missing */
 extern int mvadd_wchnstr(int, int, const cchar_t *, int);/* missing */
 extern int mvadd_wchstr(int, int, const cchar_t *);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int mvchgat(int, int, int, attr_t, short, const void *);	/* generated */
 extern int mvcur(int,int,int,int);			/* implemented */
 extern int mvdelch(int, int);				/* generated */
 extern int mvderwin(WINDOW *, int, int);		/* implemented */
 extern int mvgetch(int, int);				/* generated */
 extern int mvgetnstr(int, int, char *, int);		/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvgetn_wstr(int, int, wint_t *, int n);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int mvgetstr(int, int, char *);			/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvget_wch(int, int, wint_t *);		/* missing */
-#endif /* XPG4_EXTENDED */
-#ifdef XPG4_EXTENDED
+#endif /* _XOPEN_SOURCE_EXTENDED */
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvget_wstr(int, int, wint_t *);		/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int mvhline(int, int, chtype, int);		/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvhline_set(int, int, const cchar_t *, int);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern chtype mvinch(int, int);				/* generated */
 extern int mvinchnstr(int, int, chtype *, int);		/* generated */
 extern int mvinchstr(int, int, chtype *);		/* generated */
 extern int mvinnstr(int, int, char *, int);		/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvinnwstr(int, int, wchar_t *, int);		/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int mvinsch(int, int, chtype);			/* generated */
 extern int mvinsnstr(int, int, const char *, int);	/* generated */
 extern int mvinsstr(int, int, const char *);		/* generated */
 extern int mvinstr(int, int, char *);			/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvins_nwstr(int, int, const wchar_t *, int);	/* missing */
 extern int mvins_wch(int, int, const cchar_t *);	/* missing */
 extern int mvins_wstr(int, int, const wchar_t *);	/* missing */
@@ -487,56 +487,56 @@ extern int mvinwstr(int, int, wchar_t *);		/* missing */
 extern int mvin_wch(int, int, const cchar_t *);		/* missing */
 extern int mvin_wchstr(int, int, const cchar_t *);	/* missing */
 extern int mvin_wchntr(int, int, const cchar_t *, int);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int mvprintw(int,int,const char *,...);		/* implemented */
 extern int mvscanw(int,int,const char *,...);		/* implemented */
 extern int mvvline(int, int, chtype, int);		/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvvline_set(int, int, const cchar_t *, int);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int mvwaddch(WINDOW *, int, int, const chtype);	/* generated */
 extern int mvwaddchnstr(WINDOW *, int, int, const chtype *, int);/* generated */
 extern int mvwaddchstr(WINDOW *, int, int, const chtype *);	/* generated */
 extern int mvwaddnstr(WINDOW *, int, int, const char *, int);	/* generated */
 extern int mvwaddstr(WINDOW *, int, int, const char *);	/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvwaddnwstr(WINDOW *, int, int, const wchar_t *, int);/* missing */
 extern int mvwaddwstr(WINDOW *, int, int, const wchar_t *);	/* missing */
 extern int mvwadd_wch(WINDOW *, int, int, const cchar_t *);	/* missing */
 extern int mvwadd_wchnstr(WINDOW *, int, int, const cchar_t *, int); /* missing */
 extern int mvwadd_wchstr(WINDOW *, int, int, const cchar_t *);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int mvwchgat(WINDOW *, int, int, int, attr_t, short, const void *);/* generated */
 extern int mvwdelch(WINDOW *, int, int);		/* generated */
 extern int mvwgetch(WINDOW *, int, int);		/* generated */
 extern int mvwgetnstr(WINDOW *, int, int, char *, int);	/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvwgetn_wstr(WINDOW *, int, int, wint_t *, int n);/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int mvwgetstr(WINDOW *, int, int, char *);	/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvwget_wch(WINDOW *, int, int, wint_t *);	/* missing */
-#endif /* XPG4_EXTENDED */
-#ifdef XPG4_EXTENDED
+#endif /* _XOPEN_SOURCE_EXTENDED */
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvwget_wstr(WINDOW *, int, int, wint_t *);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int mvwhline(WINDOW *, int, int, chtype, int);	/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvwhline_set(WINDOW *, int, int, const cchar_t *, int);/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int mvwin(WINDOW *,int,int);			/* implemented */
 extern chtype mvwinch(WINDOW *, int, int);			/* generated */
 extern int mvwinchnstr(WINDOW *, int, int, chtype *, int);	/* generated */
 extern int mvwinchstr(WINDOW *, int, int, chtype *);		/* generated */
 extern int mvwinnstr(WINDOW *, int, int, char *, int);		/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvwinnwstr(WINDOW *, int, int, wchar_t *, int);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int mvwinsch(WINDOW *, int, int, chtype);		/* generated */
 extern int mvwinsnstr(WINDOW *, int, int, const char *, int);	/* generated */
 extern int mvwinsstr(WINDOW *, int, int, const char *);		/* generated */
 extern int mvwinstr(WINDOW *, int, int, char *);		/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvwins_nwstr(WINDOW *, int,int, const wchar_t *,int); /* missing */
 extern int mvwins_wch(WINDOW *, int, int, const cchar_t *);	/* missing */
 extern int mvwins_wstr(WINDOW *, int, int, const wchar_t *);	/* missing */
@@ -544,13 +544,13 @@ extern int mvwinwstr(WINDOW *, int, int, wchar_t *);		/* missing */
 extern int mvwin_wch(WINDOW *, int, int, const cchar_t *);	/* missing */
 extern int mvwin_wchnstr(WINDOW *, int,int,const cchar_t *,int); /* missing */
 extern int mvwin_wchstr(WINDOW *, int, int, const cchar_t *);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int mvwprintw(WINDOW*,int,int,const char *,...);	/* implemented */
 extern int mvwscanw(WINDOW *,int,int,const char *,...);	/* implemented */
 extern int mvwvline(WINDOW *,int, int, chtype, int);	/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvwvline_set(WINDOW *, int,int, const cchar_t *,int); /* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int napms(int);					/* implemented */
 extern WINDOW *newpad(int,int);				/* implemented */
 extern SCREEN *newterm(const char *,FILE *,FILE *);	/* implemented */
@@ -568,9 +568,9 @@ extern int overwrite(const WINDOW*,WINDOW *);		/* implemented */
 extern int pair_content(short,short*,short*);		/* implemented */
 extern int PAIR_NUMBER(int);				/* generated */	
 extern int pechochar(WINDOW *, chtype);			/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int pecho_wchar(WINDOW *, const cchar_t *);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int pnoutrefresh(WINDOW*,int,int,int,int,int,int);/* implemented */
 extern int prefresh(WINDOW *,int,int,int,int,int,int);	/* implemented */
 extern int printw(const char *,...);			/* implemented */
@@ -593,23 +593,23 @@ extern int scroll(WINDOW *);				/* generated */
 extern int scrollok(WINDOW *,bool);			/* implemented */
 extern int scr_restore(const char *);			/* implemented */
 extern int scr_set(const char *);			/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int setcchar(cchar_t *, wchar_t *, attr_t, short, const void *);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int setscrreg(int,int);				/* generated */
 extern SCREEN *set_term(SCREEN *);			/* implemented */
 extern int slk_attroff(chtype);				/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int slk_attr_off(attr_t);			/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int slk_attron(chtype);				/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int slk_attr_on(attr_t);				/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int slk_attrset(chtype);				/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int slk_attr_set(attr_t);			/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int slk_clear(void);				/* implemented */
 extern int slk_init(int);				/* implemented */
 extern char *slk_label(int);				/* implemented */
@@ -618,9 +618,9 @@ extern int slk_refresh(void);				/* implemented */
 extern int slk_restore(void);				/* implemented */
 extern int slk_set(int,const char *,int);		/* implemented */
 extern int slk_touch(void);				/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int slk_wset(int, wchar_t *, int);		/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int standout(void);				/* generated */
 extern int standend(void);				/* generated */
 extern int start_color(void);				/* implemented */
@@ -635,23 +635,23 @@ extern char *tigetstr(const char *);			/* implemented */
 extern int timeout(int);				/* implemented */
 extern int typeahead(int);				/* implemented */
 extern int ungetch(int);				/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int unget_wch(const wchar_t *);			/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int untouchwin(WINDOW *);			/* generated */
 extern void use_env(bool);				/* implemented */
 extern int vidattr(chtype);				/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int vid_attr(attr_t);				/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int vidputs(chtype, int (*)(int));		/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int vid_puts(attr_t, int (*)(int));		/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int vline(chtype, int);				/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int vline_set(const cchar_t *, int);		/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int vwprintw(WINDOW *,const char *,va_list);	/* implemented */
 extern int vw_printw(WINDOW *,const char *,va_list);	/* implemented */
 extern int vwscanw(WINDOW *,const char *,va_list);	/* implemented */
@@ -661,12 +661,12 @@ extern int waddchnstr(WINDOW *,const chtype *const,int); /* implemented */
 extern int waddchstr(WINDOW *,const chtype *);		/* generated */
 extern int waddnstr(WINDOW *,const char *const,int);	/* implemented */
 extern int waddstr(WINDOW *,const char *);		/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int waddwstr(WINDOW *,const wchar_t *);		/* missing */
 extern int wadd_wch(WINDOW *,const cchar_t *);		/* missing */
 extern int wadd_wchnstr(WINDOW *,const cchar_t *,int);	/* missing */
 extern int wadd_wchstr(WINDOW *,const cchar_t *);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int wattron(WINDOW *, int);			/* generated */
 extern int wattroff(WINDOW *, int);			/* generated */
 extern int wattrset(WINDOW *, int);			/* generated */
@@ -676,14 +676,14 @@ extern int wattr_off(WINDOW *, const attr_t);		/* implemented */
 extern int wattr_set(WINDOW *, attr_t);			/* implemented */
 extern int wbkgd(WINDOW *,const chtype);		/* implemented */
 extern void wbkgdset(WINDOW *,chtype);			/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int wbkgrndset(WINDOW *,const cchar_t *);	/* missing */
 extern int wbkgrnd(WINDOW *,const cchar_t *);		/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int wborder(WINDOW *,chtype,chtype,chtype,chtype,chtype,chtype,chtype,chtype);	/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int wborder_set(WINDOW *,cchar_t,cchar_t,cchar_t,cchar_t,cchar_t,cchar_t,cchar_t,cchar_t);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int wchgat(WINDOW *, int, attr_t, short, const void *);/* implemented */
 extern int wclear(WINDOW *);				/* implemented */
 extern int wclrtobot(WINDOW *);				/* implemented */
@@ -692,41 +692,41 @@ extern void wcursyncup(WINDOW *);			/* implemented */
 extern int wdelch(WINDOW *);				/* implemented */
 extern int wdeleteln(WINDOW *);				/* generated */
 extern int wechochar(WINDOW *, const chtype);		/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int wecho_wchar(WINDOW *, const cchar_t *);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int werase(WINDOW *);				/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int wgetbkgrnd(WINDOW *, cchar_t *);		/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int wgetch(WINDOW *);				/* implemented */
 extern int wgetnstr(WINDOW *,char *,int);		/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int wgetn_wstr(WINDOW *,wint_t *, int);		/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int wgetstr(WINDOW *, char *);			/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int wget_wch(WINDOW *, wint_t *);		/* missing */
 extern int wget_wstr(WINDOW *, wint_t *);		/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int whline(WINDOW *, chtype, int);		/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int whline_set(WINDOW *, const cchar_t *, int);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern chtype winch(WINDOW *);				/* generated */
 extern int winchnstr(WINDOW *, chtype *, int);		/* implemented */
 extern int winchstr(WINDOW *, chtype *);		/* generated */
 extern int winnstr(WINDOW *, char *, int);		/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int winnwstr(WINDOW *, wchar_t *, int);		/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int winsch(WINDOW *, chtype);			/* implemented */
 extern int winsdelln(WINDOW *,int);			/* implemented */
 extern int winsertln(WINDOW *);				/* generated */
 extern int winsnstr(WINDOW *, const char *,int);	/* implemented */
 extern int winsstr(WINDOW *, const char *);		/* generated */
 extern int winstr(WINDOW *, char *);			/* generated */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int wins_nwstr(WINDOW *, const wchar_t *, int);	/* missing */
 extern int wins_wch(WINDOW *, const cchar_t *);		/* missing */
 extern int wins_wstr(WINDOW *, const wchar_t *);	/* missing */
@@ -734,7 +734,7 @@ extern int winwstr(WINDOW *, wchar_t *);		/* missing */
 extern int win_wch(WINDOW *, const cchar_t *);		/* missing */
 extern int win_wchnstr(WINDOW *, const cchar_t *, int);	/* missing */
 extern int win_wchstr(WINDOW *, const cchar_t *);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int wmove(WINDOW *,int,int);			/* implemented */
 extern int wnoutrefresh(WINDOW *);			/* implemented */
 extern int wprintw(WINDOW *,const char *,...);		/* implemented */
@@ -750,13 +750,13 @@ extern void wsyncdown(WINDOW *);			/* implemented */
 extern void wsyncup(WINDOW *);				/* implemented */
 extern int wtimeout(WINDOW *,int);			/* implemented */
 extern int wtouchln(WINDOW *,int,int,int);		/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern wchar_t wunctrl(cchar_t *);			/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int wvline(WINDOW *,chtype,int);			/* implemented */
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 
 #ifdef __cplusplus
 }

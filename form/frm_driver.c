@@ -151,7 +151,7 @@ static int FE_Delete_Previous(FORM *);
    (((field)->just != NO_JUSTIFICATION)  && \
     (Single_Line_Field(field))           && \
     (((field)->dcols == (field)->cols)   && \
-    ((field)->opts & O_STATIC))           )
+    ((field)->opts & O_STATIC))             )
 
 /* Logic to determine whether or not a dynamic field may still grow */
 #define Growable(field) ((field)->status & _MAY_GROW)

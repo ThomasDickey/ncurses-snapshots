@@ -179,7 +179,7 @@ int post_menu(MENU * menu)
       
       if (maxx < menu->width || maxy < menu->height)
 	RETURN(E_NO_ROOM);
-      
+
       if ( (menu->win = newpad(menu->rows,menu->width)) )
 	{
 	  y = (maxy >= menu->rows) ? menu->rows : maxy;
