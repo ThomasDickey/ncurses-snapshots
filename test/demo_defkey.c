@@ -1,5 +1,5 @@
 /*
- * $Id: demo_defkey.c,v 1.1 2002/11/24 00:49:38 tom Exp $
+ * $Id: demo_defkey.c,v 1.2 2002/12/14 23:28:15 tom Exp $
  *
  * Demonstrate the define_key() function.
  * Thomas Dickey - 2002/11/23
@@ -7,7 +7,7 @@
 
 #include <test.priv.h>
 
-#if defined(NCURSES_VERSION)
+#if defined(NCURSES_VERSION) && NCURSES_EXT_FUNCS
 
 #include <term.h>
 

@@ -1,5 +1,5 @@
 /*
- * $Id: demo_keyok.c,v 1.1 2002/11/23 23:52:31 tom Exp $
+ * $Id: demo_keyok.c,v 1.2 2002/12/14 23:28:23 tom Exp $
  *
  * Demonstrate the keyok() function.
  * Thomas Dickey - 2002/11/23
@@ -7,7 +7,7 @@
 
 #include <test.priv.h>
 
-#if defined(NCURSES_VERSION)
+#if defined(NCURSES_VERSION) && NCURSES_EXT_FUNCS
 int
 main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 {

@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.36 2002/10/19 22:11:47 tom Exp $ */
+/* $Id: test.priv.h,v 1.37 2002/12/14 23:28:06 tom Exp $ */
 
 #if HAVE_CONFIG_H
 #include <ncurses_cfg.h>
@@ -82,6 +82,10 @@
 
 #ifndef HAVE_WRESIZE
 #define HAVE_WRESIZE 0
+#endif
+
+#ifndef NCURSES_EXT_FUNCS
+#define NCURSES_EXT_FUNCS 0
 #endif
 
 #ifndef NCURSES_NOMACROS

@@ -943,7 +943,8 @@
 ./test/cardfile.dat
 ./test/configure
 ./test/configure.in
-./test/define_key.c
+./test/demo_defkey.c
+./test/demo_keyok.c
 ./test/ditto.c
 ./test/dots.c
 ./test/filter.c
@@ -956,7 +957,6 @@
 ./test/ins_wide.c
 ./test/inserts.c
 ./test/keynames.c
-./test/keyok.c
 ./test/knight.c
 ./test/lrtest.c
 ./test/modules

@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.57 2002/12/07 20:37:21 tom Exp $
+# $Id: mk-1st.awk,v 1.58 2002/12/14 23:56:19 Maciej.W.Rozycki Exp $
 ##############################################################################
 # Copyright (c) 1998,2000,2002 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -38,7 +38,7 @@
 #	MODEL (e.g., "DEBUG", uppercase; toupper is not portable)
 #	depend (optional dependencies for all objects, e.g, ncurses_cfg.h)
 #	subset ("none", "base", "base+ext_funcs" or "termlib")
-#	target (cross-compile target, if any)
+#	host (cross-compile host, if any)
 #	ShlibVer ("rel", "abi" or "auto", to augment DoLinks variable)
 #	ShlibVerInfix ("yes" or "no", determines location of version #)
 #	DoLinks ("yes", "reverse" or "no", flag to add symbolic links)
@@ -297,7 +297,7 @@ END	{
 				printf "../lib/%s : $(%s_OBJS)\n", lib_name, OBJS
 				printf "\t$(AR) $(AR_OPTS) $@ $?\n"
 				printf "\t$(RANLIB) $@\n"
-				if ( target == "vxworks" )
+				if ( host == "vxworks" )
 				{
 					printf "\t$(LD) $(LD_OPTS) $? -o $(@:.a=.o)\n"
 				}
@@ -314,7 +314,7 @@ END	{
 					printf "\t(cd $(DESTDIR)$(libdir) && $(LN_S) libncurses.a libcurses.a)\n"
 				}
 				printf "\t$(RANLIB) $(DESTDIR)$(libdir)/%s\n", lib_name
-				if ( target == "vxworks" )
+				if ( host == "vxworks" )
 				{
 					printf "\t@echo installing ../lib/lib%s.o as $(DESTDIR)$(libdir)/lib%s.o\n", name, name
 					printf "\t$(INSTALL_DATA) ../lib/lib%s.o $(DESTDIR)$(libdir)/lib%s.o\n", name, name
@@ -330,7 +330,7 @@ END	{
 					printf "\t@echo linking libcurses.a to libncurses.a\n"
 					printf "\t-@rm -f $(DESTDIR)$(libdir)/libcurses.a\n"
 				}
-				if ( target == "vxworks" )
+				if ( host == "vxworks" )
 				{
 					printf "\t@echo uninstalling $(DESTDIR)$(libdir)/lib%s.o\n", name
 					printf "\t-@rm -f $(DESTDIR)$(libdir)/lib%s.o\n", name
