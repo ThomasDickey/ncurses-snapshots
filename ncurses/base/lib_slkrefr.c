@@ -38,7 +38,7 @@
 #include <curses.priv.h>
 #include <term.h>	  /* num_labels, label_*, plab_norm */
 
-MODULE_ID("$Id: lib_slkrefr.c,v 1.6 1999/01/02 22:56:59 tom Exp $")
+MODULE_ID("$Id: lib_slkrefr.c,v 1.7 1999/03/03 23:44:22 juergen Exp $")
 
 /*
  * Write the soft labels to the soft-key window.
@@ -47,22 +47,25 @@ static void
 slk_intern_refresh(SLK *slk)
 {
 int i;
+int fmt = SP->slk_format;
+
 	for (i = 0; i < slk->labcnt; i++) {
 		if (slk->dirty || slk->ent[i].dirty) {
 			if (slk->ent[i].visible) {
-				if (num_labels > 0 && SLK_STDFMT)
+				if (num_labels > 0 && SLK_STDFMT(fmt))
 				{
 				  if (i < num_labels) {
 				    TPUTS_TRACE("plab_norm");
-				    putp(tparm(plab_norm, i, slk->win,slk->ent[i].form_text));
+				    putp(tparm(plab_norm, i+1, slk->win,slk->ent[i].form_text));
 				  }
 				}
 				else
 				{
-					wmove(slk->win,SLK_LINES-1,slk->ent[i].x);
+					wmove(slk->win,SLK_LINES(fmt)-1,slk->ent[i].x);
 					if (SP && SP->_slk)
 					  wattrset(slk->win,SP->_slk->attr);
-					waddnstr(slk->win,slk->ent[i].form_text, MAX_SKEY_LEN);
+					waddnstr(slk->win,slk->ent[i].form_text,
+						 MAX_SKEY_LEN(fmt));
 					/* if we simulate SLK's, it's looking much more
 					   natural to use the current ATTRIBUTE also
 					   for the label window */

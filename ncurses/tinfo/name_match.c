@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1999 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,15 +27,14 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
- *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *  Author: Thomas E. Dickey <dickey@clark.net> 1999                        *
  ****************************************************************************/
 
 #include <curses.priv.h>
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: name_match.c,v 1.7 1998/09/19 20:27:49 Todd.Miller Exp $")
+MODULE_ID("$Id: name_match.c,v 1.8 1999/03/07 01:58:36 tom Exp $")
 
 /*
  *	_nc_first_name(char *names)
@@ -46,17 +45,16 @@ MODULE_ID("$Id: name_match.c,v 1.7 1998/09/19 20:27:49 Todd.Miller Exp $")
 char *_nc_first_name(const char *const sp)
 /* get the first name from the given name list */
 {
-    static char	buf[MAX_NAME_SIZE+1];
-    register char *cp;
+	static char	buf[MAX_NAME_SIZE+1];
+	register unsigned n;
 
-    (void) strncpy(buf, sp, sizeof(buf) - 1);
-    buf[sizeof(buf) - 1] = '\0';
-
-    cp = strchr(buf, '|');
-    if (cp)
-	*cp = '\0';
-
-    return(buf);
+	for (n = 0; n < sizeof(buf)-1; n++) {
+		if ((buf[n] = sp[n]) == '\0'
+		 || (buf[n] == '|'))
+			break;
+	}
+	buf[n] = '\0';
+	return(buf);
 }
 
 /*
@@ -66,22 +64,33 @@ char *_nc_first_name(const char *const sp)
  */
 
 int _nc_name_match(const char *const namelst, const char *const name, const char *const delim)
-/* microtune this, it occurs in several critical loops */
 {
-char namecopy[MAX_ENTRY_SIZE];	/* this may get called on a TERMCAP value */
-register char *cp;
+	const char *s, *d, *t;
+	int code, found;
 
-	if (namelst == 0)
-		return(FALSE);
-	(void) strncpy (namecopy, namelst, sizeof(namecopy) - 1);
-	namecopy[sizeof(namecopy) - 1] = '\0';
-	if ((cp = strtok(namecopy, delim)) != 0) {
-		do {
-			/* avoid strcmp() function-call cost if possible */
-			if (cp[0] == name[0] && strcmp(cp, name) == 0)
-			    return(TRUE);
-		} while
-		    ((cp = strtok((char *)0, delim)) != 0);
+	if ((s = namelst) != 0) {
+		while (*s != '\0') {
+			for (d = name; *d != '\0'; d++) {
+				if (*s != *d)
+					break;
+				s++;
+			}
+			found = FALSE;
+			for (code = TRUE; *s != '\0'; code = FALSE, s++) {
+				for (t = delim; *t != '\0'; t++) {
+					if (*s == *t) {
+						found = TRUE;
+						break;
+					}
+				}
+				if (found)
+					break;
+			}
+			if (code && *d == '\0')
+				return code;
+			if (*s++ == 0)
+				break;
+		}
 	}
-	return(FALSE);
+	return FALSE;
 }

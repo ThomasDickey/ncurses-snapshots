@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.430 1999/03/01 23:21:57 tom Exp $
+-- $Id: NEWS,v 1.432 1999/03/07 02:04:21 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990306	pre-release
+	+ add -G option to tic and infocmp, to reverse the -g option.
+	+ recode functions in name_match.c to avoid use of strncpy, which
+	  caused a 4-fold slowdown in tic (cf: 980530).
+	+ correct a few warnings about sign-extension in recent changes.
+	> patch by Juergen Pfeifer:
+	+ fixes suggested by Jeff Bradbury <jibradbury@lucent.com>:
+	  + improved parameter checking in new_fieldtype().
+	  + fixed a typo in wgetch() timeout handling.
+	  + allow slk_init() to be called per newterm call.  The internal SLK
+	    state is stored in the SCREEN struct after every newterm() and then
+	    reset for the next newterm.
+	  + fix the problem that a slk_refresh() refreshes stdscr if the
+	    terminal has true SLKs.
+	+ update HTML documentation for Ada binding.
 
 990301	pre-release
 	+ remove 'bool' casts from definitions of TRUE/FALSE so that statements

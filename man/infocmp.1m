@@ -27,14 +27,14 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.18 1998/11/29 01:13:31 Rick.Ohnemus Exp $
+.\" $Id: infocmp.1m,v 1.20 1999/03/07 02:07:48 tom Exp $
 .TH infocmp 1M ""
 .ds n 5
 .ds d @DATADIR@/terminfo
 .SH NAME
 \fBinfocmp\fR - compare or print out \fIterminfo\fR descriptions
 .SH SYNOPSIS
-\fBinfocmp\fR [\fB-dcnpILCuV1\fR] [\fB-v\fR \fIn\fR] [\fB-s d\fR| \fBi\fR| \fBl\fR| \fBc\fR]
+\fBinfocmp\fR [\fB-dcGgnpILCuV1\fR] [\fB-v\fR \fIn\fR] [\fB-s d\fR| \fBi\fR| \fBl\fR| \fBc\fR]
 .br
       [\fB-w\fR \fIwidth\fR] [\fB-A\fR \fIdirectory\fR] [\fB-B\fR \fIdirectory\fR] [\fItermname\fR...]
 .SH DESCRIPTION
@@ -212,6 +212,10 @@ entries, with two entries considered to match if any of their names do.
 The report printed to standard output lists entries with no matches in
 the other file, and entries with more than one match.  For entries
 with exactly one match it includes a difference report.
+.TP
+\fB-G\fR
+Display constant literals in decimal form
+rather than their character equivalents.
 .TP 5
 \fB-R\fR\fIsubset\fR
 Restrict output to a given subset.  This option is for use with archaic
@@ -313,6 +317,7 @@ Compiled terminal description database.
 .SH EXTENSIONS
 The
 \fB-F\fR,
+\fB-G\fR,
 \fB-R\fR,
 \fB-T\fR,
 \fB-e\fR,
@@ -333,6 +338,8 @@ The -F option of \fBinfocmp\fR(1M) should be a \fBtoe\fR(1M) mode.
 \fBcurses\fR(3X), \fBterminfo\fR(\*n).
 .SH AUTHOR
 Eric S. Raymond <esr@snark.thyrsus.com>
+and
+Thomas E. Dickey <dickey@clark.net>
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

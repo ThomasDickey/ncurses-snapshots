@@ -48,7 +48,7 @@
 
 #include <term.h>	/* clear_screen, cup & friends, cur_term */
 
-MODULE_ID("$Id: lib_newterm.c,v 1.38 1999/01/31 01:23:25 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.39 1999/03/03 23:44:22 juergen Exp $")
 
 #ifndef ONLCR		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -94,6 +94,7 @@ void filter(void)
 SCREEN * newterm(NCURSES_CONST char *term, FILE *ofp, FILE *ifp)
 {
 int	errret;
+int     slk_format = _nc_slk_format;
 SCREEN* current;
 #ifdef TRACE
 int t = _nc_getenv_num("NCURSES_TRACE");
@@ -148,10 +149,11 @@ int t = _nc_getenv_num("NCURSES_TRACE");
 	   We assume that we must simulate, if it is none of the standard
 	   formats (4-4  or 3-2-3) for which there may be some hardware
 	   support. */
-	if (num_labels <= 0 || !SLK_STDFMT)
-	    if (_nc_slk_format)
+	if (num_labels <= 0 || !SLK_STDFMT(slk_format))
+	    if (slk_format)
 	      {
-		if (ERR==_nc_ripoffline(-SLK_LINES, _nc_slk_initialize))
+		if (ERR==_nc_ripoffline(-SLK_LINES(slk_format),
+					_nc_slk_initialize))
 		  return 0;
 	      }
 	/* this actually allocates the screen structure, and saves the
@@ -165,7 +167,7 @@ int t = _nc_getenv_num("NCURSES_TRACE");
 	}
 
 	/* if the terminal type has real soft labels, set those up */
-	if (_nc_slk_format && num_labels > 0 && SLK_STDFMT)
+	if (slk_format && num_labels > 0 && SLK_STDFMT(slk_format))
 	    _nc_slk_initialize(stdscr, COLS);
 
 	SP->_ifd        = fileno(ifp);

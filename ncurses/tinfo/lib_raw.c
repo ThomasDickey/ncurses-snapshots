@@ -49,7 +49,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_raw.c,v 1.2 1998/12/20 00:42:58 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.3 1999/03/06 22:28:24 tom Exp $")
 
 #if defined(SVR4_TERMIO) && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
@@ -80,7 +80,7 @@ int raw(void)
 	if (SP != 0 && cur_term != 0) {
 
 		SP->_raw = TRUE;
-		SP->_cbreak = TRUE;
+		SP->_cbreak = 1;
 
 #ifdef __EMX__
 		setmode(SP->_ifd, O_BINARY);
@@ -105,7 +105,7 @@ int cbreak(void)
 {
 	T((T_CALLED("cbreak()")));
 
-	SP->_cbreak = TRUE;
+	SP->_cbreak = 1;
 
 #ifdef __EMX__
 	setmode(SP->_ifd, O_BINARY);
@@ -149,7 +149,7 @@ int noraw(void)
 	T((T_CALLED("noraw()")));
 
 	SP->_raw = FALSE;
-	SP->_cbreak = FALSE;
+	SP->_cbreak = 0;
 
 #ifdef __EMX__
 	setmode(SP->_ifd, O_TEXT);
@@ -171,7 +171,7 @@ int nocbreak(void)
 {
 	T((T_CALLED("nocbreak()")));
 
-	SP->_cbreak = FALSE;
+	SP->_cbreak = 0;
 
 #ifdef __EMX__
 	setmode(SP->_ifd, O_TEXT);

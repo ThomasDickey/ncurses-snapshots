@@ -31,8 +31,6 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-
-
 /*
 **	lib_set_term.c
 **
@@ -44,7 +42,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.44 1999/02/18 11:31:47 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.45 1999/03/06 22:29:13 tom Exp $")
 
 SCREEN * set_term(SCREEN *screen)
 {
@@ -159,7 +157,7 @@ size_t	i;
 	SP->_curscol     = -1;
 	SP->_nl          = TRUE;
 	SP->_raw         = FALSE;
-	SP->_cbreak      = FALSE;
+	SP->_cbreak      = 0;
 	SP->_echo        = TRUE;
 	SP->_fifohead    = -1;
 	SP->_endwin      = TRUE;

@@ -42,7 +42,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.48 1999/03/01 00:26:51 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.49 1999/03/07 01:21:14 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -84,6 +84,7 @@ static void usage(void)
 	"  -T         remove size-restrictions on compiled description",
 	"  -c         check only, validate input without compiling or translating",
 	"  -f         format complex strings for readability",
+	"  -G         format %{number} to %'char'",
 	"  -g         format %'char' to %{number}",
 	"  -e<names>  translate/compile only entries named by comma-separated list",
 	"  -o<dir>    set output directory for compiled entry writes",
@@ -383,7 +384,7 @@ int	sortmode = S_TERMINFO;	/* sort_mode */
 
 int	width = 60;
 bool	formatted = FALSE;	/* reformat complex strings? */
-bool	numbers = TRUE;		/* format "%'char'" to "%{number}" */
+int	numbers = 0;		/* format "%'char'" to/from "%{number}" */
 bool	infodump = FALSE;	/* running as captoinfo? */
 bool	capdump = FALSE;	/* running as infotocap? */
 bool	forceresolve = FALSE;	/* force resolution */
@@ -412,7 +413,7 @@ bool	check_only = FALSE;
 	 * design decision to allow the numeric values for -w, -v options to
 	 * be optional.
 	 */
-	while ((this_opt = getopt(argc, argv, "0123456789CILNR:TVce:fgo:rsvwx")) != EOF) {
+	while ((this_opt = getopt(argc, argv, "0123456789CILNR:TVce:fGgo:rsvwx")) != EOF) {
 		if (isdigit(this_opt)) {
 			switch (last_opt) {
 			case 'v':
@@ -466,8 +467,11 @@ bool	check_only = FALSE;
 		case 'f':
 			formatted = TRUE;
 			break;
+		case 'G':
+			numbers = 1;
+			break;
 		case 'g':
-			numbers = FALSE;
+			numbers = -1;
 			break;
 		case 'o':
 			outdir = optarg;
