@@ -21,7 +21,7 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: fun.c,v 1.3 2000/03/04 20:29:21 tom Exp $")
+MODULE_ID("$Id: fun.c,v 1.4 2004/09/25 21:51:39 tom Exp $")
 
 /*
  * Test the function keys on the terminal.  The code for echo tests
@@ -61,7 +61,7 @@ struct test_list printer_test_list[] = {
 /* scan code externals */
 extern int scan_max;		/* length of longest scan code */
 extern char **scan_up, **scan_down, **scan_name;
-extern int *scan_tested, *scan_length;
+extern unsigned *scan_tested, *scan_length;
 
 /* local definitions */
 static const char *fk_name[MAX_STRINGS];
@@ -102,7 +102,7 @@ keys_tested(
 			if (fk_label[i]) {
 				sprintf(outbuf, "%s %s",
 					fk_name[i] ? fk_name[i] : "??", fk_label[i]);
-				put_columns(outbuf, strlen(outbuf), 16);
+				put_columns(outbuf, (int) strlen(outbuf), 16);
 			}
 		}
 		put_newlines(2);

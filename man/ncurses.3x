@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.71 2004/07/05 13:08:19 tom Exp $
+.\" $Id: ncurses.3x,v 1.72 2004/09/25 19:06:20 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
@@ -677,6 +677,13 @@ received from the xterm.
 If your application makes heavy use of multiple-clicking, you may
 wish to lengthen this default value because the timeout applies
 to the composed multi-click event as well as the individual clicks.
+.IP
+In addition to the environment variable,
+this implementation provides a global variable with the same name.
+Portable applications should not rely upon the presence of ESCDELAY
+in either form,
+but setting the environment variable rather than the global variable
+does not create problems when compiling an application.
 .TP 5
 HOME
 Tells \fBncurses\fR where your home directory is.

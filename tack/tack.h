@@ -19,7 +19,7 @@
 ** Boston, MA 02111-1307, USA.
 */
 
-/* $Id: tack.h,v 1.10 2003/10/18 22:26:59 tom Exp $ */
+/* $Id: tack.h,v 1.11 2004/09/25 19:45:26 tom Exp $ */
 
 #ifndef NCURSES_TACK_H_incl
 #define NCURSES_TACK_H_incl 1
@@ -309,6 +309,8 @@ extern void maybe_wait(int);
 extern int wait_here(void);
 extern void read_string(char *, int);
 extern int getnext(int);
+
+#define put_that(n) put_this((int) (n))
 
 /* control.c */
 extern void event_start(int);

@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.836 2004/09/19 01:16:26 tom Exp $
+-- $Id: NEWS,v 1.838 2004/09/25 23:31:09 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040925
+	+ fix to make setcchar() to work when its wchar_t* parameter is
+	  pointing to a string which contains more data than can be converted.
+	+ modify wget_wstr() and example in ncurses.c to work if wchar_t and
+	  wint_t are different sizes (report by Marcin 'Qrczak' Kowalczyk).
 
 20040918
 	+ remove check in wget_wch() added to fix an infinite loop, appears to

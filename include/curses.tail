@@ -1,4 +1,4 @@
-/* $Id: curses.tail,v 1.8 2002/11/02 20:26:26 tom Exp $ */
+/* $Id: curses.tail,v 1.9 2004/09/25 20:40:35 tom Exp $ */
 
 /* mouse interface */
 #define NCURSES_MOUSE_VERSION	1
@@ -113,6 +113,7 @@ extern NCURSES_EXPORT(void) trace (const unsigned int);
 extern NCURSES_EXPORT_VAR(int) _nc_optimize_enable;		/* enable optimizations */
 #ifdef _XOPEN_SOURCE_EXTENDED
 extern NCURSES_EXPORT(const char *) _nc_viswbuf(const wchar_t *);
+extern NCURSES_EXPORT(const char *) _nc_viswibuf(const wint_t *);
 #endif
 extern NCURSES_EXPORT(const char *) _nc_visbuf (const char *);
 #define OPTIMIZE_MVCUR		0x01	/* cursor movement optimization */

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 /* lib_color.c
@@ -41,7 +42,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.63 2004/05/22 19:14:29 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.64 2004/09/25 22:49:16 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -52,6 +53,8 @@ NCURSES_EXPORT_VAR(int) COLOR_PAIRS = 0;
 NCURSES_EXPORT_VAR(int) COLORS = 0;
 
 #define DATA(r,g,b) {r,g,b, 0,0,0, 0}
+
+#define TYPE_CALLOC(type,elts) typeCalloc(type, (unsigned)(elts))
 
 /*
  * Given a RGB range of 0..1000, we'll normally set the individual values
@@ -233,9 +236,10 @@ start_color(void)
 	    COLOR_PAIRS = SP->_pair_count = max_pairs;
 	    COLORS = SP->_color_count = max_colors;
 
-	    if ((SP->_color_pairs = typeCalloc(unsigned short,
-					         (unsigned) max_pairs)) != 0) {
-		if ((SP->_color_table = typeCalloc(color_t, max_colors)) != 0) {
+	    if ((SP->_color_pairs = TYPE_CALLOC(unsigned short,
+						max_pairs)) != 0) {
+		if ((SP->_color_table = TYPE_CALLOC(color_t,
+						    max_colors)) != 0) {
 		    SP->_color_pairs[0] = PAIR_OF(default_fg(), default_bg());
 		    init_color_table();
 

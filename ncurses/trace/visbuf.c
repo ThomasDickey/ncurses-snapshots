@@ -41,7 +41,7 @@
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.9 2004/02/03 01:16:37 tom Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.10 2004/09/25 20:56:22 tom Exp $")
 
 static char *
 _nc_vischar(char *tp, unsigned c)
@@ -183,6 +183,28 @@ NCURSES_EXPORT(const char *)
 _nc_viswbufn(const wchar_t * buf, int len)
 {
     return _nc_viswbuf2n(0, buf, len);
+}
+
+/* this special case is used for wget_wstr() */
+NCURSES_EXPORT(const char *)
+_nc_viswibuf(const wint_t * buf)
+{
+    static wchar_t *mybuf;
+    static unsigned mylen;
+    unsigned n;
+
+    for (n = 0; buf[n] != 0; ++n) ;
+    if (mylen < ++n) {
+	mylen = n + 80;
+	if (mybuf != 0)
+	    mybuf = typeRealloc(wchar_t, mylen, mybuf);
+	else
+	    mybuf = typeMalloc(wchar_t, mylen);
+    }
+    for (n = 0; buf[n] != 0; ++n)
+	mybuf[n] = (wchar_t) buf[n];
+
+    return _nc_viswbuf2(0, mybuf);
 }
 
 NCURSES_EXPORT(const char *)

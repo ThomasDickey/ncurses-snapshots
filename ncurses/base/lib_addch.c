@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.83 2004/04/03 20:18:43 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.84 2004/09/26 00:10:54 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -101,7 +101,7 @@ _nc_render(WINDOW *win, NCURSES_CH_T ch)
 
 static
 #if !USE_WIDEC_SUPPORT		/* cannot be inline if it is recursive */
-  inline
+inline
 #endif
 int
 waddch_literal(WINDOW *win, NCURSES_CH_T ch)
@@ -229,7 +229,10 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
   testwrapping:
     );
 
-    TR(TRACE_VIRTPUT, ("(%d, %d) = %s", win->_cury, x, _tracech_t(CHREF(ch))));
+    TR(TRACE_VIRTPUT, ("cell (%d, %d..%d) = %s",
+		       win->_cury, win->_curx, x - 1,
+		       _tracech_t(CHREF(ch))));
+
     if (x > win->_maxx) {
 	/*
 	 * The _WRAPPED flag is useful only for telling an application that

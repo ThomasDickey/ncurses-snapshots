@@ -22,24 +22,24 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: scan.c,v 1.2 1999/08/21 23:09:35 tom Exp $")
+MODULE_ID("$Id: scan.c,v 1.3 2004/09/25 21:50:50 tom Exp $")
 
-int scan_max;			/* length of longest scan code */
+unsigned scan_max;		/* length of longest scan code */
 char **scan_up, **scan_down, **scan_name;
-int *scan_tested, *scan_length, *scan_value;
+unsigned *scan_tested, *scan_length, *scan_value;
 
 static int shift_state;
 static char *str;
 static int debug_char_count;
 
-#define SHIFT_KEY 0x100
+#define SHIFT_KEY   0x100
 #define CONTROL_KEY 0x200
-#define META_KEY 0x400
-#define CAPS_LOCK 0x800
+#define META_KEY    0x400
+#define CAPS_LOCK   0x800
 
 static const struct {
 	const char *name;
-	int type;
+	unsigned type;
 }  scan_special[] = {
 	{"<shift>", SHIFT_KEY},
 	{"<left shift>", SHIFT_KEY},
@@ -102,6 +102,7 @@ scan_init(char *fn)
 	char *s, *sl;
 	FILE *fp;
 	int ch, i, j;
+	unsigned len;
 	char home[512];
 
 	if ((str = getenv("HOME")))
@@ -140,9 +141,9 @@ scan_init(char *fn)
 	scan_up = (char **) malloc(sizeof(char *) * MAX_SCAN);
 	scan_down = (char **) malloc(sizeof(char *) * MAX_SCAN);
 	scan_name = (char **) malloc(sizeof(char *) * MAX_SCAN);
-	scan_tested = (int *) malloc(sizeof(int *) * MAX_SCAN);
-	scan_length = (int *) malloc(sizeof(int *) * MAX_SCAN);
-	scan_value = (int *) malloc(sizeof(int *) * MAX_SCAN);
+	scan_tested = (unsigned *) malloc(sizeof(unsigned *) * MAX_SCAN);
+	scan_length = (unsigned *) malloc(sizeof(unsigned *) * MAX_SCAN);
+	scan_value = (unsigned *) malloc(sizeof(unsigned *) * MAX_SCAN);
 	scan_up[0] = scan_down[0] = scan_name[0] = (char *) 0;
 	str = (char *) malloc(4096);	/* buffer space */
 	sl = str + 4000;	/* an upper limit */
@@ -165,11 +166,11 @@ scan_init(char *fn)
 		scan_name[i] = str;
 
 		scan_length[i] = strlen(scan_down[i]);
-		ch = strlen(scan_up[i]) + scan_length[i];
-		if (ch > scan_max)
-			scan_max = ch;
+		len = strlen(scan_up[i]) + scan_length[i];
+		if (len > scan_max)
+			scan_max = len;
 
-		scan_value[i] = scan_name[i][0];
+		scan_value[i] = UChar(scan_name[i][0]);
 		if (scan_name[i][1])	/* multi-character name */
 			for (j = 0; scan_special[j].name; j++) {
 				if (!strcmp(scan_name[i], scan_special[j].name)) {
@@ -202,7 +203,8 @@ int
 scan_key(void)
 {				/* read a key and translate scan mode to
 				   ASCII */
-	int i, j, ch;
+	unsigned i;
+	int j, ch;
 	char buf[64];
 
 	for (i = 1;; i++) {

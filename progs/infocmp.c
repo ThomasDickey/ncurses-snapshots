@@ -42,7 +42,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.75 2004/08/28 22:57:38 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.76 2004/09/25 22:41:23 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -121,7 +121,7 @@ canonical_name(char *ptr, char *buf)
  ***************************************************************************/
 
 static int
-capcmp(unsigned idx, const char *s, const char *t)
+capcmp(PredIdx idx, const char *s, const char *t)
 /* capability comparison function */
 {
     if (!VALID_STRING(s) && !VALID_STRING(t))
@@ -136,7 +136,7 @@ capcmp(unsigned idx, const char *s, const char *t)
 }
 
 static int
-use_predicate(int type, int idx)
+use_predicate(unsigned type, unsigned idx)
 /* predicate function to use for use decompilation */
 {
     ENTRY *ep;
@@ -333,7 +333,7 @@ dump_string(char *val, char *buf)
 }
 
 static void
-compare_predicate(int type, int idx, const char *name)
+compare_predicate(PredType type, PredIdx idx, const char *name)
 /* predicate function to use for entry difference reports */
 {
     register ENTRY *e1 = &entries[0];

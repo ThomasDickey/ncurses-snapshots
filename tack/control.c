@@ -25,7 +25,7 @@
 #include <sys/time.h>
 #endif
 
-MODULE_ID("$Id: control.c,v 1.3 2000/03/04 21:10:59 tom Exp $")
+MODULE_ID("$Id: control.c,v 1.4 2004/09/25 19:32:05 tom Exp $")
 
 /* terminfo test program control subroutines */
 
@@ -500,7 +500,7 @@ show_cap_results(
 		ptext(temp);
 		while (r) {
 			sprintf(temp, "$<%d>", r->delay / 1000);
-			put_columns(temp, strlen(temp), 10);
+			put_columns(temp, (int) strlen(temp), 10);
 			r = r->next;
 		}
 		r = pads[x];
@@ -508,7 +508,7 @@ show_cap_results(
 			if (r->reps > 1) {
 				delay = r->delay / (r->reps * 100);
 				sprintf(temp, "$<%d.%d*>", delay / 10, delay % 10);
-				put_columns(temp, strlen(temp), 10);
+				put_columns(temp, (int) strlen(temp), 10);
 			}
 			r = r->next;
 		}

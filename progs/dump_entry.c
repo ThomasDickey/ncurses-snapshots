@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -39,7 +39,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.66 2003/05/24 22:43:59 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.67 2004/09/25 22:39:25 tom Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
@@ -63,7 +63,7 @@ static DYNBUF outbuf;
 static DYNBUF tmpbuf;
 
 /* indirection pointers for implementing sort and display modes */
-static const int *bool_indirect, *num_indirect, *str_indirect;
+static const PredIdx *bool_indirect, *num_indirect, *str_indirect;
 static NCURSES_CONST char *const *bool_names;
 static NCURSES_CONST char *const *num_names;
 static NCURSES_CONST char *const *str_names;
@@ -262,7 +262,7 @@ dump_init(const char *version, int mode, int sort, int twidth, int traceval,
 static TERMTYPE *cur_type;
 
 static int
-dump_predicate(int type, int idx)
+dump_predicate(PredType type, PredIdx idx)
 /* predicate function to use for ordinary decompilation */
 {
     switch (type) {
@@ -282,7 +282,7 @@ dump_predicate(int type, int idx)
     return (FALSE);		/* pacify compiler */
 }
 
-static void set_obsolete_termcaps(TERMTYPE * tp);
+static void set_obsolete_termcaps(TERMTYPE *tp);
 
 /* is this the index of a function key string? */
 #define FNKEY(i)	(((i)<= 65 && (i)>= 75) || ((i)<= 216 && (i)>= 268))
@@ -296,7 +296,7 @@ static void set_obsolete_termcaps(TERMTYPE * tp);
 #define STR_IDX(name)  (&(name) - &(CUR Strings[0]))
 
 static bool
-version_filter(int type, int idx)
+version_filter(PredType type, PredIdx idx)
 /* filter out capabilities we may want to suppress */
 {
     switch (tversion) {
@@ -499,20 +499,20 @@ fmt_complex(char *src, int level)
 }
 
 int
-fmt_entry(TERMTYPE * tterm,
-	  int (*pred) (int type, int idx),
+fmt_entry(TERMTYPE *tterm,
+	  PredFunc pred,
 	  bool content_only,
 	  bool suppress_untranslatable,
 	  bool infodump,
 	  int numbers)
 {
-    int i, j;
+    PredIdx i, j;
     char buffer[MAX_TERMINFO_LENGTH];
     NCURSES_CONST char *name;
     int predval, len;
-    int num_bools = 0;
-    int num_values = 0;
-    int num_strings = 0;
+    PredIdx num_bools = 0;
+    PredIdx num_values = 0;
+    PredIdx num_strings = 0;
     bool outcount = 0;
 
 #define WRAP_CONCAT	\
@@ -786,7 +786,7 @@ fmt_entry(TERMTYPE * tterm,
 }
 
 static bool
-kill_string(TERMTYPE * tterm, char *cap)
+kill_string(TERMTYPE *tterm, char *cap)
 {
     int n;
     for (n = 0; n < NUM_STRINGS(tterm); ++n) {
@@ -799,9 +799,9 @@ kill_string(TERMTYPE * tterm, char *cap)
 }
 
 static char *
-find_string(TERMTYPE * tterm, char *name)
+find_string(TERMTYPE *tterm, char *name)
 {
-    int n;
+    PredIdx n;
     for (n = 0; n < NUM_STRINGS(tterm); ++n) {
 	if (version_filter(STRING, n)
 	    && !strcmp(name, strnames[n])) {
@@ -820,7 +820,7 @@ find_string(TERMTYPE * tterm, char *name)
  * make it smaller.
  */
 static int
-kill_labels(TERMTYPE * tterm, int target)
+kill_labels(TERMTYPE *tterm, int target)
 {
     int n;
     int result = 0;
@@ -845,7 +845,7 @@ kill_labels(TERMTYPE * tterm, int target)
  * make it smaller.
  */
 static int
-kill_fkeys(TERMTYPE * tterm, int target)
+kill_fkeys(TERMTYPE *tterm, int target)
 {
     int n;
     int result = 0;
@@ -874,12 +874,12 @@ kill_fkeys(TERMTYPE * tterm, int target)
 #define SHOW_WHY if (!already_used) PRINTF
 
 int
-dump_entry(TERMTYPE * tterm,
+dump_entry(TERMTYPE *tterm,
 	   bool suppress_untranslatable,
 	   bool limited,
 	   int already_used,
 	   int numbers,
-	   int (*pred) (int type, int idx))
+	   PredFunc pred)
 /* dump a single entry */
 {
     int len, critlen;
@@ -982,11 +982,12 @@ dump_uses(const char *name, bool infodump)
 }
 
 void
-compare_entry(void (*hook) (int t, int i, const char *name), TERMTYPE * tp
-	      GCC_UNUSED, bool quiet)
+compare_entry(void (*hook) (PredType t, PredIdx i, const char *name),
+	      TERMTYPE *tp GCC_UNUSED,
+	      bool quiet)
 /* compare two entries */
 {
-    int i, j;
+    PredIdx i, j;
     NCURSES_CONST char *name;
 
     if (!quiet)
@@ -1041,7 +1042,7 @@ compare_entry(void (*hook) (int t, int i, const char *name), TERMTYPE * tp
 #define CUR tp->
 
 static void
-set_obsolete_termcaps(TERMTYPE * tp)
+set_obsolete_termcaps(TERMTYPE *tp)
 {
 #include "capdefaults.c"
 }
@@ -1051,7 +1052,7 @@ set_obsolete_termcaps(TERMTYPE * tp)
  * unique.
  */
 void
-repair_acsc(TERMTYPE * tp)
+repair_acsc(TERMTYPE *tp)
 {
     if (VALID_STRING(acs_chars)) {
 	size_t n, m;

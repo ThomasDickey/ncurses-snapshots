@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.59 2004/04/24 21:53:06 tom Exp $
+ * $Id: view.c,v 1.60 2004/09/25 20:16:11 tom Exp $
  */
 
 #include <time.h>
@@ -167,7 +167,8 @@ ch_dup(char *src)
 	if (setcchar(dst + k, wstr, 0, 0, NULL) == OK)
 	    ++k;
     }
-    setcchar(dst + k, L"", 0, 0, NULL);
+    wstr[0] = L'\0';
+    setcchar(dst + k, wstr, 0, 0, NULL);
 #else
     dst[k] = 0;
 #endif
