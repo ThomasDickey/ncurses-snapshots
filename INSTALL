@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.50 2001/10/27 18:56:28 tom Exp $
+-- $Id: INSTALL,v 1.51 2001/12/02 01:43:08 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -465,6 +465,12 @@ SUMMARY OF CONFIGURE OPTIONS:
 
     --with-ada-objects=DIR
 	Tell where to install the Ada objects (default:  PREFIX/lib/ada/adalib)
+
+    --with-bool=TYPE
+	If --without-cxx is specified, override the type used for the "bool"
+	declared in curses.h (normally the type is automatically chosen to
+	correspond with that in <stdbool.h>, or defaults to platform-specific
+	sizes).
 
     --with-build-cc=XXX
 	If cross-compiling, specify a host C compiler, which is needed to
