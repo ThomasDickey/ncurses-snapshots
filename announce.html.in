@@ -92,7 +92,7 @@ the 4.4BSD curses quickch() routine.  <P>
 <LI> It is possible to generate the library with a list of pre-loaded 
 fallback entries linked to it so that it can serve those terminal types even
 when no terminfo tree or termcap file is accessible (this may be useful
-for support of screen-oriented programs that must run in single-user mode).
+for support of screen-oriented programs that must run in single-user mode). <P>
 
 <LI> The tic(1)/captoinfo utility provided with ncurses has the
 ability to translate many termcaps from the XENIX, IBM and
@@ -154,7 +154,8 @@ including: <P>
 <DT> u386mon
 <DD> System performance monitor for SVr4
 <DT> nvi
-<DD> New vi alpha versions 1.1.50 and later use ncurses
+<DD> New vi alpha versions 1.50 are able to use ncurses versions 1.9.7
+and later.
 </DL>
 
 The ncurses distribution includes a selection of test programs.

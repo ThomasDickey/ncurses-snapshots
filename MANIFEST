@@ -51,14 +51,13 @@
 ./include/curses.h.in
 ./include/edit_cfg.sh
 ./include/parametrized.sh
-./include/progs.priv.h
 ./include/term_entry.h
 ./include/termcap.h.in
 ./include/tic.h
 ./include/unctrl.h.in
 ./install-sh
-./man/Makefile.in
 ./man/MKterminfo.sh
+./man/Makefile.in
 ./man/captoinfo.1m
 ./man/clear.1
 ./man/curs_addch.3x
@@ -200,7 +199,6 @@
 ./ncurses/SigAction.h
 ./ncurses/alloc_entry.c
 ./ncurses/captoinfo.c
-./ncurses/fallback.c
 ./ncurses/comp_error.c
 ./ncurses/comp_hash.c
 ./ncurses/comp_parse.c
@@ -272,10 +270,10 @@
 ./ncurses/parse_entry.c
 ./ncurses/read_entry.c
 ./ncurses/read_termcap.c
-./ncurses/write_entry.c
 ./ncurses/sigaction.c
 ./ncurses/strerror.c
 ./ncurses/vsscanf.c
+./ncurses/write_entry.c
 ./panel/Makefile.in
 ./panel/modules
 ./panel/panel.c
@@ -289,6 +287,7 @@
 ./progs/dump_entry.h
 ./progs/infocmp.c
 ./progs/modules
+./progs/progs.priv.h
 ./progs/termsort.sh
 ./progs/toe.c
 ./progs/tput.c

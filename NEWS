@@ -18,7 +18,8 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 * added -h option to toe(1).
 * added -R option to tic(1) and infocmp(1).
 * added fallback-entry-list feature.
-* added -i option to infocmp(1)
+* added -i option to infocmp(1).
+* do a better job at detecting if we're on SCO.
 
 ### ncurses-1.9.5 -> 1.9.6
 

@@ -27,6 +27,7 @@
  */
 
 #include <string.h>
+#include "config.h"
 #include "tic.h"
 #include "hashsize.h"
 
@@ -166,6 +167,18 @@ struct name_table_entry	const *ptr;
  * performance enhancement).
  */
 
+#ifndef HAVE_STRDUP
+static char *strdup (char *s)
+{
+  char *p;
+
+  p = malloc((unsigned)(strlen(s)+1));
+  if (p)
+    strcpy(p,s);
+  return(p);
+}
+#endif /* not HAVE_STRDUP */
+
 #define MAX_COLUMNS BUFSIZ	/* this _has_ to be worst-case */
 #define typeCalloc(type,elts) (type *)calloc(sizeof(type),elts)
 
@@ -235,10 +248,13 @@ int main(int argc, char **argv)
 	/*
 	 * Read the table into our arrays.
 	 */
-	for (n = 0; (n < CAPTABSIZE) && gets(buffer); ) {
-		char **list = parse_columns(buffer);
+	for (n = 0; (n < CAPTABSIZE) && fgets(buffer, BUFSIZ, stdin); ) {
+		char **list, *nl = strchr(buffer, '\n');
+		if (nl)
+		    *nl = '\0';
+		list = parse_columns(buffer);
 		if (list == 0)	/* blank or comment */
-			continue;
+		    continue;
 		name_table[n].nte_link = -1;	/* end-of-hash */
 		name_table[n].nte_name = strdup(list[column]);
 		if (!strcmp(list[2], "bool")) {

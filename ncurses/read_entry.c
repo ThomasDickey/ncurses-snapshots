@@ -55,16 +55,19 @@ TERMINAL *cur_term;
  *	table.
  */
 
-#define IS_NEG1(p)	(((p)[0] == 0377) && ((p)[1] == 0377))
-#define IS_NEG2(p)	(((p)[0] == 0376) && ((p)[1] == 0377))
-#define LOW_MSB(p)	((p)[0] + 256*(p)[1])
+#undef  BYTE
+#define BYTE(p,n)	(unsigned char)(p)[n]
+
+#define IS_NEG1(p)	((BYTE(p,0) == 0377) && (BYTE(p,1) == 0377))
+#define IS_NEG2(p)	((BYTE(p,0) == 0376) && (BYTE(p,1) == 0377))
+#define LOW_MSB(p)	(BYTE(p,0) + 256*BYTE(p,1))
 
 int _nc_read_file_entry(const char *filename, TERMTYPE *ptr)
 /* return 1 if read, 0 if not found or garbled, -1 if database inaccessible */
 {
-    int			name_size, bool_count, num_count, str_count, str_size;
-    int			i, fd, numread;
-    unsigned char 	buf[MAX_ENTRY_SIZE];
+    int		name_size, bool_count, num_count, str_count, str_size;
+    int		i, fd, numread;
+    char 	buf[MAX_ENTRY_SIZE];
 
     if ((fd = open(filename, 0)) < 0)
     {

@@ -224,28 +224,30 @@ l l.
 Action	Meaning
 =
 RIS	full reset
+SC	save cursor
+RC	restore cursor
+LL	home-down
+RSR	reset scroll region
 
-DECPAM	application keypad mode
-DECPNM	normal keypad mode
+ISO DEC G0  	enable DEC graphics for G0
+ISO UK G0	enable UK chars for G0
+ISO US G0	enable US chars for G0
+ISO DEC G1  	enable DEC graphics for G1
+ISO UK G1	enable UK chars for G1
+ISO US G1	enable US chars for G1
 
-DECSC	save cursor
-DECRC	restore cursor
+DECPAM  	application keypad mode
+DECPNM  	normal keypad mode
+DECANSI  	enter ANSI mode
 
-DEC G0  	enable DEC graphics for G0
-DEC UK G0	enable UK chars for G0
-DEC US G0	enable US chars for G0
-DEC G1  	enable DEC graphics for G1
-DEC UK G1	enable UK chars for G1
-DEC US G1	enable US chars for G1
-
-DECCKM  	application cursor keys
-DECANM  	set VT52 mode
-DECCOLM  	132-column mode
-DECSCLM  	smooth scroll
-DECSCNM  	reverse video mode
-DECOM   	origin mode
-DECAWM  	wraparound mode
-DECARM  	auto-repeat mode
+DEC[+-]CKM  	application cursor keys
+DEC[+-]ANM  	set VT52 mode
+DEC[+-]COLM  	132-column mode
+DEC[+-]SCLM  	smooth scroll
+DEC[+-]SCNM  	reverse video mode
+DEC[+-]OM   	origin mode
+DEC[+-]AWM  	wraparound mode
+DEC[+-]ARM  	auto-repeat mode
 .TE
 .SH FILES
 .TP 20
@@ -263,8 +265,6 @@ The \fB-r\fR option's notion of `termcap' capabilities is BSD 4.4's.  Older
 versions may have a more restricted set.
 .SH BUGS
 The -F option of \fBinfocmp\fR(1m) should be a \fBtoe\fR(1m) mode.
-
-The \fI-i\fR option isn't smart enough to recognize composite sequences.
 .SH SEE ALSO
 \fBinfocmp\fR(1m), \fBcaptoinfo\fR(1m), \fBinfotocap\fR(1m), 
 \fBtic\fR(1m), \fBtoe\fR(1m),

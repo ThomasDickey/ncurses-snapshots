@@ -3,6 +3,7 @@
  * This is a test program for the PDCurses screen package for IBM PC type
  * machines.
  * This program was written by John Burnell (johnb@kea.am.dsir.govt.nz)
+ * esr changed the usleep calls to napms calls, 7 Nov 1995
  *
  */
 
@@ -168,7 +169,7 @@ scrollTest (WINDOW *win)
     wrefresh (win);
     scrollok(win, TRUE);
     for (i = 1; i <= height; i++) {
-      usleep (250);
+      napms(250);
       scroll(win);
       wrefresh (win);
     };
@@ -180,7 +181,7 @@ scrollTest (WINDOW *win)
     box(win, ACS_VLINE, ACS_HLINE);
     wrefresh (win);
     for (i = 1; i <= 5; i++) {
-      usleep (500);
+      napms(500);
       scroll(win);
       wrefresh (win);
     };
@@ -229,7 +230,7 @@ inputTest (WINDOW *win)
       box(subWin, ACS_VLINE, ACS_HLINE);
       mvwprintw (subWin, 1, 1, "Time = %d", i);
       wrefresh(subWin);
-      usleep(1000);
+      napms(1000);
       flushinp();
     }
 
@@ -237,7 +238,7 @@ inputTest (WINDOW *win)
     werase(win);
     flash();
     wrefresh(win);
-    usleep(500);
+    napms(500);
 
     mvwaddstr(win, 2, 1, "Press a key, followed by ENTER");
     wmove(win, 9, 10);

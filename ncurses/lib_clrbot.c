@@ -36,34 +36,36 @@ int	y, startx, minx;
 	T(("wclrtobot(%p) called", win));
 
 	startx = win->_curx;
+	if (win->_flags & _NEED_WRAP)
+		startx++;
 
 	T(("clearing from y = %d to y = %d with maxx =  %d", win->_cury, win->_maxy, win->_maxx));
 
 	for (y = win->_cury; y <= win->_maxy; y++) {
-	    minx = _NOCHANGE;
-	    end = &win->_line[y].text[win->_maxx];
+		minx = _NOCHANGE;
+		end = &win->_line[y].text[win->_maxx];
 
-	    for (ptr = &win->_line[y].text[startx]; ptr <= end; ptr++) {
-		int blank = _nc_render(win, *ptr, BLANK);
+		for (ptr = &win->_line[y].text[startx]; ptr <= end; ptr++) {
+			int blank = _nc_render(win, *ptr, BLANK);
 
 			if (*ptr != blank) {
-			    maxx = ptr;
-			    if (minx == _NOCHANGE)
+				maxx = ptr;
+				if (minx == _NOCHANGE)
 					minx = ptr - win->_line[y].text;
-			    *ptr = blank;
+				*ptr = blank;
 			}
-	    }
+		}
 
-	    if (minx != _NOCHANGE) {
+		if (minx != _NOCHANGE) {
 			if (win->_line[y].firstchar > minx
 					||  win->_line[y].firstchar == _NOCHANGE)
 			    win->_line[y].firstchar = minx;
 
 			if (win->_line[y].lastchar < maxx - win->_line[y].text)
 			    win->_line[y].lastchar = maxx - win->_line[y].text;
-	    }
+		}
 
-	    startx = 0;
+		startx = 0;
 	}
 	_nc_synchook(win);
 	return OK;

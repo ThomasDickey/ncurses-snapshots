@@ -66,6 +66,7 @@ LIBRARIES	= @LIBS_TO_MAKE@
 
 AUTO_SRC = \
 	comp_captab.c \
+	fallback.c \
 	keys.tries \
 	lib_keyname.c \
 	names.c
@@ -80,6 +81,9 @@ install :: install.libs
 $(libdir) \
 $(ticdir) :
 	$(srcdir)/../mkinstalldirs $@
+
+fallback.c : MKfallback.sh
+	sh $(srcdir)/MKfallback.sh >$@
 
 keys.tries: $(srcdir)/keys.list
 	$(AWK) -f $(srcdir)/MKkeys.awk $(srcdir)/keys.list > keys.tries

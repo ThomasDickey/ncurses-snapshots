@@ -89,6 +89,11 @@ static char *canonical_name(char *ptr, char *buf)
 static int capcmp(const char *s, const char *t)
 /* capability comparison function */
 {
+    if (!s && !t)
+	return(0);
+    else if (!s || !t)
+	return(1);
+
     if (ignorepads)
 	return(_nc_capcmp(s, t));
     else
@@ -301,49 +306,51 @@ static void compare_predicate(int type, int idx, const char *name)
  ***************************************************************************/
 
 typedef struct {char *from; char *to;} assoc;
-static const assoc dec_caps[] =
+
+static const assoc std_caps[] =
 {
-    /* FIXME: use ECMA-48 mnemonics here rather than the DEC ones */
-    "\033c",	"RIS",		/* full reset */
+    /* these are specified by X.364 and iBCS2 */
+    {"\033c",	"RIS"},		/* full reset */
 
-    "\033=",	"DECPAM",	/* application keypad mode */
-    "\033>",	"DECPNM",	/* normal keypad mode */
-
-    "\0337",	"DECSC",	/* save cursor */
-    "\0338",	"DECRC",	/* restore cursor */
-
-    "\033(0",	"DEC G0",	/* enable DEC graphics for G0 */
-    "\033(A",	"DEC UK G0",	/* enable UK chars for G0 */
-    "\033(B",	"DEC US G0",	/* enable US chars for G0 */
-    "\033)0",	"DEC G1",	/* enable DEC graphics for G1 */
-    "\033)A",	"DEC UK G1",	/* enable UK chars for G1 */
-    "\033)B",	"DEC US G1",	/* enable US chars for G1 */
-
-    "\033[?1h",	"DECCKM on",	/* application cursor keys */
-    "\033[?2h",	"DECANM on",	/* set VT52 mode */
-    "\033[?3h",	"DECCOLM on",	/* 132-column mode */
-    "\033[?4h",	"DECSCLM on",	/* smooth scroll */
-    "\033[?5h",	"DECSCNM on",	/* reverse video mode */
-    "\033[?6h",	"DECOM on",	/* origin mode */
-    "\033[?7h",	"DECAWM on",	/* wraparound mode */
-    "\033[?8h",	"DECARM on",	/* auto-repeat mode */
-
-    "\033[?1l",	"DECCKM off",	/* application cursor keys */
-    "\033[?2l",	"DECANM off",	/* set VT52 mode */
-    "\033[?3l",	"DECCOLM off",	/* 132-column mode */
-    "\033[?4l",	"DECSCLM off",	/* smooth scroll */
-    "\033[?5l",	"DECSCNM off",	/* reverse video mode */
-    "\033[?6l",	"DECOM off",	/* origin mode */
-    "\033[?7l",	"DECAWM off",	/* wraparound mode */
-    "\033[?8l",	"DECARM off",	/* auto-repeat mode */
-    (char *)NULL,
+    {"\0337",	"SC"},		/* save cursor */
+    {"\0338",	"RC"},		/* restore cursor */
+    {"\033[r",	"RSR"},		/* not an X.364 mnemonic */
+ 
+    /* this group is specified by ISO 2022 */
+    {"\033(0",	"ISO DEC G0"},	/* enable DEC graphics for G0 */
+    {"\033(A",	"ISO UK G0"},	/* enable UK chars for G0 */
+    {"\033(B",	"ISO US G0"},	/* enable US chars for G0 */
+    {"\033)0",	"ISO DEC G1"},	/* enable DEC graphics for G1 */
+    {"\033)A",	"ISO UK G1"},	/* enable UK chars for G1 */
+    {"\033)B",	"ISO US G1"},	/* enable US chars for G1 */
+  
+    /* these are DEC private modes widely supported by emulators */
+    {"\033=",	"DECPAM"},	/* application keypad mode */
+    {"\033>",	"DECPNM"},	/* normal keypad mode */
+    {"\033<",	"DECANSI"},	/* enter ANSI mode */
+ 
+    (char *)NULL
+};
+  
+static const assoc private_modes[] =
+/* DEC \E[ ... [hl] modes recognized by many emulators */
+{
+    {"1",	"CKM"},	/* application cursor keys */
+    {"2",	"ANM"},	/* set VT52 mode */
+    {"3",	"COLM"},	/* 132-column mode */
+    {"4",	"SCLM"},	/* smooth scroll */
+    {"5",	"SCNM"},	/* reverse video mode */
+    {"6",	"OM"},	/* origin mode */
+    {"7",	"AWM"},	/* wraparound mode */
+    {"8",	"ARM"},	/* auto-repeat mode */
+    (char *)NULL
 };
 
 static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 {
     char	buf[MAX_TERMINFO_LENGTH];
     char	buf2[MAX_TERMINFO_LENGTH];
-    const char	*sp;
+    const char	*sp, *ep;
     const assoc	*ap;
 
     if (cap == ABSENT_STRING || cap == CANCELLED_STRING)
@@ -353,7 +360,7 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
     buf[0] = '\0';
     for (sp = cap; *sp; sp++)
     {
-	int	i, len;
+	int	i, len = 0;
 	char	*expansion = (char *)NULL;
 
 	/* first, check other capabilities in this entry */
@@ -393,9 +400,9 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 	    }
 	}
 
-	/* now check the DEC capabilities */
+	/* now check the standard capabilities */
 	if (!expansion)
-	    for (ap = dec_caps; ap->from; ap++)
+	    for (ap = std_caps; ap->from; ap++)
 	    {
 		len = strlen(ap->from);
 
@@ -406,14 +413,52 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 		}
 	    }
 
+	/* now check for private-mode sequences */
+	if (!expansion
+		    && sp[0] == '\033' && sp[1] == '[' && sp[2] == '?'
+		    && (len = strspn(sp + 3, "0123456789;"))
+		    && ((sp[3 + len] == 'h') || (sp[3 + len] == 'l')))
+	{
+	    char	buf3[MAX_TERMINFO_LENGTH];
+
+	    (void) strcpy(buf2, (sp[3 + len] == 'h') ? "DEC+" : "DEC-");
+	    (void) strncpy(buf3, sp + 3, len);
+	    len += 4;
+	    buf3[len] = '\0';
+
+	    ep = strtok(buf3, ";");
+	    do {
+		   bool	found = FALSE;
+
+		   for (ap = private_modes; ap->from; ap++)
+		   {
+		       int tlen = strlen(ap->from);
+
+		       if (strncmp(ap->from, ep, len) == 0)
+		       {
+			   (void) strcat(buf2, ap->to);
+			   found = TRUE;
+			   break;
+		       }
+		   }
+
+		   if (!found)
+		       (void) strcat(buf2, ep);
+		   (void) strcat(buf2, ";");
+	       } while
+		   (ep = strtok((char *)NULL, ";"));
+	    buf2[strlen(buf2) - 1] = '\0';
+	    expansion = buf2;
+	}
+
 	/* now check for scroll region reset */
 	if (!expansion)
 	{
 	    (void) sprintf(buf2, "\033[1;%dr", tp->Numbers[2]);
 	    len = strlen(buf2);
 	    if (strncmp(buf2, sp, len) == 0)
-		expansion = "DEC/ANSI scroll region reset";
-	}
+		expansion = "RSR";
+	}	
 
 	/* now check for home-down */
 	if (!expansion)
@@ -421,7 +466,7 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 	    (void) sprintf(buf2, "\033[%d;1H", tp->Numbers[2]);
 	    len = strlen(buf2);
 	    if (strncmp(buf2, sp, len) == 0)
-		expansion = "DEC/ANSI home-down";
+		    expansion = "LL";
 	}
 
 	/* now look at the expansion we got, if any */
@@ -448,7 +493,7 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
  *
  ***************************************************************************/
 
-static void file_comparison(int argc, char *argv[], int optind)
+static void file_comparison(int argc, char *argv[])
 {
     /* someday we may allow comparisons on more files */
     int	filecount = 0;
@@ -836,7 +881,6 @@ int main(int argc, char *argv[])
 	    /* dump as C initializer for the terminal type */
 	    if (initdump)
 	    {
-		int	i;
 		char	*str;
 		int	size;
 
@@ -860,6 +904,9 @@ int main(int argc, char *argv[])
 
 		    case CANCELLED_BOOLEAN:
 			str = "CANCELLED_BOOLEAN";
+			break;
+		    default:
+			str = "?ERROR";
 			break;
 		    }
 		    (void) printf("/* %s */	%s,\n",
@@ -901,7 +948,7 @@ int main(int argc, char *argv[])
 		    (void) printf("/* %s */	%s,\n", strnames[i], str);
 	        }
 		(void) printf("} /* size = %d */\n", size);
-		return;
+		exit(0);
 	    }
 
 	    /* analyze the init strings */
@@ -916,7 +963,7 @@ int main(int argc, char *argv[])
 		analyze_string("rs2", reset_2string, &term[0]);
 		analyze_string("rs3", reset_3string, &term[0]);
 #undef CUR
-		return;
+		exit(0);
 	    }
 
 	    /*
@@ -981,7 +1028,7 @@ int main(int argc, char *argv[])
 	    (void) fprintf(stderr,
 		"File comparison needs exactly two file arguments.\n");	    
 	else
-	    file_comparison(argc, argv, optind);
+	    file_comparison(argc, argv);
 
 	exit(0);
 }

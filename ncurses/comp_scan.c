@@ -424,7 +424,10 @@ chtype	ch, last_ch = '\0';
 		    _nc_warning("Illegal ^ character - %s",
 		    	_tracechar((unsigned char)ch));
 		}
-		*(ptr++) = (char)(ch & 037);
+		if (ch == '?')
+		    *(ptr++) = '\177';
+		else
+		    *(ptr++) = (char)(ch & 037);
 	    }
 	    else if (ch == '\\') {
 		ch = c = next_char();

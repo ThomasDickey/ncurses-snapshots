@@ -36,10 +36,10 @@ int main(int argc, char *argv[])
 FILE        *fp;
 char        buf[BUFSIZ];
 int         i;
-char        **lptr;
+char        **lptr, **olptr;
 
 #ifdef TRACE
-    trace(TRACE_CALLS);
+    trace(TRACE_UPDATE);
 #endif
 
     if (argc != 2) {
@@ -101,22 +101,24 @@ char        **lptr;
         switch(c) {
         case KEY_DOWN:
 	case 'n':
+	    olptr = lptr;
 	    for (i = 0; i < n; i++) 
 		if (lptr + LINES < lines + MAXLINES && lptr[LINES + 1]) 
 		    lptr++;
 	        else
 		    break;
-	    wscrl(stdscr, i);
+	    wscrl(stdscr, olptr - lptr);
             break;
 
         case KEY_UP:
 	case 'p':
+	    olptr = lptr;
 	    for (i = 0; i < n; i++) 
 		if (lptr > lines)
 		    lptr--;
 	        else
 		    break;
-	    wscrl(stdscr, -i);
+	    wscrl(stdscr, olptr - lptr);
             break;
 	}
     }

@@ -15,10 +15,10 @@ SHELL = /bin/sh
 # 1.9a, 1.9b, 1.9foobar, ... when the ncurses release version changes
 # If a new ncurses has an incompatible application binary interface than
 # previous one, the ABI version should be changed.
-VERSION = 1.9.7
-SHARED_ABI = 2.0
+VERSION = 1.9.7a
+SHARED_ABI = 2.1
 
-dist: ANNOUNCE INTRO
+dist: ANNOUNCE INTRO HACK
 	(cd ..;  tar cvf ncurses-$(VERSION).tar `sed <ncurses-$(VERSION)/MANIFEST 's/^./ncurses-$(VERSION)/'`;  gzip ncurses-$(VERSION).tar)
 
 distclean:
@@ -31,7 +31,9 @@ announce.html: announce.html.in
 	sed 's,@VERSION@,$(VERSION),' <announce.html.in >announce.html
 
 INTRO: misc/ncurses-intro.html
-	lynx -dump $^ > misc/ncurses-intro.doc
+	lynx -dump misc/ncurses-intro.html > misc/ncurses-intro.doc
+HACK: misc/hackguide.html
+	lynx -dump misc/hackguide.html > misc/hackguide.doc
 
 # Prepare distribution for version control
 vcprepare:

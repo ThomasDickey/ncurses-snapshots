@@ -878,8 +878,6 @@ static WINDOW *w3;
 static WINDOW *w4;
 static WINDOW *w5;
 
-#define	nap(x)		usleep(1000*x)
-
 static unsigned long nap_msec = 1;
 
 char *mod[] = 
@@ -909,7 +907,7 @@ wait_a_while(unsigned long msec)
 	if(nap_msec == 1)
 		getchar();
 	else
-		nap(nap_msec);
+		napms(nap_msec);
 #endif
 }	/* end of wait_a_while */
 

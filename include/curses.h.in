@@ -464,7 +464,7 @@ extern int slk_attroff(attr_t);
  * pseudo functions
  */
 #define wgetstr(w, s)		wgetnstr(w, s, -1)
-#define getnstr(w, s, n)	wgetnstr(stdscr, s, n)
+#define getnstr(s, n)		wgetnstr(stdscr, s, n)
 
 #define setterm(term)		setupterm(term, 1, (int *)0)
 

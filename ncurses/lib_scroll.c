@@ -98,6 +98,10 @@ wscrl(WINDOW *win, int n)
 	if (n == 0)
 		return OK;
 
+	if ((n > (win->_regbottom - win->_regtop)) || 
+	    (-n > (win->_regbottom - win->_regtop)))
+	    return ERR;
+
 	_nc_scroll_window(win, n, win->_regtop, win->_regbottom);
 	touchline(win, win->_regtop, win->_regbottom - win->_regtop + 1);
 
