@@ -138,4 +138,5 @@ Keith Bostic (maintainer of 4.4BSD curses)
 Countless other people have contributed by reporting bugs, sending fixes,
 suggesting improvements, and generally whining about ncurses :-)
 
-
+BUGS:
+	See the INSTALL file for bug and developer-list addresses.

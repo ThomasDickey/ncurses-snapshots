@@ -61,7 +61,13 @@ int ch;
 		wrefresh(win);
 
 	while ((ch = wgetch(win)) != ERR) {
-		if (ch == '\n' || ch == '\r')
+	        /*
+		 * Some terminals (the Wyse-50 is the most common) generate
+		 * a \n from the down-arrow key.  With this logic, it's the
+		 * user's choice whether to set kcud=\n for wgetch();
+		 * terminating *getstr() with \n should work either way.
+		 */
+		if (ch == '\n' || ch == '\r' || ch == KEY_DOWN)
 			break;
 	   	if (ch == erasec || ch == KEY_LEFT || ch == KEY_BACKSPACE) {
 			if (str > oldstr) {

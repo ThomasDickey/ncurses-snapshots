@@ -36,7 +36,7 @@ install: install.data
 # use csplit -k -f tsplit $(srcdir)/terminfo.src '/SPLIT HERE/' '{99}' to split
 # the file (permitting any number of cut marks), but BSD systems don't have it.
 install.data: $(ticdir)
-	sed <$(srcdir)/dotic.in -e's,@TERMINFO@,$(ticdir),' -e 's,@SRCDIR@,$(srcdir),' -e 's,@BINDIR@,$(bindir),' >dotic.sh
+	sed <$(srcdir)/dotic.in -e 's,@TERMINFO@,$(ticdir),' -e 's,@SRCDIR@,$(srcdir),' -e 's,@BINDIR@,$(bindir),' >dotic.sh
 	sh dotic.sh
 
 # On machines with lots of memory, this is simpler and faster
@@ -60,7 +60,7 @@ clean ::
 	-rm -f tags TAGS do.tic tsplit* *~
 
 distclean: clean
-	-rm -f Makefile
+	-rm -f Makefile dotic.sh
 
 mostlyclean: clean
 

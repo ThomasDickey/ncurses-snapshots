@@ -40,7 +40,7 @@ CC		= @CC@
 CFLAGS		= @CFLAGS@
 
 INCDIR		= $(srcdir)/../include
-CPPFLAGS	= -I../ncurses @INCLUDES@ \
+CPPFLAGS	= -I$(srcdir)/../ncurses @INCLUDES@ \
 		  -DHAVE_CONFIG_H -DTERMINFO=\"$(ticdir)\"
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
@@ -56,6 +56,7 @@ LINK		= $(CC)
 LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@
 
 MK_SHARED_LIB	= @MK_SHARED_LIB@
+MK_SHARED_LIB_LINK= @MK_SHARED_LIB_LINK@
 
 RANLIB		= @RANLIB@
 
@@ -74,7 +75,7 @@ all ::	../lib $(AUTO_SRC) $(LIBRARIES)
 
 install :: install.libs
 
-install.libs: $(LIBRARIES) $(libdir)
+install.libs:: $(LIBRARIES) $(libdir)
 	@for lib in $(LIBRARIES); do \
 		out=`echo $${lib} | sed -e s'@^.*/@@'`; \
 		echo installing $${lib} as $(libdir)/$${out}; \

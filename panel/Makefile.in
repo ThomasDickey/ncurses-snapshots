@@ -49,6 +49,7 @@ LINK		= $(CC)
 LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@
 
 MK_SHARED_LIB	= @MK_SHARED_LIB@
+MK_SHARED_LIB_LINK= @MK_SHARED_LIB_LINK@
 
 RANLIB		= @RANLIB@
 
@@ -59,7 +60,7 @@ all ::	../include/panel.h $(LIBRARIES)
 
 install :: install.libs
 
-install.libs: $(LIBRARIES) $(includedir) $(libdir)
+install.libs:: $(LIBRARIES) $(includedir) $(libdir)
 	$(INSTALL_DATA) $(srcdir)/panel.h $(includedir)/panel.h
 	@for lib in $(LIBRARIES); do \
 		echo installing $${lib} as $(libdir)/$${lib}; \

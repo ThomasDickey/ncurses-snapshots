@@ -97,14 +97,14 @@ ENTRY	*qp;
 				exit(0);
 		    	default:
 				fprintf (stderr, 
-					"%s: Unknown option. Usage is:\n\t%s",
+					"%s: Unknown option. Usage is:\n\t%s\n",
 					_nc_progname,
 				        usage_string);
 				exit(1);
 			}
 	    	} else if (argflag) {
 			fprintf (stderr, 
-				"%s: Too many file names.  Usage is:\n\t%s\n",
+				"%s: Too many file names.  Usage is:\n\t%s",
 				_nc_progname,
 				usage_string);
 			exit(1);
@@ -114,19 +114,28 @@ ENTRY	*qp;
 	    	}
 	}
 
-	/* captoinfo's no-argument case */
-	if (argflag == FALSE && infodump == 1) {
-		termcap = "/etc/termcap";
-		if ((termcap = getenv("TERMCAP")) != NULL) {
-			if (access(termcap, F_OK) == 0) {
-				/* file exists */
-				source_file = termcap;
+	if (argflag == FALSE) {
+		if (infodump == 1) {
+			/* captoinfo's no-argument case */
+			termcap = "/etc/termcap";
+			if ((termcap = getenv("TERMCAP")) != NULL) {
+				if (access(termcap, F_OK) == 0) {
+					/* file exists */
+					source_file = termcap;
+				}
 			}
+		} else {
+		/* tic */
+			fprintf (stderr, 
+				"%s: File name needed.  Usage is:\n\t%s",
+				_nc_progname,
+				usage_string);
+			exit(1);
 		}
 	}
 
 	if (freopen(source_file, "r", stdin) == NULL) {
-		fprintf (stderr, "%s: Can't open %s", _nc_progname, source_file);
+		fprintf (stderr, "%s: Can't open %s\n", _nc_progname, source_file);
 		exit (1);
 	}
 
@@ -164,11 +173,11 @@ ENTRY	*qp;
 	    for_entry_list(qp)
 	    {
 		char	outbuf[MAX_TERMINFO_LENGTH * 2];
-		int	len = fmt_entry(&qp->tterm, NULL, outbuf, TRUE);
+		int	len = fmt_entry(&qp->tterm, NULL, outbuf, TRUE, infodump);
 
 		if (len > (infodump?MAX_TERMINFO_LENGTH:MAX_TERMCAP_LENGTH))
 		    	    (void) fprintf(stderr,
-			   "warning: resolved %s entry string table is %d bytes long\n",
+			   "warning: resolved %s entry is %d bytes long\n",
 			   canonical_name(qp->tterm.term_names, (char *)NULL),
 			   len);
 	    }

@@ -21,7 +21,7 @@
 
 #ifndef _TERMCAP_H
 #define _TERMCAP_H	1
-#define NCURSES_VERSION "1.9.4"
+#define NCURSES_VERSION "1.9.5"
 
 #ifdef __cplusplus
 extern "C" 

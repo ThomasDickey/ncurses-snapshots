@@ -166,6 +166,15 @@ int	m, n;
 	    newscr->_cury = win->_cury + win->_begy;
 	    newscr->_curx = win->_curx + win->_begx;
 	}
+#else
+	/* this seems to fix the problem for us.
+		michaelw@desaster.student.uni-tuebingen.de
+	*/
+
+	if (! win->_leave) {
+	  newscr->_cury = win->_cury - pminrow + win->_begy;
+	  newscr->_curx = win->_curx - pmincol + win->_begx;
+	}
 #endif /* 0 */
 	return OK;
 }

@@ -212,7 +212,7 @@ rm include/config_h
 sed \
 	-e "s/#\\(define\\)[ 	][ 	]*\\(CXX_BUILTIN_BOOL\\).*/#\\1 \\2 $BUILTIN_BOOL/" \
 	-e "s/#\\(define\\)[ 	][ 	]*\\(CXX_TYPE_OF_BOOL\\).*/#\\1 \\2 $TYPE_OF_BOOL/" \
-	$ac_given_srcdir/include/curses.h.in >conftest.tmp
+	$ac_given_srcdir/include/curses.h >conftest.tmp
 if test `cd $ac_given_srcdir;pwd` != `pwd`; then
 	echo creating include/curses.h
 	rm -f include/curses.h~

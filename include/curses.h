@@ -24,7 +24,7 @@
 #define __NCURSES_H
 #define CURSES 1
 #define CURSES_H 1
-#define NCURSES_VERSION "1.9.4"
+#define NCURSES_VERSION "1.9.5"
 
 #include <stdio.h>   
 #include <unctrl.h>

@@ -56,7 +56,7 @@ nc_cxx_library=unknown
 if test $ac_cv_prog_gxx = yes; then
 	AC_MSG_CHECKING([for libg++])
 	nc_save="$LIBS"
-	LIBS="$LIBS -lg++"
+	LIBS="$LIBS -lg++ -lm"
 	AC_TRY_LINK([
 #include <builtin.h>
 	],
@@ -116,6 +116,10 @@ dnl subdirectory is a library-source directory, modify the LIBRARIES list in
 dnl the corresponding makefile to list the models that we'll generate.
 AC_DEFUN([NC_LIB_RULES],
 [
+nc_systype="`(uname -s || hostname) 2>/dev/null | sed 1q`"
+if test -z "$nc_systype"; then nc_systype=unknown;fi
+REL_VERSION=`grep VERSION dist.mk | sed -e 's/[[^0-9]]*//'`
+ABI_VERSION=`grep SHARED_ABI dist.mk | sed -e 's/[[^0-9]]*//'`
 for nc_dir in $SRC_SUBDIRS
 do
 	if test -f $srcdir/$nc_dir/modules; then
@@ -135,8 +139,14 @@ do
 			NC_UPPERCASE($nc_item,NC_ITEM)
 			NC_LIB_SUFFIX($nc_item,nc_suffix)
 			NC_OBJ_SUBDIR($nc_item,nc_subdir)
-			$AWK -f $srcdir/mk-1st.awk -v name=$nc_dir MODEL=$NC_ITEM model=$nc_subdir suffix=$nc_suffix $srcdir/$nc_dir/modules >>$nc_dir/Makefile
-			$AWK -f $srcdir/mk-2nd.awk -v name=$nc_dir MODEL=$NC_ITEM model=$nc_subdir srcdir=$srcdir echo=$WITH_ECHO $srcdir/$nc_dir/modules >>$nc_dir/Makefile
+			$AWK -f $srcdir/mk-1st.awk name=$nc_dir MODEL=$NC_ITEM model=$nc_subdir suffix=$nc_suffix $srcdir/$nc_dir/modules >>$nc_dir/Makefile
+			$AWK -f $srcdir/mk-2nd.awk name=$nc_dir MODEL=$NC_ITEM model=$nc_subdir srcdir=$srcdir echo=$WITH_ECHO $srcdir/$nc_dir/modules >>$nc_dir/Makefile
+			if test $nc_systype = "Linux" -a $nc_dir != "lib" -a $nc_dir != "progs"; then
+				echo "install.libs:: ../lib/lib${nc_dir}.so.$REL_VERSION ../lib/lib${nc_dir}.so.$ABI_VERSION \$(libdir)" >> $nc_dir/Makefile
+				echo "	-rm -f \$(libdir)/lib${nc_dir}.so.$REL_VERSION" >> $nc_dir/Makefile
+				echo "	\$(INSTALL_DATA) ../lib/lib${nc_dir}.so.$REL_VERSION \$(libdir)" >> $nc_dir/Makefile
+				echo "	(cd \$(libdir); ln -sf lib${nc_dir}.so.$REL_VERSION lib${nc_dir}.so.$ABI_VERSION; ln -sf lib${nc_dir}.so.$REL_VERSION lib${nc_dir}.so.$ABI_VERSION)" >> $nc_dir/Makefile
+			fi
 		done
 	fi
 	echo '	cd '$nc_dir'; $(MAKE) $(NC_MFLAGS) [$]@' >>Makefile
@@ -292,23 +302,45 @@ AC_DEFUN([NC_SHARED_OPTS],
 	case $nc_systype in
 	Linux)
 		CC_SHARED_OPTS='-fPIC'
-		MK_SHARED_LIB='gcc -o $[@] -shared -Wl,-soname,$[@],-stats'
+ 		REL_VERSION=`grep VERSION dist.mk | sed -e 's/[[^0-9]]*//'`
+ 		ABI_VERSION=`grep SHARED_ABI dist.mk | sed -e 's/[[^0-9]]*//'`
+ 		MK_SHARED_LIB="gcc -o \$[@].$REL_VERSION -shared -Wl,-soname,\`basename \$[@].$ABI_VERSION\`,-stats"
+ 		MK_SHARED_LIB_LINK="ln -s \$[@].$REL_VERSION \$[@]; ln -s \$[@].$REL_VERSION \$[@].$ABI_VERSION"
+ 		LD_RPATH='-Wl,-rpath,../lib'
+		;;
+	IRIX)
+		if test "${CC}" = "gcc"; then
+			CC_SHARED_OPTS='-fPIC'
+		else
+			CC_SHARED_OPTS='-KPIC'
+		fi
+		MK_SHARED_LIB='ld -shared -rdata_shared -soname `basename $[@]` -o $[@]'
+		MK_SHARED_LIB_LINK='true'
 		;;
 	NetBSD)
 		CC_SHARED_OPTS='-fpic -DPIC'
 		MK_SHARED_LIB='ld -Bshareable -o $[@]'
+		MK_SHARED_LIB_LINK='true'
 		;;
 	SunOS)
-		CC_SHARED_OPTS='-pic'
-		MK_SHARED_LIB='ld --assert-pure-text -o $[@]'
+		if test $ac_cv_prog_gcc = yes; then
+			CC_SHARED_OPTS='-fpic'
+		else
+			CC_SHARED_OPTS='-pic'
+		fi
+		MK_SHARED_LIB='ld -assert pure-text -o $[@]'
+		MK_SHARED_LIB_LINK='true'
 		;;
 	*)
 		CC_SHARED_OPTS='unknown'
 		MK_SHARED_LIB='echo unknown'
+		MK_SHARED_LIB_LINK='echo unknown'
 		;;
 	esac
 	AC_SUBST(CC_SHARED_OPTS)
 	AC_SUBST(MK_SHARED_LIB)
+	AC_SUBST(MK_SHARED_LIB_LINK)
+	AC_SUBST(LD_RPATH)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl For each parameter, test if the source-directory exists, and if it contains

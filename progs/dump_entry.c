@@ -219,9 +219,16 @@ static int dump_predicate(int type, int idx)
 
 static void set_obsolete_termcaps(TERMTYPE *tp);
 
+static bool termcap_form(int f)
+/* return true if F indicates a termcap output format */
+{
+    return (f == F_TERMCAP || f == F_TCONVERT || f == F_TCONVERR);
+}
+
 int fmt_entry(TERMTYPE *tterm,
 			   int (*pred)(int type, int idx),
-			   char *outbuf, bool suppress_untranslatable)
+			   char *outbuf, bool suppress_untranslatable,
+			   bool infodump)
 {
 int	i, j;
 int	column;
@@ -244,7 +251,7 @@ int	predval, len = 0;
 	else
 	    i = bool_indirect[j];
 
-	if (outform == F_TERMCAP && !bool_from_termcap[i])
+	if (termcap_form(outform) && !bool_from_termcap[i])
 	    continue;
 	else if ((outform == F_LITERAL || outform == F_TERMINFO || outform == F_VARIABLE)
 		 && (OBSOLETE(bool_names[i]) && outform != F_LITERAL))
@@ -277,7 +284,7 @@ int	predval, len = 0;
 	else
 	    i = num_indirect[j];
 
-	if (outform == F_TERMCAP && !num_from_termcap[i])
+	if (termcap_form(outform) && !num_from_termcap[i])
 	    continue;
 	else if ((outform == F_LITERAL || outform == F_TERMINFO || outform == F_VARIABLE)
 		 && (OBSOLETE(num_names[i]) && outform != F_LITERAL))
@@ -312,7 +319,7 @@ int	predval, len = 0;
 	else
 	    i = str_indirect[j];
 
-	if (outform == F_TERMCAP && !str_from_termcap[i])
+	if (termcap_form(outform) && !str_from_termcap[i])
 	    continue;
 	else if ((outform == F_LITERAL || outform == F_TERMINFO || outform == F_VARIABLE)
 		 && (OBSOLETE(str_names[i]) && outform != F_LITERAL))
@@ -386,8 +393,19 @@ int	predval, len = 0;
 	}
     }
 
-    /* this is the raw length, not the printable-expanded length */
-    return(len);
+#if 0
+    fprintf(stderr, "term_names=%s, len=%d, strlen(outbuf)=%d, outbuf=%s\n",
+	    tterm->term_names, len, strlen(outbuf), outbuf);
+#endif
+    /*
+     * Here's where we use infodump to trigger a more stringent length check
+     * for termcap-translation purposes.
+     * strlen(outbuf) is the length of the raw entry, without tc= expansions,
+     * and (incorrectly) counting backslash-newlines.
+     * It gives an idea of which entries are deadly to even *scan past*,
+     * as opposed to *use*.
+     */
+    return(infodump ? len : strlen(outbuf));
 }
 
 void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int idx))
@@ -395,32 +413,49 @@ void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int idx))
 {
     int	len, critlen;
     char	*legend, outbuf[MAX_TERMINFO_LENGTH * 2];
+    bool	infodump;
 
     if (outform==F_TERMCAP || outform==F_TCONVERT || outform==F_TCONVERR)
     {
 	critlen = MAX_TERMCAP_LENGTH;
 	legend = "older termcap";
+	infodump = FALSE;
 	set_obsolete_termcaps(tterm);
     }
     else
     {
 	critlen = MAX_TERMINFO_LENGTH;
 	legend = "terminfo";
+	infodump = TRUE;
     }
 
-    if ((len = fmt_entry(tterm, pred, outbuf, FALSE)) > critlen)
+    if ((len = fmt_entry(tterm, pred, outbuf, FALSE, infodump)) > critlen)
     {
 	(void) printf("# (untranslatable capabilities removed to fit entry within %d bytes)\n",
 		      critlen);
-	if ((len = fmt_entry(tterm, pred, outbuf, TRUE)) > critlen)
+	if ((len = fmt_entry(tterm, pred, outbuf, TRUE, infodump)) > critlen)
 	{
-	    (void) fprintf(stderr,
-			   "warning: %s entry string table is %d bytes long\n",
-			   canonical_name(tterm->term_names, (char *)NULL),
-			   len);
-	    (void) printf(
-			  "# WARNING: this entry, %d bytes long, may core-dump %s libraries!\n",
-			  len, legend);
+	    char *oldac = acs_chars; 
+	    char *oldae = exit_alt_charset_mode; 
+	    char *oldas = enter_alt_charset_mode; 
+	    acs_chars = ABSENT_STRING; 
+	    exit_alt_charset_mode = ABSENT_STRING; 
+	    enter_alt_charset_mode = ABSENT_STRING; 
+	    (void) printf("# (ac/ae/as removed to fit entry within %d bytes)\n",
+			  critlen);
+	    if ((len=fmt_entry(tterm, pred, outbuf, TRUE, infodump)) > critlen)
+	    {
+		(void) fprintf(stderr,
+			       "warning: %s entry is %d bytes long\n",
+			       canonical_name(tterm->term_names, (char *)NULL),
+			       len);
+		(void) printf(
+			      "# WARNING: this entry, %d bytes long, may core-dump %s libraries!\n",
+			      len, legend);
+	    }
+	    acs_chars = oldac;
+	    exit_alt_charset_mode = oldae;
+	    enter_alt_charset_mode = oldas;
 	}
     }
 
@@ -440,7 +475,7 @@ void compare_entry(void (*hook)(int t, int i, char *name))
 	else
 	    i = bool_indirect[j];
 
-	if (outform == F_TERMCAP && !bool_from_termcap[i])
+	if (termcap_form(outform) && !bool_from_termcap[i])
 	    continue;
 	else if ((outform == F_LITERAL || outform == F_TERMINFO || outform == F_VARIABLE)
 		 && (OBSOLETE(bool_names[i]) && outform != F_LITERAL))
@@ -457,7 +492,7 @@ void compare_entry(void (*hook)(int t, int i, char *name))
 	else
 	    i = num_indirect[j];
 
-	if (outform == F_TERMCAP && !num_from_termcap[i])
+	if (termcap_form(outform) && !num_from_termcap[i])
 	    continue;
 	else if ((outform == F_LITERAL || outform == F_TERMINFO || outform == F_VARIABLE)
 		 && (OBSOLETE(num_names[i]) && outform != F_LITERAL))
@@ -474,7 +509,7 @@ void compare_entry(void (*hook)(int t, int i, char *name))
 	else
 	    i = str_indirect[j];
 
-	if (outform == F_TERMCAP && !str_from_termcap[i])
+	if (termcap_form(outform) && !str_from_termcap[i])
 	    continue;
 	else if ((outform == F_LITERAL || outform == F_TERMINFO || outform == F_VARIABLE)
 		 && (OBSOLETE(str_names[i]) && outform != F_LITERAL))
