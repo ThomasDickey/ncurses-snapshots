@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.208 2004/04/24 20:17:54 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.210 2004/10/16 16:01:40 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -225,13 +225,23 @@ PutAttrChar(CARG_CH_T ch)
 	 * normal one to be broken (by mis-design ;-).
 	 */
 	if (SP->_screen_acs_fix
-	    && SP->_acs_map[CharOf(my_ch)] & A_ALTCHARSET) {
+	    && SP->_screen_acs_map[CharOf(my_ch)]) {
 	    attr &= ~(A_ALTCHARSET);
 	    my_ch = _nc_wacs[CharOf(my_ch)];
 	}
 #endif
+	/*
+	 * If we (still) have alternate character set, it is the normal 8bit
+	 * flavor.  The _screen_acs_map[] array tells if the character was
+	 * really in acs_chars, needed because of the way wide/normal line
+	 * drawing flavors are integrated.
+	 */
 	if (attr & A_ALTCHARSET) {
-	    chtype temp = UChar(SP->_acs_map[CharOfD(ch)]);
+	    int j = CharOfD(ch);
+	    chtype temp = UChar(SP->_acs_map[j]);
+
+	    if (!(SP->_screen_acs_map[j]))
+		attr &= ~(A_ALTCHARSET);
 	    if (temp != 0)
 		SetChar(my_ch, temp, attr);
 	}

@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.259 2004/05/08 18:54:16 tom Exp $
+ * $Id: curses.priv.h,v 1.260 2004/10/16 15:19:14 tom Exp $
  *
  *	curses.priv.h
  *
@@ -496,6 +496,7 @@ struct screen {
 	bool		_legacy_coding;
 	bool		_screen_acs_fix;
 #endif
+	bool		_screen_acs_map[ACS_LEN];
 };
 
 extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;

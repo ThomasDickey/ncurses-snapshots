@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.840 2004/10/09 19:23:26 tom Exp $
+-- $Id: NEWS,v 1.842 2004/10/16 21:56:58 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20041016
+	+ minor fixes for traces.
+	+ add SP->_screen_acs_map[], used to ensure that mapping of missing
+	  line-drawing characters is handled properly.  For example, ACS_DARROW
+	  is absent from xterm-new, and it was coincidentally displayed the
+	  same as ACS_BTEE.
 
 20041009
 	+ amend 20021221 workaround for broken acs to reset the sgr, rmacs
