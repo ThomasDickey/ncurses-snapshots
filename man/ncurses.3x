@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.52 2002/02/23 23:28:14 tom Exp $
+.\" $Id: ncurses.3x,v 1.54 2002/03/10 01:00:52 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
@@ -216,7 +216,9 @@ addch/\fBcurs_addch\fR(3X)
 addchnstr/\fBcurs_addchstr\fR(3X)
 addchstr/\fBcurs_addchstr\fR(3X)
 addnstr/\fBcurs_addstr\fR(3X)
+addnwstr/\fBcurs_addwstr\fR(3X)
 addstr/\fBcurs_addstr\fR(3X)
+addwstr/\fBcurs_addwstr\fR(3X)
 assume_default_colors/\fBdefault_colors\fR(3X)*
 attr_get/\fBcurs_attr\fR(3X)
 attr_off/\fBcurs_attr\fR(3X)
@@ -298,6 +300,7 @@ init_color/\fBcurs_color\fR(3X)
 init_pair/\fBcurs_color\fR(3X)
 initscr/\fBcurs_initscr\fR(3X)
 innstr/\fBcurs_instr\fR(3X)
+innwstr/\fBcurs_inwstr\fR(3X)
 insch/\fBcurs_insch\fR(3X)
 insdelln/\fBcurs_deleteln\fR(3X)
 insertln/\fBcurs_deleteln\fR(3X)
@@ -305,6 +308,7 @@ insnstr/\fBcurs_insstr\fR(3X)
 insstr/\fBcurs_insstr\fR(3X)
 instr/\fBcurs_instr\fR(3X)
 intrflush/\fBcurs_inopts\fR(3X)
+inwstr/\fBcurs_inwstr\fR(3X)
 is_linetouched/\fBcurs_touch\fR(3X)
 is_wintouched/\fBcurs_touch\fR(3X)
 isendwin/\fBcurs_initscr\fR(3X)
@@ -329,7 +333,9 @@ mvaddch/\fBcurs_addch\fR(3X)
 mvaddchnstr/\fBcurs_addchstr\fR(3X)
 mvaddchstr/\fBcurs_addchstr\fR(3X)
 mvaddnstr/\fBcurs_addstr\fR(3X)
+mvaddnwstr/\fBcurs_addwstr\fR(3X)
 mvaddstr/\fBcurs_addstr\fR(3X)
+mvaddwstr/\fBcurs_addwstr\fR(3X)
 mvchgat/\fBcurs_attr\fR(3X)
 mvcur/\fBcurs_terminfo\fR(3X)
 mvdelch/\fBcurs_delch\fR(3X)
@@ -343,10 +349,12 @@ mvinch/\fBcurs_inch\fR(3X)
 mvinchnstr/\fBcurs_inchstr\fR(3X)
 mvinchstr/\fBcurs_inchstr\fR(3X)
 mvinnstr/\fBcurs_instr\fR(3X)
+mvinnwstr/\fBcurs_inwstr\fR(3X)
 mvinsch/\fBcurs_insch\fR(3X)
 mvinsnstr/\fBcurs_insstr\fR(3X)
 mvinsstr/\fBcurs_insstr\fR(3X)
 mvinstr/\fBcurs_instr\fR(3X)
+mvinwstr/\fBcurs_inwstr\fR(3X)
 mvprintw/\fBcurs_printw\fR(3X)
 mvscanw/\fBcurs_scanw\fR(3X)
 mvvline/\fBcurs_border\fR(3X)
@@ -358,7 +366,9 @@ mvwaddch/\fBcurs_addch\fR(3X)
 mvwaddchnstr/\fBcurs_addchstr\fR(3X)
 mvwaddchstr/\fBcurs_addchstr\fR(3X)
 mvwaddnstr/\fBcurs_addstr\fR(3X)
+mvwaddnwstr/\fBcurs_addwstr\fR(3X)
 mvwaddstr/\fBcurs_addstr\fR(3X)
+mvwaddwstr/\fBcurs_addwstr\fR(3X)
 mvwchgat/\fBcurs_attr\fR(3X)
 mvwdelch/\fBcurs_delch\fR(3X)
 mvwgetch/\fBcurs_getch\fR(3X)
@@ -371,10 +381,12 @@ mvwinch/\fBcurs_inch\fR(3X)
 mvwinchnstr/\fBcurs_inchstr\fR(3X)
 mvwinchstr/\fBcurs_inchstr\fR(3X)
 mvwinnstr/\fBcurs_instr\fR(3X)
+mvwinnwstr/\fBcurs_inwstr\fR(3X)
 mvwinsch/\fBcurs_insch\fR(3X)
 mvwinsnstr/\fBcurs_insstr\fR(3X)
 mvwinsstr/\fBcurs_insstr\fR(3X)
 mvwinstr/\fBcurs_instr\fR(3X)
+mvwinwstr/\fBcurs_inwstr\fR(3X)
 mvwprintw/\fBcurs_printw\fR(3X)
 mvwscanw/\fBcurs_scanw\fR(3X)
 mvwvline/\fBcurs_border\fR(3X)
@@ -488,7 +500,9 @@ waddch/\fBcurs_addch\fR(3X)
 waddchnstr/\fBcurs_addchstr\fR(3X)
 waddchstr/\fBcurs_addchstr\fR(3X)
 waddnstr/\fBcurs_addstr\fR(3X)
+waddnwstr/\fBcurs_addwstr\fR(3X)
 waddstr/\fBcurs_addstr\fR(3X)
+waddwstr/\fBcurs_addwstr\fR(3X)
 wattr_get/\fBcurs_attr\fR(3X)
 wattr_off/\fBcurs_attr\fR(3X)
 wattr_on/\fBcurs_attr\fR(3X)
@@ -524,12 +538,14 @@ winch/\fBcurs_inch\fR(3X)
 winchnstr/\fBcurs_inchstr\fR(3X)
 winchstr/\fBcurs_inchstr\fR(3X)
 winnstr/\fBcurs_instr\fR(3X)
+winnwstr/\fBcurs_inwstr\fR(3X)
 winsch/\fBcurs_insch\fR(3X)
 winsdelln/\fBcurs_deleteln\fR(3X)
 winsertln/\fBcurs_deleteln\fR(3X)
 winsnstr/\fBcurs_insstr\fR(3X)
 winsstr/\fBcurs_insstr\fR(3X)
 winstr/\fBcurs_instr\fR(3X)
+winwstr/\fBcurs_inwstr\fR(3X)
 wmouse_trafo/\fBcurs_mouse\fR(3X)*
 wmove/\fBcurs_move\fR(3X)
 wnoutrefresh/\fBcurs_refresh\fR(3X)
@@ -804,11 +820,9 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBin_wch\fP,
 \fBin_wchnstr\fP,
 \fBin_wchstr\fP,
-\fBinnwstr\fP,
 \fBins_nwstr\fP,
 \fBins_wch\fP,
 \fBins_wstr\fP,
-\fBinwstr\fP,
 \fBkillwchar\fP,
 \fBmvget_wch\fP,
 \fBmvget_wstr\fP,
@@ -816,22 +830,18 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBmvin_wch\fP,
 \fBmvin_wchnstr\fP,
 \fBmvin_wchstr\fP,
-\fBmvinnwstr\fP,
 \fBmvins_nwstr\fP,
 \fBmvins_wch\fP,
 \fBmvins_wstr\fP,
-\fBmvinwstr\fP,
 \fBmvwget_wch\fP,
 \fBmvwget_wstr\fP,
 \fBmvwgetn_wstr\fP,
 \fBmvwin_wch\fP,
 \fBmvwin_wchnstr\fP,
 \fBmvwin_wchstr\fP,
-\fBmvwinnwstr\fP,
 \fBmvwins_nwstr\fP,
 \fBmvwins_wch\fP,
 \fBmvwins_wstr\fP,
-\fBmvwinwstr\fP,
 \fBpecho_wchar\fP,
 \fBslk_wset\fP,
 \fBterm_attrs\fP,
@@ -843,11 +853,9 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBwin_wch\fP,
 \fBwin_wchnstr\fP,
 \fBwin_wchstr\fP,
-\fBwinnwstr\fP,
 \fBwins_nwstr\fP,
 \fBwins_wch\fP,
 \fBwins_wstr\fP,
-\fBwinwstr\fP.
 .PP
 A small number of local differences (that is, individual differences between
 the XSI Curses and \fBncurses\fR calls) are described in \fBPORTABILITY\fR

@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+.\" Copyright (c) 2002 Free Software Foundation, Inc.                        *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,59 +26,66 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addstr.3x,v 1.10 2002/03/09 23:09:29 tom Exp $
-.TH curs_addstr 3X ""
+.\" $Id: curs_inwstr.3x,v 1.1 2002/03/10 00:48:15 tom Exp $
+.TH curs_inwstr 3 ""
 .SH NAME
-\fBaddstr\fR,
-\fBaddnstr\fR,
-\fBwaddstr\fR,
-\fBwaddnstr\fR,
-\fBmvaddstr\fR,
-\fBmvaddnstr\fR,
-\fBmvwaddstr\fR,
-\fBmvwaddnstr\fR - add a string of characters to a \fBcurses\fR window and advance cursor
+.PP
+\fBinwstr\fR,
+\fBinnwstr\fR,
+\fBwinwstr\fR,
+\fBwinnwstr\fR,
+\fBmvinwstr\fR,
+\fBmvinnwstr\fR,
+\fBmvwinwstr\fR,
+\fBmvwinnwstr\fR \- get a string of \fBwchar_t\fR characters from a curses window
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fR
+\fB#include <curses.h> \fR
 
-\fBint addstr(const char *\fR\fIstr\fR\fB);\fR
+\fBint inwstr(\fR\fBwchar_t *\fR\fIstr\fR\fB);\fR
 .br
-\fBint addnstr(const char *\fR\fIstr\fR\fB, int \fR\fIn\fR\fB);\fR
+\fBint innwstr(\fR\fBwchar_t *\fR\fIstr\fR\fB, int \fR\fIn\fR\fB);\fR
 .br
-\fBint waddstr(WINDOW *\fR\fIwin\fR\fB, const char *\fR\fIstr\fR\fB);\fR
+\fBint winwstr(\fR\fBWINDOW *\fR\fIwin\fR\fB, wchar_t *\fR\fIstr\fR\fB);\fR
 .br
-\fBint waddnstr(WINDOW *\fR\fIwin\fR\fB, const char *\fR\fIstr\fR\fB, int \fR\fIn\fR\fB);\fR
+\fBint winnwstr(\fR\fBWINDOW *\fR\fIwin\fR\fB, wchar_t *\fR\fIstr\fR\fB, int \fR\fIn\fR\fB);\fR
 .br
-\fBint mvaddstr(int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, const char *\fR\fIstr\fR\fB);\fR
+\fBint mvinwstr(\fR\fBint \fR\fIy\fR\fB, int \fR\fIx\fR\fB, wchar_t *\fR\fIstr\fR\fB);\fR
 .br
-\fBint mvaddnstr(int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, const char *\fR\fIstr\fR\fB, int \fR\fIn\fR\fB);\fR
+\fBint mvinnwstr(\fR\fBint \fR\fIy\fR\fB, int \fR\fIx\fR\fB, wchar_t *\fR\fIstr\fR\fB, int \fR\fIn\fR\fB);\fR
 .br
-\fBint mvwaddstr(WINDOW *\fR\fIwin\fR\fB, int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, const char *\fR\fIstr\fR\fB);\fR
+\fBint mvwinwstr(\fR\fBWINDOW *\fR\fIwin\fR\fB, int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, wchar_t *\fR\fIstr\fR\fB);\fR
 .br
-\fBint mvwaddnstr(WINDOW *\fR\fIwin\fR\fB, int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, const char *\fR\fIstr, int \fR\fIn\fR\fB);\fR
+\fBint mvwinnwstr(\fR\fBWINDOW *\fR\fIwin\fR\fB, int \fR\fIy\fR\fB, int \fR\fIx\fR\fB, wchar_t *\fR\fIstr\fR\fB, int \fR\fIn\fR\fB);\fR
 .fi
 .SH DESCRIPTION
-These routines write the characters of the (null-terminated) character string
-\fIstr\fR on the given window.
-It is similar to calling \fBwaddch\fR once for each character in the string.
-The four routines with \fIn\fR as the last argument
-write at most \fIn\fR characters.
-If \fIn\fR is -1, then the entire string will be added,
-up to the maximum number of characters that will fit on the line,
-or until a terminating null is reached.
-.SH RETURN VALUE
-All routines return the integer \fBERR\fR upon failure and \fBOK\fR on success
-(the SVr4 manuals specify only "an integer value other than \fBERR\fR") upon
-successful completion.
+These routines return a string of \fBwchar_t\fR characters in \fIwstr\fR,
+extracted starting at the current cursor position in the named window.
+Attributes are stripped from the characters.
+The four functions with \fIn\fR as the last argument return a leading substring at most
+\fIn\fR bytes long (exclusive of the trailing NUL).
+Transfer stops at the end of the current line, or when \fIn\fR bytes have
+been stored at the location referenced by \fIwstr\fR.
+.PP
+If the size \fIn\fR is not large enough to store a complete character,
+an error is generated.
 .SH NOTES
-Note that all of these routines except \fBwaddstr\fR and \fBwaddnstr\fR may be
-macros.
-.SH PORTABILITY
-All these entry points are described in the XSI Curses standard, Issue 4.  The
-XSI errors EILSEQ and EOVERFLOW, associated with extended-level conformance,
-are not yet detected.
+Note that all routines except
+\fBwinnwstr\fR
+may be macros.
+.SH RETURN VALUES
+All routines return
+\fBERR\fR
+upon failure. Upon
+successful completion, the *\fBinwstr\fR
+routines return
+\fBOK\fR, and the *\fBinnwstr\fR
+routines return the
+number of characters read into the string.
 .SH SEE ALSO
-\fBcurses\fR(3X), \fBcurs_addch\fR(3X).
+Functions:
+\fBcurses\fR(3X),
+\fBcurs_instr\fR(3X)
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:
