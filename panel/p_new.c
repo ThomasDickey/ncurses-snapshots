@@ -36,7 +36,7 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_new.c,v 1.2 1998/02/11 12:14:01 tom Exp $")
+MODULE_ID("$Id: p_new.c,v 1.3 1999/09/18 11:04:19 juergen Exp $")
 
 /*+-------------------------------------------------------------------------
   Get root (i.e. stdscr's) panel.
@@ -65,7 +65,7 @@ root_panel(void)
 #else
 	pan->user = (void*)0;
 #endif
-	_nc_panel_link_bottom(pan);
+	_nc_bottom_panel = _nc_top_panel = pan;
       }
     }
   return _nc_stdscr_pseudo_panel;

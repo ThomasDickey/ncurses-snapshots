@@ -1,4 +1,4 @@
-/* $Id: panel.priv.h,v 1.8 1997/10/21 10:19:37 juergen Exp $ */
+/* $Id: panel.priv.h,v 1.9 1999/09/18 11:04:19 juergen Exp $ */
 
 #ifndef _PANEL_PRIV_H
 #define _PANEL_PRIV_H
@@ -76,10 +76,20 @@ typedef struct panelcons
 #define _nc_top_panel _nc_panelhook()->top_panel
 #define _nc_bottom_panel _nc_panelhook()->bottom_panel
 
-extern void _nc_panel_link_bottom(PANEL*);
-extern bool _nc_panel_is_linked(const PANEL*);
 extern void _nc_calculate_obscure(void);
 extern void _nc_free_obscure(PANEL*);
 extern void _nc_override(const PANEL*,int);
+
+#define EMPTY_STACK() (_nc_top_panel==_nc_bottom_panel)
+#define Is_Bottom(p)  (((p)!=(PANEL*)0) && !EMPTY_STACK() && (_nc_bottom_panel->above==(p))) 
+#define Is_Top(p) (((p)!=(PANEL*)0) && !EMPTY_STACK() && (_nc_top_panel==(p)))
+#define Is_Pseudo(p) ((p) && ((p)==_nc_bottom_panel))
+
+/*+-------------------------------------------------------------------------
+	_nc_panel_is_linked(pan) - check to see if panel is in the stack
+--------------------------------------------------------------------------*/
+/* This works! The only case where it would fail is, when the list has
+   only one element. But this could only be the pseudo panel at the bottom */
+#define _nc_panel_is_linked(p) ((((p)->above!=(PANEL*)0)||((p)->below!=(PANEL*)0)||((p)==_nc_bottom_panel)) ? TRUE : FALSE)
 
 #endif /* _PANEL_PRIV_H */

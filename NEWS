@@ -1,10 +1,29 @@
--- $Id: NEWS,v 1.485 1999/09/19 00:10:02 tom Exp $
+-- $Id: NEWS,v 1.488 1999/09/26 00:54:54 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990925	pre-release
+	+ add newer NetBSD console terminfo entries
+	+ add amiga-8bit terminfo entry (from Henning 'Faroul' Peters
+	  <Faroul@beyond.kn-bremen.de>)
+	+ remove -lcurses -ltermcap from configure script's check for the gpm
+	  library, since they are not really necessary (a properly configured
+	  gpm library has no dependency on any curses library), and if the
+	  curses library is not installed, this would cause the test to fail.
+	+ modify tic's -C option so that terminfo "use=" clauses are translated
+	  to "tc=" clauses even when running it as captoinfo.
+	+ modify CF_STDCPP_LIBRARY configure macro to perform its check only
+	  for GNU C++, since that library conflicts with SGI's libC on IRIX-6.2
+	+ modify CF_SHARED_OPTS configure macro to support build on NetBSD with
+	  ELF libraries (patch by Bernd Ernesti <bernd@arresum.inka.de>).
+	+ correct a problem in libpanel, where the _nc_top_panel variable was
+	  not set properly when bottom_panel() is called to hide a panel which
+	  is the only one on the stack (report/analysis by Michael Andres
+	  <ma@suse.de>, patch by Juergen Pfeifer).
 
 990918	pre-release
 	+ add acsc string to HP 70092 terminfo entry (patch by Joerg Wunsch

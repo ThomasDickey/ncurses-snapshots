@@ -3,7 +3,7 @@
 # This version of terminfo.src is distributed with ncurses.
 #
 #	Version 10.2.1
-#	$Date: 1999/09/19 00:11:27 $
+#	$Date: 1999/09/26 01:05:17 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -919,7 +919,7 @@ att7300|unixpc|pc7300|3b1|s4|AT&T UNIX PC Model 7300,
 #
 #	control-tab	\[072q
 #
-iris-ansi|IRIS emulating 40 line ANSI terminal (almost VT100), 
+iris-ansi|iris-ansi-net|IRIS emulating 40 line ANSI terminal (almost VT100), 
 	am, 
 	cols#80, it#8, lines#40, 
 	bel=^G, bold=\E[1m, clear=\E[H\E[2J, 
@@ -1186,6 +1186,46 @@ arm100-w|arm100-wam|Arm(RiscPC) ncurses compatible (for 1024x768),
 x68k|x68k-ite|NetBSD/x68k ITE, 
 	cols#96, lines#32, 
 	kclr=\E[9~, khlp=\E[28~, use=vt220, 
+
+# <tv@pobox.com>:
+# Entry for the DNARD OpenFirmware console, close to ANSI but not quite.
+#
+# (still unfinished, but good enough so far.)
+ofcons, 
+	bw, 
+	cols#80, lines#30, 
+	bel=^G, blink=\2337;2m, bold=\2331m, clear=^L, cr=^M, 
+	cub=\233%p1%dD, cub1=\233D, cud=\233%p1%dB, cud1=\233B, 
+	cuf=\233%p1%dC, cuf1=\233C, cup=\233%i%p1%d;%p2%dH, 
+	cuu=\233%p1%dA, cuu1=\233A, dch=\233%p1%dP, dch1=\233P, 
+	dim=\2332m, dl=\233%p1%dM, dl1=\233M, ed=\233J, el=\233K, 
+	flash=^G, ht=^I, ich=\233%p1%d@, ich1=\233@, il=\233%p1%dL, 
+	il1=\233L, ind=^J, invis=\2338m, kbs=^H, kcub1=\233D, 
+	kcud1=\233B, kcuf1=\233C, kcuu1=\233A, kdch1=\233P, 
+	kf1=\2330P, kf10=\2330M, kf2=\2330Q, kf3=\2330W, 
+	kf4=\2330x, kf5=\2330t, kf6=\2330u, kf7=\2330q, kf8=\2330r, 
+	kf9=\2330p, knp=\233/, kpp=\233?, nel=^M^J, rev=\2337m, 
+	rmso=\2330m, rmul=\2330m, sgr0=\2330m, 
+
+# NetBSD "wscons" emulator in vt220 mode
+# These are micro-minimal and probably need to be redone for real
+# after the manner of the pcvt entries.
+wsvt25|NetBSD wscons in 25 line DEC VT220 mode, 
+	cols#80, lines#25, use=vt220, 
+
+wsvt25m|NetBSD wscons in 25 line DEC VT220 mode with Meta, 
+	km, 
+	cols#80, lines#25, use=vt220, 
+
+# `rasterconsole' provided by 4.4BSD, NetBSD and OpenBSD on SPARC, and 
+# DECstation/pmax.
+rcons|BSD rasterconsole, 
+	use=sun-il, 
+# Color version of above. Color currenly only provided by NetBSD.
+rcons-color|BSD rasterconsole with ANSI color, 
+	bce, 
+	colors#8, pairs#64, 
+	op=\E[m, setab=\E[4%dm, setaf=\E[3%dm, use=rcons, 
 
 #### FreeBSD console entries
 #
@@ -13787,6 +13827,12 @@ amiga-h|Hans Verkuil's Amiga ANSI,
 	rmul=\2330m, rs1=\Ec, sgr0=\2330m, smacs=^N, smcup=\233?7l, 
 	smso=\2337m, smul=\2334m, 
 
+# From: Henning 'Faroul' Peters <Faroul@beyond.kn-bremen.de>, 25 Sep 1999
+amiga-8bit|Amiga ANSI using 8-bit controls, 
+	acsc=, dl=\233%p1%dM, dl1=\233M, il=\233%p1%dL, il1=\233L, 
+	ind=\204, indn@, ri=\215, rin@, 
+	use=amiga-h, 
+
 # Commodore B-128 microcomputer from Doug Tyrol <det@HEL-ACE.ARPA>
 # 	I'm trying to write a termcap for a commodore b-128, and I'm
 # having a little trouble. I've had to map most of my control characters
@@ -17265,6 +17311,13 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 1999/9/18
 #	* add acsc string to HP 70092 terminfo entry -Joerg Wunsch
+#
+# 1999/9/25
+#	* add amiga-8bit entry
+#	* add console entries from NetBSD: ofcons, wsvt25, wsvt25m, rcons,
+#	  rcons-color, based on
+#	  ftp://ftp.netbsd.org/pub/NetBSD/NetBSD-current/src/share/termcap/termcap.src
+#	* add alias for iris-ansi-net
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
