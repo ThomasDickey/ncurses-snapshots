@@ -166,7 +166,7 @@ END		{
 			print  ""
 			print "/* entry points */"
 			print "extern int putp(const char *);"
-			print "extern int restartterm(const char *term, int filenum, int *errret);"
+			print "extern int restartterm(const char *, int, int *);"
 			print "extern int setupterm(const char *,int,int *);"
 			print "extern int tgetent(char *, const char *);"
 			print "extern int tgetflag(const char *);"

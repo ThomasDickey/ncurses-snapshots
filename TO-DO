@@ -115,7 +115,7 @@ status in this implementation:
 	Page 17-18 (3.3.5): Description of non-spacing characters.
 	Page 19-21 (3.4.2): Basic character operations.
 	Page 34 (addnstr): These should now call underlying wide-
-character functions, and do (through waddnstr) if XPG4_EXTENDED is on).
+character functions, and do (through waddnstr) if _XOPEN_SOURCE_EXTENDED is on).
 	Page 35 (addnwstr): wide-character add-string functions.  All macros 
 except waddnwstr() which is not yet defined.
 	Page 36 (add_wch): wide-character add-char functions.  All macros 

@@ -50,10 +50,10 @@ char	*name = getenv("TERM");
 	/* follow the XPG4 requirement to turn echo off at this point */
 	noecho();
 
-#ifdef XPG4_EXTENDED
+#ifdef _XOPEN_SOURCE_EXTENDED
 	/* for extended XPG4 conformance requires cbreak() at this point */
 	cbreak();
-#endif /* XPG4_EXTENDED */
+#endif /* _XOPEN_SOURCE_EXTENDED */
 
 	def_prog_mode();
 	return(stdscr);
