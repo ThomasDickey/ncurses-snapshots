@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.247 2001/04/07 22:52:38 tom Exp $
+dnl $Id: aclocal.m4,v 1.248 2001/04/21 19:40:04 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -485,6 +485,9 @@ strstream)
 	;;
 esac
 ])dnl
+dnl ---------------------------------------------------------------------------
+dnl "dirname" is not portable, so we fake it with a shell script.
+AC_DEFUN([CF_DIRNAME],[$1=`echo $2 | sed -e 's:/[[^/]]*$::'`])dnl
 dnl ---------------------------------------------------------------------------
 AC_DEFUN([CF_DIRS_TO_MAKE],
 [
@@ -1875,7 +1878,7 @@ case $INSTALL in
 /*)
   ;;
 *)
-  cf_dir=`echo $INSTALL|sed -e 's%/[[^/]]*$%%'`
+  CF_DIRNAME(cf_dir,$INSTALL)
   test -z "$cf_dir" && cf_dir=.
   INSTALL=`cd $cf_dir && pwd`/`echo $INSTALL | sed -e 's:^.*/::'`
   ;;

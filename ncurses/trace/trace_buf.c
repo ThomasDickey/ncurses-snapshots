@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: trace_buf.c,v 1.9 2000/12/10 03:02:45 tom Exp $")
+MODULE_ID("$Id: trace_buf.c,v 1.10 2001/04/21 21:19:18 tom Exp $")
 
 typedef struct {
     char *text;
@@ -52,7 +52,8 @@ _nc_trace_buf(int bufnum, size_t want)
     if (bufnum < 0) {
 	if (have) {
 	    while (have--) {
-		free(list[have].text);
+		if (list[have].text != 0)
+		    free(list[have].text);
 	    }
 	    free(list);
 	}

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -45,7 +45,7 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.55 2000/12/10 02:55:08 tom Exp $");
+MODULE_ID("$Id: lib_tputs.c,v 1.56 2001/04/21 18:53:53 tom Exp $")
 
 NCURSES_EXPORT_VAR(char)
 PC = 0;				/* used by termcap library */

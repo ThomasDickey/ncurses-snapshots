@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.623 2001/04/15 00:08:01 tom Exp $
+-- $Id: NEWS,v 1.624 2001/04/21 21:38:02 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010421
+	+ modify c++/Makefile.in to link with libncurses++w.a when configured
+	  for wide-characters (patch by Sven Verdoolaege).
+	+ add check in _nc_trace_buf() to refrain from freeing a null pointer.
+	+ improve CF_PROG_INSTALL macro using CF_DIRNAME.
+	+ update config.guess, config.sub from autoconf 2.49e (alpha).
 
 20010414
 	+ add secondary check in tic.c, similar_sgr() to see if the reason
