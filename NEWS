@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.855 2005/01/08 21:34:05 tom Exp $
+-- $Id: NEWS,v 1.857 2005/01/16 01:09:58 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050115
+	+ minor fixes to allow test-compiles with g++.
+	+ correct column value shown in tic's warnings, which did not account
+	  for leading whitespace.
+	+ add a check in _nc_trans_string() for improperly ended strings, i.e.,
+	  where a following line begins in column 1.
+	+ modify _nc_save_str() to return a null pointer on buffer overflow.
+	+ improve repainting while scrolling wide-character data (Eungkyu Song).
 
 20050108
 	+ merge some development changes to extend color capabilities.

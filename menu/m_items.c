@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_items.c,v 1.15 2004/12/25 21:35:09 tom Exp $")
+MODULE_ID("$Id: m_items.c,v 1.16 2005/01/16 01:02:23 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -88,7 +88,7 @@ NCURSES_EXPORT(ITEM **)
 menu_items(const MENU * menu)
 {
   T((T_CALLED("menu_items(%p)"), menu));
-  returnVoidPtr(menu ? menu->items : (ITEM **) 0);
+  returnItemPtr(menu ? menu->items : (ITEM **) 0);
 }
 
 /*---------------------------------------------------------------------------

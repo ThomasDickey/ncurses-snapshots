@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -76,7 +76,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.69 2004/10/09 17:50:31 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.70 2005/01/16 01:03:21 tom Exp $")
 
 #include <term.h>
 #include <tic.h>
@@ -131,9 +131,12 @@ make an error
 #if USE_GPM_SUPPORT
 #ifndef LINT
 static Gpm_Connect gpm_connect;
-static int (*my_Gpm_Open) (Gpm_Connect *, int);
-static int (*my_Gpm_GetEvent) (Gpm_Event *);
-static int *my_gpm_fd;
+typedef int *dl_INT;
+typedef int (*dl_OPEN) (Gpm_Connect *, int);
+typedef int (*dl_GETEVENT) (Gpm_Event *);
+static dl_INT my_gpm_fd;
+static dl_OPEN my_Gpm_Open;
+static dl_GETEVENT my_Gpm_GetEvent;
 #endif
 #endif
 
@@ -364,9 +367,11 @@ initialize_mousetype(void)
 	    first = FALSE;
 
 	    if ((obj = dlopen("libgpm.so", my_RTLD)) != 0) {
-		if ((my_gpm_fd = dlsym(obj, "gpm_fd")) == 0 ||
-		    (my_Gpm_Open = dlsym(obj, "Gpm_Open")) == 0 ||
-		    (my_Gpm_GetEvent = dlsym(obj, "Gpm_GetEvent")) == 0) {
+		if ((my_gpm_fd = (dl_INT) dlsym(obj, "gpm_fd")) == 0 ||
+		    (my_Gpm_Open = (dl_OPEN) dlsym(obj, "Gpm_Open")) == 0 ||
+		    (my_Gpm_GetEvent = (dl_GETEVENT) dlsym(obj,
+							   "Gpm_GetEvent"))
+		    == 0) {
 		    T(("GPM initialization failed: %s", dlerror()));
 		    dlclose(obj);
 		} else {

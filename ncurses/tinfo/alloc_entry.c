@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -48,7 +48,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.41 2004/04/17 22:06:25 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.43 2005/01/16 00:32:18 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -59,13 +59,13 @@ static char *stringbuf;		/* buffer for string capabilities */
 static size_t next_free;	/* next free character in stringbuf */
 
 NCURSES_EXPORT(void)
-_nc_init_entry(TERMTYPE * const tp)
+_nc_init_entry(TERMTYPE *const tp)
 /* initialize a terminal type data block */
 {
     unsigned i;
 
 #if NO_LEAKS
-    if (tp == 0) {
+    if (tp == 0 && stringbuf != 0) {
 	FreeAndNull(stringbuf);
 	return;
     }
@@ -113,20 +113,32 @@ _nc_copy_entry(ENTRY * oldp)
     return newp;
 }
 
+/* save a copy of string in the string buffer */
 NCURSES_EXPORT(char *)
 _nc_save_str(const char *const string)
-/* save a copy of string in the string buffer */
 {
+    char *result = 0;
     size_t old_next_free = next_free;
     size_t len = strlen(string) + 1;
 
-    if (next_free + len < MAX_STRTAB) {
+    if (len == 1 && next_free != 0) {
+	/*
+	 * Cheat a little by making an empty string point to the end of the
+	 * previous string.
+	 */
+	if (next_free < MAX_STRTAB) {
+	    result = (stringbuf + next_free - 1);
+	}
+    } else if (next_free + len < MAX_STRTAB) {
 	strcpy(&stringbuf[next_free], string);
 	DEBUG(7, ("Saved string %s", _nc_visbuf(string)));
 	DEBUG(7, ("at location %d", (int) next_free));
 	next_free += len;
+	result = (stringbuf + old_next_free);
+    } else {
+	_nc_warning("Too much data, some is lost");
     }
-    return (stringbuf + old_next_free);
+    return result;
 }
 
 NCURSES_EXPORT(void)
@@ -218,7 +230,7 @@ _nc_wrap_entry(ENTRY * const ep, bool copy_strings)
 }
 
 NCURSES_EXPORT(void)
-_nc_merge_entry(TERMTYPE * const to, TERMTYPE * const from)
+_nc_merge_entry(TERMTYPE *const to, TERMTYPE *const from)
 /* merge capabilities from `from' entry into `to' entry */
 {
     unsigned i;

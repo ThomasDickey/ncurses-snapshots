@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,7 +41,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.55 2004/12/26 01:00:28 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.56 2005/01/16 01:04:13 tom Exp $")
 
 NCURSES_EXPORT_VAR(unsigned) _nc_tracing = 0; /* always define this */
 
@@ -192,7 +192,7 @@ _nc_retrace_cptr(const char *code)
 NCURSES_EXPORT(void *)
 _nc_retrace_void_ptr(void *code)
 {
-    T((T_RETURN("%p"), _nc_visbuf(code)));
+    T((T_RETURN("%p"), _nc_visbuf((const char *) code)));
     return code;
 }
 

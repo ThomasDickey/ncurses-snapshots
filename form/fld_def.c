@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_def.c,v 1.31 2004/12/25 22:24:10 tom Exp $")
+MODULE_ID("$Id: fld_def.c,v 1.32 2005/01/16 01:02:23 tom Exp $")
 
 /* this can't be readonly */
 static FIELD default_field =
@@ -276,7 +276,7 @@ NCURSES_EXPORT(FIELD *)
 new_field(int rows, int cols, int frow, int fcol, int nrow, int nbuf)
 {
   static const FIELD_CELL blank = BLANK;
-  static const FIELD_CELL zeros;
+  static const FIELD_CELL zeros = ZEROS;
 
   FIELD *New_Field = (FIELD *)0;
   int err = E_BAD_ARGUMENT;

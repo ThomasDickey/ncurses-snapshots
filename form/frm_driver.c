@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.62 2004/12/11 22:54:15 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.63 2005/01/16 01:07:48 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -4176,7 +4176,7 @@ field_buffer(const FIELD *field, int buffer)
       /* allocate a place to store the expanded string */
       if (field->expanded[buffer] != 0)
 	free(field->expanded[buffer]);
-      field->expanded[buffer] = malloc(need + 1);
+      field->expanded[buffer] = typeMalloc(char, need + 1);
 
       /* expand the multibyte data */
       if ((result = field->expanded[buffer]) != 0)
@@ -4220,7 +4220,7 @@ _nc_Widen_String(char *source, int *lengthp)
   wchar_t *result = 0;
   wchar_t wch;
   size_t given = strlen(source);
-  size_t try;
+  size_t tries;
   int pass;
   int status;
 
@@ -4237,14 +4237,14 @@ _nc_Widen_String(char *source, int *lengthp)
 	{
 	  bool found = FALSE;
 
-	  for (try = 1, status = 0; try < (given - passed); ++try)
+	  for (tries = 1, status = 0; tries < (given - passed); ++tries)
 	    {
-	      int save = source[passed + try];
+	      int save = source[passed + tries];
 
-	      source[passed + try] = 0;
+	      source[passed + tries] = 0;
 	      reset_mbytes(state);
-	      status = trans_mbytes(wch, source + passed, try, state);
-	      source[passed + try] = save;
+	      status = trans_mbytes(wch, source + passed, tries, state);
+	      source[passed + tries] = save;
 
 	      if (status > 0)
 		{
@@ -4276,7 +4276,8 @@ _nc_Widen_String(char *source, int *lengthp)
 	{
 	  if (!need)
 	    break;
-	  result = calloc(need, sizeof(*result));
+	  result = typeCalloc(wchar_t, need);
+
 	  *lengthp = need;
 	  if (result == 0)
 	    break;

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.86 2004/11/20 21:54:22 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.87 2005/01/16 01:02:23 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -233,8 +233,8 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 		for (i = 0; i < CCHARW_MAX; ++i) {
 		    if (chars[i] == 0) {
 			TR(TRACE_VIRTPUT,
-			   ("added non-spacing %d: %lx",
-			    x, CharOf(ch)));
+			   ("added non-spacing %d: %x",
+			    x, (int) CharOf(ch)));
 			chars[i] = CharOf(ch);
 			break;
 		    }

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -51,7 +51,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.68 2004/04/17 22:14:55 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.73 2005/01/15 23:52:31 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -181,6 +181,8 @@ next_char(void)
 	if (*bufptr == '\n') {
 	    _nc_curr_line++;
 	    _nc_curr_col = 0;
+	} else if (*bufptr == '\t') {
+	    _nc_curr_col = (_nc_curr_col | 7);
 	}
     } else if (!bufptr || !*bufptr) {
 	/*
@@ -217,8 +219,14 @@ next_char(void)
 		}
 		if ((bufptr = bufstart) != 0) {
 		    used = strlen(bufptr);
-		    while (iswhite(*bufptr))
+		    while (iswhite(*bufptr)) {
+			if (*bufptr == '\t') {
+			    _nc_curr_col = (_nc_curr_col | 7) + 1;
+			} else {
+			    _nc_curr_col++;
+			}
 			bufptr++;
+		    }
 
 		    /*
 		     * Treat a trailing <cr><lf> the same as a <newline> so we
@@ -237,6 +245,8 @@ next_char(void)
 		}
 	    } while (bufptr[len - 1] != '\n');	/* complete a line */
 	} while (result[0] == '#');	/* ignore comments */
+    } else if (*bufptr == '\t') {
+	_nc_curr_col = (_nc_curr_col | 7);
     }
 
     first_column = (bufptr == bufstart);
@@ -255,6 +265,7 @@ push_back(char c)
     if (bufptr == bufstart)
 	_nc_syserr_abort("Can't backspace off beginning of line");
     *--bufptr = c;
+    _nc_curr_col--;
 }
 
 static long
@@ -333,6 +344,10 @@ _nc_get_token(bool silent)
     long number;
     long token_start;
     unsigned found;
+#ifdef TRACE
+    int old_line;
+    int old_col;
+#endif
 
     if (pushtype != NO_PUSHBACK) {
 	int retval = pushtype;
@@ -368,6 +383,10 @@ _nc_get_token(bool silent)
 
     ch = eat_escaped_newline(ch);
 
+#ifdef TRACE
+    old_line = _nc_curr_line;
+    old_col = _nc_curr_col;
+#endif
     if (ch == EOF)
 	type = EOF;
     else {
@@ -399,7 +418,7 @@ _nc_get_token(bool silent)
 #endif
 	    && !strchr(terminfo_punct, (char) ch)) {
 	    if (!silent)
-		_nc_warning("Illegal character (expected alphanumeric or %s) - %s",
+		_nc_warning("Illegal character (expected alphanumeric or %s) - '%s'",
 			    terminfo_punct, unctrl((chtype) ch));
 	    _nc_panic_mode(separator);
 	    goto start_token;
@@ -408,6 +427,10 @@ _nc_get_token(bool silent)
 	if (buffer == 0)
 	    buffer = typeMalloc(char, MAX_ENTRY_SIZE);
 
+#ifdef TRACE
+	old_line = _nc_curr_line;
+	old_col = _nc_curr_col;
+#endif
 	ptr = buffer;
 	*(ptr++) = ch;
 
@@ -421,7 +444,7 @@ _nc_get_token(bool silent)
 	    after_list = 0;
 	    while ((ch = next_char()) != '\n') {
 		if (ch == EOF) {
-		    _nc_err_abort(MSG_NO_MEMORY);
+		    _nc_err_abort(MSG_NO_INPUTS);
 		} else if (ch == '|') {
 		    after_list = ptr;
 		    if (after_name == 0)
@@ -590,7 +613,7 @@ _nc_get_token(bool silent)
 		/* just to get rid of the compiler warning */
 		type = UNDEF;
 		if (!silent)
-		    _nc_warning("Illegal character - %s", unctrl((chtype) ch));
+		    _nc_warning("Illegal character - '%s'", unctrl((chtype) ch));
 	    }
 	}			/* end else (first_column == FALSE) */
     }				/* end else (ch != EOF) */
@@ -601,6 +624,11 @@ _nc_get_token(bool silent)
     if (dot_flag == TRUE)
 	DEBUG(8, ("Commented out "));
 
+    if (_nc_tracing >= DEBUG_LEVEL(8)) {
+	_tracef("parsed %d.%d to %d.%d",
+		old_line, old_col,
+		_nc_curr_line, _nc_curr_col);
+    }
     if (_nc_tracing >= DEBUG_LEVEL(7)) {
 	switch (type) {
 	case BOOLEAN:
@@ -645,8 +673,9 @@ _nc_get_token(bool silent)
 	type = _nc_get_token(silent);
 
     DEBUG(3, ("token: `%s', class %d",
-	      _nc_curr_token.tk_name != 0 ? _nc_curr_token.tk_name :
-	      "<null>",
+	      ((_nc_curr_token.tk_name != 0)
+	       ? _nc_curr_token.tk_name
+	       : "<null>"),
 	      type));
 
     return (type);
@@ -692,7 +721,7 @@ _nc_trans_string(char *ptr, char *last)
 		_nc_err_abort(MSG_NO_INPUTS);
 
 	    if (!(is7bits(ch) && isprint(ch))) {
-		_nc_warning("Illegal ^ character - %s", unctrl(ch));
+		_nc_warning("Illegal ^ character - '%s'", unctrl(ch));
 	    }
 	    if (ch == '?') {
 		*(ptr++) = '\177';
@@ -787,7 +816,7 @@ _nc_trans_string(char *ptr, char *last)
 		    continue;
 
 		default:
-		    _nc_warning("Illegal character %s in \\ sequence",
+		    _nc_warning("Illegal character '%s' in \\ sequence",
 				unctrl(ch));
 		    /* FALLTHRU */
 		case '|':
@@ -797,13 +826,21 @@ _nc_trans_string(char *ptr, char *last)
 	}
 	/* end else if (ch == '\\') */
 	else if (ch == '\n' && (_nc_syntax == SYN_TERMINFO)) {
-	    /* newlines embedded in a terminfo string are ignored */
+	    /*
+	     * Newlines embedded in a terminfo string are ignored, provided
+	     * that the next line begins with whitespace.
+	     */
 	    ignored = TRUE;
 	} else {
 	    *(ptr++) = (char) ch;
 	}
 
 	if (!ignored) {
+	    if (_nc_curr_col <= 1) {
+		push_back(ch);
+		ch = '\n';
+		break;
+	    }
 	    last_ch = ch;
 	    count++;
 	}
