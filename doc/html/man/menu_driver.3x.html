@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>menu_driver</B> - command-processing loop of the menu system
 
 
@@ -58,6 +61,8 @@
 
        REQ_TOGGLE_ITEM
             Select/deselect an item.
+
+       REQ_CLEAR_PATTERN
             Clear the menu pattern buffer.
 
        REQ_BACK_PATTERN
@@ -110,6 +115,10 @@
        should  be  defined  relative  to <B>MAX_COMMAND</B>, the maximum
        value of these pre-defined requests.
 
+
+
+</PRE>
+<H2>RETURN VALUE</H2><PRE>
        <B>menu_driver</B> return one of the following error codes:
 
        <B>E_OK</B> The routine succeeded.
@@ -160,6 +169,7 @@
 <H2>AUTHORS</H2><PRE>
        Juergen  Pfeifer.   Manual  pages  and  adaptation for new
        curses by Eric S. Raymond.
+
 
 
 

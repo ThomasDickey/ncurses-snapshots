@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>initscr</B>,  <B>newterm</B>, <B>endwin</B>, <B>isendwin</B>, <B>set_term</B>, <B>delscreen</B> -
        <B>curses</B> screen initialization and manipulation routines
 
@@ -58,6 +61,8 @@
        proper non-visual mode.  Calling <B>refresh</B> or <B>doupdate</B> after
        a temporary escape causes the  program  to  resume  visual
        mode.
+
+       The  <B>isendwin</B>  routine  returns  <B>TRUE</B>  if  <B>endwin</B> has been
        called without any subsequent calls to <B>wrefresh</B>, and <B>FALSE</B>
        otherwise.
 
@@ -103,6 +108,7 @@
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>,       <B><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></B>,       <B><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></B>,
        <B><A HREF="curs_slk.3x.html">curs_slk(3x)</A></B>, <B><A HREF="curs_util.3x.html">curs_util(3x)</A></B>
+
 
 
 

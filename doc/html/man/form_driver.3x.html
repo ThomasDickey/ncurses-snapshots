@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>form_driver</B> - command-processing loop of the form system
 
 
@@ -58,6 +61,8 @@
 
        REQ_LEFT_FIELD
             Move left to a field.
+
+       REQ_RIGHT_FIELD
             Move right to a field.
 
        REQ_UP_FIELD
@@ -110,6 +115,8 @@
             Move down in the field.
 
 
+
+       REQ_NEW_LINE
             Insert or overlay a new line.
 
        REQ_INS_CHAR
@@ -162,6 +169,9 @@
             Scroll the field forward half a page.
 
        REQ_SCR_BHPAGE
+            Scroll the field backward half a page.
+
+       REQ_SCR_FCHAR
             Scroll the field forward a character.
 
        REQ_SCR_BCHAR
@@ -216,6 +226,8 @@
             ment.
 
        <B>E_BAD_STATE</B>
+            Routine  was  called  from   an   initialization   or
+            termination function.
 
        <B>E_NOT_POSTED</B>
             The form has not been posted.
@@ -251,6 +263,7 @@
 <H2>AUTHORS</H2><PRE>
        Juergen  Pfeifer.   Manual  pages  and  adaptation for new
        curses by Eric S. Raymond.
+
 
 
 

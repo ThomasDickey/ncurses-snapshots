@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>getstr</B>,  <B>wgetstr</B>,  <B>mvgetstr</B>,  <B>mvwgetstr</B>, <B>wgetnstr</B> - accept
        character strings from <B>curses</B> terminal keyboard
 
@@ -64,6 +67,8 @@
        standard specifies that they return <B>ERR</B>  on  failure,  but
        the  single  error  condition  <B>EOVERFLOW</B>  associated  with
        extended-level conformance is not yet  returned  (the  XSI
+       curses  support  for  multi-byte  characters  is  not  yet
+       present).
 
        SVr3 and early SVr4 curses implementations did not  reject
        function keys; the SVr4.0 documentation claimed that "spe-
@@ -81,6 +86,7 @@
 </PRE>
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="curs_getch.3x.html">curs_getch(3x)</A></B>.
+
 
 
 

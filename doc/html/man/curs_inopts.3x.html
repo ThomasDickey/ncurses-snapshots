@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>cbreak</B>, <B>nocbreak</B>, <B>echo</B>, <B>noecho</B>, <B>halfdelay</B>, <B>intrflush</B>, <B>key-</B>
        <B>pad</B>, <B>meta</B>,  <B>nodelay</B>,  <B>notimeout</B>,  <B>raw</B>,  <B>noraw</B>,  <B>noqiflush</B>,
        <B>qiflush</B>,  <B>timeout</B>,  <B>wtimeout</B>,  <B>typeahead</B>  -  <B>curses</B>  input
@@ -58,6 +61,8 @@
        <B>noecho</B>.  [See <B><A HREF="curs_getch.3x.html">curs_getch(3x)</A></B> for a discussion of how these
        routines interact with <B>cbreak</B> and <B>nocbreak</B>.]
 
+       The  <B>halfdelay</B>  routine is used for half-delay mode, which
+       is similar to <B>cbreak</B> mode in that characters typed by  the
        user  are  immediately available to the program.  However,
        after blocking  for  <I>tenths</I>  tenths  of  seconds,  ERR  is
        returned  if  nothing has been typed.  The value of <B>tenths</B>
@@ -110,6 +115,8 @@
        between sequences received from a function key  and  those
        typed by a user.
 
+       The  <B>raw</B> and <B>noraw</B> routines place the terminal into or out
+       of raw mode.  Raw mode is similar to <B>cbreak</B> mode, in  that
        characters  typed  are  immediately  passed through to the
        user program.  The differences are that in raw  mode,  the
        interrupt,  quit, suspend, and flow control characters are
@@ -166,6 +173,8 @@
        torical practice of the AT&amp;T  curses  implementations,  in
        that  the  echo bit is cleared when curses initializes the
        terminal state.  BSD curses differed from  this  slightly;
+       it left the echo bit on at initialization, but the BSD <B>raw</B>
+       call turned it off as a side-effect.  For  best  portabil-
        ity,  set echo or noecho explicitly just after initializa-
        tion, even if your program remains in cooked mode.
 
@@ -187,6 +196,7 @@
 </PRE>
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="curs_getch.3x.html">curs_getch(3x)</A></B>, <B><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></B>, <B><A HREF="termio.7.html">termio(7)</A></B>
+
 
 
 

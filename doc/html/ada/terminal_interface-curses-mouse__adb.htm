@@ -1,4 +1,4 @@
-<HEAD><TITLE>terminal_interface-curses-mouse.adb</TITLE></HEAD>
+<HTML><HEAD><TITLE>terminal_interface-curses-mouse.adb</TITLE></HEAD>
 <BODY>
 <HR><DIV ALIGN="center"><H1> File : terminal_interface-curses-mouse.adb </H1></DIV><HR>
 <PRE>
@@ -48,7 +48,7 @@
 <b>with</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C; <b>use</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C;
 <b>use</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>;
 
-<b>package</b> <b>body</b> <A HREF="terminal_interface__ads.htm#41_9">Terminal_Interface</A>.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A>.<A HREF="terminal_interface-curses-mouse__ads.htm#47_35">Mouse</A><FONT COLOR=red><A NAME="47_40"></A></FONT> <b>is</b>
+<b>package</b> <b>body</b> Terminal_Interface.Curses.<A HREF="terminal_interface-curses-mouse__ads.htm#47_35">Mouse</A><FONT COLOR=red><A NAME="47_40"></A></FONT> <b>is</b>
 
    <b>use</b> <b>type</b> System.Bit_Order;
    <b>use</b> <b>type</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.int;
@@ -67,9 +67,9 @@
 
    <b>function</b> <A HREF="terminal_interface-curses-mouse__ads.htm#124_13">Get_Mouse</A><FONT COLOR=red><A NAME="64_13"></A></FONT> <b>return</b> <A HREF="terminal_interface-curses-mouse__ads.htm#85_9">Mouse_Event</A>
    <b>is</b>
-      <b>type</b> <FONT COLOR=red><A NAME="66_12">Event_Access</A></FONT> <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses-mouse__ads.htm#85_9">Mouse_Event</A>;
+      <b>type</b> Event_Access <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses-mouse__ads.htm#85_9">Mouse_Event</A>;
 
-      <b>function</b> <FONT COLOR=red><A NAME="68_16">Getmouse</A></FONT> (<FONT COLOR=red><A NAME="68_26">Ev</A></FONT> : <A HREF="terminal_interface-curses-mouse__adb.htm#66_12">Event_Access</A>) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
+      <b>function</b> <FONT COLOR=red><A NAME="68_16">Getmouse</A></FONT> (Ev : Event_Access) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-mouse__adb.htm#68_16">Getmouse</A>, "getmouse");
 
       <FONT COLOR=red><A NAME="71_7">Event</A></FONT> : <b>aliased</b> <A HREF="terminal_interface-curses-mouse__ads.htm#85_9">Mouse_Event</A>;
@@ -114,7 +114,7 @@
                          <b>return</b> <A HREF="terminal_interface-curses-mouse__ads.htm#57_9">Event_Mask</A>
    <b>is</b>
       <b>function</b> <FONT COLOR=red><A NAME="112_16">MMask</A></FONT> (<FONT COLOR=red><A NAME="112_23">M</A></FONT> : <A HREF="terminal_interface-curses-mouse__ads.htm#57_9">Event_Mask</A>;
-                      <FONT COLOR=red><A NAME="113_23">O</A></FONT> : <b>access</b> <A HREF="terminal_interface-curses-mouse__ads.htm#57_9">Event_Mask</A>) <b>return</b> <A HREF="terminal_interface-curses-mouse__ads.htm#57_9">Event_Mask</A>;
+                      O : <b>access</b> <A HREF="terminal_interface-curses-mouse__ads.htm#57_9">Event_Mask</A>) <b>return</b> <A HREF="terminal_interface-curses-mouse__ads.htm#57_9">Event_Mask</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-mouse__adb.htm#112_16">MMask</A>, "mousemask");
       <FONT COLOR=red><A NAME="115_7">R</A></FONT>   : <A HREF="terminal_interface-curses-mouse__ads.htm#57_9">Event_Mask</A>;
       <FONT COLOR=red><A NAME="116_7">Old</A></FONT> : <b>aliased</b> <A HREF="terminal_interface-curses-mouse__ads.htm#57_9">Event_Mask</A>;

@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>tic</B> - the <I>terminfo</I> entry-description compiler
 
 
@@ -58,6 +61,8 @@
               default level is 1.  If <I>n</I> is specified and  greater
               than 1, the level of detail is increased.
 
+       <B>-o</B><I>dir</I>  Write   compiled   entries   to   given  directory.
+              Overrides the TERMINFO environment variable.
 
        <B>-w</B><I>n</I>    specifies the width of the output.
 
@@ -110,6 +115,8 @@
               tc  capabilities)  even  when  doing translation to
               termcap format.  This may  be  needed  if  you  are
               preparing  a  termcap  file  for  a termcap library
+              (such as GNU termcap  up  to  version  1.3  or  BSD
+              termcap  up to 4.3BSD) that doesn't handle multiple
               tc capabilities per entry.
 
        <B>-e</B>     Limit writes  and  translations  to  the  following
@@ -162,6 +169,8 @@
               table
 
        If n is not given, it is taken to be one.
+
+       All but one of the capabilities recognized by <B>tic</B> are doc-
        umented in <B><A HREF="terminfo.5.html">terminfo(5)</A></B>.  The exception is the <B>use</B> capabil-
        ity.
 
@@ -218,6 +227,8 @@
 
        The  error  messages from this <B>tic</B> have the same format as
        GNU C error messages, and can be  parsed  by  GNU  Emacs's
+       compile facility.
+       The <B>-C</B>, <B>-G</B>, <B>-I</B>, <B>-N</B>, <B>-R</B>, <B>-T</B>, <B>-a</B>, <B>-e</B>, <B>-f</B>, <B>-g</B>, <B>-o</B>, <B>-r</B>, <B>-s</B> and
        <B>-x</B> options are not supported under SVr4.  The SVr4 -c mode
        does not report bad use links.
 
@@ -236,6 +247,7 @@
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="infocmp.1m.html">infocmp(1m)</A></B>,    <B><A HREF="captoinfo.1m.html">captoinfo(1m)</A></B>,   <B><A HREF="infotocap.1m.html">infotocap(1m)</A></B>,   <B><A HREF="toe.1m.html">toe(1m)</A></B>,
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="terminfo.5.html">terminfo(5)</A></B>.
+
 
 
 

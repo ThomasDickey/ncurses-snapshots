@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>erase</B>,  <B>werase</B>,  <B>clear</B>,  <B>wclear</B>, <B>clrtobot</B>, <B>wclrtobot</B>, <B>clr-</B>
        <B>toeol</B>, <B>wclrtoeol</B> - clear all or part of a <B>curses</B> window
 
@@ -64,11 +67,14 @@
 
        Some  historic  curses  implementations had, as an undocu-
        mented feature,  the  ability  to  do  the  equivalent  of
+       <B>clearok(...,</B>    <B>1)</B>    by    saying   <B>touchwin(stdscr)</B>   or
+       <B>clear(stdscr)</B>.  This will not work under ncurses.
 
 
 </PRE>
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></B>, <B><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></B>
+
 
 
 

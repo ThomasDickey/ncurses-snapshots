@@ -1,4 +1,4 @@
-<HEAD><TITLE>terminal_interface-curses-forms-field_types-alphanumeric.adb</TITLE></HEAD>
+<HTML><HEAD><TITLE>terminal_interface-curses-forms-field_types-alphanumeric.adb</TITLE></HEAD>
 <BODY>
 <HR><DIV ALIGN="center"><H1> File : terminal_interface-curses-forms-field_types-alphanumeric.adb </H1></DIV><HR>
 <PRE>
@@ -45,18 +45,18 @@
 <b>with</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C;
 <b>with</b> <A HREF="terminal_interface__ads.htm#41_9">Terminal_Interface</A>.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A>.<A HREF="terminal_interface-curses-aux__ads.htm#50_35">Aux</A>; <b>use</b> <A HREF="terminal_interface__ads.htm#41_9">Terminal_Interface</A>.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A>.<A HREF="terminal_interface-curses-aux__ads.htm#50_35">Aux</A>;
 
-<b>package</b> <b>body</b> <A HREF="terminal_interface__ads.htm#41_9">Terminal_Interface</A>.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A>.<A HREF="terminal_interface-curses-forms__ads.htm#49_35">Forms</A>.<A HREF="terminal_interface-curses-forms-field_types__ads.htm#43_41">Field_Types</A>.<A HREF="terminal_interface-curses-forms-field_types-alphanumeric__ads.htm#41_53">AlphaNumeric</A><FONT COLOR=red><A NAME="44_58"></A></FONT> <b>is</b>
+<b>package</b> <b>body</b> Terminal_Interface.Curses.Forms.Field_Types.<A HREF="terminal_interface-curses-forms-field_types-alphanumeric__ads.htm#41_53">AlphaNumeric</A><FONT COLOR=red><A NAME="44_58"></A></FONT> <b>is</b>
 
    <b>use</b> <b>type</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.int;
 
    <b>procedure</b> <A HREF="terminal_interface-curses-forms-field_types-alphanumeric__ads.htm#50_14">Set_Field_Type</A><FONT COLOR=red><A NAME="48_14"></A></FONT> (<A HREF="terminal_interface-curses-forms-field_types-alphanumeric__ads.htm#50_30">Fld</A> : <b>in</b> <A HREF="terminal_interface-curses-forms__ads.htm#56_9">Field</A>;
                              <A HREF="terminal_interface-curses-forms-field_types-alphanumeric__ads.htm#51_30">Typ</A> : <b>in</b> <A HREF="terminal_interface-curses-forms-field_types-alphanumeric__ads.htm#45_9">AlphaNumeric_Field</A>)
    <b>is</b>
-      <FONT COLOR=red><A NAME="51_7">C_AlphaNumeric_Field_Type</A></FONT> : <A HREF="terminal_interface-curses-forms-field_types__ads.htm#132_9">C_Field_Type</A>;
-      <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-forms-field_types-alphanumeric__adb.htm#51_7">C_AlphaNumeric_Field_Type</A>, "TYPE_ALNUM");
+      C_AlphaNumeric_Field_Type : C_Field_Type;
+      <b>pragma</b> Import (C, C_AlphaNumeric_Field_Type, "TYPE_ALNUM");
 
       <b>function</b> <FONT COLOR=red><A NAME="54_16">Set_Fld_Type</A></FONT> (<FONT COLOR=red><A NAME="54_30">F</A></FONT>    : <A HREF="terminal_interface-curses-forms__ads.htm#56_9">Field</A> := <A HREF="terminal_interface-curses-forms-field_types-alphanumeric__ads.htm#50_30">Fld</A>;
-                             <FONT COLOR=red><A NAME="55_30">Cft</A></FONT>  : <A HREF="terminal_interface-curses-forms-field_types__ads.htm#132_9">C_Field_Type</A> := <A HREF="terminal_interface-curses-forms-field_types-alphanumeric__adb.htm#51_7">C_AlphaNumeric_Field_Type</A>;
+                             Cft  : C_Field_Type := C_AlphaNumeric_Field_Type;
                              <FONT COLOR=red><A NAME="56_30">Arg1</A></FONT> : <A HREF="terminal_interface-curses-forms-field_types__ads.htm#46_12">C_Int</A>) <b>return</b> <A HREF="terminal_interface-curses-forms-field_types__ads.htm#46_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-forms-field_types-alphanumeric__adb.htm#54_16">Set_Fld_Type</A>, "set_field_type");
 

@@ -1,4 +1,4 @@
-<HEAD><TITLE>terminal_interface-curses-forms.adb</TITLE></HEAD>
+<HTML><HEAD><TITLE>terminal_interface-curses-forms.adb</TITLE></HEAD>
 <BODY>
 <HR><DIV ALIGN="center"><H1> File : terminal_interface-curses-forms.adb </H1></DIV><HR>
 <PRE>
@@ -51,7 +51,7 @@
 
 <b>with</b> <A HREF="terminal_interface__ads.htm#41_9">Terminal_Interface</A>.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A>.<A HREF="terminal_interface-curses-aux__ads.htm#50_35">Aux</A>;
 
-<b>package</b> <b>body</b> <A HREF="terminal_interface__ads.htm#41_9">Terminal_Interface</A>.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A>.<A HREF="terminal_interface-curses-forms__ads.htm#49_35">Forms</A><FONT COLOR=red><A NAME="50_40"></A></FONT> <b>is</b>
+<b>package</b> <b>body</b> Terminal_Interface.Curses.<A HREF="terminal_interface-curses-forms__ads.htm#49_35">Forms</A><FONT COLOR=red><A NAME="50_40"></A></FONT> <b>is</b>
 
    <b>use</b> <A HREF="terminal_interface__ads.htm#41_9">Terminal_Interface</A>.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A>.<A HREF="terminal_interface-curses-aux__ads.htm#50_35">Aux</A>;
 
@@ -87,7 +87,7 @@
       <b>function</b> <FONT COLOR=red><A NAME="83_16">Form_Request_Name</A></FONT> (<FONT COLOR=red><A NAME="83_35">Key</A></FONT> : <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>) <b>return</b> chars_ptr;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-forms__adb.htm#83_16">Form_Request_Name</A>, "form_request_name");
    <b>begin</b>
-      <A HREF="terminal_interface-curses-aux__ads.htm#116_14">Fill_String</A> (<A HREF="terminal_interface-curses-forms__adb.htm#83_16">Form_Request_Name</A> (<A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A> (<A HREF="terminal_interface-curses-forms__ads.htm#279_28">Key</A>)), <A HREF="terminal_interface-curses-forms__ads.htm#280_28">Name</A>);
+      <A HREF="terminal_interface-curses-aux__ads.htm#121_13">Fill_String</A> (<A HREF="terminal_interface-curses-forms__adb.htm#83_16">Form_Request_Name</A> (<A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A> (<A HREF="terminal_interface-curses-forms__ads.htm#279_28">Key</A>)), <A HREF="terminal_interface-curses-forms__ads.htm#280_28">Name</A>);
    <b>end</b> Request_Name;
 
    <b>function</b> <A HREF="terminal_interface-curses-forms__ads.htm#282_14">Request_Name</A><FONT COLOR=red><A NAME="89_13"></A></FONT> (<A HREF="terminal_interface-curses-forms__ads.htm#282_28">Key</A> : <A HREF="terminal_interface-curses-forms__ads.htm#144_12">Form_Request_Code</A>) <b>return</b> String
@@ -230,10 +230,10 @@
       <A HREF="terminal_interface-curses-forms__ads.htm#359_7">Buffer</A> : <b>in</b> <A HREF="terminal_interface-curses-forms__ads.htm#131_9">Buffer_Number</A> := <A HREF="terminal_interface-curses-forms__ads.htm#131_9">Buffer_Number</A>'First;
       <A HREF="terminal_interface-curses-forms__ads.htm#360_7">Str</A>    : <b>in</b> String)
    <b>is</b>
-      <b>type</b> <FONT COLOR=red><A NAME="229_12">Char_Ptr</A></FONT> <b>is</b> <b>access</b> <b>all</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.char;
+      <b>type</b> Char_Ptr <b>is</b> <b>access</b> <b>all</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.char;
       <b>function</b> <FONT COLOR=red><A NAME="230_16">Set_Fld_Buffer</A></FONT> (<FONT COLOR=red><A NAME="230_32">Fld</A></FONT>    : <A HREF="terminal_interface-curses-forms__ads.htm#56_9">Field</A>;
                                  <FONT COLOR=red><A NAME="231_34">Bufnum</A></FONT> : <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
-                                 <FONT COLOR=red><A NAME="232_34">S</A></FONT>      : <A HREF="terminal_interface-curses-forms__adb.htm#229_12">Char_Ptr</A>)
+                                 S      : Char_Ptr)
         <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-forms__adb.htm#230_16">Set_Fld_Buffer</A>, "set_field_buffer");
 
@@ -259,7 +259,7 @@
                              <FONT COLOR=red><A NAME="255_30">B</A></FONT>   : <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>) <b>return</b> chars_ptr;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-forms__adb.htm#254_16">Field_Buffer</A>, "field_buffer");
    <b>begin</b>
-      <A HREF="terminal_interface-curses-aux__ads.htm#116_14">Fill_String</A> (<A HREF="terminal_interface-curses-forms__adb.htm#254_16">Field_Buffer</A> (<A HREF="terminal_interface-curses-forms__ads.htm#366_7">Fld</A>, <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A> (<A HREF="terminal_interface-curses-forms__ads.htm#367_7">Buffer</A>)), <A HREF="terminal_interface-curses-forms__ads.htm#368_7">Str</A>);
+      <A HREF="terminal_interface-curses-aux__ads.htm#121_13">Fill_String</A> (<A HREF="terminal_interface-curses-forms__adb.htm#254_16">Field_Buffer</A> (<A HREF="terminal_interface-curses-forms__ads.htm#366_7">Fld</A>, <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A> (<A HREF="terminal_interface-curses-forms__ads.htm#367_7">Buffer</A>)), <A HREF="terminal_interface-curses-forms__ads.htm#368_7">Str</A>);
    <b>end</b> Get_Buffer;
 
    <b>function</b> <A HREF="terminal_interface-curses-forms__ads.htm#371_13">Get_Buffer</A><FONT COLOR=red><A NAME="261_13"></A></FONT>
@@ -389,7 +389,7 @@
    <b>is</b>
       <FONT COLOR=red><A NAME="386_7">Fos</A></FONT> : <A HREF="terminal_interface-curses-forms__ads.htm#68_9">Field_Option_Set</A>;
    <b>begin</b>
-      <A HREF="terminal_interface-curses-forms__ads.htm#414_14">Get_Options</A> (<A HREF="terminal_interface-curses-forms__ads.htm#419_26">Fld</A>, <A HREF="terminal_interface-curses-forms__adb.htm#386_7">Fos</A>);
+      <A HREF="terminal_interface-curses-forms__ads.htm#419_13">Get_Options</A> (<A HREF="terminal_interface-curses-forms__ads.htm#419_26">Fld</A>, <A HREF="terminal_interface-curses-forms__adb.htm#386_7">Fos</A>);
       <b>return</b> <A HREF="terminal_interface-curses-forms__adb.htm#386_7">Fos</A>;
    <b>end</b> Get_Options;
    <FONT COLOR=green><EM>--  |</EM></FONT>
@@ -527,9 +527,9 @@
                    <A HREF="terminal_interface-curses-forms__ads.htm#490_20">Off_Screen</A>         : <b>out</b> Natural;
                    <A HREF="terminal_interface-curses-forms__ads.htm#491_20">Additional_Buffers</A> : <b>out</b> <A HREF="terminal_interface-curses-forms__ads.htm#131_9">Buffer_Number</A>)
    <b>is</b>
-      <b>type</b> <FONT COLOR=red><A NAME="526_12">C_Int_Access</A></FONT> <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
+      <b>type</b> C_Int_Access <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>function</b> <FONT COLOR=red><A NAME="527_16">Fld_Info</A></FONT> (<FONT COLOR=red><A NAME="527_26">Fld</A></FONT> : <A HREF="terminal_interface-curses-forms__ads.htm#56_9">Field</A>;
-                         <FONT COLOR=red><A NAME="528_26">L</A></FONT>, <FONT COLOR=red><A NAME="528_29">C</A></FONT>, <FONT COLOR=red><A NAME="528_32">Fr</A></FONT>, <FONT COLOR=red><A NAME="528_36">Fc</A></FONT>, <FONT COLOR=red><A NAME="528_40">Os</A></FONT>, <FONT COLOR=red><A NAME="528_44">Ab</A></FONT> : <A HREF="terminal_interface-curses-forms__adb.htm#526_12">C_Int_Access</A>)
+                         L, C, Fr, Fc, Os, Ab : C_Int_Access)
                          <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-forms__adb.htm#527_16">Fld_Info</A>, "field_info");
 
@@ -558,8 +558,8 @@
                            <A HREF="terminal_interface-curses-forms__ads.htm#498_28">Columns</A> : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#64_12">Column_Count</A>;
                            <A HREF="terminal_interface-curses-forms__ads.htm#499_28">Max</A>     : <b>out</b> Natural)
    <b>is</b>
-      <b>type</b> <FONT COLOR=red><A NAME="557_12">C_Int_Access</A></FONT> <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
-      <b>function</b> <FONT COLOR=red><A NAME="558_16">Dyn_Info</A></FONT> (<FONT COLOR=red><A NAME="558_26">Fld</A></FONT> : <A HREF="terminal_interface-curses-forms__ads.htm#56_9">Field</A>; <FONT COLOR=red><A NAME="558_39">L</A></FONT>, <FONT COLOR=red><A NAME="558_42">C</A></FONT>, <FONT COLOR=red><A NAME="558_45">M</A></FONT> : <A HREF="terminal_interface-curses-forms__adb.htm#557_12">C_Int_Access</A>) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
+      <b>type</b> C_Int_Access <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
+      <b>function</b> <FONT COLOR=red><A NAME="558_16">Dyn_Info</A></FONT> (<FONT COLOR=red><A NAME="558_26">Fld</A></FONT> : <A HREF="terminal_interface-curses-forms__ads.htm#56_9">Field</A>; L, C, M : C_Int_Access) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-forms__adb.htm#558_16">Dyn_Info</A>, "dynamic_field_info");
 
       <FONT COLOR=red><A NAME="561_7">L</A></FONT>, <FONT COLOR=red><A NAME="561_10">C</A></FONT>, <FONT COLOR=red><A NAME="561_13">M</A></FONT> : <b>aliased</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
@@ -642,8 +642,8 @@
                     <A HREF="terminal_interface-curses-forms__ads.htm#531_21">Lines</A>   : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#62_12">Line_Count</A>;
                     <A HREF="terminal_interface-curses-forms__ads.htm#532_21">Columns</A> : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#64_12">Column_Count</A>)
    <b>is</b>
-      <b>type</b> <FONT COLOR=red><A NAME="641_12">C_Int_Access</A></FONT> <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
-      <b>function</b> <FONT COLOR=red><A NAME="642_16">M_Scale</A></FONT> (<FONT COLOR=red><A NAME="642_25">Frm</A></FONT> : <A HREF="terminal_interface-curses-forms__ads.htm#57_9">Form</A>; <FONT COLOR=red><A NAME="642_37">Yp</A></FONT>, <FONT COLOR=red><A NAME="642_41">Xp</A></FONT> : <A HREF="terminal_interface-curses-forms__adb.htm#641_12">C_Int_Access</A>) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
+      <b>type</b> C_Int_Access <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
+      <b>function</b> <FONT COLOR=red><A NAME="642_16">M_Scale</A></FONT> (<FONT COLOR=red><A NAME="642_25">Frm</A></FONT> : <A HREF="terminal_interface-curses-forms__ads.htm#57_9">Form</A>; Yp, Xp : C_Int_Access) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-forms__adb.htm#642_16">M_Scale</A>, "scale_form");
 
       <FONT COLOR=red><A NAME="645_7">X</A></FONT>, <FONT COLOR=red><A NAME="645_10">Y</A></FONT> : <b>aliased</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
@@ -739,7 +739,7 @@
 
       <FONT COLOR=red><A NAME="736_7">Res</A></FONT> : <A HREF="terminal_interface-curses-aux__ads.htm#78_12">Eti_Error</A>;
    <b>begin</b>
-      <b>pragma</b> Assert (<A HREF="terminal_interface-curses-forms__ads.htm#593_24">Flds</A> (<A HREF="terminal_interface-curses-forms__ads.htm#593_24">Flds</A>'Last) = <A HREF="terminal_interface-curses-forms__ads.htm#59_4">Null_Field</A>);
+      <b>pragma</b> Assert (Flds (Flds'Last) = Null_Field);
       <b>if</b> <A HREF="terminal_interface-curses-forms__ads.htm#593_24">Flds</A> (<A HREF="terminal_interface-curses-forms__ads.htm#593_24">Flds</A>'Last) /= <A HREF="terminal_interface-curses-forms__ads.htm#59_4">Null_Field</A> <b>then</b>
          <b>raise</b> <A HREF="terminal_interface-curses-forms__ads.htm#289_4">Form_Exception</A>;
       <b>else</b>
@@ -760,13 +760,13 @@
       <b>function</b> <FONT COLOR=red><A NAME="756_16">C_Fields</A></FONT> (<FONT COLOR=red><A NAME="756_26">Frm</A></FONT> : <A HREF="terminal_interface-curses-forms__ads.htm#57_9">Form</A>) <b>return</b> Pointer;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-forms__adb.htm#756_16">C_Fields</A>, "form_fields");
 
-      <FONT COLOR=red><A NAME="759_7">P</A></FONT> : Pointer := <A HREF="terminal_interface-curses-forms__adb.htm#756_16">C_Fields</A> (<A HREF="terminal_interface-curses-forms__ads.htm#604_21">Frm</A>);
+      P : Pointer := <A HREF="terminal_interface-curses-forms__adb.htm#756_16">C_Fields</A> (<A HREF="terminal_interface-curses-forms__ads.htm#604_21">Frm</A>);
    <b>begin</b>
-      <b>if</b> <A HREF="terminal_interface-curses-forms__adb.htm#759_7">P</A> = <b>null</b> <b>or</b> <b>else</b> <A HREF="terminal_interface-curses-forms__ads.htm#605_21">Index</A> <b>not</b> <b>in</b> 1 .. <A HREF="terminal_interface-curses-forms__ads.htm#610_13">Field_Count</A> (<A HREF="terminal_interface-curses-forms__ads.htm#604_21">Frm</A>) <b>then</b>
+      <b>if</b> P = <b>null</b> <b>or</b> <b>else</b> <A HREF="terminal_interface-curses-forms__ads.htm#605_21">Index</A> <b>not</b> <b>in</b> 1 .. <A HREF="terminal_interface-curses-forms__ads.htm#610_13">Field_Count</A> (<A HREF="terminal_interface-curses-forms__ads.htm#604_21">Frm</A>) <b>then</b>
          <b>raise</b> <A HREF="terminal_interface-curses-forms__ads.htm#289_4">Form_Exception</A>;
       <b>else</b>
-         <A HREF="terminal_interface-curses-forms__adb.htm#759_7">P</A> := <A HREF="terminal_interface-curses-forms__adb.htm#759_7">P</A> + ptrdiff_t (<A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A> (<A HREF="terminal_interface-curses-forms__ads.htm#605_21">Index</A>) - 1);
-         <b>return</b> <A HREF="terminal_interface-curses-forms__adb.htm#759_7">P</A>.<b>all</b>;
+         P := P + ptrdiff_t (<A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A> (<A HREF="terminal_interface-curses-forms__ads.htm#605_21">Index</A>) - 1);
+         <b>return</b> P.<b>all</b>;
       <b>end</b> <b>if</b>;
    <b>end</b> Fields;
    <FONT COLOR=green><EM>--  |</EM></FONT>
@@ -809,7 +809,7 @@
 
       <FONT COLOR=red><A NAME="806_7">M</A></FONT>   : <A HREF="terminal_interface-curses-forms__ads.htm#57_9">Form</A>;
    <b>begin</b>
-      <b>pragma</b> Assert (<A HREF="terminal_interface-curses-forms__ads.htm#626_21">Fields</A> (<A HREF="terminal_interface-curses-forms__ads.htm#626_21">Fields</A>'Last) = <A HREF="terminal_interface-curses-forms__ads.htm#59_4">Null_Field</A>);
+      <b>pragma</b> Assert (Fields (Fields'Last) = Null_Field);
       <b>if</b> <A HREF="terminal_interface-curses-forms__ads.htm#626_21">Fields</A> (<A HREF="terminal_interface-curses-forms__ads.htm#626_21">Fields</A>'Last) /= <A HREF="terminal_interface-curses-forms__ads.htm#59_4">Null_Field</A> <b>then</b>
          <b>raise</b> <A HREF="terminal_interface-curses-forms__ads.htm#289_4">Form_Exception</A>;
       <b>else</b>
@@ -903,7 +903,7 @@
    <b>is</b>
       <FONT COLOR=red><A NAME="900_7">Fos</A></FONT> : <A HREF="terminal_interface-curses-forms__ads.htm#108_9">Form_Option_Set</A>;
    <b>begin</b>
-      <A HREF="terminal_interface-curses-forms__ads.htm#661_14">Get_Options</A> (<A HREF="terminal_interface-curses-forms__ads.htm#666_26">Frm</A>, <A HREF="terminal_interface-curses-forms__adb.htm#900_7">Fos</A>);
+      <A HREF="terminal_interface-curses-forms__ads.htm#666_13">Get_Options</A> (<A HREF="terminal_interface-curses-forms__ads.htm#666_26">Frm</A>, <A HREF="terminal_interface-curses-forms__adb.htm#900_7">Fos</A>);
       <b>return</b> <A HREF="terminal_interface-curses-forms__adb.htm#900_7">Fos</A>;
    <b>end</b> Get_Options;
    <FONT COLOR=green><EM>--  |</EM></FONT>
@@ -1140,7 +1140,7 @@
       <b>if</b> <A HREF="terminal_interface-curses-forms__ads.htm#138_20">FA</A> /= <b>null</b> <b>and</b> <b>then</b> <A HREF="terminal_interface-curses-forms__ads.htm#139_20">Free_Fields</A> <b>then</b>
          <b>for</b> <FONT COLOR=red><A NAME="1137_14">I</A></FONT> <b>in</b> <A HREF="terminal_interface-curses-forms__ads.htm#138_20">FA</A>'First .. (<A HREF="terminal_interface-curses-forms__ads.htm#138_20">FA</A>'Last - 1) <b>loop</b>
             <b>if</b> (<A HREF="terminal_interface-curses-forms__ads.htm#138_20">FA</A> (<A HREF="terminal_interface-curses-forms__adb.htm#1137_14">I</A>) /= <A HREF="terminal_interface-curses-forms__ads.htm#59_4">Null_Field</A>) <b>then</b>
-               <A HREF="terminal_interface-curses-forms__ads.htm#318_14">Delete</A> (<A HREF="terminal_interface-curses-forms__ads.htm#138_20">FA</A> (<A HREF="terminal_interface-curses-forms__adb.htm#1137_14">I</A>));
+               <A HREF="terminal_interface-curses-forms__ads.htm#637_14">Delete</A> (<A HREF="terminal_interface-curses-forms__ads.htm#138_20">FA</A> (<A HREF="terminal_interface-curses-forms__adb.htm#1137_14">I</A>));
             <b>end</b> <b>if</b>;
          <b>end</b> <b>loop</b>;
       <b>end</b> <b>if</b>;
@@ -1152,7 +1152,7 @@
    <b>function</b> <A HREF="terminal_interface-curses-forms__ads.htm#103_13">Default_Field_Options</A><FONT COLOR=red><A NAME="1148_13"></A></FONT> <b>return</b> <A HREF="terminal_interface-curses-forms__ads.htm#68_9">Field_Option_Set</A>
    <b>is</b>
    <b>begin</b>
-      <b>return</b> <A HREF="terminal_interface-curses-forms__ads.htm#419_13">Get_Options</A> (<A HREF="terminal_interface-curses-forms__ads.htm#59_4">Null_Field</A>);
+      <b>return</b> <A HREF="terminal_interface-curses-forms__ads.htm#666_13">Get_Options</A> (<A HREF="terminal_interface-curses-forms__ads.htm#59_4">Null_Field</A>);
    <b>end</b> Default_Field_Options;
 
    <b>function</b> <A HREF="terminal_interface-curses-forms__ads.htm#127_13">Default_Form_Options</A><FONT COLOR=red><A NAME="1154_13"></A></FONT> <b>return</b> <A HREF="terminal_interface-curses-forms__ads.htm#108_9">Form_Option_Set</A>

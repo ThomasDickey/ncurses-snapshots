@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.202 2000/06/10 23:03:01 tom Exp $
+dnl $Id: aclocal.m4,v 1.203 2000/06/17 18:04:47 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -951,19 +951,18 @@ SRC=\[$]3
 echo installing \$SRC in \$DST
 case \$DST in
 /*/include/*)
-	TMP=\${TMPDIR-/tmp}/\`basename \$SRC\`
-	if test ! -f ../headers.sed ; then
-		END=\`basename \$DST\`
-		for i in \`cat \$REF/../*/headers |fgrep -v "#"\`
-		do
-			NAME=\`basename \$i\`
-			echo "s/<\$NAME>/<\$END\/\$NAME>/" >> ../headers.sed
-		done
-	fi
-	rm -f \$TMP
-	sed -f ../headers.sed \$SRC > \$TMP
-	eval \$PRG \$TMP \$DST
-	rm -f \$TMP
+	TMPSRC=\${TMPDIR-/tmp}/\`basename \$SRC\`\$\$
+	TMPSED=\${TMPDIR-/tmp}/headers.sed\$\$
+	END=\`basename \$DST\`
+	for i in \`cat \$REF/../*/headers |fgrep -v "#"\`
+	do
+		NAME=\`basename \$i\`
+		echo "s/<\$NAME>/<\$END\/\$NAME>/" >> \$TMPSED
+	done
+	rm -f \$TMPSRC
+	sed -f \$TMPSED \$SRC > \$TMPSRC
+	eval \$PRG \$TMPSRC \$DST/\$SRC
+	rm -f \$TMPSRC \$TMPSED
 	;;
 *)
 	eval \$PRG \$SRC \$DST

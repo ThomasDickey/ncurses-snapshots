@@ -1,4 +1,4 @@
-<HEAD><TITLE>terminal_interface-curses.ads</TITLE></HEAD>
+<HTML><HEAD><TITLE>terminal_interface-curses.ads</TITLE></HEAD>
 <BODY>
 <HR><DIV ALIGN="center"><H1> File : terminal_interface-curses.ads </H1></DIV><HR>
 <PRE>
@@ -40,7 +40,7 @@
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
 <FONT COLOR=green><EM>--  Author: <A HREF="http://home.t-online.de/home/Juergen.Pfeifer">J&uuml;rgen Pfeifer</A> &lt;<A HREF="mailto:juergen.pfeifer@gmx.net">&lt;juergen.pfeifer@gmx.net&gt;</A>&gt; 1996</EM></FONT>
 <FONT COLOR=green><EM>--  Version Control:</EM></FONT>
-<FONT COLOR=green><EM>--  @Revision: 1.26 @</EM></FONT>
+<FONT COLOR=green><EM>--  @Revision: 1.28 @</EM></FONT>
 <FONT COLOR=green><EM>--  Binding Version 01.00</EM></FONT>
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
 <FONT COLOR=green><EM>--  curses binding.</EM></FONT>
@@ -348,7 +348,7 @@
    <b>for</b> Character_Attribute_Set'Size <b>use</b> 16;
    <FONT COLOR=green><EM>--  Please note: this rep. clause is generated and may be</EM></FONT>
    <FONT COLOR=green><EM>--               different on your system.</EM></FONT>
-   <FONT COLOR=green><EM>--  (n)curses uses all but the lowes 16 Bits for Attributes.</EM></FONT>
+   <FONT COLOR=green><EM>--  (n)curses uses all but the lowest 16 Bits for Attributes.</EM></FONT>
 
    Normal_Video : <b>constant</b> Character_Attribute_Set := (<b>others</b> =&gt; False);
 
@@ -432,7 +432,7 @@
    <b>pragma</b> Import (C, ACS_Map, "acs_map");
    <FONT COLOR=green><EM>--</EM></FONT>
    <FONT COLOR=green><EM>--</EM></FONT>
-   <FONT COLOR=green><EM>--  Constants for several symbols from the Alternate Character Set</EM></FONT>
+   <FONT COLOR=green><EM>--  Constants for several characters from the Alternate Character Set</EM></FONT>
    <FONT COLOR=green><EM>--  You must use this constants as indices into the ACS_Map array</EM></FONT>
    <FONT COLOR=green><EM>--  to get the corresponding attributed character at runtime.</EM></FONT>
    <FONT COLOR=green><EM>--</EM></FONT>
@@ -550,7 +550,7 @@
    <b>procedure</b> Add_With_Immediate_Echo
      (<FONT COLOR=red><A NAME="547_7">Win</A></FONT> : <b>in</b> Window := Standard_Window;
       Ch  : <b>in</b> Character);
-   <FONT COLOR=green><EM>--  Add a character and do an immediate resfresh of the screen.</EM></FONT>
+   <FONT COLOR=green><EM>--  Add a character and do an immediate refresh of the screen.</EM></FONT>
    <b>pragma</b> Inline (Add_With_Immediate_Echo);
 
    <FONT COLOR=green><EM>--  |=====================================================================</EM></FONT>
@@ -759,7 +759,7 @@
    <b>pragma</b> Inline (Function_Key);
 
    <b>function</b> Function_Key_Code (Key : Function_Key_Number) <b>return</b> Real_Key_Code;
-   <FONT COLOR=green><EM>--  Return the key code for a given functionkey number.</EM></FONT>
+   <FONT COLOR=green><EM>--  Return the key code for a given function-key number.</EM></FONT>
    <b>pragma</b> Inline (Function_Key_Code);
 
    <FONT COLOR=green><EM>--  |=====================================================================</EM></FONT>
@@ -902,7 +902,7 @@
    <FONT COLOR=green><EM>--  #1A NAME="AFU_49"#2|</EM></FONT>
    <b>procedure</b> Set_Timeout_Mode (<FONT COLOR=red><A NAME="899_32">Win</A></FONT>    : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#895_9">Window</A> := Standard_Window;
                                <FONT COLOR=red><A NAME="900_32">Mode</A></FONT>   : <b>in</b> Timeout_Mode;
-                               Amount : <b>in</b> Natural); <FONT COLOR=green><EM>--  in Miliseconds</EM></FONT>
+                               Amount : <b>in</b> Natural); <FONT COLOR=green><EM>--  in Milliseconds</EM></FONT>
    <FONT COLOR=green><EM>--  AKA: <A HREF="../man/curs_inopts.3x.html">wtimeout()</A></EM></FONT>
    <FONT COLOR=green><EM>--  Instead of overloading the semantic of the sign of amount, we</EM></FONT>
    <FONT COLOR=green><EM>--  introduce the Timeout_Mode parameter. This should improve</EM></FONT>
@@ -1394,11 +1394,11 @@
    <FONT COLOR=green><EM>--  | Man page <A HREF="../man/curs_slk.3x.html">curs_slk.3x</A></EM></FONT>
    <FONT COLOR=green><EM>--  |=====================================================================</EM></FONT>
 
-   <b>type</b> Soft_Label_Key_Format <b>is</b> (<FONT COLOR=red><A NAME="1393_35">Three_Two_Three</A></FONT>,
-                                  <FONT COLOR=red><A NAME="1394_35">Four_Four</A></FONT>,
-                                  <FONT COLOR=red><A NAME="1395_35">PC_Style</A></FONT>,              <FONT COLOR=green><EM>--  ncurses specific</EM></FONT>
+   <b>type</b> Soft_Label_Key_Format <b>is</b> (Three_Two_Three,
+                                  Four_Four,
+                                  PC_Style,              <FONT COLOR=green><EM>--  ncurses specific</EM></FONT>
         <FONT COLOR=red><A NAME="1396_9"> </A></FONT>                         PC_Style_With_Index);  <FONT COLOR=green><EM>--  "</EM></FONT>
-   <b>type</b> <FONT COLOR=red><A NAME="1397_9">Label_Number</A></FONT> <b>is</b> <b>new</b> Positive <b>range</b> 1 .. <FONT COLOR=red><A NAME="1397_49">12</A></FONT>;
+   <b>type</b> <FONT COLOR=red><A NAME="1397_9">Label_Number</A></FONT> <b>is</b> <b>new</b> Positive <b>range</b> 1 .. 12;
    <b>type</b> Label_Justification <b>is</b> (Left, Centered, Right);
 
    <FONT COLOR=green><EM>--  #1A NAME="AFU_106"#2|</EM></FONT>
@@ -1598,7 +1598,7 @@
 
    <FONT COLOR=green><EM>--  #1A NAME="AFU_138"#2|</EM></FONT>
    <b>procedure</b> Start_Color;
-   <FONT COLOR=green><EM>--  AKA: <A HREF="../man/curs_color.3x.html">start_clolor()</A></EM></FONT>
+   <FONT COLOR=green><EM>--  AKA: <A HREF="../man/curs_color.3x.html">start_color()</A></EM></FONT>
    <b>pragma</b> Import (C, Start_Color, "start_color");
 
    <FONT COLOR=green><EM>--  #1A NAME="AFU_139"#2|</EM></FONT>
@@ -1702,7 +1702,7 @@
    <b>pragma</b> Inline (Nap_Milli_Seconds);
 
    <FONT COLOR=green><EM>--  |=====================================================================</EM></FONT>
-   <FONT COLOR=green><EM>--  | Some usefull helpers.</EM></FONT>
+   <FONT COLOR=green><EM>--  | Some useful helpers.</EM></FONT>
    <FONT COLOR=green><EM>--  |=====================================================================</EM></FONT>
    <b>type</b> Transform_Direction <b>is</b> (From_Screen, To_Screen);
    <b>procedure</b> Transform_Coordinates
@@ -1711,7 +1711,7 @@
       <FONT COLOR=red><A NAME="1707_7">Column</A></FONT> : <b>in</b> <b>out</b> Column_Position;
       Dir    : <b>in</b> Transform_Direction := From_Screen);
    <FONT COLOR=green><EM>--  This procedure transforms screen coordinates into coordinates relative</EM></FONT>
-   <FONT COLOR=green><EM>--  to the window and vice versa, depending on the Dir parmeter.</EM></FONT>
+   <FONT COLOR=green><EM>--  to the window and vice versa, depending on the Dir parameter.</EM></FONT>
    <FONT COLOR=green><EM>--  Screen coordinates are the position informations on the physical device.</EM></FONT>
    <FONT COLOR=green><EM>--  An Curses_Exception will be raised if Line and Column are not in the</EM></FONT>
    <FONT COLOR=green><EM>--  Window or if you pass the Null_Window as argument.</EM></FONT>

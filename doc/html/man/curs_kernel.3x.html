@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>def_prog_mode</B>,       <B>def_shell_mode</B>,      <B>reset_prog_mode</B>,
        <B>reset_shell_mode</B>, <B>resetty</B>, <B>savetty</B>, <B>getsyx</B>, <B>setsyx</B>, <B>ripof-</B>
        <B>fline</B>, <B>curs_set</B>, <B>napms</B> - low-level <B>curses</B> routines
@@ -58,6 +61,8 @@
        The <B>setsyx</B> routine sets the virtual screen cursor to <I>y</I>, <I>x</I>.
        If <I>y</I> and <I>x</I> are both <B>-1</B>, then <B>leaveok</B> is set.  The two rou-
        tines <B>getsyx</B> and <B>setsyx</B> are  designed  to  be  used  by  a
+       library routine, which manipulates <B>curses</B> windows but does
+       not want to change the current position of  the  program's
        cursor.   The  library  routine  would  call <B>getsyx</B> at the
        beginning, do its manipulation of its own  windows,  do  a
        <B>wnoutrefresh</B>  on  its  windows, call <B>setsyx</B>, and then call
@@ -116,6 +121,8 @@
 
 </PRE>
 <H2>PORTABILITY</H2><PRE>
+       The functions <B>setsyx</B> and <B>getsyx</B> are not described  in  the
+       XSI  Curses standard, Issue 4.  All other functions are as
        described in XSI Curses.
 
        The SVr4 documentation describes <B>setsyx</B> and <B>getsyx</B> as hav-
@@ -127,6 +134,7 @@
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>,       <B><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></B>,      <B><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></B>,
        <B><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></B>, <B><A HREF="curs_scr_dump.3x.html">curs_scr_dump(3x)</A></B>, <B><A HREF="curs_slk.3x.html">curs_slk(3x)</A></B>
+
 
 
 

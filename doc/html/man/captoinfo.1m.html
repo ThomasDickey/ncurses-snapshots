@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>captoinfo</B>  - convert a <I>termcap</I> description into a <I>terminfo</I>
        description
 
@@ -62,6 +65,8 @@
        CV       ve     AT&amp;T    cursor_normal
        DS       mh     AT&amp;T    enter_dim_mode
        EE       me     AT&amp;T    exit_attribute_mode
+
+       FE       LF     AT&amp;T    label_on
        FL       LO     AT&amp;T    label_off
        XS       mk     AT&amp;T    enter_secure_mode
        EN       @7     XENIX   key_end
@@ -114,6 +119,8 @@
        Gv    vertical line
        Gc    intersection
        GG    acs magic cookie count
+
+       If  the  single-line  capabilities occur in an entry, they
        will automatically be composed into an <B>acsc</B>  string.   The
        double-line capabilities and <B>GG</B> are discarded with a warn-
        ing message.
@@ -158,6 +165,7 @@
 </PRE>
 <H2>AUTHOR</H2><PRE>
        Eric S. Raymond &lt;esr@snark.thyrsus.com&gt;
+
 
 
 

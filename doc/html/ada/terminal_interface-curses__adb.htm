@@ -1,4 +1,4 @@
-<HEAD><TITLE>terminal_interface-curses.adb</TITLE></HEAD>
+<HTML><HEAD><TITLE>terminal_interface-curses.adb</TITLE></HEAD>
 <BODY>
 <HR><DIV ALIGN="center"><H1> File : terminal_interface-curses.adb </H1></DIV><HR>
 <PRE>
@@ -52,7 +52,7 @@
 <b>with</b> Ada.Strings.Fixed;
 <b>with</b> Ada.Unchecked_Conversion;
 
-<b>package</b> <b>body</b> <A HREF="terminal_interface__ads.htm#41_9">Terminal_Interface</A>.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A><FONT COLOR=red><A NAME="51_33"></A></FONT> <b>is</b>
+<b>package</b> <b>body</b> Terminal_Interface.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A><FONT COLOR=red><A NAME="51_33"></A></FONT> <b>is</b>
 
    <b>use</b> <A HREF="terminal_interface-curses-aux__ads.htm#50_35">Aux</A>;
    <b>use</b> <b>type</b> System.Bit_Order;
@@ -79,13 +79,13 @@
       <b>function</b> <FONT COLOR=red><A NAME="75_16">To_Pointer</A></FONT> <b>is</b> <b>new</b>
         Ada.Unchecked_Conversion (<A HREF="terminal_interface-curses__ads.htm#56_9">Window</A>, Pointer);
 
-      <FONT COLOR=red><A NAME="78_7">P</A></FONT> : Pointer := <A HREF="terminal_interface-curses__adb.htm#75_16">To_Pointer</A> (<A HREF="terminal_interface-curses__adb.htm#65_28">Win</A>);
+      P : Pointer := <A HREF="terminal_interface-curses__adb.htm#75_16">To_Pointer</A> (<A HREF="terminal_interface-curses__adb.htm#65_28">Win</A>);
    <b>begin</b>
       <b>if</b> <A HREF="terminal_interface-curses__adb.htm#65_28">Win</A> = <A HREF="terminal_interface-curses__ads.htm#57_4">Null_Window</A> <b>then</b>
          <b>raise</b> <A HREF="terminal_interface-curses__ads.htm#381_4">Curses_Exception</A>;
       <b>else</b>
-         <A HREF="terminal_interface-curses__adb.htm#78_7">P</A> := <A HREF="terminal_interface-curses__adb.htm#78_7">P</A> + ptrdiff_t (<A HREF="terminal_interface-curses__adb.htm#66_28">Offset</A>);
-         <b>return</b> <A HREF="terminal_interface-curses__adb.htm#78_7">P</A>.<b>all</b>;
+         P := P + ptrdiff_t (<A HREF="terminal_interface-curses__adb.htm#66_28">Offset</A>);
+         <b>return</b> P.<b>all</b>;
       <b>end</b> <b>if</b>;
    <b>end</b> W_Get_Element;
 
@@ -196,7 +196,7 @@
                   <A HREF="terminal_interface-curses__ads.htm#519_19">Ch</A>  : <b>in</b> Character)
    <b>is</b>
    <b>begin</b>
-      <A HREF="terminal_interface-curses__ads.htm#514_14">Add</A> (<A HREF="terminal_interface-curses__ads.htm#518_19">Win</A>,
+      <A HREF="terminal_interface-curses__ads.htm#518_14">Add</A> (<A HREF="terminal_interface-curses__ads.htm#518_19">Win</A>,
            <A HREF="terminal_interface-curses__ads.htm#350_9">Attributed_Character</A>'(Ch    =&gt; <A HREF="terminal_interface-curses__ads.htm#519_19">Ch</A>,
                                  Color =&gt; <A HREF="terminal_interface-curses__ads.htm#296_9">Color_Pair</A>'First,
                                  Attr  =&gt; <A HREF="terminal_interface-curses__ads.htm#348_4">Normal_Video</A>));
@@ -228,7 +228,7 @@
       <A HREF="terminal_interface-curses__ads.htm#535_7">Ch</A>     : <b>in</b> Character)
    <b>is</b>
    <b>begin</b>
-      <A HREF="terminal_interface-curses__ads.htm#524_14">Add</A> (<A HREF="terminal_interface-curses__ads.htm#532_7">Win</A>,
+      <A HREF="terminal_interface-curses__ads.htm#531_14">Add</A> (<A HREF="terminal_interface-curses__ads.htm#532_7">Win</A>,
            <A HREF="terminal_interface-curses__ads.htm#533_7">Line</A>,
            <A HREF="terminal_interface-curses__ads.htm#534_7">Column</A>,
            <A HREF="terminal_interface-curses__ads.htm#350_9">Attributed_Character</A>'(Ch    =&gt; <A HREF="terminal_interface-curses__ads.htm#535_7">Ch</A>,
@@ -254,7 +254,7 @@
       <A HREF="terminal_interface-curses__ads.htm#547_7">Ch</A>  : <b>in</b> Character)
    <b>is</b>
    <b>begin</b>
-      <A HREF="terminal_interface-curses__ads.htm#540_14">Add_With_Immediate_Echo</A>
+      <A HREF="terminal_interface-curses__ads.htm#545_14">Add_With_Immediate_Echo</A>
         (<A HREF="terminal_interface-curses__ads.htm#546_7">Win</A>,
          <A HREF="terminal_interface-curses__ads.htm#350_9">Attributed_Character</A>'(Ch    =&gt; <A HREF="terminal_interface-curses__ads.htm#547_7">Ch</A>,
                                Color =&gt; <A HREF="terminal_interface-curses__ads.htm#296_9">Color_Pair</A>'First,
@@ -408,9 +408,9 @@
                   <A HREF="terminal_interface-curses__ads.htm#639_19">Str</A> : <b>in</b> String;
                   <A HREF="terminal_interface-curses__ads.htm#640_19">Len</A> : <b>in</b> Integer := -1)
    <b>is</b>
-      <b>type</b> <FONT COLOR=red><A NAME="407_12">Char_Ptr</A></FONT> <b>is</b> <b>access</b> <b>all</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.char;
+      <b>type</b> Char_Ptr <b>is</b> <b>access</b> <b>all</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.char;
       <b>function</b> <FONT COLOR=red><A NAME="408_16">Waddnstr</A></FONT> (<FONT COLOR=red><A NAME="408_26">Win</A></FONT> : <A HREF="terminal_interface-curses__ads.htm#56_9">Window</A>;
-                         <FONT COLOR=red><A NAME="409_26">Str</A></FONT> : <A HREF="terminal_interface-curses__adb.htm#407_12">Char_Ptr</A>;
+                         Str : Char_Ptr;
                          <FONT COLOR=red><A NAME="410_26">Len</A></FONT> : <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A> := -1) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses__adb.htm#408_16">Waddnstr</A>, "waddnstr");
 
@@ -432,7 +432,7 @@
    <b>is</b>
    <b>begin</b>
       <A HREF="terminal_interface-curses__ads.htm#503_14">Move_Cursor</A> (<A HREF="terminal_interface-curses__ads.htm#645_19">Win</A>, <A HREF="terminal_interface-curses__ads.htm#646_19">Line</A>, <A HREF="terminal_interface-curses__ads.htm#647_19">Column</A>);
-      <A HREF="terminal_interface-curses__ads.htm#638_14">Add</A> (<A HREF="terminal_interface-curses__ads.htm#645_19">Win</A>, <A HREF="terminal_interface-curses__ads.htm#648_19">Str</A>, <A HREF="terminal_interface-curses__ads.htm#649_19">Len</A>);
+      <A HREF="terminal_interface-curses__ads.htm#645_14">Add</A> (<A HREF="terminal_interface-curses__ads.htm#645_19">Win</A>, <A HREF="terminal_interface-curses__ads.htm#648_19">Str</A>, <A HREF="terminal_interface-curses__ads.htm#649_19">Len</A>);
    <b>end</b> Add;
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
    <b>procedure</b> <A HREF="terminal_interface-curses__ads.htm#658_14">Add</A><FONT COLOR=red><A NAME="434_14"></A></FONT>
@@ -440,9 +440,9 @@
       <A HREF="terminal_interface-curses__ads.htm#659_19">Str</A> : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#374_9">Attributed_String</A>;
       <A HREF="terminal_interface-curses__ads.htm#660_19">Len</A> : <b>in</b> Integer := -1)
    <b>is</b>
-      <b>type</b> <FONT COLOR=red><A NAME="439_12">Chtype_Ptr</A></FONT> <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses__ads.htm#350_9">Attributed_Character</A>;
+      <b>type</b> Chtype_Ptr <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses__ads.htm#350_9">Attributed_Character</A>;
       <b>function</b> <FONT COLOR=red><A NAME="440_16">Waddchnstr</A></FONT> (<FONT COLOR=red><A NAME="440_28">Win</A></FONT> : <A HREF="terminal_interface-curses__ads.htm#56_9">Window</A>;
-                           <FONT COLOR=red><A NAME="441_28">Str</A></FONT> : <A HREF="terminal_interface-curses__adb.htm#439_12">Chtype_Ptr</A>;
+                           Str : Chtype_Ptr;
                            <FONT COLOR=red><A NAME="442_28">Len</A></FONT> : <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A> := -1) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses__adb.htm#440_16">Waddchnstr</A>, "waddchnstr");
 
@@ -468,7 +468,7 @@
    <b>is</b>
    <b>begin</b>
       <A HREF="terminal_interface-curses__ads.htm#503_14">Move_Cursor</A> (<A HREF="terminal_interface-curses__ads.htm#665_19">Win</A>, <A HREF="terminal_interface-curses__ads.htm#666_19">Line</A>, <A HREF="terminal_interface-curses__ads.htm#667_19">Column</A>);
-      <A HREF="terminal_interface-curses__ads.htm#658_14">Add</A> (<A HREF="terminal_interface-curses__ads.htm#665_19">Win</A>, <A HREF="terminal_interface-curses__ads.htm#668_19">Str</A>, <A HREF="terminal_interface-curses__ads.htm#669_19">Len</A>);
+      <A HREF="terminal_interface-curses__ads.htm#665_14">Add</A> (<A HREF="terminal_interface-curses__ads.htm#665_19">Win</A>, <A HREF="terminal_interface-curses__ads.htm#668_19">Str</A>, <A HREF="terminal_interface-curses__ads.htm#669_19">Len</A>);
    <b>end</b> Add;
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
    <b>procedure</b> <A HREF="terminal_interface-curses__ads.htm#679_14">Border</A><FONT COLOR=red><A NAME="470_14"></A></FONT>
@@ -670,8 +670,8 @@
                                      <b>return</b> <A HREF="terminal_interface-curses__ads.htm#304_9">Character_Attribute_Set</A>
    <b>is</b>
       <b>function</b> <FONT COLOR=red><A NAME="668_16">Wattrget</A></FONT> (<FONT COLOR=red><A NAME="668_26">Win</A></FONT> : <A HREF="terminal_interface-curses__ads.htm#56_9">Window</A>;
-                         <FONT COLOR=red><A NAME="669_26">Atr</A></FONT> : <b>access</b> <A HREF="terminal_interface-curses-aux__ads.htm#64_12">C_AttrType</A>;
-                         <FONT COLOR=red><A NAME="670_26">Col</A></FONT> : <b>access</b> <A HREF="terminal_interface-curses-aux__ads.htm#56_12">C_Short</A>;
+                         Atr : <b>access</b> <A HREF="terminal_interface-curses-aux__ads.htm#64_12">C_AttrType</A>;
+                         Col : <b>access</b> <A HREF="terminal_interface-curses-aux__ads.htm#56_12">C_Short</A>;
                          <FONT COLOR=red><A NAME="671_26">Opt</A></FONT> : System.Address) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses__adb.htm#668_16">Wattrget</A>, "wattr_get");
 
@@ -693,8 +693,8 @@
                                      <b>return</b> <A HREF="terminal_interface-curses__ads.htm#296_9">Color_Pair</A>
    <b>is</b>
       <b>function</b> <FONT COLOR=red><A NAME="691_16">Wattrget</A></FONT> (<FONT COLOR=red><A NAME="691_26">Win</A></FONT> : <A HREF="terminal_interface-curses__ads.htm#56_9">Window</A>;
-                         <FONT COLOR=red><A NAME="692_26">Atr</A></FONT> : <b>access</b> <A HREF="terminal_interface-curses-aux__ads.htm#64_12">C_AttrType</A>;
-                         <FONT COLOR=red><A NAME="693_26">Col</A></FONT> : <b>access</b> <A HREF="terminal_interface-curses-aux__ads.htm#56_12">C_Short</A>;
+                         Atr : <b>access</b> <A HREF="terminal_interface-curses-aux__ads.htm#64_12">C_AttrType</A>;
+                         Col : <b>access</b> <A HREF="terminal_interface-curses-aux__ads.htm#56_12">C_Short</A>;
                          <FONT COLOR=red><A NAME="694_26">Opt</A></FONT> : System.Address) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses__adb.htm#691_16">Wattrget</A>, "wattr_get");
 
@@ -760,7 +760,7 @@
    <b>is</b>
    <b>begin</b>
       <A HREF="terminal_interface-curses__ads.htm#503_14">Move_Cursor</A> (<A HREF="terminal_interface-curses__ads.htm#807_7">Win</A>, <A HREF="terminal_interface-curses__ads.htm#808_7">Line</A>, <A HREF="terminal_interface-curses__ads.htm#809_7">Column</A>);
-      <A HREF="terminal_interface-curses__ads.htm#798_14">Change_Attributes</A> (<A HREF="terminal_interface-curses__ads.htm#807_7">Win</A>, <A HREF="terminal_interface-curses__ads.htm#810_7">Count</A>, <A HREF="terminal_interface-curses__ads.htm#811_7">Attr</A>, <A HREF="terminal_interface-curses__ads.htm#812_7">Color</A>);
+      <A HREF="terminal_interface-curses__ads.htm#806_14">Change_Attributes</A> (<A HREF="terminal_interface-curses__ads.htm#807_7">Win</A>, <A HREF="terminal_interface-curses__ads.htm#810_7">Count</A>, <A HREF="terminal_interface-curses__ads.htm#811_7">Attr</A>, <A HREF="terminal_interface-curses__ads.htm#812_7">Color</A>);
    <b>end</b> Change_Attributes;
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
    <b>procedure</b> <A HREF="terminal_interface-curses__ads.htm#821_14">Beep</A><FONT COLOR=red><A NAME="762_14"></A></FONT>
@@ -1538,7 +1538,7 @@
       <A HREF="terminal_interface-curses__ads.htm#1243_7">Ch</A>  : <b>in</b> Character)
    <b>is</b>
    <b>begin</b>
-      <A HREF="terminal_interface-curses__ads.htm#1236_14">Add_Character_To_Pad_And_Echo_It</A>
+      <A HREF="terminal_interface-curses__ads.htm#1241_14">Add_Character_To_Pad_And_Echo_It</A>
         (<A HREF="terminal_interface-curses__ads.htm#1242_7">Pad</A>,
          <A HREF="terminal_interface-curses__ads.htm#350_9">Attributed_Character</A>'(Ch    =&gt; <A HREF="terminal_interface-curses__ads.htm#1243_7">Ch</A>,
                                Color =&gt; <A HREF="terminal_interface-curses__ads.htm#296_9">Color_Pair</A>'First,
@@ -1640,9 +1640,9 @@
                      <A HREF="terminal_interface-curses__ads.htm#1311_22">Str</A> : <b>in</b> String;
                      <A HREF="terminal_interface-curses__ads.htm#1312_22">Len</A> : <b>in</b> Integer := -1)
    <b>is</b>
-      <b>type</b> <FONT COLOR=red><A NAME="1639_12">Char_Ptr</A></FONT> <b>is</b> <b>access</b> <b>all</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.char;
+      <b>type</b> Char_Ptr <b>is</b> <b>access</b> <b>all</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.char;
       <b>function</b> <FONT COLOR=red><A NAME="1640_16">Winsnstr</A></FONT> (<FONT COLOR=red><A NAME="1640_26">Win</A></FONT> : <A HREF="terminal_interface-curses__ads.htm#56_9">Window</A>;
-                         <FONT COLOR=red><A NAME="1641_26">Str</A></FONT> : <A HREF="terminal_interface-curses__adb.htm#1639_12">Char_Ptr</A>;
+                         Str : Char_Ptr;
                          <FONT COLOR=red><A NAME="1642_26">Len</A></FONT> : Integer := -1) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses__adb.htm#1640_16">Winsnstr</A>, "winsnstr");
 
@@ -1662,11 +1662,11 @@
       <A HREF="terminal_interface-curses__ads.htm#1320_22">Str</A>    : <b>in</b> String;
       <A HREF="terminal_interface-curses__ads.htm#1321_22">Len</A>    : <b>in</b> Integer := -1)
    <b>is</b>
-      <b>type</b> <FONT COLOR=red><A NAME="1661_12">Char_Ptr</A></FONT> <b>is</b> <b>access</b> <b>all</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.char;
+      <b>type</b> Char_Ptr <b>is</b> <b>access</b> <b>all</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.char;
       <b>function</b> <FONT COLOR=red><A NAME="1662_16">Mvwinsnstr</A></FONT> (<FONT COLOR=red><A NAME="1662_28">Win</A></FONT>    : <A HREF="terminal_interface-curses__ads.htm#56_9">Window</A>;
                            <FONT COLOR=red><A NAME="1663_28">Line</A></FONT>   : <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
                            <FONT COLOR=red><A NAME="1664_28">Column</A></FONT> : <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
-                           <FONT COLOR=red><A NAME="1665_28">Str</A></FONT>    : <A HREF="terminal_interface-curses__adb.htm#1661_12">Char_Ptr</A>;
+                           Str    : Char_Ptr;
                            <FONT COLOR=red><A NAME="1666_28">Len</A></FONT>    : <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses__adb.htm#1662_16">Mvwinsnstr</A>, "mvwinsnstr");
 
@@ -1719,7 +1719,7 @@
    <b>is</b>
    <b>begin</b>
       <A HREF="terminal_interface-curses__ads.htm#503_14">Move_Cursor</A> (<A HREF="terminal_interface-curses__ads.htm#1338_20">Win</A>, <A HREF="terminal_interface-curses__ads.htm#1339_20">Line</A>, <A HREF="terminal_interface-curses__ads.htm#1340_20">Column</A>);
-      <A HREF="terminal_interface-curses__ads.htm#1331_14">Peek</A> (<A HREF="terminal_interface-curses__ads.htm#1338_20">Win</A>, <A HREF="terminal_interface-curses__ads.htm#1341_20">Str</A>, <A HREF="terminal_interface-curses__ads.htm#1342_20">Len</A>);
+      <A HREF="terminal_interface-curses__ads.htm#1338_14">Peek</A> (<A HREF="terminal_interface-curses__ads.htm#1338_20">Win</A>, <A HREF="terminal_interface-curses__ads.htm#1341_20">Str</A>, <A HREF="terminal_interface-curses__ads.htm#1342_20">Len</A>);
    <b>end</b> Peek;
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
    <b>procedure</b> <A HREF="terminal_interface-curses__ads.htm#1351_14">Peek</A><FONT COLOR=red><A NAME="1721_14"></A></FONT>
@@ -1727,9 +1727,9 @@
       <A HREF="terminal_interface-curses__ads.htm#1352_20">Str</A> : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#374_9">Attributed_String</A>;
       <A HREF="terminal_interface-curses__ads.htm#1353_20">Len</A> : <b>in</b>  Integer := -1)
    <b>is</b>
-      <b>type</b> <FONT COLOR=red><A NAME="1726_12">Chtype_Ptr</A></FONT> <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses__ads.htm#350_9">Attributed_Character</A>;
+      <b>type</b> Chtype_Ptr <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses__ads.htm#350_9">Attributed_Character</A>;
       <b>function</b> <FONT COLOR=red><A NAME="1727_16">Winchnstr</A></FONT> (<FONT COLOR=red><A NAME="1727_27">Win</A></FONT> : <A HREF="terminal_interface-curses__ads.htm#56_9">Window</A>;
-                          <FONT COLOR=red><A NAME="1728_27">Str</A></FONT> : <A HREF="terminal_interface-curses__adb.htm#1726_12">Chtype_Ptr</A>;
+                          Str : Chtype_Ptr;
                           <FONT COLOR=red><A NAME="1729_27">Len</A></FONT> : <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses__adb.htm#1727_16">Winchnstr</A>, "winchnstr");
 
@@ -1768,7 +1768,7 @@
    <b>is</b>
    <b>begin</b>
       <A HREF="terminal_interface-curses__ads.htm#503_14">Move_Cursor</A> (<A HREF="terminal_interface-curses__ads.htm#1358_20">Win</A>, <A HREF="terminal_interface-curses__ads.htm#1359_20">Line</A>, <A HREF="terminal_interface-curses__ads.htm#1360_20">Column</A>);
-      <A HREF="terminal_interface-curses__ads.htm#1351_14">Peek</A> (<A HREF="terminal_interface-curses__ads.htm#1358_20">Win</A>, <A HREF="terminal_interface-curses__ads.htm#1361_20">Str</A>, <A HREF="terminal_interface-curses__ads.htm#1362_20">Len</A>);
+      <A HREF="terminal_interface-curses__ads.htm#1358_14">Peek</A> (<A HREF="terminal_interface-curses__ads.htm#1358_20">Win</A>, <A HREF="terminal_interface-curses__ads.htm#1361_20">Str</A>, <A HREF="terminal_interface-curses__ads.htm#1362_20">Len</A>);
    <b>end</b> Peek;
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
    <b>procedure</b> <A HREF="terminal_interface-curses__ads.htm#1372_14">Get</A><FONT COLOR=red><A NAME="1770_14"></A></FONT> (<A HREF="terminal_interface-curses__ads.htm#1372_19">Win</A> : <b>in</b>  <A HREF="terminal_interface-curses__ads.htm#56_9">Window</A> := <A HREF="terminal_interface-curses__ads.htm#473_13">Standard_Window</A>;
@@ -1809,7 +1809,7 @@
    <b>is</b>
    <b>begin</b>
       <A HREF="terminal_interface-curses__ads.htm#503_14">Move_Cursor</A> (<A HREF="terminal_interface-curses__ads.htm#1378_19">Win</A>, <A HREF="terminal_interface-curses__ads.htm#1379_19">Line</A>, <A HREF="terminal_interface-curses__ads.htm#1380_19">Column</A>);
-      <A HREF="terminal_interface-curses__ads.htm#1372_14">Get</A> (<A HREF="terminal_interface-curses__ads.htm#1378_19">Win</A>, <A HREF="terminal_interface-curses__ads.htm#1381_19">Str</A>, <A HREF="terminal_interface-curses__ads.htm#1382_19">Len</A>);
+      <A HREF="terminal_interface-curses__ads.htm#1378_14">Get</A> (<A HREF="terminal_interface-curses__ads.htm#1378_19">Win</A>, <A HREF="terminal_interface-curses__ads.htm#1381_19">Str</A>, <A HREF="terminal_interface-curses__ads.htm#1382_19">Len</A>);
    <b>end</b> Get;
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
    <b>procedure</b> <A HREF="terminal_interface-curses__ads.htm#1400_14">Init_Soft_Label_Keys</A><FONT COLOR=red><A NAME="1811_14"></A></FONT>
@@ -1827,9 +1827,9 @@
                                  <A HREF="terminal_interface-curses__ads.htm#1407_34">Text</A>  : <b>in</b> String;
                                  <A HREF="terminal_interface-curses__ads.htm#1408_34">Fmt</A>   : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#1397_9">Label_Justification</A> := <A HREF="terminal_interface-curses__ads.htm#1397_33">Left</A>)
    <b>is</b>
-      <b>type</b> <FONT COLOR=red><A NAME="1826_12">Char_Ptr</A></FONT> <b>is</b> <b>access</b> <b>all</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.char;
+      <b>type</b> Char_Ptr <b>is</b> <b>access</b> <b>all</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.char;
       <b>function</b> <FONT COLOR=red><A NAME="1827_16">Slk_Set</A></FONT> (<FONT COLOR=red><A NAME="1827_25">Label</A></FONT> : <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
-                        <FONT COLOR=red><A NAME="1828_25">Txt</A></FONT>   : <A HREF="terminal_interface-curses__adb.htm#1826_12">Char_Ptr</A>;
+                        Txt   : Char_Ptr;
                         <FONT COLOR=red><A NAME="1829_25">Fmt</A></FONT>   : <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses__adb.htm#1827_16">Slk_Set</A>, "slk_set");
 
@@ -1871,7 +1871,7 @@
       <b>function</b> <FONT COLOR=red><A NAME="1867_16">Slk_Label</A></FONT> (<FONT COLOR=red><A NAME="1867_27">Label</A></FONT> : <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>) <b>return</b> chars_ptr;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses__adb.htm#1867_16">Slk_Label</A>, "slk_label");
    <b>begin</b>
-      <A HREF="terminal_interface-curses-aux__ads.htm#116_14">Fill_String</A> (<A HREF="terminal_interface-curses__adb.htm#1867_16">Slk_Label</A> (<A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A> (<A HREF="terminal_interface-curses__ads.htm#1423_34">Label</A>)), <A HREF="terminal_interface-curses__ads.htm#1424_34">Text</A>);
+      <A HREF="terminal_interface-curses-aux__ads.htm#121_13">Fill_String</A> (<A HREF="terminal_interface-curses__adb.htm#1867_16">Slk_Label</A> (<A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A> (<A HREF="terminal_interface-curses__ads.htm#1423_34">Label</A>)), <A HREF="terminal_interface-curses__ads.htm#1424_34">Text</A>);
    <b>end</b> Get_Soft_Label_Key;
 
    <b>function</b> <A HREF="terminal_interface-curses__ads.htm#1428_13">Get_Soft_Label_Key</A><FONT COLOR=red><A NAME="1873_13"></A></FONT> (<A HREF="terminal_interface-curses__ads.htm#1428_33">Label</A> : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#1396_9">Label_Number</A>) <b>return</b> String
@@ -1999,8 +1999,8 @@
    <b>procedure</b> <A HREF="terminal_interface-curses__ads.htm#1492_14">Define_Key</A><FONT COLOR=red><A NAME="1995_14"></A></FONT> (<A HREF="terminal_interface-curses__ads.htm#1492_26">Definition</A> : <b>in</b> String;
                          <A HREF="terminal_interface-curses__ads.htm#1493_26">Key</A>        : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#76_12">Special_Key_Code</A>)
    <b>is</b>
-      <b>type</b> <FONT COLOR=red><A NAME="1998_12">Char_Ptr</A></FONT> <b>is</b> <b>access</b> <b>all</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.char;
-      <b>function</b> <FONT COLOR=red><A NAME="1999_16">Defkey</A></FONT> (<FONT COLOR=red><A NAME="1999_24">Def</A></FONT> : <A HREF="terminal_interface-curses__adb.htm#1998_12">Char_Ptr</A>;
+      <b>type</b> Char_Ptr <b>is</b> <b>access</b> <b>all</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.char;
+      <b>function</b> <FONT COLOR=red><A NAME="1999_16">Defkey</A></FONT> (Def : Char_Ptr;
                        <FONT COLOR=red><A NAME="2000_24">Key</A></FONT> : <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses__adb.htm#1999_16">Defkey</A>, "define_key");
 
@@ -2019,7 +2019,7 @@
       <b>function</b> <FONT COLOR=red><A NAME="2015_16">Unctrl</A></FONT> (<FONT COLOR=red><A NAME="2015_24">Ch</A></FONT> : <A HREF="terminal_interface-curses-aux__ads.htm#63_12">C_Chtype</A>) <b>return</b> chars_ptr;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses__adb.htm#2015_16">Unctrl</A>, "unctrl");
    <b>begin</b>
-      <A HREF="terminal_interface-curses-aux__ads.htm#116_14">Fill_String</A> (<A HREF="terminal_interface-curses__adb.htm#2015_16">Unctrl</A> (<A HREF="terminal_interface-curses-aux__ads.htm#104_13">AttrChar_To_Chtype</A> (<A HREF="terminal_interface-curses__ads.htm#1516_26">Ch</A>)), <A HREF="terminal_interface-curses__ads.htm#1517_26">Str</A>);
+      <A HREF="terminal_interface-curses-aux__ads.htm#121_13">Fill_String</A> (<A HREF="terminal_interface-curses__adb.htm#2015_16">Unctrl</A> (<A HREF="terminal_interface-curses-aux__ads.htm#104_13">AttrChar_To_Chtype</A> (<A HREF="terminal_interface-curses__ads.htm#1516_26">Ch</A>)), <A HREF="terminal_interface-curses__ads.htm#1517_26">Str</A>);
    <b>end</b> Un_Control;
 
    <b>function</b> <A HREF="terminal_interface-curses__ads.htm#1521_13">Un_Control</A><FONT COLOR=red><A NAME="2021_13"></A></FONT> (<A HREF="terminal_interface-curses__ads.htm#1521_25">Ch</A> : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#350_9">Attributed_Character</A>) <b>return</b> String
@@ -2113,7 +2113,7 @@
       <b>function</b> <FONT COLOR=red><A NAME="2109_16">Longname</A></FONT> <b>return</b> chars_ptr;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses__adb.htm#2109_16">Longname</A>, "longname");
    <b>begin</b>
-      <A HREF="terminal_interface-curses-aux__ads.htm#116_14">Fill_String</A> (<A HREF="terminal_interface-curses__adb.htm#2109_16">Longname</A>, <A HREF="terminal_interface-curses__ads.htm#1571_25">Name</A>);
+      <A HREF="terminal_interface-curses-aux__ads.htm#121_13">Fill_String</A> (<A HREF="terminal_interface-curses__adb.htm#2109_16">Longname</A>, <A HREF="terminal_interface-curses__ads.htm#1571_25">Name</A>);
    <b>end</b> Long_Name;
 
    <b>function</b> <A HREF="terminal_interface-curses__ads.htm#1575_13">Long_Name</A><FONT COLOR=red><A NAME="2115_13"></A></FONT> <b>return</b> String
@@ -2129,7 +2129,7 @@
       <b>function</b> <FONT COLOR=red><A NAME="2125_16">Termname</A></FONT> <b>return</b> chars_ptr;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses__adb.htm#2125_16">Termname</A>, "termname");
    <b>begin</b>
-      <A HREF="terminal_interface-curses-aux__ads.htm#116_14">Fill_String</A> (<A HREF="terminal_interface-curses__adb.htm#2125_16">Termname</A>, <A HREF="terminal_interface-curses__ads.htm#1581_29">Name</A>);
+      <A HREF="terminal_interface-curses-aux__ads.htm#121_13">Fill_String</A> (<A HREF="terminal_interface-curses__adb.htm#2125_16">Termname</A>, <A HREF="terminal_interface-curses__ads.htm#1581_29">Name</A>);
    <b>end</b> Terminal_Name;
 
    <b>function</b> <A HREF="terminal_interface-curses__ads.htm#1585_13">Terminal_Name</A><FONT COLOR=red><A NAME="2131_13"></A></FONT> <b>return</b> String
@@ -2165,10 +2165,10 @@
                            <A HREF="terminal_interface-curses__ads.htm#1608_28">Fore</A> : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#276_9">Color_Number</A>;
                            <A HREF="terminal_interface-curses__ads.htm#1609_28">Back</A> : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#276_9">Color_Number</A>)
    <b>is</b>
-      <b>type</b> <FONT COLOR=red><A NAME="2164_12">C_Short_Access</A></FONT> <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses-aux__ads.htm#56_12">C_Short</A>;
+      <b>type</b> C_Short_Access <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses-aux__ads.htm#56_12">C_Short</A>;
       <b>function</b> <FONT COLOR=red><A NAME="2165_16">Paircontent</A></FONT> (<FONT COLOR=red><A NAME="2165_29">Pair</A></FONT> : <A HREF="terminal_interface-curses-aux__ads.htm#56_12">C_Short</A>;
-                            <FONT COLOR=red><A NAME="2166_29">Fp</A></FONT>   : <A HREF="terminal_interface-curses__adb.htm#2164_12">C_Short_Access</A>;
-                            <FONT COLOR=red><A NAME="2167_29">Bp</A></FONT>   : <A HREF="terminal_interface-curses__adb.htm#2164_12">C_Short_Access</A>) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
+                            Fp   : C_Short_Access;
+                            Bp   : C_Short_Access) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses__adb.htm#2165_16">Paircontent</A>, "pair_content");
 
       <FONT COLOR=red><A NAME="2170_7">F</A></FONT>, <FONT COLOR=red><A NAME="2170_10">B</A></FONT> : <b>aliased</b> <A HREF="terminal_interface-curses-aux__ads.htm#56_12">C_Short</A>;
@@ -2227,9 +2227,9 @@
                             <A HREF="terminal_interface-curses__ads.htm#1634_29">Green</A> : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#292_9">RGB_Value</A>;
                             <A HREF="terminal_interface-curses__ads.htm#1635_29">Blue</A>  : <b>out</b> <A HREF="terminal_interface-curses__ads.htm#292_9">RGB_Value</A>)
    <b>is</b>
-      <b>type</b> <FONT COLOR=red><A NAME="2226_12">C_Short_Access</A></FONT> <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses-aux__ads.htm#56_12">C_Short</A>;
+      <b>type</b> C_Short_Access <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses-aux__ads.htm#56_12">C_Short</A>;
 
-      <b>function</b> <FONT COLOR=red><A NAME="2228_16">Colorcontent</A></FONT> (<FONT COLOR=red><A NAME="2228_30">Color</A></FONT> : <A HREF="terminal_interface-curses-aux__ads.htm#56_12">C_Short</A>; <FONT COLOR=red><A NAME="2228_47">R</A></FONT>, <FONT COLOR=red><A NAME="2228_50">G</A></FONT>, <FONT COLOR=red><A NAME="2228_53">B</A></FONT> : <A HREF="terminal_interface-curses__adb.htm#2226_12">C_Short_Access</A>)
+      <b>function</b> <FONT COLOR=red><A NAME="2228_16">Colorcontent</A></FONT> (<FONT COLOR=red><A NAME="2228_30">Color</A></FONT> : <A HREF="terminal_interface-curses-aux__ads.htm#56_12">C_Short</A>; R, G, B : C_Short_Access)
                              <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses__adb.htm#2228_16">Colorcontent</A>, "color_content");
 
@@ -2392,9 +2392,9 @@
       <A HREF="terminal_interface-curses__ads.htm#1706_7">Column</A> : <b>in</b> <b>out</b> <A HREF="terminal_interface-curses__ads.htm#60_9">Column_Position</A>;
       <A HREF="terminal_interface-curses__ads.htm#1707_7">Dir</A>    : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#1702_9">Transform_Direction</A> := <A HREF="terminal_interface-curses__ads.htm#1702_33">From_Screen</A>)
    <b>is</b>
-      <b>type</b> <FONT COLOR=red><A NAME="2391_12">Int_Access</A></FONT> <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
+      <b>type</b> Int_Access <b>is</b> <b>access</b> <b>all</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>function</b> <FONT COLOR=red><A NAME="2392_16">Transform</A></FONT> (<FONT COLOR=red><A NAME="2392_27">W</A></FONT>    : <A HREF="terminal_interface-curses__ads.htm#56_9">Window</A>;
-                          <FONT COLOR=red><A NAME="2393_27">Y</A></FONT>, <FONT COLOR=red><A NAME="2393_30">X</A></FONT> : <A HREF="terminal_interface-curses__adb.htm#2391_12">Int_Access</A>;
+                          Y, X : Int_Access;
                           <FONT COLOR=red><A NAME="2394_27">Dir</A></FONT>  : <A HREF="terminal_interface-curses__ads.htm#1735_9">Curses_Bool</A>) <b>return</b> <A HREF="terminal_interface-curses-aux__ads.htm#55_12">C_Int</A>;
       <b>pragma</b> Import (C, <A HREF="terminal_interface-curses__adb.htm#2392_16">Transform</A>, "wmouse_trafo");
 

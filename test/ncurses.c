@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.128 2000/04/29 23:24:11 tom Exp $
+$Id: ncurses.c,v 1.129 2000/06/17 20:02:22 tom Exp $
 
 ***************************************************************************/
 
@@ -2359,12 +2359,10 @@ flushinp_test(WINDOW *win)
 #ifdef A_COLOR
     if (has_colors()) {
 	init_pair(2, COLOR_CYAN, COLOR_BLUE);
-	wattrset(subWin, COLOR_PAIR(2) | A_BOLD);
-    } else
-	wattrset(subWin, A_BOLD);
-#else
-    wattrset(subWin, A_BOLD);
+	wbkgd(subWin, COLOR_PAIR(2) | ' ');
+    }
 #endif
+    wattrset(subWin, A_BOLD);
     box(subWin, ACS_VLINE, ACS_HLINE);
     mvwaddstr(subWin, 2, 1, "This is a subwindow");
     wrefresh(win);

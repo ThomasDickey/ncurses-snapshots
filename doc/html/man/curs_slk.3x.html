@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>slk_init</B>,     <B>slk_set</B>,    <B>slk_refresh</B>,    <B>slk_noutrefresh</B>,
        <B>slk_label</B>, <B>slk_clear</B>, <B>slk_restore</B>, <B>slk_touch</B>,  <B>slk_attron</B>,
        <B>slk_attrset</B>,  <B>slk_attroff</B>,  <B>slk_color</B>  - <B>curses</B> soft label
@@ -58,6 +61,8 @@
        length.  A null string or a null pointer sets up  a  blank
        label.  <I>fmt</I>  is  either <B>0</B>, <B>1</B>, or <B>2</B>, indicating whether the
        label is  to be left-justified, centered, or  right-justi-
+       fied, respectively, within the label.
+       The <B>slk_refresh</B> and <B>slk_noutrefresh</B> routines correspond to
        the <B>wrefresh</B> and <B>wnoutrefresh</B> routines.
 
        The <B>slk_label</B> routine returns the current label for  label
@@ -115,6 +120,7 @@
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>,        <B><A HREF="curs_attr.3x.html">curs_attr(3x)</A></B>,        <B><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></B>,
        <B><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></B>
+
 
 
 

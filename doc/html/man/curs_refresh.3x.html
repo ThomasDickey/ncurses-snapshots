@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>refresh</B>, <B>wrefresh</B>, <B>wnoutrefresh</B>, <B>doupdate</B>, <B>redrawwin</B>, <B>wre-</B>
        <B>drawln</B> - refresh <B>curses</B> windows and lines
 
@@ -58,6 +61,8 @@
        <I>touched</I> (changed) lines in the window are  copied  to  the
        virtual  screen.   This affects programs that use overlap-
        ping windows; it means that if two  windows  overlap,  you
+       can  refresh  them  in either order and the overlap region
+       will be modified only when it is explicitly changed.  (But
        see  the  section on <B>PORTABILITY</B> below for a warning about
        exploiting this behavior.)
 
@@ -98,6 +103,7 @@
 </PRE>
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></B>
+
 
 
 

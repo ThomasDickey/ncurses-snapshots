@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>tset</B> - terminal initialization
 
 
@@ -58,6 +61,9 @@
        leaving  a  terminal  in an abnormal state.  Note, you may
        have to type
 
+           <B>&lt;LF&gt;reset&lt;LF&gt;</B>
+
+       (the line-feed character is normally control-J) to get the
        terminal to work, as carriage-return may no longer work in
        the abnormal state.  Also, the  terminal  will  often  not
        echo the command.
@@ -112,6 +118,10 @@
 
            eval `tset -s options ... `
 
+
+
+</PRE>
+<H2>TERMINAL TYPE MAPPING</H2><PRE>
        When the terminal is not hardwired into the system (or the
        current system information is incorrect) the terminal type
        derived from the <I>/etc/ttys</I> file or the <B>TERM</B>  environmental
@@ -164,6 +174,8 @@
 
        No whitespace characters are permitted in  the  -m  option
        argument.   Also,  to avoid problems with meta-characters,
+       it is suggested that the  entire  -m  option  argument  be
+       placed  within single quote characters, and that <B>csh</B> users
        insert a backslash character (``\'') before  any  exclama-
        tion marks (``!'').
 
@@ -222,6 +234,10 @@
 <H2>ENVIRONMENT</H2><PRE>
        The <B>tset</B> command uses the <B>SHELL</B> and <B>TERM</B> environment vari-
        ables.
+
+
+</PRE>
+<H2>FILES</H2><PRE>
        /etc/ttys
             system port name to terminal  type  mapping  database
             (BSD versions only).
@@ -234,6 +250,7 @@
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="csh.1.html">csh(1)</A></B>, <B><A HREF="sh.1.html">sh(1)</A></B>, <B><A HREF="stty.1.html">stty(1)</A></B>, <B><A HREF="tty.4.html">tty(4)</A></B>, <B><A HREF="termcap.5.html">termcap(5)</A></B>, <B><A HREF="ttys.5.html">ttys(5)</A></B>, envi-
        <B><A HREF="ron.7.html">ron(7)</A></B>
+
 
 
 
