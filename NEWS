@@ -1,10 +1,40 @@
--- $Id: NEWS,v 1.349 1998/07/12 00:00:25 tom Exp $
+-- $Id: NEWS,v 1.354 1998/07/25 23:36:03 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980725
+	+ updated versions of config.guess and config.sub based on automake 1.3
+	+ change name-comparisons in lib_termcap to compare no more than 2
+	  characters (gleaned from Debian distribution of 1.9.9g-8.8, verified
+	  with Solaris curses).
+	+ fix typo in curs_insstr.3x (patch by Todd C Miller)
+	+ use 'access()' to check if ncurses library should be permitted to
+	  open or modify files with fopen/open/link/unlink/remove calls, in
+	  case the calling application is running in setuid mode (request by
+	  Cristian Gafton <gafton@redhat.com>, responding to Duncan Simpson
+	  <dps@io.stargate.co.uk>).
+	+ arm100 terminfo entries from Dave Millen <dmill@globalnet.co.uk>).
+	+ qnxt2 and minitel terminfo entries from esr's version.
+
+980718
+	+ use -R option with ldconfig on FreeBSD because otherwise it resets
+	  the search path to /usr/lib (reported by Dan Nelson).
+	+ add -soname option when building shared libraries on OpenBSD 2.x
+	  (request by QingLong).
+	+ add configure options --with-manpage-format and --with-manpage-renames
+	  (request by QingLong).
+	+ correct conversion of CANCELLED_NUMERIC in write_object(), which was
+	  omitting the high-order byte, producing a 254 in the compiled
+	  terminfo.
+	+ modify return-values of tgetflag, tgetnum, tgetstr, tigetflag,
+	  tigetnum and tigetstr to be compatible with Solaris (gleaned from
+	  Debian distribution of 1.9.9g-8.8).
+	+ modify _nc_syserr_abort to abort only when compiled for debugging,
+	  otherwise simply exit with an error.
 
 980711
 	+ modify Ada95 'gen' program to use appropriate library suffix (e.g.,

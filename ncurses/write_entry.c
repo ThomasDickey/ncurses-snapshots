@@ -49,7 +49,7 @@
 #define S_ISDIR(mode) ((mode & S_IFMT) == S_IFDIR)
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.24 1998/05/30 23:33:25 Todd.Miller Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.28 1998/07/25 20:11:51 tom Exp $")
 
 static int total_written;
 
@@ -57,7 +57,7 @@ static int write_object(FILE *, TERMTYPE *);
 
 static void write_file(char *filename, TERMTYPE *tp)
 {
-	FILE *fp = fopen(filename, "wb");
+	FILE *fp = (_nc_access(filename, W_OK) == 0) ? fopen(filename, "wb") : 0;
 	if (fp == 0) {
 		perror(filename);
 		_nc_syserr_abort("can't open %s/%s", _nc_tic_dir(0), filename);
@@ -95,7 +95,7 @@ const char *destination = _nc_tic_dir(0);
 	if ((rc = stat(path, &statbuf)) < 0) {
 		rc = mkdir(path, 0777);
 	} else {
-		if (access(path, R_OK|W_OK|X_OK) < 0) {
+		if (_nc_access(path, R_OK|W_OK|X_OK) < 0) {
 			rc = -1;	/* permission denied */
 		} else if (!(S_ISDIR(statbuf.st_mode))) {
 			rc = -1;	/* not a directory */
@@ -302,7 +302,7 @@ static time_t	start_time;		/* time at start of writes */
 		{
 			_nc_warning("alias %s multiply defined.", ptr);
 		}
-		else
+		else if (_nc_access(linkname, W_OK) == 0)
 #if HAVE_LINK
 		{
 #if USE_SYMLINKS
@@ -401,6 +401,8 @@ unsigned char	buf[MAX_ENTRY_SIZE];
 	{
 		if (tp->Numbers[i] == -1)	/* HI/LO won't work */
 			buf[2*i] = buf[2*i + 1] = 0377;
+		else if (tp->Numbers[i] == -2)	/* HI/LO won't work */
+			buf[2*i] = 0376, buf[2*i + 1] = 0377;
 		else
 			LITTLE_ENDIAN(buf + 2*i, tp->Numbers[i]);
 	}

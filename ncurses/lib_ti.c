@@ -37,7 +37,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_ti.c,v 1.10 1998/04/11 23:00:27 tom Exp $")
+MODULE_ID("$Id: lib_ti.c,v 1.11 1998/07/18 02:14:05 tom Exp $")
 
 int tigetflag(NCURSES_CONST char *str)
 {
@@ -45,10 +45,15 @@ int i;
 
 	T(("tigetflag(%s)", str));
 
-	if (cur_term != 0)
-		for (i = 0; i < BOOLCOUNT; i++)
-			if (!strcmp(str, boolnames[i]))
+	if (cur_term != 0) {
+		for (i = 0; i < BOOLCOUNT; i++) {
+			if (!strcmp(str, boolnames[i])) {
+				if (!VALID_BOOLEAN(cur_term->type.Booleans[i]))
+					return 0;
 				return cur_term->type.Booleans[i];
+			}
+		}
+	}
 
 	return ABSENT_BOOLEAN;
 }
@@ -59,12 +64,17 @@ int i;
 
 	T(("tigetnum(%s)", str));
 
-	if (cur_term != 0)
-		for (i = 0; i < NUMCOUNT; i++)
-			if (!strcmp(str, numnames[i]))
+	if (cur_term != 0) {
+		for (i = 0; i < NUMCOUNT; i++) {
+			if (!strcmp(str, numnames[i])) {
+				if (!VALID_NUMERIC(cur_term->type.Numbers[i]))
+					return -1;
 				return cur_term->type.Numbers[i];
+			}
+		}
+	}
 
-	return CANCELLED_NUMERIC;
+	return CANCELLED_NUMERIC;	/* Solaris returns a -1 instead */
 }
 
 char *tigetstr(NCURSES_CONST char *str)
@@ -73,10 +83,15 @@ int i;
 
 	T(("tigetstr(%s)", str));
 
-	if (cur_term != 0)
-		for (i = 0; i < STRCOUNT; i++)
-			if (!strcmp(str, strnames[i]))
+	if (cur_term != 0) {
+		for (i = 0; i < STRCOUNT; i++) {
+			if (!strcmp(str, strnames[i])) {
+				if (!VALID_STRING(cur_term->type.Strings[i]))
+					return 0;
 				return cur_term->type.Strings[i];
+			}
+		}
+	}
 
 	return CANCELLED_STRING;
 }

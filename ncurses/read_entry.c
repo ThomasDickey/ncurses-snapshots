@@ -43,12 +43,11 @@
 #if HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
-#include <sys/stat.h>
 
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.38 1998/06/06 22:47:24 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.40 1998/07/25 20:11:11 tom Exp $")
 
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -98,7 +97,8 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
     int		i, fd, numread;
     char	buf[MAX_ENTRY_SIZE];
 
-    if ((fd = open(filename, O_RDONLY|O_BINARY)) < 0)
+    if (_nc_access(filename, R_OK) < 0
+     || (fd = open(filename, O_RDONLY|O_BINARY)) < 0)
 	return(0);
 
     T(("read terminfo %s", filename));

@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.142 1998/07/11 22:44:32 tom Exp $
+dnl $Id: configure.in,v 1.144 1998/07/19 00:31:29 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.142 $)
+AC_REVISION($Revision: 1.144 $)
 AC_INIT(ncurses/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -86,9 +86,18 @@ fi
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
 AC_ISC_POSIX
-AC_PATH_PROG(LDCONFIG,ldconfig,,$PATH:/sbin:/usr/sbin)
 CF_ANSI_CC_REQD
 CF_PROG_EXT
+
+case "$cf_cv_system_name" in
+freebsd*) #(vi
+  test -z "$LDCONFIG" && LDCONFIG="/sbin/ldconfig -R"
+  ;;
+*)
+  AC_PATH_PROG(LDCONFIG,ldconfig,,$PATH:/sbin:/usr/sbin)
+  ;;
+esac
+AC_SUBST(LDCONFIG)
 
 dnl DEFECT in autoconf 2.12:	an attempt to set policy, this breaks the
 dnl				configure script by not letting us test if C++
@@ -142,7 +151,6 @@ CF_SUBST(archiver,AR,ar)
 CF_SUBST(archiver options,AR_OPTS,rv)
 
 CF_MAKEFLAGS
-CF_MAN_PAGES
 
 dnl Special option for use by system-builders: the install-prefix is used to
 dnl adjust the location into which the actual install is done, so that an
@@ -158,6 +166,9 @@ AC_ARG_WITH(install-prefix,
 	esac])
 AC_MSG_RESULT($INSTALL_PREFIX)
 AC_SUBST(INSTALL_PREFIX)
+
+###############################################################################
+CF_MAN_PAGES
 
 ###############################################################################
 CF_HELP_MESSAGE(Options to Specify the Libraries Built/Used:)

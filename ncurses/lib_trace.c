@@ -36,8 +36,9 @@
  */
 
 #include <curses.priv.h>
+#include <tic.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.26 1998/03/21 17:52:14 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.29 1998/07/25 20:11:02 tom Exp $")
 
 #include <ctype.h>
 #if HAVE_FCNTL_H
@@ -58,12 +59,14 @@ void trace(const unsigned int tracelevel GCC_UNUSED)
 {
 #ifdef TRACE
 static bool	been_here = FALSE;
+static char	my_name[] = "trace";
 
    	_nc_tracing = tracelevel;
 	if (! been_here && tracelevel) {
 		been_here = TRUE;
 
-		if ((tracefp = fopen("trace", "w")) == 0) {
+		if (_nc_access(my_name, W_OK) < 0
+		 || (tracefp = fopen(my_name, "w")) == 0) {
 			perror("curses: Can't open 'trace' file: ");
 			exit(EXIT_FAILURE);
 		}
@@ -91,6 +94,8 @@ int c;
 
 	if (buf == 0)
 	    return("(null)");
+	if (buf == CANCELLED_STRING)
+	    return("(cancelled)");
 
 	tp = vbuf = _nc_trace_buf(bufnum, (strlen(buf) * 4) + 5);
 	*tp++ = '"';

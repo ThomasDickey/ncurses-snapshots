@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_termcap.3x,v 1.10 1998/03/11 21:12:53 juergen Exp $
+.\" $Id: curs_termcap.3x,v 1.11 1998/07/18 02:45:56 tom Exp $
 .TH curs_termcap 3X ""
 .ds n 5
 .SH NAME
@@ -62,12 +62,15 @@ It returns 1 on success, 0 if there is no such entry, and -1 if the
 terminfo database could not be found.
 The emulation ignores the buffer pointer \fIbp\fR.
 
-The \fBtgetflag\fR routine gets the boolean entry for \fIid\fR.
+The \fBtgetflag\fR routine gets the boolean entry for \fIid\fR,
+or zero if it is not available.
 
-The \fBtgetnum\fR routine gets the numeric entry for \fIid\fR.
+The \fBtgetnum\fR routine gets the numeric entry for \fIid\fR,
+or -1 if it is not available.
 
-The \fBtgetstr\fR routine returns the string entry for \fIid\fR.  Use
-\fBtputs\fR to output the returned string.
+The \fBtgetstr\fR routine returns the string entry for \fIid\fR,
+or zero if it is not available.
+Use \fBtputs\fR to output the returned string.
 
 The \fBtgoto\fR routine instantiates the parameters into the given capability.
 The output from this routine is to be passed to \fBtputs\fR.

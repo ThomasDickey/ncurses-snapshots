@@ -81,6 +81,7 @@ libform-routines	= \
 			fty_regex
 
 libncurses-routines	= \
+			access \
 			alloc_entry \
 			captoinfo \
 			codes \
