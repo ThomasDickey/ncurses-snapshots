@@ -71,20 +71,21 @@
 #  define  INCL_KBD
 #  define  INCL_MOU
 #  define  INCL_DOSPROCESS
-#  include <os2.h>			/* Need to include before the others */
+#  include <os2.h>		/* Need to include before the others */
 #endif
 
 #include <curses.priv.h>
 #include <term.h>
 
 #if USE_GPM_SUPPORT
-#ifndef LINT		/* don't need this for llib-lncurses */
-#undef buttons		/* term.h defines this, and gpm uses it! */
+#ifndef LINT			/* don't need this for llib-lncurses */
+#undef buttons			/* term.h defines this, and gpm uses it! */
 #include <gpm.h>
+#include <linux/keyboard.h>	/* defines KG_* macros */
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.42 1999/01/31 01:17:53 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.43 1999/04/18 00:37:50 Klaus.Weide Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -260,9 +261,9 @@ static void _nc_mouse_init(void)
     {
 	/* GPM: initialize connection to gpm server */
 	gpm_connect.eventMask = GPM_DOWN|GPM_UP;
-	gpm_connect.defaultMask = ~gpm_connect.eventMask;
+	gpm_connect.defaultMask = ~(gpm_connect.eventMask|GPM_HARD);
 	gpm_connect.minMod = 0;
-	gpm_connect.maxMod = ~0;
+	gpm_connect.maxMod = ~((1<<KG_SHIFT)|(1<<KG_SHIFTL)|(1<<KG_SHIFTR));
 	if (Gpm_Open (&gpm_connect, 0) >= 0) { /* returns the file-descriptor */
 	    mousetype = M_GPM;
 	    SP->_mouse_fd = gpm_fd;
@@ -806,9 +807,9 @@ static void _nc_mouse_wrap(SCREEN *sp GCC_UNUSED)
 
     switch (mousetype) {
     case M_XTERM:
-        if (eventmask)
-            mouse_activate(FALSE);
-        break;
+	if (eventmask)
+	    mouse_activate(FALSE);
+	break;
 #if USE_GPM_SUPPORT
 	/* GPM: pass all mouse events to next client */
 	case M_GPM:
@@ -962,7 +963,7 @@ bool wmouse_trafo(const WINDOW* win, int* pY, int* pX, bool to_screen)
 	      y -= (win->_begy + win->_yoffset);
 	      x -= win->_begx;
 	      result = TRUE;
-	    }	    
+	    }
 	}
       if (result)
 	{

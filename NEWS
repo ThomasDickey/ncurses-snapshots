@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.448 1999/04/11 02:20:58 tom Exp $
+-- $Id: NEWS,v 1.449 1999/04/18 00:36:58 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990417	pre-release
+	+ modify gpm mouse support so that buttons 2 and 3 are used for
+	  select/paste only when shift key is pressed, making them available
+	  for use by an application (patch by Klaus Weide).
+	+ add complete list of function keys to scoansi terminfo entry - TD
 
 990410	pre-release
 	+ add a simple test program cardfile.c to illustrate how to read form
@@ -98,6 +104,8 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  allows ncurses' tic to define new (i.e., extended) terminal
 	  capabilities.  This is activated by the tic -x switch.  The infocmp
 	  program automatically shows or compares extended capabilities.
+	  Note:  This changes the Strings and similar arrays in the TERMTYPE
+	  struct so that applications which manipulate it must be recompiled.
 	+ use macros typeMalloc, typeCalloc and typeRealloc consistently
 	  throughout ncurses library.
 	+ add _nc_strdup() to doalloc.c.

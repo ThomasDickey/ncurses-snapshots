@@ -3,7 +3,7 @@
 # This version of terminfo.src is distributed with ncurses.
 #
 #	Version 10.2.1
-#	$Date: 1999/04/10 21:27:26 $
+#	$Date: 1999/04/17 21:59:16 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -672,6 +672,12 @@ linux-lat|linux with latin1 or latin2 alternate character set,
 #	:WL=\E[S:WR=\E[T:CL=\E[U:CR=\E[V:\
 # I renamed GS/GE/HM/EN/PU/PD/RT and added klone+sgr-dumb, based
 # on the <smacs>=\E[12m  -- esr)
+#
+# In this description based on SCO's keyboard(HW) manpage list of default function key
+# values:
+#	F13-F24 are shifted F1-F12
+#	F25-F36 are control F1-F12
+#	F37-F48 are shift+control F1-F12
 scoansi|SCO Extended ANSI standard crt, 
 	am, eo, xon, 
 	cols#80, it#8, lines#25, 
@@ -680,8 +686,16 @@ scoansi|SCO Extended ANSI standard crt,
 	cuu1=\E[A, dch1=\E[P, dl1=\E[M, ed=\E[J, el=\E[K, home=\E[H, 
 	ht=^I, ich1=\E[@, il1=\E[L, ind=\E[S, kbs=^H, kcub1=\E[D, 
 	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kend=\E[F, kf1=\E[M, 
-	kf10=\E[V, kf2=\E[N, kf3=\E[O, kf4=\E[P, kf5=\E[Q, kf6=\E[R, 
-	kf7=\E[S, kf8=\E[T, kf9=\E[U, khome=\E[H, knp=\E[G, kpp=\E[I, 
+	kf10=\E[V, kf12=\E[W, kf13=\E[Y, kf14=\E[Z, kf15=\E[a, 
+	kf16=\E[b, kf17=\E[c, kf18=\E[d, kf19=\E[e, kf2=\E[N, 
+	kf20=\E[f, kf21=\E[g, kf22=\E[h, kf23=\E[i, kf24=\E[j, 
+	kf25=\E[k, kf26=\E[l, kf27=\E[m, kf28=\E[n, kf29=\E[o, 
+	kf3=\E[O, kf30=\E[p, kf31=\E[q, kf32=\E[r, kf33=\E[s, 
+	kf34=\E[t, kf35=\E[u, kf36=\E[v, kf37=\E[w, kf38=\E[x, 
+	kf39=\E[y, kf4=\E[P, kf40=\E[z, kf41=\E[@, kf42=\E[[, 
+	kf43=\E[\\, kf44=\E[], kf45=\E[\014kf46=\E[_, kf47=\E[`, 
+	kf48=\E[{, kf5=\E[Q, kf6=\E[R, kf7=\E[S, kf8=\E[T, kf9=\E[U, 
+	khome=\E[H, kich1=\E[L, knp=\E[G, kpp=\E[I, krdo=\E[F, 
 	ri=\E[T, 
 	use=klone+sgr-dumb, 
 
@@ -17195,10 +17209,13 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  (Jeffrey C Honig)
 #
 # 1999/3/27
-#	* adjust xterm-xfree86 miscellaneous keypad keys, as per patch #94.
+#	* adjust xterm-xfree86 miscellaneous keypad keys, as per patch #94 - TD.
 #
 # 1999/4/10
-#	# add linux-lat, from RedHat patches to ncurses 4.2
+#	* add linux-lat, from RedHat patches to ncurses 4.2
+#
+# 1999/4/17
+#	* add complete set of default function-key definitions for scoansi - TD.
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
