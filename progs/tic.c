@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -44,7 +44,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.92 2001/06/18 18:44:01 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.94 2002/05/25 19:18:40 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -822,8 +822,8 @@ expected_params(const char *name)
 	{ "sgr1",		6 },
 	{ "slength",		1 },
 	{ "slines",		1 },
-	{ "smgbp",		2 },
-	{ "smglp",		2 },
+	{ "smgbp",		1 },	/* 2 if smgtp is not given */
+	{ "smglp",		1 },
 	{ "smglr",		2 },
 	{ "smgrp",		1 },
 	{ "smgtb",		2 },
@@ -862,6 +862,10 @@ check_params(TERMTYPE * tp, const char *name, char *value)
     int n;
     bool params[10];
     char *s = value;
+
+    if (!strcmp(name, "smgbp")
+	&& set_top_margin_parm == 0)
+	expected = 2;
 
     for (n = 0; n < 10; n++)
 	params[n] = FALSE;
@@ -908,8 +912,23 @@ check_params(TERMTYPE * tp, const char *name, char *value)
  * sanity check.
  */
 static bool
-similar_sgr(char *a, char *b)
+similar_sgr(int num, char *a, char *b)
 {
+    static const char *names[] =
+    {
+	"none"
+	,"standout"
+	,"underline"
+	,"reverse"
+	,"blink"
+	,"dim"
+	,"bold"
+	,"invis"
+	,"protect"
+	,"altcharset"
+    };
+    char *base_a = a;
+    char *base_b = b;
     while (*b != 0) {
 	while (*a != *b) {
 	    if (*a == 0) {
@@ -917,7 +936,9 @@ similar_sgr(char *a, char *b)
 		    && b[1] == '<') {
 		    _nc_warning("Did not find delay %s", _nc_visbuf(b));
 		} else {
-		    _nc_warning("Unmatched portion %s", _nc_visbuf(b));
+		    _nc_warning("sgr(%s) %s", names[num], _nc_visbuf(base_a));
+		    _nc_warning("...compare to %s", _nc_visbuf(base_b));
+		    _nc_warning("...unmatched %s", _nc_visbuf(b));
 		}
 		return FALSE;
 	    }
@@ -945,7 +966,7 @@ check_sgr(TERMTYPE * tp, char *zero, int num, char *cap, const char *name)
     tparm_errs += _nc_tparm_err;
     if (test != 0) {
 	if (PRESENT(cap)) {
-	    if (!similar_sgr(test, cap)) {
+	    if (!similar_sgr(num, test, cap)) {
 		_nc_warning("%s differs from sgr(%d): %s", name, num,
 			    _nc_visbuf(test));
 	    }
