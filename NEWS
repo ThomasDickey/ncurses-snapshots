@@ -1,10 +1,28 @@
--- $Id: NEWS,v 1.726 2002/12/31 11:54:37 tom Exp $
+-- $Id: NEWS,v 1.727 2003/01/05 23:49:26 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030105
+	+ improve description of terminfo operators, especially static/dynamic
+	  variables (discussion with Mark I Manning IV <mark4th@earthlink.net>).
+	+ demonstrate use of FIELDTYPE by modifying test/ncurses 'r' test to
+	  use the predefined TYPE_ALPHA field-type, and by defining a
+	  specialized type for the middle initial/name.
+	+ fix MKterminfo.sh, workaround for POSIXLY_CORRECT misfeature of sed 4.0
+	> Philippe Blain:
+	+ optimize can_clear_with() a little by testing first if the parameter
+	  is indeed a "blank".
+	+ simplify ClrBottom() a little by allowing it to use clr_eos to clear
+	  sections as small as one line.
+	+ improve ClrToEOL() by checking if clr_eos is available before trying
+	  to use it.
+	+ use tputs() rather than putp() in a few cases in tty_update.c since
+	  the corresponding delays are proportional to the number of lines
+	  affected: repeat_char, clr_eos, change_scroll_region.
 
 20021231
 	+ rewrite of lib_acs.c conflicts with copying of SCREEN acs_map to/from
