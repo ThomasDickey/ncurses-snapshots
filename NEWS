@@ -1,10 +1,27 @@
--- $Id: NEWS,v 1.510 1999/11/28 03:09:09 tom Exp $
+-- $Id: NEWS,v 1.513 1999/12/05 03:15:42 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+19991204
+	+ add kvt and gnome terminfo entries -TD
+	+ correct translation of "%%" by infotocap, which was emitted as "%".
+	+ add "obsolete" termcap strings to terminfo.src
+	+ modify infocmp to default to showing obsolete capabilities rather
+	  than terminfo only.
+	+ modify write_entry.c so that if extended names (i.e., configure
+	  --enable-tcap-names) are active, then tic will also write "obsolete"
+	  capabilities that are present in the terminfo source.
+	+ modify tic so that when running as captoinfo or infotocap, it
+	  initializes the output format as in -C and -I options, respectively.
+	+ improve infocmp and tic -f option by splitting long strings that do
+	  not have if-then-else construct, but do have parameters, e.g., the
+	  initc for xterm-88color.
+	+ refine MKtermsort.sh slightly by using bool for the *_from_termcap
+	  arrays.
 
 19991127
 	+ additional fixes for non-bce terminals (handling of clear_screen,

@@ -94,7 +94,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.24 1999/07/24 20:06:13 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.25 1999/12/05 02:24:05 tom Exp $")
 
 #define MAX_PUSHED	16	/* max # args we can push onto the stack */
 #define MAX_ENTRY	2048	/* maximum chars in a translated capability */
@@ -598,6 +598,10 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 	    while (isdigit(*str) || *str == '.' || *str == '*' || *str == '/' || *str == '>')
 		str++;
 	    --str;
+	}
+	else if (str[0] == '%' && str[1] == '%')	/* escaped '%' */
+	{
+	    bufptr = save_string(bufptr, "%%");
 	}
 	else if (*str != '%' || (parametrized < 1))
 	    bufptr = save_char(bufptr, *str);

@@ -42,7 +42,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.52 1999/09/25 22:47:54 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.53 1999/12/04 22:45:52 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -407,8 +407,14 @@ bool	check_only = FALSE;
 	else
 		_nc_progname++;
 
-	infodump = (strcmp(_nc_progname, "captoinfo") == 0);
-	capdump = (strcmp(_nc_progname, "infotocap") == 0);
+	if ((infodump = (strcmp(_nc_progname, "captoinfo") == 0)) != FALSE) {
+		outform  = F_TERMINFO;
+		sortmode = S_TERMINFO;
+	}
+	if ((capdump = (strcmp(_nc_progname, "infotocap") == 0)) != FALSE) {
+		outform  = F_TERMCAP;
+		sortmode = S_TERMCAP;
+	}
 #if NCURSES_XNAMES
 	use_extended_names(FALSE);
 #endif
