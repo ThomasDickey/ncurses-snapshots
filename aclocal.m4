@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.240 2000/11/05 01:36:31 tom Exp $
+dnl $Id: aclocal.m4,v 1.241 2000/11/18 23:30:03 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -225,7 +225,7 @@ AC_MSG_CHECKING(for prefix)
 if test "x$prefix" = "xNONE" ; then
 	case "$cf_cv_system_name" in
 		# non-vendor systems don't have a conflict
-	openbsd*|netbsd*|freebsd*|linux*)
+	openbsd*|netbsd*|freebsd*|linux*|cygwin*)
 		prefix=/usr
 		;;
 	*)	prefix=$ac_default_prefix
