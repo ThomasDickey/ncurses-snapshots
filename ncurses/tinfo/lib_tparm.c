@@ -43,7 +43,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.63 2003/02/02 02:39:43 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.66 2003/02/23 00:12:59 tom Exp $")
 
 /*
  *	char *
@@ -252,148 +252,133 @@ spop(void)
 static inline const char *
 parse_format(const char *s, char *format, int *len)
 {
-    bool done = FALSE;
-    bool allowminus = FALSE;
-    bool dot = FALSE;
-    bool err = FALSE;
-    char *fmt = format;
-    int my_width = 0;
-    int my_prec = 0;
-    int value = 0;
-
     *len = 0;
-    *format++ = '%';
-    while (*s != '\0' && !done) {
-	switch (*s) {
-	case 'c':		/* FALLTHRU */
-	case 'd':		/* FALLTHRU */
-	case 'o':		/* FALLTHRU */
-	case 'x':		/* FALLTHRU */
-	case 'X':		/* FALLTHRU */
-	case 's':
-	    *format++ = *s;
-	    done = TRUE;
-	    break;
-	case '.':
-	    *format++ = *s++;
-	    if (dot) {
-		err = TRUE;
-	    } else {		/* value before '.' is the width */
-		dot = TRUE;
-		my_width = value;
-	    }
-	    value = 0;
-	    break;
-	case '#':
-	    *format++ = *s++;
-	    break;
-	case ' ':
-	    *format++ = *s++;
-	    break;
-	case ':':
-	    s++;
-	    allowminus = TRUE;
-	    break;
-	case '-':
-	    if (allowminus) {
-		*format++ = *s++;
-	    } else {
+    if (format != 0) {
+	bool done = FALSE;
+	bool allowminus = FALSE;
+	bool dot = FALSE;
+	bool err = FALSE;
+	char *fmt = format;
+	int my_width = 0;
+	int my_prec = 0;
+	int value = 0;
+
+	*len = 0;
+	*format++ = '%';
+	while (*s != '\0' && !done) {
+	    switch (*s) {
+	    case 'c':		/* FALLTHRU */
+	    case 'd':		/* FALLTHRU */
+	    case 'o':		/* FALLTHRU */
+	    case 'x':		/* FALLTHRU */
+	    case 'X':		/* FALLTHRU */
+	    case 's':
+		*format++ = *s;
 		done = TRUE;
-	    }
-	    break;
-	default:
-	    if (isdigit(UChar(*s))) {
-		value = (value * 10) + (*s - '0');
-		if (value > 10000)
+		break;
+	    case '.':
+		*format++ = *s++;
+		if (dot) {
 		    err = TRUE;
+		} else {	/* value before '.' is the width */
+		    dot = TRUE;
+		    my_width = value;
+		}
+		value = 0;
+		break;
+	    case '#':
 		*format++ = *s++;
-	    } else {
-		done = TRUE;
+		break;
+	    case ' ':
+		*format++ = *s++;
+		break;
+	    case ':':
+		s++;
+		allowminus = TRUE;
+		break;
+	    case '-':
+		if (allowminus) {
+		    *format++ = *s++;
+		} else {
+		    done = TRUE;
+		}
+		break;
+	    default:
+		if (isdigit(UChar(*s))) {
+		    value = (value * 10) + (*s - '0');
+		    if (value > 10000)
+			err = TRUE;
+		    *format++ = *s++;
+		} else {
+		    done = TRUE;
+		}
 	    }
 	}
+
+	/*
+	 * If we found an error, ignore (and remove) the flags.
+	 */
+	if (err) {
+	    my_width = my_prec = value = 0;
+	    format = fmt;
+	    *format++ = '%';
+	    *format++ = *s;
+	}
+
+	/*
+	 * Any value after '.' is the precision.  If we did not see '.', then
+	 * the value is the width.
+	 */
+	if (dot)
+	    my_prec = value;
+	else
+	    my_width = value;
+
+	*format = '\0';
+	/* return maximum string length in print */
+	*len = (my_width > my_prec) ? my_width : my_prec;
     }
-
-    /*
-     * If we found an error, ignore (and remove) the flags.
-     */
-    if (err) {
-	my_width = my_prec = value = 0;
-	format = fmt;
-	*format++ = '%';
-	*format++ = *s;
-    }
-
-    /*
-     * Any value after '.' is the precision.  If we did not see '.', then
-     * the value is the width.
-     */
-    if (dot)
-	my_prec = value;
-    else
-	my_width = value;
-
-    *format = '\0';
-    /* return maximum string length in print */
-    *len = (my_width > my_prec) ? my_width : my_prec;
     return s;
 }
 
 #define isUPPER(c) ((c) >= 'A' && (c) <= 'Z')
 #define isLOWER(c) ((c) >= 'a' && (c) <= 'z')
 
-static inline char *
-tparam_internal(const char *string, va_list ap)
+/*
+ * Analyze the string to see how many parameters we need from the varargs list,
+ * and what their types are.  We will only accept string parameters if they
+ * appear as a %l or %s format following an explicit parameter reference (e.g.,
+ * %p2%s).  All other parameters are numbers.
+ *
+ * 'number' counts coarsely the number of pop's we see in the string, and
+ * 'popcount' shows the highest parameter number in the string.  We would like
+ * to simply use the latter count, but if we are reading termcap strings, there
+ * may be cases that we cannot see the explicit parameter numbers.
+ */
+NCURSES_EXPORT(int)
+_nc_tparm_analyze(const char *string, char *p_is_s[NUM_PARM], int *popcount)
 {
-#define NUM_VARS 26
-    char *p_is_s[9];
-    long param[9];
-    int lastpop;
-    int popcount;
-    int number;
-    int len;
-    int level;
-    int x, y;
-    int i;
     size_t len2;
-    register const char *cp;
+    int i;
+    int lastpop = -1;
+    int len;
+    int number = 0;
+    const char *cp = string;
     static char dummy[] = "";
-    static int dynamic_var[NUM_VARS];
-    static int static_vars[NUM_VARS];
 
-    out_used = 0;
-    if (string == NULL)
-	return NULL;
+    if (cp == 0)
+	return 0;
 
-    if ((len2 = strlen(string)) > fmt_size) {
+    if ((len2 = strlen(cp)) > fmt_size) {
 	fmt_size = len2 + fmt_size + 2;
 	if ((fmt_buff = typeRealloc(char, fmt_size, fmt_buff)) == 0)
 	      return 0;
     }
 
-    /*
-     * Find the highest parameter-number referred to in the format string.
-     * Use this value to limit the number of arguments copied from the
-     * variable-length argument list.
-     */
+    memset(p_is_s, 0, sizeof(p_is_s[0]) * NUM_PARM);
+    *popcount = 0;
 
-    number = 0;
-    lastpop = -1;
-    popcount = 0;
-    memset(p_is_s, 0, sizeof(p_is_s));
-
-    /*
-     * Analyze the string to see how many parameters we need from the varargs
-     * list, and what their types are.  We will only accept string parameters
-     * if they appear as a %l or %s format following an explicit parameter
-     * reference (e.g., %p2%s).  All other parameters are numbers.
-     *
-     * 'number' counts coarsely the number of pop's we see in the string, and
-     * 'popcount' shows the highest parameter number in the string.  We would
-     * like to simply use the latter count, but if we are reading termcap
-     * strings, there may be cases that we cannot see the explicit parameter
-     * numbers.
-     */
-    for (cp = string; (cp - string) < (int) len2;) {
+    while ((cp - string) < (int) len2) {
 	if (*cp == '%') {
 	    cp++;
 	    cp = parse_format(cp, fmt_buff, &len);
@@ -419,11 +404,11 @@ tparam_internal(const char *string, va_list ap)
 
 	    case 'p':
 		cp++;
-		i = (*cp - '0');
-		if (i >= 0 && i <= 9) {
+		i = (UChar(*cp) - '0');
+		if (i >= 0 && i <= NUM_PARM) {
 		    lastpop = i;
-		    if (lastpop > popcount)
-			popcount = lastpop;
+		    if (lastpop > *popcount)
+			*popcount = lastpop;
 		}
 		break;
 
@@ -443,7 +428,7 @@ tparam_internal(const char *string, va_list ap)
 
 	    case L_BRACE:
 		cp++;
-		while (*cp >= '0' && *cp <= '9') {
+		while (UChar(*cp) >= '0' && (UChar(*cp) - '0') <= NUM_PARM) {
 		    cp++;
 		}
 		break;
@@ -473,8 +458,8 @@ tparam_internal(const char *string, va_list ap)
 
 	    case 'i':
 		lastpop = -1;
-		if (popcount < 2)
-		    popcount = 2;
+		if (*popcount < 2)
+		    *popcount = 2;
 		break;
 	    }
 	}
@@ -482,8 +467,43 @@ tparam_internal(const char *string, va_list ap)
 	    cp++;
     }
 
-    if (number > 9)
-	number = 9;
+    if (number > NUM_PARM)
+	number = NUM_PARM;
+    return number;
+}
+
+static inline char *
+tparam_internal(const char *string, va_list ap)
+{
+#define NUM_VARS 26
+    char *p_is_s[NUM_PARM];
+    long param[NUM_PARM];
+    int popcount;
+    int number;
+    int len;
+    int level;
+    int x, y;
+    int i;
+    const char *cp = string;
+    size_t len2;
+    static int dynamic_var[NUM_VARS];
+    static int static_vars[NUM_VARS];
+
+    if (cp == NULL)
+	return NULL;
+
+    out_used = 0;
+    len2 = strlen(cp);
+
+    /*
+     * Find the highest parameter-number referred to in the format string.
+     * Use this value to limit the number of arguments copied from the
+     * variable-length argument list.
+     */
+    number = _nc_tparm_analyze(cp, p_is_s, &popcount);
+    if (fmt_buff == 0)
+	return NULL;
+
     for (i = 0; i < max(popcount, number); i++) {
 	/*
 	 * A few caps (such as plab_norm) have string-valued parms.
@@ -520,18 +540,18 @@ tparam_internal(const char *string, va_list ap)
 	    else
 		save_number(", %d", param[i], 0);
 	}
-	_tracef(T_CALLED("%s(%s%s)"), tname, _nc_visbuf(string), out_buff);
+	_tracef(T_CALLED("%s(%s%s)"), tname, _nc_visbuf(cp), out_buff);
 	out_used = 0;
     }
 #endif /* TRACE */
 
-    while (*string) {
-	if (*string != '%') {
-	    save_char(*string);
+    while ((cp - string) < (int) len2) {
+	if (*cp != '%') {
+	    save_char(UChar(*cp));
 	} else {
-	    tparam_base = string++;
-	    string = parse_format(string, fmt_buff, &len);
-	    switch (*string) {
+	    tparam_base = cp++;
+	    cp = parse_format(cp, fmt_buff, &len);
+	    switch (*cp) {
 	    default:
 		break;
 	    case '%':
@@ -558,9 +578,9 @@ tparam_internal(const char *string, va_list ap)
 		break;
 
 	    case 'p':
-		string++;
-		i = (*string - '1');
-		if (i >= 0 && i < 9) {
+		cp++;
+		i = (UChar(*cp) - '1');
+		if (i >= 0 && i < NUM_PARM) {
 		    if (p_is_s[i])
 			spush(p_is_s[i]);
 		    else
@@ -569,39 +589,39 @@ tparam_internal(const char *string, va_list ap)
 		break;
 
 	    case 'P':
-		string++;
-		if (isUPPER(*string)) {
-		    i = (*string - 'A');
+		cp++;
+		if (isUPPER(*cp)) {
+		    i = (UChar(*cp) - 'A');
 		    static_vars[i] = npop();
-		} else if (isLOWER(*string)) {
-		    i = (*string - 'a');
+		} else if (isLOWER(*cp)) {
+		    i = (UChar(*cp) - 'a');
 		    dynamic_var[i] = npop();
 		}
 		break;
 
 	    case 'g':
-		string++;
-		if (isUPPER(*string)) {
-		    i = (*string - 'A');
+		cp++;
+		if (isUPPER(*cp)) {
+		    i = (UChar(*cp) - 'A');
 		    npush(static_vars[i]);
-		} else if (isLOWER(*string)) {
-		    i = (*string - 'a');
+		} else if (isLOWER(*cp)) {
+		    i = (UChar(*cp) - 'a');
 		    npush(dynamic_var[i]);
 		}
 		break;
 
 	    case S_QUOTE:
-		string++;
-		npush(*string);
-		string++;
+		cp++;
+		npush(UChar(*cp));
+		cp++;
 		break;
 
 	    case L_BRACE:
 		number = 0;
-		string++;
-		while (*string >= '0' && *string <= '9') {
-		    number = number * 10 + *string - '0';
-		    string++;
+		cp++;
+		while (UChar(*cp) >= '0' && (UChar(*cp) - '0') <= NUM_PARM) {
+		    number = (number * 10) + (UChar(*cp) - '0');
+		    cp++;
 		}
 		npush(number);
 		break;
@@ -692,38 +712,38 @@ tparam_internal(const char *string, va_list ap)
 		x = npop();
 		if (!x) {
 		    /* scan forward for %e or %; at level zero */
-		    string++;
+		    cp++;
 		    level = 0;
-		    while (*string) {
-			if (*string == '%') {
-			    string++;
-			    if (*string == '?')
+		    while (*cp) {
+			if (*cp == '%') {
+			    cp++;
+			    if (*cp == '?')
 				level++;
-			    else if (*string == ';') {
+			    else if (*cp == ';') {
 				if (level > 0)
 				    level--;
 				else
 				    break;
-			    } else if (*string == 'e' && level == 0)
+			    } else if (*cp == 'e' && level == 0)
 				break;
 			}
 
-			if (*string)
-			    string++;
+			if (*cp)
+			    cp++;
 		    }
 		}
 		break;
 
 	    case 'e':
 		/* scan forward for a %; at level zero */
-		string++;
+		cp++;
 		level = 0;
-		while (*string) {
-		    if (*string == '%') {
-			string++;
-			if (*string == '?')
+		while (*cp) {
+		    if (*cp == '%') {
+			cp++;
+			if (*cp == '?')
 			    level++;
-			else if (*string == ';') {
+			else if (*cp == ';') {
 			    if (level > 0)
 				level--;
 			    else
@@ -731,22 +751,22 @@ tparam_internal(const char *string, va_list ap)
 			}
 		    }
 
-		    if (*string)
-			string++;
+		    if (*cp)
+			cp++;
 		}
 		break;
 
 	    case ';':
 		break;
 
-	    }			/* endswitch (*string) */
-	}			/* endelse (*string == '%') */
+	    }			/* endswitch (*cp) */
+	}			/* endelse (*cp == '%') */
 
-	if (*string == '\0')
+	if (*cp == '\0')
 	    break;
 
-	string++;
-    }				/* endwhile (*string) */
+	cp++;
+    }				/* endwhile (*cp) */
 
     get_space(1);
     out_buff[out_used] = '\0';

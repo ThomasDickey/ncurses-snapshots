@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.733 2003/02/16 00:02:17 tom Exp $
+-- $Id: NEWS,v 1.735 2003/02/23 01:37:48 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030222
+	+ corrected ifdef's relating to configure check for wchar_t, etc.
+	+ if the output is a socket or other non-tty device, use 1 millisecond
+	  for the cost in mvcur; previously it was 9 milliseconds because the
+	  baudrate was not known.
+	+ in _nc_get_tty_mode(), initialize the TTY buffer on error, since
+	  glibc copies uninitialized data in that case, as noted by valgrind.
+	+ modify tput to use the same parameter analysis as tparm() does, to
+	  provide for user-defined strings, e.g., for xterm title, a
+	  corresponding capability might be
+	  	title=\E]2;%p1%s^G,
+	+ modify MKlib_gen.sh to avoid passing "#" tokens through the C
+	  preprocessor.  This works around Mac OS X's preprocessor, which
+	  insists on adding a blank on each side of the token (report/analysis
+	  by Kevin Murphy <murphy@genome.chop.edu>).
 
 20030215
 	+ add configure check for wchar_t and wint_t types, rather than rely

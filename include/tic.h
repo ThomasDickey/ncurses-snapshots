@@ -32,7 +32,7 @@
  ****************************************************************************/
 
 /*
- * $Id: tic.h,v 1.42 2002/10/12 15:46:15 tom Exp $
+ * $Id: tic.h,v 1.43 2003/02/22 21:45:29 tom Exp $
  *	tic.h - Global variables and structures for the terminfo
  *			compiler.
  */
@@ -203,8 +203,6 @@ struct alias
 	const char	*source;
 };
 
-extern NCURSES_EXPORT_VAR(int) _nc_tparm_err;
-
 extern NCURSES_EXPORT_VAR(const struct name_table_entry * const) _nc_info_hash_table[];
 extern NCURSES_EXPORT_VAR(const struct name_table_entry * const) _nc_cap_hash_table[];
 
@@ -283,6 +281,13 @@ extern NCURSES_EXPORT(char) _nc_trans_string (char *, char *);
 /* captoinfo.c: capability conversion */
 extern NCURSES_EXPORT(char *) _nc_captoinfo (const char *, const char *, int const);
 extern NCURSES_EXPORT(char *) _nc_infotocap (const char *, const char *, int const);
+
+/* lib_tparm.c */
+#define NUM_PARM 9
+
+extern NCURSES_EXPORT_VAR(int) _nc_tparm_err;
+
+extern NCURSES_EXPORT(int) _nc_tparm_analyze(const char *string, char *p_is_s[NUM_PARM], int *popcount);
 
 /* lib_tputs.c */
 extern NCURSES_EXPORT_VAR(int) _nc_nulls_sent;		/* Add one for every null sent */
