@@ -73,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.184 2002/12/29 01:33:13 Philippe.Blain Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.187 2002/12/31 14:37:14 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -194,6 +194,7 @@ GoTo(int const row, int const col)
 static inline void
 PutAttrChar(CARG_CH_T ch)
 {
+    NCURSES_CH_T my_ch;
     PUTC_DATA;
     NCURSES_CH_T tilde;
     NCURSES_ATTR_T attr = AttrOfD(ch);
@@ -202,22 +203,29 @@ PutAttrChar(CARG_CH_T ch)
 		       _tracech_t(ch),
 		       SP->_cursrow, SP->_curscol));
 
-#if USE_WIDEC_SUPPORT
-    /*
-     * This is crude & ugly, but works most of the time.  It checks if the
-     * acs_chars string specified that we have a mapping for this character,
-     * and uses the wide-character mapping when we expect the normal one to
-     * be broken (by mis-design ;-).
-     */
-    if (SP->_screen_acs_fix
+    if ((attr & A_ALTCHARSET)
 	&& SP->_acs_map != 0
-	&& attr & A_ALTCHARSET
-	&& ch->chars[0] < ACS_LEN
-	&& SP->_acs_map[ch->chars[0]] & A_ALTCHARSET) {
-	attr &= ~(A_ALTCHARSET);
-	ch = &_nc_wacs[ch->chars[0]];
-    }
+	&& CharOfD(ch) < ACS_LEN) {
+	my_ch = CHDEREF(ch);	/* work around const param */
+#if USE_WIDEC_SUPPORT
+	/*
+	 * This is crude & ugly, but works most of the time.  It checks if the
+	 * acs_chars string specified that we have a mapping for this
+	 * character, and uses the wide-character mapping when we expect the
+	 * normal one to be broken (by mis-design ;-).
+	 */
+	if (SP->_screen_acs_fix
+	    && SP->_acs_map[CharOf(my_ch)] & A_ALTCHARSET) {
+	    attr &= ~(A_ALTCHARSET);
+	    my_ch = _nc_wacs[CharOf(my_ch)];
+	}
 #endif
+	if (attr & A_ALTCHARSET) {
+	    SetChar(my_ch, UChar(SP->_acs_map[CharOfD(ch)]), attr);
+	    RemAttr(my_ch, A_ALTCHARSET);
+	}
+	ch = CHREF(my_ch);
+    }
     if (tilde_glitch && (CharOfD(ch) == L('~'))) {
 	SetChar(tilde, L('`'), attr);
 	ch = CHREF(tilde);
@@ -229,7 +237,7 @@ PutAttrChar(CARG_CH_T ch)
      * make it work for wide characters.
      */
     if (SP->_outch != 0) {
-	SP->_outch((int) ch);
+	SP->_outch(UChar(ch));
     } else
 #endif
     {
@@ -958,7 +966,7 @@ ClrBottom(int total)
     int col;
     int top = total;
     int last = min(screen_columns, newscr->_maxx + 1);
-    NCURSES_CH_T blank = newscr->_line[total-1].text[last-1];
+    NCURSES_CH_T blank = newscr->_line[total - 1].text[last - 1];
     bool ok;
 
     if (clr_eos && can_clear_with(CHREF(blank))) {
