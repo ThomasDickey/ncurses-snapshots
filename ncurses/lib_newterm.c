@@ -36,10 +36,10 @@
 
 #include <term.h>	/* clear_screen, cup & friends, cur_term */
 
-MODULE_ID("$Id: lib_newterm.c,v 1.22 1997/02/02 01:34:38 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.23 1997/03/30 01:42:01 tom Exp $")
 
-/* This should moved to TERMINAL */
-static filter_mode = FALSE;
+/* This should be moved to TERMINAL */
+static int filter_mode = FALSE;
 
 void filter(void)
 {

@@ -29,7 +29,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.16 1997/02/15 18:53:41 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.17 1997/03/24 11:29:51 Andreas.Schwab Exp $")
 
 /*
  *	char *
@@ -220,6 +220,7 @@ register const char *cp;
 		}
 	}
 
+	if (number > 9) number = 9;
 	for (i = 0; i < max(popcount, number); i++) {
 		/*
 		 * FIXME: potential loss here if sizeof(int) != sizeof(char *).
@@ -265,6 +266,10 @@ register const char *cp;
 
 			case 'd':
 				save_number("%d", npop());
+				break;
+
+			case 'x':
+				save_number("%x", npop());
 				break;
 
 			case '0':
