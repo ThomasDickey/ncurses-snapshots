@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.92 1997/10/25 23:32:52 tom Exp $
+ * $Id: curses.priv.h,v 1.93 1997/11/01 23:01:54 tom Exp $
  *
  *	curses.priv.h
  *
@@ -39,7 +39,7 @@ extern "C" {
 
 #include <ncurses_cfg.h>
 
-#ifdef USE_RCS_IDS
+#if USE_RCS_IDS
 #define MODULE_ID(id) static const char Ident[] = id;
 #else
 #define MODULE_ID(id) /*nothing*/
@@ -103,7 +103,7 @@ extern int errno;
 /*
  * As currently coded, hashmap relies on the scroll-hints logic.
  */
-#ifndef USE_SCROLL_HINTS
+#if !USE_SCROLL_HINTS
 #if USE_HASHMAP
 #define USE_SCROLL_HINTS 1
 #else

@@ -46,7 +46,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.23 1997/10/11 21:32:54 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.24 1997/11/01 23:39:00 tom Exp $")
 
 /*
  * We want to define GOOD_SELECT if the last argument of select(2) is
@@ -100,13 +100,14 @@ struct timeval tval;
 #endif /* !HAVE_USLEEP */
 
 /*
- * Wait a specified number of milliseconds, returning true if the timer
+ * Wait a specified number of milliseconds, returning nonzero if the timer
  * didn't expire before there is activity on the specified file descriptors.
  * The file-descriptors are specified by the mode:
  *	0 - none (absolute time)
  *	1 - ncurses' normal input-descriptor
  *	2 - mouse descriptor, if any
  *	3 - either input or mouse.
+ * We return a mask that corresponds to the mode (e.g., 2 for mouse activity).
  *
  * If the milliseconds given are -1, the wait blocks until activity on the
  * descriptors.

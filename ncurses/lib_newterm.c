@@ -30,13 +30,13 @@
 
 #include <curses.priv.h>
 
-#ifdef SVR4_TERMIO
+#if defined(SVR4_TERMIO) && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
 #endif
 
 #include <term.h>	/* clear_screen, cup & friends, cur_term */
 
-MODULE_ID("$Id: lib_newterm.c,v 1.28 1997/10/12 20:17:37 juergen Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.29 1997/11/01 19:05:26 tom Exp $")
 
 #ifndef ONLCR		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.41 1997/10/26 18:30:40 tom Exp $
+# $Id: Makefile.in,v 1.42 1997/11/01 20:37:07 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -180,7 +180,7 @@ TAGS:
 	etags *.[ch]
 
 mostlyclean ::
-	-rm -f tags TAGS core *.ln *~
+	-rm -f tags TAGS core *.ln *.atac *~
 
 clean :: mostlyclean
 	-rm -f $(AUTO_SRC)

@@ -48,7 +48,7 @@
 #include <fcntl.h>
 #endif
 
-MODULE_ID("$Id: read_termcap.c,v 1.21 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.22 1997/11/01 23:02:39 tom Exp $")
 
 #define TC_SUCCESS     0
 #define TC_UNRESOLVED -1
@@ -56,7 +56,7 @@ MODULE_ID("$Id: read_termcap.c,v 1.21 1996/12/21 14:24:06 tom Exp $")
 #define TC_SYS_ERR    -3
 #define TC_REF_LOOP   -4
 
-#ifdef USE_GETCAP
+#if USE_GETCAP
 /*
  * Copyright (c) 1980, 1993
  *	The Regents of the University of California.  All rights reserved.
@@ -773,8 +773,22 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 {
 	int found = FALSE;
 	ENTRY	*ep;
+#if USE_GETCAP_CACHE
 	char	cwd_buf[PATH_MAX];
-#ifndef USE_GETCAP
+#endif
+#if USE_GETCAP
+	char	tc[2048 * 2];
+	static char	*source;
+	static int lineno;
+
+	/* we're using getcap(3) */
+	if (_nc_tgetent(tc, &source, &lineno, tn) <= 0)
+		return (ERR);
+
+	_nc_curr_line = lineno;
+	_nc_set_source(source);
+	_nc_read_entry_source((FILE *)0, tc, FALSE, FALSE, NULLHOOK);
+#else
 	/*
 	 * Here is what the 4.4BSD termcap(3) page prescribes:
 	 *
@@ -899,19 +913,7 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 			}
 		}
 	}
-#else
-	char	tc[2048 * 2];
-	static char	*source;
-	static int lineno;
-
-	/* we're using getcap(3) */
-	if (_nc_tgetent(tc, &source, &lineno, tn) <= 0)
-		return (ERR);
-
-	_nc_curr_line = lineno;
-	_nc_set_source(source);
-	_nc_read_entry_source((FILE *)0, tc, FALSE, FALSE, NULLHOOK);
-#endif
+#endif /* USE_GETCAP */
 
 	if (_nc_head == 0)
 		return(ERR);
@@ -920,9 +922,11 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 	_nc_resolve_uses();
 
 	/* find a terminal matching tn, if we can */
+#if USE_GETCAP_CACHE
 	if (getcwd(cwd_buf, sizeof(cwd_buf)) != 0)
 	{
 		_nc_set_writedir((char *)0); /* note: this does a chdir */
+#endif
 		for_entry_list(ep) {
 			if (_nc_name_match(ep->tterm.term_names, tn, "|:"))
 			{
@@ -958,8 +962,10 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 				break;
 			}
 		}
+#if USE_GETCAP_CACHE
 		chdir(cwd_buf);
 	}
+#endif
 
 	_nc_free_entries(_nc_head);
 	return(found);

@@ -41,9 +41,9 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_raw.c,v 1.20 1997/09/02 22:41:54 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.21 1997/11/01 19:05:35 tom Exp $")
 
-#ifdef SVR4_TERMIO
+#if defined(SVR4_TERMIO) && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
 #endif
 

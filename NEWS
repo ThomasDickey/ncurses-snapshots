@@ -1,7 +1,25 @@
--- $Id: NEWS,v 1.270 1997/10/26 23:06:21 tom Exp $
+-- $Id: NEWS,v 1.271 1997/11/02 00:04:04 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+971101
+	+ force mandatory padding in bell and flash_screen, as specified in XSI.
+	+ don't allow padding_baud_rate to override mandatory delays (reported
+	  by Daniel Weaver).
+	+ modify delay_output() to use _nc_timed_wait() if no baudrate has been
+	  defined, or if the cur_term pointer is not initialized.  XSI treats
+	  this as unspecified.  (requested by Daniel Weaver).
+	+ change getcap-cache ifdef's to eliminate unnecessary chdir/mkdir
+	  when that feature is not configured.
+	+ remove _nc_err_abort() calls when write_entry.c finds a directory but
+	  cannot write to it, e.g., when translating part/all of /etc/termcap
+	  (reported by Andreas Jaeger <aj@arthur.rhein-neckar.de>).
+	  (this dates back to 951102, in 1.9.7a).
+	+ minor ifdef fixes to compile with atac and glibc 2.0.5c
+	+ add check for -lgen when configuring regexpr.h
+	+ modify Solaris shared-library option "-d y" to "-dy" to workaround
+	  incompatibility of gcc 2.7.2 vs vendor's tools.
 
 971026
 	+ correct ifdef's for struct winsize vs struct ttysize in lib_setup.c
