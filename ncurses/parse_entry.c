@@ -36,7 +36,7 @@
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.16 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.17 1996/12/30 01:05:43 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] = { 0 };
@@ -230,7 +230,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 		{
 		    if (!silent)
 		    {
-			char *type_name;
+			const char *type_name;
 			switch (entry_ptr->nte_type)
 			{
 			case BOOLEAN:
@@ -383,7 +383,7 @@ int _nc_capcmp(const char *s, const char *t)
  * list.  For each capability, we may assume there is a keycap that sends the
  * string which is the value of that capability.
  */
-typedef struct {char *from; char *to;} assoc;
+typedef struct {const char *from; const char *to;} assoc;
 static assoc const ko_xlate[] =
 {
     {"al",	"kil1"},	/* insert line key  -> KEY_IL    */

@@ -1,5 +1,6 @@
+-- $Id: INSTALL,v 1.20 1997/01/04 23:48:59 tom Exp $
 ---------------------------------------------------------------------
-             How to install Ncurses/Terminfo on your system 
+             How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
     ************************************************************
     * READ ALL OF THIS FILE BEFORE YOU TRY TO INSTALL NCURSES. *
@@ -50,18 +51,18 @@ You will need the following in order to build and install ncurses under UNIX:
 INSTALLATION PROCEDURE:
 
 1.  First, decide whether you want ncurses to replace your existing library (in
-    which case you'll need super-user privileges) or be installed in parallel 
-    with it.  
+    which case you'll need super-user privileges) or be installed in parallel
+    with it.
 
     The --prefix option to configure changes the root directory for installing
     ncurses.  The default is in subdirectories of /usr/local. Use --prefix=/usr
-    to replace your default curses distribution. This will be the case for 
+    to replace your default curses distribution. This will be the case for
     Linux and BSD/OS users.
 
     The package gets installed beneath the --prefix directory as
     follows:
 
-    In $(prefix)/bin:          tic, infocmp, captoinfo, tset, 
+    In $(prefix)/bin:          tic, infocmp, captoinfo, tset,
     				reset, clear, tput, toe
     In $(prefix)/lib:          libncurses*.* libcurses.a
     In $(prefix)/share/terminfo: compiled terminal descriptions
@@ -107,10 +108,10 @@ INSTALLATION PROCEDURE:
     also interpret the contents of the TERM environment variable.  See the
     section BSD CONVERSION NOTES below.
 
-3.  Type `make'.  Ignore any warnings, no error messages should be produced. 
-    This should compile the ncurses library, the terminfo compiler tic(1), 
-    captoinfo(1), infocmp(1), toe(1), clear(1) tset(1), reset(1), and tput(1) 
-    programs (see the man pages for explanation of what they do), some test 
+3.  Type `make'.  Ignore any warnings, no error messages should be produced.
+    This should compile the ncurses library, the terminfo compiler tic(1),
+    captoinfo(1), infocmp(1), toe(1), clear(1) tset(1), reset(1), and tput(1)
+    programs (see the man pages for explanation of what they do), some test
     programs, and the panels, menus, and forms libraries.
 
 4.  Run ncurses and several other test programs in the test directory to
@@ -126,7 +127,7 @@ INSTALLATION PROCEDURE:
     the programs, the terminfo database and the man pages.  Alternately, you
     can type `make install' in each directory you want to install.  In the
     top-level directory, you can do a partial install using these commands:
- 
+
 	'make install.progs'    installs tic, infocmp, etc...
   	'make install.includes' installs the headers.
   	'make install.libs'     installs the libraries.
@@ -189,7 +190,7 @@ INSTALLATION PROCEDURE:
 
     The easier way is to link or copy l/linux to c/console under your terminfo
     directory.  Note: this will go away next time you do `make install.data'
-    and you'll have to redo it. There is no need to have entries for all 
+    and you'll have to redo it. There is no need to have entries for all
     possible screen sizes, ncurses will figure out the size automatically.
 
 IF YOU ARE A SYSTEM INTEGRATOR:
@@ -204,19 +205,20 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 	libraries and headers in the correct locations (overwriting any
 	previous curses libraries and headers).  This will put the terminfo
 	hierarchy under /usr/share/terminfo; you may want to override this with
-	--datadir=/usr/share/misc/terminfo
+	--datadir=/usr/share/misc; terminfo and tabset are installed under the
+	data directory.
 
 	Please configure the ncurses library in a pure-terminfo mode; that
-	is, with the --disable-termcap option.   This will make the ncurses 
-	library smaller and faster. The ncurses library includes a termcap 
-	emulation that queries the terminfo database, so even applications 
-	that use raw termcap to query terminal characteristics will win 
+	is, with the --disable-termcap option.   This will make the ncurses
+	library smaller and faster. The ncurses library includes a termcap
+	emulation that queries the terminfo database, so even applications
+	that use raw termcap to query terminal characteristics will win
 	(providing you recompile and relink them!).
 
 	If you must configure with termcap fallback enabled, you may also
 	wish to use the --enable-getcap option.  This option speeds up
 	termcap-based startups, at the expense of not allowing personal
-	termcap entries to reference the terminfo tree.  See the code in 
+	termcap entries to reference the terminfo tree.  See the code in
 	ncurses/read_termcap.c for details.
 
     Keyboard Mapping:
@@ -225,8 +227,8 @@ IF YOU ARE A SYSTEM INTEGRATOR:
         (the ECMA-48 reverse-tabulation sequence) rather than ^I.  Here are
 	the loadkeys -d	mappings that will set this up:
 
-		keycode  15 = Tab             Tab             
-			alt     keycode  15 = Meta_Tab        
+		keycode  15 = Tab             Tab
+			alt     keycode  15 = Meta_Tab
 			shift	keycode  15 = F26
 		string F26 ="\033[Z"
 
@@ -235,7 +237,7 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 	In various Linuxes (and possibly elsewhere) there has been a practice
 	of designating the system console driver type as `console'.  Please
 	do not do this any more!  It complicates peoples' lives, because it
-	can mean that several different terminfo entries from different 
+	can mean that several different terminfo entries from different
 	operating systems all logically want to be called `console'.
 
 	Please pick a name unique to your console driver and set that up
@@ -272,7 +274,7 @@ RECENT XTERM VERSIONS
 CONFIGURING FALLBACK ENTRIES
 	In order to support operation of ncurses programs before the terminfo
 	tree is accessible (that is, in single-user mode or at OS installation
-	time) the ncurses library can be compiled to include an array of 
+	time) the ncurses library can be compiled to include an array of
 	pre-fetched fallback entries.
 
 	These entries are checked by setupterm() only when the conventional
@@ -359,11 +361,11 @@ first time around.
 
 Subsequently, editing the TERMCAP variable or personal TERMCAP file
 will have no effect unless you explicitly remove the terminfo entry
-under $HOME/terminfo.  If you do that, the entry will be recompiled 
+under $HOME/terminfo.  If you do that, the entry will be recompiled
 from your termcap resources the next time it is invoked.
 
 To avoid these complications, use infocmp(1) and tic(1) to edit the
-terminfo directory directly. 
+terminfo directory directly.
 
 ------------------------------- CUT HERE --------------------------------
 
@@ -374,7 +376,7 @@ USING NCURSES WITH AFS:
 
 USING NCURSES WITH EMACS:
 	GNU Emacs has its own termcap support.  By default, it uses a mixture
-	of those functions and code linked from the host system's libraries.  
+	of those functions and code linked from the host system's libraries.
 	You need to foil this and shut out the GNU termcap library entirely.
 
 	In order to do this, hack the Linux config file (s/linux.h) to contain

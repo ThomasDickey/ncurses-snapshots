@@ -29,9 +29,9 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: toe.c,v 0.11 1996/12/21 17:34:36 tom Exp $")
+MODULE_ID("$Id: toe.c,v 0.12 1996/12/30 02:34:14 tom Exp $")
 
-char	*_nc_progname;
+const char *_nc_progname;
 
 static void typelist(int eargc, char *eargv[], bool,
 		     void (*)(const char *, TERMTYPE *));
@@ -175,7 +175,7 @@ int main (int argc, char *argv[])
 static void deschook(const char *cn, TERMTYPE *tp)
 /* display a description for the type */
 {
-    char	*desc;
+    const char *desc;
 
     if ((desc = strrchr(tp->term_names, '|')) == (char *)NULL)
 	desc = "(No description)";

@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.75 1996/12/21 16:04:03 tom Exp $
+$Id: ncurses.c,v 1.76 1996/12/30 02:10:28 tom Exp $
 
 ***************************************************************************/
 
@@ -139,7 +139,7 @@ static void Pause(void)
 	(void) Getchar();
 }
 
-static void Cannot(char *what)
+static void Cannot(const char *what)
 {
 	printw("\nThis %s terminal %s\n\n", getenv("TERM"), what);
 	Pause();
@@ -350,7 +350,7 @@ static void attr_test(void)
  *
  ****************************************************************************/
 
-static char	*colors[] =
+static const char *colors[] =
 {
     "black",
     "red",
@@ -699,7 +699,7 @@ static void show_upper_chars(int first)
 	}
 }
 
-static int show_1_acs(int n, char *name, chtype code)
+static int show_1_acs(int n, const char *name, chtype code)
 {
 	const int height = 16;
 	int row = 4 + (n % height);
@@ -882,7 +882,7 @@ struct frame
 	WINDOW		*wind;
 };
 
-static void transient(struct frame *curp, char *msg)
+static void transient(struct frame *curp, const char *msg)
 {
     if (msg)
     {
@@ -1280,7 +1280,7 @@ static WINDOW *w5;
 
 static unsigned long nap_msec = 1;
 
-char *mod[] =
+static const char *mod[] =
 {
 	"test ",
 	"TEST ",
@@ -1315,7 +1315,7 @@ wait_a_while(unsigned long msec GCC_UNUSED)
 	saywhat(text)
 --------------------------------------------------------------------------*/
 static void
-saywhat(char *text)
+saywhat(const char *text)
 {
 	wmove(stdscr,LINES - 1,0);
 	wclrtoeol(stdscr);
@@ -2052,7 +2052,7 @@ static int menu_virtualize(int c)
 	return(c);
 }
 
-static char *animals[] =
+static const char *animals[] =
 {
     "Lions", "Tigers", "Bears", "(Oh my!)", "Newts", "Platypi", "Lemurs",
     (char *)NULL
@@ -2063,7 +2063,7 @@ static void menu_test(void)
     MENU	*m;
     ITEM	*items[SIZEOF(animals)];
     ITEM	**ip = items;
-    char	**ap;
+    const char	**ap;
     int		mrows, mcols;
     WINDOW	*menuwin;
 
@@ -2279,7 +2279,7 @@ static void trace_set(void)
  *
  ****************************************************************************/
 #if USE_LIBFORM
-static FIELD *make_label(int frow, int fcol, char *label)
+static FIELD *make_label(int frow, int fcol, const char *label)
 {
     FIELD	*f = new_field(1, strlen(label), frow, fcol, 0, 0);
 

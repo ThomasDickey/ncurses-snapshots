@@ -32,12 +32,12 @@
 #include <curses.priv.h>
 #include <term.h>	/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.9 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.10 1996/12/30 00:46:39 tom Exp $")
 
 char *_traceattr(attr_t newmode)
 {
 static char	buf[BUFSIZ];
-static const	struct {unsigned int val; char *name;}
+static const	struct {unsigned int val; const char *name;}
 names[] =
     {
 	{A_STANDOUT,	"A_STANDOUT, ",},
@@ -99,7 +99,7 @@ char *_tracechtype(chtype ch)
     {
 	bool	found = FALSE;
 	char	*cp;
-	static const	struct {unsigned int val; char *name;}
+	static const	struct {unsigned int val; const char *name;}
 	names[] =
 	{
 	    {'l', "ACS_ULCORNER"},	/* upper left corner */

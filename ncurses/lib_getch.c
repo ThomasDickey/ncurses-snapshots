@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.19 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.20 1996/12/29 21:41:17 tom Exp $")
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail
@@ -91,13 +91,26 @@ int ungetch(int ch)
 static inline int fifo_push(void)
 {
 int n;
-unsigned char ch;
+unsigned int ch;
 
 	if (tail == -1) return ERR;
 	/* FALLTHRU */
 again:
 	errno = 0;
-	n = read(SP->_ifd, &ch, 1);
+#if USE_GPM_SUPPORT	
+	if ((_nc_mouse_fd() >= 0) 
+	 && (_nc_timed_wait(3, -1, (int *)0) & 2))
+	{
+		_nc_mouse_event(SP);
+		ch = KEY_MOUSE;
+		n = 1;
+	} else
+#endif
+	{
+		unsigned char c2;
+		n = read(SP->_ifd, &c2, 1);
+		ch = c2;
+	}
 
 	/*
 	 * Under System V curses with non-restarting signals, getch() returns
@@ -218,18 +231,12 @@ int	ch;
 		T(("delay is %d microseconds", delay));
 
 		if (head == -1)	/* fifo is empty */
-			if (_nc_timed_wait(SP->_ifd, delay, NULL) == 0)
+			if (!_nc_timed_wait(3, delay, (int *)0))
 				return ERR;
 		/* else go on to read data available */
 	}
 
-	/*
-	 * Give the mouse interface a chance to pick up an event.
-	 * If no mouse event, check for keyboard input.
-	 */
-	if (_nc_mouse_event(SP))
-		ch = KEY_MOUSE;
-	else if (win->_use_keypad) {
+	if (win->_use_keypad) {
 		/*
 		 * This is tricky.  We only want to get special-key
 		 * events one at a time.  But we want to accumulate
@@ -253,7 +260,7 @@ int	ch;
 			}
 		} while
 		    (ch == KEY_MOUSE
-		     && (_nc_timed_wait(SP->_ifd, _nc_max_click_interval, NULL)
+		     && (_nc_timed_wait(3, _nc_max_click_interval, (int *)0)
 			 || !_nc_mouse_parse(runcount)));
 		if (runcount > 0 && ch != KEY_MOUSE)
 		{
@@ -362,7 +369,7 @@ int timeleft = ESCDELAY;
 					break;
 
 				TR(TRACE_IEVENT, ("waiting for rest of sequence"));
-				if (_nc_timed_wait(SP->_ifd, timeleft, &timeleft) < 1) {
+				if (!_nc_timed_wait(3, timeleft, &timeleft)) {
 					TR(TRACE_IEVENT, ("ran out of time"));
 					return(fifo_pull());
 				} else {

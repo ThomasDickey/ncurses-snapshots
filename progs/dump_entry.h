@@ -39,7 +39,7 @@
 #define S_TERMCAP	4	/* sort by termcap names */
 
 extern char *nametrans(const char *);
-extern void dump_init(char *, int, int, int, int);
+extern void dump_init(const char *, int, int, int, int);
 extern int fmt_entry(TERMTYPE *, int (*)(int, int), bool, bool);
 extern int dump_entry(TERMTYPE *, bool, int (*)(int, int));
 extern int dump_uses(const char *, bool);

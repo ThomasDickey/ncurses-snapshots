@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.39 1996/12/21 21:42:07 tom Exp $
+dnl $Id: aclocal.m4,v 1.40 1997/01/04 23:53:13 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -152,7 +152,8 @@ if test $ac_cv_prog_gxx = yes; then
 #include <builtin.h>
 	],
 	[float foo=abs(1.0)],
-	[nc_cxx_library=yes],
+	[nc_cxx_library=yes
+	 CXXLIBS="$CXXLIBS -lg++ -lm"],
 	[nc_cxx_library=no])
 	LIBS="$nc_save"
 	AC_MSG_RESULT($nc_cxx_library)

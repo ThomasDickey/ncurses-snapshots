@@ -27,7 +27,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include "parametrized.h"	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.14 1996/12/21 17:36:11 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.15 1996/12/30 02:29:00 tom Exp $")
 
 #define INDENT			8
 
@@ -47,7 +47,7 @@ static size_t out_size;		/* ...and its allocated length */
 static const int *bool_indirect, *num_indirect, *str_indirect;
 static char * const *bool_names, * const *num_names, * const *str_names;
 
-static char *separator, *trailer;
+static const char *separator, *trailer;
 
 /* cover various ports and variants of terminfo */
 #define V_ALLCAPS	0	/* all capabilities (SVr4, XSI, ncurses) */
@@ -95,7 +95,7 @@ char *nametrans(const char *name)
     return((char *)NULL);
 }
 
-void dump_init(char *version, int mode, int sort, int twidth, int traceval)
+void dump_init(const char *version, int mode, int sort, int twidth, int traceval)
 /* set up for entry display */
 {
     width = twidth;
@@ -710,7 +710,7 @@ int dump_entry(TERMTYPE *tterm, bool limited, int (*pred)(int type, int idx))
 /* dump a single entry */
 {
     int	len, critlen;
-    char	*legend;
+    const char	*legend;
     bool	infodump;
 
     if (outform==F_TERMCAP || outform==F_TCONVERR)

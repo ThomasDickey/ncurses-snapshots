@@ -2,7 +2,7 @@
  *  newdemo.c	-	A demo program using PDCurses. The program illustrate
  *  	 		the use of colours for text output.
  *
- * $Id: newdemo.c,v 1.11 1996/12/14 23:48:16 tom Exp $
+ * $Id: newdemo.c,v 1.12 1996/12/30 02:11:44 tom Exp $
  */
 
 #include <test.priv.h>
@@ -21,7 +21,7 @@ static RETSIGTYPE trap(int);
 /*
  *  The Australian map
  */
-char    *AusMap[16] =
+const char *AusMap[16] =
 {
     "           A           A ",
     "    N.T. AAAAA       AAAA ",
@@ -42,7 +42,7 @@ char    *AusMap[16] =
  */
 #define NMESSAGES   6
 
-char    *messages[] =
+const char *messages[] =
 {
     "Hello from the Land Down Under",
     "The Land of crocs. and a big Red Rock",
@@ -63,7 +63,8 @@ main(
 {
 WINDOW  *win;
 int     w, x, y, i, j, k, len;
-char    buffer[80], *message;
+char    buffer[80];
+const char *message;
 int     width, height;
 chtype  save[80];
 chtype  c;

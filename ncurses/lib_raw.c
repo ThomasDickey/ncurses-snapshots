@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_raw.c,v 1.14 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.15 1996/12/30 00:45:00 tom Exp $")
 
 #ifdef SVR4_TERMIO
 #define _POSIX_SOURCE
@@ -66,7 +66,7 @@ char *_tracebits(void)
 /* describe the state of the terminal control bits exactly */
 {
 static char	buf[BUFSIZ];
-static const	struct {unsigned int val; char *name;}
+static const	struct {unsigned int val; const char *name;}
 
 #ifdef TERMIOS
 iflags[] =

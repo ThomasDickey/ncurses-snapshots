@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.19 1996/12/14 21:58:15 tom Exp $
+# $Id: Makefile.in,v 1.20 1996/12/29 23:38:06 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -44,7 +44,7 @@ CCFLAGS		= $(CFLAGS) $(CPPFLAGS) $(CFLAGS_@DFT_UPR_MODEL@)
 LOCAL_LIBS	= @TEST_DEPS@
 
 LINK		= $(CC)
-LD_FLAGS	= @LD_MODEL@ @TEST_ARGS@ @LDFLAGS@ @LIBS@ @LOCAL_LDFLAGS@ $(LDFLAGS)
+LD_FLAGS	= @LD_MODEL@ @TEST_ARGS@ @LDFLAGS@ @LIBS@ @EXTRA_LIBS@ @LOCAL_LDFLAGS@ $(LDFLAGS)
 
 LINT		= @LINT@
 LINT_OPTS	= @LINT_OPTS@

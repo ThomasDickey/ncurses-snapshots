@@ -29,9 +29,9 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracedmp.c,v 1.5 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_tracedmp.c,v 1.8 1997/01/01 23:37:37 tom Exp $")
 
-void _tracedump(char *name, WINDOW *win)
+void _tracedump(const char *name, WINDOW *win)
 {
     int	i, j, n, width;
 
@@ -55,7 +55,10 @@ void _tracedump(char *name, WINDOW *win)
 	bool haveattrs, havecolors;
 
 	/* dump A_CHARTEXT part */
-	(void) sprintf(buf, "%s[%2d]='", name, n);
+	(void) sprintf(buf, "%s[%2d] %3d%3d ='",
+		name, n,
+		win->_line[n].firstchar,
+		win->_line[n].lastchar);
 	ep = buf + strlen(buf);
 	for (j = 0; j <= width; j++) {
 	    ep[j] = TextOf(win->_line[n].text[j]);

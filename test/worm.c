@@ -34,7 +34,7 @@ Options:
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.15 1996/12/14 23:48:16 tom Exp $
+  $Id: worm.c,v 1.17 1997/01/01 23:58:09 tom Exp $
 */
 
 #include <test.priv.h>
@@ -58,7 +58,7 @@ static struct worm {
     short *xpos, *ypos;
 } worm[40];
 
-static char *field;
+static const char *field;
 static int length=16, number=3;
 static chtype trail=' ';
 
@@ -269,7 +269,7 @@ int last, bottom;
 		for (y=length;--y>=0;) *ip++ = -1;
     }
     if (field) {
-		register char *p;
+		register const char *p;
 		p=field;
 		for (y=bottom;--y>=0;) {
 		    for (x=COLS;--x>=0;) {

@@ -18,7 +18,14 @@ Known Problems:
   in SVr4 (e.g., Solaris curses).  XSI doesn't specify a stacking order, so
   full compatibility for this behavior must be achieved by testing/analysis.
 
+* The ncurses 'o' test does not behave the same on SVr4 (Solaris) as with
+  ncurses (the latter pops windows up more).  The former also produces 20%
+  fewer characters in a 'script' output.  Further analysis is needed.
+
 * SVr4 uses slightly different rules for determining when softkeys are shown.
+  For example, they are initially displayed (before the ncurses 'e' test
+  activates them), and a touchwin can apparently also force them to be
+  displayed.
 
 * The code departs from perfect 8-bit cleanness in one respect; you cannot
   specify a character \200 as part of a capability string, because the terminfo
@@ -77,13 +84,7 @@ Untested features:
 
 LONGER-TERM TO-DO ITEMS:
 
-1. Extended mouse support via gpm integration
-
-We have mouse support under xterm now, implemented and documented.  The
-next step is to add code to lib_mouse.c that can detect Alessandro Rubini's
-GPM server and use it to implement the same interface.
-
-2. Extended COSE conformance
+1. Extended COSE conformance
 
 There is an XPG4 standard recently released which describes a superset
 of the SVr4 API.  The library is BASE conformant with this standard.
@@ -153,7 +154,7 @@ need better multi-locale support guarantees from the OS to finish this.
 If you are working on internationalization support, please contact us so
 we can cooperate.
 
-3. DOS port
+2. DOS port
 
 Only 16 of the 55 files in the library depend on the terminfo format.
 It should be possible to further kernelize the package, then rewrite 
@@ -161,14 +162,14 @@ a small number of core files to produce a functionally-compatible
 port that would do updates to a memory-mapped screen area.  The first
 result of this would be a DOS port.
 
-4. X port
+3. X port
 
 It would be nice if ncurses could recognize when it was running under X and
 maintain its own window.  With this feature, all ncurses programs would
 automatically become X programs.  The challenge is to handle resize events
 properly.
 
-5. Unused capabilities
+4. Unused capabilities
 
 The currently unused capabilities fall naturally into several groups:
 

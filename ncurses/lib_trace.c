@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.12 1996/12/21 15:11:11 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.14 1996/12/30 01:39:04 tom Exp $")
 
 #include <ctype.h>
 #if HAVE_FCNTL_H
@@ -37,7 +37,7 @@ MODULE_ID("$Id: lib_trace.c,v 1.12 1996/12/21 15:11:11 tom Exp $")
 #endif
 
 unsigned _nc_tracing = 0;
-char *_nc_tputs_trace;
+const char *_nc_tputs_trace = "";
 long _nc_outchars;
 int _nc_optimize_enable = OPTIMIZE_ALL;
 
@@ -60,7 +60,7 @@ static bool	been_here = FALSE;
    	_nc_tracing = tracelevel;
 }
 
-char *_nc_visbuf(const char *buf)
+const char *_nc_visbuf(const char *buf)
 /* visibilize a given string */
 {
 static char vbuf[BUFSIZ];

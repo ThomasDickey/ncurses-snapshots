@@ -33,7 +33,7 @@
 #include <sys/termio.h>	/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.15 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.16 1996/12/30 01:03:59 tom Exp $")
 
 #ifdef __QNX__		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -67,7 +67,7 @@ int _nc_initscr(void)
 WINDOW *initscr(void)
 {
 static	bool initialized = FALSE;
-char	*name;
+const char *name;
 
 	/* Portable applications must not call initscr() more than once */
 	if (!initialized) {

@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.47 1996/12/21 18:01:01 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.49 1997/01/01 23:04:31 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -645,7 +645,7 @@ struct tms before, after;
 	nonempty = 0;
 	if (curscr->_clear) {		/* force refresh ? */
 		T(("clearing and updating curscr"));
-		ClrUpdate(curscr);		/* yes, clear all & update */
+		ClrUpdate(newscr);	/* yes, clear all & update */
 		curscr->_clear = FALSE;	/* reset flag */
 	} else if (newscr->_clear) {
 		T(("clearing and updating newscr"));
@@ -669,7 +669,7 @@ struct tms before, after;
 		if (clr_eos)
 			nonempty = ClrBottom(nonempty);
 
-		T(("Transforming lines"));
+		T(("Transforming lines, nonempty %d", nonempty));
 		for (i = changedlines = 0; i < nonempty; i++) {
 			/*
 			 * newscr->line[i].firstchar is normally set
@@ -1300,7 +1300,7 @@ static void DelChar(int count)
 **	Emit a string without waiting for update.
 */
 
-void _nc_outstr(char *str)
+void _nc_outstr(const char *str)
 {
     FILE *ofp = SP ? SP->_ofp : stdout;
 

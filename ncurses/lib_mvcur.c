@@ -143,7 +143,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.31 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.32 1997/01/01 22:20:41 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -224,7 +224,7 @@ static void reset_scroll_region(void)
     if (change_scroll_region)
     {
 	/* change_scroll_region may trash the cursor location */
-	save_curs();    
+	save_curs();
 	TPUTS_TRACE("change_scroll_region");
 	putp(tparm(change_scroll_region, 0, screen_lines - 1));
 	restore_curs();
@@ -248,7 +248,7 @@ void _nc_mvcur_resume(void)
      *
      * This also undoes the effects of terminal init strings that assume
      * they know the screen size.  This is useful when you're running
-     * a vt100 emulation through xterm. 
+     * a vt100 emulation through xterm.
      */
     reset_scroll_region();
 }
@@ -872,14 +872,10 @@ static void restore_curs(void)
  *
  ****************************************************************************/
 
-int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
+static int DoTheScrolling(int n, int top, int bot, int maxy)
 /* scroll region from top to bot by n lines */
 {
     int i;
-
-    TR(TRACE_MOVE, ("mvcur_scrolln(%d, %d, %d, %d)", n, top, bot, maxy));
-
-    save_curs();
 
     /*
      * This code was adapted from Keith Bostic's hardware scrolling
@@ -899,32 +895,22 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
      * BSD curses.  BSD curses preferred pairs of il/dl operations
      * over scrolls, allegedly because il/dl looked faster.  We, on
      * the other hand, prefer scrolls because (a) they're just as fast
-     * on modern terminals and (b) using them avoids bouncing an
+     * on many terminals and (b) using them avoids bouncing an
      * unchanged bottom section of the screen up and down, which is
      * visually nasty.
      */
     if (n > 0)
     {
 	/*
-	 * Do explicit clear to end of region if it's possible that the
-	 * terminal might hold on to stuff we push off the end.
+	 * Explicitly clear if stuff pushed off top of region might
+	 * be saved by the terminal.
 	 */
-	if (non_dest_scroll_region || (memory_below && bot == maxy))
-	{
-	    if (bot == maxy && clr_eos)
+	if (non_dest_scroll_region || (memory_above && top == 0)) {
+	    for (i = 0; i < n; i++)
 	    {
-		mvcur(-1, -1, lines - n, 0);
-		TPUTS_TRACE("clr_eos");
-		tputs(clr_eos, n, _nc_outch);
-	    }
-	    else if (clr_eol)
-	    {
-		for (i = 0; i < n; i++)
-		{
-		    mvcur(-1, -1, lines - n + i, 0);
-		    TPUTS_TRACE("clr_eol");
-		    tputs(clr_eol, n, _nc_outch);
-		}
+		mvcur(-1, -1, i, 0);
+		TPUTS_TRACE("clr_eol");
+		tputs(clr_eol, n, _nc_outch);
 	    }
 	}
 
@@ -932,45 +918,30 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 	{
 	    TPUTS_TRACE("change_scroll_region");
 	    tputs(tparm(change_scroll_region, top, bot), 0, _nc_outch);
+
 	    onscreen_mvcur(-1, -1, bot, 0, TRUE);
+
 	    if (parm_index != NULL)
 	    {
 		TPUTS_TRACE("parm_index");
 		tputs(tparm(parm_index, n, 0), n, _nc_outch);
 	    }
 	    else
+	    {
 		for (i = 0; i < n; i++)
 		{
 		    TPUTS_TRACE("scroll_forward");
 		    tputs(scroll_forward, 0, _nc_outch);
 		}
+	    }
 	    TPUTS_TRACE("change_scroll_region");
 	    tputs(tparm(change_scroll_region, 0, maxy), 0, _nc_outch);
-	    restore_curs();
-	    return(OK);
 	}
-
-	/* Scroll up the block. */
-	if (parm_index && top == 0)
+	else if (parm_index && top == 0)
 	{
 	    onscreen_mvcur(oy, ox, bot, 0, TRUE);
 	    TPUTS_TRACE("parm_index");
 	    tputs(tparm(parm_index, n, 0), n, _nc_outch);
-	}
-	else if (_nc_idlok && parm_delete_line)
-	{
-	    onscreen_mvcur(oy, ox, top, 0, TRUE);
-	    TPUTS_TRACE("parm_delete_line");
-	    tputs(tparm(parm_delete_line, n, 0), n, _nc_outch);
-	}
-	else if (_nc_idlok && delete_line)
-	{
-	    onscreen_mvcur(oy, ox, top, 0, TRUE);
-	    for (i = 0; i < n; i++)
-	    {
-		TPUTS_TRACE("parm_index");
-		tputs(delete_line, 0, _nc_outch);
-	    }
 	}
 	else if (scroll_forward && top == 0 && bot == maxy)
 	{
@@ -981,83 +952,101 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 		tputs(scroll_forward, 0, _nc_outch);
 	    }
 	}
-	else
-	    return(ERR);
+	else if (_nc_idlok
+	 && (parm_delete_line || delete_line)
+	 && (parm_insert_line || insert_line))
+	{
+	    onscreen_mvcur(oy, ox, top, 0, TRUE);
 
-	/* Push down the bottom region. */
-	if (_nc_idlok && parm_insert_line)
-	{
-	    onscreen_mvcur(top, 0, bot - n + 1, 0, FALSE);
-	    TPUTS_TRACE("parm_insert_line");
-	    tputs(tparm(parm_insert_line, n, 0), n, _nc_outch);
-	}
-	else if (_nc_idlok && insert_line)
-	{
-	    onscreen_mvcur(top, 0, bot - n + 1, 0, FALSE);
-	    for (i = 0; i < n; i++)
+	    if (parm_delete_line)
 	    {
-		TPUTS_TRACE("insert_line");
-		tputs(insert_line, 0, _nc_outch);
+		TPUTS_TRACE("parm_delete_line");
+		tputs(tparm(parm_delete_line, n, 0), n, _nc_outch);
+	    }
+	    else
+	    {
+		for (i = 0; i < n; i++)
+		{
+		    TPUTS_TRACE("parm_index");
+		    tputs(delete_line, 0, _nc_outch);
+		}
+	    }
+
+	    onscreen_mvcur(top, 0, bot - n + 1, 0, FALSE);
+
+	    /* Push down the bottom region. */
+	    if (parm_insert_line)
+	    {
+		TPUTS_TRACE("parm_insert_line");
+		tputs(tparm(parm_insert_line, n, 0), n, _nc_outch);
+	    }
+	    else
+	    {
+		for (i = 0; i < n; i++)
+		{
+		    TPUTS_TRACE("insert_line");
+		    tputs(insert_line, 0, _nc_outch);
+		}
 	    }
 	}
 	else
 	    return(ERR);
-	restore_curs();
     }
     else /* (n < 0) */
     {
 	/*
-	 * Explicitly clear if stuff pushed off top of region might
-	 * be saved by the terminal.
+	 * Do explicit clear to end of region if it's possible that the
+	 * terminal might hold on to stuff we push off the end.
 	 */
-	if (non_dest_scroll_region || (memory_above && top == 0))
-	    for (i = 0; i < n; i++)
+	if (non_dest_scroll_region || (memory_below && bot == maxy))
+	{
+	    if (bot == maxy && clr_eos)
 	    {
-		mvcur(-1, -1, i, 0);
-		TPUTS_TRACE("clr_eol");
-		tputs(clr_eol, n, _nc_outch);
+		mvcur(-1, -1, lines + n, 0);
+		TPUTS_TRACE("clr_eos");
+		tputs(clr_eos, n, _nc_outch);
 	    }
+	    else if (clr_eol)
+	    {
+		for (i = 0; i < -n; i++)
+		{
+		    mvcur(-1, -1, lines + n + i, 0);
+		    TPUTS_TRACE("clr_eol");
+		    tputs(clr_eol, n, _nc_outch);
+		}
+	    }
+	}
 
 	if (change_scroll_region && (scroll_reverse || parm_rindex))
 	{
 	    TPUTS_TRACE("change_scroll_region");
 	    tputs(tparm(change_scroll_region, top, bot), 0, _nc_outch);
+
 	    onscreen_mvcur(-1, -1, top, 0, TRUE);
+
 	    if (parm_rindex)
 	    {
 		TPUTS_TRACE("parm_rindex");
 		tputs(tparm(parm_rindex, -n, 0), -n, _nc_outch);
 	    }
 	    else
+	    {
 		for (i = n; i < 0; i++)
 		{
 		    TPUTS_TRACE("scroll_reverse");
 		    tputs(scroll_reverse, 0, _nc_outch);
 		}
+	    }
 	    TPUTS_TRACE("change_scroll_region");
 	    tputs(tparm(change_scroll_region, 0, maxy), 0, _nc_outch);
-	    restore_curs();
-	    return(OK);
 	}
-
-	/* Preserve the bottom lines. */
-	onscreen_mvcur(oy, ox, bot + n + 1, 0, TRUE);
-	if (parm_rindex && bot == maxy)
+	else if (parm_rindex && bot == maxy)
 	{
+	    onscreen_mvcur(oy, ox, bot + n + 1, 0, TRUE);
+
 	    TPUTS_TRACE("parm_rindex");
 	    tputs(tparm(parm_rindex, -n, 0), -n, _nc_outch);
 	}
-	else if (_nc_idlok && parm_delete_line)
-	{
-	    TPUTS_TRACE("parm_delete_line");
-	    tputs(tparm(parm_delete_line, -n, 0), -n, _nc_outch);
-	}
-	else if (_nc_idlok && delete_line)
-	    for (i = n; i < 0; i++)
-	    {
-		TPUTS_TRACE("delete_line");
-		tputs(delete_line, 0, _nc_outch);
-	    }
 	else if (scroll_reverse && top == 0 && bot == maxy)
 	{
 	    onscreen_mvcur(-1, -1, 0, 0, TRUE);
@@ -1067,31 +1056,61 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 		tputs(scroll_reverse, 0, _nc_outch);
 	    }
 	}
-	else
-	    return(ERR);
+	else if (_nc_idlok
+	 && (parm_delete_line || delete_line)
+	 && (parm_insert_line || insert_line))
+	{
+	    onscreen_mvcur(oy, ox, bot + n + 1, 0, TRUE);
 
-	/* Scroll the block down. */
-	if (_nc_idlok && parm_insert_line)
-	{
-	    onscreen_mvcur(bot + n + 1, 0, top, 0, FALSE);
-	    TPUTS_TRACE("parm_insert_line");
-	    tputs(tparm(parm_insert_line, -n, 0), -n, _nc_outch);
-	}
-	else if (_nc_idlok && insert_line)
-	{
-	    onscreen_mvcur(bot + n + 1, 0, top, 0, FALSE);
-	    for (i = n; i < 0; i++)
+	    if (parm_delete_line)
 	    {
-		TPUTS_TRACE("insert_line");
-		tputs(insert_line, 0, _nc_outch);
+		TPUTS_TRACE("parm_delete_line");
+		tputs(tparm(parm_delete_line, -n, 0), -n, _nc_outch);
+	    }
+	    else
+	    {
+		for (i = n; i < 0; i++)
+		{
+		    TPUTS_TRACE("delete_line");
+		    tputs(delete_line, 0, _nc_outch);
+		}
+	    }
+
+	    onscreen_mvcur(bot + n + 1, 0, top, 0, FALSE);
+
+	    /* Scroll the block down. */
+	    if (parm_insert_line)
+	    {
+		TPUTS_TRACE("parm_insert_line");
+		tputs(tparm(parm_insert_line, -n, 0), -n, _nc_outch);
+	    }
+	    else
+	    {
+		for (i = n; i < 0; i++)
+		{
+		    TPUTS_TRACE("insert_line");
+		    tputs(insert_line, 0, _nc_outch);
+		}
 	    }
 	}
 	else
 	    return(ERR);
-	restore_curs();
     }
 
     return(OK);
+}
+
+int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
+/* scroll region from top to bot by n lines */
+{
+    int code;
+
+    TR(TRACE_MOVE, ("mvcur_scrolln(%d, %d, %d, %d)", n, top, bot, maxy));
+
+    save_curs();
+    code = DoTheScrolling(n, top, bot, maxy);
+    restore_curs();
+    return(code);
 }
 
 #ifdef MAIN

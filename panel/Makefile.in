@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.12 1996/12/04 17:04:55 juergen Exp $
+# $Id: Makefile.in,v 1.14 1996/12/30 00:06:51 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -93,8 +93,9 @@ $(INSTALL_PREFIX)$(libdir) :
 	-rm -f $@
 	cp $(srcdir)/panel.h $@
 
-$(srcdir)/panel.priv.h:	$(srcdir)/panel.h
-	@
+PANEL_PRIV_H = \
+	$(srcdir)/panel.priv.h \
+	$(srcdir)/panel.h
 
 tags:
 	ctags *.[ch]
