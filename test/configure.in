@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.15 1997/05/06 00:36:02 tom Exp $
+dnl $Id: configure.in,v 1.16 1997/08/16 13:34:38 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -51,7 +51,8 @@ AC_ARG_WITH(5lib,
 dnl Ncurses, installed in conventional location
 AC_ARG_WITH(ncurses,
 	[  --with-ncurses          use ncurses-libraries (installed)],
-	[AC_CHECK_LIB(gpm,Gpm_Open)
+	[AC_CHECK_FUNC(initscr,,[
+	 AC_CHECK_LIB(gpm,Gpm_Open)
 	 LIB_NAME=ncurses
 	 for p in $HOME /usr/local /usr
 	 do
@@ -70,17 +71,18 @@ AC_ARG_WITH(ncurses,
 			fi
 		fi
 	 done
-	],[test -d /usr/ccs/lib && LIBS="-L/usr/ccs/lib $LIBS"])
+	],[test -d /usr/ccs/lib && LIBS="-L/usr/ccs/lib $LIBS"])])
 
 dnl If we've not specified a library, assume we're using sysvr4 libraries
 dnl installed conventionally (e.g., SunOS 5.x - solaris).
 
 dnl Autoconf builds up the $LIBS in reverse order
 
-AC_CHECK_LIB($LIB_NAME,initscr)
-AC_CHECK_LIB(form,form_driver,,,-lcurses)
-AC_CHECK_LIB(menu,menu_driver,,,-lcurses)
-AC_CHECK_LIB(panel,new_panel,,,-lcurses)
+AC_CHECK_FUNC(initscr,,[
+AC_CHECK_LIB($LIB_NAME,initscr)])
+AC_CHECK_LIB(form,form_driver)
+AC_CHECK_LIB(menu,menu_driver)
+AC_CHECK_LIB(panel,new_panel)
 
 AC_TYPE_SIGNAL
 

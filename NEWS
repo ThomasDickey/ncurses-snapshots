@@ -1,7 +1,41 @@
--- $Id: NEWS,v 1.231 1997/08/10 00:02:51 tom Exp $
+-- $Id: NEWS,v 1.234 1997/08/17 01:19:19 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+970816
+	+ implement experimental _nc_perform_scroll().
+	+ modify newterm (actually _nc_setupscreen()) to emit an sgr0 when
+	  initializing the screen, as does SVr4 (reported by Alexander V. 
+	  Lukyanov).
+	+ added test_progs rule to ncurses/Makefile.
+	+ modify test/configure.in to check if initscr is already in $LIBS
+	  before looking for (n)curses library.
+	+ correct version-number in configure script for OSF1 shared-library
+	  options (patch by Tim Mooney).
+	+ add -DNDEBUG to CPPFLAGS for --enable-assertions (as Juergen
+	  originally patched) since the c++ demo files do not necessarily
+	  include ncurses_cfg.h
+	+ supply default value for --enable-assertions option in configure
+	  script (reported by Kriang Lerdsuwanakij <lerdsuwa@scf-fs.usc.edu>).
+	> patches by Alexander V. Lukyanov:
+	+ correct/simplify logic of werase(), wclrtoeol() and wclrbot().  See
+	  example firstlast.c
+	+ optimize waddch_literal() and waddch_nosync() by factoring out
+	  common subexpressions.
+	+ correct sense of NDEBUG ifdef for CHECK_POSITION macro.
+	+ corrections to render_char(), to make handling of colored blanks
+	  match SVr4 curses, as well as to correct a bug that xor'd space
+	  against the background character.
+	+ replaced hash function with a faster one (timed it)
+	+ rewrote the hashmap algorithm to be one-pass, this avoids multiple
+	  cost_effective() calls on the same lines.
+	+ modified cost_effective() so it is now slightly more precise.
+	> patches by H.J.Lu for glibc integration:
+	+ add modules define_key, keyok, name_match, tries
+	+ add makefile rules for some of the unit tests in ncurses (mvcur,
+	  captoinfo, hardscroll, hashmap).   
+	+ update Linux configure-script for wide-character definitions.
 
 970809
 	+ modify _tracebits() to show the character size (e.g., CS8).

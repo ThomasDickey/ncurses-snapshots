@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.74 1997/08/10 00:56:01 tom Exp $
+dnl $Id: aclocal.m4,v 1.75 1997/08/16 13:15:51 mooney Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -955,7 +955,7 @@ AC_DEFUN([NC_SHARED_OPTS],
  		MK_SHARED_LIB='$(LD) -o $[@].$(REL_VERSION) -set_version $(ABI_VERSION):$(REL_VERSION) -expect_unresolved "*" -shared -soname `basename $[@].$(ABI_VERSION)`'
 		test $nc_cv_ld_rpath = yes && MK_SHARED_LIB="$MK_SHARED_LIB -rpath \$(libdir)"
 		case $nc_cv_sysrelv in
-		4.*)
+		V4.*)
  			MK_SHARED_LIB="${MK_SHARED_LIB} -msym"
 			;;
 		esac

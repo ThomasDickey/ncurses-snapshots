@@ -17,10 +17,10 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.76 1997/08/09 23:41:33 tom Exp $
+dnl $Id: configure.in,v 1.78 1997/08/16 16:42:46 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12)
-AC_REVISION($Revision: 1.76 $)
+AC_REVISION($Revision: 1.78 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
@@ -457,12 +457,14 @@ NC_GCC_ATTRIBUTES
 ###	use option --enable-assertions to turn on generation of assertion code
 AC_ARG_ENABLE(assertions,
 	[  --enable-assertions     test: turn on generation of assertion code],
-	[with_assertions=$enableval])
+	[with_assertions=$enableval],
+	[with_assertions=no])
 if test -n "$GCC"
 then
 	if test $with_assertions = no
 	then
 		AC_DEFINE(NDEBUG)
+		CPPFLAGS="$CPPFLAGS -DNDEBUG"
 	else
 		ADAFLAGS="$ADAFLAGS -gnata"
 	fi

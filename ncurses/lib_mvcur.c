@@ -143,7 +143,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.41 1997/07/22 14:10:23 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.42 1997/08/16 16:10:30 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -154,7 +154,7 @@ MODULE_ID("$Id: lib_mvcur.c,v 1.41 1997/07/22 14:10:23 Alexander.V.Lukyanov Exp 
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
 #define BAUDRATE	SP->_baudrate		/* bits per second */
 
-#ifdef MAIN
+#if defined(MAIN) || defined(NCURSES_TEST)
 #include <sys/time.h>
 
 static bool profiling = FALSE;
@@ -654,7 +654,7 @@ onscreen_mvcur(int yold,int xold,int ynew,int xnew, bool ovw)
     char	use[OPT_SIZE], *sp;
     int		tactic = 0, newcost, usecost = INFINITY;
 
-#ifdef MAIN
+#if defined(MAIN) || defined(NCURSES_TEST)
     struct timeval before, after;
 
     gettimeofday(&before, NULL);
@@ -683,7 +683,7 @@ onscreen_mvcur(int yold,int xold,int ynew,int xnew, bool ovw)
 	 */
 	if (yold == -1 || xold == -1 || NOT_LOCAL(yold, xold, ynew, xnew))
 	{
-#ifdef MAIN
+#if defined(MAIN) || defined(NCURSES_TEST)
 	    if (!profiling)
 	    {
 		(void) fputs("nonlocal\n", stderr);
@@ -785,7 +785,7 @@ onscreen_mvcur(int yold,int xold,int ynew,int xnew, bool ovw)
     }
 #endif /* !NO_OPTIMIZE */
 
-#ifdef MAIN
+#if defined(MAIN) || defined(NCURSES_TEST)
     gettimeofday(&after, NULL);
     diff = after.tv_usec - before.tv_usec
 	+ (after.tv_sec - before.tv_sec) * 1000000;
@@ -899,7 +899,7 @@ static void restore_curs(void)
 	onscreen_mvcur(-1, -1, oy, ox, FALSE);
 }
 
-#ifdef MAIN
+#if defined(MAIN) || defined(NCURSES_TEST)
 /****************************************************************************
  *
  * Movement optimizer test code
@@ -909,11 +909,11 @@ static void restore_curs(void)
 #include <tic.h>
 #include <dump_entry.h>
 
-char *_nc_progname = "mvcur";
+const char *_nc_progname = "mvcur";
 
 static unsigned long xmits;
 
-int tputs(const char *string, int affcnt, int (*outc)(int))
+int tputs(const char *string, int affcnt GCC_UNUSED, int (*outc)(int) GCC_UNUSED)
 /* stub tputs() that dumps sequences in a visible form */
 {
     if (profiling)
@@ -951,7 +951,7 @@ static int roll(int n)
     return (j % n);
 }
 
-int main(int argc, char *argv[])
+int main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 {
     (void) strcpy(tname, getenv("TERM"));
     load_term();
@@ -1010,7 +1010,7 @@ int main(int argc, char *argv[])
 	    gettimeofday(&after, NULL);
 
 	    printf("\" (%ld msec)\n",
-		after.tv_usec - before.tv_usec + (after.tv_sec - before.tv_sec) * 1000000);
+		(long)(after.tv_usec - before.tv_usec + (after.tv_sec - before.tv_sec) * 1000000));
 	}
 	else if (sscanf(buf, "s %d %d %d %d", &fy, &fx, &ty, &tx) == 4)
 	{
@@ -1023,7 +1023,7 @@ int main(int argc, char *argv[])
 	    gettimeofday(&after, NULL);
 
 	    printf("\" (%ld msec)\n",
-		after.tv_usec - before.tv_usec + (after.tv_sec - before.tv_sec) * 1000000);
+		(long)(after.tv_usec - before.tv_usec + (after.tv_sec - before.tv_sec) * 1000000));
 	}
 	else if (buf[0] == 'r')
 	{
@@ -1068,12 +1068,12 @@ int main(int argc, char *argv[])
 	else if (buf[0] == 'i')
 	{
 	     dump_init((char *)NULL, F_TERMINFO, S_TERMINFO, 70, 0);
-	     dump_entry(&cur_term->type, NULL);
+	     dump_entry(&cur_term->type, 0, 0);
 	     putchar('\n');
 	}
 	else if (buf[0] == 'o')
 	{
-	     if (_nc_optime_enable & OPTIMIZE_MVCUR)
+	     if (_nc_optimize_enable & OPTIMIZE_MVCUR)
 	     {
 		 _nc_optimize_enable &=~ OPTIMIZE_MVCUR;
 		 (void) puts("Optimization is now off.");

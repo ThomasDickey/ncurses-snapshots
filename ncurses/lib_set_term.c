@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.21 1997/07/19 16:30:27 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.22 1997/08/16 17:11:03 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -207,6 +207,17 @@ size_t	i;
 	}
 #endif
 	init_acs();
+
+	/*
+	 * SVr4 curses emits an sgr0 before clearing the screen for the first
+	 * time, but after initializing the alternate character-set.  (We also
+	 * reset the scrolling margins a little later, but that should be
+	 * independent of this).
+	 */
+	if (exit_attribute_mode) {
+		TPUTS_TRACE("exit_attribute_mode");
+		putp(exit_attribute_mode);
+	}
 
 	T(("creating newscr"));
 	if ((newscr = newwin(slines, scolumns, 0, 0)) == 0)

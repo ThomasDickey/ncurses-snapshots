@@ -59,7 +59,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hashmap.c,v 1.16 1997/08/09 12:48:02 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.19 1997/08/16 20:43:28 tom Exp $")
 
 #ifdef HASHDEBUG
 #define LINES	24
@@ -84,50 +84,17 @@ static chtype oldtext[LINES][TEXTWIDTH], newtext[LINES][TEXTWIDTH];
 #endif /* _NEWINDEX */
 #endif /* HASHDEBUG */
 
-/* Chris Torek's hash function (from his DB package). */
-/* The loop in this function is equivalent to:
-    while(len--)
-	h += (h<<5) + *k++;
-*/
-static inline unsigned long hash4(const void *key, size_t len)
-{
-    register long h, loop;
-    register unsigned const char *k;
-
-#define HASH4a   h = (h << 5) - h + *k++;
-#define HASH4b   h = (h << 5) + h + *k++;
-#define HASH4 HASH4b
-    h = 0;
-    k = (unsigned const char *)key;
-    if (len > 0) {
-	loop = (len + 8 - 1) >> 3;
-	switch (len & (8 - 1)) {
-	case 0:
-	    do {	/* All fall throughs */
-		HASH4;
-	    case 7:
-		HASH4;
-	    case 6:
-		HASH4;
-	    case 5:
-		HASH4;
-	    case 4:
-		HASH4;
-	    case 3:
-		HASH4;
-	    case 2:
-		HASH4;
-	    case 1:
-		HASH4;
-	    } while (--loop);
-	}
-    }
-    return ((unsigned long)h);
-}
-
 static inline unsigned long hash(chtype *text)
 {
-    return(hash4(text, TEXTWIDTH*sizeof(*text)));
+    int i;
+    chtype ch;
+    unsigned long result = 0;
+    for (i = TEXTWIDTH; i>0; i--)
+    {
+	ch = *text++;
+	result += (result<<5) + ch + (ch>>16);
+    }
+    return result;
 }
 
 /* approximate update cost */
@@ -155,39 +122,144 @@ static int update_cost_from_blank(chtype *to)
     return cost;
 }
 
-/* this is not very fair to claim effectiveness here */
-static inline bool cost_effective(int from,int to,bool blank)
+/*
+ * Returns true when moving line 'from' to line 'to' seems to be cost
+ * effective. 'blank' indicates whether the line 'to' would become blank.
+ */
+static inline bool cost_effective(const int from, const int to, const bool blank)
 {
+    int new_from;
+
     if (from == to)
 	return FALSE;
 
+    new_from = OLDNUM(from);
+    if (new_from == _NEWINDEX)
+	new_from = from;
+
+    /* 
+     * On the left side of >= is the cost before moving;
+     * on the right side -- cost after moving.
+     */
     return (((blank ? update_cost_from_blank(NEWTEXT(to))
 		    : update_cost(OLDTEXT(to),NEWTEXT(to)))
-	     + update_cost(OLDTEXT(from),NEWTEXT(from)))
-	 >= (update_cost_from_blank(NEWTEXT(from))
+	     + update_cost(OLDTEXT(new_from),NEWTEXT(from)))
+	 >= ((new_from==from ? update_cost_from_blank(NEWTEXT(from))
+			     : update_cost(OLDTEXT(new_from),NEWTEXT(from)))
 	     + update_cost(OLDTEXT(from),NEWTEXT(to))));
+}
+
+
+typedef struct
+{
+    unsigned long	hashval;
+    int		oldcount, newcount;
+    int		oldindex, newindex;
+}
+    sym;
+
+static sym *hashtab=0;
+static int lines_alloc=0; 
+static long *oldhash=0;
+static long *newhash=0;
+
+static void grow_hunks(void)
+{
+    int start, end, shift;
+    int back_limit, forward_limit;	    /* limits for cells to fill */
+    int back_ref_limit, forward_ref_limit;  /* limits for refrences */
+    int i;
+    int new_hunk;
+
+    /*
+     * This is tricky part.  We have unique pairs to use as anchors.
+     * Use these to deduce the presence of spans of identical lines.
+     */
+    back_limit = 0;
+    back_ref_limit = 0;
+
+    i = 0;
+    while (i < LINES && OLDNUM(i) == _NEWINDEX)
+	i++;
+    for ( ; i < LINES; i=new_hunk)
+    {
+	start = i;
+	shift = OLDNUM(i) - i;
+	
+	/* get forward limit */
+	for (i = start+1; i < LINES && OLDNUM(i) - i == shift; i++)
+	    ;
+	end = i;
+	while (i < LINES && OLDNUM(i) == _NEWINDEX)
+	    i++;
+	new_hunk = i;
+	forward_limit = i;
+	if (i >= LINES || OLDNUM(i) >= i)
+	    forward_ref_limit = i;
+	else
+	    forward_ref_limit = OLDNUM(i);
+
+	i = start-1;
+	/* grow back */
+	if (shift < 0)
+	    back_limit = back_ref_limit + (-shift);
+	while (i >= back_limit)
+	{
+	    if(newhash[i] == oldhash[i+shift]
+	    || cost_effective(i+shift, i, shift<0))
+	    {
+		OLDNUM(i) = i+shift;
+		TR(TRACE_UPDATE | TRACE_MOVE,
+		   ("connected new line %d to old line %d (backward continuation)",
+		    i, i+shift));
+	    }
+	    else
+	    {
+		TR(TRACE_UPDATE | TRACE_MOVE,
+		   ("not connecting new line %d to old line %d (backward continuation)",
+		    i, i+shift));
+		break;
+	    }
+	    i--;
+	}
+	
+	i = end;
+	/* grow forward */
+	if (shift > 0)
+	    forward_limit = forward_ref_limit - shift;
+	while (i < forward_limit)
+	{
+	    if(newhash[i] == oldhash[i+shift]
+	    || cost_effective(i+shift, i, shift>0))
+	    {
+		OLDNUM(i) = i+shift;
+		TR(TRACE_UPDATE | TRACE_MOVE,
+		   ("connected new line %d to old line %d (forward continuation)",
+		    i, i+shift));
+	    }
+	    else
+	    {
+		TR(TRACE_UPDATE | TRACE_MOVE,
+		   ("not connecting new line %d to old line %d (forward continuation)",
+		    i, i+shift));
+		break;
+	    }
+	    i++;
+	}
+	
+	back_ref_limit = back_limit = i;
+	if (shift > 0)
+	    back_ref_limit += shift;
+    }
 }
 
 void _nc_hash_map(void)
 {
-    typedef struct
-    {
-	unsigned long	hashval;
-	int		oldcount, newcount;
-	int		oldindex, newindex;
-    }
-    sym;
-    
     sym *sp;
     register int i;
+    int start, shift, size;
 
-    static sym *hashtab=0;
-    static int lines_alloc=0; 
-    static long *oldhash=0;
 
-    long *newhash;
-    bool keepgoing;
-	
     if (LINES > lines_alloc)
     {
 	if (hashtab)
@@ -263,48 +335,32 @@ void _nc_hash_map(void)
 	    OLDNUM(sp->newindex) = sp->oldindex;
 	}
 
-    /*
-     * Now for the tricky part.  We have unique pairs to use as anchors.
-     * Use these to deduce the presence of spans of identical lines.
-     */
-    do {
-	keepgoing = FALSE;
+    grow_hunks();
 
-	for (i = 0; i < LINES-1; i++)
+    /* eliminate impossible shifts */
+    for (i = 0; i < LINES; )
+    {
+	while (i < LINES && OLDNUM(i) == _NEWINDEX)
+	    i++;
+	if (i >= LINES)
+	    break;
+	start = i;
+	shift = OLDNUM(i) - i;
+	i++;
+	while (i < LINES && OLDNUM(i) != _NEWINDEX && OLDNUM(i) - i == shift)
+	    i++;
+	size = i - start;
+	if (size < abs(shift))
 	{
-	    if (OLDNUM(i) != _NEWINDEX && OLDNUM(i+1) == _NEWINDEX)
+	    while (start < i)
 	    {
-		if (OLDNUM(i) + 1 < LINES
-		    && (newhash[i+1] == oldhash[OLDNUM(i) + 1]
-			|| cost_effective(OLDNUM(i)+1, i+1, OLDNUM(i)>i)))
-		{
-		    OLDNUM(i+1) = OLDNUM(i) + 1;
-		    TR(TRACE_UPDATE | TRACE_MOVE,
-		       ("new line %d is hash/cost-identical to old line %d (forward continuation)",
-			i+1, OLDNUM(i) + 1));
-		    keepgoing = TRUE;
-		}
+		OLDNUM(start) = _NEWINDEX;
+		start++;
 	    }
 	}
-
-	for (i = 1; i < LINES; i++)
-	{
-	    if (OLDNUM(i) != _NEWINDEX && OLDNUM(i-1) == _NEWINDEX)
-	    {
-		if (OLDNUM(i) - 1 >= 0
-		    && (newhash[i-1] == oldhash[OLDNUM(i) - 1]
-			|| cost_effective(OLDNUM(i)-1, i-1, OLDNUM(i)<i)))
-		{
-		    OLDNUM(i-1) = OLDNUM(i) - 1;
-		    TR(TRACE_UPDATE | TRACE_MOVE,
-		       ("new line %d is hash/cost-identical to old line %d (backward continuation)",
-			i-1, OLDNUM(i) - 1));
-		    keepgoing = TRUE;
-		}
-	    }
-	}
-    } while
-	(keepgoing);
+    }
+    
+    grow_hunks();
 
 #if NO_LEAKS
     FreeAndNull(hashtab);
@@ -328,7 +384,9 @@ main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 	oldtext[n][0] = newtext[n][0] = '.';
     }
 
+#ifdef TRACE
     _nc_tracing = TRACE_MOVE;
+#endif
     for (;;)
     {
 	/* grab a test command */
@@ -376,7 +434,9 @@ main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 	    break;
 
 	case 'd':	/* dump state of test arrays */
+#ifdef TRACE
 	    _nc_linedump();
+#endif
 	    (void) fputs("Old lines: [", stdout);
 	    for (n = 0; n < LINES; n++)
 		putchar(oldtext[n][0]);
@@ -392,7 +452,9 @@ main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 	case 'h':	/* apply hash mapper and see scroll optimization */
 	    _nc_hash_map();
 	    (void) fputs("Result:\n", stderr);
+#ifdef TRACE
 	    _nc_linedump();
+#endif
 	    _nc_scroll_optimize();
 	    (void) fputs("Done.\n", stderr);
 	    break;

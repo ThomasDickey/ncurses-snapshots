@@ -42,7 +42,7 @@ sed 's/%@/@@/; s/@%/@@/; s/%g$/@g/; /@g$/s/[\\&%]/\\&/g;
  s/@@/%@/; s/@@/@%/; s/@g$/%g/' > conftest.subs <<EOF
 
 
-s%@DEFS@% -DSYSTEM_NAME=\"Linux\ (glibc\ 2)\" -DPURE_TERMINFO=1 -DGCC_SCANF=1 -DGCC_PRINTF=1 -DGCC_UNUSED=__attribute__\(\(unused\)\) -DGCC_NORETURN=__attribute__\(\(noreturn\)\) -DHAVE_NC_ALLOC_H=1 -DHAVE_GETTIMEOFDAY=1 -DSTDC_HEADERS=1 -DHAVE_DIRENT_H=1 -DHAVE_REGEX_H=1 -DHAVE_FCNTL_H=1 -DHAVE_GETOPT_H=1 -DHAVE_LIMITS_H=1 -DHAVE_LOCALE_H=1 -DHAVE_SYS_IOCTL_H=1 -DHAVE_SYS_PARAM_H=1 -DHAVE_POLL_H=1 -DHAVE_SYS_SELECT_H=1 -DHAVE_SYS_TIME_H=1 -DHAVE_SYS_TIMES_H=1 -DHAVE_TERMIO_H=1 -DHAVE_TERMIOS_H=1 -DHAVE_TTYENT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_VALUES_H=1 -DCC_HAS_INLINE_FUNCS=1 -DHAVE_EXTERN_ERRNO=1 -DHAVE_EXTERN_SYS_ERRLIST=1 -DHAVE_GETTTYNAM=1 -DHAVE_MEMCCPY=1 -DHAVE_POLL=1 -DHAVE_SELECT=1 -DHAVE_SETBUF=1 -DHAVE_SETBUFFER=1 -DHAVE_SETVBUF=1 -DHAVE_SIGACTION=1 -DHAVE_SIGVEC=1 -DHAVE_STRDUP=1 -DHAVE_TCGETATTR=1 -DHAVE_TIMES=1 -DHAVE_USLEEP=1 -DHAVE_VFSCANF=1 -DHAVE_VSSCANF=1 -DRETSIGTYPE=void -DGOOD_SELECT=1 -DHAVE_BUILTIN_H=1 -DHAVE_TYPEINFO=1 -DHAVE_PANEL_H=1 -DHAVE_LIBPANEL=1 -DHAVE_MENU_H=1 -DHAVE_LIBMENU=1 -DHAVE_FORM_H=1 -DHAVE_LIBFORM=1 %g
+s%@DEFS@% -DSYSTEM_NAME=\"Linux\ (glibc\ 2)\" -DPURE_TERMINFO=1 -DGCC_SCANF=1 -DGCC_PRINTF=1 -DGCC_UNUSED=__attribute__\(\(unused\)\) -DGCC_NORETURN=__attribute__\(\(noreturn\)\) -DHAVE_NC_ALLOC_H=1 -DHAVE_GETTIMEOFDAY=1 -DSTDC_HEADERS=1 -DHAVE_DIRENT_H=1 -DHAVE_REGEX_H=1 -DHAVE_FCNTL_H=1 -DHAVE_GETOPT_H=1 -DHAVE_LIMITS_H=1 -DHAVE_LOCALE_H=1 -DHAVE_LONG_FILE_NAMES=1 -DHAVE_SYS_IOCTL_H=1 -DHAVE_SYS_PARAM_H=1 -DHAVE_POLL_H=1 -DHAVE_SYS_SELECT_H=1 -DHAVE_SYS_TIME_H=1 -DHAVE_SYS_TIMES_H=1 -DHAVE_TERMIO_H=1 -DHAVE_TERMIOS_H=1 -DHAVE_TTYENT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_VALUES_H=1 -DCC_HAS_INLINE_FUNCS=1 -DHAVE_EXTERN_ERRNO=1 -DHAVE_EXTERN_SYS_ERRLIST=1 -DHAVE_GETTTYNAM=1 -DHAVE_MEMCCPY=1 -DHAVE_POLL=1 -DHAVE_SELECT=1 -DHAVE_SETBUF=1 -DHAVE_SETBUFFER=1 -DHAVE_SETVBUF=1 -DHAVE_SIGACTION=1 -DHAVE_SIGVEC=1 -DHAVE_STRDUP=1 -DHAVE_TCGETATTR=1 -DHAVE_TIMES=1 -DHAVE_USLEEP=1 -DHAVE_VFSCANF=1 -DHAVE_VSSCANF=1 -DRETSIGTYPE=void -DGOOD_SELECT=1 -DHAVE_BUILTIN_H=1 -DHAVE_TYPEINFO=1 -DHAVE_PANEL_H=1 -DHAVE_LIBPANEL=1 -DHAVE_MENU_H=1 -DHAVE_LIBMENU=1 -DHAVE_FORM_H=1 -DHAVE_LIBFORM=1 -DTYPEOF_CHTYPE=long -DUSE_DATABASE=1 %g
 s%@NCURSES_MAJOR@%$NCURSES_MAJOR%g
 s%@NCURSES_MINOR@%$NCURSES_MINOR%g
 s%@NCURSES_PATCH@%$NCURSES_PATCH%g
@@ -50,6 +50,9 @@ s%@nc_cv_rel_version@%$nc_cv_rel_version%g
 s%@nc_cv_abi_version@%$nc_cv_abi_version%g
 s%@nc_cv_builtin_bool@%1%g
 s%@nc_cv_type_of_bool@%char%g
+s%@nc_cv_shift_limit@%32%g
+s%@nc_cv_widec_shift@%8%g
+s%@nc_cv_typeof_chtype@%long%g
 
 EOF
 
@@ -129,8 +132,8 @@ SYS_NAME=`uname -a`
 if test -z "$SYS_NAME"; then SYS_NAME=unknown;fi
 
 NC_AWK=awk
-CC=${CC-gcc}
-NC_CC="${CC} -I${glibc_nc_srcdir}/ncurses -Incurses -I${glibc_nc_srcdir}/include"
+BUILD_CC=${BUILD_CC-gcc}
+NC_CC="${BUILD_CC} -I${glibc_nc_srcdir}/ncurses -Incurses -I${glibc_nc_srcdir}/include"
 NC_CPP="${NC_CC} -E"
 NC_LIST_MODELS="normal"
 #WITH_ECHO="yes"
@@ -247,9 +250,6 @@ sh ${glibc_nc_srcdir}/ncurses/MKlib_gen.sh "${NC_CPP}" "${NC_AWK}" < ncurses/cur
 echo creating ncurses/nomacros.h
 sh ${glibc_nc_srcdir}/ncurses/MKlib_gen.sh "${NC_CPP}" "${NC_AWK}" < ncurses/curses.h | fgrep undef > ncurses/nomacros.h
 
-echo creating ncurses/keys.tries
-${NC_AWK} -f ${glibc_nc_srcdir}/ncurses/MKkeys.awk ${glibc_nc_srcdir}/ncurses/keys.list > ncurses/keys.tries
-
 echo creating ncurses/expanded.c
 sh ${glibc_nc_srcdir}/ncurses/MKexpanded.sh "${NC_CPP}"
 mv expanded.c ncurses/expanded.c
@@ -267,6 +267,11 @@ ${NC_AWK} -f ${glibc_nc_srcdir}/ncurses/MKnames.awk ${glibc_nc_srcdir}/include/C
 cat namehdr boolnames boolfnames numnames numfnames strnames strfnames nameftr >ncurses/names.c
 cat namehdr boolcodes numcodes strcodes codeftr > ncurses/codes.c
 rm -f namehdr nameftr codeftr boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes
+
+echo creating ncurses/keys.tries
+${NC_CC} -o make_key ${glibc_nc_srcdir}/ncurses/make_keys.c
+./make_key ${glibc_nc_srcdir}/ncurses/keys.list > ncurses/keys.tries
+rm -f make_key
 
 echo creating ncurses/unctrl.c
 echo | ${NC_AWK} -f ${glibc_nc_srcdir}/ncurses/MKunctrl.awk > ncurses/unctrl.c
