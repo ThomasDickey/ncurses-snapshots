@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2000/12/17 02:20:54 $
+#	$Date: 2001/01/28 02:42:04 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2836,10 +2836,13 @@ xterm-bold|xterm terminal emulator (X11R6 Window System) standout w/bold,
 # (kterm: this had extension capabilities ":KJ:TY=ascii:" -- esr)
 # (kterm should not invoke DEC Graphics as the alternate character set
 #  -- Kenji Rikitake)
+# (proper setting of enacs, smacs, rmacs makes kterm to use DEC Graphics
+#  -- MATSUMOTO Shoji)
 kterm|kterm kanji terminal emulator (X window system), 
 	eslok, hs, 
-	acsc@, csr=\E[%i%p1%d;%p2%dr, dsl=\E[?H, enacs@, fsl=\E[?F, 
-	kmous=\E[M, rc=\E8, rmacs@, sc=\E7, smacs@, 
+	acsc=++\,\,--..00II``aaffgghhjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+	csr=\E[%i%p1%d;%p2%dr, dsl=\E[?H, enacs=, fsl=\E[?F, 
+	kmous=\E[M, rc=\E8, rmacs=\E(B, sc=\E7, smacs=\E(0, 
 	tsl=\E[?E\E[?%i%dT, use=xterm-r6, use=ecma+color, 
 kterm-color|kterm-co|kterm with ANSI colors, 
 	ncv@, use=kterm, use=ecma+color, 
@@ -18647,6 +18650,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2000-12-16
 #	* improved scoansi, based on SCO man-page, and testing console,
 #	  scoterm with tack -TD
+#
+# 2001-01-27
+#	* modify kterm to use acsc via SCS controls.
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
