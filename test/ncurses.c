@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.202 2004/02/07 20:24:08 tom Exp $
+$Id: ncurses.c,v 1.205 2004/03/06 22:29:06 tom Exp $
 
 ***************************************************************************/
 
@@ -1101,6 +1101,8 @@ attr_getc(int *skip, int *fg, int *bg, int *ac)
 		    *bg = 0;
 		if (*bg < 0)
 		    *bg = max_colors - 1;
+	    } else {
+		return FALSE;
 	    }
 	    break;
 	}
@@ -3931,7 +3933,7 @@ edit_secure(FIELD * me, int c)
 	strcpy(temp, field_buffer(me, 1));
 	len = (long) (char *) field_userptr(me);
 	if (c <= KEY_MAX) {
-	    if (isgraph(c)) {
+	    if (isgraph(c) && (len + 1) < (int) sizeof(temp)) {
 		temp[len++] = c;
 		temp[len] = 0;
 		set_field_buffer(me, 1, temp);
@@ -4102,12 +4104,14 @@ form_virtualize(FORM * f, WINDOW *w)
     int c = wGetchar(w);
     unsigned n;
     FIELD *me = current_field(f);
+    bool current = TRUE;
 
     if (c == CTRL(']')) {
-	if (mode == REQ_INS_MODE)
+	if (mode == REQ_INS_MODE) {
 	    mode = REQ_OVL_MODE;
-	else
+	} else {
 	    mode = REQ_INS_MODE;
+	}
 	c = mode;
     } else {
 	for (n = 0; n < SIZEOF(lookup); n++) {
@@ -4117,15 +4121,38 @@ form_virtualize(FORM * f, WINDOW *w)
 	    }
 	}
     }
+    mvprintw(0, COLS - 6, "(%s)", mode == REQ_INS_MODE ? "INS" : "OVL");
 
     /*
      * Force the field that the user is typing into to be in reverse video,
      * while the other fields are shown underlined.
      */
-    if (c <= KEY_MAX) {
+    switch (c) {
+    case REQ_BEG_FIELD:
+    case REQ_CLR_EOF:
+    case REQ_CLR_EOL:
+    case REQ_CLR_FIELD:
+    case REQ_DEL_CHAR:
+    case REQ_DEL_LINE:
+    case REQ_DEL_PREV:
+    case REQ_DEL_WORD:
+    case REQ_END_FIELD:
+    case REQ_INS_CHAR:
+    case REQ_INS_LINE:
+    case REQ_LEFT_CHAR:
+    case REQ_LEFT_FIELD:
+    case REQ_NEXT_WORD:
+    case REQ_RIGHT_CHAR:
+	current = TRUE;
+	break;
+    default:
+	current = (c < KEY_MAX);
+	break;
+    }
+    if (current) {
 	c = edit_secure(me, c);
 	set_field_back(me, A_REVERSE);
-    } else if (c <= MAX_FORM_COMMAND) {
+    } else {
 	c = edit_secure(me, c);
 	set_field_back(me, A_UNDERLINE);
     }
@@ -4232,7 +4259,7 @@ demo_forms(void)
     addstr("^H   -- delete previous char   ^Y  -- delete line\n");
     addstr("^G   -- delete current word    ^C  -- clear to end of line\n");
     addstr("^K   -- clear to end of field  ^X  -- clear field\n");
-    addstr("Arrow keys move within a field as you would expect.");
+    addstr("Arrow keys move within a field as you would expect. ^] toggles overlay mode.");
 
     mvaddstr(4, 57, "Forms Entry Test");
 
