@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996-2001,2002
 dnl
-dnl $Id: aclocal.m4,v 1.290 2002/12/08 01:09:30 tom Exp $
+dnl $Id: aclocal.m4,v 1.292 2002/12/14 23:56:19 Maciej.W.Rozycki Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -848,7 +848,7 @@ AC_DEFUN([CF_GNAT_VERSION],
 [
 AC_MSG_CHECKING(for gnat version)
 cf_gnat_version=`$cf_ada_make -v 2>&1 | grep '[[0-9]].[[0-9]][[0-9]]*' |\
-  sed -e 's/[[^0-9 \.]]//g' | $AWK '{print $[1];}'`
+  sed -e 's/[[^0-9 \.]]//g' | $AWK '{print $[1];}' | head -1`
 AC_MSG_RESULT($cf_gnat_version)
 
 case $cf_gnat_version in
@@ -1131,7 +1131,7 @@ do
 				ldconfig="$LDCONFIG" \
 				overwrite=$WITH_OVERWRITE \
 				depend="$cf_depend" \
-				target="$target" \
+				host="$host" \
 				$srcdir/$cf_dir/modules >>$cf_dir/Makefile
 			for cf_subdir2 in $cf_subdirs lib
 			do

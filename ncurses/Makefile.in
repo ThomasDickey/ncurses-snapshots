@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.85 2002/12/01 00:08:37 tom Exp $
+# $Id: Makefile.in,v 1.86 2002/12/15 00:42:12 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -86,10 +86,10 @@ CPPFLAGS	= -DHAVE_CONFIG_H -I../ncurses -I$(srcdir) @CPPFLAGS@
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 
-HOSTCC		= @BUILD_CC@
-HOSTCCFLAGS	= -DHAVE_CONFIG_H -I../ncurses -I$(srcdir) @BUILD_CPPFLAGS@ @BUILD_CFLAGS@
-HOSTLDFLAGS	= @BUILD_LDFLAGS@
-HOSTLIBS	= @BUILD_LIBS@
+BUILD_CC	= @BUILD_CC@
+BUILD_CCFLAGS	= -DHAVE_CONFIG_H -I../ncurses -I$(srcdir) @BUILD_CPPFLAGS@ @BUILD_CFLAGS@
+BUILD_LDFLAGS	= @BUILD_LDFLAGS@
+BUILD_LIBS	= @BUILD_LIBS@
 
 CFLAGS_LIBTOOL	= $(CCFLAGS)
 CFLAGS_NORMAL	= $(CCFLAGS)
@@ -189,12 +189,12 @@ keys.list :	$(tinfo)/MKkeys_list.sh
 make_keys$x : \
 		$(tinfo)/make_keys.c \
 		names.c
-	$(HOSTCC) -o $@ $(HOSTCCFLAGS) $(tinfo)/make_keys.c $(HOSTLDFLAGS) $(HOSTLIBS)
+	$(BUILD_CC) -o $@ $(BUILD_CCFLAGS) $(tinfo)/make_keys.c $(BUILD_LDFLAGS) $(BUILD_LIBS)
 
 make_hash$x : \
 		$(tinfo)/comp_hash.c \
 		../include/hashsize.h
-	$(HOSTCC) -o $@ $(HOSTCCFLAGS) -DMAIN_PROGRAM $(tinfo)/comp_hash.c $(HOSTLDFLAGS) $(HOSTLIBS)
+	$(BUILD_CC) -o $@ $(BUILD_CCFLAGS) -DMAIN_PROGRAM $(tinfo)/comp_hash.c $(BUILD_LDFLAGS) $(BUILD_LIBS)
 
 expanded.c : $(serial)/MKexpanded.sh
 	sh $(serial)/MKexpanded.sh "$(CPP)" $(CPPFLAGS) > $@

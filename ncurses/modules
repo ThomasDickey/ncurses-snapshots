@@ -1,4 +1,4 @@
-# $Id: modules,v 1.92 2002/11/23 23:04:46 tom Exp $
+# $Id: modules,v 1.93 2002/12/14 23:22:37 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -119,6 +119,9 @@ memmove		lib		$(base)
 sigaction	lib		$(base)
 vsscanf 	lib		$(base)
 
+# actually an extension, but with its own configure option (--disable-leaks)
+lib_freeall	lib		$(base)
+
 # XSI extensions to the base library (wide-character)
 @ widechar
 lib_box_set	lib		$(wide)
@@ -144,7 +147,6 @@ expanded	lib		.
 keybound	lib		$(base)
 keyok		lib		$(base)
 lib_dft_fgbg	lib		$(base)		../include/term.h
-lib_freeall	lib		$(base)
 lib_print	lib		$(tinfo)	../include/term.h
 resizeterm	lib		$(base)		../include/term.h
 trace_xnames	lib		$(trace)	../include/term.h $(INCDIR)/term_entry.h

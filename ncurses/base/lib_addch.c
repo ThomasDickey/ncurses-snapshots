@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.68 2002/09/28 17:48:13 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.69 2002/12/14 22:20:49 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -154,8 +154,17 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
      * Provide for multi-column characters
      */
     if_WIDEC({
-	if (wcwidth(CharOf(ch)) > 1)
+	int len = wcwidth(CharOf(ch));
+	if (len > 1) {
+	    if (x + (len - 2) > win->_maxx) {
+		NCURSES_CH_T blank = NewChar2(BLANK_TEXT, BLANK_ATTR);
+		AddAttr(blank, AttrOf(ch));
+		if (waddch_literal(win, blank) != ERR)
+		    return waddch_literal(win, ch);
+		return ERR;
+	    }
 	    AddAttr(line->text[x++], WA_NAC);
+	}
     }
   testwrapping:
     );

@@ -1,10 +1,34 @@
--- $Id: NEWS,v 1.722 2002/12/08 01:13:30 tom Exp $
+-- $Id: NEWS,v 1.723 2002/12/15 01:57:04 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20021214
+	+ allow BUILD_CC and related configure script variables to be
+	  overridden from the environment.
+	+ make build-tools variables in ncurses/Makefile.in consistent with
+	  the configure script variables (report by Maciej W Rozycki).
+	+ modify ncurses/modules to allow
+		configure --disable-leaks --disable-ext-funcs
+	  to build (report by Gary Samuelson).
+	+ fix a few places in configure.in which lacked quotes (report by
+	  Gary Samuelson <gary.samuelson@verizon.com>).
+	+ correct handling of multibyte characters in waddch_literal() which
+	  force wrapping because they are started too late on the line (report
+	  by Sam Varshavchik).
+	+ small fix for CF_GNAT_VERSION to ignore the help-message which
+	  gnatmake adds to its version-message.
+	> Maciej W Rozycki <macro@ds2.pg.gda.pl>:
+	+ use AC_CHECK_TOOL to get proper values for AR and LD for cross
+	  compiling.
+	+ use $cross_compiling variable in configure script rather than
+	  comparing $host_alias and $target alias, since "host" is
+	  traditionally misused in autoconf to refer to the target platform.
+	+ change configure --help message to use "build" rather than "host"
+	  when referring to the --with-build-XXX options.
 
 20021206
 	+ modify CF_GNAT_VERSION to print gnatmake's version, and to allow for
