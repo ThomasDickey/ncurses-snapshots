@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 /*
@@ -40,7 +41,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: comp_error.c,v 1.25 2002/09/07 20:05:07 tom Exp $")
+MODULE_ID("$Id: comp_error.c,v 1.26 2004/04/17 22:20:06 tom Exp $")
 
 NCURSES_EXPORT_VAR(bool) _nc_suppress_warnings = FALSE;
 NCURSES_EXPORT_VAR(int) _nc_curr_line = 0; /* current line # in input */
@@ -70,6 +71,12 @@ _nc_set_type(const char *const name)
 NCURSES_EXPORT(void)
 _nc_get_type(char *name)
 {
+#if NO_LEAKS
+    if (name == 0) {
+	FreeAndNull(termtype);
+	return;
+    }
+#endif
     strcpy(name, termtype != 0 ? termtype : "");
 }
 

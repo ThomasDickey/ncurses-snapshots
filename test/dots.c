@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1999-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1999-2002,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: dots.c,v 1.8 2002/04/06 21:33:42 tom Exp $
+ * $Id: dots.c,v 1.9 2004/04/10 23:58:46 tom Exp $
  *
  * A simple demo of the terminfo interface.
  */
@@ -127,12 +127,16 @@ main(
 		tputs(tparm2(set_a_foreground, z), 1, outc);
 	    } else {
 		tputs(tparm2(set_a_background, z), 1, outc);
+		napms(1);
 	    }
 	} else if (valid(exit_attribute_mode)
 		   && valid(enter_reverse_mode)) {
-	    if (ranf() <= 0.01)
-		outs((ranf() > 0.6) ? enter_reverse_mode :
-		     exit_attribute_mode);
+	    if (ranf() <= 0.01) {
+		outs((ranf() > 0.6)
+		     ? enter_reverse_mode
+		     : exit_attribute_mode);
+		napms(1);
+	    }
 	}
 	outc(p);
 	fflush(stdout);

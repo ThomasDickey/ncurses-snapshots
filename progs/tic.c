@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.110 2004/03/27 22:31:07 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.111 2004/04/17 22:20:51 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -585,7 +585,7 @@ main(int argc, char *argv[])
 	(void) fprintf(stderr,
 		       "Sorry, -e can't be used without -I or -C\n");
 	cleanup();
-	return EXIT_FAILURE;
+	ExitProgram(EXIT_FAILURE);
     }
 #endif /* HAVE_BIG_CORE */
 
@@ -597,7 +597,7 @@ main(int argc, char *argv[])
 		    _nc_progname,
 		    _nc_progname,
 		    usage_string);
-	    return EXIT_FAILURE;
+	    ExitProgram(EXIT_FAILURE);
 	}
     } else {
 	if (infodump == TRUE) {
@@ -628,7 +628,7 @@ main(int argc, char *argv[])
 		    _nc_progname,
 		    usage_string);
 	    cleanup();
-	    return EXIT_FAILURE;
+	    ExitProgram(EXIT_FAILURE);
 	}
     }
 
@@ -660,7 +660,7 @@ main(int argc, char *argv[])
     if (check_only || (!infodump && !capdump) || forceresolve) {
 	if (!_nc_resolve_uses(TRUE) && !check_only) {
 	    cleanup();
-	    return EXIT_FAILURE;
+	    ExitProgram(EXIT_FAILURE);
 	}
     }
 
@@ -754,7 +754,7 @@ main(int argc, char *argv[])
 	    fprintf(log_fp, "No entries written\n");
     }
     cleanup();
-    return (EXIT_SUCCESS);
+    ExitProgram(EXIT_SUCCESS);
 }
 
 /*
@@ -1327,7 +1327,8 @@ check_termtype(TERMTYPE * tp)
 	if (tparm_errs)
 	    _nc_warning("stack error in sgr string");
     } else if (PRESENT(exit_attribute_mode)) {
-	_nc_warning("missing sgr string");
+	if (_nc_syntax == SYN_TERMINFO)
+	    _nc_warning("missing sgr string");
     }
 
     /*

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- *     and: Thomas E. Dickey                        1996-2003               *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 /*
@@ -48,7 +48,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.40 2003/11/08 21:29:54 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.41 2004/04/17 22:06:25 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -63,6 +63,13 @@ _nc_init_entry(TERMTYPE * const tp)
 /* initialize a terminal type data block */
 {
     unsigned i;
+
+#if NO_LEAKS
+    if (tp == 0) {
+	FreeAndNull(stringbuf);
+	return;
+    }
+#endif
 
     if (stringbuf == 0)
 	stringbuf = (char *) malloc(MAX_STRTAB);

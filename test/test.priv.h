@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.47 2004/03/27 21:51:14 tom Exp $ */
+/* $Id: test.priv.h,v 1.48 2004/04/10 20:11:37 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -134,6 +134,10 @@
 #else
 #include <curses.h>
 #include <term.h>
+#endif
+
+#ifdef NCURSES_VERSION
+#define HAVE_COLOR_SET 1
 #endif
 
 #if NCURSES_NOMACROS
