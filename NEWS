@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.763 2003/08/17 00:13:27 tom Exp $
+-- $Id: NEWS,v 1.764 2003/08/23 21:57:53 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030823
+	> Philippe Blain:
+	+ move assignments to SP->_cursrow, SP->_curscol into online_mvcur().
+	+ make baudrate computation in delay_output() consistent with the
+	  assumption in _nc_mvcur_init(), i.e., a byte is 9 bits.
 
 20030816
 	+ modify logic in waddch_literal() to take into account zh_TW.Big5
