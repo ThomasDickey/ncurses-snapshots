@@ -41,7 +41,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.24 1998/04/11 23:00:43 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.25 1998/04/18 21:31:38 tom Exp $")
 
 /*
  *	char *
@@ -59,14 +59,14 @@ MODULE_ID("$Id: lib_tparm.c,v 1.24 1998/04/11 23:00:43 tom Exp $")
  *	screen visible to the user, not to any  unseen  memory.)  If
  *	the terminal has memory relative cursor addressing, that can
  *	be indicated by
- *	
+ *
  *	     The parameter mechanism uses  a  stack  and  special  %
  *	codes  to manipulate it.  Typically a sequence will push one
  *	of the parameters onto the stack and then print it  in  some
  *	format.  Often more complex operations are necessary.
- *	
+ *
  *	     The % encodings have the following meanings:
- *	
+ *
  *	     %%        outputs `%'
  *	     %02d      print pop() like %02d in printf()
  *	     %02x      print pop() like %02x in printf()
@@ -80,13 +80,13 @@ MODULE_ID("$Id: lib_tparm.c,v 1.24 1998/04/11 23:00:43 tom Exp $")
  *	     %d        print pop() like %d in printf()
  *	     %s        print pop() like %s in printf()
  *	     %x        print pop() like %x in printf()
- *	
+ *
  *	     %p[1-9]   push ith parm
  *	     %P[a-z]   set variable [a-z] to pop()
  *	     %g[a-z]   get variable [a-z] and push it
  *	     %'c'      push char constant c
  *	     %{nn}     push integer constant nn
- *	
+ *
  *	     %+ %- %* %/ %m
  *	               arithmetic (%m is mod): push(pop() op pop())
  *	     %& %| %^  bit operations: push(pop() op pop())
@@ -94,12 +94,12 @@ MODULE_ID("$Id: lib_tparm.c,v 1.24 1998/04/11 23:00:43 tom Exp $")
  *	     %A %O     logical and & or operations for conditionals
  *	     %! %~     unary operations push(op pop())
  *	     %i        add 1 to first two parms (for ANSI terminals)
- *	
+ *
  *	     %? expr %t thenpart %e elsepart %;
  *	               if-then-else, %e elsepart is optional.
  *	               else-if's are possible ala Algol 68:
  *	               %? c1 %t b1 %e c2 %t b2 %e c3 %t b3 %e c4 %t b4 %e b5 %;
- *	
+ *
  *	For those of the above operators which are binary and not commutative,
  *	the stack works in the usual way, with
  *			%gx %gy %m
@@ -173,8 +173,8 @@ static inline void npush(int x)
 {
 	if (stack_ptr < STACKSIZE) {
 		stack[stack_ptr].num = x;
-        stack_ptr++;
-    }
+		stack_ptr++;
+	}
 }
 
 static inline int npop(void)
@@ -248,7 +248,7 @@ register const char *cp;
 
 	/*
 	 * This is a termcap compatibility hack.  If there are no explicit pop
-	 * operations in the string, load the stack in such a way that 
+	 * operations in the string, load the stack in such a way that
 	 * successive pops will grab successive parameters.  That will make
 	 * the expansion of (for example) \E[%d;%dH work correctly in termcap
 	 * style, which means tparam() will expand termcap strings OK.

@@ -45,12 +45,12 @@
 #include <sys/termio.h>	/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.21 1998/02/11 12:14:00 tom Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.22 1998/04/18 21:51:33 tom Exp $")
 
 WINDOW *initscr(void)
 {
 static	bool initialized = FALSE;
-const char *name;
+NCURSES_CONST char *name;
 
 	T((T_CALLED("initscr()")));
 	/* Portable applications must not call initscr() more than once */
