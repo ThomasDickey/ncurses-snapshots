@@ -41,7 +41,7 @@
 #include <ctype.h>
 #include <term.h>		/* num_labels, label_*, plab_norm */
 
-MODULE_ID("$Id: lib_slk.c,v 1.27 2003/04/13 14:13:57 tom Exp $")
+MODULE_ID("$Id: lib_slk.c,v 1.28 2003/05/24 21:10:28 tom Exp $")
 
 /*
  * We'd like to move these into the screen context structure, but cannot,
@@ -132,11 +132,11 @@ _nc_slk_initialize(WINDOW *stwin, int cols)
     max_length = SP->_slk->maxlen;
     for (i = 0; i < SP->_slk->labcnt; i++) {
 
-	if ((SP->_slk->ent[i].ent_text = _nc_doalloc(0, max_length + 1)) == 0)
+	if ((SP->_slk->ent[i].ent_text = (char *)_nc_doalloc(0, max_length + 1)) == 0)
 	    returnCode(slk_failed());
 	memset(SP->_slk->ent[i].ent_text, 0, max_length + 1);
 
-	if ((SP->_slk->ent[i].form_text = _nc_doalloc(0, max_length + 1)) == 0)
+	if ((SP->_slk->ent[i].form_text = (char *)_nc_doalloc(0, max_length + 1)) == 0)
 	    returnCode(slk_failed());
 	memset(SP->_slk->ent[i].form_text, 0, max_length + 1);
 

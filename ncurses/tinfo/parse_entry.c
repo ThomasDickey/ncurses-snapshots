@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -47,7 +47,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.57 2002/08/31 17:02:02 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.58 2003/05/24 22:51:38 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -196,8 +196,7 @@ _nc_extend_names(ENTRY * entryp, char *name, int token_type)
  */
 
 NCURSES_EXPORT(int)
-_nc_parse_entry
-(struct entry *entryp, int literal, bool silent)
+_nc_parse_entry(struct entry *entryp, int literal, bool silent)
 {
     int token_type;
     struct name_table_entry const *entry_ptr;
@@ -217,11 +216,21 @@ _nc_parse_entry
     entryp->startline = _nc_start_line;
     DEBUG(2, ("Comment range is %ld to %ld", entryp->cstart, entryp->cend));
 
-    /* junk the 2-character termcap name, if present */
+    /*
+     * Strip off the 2-character termcap name, if present.  Originally termcap
+     * used that as an indexing aid.  We can retain 2-character terminfo names,
+     * but note that they would be lost if we translate to/from termcap.  This
+     * feature is supposedly obsolete since "newer" BSD implementations do not
+     * use it; however our reference for this feature is SunOS 4.x, which
+     * implemented it.  Note that the resulting terminal type was never the
+     * 2-character name, but was instead the first alias after that.
+     */
     ptr = _nc_curr_token.tk_name;
-    if (ptr[2] == '|') {
-	ptr = _nc_curr_token.tk_name + 3;
-	_nc_curr_token.tk_name[2] = '\0';
+    if (_nc_syntax == SYN_TERMCAP) {
+	if (ptr[2] == '|') {
+	    ptr += 3;
+	    _nc_curr_token.tk_name[2] = '\0';
+	}
     }
 
     entryp->tterm.str_table = entryp->tterm.term_names = _nc_save_str(ptr);

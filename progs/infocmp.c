@@ -41,7 +41,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.69 2003/02/09 00:26:47 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.70 2003/05/24 21:05:47 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -120,7 +120,7 @@ canonical_name(char *ptr, char *buf)
  ***************************************************************************/
 
 static int
-capcmp(int idx, const char *s, const char *t)
+capcmp(unsigned idx, const char *s, const char *t)
 /* capability comparison function */
 {
     if (!VALID_STRING(s) && !VALID_STRING(t))
@@ -248,7 +248,7 @@ static bool
 entryeq(TERMTYPE * t1, TERMTYPE * t2)
 /* are two entries equivalent? */
 {
-    int i;
+    unsigned i;
 
     for (i = 0; i < NUM_BOOLEANS(t1); i++)
 	if (t1->Booleans[i] != t2->Booleans[i])
@@ -268,7 +268,7 @@ entryeq(TERMTYPE * t1, TERMTYPE * t2)
 #define TIC_EXPAND(result) _nc_tic_expand(result, outform==F_TERMINFO, numbers)
 
 static void
-print_uses(ENTRY * ep, FILE * fp)
+print_uses(ENTRY * ep, FILE *fp)
 /* print an entry's use references */
 {
     int i;
@@ -975,7 +975,7 @@ string_variable(const char *type)
 static void
 dump_initializers(TERMTYPE * term)
 {
-    int n;
+    unsigned n;
     int size;
     const char *str = 0;
 

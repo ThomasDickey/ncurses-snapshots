@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -47,7 +47,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.37 2002/09/07 20:04:15 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.38 2003/05/24 21:10:28 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -61,10 +61,10 @@ NCURSES_EXPORT(void)
 _nc_init_entry(TERMTYPE * const tp)
 /* initialize a terminal type data block */
 {
-    int i;
+    unsigned i;
 
     if (stringbuf == 0)
-	stringbuf = malloc(MAX_STRTAB);
+	stringbuf = (char *) malloc(MAX_STRTAB);
 
 #if NCURSES_XNAMES
     tp->num_Booleans = BOOLCOUNT;
@@ -126,7 +126,8 @@ _nc_wrap_entry(ENTRY * const ep, bool copy_strings)
 /* copy the string parts to allocated storage, preserving pointers to it */
 {
     int offsets[MAX_ENTRY_SIZE / 2], useoffsets[MAX_USES];
-    int i, n;
+    unsigned i, n;
+    unsigned nuses = ep->nuses;
     TERMTYPE *tp = &(ep->tterm);
 
     if (copy_strings) {
@@ -141,7 +142,7 @@ _nc_wrap_entry(ENTRY * const ep, bool copy_strings)
 	    }
 	}
 
-	for (i = 0; i < ep->nuses; i++) {
+	for (i = 0; i < nuses; i++) {
 	    if (ep->uses[i].name == 0) {
 		ep->uses[i].name = _nc_save_str(ep->uses[i].name);
 	    }
@@ -160,7 +161,7 @@ _nc_wrap_entry(ENTRY * const ep, bool copy_strings)
 	    offsets[i] = tp->Strings[i] - stringbuf;
     }
 
-    for (i = 0; i < ep->nuses; i++) {
+    for (i = 0; i < nuses; i++) {
 	if (ep->uses[i].name == 0)
 	    useoffsets[i] = ABSENT_OFFSET;
 	else
@@ -200,7 +201,7 @@ _nc_wrap_entry(ENTRY * const ep, bool copy_strings)
     }
 #endif
 
-    for (i = 0; i < ep->nuses; i++) {
+    for (i = 0; i < nuses; i++) {
 	if (useoffsets[i] == ABSENT_OFFSET)
 	    ep->uses[i].name = 0;
 	else
@@ -209,11 +210,10 @@ _nc_wrap_entry(ENTRY * const ep, bool copy_strings)
 }
 
 NCURSES_EXPORT(void)
-_nc_merge_entry
-(TERMTYPE * const to, TERMTYPE * const from)
+_nc_merge_entry(TERMTYPE * const to, TERMTYPE * const from)
 /* merge capabilities from `from' entry into `to' entry */
 {
-    int i;
+    unsigned i;
 
 #if NCURSES_XNAMES
     _nc_align_termtype(to, from);
