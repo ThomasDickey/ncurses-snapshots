@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.50 2004/05/08 21:54:29 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.53 2004/05/16 15:35:31 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -97,6 +97,16 @@ Perhaps at some time we will make this configurable at runtime.
 #define FIX_FORM_INACTIVE_BUG (1)
 /* Allow dynamic field growth also when navigating past the end */
 #define GROW_IF_NAVIGATE (1)
+
+#if USE_WIDEC_SUPPORT
+#define myADDNSTR(w, s, n) wadd_wchnstr(w, s, n)
+#define myINSNSTR(w, s, n) wins_wchnstr(w, s, n)
+#define myINNSTR(w, s, n)  fix_wchnstr(w, s, n)
+#else
+#define myADDNSTR(w, s, n) waddnstr(w, s, n)
+#define myINSNSTR(w, s, n) winsnstr(w, s, n)
+#define myINNSTR(w, s, n)  winnstr(w, s, n)
+#endif
 
 /*----------------------------------------------------------------------------
   Forward references to some internally used static functions
@@ -193,6 +203,45 @@ static int FE_Delete_Previous(FORM *);
 #define Minimum(a,b) (((a)<=(b)) ? (a) : (b))
 #define Maximum(a,b) (((a)>=(b)) ? (a) : (b))
 
+/*----------------------------------------------------------------------------
+  Useful constants
+  --------------------------------------------------------------------------*/
+static FIELD_CELL myBLANK = BLANK;
+static FIELD_CELL myZEROS;
+
+/*----------------------------------------------------------------------------
+  Wide-character special functions
+  --------------------------------------------------------------------------*/
+#if USE_WIDEC_SUPPORT
+/* like winsnstr */
+static int
+wins_wchnstr(WINDOW *w, cchar_t *s, int n)
+{
+  int code = ERR;
+  int y, x;
+
+  while (n-- > 0)
+    {
+      getyx(w, y, x);
+      if ((code = wins_wch(w, s++)) != OK)
+	break;
+      if ((code = wmove(w, y, x + 1)) != OK)
+	break;
+    }
+  return code;
+}
+
+/* win_wchnstr is inconsistent with winnstr, since it returns OK rather than
+ * the number of items transferred.
+ */
+static int
+fix_wchnstr(WINDOW *w, cchar_t *s, int n)
+{
+  win_wchnstr(w, s, n);
+  return n;
+}
+#endif
+
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
 |   Function      :  static char *Get_Start_Of_Data(char * buf, int blen)
@@ -202,14 +251,14 @@ static int FE_Delete_Previous(FORM *);
 |
 |   Return Values :  Pointer to first non-blank position in buffer
 +--------------------------------------------------------------------------*/
-INLINE static char *
-Get_Start_Of_Data(char *buf, int blen)
+INLINE static FIELD_CELL *
+Get_Start_Of_Data(FIELD_CELL *buf, int blen)
 {
-  char *p = buf;
-  char *end = &buf[blen];
+  FIELD_CELL *p = buf;
+  FIELD_CELL *end = &buf[blen];
 
   assert(buf && blen >= 0);
-  while ((p < end) && is_blank(*p))
+  while ((p < end) && ISBLANK(*p))
     p++;
   return ((p == end) ? buf : p);
 }
@@ -224,13 +273,13 @@ Get_Start_Of_Data(char *buf, int blen)
 |   Return Values :  Pointer to position after last non-blank position in
 |                    buffer.
 +--------------------------------------------------------------------------*/
-INLINE static char *
-After_End_Of_Data(char *buf, int blen)
+INLINE static FIELD_CELL *
+After_End_Of_Data(FIELD_CELL *buf, int blen)
 {
-  char *p = &buf[blen];
+  FIELD_CELL *p = &buf[blen];
 
   assert(buf && blen >= 0);
-  while ((p > buf) && is_blank(p[-1]))
+  while ((p > buf) && ISBLANK(p[-1]))
     p--;
   return (p);
 }
@@ -244,14 +293,14 @@ After_End_Of_Data(char *buf, int blen)
 |
 |   Return Values :  Pointer to first whitespace character in buffer.
 +--------------------------------------------------------------------------*/
-INLINE static char *
-Get_First_Whitespace_Character(char *buf, int blen)
+INLINE static FIELD_CELL *
+Get_First_Whitespace_Character(FIELD_CELL *buf, int blen)
 {
-  char *p = buf;
-  char *end = &p[blen];
+  FIELD_CELL *p = buf;
+  FIELD_CELL *end = &p[blen];
 
   assert(buf && blen >= 0);
-  while ((p < end) && !is_blank(*p))
+  while ((p < end) && !ISBLANK(*p))
     p++;
   return ((p == end) ? buf : p);
 }
@@ -266,13 +315,13 @@ Get_First_Whitespace_Character(char *buf, int blen)
 |   Return Values :  Pointer to position after last whitespace character in
 |                    buffer.
 +--------------------------------------------------------------------------*/
-INLINE static char *
-After_Last_Whitespace_Character(char *buf, int blen)
+INLINE static FIELD_CELL *
+After_Last_Whitespace_Character(FIELD_CELL *buf, int blen)
 {
-  char *p = &buf[blen];
+  FIELD_CELL *p = &buf[blen];
 
   assert(buf && blen >= 0);
-  while ((p > buf) && !is_blank(p[-1]))
+  while ((p > buf) && !ISBLANK(p[-1]))
     p--;
   return (p);
 }
@@ -296,7 +345,7 @@ After_Last_Whitespace_Character(char *buf, int blen)
 |   Return Values :  -
 +--------------------------------------------------------------------------*/
 INLINE static void
-Adjust_Cursor_Position(FORM *form, const char *pos)
+Adjust_Cursor_Position(FORM *form, const FIELD_CELL *pos)
 {
   FIELD *field;
   int idx;
@@ -327,12 +376,12 @@ Adjust_Cursor_Position(FORM *form, const char *pos)
 |   Return Values :  -
 +--------------------------------------------------------------------------*/
 static void
-Buffer_To_Window(const FIELD *field, WINDOW * win)
+Buffer_To_Window(const FIELD *field, WINDOW *win)
 {
   int width, height;
   int len;
   int row;
-  char *pBuffer;
+  FIELD_CELL *pBuffer;
 
   assert(win && field);
 
@@ -346,7 +395,7 @@ Buffer_To_Window(const FIELD *field, WINDOW * win)
       if ((len = (int)(After_End_Of_Data(pBuffer, width) - pBuffer)) > 0)
 	{
 	  wmove(win, row, 0);
-	  waddnstr(win, pBuffer, len);
+	  myADDNSTR(win, pBuffer, len);
 	}
     }
 }
@@ -365,11 +414,11 @@ Buffer_To_Window(const FIELD *field, WINDOW * win)
 |   Return Values :  -
 +--------------------------------------------------------------------------*/
 static void
-Window_To_Buffer(WINDOW * win, FIELD *field)
+Window_To_Buffer(WINDOW *win, FIELD *field)
 {
   int pad;
   int len = 0;
-  char *p;
+  FIELD_CELL *p;
   int row, height;
 
   assert(win && field && field->buf);
@@ -381,9 +430,9 @@ Window_To_Buffer(WINDOW * win, FIELD *field)
   for (row = 0; (row < height) && (row < field->drows); row++)
     {
       wmove(win, row, 0);
-      len += winnstr(win, p + len, field->dcols);
+      len += myINNSTR(win, p + len, field->dcols);
     }
-  p[len] = '\0';
+  p[len] = myZEROS;
 
   /* replace visual padding character by blanks in buffer */
   if (pad != C_BLANK)
@@ -392,8 +441,9 @@ Window_To_Buffer(WINDOW * win, FIELD *field)
 
       for (i = 0; i < len; i++, p++)
 	{
-	  if (*p == pad)
-	    *p = C_BLANK;
+	  if ((unsigned long)CharOf(*p) == ChCharOf(pad)
+	      && AttrOf(*p) == ChAttrOf(pad))
+	    *p = myBLANK;
 	}
     }
 }
@@ -479,7 +529,7 @@ Field_Grown(FIELD *field, int amount)
 	}
       /* drows, dcols changed, so we get really the new buffer length */
       new_buflen = Buffer_Length(field);
-      newbuf = (FIELD_CELL *) malloc(Total_Buffer_Size(field));
+      newbuf = (FIELD_CELL *)malloc(Total_Buffer_Size(field));
       if (!newbuf)
 	{
 	  /* restore to previous state */
@@ -488,7 +538,6 @@ Field_Grown(FIELD *field, int amount)
 	  if ((single_line_field && (field->dcols != field->maxgrow)) ||
 	      (!single_line_field && (field->drows != field->maxgrow)))
 	    field->status |= _MAY_GROW;
-	  return FALSE;
 	}
       else
 	{
@@ -499,6 +548,8 @@ Field_Grown(FIELD *field, int amount)
 	  FIELD_CELL *old_bp;
 	  FIELD_CELL *new_bp;
 
+	  result = TRUE;	/* allow sharing of recovery on failure */
+
 	  field->buf = newbuf;
 	  for (i = 0; i <= field->nbuf; i++)
 	    {
@@ -507,55 +558,66 @@ Field_Grown(FIELD *field, int amount)
 	      for (j = 0; j < old_buflen; ++j)
 		new_bp[j] = old_bp[j];
 	      while (j < new_buflen)
-		new_bp[j++] = C_BLANK;
-	      new_bp[new_buflen] = C_ZEROS;
+		new_bp[j++] = myBLANK;
+	      new_bp[new_buflen] = myZEROS;
 	    }
 
-	  if (need_visual_update)
+#if USE_WIDEC_SUPPORT
+	  if (wresize(field->working, field->drows, field->dcols) == ERR)
+	    result = FALSE;
+#endif
+
+	  if (need_visual_update && result)
 	    {
 	      WINDOW *new_window = newpad(field->drows, field->dcols);
 
-	      if (!new_window)
+	      if (new_window != 0)
 		{
-		  /* restore old state */
-		  field->dcols = old_dcols;
-		  field->drows = old_drows;
-		  field->buf = oldbuf;
-		  if ((single_line_field &&
-		       (field->dcols != field->maxgrow)) ||
-		      (!single_line_field &&
-		       (field->drows != field->maxgrow)))
-		    field->status |= _MAY_GROW;
-		  free(newbuf);
-		  return FALSE;
+		  assert(form != (FORM *)0);
+		  if (form->w)
+		    delwin(form->w);
+		  form->w = new_window;
+		  Set_Field_Window_Attributes(field, form->w);
+		  werase(form->w);
+		  Buffer_To_Window(field, form->w);
+		  untouchwin(form->w);
+		  wmove(form->w, form->currow, form->curcol);
 		}
-	      assert(form != (FORM *)0);
-	      if (form->w)
-		delwin(form->w);
-	      form->w = new_window;
-	      Set_Field_Window_Attributes(field, form->w);
-	      werase(form->w);
-	      Buffer_To_Window(field, form->w);
-	      untouchwin(form->w);
-	      wmove(form->w, form->currow, form->curcol);
+	      else
+		result = FALSE;
 	    }
 
-	  free(oldbuf);
-	  /* reflect changes in linked fields */
-	  if (field != field->link)
+	  if (result)
 	    {
-	      FIELD *linked_field;
-
-	      for (linked_field = field->link;
-		   linked_field != field;
-		   linked_field = linked_field->link)
+	      free(oldbuf);
+	      /* reflect changes in linked fields */
+	      if (field != field->link)
 		{
-		  linked_field->buf = field->buf;
-		  linked_field->drows = field->drows;
-		  linked_field->dcols = field->dcols;
+		  FIELD *linked_field;
+
+		  for (linked_field = field->link;
+		       linked_field != field;
+		       linked_field = linked_field->link)
+		    {
+		      linked_field->buf = field->buf;
+		      linked_field->drows = field->drows;
+		      linked_field->dcols = field->dcols;
+		    }
 		}
 	    }
-	  result = TRUE;
+	  else
+	    {
+	      /* restore old state */
+	      field->dcols = old_dcols;
+	      field->drows = old_drows;
+	      field->buf = oldbuf;
+	      if ((single_line_field &&
+		   (field->dcols != field->maxgrow)) ||
+		  (!single_line_field &&
+		   (field->drows != field->maxgrow)))
+		field->status |= _MAY_GROW;
+	      free(newbuf);
+	    }
 	}
     }
   return (result);
@@ -742,7 +804,7 @@ _nc_Refresh_Current_Field(FORM *form)
 |   Return Values :  -
 +--------------------------------------------------------------------------*/
 static void
-Perform_Justification(FIELD *field, WINDOW * win)
+Perform_Justification(FIELD *field, WINDOW *win)
 {
   FIELD_CELL *bp;
   int len;
@@ -770,7 +832,7 @@ Perform_Justification(FIELD *field, WINDOW * win)
 	}
 
       wmove(win, 0, col);
-      waddnstr(win, bp, len);
+      myADDNSTR(win, bp, len);
     }
 }
 
@@ -786,7 +848,7 @@ Perform_Justification(FIELD *field, WINDOW * win)
 |   Return Values :  -
 +--------------------------------------------------------------------------*/
 static void
-Undo_Justification(FIELD *field, WINDOW * win)
+Undo_Justification(FIELD *field, WINDOW *win)
 {
   FIELD_CELL *bp;
   int len;
@@ -798,7 +860,7 @@ Undo_Justification(FIELD *field, WINDOW * win)
     {
       assert(win);
       wmove(win, 0, 0);
-      waddnstr(win, bp, len);
+      myADDNSTR(win, bp, len);
     }
 }
 
@@ -1189,7 +1251,7 @@ _nc_Set_Current_Field(FORM *form, FIELD *newfield)
 		}
 	    }
 	  delwin(form->w);
-	  form->w = (WINDOW *) 0;
+	  form->w = (WINDOW *)0;
 	}
 
       field = newfield;
@@ -1365,9 +1427,9 @@ static int
 IFN_Next_Word(FORM *form)
 {
   FIELD *field = form->current;
-  char *bp = Address_Of_Current_Position_In_Buffer(form);
-  char *s;
-  char *t;
+  FIELD_CELL *bp = Address_Of_Current_Position_In_Buffer(form);
+  FIELD_CELL *s;
+  FIELD_CELL *t;
 
   /* We really need access to the data, so we have to synchronize */
   Synchronize_Buffer(form);
@@ -1405,9 +1467,9 @@ static int
 IFN_Previous_Word(FORM *form)
 {
   FIELD *field = form->current;
-  char *bp = Address_Of_Current_Position_In_Buffer(form);
-  char *s;
-  char *t;
+  FIELD_CELL *bp = Address_Of_Current_Position_In_Buffer(form);
+  FIELD_CELL *s;
+  FIELD_CELL *t;
   bool again = FALSE;
 
   /* We really need access to the data, so we have to synchronize */
@@ -1479,7 +1541,7 @@ static int
 IFN_End_Of_Field(FORM *form)
 {
   FIELD *field = form->current;
-  char *pos;
+  FIELD_CELL *pos;
 
   Synchronize_Buffer(form);
   pos = After_End_Of_Data(field->buf, Buffer_Length(field));
@@ -1525,8 +1587,8 @@ static int
 IFN_End_Of_Line(FORM *form)
 {
   FIELD *field = form->current;
-  char *pos;
-  char *bp;
+  FIELD_CELL *pos;
+  FIELD_CELL *bp;
 
   Synchronize_Buffer(form);
   bp = Address_Of_Current_Row_In_Buffer(form);
@@ -1997,7 +2059,7 @@ INLINE static bool
 Is_There_Room_For_A_Line(FORM *form)
 {
   FIELD *field = form->current;
-  char *begin_of_last_line, *s;
+  FIELD_CELL *begin_of_last_line, *s;
 
   Synchronize_Buffer(form);
   begin_of_last_line = Address_Of_Row_In_Buffer(field, (field->drows - 1));
@@ -2051,23 +2113,22 @@ Is_There_Room_For_A_Char_In_Line(FORM *form)
 |                    E_SYSTEM_ERROR    - system error
 +--------------------------------------------------------------------------*/
 static int
-Insert_String(FORM *form, int row, char *txt, int len)
+Insert_String(FORM *form, int row, FIELD_CELL *txt, int len)
 {
   FIELD *field = form->current;
-  char *bp = Address_Of_Row_In_Buffer(field, row);
+  FIELD_CELL *bp = Address_Of_Row_In_Buffer(field, row);
   int datalen = (int)(After_End_Of_Data(bp, field->dcols) - bp);
   int freelen = field->dcols - datalen;
   int requiredlen = len + 1;
-  char *split;
+  FIELD_CELL *split;
   int result = E_REQUEST_DENIED;
-  const char *Space = " ";
 
   if (freelen >= requiredlen)
     {
       wmove(form->w, row, 0);
-      winsnstr(form->w, txt, len);
+      myINSNSTR(form->w, txt, len);
       wmove(form->w, row, len);
-      winsnstr(form->w, Space, 1);
+      myINSNSTR(form->w, &myBLANK, 1);
       return E_OK;
     }
   else
@@ -2101,9 +2162,9 @@ Insert_String(FORM *form, int row, char *txt, int len)
 	      wmove(form->w, row, datalen);
 	      wclrtoeol(form->w);
 	      wmove(form->w, row, 0);
-	      winsnstr(form->w, txt, len);
+	      myINSNSTR(form->w, txt, len);
 	      wmove(form->w, row, len);
-	      winsnstr(form->w, Space, 1);
+	      myINSNSTR(form->w, &myBLANK, 1);
 	      return E_OK;
 	    }
 	}
@@ -2138,8 +2199,8 @@ Wrapping_Not_Necessary_Or_Wrapping_Ok(FORM *form)
       (There_Is_No_Room_For_A_Char_In_Line(form)) &&	/* line is full        */
       (!Last_Row || Growable(field)))	/* there are more lines */
     {
-      char *bp;
-      char *split;
+      FIELD_CELL *bp;
+      FIELD_CELL *split;
       int chars_to_be_wrapped;
       int chars_to_remain_on_line;
 
@@ -2266,7 +2327,7 @@ static int
 FE_New_Line(FORM *form)
 {
   FIELD *field = form->current;
-  char *bp, *t;
+  FIELD_CELL *bp, *t;
   bool Last_Row = ((field->drows - 1) == form->currow);
 
   if (form->status & _OVLMODE)
@@ -2329,7 +2390,7 @@ FE_New_Line(FORM *form)
 	  form->curcol = 0;
 	  wmove(form->w, form->currow, form->curcol);
 	  winsertln(form->w);
-	  waddnstr(form->w, bp, (int)(t - bp));
+	  myADDNSTR(form->w, bp, (int)(t - bp));
 	  form->status |= _WINDOW_MODIFIED;
 	  return E_OK;
 	}
@@ -2362,7 +2423,7 @@ FE_Insert_Character(FORM *form)
 	    result = E_SYSTEM_ERROR;
 	  else
 	    {
-	      winsch(form->w, (chtype) C_BLANK);
+	      winsch(form->w, (chtype)C_BLANK);
 	      result = Wrapping_Not_Necessary_Or_Wrapping_Ok(form);
 	    }
 	}
@@ -2445,7 +2506,7 @@ FE_Delete_Previous(FORM *form)
 
   if ((--(form->curcol)) < 0)
     {
-      char *this_line, *prev_line, *prev_end, *this_end;
+      FIELD_CELL *this_line, *prev_line, *prev_end, *this_end;
 
       form->curcol++;
       if (form->status & _OVLMODE)
@@ -2463,7 +2524,7 @@ FE_Delete_Previous(FORM *form)
       wdeleteln(form->w);
       Adjust_Cursor_Position(form, prev_end);
       wmove(form->w, form->currow, form->curcol);
-      waddnstr(form->w, this_line, (int)(this_end - this_line));
+      myADDNSTR(form->w, this_line, (int)(this_end - this_line));
     }
   else
     {
@@ -2502,13 +2563,13 @@ static int
 FE_Delete_Word(FORM *form)
 {
   FIELD *field = form->current;
-  char *bp = Address_Of_Current_Row_In_Buffer(form);
-  char *ep = bp + field->dcols;
-  char *cp = bp + form->curcol;
-  char *s;
+  FIELD_CELL *bp = Address_Of_Current_Row_In_Buffer(form);
+  FIELD_CELL *ep = bp + field->dcols;
+  FIELD_CELL *cp = bp + form->curcol;
+  FIELD_CELL *s;
 
   Synchronize_Buffer(form);
-  if (is_blank(*cp))
+  if (ISBLANK(*cp))
     return E_REQUEST_DENIED;	/* not in word */
 
   /* move cursor to begin of word and erase to end of screen-line */
@@ -2521,10 +2582,10 @@ FE_Delete_Word(FORM *form)
   s = Get_First_Whitespace_Character(cp, (int)(ep - cp));
   /* to begin of next word    */
   s = Get_Start_Of_Data(s, (int)(ep - s));
-  if ((s != cp) && !is_blank(*s))
+  if ((s != cp) && !ISBLANK(*s))
     {
       /* copy remaining line to window */
-      waddnstr(form->w, s, (int)(s - After_End_Of_Data(s, (int)(ep - s))));
+      myADDNSTR(form->w, s, (int)(s - After_End_Of_Data(s, (int)(ep - s))));
     }
   return E_OK;
 }
@@ -2761,14 +2822,14 @@ Check_Field(FIELDTYPE *typ, FIELD *field, TypeArgument *argp)
     {
       if (field->opts & O_NULLOK)
 	{
-	  char *bp = field->buf;
+	  FIELD_CELL *bp = field->buf;
 
 	  assert(bp);
-	  while (is_blank(*bp))
+	  while (ISBLANK(*bp))
 	    {
 	      bp++;
 	    }
-	  if (*bp == '\0')
+	  if (CharOf(*bp) == 0)
 	    return TRUE;
 	}
 
@@ -3631,7 +3692,7 @@ Data_Entry(FORM *form, int c)
 
       if (form->status & _OVLMODE)
 	{
-	  waddch(form->w, (chtype) c);
+	  waddch(form->w, (chtype)c);
 	}
       else
 	/* no _OVLMODE */
@@ -3645,7 +3706,7 @@ Data_Entry(FORM *form, int c)
 	  if (!There_Is_Room && !Field_Grown(field, 1))
 	    return E_SYSTEM_ERROR;
 
-	  winsch(form->w, (chtype) c);
+	  winsch(form->w, (chtype)c);
 	}
 
       if ((result = Wrapping_Not_Necessary_Or_Wrapping_Ok(form)) == E_OK)
@@ -3919,6 +3980,10 @@ set_field_buffer(FIELD *field, int buffer, const char *value)
   unsigned int i;
   unsigned int len;
 
+#if USE_WIDEC_SUPPORT
+  FIELD_CELL *widevalue = 0;
+#endif
+
   if (!field || !value || ((buffer < 0) || (buffer > field->nbuf)))
     RETURN(E_BAD_ARGUMENT);
 
@@ -3961,16 +4026,46 @@ set_field_buffer(FIELD *field, int buffer, const char *value)
 
   p = Address_Of_Nth_Buffer(field, buffer);
 
+#if USE_WIDEC_SUPPORT
+  /*
+   * Use addstr's logic for converting a string to an array of cchar_t's.
+   * There should be a better way, but this handles nonspacing characters
+   * and other special cases that we really do not want to handle here.
+   */
+  wclear(field->working);
+  mvwaddstr(field->working, 0, 0, value);
+
+  if ((widevalue = (FIELD_CELL *)calloc(field->cols, sizeof(FIELD_CELL))) == 0)
+    {
+      RETURN(E_SYSTEM_ERROR);
+    }
+  else
+    {
+      mvwin_wchnstr(field->working, 0, 0, widevalue, field->cols);
+      for (i = 0; i < len; ++i)
+	{
+	  if (CharEq(myZEROS, widevalue[i]))
+	    {
+	      while (i < len)
+		p[i++] = myBLANK;
+	      break;
+	    }
+	  p[i] = widevalue[i];
+	}
+      free(widevalue);
+    }
+#else
   for (i = 0; i < len; ++i)
     {
       if (value[i] == '\0')
 	{
 	  while (i < len)
-	    p[i++] = C_BLANK;
+	    p[i++] = myBLANK;
 	  break;
 	}
       p[i] = value[i];
     }
+#endif
 
   if (buffer == 0)
     {
@@ -3997,10 +4092,38 @@ set_field_buffer(FIELD *field, int buffer, const char *value)
 NCURSES_EXPORT(char *)
 field_buffer(const FIELD *field, int buffer)
 {
+  char *result = 0;
+
   if (field && (buffer >= 0) && (buffer <= field->nbuf))
-    return Address_Of_Nth_Buffer(field, buffer);
-  else
-    return (char *)0;
+    {
+#if USE_WIDEC_SUPPORT
+      FIELD_CELL *data = Address_Of_Nth_Buffer(field, buffer);
+      unsigned need = 0;
+      int n;
+
+      /* determine the number of bytes needed to store the expanded string */
+      for (n = 0; n < field->cols; ++n)
+	{
+	  need += getcchar(&data[n], (wchar_t *)0, 0, 0, 0);
+	}
+
+      /* allocate a place to store the expanded string */
+      if (field->expanded[buffer] != 0)
+	free(field->expanded[buffer]);
+      field->expanded[buffer] = malloc(need + 1);
+
+      /* expand the multibyte data */
+      if ((result = field->expanded[buffer]) != 0)
+	{
+	  wclear(field->working);
+	  mvwadd_wchnstr(field->working, 0, 0, data, field->cols);
+	  mvwinnstr(field->working, 0, 0, result, field->cols);
+	}
+#else
+      result = Address_Of_Nth_Buffer(field, buffer);
+#endif
+    }
+  return result;
 }
 
 #if USE_WIDEC_SUPPORT

@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.812 2004/05/08 21:00:07 tom Exp $
+-- $Id: NEWS,v 1.814 2004/05/16 15:55:41 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040516
+	+ modify form library to use cchar_t's rather than char's in the
+	  wide-character configuration for storing data for field buffers.
+	+ correct logic of win_wchnstr(), which did not work for more than
+	  one cell.
 
 20040508
 	+ replace memset/memcpy usage in form library with for-loops to

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_def.c,v 1.20 2004/05/08 21:51:20 tom Exp $")
+MODULE_ID("$Id: fld_def.c,v 1.23 2004/05/16 15:51:38 tom Exp $")
 
 /* this can't be readonly */
 static FIELD default_field =
@@ -60,8 +60,9 @@ static FIELD default_field =
   (FORM *)0,			/* form    */
   (FIELDTYPE *)0,		/* type    */
   (char *)0,			/* arg     */
-  (FIELD_CELL *) 0,		/* buf     */
+  (FIELD_CELL *)0,		/* buf     */
   (char *)0			/* usrptr  */
+  NCURSES_FIELD_EXTENSION
 };
 
 NCURSES_EXPORT_VAR(FIELD *)
@@ -260,6 +261,9 @@ _nc_Free_Type(FIELD *field)
 NCURSES_EXPORT(FIELD *)
 new_field(int rows, int cols, int frow, int fcol, int nrow, int nbuf)
 {
+  static const FIELD_CELL blank = BLANK;
+  static const FIELD_CELL zeros;
+
   FIELD *New_Field = (FIELD *)0;
   int err = E_BAD_ARGUMENT;
 
@@ -283,12 +287,17 @@ new_field(int rows, int cols, int frow, int fcol, int nrow, int nbuf)
       New_Field->nbuf = nbuf;
       New_Field->link = New_Field;
 
+#if USE_WIDEC_SUPPORT
+      New_Field->working = newpad(rows, cols);
+      New_Field->expanded = (char **)calloc(1 + rows, sizeof(char *));
+#endif
+
       if (_nc_Copy_Type(New_Field, &default_field))
 	{
 	  size_t len;
 
 	  len = Total_Buffer_Size(New_Field);
-	  if ((New_Field->buf = (FIELD_CELL *) malloc(len * sizeof(FIELD_CELL))))
+	  if ((New_Field->buf = (FIELD_CELL *)malloc(len * sizeof(FIELD_CELL))))
 	    {
 	      /* Prefill buffers with blanks and insert terminating zeroes
 	         between buffers */
@@ -301,9 +310,9 @@ new_field(int rows, int cols, int frow, int fcol, int nrow, int nbuf)
 
 		  for (j = 0; j < cells; ++j)
 		    {
-		      buffer[j] = C_BLANK;
+		      buffer[j] = blank;
 		    }
-		  buffer[j] = C_ZEROS;
+		  buffer[j] = zeros;
 		}
 	      return New_Field;
 	    }
@@ -351,6 +360,19 @@ free_field(FIELD *field)
       f->link = field->link;
     }
   _nc_Free_Type(field);
+#if USE_WIDEC_SUPPORT
+  if (field->expanded != 0)
+    {
+      int n;
+
+      for (n = 0; n <= field->nbuf; ++n)
+	{
+	  FreeIfNeeded(field->expanded[n]);
+	}
+      free(field->expanded);
+      delwin(field->working);
+    }
+#endif
   free(field);
   RETURN(E_OK);
 }

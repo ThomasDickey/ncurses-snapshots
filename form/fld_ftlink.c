@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_ftlink.c,v 1.8 2003/11/08 20:45:36 tom Exp $")
+MODULE_ID("$Id: fld_ftlink.c,v 1.9 2004/05/15 20:46:53 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -49,35 +49,35 @@ MODULE_ID("$Id: fld_ftlink.c,v 1.8 2003/11/08 20:45:36 tom Exp $")
 |   Return Values :  Fieldtype pointer or NULL if error occurred.
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(FIELDTYPE *)
-link_fieldtype 
-(FIELDTYPE * type1, FIELDTYPE * type2)
+link_fieldtype(FIELDTYPE *type1, FIELDTYPE *type2)
 {
   FIELDTYPE *nftyp = (FIELDTYPE *)0;
 
-  if ( type1 && type2 )
+  if (type1 && type2)
     {
       nftyp = (FIELDTYPE *)malloc(sizeof(FIELDTYPE));
+
       if (nftyp)
 	{
 	  *nftyp = *_nc_Default_FieldType;
 	  nftyp->status |= _LINKED_TYPE;
-	  if ((type1->status & _HAS_ARGS) || (type2->status & _HAS_ARGS) )
+	  if ((type1->status & _HAS_ARGS) || (type2->status & _HAS_ARGS))
 	    nftyp->status |= _HAS_ARGS;
-	  if ((type1->status & _HAS_CHOICE) || (type2->status & _HAS_CHOICE) )
+	  if ((type1->status & _HAS_CHOICE) || (type2->status & _HAS_CHOICE))
 	    nftyp->status |= _HAS_CHOICE;
-	  nftyp->left  = type1;
-	  nftyp->right = type2; 
+	  nftyp->left = type1;
+	  nftyp->right = type2;
 	  type1->ref++;
 	  type2->ref++;
 	}
       else
 	{
-	  SET_ERROR( E_SYSTEM_ERROR );
+	  SET_ERROR(E_SYSTEM_ERROR);
 	}
     }
   else
     {
-      SET_ERROR( E_BAD_ARGUMENT );
+      SET_ERROR(E_BAD_ARGUMENT);
     }
   return nftyp;
 }
