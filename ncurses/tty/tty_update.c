@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey 1996-2002                                      *
  ****************************************************************************/
 
 /*-----------------------------------------------------------------
@@ -72,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.177 2002/09/28 20:41:55 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.180 2002/12/21 23:52:57 Philippe.Blain Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -195,16 +196,39 @@ PutAttrChar(CARG_CH_T ch)
 {
     PUTC_DATA;
     NCURSES_CH_T tilde;
-
-    if (tilde_glitch && (CharOfD(ch) == L('~'))) {
-	SetChar(tilde, L('`'), AttrOfD(ch));
-	ch = CHREF(tilde);
-    }
+    NCURSES_ATTR_T attr = AttrOfD(ch);
 
     TR(TRACE_CHARPUT, ("PutAttrChar(%s) at (%d, %d)",
 		       _tracech_t(ch),
 		       SP->_cursrow, SP->_curscol));
-    UpdateAttrs(AttrOfD(ch));
+
+#if USE_WIDEC_SUPPORT
+    /*
+     * This is crude & ugly, but works most of the time.  It doesn't handle
+     * linux console's HLINE since the reverse lookup finds S3, which is not
+     * in the console font.  It would be better to change the data in acs_map
+     * so the loop isn't needed.
+     */
+    if (SP->_screen_acs_fix
+	&& attr & A_ALTCHARSET
+	&& ch->chars[0] < 256) {
+	chtype ch2 = ch->chars[0] | A_ALTCHARSET;
+	unsigned n;
+	for (n = 32; n < ACS_LEN; ++n) {
+	    if (ch2 == acs_map[n]) {
+		attr &= ~(A_ALTCHARSET);
+		ch = &_nc_wacs[n];
+		break;
+	    }
+	}
+    }
+#endif
+    if (tilde_glitch && (CharOfD(ch) == L('~'))) {
+	SetChar(tilde, L('`'), attr);
+	ch = CHREF(tilde);
+    }
+
+    UpdateAttrs(attr);
 #if !USE_WIDEC_SUPPORT
     /* FIXME - we do this special case for signal handling, should see how to
      * make it work for wide characters.
@@ -1478,12 +1502,12 @@ scroll_csr_forward(int n, int top, int bot, int miny, int maxy, NCURSES_CH_T bla
 	GoTo(bot, 0);
 	UpdateAttrs(AttrOf(blank));
 	TPUTS_TRACE("scroll_forward");
-	tputs(scroll_forward, 0, _nc_outch);
+	putp(scroll_forward);
     } else if (n == 1 && delete_line && bot == maxy) {
 	GoTo(top, 0);
 	UpdateAttrs(AttrOf(blank));
 	TPUTS_TRACE("delete_line");
-	tputs(delete_line, 0, _nc_outch);
+	putp(delete_line);
     } else if (parm_index && top == miny && bot == maxy) {
 	GoTo(bot, 0);
 	UpdateAttrs(AttrOf(blank));
@@ -1499,14 +1523,14 @@ scroll_csr_forward(int n, int top, int bot, int miny, int maxy, NCURSES_CH_T bla
 	UpdateAttrs(AttrOf(blank));
 	for (i = 0; i < n; i++) {
 	    TPUTS_TRACE("scroll_forward");
-	    tputs(scroll_forward, 0, _nc_outch);
+	    putp(scroll_forward);
 	}
     } else if (delete_line && bot == maxy) {
 	GoTo(top, 0);
 	UpdateAttrs(AttrOf(blank));
 	for (i = 0; i < n; i++) {
 	    TPUTS_TRACE("delete_line");
-	    tputs(delete_line, 0, _nc_outch);
+	    putp(delete_line);
 	}
     } else
 	return ERR;
@@ -1536,12 +1560,12 @@ scroll_csr_backward(int n, int top, int bot, int miny, int maxy,
 	GoTo(top, 0);
 	UpdateAttrs(AttrOf(blank));
 	TPUTS_TRACE("scroll_reverse");
-	tputs(scroll_reverse, 0, _nc_outch);
+	putp(scroll_reverse);
     } else if (n == 1 && insert_line && bot == maxy) {
 	GoTo(top, 0);
 	UpdateAttrs(AttrOf(blank));
 	TPUTS_TRACE("insert_line");
-	tputs(insert_line, 0, _nc_outch);
+	putp(insert_line);
     } else if (parm_rindex && top == miny && bot == maxy) {
 	GoTo(top, 0);
 	UpdateAttrs(AttrOf(blank));
@@ -1557,14 +1581,14 @@ scroll_csr_backward(int n, int top, int bot, int miny, int maxy,
 	UpdateAttrs(AttrOf(blank));
 	for (i = 0; i < n; i++) {
 	    TPUTS_TRACE("scroll_reverse");
-	    tputs(scroll_reverse, 0, _nc_outch);
+	    putp(scroll_reverse);
 	}
     } else if (insert_line && bot == maxy) {
 	GoTo(top, 0);
 	UpdateAttrs(AttrOf(blank));
 	for (i = 0; i < n; i++) {
 	    TPUTS_TRACE("insert_line");
-	    tputs(insert_line, 0, _nc_outch);
+	    putp(insert_line);
 	}
     } else
 	return ERR;
@@ -1596,14 +1620,14 @@ scroll_idl(int n, int del, int ins, NCURSES_CH_T blank)
     UpdateAttrs(AttrOf(blank));
     if (n == 1 && delete_line) {
 	TPUTS_TRACE("delete_line");
-	tputs(delete_line, 0, _nc_outch);
+	putp(delete_line);
     } else if (parm_delete_line) {
 	TPUTS_TRACE("parm_delete_line");
 	tputs(tparm(parm_delete_line, n, 0), n, _nc_outch);
     } else {			/* if (delete_line) */
 	for (i = 0; i < n; i++) {
 	    TPUTS_TRACE("delete_line");
-	    tputs(delete_line, 0, _nc_outch);
+	    putp(delete_line);
 	}
     }
 
@@ -1611,14 +1635,14 @@ scroll_idl(int n, int del, int ins, NCURSES_CH_T blank)
     UpdateAttrs(AttrOf(blank));
     if (n == 1 && insert_line) {
 	TPUTS_TRACE("insert_line");
-	tputs(insert_line, 0, _nc_outch);
+	putp(insert_line);
     } else if (parm_insert_line) {
 	TPUTS_TRACE("parm_insert_line");
 	tputs(tparm(parm_insert_line, n, 0), n, _nc_outch);
     } else {			/* if (insert_line) */
 	for (i = 0; i < n; i++) {
 	    TPUTS_TRACE("insert_line");
-	    tputs(insert_line, 0, _nc_outch);
+	    putp(insert_line);
 	}
     }
 

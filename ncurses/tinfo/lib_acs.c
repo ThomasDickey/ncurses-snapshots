@@ -34,7 +34,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* ena_acs, acs_chars */
 
-MODULE_ID("$Id: lib_acs.c,v 1.22 2002/09/01 19:26:57 tom Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.24 2002/12/21 16:59:40 tom Exp $")
 
 #if BROKEN_LINKER
 NCURSES_EXPORT_VAR(chtype *)
@@ -97,6 +97,13 @@ _nc_init_acs(void)
     ACS_PI = '*';		/* should be greek pi */
     ACS_NEQUAL = '!';		/* should be not-equal */
     ACS_STERLING = 'f';		/* should be pound-sterling symbol */
+
+#if !USE_WIDEC_SUPPORT
+    if (_nc_unicode_locale() && _nc_locale_breaks_acs()) {
+	acs_chars = NULL;
+	ena_acs = NULL;
+    }
+#endif
 
     if (ena_acs != NULL) {
 	TPUTS_TRACE("ena_acs");

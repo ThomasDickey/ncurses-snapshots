@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.9 2002/09/01 19:44:37 tom Exp $
+.\" $Id: curs_util.3x,v 1.10 2002/12/21 22:21:37 tom Exp $
 .TH curs_util 3X ""
 .SH NAME
 \fBdelay_output\fR,
@@ -105,6 +105,7 @@ data.  It returns a pointer to the new window.
 The \fBdelay_output\fR routine inserts an \fIms\fR millisecond pause
 in output.  This routine should not be used extensively because
 padding characters are used rather than a CPU pause.
+If no padding character is specified, this uses \fBnapms\fR to perform the delay.
 
 The \fBflushinp\fR routine throws away any typeahead that has been typed by the
 user and has not yet been read by the program.
@@ -125,7 +126,10 @@ The SVr4 documentation describes the action of \fBfilter\fR only in the vaguest
 terms.  The description here is adapted from the XSI Curses standard (which
 erroneously fails to describe the disabling of \fBcuu\fR).
 .SH SEE ALSO
-\fBcurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_scr_dump\fR(3X).
+\fBcurses\fR(3X),
+\fBcurs_initscr\fR(3X),
+\fBcurs_kernel\fR(3X),
+\fBcurs_scr_dump\fR(3X).
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

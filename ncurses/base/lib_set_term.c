@@ -43,7 +43,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.71 2002/09/14 22:48:00 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.74 2002/12/21 22:59:24 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN * screenp)
@@ -377,6 +377,8 @@ _nc_setupscreen(short slines, short const scolumns, FILE * output)
     _nc_init_acs();
 #if USE_WIDEC_SUPPORT
     _nc_init_wacs();
+
+    SP->_screen_acs_fix = (_nc_unicode_locale() && _nc_locale_breaks_acs());
 #endif
     memcpy(SP->_acs_map, acs_map, sizeof(chtype) * ACS_LEN);
 
