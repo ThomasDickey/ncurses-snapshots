@@ -36,7 +36,7 @@
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.19 1997/10/04 22:59:25 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.20 1997/11/08 18:20:27 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] = { 0 };
@@ -877,7 +877,7 @@ struct name_table_entry	const * lookup_fullname(const char *find)
 
     for (;;) {
 	int count = 0;
-	char *const *names;
+	NCURSES_CONST char *const *names;
 
 	switch (++state) {
 	case BOOLEAN:

@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 10.1.12
+#	Version 10.1.13
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2348,7 +2348,7 @@ sun-il|Sun Microsystems console with working insert-line,
 	kpp=\E[216z, kres=\E[193z, kund=\E[195z, rev=\E[7m, 
 	rmso=\E[m, rmul=\E[m, rs2=\E[s, 
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m, 
-	sgr0=\E[m, smso=\E[7m, smul=\E[4m, 
+	sgr0=\E[m, smso=\E[7m, smul=\E[4m, u8=\E[1t, u9=\E[11t, 
 # On a SparcStation 5, <il1>/<il> flake out on the last line.
 # Unfortunately, without them the terminal has no way to scroll.
 sun-ss5|Sun SparcStation 5 console, 
@@ -14118,6 +14118,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* correct wy120 smxon/tbc capabilities which were stuck together.
 # 10.1.12 (Sat Oct 18 17:38:41 EDT 1997)
 #	* add entry for xterm-xf86-v39t
+# 10.1.13 (Sat Nov  8 13:43:33 EST 1997)
+#	* add u8,u9 to sun-il description
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

@@ -33,7 +33,7 @@
 #include <term.h>	/* padding_baud_rate, xon_xoff */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.25 1997/11/02 00:05:07 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.26 1997/11/09 01:27:55 tom Exp $")
 
 #define OUTPUT ((SP != 0) ? SP->_ofp : stdout)
 
@@ -62,7 +62,7 @@ int delay_output(int ms)
 			null = pad_char[0];
 #endif /* pad_char */
 
-		nullcount = ms * 1000 / cur_term->_baudrate;
+		nullcount = ms * cur_term->_baudrate / 10000;
 		for (_nc_nulls_sent += nullcount; nullcount > 0; nullcount--)
 			my_outch(null);
 		if (my_outch == _nc_outch)
@@ -90,9 +90,16 @@ int putp(const char *string)
 int tputs(const char *string, int affcnt, int (*outc)(int))
 {
 bool	always_delay = (string == bell) || (string == flash_screen);
-float	number;
+bool	allow_delay =
+	 !xon_xoff
+#ifdef padding_baud_rate
+	 && padding_baud_rate
+	 && (!cur_term || cur_term->_baudrate >= padding_baud_rate)
+#endif
+	 ;
+int	number;
 #ifdef BSD_TPUTS
-float	trailpad;
+int	trailpad;
 #endif /* BSD_TPUTS */
 
 #ifdef TRACE
@@ -121,17 +128,15 @@ char	addrbuf[17];
 	 * (like nethack) actually do the likes of tputs("50") to get delays.
 	 */
 	trailpad = 0;
-	number = 0;
-
 	while (isdigit(*string)) {
-		trailpad = trailpad * 10 + *string - '0';
+		trailpad = trailpad * 10 + (*string - '0');
 		string++;
 	}
-
+	if (trailpad) trailpad *= 10;
 	if (*string == '.') {
 		string++;
 		if (isdigit(*string)) {
-			trailpad += (float) (*string - '0') / 10.;
+			trailpad += (*string - '0');
 			string++;
 		}
 		while (isdigit(*string))
@@ -157,30 +162,30 @@ char	addrbuf[17];
 			} else {
 				bool mandatory;
 
-				number = 0;
 				string++;
-
 				if ((!isdigit(*string) && *string != '.') || !strchr(string, '>')) {
 					(*outc)('$');
 					(*outc)('<');
 					continue;
 				}
+
+				number = 0;
 				while (isdigit(*string)) {
-					number = number * 10 + *string - '0';
+					number = number * 10 + (*string - '0');
 					string++;
 				}
-
+				if (number) number *= 10;
 				if (*string == '.') {
 					string++;
 					if (isdigit(*string)) {
-						number += (float) (*string - '0') / 10.;
+						number += (*string - '0');
 						string++;
 					}
 					while (isdigit(*string))
 						string++;
 				}
 
-				mandatory = always_delay || !xon_xoff;
+				mandatory = FALSE;
 				while (*string == '*' || *string == '/')
 				{
 					if (*string == '*') {
@@ -193,12 +198,10 @@ char	addrbuf[17];
 					}
 				}
 
-#ifdef padding_baud_rate
-				if (mandatory
-				 && number > 0)
-					delay_output(number);
-#endif /* padding_baud_rate */
-				number = 0;
+				if (number > 0
+				 && (always_delay
+				  || (allow_delay && mandatory)))
+					delay_output(number/10);
 
 			} /* endelse (*string == '<') */
 		} /* endelse (*string == '$') */
@@ -213,13 +216,9 @@ char	addrbuf[17];
 	/*
 	 * Emit any BSD-style prefix padding that we've accumulated now.
 	 */
-#ifdef padding_baud_rate
 	if (trailpad > 0
-	 && !xon_xoff
-	 && padding_baud_rate
-	 && (!cur_term || cur_term->_baudrate >= padding_baud_rate))
-		delay_output(number);
-#endif /* padding_baud_rate */
+	 && (always_delay || allow_delay))
+		delay_output(trailpad/10);
 #endif /* BSD_TPUTS */
 
 	my_outch = _nc_outch;

@@ -48,7 +48,7 @@
 #include <fcntl.h>
 #endif
 
-MODULE_ID("$Id: read_termcap.c,v 1.22 1997/11/01 23:02:39 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.23 1997/11/08 22:41:36 tom Exp $")
 
 #define TC_SUCCESS     0
 #define TC_UNRESOLVED -1
@@ -57,157 +57,16 @@ MODULE_ID("$Id: read_termcap.c,v 1.22 1997/11/01 23:02:39 tom Exp $")
 #define TC_REF_LOOP   -4
 
 #if USE_GETCAP
-/*
- * Copyright (c) 1980, 1993
- *	The Regents of the University of California.  All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgment:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- */
 
-/* static char sccsid[] = "@(#)termcap.c	8.1 (Berkeley) 6/4/93" */
-
-#define	PBUFSIZ		512	/* max length of filename path */
-#define	PVECSIZ		32	/* max number of names in path */
-
-static char *_nc_cgetcap(char *, const char *, int);
-static int _nc_cgetent(char **, int *, char **, const char *);
+#if HAVE_BSD_CGETENT
+#define _nc_cgetcap   cgetcap
+#define _nc_cgetent(buf, oline, db_array, name) cgetent(buf, db_array, name)
+#define _nc_cgetmatch cgetmatch
+#define _nc_cgetset   cgetset
+#else
 static int _nc_cgetmatch(char *, const char *);
-static int _nc_cgetset(const char *);
 static int _nc_getent(char **, unsigned int *, int *, int, char **, int, const char *, int, char *);
 static int _nc_nfcmp(const char *, char *);
-static int _nc_tgetent(char *, char **, int *, const char *);
-
-/*
- * termcap - routines for dealing with the terminal capability data base
- *
- * BUG:		Should use a "last" pointer in tbuf, so that searching
- *		for capabilities alphabetically would not be a n**2/2
- *		process when large numbers of capabilities are given.
- * Note:	If we add a last pointer now we will screw up the
- *		tc capability. We really should compile termcap.
- *
- * Essentially all the work here is scanning and decoding escapes in string
- * capabilities.  We don't use stdio because the editor doesn't, and because
- * living w/o it is not hard.
- */
-
-static	char *tbuf;	/* termcap buffer */
-
-/*
- * Get an entry for terminal name in buffer bp from the termcap file.
- */
-static int
-_nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
-{
-	static char *the_source;
-
-	register char *p;
-	register char *cp;
-	char  *dummy;
-	char **fname;
-	char  *home;
-	int    i;
-	char   pathbuf[PBUFSIZ];	/* holds raw path of filenames */
-	char  *pathvec[PVECSIZ];	/* to point to names in pathbuf */
-	char **pvec;			/* holds usable tail of path vector */
-	char  *termpath;
-
-	fname = pathvec;
-	pvec = pathvec;
-	tbuf = bp;
-	p = pathbuf;
-	cp = getenv("TERMCAP");
-
-	/*
-	 * TERMCAP can have one of two things in it.  It can be the name of a
-	 * file to use instead of /etc/termcap.  In this case it better start
-	 * with a "/".  Or it can be an entry to use so we don't have to read
-	 * the file.  In this case it has to already have the newlines crunched
-	 * out.  If TERMCAP does not hold a file name then a path of names is
-	 * searched instead.  The path is found in the TERMPATH variable, or
-	 * becomes "$HOME/.termcap /etc/termcap" if no TERMPATH exists.
-	 */
-	if (!cp || *cp != '/') {	/* no TERMCAP or it holds an entry */
-		if ((termpath = getenv("TERMPATH")) != 0) {
-			strncpy(pathbuf, termpath, sizeof(pathbuf)-1);
-		} else {
-			if ((home = getenv("HOME")) != 0) { /* setup path */
-				p += strlen(home);	/* path, looking in */
-				strcpy(pathbuf, home);	/* $HOME first */
-				*p++ = '/';
-			}	/* if no $HOME look in current directory */
-#define	MY_PATH_DEF	".termcap /etc/termcap /usr/share/misc/termcap"
-			strncpy(p, MY_PATH_DEF, PBUFSIZ - (p - pathbuf));
-		}
-	}
-	else				/* user-defined name in TERMCAP */
-		strncpy(pathbuf, cp, PBUFSIZ);	/* still can be tokenized */
-
-	*fname++ = pathbuf;	/* tokenize path into vector of names */
-	while (*++p) {
-		if (*p == ' ' || *p == ':') {
-			*p = '\0';
-			while (*++p)
-				if (*p != ' ' && *p != ':')
-					break;
-			if (*p == '\0')
-				break;
-			*fname++ = p;
-			if (fname >= pathvec + PVECSIZ) {
-				fname--;
-				break;
-			}
-		}
-	}
-	*fname = 0;			/* mark end of vector */
-	if (cp && *cp && *cp != '/') {
-		if (_nc_cgetset(cp) < 0)
-			return(TC_SYS_ERR);
-	}
-
-	i = _nc_cgetent(&dummy, lineno, pathvec, name);
-
-	if (i >= 0)
-		strcpy(bp, dummy);
-
-	FreeIfNeeded(dummy);
-	FreeIfNeeded(the_source);
-	the_source = 0;
-
-	if (i >= 0) {
-		the_source = malloc(strlen(pathvec[i]) + 1);
-		if (the_source != 0)
-			*sourcename = strcpy(the_source, pathvec[i]);
-	}
-
-	return(i);
-}
 
 /*-
  * Copyright (c) 1992, 1993
@@ -672,8 +531,8 @@ _nc_getent(
 			 * Insert tc'ed record into our record.
 			 */
 			s = tcstart + newilen;
-			memmove(s, tcend, rp - tcend);
-			memmove(tcstart, newicap, newilen);
+			memmove(s, tcend, (size_t)(rp - tcend));
+			memmove(tcstart, newicap, (size_t)newilen);
 			rp += diff;
 			free(icap);
 
@@ -767,6 +626,152 @@ _nc_nfcmp(const char *nf, char *rec)
 
 	return (ret);
 }
+#endif /* HAVE_BSD_CGETENT */
+
+/*
+ * Since ncurses provides its own 'tgetent()', we cannot use the native one.
+ * So we reproduce the logic to get down to cgetent() -- or our cut-down
+ * version of that -- to circumvent the problem of configuring against the
+ * termcap library.
+ */
+#define USE_BSD_TGETENT 1
+
+#if USE_BSD_TGETENT
+/*
+ * Copyright (c) 1980, 1993
+ *	The Regents of the University of California.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgment:
+ *	This product includes software developed by the University of
+ *	California, Berkeley and its contributors.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+
+/* static char sccsid[] = "@(#)termcap.c	8.1 (Berkeley) 6/4/93" */
+
+#define	PBUFSIZ		512	/* max length of filename path */
+#define	PVECSIZ		32	/* max number of names in path */
+
+static char *tbuf;
+
+/*
+ * Get an entry for terminal name in buffer bp from the termcap file.
+ */
+static int
+_nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
+{
+	static char *the_source;
+
+	register char *p;
+	register char *cp;
+	char  *dummy;
+	char **fname;
+	char  *home;
+	int    i;
+	char   pathbuf[PBUFSIZ];	/* holds raw path of filenames */
+	char  *pathvec[PVECSIZ];	/* to point to names in pathbuf */
+	char **pvec;			/* holds usable tail of path vector */
+	char  *termpath;
+
+	fname = pathvec;
+	pvec = pathvec;
+	tbuf = bp;
+	p = pathbuf;
+	cp = getenv("TERMCAP");
+
+	/*
+	 * TERMCAP can have one of two things in it.  It can be the name of a
+	 * file to use instead of /etc/termcap.  In this case it better start
+	 * with a "/".  Or it can be an entry to use so we don't have to read
+	 * the file.  In this case it has to already have the newlines crunched
+	 * out.  If TERMCAP does not hold a file name then a path of names is
+	 * searched instead.  The path is found in the TERMPATH variable, or
+	 * becomes "$HOME/.termcap /etc/termcap" if no TERMPATH exists.
+	 */
+	if (!cp || *cp != '/') {	/* no TERMCAP or it holds an entry */
+		if ((termpath = getenv("TERMPATH")) != 0) {
+			strncpy(pathbuf, termpath, sizeof(pathbuf)-1);
+		} else {
+			if ((home = getenv("HOME")) != 0) { /* setup path */
+				p += strlen(home);	/* path, looking in */
+				strcpy(pathbuf, home);	/* $HOME first */
+				*p++ = '/';
+			}	/* if no $HOME look in current directory */
+#define	MY_PATH_DEF	".termcap /etc/termcap /usr/share/misc/termcap"
+			strncpy(p, MY_PATH_DEF, (size_t)(PBUFSIZ - (p - pathbuf)));
+		}
+	}
+	else				/* user-defined name in TERMCAP */
+		strncpy(pathbuf, cp, PBUFSIZ);	/* still can be tokenized */
+
+	*fname++ = pathbuf;	/* tokenize path into vector of names */
+	while (*++p) {
+		if (*p == ' ' || *p == ':') {
+			*p = '\0';
+			while (*++p)
+				if (*p != ' ' && *p != ':')
+					break;
+			if (*p == '\0')
+				break;
+			*fname++ = p;
+			if (fname >= pathvec + PVECSIZ) {
+				fname--;
+				break;
+			}
+		}
+	}
+	*fname = 0;			/* mark end of vector */
+	if (cp && *cp && *cp != '/') {
+		if (_nc_cgetset(cp) < 0) {
+			return(TC_SYS_ERR);
+		}
+	}
+
+	i = _nc_cgetent(&dummy, lineno, pathvec, name);
+
+	if (i >= 0)
+		strcpy(bp, dummy);
+
+	FreeIfNeeded(dummy);
+	FreeIfNeeded(the_source);
+	the_source = 0;
+
+	/* This is not related to the BSD cgetent(), but to fake up a suitable
+	 * filename for ncurses' error reporting.  (If we are not using BSD
+	 * cgetent, then it is the actual filename).
+	 */
+	if (i >= 0) {
+		the_source = malloc(strlen(pathvec[i]) + 1);
+		if (the_source != 0)
+			*sourcename = strcpy(the_source, pathvec[i]);
+	}
+
+	return(i);
+}
+#endif /* USE_BSD_TGETENT */
 #endif /* USE_GETCAP */
 
 int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
@@ -782,7 +787,7 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 	static int lineno;
 
 	/* we're using getcap(3) */
-	if (_nc_tgetent(tc, &source, &lineno, tn) <= 0)
+	if (_nc_tgetent(tc, &source, &lineno, tn) < 0)
 		return (ERR);
 
 	_nc_curr_line = lineno;

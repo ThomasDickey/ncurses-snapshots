@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.91 1997/10/18 20:34:18 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.92 1997/11/08 21:22:57 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -550,7 +550,7 @@ struct tms before, after;
 		     * ensure there's enough room to set the attribute before
 		     * the first non-blank in the run.
 		     */
-#define SAFE(a)	!((a) & ~NONBLANK_ATTR)
+#define SAFE(a)	!((a) & (chtype)~NONBLANK_ATTR)
 		    if (TextOf(newscr->_line[i].text[j])==' ' && SAFE(turnon))
 		    {
 			newscr->_line[i].text[j] &= ~turnon;

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: edit_cfg.sh,v 1.6 1997/04/06 01:54:44 tom Exp $
+# $Id: edit_cfg.sh,v 1.7 1997/11/08 18:14:57 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -25,16 +25,19 @@
 #	$1 = ncurses_cfg.h
 #	$2 = term.h
 #
+TMP=edit$$
+trap "rm -f $TMP" 0 1 2 5 15
 for name in \
 	HAVE_TCGETATTR \
 	HAVE_TERMIOS_H \
 	HAVE_TERMIO_H \
+	NCURSES_CONST \
 	BROKEN_LINKER
 do
 	mv $2 $2.bak
-	if ( grep "[ 	]$name[ 	]" $1 2>&1 >/dev/null )
+	if ( grep "[ 	]$name[ 	]" $1 2>&1 >$TMP )
 	then
-		sed -e 's/define '$name'.*$/define '$name' 1/' $2.bak >$2
+		sed -e 's@#define '$name'.*$@'"`cat $TMP`@" $2.bak >$2
 	else
 		sed -e 's/define '$name'.*$/define '$name' 0/' $2.bak >$2
 	fi

@@ -81,7 +81,7 @@ char *ttyname(int fd);
 # include <sys/ioctl.h>
 #endif
 
-#if SYSTEM_LOOKS_LIKE_SCO
+#if NEED_PTEM_H
 /* they neglected to define struct winsize in termios.h -- it's only
    in termio.h	*/
 #include	<sys/stream.h>
@@ -91,7 +91,7 @@ char *ttyname(int fd);
 #include <curses.h>	/* for bool typedef */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.29 1997/10/18 20:03:49 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.30 1997/11/09 00:30:38 tom Exp $")
 
 extern char **environ;
 
@@ -1038,7 +1038,7 @@ static char arg_to_char(void)
 int
 main(int argc, char **argv)
 {
-#ifdef TIOCGWINSZ
+#if defined(TIOCGWINSZ) && defined(TIOCSWINSZ)
 	struct winsize win;
 #endif
 	int ch, noinit, noset, quiet, Sflag, sflag, showterm;
@@ -1130,7 +1130,7 @@ main(int argc, char **argv)
 		tcolumns = columns;
 		tlines = lines;
 
-#ifdef TIOCGWINSZ
+#if defined(TIOCGWINSZ) && defined(TIOCSWINSZ)
 		/* Set window size */
 		(void)ioctl(STDERR_FILENO, TIOCGWINSZ, &win);
 		if (win.ws_row == 0 && win.ws_col == 0 &&

@@ -36,7 +36,7 @@
 
 #include <term.h>	/* clear_screen, cup & friends, cur_term */
 
-MODULE_ID("$Id: lib_newterm.c,v 1.29 1997/11/01 19:05:26 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.30 1997/11/08 17:32:31 tom Exp $")
 
 #ifndef ONLCR		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -151,9 +151,10 @@ char *t = getenv("NCURSES_TRACE");
 	/* this actually allocates the screen structure, and saves the
 	 * original terminal settings.
 	 */
-	current = SP; SP = 0;
+	current = SP;
+	_nc_set_screen(0);
 	if (_nc_setupscreen(LINES, COLS, ofp) == ERR) {
-	        SP = current;
+	        _nc_set_screen(current);
 		return 0;
 	}
 
