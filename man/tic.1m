@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.24 1999/02/23 02:18:15 tom Exp $
+.\" $Id: tic.1m,v 1.25 1999/03/07 02:07:06 tom Exp $
 .TH tic 1M ""
 .ds n 5
 .ds d @DATADIR@/terminfo
@@ -104,6 +104,10 @@ option of \fIinfocmp\fR(1M) in that it does not merely translate capability
 names, but also translates terminfo strings to termcap format.  Capabilities
 that are not translatable are left in the entry under their terminfo names
 but commented out with two preceding dots.
+.TP
+\fB-G\fR
+Display constant literals in decimal form
+rather than their character equivalents.
 .TP
 \fB-I\fR
 Force source translation to terminfo format.
@@ -248,6 +252,7 @@ error messages, and can be parsed by GNU Emacs's compile facility.
 
 The
 \fB-o\fR,
+\fB-G\fR,
 \fB-I\fR,
 \fB-C\fR,
 \fB-N\fR,

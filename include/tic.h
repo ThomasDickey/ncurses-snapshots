@@ -246,7 +246,7 @@ extern void _nc_warning(const char *const,...) GCC_PRINTFLIKE(1,2);
 extern bool _nc_suppress_warnings;
 
 /* comp_expand.c: expand string into readable form */
-extern char *_nc_tic_expand(const char *, bool, bool);
+extern char *_nc_tic_expand(const char *, bool, int);
 
 /* comp_scan.c: decode string from readable form */
 extern char _nc_trans_string(char *);

@@ -1,4 +1,4 @@
-.\" $Id: terminfo.tail,v 1.28 1999/02/07 03:30:04 tom Exp $
+.\" $Id: terminfo.tail,v 1.29 1999/03/07 02:09:07 tom Exp $
 .\" Beginning of terminfo.tail file
 .ps +1
 .PP
@@ -1487,8 +1487,8 @@ files containing terminal descriptions
 .SH "SEE ALSO"
 \fBtic\fR(1M), \fBcurses\fR(3X), \fBprintf\fR(3S), \fBterm\fR(\*n).
 .SH AUTHORS
-Zeyd M. Ben-Halim, Eric S. Raymond.  Descends from the original pcurses
-by Pavel Curtis.
+Zeyd M. Ben-Halim, Eric S. Raymond, Thomas E. Dickey.
+Based on pcurses by Pavel Curtis.
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

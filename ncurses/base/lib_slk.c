@@ -41,7 +41,7 @@
 #include <ctype.h>
 #include <term.h>	/* num_labels, label_*, plab_norm */
 
-MODULE_ID("$Id: lib_slk.c,v 1.15 1999/01/02 22:56:30 tom Exp $")
+MODULE_ID("$Id: lib_slk.c,v 1.16 1999/03/03 23:44:22 juergen Exp $")
 
 /*
  * We'd like to move these into the screen context structure, but cannot,
@@ -56,7 +56,7 @@ int _nc_slk_format;  /* one more than format specified in slk_init() */
 static void
 slk_paint_info(WINDOW *win)
 {
-  if (win && _nc_slk_format==4)
+  if (win && SP->slk_format==4)
     {
       int i;
 
@@ -64,7 +64,7 @@ slk_paint_info(WINDOW *win)
       wmove (win,0,0);
 
       for (i = 0; i < SP->_slk->maxlab; i++) {
-	if (win && _nc_slk_format==4)
+	if (win && SP->slk_format==4)
 	  {
 	    mvwaddch(win,0,SP->_slk->ent[i].x,'F');
 	    if (i<9)
@@ -87,6 +87,7 @@ int
 _nc_slk_initialize(WINDOW *stwin, int cols)
 {
 int i, x;
+int res = OK;
 char *p;
 
 	T(("slk_initialize()"));
@@ -103,9 +104,12 @@ char *p;
 	SP->_slk->buffer = NULL;
 	SP->_slk->attr   = A_STANDOUT;
 
-	SP->_slk->maxlab = (num_labels > 0) ? num_labels : MAX_SKEY;
-	SP->_slk->maxlen = (num_labels > 0) ? label_width * label_height : MAX_SKEY_LEN;
-	SP->_slk->labcnt = (SP->_slk->maxlab < MAX_SKEY) ? MAX_SKEY : SP->_slk->maxlab;
+	SP->_slk->maxlab = (num_labels > 0) ?
+	  num_labels : MAX_SKEY(_nc_slk_format);
+	SP->_slk->maxlen = (num_labels > 0) ?
+	  label_width * label_height : MAX_SKEY_LEN(_nc_slk_format);
+	SP->_slk->labcnt = (SP->_slk->maxlab < MAX_SKEY(_nc_slk_format)) ? 
+	  MAX_SKEY(_nc_slk_format) : SP->_slk->maxlab;
 
 	SP->_slk->ent = typeCalloc(slk_ent, SP->_slk->labcnt);
 	if (SP->_slk->ent == NULL)
@@ -177,11 +181,17 @@ char *p;
 		   FreeIfNeeded(SP->_slk->ent);
 		   free(SP->_slk);
 		   SP->_slk = (SLK*)0;
-		   return(ERR);
+		   res = (ERR);
 		}
 	}
 
-	return(OK);
+	/* We now reset the format so that the next newterm has again
+	 * per default no SLK keys and may call slk_init again to
+	 * define a new layout. (juergen 03-Mar-1999)
+	 */
+	SP->slk_format = _nc_slk_format;
+	_nc_slk_format = 0;
+	return(res);
 }
 
 

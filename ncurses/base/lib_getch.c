@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.41 1998/09/26 23:34:53 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.42 1999/03/03 23:44:22 juergen Exp $")
 
 #include <fifo_defs.h>
 
@@ -229,8 +229,9 @@ int	ch;
 	if (wgetch_should_refresh(win))
 		wrefresh(win);
 
-	if (!win->_notimeout && (win->_delay >= 0 || SP->_cbreak > 1)) {
-	int delay;
+	if (!win->_notimeout && (win->_delay >= 0 || SP->_cbreak > 0))
+	{
+	        int delay;
 
 		T(("timed delay in wgetch()"));
 		if (SP->_cbreak > 1)
@@ -246,7 +247,8 @@ int	ch;
 		/* else go on to read data available */
 	}
 
-	if (win->_use_keypad) {
+	if (win->_use_keypad) 
+        {
 		/*
 		 * This is tricky.  We only want to get special-key
 		 * events one at a time.  But we want to accumulate

@@ -34,7 +34,7 @@ Options:
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.22 1998/06/28 00:47:41 tom Exp $
+  $Id: worm.c,v 1.23 1999/03/06 22:52:04 tom Exp $
 */
 
 #include <test.priv.h>
@@ -208,7 +208,6 @@ int last, bottom;
 		usage:
 		    fprintf(stderr, "usage: %s [-field] [-length #] [-number #] [-trail]\n",*argv);
 		    return EXIT_FAILURE;
-		    break;
 		}
     }
 

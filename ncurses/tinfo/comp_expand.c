@@ -35,7 +35,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_expand.c,v 1.10 1999/02/23 23:14:59 tom Exp $")
+MODULE_ID("$Id: comp_expand.c,v 1.11 1999/03/07 00:51:07 tom Exp $")
 
 static int trailing_spaces(const char *src)
 {
@@ -49,7 +49,7 @@ static int trailing_spaces(const char *src)
 #define REALCTL(s) (CHAR_OF(s) < 127 && iscntrl(CHAR_OF(s)))
 #define REALPRINT(s) (CHAR_OF(s) < 127 && isprint(CHAR_OF(s)))
 
-char *_nc_tic_expand(const char *srcp, bool tic_format, bool numbers)
+char *_nc_tic_expand(const char *srcp, bool tic_format, int numbers)
 {
 static char *	buffer;
 static size_t	length;
@@ -73,18 +73,21 @@ int		ch;
 			/*
 			 * Though the character literals are more compact, most
 			 * terminal descriptions use numbers and are not easy
-			 * to read in character-literal form.  This is the
-			 * default option for tic/infocmp.
+			 * to read in character-literal form.
 			 */
-			if (numbers
-			 && str[0] == S_QUOTE
-			 && str[1] != '\\'
-			 && REALPRINT(str+1)
-			 && str[2] == S_QUOTE) {
+			switch (numbers) {
+			case -1:
+			    if (str[0] == S_QUOTE
+			     && str[1] != '\\'
+			     && REALPRINT(str+1)
+			     && str[2] == S_QUOTE) {
 				sprintf(buffer+bufp, "{%d}", str[1]);
 				bufp += strlen(buffer+bufp);
 				str += 2;
-			}
+			    } else {
+				buffer[bufp++] = *str;
+			    }
+			    break;
 			/*
 			 * If we have a "%{number}", try to translate it into
 			 * a "%'char'" form, since that will run a little faster
@@ -92,9 +95,9 @@ int		ch;
 			 * for the constant makes it simpler to compare terminal
 			 * descriptions.
 			 */
-			else if (!numbers
-			 && str[0] == L_BRACE
-			 && isdigit(str[1])) {
+			case 1:
+			    if (str[0] == L_BRACE
+			     && isdigit(str[1])) {
 				char *dst = 0;
 				long value = strtol(str+1, &dst, 0);
 				if (dst != 0
@@ -113,8 +116,13 @@ int		ch;
 				} else {
 					buffer[bufp++] = *str;
 				}
-			} else {
-				buffer[bufp++] = *str;
+			    } else {
+				    buffer[bufp++] = *str;
+			    }
+			    break;
+			default:
+			    buffer[bufp++] = *str;
+			    break;
 			}
 		}
 		else if (ch == 128) {
