@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.311 2003/07/26 21:55:30 tom Exp $
+dnl $Id: aclocal.m4,v 1.312 2003/08/30 21:08:55 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -3130,19 +3130,27 @@ if test $with_dmalloc = yes ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_LIBTOOL version: 6 updated: 2003/06/07 17:05:45
+dnl CF_WITH_LIBTOOL version: 7 updated: 2003/08/30 17:06:46
 dnl ---------------
 dnl Provide a configure option to incorporate libtool.  Define several useful
 dnl symbols for the makefile rules.
 AC_DEFUN([CF_WITH_LIBTOOL],
 [
 LIBTOOL=
+
+# common library maintenance symbols that are convenient for libtool scripts:
 LIB_CREATE='$(AR) -cr'
 LIB_OBJECT='$(OBJECTS)'
 LIB_SUFFIX=.a
+LIB_PREP="$RANLIB"
+
+# symbols used to prop libtool up to enable it to determine what it should be
+# doing:
+LIB_CLEAN=
+LIB_COMPILE=
+LIB_LINK=
 LIB_INSTALL=
 LIB_UNINSTALL=
-LIB_PREP="$RANLIB"
 
 AC_MSG_CHECKING(if you want to build libraries with libtool)
 AC_ARG_WITH(libtool,
@@ -3150,8 +3158,13 @@ AC_ARG_WITH(libtool,
 	[with_libtool=$withval],
 	[with_libtool=no])
 AC_MSG_RESULT($with_libtool)
-if test "$with_libtool" = "yes"; then
-	AC_PATH_PROG(LIBTOOL,libtool)
+if test "$with_libtool" != "no"; then
+	if test "$with_libtool" != "yes" ; then
+		CF_PATH_SYNTAX(with_libtool)
+		LIBTOOL=$with_libtool
+	else
+		AC_PATH_PROG(LIBTOOL,libtool)
+	fi
 	if test -z "$LIBTOOL" ; then
 		AC_MSG_ERROR(Cannot find libtool)
 	fi
@@ -3159,6 +3172,9 @@ if test "$with_libtool" = "yes"; then
 	LIB_CREATE='$(LIBTOOL) --mode=link $(CC) -rpath $(DESTDIR)$(libdir) -version-info `cut -f1 $(srcdir)/VERSION` -o'
 	LIB_OBJECT='$(OBJECTS:.o=.lo)'
 	LIB_SUFFIX=.la
+	LIB_CLEAN='$(LIBTOOL) --mode=clean'
+	LIB_COMPILE='$(LIBTOOL) --mode=compile'
+	LIB_LINK='$(LIBTOOL) --mode=link'
 	LIB_INSTALL='$(LIBTOOL) --mode=install'
 	LIB_UNINSTALL='$(LIBTOOL) --mode=uninstall'
 	LIB_PREP=:
@@ -3169,24 +3185,41 @@ if test "$with_libtool" = "yes"; then
 	# Save the version in a cache variable - this is not entirely a good
 	# thing, but the version string from libtool is very ugly, and for
 	# bug reports it might be useful to have the original string.
-	cf_cv_libtool_version=`$LIBTOOL --version 2>&1 | sed -e 's/^[[^1-9]]*//' -e 's/[[^0-9.]].*//'`
+	cf_cv_libtool_version=`$LIBTOOL --version 2>&1 | head -1 | sed -e 's/^[[^1-9]]*//' -e 's/[[^0-9.]].*//'`
 	AC_MSG_RESULT($cf_cv_libtool_version)
 	if test -z "$cf_cv_libtool_version" ; then
 		AC_MSG_ERROR(This is not libtool)
 	fi
+
+	# special hack to add --tag option for C++ compiler
+	case $cf_cv_libtool_version in
+	1.[[5-9]]*|[[2-9]]*)
+		LIBTOOL_CXX="$LIBTOOL --tag=CXX"
+		;;
+	*)
+		LIBTOOL_CXX="$LIBTOOL"
+		;;
+	esac
 else
 	LIBTOOL=""
+	LIBTOOL_CXX=""
 fi
 
 test -z "$LIBTOOL" && ECHO_LT=
 
 AC_SUBST(LIBTOOL)
+AC_SUBST(LIBTOOL_CXX)
+
 AC_SUBST(LIB_CREATE)
 AC_SUBST(LIB_OBJECT)
 AC_SUBST(LIB_SUFFIX)
+AC_SUBST(LIB_PREP)
+
+AC_SUBST(LIB_CLEAN)
+AC_SUBST(LIB_COMPILE)
+AC_SUBST(LIB_LINK)
 AC_SUBST(LIB_INSTALL)
 AC_SUBST(LIB_UNINSTALL)
-AC_SUBST(LIB_PREP)
 
 ])dnl
 dnl ---------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.28 2003/04/19 16:39:09 tom Exp $
+# $Id: Makefile.in,v 1.29 2003/08/23 23:24:08 tom Exp $
 # Makefile for tack
 #
 # The variable 'srcdir' refers to the source-distribution, and can be set with
@@ -29,6 +29,11 @@ includedir	= @includedir@
 datadir		= @datadir@
 
 LIBTOOL		= @LIBTOOL@
+LIBTOOL_CLEAN	= @LIB_CLEAN@
+LIBTOOL_COMPILE	= @LIB_COMPILE@
+LIBTOOL_LINK	= @LIB_LINK@
+LIBTOOL_INSTALL	= @LIB_INSTALL@
+LIBTOOL_UNINSTALL = @LIB_UNINSTALL@
 
 INSTALL		= @INSTALL@
 INSTALL_PROGRAM	= @INSTALL_PROGRAM@
@@ -55,7 +60,7 @@ CFLAGS_SHARED	= $(CCFLAGS) @CC_SHARED_OPTS@
 CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
 LD		= @LD@
-LINK		= @LINK_PROGS@ $(LIBTOOL) $(CC)
+LINK		= @LINK_PROGS@ $(LIBTOOL_LINK) $(CC)
 LDFLAGS		= @EXTRA_LDFLAGS@ \
 		@PROG_ARGS@ @LDFLAGS@ @LD_MODEL@ @LIBS@ @EXTRA_LIBS@
 
@@ -92,11 +97,11 @@ uninstall.libs:
 install.tack: $(PROGS) \
 	$(DESTDIR)$(bindir) \
 	$(DESTDIR)$(mandir)
-	$(LIBTOOL) $(INSTALL_PROGRAM) tack$x $(DESTDIR)$(bindir)/tack$x
+	$(LIBTOOL_INSTALL) $(INSTALL_PROGRAM) tack$x $(DESTDIR)$(bindir)/tack$x
 	$(INSTALL_DATA) $(srcdir)/tack.1 $(DESTDIR)$(mandir)/tack.1
 
 uninstall.tack:
-	-@$(LIBTOOL) rm -f $(DESTDIR)$(bindir)/tack$x
+	-@$(LIBTOOL_UNINSTALL) rm -f $(DESTDIR)$(bindir)/tack$x
 	-@rm -f $(DESTDIR)$(mandir)/tack.1
 
 $(DESTDIR)$(bindir) \

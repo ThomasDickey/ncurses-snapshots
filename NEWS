@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.764 2003/08/23 21:57:53 tom Exp $
+-- $Id: NEWS,v 1.765 2003/08/30 22:54:59 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030830
+	+ alter configure script help message to make it clearer that
+	  --with-build-cc does not specify a cross-compiler (suggested by Dan
+	  Kegel <dank@kegel.com>).
+	+ modify configure script to accommodate libtool 1.5, as well as add an
+	  parameter to the "--with-libtool" option which can specify the
+	  pathname of libtool (report by Chris Zubrzycki).  We note that
+	  libtool 1.5 has more than one bug in its C++ support, so it is not
+	  able to install libncurses++, for instance, if $DESTDIR or the option
+	  --with-install-prefix is used.
 
 20030823
 	> Philippe Blain:

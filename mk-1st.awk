@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.59 2003/07/19 18:44:32 Charles.Wilson Exp $
+# $Id: mk-1st.awk,v 1.60 2003/08/30 20:48:52 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000,2002 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -287,19 +287,19 @@ END	{
 				}
 				end_name = lib_name;
 				printf "../lib/%s : $(%s_OBJS)\n", lib_name, OBJS
-				printf "\tcd ../lib && $(LIBTOOL) $(%s) -o %s $(%s_OBJS:.o=.lo) -rpath $(DESTDIR)$(libdir) -version-info $(NCURSES_MAJOR):$(NCURSES_MINOR) $(SHLIB_LIST)\n", compile, lib_name, OBJS
+				printf "\tcd ../lib && $(LIBTOOL_LINK) $(%s) -o %s $(%s_OBJS:.o=.lo) -rpath $(DESTDIR)$(libdir) -version-info $(NCURSES_MAJOR):$(NCURSES_MINOR) $(SHLIB_LIST)\n", compile, lib_name, OBJS
 				print  ""
 				print  "install \\"
 				print  "install.libs \\"
 				printf "install.%s :: $(DESTDIR)$(libdir) ../lib/%s\n", name, lib_name
 				printf "\t@echo installing ../lib/%s as $(DESTDIR)$(libdir)/%s\n", lib_name, lib_name
-				printf "\tcd ../lib; $(LIBTOOL) $(INSTALL) %s $(DESTDIR)$(libdir)\n", lib_name
+				printf "\tcd ../lib; $(LIBTOOL_INSTALL) $(INSTALL) %s $(DESTDIR)$(libdir)\n", lib_name
 				print  ""
 				print  "uninstall \\"
 				print  "uninstall.libs \\"
 				printf "uninstall.%s ::\n", name
 				printf "\t@echo uninstalling $(DESTDIR)$(libdir)/%s\n", lib_name
-				printf "\t-@$(LIBTOOL) rm -f $(DESTDIR)$(libdir)/%s\n", lib_name
+				printf "\t-@$(LIBTOOL_CLEAN) rm -f $(DESTDIR)$(libdir)/%s\n", lib_name
 			}
 			else
 			{
@@ -353,7 +353,7 @@ END	{
 			print "mostlyclean::"
 			printf "\t-rm -f $(%s_OBJS)\n", OBJS
 			if ( MODEL == "LIBTOOL" ) {
-				printf "\t-rm -f $(%s_OBJS:.o=.lo)\n", OBJS
+				printf "\t-$(LIBTOOL_CLEAN) rm -f $(%s_OBJS:.o=.lo)\n", OBJS
 			}
 		}
 		else if ( found == 2 )
@@ -362,13 +362,13 @@ END	{
 			print "mostlyclean::"
 			printf "\t-rm -f $(%s_OBJS)\n", OBJS
 			if ( MODEL == "LIBTOOL" ) {
-				printf "\t-rm -f $(%s_OBJS:.o=.lo)\n", OBJS
+				printf "\t-$(LIBTOOL_CLEAN) rm -f $(%s_OBJS:.o=.lo)\n", OBJS
 			}
 			print ""
 			print "clean ::"
 			printf "\t-rm -f $(%s_OBJS)\n", OBJS
 			if ( MODEL == "LIBTOOL" ) {
-				printf "\t-rm -f $(%s_OBJS:.o=.lo)\n", OBJS
+				printf "\t-$(LIBTOOL_CLEAN) rm -f $(%s_OBJS:.o=.lo)\n", OBJS
 			}
 		}
 	}
