@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.22 1997/02/16 01:47:11 tom Exp $
+# $Id: Makefile.in,v 1.23 1997/03/09 00:33:17 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -93,6 +93,7 @@ LINT_OPTS	= @LINT_OPTS@
 LINT_LIBS	= -lncurses @LIBS@
 
 AUTO_SRC = \
+	../include/nomacros.h \
 	comp_captab.c \
 	expanded.c \
 	fallback.c \
@@ -115,6 +116,10 @@ fallback.c : $(srcdir)/MKfallback.sh
 
 lib_gen.c : $(srcdir)/MKlib_gen.sh ../include/curses.h
 	sh $(srcdir)/MKlib_gen.sh "$(CPP)" "$(AWK)" <../include/curses.h >$@
+
+../include/nomacros.h : $(srcdir)/MKlib_gen.sh ../include/curses.h
+	sh $(srcdir)/MKlib_gen.sh "$(CPP)" "$(AWK)" <../include/curses.h | \
+		fgrep undef >$@
 
 keys.tries: $(srcdir)/keys.list
 	$(AWK) -f $(srcdir)/MKkeys.awk $(srcdir)/keys.list > keys.tries

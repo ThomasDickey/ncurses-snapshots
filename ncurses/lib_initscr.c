@@ -33,7 +33,7 @@
 #include <sys/termio.h>	/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.17 1997/02/15 20:53:28 tom Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.18 1997/03/08 14:03:59 tom Exp $")
 
 #ifndef ONLCR		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -69,13 +69,14 @@ WINDOW *initscr(void)
 static	bool initialized = FALSE;
 const char *name;
 
+	T((T_CALLED("initscr()")));
 	/* Portable applications must not call initscr() more than once */
 	if (!initialized) {
 		initialized = TRUE;
 
 		if ((name = getenv("TERM")) == 0)
 			name = "unknown";
-		if (newterm(name, stdout, stdin) == NULL) {
+		if (newterm(name, stdout, stdin) == 0) {
 			fprintf(stderr, "Error opening terminal: %s.\n", name);
 			exit(EXIT_FAILURE);
 		}
@@ -87,7 +88,7 @@ const char *name;
 		/* def_shell_mode - done in newterm/_nc_setupscreen */
 		def_prog_mode();
 	}
-	return(stdscr);
+	returnWin(stdscr);
 }
 
 char *termname(void)
@@ -97,10 +98,9 @@ static char	ret[15];
 
 	T(("termname() called"));
 
-	if (term == (char *)NULL)
-		return(char *)NULL;
-	else {
+	if (term != 0) {
 		(void) strncpy(ret, term, sizeof(ret) - 1);
-		return(ret);
+		term = ret;
 	}
+	return term;
 }

@@ -29,18 +29,20 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.27 1997/02/16 00:46:28 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.28 1997/03/08 21:38:28 tom Exp $")
 
 int wattr_on(WINDOW *win, const attr_t at)
 {
-	T((T_CALLED("wattr_on(%p,%#lx) current %s"), win, at, _traceattr(win->_attrs)));
+	T((T_CALLED("wattr_on(%p,%#lx)"), win, at));
+	T(("... current %s", _traceattr(win->_attrs)));
 	toggle_attr_on(win->_attrs,at);
 	returnCode(OK);
 }
 
 int wattr_off(WINDOW *win, const attr_t at)
 {
-	T((T_CALLED("wattr_off(%p,%#lx) current %s"), win, at, _traceattr(win->_attrs)));
+	T((T_CALLED("wattr_off(%p,%#lx)"), win, at));
+	T(("... current %s", _traceattr(win->_attrs)));
 	toggle_attr_off(win->_attrs,at);
 	returnCode(OK);
 }
@@ -49,7 +51,7 @@ int wchgat(WINDOW *win, int n, attr_t attr, short color, const void *opts GCC_UN
 {
     int	i;
 
-    T((T_CALLED("wchgat(%p,%d,%#lx,%d) %s"), win, n, attr, color, _traceattr(attr)));
+    T((T_CALLED("wchgat(%p,%d,%#lx,%d)"), win, n, attr, color));
 
     toggle_attr_on(attr,COLOR_PAIR(color));
 

@@ -17,7 +17,7 @@
  * CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
  ******************************************************************************/
-/* $Id: test.priv.h,v 1.11 1997/02/15 18:25:20 tom Exp $ */
+/* $Id: test.priv.h,v 1.12 1997/03/09 00:34:53 tom Exp $ */
 #if HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -30,6 +30,10 @@
 #endif
 
 #include <curses.h>
+
+#ifdef NCURSES_NOMACROS
+#include <nomacros.h>
+#endif
 
 #if HAVE_GETOPT_H
 #include <getopt.h>
