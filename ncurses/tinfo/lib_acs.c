@@ -34,12 +34,23 @@
 #include <curses.priv.h>
 #include <term.h>		/* ena_acs, acs_chars */
 
-MODULE_ID("$Id: lib_acs.c,v 1.19 2001/06/02 23:59:18 skimo Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.20 2001/12/08 21:45:45 tom Exp $")
 
+#if BROKEN_LINKER
+NCURSES_EXPORT_VAR(chtype *)
+_nc_acs_map(void)
+{
+    static chtype *the_map = 0;
+    if (the_map == 0)
+	the_map = typeCalloc(chtype, ACS_LEN);
+    return the_map;
+}
+#else
 NCURSES_EXPORT_VAR(chtype) acs_map[ACS_LEN] =
 {
     0
 };
+#endif
 
 NCURSES_EXPORT(void)
 _nc_init_acs(void)

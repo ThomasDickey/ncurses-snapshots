@@ -1,4 +1,4 @@
-# $Id: mk-0th.awk,v 1.11 2001/08/11 20:18:43 tom Exp $
+# $Id: mk-0th.awk,v 1.12 2001/12/08 18:57:26 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2001 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -83,7 +83,7 @@ END	{
 			printf "\tcproto -a -l -DLINT $(CPPFLAGS) $(C_SRC) >$@\n"
 			print  ""
 			print  "lintlib :"
-			printf "\t$(srcdir)/../misc/makellib %s $(CPPFLAGS)", libname
+			printf "\tsh $(srcdir)/../misc/makellib %s $(CPPFLAGS)", libname
 			print ""
 			print "lint :"
 			print "\t$(LINT) $(LINT_OPTS) $(CPPFLAGS) $(C_SRC) $(LINT_LIBS)"

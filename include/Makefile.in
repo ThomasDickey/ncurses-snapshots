@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.34 2001/07/01 01:10:18 tom Exp $
+# $Id: Makefile.in,v 1.35 2001/12/08 18:50:06 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -87,22 +87,22 @@ curses.h : $(TERMINFO_CAPS) \
 		$(srcdir)/curses.tail \
 		$(srcdir)/MKkey_defs.sh
 	cat curses.head >$@
-	AWK=$(AWK) $(SHELL) $(srcdir)/MKkey_defs.sh $(TERMINFO_CAPS) >>$@
-	$(SHELL) -c 'if test "@NCURSES_CH_T@" = "cchar_t" ; then cat $(srcdir)/curses.wide >>$@ ; fi'
+	AWK=$(AWK) sh $(srcdir)/MKkey_defs.sh $(TERMINFO_CAPS) >>$@
+	sh -c 'if test "@NCURSES_CH_T@" = "cchar_t" ; then cat $(srcdir)/curses.wide >>$@ ; fi'
 	cat $(srcdir)/curses.tail >>$@
 
 term.h: $(TERMINFO_CAPS) MKterm.h.awk
 	$(AWK) -f MKterm.h.awk $(TERMINFO_CAPS) > $@
-	$(SHELL) $(srcdir)/edit_cfg.sh ../include/ncurses_cfg.h $@
+	sh $(srcdir)/edit_cfg.sh ../include/ncurses_cfg.h $@
 
 hashsize.h: $(TERMINFO_CAPS) $(srcdir)/MKhashsize.sh
-	$(SHELL) $(srcdir)/MKhashsize.sh $(TERMINFO_CAPS) >$@
+	sh $(srcdir)/MKhashsize.sh $(TERMINFO_CAPS) >$@
 
 ncurses_def.h: $(srcdir)/ncurses_defs $(srcdir)/MKncurses_def.sh
-	AWK=$(AWK) $(SHELL) $(srcdir)/MKncurses_def.sh $(srcdir)/ncurses_defs >$@
+	AWK=$(AWK) sh $(srcdir)/MKncurses_def.sh $(srcdir)/ncurses_defs >$@
 
 parametrized.h: $(TERMINFO_CAPS) $(srcdir)/MKparametrized.sh
-	AWK=$(AWK) $(SHELL) $(srcdir)/MKparametrized.sh $(TERMINFO_CAPS) >$@
+	AWK=$(AWK) sh $(srcdir)/MKparametrized.sh $(TERMINFO_CAPS) >$@
 
 tags:
 	ctags *.[ch]

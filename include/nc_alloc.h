@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996,1997                   *
  ****************************************************************************/
-/* $Id: nc_alloc.h,v 1.9 2001/09/15 23:23:28 tom Exp $ */
+/* $Id: nc_alloc.h,v 1.10 2001/12/08 23:49:44 tom Exp $ */
 
 #ifndef NC_ALLOC_included
 #define NC_ALLOC_included 1
@@ -70,10 +70,10 @@ extern void _nc_leaks_dump_entry(void);
 #endif
 
 /* doalloc.c */
-extern void *_nc_doalloc(void *, size_t);
+extern NCURSES_EXPORT(void *) _nc_doalloc(void *, size_t);
 #if !HAVE_STRDUP
 #define strdup _nc_strdup
-extern char *_nc_strdup(const char *);
+extern NCURSES_EXPORT(char *) _nc_strdup(const char *);
 #endif
 
 #define typeMalloc(type,elts) (type *)malloc((elts)*sizeof(type))

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: edit_cfg.sh,v 1.10 2000/09/09 20:29:58 tom Exp $
+# $Id: edit_cfg.sh,v 1.11 2001/12/08 20:13:52 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -43,6 +43,7 @@ for name in \
 	HAVE_TCGETATTR \
 	HAVE_TERMIOS_H \
 	HAVE_TERMIO_H \
+	HAVE_VSSCANF \
 	BROKEN_LINKER
 do
 	mv $2 $BAK

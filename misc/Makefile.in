@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.32 2001/10/14 00:44:14 tom Exp $
+# $Id: Makefile.in,v 1.33 2001/12/08 18:50:46 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -90,9 +90,9 @@ install.data :	$(DESTDIR)$(libdir) \
 	source=${source} \
 	THIS_CC=$(CC) \
 	THAT_CC=$(HOSTCC) \
-	$(SHELL) ./run_tic.sh
+	sh ./run_tic.sh
 	@cd $(srcdir)/tabset && \
-		$(SHELL) -c 'for i in * ; do \
+		sh -c 'for i in * ; do \
 			if test -f $$i ; then \
 			echo installing $$i; \
 			$(INSTALL_DATA) $$i $(DESTDIR)$(tabsetdir)/$$i; \
@@ -101,7 +101,7 @@ install.data :	$(DESTDIR)$(libdir) \
 $(DESTDIR)$(libdir) \
 $(DESTDIR)$(tabsetdir) \
 $(DESTDIR)$(ticdir) :
-	$(srcdir)/../mkinstalldirs $@
+	sh $(srcdir)/../mkinstalldirs $@
 
 uninstall : uninstall.data
 

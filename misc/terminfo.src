@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2001/11/25 02:05:59 $
+#	$Date: 2001/12/08 22:23:46 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2970,10 +2970,38 @@ nxterm|xterm-color|generic color xterm,
 	op=\E[m, use=xterm-r6, use=klone+color, 
 
 # this describes the alpha-version of Gnome terminal shipped with Redhat 6.0
-gnome|Gnome terminal, 
+gnome-rh62|Gnome terminal, 
 	bce, 
 	kdch1=\177, kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, 
 	use=xterm-color, 
+
+# GNOME Terminal 1.4.0.4 (Redhat 7.2)
+#
+# This implements a subset of vt102 with a random selection of features from
+# other terminals such as color and function-keys.
+#
+# shift-f1 to shift-f10 are f11 to f20
+#
+# NumLock changes the application keypad to approximate vt100 keypad, except
+# that there is no escape sequence matching comma (,).
+#
+# Other defects observed:
+#	vt100 LNM mode is not implemented.
+#	vt100 80/132 column mode is not implemented.
+#	vt100 DECALN is not implemented.
+#	vt100 DECSCNM mode is not implemented, so flash does not work.
+#	vt100 TBC (tab reset) is not implemented.
+#	xterm alternate screen controls do not restore cursor position properly
+#	it hangs in tack after running function-keys test.
+gnome-rh72|GNOME Terminal, 
+	bce, 
+	civis=\E[?25l, cnorm=\E[?25h, kdch1=\E[3~, kf1=\EOP, 
+	kf2=\EOQ, kf3=\EOR, kf4=\EOS, rmam=\E[?7l, 
+	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m%?%p9%t\016%e\017%;, 
+	smam=\E[?7h, tbc@, use=xterm-color, 
+
+gnome|GNOME Terminal, 
+	use=gnome-rh72, 
 
 # This is kvt 0-18.7, shipped with Redhat 6.0 (though whether it supports bce
 # or not is debatable).
@@ -14818,47 +14846,6 @@ nsterm-s|AppKit Terminal.app v41+ w/MacRoman charset (color w/statusline),
 nsterm-c-s|AppKit Terminal.app v51+ w/MacRoman charset (full color w/statusline), 
 	use=nsterm+s, use=nsterm+c, use=nsterm+mac, 
 
-# $Log: terminfo.src,v $
-# Revision 1.193  2001/11/25 02:05:59  tom
-# implemented up-to-date entries for M$ telnet (W2K) and KDE konsole
-#
-# Revision 1.192  2001/11/18 02:04:16  tom
-# updated Benjamin Sittler's entries
-#
-# Revision 1.16  2001/11/13 23:30:58  bsittler
-# added a note on Mac OS X versions and corresponding Terminal.app versions.
-#
-# Revision 1.15  2001/11/07 20:02:07  bsittler
-# updated descriptions of v51 features, and added function
-# keys and 16-color mode.
-#
-# Revision 1.14  2001/09/23 06:46:45  bsittler
-# Reordered use= entries to reflect last-highest precedence
-#
-# Revision 1.13  2001/07/18 21:14:16  bsittler
-# fixed a type, added a single Apple_Terminal alias
-#
-# Revision 1.12  2001/07/13 00:23:22  bsittler
-# renamed nsterminal to nsterm to work around Solaric tic inadequacies
-#
-# Revision 1.11  2001/07/12 23:32:01  bsittler
-# cleaned up a note about charset compatibility
-#
-# Revision 1.10  2001/07/12 21:28:12  bsittler
-# renamed to nsterminal to better reflect its origins;
-# removed the Apple_Terminal names
-#
-# Revision 1.9  2001/07/11 19:09:33  bsittler
-# Switched the primary name from Apple_Terminal to osxterm to work around
-# unbelievably broken Solaris tic which *still* can't handle terminal names of
-# more than 15 characters!
-#
-# Revision 1.8  2001/07/11 19:03:15  bsittler
-# Added full color (-c) entries without :ncv:.
-#
-# Revision 1.7  2001/07/11 18:25:45  bsittler
-# Added RCS tags.
-
 # xnuppc - Darwin PowerPC Console (a.k.a. "darwin")
 #
 # On PowerPC platforms, Apple's Darwin operating system uses a
@@ -19447,6 +19434,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2001-11-24
 #	* add ms-vt100-color entry -TD
 #	* add "konsole" entries -TD
+#
+# 2001-12-08
+#	* update gnome entry to Redhat 7.2 -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

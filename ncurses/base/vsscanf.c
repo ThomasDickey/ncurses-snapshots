@@ -34,14 +34,13 @@
 
 #if !HAVE_VSSCANF
 
-MODULE_ID("$Id: vsscanf.c,v 1.13 2001/06/30 23:07:37 tom Exp $")
+MODULE_ID("$Id: vsscanf.c,v 1.14 2001/12/08 20:12:35 tom Exp $")
 
 /*VARARGS2*/
 NCURSES_EXPORT(int)
-vsscanf
-(const char *str, const char *format, va_list ap)
+vsscanf(const char *str, const char *format, va_list ap)
 {
-#if defined(_IOREAD) && defined(_NFILE)
+#if HAVE_VFSCANF || HAVE__DOSCAN
     /*
      * This code should work on anything descended from AT&T SVr1.
      */

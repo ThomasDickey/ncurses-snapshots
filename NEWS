@@ -1,10 +1,42 @@
--- $Id: NEWS,v 1.657 2001/12/02 02:09:19 tom Exp $
+-- $Id: NEWS,v 1.658 2001/12/08 22:15:23 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20011208
+	+ modify final checks in lib_setup.c for line and col values, making
+	  them independent.
+	+ modify acs_map[] if configure --broken-linker is specified, to make
+	  it use a function rather than an array (prompted by an incorrect
+	  implementation in cygwin package).
+	+ correct spelling of configure option --enable-colorfgbg, which
+	  happened to work if --with-develop was set (noted in cygwin package
+	  for ncurses).
+	+ modify ifdef for genericerror() to compile with SUNWspro Sun WorkShop
+	  6 update 1 C++ 5.2 (patch by Sullivan N Beck <sbeck@cise.ufl.edu>).
+	+ add configure checks to see if ncurses' fallback vsscanf() will
+	  compile either of the special cases for FILE structs, and if not,
+	  force it to the case which simply returns an error (report by
+	  Sullivan N Beck <sbeck@cise.ufl.edu> indicates that Solaris 8 with
+	  64-bits does not allow access to FILE's fields).
+	+ modify ifdef's for c++/cursesw.cc to use the fallback vsscanf() in
+	  the ncurses library if no better substitute for this can be found
+	  in the C++ runtime.
+	+ modify the build to name dynamic libraries according to the
+	  convention used on OS X and Darwin.  Rather than something like
+	  libncurses.dylib.5.2, Darwin would name it libncurses.  5.dylib. 
+	  There are a few additional minor fixes, such as setting the library
+	  version and compatibility version numbers (patch by Jason Evans
+	  <jevans@apple.com>).
+	+ use 'sh' to run mkinstalldirs, to work around problems with buggy
+	  versions of 'make' on OS/2 (report by John Polterak <jp@eyup.org>).
+	+ correct typo in manpage description of curs_set() (Debian #121548).
+	+ replace the configure script existence-check for mkstemp() by one
+	  that checks if the function works, needed for older glibc and
+	  AmigaOS.
 
 20011201
 	+ modify script that generates fallbacks.c to compile a temporary
