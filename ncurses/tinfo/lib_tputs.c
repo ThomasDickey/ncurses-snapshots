@@ -45,7 +45,7 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.45 2000/02/27 02:33:24 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.46 2000/05/21 00:38:19 tom Exp $")
 
 char PC = 0;			/* used by termcap library */
 speed_t ospeed = 0;		/* used by termcap library */
@@ -95,6 +95,66 @@ _nc_outch(int ch)
     }
     return OK;
 }
+
+#ifdef USE_WIDEC_SUPPORT
+/*
+ * Reference: The Unicode Standard 2.0
+ *
+ * No surrogates supported (we're storing only one 16-bit Unicode value per
+ * cell).
+ */
+int
+_nc_utf8_outch(int ch)
+{
+    static const unsigned byteMask = 0xBF;
+    static const unsigned otherMark = 0x80;
+    static const unsigned firstMark[] =
+    {0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC};
+
+    int result[7], *ptr;
+    int count = 0;
+
+    if (ch < 0x80)
+	count = 1;
+    else if (ch < 0x800)
+	count = 2;
+    else if (ch < 0x10000)
+	count = 3;
+    else if (ch < 0x200000)
+	count = 4;
+    else if (ch < 0x4000000)
+	count = 5;
+    else if (ch <= 0x7FFFFFFF)
+	count = 6;
+    else {
+	count = 2;
+	ch = 0xFFFD;
+    }
+    ptr = result + count;
+    switch (count) {
+    case 6:
+	*--ptr = (ch | otherMark) & byteMask;
+	ch >>= 6;
+    case 5:
+	*--ptr = (ch | otherMark) & byteMask;
+	ch >>= 6;
+    case 4:
+	*--ptr = (ch | otherMark) & byteMask;
+	ch >>= 6;
+    case 3:
+	*--ptr = (ch | otherMark) & byteMask;
+	ch >>= 6;
+    case 2:
+	*--ptr = (ch | otherMark) & byteMask;
+	ch >>= 6;
+    case 1:
+	*--ptr = (ch | firstMark[count]);
+    }
+    while (count--)
+	_nc_outch(*ptr++);
+    return OK;
+}
+#endif
 
 int
 putp(const char *string)

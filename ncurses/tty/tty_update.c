@@ -70,7 +70,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.135 2000/04/15 23:41:46 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.136 2000/05/20 23:28:00 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -181,6 +181,8 @@ GoTo(int const row, int const col)
 static inline void
 PutAttrChar(chtype ch)
 {
+    int data;
+
     if (tilde_glitch && (TextOf(ch) == '~'))
 	ch = ('`' | AttrOf(ch));
 
@@ -188,10 +190,11 @@ PutAttrChar(chtype ch)
 	    _tracechtype(ch),
 	    SP->_cursrow, SP->_curscol));
     UpdateAttrs(ch);
-    if (SP->_cleanup) {
-	_nc_outch((int) TextOf(ch));
+    data = TextOf(ch);
+    if (SP->_outch != 0) {
+	SP->_outch(data);
     } else {
-	putc((int) TextOf(ch), SP->_ofp);	/* macro's fastest... */
+	putc(data, SP->_ofp);	/* macro's fastest... */
 #ifdef TRACE
 	_nc_outchars++;
 #endif /* TRACE */

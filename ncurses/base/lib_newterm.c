@@ -47,7 +47,7 @@
 #include <term.h>		/* clear_screen, cup & friends, cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.44 2000/02/13 00:59:39 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.45 2000/05/20 23:45:57 tom Exp $");
 
 #ifndef ONLCR			/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -190,6 +190,22 @@ newterm(NCURSES_CONST char *name, FILE * ofp, FILE * ifp)
 #define SGR0_TEST(mode) (mode != 0) && (exit_attribute_mode == 0 || strcmp(mode, exit_attribute_mode))
     SP->_use_rmso = SGR0_TEST(exit_standout_mode);
     SP->_use_rmul = SGR0_TEST(exit_underline_mode);
+
+#ifdef USE_WIDEC_SUPPORT
+    /*
+     * XFree86 xterm can be configured to support UTF-8 based on environment
+     * variable settings.
+     */
+    {
+	char *s;
+	if (((s = getenv("LC_ALL")) != 0
+		|| (s = getenv("LC_CTYPE")) != 0
+		|| (s = getenv("LANG")) != 0)
+	    && strstr(s, "UTF-8") != 0) {
+	    SP->_outch = _nc_utf8_outch;
+	}
+    }
+#endif
 
     /* compute movement costs so we can do better move optimization */
     _nc_mvcur_init();

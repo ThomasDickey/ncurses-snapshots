@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.158 2000/04/08 23:43:08 tom Exp $
+ * $Id: curses.priv.h,v 1.160 2000/05/20 23:46:58 tom Exp $
  *
  *	curses.priv.h
  *
@@ -400,6 +400,7 @@ struct screen {
 	unsigned long	*oldhash, *newhash;
 
 	bool            _cleanup;	/* cleanup after int/quit signal */
+	int             (*_outch)(int);	/* output handler if not putc */
 };
 
 extern SCREEN *_nc_screen_chain;
@@ -725,6 +726,10 @@ extern void _nc_trace_tries(struct tries *tree);
 
 #if USE_SIZECHANGE
 extern void _nc_update_screensize(void);
+#endif
+
+#ifdef USE_WIDEC_SUPPORT
+extern int _nc_utf8_outch(int);
 #endif
 
 /* scroll indices */

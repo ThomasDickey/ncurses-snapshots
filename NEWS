@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.556 2000/05/13 19:58:08 tom Exp $
+-- $Id: NEWS,v 1.558 2000/05/21 01:44:21 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000520
+	+ modify view.c to make a rudimentary viewer of UTF-8 text if ncurses
+	  is configured with the experimental wide-character support.
+	+ add a simple UTF-8 output driver to the experimental wide-character
+	  support.  If any of the environment variables LC_ALL, LC_CTYPE or
+	  LANG contain the string "UTF-8", this driver will be used to
+	  translate the output to UTF-8.  This works with XFree86 xterm.
+	+ modify configure script to allow building shared libraries on BeOS
+	  (from a patch by by Valeriy E Ushakov).
+	+ modify lib_addch.c to allow repeated update to the lower-right
+	  corner, rather than displaying only the first character written until
+	  the cursor is moved.  Recent versions of SVr4 curses can update the
+	  lower-right corner, and behave this way (reported by Neil Zanella).
+	+ add a limit-check in _nc_do_color(), to avoid using invalid color
+	  pair value (from bug report by Brendan O'Dea <bod@compusol.com.au>).
 
 20000513
 	+ the tack program knows how to use smcup and rmcup but the "show caps
