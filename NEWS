@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.645 2001/09/16 00:51:36 tom Exp $
+-- $Id: NEWS,v 1.646 2001/09/23 00:33:20 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010922
+	+ fix:  PutRange() was counting the second part of a wide character as
+	  part of a run, resulting in a cursor position that was one too far
+	  (patch by Sven Verdoolaege).
+	+ modify resizeterm() to not queue a KEY_RESIZE if there was no
+	  SIGWINCH, thereby separating the two styles of SIGWINCH handling
+	  in test/view.c
+	+ simplified lib_tstp.c, modify it to use SA_RESTART flag for SIGWINCH.
+	+ eliminate several static buffers in the terminfo compiler, using
+	  allocated buffers.
+	+ modify MKkeyname.awk so that keyname() does not store its result into
+	  a static buffer that is overwritten by the next call.
+	+ reorganize the output of infocmp -E and -e options to compile cleanly
+	  with gcc -Wwrite-strings warnings.
+	+ remove redefinition of chgat/wchgat/mvwchgat from curses.wide 
 
 20010915
 	+ add label to test/view.c, showing the name of the last key or signal

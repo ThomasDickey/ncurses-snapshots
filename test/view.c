@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.43 2001/09/16 00:45:31 tom Exp $
+ * $Id: view.c,v 1.45 2001/09/23 00:16:47 tom Exp $
  */
 
 #include <string.h>
@@ -55,7 +55,7 @@
 #endif
 
 static RETSIGTYPE finish(int sig) GCC_NORETURN;
-static void show_all(char *tag);
+static void show_all(const char *tag);
 
 #if defined(SIGWINCH) && defined(TIOCGWINSZ) && HAVE_RESIZETERM
 #define CAN_RESIZE 1
@@ -191,7 +191,7 @@ main(int argc, char *argv[])
 #if CAN_RESIZE
     bool nonposix_resize = FALSE;
 #endif
-    char *my_label = "Input";
+    const char *my_label = "Input";
 
     setlocale(LC_ALL, "");
 
@@ -303,8 +303,10 @@ main(int argc, char *argv[])
 	n = 0;
 	for (;;) {
 #if CAN_RESIZE
-	    if (interrupted)
+	    if (interrupted) {
 		adjust(0);
+		my_label = "interrupt";
+	    }
 #endif
 	    waiting = TRUE;
 	    c = getch();
@@ -454,7 +456,7 @@ adjust(int sig)
 #endif /* CAN_RESIZE */
 
 static void
-show_all(char *tag)
+show_all(const char *tag)
 {
     int i;
     char temp[BUFSIZ];

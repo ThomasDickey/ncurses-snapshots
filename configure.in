@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.246 2001/08/25 23:54:37 tom Exp $
+dnl $Id: configure.in,v 1.247 2001/09/22 21:17:40 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20000819)
-AC_REVISION($Revision: 1.246 $)
+AC_REVISION($Revision: 1.247 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -793,7 +793,7 @@ AC_SUBST(NCURSES_libutf8_h)
 
 AC_MSG_CHECKING(for terminal capabilities file)
 AC_ARG_WITH(caps,
-	[ --with-caps=alt         compile with experimental alternate Caps file],
+	[  --with-caps=alt         compile with experimental alternate Caps file],
 	[TERMINFO_CAPS=Caps.$withval],
 	[TERMINFO_CAPS=Caps])
 test -f ${srcdir}/include/${TERMINFO_CAPS} || TERMINFO_CAPS=Caps

@@ -70,7 +70,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.168 2001/08/04 18:30:17 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.169 2001/09/23 00:29:40 skimo Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -490,6 +490,8 @@ PutRange(
     if (otext != ntext
 	&& (last - first + 1) > SP->_inline_cost) {
 	for (j = first, run = 0; j <= last; j++) {
+	    if (!run && isnac(otext[j]))
+		continue;
 	    if (CharEq(otext[j], ntext[j])) {
 		run++;
 	    } else {

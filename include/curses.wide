@@ -1,7 +1,7 @@
 
 #ifdef _XOPEN_SOURCE_EXTENDED
 
-/* $Id: curses.wide,v 1.1 2001/07/01 01:21:03 tom Exp $ */
+/* $Id: curses.wide,v 1.2 2001/09/22 19:08:51 tom Exp $ */
 
 #include <wchar.h>	/* we want mbstate_t */
 
@@ -127,7 +127,6 @@ extern NCURSES_EXPORT(int) wvline_set (WINDOW *, const cchar_t *, int);	/* missi
 #define attr_on(a,opts)			wattr_on(stdscr,a,opts)
 #define attr_set(a,pair,opts)		wattr_set(stdscr,a,pair,opts)
 #define box_set(w,v,h)			wborder_set(w,v,v,h,h,0,0,0,0)
-#define chgat(n,a,c,o)			wchgat(stdscr,n,a,c,o)
 #define echo_wchar(c)			wecho_wchar(stdscr,c)
 #define getbkgrnd(wch)			wgetbkgrnd(stdscr,wch)
 #define get_wch(c)			wget_wch(stdscr,c)
@@ -146,7 +145,6 @@ extern NCURSES_EXPORT(int) wvline_set (WINDOW *, const cchar_t *, int);	/* missi
 #define mvadd_wch(y,x,c)		mvwadd_wch(stdscr,y,x,c)
 #define mvaddnwstr(y,x,wstr,n)		mvwaddnwstr(stdscr,y,x,wstr,n)
 #define mvaddwstr(y,x,wstr,n)		mvwaddnwstr(stdscr,y,x,wstr,-1)
-#define mvchgat(y,x,n,a,c,o)		mvwchgat(stdscr,y,x,n,a,c,o)
 #define mvget_wch(y,x,c)		mvwget_wch(stdscr,y,x,c)
 #define mvget_wstr(y,x,t)		mvwgetn_wstr(stdscr,y,x,t,-1)
 #define mvgetn_wstr(y,x,t,n)		mvwgetn_wstr(stdscr,y,x,t,n)
@@ -164,7 +162,6 @@ extern NCURSES_EXPORT(int) wvline_set (WINDOW *, const cchar_t *, int);	/* missi
 #define mvwadd_wch(win,y,x,c)		(wmove(win,y,x) == ERR ? ERR : wadd_wch(stdscr,c))
 #define mvwaddnwstr(win,y,x,wstr,n)	(wmove(win,y,x) == ERR ? ERR : waddnwstr(stdscr,wstr,n))
 #define mvwaddwstr(win,y,x,wstr,n)	(wmove(win,y,x) == ERR ? ERR : waddnwstr(stdscr,wstr,-1))
-#define mvwchgat(win,y,x,n,a,c,o)	(wmove(win,y,x) == ERR ? ERR : wchgat(win,n,a,c,o))
 #define mvwget_wch(win,y,x,c)		(wmove(win,y,x) == ERR ? ERR : wget_wch(win,c))
 #define mvwget_wstr(win,y,x,t)		(wmove(win,y,x) == ERR ? ERR : wgetn_wstr(win,t,-1))
 #define mvwgetn_wstr(win,y,x,t,n)	(wmove(win,y,x) == ERR ? ERR : wgetn_wstr(win,t,n))
