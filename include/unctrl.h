@@ -33,7 +33,7 @@
  */
 #ifndef _UNCTRL_H
 #define _UNCTRL_H	1
-#define NCURSES_VERSION "1.9.4"
+#define NCURSES_VERSION "1.9.5"
 
 extern char *unctrl(unsigned char);
 

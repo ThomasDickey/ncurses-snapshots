@@ -129,8 +129,16 @@ int		newx;
 	x = win->_curx;
 	y = win->_cury;
 
-	if (y > win->_maxy || x > win->_maxx || y < 0 || x < 0)
+	if (y > win->_maxy || x > win->_maxx || y < 0 || x < 0) {
+		TR(TRACE_VIRTPUT, ("Alert! win _curx = %d, _cury = %d "
+				   "(_maxx = %d, _maxy = %d)", x, y,
+				   win->_maxx, win->_maxy));
+	  	/* seems that window's data got corrupt, so it 
+		   requires sanitation */
+	  	win->_curx = win->_cury = 0;
+		win->_flags &= ~_NEED_WRAP;
 	    	return(ERR);
+	}
 
 #ifdef A_PCCHARSET
 	if (ch & A_PCCHARSET)
@@ -146,14 +154,15 @@ int		newx;
 
 	switch (ch&A_CHARTEXT) {
     	case '\t':
-		if (win->_flags & _NEED_WRAP)
-			newx = TABSIZE;
-		else
+		if (win->_flags & _NEED_WRAP) {
+		  	x = 0;
+			newx = min(TABSIZE, win->_maxx+1);
+		} else
 			newx = min(x + (TABSIZE-(x%TABSIZE)), win->_maxx+1);
 		for (; x < newx; x++)
 	    		if (waddch_nosync(win, ' ' | (ch&A_ATTRIBUTES), TRUE) == ERR)
 				return(ERR);
-		goto finish;
+		return(OK);
     	case '\n':
 		wclrtoeol(win);
 		DO_NEWLINE

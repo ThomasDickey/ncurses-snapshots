@@ -104,7 +104,7 @@ change_scroll_region    	"csr"	str	"cs"	Y	change region to line #1 to line #2
 clear_all_tabs          	"tbc"	str	"ct"	Y	clear all tab stops
 clear_screen            	"clear"	str	"cl"	Y	clear screen and home cursor
 clr_eol                 	"el"	str	"ce"	Y	clear to end of line
-clr_eos                 	"ed"	str	"cd"	Y	clear to edn of screen
+clr_eos                 	"ed"	str	"cd"	Y	clear to end of screen
 column_address          	"hpa"	str	"ch"	Y	horizontal position #1, absolute
 command_character       	"cmdch"	str	"CC"	Y	terminal settable cmd character in prototype !?
 cursor_address          	"cup"	str	"cm"	Y	move to row #1 columns #2
@@ -153,15 +153,15 @@ insert_character        	"ich1"	str	"ic"	Y	insert character
 insert_line             	"il1"	str	"al"	Y	insert line
 insert_padding          	"ip"	str	"ip"	Y	insert padding after inserted character
 key_backspace           	"kbs"	str	"kb"	Y	backspace key
-key_catab               	"ktbc"	str	"ka"	Y	clear-all-tabs key
-key_clear               	"kclr"	str	"kC"	Y	clear-screen or erase key
-key_ctab                	"kctab"	str	"kt"	Y	clear-tab key
-key_dc                  	"kdch1"	str	"kD"	Y	delete-character key
-key_dl                  	"kdl1"	str	"kL"	Y	delete-line key
+key_catab               	"ktbc"	str	"ka"	-	clear-all-tabs key
+key_clear               	"kclr"	str	"kC"	-	clear-screen or erase key
+key_ctab                	"kctab"	str	"kt"	-	clear-tab key
+key_dc                  	"kdch1"	str	"kD"	-	delete-character key
+key_dl                  	"kdl1"	str	"kL"	-	delete-line key
 key_down                	"kcud1"	str	"kd"	Y	down-arrow key
-key_eic                 	"krmir"	str	"kM"	Y	sent by rmir or smir in insert mode
-key_eol                 	"kel"	str	"kE"	Y	clear-to-end-of-line key
-key_eos                 	"ked"	str	"kS"	Y	clear-to-end-of-screen key
+key_eic                 	"krmir"	str	"kM"	-	sent by rmir or smir in insert mode
+key_eol                 	"kel"	str	"kE"	-	clear-to-end-of-line key
+key_eos                 	"ked"	str	"kS"	-	clear-to-end-of-screen key
 key_f0                  	"kf0"	str	"k0"	Y	F0 function key
 key_f1                  	"kf1"	str	"k1"	Y	F1 function key
 key_f10                 	"kf10"	str	"k;"	-	F10 function key
@@ -174,30 +174,30 @@ key_f7                  	"kf7"	str	"k7"	Y	F7 function key
 key_f8                  	"kf8"	str	"k8"	Y	F8 fucntion key
 key_f9                  	"kf9"	str	"k9"	Y	F9 function key
 key_home                	"khome"	str	"kh"	Y	home key
-key_ic                  	"kich1"	str	"kI"	Y	insert-character key
-key_il                  	"kil1"	str	"kA"	Y	insert-line key
+key_ic                  	"kich1"	str	"kI"	-	insert-character key
+key_il                  	"kil1"	str	"kA"	-	insert-line key
 key_left                	"kcub1"	str	"kl"	Y	left-arrow key
-key_ll                  	"kll"	str	"kH"	Y	last-line key
-key_npage               	"knp"	str	"kN"	Y	next-page key
-key_ppage               	"kpp"	str	"kP"	Y	prev-page key
+key_ll                  	"kll"	str	"kH"	-	last-line key
+key_npage               	"knp"	str	"kN"	-	next-page key
+key_ppage               	"kpp"	str	"kP"	-	prev-page key
 key_right               	"kcuf1"	str	"kr"	Y	right-arrow key
-key_sf                  	"kind"	str	"kF"	Y	scroll-forward key
-key_sr                  	"kri"	str	"kR"	Y	scroll-backward key
-key_stab                	"khts"	str	"kT"	Y	set-tab key
+key_sf                  	"kind"	str	"kF"	-	scroll-forward key
+key_sr                  	"kri"	str	"kR"	-	scroll-backward key
+key_stab                	"khts"	str	"kT"	-	set-tab key
 key_up                  	"kcuu1"	str	"ku"	Y	up-arrow key
 keypad_local            	"rmkx"	str	"ke"	Y	out of 'keyboard_transmit' mode
 keypad_xmit             	"smkx"	str	"ks"	Y	enter into 'keyboard_transmit' mode
-lab_f0                  	"lf0"	str	"l0"	Y	label on function key f0 if not f0
-lab_f1                  	"lf1"	str	"l1"	Y	label on function key f1 if not f1
+lab_f0                  	"lf0"	str	"l0"	-	label on function key f0 if not f0
+lab_f1                  	"lf1"	str	"l1"	-	label on function key f1 if not f1
 lab_f10                 	"lf10"	str	"la"	-	label on function key f10 if not f10
-lab_f2                  	"lf2"	str	"l2"	Y	label on function key f2 if not f2
-lab_f3                  	"lf3"	str	"l3"	Y	label on function key f3 if not f3
-lab_f4                  	"lf4"	str	"l4"	Y	label on function key f4 if not f4
-lab_f5                  	"lf5"	str	"l5"	Y	lable on function key f5 if not f5
-lab_f6                  	"lf6"	str	"l6"	Y	label on function key f6 if not f6
-lab_f7                  	"lf7"	str	"l7"	Y	label on function key f7 if not f7
-lab_f8                  	"lf8"	str	"l8"	Y	label on function key f8 if not f8
-lab_f9                  	"lf9"	str	"l9"	Y	label on function key f9 if not f9
+lab_f2                  	"lf2"	str	"l2"	-	label on function key f2 if not f2
+lab_f3                  	"lf3"	str	"l3"	-	label on function key f3 if not f3
+lab_f4                  	"lf4"	str	"l4"	-	label on function key f4 if not f4
+lab_f5                  	"lf5"	str	"l5"	-	lable on function key f5 if not f5
+lab_f6                  	"lf6"	str	"l6"	-	label on function key f6 if not f6
+lab_f7                  	"lf7"	str	"l7"	-	label on function key f7 if not f7
+lab_f8                  	"lf8"	str	"l8"	-	label on function key f8 if not f8
+lab_f9                  	"lf9"	str	"l9"	-	label on function key f9 if not f9
 meta_off                	"rmm"	str	"mo"	Y	turn off meta mode
 meta_on                 	"smm"	str	"mm"	Y	turn on meta mode (8th-bit on)
 newline                 	"nel"	str	"nw"	Y	newline (behave like cr followed by lf)

@@ -19,7 +19,7 @@ CPPFLAGS	= @INCLUDES@ -DHAVE_CONFIG_H
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 
 LINK		= $(CC)
-LDFLAGS		= -L../lib -L$(libdir) @LDFLAGS@ @LD_MODEL@ @LIBS@
+LDFLAGS		= -L../lib -L$(libdir) @LDFLAGS@ @LD_MODEL@ @LIBS@ @LD_RPATH@
 
 .SUFFIXES: .cc
 .cc.o:
@@ -30,7 +30,7 @@ all: demo
 
 DEPS_DEMO = cursesw.o cursesp.o demo.o
 demo: $(DEPS_DEMO)
-	$(LINK) -o $@ $(DEPS_DEMO) $(LDFLAGS) -lpanel@DFT_ARG_SUFFIX@ -lncurses@DFT_ARG_SUFFIX@ -lg++
+	$(LINK) -o $@ $(DEPS_DEMO) $(LDFLAGS) -lpanel@DFT_ARG_SUFFIX@ -lncurses@DFT_ARG_SUFFIX@ -lg++ -lm
 
 cursesp.o: $(srcdir)/cursesp.cc
 cursesw.o: $(srcdir)/cursesw.cc

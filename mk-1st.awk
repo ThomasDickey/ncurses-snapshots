@@ -32,6 +32,7 @@ END	{
 				printf "../lib/lib%s%s : $(%s_OBJS)\n", name, suffix, MODEL
 				print  "\t@-rm -f $@"
 				printf "\t$(MK_SHARED_LIB) $(%s_OBJS)\n", MODEL
+				printf "\t$(MK_SHARED_LIB_LINK)\n"
 			}
 			else
 			{

@@ -1,7 +1,7 @@
 ./ANNOUNCE
-./CHANGES
 ./INSTALL
 ./MANIFEST
+./NEWS
 ./Makefile.in
 ./README
 ./TO-DO
