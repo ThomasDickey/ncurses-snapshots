@@ -47,7 +47,7 @@
 #include <term.h>		/* clear_screen, cup & friends, cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.45 2000/05/20 23:45:57 tom Exp $");
+MODULE_ID("$Id: lib_newterm.c,v 1.46 2000/07/01 22:26:22 tom Exp $")
 
 #ifndef ONLCR			/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0

@@ -59,7 +59,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.36 2000/02/13 01:02:34 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.37 2000/06/29 23:03:09 tom Exp $")
 
 static long _nc_gettime(bool first)
 {
@@ -241,7 +241,6 @@ retry:
 				if ((mode & (1 << count))
 				 && (fds[count].revents & POLLIN)) {
 					result |= (1 << count);
-					count++;
 				}
 			}
 #elif defined(__BEOS__)

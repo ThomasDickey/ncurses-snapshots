@@ -1,10 +1,28 @@
--- $Id: NEWS,v 1.566 2000/06/25 01:25:40 tom Exp $
+-- $Id: NEWS,v 1.568 2000/07/02 01:16:51 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000701 pre-release
+	+ change minor version to 1, i.e., ncurses 5.1
+	+ add experimental configure option --enable-colorfgbg to check for
+	  $COLORTERM variable as set by rxvt/aterm/Eterm.
+	+ add Eterm terminfo entry (Michael Jennings <mej@valinux.com>).
+	+ modify manlinks.sed to pick aliases from the SYNOPSIS section, and
+	  several manpages so manlinks.sed can find aliases for creating
+	  symbolic links.
+	+ add explanation to run_tic.sh regarding extended terminal
+	  capabilities.
+	+ change message format for edit_cfg.sh, since some people interpret
+	  it as a warning.
+	+ correct unescaped '$' in sysv5uw7*|unix_sv* rule for CF_SHARED_OPTS
+	  configure macro (report by Thanh Ma <Thanh.Ma@casi-rusco.com>).
+	+ correct logic in lib_twait.c as used by lib_mouse.c for GPM mouse
+	  support when poll() is used rather than select() (prompted by
+	  discussion with David Allen <DAllen24@aol.com>).
 
 20000624 pre-release
 	+ modify TransformLine() to check for cells with different color pairs
@@ -90,7 +108,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  broke check for screen's AX capability (reported by Valeriy E Ushakov
 	  <uwe@ptc.spbu.ru>).
 	+ change man2html rule in dist.mk to workaround bug in some man-programs
-	  that ignores local when rendering hyphenation.
+	  that ignores locale when rendering hyphenation.
 	+ change web- and ftp-site to dickey.his.com
 
 20000429

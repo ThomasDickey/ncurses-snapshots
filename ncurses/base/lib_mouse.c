@@ -84,7 +84,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.51 2000/03/18 22:11:42 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.52 2000/06/29 23:02:26 tom Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -323,7 +323,7 @@ _nc_mouse_event(SCREEN * sp GCC_UNUSED)
     Gpm_Event ev;
 
     if (gpm_fd >= 0
-	&& _nc_timed_wait(2, 0, (int *) 0)
+	&& (_nc_timed_wait(3, 0, (int *) 0) & 2) != 0
 	&& Gpm_GetEvent(&ev) == 1) {
 	eventp->id = 0;		/* there's only one mouse... */
 
