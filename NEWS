@@ -1,10 +1,15 @@
--- $Id: NEWS,v 1.471 1999/07/31 23:21:48 tom Exp $
+-- $Id: NEWS,v 1.472 1999/08/15 01:46:58 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990814	pre-release
+	+ add ms-vt100 terminfo entry -TD
+	+ minor fixes for misc/emx.src, based on testing with tack.
+	+ minor fix for test/ncurses.c, test 'a', in case ncv is not set.
 
 990731	pre-release
 	+ minor correction for 'screen' terminfo entry.

@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.117 1999/07/31 21:00:47 tom Exp $
+$Id: ncurses.c,v 1.118 1999/08/10 00:37:30 tom Exp $
 
 ***************************************************************************/
 
@@ -368,7 +368,7 @@ static int show_attr(int row, int skip, chtype attr, const char *name, bool once
     if (attr != A_NORMAL) {
 	if (!(termattrs() & attr)) {
 	    printw(" (N/A)");
-	} else if (ncv && (getbkgd(stdscr) & A_COLOR)) {
+	} else if (ncv > 0 && (getbkgd(stdscr) & A_COLOR)) {
 	    static const attr_t table[] = {
 		A_STANDOUT,
 		A_UNDERLINE,
