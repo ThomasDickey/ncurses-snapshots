@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_box.c,v 1.15 2001/06/09 23:47:15 skimo Exp $")
+MODULE_ID("$Id: lib_box.c,v 1.16 2001/07/08 00:21:43 tom Exp $")
 
 #if USE_WIDEC_SUPPORT
 NCURSES_EXPORT(int)
@@ -86,8 +86,15 @@ wborder_set(WINDOW *win,
     RENDER_WITH_DEFAULT(bl, ACS_LLCORNER);
     RENDER_WITH_DEFAULT(br, ACS_LRCORNER);
 
-    T(("using %#lx, %#lx, %#lx, %#lx, %#lx, %#lx, %#lx, %#lx",
-       ls, rs, ts, bs, tl, tr, bl, br));
+    T(("using %s, %s, %s, %s, %s, %s, %s, %s",
+       _tracech_t2(1, CHREF(wls)),
+       _tracech_t2(2, CHREF(wrs)),
+       _tracech_t2(3, CHREF(wts)),
+       _tracech_t2(4, CHREF(wbs)),
+       _tracech_t2(5, CHREF(wtl)),
+       _tracech_t2(6, CHREF(wtr)),
+       _tracech_t2(7, CHREF(wbl)),
+       _tracech_t2(8, CHREF(wbr))));
 
     endx = win->_maxx;
     endy = win->_maxy;

@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.27 2001/06/18 18:23:32 skimo Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.29 2001/07/07 23:53:25 tom Exp $")
 
 #if USE_WIDEC_SUPPORT
 #define CONV_DATA   mbstate_t state; wchar_t cached; int clen = 0
@@ -210,6 +210,7 @@ NCURSES_EXPORT(int)
 waddnwstr(WINDOW *win, const wchar_t * str, int n)
 {
     int code = ERR;
+    int i;
 
     T((T_CALLED("waddnwstr(%p,%s,%d)"), win, _nc_viswbuf(str), n));
 
@@ -220,10 +221,16 @@ waddnwstr(WINDOW *win, const wchar_t * str, int n)
 	if (n < 0)
 	    n = (int) wcslen(str);
 
-	while ((n-- > 0) && (*str != '\0')) {
+	while ((n-- > 0) && (*str != L('\0'))) {
 	    NCURSES_CH_T ch;
 	    SetChar(ch, *str++, A_NORMAL);
-	    TR(TRACE_VIRTPUT, ("*str = %#x", *str));
+	    i = 1;
+	    while (i < CCHARW_MAX && n > 0 && (*str != L('\0'))
+		   && wcwidth(*str) == 0) {
+		ch.chars[i++] = *str++;
+		--n;
+	    }
+	    TR(TRACE_VIRTPUT, ("*str = %#lx", *str));
 	    if (_nc_waddch_nosync(win, ch) == ERR) {
 		code = ERR;
 		break;

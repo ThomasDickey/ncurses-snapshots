@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.635 2001/07/01 01:46:42 tom Exp $
+-- $Id: NEWS,v 1.636 2001/07/08 01:00:50 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010707
+	+ fix some of the trace calls which needed modification to work with
+	  new wide-character structures.
+	+ modify magic-cookie code in tty_update.c to compile with new
+	  wide-character structures (report by <George.R.Goffe@seagate.com>).
+	+ ensure that _XOPEN_SOURCE_EXTENDED is defined in curses.priv.h if
+	  compiling for wide-character configuration.
+	+ make addwnstr() handle non-spacing characters (patch by Sven Verdoolaege).
 
 20010630
 	+ add configure check to define _GNU_SOURCE, needed to prop up glibc

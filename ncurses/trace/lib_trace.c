@@ -40,7 +40,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.42 2001/06/10 00:51:04 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.43 2001/07/08 00:54:59 tom Exp $")
 
 NCURSES_EXPORT_VAR(unsigned)
 _nc_tracing = 0;		/* always define this */
@@ -82,6 +82,37 @@ trace(const unsigned int tracelevel GCC_UNUSED)
 }
 #endif
 
+static char *
+_nc_vischar(char *tp, chtype c)
+{
+    if (c == '"' || c == '\\') {
+	*tp++ = '\\';
+	*tp++ = c;
+    } else if (is7bits(c) && (isgraph(c) || c == ' ')) {
+	*tp++ = c;
+    } else if (c == '\n') {
+	*tp++ = '\\';
+	*tp++ = 'n';
+    } else if (c == '\r') {
+	*tp++ = '\\';
+	*tp++ = 'r';
+    } else if (c == '\b') {
+	*tp++ = '\\';
+	*tp++ = 'b';
+    } else if (c == '\033') {
+	*tp++ = '\\';
+	*tp++ = 'e';
+    } else if (is7bits(c) && iscntrl(c)) {
+	*tp++ = '\\';
+	*tp++ = '^';
+	*tp++ = '@' + c;
+    } else {
+	sprintf(tp, "\\%03o", UChar(c));
+	tp += strlen(tp);
+    }
+    return tp;
+}
+
 NCURSES_EXPORT(const char *)
 _nc_visbuf2(int bufnum, const char *buf)
 /* visibilize a given string */
@@ -106,31 +137,7 @@ _nc_visbuf2(int bufnum, const char *buf)
 #endif
     *tp++ = '"';
     while ((c = *buf++) != '\0') {
-	if (c == '"') {
-	    *tp++ = '\\';
-	    *tp++ = '"';
-	} else if (is7bits(c) && (isgraph(c) || c == ' ')) {
-	    *tp++ = c;
-	} else if (c == '\n') {
-	    *tp++ = '\\';
-	    *tp++ = 'n';
-	} else if (c == '\r') {
-	    *tp++ = '\\';
-	    *tp++ = 'r';
-	} else if (c == '\b') {
-	    *tp++ = '\\';
-	    *tp++ = 'b';
-	} else if (c == '\033') {
-	    *tp++ = '\\';
-	    *tp++ = 'e';
-	} else if (is7bits(c) && iscntrl(c)) {
-	    *tp++ = '\\';
-	    *tp++ = '^';
-	    *tp++ = '@' + c;
-	} else {
-	    sprintf(tp, "\\%03o", UChar(c));
-	    tp += strlen(tp);
-	}
+	tp = _nc_vischar(tp, UChar(c));
     }
     *tp++ = '"';
     *tp++ = '\0';
@@ -145,9 +152,38 @@ _nc_visbuf(const char *buf)
 
 #if USE_WIDEC_SUPPORT
 NCURSES_EXPORT(const char *)
+_nc_viswbuf2(int bufnum, const wchar_t * buf)
+/* visibilize a given string */
+{
+    char *vbuf;
+    char *tp;
+    int c;
+
+    if (buf == 0)
+	return ("(null)");
+
+#ifdef TRACE
+    tp = vbuf = _nc_trace_buf(bufnum, (wcslen(buf) * 4) + 5);
+#else
+    {
+	static char *mybuf[2];
+	mybuf[bufnum] = _nc_doalloc(mybuf[bufnum], (wcslen(buf) * 4) + 5);
+	tp = vbuf = mybuf[bufnum];
+    }
+#endif
+    *tp++ = '"';
+    while ((c = *buf++) != '\0') {
+	tp = _nc_vischar(tp, UChar(c));
+    }
+    *tp++ = '"';
+    *tp++ = '\0';
+    return (vbuf);
+}
+
+NCURSES_EXPORT(const char *)
 _nc_viswbuf(const wchar_t * buf)
 {
-    return "";
+    return _nc_viswbuf2(0, buf);
 }
 #endif
 

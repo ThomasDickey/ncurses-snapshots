@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.197 2001/07/01 01:33:34 tom Exp $
+ * $Id: curses.priv.h,v 1.200 2001/07/08 00:37:57 tom Exp $
  *
  *	curses.priv.h
  *
@@ -233,7 +233,11 @@ color_t;
 
 #define WINDOWLIST struct _win_list
 
-#if !USE_WIDEC_SUPPORT
+#if USE_WIDEC_SUPPORT
+#ifndef _XOPEN_SOURCE_EXTENDED
+#define _XOPEN_SOURCE_EXTENDED
+#endif
+#else
 #undef _XOPEN_SOURCE_EXTENDED
 #define _bkgrnd	    _bkgd
 #define wgetbkgrnd(win, wch)	*wch = win->_bkgd
@@ -547,7 +551,9 @@ typedef	struct {
 #define WA_NAC		1
 #define isnac(ch)	(AttrOf(ch) & WA_NAC)
 #define if_WIDEC(code)  code
-#define Charable(ch)	(!isnac(ch) && (wctob(CharOf(ch)) == (char)CharOf(ch)))
+#define Charable(ch)	(!isnac(ch) &&  			   	\
+			 (ch).chars[1] == L'\0' &&			\
+                         (wctob(CharOf(ch)) == (char)CharOf(ch)))
 
 #define L(ch)		L ## ch
 #else /* }{ */
@@ -660,6 +666,10 @@ extern NCURSES_EXPORT(void) _nc_fifo_dump (void);
 
 extern NCURSES_EXPORT_VAR(unsigned) _nc_tracing;
 extern NCURSES_EXPORT(const char *) _nc_visbuf2 (int, const char *);
+
+#if USE_WIDEC_SUPPORT
+extern NCURSES_EXPORT(const char *) _nc_viswbuf2 (int, const wchar_t *);
+#endif
 
 #define _trace_key(ch) ((ch > KEY_MIN) ? keyname(ch) : _tracechar((unsigned char)ch))
 

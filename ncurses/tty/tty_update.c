@@ -70,7 +70,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.166 2001/06/10 00:25:47 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.167 2001/07/08 00:55:02 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -962,6 +962,23 @@ ClrBottom(int total)
     return total;
 }
 
+#if USE_WIDEC_SUPPORT
+static inline bool
+check_xmc_transition(NCURSES_CH_T * a, NCURSES_CH_T * b)
+{
+    if (((a->attr ^ b->attr) & ~(a->attr) & SP->_xmc_triggers) != 0) {
+	return TRUE;
+    }
+    return FALSE;
+}
+#define xmc_turn_on(a,b) check_xmc_transition(&(a), &(b))
+#else
+#define xmc_turn_on(a,b) ((((a)^(b)) & ~(a) & SP->_xmc_triggers) != 0)
+#endif
+
+#define xmc_new(r,c) newscr->_line[r].text[c]
+#define xmc_turn_off(a,b) xmc_turn_on(b,a)
+
 /*
 **	TransformLine(lineno)
 **
@@ -1045,10 +1062,6 @@ TransformLine(int const lineno)
 	PutRange(oldLine, newLine, lineno, 0, (screen_columns - 1));
 #if USE_XMC_SUPPORT
 
-#define NEW(r,c) newscr->_line[r].text[c]
-#define xmc_turn_on(a,b) ((((a)^(b)) & ~(a) & SP->_xmc_triggers) != 0)
-#define xmc_turn_off(a,b) xmc_turn_on(b,a)
-
 	/*
 	 * This is a very simple loop to paint characters which may have the
 	 * magic cookie glitch embedded.  It doesn't know much about video
@@ -1074,7 +1087,7 @@ TransformLine(int const lineno)
 		     && xmc_turn_on(newLine[n - 1], newLine[n]))
 		    || (n == 0
 			&& lineno > 0
-			&& xmc_turn_on(NEW(lineno - 1, screen_columns - 1),
+			&& xmc_turn_on(xmc_new(lineno - 1, screen_columns - 1),
 				       newLine[n])))) {
 		n = m;
 	    }
@@ -1090,12 +1103,11 @@ TransformLine(int const lineno)
 		     && xmc_turn_off(newLine[n], newLine[n + 1]))
 		    || (n + 1 >= screen_columns
 			&& lineno + 1 < screen_lines
-			&& xmc_turn_off(newLine[n], NEW(lineno + 1, 0))))) {
+			&& xmc_turn_off(newLine[n], xmc_new(lineno + 1, 0))))) {
 		n = m;
 	    }
 
 	}
-#undef NEW
 #endif
     } else {
 	NCURSES_CH_T blank;

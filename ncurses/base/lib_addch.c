@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.59 2001/06/09 23:47:38 skimo Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.61 2001/07/08 00:54:50 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -62,7 +62,7 @@ render_char(WINDOW *win, NCURSES_CH_T ch)
 {
     attr_t a = win->_attrs;
 
-    if (CharOf(ch) == L(' ') && AttrOf(ch) == A_NORMAL) {
+    if (ISBLANK(ch) && AttrOf(ch) == A_NORMAL) {
 	/* color in attrs has precedence over bkgrnd */
 	ch = win->_bkgrnd;
 	SetAttr(ch, a | (AttrOf(win->_bkgrnd) & COLOR_MASK(a)));
@@ -73,8 +73,10 @@ render_char(WINDOW *win, NCURSES_CH_T ch)
 	AddAttr(ch, (a & COLOR_MASK(AttrOf(ch))));
     }
 
-    TR(TRACE_VIRTPUT, ("bkg = %lx, attrs = %lx -> ch = %lx", win->_bkgrnd,
-		       win->_attrs, ch));
+    TR(TRACE_VIRTPUT, ("bkg = %s, attrs = %s -> ch = %s",
+		       _tracech_t2(1, CHREF(win->_bkgrnd)),
+		       _traceattr(win->_attrs),
+		       _tracech_t2(3, CHREF(ch))));
 
     return (ch);
 }
