@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.254 2003/12/07 00:21:14 tom Exp $
+ * $Id: curses.priv.h,v 1.255 2004/02/01 01:05:58 Stanislav.Ievlev Exp $
  *
  *	curses.priv.h
  *
@@ -486,6 +486,9 @@ struct screen {
 	HASHMAP 	*hashtab;
 	int		hashtab_len;
 
+	bool            _cleanup;	/* cleanup after int/quit signal */
+	int             (*_outch)(int);	/* output handler if not putc */
+
 	/* recent versions of 'screen' have partially-working support for
 	 * UTF-8, but do not permit ACS at the same time (see tty_update.c).
 	 */
@@ -493,9 +496,6 @@ struct screen {
 	bool		_posix_locale;
 	bool		_screen_acs_fix;
 #endif
-
-	bool            _cleanup;	/* cleanup after int/quit signal */
-	int             (*_outch)(int);	/* output handler if not putc */
 };
 
 extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;

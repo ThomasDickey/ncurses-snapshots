@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.332 2004/01/18 00:22:00 tom Exp $
+dnl $Id: aclocal.m4,v 1.333 2004/01/30 20:59:56 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -167,7 +167,7 @@ You have the following choices:
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_BOOL_DECL version: 7 updated: 2004/01/14 19:12:46
+dnl CF_BOOL_DECL version: 8 updated: 2004/01/30 15:51:18
 dnl ------------
 dnl Test if 'bool' is a builtin type in the configured C++ compiler.  Some
 dnl older compilers (e.g., gcc 2.5.8) don't support 'bool' directly; gcc
@@ -184,7 +184,11 @@ AC_MSG_CHECKING(if we should include stdbool.h)
 AC_CACHE_VAL(cf_cv_header_stdbool_h,[
 	AC_TRY_COMPILE([],[bool foo = false],
 		[cf_cv_header_stdbool_h=0],
-		[AC_TRY_COMPILE([#include <stdbool.h>],[bool foo = false],
+		[AC_TRY_COMPILE([
+#ifndef __BEOS__
+#include <stdbool.h>
+#endif
+],[bool foo = false],
 			[cf_cv_header_stdbool_h=1],
 			[cf_cv_header_stdbool_h=0])])])
 
@@ -355,7 +359,7 @@ AC_MSG_RESULT($cf_cv_cgetent)
 test "$cf_cv_cgetent" = yes && AC_DEFINE(HAVE_BSD_CGETENT)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CHECK_CACHE version: 7 updated: 2001/12/19 00:50:10
+dnl CF_CHECK_CACHE version: 9 updated: 2004/01/30 15:59:13
 dnl --------------
 dnl Check if we're accidentally using a cache from a different machine.
 dnl Derive the system name, as a check for reusing the autoconf cache.
@@ -364,6 +368,9 @@ dnl If we've packaged config.guess and config.sub, run that (since it does a
 dnl better job than uname).  Normally we'll use AC_CANONICAL_HOST, but allow
 dnl an extra parameter that we may override, e.g., for AC_CANONICAL_SYSTEM
 dnl which is useful in cross-compiles.
+dnl
+dnl Note: we would use $ac_config_sub, but that is one of the places where
+dnl autoconf 2.5x broke compatibility with autoconf 2.13
 AC_DEFUN([CF_CHECK_CACHE],
 [
 if test -f $srcdir/config.guess ; then
@@ -3624,7 +3631,7 @@ test "$cf_with_sysmouse" = yes && AC_DEFINE(USE_SYSMOUSE)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 9 updated: 2004/01/12 20:45:17
+dnl CF_XOPEN_SOURCE version: 11 updated: 2004/01/26 20:58:41
 dnl ---------------
 dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions,
 dnl or adapt to the vendor's definitions to get equivalent functionality.
@@ -3642,6 +3649,9 @@ irix6.*) #(vi
 linux*) #(vi
 	CF_GNU_SOURCE
 	;;
+mirbsd*) #(vi
+	# setting _XOPEN_SOURCE or _POSIX_SOURCE breaks <arpa/inet.h>
+	;;
 netbsd*) #(vi
 	# setting _XOPEN_SOURCE breaks IPv6 for lynx on NetBSD 1.6, breaks xterm, is not needed for ncursesw
 	;;
@@ -3650,6 +3660,9 @@ openbsd*) #(vi
 	;;
 osf[[45]]*) #(vi
 	CPPFLAGS="$CPPFLAGS -D_OSF_SOURCE"
+	;;
+sco*) #(vi
+	# setting _XOPEN_SOURCE breaks Lynx on SCO Unix / OpenServer
 	;;
 solaris*) #(vi
 	CPPFLAGS="$CPPFLAGS -D__EXTENSIONS__"
