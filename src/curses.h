@@ -261,7 +261,7 @@ extern char ttytype[];		/* needed for backward compatibility */
 #define __attribute__(p) /* nothing */
 #endif
 
-/* Debugging : use with libdcurses.a */
+/* Debugging : use with libncurses_g.a */
 
 extern void _tracef(char *, ...) __attribute__((format(printf,1,2)));
 extern void _tracedump(char *, WINDOW *);
@@ -331,6 +331,7 @@ extern int mvscanw(int,int,const char *,...);
 extern int mvwin(WINDOW *,int,int);
 extern int mvwprintw(WINDOW *,int,int,const char *,...);
 extern int mvwscanw(WINDOW *,int,int,const char *,...);
+extern int napms(int);
 extern WINDOW *newpad(int,int);
 extern SCREEN *newterm(const char *,FILE *,FILE *);
 extern WINDOW *newwin(int,int,int,int);
