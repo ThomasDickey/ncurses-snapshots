@@ -35,8 +35,8 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control
---  $Revision: 1.6 $
---  Binding Version 00.93
+--  $Revision: 1.7 $
+--  Binding Version 01.00
 ------------------------------------------------------------------------------
 with Ada.Strings; use Ada.Strings;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;

@@ -35,8 +35,8 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control
---  $Revision: 1.4 $
---  Binding Version 00.93
+--  $Revision: 1.5 $
+--  Binding Version 01.00
 ------------------------------------------------------------------------------
 --  This package has been contributed by Laurent Pautet <pautet@gnat.com>   --
 --                                                                          --

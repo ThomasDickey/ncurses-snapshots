@@ -39,16 +39,18 @@
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
 <FONT COLOR=green><EM>--  <A HREF="http://home.t-online.de/home/Juergen.Pfeifer">J&uuml;rgen Pfeifer</A> (<A HREF="mailto:juergen.pfeifer@gmx.net">juergen.pfeifer@gmx.net</A>) 1996                          --</EM></FONT>
 <FONT COLOR=green><EM>--  Version Control:</EM></FONT>
-<FONT COLOR=green><EM>--  @Revision: 1.7 @</EM></FONT>
-<FONT COLOR=green><EM>--  Binding Version 00.93</EM></FONT>
+<FONT COLOR=green><EM>--  @Revision: 1.9 @</EM></FONT>
+<FONT COLOR=green><EM>--  Binding Version 01.00</EM></FONT>
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
 <b>package</b> <A HREF="terminal_interface__ads.htm#41_9">Terminal_Interface</A>.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A>.<A HREF="terminal_interface-curses-forms__ads.htm#49_35">Forms</A>.<A HREF="terminal_interface-curses-forms-field_types__ads.htm#43_41">Field_Types</A>.<A HREF="terminal_interface-curses-forms-field_types-ipv4_address__adb.htm#44_58">IPV4_Address</A><FONT COLOR=red><A NAME="41_53"></A></FONT> <b>is</b>
+   <b>pragma</b> Preelaborate
+     (<A HREF="terminal_interface__ads.htm#41_9">Terminal_Interface</A>.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A>.<A HREF="terminal_interface-curses-forms__ads.htm#49_35">Forms</A>.<A HREF="terminal_interface-curses-forms-field_types__ads.htm#43_41">Field_Types</A>.<A HREF="terminal_interface-curses-forms-field_types-ipv4_address__ads.htm#41_53">IPV4_Address</A>);
 
-   <b>type</b> <FONT COLOR=red><A NAME="43_9">Internet_V4_Address_Field</A></FONT> <b>is</b> <b>new</b> <A HREF="terminal_interface-curses-forms-field_types__ads.htm#52_9">Field_Type</A> <b>with</b> <b>null</b> <b>record</b>;
+   <b>type</b> <FONT COLOR=red><A NAME="45_9">Internet_V4_Address_Field</A></FONT> <b>is</b> <b>new</b> <A HREF="terminal_interface-curses-forms-field_types__ads.htm#52_9">Field_Type</A> <b>with</b> <b>null</b> <b>record</b>;
 
-   <b>procedure</b> <A HREF="terminal_interface-curses-forms-field_types-ipv4_address__adb.htm#48_14">Set_Field_Type</A><FONT COLOR=red><A NAME="45_14"></A></FONT> (<FONT COLOR=red><A NAME="45_30">Fld</A></FONT> : <b>in</b> <A HREF="terminal_interface-curses-forms__ads.htm#56_9">Field</A>;
-                             Typ : <b>in</b> <A HREF="terminal_interface-curses-forms-field_types-ipv4_address__ads.htm#43_9">Internet_V4_Address_Field</A>);
-   <b>pragma</b> Inline (<A HREF="terminal_interface-curses-forms-field_types-ipv4_address__ads.htm#45_14">Set_Field_Type</A>);
+   <b>procedure</b> <A HREF="terminal_interface-curses-forms-field_types-ipv4_address__adb.htm#48_14">Set_Field_Type</A><FONT COLOR=red><A NAME="47_14"></A></FONT> (<FONT COLOR=red><A NAME="47_30">Fld</A></FONT> : <b>in</b> <A HREF="terminal_interface-curses-forms__ads.htm#57_9">Field</A>;
+                             Typ : <b>in</b> <A HREF="terminal_interface-curses-forms-field_types-ipv4_address__ads.htm#45_9">Internet_V4_Address_Field</A>);
+   <b>pragma</b> Inline (<A HREF="terminal_interface-curses-forms-field_types-ipv4_address__ads.htm#47_14">Set_Field_Type</A>);
 
 <b>end</b> Terminal_Interface.Curses.Forms.Field_Types.IPV4_Address;
 </PRE></BODY></HTML>

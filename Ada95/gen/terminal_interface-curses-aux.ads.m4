@@ -1,4 +1,6 @@
-------------------------------------------------------------------------------
+--  -*- ada -*-
+define(`HTMLNAME',`terminal_interface-curses-aux__ads.htm')dnl
+include(M4MACRO)------------------------------------------------------------------------------
 --                                                                          --
 --                           GNAT ncurses Binding                           --
 --                                                                          --
@@ -35,8 +37,8 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.11 $
---  Binding Version 00.93
+--  $Revision: 1.13 $
+--  Binding Version 01.00
 ------------------------------------------------------------------------------
 include(`Base_Defs')
 with System;
@@ -45,6 +47,7 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 with Unchecked_Conversion;
 
 package Terminal_Interface.Curses.Aux is
+   pragma Preelaborate (Terminal_Interface.Curses.Aux);
 
    use type Interfaces.C.int;
 

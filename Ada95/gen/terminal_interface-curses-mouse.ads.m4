@@ -38,13 +38,14 @@ include(M4MACRO)dnl
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.17 $
---  Binding Version 00.93
+--  $Revision: 1.19 $
+--  Binding Version 01.00
 ------------------------------------------------------------------------------
 include(`Mouse_Base_Defs')
 with System;
 
 package Terminal_Interface.Curses.Mouse is
+   pragma Preelaborate (Terminal_Interface.Curses.Mouse);
 
    --  MANPAGE(`curs_mouse.3x')
    --  Please note, that in ncurses-1.9.9e documentation mouse support

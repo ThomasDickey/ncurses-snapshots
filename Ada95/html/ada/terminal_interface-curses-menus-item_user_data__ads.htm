@@ -40,7 +40,7 @@
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
 <FONT COLOR=green><EM>--  <A HREF="http://home.t-online.de/home/Juergen.Pfeifer">J&uuml;rgen Pfeifer</A> (<A HREF="mailto:juergen.pfeifer@gmx.net">juergen.pfeifer@gmx.net</A>) 1996                          --</EM></FONT>
 <FONT COLOR=green><EM>--  Version Control:</EM></FONT>
-<FONT COLOR=green><EM>--  @Revision: 1.10 @</EM></FONT>
+<FONT COLOR=green><EM>--  @Revision: 1.11 @</EM></FONT>
 <FONT COLOR=green><EM>--  Binding Version 00.93</EM></FONT>
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
 
@@ -48,6 +48,7 @@
    <b>type</b> <FONT COLOR=red><A NAME="44_9">User</A></FONT> <b>is</b> <b>limited</b> <b>private</b>;
    <b>type</b> <A HREF="terminal_interface__ads.htm#41_9">User_Access</A> <b>is</b> <b>access</b> User<A HREF="terminal_interface-curses-menus__ads.htm#49_35">;</A>
 <b>package</b> Terminal_Interface.Curses.Menus.Item_User_Data <b>is</b>
+   <b>pragma</b> Preelaborate (Terminal_Interface.Curses.Menus.Item_User_Data);
 
   <FONT COLOR=green><EM>--  The binding uses the same user pointer for menu items</EM></FONT>
   <FONT COLOR=green><EM>--  as the low level C implementation. So you can safely</EM></FONT>

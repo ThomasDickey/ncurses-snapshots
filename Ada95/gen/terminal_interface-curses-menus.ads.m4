@@ -38,8 +38,8 @@ include(M4MACRO)dnl
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.18 $
---  Binding Version 00.93
+--  $Revision: 1.20 $
+--  Binding Version 01.00
 ------------------------------------------------------------------------------
 include(`Menu_Base_Defs')
 with System;
@@ -47,6 +47,7 @@ with Interfaces.C;
 with Ada.Characters.Latin_1;
 
 package Terminal_Interface.Curses.Menus is
+   pragma Preelaborate (Terminal_Interface.Curses.Menus);
 include(`Menu_Linker_Options')dnl
 include(`Linker_Options')
    Space : Character renames Ada.Characters.Latin_1.Space;
@@ -585,10 +586,10 @@ include(`Item_Rep')dnl
 
 -------------------------------------------------------------------------------
 private
-   type Item   is new System.Address;
-   type Menu   is new System.Address;
+   type Item   is new System.Storage_Elements.Integer_Address;
+   type Menu   is new System.Storage_Elements.Integer_Address;
 
-   Null_Item : constant Item := Item (System.Null_Address);
-   Null_Menu : constant Menu := Menu (System.Null_Address);
+   Null_Item : constant Item := 0;
+   Null_Menu : constant Menu := 0;
 
 end Terminal_Interface.Curses.Menus;

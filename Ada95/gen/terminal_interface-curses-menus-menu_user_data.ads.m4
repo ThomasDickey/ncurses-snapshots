@@ -38,14 +38,15 @@ include(M4MACRO)dnl
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.10 $
---  Binding Version 00.93
+--  $Revision: 1.12 $
+--  Binding Version 01.00
 ------------------------------------------------------------------------------
 
 generic
    type User is limited private;
    type User_Access is access User;
 package Terminal_Interface.Curses.Menus.Menu_User_Data is
+   pragma Preelaborate (Terminal_Interface.Curses.Menus.Menu_User_Data);
 
    --  MANPAGE(`menu_userptr.3x')
 

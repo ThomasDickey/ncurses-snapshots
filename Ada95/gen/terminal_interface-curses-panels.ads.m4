@@ -38,12 +38,13 @@ include(M4MACRO)dnl
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.12 $
---  Binding Version 00.93
+--  $Revision: 1.14 $
+--  Binding Version 01.00
 ------------------------------------------------------------------------------
 with System;
 
 package Terminal_Interface.Curses.Panels is
+   pragma Preelaborate (Terminal_Interface.Curses.Panels);
 include(`Panel_Linker_Options')dnl
 include(`Linker_Options')
    type Panel is private;
@@ -139,7 +140,7 @@ include(`Linker_Options')
    pragma Inline (Delete);
 
    private
-      type Panel is new System.Address;
-      Null_Panel : constant Panel := Panel (System.Null_Address);
+      type Panel is new System.Storage_Elements.Integer_Address;
+      Null_Panel : constant Panel := 0;
 
 end Terminal_Interface.Curses.Panels;

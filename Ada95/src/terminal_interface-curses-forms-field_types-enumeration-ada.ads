@@ -35,13 +35,15 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.6 $
---  Binding Version 00.93
+--  $Revision: 1.8 $
+--  Binding Version 01.00
 ------------------------------------------------------------------------------
 generic
    type T is (<>);
 
 package Terminal_Interface.Curses.Forms.Field_Types.Enumeration.Ada is
+   pragma Preelaborate
+     (Terminal_Interface.Curses.Forms.Field_Types.Enumeration.Ada);
 
    function Create (Set            : Type_Set := Mixed_Case;
                     Case_Sensitive : Boolean  := False;

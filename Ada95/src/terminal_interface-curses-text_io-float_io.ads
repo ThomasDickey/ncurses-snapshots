@@ -35,8 +35,8 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.8 $
---  Binding Version 00.93
+--  $Revision: 1.9 $
+--  Binding Version 01.00
 ------------------------------------------------------------------------------
 generic
    type Num is digits <>;
