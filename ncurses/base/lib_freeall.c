@@ -39,7 +39,7 @@
 extern int malloc_errfd;	/* FIXME */
 #endif
 
-MODULE_ID("$Id: lib_freeall.c,v 1.22 2003/02/08 20:52:29 tom Exp $")
+MODULE_ID("$Id: lib_freeall.c,v 1.24 2003/02/15 21:18:14 tom Exp $")
 
 /*
  * Free all ncurses data.  This is used for testing only (there's no practical
@@ -51,6 +51,7 @@ _nc_freeall(void)
     WINDOWLIST *p, *q;
     char *s;
 
+    T((T_CALLED("_nc_freeall()")));
 #if NO_LEAKS
     _nc_free_tparm();
     FreeAndNull(_nc_oldnums);
@@ -83,6 +84,7 @@ _nc_freeall(void)
 	_nc_free_termtype(&(cur_term->type));
 	free(cur_term);
     }
+    _nc_free_entries(_nc_head);
 
     if ((s = _nc_home_terminfo()) != 0)
 	free(s);
@@ -98,6 +100,7 @@ _nc_freeall(void)
 #elif HAVE_PURIFY
     purify_all_inuse();
 #endif
+    returnVoid;
 }
 
 NCURSES_EXPORT(void)

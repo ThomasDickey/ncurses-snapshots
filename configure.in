@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+dnl Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
 dnl copy of this software and associated documentation files (the            *
@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.282 2003/01/25 23:17:03 tom Exp $
+dnl $Id: configure.in,v 1.285 2003/02/16 00:07:18 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.282 $)
+AC_REVISION($Revision: 1.285 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -771,7 +771,15 @@ fi
 ###   use option --enable-widec to turn on use of wide-character support
 NCURSES_CH_T=chtype
 NCURSES_LIBUTF8=0
+
 NCURSES_MBSTATE_T=0
+NCURSES_WCHAR_T=0
+NCURSES_WINT_T=0
+
+# use these variables to work around a defect in gcc's fixincludes.
+NCURSES_OK_WCHAR_T=
+NCURSES_OK_WINT_T=
+
 AC_MSG_CHECKING(if you want experimental wide-character code)
 AC_ARG_ENABLE(widec,
 	[  --enable-widec          compile with experimental wide-char/UTF-8 code],
@@ -785,20 +793,25 @@ if test "$with_widec" = yes ; then
 	# with_overwrite=no
 	NCURSES_CH_T=cchar_t
 	AC_CHECK_FUNC(putwc)
-if test "$ac_cv_func_putwc" != yes ; then
-	CF_LIBUTF8
-	if test "$cf_cv_libutf8" = yes ; then
-		NCURSES_LIBUTF8=1
+	if test "$ac_cv_func_putwc" != yes ; then
+		CF_LIBUTF8
+		if test "$cf_cv_libutf8" = yes ; then
+			NCURSES_LIBUTF8=1
+		fi
 	fi
-fi
-	CF_MBSTATE_T
-	if test "$cf_cv_mbstate_t" = yes ; then
-		NCURSES_MBSTATE_T=1
-	fi
+	CF_WCHAR_TYPE(mbstate_t, NCURSES_MBSTATE_T)
+	CF_WCHAR_TYPE(wchar_t,   NCURSES_WCHAR_T,   NCURSES_OK_WCHAR_T)
+	CF_WCHAR_TYPE(wint_t,    NCURSES_WINT_T,    NCURSES_OK_WINT_T)
 fi
 AC_SUBST(NCURSES_CH_T)
 AC_SUBST(NCURSES_LIBUTF8)
+
 AC_SUBST(NCURSES_MBSTATE_T)
+AC_SUBST(NCURSES_WCHAR_T)
+AC_SUBST(NCURSES_WINT_T)
+
+AC_SUBST(NCURSES_OK_WCHAR_T)
+AC_SUBST(NCURSES_OK_WINT_T)
 
 AC_MSG_CHECKING(for terminal capabilities file)
 AC_ARG_WITH(caps,
@@ -1260,12 +1273,12 @@ AC_DEFINE_UNQUOTED(NCURSES_PATHSEP,'$PATHSEP')
 CFLAGS="$CFLAGS $EXTRA_CFLAGS"
 
 ################################################################################
+test "$use_database" = yes && SUB_MAKEFILES="$SUB_MAKEFILES misc/run_tic.sh:misc/run_tic.in"
 AC_OUTPUT( \
 	include/MKterm.h.awk \
 	include/curses.head:include/curses.h.in \
 	include/termcap.h \
 	include/unctrl.h \
-	misc/run_tic.sh:misc/run_tic.in \
 	$SUB_MAKEFILES \
 	Makefile,[
 CF_LIB_RULES

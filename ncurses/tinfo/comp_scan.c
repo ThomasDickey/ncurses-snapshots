@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -50,7 +50,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.61 2002/09/07 20:04:09 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.62 2003/02/15 21:16:49 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -173,8 +173,12 @@ _nc_get_token(bool silent)
 	return (retval);
     }
 
-    if (end_of_stream())
+    if (end_of_stream()) {
+	if (buffer != 0) {
+	    FreeAndNull(buffer);
+	}
 	return (EOF);
+    }
 
   start_token:
     token_start = stream_pos();

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996-2003
 dnl
-dnl $Id: aclocal.m4,v 1.296 2003/02/02 01:41:46 tom Exp $
+dnl $Id: aclocal.m4,v 1.298 2003/02/15 23:59:55 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1970,37 +1970,6 @@ ifelse($1,,[
 fi
 ])
 dnl ---------------------------------------------------------------------------
-dnl Check if mbstate_t is declared, and if so, which header file.
-AC_DEFUN([CF_MBSTATE_T],
-[
-# This is needed on Tru64 5.0 to declare mbstate_t
-AC_CACHE_CHECK(if we must include wchar.h to declare mbstate_t,cf_cv_mbstate_t,[
-AC_TRY_COMPILE([
-#include <stdlib.h>
-#ifdef HAVE_LIBUTF8_H
-#include <libutf8.h>
-#endif],
-	[mbstate_t state],
-	[cf_cv_mbstate_t=no],
-	[AC_TRY_COMPILE([
-#include <stdlib.h>
-#include <wchar.h>
-#ifdef HAVE_LIBUTF8_H
-#include <libutf8.h>
-#endif],
-	[mbstate_t value],
-	[cf_cv_mbstate_t=yes],
-	[cf_cv_mbstate_t=unknown])])])
-
-if test "$cf_cv_mbstate_t" = yes ; then
-	AC_DEFINE(NEED_WCHAR_H)
-fi
-
-if test "$cf_cv_mbstate_t" != unknown ; then
-	AC_DEFINE(HAVE_MBSTATE_T)
-fi
-])dnl
-dnl ---------------------------------------------------------------------------
 dnl Check if the file-system supports mixed-case filenames.  If we're able to
 dnl create a lowercase name and see it as uppercase, it doesn't support that.
 AC_DEFUN([CF_MIXEDCASE_FILENAMES],
@@ -2875,6 +2844,49 @@ AC_DEFUN([CF_VERBOSE],
 [test -n "$verbose" && echo "	$1" 1>&AC_FD_MSG
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Check if type wide-character type $1 is declared, and if so, which header
+dnl file is needed.  The second parameter is used to set a shell variable when
+dnl the type is not found.  The first parameter sets a shell variable for the
+dnl opposite sense.
+AC_DEFUN([CF_WCHAR_TYPE],
+[
+# This is needed on Tru64 5.0 to declare $1
+AC_CACHE_CHECK(if we must include wchar.h to declare $1,cf_cv_$1,[
+AC_TRY_COMPILE([
+#include <stdlib.h>
+#ifdef HAVE_LIBUTF8_H
+#include <libutf8.h>
+#endif],
+	[$1 state],
+	[cf_cv_$1=no],
+	[AC_TRY_COMPILE([
+#include <stdlib.h>
+#include <wchar.h>
+#ifdef HAVE_LIBUTF8_H
+#include <libutf8.h>
+#endif],
+	[$1 value],
+	[cf_cv_$1=yes],
+	[cf_cv_$1=unknown])])])
+
+if test "$cf_cv_$1" = yes ; then
+	AC_DEFINE(NEED_WCHAR_H)
+fi
+
+ifelse($2,,,[
+# if we do not find $1 in either place, use substitution to provide a fallback.
+if test "$cf_cv_$1" = unknown ; then
+	$2=1
+fi
+])
+ifelse($3,,,[
+# if we find $1 in either place, use substitution to provide a fallback.
+if test "$cf_cv_$1" != unknown ; then
+	$3=1
+fi
+])
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Configure-option for dbmalloc
 AC_DEFUN([CF_WITH_DBMALLOC],[
 AC_MSG_CHECKING(if you want to link with dbmalloc for testing)
@@ -3035,7 +3047,7 @@ AC_ARG_WITH(sysmouse,
 	ioctl(0, CONS_MOUSECTL, &the_mouse);
 ],[cf_with_sysmouse=yes],[cf_with_sysmouse=no])
 	fi
-fi
 AC_MSG_RESULT($cf_with_sysmouse)
 test "$cf_with_sysmouse" = yes && AC_DEFINE(USE_SYSMOUSE)
+fi
 ])dnl

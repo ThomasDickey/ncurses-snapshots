@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -49,7 +49,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.73 2002/12/21 16:44:59 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.74 2003/02/15 21:15:49 tom Exp $")
 
 /****************************************************************************
  *
@@ -240,7 +240,9 @@ static int
 grab_entry(const char *const tn, TERMTYPE * const tp)
 /* return 1 if entry found, 0 if not found, -1 if database not accessible */
 {
+#if USE_DATABASE
     char filename[PATH_MAX];
+#endif
     int status;
 
     /*
