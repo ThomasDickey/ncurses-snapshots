@@ -31,18 +31,18 @@
 #include <curses.priv.h>
 
 #if USE_FUNC_POLL
-#include <stropts.h>
-#include <poll.h>
-#if HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
+# include <stropts.h>
+# include <poll.h>
+# if HAVE_SYS_TIME_H
+#  include <sys/time.h>
+# endif
 #elif HAVE_SELECT
-#if HAVE_SYS_TIME_H && HAVE_SYS_TIME_SELECT
-#include <sys/time.h>
-#endif
-#if HAVE_SYS_SELECT_H
-#include <sys/select.h>
-#endif
+# if HAVE_SYS_TIME_H && HAVE_SYS_TIME_SELECT
+#  include <sys/time.h>
+# endif
+# if HAVE_SYS_SELECT_H
+#  include <sys/select.h>
+# endif
 #endif
 
 #ifdef __BEOS__
@@ -51,7 +51,7 @@
 #define select check_select
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.27 1998/01/20 16:53:50 Fred.Fish Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.28 1998/01/31 20:51:58 tom Exp $")
 
 /*
  * We want to define GOOD_SELECT if the last argument of select(2) is
@@ -148,7 +148,7 @@ long delta;
 		ntimeout.tv_usec = 0;
 	}
 
-	T(("start twait: %lu.%06lu secs", (long) ntimeout.tv_sec, (long) ntimeout.tv_usec));
+	T(("start twait: %lu.%06lu secs, mode: %d", (long) ntimeout.tv_sec, (long) ntimeout.tv_usec, mode));
 
 #ifdef HIDE_EINTR
 	/*
@@ -244,7 +244,7 @@ long delta;
 
 	T(("end twait: returned %d (%d), remaining time %lu.%06lu secs (%d msec)",
 		result, errno,
-		(long) ntimeout.tv_sec, (long) ntimeout.tv_usec,
+		(long) ntimeout.tv_sec, (long) (ntimeout.tv_usec / 1000),
 		timeleft ? *timeleft : -1));
 
 	/*

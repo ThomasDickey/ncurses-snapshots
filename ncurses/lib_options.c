@@ -32,7 +32,7 @@
 #include <term.h>	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
 
-MODULE_ID("$Id: lib_options.c,v 1.26 1997/09/20 15:02:34 juergen Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.27 1998/01/31 21:12:24 tom Exp $")
 
 int has_ic(void)
 {
@@ -305,7 +305,10 @@ static void init_keytry(void)
 #endif*/
 	size_t n;
 
-	SP->_keytry = 0;
+	/* The SP->_keytry value is initialized in newterm(), where the SP
+	 * structure is created, because we can not tell where keypad() or
+	 * mouse_activate() (which will call keyok()) are first called.
+	 */
 
 	for (n = 0; n < SIZEOF(table); n++)
 		if (table[n].offset < STRCOUNT)

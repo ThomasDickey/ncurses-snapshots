@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -61,7 +60,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 0.32 1997/12/20 22:30:42 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 0.33 1998/01/31 21:59:02 tom Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -71,6 +70,8 @@ static int		mousetype;
 #define M_XTERM		-1	/* use xterm's mouse tracking? */
 #define M_NONE		0	/* no mouse device */
 #define M_GPM		1	/* use GPM */
+#define M_QNX		2	/* QNX mouse on console */
+#define M_QNX_TERM	3	/* QNX mouse on pterm/xterm (using qansi-m) */
 
 #if USE_GPM_SUPPORT
 #ifndef LINT
@@ -85,7 +86,11 @@ static void _nc_mouse_resume(SCREEN *);
 static void _nc_mouse_wrap(SCREEN *);
 
 /* maintain a circular list of mouse events */
-#define EV_MAX		8		/* size of circular event queue */
+
+/* The definition of the circular list size (EV_MAX), is in curses.priv.h, so
+ * wgetch() may refer to the size and call _nc_mouse_parse() before circular
+ * list overflow.
+ */
 static MEVENT	events[EV_MAX];		/* hold the last mouse event seen */
 static MEVENT	*eventp = events;	/* next free slot in event queue */
 #define NEXT(ep)	((ep == events + EV_MAX - 1) ? events : ep + 1)
@@ -147,6 +152,8 @@ static void _nc_mouse_init(void)
 	}
     }
 #endif
+
+    T(("_nc_mouse_init() set mousetype to %d", mousetype));
 }
 
 static bool _nc_mouse_event(SCREEN *sp GCC_UNUSED)
@@ -188,6 +195,7 @@ static bool _nc_mouse_event(SCREEN *sp GCC_UNUSED)
 	return (TRUE);
     }
 #endif
+
     /* xterm: never have to query, mouse events are in the keyboard stream */
     return(FALSE);	/* no event waiting */
 }
@@ -303,6 +311,7 @@ static bool _nc_mouse_inline(SCREEN *sp)
 
 	/* bump the next-free pointer into the circular list */
 	eventp = NEXT(eventp);
+	return(TRUE);
     }
 
     return(FALSE);
@@ -311,39 +320,46 @@ static bool _nc_mouse_inline(SCREEN *sp)
 static void mouse_activate(bool on)
 {
     _nc_mouse_init();
-    if (mousetype == M_XTERM)
-    {
+
+    if (on) {
+
+	switch (mousetype) {
+	case M_XTERM:
 #ifdef NCURSES_EXT_FUNCS
-	keyok(KEY_MOUSE, on);
+	    keyok(KEY_MOUSE, on);
 #endif
-	if (on)
-	{
 	    TPUTS_TRACE("xterm mouse initialization");
 	    putp("\033[?1000h");
+	    break;
+#if USE_GPM_SUPPORT
+	case M_GPM:
+	    SP->_mouse_fd = gpm_fd;
+	    break;
+#endif
 	}
-	else
-	{
-	    TPUTS_TRACE("xterm mouse deinitialization");
-	    putp("\033[?1000l");
-	}
-	(void) fflush(SP->_ofp);
-    }
-
-    /* Make runtime binding to cut down on object size of applications that do
-     * not use the mouse (e.g., 'clear').
-     */
-    if (on)
-    {
+	/* Make runtime binding to cut down on object size of applications that
+	 * do not use the mouse (e.g., 'clear').
+	 */
 	SP->_mouse_event  = _nc_mouse_event;
 	SP->_mouse_inline = _nc_mouse_inline;
 	SP->_mouse_parse  = _nc_mouse_parse;
 	SP->_mouse_resume = _nc_mouse_resume;
 	SP->_mouse_wrap   = _nc_mouse_wrap;
+
+    } else {
+
+	switch (mousetype) {
+	case M_XTERM:
+	    TPUTS_TRACE("xterm mouse deinitialization");
+	    putp("\033[?1000l");
+	    break;
 #if USE_GPM_SUPPORT
-	if (mousetype == M_GPM)
-	    SP->_mouse_fd = gpm_fd;
+	case M_GPM:
+	    break;
 #endif
+	}
     }
+    (void) fflush(SP->_ofp);
 }
 
 /**************************************************************************
@@ -393,8 +409,9 @@ static bool _nc_mouse_parse(int runcount)
 
     /* find the start of the run */
     runp = eventp;
-    for (n = runcount; n > 0; n--)
+    for (n = runcount; n > 0; n--) {
 	runp = PREV(runp);
+    }
 
 #ifdef TRACE
     if (_nc_tracing & TRACE_IEVENT)
@@ -567,8 +584,9 @@ static bool _nc_mouse_parse(int runcount)
      * don't match the current event mask.
      */
     for (; runcount; prev = PREV(eventp), runcount--)
-	if (prev->id == INVALID_EVENT || !(prev->bstate & eventmask))
+	if (prev->id == INVALID_EVENT || !(prev->bstate & eventmask)) {
 	    eventp = prev;
+	}
 
 #ifdef TRACE
     if (_nc_tracing & TRACE_IEVENT)
@@ -592,11 +610,17 @@ static void _nc_mouse_wrap(SCREEN *sp GCC_UNUSED)
 {
     TR(MY_TRACE, ("_nc_mouse_wrap() called"));
 
-    /* xterm: turn off reporting */
-    if (mousetype == M_XTERM && eventmask)
-	mouse_activate(FALSE);
-
-    /* GPM: pass all mouse events to next client */
+    switch (mousetype) {
+    case M_XTERM:
+        if (eventmask)
+            mouse_activate(FALSE);
+        break;
+#if USE_GPM_SUPPORT
+	/* GPM: pass all mouse events to next client */
+	case M_GPM:
+	    break;
+#endif
+    }
 }
 
 static void _nc_mouse_resume(SCREEN *sp GCC_UNUSED)
@@ -622,7 +646,7 @@ int getmouse(MEVENT *aevent)
 {
     T((T_CALLED("getmouse(%p)"), aevent));
 
-    if (aevent && (mousetype == M_XTERM || mousetype == M_GPM))
+    if (aevent && (mousetype != M_NONE))
     {
 	/* compute the current-event pointer */
 	MEVENT	*prev = PREV(eventp);
@@ -663,7 +687,7 @@ mmask_t mousemask(mmask_t newmask, mmask_t *oldmask)
 	*oldmask = eventmask;
 
     _nc_mouse_init();
-    if (mousetype == M_XTERM || mousetype == M_GPM)
+    if ( mousetype != M_NONE )
     {
 	eventmask = newmask &
 	    (BUTTON_ALT | BUTTON_CTRL | BUTTON_SHIFT

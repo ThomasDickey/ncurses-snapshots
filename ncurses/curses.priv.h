@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.98 1998/01/24 20:04:43 tom Exp $
+ * $Id: curses.priv.h,v 1.99 1998/01/31 21:20:05 tom Exp $
  *
  *	curses.priv.h
  *
@@ -98,7 +98,15 @@ extern int errno;
 #define USE_GPM_SUPPORT 0
 #endif
 
+/* QNX mouse support */
+#if defined(__QNX__) && !defined(__QNXNTO__)
+#define USE_QNX_MOUSE 1
+#else
+#define USE_QNX_MOUSE 0
+#endif
+
 #define DEFAULT_MAXCLICK 166
+#define EV_MAX		8	/* size of mouse circular event queue */
 
 /*
  * If we don't have signals to support it, don't add a sigwinch handler.

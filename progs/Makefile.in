@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.32 1998/01/20 23:26:14 J.J.G.Ripoll Exp $
+# $Id: Makefile.in,v 1.34 1998/02/01 01:13:06 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -80,7 +80,7 @@ LDFLAGS		= @EXTRA_LDFLAGS@ \
 LDFLAGS_NORMAL	= $(LDFLAGS)
 LDFLAGS_DEBUG	= $(LDFLAGS) @CC_G_OPT@
 LDFLAGS_PROFILE	= $(LDFLAGS) -pg
-LDFLAGS_SHARED	= $(LDFLAGS) @CC_SHARED_OPTS@ @LD_SHARED_OPTS@
+LDFLAGS_SHARED	= $(LDFLAGS) @CC_SHARED_OPTS@ # @LD_SHARED_OPTS@
 
 LDFLAGS_DEFAULT	= $(LDFLAGS_@DFT_UPR_MODEL@)
 
@@ -96,7 +96,7 @@ PROGS = tic$x toe$x infocmp$x clear$x tput$x tset$x
 TESTPROGS = mvcur$x tctest$x hardscroll$x hashmap$x
 
 # Default library, for linking applications
-DEPS_CURSES = ../lib/libncurses@DFT_DEP_SUFFIX@
+DEPS_CURSES = @LIB_PREFIX@ncurses@DFT_DEP_SUFFIX@
 
 ################################################################################
 all:		$(AUTO_SRC) $(PROGS) 
@@ -187,42 +187,6 @@ tset$x: $(DEPS_TSET) $(DEPS_CURSES)
 
 termsort.c: $(srcdir)/MKtermsort.sh
 	sh -c "$(srcdir)/MKtermsort.sh $(AWK) $(srcdir)/../include/Caps" >$@
-
-#
-# Test programs (not normally built by make all) start here.
-#
-
-# Cursor movement optimization tester. Use -g for debugging but -O if you're
-# profiling with intent to determine COMPUTE_OVERHEAD
-MVFLAGS = -O
-DEPS_MVCUR = \
-	$(srcdir)/../ncurses/lib_mvcur.c \
-	$(MODEL)/dump_entry.o
-
-mvcur$x: $(DEPS_MVCUR) $(DEPS_CURSES)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) -DTRACE -DMAIN $(MVFLAGS) $(DEPS_MVCUR) $(LDFLAGS_DEFAULT) -o $@
-
-# Termcap-conversion tester
-DEPS_TCTEST = \
-	$(srcdir)/../ncurses/captoinfo.c
-
-tctest$x: $(DEPS_TCTEST) $(DEPS_CURSES)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) -DTRACE -DMAIN $(DEPS_TCTEST) $(LDFLAGS_DEFAULT) -o $@
-
-# Demonstrator/tester for hardware-scrolling algorithm.
-DEPS_HARDSCROLL = \
-	$(srcdir)/../ncurses/hardscroll.c \
-	$(MODEL)/lib_trace.o	
-hardscroll$x: 
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) -I$(srcdir)/../ncurses -DTRACE -DSCROLLDEBUG $(DEPS_HARDSCROLL) $(LDFLAGS_DEFAULT) -o $@
-
-# Demonstrator-tester for enhanced hardware-scrolling code with hash mapping
-DEPS_HASHMAP = \
-	$(srcdir)/../ncurses/hashmap.c \
-	$(srcdir)/../ncurses/hardscroll.c \
-	$(MODEL)/lib_trace.o	
-hashmap$x: $(DEPS_HASHMAP)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) -I$(srcdir)/../ncurses -DTRACE  -DHASHDEBUG $(DEPS_HASHMAP) -o $@
 
 #
 # Utility productions start here

@@ -1,7 +1,7 @@
 #!/bin/sh
-# $Id: tar-copy.sh,v 1.1 1997/10/18 17:56:33 tom Exp $
+# $Id: tar-copy.sh,v 1.2 1998/01/30 18:15:26 tom Exp $
 ################################################################################
-# Copyright 1997 by Thomas E. Dickey <dickey@clark.net>                        #
+# Copyright 1997,1998 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
 #                                                                              #
 # Permission to use, copy, modify, and distribute this software and its        #
@@ -51,8 +51,9 @@ cd $2
 if ( tar cf $TMP $1 )
 then
 	cd $3
-	$DOIT "rm -rf `tar tf $TMP`" 2>/dev/null
-	$DOIT "tar xf $TMP"
+	LIST=`tar tf $TMP 2>&1`
+	$DOIT rm -rf $LIST 2>/dev/null
+	$DOIT tar xvf $TMP
 else
 	echo "Cannot create tar of $1 files"
 	exit 1

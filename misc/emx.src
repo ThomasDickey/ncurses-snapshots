@@ -1,4 +1,4 @@
-# $Id: emx.src,v 1.3 1998/01/25 02:21:55 tom Exp $
+# $Id: emx.src,v 1.4 1998/02/01 00:03:44 tom Exp $
 # This is a reformatted copy of the terminfo source for OS/2 EMX from
 # Juan Jose Garcia Ripoll <worm@arrakis.es>.
 # http://www.arrakis.es/~worm/
@@ -210,6 +210,7 @@ ansi.sys|ANSI.SYS 3.1 and later versions,
 # reverse(4) and invisible(64) don't work with color.
 emx-base|DOS special keys,
 	ncv#71,
+	bel=^G,
 	ka1=\0G,
 	ka3=\0I,
 	kb2=\0L,

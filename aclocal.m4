@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.118 1998/01/24 19:03:11 tom Exp $
+dnl $Id: aclocal.m4,v 1.119 1998/01/30 21:17:29 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -550,6 +550,16 @@ done
 
 for cf_dir in $SRC_SUBDIRS
 do
+	if test -f $cf_dir/Makefile ; then
+		case "$cf_dir" in
+		Ada95) #(vi
+			echo 'install.libs \' >> Makefile
+			echo 'uninstall.libs ::' >> Makefile
+			echo '	cd '$cf_dir' && $(MAKE) $(CF_MFLAGS) [$]@' >> Makefile
+			;;
+		esac
+	fi
+
 	if test -f $srcdir/$cf_dir/modules; then
 		echo >> Makefile
 		if test -f $srcdir/$cf_dir/headers; then
@@ -1496,9 +1506,10 @@ dnl Check if we can include <sys/time.h> with <sys/select.h>; this breaks on
 dnl older SCO configurations.
 AC_DEFUN([CF_SYS_TIME_SELECT],
 [
-AC_MSG_CHECKING(if sys/time.h conflicts with sys/select.h)
+AC_MSG_CHECKING(if sys/time.h works with sys/select.h)
 AC_CACHE_VAL(cf_cv_sys_time_select,[
 AC_TRY_COMPILE([
+#include <sys/types.h>
 #if HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif

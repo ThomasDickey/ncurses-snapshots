@@ -36,7 +36,7 @@
 
 #include <term.h>	/* clear_screen, cup & friends, cur_term */
 
-MODULE_ID("$Id: lib_newterm.c,v 1.31 1997/12/28 00:36:51 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.32 1998/01/31 21:14:34 tom Exp $")
 
 #ifndef ONLCR		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -184,6 +184,8 @@ char *t = getenv("NCURSES_TRACE");
 			   (parm_index  || parm_delete_line || delete_line)));
 
 	baudrate();	/* sets a field in the SP structure */
+
+	SP->_keytry = 0;
 
 	/* compute movement costs so we can do better move optimization */
 	_nc_mvcur_init();

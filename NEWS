@@ -1,10 +1,40 @@
--- $Id: NEWS,v 1.302 1998/01/25 02:30:26 tom Exp $
+-- $Id: NEWS,v 1.306 1998/02/01 01:10:11 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980131
+	+ corrected conversion in tclock.c (cf: 971018).
+	+ updates to Makefile.glibc and associated Linux configure script
+	  (patch by H.J.Lu).
+	+ workaround a quoting problem on SunOS with tar-copy.sh
+	+ correct init_pair() calls in worm.c to work when use_default_colors()
+	  is not available.
+	+ include <sys/types.h> in CF_SYS_TIME_SELECT to work with FreeBSD 2.1.5
+	+ add ncv capability to FreeBSD console (cons25w), making reverse
+	  work with color.
+	+ correct sense of configure-test for sys/time.h inclusion with
+	  sys/select.h
+	+ fixes for Ada95/ada_include/Makefile.in to work with --srcdir option.
+	+ remove unused/obsolete test-program rules from progs/Makefile.in
+	  (the rules in ncurses/Makefile.in work).
+	+ remove shared-library loader flags from test/Makefile.in, etc.
+	+ simplify test/configure.in using new version of autoconf to create
+	  test/ncurses_cfg.h
+	+ suppress suffix rules in test/Makefile.in, provide explicit dependency
+	  to work with --srcdir option and less capable 'make' programs.
+	> adapted from patch for QNX by Xiaodan Tang:
+	+ initialize %P and %g variables set/used in tparm, and also ensure
+	  that empty strings don't return a null result from tparam_internal
+	+ add QNX-specific prototype for vsscanf()
+	+ move initialization of SP->_keytry from init_keytry() to newterm() to
+	  avoid resetting it via a keyok() call by mouse_activate().
+	+ reorganized some functions in lib_mouse() to use case-statements.
+	+ remove sgr string from qnx terminfo entry since it is reported to
+	  turn off attributes inconsistently.
 
 980124 
 	+ add f/F/b/B commands to ncurses 'b' test to toggle colors, providing

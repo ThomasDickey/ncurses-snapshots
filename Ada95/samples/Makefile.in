@@ -19,7 +19,7 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.14 $
+#  $Revision: 1.15 $
 #
 .SUFFIXES:
 
@@ -95,8 +95,13 @@ all ::  demo1 rainy_day
 sources :
 	@
 
-install ::
-uninstall ::
+install \
+install.libs ::
+	@
+
+uninstall \
+uninstall.libs ::
+	@
 
 demo1:	explain.msg
 	$(ADAMAKE) $(ADAMAKEFLAGS) tour $(CARGS) $(LARGS)

@@ -19,7 +19,7 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.8 $
+#  $Revision: 1.9 $
 #
 SHELL		= /bin/sh
 THIS		= Makefile
@@ -29,7 +29,9 @@ SUBDIRS         = @ADA_SUBDIRS@
 all \
 sources \
 install \
-uninstall ::
+install.libs \
+uninstall \
+uninstall.libs ::
 	for d in $(SUBDIRS); do \
 		(cd $$d ; $(MAKE) $@) ;\
 	done
@@ -46,3 +48,6 @@ realclean ::
 		(cd $$d ; $(MAKE) $@) ;\
 	done
 	rm -f Makefile
+
+install.data :
+	@

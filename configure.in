@@ -17,10 +17,10 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.121 1998/01/25 00:20:10 tom Exp $
+dnl $Id: configure.in,v 1.123 1998/01/31 23:14:57 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.121 $)
+AC_REVISION($Revision: 1.123 $)
 AC_INIT(ncurses/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -639,8 +639,8 @@ hpux*)
 os2*)
     # We make sure -Zexe is not used -- it would interfere with @PROG_EXT@
     CFLAGS="$CFLAGS -Zmt -D__ST_MT_ERRNO__"
-#   LDFLAGS=`echo "$LDFLAGS -Zmt -Zcrtdll" | sed "s/-Zexe//g"`
-#   PROG_EXT=".exe"
+    LDFLAGS=`echo "$LDFLAGS -Zmt -Zcrtdll" | sed "s/-Zexe//g"`
+    PROG_EXT=".exe"
     ;;
 esac
 AC_SUBST(PROG_EXT)
@@ -847,9 +847,6 @@ CF_LIB_RULES
 ],[
 ### Special initialization commands, used to pass information from the
 ### configuration-run into config.status
-
-SYS_NAME="`(uname -a || hostname) 2>/dev/null | sed 1q`"
-if test -z "\$SYS_NAME"; then SYS_NAME=unknown;fi
 
 AWK="$AWK"
 CF_LIST_MODELS="$cf_list_models"
