@@ -73,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.198 2003/08/02 22:33:31 Philippe.Blain Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.199 2003/08/23 21:25:08 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -172,8 +172,6 @@ GoTo(int const row, int const col)
     position_check(SP->_cursrow, SP->_curscol, "GoTo");
 
     mvcur(SP->_cursrow, SP->_curscol, row, col);
-    SP->_cursrow = row;
-    SP->_curscol = col;
     position_check(SP->_cursrow, SP->_curscol, "GoTo2");
 }
 
@@ -1851,8 +1849,6 @@ _nc_screen_wrap(void)
 	SP->_default_color = FALSE;
 
 	mvcur(SP->_cursrow, SP->_curscol, screen_lines - 1, 0);
-	SP->_cursrow = screen_lines - 1;
-	SP->_curscol = 0;
 
 	ClrToEOL(blank, TRUE);
     }

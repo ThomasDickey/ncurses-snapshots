@@ -154,11 +154,8 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.92 2003/08/16 23:22:42 Philippe.Blain Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.93 2003/08/23 21:51:58 tom Exp $")
 
-#define CURRENT_ROW	SP->_cursrow	/* phys cursor row */
-#define CURRENT_COLUMN	SP->_curscol	/* phys cursor column */
-#define CURRENT_ATTR	SP->_current_attr	/* current phys attribute */
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
 #define BAUDRATE	cur_term->_baudrate	/* bits per second */
 
@@ -297,11 +294,9 @@ NCURSES_EXPORT(void)
 _nc_mvcur_init(void)
 /* initialize the cost structure */
 {
-    /*
-     * 9 = 7 bits + 1 parity + 1 stop.
-     */
     if (isatty(fileno(SP->_ofp)))
-	SP->_char_padding = (9 * 1000 * 10) / (BAUDRATE > 0 ? BAUDRATE : 9600);
+	SP->_char_padding = ((BAUDBYTE * 1000 * 10)
+			     / (BAUDRATE > 0 ? BAUDRATE : 9600));
     else
 	SP->_char_padding = 1;	/* must be nonzero */
     if (SP->_char_padding <= 0)
@@ -611,7 +606,7 @@ relative_move(string_desc * target, int from_y, int from_x, int to_y, int
 
 		    for (i = 0; i < n; i++) {
 			NCURSES_CH_T ch = WANT_CHAR(to_y, from_x + i);
-			if (AttrOf(ch) != CURRENT_ATTR
+			if (AttrOf(ch) != SP->_current_attr
 #if USE_WIDEC_SUPPORT
 			    || !Charable(ch)
 #endif
@@ -839,6 +834,8 @@ onscreen_mvcur(int yold, int xold, int ynew, int xnew, bool ovw)
     if (usecost != INFINITY) {
 	TPUTS_TRACE("mvcur");
 	tputs(buffer, 1, _nc_outch);
+	SP->_cursrow = ynew;
+	SP->_curscol = xnew;
 	return (OK);
     } else
 	return (ERR);

@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.251 2003/08/16 23:52:22 tom Exp $
+ * $Id: curses.priv.h,v 1.252 2003/08/23 21:38:49 tom Exp $
  *
  *	curses.priv.h
  *
@@ -949,6 +949,7 @@ extern NCURSES_EXPORT(int) _nc_has_mouse (void);
 
 /* lib_mvcur.c */
 #define INFINITY	1000000	/* cost: too high to use */
+#define BAUDBYTE	9	/* 9 = 7 bits + 1 parity + 1 stop */
 
 /* lib_setup.c */
 extern NCURSES_EXPORT(char *) _nc_get_locale(void);
