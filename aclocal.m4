@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.71 1997/07/20 01:04:10 tom Exp $
+dnl $Id: aclocal.m4,v 1.72 1997/07/26 21:43:38 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -935,7 +935,7 @@ AC_DEFUN([NC_SHARED_OPTS],
 	Linux)
 		# tested with Linux 1.2.8 and gcc 2.7.0 (ELF)
 		CC_SHARED_OPTS='-fPIC'
- 		MK_SHARED_LIB='gcc -o $[@].$(REL_VERSION) -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)`,-stats'
+ 		MK_SHARED_LIB='gcc -o $[@].$(REL_VERSION) -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)`,-stats,-lc'
 		test $nc_cv_ld_rpath = yes && MK_SHARED_LIB="$MK_SHARED_LIB -Wl,-rpath,\$(libdir)"
 		if test $DFT_LWR_MODEL = "shared" ; then
  			LOCAL_LDFLAGS='-Wl,-rpath,../lib'

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.22 1997/05/17 23:33:33 tom Exp $
+# $Id: Makefile.in,v 1.23 1997/07/26 13:51:17 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -114,6 +114,9 @@ install.progs: $(PROGS) $(INSTALL_PREFIX)$(bindir)
 	@echo "linking captoinfo to tic"
 	-@rm -f $(INSTALL_PREFIX)$(bindir)/captoinfo
 	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) tic captoinfo)
+	@echo "linking infotocap to tic"
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/infotocap
+	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) tic infotocap)
 	@echo "linking reset to tset"
 	-@rm -f $(INSTALL_PREFIX)$(bindir)/reset
 	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) tset reset)

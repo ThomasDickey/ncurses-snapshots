@@ -27,7 +27,7 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <term.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.15 1997/07/05 18:12:54 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.16 1997/07/26 21:46:21 tom Exp $")
 
 /*
    some of the code in here was contributed by:
@@ -161,9 +161,11 @@ int tgetflag(const char *id)
 int i;
 
 	T(("tgetflag: %s", id));
-	for (i = 0; i < BOOLCOUNT; i++)
-		if (!strcmp(id, boolcodes[i]))
-			return cur_term->type.Booleans[i];
+	if (cur_term != 0) {
+		for (i = 0; i < BOOLCOUNT; i++)
+			if (!strcmp(id, boolcodes[i]))
+				return cur_term->type.Booleans[i];
+	}
 	return ERR;
 }
 
@@ -181,9 +183,11 @@ int tgetnum(const char *id)
 int i;
 
 	T(("tgetnum: %s", id));
-	for (i = 0; i < NUMCOUNT; i++)
-		if (!strcmp(id, numcodes[i]))
-			return cur_term->type.Numbers[i];
+	if (cur_term != 0) {
+		for (i = 0; i < NUMCOUNT; i++)
+			if (!strcmp(id, numcodes[i]))
+				return cur_term->type.Numbers[i];
+	}
 	return ERR;
 }
 
@@ -201,11 +205,13 @@ char *tgetstr(const char *id, char **area GCC_UNUSED)
 int i;
 
 	T(("tgetstr: %s", id));
-	for (i = 0; i < STRCOUNT; i++) {
-		T(("trying %s", strcodes[i]));
-		if (!strcmp(id, strcodes[i])) {
-			T(("found match : %s", cur_term->type.Strings[i]));
-			return cur_term->type.Strings[i];
+	if (cur_term != 0) {
+		for (i = 0; i < STRCOUNT; i++) {
+			T(("trying %s", strcodes[i]));
+			if (!strcmp(id, strcodes[i])) {
+				T(("found match : %s", cur_term->type.Strings[i]));
+				return cur_term->type.Strings[i];
+			}
 		}
 	}
 	return NULL;

@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.69 1997/07/19 15:33:27 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.71 1997/07/27 00:31:53 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -456,6 +456,8 @@ struct tms before, after;
 
 	_nc_signal_handler(FALSE);
 
+	if (SP->_fifohold)
+		SP->_fifohold--;
 	if (SP->_endwin == TRUE) {
 
 		T(("coming back from shell mode"));
@@ -646,7 +648,7 @@ struct tms before, after;
 		ClrUpdate(newscr);
 		newscr->_clear = FALSE;
 	} else {
-		int changedlines = 0;
+		int changedlines = CHECK_INTERVAL;
 
 		nonempty = min(screen_lines, newscr->_maxy+1);
 #if USE_HASHMAP		/* still 5% slower 960928 */
@@ -666,6 +668,20 @@ struct tms before, after;
 		T(("Transforming lines, nonempty %d", nonempty));
 		for (i = 0; i < nonempty; i++) {
 			/*
+			 * Here is our line-breakout optimization.
+			 */
+			if (changedlines == CHECK_INTERVAL)
+			{
+			    if(SP->_fifohold == 0
+			     && check_pending())
+			    {
+				SP->_fifohold = 5;
+				goto cleanup;
+			    }
+			    changedlines = 0;
+			}
+
+			/*
 			 * newscr->line[i].firstchar is normally set
 			 * by wnoutrefresh.  curscr->line[i].firstchar
 			 * is normally set by _nc_scroll_window in the
@@ -683,16 +699,6 @@ struct tms before, after;
 				MARK_NOCHANGE(newscr,i)
 			if (i <= curscr->_maxy)
 				MARK_NOCHANGE(curscr,i)
-
-			/*
-			 * Here is our line-breakout optimization.
-			 */
-			if (changedlines == CHECK_INTERVAL)
-			{
-			    if(check_pending())
-				goto cleanup;
-			    changedlines = 0;
-			}
 		}
 	}
 
