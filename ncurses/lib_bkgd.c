@@ -21,7 +21,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_bkgd.c,v 1.10 1997/09/20 15:02:34 juergen Exp $")
+MODULE_ID("$Id: lib_bkgd.c,v 1.11 1997/10/18 19:03:49 tom Exp $")
 
 void wbkgdset(WINDOW *win, chtype ch)
 {
@@ -38,6 +38,7 @@ void wbkgdset(WINDOW *win, chtype ch)
       ch |= BLANK;
     win->_bkgd = ch;
   }
+  returnVoid;
 }
 
 int wbkgd(WINDOW *win, const chtype ch)

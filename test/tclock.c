@@ -128,8 +128,8 @@ main(
 	  {
 	    sangle=(i+1)*(2.0*PI)/12.0;
 	    sradius=10;
-	    sdx=2.0*sradius*sin(sangle);
-	    sdy=sradius*cos(sangle);
+	    sdx = (int)(2.0 * sradius * sin(sangle));
+	    sdy = (int)(sradius * cos(sangle));
 	    sprintf(szChar,"%d",i+1);
 
 	    mvaddstr((int)(cy-sdy),(int)(cx+sdx),szChar);
@@ -142,23 +142,23 @@ main(
 	  {
 	    sleep(1);
 
-	    tim=time(0);
-	    t=localtime(&tim);
+	    tim = time(0);
+	    t = localtime(&tim);
 
-	    hours=(t->tm_hour + (t->tm_min/60.0));
-	    if(hours>12.0) hours-=12.0;
+	    hours = (t->tm_hour + (t->tm_min/60.0));
+	    if(hours>12.0) hours -= 12.0;
 
-	    mangle=(t->tm_min)*(2*PI)/60.0;
-	    mdx=2.0*mradius*sin(mangle);
-	    mdy=mradius*cos(mangle);
+	    mangle = (int)((t->tm_min) * (2 * PI)/60.0);
+	    mdx    = (int)(2.0 * mradius * sin(mangle));
+	    mdy    = (int)(mradius * cos(mangle));
 	    
-	    hangle=(hours)*(2.0*PI)/12.0;
-	    hdx=2.0*hradius*sin(hangle);
-	    hdy=hradius*cos(hangle);
+	    hangle = (int)((hours) * (2.0 * PI)/12.0);
+	    hdx    = (int)(2.0 * hradius * sin(hangle));
+	    hdy    = (int)(hradius * cos(hangle));
        
-	    sangle=(t->tm_sec%60)*(2.0*PI)/60.0;
-	    sdx=2.0*sradius*sin(sangle);
-	    sdy=sradius*cos(sangle);
+	    sangle = (int)((t->tm_sec%60) * (2.0 * PI)/60.0);
+	    sdx    = (int)(2.0 * sradius * sin(sangle));
+	    sdy    = (int)(sradius * cos(sangle));
 
 	    plot(cx+sdx,cy-sdy,'O');
 	    dline(cx,cy,cx+hdx,cy-hdy,'.');

@@ -92,7 +92,7 @@
 /******************************************************************************/
 
 /*
- * $Id: xmas.c,v 1.10 1997/07/05 16:49:22 tom Exp $
+ * $Id: xmas.c,v 1.11 1997/10/18 20:08:39 tom Exp $
  */
 #include <test.priv.h>
 
@@ -100,7 +100,7 @@
 
 #define FROMWHO "Mark Hessling - (M.Hessling@gu.edu.au)"
 
-static chtype my_bg = COLOR_BLACK;
+static int my_bg = COLOR_BLACK;
 static int y_pos, x_pos;
 
 static WINDOW

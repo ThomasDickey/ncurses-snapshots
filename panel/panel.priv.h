@@ -1,4 +1,4 @@
-/* $Id: panel.priv.h,v 1.5 1997/07/05 16:49:22 tom Exp $ */
+/* $Id: panel.priv.h,v 1.7 1997/10/18 18:34:36 tom Exp $ */
 
 #ifndef _PANEL_PRIV_H
 #define _PANEL_PRIV_H
@@ -12,15 +12,14 @@
 #include <assert.h>
 
 #if HAVE_LIBDMALLOC
-#include <dmalloc.h>    /* Gray Watson's library */
+#  include <dmalloc.h>    /* Gray Watson's library */
 #endif
 
 #if HAVE_LIBDBMALLOC
-#include <dbmalloc.h>   /* Conor Cahill's library */
+#  include <dbmalloc.h>   /* Conor Cahill's library */
 #endif
 
 #include "panel.h"
-
 
 #if ( CC_HAS_INLINE_FUNCS && !defined(TRACE) )
 #  define INLINE inline
@@ -28,26 +27,64 @@
 #  define INLINE
 #endif
 
-
 typedef struct panelcons
 {
   struct panelcons *above;
   struct panel *pan;
 } PANELCONS;
 
-#ifdef TRACE
-#  define dBug(x) _tracef x
-#else
-#  define dBug(x)
-#endif
-
 #ifdef USE_RCS_IDS
-#define MODULE_ID(id) static const char Ident[] = id;
+#  define MODULE_ID(id) static const char Ident[] = id;
 #else
-#define MODULE_ID(id) /*nothing*/
+#  define MODULE_ID(id) /*nothing*/
 #endif
 
 #define P_TOUCH  (0)
 #define P_UPDATE (1)
 
+#ifdef TRACE
+   extern const char *_nc_my_visbuf(const void *);
+#  ifdef TRACE_TXT
+#    define USER_PTR(ptr) _nc_visbuf((const char *)ptr)
+#  else
+#    define USER_PTR(ptr) _nc_my_visbuf((const char *)ptr)
+#  endif
+
+   extern void _nc_dPanel(const char*, const PANEL*);
+   extern void _nc_dStack(const char*, int, const PANEL*);
+   extern void _nc_Wnoutrefresh(const PANEL*);
+   extern void _nc_Touchpan(const PANEL*);
+   extern void _nc_Touchline(const PANEL*, int, int);
+
+#  define dBug(x) _tracef x
+#  define dPanel(text,pan) _nc_dPanel(text,pan)
+#  define dStack(fmt,num,pan) _nc_dStack(fmt,num,pan)
+#  define Wnoutrefresh(pan) _nc_Wnoutrefresh(pan)
+#  define Touchpan(pan) _nc_Touchpan(pan)
+#  define Touchline(pan,start,count) _nc_Touchline(pan,start,count)
+#else /* !TRACE */
+#  define dBug(x)
+#  define dPanel(text,pan)
+#  define dStack(fmt,num,pan)
+#  define Wnoutrefresh(pan) wnoutrefresh((pan)->win)
+#  define Touchpan(pan) touchwin((pan)->win)
+#  define Touchline(pan,start,count) touchline((pan)->win,start,count)
 #endif
+
+#define _nc_stdscr_pseudo_panel SP->stdscr_pseudo_panel
+#define _nc_top_panel SP->top_panel
+#define _nc_bottom_panel SP->bottom_panel
+
+extern void _nc_panel_link_bottom(PANEL*);
+extern bool _nc_panel_is_linked(const PANEL*);
+extern void _nc_calculate_obscure(void);
+extern void _nc_free_obscure(PANEL*);
+extern void _nc_override(const PANEL*,int);
+
+/* We need this reference to the internals of ncurses, because
+ * we have to store the panel stack handles on a per screen basis,
+ * so we need access to SP!
+ */
+#include <curses.priv.h>
+
+#endif /* _PANEL_PRIV_H */

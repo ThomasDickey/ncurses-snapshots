@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.84 1997/10/11 22:12:42 tom Exp $
+ * $Id: curses.priv.h,v 1.90 1997/10/19 02:46:53 tom Exp $
  *
  *	curses.priv.h
  *
@@ -32,6 +32,10 @@
 
 #ifndef CURSES_PRIV_H
 #define CURSES_PRIV_H 1
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <ncurses_cfg.h>
 
@@ -127,30 +131,6 @@ struct tries {
 };
 
 /*
- * Structure for soft labels.
- */
-
-typedef struct
-{
-	char *text;             /* text for the label */
-	char *form_text;        /* formatted text (left/center/...) */
-	int x;                  /* x coordinate of this field */
-	char dirty;             /* this label has changed */
-	char visible;           /* field is visible */
-} slk_ent;
-
-typedef struct {
-	char dirty;             /* all labels have changed */
-	char hidden;            /* soft labels are hidden */
-	struct _win_st *win;
-	slk_ent *ent;
-	char *buffer;           /* buffer for labels */
-	short maxlab;           /* number of available labels */
-	short labcnt;           /* number of allocated labels */
-	short maxlen;           /* length of labels */
-} SLK;
-
-/*
  * Definitions for color pairs
  */
 #define C_SHIFT 8		/* we need more bits than there are colors */
@@ -177,6 +157,33 @@ color_t;
 #define WINDOWLIST struct _win_list
 
 #include <curses.h>	/* we'll use -Ipath directive to get the right one! */
+
+/*
+ * Structure for soft labels.
+ */
+
+typedef struct
+{
+	char *text;             /* text for the label */
+	char *form_text;        /* formatted text (left/center/...) */
+	int x;                  /* x coordinate of this field */
+	char dirty;             /* this label has changed */
+	char visible;           /* field is visible */
+} slk_ent;
+
+typedef struct {
+	char dirty;             /* all labels have changed */
+	char hidden;            /* soft labels are hidden */
+	struct _win_st *win;
+	slk_ent *ent;
+	char*  buffer;           /* buffer for labels */
+	short  maxlab;           /* number of available labels */
+	short  labcnt;           /* number of allocated labels */
+	short  maxlen;           /* length of labels */
+        chtype attr;             /* soft label attribute */
+} SLK;
+
+struct panel; /* Forward Declaration */
 
 struct screen {
 	int             _ifd;           /* input file ptr for screen        */
@@ -290,6 +297,19 @@ struct screen {
 	int             _mouse_fd;      /* file-descriptor, if any */
 
 	/*
+	 * This supports automatic resizing
+	 */
+	int		(*_resize)(int,int);
+
+        /*
+	 * These are data that support the proper handling of the panel stack on an
+	 * per screen basis.
+	 */
+        struct panel*   top_panel;
+        struct panel*   bottom_panel;
+        struct panel*   stdscr_pseudo_panel;
+
+	/*
 	 * Linked-list of all windows, to support '_nc_resizeall()' and
 	 * '_nc_freeall()'
 	 */
@@ -386,25 +406,30 @@ typedef	struct {
 #define T(a)		TR(TRACE_CALLS, a)
 #define TPUTS_TRACE(s)	_nc_tputs_trace = s;
 #define TRACE_RETURN(value,type) return _nc_retrace_##type(value)
-#define returnWin(code)  TRACE_RETURN(code,win)
-#define returnPtr(code)  TRACE_RETURN(code,ptr)
+#define returnAttr(code) TRACE_RETURN(code,attr_t)
 #define returnCode(code) TRACE_RETURN(code,int)
+#define returnPtr(code)  TRACE_RETURN(code,ptr)
 #define returnVoid       T((T_RETURN(""))); return
+#define returnWin(code)  TRACE_RETURN(code,win)
 extern unsigned _nc_tracing;
 extern WINDOW * _nc_retrace_win(WINDOW *);
+extern attr_t _nc_retrace_attr_t(attr_t);
 extern char *_nc_retrace_ptr(char *);
 extern const char *_nc_tputs_trace;
 extern const char *_nc_visbuf(const char *);
 extern const char *_nc_visbuf2(int, const char *);
 extern int _nc_retrace_int(int);
 extern long _nc_outchars;
+extern void _nc_fifo_dump(void);
 #else
 #define T(a)
 #define TR(n, a)
 #define TPUTS_TRACE(s)
-#define returnWin(code)  return code
+#define returnAttr(code) return code
 #define returnCode(code) return code
+#define returnPtr(code)  return code
 #define returnVoid       return
+#define returnWin(code)  return code
 #endif
 
 #define _trace_key(ch) ((ch > KEY_MIN) ? keyname(ch) : _tracechar((unsigned char)ch))
@@ -562,19 +587,18 @@ extern int _nc_remove_key(struct tries **tree, unsigned short code);
 
 /* elsewhere ... */
 extern WINDOW *_nc_makenew(int, int, int, int, int);
+extern char *_nc_trace_buf(int, size_t);
 extern chtype _nc_background(WINDOW *);
 extern chtype _nc_render(WINDOW *, chtype);
-extern char *_nc_trace_buf(int, size_t);
 extern int _nc_keypad(bool);
 extern int _nc_outch(int);
 extern int _nc_setupscreen(short, short const, FILE *);
 extern int _nc_timed_wait(int, int, int *);
 extern int _nc_waddch_nosync(WINDOW *, const chtype);
 extern void _nc_do_color(int, int (*)(int));
-extern void _nc_freeall(void);
 extern void _nc_free_and_exit(int);
+extern void _nc_freeall(void);
 extern void _nc_freewin(WINDOW *win);
-extern void _nc_get_screensize(void);
 extern void _nc_hash_map(void);
 extern void _nc_outstr(const char *str);
 extern void _nc_scroll_optimize(void);
@@ -582,6 +606,7 @@ extern void _nc_scroll_window(WINDOW *, int const, short const, short const, cht
 extern void _nc_set_buffer(FILE *ofp, bool buffered);
 extern void _nc_signal_handler(bool);
 extern void _nc_synchook(WINDOW *win);
+extern void _nc_update_screensize(void);
 
 /*
  * On systems with a broken linker, define 'SP' as a function to force the
@@ -620,11 +645,26 @@ extern int _nc_usleep(unsigned int);
 extern int _nc_slk_format;  /* != 0 if slk_init() called */
 extern int _nc_slk_initialize(WINDOW *, int);
 
+/* 
+ * Some constants related to SLK's 
+ */
+#define MAX_SKEY_OLD	   8	/* count of soft keys */
+#define MAX_SKEY_LEN_OLD   8	/* max length of soft key text */
+#define MAX_SKEY_PC       12    /* This is what most PC's have */
+#define MAX_SKEY_LEN_PC    5
+
+#define MAX_SKEY          (SLK_STDFMT ? MAX_SKEY_OLD : MAX_SKEY_PC)
+#define MAX_SKEY_LEN      (SLK_STDFMT ? MAX_SKEY_LEN_OLD : MAX_SKEY_LEN_PC)
+
 /* Macro to check whether or not we use a standard format */
 #define SLK_STDFMT (_nc_slk_format < 3)
 /* Macro to determine height of label window */
 #define SLK_LINES  (SLK_STDFMT ? 1 : (_nc_slk_format - 2))
 
 extern int _nc_ripoffline(int line, int (*init)(WINDOW *,int));
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* CURSES_PRIV_H */

@@ -40,7 +40,7 @@
 #undef USE_SIGWINCH	/* FIXME: configure should resolve this */
 #endif
 
-MODULE_ID("$Id: lib_tstp.c,v 1.11 1997/09/20 19:33:18 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.12 1997/10/18 21:14:58 tom Exp $")
 
 /*
  * Note: This code is fragile!  Its problem is that different OSs
@@ -178,6 +178,7 @@ static void cleanup(int sig)
 		    {
 			set_term(scan);
 			endwin();
+			SP->_endwin = FALSE; /* in case we have an atexit! */
 			scan = scan->_next_screen;
 		    }
 		}

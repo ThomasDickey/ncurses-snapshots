@@ -24,7 +24,7 @@
 #include "cursesapp.h"
 #include "internal.h"
 
-MODULE_ID("$Id: cursesmain.cc,v 1.1 1997/09/07 22:22:56 juergen Exp $")
+MODULE_ID("$Id: cursesmain.cc,v 1.2 1997/10/13 22:56:21 tom Exp $")
 
 /* This is the default implementation of main() for a NCursesApplication.
  * You only have to instantiate a static NCursesApplication object in your
@@ -36,6 +36,6 @@ int main(int argc, char* argv[])
   if (!A)
     return(1);
   A->handleArgs(argc,argv);
-  return((*A)());
   ::endwin();
+  return((*A)());
 }

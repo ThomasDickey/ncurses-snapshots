@@ -36,7 +36,7 @@
 
 #include <term.h>	/* clear_screen, cup & friends, cur_term */
 
-MODULE_ID("$Id: lib_newterm.c,v 1.27 1997/10/11 21:52:47 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.28 1997/10/12 20:17:37 juergen Exp $")
 
 #ifndef ONLCR		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -82,6 +82,7 @@ void filter(void)
 SCREEN * newterm(const char *term, FILE *ofp, FILE *ifp)
 {
 int	errret;
+SCREEN* current;
 #ifdef TRACE
 char *t = getenv("NCURSES_TRACE");
 
@@ -150,8 +151,11 @@ char *t = getenv("NCURSES_TRACE");
 	/* this actually allocates the screen structure, and saves the
 	 * original terminal settings.
 	 */
-	if (_nc_setupscreen(LINES, COLS, ofp) == ERR)
+	current = SP; SP = 0;
+	if (_nc_setupscreen(LINES, COLS, ofp) == ERR) {
+	        SP = current;
 		return 0;
+	}
 
 #ifdef num_labels
 	/* if the terminal type has real soft labels, set those up */

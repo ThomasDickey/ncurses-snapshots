@@ -29,7 +29,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: toe.c,v 0.16 1997/07/06 00:26:56 tom Exp $")
+MODULE_ID("$Id: toe.c,v 0.17 1997/10/18 20:02:36 tom Exp $")
 
 const char *_nc_progname;
 
@@ -158,12 +158,12 @@ int main (int argc, char *argv[])
     if (optind < argc) {
 	code = typelist(argc-optind, argv+optind, header, deschook);
     } else {
-	char	*explicit, *home, *eargv[3];
+	char	*by_env, *home, *eargv[3];
 	int	j;
 
 	j = 0;
-	if ((explicit = getenv("TERMINFO")) != (char *)NULL)
-	    eargv[j++] = explicit;
+	if ((by_env = getenv("TERMINFO")) != (char *)NULL)
+	    eargv[j++] = by_env;
 	else
 	{
 	    if ((home = getenv("HOME")) != (char *)NULL)

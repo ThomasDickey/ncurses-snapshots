@@ -21,7 +21,7 @@
 | WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                               |
 +----------------------------------------------------------------------------*/
 
-// $Id: cursesapp.h,v 1.1 1997/09/07 22:22:48 juergen Exp $
+// $Id: cursesapp.h,v 1.2 1997/10/13 22:56:21 tom Exp $
 
 #ifndef _CURSESAPP_H
 #define _CURSESAPP_H
@@ -29,14 +29,15 @@
 #include <cursslk.h>
 
 class NCursesApplication {
-private:
-  static int rinit(NCursesWindow& w); // Internal Init function for title
-  static NCursesApplication* theApp;  // Global ref. to the application
-
+public:
   typedef struct _slk_link {          // This structure is used to maintain
     struct _slk_link* prev;           // a stack of SLKs
     Soft_Label_Key_Set* SLKs;
   } SLK_Link;
+private:
+  static int rinit(NCursesWindow& w); // Internal Init function for title
+  static NCursesApplication* theApp;  // Global ref. to the application
+
   static SLK_Link* slk_stack;
 
 protected:

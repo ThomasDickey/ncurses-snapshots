@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.92 1997/10/11 21:05:19 tom Exp $
+dnl $Id: aclocal.m4,v 1.93 1997/10/19 00:18:31 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1171,7 +1171,8 @@ do
 
 	CFLAGS="$cf_save_CFLAGS"
 	if test "$cf_cv_sizechange" = yes ; then
-		test -n "$cf_opts" && AC_DEFINE($cf_opts)
+		echo "size-change succeeded ($cf_opts)" >&AC_FD_CC
+		test -n "$cf_opts" && AC_DEFINE_UNQUOTED($cf_opts)
 		break
 	fi
 done
@@ -1497,7 +1498,7 @@ ifelse($4,,[withval="${$3}"],[withval="${$3-ifelse($5,,$4,$5)}"]))dnl
 case ".$withval" in #(vi
 ./*) #(vi
   ;;
-.\[$]*prefix) #(vi
+.\[$]{*prefix}*) #(vi
   eval withval="$withval"
   case ".$withval" in #(vi
   .NONE/*)

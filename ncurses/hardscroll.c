@@ -134,11 +134,10 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hardscroll.c,v 1.26 1997/08/23 22:02:26 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: hardscroll.c,v 1.27 1997/10/18 17:23:05 tom Exp $")
 
 #if defined(SCROLLDEBUG) || defined(HASHDEBUG)
-#define LINES	24
-int oldnums[LINES];
+int oldnums[MAXLINES];
 #define OLDNUM(n)	oldnums[n]
 #undef T
 #define T(x)		(void) printf x ; (void) putchar('\n');
@@ -165,24 +164,24 @@ void _nc_scroll_optimize(void)
 #endif /* TRACE */
 
     /* pass 1 - from top to bottom scrolling up */
-    for (i = 0; i < LINES; )
+    for (i = 0; i < screen_lines; )
     {
-	while (i < LINES && (OLDNUM(i) == _NEWINDEX || OLDNUM(i) <= i))
+	while (i < screen_lines && (OLDNUM(i) == _NEWINDEX || OLDNUM(i) <= i))
 	    i++;
-	if (i >= LINES)
+	if (i >= screen_lines)
 	    break;
 	    
 	shift = OLDNUM(i) - i; /* shift > 0 */
 	start = i;
 	
 	i++;
-	while (i < LINES && OLDNUM(i) != _NEWINDEX && OLDNUM(i) - i == shift)
+	while (i < screen_lines && OLDNUM(i) != _NEWINDEX && OLDNUM(i) - i == shift)
 	    i++;
 	end = i-1 + shift;
 
 	TR(TRACE_UPDATE | TRACE_MOVE, ("scroll [%d, %d] by %d", start, end, shift));
 #if !defined(SCROLLDEBUG) && !defined(HASHDEBUG)
-	if (_nc_scrolln(shift, start, end, LINES - 1) == ERR)
+	if (_nc_scrolln(shift, start, end, screen_lines - 1) == ERR)
 	{
 	    TR(TRACE_UPDATE | TRACE_MOVE, ("unable to scroll"));
 	    continue;
@@ -191,7 +190,7 @@ void _nc_scroll_optimize(void)
     }
 
     /* pass 2 - from bottom to top scrolling down */
-    for (i = LINES-1; i >= 0; )
+    for (i = screen_lines-1; i >= 0; )
     {
 	while (i >= 0 && (OLDNUM(i) == _NEWINDEX || OLDNUM(i) >= i))
 	    i--;
@@ -208,7 +207,7 @@ void _nc_scroll_optimize(void)
 
 	TR(TRACE_UPDATE | TRACE_MOVE, ("scroll [%d, %d] by %d", start, end, shift));
 #if !defined(SCROLLDEBUG) && !defined(HASHDEBUG)
-	if (_nc_scrolln(shift, start, end, LINES - 1) == ERR)
+	if (_nc_scrolln(shift, start, end, screen_lines - 1) == ERR)
 	{
 	    TR(TRACE_UPDATE | TRACE_MOVE, ("unable to scroll"));
 	    continue;
@@ -225,13 +224,13 @@ void _nc_linedump(void)
     static char *buf;
 
     int	n;
-    size_t	want = (LINES + 1) * 4;
+    size_t	want = (screen_lines + 1) * 4;
 
     if (have < want)
 	buf = malloc(have = want);
 
     (void) strcpy(buf, "virt");
-    for (n = 0; n < LINES; n++)
+    for (n = 0; n < screen_lines; n++)
 	(void) sprintf(buf + strlen(buf), " %02d", OLDNUM(n));
     TR(TRACE_UPDATE | TRACE_MOVE, (buf));
 }
@@ -251,7 +250,7 @@ main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
     {
 	int	n;
 
-	for (n = 0; n < LINES; n++)
+	for (n = 0; n < screen_lines; n++)
 	    oldnums[n] = _NEWINDEX;
 
 	/* grab the test vector */

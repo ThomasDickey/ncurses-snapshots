@@ -2,14 +2,14 @@
  * This test was written by Alexander V. Lukyanov to demonstrate difference
  * between ncurses 4.1 and SVR4 curses
  *
- * $Id: firstlast.c,v 1.1 1997/08/16 19:54:28 Alexander.V.Lukyanov Exp $
+ * $Id: firstlast.c,v 1.2 1997/10/18 21:34:53 tom Exp $
  */
 
 #include <test.priv.h>
 
-static void fill(WINDOW *w,char *str)
+static void fill(WINDOW *w,const char *str)
 {
-	char *s;
+	const char *s;
 	for(;;) {
 		for(s=str; *s; s++) {
 			if(waddch(w,*s)==ERR)

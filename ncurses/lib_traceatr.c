@@ -32,7 +32,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.22 1997/09/02 22:14:19 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.23 1997/10/18 18:21:32 tom Exp $")
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
@@ -110,6 +110,13 @@ unsigned save_nc_tracing = _nc_tracing;
 char *_traceattr(attr_t newmode)
 {
 	return _traceattr2(0, newmode);
+}
+
+/* Trace 'int' return-values */
+attr_t _nc_retrace_attr_t(attr_t code)
+{
+	T((T_RETURN("%s"), _traceattr(code)));
+	return code;
 }
 
 char *_tracechtype2(int bufnum, chtype ch)

@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.90 1997/10/11 22:11:16 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.91 1997/10/18 20:34:18 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -490,8 +490,7 @@ struct tms before, after;
 		 * (this can happen in an xterm, for example), and resize the
 		 * ncurses data structures accordingly.
 		 */
-		_nc_get_screensize();
-		resizeterm(LINES, COLS);
+		_nc_update_screensize();
 	}
 
 	if (SP->_endwin) {

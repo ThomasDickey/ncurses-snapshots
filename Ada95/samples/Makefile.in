@@ -19,14 +19,13 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.9 $
+#  $Revision: 1.10 $
 #
 .SUFFIXES:
 
 SHELL		= /bin/sh
 THIS		= Makefile
 
-MODEL		= ../../@DFT_OBJ_SUBDIR@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@

@@ -22,7 +22,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.23 1997/09/09 00:14:00 Alexander.V.Lukyanov Exp $
+ * $Id: view.c,v 1.24 1997/10/18 20:07:46 tom Exp $
  */
 
 #include <test.priv.h>
@@ -199,11 +199,11 @@ bool        use_resize = TRUE;
     lptr = lines;
     while (!done) {
 	int n, c;
-	bool explicit;
+	bool got_number;
 
 	show_all();
 
-	explicit = FALSE;
+	got_number = FALSE;
 	n = 0;
         for (;;) {
 #if CAN_RESIZE
@@ -214,18 +214,18 @@ bool        use_resize = TRUE;
 	    c = getch();
 	    waiting = FALSE;
 	    if ((c < 127) && isdigit(c)) {
-		if (!explicit) {
+		if (!got_number) {
 		    mvprintw(0,0, "Count: ");
 		    clrtoeol();
 		}
 		addch(c);
 		n = 10 * n + (c - '0');
-		explicit = TRUE;
+		got_number = TRUE;
 	    }
 	    else
 		break;
 	}
-	if (!explicit && n == 0)
+	if (!got_number && n == 0)
 	    n = 1;
 
 	switch(c) {

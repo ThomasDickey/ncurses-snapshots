@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_enum.c,v 1.7 1997/08/30 20:02:31 juergen Exp $")
+MODULE_ID("$Id: fty_enum.c,v 1.8 1997/10/18 19:33:20 tom Exp $")
 
 typedef struct {
   char **kwds;
@@ -63,15 +63,15 @@ static void *Make_Enum_Type(va_list * ap)
 static void *Copy_Enum_Type(const void * argp)
 {
   const enumARG *ap = (const enumARG *)argp;
-  enumARG *new = (enumARG *)0;
+  enumARG *result = (enumARG *)0;
 
   if (argp)
     {
-      new = (enumARG *)malloc(sizeof(enumARG));
-      if (new)
-	*new = *ap;
+      result = (enumARG *)malloc(sizeof(enumARG));
+      if (result)
+	*result = *ap;
     }
-  return (void *)new;
+  return (void *)result;
 }
 
 /*---------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.17 1997/09/27 22:52:55 tom Exp $
+# $Id: Makefile.in,v 1.18 1997/10/12 13:05:30 juergen Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -57,7 +57,7 @@ LN_S		= @LN_S@
 CC		= @CC@
 CFLAGS		= @CFLAGS@
 
-CPPFLAGS	= @CPPFLAGS@ \
+CPPFLAGS	= @CPPFLAGS@ -I$(srcdir)/../ncurses \
 		  -DHAVE_CONFIG_H -DTERMINFO=\"$(ticdir)\"
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
@@ -98,7 +98,8 @@ $(INSTALL_PREFIX)$(libdir) :
 
 PANEL_PRIV_H = \
 	$(srcdir)/panel.priv.h \
-	$(srcdir)/panel.h
+	$(srcdir)/panel.h \
+	$(srcdir)/../ncurses/curses.priv.h
 
 tags:
 	ctags *.[ch]

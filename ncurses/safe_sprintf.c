@@ -22,7 +22,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: safe_sprintf.c,v 1.2 1997/08/31 22:45:05 tom Exp $")
+MODULE_ID("$Id: safe_sprintf.c,v 1.3 1997/10/18 17:54:35 tom Exp $")
 
 #ifdef USE_SAFE_SPRINTF
 
@@ -208,9 +208,9 @@ _nc_printf_string(const char *fmt, va_list ap)
 	static char *buf;
 	static size_t len;
 
-	if (LINES > rows || COLS > cols) {
-		if (LINES > rows) rows = LINES;
-		if (COLS  > cols) cols = COLS;
+	if (screen_lines > rows || screen_columns > cols) {
+		if (screen_lines   > rows) rows = screen_lines;
+		if (screen_columns > cols) cols = screen_columns;
 		len = (rows * (cols + 1)) + 1;
 		if (buf == 0)
 			buf = malloc(len);

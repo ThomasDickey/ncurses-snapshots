@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_regex.c,v 1.10 1997/09/20 18:53:50 tom Exp $")
+MODULE_ID("$Id: fty_regex.c,v 1.11 1997/10/18 19:32:35 tom Exp $")
 
 #if HAVE_REGEX_H_FUNCS	/* We prefer POSIX regex */
 #include <regex.h>
@@ -164,14 +164,14 @@ static void *Copy_RegularExpression_Type(const void * argp)
 {
 #if (HAVE_REGEX_H_FUNCS | HAVE_REGEXP_H_FUNCS | HAVE_REGEXPR_H_FUNCS)
   const RegExp_Arg *ap = (const RegExp_Arg *)argp;
-  const RegExp_Arg *new = (const RegExp_Arg *)0; 
+  const RegExp_Arg *result = (const RegExp_Arg *)0; 
   
   if (ap)
     {
       *(ap->refCount) += 1;
-      new = ap;
+      result = ap;
     }
-  return (void *)new;
+  return (void *)result;
 #else
   return 0;
 #endif

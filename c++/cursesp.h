@@ -2,7 +2,7 @@
 #ifndef _CURSESP_H
 #define _CURSESP_H
 
-// $Id: cursesp.h,v 1.8 1997/10/03 10:32:17 juergen Exp $
+// $Id: cursesp.h,v 1.9 1997/10/13 22:56:21 tom Exp $
 
 #include <cursesw.h>
 
@@ -103,11 +103,15 @@ public:
    redesign of the low level stuff. At the moment, we define them in the
    interface but they will always produce an error. */
   inline NCursesPanel& above() const {
+    static NCursesPanel dummy;
     OnError(ERR);
+    return dummy;
   }
 
   inline NCursesPanel& below() const {
+    static NCursesPanel dummy;
     OnError(ERR);
+    return dummy;
   }
 
   // Those two are rewrites of the corresponding virtual members of

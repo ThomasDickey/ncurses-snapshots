@@ -6,7 +6,7 @@
  * modified 10-18-89 for curses (jrl)
  * 10-18-89 added signal handling
  *
- * $Id: gdc.c,v 1.9 1997/05/19 23:28:28 tom Exp $
+ * $Id: gdc.c,v 1.10 1997/10/18 20:06:06 tom Exp $
  */
 
 #include <test.priv.h>
@@ -28,7 +28,7 @@ static short disp[11] = {
 	075557, 011111, 071747, 071717, 055711,
 	074717, 074757, 071111, 075757, 075717, 002020
 };
-static long old[6], next[6], new[6], mask;
+static long older[6], next[6], newer[6], mask;
 static char scrol;
 
 static int sigtermed = 0;
@@ -135,15 +135,15 @@ int n = 0;
 		for(k=0; k<6; k++) {
 			if(scrol) {
 				for(i=0; i<5; i++)
-					new[i] = (new[i]&~mask) | (new[i+1]&mask);
-				new[5] = (new[5]&~mask) | (next[k]&mask);
+					newer[i] = (newer[i]&~mask) | (newer[i+1]&mask);
+				newer[5] = (newer[5]&~mask) | (next[k]&mask);
 			} else
-				new[k] = (new[k]&~mask) | (next[k]&mask);
+				newer[k] = (newer[k]&~mask) | (next[k]&mask);
 			next[k] = 0;
 			for(s=1; s>=0; s--) {
 				standt(s);
 				for(i=0; i<6; i++) {
-					if((a = (new[i]^old[i])&(s ? new : old)[i]) != 0) {
+					if((a = (newer[i]^older[i])&(s ? newer : older)[i]) != 0) {
 						for(j=0,t=1<<26; t; t>>=1,j++) {
 							if(a&t) {
 								if(!(a&(t<<1))) {
@@ -154,7 +154,7 @@ int n = 0;
 						}
 					}
 					if(!s) {
-						old[i] = new[i];
+						older[i] = newer[i];
 					}
 				}
 				if(!s) {
@@ -204,7 +204,7 @@ int i, m;
 	m = 7<<n;
 	for(i=0; i<5; i++) {
 		next[i] |= ((disp[t]>>(4-i)*3)&07)<<n;
-		mask |= (next[i]^old[i])&m;
+		mask |= (next[i]^older[i])&m;
 	}
 	if(mask&m)
 		mask |= m;
