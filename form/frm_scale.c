@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_scale.c,v 1.7 2003/10/25 15:17:08 tom Exp $")
+MODULE_ID("$Id: frm_scale.c,v 1.8 2004/05/29 19:21:08 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -45,19 +45,19 @@ MODULE_ID("$Id: frm_scale.c,v 1.7 2003/10/25 15:17:08 tom Exp $")
 |                    E_NOT_CONNECTED   - no fields connected to form
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-scale_form (const FORM * form, int * rows, int * cols)
+scale_form(const FORM *form, int *rows, int *cols)
 {
-  if ( !form )
+  if (!form)
     RETURN(E_BAD_ARGUMENT);
 
-  if ( !(form->field) )
+  if (!(form->field))
     RETURN(E_NOT_CONNECTED);
-  
-  if (rows) 
+
+  if (rows)
     *rows = form->rows;
-  if (cols) 
+  if (cols)
     *cols = form->cols;
-  
+
   RETURN(E_OK);
 }
 

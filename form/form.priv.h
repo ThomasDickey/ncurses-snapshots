@@ -30,7 +30,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: form.priv.h,v 0.18 2004/05/15 22:36:26 tom Exp $ */
+/* $Id: form.priv.h,v 0.19 2004/05/30 01:04:08 tom Exp $ */
 
 #ifndef FORM_PRIV_H
 #define FORM_PRIV_H 1
@@ -97,7 +97,7 @@
 
 /* Calculate the total size of all buffers for this field */
 #define Total_Buffer_Size(field) \
-   ( (Buffer_Length(field) + 1) * (1+(field)->nbuf) )
+   ( (Buffer_Length(field) + 1) * (1+(field)->nbuf) * sizeof(FIELD_CELL) )
 
 /* Logic to determine whether or not a field is single lined */
 #define Single_Line_Field(field) \

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_def.c,v 1.23 2004/05/16 15:51:38 tom Exp $")
+MODULE_ID("$Id: fld_def.c,v 1.26 2004/05/30 01:05:38 tom Exp $")
 
 /* this can't be readonly */
 static FIELD default_field =
@@ -66,7 +66,7 @@ static FIELD default_field =
 };
 
 NCURSES_EXPORT_VAR(FIELD *)
-  _nc_Default_Field = &default_field;
+_nc_Default_Field = &default_field;
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
@@ -288,7 +288,7 @@ new_field(int rows, int cols, int frow, int fcol, int nrow, int nbuf)
       New_Field->link = New_Field;
 
 #if USE_WIDEC_SUPPORT
-      New_Field->working = newpad(rows, cols);
+      New_Field->working = newpad(1, Buffer_Length(New_Field));
       New_Field->expanded = (char **)calloc(1 + rows, sizeof(char *));
 #endif
 
@@ -297,7 +297,7 @@ new_field(int rows, int cols, int frow, int fcol, int nrow, int nbuf)
 	  size_t len;
 
 	  len = Total_Buffer_Size(New_Field);
-	  if ((New_Field->buf = (FIELD_CELL *)malloc(len * sizeof(FIELD_CELL))))
+	  if ((New_Field->buf = (FIELD_CELL *)malloc(len)))
 	    {
 	      /* Prefill buffers with blanks and insert terminating zeroes
 	         between buffers */

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_arg.c,v 1.7 2003/10/25 15:17:08 tom Exp $")
+MODULE_ID("$Id: fld_arg.c,v 1.8 2004/05/29 19:22:20 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -61,13 +61,11 @@ MODULE_ID("$Id: fld_arg.c,v 1.7 2003/10/25 15:17:08 tom Exp $")
 |                    E_BAD_ARGUMENT - invalid argument
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-set_fieldtype_arg
-    (FIELDTYPE * typ,
-     void * (* const make_arg)(va_list *),
-     void * (* const copy_arg)(const void *),
-     void   (* const free_arg)(void *))
+set_fieldtype_arg(FIELDTYPE *typ, void *(*const make_arg)(va_list *),
+		  void *(*const copy_arg)(const void *),
+		  void (*const free_arg) (void *))
 {
-  if ( !typ || !make_arg )
+  if (!typ || !make_arg)
     RETURN(E_BAD_ARGUMENT);
 
   typ->status |= _HAS_ARGS;
@@ -86,7 +84,7 @@ set_fieldtype_arg
 |   Return Values :  Pointer to structure or NULL if none is defined.
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(void *)
-field_arg (const FIELD * field)
+field_arg(const FIELD *field)
 {
   return Normalize_Field(field)->arg;
 }

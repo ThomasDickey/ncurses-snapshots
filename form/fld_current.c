@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_current.c,v 1.7 2003/10/25 15:17:08 tom Exp $")
+MODULE_ID("$Id: fld_current.c,v 1.8 2004/05/29 20:47:11 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -48,45 +48,45 @@ MODULE_ID("$Id: fld_current.c,v 1.7 2003/10/25 15:17:08 tom Exp $")
 |                    E_SYSTEM_ERROR    - system error
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-set_current_field (FORM  * form, FIELD * field)
+set_current_field(FORM *form, FIELD *field)
 {
   int err = E_OK;
 
-  if ( !form || !field )
+  if (!form || !field)
     RETURN(E_BAD_ARGUMENT);
 
-  if ( (form != field->form) || Field_Is_Not_Selectable(field) )
+  if ((form != field->form) || Field_Is_Not_Selectable(field))
     RETURN(E_REQUEST_DENIED);
 
   if (!(form->status & _POSTED))
     {
       form->current = field;
       form->curpage = field->page;
-  }
+    }
   else
     {
-      if (form->status & _IN_DRIVER) 
+      if (form->status & _IN_DRIVER)
 	err = E_BAD_STATE;
       else
 	{
 	  if (form->current != field)
 	    {
-	      if (!_nc_Internal_Validation(form)) 
-	       err = E_INVALID_FIELD;
+	      if (!_nc_Internal_Validation(form))
+		err = E_INVALID_FIELD;
 	      else
 		{
-		  Call_Hook(form,fieldterm);
+		  Call_Hook(form, fieldterm);
 		  if (field->page != form->curpage)
 		    {
-		      Call_Hook(form,formterm);
-		      err = _nc_Set_Form_Page(form,field->page,field);
-		      Call_Hook(form,forminit);
-		    } 
-		  else 
-		    {
-		      err = _nc_Set_Current_Field(form,field);
+		      Call_Hook(form, formterm);
+		      err = _nc_Set_Form_Page(form, field->page, field);
+		      Call_Hook(form, forminit);
 		    }
-		  Call_Hook(form,fieldinit);
+		  else
+		    {
+		      err = _nc_Set_Current_Field(form, field);
+		    }
+		  Call_Hook(form, fieldinit);
 		  _nc_Refresh_Current_Field(form);
 		}
 	    }
@@ -104,7 +104,7 @@ set_current_field (FORM  * form, FIELD * field)
 |   Return Values :  Pointer to the current field.
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(FIELD *)
-current_field (const FORM * form)
+current_field(const FORM *form)
 {
   return Normalize_Form(form)->current;
 }
@@ -120,9 +120,9 @@ current_field (const FORM * form)
 |                    -1     : fieldpointer invalid or field not connected
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-field_index (const FIELD * field)
+field_index(const FIELD *field)
 {
-  return ( (field && field->form) ? field->index : -1 );
+  return ((field && field->form) ? field->index : -1);
 }
 
 /* fld_current.c ends here */

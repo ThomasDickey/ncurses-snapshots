@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_hook.c,v 1.11 2003/10/25 15:17:08 tom Exp $")
+MODULE_ID("$Id: frm_hook.c,v 1.12 2004/05/29 19:21:31 tom Exp $")
 
 /* "Template" macro to generate function to set application specific hook */
 #define GEN_HOOK_SET_FUNCTION( typ, name ) \
@@ -59,7 +59,7 @@ NCURSES_IMPEXP Form_Hook NCURSES_API typ ## _ ## name ( const FORM *form )\
 |
 |   Return Values :  E_OK      - success
 +--------------------------------------------------------------------------*/
-GEN_HOOK_SET_FUNCTION(field,init)
+GEN_HOOK_SET_FUNCTION(field, init)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -69,7 +69,7 @@ GEN_HOOK_SET_FUNCTION(field,init)
 |
 |   Return Values :  The address or NULL if no hook defined.
 +--------------------------------------------------------------------------*/
-GEN_HOOK_GET_FUNCTION(field,init)
+GEN_HOOK_GET_FUNCTION(field, init)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -81,7 +81,7 @@ GEN_HOOK_GET_FUNCTION(field,init)
 |
 |   Return Values :  E_OK      - success
 +--------------------------------------------------------------------------*/
-GEN_HOOK_SET_FUNCTION(field,term)
+GEN_HOOK_SET_FUNCTION(field, term)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -91,7 +91,7 @@ GEN_HOOK_SET_FUNCTION(field,term)
 |
 |   Return Values :  The address or NULL if no hook defined.
 +--------------------------------------------------------------------------*/
-GEN_HOOK_GET_FUNCTION(field,term)
+GEN_HOOK_GET_FUNCTION(field, term)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -103,7 +103,7 @@ GEN_HOOK_GET_FUNCTION(field,term)
 |
 |   Return Values :  E_OK       - success
 +--------------------------------------------------------------------------*/
-GEN_HOOK_SET_FUNCTION(form,init)
+GEN_HOOK_SET_FUNCTION(form, init)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -113,7 +113,7 @@ GEN_HOOK_SET_FUNCTION(form,init)
 |
 |   Return Values :  The address or NULL if no hook defined.
 +--------------------------------------------------------------------------*/
-GEN_HOOK_GET_FUNCTION(form,init)
+GEN_HOOK_GET_FUNCTION(form, init)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -125,7 +125,7 @@ GEN_HOOK_GET_FUNCTION(form,init)
 |
 |   Return Values :  E_OK       - success
 +--------------------------------------------------------------------------*/
-GEN_HOOK_SET_FUNCTION(form,term)
+GEN_HOOK_SET_FUNCTION(form, term)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -135,6 +135,6 @@ GEN_HOOK_SET_FUNCTION(form,term)
 |
 |   Return Values :  The address or NULL if no hook defined.
 +--------------------------------------------------------------------------*/
-GEN_HOOK_GET_FUNCTION(form,term)
+GEN_HOOK_GET_FUNCTION(form, term)
 
 /* frm_hook.c ends here */

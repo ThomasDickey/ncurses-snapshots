@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_ftlink.c,v 1.9 2004/05/15 20:46:53 tom Exp $")
+MODULE_ID("$Id: fld_ftlink.c,v 1.10 2004/05/29 20:51:38 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  

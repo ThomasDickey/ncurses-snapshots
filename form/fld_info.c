@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_info.c,v 1.7 2003/10/25 15:17:08 tom Exp $")
+MODULE_ID("$Id: fld_info.c,v 1.8 2004/05/29 20:47:04 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -47,24 +47,29 @@ MODULE_ID("$Id: fld_info.c,v 1.7 2003/10/25 15:17:08 tom Exp $")
 |                    E_BAD_ARGUMENT - invalid field pointer
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-field_info 
-    (const FIELD *field,
-     int *rows, int *cols, 
-     int *frow, int *fcol, 
-     int *nrow, int *nbuf)
+field_info(const FIELD *field,
+	   int *rows, int *cols,
+	   int *frow, int *fcol,
+	   int *nrow, int *nbuf)
 {
-  if (!field) 
+  if (!field)
     RETURN(E_BAD_ARGUMENT);
 
-  if (rows) *rows = field->rows;
-  if (cols) *cols = field->cols;
-  if (frow) *frow = field->frow;
-  if (fcol) *fcol = field->fcol;
-  if (nrow) *nrow = field->nrow;
-  if (nbuf) *nbuf = field->nbuf;
+  if (rows)
+    *rows = field->rows;
+  if (cols)
+    *cols = field->cols;
+  if (frow)
+    *frow = field->frow;
+  if (fcol)
+    *fcol = field->fcol;
+  if (nrow)
+    *nrow = field->nrow;
+  if (nbuf)
+    *nbuf = field->nbuf;
   RETURN(E_OK);
 }
-	
+
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
 |   Function      :  int dynamic_field_info(const FIELD *field,
@@ -78,15 +83,17 @@ field_info
 |                    E_BAD_ARGUMENT - invalid argument
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-dynamic_field_info
-(const FIELD *field, int *drows, int *dcols, int *maxgrow)
+dynamic_field_info(const FIELD *field, int *drows, int *dcols, int *maxgrow)
 {
   if (!field)
     RETURN(E_BAD_ARGUMENT);
 
-  if (drows)   *drows   = field->drows;
-  if (dcols)   *dcols   = field->dcols;
-  if (maxgrow) *maxgrow = field->maxgrow;
+  if (drows)
+    *drows = field->drows;
+  if (dcols)
+    *dcols = field->dcols;
+  if (maxgrow)
+    *maxgrow = field->maxgrow;
 
   RETURN(E_OK);
 }

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_newftyp.c,v 1.10 2004/05/15 23:11:36 tom Exp $")
+MODULE_ID("$Id: fld_newftyp.c,v 1.11 2004/05/29 19:19:09 tom Exp $")
 
 static FIELDTYPE const default_fieldtype =
 {
@@ -50,7 +50,7 @@ static FIELDTYPE const default_fieldtype =
 };
 
 NCURSES_EXPORT_VAR(const FIELDTYPE *)
-  _nc_Default_FieldType = &default_fieldtype;
+_nc_Default_FieldType = &default_fieldtype;
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
@@ -68,8 +68,8 @@ NCURSES_EXPORT_VAR(const FIELDTYPE *)
 |   Return Values :  Fieldtype pointer or NULL if error occurred
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(FIELDTYPE *)
-new_fieldtype(bool(*const field_check) (FIELD *, const void *),
-	      bool(*const char_check) (int, const void *))
+new_fieldtype(bool (*const field_check) (FIELD *, const void *),
+	      bool (*const char_check) (int, const void *))
 {
   FIELDTYPE *nftyp = (FIELDTYPE *)0;
 

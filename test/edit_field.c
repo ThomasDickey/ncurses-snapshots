@@ -1,5 +1,5 @@
 /*
- * $Id: edit_field.c,v 1.7 2003/05/17 23:16:13 tom Exp $
+ * $Id: edit_field.c,v 1.8 2004/05/29 22:49:23 tom Exp $
  *
  * A wrapper for form_driver() which keeps track of the user's editing changes
  * for each field, and makes the result available as a null-terminated string
@@ -181,7 +181,7 @@ help_edit_field(void)
 
     keypad(help, TRUE);
     keypad(data, TRUE);
-    waddstr(data, "Defined form-traversal keys:\n");
+    waddstr(data, "Defined form edit/traversal keys:\n");
     for (n = 0; n < SIZEOF(commands); ++n) {
 	const char *name;
 #ifdef NCURSES_VERSION

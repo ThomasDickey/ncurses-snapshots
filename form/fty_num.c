@@ -13,18 +13,20 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_num.c,v 1.17 2004/04/03 23:00:47 tom Exp $")
+MODULE_ID("$Id: fty_num.c,v 1.18 2004/05/29 19:12:45 tom Exp $")
 
 #if HAVE_LOCALE_H
 #include <locale.h>
 #endif
 
-typedef struct {
-  int    precision;
-  double low;
-  double high;
-  struct lconv* L;
-} numericARG;
+typedef struct
+  {
+    int precision;
+    double low;
+    double high;
+    struct lconv *L;
+  }
+numericARG;
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -34,19 +36,21 @@ typedef struct {
 |
 |   Return Values :  Pointer to argument structure or NULL on error
 +--------------------------------------------------------------------------*/
-static void *Make_Numeric_Type(va_list * ap)
+static void *
+Make_Numeric_Type(va_list *ap)
 {
-  numericARG *argn = (numericARG *)malloc(sizeof(numericARG));
+  numericARG *argn = (numericARG *) malloc(sizeof(numericARG));
 
   if (argn)
     {
-      argn->precision = va_arg(*ap,int);
-      argn->low       = va_arg(*ap,double);
-      argn->high      = va_arg(*ap,double);
+      argn->precision = va_arg(*ap, int);
+      argn->low = va_arg(*ap, double);
+      argn->high = va_arg(*ap, double);
+
 #if HAVE_LOCALE_H
-      argn->L         = localeconv();
+      argn->L = localeconv();
 #else
-      argn->L         = NULL;
+      argn->L = NULL;
 #endif
     }
   return (void *)argn;
@@ -60,16 +64,17 @@ static void *Make_Numeric_Type(va_list * ap)
 |
 |   Return Values :  Pointer to argument structure or NULL on error.
 +--------------------------------------------------------------------------*/
-static void *Copy_Numeric_Type(const void * argp)
+static void *
+Copy_Numeric_Type(const void *argp)
 {
   const numericARG *ap = (const numericARG *)argp;
-  numericARG *result = (numericARG *)0;
+  numericARG *result = (numericARG *) 0;
 
   if (argp)
     {
-      result = (numericARG *)malloc(sizeof(numericARG));
+      result = (numericARG *) malloc(sizeof(numericARG));
       if (result)
-	*result  = *ap;
+	*result = *ap;
     }
   return (void *)result;
 }
@@ -82,9 +87,10 @@ static void *Copy_Numeric_Type(const void * argp)
 |
 |   Return Values :  -
 +--------------------------------------------------------------------------*/
-static void Free_Numeric_Type(void * argp)
+static void
+Free_Numeric_Type(void *argp)
 {
-  if (argp) 
+  if (argp)
     free(argp);
 }
 
@@ -98,51 +104,57 @@ static void Free_Numeric_Type(void * argp)
 |   Return Values :  TRUE  - field is valid
 |                    FALSE - field is invalid
 +--------------------------------------------------------------------------*/
-static bool Check_Numeric_Field(FIELD * field, const void * argp)
+static bool
+Check_Numeric_Field(FIELD *field, const void *argp)
 {
   const numericARG *argn = (const numericARG *)argp;
-  double low          = argn->low;
-  double high         = argn->high;
-  int prec            = argn->precision;
-  unsigned char *bp   = (unsigned char *)field_buffer(field,0);
-  char *s             = (char *)bp;
-  double val          = 0.0;
-  struct lconv* L     = argn->L;
+  double low = argn->low;
+  double high = argn->high;
+  int prec = argn->precision;
+  unsigned char *bp = (unsigned char *)field_buffer(field, 0);
+  char *s = (char *)bp;
+  double val = 0.0;
+  struct lconv *L = argn->L;
   char buf[64];
 
-  while(*bp && *bp==' ') bp++;
+  while (*bp && *bp == ' ')
+    bp++;
   if (*bp)
     {
-      if (*bp=='-' || *bp=='+')
+      if (*bp == '-' || *bp == '+')
 	bp++;
-      while(*bp)
+      while (*bp)
 	{
-	  if (!isdigit(UChar(*bp))) break;
+	  if (!isdigit(UChar(*bp)))
+	    break;
 	  bp++;
 	}
-      if (*bp==(
+      if (*bp == (
 #if HAVE_LOCALE_H
-		(L && L->decimal_point) ? *(L->decimal_point) :
+		   (L && L->decimal_point) ? *(L->decimal_point) :
 #endif
-		'.'))
+		   '.'))
 	{
 	  bp++;
-	  while(*bp)
+	  while (*bp)
 	    {
-	      if (!isdigit(UChar(*bp))) break;
+	      if (!isdigit(UChar(*bp)))
+		break;
 	      bp++;
 	    }
 	}
-      while(*bp && *bp==' ') bp++;
-      if (*bp=='\0')
+      while (*bp && *bp == ' ')
+	bp++;
+      if (*bp == '\0')
 	{
 	  val = atof(s);
-	  if (low<high)
+	  if (low < high)
 	    {
-	      if (val<low || val>high) return FALSE;
+	      if (val < low || val > high)
+		return FALSE;
 	    }
-	  sprintf(buf,"%.*f",(prec>0?prec:0),val);
-	  set_field_buffer(field,0,buf);
+	  sprintf(buf, "%.*f", (prec > 0 ? prec : 0), val);
+	  set_field_buffer(field, 0, buf);
 	  return TRUE;
 	}
     }
@@ -160,25 +172,27 @@ static bool Check_Numeric_Field(FIELD * field, const void * argp)
 |   Return Values :  TRUE  - character is valid
 |                    FALSE - character is invalid
 +--------------------------------------------------------------------------*/
-static bool Check_Numeric_Character(int c, const void * argp)
+static bool
+Check_Numeric_Character(int c, const void *argp)
 {
   const numericARG *argn = (const numericARG *)argp;
-  struct lconv* L  = argn->L;  
+  struct lconv *L = argn->L;
 
-  return (isdigit(UChar(c))  || 
-	  c == '+'    || 
-	  c == '-'    || 
+  return (isdigit(UChar(c)) ||
+	  c == '+' ||
+	  c == '-' ||
 	  c == (
 #if HAVE_LOCALE_H
-		(L && L->decimal_point) ? *(L->decimal_point) :
+		 (L && L->decimal_point) ? *(L->decimal_point) :
 #endif
-		'.')
-	  ) ? TRUE : FALSE;
+		 '.')
+    )? TRUE : FALSE;
 }
 
-static FIELDTYPE typeNUMERIC = {
+static FIELDTYPE typeNUMERIC =
+{
   _HAS_ARGS | _RESIDENT,
-  1,                           /* this is mutable, so we can't be const */
+  1,				/* this is mutable, so we can't be const */
   (FIELDTYPE *)0,
   (FIELDTYPE *)0,
   Make_Numeric_Type,

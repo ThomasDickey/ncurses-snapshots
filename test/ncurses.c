@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.212 2004/05/22 23:50:54 tom Exp $
+$Id: ncurses.c,v 1.213 2004/05/29 22:49:37 tom Exp $
 
 ***************************************************************************/
 
@@ -4287,7 +4287,7 @@ demo_forms(void)
     unsigned n = 0;
 
     move(18, 0);
-    addstr("Defined form-traversal keys:   ^Q/ESC- exit form\n");
+    addstr("Defined edit/traversal keys:   ^Q/ESC- exit form\n");
     addstr("^N   -- go to next field       ^P  -- go to previous field\n");
     addstr("Home -- go to first field      End -- go to last field\n");
     addstr("^L   -- go to field to left    ^R  -- go to field to right\n");

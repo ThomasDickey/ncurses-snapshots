@@ -13,11 +13,13 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_alnum.c,v 1.13 2004/04/03 23:00:47 tom Exp $")
+MODULE_ID("$Id: fty_alnum.c,v 1.14 2004/05/29 19:15:48 tom Exp $")
 
-typedef struct {
-  int width;
-} alnumARG;
+typedef struct
+  {
+    int width;
+  }
+alnumARG;
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
@@ -27,12 +29,13 @@ typedef struct {
 |
 |   Return Values :  Pointer to argument structure or NULL on error
 +--------------------------------------------------------------------------*/
-static void *Make_AlphaNumeric_Type(va_list * ap)
+static void *
+Make_AlphaNumeric_Type(va_list *ap)
 {
-  alnumARG *argp = (alnumARG *)malloc(sizeof(alnumARG));
+  alnumARG *argp = (alnumARG *) malloc(sizeof(alnumARG));
 
   if (argp)
-    argp->width = va_arg(*ap,int);
+    argp->width = va_arg(*ap, int);
 
   return ((void *)argp);
 }
@@ -45,10 +48,11 @@ static void *Make_AlphaNumeric_Type(va_list * ap)
 |
 |   Return Values :  Pointer to argument structure or NULL on error.
 +--------------------------------------------------------------------------*/
-static void *Copy_AlphaNumeric_Type(const void *argp)
+static void *
+Copy_AlphaNumeric_Type(const void *argp)
 {
   const alnumARG *ap = (const alnumARG *)argp;
-  alnumARG *result = (alnumARG *)malloc(sizeof(alnumARG));
+  alnumARG *result = (alnumARG *) malloc(sizeof(alnumARG));
 
   if (result)
     *result = *ap;
@@ -64,7 +68,8 @@ static void *Copy_AlphaNumeric_Type(const void *argp)
 |
 |   Return Values :  -
 +--------------------------------------------------------------------------*/
-static void Free_AlphaNumeric_Type(void * argp)
+static void
+Free_AlphaNumeric_Type(void *argp)
 {
   if (argp)
     free(argp);
@@ -81,22 +86,23 @@ static void Free_AlphaNumeric_Type(void * argp)
 |   Return Values :  TRUE  - field is valid
 |                    FALSE - field is invalid
 +--------------------------------------------------------------------------*/
-static bool Check_AlphaNumeric_Field(FIELD * field, const void * argp)
+static bool
+Check_AlphaNumeric_Field(FIELD *field, const void *argp)
 {
   int width = ((const alnumARG *)argp)->width;
-  unsigned char *bp  = (unsigned char *)field_buffer(field,0);
-  int  l = -1;
+  unsigned char *bp = (unsigned char *)field_buffer(field, 0);
+  int l = -1;
   unsigned char *s;
 
-  while(*bp && *bp==' ')
+  while (*bp && *bp == ' ')
     bp++;
   if (*bp)
     {
       s = bp;
-      while(*bp && isalnum(UChar(*bp)))
+      while (*bp && isalnum(UChar(*bp)))
 	bp++;
-      l = (int)(bp-s);
-      while(*bp && *bp==' ')
+      l = (int)(bp - s);
+      while (*bp && *bp == ' ')
 	bp++;
     }
   return ((*bp || (l < width)) ? FALSE : TRUE);
@@ -113,14 +119,16 @@ static bool Check_AlphaNumeric_Field(FIELD * field, const void * argp)
 |   Return Values :  TRUE  - character is valid
 |                    FALSE - character is invalid
 +--------------------------------------------------------------------------*/
-static bool Check_AlphaNumeric_Character(int c, const void * argp GCC_UNUSED)
+static bool
+Check_AlphaNumeric_Character(int c, const void *argp GCC_UNUSED)
 {
   return (isalnum(UChar(c)) ? TRUE : FALSE);
 }
 
-static FIELDTYPE typeALNUM = {
+static FIELDTYPE typeALNUM =
+{
   _HAS_ARGS | _RESIDENT,
-  1,                           /* this is mutable, so we can't be const */
+  1,				/* this is mutable, so we can't be const */
   (FIELDTYPE *)0,
   (FIELDTYPE *)0,
   Make_AlphaNumeric_Type,
