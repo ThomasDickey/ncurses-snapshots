@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.26 1997/02/16 02:39:55 tom Exp $
+# $Id: Makefile.in,v 1.27 1997/05/04 00:56:13 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -43,6 +43,7 @@ CFLAGS_SHARED	= $(CCFLAGS) @CC_SHARED_OPTS@
 
 CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
+ABI_VERSION	= @ABI_VERSION@
 LOCAL_LIBS	= @TEST_DEPS@
 
 LD		= @LD@

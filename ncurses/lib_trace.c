@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.22 1997/04/24 11:02:43 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.23 1997/05/02 00:13:07 tom Exp $")
 
 #include <ctype.h>
 #if HAVE_FCNTL_H
@@ -47,6 +47,7 @@ void trace(const unsigned int tracelevel)
 {
 static bool	been_here = FALSE;
 
+   	_nc_tracing = tracelevel;
 	if (! been_here && tracelevel) {
 		been_here = TRUE;
 
@@ -63,10 +64,9 @@ static bool	been_here = FALSE;
 #elif HAVE_SETBUF	/* POSIX */
 		(void) setbuffer(tracefp, (char *)0);
 #endif
-		_tracef("TRACING NCURSES version %s", NCURSES_VERSION);
+		_tracef("TRACING NCURSES version %s (%d)",
+			NCURSES_VERSION, NCURSES_VERSION_PATCH);
 	}
-
-   	_nc_tracing = tracelevel;
 }
 
 const char *_nc_visbuf2(int bufnum, const char *buf)

@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_regex.c,v 1.8 1997/02/15 17:43:39 tom Exp $")
+MODULE_ID("$Id: fty_regex.c,v 1.9 1997/05/01 16:03:17 tom Exp $")
 
 #if HAVE_REGEX_H	/* We prefer POSIX regex */
 #include <regex.h>
@@ -24,7 +24,7 @@ typedef struct
   unsigned long *refCount;
 } RegExp_Arg;
 
-#elif HAVE_REGEXP_H
+#elif HAVE_REGEXP_H | HAVE_REGEXPR_H
 #undef RETURN
 static int reg_errno;
 
@@ -47,7 +47,11 @@ static char *RegEx_Error(int code)
 #define RETURN(c)	return(c)
 #define ERROR(c)	return RegEx_Error(c)
 
+#if HAVE_REGEXP_H
 #include <regexp.h>
+#else
+#include <regexpr.h>
+#endif
 
 typedef struct
 {
@@ -94,7 +98,7 @@ static void *Make_RegularExpression_Type(va_list * ap)
 	}
     }
   return((void *)preg);
-#elif HAVE_REGEXP_H
+#elif HAVE_REGEXP_H | HAVE_REGEXPR_H
   char *rx = va_arg(*ap,char *);
   RegExp_Arg *pArg;
 
@@ -111,7 +115,11 @@ static void *Make_RegularExpression_Type(va_list * ap)
 	char *buf = (char *)malloc(blen);
 	if (buf)
 	  {
+#if HAVE_REGEXP_H
 	    char *last_pos = compile (rx, buf, &buf[blen], '\0');
+#else
+	    char *last_pos = compile (rx, buf, &buf[blen], '\0');
+#endif
 	    if (reg_errno)
 	      {
 		free(buf);
@@ -154,7 +162,7 @@ static void *Make_RegularExpression_Type(va_list * ap)
 +--------------------------------------------------------------------------*/
 static void *Copy_RegularExpression_Type(const void * argp)
 {
-#if (HAVE_REGEX_H | HAVE_REGEXP_H)
+#if (HAVE_REGEX_H | HAVE_REGEXP_H | HAVE_REGEXPR_H)
   const RegExp_Arg *ap = (const RegExp_Arg *)argp;
   const RegExp_Arg *new = (const RegExp_Arg *)0; 
   
@@ -179,7 +187,7 @@ static void *Copy_RegularExpression_Type(const void * argp)
 +--------------------------------------------------------------------------*/
 static void Free_RegularExpression_Type(void * argp)
 {
-#if HAVE_REGEX_H | HAVE_REGEXP_H
+#if HAVE_REGEX_H | HAVE_REGEXP_H | HAVE_REGEXPR_H
   RegExp_Arg *ap = (RegExp_Arg *)argp;
   if (ap)
     {
@@ -191,7 +199,7 @@ static void Free_RegularExpression_Type(void * argp)
 	      free(ap->refCount);
 	      regfree(ap->pRegExp);
 	    }
-#elif HAVE_REGEXP_H
+#elif HAVE_REGEXP_H | HAVE_REGEXPR_H
 	  if (ap->compiled_expression)
 	    {
 	      free(ap->refCount);
@@ -222,7 +230,7 @@ static bool Check_RegularExpression_Field(FIELD * field, const void  * argp)
   const RegExp_Arg *ap = (const RegExp_Arg*)argp;
   if (ap && ap->pRegExp)
     match = (regexec(ap->pRegExp,field_buffer(field,0),0,NULL,0) ? FALSE:TRUE);
-#elif HAVE_REGEXP_H
+#elif HAVE_REGEXP_H | HAVE_REGEXPR_H
   RegExp_Arg *ap = (RegExp_Arg *)argp;
   if (ap && ap->compiled_expression)
     match = (step(field_buffer(field,0),ap->compiled_expression) ? TRUE:FALSE);

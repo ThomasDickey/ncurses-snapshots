@@ -1,5 +1,5 @@
 /*
- * $Id: rain.c,v 1.7 1996/12/14 23:48:16 tom Exp $
+ * $Id: rain.c,v 1.8 1997/05/03 18:38:27 tom Exp $
  */
 #include <test.priv.h>
 
@@ -10,8 +10,6 @@
 /* rain 11/3/1980 EPS/CITHEP */
 
 #define cursor(col,row) move(row,col)
-
-static char *normal, *hidden;
 
 static float ranf(void);
 static void onsig(int sig);
@@ -32,9 +30,7 @@ float c;
     initscr();
     nl();
     noecho();
-    if ((normal = tigetstr("cnorm")) != 0
-     && (hidden = tigetstr("civis")) != 0)
-    	putp(tparm(hidden));
+    curs_set(0);
 
     r = (float)(LINES - 4);
     c = (float)(COLS - 4);
@@ -93,7 +89,7 @@ float c;
 static void
 onsig(int n GCC_UNUSED)
 {
-    putp(tparm(normal));
+    curs_set(1);
     endwin();
     exit(EXIT_FAILURE);
 }

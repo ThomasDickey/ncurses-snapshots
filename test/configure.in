@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.13 1997/04/06 01:09:36 tom Exp $
+dnl $Id: configure.in,v 1.14 1997/05/04 00:56:44 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -123,6 +123,9 @@ AC_SUBST(LD_MODEL)
 
 LOCAL_LDFLAGS=""
 AC_SUBST(LOCAL_LDFLAGS)
+
+ABI_VERSION=""
+AC_SUBST(ABI_VERSION)
 
 TEST_DEPS=""
 AC_SUBST(TEST_DEPS)

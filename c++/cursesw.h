@@ -2,29 +2,32 @@
 #ifndef _CURSESW_H
 #define _CURSESW_H
 
-#pragma interface
-
 #include <ncurses_cfg.h>
+
+#pragma interface
 
 #include <stdio.h>
 #include <stdarg.h>
 
 #ifdef __SUNPRO_CC
-#include <generic.h>
-#include <string.h>
-extern "C" { unsigned sleep(int); }
+#  include <generic.h>
+#  include <string.h>
+   extern "C" { unsigned sleep(int); }
 #else
-#if HAVE_BUILTIN_H
-#include <builtin.h>
-#endif
+#  if HAVE_BUILTIN_H
+#    include <builtin.h>
+#  endif
 #endif
 
 #if HAVE_VALUES_H
-#include <values.h>
+#  include <values.h>
 #endif
+
 #include <strstream.h>
+#include <etip.h>
+
 extern "C" {
-#include   <curses.h>
+#  include   <curses.h>
 }
 
 /* SCO 3.2v4 curses.h includes term.h, which defines lines as a macro.
@@ -494,245 +497,232 @@ inline int UNDEF(nocrmode)(void) { return nocrmode(); }
 
 class NCursesWindow
 {
-  private:
-    void           init(); 
-    void           err_handler(const char *);
-  protected:
-    static int     count;            // count of all active windows:
-                                     //   We rely on the c++ promise that
-                                     //   all otherwise uninitialized
-                                     //   static class vars are set to 0
+  friend class NCursesMenu; friend class NCursesForm;
+  
+private:
+  static void    initialize();
+  void           init(); 
+  void           err_handler(const char *) const THROWS(NCursesException);
 
-    WINDOW *       w;                // the curses WINDOW
+  short          getcolor(int getback) const;
 
-    int            alloced;          // true if we own the WINDOW
+  static int     setpalette(short fore, short back, short pair);
+  static int     colorInitialized;
+  
+protected:
+  static int     count;            // count of all active windows:
+  //   We rely on the c++ promise that
+  //   all otherwise uninitialized
+  //   static class vars are set to 0
+  
+  WINDOW *       w;                // the curses WINDOW
+  
+  int            alloced;          // true if we own the WINDOW
+  
+  NCursesWindow* par;              // parent, if subwindow
+  NCursesWindow* subwins;          // head of subwindows list
+  NCursesWindow* sib;              // next subwindow of parent
+  
+  void           kill_subwindows(); // disable all subwindows
+  
+public:
+  NCursesWindow(WINDOW* &window);  // useful only for stdscr
+  
+  NCursesWindow(int lines,         // number of lines
+		int cols,          // number of columns
+		int begin_y,       // line origin
+		int begin_x);      // col origin
+  
+  NCursesWindow(NCursesWindow& par,// parent window
+		int lines,         // number of lines
+		int cols,          // number of columns
+		int by,            // absolute or relative
+		int bx,            //   origins:
+		char absrel = 'a');// if `a', by & bx are
+  // absolute screen pos,
+  // else if `r', they are
+  // relative to par origin
+  virtual ~NCursesWindow();
+  
+  static void    useColors(void);
+  // Call this routine very early if you want to have colors.
 
-    NCursesWindow* par;              // parent, if subwindow
-    NCursesWindow* subwins;          // head of subwindows list
-    NCursesWindow* sib;              // next subwindow of parent
-
-    void           kill_subwindows(); // disable all subwindows
-
-  public:
-    NCursesWindow(WINDOW* &window);  // useful only for stdscr
-
-    NCursesWindow(int lines,         // number of lines
- 		  int cols,          // number of columns
-	 	  int begin_y,       // line origin
-		  int begin_x);      // col origin
-
-    NCursesWindow(NCursesWindow& par,// parent window
-		  int lines,         // number of lines
-		  int cols,          // number of columns
-		  int by,            // absolute or relative
-		  int bx,            //   origins:
-		  char absrel = 'a');// if `a', by & bx are
-                                     // absolute screen pos,
-                                     // else if `r', they are
-                                     // relative to par origin
-    virtual ~NCursesWindow();
-
-    // terminal status
-    int            lines() const { return LINES; }
-                            // number of lines on terminal, *not* window
-    int            cols() const { return COLS; }
-                            // number of cols  on terminal, *not* window
-    virtual int    colors() const { return 1; }
-                            // number of available colors
-
-    // window status
-    int            height() const { return maxy() - begy() + 1; }
-                             // number of lines in this window
-    int            width() const { return maxx() - begx() + 1; }
-                             // number of cols in this window
-    int            begx() const { return w->_begx; }
-                             // smallest x coord in window
-    int            begy() const { return w->_begy; }
-                             // smallest y coord in window
-    int            maxx() const { return w->_maxx; }
-                             // largest  x coord in window
-    int            maxy() const { return w->_maxy; }
-                             // largest  x coord in window
-    virtual short  foreground() const { return 1; }
-                             // actual foreground color
-    virtual short  background() const { return 1; }
-                             // actual background color
-    virtual short  getcolor() const { return 0x11; }
-                             // actual color pair number
-    virtual int    setpalette(short fore, short back) const { return 0; }
-                             // set color palette entry
-    virtual int    setcolor(short pair) { return 0; }
-                             // set actually used palette entry
-
-    // window positioning
-    int            move(int y, int x) { return ::wmove(w, y, x); }
-
-    // coordinate positioning
-    void           getyx(int& y, int& x) { ::getyx(w, y, x); }
-    int            mvcur(int sy, int ey, int sx, int ex)
-                       { return ::mvcur(sy, ey, sx, ex); }
-
-    // input
-    int            getch() { return ::wgetch(w); }
-    int            getch(int y, int x)
-                       { return (::wmove(w, y, x)==ERR) ? ERR : ::wgetch(w); }
-    int            getstr(char* str) { return ::wgetstr(w, str); }
-    int            getstr(int y, int x, char* str)
-                       { return (::wmove(w, y, x)==ERR) ? ERR 
-                                                        : ::wgetstr(w, str); }
-    int            scanw(const char*, ...)
+  // terminal status
+  int            lines() const { return LINES; }
+  // number of lines on terminal, *not* window
+  int            cols() const { return COLS; }
+  // number of cols  on terminal, *not* window
+  static int     NumberOfColors();
+  // number of available colors
+  int     colors() const { return NumberOfColors(); }
+  // number of available colors
+  
+  // window status
+  int            height() const { return maxy() + 1; }
+  // number of lines in this window
+  int            width() const { return maxx() + 1; }
+  // number of cols in this window
+  int            begx() const { return w->_begx; }
+  // smallest x coord in window
+  int            begy() const { return w->_begy; }
+  // smallest y coord in window
+  int            maxx() const { return w->_maxx; }
+  // largest  x coord in window
+  int            maxy() const { return w->_maxy; }
+  // largest  x coord in window
+  short  getcolor() const;
+  // actual color pair
+  short  foreground() const { getcolor(0); }
+  // actual foreground color
+  short  background() const { getcolor(1); }
+  // actual background color
+  int    setpalette(short fore, short back);
+  // set color palette entry
+  int    setcolor(short pair);
+  // set actually used palette entry
+  
+  // window positioning
+  int            move(int y, int x) { return ::wmove(w, y, x); }
+  
+  // coordinate positioning
+  void           getyx(int& y, int& x) { ::getyx(w, y, x); }
+  int            mvcur(int sy, int ey, int sx, int ex) { 
+    return ::mvcur(sy, ey, sx, ex); }
+  
+  // input
+  int            getch() { return ::wgetch(w); }
+  int            getch(int y, int x) {
+    return (::wmove(w, y, x)==ERR) ? ERR : ::wgetch(w); }
+  int            getstr(char* str) { return ::wgetstr(w, str); }
+  int            getstr(int y, int x, char* str) { 
+    return (::wmove(w, y, x)==ERR) ? ERR : ::wgetstr(w, str); }
+  int            scanw(const char*, ...)
 #if __GNUG__ >= 2
-	           __attribute__ ((format (scanf, 2, 3)));
+    __attribute__ ((format (scanf, 2, 3)));
 #else
-                   ;
+  ;
 #endif
-    int            scanw(int, int, const char*, ...)
+  int            scanw(int, int, const char*, ...)
 #if __GNUG__ >= 2
-	           __attribute__ ((format (scanf, 4, 5)));
+    __attribute__ ((format (scanf, 4, 5)));
 #else
-                   ;
+  ;
 #endif
-
-    // output
-    int            addch(const chtype ch) { return ::waddch(w, ch); }
-    int            addch(int y, int x, chtype ch)
-                       { return (::wmove(w, y, x)==ERR) ? ERR 
-                                                        : ::waddch(w, ch); }
-    int            addstr(const char* str) { return ::waddstr(w, (char*)str); }
-    int            addstr(int y, int x, const char * str)
-                       { return (::wmove(w, y, x)==ERR) ? ERR
-                                                  : ::waddstr(w, (char*)str); }
-    int            printw(const char* fmt, ...)
+  
+  // output
+  int            addch(const chtype ch) { return ::waddch(w, ch); }
+  int            addch(int y, int x, chtype ch) {
+    return (::wmove(w, y, x)==ERR) ? ERR : ::waddch(w, ch); }
+  int            addstr(const char* str) { return ::waddstr(w, (char*)str); }
+  int            addstr(int y, int x, const char * str) {
+    return (::wmove(w, y, x)==ERR) ? ERR : ::waddstr(w, (char*)str); }
+  int            printw(const char* fmt, ...)
 #if __GNUG__ >= 2
-	           __attribute__ ((format (printf, 2, 3)));
+    __attribute__ ((format (printf, 2, 3)));
 #else
-                   ;
+  ;
 #endif
-    int            printw(int y, int x, const char * fmt, ...)
+  int            printw(int y, int x, const char * fmt, ...)
 #if __GNUG__ >= 2
-	           __attribute__ ((format (printf, 4, 5)));
+    __attribute__ ((format (printf, 4, 5)));
 #else
-                   ;
+  ;
 #endif
-    int            inch() { return ::winch(w); }
-    int            inch(int y, int x)
-                       { return (::wmove(w, y, x)==ERR) ? ERR : ::winch(w); }
-    int            insch(chtype ch) { return ::winsch(w, ch); }
-    int            insch(int y, int x, chtype ch)
-                       { return (::wmove(w, y, x)==ERR) ? ERR 
-                                                        : ::winsch(w, ch); }
-    int            insertln() { return ::winsertln(w); }
-    int            attron(chtype at) { return ::wattron(w, at); }
-    int            attroff(chtype at) { return ::wattroff(w, at); }
-    int            attrset(chtype at) { return ::wattrset(w, at); }
-
-    // borders
-    int            box(char vert, char  hor) { return ::box(w, vert, hor); }
-    int            box() { return ::box(w, ACS_VLINE, ACS_HLINE); }
-
-    // lines and boxes
-    int            hline(int y, int x, chtype ch, int len)
-                       { return (::wmove(w, y, x)==ERR) ? ERR:
-                                               ::whline(w, ch, len); }
-    int            hline(int y, int x, int len)
-                       { return (::wmove(w, y, x)==ERR) ? ERR:
-                                               ::whline(w, ACS_HLINE, len); }
-    int            hline(chtype ch, int len) { return ::whline(w, ch, len); }
-    int            hline(int len) { return ::whline(w, ACS_HLINE, len); }
-    int            vline(int y, int x, chtype ch, int len)
-                       { return (::wmove(w, y, x)==ERR) ? ERR:
-                                                ::wvline(w, ch, len); }
-    int            vline(int y, int x, int len)
-                       { return (::wmove(w, y, x)==ERR) ? ERR:
-                                                ::wvline(w, ACS_VLINE, len); }
-    int            vline(chtype ch, int len) { return ::wvline(w, ch, len); }
-    int            vline(int len) { return ::wvline(w, ACS_VLINE, len); }
-
-    // erasure
-    int            erase() { return ::werase(w); }
-    int            clear() { return ::wclear(w); }
-    int            clearok(int bf) { return ::clearok(w, bf); }
-    int            clrtobot() { return ::wclrtobot(w); }
-    int            clrtoeol() { return ::wclrtoeol(w); }
-    int            delch() { return ::wdelch(w); }
-    int            delch(int y, int x)
-                       { return (::wmove(w, y, x)==ERR) ? ERR : ::wdelch(w); }
-    int            deleteln() { return ::wdeleteln(w); }
-
-    // screen control
-    int            scroll() { return ::scroll(w); }
-    int            scrollok(int bf) { return ::scrollok(w, bf); }
-    int            idlok(int bf) { return ::idlok(w, bf); }
-    int            touchwin() { return ::touchwin(w); }
-    int            refresh() { return ::wrefresh(w); }
-    int            leaveok(int bf) { return ::leaveok(w, bf); }
-    int            noutrefresh() { return ::wnoutrefresh(w); }
-    int            doupdate() { return ::doupdate(); }
+  int            inch() { return ::winch(w); }
+  int            inch(int y, int x) {
+    return (::wmove(w, y, x)==ERR) ? ERR : ::winch(w); }
+  int            insch(chtype ch) { return ::winsch(w, ch); }
+  int            insch(int y, int x, chtype ch) {
+    return (::wmove(w, y, x)==ERR) ? ERR : ::winsch(w, ch); }
+  int            insertln() { return ::winsertln(w); }
+  int            attron(chtype at) { return ::wattron(w, at); }
+  int            attroff(chtype at) { return ::wattroff(w, at); }
+  int            attrset(chtype at) { return ::wattrset(w, at); }
+  
+  // borders
+  int            box(chtype vert=0, chtype  hor=0) { return ::box(w, vert, hor); }
+  
+  // lines and boxes
+  int            hline(int y, int x, chtype ch, int len) {
+    return (::wmove(w, y, x)==ERR) ? ERR: ::whline(w, ch, len); }
+  int            hline(int y, int x, int len) {
+    return (::wmove(w, y, x)==ERR) ? ERR: ::whline(w, 0, len); }
+  int            hline(chtype ch, int len) { return ::whline(w, ch, len); }
+  int            hline(int len) { return ::whline(w, 0, len); }
+  int            vline(int y, int x, chtype ch, int len) {
+    return (::wmove(w, y, x)==ERR) ? ERR: ::wvline(w, ch, len); }
+  int            vline(int y, int x, int len) {
+    return (::wmove(w, y, x)==ERR) ? ERR: ::wvline(w, 0, len); }
+  int            vline(chtype ch, int len) { return ::wvline(w, ch, len); }
+  int            vline(int len) { return ::wvline(w, 0, len); }
+  
+  // erasure
+  int            erase() { return ::werase(w); }
+  int            clear() { return ::wclear(w); }
+  int            clearok(int bf) { return ::clearok(w, bf); }
+  int            clrtobot() { return ::wclrtobot(w); }
+  int            clrtoeol() { return ::wclrtoeol(w); }
+  int            delch() { return ::wdelch(w); }
+  int            delch(int y, int x) {
+    return (::wmove(w, y, x)==ERR) ? ERR : ::wdelch(w); }
+  int            deleteln() { return ::wdeleteln(w); }
+  
+  // screen control
+  int            scroll() { return ::scroll(w); }
+  int            scrollok(int bf) { return ::scrollok(w, bf); }
+  int            idlok(int bf) { return ::idlok(w, bf); }
+  int            touchwin() { return ::touchwin(w); }
+  int            refresh() { return ::wrefresh(w); }
+  int            leaveok(int bf) { return ::leaveok(w, bf); }
+  int            noutrefresh() { return ::wnoutrefresh(w); }
+  int            doupdate() { return ::doupdate(); }
 #ifndef _no_flushok
-    int            flushok(int bf) { return ::flushok(w, bf); }
+  int            flushok(int bf) { return ::flushok(w, bf); }
 #endif
-    int            keypad(int bf) { return ::keypad(w, bf); }
-    int            standout() { return ::wstandout(w); }
-    int            standend() { return ::wstandend(w); }
-
-    // multiple window control
-    int            overlay(NCursesWindow &win)
-                       { return ::overlay(w, win.w); }
-    int            overwrite(NCursesWindow &win)
-                       { return ::overwrite(w, win.w); }
-
-
-    // traversal support
-    NCursesWindow*  child() { return subwins; }
-    NCursesWindow*  sibling() { return sib; }
-    NCursesWindow*  parent() { return par; }
+  int            keypad(int bf) { return ::keypad(w, bf); }
+  int            standout() { return ::wstandout(w); }
+  int            standend() { return ::wstandend(w); }
+  
+  // multiple window control
+  int            overlay(NCursesWindow &win) {
+    return ::overlay(w, win.w); }
+  int            overwrite(NCursesWindow &win) {
+    return ::overwrite(w, win.w); }
+  
+  
+  // traversal support
+  NCursesWindow*  child() { return subwins; }
+  NCursesWindow*  sibling() { return sib; }
+  NCursesWindow*  parent() { return par; }
+  
+  // True if win is a child of this window. 
+  bool isDescendant(NCursesWindow& win);
 };
 
 
+// We leave this here for compatibility reasons.
 class NCursesColorWindow : public NCursesWindow {
-  private:
-    void           colorInit(void);
-    short          getcolor(int getback) const;
+public:
+  NCursesColorWindow(WINDOW* &window)   // useful only for stdscr
+    : NCursesWindow(window) {
+      useColors(); }
 
-  protected:
-    static int     colorInitialized;
+  NCursesColorWindow(int lines,         // number of lines
+		     int cols,          // number of columns
+		     int begin_y,       // line origin
+		     int begin_x)       // col origin
+    : NCursesWindow(lines,cols,begin_y,begin_x) {
+      useColors(); }
 
-  public:
-    NCursesColorWindow(WINDOW* &window);  // useful only for stdscr
-
-    NCursesColorWindow(int lines,         // number of lines
-		       int cols,          // number of columns
-		       int begin_y,       // line origin
-		       int begin_x);      // col origin
-
-    NCursesColorWindow(NCursesWindow& par,// parent window
-		       int lines,         // number of lines
-		       int cols,          // number of columns
-		       int by,            // absolute or relative
-		       int bx,            //   origins:
-		       char absrel = 'a');// if `a', by & bx are
-                                          // absolute screen pos,
-                                          // else if `r', they are
-                                          // relative to par origin
-
-    // terminal status
-    int            colors() const { return has_colors() ? COLORS : 1; }
-                            // number of available colors
-
-    // window status
-    short          foreground() const { return getcolor(0); }
-                             // actual foreground color
-    short          background() const { return getcolor(1); }
-                             // actual background color
-    short          getcolor() const { return PAIR_NUMBER(w->_attrs); }
-                             // actual color pair number
-    static int     setpalette(short fore, short back, short pair);
-    int            setpalette(short fore, short back) const {
-                      return setpalette(fore, back, PAIR_NUMBER(w->_attrs)); }
-                             // set color palette entry
-    int            setcolor(short pair);
-                             // set actually used palette entry
-
+  NCursesColorWindow(NCursesWindow& par,// parent window
+		     int lines,         // number of lines
+		     int cols,          // number of columns
+		     int by,            // absolute or relative
+		     int bx,            //   origins:
+		     char absrel = 'a') // if `a', by & bx are
+    : NCursesWindow(par,lines,cols,     // absolute screen pos,
+		    by,bx) {            // else if `r', they are
+      useColors(); }                    // relative to par origin  
 };
 
 #endif // _CURSESW_H

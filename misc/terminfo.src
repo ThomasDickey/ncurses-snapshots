@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 10.1.0
+#	Version 10.1.1
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -321,7 +321,7 @@ klone+koi8acs|alternate character set for ansi.sys displays with KOI8 charset,
 	acsc=l\202m\204k\203j\205u\207t\206v\210w\211q\200x\201n\212o\213s\214p\216r\217`\004a\237f\234g\232~\225.\037-\036+\020\,\021h\222I\2200\215y\230z\231{\267}L|\274, 
 	rmacs=\E[10m, smacs=\E[11m, 
 
-# ANSI.SYS color control.  The setb/setf caps depend on the coincidence
+# ANSI.SYS color control.  The setab/setaf caps depend on the coincidence
 # between SVr4/XPG4's color numbers and ANSI.SYS attributes.  Here are longer
 # but equivalent strings that don't rely on that coincidence:
 # setb=\E[4%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m,
@@ -336,7 +336,7 @@ klone+color|color control for ansi.sys and ISO6429-compatible displays,
 # default color pair,  but many `ANSI' terminals don't grok the <op> cap.
 ecma+color|color control for ECMA-48-compatible terminals, 
 	colors#8, ncv#3, pairs#64, 
-	op=\E[39;49m, setb=\E[4%p1%dm, setf=\E[3%p1%dm, 
+	op=\E[39;49m, setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
 
 # Attribute control for ECMA-48-compatible terminals
 ecma+sgr|attribute capabilities for true ECMA-48 terminals, 
@@ -979,6 +979,9 @@ x68k|x68k-ite|NetBSD/x68k ITE,
 # for syscons
 # common entry without semigraphics
 # Bug: The <op> capability resets attributes.
+# Bug? The ech and el1 attributes appear to move the cursor in some cases; for
+# instance el1 does if the cursor is moved to the right margin first.  Removed
+# by T.Dickey 97/5/3 (ech=\E[%p1%dX, el1=\E[1K)
 cons25w|ansiw|ansi80x25-raw|freebsd console (25-line raw mode), 
 	am, bce, bw, eo, msgr, npc, 
 	colors#8, cols#80, it#8, lines#25, pairs#64, 
@@ -986,24 +989,23 @@ cons25w|ansiw|ansi80x25-raw|freebsd console (25-line raw mode),
 	cr=^M, cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=\E[B, 
 	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
 	cuu=\E[%p1%dA, cuu1=\E[A, dch=\E[%p1%dP, dch1=\E[P, 
-	dim=\E[30;1m, dl=\E[%p1%dM, dl1=\E[M, ech=\E[%p1%dX, 
-	ed=\E[J, el=\E[K, el1=\E[1K, home=\E[H, hpa=\E[%i%p1%d`, 
-	ht=^I, ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, il1=\E[L, 
-	ind=\E[S, indn=\E[%p1%dS, kb2=\E[E, kbs=^H, kcbt=\E[Z, 
-	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\177, 
-	kend=\E[F, kf1=\E[M, kf10=\E[V, kf11=\E[W, kf12=\E[X, 
-	kf2=\E[N, kf3=\E[O, kf4=\E[P, kf5=\E[Q, kf6=\E[R, kf7=\E[S, 
-	kf8=\E[T, kf9=\E[U, khome=\E[H, kich1=\E[L, knp=\E[G, 
-	kpp=\E[I, nel=\E[E, op=\E[x, rev=\E[7m, ri=\E[T, 
-	rin=\E[%p1%dT, rmso=\E[m, rs1=\E[x\E[m\Ec, 
-	setb=\E[4%p1%dm, setf=\E[3%p1%dm, sgr0=\E[m, smso=\E[7m, 
-	vpa=\E[%i%p1%dd, 
+	dim=\E[30;1m, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, 
+	home=\E[H, hpa=\E[%i%p1%d`, ht=^I, ich=\E[%p1%d@, 
+	ich1=\E[@, il=\E[%p1%dL, il1=\E[L, ind=\E[S, 
+	indn=\E[%p1%dS, kb2=\E[E, kbs=^H, kcbt=\E[Z, kcub1=\E[D, 
+	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\177, kend=\E[F, 
+	kf1=\E[M, kf10=\E[V, kf11=\E[W, kf12=\E[X, kf2=\E[N, 
+	kf3=\E[O, kf4=\E[P, kf5=\E[Q, kf6=\E[R, kf7=\E[S, kf8=\E[T, 
+	kf9=\E[U, khome=\E[H, kich1=\E[L, knp=\E[G, kpp=\E[I, 
+	nel=\E[E, op=\E[x, rev=\E[7m, ri=\E[T, rin=\E[%p1%dT, 
+	rmso=\E[m, rs1=\E[x\E[m\Ec, setab=\E[4%p1%dm, 
+	setaf=\E[3%p1%dm, sgr0=\E[m, smso=\E[7m, vpa=\E[%i%p1%dd, 
 cons25|ansis|ansi80x25|freebsd console (25-line ansi mode), 
 	acsc=l\332m\300k\277j\331u\264t\303v\301w\302q\304x\263n\305`\004a\260f\370g\361~\371.\031-\030h\261I^U0\333y\363z\362, 
 	use=cons25w, 
 cons25-m|ansis-mono|ansi80x25-mono|freebsd console (25-line mono ansi mode), 
 	colors@, pairs@, 
-	bold@, dim@, op@, rmul=\E[m, setb@, setf@, smul=\E[4m, use=cons25, 
+	bold@, dim@, op@, rmul=\E[m, setab@, setaf@, smul=\E[4m, use=cons25, 
 cons30|ansi80x30|freebsd console (30-line ansi mode), 
 	lines#30, use=cons25, 
 cons30-m|ansi80x30-mono|freebsd console (30-line mono ansi mode), 
@@ -1025,7 +1027,7 @@ cons25r|pc3r|ibmpc3r|cons25-koi8-r|freebsd console w/koi8-r cyrillic,
 	use=cons25w, 
 cons25r-m|pc3r-m|ibmpc3r-mono|cons25-koi8r-m|freebsd console w/koi8-r cyrillic (mono), 
 	colors@, pairs@, 
-	op@, rmul=\E[m, setb@, setf@, smul=\E[4m, use=cons25r, 
+	op@, rmul=\E[m, setab@, setaf@, smul=\E[4m, use=cons25r, 
 cons50r|cons50-koi8r|freebsd console w/koi8-r cyrillic (50 lines), 
 	lines#50, use=cons25r, 
 cons50r-m|cons50-koi8r-m|freebsd console w/koi8-r cyrillic (50-line mono), 
@@ -1040,7 +1042,7 @@ cons25l1|cons25-iso8859|freebsd console w/iso 8859-1 chars,
 	use=cons25w, 
 cons25l1-m|cons25-iso-m|freebsd console w/iso 8859-1 chars (mono), 
 	colors@, pairs@, 
-	bold@, dim@, op@, rmul=\E[m, setb@, setf@, smul=\E[4m, use=cons25l1, 
+	bold@, dim@, op@, rmul=\E[m, setab@, setaf@, smul=\E[4m, use=cons25l1, 
 cons50l1|cons50-iso8859|freebsd console w/iso 8859-1 chars (50 lines), 
 	lines#50, use=cons25l1, 
 cons50l1-m|cons50-iso-m|freebsd console w/iso 8859-1 chars (50-line mono), 
@@ -1095,7 +1097,7 @@ bsdos|BSD/OS console,
 	il1=\E[L, ind=^J, kbs=^H, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, 
 	kcuu1=\E[A, khome=\E[H, kich1=\E[L, kll=\E[F, knp=\E[G, 
 	kpp=\E[I, nel=^M^J, op=\E[x, rc=\E8, rev=\E[7m, rmso=\E[0m, 
-	sc=\E7, setb=\E[4%p1%dm, setf=\E[3%p1%dm, sgr0=\E[0m, 
+	sc=\E7, setab=\E[4%p1%dm, setaf=\E[3%p1%dm, sgr0=\E[0m, 
 	smso=\E[7m, 
 bsdos-bold|IBM PC BSD/386 Console with bold instead of underline, 
 	rmul=\E[0m, smul=\E[1m, 
@@ -1974,7 +1976,7 @@ rxvt|reduced xterm terminal (X Window System),
 	rmkx=\E>, rmso=\E[27m, rmul=\E[24m, 
 	rs1=\E>\E[1;3;4;5;6l\E[?7h\E[m\E[r\E[2J\E[H, 
 	rs2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l\E>, 
-	sc=\E7, setb=\E[4%p1%dm, setf=\E[3%p1%dm, sgr0=\E[m, 
+	sc=\E7, setab=\E[4%p1%dm, setaf=\E[3%p1%dm, sgr0=\E[m, 
 	smacs=\E(B\E)U\016, smcup=\E7\E[?47h, smir=\E[4h, 
 	smkx=\E=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
 	vpa=\E[%i%p1%dd, 
@@ -2036,8 +2038,7 @@ xterm-sun|xterm with sunFunctionKeys true,
 xterms-sun|small (80x24) xterm with sunFunctionKeys true, 
 	cols#80, lines#24, use=xterm-sun, 
 
-# This is for the extensible terminal emulator on the X11R6 contrib tape.
-# (emu: I changed <setab>/<setaf> to <setb>/<setf> -- esr)
+# This is for the extensible terminal emulator on the X11R6 contrib tape (emu).
 emu|emu native mode, 
 	mir, msgr, xon, 
 	colors#15, cols#80, it#8, lines#24, pairs#64, vt#200, 
@@ -2058,9 +2059,9 @@ emu|emu native mode,
 	kf7=\EF07, kf8=\EF08, kf9=\EF09, kfnd=\Efind, kich1=\Eins, 
 	knp=\Enext, kpp=\Eprior, kslt=\Esel, oc=\Es0;\Er0;, 
 	rev=\ES\ET, ri=\EF, rmacs=\200, rmir=\EX, rmso=\ES, rmul=\ES, 
-	rs2=\ES\Es0;\Er0;, setb=\Es%i%p1%d; setf=\Er%i%p1%d;, 
-	sgr0=\ES, smacs=\200, smir=\EY, smso=\ES\ET, smul=\ES\EV, 
-	tbc=\Ej, 
+	rs2=\ES\Es0;\Er0;, 
+	setab=\Es%i%p1%d; setaf=\Er%i%p1%d;, sgr0=\ES, 
+	smacs=\200, smir=\EY, smso=\ES\ET, smul=\ES\EV, tbc=\Ej, 
 
 ######## UNIX VIRTUAL TERMINALS AND VIRTUAL CONSOLES
 #
@@ -9139,7 +9140,7 @@ kt7ix|kimtron model kt-7 or 70 in IX mode,
 #  Horizontal cursor qualifiers of NUL, XON and XOFF are mapped to the next
 #  value up, followed by backspace.
 #
-P2|prism2|MDC Prism-2, 
+prism2|MDC Prism-2, 
 	am, bw, msgr, 
 	cols#80, lines#24, 
 	bel=^G, clear=\014$<20>, cr=^M, cub1=^H, cud1=^J, cuf1=^F, 
@@ -12157,8 +12158,8 @@ ti_ansi|basic entry for ti928,
 	kf2=\E[N, kf3=\E[O, kf4=\E[P, kf5=\E[Q, kf6=\E[R, kf7=\E[S, 
 	kf8=\E[T, kf9=\E[U, khome=\E[H, knp=\E[G, kpp=\E[I, 
 	op=\E[37;40m, ri=\E[T, rmso=\E[m, rmul=\E[m, 
-	setb=\E[4%p1%dm, setf=\E[3%p1%dm, sgr0=\E[m, smso=\E[7m, 
-	smul=\E[4m, 
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, sgr0=\E[m, 
+	smso=\E[7m, smul=\E[4m, 
 #
 #       928 VDT 7 bit control mode
 #
@@ -13898,6 +13899,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* Minor corrections to xterm entries.
 #	* Replaced EWAN telnet entry.
 #	* Dropped the reorder script generator.  It was a fossil.
+# 10.1.1 (Sat May  3 21:41:27 EDT 1997):
+#	* Use setaf/setab consistently with SVr4.
+#	* Remove ech, el1 from cons25w, they do not work in FreeBSD 2.1.5
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

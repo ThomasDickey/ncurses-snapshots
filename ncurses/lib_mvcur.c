@@ -143,7 +143,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.36 1997/04/26 22:47:17 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.37 1997/05/03 22:15:26 Peter.Wemm Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -966,7 +966,7 @@ static int DoTheScrolling(int n, int top, int bot, int maxy)
 	    TPUTS_TRACE("change_scroll_region");
 	    tputs(tparm(change_scroll_region, 0, maxy), 0, _nc_outch);
 	}
-	else if (parm_index && top == 0)
+	else if (parm_index && top == 0 && bot == maxy)
 	{
 	    onscreen_mvcur(oy, ox, bot, 0, TRUE);
 	    TPUTS_TRACE("parm_index");
@@ -1069,7 +1069,7 @@ static int DoTheScrolling(int n, int top, int bot, int maxy)
 	    TPUTS_TRACE("change_scroll_region");
 	    tputs(tparm(change_scroll_region, 0, maxy), 0, _nc_outch);
 	}
-	else if (parm_rindex && bot == maxy)
+	else if (parm_rindex && top == 0 && bot == maxy)
 	{
 	    onscreen_mvcur(oy, ox, bot + n + 1, 0, TRUE);
 

@@ -29,7 +29,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.15 1997/02/15 23:59:04 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.17 1997/05/03 19:16:05 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -295,6 +295,21 @@ int pair_content(short pair, short *f, short *b)
 	returnCode(OK);
 }
 
+/*
+ * SVr4 curses is known to interchange color codes (1,4) and (3,6), possibly
+ * to maintain compatibility with a pre-ANSI scheme.  The same scheme is
+ * also used in the FreeBSD syscons.
+ */
+static int toggled_colors(int c)
+{
+    if (c < 16) {
+	static const int table[] =
+		{ 0,  4,  2,  6,  1,  5,  3,  7,
+		  8, 12, 10, 14,  9, 13, 11, 15};
+	c = table[c];
+    }
+    return c;
+}
 
 void _nc_do_color(int pair, int  (*outc)(int))
 {
@@ -344,7 +359,7 @@ void _nc_do_color(int pair, int  (*outc)(int))
 		else
 		{
 		    TPUTS_TRACE("set_foreground");
-		    tputs(tparm(set_foreground, fg), 1, outc);
+		    tputs(tparm(set_foreground, toggled_colors(fg)), 1, outc);
 		}
 	    }
 	    if (bg != C_MASK)
@@ -357,7 +372,7 @@ void _nc_do_color(int pair, int  (*outc)(int))
 		else
 		{
 		    TPUTS_TRACE("set_background");
-		    tputs(tparm(set_background, bg), 1, outc);
+		    tputs(tparm(set_background, toggled_colors(bg)), 1, outc);
 		}
 	    }
 	}

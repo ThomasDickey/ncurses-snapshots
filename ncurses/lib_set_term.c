@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.16 1997/04/06 00:29:56 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.17 1997/05/01 23:46:18 Alexander.V.Lukyanov Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -191,6 +191,7 @@ int	bottom_stolen = 0, i;
 	SP->_newscr      = 0;
 	SP->_stdscr      = 0;
 	SP->_topstolen   = 0;
+	SP->_cursor      = -1;	/* cannot know real cursor shape */
 
 	init_acs();
 

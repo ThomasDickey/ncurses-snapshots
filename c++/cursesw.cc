@@ -18,21 +18,26 @@
 
   modified by Ulrich Drepper  (drepper@karlsruhe.gmd.de)
           and Anatoly Ivasyuk (anatoly@nick.csh.rit.edu)
+
+  modified by Juergen Pfeifer (Juergen.Pfeifer@T-Online.de)	  
 */
 
-#if !defined(lint)
-static const char vcid[] = "$Id: cursesw.cc,v 1.3 1996/12/14 23:48:13 tom Exp $";
-#endif // !lint
+#include "internal.h"
 
+MODULE_ID("$Id: cursesw.cc,v 1.4 1997/05/03 10:51:07 juergen Exp $")
 
 #pragma implementation
 
 #include "cursesw.h"
 
+#define COLORS_NEED_INITIALIZATION  -1
+#define COLORS_NOT_INITIALIZED       0
+#define COLORS_MONOCHROME            1
+#define COLORS_ARE_REALLY_THERE      2
+
 
 // declare static variables for the class
 int NCursesWindow::count = 0;
-
 
 int
 NCursesWindow::scanw(const char* fmt, ...)
@@ -115,21 +120,28 @@ NCursesWindow::init(void)
 }
 
 void
-NCursesWindow::err_handler(const char *msg)
+NCursesWindow::err_handler(const char *msg) const THROWS(NCursesException)
 {
-#if defined(__SUNPRO_CC)
-    genericerror(1, (char *)msg);
-#else
-    (*lib_error_handler)("NCursesWindow", msg);
-#endif
+  THROW(new NCursesException(msg));
+}
+
+void
+NCursesWindow::initialize() {
+  ::initscr();
+  if (colorInitialized==COLORS_NEED_INITIALIZATION) {
+    colorInitialized=COLORS_NOT_INITIALIZED;
+    count++;
+    useColors();
+    count--;
+  }
 }
 
 NCursesWindow::NCursesWindow(int lines, int cols, int begin_y, int begin_x)
 {
     if (count==0)
-	initscr();
+      initialize();
 
-    w = newwin(lines, cols, begin_y, begin_x);
+    w = ::newwin(lines, cols, begin_y, begin_x);
     if (w == 0) {
 	err_handler("Cannot construct window");
     }
@@ -143,8 +155,8 @@ NCursesWindow::NCursesWindow(int lines, int cols, int begin_y, int begin_x)
 NCursesWindow::NCursesWindow(WINDOW* &window)
 {
     if (count==0)
-	initscr();
-
+      initialize();
+    
     w = window;
     init();
     alloced = 0;
@@ -181,6 +193,18 @@ NCursesWindow::NCursesWindow(NCursesWindow& win, int l, int c,
     count++;
 }
 
+bool
+NCursesWindow::isDescendant(NCursesWindow& win) {
+  for (NCursesWindow* p = subwins; p != NULL; p = p->sib) {
+    if (p==&win)
+      return true;
+    else {
+      if (p->isDescendant(win))
+	return true;
+    }
+  }
+  return false;
+}
 
 void
 NCursesWindow::kill_subwindows()
@@ -231,73 +255,90 @@ NCursesWindow::~NCursesWindow()
     }
 }
 
-
-int NCursesColorWindow::colorInitialized = 0;
-
+// ---------------------------------------------------------------------
+// Color stuff
+//
+int NCursesWindow::colorInitialized = COLORS_NOT_INITIALIZED;
 
 void
-NCursesColorWindow::colorInit(void)
+NCursesWindow::useColors(void)
 {
-    if (colorInitialized == 0) {
-	start_color();
-	colorInitialized = 1;
+    if (colorInitialized == COLORS_NOT_INITIALIZED) {        
+      if (count>0) {
+	if (has_colors()) {
+	  start_color();
+	  colorInitialized = COLORS_ARE_REALLY_THERE;
+	}
+	else
+	  colorInitialized = COLORS_MONOCHROME;
+      }
+      else
+	colorInitialized = COLORS_NEED_INITIALIZATION;
     }
 }
 
-
-NCursesColorWindow::NCursesColorWindow(WINDOW* &window)
-: NCursesWindow(window)
-{
-    colorInit();
-}
-
-
-NCursesColorWindow::NCursesColorWindow(int lines, int cols, 
-                                       int begin_y, int begin_x)
-: NCursesWindow(lines, cols, begin_y, begin_x)
-{
-    colorInit();
-}
-
-
-NCursesColorWindow::NCursesColorWindow(NCursesWindow& par,
-		                       int lines, int cols,
-		                       int by, int bx, char absrel)
-: NCursesWindow(par, lines, cols, by, bx, absrel) 
-{
-    colorInit();
-}
-
-
 short
-NCursesColorWindow::getcolor(int getback) const 
+NCursesWindow::getcolor(int getback) const 
 {
     short fore, back;
 
-    if (pair_content(PAIR_NUMBER(w->_attrs), &fore, &back))
-	return ERR;
-
+    if (colorInitialized==COLORS_ARE_REALLY_THERE) {
+      if (pair_content(PAIR_NUMBER(w->_attrs), &fore, &back))
+	err_handler("Can't get color pair");
+    }
+    else {
+      // Monochrome means white on black
+      back = COLOR_BLACK;
+      fore = COLOR_WHITE;
+    }
     return getback ? back : fore;
 }
 
-
-int
-NCursesColorWindow::setpalette(short fore, short back, short pair)
+int NCursesWindow::NumberOfColors()
 {
-    return init_pair(pair, fore, back);
+  if (colorInitialized==COLORS_ARE_REALLY_THERE)
+    return COLORS;
+  else
+    return 1; // monochrome (actually there are two ;-)
 }
 
+short
+NCursesWindow::getcolor() const 
+{
+  if (colorInitialized==COLORS_ARE_REALLY_THERE)
+    return PAIR_NUMBER(w->_attrs);
+  else
+    return 0; // we only have pair zero
+}
 
 int
-NCursesColorWindow::setcolor(short pair)
+NCursesWindow::setpalette(short fore, short back, short pair)
 {
-    if ((pair < 1) || (pair > COLOR_PAIRS))
-	return ERR;
+  if (colorInitialized==COLORS_ARE_REALLY_THERE)
+    return init_pair(pair, fore, back);
+  else
+    return OK;
+}
 
-    attroff(A_COLOR);
-    attrset(COLOR_PAIR(pair));
-
+int
+NCursesWindow::setpalette(short fore, short back)
+{
+  if (colorInitialized==COLORS_ARE_REALLY_THERE)
+    return setpalette(fore, back, PAIR_NUMBER(w->_attrs));
+  else
     return OK;
 }
 
 
+int
+NCursesWindow::setcolor(short pair)
+{
+  if (colorInitialized==COLORS_ARE_REALLY_THERE) {
+    if ((pair < 1) || (pair > COLOR_PAIRS))
+      err_handler("Can't set color pair");
+    
+    attroff(A_COLOR);
+    attrset(COLOR_PAIR(pair));
+  }
+  return OK;
+}

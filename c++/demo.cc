@@ -3,18 +3,19 @@
  *
  *   written by Anatoly Ivasyuk (anatoly@nick.csh.rit.edu)
  *
- * $Id: demo.cc,v 1.4 1997/02/15 21:18:55 tom Exp $
+ * $Id: demo.cc,v 1.5 1997/05/03 10:51:07 juergen Exp $
  */
 
-#include "cursesw.h"
-#include "cursesp.h"
+#include "cursesm.h"
 
 #if HAVE_LIBC_H
-#include "libc.h"
+#  include "libc.h"
 #endif
 
-main()
+class SillyDemo 
 {
+  public:
+  void run(int sleeptime) {
     //  We need to define a full screen panel for the main screen so
     //  that when redraws happen, the main screen actually gets redrawn.
     //  I think there may be a bug in the panels code which won't redraw
@@ -59,45 +60,45 @@ main()
     //  Show that things actually come back correctly when the screen
     //  is cleared and the global NCursesPanel::redraw() is called.
 
-    sleep(2);
+    sleep(sleeptime);
     ::clear();			// call ncurses clear() directly
     ::wrefresh(stdscr);		// call ncurses refresh directly
-    sleep(2);
+    sleep(sleeptime);
     NCursesPanel::redraw();
 
     //  Show what happens when panels are deleted and moved.
 
-    sleep(2);
+    sleep(sleeptime);
     delete u;
     std->refresh();
 
-    sleep(2);
+    sleep(sleeptime);
     delete z;
     std->refresh();
 
-    sleep(2);
+    sleep(sleeptime);
     delete v;
     std->refresh();
 
     // show how it looks when a panel moves
-    sleep(2);
+    sleep(sleeptime);
     y->mvpan(5,30);
     std->refresh();
 
-    sleep(2);
+    sleep(sleeptime);
     delete y;
     std->refresh();
 
     // show how it looks when you raise a panel
-    sleep(2);
+    sleep(sleeptime);
     w->top();
     std->refresh();
 
-    sleep(2);
+    sleep(sleeptime);
     delete w;
     std->refresh();
 
-    sleep(2);
+    sleep(sleeptime);
     delete x;
     std->refresh();
 
@@ -105,6 +106,123 @@ main()
     //  last thing using NCursesWindow, this has the effect of
     //  shutting down ncurses and restoring the terminal state.
 
-    sleep(2);
+    sleep(sleeptime);
     delete std;
+  }
+};
+
+
+class UserData
+{
+private:
+  int u;
+public:
+  UserData(int x) : u(x) {} 
+  int sleeptime() const { return u; }
+  
+};
+
+template<class T> class MyAction : public NCursesUserItem<T>
+{
+public:
+  MyAction (const UserData* p_UserData,
+	    const char*     p_name)
+    : NCursesUserItem<T>(p_UserData, p_name)
+  {};
+
+  void action() {
+    SillyDemo a;
+    a.run(UserData()->sleeptime());
+  }
+};
+
+class QuitItem : public NCursesMenuItem
+{
+public:
+  QuitItem() : NCursesMenuItem("Quit") {
+  }
+
+  void action() {
+    endwin();
+    exit(0);
+  }
+};
+
+class MyMenu : public NCursesMenu
+{
+private:
+  NCursesPanel* P;
+
+public:
+  MyMenu (NCursesMenuItem* menu[]) 
+    : NCursesMenu (menu, 7, 8, 2, 2, true)
+  {
+    if (NCursesWindow::NumberOfColors() > 2) {
+      setcolor(1);
+      setpalette(COLOR_YELLOW, COLOR_BLUE);
+    }
+
+    P = new NCursesPanel(1,COLS,LINES-1,0);
+    boldframe("Demo","Silly");
+    P->show();
+  }
+
+  ~MyMenu()
+  {
+    P->hide();
+    delete P;
+  }
+
+  virtual void On_Menu_Init()
+  {
+    P->move(0,0);
+    P->clrtoeol();
+    P->addstr("12345");
+    NCursesPanel::refresh();
+  }
+
+  virtual void On_Menu_Termination()
+  {
+    P->move(0,0);
+    P->clrtoeol();
+    P->addstr("Menu Exit");
+    NCursesPanel::refresh();
+  }
+
+  virtual void On_Item_Init(NCursesMenuItem& item)
+  {
+    P->move(0,item.index());
+    P->attron(A_REVERSE);
+    P->printw("%1d",1+item.index());
+    P->attroff(A_REVERSE);
+    NCursesPanel::refresh();
+  }
+
+  virtual void On_Item_Termination(NCursesMenuItem& item)
+  {
+    P->move(0,item.index());
+    P->attroff(A_REVERSE);
+    P->printw("%1d",1+item.index());
+    NCursesPanel::refresh();
+  }
+};
+
+main()
+{
+  UserData u(1);
+
+  NCursesWindow::useColors();
+
+  NCursesMenuItem** I = new NCursesMenuItem*[5] = {
+    &NCursesMenuItem("One"),
+    &NCursesMenuItem("Two"),
+    &MyAction<UserData> (&u, "Silly"),
+    &NCursesMenuItem("Four"),
+    &QuitItem(),
+    &NCursesMenuItem()
+  };
+  
+  MyMenu m(I);
+
+  m();
 }
