@@ -40,7 +40,7 @@
 
 #undef TRUE
 #undef FALSE
-#define CXX_BUILTIN_BOOL 1
+#define CXX_BUILTIN_BOOL 0
 #define CXX_TYPE_OF_BOOL unsigned
 
 #if defined(__cplusplus) && CXX_BUILTIN_BOOL
@@ -371,12 +371,12 @@ extern int wdelch(WINDOW *);
 extern int wechochar(WINDOW *, chtype);
 extern int werase(WINDOW *);
 extern int wgetch(WINDOW *);
-extern int wgetnstr(WINDOW *,const char *,int maxlen);
+extern int wgetnstr(WINDOW *,char *,int maxlen);
 extern int whline(WINDOW *,chtype,int);
 extern int winsch(WINDOW *,chtype);
 extern int winsdelln(WINDOW *,int);
 extern int winnstr(WINDOW *win,char *str,int n);
-extern int winsnstr(WINDOW *,char *,int);
+extern int winsnstr(WINDOW *,const char *,int);
 extern int wmove(WINDOW *,int,int);
 extern int wnoutrefresh(WINDOW *);
 extern int wprintw(WINDOW *,const char *,...);

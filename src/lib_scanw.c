@@ -35,7 +35,7 @@
 extern int vsscanf(const char *str, const char *format, ...);
 #endif
 
-int vwscanw(WINDOW *win, char *fmt, va_list argp)
+int vwscanw(WINDOW *win, const char *fmt, va_list argp)
 {
 char buf[BUFSIZ];
 
@@ -45,7 +45,7 @@ char buf[BUFSIZ];
 	return(vsscanf(buf, fmt, argp));
 }
 
-int scanw(char *fmt, ...)
+int scanw(const char *fmt, ...)
 {
 va_list ap;
 
@@ -55,7 +55,7 @@ va_list ap;
 	return(vwscanw(stdscr, fmt, ap));
 }
 
-int wscanw(WINDOW *win, char *fmt, ...)
+int wscanw(WINDOW *win, const char *fmt, ...)
 {
 va_list ap;
 
@@ -67,7 +67,7 @@ va_list ap;
 
 
 
-int mvscanw(int y, int x, char *fmt, ...)
+int mvscanw(int y, int x, const char *fmt, ...)
 {
 va_list ap;
 
@@ -77,7 +77,7 @@ va_list ap;
 
 
 
-int mvwscanw(WINDOW *win, int y, int x, char *fmt, ...)
+int mvwscanw(WINDOW *win, int y, int x, const char *fmt, ...)
 {
 va_list ap;
 

@@ -72,7 +72,7 @@ int overlay(WINDOW *const win1, WINDOW *win2)
 **
 **/
 
-int overwrite(WINDOW *win1, WINDOW *win2)
+int overwrite(WINDOW *const win1, WINDOW *win2)
 {
 	overlap(win1, win2, FALSE);
 	return OK;

@@ -30,7 +30,7 @@
 #include <string.h>
 
 int
-waddnstr(WINDOW *win, char *const astr, int n)
+waddnstr(WINDOW *win, const char *astr, int n)
 {
 unsigned char *str = (unsigned char *)astr;
 int code = ERR;
@@ -57,11 +57,11 @@ int code = ERR;
 }
 
 int
-waddchnstr(WINDOW *win, chtype *const astr, int n)
+waddchnstr(WINDOW *win, const chtype *astr, int n)
 {
 int oy = win->_cury;
 int ox = win->_curx;
-chtype *str = astr;
+chtype *str = (chtype *)astr;
 int code = OK;
 
 	T(("waddchnstr(%p,%p,%d) called", win, str, n));
@@ -70,7 +70,7 @@ int code = OK;
 		n = 0;
 		while (*str++ != 0)
 			n++;
-		str = astr;
+		str = (chtype *)astr;
 	}
 
 	while(n-- > 0) {

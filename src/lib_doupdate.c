@@ -264,7 +264,7 @@ int	i;
 		if (change_scroll_region)
 		{
 			TPUTS_TRACE("change_scroll_region");
-			putp(tparm("change_scroll_region", 0, lines - 1));
+			putp(tparm(change_scroll_region, 0, lines - 1));
 		}
 		newscr->_clear = TRUE;
 		SP->_endwin = FALSE;

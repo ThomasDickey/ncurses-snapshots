@@ -298,9 +298,7 @@ all:	$(AUTO_SRC) $(PROGS) $(LIBRARIES)
 
 libs:	$(LIBRARIES)
 
-install.all : install.libs install.progs install.data install.man
-
-install: install.libs install.progs install.data
+install: install.libs install.progs 
 
 install.libs: term.h $(LIBRARIES) $(includedir) $(libdir)
 	$(INSTALL_DATA) term.h $(includedir)/term.h
@@ -420,11 +418,9 @@ comp_parse.o: tic.h object.h term.h dump_entry.h
 
 parse_entry.o: parametrized.h
 
-write_entry.o: parametrized.h
-
 infocmp.o: infocmp.c term.h tic.h dump_entry.h
 
-dump_entry.o: dump_entry.c termsort.c term.h tic.h dump_entry.h
+dump_entry.o: dump_entry.c parametrized.h termsort.c term.h tic.h dump_entry.h
 
 lib_setup.o: lib_setup.c
 

@@ -152,8 +152,12 @@ int def_shell_mode()
 
 #ifdef TERMIOS
  	if((tcgetattr(cur_term->Filedes, &cur_term->Ottyb)) == -1) {
+#if 0
  		perror("def_shell_mode() tcgetattr() failed:");
  		exit(1);
+#else
+		return ERR;
+#endif
  	}
  	if (cur_term->Ottyb.c_oflag & tabs)
 		tab = back_tab = NULL;
@@ -172,8 +176,12 @@ int def_prog_mode()
 
 #ifdef TERMIOS
  	if((tcgetattr(cur_term->Filedes, &cur_term->Nttyb)) == -1) {
+#if 0
  		perror("def_prog_mode() tcgetattr() failed:");
  		exit(1);
+#else
+		return ERR;
+#endif
  	}
  	cur_term->Nttyb.c_oflag &= ~tabs;
 #else
@@ -206,7 +214,7 @@ int def_prog_mode()
 					    exit(1);\
 					}
 
-static int grab_entry(char *tn, TERMTYPE *tp)
+static int grab_entry(const char *tn, TERMTYPE *tp)
 {
 	if (read_entry(tn, tp) == OK)
 	    return(OK);
@@ -230,7 +238,7 @@ char ttytype[NAMESIZE];
  *
  */
 
-int setupterm(char *termname, int Filedes, int *errret)
+int setupterm(const char *termname, int Filedes, int *errret)
 {
 struct term	*term_ptr;
 
@@ -259,7 +267,7 @@ struct term	*term_ptr;
 		if (term_ptr == NULL)
 	    		ret_error0(-1, "Not enough memory to create terminal structure.\n") ;
 
-		if (grab_entry(termname, &term_ptr->type) < 0)
+		if (grab_entry((char *)termname, &term_ptr->type) < 0)
 		    	ret_error(-1, "'%s': Unknown terminal type.\n", termname);
 
 		cur_term = term_ptr;

@@ -103,7 +103,7 @@ int putwin(WINDOW *win, FILE *filep)
 	return(OK);
 }
 
-int scr_restore(char *file)
+int scr_restore(const char *file)
 {
 	FILE	*fp;
 
@@ -119,7 +119,7 @@ int scr_restore(char *file)
 	return ERR;
 }
 
-int scr_dump(char *file)
+int scr_dump(const char *file)
 {
 	FILE	*fp;
 
@@ -134,7 +134,7 @@ int scr_dump(char *file)
 	}
 }
 
-int scr_init(char *file)
+int scr_init(const char *file)
 {
 	FILE	*fp;
 	struct stat	stb;
@@ -159,7 +159,7 @@ int scr_init(char *file)
 	return ERR;
 }
 
-int scr_set(char *file)
+int scr_set(const char *file)
 {
     if (scr_init(file) == ERR)
 	return(ERR);

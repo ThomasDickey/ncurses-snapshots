@@ -40,7 +40,7 @@ void filter(void)
     filter_mode = TRUE;
 }
 
-SCREEN * newterm(char *term, FILE *ofp, FILE *ifp)
+SCREEN * newterm(const char *term, FILE *ofp, FILE *ifp)
 {
 int	errret;
 
@@ -49,7 +49,7 @@ int	errret;
 #endif
 
 	/* this loads the capability entry, then sets LINES and COLS */
-	if (setupterm(term, fileno(ifp), &errret) != 1)
+	if (setupterm((char *)term, fileno(ifp), &errret) != 1)
 	    	return NULL;
 
 	/* implement filter mode */

@@ -844,8 +844,6 @@ void
 saywhat(text)
 char *text;
 {
-int y,x;
-
 	wmove(stdscr,LINES - 1,0);
 	wclrtoeol(stdscr);
 	waddstr(stdscr, text);
@@ -866,7 +864,7 @@ PANEL *pan;
 
 	if(!win)
 		return((PANEL *)0);
-	if(pan = new_panel(win))
+	if((pan = new_panel(win)))
 		return(pan);
 	delwin(win);
 	return((PANEL *)0);
@@ -897,7 +895,7 @@ pflush()
 /*+-------------------------------------------------------------------------
 	fill_panel(win)
 --------------------------------------------------------------------------*/
-fill_panel(pan)
+void fill_panel(pan)
 PANEL *pan;
 {
 WINDOW *win = pan->win;

@@ -30,6 +30,8 @@
 #include <string.h>
 #include "curses.priv.h"
 
+SCREEN *SP;
+
 WINDOW *initscr(void)
 {
 char	*name = getenv("TERM");
@@ -46,18 +48,16 @@ char	*name = getenv("TERM");
 	}
 }
 
-char *
-termname(void)
+char *termname(void)
 {
-	char	*term = getenv("TERM");
-	static char	ret[15];
+char	*term = getenv("TERM");
+static char	ret[15];
 
 	T(("termname() called"));
 
 	if (term == (char *)NULL)
 		return(char *)NULL;
-	else
-	{
+	else {
 		(void) strncpy(ret, term, sizeof(ret) - 1);
 		return(ret);
 	}
