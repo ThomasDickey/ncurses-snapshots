@@ -33,10 +33,12 @@
 
 /*
  *	lib_slkcolor.c
+ *	Soft key routines.
+ *	Set the label's color
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkcolor.c,v 1.11 2005/01/08 23:02:36 tom Exp $")
+MODULE_ID("$Id: lib_slkcolor.c,v 1.12 2005/01/28 21:11:53 tom Exp $")
 
 NCURSES_EXPORT(int)
 slk_color(short color_pair_number)
@@ -44,11 +46,9 @@ slk_color(short color_pair_number)
     T((T_CALLED("slk_color(%d)"), color_pair_number));
 
     if (SP != 0 && SP->_slk != 0 &&
-	color_pair_number < COLOR_PAIRS) {
+	color_pair_number >= 0 && color_pair_number < COLOR_PAIRS) {
 	TR(TRACE_ATTRS, ("... current is %s", _tracech_t(CHREF(SP->_slk->attr))));
-	if (color_pair_number != 0) {
-	    SetPair(SP->_slk->attr, color_pair_number);
-	}
+	SetPair(SP->_slk->attr, color_pair_number);
 	TR(TRACE_ATTRS, ("new attribute is %s", _tracech_t(CHREF(SP->_slk->attr))));
 	returnCode(OK);
     } else

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2001-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 2001-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey 1996-2004                                      *
+ *  Author: Thomas E. Dickey                        1996-on                 *
  *     and: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
@@ -41,7 +41,7 @@
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.11 2004/10/23 20:42:26 tom Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.12 2005/01/29 21:26:07 tom Exp $")
 
 static char *
 _nc_vischar(char *tp, unsigned c)
@@ -220,7 +220,7 @@ _nc_viscbuf2(int bufnum, const cchar_t *buf, int len)
 	len = _nc_wchstrlen(buf);
 
     for (n = 1; n < len; n++) {
-	if (AttrOf(buf[n]) != AttrOf(buf[0])) {
+	if (!SameAttrOf(buf[n], buf[0])) {
 	    same = FALSE;
 	    break;
 	}

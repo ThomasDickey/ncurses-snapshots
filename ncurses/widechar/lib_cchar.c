@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2001-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 2001-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_cchar.c,v 1.10 2004/10/02 23:44:34 Marcin.Kowalczyk Exp $")
+MODULE_ID("$Id: lib_cchar.c,v 1.11 2005/01/29 21:29:16 tom Exp $")
 
 /* 
  * The SuSv2 description leaves some room for interpretation.  We'll assume wch
@@ -80,6 +80,7 @@ setcchar(cchar_t *wcval,
 
 	if (len != 0) {
 	    SetAttr(*wcval, attrs | COLOR_PAIR(color_pair));
+	    SetPair(CHDEREF(wcval), color_pair);
 	    memcpy(&wcval->chars, wch, len * sizeof(wchar_t));
 	    TR(TRACE_CCALLS, ("copy %d wchars, first is %s", len,
 			      _tracecchar_t(wcval)));
@@ -115,7 +116,7 @@ getcchar(const cchar_t *wcval,
 	    code = ERR;
 	} else if (len >= 0) {
 	    *attrs = AttrOf(*wcval) & A_ATTRIBUTES;
-	    *color_pair = PAIR_NUMBER(AttrOf(*wcval));
+	    *color_pair = GetPair(*wcval);
 	    wmemcpy(wch, wcval->chars, (unsigned) len);
 	    wch[len] = L'\0';
 	    code = OK;

@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.238 2004/12/25 20:52:17 tom Exp $
+$Id: ncurses.c,v 1.239 2005/01/29 22:23:16 tom Exp $
 
 ***************************************************************************/
 
@@ -1707,6 +1707,8 @@ color_test(void)
 	pairs_max = COLOR_PAIRS;
 
     while (!done) {
+	int shown = 0;
+
 	/* this assumes an 80-column line */
 	if (opt_wide) {
 	    width = 4;
@@ -1741,7 +1743,7 @@ color_test(void)
 	    int col = (i % per_row + 1) * width;
 	    int pair = i;
 
-	    if (move(row, col) != ERR) {
+	    if (row >= 0 && move(row, col) != ERR) {
 		init_pair(pair, i % COLORS, i / COLORS);
 		attron((attr_t) COLOR_PAIR(pair));
 		if (opt_bold)
@@ -1757,6 +1759,9 @@ color_test(void)
 		if ((i % per_row) == 0 && (i % COLORS) == 0) {
 		    show_color_name(row, 0, i / COLORS, opt_wide);
 		}
+		++shown;
+	    } else if (shown) {
+		break;
 	    }
 	}
 
@@ -1837,6 +1842,8 @@ wide_color_test(void)
     WINDOW *helpwin;
 
     while (!done) {
+	int shown = 0;
+
 	/* this assumes an 80-column line */
 	if (opt_wide) {
 	    width = 4;
@@ -1871,7 +1878,7 @@ wide_color_test(void)
 	    int col = (i % per_row + 1) * width;
 	    int pair = i;
 
-	    if (move(row, col) != ERR) {
+	    if (row >= 0 && move(row, col) != ERR) {
 		init_pair(pair, i % COLORS, i / COLORS);
 		color_set(pair, NULL);
 		if (opt_bold)
@@ -1887,6 +1894,9 @@ wide_color_test(void)
 		if ((i % per_row) == 0 && (i % COLORS) == 0) {
 		    show_color_name(row, 0, i / COLORS, opt_wide);
 		}
+		++shown;
+	    } else if (shown) {
+		break;
 	    }
 	}
 
@@ -5592,7 +5602,7 @@ main(int argc, char *argv[])
     if (has_colors()) {
 	start_color();
 #ifdef NCURSES_VERSION_PATCH
-	max_colors = COLORS > 16 ? 16 : COLORS;
+	max_colors = COLORS;	/* was > 16 ? 16 : COLORS */
 #if HAVE_USE_DEFAULT_COLORS
 	if (default_colors) {
 	    use_default_colors();
@@ -5604,9 +5614,9 @@ main(int argc, char *argv[])
 #endif
 #endif
 #else /* normal SVr4 curses */
-	max_colors = COLORS > 8 ? 8 : COLORS;
+	max_colors = COLORS;	/* was > 8 ? 8 : COLORS */
 #endif
-	max_pairs = COLOR_PAIRS > 256 ? 256 : COLOR_PAIRS;
+	max_pairs = COLOR_PAIRS;	/* was > 256 ? 256 : COLOR_PAIRS */
 
 	if (can_change_color()) {
 	    all_colors = (RGB_DATA *) malloc(max_colors * sizeof(RGB_DATA));

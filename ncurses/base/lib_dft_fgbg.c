@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -33,7 +33,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_dft_fgbg.c,v 1.16 2004/10/30 21:24:08 tom Exp $")
+MODULE_ID("$Id: lib_dft_fgbg.c,v 1.17 2005/01/29 21:42:15 tom Exp $")
 
 /*
  * Modify the behavior of color-pair 0 so that the library doesn't assume that
@@ -43,7 +43,7 @@ NCURSES_EXPORT(int)
 use_default_colors(void)
 {
     T((T_CALLED("use_default_colors()")));
-    returnCode(assume_default_colors(C_MASK, C_MASK));
+    returnCode(assume_default_colors(-1, -1));
 }
 
 /*
@@ -61,10 +61,10 @@ assume_default_colors(int fg, int bg)
     if (initialize_pair)	/* don't know how to handle this */
 	returnCode(ERR);
 
-    SP->_default_color = (fg < 0 || fg == C_MASK) || (bg < 0 || bg == C_MASK);
+    SP->_default_color = isDefaultColor(fg) || isDefaultColor(bg);
     SP->_has_sgr_39_49 = (tigetflag("AX") == TRUE);
-    SP->_default_fg = (fg >= 0) ? (fg & C_MASK) : C_MASK;
-    SP->_default_bg = (bg >= 0) ? (bg & C_MASK) : C_MASK;
+    SP->_default_fg = isDefaultColor(fg) ? COLOR_DEFAULT : (fg & C_MASK);
+    SP->_default_bg = isDefaultColor(bg) ? COLOR_DEFAULT : (bg & C_MASK);
     if (SP->_color_pairs != 0) {
 	bool save = SP->_default_color;
 	SP->_default_color = TRUE;

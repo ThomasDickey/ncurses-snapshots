@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.80 2005/01/22 20:11:48 tom Exp $
+# $Id: Makefile.in,v 1.81 2005/01/29 19:27:15 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -140,6 +140,9 @@ TESTS = \
 all: $(TESTS)
 
 sources:
+
+tags:
+	ctags *.[ch]
 
 background$x: $(MODEL)/background$o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/background$o $(LDFLAGS_CURSES)
