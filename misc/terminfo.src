@@ -929,6 +929,7 @@ ibmpcx|xenix|ibmx|IBM PC xenix console display,
 # handle this case with the <ich1> capability, and prefers <am> for better
 # optimization.  Bug: The <op> capability resets attributes.
 # From: Michael Hunter <mphunter@qnx.com> 30 Jul 1996
+# removed: sgr=%?%p1%t\E<%;%p2%t\E[%;%p3%t\E(%;%p4%t\E{%;%p6%t\E<%;, 
 qnx|qnx4|qnx console, 
 	daisy, km, mir, msgr, xhpa, xt, 
 	colors#8, cols#80, it#4, lines#25, ncv#3, pairs#8, 
@@ -980,9 +981,8 @@ qnx|qnx4|qnx console,
 	ktbc=\377\344, kund=\377\365, mvpa=\E!%p1%02d, op=\ER, 
 	rep=\Eg%p2%' '%+%c%p1%c, rev=\E(, ri=\EI, rmcup=\Eh\ER, 
 	rmso=\E), rmul=\E], rs1=\ER, setb=\E@%p1%Pb%gb%gf%d%d, 
-	setf=\E@%p1%Pf%gb%gf%d%d, 
-	sgr=%?%p1%t\E<%;%p2%t\E[%;%p3%t\E(%;%p4%t\E{%;%p6%t\E<%;, 
-	sgr0=\E}\E]\E>\E), smcup=\Ei, smso=\E(, smul=\E[, 
+	setf=\E@%p1%Pf%gb%gf%d%d, sgr0=\E}\E]\E>\E), smcup=\Ei, 
+	smso=\E(, smul=\E[, 
 
 #### NetBSD consoles
 #
@@ -2696,6 +2696,7 @@ nwp512|news|nwp514|news40|vt100-bm|sony vt100 emulator 40 lines,
 #
 # (nwp512-a: this had :TY=ascii: and the alias vt100-bm --esr)
 nwp512-a|nwp514-a|news-a|news42|news40-a|sony vt100 emulator 42 line, 
+	
 	
 	
 s, 
@@ -14972,14 +14973,19 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* Removed rmir/smir from tv92B.
 #
 # 10.2.0 (Sat Feb 28 12:47:36 EST 1998):
-#	* Added Thomas Dickey's acsc string for linux.
-#	* Merged in BeOS, iris-color, hds200, xterm-xf86-v40, xterm-8bit,
-#	  and emx entries.
+#	* add hds200 description (Walter Skorski)
+#	* add beterm entry (Fred Fish)
+#	* add Thomas Dickey's xterm-xf86-v40, xterm-8bit, xterm-16color,
+#	  iris-color entries.
+#	* add emx entries.
 #	* Replaced unixpc entry with Benjamin Sittler's corrected version.
 #	* Replaced xterm/rxvt/emu/syscons entries with Thomas Dickey's
 #	  versions.
+#	* remove sgr string from qnx based on report by Xiaodan Tang
 #	* Added u8/u9, removed rmul/smul from sun-il.
-#	* 4.2 tic allows us to use \0 instead of \200 now.
+#	* 4.2 tic displays \0 rather than \200.
+#	* add linux-koi8r to replace linux-koi8 (which uses a corrupt acsc,
+#	  apparently based on cp-866).
 #	* Merged in Pavel Roskin's acsc for linux-koi8
 #	* Corrected some erroneous \\\s to \.
 #	* 4.2 ncurses has been changed to use setaf/setab, consistent w/SysV.

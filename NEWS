@@ -1,10 +1,24 @@
--- $Id: NEWS,v 1.316 1998/02/28 23:10:26 tom Exp $
+-- $Id: NEWS,v 1.319 1998/03/08 01:04:48 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980307
+	+ use 'stat()' rather than 'access()' in toe.c to check for the
+	  existence of $HOME/.terminfo, since it may be a file.
+	+ suppress configure CF_CXX_LIBRARY check if we are not using g++
+	  2.7.x, since this is not needed with g++ 2.8 or egcs (patch by
+	  Juergen Pfeifer).
+	+ turn on hashmap scrolling code by default, intend to remedy defects
+	  by 4.3 release.
+	+ minor corrections to terminfo.src changelog.
+
+980302	4.2 release for upload to prep.ai.mit.edu
+	+ correct Florian's email address in ncurses-intro.html
+	+ terminfo.src 10.2.0 from Eric.
 
 980228	pre-release
 	+ add linux-koi8r replace linux-koi8, which is not KOI8 (patch by
