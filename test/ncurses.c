@@ -32,6 +32,9 @@ library source.
 #if HAVE_SYS_TIME_H && ! SYSTEM_LOOKS_LIKE_SCO
 #include <sys/time.h>
 #endif
+#if HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif
 #endif
 
 #include <curses.h>

@@ -15,7 +15,7 @@ SHELL = /bin/sh
 # 1.9a, 1.9b, 1.9foobar, ... when the ncurses release version changes
 # If a new ncurses has an incompatible application binary interface than
 # previous one, the ABI version should be changed.
-VERSION = 1.9.9a
+VERSION = 1.9.9b
 SHARED_ABI = 3.0
 
 dist: announce.html misc/ncurses-intro.doc misc/hackguide.doc
