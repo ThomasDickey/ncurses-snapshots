@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2000/05/14 01:22:36 $
+#	$Date: 2000/06/11 01:40:36 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -710,9 +710,9 @@ linux|linux console,
 	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, 
 	kf19=\E[33~, kf2=\E[[B, kf20=\E[34~, kf3=\E[[C, kf4=\E[[D, 
 	kf5=\E[[E, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
-	khome=\E[1~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, kspd=^Z, 
-	nel=^M^J, rc=\E8, rev=\E[7m, ri=\EM, rmir=\E[4l, rmso=\E[27m, 
-	rmul=\E[24m, rs1=\Ec\E]R, sc=\E7, 
+	khome=\E[1~, kich1=\E[2~, kmous=\E[M, knp=\E[6~, kpp=\E[5~, 
+	kspd=^Z, nel=^M^J, rc=\E8, rev=\E[7m, ri=\EM, rmir=\E[4l, 
+	rmso=\E[27m, rmul=\E[24m, rs1=\Ec\E]R, sc=\E7, 
 	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m, 
 	smir=\E[4h, smul=\E[4m, tbc=\E[3g, u6=\E[%i%d;%dR, 
 	u7=\E[6n, u8=\E[?6c, u9=\E[c, vpa=\E[%i%p1%dd, 
@@ -18297,6 +18297,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2000/5/13
 #	* remove ncv from xterm-16color, xterm-256 color
+#
+# 2000/6/10
+#	* add kmous capability to linux to use Joerg Schoen's gpm patch.
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
