@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.60 2001/05/19 23:25:48 tom Exp $
+# $Id: Makefile.in,v 1.61 2001/08/12 00:04:13 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.           #
 #                                                                            #
@@ -170,6 +170,7 @@ mostlyclean ::
 	-rm -f core tags TAGS *~ *.bak *.i *.ii *.ln *.atac trace
 
 clean :: mostlyclean
+	-rm -rf $(MODEL)/SunWS_cache
 	-$(LIBTOOL) rm -f demo$x $(AUTO_SRC) ../lib/$(LIBNAME) $(LIB_OBJS) $(LIB_OBJS:.o=.lo) $(OBJS_DEMO)
 	-rm -rf .libs
 

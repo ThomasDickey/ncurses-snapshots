@@ -761,6 +761,7 @@
 ./ncurses/curses.priv.h
 ./ncurses/fifo_defs.h
 ./ncurses/llib-lncurses
+./ncurses/llib-lncursesw
 ./ncurses/modules
 ./ncurses/tinfo/MKcaptab.awk
 ./ncurses/tinfo/MKfallback.sh

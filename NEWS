@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.640 2001/08/05 01:33:27 tom Exp $
+-- $Id: NEWS,v 1.641 2001/08/12 00:42:59 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010811
+	+ fix for VALID_BOOLEAN() macro when char is not signed.
+	+ modify 'clean' rule for C++ binding to work with Sun compiler, which
+	  caches additional information in a subdirectory of the objects.
+	+ added llib-ncursesw.
 
 20010804
 	+ add Caps.keys example for experimental extended function keys
