@@ -1,0 +1,65 @@
+.TH captoinfo 1M ""
+.ds n 5
+.ds d @TERMINFO@
+.SH NAME
+\fBcaptoinfo\fR - convert a \fItermcap\fR description into a \fIterminfo\fR description
+.SH SYNOPSIS
+\fBcaptoinfo\fR [\fB-v\fIn\fR \fIwidth\fR]  [\fB-V\fR] [\fB-1\fR] [\fB-w\fR \fIwidth\fR] \fIfile\fR . . .
+.SH DESCRIPTION
+\fBcaptoinfo\fR looks in \fIfile\fR for \fBtermcap\fR descriptions.  For each
+one found, an equivalent \fBterminfo\fR description is written to standard
+output, along with any comments found.  A description which is expressed as
+relative to another description (as specified in the \fBtermcap tc = field\fR)
+will be reduced to the minimum superset before being output.
+
+If no \fIfile\fR is given, then the environment variable \fBTERMCAP\fR is used
+for the filename or entry.  If \fBTERMCAP\fR is a full pathname to a file, only
+the terminal whose name is specified in the environment variable \fBTERM\fR is
+extracted from that file.  If the environment variable \fBTERMCAP\fR is not
+set, then the file \fB\*d\fR is read.
+.TP 5
+\fB-v\fR 
+print out tracing information on standard error as the program runs.
+.TP 5
+\fB-V\fR
+print out the version of the program in use on standard error and exit.
+.TP 5
+\fB-1\fR
+cause the fields to print out one to a line.  Otherwise, the fields
+will be printed several to a line to a maximum width of 60
+characters.
+.TP 5
+\fB-w\fR
+change the output to \fIwidth\fR characters.
+.SH FILES
+.TP 20
+\*d
+Compiled terminal description database.
+.SH NOTES
+This utility is actually a link to \fItic\fR(1M), running in \fI-I\fR mode.
+
+The trace option isn't identical to SVr4's.  Under SVr4, instead of following
+the -v with a trace level n, you repeat it n times.
+.BUGS
+The handling of "tc=" capabilities in termcap entries is deficient in two
+respects:
+
+This implementation will error out if it encounters a "tc=" capability
+referring to a terminal that does not yet have a compiled entry in the terminfo
+database.  Someday, it should correctly handle "tc=" capabilities that are
+resolved within the input source-file.
+
+Even if the "tc=" is resolvable, the decompilation code will not yet (as
+claimed in the first paragraph of the description) produce a description
+relative to a "use=" capability.  This feature will be added in a future
+release.
+.SH SEE ALSO
+\fBcurses\fR(3X), \fBinfocmp\fR(1M), \fBterminfo\fR(\*n)
+.SH AUTHOR
+Eric S. Raymond <esr@snark.thyrsus.com>
+.\"#
+.\"# The following sets edit modes for GNU EMACS
+.\"# Local Variables:
+.\"# mode:nroff
+.\"# fill-column:79
+.\"# End:

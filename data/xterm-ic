@@ -1,0 +1,8 @@
+
+# vi may work better with this termcap, because vi
+# doesn't use insert mode much
+xterm-ic|xterm-vi|xterm with insert character instead of insert mode,
+	mir@,
+	ich1=\E[@, rmir@, smir@,
+	use=xterm,
+
