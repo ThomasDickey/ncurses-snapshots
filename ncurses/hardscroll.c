@@ -183,7 +183,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hardscroll.c,v 1.17 1997/02/15 22:33:12 tom Exp $")
+MODULE_ID("$Id: hardscroll.c,v 1.19 1997/05/17 21:46:10 tom Exp $")
 
 #if defined(TRACE) || defined(SCROLLDEBUG)
 void _nc_linedump(void);
@@ -283,10 +283,9 @@ void _nc_scroll_optimize(void)
 
 	TR(TRACE_UPDATE | TRACE_MOVE, ("Pass %d:", pass++));
 
-	first = 0;		/* start scan at top line */
 	no_hunk_moved = TRUE;
 
-	while (first < LINES)
+	for (first = 0; first < LINES; first = last + 1)
 	{
 	    /* find the beginning of a hunk */
 	    while (first < LINES && OLDNUM(first) == _NEWINDEX)
@@ -304,17 +303,23 @@ void _nc_scroll_optimize(void)
 	    olast = OLDNUM(last);
 
 	    /* compute the hunk's displacement */
-	    disp = first - OLDNUM(first);
+	    disp = first - ofirst;
 
 	    TR(TRACE_UPDATE | TRACE_MOVE, ("found hunk: first = %2d, last = %2d, ofirst = %2d, olast = %2d, disp = %2d",
 			   first, last, ofirst, olast, disp));
 
 	    /* OK, time to try to move the hunk? */
 	    if (disp != 0)
-		if (all_discarded(ofirst, olast, disp))
+	    {
+		int m;
+		
+		/* moving small chunk far is a bad thing */
+		if (last-first+1 < (disp>0?disp:-disp))
 		{
-		    int	m;
-
+		    TR(TRACE_UPDATE | TRACE_MOVE, ("the hunk is to be moved too far - ignored"));
+		}
+		else if (all_discarded(ofirst, olast, disp))
+		{
 		    if (disp > 0)
 			olast += disp;
 		    else /* (disp < 0) */
@@ -323,32 +328,24 @@ void _nc_scroll_optimize(void)
 		    TR(TRACE_UPDATE | TRACE_MOVE, ("scroll [%d, %d] by %d", ofirst, olast, -disp));
 #if !defined(SCROLLDEBUG) && !defined(HASHDEBUG)
 		    if (_nc_mvcur_scrolln(-disp, ofirst, olast, LINES - 1) == ERR)
-		    	break;
-		    _nc_scroll_window(curscr, -disp, ofirst, olast);
+			break;
 #endif /* !defined(SCROLLDEBUG) && !defined(HASHDEBUG) */
-
-		    for (m = ofirst; m <= olast; m++)
-		    {
-			REAL(m) = _NEWINDEX;
-#if !defined(SCROLLDEBUG) && !defined(HASHDEBUG)
-			/*
-			 * This will tell the second stage of the optimizer
-			 * that every line in the hunk on the real screen has
-			 * been changed.
-			 */
-			curscr->_line[m].firstchar = 0;
-			curscr->_line[m].lastchar = curscr->_maxx;
-#endif /* !defined(SCROLLDEBUG) && !defined(HASHDEBUG) */
-		    }
-		    for (m = first; m <= last; m++)
-			OLDNUM(m) = _NEWINDEX;
-
-		    no_hunk_moved = FALSE;
+		}
+		else
+		{
+		    /* cannot do anything with this hunk -- go to the next */
+		    continue;
 		}
 
-	    /* OK, done with this hunk */
-	    first = last + 1;
-	}
+		for (m = ofirst; m <= olast; m++)
+		    REAL(m) = _NEWINDEX;
+		for (m = first; m <= last; m++)
+		    OLDNUM(m) = _NEWINDEX;
+
+		no_hunk_moved = FALSE;
+
+	    } /* disp!=0 */
+	} /* for(first) */
     } while
 	(!no_hunk_moved);
 }

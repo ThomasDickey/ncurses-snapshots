@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.60 1997/05/03 19:32:55 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.62 1997/05/17 21:45:57 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -77,11 +77,10 @@ MODULE_ID("$Id: lib_doupdate.c,v 1.60 1997/05/03 19:32:55 Alexander.V.Lukyanov E
 /* #define POSITION_DEBUG */
 
 static inline chtype ClrBlank ( WINDOW *win );
-static inline chtype ClrSetup ( WINDOW *scr );
 static int ClrBottom(int total);
 static int InsStr( chtype *line, int count );
-static void ClearScreen( void );
-static void ClrUpdate( WINDOW *scr );
+static void ClearScreen( chtype blank );
+static void ClrUpdate( void );
 static void DelChar( int count );
 static void TransformLine( int const lineno );
 
@@ -622,11 +621,11 @@ struct tms before, after;
 	nonempty = 0;
 	if (curscr->_clear) {		/* force refresh ? */
 		T(("clearing and updating curscr"));
-		ClrUpdate(newscr);	/* yes, clear all & update */
+		ClrUpdate();	/* yes, clear all & update */
 		curscr->_clear = FALSE;	/* reset flag */
 	} else if (newscr->_clear) {
 		T(("clearing and updating newscr"));
-		ClrUpdate(newscr);
+		ClrUpdate();
 		newscr->_clear = FALSE;
 	} else {
 		int changedlines;
@@ -716,9 +715,7 @@ struct tms before, after;
  *
  *	Returns the attributed character that corresponds to the "cleared"
  *	screen.  If the terminal has the back-color-erase feature, this will be
- *	colored according to the wbkgd() call.  (Other attributes are
- *	unspecified, hence assumed to be reset in accordance with
- *	'ClrSetup()').
+ *	colored according to the wbkgd() call.
  *
  *	We treat 'curscr' specially because it isn't supposed to be set directly
  *	in the wbkgd() call.  Assume 'stdscr' for this case.
@@ -735,64 +732,23 @@ chtype	blank = BLANK;
 }
 
 /*
- *	ClrSetup(win)
- *
- *	Ensures that if the terminal recognizes back-color-erase, that we
- *	set the video attributes to match the window's background color
- *	before an erase operation.
- */
-static inline chtype ClrSetup (WINDOW *win)
-{
-	if (back_color_erase)
-		vidattr(BCE_BKGD(win) & BCE_ATTRS);
-	return ClrBlank(win);
-}
-
-/*
-**	ClrUpdate(scr)
+**	ClrUpdate()
 **
 **	Update by clearing and redrawing the entire screen.
 **
 */
 
-static void ClrUpdate(WINDOW *scr)
+static void ClrUpdate()
 {
-int	i = 0, j = 0;
-int	lastNonBlank;
-chtype	blank = ClrSetup(scr);
+	int i;
 
-	T(("ClrUpdate(%p) called", scr));
-	ClearScreen();
-
-	if (scr != curscr) {
-		for (i = 0; i < screen_lines ; i++)
-			for (j = 0; j < screen_columns; j++)
-				curscr->_line[i].text[j] = blank;
-	}
+	T(("ClrUpdate() called"));
+	
+	ClearScreen(ClrBlank(newscr));
 
 	T(("updating screen from scratch"));
-	for (i = 0; i < min(screen_lines, scr->_maxy + 1); i++) {
-		lastNonBlank = scr->_maxx;
-
-		while (lastNonBlank >= 0
-		  &&   scr->_line[i].text[lastNonBlank] == blank)
-			lastNonBlank--;
-
-		if (lastNonBlank >= 0) {
-			if (lastNonBlank > screen_columns)
-				lastNonBlank = screen_columns;
-			GoTo(i, 0);
-			PutRange(curscr->_line[i].text,
-				    scr->_line[i].text, i, 0, lastNonBlank);
-		}
-	}
-
-	if (scr != curscr) {
-		for (i = 0; i < screen_lines ; i++)
-			memcpy(curscr->_line[i].text,
-			          scr->_line[i].text,
-				  screen_columns * sizeof(chtype));
-	}
+	for (i = 0; i < min(screen_lines, newscr->_maxy + 1); i++)
+		TransformLine(i);
 }
 
 /*
@@ -829,6 +785,31 @@ bool	needclear = FALSE;
 	    }
 	    else
 		putp(clr_eol);
+	}
+}
+
+/*
+**	ClrToEOS(blank)
+**
+**	Clear to end of screen, starting at the cursor position
+*/
+
+static void ClrToEOS(chtype blank)
+{
+int row, col;
+	
+	UpdateAttrs(blank);
+	TPUTS_TRACE("clr_eos");
+	row = SP->_cursrow;
+	tputs(clr_eos, screen_lines-row, _nc_outch);
+	
+	for (col = SP->_curscol; col < screen_columns; col++)
+		curscr->_line[row].text[col] = blank;
+
+	for (row++; row < screen_lines; row++)
+	{
+		for (col = 0; col < screen_columns; col++)
+			curscr->_line[row].text[col] = blank;
 	}
 }
 
@@ -872,14 +853,8 @@ chtype	blank  = newscr->_line[total-1].text[last-1]; /* lower right char */
 
 		if (top < total) {
 			GoTo(top,0);
-			UpdateAttrs(blank);
-			TPUTS_TRACE("clr_eos");
-			putp(clr_eos);
-			while (total-- > top) {
-				for (col = 0; col <= curscr->_maxx; col++)
-					curscr->_line[total].text[col] = blank;
-			}
-			total++;
+			ClrToEOS(blank);
+			total = top;
 		}
 	}
 #if NO_LEAKS
@@ -1080,18 +1055,20 @@ bool	attrchanged = FALSE;
 }
 
 /*
-**	ClearScreen()
+**	ClearScreen(blank)
 **
 **	Clear the physical screen and put cursor at home
 **
 */
 
-static void ClearScreen(void)
+static void ClearScreen(chtype blank)
 {
+	int	i,j;
 
 	T(("ClearScreen() called"));
 
 	if (clear_screen) {
+		UpdateAttrs(blank);
 		TPUTS_TRACE("clear_screen");
 		putp(clear_screen);
 		SP->_cursrow = SP->_curscol = 0;
@@ -1102,6 +1079,7 @@ static void ClearScreen(void)
 		SP->_cursrow = SP->_curscol = -1;
 		GoTo(0,0);
 
+		UpdateAttrs(blank);
 		TPUTS_TRACE("clr_eos");
 		putp(clr_eos);
 	} else if (clr_eol) {
@@ -1109,14 +1087,22 @@ static void ClearScreen(void)
 
 		while (SP->_cursrow < screen_lines) {
 			GoTo(SP->_cursrow, 0);
+			UpdateAttrs(blank);
 			TPUTS_TRACE("clr_eol");
 			putp(clr_eol);
 		}
 		GoTo(0,0);
+	} else {
+		T(("cannot clear screen"));
+		return;
 	}
+
+	for (i = 0; i < screen_lines ; i++)
+		for (j = 0; j < screen_columns; j++)
+			curscr->_line[i].text[j] = blank;
+
 	T(("screen cleared"));
 }
-
 
 /*
 **	InsStr(line, count)
@@ -1205,4 +1191,256 @@ void _nc_outstr(const char *str)
 #ifdef TRACE
     _nc_outchars += strlen(str);
 #endif /* TRACE */
+}
+
+/****************************************************************************
+ *
+ * Physical-scrolling support
+ *
+ ****************************************************************************/
+
+int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
+/* scroll region from top to bot by n lines */
+{
+    chtype blank=ClrBlank(stdscr);
+    int i;
+
+    TR(TRACE_MOVE, ("mvcur_scrolln(%d, %d, %d, %d)", n, top, bot, maxy));
+
+    /*
+     * This code was adapted from Keith Bostic's hardware scrolling
+     * support for 4.4BSD curses.  I (esr) translated it to use terminfo
+     * capabilities, narrowed the call interface slightly, and cleaned
+     * up some convoluted tests.  I also added support for the memory_above
+     * memory_below, and non_dest_scroll_region capabilities.
+     *
+     * For this code to work, we must have either
+     * change_scroll_region and scroll forward/reverse commands, or
+     * insert and delete line capabilities.
+     * When the scrolling region has been set, the cursor has to
+     * be at the last line of the region to make the scroll
+     * happen.
+     *
+     * This code makes one aesthetic decision in the opposite way from
+     * BSD curses.  BSD curses preferred pairs of il/dl operations
+     * over scrolls, allegedly because il/dl looked faster.  We, on
+     * the other hand, prefer scrolls because (a) they're just as fast
+     * on many terminals and (b) using them avoids bouncing an
+     * unchanged bottom section of the screen up and down, which is
+     * visually nasty.
+     */
+    if (n > 0)
+    {
+	/*
+	 * Explicitly clear if stuff pushed off top of region might
+	 * be saved by the terminal.
+	 */
+	if (non_dest_scroll_region || (memory_above && top == 0)) {
+	    for (i = 0; i < n; i++)
+	    {
+		GoTo(i, 0);
+		ClrToEOL(BLANK);
+	    }
+	}
+
+	if (change_scroll_region && (scroll_forward || parm_index))
+	{
+	    TPUTS_TRACE("change_scroll_region");
+	    tputs(tparm(change_scroll_region, top, bot), 0, _nc_outch);
+	    SP->_cursrow = SP->_curscol = -1;
+
+	    GoTo(bot, 0);
+	    UpdateAttrs(blank);
+	    if (parm_index != NULL)
+	    {
+		TPUTS_TRACE("parm_index");
+		tputs(tparm(parm_index, n, 0), n, _nc_outch);
+	    }
+	    else
+	    {
+		for (i = 0; i < n; i++)
+		{
+		    TPUTS_TRACE("scroll_forward");
+		    tputs(scroll_forward, 0, _nc_outch);
+		}
+	    }
+	    TPUTS_TRACE("change_scroll_region");
+	    tputs(tparm(change_scroll_region, 0, maxy), 0, _nc_outch);
+	    SP->_cursrow = SP->_curscol = -1;
+	}
+	else if (parm_index && top == 0 && bot == maxy)
+	{
+	    GoTo(bot, 0);
+	    UpdateAttrs(blank);
+	    TPUTS_TRACE("parm_index");
+	    tputs(tparm(parm_index, n, 0), n, _nc_outch);
+	}
+	else if (scroll_forward && top == 0 && bot == maxy)
+	{
+	    GoTo(bot, 0);
+	    UpdateAttrs(blank);
+	    for (i = 0; i < n; i++)
+	    {
+		TPUTS_TRACE("scroll_forward");
+		tputs(scroll_forward, 0, _nc_outch);
+	    }
+	}
+	else if (_nc_idlok
+	 && (parm_delete_line || delete_line)
+	 && (parm_insert_line || insert_line))
+	{
+	    GoTo(top, 0);
+	    UpdateAttrs(blank);
+	    if (parm_delete_line)
+	    {
+		TPUTS_TRACE("parm_delete_line");
+		tputs(tparm(parm_delete_line, n, 0), n, _nc_outch);
+	    }
+	    else
+	    {
+		for (i = 0; i < n; i++)
+		{
+		    TPUTS_TRACE("parm_index");
+		    tputs(delete_line, 0, _nc_outch);
+		}
+	    }
+
+	    GoTo(bot - n + 1, 0);
+
+	    /* Push down the bottom region. */
+	    UpdateAttrs(blank);
+	    if (parm_insert_line)
+	    {
+		TPUTS_TRACE("parm_insert_line");
+		tputs(tparm(parm_insert_line, n, 0), n, _nc_outch);
+	    }
+	    else
+	    {
+		for (i = 0; i < n; i++)
+		{
+		    TPUTS_TRACE("insert_line");
+		    tputs(insert_line, 0, _nc_outch);
+		}
+	    }
+	}
+	else
+	    return(ERR);
+    }
+    else /* (n < 0) */
+    {
+	/*
+	 * Do explicit clear to end of region if it's possible that the
+	 * terminal might hold on to stuff we push off the end.
+	 */
+	if (non_dest_scroll_region || (memory_below && bot == maxy))
+	{
+	    if (bot == maxy && clr_eos)
+	    {
+		GoTo(maxy + n, 0);
+		ClrToEOS(BLANK);
+	    }
+	    else if (clr_eol)
+	    {
+		for (i = 0; i < -n; i++)
+		{
+		    GoTo(maxy + n + i, 0);
+		    ClrToEOL(BLANK);
+		}
+	    }
+	}
+
+	if (change_scroll_region && (scroll_reverse || parm_rindex))
+	{
+	    TPUTS_TRACE("change_scroll_region");
+	    tputs(tparm(change_scroll_region, top, bot), 0, _nc_outch);
+	    SP->_cursrow = SP->_curscol = -1;
+
+	    GoTo(top, 0);
+	    UpdateAttrs(blank);
+	    if (parm_rindex)
+	    {
+		TPUTS_TRACE("parm_rindex");
+		tputs(tparm(parm_rindex, -n, 0), -n, _nc_outch);
+	    }
+	    else
+	    {
+		for (i = n; i < 0; i++)
+		{
+		    TPUTS_TRACE("scroll_reverse");
+		    tputs(scroll_reverse, 0, _nc_outch);
+		}
+	    }
+	    TPUTS_TRACE("change_scroll_region");
+	    tputs(tparm(change_scroll_region, 0, maxy), 0, _nc_outch);
+	    SP->_cursrow = SP->_curscol = -1;
+	}
+	else if (parm_rindex && top == 0 && bot == maxy)
+	{
+	    GoTo(bot + n + 1, 0);
+	    UpdateAttrs(blank);
+	    TPUTS_TRACE("parm_rindex");
+	    tputs(tparm(parm_rindex, -n, 0), -n, _nc_outch);
+	}
+	else if (scroll_reverse && top == 0 && bot == maxy)
+	{
+	    GoTo(0, 0);
+	    UpdateAttrs(blank);
+	    for (i = n; i < 0; i++)
+	    {
+		TPUTS_TRACE("scroll_reverse");
+		tputs(scroll_reverse, 0, _nc_outch);
+	    }
+	}
+	else if (_nc_idlok
+	 && (parm_delete_line || delete_line)
+	 && (parm_insert_line || insert_line))
+	{
+	    GoTo(bot + n + 1, 0);
+	    UpdateAttrs(blank);
+	    if (parm_delete_line)
+	    {
+		TPUTS_TRACE("parm_delete_line");
+		tputs(tparm(parm_delete_line, -n, 0), -n, _nc_outch);
+	    }
+	    else
+	    {
+		for (i = n; i < 0; i++)
+		{
+		    TPUTS_TRACE("delete_line");
+		    tputs(delete_line, 0, _nc_outch);
+		}
+	    }
+
+	    GoTo(top, 0);
+
+	    /* Scroll the block down. */
+	    UpdateAttrs(blank);
+	    if (parm_insert_line)
+	    {
+		TPUTS_TRACE("parm_insert_line");
+		tputs(tparm(parm_insert_line, -n, 0), -n, _nc_outch);
+	    }
+	    else
+	    {
+		for (i = n; i < 0; i++)
+		{
+		    TPUTS_TRACE("insert_line");
+		    tputs(insert_line, 0, _nc_outch);
+		}
+	    }
+	}
+	else
+	    return(ERR);
+    }
+    
+    /* this is mainly for doupdate not to skip those lines */
+    for (i = top; i >= bot; i++)
+    {
+	curscr->_line[i].firstchar = 0;
+	curscr->_line[i].lastchar = curscr->_maxx;
+    }
+
+    _nc_scroll_window(curscr, n, top, bot, blank);
+
+    return(OK);
 }

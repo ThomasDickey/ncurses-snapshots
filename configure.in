@@ -17,14 +17,15 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.64 1997/05/10 15:26:07 tom Exp $
+dnl $Id: configure.in,v 1.66 1997/05/18 01:27:53 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12)
-AC_REVISION($Revision: 1.64 $)
+AC_REVISION($Revision: 1.66 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
 NC_SYSTYPE
+NC_SYSRELV
 
 # We need a configure script only when compiling as part of GNU C library.
 # Here we have to generate one of the files we need while compiling.
@@ -61,7 +62,7 @@ changequote([,])dnl
 nc_user_CFLAGS="$CFLAGS"
 
 ###	Derive the system name, as a check for reusing the autoconf cache
-system_name="`(uname -s -r || hostname || echo unknown) 2>/dev/null`"
+system_name="$nc_cv_systype $nc_cv_sysrelv"
 if test -n "$system_name" ; then
 	AC_DEFINE_UNQUOTED(SYSTEM_NAME,"$system_name")
 else
@@ -213,13 +214,20 @@ profile) LD_MODEL='-pg';;
 shared)  LD_MODEL=''   ;;
 esac
 AC_SUBST(LD_MODEL)dnl		the type of link (e.g., -g or -pg)
+
+AC_MSG_CHECKING(if rpath option should be used)
+AC_ARG_ENABLE(rpath,
+[  --enable-rpath          use rpath option when generating shared libraries],
+[nc_cv_ld_rpath=$enableval],
+[nc_cv_ld_rpath=no])
+AC_MSG_RESULT($nc_cv_ld_rpath)
+
 NC_SHARED_OPTS
 
 if test "$CC_SHARED_OPTS" = "unknown"; then
 	for model in $nc_list_models; do
 		if test "$model" = "shared"; then
-			echo '** Shared libraries are not supported in this version'
-			exit 1
+			AC_ERROR(Shared libraries are not supported in this version)
 		fi
 	done
 fi
@@ -648,6 +656,7 @@ WITH_OVERWRITE="$with_overwrite"
 SRC_SUBDIRS="$SRC_SUBDIRS"
 nc_cxx_library="$nc_cxx_library"
 nc_cv_systype="$nc_cv_systype"
+nc_cv_sysrelv="$nc_cv_sysrelv"
 nc_cv_rel_version="$nc_cv_rel_version"
 nc_cv_abi_version="$nc_cv_abi_version"
 nc_cv_do_symlinks="$nc_cv_do_symlinks"

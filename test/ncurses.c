@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.91 1997/05/10 18:19:48 tom Exp $
+$Id: ncurses.c,v 1.92 1997/05/12 21:35:00 juergen Exp $
 
 ***************************************************************************/
 
@@ -2871,9 +2871,11 @@ main(int argc, char *argv[])
 	case 'h':
 	    ripoffline(1, rip_header);
 	    break;
+#if USE_LIBPANEL
 	case 's':
 	    nap_msec = atol(optarg);
 	    break;
+#endif
 #ifdef TRACE
 	case 't':
 	    save_trace = atoi(optarg);

@@ -1,6 +1,42 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970517
+	+ suppress check for pre-existing ncurses header if the --prefix
+	  option is specified.
+	+ add configure options "--with-system-type" and "--with-system-release"
+	  to assist in checking the generated makefiles.
+	+ add configure option "--enable-rpath" to allow installers to specify
+	  that programs linked against shared libraries will have their library
+	  path embedded, allowing installs into nonstandard locations.
+	+ add flags to OSF1 shared-library options to specify version and
+	  symbol file (patch by Tim Mooney <mooney@dogbert.cc.ndsu.NoDak.edu>)
+	+ add missing definition for ABI_VERSION to c++/Makefile.in (reported
+	  by Satoshi Adachi <adachi@wisdom.aa.ap.titech.ac.jp>).
+	+ modify link flags to accommodate HP-UX linker which embeds absolute
+	  pathnames in executables linked against shared libraries (reported by
+	  Jason Evans <jasone@mrc.uidaho.edu>, solved by Alan Shutko
+	  <ats@hubert.wustl.edu>).
+	+ drop unnecessary check for attribute-change in onscreen_mvcur() since
+	  mvcur() is the only caller within the library, and that check in turn
+	  is exercised only from lib_doupdate.c (patch by Alexander V. 
+	  Lukyanov).
+	+ add 'blank' parameter to _nc_scroll_window() so _nc_mvcur_scrolln()
+	  can use the background of stdscr as a parameter to that function
+	  (patch by Alexander V. Lukyanov).
+	+ moved _nc_mvcur_scrolln() from lib_mvcur.c to lib_doupdate.c, to use
+	  the latter's internal functions, as well as to eliminate unnecessary
+	  cursor save/restore operations (patch by Alexander V. Lukyanov).
+	+ omit parameter of ClrUpdate(), since it is called only for newscr,
+	  further optimized/reduced by using ClearScreen() and TransformLine()
+	  to get rid of duplicate code (patch by Alexander V. Lukyanov).
+	+ modify scrolling algorithm in _nc_scroll_optimize() to reject hunks
+	  that are smaller than the distance to be moved (patch by Alexander V. 
+	  Lukyanov).
+	+ correct a place where the panel library was not ifdef'd in ncurses.c
+	  (Juergen Pfeifer)
+	+ documentation fixes (Juergen Pfeifer)
+
 970515	4.1 release for upload to prep.ai.mit.edu
 	+ re-tag changes since 970505 as 4.1 release.
 

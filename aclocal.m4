@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.60 1997/05/10 15:56:16 tom Exp $
+dnl $Id: aclocal.m4,v 1.65 1997/05/18 01:56:50 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -125,6 +125,7 @@ if test "x$prefix" = "xNONE" ; then
 	esac
 fi
 AC_MSG_RESULT($prefix)
+if test "x$prefix" = "xNONE" ; then
 AC_MSG_CHECKING(for default include-directory)
 test -n "$verbose" && echo 1>&6
 for nc_symbol in \
@@ -148,6 +149,7 @@ do
 	test -n "$verbose"  && echo "	tested $nc_dir" 1>&6
 done
 AC_MSG_RESULT($includedir)
+fi
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl If we're trying to use g++, test if libg++ is installed (a rather common
@@ -898,9 +900,11 @@ dnl Some loaders leave 'so_locations' lying around.  It's nice to clean up.
 AC_DEFUN([NC_SHARED_OPTS],
 [
 	AC_REQUIRE([NC_SYSTYPE])
+	AC_REQUIRE([NC_SYSRELV])
 	AC_REQUIRE([NC_VERSION])
  	LOCAL_LDFLAGS=
  	LOCAL_LDFLAGS2=
+	LD_SHARED_OPTS=
 
 	nc_cv_do_symlinks=no
 	nc_cv_rm_so_locs=no
@@ -910,8 +914,10 @@ AC_DEFUN([NC_SHARED_OPTS],
 		# (tested with gcc 2.7.2 -- I don't have c89)
 		if test "${CC}" = "gcc"; then
 			CC_SHARED_OPTS='-fPIC'
+			LD_SHARED_OPTS='-Xlinker +b -Xlinker $(libdir)'
 		else
 			CC_SHARED_OPTS='+Z'
+			LD_SHARED_OPTS='+b $(libdir)'
 		fi
 		MK_SHARED_LIB='$(LD) -b -o $[@]'
 		;;
@@ -929,6 +935,7 @@ AC_DEFUN([NC_SHARED_OPTS],
 		# tested with Linux 1.2.8 and gcc 2.7.0 (ELF)
 		CC_SHARED_OPTS='-fPIC'
  		MK_SHARED_LIB='gcc -o $[@].$(REL_VERSION) -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)`,-stats'
+		test $nc_cv_ld_rpath = yes && MK_SHARED_LIB="$MK_SHARED_LIB -Wl,-rpath,\$(libdir)"
 		if test $DFT_LWR_MODEL = "shared" ; then
  			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
  			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'
@@ -944,7 +951,13 @@ AC_DEFUN([NC_SHARED_OPTS],
 		# tested with OSF/1 V3.2 and gcc 2.6.3 (but the c++ demo didn't
 		# link with shared libs).
 		CC_SHARED_OPTS=''
- 		MK_SHARED_LIB='$(LD) -o $[@].$(REL_VERSION) -shared -soname `basename $[@].$(ABI_VERSION)`'
+ 		MK_SHARED_LIB='$(LD) -o $[@].$(REL_VERSION) -set_version $(ABI_VERSION):$(REL_VERSION) -expect_unresolved "*" -shared -soname `basename $[@].$(ABI_VERSION)`'
+		test $nc_cv_ld_rpath = yes && MK_SHARED_LIB="$MK_SHARED_LIB -rpath \$(libdir)"
+		case $nc_cv_sysrelv in
+		4.*)
+ 			MK_SHARED_LIB="${MK_SHARED_LIB} -msym"
+			;;
+		esac
 		if test $DFT_LWR_MODEL = "shared" ; then
  			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
  			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'
@@ -960,7 +973,7 @@ AC_DEFUN([NC_SHARED_OPTS],
 		else
 			CC_SHARED_OPTS='-KPIC'
 		fi
-		case `uname -r` in
+		case $nc_cv_sysrelv in
 		4.*)
 			MK_SHARED_LIB='$(LD) -assert pure-text -o $[@].$(REL_VERSION)'
 			;;
@@ -981,6 +994,7 @@ AC_DEFUN([NC_SHARED_OPTS],
 		;;
 	esac
 	AC_SUBST(CC_SHARED_OPTS)
+	AC_SUBST(LD_SHARED_OPTS)
 	AC_SUBST(MK_SHARED_LIB)
 	AC_SUBST(LOCAL_LDFLAGS)
 	AC_SUBST(LOCAL_LDFLAGS2)
@@ -1111,17 +1125,40 @@ AC_MSG_RESULT($nc_cv_dcl_sys_errlist)
 test $nc_cv_dcl_sys_errlist = yes && AC_DEFINE(HAVE_EXTERN_SYS_ERRLIST)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Derive the system-release (our secondary clue to the method of building
+dnl shared libraries).
+AC_DEFUN([NC_SYSRELV],
+[
+AC_MSG_CHECKING(for system release version)
+AC_CACHE_VAL(nc_cv_sysrelv,[
+AC_ARG_WITH(system-release,
+[  --with-system-relv=XXX  test: override derived host system-release version],
+[nc_cv_sysrelv=$withval],
+[
+changequote(,)dnl
+nc_cv_sysrelv="`(uname -r || echo unknown) 2>/dev/null |sed -e s'/[:\/-]/_/'g  | sed 1q`"
+changequote([,])dnl
+if test -z "$nc_cv_sysrelv"; then nc_cv_sysrelv=unknown;fi
+])])
+AC_MSG_RESULT($nc_cv_sysrelv)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Derive the system-type (our main clue to the method of building shared
 dnl libraries).
 AC_DEFUN([NC_SYSTYPE],
 [
+AC_MSG_CHECKING(for system type)
 AC_CACHE_VAL(nc_cv_systype,[
+AC_ARG_WITH(system-type,
+[  --with-system-type=XXX  test: override derived host system-type],
+[nc_cv_systype=$withval],
+[
 changequote(,)dnl
 nc_cv_systype="`(uname -s || hostname || echo unknown) 2>/dev/null |sed -e s'/[:\/.-]/_/'g  | sed 1q`"
 changequote([,])dnl
 if test -z "$nc_cv_systype"; then nc_cv_systype=unknown;fi
-])
-AC_MSG_RESULT(System type is $nc_cv_systype)
+])])
+AC_MSG_RESULT($nc_cv_systype)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl On some systems ioctl(fd, TIOCGWINSZ, &size) will always return {0,0} until
