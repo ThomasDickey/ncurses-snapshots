@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+.\" Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,15 +26,14 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.14 2004/07/05 13:16:08 tom Exp $
+.\" $Id: tset.1,v 1.15 2005/03/20 18:27:09 tom Exp $
 .TH tset 1 ""
 .SH NAME
 \fBtset\fR, \fBreset\fR - terminal initialization
 .SH SYNOPSIS
-\fBtset\fR [\fB-IQVqrs\fR] [\fB-\fR] [\fB-e\fR \fIch\fR] [\fB-i\fR \fIch\fR] [\fB-k\fR \fIch\fR] [\fB-m\fR \fImapping\fR] [\fIterminal\fR]
+\fBtset\fR [\fB-IQVcqrsw\fR] [\fB-\fR] [\fB-e\fR \fIch\fR] [\fB-i\fR \fIch\fR] [\fB-k\fR \fIch\fR] [\fB-m\fR \fImapping\fR] [\fIterminal\fR]
 .br
-A
-\fBreset\fR [\fB-IQVqrs\fR] [\fB-\fR] [\fB-e\fR \fIch\fR] [\fB-i\fR \fIch\fR] [\fB-k\fR \fIch\fR] [\fB-m\fR \fImapping\fR] [\fIterminal\fR]
+\fBreset\fR [\fB-IQVcqrsw\fR] [\fB-\fR] [\fB-e\fR \fIch\fR] [\fB-i\fR \fIch\fR] [\fB-k\fR \fIch\fR] [\fB-m\fR \fImapping\fR] [\fIterminal\fR]
 .SH DESCRIPTION
 \&\fBTset\fR initializes terminals.
 \fBTset\fR first determines the type of terminal that you are using.
@@ -52,7 +51,9 @@ System-V-like UNIXes, \fIgetty\fR does this job by setting
 4. The default terminal type, ``unknown''.
 .PP
 If the terminal type was not specified on the command-line, the \fB-m\fR
-option mappings are then applied (see below for more information).
+option mappings are then applied (see the section
+.B TERMINAL TYPE MAPPING
+for more information).
 Then, if the terminal type begins with a question mark (``?''), the
 user is prompted for confirmation of the terminal type.  An empty
 response confirms the type, or, another type can be entered to specify
@@ -66,6 +67,9 @@ and tab initialization strings are sent to the standard error output.
 Finally, if the erase, interrupt and line kill characters have changed,
 or are not set to their default values, their values are displayed to the
 standard error output.
+Use the \fB-c\fP or \fB-w\fP option to select only the window sizing
+versus the other initialization.
+If neither option is given, both are assumed.
 .PP
 When invoked as \fBreset\fR, \fBtset\fR sets cooked and echo modes,
 turns off cbreak and raw modes, turns on newline translation and
@@ -82,22 +86,13 @@ Also, the terminal will often not echo the command.
 .PP
 The options are as follows:
 .TP 5
-.B -q
-The terminal type is displayed to the standard output, and the terminal is
-not initialized in any way.  The option `-' by itself is equivalent but
-archaic.
-.TP
+.B -c
+Set control characters and modes.
 .B -e
 Set the erase character to \fIch\fR.
 .TP
 .B -I
 Do not send the terminal or tab initialization strings to the terminal.
-.TP
-.B -Q
-Don't display any values for the erase, interrupt and line kill characters.
-.TP
-.B -V
-reports the version of ncurses which was used in this program, and exits.
 .TP
 .B -i
 Set the interrupt character to \fIch\fR.
@@ -107,7 +102,19 @@ Set the line kill character to \fIch\fR.
 .TP
 .B -m
 Specify a mapping from a port type to a terminal.
-See below for more information.
+See the section
+.B TERMINAL TYPE MAPPING
+for more information.
+.TP
+.B -Q
+Do not display any values for the erase, interrupt and line kill characters.
+Normally \fBtset\fR displays the values for control characters which
+differ from the system's default values.
+.TP
+.B -q
+The terminal type is displayed to the standard output, and the terminal is
+not initialized in any way.  The option `-' by itself is equivalent but
+archaic.
 .TP
 .B -r
 Print the terminal type to the standard error output.
@@ -115,11 +122,22 @@ Print the terminal type to the standard error output.
 .B -s
 Print the sequence of shell commands to initialize the environment variable
 \fBTERM\fR to the standard output.
-See the section below on setting the environment for details.
+See the section
+.B SETTING THE ENVIRONMENT
+for details.
+.TP
+.B -V
+reports the version of ncurses which was used in this program, and exits.
+.TP
+.B -w
+Resize the window to match the size deduced via \fBsetupterm\fP.
+Normally this has no effect,
+unless \fBsetupterm\fP is not able to detect the window size.
 .PP
 The arguments for the \fB-e\fR, \fB-i\fR, and \fB-k\fR
 options may either be entered as actual characters or by using the `hat'
 notation, i.e. control-h may be specified as ``^H'' or ``^h''.
+.
 .SH SETTING THE ENVIRONMENT
 It is often desirable to enter the terminal type and information about
 the terminal's capabilities into the shell's environment.
@@ -241,6 +259,7 @@ terminal capability database
 csh(1),
 sh(1),
 stty(1),
+setupterm(3),
 tty(4),
 termcap(5),
 ttys(5),
