@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.663 2002/01/12 23:52:35 tom Exp $
+-- $Id: NEWS,v 1.665 2002/01/20 01:45:46 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020119
+	+ add case in lib_baudrate.c for B921600 (patch by Andrey A Chernov).
+	+ correct missing sed-editing stage in manpage installs which is used
+	  to rename manpages, broken in 20010324 fix for Debian #89939 (Debian
+	  #78866).
+	+ remove -L$(libdir) from linker flags, probably not needed any more
+	  since HPUX is handled properly (reported by NIIBE Yutaka
+	  <gniibe@m17n.org>).
+	+ add configure check for mbstate_t, needed for wide-character
+	  configuration.  On some platforms we must include <wchar.h> to
+	  define this (reported by Daniel Jacobowitz).
+	+ incorporate some of the changes needed to build dll's on cygwin.
+
+20020112a
+	+ workaround for awk did not work with mawk, adjusted shell script.
 
 20020112
 	+ add Caps.osf1r5, as an example.

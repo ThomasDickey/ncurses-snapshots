@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.32 2001/12/08 18:48:01 tom Exp $
+# $Id: Makefile.in,v 1.33 2002/01/19 22:49:44 tom Exp $
 ##############################################################################
-# Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.                #
+# Copyright (c) 1998,2000,2001,2002 Free Software Foundation, Inc.           #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -71,6 +71,9 @@ mostlyclean :
 
 clean:	mostlyclean
 	rm -f terminfo.5
+
+edit_man.sed : make_sed.sh @MANPAGE_RENAMES@
+	sh $srcdir/make_sed.sh @MANPAGE_RENAMES@ >edit_man.sed
 
 distclean realclean: clean
 	rm -f Makefile edit_man.*
