@@ -112,7 +112,7 @@ chtype	ch = c;
 
 	switch (ch&A_CHARTEXT) {
     	case '\t':
-		for (newx = x + (8 - (x & 07)); x < newx; x++)
+		for (newx = x + (TABSIZE - (x % TABSIZE)); x < newx; x++)
 	    		if (waddch(win, ' ') == ERR)
 				return(ERR);
 		return(OK);

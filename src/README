@@ -44,12 +44,11 @@ supporting internationalization.
 
 2. DOS port
 
-Parts of the code have been conditioned on the macro UNIX; it is now
-possible to compile a version of the code that knows nothing about
-terminfo and instead refers to the file nonunix.c for core primitives.
-It ought to be possible to modify this file to support the curses API
-in DOS, Macintosh, and other single-user micro environments supporting
-ANSI C.
+Only 16 of the 55 files in the library depend on the terminfo format.
+It should be possible to further kernelize the package, then rewrite 
+a small number of core files to produce a functionally-compatible
+port that would do updates to a memory-mapped screen area.  The first
+result of this would be a DOS port.
 
 3. X port
 

@@ -620,34 +620,28 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 
     ep = move + strlen(move);
 
-    if (to_x != from_x)
-    {
+    if (to_x != from_x) {
 	char	try[OPT_SIZE];
 
 	hcost = INFINITY;
 
-	if (column_address)
-	{
+	if (column_address) {
 	    (void) strcpy(ep, tparm(column_address, to_x));
 	    hcost = SP->_hpa_cost;
 	}
 
-	if (to_x > from_x)
-	{
+	if (to_x > from_x) {
 	    n = to_x - from_x;
 
-	    if (parm_right_cursor)
-	    {
+	    if (parm_right_cursor) {
 	        sp = tparm(parm_right_cursor, n);
-		if (SP->_cuf_cost < hcost)
-		{
+		if (SP->_cuf_cost < hcost) {
 		    (void) strcpy(ep, sp);
 		    hcost = SP->_cuf_cost;
 		}
 	    }
 
-	    if (cursor_right)
-	    {
+	    if (cursor_right) {
 		int	lhcost = 0;
 
 		try[0] = '\0';

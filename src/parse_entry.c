@@ -18,7 +18,6 @@
 *                                                                          *
 ***************************************************************************/
 
-#include "system.h"
 
 /*
  *	parse_entry.c -- compile one terminfo or termcap entry

@@ -87,7 +87,7 @@ int	errret;
 	SP->_checkfd	= fileno(ifp);
 	typeahead(fileno(ifp));
 	SP->_ofp        = ofp;
-#if defined(UNIX) && defined(TERMIOS)
+#ifdef TERMIOS
 	SP->_use_meta   = ((cur_term->Ottyb.c_cflag & CSIZE) == CS8 &&
 			    !(cur_term->Ottyb.c_iflag & ISTRIP));
 #else

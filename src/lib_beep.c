@@ -42,10 +42,6 @@ int beep(void)
 {
 	T(("beep() called"));
 
-#ifndef UNIX
-	_outch(7);
-	return(OK);
-#else
 	/* should make sure that we are not in altchar mode */
 	if (bell)
 	{
@@ -59,7 +55,6 @@ int beep(void)
 	}
 	else
 		return(ERR);
-#endif /* UNIX */
 }
 
 /*
@@ -74,10 +69,6 @@ int flash(void)
 {
 	T(("flash() called"));
 
-#ifndef UNIX
-	_outch(7);	/* under DOS we can do better than this */
-	return(OK);
-#else
 	/* should make sure that we are not in altchar mode */
 	if (flash_screen)
 	{
@@ -91,5 +82,4 @@ int flash(void)
 	}
 	else
 		return(ERR);
-#endif /* UNIX */
 }

@@ -133,9 +133,7 @@ struct screen {
        	int		_ifd;	    	/* input file ptr for screen        */
    	FILE		*_ofp;	    	/* output file ptr for screen       */
    	int		_checkfd;	/* filedesc for typeahead check     */ 
-#ifdef UNIX
 	struct term	*_term;	    	/* terminal type information        */
-#endif /* UNIX */
 	short		_lines;		/* screen lines			    */
 	short		_columns;	/* screen columns		    */
 	WINDOW		*_curscr;   	/* current screen                   */
@@ -159,7 +157,6 @@ struct screen {
 	bool		_echo;	    	/* True if echo on                  */
 	bool		_use_meta;      /* use the meta key?		    */
  	SLK		*_slk;	    	/* ptr to soft key struct / NULL    */
-#ifdef UNIX
 	int		_baudrate;	/* used to compute padding	    */
 
 	/* cursor movement costs; units are 10ths of milliseconds */
@@ -182,7 +179,6 @@ struct screen {
 	int		_cuu_cost;	/* cost of (parm_cursor_up)	    */
 	int		_hpa_cost;	/* cost of (column_address)	    */
 	int		_vpa_cost;	/* cost of (row_address)	    */
-#endif /* UNIX */
 };
 
 /*
@@ -202,25 +198,3 @@ extern int slk_initialize(WINDOW *, int);
 #define MAXCOLUMNS    135
 #define MAXLINES      66
 #define UNINITIALISED ((struct try * ) -1)
-
-#ifndef STDOUT_FILENO
-#define STDOUT_FILENO	1
-#endif
-#ifndef STDIN_FILENO
-#define STDIN_FILENO	0
-#endif
-
-#ifndef UNIX
-
-/*
- * Frozen variables for memory-mapped ports.  
- */
-
-/* these shouldn't change */
-#define getenv(x)	(char *)NULL	/* fake out initscr() code */
-
-/* This set of pseudo-caps is good for CGA-compatible displays */
-#define max_colors	8
-#define max_pairs	(max_colors* max_colors)
-
-#endif /* UNIX */
