@@ -198,7 +198,7 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 	libraries and headers in the correct locations (overwriting any
 	previous curses libraries and headers).  This will put the terminfo
 	hierarchy under /usr/share/terminfo; you may want to override this with
-	--data-dir=/usr/share/misc/terminfo
+	--datadir=/usr/share/misc/terminfo
 
 	Please configure the ncurses library in a pure-terminfo mode; that
 	is, with the --disable-termcap option.   This will make the ncurses 

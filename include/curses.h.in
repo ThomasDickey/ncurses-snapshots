@@ -216,7 +216,6 @@ struct _win_st {
 	/* window location and size */
 	short   _maxy, _maxx;	/* maximums of x and y, NOT window size */
 	short   _begy, _begx;	/* screen coords of upper-left-hand corner */
-	short   _yoffset;	/* real begy is _begy + _yoffset */
 
 	short   _flags;		/* window state flags */
 
@@ -262,6 +261,8 @@ struct _win_st {
 	    short _pad_top,    _pad_left;
 	    short _pad_bottom, _pad_right;
 	} _pad;
+
+	short   _yoffset;	/* real begy is _begy + _yoffset */
 };
 
 extern WINDOW   *stdscr, *curscr, *newscr;
@@ -287,6 +288,9 @@ extern char ttytype[];		/* needed for backward compatibility */
 #if !defined(__GNUC__) && !defined(__attribute__)
 #define __attribute__(p) /* nothing */
 #endif
+
+#define GCC_PRINTFLIKE(fmt,var) __attribute__((format(printf,fmt,var)))
+#define GCC_SCANFLIKE(fmt,var)  __attribute__((format(scanf,fmt,var)))
 
 /*
  * Function prototypes.  This is the complete XSI Curses list of required
@@ -489,8 +493,10 @@ extern int mvin_wch(int, int, const cchar_t *);		/* missing */
 extern int mvin_wchstr(int, int, const cchar_t *);	/* missing */
 extern int mvin_wchntr(int, int, const cchar_t *, int);	/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
-extern int mvprintw(int,int,const char *,...);		/* implemented */
-extern int mvscanw(int,int,const char *,...);		/* implemented */
+extern int mvprintw(int,int,const char *,...)		/* implemented */
+		GCC_PRINTFLIKE(3,4);
+extern int mvscanw(int,int,const char *,...)		/* implemented */
+		GCC_SCANFLIKE(3,4);
 extern int mvvline(int, int, chtype, int);		/* generated */
 #ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvvline_set(int, int, const cchar_t *, int);	/* missing */
@@ -546,8 +552,10 @@ extern int mvwin_wch(WINDOW *, int, int, const cchar_t *);	/* missing */
 extern int mvwin_wchnstr(WINDOW *, int,int,const cchar_t *,int); /* missing */
 extern int mvwin_wchstr(WINDOW *, int, int, const cchar_t *);	/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
-extern int mvwprintw(WINDOW*,int,int,const char *,...);	/* implemented */
-extern int mvwscanw(WINDOW *,int,int,const char *,...);	/* implemented */
+extern int mvwprintw(WINDOW*,int,int,const char *,...)	/* implemented */
+		GCC_PRINTFLIKE(4,5);
+extern int mvwscanw(WINDOW *,int,int,const char *,...)	/* implemented */
+		GCC_SCANFLIKE(4,5);
 extern int mvwvline(WINDOW *,int, int, chtype, int);	/* generated */
 #ifdef _XOPEN_SOURCE_EXTENDED
 extern int mvwvline_set(WINDOW *, int,int, const cchar_t *,int); /* missing */
@@ -574,7 +582,8 @@ extern int pecho_wchar(WINDOW *, const cchar_t *);	/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern int pnoutrefresh(WINDOW*,int,int,int,int,int,int);/* implemented */
 extern int prefresh(WINDOW *,int,int,int,int,int,int);	/* implemented */
-extern int printw(const char *,...);			/* implemented */
+extern int printw(const char *,...)			/* implemented */
+		GCC_PRINTFLIKE(1,2);
 extern int putp(const char *);				/* implemented */
 extern int putwin(WINDOW *, FILE *);			/* implemented */
 extern int qiflush(void);				/* implemented */
@@ -586,7 +595,8 @@ extern int reset_prog_mode(void);			/* implemented */
 extern int reset_shell_mode(void);			/* implemented */
 extern int ripoffline(int, int (*init)(WINDOW *, int));	/* implemented */
 extern int savetty(void);				/* implemented */
-extern int scanw(const char *,...);			/* implemented */
+extern int scanw(const char *,...)			/* implemented */
+		GCC_SCANFLIKE(1,2);
 extern int scr_dump(const char *);			/* implemented */
 extern int scr_init(const char *);			/* implemented */
 extern int scrl(int);					/* generated */
@@ -739,11 +749,13 @@ extern int win_wchstr(WINDOW *, const cchar_t *);	/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern int wmove(WINDOW *,int,int);			/* implemented */
 extern int wnoutrefresh(WINDOW *);			/* implemented */
-extern int wprintw(WINDOW *,const char *,...);		/* implemented */
+extern int wprintw(WINDOW *,const char *,...)		/* implemented */
+		GCC_PRINTFLIKE(2,3);
 extern int wredrawln(WINDOW *,int,int);			/* implemented */
 extern int wrefresh(WINDOW *);				/* implemented */
 extern int wresize(WINDOW *, int, int);			/* implemented */
-extern int wscanw(WINDOW *,const char *,...);		/* implemented */
+extern int wscanw(WINDOW *,const char *,...)		/* implemented */
+		GCC_SCANFLIKE(2,3);
 extern int wscrl(WINDOW *,int);				/* implemented */
 extern int wsetscrreg(WINDOW *,int,int);		/* implemented */
 extern int wstandout(WINDOW *);				/* generated */
@@ -811,8 +823,8 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 
 #define	wbkgdset(win, ch) \
 	(((win)->_attrs = (((win)->_attrs & ~((win)->_bkgd & A_ATTRIBUTES)) | \
-	    (ch & A_ATTRIBUTES))), \
-	    ((win)->_bkgd = (ch & A_CHARTEXT) ? ch : (ch | ' ')))
+	    ((ch) & A_ATTRIBUTES))), \
+	    ((win)->_bkgd = ((ch) & A_CHARTEXT) ? (ch) : ((ch) | ' ')))
 
 /* It seems older SYSV curses versions define these */
 #define getattrs(win)		((win)->_attrs)
@@ -1186,7 +1198,7 @@ extern int mouseinterval(int);
 
 /* Debugging : use with libncurses_g.a */
 
-extern void _tracef(const char *, ...) __attribute__((format(printf,1,2)));
+extern void _tracef(const char *, ...) GCC_PRINTFLIKE(1,2);
 extern void _tracedump(char *, WINDOW *);
 extern char *_traceattr(attr_t);
 extern char *_tracebits(void);

@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.24 1996/06/26 10:24:16 tom Exp $
+dnl $Id: aclocal.m4,v 1.26 1996/07/06 18:36:34 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -541,19 +541,23 @@ AC_DEFUN([NC_MAN_PAGES],
   if test -z "$MANPATH" ; then
     MANPATH="/usr/man:/usr/share/man"
   fi
-  # look for the 'date' man-page
+  # look for the 'date' man-page (it's most likely to be installed!)
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
   nc_form=unknown
   for nc_dir in $MANPATH; do
     test -z "$nc_dir" && nc_dir=.
     nc_rename=""
-    for nc_name in $nc_dir/*/date.1* $nc_dir/*/date
+    nc_format=no
+changequote({{,}})dnl
+    for nc_name in $nc_dir/*/date.[01]* $nc_dir/*/date
+changequote([,])dnl
     do
        nc_test=`echo $nc_name | sed -e 's/*//'`
        if test "x$nc_test" = "x$nc_name" ; then
 	  case "$nc_name" in
 	  *.gz) nc_form=gzip;     nc_name=`basename $nc_name .gz`;;
 	  *.Z)  nc_form=compress; nc_name=`basename $nc_name .Z`;;
+	  *.0)	nc_form=BSDI; nc_format=yes;;
 	  *)    nc_form=cat;;
 	  esac
 	  break
@@ -585,6 +589,11 @@ AC_DEFUN([NC_MAN_PAGES],
         -e 's/[ ]\+/\//' \
         -e s/\$/\\\/g/ >man/edit_man.sed
   fi
+  if test $nc_format = yes ; then
+    nc_subdir='$mandir/cat'
+  else
+    nc_subdir='$mandir/man'
+  fi
 
 cat >man/edit_man.sh <<NC_EOF
 changequote({{,}})dnl
@@ -606,14 +615,14 @@ do
 case \$i in
 *.[0-9]*)
 	section=\`expr "\$i" : '.*\\.\\([0-9]\\)[xm]*'\`;
-	if [ ! -d \$mandir/man\${section} ]; then
-		\$MKDIRS \$mandir/man\$section
+	if [ ! -d $nc_subdir\${section} ]; then
+		\$MKDIRS $nc_subdir\$section
 	fi
 	source=\`basename \$i\`
 NC_EOF
 if test -z "$nc_rename" ; then
 cat >>man/edit_man.sh <<NC_EOF
-	target=\$mandir/man\${section}/\$source
+	target=$nc_subdir\${section}/\$source
 	sed -e 's,@DATADIR@,\$datadir,' < \$i >\$TMP
 NC_EOF
 else
@@ -623,8 +632,14 @@ cat >>man/edit_man.sh <<NC_EOF
 		echo '? missing rename for '\$source
 		target="\$source"
 	fi
-	target="\$mandir/man\$section/\$target"
+	target="$nc_subdir\$section/\$target"
 	sed -e 's,@DATADIR@,\$datadir,' < \$i | sed -f edit_man.sed >\$TMP
+NC_EOF
+fi
+if test "$nc_format" ; then
+cat >>man/edit_man.sh <<NC_EOF
+	nroff -man \$TMP >\$TMP.out
+	mv \$TMP.out \$TMP
 NC_EOF
 fi
 case "$nc_form" in
@@ -644,6 +659,12 @@ cat >>man/edit_man.sh <<NC_EOF
 		mv \$TMP.gz \$TMP
 		target="\$target.gz"
 	fi
+NC_EOF
+  ;;
+BSDI)
+cat >>man/edit_man.sh <<NC_EOF
+	# BSDI installs only .0 suffixes in the cat directories
+	target="\`echo \$target|sed -e 's/\.[1-9]\+.\?/.0/'\`"
 NC_EOF
   ;;
 esac
@@ -667,6 +688,24 @@ AC_DEFUN([NC_OBJ_SUBDIR],
 	profile) $2='obj_p' ;;
 	shared)  $2='obj_s' ;;
 	esac
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Force $INSTALL to be an absolute-path.  Otherwise, edit_man.sh and the
+dnl misc/tabset install won't work properly.  Usually this happens only when
+dnl using the fallback mkinstalldirs script
+AC_DEFUN([NC_PROG_INSTALL],
+[AC_PROG_INSTALL
+case $INSTALL in
+/*)
+  ;;
+*)
+changequote({{,}})dnl
+  nc_dir=`echo $INSTALL|sed -e 's%/[^/]*$%%'`
+  test -z "$nc_dir" && nc_dir=.
+changequote([,])dnl
+  INSTALL=`cd $nc_dir;pwd`/`basename $INSTALL`
+  ;;
+esac
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Attempt to determine if we've got one of the flavors of regular-expression

@@ -9,7 +9,6 @@
           + Why System V Curses?
           + How to Design Extensions
      * Portability and Configuration
-          +
           + If autoconf Fails
      * Documentation Conventions
        
@@ -122,6 +121,9 @@ If autoconf Fails
    automatically. Here are some -D options you might need to compile with
    if it fails:
    
+   -DHAVE_UNISTD_H
+          if <unistd.h> is present
+          
    -DHAVE_SIGACTION
           if the sigaction function is present
           
@@ -132,7 +134,10 @@ If autoconf Fails
           if (e.g., svr4) you need _POSIX_SOURCE to have sigaction
           
    -DHAVE_TERMIOS_H
-          if you have ; otherwise it uses
+          if you have <termios.h>
+          
+   -DHAVE_TERMIO_H
+          if you have <termio.h>; otherwise it uses <sgtty.h>
           
    -DBROKEN_TIOCGETWINSZ
           on SVR4 and HPUX, the get window size ioctl is broken.
@@ -169,6 +174,15 @@ If autoconf Fails
    
                               HOW TO REPORT BUGS
                                        
+   The reporting address for bugs is ncurses-list@netcom.com. This is a
+   majordomo list; to join, write to listserv@netcom.com with a message
+   containing the line:
+   
+
+             subscribe ncurses-list &lt;name&gt;@&lt;host.domain&gt;
+
+   
+   
    The ncurses code is maintained by a small group of volunteers. While
    we try our best to fix bugs promptly, we simply don't have a lot of
    hours to spend on elementary hand-holding. We rely on intelligent
@@ -277,8 +291,9 @@ If autoconf Fails
    program is command-driven and has on-line help.
    
    If you think the vertical-scroll optimization is broken, or just want
-   to understand how it works better, build hardscroll and read the
-   header comment of hardscroll.c; then try it out.
+   to understand how it works better, build hashmap and read the header
+   comments of hardscroll.c and hashmap.c; then try it out. You can also
+   test the hardware-scrolling optimization separately with hardscroll.
    
    There's one other interactive tester, tctest, that exercises
    translation between termcap and terminfo formats. If you have a
@@ -319,17 +334,18 @@ Library Overview
    being ported to an environment without an underlying terminfo
    capability representation.
    
-   The files lib_kernel.c, lib_raw.c, lib_tstp.c, and lib_twait.c have
-   serious hooks into the tty driver and signal facilities. If you run
-   into porting snafus moving the package to another UNIX, the problem is
-   likely to be in one of these files.
+   The files lib_kernel.c, lib_baudrate.c, lib_raw.c, lib_tstp.c, and
+   lib_twait.c have serious hooks into the tty driver and signal
+   facilities. If you run into porting snafus moving the package to
+   another UNIX, the problem is likely to be in one of these files. The
+   file lib_print.c uses sleep(2) and also falls in this category.
    
-   Almost all of the real work is done in the files hardscroll.c,
-   lib_addch.c, lib_doupdate.c, lib_mvcur.c, lib_getch.c, lib_mouse.c,
-   lib_refresh.c, and lib_setup.c. Most of the algorithmic complexity in
-   the library lives in these files. If there is a real bug in _ncurses_
-   itself, it's probably here. We'll tour some of these files in detail
-   below (see The Engine Room).
+   Almost all of the real work is done in the files hashmap.c,
+   hardscroll.c, lib_addch.c, lib_doupdate.c, lib_mvcur.c, lib_getch.c,
+   lib_mouse.c, lib_refresh.c, and lib_setup.c. Most of the algorithmic
+   complexity in the library lives in these files. If there is a real bug
+   in _ncurses_ itself, it's probably here. We'll tour some of these
+   files in detail below (see The Engine Room).
    
    Finally, there is a group of files that is actually most of the
    terminfo compiler. The reason this code lives in the _ncurses_ library
@@ -413,18 +429,20 @@ The Engine Room
    (as represented in the newscr window structure), while doing as little
    I/O as possible.
    
-   The brains of this operation are the modules hardscroll.c and
-   lib_doupdate.c; both use lib_mvcur.c. Essentially, what happens looks
-   like this:
+   The brains of this operation are the modules hashmap.c, hardscroll.c
+   and lib_doupdate.c; the latter two use lib_mvcur.c. Essentially, what
+   happens looks like this:
    
-   The hardscroll.c module tries to detect vertical motion changes
-   between the real and virtual screens. It does so by comparing line
-   number vectors between curscr and newscr; both are modified by
+   The hashmap.c module tries to detect vertical motion changes between
+   the real and virtual screens. This information is represented by the
+   oldindex members in the newscr structure. These are modified by
    vertical-motion and clear operations, and both are re-initialized
-   after each update.
+   after each update. To this change-journalling information, the hashmap
+   code adds deductions made using a modified Heckel algorithm on hash
+   values generated from the line contents.
    
    The hardscroll.c module computes an optimum set of scroll, insertion,
-   and deletion operations to make the vectors match. It calls
+   and deletion operations to make the indices match. It calls
    _nc_mvcur_scrolln() in lib_mvcur.c to do those motions.
    
    Then lib_doupdate.c goes to work. Its job is to do line-by-line
@@ -683,10 +701,11 @@ lib_initscr.c   -- getenv()
         initscr()               -- initialize curses functions
 lib_newterm.c
         newterm()               -- set up new terminal screen
+lib_baudrate.c
+        baudrate()              -- return the baudrate
 lib_kernel.c    -- various tty-manipulation and system calls
         reset_prog_mode()       -- reset ccurses-raw mode
         reset_shell_mode()      -- reset cooked mode
-        baudrate()              -- return the baudrate
         erasechar()             -- return the erase char
         killchar()              -- return the kill character
         flushinp()              -- flush pending input
@@ -705,6 +724,8 @@ lib_raw.c       -- various tty-manipulation calls
         nocbreak()
 lib_setup.c     -- various tty-manipulation calls
         use_env()
+        setupterm()
+lib_restart.c   -- various tty-manipulation calls
         def_shell_mode()
         def_prog_mode()
         set_curterm()
@@ -721,3 +742,5 @@ lib_twait.c     -- gettimeofday(), select().
      _________________________________________________________________
    
     Eric S. Raymond <esr@snark.thyrsus.com>
+    
+   (Note: This is _not_ the bug address!)

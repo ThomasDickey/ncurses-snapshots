@@ -56,8 +56,9 @@ void _nc_get_type(char *name)
 
 static inline void where_is_problem(void)
 {
-	fprintf (stderr, "\"%s\", line %d: col %d: ",
-		sourcename, _nc_curr_line, _nc_curr_col);
+	fprintf (stderr, "\"%s\", line %d: ", sourcename, _nc_curr_line);
+	if (_nc_curr_col >= 0)
+		fprintf (stderr, " col %d: ", _nc_curr_col);
 	if (termtype[0])
 		fprintf (stderr, "terminal '%s', ", termtype);
 }

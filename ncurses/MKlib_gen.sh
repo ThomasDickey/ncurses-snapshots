@@ -21,7 +21,7 @@
 # 3. awk: generate the calls with args matching the formals 
 # 4. sed: prefix function names in prototypes so the preprocessor won't expand
 #         them.
-# 5. cpp: macroexpand the file so the macro calls turn into C calls
+# 5. cpp: macro-expand the file so the macro calls turn into C calls
 # 6. awk: strip the expansion junk off the front and add the new header
 # 7. sed: squeeze spaces, strip off gen_ prefix, create needed #undef
 #
@@ -97,7 +97,7 @@ BEGIN		{
 	print " * requirement that every macro also exist as a callable"
 	print " * function."
 	print " *"
-	print " * It will neever be linked unless you call one of the entry"
+	print " * It will never be linked unless you call one of the entry"
 	print " * points with its normal macro definition disabled.  In that"
 	print " * case, if you have no shared libraries, it will indirectly"
 	print " * pull most of the rest of the library into your link image."

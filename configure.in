@@ -1,7 +1,7 @@
-dnl $Id: configure.in,v 1.23 1996/06/23 01:10:15 tom Exp $
+dnl $Id: configure.in,v 1.24 1996/07/06 18:15:56 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.9)
-AC_REVISION($Revision: 1.23 $)
+AC_REVISION($Revision: 1.24 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
@@ -36,7 +36,7 @@ dnl                            for that name,
 AC_PROG_CXX
 AC_PROG_AWK
 AC_PROG_MAKE_SET
-AC_PROG_INSTALL
+NC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_RANLIB
 AC_CHECK_PROGS(LINT, tdlint lint alint)

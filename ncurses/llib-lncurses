@@ -415,6 +415,11 @@ int	echochar(
 		const chtype z)
 		{ return(*(int *)0); }
 
+#undef getbkgd
+chtype	getbkgd(
+		WINDOW	*z)
+		{ return(*(chtype *)0); }
+
 #undef getch
 int	getch(void)
 		{ return(*(int *)0); }
@@ -899,11 +904,6 @@ void	wbkgdset(
 		chtype	z)
 		{ /* void */ }
 
-#undef wgetbkgd
-chtype	wgetbkgd(
-		WINDOW	*z)
-		{ return(*(chtype *)0); }
-
 #undef wdeleteln
 int	wdeleteln(
 		WINDOW	*z)
@@ -1175,8 +1175,7 @@ int	wmove(
 /* ./lib_mvcur.c */
 
 #undef _nc_mvcur_init
-void	_nc_mvcur_init(
-		SCREEN	*sp)
+void	_nc_mvcur_init(void)
 		{ /* void */ }
 
 #undef _nc_mvcur_wrap
@@ -1707,7 +1706,8 @@ ripoff_t *rsp;
 #undef _nc_setupscreen
 int	_nc_setupscreen(
 		short	slines, 
-		short const scolumns)
+		short const scolumns, 
+		FILE	*output)
 		{ return(*(int *)0); }
 
 #undef _nc_ripoffline
@@ -1818,6 +1818,10 @@ int	slk_attron(
 int	slk_attroff(
 		const attr_t attr)
 		{ return(*(int *)0); }
+
+#undef slk_attr
+attr_t	slk_attr(void)
+		{ return(*(attr_t *)0); }
 
 /* ./lib_termcap.c */
 
@@ -2119,6 +2123,11 @@ char	*const strcodes[] = {0};
 #undef cur_term
 TERMINAL *cur_term;
 
+#undef _nc_tic_dir
+char	*_nc_tic_dir(
+		char	*path)
+		{ return(*(char **)0); }
+
 #undef _nc_read_file_entry
 int	_nc_read_file_entry(
 		const char *const filename, 
@@ -2165,6 +2174,10 @@ void	_nc_set_writedir(
 void	_nc_write_entry(
 		TERMTYPE *const tp)
 		{ /* void */ }
+
+#undef _nc_tic_written
+int	_nc_tic_written(void)
+		{ return(*(int *)0); }
 
 /* ./sigaction.c */
 
