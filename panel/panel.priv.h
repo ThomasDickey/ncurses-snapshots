@@ -26,10 +26,10 @@
  * authorization.                                                           *
  ****************************************************************************/
 
-/* $Id: panel.priv.h,v 1.17 2001/02/24 23:47:05 tom Exp $ */
+/* $Id: panel.priv.h,v 1.18 2001/03/24 21:38:45 tom Exp $ */
 
-#ifndef _PANEL_PRIV_H
-#define _PANEL_PRIV_H
+#ifndef NCURSES_PANEL_PRIV_H
+#define NCURSES_PANEL_PRIV_H 1
 
 #if HAVE_CONFIG_H
 #  include <ncurses_cfg.h>
@@ -198,4 +198,4 @@
       err = err_if_unlinked;\
   }
 
-#endif /* _PANEL_PRIV_H */
+#endif /* NCURSES_PANEL_PRIV_H */

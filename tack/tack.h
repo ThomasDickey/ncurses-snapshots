@@ -19,10 +19,10 @@
 ** Boston, MA 02111-1307, USA.
 */
 
-/* $Id: tack.h,v 1.7 2000/11/04 22:53:36 tom Exp $ */
+/* $Id: tack.h,v 1.8 2001/03/24 21:53:35 tom Exp $ */
 
-#ifndef _TACK_H
-#define _TACK_H 1
+#ifndef NCURSES_TACK_H_incl
+#define NCURSES_TACK_H_incl 1
 
 /* terminfo action checker include file */
 
@@ -402,4 +402,4 @@ extern void menu_clear_screen(struct test_list *, int *, int *);
 extern void menu_reset_init(struct test_list *, int *, int *);
 extern int subtest_menu(struct test_list *, int *, int *);
 
-#endif /* _TACK_H */
+#endif /* NCURSES_TACK_H_incl */

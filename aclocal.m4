@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.244 2001/02/04 00:26:59 tom Exp $
+dnl $Id: aclocal.m4,v 1.245 2001/03/19 01:23:03 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -1529,6 +1529,7 @@ cat >>man/edit_man.sh <<CF_EOF
 	aliases=\`sed -f \$srcdir/manlinks.sed \$inalias | sort -u\`
 CF_EOF
 fi
+
 if test "$cf_manpage_renames" = no ; then
 cat >>man/edit_man.sh <<CF_EOF
 	# perform program transformations for section 1 man pages
@@ -1537,9 +1538,19 @@ cat >>man/edit_man.sh <<CF_EOF
 	else
 		target=$cf_subdir\${section}/\$source
 	fi
+CF_EOF
+else
+cat >>man/edit_man.sh <<CF_EOF
+	target=\`grep "^\$source" $cf_manpage_renames | $AWK '{print \[$]2}'\`
+	if test -z "\$target" ; then
+		echo '? missing rename for '\$source
+		target="\$source"
+	fi
+	target="$cf_subdir\${section}/\${target}"
+CF_EOF
+fi
 
 	# replace variables in man page
-CF_EOF
 	ifelse($1,,,[
 	for cf_name in $1
 	do
@@ -1564,17 +1575,6 @@ CF_EOF
 cat >>man/edit_man.sh <<CF_EOF
 		< \$i >\$TMP
 CF_EOF
-else
-cat >>man/edit_man.sh <<CF_EOF
-	target=\`grep "^\$source" $cf_manpage_renames | $AWK '{print \[$]2}'\`
-	if test -z "\$target" ; then
-		echo '? missing rename for '\$source
-		target="\$source"
-	fi
-	target="$cf_subdir\$section/\$target"
-	test \$verb = installing && sed -e "s,@DATADIR@,\$datadir," < \$i | sed -f edit_man.sed >\$TMP
-CF_EOF
-fi
 if test $cf_manpage_tbl = yes ; then
 cat >>man/edit_man.sh <<CF_EOF
 	tbl \$TMP >\$TMP.out

@@ -31,10 +31,10 @@
  *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1997                 *
  ****************************************************************************/
 
-// $Id: cursslk.h,v 1.6 2000/12/10 03:10:39 tom Exp $
+// $Id: cursslk.h,v 1.7 2001/03/24 21:41:47 tom Exp $
 
-#ifndef _CURSSLK_H
-#define _CURSSLK_H
+#ifndef NCURSES_CURSSLK_H_incl
+#define NCURSES_CURSSLK_H_incl
 
 #include <cursesw.h>
 
@@ -202,4 +202,4 @@ public:
   }
 };
 
-#endif // _CURSSLK_H
+#endif // NCURSES_CURSSLK_H_incl

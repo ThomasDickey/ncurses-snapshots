@@ -27,10 +27,10 @@
  * authorization.                                                           *
  ****************************************************************************/
 
-#ifndef _CURSESW_H
-#define _CURSESW_H
+#ifndef NCURSES_CURSESW_H_incl
+#define NCURSES_CURSESW_H_incl 1
 
-// $Id: cursesw.h,v 1.22 2001/03/10 23:48:58 tom Exp $
+// $Id: cursesw.h,v 1.23 2001/03/24 21:41:42 tom Exp $
 
 #include <etip.h>
 #include <stdio.h>
@@ -1397,4 +1397,4 @@ public:
 
 };
 
-#endif // _CURSESW_H
+#endif // NCURSES_CURSESW_H_incl

@@ -1,10 +1,27 @@
--- $Id: NEWS,v 1.619 2001/03/11 00:03:20 tom Exp $
+-- $Id: NEWS,v 1.620 2001/03/24 22:34:34 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010324
+	+ change symbols used to guard against repeated includes to begin
+	  consistently with "NCURSES_" rather than a leading underscore.  There
+	  are other symbols defined in the header files which begin with a
+	  leading underscore, but they are part of the legacy interface.
+	+ reorder includes in c++ binding so that rcs identifiers can be
+	  compiled-in.
+	+ add .cc.ii rule to c++ makefile, to get preprocessor output for
+	  debugging.
+	+ correct configure script handling of @keyword@ substitutions when the
+	  --with-manpage-renames option is given (cf:  20000715, fixes Debian
+	  bug #89939).
+	+ report stack underflow/overflow in tparm() when tic -cv option is
+	  given.
+	+ remove spurious "%|" operator from xterm-xfree86 terminfo entry,
+	  (reported by Adam Costello <amc@cs.berkeley.edu>, Debian bug #89222).
 
 20010310
 	+ cleanup of newdemo.c, fixing some ambiguous expressions noted by gcc

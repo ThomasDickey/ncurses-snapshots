@@ -31,14 +31,14 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: term_entry.h,v 1.31 2001/01/13 22:44:41 tom Exp $ */
+/* $Id: term_entry.h,v 1.32 2001/03/24 21:53:10 tom Exp $ */
 
 /*
  *	term_entry.h -- interface to entry-manipulation code
  */
 
-#ifndef _TERM_ENTRY_H
-#define _TERM_ENTRY_H
+#ifndef NCURSES_TERM_ENTRY_H_incl
+#define NCURSES_TERM_ENTRY_H_incl 1
 
 #ifdef __cplusplus
 extern "C" {
@@ -159,4 +159,4 @@ extern NCURSES_EXPORT(void) _nc_trace_xnames (TERMTYPE *);
 }
 #endif
 
-#endif /* _TERM_ENTRY_H */
+#endif /* NCURSES_TERM_ENTRY_H_incl */

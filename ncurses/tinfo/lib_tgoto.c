@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2000 Free Software Foundation, Inc.                        *
+ * Copyright (c) 2000,2001 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -35,7 +35,7 @@
 #include <ctype.h>
 #include <termcap.h>
 
-MODULE_ID("$Id: lib_tgoto.c,v 1.5 2000/12/10 01:33:16 tom Exp $")
+MODULE_ID("$Id: lib_tgoto.c,v 1.7 2001/03/24 22:25:55 tom Exp $")
 
 #if !PURE_TERMINFO
 static bool
@@ -94,7 +94,7 @@ tgoto_internal(const char *string, int x, int y)
 	    }
 	}
 	if (*string == '%') {
-	    char *fmt = 0;
+	    const char *fmt = 0;
 
 	    switch (*++string) {
 	    case '\0':

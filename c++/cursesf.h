@@ -31,10 +31,10 @@
  *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1997                 *
  ****************************************************************************/
 
-// $Id: cursesf.h,v 1.14 2001/03/10 23:54:44 tom Exp $
+// $Id: cursesf.h,v 1.15 2001/03/24 21:41:23 tom Exp $
 
-#ifndef _CURSESF_H
-#define _CURSESF_H
+#ifndef NCURSES_CURSESF_H_incl
+#define NCURSES_CURSESF_H_incl 1
 
 #include <cursesp.h>
 #include <string.h>
@@ -820,5 +820,5 @@ public:
   }
 };
 
-#endif // _CURSESF_H
+#endif // NCURSES_CURSESF_H_incl
 

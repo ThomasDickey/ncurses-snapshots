@@ -31,10 +31,10 @@
  *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1997                 *
  ****************************************************************************/
 
-// $Id: cursesapp.h,v 1.6 2000/12/10 03:10:39 tom Exp $
+// $Id: cursesapp.h,v 1.7 2001/03/24 21:41:18 tom Exp $
 
-#ifndef _CURSESAPP_H
-#define _CURSESAPP_H
+#ifndef NCURSES_CURSESAPP_H_incl
+#define NCURSES_CURSESAPP_H_incl
 
 #include <cursslk.h>
 
@@ -160,4 +160,4 @@ public:
 
 };
  
-#endif // _CURSESAPP_H
+#endif // NCURSES_CURSESAPP_H_incl
