@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.137 1999/03/03 23:43:39 juergen Exp $
+ * $Id: curses.priv.h,v 1.138 1999/03/14 12:25:18 tom Exp $
  *
  *	curses.priv.h
  *
@@ -631,7 +631,7 @@ extern void _nc_expanded(void);
 extern void *_nc_doalloc(void *, size_t);
 #if !HAVE_STRDUP
 #define strdup _nc_strdup
-extern char *_nc_strdup(char *);
+extern char *_nc_strdup(const char *);
 #endif
 
 /* doupdate.c */

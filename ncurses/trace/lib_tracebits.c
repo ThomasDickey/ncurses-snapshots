@@ -34,7 +34,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_tracebits.c,v 1.1 1998/11/08 00:20:32 tom Exp $")
+MODULE_ID("$Id: lib_tracebits.c,v 1.2 1999/03/14 12:27:03 tom Exp $")
 
 #if defined(SVR4_TERMIO) && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
@@ -213,5 +213,5 @@ cflags[] =
     return(buf);
 }
 #else
-char *_nc_tracebits(void) { return ""; }
+char *_nc_tracebits(void) { static char tmp[] = ""; return tmp; }
 #endif /* TRACE */

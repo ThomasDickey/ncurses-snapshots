@@ -47,6 +47,7 @@ s%@NCURSES_MAJOR@%$NCURSES_MAJOR%g
 s%@NCURSES_MINOR@%$NCURSES_MINOR%g
 s%@NCURSES_PATCH@%$NCURSES_PATCH%g
 s%@NCURSES_CONST@%%g
+s%@NCURSES_XNAMES@%1%g
 s%@OSPEED_TYPE@%speed_t%g
 s%@OSPEED_INCLUDES@%#include <termios.h>%g
 s%@cf_cv_rel_version@%$cf_cv_rel_version%g
