@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.162 2000/06/24 21:06:10 tom Exp $
+ * $Id: curses.priv.h,v 1.163 2000/07/29 15:07:05 tom Exp $
  *
  *	curses.priv.h
  *
@@ -530,12 +530,14 @@ typedef	struct {
 #define TPUTS_TRACE(s)	_nc_tputs_trace = s;
 #define TRACE_RETURN(value,type) return _nc_retrace_##type(value)
 #define returnAttr(code) TRACE_RETURN(code,attr_t)
+#define returnChar(code) TRACE_RETURN(code,chtype)
 #define returnCode(code) TRACE_RETURN(code,int)
 #define returnPtr(code)  TRACE_RETURN(code,ptr)
 #define returnVoid       T((T_RETURN(""))); return
 #define returnWin(code)  TRACE_RETURN(code,win)
 extern WINDOW * _nc_retrace_win(WINDOW *);
 extern attr_t _nc_retrace_attr_t(attr_t);
+extern attr_t _nc_retrace_chtype(chtype);
 extern char *_nc_retrace_ptr(char *);
 extern const char *_nc_tputs_trace;
 extern int _nc_retrace_int(int);
@@ -546,6 +548,7 @@ extern void _nc_fifo_dump(void);
 #define TR(n, a)
 #define TPUTS_TRACE(s)
 #define returnAttr(code) return code
+#define returnChar(code) return code
 #define returnCode(code) return code
 #define returnPtr(code)  return code
 #define returnVoid       return
@@ -568,7 +571,7 @@ extern const char *_nc_visbuf2(int, const char *);
       (S) = ((S) & ALL_BUT_COLOR) | (at);\
    else\
       (S) |= (at);\
-   T(("new attribute is %s", _traceattr((S))));}
+   TR(TRACE_ATTRS, ("new attribute is %s", _traceattr((S))));}
 
 
 #define toggle_attr_off(S,at) {\
@@ -583,7 +586,7 @@ extern const char *_nc_visbuf2(int, const char *);
       else /* leave color alone */\
 	 (S) &= ~(at);\
    }\
-   T(("new attribute is %s", _traceattr((S))));}
+   TR(TRACE_ATTRS, ("new attribute is %s", _traceattr((S))));}
 
 #define DelCharCost(count) \
 		((parm_dch != 0) \
@@ -607,7 +610,8 @@ extern const char *_nc_visbuf2(int, const char *);
 				vidattr(AttrOf(c)); \
 				if (magic_cookie_glitch > 0 \
 				 && XMC_CHANGES((chg ^ SP->_current_attr))) { \
-					T(("%s @%d before glitch %d,%d", \
+					TR(TRACE_ATTRS,
+						("%s @%d before glitch %d,%d", \
 						__FILE__, __LINE__, \
 						SP->_cursrow, \
 						SP->_curscol)); \
