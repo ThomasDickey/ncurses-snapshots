@@ -1,0 +1,58 @@
+#!/bin/sh
+
+#  user may have specified a target on the command line
+if [ "$1" != "" ]
+then
+  OS="$1"
+else
+#  nothing on the command line, ask for OS
+echo "1) Linux "
+echo "2) 386BSD "
+echo "3) SunOS "
+echo "4) HP-UX "
+echo "5) Ultrix "
+echo "6) NeXTSTEP 3.0 "
+echo "7) SYSTEM V Release 4 "
+echo "8) BSDI BSD/386 "
+echo "9) Apollo "
+echo "10) AIX 3.2.5 "
+echo "11) Other... "
+echo
+echo -n "What OS do you use? "
+read opsys
+echo
+case $opsys in
+  1)
+  OS=linux ;;
+  2)
+  OS=386bsd ;;
+  3)
+  OS=sunos ;;
+  4)
+  OS=hpux ;;
+  5)
+  OS=ultrix ;;
+  6)
+  OS=next3.0 ;;
+  7)
+  OS=svr4 ;;
+  8)
+  OS=bsd386 ;;
+  9)
+  OS=apollo ;;
+  10)
+  OS=aix ;;
+  *) 
+  echo "For unsupported Operating systems please read the file 'README' in this directory" ;
+  echo "do 'cat Config Makefile.dist>Makefile' and then you can type 'make'." ; exit 1 ;;
+esac
+fi
+echo "Configuring ncurses for $OS"
+grep $OS matrix|awk -F"\t" -f script.src 
+grep $OS matrix|awk -F"\t" -f script.test 
+
+echo "catting Config.$OS and Makefile.dist to create the Makefile"
+echo "catting ../test/Config.$OS and ../test/Makefile.dist to create the ../test/Makefile"
+cat Config.$OS Makefile.dist > Makefile
+cat ../test/Config.$OS ../test/Makefile.dist > ../test/Makefile
+

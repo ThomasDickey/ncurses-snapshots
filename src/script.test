@@ -1,0 +1,48 @@
+BEGIN	{FS=":";}
+
+		{output = "../test/Config." $1;	
+		os = $2;
+		isposix = $3;
+		signals = $4;
+		terminal = $5;
+		headers = $6;
+		tabs = $7;
+		opt = $8;
+		srcdir = $9;
+		cc = $10;
+		flags = $11;
+		extra = $12;
+		base = $13;
+		install = $14;
+
+print "#===========================================================================" > output;
+print "# This Configuration file is for:" > output;
+print "# "  os > output;
+print "#===========================================================================" > output;
+print "" > output;
+print "# Handling non-POSIX systems requires defining NONPOSIX" > output;
+print "# The most common clue to this is a missing <unistd.h>" > output;
+print "# This currently applies to NeXTSTEP 3.0" > output;
+print "# ISPOSIX = -DNONPOSIX" > output;
+if (isposix == "NONE")
+	print "ISPOSIX = " > output;
+else
+	print "ISPOSIX = " isposix > output;
+print "" > output;
+print "# Ansi compiler, and relevant flags" > output;
+print "CC= " cc > output;
+print "FLAGS= -I$(INCLUDE) " flags > output;
+print "CFLAGS= $(FLAGS) $(CONFIG)" > output;
+print "DFLAGS= $(FLAGS) -DTRACE $(CONFIG)" > output;
+print "" > output;
+print "INSTALL_DIR=" base >output
+print ""
+print "# Where the header files are " > output;
+print "INCLUDE= $(INSTALL_DIR)/include/ncurses" > output;
+print "" > output;
+print "# Where the libraries are" > output;
+print "# If not /usr/lib don't forget to add -L$(LIB) to your LDFLAGS" > output;
+print "# when linking things with ncurses" > output;
+print "LIB= $(INSTALL_DIR)/lib" > output;
+print "" > output;
+}

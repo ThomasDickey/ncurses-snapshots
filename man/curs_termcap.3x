@@ -1,0 +1,57 @@
+.TH curs_termcap 3X ""
+.ds n 5
+.SH NAME
+\fBcurs_termcap\fR: \fBtgetent\fR, \fBtgetflag\fR, \fBtgetnum\fR,
+\fBtgetstr\fR, \fBtgoto\fR, \fBtputs\fR - direct \fBncurses\fR
+interface to the terminfo capability database
+.SH SYNOPSIS
+\fB#include <ncurses.h>\fR
+.br
+\fB#include <term.h>\fR
+.br
+\fBint tgetent(char *bp, char *name);\fR
+.br
+\fBint tgetflag(char id[2]);\fR
+.br
+\fBint tgetnum(char id[2]);\fR
+.br
+\fBchar *tgetstr(char id[2], char **area);\fR
+.br
+\fBchar *tgoto(char *cap, int col, int row);\fR
+.br
+\fBint tputs(char *str, int affcnt, int (*putc)(void));\fR
+.br
+.SH DESCRIPTION
+These routines are included as a conversion aid for programs that use
+the \fItermcap\fR library.  Their parameters are the same and the
+routines are emulated using the \fIterminfo\fR database.  Thus, they
+can only be used to query the capabilities of entries for which a
+terminfo entry has been compiled.
+
+The \fBtgetent\fR routine looks up the termcap entry for \fIname\fR.
+The emulation ignores the buffer pointer \fIbp\fR.
+
+The \fBtgetflag\fR routine gets the boolean entry for \fIid\fR.
+
+The \fBtgetnum\fR routine gets the numeric entry for \fIid\fR.
+
+The \fBtgetstr\fR routine returns the string entry for \fIid\fR.  Use
+\fBtputs\fR to output the returned string.
+
+The \fBtgoto\fR routine instantiates the parameters into the given capability.
+The output from this routine is to be passed to \fBtputs\fR.
+
+The \fBtputs\fR routine is described on the curs_\fBterminfo\fR(\*n) manual page.
+.SH RETURN VALUE
+Routines that return an integer return \fBERR\fR upon failure and an integer
+value other than \fBERR\fR upon successful completion.
+
+Routines that return pointers return \fBNULL\fR on error.
+.SH SEE ALSO
+\fBncurses\fR(3X), \fBcurs_terminfo(\*n), putc(3S).\fR
+.\"#
+.\"# The following sets edit modes for GNU EMACS
+.\"# Local Variables:
+.\"# mode:nroff
+.\"# fill-column:79
+.\"# End:

@@ -1,0 +1,4 @@
+xterm-bold|xterm with bold instead of underline,
+	smul=\E[1m,
+	use=xterm,
+

@@ -1,0 +1,126 @@
+BEGIN	{FS=":";}
+
+		{output = "Config." $1;	
+		os = $2;
+		isposix = $3;
+		signals = $4;
+		terminal = $5;
+		headers = $6;
+		tabs = $7;
+		opt = $8;
+		srcdir = $9;
+		cc = $10;
+		flags = $11;
+		extra = $12;
+		base = $13;
+		install = $14;
+
+print "# This file handles all the OS-specific definitions" > output;
+print "# It also deals with defaults" > output;
+print "# You only need to change things in this file" > output;
+print "" > output;
+print "#===========================================================================" > output;
+print "# This Configuration file is for:" > output;
+print "# "  os > output;
+print "#===========================================================================" > output;
+print "" > output;
+print "# Handling non-POSIX systems requires defining NONPOSIX" > output;
+print "# The most common clue to this is a missing <unistd.h>" > output;
+print "# This currently applies to NeXTSTEP 3.0" > output;
+print "# ISPOSIX = -DNONPOSIX" > output;
+if (isposix == "NONE")
+	print "ISPOSIX = " > output;
+else
+	print "ISPOSIX = " isposix > output;
+print "" > output;
+print "# Define whether a system has sigaction or not. Older BSD-based" > output;
+print "# don't, and use sigvec instead." > output;
+print "# SIGNALS = -DNOACTION" > output;
+if (signals == "NONE")
+	print "SIGNALS = " > output;
+else
+	print "SIGNALS = " signals > output;
+print "" > output;
+print "# Define whether the system uses termios or sgtty terminal handling" > output;
+print "# Only NeXTSTEP 3.0 uses sgtty" > output;
+print "# TERMINAL = -DNOTERMIOS" > output;
+if (terminal == "NONE")
+	print "TERMINAL = " > output;
+else
+	print "TERMINAL = " terminal > output;
+print "" > output;
+print "# Most commercial systems don't bother to declare external variables in their headers" > output;
+print "# If your system is one of those, use -DBRAINDEAD" > output;
+print "# This includes SunOS, Ultrix, HPux, apollo" > output;
+print "# but not Linux, 386bsd, bsd386/BSDI, SYSVR4.2." > output;
+print "# HEADERS = -DBRAINDEAD" > output;
+if (headers == "NONE")
+	print "HEADERS = " > output;
+else
+	print "HEADERS = " headers > output;
+print "" > output;
+print "# BSD systems (386bsd, BSDI, and probably others) don't have TAB3" > output;
+print "# or XTABS. Some systems have TAB3 but not XTABS." > output;
+print "# HPux doesn't need this flag." > output;
+print "# Apollos don't need it, even in bsd environment(!)" > output;
+print "# use -DBSDTABS if your system doesn't have TAB3 in termios.h" > output;
+print "# TABS = -DBSDTABS" > output;
+if (tabs == "NONE")
+	print "TABS = " > output;
+else
+	print "TABS = " tabs > output;
+print "" > output;
+print "# The mvcur optimization is still buggy. If your terminals have" > output;
+print "# direct cursor addressing capabilites don't use it. Otherwise" > output;
+print "# use -DOPT_MVCUR" > output;
+print "# OPT = -DOPT_MVCUR" > output;
+if (opt == "NONE")
+	print "OPT = " > output;
+else
+	print "OPT = " opt > output;
+print "" > output;
+print "# Now gather up all the configuration flags" > output;
+if (extra == "NONE")
+	print "CONFIG = $(ISPOSIX) $(SIGNALS) $(TERMINAL) $(HEADERS) $(TABS) $(OPT) " > output;
+else
+	print "CONFIG = $(ISPOSIX) $(SIGNALS) $(TERMINAL) $(HEADERS) $(TABS) $(OPT) " extra> output;
+print "" > output;
+print "# SRCDIR is the directory where terminfo entries, the tic and" > output;
+print "# untic programs, live. Should be somewhere on the root file" > output;
+print "# system to enable its use in single-user mode" > output;
+print "SRCDIR= " srcdir > output;
+print "" > output;
+print "# libraries to build" > output;
+print "# ncurses is the regular version" > output;
+print "# dcurses is the tracing version" > output;
+print "LIBS= libncurses.a libdcurses.a" > output;
+print "" > output;
+print "# Ansi compiler, and relevant flags" > output;
+print "CC= " cc > output;
+print "FLAGS= " flags > output;
+print "CFLAGS= $(FLAGS) $(CONFIG)" > output;
+print "DFLAGS= $(FLAGS) -DTRACE $(CONFIG)" > output;
+print "" > output;
+print "# Base directory; a separate entity to allow user installation" > output;
+print "INSTALL_DIR = " base > output;
+print "" > output;
+print "# Where the header files will go " > output;
+print "INCLUDE= $(INSTALL_DIR)/include/ncurses" > output;
+print "" > output;
+print "# Where the libraries will go" > output;
+print "# gcc knows to look in here, if you change it or you compiler doesn't" > output;
+print "# look in /usr/local/lib don't forget to add -L$(LIB) to your LDFLAGS" > output;
+print "# when linking things with ncurses" > output;
+print "LIB= $(INSTALL_DIR)/lib" > output;
+print "" > output;
+print "# Where man pages will go" > output;
+print "MAN= $(INSTALL_DIR)/man" > output;
+print "" > output;
+print "# The program to use to install things: " > output;
+print "# It should be an 'install' that understands -cmgos options " > output;
+print "# FSF has one. " > output;
+print "INSTALL = " install > output;
+print "" > output;
+
+}
+

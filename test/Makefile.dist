@@ -1,0 +1,73 @@
+# change to -ldcurses if you want to do any debugging
+
+LDFLAGS = -L$(LIB) -lncurses
+
+TESTS = \
+	battle \
+	bs \
+	copy \
+	ensor \
+	firework \
+	gdc \
+	hanoi \
+	knight \
+	newdemo \
+	ncurses \
+	over \
+	rain \
+	scroll \
+	scroll2 \
+	scroll3 \
+	testcurs \
+	worm \
+	tclock \
+	xmas 
+
+all: $(TESTS) 
+
+battle: battle.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+bs: bs.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+copy: copy.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+ensor: ensor.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+firework: firework.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+gdc: gdc.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+hanoi: hanoi.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+knight: knight.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+ncurses: ncurses.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+newdemo: newdemo.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+over: over.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+rain: rain.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+scroll: scroll.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+scroll2: scroll2.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+scroll3: scroll3.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+testcurs: testcurs.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+worm: worm.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+tclock: tclock.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+xmas: xmas.c
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) -o $@
+
+clean:
+	rm -rf *.o trace t $(TESTS)
+
+clobber: clean
+	rm -rf Config.* Makefile
+	@echo "You'll have to reconfigure by running src/Configure"
+
