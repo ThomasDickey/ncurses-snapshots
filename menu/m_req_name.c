@@ -27,7 +27,8 @@
  ****************************************************************************/
 
 /****************************************************************************
- *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1995,1997            *
+ *   Author:  Juergen Pfeifer, 1995,1997                                    *
+ *   Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en             *
  ****************************************************************************/
 
 /***************************************************************************
@@ -37,7 +38,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_req_name.c,v 1.13 2000/12/10 02:16:48 tom Exp $")
+MODULE_ID("$Id: m_req_name.c,v 1.14 2002/07/06 15:22:16 juergen Exp $")
 
 static const char *request_names[ MAX_MENU_COMMAND - MIN_MENU_COMMAND + 1 ] = {
   "LEFT_ITEM"    ,

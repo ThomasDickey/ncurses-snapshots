@@ -7,13 +7,14 @@
  */
 /***************************************************************************
 *                                                                          *
-*  Author : Juergen Pfeifer, juergen.pfeifer@gmx.net                       *
+*  Author : Juergen Pfeifer                                                *
+*  Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en              *
 *                                                                          *
 ***************************************************************************/
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_alpha.c,v 1.10 2000/12/09 23:46:12 tom Exp $")
+MODULE_ID("$Id: fty_alpha.c,v 1.11 2002/07/06 15:33:27 juergen Exp $")
 
 typedef struct {
   int width;

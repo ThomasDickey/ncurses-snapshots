@@ -19,13 +19,14 @@
   modified by Ulrich Drepper  (drepper@karlsruhe.gmd.de)
           and Anatoly Ivasyuk (anatoly@nick.csh.rit.edu)
 
-  modified by Juergen Pfeifer (juergen.pfeifer@gmx.net)
+  modified by Juergen Pfeifer
+  Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en
 */
 
 #include "internal.h"
 #include "cursesw.h"
 
-MODULE_ID("$Id: cursesw.cc,v 1.24 2001/12/08 21:02:33 tom Exp $")
+MODULE_ID("$Id: cursesw.cc,v 1.25 2002/07/06 15:47:52 juergen Exp $")
 
 #define COLORS_NEED_INITIALIZATION  -1
 #define COLORS_NOT_INITIALIZED       0

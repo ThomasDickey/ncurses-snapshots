@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: cardfile.c,v 1.12 2002/06/29 23:32:18 tom Exp $
+ * $Id: cardfile.c,v 1.14 2002/07/14 00:32:54 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text forms the content.
  */
@@ -301,6 +301,33 @@ form_virtualize(WINDOW *w)
     }
 }
 
+static FIELD **
+make_fields(CARD * p, int form_high, int form_wide)
+{
+    FIELD **f = (FIELD **) calloc(3, sizeof(FIELD *));
+
+    f[0] = new_field(1, form_wide, 0, 0, 0, 0);
+    set_field_back(f[0], A_REVERSE);
+    set_field_buffer(f[0], 0, p->title);
+
+    f[1] = new_field(form_high - 1, form_wide, 1, 0, 0, 0);
+    set_field_buffer(f[1], 0, p->content);
+    set_field_just(f[1], JUSTIFY_LEFT);
+
+    f[2] = 0;
+    return f;
+}
+
+static void
+show_legend(void)
+{
+    erase();
+    move(LINES - 3, 0);
+    addstr("^Q/ESC -- exit form            ^W   -- writes data to file\n");
+    addstr("^N   -- go to next card        ^P   -- go to previous card\n");
+    addstr("Arrow keys move left/right within a field, up/down between fields");
+}
+
 /*******************************************************************************/
 
 static void
@@ -314,43 +341,29 @@ cardfile(char *fname)
     int panel_high = LINES - (visible_cards * OFFSET_CARD) - 5;
     int form_wide = panel_wide - 2;
     int form_high = panel_high - 2;
-    int x = (visible_cards - 1) * OFFSET_CARD;
-    int y = 0;
-    int ch;
+    int y = (visible_cards - 1) * OFFSET_CARD;
+    int x = 0;
+    int ch = ERR;
+    int last_ch;
     int finished = FALSE;
 
-    move(LINES - 3, 0);
-    addstr("^Q/ESC -- exit form            ^W   -- writes data to file\n");
-    addstr("^N   -- go to next card        ^P   -- go to previous card\n");
-    addstr("Arrow keys move left/right within a field, up/down between fields");
+    show_legend();
 
     /* make a panel for each CARD */
     for (p = all_cards; p != 0; p = p->link) {
-	FIELD **f = (FIELD **) calloc(3, sizeof(FIELD *));
 
-	win = newwin(panel_high, panel_wide, x, y);
+	win = newwin(panel_high, panel_wide, y, x);
 	keypad(win, TRUE);
 	p->panel = new_panel(win);
 	box(win, 0, 0);
 
-	/* ...and a form in each panel */
-	f[0] = new_field(1, form_wide, 0, 0, 0, 0);
-	set_field_back(f[0], A_REVERSE);
-	set_field_buffer(f[0], 0, p->title);
-
-	f[1] = new_field(form_high - 1, form_wide, 1, 0, 0, 0);
-	set_field_buffer(f[1], 0, p->content);
-	set_field_just(f[1], JUSTIFY_LEFT);
-
-	f[2] = 0;
-
-	p->form = new_form(f);
+	p->form = new_form(make_fields(p, form_high, form_wide));
 	set_form_win(p->form, win);
 	set_form_sub(p->form, derwin(win, form_high, form_wide, 1, 1));
 	post_form(p->form);
 
-	x -= OFFSET_CARD;
-	y += OFFSET_CARD;
+	y -= OFFSET_CARD;
+	x += OFFSET_CARD;
     }
 
     order_cards(top_card = all_cards, visible_cards);
@@ -359,8 +372,9 @@ cardfile(char *fname)
 	update_panels();
 	doupdate();
 
-	switch (form_driver(top_card->form, ch =
-			    form_virtualize(panel_window(top_card->panel)))) {
+	last_ch = ch;
+	ch = form_virtualize(panel_window(top_card->panel));
+	switch (form_driver(top_card->form, ch)) {
 	case E_OK:
 	    break;
 	case E_UNKNOWN_COMMAND:
@@ -381,7 +395,57 @@ cardfile(char *fname)
 		break;
 #ifdef KEY_RESIZE
 	    case KEY_RESIZE:
-		flash();
+		/* resizeterm already did "something" reasonable, but it cannot
+		 * know much about layout.  So let's make it nicer.
+		 */
+		panel_wide = COLS - (visible_cards * OFFSET_CARD);
+		panel_high = LINES - (visible_cards * OFFSET_CARD) - 5;
+
+		form_wide = panel_wide - 2;
+		form_high = panel_high - 2;
+
+		y = (visible_cards - 1) * OFFSET_CARD;
+		x = 0;
+
+		show_legend();
+		for (p = all_cards; p != 0; p = p->link) {
+		    FIELD **oldf = form_fields(p->form);
+		    WINDOW *olds = form_sub(p->form);
+
+		    win = form_win(p->form);
+
+		    /* move and resize the card as needed
+		     * FIXME: if the windows are shrunk too much, this won't do
+		     */
+		    mvwin(win, y, x);
+		    wresize(win, panel_high, panel_wide);
+
+		    /* reconstruct each form.  Forms are not resizable, and
+		     * there appears to be no good way to reload the text in
+		     * a resized window.
+		     */
+		    werase(win);
+
+		    free_form(p->form);
+
+		    p->form = new_form(make_fields(p, form_high, form_wide));
+		    set_form_win(p->form, win);
+		    set_form_sub(p->form, derwin(win, form_high, form_wide,
+						 1, 1));
+		    post_form(p->form);
+
+		    free(oldf);
+		    delwin(olds);
+
+		    box(win, 0, 0);
+
+		    y -= OFFSET_CARD;
+		    x += OFFSET_CARD;
+		}
+		break;
+	    case ERR:
+		if (last_ch != KEY_RESIZE)
+		    finished = TRUE;
 		break;
 #endif
 	    default:
@@ -394,6 +458,28 @@ cardfile(char *fname)
 	    break;
 	}
     }
+#if NO_LEAKS
+    while (all_cards != 0) {
+	FIELD **f;
+	int count;
+	int n;
+
+	p = all_cards;
+	all_cards = all_cards->link;
+
+	f = form_fields(p->form);
+	count = field_count(p->form);
+	for (n = 0; n < count; ++n)
+	    free_field(f[n]);
+	free(f);
+
+	free_form(p->form);
+	del_panel(p->panel);
+	free(p->title);
+	free(p->content);
+	free(p);
+    }
+#endif
 }
 
 /*******************************************************************************/

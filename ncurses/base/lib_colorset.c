@@ -27,7 +27,8 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1998                  *
+ *  Author: Juergen Pfeifer, 1998                                           *
+ *  Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en              *
  ****************************************************************************/
 
 /*
@@ -40,7 +41,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_colorset.c,v 1.7 2000/12/10 01:24:50 tom Exp $")
+MODULE_ID("$Id: lib_colorset.c,v 1.8 2002/07/13 11:35:08 juergen Exp $")
 
 NCURSES_EXPORT(int)
 wcolor_set

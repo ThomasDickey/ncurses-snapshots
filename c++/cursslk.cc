@@ -28,7 +28,8 @@
  ****************************************************************************/
 
 /****************************************************************************
- *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1997                 *
+ *   Author: Juergen Pfeifer, 1997                                          *
+ *   Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en             *
  ****************************************************************************/
 
 #include "internal.h"
@@ -36,7 +37,7 @@
 #include "cursesapp.h"
 #include <string.h>
 
-MODULE_ID("$Id: cursslk.cc,v 1.9 2001/03/24 20:04:15 tom Exp $")
+MODULE_ID("$Id: cursslk.cc,v 1.10 2002/07/13 11:35:08 juergen Exp $")
 
 void Soft_Label_Key_Set::Soft_Label_Key::operator=(char *text)  {
   delete[] label;

@@ -27,11 +27,12 @@
  ****************************************************************************/
 
 /****************************************************************************
- *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1995,1997            *
+ *   Author:  Juergen Pfeifer, 1995,1997                                    *
+ *   Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en             *
  ****************************************************************************/
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.38 2001/03/25 02:07:50 juergen Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.39 2002/07/06 15:33:27 juergen Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority

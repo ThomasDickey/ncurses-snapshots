@@ -28,14 +28,15 @@
  ****************************************************************************/
 
 /****************************************************************************
- *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1997                 *
+ *   Author: Juergen Pfeifer, 1997                                          *
+ *   Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en             *
  ****************************************************************************/
 
 #include "internal.h"
 #include "cursesm.h"
 #include "cursesapp.h"
 
-MODULE_ID("$Id: cursesm.cc,v 1.16 2001/07/14 20:54:43 juergen Exp $")
+MODULE_ID("$Id: cursesm.cc,v 1.17 2002/07/06 15:47:52 juergen Exp $")
 
 NCursesMenuItem::~NCursesMenuItem() {
   if (item)

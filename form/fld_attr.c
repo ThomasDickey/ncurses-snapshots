@@ -27,11 +27,12 @@
  ****************************************************************************/
 
 /****************************************************************************
- *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1995,1997            *
+ *   Author:  Juergen Pfeifer, 1995,1997                                    *
+ *   Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en             *
  ****************************************************************************/
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_attr.c,v 1.5 2000/12/10 02:09:38 tom Exp $")
+MODULE_ID("$Id: fld_attr.c,v 1.6 2002/07/06 15:33:27 juergen Exp $")
 
 /*----------------------------------------------------------------------------
   Field-Attribute manipulation routines

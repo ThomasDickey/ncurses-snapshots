@@ -28,14 +28,15 @@
  ****************************************************************************/
 
 /****************************************************************************
- *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1993,1997            *
+ *   Author: Juergen Pfeifer, 1993, 1997                                    *
+ *   Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en             *
  ****************************************************************************/
 
 #include "internal.h"
 #include "cursesp.h"
 #include <string.h>
 
-MODULE_ID("$Id: cursesp.cc,v 1.19 2001/07/14 20:54:43 juergen Exp $")
+MODULE_ID("$Id: cursesp.cc,v 1.20 2002/07/13 11:35:08 juergen Exp $")
 
 NCursesPanel* NCursesPanel::dummy = (NCursesPanel*)0;
 

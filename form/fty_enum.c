@@ -7,13 +7,14 @@
  */
 /***************************************************************************
 *                                                                          *
-*  Author : Juergen Pfeifer, juergen.pfeifer@gmx.net                       *
+*  Author : Juergen Pfeifer                                                *
+*  Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en              *
 *                                                                          *
 ***************************************************************************/
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_enum.c,v 1.15 2000/12/09 23:46:12 tom Exp $")
+MODULE_ID("$Id: fty_enum.c,v 1.16 2002/07/13 11:35:08 juergen Exp $")
 
 typedef struct {
   char **kwds;
