@@ -440,11 +440,14 @@ termsort.c: Caps.filtered termsort.sh
 parametrized.h: Caps.filtered termsort.sh
 	(cd $(srcdir); sh parametrized.sh) >parametrized.h
 
+tags:
+	ctags *.[ch]
+
 TAGS:
 	etags *.[ch]
 
 clean:
-	-rm -f tags TAGS
+	-rm -f tags TAGS *~
 	-rm -f *.[od] $(AUTO_SRC) $(TESTPROGS)
 	-rm -f *.a $(PROGS)
 

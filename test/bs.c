@@ -47,12 +47,6 @@ extern void srand48();
  */
 #endif /* isxdigit */
 
-extern unsigned sleep();
-extern char *strchr(), *strcpy();
-extern long time();
-extern void exit();
-
-extern char *strchr();
 
 static int getcoord(int);
 

@@ -29,15 +29,27 @@
 #include <unctrl.h>
 #include <stdarg.h>
 
-#if defined(__cplusplus)
-#define bool char
-#else
-typedef char	bool;
-#endif
+/* XSI and SVr4 specify that curses implements 'bool'.  However, C++ may also
+ * implement it.  If so, we must use the C++ compiler's type to avoid conflict
+ * with other interfaces.
+ *
+ * To simplify use with/without the configuration script, we define the symbols
+ * CXX_BUILTIN_BOOL and CXX_TYPE_OF_BOOL; they're edited by the configure
+ * script.
+ */
 
-#ifndef TRUE
-#  define TRUE    (1)
-#  define FALSE   (0)
+#undef TRUE
+#undef FALSE
+#define CXX_BUILTIN_BOOL 0
+#define CXX_TYPE_OF_BOOL unsigned
+
+#if defined(__cplusplus) && CXX_BUILTIN_BOOL
+#define TRUE    ((CXX_TYPE_OF_BOOL)true)
+#define FALSE   ((CXX_TYPE_OF_BOOL)false)
+#else
+typedef CXX_TYPE_OF_BOOL bool;
+#define TRUE    ((bool)1)
+#define FALSE   ((bool)0)
 #endif
 
 typedef unsigned long  chtype;

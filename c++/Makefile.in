@@ -12,7 +12,7 @@ libdir		= $(exec_prefix)/lib
 includedir	= @includedir@
 
 CC		= @CXX@
-CFLAGS		= @CFLAGS@
+CFLAGS		= @CXXFLAGS@
 
 CPPFLAGS	= -I. -I$(srcdir) -I$(srcdir)/../include -I$(srcdir)/../src -I$(includedir) -DHAVE_CONFIG_H
 

@@ -141,7 +141,7 @@ static inline void PutAttrChar(chtype ch)
 	putc(ch & A_CHARTEXT, SP->_ofp);
 	if (char_padding) {
 		TPUTS_TRACE("char_padding");
-		putp("char_padding");
+		putp(char_padding);
 	}
 }
 
@@ -168,7 +168,7 @@ static inline void PutChar(chtype ch)
 				if (insert_padding)
 				{
 					TPUTS_TRACE("insert_padding");
-					putp("insert_padding");
+					putp(insert_padding);
 				}
 				TPUTS_TRACE("exit_insert_mode");
 				putp(exit_insert_mode);
@@ -179,7 +179,7 @@ static inline void PutChar(chtype ch)
 				if (insert_padding)
 				{
 					TPUTS_TRACE("insert_padding");
-					putp("insert_padding");
+					putp(insert_padding);
 				}
 			}
 			return;
@@ -263,7 +263,7 @@ int	i;
 		if (change_scroll_region)
 		{
 			TPUTS_TRACE("change_scroll_region");
-			putp(tparm("change_scroll_region", 0, lines - 1));
+			putp(tparm(change_scroll_region, 0, lines - 1));
 		}
 		newscr->_clear = TRUE;
 		SP->_endwin = FALSE;
@@ -410,6 +410,8 @@ int	j;
 
 static void ClrToBOL(void)
 {
+int j;
+
 	if (back_color_erase) {
 		TPUTS_TRACE("orig_pair");
 		putp(orig_pair);
@@ -418,6 +420,9 @@ static void ClrToBOL(void)
 	putp(clr_bol);
 	if (back_color_erase)
 		vidattr(SP->_current_attr);
+
+	for (j = 0; j <= SP->_curscol; j++)
+	    curscr->_line[SP->_cursrow].text[j] = ' ';
 }
 
 /*
@@ -704,7 +709,7 @@ static void InsStr(chtype *line, int count)
 			if (insert_padding)
 			{
 				TPUTS_TRACE("insert_padding");
-				putp("insert_padding");
+				putp(insert_padding);
 			}
 			line++;
 			count--;

@@ -40,9 +40,7 @@ struct screen	*oldSP;
 	oldSP = SP;
 	SP = screen;
 
-#ifdef UNIX
 	cur_term = SP->_term;
-#endif /* UNIX */
 	curscr   = SP->_curscr;
 	newscr   = SP->_newscr;
 	stdscr   = SP->_stdscr;
@@ -73,9 +71,7 @@ int	stolen, topstolen;
 	if ((SP = (SCREEN *) calloc(sizeof(*SP), 1)) == NULL)
 	    	return ERR;
 
-#ifdef UNIX
 	SP->_term      	= cur_term;
-#endif /* UNIX */
 	SP->_lines	= slines;
 	SP->_columns	= scolumns;
 	SP->_cursrow   	= -1;
