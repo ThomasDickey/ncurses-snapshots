@@ -41,9 +41,9 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.54 2004/12/11 23:52:43 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.55 2004/12/26 01:00:28 tom Exp $")
 
-NCURSES_EXPORT_VAR(unsigned) _nc_tracing = 0;	/* always define this */
+NCURSES_EXPORT_VAR(unsigned) _nc_tracing = 0; /* always define this */
 
 #ifdef TRACE
 NCURSES_EXPORT_VAR(const char *) _nc_tputs_trace = "";
@@ -188,9 +188,17 @@ _nc_retrace_cptr(const char *code)
     return code;
 }
 
+/* Trace 'void*' return-values */
+NCURSES_EXPORT(void *)
+_nc_retrace_void_ptr(void *code)
+{
+    T((T_RETURN("%p"), _nc_visbuf(code)));
+    return code;
+}
+
 /* Trace 'SCREEN *' return-values */
 NCURSES_EXPORT(SCREEN *)
-_nc_retrace_sp(SCREEN * code)
+_nc_retrace_sp(SCREEN *code)
 {
     T((T_RETURN("%p"), code));
     return code;

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_arg.c,v 1.10 2004/12/11 21:35:46 tom Exp $")
+MODULE_ID("$Id: fld_arg.c,v 1.11 2004/12/25 22:20:18 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
@@ -91,7 +91,8 @@ set_fieldtype_arg(FIELDTYPE *typ,
 NCURSES_EXPORT(void *)
 field_arg(const FIELD *field)
 {
-  return Normalize_Field(field)->arg;
+  T((T_CALLED("field_arg(%p)"), field));
+  returnVoidPtr(Normalize_Field(field)->arg);
 }
 
 /* fld_arg.c ends here */

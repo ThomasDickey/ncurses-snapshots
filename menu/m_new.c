@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_new.c,v 1.15 2004/12/11 23:29:34 tom Exp $")
+MODULE_ID("$Id: m_new.c,v 1.16 2004/12/25 21:57:53 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -55,6 +55,7 @@ new_menu(ITEM ** items)
 {
   MENU *menu = (MENU *) calloc(1, sizeof(MENU));
 
+  T((T_CALLED("new_menu(%p)"), items));
   if (menu)
     {
       *menu = _nc_Default_Menu;
@@ -74,7 +75,7 @@ new_menu(ITEM ** items)
   if (!menu)
     SET_ERROR(E_SYSTEM_ERROR);
 
-  return (menu);
+  returnMenu(menu);
 }
 
 /*---------------------------------------------------------------------------

@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_opts.c,v 1.18 2004/12/11 23:29:34 tom Exp $")
+MODULE_ID("$Id: m_opts.c,v 1.19 2004/12/25 21:36:12 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu
@@ -176,7 +176,8 @@ menu_opts_on(MENU * menu, Menu_Options opts)
 NCURSES_EXPORT(Menu_Options)
 menu_opts(const MENU * menu)
 {
-  return (ALL_MENU_OPTS & Normalize_Menu(menu)->opt);
+  T((T_CALLED("menu_opts(%p)"), menu));
+  returnMenuOpts(ALL_MENU_OPTS & Normalize_Menu(menu)->opt);
 }
 
 /* m_opts.c ends here */

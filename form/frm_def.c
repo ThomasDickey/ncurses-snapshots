@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_def.c,v 1.16 2004/12/11 22:26:58 tom Exp $")
+MODULE_ID("$Id: frm_def.c,v 1.17 2004/12/25 22:26:01 tom Exp $")
 
 /* this can't be readonly */
 static FORM default_form =
@@ -285,6 +285,7 @@ new_form(FIELD **fields)
 
   FORM *form = (FORM *)malloc(sizeof(FORM));
 
+  T((T_CALLED("new_form(%p)"), fields));
   if (form)
     {
       *form = *_nc_Default_Form;
@@ -298,7 +299,7 @@ new_form(FIELD **fields)
   if (!form)
     SET_ERROR(err);
 
-  return (form);
+  returnForm(form);
 }
 
 /*---------------------------------------------------------------------------
@@ -374,7 +375,8 @@ set_form_fields(FORM *form, FIELD **fields)
 NCURSES_EXPORT(FIELD **)
 form_fields(const FORM *form)
 {
-  return (Normalize_Form(form)->field);
+  T((T_CALLED("form_field(%p)"), form));
+  returnFieldPtr(Normalize_Form(form)->field);
 }
 
 /*---------------------------------------------------------------------------

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_newftyp.c,v 1.12 2004/12/11 21:45:07 tom Exp $")
+MODULE_ID("$Id: fld_newftyp.c,v 1.13 2004/12/25 22:24:10 tom Exp $")
 
 static FIELDTYPE const default_fieldtype =
 {
@@ -73,6 +73,7 @@ new_fieldtype(bool (*const field_check) (FIELD *, const void *),
 {
   FIELDTYPE *nftyp = (FIELDTYPE *)0;
 
+  T((T_CALLED("new_fieldtype(%p,%p)"), field_check, char_check));
   if ((field_check) || (char_check))
     {
       nftyp = (FIELDTYPE *)malloc(sizeof(FIELDTYPE));
@@ -92,7 +93,7 @@ new_fieldtype(bool (*const field_check) (FIELD *, const void *),
     {
       SET_ERROR(E_BAD_ARGUMENT);
     }
-  return nftyp;
+  returnFieldType(nftyp);
 }
 
 /*---------------------------------------------------------------------------

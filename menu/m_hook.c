@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_hook.c,v 1.13 2004/12/11 23:12:01 tom Exp $")
+MODULE_ID("$Id: m_hook.c,v 1.14 2004/12/25 21:39:52 tom Exp $")
 
 /* "Template" macro to generate function to set application specific hook */
 #define GEN_HOOK_SET_FUNCTION( typ, name ) \
@@ -52,7 +52,8 @@ NCURSES_IMPEXP int NCURSES_API set_ ## typ ## _ ## name (MENU *menu, Menu_Hook f
 #define GEN_HOOK_GET_FUNCTION( typ, name ) \
 NCURSES_IMPEXP Menu_Hook NCURSES_API typ ## _ ## name ( const MENU *menu )\
 {\
-   return (Normalize_Menu(menu) -> typ ## name);\
+   T((T_CALLED(#typ "_" #name "(%p)"), menu));\
+   returnMenuHook(Normalize_Menu(menu) -> typ ## name);\
 }
 
 /*---------------------------------------------------------------------------

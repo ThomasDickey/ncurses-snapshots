@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_req_name.c,v 1.17 2004/12/11 23:29:34 tom Exp $")
+MODULE_ID("$Id: m_req_name.c,v 1.18 2004/12/25 21:42:21 tom Exp $")
 
 static const char *request_names[MAX_MENU_COMMAND - MIN_MENU_COMMAND + 1] =
 {
@@ -74,13 +74,14 @@ static const char *request_names[MAX_MENU_COMMAND - MIN_MENU_COMMAND + 1] =
 NCURSES_EXPORT(const char *)
 menu_request_name(int request)
 {
+  T((T_CALLED("menu_request_name(%d)"), request));
   if ((request < MIN_MENU_COMMAND) || (request > MAX_MENU_COMMAND))
     {
       SET_ERROR(E_BAD_ARGUMENT);
-      return (const char *)0;
+      returnCPtr((const char *)0);
     }
   else
-    return request_names[request - MIN_MENU_COMMAND];
+    returnCPtr(request_names[request - MIN_MENU_COMMAND]);
 }
 
 /*---------------------------------------------------------------------------
@@ -115,7 +116,7 @@ menu_request_by_name(const char *str)
       for (i = 0; i < A_SIZE; i++)
 	{
 	  if (strncmp(request_names[i], buf, sizeof(buf)) == 0)
-	    return MIN_MENU_COMMAND + i;
+	    returnCode(MIN_MENU_COMMAND + i);
 	}
     }
   RETURN(E_NO_MATCH);

@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_vis.c,v 1.14 2004/12/11 23:06:56 tom Exp $")
+MODULE_ID("$Id: m_item_vis.c,v 1.15 2004/12/25 21:40:09 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -54,14 +54,15 @@ item_visible(const ITEM * item)
 {
   MENU *menu;
 
+  T((T_CALLED("item_visible(%p)"), item));
   if (item &&
       (menu = item->imenu) &&
       (menu->status & _POSTED) &&
       ((menu->toprow + menu->arows) > (item->y)) &&
       (item->y >= menu->toprow))
-    return TRUE;
+    returnBool(TRUE);
   else
-    return FALSE;
+    returnBool(FALSE);
 }
 
 /* m_item_vis.c ends here */

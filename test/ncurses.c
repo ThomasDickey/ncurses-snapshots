@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.235 2004/12/19 01:12:16 tom Exp $
+$Id: ncurses.c,v 1.238 2004/12/25 20:52:17 tom Exp $
 
 ***************************************************************************/
 
@@ -1210,7 +1210,7 @@ attr_getc(int *skip, int *fg, int *bg, int *tx, int *ac, unsigned *kc)
 	int ch = Getchar();
 
 	error = FALSE;
-	if (isdigit(ch)) {
+	if (ch < 256 && isdigit(ch)) {
 	    *skip = (ch - '0');
 	} else {
 	    switch (ch) {
@@ -1488,7 +1488,7 @@ wide_attr_getc(int *skip, int *fg, int *bg, int *tx, int *ac, unsigned *kc)
 	int ch = Getchar();
 
 	error = FALSE;
-	if (isdigit(ch)) {
+	if (ch < 256 && isdigit(ch)) {
 	    *skip = (ch - '0');
 	} else {
 	    switch (ch) {
@@ -1739,7 +1739,7 @@ color_test(void)
 	for (i = (base_row * per_row); i < pairs_max; i++) {
 	    int row = grid_top + (i / per_row) - base_row;
 	    int col = (i % per_row + 1) * width;
-	    int pair = i + 1;
+	    int pair = i;
 
 	    if (move(row, col) != ERR) {
 		init_pair(pair, i % COLORS, i / COLORS);
@@ -1869,7 +1869,7 @@ wide_color_test(void)
 	for (i = (base_row * per_row); i < pairs_max; i++) {
 	    int row = grid_top + (i / per_row) - base_row;
 	    int col = (i % per_row + 1) * width;
-	    int pair = i + 1;
+	    int pair = i;
 
 	    if (move(row, col) != ERR) {
 		init_pair(pair, i % COLORS, i / COLORS);
@@ -2051,7 +2051,7 @@ color_edit(void)
 
 	last_c = this_c;
 	this_c = Getchar();
-	if (isdigit(this_c) && !isdigit(last_c))
+	if (this_c < 256 && isdigit(this_c) && !isdigit(last_c))
 	    value = 0;
 
 	switch (this_c) {
@@ -2819,7 +2819,7 @@ wide_acs_display(void)
 	    show_utf8_chars();
 	    break;
 	default:
-	    if (isdigit(c))
+	    if (c < 256 && isdigit(c))
 		digit = (c - '0');
 	    else if (c == '+')
 		++digit;

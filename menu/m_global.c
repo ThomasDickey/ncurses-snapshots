@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_global.c,v 1.17 2004/12/11 23:06:56 tom Exp $")
+MODULE_ID("$Id: m_global.c,v 1.18 2004/12/26 00:57:50 tom Exp $")
 
 static char mark[] = "-";
 /* *INDENT-OFF* */
@@ -125,6 +125,7 @@ ComputeMaximum_NameDesc_Lengths(MENU * menu)
 
   menu->namelen = MaximumNameLength;
   menu->desclen = MaximumDescriptionLength;
+  T(("ComputeMaximum_NameDesc_Lengths %d,%d", menu->namelen, menu->desclen));
 }
 
 /*---------------------------------------------------------------------------
@@ -237,6 +238,83 @@ _nc_Disconnect_Items(MENU * menu)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
+|   Function      :  int _nc_Calculate_Text_Width(const TEXT * item)
+|   
+|   Description   :  Calculate the number of columns for a TEXT.
+|
+|   Return Values :  the width
++--------------------------------------------------------------------------*/
+NCURSES_EXPORT(int)
+_nc_Calculate_Text_Width(const TEXT * item /*FIXME: limit length */ )
+{
+#if USE_WIDEC_SUPPORT
+  int result = item->length;
+  int count = mbstowcs(0, item->str, 0);
+  wchar_t *temp = 0;
+
+  T((T_CALLED("_nc_menu_text_width(%p)"), item));
+  if (count > 0
+      && (temp = malloc(sizeof(*temp) * (2 + count))) != 0)
+    {
+      int n;
+
+      result = 0;
+      mbstowcs(temp, item->str, count);
+      for (n = 0; n < count; ++n)
+	{
+	  int test = wcwidth(temp[n]);
+
+	  if (test <= 0)
+	    test = 1;
+	  result += test;
+	}
+      free(temp);
+    }
+  returnCode(result);
+#else
+  return item->length;
+#endif
+}
+
+/* FIXME: this is experimental, should cache the results but don't want to
+ * modify the MENU struct to do this until it's complete.
+ */
+#if 0				/* USE_WIDEC_SUPPORT */
+static int
+calculate_actual_width(MENU * menu, bool name)
+{
+  int width = 0;
+  int check = 0;
+  ITEM **items;
+
+  assert(menu && menu->items);
+  for (items = menu->items; *items; items++)
+    {
+      if (name)
+	{
+	  check = _nc_Calculate_Text_Width(&((*items)->name));
+	}
+      else
+	{
+	  check = _nc_Calculate_Text_Width(&((*items)->description));
+	}
+      if (check > width)
+	width = check;
+    }
+
+  T(("calculate_actual_width %s = %d/%d",
+     name ? "name" : "desc",
+     width,
+     name ? menu->namelen : menu->desclen));
+  width += 2;			/* FIXME - need this? */
+  return width;
+}
+#else
+#define calculate_actual_width(menu, name) (name ? menu->namelen : menu->desclen)
+#endif
+
+/*---------------------------------------------------------------------------
+|   Facility      :  libnmenu  
 |   Function      :  void _nc_Calculate_Item_Length_and_Width(MENU *menu)
 |   
 |   Description   :  Calculate the length of an item and the width of the
@@ -253,14 +331,24 @@ _nc_Calculate_Item_Length_and_Width(MENU * menu)
 
   menu->height = 1 + menu->spc_rows * (menu->arows - 1);
 
-  l = menu->namelen + menu->marklen;
+  l = calculate_actual_width(menu, TRUE);
+  l += menu->marklen;
+
   if ((menu->opt & O_SHOWDESC) && (menu->desclen > 0))
-    l += (menu->desclen + menu->spc_desc);
+    {
+      l += calculate_actual_width(menu, FALSE);
+      l += menu->spc_desc;
+    }
 
   menu->itemlen = l;
   l *= menu->cols;
   l += (menu->cols - 1) * menu->spc_cols;	/* for the padding between the columns */
   menu->width = l;
+
+  T(("_nc_CalculateItem_Length_and_Width columns %d, item %d, width %d",
+     menu->cols,
+     menu->itemlen,
+     menu->width));
 }
 
 /*---------------------------------------------------------------------------

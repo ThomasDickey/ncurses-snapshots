@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_pad.c,v 1.9 2004/12/11 23:29:33 tom Exp $")
+MODULE_ID("$Id: m_pad.c,v 1.10 2004/12/25 21:40:58 tom Exp $")
 
 /* Macro to redraw menu if it is posted and changed */
 #define Refresh_Menu(menu) \
@@ -88,7 +88,8 @@ set_menu_pad(MENU * menu, int pad)
 NCURSES_EXPORT(int)
 menu_pad(const MENU * menu)
 {
-  return (Normalize_Menu(menu)->pad);
+  T((T_CALLED("menu_pad(%p)"), menu));
+  returnCode(Normalize_Menu(menu)->pad);
 }
 
 /* m_pad.c ends here */

@@ -433,6 +433,7 @@
 ./doc/ncurses-intro.doc
 ./form/Makefile.in
 ./form/READ.ME
+./form/f_trace.c
 ./form/fld_arg.c
 ./form/fld_attr.c
 ./form/fld_current.c
@@ -663,6 +664,7 @@
 ./menu/m_scale.c
 ./menu/m_spacing.c
 ./menu/m_sub.c
+./menu/m_trace.c
 ./menu/m_userptr.c
 ./menu/m_win.c
 ./menu/menu.h

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_user.c,v 1.14 2004/12/11 22:25:07 tom Exp $")
+MODULE_ID("$Id: fld_user.c,v 1.15 2004/12/25 22:24:50 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -65,7 +65,8 @@ set_field_userptr(FIELD *field, void *usrptr)
 NCURSES_EXPORT(void *)
 field_userptr(const FIELD *field)
 {
-  return Normalize_Field(field)->usrptr;
+  T((T_CALLED("field_userptr(%p)"), field));
+  returnVoidPtr(Normalize_Field(field)->usrptr);
 }
 
 /* fld_user.c ends here */

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_type.c,v 1.14 2004/12/11 22:17:49 tom Exp $")
+MODULE_ID("$Id: fld_type.c,v 1.15 2004/12/25 22:24:10 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -90,7 +90,8 @@ set_field_type(FIELD *field, FIELDTYPE *type,...)
 NCURSES_EXPORT(FIELDTYPE *)
 field_type(const FIELD *field)
 {
-  return Normalize_Field(field)->type;
+  T((T_CALLED("field_type(%p)"), field));
+  returnFieldType(Normalize_Field(field)->type);
 }
 
 /* fld_type.c ends here */
