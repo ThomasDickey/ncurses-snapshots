@@ -35,7 +35,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.30 1997/10/11 16:40:48 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.32 1997/10/19 02:38:03 tom Exp $")
 
 /****************************************************************************
  *
@@ -45,7 +45,9 @@ MODULE_ID("$Id: lib_setup.c,v 1.30 1997/10/11 16:40:48 tom Exp $")
 
 #if HAVE_SIZECHANGE
 # if !defined(sun) || !HAVE_TERMIOS_H
-#  include <sys/ioctl.h>
+#  if HAVE_SYS_IOCTL_H
+#   include <sys/ioctl.h>
+#  endif
 # endif
 #endif
 
@@ -62,35 +64,35 @@ void use_env(bool f)
 
 int LINES, COLS, TABSIZE;
 
-void _nc_get_screensize(void)
-/* set LINES and COLS from the environment and/or terminfo entry */
+static void _nc_get_screensize(int *linep, int *colp)
+/* Obtain lines/columns values from the environment and/or terminfo entry */
 {
-char		*rows, *cols;
+char	*rows, *cols;
 
 	/* figure out the size of the screen */
 	T(("screen size: terminfo lines = %d columns = %d", lines, columns));
 
 	if (!_use_env)
 	{
-	    LINES = (int)lines;
-	    COLS  = (int)columns;
+	    *linep = (int)lines;
+	    *colp  = (int)columns;
 	}
 	else	/* usually want to query LINES and COLUMNS from environment */
 	{
-	    LINES = COLS = 0;
+	    *linep = *colp = 0;
 
 	    /* first, look for environment variables */
 	    rows = getenv("LINES");
-	    if (rows != (char *)NULL)
-		LINES = atoi(rows);
+	    if (rows != 0)
+		*linep = atoi(rows);
 	    cols = getenv("COLUMNS");
-	    if (cols != (char *)NULL)
-		COLS = atoi(cols);
-	    T(("screen size: environment LINES = %d COLUMNS = %d",LINES,COLS));
+	    if (cols != 0)
+		*colp = atoi(cols);
+	    T(("screen size: environment LINES = %d COLUMNS = %d",*linep,*colp));
 
 #if HAVE_SIZECHANGE
 	    /* if that didn't work, maybe we can try asking the OS */
-	    if (LINES <= 0 || COLS <= 0)
+	    if (*linep <= 0 || *colp <= 0)
 	    {
 		if (isatty(cur_term->Filedes))
 		{
@@ -111,12 +113,12 @@ char		*rows, *cols;
 			(errno == EINTR);
 
 #ifdef TIOCGWINSZ
-		    LINES = (int)size.ws_row;
-		    COLS  = (int)size.ws_col;
+		    *linep = (int)size.ws_row;
+		    *colp  = (int)size.ws_col;
 #else
 #ifdef TIOCGSIZE
-		    LINES = (int)size.ts_lines;
-		    COLS  = (int)size.ts_cols;
+		    *linep = (int)size.ts_lines;
+		    *colp  = (int)size.ts_cols;
 #endif
 #endif
 		}
@@ -126,29 +128,29 @@ char		*rows, *cols;
 #endif /* HAVE_SIZECHANGE */
 
 	    /* if we can't get dynamic info about the size, use static */
-	    if (LINES <= 0 || COLS <= 0)
+	    if (*linep <= 0 || *colp <= 0)
 		if (lines > 0 && columns > 0)
 		{
-		    LINES = (int)lines;
-		    COLS  = (int)columns;
+		    *linep = (int)lines;
+		    *colp  = (int)columns;
 		}
 
 	    /* the ultimate fallback, assume fixed 24x80 size */
-	    if (LINES <= 0 || COLS <= 0)
+	    if (*linep <= 0 || *colp <= 0)
 	    {
-		LINES = 24;
-		COLS  = 80;
+		*linep = 24;
+		*colp  = 80;
 	    }
 
 	    /*
 	     * Put the derived values back in the screen-size caps, so
 	     * tigetnum() and tgetnum() will do the right thing.
 	     */
-	    lines   = (short)LINES;
-	    columns = (short)COLS;
+	    lines   = (short)(*linep);
+	    columns = (short)(*colp);
 	}
 
-	T(("screen size is %dx%d", LINES, COLS));
+	T(("screen size is %dx%d", *linep, *colp));
 
 #ifdef init_tabs
 	if (init_tabs != -1)
@@ -158,6 +160,15 @@ char		*rows, *cols;
 		TABSIZE = 8;
 	T(("TABSIZE = %d", TABSIZE));
 
+}
+
+void _nc_update_screensize(void)
+{
+	int my_lines, my_cols;
+
+	_nc_get_screensize(&my_lines, &my_cols);
+	if (SP != 0 && SP->_resize != 0)
+		SP->_resize(my_lines, my_cols);
 }
 
 /****************************************************************************
@@ -222,9 +233,9 @@ int status;
 
 	T((T_CALLED("setupterm(\"%s\",%d,%p)"), tname, Filedes, errret));
 
-	if (tname == NULL) {
+	if (tname == 0) {
 		tname = getenv("TERM");
-		if (tname == NULL)
+		if (tname == 0)
 			ret_error0(-1, "TERM environment variable not set.\n");
 	}
 
@@ -232,7 +243,7 @@ int status;
 
 	term_ptr = typeCalloc(TERMINAL, 1);
 
-	if (term_ptr == NULL)
+	if (term_ptr == 0)
 		ret_error0(-1, "Not enough memory to create terminal structure.\n") ;
 #if USE_DATABASE
 	status = grab_entry(tname, &term_ptr->type);
@@ -278,7 +289,7 @@ int status;
 	    Filedes = STDERR_FILENO;
 	cur_term->Filedes = Filedes;
 
-	_nc_get_screensize();
+	_nc_get_screensize(&LINES, &COLS);
 
 	if (errret)
 		*errret = 1;

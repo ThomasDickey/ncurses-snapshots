@@ -1,7 +1,33 @@
--- $Id: NEWS,v 1.263 1997/10/11 23:41:08 tom Exp $
+-- $Id: NEWS,v 1.266 1997/10/19 02:55:08 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+971018
+	+ split-out lib_ungetch.c, make runtime link to resizeterm() to
+	  decouple those modules from lib_restart.c
+	+ add xterm-xf86-v39t description to terminfo.src
+	+ reset SP->_endwin in lib_tstp.c cleanup() function after calling
+	  endwin() to avoid unnecessary repainting if the application has
+	  established an atexit function, etc.  Encountered this problem in
+	  the c++ demo, whose destructors repaint the screen.
+	+ combine _nc_get_screensize() and resizeterm() calls as new function
+	  _nc_update_screensize().
+	+ minor fixes to allow compile with g++ (suggested by Nelson H. F.
+	  Beebe).
+	+ implement install-rules for Ada95 makefiles.
+	+ use screen_lines or MAXLINES as needed where LINES was coded,
+	  as well as screen_columns for COLS, in the ncurses library.
+	> patch by Alexander V. Lukyanov:
+	+ modify logic for ripped-off lines to handle several SCREENs.
+	> patch by Juergen Pfeifer:
+	+ factors lib_slk.c into some smaller modules
+	+ factors panel.c into some smaller modules
+	+ puts the static information about the current panel stack into the
+	  SCREEN structure to allow different panel stacks on different
+	  screens.
+	+ preliminary fix for an error adjusting LINES to account for
+	  ripped-off lines.
 
 971011
 	+ move _nc_max_click_interval and other mouse interface items to SCREEN

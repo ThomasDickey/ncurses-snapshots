@@ -56,13 +56,12 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hashmap.c,v 1.22 1997/08/31 01:54:39 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.23 1997/10/18 17:25:02 tom Exp $")
 
 #ifdef HASHDEBUG
-#define LINES	24
 #define TEXTWIDTH	1
-int oldnums[LINES], reallines[LINES];
-static chtype oldtext[LINES][TEXTWIDTH], newtext[LINES][TEXTWIDTH];
+int oldnums[MAXLINES], reallines[MAXLINES];
+static chtype oldtext[MAXLINES][TEXTWIDTH], newtext[MAXLINES][TEXTWIDTH];
 #define OLDNUM(n)	oldnums[n]
 #define REAL(m)		reallines[m]
 #define OLDTEXT(n)	oldtext[n]
@@ -176,23 +175,23 @@ static void grow_hunks(void)
     back_ref_limit = 0;
 
     i = 0;
-    while (i < LINES && OLDNUM(i) == _NEWINDEX)
+    while (i < screen_lines && OLDNUM(i) == _NEWINDEX)
 	i++;
-    for ( ; i < LINES; i=next_hunk)
+    for ( ; i < screen_lines; i=next_hunk)
     {
 	start = i;
 	shift = OLDNUM(i) - i;
 	
 	/* get forward limit */
 	i = start+1;
-	while (i < LINES && OLDNUM(i) != _NEWINDEX && OLDNUM(i) - i == shift)
+	while (i < screen_lines && OLDNUM(i) != _NEWINDEX && OLDNUM(i) - i == shift)
 	    i++;
 	end = i;
-	while (i < LINES && OLDNUM(i) == _NEWINDEX)
+	while (i < screen_lines && OLDNUM(i) == _NEWINDEX)
 	    i++;
 	next_hunk = i;
 	forward_limit = i;
-	if (i >= LINES || OLDNUM(i) >= i)
+	if (i >= screen_lines || OLDNUM(i) >= i)
 	    forward_ref_limit = i;
 	else
 	    forward_ref_limit = OLDNUM(i);
@@ -258,11 +257,11 @@ void _nc_hash_map(void)
     int start, shift, size;
 
 
-    if (LINES > lines_alloc)
+    if (screen_lines > lines_alloc)
     {
 	if (hashtab)
 	    free (hashtab);
-	hashtab = malloc (sizeof(*hashtab)*(LINES+1)*2);
+	hashtab = malloc (sizeof(*hashtab)*(screen_lines+1)*2);
 	if (!hashtab)
 	{
 	    if (oldhash)
@@ -273,7 +272,7 @@ void _nc_hash_map(void)
   
 	if (oldhash)
 	    free (oldhash);
-	oldhash = malloc (sizeof(*oldhash)*LINES*2);
+	oldhash = malloc (sizeof(*oldhash)*screen_lines*2);
 	if (!oldhash)
 	{
 	    if (hashtab)
@@ -282,15 +281,15 @@ void _nc_hash_map(void)
 	    return;
 	}
 	
-	lines_alloc = LINES;
+	lines_alloc = screen_lines;
     }
-    newhash = oldhash + LINES;	/* two arrays in the same memory block */
+    newhash = oldhash + screen_lines;	/* two arrays in the same memory block */
 
     /*
      * Set up and count line-hash values.
      */
-    memset(hashtab, '\0', sizeof(*hashtab)*(LINES+1)*2);
-    for (i = 0; i < LINES; i++)
+    memset(hashtab, '\0', sizeof(*hashtab)*(screen_lines+1)*2);
+    for (i = 0; i < screen_lines; i++)
     {
 	unsigned long hashval = hash(OLDTEXT(i));
 
@@ -302,7 +301,7 @@ void _nc_hash_map(void)
 	sp->oldcount++;
 	sp->oldindex = i;
     }
-    for (i = 0; i < LINES; i++)
+    for (i = 0; i < screen_lines; i++)
     {
 	unsigned long hashval = hash(NEWTEXT(i));
 
@@ -342,16 +341,16 @@ void _nc_hash_map(void)
      * those which are to be moved too far, they are likely to destroy
      * more than carry.
      */
-    for (i = 0; i < LINES; )
+    for (i = 0; i < screen_lines; )
     {
-	while (i < LINES && OLDNUM(i) == _NEWINDEX)
+	while (i < screen_lines && OLDNUM(i) == _NEWINDEX)
 	    i++;
-	if (i >= LINES)
+	if (i >= screen_lines)
 	    break;
 	start = i;
 	shift = OLDNUM(i) - i;
 	i++;
-	while (i < LINES && OLDNUM(i) != _NEWINDEX && OLDNUM(i) - i == shift)
+	while (i < screen_lines && OLDNUM(i) != _NEWINDEX && OLDNUM(i) - i == shift)
 	    i++;
 	size = i - start;
 	if (size <= abs(shift))
@@ -382,7 +381,7 @@ main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
     char	line[BUFSIZ], *st;
     int		n;
 
-    for (n = 0; n < LINES; n++)
+    for (n = 0; n < screen_lines; n++)
     {
 	reallines[n] = n;
 	oldnums[n] = _NEWINDEX;
@@ -405,7 +404,7 @@ main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 	    break;
 
 	case 'l':	/* get initial line number vector */
-	    for (n = 0; n < LINES; n++)
+	    for (n = 0; n < screen_lines; n++)
 	    {
 		reallines[n] = n;
 		oldnums[n] = _NEWINDEX;
@@ -419,9 +418,9 @@ main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 	    break;
 
 	case 'n':	/* use following letters as text of new lines */
-	    for (n = 0; n < LINES; n++)
+	    for (n = 0; n < screen_lines; n++)
 		newtext[n][0] = '.';
-	    for (n = 0; n < LINES; n++)
+	    for (n = 0; n < screen_lines; n++)
 		if (line[n+1] == '\n')
 		    break;
 		else
@@ -429,9 +428,9 @@ main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 	    break;
 
 	case 'o':	/* use following letters as text of old lines */
-	    for (n = 0; n < LINES; n++)
+	    for (n = 0; n < screen_lines; n++)
 		oldtext[n][0] = '.';
-	    for (n = 0; n < LINES; n++)
+	    for (n = 0; n < screen_lines; n++)
 		if (line[n+1] == '\n')
 		    break;
 		else
@@ -443,12 +442,12 @@ main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 	    _nc_linedump();
 #endif
 	    (void) fputs("Old lines: [", stdout);
-	    for (n = 0; n < LINES; n++)
+	    for (n = 0; n < screen_lines; n++)
 		putchar(oldtext[n][0]);
 	    putchar(']');
 	    putchar('\n');
 	    (void) fputs("New lines: [", stdout);
-	    for (n = 0; n < LINES; n++)
+	    for (n = 0; n < screen_lines; n++)
 		putchar(newtext[n][0]);
 	    putchar(']');
 	    putchar('\n');

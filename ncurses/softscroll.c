@@ -21,7 +21,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: softscroll.c,v 1.4 1997/08/23 15:59:42 tom Exp $")
+MODULE_ID("$Id: softscroll.c,v 1.5 1997/10/18 18:38:47 tom Exp $")
 
 /*
  * Compute indices for the given WINDOW, preparing it for scrolling.
@@ -36,13 +36,13 @@ MODULE_ID("$Id: softscroll.c,v 1.4 1997/08/23 15:59:42 tom Exp $")
 static void compute_curscr(void)
 {
 	int y, x, z;
-	for (y = 0; y < LINES; y++) {
+	for (y = 0; y < screen_lines; y++) {
 		struct ldat *nline = &curscr->_line[y];
 		int found = y;
 		for (z = 0; z < y; z++) {
 			int same = TRUE;
 			struct ldat *oline = &curscr->_line[z];
-			for (x = 0; x < COLS; x++) {
+			for (x = 0; x < screen_columns; x++) {
 				if (nline->text[x] != oline->text[x]) {
 					same = FALSE;
 					break;
@@ -60,13 +60,13 @@ static void compute_curscr(void)
 static void compute_newscr(void)
 {
 	int y, x, z;
-	for (y = 0; y < LINES; y++) {
+	for (y = 0; y < screen_lines; y++) {
 		struct ldat *nline = &newscr->_line[y];
 		int found = _NEWINDEX;
-		for (z = 0; z < LINES; z++) {
+		for (z = 0; z < screen_lines; z++) {
 			int same = TRUE;
 			struct ldat *oline = &curscr->_line[z];
-			for (x = 0; x < COLS; x++) {
+			for (x = 0; x < screen_columns; x++) {
 				if (nline->text[x] != oline->text[x]) {
 					same = FALSE;
 					break;
@@ -131,7 +131,7 @@ _nc_perform_scroll(void)
 	 && (scroll_forward || parm_index)
 	 && (scroll_reverse || parm_rindex)) {
 		partial = TRUE;
-		for (row = 0, top = -1; row < LINES; row++) {
+		for (row = 0, top = -1; row < screen_lines; row++) {
 			if (OLDNUM(row) != NEWNUM(row)) {
 				break;
 			}
@@ -139,7 +139,7 @@ _nc_perform_scroll(void)
 		}
 		top++;
 
-		for (row = LINES-1, bottom = LINES; row >= 0; row--) {
+		for (row = screen_lines-1, bottom = screen_lines; row >= 0; row--) {
 			if (OLDNUM(row) != NEWNUM(row)) {
 				break;
 			}
@@ -149,7 +149,7 @@ _nc_perform_scroll(void)
 	} else {
 		partial = FALSE;
 		top     = 0;
-		bottom  = LINES - 1;
+		bottom  = screen_lines - 1;
 	}
 
 	maxdisp = (bottom - top + 1) / 2;
@@ -167,9 +167,9 @@ _nc_perform_scroll(void)
 
 		do {
 			/* check for forward-movement */
-			for (fn = top + disp; fn < LINES - disp; fn++) {
+			for (fn = top + disp; fn < screen_lines - disp; fn++) {
 				int eql = 0;
-				for (n = fn, fwd = 0; n < LINES; n++) {
+				for (n = fn, fwd = 0; n < screen_lines; n++) {
 					if (NEWNUM(n) == _NEWINDEX
 					 || NEWNUM(n) != OLDNUM(n-disp))
 						break;
@@ -185,9 +185,9 @@ _nc_perform_scroll(void)
 			}
 
 			/* check for backward-movement */
-			for (bn = top + disp; bn < LINES - disp; bn++) {
+			for (bn = top + disp; bn < screen_lines - disp; bn++) {
 				int eql = 0;
-				for (n = bn, bak = 0; n < LINES; n++) {
+				for (n = bn, bak = 0; n < screen_lines; n++) {
 					if (OLDNUM(n) == _NEWINDEX
 					 || OLDNUM(n) != NEWNUM(n-disp))
 						break;
@@ -216,7 +216,7 @@ _nc_perform_scroll(void)
 			}
 
 			TR(TRACE_UPDATE | TRACE_MOVE, ("scroll [%d, %d] by %d", first, last, moved));
-			if (_nc_scrolln(moved, first, last, LINES - 1) == ERR)
+			if (_nc_scrolln(moved, first, last, screen_lines - 1) == ERR)
 			{
 				TR(TRACE_UPDATE | TRACE_MOVE, ("unable to scroll"));
 				break;

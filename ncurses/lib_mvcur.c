@@ -141,7 +141,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.46 1997/10/11 16:35:20 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.47 1997/10/18 19:19:52 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -508,7 +508,7 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 
     if (to_x != from_x)
     {
-	char	try[OPT_SIZE];
+	char	str[OPT_SIZE];
 
 	hcost = INFINITY;
 
@@ -534,7 +534,7 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 	    {
 		int	lhcost = 0;
 
-		try[0] = '\0';
+		str[0] = '\0';
 
 #if USE_HARD_TABS
 		/* use hard tabs, if we have them, to do as much as possible */
@@ -544,7 +544,7 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 
 		    for (fr = from_x; (nxt = NEXTTAB(fr)) <= to_x; fr = nxt)
 		    {
-			lhcost = repeated_append(lhcost, SP->_ht_cost, 1, try, tab);
+			lhcost = repeated_append(lhcost, SP->_ht_cost, 1, str, tab);
 			if (lhcost == INFINITY)
 				break;
 		    }
@@ -579,7 +579,7 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 		    char	*sp;
 		    int	i;
 
-		    sp = try + strlen(try);
+		    sp = str + strlen(str);
 
 		    for (i = 0; i < n; i++)
 			*sp++ = WANT_CHAR(to_y, from_x + i);
@@ -589,13 +589,13 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 		else
 #endif /* defined(REAL_ATTR) && defined(WANT_CHAR) */
 		{
-		    lhcost = repeated_append(lhcost, SP->_cuf1_cost, n, try, cursor_right);
+		    lhcost = repeated_append(lhcost, SP->_cuf1_cost, n, str, cursor_right);
 		}
 
 		if (lhcost < hcost)
 		{
 		    if (result)
-			(void) strcpy(result, try);
+			(void) strcpy(result, str);
 		    hcost = lhcost;
 		}
 	    }
@@ -615,7 +615,7 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 	    {
 		int	lhcost = 0;
 
-		try[0] = '\0';
+		str[0] = '\0';
 
 #if USE_HARD_TABS
 		if (init_tabs > 0 && back_tab)
@@ -624,7 +624,7 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 
 		    for (fr = from_x; (nxt = LASTTAB(fr)) >= to_x; fr = nxt)
 		    {
-			lhcost = repeated_append(lhcost, SP->_cbt_cost, 1, try, back_tab);
+			lhcost = repeated_append(lhcost, SP->_cbt_cost, 1, str, back_tab);
 			if (lhcost == INFINITY)
 				break;
 		    }
@@ -633,12 +633,12 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 		}
 #endif /* USE_HARD_TABS */
 
-		lhcost = repeated_append(lhcost, SP->_cub1_cost, n, try, cursor_left);
+		lhcost = repeated_append(lhcost, SP->_cub1_cost, n, str, cursor_left);
 
 		if (lhcost < hcost)
 		{
 		    if (result)
-			(void) strcpy(result, try);
+			(void) strcpy(result, str);
 		    hcost = lhcost;
 		}
 	    }

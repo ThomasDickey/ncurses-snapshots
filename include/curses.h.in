@@ -18,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.56 1997/10/04 21:54:03 tom Exp $ */
+/* $Id: curses.h.in,v 1.57 1997/10/18 19:20:55 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -237,7 +237,16 @@ typedef struct
 cchar_t;
 #endif /* _XOPEN_SOURCE_EXTENDED */
 
-struct _win_st {
+struct ldat
+{
+	chtype  *text;		/* text of the line */
+	short   firstchar;	/* first changed character in the line */
+	short   lastchar;	/* last changed character in the line */
+	short   oldindex;	/* index of the line at last update */
+};
+
+struct _win_st
+{
 	short   _cury, _curx;	/* current cursor position */
 
 	/* window location and size */
@@ -262,15 +271,7 @@ struct _win_st {
 	bool    _use_keypad;    /* process function keys into KEY_ symbols? */
 	int	_delay;		/* 0 = nodelay, <0 = blocking, >0 = delay */
 
-	/* the actual line data */
-	struct ldat
-	{
-	    chtype  *text;	/* text of the line */
-	    short   firstchar;  /* first changed character in the line */
-	    short   lastchar;   /* last changed character in the line */
-	    short   oldindex;	/* index of the line at last update */
-	}
-	*_line;
+	struct ldat *_line;	/* the actual line data */
 
 	/* global screen state */
 	short	_regtop;	/* top line of scrolling region */
@@ -318,8 +319,9 @@ extern char ttytype[];		/* needed for backward compatibility */
  * GCC (and some other compilers) define '__attribute__'; we're using this
  * macro to alert the compiler to flag inconsistencies in printf/scanf-like
  * function calls.  Just in case '__attribute__' isn't defined, make a dummy.
+ * G++ doesn't accept it anyway.
  */
-#if !defined(__GNUC__) && !defined(__attribute__)
+#if defined(__cplusplus) || (!defined(__GNUC__) && !defined(__attribute__))
 #define __attribute__(p) /* nothing */
 #endif
 

@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_num.c,v 1.10 1997/07/05 16:49:22 tom Exp $")
+MODULE_ID("$Id: fty_num.c,v 1.11 1997/10/18 19:32:58 tom Exp $")
 
 #if HAVE_LOCALE_H
 #include <locale.h>
@@ -63,15 +63,15 @@ static void *Make_Numeric_Type(va_list * ap)
 static void *Copy_Numeric_Type(const void * argp)
 {
   const numericARG *ap = (const numericARG *)argp;
-  numericARG *new = (numericARG *)0;
+  numericARG *result = (numericARG *)0;
 
   if (argp)
     {
-      new = (numericARG *)malloc(sizeof(numericARG));
-      if (new)
-	*new  = *ap;
+      result = (numericARG *)malloc(sizeof(numericARG));
+      if (result)
+	*result  = *ap;
     }
-  return (void *)new;
+  return (void *)result;
 }
 
 /*---------------------------------------------------------------------------

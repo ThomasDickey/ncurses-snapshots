@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.31 1997/10/11 13:36:36 tom Exp $
+# $Id: Makefile.in,v 1.32 1997/10/18 20:55:39 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -44,7 +44,7 @@ CXXFLAGS	= @CXXFLAGS@
 CXXLIBS		= @CXXLIBS@
 
 INCDIR		= ../include
-CPPFLAGS	= @CPPFLAGS@ -I../c++ -I$(INCDIR) -I$(srcdir) -DHAVE_CONFIG_H
+CPPFLAGS	= -I../c++ -I$(INCDIR) -I$(srcdir) -DHAVE_CONFIG_H @CPPFLAGS@ 
 
 CCFLAGS		= $(CPPFLAGS) $(CXXFLAGS)
 

@@ -36,7 +36,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.25 1997/10/11 16:31:07 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.26 1997/10/18 19:26:31 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -552,7 +552,7 @@ bool	ignored = FALSE;
  *	get_token() call.
  */
 
-void _nc_push_token(int class)
+void _nc_push_token(int tokclass)
 {
     /*
      * This implementation is kind of bogus, it will fail if we ever do
@@ -560,7 +560,7 @@ void _nc_push_token(int class)
      * relies on the fact that curr_tok is static storage that nothing
      * but get_token() touches.
      */
-    pushtype = class;
+    pushtype = tokclass;
     _nc_get_type(pushname);
 
     DEBUG(3, ("pushing token: `%s', class %d",

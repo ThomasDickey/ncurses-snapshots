@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.100 1997/10/11 23:38:15 tom Exp $
+$Id: ncurses.c,v 1.101 1997/10/18 20:14:40 tom Exp $
 
 ***************************************************************************/
 
@@ -1898,8 +1898,8 @@ static void panner(WINDOW *pad,
 	    int length  = (portx - top_x - 1);
 	    float ratio = ((float) length) / ((float) pxmax);
 
-	    lowend  = top_x + (basex * ratio);
-	    highend = top_x + ((basex + length) * ratio);
+	    lowend  = (int)(top_x + (basex * ratio));
+	    highend = (int)(top_x + ((basex + length) * ratio));
 
 	    do_h_line(porty - 1, top_x, ACS_HLINE, lowend);
 	    if (highend < portx) {
@@ -1915,8 +1915,8 @@ static void panner(WINDOW *pad,
 	    int length  = (porty - top_y - 1);
 	    float ratio = ((float) length) / ((float) pymax);
 
-	    lowend  = top_y + (basey * ratio);
-	    highend = top_y + ((basey + length) * ratio);
+	    lowend  = (int)(top_y + (basey * ratio));
+	    highend = (int)(top_y + ((basey + length) * ratio));
 
 	    do_v_line(top_y, portx - 1, ACS_VLINE, lowend);
 		if (highend < porty) {
@@ -2242,7 +2242,7 @@ static char *tracetrace(int tlevel)
 	size_t need = 12;
 	for (n = 0; t_tbl[n].name != 0; n++)
 	    need += strlen(t_tbl[n].name) + 2;
-	buf = malloc(need);
+	buf = (char *)malloc(need);
     }
     sprintf(buf, "0x%02x = {", tlevel);
     if (tlevel == 0) {

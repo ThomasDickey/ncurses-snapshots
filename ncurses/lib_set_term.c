@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.29 1997/10/11 22:17:43 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.33 1997/10/19 02:42:09 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -172,7 +172,8 @@ void delscreen(SCREEN *sp)
 	returnVoid;
 }
 
-ripoff_t rippedoff[5], *rsp = rippedoff;
+static ripoff_t rippedoff[5];
+static ripoff_t *rsp = rippedoff;
 #define N_RIPS SIZEOF(rippedoff)
 
 static bool no_mouse_event (SCREEN *sp GCC_UNUSED) { return FALSE; }
@@ -187,6 +188,7 @@ int _nc_setupscreen(short slines, short const scolumns, FILE *output)
 int	bottom_stolen = 0;
 size_t	i;
 
+        assert(SP==0); /* has been reset in newterm() ! */ 
 	if (!_nc_alloc_screen())
 		return ERR;
 
@@ -216,6 +218,11 @@ size_t	i;
 	SP->_mouse_resume = no_mouse_resume;
 	SP->_mouse_wrap   = no_mouse_wrap;
 	SP->_mouse_fd     = -1;
+
+	/* initialize the panel hooks */
+	SP->top_panel = (struct panel*)0;
+	SP->bottom_panel = (struct panel*)0;
+	SP->stdscr_pseudo_panel = (struct panel*)0;
 
 	/*
 	 * If we've no magic cookie support, we suppress attributes that xmc
@@ -267,6 +274,7 @@ size_t	i;
 
 	SP->_newscr = newscr;
 	SP->_curscr = curscr;
+	SP->_resize = resizeterm;
 
 	newscr->_clear = TRUE;
 	curscr->_clear = FALSE;
@@ -297,7 +305,10 @@ size_t	i;
 	      }
 	      SP->_lines_avail -= count;
 	  }
+	  rsp->line = 0;
 	}
+	/* reset the stack */
+	rsp = rippedoff;
 
 	T(("creating stdscr"));
 	assert ((SP->_lines_avail + SP->_topstolen + bottom_stolen) == slines);

@@ -91,7 +91,7 @@ char *ttyname(int fd);
 #include <curses.h>	/* for bool typedef */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.28 1997/08/02 22:20:32 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.29 1997/10/18 20:03:49 tom Exp $")
 
 extern char **environ;
 
@@ -956,32 +956,32 @@ static void
 report(const char *name, int which, u_int def)
 {
 #ifdef TERMIOS
-	u_int old, new;
+	u_int older, newer;
 	char *p;
 
-	new = mode.c_cc[which];
-	old = oldmode.c_cc[which];
+	newer = mode.c_cc[which];
+	older = oldmode.c_cc[which];
 
-	if (old == new && old == def)
+	if (older == newer && older == def)
 		return;
 
-	(void)fprintf(stderr, "%s %s ", name, old == new ? "is" : "set to");
+	(void)fprintf(stderr, "%s %s ", name, older == newer ? "is" : "set to");
 
 	/*
 	 * Check 'delete' before 'backspace', since the key_backspace value
 	 * is ambiguous.
 	 */
-	if (new == 0177)
+	if (newer == 0177)
 		(void)fprintf(stderr, "delete.\n");
 	else if ((p = key_backspace) != 0
-	 && new == (u_int)p[0]
+	 && newer == (u_int)p[0]
 	 && p[1] == '\0')
 		(void)fprintf(stderr, "backspace.\n");
-	else if (new < 040) {
-		new ^= 0100;
-		(void)fprintf(stderr, "control-%c (^%c).\n", new, new);
+	else if (newer < 040) {
+		newer ^= 0100;
+		(void)fprintf(stderr, "control-%c (^%c).\n", newer, newer);
 	} else
-		(void)fprintf(stderr, "%c.\n", new);
+		(void)fprintf(stderr, "%c.\n", newer);
 #endif
 }
 

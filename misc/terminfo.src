@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 10.1.10
+#	Version 10.1.12
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -1899,6 +1899,16 @@ xterm-xf86-v32|xterm terminal emulator (X Window System),
 xterm-xf86-v33|xterm terminal emulator (X Window System), 
 	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, 
 	use=xterm-xf86-v32, 
+
+# This beta version will probably be released in XFree86 4.0 (T.Dickey).
+# Besides providing printer support, it exploits a new feature that allows
+# xterm to use terminfo-based descriptions with the titeInhibit resource.
+xterm-xf86-v39t|xterm terminal emulator (X Window System), 
+	mc5i, 
+	mc0=\E[i, mc4=\E[4i, mc5=\E[5i, rmcup=\E[?1047l\E[?1048l, 
+	smcup=\E[?1048h\E[?1047h, 
+	use=xterm-xf86-v33, 
+
 # This is one of the variants from XFree86 3.3 (T.Dickey)
 xterm-16color|xterm with 16 colors like aixterm, 
 	colors#16, ncv#32, pairs#256, 
@@ -4840,8 +4850,9 @@ wy120|wyse120|wy150|wyse150|Wyse 120/150,
 	rs3=\EwG\Ee($<100>, 
 	sgr=%?%p8%t\E)%e\E(%;%?%p9%t\EcE%e\EcD%;\EG%'0'%?%p2%t%{8}%|%;%?%p1%p3%|%p6%|%t%{4}%|%;%?%p4%t%{2}%|%;%?%p1%p5%|%t%{64}%|%;%?%p7%t%{1}%|%;%c, 
 	sgr0=\E(\EH\003\EG0\EcD, smacs=\EcE, smam=\Ed/, 
-	smcup=\Ew0, smir=\Eq, smln=\EA10, smso=\EGt, 
-	smxon=\Ec21, tbc=\E0, tsl=\EF, use=adm+sgr, 
+	smcup=\Ew0, smir=\Eq, smln=\EA10, smso=\EGt, smxon=\Ec21, 
+	tbc=\E0, tsl=\EF, 
+	use=adm+sgr, 
 #
 wy120-w|wyse120-w|wy150-w|wyse150-w|wyse 120/150 132-column, 
 	cols#132, lw#7, nlab#16, wsl#97, 
@@ -14105,6 +14116,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add color, mouse support to kterm.
 # 10.1.11 (Sat Oct 11 14:57:10 EDT 1997)
 #	* correct wy120 smxon/tbc capabilities which were stuck together.
+# 10.1.12 (Sat Oct 18 17:38:41 EDT 1997)
+#	* add entry for xterm-xf86-v39t
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

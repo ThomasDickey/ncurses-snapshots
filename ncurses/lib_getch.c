@@ -28,18 +28,9 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.34 1997/10/11 22:02:03 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.36 1997/10/19 02:31:20 tom Exp $")
 
-#define head	SP->_fifohead
-#define tail	SP->_fifotail
-/* peek points to next uninterpreted character */
-#define peek	SP->_fifopeek
-
-#define h_inc() { head == FIFO_SIZE-1 ? head = 0 : head++; if (head == tail) head = -1, tail = 0;}
-#define h_dec() { head == 0 ?  head = FIFO_SIZE-1 : head--; if (head == tail) tail = -1;}
-#define t_inc() { tail == FIFO_SIZE-1 ? tail = 0 : tail++; if (tail == head) tail = -1;}
-#define t_dec() { tail == 0 ?  tail = FIFO_SIZE-1 : tail--; if (head == tail) fifo_clear();}
-#define p_inc() { peek == FIFO_SIZE-1 ? peek = 0 : peek++;}
+#include <fifo_defs.h>
 
 int ESCDELAY = 1000;	/* max interval betw. chars in funkeys, in millisecs */
 
@@ -52,18 +43,6 @@ static inline int fifo_peek(void)
 	return ch;
 }
 
-#define cooked_key_in_fifo()	(head!=-1 && peek!=head)
-#define raw_key_in_fifo()	(head!=-1 && peek!=tail)
-
-#ifdef TRACE
-static inline void fifo_dump(void)
-{
-int i;
-	T(("head = %d, tail = %d, peek = %d", head, tail, peek));
-	for (i = 0; i < 10; i++)
-		T(("char %d = %s", i, _trace_key(SP->_fifo[i])));
-}
-#endif /* TRACE */
 
 static inline int fifo_pull(void)
 {
@@ -80,31 +59,10 @@ int ch;
 	    h_inc();
 	    
 #ifdef TRACE
-	if (_nc_tracing & TRACE_IEVENT) fifo_dump();
+	if (_nc_tracing & TRACE_IEVENT) _nc_fifo_dump();
 #endif
 	return ch;
 }
-
-int ungetch(int ch)
-{
-	if (tail == -1)
-		return ERR;
-	if (head == -1) {
-		head = 0;
-		t_inc()
-		peek = tail; /* no raw keys */
-	} else
-		h_dec();
-
-	SP->_fifo[head] = ch;
-	T(("ungetch %#x ok", ch));
-#ifdef TRACE
-	if (_nc_tracing & TRACE_IEVENT) fifo_dump();
-#endif
-	return OK;
-}
-
-#undef HIDE_EINTR
 
 static inline int fifo_push(void)
 {
@@ -161,7 +119,7 @@ again:
 	t_inc();
 	T(("pushed %#x at %d", ch, tail));
 #ifdef TRACE
-	if (_nc_tracing & TRACE_IEVENT) fifo_dump();
+	if (_nc_tracing & TRACE_IEVENT) _nc_fifo_dump();
 #endif
 	return ch;
 }
@@ -283,8 +241,7 @@ int	ch;
 	{
 	    if(SP->_sig_winch)
 	    {
-		_nc_get_screensize();
-		resizeterm(LINES, COLS);
+		_nc_update_screensize();
 		/* resizeterm can push KEY_RESIZE */
 		if(cooked_key_in_fifo())
 		{

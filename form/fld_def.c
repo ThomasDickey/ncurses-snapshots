@@ -22,7 +22,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_def.c,v 1.7 1997/08/27 22:04:45 juergen Exp $")
+MODULE_ID("$Id: fld_def.c,v 1.8 1997/10/18 19:35:36 tom Exp $")
 
 /* this can't be readonly */
 static FIELD default_field = {
@@ -177,33 +177,33 @@ static void Free_Argument(const FIELDTYPE * typ, TypeArgument * argp)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
-|   Function      :  static bool Copy_Type( FIELD *new, FIELD const *old )
+|   Function      :  static bool Copy_Type( FIELD *dst, FIELD const *src )
 |   
-|   Description   :  Copy argument structure of field old to field new
+|   Description   :  Copy argument structure of field src to field dst
 |
 |   Return Values :  TRUE       - copy worked
 |                    FALSE      - error occured
 +--------------------------------------------------------------------------*/
-static bool Copy_Type(FIELD *new, FIELD const *old)
+static bool Copy_Type(FIELD *dst, FIELD const *src)
 {
   int err = 0;
 
-  assert(new && old);
+  assert(dst && src);
 
-  new->type = old->type;
-  new->arg  = (void *)Copy_Argument(old->type,(TypeArgument *)(old->arg),&err);
+  dst->type = src->type;
+  dst->arg  = (void *)Copy_Argument(src->type,(TypeArgument *)(src->arg),&err);
 
   if (err)
     {
-      Free_Argument(new->type,(TypeArgument *)(new->arg));
-      new->type = (FIELDTYPE *)0;
-      new->arg  = (void *)0;
+      Free_Argument(dst->type,(TypeArgument *)(dst->arg));
+      dst->type = (FIELDTYPE *)0;
+      dst->arg  = (void *)0;
       return FALSE;
     }
   else
     {
-      if (new->type) 
-	new->type->ref++;
+      if (dst->type) 
+	dst->type->ref++;
       return TRUE;
     }
 }
