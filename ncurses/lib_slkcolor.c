@@ -35,7 +35,7 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkcolor.c,v 1.2 1998/03/21 23:30:41 tom Exp $")
+MODULE_ID("$Id: lib_slkcolor.c,v 1.3 1998/04/11 23:31:08 tom Exp $")
 
 int
 slk_color(short color_pair_number)
@@ -45,7 +45,7 @@ slk_color(short color_pair_number)
   if (SP!=0 && SP->_slk!=0 &&
       color_pair_number>=0 && color_pair_number<COLOR_PAIRS)
     {
-      T(("... current %ld", PAIR_NUMBER(SP->_slk->attr)));
+      T(("... current %ld", (long) PAIR_NUMBER(SP->_slk->attr)));
       toggle_attr_on(SP->_slk->attr,COLOR_PAIR(color_pair_number));
       returnCode(OK);
     }

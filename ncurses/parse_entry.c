@@ -49,7 +49,7 @@
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.22 1998/02/11 12:13:59 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.23 1998/04/04 19:08:59 juergen Exp $")
 
 #ifdef LINT
 static short const parametrized[] = { 0 };
@@ -322,7 +322,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
      * space-efficient to call this after use resolution, but it has
      * to be done before entry allocation is wrapped up.
      */
-    if (!literal)
+    if (!literal) {
 	if (_nc_syntax == SYN_TERMCAP)
 	{
 	    bool	has_base_entry = FALSE;
@@ -348,7 +348,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
         }
 	else
 	    postprocess_terminfo(&entryp->tterm);
-
+    }
     _nc_wrap_entry(entryp);
 
     return(OK);
@@ -575,7 +575,7 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
     /*
      * Translate the old termcap :pt: capability to it#8 + ht=\t
      */
-    if (has_hardware_tabs == TRUE)
+    if (has_hardware_tabs == TRUE) {
 	if (init_tabs != 8 && init_tabs != ABSENT_NUMERIC)
 	    _nc_warning("hardware tabs with a width other than 8: %d", init_tabs);
         else
@@ -590,7 +590,7 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
 		init_tabs = 8;
 	    }
 	}
-
+    }
     /*
      * Now translate the ko capability, if there is one.  This
      * isn't from mytinfo...

@@ -7,7 +7,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.22 1997/12/20 15:11:53 tom Exp $
+ * $Id: bs.c,v 1.23 1998/04/04 19:09:32 juergen Exp $
  */
 
 #include <test.priv.h>
@@ -827,11 +827,12 @@ static int plyturn(void)
     hits[PLAYER][curx][cury] = (hit ? MARK_HIT : MARK_MISS);
     cgoto(cury, curx);
 #ifdef A_COLOR
-    if (has_colors())
+    if (has_colors()) {
 	if (hit)
 	    attron(COLOR_PAIR(COLOR_RED));
 	else
 	    attron(COLOR_PAIR(COLOR_GREEN));
+    }
 #endif /* A_COLOR */
     (void) addch((chtype)hits[PLAYER][curx][cury]);
 #ifdef A_COLOR
@@ -965,11 +966,12 @@ static int cpufire(int x, int y)
 
     pgoto(y, x);
 #ifdef A_COLOR
-    if (has_colors())
+    if (has_colors()) {
 	if (hit)
 	    attron(COLOR_PAIR(COLOR_RED));
 	else
 	    attron(COLOR_PAIR(COLOR_GREEN));
+    }
 #endif /* A_COLOR */
     (void)addch((chtype)(hit ? SHOWHIT : SHOWSPLASH));
 #ifdef A_COLOR

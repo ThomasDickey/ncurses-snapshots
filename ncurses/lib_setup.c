@@ -47,7 +47,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.37 1998/02/11 12:13:56 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.38 1998/04/04 19:08:22 juergen Exp $")
 
 /****************************************************************************
  *
@@ -262,16 +262,18 @@ int status;
 
 	if (tname == 0) {
 		tname = getenv("TERM");
-		if (tname == 0 || *tname == '\0')
+		if (tname == 0 || *tname == '\0') {
 			ret_error0(-1, "TERM environment variable not set.\n");
+                }
 	}
 
 	T(("your terminal name is %s", tname));
 
 	term_ptr = typeCalloc(TERMINAL, 1);
 
-	if (term_ptr == 0)
+	if (term_ptr == 0) {
 		ret_error0(-1, "Not enough memory to create terminal structure.\n") ;
+        }
 #if USE_DATABASE
 	status = grab_entry(tname, &term_ptr->type);
 #else
@@ -323,11 +325,12 @@ int status;
 
 	T((T_CREATE("screen %s %dx%d"), tname, LINES, COLS));
 
-	if (generic_type)
+	if (generic_type) {
 		ret_error(0, "'%s': I need something more specific.\n", tname);
-	if (hard_copy)
+	}
+	if (hard_copy) {
 		ret_error(1, "'%s': I can't handle hardcopy terminals.\n", tname);
-
+	}
 	returnCode(OK);
 }
 

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.125 1998/04/04 00:13:34 tom Exp $
+dnl $Id: aclocal.m4,v 1.126 1998/04/04 19:21:12 juergen Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1203,7 +1203,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	linux*)
 		# tested with Linux 2.0.29 and gcc 2.7.2 (ELF)
-		CC_SHARED_OPTS='-fPIC'
+		CC_SHARED_OPTS='-fpic'
  		MK_SHARED_LIB='gcc -o $[@].$(REL_VERSION) -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)`,-stats,-lc'
 		test $cf_cv_ld_rpath = yes && cf_ld_rpath_opt="-Wl,-rpath,"
 		if test $DFT_LWR_MODEL = "shared" ; then

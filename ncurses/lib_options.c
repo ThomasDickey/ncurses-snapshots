@@ -44,9 +44,9 @@
 #include <term.h>	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
 
-MODULE_ID("$Id: lib_options.c,v 1.29 1998/02/11 12:13:55 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.31 1998/04/11 23:40:51 tom Exp $")
 
-int has_ic(void)
+bool has_ic(void)
 {
 	T((T_CALLED("has_ic()")));
 	returnCode((insert_character || parm_ich
@@ -54,7 +54,7 @@ int has_ic(void)
 	   &&  (delete_character || parm_dch));
 }
 
-int has_il(void)
+bool has_il(void)
 {
 	T((T_CALLED("has_il()")));
 	returnCode((insert_line || parm_insert_line)
@@ -122,16 +122,13 @@ int notimeout(WINDOW *win, bool f)
 	  returnCode(ERR);
 }
 
-int wtimeout(WINDOW *win, int delay)
+void wtimeout(WINDOW *win, int delay)
 {
 	T((T_CALLED("wtimeout(%p,%d)"), win, delay));
 
 	if (win) {
 	  win->_delay = delay;
-	  returnCode(OK);
 	}
-	else
-	  returnCode(ERR);
 }
 
 int keypad(WINDOW *win, bool flag)
@@ -230,7 +227,7 @@ int typeahead(int fd)
 **
 */
 
-
+#ifdef NCURSES_EXT_FUNCS
 static int has_key_internal(int keycode, struct tries *tp)
 {
     if (tp == 0)
@@ -247,6 +244,7 @@ int has_key(int keycode)
     T((T_CALLED("has_key(%d)"), keycode));
     returnCode(has_key_internal(keycode, SP->_keytry));
 }
+#endif /* NCURSES_EXT_FUNCS */
 
 /*
 **      init_keytry()

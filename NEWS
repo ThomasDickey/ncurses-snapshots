@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.326 1998/04/04 13:50:22 tom Exp $
+-- $Id: NEWS,v 1.329 1998/04/11 23:41:18 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980411
+	+ ifdef'd has_key() and mcprint() as extended functions.
+	+ modified several prototypes to correspond with 1997 version of
+	  X/Open Curses.
+	+ remove spurious trailing blanks in glibc addon-scripts (patch by
+	  H.J.Lu).
+	+ insert a few braces at locations where gcc-2.8.x asks to use them to
+	  avoid ambigous else's, use -fpic rather than -fPIC for Linux (patch
+	  by Juergen Pfeifer).
 
 980404
 	+ split SHLIB_LIST into SHLIB_DIRS/SHLIB_LIST to keep -L options

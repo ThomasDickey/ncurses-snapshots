@@ -42,7 +42,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_scanw.c,v 1.7 1998/02/11 12:13:55 tom Exp $")
+MODULE_ID("$Id: lib_scanw.c,v 1.8 1998/04/11 22:54:18 tom Exp $")
 
 #if !HAVE_VSSCANF
 #if defined(__QNX__)
@@ -52,7 +52,7 @@ extern int vsscanf(const char *str, const char *format, ...);
 #endif
 #endif
 
-int vwscanw(WINDOW *win, const char *fmt, va_list argp)
+int vwscanw(WINDOW *win, NCURSES_CONST char *fmt, va_list argp)
 {
 char buf[BUFSIZ];
 
@@ -62,7 +62,7 @@ char buf[BUFSIZ];
 	return(vsscanf(buf, fmt, argp));
 }
 
-int scanw(const char *fmt, ...)
+int scanw(NCURSES_CONST char *fmt, ...)
 {
 int code;
 va_list ap;
@@ -75,7 +75,7 @@ va_list ap;
 	return (code);
 }
 
-int wscanw(WINDOW *win, const char *fmt, ...)
+int wscanw(WINDOW *win, NCURSES_CONST char *fmt, ...)
 {
 int code;
 va_list ap;
@@ -88,7 +88,7 @@ va_list ap;
 	return (code);
 }
 
-int mvscanw(int y, int x, const char *fmt, ...)
+int mvscanw(int y, int x, NCURSES_CONST char *fmt, ...)
 {
 int code;
 va_list ap;
@@ -99,7 +99,7 @@ va_list ap;
 	return (code);
 }
 
-int mvwscanw(WINDOW *win, int y, int x, const char *fmt, ...)
+int mvwscanw(WINDOW *win, int y, int x, NCURSES_CONST char *fmt, ...)
 {
 int code;
 va_list ap;

@@ -48,7 +48,7 @@
 
 #include <term.h>	/* clear_screen, cup & friends, cur_term */
 
-MODULE_ID("$Id: lib_newterm.c,v 1.33 1998/02/11 12:13:57 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.34 1998/04/11 22:53:05 tom Exp $")
 
 #ifndef ONLCR		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -91,7 +91,7 @@ void filter(void)
     filter_mode = TRUE;
 }
 
-SCREEN * newterm(const char *term, FILE *ofp, FILE *ifp)
+SCREEN * newterm(NCURSES_CONST char *term, FILE *ofp, FILE *ifp)
 {
 int	errret;
 SCREEN* current;

@@ -2,7 +2,7 @@
 #ifndef _CURSESW_H
 #define _CURSESW_H
 
-// $Id: cursesw.h,v 1.14 1998/03/11 20:02:21 juergen Exp $
+// $Id: cursesw.h,v 1.15 1998/04/11 23:07:44 tom Exp $
 
 #include <etip.h>
 #include <stdio.h>
@@ -372,7 +372,7 @@ inline WINDOW *UNDEF(subpad)(WINDOW *p, int l, int c, int y, int x)
 #endif
 
 #ifdef timeout
-inline int UNDEF(timeout)(int delay) { return timeout(delay); }
+inline void UNDEF(timeout)(int delay) { timeout(delay); }
 #undef timeout
 #define timeout UNDEF(timeout)
 #endif
