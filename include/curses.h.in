@@ -402,8 +402,8 @@ extern int waddnwstr(WINDOW *,const char *,int);
 extern int waddchnstr(WINDOW *,const chtype *,int);
 extern int waddnstr(WINDOW *,const char *,int);
 #endif /* XPG4_EXTENDED */
-extern int wattron(WINDOW *,const attr_t);
-extern int wattroff(WINDOW *,const attr_t);
+extern int wattr_on(WINDOW *,const attr_t);
+extern int wattr_off(WINDOW *,const attr_t);
 extern int wbkgd(WINDOW *,const chtype);
 extern int wborder(WINDOW *,chtype,chtype,chtype,chtype,chtype,chtype,chtype,chtype);
 extern int wchgat(WINDOW *, int, attr_t, short, void *const);
@@ -490,9 +490,13 @@ extern int slk_attroff(attr_t);
 #define getmaxy(win)		((win)->_maxy + 1)
 
 #define winch(win)       	((win)->_line[(win)->_cury].text[(win)->_curx])
-#define wstandout(win)      	(wattrset(win,A_STANDOUT))
-#define wstandend(win)      	(wattrset(win,A_NORMAL))
-#define wattrset(win,at)    	((win)->_attrs = (at))
+#define wstandout(win)      	(wattr_set(win,A_STANDOUT))
+#define wstandend(win)      	(wattr_set(win,A_NORMAL))
+#define wattr_set(win,at)    	((win)->_attrs = (at))
+
+#define wattron(win,at)		wattr_on(win,at)
+#define wattroff(win,at)	wattr_off(win,at)
+#define wattrset(win,at)    	wattr_set(win, at)
 
 #define scroll(win)		wscrl(win,1)
 
@@ -619,9 +623,6 @@ extern int slk_attroff(attr_t);
 #define mvadd_wch(y,x,c)	(wmove(stdscr,y,x) == ERR ? ERR : wadd_wch(stsdscr, c))
 #define mvwadd_wch(y,x,win,c)	(wmove(win,y,x) == ERR ? ERR : wadd_wch(stsdscr, c))
 #define wattr_get(win, a)	((win)->_attrs)
-#define wattr_off(win, a)	attroff(win, a)
-#define wattr_on(win, a)	attron(win, a)
-#define wattr_set(win, a)	attrset(win, a)
 #define attr_get()		wattr_get(stdscr)
 #define attr_off(a)		wattr_off(stdscr, a)
 #define attr_on(a)		wattr_on(stdscr, a)

@@ -234,9 +234,10 @@ int def_prog_mode()
 static int grab_entry(const char *tn, TERMTYPE *tp)
 /* return 1 if entry found, 0 if not found, -1 if database not accessible */
 {
+	char	filename[PATH_MAX];
 	int	status;
 
-	if ((status = _nc_read_entry(tn, tp)) == 1)
+	if ((status = _nc_read_entry(tn, filename, tp)) == 1)
 	    return(1);
 
 #ifndef PURE_TERMINFO
@@ -289,6 +290,18 @@ struct term	*term_ptr;
 		if (term_ptr == NULL)
 	    		ret_error0(-1, "Not enough memory to create terminal structure.\n") ;
 		status = grab_entry(tname, &term_ptr->type);
+
+		/* try fallback list if entry on disk */
+		if (status != 1)
+		{
+		    const TERMTYPE	*fallback = _nc_fallback(tname);
+
+		    if (fallback)
+		    {
+			memcpy(&term_ptr->type, fallback, sizeof(TERMTYPE));
+			status = 1;
+		    }
+		}
 
 		if (status == -1)
 		{

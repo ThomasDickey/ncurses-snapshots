@@ -59,8 +59,12 @@
 */
 
 #define MAGIC		0432	/* first two bytes of a compiled entry */
-#define MAX_NAME_SIZE	127	/* maximum legal name size */
+#define MAX_NAME_SIZE	127	/* maximum legal name field size */
 #define MAX_ENTRY_SIZE	4096	/* maximum legal entry size */
+#define MAX_ALIAS	14	/* maximum size of individual name or alias */
+
+/* location of user's personal info directory */
+#define PRIVATE_INFO	"%s/.terminfo"	/* plug getenv("HOME") into %s */
 
 #define DEBUG(n, a)	if (_nc_tracing & (1 << (n - 1))) _tracef a 
 extern int _nc_tracing;
@@ -161,6 +165,7 @@ extern int _nc_curr_line;
 extern long _nc_curr_file_pos;
 extern long _nc_comment_start, _nc_comment_end;
 extern int _nc_syntax;
+extern long _nc_start_line;
 #define SYN_TERMINFO	0
 #define SYN_TERMCAP	1
 

@@ -66,7 +66,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 {
     int			token_type;
     struct name_table_entry	const *entry_ptr;
-    char			*ptr;
+    char			*ptr, namecpy[MAX_NAME_SIZE];
 
     token_type = _nc_get_token();
 
@@ -79,6 +79,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 
     entryp->cstart = _nc_comment_start;
     entryp->cend = _nc_comment_end;
+    entryp->startline = _nc_start_line;
     DEBUG(2, ("Comment range is %ld to %ld", entryp->cstart, entryp->cend));
 
     /* junk the 2-character termcap name, if present */
@@ -92,6 +93,24 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
     entryp->tterm.str_table = entryp->tterm.term_names = _nc_save_str(ptr);
 
     DEBUG(1, ("Starting '%s'", ptr));
+
+    /*
+     * We do this because the one-token lookahead in the parse loop
+     * results in the terminal type getting prematurely set to correspond
+     * to that of the next entry.
+     */
+    _nc_set_type(_nc_first_name(entryp->tterm.term_names));
+
+    /* check for overly-long names and aliases */
+    (void) strcpy(namecpy, entryp->tterm.term_names);
+    if ((ptr = strrchr(namecpy, '|')) != (char *)NULL)
+	*ptr = '\0';
+    ptr = strtok(namecpy, "|");
+    if (strlen(ptr) > MAX_ALIAS)
+	_nc_warning("primary name may be too long");
+    while ((ptr = strtok((char *)NULL, "|")) != (char *)NULL)
+	if (strlen(ptr) > MAX_ALIAS)
+	    _nc_warning("alias `%s' may be too long", ptr);
 
     entryp->nuses = 0;
 
@@ -680,11 +699,83 @@ static
 void postprocess_terminfo(TERMTYPE *tp)
 {
     /*
-     * TERMINFO-TO-TERMINFO TRANSLATIONS
-     *
-     * ...will go here.  There aren't any yet, but when we figure out
-     * how the characters in an AIX box1 or box2 capability map to
-     * ACSC characters (for example) there will be.
+     * TERMINFO-TO-TERMINFO MAPPINGS FOR SOURCE TRANSLATION 
+     * ----------------------------------------------------------------------
+     */
+
+    /*
+     * Translate AIX forms characters.
+     */
+    if (PRESENT(box_chars_1))
+    {
+	char	buf2[MAX_TERMCAP_LENGTH], *bp = buf2;
+
+	if (box_chars_1[0])	/* ACS_ULCORNER */
+	{
+	    *bp++ = 'l';
+	    *bp++ = box_chars_1[0];
+	}
+	if (box_chars_1[1])	/* ACS_HLINE */
+  	{
+	    *bp++ = 'q';
+	    *bp++ = box_chars_1[1];
+	}
+	if (box_chars_1[2])	/* ACS_URCORNER */
+	{
+	    *bp++ = 'k';
+	    *bp++ = box_chars_1[2];
+	}
+	if (box_chars_1[3])	/* ACS_VLINE */
+  	{
+	    *bp++ = 'x';
+	    *bp++ = box_chars_1[3];
+	}
+	if (box_chars_1[4])	/* ACS_LRCORNER */
+	{
+	    *bp++ = 'j';
+	    *bp++ = box_chars_1[4];
+	}
+	if (box_chars_1[5])	/* ACS_LLCORNER */
+	{
+	    *bp++ = 'm';
+	    *bp++ = box_chars_1[5];
+	}
+	if (box_chars_1[6])	/* ACS_TTEE */
+   	{
+	    *bp++ = 'w';
+	    *bp++ = box_chars_1[6];
+	}
+	if (box_chars_1[7])	/* ACS_RTEE */
+   	{
+	    *bp++ = 'u';
+	    *bp++ = box_chars_1[7];
+	}
+	if (box_chars_1[8])	/* ACS_BTEE */
+   	{
+	    *bp++ = 'v';
+	    *bp++ = box_chars_1[8];
+	}
+	if (box_chars_1[9])	/* ACS_LTEE */
+   	{
+	    *bp++ = 't';
+	    *bp++ = box_chars_1[9];
+	}
+	if (box_chars_1[10])	/* ACS_PLUS */
+   	{
+	    *bp++ = 'n';
+	    *bp++ = box_chars_1[10];
+	}
+
+	if (bp != buf2)
+	{
+	    *bp++ = '\0';
+	    acs_chars = _nc_save_str(buf2);
+	    _nc_warning("acsc string synthesized from AIX capabilities");
+	    box_chars_1 = ABSENT_STRING;
+	}
+    }
+    /*
+     * ----------------------------------------------------------------------
      */
 }
 

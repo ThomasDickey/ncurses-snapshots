@@ -34,6 +34,22 @@
 #include <unistd.h>
 #endif
 
+#if HAVE_LIMITS_H
+# include <limits.h>
+#elif HAVE_SYS_PARAM_H
+# include <sys/param.h>
+#endif
+
+#ifndef PATH_MAX
+# if defined(_POSIX_PATH_MAX)
+#  define PATH_MAX _POSIX_PATH_MAX
+# elif defined(MAXPATHLEN)
+#  define PATH_MAX MAXPATHLEN
+# else
+#  define PATH_MAX 255	/* the Posix minimum pathsize */
+# endif
+#endif
+
 #include <curses.h>	/* we'll use -Ipath directive to get the right one! */
 
 #if HAVE_TERMIOS_H

@@ -31,23 +31,9 @@ all:
 
 install: install.data
 
-# Kluge alert: we compile terminfo.src in two pieces because a lot of machines
-# with < 16MB RAM choke on tic's core-hog habits.  It would be much nicer to
-# use csplit -k -f tsplit $(srcdir)/terminfo.src '/SPLIT HERE/' '{99}' to split
-# the file (permitting any number of cut marks), but BSD systems don't have it.
 install.data: $(ticdir)
-	sed <$(srcdir)/dotic.in -e 's,@TERMINFO@,$(ticdir),' -e 's,@SRCDIR@,$(srcdir),' -e 's,@BINDIR@,$(bindir),' >dotic.sh
-	sh dotic.sh
-
-# On machines with lots of memory, this is simpler and faster
-install.bigmem: $(ticdir)
-	-rm -f do.tic
-	echo "TERMINFO=$(ticdir)">do.tic
-	echo "export TERMINFO">>do.tic
-	echo "rm -fr $(ticdir)/[0-9A-Za-z]">>do.tic
-	echo "$(bindir)/tic -v $(srcdir)/terminfo.src">>do.tic
-	(sh do.tic)
-	rm do.tic
+	rm -fr $(ticdir)/[0-9A-Za-z]
+	TERMINFO=$(ticdir) $(bindir)/tic $(srcdir)/terminfo.src
 
 $(ticdir) :
 	$(srcdir)/../mkinstalldirs $@

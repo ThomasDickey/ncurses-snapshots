@@ -4,15 +4,26 @@
 .SH NAME
 \fBtic\fR - the \fIterminfo\fR entry-description compiler
 .SH SYNOPSIS
-\fBtic\fR [\fB-v\fR[\fIn\fR]] [\fB-cpICN\fR] \fIfile\fR
+\fBtic\fR [\fB-v\fR[\fIn\fR]] [\fB-cpICNru\fR] \fIfile\fR
 .br
 .SH DESCRIPTION
 The command \fBtic\fR translates a \fBterminfo\fR file from source
-format into compiled format.  The results are normally placed in the
-directory \fB\*d\fR (but your system administrator may have compiled
-in a different location, and the environment variable \fBTERMINFO\fR
-overrides the default).  The compiled format is necessary for use with
+format into compiled format.  The compiled format is necessary for use with
 the library routines in \fBncurses\fR(3X).
+.PP
+The results are normally placed in the system terminfo
+directory \fB\*d\fR.  There are two ways to change this behavior.
+.PP
+First, you may override the system default by setting the variable
+\fBTERMINFO\fR in your shell environment to a valid (existing) directory name.
+.PP
+Secondly, if \fBtic\fR cannot get access to \fI\*d\fR or your TERMINFO
+directory, it looks for the directory \fI$HOME/.terminfo\fR; if that directory
+exists, the entry is placed there.
+.PP
+Libraries that read terminfo entries are expected to check for a TERMINFO
+directory first, look at \fI$HOME/.terminfo\fR if TERMINFO is not set, and
+finally look in \fI\*d\fR.
 .TP
 \fB-c\fR
 specifies to only check \fIfile\fR for errors, including syntax problems and
@@ -40,9 +51,6 @@ names, but also translates terminfo strings to termcap format.  Capabilities
 that are not translatable are left in the entry under their terminfo names
 but commented out with two preceding dots.
 .TP
-\fB-p\fR
-Ignore padding specifications when comparing strings.
-.TP
 \fB-N\fR
 Disable smart defaults.  
 Normally, when translating from termcap to terminfo, the compiler makes 
@@ -54,6 +62,13 @@ to use obsolete termcap capabilities to deduce correct values.  It also
 normally suppresses output of obsolete termcap capabilities such as \fBbs\fR.
 This option forces a more literal translation that also preserves the
 obsolete capabilities.
+.TP
+\fB-R\fR\fIsubset\fR
+Restrict output to a given subset.  This option is for use with archaic
+versions of terminfo like those on SVr1, Ultrix, or HP/UX that don't support
+the full set of SVR4/XSI Curses terminfo; and outright broken ports like AIX
+that have their own extensions incompatible with SVr4/XSI.  Available subsets
+are "SVr1", "Ultrix", "HP", and AIX"; see \fBterminfo\fR(\*n) for details.
 .TP
 \fIfile\fR
 contains one or more \fBterminfo\fR terminal descriptions in source
@@ -122,16 +137,20 @@ be mixed in a single source file.  See \fBterminfo\fR(\*n) for the list of
 termcap names taken to be equivalent to terminfo names.
 
 The SVr4 manual page are not clear on the resolution rules for \fBuse\fR
-capabilities. This implementation of \fBtic\fR will find use targets
-anywhere in the source file, or anywhere in the system's file tree of
-compiled entries, or anywhere in the file tree routed at \fBTERMINFO\fR
-(if \fBTERMINFO\fR is defined).
+capabilities. This implementation of \fBtic\fR will find use targets anywhere
+in the source file, or anywhere in the file tree routed at \fBTERMINFO\fR (if
+\fBTERMINFO\fR is defined), or in the user's \fI$HOME/.terminfo\fR directory
+(if it exists), or (finally) anywhere in the system's file tree of
+compiled entries.
 
 The error messages from this \fBtic\fR have the same format as GNU C
 error messages, and can be parsed by GNU Emacs's compile facility.
 
-The -I, -C, -N, -u, and -p options are not supported under SVr4.
+The -I, -C, -N, -R, and -u options are not supported under SVr4.
 The SVr4 -c mode does not report bad use links.
+
+System V does not compile entries to or read entries from your
+\fI$HOME/.terminfo\fR directory unless TERMINFO is explicitly set to it.
 .SH FILES
 .TP 5
 \fB\*d/?/*\fR

@@ -19,53 +19,40 @@
 *                                                                          *
 ***************************************************************************/
 
+#include <config.h>
 
-/*
- *	term_entry.h -- interface to entry-manipulation code
- */
+#include <stdlib.h>
 
-#ifndef _TERM_ENTRY_H
-#define _TERM_ENTRY_H
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#else
+# if HAVE_LIBC_H
+# include <libc.h>
+# endif
+#endif
 
-#define MAX_USES	32
+#if HAVE_LIMITS_H
+# include <limits.h>
+#elif HAVE_SYS_PARAM_H
+# include <sys/param.h>
+#endif
 
-typedef struct entry {
-	TERMTYPE	tterm;
-	int		nuses;
-	void		*uses[MAX_USES];	/* (char *) or (ENTRY *) */
-	long		cstart, cend;
-	long		startline;
-	struct entry	*next;
-	struct entry	*last;
-}
-ENTRY;
+#ifndef PATH_MAX
+# if defined(_POSIX_PATH_MAX)
+#  define PATH_MAX _POSIX_PATH_MAX
+# elif defined(MAXPATHLEN)
+#  define PATH_MAX MAXPATHLEN
+# else
+#  define PATH_MAX 255	/* the Posix minimum pathsize */
+# endif
+#endif
 
-extern ENTRY	*_nc_head, *_nc_tail;
-#define for_entry_list(qp)	for (qp = _nc_head; qp; qp = qp->next)
-
-#define MAX_LINE	132
-
-#define NULLHOOK        (bool(*)(ENTRY *))0
-
-/* alloc_entry.c: elementary allocation code */
-extern void _nc_init_entry(TERMTYPE *);
-extern char *_nc_save_str(char *);
-extern void _nc_merge_entry(TERMTYPE *, TERMTYPE *);
-extern void _nc_wrap_entry(ENTRY *);
-
-/* parse_entry.c: entry-parsing code */
-extern int _nc_parse_entry(ENTRY *, int, bool);
-extern int _nc_capcmp(const char *, const char *);
-
-/* write_entry.c: writing an entry to the file system */
-extern void _nc_write_entry(TERMTYPE *);
-
-/* comp_parse.c: entry list handling */
-extern void _nc_read_entry_source(FILE*, char*, int, bool, bool (*)(ENTRY*));
-extern bool _nc_entry_match(char *, char *);
-extern int _nc_resolve_uses(void);
-extern void _nc_free_entries(ENTRY *);
-
-#endif /* _TERM_ENTRY_H */
-
-/* term_entry.h ends here */
+#if HAVE_GETOPT_H
+#include <getopt.h>
+#else
+	/* 'getopt()' may be prototyped in <stdlib.h>, but declaring its
+	 * variables doesn't hurt.
+	 */
+extern char *optarg;
+extern int optind;
+#endif /* HAVE_GETOPT_H */

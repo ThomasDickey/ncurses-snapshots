@@ -4,7 +4,7 @@
 .SH NAME
 \fBinfocmp\fR - compare or print out \fIterminfo\fR descriptions
 .SH SYNOPSIS
-\fBinfocmp\fR [\fB-dcnILCuvV1\fR] [\fB-s d\fR| \fBi\fR| \fBl\fR| \fBc\fR]
+\fBinfocmp\fR [\fB-dcnpILCuvV1\fR] [\fB-s d\fR| \fBi\fR| \fBl\fR| \fBc\fR]
 .br
       [\fB-w\fR \fIwidth\fR] [\fB-A\fR \fIdirectory\fR] [\fB-B\fR \fIdirectory\fR] [\fItermname\fR...]
 .SH DESCRIPTION
@@ -164,6 +164,9 @@ The report printed to standard output lists entries with no matches in
 the other file, and entries with more than one match.  For entries
 with exactly one match it includes a difference report.
 .TP 5
+\fB-p\fR
+Ignore padding specifications when comparing strings.
+.TP 5
 \fB-v\fR
 prints out tracing information on standard error as the program runs.
 .TP 5
@@ -177,7 +180,19 @@ of 60 characters.
 .TP 5
 \fB-w\fR
 changes the output to \fIwidth\fR characters.
-
+.TP 5
+\fB-R\fR\fIsubset\fR
+Restrict output to a given subset.  This option is for use with archaic
+versions of terminfo like those on SVr1, Ultrix, or HP/UX that don't support
+the full set of SVR4/XSI Curses terminfo; and outright broken ports like AIX
+that have their own extensions incompatible with SVr4/XSI.  Available subsets
+are "SVr1", "Ultrix", "HP", and AIX"; see \fBterminfo\fR(\*n) for details.
+.TP 5
+\fB-e\fR
+Dump the capabilities of the given terminal as a C initializer for a
+TERMTYPE structure (the terminal capability structure in the \fB<term.h>\fR).
+This option is useful for preparing versions of the curses library hardwired
+for a given terminal type.
 .SS Changing Databases [-A \fIdirectory\fR] [-B \fIdirectory\fR]
 The location of the compiled \fBterminfo\fR database is taken from the
 environment variable \fBTERMINFO\fR .  If the variable is not defined, or the
@@ -189,19 +204,67 @@ set \fBTERMINFO\fR for the other \fItermnames\fR.  With this, it is possible to
 compare descriptions for a terminal with the same name located in two different
 databases.  This is useful for comparing descriptions for the same terminal
 created by different people.
+.TP 5
+\fB-i\fR
+Analyze the initialization (\fBis1\fR, \fBis2\fR, \fBis3\fR), and reset
+(\fBrs1\fR, \fBrs2\fR, \fBrs3\fR), strings in the entry.  For each string, the
+code tries to analyze it into actions in terms of the other capabilities in the
+entry, certain X3.64/ISO 6429/ECMA-48 capabilities, and certain DEC VT-series
+private modes (the set of recognized special sequences has been selected for
+completeness over the existing terminfo database).  Each report line consists
+of the capability name, followed by a colon and space, followed by a printable
+expansion of the capability string with sections matching recognized actions
+translated into {}-bracketed descriptions.  Here is a list of the DEC/ANSI
+special sequences recognized:
+
+.TS
+center;
+l l
+l l.
+Action	Meaning
+=
+RIS	full reset
+
+DECPAM	application keypad mode
+DECPNM	normal keypad mode
+
+DECSC	save cursor
+DECRC	restore cursor
+
+DEC G0  	enable DEC graphics for G0
+DEC UK G0	enable UK chars for G0
+DEC US G0	enable US chars for G0
+DEC G1  	enable DEC graphics for G1
+DEC UK G1	enable UK chars for G1
+DEC US G1	enable US chars for G1
+
+DECCKM  	application cursor keys
+DECANM  	set VT52 mode
+DECCOLM  	132-column mode
+DECSCLM  	smooth scroll
+DECSCNM  	reverse video mode
+DECOM   	origin mode
+DECAWM  	wraparound mode
+DECARM  	auto-repeat mode
+.TE
 .SH FILES
 .TP 20
 \*d
 Compiled terminal description database.
 .SH EXTENSIONS
-The -F option is not supported in SVr4 curses.  (It is primarily intended
+The \fB-F\fR option is not supported in SVr4 curses.  (It is primarily intended
 to help infocmp's author, while wearing his terminfo/termcap maintainer hat,
 merge termcap/terminfo files from various sources into the master.)
+
+The \fB-R\fR, \fB-p\fR, \fB-e\fR and \fB-i\fR options are not supported
+in SVr4 curses.
 
 The \fB-r\fR option's notion of `termcap' capabilities is BSD 4.4's.  Older
 versions may have a more restricted set.
 .SH BUGS
 The -F option of \fBinfocmp\fR(1m) should be a \fBtoe\fR(1m) mode.
+
+The \fI-i\fR option isn't smart enough to recognize composite sequences.
 .SH SEE ALSO
 \fBinfocmp\fR(1m), \fBcaptoinfo\fR(1m), \fBinfotocap\fR(1m), 
 \fBtic\fR(1m), \fBtoe\fR(1m),

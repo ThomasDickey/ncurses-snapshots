@@ -100,7 +100,6 @@ by Eric S. Raymond and Zeyd M. Ben-Halim<BR>
 <LI> <A HREF="#ftype_regexp">TYPE_REGEXP</A>
 </UL>
 <LI> <A HREF="#fbuffer">Direct Field Buffer Manipulation</A>
-<LI> <A HREF="#fcustom">Custom Validation Types</A>
 </UL>
 <LI> <A HREF="#formattrs">Attributes of Forms</A>
 <LI> <A HREF="#fdisplay">Control of Form Display</A>
@@ -109,6 +108,21 @@ by Eric S. Raymond and Zeyd M. Ben-Halim<BR>
 <LI> <A HREF="#fpage">Page Navigation Requests</A>
 <LI> <A HREF="#ffield">Inter-Field Navigation Requests</A>
 <LI> <A HREF="#fifield">Intra-Field Navigation Requests</A>
+<LI> <A HREF="#fscroll">Scrolling Requests</A>
+<LI> <A HREF="#fedit">Field Editing Requests</A>
+<LI> <A HREF="#forder">Order Requests</A>
+<LI> <A HREF="#fappcmds">Application Commands</A>
+</UL>
+<LI> <A HREF="#fhooks">Field Change Hooks</A>
+<LI> <A HREF="#ffocus">Field Change Commands</A>
+<LI> <A HREF="#frmoptions">Form Options</A>
+<LI> <A HREF="#fcustom">Custom Validation Types</A>
+<UL>
+<LI> <A HREF="#flinktypes">Union Types</A>
+<LI> <A HREF="#fnewtypes">New Field Types</A>
+<LI> <A HREF="#fcheckargs">Validation Function Arguments</A>
+<LI> <A HREF="#fcustorder">Order Functions For Custom Types</A>
+<LI> <A NAME="#fcustprobs">Avoiding Problems</A>
 </UL>
 </UL>
 
@@ -725,6 +739,13 @@ available only if you link with -lncurses_g.  It can be used the same way as
 The output goes to a file called <TT>trace</TT> in the current directory.
 </DL>
 
+Trace logs can be difficult to interpret due to the sheer volume of
+data dumped in them.  There is a script called <B>tracemunch</B>
+included with the <TT>ncurses</TT> distribution that can alleviate
+this problem somewhat; it compacts long sequences of similar operations into
+more succinct single-line pseudo-operations. These pseudo-ops can be
+distinguished by the fact that they are named in capital letters.<P>
+
 <H2><A NAME="hints">Hints, Tips, and Tricks</A></H2>
 
 The <TT>ncurses</TT> manual pages are a complete reference for this library.
@@ -1237,7 +1258,7 @@ The general flow of control of a form program looks like this:
 <LI> Terminate <CODE>curses</CODE>.
 </OL>
 
-That this looks much like a menu program; the form library handles
+Note that this looks much like a menu program; the form library handles
 tasks which are in many ways similar, and its interface was obviously
 designed to resemble that of the <A HREF="#menu">menu library</A>
 wherever possible. <P>
@@ -1440,15 +1461,15 @@ functions:
 
 <PRE>
 int set_field_opts(FIELD *field,          /* field to alter */
-                   chtype attr);          /* attribute to set */ 
+                   int attr);             /* attribute to set */ 
 
-int set_field_opts_on(FIELD *field,       /* field to alter */
-                      chtype attr);       /* attributes to turn on */ 
+int field_opts_on(FIELD *field,           /* field to alter */
+                  int attr);              /* attributes to turn on */ 
 
-int set_field_opts_off(FIELD *field,      /* field to alter */
-                       chtype attr);      /* attributes to turn off */ 
+int field_opts_off(FIELD *field,          /* field to alter */
+                   int attr);             /* attributes to turn off */ 
 
-OPTIONS field_opts(FIELD *field);         /* field to query */
+int field_opts(FIELD *field);             /* field to query */
 </PRE>
 
 By default, all options are on.  Here are the available option bits:
@@ -1504,6 +1525,9 @@ stretch to fit entered data.
 
 A field's options cannot be changed while the field is currently selected.
 However, options may be changed on posted fields that are not current. <P>
+
+The option values are bit-masks and can be composed with logical-or in
+the obvious way. <P>
 
 <H2><A NAME="fstatus">Field Status</A></H2>
 
@@ -1767,7 +1791,7 @@ to set the value of the zero-numbered (or some other) buffer from your
 application:
 
 <PRE>
-char *field_buffer(FIELD *field,          /* field to alter */
+int set_field_buffer(FIELD *field,        /* field to alter */
                    int bufindex,          /* number of buffer to alter */
                    char *value);          /* string value to set */
 </PRE>
@@ -1893,6 +1917,16 @@ field is multi-line and there is data offscreen below it. <P>
 The function <TT>data_behind()</TT> returns TRUE if the first (upper
 left hand) character position is off-screen (not being displayed). <P>
 
+Finally, there is a function to restore the form window's cursor to the
+value expected by the forms driver: <P>
+
+<PRE>
+int pos_form_cursor(FORM *)               /* form to be queried */
+</PRE>
+
+If your application changes the form window cursor, call this function before
+handing control back to the forms driver in order to re-synchronize it. <P>
+
 <H2><A NAME="fdriver">Input Processing in the Forms Driver</A></H2>
 
 The function <TT>form_driver()</TT> handles virtualized input requests
@@ -1994,6 +2028,319 @@ otherwise it will skip over B to C. <P>
 These requests drive movement of the edit cursor within the currently
 selected field. <P>
 
+<DL>
+<DT> <TT>REQ_NEXT_CHAR</TT>
+<DD> Move to next character.
+<DT> <TT>REQ_PREV_CHAR</TT>
+<DD> Move to previous character.
+<DT> <TT>REQ_NEXT_LINE</TT>
+<DD> Move to next line.
+<DT> <TT>REQ_PREV_LINE</TT>
+<DD> Move to previous line.
+<DT> <TT>REQ_NEXT_WORD</TT>
+<DD> Move to next word.
+<DT> <TT>REQ_PREV_WORD</TT>
+<DD> Move to previous word.
+<DT> <TT>REQ_BEG_FIELD</TT>
+<DD> Move to beginning of field.
+<DT> <TT>REQ_END_FIELD</TT>
+<DD> Move to ebd of field.
+<DT> <TT>REQ_BEG_LINE</TT>
+<DD> Move to beginning of line.
+<DT> <TT>REQ_END_LINE</TT>
+<DD> Move to ebd of line.
+<DT> <TT>REQ_LEFT_CHAR</TT>
+<DD> Move left in field.
+<DT> <TT>REQ_RIGHT_CHAR</TT>
+<DD> Move right in field.
+<DT> <TT>REQ_UP_CHAR</TT>
+<DD> Move up in field.
+<DT> <TT>REQ_DOWN_CHAR</TT>
+<DD> Move down in field.
+</DL>
+
+Each <EM>word</EM> is separated from the previous and next characters
+by whitespace.  The commands to move to beginning and end of line or field
+look for the first or last non-pad character in their ranges. <P>
+
+<H3><A NAME="fscroll">Scrolling Requests</A></H3>
+
+Fields that are dynamic and have grown and fields explicitly created
+with offscreen rows are scrollable.  One-line fields scroll horizontally;
+multi-line fields scroll vertically.  Most scrolling is triggered by
+editing and intra-field movement (the library scrolls the field to keep the
+cursor visible).  It is possible to explicitly request scrolling with the
+following requests: <P>
+<P>
+
+<DL>
+<DT> <TT>REQ_SCR_FLINE</TT>
+<DD> Scroll vertically forward a line.
+<DT> <TT>REQ_SCR_BLINE</TT>
+<DD> Scroll vertically backward a line.
+<DT> <TT>REQ_SCR_FPAGE</TT>
+<DD> Scroll vertically forward a page.
+<DT> <TT>REQ_SCR_BPAGE</TT>
+<DD> Scroll vertically backward a page.
+<DT> <TT>REQ_SCR_FHPAGE</TT>
+<DD> Scroll vertically forward half a page.
+<DT> <TT>REQ_SCR_BHPAGE</TT>
+<DD> Scroll vertically backward half a page.
+<DT> <TT>REQ_SCR_FCHAR</TT>
+<DD> Scroll horizontally forward a character.
+<DT> <TT>REQ_SCR_BCHAR</TT>
+<DD> Scroll horizontally backward a character.
+<DT> <TT>REQ_SCR_HFLINE</TT>
+<DD> Scroll horizontally one field width forward.
+<DT> <TT>REQ_SCR_HBLINE</TT>
+<DD> Scroll horizontally one field width backward.
+<DT> <TT>REQ_SCR_HFHALF</TT>
+<DD> Scroll horizontally one half field width forward.
+<DT> <TT>REQ_SCR_HBHALF</TT>
+<DD> Scroll horizontally one half field width backward.
+</DL>
+
+For scrolling purposes, a <EM>page</EM> of a field is the height
+of its visible part. <P>
+
+<H3><A NAME="fedit">Editing Requests</A></H3>
+
+When you pass the forms driver an ASCII character, it is treated as a
+request to add the character to the field's data buffer.  Whether this
+is an insertion or a replacement depends on the field's edit mode
+(insertion is the default. <P>
+
+The following requests support editing the field and changing the edit
+mode: <P>
+
+<DL>
+<DT> <TT>REQ_INS_MODE</TT>
+<DD> Set insertion mode.
+<DT> <TT>REQ_OVL_MODE</TT>
+<DD> Set overlay mode.
+<DT> <TT>REQ_NEW_LINE</TT>
+<DD> New line request (see below for explanation).
+<DT> <TT>REQ_INS_CHAR</TT>
+<DD> Insert space at character location.
+<DT> <TT>REQ_INS_LINE</TT>
+<DD> Insert blank line at character location.
+<DT> <TT>REQ_DEL_CHAR</TT>
+<DD> Delete character at cursor.
+<DT> <TT>REQ_DEL_PREV</TT>
+<DD> Delete previous word at cursor.
+<DT> <TT>REQ_DEL_LINE</TT>
+<DD> Delete line at cursor.
+<DT> <TT>REQ_DEL_WORD</TT>
+<DD> Delete word at cursor.
+<DT> <TT>REQ_CLR_EOL</TT>
+<DD> Clear to end of line.
+<DT> <TT>REQ_CLR_EOF</TT>
+<DD> Clear to end of field.
+<DT> <TT>REQ_CLEAR_FIELD</TT>
+<DD> Clear entire field.
+</DL>
+
+The behavior of the <TT>REQ_NEW_LINE</TT> and <TT>REQ_DEL_PREV</TT> requests
+is complicated and partly controlled by a pair of forms options.
+The special cases are triggered when the cursor is at the beginning of
+a field, or on the last line of the field. <P>
+
+First, we consider <TT>REQ_NEW_LINE</TT>: <P>
+
+The normal behavior of <TT>REQ_NEW_LINE</TT> in insert mode is to break the
+current line at the position of the edit cursor, inserting the portion of
+the current line after the cursor as a new line following the current
+and moving the cursor to the beginning of that new line (you may think
+of this as inserting a newline in the field buffer). <P>
+
+The normal behavior of <TT>REQ_NEW_LINE</TT> in overlay mode is to clear the
+current line from the position of the edit cursor to end of line.
+The cursor is then moved to the beginning of the next line. <P>
+
+However, <TT>REQ_NEW_LINE</TT> at the beginning of a field, or on the
+last line of a field, instead does a <TT>REQ_NEXT_FIELD</TT>.
+<TT>O_NL_OVERLOAD</TT> option is off, this special action is
+disabled. <P>
+
+Now, let us consider <TT>REQ_DEL_PREV</TT>: <P>
+
+The normal behavior of <TT>REQ_DEL_PREV</TT> is to delete the previous
+character.  If insert mode is on, and the cursor is at the start of a
+line, and the text on that line will fit on the previous one, it
+instead appends the contents of the current line to the previous one
+and deletes the current line (you may think of this as deleting a
+newline from the field buffer). <P>
+
+However, <TT>REQ_DEL_PREV</TT> at the beginning of a field is instead
+treated as a <TT>REQ_PREV_FIELD</TT>. <P> If the
+<TT>O_BS_OVERLOAD</TT> option is off, this special action is
+disabled and the forms driver just returns <TT>E_REQUEST_DENIED</TT>. <P>
+
+See <A HREF="#frmoptions">Form Options</A> for discussion of how to set
+and clear the overload options. <P>
+
+<H3><A NAME="forder">Order Requests</A></H3>
+
+If the type of your field is ordered, and has associated functions
+for getting the next and previous values of the type from a given value,
+there are requests that can fetch that value into the field buffer: <P>
+
+<DL>
+<DT> <TT>REQ_NEXT_CHOICE</TT>
+<DD> Place the successor value of the current value in the buffer.
+<DT> <TT>REQ_PREV_CHOICE</TT>
+<DD> Place the predecessor value of the current value in the buffer.
+</DL>
+
+Of the built-in field types, only <TT>TYPE_ENUM</TT> has built-in successor
+and predecessor functions.  When you define a field type of your own 
+(see <A HREF="#fcustom">Custom Validation Types</A>), you can associate
+our own ordering functions. <P>
+
+<H3><A NAME="fappcmds">Application Commands</A></H3>
+
+Form requests are represented as integers above the <TT>curses</TT> value
+greater than <TT>KEY_MAX</TT> and less than or equal to the constant
+<TT>MAX_COMMAND</TT>.  If your input-virtualization routine returns a
+value above <TT>MAX_COMMAND</TT>, the forms driver will ignore it. <P>
+
+<H2><A NAME="fhooks">Field Change Hooks</A></H2>
+
+It is possible to set function hooks to be executed whenever the
+current field or form changes.  Here are the functions that support this: <P>
+
+<PRE>
+typedef void	(*HOOK)();       /* pointer to function returning void */
+
+int set_form_init(FORM *form,    /* form to alter */
+                  HOOK hook);    /* initialization hook */
+
+HOOK form_init(FORM *form);      /* form to query */
+
+int set_form_term(FORM *form,    /* form to alter */
+                  HOOK hook);    /* termination hook */
+
+HOOK form_term(FORM *form);      /* form to query */
+
+int set_field_init(FORM *form,   /* form to alter */
+                  HOOK hook);    /* initialization hook */
+
+HOOK field_init(FORM *form);     /* form to query */
+
+int set_field_term(FORM *form,   /* form to alter */
+                  HOOK hook);    /* termination hook */
+
+HOOK field_term(FORM *form);     /* form to query */
+</PRE>
+
+These functions allow you to either set or query four different hooks.
+In each of the set functions, the second argument should be the
+address of a hook function.  These functions differ only in the timing
+of the hook call. <P>
+
+<DL>
+<DT> form_init
+<DD> This hook is called when the form is posted; also, just after
+each page change operation.
+<DT> field_init
+<DD> This hook is called when the form is posted; also, just after
+each field change
+<DT> field_term
+<DD> This hook is called just after field validation; that is, just before
+the field is altered.  It is also called when the form is unposted. <P>
+<DT> form_term
+<DD> This hook is called when the form is unposted; also, just before
+each page change operation.
+</DL>
+
+Calls to these hooks may be triggered
+<OL>
+<LI> When user editing requests are processed by the forms driver
+<LI> When the current page is changed by <TT>set_current_field()</TT> call
+<LI> Wnen the current field is changed by a <TT>set_form_page()</TT> call
+</OL>
+
+See <A NAME="ffocus">Field Change Commands</A> for discussion of the latter
+two cases. <P>
+
+You can set a default hook for all fields by passing one of the set functions
+a NULL first argument. <P>
+
+You can disable any of these hooks by (re)setting them to NULL, the default
+value. <P>
+
+<H2><A HREF="#ffocus">Field Change Commands</A></H2>
+
+Normally, navigation through the form will be driven by the user's
+input requests.  But sometimes it is useful to be able to move the
+focus for editing and viewing under control of your application, or
+ask which field it currently is in.  The following functions help you
+accomplish this: <P>
+
+<PRE>
+int set_current_field(FORM *form,         /* form to alter */
+                      FIELD *field);      /* field to shift to */
+
+FIELD *current_field(FORM *form);         /* form to query */
+
+int field_index(FORM *form,               /* form to query */
+                FIELD *field);            /* field to get index of */
+</PRE>
+
+The function <TT>field_index()</TT> returns the index of the given field
+in the given form's field array (the array passed to <TT>new_form()</TT> or
+<TT>set_form_fields()</TT>). <P>
+
+The initial current field of a form is the first active field on the
+first page. The function <TT>set_form_fields()</TT> resets this.<P>
+
+It is also possible to move around by pages. <P>
+
+<PRE>
+int set_form_page(FORM *form,             /* form to alter */
+                  int page);              /* page to go to (0-origin) */
+
+int form_page(FORM *form);                /* return form's current page */
+</PRE>
+
+The initial page of a newly-created form is 0.  The function
+<TT>set_form_fields()</TT> resets this. <P>
+
+<H2><A NAME="frmoptions">Form Options</A></H2>
+
+Like fields, forms may have control option bits.  They can be changed
+or queiried with these functions: <P>
+
+<PRE>
+<PRE>
+int set_form_opts(FORM *form,             /* form to alter */
+                  int attr);              /* attribute to set */ 
+
+int form_opts_on(FORM *form,              /* form to alter */
+                 int attr);               /* attributes to turn on */ 
+
+int form_opts_off(FORM *form,             /* form to alter */
+                  int attr);              /* attributes to turn off */ 
+
+int form_opts(FORM *form);                /* form to query */
+</PRE>
+
+By default, all options are on.  Here are the available option bits:
+</PRE>
+<DL>
+<DT> O_NL_OVERLOAD
+<DD> Enable overloading of <TT>REQ_NEW_LINE</TT> as described in <A
+NAME="fedit">Editing Requests</A>.  The value of this option is
+ignored on dynamic fields that have not reached their size limit;
+these have no last line, so the circumstances for triggering a
+<TT>REQ_NEXT_FIELD</TT> never arise.
+<DT> O_BS_OVERLOAD
+<DD> Enable overloading of <TT>REQ_DEL_PREV</TT> as described in
+<A NAME="fedit">Editing Requests</A>.
+</DL>
+
+The option values are bit-masks and can be composed with logical-or in
+the obvious way. <P>
 
 <H2><A NAME="fcustom">Custom Validation Types</A></H2>
 
@@ -2004,8 +2351,152 @@ types.  Most of the complications in the validation-type interface have to
 do with the handling of the additional arguments within custom validation
 functions. <P>
 
+<H3><A NAME="flinktypes">Union Types</A></H3>
+
 The simplest way to create a custom data type is to compose it from two
 preexisting ones:  <P>
+
+<PRE>
+FIELD *link_fieldtype(FIELDTYPE *type1, 
+                      FIELDTYPE *type2);
+</PRE>
+
+This function creates a field type that will accept any of the values
+legal for either of its argument field types (which may be either
+predefined or programmer-defined).
+
+If a <TT>set_field_type()</TT> call later requires arguments, the new
+composite type expects all arguments for the first type, than all arguments
+for the second.  Order functions (see <A HREF="#forder">Order Requests</A>)
+associated with the component types will work on the composite; what it does
+is check the validation function for the first type, then for the second, to
+figure what type the buffer contents should be treated as. <P>
+
+<H3><A NAME="fnewtypes">New Field Types</A></H3>
+
+To create a field type from scratch, you need to specify one or both of the
+following things: <P>
+
+<UL>
+<LI> A character-validation function, to check each character as it is entered.
+<LI> A field-validation function to be applied on exit from the field.
+</UL>
+
+Here's how you do that: <P>
+typedef int	(*HOOK)();       /* pointer to function returning int */
+
+<PRE>
+FIELDTYPE *new_fieldtype(HOOK f_validate, /* field validator */
+                         HOOK c_validate) /* character validator */
+
+
+int free_fieldtype(FIELDTYPE *ftype);     /* type to free */
+</PRE>
+
+At least one of the arguments of <TT>new_fieldtype()</TT>must be
+non-NULL.  The forms driver will automatically call the new type's
+validation functions at appropriate points in processing a field of
+the new type. <P>
+
+The function <TT>free_fieldtype()</TT> deallocates the argument
+fieldtype, freeing all storage associated with it. <P>
+
+Normally, a field validator is called when the user attempts to
+leave the field.  Its first argument is a field fointer, from which it
+can get to field buffer 0 and test it.  If the function returns TRUE,
+the operation succeeds; if it returns FALSE, the edit cursor stays in
+the field. <P>
+
+A character validator gets the character passed in as a first argument.
+It too should return TRUE if the character is valid, FALSE otherwise. <P>
+
+<H3><A NAME="fcheckargs">Validation Function Arguments</A></H3>
+
+Your field- and character- validation functions will be passed a
+second argument as well.  This second argument is the address of a
+structure (which we'll call a <EM>pile</EM>) built from any of the
+field-type-specific arguments passed to <TT>set_field_type()</TT>.  If
+no such arguments are defined for the field type, this pile pointer
+argument will be NULL. <P>
+
+In order to arrange for such arguments to be passed to your validation
+functions, you must associate a small set of storage-management functions
+with the type.  The forms driver will use these to synthesize a pile
+from the trailing arguments of each <TT>set_field_type()</TT> argument, and
+a pointer to the pile will be passed to the validation functions. <P>
+
+Here is how you make the association: <P>
+
+<PRE>
+typedef char	*(*PTRHOOK)();    /* pointer to function returning (char *) */
+typedef void	(*VOIDHOOK)();    /* pointer to function returning void */
+
+int set_fieldtype_arg(FIELDTYPE *type,    /* type to alter */
+                      PTRHOOK make_str,   /* make structure from args */
+                      PTRHOOK copy_str,   /* make copy of structure */
+                      VOIDHOOK free_str); /* free structure storage */
+</PRE>
+
+Here is how the storage-management hooks are used: <P>
+
+<DL>
+<DT> <TT>make_str</TT>
+<DD> This function is called by <TT>set_field_type()</TT>.  It gets one
+argument, a <TT>va_list</TT> of the type-specific arguments passed to
+<TT>set_field_type()</TT>.  It is expected to return a pile pointer to a data
+structure that encapsulates those arguments.
+<DT> <TT>copy_str</TT>
+<DD> This function is called by form library functions that allocate new
+field instances.  It is expected to take a pile pointer, copy the pile
+to allocated storage, and return the address of the pile copy.
+<DT> <TT>free_str</TT>
+<DD> This function is called by field- and type-deallocation routines in the
+library.  It takes a pile pointer argument, and is expected to free the
+storage of that pile.
+</DL>
+
+The <TT>make_str</TT> and <TT>copy_str</TT> functions may return NULL to
+signal allocation failure.  The library routines will that call them will
+return error indication when this happens.  Thus, your validation functions
+should never see a NULL pile pointer and need not check specially for it. <P>
+
+<H3><A NAME="fcustorder">Order Functions For Custom Types</A></H3>
+
+Some custom field types are simply ordered in the same well-defined way
+that <TT>TYPE_ENUM</TT> is.  For such types, it is possible to define
+successor and predecessor functions to support the <TT>REQ_NEXT_CHOICE</TT>
+and <TT>REQ_PREV_CHOICE</TT> requests. Here's how: <P>
+
+<PRE>
+typedef int	(*INTHOOK)();     /* pointer to function returning int */
+
+int set_fieldtype_arg(FIELDTYPE *type,    /* type to alter */
+                      INTHOOK succ,       /* get successor value */
+                      INTHOOK pred);      /* get predecessor value */
+</PRE>
+
+The successor and predecessor arguments will each be passed two arguments;
+a field pointer, and a pile pointer (as for the validation functions).  They
+are expected to use the function <TT>field_buffer()</TT> to read the 
+current value, and <TT>set_field_buffer()</TT> on buffer 0 to set the next
+or previous value.  Either hook may return TRUE to indicate success (a
+legal next or previous value was set) or FALSE to indicate fialure. <P>
+
+<H3><A NAME="fcustprobs">Avoiding Problems</A></H3>
+
+The interface for defining custom types is complicated and tricky.
+Rather than attempting to create a custom type entirely from scratch,
+you should start by studying the library source code for whichever of
+the pre-defined types seems to be closest to what you want. <P>
+
+Use that code as a model, and evolve it towards what you really want.
+You will avoid many problems and annoyances that way.  The code
+in the <TT>ncurses</TT> library has been specifically un-copyrighted
+to support this. <P>
+
+If your custom type defines order functions, have do something intuitive
+with a blank field.  A useful convention is to make the successor of a
+blank field the types minimum value, and its predecessor the maximum. <P>
 
 <HR>
 <P>

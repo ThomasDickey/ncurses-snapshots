@@ -51,6 +51,7 @@ int	_nc_curr_line;		/* current line # in input */
 long	_nc_curr_file_pos;	/* file offset of current line */
 long	_nc_comment_start;	/* start of comment range before name */
 long	_nc_comment_end;	/* end of comment range before name */
+long	_nc_start_line;		/* start line of current entry */
 
 /*****************************************************************************
  *
@@ -106,7 +107,7 @@ int _nc_get_token(void)
 long		number;
 int		type;
 int		ch;
-static char	buffer[1024];
+static char	buffer[MAX_ENTRY_SIZE];
 char		*ptr;
 int		dot_flag = FALSE;
 long		token_start;
@@ -170,6 +171,7 @@ long		token_start;
 
 			_nc_comment_start = token_start;
 			_nc_comment_end = _nc_curr_file_pos;
+			_nc_start_line = _nc_curr_line;
 
 			_nc_syntax = ERR;
 			while ((ch = next_char()) != '\n')

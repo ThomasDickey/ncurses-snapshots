@@ -21,29 +21,73 @@
 
 /*
  *	comp_main.c --- Main program for terminfo compiler
+ *			by Eric S. Raymond
  *
  */
 
-#include <config.h>
-
-#include "tic.h"
+#include <progs.priv.h>
 
 #include <string.h>
-#include <stdlib.h>
-
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#else
-# if HAVE_LIBC_H
-#include <libc.h>
-# endif
-#endif
 
 #include "term.h"
+#include "tic.h"
 #include "dump_entry.h"
 #include "term_entry.h"
 
 char	*_nc_progname;
+
+static bool immedhook(ENTRY *ep)
+/* write out entries with no use capabilities immediately to save storage */
+{
+#ifndef HAVE_BIG_CORE
+    /*
+     * This is strictly a core-economy kluge.  The really clean way to handle
+     * compilation is to slurp the whole file into core and then do all the
+     * name-collision checks and entry writes in one swell foop.  But the
+     * terminfo master file is large enough that some core-poor systems swap
+     * like crazy when you compile it this way...there have been reports of
+     * this process taking *three hours*, rather than the twenty seconds or
+     * less typical on my development box.  
+     *
+     * So.  This hook *immediately* writes out the referenced entry if it
+     * has no use capabilities.  The compiler main loop refrains from
+     * adding the entry to the in-core list when this hook fires.  If some
+     * other entry later needs to reference an entry that got written
+     * immediately, that's OK; the resolution code will fetch it off disk
+     * when it can't find it in core.
+     *
+     * Name collisions will still be detected, just not as cleanly.  The
+     * write_entry() code complains before overwriting an entry that
+     * postdates the time of tic's first call to write_entry(),  Thus
+     * it will complain about overwriting entries newly made during the
+     * tic run, but not about overwriting ones that predate it.
+     *
+     * The reason this is a hook, and not in line with the rest of the
+     * compiler code, is that the support for termcap fallback cannot assume
+     * it has anywhere to spool out these entries!  
+     *
+     * The _nc_set_type() call here requires a compensating one in 
+     * _nc_parse_entry().
+     *
+     * If you define HAVE_BIG_CORE, you'll disable this kluge.  This will
+     * make tic a bit faster (because the resolution code won't have to do
+     * disk I/O nearly as often).
+     */
+    if (ep->nuses == 0)
+    {
+	int	oldline = _nc_curr_line;
+
+	_nc_set_type(_nc_first_name(ep->tterm.term_names));
+	_nc_curr_line = ep->startline;
+	_nc_write_entry(&ep->tterm);
+	_nc_curr_line = oldline;
+	free(ep->tterm.str_table);
+	return(TRUE);
+    }
+    else
+#endif /* HAVE_BIG_CORE */
+	return(FALSE);
+}
 
 int main (int argc, char *argv[])
 {
@@ -55,11 +99,10 @@ ENTRY	*qp;
 int	width = 60;
 bool	infodump = FALSE;	/* running as captoinfo? */
 bool	capdump = FALSE;	/* running as infotocap? */
+char	*tversion = (char *)NULL;
 char	*source_file = "terminfo";
 char	*const usage_string = "tic [-v[n]] source-file\n";
 bool	check_only = FALSE;
-bool	direct_dependencies = FALSE;
-bool	invert_dependencies = FALSE;
 
 	if ((_nc_progname = strrchr(argv[0], '/')) == NULL)
 		_nc_progname = argv[0];
@@ -73,7 +116,7 @@ bool	invert_dependencies = FALSE;
 	    	if (argv[i][0] == '-') {
 			switch (argv[i][1]) {
 		    	case 'c':
-				check_only = 1;
+				check_only = TRUE;
 				break;
 		    	case 'v':
 				debug_level = argv[i][2] ? atoi(&argv[i][2]):1;
@@ -88,17 +131,14 @@ bool	invert_dependencies = FALSE;
 			case 'N':
 				smart_defaults = FALSE;
 				break;
+			case 'R':
+				tversion = &argv[i][2];
+				break;
 		    	case '1':
 		    		width = 0;
 		    		break;
 	    	    	case 'w':
 				width = argv[i][2]  ?  atoi(&argv[i][2])  :  1;
-				break;
-			case 'u':
-				direct_dependencies = TRUE;
-				break;
-			case 'U':
-				invert_dependencies = TRUE;
 				break;
 		    	case 'V':
 				(void) fputs(NCURSES_VERSION, stdout);
@@ -148,16 +188,18 @@ bool	invert_dependencies = FALSE;
 	}
 
 	if (infodump)
-		dump_init(smart_defaults ? F_TERMINFO : F_LITERAL,
+		dump_init(tversion,
+			  smart_defaults ? F_TERMINFO : F_LITERAL,
 			  S_TERMINFO, width, debug_level);
 	else if (capdump)
-		dump_init(F_TCONVERT, S_TERMCAP, width, debug_level);
+		dump_init(tversion,
+			  F_TCONVERT, S_TERMCAP, width, debug_level);
 
 	/* parse entries out of the source file */
 	_nc_set_source(source_file);
 	_nc_read_entry_source(stdin, (char *)NULL,
 			      !smart_defaults, FALSE,
-			      NULLHOOK);
+			      (check_only || infodump || capdump) ? NULLHOOK : immedhook);
 
 	/* do use resolution */
 	if (check_only || (!infodump && !capdump))
@@ -174,7 +216,7 @@ bool	invert_dependencies = FALSE;
 		if (len > (infodump?MAX_TERMINFO_LENGTH:MAX_TERMCAP_LENGTH))
 		    	    (void) fprintf(stderr,
 			   "warning: resolved %s entry is %d bytes long\n",
-			   _nc_first_name(&qp->tterm),
+			   _nc_first_name(qp->tterm.term_names),
 			   len);
 	    }
 
@@ -182,9 +224,12 @@ bool	invert_dependencies = FALSE;
 	if (!check_only)
 	    if (!infodump && !capdump)
 	    {
-		_nc_set_type((char *)NULL);
 		for_entry_list(qp)
+		{
+		    _nc_set_type(_nc_first_name(qp->tterm.term_names));
+		    _nc_curr_line = qp->startline;
 		    _nc_write_entry(&qp->tterm);
+		}
 	    }
 	    else
 	    {

@@ -27,19 +27,15 @@
  * Ross Ridge's mytinfo package.
  */
 
-#include <config.h>
+#include <progs.priv.h>
 
 #include <ctype.h>
-#include <stdlib.h>
-
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 
 #include <curses.h>
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+
 #if !HAVE_EXTERN_ERRNO
 extern int errno;
 #endif
@@ -213,9 +209,6 @@ FILE *f;
 	}
 	return(0);
 }
-
-extern char *optarg;
-extern int optind;
 
 int main(int argc, char **argv)
 {

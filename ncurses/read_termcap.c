@@ -36,7 +36,6 @@
 #include "curses.priv.h"
 #include <stdlib.h>
 #include <string.h>
-
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -45,12 +44,10 @@
 #include "tic.h"
 #include "term_entry.h"
 
-#define TERMTMP	"/tmp/tcXXXXXX"
-
 int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
 {
     /*
-     * Here is what the BSD termcap(3) page prescribes:
+     * Here is what the 4.4BSD termcap(3) page prescribes:
      *
      * It will look in the environment for a TERMCAP variable.  If
      * found, and the value does not begin with a slash, and the
@@ -118,6 +115,8 @@ int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
     }
     else	/* normal case */
     {
+	char	envhome[PATH_MAX];
+
 	filecount = 0;
 
 	/*
@@ -130,7 +129,9 @@ int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
 	    termpaths[filecount++] = "/usr/share/misc/termcap";
 
 	/* user's .termcap, if any, should override it */
-	(void) sprintf(pathbuf, "%s/.termcap", getenv("HOME"));
+	(void) strncpy(envhome, getenv("HOME"), PATH_MAX - 10);
+	envhome[PATH_MAX - 10] = '\0';
+	(void) sprintf(pathbuf, "%s/.termcap", envhome);
 	termpaths[filecount++] = pathbuf;
 
 	termpaths[filecount] = (char *)NULL;
@@ -189,6 +190,21 @@ int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
 	    memcpy(tp, &ep->tterm, sizeof(TERMTYPE));
 	    ep->tterm.str_table = (char *)NULL;
 	    _nc_free_entries(_nc_head);
+
+	    /*
+	     * OK, now try to write the type to user's terminfo directory.
+	     * Next time he loads this, it will come through terminfo.
+	     *
+	     * Advantage: Second and subsequent fetches of this entry
+	     * will be very fast.
+	     *
+	     * Disadvantage: After the first time a termcap type is loaded
+	     * by its user, editing it in the /etc/termcap file, or in TERMCAP,
+	     * or in a local ~/.termcap, will be ineffective unless the
+	     * terminfo entry is explicitly removed.
+	     */
+	    (void) _nc_write_entry(tp);
+
 	    return(1);
 	}
 

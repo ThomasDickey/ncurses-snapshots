@@ -97,6 +97,21 @@ in the example above.
 .br
 .ne 5
 .PP
+.SS Fetching Compiled Descriptions
+.PP
+To easily test a new terminal description you can set the environment variable
+TERMINFO to a pathname of a directory containing the
+compiled description you are working
+on and programs will look there rather than in
+.IR \*d .
+.PP
+If TERMINFO is not set, the \fBncurses\fR version of the terminfo reader code
+will instead look in the directory $HOME/.terminfo for a compiled description.
+(This extension is not supported under stock System V terminfo/curses.)
+.PP
+If these local lookups fail, the last place tried will be the system terminfo
+directory, \fI\*d\fR.
+.PP
 .SS Preparing Descriptions
 .PP
 We now outline how to prepare descriptions of terminals.
@@ -112,11 +127,7 @@ the ability of the
 .I terminfo
 file to describe it
 or bugs in the screen-handling code of the test program.
-To easily test a new terminal description you can set the environment variable
-TERMINFO to a pathname of a directory containing the
-compiled description you are working
-on and programs will look there rather than in
-.IR \*d .
+.PP
 To get the padding for insert line right (if the terminal manufacturer
 did not document it) a severe test is to edit /etc/passwd at 9600 baud,
 delete 16 or so lines from the middle of the screen, then hit the `u'
@@ -1250,6 +1261,12 @@ When in -C (translate to termcap) mode, the \fBncurses\fR implementation of
 \fBtic\fR(1) issues warning messages when the pre-tc length of a termcap
 translation is too long.  The -c (check) option also checks resolved (after tc
 expansion) lengths.
+.SS Binary Compatibility
+It is not wise to count on portability of binary terminfo entries between
+commercial UNIX versions.  The problem is that there are at least two versions
+of terminfo (under HP-UX and AIX) which diverged from System V terminfo after
+SVr1, and have added extension capabilities to the string table that (in the
+binary format) collide with System V and XSI Curses extensions.
 .SH EXTENSIONS
 Some SVr4 \fBcurses\fR implementations, and all previous to SVr4, don't
 interpret the %A and %O operators in parameter strings.  SVr4 curses does
@@ -1275,6 +1292,35 @@ documentation for the AT&T 505 terminal.
 Be careful assigning the \fBkmous\fR capability.  The \fBncurses\fR wants to
 interpret it as \fBKEY_MOUSE\fR, for use by terminals and emulators like xterm
 that can return mouse-traking information in the keyboard-input stream.
+.PP
+Different commercial ports of terminfo and curses support different subsets of
+the XSI Curses standard and (in some cases) different extension sets.  Here
+is a summary, accurate as of October 1995:
+.PP
+\fBSVR4, Solaris, ncurses\fR --
+These support all SVr4 capabilities.
+.PP
+\fBSGI\fR --
+Supports the SVr4 set, adds one undocumented extended string
+capability (\fBset_pglen\fR).
+.PP
+\fBSVr1, Ultrix\fR --
+These support a restricted subset of terminfo capabilities.  The booleans
+end with \fBxon_xoff\fR; the numerics with \fBwidth_status_line\fR; and the 
+strings with \fBprtr_non\fR.
+.PP
+\fBHP/UX\fR --
+Supports the SVr1 subset, plus the SVr[234] numerics \fBnum_labels\fR,
+\fBlabel_height\fR, \fBlabel_width\fR, plus function keys 11 through 63, plus
+\fBplab_norm\fR, \fBlabel_on\fR, and \fBlabel_off\fR, plus some incompatible
+extensions in the string table.
+.PP
+\fBAIX\fR --
+Supports the SVr1 subset, plus function keys 11 through 63, plus a number
+of incompatible string table extensions.
+.PP
+\fBOSF\fR --
+Supports both the SVr4 set and the AIX extensions.
 .SH FILES
 .TP 25
 \*d/?/*

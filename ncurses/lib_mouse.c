@@ -23,7 +23,7 @@
  * This module is intended to encapsulate ncurses's interface to pointing
  * devices. 
  *
- * The first method used will xterm's internal mouse-tracking facility.
+ * The first method used is xterm's internal mouse-tracking facility.
  * The second (not yet implemented) will be Alessandro Rubini's GPM server.
  *
  * Notes for implementors of new mouse-interface methods:

@@ -29,6 +29,8 @@ BEGIN		{
 			print  "DCL(strcodes)   = {"		> "strcodes"
 		}
 
+$1 ~ /^#/		{next;}
+
 $1 == "SKIPWARN"	{next;}
 
 $3 == "bool"	{

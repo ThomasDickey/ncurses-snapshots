@@ -5,14 +5,21 @@
 .SH SYNOPSIS
 \fB#include <form.h>\fR
 .br
+int set_current_field(FORM *form, int page);
+.br
+FIELD *current_field(FORM *);
+.br
 int set_form_page(FORM *form, int n);
 .br
-OPTIONS form_page(FORM *form);
+int form_page(FORM *form);
 .br
 .SH DESCRIPTION
+The function \fBset_current field\fR sets the current field of the given
+form; \fBcurrent_field\fR returns the current field of the given form.
+.PP
 The function \fBset_form_page\fR sets the form's page number (goes to page
 \fIn\fR of the form).
-
+.PP
 The function \fBform_page\fR returns the form's current page number.
 .SH RETURN VALUE
 Except for \fBform_page\fR, each routine returns one of the following:

@@ -76,8 +76,18 @@ int start_color(void)
 		TPUTS_TRACE("orig_pair");
 		putp(orig_pair);
 	}
-	else return ERR;
 #endif /* orig_pair */
+#ifdef orig_colors
+	if (orig_colors != NULL)
+	{
+		TPUTS_TRACE("orig_colors");
+		putp(orig_colors);
+	}
+#endif /* orig_colors */
+#if defined(orig_pair) && defined(orig_colors)
+	if (!orig_pair && !orig_colors)
+		return ERR;
+#endif /* defined(orig_pair) && defined(orig_colors) */
 	if (max_pairs != -1)
 		COLOR_PAIRS = max_pairs;
 	else
@@ -97,6 +107,12 @@ int start_color(void)
 #endif /* hue_lightness_saturation */
 	    memcpy(color_table, cga_palette, sizeof(color_t) * COLORS);
 
+	if (orig_colors)
+	{
+	    TPUTS_TRACE("orig_colors");
+	    putp(orig_colors);
+	}
+
 	T(("started color: COLORS = %d, COLOR_PAIRS = %d", COLORS, COLOR_PAIRS));
 
 	return OK;
@@ -114,8 +130,8 @@ static void rgb2hls(short r, short g, short b, short *h, short *l, short *s)
     /* calculate lightness */
     *l = (min + max) / 20;
 
-    if (min == max)
-    {				/* black, white and all shades of gray */
+    if (min == max)		/* black, white and all shades of gray */
+    {
 	*h = 0;
 	*s = 0;
 	return;
@@ -148,12 +164,32 @@ int init_pair(short pair, short f, short b)
 	if ((f  < 0) || (f >= COLORS) || (b < 0) || (b >= COLORS))
 		return ERR;
 
-	/* still to do:
-	   if pair was initialized before a screen update is performed
-	   replacing original pair colors with the new ones
-	*/
+	/* 
+	 * FIXME: when a pair's content is changed, replace its colors
+	 * (if pair was initialized before a screen update is performed
+	 * replacing original pair colors with the new ones)
+	 */
 
 	color_pairs[pair] = ( (f & 0x0f) | (b & 0x0f) << 4 );
+
+	if (initialize_pair)
+	{
+	    const color_t	*tp = hue_lightness_saturation ? hls_palette : cga_palette;
+
+	    T(("initializing pair: pair = %d, fg=(%d,%d,%d), bg=(%d,%d,%d)\n",
+	       pair,
+	       tp[f].red, tp[f].green, tp[f].blue,
+	       tp[b].red, tp[b].green, tp[b].blue));
+
+	    if (initialize_pair)
+	    {
+		TPUTS_TRACE("initialize_pair");
+		putp(tparm(initialize_pair,
+			    pair,
+			    tp[f].red, tp[f].green, tp[f].blue,
+			    tp[b].red, tp[b].green, tp[b].blue));
+	    }		
+	}
 
 	return OK;
 }
@@ -190,9 +226,12 @@ int init_color(short color, short r, short g, short b)
 		color_table[color].blue = b;
 	}
 
-	TPUTS_TRACE("initialize_color");
 #ifdef initialize_color
-	putp(tparm(initialize_color, color, r, g, b));
+	if (initialize_color)
+	{
+		TPUTS_TRACE("initialize_color");
+		putp(tparm(initialize_color, color, r, g, b));
+	}
 #endif /* initialize_color */
 	return OK;
 }
@@ -204,10 +243,12 @@ bool can_change_color(void)
 
 int has_colors(void)
 {
-	return ((orig_pair != NULL) && (max_colors != -1) && (max_pairs != -1)
+	return ((orig_pair != NULL || orig_colors != NULL) 
+		&& (max_colors != -1) && (max_pairs != -1)
 		&& 
-		(((set_foreground != NULL) && (set_background != NULL)) ||
-		((set_a_foreground != NULL) && (set_a_background != NULL)))
+		(((set_foreground != NULL) && (set_background != NULL))
+		|| ((set_a_foreground != NULL) && (set_a_background != NULL))
+		|| set_color_pair)
 		);
 }
 
@@ -236,29 +277,49 @@ int pair_content(short pair, short *f, short *b)
 
 void _nc_do_color(int pair, int  (*outc)(int))
 {
-short fg, bg;
+    short fg, bg;
 
-	if ( pair == 0 ) {
-		TPUTS_TRACE("orig_pair");
-		tputs(orig_pair, 1, outc);
-	} else {
-		pair_content(pair, &fg, &bg);
-
-		T(("setting colors: pair = %d, fg = %d, bg = %d\n", pair, fg, bg));
-
-		if (set_a_foreground) {
-		    TPUTS_TRACE("set_a_foreground");
-		    tputs(tparm(set_a_foreground, fg), 1, outc);
-		} else {
-		    TPUTS_TRACE("set_foreground");
-		    tputs(tparm(set_foreground, fg), 1, outc);
-		}
-		if (set_a_background) {
-		    TPUTS_TRACE("set_a_background");
-		    tputs(tparm(set_a_background, bg), 1, outc);
-		} else {
-		    TPUTS_TRACE("set_background");
-		    tputs(tparm(set_background, bg), 1, outc);
-		}
+    if (pair == 0) 
+    {
+	if (orig_pair)
+	{
+	    TPUTS_TRACE("orig_pair");
+	    tputs(orig_pair, 1, outc);
 	}
+    }
+    else
+    {
+	if (set_color_pair)
+	{
+	    TPUTS_TRACE("set_color_pair");
+	    tputs(tparm(set_color_pair, pair), 1, outc);
+	}
+	else
+	{
+	    pair_content(pair, &fg, &bg);
+
+	    T(("setting colors: pair = %d, fg = %d, bg = %d\n", pair, fg, bg));
+
+	    if (set_a_foreground)
+	    {
+		TPUTS_TRACE("set_a_foreground");
+		tputs(tparm(set_a_foreground, fg), 1, outc);
+	    }
+	    else
+	    {
+		TPUTS_TRACE("set_foreground");
+		tputs(tparm(set_foreground, fg), 1, outc);
+	    }
+	    if (set_a_background)
+	    {
+		TPUTS_TRACE("set_a_background");
+		tputs(tparm(set_a_background, bg), 1, outc);
+	    }
+	    else
+	    {
+		TPUTS_TRACE("set_background");
+		tputs(tparm(set_background, bg), 1, outc);
+	    }
+	}
+    }
 }

@@ -229,12 +229,12 @@ typedef void (*Form_Hook)(FORM *);
 	/*************************
 	*  standard field types  *
 	*************************/
-extern FIELDTYPE const *TYPE_ALPHA;
-extern FIELDTYPE const *TYPE_ALNUM;
-extern FIELDTYPE const *TYPE_ENUM;
-extern FIELDTYPE const *TYPE_INTEGER;
-extern FIELDTYPE const *TYPE_NUMERIC;
-extern FIELDTYPE const *TYPE_REGEXP;
+extern FIELDTYPE *TYPE_ALPHA,
+                 *TYPE_ALNUM,
+                 *TYPE_ENUM,
+                 *TYPE_INTEGER,
+                 *TYPE_NUMERIC,
+                 *TYPE_REGEXP;
 
         /*********************** 
         *   Default objects    *

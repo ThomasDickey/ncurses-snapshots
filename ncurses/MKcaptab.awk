@@ -47,7 +47,7 @@ $1 == "infoalias"	{
 		    if ($3 == "IGNORE")
 			to = "(char *)NULL";
 		    else
-			to = "\"$3\"";
+			to = "\"" $3 "\"";
 		    printf "\t{\"%s\", %s, \"%s\"},\t /* %s */\n",
 				$2, to, $4, $5
 		}

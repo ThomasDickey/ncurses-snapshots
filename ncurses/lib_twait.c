@@ -43,6 +43,23 @@
 #include <sys/select.h>
 #endif
 
+/*
+ * We want to define GOOD_SELECT if the last argument of select(2) is 
+ * modified to indicate time left.  The code will deal gracefully with
+ * the other case, this is just an optimization to reduce the number
+ * of system calls per input event.
+ *
+ * In general, expect System-V-like UNIXes to have this behavior and BSD-like 
+ * ones to not have it.  Check your manual page.  If it doesn't explicitly
+ * say the last argument is modified, assume it's not.
+ * 
+ * (We'd really like configure to autodetect this, but writing a proper test
+ * turns out to be hard.)
+ */
+#if defined(linux)
+#define GOOD_SELECT
+#endif
+
 #if !HAVE_USLEEP
 void usleep(unsigned int usec)
 {

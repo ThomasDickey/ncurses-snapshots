@@ -4,15 +4,17 @@
 .SH NAME
 \fBtoe\fR - table of (terminfo) entries
 .SH SYNOPSIS
-\fBtoe\fR [\fB-v\fR[\fIn\fR]] [\fB-uUV\fR] \fIfile...\fR
+\fBtoe\fR [\fB-v\fR[\fIn\fR]] [\fB-huUV\fR] \fIfile...\fR
 .br
 .SH DESCRIPTION
 .PP
 With no options, \fBtoe\fR lists all available terminal types by primary name
 with descriptions.  File arguments specify the directories to be scanned; if no
-such arguments are given, your default terminfo directory is scanned.
+such arguments are given, your default terminfo directory is scanned.  If you
+also specify the -h option, a directory header will be issued as each
+directory is entered. 
 .PP
-Ther are other options intended for use by terminfo file maintainers:
+There are other options intended for use by terminfo file maintainers:
 .TP
 \fB-u\fR \fUfile\fR
 says to issue a report on dependencies in the given file. This report condenses

@@ -118,6 +118,15 @@ this is why the numbers and sizes are included.
 Also, new capabilities must always be added at the end of the lists
 of boolean, number, and string capabilities.
 .PP
+Despite the consistent use of little-endian for numbers and the otherwise
+self-describing format, it is not wise to count on portability of binary
+terminfo entries between commercial UNIX versions.  The problem is that there
+are at least three versions of terminfo (under HP-UX, AIX, and OSF/1) which
+diverged from System V terminfo after SVr1, and have added extension
+capabilities to the string table that (in the binary format) collide with
+System V and XSI Curses extensions.  See \fBterminfo\fR(\*n) for detailed
+discussion of terminfo source compatibility issues.
+.PP
 As an example, here is a hex dump of the description for the Lear-Siegler
 ADM-3, a popular though rather stupid early terminal:
 .nf

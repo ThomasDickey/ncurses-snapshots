@@ -1,23 +1,10 @@
 
-/***************************************************************************
-*                            COPYRIGHT NOTICE                              *
-****************************************************************************
-*                ncurses is copyright (C) 1992-1995                        *
-*                          Zeyd M. Ben-Halim                               *
-*                          zmbenhal@netcom.com                             *
-*                          Eric S. Raymond                                 *
-*                          esr@snark.thyrsus.com                           *
-*                                                                          *
-*        Permission is hereby granted to reproduce and distribute ncurses  *
-*        by any means and for any fee, whether alone or as part of a       *
-*        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, and is not    *
-*        removed from any of its header files. Mention of ncurses in any   *
-*        applications linked with it is highly appreciated.                *
-*                                                                          *
-*        ncurses comes AS IS with no warranty, implied or expressed.       *
-*                                                                          *
-***************************************************************************/
+/*
+ * THIS CODE IS SPECIFICALLY EXEMPTED FROM THE NCURSES PACKAGE COPYRIGHT.
+ * You may freely copy it for use as a template for your own field types.
+ * If you develop a field type that might be of general use, please send
+ * it back to the ncurses maintainers for inclusion in the next version.
+ */
 
 #include "form.priv.h"
 
@@ -125,9 +112,9 @@ static bool Check_Alpha_Character(int c, const void * argp)
   return (isalpha(c) ? TRUE : FALSE);
 }
 
-static FIELDTYPE const typeALPHA = {
+static FIELDTYPE typeALPHA = {
   _HAS_ARGS | _RESIDENT,
-  1,
+  1,                           /* this is mutable, so we can't be const */
   (FIELDTYPE *)0,
   (FIELDTYPE *)0,
   Make_Alpha_Type,
@@ -139,6 +126,6 @@ static FIELDTYPE const typeALPHA = {
   NULL
 };
 
-FIELDTYPE const * TYPE_ALPHA = &typeALPHA;
+FIELDTYPE* TYPE_ALPHA = &typeALPHA;
 
 /* fty_alpha.c ends here */

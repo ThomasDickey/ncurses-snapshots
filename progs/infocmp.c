@@ -26,22 +26,10 @@
  *
  */
 
-#include <config.h>
+#include <progs.priv.h>
 
-#include <stdlib.h>
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#include <sys/param.h>		/* for MAXPATHLEN */
 #include <string.h>
 #include <ctype.h>
-#ifdef HAVE_GETOPT_H
-#include <getopt.h>
-#endif /* HAVE_GETOPT_H */
-
-#ifndef MAXPATHLEN
-#define MAXPATHLEN 256
-#endif
 
 #include "term.h"
 #include "tic.h"
@@ -52,7 +40,7 @@
 
 char *_nc_progname = "infocmp";
 
-typedef char	path[MAXPATHLEN];
+typedef char	path[PATH_MAX];
 
 /***************************************************************************
  *
@@ -65,6 +53,7 @@ static char *tname[MAXTERMS];	/* terminal type names */
 static TERMTYPE term[MAXTERMS];	/* terminfo entries */
 static int termcount;		/* count of terminal entries */
 
+static char *tversion;		/* terminfo version selected */
 static int outform;		/* output format */
 static int sortmode;		/* sort_mode */
 static int itrace;		/* trace flag for debugging */
@@ -79,11 +68,32 @@ static int compare;
 #define C_USEALL	4	/* generate relative use-form entry */
 static bool ignorepads;		/* ignore pad prefixes when diffing */
 
+static char *canonical_name(char *ptr, char *buf)
+/* extract the terminal type's primary name */
+{
+    char	*bp;
+
+    (void) strcpy(buf, ptr);
+    if ((bp = strchr(buf, '|')) != (char *)NULL)
+	*bp = '\0';
+
+    return(buf);
+}
+
 /***************************************************************************
  *
  * Predicates for dump function
  *
  ***************************************************************************/
+
+static int capcmp(const char *s, const char *t)
+/* capability comparison function */
+{
+    if (ignorepads)
+	return(_nc_capcmp(s, t));
+    else
+	return(strcmp(s, t));
+}
 
 static int use_predicate(int type, int idx)
 /* predicate function to use for use decompilation */
@@ -152,7 +162,7 @@ static int use_predicate(int type, int idx)
 
 		if (usestr == (char *)NULL && termstr == (char *)NULL)
 			return(FAIL);
-		else if (!usestr||!termstr||strcmp(usestr,termstr)!=0)
+		else if (!usestr || !termstr || capcmp(usestr,termstr))
 			return(TRUE);
 		else
 			return(FAIL);
@@ -176,14 +186,14 @@ static bool entryeq(TERMTYPE *t1, TERMTYPE *t2)
 	    return(FALSE);
 
     for (i = 0; i < STRCOUNT; i++)
-	if (_nc_capcmp(t1->Strings[i], t2->Strings[i]))
+	if (capcmp(t1->Strings[i], t2->Strings[i]))
 	    return(FALSE);
 
     return(TRUE);
 }
 
 static void compare_predicate(int type, int idx, const char *name)
-/* predicate function to use for ordinary decompilation */
+/* predicate function to use for entry difference reports */
 {
 	register TERMTYPE *t1 = &term[0];
 	register TERMTYPE *t2 = &term[1];
@@ -242,7 +252,7 @@ static void compare_predicate(int type, int idx, const char *name)
 		switch(compare)
 		{
 		case C_DIFFERENCE:
-			if (_nc_capcmp(s1, s2))
+			if (capcmp(s1, s2))
 			{
 				char	buf1[BUFSIZ], buf2[BUFSIZ];
 
@@ -270,7 +280,7 @@ static void compare_predicate(int type, int idx, const char *name)
 			break;
 
 		case C_COMMON:
-			if (s1 && s2 && !_nc_capcmp(s1, s2))
+			if (s1 && s2 && !capcmp(s1, s2))
 				(void) printf("\t%s= '%s'.\n",name,expand(s1));
 			break;
 
@@ -286,16 +296,342 @@ static void compare_predicate(int type, int idx, const char *name)
 
 /***************************************************************************
  *
- * Main sequence
+ * Init string analysis
  *
  ***************************************************************************/
 
-#ifdef HAVE_GETOPT_H
-#include <getopt.h>
-#else
-extern char *optarg;
-extern int optind;
-#endif /* HAVE_GETOPT_H */
+typedef struct {char *from; char *to;} assoc;
+static const assoc dec_caps[] =
+{
+    /* FIXME: use ECMA-48 mnemonics here rather than the DEC ones */
+    "\033c",	"RIS",		/* full reset */
+
+    "\033=",	"DECPAM",	/* application keypad mode */
+    "\033>",	"DECPNM",	/* normal keypad mode */
+
+    "\0337",	"DECSC",	/* save cursor */
+    "\0338",	"DECRC",	/* restore cursor */
+
+    "\033(0",	"DEC G0",	/* enable DEC graphics for G0 */
+    "\033(A",	"DEC UK G0",	/* enable UK chars for G0 */
+    "\033(B",	"DEC US G0",	/* enable US chars for G0 */
+    "\033)0",	"DEC G1",	/* enable DEC graphics for G1 */
+    "\033)A",	"DEC UK G1",	/* enable UK chars for G1 */
+    "\033)B",	"DEC US G1",	/* enable US chars for G1 */
+
+    "\033[?1h",	"DECCKM on",	/* application cursor keys */
+    "\033[?2h",	"DECANM on",	/* set VT52 mode */
+    "\033[?3h",	"DECCOLM on",	/* 132-column mode */
+    "\033[?4h",	"DECSCLM on",	/* smooth scroll */
+    "\033[?5h",	"DECSCNM on",	/* reverse video mode */
+    "\033[?6h",	"DECOM on",	/* origin mode */
+    "\033[?7h",	"DECAWM on",	/* wraparound mode */
+    "\033[?8h",	"DECARM on",	/* auto-repeat mode */
+
+    "\033[?1l",	"DECCKM off",	/* application cursor keys */
+    "\033[?2l",	"DECANM off",	/* set VT52 mode */
+    "\033[?3l",	"DECCOLM off",	/* 132-column mode */
+    "\033[?4l",	"DECSCLM off",	/* smooth scroll */
+    "\033[?5l",	"DECSCNM off",	/* reverse video mode */
+    "\033[?6l",	"DECOM off",	/* origin mode */
+    "\033[?7l",	"DECAWM off",	/* wraparound mode */
+    "\033[?8l",	"DECARM off",	/* auto-repeat mode */
+    (char *)NULL,
+};
+
+static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
+{
+    char	buf[MAX_TERMINFO_LENGTH];
+    char	buf2[MAX_TERMINFO_LENGTH];
+    const char	*sp;
+    const assoc	*ap;
+
+    if (cap == ABSENT_STRING || cap == CANCELLED_STRING)
+	return;
+    (void) printf("%s: ", name);
+
+    buf[0] = '\0';
+    for (sp = cap; *sp; sp++)
+    {
+	int	i, len;
+	char	*expansion = (char *)NULL;
+
+	/* first, check other capabilities in this entry */
+	for (i = 0; i < STRCOUNT; i++)
+	{
+	    char	*cp = tp->Strings[i];
+
+	    /* don't use soft-key capabilities */
+	    if (strnames[i][0] == 'k' && strnames[i][0] == 'f')
+		continue;
+
+
+	    if (cp != ABSENT_STRING && cp != CANCELLED_STRING && cp[0] && cp != cap)
+	    {
+		len = strlen(cp);
+		(void) strncpy(buf2, sp, len);
+		buf2[len] = '\0';
+
+		if (_nc_capcmp(cp, buf2))
+		    continue;
+
+#define ISRS(s)	(!strncmp((s), "is", 2) || !strncmp((s), "rs", 2))
+		/*
+		 * Theoretically we just passed the test for translation
+		 * (equality once the padding is stripped).  However, there
+		 * are a few more hoops that need to be jumped so that 
+		 * identical pairs of initialization and reset strings
+		 * don't just refer to each other.
+		 */
+		if (ISRS(name) || ISRS(strnames[i]))
+		    if (cap < cp)
+			continue;
+#undef ISRS
+
+		expansion = strnames[i];
+		break;
+	    }
+	}
+
+	/* now check the DEC capabilities */
+	if (!expansion)
+	    for (ap = dec_caps; ap->from; ap++)
+	    {
+		len = strlen(ap->from);
+
+		if (strncmp(ap->from, sp, len) == 0)
+		{
+		    expansion = ap->to;
+		    break;
+		}
+	    }
+
+	/* now check for scroll region reset */
+	if (!expansion)
+	{
+	    (void) sprintf(buf2, "\033[1;%dr", tp->Numbers[2]);
+	    len = strlen(buf2);
+	    if (strncmp(buf2, sp, len) == 0)
+		expansion = "DEC/ANSI scroll region reset";
+	}
+
+	/* now check for home-down */
+	if (!expansion)
+	{
+	    (void) sprintf(buf2, "\033[%d;1H", tp->Numbers[2]);
+	    len = strlen(buf2);
+	    if (strncmp(buf2, sp, len) == 0)
+		expansion = "DEC/ANSI home-down";
+	}
+
+	/* now look at the expansion we got, if any */
+	if (expansion)
+	{
+	    (void) sprintf(buf + strlen(buf), "{%s}", expansion);
+	    sp += len - 1;
+	    continue;
+	}
+	else
+	{
+	    /* couldn't match anything */
+	    buf2[0] = *sp;
+	    buf2[1] = '\0';
+	    (void) strcat(buf, expand(buf2));
+	}
+    }
+    (void) printf("%s\n", buf);
+}
+
+/***************************************************************************
+ *
+ * File comparison
+ *
+ ***************************************************************************/
+
+static void file_comparison(int argc, char *argv[], int optind)
+{
+    /* someday we may allow comparisons on more files */
+    int	filecount = 0;
+    ENTRY	*heads[2];
+    ENTRY	*tails[2];
+    ENTRY	*qp, *rp;
+    int		i, saveoptind;
+
+    dump_init((char *)NULL, F_LITERAL, S_TERMINFO, 0, itrace);
+
+    for (saveoptind = optind; optind < argc; optind++)
+    {
+	if (freopen(argv[optind], "r", stdin) == NULL)
+	    _nc_err_abort("Can't open %s", argv[optind]);
+
+	_nc_head = _nc_tail = (ENTRY *)NULL;
+
+	/* parse entries out of the source file */
+	_nc_set_source(argv[optind]);
+	_nc_read_entry_source(stdin, NULL, TRUE, FALSE, NULLHOOK);
+
+	/* do use resolution */
+	if (!_nc_resolve_uses())
+	{
+	    (void) fprintf(stderr,
+			   "There are unresolved use entries in %s:\n",
+			   argv[optind]);
+	    for_entry_list(qp)
+		if (qp->nuses)
+		{
+		    (void) fputs(qp->tterm.term_names, stderr);
+		    (void) fputc('\n', stderr);
+		}
+	    exit(1);
+	}
+
+	heads[filecount] = _nc_head;
+	tails[filecount] = _nc_tail;
+	filecount++;
+    }
+
+    /* OK, all entries are in core.  Ready to do the comparison */
+    if (itrace)
+	(void) fprintf(stderr, "Entries are now in core...\n");
+
+    /*
+     * The entry-matching loop.  We're not using the use[]
+     * slots any more (they got zeroed out by resolve_uses) so
+     * we stash each entry's matches in the other file there.
+     * Sigh, this is intrinsically quadratic.
+     */
+    for (qp = heads[0]; qp; qp = qp->next)
+    {
+	for (rp = heads[1]; rp; rp = rp->next)
+	    if (_nc_entry_match(qp->tterm.term_names,rp->tterm.term_names))
+	    {
+		/*
+		 * This is why the uses[] array is (void *) -- so we
+		 * can have either (char *) for names or entry 
+		 * structure pointers in them and still be type-safe.
+		 */
+		if (qp->nuses < MAX_USES)
+		    qp->uses[qp->nuses] = (void *)rp;
+		qp->nuses++;
+			
+		if (rp->nuses < MAX_USES)
+		    rp->uses[rp->nuses] = (void *)qp;
+		rp->nuses++;
+	    }
+    }
+
+    /* now we have two circular lists with crosslinks */
+    if (itrace)
+	(void) fprintf(stderr, "Name matches are done...\n");
+
+    for (qp = heads[0]; qp; qp = qp->next)
+	if (qp->nuses > 1)
+	{
+	    (void) fprintf(stderr,
+			   "%s in file 1 (%s) has %d matches in file 2 (%s):\n",
+			   _nc_first_name(qp->tterm.term_names),
+			   argv[saveoptind],
+			   qp->nuses,
+			   argv[saveoptind+1]);
+	    for (i = 0; i < qp->nuses; i++)
+		(void) fprintf(stderr,
+			       "\t%s\n",
+			       _nc_first_name(((ENTRY *)qp->uses[i])->tterm.term_names));
+	}
+    for (rp = heads[1]; rp; rp = rp->next)
+	if (rp->nuses > 1)
+	{
+	    (void) fprintf(stderr,
+			   "%s in file 2 (%s) has %d matches in file 1 (%s):\n",
+			   _nc_first_name(rp->tterm.term_names),
+			   argv[saveoptind+1],
+			   rp->nuses,
+			   argv[saveoptind]);
+	    for (i = 0; i < rp->nuses; i++)
+		(void) fprintf(stderr,
+			       "\t%s\n",
+			       _nc_first_name(((ENTRY *)rp->uses[i])->tterm.term_names));
+	}
+
+    (void) printf("In file 1 (%s) only:\n", argv[saveoptind]);
+    for (qp = heads[0]; qp; qp = qp->next)
+	if (qp->nuses == 0)
+	    (void) printf("\t%s\n",
+			  _nc_first_name(qp->tterm.term_names));
+
+    (void) printf("In file 2 (%s) only:\n", argv[saveoptind+1]);
+    for (rp = heads[1]; rp; rp = rp->next)
+	if (rp->nuses == 0)
+	    (void) printf("\t%s\n",
+			  _nc_first_name(rp->tterm.term_names));
+
+    (void) printf("The following entries are equivalent:\n");
+    for (qp = heads[0]; qp; qp = qp->next)
+    {
+	rp = (ENTRY *)qp->uses[0];    
+
+	if (qp->nuses == 1 && entryeq(&qp->tterm, &rp->tterm))
+	{
+	    char name1[NAMESIZE], name2[NAMESIZE];
+
+	    (void) canonical_name(qp->tterm.term_names, name1);
+	    (void) canonical_name(rp->tterm.term_names, name2);
+
+	    (void) printf("%s = %s\n", name1, name2);
+	}
+    }
+
+    (void) printf("Differing entries:\n");
+    termcount = 2;
+    for (qp = heads[0]; qp; qp = qp->next)
+    {
+	rp = (ENTRY *)qp->uses[0];
+
+	if (qp->nuses == 1 && !entryeq(&qp->tterm, &rp->tterm))
+	{
+	    char name1[NAMESIZE], name2[NAMESIZE];
+
+	    memcpy(&term[0], &qp->tterm, sizeof(TERMTYPE));
+	    memcpy(&term[1], &rp->tterm, sizeof(TERMTYPE));
+
+	    (void) canonical_name(qp->tterm.term_names, name1);
+	    (void) canonical_name(rp->tterm.term_names, name2);
+
+	    switch (compare)
+	    {
+	    case C_DIFFERENCE:
+		if (itrace)
+		    (void)fprintf(stderr,"infocmp: dumping differences\n");
+		(void) printf("comparing %s to %s.\n", name1, name2);
+		compare_entry(compare_predicate);
+		break;
+
+	    case C_COMMON:
+		if (itrace)
+		    (void) fprintf(stderr,
+				   "infocmp: dumping common capabilities\n");
+		(void) printf("comparing %s to %s.\n", name1, name2);
+		compare_entry(compare_predicate);
+		break;
+
+	    case C_NAND:
+		if (itrace)
+		    (void) fprintf(stderr,
+				   "infocmp: dumping differences\n");
+		(void) printf("comparing %s to %s.\n", name1, name2);
+		compare_entry(compare_predicate);
+		break;
+
+	    }
+	}
+    }
+}
+
+/***************************************************************************
+ *
+ * Main sequence
+ *
+ ***************************************************************************/
 
 int main(int argc, char *argv[])
 {
@@ -303,6 +639,8 @@ int main(int argc, char *argv[])
 	path tfile[MAXTERMS];
 	int saveoptind, c, i;
 	bool filecompare = FALSE;
+	bool initdump = FALSE;
+	bool init_analyze = FALSE;
 
 	if ((terminal = getenv("TERM")) == NULL)
 	{
@@ -312,15 +650,17 @@ int main(int argc, char *argv[])
 	}
 
 	/* where is the terminfo database location going to default to? */
-	if ((firstdir = getenv("TERMINFO")) == NULL)
-		firstdir = TERMINFO;
-	restdir = firstdir;
+	restdir = firstdir = getenv("TERMINFO");
 
-	while ((c = getopt(argc, argv, "dcCFnlLprs:uvVw:A:B:1")) != EOF)
+	while ((c = getopt(argc, argv, "decCFinlLprR:s:uvVw:A:B:1")) != EOF)
 		switch (c)
 		{
 		case 'd':
 			compare = C_DIFFERENCE;
+			break;
+
+		case 'e':
+			initdump = TRUE;
 			break;
 
 		case 'c':
@@ -330,11 +670,15 @@ int main(int argc, char *argv[])
 		case 'C':
 			outform = F_TERMCAP;
 			if (sortmode == S_DEFAULT)
-			sortmode = S_TERMCAP;
+			    sortmode = S_TERMCAP;
 			break;
 
 		case 'F':
 			filecompare = TRUE;
+			break;
+
+		case 'i':
+			init_analyze = TRUE;
 			break;
 
 		case 'l':
@@ -344,7 +688,7 @@ int main(int argc, char *argv[])
 		case 'L':
 			outform = F_VARIABLE;
 			if (sortmode == S_DEFAULT)
-			sortmode = S_VARIABLE;
+			    sortmode = S_VARIABLE;
 			break;
 
 		case 'n':
@@ -357,6 +701,10 @@ int main(int argc, char *argv[])
 
 		case 'r':
 			outform = F_TCONVERR;
+			break;
+
+		case 'R':
+			tversion = optarg;
 			break;
 
 		case 's':
@@ -410,7 +758,7 @@ int main(int argc, char *argv[])
 		sortmode = S_TERMINFO;
 
 	/* set up for display */
-	dump_init(outform, sortmode, mwidth, itrace);
+	dump_init(tversion, outform, sortmode, mwidth, itrace);
 
 	/* make sure we have at least one terminal name to work with */
 	if (optind >= argc)
@@ -441,15 +789,33 @@ int main(int argc, char *argv[])
 		    int		status;
 
 		    tname[termcount] = argv[optind];
-		    (void) sprintf(tfile[termcount], "%s/%c/%s",
-				   directory,
-				   *argv[optind], argv[optind]);
-		    if (itrace)
-			(void) fprintf(stderr,
-			       "infocmp: reading entry %s from file %s\n",
-			       argv[optind], tfile[termcount]);
-		    status = _nc_read_file_entry(tfile[termcount],
-						 &term[termcount]);
+
+		    if (directory)
+		    {
+			(void) sprintf(tfile[termcount], "%s/%c/%s",
+				       directory,
+				       *argv[optind], argv[optind]);
+			if (itrace)
+			    (void) fprintf(stderr,
+					   "infocmp: reading entry %s from file %s\n",
+					   argv[optind], tfile[termcount]);
+
+			status = _nc_read_file_entry(tfile[termcount],
+						     &term[termcount]);
+		    }
+		    else
+		    {
+			if (itrace)
+			    (void) fprintf(stderr,
+					   "infocmp: reading entry %s from system directories %s\n",
+					   argv[optind], tname[termcount]);
+
+			status = _nc_read_entry(tname[termcount],
+						tfile[termcount],
+						&term[termcount]);
+			directory = TERMINFO;	/* for error message */
+		    }
+
 		    if (status == -1)
 		    {
 			(void) fprintf(stderr,
@@ -466,6 +832,92 @@ int main(int argc, char *argv[])
 		    }
 		    termcount++;
 		}
+
+	    /* dump as C initializer for the terminal type */
+	    if (initdump)
+	    {
+		int	i;
+		char	*str;
+		int	size;
+
+		(void) printf("    \"%s\",\n    (char *)0,\n/* BOOLEANS */\n",
+			      term->term_names);
+		for (i = 0; i < BOOLCOUNT; i++)
+		{
+		    switch(term->Booleans[i])
+		    {
+		    case TRUE:
+			str = "TRUE";
+			break;
+
+		    case FALSE:
+			str = "FALSE";
+			break;
+
+		    case ABSENT_BOOLEAN:
+			str = "ABSENT_BOOLEAN";
+			break;
+
+		    case CANCELLED_BOOLEAN:
+			str = "CANCELLED_BOOLEAN";
+			break;
+		    }
+		    (void) printf("/* %s */	%s,\n",
+				  boolnames[i], str);
+		}
+		(void) printf("/* NUMERICS */\n");
+		for (i = 0; i < NUMCOUNT; i++)
+		    (void) printf("/* %s */	%d,\n",
+				  numnames[i], term->Numbers[i]);
+		size = sizeof(TERMTYPE)
+		    + (BOOLCOUNT * sizeof(term->Booleans[0]))
+		    + (NUMCOUNT * sizeof(term->Numbers[0]));
+		(void) printf("/* STRINGS */\n");
+		for (i = 0; i < STRCOUNT; i++)
+		{
+		    char	buf[BUFSIZ], *sp, *tp;
+
+		    if (term->Strings[i] == ABSENT_STRING)
+			str = "ABSENT_STRING";
+		    else if (term->Strings[i] == CANCELLED_STRING)
+			str = "CANCELLED_STRING";
+		    else
+		    {
+			tp = buf;
+			*tp++ = '"';
+			for (sp = term->Strings[i]; *sp; sp++)
+			    if (isascii(*sp) && isprint(*sp) && *sp !='\\' && *sp != '"')
+				*tp++ = *sp;
+			    else
+			    {
+				(void) sprintf(tp, "\\%03o", *sp);
+				tp += 4;
+			    }
+			*tp++ = '"';
+			*tp = '\0';
+			size += (strlen(term->Strings[i]) + 1);
+			str = buf;
+		    }
+		    (void) printf("/* %s */	%s,\n", strnames[i], str);
+	        }
+		(void) printf("} /* size = %d */\n", size);
+		return;
+	    }
+
+	    /* analyze the init strings */
+	    if (init_analyze)
+	    {
+#undef CUR
+#define CUR	term[0].
+		analyze_string("is1", init_1string, &term[0]);
+		analyze_string("is2", init_2string, &term[0]);
+		analyze_string("is3", init_3string, &term[0]);
+		analyze_string("rs1", reset_1string, &term[0]);
+		analyze_string("rs2", reset_2string, &term[0]);
+		analyze_string("rs3", reset_3string, &term[0]);
+#undef CUR
+		return;
+	    }
 
 	    /*
 	     * Here's where the real work gets done
@@ -510,14 +962,14 @@ int main(int argc, char *argv[])
 		if (itrace)
 		    (void) fprintf(stderr, "infocmp: dumping use entry\n");
 		dump_entry(&term[0], use_predicate);
-		putchar('\n');
 		for (i = 1; i < termcount; i++)
 		    if (outform==F_TERMCAP
 			|| outform==F_TCONVERT
 			|| outform==F_TCONVERR)
-			(void) printf("\ttc=%s,\n", tname[i]);
+			(void) printf("tc=%s:", tname[i]);
 		    else
-			(void) printf("\tuse=%s,\n", tname[i]);
+			(void) printf("use=%s, ", tname[i]);
+		putchar('\n');
 		break;
 	    }
 	}
@@ -529,182 +981,7 @@ int main(int argc, char *argv[])
 	    (void) fprintf(stderr,
 		"File comparison needs exactly two file arguments.\n");	    
 	else
-	{
-	    /* someday we may allow comparisons on more files */
-	    int	filecount = 0;
-	    ENTRY	*heads[2];
-	    ENTRY	*tails[2];
-	    ENTRY	*qp, *rp;
-
-	    dump_init(F_LITERAL, S_TERMINFO, 0, itrace);
-
-	    for (saveoptind = optind; optind < argc; optind++)
-	    {
-		if (freopen(argv[optind], "r", stdin) == NULL)
-		    _nc_err_abort("Can't open %s", argv[optind]);
-
-		_nc_head = _nc_tail = (ENTRY *)NULL;
-
-		/* parse entries out of the source file */
-		_nc_set_source(argv[optind]);
-		_nc_read_entry_source(stdin, NULL, TRUE, FALSE, NULLHOOK);
-
-		/* do use resolution */
-		if (!_nc_resolve_uses())
-		{
-		    (void) fprintf(stderr,
-			"There are unresolved use entries in %s:\n",
-			argv[optind]);
-		    for_entry_list(qp)
-			if (qp->nuses)
-			{
-			    (void) fputs(qp->tterm.term_names, stderr);
-			    (void) fputc('\n', stderr);
-			}
-		    exit(1);
-		}
-
-		heads[filecount] = _nc_head;
-		tails[filecount] = _nc_tail;
-		filecount++;
-	    }
-
-	    /* OK, all entries are in core.  Ready to do the comparison */
-	    if (itrace)
-		(void) fprintf(stderr, "Entries are now in core...\n");
-
-	    /*
-	     * The entry-matching loop.  We're not using the use[]
-	     * slots any more (they got zeroed out by resolve_uses) so
-	     * we stash each entry's matches in the other file there.
-	     * Sigh, this is intrinsically quadratic.
-	     */
-	    for (qp = heads[0]; qp; qp = qp->next)
-	    {
-		for (rp = heads[1]; rp; rp = rp->next)
-		    if (_nc_entry_match(qp->tterm.term_names,rp->tterm.term_names))
-		    {
-			/*
-			 * This is why the uses[] array is (void *) -- so we
-			 * can have either (char *) for names or entry 
-			 * structure pointers in them and still be type-safe.
-			 */
-			if (qp->nuses < MAX_USES)
-			    qp->uses[qp->nuses] = (void *)rp;
-			qp->nuses++;
-			
-			if (rp->nuses < MAX_USES)
-			    rp->uses[rp->nuses] = (void *)qp;
-			rp->nuses++;
-		    }
-	    }
-
-	    /* now we have two circular lists with crosslinks */
-	    if (itrace)
-		(void) fprintf(stderr, "Name matches are done...\n");
-
-	    for (qp = heads[0]; qp; qp = qp->next)
-		if (qp->nuses > 1)
-		{
-		    (void) fprintf(stderr,
-				   "%s in file 1 (%s) has %d matches in file 2 (%s):\n",
-				   canonical_name(qp->tterm.term_names, NULL),
-				   argv[saveoptind],
-				   qp->nuses,
-				   argv[saveoptind+1]);
-		    for (i = 0; i < qp->nuses; i++)
-			(void) fprintf(stderr,
-				       "\t%s\n",
-				       canonical_name(((ENTRY *)qp->uses[i])->tterm.term_names, NULL));
-		}
-	    for (rp = heads[1]; rp; rp = rp->next)
-		if (rp->nuses > 1)
-		{
-		    (void) fprintf(stderr,
-				   "%s in file 2 (%s) has %d matches in file 1 (%s):\n",
-				   canonical_name(rp->tterm.term_names, NULL),
-				   argv[saveoptind+1],
-				   rp->nuses,
-				   argv[saveoptind]);
-		    for (i = 0; i < rp->nuses; i++)
-			(void) fprintf(stderr,
-				       "\t%s\n",
-				       canonical_name(((ENTRY *)rp->uses[i])->tterm.term_names, NULL));
-		}
-
-	    (void) printf("In file 1 (%s) only:\n", argv[saveoptind]);
-	    for (qp = heads[0]; qp; qp = qp->next)
-		if (qp->nuses == 0)
-		    (void) printf("\t%s\n",
-				  canonical_name(qp->tterm.term_names, NULL));
-
-	    (void) printf("In file 2 (%s) only:\n", argv[saveoptind+1]);
-	    for (rp = heads[1]; rp; rp = rp->next)
-		if (rp->nuses == 0)
-		    (void) printf("\t%s\n",
-				  canonical_name(rp->tterm.term_names, NULL));
-
-	    (void) printf("The following entries are equivalent:\n");
-	    for (qp = heads[0]; qp; qp = qp->next)
-	    {
-		rp = (ENTRY *)qp->uses[0];    
-
-		if (qp->nuses == 1 && entryeq(&qp->tterm, &rp->tterm))
-		{
-		    char name1[NAMESIZE], name2[NAMESIZE];
-
-		    (void) canonical_name(qp->tterm.term_names, name1);
-		    (void) canonical_name(rp->tterm.term_names, name2);
-
-		    (void) printf("%s = %s\n", name1, name2);
-		}
-	    }
-
-	    (void) printf("Differing entries:\n");
-	    termcount = 2;
-	    for (qp = heads[0]; qp; qp = qp->next)
-	    {
-		rp = (ENTRY *)qp->uses[0];
-
-		if (qp->nuses == 1 && !entryeq(&qp->tterm, &rp->tterm))
-		{
-		    char name1[NAMESIZE], name2[NAMESIZE];
-
-		    memcpy(&term[0], &qp->tterm, sizeof(TERMTYPE));
-		    memcpy(&term[1], &rp->tterm, sizeof(TERMTYPE));
-
-		    (void) canonical_name(qp->tterm.term_names, name1);
-		    (void) canonical_name(rp->tterm.term_names, name2);
-
-		    switch (compare)
-		    {
-		    case C_DIFFERENCE:
-			if (itrace)
-			    (void)fprintf(stderr,"infocmp: dumping differences\n");
-			(void) printf("comparing %s to %s.\n", name1, name2);
-			compare_entry(compare_predicate);
-			break;
-
-		    case C_COMMON:
-			if (itrace)
-			    (void) fprintf(stderr,
-					   "infocmp: dumping common capabilities\n");
-			(void) printf("comparing %s to %s.\n", name1, name2);
-			compare_entry(compare_predicate);
-			break;
-
-		    case C_NAND:
-			if (itrace)
-			    (void) fprintf(stderr,
-					   "infocmp: dumping differences\n");
-			(void) printf("comparing %s to %s.\n", name1, name2);
-			compare_entry(compare_predicate);
-			break;
-
-		    }
-		}
-	    }
-	}
+	    file_comparison(argc, argv, optind);
 
 	exit(0);
 }

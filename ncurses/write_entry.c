@@ -25,33 +25,24 @@
  *	write_entry.c -- write a terminfo structure onto the file system
  */
 
-#include <config.h>
-
-#include <stdlib.h>
+#include <progs.priv.h>
 
 #include <errno.h>
-#if !HAVE_EXTERN_ERRNO
-extern int errno;
-#endif
-
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#else
-# if HAVE_LIBC_H
-# include <libc.h>
-# endif
-#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
 #include <string.h>
-#include <tic.h>
+
+#include "tic.h"
 #include "term.h"
 #include "term_entry.h"
 
+#if !HAVE_EXTERN_ERRNO
+extern int errno;
+#endif
+
 static int write_object(FILE *, TERMTYPE *);
 
-static time_t	start_time;		/* time at start of writes */
 static char	*destination = TERMINFO;
 
 /*
@@ -68,21 +59,38 @@ static void check_writeable(void)
 {
 struct stat	statbuf;
 char		*dirnames = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-char		dir[2];
+char		envhome[PATH_MAX], homedir[PATH_MAX], dir[2];
 
 	if (getenv("TERMINFO") != NULL)
 	    destination = getenv("TERMINFO");
 
 	if (access(destination, W_OK) < 0) {
-	    _nc_err_abort("`%s' non-existant or permission denied (errno %d)", destination, errno);
+	    char	*home;
+
+	    /* ncurses extension...fall back on user's private directory */
+	    if ((home = getenv("HOME")) != (char *)NULL)
+	    {
+		/* total paranoia -- avoid potential buffer spamming */
+		(void) strncpy(envhome, home, PATH_MAX-sizeof(PRIVATE_INFO)-1);
+		envhome[PATH_MAX-sizeof(PRIVATE_INFO)-1] = '\0';
+		(void) sprintf(homedir, PRIVATE_INFO, envhome);
+
+		if (access(homedir, X_OK) < 0)
+		    mkdir(homedir, 0777);
+		destination = homedir;
+	    }
 	}
+
+	if (access(destination, W_OK) < 0)
+	    _nc_err_abort("%s: non-existant or permission denied (errno %d)",
+			  destination, errno);
 
 	/*
 	 * Note: because of this code, this function should be called
 	 * *once only* per run.
 	 */
 	if (chdir(destination) < 0) {
-	    _nc_err_abort("%s is not a directory", destination);
+	    _nc_err_abort("%s: not a directory", destination);
 	}
 	
 	dir[1] = '\0';
@@ -90,14 +98,14 @@ char		dir[2];
 	    	if (stat(dir, &statbuf) < 0) {
 			mkdir(dir, 0755);
 	    	} else if (access(dir, 7) < 0) {
-			_nc_err_abort("%s/%s: Permission denied",destination, dir);
+			_nc_err_abort("%s/%s: permission denied",destination, dir);
 	    	}
 #ifdef _POSIX_SOURCE
 	    	else if (!(S_ISDIR(statbuf.st_mode)))
 #else
 	    	else if ((statbuf.st_mode & S_IFMT) != S_IFDIR)
 #endif	    
-			_nc_err_abort("%s/%s: Not a directory\n", destination,dir);
+			_nc_err_abort("%s/%s: not a directory", destination,dir);
 	}
 }
 
@@ -118,18 +126,22 @@ char		dir[2];
  *	e.g., with NFS, because the filesystem may have a different time
  *	reference.  We check for pre-existence of links by latching the first
  *	timestamp from a file that we create.
+ *
+ *	The _nc_warning() calls will report a correct line number only if
+ *	_nc_curr_line is properly set before the write_entry() call.
  */
 
 void _nc_write_entry(TERMTYPE *tp)
 {
 struct stat	statbuf;
 FILE		*fp;
-char		name_list[1024];
+char		name_list[MAX_TERMINFO_LENGTH];
 char		*first_name, *other_names;
 char		*ptr;
-char		filename[100];
-char		linkname[100];
+char		filename[PATH_MAX];
+char		linkname[PATH_MAX];
 static int	call_count;
+static time_t	start_time;		/* time at start of writes */
 
 	if (call_count++ == 0) {
 		check_writeable();
@@ -151,7 +163,7 @@ static int	call_count;
 	    	*ptr = '\0';
 
 	    	for (ptr = name_list; *ptr != '\0'  &&  *ptr != '|'; ptr++)
-			;
+			continue;
 	    
 	    	if (*ptr == '\0')
 			other_names = ptr;
@@ -164,27 +176,41 @@ static int	call_count;
 	DEBUG(7, ("First name = '%s'", first_name));
 	DEBUG(7, ("Other names = '%s'", other_names));
 
+	_nc_set_type(first_name);
+
 	if (strlen(first_name) > sizeof(filename)-3)
-	    	_nc_warning("'%s': terminal name too long.", first_name);
+	    	_nc_warning("terminal name too long.");
 
 	sprintf(filename, "%c/%s", first_name[0], first_name);
+
+	/*
+	 * Has this primary name been written since the first call to
+	 * write_entry()?  If so, the newer write will step on the older,
+	 * so warn the user.
+	 */
+	if (start_time > 0 &&
+	    stat(filename, &statbuf) >= 0
+	    && statbuf.st_mtime >= start_time)
+	{
+		_nc_warning("name multiply defined.");
+	}
 
 	fp = fopen(filename, "w");
 	if (fp == NULL) {
 	    	perror(filename);
-	    	_nc_syserr_abort("Can't open %s/%s", destination, filename);
+	    	_nc_syserr_abort("can't open %s/%s", destination, filename);
 	}
 	DEBUG(1, ("Created %s", filename));
 
 	if (write_object(fp, tp) == ERR) {
-	    	_nc_syserr_abort("Error in writing %s/%s", destination, filename);
+	    	_nc_syserr_abort("error writing %s/%s", destination, filename);
 	}
 	fclose(fp);
 
 	if (start_time == 0) {
 	    	if (stat(filename, &statbuf) < 0
 		 || (start_time = statbuf.st_mtime) == 0) {
-	    		_nc_syserr_abort("Error in obtaining time from %s/%s",
+	    		_nc_syserr_abort("error obtaining time from %s/%s",
 				destination, filename);
 		}
 	}
@@ -197,54 +223,31 @@ static int	call_count;
 			*(other_names++) = '\0';
 
 	    	if (strlen(ptr) > sizeof(linkname)-3) {
-			_nc_warning("'%s': terminal name too long.", ptr);
+			_nc_warning("terminal alias %s too long.", ptr);
 			continue;
 	    	}
 
 	    	sprintf(linkname, "%c/%s", ptr[0], ptr);
 
 	    	if (strcmp(filename, linkname) == 0) {
-			_nc_warning("Terminal name '%s' synonym for itself", first_name);
+			_nc_warning("self-synonym ignored");
 	    	}
 	    	else if (stat(linkname, &statbuf) >= 0  &&
 						statbuf.st_mtime < start_time)
 	    	{
-			fprintf(stderr,
-				"'%s' defined in more than one entry; using '%s'.\n",
-				ptr, tp->term_names);
+			_nc_warning("alias %s multiply defined.", ptr);
 		}
 		else
 	    	{
 			unlink(linkname);
 			if (link(filename, linkname) < 0)
-			    _nc_syserr_abort("Can't link %s to %s", filename, linkname);
+			    _nc_syserr_abort("can't link %s to %s", filename, linkname);
 			DEBUG(1, ("Linked %s", linkname));
 	    	}
 	}
 }
 
-/*
- *	int
- *	_nc_must_swap(void)
- *
- *	Test whether this machine will need byte-swapping
- *
- */
-
-static inline int
-must_swap(void)
-{
-union {
-    short num;
-    unsigned char  byte[2];
-}test;
-
-	test.num = 1;
-	return(test.byte[1]);
-}
-
-#define swap(x)		(((x >> 8) & 0377) + 256 * (x & 0377))
-
+#undef LITTLE_ENDIAN	/* BSD/OS defines this as a feature macro */
 #define HI(x)			((x) / 256)
 #define LO(x)			((x) % 256)
 #define LITTLE_ENDIAN(p, x)	(p)[0] = LO(x), (p)[1] = HI(x)
@@ -281,6 +284,8 @@ unsigned char	buf[MAX_ENTRY_SIZE];
 	for (i = 0; i < strmax; i++)
 	    if (tp->Strings[i] == ABSENT_STRING)
 		offsets[i] = -1;
+	    else if (tp->Strings[i] == CANCELLED_STRING)
+		offsets[i] = -2;
 	    else
 	    {
 		offsets[i] = nextfree;
@@ -328,6 +333,11 @@ unsigned char	buf[MAX_ENTRY_SIZE];
 	for (i = 0; i < strmax; i++)
 		if (offsets[i] == -1)	/* HI/LO won't work */
 			buf[2*i] = buf[2*i + 1] = 0377;
+		else if (offsets[i] == -2)	/* HI/LO won't work */
+		{
+			buf[2*i] = 0376;
+			buf[2*i + 1] = 0377;
+		}
 		else
 			LITTLE_ENDIAN(buf + 2*i, offsets[i]);
 	if (fwrite(buf, 2, (size_t)strmax, fp) != strmax)
@@ -339,7 +349,7 @@ unsigned char	buf[MAX_ENTRY_SIZE];
 
 	/* the strings */
 	for (i = 0; i < strmax; i++)
-	    if (tp->Strings[i] != (char *)NULL)
+	    if (tp->Strings[i] != ABSENT_STRING && tp->Strings[i] != CANCELLED_STRING)
 		if (fwrite(tp->Strings[i], sizeof(char), strlen(tp->Strings[i]) + 1, fp) != strlen(tp->Strings[i]) + 1)
 		    return(ERR);
 

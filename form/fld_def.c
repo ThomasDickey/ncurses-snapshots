@@ -167,7 +167,7 @@ static void Free_Argument(const FIELDTYPE * typ, TypeArgument * argp)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
-|   Function      :  static bool Copy_Type( FIELD *new, FIELD *old )
+|   Function      :  static bool Copy_Type( FIELD *new, FIELD const *old )
 |   
 |   Description   :  Copy argument structure of field old to field new
 |

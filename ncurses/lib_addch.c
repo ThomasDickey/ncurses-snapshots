@@ -22,7 +22,7 @@
 /*
 **	lib_addch.c
 **
-**	The routine waddch().
+**	The routines waddch(), wattr_on(), wattr_off(), wchgat().
 **
 */
 
@@ -34,7 +34,7 @@
 
 int TABSIZE = 8; /* default size of a TAB */
 
-int wattron(WINDOW *win, const attr_t at)
+int wattr_on(WINDOW *win, const attr_t at)
 {
 	T(("wattron(%p,%s) current = %s", win, _traceattr(at), _traceattr(win->_attrs)));
 	if (PAIR_NUMBER(at) > 0x00) {
@@ -47,7 +47,7 @@ int wattron(WINDOW *win, const attr_t at)
 	return OK;
 }
 
-int wattroff(WINDOW *win, const attr_t at)
+int wattr_off(WINDOW *win, const attr_t at)
 {
 #define IGNORE_COLOR_OFF FALSE
 

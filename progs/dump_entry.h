@@ -39,8 +39,7 @@
 #define S_VARIABLE	3	/* sort by C variable names */
 #define S_TERMCAP	4	/* sort by termcap names */
 
-extern char *canonical_name(char *, char *);
-extern void dump_init(int, int, int, int);
+extern void dump_init(char *, int, int, int, int);
 extern int fmt_entry(TERMTYPE *, int (*)(int, int), char *, bool, bool);
 extern void dump_entry(TERMTYPE *, int (*)(int, int));
 extern void compare_entry(void (*)(int, int, const char *));

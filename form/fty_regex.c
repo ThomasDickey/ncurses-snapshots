@@ -1,28 +1,45 @@
 
-/***************************************************************************
-*                            COPYRIGHT NOTICE                              *
-****************************************************************************
-*                ncurses is copyright (C) 1992-1995                        *
-*                          Zeyd M. Ben-Halim                               *
-*                          zmbenhal@netcom.com                             *
-*                          Eric S. Raymond                                 *
-*                          esr@snark.thyrsus.com                           *
-*                                                                          *
-*        Permission is hereby granted to reproduce and distribute ncurses  *
-*        by any means and for any fee, whether alone or as part of a       *
-*        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, and is not    *
-*        removed from any of its header files. Mention of ncurses in any   *
-*        applications linked with it is highly appreciated.                *
-*                                                                          *
-*        ncurses comes AS IS with no warranty, implied or expressed.       *
-*                                                                          *
-***************************************************************************/
+/*
+ * THIS CODE IS SPECIFICALLY EXEMPTED FROM THE NCURSES PACKAGE COPYRIGHT.
+ * You may freely copy it for use as a template for your own field types.
+ * If you develop a field type that might be of general use, please send
+ * it back to the ncurses maintainers for inclusion in the next version.
+ */
 
 #include "form.priv.h"
 
-#if HAVE_REGEX_H	/* We assume POSIX regex */
+#if HAVE_REGEX_H	/* We prefer POSIX regex */
 #include <regex.h>
+
+typedef struct
+{
+  regex_t *pRegExp;
+  unsigned long refCount;
+} RegExp_Arg;
+
+#elif HAVE_REGEXP_H
+#undef RETURN
+static int reg_errno;
+
+#define INIT 		register char *sp = instring; reg_errno=0;
+#define GETC()		(*sp++)
+#define PEEKC()		(*sp)
+#define UNGETC(c)	(--sp)
+#define RETURN(c)	return(c)
+#define ERROR(c)	reg_errno=(c)
+
+#include <regexp.h>
+
+typedef struct
+{
+  char *compiled_expression;
+  unsigned long refCount;
+} RegExp_Arg;
+
+/* Maximum Length we allow for a compiled regular expression */
+#define MAX_RX_LEN   (2048)
+#define RX_INCREMENT (256)
+
 #endif
 
 /*---------------------------------------------------------------------------
@@ -37,18 +54,69 @@ static void *Make_RegularExpression_Type(va_list * ap)
 {
 #if HAVE_REGEX_H
   char *rx = va_arg(*ap,char *);
-  regex_t *preg;
+  RegExp_Arg *preg;
 
-  preg = (regex_t*)malloc(sizeof(regex_t));
+  preg = (RegExp_Arg*)malloc(sizeof(RegExp_Arg));
   if (preg)
     {
-      if (regcomp(preg,rx,0))
+      if ((preg->pRegExp = (regex_t*)malloc(sizeof(regex_t))) &&
+	  !regcomp(preg->pRegExp,rx,
+		   (REG_EXTENDED | REG_NOSUB | REG_NEWLINE) ))
 	{
+	  preg->refCount = 1;
+	}
+      else
+	{
+	  if (preg->pRegExp)
+	    free(preg->pRegExp);
 	  free(preg);
-	  preg = (regex_t*)0;
+	  preg = (RegExp_Arg*)0;
 	}
     }
   return((void *)preg);
+#elif HAVE_REGEXP_H
+  char *rx = va_arg(*ap,char *);
+  RegExp_Arg *pArg;
+
+  pArg = (RegExp_Arg *)malloc(sizeof(RegExp_Arg));
+  
+  if (pArg)
+    {
+      int blen = RX_INCREMENT;
+      pArg->compiled_expression = NULL;
+      pArg->refCount = 1;
+
+      do {
+	char *buf = (char *)malloc(blen);
+	if (buf)
+	  {
+	    char *last_pos = compile (rx, buf, &buf[blen], '\0');
+	    if (reg_errno)
+	      {
+		free(buf);
+		if (reg_errno==50)
+		  blen += RX_INCREMENT;
+		else
+		  {		   
+		    free(pArg);
+		    pArg = NULL;
+		    break;
+		  }
+	      }
+	    else
+	      {
+		pArg->compiled_expression = buf;
+		break;
+	      }
+	  }
+      } while( blen <= MAX_RX_LEN );
+    }
+  if (pArg && !pArg->compiled_expression)
+    {
+      free(pArg);
+      pArg = NULL;
+    }
+  return (void *)pArg;
 #else
   return 0;
 #endif
@@ -65,16 +133,14 @@ static void *Make_RegularExpression_Type(va_list * ap)
 +--------------------------------------------------------------------------*/
 static void *Copy_RegularExpression_Type(const void * argp)
 {
-#if HAVE_REGEX_H
-  char *ap  = (char *)argp;
-  char *new = (char *)0; 
+#if (HAVE_REGEX_H | HAVE_REGEXP_H)
+  RegExp_Arg *ap  = (RegExp_Arg *)argp;
+  RegExp_Arg *new = (RegExp_Arg *)0; 
   
-  if (argp)
+  if (ap)
     {
-      /* FIXME: this cannot possibly work! */
-      new = (char *)malloc(1+strlen(ap));
-      if (new)
-	strcpy(new,ap);
+      (ap->refCount)++;
+      new = ap;
     }
   return (void *)new;
 #else
@@ -92,8 +158,23 @@ static void *Copy_RegularExpression_Type(const void * argp)
 +--------------------------------------------------------------------------*/
 static void Free_RegularExpression_Type(void * argp)
 {
-  if (argp) 
-    free(argp);
+#if HAVE_REGEX_H | HAVE_REGEXP_H
+  RegExp_Arg *ap = (RegExp_Arg *)argp;
+  if (ap)
+    {
+      if (--(ap->refCount) == 0)
+	{
+#if HAVE_REGEX_H
+	  if (ap->pRegExp)
+	    regfree(ap->pRegExp);
+#elif HAVE_REGEXP_H
+	  if (ap->compiled_expression)
+	    free(ap->compiled_expression);
+#endif
+	  free(ap);
+	}
+    }
+#endif
 }
 
 /*---------------------------------------------------------------------------
@@ -109,18 +190,22 @@ static void Free_RegularExpression_Type(void * argp)
 +--------------------------------------------------------------------------*/
 static bool Check_RegularExpression_Field(FIELD * field, const void  * argp)
 {
+  bool match = FALSE;
 #if HAVE_REGEX_H
-  regex_t *preg = (regex_t*)argp;
-
-  return ((regexec(preg,field_buffer(field,0),0,NULL,0)==0) ? TRUE:FALSE);
-#else
-  return FALSE;
+  RegExp_Arg *ap = (RegExp_Arg*)argp;
+  if (ap && ap->pRegExp)
+    match = (regexec(ap->pRegExp,field_buffer(field,0),0,NULL,0) ? FALSE:TRUE);
+#elif HAVE_REGEXP_H
+  RegExp_Arg *ap = (RegExp_Arg *)argp;
+  if (ap && ap->compiled_expression)
+    match = (step(field_buffer(field,0),ap->compiled_expression) ? TRUE:FALSE);
 #endif
+  return match;
 }
 
-static FIELDTYPE const typeREGEXP = {
+static FIELDTYPE typeREGEXP = {
   _HAS_ARGS | _RESIDENT,
-  1,
+  1,                           /* this is mutable, so we can't be const */
   (FIELDTYPE *)0,
   (FIELDTYPE *)0,
   Make_RegularExpression_Type,
@@ -132,6 +217,6 @@ static FIELDTYPE const typeREGEXP = {
   NULL
 };
 
-FIELDTYPE const * TYPE_REGEXP = &typeREGEXP;
+FIELDTYPE* TYPE_REGEXP = &typeREGEXP;
 
 /* fty_regex.c ends here */
