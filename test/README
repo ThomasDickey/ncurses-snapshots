@@ -1,4 +1,4 @@
--- $Id: README,v 1.18 2004/05/29 23:21:30 tom Exp $
+-- $Id: README,v 1.19 2004/06/19 21:52:27 tom Exp $
 -------------------------------------------------------------------------------
 
 The programs in this directory are designed to test your newest toy :-)
@@ -297,11 +297,11 @@ innwstr				-
 ins_nwstr			-
 ins_wch				-
 ins_wstr			-
-insch				-
+insch				test: inserts
 insdelln			-
 insertln			-
-insnstr				-
-insstr				-
+insnstr				test: inserts
+insstr				test: inserts
 instr				-
 intrflush			test: demo_forms
 inwstr				-
@@ -358,9 +358,9 @@ mvinnwstr			-
 mvins_nwstr			-
 mvins_wch			-
 mvins_wstr			-
-mvinsch				-
-mvinsnstr			-
-mvinsstr			-
+mvinsch				test: inserts
+mvinsnstr			test: inserts
+mvinsstr			test: inserts
 mvinstr				-
 mvinwstr			-
 mvprintw			test: bs firework hanoi ncurses tclock view
@@ -400,7 +400,7 @@ mvwins_nwstr			-
 mvwins_wch			test: ins_wide
 mvwins_wstr			test: ins_wide
 mvwinsch			test: ins_wide inserts
-mvwinsnstr			-
+mvwinsnstr			test: inserts
 mvwinsstr			test: inserts testcurs
 mvwinstr			-
 mvwinwstr			-
@@ -578,11 +578,11 @@ winnwstr			lib: ncurses
 wins_nwstr			lib: ncurses
 wins_wch			lib: form
 wins_wstr			-
-winsch				test: testcurs
+winsch				test: inserts testcurs
 winsdelln			lib: ncurses
 winsertln			test: testcurs
-winsnstr			lib: ncurses
-winsstr				lib: ncurses
+winsnstr			test: inserts
+winsstr				test: inserts
 winstr				-
 winwstr				lib: ncurses
 wmouse_trafo			lib: menu

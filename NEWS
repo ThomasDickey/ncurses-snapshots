@@ -1,10 +1,15 @@
-j- $Id: NEWS,v 1.818 2004/06/05 22:04:49 tom Exp $
+-- $Id: NEWS,v 1.819 2004/06/19 23:58:47 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040619
+	+ reconsidered winsnstr(), decided after comparing other
+	  implementations that wrapping is an X/Open documentation error.
+	+ modify test/inserts.c to test all flavors of insstr().
 
 20040605
 	+ add setlocale() calls to a few test programs which may require it:

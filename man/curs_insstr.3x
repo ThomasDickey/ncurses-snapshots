@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_insstr.3x,v 1.13 2004/02/28 23:12:39 tom Exp $
+.\" $Id: curs_insstr.3x,v 1.14 2004/06/19 22:22:51 tom Exp $
 .TH curs_insstr 3X ""
 .SH NAME
 \fBinsstr\fR,
@@ -60,10 +60,7 @@
 These routines insert a character string
 (as many characters as will fit on the line)
 before the character under the cursor.
-All characters to the right of the cursor are shifted right.
-The \fBwinsnstr\fP and related functions perform wrapping as is done
-for \fBaddch\fP.
-The other functions do not perform wrapping,
+All characters to the right of the cursor are shifted right
 with the possibility of the rightmost characters on the line being lost.
 The cursor position does not change
 (after moving to \fIy\fR, \fIx\fR, if specified).
@@ -77,13 +74,18 @@ All routines that return an integer return \fBERR\fR upon failure and OK (SVr4
 specifies only "an integer value other than \fBERR\fR") upon successful
 completion, unless otherwise noted in the preceding routine descriptions.
 .SH NOTES
-Note that all but \fBwinsnstr\fR and \fBwinsstr\fR may be macros.
+Note that all but \fBwinsnstr\fR may be macros.
 .SH PORTABILITY
 These functions are described in the XSI Curses standard, Issue 4, which adds
 const qualifiers to the arguments.  The XSI Curses error conditions
 \fBEILSEQ\fR and \fBEILOVERFLOW\fR associated with extended-level conformance
 are not yet detected (this implementation does not yet support XPG4 multibyte
 characters).
+.LP
+The Single Unix Specification, Version 2 states that 
+\fBinsnstr\fP and \fBwinsnstr\fP perform wrapping.
+This is probably an error, since it makes this group of functions inconsistent.
+Also, no implementation of curses documents this inconsistency.
 .SH SEE ALSO
 \fBcurses\fR(3X),
 \fBunctrl\fR(3X),
