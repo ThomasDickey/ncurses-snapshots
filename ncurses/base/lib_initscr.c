@@ -45,7 +45,7 @@
 #include <sys/termio.h>		/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.30 2002/09/07 18:11:20 tom Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.31 2002/09/21 19:26:23 tom Exp $")
 
 NCURSES_EXPORT(WINDOW *)
 initscr(void)
@@ -68,6 +68,23 @@ initscr(void)
 	if ((name = getenv("TERM")) == 0
 	    || *name == '\0')
 	    name = "unknown";
+#ifdef __CYGWIN__
+	/*
+	 * 2002/9/21
+	 * Work around a bug in Cygwin.  Full-screen subprocesses run from
+	 * bash, in turn spawned from another full-screen process, will dump
+	 * core when attempting to write to stdout.  Opening /dev/tty
+	 * explicitly seems to fix the problem.
+	 */
+	if (isatty(fileno(stdout))) {
+	    FILE *fp = fopen("/dev/tty", "w");
+	    if (fp != 0 && isatty(fileno(fp))) {
+		fclose(stdout);
+		dup2(fileno(fp), STDOUT_FILENO);
+		stdout = fdopen(STDOUT_FILENO, "w");
+	    }
+	}
+#endif
 	if (newterm(name, stdout, stdin) == 0) {
 	    fprintf(stderr, "Error opening terminal: %s.\n", name);
 	    exit(EXIT_FAILURE);

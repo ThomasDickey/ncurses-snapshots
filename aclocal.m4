@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000,2001
 dnl
-dnl $Id: aclocal.m4,v 1.283 2002/09/07 18:21:13 tom Exp $
+dnl $Id: aclocal.m4,v 1.285 2002/09/21 23:59:01 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1078,9 +1078,9 @@ do
 			cf_subsets=`echo "$LIB_SUBSETS" | sed -e 's/^termlib //'`
 		fi
 
-		sed -e "s@\@LIBS_TO_MAKE\@@$LIBS_TO_MAKE@" \
-		    -e "s@\@IMPORT_LIB\@@$IMPORT_LIB@" \
-		    -e "s@\@SHARED_LIB\@@$SHARED_LIB@" \
+		sed -e "s%@LIBS_TO_MAKE@%$LIBS_TO_MAKE%" \
+		    -e "s%@IMPORT_LIB@%$IMPORT_LIB%" \
+		    -e "s%@SHARED_LIB@%$SHARED_LIB%" \
 			$cf_dir/Makefile >$cf_dir/Makefile.out
 		mv $cf_dir/Makefile.out $cf_dir/Makefile
 
@@ -1832,7 +1832,7 @@ CF_EOF
 	])
 if test -f $MANPAGE_RENAMES ; then
 cat >>man/edit_man.sh <<CF_EOF
-		< \$i | sed -f man/edit_man.sed >\$TMP
+		< \$i | sed -f edit_man.sed >\$TMP
 CF_EOF
 else
 cat >>man/edit_man.sh <<CF_EOF
@@ -2110,12 +2110,12 @@ case ".[$]$1" in #(vi
   eval $1="[$]$1"
   case ".[$]$1" in #(vi
   .NONE/*)
-    $1=`echo [$]$1 | sed -e s@NONE@$ac_default_prefix@`
+    $1=`echo [$]$1 | sed -e s%NONE%$ac_default_prefix%`
     ;;
   esac
   ;; #(vi
 .NONE/*)
-  $1=`echo [$]$1 | sed -e s@NONE@$ac_default_prefix@`
+  $1=`echo [$]$1 | sed -e s%NONE%$ac_default_prefix%`
   ;;
 *)
   ifelse($2,,[AC_ERROR([expected a pathname, not \"[$]$1\"])],$2)
