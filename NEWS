@@ -1,10 +1,15 @@
--- $Id: NEWS,v 1.609 2000/12/10 03:30:30 tom Exp $
+-- $Id: NEWS,v 1.610 2000/12/17 02:26:00 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20001216
+	+ improved scoansi terminfo entry -TD
+	+ modify configure script and makefile in Ada95/src to compile a stub
+	  for the trace functions when ncurses does not provide those.
 
 20001209
 	+ add ncurses_dll.h and related definitions to support generating DLL's

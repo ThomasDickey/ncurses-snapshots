@@ -29,7 +29,7 @@
 #  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 #
 #  Version Control
-#  $Revision: 1.23 $
+#  $Revision: 1.24 $
 #
 .SUFFIXES:
 
@@ -190,7 +190,7 @@ mostlyclean ::
 	rm -f *.o *.ali b_t*.* *.s $(PROGS) a.out core b_*_test.c *.xr[bs] *.a
 
 clean :: mostlyclean
-	rm -f $(LIBALIS) $(GENALIS) $(LIBOBJS) $(GENOBJS)
+	rm -f $(LIBALIS) $(GENALIS) $(LIBOBJS) $(GENOBJS) $(ABASE)-trace.adb
 
 distclean :: clean
 	rm -f Makefile
@@ -229,10 +229,14 @@ $(ABASE)-putwin.o: \
 	$(ADA) $(ADAFLAGS) -c -o $@ $(srcdir)/$(ABASE)-putwin.adb
 
 
+$(ABASE)-trace.adb : $(srcdir)/@ADA_TRACE@.adb
+	rm -f $@
+	cp $(srcdir)/@ADA_TRACE@.adb $@
+
 $(ABASE)-trace.o: \
 		$(ABASE)-trace.ads \
-		$(srcdir)/$(ABASE)-trace.adb $(BASEDEPS)
-	$(ADA) $(ADAFLAGS) -c -o $@ $(srcdir)/$(ABASE)-trace.adb
+		$(ABASE)-trace.adb $(BASEDEPS)
+	$(ADA) $(ADAFLAGS) -c -o $@ $(ABASE)-trace.adb
 
 
 $(ABASE)-mouse.o: \
