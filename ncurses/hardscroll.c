@@ -183,11 +183,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hardscroll.c,v 1.21 1997/07/14 18:19:20 Alexander.V.Lukyanov Exp $")
-
-#if defined(TRACE) || defined(SCROLLDEBUG)
-void _nc_linedump(void);
-#endif /* defined(TRACE) || defined(SCROLLDEBUG) */
+MODULE_ID("$Id: hardscroll.c,v 1.22 1997/08/09 12:51:05 tom Exp $")
 
 /* if only this number of lines is carried over, nuke the screen and redraw */
 #define CLEAR_THRESHOLD		3
@@ -362,8 +358,14 @@ void _nc_scroll_optimize(void)
 void _nc_linedump(void)
 /* dump the state of the real and virtual oldnum fields */
 {
+    static size_t have;
+    static char *buf;
+
     int	n;
-    char	buf[BUFSIZ];
+    size_t	want = (LINES + 1) * 4;
+
+    if (have < want)
+	buf = malloc(have = want);
 
     (void) strcpy(buf, "real");
     for (n = 0; n < LINES; n++)

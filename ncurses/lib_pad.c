@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_pad.c,v 1.20 1997/06/15 00:47:49 tom Exp $")
+MODULE_ID("$Id: lib_pad.c,v 1.21 1997/08/09 17:21:49 tom Exp $")
 
 WINDOW *newpad(int l, int c)
 {
@@ -46,7 +46,7 @@ int i;
 		returnWin(0);
 
 	for (i = 0; i < l; i++) {
-	    win->_line[i].oldindex = _NEWINDEX;
+	    if_USE_SCROLL_HINTS(win->_line[i].oldindex = _NEWINDEX);
 	    if ((win->_line[i].text = typeCalloc(chtype, ((size_t)c))) == 0) {
 		_nc_freewin(win);
 		returnWin(0);
@@ -175,6 +175,7 @@ bool	wide;
 			}
 		}
 
+#if USE_SCROLL_HINTS
 		if (wide) {
 		    int nind = m + displaced;
 		    if (oline->oldindex < 0
@@ -195,8 +196,9 @@ bool	wide;
 
 		    nline->oldindex = nind;
 		}
+#endif /* USE_SCROLL_HINTS */
 		oline->firstchar = oline->lastchar = _NOCHANGE;
-		oline->oldindex = i;
+		if_USE_SCROLL_HINTS(oline->oldindex = i);
 	}
 
 	/*
@@ -205,10 +207,12 @@ bool	wide;
 	 * procedure.  The only rows that should have an index value are those
 	 * that are displayed during this cycle.
 	 */
+#if USE_SCROLL_HINTS
 	for (i = pminrow-1; (i >= 0) && (win->_line[i].oldindex >= 0); i--)
 		win->_line[i].oldindex = _NEWINDEX;
 	for (i = pmaxrow+1; (i <= win->_maxy) && (win->_line[i].oldindex >= 0); i++)
 		win->_line[i].oldindex = _NEWINDEX;
+#endif
 
 	win->_begx = smincol;
 	win->_begy = sminrow;

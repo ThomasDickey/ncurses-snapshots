@@ -21,7 +21,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: wresize.c,v 1.6 1997/05/28 09:01:48 J.T.Conklin Exp $")
+MODULE_ID("$Id: wresize.c,v 1.7 1997/08/09 17:21:51 tom Exp $")
 
 /*
  * Reallocate a curses WINDOW struct to either shrink or grow to the specified
@@ -104,7 +104,7 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 		int	begin	= (s == 0) ? 0 : size_x + 1;
 		int	end	= ToCols;
 
-		win->_line[row].oldindex = row;
+		if_USE_SCROLL_HINTS(win->_line[row].oldindex = row);
 
 		if (ToCols != size_x || s == 0) {
 			if (! (win->_flags & _SUBWIN)) {

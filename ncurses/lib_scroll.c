@@ -32,7 +32,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_scroll.c,v 1.12 1997/05/13 15:44:13 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_scroll.c,v 1.13 1997/08/09 17:21:49 tom Exp $")
 
 void _nc_scroll_window(WINDOW *win, int const n, short const top, short const bottom, chtype blank)
 {
@@ -58,12 +58,12 @@ size_t	to_copy = (size_t)(sizeof(chtype) * (win->_maxx + 1));
 		    	memcpy(win->_line[line].text,
 			       win->_line[line+n].text,
 			       to_copy);
-			win->_line[line].oldindex = win->_line[line+n].oldindex;
+			if_USE_SCROLL_HINTS(win->_line[line].oldindex = win->_line[line+n].oldindex);
 		}
 		for (line = top; line < top-n; line++) {
 			for (j = 0; j <= win->_maxx; j ++)
 				win->_line[line].text[j] = blank;
-			win->_line[line].oldindex = _NEWINDEX;
+			if_USE_SCROLL_HINTS(win->_line[line].oldindex = _NEWINDEX);
 			win->_line[line].firstchar = 0;
 			win->_line[line].lastchar = win->_maxx;
 		}
@@ -75,12 +75,12 @@ size_t	to_copy = (size_t)(sizeof(chtype) * (win->_maxx + 1));
 		    	memcpy(win->_line[line].text,
 			       win->_line[line+n].text,
 			       to_copy);
-			win->_line[line].oldindex = win->_line[line+n].oldindex;
+			if_USE_SCROLL_HINTS(win->_line[line].oldindex = win->_line[line+n].oldindex);
 		}
 		for (line = bottom; line > bottom-n; line--) {
 			for (j = 0; j <= win->_maxx; j ++)
 				win->_line[line].text[j] = blank;
-			win->_line[line].oldindex = _NEWINDEX;
+			if_USE_SCROLL_HINTS(win->_line[line].oldindex = _NEWINDEX);
 			win->_line[line].firstchar = 0;
 			win->_line[line].lastchar = win->_maxx;
 		}

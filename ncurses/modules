@@ -1,4 +1,4 @@
-# $Id: modules,v 1.28 1997/06/15 18:22:13 tom Exp $
+# $Id: modules,v 1.29 1997/08/09 12:17:44 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -118,4 +118,5 @@ lib_adabind	lib		$(srcdir)
 lib_dft_fgbg	lib		$(srcdir)
 lib_freeall	lib		$(srcdir)
 resizeterm	lib		$(srcdir)	../include/term.h
+softscroll	lib		$(srcdir)
 wresize		lib		$(srcdir)	../include/term.h

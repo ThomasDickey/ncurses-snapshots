@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.20 1997/05/05 21:28:17 tom Exp $
+# $Id: mk-1st.awk,v 1.21 1997/08/09 17:32:14 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -120,7 +120,7 @@ END	{
 					printf "\t-rm -f $(INSTALL_PREFIX)$(libdir)/%s \n", ovr_name
 					printf "\t(cd $(INSTALL_PREFIX)$(libdir) && $(LN_S) %s %s)\n", lib_name, ovr_name
 				}
-				printf "\t- ldconfig\n"
+				printf "\t- test -z \"$(INSTALL_PREFIX)\" && ldconfig\n"
 				if ( rmSoLocs == "yes" ) {
 					print  ""
 					print  "mostlyclean \\"

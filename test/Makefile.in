@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.30 1997/05/17 23:34:12 tom Exp $
+# $Id: Makefile.in,v 1.31 1997/08/10 00:29:57 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -75,6 +75,7 @@ TESTS = \
 	newdemo \
 	rain \
 	tclock \
+	testaddch \
 	testcurs \
 	view \
 	worm \
@@ -106,6 +107,8 @@ rain: $(MODEL)/rain.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
 tclock: $(MODEL)/tclock.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT) -lm
+testaddch: $(MODEL)/testaddch.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
 testcurs: $(MODEL)/testcurs.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
 view: $(MODEL)/view.o $(LOCAL_LIBS)

@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.72 1997/07/26 21:43:38 tom Exp $
+dnl $Id: aclocal.m4,v 1.74 1997/08/10 00:56:01 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1230,9 +1230,14 @@ int main()
 {
 	FILE *fp = fopen("nc_test.out", "w");
 	if (fp != 0) {
+		char *result = "long";
 #if USE_WIDEC_SUPPORT
+		/*
+		 * If wchar_t is smaller than a long, it must be an int or a
+		 * short.  We prefer not to use a short anyway.
+		 */
 		if (sizeof(unsigned long) > sizeof(wchar_t))
-			fputs("int", fp);
+			result = "int";
 #endif
 		if (sizeof(unsigned long) > sizeof(unsigned int)) {
 			int n;
@@ -1244,9 +1249,13 @@ int main()
 					break;
 				}
 			}
-			fputs((x != 0) ? "int" : "long",  fp);
-		} else
-			fputs("long", fp);
+			/*
+			 * If x is nonzero, an int is big enough for the bits
+			 * that we want.
+			 */
+			result = (x != 0) ? "int" : "long";
+		}
+		fputs(result, fp);
 		fclose(fp);
 	}
 	exit(0);
@@ -1315,8 +1324,7 @@ AC_DEFUN([NC_WIDEC_SHIFT],
 AC_REQUIRE([NC_TYPEOF_CHTYPE])
 AC_MSG_CHECKING([for number of bits in chtype])
 AC_CACHE_VAL(nc_cv_shift_limit,[
-	if test ".$with_widec" = ".yes" ; then
-		AC_TRY_RUN([
+	AC_TRY_RUN([
 #include <stdio.h>
 int main()
 {
@@ -1340,9 +1348,6 @@ int main()
 		[nc_cv_shift_limit=32],
 		[nc_cv_shift_limit=32])
 		rm -f nc_test.out
-	else
-		nc_cv_shift_limit=32
-	fi
 	])
 AC_MSG_RESULT($nc_cv_shift_limit)
 AC_SUBST(nc_cv_shift_limit)
