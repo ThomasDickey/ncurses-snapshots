@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.51 2002/04/06 21:41:47 tom Exp $
+ * $Id: view.c,v 1.52 2002/04/27 22:37:39 tom Exp $
  */
 
 #include <ctype.h>
@@ -107,7 +107,7 @@ ch_len(NCURSES_CH_T * src)
 #endif
 
 #if USE_WIDEC_SUPPORT
-    while (getcchar(src++, NULL, NULL, NULL, NULL) > 1)
+    while (getcchar(src++, NULL, NULL, NULL, NULL) > 0)
 	result++;
 #else
     while (*src++)

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000,2001
 dnl
-dnl $Id: aclocal.m4,v 1.279 2002/02/23 20:38:31 tom Exp $
+dnl $Id: aclocal.m4,v 1.280 2002/04/27 19:31:30 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -1064,6 +1064,7 @@ do
 		done
 
 		if test $cf_dir = ncurses ; then
+			cf_subsets="$LIB_SUBSETS"
 			case "$LIB_SUBSETS" in #(vi
 			termlib+*) #(vi
 				;;
@@ -1072,6 +1073,8 @@ do
 				LIBS_TO_MAKE="$cf_item $LIBS_TO_MAKE"
 				;;
 			esac
+		else
+			cf_subsets=`echo "$LIB_SUBSETS" | sed -e 's/^termlib //'`
 		fi
 
 		sed -e "s@\@LIBS_TO_MAKE\@@$LIBS_TO_MAKE@" \
@@ -1084,10 +1087,12 @@ do
 			libname="${cf_dir}${LIB_SUFFIX}" subsets="$LIB_SUBSETS" \
 			$srcdir/$cf_dir/modules >>$cf_dir/Makefile
 
-		cf_subdirs=
-		for cf_item in $CF_LIST_MODELS
+		for cf_subset in $cf_subsets
 		do
-			echo 'Appending rules for '$cf_item' model ('$cf_dir')'
+			cf_subdirs=
+			for cf_item in $CF_LIST_MODELS
+			do
+			echo "Appending rules for ${cf_item} model (${cf_dir}: ${cf_subset})"
 			CF_UPPER(CF_ITEM,$cf_item)
 			CF_LIB_SUFFIX($cf_item,cf_suffix)
 			CF_OBJ_SUBDIR($cf_item,cf_subdir)
@@ -1107,8 +1112,6 @@ do
 				cf_depend="$cf_depend $cf_reldir/curses.priv.h"
 			fi
 
-			for cf_subset in $LIB_SUBSETS
-			do
 			$AWK -f $srcdir/mk-1st.awk \
 				name=$cf_dir \
 				traces=$LIB_TRACING \
@@ -1130,7 +1133,7 @@ do
 			do
 				test $cf_subdir = $cf_subdir2 && break
 			done
-			test ".$cf_subdir2" != ".$cf_subdir" && \
+			test "${cf_subset}.${cf_subdir2}" != "${cf_subset}.${cf_subdir}" && \
 			$AWK -f $srcdir/mk-2nd.awk \
 				name=$cf_dir \
 				traces=$LIB_TRACING \
