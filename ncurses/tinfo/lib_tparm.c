@@ -42,7 +42,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.44 2000/09/17 16:23:24 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.45 2000/09/23 20:40:30 tom Exp $")
 
 /*
  *	char *
@@ -114,7 +114,6 @@ typedef struct {
 
 static stack_frame stack[STACKSIZE];
 static int stack_ptr;
-static bool is_tgoto = FALSE;
 
 #ifdef TRACE
 static const char *tname;
@@ -256,13 +255,8 @@ parse_format(const char *s, char *format, int *len)
 	    done = TRUE;
 	    break;
 	case '.':
-	    if (!is_tgoto || (s != base)) {
-		*format++ = *s++;
-		dot = TRUE;
-	    } else {
-		*format++ = 'c';
-		done = TRUE;
-	    }
+	    *format++ = *s++;
+	    dot = TRUE;
 	    break;
 	case '#':
 	    *format++ = *s++;
@@ -369,7 +363,6 @@ tparam_internal(const char *string, va_list ap)
 	    case 'x':		/* FALLTHRU */
 	    case 'X':		/* FALLTHRU */
 	    case 'c':		/* FALLTHRU */
-	    case '.':		/* tgoto special-case */
 		number++;
 		lastpop = -1;
 		break;
@@ -497,7 +490,6 @@ tparam_internal(const char *string, va_list ap)
 	    case 'x':		/* FALLTHRU */
 	    case 'X':		/* FALLTHRU */
 	    case 'c':		/* FALLTHRU */
-	    case '.':		/* tgoto special-case */
 		save_number(format, npop(), len);
 		break;
 
@@ -721,28 +713,4 @@ tparm(NCURSES_CONST char *string,...)
     result = tparam_internal(string, ap);
     va_end(ap);
     return result;
-}
-
-/*
- * Retained solely for upward compatibility.  Note the intentional reversing of
- * the last two arguments.
- *
- * The 'is_tgoto' flag provides a workaround for a configuration mismatch on
- * FreeBSD, which installs 'screen' with termcap, which in turn compiles-in a
- * hardcoded escape sequence in termcap format for switching character sets,
- * i.e., "\033(%.".  The "%." is analogous to terminfo's "%c", and for the given
- * purpose is identical.  Normally tgoto() would be called using strings that
- * come from the terminfo database, but there is no defined capability for this
- * particular string.
- */
-char *
-tgoto(const char *string, int x, int y)
-{
-    char *result;
-
-    T((T_CALLED("tgoto(%s, %d, %d)"), string, x, y));
-    is_tgoto = TRUE;
-    result = tparm((NCURSES_CONST char *) string, y, x);
-    is_tgoto = FALSE;
-    returnPtr(result);
 }

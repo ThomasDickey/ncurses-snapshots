@@ -1,10 +1,33 @@
--- $Id: NEWS,v 1.591 2000/09/17 16:40:44 tom Exp $
+-- $Id: NEWS,v 1.593 2000/09/24 02:35:41 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000923
+	+ modify rs2 capability in xterm-r6 and similar where cursor
+	  save/restore bracketed the sequence for resetting video attributes. 
+	  The cursor restore would undo that (from a NetBSD bug report by John
+	  Hawkinson <jhawk@MIT.EDU>).
+	+ using parameter check added to tic, corrected 27 typos in
+	  terminfo.src -TD
+	+ modify tic to verify that its inputs are really files, in case
+	  someone tries to read a directory (or /dev/zero).
+	+ add a check for empty buffers returned by fgets() in comp_scan.c
+	  next_char() function, in case tic is run on a non-text file (fixes
+	  a core dump reported by Aaron Campbell <aaron@cs.dal.ca>).
+	+ add to railroad.c some code exercising tgoto(), providing an
+	  alternate form of display if the terminal supports cursor addressing.
+	+ split-out tgoto() again, this time into new file lib_tgoto.c, and
+	  implement a conventional BSD-style tgoto() which is used if the
+	  capability string does not contain terminfo-style padding or
+	  parameters (requested by Andrey A Chernov <ache@nagual.pp.ru>).
+	+ add check to tic which reports capabilities that do not reference
+	  the expected number of parameters.
+	+ add error checking to infocmp's -v and -m options to ensure that
+	  the option value is indeed a number.
 
 20000917
 	+ add S0, E0 extensions to screen's terminfo entry, which is another
