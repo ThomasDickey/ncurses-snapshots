@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2001/12/08 22:23:46 $
+#	$Date: 2001/12/08 22:21:15 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -14845,6 +14845,50 @@ nsterm-s|AppKit Terminal.app v41+ w/MacRoman charset (color w/statusline),
 
 nsterm-c-s|AppKit Terminal.app v51+ w/MacRoman charset (full color w/statusline), 
 	use=nsterm+s, use=nsterm+c, use=nsterm+mac, 
+
+# $Log: terminfo.src,v $
+# Revision 1.194  2001/12/08 22:21:15  tom
+# update 'gnome' to Redhat 7.2
+#
+# Revision 1.193  2001/11/25 02:05:59  tom
+# implemented up-to-date entries for M$ telnet (W2K) and KDE konsole
+#
+# Revision 1.192  2001/11/18 02:04:16  tom
+# updated Benjamin Sittler's entries
+#
+# Revision 1.16  2001/11/13 23:30:58  bsittler
+# added a note on Mac OS X versions and corresponding Terminal.app versions.
+#
+# Revision 1.15  2001/11/07 20:02:07  bsittler
+# updated descriptions of v51 features, and added function
+# keys and 16-color mode.
+#
+# Revision 1.14  2001/09/23 06:46:45  bsittler
+# Reordered use= entries to reflect last-highest precedence
+#
+# Revision 1.13  2001/07/18 21:14:16  bsittler
+# fixed a type, added a single Apple_Terminal alias
+#
+# Revision 1.12  2001/07/13 00:23:22  bsittler
+# renamed nsterminal to nsterm to work around Solaric tic inadequacies
+#
+# Revision 1.11  2001/07/12 23:32:01  bsittler
+# cleaned up a note about charset compatibility
+#
+# Revision 1.10  2001/07/12 21:28:12  bsittler
+# renamed to nsterminal to better reflect its origins;
+# removed the Apple_Terminal names
+#
+# Revision 1.9  2001/07/11 19:09:33  bsittler
+# Switched the primary name from Apple_Terminal to osxterm to work around
+# unbelievably broken Solaris tic which *still* can't handle terminal names of
+# more than 15 characters!
+#
+# Revision 1.8  2001/07/11 19:03:15  bsittler
+# Added full color (-c) entries without :ncv:.
+#
+# Revision 1.7  2001/07/11 18:25:45  bsittler
+# Added RCS tags.
 
 # xnuppc - Darwin PowerPC Console (a.k.a. "darwin")
 #

@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.146 2001/09/15 22:04:52 tom Exp $
+$Id: ncurses.c,v 1.149 2001/12/16 00:09:52 tom Exp $
 
 ***************************************************************************/
 
@@ -249,14 +249,155 @@ mouse_decode(MEVENT const *ep)
  ****************************************************************************/
 
 static void
-getch_test(void)
-/* test the keypad feature */
+wgetch_help(WINDOW *win, bool is_keypad)
+{
+    static const char *help[] =
+    {
+	"g -- triggers a getstr test"
+	,"k -- toggle keypad/literal mode"
+	,"s -- shell out\n"
+	,"q -- quit (x also exits)"
+	,"w -- create a new window"
+#ifdef SIGTSTP
+	,"z -- suspend this process"
+#endif
+    };
+    int y, x;
+    unsigned n;
+
+    getyx(win, y, x);
+    move(0, 0);
+    printw("Type any key to see its %s value.  Also:\n",
+	   is_keypad ? "keypad" : "literal");
+    for (n = 0; n < SIZEOF(help); ++n) {
+	mvprintw(
+		    1 + n % (SIZEOF(help) / 2),
+		    (n >= SIZEOF(help) / 2) ? COLS / 2 : 0,
+		    "%s", help[n]);
+	clrtoeol();
+    }
+    wrefresh(stdscr);
+    wmove(win, y, x);
+}
+
+static void
+wgetch_test(WINDOW *win, int delay)
 {
     char buf[BUFSIZ];
+    int first_y, first_x;
+    int last_y = getmaxy(win) - 1;
     int c;
-    int incount = 0, firsttime = 0;
-    bool blocking = TRUE;
-    int y;
+    int incount = 0;
+    bool blocking = (delay < 0);
+    bool is_keypad = (win == stdscr);
+    int y, x;
+
+    keypad(win, is_keypad);	/* should be redundant, but for testing */
+    wtimeout(win, delay);
+    getyx(win, first_y, first_x);
+
+    wgetch_help(win, is_keypad);
+    wsetscrreg(win, first_y, last_y);
+    scrollok(win, TRUE);
+
+    for (;;) {
+	while ((c = wGetchar(win)) == ERR) {
+	    incount++;
+	    if (blocking) {
+		(void) wprintw(win, "%05d: input error\n", incount);
+		break;
+	    } else {
+		(void) wprintw(win, "%05d: input timed out\n", incount);
+	    }
+	}
+	if (c == 'x' || c == 'q' || (c == ERR && blocking)) {
+	    break;
+	} else if (c == 'g') {
+	    waddstr(win, "getstr test: ");
+	    echo();
+	    wgetnstr(win, buf, sizeof(buf) - 1);
+	    noecho();
+	    wprintw(win, "I saw %d characters:\n\t`%s'.\n", strlen(buf), buf);
+	} else if (c == 'k') {
+	    is_keypad = !is_keypad;
+	    keypad(win, is_keypad);
+	    wgetch_help(win, is_keypad);
+	} else if (c == 's') {
+	    ShellOut(TRUE);
+	} else if (c == 'w') {
+	    int high = last_y - first_y + 1;
+	    int wide = getmaxx(win) - first_x;
+	    int old_y, old_x;
+	    int new_y = first_y + getbegy(win);
+	    int new_x = first_x + getbegx(win);
+
+	    getyx(win, old_y, old_x);
+	    if (high > 2 && wide > 2) {
+		WINDOW *wb = newwin(high, wide, new_y, new_x);
+		WINDOW *wi = newwin(high - 2, wide - 2, new_y + 1, new_x + 1);
+
+		box(wb, 0, 0);
+		wrefresh(wb);
+		wmove(wi, 0, 0);
+		wgetch_test(wi, delay);
+		delwin(wi);
+		delwin(wb);
+
+		wgetch_help(win, is_keypad);
+		wmove(win, old_y, old_x);
+		touchwin(win);
+		wrefresh(win);
+	    }
+#ifdef SIGTSTP
+	} else if (c == 'z') {
+	    kill(getpid(), SIGTSTP);
+#endif
+	} else {
+	    wprintw(win, "Key pressed: %04o ", c);
+#ifdef NCURSES_MOUSE_VERSION
+	    if (c == KEY_MOUSE) {
+		MEVENT event;
+
+		getmouse(&event);
+		wprintw(win, "KEY_MOUSE, %s\n", mouse_decode(&event));
+		getyx(win, y, x);
+		move(event.y, event.x);
+		addch('*');
+		wmove(win, y, x);
+	    } else
+#endif /* NCURSES_MOUSE_VERSION */
+	    if (c >= KEY_MIN) {
+		(void) waddstr(win, keyname(c));
+		waddch(win, '\n');
+	    } else if (c > 0x80) {
+		int c2 = (c & 0x7f);
+		if (isprint(c2))
+		    (void) wprintw(win, "M-%c", c2);
+		else
+		    (void) wprintw(win, "M-%s", unctrl(c2));
+		waddstr(win, " (high-half character)\n");
+	    } else {
+		if (isprint(c))
+		    (void) wprintw(win, "%c (ASCII printable character)\n", c);
+		else
+		    (void) wprintw(win, "%s (ASCII control character)\n",
+				   unctrl(c));
+	    }
+	    y = getcury(win);
+	    if (y >= last_y)
+		wmove(win, first_y, 0);
+	    wclrtoeol(win);
+	}
+    }
+
+    wtimeout(win, -1);
+}
+
+static void
+getch_test(void)
+{
+    char buf[BUFSIZ];
+    int delay;
 
     refresh();
 
@@ -266,83 +407,22 @@ getch_test(void)
 
     (void) printw("Delay in 10ths of a second (<CR> for blocking input)? ");
     echo();
-    getstr(buf);
+    getnstr(buf, sizeof(buf) - 1);
     noecho();
     nonl();
 
     if (isdigit(UChar(buf[0]))) {
-	timeout(atoi(buf) * 100);
-	blocking = FALSE;
+	delay = atoi(buf) * 100;
+    } else {
+	delay = -1;
     }
-
-    c = '?';
     raw();
-    for (;;) {
-	if (firsttime++) {
-	    printw("Key pressed: %04o ", c);
-#ifdef NCURSES_MOUSE_VERSION
-	    if (c == KEY_MOUSE) {
-		MEVENT event;
-
-		getmouse(&event);
-		printw("KEY_MOUSE, %s\n", mouse_decode(&event));
-	    } else
-#endif /* NCURSES_MOUSE_VERSION */
-	    if (c >= KEY_MIN) {
-		(void) addstr(keyname(c));
-		addch('\n');
-	    } else if (c > 0x80) {
-		int c2 = (c & 0x7f);
-		if (isprint(c2))
-		    (void) printw("M-%c", c2);
-		else
-		    (void) printw("M-%s", unctrl(c2));
-		addstr(" (high-half character)\n");
-	    } else {
-		if (isprint(c))
-		    (void) printw("%c (ASCII printable character)\n", c);
-		else
-		    (void) printw("%s (ASCII control character)\n", unctrl(c));
-	    }
-	    y = getcury(stdscr);
-	    if (y >= LINES - 1)
-		move(0, 0);
-	    clrtoeol();
-	}
-
-	if (c == 'g') {
-	    addstr("getstr test: ");
-	    echo();
-	    getstr(buf);
-	    noecho();
-	    printw("I saw `%s'.\n", buf);
-	}
-	if (c == 's') {
-	    ShellOut(TRUE);
-	}
-	if (c == 'x' || c == 'q' || (c == ERR && blocking))
-	    break;
-	if (c == '?') {
-	    addstr("Type any key to see its keypad value.  Also:\n");
-	    addstr("g -- triggers a getstr test\n");
-	    addstr("s -- shell out\n");
-	    addstr("q -- quit\n");
-	    addstr("? -- repeats this help message\n");
-	}
-
-	while ((c = Getchar()) == ERR)
-	    if (!blocking)
-		(void) printw("%05d: input timed out\n", incount++);
-	    else {
-		(void) printw("%05d: input error\n", incount++);
-		break;
-	    }
-    }
+    move(5, 0);
+    wgetch_test(stdscr, delay);
 
 #ifdef NCURSES_MOUSE_VERSION
     mousemask(0, (mmask_t *) 0);
 #endif
-    timeout(-1);
     erase();
     noraw();
     nl();

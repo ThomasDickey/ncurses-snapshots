@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000,2001
 dnl
-dnl $Id: aclocal.m4,v 1.265 2001/12/08 21:03:08 tom Exp $
+dnl $Id: aclocal.m4,v 1.266 2001/12/15 18:23:54 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -331,7 +331,7 @@ test -n "$system_name" && AC_DEFINE_UNQUOTED(SYSTEM_NAME,"$system_name")
 AC_CACHE_VAL(cf_cv_system_name,[cf_cv_system_name="$system_name"])
 
 test -z "$system_name" && system_name="$cf_cv_system_name"
-test -n "$cf_cv_system_name" && AC_MSG_RESULT("Configuring for $cf_cv_system_name")
+test -n "$cf_cv_system_name" && AC_MSG_RESULT(Configuring for $cf_cv_system_name)
 
 if test ".$system_name" != ".$cf_cv_system_name" ; then
 	AC_MSG_RESULT(Cached system name ($system_name) does not agree with actual ($cf_cv_system_name))
@@ -2619,7 +2619,8 @@ NCURSES_PATCH="`egrep '^NCURSES_PATCH[[ 	]]*=' $srcdir/dist.mk | sed -e 's/^[[^0
 cf_cv_abi_version=${NCURSES_MAJOR}
 cf_cv_rel_version=${NCURSES_MAJOR}.${NCURSES_MINOR}
 dnl Show the computed version, for logging
-AC_MSG_RESULT(Configuring NCURSES $cf_cv_rel_version ABI $cf_cv_abi_version (`date`))
+cf_cv_timestamp=`date`
+AC_MSG_RESULT(Configuring NCURSES $cf_cv_rel_version ABI $cf_cv_abi_version ($cf_cv_timestamp))
 dnl We need these values in the generated headers
 AC_SUBST(NCURSES_MAJOR)
 AC_SUBST(NCURSES_MINOR)

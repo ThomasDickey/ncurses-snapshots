@@ -40,15 +40,15 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.56 2001/10/14 00:24:44 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.57 2001/12/16 01:13:48 tom Exp $")
 
 #include <fifo_defs.h>
 
 NCURSES_EXPORT_VAR(int)
 ESCDELAY = 1000;		/* max interval betw. chars in funkeys, in millisecs */
 
-     static inline int
-       fifo_peek(void)
+static inline int
+fifo_peek(void)
 {
     int ch = SP->_fifo[peek];
     TR(TRACE_IEVENT, ("peeking at %d", peek));
@@ -62,7 +62,7 @@ fifo_pull(void)
 {
     int ch;
     ch = SP->_fifo[head];
-    TR(TRACE_IEVENT, ("pulling %d from %d", ch, head));
+    TR(TRACE_IEVENT, ("pulling %s from %d", _tracechar(ch), head));
 
     if (peek == head) {
 	h_inc();
@@ -130,7 +130,7 @@ fifo_push(void)
     if (head == -1)
 	head = peek = tail;
     t_inc();
-    TR(TRACE_IEVENT, ("pushed %#x at %d", ch, tail));
+    TR(TRACE_IEVENT, ("pushed %s at %d", _tracechar(ch), tail));
 #ifdef TRACE
     if (_nc_tracing & TRACE_IEVENT)
 	_nc_fifo_dump();
@@ -169,7 +169,7 @@ wgetch(WINDOW *win)
 	    wrefresh(win);
 
 	ch = fifo_pull();
-	T(("wgetch returning (pre-cooked): %#x = %s", ch, _trace_key(ch)));
+	T(("wgetch returning (pre-cooked): %s", _tracechar(ch)));
 	returnCode(ch);
     }
 
@@ -227,6 +227,9 @@ wgetch(WINDOW *win)
 	 */
 	int runcount = 0;
 
+	if (win->_use_keypad != SP->_keypad_on)
+	    _nc_keypad(win->_use_keypad);
+
 	do {
 	    ch = kgetch(win);
 	    if (ch == KEY_MOUSE) {
@@ -258,7 +261,7 @@ wgetch(WINDOW *win)
 	    /* resizeterm can push KEY_RESIZE */
 	    if (cooked_key_in_fifo()) {
 		ch = fifo_pull();
-		T(("wgetch returning (pre-cooked): %#x = %s", ch, _trace_key(ch)));
+		T(("wgetch returning (pre-cooked): %s", _tracechar(ch)));
 		returnCode(ch);
 	    }
 	}
@@ -306,7 +309,7 @@ wgetch(WINDOW *win)
 	if (!SP->_use_meta)
 	    ch &= 0x7f;
 
-    T(("wgetch returning : %#x = %s", ch, _trace_key(ch)));
+    T(("wgetch returning : %s", _tracechar(ch)));
 
     returnCode(ch);
 }
@@ -352,19 +355,16 @@ kgetch(WINDOW *win GCC_UNUSED)
 	    return ch;
 	}
 
-	TR(TRACE_IEVENT, ("ch: %s", _trace_key((unsigned char) ch)));
+	TR(TRACE_IEVENT, ("ch: %s", _tracechar((unsigned char) ch)));
 	while ((ptr != NULL) && (ptr->ch != (unsigned char) ch))
 	    ptr = ptr->sibling;
-#ifdef TRACE
+
 	if (ptr == NULL) {
 	    TR(TRACE_IEVENT, ("ptr is null"));
-	} else
-	    TR(TRACE_IEVENT, ("ptr=%p, ch=%d, value=%d",
-			      ptr, ptr->ch, ptr->value));
-#endif /* TRACE */
-
-	if (ptr == NULL)
 	    break;
+	}
+	TR(TRACE_IEVENT, ("ptr=%p, ch=%d, value=%d",
+			  ptr, ptr->ch, ptr->value));
 
 	if (ptr->value != 0) {	/* sequence terminated */
 	    TR(TRACE_IEVENT, ("end of sequence"));
