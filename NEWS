@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.474 1999/08/22 00:12:43 tom Exp $
+-- $Id: NEWS,v 1.476 1999/08/29 01:05:16 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990828	pre-release
+	+ add cygwin terminfo entry -TD
+	+ modify CF_PROG_EXT configure macro to set .exe extension for cygwin.
+	+ add configure option --without-cxx-binding, modifying the existing
+	  --without-cxx option to check only for the C++ compiler
+	  characteristics.  Whether or not the C++ binding is needed, the
+	  configure script checks for the size/type of bool, to make ncurses
+	  match.  Otherwise C++ applications cannot use ncurses.
 
 990821	pre-release
 	+ updated configure macros CF_MAKEFLAGS, CF_CHECK_ERRNO

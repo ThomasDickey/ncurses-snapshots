@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.162 1999/08/22 00:13:21 tom Exp $
+dnl $Id: aclocal.m4,v 1.164 1999/08/29 01:04:26 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1370,6 +1370,9 @@ os2*)
     LDFLAGS=`echo "$LDFLAGS -Zmt -Zcrtdll" | sed "s/-Zexe//g"`
     PROG_EXT=".exe"
     ;;
+cygwin*)
+    PROG_EXT=".exe"
+    ;;
 esac
 AC_SUBST(PROG_EXT)
 ])dnl
@@ -1799,7 +1802,7 @@ do
 	SRC_SUBDIRS="$SRC_SUBDIRS $cf_dir"
 done
 SRC_SUBDIRS="$SRC_SUBDIRS misc test"
-test $cf_cxx_library != no && SRC_SUBDIRS="$SRC_SUBDIRS c++"
+test $cf_with_cxx_binding != no && SRC_SUBDIRS="$SRC_SUBDIRS c++"
 
 ADA_SUBDIRS=
 if test "$cf_cv_prog_gnat_correct" = yes && test -d $srcdir/Ada95; then
