@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.19 2000/08/13 01:33:27 tom Exp $
+# $Id: Makefile.in,v 1.20 2000/08/19 19:11:56 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -33,8 +33,8 @@
 
 SHELL = /bin/sh
 
-INSTALL_PREFIX=@INSTALL_PREFIX@
-CF_MFLAGS = @cf_cv_makeflags@ INSTALL_PREFIX="$(INSTALL_PREFIX)"
+DESTDIR=@DESTDIR@
+CF_MFLAGS = @cf_cv_makeflags@ DESTDIR="$(DESTDIR)"
 
 @SET_MAKE@
 

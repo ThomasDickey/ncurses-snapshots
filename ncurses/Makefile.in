@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.67 2000/08/13 00:09:25 tom Exp $
+# $Id: Makefile.in,v 1.68 2000/08/19 19:16:18 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -54,7 +54,7 @@ CF_MFLAGS 	= @cf_cv_makeflags@
 @SET_MAKE@
 
 MODEL		= @DFT_LWR_MODEL@
-INSTALL_PREFIX	= @INSTALL_PREFIX@
+DESTDIR		= @DESTDIR@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
@@ -148,7 +148,7 @@ libs ::		$(AUTO_SRC) ../lib $(LIBRARIES)
 
 sources:	$(AUTO_SRC)
 
-$(INSTALL_PREFIX)$(libdir) :
+$(DESTDIR)$(libdir) :
 	$(srcdir)/../mkinstalldirs $@
 
 ../lib : ; mkdir $@

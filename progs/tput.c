@@ -42,8 +42,9 @@
 #ifndef	PURE_TERMINFO
 #include <termsort.c>
 #endif
+#include <transform.h>
 
-MODULE_ID("$Id: tput.c,v 1.16 2000/03/19 01:08:08 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.19 2000/08/19 20:39:22 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -66,7 +67,7 @@ quit(int status, const char *fmt,...)
 static void
 usage(void)
 {
-    fprintf(stderr, "usage: %s [-S] [-T term] capname\n", prg_name);
+    fprintf(stderr, "usage: %s [-V] [-S] [-T term] capname\n", prg_name);
     exit(EXIT_FAILURE);
 }
 
@@ -81,10 +82,10 @@ tput(int argc, char *argv[])
 
     reset = 0;
     name = argv[0];
-    if (strcmp(name, "reset") == 0) {
+    if (strcmp(name, PROG_RESET) == 0) {
 	reset = 1;
     }
-    if (reset || strcmp(name, "init") == 0) {
+    if (reset || strcmp(name, PROG_INIT) == 0) {
 	if (init_prog != 0) {
 	    system(init_prog);
 	}
@@ -254,7 +255,8 @@ int
 main(int argc, char **argv)
 {
     char *s, *term;
-    int errret, cmdline = 1;
+    int errret;
+    bool cmdline = TRUE;
     int c;
     char buf[BUFSIZ];
     int errors = 0;
@@ -266,15 +268,18 @@ main(int argc, char **argv)
 
     term = getenv("TERM");
 
-    while ((c = getopt(argc, argv, "ST:")) != EOF)
+    while ((c = getopt(argc, argv, "ST:V")) != EOF)
 	switch (c) {
 	case 'S':
-	    cmdline = 0;
+	    cmdline = FALSE;
 	    break;
 	case 'T':
 	    use_env(FALSE);
 	    term = optarg;
 	    break;
+	case 'V':
+	    puts(curses_version());
+	    return EXIT_SUCCESS;
 	default:
 	    usage();
 	    /* NOTREACHED */

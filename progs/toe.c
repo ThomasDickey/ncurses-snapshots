@@ -43,7 +43,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: toe.c,v 1.22 2000/03/11 21:47:35 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.23 2000/08/19 18:25:19 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -107,8 +107,7 @@ main(int argc, char *argv[])
 	    invert_dependencies = TRUE;
 	    break;
 	case 'V':
-	    (void) fputs(NCURSES_VERSION, stdout);
-	    putchar('\n');
+	    puts(curses_version());
 	    ExitProgram(EXIT_SUCCESS);
 	default:
 	    (void) fprintf(stderr, "usage: toe [-huUV] [-v n] [file...]\n");

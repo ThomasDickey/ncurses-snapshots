@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.14 2000/08/13 01:56:32 tom Exp $
+.\" $Id: tput.1,v 1.15 2000/08/19 18:51:05 tom Exp $
 .TH tput 1 ""
 .ds d @TERMINFO@
 .ds n 5
@@ -43,6 +43,8 @@
 \fBtput\fR [\fB-T\fR\fItype\fR] \fBlongname\fR
 .br
 \fBtput -S\fR  \fB<<\fR
+.br
+\fBtput -V\fR
 .br
 .SH DESCRIPTION
 The \fBtput\fR utility uses the \fBterminfo\fR database to make the
@@ -84,6 +86,9 @@ instead of from the command line (see example).  Only one
 \fIcapname\fR is allowed per line.  The \fB-S\fR option changes the
 meaning of the \fB0\fR and \fB1\fR boolean and string exit codes (see the
 EXIT CODES section).
+.TP 5
+\fB-V\fR
+reports the version of ncurses which was used in this program, and exits.
 .TP
 \fBinit\fR
 If the \fBterminfo\fR database is present and an entry for the user's

@@ -41,7 +41,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.54 2000/03/19 02:56:14 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.55 2000/08/19 18:25:38 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -1237,8 +1237,7 @@ main(int argc, char *argv[])
 	    break;
 
 	case 'V':
-	    (void) fputs(NCURSES_VERSION, stdout);
-	    putchar('\n');
+	    puts(curses_version());
 	    ExitProgram(EXIT_SUCCESS);
 
 	case 'w':

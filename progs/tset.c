@@ -102,7 +102,7 @@ char *ttyname(int fd);
 #include <curses.h>		/* for bool typedef */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.42 2000/07/09 23:17:34 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.44 2000/08/19 20:46:37 tom Exp $")
 
 extern char **environ;
 
@@ -1036,7 +1036,7 @@ static void
 usage(const char *pname)
 {
     (void) fprintf(stderr,
-	"usage: %s [-IQrs] [-] [-e ch] [-i ch] [-k ch] [-m mapping] [terminal]\n", pname);
+	"usage: %s [-IQVrs] [-] [-e ch] [-i ch] [-k ch] [-m mapping] [terminal]\n", pname);
     exit(EXIT_FAILURE);
 }
 
@@ -1078,7 +1078,7 @@ main(int argc, char **argv)
 
     obsolete(argv);
     noinit = noset = quiet = Sflag = sflag = showterm = 0;
-    while ((ch = getopt(argc, argv, "a:d:e:Ii:k:m:np:qQSrs")) != EOF) {
+    while ((ch = getopt(argc, argv, "a:d:e:Ii:k:m:np:qQSrsV")) != EOF) {
 	switch (ch) {
 	case 'q':		/* display term only */
 	    noset = 1;
@@ -1121,6 +1121,9 @@ main(int argc, char **argv)
 	case 's':		/* output TERM set command */
 	    sflag = 1;
 	    break;
+	case 'V':
+	    puts(curses_version());
+	    return EXIT_SUCCESS;
 	case '?':
 	default:
 	    usage(*argv);

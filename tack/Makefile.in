@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.20 2000/08/13 00:07:21 tom Exp $
+# $Id: Makefile.in,v 1.21 2000/08/19 19:14:04 tom Exp $
 # Makefile for tack
 #
 # The variable 'srcdir' refers to the source-distribution, and can be set with
@@ -18,7 +18,7 @@ CF_MFLAGS 	= @cf_cv_makeflags@
 x		= @PROG_EXT@
 
 MODEL		= ../@DFT_OBJ_SUBDIR@
-INSTALL_PREFIX	= @INSTALL_PREFIX@
+DESTDIR		= @DESTDIR@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
@@ -86,17 +86,17 @@ install.libs \
 uninstall.libs:
 
 install.tack: $(PROGS) \
-	$(INSTALL_PREFIX)$(bindir) \
-	$(INSTALL_PREFIX)$(mandir)
-	$(INSTALL_PROGRAM) tack$x $(INSTALL_PREFIX)$(bindir)/tack$x
-	$(INSTALL_DATA) $(srcdir)/tack.1 $(INSTALL_PREFIX)$(mandir)/tack.1
+	$(DESTDIR)$(bindir) \
+	$(DESTDIR)$(mandir)
+	$(INSTALL_PROGRAM) tack$x $(DESTDIR)$(bindir)/tack$x
+	$(INSTALL_DATA) $(srcdir)/tack.1 $(DESTDIR)$(mandir)/tack.1
 
 uninstall.tack:
-	-@rm -f $(INSTALL_PREFIX)$(bindir)/tack$x
-	-@rm -f $(INSTALL_PREFIX)$(mandir)/tack.1
+	-@rm -f $(DESTDIR)$(bindir)/tack$x
+	-@rm -f $(DESTDIR)$(mandir)/tack.1
 
-$(INSTALL_PREFIX)$(bindir) \
-$(INSTALL_PREFIX)$(mandir) :
+$(DESTDIR)$(bindir) \
+$(DESTDIR)$(mandir) :
 	$(srcdir)/../mkinstalldirs $@
 
 #

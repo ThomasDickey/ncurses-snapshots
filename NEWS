@@ -1,10 +1,25 @@
--- $Id: NEWS,v 1.583 2000/08/13 01:20:32 tom Exp $
+-- $Id: NEWS,v 1.584 2000/08/19 23:25:36 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000819
+	+ add cases for EMX OS/2 to config.guess, config.sub
+	+ new version of config.guess, config.sub from lynx 2.8.4dev.7
+	+ add definitions via transform.h to allow tic and tput to check for
+	  the transformed aliases rather than the original infotocap, etc.
+	+ simplify transform-expressions in progs/Makefile.in, make the
+	  uninstall rule work for transformed program names.
+	+ change symbol used by --install-prefix configure option from
+	  INSTALL_PREFIX to DESTDIR (the latter has become common usage
+	  although the name is misleading).
+	+ modify programs to use curses_version() string to report the version
+	  of ncurses with which they are compiled rather than the
+	  NCURSES_VERSION string.  The function returns the patch level in
+	  addition to the major and minor version numbers.
 
 20000812
 	+ modify CF_MAN_PAGES configure macro to make transformed program names

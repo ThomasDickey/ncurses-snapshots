@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.205 2000/08/13 02:04:38 tom Exp $
+dnl $Id: configure.in,v 1.206 2000/08/19 19:08:11 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971230)
-AC_REVISION($Revision: 1.205 $)
+AC_REVISION($Revision: 1.206 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -179,11 +179,11 @@ AC_ARG_WITH(install-prefix,
 	[case "$withval" in #(vi
 	yes|no) #(vi
 		;;
-	*)	INSTALL_PREFIX="$withval"
+	*)	DESTDIR="$withval"
 		;;
 	esac])
-AC_MSG_RESULT($INSTALL_PREFIX)
-AC_SUBST(INSTALL_PREFIX)
+AC_MSG_RESULT($DESTDIR)
+AC_SUBST(DESTDIR)
 
 ###############################################################################
 CF_HELP_MESSAGE(Options to Specify the Libraries Built/Used:)
