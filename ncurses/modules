@@ -1,4 +1,4 @@
-# $Id: modules,v 1.50 1998/09/19 21:07:39 tom Exp $
+# $Id: modules,v 1.51 1998/09/26 20:52:23 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -116,6 +116,7 @@ nc_panel	lib		$(srcdir)
 safe_sprintf	lib		$(srcdir)
 
 # Modules for porting
+memmove		lib		$(srcdir)
 sigaction	lib		$(srcdir)
 vsscanf 	lib		$(srcdir)
 

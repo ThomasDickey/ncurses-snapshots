@@ -1,10 +1,35 @@
--- $Id: NEWS,v 1.375 1998/09/20 04:01:18 tom Exp $
+-- $Id: NEWS,v 1.377 1998/09/26 23:33:32 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980926
+	+ implement mouse support for OS/2 EMX (adapted from patch against
+	  4.2(?) by Ilya Zakharevich).
+	+ add configure-check for bcopy/memmove, for 980919 changes to hashmap.
+	+ merge Data General terminfo from Hasufin <hasufin@vidnet.net> - TD
+	+ merge AIX 3.2.5 terminfo descriptions for IBM terminals, replaces
+	  some older entries - TD
+	+ modify tic to compile into %'char' form in preference to %{number},
+	  since that is a little more efficient.
+	+ minor correction to infocmp to avoid displaying "difference" between
+	  two capabilities that are rendered in equivalent forms.
+	+ add -g option to tic/infocmp to force character constants to be
+	  displayed in quoted form.  Otherwise their decimal values are shown.
+	+ modify setupterm so that cancelled strings are treated the same as
+	  absent strings, cancelled and absent booleans false (does not affect
+	  tic, infocmp).
+	+ modify tic, infocmp to discard redundant i3, r3 strings when output
+	  to termcap format.
+ 	> patch by Alexander V Lukyanov:
+	+ improve performance of tparm, now it takes 19% instead of 25% when
+	  profiling worm. 
+	+ rename maxlen/minlen to prec/width for better readability. 
+	+ use format string for printing strings. 
+	+ use len argument correctly in save_text, and pass it to save_number. 
 
 980919
 	+ make test_progs compile (but hashmap does not function).

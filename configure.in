@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.144 1998/07/19 00:31:29 tom Exp $
+dnl $Id: configure.in,v 1.145 1998/09/26 20:42:39 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.144 $)
+AC_REVISION($Revision: 1.145 $)
 AC_INIT(ncurses/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -747,6 +747,7 @@ fi
 AC_TYPE_SIGNAL
 CF_TYPE_SIGACTION
 CF_SIZECHANGE
+CF_FUNC_MEMMOVE
 
 dnl FIXME checks we don't do (but neither does the old Configure script):
 case "$cf_cv_system_name" in

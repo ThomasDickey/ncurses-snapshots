@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.16 1998/08/27 21:21:04 Rick.Ohnemus Exp $
+.\" $Id: infocmp.1m,v 1.17 1998/09/26 13:47:43 tom Exp $
 .TH infocmp 1M ""
 .ds n 5
 .ds d @DATADIR@/terminfo
@@ -239,6 +239,10 @@ for a given terminal type.
 \fB-f\fR
 Display complex terminfo strings which contain if/then/else/endif expressions
 indented for readability.
+.TP
+\fB-g\fR
+Display constant character literals in quoted form
+rather than their decimal equivalents.
 .TP 5
 \fB-i\fR
 Analyze the initialization (\fBis1\fR, \fBis2\fR, \fBis3\fR), and reset
@@ -313,6 +317,7 @@ The
 \fB-T\fR,
 \fB-e\fR,
 \fB-f\fR,
+\fB-g\fR,
 \fB-i\fR, and
 \fB-p\fR
 options are not supported in SVr4 curses.

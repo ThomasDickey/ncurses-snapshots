@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.109 1998/07/11 23:07:10 tom Exp $
+$Id: ncurses.c,v 1.110 1998/09/26 22:20:36 tom Exp $
 
 ***************************************************************************/
 
@@ -405,6 +405,7 @@ static void attr_test(void)
         refresh();
     } while (attr_getc(&n, &fg, &bg));
 
+    free((char *)pairs);
     bkgdset(A_NORMAL | BLANK);
     erase();
     endwin();

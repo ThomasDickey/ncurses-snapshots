@@ -48,7 +48,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.44 1998/09/19 21:39:39 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.46 1998/09/26 12:22:30 tom Exp $")
 
 /****************************************************************************
  *
@@ -242,18 +242,35 @@ static int grab_entry(const char *const tn, TERMTYPE *const tp)
 	char	filename[PATH_MAX];
 	int	status;
 
-	if ((status = _nc_read_entry(tn, filename, tp)) == 1)
-	    return(1);
+	if ((status = _nc_read_entry(tn, filename, tp)) != 1) {
 
 #ifndef PURE_TERMINFO
-	/*
-	 * Try falling back on the termcap file.  Note: allowing this call
-	 * links the entire terminfo/termcap compiler into the startup code.
-	 * It's preferable to build a real terminfo database and use that.
-	 */
-	status = _nc_read_termcap_entry(tn, tp);
+		/*
+		 * Try falling back on the termcap file.
+		 * Note:  allowing this call links the entire terminfo/termcap
+		 * compiler into the startup code.  It's preferable to build a
+		 * real terminfo database and use that.
+		 */
+		status = _nc_read_termcap_entry(tn, tp);
 #endif /* PURE_TERMINFO */
 
+	}
+
+	/*
+	 * If we have an entry, force all of the cancelled strings to null
+	 * pointers so we don't have to test them in the rest of the library.
+	 * (The terminfo compiler bypasses this logic, since it must know if
+	 * a string is cancelled, for merging entries).
+	 */
+	if (status == 1) {
+		unsigned n;
+		for (n = 0; n < BOOLCOUNT; n++)
+			if (!VALID_BOOLEAN(tp->Booleans[n]))
+				tp->Booleans[n] = FALSE;
+		for (n = 0; n < STRCOUNT; n++)
+			if (tp->Strings[n] == CANCELLED_STRING)
+				tp->Strings[n] = ABSENT_STRING;
+	}
 	return(status);
 }
 #endif
