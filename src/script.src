@@ -8,7 +8,7 @@ BEGIN	{FS=":";}
 		terminal = $7;
 		headers = $8;
 		tabs = $9;
-		srcdir = $10;
+		terminfo = $10;
 		cc = $11;
 		flags = $12;
 		extra = $13;
@@ -87,10 +87,10 @@ if (extra == "NONE")
 else
 	print "CONFIG = $(ISPOSIX) $(SIGNALS) $(TERMINAL) $(HEADERS) $(TABS) $(OPT) $(COMPAT) " extra >output;
 print "" > output;
-print "# SRCDIR is the directory where terminfo entries, the tic and" > output;
+print "# TERMINFO is the directory where terminfo entries, the tic and" > output;
 print "# untic programs, live. Should be somewhere on the root file" > output;
 print "# system to enable its use in single-user mode" > output;
-print "SRCDIR= " srcdir > output;
+print "TERMINFO= " terminfo > output;
 print "" > output;
 print "# libraries to build" > output;
 print "# ncurses is the regular version" > output;

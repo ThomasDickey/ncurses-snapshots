@@ -1,6 +1,24 @@
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
+*                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
  * Termcap compatibility support
@@ -15,16 +33,13 @@
  * people to run tic(1) from root on the existing termcap file
  * to translate it into a terminfo database.
  *
- * This software is Copyright (C) 1994 by Eric S. Raymond, all rights reserved.
- * It is issued with ncurses under the same terms and conditions as the ncurses
- * library sources.
  */
 
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include "curses.priv.h"
-#include "terminfo.h"
+#include "term.h"
 #include "tic.h"
 #include "term_entry.h"
 
@@ -41,11 +56,10 @@ int read_termcap_entry(char *tn, TERMTYPE *tp)
      * file.  If it does begin with a slash, the string is used as a
      * path name of the termcap file to search.  If TERMCAP does not
      * begin with a slash and name is different from TERM, tgetent()
-     * searches the files $HOME/.termcap and
-     * /usr/share/misc/termcap, in that order, unless the environment
-     * variable TERMPATH exists, in which case it specifies a list
-     * of file pathnames (separated by spaces or colons) to be
-     * searched instead.
+     * searches the files $HOME/.termcap and /usr/share/misc/termcap,
+     * in that order, unless the environment variable TERMPATH exists,
+     * in which case it specifies a list of file pathnames (separated
+     * by spaces or colons) to be searched instead.
      *
      * It goes on to state:
      *
@@ -60,7 +74,7 @@ int read_termcap_entry(char *tn, TERMTYPE *tp)
     ENTRY	*ep;
 #define MAXPATHS	32
     char	*tc, *termpaths[MAXPATHS], pathbuf[BUFSIZ];
-    int    	filecount = 0;
+    int    	i, filecount = 0;
     bool	delete = FALSE;
 
     if ((tc = getenv("TERMCAP")) != (char *)NULL)
@@ -72,28 +86,28 @@ int read_termcap_entry(char *tn, TERMTYPE *tp)
 	}
 	else if (name_match(tc, tn))    /* treat it as a capability file */
 	{
-	    termpaths[0] = mktemp(pathbuf, "/tmp/tcXXXXXX");
+	    termpaths[0] = mktemp("/tmp/tcXXXXXX");
 	    termpaths[filecount = 1] = (char *)NULL;
 
-	    if ((fp = fopen(pathbuf, "w")) != (FILE *)NULL)
+	    if ((fp = fopen(termpaths[0], "w")) != (FILE *)NULL)
 	    {
 		(void) fwrite(tc, strlen(tc), sizeof(char), fp);
 		(void) fclose(fp);
 		delete = TRUE;
 	    }
 	}
-	else if ((tp = getenv("TERMPATHS")) != (char *)NULL)
+	else if ((tc = getenv("TERMPATHS")) != (char *)NULL)
 	{
 	    char    *cp;
 
-	    for (cp = tp; *cp; cp++)
+	    for (cp = tc; *cp; cp++)
 	    {
 		if (*cp == ':')
 		    *cp = '\0';
-		else if (cp == line || cp[-1] == '\0')
+		else if (cp == tc || cp[-1] == '\0')
 		{
-		    if (filecount >= maxarg - 1)
-			return(FAIL);
+		    if (filecount >= MAXPATHS - 1)
+			return(ERR);
 
 		    termpaths[filecount++] = cp;
 		}
@@ -111,18 +125,21 @@ int read_termcap_entry(char *tn, TERMTYPE *tp)
     }
 
     /* get the data from all designated files */
-    make_hash_table();
+    make_hash_table(info_table, info_hash_table);
+    make_hash_table(cap_table, cap_hash_table);
     for (i = 0; i < filecount; i++)
     {
-	TR(("Looking for %s in %s", tn, termpaths[i]));
-	fp = fopen(termpaths[i], "r");
-	set_source(termpaths[i]);
-	read_entry_source(fp, FALSE);
-	(void) fclose(fp);
+	T(("Looking for %s in %s", tn, termpaths[i]));
+	if ((fp = fopen(termpaths[i], "r")) != (FILE *)NULL)
+	{
+	    set_source(termpaths[i]);
+	    read_entry_source(fp, FALSE);
+	    (void) fclose(fp);
+	}
     }
 
     if (delete)
-	(void) remove(pathbuf);
+	(void) remove(termpaths[0]);
 
     if (head == (ENTRY *)NULL)
 	return(ERR);

@@ -1,5 +1,5 @@
 This is a log of changes that ncurses has gone through since I
-started working with Pavel Curtis' original work of 1992:
+started working with Pavel Curtis' original work, pcurses, in 1992:
 
 #### ncurses -> ncurses 0.1 #### Jul 31, 1992 ####
 replacing sgtty stuff by termios stuff.
@@ -145,7 +145,7 @@ replaced by a hopefully more helpful message.
 *) Added configuration files for SunOS, Linux, HP/UX, Ultrix,
 386bsd/BSDI (if you have others send'em to me)
 *) Cleaner Makefile.
-*) The documentation in manual.doc is now more up to date.
+*) The documentation in manual.doc is now more uptodate.
 *) update optimization and support for hp terminals, and 386bsd
 console driver(s).
 *) mvcur optimization for terminals without cursor addressing
@@ -191,11 +191,11 @@ ncurses. To ensure correct behavior, recompile all such programs.
 Most programs using color or newer capabilities will break, others
 will probably continue to work ok.
 
-2) Pavel Curtis has renounced his copyright to the public domain.
-This means that his original sources (posted to comp.sources.unix)
-are now in the public domain. The current sources are NOT in the
-public domain, they are copyrighted by me. I'm entertaining ideas
-on what the new terms ncurses is released under.
+2) Pavel Curtis has renounced his copyright to the public domain. 
+This means that his original sources (posted to comp.sources.unix,
+volume 1) are now in the public domain.  The current sources are
+NOT in the public domain, they are copyrighted by me.  I'm
+entertaining ideas on what the new terms ncurses is released under.
 
 3) Eric S. Raymond has supplied a complete set of man pages for
 ncurses in ?roff format. They will eventually replace most of the 
@@ -272,7 +272,7 @@ Other changes and notes from 1.8.2 include:
 *) fixed ungetch() to take int instead of ch.
 *) fixes to cure wgetch() if flushinp() is called.
 
-One note I forgot to mention in 1.8.3 is that tracing if off by
+One note I forgot to mention in 1.8.3 is that tracing is off by
 default starting in the version. If you want tracing output, put
 traceon(); in your code and link with -ldcurses.
 
@@ -348,8 +348,7 @@ traceon(); in your code and link with -ldcurses.
 *) untic no longer exists, infocmp replaces it.
 *) tic can understand termcap now, especially if it is called captoinfo.
 *) The Linux Standard Console terminfo entry is called linux insead of console.
-   You HAVE to modify /etc/termcap, /etc/profile, /etc/ttytype, etc.
-   accordingly. It also uses the kernel's new method of changing charsets.
+   It also uses the kernel's new method of changing charsets.
 *) initscr() will EXIT upon error (as the docs say) This wil mostly happen if
    you try to run on an undefined terminal.
 *) I can get things running on AIX but tic can't compile terminfo. I have to
@@ -360,25 +359,48 @@ traceon(); in your code and link with -ldcurses.
 *) cleaned up the test/ directory.    
 *) test/worm will segfault after quite a while.
 *) many spelling corrections courtesy of Thomas E. Dickey 
-
+ 
 ### ncurses 1.8.8 -> 1.8.9
+
 *) compile (mostly) clean with gcc 2.5.8 -Wall -Wstrict-prototypes
    -Wmissing-prototypes -Wconversion and using __attribute__ to flush out
    non-portable use of "%x" for pointers, or for chtype data (which is declared
    as a long).
-*) corrected (as per SysVR4 include-files) prototypes for tputs, tgetent,
-   tgetflag, tgetnum, tgetstr.
-*) moved tgoto to lib_tparm.c
-*) include <termcap.h> where required to declare prototypes.
-*) added trace mask TRACE_DETAILS, use this in lib_getch.c to allow finer
-   resolution of traces.
-*) added/corrected error/limits checking in waddnstr, delwin, mvwin, makenew,
-   pnoutrefresh, wnoutrefresh, initscr
-*) corrected logic of waddchnstr, which was not passing character attributes.
 *) modified doupdate to ensure that typahead was turned on before attempting
    select-call (otherwise, some implementations hang).
-*) use calloc rather than malloc for allocating structs (Purify warns about
-   many places where ncurses references uninitialized variables otherwise).
-*) fixes in ncurses test-program to make it friendlier when reporting that
-   the terminal doesn't support color, and also to handle wrap-around in the
-   character-test.
+*) added trace mask TRACE_FIFO, use this in lib_getch.c to allow finer
+   resolution of traces.
+*) improved bounds checking on several critical functions.
+*) the data directory has been replaced by the new master terminfo file.
+*) -F file-comparison option added to infocmp.
+*) compatibility with XSI Curses is now documented in the man bages.
+*) wsyncup/wsyncdown functions are reliable now; subwindow code in general
+   is much less flaky.
+*) capabilities ~msgr, tilde_glitch, insert_padding, generic_type, no_pad_char,
+   memory_above, memory_below, and hard_copy are now used properly.
+*) cursor-movement optimization has been completely rewritten.
+*) vertical-movement optimization now uses hardware scrolling, il, dl.
+
+### ncurses 1.8.9 -> 1.9
+
+*) cleanup gcc warnings for the following: use size_t where 'int' is not
+   appropriate, fixed some shadowed variables, change attr_t to compatible with
+   chtype, use attr_t in some places where it was confused with 'int'.
+*) use chtype/attr_t casts as appropriate to ensure portability of masking
+   operations.
+*) added-back waddchnstr() to lib_addstr.c (it had been deleted).
+*) supplied missing prototypes in curses.h
+*) include <termcap.h> in lib_termcap.c to ensure that the prototypes
+   are consistent (they weren't).
+*) corrected prototype of tputs in <termcap.h>
+*) rewrote varargs parsing in lib_tparm.c (to avoid referencing memory
+   that may be out of bounds on the stack) -- Purify found this.
+*) ensure that TRACE is defined in lib_trace.c (to solve prototype
+   warnings from gcc).
+*) corrected scrolling-region size in 'mvcur_wrap()'
+*) more spelling fixes
+*) use 'calloc()' to allocate WINDOW struct in lib_newwin.c (Purify).
+*) set default value for SP->_ofp in lib_set_term.c (otherwise SunOS dumps
+   core in init_acs()).
+*) include <errno.h> in write_entry.c (most "braindead" includes declare errno
+   in that file).

@@ -35,10 +35,12 @@ char        buf[BUFSIZ];
 int         i;
 char        **lptr;
 
-    trace(TRACE_CHARPUT | TRACE_MOVE);
+#ifdef TRACE
+    trace(TRACE_CALLS);
+#endif
 
     if (argc != 2) {
-        (void) fprintf(stderr, "usage: view file");
+        fprintf(stderr, "usage: view file\n");
         exit(1);
     } else if ((fp = fopen(argv[1], "r")) == (FILE *)NULL) {
         perror(argv[1]);

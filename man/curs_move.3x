@@ -20,10 +20,10 @@ completion.
 .SH NOTES
 Note that \fBmove\fR may be a macro.
 .SH PORTABILITY
-These functions are described in the XSI Curses draft.  The draft specifies
-that if (y,x) is within a multi-column character, the cursor is moved to the
-first column of that character; however, \fBncurses\fR does not yet support
-XSI multi-byte characters.
+These functions are described in the XSI Curses standard, Issue 4.  The
+standard specifies that if (y,x) is within a multi-column character, the cursor
+is moved to the first column of that character; however, \fBncurses\fR does not
+yet support the extended-level XSI multi-byte characters.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_refresh\fR(3X)
 .\"#

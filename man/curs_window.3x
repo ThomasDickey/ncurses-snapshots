@@ -72,16 +72,13 @@ screen.
 
 Calling \fBdupwin\fR creates an exact duplicate of the window \fIwin\fR.
 
-Calling \fBwsyncup\fR causes a subwindow's information on which lines have
-changed to be propagated `upwards' into its ancestors.
+Calling \fBwsyncup\fR touches all ancestors of \fIwin\fR.  If \fBsyncok\fR is
+called with second argument \fBTRUE\fR then \fBwsyncup\fR is called
+automatically whenever there is a change in the window.
 
-If \fBsyncok\fR is called with second argument \fBTRUE\fR then
-\fBwsyncup\fR is called automatically whenever there is a change in the window.
-
-Calling \fBwsyndown\fR merges into a window's information on which lines have
-changed all the corresponding information from its subwindows and derived
-windows.  This routine is called by \fBwrefresh\fR, so it should almost
-never be necessary to call it manually.
+The \fBwsyncdown\fR routine touches \fIwin\fR if any of its ancestor windows
+have been touched.  This routine is called by \fBwrefresh\fR, so it should
+almost never be necessary to call it manually.
 
 The routine \fBwcursyncup\fR updates the current cursor position of all the
 ancestors of the window to reflect the current cursor position of the
@@ -104,8 +101,15 @@ Note that \fBsyncok\fR may be a macro.
 The subwindow functions (\fIsubwin\fR, \fIderwin\fR, \fImvderwin\fR,
 \fBwsyncup\fR, \fBwsyncdown\fR, \fBwcursyncup\fR, \fBsyncok\fR) are flaky,
 incompletely implemented, and not well tested.
+
+The System V curses documentation is very unclear about what \fBwsyncup\fR
+and \fBwsyncdown\fR actually do.  It seems to imply that they are only 
+supposed to touch exactly those lines that are affected by ancestor changes.
+The language here, and the behavior of the \fBncurses\fR implementation,
+is patterned on the XPG4 curses standard.  The weaker XPG4 spec may result
+in slower updates.
 .SH PORTABILITY
-The XSI Curses draft describes these functions.
+The XSI Curses standard, Issue 4 describes these functions.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_refresh\fR(3X), \fBcurs_touch\fR(3X)
 .\"#

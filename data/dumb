@@ -1,5 +1,0 @@
-# Dumb terminal
-dumb|simple,
-	am,
-	cols#80,
-	bel=^G, cr=\r, cud1=\n, ff=\f, ht=\t, ind=\n,

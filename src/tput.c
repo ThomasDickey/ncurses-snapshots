@@ -1,3 +1,25 @@
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
+*                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
+
 /*
  * tput.c -- shellscript access to terminal capabilities
  *
@@ -7,11 +29,12 @@
 
 #include <ctype.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <curses.h>
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
-#include "terminfo.h"
+#include "term.h"
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -165,16 +188,16 @@ FILE *f;
 		quit(4, "%s: unknown terminfo capability '%s'", prg_name, argv[0]);
 	else if (s != (char *)NULL) {
 		if (argc > 1) {
-		int i;
+		int k;
 
 			/* Nasty hack time. The tparm function needs to see numeric
 			 * parameters as numbers, not as pointers to their string
 			 * representations
 			 */
 
-			 for (i = 1; i < argc; i++)
-			 	if (isdigit(argv[i][0]))
-			 		argv[i] = (char *)atoi(argv[i]);
+			 for (k = 1; k < argc; k++)
+			 	if (isdigit(argv[k][0]))
+			 		argv[k] = (char *)atoi(argv[k]);
 
 				s = tparm(s,argv[1],argv[2],argv[3],argv[4],
 					    argv[5],argv[6],argv[7],argv[8],
@@ -226,7 +249,7 @@ int errret, cmdline = 1;
 
 	cleanup = clean;
 
-	setupterm(term, 1, &errret);
+	setupterm(term, STDOUT_FILENO, &errret);
 	if (errret == ERR)
 	quit(3, "unknown terminal \"%s\"", term);
 
@@ -237,7 +260,7 @@ int errret, cmdline = 1;
 	int errors = 0;
 
 	while (fgets(buf, sizeof(buf), stdin) != (char *)NULL) {
-		int	    argc = 0;
+		int	 argnum = 0;
 		char    *cp;
 
 		/* crack the argument list into a dope vector */
@@ -245,11 +268,11 @@ int errret, cmdline = 1;
 		if (isspace(*cp))
 			*cp = '\0';
 		else if (cp == buf || cp[-1] == 0)
-			argv[argc++] = cp;
+			argv[argnum++] = cp;
 		}
-		argv[argc] = (char *)NULL;
+		argv[argnum] = (char *)NULL;
 
-		if (tput(argc, argv) != 0)
+		if (tput(argnum, argv) != 0)
 		errors++;
 	}
 

@@ -43,7 +43,7 @@ Ignore pad prefixes when comparing strings.
 Disable smart defaults.  
 Normally, when translating from termcap to terminfo, the compiler makes 
 a number of assumptions about the defaults of string capabilities
-\freset1_string\fR, \fBcarriage_return\fR, \fBcursor_left\fR, 
+\fBreset1_string\fR, \fBcarriage_return\fR, \fBcursor_left\fR, 
 \fBcursor_down\fR, \fBscroll_forward\fR, \fBtab\fR, \fBnewline\fR,
 \fBkey_backspace\fR, \fBkey_left\fR, and \fBkey_down\fR, then attempts
 to use obsolete termcap capabilities to deduce correct values.  It also
@@ -108,7 +108,8 @@ truncated to 14 characters and a warning message will be printed.
 .SH EXTENSIONS
 Unlike the stock SVr4 \fBtic\fR command, this implementation can actually
 compile termcap sources.  In fact, entries in terminfo and termcap syntax can
-be mixed in a single source file.
+be mixed in a single source file.  See \fBterminfo\fR(\*n) for the list of
+termcap names taken to be equivalent to terminfo names.
 
 The SVr4 manual page are not clear on the resolution rules for \fBuse\fR
 capabilities. This implementation of \fBtic\fR will find use targets

@@ -32,10 +32,11 @@ hue_lightness_saturation	"hls"	bool	"hl"	-	terminal uses only HLS color notation
 col_addr_glitch         	"xhpa"	bool	"YA"	-	only positive motion for hpa/mhpa caps
 cr_cancels_micro_mode   	"crxm"	bool	"YB"	-	using cr turns off micro mode
 has_print_wheel         	"daisy"	bool	"YC"	-	printer needs operator to change character set
-row_addr_glitch         	"xvpa"	bool	"YD"	-	only positive motion for vhp/mvpa caps
+row_addr_glitch         	"xvpa"	bool	"YD"	-	only positive motion for vpa/mvpa caps
 semi_auto_right_margin  	"sam"	bool	"YE"	-	printing in last column causes cr
 cpi_changes_res         	"cpix"	bool	"YF"	-	changing character pitch changes resolution
-lpi_changes_res         	"lpix"	bool	"YG"	-	chnaging line pitch changes resolution
+lpi_changes_res         	"lpix"	bool	"YG"	-	changing line pitch changes resolution
+get_mouse               	"getm"	bool	"Gm"	-	Curses should get button events
 # These are the numerical capabilities
 columns                 	"cols"	num	"co"	Y	number of columns in aline
 init_tabs               	"it"	num	"it"	Y	tabs initially every # spaces
@@ -55,11 +56,11 @@ max_colors              	"colors"	num	"Co"	-	maximum numbers of colors on screen
 max_pairs               	"pairs"	num	"pa"	-	maximum number of color-pairs on the screen
 no_color_video          	"ncv"	num	"NC"	-	video attributes that can't be used with colors
 buffer_capacity         	"bufsz"	num	"Ya"	-	numbers of bytes buffered before printing
-dot_horz_spacing        	"spinh"	num	"Yc"	-	spacing of pins vertically in pins per inch
-dot_vert_spacing        	"spinv"	num	"Yb"	-	spacing of dots horizontally in dots per inch
+dot_vert_spacing        	"spinv"	num	"Yb"	-	spacing of pins vertically in pins per inch
+dot_horz_spacing        	"spinh"	num	"Yc"	-	spacing of dots horizontally in dots per inch
 max_micro_address       	"maddr"	num	"Yd"	-	maximum value in micro_..._address
 max_micro_jump          	"mjump"	num	"Ye"	-	maximum value in parm_..._micro
-micro_col_size         		"mcs"	num	"Yf"	-	character size when in micro mode
+micro_char_size         	"mcs"	num	"Yf"	-	character size when in micro mode
 micro_line_size         	"mls"	num	"Yg"	-	line size when in micro mode
 number_of_pins          	"npins"	num	"Yh"	-	numbers of pins in print-head
 output_res_char         	"orc"	num	"Yi"	-	horizontal resolution in units per line
@@ -225,8 +226,8 @@ enter_xon_mode          	"smxon"	str	"SX"	-	turn on xon/xoff handshaking
 exit_xon_mode           	"rmxon"	str	"RX"	-	turn off xon/xoff handshaking
 enter_am_mode           	"smam"	str	"SA"	-	turn on automatic margins
 exit_am_mode            	"rmam"	str	"RA"	-	turn off automatic margins
-xoff_character          	"xoffc"	str	"XF"	-	XON character
-xon_character           	"xonc"	str	"XN"	-	XOFF character
+xon_character           	"xonc"	str	"XN"	-	XON character
+xoff_character          	"xoffc"	str	"XF"	-	XOFF character
 ena_acs                 	"enacs"	str	"eA"	-	enable alternate char set
 label_on                	"smln"	str	"LO"	-	turn on soft labels
 label_off               	"rmln"	str	"LF"	-	turn off soft labels
@@ -287,7 +288,7 @@ key_srsume              	"kRES"	str	"%j"	-	shifted key
 key_ssave               	"kSAV"	str	"!1"	-	shifted key
 key_ssuspend            	"kSPD"	str	"!2"	-	shifted key
 key_sundo               	"kUND"	str	"!3"	-	shifted key
-req_for_input           	"rfi"	str	"RF"	-
+req_for_input           	"rfi"	str	"RF"	-	send next input char (for ptys)
 key_f11                 	"kf11"	str	"F1"	-	F11 function key
 key_f12                 	"kf12"	str	"F2"	-	F12 function key
 key_f13                 	"kf13"	str	"F3"	-	F13 function key
@@ -342,7 +343,7 @@ key_f61                 	"kf61"	str	"Fp"	-	F61 function key
 key_f62                 	"kf62"	str	"Fq"	-	F62 function key
 key_f63                 	"kf63"	str	"Fr"	-	F63 function key
 clr_bol                 	"el1"	str	"cb"	-	Clear to beginning of line
-clear_margins           	"mgc"	str	"MC"	-	clear righ and left soft margins
+clear_margins           	"mgc"	str	"MC"	-	clear right and left soft margins
 set_left_margin         	"smgl"	str	"ML"	-	set left soft margin
 set_right_margin        	"smgr"	str	"MR"	-	set right soft margin
 label_format            	"fln"	str	"Lf"	-	label format
@@ -436,7 +437,7 @@ char_set_names          	"csnm"	str	"Zy"	-	List of character set names
 key_mouse               	"kmous"	str	"Km"	-	Mouse event has occurred
 mouse_info              	"minfo"	str	"Mi"	-	Mouse status information
 req_mouse_pos           	"reqmp"	str	"RQ"	-	Request mouse position
-get_mouse               	"getm"	str	"Gm"	-	??
+get_mouse               	"getm"	str	"Gm"	-	Curses should get button events
 set_a_foreground        	"setaf"	str	"AF"	-	Set ANSI foreground color
 set_a_background        	"setab"	str	"AB"	-	Set ANSI background color
 pkey_plab               	"pfxl"	str	"xl"	-	Program function key #1 to type string #2 and show string #3
@@ -467,6 +468,20 @@ exit_scancode_mode      	"rmsc"	str	"S5"	-	Exit PC scancode mode
 pc_term_options         	"pctrm"	str	"S6"	-	PC terminal options
 scancode_escape         	"scesc"	str	"S7"	-	Escape for scancode emulation
 alt_scancode_esc        	"scesa"	str	"S8"	-	Alternate escape for scancode emulation
+#
+# The XSI Curses standard added these.  They are probably in SV 4.2 curses as
+# well, but because XSI Curses lists them is strict alphabetical order we can't
+# know if this is the right binary order.  Our termcap names for them are
+# invented; according to the XSI Curses standard, they have no termcap names.
+# If your compiled terminfo entries use these, they may not be binary-
+# compatible with SVr4.2 entries; beware!
+#
+enter_horizontal_hl_mode	"ehhlm"	str	"Xh"	-	Enter horizontal highlight mode
+enter_left_hl_mode      	"elhlm"	str	"Xl"	-	Enter left highlight mode
+enter_low_hl_mode       	"elohlm"	str	"Xo"	-	Enter low highlight mode
+enter_right_hl_mode     	"erhlm"	str	"Xr"	-	Enter right highlight mode
+enter_top_hl_mode        	"ethlm"	str	"Xt"	-	Enter top highlight mode
+enter_vertical_hl_mode     	"evhlm"	str	"Xv"	-	Enter vertical highlight mode
 #
 # The magic token below tells the tic compiler-generator code that all the caps
 # caps it should be ignored (not written out) when dumping terminfo objects.
@@ -570,7 +585,7 @@ return_does_clr_eol        	"OTxr"	bool	"xr"	Y	(used)
 # parm_scroll_right       	"OTsr"	str	"SR"	-	(not used)
 #
 # Alias declarations.  Here we set up aliases for translating extensions 
-# into standard terminfo.  NOTE: THE CODE DOES NOT ACTUALLY USE THESE YET!
+# into standard terminfo.
 #
 # AT&T extensions:
 #
@@ -580,14 +595,14 @@ return_does_clr_eol        	"OTxr"	bool	"xr"	Y	(used)
 # set.  Comments in the original, and a little cross-checking with other AT&T
 # documentation, seem to establish the following mappings:
 #
-alias	"BO"	"mr"	"AT&T"	enter_reverse_mode
-alias	"CI"	"vi"	"AT&T"	cursor_invisible
-alias	"CV"	"ve"	"AT&T"	cursor_normal
-alias	"DS"	"mh"	"AT&T"	enter_dim_mode
-alias	"EE"	"me"	"AT&T"	exit_attribute_mode	
-alias	"FE"	"LF"	"AT&T"	label_on
-alias	"FL"	"LO"	"AT&T"	label_off
-alias	"XS"	"mk"	"AT&T"	enter_secure_mode
+alias	"BO"	"mr"	AT&T	enter_reverse_mode
+alias	"CI"	"vi"	AT&T	cursor_invisible
+alias	"CV"	"ve"	AT&T	cursor_normal
+alias	"DS"	"mh"	AT&T	enter_dim_mode
+alias	"EE"	"me"	AT&T	exit_attribute_mode	
+alias	"FE"	"LF"	AT&T	label_on
+alias	"FL"	"LO"	AT&T	label_off
+alias	"XS"	"mk"	AT&T	enter_secure_mode
 #
 # XENIX extensions:
 #
@@ -608,14 +623,14 @@ alias	"XS"	"mk"	"AT&T"	enter_secure_mode
 #	WL	key_word_left
 #	WR	key_word_right
 # 
-alias	"EN"	"@7"	"XENIX"	key_end
-alias	"GE"	"ae"	"XENIX"	exit_alt_charset_mode
-alias	"GS"	"as"	"XENIX"	enter_alt_charset_mode
-alias	"HM"	"kh"	"XENIX"	key_home
-alias	"LD"	"kL"	"XENIX"	key_dl
-alias	"PD"	"kN"	"XENIX"	key_npage
-alias	"PN"	"po"	"XENIX"	prtr_off
-alias	"PS"	"pf"	"XENIX"	prtr_on
-alias	"PU"	"kP"	"XENIX"	key_ppage
-alias	"RT"	"@8"	"XENIX"	kent
-alias	"UP"	"ku"	"XENIX"	kcuu1
+alias	"EN"	"@7"	XENIX	key_end
+alias	"GE"	"ae"	XENIX	exit_alt_charset_mode
+alias	"GS"	"as"	XENIX	enter_alt_charset_mode
+alias	"HM"	"kh"	XENIX	key_home
+alias	"LD"	"kL"	XENIX	key_dl
+alias	"PD"	"kN"	XENIX	key_npage
+alias	"PN"	"po"	XENIX	prtr_off
+alias	"PS"	"pf"	XENIX	prtr_on
+alias	"PU"	"kP"	XENIX	key_ppage
+alias	"RT"	"@8"	XENIX	kent
+alias	"UP"	"ku"	XENIX	kcuu1

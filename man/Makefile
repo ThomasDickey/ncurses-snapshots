@@ -1,7 +1,7 @@
 
 
 install:
-	@mkdir -p $(MAN) $(MAN)/man3 $(MAN)/man5 $(MAN)/man1
+	-@mkdir -p $(MAN) $(MAN)/man3 $(MAN)/man5 $(MAN)/man1
 	@for i in *.3x; do \
 		sed 's,@TERMINFO@,$(SRCDIR),' < $$i >tmp.tmp; \
 		echo installing man page $$i;\

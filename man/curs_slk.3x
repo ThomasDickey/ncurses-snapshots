@@ -77,9 +77,10 @@ integer value other than \fBERR\fR") upon successful completion.
 Most applications would use \fBslk_noutrefresh\fR because a
 \fBwrefresh\fR is likely to follow soon.
 .SH PORTABILITY
-The XSI Curses draft describes these functions.  It changes the argument type
-of the attribute-manipulation functions \fBslk_attron\fR,  \fBslk_attroff\fR, 
-\fBslk_attrset\fR to be \fBattr_t\fR, and adds \fBconst\fR qualifiers.
+The XSI Curses standard, Issue 4, describes these functions.  It changes the
+argument type of the attribute-manipulation functions \fBslk_attron\fR,
+\fBslk_attroff\fR, \fBslk_attrset\fR to be \fBattr_t\fR, and adds \fBconst\fR
+qualifiers.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_attr\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_refresh\fR(3X)
 .\"#

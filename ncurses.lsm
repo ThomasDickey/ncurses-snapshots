@@ -1,0 +1,25 @@
+Begin3
+Title:		ncurses
+Version:	1.9
+Entered-date:	Mon Mar 27 00:05:16 EST 1995
+Description:	SVr4 and XSI-Curses compatible curses library and terminfo
+		tools including tic, infocmp, captoinfo.  The library can
+		be configured to fall back to reading /etc/termcap for
+		backward compatibility with BSD curses, but the distribution
+		includes a copy of the master terminfo database.  Supports
+		color, multiple highlights, forms-drawing characters, and
+		automatic recognition of keypad and function-key sequences.
+		Includes full man pages, test programs.
+Keywords:	curses, interface, screen, library
+Author: 	zmbenhal@netcom.com (Zeyd Ben-Halim)
+		esr@snark.thyrsus.com (Eric S. Raymond)
+Maintained-by:	zmbenhal@netcom.com (Zeyd Ben-Halim)
+		esr@snark.thyrsus.com (Eric S. Raymond)
+Primary-site:	ftp.netcom.com /pub/zm/zmbenhal/ncurses
+		ncurses-1.9.tgz
+Alternate-site: locke.ccil.org /pub
+Platform:	Portable to any ANSI/POSIX system.
+Copying-policy:	BSD-like.
+End
+
+

@@ -1,22 +1,24 @@
 
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
 *                ncurses is copyright (C) 1992-1995                        *
-*                          by Zeyd M. Ben-Halim                            *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
 ***************************************************************************/
+
 
 
 /*
@@ -36,7 +38,7 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <curses.h>
-#include "terminfo.h"
+#include "term.h"
 #include "object.h"
 
 #define OFFSET_BUFSIZE	100
@@ -98,7 +100,7 @@ char namebuf[128];
 
 	read(fd, namebuf, min(127, header.name_size));
 	namebuf[127] = '\0';
-	ptr->term_names = malloc(strlen(namebuf) + 1);
+	ptr->term_names = calloc(sizeof(char), strlen(namebuf) + 1);
 	(void) strcpy(ptr->term_names, namebuf);
 	if (header.name_size > 127)
 	    	lseek(fd, (long) (header.name_size - 127), 1);
@@ -191,7 +193,7 @@ char namebuf[128];
 int read_entry(char *tn, TERMTYPE *tp)
 {
 char		filename[1024];
-char		*directory = SRCDIR;
+char		*directory = TERMINFO;
 char		*terminfo;
 
 	if ((terminfo = getenv("TERMINFO")) != NULL)
@@ -203,7 +205,7 @@ char		*terminfo;
 		return(OK);
 
 	/* try the system directory */
-	(void) sprintf(filename, "%s/%c/%s", SRCDIR, tn[0], tn);
+	(void) sprintf(filename, "%s/%c/%s", TERMINFO, tn[0], tn);
 	if (read_file_entry(filename, tp) == OK)
 		return(OK);
 

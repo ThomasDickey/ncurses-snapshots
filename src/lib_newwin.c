@@ -1,22 +1,24 @@
 
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
 *                ncurses is copyright (C) 1992-1995                        *
-*                          by Zeyd M. Ben-Halim                            *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
 ***************************************************************************/
+
 
 
 /*
@@ -49,7 +51,7 @@ int	i, j;
 		return NULL;
 
 	for (i = 0; i < num_lines; i++) {
-	    if ((win->_line[i].text = TypeAllocN(chtype, num_columns)) == NULL) {
+	    if ((win->_line[i].text = (chtype *) calloc(num_columns, sizeof(chtype))) == NULL) {
 			for (j = 0; j < i; j++)
 			    free(win->_line[j].text);
 
@@ -126,14 +128,13 @@ WINDOW	*win;
 
 	T(("makenew(%d,%d,%d,%d)", num_lines, num_columns, begy, begx));
 
-	if (num_lines <= 0
-	 || num_columns <= 0)
+	if (num_lines <= 0 || num_columns <= 0)
 	 	return NULL;
 
-	if ((win = TypeAllocN(WINDOW, 1)) == NULL)
+	if ((win = (WINDOW *) calloc(sizeof(WINDOW), 1)) == NULL)
 		return NULL;            
 
-	if ((win->_line = TypeAllocN(struct ldat, num_lines)) == NULL) {
+	if ((win->_line = (struct ldat *) calloc(num_lines, sizeof (struct ldat))) == NULL) {
 		free(win);
 		return NULL;               
 	}
@@ -147,7 +148,7 @@ WINDOW	*win;
 
 	win->_flags      = 0;
 	win->_attrs      = A_NORMAL;
-	win->_bkgd	 = ' ';
+	win->_bkgd	 = A_NORMAL;
 
 	win->_clear      = (num_lines == screen_lines  &&  num_columns == screen_columns);
 	win->_idlok      = FALSE;

@@ -6,7 +6,7 @@ echo "/*"
 echo " * hashsize.h -- hash and token table constants"
 echo " */"
 
-TABSIZE=`grep -v '^[ #]' Caps | wc -l`
+TABSIZE=`grep -v '^[ #]' Caps.filtered | grep -v "^alias" | wc -l`
 
 echo ""
 echo "#define CAPTABSIZE	${TABSIZE}"

@@ -1,22 +1,24 @@
 
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*                ncurses is copyright (C) 1992, 1993, 1994                 *
-*                          by Zeyd M. Ben-Halim                            *
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
 ***************************************************************************/
+
 
 
 /*
@@ -496,7 +498,7 @@ register char *cap,	/* relevant termcap capability index */
 register char *str,	/* string value of the capability */
 int parametrized)	/* do % translations? */
 {
-    int	seenone = 0, seentwo = 0, seenm = 0, seenn = 0;
+    int	seenone = 0, seentwo = 0, saw_m = 0, saw_n = 0;
     char *padding, ch1 = 0, ch2 = 0;
 
     /*
@@ -602,7 +604,7 @@ int parametrized)	/* do % translations? */
 	else if (strncmp(str, "%{96}%^", 7) == 0)
 	{
 	    str += 6;
-	    if (seenm++ == 0)
+	    if (saw_m++ == 0)
 	    {
 		(void) sprintf(bufptr, "%%n");
 		bufptr += strlen(bufptr);
@@ -611,7 +613,7 @@ int parametrized)	/* do % translations? */
 	else if (strncmp(str, "%{127}%^", 8) == 0)
 	{
 	    str += 7;
-	    if (seenn++ == 0)
+	    if (saw_n++ == 0)
 	    {
 		(void) sprintf(bufptr, "%%m");
 		bufptr += strlen(bufptr);

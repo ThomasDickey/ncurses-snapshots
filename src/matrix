@@ -1,13 +1,13 @@
-:1:linux:Linux 1.1.59/GCC 2.5.8/libc 4.5.21:NONE:NONE:NONE:NONE:NONE:/usr/lib/terminfo:gcc:-I. -Wall:NONE:/usr:install
+:1:linux:Linux 1.2.0/GCC 2.6.2/libc 4.6.27:NONE:NONE:NONE:NONE:NONE:/usr/lib/terminfo:gcc:-I. -Wall:NONE:/usr:install
 :2:386bsd:386BSD/netBSD/freeBSD:NONE:NONE:NONE:NONE:-DBSDTABS:/usr/local/lib/terminfo:gcc:-pipe -I. -Wall:NONE:/usr:install
-:3:bsd386:BSDI's BSD/386:NONE:NONE:NONE:NONE:-DBSDTABS:/usr/local/lib/terminfo:gcc2:-pipe -I. -Wall:NONE:/usr:install
-:4:sunos:SunOS 4.1.3/GCC:NONE:NONE:NONE:-DBRAINDEAD:NONE:/usr/lib/terminfo:gcc:-I. -Wall:-DSUNIOCTL:/usr:install
+:3:bsdos:BSDI's BSD/OS:NONE:NONE:NONE:NONE:-DBSDTABS:/usr/local/lib/terminfo:gcc2:-pipe -I. -Wall:NONE:/usr:install
+:4:sunos:SunOS 4.1.3/GCC:NONE:NONE:NONE:-DBRAINDEAD:NONE:/usr/lib/terminfo:gcc:-I. -Wall:-DNOSTRERROR -DSUNIOCTL:/usr:install
 :5:ultrix:Ultrix:NONE:NONE:NONE:-DBRAINDEAD:NONE:/usr/lib/terminfo:gcc:-I. -Wall:-DNOUSLEEP:/usr:install
 :6:hpux:HP-UX 9.0:NONE:NONE:NONE:-DBRAINDEAD:NONE:/usr/local/lib/terminfo:cc:-I. -Aa -Wc,-w1:-DBROKEN_TIOCGWINSZ -D_HPUX_SOURCE:/usr:install
 :7:hpux89:HP-UX with c89 compiler:NONE:NONE:NONE:-DBRAINDEAD:NONE:/usr/local/lib/terminfo:c89:-I.:-DBROKEN_TIOCGWINSZ -D_HPUX_SOURCE:/usr/install
-:8:next3.0:NeXTStep 3.0:-DNONPOSIX:-DNOACTION:-DNOTERMIOS:NONE:-DBSDTABS:/usr/local/lib/terminfo:gcc:-I. -Wall:NONE:/usr:install
+:8:next3.0:NeXTStep 3.0:-DNONPOSIX:-DNOACTION:-DNOTERMIOS:NONE:-DBSDTABS:/usr/local/lib/terminfo:gcc:-I. -Wall:-DNOSTRERROR:/usr:install
 :9:svr4:Generic SYSV R4:NONE:-DSVR4_ACTION:NONE:NONE:NONE:/usr/local/lib/terminfo:gcc:-I. -Wall:-DBROKEN_TIOCGWINSZ:/usr:/usr/ucb/install
-:10:apollo:Apollo:-DNONPOSIX:-DNOACTION:-DNOTERMIOS:NONE:NONE:/usr/local/lib/terminfo:gcc:-pipe -I. -Wall:NONE:/usr:install
-:11:aix:AIX 3.2.5:NONE:NONE:NONE:NONE:NONE:NONE:/usr/local/lib/terminfo:cc:-I.:-D_ALL_SOURCE -DSYS_SELECT:/usr:/usr/ucb/install
+:10:apollo:Apollo:-DNONPOSIX:-DNOACTION:-DNOTERMIOS:NONE:NONE:/usr/local/lib/terminfo:gcc:-pipe -I. -Wall:-DNOSTRERROR:/usr:install
+:11:aix:AIX 3.2.5:NONE:NONE:NONE:NONE:NONE:/usr/local/lib/terminfo:c89:-I.:-D_ALL_SOURCE -DSYS_SELECT:/usr:/usr/ucb/install
 :12:solaris:Solaris 2.3:NONE:NONE:NONE:NONE:NONE:/usr/lib/terminfo:cc:-I. -Xc:NONE:/usr/:/usr/ucb/install
 :13:next3.2:NeXTStep 3.2:NONE:NONE:NONE:NONE:NONE:/usr/lib/terminfo:cc:-I.:NONE:/usr:install

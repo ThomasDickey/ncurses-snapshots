@@ -45,11 +45,11 @@ but this appears to be an error.
 .SH NOTES
 Note that \fBbkgdset\fR and \fBbkgd\fR may be macros.
 .SH PORTABILITY
-These functions are described in the XSI Curses draft.  The draft does not
-include \fBconst\fR qualifiers on the arguments.  The draft specifies that
-\fBbkgd\fR and \fBwbkgd\fR return \fBERR\fR, on failure. but they have no
-failure conditions.  The draft describes the new function \fBwgetbkgd\fR, which
-is not in SVr4.
+These functions are described in the XSI Curses standard, Issue 4.  The draft
+does not include \fBconst\fR qualifiers on the arguments.  The standard
+specifies that \fBbkgd\fR and \fBwbkgd\fR return \fBERR\fR, on failure. but
+gives no failure conditions.  The draft describes the new function
+\fBwgetbkgd\fR, which is not in SVr4.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_addch\fR(3X), \fBcurs_outopts\fR(3X)
 .\"#

@@ -290,7 +290,7 @@ int i;
 				refresh();
 				if (toupper(getch()) == 'Y') {
 					clear ();
-					return (1);
+					return ;
 				} else {
 					clear ();
 					refresh ();

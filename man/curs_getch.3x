@@ -23,8 +23,16 @@ value \fBERR\fR is returned.  In delay mode, the program waits until the system
 passes text through to the program.  Depending on the setting of \fBcbreak\fR,
 this is after one character (cbreak mode), or after the first newline (nocbreak
 mode).  In half-delay mode, the program waits until a character is typed or the
-specified timeout has been reached.  Unless \fBnoecho\fR has been set, the
-character will also be echoed into the designated window.
+specified timeout has been reached. 
+
+If \fBnoecho\fR has been set, then the character will also be echoed into the
+designated window according to the following rules: 
+If the character is the current erase character, left arrow, or backspace,
+the cursor is moved one space to the left and that screen position is erased
+as if \fBdelch\fR had been called.
+If the character value is any other \fBKEY_\fR define, the user is alerted
+with a \fBbeep\fR call.
+Otherwise the character is simply output to the screen.
 
 If the window is not a pad, and it has been moved or modified since the last
 call to \fBwrefresh\fR, \fBwrefresh\fR will be called before another character
@@ -177,9 +185,13 @@ consoles typically support little more than \fBKEY_UP\fR, \fBKEY_DOWN\fR,
 \fBKEY_NPAGE\fR, \fBKEY_PPAGE\fR, and function keys 1 through 12.  The Ins key
 is usually mapped to \fBKEY_IC\fR.
 .SH PORTABILITY
-These functions are described in the XSI Curses draft.  They read single-byte
-characters only.  The draft specifies that they return \fBERR\fR on failure,
-but specifies no error conditions.
+These functions are described in the XSI Curses standard, Issue 4.  They read
+single-byte characters only.  The standard specifies that they return \fBERR\fR
+on failure, but specifies no error conditions.
+
+The echo behavior of these functions on input of \fBKEY_\fR or backspace
+characters was not specified.  This description is adopted from the XSI
+Curses standard.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_inopts\fR(3X), \fBcurs_move\fR(3X),
 \fBcurs_refresh\fR(3X).

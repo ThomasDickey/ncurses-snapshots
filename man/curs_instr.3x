@@ -37,10 +37,11 @@ Note that all routines except \fBwinnstr\fR may be macros.  SVr4 does not
 document whether a length limit includes or excludes the trailing NUL, and
 does not document the meaning of the return values.
 .SH PORTABILITY
-These functions are described in the XSI Curses draft.  The draft specifies
-that they always return \fBOK\fR on success.  The XSI Curses error conditions
-\fBEILSEQ\fR and \fBEILOVERFLOW\fR are not yet detected (\fBncurses\fR does not
-yet support XPG4 multibyte characters).
+These functions are described in the XSI Curses standard, Issue 4.  The
+standard specifies that they always return \fBOK\fR on success.  The XSI Curses
+error conditions \fBEILSEQ\fR and \fBEILOVERFLOW\fR associated with
+extebded-level conformance are not yet detected (\fBncurses\fR does not yet
+support XPG4 multibyte characters).
 .SH SEE ALSO
 \fBncurses\fR(3X).
 .\"#

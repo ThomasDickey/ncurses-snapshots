@@ -2,16 +2,18 @@
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*                ncurses is copyright (C) 1992, 1993, 1994                 *
-*                          by Zeyd M. Ben-Halim                            *
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
@@ -21,11 +23,16 @@
 /*
 **	lib_tstp.c
 **
-**	The routine tstp().
+**	The routines tstp() and curses_signal_handler().
 **
 */
 
 #include "curses.priv.h"
+#ifndef NOACTION
+typedef struct sigaction sigaction_t;
+#else
+#include "SigAction.h"
+#endif
 #ifdef SVR4_ACTION
 #define _POSIX_SOURCE
 #endif

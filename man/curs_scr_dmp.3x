@@ -30,8 +30,9 @@ currently has on its screen.  If the data is determined to be valid,
 than clearing the screen and starting from scratch.  \fBscr_init\fR is used
 after \fBinitscr\fR or a \fBsystem\fR [see \fBsystem\fR(BA_LIB)] call to share
 the screen with another process which has done a \fBscr_dump\fR after its
-\fBendwin\fR call.  The data is declared invalid if the time-stamp of the tty
-is old or the terminfo capabilities \fBrmcup\fR and \fBnrrmc\fR exist.
+\fBendwin\fR call.  The data is declared invalid if the terminfo capabilities
+\fBrmcup\fR and \fBnrrmc\fR exist; also if the terminal has been written to
+since the preceding \fBscr_dump\fR call.
 
 The \fBscr_set\fR routine is a combination of \fBscr_restore\fR and
 \fBscr_init\fR.  It tells the program that the information in \fIfilename\fR is
@@ -46,7 +47,12 @@ upon success.
 .SH NOTES
 Note that \fBscr_init\fR, \fBscr_set\fR, and \fBscr_restore\fR may be macros.
 .SH PORTABILITY
-The XSI Curses draft describes these functions (adding the const qualifiers).
+The XSI Curses standard, Issue 4, describes these functions (adding the const
+qualifiers).
+
+The SVr4 docs merely say under \fBscr_init\fR that the dump data is also
+considered invalid "if the time-stamp of the tty is old" but don't define
+"old".
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_refresh\fR(3X),
 \fBcurs_util\fR(3X), \fBsystem\fR(3S)

@@ -2,22 +2,22 @@
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*                ncurses is copyright (C) 1992, 1993, 1994                 *
-*                          by Zeyd M. Ben-Halim                            *
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
 ***************************************************************************/
-
-
 
 /*
 **	lib_addstr.c
@@ -34,7 +34,7 @@ waddnstr(WINDOW *win, char *const astr, int n)
 char *str = astr;
 int code = ERR;
 
-	T(("waddnstr(%p,\"%s\",%d) called", win, visbuf(str), n));
+	T(("waddnstr(%p,\"%s\",%d) called %s", win, visbuf(str), n, _traceattr(win->_attrs)));
 
 	if (str != NULL) {
 
@@ -45,7 +45,7 @@ int code = ERR;
 
 		while((n-- > 0) && (*str != '\0')) {
 			TR(TRACE_VIRTPUT, ("*str = %x", *str));
-			if (waddch(win, (chtype)(unsigned char)*str++) == ERR) {
+			if (waddch(win, *str++) == ERR) {
 				code = ERR;
 				break;
 			}

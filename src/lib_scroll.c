@@ -1,22 +1,24 @@
 
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
 *                ncurses is copyright (C) 1992-1995                        *
-*                          by Zeyd M. Ben-Halim                            *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
 ***************************************************************************/
+
 
 
 /*
@@ -34,7 +36,8 @@
 
 void scroll_window(WINDOW *win, int n, int top, int bottom)
 {
-int	line;
+int	line, j;
+chtype	blank = wrenderchar(win, ' ', BLANK, TRUE);
 
 	TR(TRACE_MOVE, ("scroll_window(%p, %d, %d, %d)", win, n, top,bottom)); 
 
@@ -42,7 +45,7 @@ int	line;
 	 * This used to do a line-text pointer-shuffle instead of text copies.
 	 * That (a) doesn't work when the window is derived and doesn't have
 	 * its own storage, (b) doesn't save you a lot on modern machines
-	 * anyway.  Your typical memset/memcpy implementations are coded in
+	 * anyway.  Your typical memcpy implementations are coded in
 	 * assembler using a tight BLT loop; for the size of copies we're
 	 * talking here, the total execution time is dominated by the one-time
 	 * setup cost.  So there is no point in trying to be excessively
@@ -60,8 +63,8 @@ int	line;
 		}
 		for (line = top; line < top-n; line++)
 		{
-			memset(win->_line[line].text, BLANK,
-			       sizeof(chtype) * win->_maxx);
+			for (j = 0; j < win->_maxx; j ++)
+				win->_line[line].text[j] = blank;
 			win->_line[line].oldindex = NEWINDEX;
 		}
     	}
@@ -77,8 +80,8 @@ int	line;
 		}
 		for (line = bottom; line > bottom-n; line--)
 		{
-			memset(win->_line[line].text, BLANK,
-			       sizeof(chtype) * win->_maxx);
+			for (j = 0; j < win->_maxx; j ++)
+				win->_line[line].text[j] = blank;
 			win->_line[line].oldindex = NEWINDEX;
 		}
 	}

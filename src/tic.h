@@ -1,7 +1,24 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
+*                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
  *	tic.h - Global variables and structures for the terminfo
@@ -12,9 +29,12 @@
 #include <stdio.h>
 
 #ifndef TRUE
-typedef char	bool;
 #define TRUE	1
 #define FALSE	0
+#endif
+
+#ifndef bool
+#define bool unsigned char
 #endif
 
 #ifndef OK
@@ -73,10 +93,18 @@ struct name_table_entry
 	short	nte_index;	/* index of associated variable in its array */
 };
 
+struct alias
+{
+    char	*from;
+    char	*to;
+};
+
+
 extern struct name_table_entry	info_table[];
 extern struct name_table_entry	*info_hash_table[];
 extern struct name_table_entry	cap_table[];
 extern struct name_table_entry	*cap_hash_table[];
+extern struct alias alias_table[];
 
 #define NOTFOUND	((struct name_table_entry *) 0)
 

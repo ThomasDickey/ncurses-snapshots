@@ -2,16 +2,18 @@
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*                ncurses is copyright (C) 1992, 1993, 1994                 *
-*                          by Zeyd M. Ben-Halim                            *
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
@@ -24,7 +26,7 @@
  */
 
 #include <string.h>
-#include <termcap.h>
+#include <term.h>
 #include "curses.priv.h"
 
 /*
@@ -117,7 +119,7 @@ static inline char *spop(void)
 	return   (stack_ptr > 0  ?  stack[--stack_ptr].str  :  0);
 }
 
-char *tparm(char *string, ...)
+char *tparm(const char *string, ...)
 {
 va_list	ap;
 char	len;
@@ -125,58 +127,56 @@ int	number;
 int	level;
 int	x, y;
 int	i;
+register char	*cp;
 
 	if (string == NULL)
 		return NULL;
 
+	/*
+	 * Find the highest parameter-number referred to in the format string.
+	 * Use this value to limit the number of arguments copied from the
+	 * variable-length argument list.
+	 */
+	for (cp = (char *)string, number = 0; *cp != '\0'; cp++) {
+		if (cp[0] == '%' && cp[1] != '\0') {
+			switch (cp[1]) {
+			case '%':
+				cp++;
+				break;
+			case 'i':
+				if (number < 2)
+					number = 2;
+				break;
+			case 'p':
+				cp++;
+				if (cp[1] >= '1' && cp[1] <= '9') {
+					int c = cp[1] - '0';
+					if (c > number)
+						number = c;
+				}
+				break;
+			}
+		}
+	}
+
 	va_start(ap, string);
-	for (i = 0; i < 9; i++) {
+	for (i = 0; i < number; i++) {
+		/*
+		 * FIXME: potential loss here if sizeof(int) != sizeof(char *).
+		 * A few caps (such as plab_norm) have string-valued parms.
+		 */
 		param[i] = va_arg(ap, int);
 	}
 
 #ifdef TRACE
-	number = 0;
-	{
-		char	*cp;
-		for (cp = string; *cp; cp++)
-			if (*cp == '%' && (cp == string || cp[-1] != '%'))
-				number++;
-	}
-
-	if (number == 0)
-		T(("tparm(\"%s\") called", visbuf(string)));
-	else if (number == 1)
-		T(("tparm(\"%s\", %d) called", visbuf(string), param[0]));
-	else if (number == 2)
-		T(("tparm(\"%s\", %d, %d) called",
-			visbuf(string), param[0], param[1]));
-	else if (number == 3)
-		T(("tparm(\"%s\", %d, %d, %d) called",
-			visbuf(string), param[0], param[1], param[2]));
-	else if (number == 4)
-		T(("tparm(\"%s\", %d, %d, %d, %d) called",
-			visbuf(string), param[0], param[1], param[2],
-			param[3]));
-	else if (number == 5)
-		T(("tparm(\"%s\", %d, %d, %d, %d, %d) called",
-			visbuf(string), param[0], param[1], param[2], param[3],
-			param[4]));
- 	else if (number == 6)
-		T(("tparm(\"%s\", %d, %d, %d, %d, %d, %d) called",
-			visbuf(string), param[0], param[1], param[2], param[3],
-			param[4], param[5]));
-	else if (number == 7)
-		T(("tparm(\"%s\", %d, %d, %d, %d, %d, %d, %d) called",
-			visbuf(string), param[0], param[1], param[2], param[3],
-			param[4], param[5], param[6]));
-	else if (number == 8)
-		T(("tparm(\"%s\", %d, %d, %d, %d, %d, %d, %d, %d) called",
-			visbuf(string), param[0], param[1], param[2], param[3],
-			param[4], param[5], param[6], param[7]));
-	else
-		T(("tparm(\"%s\", %d, %d, %d, %d, %d, %d, %d, %d, %d) called",
-			visbuf(string), param[0], param[1], param[2], param[3],
-			param[4], param[5], param[6], param[7], param[8]));
+	if (_tracing & TRACE_CALLS) {
+		*(cp = buffer) = '\0';
+		for (i = 0; i < number; i++) {
+			(void)sprintf(cp, ", %d", param[i]);
+			cp += strlen(cp);
+		}
+		_tracef("tparm(\"%s\"%s) called", visbuf(string), buffer);
+ 	}
 #endif /* TRACE */
 
 	stack_ptr = 0;
@@ -418,17 +418,3 @@ int	i;
 	return(buffer);
 }
 
-
-/*
- *	char *
- *	tgoto(string, x, y)
- *
- *	Retained solely for upward compatibility.  Note the intentional
- *	reversing of the last two arguments.
- *
- */
-
-char *tgoto(const char *string, int x, int y)
-{
-	return(tparm((char *)string, y, x));
-}

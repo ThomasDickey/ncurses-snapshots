@@ -2,20 +2,23 @@
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*                ncurses is copyright (C) 1992, 1993, 1994                 *
-*                          by Zeyd M. Ben-Halim                            *
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
 ***************************************************************************/
+
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -26,8 +29,8 @@
 #include <unctrl.h>
 #include <stdarg.h>
 
-#ifndef TRUE
 typedef char	bool;
+#ifndef TRUE
 #  define TRUE    (1)
 #  define FALSE   (0)
 #endif
@@ -46,7 +49,12 @@ typedef unsigned long  chtype;
 #define A_ALTCHARSET	0x00400000
 #define A_INVIS		0x00800000
 #define A_PROTECT	0x01000000
-/* bits 0xfe000000 are available for extended attributes */
+#define A_HORIZONTAL	0x02000000	/* XSI Curses attr -- not yet used */
+#define A_LEFT		0x04000000	/* XSI Curses attr -- not yet used */
+#define A_LOW		0x08000000	/* XSI Curses attr -- not yet used */
+#define A_RIGHT		0x10000000	/* XSI Curses attr -- not yet used */
+#define A_TOP		0x20000000	/* XSI Curses attr -- not yet used */
+#define A_VERTICAL	0x40000000	/* XSI Curses attr -- not yet used */
 #define A_CHARTEXT	0x000000ff
 #define A_COLOR		0x0000ff00
 #define COLOR_PAIR(n)	(n << 8) 
@@ -54,8 +62,30 @@ typedef unsigned long  chtype;
 
 /* extended attributes unique to ncurses */
 #ifdef __i386__
-#define A_PCCHARSET	0x02000000	/* corresponds to smpch/rmpch */
+#define A_PCCHARSET	A_PROTECT	/* corresponds to smpch/rmpch */
 #endif /* __i386__ */
+/*
+ * XSI attributes.  In the ncurses implementation, they are identical to the
+ * A_ attributes because attr_t is just an int.  The XSI Curses attr_* and
+ * wattr_* entry points are all mapped to attr* and wattr* entry points.
+ */
+#define WA_ATTRIBUTES	0xffffff00
+#define WA_NORMAL	0x00000000
+#define WA_STANDOUT	0x00010000
+#define WA_UNDERLINE	0x00020000
+#define WA_REVERSE	0x00040000
+#define WA_BLINK	0x00080000
+#define WA_DIM		0x00100000
+#define WA_BOLD		0x00200000
+#define WA_ALTCHARSET	0x00400000
+#define WA_INVIS	0x00800000
+#define WA_PROTECT	0x01000000
+#define WA_HORIZONTAL	0x02000000	/* XSI Curses attr -- not yet used */
+#define WA_LEFT		0x04000000	/* XSI Curses attr -- not yet used */
+#define WA_LOW		0x08000000	/* XSI Curses attr -- not yet used */
+#define WA_RIGHT	0x10000000	/* XSI Curses attr -- not yet used */
+#define WA_TOP		0x20000000	/* XSI Curses attr -- not yet used */
+#define WA_VERTICAL	0x40000000	/* XSI Curses attr -- not yet used */
 
 /* colors */
 extern int COLORS;
@@ -80,8 +110,8 @@ extern 	chtype acs_map[];
 #define ACS_LLCORNER	(acs_map['m'])	/* lower left corner */
 #define ACS_URCORNER	(acs_map['k'])	/* upper right corner */
 #define ACS_LRCORNER	(acs_map['j'])	/* lower right corner */
-#define ACS_RTEE	(acs_map['u'])	/* tee pointing left */
 #define ACS_LTEE	(acs_map['t'])	/* tee pointing right */
+#define ACS_RTEE	(acs_map['u'])	/* tee pointing left */
 #define ACS_BTEE	(acs_map['v'])	/* tee pointing up */
 #define ACS_TTEE	(acs_map['w'])	/* tee pointing down */
 #define ACS_HLINE	(acs_map['q'])	/* horizontal line */
@@ -133,7 +163,7 @@ extern 	chtype acs_map[];
 typedef struct screen  SCREEN;
 typedef struct _win_st WINDOW;
 
-typedef	chtype	attr_t;
+typedef	chtype	attr_t;		/* ...must be at least as wide as chtype */
 
 struct _win_st {
 	short   _cury, _curx;	/* current cursor position */
@@ -190,10 +220,6 @@ extern "C" {
 
 extern char ttytype[];		/* needed for backward compatibility */
 
-extern int tigetflag(char *);
-extern int tigetnum(char *);
-extern char *tigetstr(char *);
-
 /*
  * GCC (and some other compilers) define '__attribute__'; we're using this
  * macro to alert the compiler to flag inconsistencies in printf/scanf-like
@@ -208,7 +234,7 @@ extern char *tigetstr(char *);
 extern void _init_trace(void);
 extern void _tracef(char *, ...) __attribute__((format(printf,1,2)));
 extern void _tracedump(char *, WINDOW *);
-extern char *_traceattr(chtype mode);
+extern char *_traceattr(attr_t mode);
 extern char *_tracechar(const unsigned char mode);
 extern void trace(const unsigned int tracelevel);
 
@@ -216,11 +242,12 @@ extern void trace(const unsigned int tracelevel);
 #define TRACE_DISABLE	0x00	/* turn off tracing */
 #define TRACE_UPDATE	0x01	/* trace update actions, old & new screens */
 #define TRACE_MOVE	0x02	/* trace cursor moves and scrolls */
-#define TRACE_CALLS	0x04	/* trace curses calls */
-#define TRACE_CHARPUT	0x08	/* trace all character outputs */
+#define TRACE_CHARPUT	0x04	/* trace all character outputs */
+#define TRACE_ORDINARY	0x07	/* trace all update actions */
+#define TRACE_CALLS	0x08	/* trace all curses calls */
 #define TRACE_VIRTPUT	0x10	/* trace virtual character puts */
-#define TRACE_DETAILS	0x20	/* also internal details */
-#define TRACE_MAXIMUM	0x0f	/* maximum trace level */
+#define TRACE_FIFO	0x20	/* also fifo actions by getch() */
+#define TRACE_MAXIMUM	0xff	/* maximum trace level */
 
 #ifdef TRACE
 extern bool no_optimize;	/* suppress optimization */
@@ -245,6 +272,7 @@ extern WINDOW *dupwin(WINDOW *);
 extern int echo(void);
 extern int endwin(void);
 extern char erasechar(void);
+extern void filter(void);
 extern int flash(void);
 extern int flushinp(void);
 extern WINDOW *getwin(FILE *fp);
@@ -287,31 +315,32 @@ extern int pechochar(WINDOW *, chtype);
 extern int pnoutrefresh(WINDOW *,int,int,int,int,int,int);
 extern int prefresh(WINDOW *,int,int,int,int,int,int);
 extern int printw(char *,...);
-extern int putp(char *);
 extern int putwin(WINDOW *, FILE *);
 extern int qiflush(void);
 extern int raw(void);
 extern int reset_prog_mode(void);
 extern int reset_shell_mode(void);
 extern int resetty(void);
-extern int restartterm(char *term, int filenum, int *errret);
 extern int ripoffline(int line, int (*init)(WINDOW *, int));
 extern int savetty(void);
 extern int scanw(char *,...);
+extern int scr_dump(char *file);
+extern int scr_init(char *file);
+extern int scr_restore(char *file);
+extern int scr_set(char *file);
 extern int scrollok(WINDOW *,bool);
 extern SCREEN *set_term(SCREEN *);
-extern int setupterm(char *,int,int *);
+extern WINDOW *subpad(WINDOW *orig, int l, int c, int begy, int begx);
 extern WINDOW *subwin(WINDOW *,int,int,int,int);
 extern int syncok(WINDOW *win, bool bf);
 extern attr_t termattrs(void);
 extern char *termname(void);
 extern int timeout(int);
-extern char *tparm(char *, ...);
 extern int typeahead(int);
 extern int ungetch(int);
 extern void use_env(bool);
 extern int vidattr(attr_t);
-extern int vidputs(attr_t,int (*)(char));
+extern int vidputs(attr_t,int (*)(int));
 extern int vwscanw(WINDOW *,char *,va_list);
 extern int vwprintw(WINDOW *,char *,va_list);
 extern int waddch(WINDOW *, const chtype);
@@ -333,6 +362,7 @@ extern int wgetnstr(WINDOW *,char *,int maxlen);
 extern int whline(WINDOW *,chtype,int);
 extern int winsch(WINDOW *,chtype);
 extern int winsdelln(WINDOW *,int);
+extern int winnstr(WINDOW *win, char *str, int n);
 extern int winsnstr(WINDOW *,char *const,int);
 extern int wmove(WINDOW *,int,int);
 extern int wnoutrefresh(WINDOW *);
@@ -401,9 +431,17 @@ extern int slk_attroff(attr_t);
 #define wbkgdset(win,ch)	((win)->_bkgd = ch)
 
 /* XSI curses macros for XPG4 conformance */
-#define getattr(ap)		(*ap = stdscr->_attrs)
-#define wgetattr(win, ap)	(*ap = (win)->_attrs)
 #define wgetbkgd(win)		((win)->_bkgd)
+
+#define wattr_get(win, a)	((win)->_attrs)
+#define wattr_off(win, a)	attroff(win, a)
+#define wattr_on(win, a)	attron(win, a)
+#define wattr_set(win, a)	attrset(win, a)
+
+#define attr_get()		wattr_get(stdscr)
+#define attr_off(a)		wattr_off(strdscr, a)
+#define attr_on(a)		wattr_on(strdscr, a)
+#define attr_set(a)		wattr_set(strdscr, a)
 
 /*
  * XSI curses deprecates SVr4 vwprintw/vwscanw, which are supposed to use

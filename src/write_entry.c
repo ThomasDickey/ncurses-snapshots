@@ -1,22 +1,24 @@
 
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
 *                ncurses is copyright (C) 1992-1995                        *
-*                          by Zeyd M. Ben-Halim                            *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
 ***************************************************************************/
+
 
 
 /*
@@ -24,6 +26,7 @@
  */
 
 #include <stdlib.h>
+#include <errno.h>
 #ifndef NONPOSIX
 #include <unistd.h>
 #else
@@ -34,7 +37,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "tic.h"
-#include "terminfo.h"
+#include "term.h"
 #include "object.h"
 
 extern long	time(long *);
@@ -42,7 +45,7 @@ extern long	time(long *);
 static int write_object(FILE *, TERMTYPE *);
 
 static long	start_time;		/* time at start of writes */
-static char	*destination = SRCDIR;
+static char	*destination = TERMINFO;
 
 /*
  *	check_writeable(void)
@@ -189,7 +192,7 @@ static int	call_count;
 						statbuf.st_mtime < start_time)
 	    	{
 			fprintf(stderr,
-				"'%s' defined in more than one entry; using is '%s'.\n",
+				"'%s' defined in more than one entry; using '%s'.\n",
 				ptr, tp->term_names);
 		}
 		else

@@ -1,18 +1,19 @@
 
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
 *                ncurses is copyright (C) 1992-1995                        *
-*                          by Zeyd M. Ben-Halim                            *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
@@ -27,7 +28,8 @@
 */
 
 #include <stdlib.h>
-#include "terminfo.h"
+#include "term.h"	/* keypad_xmit, keypad_local, meta_on, meta_off */
+			/* cursor_visible,cursor_normal,cursor_invisible */
 #include "curses.priv.h"
 
 int idlok(WINDOW *win,  bool flag)
@@ -138,9 +140,15 @@ int keypad(WINDOW *win, bool flag)
    	win->_use_keypad = flag;
 
 	if (flag  &&  keypad_xmit)
+	{
+	    TPUTS_TRACE("keypad_xmit");
 	    putp(keypad_xmit);
+	}
 	else if (! flag  &&  keypad_local)
+	{
+	    TPUTS_TRACE("keypad_local");
 	    putp(keypad_local);
+	}
 	    
 	if (SP->_keytry == UNINITIALISED)
 	    init_keytry();
@@ -156,10 +164,54 @@ int meta(WINDOW *win, bool flag)
 	SP->_use_meta = flag;
 
 	if (flag  &&  meta_on)
+	{
+	    TPUTS_TRACE("meta_on");
 	    putp(meta_on);
+	}
 	else if (! flag  &&  meta_off)
+	{
+	    TPUTS_TRACE("meta_off");
 	    putp(meta_off);
+	}
 	return OK; 
+}
+
+/* curs_set() moved here to narrow the kernel interface */
+
+int curs_set(int vis)
+{
+int cursor = SP->_cursor;
+
+	T(("curs_set(%d)", vis));
+
+	if (vis < 0 || vis > 2)
+		return ERR;
+
+	switch(vis) {
+	case 2:
+		if (cursor_visible)
+		{
+			TPUTS_TRACE("cursor_visible");
+			putp(cursor_visible);
+		}
+		break;
+	case 1:
+		if (cursor_normal)
+		{
+			TPUTS_TRACE("cursor_normal");
+			putp(cursor_normal);
+		}
+		break;
+	case 0:
+		if (cursor_invisible)
+		{
+			TPUTS_TRACE("cursor_invisible");
+			putp(cursor_invisible);
+		}
+		break;
+	}
+	SP->_cursor = vis;
+	return cursor;	
 }
 
 /*
@@ -209,7 +261,7 @@ struct try      *ptr, *savedptr;
 					return;
 	   			}
 			} else {
-	    		if ((ptr->sibling = TypeAllocN(struct try, 1)) == NULL) {
+	    		if ((ptr->sibling = (struct try *) malloc(sizeof *ptr)) == NULL) {
 	        		out_of_memory = TRUE;
 					return;
 	    		}
@@ -223,7 +275,7 @@ struct try      *ptr, *savedptr;
 	       	}
 	   	} /* end for (;;) */  
 	} else {   /* newtry == NULL :: First sequence to be added */
-	    	savedptr = ptr = newtry = TypeAllocN(struct try, 1);
+	    	savedptr = ptr = newtry = (struct try *) malloc(sizeof *ptr);
 	    
 	    	if (ptr == NULL) {
 	        	out_of_memory = TRUE;
@@ -238,7 +290,7 @@ struct try      *ptr, *savedptr;
 	    /* at this point, we are adding to the try.  ptr->child == NULL */
 	    
 	while (*str) {
-	   	ptr->child = TypeAllocN(struct try, 1);
+	   	ptr->child = (struct try *) malloc(sizeof *ptr);
 	    
 	   	ptr = ptr->child;
 	   

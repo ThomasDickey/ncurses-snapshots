@@ -9,6 +9,18 @@ See the file CHANGES for a release history and bug-fix notes.
 Detailed documentation can be found in the man directory.  An HTML
 introduction to ncurses programming lives in the doc directory.
 
+RELATED RESOURCES:
+
+This distribution now includes (and uses) a copy of the master terminfo
+database maintained by Eric Raymond.  This database (which is the 
+official descendant of the 4.4BSD termcap file) changes faster than this
+code does.
+
+You can surf to a WWW page that carries the current terminfo master file,
+and news about ncurses, at
+
+	http://www.ccil.org/~esr/ncurses.html
+
 AUTHORS:
 
 Pavel Curtis: 
@@ -25,6 +37,12 @@ Eric S. Raymond:
         for vertical motions, and the ncurses test program.
 
 CONTRIBUTORS:
+
+Thomas Dickey
+	for first-class bug-chasing and methodical testing.
+
+Ross Ridge
+	for the code that hacks termcap parameters into terminfo.
 
 Warren Tucker and Gerhard Fuernkranz,
 	for writing and sending the PANELS library.

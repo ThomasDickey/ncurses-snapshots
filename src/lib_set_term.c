@@ -1,22 +1,24 @@
 
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
 *                ncurses is copyright (C) 1992-1995                        *
-*                          by Zeyd M. Ben-Halim                            *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
 ***************************************************************************/
+
 
 
 /*
@@ -28,11 +30,9 @@
 
 #include <stdlib.h>
 #include "curses.priv.h"
-#include "terminfo.h"
+#include "term.h"	/* cur_term */
 
-struct screen *
-set_term(screen)
-struct screen *screen;
+struct screen * set_term(struct screen *screen)
 {
 struct screen	*oldSP;
 
@@ -49,9 +49,9 @@ struct screen	*oldSP;
 	return(oldSP);
 }
 
-void delscreen(SCREEN *SP)
+void delscreen(SCREEN *sp)
 {
-	free(SP);
+	free(sp);
 }
 
 WINDOW *stdscr, *curscr, *newscr;
@@ -69,7 +69,7 @@ int setupscreen(int slines, int scolumns)
 {
 int	stolen, topstolen;
 
-	if ((SP = TypeAllocN(SCREEN, 1)) == NULL)
+	if ((SP = (SCREEN *) calloc(sizeof(*SP), 1)) == NULL)
 	    	return ERR;
 
 	SP->_term      	= cur_term;
@@ -86,6 +86,7 @@ int	stolen, topstolen;
 	SP->_fifotail 	= 0;
 	SP->_fifopeek	= 0;
 	SP->_endwin	= TRUE;
+	SP->_ofp	= stdout;	/* (may be overridden later) */
 
 	init_acs(); 
 

@@ -1,41 +1,56 @@
-			ANNOUNCING NCURSES
+
+===============================================================================
+			ANNOUNCING NCURSES 1.9
+===============================================================================
 
 The ncurses library is a freeware emulation of System V Release 4.0 curses.
 It uses terminfo format, supports color and multiple highlights and forms
-characters, and has all the other SV-curses enhancements over BSD curses.
+characters, and function-key mapping, and has all the other SYSV-curses
+enhancements over BSD curses.
 
-The ncurses code is highly portable, and runs on all of the following
-platforms: Linux, 386BSD, SunOS, HP-UX, Ultrix, NeXTSTEP 3.0, System V
-Release 4, BSDI BSD/386, Apollo, AIX 3.2.5, Solaris 2.3.  It should port
-easily to any ANSI/POSIX-conforming UNIX.
+The ncurses code was developed under Linux.  It is highly portable, and
+runs on all of the following platforms: 386BSD, SunOS, HP-UX, Ultrix,
+NeXTSTEP 3.0, System V Release 4, BSDI BSD/OS, Apollo, AIX 3.2.5, Solaris
+2.3, NeXTSTEP 3.2.  It should port easily to any ANSI/POSIX-conforming UNIX.
 
-The distribution includes the library and support utilities, including 
-a terminfo compiler tic(1), a decompiler infocmp(1), clear(1), tput(1), 
-and a termcap conversion tool captoinfo(1).  Full manual pages are 
-provided for the library and tools.
+The distribution includes the library and support utilities, including a
+terminfo compiler tic(1), a decompiler infocmp(1), clear(1), tput(1), and a
+termcap conversion tool captoinfo(1).  Full manual pages are provided for
+the library and tools.
+
+The ncurses distribution is available at:
+
+	ftp://ftp.netcom.com/pub/zm/zmbenhal/ncurses
 
 			FEATURES OF NCURSES
 
-* Full support for SVr4 curses features including keyboard mapping, color,
-  and forms-drawing with ACS characters.
+* All 257 of the SVr4 calls have been implemented (and are documented).
 
-* Almost all of the SVr4 calls have been implemented.  Only 1 of 257
-  calls is not yet supported.
+* Full support for SVr4 curses features including keyboard mapping, color,
+  forms-drawing with ACS characters, and automatic recognition of keypad
+  and function keys.
+
+* The API is 8-bit clean and base-level conformant with the X/OPEN curses
+  specification, XSI Curses (that is, it implements all BASE level features,
+  but not all EXTENDED features).  Most EXTENDED-level features not directly
+  concerned with wide-character support are implemented, including many
+  function calls not supported under SVr4 curses (but portability of all
+  calls is documented so you can use the SVr4 subset only).
 
 * Better cursor-movement optimization.  The package now features a
   cursor-local-movement computation more efficient than either BSD's
-  or SV's.
+  or System V's.
 
-* Super hardware scrolling support.  The screen-update code
-  incorporates a novel algorithm that enables it to make optimal
+* Super hardware scrolling support.  The screen-update code incorporates
+  a novel, simple, and cheap algorithm that enables it to make optimal
   use of hardware scrolling, line-insertion, and line-deletion
   for screen-line movements.  This algorithm is more powerful than
   the BSD curses quickch() routine.
 
 * (PC-clone boxes only) Support for access to the IBM PC ROM characters
   through a new highlight, A_PCCHARSET.  Also, ncurses will now
-  automatically load a nice set of nice forms characters when running
-  on PC-compatible consoles.
+  automatically load a nice set of forms characters when running on
+  PC-compatible consoles with no acsc capability specified.
 
 * Automatic fallback to the /etc/termcap file can be compiled in
   for systems withould a terminfo tree.  This feature is neither
@@ -46,10 +61,16 @@ provided for the library and tools.
 
 			STATE OF THE PACKAGE
 
+Numerous bugs present in earlier versions through 1.8.7 have been fixed; the
+library is far more reliable than it used to be.  Bounds checking in many 
+`dangerous' entry points has been improved.  The code is now type-safe 
+according to gcc -Wall.  The library has been checked for malloc leaks and
+arena corruption by the Purify memory-allocation tester.
+
 The ncurses code has been tested with a wide variety of games and utilities,
 including:
 
-	lynx-2.4	-- the character-screen WWW browser
+	lynx-2.3.7	-- the character-screen WWW browser
 	bs-2.0		-- Battleships game with proper visual interface
 	greed-3.1	-- the game of Greed
 	nolan-1.1	-- the World's Smallest Political Quiz
@@ -65,7 +86,7 @@ The ncurses distribution includes a selection of test programs.
 The primary maintainer of ncurses is Zeyd ben-Halim <zmbenhal@netcom.com>.
 Unfortunately, he can only work on the package part time.  As a result, since
 1.8.1, much of the enhancement work and all the documentation has been done by
-Eric S. Raymond <esr@snark.thyrsus.com>.  However, requests for beta releases
+Eric S. Raymond <esr@snark.thyrsus.com>.  However, requests for beta updates
 and other queries should properly be directed to Zeyd.
 
 There is an ncurses mailing list.  It is a listserv list; to join, write
@@ -88,3 +109,16 @@ will, in fact, use ncurses.
 BSDI has said that they will cut over to ncurses if and when Keith gives the
 word.  Where BSDI goes, freeBSD and netBSD are likely to follow.
 
+			RELATED RESOURCES
+
+This distribution now includes (and uses) a copy of the master terminfo
+database maintained by Eric Raymond.  This database (which is the 
+official descendant of the 4.4BSD termcap file) changes faster than this
+code does, so you probably want to pick up new copies occasionally.
+
+You can surf to a WWW page that carries the current terminfo master file,
+and news about ncurses, at
+
+	http://www.ccil.org/~esr/ncurses.html
+
+===============================================================================

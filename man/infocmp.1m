@@ -156,6 +156,14 @@ sorting to be done by the \fBtermcap\fR name or the long C variable
 name, respectively.
 
 .TP 5
+\fB-F\fR
+compare terminfo files.  This assumes that two following arguments are
+filenames.  The files are searched for pairwise matches between
+entries, with two entries considered to match if any of their names do.
+The report printed to standard output lists entries with no matches in
+the other file, and entries with more than one match.  For entries
+with exactly one match it includes a difference report.
+.TP 5
 \fB-v\fR
 prints out tracing information on standard error as the program runs.
 .TP 5
@@ -185,8 +193,10 @@ created by different people.
 .TP 20
 \*d
 Compiled terminal description database.
-.SH NOTE
-The \fB-r\fB option's notion of `termcap' capabilities is BSD 4.4's.  Older
+.SH EXTENSIONS
+The -F option is not supported in SVr4 curses.
+
+The \fB-r\fR option's notion of `termcap' capabilities is BSD 4.4's.  Older
 versions may have a more restricted set.
 .SH SEE ALSO
 \fBcurses\fR(3X), \fBterminfo\fR(\*n), \fBtic\fR(1M)

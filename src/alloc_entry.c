@@ -2,16 +2,18 @@
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*                ncurses is copyright (C) 1992, 1993, 1994                 *
-*                          by Zeyd M. Ben-Halim                            *
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
@@ -27,20 +29,17 @@
  *	wrap_entry();
  *	free_entry();
  *
- * This software is Copyright (C) 1994 by Eric S. Raymond, all rights reserved.
- * It is issued with ncurses under the same terms and conditions as the ncurses
- * library sources.
  */
 
 #include <stdlib.h>
 #include "tic.h"
-#include "terminfo.h"
+#include "term.h"
 #include "term_entry.h"
 
 #define MAX_STRTAB	4096	/* documented maximum entry size */
 
 static char	stringbuf[MAX_STRTAB];	/* buffer for string capabilities */
-static int	next_free;		/* next free character in stringbuf */
+static size_t	next_free;		/* next free character in stringbuf */
 
 void init_entry(TERMTYPE *tp)
 /* initialize a terminal type data block */
@@ -62,8 +61,8 @@ int	i;
 char *save_str(char *string)
 /* save a copy of string in the string buffer */
 {
-int	old_next_free = next_free;
-int	len = strlen(string) + 1;
+size_t	old_next_free = next_free;
+size_t	len = strlen(string) + 1;
 
 	if (next_free + len < MAX_STRTAB)
 	{

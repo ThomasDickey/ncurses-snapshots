@@ -15,7 +15,7 @@ interfaces to terminfo database
 .br
 \fBint setterm(char *term);\fR
 .br
-\fBint set_curterm(TERMINAL *nterm);\fR
+\fBTERMINAL *set_curterm(TERMINAL *nterm);\fR
 .br
 \fBint del_curterm(TERMINAL *oterm);\fR
 .br
@@ -25,7 +25,7 @@ interfaces to terminfo database
       long int p4, long int p5, long int p6, long int p7,\fR
       long int p8, long int p9);\fR
 .br
-\fBint tputs(char *str, int affcnt, int (*putc)(char));\fR
+\fBint tputs(char *str, int affcnt, int (*putc)(int));\fR
 .br
 \fBint putp(char *str);\fR
 .br
@@ -105,7 +105,8 @@ is not recommended for new programs.
 
 The \fBset_curterm\fR routine sets the variable \fBcur_term\fR to
 \fInterm\fR, and makes all of the \fBterminfo\fR boolean, numeric, and
-string variables use the values from \fInterm\fR.
+string variables use the values from \fInterm\fR.  It returns the old value
+of \fBcur_term\fR.
 
 The \fBdel_curterm\fR routine frees the space pointed to by
 \fIoterm\fR and makes it available for further use.  If \fIoterm\fR is
@@ -184,12 +185,16 @@ committing to the allocation of storage involved in \fBinitscr\fR.
 
 Note that \fBvidattr\fR and \fBvidputs\fR may be macros.
 .SH PORTABILITY
-The XSI Curses draft describes the functions \fBsetupterm\fR, 
-\fBset_curterm\fR, \fBdel_curterm\fR, \fBrestarrtterm\fR, \fBtparm\fR,
-\fBtigetflag\fR, \fBtigetnum\fR, and \fBtigetstr\fR.
+The function \fBsetterm\fR is not describe in the XSI Curses standard and must
+be considered non-portable.  All other functions are as described in the XSI
+curses standard.
 
-The functions \fBsetterm\fR is not describe in the XSI Curses draft and must
-be considered non-portable.
+In System V Release 4, \fBset_curterm\fR has an \fBint\fR return type and
+returns \fBOK\fR or \fBERR\fR.  We have chosen to implement the XSI Curses
+semantics.
+
+In System V Release 4, the third argument of \fBtputs\fR has the type
+\fBint (*putc)(char)\fR.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_kernel\fR(3X), \fBcurs_termcap\fR(3X),
 \fBputc\fR(3S), \fBterminfo\fR(\*n)

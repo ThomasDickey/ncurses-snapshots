@@ -1,5 +1,0 @@
-
-xtermc|xterm-color|Color Xterm,
-         colors#8, pairs#64, setf=\E[%p1%{30}%+%dm, setb=\E[%p1%{40}%+%dm,
-         op=\E[30;47m, use=xterm,
-

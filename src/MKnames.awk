@@ -1,8 +1,4 @@
 
-#  This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for
-#  details. If they are missing then this copy is in violation of  
-#  the copyright conditions. 
-
 BEGIN		{
 			print  "/*" > "boolnames"
 			print  " *	names.c - Arrays of capability names and codes"  > "boolnames"

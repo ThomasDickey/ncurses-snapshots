@@ -73,8 +73,9 @@ Routines that return pointers always return \fBNULL\fR on error.
 .SH NOTES
 Note that \fBinitscr\fR and \fBnewterm\fR may be macros.
 .SH PORTABILITY
-These functions are described in the XSI Curses draft.  It specifies
-that portable applications must not call \fBinitscr\fR more than once.
+These functions are described in the XSI Curses standard, Issue 4.  It
+specifies that portable applications must not call \fBinitscr\fR more than
+once.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_kernel\fR(3X), \fBcurs_refresh\fR(3X),
 \fBcurs_slk\fR(3X), \fBcurs_util\fR(3X)
