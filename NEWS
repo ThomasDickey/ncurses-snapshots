@@ -1,6 +1,13 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970328
+	+ correct array limit in tparam_internal(), add case to interpret "%x"
+	  (patch by Andreas Schwab)
+	+ rewrote number-parsing in ncurses.c 'd' test; it did not reset the
+	  value properly when non-numeric characters were given (reported by
+	  Andreas Schwab <schwab@issan.informatik.uni-dortmund.de>)
+
 970321
 	+ move definition of __INTERNAL_CAPS_VISIBLE before include for
 	  progs.priv.h (patch by David MacKenzie).

@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.82 1997/02/15 23:59:55 tom Exp $
+$Id: ncurses.c,v 1.84 1997/03/30 01:09:29 tom Exp $
 
 ***************************************************************************/
 
@@ -406,15 +406,43 @@ static void color_test(void)
     endwin();
 }
 
+static void change_color(int current, int field, int value, int usebase)
+{
+	short	red, green, blue;
+
+	if (usebase)
+		color_content(current, &red, &green, &blue);
+	else
+		red = green = blue = 0;
+
+	switch (field) {
+	case 0:
+		red += value;
+		break;
+	case 1:
+		green += value;
+		break;
+	case 2:
+		blue += value;
+		break;
+	}
+
+	if (init_color(current, red, green, blue) == ERR)
+		beep();
+}
+
 static void color_edit(void)
 /* display the color test pattern, without trying to edit colors */
 {
-    int	i, c, value = 0, current = 0, field = 0, usebase = 0;
+    int	i, this_c = 0, value = 0, current = 0, field = 0;
+    int last_c;
 
     refresh();
 
     for (i = 0; i < COLORS; i++)
 	init_pair(i, COLOR_WHITE, i);
+
+    mvprintw(LINES-2, 0, "Number: %d", value);
 
     do {
 	short	red, green, blue;
@@ -465,61 +493,44 @@ static void color_edit(void)
 
 	move(2 + current, 0);
 
-	switch (c = Getchar())
+	last_c = this_c;
+	this_c = Getchar();
+	if (isdigit(this_c) && !isdigit(last_c))
+		value = 0;
+
+	switch (this_c)
 	{
 	case KEY_UP:
 	    current = (current == 0 ? (COLORS - 1) : current - 1);
-	    value = 0;
 	    break;
 
 	case KEY_DOWN:
 	    current = (current == (COLORS - 1) ? 0 : current + 1);
-	    value = 0;
 	    break;
 
 	case KEY_RIGHT:
 	    field = (field == 2 ? 0 : field + 1);
-	    value = 0;
 	    break;
 
 	case KEY_LEFT:
 	    field = (field == 0 ? 2 : field - 1);
-	    value = 0;
 	    break;
 
 	case '0': case '1': case '2': case '3': case '4':
 	case '5': case '6': case '7': case '8': case '9':
-	    do {
-		value = value * 10 + (c - '0');
-		c = Getchar();
-	    } while
-		(isdigit(c));
-	    if (c != '+' && c != '-' && c != '=')
-		beep();
-	    else
-		ungetch(c);
+	    value = value * 10 + (this_c - '0');
 	    break;
 
 	case '+':
-	    usebase = 1;
-	    goto changeit;
+	    change_color(current, field, value, 1);
+	    break;
 
 	case '-':
-	    value = -value;
-	    usebase = 1;
-	    goto changeit;
+	    change_color(current, field, -value, 1);
+	    break;
 
 	case '=':
-	    usebase = 0;
-	changeit:
-	    color_content(current, &red, &green, &blue);
-	    if (field == 0)
-		red = red * usebase + value;
-	    else if (field == 1)
-		green = green * usebase + value;
-	    else if (field == 2)
-		blue = blue * usebase + value;
-	    init_color(current, red, green, blue);
+	    change_color(current, field, value, 0);
 	    break;
 
 	case '?':
@@ -530,7 +541,7 @@ static void color_edit(void)
     P("the fields in one of the RGB triples of the current colors; the one");
     P("currently selected will be reverse-video highlighted.");
     P("");
-    P("To change a field, enter the digits of the new value; they won't be");
+    P("To change a field, enter the digits of the new value; they are echoed");
     P("echoed.  Finish by typing `='; the change will take effect instantly.");
     P("To increment or decrement a value, use the same procedure, but finish");
     P("with a `+' or `-'.");
@@ -549,8 +560,10 @@ static void color_edit(void)
 	    beep();
 	    break;
 	}
+	mvprintw(LINES-2, 0, "Number: %d", value);
+	clrtoeol();
     } while
-	(c != 'x' && c != 'q');
+	(this_c != 'x' && this_c != 'q');
 
     erase();
     endwin();
