@@ -37,7 +37,7 @@
 #define USE_TRACE_TIMES 0
 #endif
 
-#if HAVE_SYS_TIME_H && ! SYSTEM_LOOKS_LIKE_SCO
+#if HAVE_SYS_TIME_H && HAVE_SYS_TIME_SELECT
 #include <sys/time.h>
 #endif
 
@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.92 1997/11/08 21:22:57 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.93 1997/11/15 22:48:57 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a

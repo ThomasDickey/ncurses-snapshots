@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.101 1997/10/18 20:14:40 tom Exp $
+$Id: ncurses.c,v 1.102 1997/11/15 22:49:16 tom Exp $
 
 ***************************************************************************/
 
@@ -27,7 +27,7 @@ $Id: ncurses.c,v 1.101 1997/10/18 20:14:40 tom Exp $
 #include <signal.h>
 
 #if HAVE_GETTIMEOFDAY
-#if HAVE_SYS_TIME_H && ! SYSTEM_LOOKS_LIKE_SCO
+#if HAVE_SYS_TIME_H && HAVE_SYS_TIME_SELECT
 #include <sys/time.h>
 #endif
 #if HAVE_SYS_SELECT_H

@@ -33,7 +33,7 @@
 #include <term.h>	/* padding_baud_rate, xon_xoff */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.26 1997/11/09 01:27:55 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.27 1997/11/16 01:33:18 tom Exp $")
 
 #define OUTPUT ((SP != 0) ? SP->_ofp : stdout)
 
@@ -90,7 +90,7 @@ int putp(const char *string)
 int tputs(const char *string, int affcnt, int (*outc)(int))
 {
 bool	always_delay = (string == bell) || (string == flash_screen);
-bool	allow_delay =
+bool	normal_delay =
 	 !xon_xoff
 #ifdef padding_baud_rate
 	 && padding_baud_rate
@@ -132,7 +132,7 @@ char	addrbuf[17];
 		trailpad = trailpad * 10 + (*string - '0');
 		string++;
 	}
-	if (trailpad) trailpad *= 10;
+	trailpad *= 10;
 	if (*string == '.') {
 		string++;
 		if (isdigit(*string)) {
@@ -174,7 +174,7 @@ char	addrbuf[17];
 					number = number * 10 + (*string - '0');
 					string++;
 				}
-				if (number) number *= 10;
+				number *= 10;
 				if (*string == '.') {
 					string++;
 					if (isdigit(*string)) {
@@ -200,7 +200,8 @@ char	addrbuf[17];
 
 				if (number > 0
 				 && (always_delay
-				  || (allow_delay && mandatory)))
+				  || normal_delay
+				  || mandatory))
 					delay_output(number/10);
 
 			} /* endelse (*string == '<') */
@@ -217,7 +218,7 @@ char	addrbuf[17];
 	 * Emit any BSD-style prefix padding that we've accumulated now.
 	 */
 	if (trailpad > 0
-	 && (always_delay || allow_delay))
+	 && (always_delay || normal_delay))
 		delay_output(trailpad/10);
 #endif /* BSD_TPUTS */
 

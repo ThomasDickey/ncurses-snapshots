@@ -37,8 +37,7 @@
 #include <sys/time.h>
 #endif
 #elif HAVE_SELECT
-/* on SCO, <sys/time.h> conflicts with <sys/select.h> */
-#if HAVE_SYS_TIME_H && ! SYSTEM_LOOKS_LIKE_SCO
+#if HAVE_SYS_TIME_H && HAVE_SYS_TIME_SELECT
 #include <sys/time.h>
 #endif
 #if HAVE_SYS_SELECT_H
@@ -46,7 +45,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.24 1997/11/01 23:39:00 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.25 1997/11/15 22:51:37 tom Exp $")
 
 /*
  * We want to define GOOD_SELECT if the last argument of select(2) is

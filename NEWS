@@ -1,7 +1,28 @@
--- $Id: NEWS,v 1.274 1997/11/09 01:17:13 tom Exp $
+-- $Id: NEWS,v 1.278 1997/11/16 01:35:26 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+971115
+	+ increase MAX_NAME_SIZE to 512 to handle extremely long alias list
+	  in HP-UX terminfo.
+	+ correction & simplification of delay computation in tputs, based on
+	  comments from Daniel Weaver.
+	+ replace test for SCO with more precise header tests.
+	+ add configure test for unsigned literals, use in NCURSES_BITS macro.
+	+ comment-out the -PIC, etc., flags from c++, progs and test makefiles
+	  since they probably are not needed, and are less efficient (noted by.
+	  Ju"rgen Fluk)
+	+ add -L$(libdir) to loader options, after -L../lib so that loaders
+	  that record this information will tend to do the right thing if
+	  the programs are moved around after installing them (suggested by.
+	  Ju"rgen Fluk).
+	+ add -R option to loader options for programs for Solaris if the
+	  --enable-rpath option is specified for the libraries.
+
+971112
+	+ correct installed filename for shared libraries on *BSD (reported by
+	  Ju"rgen Fluk).
 
 971108
 	+ cleanup logic for deciding when tputs() should call delay_output(),
