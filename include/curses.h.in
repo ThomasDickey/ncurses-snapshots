@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey 1996-on                                        *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.135 2002/11/16 22:06:50 tom Exp $ */
+/* $Id: curses.h.in,v 1.136 2003/01/18 23:33:20 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -294,10 +294,11 @@ typedef	chtype	attr_t;		/* ...must be at least as wide as chtype */
 #include <wchar.h>		/* ...to get mbstate_t, etc. */
 #endif
 
-#ifndef _WCHAR_T
+#if !defined(_WCHAR_T) && !defined(wchar_t)
 typedef unsigned long wchar_t;
 #endif /* _WCHAR_T */
-#ifndef _WINT_T
+
+#if !defined(_WINT_T) && !defined(wint_t)
 typedef long int wint_t;
 #endif /* _WINT_T */
 

@@ -73,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.193 2003/01/12 01:33:11 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.194 2003/01/19 01:10:32 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -379,29 +379,25 @@ PutChar(const ARG_CH_T ch)
 static inline bool
 can_clear_with(ARG_CH_T ch)
 {
-    if (ISBLANK(CHDEREF(ch))) {
-	/* Tests for bce, non-bce terminals */
-	if (!back_color_erase && SP->_coloron) {
+    if (!back_color_erase && SP->_coloron) {
 #if NCURSES_EXT_FUNCS
-	    if (!SP->_default_color)
+	if (!SP->_default_color)
+	    return FALSE;
+	if (SP->_default_fg != C_MASK || SP->_default_bg != C_MASK)
+	    return FALSE;
+	if (AttrOfD(ch) & A_COLOR) {
+	    short fg, bg;
+	    pair_content(PAIR_NUMBER(AttrOfD(ch)), &fg, &bg);
+	    if (fg != C_MASK || bg != C_MASK)
 		return FALSE;
-	    if (SP->_default_fg != C_MASK || SP->_default_bg != C_MASK)
-		return FALSE;
-	    if (AttrOfD(ch) & A_COLOR) {
-		short fg, bg;
-		pair_content(PAIR_NUMBER(AttrOfD(ch)), &fg, &bg);
-		if (fg != C_MASK || bg != C_MASK)
-		    return FALSE;
-	    }
-#else
-	    if (AttrOfD(ch) & A_COLOR)
-		return FALSE;
-#endif
 	}
-	if ((AttrOfD(ch) & ~(NONBLANK_ATTR | A_COLOR)) != 0)
-	    return TRUE;
+#else
+	if (AttrOfD(ch) & A_COLOR)
+	    return FALSE;
+#endif
     }
-    return FALSE;
+    return (ISBLANK(CHDEREF(ch)) &&
+	    (AttrOfD(ch) & ~(NONBLANK_ATTR | A_COLOR)) == BLANK_ATTR);
 }
 
 /*
