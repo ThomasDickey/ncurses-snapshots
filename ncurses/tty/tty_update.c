@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- *     and: Thomas E. Dickey 1996-2002                                      *
+ *     and: Thomas E. Dickey 1996-2004                                      *
  ****************************************************************************/
 
 /*-----------------------------------------------------------------
@@ -73,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.203 2003/12/07 00:22:03 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.204 2004/01/25 22:34:18 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -197,13 +197,8 @@ PutAttrChar(CARG_CH_T ch)
      * Determine the number of character cells which the 'ch' value will use
      * on the screen.  It should be at least one.
      */
-    if ((chlen = wcwidth(CharOf(CHDEREF(ch)))) <= 0) {
-	static NCURSES_CH_T blank = NewChar(BLANK_TEXT);
-
-	ch = CHREF(blank);
+    if ((chlen = wcwidth(CharOf(CHDEREF(ch)))) <= 0)
 	chlen = 1;
-	TR(TRACE_CHARPUT, ("forced to blank"));
-    }
 #endif
 
     if ((attr & A_ALTCHARSET)

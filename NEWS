@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.792 2004/01/24 19:44:33 tom Exp $
+-- $Id: NEWS,v 1.793 2004/01/25 22:36:42 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,7 +6,17 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
-20040124 5.4 release for upload to ftp.gnu.org
+20040125 pre-release
+	+ amend change to PutAttrChar() from 20030614 which computed the number
+	  of cells for a possibly multi-cell character.  The 20030614 change
+	  forced the cell to a blank if the result from wcwidth() was not
+	  greater than zero.  However, wcwidth() called for parameters in the
+	  range 128-255 can give this return value.  The logic now simply
+	  ensures that the number of cells is greater than zero without
+	  modifying the displayed value.
+
+20040124 pre-release
+	+ looked good for 5.4 release for upload to ftp.gnu.org (but see above)
 	+ modify configure script check for ranlib to use AC_CHECK_TOOL, since
 	  that works better for cross-compiling.
 
