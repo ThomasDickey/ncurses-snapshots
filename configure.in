@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.330 2005/01/22 20:02:24 tom Exp $
+dnl $Id: configure.in,v 1.331 2005/02/05 18:14:41 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.330 $)
+AC_REVISION($Revision: 1.331 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -840,6 +840,19 @@ if test "$with_ext_colors" = yes ; then
 	AC_DEFINE(NCURSES_EXT_COLORS)
 fi
 AC_SUBST(NCURSES_EXT_COLORS)
+
+###   use option --enable-ext-mouse to modify coding to support 5-button mice
+AC_MSG_CHECKING(if you want to use experimental extended mouse encoding)
+AC_ARG_ENABLE(ext-mouse,
+	[  --enable-ext-mouse      compile for experimental mouse-encoding],
+	[with_ext_mouse=$enableval],
+	[with_ext_mouse=no])
+AC_MSG_RESULT($with_ext_mouse)
+NCURSES_MOUSE_VERSION=1
+if test "$with_ext_mouse" = yes ; then
+	NCURSES_MOUSE_VERSION=2
+fi
+AC_SUBST(NCURSES_MOUSE_VERSION)
 
 AC_MSG_CHECKING(if you want experimental safe-sprintf code)
 AC_ARG_ENABLE(safe-sprintf,

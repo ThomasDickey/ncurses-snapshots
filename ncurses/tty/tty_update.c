@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.218 2005/01/29 21:02:05 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.219 2005/02/05 22:51:25 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -1223,6 +1223,7 @@ TransformLine(int const lineno)
 	/* if there wasn't one, we're done */
 	if (firstChar >= screen_columns) {
 	    TR(TRACE_UPDATE, (T_RETURN("")));
+	    return;
 	}
 
 	blank = newLine[screen_columns - 1];
@@ -1243,6 +1244,7 @@ TransformLine(int const lineno)
 		       (nLastChar - firstChar + 1) * sizeof(NCURSES_CH_T));
 	    }
 	    TR(TRACE_UPDATE, (T_RETURN("")));
+	    return;
 	}
 
 	/* find last non-blank character on old line */
@@ -1338,6 +1340,7 @@ TransformLine(int const lineno)
 	       newLine + firstChar,
 	       (screen_columns - firstChar) * sizeof(NCURSES_CH_T));
     TR(TRACE_UPDATE, (T_RETURN("")));
+    return;
 }
 
 /*

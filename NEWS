@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.866 2005/01/29 21:24:53 tom Exp $
+-- $Id: NEWS,v 1.868 2005/02/05 22:39:38 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050205
+	+ add traces for callback functions in form library.
+	+ add experimental configure option --enable-ext-mouse, which defines
+	  NCURSES_MOUSE_VERSION 2, and modifies the encoding of mouse events to
+	  support wheel mice, which may transmit buttons 4 and 5.  This works
+	  with xterm and similar X terminal emulators (prompted by question by
+	  Andreas Henningsson, this is also related to Debian #230990).
+	+ improve configure macros CF_XOPEN_SOURCE and CF_POSIX_C_SOURCE to
+	  avoid redefinition warnings on cygwin.
 
 20050129
 	+ merge remaining development changes for extended colors (mostly

@@ -1,6 +1,6 @@
 // * this is for making emacs happy: -*-Mode: C++;-*-
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -35,7 +35,7 @@
 #include "cursesm.h"
 #include "cursesapp.h"
 
-MODULE_ID("$Id: cursesm.cc,v 1.18 2003/10/25 15:04:46 tom Exp $")
+MODULE_ID("$Id: cursesm.cc,v 1.19 2005/02/05 16:01:52 tom Exp $")
 
 NCursesMenuItem::~NCursesMenuItem() {
   if (item)
@@ -45,7 +45,7 @@ NCursesMenuItem::~NCursesMenuItem() {
 bool
 NCursesMenuItem::action() {
   return FALSE;
-};
+}
 
 NCursesMenuCallbackItem::~NCursesMenuCallbackItem() {
 }
@@ -290,9 +290,9 @@ NCursesMenu::operator()(void) {
   post();
   show();
   refresh();
-  
+
   while (!b_action && ((drvCmnd = virtualize((c=getKey()))) != CMD_QUIT)) {
-    
+
     switch((err=driver(drvCmnd))) {
     case E_REQUEST_DENIED:
       On_Request_Denied(c);
