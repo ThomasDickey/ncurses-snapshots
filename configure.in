@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.266 2002/05/11 19:47:55 tom Exp $
+dnl $Id: configure.in,v 1.267 2002/05/18 21:14:13 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20000819)
-AC_REVISION($Revision: 1.266 $)
+AC_REVISION($Revision: 1.267 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -80,9 +80,11 @@ CF_CFG_DEFAULTS
 
 ###	Checks for programs.
 AC_PROG_CC
+GCC_VERSION=none
 if test "$GCC" = yes ; then
 	AC_MSG_CHECKING(version of gcc)
-	eval "$CC --version"
+	GCC_VERSION="`${CC} --version|head -1`"
+	AC_MSG_RESULT($GCC_VERSION)
 fi
 
 # If we're cross-compiling, allow the user to override the tools and their
@@ -148,12 +150,16 @@ else
 	popdef([AC_MSG_ERROR])dnl
 fi
 
+GXX_VERSION=none
 if test "$GXX" = yes; then
-	case "`${CXX-g++} --version`" in
+	AC_MSG_CHECKING(version of g++)
+	GXX_VERSION="`${CXX-g++} --version|head -1`"
+	AC_MSG_RESULT($GXX_VERSION)
+	case $GXX_VERSION in
 	1*|2.[[0-6]]*)
 		GXX=""; CXX=""; ac_cv_prog_gxx=no
 		cf_cxx_library=no
-		echo No: templates do not work
+		AC_MSG_WARN(templates do not work)
 		;;
 	esac
 fi
@@ -1022,23 +1028,17 @@ if test -n "$CXX" ; then
 	AC_LANG_CPLUSPLUS
 	CF_STDCPP_LIBRARY
 
-	if test "$GXX" = yes; then
-		AC_MSG_CHECKING(version of ${CXX-g++})
-		eval "${CXX-g++} --version"
-		case "`${CXX-g++} --version`" in
-		1*|2.[0-6]*)
-			cf_cxx_library=yes
-			;;
-		*-2.7*|2.7*)
-			CF_GPP_LIBRARY
-			;;
-		*)
-			cf_cxx_library=no
-			;;
-		esac
-	else
+	case $GXX_VERSION in
+	1*|2.[0-6]*)
+		cf_cxx_library=yes
+		;;
+	*-2.7*|2.7*)
+		CF_GPP_LIBRARY
+		;;
+	*)
 		cf_cxx_library=no
-	fi
+		;;
+	esac
 
 	AC_CHECK_HEADERS(typeinfo)
 
@@ -1168,18 +1168,16 @@ fi
 ### using a 'char' for bools.  gcc 2.7.0's conversion-warnings are broken too
 ### badly to consider using for development purposes, but 2.5.8 is okay.
 if test -n "$with_warnings"; then
-	if test "$GCC" = yes; then
-		case "`$CC --version`" in
-		2.6.3)
-			if test "$cf_cv_type_of_bool" != "char"; then
-				EXTRA_CFLAGS="$EXTRA_CFLAGS -Wconversion"
-			fi
-			;;
-		2.5*)
+	case $GCC_VERSION in
+	2.6.3)
+		if test "$cf_cv_type_of_bool" != "char"; then
 			EXTRA_CFLAGS="$EXTRA_CFLAGS -Wconversion"
-			;;
-		esac
-	fi
+		fi
+		;;
+	2.5*)
+		EXTRA_CFLAGS="$EXTRA_CFLAGS -Wconversion"
+		;;
+	esac
 fi
 
 ### Construct the library-subsets, if any, from this set of keywords:

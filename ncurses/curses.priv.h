@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,11 +29,12 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey 1996-2002                                      *
  ****************************************************************************/
 
 
 /*
- * $Id: curses.priv.h,v 1.216 2002/03/17 00:45:49 tom Exp $
+ * $Id: curses.priv.h,v 1.218 2002/05/18 19:48:38 tom Exp $
  *
  *	curses.priv.h
  *
@@ -110,6 +111,9 @@ extern int errno;
 #define USE_FUNC_POLL 0
 #endif
 
+/* include signal.h before curses.h to work-around defect in glibc 2.1.3 */
+#include <signal.h>
+
 /* Alessandro Rubini's GPM (general-purpose mouse) */
 #if HAVE_LIBGPM && HAVE_GPM_H
 #define USE_GPM_SUPPORT 1
@@ -140,7 +144,7 @@ extern int errno;
 #undef HAVE_SIZECHANGE
 #endif
 
-#if HAVE_SIZECHANGE
+#if HAVE_SIZECHANGE && defined(SIGWINCH)
 #define USE_SIZECHANGE 1
 #else
 #undef USE_SIGWINCH

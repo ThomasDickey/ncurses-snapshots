@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -31,8 +31,6 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-#include <signal.h>
-
 #include <curses.priv.h>
 
 #include <SigAction.h>
@@ -42,7 +40,7 @@
 
 #if !HAVE_SIGACTION && HAVE_SIGVEC
 
-MODULE_ID("$Id: sigaction.c,v 1.12 2001/07/01 01:22:10 tom Exp $")
+MODULE_ID("$Id: sigaction.c,v 1.13 2002/05/18 19:56:26 tom Exp $")
 
 NCURSES_EXPORT(int)
 sigaction
