@@ -28,10 +28,10 @@
  ****************************************************************************/
 
 /****************************************************************************
- *   Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1997             *
+ *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1997                 *
  ****************************************************************************/
 
-// $Id: etip.h.in,v 1.8 1998/07/11 23:11:39 Chris.Johns Exp $
+// $Id: etip.h.in,v 1.10 1999/05/16 17:29:47 juergen Exp $
 
 #ifndef _ETIP_H
 #define _ETIP_H

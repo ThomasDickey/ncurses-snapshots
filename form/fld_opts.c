@@ -27,11 +27,11 @@
  ****************************************************************************/
 
 /****************************************************************************
- *   Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1995,1997        *
+ *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1995,1997            *
  ****************************************************************************/
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_opts.c,v 1.4 1999/02/18 16:12:30 juergen Exp $")
+MODULE_ID("$Id: fld_opts.c,v 1.6 1999/05/16 17:19:06 juergen Exp $")
 
 /*----------------------------------------------------------------------------
   Field-Options manipulation routines

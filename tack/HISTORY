@@ -1,6 +1,7 @@
 
 Current history:
 
+1999/05/16		Minor fix to build/link on CLIX
 1999/05/09		Update to build/link on NeXT
 1999/04/17		Update to work with ncurses 5.0 beta1 (TERMTYPE struct)
 1999/02/07		Build with ncurses 4.2 981219 (renamed function)

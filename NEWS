@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.451 1999/05/09 18:41:05 tom Exp $
+-- $Id: NEWS,v 1.453 1999/05/17 01:27:19 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,6 +6,13 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
+990516	pre-release
+	+ minor fix to build tack on CLIX (mismatched const).
+	> patch by Juergen Pfeifer:
+	+ change Juergen's old email address with new one in the files where it
+	  is referenced.  The Ada95 HTML pages are regenerated. 
+	+ update MANIFEST to list the tack files.
+ 
 990509	pre-release
 	+ minor fixes to make 'tack' build/link on NeXT (reported by Francisco
 	  A. Tomei Torres).
