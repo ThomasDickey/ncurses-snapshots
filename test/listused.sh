@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: listused.sh,v 1.2 2003/03/22 23:21:12 tom Exp $
+# $Id: listused.sh,v 1.3 2003/03/29 19:32:58 tom Exp $
 # A very simple script to list entrypoints that are used by either a test
 # program, or within the libraries.  This relies on the output format of 'nm',
 # and assumes that the libraries are configured using
@@ -19,13 +19,20 @@ elif test ! -d ../lib ; then
 fi
 
 PROGS=
-for name in *.c
+for name in `(echo "test:";sort modules; echo "progs:";sort ../progs/modules) |sed -e 's/[ 	].*//' -e '/^[#@]/d'`
 do
-	NAME=../objects/`basename $name .c`.o
-	if test -f $NAME
-	then
-		PROGS="$PROGS $NAME"
-	fi
+	case $name in
+	*:)
+		PROGS="$PROGS $name"
+		;;
+	*)
+		NAME=../objects/${name}.o
+		if test -f $NAME
+		then
+			PROGS="$PROGS $NAME"
+		fi
+		;;
+	esac
 done
 
 # For each library -
@@ -53,33 +60,47 @@ do
 			-e 's/^[A-Z] //' \
 			-e '/^_/d' |\
 		sort -u`
-	# List programs in this directory which use that external.
+	# List programs which use that external.
 	for name in $WANT
 	do
 		HAVE=
+		tags=
+		last=
 		for prog in $PROGS
 		do
-			TEST=`nm $NM_OPTS $prog |\
-				sed	-e 's/^[^ ]*//' \
-					-e 's/^ *//' \
-					-e '/^[ a-z] /d' \
-					-e '/:$/d' \
-					-e '/^$/d' \
-					-e '/^[A-TV-Z] /d' \
-					-e 's/^[A-Z] //' \
-					-e '/^_/d' \
-					-e 's/^'${name}'$/_/' \
-					-e '/^[^_]/d'`
-			if test -n "$TEST"
-			then
-				have=`basename $prog .o`
-				if test -n "$HAVE"
+			case $prog in
+			*:)
+				tags=$prog
+				;;
+			*)
+				TEST=`nm $NM_OPTS $prog |\
+					sed	-e 's/^[^ ]*//' \
+						-e 's/^ *//' \
+						-e '/^[ a-z] /d' \
+						-e '/:$/d' \
+						-e '/^$/d' \
+						-e 's/^[A-Z] //' \
+						-e '/^_/d' \
+						-e 's/^'${name}'$/_/' \
+						-e '/^[^_]/d'`
+				if test -n "$TEST"
 				then
-					HAVE="$HAVE $have"
-				else
-					HAVE="prog: $have"
+					have=`basename $prog .o`
+					if test -n "$HAVE"
+					then
+						if test "$last" = "$tags"
+						then
+							HAVE="$HAVE $have"
+						else
+							HAVE="$HAVE $tags $have"
+						fi
+					else
+						HAVE="$tags $have"
+					fi
+					last="$tags"
 				fi
-			fi
+				;;
+			esac
 		done
 		# if we did not find a program using it directly, see if it
 		# is used within a library.

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2002 Free Software Foundation, Inc.                        *
+ * Copyright (c) 2002,2003 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_get_wstr.c,v 1.4 2002/07/20 19:28:29 tom Exp $")
+MODULE_ID("$Id: lib_get_wstr.c,v 1.5 2003/03/29 23:16:41 tom Exp $")
 
 /*
  * This wipes out the last character, no matter whether it was a tab, control
@@ -140,6 +140,14 @@ wgetn_wstr(WINDOW *win, wint_t * str, int maxlen)
 	} else if (maxlen >= 0 && tmpstr - oldstr >= maxlen) {
 	    beep();
 	} else {
+	    if (ch == '\n'
+		|| ch == '\r') {
+		if (oldecho == TRUE
+		    && win->_cury == win->_maxy
+		    && win->_scroll)
+		    wechochar(win, (chtype) '\n');
+		break;
+	    }
 	    *tmpstr++ = ch;
 	    if (oldecho == TRUE) {
 		int oldy = win->_cury;
@@ -193,7 +201,7 @@ wgetn_wstr(WINDOW *win, wint_t * str, int maxlen)
     *tmpstr = 0;
     if (code == ERR) {
 	if (tmpstr == oldstr) {
-	    *tmpstr++ = (wchar_t)WEOF;
+	    *tmpstr++ = (wchar_t) WEOF;
 	    *tmpstr = 0;
 	}
 	returnCode(ERR);

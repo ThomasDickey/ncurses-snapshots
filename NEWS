@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.739 2003/03/23 00:15:29 tom Exp $
+-- $Id: NEWS,v 1.741 2003/03/29 23:16:18 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030329
+	+ add 'E' test to ncurses.c, to exercise slk_wset().
+	+ correct handling of carriage-return in wgetn_wstr(), used in demo of
+	  slk_wset().
+	+ first draft of slk_wset() function.
 
 20030322
 	+ improved warnings in tic when suppressing items to fit in termcap's

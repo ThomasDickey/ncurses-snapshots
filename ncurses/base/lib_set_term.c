@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -43,7 +43,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.75 2002/12/31 11:50:19 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.76 2003/03/29 22:55:25 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN * screenp)
@@ -100,7 +100,6 @@ delscreen(SCREEN * sp)
 
     if (sp->_slk != 0) {
 	FreeIfNeeded(sp->_slk->ent);
-	FreeIfNeeded(sp->_slk->buffer);
 	free(sp->_slk);
 	sp->_slk = 0;
     }
@@ -203,7 +202,7 @@ extract_fgbg(char *src, int *result)
 #endif
 
 NCURSES_EXPORT(int)
-_nc_setupscreen(short slines, short const scolumns, FILE * output)
+_nc_setupscreen(short slines, short const scolumns, FILE *output)
 /* OS-independent screen initializations */
 {
     int bottom_stolen = 0;

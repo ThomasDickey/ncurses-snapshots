@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2002 Free Software Foundation, Inc.                        *
+ * Copyright (c) 2002,2003 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -38,9 +38,8 @@
 */
 
 #include <curses.priv.h>
-#include <ctype.h>
 
-MODULE_ID("$Id: lib_ins_wch.c,v 1.2 2002/11/23 23:06:32 tom Exp $")
+MODULE_ID("$Id: lib_ins_wch.c,v 1.3 2003/03/29 21:52:29 tom Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify

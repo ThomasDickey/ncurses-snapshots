@@ -1,7 +1,7 @@
 
 #ifdef _XOPEN_SOURCE_EXTENDED
 
-/* $Id: curses.wide,v 1.25 2002/08/31 17:48:53 tom Exp $ */
+/* $Id: curses.wide,v 1.26 2003/03/29 20:02:59 tom Exp $ */
 
 extern NCURSES_EXPORT_VAR(cchar_t *) _nc_wacs;
 
@@ -129,7 +129,7 @@ extern NCURSES_EXPORT(int) mvwinwstr (WINDOW *, int, int, wchar_t *);		/* genera
 extern NCURSES_EXPORT(int) mvwvline_set (WINDOW *, int,int, const cchar_t *,int); /* generated:WIDEC */
 extern NCURSES_EXPORT(int) pecho_wchar (WINDOW *, const cchar_t *);	/* missing */
 extern NCURSES_EXPORT(int) setcchar (cchar_t *, const wchar_t *, const attr_t, short, const void *);	/* implemented */
-extern NCURSES_EXPORT(int) slk_wset (int, const wchar_t *, int);	/* missing */
+extern NCURSES_EXPORT(int) slk_wset (int, const wchar_t *, int);	/* implemented */
 extern NCURSES_EXPORT(attr_t) term_attrs (void);			/* implemented */
 extern NCURSES_EXPORT(int) unget_wch (const wchar_t);			/* implemented */
 extern NCURSES_EXPORT(int) vid_attr (attr_t, short, void *);		/* implemented */
