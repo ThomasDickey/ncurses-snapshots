@@ -45,7 +45,7 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.44 2000/02/13 01:01:26 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.45 2000/02/27 02:33:24 tom Exp $")
 
 char PC = 0;			/* used by termcap library */
 speed_t ospeed = 0;		/* used by termcap library */
@@ -59,9 +59,10 @@ delay_output(int ms)
 {
     T((T_CALLED("delay_output(%d)"), ms));
 
-    if (no_pad_char)
+    if (no_pad_char) {
+	_nc_flush();
 	napms(ms);
-    else {
+    } else {
 	register int nullcount;
 
 	nullcount = (ms * _nc_baudrate(ospeed)) / 10000;
