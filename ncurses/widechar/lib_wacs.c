@@ -33,7 +33,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_wacs.c,v 1.2 2002/02/17 00:02:15 tom Exp $")
+MODULE_ID("$Id: lib_wacs.c,v 1.4 2002/06/29 21:51:02 tom Exp $")
 
 NCURSES_EXPORT_VAR(cchar_t) * _nc_wacs = 0;
 
@@ -99,15 +99,16 @@ _nc_init_wacs(void)
     unsigned n, m;
     int active = _nc_unicode_locale();
 
+    /*
+     * If we're running in a UTF-8 locale, will use the Unicode equivalents
+     * rather than the terminfo information.  Actually the terminfo should
+     * be the rule, but there are people who are offended by the notion that
+     * a Unicode-capable terminal would have something resembling a mode.
+     * So the smacs/rmacs may be disabled.
+     */
     T(("initializing WIDE-ACS map (Unicode is%s active)",
        active ? "" : " not"));
 
-    if (active) {
-	enter_alt_charset_mode = "";
-	exit_alt_charset_mode = "";
-	acs_chars = "";
-	ena_acs = "";
-    }
     _nc_wacs = typeCalloc(cchar_t, ACS_LEN);
     for (n = 0; n < SIZEOF(table); ++n) {
 	m = table[n].map;

@@ -13,7 +13,7 @@
  * results, use the ncurses(3) library.  On non-Intel machines, SVr4 curses is
  * just as good.
  *
- * $Id: blue.c,v 1.23 2002/04/06 23:05:16 tom Exp $
+ * $Id: blue.c,v 1.24 2002/06/29 23:32:18 tom Exp $
  */
 
 #include <time.h>
@@ -373,6 +373,9 @@ int
 main(int argc, char *argv[])
 {
     (void) signal(SIGINT, die);
+
+    setlocale(LC_ALL, "");
+
     initscr();
 
     /*

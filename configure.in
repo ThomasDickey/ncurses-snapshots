@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.269 2002/06/22 19:52:14 tom Exp $
+dnl $Id: configure.in,v 1.270 2002/06/29 22:29:03 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.269 $)
+AC_REVISION($Revision: 1.270 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -92,6 +92,7 @@ fi
 # compiler, etc., but we need a host compiler to generate parts of the source.
 BUILD_CC='$(CC)'
 BUILD_CFLAGS='$(CFLAGS)'
+BUILD_CPPFLAGS='$(CPPFLAGS)'
 BUILD_LDFLAGS='$(LDFLAGS)'
 BUILD_LIBS='$(LIBS)'
 if test "$host_alias" != "$target_alias" ; then
@@ -102,6 +103,9 @@ if test "$host_alias" != "$target_alias" ; then
 	AC_ARG_WITH(build-cflags,
 		[  --with-build-cflags=XXX if cross-compiling, the host C compiler-flags],
 		[BUILD_CFLAGS="$withval"])
+	AC_ARG_WITH(build-cppflags,
+		[  --with-build-cppflags=XXX if cross-compiling, the host C preprocessor-flags],
+		[BUILD_CPPFLAGS="$withval"])
 	AC_ARG_WITH(build-ldflags,
 		[  --with-build-ldflags=XXX if cross-compiling, the host linker-flags],
 		[BUILD_LDFLAGS="$withval"])
@@ -111,6 +115,7 @@ if test "$host_alias" != "$target_alias" ; then
 fi
 AC_SUBST(BUILD_CC)
 AC_SUBST(BUILD_CFLAGS)
+AC_SUBST(BUILD_CPPFLAGS)
 AC_SUBST(BUILD_LDFLAGS)
 AC_SUBST(BUILD_LIBS)
 

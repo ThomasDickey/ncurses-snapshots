@@ -7,7 +7,7 @@
  * This can't be part of the ncurses test-program, because ncurses rips off the
  * bottom line to do labels.
  *
- * $Id: lrtest.c,v 0.17 2002/04/06 20:45:22 tom Exp $
+ * $Id: lrtest.c,v 0.18 2002/06/29 23:32:18 tom Exp $
  */
 
 #include <test.priv.h>
@@ -69,6 +69,8 @@ main(
 	{1, 0, 1, 1, 1, '*' | A_REVERSE},
 	{2, 0, 1, 1, 1, '*' | A_REVERSE}
     };
+
+    setlocale(LC_ALL, "");
 
     initscr();
     noecho();

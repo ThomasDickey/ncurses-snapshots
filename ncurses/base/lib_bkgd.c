@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,2001-2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -33,7 +33,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_bkgd.c,v 1.26 2001/12/19 01:36:58 tom Exp $")
+MODULE_ID("$Id: lib_bkgd.c,v 1.27 2002/06/29 22:11:14 Philippe.Blain Exp $")
 
 /*
  * Set the window's background information.
@@ -117,7 +117,7 @@ wbkgrnd(WINDOW *win, const ARG_CH_T ch)
 		    win->_line[y].text[x] = win->_nc_bkgd;
 		else {
 		    NCURSES_CH_T wch = win->_line[y].text[x];
-		    RemAttr(wch, ~A_ALTCHARSET);
+		    RemAttr(wch, A_ALTCHARSET);
 		    win->_line[y].text[x] = _nc_render(win, wch);
 		}
 	    }

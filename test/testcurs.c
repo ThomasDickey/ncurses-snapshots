@@ -7,7 +7,7 @@
  *  wrs(5/28/93) -- modified to be consistent (perform identically) with either
  *                  PDCurses or under Unix System V, R4
  *
- * $Id: testcurs.c,v 1.29 2002/06/01 16:17:52 tom Exp $
+ * $Id: testcurs.c,v 1.30 2002/06/29 23:32:18 tom Exp $
  */
 
 #include <test.priv.h>
@@ -60,6 +60,8 @@ main(
     int new_option = 0;
     bool quit = FALSE;
     unsigned n;
+
+    setlocale(LC_ALL, "");
 
 #ifdef PDCDEBUG
     PDC_debug("testcurs started\n");

@@ -6,7 +6,7 @@
  * modified 10-18-89 for curses (jrl)
  * 10-18-89 added signal handling
  *
- * $Id: gdc.c,v 1.21 2002/03/23 22:17:24 tom Exp $
+ * $Id: gdc.c,v 1.22 2002/06/29 23:32:18 tom Exp $
  */
 
 #include <time.h>
@@ -132,6 +132,8 @@ main(int argc, char *argv[])
     FILE *ofp = stdout;
     FILE *ifp = stdin;
     bool scrol = FALSE;
+
+    setlocale(LC_ALL, "");
 
     signal(SIGINT, sighndl);
     signal(SIGTERM, sighndl);

@@ -1,3 +1,5 @@
+/* $Id: tclock.c,v 1.22 2002/06/29 23:34:13 tom Exp $ */
+
 #include "test.priv.h"
 
 #include <math.h>
@@ -131,6 +133,8 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
     struct timeval current;
     double fraction = 0.0;
 #endif
+
+    setlocale(LC_ALL, "");
 
     initscr();
     noecho();
