@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,6 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
 
 /*
 **	lib_mvcur.c
@@ -140,7 +140,7 @@
 #define CURRENT_COLUMN	SP->_curscol		/* phys cursor column */
 #define REAL_ATTR	SP->_current_attr	/* phys current attribute */
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
-#define BAUDRATE	SP->_baudrate		/* bits per secound */
+#define BAUDRATE	SP->_baudrate		/* bits per second */
 
 /****************************************************************************
  *
@@ -150,6 +150,7 @@
 
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 #ifdef TRACE
 bool no_optimize;	/* suppress optimization */
@@ -161,6 +162,8 @@ bool no_optimize;	/* suppress optimization */
 static bool profiling = FALSE;
 static float diff;
 #endif /* MAIN */
+
+#define OPT_SIZE 512
 
 static char	*address_cursor;
 static int	auto_margin;
@@ -379,6 +382,27 @@ int mvcur(int yold, int xold, int ynew, int xnew)
 }
 
 /*
+ * Perform repeated-append, returning cost
+ */
+static int repeated_append (int total, int num, int repeat, char *dst, char *src)
+{
+	size_t src_len = strlen(src);
+	size_t dst_len = strlen(dst);
+
+	if ((dst_len + repeat * src_len) < OPT_SIZE-1) {
+		total += (num * repeat);
+		dst += dst_len;
+		while (repeat-- > 0) {
+			(void) strcpy(dst, src);
+			dst += src_len;
+		}
+	} else {
+		total = INFINITY;
+	}
+	return total;
+}
+
+/*
  * With the machinery set up above, it's conceivable that
  * onscreen_mvcur could be modified into a recursive function that does
  * an alpha-beta search of motion space, as though it were a chess
@@ -392,9 +416,9 @@ int mvcur(int yold, int xold, int ynew, int xnew)
 static int onscreen_mvcur(int yold, int xold, int ynew, int xnew, bool ovw)
 /* onscreen move from (yold, xold) to (ynew, xnew) */
 {
-    char	use[512], *sp;
+    char	use[OPT_SIZE], *sp;
 #ifndef NO_OPTIMIZE
-    char	move[512];
+    char	move[OPT_SIZE];
 #endif /* !NO_OPTIMIZE */
     int		newcost, usecost = INFINITY;
 
@@ -559,9 +583,7 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 	    if (cursor_down && (n * SP->_cud1_cost < vcost))
 	    {
 		ep[0] = '\0';
-		vcost = n * SP->_cud1_cost;
-		while (n--)
-		    (void) strcat(ep, cursor_down);
+		vcost = repeated_append(vcost, SP->_cud1_cost, n, ep, cursor_down);
 	    }
 	}
 	else /* (to_y < from_y) */
@@ -581,9 +603,7 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 	    if (cursor_up && (n * SP->_cuu1_cost < vcost))
 	    {
 		ep[0] = '\0';
-		vcost = n * SP->_cuu1_cost;
-		while (n--)
-		    (void) strcat(ep, cursor_up);
+		vcost = repeated_append(vcost, SP->_cuu1_cost, n, ep, cursor_up);
 	    }
 	}
 
@@ -602,7 +622,7 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 
     if (to_x != from_x)
     {
-	char	try[512];
+	char	try[OPT_SIZE];
 
 	hcost = INFINITY;
 
@@ -640,8 +660,9 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 
 		    for (fr = from_x; (nxt = NEXTTAB(fr)) <= to_x; fr = nxt)
 		    {
-			(void) strcat(try, tab);
-			lhcost += SP->_ht_cost;
+			lhcost = repeated_append(lhcost, SP->_ht_cost, 1, try, tab);
+			if (lhcost == INFINITY)
+				break;
 		    }
 
 		    n = to_x - fr;
@@ -684,9 +705,7 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 		else
 #endif /* defined(REAL_ATTR) && defined(WANT_CHAR) */
 		{
-		    lhcost += (n * SP->_cuf1_cost);
-		    while (n--)
-			(void) strcat(try, cursor_right);
+		    lhcost = repeated_append(lhcost, SP->_cuf1_cost, n, try, cursor_right);
 		}
 
 		if (lhcost < hcost)
@@ -723,17 +742,16 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 
 		    for (fr = from_x; (nxt = LASTTAB(fr)) >= to_x; fr = nxt)
 		    {
-			(void) strcat(try, back_tab);
-			lhcost += SP->_cbt_cost;
+			lhcost = repeated_append(lhcost, SP->_cbt_cost, 1, try, back_tab);
+			if (lhcost == INFINITY)
+				break;
 		    }
 
 		    n = to_x - fr;
 		}
 #endif /* TABS_OK */
 
-		lhcost += n * SP->_cub1_cost;
-		while (n--)
-		    (void) strcat(try, cursor_left);
+		lhcost = repeated_append(lhcost, SP->_cub1_cost, n, try, cursor_left);
 
 		if (lhcost < hcost)
 		{
@@ -789,7 +807,7 @@ int mvcur_scrolln(int n, int top, int bot, int maxy)
 {
     int i;
 
-    TR(TRACE_MOVE, ("mvcur_scrolln(%d, %d, %d, %d)", n, top, bot, maxy)); 
+    TR(TRACE_MOVE, ("mvcur_scrolln(%d, %d, %d, %d)", n, top, bot, maxy));
 
     save_curs();
 
@@ -1004,7 +1022,9 @@ int mvcur_scrolln(int n, int top, int bot, int maxy)
 }
 
 #ifdef MAIN
+#if HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <stdlib.h>
 #include "tic.h"

@@ -10,7 +10,7 @@
 #include <values.h>
 #include <strstream.h>
 extern "C" {
-#include   <ncurses.h>
+#include   <curses.h>
 }
 
 /* SCO 3.2v4 curses.h includes term.h, which defines lines as a macro.
@@ -56,7 +56,7 @@ inline int (clear)()  { return clear(); }
 inline int (clearok)(WINDOW* win, int bf)  { return clearok(win, bf); }
 #undef clearok
 #else
-extern "C" int clearok(WINDOW*, int);
+extern "C" int clearok(WINDOW*, bool);
 #endif
 #ifdef clrtobot
 inline int (clrtobot)()  { return clrtobot(); }
@@ -124,7 +124,7 @@ inline int (insertln)()  { return insertln(); }
 inline int (leaveok)(WINDOW* win, int bf)  { return leaveok(win, bf); }
 #undef leaveok
 #else
-extern "C" int leaveok(WINDOW* win, int bf);
+extern "C" int leaveok(WINDOW* win, bool bf);
 #endif
 #ifdef move
 inline int (move)(int x, int y)  { return move(x, y); }
@@ -147,7 +147,7 @@ inline int (scrollok)(WINDOW* win, int bf)  { return scrollok(win, bf); }
 #undef scrollok
 #else
 #ifndef hpux
-extern "C" int scrollok(WINDOW*, int);
+extern "C" int scrollok(WINDOW*, bool);
 #else
 extern "C" int scrollok(WINDOW*, char);
 #endif

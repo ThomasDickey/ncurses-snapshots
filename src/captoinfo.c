@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-
+#include "system.h"
 
 /*
  *	captoinfo.c --- conversion between termcap and terminfo formats
@@ -584,7 +583,7 @@ int parametrized)	/* do % translations? */
 
 	    if (ch1)
 		c1 = ch1;
-	    if (isprint(c1))
+	    if (isascii(c1) && isprint(c1))
 		*bufptr++ = c1;
 	    else
 	    {
@@ -706,7 +705,9 @@ int parametrized)	/* do % translations? */
 }
 
 #ifdef MAIN
+#if HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 

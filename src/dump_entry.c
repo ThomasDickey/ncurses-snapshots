@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,6 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
 
 #include <stdlib.h>
 #include <sys/param.h>		/* for MAXPATHLEN */
@@ -41,7 +41,7 @@ static int tracelevel;		/* level of debug output */
 static int *bool_indirect, *num_indirect, *str_indirect;
 static char **bool_names, **num_names, **str_names;
 
-static unsigned char *separator, *trailer;
+static char *separator, *trailer;
 
 #define OBSOLETE(n) (n[0] == 'O' && n[1] == 'T')
 

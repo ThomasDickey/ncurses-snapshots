@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,6 +18,8 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
+
 /*
 **	lib_twait.c
 **
@@ -29,13 +30,17 @@
 #include <sys/types.h>		/* some systems can't live without this */
 #include <string.h>
 #include <sys/time.h>
+
+#if HAVE_UNISTD_H
 #include <unistd.h>
-#if defined(SYS_SELECT)
+#endif
+
+#if HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
 #include "curses.priv.h"
 
-#if defined(NOUSLEEP)
+#if !HAVE_USLEEP
 void usleep(unsigned int usec)
 {
 struct timeval tval;

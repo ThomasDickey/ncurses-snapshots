@@ -1,7 +1,10 @@
 
 BEGIN {
 	print ""
+	print "#include \"system.h\""
+	print ""
 	print "#include <stdlib.h>"
+	print "#include \"term.h\""
 	print "#include \"curses.h\""
 	print ""
 	print "struct kn {"

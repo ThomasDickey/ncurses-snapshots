@@ -76,7 +76,7 @@ struct token
 	char	*tk_valstring;	/* value of capability (if a string) */
 };
 
-struct token	curr_token;
+extern	struct token	curr_token;
 
 	/*
 	 *	The file comp_captab.c contains an array of these structures,

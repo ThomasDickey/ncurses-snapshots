@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,6 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
 
 /*
  * tput.c -- shellscript access to terminal capabilities
@@ -29,11 +29,19 @@
 
 #include <ctype.h>
 #include <stdlib.h>
+
+#if HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+
 #include <curses.h>
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#if !HAVE_EXTERN_ERRNO
+extern int errno;
+#endif
+
 #include "term.h"
 
 #define PUTS(s)		fputs(s, stdout)

@@ -29,9 +29,12 @@
 #include <unctrl.h>
 #include <stdarg.h>
 
-#if ! defined(__cplusplus)
+#if defined(__cplusplus)
+#define bool char
+#else
 typedef char	bool;
 #endif
+
 #ifndef TRUE
 #  define TRUE    (1)
 #  define FALSE   (0)
@@ -133,11 +136,6 @@ extern 	chtype acs_map[];
 #define ACS_BOARD	(acs_map['h'])	/* board of squares */
 #define ACS_LANTERN	(acs_map['I'])	/* lantern symbol */
 #define ACS_BLOCK	(acs_map['0'])	/* solid square block */
-
-#ifndef TRUE
-#  define TRUE    (1)
-#  define FALSE   (0)
-#endif
 
 #define ERR     (-1)
 #define OK      (0)
@@ -390,7 +388,7 @@ extern int pair_content(short,short*,short*);
 extern int start_color(void);
 
 extern int slk_init(int);
-extern int slk_set(int,char *,int);
+extern int slk_set(int,char *const,int);
 extern int slk_refresh(void);
 extern int slk_noutrefresh(void);
 extern char *slk_label(int);

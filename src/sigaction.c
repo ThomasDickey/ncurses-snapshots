@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,12 +18,12 @@
 *                                                                          *
 ***************************************************************************/
 
-
+#include "system.h"
 
 /* This file provides sigaction() emulation using sigvec() */
 /* Use only if this is non POSIX system */
 
-#ifdef NOACTION
+#if !HAVE_SIGACTION
 #include <signal.h>
 #include "curses.priv.h"
 

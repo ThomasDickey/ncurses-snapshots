@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-
+#include "system.h"
 
 /*
  *	read_entry.c -- Routine for reading in a compiled terminfo file
@@ -28,10 +27,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#ifndef NONPOSIX
+#if HAVE_UNISTD_H
 #include <unistd.h>
 #else
-#include <libc.h> 
+# if HAVE_LIBC_H
+# include <libc.h> 
+# endif
 #endif
 #include <fcntl.h>
 #include <sys/types.h>
@@ -103,11 +104,11 @@ char namebuf[128];
 	ptr->term_names = calloc(sizeof(char), strlen(namebuf) + 1);
 	(void) strcpy(ptr->term_names, namebuf);
 	if (header.name_size > 127)
-	    	lseek(fd, (long) (header.name_size - 127), 1);
+	    	lseek(fd, (off_t) (header.name_size - 127), 1);
 
 	read(fd, ptr->Booleans, min(BOOLCOUNT, header.bool_count));
 	if (header.bool_count > BOOLCOUNT)
-	    	lseek(fd, (long) (header.bool_count - BOOLCOUNT), 1);
+	    	lseek(fd, (off_t) (header.bool_count - BOOLCOUNT), 1);
 	else
 	    	for (i=header.bool_count; i < BOOLCOUNT; i++)
 			ptr->Booleans[i] = 0;
@@ -128,7 +129,7 @@ char namebuf[128];
 	}
 
 	if (header.num_count > NUMCOUNT)
-	   	lseek(fd, (long) (2 * (header.num_count - NUMCOUNT)), 1);
+	   	lseek(fd, (off_t) (2 * (header.num_count - NUMCOUNT)), 1);
 	else
 	   	for (i=header.num_count; i < NUMCOUNT; i++)
 			ptr->Numbers[i] = -1;
@@ -170,7 +171,7 @@ char namebuf[128];
 	}
 
 	if (header.str_count > STRCOUNT)
-	    	lseek(fd, (long) (2 * (header.str_count - STRCOUNT)), 1);
+	    	lseek(fd, (off_t) (2 * (header.str_count - STRCOUNT)), 1);
 	else
 	    	for (i=header.str_count; i < STRCOUNT; i++)
 			ptr->Strings[i] = 0;

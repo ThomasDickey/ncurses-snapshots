@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,6 +18,8 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
+
 /*
 **	lib_getch.c
 **
@@ -29,7 +30,7 @@
 #include <sys/types.h>
 #include <string.h>
 #include <errno.h>
-#if defined(BRAINDEAD)
+#if !HAVE_EXTERN_ERRNO
 extern int errno;
 #endif
 #include "curses.priv.h"

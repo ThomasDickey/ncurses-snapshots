@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,6 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
 
 /*
 **	lib_options.c
@@ -32,11 +32,37 @@
 			/* cursor_visible,cursor_normal,cursor_invisible */
 #include "curses.priv.h"
 
+int has_ic(void)
+{
+	T(("has_ic() called"));
+#ifdef UNIX
+	return (insert_character || parm_ich)
+		&& (delete_character || parm_dch);
+#else
+	return TRUE;
+#endif /* NONUNIX */
+}
+
+int has_il(void)
+{
+	T(("has_il() called"));
+#ifdef UNIX
+	return (insert_line || parm_insert_line)
+		&& (delete_line || parm_delete_line);
+#else
+	return TRUE;
+#endif /* NONUNIX */
+}
+
 int idlok(WINDOW *win,  bool flag)
 {
 	T(("idlok(%p,%d) called", win, flag));
 
+#ifdef UNIX
    	win->_idlok = flag && (has_il() || change_scroll_region);
+#else
+	win->_idlok = flag;
+#endif /* NONUNIX */
 	return OK; 
 }
 
@@ -139,6 +165,7 @@ int keypad(WINDOW *win, bool flag)
 
    	win->_use_keypad = flag;
 
+#ifdef UNIX
 	if (flag  &&  keypad_xmit)
 	{
 	    TPUTS_TRACE("keypad_xmit");
@@ -149,13 +176,12 @@ int keypad(WINDOW *win, bool flag)
 	    TPUTS_TRACE("keypad_local");
 	    putp(keypad_local);
 	}
-	    
+#endif /* UNIX */
+
 	if (SP->_keytry == UNINITIALISED)
 	    init_keytry();
 	return OK; 
 }
-
-
 
 int meta(WINDOW *win, bool flag)
 {
@@ -163,6 +189,7 @@ int meta(WINDOW *win, bool flag)
 
 	SP->_use_meta = flag;
 
+#ifdef UNIX
 	if (flag  &&  meta_on)
 	{
 	    TPUTS_TRACE("meta_on");
@@ -173,11 +200,13 @@ int meta(WINDOW *win, bool flag)
 	    TPUTS_TRACE("meta_off");
 	    putp(meta_off);
 	}
+#endif /* UNIX */
 	return OK; 
 }
 
 /* curs_set() moved here to narrow the kernel interface */
 
+#ifdef UNIX
 int curs_set(int vis)
 {
 int cursor = SP->_cursor;
@@ -213,6 +242,7 @@ int cursor = SP->_cursor;
 	SP->_cursor = vis;
 	return cursor;	
 }
+#endif /* UNIX */
 
 /*
 **      init_keytry()
@@ -226,9 +256,13 @@ static struct  try *newtry;
 
 static void init_keytry(void)
 {
-    newtry = NULL;
+	newtry = NULL;
 	
+#ifdef UNIX
 #include "keys.tries"
+#else
+	/* include an appropriate set of add_to_try() calls here; */
+#endif /* UNIX */
 
 	SP->_keytry = newtry;
 }

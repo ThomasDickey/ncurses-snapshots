@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-
+#include "system.h"
 
 /*
  *	lib_trace.c - Tracing/Debugging routines
@@ -37,8 +36,12 @@
 
 #include "curses.priv.h"
 
-#if defined(BRAINDEAD)
+#if !HAVE_EXTERN_ERRNO
 extern int errno;
+#endif
+
+#if !HAVE_STRERROR
+extern char *strerror(int);
 #endif
 
 int _tracing = 0;  
@@ -135,7 +138,7 @@ char *tp = vbuf;
 	    return("(null)");
 
     	while (*buf) {
-		if (isprint(*buf) || *buf == ' ')
+		if (isascii(*buf) && isgraph(*buf))
 	    		*tp++ = *buf++;
 		else if (*buf == '\n') {
 	    		*tp++ = '\\'; *tp++ = 'n';

@@ -6,6 +6,7 @@ cat <<'EOF'
  *
  */
 
+#include "system.h"
 
 #include "tic.h"
 #include "term.h"

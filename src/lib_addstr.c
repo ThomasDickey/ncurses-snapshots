@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,6 +18,8 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
+
 /*
 **	lib_addstr.c
 *
@@ -27,14 +28,15 @@
 */
 
 #include "curses.priv.h"
+#include <string.h>
 
 int
 waddnstr(WINDOW *win, char *const astr, int n)
 {
-unsigned char *str = astr;
+unsigned char *str = (unsigned char *)astr;
 int code = ERR;
 
-	T(("waddnstr(%p,\"%s\",%d) called %s", win, visbuf(str), n, _traceattr(win->_attrs)));
+	T(("waddnstr(%p,\"%s\",%d) called %s", win, visbuf(astr), n, _traceattr(win->_attrs)));
 
 	if (str != NULL) {
 
@@ -58,21 +60,28 @@ int code = ERR;
 int
 waddchnstr(WINDOW *win, chtype *const astr, int n)
 {
+int oy = win->_cury;
+int ox = win->_curx;
 chtype *str = astr;
+int code = OK;
 
 	T(("waddchnstr(%p,%p,%d) called", win, str, n));
 
 	if (n < 0) {
-		while (*str) {
-		    if (waddch(win, *str++) == ERR)
-			return(ERR);
-		}
-		return OK;
+		n = 0;
+		while (*str++ != 0)
+			n++;
+		str = astr;
 	}
 
 	while(n-- > 0) {
-		if (waddch(win, *str++) == ERR)
-			return ERR;
+		if (waddch(win, *str++) == ERR) {
+			code = ERR;
+			break;
+		}
 	}
-	return OK;
+
+	win->_curx = ox;
+	win->_cury = oy;
+	return code;
 }

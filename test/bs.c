@@ -39,7 +39,7 @@ extern void srand48();
 #endif
 
 #define bzero(s, n)	(void)memset((char *)(s), '\0', n)
-extern char *memset();
+
 /*
  * Try this if ungetch() fails to resolve.
  *
@@ -52,7 +52,9 @@ extern char *strchr(), *strcpy();
 extern long time();
 extern void exit();
 
-static bool checkplace();
+extern char *strchr();
+
+static int getcoord(int);
 
 /*
  * Constants for tuning the random-fire algorithm. It prefers moves that
@@ -146,6 +148,8 @@ typedef struct
 }
 ship_t;
 
+static bool checkplace(int b, ship_t *ss, int vis);
+
 ship_t plyship[SHIPTYPES] =
 {
     { carrier,	0, 'A', 5},
@@ -183,7 +187,7 @@ int	sig;
     (void)resetterm();
     (void)echo();
     (void)endwin();
-    exit(0);
+    exit(sig);
 }
 
 static void announceopts()
@@ -432,8 +436,6 @@ static void initgame()
 
     ss = (ship_t *)NULL;
     do {
-	extern char *strchr();
-	static char getcoord();
 	char c, docked[SHIPTYPES + 2], *cp = docked;
 
 	/* figure which ships still wait to be placed */
@@ -873,7 +875,7 @@ char *s;
 	if (islower(ch))
 	    ch = toupper(ch);
 	if (ch == CTRLC)
-	    uninitgame();
+	    uninitgame(0);
 	for (s1=s; *s1 && ch != *s1; ++s1)
 	    continue;
 	if (*s1)
@@ -1257,7 +1259,7 @@ char *argv[];
 	}
     } while
 	(playagain());
-    uninitgame();
+    uninitgame(0);
     /*NOTREACHED*/
 }
 

@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-
+#include "system.h"
 
 /*
 **	lib_scanw.c
@@ -30,6 +29,10 @@
 
 #include <stdio.h>
 #include "curses.priv.h"
+
+#if !HAVE_VSSCANF
+extern int vsscanf(const char *str, const char *format, ...);
+#endif
 
 int vwscanw(WINDOW *win, char *fmt, va_list argp)
 {
