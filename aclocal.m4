@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.197 2000/04/22 16:20:59 tom Exp $
+dnl $Id: aclocal.m4,v 1.198 2000/05/20 21:52:40 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1656,6 +1656,10 @@ AC_DEFUN([CF_SHARED_OPTS],
 	cf_cv_rm_so_locs=no
 
 	case $cf_cv_system_name in
+	beos*)
+		CC_SHARED_OPTS='-fPIC'
+		MK_SHARED_LIB='$(CC) -o $[@] -Xlinker -soname=`basename $[@]` -nostart -e 0'
+		;;
 	hpux10.*)
 		# (tested with gcc 2.7.2 -- I don't have c89)
 		if test -n "$GCC"; then
