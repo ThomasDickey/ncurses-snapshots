@@ -26,9 +26,9 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000,2001
+dnl Author: Thomas E. Dickey 1996-2001,2002
 dnl
-dnl $Id: aclocal.m4,v 1.285 2002/09/21 23:59:01 tom Exp $
+dnl $Id: aclocal.m4,v 1.290 2002/12/08 01:09:30 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -39,9 +39,9 @@ dnl Construct the list of include-options for the C programs in the Ada95
 dnl binding.
 AC_DEFUN([CF_ADA_INCLUDE_DIRS],
 [
-ACPPFLAGS="$ACPPFLAGS -I. -I../../include"
+ACPPFLAGS="-I. -I../../include $ACPPFLAGS"
 if test "$srcdir" != "."; then
-	ACPPFLAGS="$ACPPFLAGS -I\$(srcdir)/../../include"
+	ACPPFLAGS="-I\$(srcdir)/../../include $ACPPFLAGS"
 fi
 if test "$GCC" != yes; then
 	ACPPFLAGS="$ACPPFLAGS -I\$(includedir)"
@@ -88,7 +88,7 @@ fi
 
 if test -n "$cf_new_cppflags" ; then
 	ifelse($2,,,[CF_VERBOSE(add to \$CPPFLAGS $cf_new_cppflags)])
-	CPPFLAGS="$CPPFLAGS $cf_new_cppflags"
+	CPPFLAGS="$cf_new_cppflags $CPPFLAGS"
 fi
 
 ])dnl
@@ -783,7 +783,7 @@ dnl	-pedantic
 dnl
 AC_DEFUN([CF_GCC_WARNINGS],
 [
-if test "$GCC" = yes
+if ( test "$GCC" = yes || test "$GXX" = yes )
 then
 	cat > conftest.$ac_ext <<EOF
 #line __oline__ "configure"
@@ -846,18 +846,21 @@ dnl ---------------------------------------------------------------------------
 dnl Verify Version of GNAT.
 AC_DEFUN([CF_GNAT_VERSION],
 [
-cf_cv_gnat_version=`$cf_ada_make -v 2>&1 | grep '[[0-9]].[[0-9]][[0-9]]*' |\
+AC_MSG_CHECKING(for gnat version)
+cf_gnat_version=`$cf_ada_make -v 2>&1 | grep '[[0-9]].[[0-9]][[0-9]]*' |\
   sed -e 's/[[^0-9 \.]]//g' | $AWK '{print $[1];}'`
-case $cf_cv_gnat_version in
+AC_MSG_RESULT($cf_gnat_version)
+
+case $cf_gnat_version in
   3.1[[1-9]]*|3.[[2-9]]*|[[4-9]].*)
     cf_cv_prog_gnat_correct=yes
     ;;
-  *) echo Unsupported GNAT version $cf_cv_gnat_version. Required is 3.11 or better. Disabling Ada95 binding.
+  *) echo Unsupported GNAT version $cf_gnat_version. Required is 3.11 or better. Disabling Ada95 binding.
      cf_cv_prog_gnat_correct=no
      ;;
 esac
-case $cf_cv_gnat_version in
-  3.1*|[[4-9]].*)
+case $cf_gnat_version in
+  3.[[1-9]]*|[[4-9]].*)
       cf_compile_generics=generics
       cf_generic_objects="\$(GENOBJS)"
       ;;
@@ -948,9 +951,9 @@ dnl with gcc, don't append the includedir if it happens to be /usr/include,
 dnl since that usually breaks gcc's shadow-includes.
 AC_DEFUN([CF_INCLUDE_DIRS],
 [
-CPPFLAGS="$CPPFLAGS -I. -I../include"
+CPPFLAGS="-I. -I../include $CPPFLAGS"
 if test "$srcdir" != "."; then
-	CPPFLAGS="$CPPFLAGS -I\$(srcdir)/../include"
+	CPPFLAGS="-I\$(srcdir)/../include $CPPFLAGS"
 fi
 if test "$GCC" != yes; then
 	CPPFLAGS="$CPPFLAGS -I\$(includedir)"
@@ -2872,6 +2875,60 @@ dnl ---------------------------------------------------------------------------
 dnl Use AC_VERBOSE w/o the warnings
 AC_DEFUN([CF_VERBOSE],
 [test -n "$verbose" && echo "	$1" 1>&AC_FD_MSG
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Provide a configure option to incorporate libtool.  Define several useful
+dnl symbols for the makefile rules.
+AC_DEFUN([CF_WITH_LIBTOOL],
+[
+LIBTOOL=
+LIB_CREATE='$(AR) -cr'
+LIB_OBJECT='$(OBJECTS)'
+LIB_SUFFIX=.a
+LIB_INSTALL=
+LIB_UNINSTALL=
+
+AC_MSG_CHECKING(if you want to build libraries with libtool)
+AC_ARG_WITH(libtool,
+	[  --with-libtool          generate libraries with libtool],
+	[with_libtool=$withval],
+	[with_libtool=no])
+AC_MSG_RESULT($with_libtool)
+if test "$with_libtool" = "yes"; then
+	AC_PATH_PROG(LIBTOOL,libtool)
+	if test -z "$LIBTOOL" ; then
+		AC_MSG_ERROR(Cannot find libtool)
+	fi
+
+	LIB_CREATE='$(LIBTOOL) --mode=link $(CC) -rpath $(DESTDIR)$(libdir) -version-info `cut -f1 $(srcdir)/VERSION` -o'
+	LIB_OBJECT='$(OBJECTS:.o=.lo)'
+	LIB_SUFFIX=.la
+	LIB_INSTALL='$(LIBTOOL) --mode=install'
+	LIB_UNINSTALL='$(LIBTOOL) --mode=uninstall'
+	RANLIB=:
+
+	# Show the version of libtool
+	AC_MSG_CHECKING(version of libtool)
+
+	# Save the version in a cache variable - this is not entirely a good
+	# thing, but the version string from libtool is very ugly, and for
+	# bug reports it might be useful to have the original string.
+	cf_cv_libtool_version=`$LIBTOOL --version 2>&1 | sed -e 's/^[[^1-9]]*//' -e 's/[[^0-9.]].*//'`
+	AC_MSG_RESULT($cf_cv_libtool_version)
+	if test -z "$cf_cv_libtool_version" ; then
+		AC_MSG_ERROR(This is not libtool)
+	fi
+else
+	LIBTOOL=""
+fi
+
+AC_SUBST(LIBTOOL)
+AC_SUBST(LIB_CREATE)
+AC_SUBST(LIB_OBJECT)
+AC_SUBST(LIB_SUFFIX)
+AC_SUBST(LIB_INSTALL)
+AC_SUBST(LIB_UNINSTALL)
+
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Wrapper for AC_ARG_WITH to ensure that user supplies a pathname, not just

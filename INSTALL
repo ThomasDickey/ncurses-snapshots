@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.57 2002/10/26 19:03:45 tom Exp $
+-- $Id: INSTALL,v 1.58 2002/12/07 18:16:37 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -311,10 +311,6 @@ SUMMARY OF CONFIGURE OPTIONS:
     --disable-scroll-hints
 	Compile without scroll-hints code.  This option is ignored when
 	hashmap scrolling is configured, which is the default.
-
-    --enable-add-ons=DIR...
-	This is used to check if this package is a glibc add-on.  This is used
-	only by the glibc makefiles.
 
     --enable-assertions
 	For testing, compile-in assertion code.  This is used only for a few

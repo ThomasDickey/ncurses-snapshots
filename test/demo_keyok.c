@@ -1,5 +1,5 @@
 /*
- * $Id: keyok.c,v 1.1 2002/11/23 23:52:31 tom Exp $
+ * $Id: demo_keyok.c,v 1.1 2002/11/23 23:52:31 tom Exp $
  *
  * Demonstrate the keyok() function.
  * Thomas Dickey - 2002/11/23

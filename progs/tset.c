@@ -103,7 +103,7 @@ char *ttyname(int fd);
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tset.c,v 0.53 2002/08/24 23:18:16 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.54 2002/12/08 00:50:12 tom Exp $")
 
 extern char **environ;
 
@@ -627,8 +627,10 @@ get_termcap_entry(char *userarg)
  **************************************************************************/
 
 /* some BSD systems have these built in, some systems are missing
- * one or more definitions. The safest solution is to override.
+ * one or more definitions. The safest solution is to override unless the
+ * commonly-altered ones are defined.
  */
+#if !(defined(CERASE) && defined(CINTR) && defined(CKILL) && defined(CQUIT))
 #undef CEOF
 #undef CERASE
 #undef CINTR
@@ -639,18 +641,39 @@ get_termcap_entry(char *userarg)
 #undef CSTART
 #undef CSTOP
 #undef CSUSP
+#endif
 
 /* control-character defaults */
+#ifndef CEOF
 #define CEOF	CTRL('D')
+#endif
+#ifndef CERASE
 #define CERASE	CTRL('H')
+#endif
+#ifndef CINTR
 #define CINTR	127		/* ^? */
+#endif
+#ifndef CKILL
 #define CKILL	CTRL('U')
+#endif
+#ifndef CLNEXT
 #define CLNEXT  CTRL('v')
+#endif
+#ifndef CRPRNT
 #define CRPRNT  CTRL('r')
+#endif
+#ifndef CQUIT
 #define CQUIT	CTRL('\\')
+#endif
+#ifndef CSTART
 #define CSTART	CTRL('Q')
+#endif
+#ifndef CSTOP
 #define CSTOP	CTRL('S')
+#endif
+#ifndef CSUSP
 #define CSUSP	CTRL('Z')
+#endif
 
 #define	CHK(val, dft)	((int)val <= 0 ? dft : val)
 
@@ -1183,8 +1206,8 @@ main(int argc, char **argv)
 #ifdef TERMIOS
 	if (!quiet) {
 	    report("Erase", VERASE, CERASE);
-	    report("Kill", VKILL, CINTR);
-	    report("Interrupt", VINTR, CKILL);
+	    report("Kill", VKILL, CKILL);
+	    report("Interrupt", VINTR, CINTR);
 	}
 #endif
     }
@@ -1193,12 +1216,14 @@ main(int argc, char **argv)
 	err("The -S option is not supported under terminfo.");
 
     if (sflag) {
+	int len;
 	/*
 	 * Figure out what shell we're using.  A hack, we look for an
 	 * environmental variable SHELL ending in "csh".
 	 */
 	if ((p = getenv("SHELL")) != 0
-	    && !strcmp(p + strlen(p) - 3, "csh"))
+	    && (len = strlen(p)) >= 3
+	    && !strcmp(p + len - 3, "csh"))
 	    p = "set noglob;\nsetenv TERM %s;\nunset noglob;\n";
 	else
 	    p = "TERM=%s;\n";
@@ -1207,5 +1232,3 @@ main(int argc, char **argv)
 
     return EXIT_SUCCESS;
 }
-
-/* tset.c ends here */

@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.56 2001/12/08 18:48:01 tom Exp $
+# $Id: Makefile.in,v 1.57 2002/12/01 00:10:32 tom Exp $
 ##############################################################################
-# Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.           #
+# Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -27,7 +27,7 @@
 # authorization.                                                             #
 ##############################################################################
 #
-# Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
+# Author: Thomas E. Dickey 1996-2002
 #
 # Makefile for ncurses source code.
 #
@@ -73,8 +73,7 @@ CPP		= @CPP@
 CFLAGS		= @CFLAGS@
 
 INCDIR		= $(srcdir)/../include
-CPPFLAGS	= -I../progs -I$(srcdir) @CPPFLAGS@ \
-		  -DHAVE_CONFIG_H
+CPPFLAGS	= -I../progs -I$(srcdir) -DHAVE_CONFIG_H @CPPFLAGS@
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 

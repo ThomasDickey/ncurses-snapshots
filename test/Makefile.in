@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.67 2002/11/24 00:05:53 tom Exp $
+# $Id: Makefile.in,v 1.69 2002/12/01 00:11:14 tom Exp $
 ##############################################################################
-# Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.           #
+# Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -27,7 +27,7 @@
 # authorization.                                                             #
 ##############################################################################
 #
-# Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
+# Author: Thomas E. Dickey 1996-2002
 #
 # Makefile for ncurses tests.
 
@@ -51,7 +51,7 @@ CC		= @CC@
 CPP		= @CPP@
 
 CFLAGS		= @CFLAGS@
-CPPFLAGS	=  -I../test -I$(srcdir) @CPPFLAGS@ -DHAVE_CONFIG_H
+CPPFLAGS	=  -I../test -I$(srcdir) -DHAVE_CONFIG_H @CPPFLAGS@
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 
@@ -89,7 +89,8 @@ TESTS = \
 	blue$x \
 	bs$x \
 	cardfile$x \
-	define_key$x \
+	demo_defkey$x \
+	demo_keyok$x \
 	ditto$x \
 	dots$x \
 	filter$x \
@@ -101,7 +102,6 @@ TESTS = \
 	inserts$x \
 	ins_wide$x \
 	keynames$x \
-	keyok$x \
 	knight$x \
 	lrtest$x \
 	ncurses$x \
@@ -129,6 +129,12 @@ bs$x: $(MODEL)/bs.o $(LOCAL_LIBS)
 cardfile$x: $(MODEL)/cardfile.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/cardfile.o $(LDFLAGS_DEFAULT)
 
+demo_defkey$x: $(MODEL)/demo_defkey.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/demo_defkey.o $(LDFLAGS_DEFAULT)
+
+demo_keyok$x: $(MODEL)/demo_keyok.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/demo_keyok.o $(LDFLAGS_DEFAULT)
+
 ditto$x: $(MODEL)/ditto.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/ditto.o $(LDFLAGS_DEFAULT)
 
@@ -155,6 +161,9 @@ hashtest$x: $(MODEL)/hashtest.o $(LOCAL_LIBS)
 
 inserts$x: $(MODEL)/inserts.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/inserts.o $(LDFLAGS_DEFAULT)
+
+ins_wide$x: $(MODEL)/ins_wide.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/ins_wide.o $(LDFLAGS_DEFAULT)
 
 keynames$x: $(MODEL)/keynames.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/keynames.o $(LDFLAGS_DEFAULT)

@@ -1,5 +1,5 @@
 /*
- * $Id: define_key.c,v 1.1 2002/11/24 00:49:38 tom Exp $
+ * $Id: demo_defkey.c,v 1.1 2002/11/24 00:49:38 tom Exp $
  *
  * Demonstrate the define_key() function.
  * Thomas Dickey - 2002/11/23

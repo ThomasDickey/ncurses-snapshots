@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.274 2002/09/15 00:11:28 tom Exp $
+dnl $Id: configure.in,v 1.277 2002/12/07 21:57:23 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.274 $)
+AC_REVISION($Revision: 1.277 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -45,32 +45,6 @@ AC_ARG_WITH(system-type,
 [  --with-system-type=XXX  test: override derived host system-type],
 [AC_MSG_WARN(overriding system type to $withval)
  cf_cv_system_name=$withval])
-
-# We need a configure script only when compiling as part of GNU C library.
-# Here we have to generate one of the files we need while compiling.
-#
-# The only problem is that users of the package might think they have to
-# run configure themself and find it irritating when nothing happens.
-#
-# So we try here to find out whether we are called from the glibc configure
-# or by a user.
-#
-dnl Check if we are a drop-in addition to glibc.
-AC_ARG_ENABLE(add-ons, dnl
-[  --enable-add-ons=DIR... used to check if we are a glibc add-on.],
-		[glibc_add_on=yes],
-		[glibc_add_on=])
-
-if test x"$glibc_add_on" = "xyes" ; then
-  rm -f $srcdir/Banner
-  # We are in glibc.
-  rm -f $srcdir/Makefile
-  cp $srcdir/Makefile.glibc $srcdir/Makefile
-  echo "ncurses `grep \"^[[ 	]]*ncurses-version[[ 	]]*=.*$\" \
-		$srcdir/Makefile | sed -e \
-		's/^[[ 	]]*ncurses-version[[ 	]]*=[[ 	]]*\([[^	^ ]]*\)[[ 	]]*$/\1/'`" > $srcdir/Banner
-  exit 0
-fi
 
 ###	Save the given $CFLAGS to allow user-override.
 cf_user_CFLAGS="$CFLAGS"
@@ -148,11 +122,21 @@ if test "X$cf_with_cxx" = Xno ; then
 	CXX=""
 	GXX=""
 else
+	# with autoconf 2.13, we can change the error to a warning:
 	pushdef([AC_MSG_ERROR],
-		[AC_MSG_RESULT([You don't have any C++ compiler, too bad]); dnl
+		[AC_MSG_RESULT(no)
+		 AC_MSG_WARN([You don't have any C++ compiler, too bad])
 		cf_with_cxx=no; CXX=""; GXX="";])dnl
 	AC_PROG_CXX
 	popdef([AC_MSG_ERROR])dnl
+	# autoconf 2.5x removed the error - by hardcoding it to g++.
+	if test "$CXX" = "g++" ; then
+		AC_PATH_PROG(CXX,g++)
+	fi
+	if test "$CXX" = "g++" ; then
+		AC_MSG_WARN(ignoring hardcoded g++)
+		cf_with_cxx=no; CXX=""; GXX="";
+	fi
 fi
 
 GXX_VERSION=none
@@ -247,19 +231,12 @@ CF_HELP_MESSAGE(Options to Specify the Libraries Built/Used:)
 cf_list_models=""
 AC_SUBST(cf_list_models)dnl	the complete list of models ("normal debug")
 
-AC_MSG_CHECKING(if you want to build libraries with libtool)
-AC_ARG_WITH(libtool,
-	[  --with-libtool          generate libraries with libtool],
-	[with_libtool=$withval],
-	[with_libtool=no])
-AC_MSG_RESULT($with_libtool)
-if test "$with_libtool" = "yes"; then
-	cf_list_models="$cf_list_models libtool"
-	test -z "$LIBTOOL" && LIBTOOL=libtool
+CF_WITH_LIBTOOL
+if test "$with_libtool" = "yes" ; then
+
+cf_list_models="$cf_list_models libtool"
+
 else
-	LIBTOOL=""
-fi
-AC_SUBST(LIBTOOL)
 
 AC_MSG_CHECKING(if you want to build shared libraries)
 AC_ARG_WITH(shared,
@@ -292,6 +269,8 @@ AC_ARG_WITH(profile,
 	[with_profile=no])
 AC_MSG_RESULT($with_profile)
 test "$with_profile" = "yes" && cf_list_models="$cf_list_models profile"
+
+fi
 
 ###############################################################################
 
@@ -1236,6 +1215,7 @@ AC_SUBST(DFT_OBJ_SUBDIR)dnl the default object-directory ("obj")
 AC_MSG_RESULT($DFT_OBJ_SUBDIR)
 
 # libtool thinks it can make c++ shared libraries (perhaps only g++)
+if test "$cf_with_cxx" = yes ; then
 AC_MSG_CHECKING(c++ library-dependency suffix)
 if test "$with_libtool" = "yes"; then
 	CXX_LIB_SUFFIX=$DFT_DEP_SUFFIX
@@ -1244,9 +1224,12 @@ else
 fi
 AC_MSG_RESULT($CXX_LIB_SUFFIX)
 AC_SUBST(CXX_LIB_SUFFIX)
+fi
 
 TINFO_LIST="$SHLIB_LIST"
-test "$with_termlib" = yes && SHLIB_LIST="$SHLIB_LIST -ltinfo${LIB_SUFFIX}"
+if test "$with_libtool" != yes ; then
+	test "$with_termlib" = yes && SHLIB_LIST="$SHLIB_LIST -ltinfo${LIB_SUFFIX}"
+fi
 
 AC_MSG_CHECKING(where we will install curses.h)
 test "$with_overwrite" = no && \
