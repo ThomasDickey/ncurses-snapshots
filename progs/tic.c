@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.101 2002/08/31 16:49:51 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.102 2002/10/05 19:59:41 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -89,25 +89,27 @@ usage(void)
     {
 	"Options:",
 	"  -1         format translation output one capability per line",
-	"  -A         suppress commented-out capabilities",
-	"  -C         translate entries to termcap source form",
-	"  -I         translate entries to terminfo source form",
-	"  -L         translate entries to full terminfo source form",
-	"  -N         disable smart defaults for source translation",
-	"  -R<name>   restrict translation to given terminfo/termcap version",
-	"  -T         remove size-restrictions on compiled description",
-	"  -V         print version",
 #if NCURSES_XNAMES
 	"  -a         retain commented-out capabilities (sets -x also)",
 #endif
+	"  -C         translate entries to termcap source form",
 	"  -c         check only, validate input without compiling or translating",
+	"  -e<names>  translate/compile only entries named by comma-separated list",
 	"  -f         format complex strings for readability",
 	"  -G         format %{number} to %'char'",
 	"  -g         format %'char' to %{number}",
-	"  -e<names>  translate/compile only entries named by comma-separated list",
+	"  -I         translate entries to terminfo source form",
+	"  -L         translate entries to full terminfo source form",
+	"  -N         disable smart defaults for source translation",
 	"  -o<dir>    set output directory for compiled entry writes",
+	"  -R<name>   restrict translation to given terminfo/termcap version",
 	"  -r         force resolution of all use entries in source translation",
 	"  -s         print summary statistics",
+	"  -T         remove size-restrictions on compiled description",
+#if NCURSES_XNAMES
+	"  -t         suppress commented-out capabilities",
+#endif
+	"  -V         print version",
 	"  -v[n]      set verbosity level",
 	"  -w[n]      set format width for translation output",
 #if NCURSES_XNAMES
@@ -468,7 +470,7 @@ main(int argc, char *argv[])
      * be optional.
      */
     while ((this_opt = getopt(argc, argv,
-			      "0123456789ACILNR:TVace:fGgo:rsvwx")) != EOF) {
+			      "0123456789CILNR:TVace:fGgo:rstvwx")) != EOF) {
 	if (isdigit(this_opt)) {
 	    switch (last_opt) {
 	    case 'v':
@@ -544,7 +546,7 @@ main(int argc, char *argv[])
 	    width = 0;
 	    break;
 #if NCURSES_XNAMES
-	case 'A':
+	case 't':
 	    _nc_disable_period = FALSE;
 	    suppress_untranslatable = TRUE;
 	    break;

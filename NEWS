@@ -1,10 +1,25 @@
--- $Id: NEWS,v 1.712 2002/09/28 23:35:44 tom Exp $
+-- $Id: NEWS,v 1.713 2002/10/06 00:35:31 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20021002 pre-release
+	+ correct winnwstr() to account for non-character cells generated when
+	  a double-width character is added (report by Michael Bienia
+	  <michael@vorlon.ping.de>).
+	+ modify _nc_viswbuf2n() to provide better results using wctomb().
+	+ correct logic in _nc_varargs() which broke tracing of parameters for
+	  formats such as "%.*s".
+	+ correct scale factor in linux-c and linux-c-nc terminfo entries
+	  (report Floyd Davidson).
+	+ change tic -A option to -t, add the same option to infocmp for
+	  consistency.
+	+ correct "%c" implementation in lib_tparm.c, which did not map a null
+	  character to a 128 (cf: 980620) (patch by Frank Henigman
+	  <fjhenigman@mud.cgl.uwaterloo.ca>).
 
 20020928 pre-release
 	+ modify MKkey_defs.sh to check for POSIX sort -k option, use that if

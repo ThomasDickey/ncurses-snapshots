@@ -41,7 +41,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.65 2002/08/11 00:33:37 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.68 2002/10/06 01:13:04 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -917,6 +917,9 @@ usage(void)
 	,"  -r    with -C, output in termcap form"
 	,"  -r    with -F, resolve use-references"
 	,"  -s [d|i|l|c] sort fields"
+#if NCURSES_XNAMES
+	,"  -t    suppress commented-out capabilities"
+#endif
 	,"  -u    produce source with 'use='"
 	,"  -v number  (verbose)"
 	,"  -w number  (width)"
@@ -1165,6 +1168,7 @@ main(int argc, char *argv[])
     bool filecompare = FALSE;
     int initdump = 0;
     bool init_analyze = FALSE;
+    bool suppress_untranslatable = FALSE;
 
     if ((terminal = getenv("TERM")) == 0) {
 	(void) fprintf(stderr,
@@ -1175,28 +1179,26 @@ main(int argc, char *argv[])
     /* where is the terminfo database location going to default to? */
     restdir = firstdir = 0;
 
-    while ((c = getopt(argc, argv, "adeEcCfFGgIinlLpqrR:s:uv:Vw:A:B:1T")) != EOF)
+    while ((c = getopt(argc,
+		       argv,
+		       "1A:aB:CcdEeFfGgIiLlnpqR:rs:TtuVv:w:")) != EOF)
 	switch (c) {
+	case '1':
+	    mwidth = 0;
+	    break;
+
+	case 'A':
+	    firstdir = optarg;
+	    break;
+
 #if NCURSES_XNAMES
 	case 'a':
 	    _nc_disable_period = TRUE;
 	    use_extended_names(TRUE);
 	    break;
 #endif
-	case 'd':
-	    compare = C_DIFFERENCE;
-	    break;
-
-	case 'e':
-	    initdump |= 1;
-	    break;
-
-	case 'E':
-	    initdump |= 2;
-	    break;
-
-	case 'c':
-	    compare = C_COMMON;
+	case 'B':
+	    restdir = optarg;
 	    break;
 
 	case 'C':
@@ -1204,6 +1206,26 @@ main(int argc, char *argv[])
 	    tversion = "BSD";
 	    if (sortmode == S_DEFAULT)
 		sortmode = S_TERMCAP;
+	    break;
+
+	case 'c':
+	    compare = C_COMMON;
+	    break;
+
+	case 'd':
+	    compare = C_DIFFERENCE;
+	    break;
+
+	case 'E':
+	    initdump |= 2;
+	    break;
+
+	case 'e':
+	    initdump |= 1;
+	    break;
+
+	case 'F':
+	    filecompare = TRUE;
 	    break;
 
 	case 'f':
@@ -1218,10 +1240,6 @@ main(int argc, char *argv[])
 	    numbers = -1;
 	    break;
 
-	case 'F':
-	    filecompare = TRUE;
-	    break;
-
 	case 'I':
 	    outform = F_TERMINFO;
 	    if (sortmode == S_DEFAULT)
@@ -1233,14 +1251,14 @@ main(int argc, char *argv[])
 	    init_analyze = TRUE;
 	    break;
 
-	case 'l':
-	    outform = F_TERMINFO;
-	    break;
-
 	case 'L':
 	    outform = F_VARIABLE;
 	    if (sortmode == S_DEFAULT)
 		sortmode = S_VARIABLE;
+	    break;
+
+	case 'l':
+	    outform = F_TERMINFO;
 	    break;
 
 	case 'n':
@@ -1258,13 +1276,13 @@ main(int argc, char *argv[])
 	    bool_sep = ", ";
 	    break;
 
+	case 'R':
+	    tversion = optarg;
+	    break;
+
 	case 'r':
 	    tversion = 0;
 	    limited = FALSE;
-	    break;
-
-	case 'R':
-	    tversion = optarg;
 	    break;
 
 	case 's':
@@ -1283,38 +1301,34 @@ main(int argc, char *argv[])
 	    }
 	    break;
 
-	case 'u':
-	    compare = C_USEALL;
+	case 'T':
+	    limited = FALSE;
 	    break;
 
-	case 'v':
-	    itrace = optarg_to_number();
-	    set_trace_level(itrace);
+#if NCURSES_XNAMES
+	case 't':
+	    _nc_disable_period = FALSE;
+	    suppress_untranslatable = TRUE;
+	    break;
+#endif
+
+	case 'u':
+	    compare = C_USEALL;
 	    break;
 
 	case 'V':
 	    puts(curses_version());
 	    ExitProgram(EXIT_SUCCESS);
 
+	case 'v':
+	    itrace = optarg_to_number();
+	    set_trace_level(itrace);
+	    break;
+
 	case 'w':
 	    mwidth = optarg_to_number();
 	    break;
 
-	case 'A':
-	    firstdir = optarg;
-	    break;
-
-	case 'B':
-	    restdir = optarg;
-	    break;
-
-	case '1':
-	    mwidth = 0;
-	    break;
-
-	case 'T':
-	    limited = FALSE;
-	    break;
 	default:
 	    usage();
 	}
@@ -1427,7 +1441,12 @@ main(int argc, char *argv[])
 			       tname[0]);
 	    (void) printf("#\tReconstructed via infocmp from file: %s\n",
 			  tfile[0]);
-	    len = dump_entry(&entries[0].tterm, FALSE, limited, 0, numbers, NULL);
+	    len = dump_entry(&entries[0].tterm,
+			     suppress_untranslatable,
+			     limited,
+			     0,
+			     numbers,
+			     NULL);
 	    putchar('\n');
 	    if (itrace)
 		(void) fprintf(stderr, "infocmp: length %d\n", len);
@@ -1459,7 +1478,12 @@ main(int argc, char *argv[])
 	case C_USEALL:
 	    if (itrace)
 		(void) fprintf(stderr, "infocmp: dumping use entry\n");
-	    len = dump_entry(&entries[0].tterm, FALSE, limited, 0, numbers, use_predicate);
+	    len = dump_entry(&entries[0].tterm,
+			     suppress_untranslatable,
+			     limited,
+			     0,
+			     numbers,
+			     use_predicate);
 	    for (i = 1; i < termcount; i++)
 		len += dump_uses(tname[i], !(outform == F_TERMCAP
 					     || outform == F_TCONVERR));

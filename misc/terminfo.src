@@ -10,7 +10,7 @@
 #
 #------------------------------------------------------------------------------
 #	Version 10.2.1
-#	$Date: 2002/09/28 23:46:14 $
+#	$Date: 2002/10/05 18:40:53 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -716,16 +716,17 @@ linux-m|Linux console no color,
 
 # The 1.3.x kernels add color-change capabilities; if yours doesn't have this
 # and it matters, turn off <ccc>.  The %02x escape used to implement this is
-# not back-portable to older SV curses (although it has worked fine on Solaris
-# for several years) and not supported in ncurses versions before 1.9.9.
-linux-c-nc|linux console 1.3.x hack for ncurses only, 
+# not supposedly back-portable to older SV curses (although it has worked fine
+# on Solaris for several years) and not supported in ncurses versions before
+# 1.9.9.
+linux-c-nc|linux console with color-change, 
 	ccc, 
-	initc=\E]P%p1%x%p2%{255}%*%{1000}%/%02x%p3%{255}%*%{1000}%/%02x%p4%{255}%*%{1000}%/%02x, 
+	initc=\E]P%p1%x%p2%{256}%*%{1000}%/%02x%p3%{256}%*%{1000}%/%02x%p4%{256}%*%{1000}%/%02x, 
 	oc=\E]R, use=linux-basic, 
 # From: Dennis Henriksen <opus@osrl.dk>, 9 July 1996
 linux-c|linux console 1.3.6+ for older ncurses, 
 	ccc, 
-	initc=\E]P%?%p1%{9}%>%t%p1%{10}%-%'a'%+%c%e%p1%d%;%p2%{255}%*%{1000}%/%Pr%gr%{16}%/%Px%?%gx%{9}%>%t%gx%{10}%-%'a'%+%c%e%gx%d%;%gr%{15}%&%Px%?%gx%{9}%>%t%gx%{10}%-%'a'%+%c%e%gx%d%;%p3%{255}%*%{1000}%/%Pr%gr%{16}%/%Px%?%gx%{9}%>%t%gx%{10}%-%'a'%+%c%e%gx%d%;%gr%{15}%&%Px%?%gx%{9}%>%t%gx%{10}%-%'a'%+%c%e%gx%d%;%p4%{255}%*%{1000}%/%Pr%gr%{16}%/%Px%?%gx%{9}%>%t%gx%{10}%-%'a'%+%c%e%gx%d%;%gr%{15}%&%Px%?%gx%{9}%>%t%gx%{10}%-%'a'%+%c%e%gx%d%;, 
+	initc=\E]P%?%p1%{9}%>%t%p1%{10}%-%'a'%+%c%e%p1%d%;%p2%{256}%*%{1000}%/%Pr%gr%{16}%/%Px%?%gx%{9}%>%t%gx%{10}%-%'a'%+%c%e%gx%d%;%gr%{15}%&%Px%?%gx%{9}%>%t%gx%{10}%-%'a'%+%c%e%gx%d%;%p3%{256}%*%{1000}%/%Pr%gr%{16}%/%Px%?%gx%{9}%>%t%gx%{10}%-%'a'%+%c%e%gx%d%;%gr%{15}%&%Px%?%gx%{9}%>%t%gx%{10}%-%'a'%+%c%e%gx%d%;%p4%{256}%*%{1000}%/%Pr%gr%{16}%/%Px%?%gx%{9}%>%t%gx%{10}%-%'a'%+%c%e%gx%d%;%gr%{15}%&%Px%?%gx%{9}%>%t%gx%{10}%-%'a'%+%c%e%gx%d%;, 
 	oc=\E]R, use=linux-basic, 
 
 # The 2.2.x kernels add a private mode that sets the cursor type; use that to
@@ -19534,6 +19535,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  the history of this console type -TD
 #	* scaled the linux-c terminfo entry to match linux-c-nc, i.e., the
 #	  r/g/b parameters of initc are in the range 0 to 1000 -TD
+#
+# 2002-1005
+#	* minor fix for scale-factor of linux-c and linux-c-nc -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

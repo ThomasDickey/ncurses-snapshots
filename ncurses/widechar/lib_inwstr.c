@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_inwstr.c,v 1.1 2002/03/10 00:25:27 tom Exp $")
+MODULE_ID("$Id: lib_inwstr.c,v 1.3 2002/10/06 00:56:36 tom Exp $")
 
 NCURSES_EXPORT(int)
 winnwstr(WINDOW *win, wchar_t * wstr, int n)
@@ -50,23 +50,25 @@ winnwstr(WINDOW *win, wchar_t * wstr, int n)
     cchar_t *text;
     wchar_t wch;
 
-    TR(TRACE_CCALLS, (T_CALLED("winnwstr(%p,%p,%d)"), win, wstr, n));
+    T((T_CALLED("winnwstr(%p,%p,%d)"), win, wstr, n));
     if (wstr != 0) {
 	if (win) {
 	    getyx(win, row, col);
 
 	    text = win->_line[row].text;
 	    while (count < n && count != ERR) {
-		for (inx = 0; (inx < CCHARW_MAX)
-		     && ((wch = text[col].chars[inx]) != 0);
-		     ++inx) {
-		    if (count + 1 >= n) {
-			if ((count = last) == 0) {
-			    count = ERR;	/* error if we t store nothing */
+		if (!isnac(text[col])) {
+		    for (inx = 0; (inx < CCHARW_MAX)
+			 && ((wch = text[col].chars[inx]) != 0);
+			 ++inx) {
+			if (count + 1 > n) {
+			    if ((count = last) == 0) {
+				count = ERR;	/* error if we store nothing */
+			    }
+			    break;
 			}
-			break;
+			wstr[count++] = wch;
 		    }
-		    wstr[count++] = wch;
 		}
 		last = count;
 		if (++col > win->_maxx) {
@@ -74,8 +76,10 @@ winnwstr(WINDOW *win, wchar_t * wstr, int n)
 		}
 	    }
 	}
-	if (count > 0)
+	if (count > 0) {
 	    wstr[count] = '\0';
+	    T(("winnwstr returns %s", _nc_viswbuf(wstr)));
+	}
     }
     returnCode(count);
 }
@@ -89,7 +93,7 @@ NCURSES_EXPORT(int)
 winwstr(WINDOW *win, wchar_t * wstr)
 {
     int result = OK;
-    TR(TRACE_CCALLS, (T_CALLED("winwstr(%p,%p)"), win, wstr));
+    T((T_CALLED("winwstr(%p,%p)"), win, wstr));
     if (winnwstr(win, wstr, CCHARW_MAX * (win->_maxx - win->_curx + 1)) == ERR)
 	result = ERR;
     returnCode(result);

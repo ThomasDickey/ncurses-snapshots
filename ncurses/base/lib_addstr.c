@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.33 2002/09/28 16:30:46 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.34 2002/10/06 00:25:25 tom Exp $")
 
 #if USE_WIDEC_SUPPORT
 #define CONV_DATA   mbstate_t state; wchar_t cached; int clen = 0
