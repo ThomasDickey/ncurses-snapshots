@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.187 2000/03/05 18:17:09 juergen Exp $
+dnl $Id: configure.in,v 1.188 2000/04/01 20:45:16 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.187 $)
+AC_REVISION($Revision: 1.188 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -940,6 +940,13 @@ LIB_SUBSETS="${LIB_SUBSETS}base"
 test "$with_ext_funcs" = yes && LIB_SUBSETS="${LIB_SUBSETS}+ext_funcs"
 AC_MSG_RESULT($LIB_SUBSETS)
 
+LIB_TRACING=DEBUG
+case "$CFLAGS" in
+*-DTRACE*)
+	LIB_TRACING=all
+	;;
+esac
+
 ### Construct the list of include-directories to be generated
 CF_INCLUDE_DIRS
 CF_ADA_INCLUDE_DIRS
@@ -981,6 +988,7 @@ DFT_LWR_MODEL="$DFT_LWR_MODEL"
 LDCONFIG="$LDCONFIG"
 LIB_NAME="$LIB_NAME"
 LIB_SUBSETS="$LIB_SUBSETS"
+LIB_TRACING="$LIB_TRACING"
 SRC_SUBDIRS="$SRC_SUBDIRS"
 TINFO_NAME="$TINFO_NAME"
 WITH_ECHO="$with_echo"

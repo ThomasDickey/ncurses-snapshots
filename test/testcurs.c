@@ -7,7 +7,7 @@
  *  wrs(5/28/93) -- modified to be consistent (perform identically) with either
  *                  PDCurses or under Unix System V, R4
  *
- * $Id: testcurs.c,v 1.19 1999/02/14 00:42:28 tom Exp $
+ * $Id: testcurs.c,v 1.20 2000/04/01 20:01:34 tom Exp $
  */
 
 #include <test.priv.h>
@@ -139,7 +139,7 @@ initTest (WINDOW **win)
 #ifdef PDCDEBUG
     PDC_debug("initTest called\n");
 #endif
-#ifdef NCURSES_VERSION
+#ifdef TRACE
     trace(TRACE_MAXIMUM);
 #endif
     initscr();
