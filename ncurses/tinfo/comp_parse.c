@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 /*
@@ -52,7 +53,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.57 2003/10/25 22:25:36 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.58 2004/04/17 22:17:04 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype) (TERMTYPE *) = sanity_check;
@@ -105,13 +106,7 @@ _nc_free_entries(ENTRY * headp)
     ENTRY *ep, *next;
 
     for (ep = headp; ep; ep = next) {
-	/*
-	 * This conditional lets us disconnect storage from the list.
-	 * To do this, copy an entry out of the list, then null out
-	 * the string-table member in the original and any use entries
-	 * it references.
-	 */
-	FreeIfNeeded(ep->tterm.str_table);
+	_nc_free_termtype(&(ep->tterm));
 
 	next = ep->next;
 
@@ -188,10 +183,14 @@ _nc_read_entry_source(FILE *fp, char *buf,
 	 * use references to disk, so as to avoid chewing up a lot of
 	 * core when the resolution code could fetch entries off disk.
 	 */
-	if (hook != NULLHOOK && (*hook) (&thisentry))
+	if (hook != NULLHOOK && (*hook) (&thisentry)) {
 	    immediate++;
-	else
+	} else {
 	    enqueue(&thisentry);
+	    FreeIfNeeded(thisentry.tterm.Booleans);
+	    FreeIfNeeded(thisentry.tterm.Numbers);
+	    FreeIfNeeded(thisentry.tterm.Strings);
+	}
     }
 
     if (_nc_tail) {

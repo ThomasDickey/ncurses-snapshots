@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996 on                 *
  ****************************************************************************/
 
 /*
@@ -50,7 +51,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.67 2004/04/03 20:27:02 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.68 2004/04/17 22:14:55 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -94,11 +95,182 @@ NCURSES_EXPORT_VAR(bool)
 _nc_disable_period = FALSE;	/* used by tic -a option */
 #endif
 
-static bool end_of_stream(void);
-static int last_char(void);
-static int next_char(void);
-static long stream_pos(void);
-static void push_back(char c);
+/*****************************************************************************
+ *
+ * Character-stream handling
+ *
+ *****************************************************************************/
+
+#define LEXBUFSIZ	1024
+
+static char *bufptr;		/* otherwise, the input buffer pointer */
+static char *bufstart;		/* start of buffer so we can compute offsets */
+static FILE *yyin;		/* scanner's input file descriptor */
+
+/*
+ *	_nc_reset_input()
+ *
+ *	Resets the input-reading routines.  Used on initialization,
+ *	or after a seek has been done.  Exactly one argument must be
+ *	non-null.
+ */
+
+NCURSES_EXPORT(void)
+_nc_reset_input(FILE *fp, char *buf)
+{
+    pushtype = NO_PUSHBACK;
+    if (pushname != 0)
+	pushname[0] = '\0';
+    yyin = fp;
+    bufstart = bufptr = buf;
+    _nc_curr_file_pos = 0L;
+    if (fp != 0)
+	_nc_curr_line = 0;
+    _nc_curr_col = 0;
+}
+
+/*
+ *	int last_char()
+ *
+ *	Returns the final nonblank character on the current input buffer
+ */
+static int
+last_char(void)
+{
+    size_t len = strlen(bufptr);
+    while (len--) {
+	if (!isspace(UChar(bufptr[len])))
+	    return bufptr[len];
+    }
+    return 0;
+}
+
+/*
+ *	int next_char()
+ *
+ *	Returns the next character in the input stream.  Comments and leading
+ *	white space are stripped.
+ *
+ *	The global state variable 'firstcolumn' is set TRUE if the character
+ *	returned is from the first column of the input line.
+ *
+ *	The global variable _nc_curr_line is incremented for each new line.
+ *	The global variable _nc_curr_file_pos is set to the file offset of the
+ *	beginning of each line.
+ */
+
+static int
+next_char(void)
+{
+    static char *result;
+    static size_t allocated;
+    int the_char;
+
+    if (!yyin) {
+	if (result != 0) {
+	    FreeAndNull(result);
+	    FreeAndNull(pushname);
+	    allocated = 0;
+	}
+	/*
+	 * An string with an embedded null will truncate the input.  This is
+	 * intentional (we don't read binary files here).
+	 */
+	if (bufptr == 0 || *bufptr == '\0')
+	    return (EOF);
+	if (*bufptr == '\n') {
+	    _nc_curr_line++;
+	    _nc_curr_col = 0;
+	}
+    } else if (!bufptr || !*bufptr) {
+	/*
+	 * In theory this could be recoded to do its I/O one character at a
+	 * time, saving the buffer space.  In practice, this turns out to be
+	 * quite hard to get completely right.  Try it and see.  If you
+	 * succeed, don't forget to hack push_back() correspondingly.
+	 */
+	size_t used;
+	size_t len;
+
+	do {
+	    bufstart = 0;
+	    used = 0;
+	    do {
+		if (used + (LEXBUFSIZ / 4) >= allocated) {
+		    allocated += (allocated + LEXBUFSIZ);
+		    result = typeRealloc(char, allocated, result);
+		    if (result == 0)
+			return (EOF);
+		}
+		if (used == 0)
+		    _nc_curr_file_pos = ftell(yyin);
+
+		if (fgets(result + used, allocated - used, yyin) != 0) {
+		    bufstart = result;
+		    if (used == 0) {
+			_nc_curr_line++;
+			_nc_curr_col = 0;
+		    }
+		} else {
+		    if (used != 0)
+			strcat(result, "\n");
+		}
+		if ((bufptr = bufstart) != 0) {
+		    used = strlen(bufptr);
+		    while (iswhite(*bufptr))
+			bufptr++;
+
+		    /*
+		     * Treat a trailing <cr><lf> the same as a <newline> so we
+		     * can read files on OS/2, etc.
+		     */
+		    if ((len = strlen(bufptr)) > 1) {
+			if (bufptr[len - 1] == '\n'
+			    && bufptr[len - 2] == '\r') {
+			    len--;
+			    bufptr[len - 1] = '\n';
+			    bufptr[len] = '\0';
+			}
+		    }
+		} else {
+		    return (EOF);
+		}
+	    } while (bufptr[len - 1] != '\n');	/* complete a line */
+	} while (result[0] == '#');	/* ignore comments */
+    }
+
+    first_column = (bufptr == bufstart);
+    if (first_column)
+	had_newline = FALSE;
+
+    _nc_curr_col++;
+    the_char = *bufptr++;
+    return UChar(the_char);
+}
+
+static void
+push_back(char c)
+/* push a character back onto the input stream */
+{
+    if (bufptr == bufstart)
+	_nc_syserr_abort("Can't backspace off beginning of line");
+    *--bufptr = c;
+}
+
+static long
+stream_pos(void)
+/* return our current character position in the input stream */
+{
+    return (yyin ? ftell(yyin) : (bufptr ? bufptr - bufstart : 0));
+}
+
+static bool
+end_of_stream(void)
+/* are we at end of input? */
+{
+    return ((yyin ? feof(yyin) : (bufptr && *bufptr == '\0'))
+	    ? TRUE : FALSE);
+}
 
 /* Assume we may be looking at a termcap-style continuation */
 static inline int
@@ -178,6 +350,8 @@ _nc_get_token(bool silent)
     }
 
     if (end_of_stream()) {
+	yyin = 0;
+	next_char();		/* frees its allocated memory */
 	if (buffer != 0) {
 	    FreeAndNull(buffer);
 	}
@@ -686,176 +860,4 @@ _nc_panic_mode(char ch)
 	if (c == EOF)
 	    return;
     }
-}
-
-/*****************************************************************************
- *
- * Character-stream handling
- *
- *****************************************************************************/
-
-#define LEXBUFSIZ	1024
-
-static char *bufptr;		/* otherwise, the input buffer pointer */
-static char *bufstart;		/* start of buffer so we can compute offsets */
-static FILE *yyin;		/* scanner's input file descriptor */
-
-/*
- *	_nc_reset_input()
- *
- *	Resets the input-reading routines.  Used on initialization,
- *	or after a seek has been done.  Exactly one argument must be
- *	non-null.
- */
-
-NCURSES_EXPORT(void)
-_nc_reset_input(FILE *fp, char *buf)
-{
-    pushtype = NO_PUSHBACK;
-    if (pushname != 0)
-	pushname[0] = '\0';
-    yyin = fp;
-    bufstart = bufptr = buf;
-    _nc_curr_file_pos = 0L;
-    if (fp != 0)
-	_nc_curr_line = 0;
-    _nc_curr_col = 0;
-}
-
-/*
- *	int last_char()
- *
- *	Returns the final nonblank character on the current input buffer
- */
-static int
-last_char(void)
-{
-    size_t len = strlen(bufptr);
-    while (len--) {
-	if (!isspace(UChar(bufptr[len])))
-	    return bufptr[len];
-    }
-    return 0;
-}
-
-/*
- *	int next_char()
- *
- *	Returns the next character in the input stream.  Comments and leading
- *	white space are stripped.
- *
- *	The global state variable 'firstcolumn' is set TRUE if the character
- *	returned is from the first column of the input line.
- *
- *	The global variable _nc_curr_line is incremented for each new line.
- *	The global variable _nc_curr_file_pos is set to the file offset of the
- *	beginning of each line.
- */
-
-static int
-next_char(void)
-{
-    int the_char;
-
-    if (!yyin) {
-	/*
-	 * An string with an embedded null will truncate the input.  This is
-	 * intentional (we don't read binary files here).
-	 */
-	if (*bufptr == '\0')
-	    return (EOF);
-	if (*bufptr == '\n') {
-	    _nc_curr_line++;
-	    _nc_curr_col = 0;
-	}
-    } else if (!bufptr || !*bufptr) {
-	/*
-	 * In theory this could be recoded to do its I/O one character at a
-	 * time, saving the buffer space.  In practice, this turns out to be
-	 * quite hard to get completely right.  Try it and see.  If you
-	 * succeed, don't forget to hack push_back() correspondingly.
-	 */
-	static char *result;
-	static size_t allocated;
-	size_t used;
-	size_t len;
-
-	do {
-	    bufstart = 0;
-	    used = 0;
-	    do {
-		if (used + (LEXBUFSIZ / 4) >= allocated) {
-		    allocated += (allocated + LEXBUFSIZ);
-		    result = typeRealloc(char, allocated, result);
-		    if (result == 0)
-			return (EOF);
-		}
-		if (used == 0)
-		    _nc_curr_file_pos = ftell(yyin);
-
-		if (fgets(result + used, allocated - used, yyin) != 0) {
-		    bufstart = result;
-		    if (used == 0) {
-			_nc_curr_line++;
-			_nc_curr_col = 0;
-		    }
-		} else {
-		    if (used != 0)
-			strcat(result, "\n");
-		}
-		if ((bufptr = bufstart) != 0) {
-		    used = strlen(bufptr);
-		    while (iswhite(*bufptr))
-			bufptr++;
-
-		    /*
-		     * Treat a trailing <cr><lf> the same as a <newline> so we
-		     * can read files on OS/2, etc.
-		     */
-		    if ((len = strlen(bufptr)) > 1) {
-			if (bufptr[len - 1] == '\n'
-			    && bufptr[len - 2] == '\r') {
-			    len--;
-			    bufptr[len - 1] = '\n';
-			    bufptr[len] = '\0';
-			}
-		    }
-		} else {
-		    return (EOF);
-		}
-	    } while (bufptr[len - 1] != '\n');	/* complete a line */
-	} while (result[0] == '#');	/* ignore comments */
-    }
-
-    first_column = (bufptr == bufstart);
-    if (first_column)
-	had_newline = FALSE;
-
-    _nc_curr_col++;
-    the_char = *bufptr++;
-    return UChar(the_char);
-}
-
-static void
-push_back(char c)
-/* push a character back onto the input stream */
-{
-    if (bufptr == bufstart)
-	_nc_syserr_abort("Can't backspace off beginning of line");
-    *--bufptr = c;
-}
-
-static long
-stream_pos(void)
-/* return our current character position in the input stream */
-{
-    return (yyin ? ftell(yyin) : (bufptr ? bufptr - bufstart : 0));
-}
-
-static bool
-end_of_stream(void)
-/* are we at end of input? */
-{
-    return ((yyin ? feof(yyin) : (bufptr && *bufptr == '\0'))
-	    ? TRUE : FALSE);
 }

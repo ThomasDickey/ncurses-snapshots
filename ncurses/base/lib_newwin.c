@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.34 2002/08/18 00:12:30 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.35 2004/04/10 23:42:00 tom Exp $")
 
 static WINDOW *
 remove_window_from_screen(WINDOW *win)
@@ -119,9 +119,6 @@ newwin(int num_lines, int num_columns, int begy, int begx)
 	num_lines = SP->_lines_avail - begy;
     if (num_columns == 0)
 	num_columns = screen_columns - begx;
-
-    if (num_columns + begx > SP->_columns || num_lines + begy > SP->_lines_avail)
-	returnWin(0);
 
     if ((win = _nc_makenew(num_lines, num_columns, begy, begx, 0)) == 0)
 	returnWin(0);

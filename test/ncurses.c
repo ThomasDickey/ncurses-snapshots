@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.205 2004/03/06 22:29:06 tom Exp $
+$Id: ncurses.c,v 1.206 2004/04/10 23:50:12 tom Exp $
 
 ***************************************************************************/
 
@@ -3629,6 +3629,8 @@ menu_virtualize(int c)
 static const char *animals[] =
 {
     "Lions", "Tigers", "Bears", "(Oh my!)", "Newts", "Platypi", "Lemurs",
+    "Lions, Tigers, Bears, (Oh my!), Newts, Platypi, Lemurs",
+    "Lions, Tigers, Bears, (Oh my!), Newts, Platypi, Lemurs, Lions, Tigers, Bears, (Oh my!), Newts, Platypi, Lemurs",
     (char *) 0
 };
 
@@ -3672,6 +3674,8 @@ menu_test(void)
     post_menu(m);
 
     while ((c = menu_driver(m, menu_virtualize(wGetchar(menuwin)))) != E_UNKNOWN_COMMAND) {
+	if (c == E_NOT_POSTED)
+	    break;
 	if (c == E_REQUEST_DENIED)
 	    beep();
 	continue;

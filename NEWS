@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.806 2004/04/03 22:52:37 tom Exp $
+-- $Id: NEWS,v 1.808 2004/04/17 22:08:54 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040417
+	+ modify tic's missing-sgr warning to apply to terminfo only.
+	+ free some memory leaks in tic.
+	+ remove check in post_menu() that prevented menus from extending
+	  beyond the screen (request by Max J. Werner).
+	+ remove check in newwin(), derwin() that prevents allocating windows
+	  that extend beyond the screen.  Solaris curses does this.
+	+ add ifdef in test/color_set.c to allow it to compile with older
+	  curses.
+	+ add napms() calls to test/dots.c to make it not be a CPU hog.
 
 20040403
 	+ modify unctrl() to return null if its parameter does not correspond

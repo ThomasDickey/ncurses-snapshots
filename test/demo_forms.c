@@ -1,5 +1,5 @@
 /*
- * $Id: demo_forms.c,v 1.3 2003/05/03 22:08:20 tom Exp $
+ * $Id: demo_forms.c,v 1.4 2004/04/17 21:18:40 tom Exp $
  *
  * Demonstrate a variety of functions from the form library.
  * Thomas Dickey - 2003/4/26
@@ -283,7 +283,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
     demo_forms();
 
     endwin();
-    return EXIT_SUCCESS;
+    ExitProgram(EXIT_SUCCESS);
 }
 #else
 int
