@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.50 1997/03/01 23:13:01 tom Exp $
+dnl $Id: aclocal.m4,v 1.51 1997/03/15 23:02:29 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -526,8 +526,15 @@ do
 
 install \\
 install.libs \\
-install.includes :: \$(INSTALL_PREFIX)\$(includedir)
+install.includes :: \$(INSTALL_PREFIX)\$(includedir) \\
 NC_EOF
+		j=""
+		for i in `cat $srcdir/$nc_dir/headers |fgrep -v "#"`
+		do
+			test -n "$j" && echo "		$j \\" >>$nc_dir/Makefile
+			j=$i
+		done
+		echo "		$j" >>$nc_dir/Makefile
 		for i in `cat $srcdir/$nc_dir/headers |fgrep -v "#"`
 		do
 			echo "	@ ../headers.sh \$(INSTALL_DATA) \$(INSTALL_PREFIX)\$(includedir) \$(srcdir) $i" >>$nc_dir/Makefile

@@ -1,6 +1,15 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970315
+	+ add header dependencies so that "make install.libs" will succeed
+	  even if "make all" is not done first.
+	+ moved some macros from lib_doupdate.c to curses.priv.h to use in
+	  expanded functions with ATAC. 
+	+ correct implementation of lib_instr.c; both XSI and SVr4 agree that
+	  the winnstr functions can return more characters than will fit on one
+	  line.
+
 970308
 	+ modify script that generates lib_gen.c to support traces of called &
 	  return.

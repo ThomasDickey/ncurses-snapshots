@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.23 1997/03/09 00:33:17 tom Exp $
+# $Id: Makefile.in,v 1.24 1997/03/15 23:11:30 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -124,7 +124,9 @@ lib_gen.c : $(srcdir)/MKlib_gen.sh ../include/curses.h
 keys.tries: $(srcdir)/keys.list
 	$(AWK) -f $(srcdir)/MKkeys.awk $(srcdir)/keys.list > keys.tries
 
-make_hash : $(srcdir)/comp_hash.c
+make_hash : \
+		$(srcdir)/comp_hash.c \
+		../include/hashsize.h
 	$(CC) -o $@ $(CCFLAGS) -DMAIN_PROGRAM $(srcdir)/comp_hash.c $(LDFLAGS)
 
 expanded.c : $(srcdir)/MKexpanded.sh

@@ -29,7 +29,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.28 1997/03/08 21:38:28 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.29 1997/03/16 00:58:34 tom Exp $")
 
 int wattr_on(WINDOW *win, const attr_t at)
 {
@@ -279,7 +279,7 @@ int waddch(WINDOW *win, const chtype ch)
 {
 	int code = ERR;
 
-	TR(TRACE_VIRTPUT|TRACE_CCALLS, (T_CALLED("waddch(%p, %s)"), win, _tracechtype(ch)));
+	TR(TRACE_VIRTPUT|TRACE_CCALLS, (T_CALLED("waddch(%p, %#lx) %s"), win, ch, _tracechtype(ch)));
 
 	if (waddch_nosync(win, ch) != ERR)
 	{
@@ -295,7 +295,7 @@ int wechochar(WINDOW *win, const chtype ch)
 {
 	int code = ERR;
 
-	TR(TRACE_VIRTPUT|TRACE_CCALLS, (T_CALLED("wechochar(%p, %s)"), win, _tracechtype(ch)));
+	TR(TRACE_VIRTPUT|TRACE_CCALLS, (T_CALLED("wechochar(%p, %#lx) %s"), win, ch, _tracechtype(ch)));
 
 	if (waddch_literal(win, ch) != ERR)
 	{
