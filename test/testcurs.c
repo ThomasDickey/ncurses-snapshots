@@ -7,7 +7,7 @@
  *  wrs(5/28/93) -- modified to be consistent (perform identically) with either
  *                  PDCurses or under Unix System V, R4
  *
- * $Id: testcurs.c,v 1.30 2002/06/29 23:32:18 tom Exp $
+ * $Id: testcurs.c,v 1.31 2002/09/14 22:45:15 tom Exp $
  */
 
 #include <test.priv.h>
@@ -46,6 +46,18 @@ const COMMAND command[] =
     {"Output Test", outputTest}
 };
 #define MAX_OPTIONS SIZEOF(command)
+
+#if !HAVE_STRDUP
+#define strdup my_strdup
+static char *
+strdup(char *s)
+{
+    char *p = (char *) malloc(strlen(s) + 1);
+    if (p)
+	strcpy(p, s);
+    return (p);
+}
+#endif /* not HAVE_STRDUP */
 
 int width, height;
 
@@ -411,7 +423,7 @@ inputTest(WINDOW *win)
 	noraw();
 	num = 0;
 	*buffer = 0;
-	answered = mvwscanw(win, 7, 6, format, &num, buffer);
+	answered = mvwscanw(win, 7, 6, strdup(format), &num, buffer);
 	mvwprintw(win, 8, 6,
 		  "String: %s Number: %d (%d values read)",
 		  buffer, num, answered);

@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.273 2002/09/07 17:51:33 tom Exp $
+dnl $Id: configure.in,v 1.274 2002/09/15 00:11:28 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.273 $)
+AC_REVISION($Revision: 1.274 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1253,6 +1253,15 @@ test "$with_overwrite" = no && \
 test "x$includedir" = 'x${prefix}/include' && \
 	includedir='$(prefix)/include/ncurses'${LIB_SUFFIX}
 AC_MSG_RESULT($includedir)
+
+### Resolve a conflict between normal and wide-curses by forcing applications
+### that will need libutf8 to add it to their configure script.
+if test "$with_overwrite" != no ; then
+if test "$NCURSES_LIBUTF8" = 1 ; then
+	NCURSES_LIBUTF8='defined(HAVE_LIBUTF8_H)'
+	AC_MSG_WARN(Wide-character applications must define HAVE_LIBUTF8_H to include curses.h)
+fi
+fi
 
 AC_SUBST(EXTRA_LIBS)
 AC_SUBST(TINFO_LIST)

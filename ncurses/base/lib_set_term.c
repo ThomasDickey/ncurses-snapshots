@@ -43,7 +43,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.70 2002/08/31 19:44:52 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.71 2002/09/14 22:48:00 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN * screenp)
@@ -61,7 +61,7 @@ set_term(SCREEN * screenp)
     stdscr = SP->_stdscr;
     COLORS = SP->_color_count;
     COLOR_PAIRS = SP->_pair_count;
-    memcpy(acs_map, SP->_acs_map, sizeof(chtype) * ACS_LEN);
+    memcpy(acs_map, SP->_acs_map, sizeof(SP->_acs_map[0]) * ACS_LEN);
 
     T((T_RETURN("%p"), oldSP));
     return (oldSP);

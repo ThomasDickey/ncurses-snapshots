@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000,2001,2002 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,21 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_box.c,v 1.18 2002/02/23 20:40:06 tom Exp $")
+MODULE_ID("$Id: lib_box.c,v 1.21 2002/09/15 01:04:27 tom Exp $")
+
+#if USE_WIDEC_SUPPORT
+static inline chtype
+_my_render(WINDOW *win, chtype ch)
+{
+    NCURSES_CH_T wch;
+    SetChar2(wch, ch);
+    wch = _nc_render(win, wch);
+    return CharOf(wch) | AttrOf(wch);
+}
+#define RENDER_WITH_DEFAULT(ch,def) w ## ch = _my_render(win, (ch == 0) ? def : ch)
+#else
+#define RENDER_WITH_DEFAULT(ch,def) w ## ch = _nc_render(win, (ch == 0) ? def : ch)
+#endif
 
 NCURSES_EXPORT(int)
 wborder(WINDOW *win,
@@ -67,8 +81,6 @@ wborder(WINDOW *win,
     if (!win)
 	returnCode(ERR);
 
-#define RENDER_WITH_DEFAULT(ch,def) w ## ch = (ch == 0) ? def : ch
-
     RENDER_WITH_DEFAULT(ls, ACS_VLINE);
     RENDER_WITH_DEFAULT(rs, ACS_VLINE);
     RENDER_WITH_DEFAULT(ts, ACS_HLINE);
@@ -92,22 +104,22 @@ wborder(WINDOW *win,
     endy = win->_maxy;
 
     for (i = 0; i <= endx; i++) {
-	SetChar(win->_line[0].text[i], ChCharOf(wts), ChAttrOf(wts));
-	SetChar(win->_line[endy].text[i], ChCharOf(wbs), ChAttrOf(wbs));
+	SetChar2(win->_line[0].text[i], wts);
+	SetChar2(win->_line[endy].text[i], wbs);
     }
     win->_line[endy].firstchar = win->_line[0].firstchar = 0;
     win->_line[endy].lastchar = win->_line[0].lastchar = endx;
 
     for (i = 0; i <= endy; i++) {
-	SetChar(win->_line[i].text[0], ChCharOf(wls), ChAttrOf(wls));
-	SetChar(win->_line[i].text[endx], ChCharOf(wrs), ChAttrOf(wrs));
+	SetChar2(win->_line[i].text[0], wls);
+	SetChar2(win->_line[i].text[endx], wrs);
 	win->_line[i].firstchar = 0;
 	win->_line[i].lastchar = endx;
     }
-    SetChar(win->_line[0].text[0], ChCharOf(wtl), ChAttrOf(wtl));
-    SetChar(win->_line[0].text[endx], ChCharOf(wtr), ChAttrOf(wtr));
-    SetChar(win->_line[endy].text[0], ChCharOf(wbl), ChAttrOf(wbl));
-    SetChar(win->_line[endy].text[endx], ChCharOf(wbr), ChAttrOf(wbr));
+    SetChar2(win->_line[0].text[0], wtl);
+    SetChar2(win->_line[0].text[endx], wtr);
+    SetChar2(win->_line[endy].text[0], wbl);
+    SetChar2(win->_line[endy].text[endx], wbr);
 
     _nc_synchook(win);
     returnCode(OK);
