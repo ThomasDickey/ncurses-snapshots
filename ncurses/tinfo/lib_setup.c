@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -53,7 +53,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.87 2004/11/28 01:17:18 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.88 2005/03/12 19:41:45 tom Exp $")
 
 /****************************************************************************
  *
@@ -395,8 +395,11 @@ _nc_unicode_locale(void)
 NCURSES_EXPORT(int)
 _nc_locale_breaks_acs(void)
 {
-    char *env = getenv("TERM");
-    if (env != 0) {
+    char *env;
+
+    if ((env = getenv("NCURSES_NO_UTF8_ACS")) != 0) {
+	return atoi(env);
+    } else if ((env = getenv("TERM")) != 0) {
 	if (strstr(env, "linux"))
 	    return 1;		/* always broken */
 	if (strstr(env, "screen") != 0

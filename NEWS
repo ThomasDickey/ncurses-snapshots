@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.875 2005/03/06 00:17:39 tom Exp $
+-- $Id: NEWS,v 1.876 2005/03/12 21:04:36 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050312
+	+ change tracemunch to use strict checking.
+	+ modify ncurses.c 'p' test to test line-drawing within a pad.
+	+ implement environment variable NCURSES_NO_UTF8_ACS to support
+	  miscellaneous terminal emulators which ignore alternate character
+	  set escape sequences when in UTF-8 mode.
 
 20050305
 	+ change NCursesWindow::err_handler() to a virtual function (request by
