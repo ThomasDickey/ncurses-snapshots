@@ -32,7 +32,7 @@
 
 /*
     Version Control
-    $Revision: 1.29 $
+    $Revision: 1.30 $
   --------------------------------------------------------------------------*/
 /*
   This program generates various record structures and constants from the
@@ -1048,7 +1048,6 @@ static void gen_color (void)
  */
 static void gen_linkopts (void)
 {
-   printf("   pragma Linker_Options (\"-lAdaCurses%s\");\n", model);
    printf("   pragma Linker_Options (\"-lncurses%s\");\n", model);
 }
 

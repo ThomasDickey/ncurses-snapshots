@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1998,1999 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,15 +41,15 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.36 1999/10/03 00:20:37 Philippe.Blain Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.37 1999/10/30 23:00:15 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
  * hystorical reasons.  So we assign them in start_color() and also in
  * set_term()'s screen-switching logic.
  */
-int COLOR_PAIRS;
-int COLORS;
+int COLOR_PAIRS = 0;
+int COLORS = 0;
 
 /*
  * Given a RGB range of 0..1000, we'll normally set the individual values

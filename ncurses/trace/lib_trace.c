@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1998,1999 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -38,7 +38,7 @@
 #include <curses.priv.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.30 1998/10/03 23:41:42 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.31 1999/10/30 23:00:15 tom Exp $")
 
 #include <ctype.h>
 #if HAVE_FCNTL_H
@@ -49,7 +49,7 @@ unsigned _nc_tracing = 0;	/* always define this */
 
 #ifdef TRACE
 const char *_nc_tputs_trace = "";
-long _nc_outchars;
+long _nc_outchars = 0;
 
 static FILE *	tracefp;	/* default to writing to stderr */
 #endif

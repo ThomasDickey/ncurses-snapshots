@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1998,1999 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -39,15 +39,15 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <term_entry.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.29 1999/09/05 01:06:43 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.30 1999/10/30 23:00:16 tom Exp $")
 
 /*
    some of the code in here was contributed by:
    Magnus Bengtsson, d6mbeng@dtek.chalmers.se
 */
 
-char *UP;
-char *BC;
+char *UP = 0;
+char *BC = 0;
 
 /***************************************************************************
  *

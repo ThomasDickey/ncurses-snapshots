@@ -2191,7 +2191,7 @@ ENTRY	*_nc_tail;
 
 #undef _nc_free_entries
 void	_nc_free_entries(
-		ENTRY	*head)
+		ENTRY	*headp)
 		{ /* void */ }
 
 #undef _nc_entry_match
