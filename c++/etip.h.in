@@ -31,7 +31,7 @@
  *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1997                 *
  ****************************************************************************/
 
-// $Id: etip.h.in,v 1.16 2001/03/24 21:42:06 tom Exp $
+// $Id: etip.h.in,v 1.18 2001/04/07 22:45:04 tom Exp $
 
 #ifndef NCURSES_ETIP_H_incl
 #define NCURSES_ETIP_H_incl 1
@@ -49,8 +49,8 @@
 #define HAVE_GPP_BUILTIN_H 0
 #endif
 
-#ifndef HAVE_SSTREAM
-#define HAVE_SSTREAM 0
+#ifndef HAVE_STRSTREAM_H
+#define HAVE_STRSTREAM_H 0
 #endif
 
 #ifndef HAVE_TYPEINFO
@@ -71,6 +71,14 @@
 
 #ifndef CPP_HAS_PARAM_INIT
 #define CPP_HAS_PARAM_INIT 0
+#endif
+
+#ifndef USE_STDIO_VSCAN
+#define USE_STDIO_VSCAN 0
+#endif
+
+#ifndef USE_STRSTREAM_VSCAN
+#define USE_STRSTREAM_VSCAN 0
 #endif
 
 #ifdef __GNUG__

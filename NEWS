@@ -1,10 +1,27 @@
--- $Id: NEWS,v 1.621 2001/03/31 23:48:51 tom Exp $
+-- $Id: NEWS,v 1.622 2001/04/07 22:35:52 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010407
+	+ add configure checks for strstream.h vscan function, and similar
+	  stdio-based function which may be used in C++ binding for gcc 3.0
+	  (reports by George Goffe, Lars Hecking, Mike Castle).
+	+ rewrite parts of configure.in which used changequote().  That feature
+	  is broken in the latest autoconf alphas (e.g., 2.49d).
+	+ add a missing pathname for ncurses_dll.h, needed when building in
+	  a directory outside the source tree (patch by Sven Verdoolaege
+	  <skimo@kotnet.org>).
+	> fix 2 bugs in test/bs.c (patch by Erik Sigra <sigra@home.se>):
+	+ no ships were ever placed in the last row or in the last column. 
+	  This made the game very easy to win, because you never had to waste
+	  any shots there, but the computer did.
+	+ the squares around a sunken ship that belonged to the player were not
+	  displayed as already hit by the computer, like it does for the
+	  player.
 
 20010331
 	+ add some examples of customizing screen's terminfo: 
