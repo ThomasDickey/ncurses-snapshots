@@ -2,7 +2,7 @@
 <!-- 
   * t
   ****************************************************************************
-  * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+  * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
   * copy of this software and associated documentation files (the            *
@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getch.3x,v 1.18 2001/02/25 00:20:30 tom Exp @
+  * @Id: curs_getch.3x,v 1.21 2002/03/17 14:36:21 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -102,8 +102,8 @@
        program.
 
        The <STRONG>ungetch</STRONG> routine places <EM>ch</EM> back onto the input queue to
-       be returned by the next call to <STRONG>wgetch</STRONG>.  Note  that  there
-       is, in effect, just one input queue for all windows.
+       be returned by the next call to <STRONG>wgetch</STRONG>.  There is just one
+       input queue for all windows.
 
 
    <STRONG>Function</STRONG> <STRONG>Keys</STRONG>
@@ -220,8 +220,8 @@
                          | <STRONG>C1</STRONG>  | <STRONG>down</STRONG> |  <STRONG>C3</STRONG>   |
                          +-----+------+-------+
        The <STRONG>has_key</STRONG> routine takes a key value from the above list,
-       and returns TRUE or FALSE according as the current  termi-
-       nal type recognizes a key with that value.
+       and returns TRUE or FALSE according to whether the current
+       terminal type recognizes a key with that value.
 
 
 

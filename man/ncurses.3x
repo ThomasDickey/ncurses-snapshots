@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.57 2002/03/10 23:51:16 tom Exp $
+.\" $Id: ncurses.3x,v 1.58 2002/03/17 14:58:29 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
@@ -270,6 +270,7 @@ erasechar/\fBcurs_termattrs\fR(3X)
 filter/\fBcurs_util\fR(3X)
 flash/\fBcurs_beep\fR(3X)
 flushinp/\fBcurs_util\fR(3X)
+get_wch/\fBcurs_get_wch\fR(3X)
 getbegyx/\fBcurs_getyx\fR(3X)
 getbkgd/\fBcurs_bkgd\fR(3X)
 getbkgrnd/\fBcurs_bkgrnd\fR(3X)
@@ -344,6 +345,7 @@ mvchgat/\fBcurs_attr\fR(3X)
 mvcur/\fBcurs_terminfo\fR(3X)
 mvdelch/\fBcurs_delch\fR(3X)
 mvderwin/\fBcurs_window\fR(3X)
+mvget_wch/\fBcurs_get_wch\fR(3X)
 mvgetch/\fBcurs_getch\fR(3X)
 mvgetnstr/\fBcurs_getstr\fR(3X)
 mvgetstr/\fBcurs_getstr\fR(3X)
@@ -379,6 +381,7 @@ mvwaddstr/\fBcurs_addstr\fR(3X)
 mvwaddwstr/\fBcurs_addwstr\fR(3X)
 mvwchgat/\fBcurs_attr\fR(3X)
 mvwdelch/\fBcurs_delch\fR(3X)
+mvwget_wch/\fBcurs_get_wch\fR(3X)
 mvwgetch/\fBcurs_getch\fR(3X)
 mvwgetnstr/\fBcurs_getstr\fR(3X)
 mvwgetstr/\fBcurs_getstr\fR(3X)
@@ -491,6 +494,7 @@ tputs/\fBcurs_terminfo\fR(3X)
 trace/\fBcurs_trace\fR(3X)*
 typeahead/\fBcurs_inopts\fR(3X)
 unctrl/\fBcurs_util\fR(3X)
+unget_wch/\fBcurs_get_wch\fR(3X)
 ungetch/\fBcurs_getch\fR(3X)
 ungetmouse/\fBcurs_mouse\fR(3X)*
 untouchwin/\fBcurs_touch\fR(3X)
@@ -540,6 +544,7 @@ wecho_wchar/\fBcurs_add_wch\fR(3X)
 wechochar/\fBcurs_addch\fR(3X)
 wenclose/\fBcurs_mouse\fR(3X)*
 werase/\fBcurs_clear\fR(3X)
+wget_wch/\fBcurs_get_wch\fR(3X)
 wgetbkgrnd/\fBcurs_bkgrnd\fR(3X)
 wgetch/\fBcurs_getch\fR(3X)
 wgetnstr/\fBcurs_getstr\fR(3X)
@@ -830,18 +835,15 @@ Curses standard.  Certain portions of the EXTENDED XSI Curses functionality
 (including color support) are supported.  The following EXTENDED XSI Curses
 calls in support of wide (multibyte) characters are not yet implemented:
 \fBerasewchar\fP,
-\fBget_wch\fP,
 \fBget_wstr\fP,
 \fBgetn_wstr\fP,
 \fBin_wchnstr\fP,
 \fBin_wchstr\fP,
 \fBkillwchar\fP,
-\fBmvget_wch\fP,
 \fBmvget_wstr\fP,
 \fBmvgetn_wstr\fP,
 \fBmvin_wchnstr\fP,
 \fBmvin_wchstr\fP,
-\fBmvwget_wch\fP,
 \fBmvwget_wstr\fP,
 \fBmvwgetn_wstr\fP,
 \fBmvwin_wchnstr\fP,
@@ -849,9 +851,7 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBpecho_wchar\fP,
 \fBslk_wset\fP,
 \fBterm_attrs\fP,
-\fBunget_wch\fP,
 \fBvid_puts\fP,
-\fBwget_wch\fP,
 \fBwget_wstr\fP,
 \fBwgetn_wstr\fP,
 \fBwin_wchnstr\fP,

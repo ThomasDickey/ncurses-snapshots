@@ -1027,6 +1027,13 @@ NCURSES_BOOL mouse_trafo(
 #undef ESCDELAY
 int	ESCDELAY;
 
+#undef _nc_wgetch
+int	_nc_wgetch(
+		WINDOW	*win, 
+		unsigned long *result, 
+		int	use_meta)
+		{ return(*(int *)0); }
+
 #undef wgetch
 int	wgetch(
 		WINDOW	*win)

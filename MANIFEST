@@ -204,7 +204,6 @@
 ./config.sub
 ./configure
 ./configure.in
-./configure.out
 ./convert_configure.pl
 ./dist.mk
 ./doc/hackguide.doc
@@ -330,6 +329,7 @@
 ./doc/html/man/curs_delch.3x.html
 ./doc/html/man/curs_deleteln.3x.html
 ./doc/html/man/curs_extend.3x.html
+./doc/html/man/curs_get_wch.3x.html
 ./doc/html/man/curs_getcchar.3x.html
 ./doc/html/man/curs_getch.3x.html
 ./doc/html/man/curs_getstr.3x.html
@@ -503,7 +503,6 @@
 ./include/tic.h
 ./include/unctrl.h.in
 ./install-sh
-./make.out
 ./man/MKterminfo.sh
 ./man/Makefile.in
 ./man/captoinfo.1m
@@ -525,6 +524,7 @@
 ./man/curs_delch.3x
 ./man/curs_deleteln.3x
 ./man/curs_extend.3x
+./man/curs_get_wch.3x
 ./man/curs_getcchar.3x
 ./man/curs_getch.3x
 ./man/curs_getstr.3x
@@ -855,11 +855,13 @@
 ./ncurses/tty/tty_update.c
 ./ncurses/widechar/lib_box_set.c
 ./ncurses/widechar/lib_cchar.c
+./ncurses/widechar/lib_get_wch.c
 ./ncurses/widechar/lib_hline_set.c
 ./ncurses/widechar/lib_in_wch.c
 ./ncurses/widechar/lib_ins_nwstr.c
 ./ncurses/widechar/lib_ins_wch.c
 ./ncurses/widechar/lib_inwstr.c
+./ncurses/widechar/lib_unget_wch.c
 ./ncurses/widechar/lib_vline_set.c
 ./ncurses/widechar/lib_wacs.c
 ./ncurses/widechar/lib_wunctrl.c

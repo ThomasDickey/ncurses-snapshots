@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.674 2002/03/10 23:47:58 tom Exp $
+-- $Id: NEWS,v 1.676 2002/03/17 15:04:13 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020317
+	+ add 'e' and 'm' toggles to 'a', 'A' tests in ncurses.c to demonstrate
+	  effect of echo/noecho and meta modes.
+	+ add 'A' test to ncurses.c to demonstrate wget_wch() and related
+	  functions.
+	+ add manpage: curs_get_wch.3x
+	+ implement unget_wch().
+	+ implement wget_wch().
 
 20020310
 	+ regenerated html manpages.

@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.214 2002/02/09 22:39:43 tom Exp $
+ * $Id: curses.priv.h,v 1.216 2002/03/17 00:45:49 tom Exp $
  *
  *	curses.priv.h
  *
@@ -558,7 +558,7 @@ typedef	struct {
 				    --PUTC_n;					    \
 				if (PUTC_n <= 0)				    \
 				    break;					    \
-				fwrite(PUTC_buf, PUTC_n, 1, b);			    \
+				fwrite(PUTC_buf, (unsigned) PUTC_n, 1, b);	    \
 				++PUTC_i;					    \
 			    } while (PUTC_ch != L'\0');				    \
 			} } while (0)
@@ -812,6 +812,9 @@ extern NCURSES_EXPORT(int) _nc_msec_cost (const char *const, int);  /* used by '
 #if USE_WIDEC_SUPPORT
 extern NCURSES_EXPORT(int) _nc_wchstrlen(const cchar_t *);
 #endif
+
+/* lib_getch.c */
+extern NCURSES_EXPORT(int) _nc_wgetch(WINDOW *, unsigned long *, int);
 
 /* lib_mvcur.c */
 #define INFINITY	1000000	/* cost: too high to use */

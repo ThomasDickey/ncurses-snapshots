@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -52,7 +52,7 @@
 #define TRACE_OUT(p)		/*nothing */
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.56 2000/12/10 02:55:08 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.57 2002/03/16 21:42:23 tom Exp $")
 
 static int total_written;
 
@@ -361,10 +361,10 @@ _nc_write_entry(TERMTYPE * const tp)
 #define WRITE_STRING(str) (fwrite(str, sizeof(char), strlen(str) + 1, fp) == strlen(str) + 1)
 
 static int
-compute_offsets(char **Strings, int strmax, short *offsets)
+compute_offsets(char **Strings, unsigned strmax, short *offsets)
 {
     size_t nextfree = 0;
-    int i;
+    unsigned i;
 
     for (i = 0; i < strmax; i++) {
 	if (Strings[i] == ABSENT_STRING) {
@@ -381,9 +381,9 @@ compute_offsets(char **Strings, int strmax, short *offsets)
 }
 
 static void
-convert_shorts(unsigned char *buf, short *Numbers, int count)
+convert_shorts(unsigned char *buf, short *Numbers, unsigned count)
 {
-    int i;
+    unsigned i;
     for (i = 0; i < count; i++) {
 	if (Numbers[i] == ABSENT_NUMERIC) {	/* HI/LO won't work */
 	    buf[2 * i] = buf[2 * i + 1] = 0377;

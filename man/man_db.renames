@@ -1,4 +1,4 @@
-# $Id: man_db.renames,v 0.28 2002/03/10 23:46:56 tom Exp $
+# $Id: man_db.renames,v 0.29 2002/03/16 22:35:07 tom Exp $
 # Manual-page renamings for the man_db program
 #
 # Files:
@@ -21,6 +21,7 @@ curs_color.3x			color.3ncurses
 curs_delch.3x			delch.3ncurses
 curs_deleteln.3x		deleteln.3ncurses
 curs_extend.3x			extensions.3ncurses
+curs_get_wch.3x			get_wch.3ncurses
 curs_getcchar.3x		getcchar.3ncurses
 curs_getch.3x			getch.3ncurses
 curs_getstr.3x			getstr.3ncurses
