@@ -40,13 +40,13 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: doalloc.c,v 1.1 1998/08/15 23:20:16 tom Exp $")
+MODULE_ID("$Id: doalloc.c,v 1.2 1998/08/18 22:52:39 Hans-Joachim.Widmaier Exp $")
 
 void *_nc_doalloc(void *oldp, size_t amount)
 {
 	void *newp;
 
-	if (oldp == 0) {
+	if (oldp != 0) {
 		if ((newp = realloc(oldp, amount)) == 0) {
 			free(oldp);
 			errno = ENOMEM;		/* just in case 'free' reset */

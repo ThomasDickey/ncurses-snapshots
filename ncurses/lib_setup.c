@@ -47,7 +47,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.40 1998/08/15 22:50:48 Todd.Miller Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.41 1998/08/22 16:22:15 tom Exp $")
 
 /****************************************************************************
  *
@@ -128,6 +128,16 @@ char	*rows, *cols;
 		*colp = atoi(cols);
 	    T(("screen size: environment LINES = %d COLUMNS = %d",*linep,*colp));
 
+#ifdef __EMX__
+	    if (*linep <= 0 || *colp <= 0)
+	    {
+		int screendata[2];
+		_scrsize(screendata);
+		*colp  = screendata[0];
+		*linep = screendata[1];
+	    	T(("EMX screen size: environment LINES = %d COLUMNS = %d",*linep,*colp));
+	    }
+#endif
 #if HAVE_SIZECHANGE
 	    /* if that didn't work, maybe we can try asking the OS */
 	    if (*linep <= 0 || *colp <= 0)

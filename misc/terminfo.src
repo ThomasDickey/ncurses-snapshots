@@ -1,7 +1,7 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
 #	Version 10.2.1
-#	$Date: 1998/08/15 21:36:00 $
+#	$Date: 1998/08/22 13:28:50 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2442,7 +2442,7 @@ eterm|gnu emacs term.el terminal emulation,
 	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
 	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
 	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
-	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\\E[J, 
+	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, 
 	el=\E[K, el1=\E[1K, home=\E[H, ht=^I, ich=\E[%p1%d@, 
 	il=\E[%p1%dL, il1=\E[L, ind=^J, rev=\E[7m, 
 	rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, rmso=\E[m, rmul=\E[m, 
@@ -12811,7 +12811,7 @@ osborne|osborne1|osborne I in 80-column mode,
 	cols#80, lines#24, 
 	clear=^Z, cub1=\010$<4>, cud1=^J, cuf1=^L, 
 	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, 
-	dch1=\\EW$<4/>, dl1=\ER, el=\ET, il1=\EE, is2=^Z, kbs=^H, 
+	dch1=\EW$<4/>, dl1=\ER, el=\ET, il1=\EE, is2=^Z, kbs=^H, 
 	kcub1=^H, kcud1=^J, kcuf1=^L, kcuu1=^K, rmir=, rmso=\E), 
 	rmul=\Em, smir=\EQ, smso=\E(, smul=\El, 
 #
@@ -16096,7 +16096,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add linux-koi8r to replace linux-koi8 (which uses a corrupt acsc,
 #	  apparently based on cp-866).
 #	* Merged in Pavel Roskin's acsc for linux-koi8
-#	* Corrected some erroneous \\\s to \.
+#	* Corrected some erroneous \\'s to \.
 #	* 4.2 ncurses has been changed to use setaf/setab, consistent w/SysV.
 #	* II -> ii in pcvtXX, screen, xterm.
 #	* Removed \n chars following ANSI escapes in sgr & friends.
@@ -16134,11 +16134,14 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* Added arm100 terminfo entries from Dave Millen.
 #
 # 1998/8/6
-#	* Added ncsa telnet entries Francesco Potorti
+#	* Added ncsa telnet entries from Francesco Potorti
 #
 # 1998/8/15
 #	* modify ncsa telnet entry to reflect color, other capabilities based on
 #	  examination of the source code - T.Dickey.
+#
+# 1998/8/22
+#	* Corrected some erroneous \\'s to \ (eterm, osborne) - TD.
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

@@ -1,4 +1,4 @@
-.\" $Id: terminfo.tail,v 1.19 1998/06/30 01:10:04 tom Exp $
+.\" $Id: terminfo.tail,v 1.20 1998/08/22 19:43:59 tom Exp $
 .\" Beginning of terminfo.tail file
 .ps +1
 .PP
@@ -964,35 +964,42 @@ This alternate character set may be specified by the \fBacsc\fR capability.
 center expand;
 c l l c
 c l l c
-lw25 lw6 lw2 lw20.
+lw28 lw6 lw2 lw20.
 .\".TH
 \fBGlyph	ACS	Ascii	VT100
 Name	Name	Default	Name\fR
-upper left corner	ACS_ULCORNER	+	l
-lower left corner	ACS_LLCORNER	+	m
-upper right corner	ACS_URCORNER	+	k
-lower right corner	ACS_LRCORNER	+	j
-tee pointing right	ACS_LTEE	+	t
-tee pointing left	ACS_RTEE	+	u
-tee pointing up 	ACS_BTEE	+	v
-tee pointing down	ACS_TTEE	+	w
-horizontal line 	ACS_HLINE	-	q
-vertical line   	ACS_VLINE	|	x
-large plus or crossover	ACS_PLUS	+	n
-scan line 1     	ACS_S1  	~	o
-scan line 9     	ACS_S9  	\&_	s
-diamond         	ACS_DIAMOND	+	`
-checker board (stipple)	ACS_CKBOARD	:	a
-degree symbol   	ACS_DEGREE	\e	f
-plus/minus      	ACS_PLMINUS	#	g
-bullet          	ACS_BULLET	o	~
+UK pound sign        	ACS_STERLING	f	}
+arrow pointing down	ACS_DARROW	v	.
 arrow pointing left	ACS_LARROW	<	,
 arrow pointing right	ACS_RARROW	>	+
-arrow pointing down	ACS_DARROW	v	.
 arrow pointing up	ACS_UARROW	^	-
 board of squares	ACS_BOARD	#	h
+bullet          	ACS_BULLET	o	~
+checker board (stipple)	ACS_CKBOARD	:	a
+degree symbol   	ACS_DEGREE	\e	f
+diamond         	ACS_DIAMOND	+	`
+greater-than-or-equal-to	ACS_GEQUAL	>	z
+greek pi        	ACS_PI	*	{
+horizontal line 	ACS_HLINE	-	q
 lantern symbol  	ACS_LANTERN	#	i
+large plus or crossover	ACS_PLUS	+	n
+less-than-or-equal-to	ACS_LEQUAL	<	y
+lower left corner	ACS_LLCORNER	+	m
+lower right corner	ACS_LRCORNER	+	j
+not-equal       	ACS_NEQUAL	!	|
+plus/minus      	ACS_PLMINUS	#	g
+scan line 1     	ACS_S1  	~	o
+scan line 3     	ACS_S3  	-	p
+scan line 7     	ACS_S7  	-	r
+scan line 9     	ACS_S9  	\&_	s
 solid square block	ACS_BLOCK	#	0
+tee pointing down	ACS_TTEE	+	w
+tee pointing left	ACS_RTEE	+	u
+tee pointing right	ACS_LTEE	+	t
+tee pointing up 	ACS_BTEE	+	v
+upper left corner	ACS_ULCORNER	+	l
+upper right corner	ACS_URCORNER	+	k
+vertical line   	ACS_VLINE	|	x
 .TE
 .PP
 The best way to define a new device's graphics set is to add a column

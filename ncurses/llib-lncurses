@@ -2068,6 +2068,14 @@ int	wresize(
 		int	ToCols)
 		{ return(*(int *)0); }
 
+/* ./access.c */
+
+#undef _nc_access
+int	_nc_access(
+		const char *path, 
+		int	mode)
+		{ return(*(int *)0); }
+
 /* ./alloc_entry.c */
 
 #undef _nc_init_entry
@@ -2270,6 +2278,14 @@ void	_nc_reset_input(
 		FILE	*fp, 
 		char	*buf)
 		{ /* void */ }
+
+/* ./doalloc.c */
+
+#undef _nc_doalloc
+void	*_nc_doalloc(
+		void	*oldp, 
+		size_t	amount)
+		{ return(*(void **)0); }
 
 /* ./fallback.c */
 
@@ -2737,6 +2753,11 @@ void	_nc_read_termcap(void)
 		{ /* void */ }
 
 /* ./trace_buf.c */
+
+typedef struct {
+	char *text;
+	size_t size;
+} LIST;
 
 #undef _nc_trace_buf
 char	*_nc_trace_buf(
