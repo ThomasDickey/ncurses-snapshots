@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.880 2005/03/26 23:11:19 tom Exp $
+-- $Id: NEWS,v 1.882 2005/03/27 17:38:55 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050327
+	+ amend change from 20050320 to limit it to configurations with a
+	  valid locale.
+	+ fix a bug introduced in 20050320 which broke the translation of
+	  nonprinting characters to uparrow form (report by TAKAHASHI Tamotsu).
 
 20050326
 	+ add ifdef's for _LP64 in curses.h to avoid using wasteful 64-bits for
