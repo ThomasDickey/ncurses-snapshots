@@ -1,3 +1,4 @@
+# $Id: dist.mk,v 1.21 1996/12/07 20:30:16 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -15,8 +16,8 @@ SHELL = /bin/sh
 # 1.9a, 1.9b, 1.9foobar, ... when the ncurses release version changes
 # If a new ncurses has an incompatible application binary interface than
 # previous one, the ABI version should be changed.
-VERSION = 1.9.9g
-SHARED_ABI = 3.4
+VERSION = 4.0
+SHARED_ABI = 4
 
 dist: announce.html misc/ncurses-intro.doc misc/hackguide.doc
 	(cd ..;  tar cvf ncurses-$(VERSION).tar `sed <ncurses-$(VERSION)/MANIFEST 's/^./ncurses-$(VERSION)/'`;  gzip ncurses-$(VERSION).tar)

@@ -35,7 +35,7 @@
 #include <sys/termio.h>	/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.13 1996/09/07 17:07:36 tom Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.14 1996/12/07 20:56:42 tom Exp $")
 
 #ifdef __QNX__		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -74,7 +74,6 @@ char	*name;
 	/* Portable applications must not call initscr() more than once */
 	if (!initialized) {
 		initialized = TRUE;
-		_nc_idcok = TRUE;
 
 		if ((name = getenv("TERM")) == 0)
 			name = "unknown";

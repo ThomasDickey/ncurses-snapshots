@@ -3,6 +3,20 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+961207	- snapshot
+	+ integrate resizeterm() into doupdate(), so that if screen size
+	  changes between endwin/refresh, ncurses will resize windows to fit
+	  (this needs additonal testing with pads and softkeys).
+	+ add, for memory-leak testing, _nc_freeall() entrypoint to free all
+	  data used in ncurses library.
+	+ initialize _nc_idcok, _nc_idlok statically to resolve discrepancy
+	  between initscr() and newwin() initialization (reported by
+	  lav@yars.free.net).
+	+ test built VERSION=4.0, SHARED_ABI=4 with Linux ld.so.1.8.5
+	  (set beta versions to those values -- NOTE that subsequent pre-4.0
+	  beta may not be interchangeable).
+	+ modify configure script to work with autoconf 2.12
+
 961130	1.9.9g release
 	+ add copyright notices to configuration scripts (written by Thomas
 	  Dickey).

@@ -29,7 +29,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: resizeterm.c,v 1.1 1996/09/07 14:58:23 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.2 1996/12/08 01:16:46 tom Exp $")
 
 /*
  * This function reallocates NCURSES window structures.  It is invoked in
@@ -42,19 +42,57 @@ MODULE_ID("$Id: resizeterm.c,v 1.1 1996/09/07 14:58:23 tom Exp $")
 int
 resizeterm(int ToLines, int ToCols)
 {
+	int stolen = screen_lines - SP->_lines_avail;
+	int bottom = screen_lines + SP->_topstolen - stolen;
+
 #ifdef TRACE
-	T(("resizeterm called (%d,%d) to (%d,%d)", LINES, COLS, ToLines, ToCols));
+	T(("resizeterm called (%d,%d) to (%d,%d)", screen_lines, screen_columns, ToLines, ToCols));
 #endif
-	if (ToLines != LINES
-	 || ToCols  != COLS) {
+	if (ToLines != screen_lines
+	 || ToCols  != screen_columns) {
+		WINDOWLIST *wp;
 
-		if (wresize(stdscr, ToLines, ToCols) != OK
-		 || wresize(curscr, ToLines, ToCols) != OK
-		 || wresize(newscr, ToLines, ToCols) != OK)
-			return ERR;
+		for (wp = _nc_windows; wp != 0; wp = wp->next) {
+			WINDOW *win = wp->win;
+			int myLines = win->_maxy + 1;
+			int myCols  = win->_maxx + 1;
 
-		LINES = screen_lines   = lines    = ToLines;
-		COLS  = screen_columns = columns  = ToCols;
+			/* pads aren't treated this way */
+			if (win->_flags & _ISPAD)
+				continue;
+
+			if (win->_begy >= bottom) {
+				win->_begy += (ToLines - screen_lines);
+			} else {
+				if (myLines == screen_lines - stolen
+				 && ToLines != screen_lines)
+				 	myLines = ToLines - stolen;
+				else
+				if (myLines == screen_lines
+				 && ToLines != screen_lines)
+				 	myLines = ToLines;
+			}
+
+			if (myCols  == screen_columns
+			 && ToCols  != screen_columns)
+			 	myCols = ToCols;
+
+			if (wresize(win, myLines, myCols) != OK)
+				return ERR;
+		}
+
+		screen_lines   = lines    = ToLines;
+		screen_columns = columns  = ToCols;
+
+		SP->_lines_avail = lines - stolen;
 	}
+
+	/*
+	 * Always update LINES, to allow for call from lib_doupdate.c which
+	 * needs to have the count adjusted by the stolen (ripped off) lines.
+	 */
+	LINES = ToLines - stolen;
+	COLS  = ToCols;
+
 	return OK;
 }

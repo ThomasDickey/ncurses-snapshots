@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.37 1996/11/09 21:46:35 tom Exp $
+ * $Id: curses.priv.h,v 1.38 1996/12/07 21:38:24 tom Exp $
  *
  *	curses.priv.h
  *
@@ -206,6 +206,12 @@ struct screen {
 /* Ncurses' public interface follows the internal types */
 #include <curses.h>	/* we'll use -Ipath directive to get the right one! */
 
+#define WINDOWLIST struct _win_list
+	WINDOWLIST {
+	WINDOWLIST *next;
+	WINDOW	*win;
+};
+
 typedef	struct {
 	int	line;                   /* lines to take, < 0 => from bottom*/
 	int	(*hook)(struct _win_st *, int); /* callback for user        */
@@ -350,6 +356,7 @@ extern int _nc_timed_wait(int, int, int *);
 extern int _nc_waddch_nosync(WINDOW *, const chtype);
 extern void _nc_backspace(WINDOW *win);
 extern void _nc_do_color(int, int (*)(int));
+extern void _nc_freeall(void);
 extern void _nc_freewin(WINDOW *win);
 extern void _nc_get_screensize(void);
 extern void _nc_hash_map(void);
@@ -405,5 +412,7 @@ extern int _nc_ripoffline(int line, int (*init)(WINDOW *,int));
 #define UNINITIALISED ((struct try * ) -1)
 
 extern bool _nc_idlok, _nc_idcok;
+
+extern WINDOWLIST *_nc_windows;
 
 #endif /* CURSES_PRIV_H */
