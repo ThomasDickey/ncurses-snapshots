@@ -1,4 +1,4 @@
-# $Id: man_db.renames,v 0.5 1997/05/29 09:58:28 tom Exp $
+# $Id: man_db.renames,v 0.6 1997/07/26 21:50:52 tom Exp $
 # Manual-page renamings for the man_db program
 #
 captoinfo.1m			captoinfo.1m
@@ -34,7 +34,7 @@ curs_print.3x			print.3ncurses
 curs_printw.3x			printw.3ncurses
 curs_refresh.3x			refresh.3ncurses
 curs_scanw.3x			scanw.3ncurses
-curs_scr_dmp.3x			scr_dmp.3ncurses
+curs_scr_dmp.3x			scr_dump.3ncurses
 curs_scroll.3x			scroll.3ncurses
 curs_slk.3x			slk.3ncurses
 curs_termattrs.3x		termattrs.3ncurses

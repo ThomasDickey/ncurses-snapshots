@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.24 1997/02/15 21:12:16 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.25 1997/07/27 00:32:49 tom Exp $")
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail
@@ -132,6 +132,7 @@ again:
 	T(("read %d characters", n));
 
 	SP->_fifo[tail] = ch;
+	SP->_fifohold = 0;
 	if (head == -1) head = tail;
 	t_inc();
 	T(("pushed %#x at %d", ch, tail));

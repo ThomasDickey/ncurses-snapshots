@@ -1,7 +1,34 @@
--- $Id: NEWS,v 1.224 1997/07/19 16:30:02 tom Exp $
+-- $Id: NEWS,v 1.227 1997/07/27 00:45:17 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+970726
+	+ add flag SP->_fifohold, corresponding logic to modify the behavior of
+	  the line breakout logic so that if the application does not read
+	  input, refreshes will not be stopped, but only slowed.
+	+ generate slk_attr_off(), slk_attr_on(), slk_attr_set(), vid_attr(),
+	  ifdef'd for wide-character support, since ncurses' WA_xxx attribute
+	  masks are identical with the A_xxx masks.
+	+ modify MKlib_gen.sh to generate ifdef'd functions to support optional
+	  configuration of wide-characters.
+	+ modify tset to behave more like SVr4's tset, which does not modify
+	  the settings of intr, quit or erase unless they are given as command
+	  options (reported by Nelson H. F. Beebe <beebe@math.utah.edu>).
+	+ modify tset to look in /etc/ttys or /etc/ttytype if the configuration
+	  does not have getttynam().
+	+ extend baudrate table in tset.c to match baudrate() function.
+	+ add table entries for 230400 and 460800 bd to baudrate() function. 
+	+ improve breakout logic by allowing it before the first line updated,
+	  which is what SVr4 curses does (patch by Alexander V. Lukyanov).
+	+ correct initialization of vcost in relative_move(), for cursor-down
+	  case (patch by Alexander V. Lukyanov).
+	> nits gleaned from Debian distribution of 1.9.9g-3:
+	+ install symbolic link for intotocap.
+	+ reference libc directly when making shared libraries.
+	+ correct renaming of curs_scr_dmp.3x in man_db.renames.
+	+ guard tgetflag() and other termcap functions against null cur_term
+	  pointer.
 
 970719
 	+ corrected initial state of software echo (error in 970405, reported

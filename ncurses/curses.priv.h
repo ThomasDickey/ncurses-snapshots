@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.66 1997/07/05 21:06:57 tom Exp $
+ * $Id: curses.priv.h,v 1.67 1997/07/26 23:39:11 tom Exp $
  *
  *	curses.priv.h
  *
@@ -180,7 +180,8 @@ struct screen {
 	unsigned int    _fifo[FIFO_SIZE];       /* input push-back buffer   */
 	signed char     _fifohead,      /* head of fifo queue               */
 	                _fifotail,      /* tail of fifo queue               */
-	                _fifopeek;      /* where to peek for next char      */
+	                _fifopeek,      /* where to peek for next char      */
+	                _fifohold;      /* set if breakout marked           */
 
 	int             _endwin;        /* are we out of window mode?       */
 	unsigned long   _current_attr;  /* terminal attribute current set   */

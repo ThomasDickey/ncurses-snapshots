@@ -18,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.49 1997/07/19 22:21:52 tom Exp $ */
+/* $Id: curses.h.in,v 1.50 1997/07/26 21:37:41 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -91,26 +91,25 @@ extern "C" {
 
 /*
  * XSI attributes.  In the ncurses implementation, they are identical to the
- * A_ attributes because attr_t is just an int.  The XSI Curses attr_* and
- * wattr_* entry points are all mapped to attr* and wattr* entry points.
+ * A_ attributes.
  */
-#define WA_ATTRIBUTES	0xffffff00
-#define WA_NORMAL	0x00000000
-#define WA_STANDOUT	0x00010000
-#define WA_UNDERLINE	0x00020000
-#define WA_REVERSE	0x00040000
-#define WA_BLINK	0x00080000
-#define WA_DIM		0x00100000
-#define WA_BOLD		0x00200000
-#define WA_ALTCHARSET	0x00400000
-#define WA_INVIS	0x00800000
-#define WA_PROTECT	0x01000000
-#define WA_HORIZONTAL	0x02000000	/* XSI Curses attr -- not yet used */
-#define WA_LEFT		0x04000000	/* XSI Curses attr -- not yet used */
-#define WA_LOW		0x08000000	/* XSI Curses attr -- not yet used */
-#define WA_RIGHT	0x10000000	/* XSI Curses attr -- not yet used */
-#define WA_TOP		0x20000000	/* XSI Curses attr -- not yet used */
-#define WA_VERTICAL	0x40000000	/* XSI Curses attr -- not yet used */
+#define WA_ATTRIBUTES	A_ATTRIBUTES
+#define WA_NORMAL	A_NORMAL
+#define WA_STANDOUT	A_STANDOUT
+#define WA_UNDERLINE	A_UNDERLINE
+#define WA_REVERSE	A_REVERSE
+#define WA_BLINK	A_BLINK
+#define WA_DIM		A_DIM
+#define WA_BOLD		A_BOLD
+#define WA_ALTCHARSET	A_ALTCHARSET
+#define WA_INVIS	A_INVIS
+#define WA_PROTECT	A_PROTECT
+#define WA_HORIZONTAL	A_HORIZONTAL
+#define WA_LEFT		A_LEFT
+#define WA_LOW		A_LOW
+#define WA_RIGHT	A_RIGHT
+#define WA_TOP		A_TOP
+#define WA_VERTICAL	A_VERTICAL
 
 /* colors */
 extern int COLORS;
@@ -668,18 +667,12 @@ extern int setcchar(cchar_t *, wchar_t *, attr_t, short, const void *);	/* missi
 extern int setscrreg(int,int);				/* generated */
 extern SCREEN *set_term(SCREEN *);			/* implemented */
 extern int slk_attroff(const attr_t);			/* implemented */
-#ifdef _XOPEN_SOURCE_EXTENDED
-extern int slk_attr_off(attr_t);			/* missing */
-#endif /* _XOPEN_SOURCE_EXTENDED */
+extern int slk_attr_off(attr_t);			/* generated:WIDEC */
 extern int slk_attron(const attr_t);			/* implemented */
-#ifdef _XOPEN_SOURCE_EXTENDED
-extern int slk_attr_on(attr_t);				/* missing */
-#endif /* _XOPEN_SOURCE_EXTENDED */
+extern int slk_attr_on(attr_t);				/* generated:WIDEC */
 extern int slk_attrset(const attr_t);			/* implemented */
 extern attr_t slk_attr(void);                           /* implemented */
-#ifdef _XOPEN_SOURCE_EXTENDED
-extern int slk_attr_set(attr_t);			/* missing */
-#endif /* _XOPEN_SOURCE_EXTENDED */
+extern int slk_attr_set(attr_t);			/* generated:WIDEC */
 extern int slk_clear(void);				/* implemented */
 extern int slk_init(int);				/* implemented */
 extern char *slk_label(int);				/* implemented */
@@ -712,9 +705,7 @@ extern int unget_wch(const wchar_t *);			/* missing */
 extern int untouchwin(WINDOW *);			/* generated */
 extern void use_env(bool);				/* implemented */
 extern int vidattr(chtype);				/* implemented */
-#ifdef _XOPEN_SOURCE_EXTENDED
-extern int vid_attr(attr_t);				/* missing */
-#endif /* _XOPEN_SOURCE_EXTENDED */
+extern int vid_attr(attr_t);				/* generated:WIDEC */
 extern int vidputs(chtype, int (*)(int));		/* implemented */
 #ifdef _XOPEN_SOURCE_EXTENDED
 extern int vid_puts(attr_t, int (*)(int));		/* missing */
@@ -1093,6 +1084,10 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define mvwinwstr(win,y,x,c)		(wmove(win,y,x) == ERR ? ERR : winnwstr(stdscr,c,-1))
 #define mvwvline_set(win,y,x,c,n)	(wmove(win,y,x) == ERR ? ERR : wvline_set(win,c,n))
 
+#define slk_attr_off(a)			slk_attroff(a)
+#define slk_attr_on(a)			slk_attron(a)
+#define slk_attr_set(a)			slk_attrset(a)
+#define vid_attr(a)			vidattr(a)
 #define vline_set(c,n)			vhline_set(stdscr,c,n)
 #define waddwstr(win,wstr,n)		waddnwstr(win,wstr,-1)
 #define wattr_get(win)			((win)->_attrs)

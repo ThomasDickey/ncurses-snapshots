@@ -143,7 +143,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.40 1997/07/12 23:59:42 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.41 1997/07/22 14:10:23 Alexander.V.Lukyanov Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -461,7 +461,7 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 	    {
 		if (result)
 		    result[0] = '\0';
-		vcost = repeated_append(vcost, SP->_cud1_cost, n, result, cursor_down);
+		vcost = repeated_append(0, SP->_cud1_cost, n, result, cursor_down);
 	    }
 	}
 	else /* (to_y < from_y) */
@@ -479,7 +479,7 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 	    {
 		if (result)
 		    result[0] = '\0';
-		vcost = repeated_append(vcost, SP->_cuu1_cost, n, result, cursor_up);
+		vcost = repeated_append(0, SP->_cuu1_cost, n, result, cursor_up);
 	    }
 	}
 

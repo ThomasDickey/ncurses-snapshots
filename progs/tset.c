@@ -91,7 +91,7 @@ char *ttyname(int fd);
 #include <curses.h>	/* for bool typedef */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.26 1997/07/12 22:33:48 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.27 1997/07/26 22:46:46 tom Exp $")
 
 extern char **environ;
 
@@ -102,10 +102,10 @@ const char *_nc_progname = "tset";
 
 static TTY mode, oldmode;
 
-static int	terasechar;		/* new erase character */
-static int	intrchar;		/* new interrupt character */
+static int	terasechar = -1;	/* new erase character */
+static int	intrchar = -1;		/* new interrupt character */
 static int	isreset;		/* invoked as reset */
-static int	tkillchar;		/* new kill character */
+static int	tkillchar = -1;		/* new kill character */
 static int	tlines, tcolumns;		/* window size */
 
 #define LOWERCASE(c) ((isalpha(c) && isupper(c)) ? tolower(c) : (c))
@@ -264,6 +264,32 @@ static const SPEEDS speeds[] = {
 	{ "38400",	B38400 },
 	{ "19200",	B19200 },
 	{ "38400",	B38400 },
+#ifdef B19200
+	{ "19200",	B19200 },
+#else
+#ifdef EXTA
+	{ "19200",	EXTA },
+#endif
+#endif
+#ifdef B38400
+	{ "38400",	B38400 },
+#else
+#ifdef EXTB
+	{ "38400",	EXTB },
+#endif
+#endif
+#ifdef B57600
+	{ "57600",	B57600 },
+#endif
+#ifdef B115200
+	{ "115200",	B115200 },
+#endif
+#ifdef B230400
+	{ "230400",	B230400 },
+#endif
+#ifdef B460800
+	{ "460800",	B460800 },
+#endif
 	{ (char *)0,    0 }
 };
 
@@ -463,8 +489,10 @@ get_termcap_entry(char *userarg)
 	const char *ttype;
 #if HAVE_GETTTYNAM
 	struct ttyent *t;
-	char *ttypath;
+#else
+	FILE *fp;
 #endif
+	char *ttypath;
 
 	if (userarg) {
 		ttype = userarg;
@@ -475,23 +503,46 @@ get_termcap_entry(char *userarg)
 	if ((ttype = getenv("TERM")) != 0)
 		goto map;
 
-#if HAVE_GETTTYNAM
-	/*
-	 * We have the 4.3BSD library call getttynam(3); that means
-	 * there's an /etc/ttys to look up device-to-type mappings in.
-	 * Try ttyname(3); check for dialup or other mapping.
-	 */
 	if ((ttypath = ttyname(STDERR_FILENO)) != 0) {
 		if ((p = strrchr(ttypath, '/')) != 0)
 			++p;
 		else
 			p = ttypath;
+#if HAVE_GETTTYNAM
+		/*
+		 * We have the 4.3BSD library call getttynam(3); that means
+		 * there's an /etc/ttys to look up device-to-type mappings in.
+		 * Try ttyname(3); check for dialup or other mapping.
+		 */
 		if ((t = getttynam(p))) {
 			ttype = t->ty_type;
 			goto map;
 		}
-	}
+#else
+		if ((fp = fopen("/etc/ttytype", "r")) != 0
+		 || (fp = fopen("/etc/ttys", "r")) != 0) {
+			char buffer[BUFSIZ];
+			char *s, *t, *d;
+
+			while (fgets(buffer, sizeof(buffer)-1, fp) != 0) {
+				for (s = buffer, t = d = 0; *s; s++) {
+					if (isspace(*s))
+						*s = '\0';
+					else if (t == 0)
+						t = s;
+					else if (d == 0 && s != buffer && s[-1] == '\0')
+						d = s;
+				}
+				if (t != 0 && d != 0 && !strcmp(d,p)) {
+					ttype = strdup(t);
+					fclose(fp);
+					goto map;
+				}
+			}
+			fclose(fp);
+		}
 #endif /* HAVE_GETTTYNAM */
+	}
 
 	/* If still undefined, use "unknown". */
 	ttype = "unknown";
@@ -561,6 +612,8 @@ found:	if ((p = getenv("TERMCAP")) != 0 && *p != '/') {
 #undef CERASE
 #undef CINTR
 #undef CKILL
+#undef CLNEXT
+#undef CRPRNT
 #undef CQUIT
 #undef CSTART
 #undef CSTOP
@@ -571,14 +624,8 @@ found:	if ((p = getenv("TERMCAP")) != 0 && *p != '/') {
 #define CERASE	CTRL('H')
 #define CINTR	127		/* ^? */
 #define CKILL	CTRL('U')
-#if defined(CLNEXT)
-#undef CLNEXT
 #define CLNEXT  CTRL('v')
-#endif
-#if defined(CRPRNT)
-#undef CRPRNT
 #define CRPRNT  CTRL('r')
-#endif
 #define CQUIT	CTRL('\\')
 #define CSTART	CTRL('Q')
 #define CSTOP	CTRL('S')
@@ -709,59 +756,43 @@ reset_mode(void)
 }
 
 /*
- * Determine the erase, interrupt, and kill characters from the termcap
- * entry and command line and update their values in 'mode'.
+ * Returns a "good" value for the erase character.  This is loosely based on
+ * the BSD4.4 logic.
+ */
+static int
+default_erase(void)
+{
+	int result;
+
+	if (over_strike
+	 && key_backspace != 0
+	 && strlen(key_backspace) == 1)
+		result = key_backspace[0];
+	else
+		result = CERASE;
+
+	return result;
+}
+
+/*
+ * Update the values of the erase, interrupt, and kill characters in 'mode'.
+ *
+ * SVr4 tset (e.g., Solaris 2.5) only modifies the intr, quit or erase
+ * characters if they're unset, or if we specify them as options.  This differs
+ * from BSD 4.4 tset, which always sets erase.
  */
 static void
 set_control_chars(void)
 {
-#ifdef __OBSOLETE__
-	/*
-	 * 4.4BSD logic for setting erasechar, left here in case there is some
-	 * necessary subtlety missed in the production code below that really
-	 * needs to be added someday (in particular, I don't understand what
-	 * the second if-statement involving the os flag is doing, and it makes
-	 * my head hurt when I try and follow out all the combinations).
-	 */
-	char *bp, *p, bs_char, buf[1024];
-
-	bp = buf;
-	p = tgetstr("kb", &bp);
-	if (p == 0 || p[1] != '\0')
-		p = tgetstr("bc", &bp);
-	if (p != 0 && p[1] == '\0')
-		bs_char = p[0];
-	else if (tgetflag("bs"))
-		bs_char = CTRL('h');
-	else
-		bs_char = 0;
-
-	if (terasechar==0 && !tgetflag("os") && mode.c_cc[VERASE] != CERASE) {
-		if (tgetflag("bs") || bs_char != 0)
-			terasechar = -1;
-	}
-	if (terasechar < 0)
-		terasechar = (bs_char != 0) ? bs_char : CTRL('h');
-#else
-  	/* the real erasechar logic used now */
-	char bs_char = 0;
-
-	if (key_backspace != (char *)0)
-		bs_char = key_backspace[0];
-
-	if (terasechar <= 0)
-	    terasechar = (bs_char != 0) ? bs_char : CTRL('h');
-#endif /* __OBSOLETE__ */
-
 #ifdef TERMIOS
-	if (mode.c_cc[VERASE] == 0 || terasechar != 0)
-		mode.c_cc[VERASE] = terasechar ? terasechar : CERASE;
+	if (mode.c_cc[VERASE] == 0 || terasechar >= 0)
+		mode.c_cc[VERASE] = terasechar >= 0 ? terasechar : default_erase();
 
-	if (mode.c_cc[VINTR] == 0 || intrchar != 0)
-		 mode.c_cc[VINTR] = intrchar ? intrchar : CINTR;
+	if (mode.c_cc[VINTR] == 0 || intrchar >= 0)
+		 mode.c_cc[VINTR] = intrchar >= 0 ? intrchar : CINTR;
 
-	if (mode.c_cc[VKILL] == 0 || tkillchar != 0)
-		mode.c_cc[VKILL] = tkillchar ? tkillchar : CKILL;
+	if (mode.c_cc[VKILL] == 0 || tkillchar >= 0)
+		mode.c_cc[VKILL] = tkillchar >= 0 ? tkillchar : CKILL;
 #endif
 }
 
@@ -936,12 +967,16 @@ report(const char *name, int which, u_int def)
 
 	(void)fprintf(stderr, "%s %s ", name, old == new ? "is" : "set to");
 
-	if ((p = key_backspace) != 0
+	/*
+	 * Check 'delete' before 'backspace', since the key_backspace value
+	 * is ambiguous.
+	 */
+	if (new == 0177)
+		(void)fprintf(stderr, "delete.\n");
+	else if ((p = key_backspace) != 0
 	 && new == (u_int)p[0]
 	 && p[1] == '\0')
 		(void)fprintf(stderr, "backspace.\n");
-	else if (new == 0177)
-		(void)fprintf(stderr, "delete.\n");
 	else if (new < 040) {
 		new ^= 0100;
 		(void)fprintf(stderr, "control-%c (^%c).\n", new, new);
@@ -993,6 +1028,13 @@ usage(const char* pname)
 	exit(EXIT_FAILURE);
 }
 
+static char arg_to_char(void)
+{
+	return (optarg[0] == '^' && optarg[1] != '\0')
+		? ((optarg[1] == '?') ? '\177' : CTRL(optarg[1]))
+		: optarg[0];
+}
+
 int
 main(int argc, char **argv)
 {
@@ -1040,22 +1082,16 @@ main(int argc, char **argv)
 			add_mapping("dialup", optarg);
 			break;
 		case 'e':		/* erase character */
-			terasechar = optarg[0] == '^' && optarg[1] != '\0' ?
-			    optarg[1] == '?' ? '\177' : CTRL(optarg[1]) :
-			    optarg[0];
+			terasechar = arg_to_char();
 			break;
 		case 'I':		/* no initialization strings */
 			noinit = 1;
 			break;
 		case 'i':		/* interrupt character */
-			intrchar = optarg[0] == '^' && optarg[1] != '\0' ?
-			    optarg[1] == '?' ? '\177' : CTRL(optarg[1]) :
-			    optarg[0];
+			intrchar = arg_to_char();
 			break;
 		case 'k':		/* kill character */
-			tkillchar = optarg[0] == '^' && optarg[1] != '\0' ?
-			    optarg[1] == '?' ? '\177' : CTRL(optarg[1]) :
-			    optarg[0];
+			tkillchar = arg_to_char();
 			break;
 		case 'm':		/* map identifier to type */
 			add_mapping(0, optarg);
