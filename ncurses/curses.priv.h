@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.163 2000/07/29 15:07:05 tom Exp $
+ * $Id: curses.priv.h,v 1.164 2000/07/31 00:26:20 tom Exp $
  *
  *	curses.priv.h
  *
@@ -610,7 +610,7 @@ extern const char *_nc_visbuf2(int, const char *);
 				vidattr(AttrOf(c)); \
 				if (magic_cookie_glitch > 0 \
 				 && XMC_CHANGES((chg ^ SP->_current_attr))) { \
-					TR(TRACE_ATTRS,
+					TR(TRACE_ATTRS, \
 						("%s @%d before glitch %d,%d", \
 						__FILE__, __LINE__, \
 						SP->_cursrow, \

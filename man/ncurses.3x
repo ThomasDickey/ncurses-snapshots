@@ -27,11 +27,11 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.41 2000/07/15 22:04:13 tom Exp $
+.\" $Id: ncurses.3x,v 1.42 2000/08/13 01:56:09 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
-.ds d @DATADIR@/terminfo
+.ds d @TERMINFO@
 .SH NAME
 \fBncurses\fR - CRT screen handling and optimization package
 .SH SYNOPSIS
@@ -694,7 +694,7 @@ directories listed in the TERMINFO_DIRS symbol
 -
 one or more directories whose names are configured and compiled into the
 ncurses library, e.g.,
-@DATADIR@/terminfo
+@TERMINFO@
 .RE
 .TP 5
 TERMINFO_DIRS
@@ -713,7 +713,7 @@ If the TERMPATH symbol is not set, \fBncurses\fR looks in the files
 .TP 5
 @DATADIR@/tabset
 directory containing initialization files for the terminal capability database
-@DATADIR@/terminfo
+@TERMINFO@
 terminal capability database
 .SH SEE ALSO
 \fBterminfo\fR(\*n) and 3X pages whose names begin "curs_" for detailed routine

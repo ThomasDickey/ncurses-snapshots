@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2000/07/23 00:29:34 $
+#	$Date: 2000/08/13 01:25:19 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2670,6 +2670,8 @@ kterm|kterm kanji terminal emulator (X window system),
 	acsc@, csr=\E[%i%p1%d;%p2%dr, dsl=\E[?H, enacs@, fsl=\E[?F, 
 	kmous=\E[M, rc=\E8, rmacs@, sc=\E7, smacs@, 
 	tsl=\E[?E\E[?%i%dT, use=xterm-r6, use=ecma+color, 
+kterm-color|kterm-co|kterm with ANSI colors, 
+	ncv@, use=kterm, use=ecma+color, 
 # See the note on ICH/ICH1 VERSUS RMIR/SMIR near the end of file
 xterm-nic|xterm with ich/ich1 suppressed for non-curses programs, 
 	ich@, ich1@, use=xterm, 
@@ -3169,9 +3171,10 @@ ncsa-vt220|NCSA Telnet using vt220-compatible function keys,
 
 #### Pilot Pro Palm-Top
 #
-# From: Jason Downs <downsj@downsj.com>, 15 Jun 1997 (Top Gun Telnet's author)
+# Termcap for Top Gun Telnet and SSH on the Palm Pilot.
+# http://www.isaac.cs.berkeley.edu/pilot/tgtelnet.html
 pilot|tgtelnet|Top Gun Telnet on the Palm Pilot Professional, 
-	am, xenl, 
+	OTbs, am, xenl, 
 	cols#39, lines#16, 
 	bel=^G, clear=\Ec, cr=^M, cub1=^H, cud1=^J, 
 	cup=\Em%p1%{32}%+%c%p2%{32}%+%c, home=\Em\s\s, ht=^I, 
@@ -18376,6 +18379,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2000-07-18
 #       * add amiga-vnc entry.
+#
+# 2000-08-12
+#	* correct description of Top Gun Telnet.
+#	* add kterm-color
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

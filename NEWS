@@ -1,10 +1,37 @@
--- $Id: NEWS,v 1.581 2000/07/30 00:15:32 tom Exp $
+-- $Id: NEWS,v 1.583 2000/08/13 01:20:32 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000812
+	+ modify CF_MAN_PAGES configure macro to make transformed program names
+	  a parameter to that macro rather than embedding them in the macro.
+	+ newer config.guess, config.sub (reference version used in lynx
+	  2.8.4dev.7).
+	+ add configure option --with-default-terminfo-dir=DIR to allow
+	  specifying the default terminfo database directory (request by Albert
+	  Chin-A-Young).
+	+ minor updates for terminfo.src from FreeBSD termcap change-history.
+	+ correct notes in README and INSTALL regarding documentation files
+	  that were moved from misc directory to doc (report by Rich Kulawiec
+	  <rsk@gsp.org>).
+	+ change most remaining unquoted parameters of 'test' in configure
+	  script to use quotes, for instance fixing a problem in the
+	  --disable-database option (reported by Christian Mondrup
+	  <scancm@biobase.dk>).
+	+ minor adjustments to work around some of the incompatibilities/bugs
+	  in autoconf 2.29a alpha.
+	+ add -I/usr/local/include when --with-ncurses option is used in
+	  test/configure script.
+	+ correct logic in adjust_cancels(), which did not check both
+	  alternatives when reclassifying an extended name between boolean,
+	  number and string, causing an infinite loop in tic.
+
+20000730
+	+ correct a missing backslash in curses.priv.h
 
 20000729
 	+ change handling of non_dest_scroll_region in tty_update.c to clear

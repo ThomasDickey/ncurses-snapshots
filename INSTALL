@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.38 2000/07/08 22:46:08 tom Exp $
+-- $Id: INSTALL,v 1.40 2000/08/13 00:05:49 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -442,6 +442,10 @@ SUMMARY OF CONFIGURE OPTIONS:
 	Generate debug-libraries (default).  These are named by adding "_g"
 	to the root, e.g., libncurses_g.a
 
+    --with-default-terminfo-dir=XXX
+	Specify the default terminfo database directory.  This is normally
+	DATADIR/terminfo, e.g., /usr/share/terminfo.
+
     --with-develop
 	Enable experimental/development options.  This does not count those
 	that change the interface, such as --enable-widec.
@@ -516,8 +520,8 @@ SUMMARY OF CONFIGURE OPTIONS:
 	script.
 
     --with-terminfo-dirs=XXX
-	Specify a search-list of terminfo directories which will be compiled into
-	the ncurses library (default: DATADIR/terminfo)
+	Specify a search-list of terminfo directories which will be compiled
+	into the ncurses library (default: DATADIR/terminfo)
 
     --with-termlib
 	When building the ncurses library, organize this as two parts:  the
@@ -985,5 +989,5 @@ BUGS:
 	bug-ncurses-request@gnu.org with body that reads:
 	subscribe ncurses <your-email-address-here>
 
-	The Hacker's Guide in the misc directory includes some guidelines
+	The Hacker's Guide in the doc directory includes some guidelines
 	on how to report bugs in ways that will get them fixed most quickly.
