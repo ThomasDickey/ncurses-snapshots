@@ -1,10 +1,45 @@
--- $Id: NEWS,v 1.536 2000/03/05 04:40:48 tom Exp $
+-- $Id: NEWS,v 1.539 2000/03/12 03:45:18 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000311
+	+ make ifdef's for BROKEN_LINKER consistent (patch by Todd C Miller).
+	+ improved tack/README (patch by Daniel Weaver).
+	+ modify tput.c to ensure that unspecified parameters are passed to
+	  tparm() as 0's.
+	+ add a few checks in infocmp to guard against buffer overflow when
+	  displaying string capabilities.
+	+ add check for zero-uses in infocmp's file_comparison() function
+	  before calling _nc_align_termtype().  Otherwise one parameter is
+	  indexed past the end of the uses-array.
+	+ add an option -q to infocmp to specify the less verbose output,
+	  keeping the existing format as the default, though not retaining the
+	  previous behavior that made the -F option compare each entry to
+	  itself.
+	+ adapted patch by Eric Raymond to make infocmp -F less verbose
+	  (the submitted patch was unusable because it did not compile
+	  properly):
+	  + modify write_entry.c to ensure that absent or cancelled booleans
+	    are written as FALSE, for consistency with infocmp which now
+	    assumes this.  Note that for the small-core configuration, tic
+	    may not produce the same result as before.
+	  + change some private library interfaces used by infocmp, e.g.,
+	    _nc_resolve_uses().
+	  + add a check in _nc_infotocap() to ensure that cm-style capabilities
+	    accept only %d codes when converting the format from terminfo to
+	    termcap.
+	  + modify ENTRY struct to separate the data in 'parent' into the name
+	    and link values (the original idea to merge both into 'parent' was
+	    not good).
+	  + discard repair_acsc(tterm);
+	> patch by Juergen Pfeifer:
+	+ drop support for gnat 3.10
+	+ move generated documentation and html files under ./doc directory,
+	  adding makefile rules for this to dist.mk
 
 20000304
 	+ correct conflicting use of tparm() in 20000226 change to tic, which

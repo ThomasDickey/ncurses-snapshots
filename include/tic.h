@@ -170,7 +170,7 @@ struct tinfo_fkeys {
 	chtype code;
 	};
 
-#ifdef	BROKEN_LINKER
+#if	BROKEN_LINKER
 
 #define	_nc_tinfo_fkeys	_nc_tinfo_fkeysf()
 extern struct tinfo_fkeys *_nc_tinfo_fkeysf(void);

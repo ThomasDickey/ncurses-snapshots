@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.186 2000/02/27 00:48:03 tom Exp $
+dnl $Id: configure.in,v 1.187 2000/03/05 18:17:09 juergen Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.186 $)
+AC_REVISION($Revision: 1.187 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -891,21 +891,22 @@ if test	"$cf_cv_prog_gnat_correct" = yes; then
    CF_WITH_PATH(ada-include,
        [  --with-ada-include=DIR  Ada includes are in DIR],
        ADA_INCLUDE,
-       PREFIX/lib/gnu-Ada/adainclude,
-       [$]prefix/lib/gnu-Ada/adainclude)
+       PREFIX/lib/ada/adainclude,
+       [$]prefix/lib/ada/adainclude)
    AC_SUBST(ADA_INCLUDE)
 
    CF_WITH_PATH(ada-objects,
        [  --with-ada-objects=DIR  Ada objects are in DIR],
        ADA_OBJECTS,
-       PREFIX/lib/gnu-Ada/adalib,
-       [$]prefix/lib/gnu-Ada/adalib)
+       PREFIX/lib/ada/adalib,
+       [$]prefix/lib/ada/adalib)
    AC_SUBST(ADA_OBJECTS)
 
-   if test $with_shared = no
-   then
-      AC_MSG_WARN(Ada95 applications will not link properly with static libraries)
-   fi
+# This has been fixed!
+#   if test $with_shared = no
+#   then
+#      AC_MSG_WARN(Ada95 applications will not link properly with static libraries)
+#   fi
 fi
 fi
 

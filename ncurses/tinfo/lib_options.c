@@ -42,7 +42,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_options.c,v 1.38 2000/02/13 01:01:26 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.39 2000/03/12 00:19:11 tom Exp $")
 
 int
 idlok(WINDOW *win, bool flag)
@@ -50,7 +50,7 @@ idlok(WINDOW *win, bool flag)
     T((T_CALLED("idlok(%p,%d)"), win, flag));
 
     if (win) {
-	_nc_idlok = win->_idlok = flag && (has_il() || change_scroll_region);
+	_nc_idlok = win->_idlok = (flag && (has_il() || change_scroll_region));
 	returnCode(OK);
     } else
 	returnCode(ERR);
@@ -62,7 +62,7 @@ idcok(WINDOW *win, bool flag)
     T((T_CALLED("idcok(%p,%d)"), win, flag));
 
     if (win)
-	_nc_idcok = win->_idcok = flag && has_ic();
+	_nc_idcok = win->_idcok = (flag && has_ic());
 
     returnVoid;
 }

@@ -43,7 +43,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: toe.c,v 1.21 2000/01/15 22:40:58 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.22 2000/03/11 21:47:35 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -137,7 +137,7 @@ main(int argc, char *argv[])
 
 	    (void) printf("%s:", _nc_first_name(qp->tterm.term_names));
 	    for (j = 0; j < qp->nuses; j++)
-		(void) printf(" %s", (char *) (qp->uses[j].parent));
+		(void) printf(" %s", qp->uses[j].name);
 	    putchar('\n');
 	}
 
@@ -156,8 +156,8 @@ main(int argc, char *argv[])
 		    continue;
 
 		for (i = 0; i < rp->nuses; i++)
-		    if (_nc_name_match(qp->tterm.term_names, (char *)
-			    rp->uses[i].parent, "|")) {
+		    if (_nc_name_match(qp->tterm.term_names,
+			    rp->uses[i].name, "|")) {
 			if (matchcount++ == 0)
 			    (void) printf("%s:",
 				_nc_first_name(qp->tterm.term_names));
