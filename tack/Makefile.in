@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.10 1999/10/30 23:09:02 tom Exp $
+# $Id: Makefile.in,v 1.12 1999/11/07 00:09:28 tom Exp $
 # Makefile for tack
 #
 # The variable 'srcdir' refers to the source-distribution, and can be set with
@@ -24,6 +24,7 @@ prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 bindir		= @bindir@
 libdir		= @libdir@
+mandir		= @mandir@/man1
 includedir	= @includedir@
 datadir		= @datadir@
 
@@ -31,6 +32,7 @@ ticdir		= $(datadir)/terminfo
 
 INSTALL		= @INSTALL@
 INSTALL_PROGRAM	= @INSTALL_PROGRAM@
+INSTALL_DATA	= @INSTALL_DATA@
 
 AWK		= @AWK@
 LN_S		= @LN_S@
@@ -83,13 +85,18 @@ uninstall: uninstall.tack
 install.libs:
 uninstall.libs:
 
-install.tack: $(PROGS) $(INSTALL_PREFIX)$(bindir)
+install.tack: $(PROGS) \
+	$(INSTALL_PREFIX)$(bindir) \
+	$(INSTALL_PREFIX)$(mandir)
 	$(INSTALL_PROGRAM) tack$x    $(INSTALL_PREFIX)$(bindir)/tack$x
+	$(INSTALL_DATA)    tack.1    $(INSTALL_PREFIX)$(mandir)/tack.1
 
 uninstall.tack:
 	-@rm -f $(INSTALL_PREFIX)$(bindir)/tack$x
+	-@rm -f $(INSTALL_PREFIX)$(mandir)/tack.1
 
-$(INSTALL_PREFIX)$(bindir) :
+$(INSTALL_PREFIX)$(bindir) \
+$(INSTALL_PREFIX)$(mandir) :
 	$(srcdir)/../mkinstalldirs $@
 
 #

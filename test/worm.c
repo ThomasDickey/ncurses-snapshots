@@ -34,7 +34,7 @@ Options:
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.26 1999/10/23 01:31:40 tom Exp $
+  $Id: worm.c,v 1.27 1999/11/06 23:54:46 Frank.Heckenbach Exp $
 */
 
 #include <test.priv.h>
@@ -350,9 +350,9 @@ main(int argc, char *argv[])
 		    last = COLS - 1;
 		}
 		if (bottom != LINES - 1) {
-		    ref = typeRealloc(short *, LINES, ref);
-		    for (y = COLS; y <= bottom; y++)
+		    for (y = LINES; y <= bottom; y++)
 			free(ref[y]);
+		    ref = typeRealloc(short *, LINES, ref);
 		    for (y = bottom + 1; y < LINES; y++) {
 			ref[y] = typeAlloc(short, COLS);
 			for (x = 0; x < COLS; x++)
