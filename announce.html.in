@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
 <!--
-  $Id: announce.html.in,v 1.43 2002/09/02 00:47:45 tom Exp $
+  $Id: announce.html.in,v 1.44 2002/10/12 23:35:32 tom Exp $
 -->
 <HTML>
 <HEAD>
@@ -9,7 +9,7 @@
 </HEAD>
 <BODY>
 
-<H1>Announcing ncurses @VERSION@ Pre-Release</H1>
+<H1>Announcing ncurses @VERSION@</H1>
 
 The ncurses (new curses) library is a free software emulation of
 curses in System V Release 4.0, and more.  It uses terminfo format,

@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.227 2002/09/28 20:13:13 tom Exp $
+ * $Id: curses.priv.h,v 1.228 2002/10/12 15:49:10 tom Exp $
  *
  *	curses.priv.h
  *
@@ -669,6 +669,13 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 
 #ifdef TRACE
 
+#define START_TRACE() \
+	if ((_nc_tracing & TRACE_MAXIMUM) == 0) { \
+	    int t = _nc_getenv_num("NCURSES_TRACE"); \
+	    if (t >= 0) \
+		trace((unsigned) t); \
+	}
+
 #define TR(n, a)	if (_nc_tracing & (n)) _tracef a
 #define T(a)		TR(TRACE_CALLS, a)
 #define TPUTS_TRACE(s)	_nc_tputs_trace = s;
@@ -708,6 +715,8 @@ extern NCURSES_EXPORT(const char *) _nc_viscbuf (const cchar_t *, int);
 #endif
 
 #else /* !TRACE */
+
+#define START_TRACE() /* nothing */
 
 #define T(a)
 #define TR(n, a)

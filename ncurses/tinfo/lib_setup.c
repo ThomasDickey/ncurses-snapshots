@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -48,7 +48,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.68 2001/12/08 22:14:18 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.70 2002/10/12 21:50:18 tom Exp $")
 
 /****************************************************************************
  *
@@ -305,6 +305,7 @@ setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
     struct term *term_ptr;
     int status;
 
+    START_TRACE();
     T((T_CALLED("setupterm(%s,%d,%p)"), _nc_visbuf(tname), Filedes, errret));
 
     if (tname == 0) {
@@ -374,13 +375,22 @@ setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
     ttytype[NAMESIZE - 1] = '\0';
 
     /*
-     * Allow output redirection.  This is what SVr3 does.
-     * If stdout is directed to a file, screen updates go
-     * to standard error.
+     * Allow output redirection.  This is what SVr3 does.  If stdout is
+     * directed to a file, screen updates go to standard error.
      */
     if (Filedes == STDOUT_FILENO && !isatty(Filedes))
 	Filedes = STDERR_FILENO;
     cur_term->Filedes = Filedes;
+
+    /*
+     * If an application calls setupterm() rather than initscr() or newterm(),
+     * we will not have the def_prog_mode() call in _nc_setupscreen().  Do it
+     * now anyway, so we can initialize the baudrate.
+     */
+    if (isatty(Filedes)) {
+	def_prog_mode();
+	baudrate();
+    }
 
     _nc_get_screensize(&LINES, &COLS);
 

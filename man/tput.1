@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tput.1,v 1.17 2002/07/20 19:13:00 tom Exp $
+.\" $Id: tput.1,v 1.18 2002/10/12 13:53:20 tom Exp $
 .TH tput 1 ""
 .ds d @TERMINFO@
 .ds n 1
@@ -76,16 +76,27 @@ the attribute is also accepted.
 .TP
 \fIparms\fR
 If the attribute is a string that takes parameters, the arguments
-\fIparms\fR will be instantiated into the string.  An all numeric
-argument will be passed to the attribute as a number.
+\fIparms\fR will be instantiated into the string.
+An all-numeric argument will be passed to the attribute as a number.
+.IP
+Only a few terminfo capabilities require string parameters;
+\fBtput\fR uses a table to decide which to pass as strings.
+Normally \fBtput\fR uses \fBtparm\fR (3X) to perform the substitution.
+If no parameters are given for the attribute,
+\fBtput\fR writes the string without performing the substitution. 
 .TP
 \fB-S\fR
 allows more than one capability per invocation of \fBtput\fR.  The
 capabilities must be passed to \fBtput\fR from the standard input
-instead of from the command line (see example).  Only one
-\fIcapname\fR is allowed per line.  The \fB-S\fR option changes the
+instead of from the command line (see example).
+Only one \fIcapname\fR is allowed per line.
+The \fB-S\fR option changes the
 meaning of the \fB0\fR and \fB1\fR boolean and string exit codes (see the
 EXIT CODES section).
+.IP
+Again, \fBtput\fR uses a table and the presence of parameters in its input
+to decide whether to use \fBtparm\fR (3X),
+and how to interpret the parameters.
 .TP
 \fB-V\fR
 reports the version of ncurses which was used in this program, and exits.
@@ -158,6 +169,9 @@ Set exit code to indicate if the current terminal is a hard copy terminal.
 \fBtput cup 23 4\fR
 Send the sequence to move the cursor to row 23, column 4.
 .TP 5
+\fBtput cup\fR
+Send the terminfo string for cursor-movement, with no parameters substituted.
+.TP 5
 \fBtput longname\fR
 Print the long name from the \fBterminfo\fR database for the
 type of terminal specified in the environmental
@@ -176,10 +190,11 @@ variable \fBTERM\fR.
 .RE
 .TP 5
 \&
-This example shows tput processing several capabilities in one
-invocation.  This example clears the screen, moves the cursor to
-position 10, 10 and turns on bold (extra bright) mode.  The list is
-terminated by an exclamation mark (\fB!\fR) on a line by itself.
+This example shows \fBtput\fR processing several capabilities in one invocation.
+It clears the screen,
+moves the cursor to position 10, 10
+and turns on bold (extra bright) mode.
+The list is terminated by an exclamation mark (\fB!\fR) on a line by itself.
 .SH FILES
 .TP
 \fB\*d\fR
@@ -199,7 +214,7 @@ information, see the "Tabs and Initialization"
 section of \fBterminfo\fR(5)
 .SH EXIT CODES
 If the \fB-S\fR option is used,
-tput checks for errors from each line,
+\fBtput\fR checks for errors from each line,
 and if any errors are found, will set the exit code to 4 plus the
 number of lines with errors.
 If no errors are found, the exit code is \fB0\fR.
@@ -261,7 +276,10 @@ The \fBlongname\fR and \fB-S\fR options, and the parameter-substitution
 features used in the \fBcup\fR example, are not supported in BSD curses or in
 AT&T/USL curses before SVr4.
 .SH SEE ALSO
-\fB@CLEAR@\fR(1), \fBstty\fR(1), \fBtabs\fR(\*n), \fBterminfo\fR(5).
+\fB@CLEAR@\fR(1),
+\fBstty\fR(1),
+\fBtabs\fR(\*n),
+\fBterminfo\fR(5).
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

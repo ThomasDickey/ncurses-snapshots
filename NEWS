@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.713 2002/10/06 00:35:31 tom Exp $
+-- $Id: NEWS,v 1.714 2002/10/12 22:35:42 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,7 +6,21 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
-20021002 pre-release
+20021012 5.3 release for upload to ftp.gnu.org
+	+ modify ifdef's in etip.h.in to allow the etip.h header to compile
+	  with gcc 3.2 (patch by Dimitar Zhekov <jimmy@is-vn.bg>).
+	+ add logic to setupterm() to make it like initscr() and newterm(),
+	  by checking for $NCURSES_TRACE environment variable and enabling
+	  the debug trace in that case.
+	+ modify setupterm() to ensure that it initializes the baudrate, for
+	  applications such as tput (report by Frank Henigman).
+	+ modify definition of bits used for command-line and library debug
+	  traces to avoid overlap, using new definition TRACE_SHIFT to relate
+	  the two.
+	+ document tput's interpretation of parameterized strings according to
+	  whether parameters are given, etc. (discussion with Robert De Bath).
+
+20021005 pre-release
 	+ correct winnwstr() to account for non-character cells generated when
 	  a double-width character is added (report by Michael Bienia
 	  <michael@vorlon.ping.de>).

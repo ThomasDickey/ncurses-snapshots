@@ -32,7 +32,7 @@
  ****************************************************************************/
 
 /*
- * $Id: tic.h,v 1.41 2002/06/01 19:07:02 tom Exp $
+ * $Id: tic.h,v 1.42 2002/10/12 15:46:15 tom Exp $
  *	tic.h - Global variables and structures for the terminfo
  *			compiler.
  */
@@ -104,7 +104,7 @@ extern "C" {
  */
 
 #define MAX_DEBUG_LEVEL 15
-#define DEBUG_LEVEL(n)	((n) << 12)	/* see TRACE_MAXIMUM */
+#define DEBUG_LEVEL(n)	((n) << TRACE_SHIFT)
 
 #define set_trace_level(n) \
  	_nc_tracing &= DEBUG_LEVEL(MAX_DEBUG_LEVEL), \
