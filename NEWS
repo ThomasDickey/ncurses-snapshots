@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.570 2000/07/04 21:50:00 tom Exp $
+-- $Id: NEWS,v 1.577 2000/07/08 20:59:25 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,7 +6,30 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
-20000704 5.1 release for upload to ftp.gnu.org
+20000708 5.1 release for upload to ftp.gnu.org
+	+ document configure options in INSTALL.
+	+ add man-page for ncurses trace functions.
+	+ correct return value shown in curs_touch.3x for is_linetouched() and
+	  is_wintouched(), in curs_initscr.3x for isendwin(), and in
+	  curs_termattr.3x for has_ic() and has_il().
+	+ add prototypes for touchline() and touchwin(), adding them to the
+	  list of generated functions.
+	+ modify fifo_push() to put ERR into the fifo just like other values to
+	  return from wgetch().  It was returning without doing that, making
+	  end-of-file condition incorrectly return a 0 (reported by Todd C
+	  Miller).
+	+ uncomment CC_SHARED_OPTS for progs and tack (see 971115), since they
+	  are needed for SCO OpenServer.
+	+ move _nc_disable_period from free_ttype.c to comp_scan.c to appease
+	  dynamic loaders on SCO and IRIX64.
+	+ add "-a" option to test/ncurses.c to invoke assume_default_colors()
+	  for testing.
+	+ correct assignment in assume_default_colors() which tells ncurses
+	  whether to use default colors, or the assumed ones (reported by Gary
+	  Funck <gary@Intrepid.Com>).
+	+ review/correct logic in mk-1st.awk for making symbolic links for
+	  shared libraries, in particular for FreeBSD, etc.
+	+ regenerate misc/*.def files for OS/2 EMX dll's.
 	+ correct quoting of values for CC_SHARED_OPTS in aclocal.m4 for
 	  cases openbsd2*, openbsd*, freebsd* and netbsd* (patch by Peter
 	  Wemm) (err in 20000610).

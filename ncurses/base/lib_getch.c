@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.47 2000/05/28 01:12:51 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.48 2000/07/08 11:21:51 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -163,7 +163,7 @@ fifo_push(void)
 
     if ((n == -1) || (n == 0)) {
 	T(("read(%d,&ch,1)=%d, errno=%d", SP->_ifd, n, errno));
-	return ERR;
+	ch = ERR;
     }
     T(("read %d characters", n));
 

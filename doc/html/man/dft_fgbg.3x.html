@@ -5,7 +5,8 @@
 
 </PRE>
 <H2>NAME</H2><PRE>
-       <B>dft_fgbg</B> - use terminal's default colors
+       <B>dft_fgbg</B>:  <B>use_default_colors</B>, <B>assume_default_colors</B> - use
+       terminal's default colors
 
 
 </PRE>
@@ -24,10 +25,17 @@
        These terminals allow the application to reset color to an
        unspecified default value (e.g., with SGR 39 or SGR 49).
 
-       Applications  that  paint  a  colored  background over the
-       whole screen do not take advantage of SGR 39 and  SGR  49.
-       Some  applications  are  designed to work with the default
-       background.
+       Applications that paint  a  colored  background  over  the
+       whole  screen  do not take advantage of SGR 39 and SGR 49.
+       Some applications are designed to work  with  the  default
+       background,  using  colors  only  for  text.  For example,
+       there are several implementations of the <B>ls</B> program  which
+       use  colors to denote different file types or permissions.
+       These "color ls" programs do not  necessarily  modify  the
+       background  color, typically using only the <I>setaf</I> terminfo
+       capability  to  set  the  foreground  color.   Full-screen
+       applications  that  use default colors can achieve similar
+       visual effects.
 
        The first function, <I>use</I><B>_</B><I>default</I><B>_</B><I>colors()</I> tells the  curses
        library  to  assign terminal default foreground/background
@@ -37,38 +45,49 @@
        default foreground on blue.
 
        The  other,  <I>assume</I><B>_</B><I>default</I><B>_</B><I>colors()</I> is a refinement which
-       tells which colors to paint for color pair 0, and -1 means
-       default terminal color.  The following are equivalent:
+       tells which colors to paint for color pair 0.  This  func-
+       tion  recognizes  a special color number -1, which denotes
+       the default terminal color.
+
+       The following are equivalent:
               <I>use</I><B>_</B><I>default</I><B>_</B><I>colors();</I>
               <I>assume</I><B>_</B><I>default</I><B>_</B><I>colors(-1,-1);</I>
 
-       This is a ncurses extension and for other curses implemen-
-       tations color number -1 does not mean  anything,  just  as
-       for ncurses before a successful call of use_default_colors
-       or assume_default_colors.
+       These are ncurses extensions.  For other curses  implemen-
+       tations,  color  number -1 does not mean anything, just as
+       for ncurses before a successful call  of  <I>use</I><B>_</B><I>default</I><B>_</B><I>col-</I>
+       <I>ors()</I> or <I>assume</I><B>_</B><I>default</I><B>_</B><I>colors()</I>.
+
+       Other  curses  implementations do not allow an application
+       to modify color pair 0.  They assume that  the  background
+       is COLOR_BLACK, but do not ensure that the color pair 0 is
+       painted to match the assumption.  If your application does
+       not use either <I>use</I><B>_</B><I>default</I><B>_</B><I>colors()</I> or <I>assume</I><B>_</B><I>default</I><B>_</B><I>col-</I>
+       <I>ors()</I> ncurses will paint a white  foreground  (text)  with
+       black background for color pair 0.
 
 
 </PRE>
 <H2>RETURN VALUE</H2><PRE>
        These functions return the integer <B>ERR</B> upon failure and <B>OK</B>
-       on  success.   They  will fail if either the terminal does
-       not support the <I>orig</I><B>_</B><I>pair</I> or <I>orig</I><B>_</B><I>colors</I>  capability.   If
-       the  <I>initialize</I><B>_</B><I>pair</I>  capability  is found, this causes an
+       on success.  They will fail if either  the  terminal  does
+       not  support  the <I>orig</I><B>_</B><I>pair</I> or <I>orig</I><B>_</B><I>colors</I> capability.  If
+       the <I>initialize</I><B>_</B><I>pair</I> capability is found,  this  causes  an
        error as well.
 
 
 </PRE>
 <H2>NOTES</H2><PRE>
        Associated with this extension, the <B><A HREF="init_pair.3x.html">init_pair(3x)</A></B> function
-       accepts  negative  arguments to specify default foreground
+       accepts negative arguments to specify  default  foreground
        or background colors.
 
 
 </PRE>
 <H2>PORTABILITY</H2><PRE>
-       These routines are specific to  ncurses.   They  were  not
-       supported  on  Version 7, BSD or System V implementations.
-       It is recommended that any code depending on them be  con-
+       These  routines  are  specific  to ncurses.  They were not
+       supported on Version 7, BSD or System  V  implementations.
+       It  is recommended that any code depending on them be con-
        ditioned using NCURSES_VERSION.
 
 
@@ -79,27 +98,8 @@
 
 </PRE>
 <H2>AUTHOR</H2><PRE>
-       Thomas  Dickey  (from  an analysis of the requirements for
+       Thomas Dickey (from an analysis of  the  requirements  for
        color xterm for XFree86 3.1.2C, February 1996).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

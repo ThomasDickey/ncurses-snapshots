@@ -6,8 +6,8 @@
 </PRE>
 <H2>NAME</H2><PRE>
        <B>start_color</B>,     <B>init_pair</B>,     <B>init_color</B>,    <B>has_colors</B>,
-       <B>can_change_color</B>,  <B>color_content</B>,  <B>pair_content</B>  -  <B>curses</B>
-       color manipulation routines
+       <B>can_change_color</B>, <B>color_content</B>, <B>pair_content</B>,  <B>COLOR_PAIR</B>
+       - <B>curses</B> color manipulation routines
 
 
 </PRE>
@@ -64,13 +64,23 @@
        The <B>init_pair</B> routine changes the definition of  a  color-
        pair.   It takes three arguments: the number of the color-
        pair to be changed, the foreground color number,  and  the
-       background  color number.  The value of the first argument
-       must be between <B>1</B> and <B>COLOR_PAIRS-1</B>.   The  value  of  the
-       second  and  third  arguments must be between 0 and <B>COLORS</B>
-       (the 0 color pair is wired to white on black and cannot be
-       changed).   If  the color-pair was previously initialized,
-       the screen is refreshed and all occurrences of that color-
-       pair is changed to the new definition.
+       background color number.  For portable applications:
+
+       -    The value of the first argument must be between <B>1</B> and
+            <B>COLOR_PAIRS-1</B>.
+
+       -    The value of the second and third arguments  must  be
+            between  0  and  <B>COLORS</B> (the 0 color pair is wired to
+            white on black and cannot be changed).
+
+       If the color-pair was previously initialized,  the  screen
+       is  refreshed  and  all  occurrences of that color-pair is
+       changed to the new definition.
+
+       As an extension, ncurses allows you to set  color  pair  0
+       via  the  <B>assume_default_colors</B> routine, or to specify the
+       use of default colors  (color  number  <B>-1</B>)  if  you  first
+       invoke the <B>use_default_colors</B> routine.
 
        The  <B>init_color</B> routine changes the definition of a color.
        It takes four arguments: the number of  the  color  to  be
@@ -158,17 +168,17 @@
        Several  caveats  apply  on 386 and 486 machines with VGA-
        compatible graphics:
 
-       COLOR_YELLOW  is  actually  brown.   To  get  yellow,  use
-       COLOR_YELLOW combined with the <B>A_BOLD</B> attribute.
+       -    COLOR_YELLOW is actually brown.  To get  yellow,  use
+            COLOR_YELLOW combined with the <B>A_BOLD</B> attribute.
 
-       The  A_BLINK  attribute  should  in theory cause the back-
-       ground to go bright.  This often fails to work,  and  even
-       some cards for which it mostly works (such as the Paradise
-       and compatibles) do the wrong thing when you try to set  a
-       bright  "yellow"  background  (you  get  a blinking yellow
-       foreground instead).
+       -    The  A_BLINK  attribute  should  in  theory cause the
+            background to go bright.  This often fails  to  work,
+            and  even  some cards for which it mostly works (such
+            as the Paradise and compatibles) do the  wrong  thing
+            when you try to set a bright "yellow" background (you
+            get a blinking yellow foreground instead).
 
-       Color RGB values are not settable.
+       -    Color RGB values are not settable.
 
 
 </PRE>
@@ -181,24 +191,14 @@
        <B>use_default_colors</B> extension, but only if that routine has
        been first invoked.
 
+       The assumption that <B>COLOR_BLACK</B> is the default  background
+       color   for  all  terminals  can  be  modified  using  the
+       <B>assume_default_colors</B> extension,
+
 
 </PRE>
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></B>, <B><A HREF="curs_attr.3x.html">curs_attr(3x)</A></B>, <B><A HREF="dft_fgbg.3x.html">dft_fgbg(3x)</A></B>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

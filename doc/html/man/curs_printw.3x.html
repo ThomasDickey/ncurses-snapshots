@@ -5,8 +5,8 @@
 
 </PRE>
 <H2>NAME</H2><PRE>
-       <B>printw</B>,  <B>wprintw</B>,  <B>mvprintw</B>,  <B>mvwprintw</B>,  <B>vwprintw</B> - print
-       formatted output in <B>curses</B> windows
+       <B>printw</B>,  <B>wprintw</B>, <B>mvprintw</B>, <B>mvwprintw</B>, <B>vwprintw</B>, <B>vw_printw</B>
+       - print formatted output in <B>curses</B> windows
 
 
 </PRE>
@@ -21,6 +21,7 @@
 
        <B>#include</B> <B>&lt;varargs.h&gt;</B>
        <B>int</B> <B>vwprintw(WINDOW</B> <B>*win,</B> <B>char</B> <B>*fmt,</B> <B>varglist);</B>
+       <B>int</B> <B>vw_printw(WINDOW</B> <B>*win,</B> <B>char</B> <B>*fmt,</B> <B>varglist);</B>
 
 
 </PRE>
@@ -54,7 +55,6 @@
 </PRE>
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="printf.3S.html">printf(3S)</A></B>, <B>vprintf(3S)</B>
-
 
 
 

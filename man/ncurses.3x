@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.39 1999/12/19 01:53:04 tom Exp $
+.\" $Id: ncurses.3x,v 1.40 2000/07/08 13:10:31 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
@@ -198,6 +198,17 @@ l l
 l l .
 \fBcurses\fR Routine Name/Manual Page Name
 =
+COLOR_PAIR/\fBcurs_color\fR(3X)
+PAIR_NUMBER/\fBcurs_attr\fR(3X)
+_nc_tracebits/\fBcurs_trace\fR(3X)*
+_traceattr/\fBcurs_trace\fR(3X)*
+_traceattr2/\fBcurs_trace\fR(3X)*
+_tracechar/\fBcurs_trace\fR(3X)*
+_tracechtype/\fBcurs_trace\fR(3X)*
+_tracechtype2/\fBcurs_trace\fR(3X)*
+_tracedump/\fBcurs_trace\fR(3X)*
+_tracef/\fBcurs_trace\fR(3X)*
+_tracemouse/\fBcurs_trace\fR(3X)*
 addch/\fBcurs_addch\fR(3X)
 addchnstr/\fBcurs_addchstr\fR(3X)
 addchstr/\fBcurs_addchstr\fR(3X)
@@ -295,6 +306,7 @@ leaveok/\fBcurs_outopts\fR(3X)
 longname/\fBcurs_termattrs\fR(3X)
 mcprint/\fBcurs_print\fR(3X)*
 meta/\fBcurs_inopts\fR(3X)
+mouse_trafo/\fBcurs_mouse\fR(3X)*
 mouseinterval/\fBcurs_mouse\fR(3X)*
 mousemask/\fBcurs_mouse\fR(3X)*
 move/\fBcurs_move\fR(3X)
@@ -321,6 +333,7 @@ mvinsstr/\fBcurs_insstr\fR(3X)
 mvinstr/\fBcurs_instr\fR(3X)
 mvprintw/\fBcurs_printw\fR(3X)
 mvscanw/\fBcurs_scanw\fR(3X)
+mvvline/\fBcurs_border\fR(3X)
 mvwaddch/\fBcurs_addch\fR(3X)
 mvwaddchnstr/\fBcurs_addchstr\fR(3X)
 mvwaddchstr/\fBcurs_addchstr\fR(3X)
@@ -428,6 +441,7 @@ touchwin/\fBcurs_touch\fR(3X)
 tparm/\fBcurs_terminfo\fR(3X)
 tputs/\fBcurs_termcap\fR(3X)
 tputs/\fBcurs_terminfo\fR(3X)
+trace/\fBcurs_trace\fR(3X)*
 typeahead/\fBcurs_inopts\fR(3X)
 unctrl/\fBcurs_util\fR(3X)
 ungetch/\fBcurs_getch\fR(3X)
