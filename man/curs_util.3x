@@ -4,7 +4,7 @@
 \fBuse_env\fR, \fBputwin\fR, \fBgetwin\fR, \fBdelay_output\fR,
 \fBflushinp\fR - miscellaneous \fBncurses\fR utility routines
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
 \fBchar *unctrl(chtype c);\fR
 .br
@@ -34,7 +34,8 @@ The \fBfilter\fR routine, if used, must be called before \fBinitscr\fR or
 \fBnewterm\fR are called.  It makes \fBncurses\fR think that there is a
 one-line screen.  \fBncurses\fR does not use any terminal capabilities
 that assume that they know on what line of the screen the cursor is
-positioned.
+positioned (that is, all cursor motion capabilities except \fBcr\fR,
+\fBcub\fR, \fBcub1\fR, \fBhpa\fR).
 
 The \fBuse_env\fR routine, if used, is called before \fBinitscr\fR or
 \fBnewterm\fR are called.  When called with \fBFALSE\fR as an
@@ -60,15 +61,17 @@ padding characters are used rather than a CPU pause.
 The \fBflushinp\fR routine throws away any typeahead that has been typed by the
 user and has not yet been read by the program.
 .SH RETURN VALUE
-Except for \fBflushinp\fR, routines that return an integer return
-\fBERR\fR upon failure and an integer value other than \fBERR\fR upon
-successful completion.
+Except for \fBflushinp\fR, routines that return an integer return \fBERR\fR
+upon failure and \fBOK\fR (SVr4 specifies only "an integer value other than
+\fBERR\fR") upon successful completion.
 
 \fBflushinp\fR always returns \fBOK\fR.
 
 Routines that return pointers return \fBNULL\fR on error.
 .SH BUGS
-The \fBfilter\fR entry point is not yet supported.
+The \fBfilter\fR entry point is not yet supported in \fIncurses\fR(3X).
+.SH PORTABILITY
+The XSI Curses draft describes these functions.
 .SH NOTES
 Note that \fBunctrl\fR is a macro, which is defined in <\fBunctrl.h\fR>.
 .SH SEE ALSO

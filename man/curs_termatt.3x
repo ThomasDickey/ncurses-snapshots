@@ -4,7 +4,7 @@
 \fBhas_il\fR, \fBkillchar\fR, \fBlongname\fR, \fBtermattrs\fR,
 \fBtermname\fR - \fBncurses\fR environment query routines
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
 \fBint baudrate(void);\fR
 .br
@@ -18,7 +18,7 @@
 .br
 \fBchar *longname(void);\fR
 .br
-\fBchtype termattrs(void);\fR
+\fBattr_t termattrs(void);\fR
 .br
 \fBchar *termname(void);\fR
 .br
@@ -60,10 +60,14 @@ variable \fBTERM\fR (truncated to 14 characters).
 .SH RETURN VALUE
 \fBlongname\fR and \fBtermname\fR return \fBNULL\fR on error.
 
-Routines that return an integer return \fBERR\fR upon failure and an integer
-value other than \fBERR\fR upon successful completion.
+Routines that return an integer return \fBERR\fR upon failure and \fOK\fR
+(SVr4 only specifies "an integer value other than \fBERR\fR") upon successful
+completion.
 .SH NOTES
 Note that \fBtermattrs\fR may be a macro.
+.SH PORTABILITY
+The XSI Curses draft describes these functions.  It changes the return type
+of \fBtermattrs\fR to the new type \fBattr_t\fR.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_outopts\fR(3X)
 .\"#

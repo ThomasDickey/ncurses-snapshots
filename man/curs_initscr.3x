@@ -4,7 +4,7 @@
 \fBisendwin\fR, \fBset_term\fR, \fBdelscreen\fR - \fBncurses\fR screen
 initialization and manipulation routines
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
 \fBWINDOW *initscr(void);\fR
 .br
@@ -22,9 +22,8 @@ initialization and manipulation routines
 \fBinitscr\fR is normally the first \fBncurses\fR routine to call when
 initializing a program.  A few special routines sometimes need to be
 called before it; these are \fBslk_init\fR, \fBfilter\fR, \fBripoffline\fR,
-\fBuse_env\fR.  For multiple-terminal applications, or in order to test
-for the presence of given capabilities, \fBnewterm\fR may be called before
-\fBinitscr\fR.
+\fBuse_env\fR.  For multiple-terminal applications, \fBnewterm\fR may be
+called before \fBinitscr\fR.
 
 The initscr code determines the terminal type and initializes all \fBncurses\fR
 data structures.  \fBinitscr\fR also causes the first call to \fBrefresh\fR to
@@ -73,6 +72,9 @@ upon successful completion.
 Routines that return pointers always return \fBNULL\fR on error.
 .SH NOTES
 Note that \fBinitscr\fR and \fBnewterm\fR may be macros.
+.SH PORTABILITY
+These functions are described in the XSI Curses draft.  It specifies
+that portable applications must not call \fBinitscr\fR more than once.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_kernel\fR(3X), \fBcurs_refresh\fR(3X),
 \fBcurs_slk\fR(3X), \fBcurs_util\fR(3X)

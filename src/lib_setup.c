@@ -1,44 +1,47 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992, 1993, 1994                 *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
- *	setupterm(termname, Filedes, errret)
+ * Terminal setup routines:
  *
- *	Find and read the appropriate object file for the terminal
- *	Make cur_term point to the structure.
- *	Turn off the XTABS bit in the tty structure if it was on
- *	If XTABS was on, remove the tab and backtab capabilities.
- *
+ *		setup_sizes(void)
+ *		use_env(bool)
+ *		setupterm(char *, int, int *)
+ *		int set_curterm(TERMINAL *)
+ *		int del_curterm(TERMINAL *)
  */
 
 #include <stdlib.h>
 #include <string.h>
-#ifndef SUNIOCTL
-#include <sys/ioctl.h>
-#endif
 #include "curses.priv.h"
 #include "terminfo.h"
 
-#define ret_error(code, fmt, arg)	if (errret) {\
-					    *errret = code;\
-					    return(code);\
-					} else {\
-					    fprintf(stderr, fmt, arg);\
-					    exit(1);\
-					}
+/****************************************************************************
+ *
+ * Terminal size computation
+ *
+ ****************************************************************************/
 
-#define ret_error0(code, msg)		if (errret) {\
-					    *errret = code;\
-					    return(code);\
-					} else {\
-					    fprintf(stderr, msg);\
-					    exit(1);\
-					}
-
-
-static void do_prototype(void);
+#ifndef SUNIOCTL
+#include <sys/ioctl.h>
+#endif
 
 static int _use_env = TRUE;
 
@@ -68,6 +71,56 @@ struct winsize size;
 #endif
 }
 
+void get_screensize(void)
+/* set LINES and COLS from the environment and/or terminfo entry */
+{
+char 		*rows, *cols;
+
+	/* figure out the size of the screen */
+	T(("screen size: terminfo lines = %d columns = %d", lines, columns));
+	
+	/* get value of LINES and COLUMNS environment variables */
+	LINES = COLS = 0;
+	rows = getenv("LINES");
+	if (rows != (char *)NULL)
+		LINES = atoi(rows);
+	cols = getenv("COLUMNS");
+	if (cols != (char *)NULL)
+		COLS = atoi(cols);
+	T(("screen size: environment LINES = %d COLUMNS = %d", LINES, COLS));
+
+	/* if _use_env is false then override the environment */
+	if (_use_env == FALSE) 
+		if (lines > 0 && columns > 0) {
+			LINES = lines;
+			COLS  = columns; 
+		} 
+
+	/* If _use_env is true but environment is undefined:
+	   If we can get window size, use it,
+	   else try lines/columns,
+	   else give up.
+	*/
+
+	if (LINES <= 0 || COLS <= 0) {
+		if (!isatty(cur_term->Filedes) || resize(cur_term->Filedes)) {
+			/* no window size, our last hope is terminfo */
+			if (lines > 0 && columns > 0) {
+				LINES = lines;
+				COLS  = columns; 
+			} 
+		}
+	}
+
+	T(("screen size is %dx%d", LINES, COLS));
+}
+
+/****************************************************************************
+ *
+ * Mode sets
+ *
+ ****************************************************************************/
+
 #ifndef BSDTABS
 #define tabs TAB3
 #else
@@ -76,7 +129,7 @@ struct winsize size;
  
 int def_shell_mode()
 {
-		T(("def_shell_mode() called"));
+	T(("def_shell_mode() called"));
 
 #ifdef TERMIOS
  	if((tcgetattr(cur_term->Filedes, &cur_term->Ottyb)) == -1) {
@@ -112,34 +165,58 @@ int def_prog_mode()
 	return OK;
 }
 
-static bool name_match(char *namelst, const char *name)
+/****************************************************************************
+ *
+ * Terminal setup
+ *
+ ****************************************************************************/
+
+#define ret_error(code, fmt, arg)	if (errret) {\
+					    *errret = code;\
+					    return(code);\
+					} else {\
+					    fprintf(stderr, fmt, arg);\
+					    exit(1);\
+					}
+
+#define ret_error0(code, msg)		if (errret) {\
+					    *errret = code;\
+					    return(code);\
+					} else {\
+					    fprintf(stderr, msg);\
+					    exit(1);\
+					}
+
+static int grab_entry(char *tn, TERMTYPE *tp)
 {
-char *cp, namecopy[NAMESIZE];
+	if (read_entry(tn, tp) == OK)
+	    return(OK);
 
-	T(("matching %s with %s", name, namelst));
-	if (namelst == NULL)
-		return FALSE;
-    	strcpy(namecopy, namelst);
-    	if ((cp = strtok(namelst, "|")) != NULL)
-    		do {
-			if (strcmp(cp, name) == 0)
-			    return(TRUE);
-    		} while
-		((cp = strtok((char *)NULL, "|")) != NULL);
+#ifdef TERMCAP_FILE
+	/* try falling back on the termcap file */
+	if (read_termcap_entry(tn, tp) == OK)
+		return(OK);
+#endif /* TERMCAP_FILE */
 
-    	return FALSE;
+	return(ERR);
 }
 
 char ttytype[NAMESIZE];
 
+/*
+ *	setupterm(termname, Filedes, errret)
+ *
+ *	Find and read the appropriate object file for the terminal
+ *	Make cur_term point to the structure.
+ *	Turn off the XTABS bit in the tty structure if it was on
+ *	If XTABS was on, remove the tab and backtab capabilities.
+ *
+ */
+
 int setupterm(char *termname, int Filedes, int *errret)
 {
-char		filename1[1024];
-char		filename2[1024];
-char		*directory = SRCDIR;
-char		*terminfo;
 struct term	*term_ptr;
-char 		*rows, *cols;
+static void do_prototype(void);
 
 #ifdef TRACE
 	_init_trace();
@@ -169,14 +246,10 @@ char 		*rows, *cols;
 		if (term_ptr == NULL)
 	    		ret_error0(-1, "Not enough memory to create terminal structure.\n") ;
 
-		if ((terminfo = getenv("TERMINFO")) != NULL)
-		    	directory = terminfo;
-
-		sprintf(filename1, "%s/%c/%s", directory, termname[0], termname);
-		sprintf(filename2, "%s/%c/%s", SRCDIR, termname[0], termname);
-
-		if (read_entry(filename1, &term_ptr->type) < 0 &&  read_entry(filename2, &term_ptr->type) < 0)
-		    	ret_error(-1, "'%s': Unknown terminal type.\n", termname);
+		if (grab_entry(termname, &term_ptr->type) < 0)
+		    	ret_error(-1,
+				  "'%s': Unknown terminal type.\n",
+				  termname);
 
 		cur_term = term_ptr;
 		if (command_character  &&  getenv("CC"))
@@ -186,54 +259,49 @@ char 		*rows, *cols;
 		ttytype[NAMESIZE - 1] = '\0';
 		cur_term->Filedes = Filedes;
 
-		/* figure out the size of the screen */
-
-		T(("screen size: terminfo lines = %d columns = %d", lines, columns));
-	
-		/* get value of LINES and COLUMNS environment variables */
-		LINES = COLS = 0;
-		rows = getenv("LINES");
-		if (rows != (char *)NULL)
-			LINES = atoi(rows);
- 
-		cols = getenv("COLUMNS");
-		if (cols != (char *)NULL)
-			COLS = atoi(cols);
-
-		T(("screen size: environment LINES = %d COLUMNS = %d", LINES, COLS));
-
-		/* if _use_env is false then override the environment */
-
-		if (_use_env == FALSE) 
-			if (lines > 0 && columns > 0) {
-				LINES = lines;
-				COLS  = columns; 
-			} 
-
-		/* If _use_env is true but environment is undefined:
-		   If we can get window size, use it,
-		   else try lines/columns,
-		   else give up.
-		*/
-
-		if (LINES <= 0 || COLS <= 0) {
-			if (!isatty(Filedes) || (resize(Filedes) == 1)) {
-				/* no window size, our last hope is terminfo */
-				if (lines > 0 && columns > 0) {
-					LINES = lines;
-					COLS  = columns; 
-				} 
-			}
-		}
-		/* should have found out the dimensions by now */
-		lines = LINES;
-		columns = COLS;
-			
-		T(("screen size is %dx%d and %dx%d", LINES, COLS, lines, columns));
+		get_screensize();
 	}
+
 	if (errret)
 		*errret = 1;
 	return(1);
+
+}
+
+int restartterm(char *term, int filenum, int *errret)
+{
+int saveecho = SP->_echo;
+int savecbreak = SP->_cbreak;
+int saveraw = SP->_raw;
+int savenl = SP->_nl;
+
+	setupterm(term, filenum, errret);
+
+	if (saveecho)
+		echo();
+	else
+		noecho();
+
+	if (savecbreak) {
+		cbreak();
+		noraw();
+	} else if (saveraw) {
+		nocbreak();
+		raw();
+	} else {
+		nocbreak();
+		noraw();
+	}
+	if (savenl)
+		nl();
+	else
+		nonl();
+
+	reset_prog_mode();
+
+	get_screensize();
+
+	return(OK);
 }
 
 int set_curterm(TERMINAL *term)

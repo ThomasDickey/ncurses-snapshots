@@ -1,74 +1,115 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 
 #include "curses.priv.h"
-#include "terminfo.h"
+#include "terminfo.h"	/* ena_acs, acs_chars */
 #include <string.h>
 
-/* line graphics */
-
+#define ASCII(c)	((chtype)(c) & A_CHARTEXT)
+#define PCCHAR(c)	((chtype)(c) & A_CHARTEXT) | A_PCCHARSET
+#define ALTCHAR(c)	((chtype)(c) & A_CHARTEXT) | A_ALTCHARSET
 
 chtype acs_map[128];
 
-void init_acs()
+void init_acs(void)
 {
-
-/*
- ACS_ULCORNER	(acs_map['l'])
- ACS_LLCORNER	(acs_map['m'])
- ACS_URCORNER	(acs_map['k'])
- ACS_LRCORNER	(acs_map['j'])
- ACS_RTEE	(acs_map['u'])
- ACS_LTEE	(acs_map['t'])
- ACS_BTEE	(acs_map['v'])
- ACS_TTEE	(acs_map['w'])
- ACS_HLINE	(acs_map['q'])
- ACS_VLINE	(acs_map['x'])
- ACS_PLUS	(acs_map['n'])
- ACS_S1		(acs_map['o'])	scan line 1
- ACS_S9		(acs_map['s'])	scan line 9
- ACS_DIAMOND	(acs_map['`'])	diamond 
- ACS_CKBOARD	(acs_map['a'])	checker board (stipple) 
- ACS_DEGREE	(acs_map['f'])	degree symbol 
- ACS_PLMINUS	(acs_map['g'])	plus/minus
- ACS_BULLET	(acs_map['~'])	bullet
- ACS_LARROW	(acs_map[','])	arrow pointing left
- ACS_RARROW	(acs_map['+'])	arrow pointing right
- ACS_DARROW	(acs_map['.'])	arrow pointing down
- ACS_UARROW	(acs_map['-'])	arrow pointing up 
- ACS_BOARD	(acs_map['h'])	board of squares 
- ACS_LANTERN	(acs_map['I'])	lantern symbol 
- ACS_BLOCK	(acs_map['0'])	solid square block
-*/
-
 	T(("initializing ACS map"));
 
-	acs_map['l'] = acs_map['m'] = acs_map['k'] = acs_map['j'] = 
-	acs_map['u'] = acs_map['t'] = acs_map['v'] = acs_map['w'] = (chtype)'+' & A_CHARTEXT;
-	acs_map['q'] = (chtype)'-' & A_CHARTEXT;
-	acs_map['x'] = (chtype)'|' & A_CHARTEXT;
-	acs_map['n'] = (chtype)'+' & A_CHARTEXT;
-	acs_map['o'] = (chtype)'~' & A_CHARTEXT;
-	acs_map['s'] = (chtype)'_' & A_CHARTEXT;
-	acs_map['`'] = (chtype)'+' & A_CHARTEXT;
-	acs_map['a'] = (chtype)':' & A_CHARTEXT;
-	acs_map['f'] = (chtype)'\'' & A_CHARTEXT;
-	acs_map['g'] = (chtype)'#' & A_CHARTEXT;
-	acs_map['~'] = (chtype)'o' & A_CHARTEXT;
-	acs_map[','] = (chtype)'<' & A_CHARTEXT;
-	acs_map['+'] = (chtype)'>' & A_CHARTEXT;
-	acs_map['.'] = (chtype)'v' & A_CHARTEXT;
-	acs_map['-'] = (chtype)'^' & A_CHARTEXT;
-	acs_map['h'] = (chtype)'#' & A_CHARTEXT;
-	acs_map['I'] = (chtype)'#' & A_CHARTEXT;
-	acs_map['0'] = (chtype)'#' & A_CHARTEXT;
+	/*
+	 * Initializations for a UNIX-like multi-terminal environment.  Use
+	 * ASCII chars and count on the terminfo description to do better.
+	 */
+	ACS_ULCORNER = ASCII('+');	/* should be upper left corner */
+	ACS_LLCORNER = ASCII('+');	/* should be lower left corner */
+	ACS_URCORNER = ASCII('+');	/* should be upper right corner */
+	ACS_LRCORNER = ASCII('+');	/* should be lower right corner */
+	ACS_RTEE     = ASCII('+');	/* should be tee pointing left */
+	ACS_LTEE     = ASCII('+');	/* should be tee pointing right */
+	ACS_BTEE     = ASCII('+');	/* should be tee pointing up */
+	ACS_TTEE     = ASCII('+');	/* should be tee pointing down */
+	ACS_HLINE    = ASCII('-');	/* should be horizontal line */
+	ACS_VLINE    = ASCII('|');	/* should be vertical line */
+	ACS_PLUS     = ASCII('+');	/* should be large plus or crossover */
+	ACS_S1       = ASCII('~');	/* should be scan line 1 */
+	ACS_S9       = ASCII('_');	/* should be scan line 9 */
+	ACS_DIAMOND  = ASCII('+');	/* should be diamond */
+	ACS_CKBOARD  = ASCII(':');	/* should be checker board (stipple) */
+	ACS_DEGREE   = ASCII('\'');	/* should be degree symbol */
+	ACS_PLMINUS  = ASCII('#');	/* should be plus/minus */
+	ACS_BULLET   = ASCII('o');	/* should be bullet */
+	ACS_LARROW   = ASCII('<');	/* should be arrow pointing left */
+	ACS_RARROW   = ASCII('>');	/* should be arrow pointing right */
+	ACS_DARROW   = ASCII('v');	/* should be arrow pointing down */
+	ACS_UARROW   = ASCII('^');	/* should be arrow pointing up */
+	ACS_BOARD    = ASCII('#');	/* should be board of squares */
+	ACS_LANTERN  = ASCII('#');	/* should be lantern symbol */
+	ACS_BLOCK    = ASCII('#');	/* should be solid square block */
 
+#ifdef __i386__
+	if (enter_pc_charset_mode)
+	{
+	/*
+	 * IBM high-half and literal control characters to use if we have them
+	 * available.  We'd like to load these from a terminfo entry, but there
+	 * is no way to represent enclosure with both ALTCHARSET and PCCHARSET
+	 * in terminfo's acsc capability.  We'd also like to use ROM chars 
+	 * 26 and 27 for the left and right-pointing arrows, but typical
+	 * UNIX console drivers (e.g., Linux) won't let us do it -- 27 is
+	 * ESC, which gets treated as a control-sequence leader and swallowed.
+	 */
+	ACS_ULCORNER = ALTCHAR('Z');	/* IBM upper left corner */
+	ACS_LLCORNER = ALTCHAR('@');	/* IBM lower left corner */
+	ACS_URCORNER = ALTCHAR('?');	/* IBM upper right corner */
+	ACS_LRCORNER = ALTCHAR('Y');	/* IBM lower right corner */
+	ACS_RTEE     = ALTCHAR('C');	/* IBM tee pointing right */
+	ACS_LTEE     = ALTCHAR('4');	/* IBM tee pointing left */
+	ACS_BTEE     = ALTCHAR('A');	/* IBM tee pointing up */
+	ACS_TTEE     = ALTCHAR('B');	/* IBM tee pointing down */
+	ACS_HLINE    = ALTCHAR('D');	/* IBM horizontal line */
+	ACS_VLINE    = ALTCHAR('3');	/* IBM vertical line */
+	ACS_PLUS     = ALTCHAR('E');	/* IBM large plus or crossover */
+	ACS_S1       = ASCII('~');	/* should be scan line 1 */
+	ACS_S9       = ASCII('_');	/* should be scan line 9 */
+	ACS_DIAMOND  = PCCHAR(4);	/* IBM diamond */
+	ACS_CKBOARD  = ALTCHAR('2');	/* IBM checker board (stipple) */
+	ACS_DEGREE   = ALTCHAR('x');	/* IBM degree symbol */
+	ACS_PLMINUS  = ALTCHAR('q');	/* IBM plus/minus */
+	ACS_BULLET   = ALTCHAR('~');	/* IBM bullet (actually small block) */
+	ACS_LARROW   = PCCHAR(17);	/* IBM arrow pointing left */
+	ACS_RARROW   = PCCHAR(16);	/* IBM arrow pointing right */
+	ACS_DARROW   = PCCHAR(25);	/* IBM arrow pointing down */
+	ACS_UARROW   = PCCHAR(24);	/* IBM arrow pointing up */
+	ACS_BOARD    = ALTCHAR('0');	/* IBM board of squares */
+	ACS_LANTERN  = ASCII('#');	/* should be lantern symbol */
+	ACS_BLOCK    = ALTCHAR('[');	/* IBM solid square block */
+	}
+#endif /* __i386__ */
+
+#ifdef ena_acs
 	if (ena_acs != NULL)
 		putp(ena_acs);
+#endif /* ena_acs */
 
+#ifdef acs_chars
 	if (acs_chars != NULL) {
 	    int i = 0;
 	    int length = strlen(acs_chars);
@@ -82,8 +123,8 @@ void init_acs()
 			case 'g':case '~':case ',':case '+':
 			case '.':case '-':case 'h':case 'I':
 			case '0': 
-				acs_map[(unsigned int)(unsigned char)acs_chars[i]] = 
-					(acs_chars[++i] & A_CHARTEXT) | A_ALTCHARSET;
+				acs_map[(unsigned int)acs_chars[i]] = 
+					ALTCHAR(acs_chars[++i]);
 			default:
 				i++;
 				break;
@@ -93,6 +134,7 @@ void init_acs()
 	else {
 		T(("acsc not defined, using default mapping"));
 	}
-#endif
+#endif /* TRACE */
+#endif acs_char
 }
 

@@ -1,7 +1,22 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992, 1993, 1994                 *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
 **	lib_getch.c
@@ -12,7 +27,6 @@
 
 #include <sys/types.h>
 #include <string.h>
-#include <signal.h>
 #include <errno.h>
 #if defined(BRAINDEAD)
 extern int errno;
@@ -76,7 +90,7 @@ unsigned char ch;
 
 	if (tail == -1) return ERR;
 again:    
-	n = read(fileno(SP->_ifp), &ch, 1);
+	n = read(SP->_ifd, &ch, 1);
 	if (n == -1 && errno == EINTR)
 		goto again;
 	T(("read %d characters", n));
@@ -111,7 +125,8 @@ int	ch;
 	   &&  win->_curx == win->_maxx &&  win->_cury == win->_maxy)
 		return(ERR);
 
-	if (is_wintouched(win) || (win->_flags & _HASMOVED))
+	if ((is_wintouched(win) || (win->_flags & _HASMOVED)) && 
+						!(win->_flags & _ISPAD))
 		wrefresh(win);
 
 	if (SP->_echo  &&  ! (SP->_raw  ||  SP->_cbreak)) {
@@ -119,7 +134,7 @@ int	ch;
 		setHere = TRUE;
 	}
 
-	if (win->_delay >= 0 || SP->_cbreak > 1) {
+	if (!win->_notimeout && (win->_delay >= 0 || SP->_cbreak > 1)) {
 	int delay;
 
 		T(("timed delay in wgetch()"));
@@ -131,7 +146,7 @@ int	ch;
 		T(("delay is %d microseconds", delay));
 
 		if (head == -1)	/* fifo is empty */
-			if (timed_wait(fileno(SP->_ifp), delay, NULL) == 0)
+			if (timed_wait(SP->_ifd, delay, NULL) == 0)
 				return ERR;
 		/* else go on to read data available */
 	}
@@ -146,11 +161,11 @@ int	ch;
 
 	/* strip 8th-bit is so desired */
 	if (ch & 0x80)
-		if (!win->_use_meta)
+		if (!SP->_use_meta)
 			ch &= 0x7f;
 
 	/* there must be a simpler way of doing this */
-	if (SP->_echo  &&  ch < 0400) {   /* ch < 0400 => not a keypad key */
+	if (!(win->_flags & _ISPAD) && SP->_echo  &&  ch < KEY_MIN) {
 		mvwaddch(curscr, win->_begy + win->_cury,
                          win->_begx + win->_curx, ch | win->_attrs);
 		waddch(win, ch | win->_attrs);
@@ -207,7 +222,7 @@ int timeleft = 1000;
 					break;
 
 	    			T(("waiting for rest of sequence"));
-   				if (timed_wait(fileno(SP->_ifp), timeleft, &timeleft) < 1) {
+   				if (timed_wait(SP->_ifd, timeleft, &timeleft) < 1) {
 					T(("ran out of time"));
 					return(fifo_pull());
    				} else {

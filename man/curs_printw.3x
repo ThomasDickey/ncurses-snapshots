@@ -4,7 +4,7 @@
 \fBmvwprintw\fR, \fBvwprintw\fR - print formatted output in
 \fBncurses\fR windows
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
 \fBint printw(char *fmt\fR [\fB, arg\fR] \fB...);\fR
 .br
@@ -30,8 +30,13 @@ The \fBvwprintw\fR routine is analogous to \fBvprintf\fR [see
 argument list.  The third argument is a \fBva_list\fR, a pointer to a
 list of arguments, as defined in \fB<varargs.h>\fR.
 .SH RETURN VALUE
-All routines return the integer \fBERR\fR upon failure and an integer value
-other than \fBERR\fR upon successful completion.
+Routines that return an integer return \fBERR\fR upon failure and \fBOK\fR
+(SVr4 onlyspecifies "an integer value other than \fBERR\fR") upon successful
+completion.
+.SH PORTABILITY
+The XSI Curses draft describes these functions.  The function \fBvwprintw\fR
+is marked TO BE WITHDRAWN, and is to be replaced by a function
+\fBvw_printw\fR using the \fB<stdarg.h>\fR interface.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBprintf\fR(3S), \fBvprintf(3S)\fR
 .\"#

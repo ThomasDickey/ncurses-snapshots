@@ -1,7 +1,23 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
 **	lib_overlay.c
@@ -12,7 +28,7 @@
 
 #include "curses.priv.h"
 
-static void overlap(WINDOW *s, WINDOW *d, int flag)
+static void overlap(WINDOW *const s, WINDOW *d, int flag)
 { 
 int sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol;
 
@@ -39,7 +55,7 @@ int sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol;
 **
 **/
 
-int overlay(WINDOW *win1, WINDOW *win2)
+int overlay(WINDOW *const win1, WINDOW *win2)
 {
 	overlap(win1, win2, TRUE);
 	return OK;
@@ -87,21 +103,21 @@ int sx, sy, dx, dy;
 	T(("rectangle fits in destination"));
 
 	for (dy = dminrow, sy = sminrow; dy <= dmaxrow; sy++, dy++) {
-		dst->_firstchar[dy] = dmincol;
-		dst->_lastchar[dy] = dmincol;
+		dst->_line[dy].firstchar = dmincol;
+		dst->_line[dy].lastchar = dmincol;
 		for (dx = dmincol, sx = smincol; dx <= dmaxcol; sx++, dx++) {
 			if (over == TRUE ) {
-				if (((src->_line[sy][sx] & A_CHARTEXT) != ' ') && (dst->_line[dy][dx] != src->_line[sy][sx]))  {	
-					dst->_line[dy][dx] = src->_line[sy][sx];
-					dst->_lastchar[dy] = dx;
+				if (((src->_line[sy].text[sx] & A_CHARTEXT) != ' ') && (dst->_line[dy].text[dx] != src->_line[sy].text[sx]))  {	
+					dst->_line[dy].text[dx] = src->_line[sy].text[sx];
+					dst->_line[dy].lastchar = dx;
 				} else
-					dst->_firstchar[dy]++;
+					dst->_line[dy].firstchar++;
 			} else {
-				if (dst->_line[dy][dx] != src->_line[sy][sx]) {  	
-					dst->_line[dy][dx] = src->_line[sy][sx];
-					dst->_lastchar[dy] = dx;
+				if (dst->_line[dy].text[dx] != src->_line[sy].text[sx]) {  	
+					dst->_line[dy].text[dx] = src->_line[sy].text[sx];
+					dst->_line[dy].lastchar = dx;
 				} else
-					dst->_firstchar[dy]++;
+					dst->_line[dy].firstchar++;
 			}
 		}
 	}

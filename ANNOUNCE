@@ -1,62 +1,90 @@
-Announcing the latest version of ncurses (1.8.7) sources and 
-associated bits and pieces.
+			ANNOUNCING NCURSES
 
-It available by anonymous ftp as:
-netcom.com:pub/zmbenhal/ncurses/ncurses-1.8.7.tgz
-The file is a gzipped tar. gzip and tar are available from
-you favorite GNU archive.
+The ncurses library is a freeware emulation of System V Release 4.0 curses.
+It uses terminfo format, supports color and multiple highlights and forms
+characters, and has all the other SV-curses enhancements over BSD curses.
 
-See the file ncurses-1.8.7/INSTALL for instructions on how to build
-and install ncurses.
+The ncurses code is highly portable, and runs on all of the following
+platforms: Linux, 386BSD, SunOS, HP-UX, Ultrix, NeXTSTEP 3.0, System V
+Release 4, BSDI BSD/386, Apollo, AIX 3.2.5, Solaris 2.3.  It should port
+easily to any ANSI/POSIX-conforming UNIX.
 
-ncurses is a SYSV-compatible curses (screen management) package.
-It supports keypad() allowing access to function and arrow keys.
-It supports and uses Terminfo instead of termcap for terminal description.
-It has support for PC graphic characters (used in drawing boxes).
-It has color support similar to that in SYSV curses.
+The distribution includes the library and support utilities, including 
+a terminfo compiler tic(1), a decompiler infocmp(1), clear(1), tput(1), 
+and a termcap conversion tool captoinfo(1).  Full manual pages are 
+provided for the library and tools.
 
-It currently has support for the following:
-Linux
-386BSD/NetBSD/FreeBSD
-BSDI's BSD/386
-SYSTEM V R4
-SunOs 4.1.3
-Ultrix
-HP/UX 9.0
-HP/UX with c89 compiler
-Apollo
-NeXTSTEP 3.0
-NeXTSTEP 3.2
-AIX 3.2.5
-Some people are working on A/UX, SCO, DEC alpha, SunOs with glibc.
+			FEATURES OF NCURSES
 
-Any comments, bug reports, patches, additions are welcome.
-If you have a program that's having problems running with ncurses either send
-me a copy of it or tell where I can get a copy.
+* Full support for SVr4 curses features including keyboard mapping, color,
+  and forms-drawing with ACS characters.
 
-There now a mailing list for the discussion of the development of ncurses:
-ncurses-list@netcom.com
-To subscribe send mail to listserv@netcom.com with a message like this:
-subscribe ncurses-list <email address>
+* Almost all of the SVr4 calls have been implemented.  Only 1 of 257
+  calls is not yet supported.
 
-========================== CHANGES  & NOTES ==============================
+* Better cursor-movement optimization.  The package now features a
+  cursor-local-movement computation more efficient than either BSD's
+  or SV's.
 
-Yes, there was an 1.8.6 but only a few people had access to (or knowledge of)
-it. Thanks to their feedback 1.8.7 is a better ncurses!
+* Super hardware scrolling support.  The screen-update code
+  incorporates a novel algorithm that enables it to make optimal
+  use of hardware scrolling, line-insertion, and line-deletion
+  for screen-line movements.  This algorithm is more powerful than
+  the BSD curses quickch() routine.
 
-*) untic on longer exists, infocmp replaces it.
-*) tic can understand termcap now, especially if it is called captoinfo.
-*) The Linux Standard Console terminfo entry is called linux insead of console.
-   You HAVE to modify /etc/termcap, /etc/profile, /etc/ttytype, etc.
-   accordingly. It also uses the kernel's new method of changing charsets.
-*) initscr() will EXIT upon error (as the docs say) This wil mostly happen if
-   you try to run on an undefined terminal.
-*) I can get things running on AIX but tic can't compile terminfo. I have to
-   compile entries on another machine. Volunteers to hunt this bug are welcome.
-*) wbkgd() and wbkgdset() can be used to set a windows background to color.
-   wclear()/werase() DO NOT use the current attribute to clear the screen.
-   This is the way SVR4 curses works. PDCurses is broken with this respect.
-*) cleaned up the test/ directory.    
-*) test/worm will segfault after for quite a while.
-*) many spelling corrections courtesy of Thomas E. Dickey 
+* (PC-clone boxes only) Support for access to the IBM PC ROM characters
+  through a new highlight, A_PCCHARSET.  Also, ncurses will now
+  automatically load a nice set of nice forms characters when running
+  on PC-compatible consoles.
+
+* Automatic fallback to the /etc/termcap file can be compiled in
+  for systems withould a terminfo tree.  This feature is neither
+  fast nor cheap, you don't want to use it unless you have to,
+  but it's there.
+
+* An HTML "Introduction to Programming with NCURSES" document.
+
+			STATE OF THE PACKAGE
+
+The ncurses code has been tested with a wide variety of games and utilities,
+including:
+
+	lynx-2.4	-- the character-screen WWW browser
+	bs-2.0		-- Battleships game with proper visual interface
+	greed-3.1	-- the game of Greed
+	nolan-1.1	-- the World's Smallest Political Quiz
+	vh-1.6		-- Volks-Hypertext browser for the Jargon File
+	blue		-- Blue Moon solitare game
+	u386mon		-- System performance monitor for SVr4
+	nvi		-- New vi alpha version 1.1.34
+
+The ncurses distribution includes a selection of test programs.
+
+			WHO'S WHO AND WHAT'S WHAT
+
+The primary maintainer of ncurses is Zeyd ben-Halim <zmbenhal@netcom.com>.
+Unfortunately, he can only work on the package part time.  As a result, since
+1.8.1, much of the enhancement work and all the documentation has been done by
+Eric S. Raymond <esr@snark.thyrsus.com>.  However, requests for beta releases
+and other queries should properly be directed to Zeyd.
+
+There is an ncurses mailing list.  It is a listserv list; to join, write
+to listserv@netcom.com with a message containing the line
+
+	subscribe ncurses-list <name>@<host.domain>
+
+This list is open to anyone interested in helping with the development and
+testing of this package.
+
+			WHITHER BSD CURSES?
+
+Keith Bostic, the maintainer of BSD curses, has undertaken that if ncurses
+proves stable and usable with nvi, he will switch to ncurses for the nvi (new
+vi) distribution and pronounce BSD curses officially dead.
+
+It is therefore probable that the next re-packaging of 4.4BSD curses
+will, in fact, use ncurses.
+
+BSDI has said that they will cut over to ncurses if and when Keith gives the
+word.  Where BSDI goes, freeBSD and netBSD are likely to follow.
 

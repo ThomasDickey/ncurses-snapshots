@@ -29,37 +29,41 @@
 #include "curses.priv.h"
 
 int
-waddnstr(WINDOW *win, char *str, int n)
+waddnstr(WINDOW *win, char *const astr, int n)
 {
+char *str = astr;
+
 	T(("waddnstr(%x,\"%s\",%d) called", win, visbuf(str), n));
 
 	if (str == NULL)
 		return ERR;
 
-	T(("str is not null"));
+	TR(TRACE_VIRTPUT, ("str is not null"));
 	if (n < 0) {
 		while (*str != '\0') {
 		    	if (waddch(win, (chtype)(unsigned char)*str++) == ERR)
 				return(ERR);
 		}
-		T(("waddnstr() done."));
+		TR(TRACE_VIRTPUT, ("waddnstr() done."));
 		return OK;
 	}
 
 	while(n-- > 0) {
-		T(("*str = %x", *str));
+		TR(TRACE_VIRTPUT, ("*str = %x", *str));
 		if (*str == '\0')
 			break;
 		if (waddch(win, (chtype)(unsigned char)*str++) == ERR)
 			return ERR;
 	}
-	T(("waddnstr() done."));
+	TR(TRACE_VIRTPUT, ("waddnstr() done."));
 	return OK;
 }
 
 int
-waddchnstr(WINDOW *win, chtype *str, int n)
+waddchnstr(WINDOW *win, chtype *const astr, int n)
 {
+chtype *str = astr;
+
 	T(("waddchnstr(%x,%x,%d) called", win, str, n));
 
 	if (n < 0) {

@@ -33,8 +33,17 @@ inline void backspace(WINDOW *win)
 	mvwaddstr(curscr, win->_begy + win->_cury, win->_begx + win->_curx,
 		 "\b \b");
 	waddstr(win, "\b \b");
-	fputs("\b \b", SP->_ofp);
-	fflush(SP->_ofp);
+
+	/*
+	 * This used to do the equivalent of outstr("\b \b"), which
+	 * would fail on terminals with a non-backspace cursor_left
+	 * character.
+	 */
+	mvcur(win->_begy + win->_cury, win->_begx + win->_curx,
+	      win->_begy + win->_cury, win->_begx + win->_curx - 1);
+	outstr(" ");
+	mvcur(win->_begy + win->_cury, win->_begx + win->_curx,
+	      win->_begy + win->_cury, win->_begx + win->_curx - 1);
 	SP->_curscol--; 
 }
 
@@ -87,12 +96,13 @@ int ch;
 		    beep();
 		} else {
 			if (oldecho == TRUE) {
+			        char	*glyph = unctrl(ch);
+
 				mvwaddstr(curscr, win->_begy + win->_cury,
-				  	win->_begx + win->_curx, unctrl(ch));
-				waddstr(win, unctrl(ch));
-				fputs(unctrl(ch), SP->_ofp);
-				fflush(SP->_ofp);
-				SP->_curscol++;
+				  	win->_begx + win->_curx, glyph);
+				waddstr(win, glyph);
+				outstr(glyph);
+				SP->_curscol += strlen(glyph);
 			} else
 				*str++ = ch;
 	   	}

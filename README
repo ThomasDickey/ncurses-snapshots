@@ -6,23 +6,28 @@ See the file ANNOUNCE for a summary of ncurses features and ports.
 See the file INSTALL for instructions on how to build and install ncurses.
 See the file CHANGES for a release history and bug-fix notes.
 
-Detailed documentation can be found in the man directory.
+Detailed documentation can be found in the man directory.  An HTML
+introduction to ncurses programming lives in the doc directory.
 
-CREDITS:
+AUTHORS:
 
 Pavel Curtis: 
 	wrote the original ncurses
 
 Zeyd M. Ben-Halim:
 	Port of original to Linux and many enhancements.
-	Zeyd can have this project back any time he re-materializes.
 
-Gerhard Fuernkranz,
-	for writing the slk_* routines and sending me the sources
-        for the PANELS library.
+Eric S. Raymond:
+	the man pages, infocmp(1), tput(1), clear(1), captoinfo(1),
+	most of tic(1), src/lib_twait.c, trace levels, the HTML intro,
+	wgetnstr() and 36 other entry points, the A_PCCHARSET code, 
+	the cursor-movement optimization, the scroll-pack optimizer
+        for vertical motions, and the ncurses test program.
 
-Warren Tucker,
-	for writing the PANELS library.
+CONTRIBUTORS:
+
+Warren Tucker and Gerhard Fuernkranz,
+	for writing and sending the PANELS library.
 
 Hellmuth Michaelis,
 	for many patches and testing the optimization code.
@@ -30,14 +35,8 @@ Hellmuth Michaelis,
 Eric Newton, Ulrich Drepper, and Anatoly Ivasyuk:
 	the C++ code.
 
-Eric S. Raymond:
-	the man pages, src/lib_twait.c, infocmp(1), tput(1),
-        clear(1), captoinfo(1), trace levels, termcap-compilation
-        support in tic(1), wgetnstr(), ripoffline(), termattrs(),
-        delay_output(), wechochar(), and the ncurses test program.
-
 Jonathan Ross,
-	for lesson in using sed.
+	for lessons in using sed.
 
 Countless other people have contributed by reporting bugs, sending fixes,
 suggesting improvements, and generally whining about ncurses :-)

@@ -4,15 +4,15 @@
 \fBscr_init\fR, \fBscr_set\fR - read (write) a \fBncurses\fR screen
 from (to) a file
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
-\fBint scr_dump(char *filename);\fR
+\fBint scr_dump(char *const filename);\fR
 .br
-\fBint scr_restore(char *filename);\fR
+\fBint scr_restore(char *const filename);\fR
 .br
-\fBint scr_init(char *filename);\fR
+\fBint scr_init(char *const filename);\fR
 .br
-\fBint scr_set(char *filename);\fR
+\fBint scr_set(char *const filename);\fR
 .br
 .SH DESCRIPTION
 The \fBscr_dump\fR routine dumps the current contents of the virtual screen
@@ -45,8 +45,8 @@ All routines return the integer \fBERR\fR upon failure and \fBOK\fR
 upon success.
 .SH NOTES
 Note that \fBscr_init\fR, \fBscr_set\fR, and \fBscr_restore\fR may be macros.
-.BUGS
-The time-stamp and rmcup/nrrmc checks are not implemented in \fBncurses\fR(3X).
+.SH PORTABILITY
+The XSI Curses draft describes these functions (adding the const qualifiers).
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_refresh\fR(3X),
 \fBcurs_util\fR(3X), \fBsystem\fR(3S)

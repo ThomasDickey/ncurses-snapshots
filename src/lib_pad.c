@@ -1,6 +1,22 @@
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992, 1993, 1994                 *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
  * lib_pad.c
@@ -10,6 +26,7 @@
  */
 
 #include <stdlib.h>
+#include <errno.h>
 #include "curses.priv.h"
 
 WINDOW *newpad(int l, int c)
@@ -29,23 +46,38 @@ int i, j;
 	win->_flags |= _ISPAD;
 
 	for (i = 0; i < l; i++) {
-	    if ((win->_line[i] = (chtype *) calloc(c, sizeof(chtype))) == NULL) {
+	    if ((win->_line[i].text = (chtype *) calloc(c, sizeof(chtype))) == NULL) {
 			for (j = 0; j < i; j++)
-			    free(win->_line[j]);
+			    free(win->_line[j].text);
 
-			free(win->_firstchar);
-			free(win->_lastchar);
 			free(win->_line);
 			free(win);
 
+			errno = ENOMEM;
 			return NULL;
 	    }
 	    else
-		for (ptr = win->_line[i]; ptr < win->_line[i] + c; )
+		for (ptr = win->_line[i].text; ptr < win->_line[i].text + c; )
 		    *ptr++ = ' ';
 	}
 
 	T(("newpad: returned window is %x", win));
+
+	return(win);
+}
+
+WINDOW *subpad(WINDOW *orig, int l, int c, int begy, int begx)
+{
+WINDOW	*win;
+
+	T(("subpad(%d, %d) called", l, c));
+
+	if ((win = derwin(orig, l, c, begy, begx)) == NULL)
+	    return NULL;
+
+	win->_flags |= _ISPAD;
+
+	T(("subpad: returned window is %x", win));
 
 	return(win);
 }
@@ -73,17 +105,14 @@ int	m, n;
 	if (!(win->_flags & _ISPAD))
 		return ERR;
 
-	T(("one"));
 	if (pminrow < 0) pminrow = 0;
 	if (pmincol < 0) pmincol = 0;
 	if (sminrow < 0) sminrow = 0;
 	if (smincol < 0) smincol = 0;
 
-	T(("two"));
-	if (smaxrow >= LINES || smaxcol >= COLS)
+	if (smaxrow >= screen_lines || smaxcol >= screen_columns)
 		return ERR;
 
-	T(("three"));
 	T((" pminrow + smaxrow - sminrow %d, win->_maxy %d", pminrow + smaxrow - sminrow ,  win->_maxy));
 	T((" pmincol + smaxcol - smincol %d, win->_maxx %d", pmincol + smaxcol - smincol ,  win->_maxx));
 	if ((pminrow + smaxrow - sminrow >= win->_maxy) ||
@@ -92,24 +121,23 @@ int	m, n;
 
 	T(("pad being refreshed"));
 
-	for (i = pminrow, m = sminrow; i <= pminrow + smaxrow-sminrow;
-	     i++, m++) {
+	for (i = pminrow, m = sminrow; i <= pminrow + smaxrow-sminrow; i++, m++) {
 		for (j = pmincol, n = smincol; j <= pmincol + smaxcol-smincol;
 		     j++, n++) {
-		    if (win->_line[i][j] != newscr->_line[m][n]) {
-			newscr->_line[m][n] = win->_line[i][j];
+		    if (win->_line[i].text[j] != newscr->_line[m].text[n]) {
+			newscr->_line[m].text[n] = win->_line[i].text[j];
 
-			if (newscr->_firstchar[m] == _NOCHANGE)
-			    newscr->_firstchar[m] = newscr->_lastchar[m] = n;
-			else if (n < newscr->_firstchar[m])
-			    newscr->_firstchar[m] = n;
-			else if (n > newscr->_lastchar[m])
-			    newscr->_lastchar[m] = n;
+			if (newscr->_line[m].firstchar == _NOCHANGE)
+			    newscr->_line[m].firstchar = newscr->_line[m].lastchar = n;
+			else if (n < newscr->_line[m].firstchar)
+			    newscr->_line[m].firstchar = n;
+			else if (n > newscr->_line[m].lastchar)
+			    newscr->_line[m].lastchar = n;
 		    }
 		}
 	}
 
-	win->_firstchar[i] = win->_lastchar[i] = _NOCHANGE;
+	win->_line[i].firstchar = win->_line[i].lastchar = _NOCHANGE;
 
 	win->_begx = smincol;
 	win->_begy = sminrow;

@@ -1,7 +1,23 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
 **	lib_clreol.c
@@ -11,8 +27,6 @@
 */
 
 #include "curses.priv.h"
-
-#define BLANK ' '|A_NORMAL
 
 int  wclrtoeol(WINDOW *win)
 {
@@ -24,25 +38,26 @@ int	y, x, minx;
 	y = win->_cury;
 	x = win->_curx;
 
-	end = &win->_line[y][win->_maxx];
+	end = &win->_line[y].text[win->_maxx];
 	minx = _NOCHANGE;
-	maxx = &win->_line[y][x];
+	maxx = &win->_line[y].text[x];
 
 	for (ptr = maxx; ptr <= end; ptr++) {
 	    if (*ptr != BLANK) {
 			maxx = ptr;
 			if (minx == _NOCHANGE)
-			    minx = ptr - win->_line[y];
+			    minx = ptr - win->_line[y].text;
 			*ptr = BLANK;
 	    }
 	}
 
 	if (minx != _NOCHANGE) {
-	    if (win->_firstchar[y] > minx || win->_firstchar[y] == _NOCHANGE)
-			win->_firstchar[y] = minx;
+	    if (win->_line[y].firstchar > minx || win->_line[y].firstchar == _NOCHANGE)
+			win->_line[y].firstchar = minx;
 
-	    if (win->_lastchar[y] < maxx - win->_line[y])
-			win->_lastchar[y] = maxx - win->_line[y];
+	    if (win->_line[y].lastchar < maxx - win->_line[y].text)
+			win->_line[y].lastchar = maxx - win->_line[y].text;
 	}
+	wchangesync(win);
 	return(OK);
 }

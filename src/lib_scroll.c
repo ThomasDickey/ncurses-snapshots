@@ -1,7 +1,23 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
 **	lib_scroll.c
@@ -13,68 +29,64 @@
 */
 
 #include <stdlib.h>
+#include <string.h>
 #include "curses.priv.h"
-#include "terminfo.h"
 
-void scroll_window(WINDOW *win, int n)
+void scroll_window(WINDOW *win, int n, int top, int bottom)
 {
-int	line, i;
-chtype	*ptr, *temp;
-chtype  **saved;
-chtype	blank = ' ';
+int	line;
 
-    	saved = (chtype **)malloc(sizeof(chtype *) * abs(n));
+	TR(TRACE_MOVE, ("scroll_window(%x, %d, %d, %d)", win, n, top,bottom)); 
 
+	/*
+	 * This used to do a line-text pointer-shuffle instead of text copies.
+	 * That (a) doesn't work when the window is derived and doesn't have
+	 * its own storage, (b) doesn't save you a lot on modern machines
+	 * anyway.  Your typical memset/memcpy implementations are coded in
+	 * assembler using a tight BLT loop; for the size of copies we're
+	 * talking here, the total execution time is dominated by the one-time
+	 * setup cost.  So there is no point in trying to be excessively
+	 * clever -- esr.
+	 */
+
+	/* shift n lines downwards */
     	if (n < 0) {
-		/* save overwritten lines */
-		
-		for (i = 0; i < -n; i++)
-		    	saved[i] = win->_line[win->_regbottom-i];
-
-		/* shift n lines */
-		
-		for (line = win->_regbottom; line > win->_regtop+n; line--)
-		    	win->_line[line] = win->_line[line+n];
-
-		/* restore saved lines and blank them */
-
-		for (i = 0, line = win->_regtop; line < win->_regtop-n; line++, i++) {
-		    	win->_line[line] = saved[i]; 
-		    	temp = win->_line[line];
-		    	for (ptr = temp; ptr - temp <= win->_maxx; ptr++)
-				*ptr = blank;
+		for (line = bottom; line > top-n; line--)
+		{
+		    	memcpy(win->_line[line].text,
+			       win->_line[line+n].text,
+			       sizeof(chtype) * win->_maxx);
+			win->_line[line].oldindex=win->_line[line+n].oldindex;
+		}
+		for (line = top; line < top-n; line++)
+		{
+			memset(win->_line[line].text, BLANK,
+			       sizeof(chtype) * win->_maxx);
+			win->_line[line].oldindex = NEWINDEX;
 		}
     	}
 
+	/* shift n lines upwards */
     	if (n > 0) {
-		/* save overwritten lines */
-		
-		for (i = 0; i < n; i++)
-		    	saved[i] = win->_line[win->_regtop+i];
-
-		/* shift n lines */
-		
-		for (line = win->_regtop; line < win->_regbottom; line++)
-		    	win->_line[line] = win->_line[line+n];
-
-		/* restore saved lines and blank them */
-
-		for (i = 0, line = win->_regbottom; line > win->_regbottom - n; line--, i++) {
-		    	win->_line[line] = saved[i];
-		    	temp = win->_line[line];
-		    	for (ptr = temp; ptr - temp <= win->_maxx; ptr++)
-				*ptr = blank;
+		for (line = top; line < bottom-n; line++)
+		{
+		    	memcpy(win->_line[line].text,
+			       win->_line[line+n].text,
+			       sizeof(chtype) * win->_maxx);
+			win->_line[line].oldindex=win->_line[line+n].oldindex;
+		}
+		for (line = bottom; line > bottom-n; line--)
+		{
+			memset(win->_line[line].text, BLANK,
+			       sizeof(chtype) * win->_maxx);
+			win->_line[line].oldindex = NEWINDEX;
 		}
 	}
-	
-	free(saved);
 }
 
 int
 wscrl(WINDOW *win, int n)
 {
-int physical = FALSE;
-
 	T(("wscrl(%x,%d) called", win, n));
 
 	if (! win->_scroll)
@@ -83,50 +95,9 @@ int physical = FALSE;
 	if (n == 0)
 		return OK;
 
-	/* as an optimization, if the scrolling region is the entire screen
-	   scroll the physical screen */
-	/* should we extend this to include smaller scrolling ranges by using
-	   change_scroll_region? */
+	scroll_window(win, n, win->_regtop, win->_regbottom);
+	touchline(win, win->_regtop, win->_regbottom - win->_regtop + 1);
 
-    	if (win->_maxx == columns && win->_regtop == 0 && win->_regbottom == lines) 
-    		physical = TRUE;
-
-	if (physical == TRUE) {
-		wrefresh(win);
-		scroll_window(curscr, n);
-		scroll_window(newscr, n);
-	}
-	scroll_window(win, n);
-
-	if (physical == TRUE) {
-		/* at the moment this relies on scroll_reverse and scroll_forward
-		   or parm_rindex and parm_index.
-		   we should add idl support as an alternative */
-
-		if (n > 0) {
-			mvcur(-1, -1, win->_regtop, 0);
-			if (parm_rindex) {
-				putp(tparm(parm_rindex, n));
-			} else if (scroll_reverse) {
-				while (n--)
-					putp(scroll_reverse);
-			}
-		}
-
-		if (n < 0) {
-			mvcur(-1, -1, win->_regbottom, columns);
-			n = abs(n);
-			if (parm_index) {
-				putp(tparm(parm_index, n));
-		    } else if (scroll_forward) {
-		    	while (n--)
-					putp(scroll_forward);
-			}
-		}
-
-		mvcur(-1, -1, win->_cury, win->_curx);
-	} else 
-	    	touchline(win, win->_regtop, win->_regbottom - win->_regtop + 1);
-
+	wchangesync(win);
     	return OK;
 }

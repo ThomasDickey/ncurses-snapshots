@@ -1,7 +1,23 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
 **	lib_options.c
@@ -14,27 +30,26 @@
 #include "terminfo.h"
 #include "curses.priv.h"
 
-int idlok(WINDOW *win, int flag)
+int idlok(WINDOW *win,  bool flag)
 {
 	T(("idlok(%x,%d) called", win, flag));
 
-	if (flag == FALSE) {
-		win->_idlok = FALSE;
-		return OK;
-	}
-
-   	if (insert_line  ||  delete_line || parm_insert_line || parm_delete_line) {
-   		if ((win->_regtop > 0 || win->_regbottom < LINES-1) &&
-   		   (change_scroll_region == NULL))
-   			win->_idlok = FALSE;
-   		else
-			win->_idlok = TRUE;
-	}
+   	win->_idlok = flag && (has_il() || change_scroll_region);
 	return OK; 
 }
 
 
-int clearok(WINDOW *win, int flag)
+int idcok(WINDOW *win, bool flag)
+{
+	T(("idcok(%x,%d) called", win, flag));
+
+	win->_idcok = flag && has_ic();
+
+	return OK; 
+}
+
+
+int clearok(WINDOW *win, bool flag)
 {
 	T(("clearok(%x,%d) called", win, flag));
 
@@ -46,7 +61,15 @@ int clearok(WINDOW *win, int flag)
 }
 
 
-int leaveok(WINDOW *win, int flag)
+int immedok(WINDOW *win, bool flag)
+{
+	T(("immedok(%x,%d) called", win, flag));
+
+   	win->_immed = flag;
+	return OK; 
+}
+
+int leaveok(WINDOW *win, bool flag)
 {
 	T(("leaveok(%x,%d) called", win, flag));
 
@@ -59,7 +82,7 @@ int leaveok(WINDOW *win, int flag)
 }
 
 
-int scrollok(WINDOW *win, int flag)
+int scrollok(WINDOW *win, bool flag)
 {
 	T(("scrollok(%x,%d) called", win, flag));
 
@@ -79,7 +102,7 @@ int halfdelay(int t)
 	return OK;
 }
 
-int nodelay(WINDOW *win, int flag)
+int nodelay(WINDOW *win, bool flag)
 {
 	T(("nodelay(%x,%d) called", win, flag));
 
@@ -108,7 +131,7 @@ int wtimeout(WINDOW *win, int delay)
 static void init_keytry(void);
 static void add_to_try(char *, short);
 
-int keypad(WINDOW *win, int flag)
+int keypad(WINDOW *win, bool flag)
 {
 	T(("keypad(%x,%d) called", win, flag));
 
@@ -126,11 +149,11 @@ int keypad(WINDOW *win, int flag)
 
 
 
-int meta(WINDOW *win, int flag)
+int meta(WINDOW *win, bool flag)
 {
 	T(("meta(%x,%d) called", win, flag));
 
-	win->_use_meta = flag;
+	SP->_use_meta = flag;
 
 	if (flag  &&  meta_on)
 	    putp(meta_on);
@@ -249,8 +272,3 @@ int typeahead(int fd)
 	return OK;
 }
 
-int intrflush(WINDOW *win, bool flag)
-{
-	T(("intrflush(%x, %d) called", win, flag));
-	return OK;
-}

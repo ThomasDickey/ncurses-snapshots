@@ -2,73 +2,99 @@
              How to install Ncurses/Terminfo on your system 
 ---------------------------------------------------------------------
 ************************************************************
-* READ ALL OF THIS FILE BEFORE YOU TRY AND INSTALL NCURSES.*
+* READ ALL OF THIS FILE BEFORE YOU TRY TO INSTALL NCURSES. *
 ************************************************************
 
 You should be reading the file INSTALL in a directory called:
-ncurses-1.8.6
+ncurses-d.d.d, where d.d.d is the current version number (see README).
 There are several subdirectories, called 'src', 'test', 'data',
 and 'man'.
 
-You NEED the following in order to build and install ncurses:
-gcc or other ANSI C compiler
-sh (bash will do)
-awk
-sed
-BSD style install
+REQUIREMENTS:
 
-1.  It is an unfortunate fact of life that your have to configure things
-    differently on different operating system. OS and setup configuration
-    is done in a file called Config.<os-name> in the src directory.
-    These file are generated automatically when you run the src/Configure
-    script, and so is the appropriate makefile.
-    If your operating system is not supported, read the file src/README
-    for information on how to create a configuration file for your system.
+You will need the following in order to build and install ncurses under UNIX:
 
-2.  Read and edit src/Makefile to suit your local setup.
+	* ANSI C compiler  (gcc is recommended)
+	* sh               (bash will do)
+	* awk
+	* sed
+	* BSD or System V style install
+
+INSTALLATION PROCEDURE:
+
+1.  Run Configure.
+    
+    Tell it the OS you are using.  It will create your Makefile.
+    If your operating system is not supported, read the PORTABILITY section
+    in the file src/README for information on how to create a configuration
+    file for your system.
+
+2.  Decide where you want to put the object files of terminal descriptions.
+
+    This step may not be necessary if your operating system is
+    one of those supported by Configure.
+
+    On my system (and I recommend it for you), the directory /usr/lib/terminfo
+    is used.  If your system already has a terminfo database and you want to
+    keep separate databases you can put it somewhere else.
+
+    Remember, this is not where the C language source code to the library will
+    go; this is where the actual binary terminal descriptions will go.
+
+    To use a non-default location, you'll need to do these steps (skip these
+    if you're being reasonable or lazy):
+
+	a. Keep in mind that this directory should probably be
+	   in your root filesystem so that programs which use terminfo
+	   can be used even when the system is only up single-user.
+
+	b. Change the value of the entry for SRCDIR in src/matrix
+	   to the name of the directory you've chosen.
+
+	c. Return to step 1 (running Configure).
+
+2.  Read and (if necessary) edit src/Makefile to suit your local setup.
+
+    This step will probably not be necessary if your operating system is
+    one of those supported by Configure.  In this case, the 
+
     Note that any changes made to src/Makefile will disappear when you
     re-run src/Configure. If you want these changes to be permanent make them
     in src/matrix or src/Makefile.dist. You might want to pass these changes
     to me if they are of general use.
 
-3.  Decide where you want to put the object files of terminal descriptions.
-    On my system (and I recommend it for you), the directory /usr/lib/terminfo
-    is used.  If your system already has a terminfo database and you want to
-    keep separate databases you can put it somewhere else.
-    Remember, this is not where the C language source code to the library will
-    go; this is where the actual binary terminal descriptions will go.
-    You'll need to do these steps (skip these if 
-    you're being reasonable or lazy):
-	a. Keep in mind that this directory should probably be
-	   in your root filesystem so that programs which use terminfo
-	   can be used even when the system is only up single-user.
-	b. Change the value of the entry for SRCDIR in src/matrix
-	   to the name of the directory you've chosen.
+4.  Type 'make'.
 
-4.  Type 'make'.  Ignore any warnings, no error-messages should be produced.
+    Ignore any warnings, no error-messages should be produced.
     This should compile the library, the terminfo compiler (tic), and the
     infocmp, clear and tput programs (see the man pages for explanation of
     what they do).
 
-5.  There are several parts to installing ncurses:
-	'make install.cmds' installs tic, infocmp, clear and tput.
+5.  There are several parts to installing ncurses once it has compiled:
+
+	'make install.cmds' installs tic, infocmp, captoinfo, clear and tput.
 	'make install.libs' installs the headers and libraries.
 	'make install.man' installs the man pages.
 	'make install.data' installs the terminfo database. You can skip this
 		part if your system already has such a database.
+
 	'make install.all' will do all the above.
-	'make alias' will link ncurses.h and nterm.h to curses.h and term.h
 
-6.  Change to the subdirectory test and type 'make all'.  This should compile
-    all of the test programs  in the release.  Once again, there should be
-    no errors. You'll get lots of warnings, just ignore them. Read the
-    file test/README for details on what to expect.
+TESTING:
 
-8.  The c++ directory has C++ classes that are built on top of ncurses and
-    panels. You need to have installed panels to compile and run the demo.
+6.  Change to the subdirectory test and type 'make all'.
+
+    This should compile all of the test programs in the release.  Once again,
+    there should be no errors. You'll get lots of warnings, just ignore them.
+    Read the file test/README for details on what to expect.
+
+7.  Run ncurses and several other test programs.
+
+    The ncurses program is designed specifically to test the ncurses library.
+    You can useit to verify that the screen highlights work correctly, that
+    cursor addressing and window scrolling works OK, etc.
 
 NOTES:
-
 	If you have SLS or anything based on it (slackware is OK) PLEASE
 	remove everything related to ncurses before re-installing it.
 
@@ -78,13 +104,19 @@ NOTES:
 	to use the -I option when you compile programs and -L when you link
 	them.
 
-	If you have bsd curses installed in your system and you accidentally
+	If you have BSD curses installed in your system and you accidentally
 	compile using its curses.h you'll end up with a large number of
 	undefined symbols at link time. _waddbytes is one of them.
 
 	The include files will be installed in /usr/include/ncurses.  To 
 	arrange for your programs to see them by default, copy them to
 	/usr/include from there.
+
+	On many systems, the make production `install.sys' will install
+	ncurses over the system curses libraries.  Don't do this casually!
+
+	The c++ directory has C++ classes that are built on top of ncurses and
+	panels.  You need to have installed panels to compile and run the demo.
 
 BUGS:
 	Send any feedback to me: zmbenhal@netcom.com 

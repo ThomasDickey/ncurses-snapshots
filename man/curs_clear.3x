@@ -4,7 +4,7 @@
 \fBwclear\fR, \fBclrtobot\fR, \fBwclrtobot\fR, \fBclrtoeol\fR,
 \fBwclrtoeol\fR - clear all or part of a \fBncurses\fR window
 .SH SYNOPSIS
-\fB# include <ncurses.h>\fR
+\fB# include <curses.h>\fR
 
 \fBint erase(void);\fR
 .br
@@ -36,13 +36,16 @@ end of screen.  That is, they erase all lines below the cursor in the window.
 Also, the current line to the right of the cursor, inclusive, is erased.
 
 The \fBclrtoeol\fR and \fBwclrtoeol\fR routines erase the current line
-to the right of the cursor, inclusive.
+to the right of the cursor, inclusive, to the end of the current line.
 .SH RETURN VALUE
-All routines return the integer \fBOK\fR, or a non-negative integer if
-\fBimmedok\fR is set.
+All routines return the integer \fBOK\fR.  The SVr4.0 manual says "or a
+non-negative integer if \fBimmedok\fR is set", but this appears to be an error.
 .SH NOTES
 Note that \fBerase\fR, \fBwerase\fR, \fBclear\fR, \fBwclear\fR,
 \fBclrtobot\fR, and \fBclrtoeol\fR may be macros.
+.SH PORTABILITY
+These functions are described in the XSI Curses draft.  The draft specifies
+that they return \fBERR\fR on failure, but specifies no error conditions.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_outopts\fR(3X), \fBcurs_refresh\fR(3X)
 .\"#

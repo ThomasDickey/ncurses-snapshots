@@ -8,7 +8,6 @@ gdc.c - Great Digital Clock, gives an example of usng color
 hanoi.c - the game of hanoi, also an example of using color
 knight.c - the game of Knight's Tour
 rain.c - rain drops are falling on my head..
-scroll.c, scroll2.c, scroll.3.c - various scrolling tests 
 worm.c - worms run all over your screen
 firework.c - multi-colored fireworks
 testcurs.c - a test from the PDCurses people

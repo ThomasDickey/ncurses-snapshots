@@ -4,7 +4,7 @@
 \fBdoupdate\fR, \fBredrawwin\fR, \fBwredrawln\fR - refresh
 \fBncurses\fR windows and lines
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
 \fBint refresh(void);\fR
 .br
@@ -55,10 +55,13 @@ line exists and redrawing the entire window could be subject to even more
 communication noise.  Just redrawing several lines offers the possibility that
 they would show up unblemished.
 .SH RETURN VALUE
-All routines return the integer \fBERR\fR upon failure and an integer value
-other than \fBERR\fR upon successful completion.
+Routines that return an integer return \fBERR\fR upon failure, and \fBOK\fR
+(SVr4 only specifies "an integer value other than \fBERR\fR") upon successful
+completion.
 .SH NOTES
 Note that \fBrefresh\fR and \fBredrawwin\fR may be macros.
+.SH PORTABILITY
+The XSI Curses draft describes these functions.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_outopts\fR(3X)
 .\"#

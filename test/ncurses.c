@@ -107,42 +107,46 @@ static void attr_test(void)
 
     mvaddstr(2,8,"This is STANDOUT mode: ");
     attron(A_STANDOUT);
-    addstr("abcde fghij klmno pqrst uvwxy x");
+    addstr("abcde fghij klmno pqrst uvwxy z");
     attroff(A_STANDOUT);
 
     mvaddstr(4,8,"This is REVERSE mode: ");
     attron(A_REVERSE);
-    addstr("abcde fghij klmno pqrst uvwxy x");
+    addstr("abcde fghij klmno pqrst uvwxy z");
     attroff(A_REVERSE);
 
     mvaddstr(6,8,"This is BOLD mode: ");
     attron(A_BOLD);
-    addstr("abcde fghij klmno pqrst uvwxy x");
+    addstr("abcde fghij klmno pqrst uvwxy z");
     attroff(A_BOLD);
 
     mvaddstr(8,8,"This is UNDERLINE mode: ");
     attron(A_UNDERLINE);
-    addstr("abcde fghij klmno pqrst uvwxy x");
+    addstr("abcde fghij klmno pqrst uvwxy z");
     attroff(A_UNDERLINE);
 
     mvaddstr(10,8,"This is DIM mode: ");
     attron(A_DIM);
-    addstr("abcde fghij klmno pqrst uvwxy x");
+    addstr("abcde fghij klmno pqrst uvwxy z");
     attroff(A_DIM);
 
     mvaddstr(12,8,"This is BLINK mode: ");
     attron(A_BLINK);
-    addstr("abcde fghij klmno pqrst uvwxy x");
+    addstr("abcde fghij klmno pqrst uvwxy z");
     attroff(A_BLINK);
 
-    mvaddstr(14,8,"This is BOLD UNDERLINE BLINK mode: ");
-    attron(A_BOLD|A_BLINK|A_UNDERLINE);
-    addstr("abcde fghij klmno pqrst uvwxy x");
-    attroff(A_BOLD|A_BLINK|A_UNDERLINE);
+    mvaddstr(14,8,"This is PROTECT mode: ");
+    attron(A_PROTECT);
+    addstr("abcde fghij klmno pqrst uvwxy z");
+    attroff(A_PROTECT);
+
+    attrset(A_INVIS);
+    mvaddstr(16,8,"This is INVISIBLE mode: ");
+    addstr("abcde fghij klmno pqrst uvwxy z");
 
     attrset(A_NORMAL);
-    mvaddstr(16,8,"This is NORMAL mode: ");
-    addstr("abcde fghij klmno pqrst uvwxy x");
+    mvaddstr(18,8,"This is NORMAL mode: ");
+    addstr("abcde fghij klmno pqrst uvwxy z");
 
     refresh();
 
@@ -533,6 +537,8 @@ static void acs_display()
  *
  ****************************************************************************/
 
+#define BOTLINES	3	/* number of line stolen from screen bottom */
+
 typedef struct
 {
     int y, x;
@@ -588,14 +594,14 @@ static WINDOW *getwindow(void)
     move(0, 0); clrtoeol();
     addstr("Use arrows to move cursor, anything else to mark corner 1");
     refresh();
-    if ((tmp = selectcell(1,    0,    LINES-1, COLS-1)) == (pair *)NULL)
+    if ((tmp = selectcell(1,    0,    LINES-BOTLINES, COLS-1)) == (pair *)NULL)
 	return((WINDOW *)NULL);
     memcpy(&ul, tmp, sizeof(pair));
     addch(ACS_ULCORNER);
     move(0, 0); clrtoeol();
     addstr("Use arrows to move cursor, anything else to mark corner 2");
     refresh();
-    if ((tmp = selectcell(ul.y, ul.x, LINES-1, COLS-1)) == (pair *)NULL)
+    if ((tmp = selectcell(ul.y, ul.x, LINES-BOTLINES, COLS-1)) == (pair *)NULL)
 	return((WINDOW *)NULL);
     memcpy(&lr, tmp, sizeof(pair));
 
@@ -614,22 +620,42 @@ static WINDOW *getwindow(void)
     return(rwindow);
 }
 
+static void transient(char *msg)
+{
+    if (msg)
+    {
+	mvaddstr(LINES - 1, 0, msg);
+	refresh();
+	sleep(1);
+    }
+
+    mvaddstr(LINES - 1, 0,
+	     "All other characters are echoed, windows should scroll.");
+    refresh();
+}
+
 static void acs_and_scroll()
 /* Demonstrate windows */
 {
     int	c;
+    FILE *fp;
     struct frame
     {
         struct frame	*next, *last;
         WINDOW		*wind;
     }
-    *oldw  = (struct frame *)NULL, *current = (struct frame *)NULL, *neww;
+    *current = (struct frame *)NULL, *neww;
+
+#define DUMPFILE	"screendump"
 
     refresh();
+    mvaddstr(LINES - 4, 0,
+	     "F1 = make new window, F2 = next window, F3 = previous window, ");
+    mvaddstr(LINES - 3, 0,
+	     "F4 = scroll current window forward, F5 = scroll current window backward");
     mvaddstr(LINES - 2, 0,
-	     "F1 = make new window, F2 = next window, F3 = previous window, Ctrl-D = exit");
-    mvaddstr(LINES - 1, 0,
-	     "All other characters are echoed, windows should scroll.");
+	     "F6 = save window to file, F7 = restore window, Ctrl-D = exit");
+    transient((char *)NULL);
 
     c = KEY_F(1);
     do {
@@ -643,7 +669,7 @@ static void acs_and_scroll()
 	    neww = (struct frame *) malloc(sizeof(struct frame));
 	    if ((neww->wind = getwindow()) == (WINDOW *)NULL)
 		goto breakout;
-	    if (oldw == NULL)	/* First element,  */
+	    if (current == NULL)	/* First element,  */
 	    {
 		neww->next = neww; /*   so point it at itself */
 		neww->last = neww;
@@ -651,22 +677,73 @@ static void acs_and_scroll()
 	    }
 	    else
 	    {
-		neww->last = oldw;  oldw->next = neww;
-		neww->next = current; current->last = neww;
+		neww->next = current->next;
+		neww->last = current;
+		neww->last->next = neww;
+		neww->next->last = neww;
 	    }
-	    oldw = neww;
 	    keypad(neww->wind, TRUE);
 	    break;
 
-	case KEY_F(2):
+	case KEY_F(2):		/* go to next window */
 	    current = current->next;
 	    break;
 
-	case KEY_F(3):
+	case KEY_F(3):		/* go to previous window */
 	    current = current->last;
 	    break;
 
-	case KEY_F(4):	/* undocumented --- use this to test area clears */
+	case KEY_F(4):		/* scroll current window forward */
+	    if (current)
+		wscrl(current->wind, 1);
+	    break;
+
+	case KEY_F(5):		/* scroll current window backwards */
+	    if (current)
+		wscrl(current->wind, -1);
+	    break;
+
+	case KEY_F(6):		/* save window */
+	    if ((fp = fopen(DUMPFILE, "w")) == (FILE *)NULL)
+		transient("Can't open screen dump file");
+	    else
+	    {
+		(void) putwin(current->wind, fp);
+		(void) fclose(fp);
+
+		current->last->next = current->next;
+		current->next->last = current->last;
+
+		werase(current->wind);
+		wrefresh(current->wind);
+		delwin(current->wind);
+
+		neww = current->next;
+		free(current);
+		current = neww;
+	    }
+	    break;
+
+	case KEY_F(7):		/* restore window */
+	    if ((fp = fopen(DUMPFILE, "r")) == (FILE *)NULL)
+		transient("Can't open screen dump file");
+	    else
+	    {
+		neww = (struct frame *) malloc(sizeof(struct frame));
+
+		neww->next = current->next;
+		neww->last = current;
+		neww->last->next = neww;
+		neww->next->last = neww;
+
+		neww->wind  = getwin(fp);
+		(void) fclose(fp);
+
+		wrefresh(neww->wind);
+	    }
+	    break;
+
+	case KEY_F(10):	/* undocumented --- use this to test area clears */
 	    selectcell(0, 0, LINES - 1, COLS - 1);
 	    clrtobot();
 	    refresh();
@@ -853,6 +930,7 @@ int padgetch(void)
     case '-': return(KEY_DL);
     case '>': return(KEY_IC);
     case '<': return(KEY_DC);
+    case 'q': return(KEY_EXIT);
     default: return(c);
     }
 }
@@ -1066,7 +1144,7 @@ int main(const int argc, const char *argv[])
     char	buf[BUFSIZ];
 
     /* enable debugging */
-    trace(TRACE_ORDINARY);
+    trace(TRACE_MAXIMUM);
 
     /* tell it we're going to play with soft keys */
     slk_init(1);

@@ -1,700 +1,842 @@
-/*---------------------------------------------------------------------------
- *
- *	lib_mvcur.c
- *
- *	The routine mvcur() etc.
- *
- *	last edit-date: [Wed Jun 16 14:13:22 1993]
- *
- *	-hm	conversion from termcap -> terminfo
- *	-hm	optimization debugging
- *	-hm	zeyd's ncurses 0.7 update
- *	-hm	eat_newline_glitch bugfix
- *	-hm	hpux lint'ing ..
- *
- *---------------------------------------------------------------------------*/
- 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                         */
+/*
+**	lib_mvcur.c
+**
+**	The routines for moving the physical cursor and scrolling:
+**
+**		int mvcur(int old_y, int old_x, int new_y, int new_x)
+**
+**		int scrolln(int n, int top, int bot, int maxy)
+**
+** Some of this code was originally part of the legacy 4.4BSD curses
+** (cr_put.c and refresh.c version 8.3).  I (esr) translated it to speak
+** terminfo and cleaned out a lot of cruft having to do with obsolete 
+** capabilities.  Then I threw away plod() and wrote a smarter local movement 
+** optimizer.  By the time I was done, only a few pieces of the 4.4BSD logic
+** were left (in mvcur(), which mostly used to be fgoto()).  Keith Bostic's
+** scrolln() routine survived almost intact, though.
+**
+** Comparisons with older curses packages:  
+**    SVr3 curses mvcur() can't use cursor_to_ll or auto_left_margin.
+**    4.4BSD curses can't use cuu/cud/cuf/cub/hpa/vpa/tab/cbt for local
+** motions.  It doesn't use tactics based on auto_left_margin.  Weirdly
+** enough, it doesn't use its own hardware-scrolling routine to scroll up
+** destination lines for out-of-bounds addresses!
+**    old ncurses optimizer: less accurate cost computations (in fact,
+** it was broken and had to be commented out!).
+**
+** Compile with -DMAIN to build an interactive tester/timer for the movement
+** optimizer.  You can use it to investigate the optimizer's behavior.
+** You can also use it for tuning the formulas used to determine whether
+** or not full optimization is attempted.
+**
+** This code has a nasty tendency to find bugs in terminfo entries, because it
+** exercises the non-cup movement capabilities heavily.  If you think you've
+** found a bug, try deleting subsets of the following capabilities (arranged
+** in decreasing order of suspiciousness): it, tab, cbt, hpa, vpa, cuu, cud,
+** cuf, cub, cuu1, cud1, cuf1, cub1.  It may be that one or more are wrong.
+**
+** This software is Copyright (C) 1994 by Eric S. Raymond, all rights reserved.
+** It is issued with ncurses under the same terms and conditions as the ncurses
+** library sources.
+**/
 
-#include <string.h>
-#include <stdlib.h>
+/****************************************************************************
+ *
+ * Constants and macros for optimizer tuning.
+ *
+ ****************************************************************************/
+
+/*
+ * The average overhead of a full optimization computation in character
+ * transmission times.  If it's too high, the algorithm will be a bit
+ * over-biased toward using cup rather than local motions; if it's too
+ * low, the algorithm may spend more time than is strictly optimal
+ * looking for non-cup motions.  Profile the optimizer using the `t'
+ * command of the exerciser (see below), and round to the nearest integer.
+ * Assuming your machine runs compiled C about as efficiently as a 486, the
+ * following mapping should be about right:
+ *
+ *		Kbps:	28.8	19.2	14.4	9.60	2.40
+ *	       		-----	----	----	----	----
+ *	25MHz	->	17	11	8	6	1
+ *	50MHz	->	8	6	4	3	1
+ *	66MHz	->	6	4	3	2	0
+ *	100MHz	->	4	3	2	1	0
+ *	120MHz	->	3	2	1	0	0
+ *
+ * Cross your average line speed with your processor speed to get
+ * your overhead value.
+ *
+ * Yes, I thought about computing expected overhead dynamically, say
+ * by derivation from a running average of optimizer times.  But the
+ * whole point of this optimization is to *decrease* the frequency of
+ * system calls. :-)
+ */
+#define COMPUTE_OVERHEAD	3	/* I use a 50MHz box @ 9.6Kbs */
+
+/*
+ * LONG_DIST is the distance we consider to be just as costly to move over as a
+ * cup sequence is to emit.  In other words, it's the length of a cup sequence
+ * adjusted for computation overhead.  The magic number is the length of
+ * "\033[yy;xxH", the typical cup sequence these days.
+ */
+#define LONG_DIST		(8 - COMPUTE_OVERHEAD)
+
+/*
+ * Tell whether a motion is optimizable by local motions.  Needs to be cheap to
+ * compute. In general, all the fast moves go to either the right or left edge
+ * of the screen.  So any motion to a location that is (a) further away than
+ * LONG_DIST and (b) further inward from the right or left edge than LONG_DIST,
+ * we'll consider nonlocal.
+ */
+#define NOT_LOCAL(fy, fx, ty, tx)	((tx > LONG_DIST) && (tx < screen_lines - 1 - LONG_DIST) && (abs(ty-fy) + abs(tx-fx) > LONG_DIST))
+
+/****************************************************************************
+ *
+ * External interfaces
+ *
+ ****************************************************************************/
+
+#include "curses.h"
+
 #include "terminfo.h"
 #include "curses.priv.h"
+#define NLMAPPING	SP->_nl			/* nl() on? */
+#define RAW		SP->_raw		/* raw() on? */
+#define CURRENT_ATTR	SP->_current_attr	/* current phys attribute */
+#define CURRENT_ROW	SP->_cursrow		/* phys cursor row */
+#define CURRENT_COLUMN	SP->_curscol		/* phys cursor column */
+#define REAL_ATTR	SP->_current_attr	/* phys current attribute */
+#define REAL_CHAR(y, x)	SP->_curscr->_line[y].text[x]	/* phys screen data */
 
-#ifndef OPT_MVCUR
-/*
-**
-**	mvcur(oldrow, oldcol, newrow, newcol)
-**	A hack for terminals that are smart enough
-**	to know how to move cursor.
-**	There is still a bug in the alternative long-
-**	winded code.
-**
-*/
+/****************************************************************************
+ *
+ * Optimized cursor movement
+ *
+ ****************************************************************************/
 
-int mvcur(int oldrow, int oldcol, int newrow, int newcol)
+#include <string.h>
+
+#ifdef TRACE
+bool no_optimize;	/* suppress optimization */
+#endif /* TRACE */
+
+#ifdef MAIN
+#include <sys/time.h>
+
+static bool profiling = FALSE;
+static float diff;
+#endif /* MAIN */
+
+static int	onscreen_mvcur(int, int, int, int, bool);
+#ifndef NO_OPTIMIZE
+static int	relative_move(char *, int, int, int, int, bool);
+#endif /* !NO_OPTIMIZE */
+
+int mvcur(int yold, int xold, int ynew, int xnew)
+/* optimized cursor move from (yold, xold) to (ynew, xnew) */
 {
-    T(("mvcur(%d,%d,%d,%d) called", oldrow, oldcol, newrow, newcol));
+    TR(TRACE_MOVE, ("mvcur(%d,%d,%d,%d) called", yold, xold, ynew, xnew));
 
-	if(!cursor_address)
-		return ERR;
+    if (yold == ynew && xold == xnew)
+	return(OK);
 
-	newrow %= lines;
-	newcol %= columns;
+    /*
+     * Most work here is rounding for terminal boundaries getting the
+     * column position implied by wraparound or the lack thereof and
+     * rolling up the screen to get ynew on the screen.
+     */
 
-	if (cursor_address)
-		putp(tparm(cursor_address, newrow, newcol));
-	return OK;
-		
+    if (xnew >= screen_columns)
+    {
+	ynew += xnew / screen_columns;
+	xnew %= screen_columns;
+    }
+    if (xold >= screen_columns)
+    {
+	int	l;
+
+	l = (xold + 1) / screen_columns;
+	yold += l;
+	xold %= screen_columns;
+	if (!auto_right_margin)
+	{
+	    while (l > 0) {
+		if (newline)
+		    tputs(newline, 0, _outch);
+		else
+		    putchar('\n');
+		l--;
+	    }
+	    xold = 0;
+	}
+	if (yold > screen_lines - 1)
+	{
+	    ynew -= yold - (screen_lines - 1);
+	    yold = screen_lines - 1;
+	}
+    }
+
+#ifdef CURSES_OVERRUN	/* not used, it takes us out of sync with curscr */
+    /*
+     * The destination line is offscreen. Try to scroll the screen to
+     * bring it onscreen.  Note: this is not a documented feature of the
+     * API.  It's here for compatibility with archaic curses code, a
+     * feature no one seems to have actually used in a long time.
+     */
+    if (ynew >= screen_lines)
+    {
+	if (scrolln((ynew - (screen_lines - 1)), 0, screen_lines - 1, screen_lines - 1) == OK)
+	    ynew = screen_lines - 1;
+	else
+	    return(ERR);
+    }
+#endif /* CURSES_OVERRUN */
+
+    /* destination location is on screen now */
+    return(onscreen_mvcur(yold, xold, ynew, xnew, TRUE));
 }
 
-#else
-
-#define BUFSIZE	128			/* size of strategy buffer */
-
-struct Sequence
-{
-	int	vec[BUFSIZE];	/* vector of operations */
-	int	*end;		/* end of vector */
-	int	cost;		/* cost of vector */
-};
-
-static void row(struct Sequence *outseq, int orow, int nrow);
-static void column(struct Sequence *outseq, int ocol, int ncol);
-static void simp_col(struct Sequence *outseq, int oc, int nc);
-static void zero_seq(struct Sequence *seq);
-static void add_seq(struct Sequence *seq1, struct Sequence *seq2);
-static void out_seq(struct Sequence *seq);
-static void update_ops(void);
-static void init_costs(int costs[]);
-static int countc(char ch);
-static void add_op(struct Sequence *seq, int op, ...);
-static char *sequence(int op);
-
-static int c_count;			/* used for counting tputs output */
-
-#define	INFINITY	1000		/* biggest, impossible sequence cost */
-#define NUM_OPS		16		/* num. term. control sequences */
-#define NUM_NPARM	9		/* num. ops wo/ parameters */
-
-	/* operator indexes into op_info */
-
-#define	CARRIAGE_RETURN	0		/* watch out for nl mapping */
-#define	CURS_DOWN	1
-#define	CURS_HOME	2
-#define	CURS_LEFT	3
-#define	CURS_RIGHT	4
-#define	CURS_TO_LL	5
-#define	CURS_UP		6
-#define	TAB		7
-#define	BACK_TAB	8
-#define	ROW_ADDR	9
-#define	COL_ADDR	10
-#define	P_DOWN_CURS	11
-#define	P_LEFT_CURS	12
-#define	P_RIGHT_CURS	13
-#define	P_UP_CURS	14
-#define	CURS_ADDR	15
-
-static bool	loc_init = FALSE;	/* set if op_info is init'ed */
-
-static bool	rel_ok;			/* set if we really know where we are */
-
 /*
- *	op_info[NUM_OPS]
- *
- *	op_info[] contains for operations with no parameters
- *	the cost of the operation.  These ops should be first in the array.
- *	For operations with parameters, op_info[] contains
- *	the negative of the number of parameters.
+ * With the machinery set up above, it's conceivable that
+ * onscreen_mvcur could be modified into a recursive function that does
+ * an alpha-beta search of motion space, as though it were a chess
+ * move tree, with the weight function being boolean and the search
+ * depth equated to length of string.  However, this would jack up the
+ * computation cost a lot, especially on terminals without a cup
+ * capability constraining the search tree depth.  So we settle for
+ * the simpler method below.
  */
 
-static int	op_info[NUM_OPS] = {
-	0,		/* carriage_return */
-	0,		/* cursor_down */
-	0,		/* cursor_home */
-	0,		/* cursor_left */
-	0,		/* cursor_right */
-	0,		/* cursor_to_ll */
-	0,		/* cursor_up */
-	0,		/* tab */
-	0,		/* back_tab */
-	-1,		/* row_address */
-	-1,		/* column_address */
-	-1,		/* parm_down_cursor */
-	-1,		/* parm_left_cursor */
-	-1,		/* parm_right_cursor */
-	-1,		/* parm_up_cursor */
-	-2		/* cursor_address */
-};
-
 /*
-**	Make_seq_best(best, try)
-**	
-**	Make_seq_best() copies try to best if try->cost < best->cost
-**
-**	fixed the old version, now it really runs .. (-hm/08.04.93)
-**
-*/
+ * This must be a character that never occurs as a control sequence leader.
+ * Any printable character ought to do.
+ */
+#define OUT_OF_BAND	'x'
 
-inline void Make_seq_best(struct Sequence *best, struct Sequence *try)
+static int onscreen_mvcur(int yold, int xold, int ynew, int xnew, bool ovw)
+/* onscreen move from (yold, xold) to (ynew, xnew) */
 {
-	if (best->cost > try->cost) {
-		register int *sptr;
+    char	use[512], *sp;
+#ifndef NO_OPTIMIZE
+    char	move[512];
+#endif /* !NO_OPTIMIZE */
 
-		sptr = try->vec;			/* src ptr */
-		best->end = best->vec;			/* dst ptr */
-		while(sptr != try->end)			/* copy src -> dst */
-			*(best->end++) = *(sptr++);
-		best->cost = try->cost;			/* copy cost */
+#ifdef MAIN
+    struct timeval before, after;
+
+    gettimeofday(&before, NULL);
+#endif /* MAIN */
+
+    use[0] = OUT_OF_BAND;
+
+    /* tactic #0: use direct cursor addressing */
+    sp = tgoto(cursor_address, xnew, ynew);
+    if (sp)
+    {
+	(void) strcpy(use, sp);
+
+#ifdef TRACE
+	if (no_optimize)
+	    xold = yold = -1;
+#endif /* TRACE */
+
+	/*
+	 * We may be able to tell in advance that the full optimization
+	 * will probably not be worth its overhead.  Also, don't try to
+	 * use local movement if the current attribute is anything but
+	 * A_NORMAL...there are just too many ways this can screw up
+	 * (like, say, local-movement \n getting mapped to some obscure
+	 * character because A_ALTCHARSET is on).
+	 */
+	if (yold == -1 || xold == -1  || 
+	    REAL_ATTR != A_NORMAL || NOT_LOCAL(yold, xold, ynew, xnew))
+	{
+#ifdef MAIN
+	    if (!profiling)
+	    {
+		(void) fputs("nonlocal\n", stderr);
+		goto nonlocal;	/* always run the optimizer if profiling */
+	    }
+#else
+	    goto nonlocal;
+#endif /* MAIN */
 	}
+    }
+
+#ifndef NO_OPTIMIZE
+    /* tactic #1: use local movement */
+    if (yold != -1 && xold != -1
+		&& (relative_move(move, yold, xold, ynew, xnew, ovw)==OK)
+		&& (use[0] == OUT_OF_BAND || strlen(move) < strlen(use)))
+	(void) strcpy(use, move);
+
+    /* tactic #2: use carriage-return + local movement */
+    if (yold < screen_lines - 1 && xold < screen_columns - 1)
+    {
+	if (carriage_return
+		&& (relative_move(move, yold,0,ynew,xnew, ovw) == OK)
+		&& (use[0] == OUT_OF_BAND || (strlen(carriage_return) + strlen(move) < strlen(use))))
+	{
+	    (void) strcpy(use, carriage_return);
+	    (void) strcat(use, move);
+	}
+    }
+
+    /* tactic #3: use home-cursor + local movement */
+    if (cursor_home
+	&& (relative_move(move, 0, 0, ynew, xnew, ovw) == OK)
+	&& (use[0] == OUT_OF_BAND || (strlen(cursor_home) + strlen(move) < strlen(use))))
+    {
+	(void) strcpy(use, cursor_home);
+	(void) strcat(use, move);
+    }
+
+    /* tactic #4: use home-down + local movement */
+    if (cursor_to_ll
+    	&& (relative_move(move, screen_lines-1, 0, ynew, xnew, ovw) == OK)
+	&& (use[0] == OUT_OF_BAND || (strlen(cursor_to_ll) + strlen(move) < strlen(use))))
+    {
+	(void) strcpy(use, cursor_to_ll);
+	(void) strcat(use, move);
+    }
+
+    /* tactic #5: use left margin for wrap to right-hand side */
+    if (auto_left_margin && yold > 0 && yold < screen_lines - 1 && cursor_left
+	&& (relative_move(move, yold-1, screen_columns-1, ynew, xnew, ovw) == OK)
+	&& (use[0] == OUT_OF_BAND || (strlen(carriage_return) + strlen(cursor_left) + strlen(move) < strlen(use))))
+    {
+	use[0] = '\0';
+	if (xold > 0)
+	    (void) strcat(use, carriage_return);
+	(void) strcat(use, cursor_left);
+	(void) strcat(use, move);
+    }
+#endif /* !NO_OPTIMIZE */
+
+#ifdef MAIN
+    gettimeofday(&after, NULL);
+    diff = after.tv_usec - before.tv_usec
+	+ (after.tv_sec - before.tv_sec) * 1000000;
+    if (!profiling)
+	(void) fprintf(stderr, "onscreen: %d msec, %f 28.8Kbps char-equivalents\n",
+		       (int)diff, diff/288);
+#endif /* MAIN */
+
+ nonlocal:
+    if (use[0] != OUT_OF_BAND)
+    {
+	tputs(use, 1, _outch);
+	return(OK);
+    }
+    else
+	return(ERR);
 }
 
+#ifndef NO_OPTIMIZE
+#define NEXTTAB(fr)	(fr + init_tabs - (fr % init_tabs))
+#define LASTTAB(fr)	(fr - init_tabs + (fr % init_tabs))
 
-/*
-**
-**	mvcur(oldrow, oldcol, newrow, newcol)
-**
-**	mvcur() optimally moves the cursor from the position
-**	specified by (oldrow, oldcol) to (newrow, newcol).  If
-**	(oldrow, oldcol) == (-1, -1), mvcur() does not use relative
-**	cursor motions.  If the coordinates are otherwise
-**	out of bounds, it mods them into range.
-**
-**	Revisions needed:
-**		eat_newline_glitch, auto_right_margin
-*/
-
-int mvcur(int oldrow, int oldcol, int newrow, int newcol)
+static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bool ovw)
+/* move via local motions (cuu/cuu1/cud/cud1/cub1/cub/cuf1/cuf/vpa/hpa) */
 {
-struct Sequence	seqA, seqB,	/* allocate work structures */
-		col0seq,	/* sequence to get from col0 to nc */
-		*best,		/* best sequence so far */
-		*try;		/* next try */
-bool		nlstat = SP->_nl; /* nl-output-mapping in effect ?*/
+    char	*ep, *sp;
+    int	n;
 
-	T(("=============================\nmvcur(%d,%d,%d,%d) called",
-	   oldrow, oldcol, newrow, newcol));
+    move[0] = '\0';
+    ep = move;
 
-	if ((oldrow == newrow) && (oldcol == newcol))
-		return OK;
-		
-	if (oldcol == columns-1 && eat_newline_glitch && auto_right_margin) {
-		putp(tparm(cursor_address, newrow, newcol));
-		return OK;
+    if (to_y != from_y)
+    {
+	ep[0] = OUT_OF_BAND;
+
+	if (row_address)
+	    (void) strcpy(ep, tparm(row_address, to_y));
+
+	if (to_y > from_y)
+	{
+	    n = (to_y - from_y);
+
+	    if (parm_down_cursor)
+	    {
+		sp = tparm(parm_down_cursor, n);
+		if (ep[0] == OUT_OF_BAND && strlen(sp) < strlen(ep))
+		    (void) strcpy(ep, sp);
+	    }
+
+	    if (cursor_down
+		&& (ep[0] == OUT_OF_BAND || n * strlen(cursor_down) < strlen(ep)))
+	    {
+		ep[0] = '\0';
+		while (n--)
+		    (void) strcat(ep, cursor_down);
+	    }
+	}
+	else /* (to_y < from_y) */
+	{
+	    n = (from_y - to_y);
+
+	    if (parm_up_cursor)
+	    {
+		sp = tparm(parm_up_cursor, n);
+		if (ep[0] == OUT_OF_BAND && strlen(sp) < strlen(ep))
+		    (void) strcpy(ep, sp);
+	    }
+
+	    if (cursor_up
+		&& (ep[0] == OUT_OF_BAND || n * strlen(cursor_up) < strlen(ep)))
+	    {
+		ep[0] = '\0';
+		while (n--)
+		    (void) strcat(ep, cursor_up);
+	    }
 	}
 
-#if 0
-	if (nlstat)
-		nonl();
-#endif
-	update_ops();			/* make sure op_info[] is current */
+	if (ep[0] == OUT_OF_BAND)
+	    return(ERR);
+    }
 
-	if (oldrow < 0  ||  oldcol < 0 || (eat_newline_glitch && oldcol == 0 )) {
-		rel_ok = FALSE;		/* relative ops ok? */
-	} else {
-		rel_ok = TRUE;
-		oldrow %= lines;	/* mod values into range */
-		oldcol %= columns;
-	}
+    /*
+     * It may be that we're using a cud1 capability of \n with the side-effect
+     * of taking the cursor to column 0.  Deal with this.
+     */
+    if (ep[0] == '\n' && NLMAPPING && !RAW)
+	from_x = 0;
 	
-	newrow %= lines;
-	newcol %= columns;
+    ep = move + strlen(move);
 
-	best = &seqA;
-	try = &seqB;
+    if (to_x != from_x)
+    {
+#if defined(REAL_ATTR) && defined(REAL_CHAR)
+	int	i;
+#endif /* defined(REAL_ATTR) && defined(REAL_CHAR) */
+	char	try[512];
 
-	/* try out direct cursor addressing */
+	ep[0] = OUT_OF_BAND;
 
-	zero_seq(best);
-	add_op(best, CURS_ADDR, newrow, newcol);
+	if (column_address)
+	    (void) strcpy(ep, tparm(column_address, to_x));
 
-	/* try out independent row/column addressing */
+	if (to_x > from_x)
+	{
+	    n = to_x - from_x;
 
-	if(rel_ok) {
-		zero_seq(try);
-		row(try, oldrow, newrow);
-		column(try, oldcol, newcol);
-		Make_seq_best(best, try);
-	}
+	    if (parm_right_cursor)
+	    {
+	        sp = tparm(parm_right_cursor, n);
+		if (ep[0] == OUT_OF_BAND && strlen(sp) < strlen(ep))
+		    (void) strcpy(ep, sp);
+	    }
 
-	zero_seq(&col0seq);		/* store seq. to get from c0 to nc */
-	column(&col0seq, 0, newcol);
+	    if (cursor_right)
+	    {
+		try[0] = '\0';
 
-	if(col0seq.cost < INFINITY) {	/* can get from col0 to newcol */
+		/* use hard tabs, if we have them, to do as much as possible */
+		if (init_tabs > 0 && tab)
+		{
+		    int	nxt, fr;
 
-		/* try out homing and then row/column */
+		    for (fr = from_x; (nxt = NEXTTAB(fr)) <= to_x; fr = nxt)
+			(void) strcat(try, tab);
 
-		if (! rel_ok  ||  newcol < oldcol  ||  newrow < oldrow) {
-			zero_seq(try);
-			add_op(try, CURS_HOME, 1);
-			row(try, 0, newrow);
-			add_seq(try, &col0seq);
-			Make_seq_best(best, try);
+		    n = to_x - fr;
+		    from_x = fr;
 		}
 
-		/* try out homing to last line  and then row/column */
+#if defined(REAL_ATTR) && defined(REAL_CHAR)
+		/*
+		 * If we have no attribute changes, overwrite is cheaper.
+		 * Note: must suppress this by passing in ovw = FALSE whenever
+		 * REAL_CHAR would return invalid data.  In particular, this 
+		 * is true between the time a hardware scroll has been done
+		 * and the time the structure REAL_CHAR would access has been
+		 * updated.
+		 */
+		if (ovw)
+		{
+		    char	*sp;
 
-		if (! rel_ok  ||  newcol < oldcol  ||  newrow > oldrow) {
-			zero_seq(try);
-			add_op(try, CURS_TO_LL, 1);
-			row(try, lines - 1, newrow);
-			add_seq(try, &col0seq);
-			Make_seq_best(best, try);
+		    for (i = 0; i < n; i++)
+			if ((REAL_CHAR(to_y, from_x + i) & A_ATTRIBUTES) != CURRENT_ATTR)
+			{
+			    ovw = FALSE;
+			    break;
+			}
+
+		    sp = try + strlen(try);
+
+		    for (i = 0; i < n; i++)
+			*sp++ = REAL_CHAR(to_y, from_x + i);
+		    *sp = '\0';
+	        }
+		else
+#endif /* defined(REAL_ATTR) && defined(REAL_CHAR) */
+		    while (n--)
+			(void) strcat(try, cursor_right);
+
+		if (ep[0] == OUT_OF_BAND || strlen(try) < strlen(ep))
+		    (void) strcpy(ep, try);
+	    }
+	}
+	else /* (to_x < from_x) */
+	{
+	    n = from_x - to_x;
+
+	    if (parm_left_cursor)
+	    {
+		sp = tparm(parm_left_cursor, n);
+		if (ep[0] == OUT_OF_BAND && strlen(sp) < strlen(ep))
+		    (void) strcpy(ep, sp);
+	    }
+
+	    if (cursor_left)
+	    {
+		try[0] = '\0';
+
+		if (init_tabs > 0 && back_tab)
+		{
+		    int	nxt, fr;
+
+		    for (fr = from_x; (nxt = LASTTAB(fr)) >= to_x; fr = nxt)
+			(void) strcat(try, back_tab);
+
+		    n = to_x - fr;
 		}
+		while (n--)
+		    (void) strcat(try, cursor_left);
+
+		if (ep[0] == OUT_OF_BAND || strlen(try) < strlen(ep))
+		    (void) strcpy(ep, try);
+	    }
 	}
 
-	out_seq(best);
-#if 0
-	if(nlstat)
-		nl();
-#endif
+	if (ep[0] == OUT_OF_BAND)
+	    return(ERR);
+    }
 
-	T(("==================================="));
-
-	return OK;
+    return(OK);
 }
+#endif /* !NO_OPTIMIZE */
 
-/*
-**	row(outseq, oldrow, newrow)
-**
-**	row() adds the best sequence for moving
-**  		the cursor from oldrow to newrow to seq.
-**	row() considers row_address, parm_up/down_cursor
-**  		and cursor_up/down.
-*/
+/****************************************************************************
+ *
+ * Physical-scrolling support
+ *
+ ****************************************************************************/
 
-static void
-row(struct Sequence *outseq,	/* where to put the output */
-int orow, int nrow)		/* old, new cursor locations */
+int scrolln(int n, int top, int bot, int maxy)
+/* scroll region from top to bot by n lines */
 {
-struct Sequence	seqA, seqB,
-		*best,		/* best sequence so far */
-		*try;		/* next try */
+    int i, oy, ox;
 
-int	parm_cursor, one_step;
+    oy = CURRENT_ROW;
+    ox = CURRENT_COLUMN;
 
-	best = &seqA;
-	try = &seqB;
-
-	if (nrow == orow)
-		return;
-
-	if (nrow < orow) {
-		parm_cursor = P_UP_CURS;
-		one_step = CURS_UP;
-	} else {
-		parm_cursor = P_DOWN_CURS;
-		one_step = CURS_DOWN;
+    TR(TRACE_MOVE, ("scrolln(%d, %d, %d, %d)", n, top, bot, maxy)); 
+    /*
+     * This code was adapted from Keith Bostic's hardware scrolling
+     * support for 4BSD curses.  I translated it to use terminfo
+     * capabilities, narrowed the call interface slightly, and cleaned
+     * up some convoluted tests.
+     *
+     * For this code to work, we must have either
+     * change_scroll_region and scroll forward/reverse commands, or
+     * insert and delete line capabilities.
+     * When the scrolling region has been set, the cursor has to
+     * be at the last line of the region to make the scroll
+     * happen.
+     *
+     * This code makes one aesthetic decision in the opposite way from
+     * BSD curses.  BSD curses preferred pairs of il/dl operations
+     * over scrolls, allegedly because il/dl looked faster.  We, on
+     * the other hand, prefer scrolls because (a) they're just as fast
+     * on modern terminals and (b) using them avoids bouncing an
+     * unchanged bottom section of the screen up and down, which is
+     * visually nasty.
+     */
+    if (n > 0)
+    {
+	if (change_scroll_region && (scroll_forward || parm_index))
+	{
+	    tputs(tparm(change_scroll_region, top, bot), 0, _outch);
+	    onscreen_mvcur(-1, -1, bot, 0, TRUE);
+	    if (parm_index != NULL)
+		tputs(tparm(parm_index, n, 0), n, _outch);
+	    else
+		for (i = 0; i < n; i++)
+		    tputs(scroll_forward, 0, _outch);
+	    tputs(tparm(change_scroll_region, 0, maxy), 0, _outch);
+	    onscreen_mvcur(-1, -1, oy, ox, FALSE);
+	    return(OK);
 	}
 
-	/* try out direct row addressing */
-
-	zero_seq(best);
-	add_op(best, ROW_ADDR, nrow);
-
-	/* try out paramaterized up or down motion */
-
-	if (rel_ok) {
-		zero_seq(try);
-		add_op(try, parm_cursor, abs(orow - nrow));
-		Make_seq_best(best, try);
+	/* Scroll up the block. */
+	if (parm_index && top == 0)
+	{
+	    onscreen_mvcur(oy, ox, bot, 0, TRUE);
+	    tputs(tparm(parm_index, n, 0), n, _outch);
 	}
-
-	/* try getting there one step at a time... */
-
-	if (rel_ok) {
-		zero_seq(try);
-		add_op(try, one_step, abs(orow-nrow));
-		Make_seq_best(best, try);
+	else if (parm_delete_line)
+	{
+	    onscreen_mvcur(oy, ox, top, 0, TRUE);
+	    tputs(tparm(parm_delete_line, n, 0), n, _outch);
 	}
-
-	add_seq(outseq, best);
-}
-
-
-/*
-**	column(outseq, oldcol, newcol)
-**
-**	column() adds the best sequence for moving
-**		the cursor from oldcol to newcol to outseq.
-**	column() considers column_address, parm_left/right_cursor,
-**		simp_col(), and carriage_return followed by simp_col().
-*/
-
-static void column(struct Sequence *outseq,	/* where to put the output */
-int ocol, int ncol)		/* old, new cursor  column */
-{
-struct Sequence	seqA, seqB,
-		*best, *try;
-int		parm_cursor;	/* set to either parm_up/down_cursor */
-
-	best = &seqA;
-	try = &seqB;
-
-	if (ncol == ocol)
-		return;
-
-	if (ncol < ocol)
-		parm_cursor = P_LEFT_CURS;
+	else if (delete_line)
+	{
+	    onscreen_mvcur(oy, ox, top, 0, TRUE);
+	    for (i = 0; i < n; i++)
+		tputs(delete_line, 0, _outch);
+	}
+	else if (scroll_forward && top == 0)
+	{
+	    onscreen_mvcur(oy, ox, bot, 0, TRUE);
+	    for (i = 0; i < n; i++)
+		tputs(scroll_forward, 0, _outch);
+	}
 	else
-		parm_cursor = P_RIGHT_CURS;
+	    return(ERR);
 
-	/* try out direct column addressing */
-
-	zero_seq(best);
-	add_op(best, COL_ADDR, ncol);
-
-	/* try carriage_return then simp_col() */
-
-	if(! rel_ok  ||  (ncol < ocol)) {
-		zero_seq(try);
-		add_op(try, CARRIAGE_RETURN, 1);
-		simp_col(try, 0, ncol);
-		Make_seq_best(best, try);
+	/* Push down the bottom region. */
+	onscreen_mvcur(top, 0, bot - n + 1, 0, FALSE);
+	if (parm_insert_line)
+	    tputs(tparm(parm_insert_line, n, 0), n, _outch);
+	else if (insert_line)
+	    for (i = 0; i < n; i++)
+		tputs(insert_line, 0, _outch);
+	else
+	    return(ERR);
+	onscreen_mvcur(bot - n + 1, 0, oy, ox, FALSE);
+    }
+    else /* (n < 0) */
+    {
+	if (change_scroll_region && (scroll_reverse || parm_rindex))
+	{
+	    tputs(tparm(change_scroll_region, top, bot), 0, _outch);
+	    onscreen_mvcur(-1, -1, top, 0, TRUE);
+	    if (parm_rindex)
+		tputs(tparm(parm_rindex, -n, 0), -n, _outch);
+	    else
+		for (i = n; i < 0; i++)
+		    tputs(scroll_reverse, 0, _outch);
+	    tputs(tparm(change_scroll_region, 0, maxy), 0, _outch);
+	    onscreen_mvcur(-1, -1, oy, ox, FALSE);
+	    return(OK);
 	}
-	if(rel_ok) {
-		/* try out paramaterized left or right motion */
 
-		zero_seq(try);
-		add_op(try, parm_cursor, abs(ocol - ncol));
-		Make_seq_best(best, try);
+	/* Preserve the bottom lines. */
+	onscreen_mvcur(oy, ox, bot + n + 1, 0, TRUE);
+	if (parm_rindex && bot == maxy)
+	    tputs(tparm(parm_rindex, -n, 0), -n, _outch);
+	else if (parm_delete_line)
+	    tputs(tparm(parm_delete_line, -n, 0), -n, _outch);
+	else if (delete_line)
+	    for (i = n; i < 0; i++)
+		tputs(delete_line, 0, _outch);
+	else if (scroll_reverse && bot == maxy)
+	    for (i = n; i < 0; i++)
+		tputs(scroll_reverse, 0, _outch);
+	else
+	    return(ERR);
 
-		/* try getting there with simp_col() */
+	/* Scroll the block down. */
+	onscreen_mvcur(bot + n + 1, 0, top, 0, FALSE);
+	if (parm_insert_line)
+	    tputs(tparm(parm_insert_line, -n, 0), -n, _outch);
+	else if (insert_line)
+	    for (i = n; i < 0; i++)
+		tputs(insert_line, 0, _outch);
+	else
+	    return(ERR);
+	onscreen_mvcur(top, 0, oy, ox, FALSE);
+    }
 
-		zero_seq(try);
-		simp_col(try, ocol, ncol);
-		Make_seq_best(best, try);
-	}
-
-	add_seq(outseq, best);
+    return(OK);
 }
 
+#ifdef MAIN
+#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
+#include "tic.h"
+#include "dump_entry.h"
 
-/*
-** 	simp_col(outseq, oldcol, newcol)
-**
-**	simp_col() adds the best simple sequence for getting
-**		from oldcol to newcol to outseq.
-**	simp_col() considers (back_)tab and cursor_left/right.
-**
-**  Revisions needed:
-**	Simp_col asssumes that the cost of a (back_)tab
-**	is less then the cost of one-stepping to get to the same column.
-**	Should sometimes use overprinting instead of cursor_right.
-*/
+char *progname = "mvcur";
 
-static void
-simp_col( struct Sequence *outseq,		/* place to put sequence */
-int oc, int nc)				/* old column, new column */
+int tputs(char *string, int affcnt, int (*outc)(char))
+/* stub tputs() that dumps sequences in a visible form */
 {
-struct Sequence	seqA, seqB, tabseq,
-		*best, *try;
-int	mytab, tabs, onepast,
-		one_step, opp_step; 
+    if (!profiling)
+	(void) fputs(visbuf(string), stdout);
+    return(OK);
+}
 
-	onepast = -1;
-	
-	if (oc == nc)
-		return;
+int putp(char *string)
+{
+    return(tputs(string, 1, _outch));
+}
 
-	if(! rel_ok) {
-		outseq->cost = INFINITY;
-		return;
+static char	tname[BUFSIZ];
+
+static void load_term(void)
+{
+    int	errret;
+
+    (void) setupterm(tname, 1, &errret);
+    if (errret == 1)
+	(void) printf("Loaded \"%s\" entry.\n", tname);
+    else
+	(void) printf("Load failed, error %d.\n", errret);
+}
+
+int roll(int n)
+{
+    int i, j;
+
+    i = (RAND_MAX / n) * n;
+    while ((j = rand()) >= i)
+	continue;
+    return (j % n);
+}
+
+int main(int argc, char *argv[])
+{
+    (void) strcpy(tname, getenv("TERM"));
+    load_term();
+    setupscreen(lines, columns);
+    make_hash_table(info_table, info_hash_table);
+
+    (void) puts("The mvcur tester.  Type ? for help");
+    for (;;)
+    {
+	int	fy, fx, ty, tx, n, i;
+	char	buf[BUFSIZ], capname[BUFSIZ];
+
+	(void) fputs("> ", stdout);
+	(void) fgets(buf, sizeof(buf), stdin);
+
+	if (buf[0] == '?')
+	{
+(void) puts("?                -- display this help message");
+(void) puts("fy fx ty tx      -- (4 numbers) display (fy,fx)->(ty,tx) move");
+(void) puts("s[croll] n t b m -- display scrolling sequence");
+(void) printf("r[eload]         -- reload terminal info for %s\n",
+	      getenv("TERM"));
+(void) puts("l[oad] <term>    -- load terminal info for type <term>");
+(void) puts("nl               -- assume NL -> CR/LF when computing (default)");
+(void) puts("nonl             -- don't assume NL -> CR/LF when computing");
+(void) puts("d[elete] <cap>   -- delete named capability");
+(void) puts("i[nspect]        -- display terminal capabilities");
+(void) puts("t[orture] <num>  -- torture-test with <num> random moves");
+(void) puts("q[uit]           -- quit the program");
 	}
+	else if (sscanf(buf, "%d %d %d %d", &fy, &fx, &ty, &tx) == 4)
+	{
+	    struct timeval before, after;
 
-	best = &seqA;
-	try  = &seqB;
+	    putchar('"');
 
-	if(oc < nc) {
-		mytab = TAB;
+	    gettimeofday(&before, NULL);
+	    mvcur(fy, fx, ty, tx);
+	    gettimeofday(&after, NULL);
 
-		if (init_tabs > 0  &&  op_info[TAB] < INFINITY) {
-			tabs = (nc / init_tabs) - (oc / init_tabs);
-			onepast = ((nc / init_tabs) + 1) * init_tabs;
-			if (tabs)
-				oc = onepast - init_tabs; /* consider it done */
-		} else {
-			tabs = 0;
+	    printf("\" (%ld msec)\n",
+		after.tv_usec - before.tv_usec + (after.tv_sec - before.tv_sec) * 1000000);
+	}
+	else if (sscanf(buf, "s %d %d %d %d", &fy, &fx, &ty, &tx) == 4)
+	{
+	    struct timeval before, after;
+
+	    putchar('"');
+
+	    gettimeofday(&before, NULL);
+	    scrolln(fy, fx, ty, tx);
+	    gettimeofday(&after, NULL);
+
+	    printf("\" (%ld msec)\n",
+		after.tv_usec - before.tv_usec + (after.tv_sec - before.tv_sec) * 1000000);
+	}
+	else if (buf[0] == 'r')
+	{
+	    (void) strcpy(tname, getenv("TERM"));
+	    load_term();
+	}
+	else if (sscanf(buf, "l %s", tname) == 1)
+	{
+	    load_term();
+	}
+	else if (strncmp(buf, "nl", 2) == 0)
+	{
+	    NLMAPPING = TRUE;
+	    (void) puts("NL -> CR/LF will be assumed.");
+	}
+	else if (strncmp(buf, "nonl", 4) == 0)
+	{
+	    NLMAPPING = FALSE;
+	    (void) puts("NL -> CR/LF will not be assumed.");
+	}
+	else if (sscanf(buf, "d %s", capname) == 1)
+	{
+	    struct name_table_entry	*np = find_entry(capname,
+							 info_hash_table);
+
+	    if (np == NULL)
+		(void) printf("No such capability as \"%s\"\n", capname);
+	    else
+	    {
+		switch(np->nte_type)
+		{
+		case BOOLEAN:
+		    cur_term->type.Booleans[np->nte_index] = FALSE;
+		    (void) printf("Boolean capability `%s' (%d) turned off.\n",
+				  np->nte_name, np->nte_index);
+		    break;
+
+		case NUMBER:
+		    cur_term->type.Numbers[np->nte_index] = -1;
+		    (void) printf("Number capability `%s' (%d) set to -1.\n",
+				  np->nte_name, np->nte_index);
+		    break;
+
+		case STRING:
+		    cur_term->type.Strings[np->nte_index] = (char *)NULL;
+		    (void) printf("String capability `%s' (%d) deleted.\n",
+				  np->nte_name, np->nte_index);
+		    break;
 		}
-		one_step = CURS_RIGHT;
-		opp_step = CURS_LEFT;
-	} else {
-		mytab = BACK_TAB;
-		if (init_tabs > 0  &&  op_info[BACK_TAB] < INFINITY) {
-			tabs = (oc / init_tabs) - (nc / init_tabs);
-			onepast = ((nc - 1) / init_tabs) * init_tabs;
-			if (tabs)
-				oc = onepast + init_tabs; /* consider it done */
-		} else {
-			tabs = 0;
-		}
-		one_step = CURS_LEFT;
-		opp_step = CURS_RIGHT;
+	    }
 	}
-
-	/* tab as close as possible to nc */
-
-	zero_seq(&tabseq);
-	add_op(&tabseq, mytab, tabs);
-
-	/* try extra tab and backing up */
-
-	zero_seq(best);
-
-	if (onepast >= 0  &&  onepast < columns) {
-		add_op(best, mytab, 1);
-		add_op(best, opp_step, abs(onepast - nc));
-	} else {
-		best->cost = INFINITY;	/* make sure of next swap */
+	else if (buf[0] == 'i')
+	{
+	     dump_init(F_TERMINFO, S_TERMINFO, 70, 0);
+	     dump_entry(&cur_term->type, NULL);
+	     putchar('\n');
 	}
+	else if (sscanf(buf, "t %d", &n) == 1)
+	{
+	    float cumtime = 0;
 
-	/* try stepping to nc */
-
-	zero_seq(try);
-	add_op(try, one_step, abs(nc - oc));
-	Make_seq_best(best, try);
-	
-	if (tabseq.cost < INFINITY)
-		add_seq(outseq, &tabseq);
-	add_seq(outseq, best);
-}
-
-
-/*
-**	zero_seq(seq) empties seq.
-**	add_seq(seq1, seq2) adds seq1 to seq2.
-**	out_seq(seq) outputs a sequence.
-*/
-
-static void
-zero_seq(seq)
-struct Sequence	*seq;
-{
-	seq->end = seq->vec;
-	seq->cost = 0;
-}
-
-static void
-add_seq(struct Sequence	*seq1, struct Sequence *seq2)
-{
-int	*vptr;
-
-	T(("add_seq(%x, %x)", seq1, seq2));
-
-	if(seq1->cost >= INFINITY  ||  seq2->cost >= INFINITY)
-		seq1->cost = INFINITY;
-	else {
-		vptr = seq2->vec;
-		while (vptr != seq2->end)
-		*(seq1->end++) = *(vptr++);
-		seq1->cost += seq2->cost;
+	    srand(getpid() + time((time_t *)0));
+	    profiling = TRUE;
+	    for (i = 0; i < n; i++)
+	    {
+		mvcur(roll(lines), roll(columns), roll(lines), roll(columns));
+		if (diff)
+		    cumtime += diff;
+	    }
+	    profiling = FALSE;
+	    (void) printf("%d moves in %d secs; %f 28.8Kbps char-xmits.\n",
+		n, (int)cumtime, cumtime/(n * 288));
 	}
+	else if (buf[0] == 'x' || buf[0] == 'q')
+	    break;
+	else
+	    (void) puts("Invalid command.");
+    }
+
+    return(0);
 }
 
+#endif /* MAIN */
 
-static void
-out_seq(struct Sequence *seq)
-{
-int	*opptr, prm[9], ps, p, op;
-int	count;
-char	*sequence();
-
-	T(("out_seq(%x)", seq));
-
-	if (seq->cost >= INFINITY)
-		return;
-
-	for (opptr = seq->vec;  opptr < seq->end;  opptr++) {
-		op = *opptr;			/* grab operator */
-		ps = -op_info[op];
-		if(ps > 0) {				/* parameterized */
-			for (p = 0;  p < ps;  p++)	/* fill in needed parms */
-				prm[p] = *(++opptr);
-
-			putp(tparm(sequence(op),
-				prm[0], prm[1], prm[2], prm[3], prm[4],
-				prm[5], prm[6], prm[7], prm[8]));
-		} else {
-			count = *(++opptr);
-			/*rev should save tputs output instead of mult calls */
-			while (count--)			/* do count times */
-				putp(sequence(op));
-		}
-	}
-}
-
-
-/*
-**	update_ops()
-**
-**	update_ops() makes sure that
-**	the op_info[] array is updated and initializes
-**	the cost array for SP if needed.
-*/
-
-static void
-update_ops()
-{
-	T(("update_ops()"));
-
-	if (SP) {			/* SP structure exists */
-	int op; 
-
-		if (! SP->_costinit) {	/* this term not yet assigned costs */
-			loc_init = FALSE;	/* if !SP in the future, new term */
-			init_costs(SP->_costs);	/* fill term costs */
-			SP->_costinit = TRUE;
-		}
-
-		for (op = 0;  op < NUM_NPARM;  op++)
-			op_info[op] = SP->_costs[op];	/* set up op_info */
-		
-		/* check for newline that might be mapped... */
-
-		if (SP->_nlmapping  &&  index(sequence(CURS_DOWN), '\n'))
-			op_info[CURS_DOWN] = INFINITY;
-	} else {
-		if (! loc_init) {		/* using local costs */
-			loc_init = TRUE;
-			init_costs(op_info);		/* set up op_info */
-		}
-
-		/* check for newline that might be mapped... */
-
-		if (index(sequence(CURS_DOWN), '\n'))
-			op_info[CURS_DOWN] = INFINITY;
-	}
-}
-
-
-/*
-**	init_costs(costs)
-**
-**	init_costs() fills the array costs[NUM_NPARM]
-** 	with costs calculated by doing tputs() calls.
-*/
-
-static void
-init_costs(int costs[])
-{
-int	i;
-
-	for (i = 0;  i < NUM_NPARM;  i++) {
-		if (sequence(i) != (char *) 0) {
-			c_count = 0;
-			tputs(sequence(i), 1, countc);
-			costs[i] = c_count;
-		} else
-			costs[i] = INFINITY;
-	}
-}
-
-
-/*
-**	countc() increments global var c_count.
-*/
-
-static int countc(char ch)
-{
-	return(c_count++);
-}
-
-/*
-**	add_op(seq, op, p0, p1, ... , p8)
-**
-**	add_op() adds the operator op and the appropriate
-**  	number of paramaters to seq.  It also increases the 
-**  	cost appropriately.
-**	if op has no parameters, p0 is taken to be a count.
-*/
-
-static void add_op(struct Sequence *seq, int op, ...)
-{
-va_list	argp;
-int	num_ps, p;
-	
-	T(("adding op %d to sequence", op));
-
-	va_start(argp, op);
-	
-	num_ps = - op_info[op];		/* get parms or -cost */
-
-	*(seq->end++) = op;
-
-	if (num_ps == (- INFINITY)  ||  sequence(op) == (char *) 0) {
-		seq->cost = INFINITY;
-	} else if (num_ps <= 0) {		/* no parms, -cost */
-		int i = va_arg(argp, int);
-		seq->cost -= i * num_ps;	/* ADD count * cost */
-		*(seq->end++) = i;
-	} else {
-	int prm[9];
-		 
-		for (p = 0;  p < num_ps;  p++)
-			*(seq->end++) = prm[p] = va_arg(argp, int);
-
-		c_count = 0;
-		
-		tputs(tparm(sequence(op), prm[0], prm[1], prm[2], prm[3], prm[4],
-			    prm[5], prm[6], prm[7], prm[8]), 1, countc);
-
-		seq->cost += c_count;
-	}
-	va_end(argp);
-}
-
-
-/*
-**	char	*sequence(op)
-**
-**	sequence() returns a pointer to the op's
-**      terminal control sequence.
-*/
-
-static char *sequence(int op)
-{
-	T(("sequence(%d)", op));
-
-	switch(op) {
-		case CARRIAGE_RETURN:
-			return (carriage_return);
-		case CURS_DOWN:
-			return (cursor_down);
-		case CURS_HOME:
-			return (cursor_home);
-		case CURS_LEFT:
-			return (cursor_left);
-		case CURS_RIGHT:
-			return (cursor_right);
-		case CURS_TO_LL:
-			return (cursor_to_ll);
-		case CURS_UP:
-			return (cursor_up);
-		case TAB:
-			return (tab);
-		case BACK_TAB:
-			return (back_tab);
-		case ROW_ADDR:
-			return (row_address);
-		case COL_ADDR:
-			return (column_address);
-		case P_DOWN_CURS:
-			return (parm_down_cursor);
-		case P_LEFT_CURS:
-			return (parm_left_cursor);
-		case P_RIGHT_CURS:
-			return (parm_right_cursor);
-		case P_UP_CURS:
-			return (parm_up_cursor);
-		case CURS_ADDR:
-			return (cursor_address);
-		default:
-			return ((char *) 0);
-	}
-}
-
-#endif
-
+/* lib_mvcur.c ends here */

@@ -14,7 +14,7 @@
  *             nothing changes on the display.                       *
  *********************************************************************/
   
-#  include <ncurses.h>         /* ncurses include lives here */
+#include <curses.h>         /* ncurses include lives here */
 
 main()
 {

@@ -4,23 +4,23 @@
 \fBmvinsstr\fR, \fBmvinsnstr\fR, \fBmvwinsstr\fR, \fBmvwinsnstr\fR - insert
 string before cursor a \fBncurses\fR window
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 .br
-\fBint insstr(char *str);\fR
+\fBint insstr(char *const str);\fR
 .br
-\fBint insnstr(char *str, int n);\fR
+\fBint insnstr(char *const str, int n);\fR
 .br
-\fBint winsstr(WINDOW *win, char *str);\fR
+\fBint winsstr(WINDOW *win, char *const str);\fR
 .br
-\fBint winsnstr(WINDOW *win, char *str, int n);\fR
+\fBint winsnstr(WINDOW *win, char *const str, int n);\fR
 .br
-\fBint mvinsstr(int y, int x, char *str);\fR
+\fBint mvinsstr(int y, int x, char *const str);\fR
 .br
-\fBint mvinsnstr(int y, int x, char *str, int n);\fR
+\fBint mvinsnstr(int y, int x, char *const str, int n);\fR
 .br
-\fBint mvwinsstr(WINDOW *win, int y, int x, char *str);\fR
+\fBint mvwinsstr(WINDOW *win, int y, int x, char *const str);\fR
 .br
-\fBint mvwinsnstr(WINDOW *win, int y, int x, char *str, int n);\fR
+\fBint mvwinsnstr(WINDOW *win, int y, int x, char *const str, int n);\fR
 .br
 .SH DESCRIPTION
 These routines insert a character string (as many characters as will fit on the
@@ -40,13 +40,16 @@ Calling \fBwinch\fR after adding a control character (and moving to
 it, if necessary) does not return the control character, but instead
 returns a character in the the ^-representation of the control character.
 .SH RETURN VALUE
-All routines return the integer \fBERR\fR upon failure and an integer value
-other than \fBERR\fR upon successful completion.
-.SH BUGS
-Entry points for these functions are in ncurses.h but they are not
-implemented as of ncurses 1.8.6.
+All routines that return an integer return \fBERR\fR upon failure and OK (SVr4
+specifies only "an integer value other than \fBERR\fR") upon successful
+completion, unless otherwise noted in the preceding routine descriptions.
 .SH NOTES
 Note that all but \fBwinsnstr\fR may be macros.
+.SH PORTABILITY
+These functions are described in the XSI Curses draft, which adds const
+qualifiers to the arguments.  The XSI Curses error conditions \fBEILSEQ\fR and
+\fBEILOVERFLOW\fR are not yet detected (\fBncurses\fR does not yet support XPG4
+multibyte characters).
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_clear\fR(3X), \fBcurs_inch\fR(3X).
 .\"#

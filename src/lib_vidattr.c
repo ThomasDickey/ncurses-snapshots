@@ -2,7 +2,7 @@
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*                ncurses is copyright (C) 1992, 1993, 1994                 *
+*                ncurses is copyright (C) 1992-1995                        *
 *                          by Zeyd M. Ben-Halim                            *
 *                          zmbenhal@netcom.com                             *
 *                                                                          *
@@ -69,7 +69,7 @@ int fg, bg;
 
 #define previous_attr SP->_current_attr
 
-int vidputs(chtype newmode, int  (*outc)(char))
+int vidputs(attr_t newmode, int  (*outc)(char))
 {
 chtype	turn_off = (~newmode & previous_attr) & ~A_COLOR;
 chtype	turn_on  = (newmode & ~previous_attr) & ~A_COLOR;
@@ -131,6 +131,15 @@ chtype	turn_on  = (newmode & ~previous_attr) & ~A_COLOR;
 		if ((turn_off & A_STANDOUT)  &&  exit_standout_mode)
 		    tputs(exit_standout_mode, 1, outc);
 
+#ifdef A_PCCHARSET
+		/*
+		 * exit_pc_charset_mode is a defined SVr4 terminfo
+		 * A_PCCHARSET is an ncurses invention to invoke it
+		 */
+		if ((turn_off & A_PCCHARSET)  &&  exit_pc_charset_mode)
+			tputs(exit_pc_charset_mode, 1, outc);
+#endif /* A_PCCHARSET */
+
 		T(("turning %x on", _traceattr(turn_on)));
 
 		if ((turn_on & A_ALTCHARSET) && enter_alt_charset_mode) 
@@ -160,6 +169,15 @@ chtype	turn_on  = (newmode & ~previous_attr) & ~A_COLOR;
 		if ((turn_on & A_UNDERLINE)  &&  enter_underline_mode)
 			tputs(enter_underline_mode, 1, outc);
 
+#ifdef A_PCCHARSET
+		/*
+		 * enter_pc_charset_mode is a defined SVr4 terminfo
+		 * A_PCCHARSET is an ncurses invention to invoke it
+		 */
+		if ((turn_on & A_PCCHARSET)  &&  enter_pc_charset_mode)
+			tputs(enter_pc_charset_mode, 1, outc);
+#endif /* A_PCCHARSET */
+
 	}
 
 	if (SP->_coloron) {
@@ -178,11 +196,48 @@ chtype	turn_on  = (newmode & ~previous_attr) & ~A_COLOR;
 	return OK;
 }
 
-int vidattr(chtype newmode)
+int vidattr(attr_t newmode)
 {
 
 	T(("vidattr(%x) called", newmode));
 
 	return(vidputs(newmode, _outch));
+}
+
+attr_t termattrs(void)
+{
+	int attrs = A_NORMAL;
+
+	if (enter_alt_charset_mode)
+		attrs |= A_ALTCHARSET;
+
+	if (enter_blink_mode)
+		attrs |= A_BLINK;
+
+	if (enter_bold_mode)
+		attrs |= A_BOLD;
+
+	if (enter_dim_mode)
+		attrs |= A_DIM;
+
+	if (enter_reverse_mode)
+		attrs |= A_REVERSE;
+
+	if (enter_standout_mode)
+		attrs |= A_STANDOUT;
+
+	if (enter_protected_mode)
+		attrs |= A_PROTECT;
+
+	if (enter_secure_mode)
+		attrs |= A_INVIS;
+
+	if (enter_underline_mode)
+		attrs |= A_UNDERLINE;
+
+	if (SP->_coloron)
+		attrs |= A_COLOR;
+
+	return(attrs);
 }
 

@@ -28,8 +28,43 @@
 #include "unctrl.h"
 #include "curses.priv.h"
 
+#define ALL_BUT_COLOR ((chtype)~(A_COLOR))
+
+int wattron(WINDOW *win, const attr_t at)
+{
+	T(("wattron(%x,%s) current = %s", win, _traceattr(at), _traceattr(win->_attrs)));
+	if (PAIR_NUMBER(at) > 0x00) {
+		win->_attrs = (win->_attrs & ALL_BUT_COLOR) | at ;
+		T(("new attribute is %s", _traceattr(win->_attrs)));
+	} else {
+		win->_attrs |= at;
+		T(("new attribute is %s", _traceattr(win->_attrs)));
+	}
+	return OK;
+}
+
+int wattroff(WINDOW *win, const attr_t at)
+{
+#define IGNORE_COLOR_OFF FALSE
+
+	T(("wattroff(%x,%s) current = %s", win, _traceattr(at), _traceattr(win->_attrs)));
+	if (IGNORE_COLOR_OFF == TRUE) {
+		if (PAIR_NUMBER(at) == 0xff) /* turn off color */
+			win->_attrs &= ~at;
+		else /* leave color alone */
+			win->_attrs &= ~(at|ALL_BUT_COLOR);
+	} else {
+		if (PAIR_NUMBER(at) > 0x00) /* turn off color */
+			win->_attrs &= ~at;
+		else /* leave color alone */
+			win->_attrs &= ~(at|ALL_BUT_COLOR);
+	}
+	T(("new attribute is %s", _traceattr(win->_attrs)));
+	return OK;
+}
+
 static int
-wladdch(WINDOW *win, chtype c, bool literal)
+wladdch(WINDOW *win, const chtype c, const bool literal)
 {
 int	x, y;
 int	newx;
@@ -40,6 +75,11 @@ chtype	ch = c;
 
 	if (y > win->_maxy  ||  x > win->_maxx  ||  y < 0  ||  x < 0)
 	    	return(ERR);
+
+#ifdef A_PCCHARSET
+	if (ch & A_PCCHARSET)
+		goto noctrl;
+#endif /* A_PCCHARSET */
 
 	if (ch & A_ALTCHARSET)
 		goto noctrl;
@@ -71,27 +111,27 @@ chtype	ch = c;
 
 		/* FALL THROUGH */
         noctrl:
-        	T(("win attr = %x", win->_attrs));
+        	TR(TRACE_VIRTPUT, ("win attr = %x", win->_attrs));
 		ch |= win->_attrs;
 
-		if (win->_line[y][x]&A_CHARTEXT == ' ')
+		if (win->_line[y].text[x]&A_CHARTEXT == ' ')
 			ch |= win->_bkgd;
 		else
 			ch |= (win->_bkgd&A_ATTRIBUTES);
-		T(("bkg = %x -> ch = %x", win->_bkgd, ch));
+		TR(TRACE_VIRTPUT, ("bkg = %x -> ch = %x", win->_bkgd, ch));
 
-		if (win->_line[y][x] != ch) {
-		    	if (win->_firstchar[y] == _NOCHANGE)
-				win->_firstchar[y] = win->_lastchar[y] = x;
-		    	else if (x < win->_firstchar[y])
-				win->_firstchar[y] = x;
-		    	else if (x > win->_lastchar[y])
-				win->_lastchar[y] = x;
+		if (win->_line[y].text[x] != ch) {
+		    	if (win->_line[y].firstchar == _NOCHANGE)
+				win->_line[y].firstchar = win->_line[y].lastchar = x;
+		    	else if (x < win->_line[y].firstchar)
+				win->_line[y].firstchar = x;
+		    	else if (x > win->_line[y].lastchar)
+				win->_line[y].lastchar = x;
 
 		}
 
-		win->_line[y][x++] = ch;
-		T(("char %d of line %d is %x", x, y, ch));
+		win->_line[y].text[x++] = ch;
+		TR(TRACE_VIRTPUT, ("char %d of line %d is %x", x, y, ch));
 		if (x > win->_maxx) {
 		    	x = 0;
 do_newline:
@@ -108,19 +148,21 @@ do_newline:
 	win->_curx = x;
 	win->_cury = y;
 
-	T(("waddch() is done"));
+	TR(TRACE_VIRTPUT, ("waddch() is done"));
+
+	wchangesync(win);
 	return(OK);
 }
 
-int waddch(WINDOW *win, chtype ch)
+int waddch(WINDOW *win, const chtype ch)
 {
-	TR(TRACE_CHARPUT, ("waddch(%x,%c (%x)) called", win, ch&A_CHARTEXT, ch));
+	TR(TRACE_VIRTPUT, ("waddch(%x,%c (%x)) called", win, ch&A_CHARTEXT, ch));
 	return wladdch(win, ch, FALSE);
 }
 
 int wechochar(WINDOW *win, chtype ch)
 {
-	T(("wechochar(%x,%c (%x)) called", win, ch&A_CHARTEXT, ch));
+	TR(TRACE_VIRTPUT, ("wechochar(%x,%c (%x)) called", win, ch&A_CHARTEXT, ch));
 
 	return wladdch(win, ch, TRUE);
 }

@@ -144,7 +144,7 @@ FILE *f;
 	if (reset && reset_3string != NULL) {
 		PUTS(reset_3string);
 	} else if (init_2string != NULL) {
-		PUTS(init_3string);
+		PUTS(init_2string);
 	}
 	FLUSH;
 	return 0;
@@ -177,7 +177,8 @@ FILE *f;
 			 		argv[i] = (char *)atoi(argv[i]);
 
 				s = tparm(s,argv[1],argv[2],argv[3],argv[4],
-					    argv[5],argv[6],argv[7],argv[8]);
+					    argv[5],argv[6],argv[7],argv[8],
+					    argv[9]);
 		}
 		fputs(s, stdout);
 		return(0);

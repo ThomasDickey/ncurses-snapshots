@@ -23,19 +23,14 @@
 #define CURSES_H 1
 
 #include <stdio.h>   
-#include <stdarg.h>
-#ifndef NOTERMIOS
-#include <termios.h>
-#ifndef TERMIOS
-#define TERMIOS 1
-#endif
-#else
-#include <sgtty.h>
-#include <sys/ioctl.h>
-#endif
 #include <unctrl.h>
+#include <stdarg.h>
 
-#define bool    char
+#ifndef TRUE
+typedef char	bool;
+#  define TRUE    (1)
+#  define FALSE   (0)
+#endif
 
 typedef unsigned long  chtype;
 
@@ -51,10 +46,16 @@ typedef unsigned long  chtype;
 #define A_ALTCHARSET	0x00400000
 #define A_INVIS		0x00800000
 #define A_PROTECT	0x01000000
+/* bits 0xfe000000 are available for extended attributes */
 #define A_CHARTEXT	0x000000ff
 #define A_COLOR		0x0000ff00
 #define COLOR_PAIR(n)	(n << 8) 
 #define PAIR_NUMBER(a)	((a & A_COLOR) >> 8)
+
+/* extended attributes unique to ncurses */
+#ifdef __i386__
+#define A_PCCHARSET	0x02000000	/* corresponds to smpch/rmpch */
+#endif /* __i386__ */
 
 /* colors */
 extern int COLORS;
@@ -75,17 +76,17 @@ extern unsigned char *color_pairs;
 extern 	chtype acs_map[];
 
 
-#define ACS_ULCORNER	(acs_map['l'])
-#define ACS_LLCORNER	(acs_map['m'])
-#define ACS_URCORNER	(acs_map['k'])
-#define ACS_LRCORNER	(acs_map['j'])
-#define ACS_RTEE	(acs_map['u'])
-#define ACS_LTEE	(acs_map['t'])
-#define ACS_BTEE	(acs_map['v'])
-#define ACS_TTEE	(acs_map['w'])
-#define ACS_HLINE	(acs_map['q'])
-#define ACS_VLINE	(acs_map['x'])
-#define ACS_PLUS	(acs_map['n'])
+#define ACS_ULCORNER	(acs_map['l'])	/* upper left corner */
+#define ACS_LLCORNER	(acs_map['m'])	/* lower left corner */
+#define ACS_URCORNER	(acs_map['k'])	/* upper right corner */
+#define ACS_LRCORNER	(acs_map['j'])	/* lower right corner */
+#define ACS_RTEE	(acs_map['u'])	/* tee pointing left */
+#define ACS_LTEE	(acs_map['t'])	/* tee pointing right */
+#define ACS_BTEE	(acs_map['v'])	/* tee pointing up */
+#define ACS_TTEE	(acs_map['w'])	/* tee pointing down */
+#define ACS_HLINE	(acs_map['q'])	/* horizontal line */
+#define ACS_VLINE	(acs_map['x'])	/* vertical line */
+#define ACS_PLUS	(acs_map['n'])	/* large plus or crossover */
 #define ACS_S1		(acs_map['o'])	/* scan line 1 */
 #define ACS_S9		(acs_map['s'])	/* scan line 9 */
 #define ACS_DIAMOND	(acs_map['`'])	/* diamond */
@@ -109,52 +110,77 @@ extern 	chtype acs_map[];
 #define ERR     (-1)
 #define OK      (0)
 
-#define _SUBWIN         0x01
-#define _ENDLINE        0x02
-#define _FULLWIN        0x04
-#define _SCROLLWIN      0x08
-#define _ISPAD		0x10
-#define _HASMOVED	0x20
+/* values for the _flags member */
+#define _SUBWIN         0x01	/* is this a sub-window? */
+#define _ENDLINE        0x02	/* is the window flush right? */
+#define _FULLWIN        0x04	/* is the window full-screen? */
+#define _SCROLLWIN      0x08	/* bottom edge is at screen bottom? */
+#define _ISPAD	        0x10	/* is this window a pad? */
+#define _HASMOVED       0x20	/* has cursor moved since last refresh? */
 
+/*
+ * this value is used in the firstchar and lastchar fields to mark 
+ * unchanged lines
+ */
 #define _NOCHANGE       -1
+
+/*
+ * this value is used in the oldindex field to mark lines created by insertions
+ * and scrolls.
+ */
+#define NEWINDEX	-1
 
 typedef struct screen  SCREEN;
 typedef struct _win_st WINDOW;
 
+typedef	int	attr_t;
+
 struct _win_st {
 	short   _cury, _curx;	/* current cursor position */
-	short   _maxy, _maxx;	/* maximum values of x and y NOT the screen dimensions */
-	short   _begy, _begx;
-	short   _flags;
-	chtype  _attrs;
-	chtype  _bkgd;
 
-	/* The following should be consolidated into one bitset */
-	bool	_notimeout;
-	bool	_use_idc;
-	bool    _clear;
-	bool    _leave;
-	bool    _scroll;
-	bool    _idlok;
-	bool	_immed;
-	bool	_sync;
-	bool    _use_keypad;    /* 0=no, 1=yes */
-	bool    _use_meta;      /* T=use the meta key */
+	/* window location and size */
+	short   _maxy, _maxx;	/* maximums of x and y, NOT window size */
+	short   _begy, _begx;	/* screen coords of upper-left-hand corner */
 
-	int	_delay;		/* 0 = nodelay
-		   		  <0 = blocking
-		   		  >0 = delay */
-	chtype  **_line;
-	short   *_firstchar;    /* First changed character in the line */
-	short   *_lastchar;     /* Last changed character in the line */
-	short	_regtop;	/* Top and bottom of scrolling region */
-	short	_regbottom;
-	int	_parx;
-	int	_pary;
-	WINDOW	*_parent;	/* parent if a sub-window */
+	short   _flags;		/* window state flags */
+
+	/* attribute tracking */
+	attr_t  _attrs;		/* current attribute for non-space character */
+	chtype  _bkgd;		/* current background char/attribute pair */
+
+	/* option values set by user */
+	bool	_notimeout;	/* no time out on function-key entry? */
+	bool    _clear;		/* consider all data in the window invalid? */
+	bool    _leave;		/* OK to not reset cursor on exit? */
+	bool    _scroll;	/* OK to scroll this window? */
+	bool    _idlok;		/* OK to use insert/delete line? */
+	bool    _idcok;		/* OK to use insert/delete char? */
+	bool	_immed;		/* window in immed mode? (not yet used) */
+	bool	_sync;		/* window in sync mode? */
+	bool    _use_keypad;    /* process function keys into KEY_ symbols? */
+	int	_delay;		/* 0 = nodelay, <0 = blocking, >0 = delay */
+
+	/* the actual line data */
+	struct ldat
+	{
+	    chtype  *text;	/* text of the line */
+	    short   firstchar;  /* first changed character in the line */
+	    short   lastchar;   /* last changed character in the line */
+	    short   oldindex;	/* index of the line at last update */
+	}
+	*_line;
+
+	/* global screen state */
+	short	_regtop;	/* top line of scrolling region */
+	short	_regbottom;	/* bottom line of scrolling region */
+
+	/* these are used only if this is a sub-window */
+	int	_parx;		/* x coordinate of this window in parent */
+	int	_pary;		/* y coordinate of this window in parent */
+	WINDOW	*_parent;	/* pointer to parent if a sub-window */
 };
 
-extern WINDOW	*stdscr, *curscr;
+extern WINDOW   *stdscr, *curscr, *newscr;
 
 extern int	LINES, COLS;
 
@@ -172,27 +198,36 @@ extern char *tigetstr(char *);
 
 extern void _init_trace(void);
 extern void _tracef(char *, ...);
+extern void _tracedump(char *, WINDOW *);
 extern char *_traceattr(int mode);
 extern char *_tracechar(const unsigned char mode);
 extern void trace(const unsigned int tracelevel);
 
 /* trace masks */
 #define TRACE_DISABLE	0x00	/* turn off tracing */
-#define TRACE_ORDINARY	0x01	/* ordinary trace mode */
-#define TRACE_CHARPUT	0x02	/* also trace all character outputs */
+#define TRACE_UPDATE	0x01	/* trace update actions, old & new screens */
+#define TRACE_MOVE	0x02	/* trace cursor moves and scrolls */
+#define TRACE_CALLS	0x04	/* trace curses calls */
+#define TRACE_CHARPUT	0x08	/* trace all character outputs */
+#define TRACE_VIRTPUT	0x10	/* trace virtual character puts */
 #define TRACE_MAXIMUM	0x0f	/* maximum trace level */
+
+#ifdef TRACE
+extern bool no_optimize;	/* suppress optimization */
+#endif /* TRACE */
 
 /* function prototypes */
 
 extern int baudrate(void);
 extern int beep(void);
 extern int cbreak(void);
-extern int clearok(WINDOW *,int);
+extern int clearok(WINDOW *,bool);
 extern int copywin(WINDOW *,WINDOW *,int,int,int,int,int,int,int);
 extern int curs_set(int);
 extern int def_prog_mode(void);
 extern int def_shell_mode(void);
-extern int delay_output(int);
+extern int delay_output(float);
+extern void delscreen(SCREEN *SP);
 extern int delwin(WINDOW *);
 extern WINDOW *derwin(WINDOW *,int,int,int,int);
 extern int doupdate(void);
@@ -202,20 +237,24 @@ extern int endwin(void);
 extern char erasechar(void);
 extern int flash(void);
 extern int flushinp(void);
+extern WINDOW *getwin(FILE *fp);
 extern int halfdelay(int);
-extern int idlok(WINDOW *,int);
+extern int idcok(WINDOW *, bool);
+extern int idlok(WINDOW *, bool);
+extern int immedok(WINDOW *, bool);
 extern int intrflush(WINDOW *,bool);
 extern int is_linetouched(WINDOW *,int);
 extern int is_wintouched(WINDOW *);
 extern WINDOW *initscr(void);
 extern int isendwin(void);
 extern char *keyname(int);
-extern int keypad(WINDOW *,int);
+extern int keypad(WINDOW *,bool);
 extern char killchar(void);
-extern int leaveok(WINDOW *,int);
+extern int leaveok(WINDOW *,bool);
 extern char *longname(void);
-extern int meta(WINDOW *,int);
+extern int meta(WINDOW *,bool);
 extern int mvcur(int,int,int,int);
+extern int mvderwin(WINDOW *, int, int);
 extern int mvprintw(int,int,char *,...);
 extern int mvscanw(int,int,char *,...);
 extern int mvwin(WINDOW *,int,int);
@@ -226,50 +265,59 @@ extern SCREEN *newterm(char *,FILE *,FILE *);
 extern WINDOW *newwin(int,int,int,int);
 extern int nl(void);
 extern int nocbreak(void);
-extern int nodelay(WINDOW *,int);
+extern int nodelay(WINDOW *,bool);
 extern int noecho(void);
 extern int nonl(void);
+extern int noqiflush(void);
 extern int noraw(void);
 extern int notimeout(WINDOW *,bool);
-extern int overlay(WINDOW *,WINDOW *);
-extern int overwrite(WINDOW *,WINDOW *);
+extern int overlay(WINDOW *const,WINDOW *);
+extern int overwrite(WINDOW *const,WINDOW *);
 extern int pechochar(WINDOW *, chtype);
 extern int pnoutrefresh(WINDOW *,int,int,int,int,int,int);
 extern int prefresh(WINDOW *,int,int,int,int,int,int);
 extern int printw(char *,...);
 extern int putp(char *);
+extern int putwin(WINDOW *, FILE *);
+extern int qiflush(void);
 extern int raw(void);
 extern int reset_prog_mode(void);
 extern int reset_shell_mode(void);
 extern int resetty(void);
+extern int restartterm(char *term, int filenum, int *errret);
 extern int ripoffline(int line, int (*init)(WINDOW *, int));
 extern int savetty(void);
 extern int scanw(char *,...);
-extern int scrollok(WINDOW *,int);
+extern int scrollok(WINDOW *,bool);
 extern SCREEN *set_term(SCREEN *);
 extern int setupterm(char *,int,int *);
 extern WINDOW *subwin(WINDOW *,int,int,int,int);
+extern int syncok(WINDOW *win, bool bf);
+extern attr_t termattrs(void);
+extern char *termname(void);
+extern char *tgoto(char *, int, int);
 extern int timeout(int);
 extern char *tparm(char *, ...);
+extern int tputs(char *,int,int (*)(char));
 extern int typeahead(int);
 extern int ungetch(int);
 extern void use_env(bool);
-extern int vidattr(chtype);
-extern int vidputs(chtype,int (*)(char));
+extern int vidattr(attr_t);
+extern int vidputs(attr_t,int (*)(char));
 extern int vwscanw(WINDOW *,char *,va_list);
 extern int vwprintw(WINDOW *,char *,va_list);
-extern int waddch(WINDOW *,chtype);
-extern int waddchnstr(WINDOW *,chtype *,int);
-extern int waddnstr(WINDOW *,char *,int);
-extern int wattron(WINDOW *,chtype);
-extern int wattroff(WINDOW *,chtype);
-extern int wbkgd(WINDOW *,chtype);
+extern int waddch(WINDOW *, const chtype);
+extern int waddchnstr(WINDOW *,chtype *const ,int);
+extern int waddnstr(WINDOW *,char *const,int);
+extern int wattron(WINDOW *,const attr_t);
+extern int wattroff(WINDOW *,const attr_t);
+extern int wbkgd(WINDOW *,const chtype);
 extern int wborder(WINDOW *,chtype,chtype,chtype,chtype,chtype,chtype,chtype,chtype);
 extern int wclear(WINDOW *);
 extern int wclrtobot(WINDOW *);
 extern int wclrtoeol(WINDOW *);
+extern void wcursyncup(WINDOW *);
 extern int wdelch(WINDOW *);
-extern int wdeleteln(WINDOW *);
 extern int wechochar(WINDOW *, chtype);
 extern int werase(WINDOW *);
 extern int wgetch(WINDOW *);
@@ -277,7 +325,7 @@ extern int wgetnstr(WINDOW *,char *,int maxlen);
 extern int whline(WINDOW *,chtype,int);
 extern int winsch(WINDOW *,chtype);
 extern int winsdelln(WINDOW *,int);
-extern int winsnstr(WINDOW *,char *,int);
+extern int winsnstr(WINDOW *,char *const,int);
 extern int wmove(WINDOW *,int,int);
 extern int wnoutrefresh(WINDOW *);
 extern int wprintw(WINDOW *,char *,...);
@@ -286,6 +334,8 @@ extern int wrefresh(WINDOW *);
 extern int wscanw(WINDOW *,char *,...);
 extern int wscrl(WINDOW *,int);
 extern int wsetscrreg(WINDOW *,int,int);
+extern void wsyncdown(WINDOW *);
+extern void wsyncup(WINDOW *);
 extern int wtimeout(WINDOW *,int);
 extern int wtouchln(WINDOW *,int,int,int);
 extern int wvline(WINDOW *,chtype,int);
@@ -306,6 +356,9 @@ extern char *slk_label(int);
 extern int slk_clear(void);
 extern int slk_restore(void);
 extern int slk_touch(void);
+extern int slk_attrset(attr_t);
+extern int slk_attron(attr_t);
+extern int slk_attroff(attr_t);
 
 #ifdef __cplusplus
 }
@@ -315,6 +368,7 @@ extern int slk_touch(void);
  * pseudo functions
  */
 #define wgetstr(w, s)		wgetnstr(w, s, -1)
+#define getnstr(w, s, n)	wgetnstr(stdscr, s, n)
 
 #define napms(x)		usleep(1000*x)
 #define setterm(term)		setupterm(term, 1, (int *)0)
@@ -326,25 +380,42 @@ extern int slk_touch(void);
 #define nocrmode()		nocbreak()
 #define gettmode()		
 
+#define has_ic()		(insert_character && delete_character)
+#define has_il()		(insert_line && delete_line)
+
 #define getyx(win,y,x)   	(y = (win)->_cury, x = (win)->_curx)
 #define getbegyx(win,y,x)	(y = (win)->_begy, x = (win)->_begx)
 #define getmaxyx(win,y,x)	(y = (win)->_maxy + 1, x = (win)->_maxx + 1)
+#define getparyx(win,y,x)	(y = (win)->_pary, x = (win)->_parx)
 #define getsyx(y,x)		getyx(stdscr, y, x)
 #define setsyx(y,x)		(stdscr->_cury = y, stdscr->_curx = x)
 
-#define wbkgdset(win,ch)	(win->_bkgd = ch)
+#define wbkgdset(win,ch)	((win)->_bkgd = ch)
 
-/* It seems older SYSV curses define these */
-#define getattrs(win)		(win->_attrs)
+/* XSI curses macros for XPG4 conformance */
+#define getattr(ap)		(*ap = stdscr->_attrs)
+#define wgetattr(win, ap)	(*ap = (win)->_attrs)
+#define wgetbkgd(win)		((win)->_bkgd)
+
+/*
+ * XSI curses deprecates SVr4 vwprintw/vwscanw, which are supposed to use
+ * varargs.h.  It adds new calls vw_printw/vw_scanw, which are supposed to
+ * use POSIX stdarg.h.  The ncurses versions of vwprintw/vwscanw already
+ * use stdarg.h, so...
+ */
+#define vw_printw		vwprintw
+#define vw_scanw		vwscanw
+
+/* It seems older SYSV curses versions define these */
+#define getattrs(win)		((win)->_attrs)
 #define getmaxx(win)		((win)->_maxx + 1)
 #define getmaxy(win)		((win)->_maxy + 1)
 
-#define winch(win)       	((win)->_line[(win)->_cury][(win)->_curx])
+#define winch(win)       	((win)->_line[(win)->_cury].text[(win)->_curx])
 #define wstandout(win)      	(wattrset(win,A_STANDOUT))
 #define wstandend(win)      	(wattrset(win,A_NORMAL))
 #define wattrset(win,at)    	((win)->_attrs = (at))
 
-#define subpad(p,l,c,y,x)	derwin(p,l,c,y,x)
 #define scroll(win)		wscrl(win,1)
 
 #define touchwin(win)		wtouchln((win), 0, (win)->_maxy + 1, 1)
@@ -356,7 +427,9 @@ extern int slk_touch(void);
 #define hline(ch, n)		whline(stdscr, ch, n)
 #define vline(ch, n)		wvline(stdscr, ch, n)
 
-#define winsstr(w, s)		winsnstr(w, s, 0)
+#define winstr(w, s)		winnstr(w, s, -1)
+#define winchstr(w, s)		winchnstr(w, s, -1)
+#define winsstr(w, s)		winsnstr(w, s, -1)
 
 #define redrawwin(w)		wredrawln(w, 0, w->_maxy+1)
 #define waddstr(win,str)	waddnstr(win,str,-1)
@@ -400,6 +473,10 @@ extern int slk_touch(void);
 #define insdelln(n)		winsdelln(stdscr, n)
 #define insstr(s)		winsstr(stdscr, s)
 #define insnstr(s,n)		winsnstr(stdscr, s, n)
+#define instr(s)		winstr(stdscr, s)
+#define innstr(s,n)		winnstr(stdscr, s, n)
+#define inchstr(s)		winchstr(stdscr, s)
+#define inchnstr(s,n)		winchnstr(stdscr, s, n)
 
 /*
  * mv functions
@@ -412,10 +489,14 @@ extern int slk_touch(void);
 #define mvwaddnstr(win,y,x,str,n)	(wmove(win,y,x) == ERR ? ERR : waddnstr(win,str,n))
 #define mvwaddstr(win,y,x,str)  	(wmove(win,y,x) == ERR ? ERR : waddnstr(win,str,-1))
 #define mvwgetstr(win,y,x,str)      	(wmove(win,y,x) == ERR ? ERR : wgetstr(win,str))
+#define mvgetnstr(win,y,x,str,n)    	(wmove(win,y,x) == ERR ? ERR : wgetnstr(stdscr,str,n))
+#define mvwgetnstr(win,y,x,str,n)    	(wmove(win,y,x) == ERR ? ERR : wgetnstr(win,str,n))
 #define mvwinch(win,y,x)        	(wmove(win,y,x) == ERR ? ERR : winch(win))
 #define mvwdelch(win,y,x)       	(wmove(win,y,x) == ERR ? ERR : wdelch(win))
 #define mvwinsch(win,y,x,c)     	(wmove(win,y,x) == ERR ? ERR : winsch(win,c))
 #define mvaddch(y,x,ch)         	mvwaddch(stdscr,y,x,ch)
+#define mvaddchnstr(y,x,str,n)		mvwaddchnstr(stdscr,y,x,str,n)
+#define mvaddchstr(y,x,str)		mvwaddchstr(stdscr,y,x,str)
 #define mvgetch(y,x)            	mvwgetch(stdscr,y,x)
 #define mvaddnstr(y,x,str,n)		mvwaddnstr(stdscr,y,x,str,n)
 #define mvaddstr(y,x,str)       	mvwaddstr(stdscr,y,x,str)
@@ -427,6 +508,14 @@ extern int slk_touch(void);
 #define mvwinsnstr(w, y, x, s, n)	(wmove(w,y,x) == ERR ? ERR : winsnstr(w,s,n))
 #define mvinsstr(y,x,s)			mvwinsstr(stdscr,y,x,s)
 #define mvinsnstr(y,x,s,n)		mvwinsnstr(stdscr,y,x,s,n)
+#define mvwinstr(w, y, x, s)		(wmove(w,y,x) == ERR ? ERR : winstr(w,s))
+#define mvwinnstr(w, y, x, s, n)	(wmove(w,y,x) == ERR ? ERR : winnstr(w,s,n))
+#define mvinstr(y,x,s)			mvwinstr(stdscr,y,x,s)
+#define mvinnstr(y,x,s,n)		mvwinnstr(stdscr,y,x,s,n)
+#define mvwinchstr(w, y, x, s)		(wmove(w,y,x) == ERR ? ERR : winstr(w,s))
+#define mvwinchnstr(w, y, x, s, n)	(wmove(w,y,x) == ERR ? ERR : winnstr(w,s,n))
+#define mvinchstr(y,x,s)		mvwinstr(stdscr,y,x,s)
+#define mvinchnstr(y,x,s,n)		mvwinnstr(stdscr,y,x,s,n)
 
 /* Funny "characters" enabled for various special function keys for input */
 /* Whether such a key exists depend if its definition is in the terminfo entry */

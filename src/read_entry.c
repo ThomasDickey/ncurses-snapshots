@@ -1,7 +1,23 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
  *	read_entry.c -- Routine for reading in a compiled terminfo file
@@ -18,6 +34,8 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <string.h>
+#include <curses.h>
 #include "terminfo.h"
 #include "object.h"
 
@@ -27,7 +45,7 @@
 
 /*
  *	int
- *	read_entry(filename, ptr)
+ *	read_file_entry(filename, ptr)
  *
  *	Read the compiled terminfo entry in the given file into the
  *	structure pointed to by ptr, allocating space for the string
@@ -39,7 +57,7 @@
 
 TERMINAL *cur_term;
 
-int read_entry(char *filename, struct termtype *ptr)
+int read_file_entry(char *filename, TERMTYPE *ptr)
 {
 int		fd;
 int		numread;
@@ -163,17 +181,45 @@ char namebuf[128];
 	return(0);
 }
 
+/*
+ *	read_entry(char *tn, TERMTYPE *tp)
+ *
+ *	Find and read the compiled entry for a given terminal type,
+ *	if it exists.
+ */
+
+int read_entry(char *tn, TERMTYPE *tp)
+{
+char		filename[1024];
+char		*directory = SRCDIR;
+char		*terminfo;
+
+	if ((terminfo = getenv("TERMINFO")) != NULL)
+	    	directory = terminfo;
+
+	/* try a local directory */
+	(void) sprintf(filename, "%s/%c/%s", directory, tn[0], tn);
+	if (read_file_entry(filename, tp) == OK)
+		return(OK);
+
+	/* try the system directory */
+	(void) sprintf(filename, "%s/%c/%s", SRCDIR, tn[0], tn);
+	if (read_file_entry(filename, tp) == OK)
+		return(OK);
+
+	return(ERR);
+}
 
 /*
  *	int
- *	must_swap()
+ *	must_swap(void)
  *
  *	Test whether this machine will need byte-swapping
  *
  */
 
 int
-must_swap()
+must_swap(void)
 {
 union {
     short num;
@@ -183,3 +229,27 @@ union {
 	test.num = 1;
 	return(test.byte[1]);
 }
+
+/*
+ *	bool name_match(namelist, name)
+ *
+ *	Is the given name matched in namelist?
+ */
+
+int name_match(char *namelst, const char *name)
+{
+char *cp, namecopy[NAMESIZE];
+
+	if (namelst == NULL)
+		return(FALSE);
+    	(void) strcpy(namecopy, namelst);
+    	if ((cp = strtok(namecopy, "|")) != NULL)
+    		do {
+			if (strcmp(cp, name) == 0)
+			    return(TRUE);
+    		} while
+		    ((cp = strtok((char *)NULL, "|")) != NULL);
+
+    	return(FALSE);
+}
+
