@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: shlib,v 1.1 1996/06/15 22:16:55 tom Exp $
+# $Id: shlib,v 1.2 1996/06/17 21:45:36 tom Exp $
 # Use this script as a wrapper when running executables linked to shared
 # libraries on systems that use the $LD_LIBRARY_PATH variable and don't embed
 # the soname's path within the linked executable (such as IRIX), e.g,
@@ -25,17 +25,19 @@
 # Using a conventional link, with -L and -l options on Linux results in a
 # statically linked executable, which we don't want at all.
 #
-q=
+q=""
 for p in lib ../lib
 do
 	if test -d $p; then
 		q="$p"
 	fi
 done
-if test -n "$LD_LIBRARY_PATH"; then
-	LD_LIBRARY_PATH="$q:$LD_LIBRARY_PATH"
-else
-	LD_LIBRARY_PATH="$q"
+if test -n "$q" ; then
+	if test -n "$LD_LIBRARY_PATH"; then
+		LD_LIBRARY_PATH="$q:$LD_LIBRARY_PATH"
+	else
+		LD_LIBRARY_PATH="$q"
+	fi
+	export LD_LIBRARY_PATH
 fi
-export LD_LIBRARY_PATH
 eval "$*"

@@ -67,7 +67,7 @@ int set_menu_opts(MENU * menu, Menu_Options opts)
 	{
 	  ITEM **item;
   
-	  if ( (item=menu->items) != 0 )
+	  if ( ((item=menu->items) != (ITEM**)0) )
 	    for(;*item;item++) 
 	      (*item)->value = FALSE;
 	}

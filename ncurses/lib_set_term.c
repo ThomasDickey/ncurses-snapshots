@@ -57,40 +57,43 @@ void delscreen(SCREEN *sp)
 ripoff_t rippedoff[5], *rsp = rippedoff;
 #define N_RIPS (int)(sizeof(rippedoff)/sizeof(rippedoff[0]))
 
-int _nc_setupscreen(short slines, short const scolumns)
+int _nc_setupscreen(short slines, short const scolumns, FILE *output)
 /* OS-independent screen initializations */
 {
-int	topstolen, i;
+int	bottom_stolen = 0, i;
 
 	if (!_nc_alloc_screen())
-	    	return ERR;
+		return ERR;
 
-	SP->_term      	= cur_term;
-	SP->_lines	= slines;
-	SP->_columns	= scolumns;
-	SP->_cursrow   	= -1;
-	SP->_curscol   	= -1;
-	SP->_keytry    	= UNINITIALISED;
-	SP->_nl        	= TRUE;
-	SP->_raw       	= FALSE;
-	SP->_cbreak    	= FALSE;
-	SP->_echo      	= TRUE;
-	SP->_fifohead	= -1;
-	SP->_fifotail 	= 0;
-	SP->_fifopeek	= 0;
-	SP->_endwin	= TRUE;
-	SP->_ofp	= stdout;	/* (may be overridden later) */
-	SP->_coloron	= 0;
+	SP->_term        = cur_term;
+	SP->_lines       = slines;
+	SP->_lines_avail = slines;
+	SP->_columns     = scolumns;
+	SP->_cursrow     = -1;
+	SP->_curscol     = -1;
+	SP->_keytry      = UNINITIALISED;
+	SP->_nl          = TRUE;
+	SP->_raw         = FALSE;
+	SP->_cbreak      = FALSE;
+	SP->_echo        = TRUE;
+	SP->_fifohead    = -1;
+	SP->_fifotail    = 0;
+	SP->_fifopeek    = 0;
+	SP->_endwin      = TRUE;
+	SP->_ofp         = output;      /* (may be overridden later) */
+	SP->_coloron     = 0;
+	SP->_stdscr      = (WINDOW*)NULL;
+	SP->_topstolen   = 0;
 
-	init_acs(); 
+	init_acs();
 
 	T(("creating newscr"));
 	if ((newscr = newwin(slines, scolumns, 0, 0)) == (WINDOW *)NULL)
-	    	return ERR;
+		return ERR;
 
 	T(("creating curscr"));
 	if ((curscr = newwin(slines, scolumns, 0, 0)) == (WINDOW *)NULL)
-	    	return ERR;
+		return ERR;
 
 	SP->_newscr = newscr;
 	SP->_curscr = curscr;
@@ -98,38 +101,37 @@ int	topstolen, i;
 	newscr->_clear = TRUE;
 	curscr->_clear = FALSE;
 
-	topstolen = 0;
 	for (i=0, rsp = rippedoff; rsp->line && (i < N_RIPS); rsp++, i++) {
-		if (rsp->hook)
-		  {
-		    int count = (rsp->line < 0) ? -rsp->line : rsp->line;
-		    WINDOW *w;
+	  if (rsp->hook) {
+	      WINDOW *w;
+	      int count = (rsp->line < 0) ? -rsp->line : rsp->line;
 
-		    if (rsp->line < 0)
-		      {
-			w = newwin(count,scolumns,slines+topstolen-count,0);
-			if (w)
-			  rsp->hook(w, scolumns);
-			else
-			  return ERR;
-		      }
-		    else
-		      {
-			w = newwin(count,scolumns, topstolen,0);
-			if (w)
-			  {
-			    rsp->hook(w, scolumns);
-			    topstolen += count;
-			  }
-			else
-			  return ERR;
-		      }
-		    slines -= count;
+	      if (rsp->line < 0) {
+		  w = newwin(count,scolumns,SP->_lines_avail - count,0);
+		  if (w) {
+		      rsp->w = w;
+		      rsp->hook(w, scolumns);
+		      bottom_stolen += count;
 		  }
+		  else
+		    return ERR;
+	      } else {
+		  w = newwin(count,scolumns, 0, 0);
+		  if (w) {
+		      rsp->w = w;
+		      rsp->hook(w, scolumns);
+		      SP->_topstolen += count;
+		  }
+		  else
+		    return ERR;
+	      }
+	      SP->_lines_avail -= count;
+	  }
 	}
 
 	T(("creating stdscr"));
-    	if ((stdscr = newwin(LINES = slines, scolumns, topstolen, 0)) == NULL)
+	assert ((SP->_lines_avail + SP->_topstolen + bottom_stolen) == slines);
+	if ((stdscr = newwin(LINES = SP->_lines_avail, scolumns, 0, 0)) == NULL)
 		return ERR;
 	SP->_stdscr = stdscr;
 
@@ -153,6 +155,7 @@ _nc_ripoffline(int line, int (*init)(WINDOW *,int))
 
     rsp->line = line;
     rsp->hook = init;
+    rsp->w    = (WINDOW *)NULL;
     rsp++;
 
     return(OK);

@@ -1121,7 +1121,7 @@ int main(int argc, char *argv[])
 {
     (void) strcpy(tname, getenv("TERM"));
     load_term();
-    _nc_setupscreen(lines, columns);
+    _nc_setupscreen(lines, columns, stdout);
     baudrate();
 
     _nc_mvcur_init(SP);

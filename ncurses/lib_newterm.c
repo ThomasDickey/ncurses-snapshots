@@ -101,14 +101,11 @@ char *t = getenv("NCURSES_TRACE");
 	  unsigned int bufsiz = min(LINES * (COLS + 6), 2800);
 
 #if HAVE_SETVBUF
-	  /*
-	   * If your code core-dumps here, you are probably running
-	   * some bastard offspring of an SVR3 on which the setvbuffer(3)
-	   * arguments are reversed.  Autoconf has a test macro for this
-	   * but I have too much else to do to figure out how it works.
-	   * Send us a patch if you care.
-	   */
+#ifdef SETVBUF_REVERSED	/* pre-svr3? */
+	  (void) setvbuf(ofp, malloc(bufsiz), bufsiz, _IOFBF);
+#else
 	  (void) setvbuf(ofp, malloc(bufsiz), _IOFBF, bufsiz);
+#endif
 #elif HAVE_SETBUFFER
 	  (void) setbuffer(ofp, malloc(bufsiz), (int)bufsiz);
 #endif
@@ -152,7 +149,7 @@ char *t = getenv("NCURSES_TRACE");
 		  return NULL;
 	      }
 	/* this actually allocates the screen structure */
-	if (_nc_setupscreen(LINES, COLS) == ERR)
+	if (_nc_setupscreen(LINES, COLS, ofp) == ERR)
 	    	return NULL;
 
 #ifdef num_labels
@@ -164,7 +161,6 @@ char *t = getenv("NCURSES_TRACE");
 	SP->_ifd        = fileno(ifp);
 	SP->_checkfd	= fileno(ifp);
 	typeahead(fileno(ifp));
-	SP->_ofp        = ofp;
 #ifdef TERMIOS
 	SP->_use_meta   = ((cur_term->Ottyb.c_cflag & CSIZE) == CS8 &&
 			    !(cur_term->Ottyb.c_iflag & ISTRIP));

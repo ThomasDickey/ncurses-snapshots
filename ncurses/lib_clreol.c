@@ -38,7 +38,12 @@ short	y, x, minx;
 
 	y = win->_cury;
 	x = win->_curx;
-	if (win->_flags & _NEED_WRAP
+
+	/*
+	 * We don't want to clear if we just wrapped the cursor.  There's no
+	 * point in clearing if we're not on a legal position, either.
+	 */
+	if (win->_flags & _WRAPPED
 	 || y > win->_maxy
 	 || x > win->_maxx)
 	 	return ERR;

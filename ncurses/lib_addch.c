@@ -51,7 +51,7 @@ int wchgat(WINDOW *win, int n, attr_t attr, short color, const void *opts)
 
     for (i = win->_curx; i <= win->_maxx && (n == -1 || (n-- > 0)); i++)
 	win->_line[win->_cury].text[i]
-	    = (win->_line[win->_cury].text[i] & A_CHARTEXT)
+	    = TextOf(win->_line[win->_cury].text[i])
 		| attr
 		| COLOR_PAIR(color);
 
@@ -71,7 +71,7 @@ int wchgat(WINDOW *win, int n, attr_t attr, short color, const void *opts)
 static inline chtype render_char(WINDOW *win, chtype oldch, chtype newch)
 /* compute a rendition of the given char correct for the current context */
 {
-	if ((oldch & A_CHARTEXT) == ' ')
+	if (TextOf(oldch) == ' ')
 		newch |= win->_bkgd;
 	else if (!(newch & A_ATTRIBUTES))
 		newch |= (win->_bkgd & A_ATTRIBUTES);
@@ -86,24 +86,12 @@ chtype _nc_render(WINDOW *win, chtype oldch, chtype newch)
     return(render_char(win, oldch, newch));
 }
 
-/* actions needed to process a newline within addch_nosync() */
-#define DO_NEWLINE	x = 0; \
-			win->_flags &= ~_NEED_WRAP; \
-			y++; \
-			if (y > win->_regbottom) { \
-				y--; \
-				if (win->_scroll) \
-					scroll(win); \
-			}
-
 /* check if position is legal; if not, return error */
 #define CHECK_POSITION(win, x, y) \
 	if (y > win->_maxy || x > win->_maxx || y < 0 || x < 0) { \
 		TR(TRACE_VIRTPUT, ("Alert! Win=%p _curx = %d, _cury = %d " \
 				   "(_maxx = %d, _maxy = %d)", win, x, y, \
 				   win->_maxx, win->_maxy)); \
-	  	win->_curx = win->_cury = 0; \
-		win->_flags &= ~_NEED_WRAP; \
 	    	return(ERR); \
 	}
 
@@ -117,10 +105,15 @@ register int x, y;
 
 	CHECK_POSITION(win, x, y);
 
-	if (win->_flags & _NEED_WRAP) {
-		TR(TRACE_MOVE, ("new char when NEED_WRAP set at %d,%d",y,x));
-		DO_NEWLINE
-	}
+	/*
+	 * If we're trying to add a character at the lower-right corner more
+	 * than once, fail.  (Moving the cursor will clear the flag).
+	 */
+#if 0	/* FIXME: ncurses 'p' test failed with this enabled */
+	if ((win->_flags & _WRAPPED)
+	 && (x != 0))
+		return (ERR);
+#endif
 
 	/*
 	 * We used to pass in
@@ -146,9 +139,29 @@ register int x, y;
 	win->_line[y].text[x++] = ch;
 	TR(TRACE_VIRTPUT, ("(%d, %d) = %s", y, x, _tracechtype(ch)));
 	if (x > win->_maxx) {
-		TR(TRACE_MOVE, ("NEED_WRAP set at %d,%d",y,x));
-		win->_flags |= _NEED_WRAP;
-		x--;
+		/*
+		 * The _WRAPPED flag is useful only for telling an application
+		 * that we've just wrapped the cursor.  We don't do anything
+		 * with this flag except set it when wrapping, and clear it
+		 * whenever we move the cursor.  If we try to wrap at the
+		 * lower-right corner of a window, we cannot move the cursor
+		 * (since that wouldn't be legal).  So we return an error
+		 * (which is what svr4 does).  Unlike svr4, we can successfully
+		 * add a character to the lower-right corner.
+		 */
+		win->_flags |= _WRAPPED;
+		if (++y > win->_regbottom) {
+			y = win->_regbottom;
+			x = win->_maxx;
+			if (win->_scroll)
+				scroll(win);
+			else {
+				win->_curx = x;
+				win->_cury = y;
+				return (ERR);
+			}
+		}
+		x = 0;
 	}
 
 	win->_curx = x;
@@ -163,7 +176,6 @@ int waddch_nosync(WINDOW *win, const chtype c)
 {
 register chtype	ch = c;
 register int	x, y;
-int		newx;
 
 	x = win->_curx;
 	y = win->_cury;
@@ -173,34 +185,61 @@ int		newx;
 	if (ch & A_ALTCHARSET)
 		goto noctrl;
 
-	switch ((int)(ch&A_CHARTEXT)) {
+	switch ((int)TextOf(ch)) {
     	case '\t':
-		if (win->_flags & _NEED_WRAP) {
-		  	x = 0;
-			newx = min(TABSIZE, win->_maxx+1);
-		} else
-			newx = min(x + (TABSIZE-(x%TABSIZE)), win->_maxx+1);
-		while (win->_curx < newx) {
-	    		if (waddch_literal(win, ' ' | (ch&A_ATTRIBUTES)) == ERR)
-				return(ERR);
+		x += (TABSIZE-(x%TABSIZE));
+
+		/*
+		 * Space-fill the tab on the bottom line so that we'll get the
+		 * "correct" cursor position.
+		 */
+		if ((! win->_scroll && (y == win->_regbottom))
+		 || (x <= win->_maxx)) {
+			while (win->_curx < x) {
+	    			if (waddch_literal(win, (' ' | AttrOf(ch))) == ERR)
+					return(ERR);
+			}
+			break;
+		} else {
+			win->_flags |= _WRAPPED;
+			if (++y > win->_regbottom) {
+				x = win->_maxx;
+				y--;
+				if (win->_scroll) {
+					scroll(win);
+					x = 0;
+				}
+			} else {
+				wclrtoeol(win);
+				x = 0;
+			}
 		}
-		return(OK);
+		break;
     	case '\n':
-		wclrtoeol(win);
-		DO_NEWLINE
+		x = 0;
+		if (++y > win->_regbottom) {
+			y--;
+			if (win->_scroll)
+				scroll(win);
+			else
+				return (ERR);
+		} else {
+			wclrtoeol(win);
+			win->_flags &= ~_WRAPPED;
+		}
 		break;
     	case '\r':
 		x = 0;
-		win->_flags &= ~_NEED_WRAP;
+		win->_flags &= ~_WRAPPED;
 		break;
     	case '\b':
-		if (win->_flags & _NEED_WRAP)
-			win->_flags &= ~_NEED_WRAP;
-		else if (--x < 0)
-			x = 0;
+		if (x > 0) {
+			x--;
+			win->_flags &= ~_WRAPPED;
+		}
 		break;
     	default:
-		if (is7bits(ch & A_CHARTEXT) && iscntrl(ch & A_CHARTEXT))
+		if (is7bits(TextOf(ch)) && iscntrl(TextOf(ch)))
 		    	return(waddstr(win, unctrl((unsigned char)ch)));
 
 		/* FALLTHRU */
@@ -214,8 +253,6 @@ int		newx;
 
 	return(OK);
 }
-
-#undef DO_NEWLINE
 
 int _nc_waddch_nosync(WINDOW *win, const chtype c)
 /* export copy of waddch_nosync() so the string-put functions can use it */

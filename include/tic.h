@@ -190,4 +190,10 @@ extern char *_nc_infotocap(char *const, char *, int const);
 /* comp_main.c: compiler main */
 extern char	*_nc_progname;
 
+/* read_entry.c */
+extern char *_nc_tic_dir(char *);
+
+/* write_entry.c */
+extern int _nc_tic_written(void);
+
 #endif /* __TIC_H */

@@ -106,7 +106,7 @@ short	pmaxcol;
 short	displaced;
 bool	wide;
 
-	T(("pnoutrefresh(%p, %d, %d, %d, %d, %d, %d) called", 
+	T(("pnoutrefresh(%p, %d, %d, %d, %d, %d, %d) called",
 		win, pminrow, pmincol, sminrow, smincol, smaxrow, smaxcol));
 
 	if (win == 0)
@@ -161,47 +161,47 @@ bool	wide;
 	 */
 	wide = (sminrow <= 1 && win->_maxx >= (newscr->_maxx - 1));
 
-	for (i = pminrow, m = sminrow; i <= pmaxrow; i++, m++) {
+	for (i = pminrow, m = sminrow + win->_yoffset; i <= pmaxrow; i++, m++) {
 		register struct ldat	*nline = &newscr->_line[m];
 		register struct ldat	*oline = &win->_line[i];
 
 		for (j = pmincol, n = smincol; j <= pmaxcol; j++, n++) {
-	    		if (oline->text[j] != nline->text[n]) {
+			if (oline->text[j] != nline->text[n]) {
 				nline->text[n] = oline->text[j];
 
 				if (nline->firstchar == _NOCHANGE)
-		   			nline->firstchar = nline->lastchar = n;
+					nline->firstchar = nline->lastchar = n;
 				else if (n < nline->firstchar)
-		   			nline->firstchar = n;
+					nline->firstchar = n;
 				else if (n > nline->lastchar)
-		   			nline->lastchar = n;
+					nline->lastchar = n;
 			}
 		}
 
-  		if (wide) {
- 		    int nind = m + displaced;
- 		    if (oline->oldindex < 0
- 		     || nind < sminrow
- 		     || nind > smaxrow)
- 		    	nind = _NEWINDEX;
-  
- 		    nline->oldindex = nind;
-  		}
+		if (wide) {
+		    int nind = m + displaced;
+		    if (oline->oldindex < 0
+		     || nind < sminrow
+		     || nind > smaxrow)
+			nind = _NEWINDEX;
+
+		    nline->oldindex = nind;
+		}
 		oline->firstchar = oline->lastchar = _NOCHANGE;
 		oline->oldindex = i;
 	}
 
- 	/*
- 	 * Clean up debris from scrolling or resizing the pad, so we do not
- 	 * accidentally pick up the index value during the next call to this
- 	 * procedure.  The only rows that should have an index value are those
- 	 * that are displayed during this cycle.
- 	 */
- 	for (i = pminrow-1; (i >= 0) && (win->_line[i].oldindex >= 0); i--)
- 		win->_line[i].oldindex = _NEWINDEX;
- 	for (i = pmaxrow+1; (i <= win->_maxy) && (win->_line[i].oldindex >= 0); i++)
- 		win->_line[i].oldindex = _NEWINDEX;
- 
+	/*
+	 * Clean up debris from scrolling or resizing the pad, so we do not
+	 * accidentally pick up the index value during the next call to this
+	 * procedure.  The only rows that should have an index value are those
+	 * that are displayed during this cycle.
+	 */
+	for (i = pminrow-1; (i >= 0) && (win->_line[i].oldindex >= 0); i--)
+		win->_line[i].oldindex = _NEWINDEX;
+	for (i = pmaxrow+1; (i <= win->_maxy) && (win->_line[i].oldindex >= 0); i++)
+		win->_line[i].oldindex = _NEWINDEX;
+
 	win->_begx = smincol;
 	win->_begy = sminrow;
 
@@ -219,13 +219,13 @@ bool	wide;
 	 && win->_curx  >= pmincol
 	 && win->_cury  <= pmaxrow
 	 && win->_curx  <= pmaxcol) {
-		newscr->_cury = win->_cury - pminrow + win->_begy;
+		newscr->_cury = win->_cury - pminrow + win->_begy + win->_yoffset;
 		newscr->_curx = win->_curx - pmincol + win->_begx;
 	}
 	win->_flags &= ~_HASMOVED;
 
 	/*
-	 * Update our cache of the line-numbers that we displayed from the pad. 
+	 * Update our cache of the line-numbers that we displayed from the pad.
 	 * We will use this on subsequent calls to this function to derive
 	 * values to stuff into 'oldindex[]' -- for scrolling optimization.
 	 */

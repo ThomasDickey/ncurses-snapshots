@@ -45,17 +45,17 @@ int code;
 	T(("wrefresh(%p) called", win));
 
 	if (win == curscr) {
-	    	curscr->_clear = TRUE;
+		curscr->_clear = TRUE;
 		code = doupdate();
 	} else if ((code = wnoutrefresh(win)) == OK) {
 		code = doupdate();
 		/*
 		 * Reset the clearok() flag in case it was set for the special
 		 * case in hardscroll.c (if we don't reset it here, we'll get 2
-		 * refreshes because the flag is copied from stdscr to newscr). 
+		 * refreshes because the flag is copied from stdscr to newscr).
 		 * Resetting the flag shouldn't do any harm, anyway.
 		 */
-	    	win->_clear = FALSE;
+		win->_clear = FALSE;
 	}
 	return(code);
 }
@@ -113,23 +113,25 @@ bool	wide;
 	 * common-subexpression chunking to make it really tense,
 	 * so we'll force the issue.
 	 */
-	for (i = 0, m = begy; i <= win->_maxy && m <= newscr->_maxy; i++, m++) {
+	for (i = 0, m = begy + win->_yoffset;
+	     i <= win->_maxy && m <= newscr->_maxy;
+	     i++, m++) {
 		register struct ldat	*nline = &newscr->_line[m];
 		register struct ldat	*oline = &win->_line[i];
 
 		if (oline->firstchar != _NOCHANGE) {
 
 			for (j = oline->firstchar, n = j + begx; j <= oline->lastchar; j++, n++) {
-		    		if (oline->text[j] != nline->text[n]) {
+				if (oline->text[j] != nline->text[n]) {
 					nline->text[n] = oline->text[j];
 
 					if (nline->firstchar == _NOCHANGE)
-			   			nline->firstchar = nline->lastchar = n;
+						nline->firstchar = nline->lastchar = n;
 					else if (n < nline->firstchar)
-			   			nline->firstchar = n;
+						nline->firstchar = n;
 					else if (n > nline->lastchar)
-			   			nline->lastchar = n;
-		    		}
+						nline->lastchar = n;
+				}
 			}
 
 		}
@@ -137,7 +139,7 @@ bool	wide;
 		if (wide) {
 		    int	oind = oline->oldindex;
 
-		    nline->oldindex = (oind == _NEWINDEX) ? _NEWINDEX : begy + oind;
+		    nline->oldindex = (oind == _NEWINDEX) ? _NEWINDEX : begy + oind + win->_yoffset;
 		}
 
 		oline->firstchar = oline->lastchar = _NOCHANGE;
@@ -145,12 +147,12 @@ bool	wide;
 	}
 
 	if (win->_clear) {
-	   	win->_clear = FALSE;
+		win->_clear = FALSE;
 	}
 
 	if (! win->_leaveok) {
-	   	newscr->_cury = win->_cury + win->_begy;
-	   	newscr->_curx = win->_curx + win->_begx;
+		newscr->_cury = win->_cury + win->_begy + win->_yoffset;
+		newscr->_curx = win->_curx + win->_begx;
 	}
 	return(OK);
 }

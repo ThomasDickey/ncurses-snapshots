@@ -84,7 +84,7 @@ int i;
 				{
 					wmove(slk->win,SLK_LINES-1,slk->ent[i].x);
 					wattrset(slk->win,_slk_attr);
-					waddstr(slk->win,slk->ent[i].form_text);
+					waddnstr(slk->win,slk->ent[i].form_text, MAX_SKEY_LEN);
 					wattrset(slk->win,A_NORMAL);
 				}
 			}
@@ -116,7 +116,7 @@ int
 slk_noutrefresh(void)
 {
 	T(("slk_noutrefresh()"));
-	
+
 	if (SP->_slk == NULL)
 		return(ERR);
 	if (SP->_slk->hidden)
@@ -133,7 +133,7 @@ int
 slk_refresh(void)
 {
 	T(("slk_refresh()"));
-	
+
 	if (SP->_slk == NULL)
 		return(ERR);
 	if (SP->_slk->hidden)
@@ -150,7 +150,7 @@ int
 slk_restore(void)
 {
 	T(("slk_restore()"));
-	
+
 	if (SP->_slk == NULL)
 		return(ERR);
 	SP->_slk->hidden = FALSE;
@@ -180,7 +180,7 @@ const char *p;
 	while (isspace(*str)) str++; /* skip over leading spaces  */
 	p = str;
 	while (isprint(*p)) p++;     /* The first non-print stops */
-	
+
 	--i; /* Adjust numbering of labels */
 
 	len = (size_t)(p - str);
@@ -224,7 +224,7 @@ int
 slk_touch(void)
 {
 	T(("slk_touch()"));
-	
+
 	if (SP->_slk == NULL)
 		return(ERR);
 	SP->_slk->dirty = TRUE;
@@ -239,7 +239,7 @@ int
 slk_clear(void)
 {
 	T(("slk_clear()"));
-	
+
 	if (SP->_slk == NULL)
 		return(ERR);
 	SP->_slk->hidden = TRUE;
@@ -270,7 +270,7 @@ char *p;
 	    return(ERR);
 
 	_slk->ent = NULL;
-        _slk->buffer = NULL;
+	_slk->buffer = NULL;
 
 #ifdef num_labels
 	_slk->maxlab = (num_labels > 0) ? num_labels : MAX_SKEY;
@@ -290,10 +290,10 @@ char *p;
 	  goto exception;
 
 	for (i = 0; i < _slk->labcnt; i++) {
-	        _slk->ent[i].text = p;
-                p += (1 + _slk->maxlen);
+		_slk->ent[i].text = p;
+		p += (1 + _slk->maxlen);
 		_slk->ent[i].form_text = p;
-                p += (1 + _slk->maxlen);
+		p += (1 + _slk->maxlen);
 		memset(_slk->ent[i].form_text, ' ', (unsigned)_slk->maxlen);
 		_slk->ent[i].visible = (i < _slk->maxlab);
 	}
@@ -330,7 +330,7 @@ char *p;
 	else {
 	  if (_nc_slk_format == 2) {	/* 4-4 */
 	    int gap = cols - (_slk->maxlab * _slk->maxlen) - 6;
-	    
+
 	    if (gap < 1)
 			gap = 1;
 	    for (i = x = 0; i < _slk->maxlab; i++) {
@@ -339,11 +339,11 @@ char *p;
 	      x += (i == 3) ? gap : 1;
 	    }
 	  }
-	  else 
+	  else
 	    {
 	      if (_nc_slk_format == 1) { /* 1 -> 3-2-3 */
 		int gap = (cols - (_slk->maxlab * _slk->maxlen) - 5) / 2;
-		
+
 		if (gap < 1)
 		  gap = 1;
 		for (i = x = 0; i < _slk->maxlab; i++) {
@@ -360,14 +360,14 @@ char *p;
 	if ((_slk->win = stwin) == NULL)
 	{
 	exception:
-                if (_slk)
-                {
-	           if (_slk->buffer) free (_slk->buffer);
-                   if (_slk->ent) free(_slk->ent);
+		if (_slk)
+		{
+		   if (_slk->buffer) free (_slk->buffer);
+		   if (_slk->ent) free(_slk->ent);
 		   free(_slk);
 		   SP->_slk = _slk = (SLK*)0;
-		   return(ERR); 
-                }
+		   return(ERR);
+		}
 	}
 
 	return(OK);
@@ -388,21 +388,21 @@ slk_init(int format)
 
 /* Functions to manipulate the soft-label attribute */
 
-int 
+int
 slk_attrset(const attr_t attr)
 {
     _slk_attr = attr;
     return(OK);
 }
 
-int 
+int
 slk_attron(const attr_t attr)
 {
     toggle_attr_on(_slk_attr,attr);
     return(OK);
 }
 
-int 
+int
 slk_attroff(const attr_t attr)
 {
     toggle_attr_off(_slk_attr,attr);

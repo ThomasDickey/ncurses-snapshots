@@ -37,7 +37,9 @@
 
 char	*_nc_progname = "tic";
 
-static	const	char usage_string[] = "[-hc] [-v[n]] [-e names] [-CILNRTrw1] source-file\n";
+static	bool	showsummary = FALSE;
+
+static	const	char usage_string[] = "[-hc] [-v[n]] [-e names] [-CILNRTrsw1] source-file\n";
 
 static void usage(void)
 {
@@ -54,6 +56,7 @@ static void usage(void)
 	"  -e<names>  translate/compile only entries named by comma-separated list",
 	"  -o<dir>    set output directory for compiled entry writes",
 	"  -r         force resolution of all use entries in source translation",
+	"  -s         print summary statistics",
 	"  -v[n]      set verbosity level",
 	"  -w[n]      set format width for translation output",
 	"",
@@ -63,7 +66,7 @@ static void usage(void)
 	size_t j;
 
 	printf("Usage: %s %s\n", _nc_progname, usage_string);
-  	for (j = 0; j < sizeof(tbl)/sizeof(tbl[0]); j++)
+	for (j = 0; j < sizeof(tbl)/sizeof(tbl[0]); j++)
 		puts(tbl[j]);
 	exit(EXIT_FAILURE);
 }
@@ -79,7 +82,7 @@ static bool immedhook(ENTRY *ep)
      * terminfo master file is large enough that some core-poor systems swap
      * like crazy when you compile it this way...there have been reports of
      * this process taking *three hours*, rather than the twenty seconds or
-     * less typical on my development box.  
+     * less typical on my development box.
      *
      * So.  This hook *immediately* writes out the referenced entry if it
      * has no use capabilities.  The compiler main loop refrains from
@@ -96,9 +99,9 @@ static bool immedhook(ENTRY *ep)
      *
      * The reason this is a hook, and not in line with the rest of the
      * compiler code, is that the support for termcap fallback cannot assume
-     * it has anywhere to spool out these entries!  
+     * it has anywhere to spool out these entries!
      *
-     * The _nc_set_type() call here requires a compensating one in 
+     * The _nc_set_type() call here requires a compensating one in
      * _nc_parse_entry().
      *
      * If you define HAVE_BIG_CORE, you'll disable this kluge.  This will
@@ -307,7 +310,7 @@ bool	check_only = FALSE;
 	 * design decision to allow the numeric values for -w, -v options to
 	 * be optional.
 	 */
-	while ((this_opt = getopt(argc, argv, "0123456789CILNR:TVce:orvw")) != EOF) {
+	while ((this_opt = getopt(argc, argv, "0123456789CILNR:TVce:orsvw")) != EOF) {
 		if (isdigit(this_opt)) {
 			switch (last_opt) {
 			case 'v':
@@ -364,6 +367,9 @@ bool	check_only = FALSE;
 		case 'r':
 			forceresolve = TRUE;
 			break;
+		case 's':
+			showsummary = TRUE;
+			break;
 		case 'v':
 			v_opt = 0;
 			break;
@@ -382,7 +388,7 @@ bool	check_only = FALSE;
 	if (optind < argc) {
 		source_file = argv[optind++];
 		if (optind < argc) {
-			fprintf (stderr, 
+			fprintf (stderr,
 				"%s: Too many file names.  Usage:\n\t%s %s",
 				_nc_progname,
 				_nc_progname,
@@ -401,7 +407,7 @@ bool	check_only = FALSE;
 			}
 		} else {
 		/* tic */
-			fprintf (stderr, 
+			fprintf (stderr,
 				"%s: File name needed.  Usage:\n\t%s %s",
 				_nc_progname,
 				_nc_progname,
@@ -418,7 +424,7 @@ bool	check_only = FALSE;
 	if (infodump)
 		dump_init(tversion,
 			  smart_defaults
-			  	? outform
+				? outform
 				: F_LITERAL,
 			  sortmode, width, debug_level);
 	else if (capdump)
@@ -446,7 +452,7 @@ bool	check_only = FALSE;
 	 * Aaargh! immedhook seriously hoses us!
 	 *
 	 * One problem with immedhook is it means we can't do -e.  Problem
-	 * is that we can't guarantee that for each terminal listed, all the 
+	 * is that we can't guarantee that for each terminal listed, all the
 	 * terminals it depends on will have been kept in core for reference
 	 * resolution -- in fact it's certain the primitive types at the end
 	 * of reference chains *won't* be in core unless they were explicitly
@@ -470,7 +476,7 @@ bool	check_only = FALSE;
 		    int	len = fmt_entry(&qp->tterm, NULL, TRUE, infodump);
 
 		    if (len>(infodump?MAX_TERMINFO_LENGTH:MAX_TERMCAP_LENGTH))
-		    	    (void) fprintf(stderr,
+			    (void) fprintf(stderr,
 			   "warning: resolved %s entry is %d bytes long\n",
 			   _nc_first_name(qp->tterm.term_names),
 			   len);
@@ -503,7 +509,7 @@ bool	check_only = FALSE;
 			int	j = qp->cend - qp->cstart;
 			int	len = 0;
 
-			(void) fseek(stdin, qp->cstart, SEEK_SET); 
+			(void) fseek(stdin, qp->cstart, SEEK_SET);
 			while (j-- )
 			    if (infodump)
 				(void) putchar(getchar());
@@ -531,6 +537,18 @@ bool	check_only = FALSE;
 		}
 	    }
 	}
-	
+
+	/* Show the directory into which entries were written, and the total
+	 * number of entries
+	 */
+	if (showsummary) {
+		int total = _nc_tic_written();
+		if (total != 0)
+			printf("%d entries written to %s\n",
+				total,
+				_nc_tic_dir((char *)0));
+		else
+			printf("No entries written\n");
+	}
 	return(EXIT_SUCCESS);
 }

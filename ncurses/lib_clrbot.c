@@ -36,8 +36,6 @@ short	y, startx, minx;
 	T(("wclrtobot(%p) called", win));
 
 	startx = win->_curx;
-	if (win->_flags & _NEED_WRAP)
-		startx++;
 
 	T(("clearing from y = %d to y = %d with maxx =  %d", win->_cury, win->_maxy, win->_maxx));
 

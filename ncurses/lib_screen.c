@@ -50,21 +50,22 @@ WINDOW *getwin(FILE *filep)
 	nwin->_curx       = try._curx;
 	nwin->_cury       = try._cury;
 	nwin->_maxy       = try._maxy;
-	nwin->_maxx       = try._maxx;       
+	nwin->_maxx       = try._maxx;
 	nwin->_begy       = try._begy;
 	nwin->_begx       = try._begx;
+	nwin->_yoffset    = try._yoffset;
 	nwin->_flags      = try._flags;
 
 	nwin->_attrs      = try._attrs;
-	nwin->_bkgd	  = try._bkgd; 
+	nwin->_bkgd       = try._bkgd;
 
 	nwin->_clear      = try._clear;
 	nwin->_scroll     = try._scroll;
 	nwin->_leaveok    = try._leaveok;
 	nwin->_use_keypad = try._use_keypad;
-	nwin->_delay   	  = try._delay;
-	nwin->_immed	  = try._immed;
-	nwin->_sync	  = try._sync;
+	nwin->_delay      = try._delay;
+	nwin->_immed      = try._immed;
+	nwin->_sync       = try._sync;
 
 	nwin->_regtop     = try._regtop;
 	nwin->_regbottom  = try._regbottom;

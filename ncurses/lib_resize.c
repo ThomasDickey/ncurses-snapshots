@@ -72,7 +72,7 @@ int wresize(WINDOW *win, int new_lines, int new_cols)
      * within the new window size.  We also have to assume that if the
      * bottom of the scrolling region is the last line, the user wants
      * that bottom to stick to the bottom of the resized window.  The
-     * real problem here is that the API doesn't distinguish between 
+     * real problem here is that the API doesn't distinguish between
      * resetting the scroll region to the entire window and setting it
      * to an explicit scroll region that happens to include the whole
      * window.
@@ -83,7 +83,7 @@ int wresize(WINDOW *win, int new_lines, int new_cols)
       win->_regbottom = new_lines - 1;
   }
 
-  /* window width is different, resize all old lines */ 
+  /* window width is different, resize all old lines */
   if (new_cols != win->_maxx+1)
     for (i = 0; i < min(new_lines, win->_maxy+1); i++)
     {
@@ -113,7 +113,7 @@ int wresize(WINDOW *win, int new_lines, int new_cols)
     }
 
   /* clip the cursor position to within the new size */
-  if (win->_curx > new_cols - 1) 
+  if (win->_curx > new_cols - 1)
     win->_curx = new_cols - 1;
   if (win->_cury > new_lines - 1)
     win->_cury = new_lines - 1;
@@ -124,13 +124,14 @@ int wresize(WINDOW *win, int new_lines, int new_cols)
   {
     win->_flags |= _ENDLINE;
 
-    if (win->_begx == 0 && new_lines == screen_lines && win->_begy == 0)
+    if (win->_begx == 0 && new_lines == screen_lines && win->_begy == 0 && win->_yoffset == 0)
       win->_flags |= _FULLWIN;
 
-    if (win->_begy + new_lines == screen_lines)
+    if (win->_yoffset + win->_begy + new_lines == screen_lines)
       win->_flags |= _SCROLLWIN;
   }
 
+#if 0	/* it's not done this way anymore */
   /* right margin may have moved, set _NEED_WRAP properly */
   if ((win->_flags & _NEED_WRAP) && win->_curx != new_cols - 1)
   {
@@ -142,6 +143,7 @@ int wresize(WINDOW *win, int new_lines, int new_cols)
     win->_curx--;
     win->_flags |= _NEED_WRAP;
   }
+#endif
 
   /* finally, update size members */
   win->_maxy = new_lines - 1;
