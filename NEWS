@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.415 1999/02/06 12:53:43 tom Exp $
+-- $Id: NEWS,v 1.416 1999/02/09 23:28:04 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990213
+	+ enable sigwinch handler by default.
+	+ disable logic that allows setbuf to be turned off/on, because some
+	  implementations will overrun the buffer after it has been disabled
+	  once.
 
 990206
 	+ suppress sc/rc capabilities from terminal description if they appear

@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.126 1999/01/03 01:00:41 tom Exp $
+ * $Id: curses.priv.h,v 1.127 1999/02/09 23:24:52 tom Exp $
  *
  *	curses.priv.h
  *
@@ -701,6 +701,8 @@ extern void _nc_update_screensize(void);
 
 /* scroll indices */
 extern int *_nc_oldnums;
+
+#define USE_SETBUF_0 0
 
 #define NC_BUFFERED(flag) \
 	if ((SP->_buffered != 0) != flag) \
