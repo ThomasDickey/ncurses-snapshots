@@ -37,7 +37,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.21 1996/08/17 22:56:36 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.22 1996/08/25 00:20:46 tom Exp $")
 
 TERMINAL *cur_term;
 
@@ -92,11 +92,11 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 	    char	*slash;
 
 	    (void) strcpy(buf, filename);
-	    if ((slash = strrchr(buf, '/')) != 0)
+	    if ((slash = strrchr(buf, '/')) != 0) {
 		*slash = '\0';
-
-	    if (slash && access(buf, R_OK))
-		return(-1);
+	    	if (access(buf, R_OK))
+		    return(-1);
+	    }
 	}
 
 	return(0);

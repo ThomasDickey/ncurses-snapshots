@@ -44,7 +44,7 @@
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.15 1996/08/17 21:48:17 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.16 1996/08/24 23:55:46 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 
@@ -108,6 +108,8 @@ void _nc_free_entries(ENTRY *head)
 	next = ep->next;
 
 	free(ep);
+	if (ep == _nc_head) _nc_head = 0;
+	if (ep == _nc_tail) _nc_tail = 0;
     }
 }
 

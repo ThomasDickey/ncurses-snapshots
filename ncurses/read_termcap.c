@@ -23,21 +23,19 @@
 /*
  * Termcap compatibility support
  *
- * If your OS integrator didn't install a terminfo database, you can
- * call _nc_read_termcap_entry() to support reading and translating
- * capabilities from the system termcap file.  This is a kluge; it
- * will bulk up and slow down every program that uses ncurses, and
- * translated termcap entries cannot use full terminfo capabilities.
- * Don't use it unless you absolutely have to; instead, get your
- * system people to run tic(1) from root on the terminfo master
- * included with ncurses to translate it into a terminfo database.
+ * If your OS integrator didn't install a terminfo database, you can call
+ * _nc_read_termcap_entry() to support reading and translating capabilities
+ * from the system termcap file.  This is a kludge; it will bulk up and slow
+ * down every program that uses ncurses, and translated termcap entries cannot
+ * use full terminfo capabilities.  Don't use it unless you absolutely have to;
+ * instead, get your system people to run tic(1) from root on the terminfo
+ * master included with ncurses to translate it into a terminfo database.
  *
- * If USE_GETCAP is enabled, we use what is effectively a copy of the
- * 4.4BSD getcap code to fetch entries.  There are disadvantages to this;
- * mainly that getcap(3) does its own resolution, meaning that entries
- * read in in this way can't reference the terminfo tree. The only thing
- * it buys is faster startup time, getcap(3) is much faster than our tic
- * parser.
+ * If USE_GETCAP is enabled, we use what is effectively a copy of the 4.4BSD
+ * getcap code to fetch entries.  There are disadvantages to this; mainly that
+ * getcap(3) does its own resolution, meaning that entries read in in this way
+ * can't reference the terminfo tree.  The only thing it buys is faster startup
+ * time, getcap(3) is much faster than our tic parser.
  */
 
 #include <curses.priv.h>
@@ -51,7 +49,13 @@
 #include <fcntl.h>
 #endif
 
-MODULE_ID("$Id: read_termcap.c,v 1.14 1996/07/31 00:15:21 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.16 1996/08/25 00:46:11 tom Exp $")
+
+#define TC_SUCCESS     0
+#define TC_UNRESOLVED -1
+#define TC_NOT_FOUND  -2
+#define TC_SYS_ERR    -3
+#define TC_REF_LOOP   -4
 
 #ifdef USE_GETCAP
 /*
@@ -67,7 +71,7 @@ MODULE_ID("$Id: read_termcap.c,v 1.14 1996/07/31 00:15:21 tom Exp $")
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
+ *    must display the following acknowledgment:
  *	This product includes software developed by the University of
  *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
@@ -87,20 +91,18 @@ MODULE_ID("$Id: read_termcap.c,v 1.14 1996/07/31 00:15:21 tom Exp $")
  * SUCH DAMAGE.
  */
 
-#ifndef lint
-static char sccsid[] = "@(#)termcap.c	8.1 (Berkeley) 6/4/93";
-#endif /* not lint */
+/* static char sccsid[] = "@(#)termcap.c	8.1 (Berkeley) 6/4/93" */
 
 #define	PBUFSIZ		512	/* max length of filename path */
 #define	PVECSIZ		32	/* max number of names in path */
 
-static char *_nc_cgetcap(char *, char *, int);
-static int _nc_cgetent(char **, char **, char *);
-static int _nc_cgetmatch(char *, char *);
-static int _nc_cgetset(char *);
-static int _nc_getent (char **, unsigned int *, char **, int, char *, int, char *);
-static int _nc_nfcmp(char *, char *);
-static int _nc_tgetent(char *, char *);
+static char *_nc_cgetcap(char *, const char *, int);
+static int _nc_cgetent(char **, int *, char **, const char *);
+static int _nc_cgetmatch(char *, const char *);
+static int _nc_cgetset(const char *);
+static int _nc_getent(char **, unsigned int *, int *, int, char **, int, const char *, int, char *);
+static int _nc_nfcmp(const char *, char *);
+static int _nc_tgetent(char *, char **, int *, const char *);
 
 /*
  * termcap - routines for dealing with the terminal capability data base
@@ -111,9 +113,9 @@ static int _nc_tgetent(char *, char *);
  * Note:	If we add a last pointer now we will screw up the
  *		tc capability. We really should compile termcap.
  *
- * Essentially all the work here is scanning and decoding escapes
- * in string capabilities.  We don't use stdio because the editor
- * doesn't, and because living w/o it is not hard.
+ * Essentially all the work here is scanning and decoding escapes in string
+ * capabilities.  We don't use stdio because the editor doesn't, and because
+ * living w/o it is not hard.
  */
 
 static	char *tbuf;	/* termcap buffer */
@@ -122,8 +124,10 @@ static	char *tbuf;	/* termcap buffer */
  * Get an entry for terminal name in buffer bp from the termcap file.
  */
 static int
-_nc_tgetent(char *bp, char *name)
+_nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
 {
+	static char *the_source;
+
 	register char *p;
 	register char *cp;
 	char  *dummy;
@@ -140,34 +144,34 @@ _nc_tgetent(char *bp, char *name)
 	tbuf = bp;
 	p = pathbuf;
 	cp = getenv("TERMCAP");
+
 	/*
-	 * TERMCAP can have one of two things in it. It can be the
-	 * name of a file to use instead of /etc/termcap. In this
-	 * case it better start with a "/". Or it can be an entry to
-	 * use so we don't have to read the file. In this case it
-	 * has to already have the newlines crunched out.  If TERMCAP
-	 * does not hold a file name then a path of names is searched
-	 * instead.  The path is found in the TERMPATH variable, or
+	 * TERMCAP can have one of two things in it.  It can be the name of a
+	 * file to use instead of /etc/termcap.  In this case it better start
+	 * with a "/".  Or it can be an entry to use so we don't have to read
+	 * the file.  In this case it has to already have the newlines crunched
+	 * out.  If TERMCAP does not hold a file name then a path of names is
+	 * searched instead.  The path is found in the TERMPATH variable, or
 	 * becomes "$HOME/.termcap /etc/termcap" if no TERMPATH exists.
 	 */
 	if (!cp || *cp != '/') {	/* no TERMCAP or it holds an entry */
-		if (termpath = getenv("TERMPATH"))
-			strncpy(pathbuf, termpath, PBUFSIZ);
-		else {
-			if (home = getenv("HOME")) {	/* set up default */
+		if ((termpath = getenv("TERMPATH")) != 0) {
+			strncpy(pathbuf, termpath, sizeof(pathbuf)-1);
+		} else {
+			if ((home = getenv("HOME")) != 0) { /* setup path */
 				p += strlen(home);	/* path, looking in */
 				strcpy(pathbuf, home);	/* $HOME first */
 				*p++ = '/';
 			}	/* if no $HOME look in current directory */
-#define	_PATH_DEF	".termcap /usr/share/misc/termcap"
-			strncpy(p, _PATH_DEF, PBUFSIZ - (p - pathbuf));
+#define	MY_PATH_DEF	".termcap /etc/termcap /usr/share/misc/termcap"
+			strncpy(p, MY_PATH_DEF, PBUFSIZ - (p - pathbuf));
 		}
 	}
 	else				/* user-defined name in TERMCAP */
 		strncpy(pathbuf, cp, PBUFSIZ);	/* still can be tokenized */
 
 	*fname++ = pathbuf;	/* tokenize path into vector of names */
-	while (*++p)
+	while (*++p) {
 		if (*p == ' ' || *p == ':') {
 			*p = '\0';
 			while (*++p)
@@ -181,22 +185,33 @@ _nc_tgetent(char *bp, char *name)
 				break;
 			}
 		}
-	*fname = (char *) 0;			/* mark end of vector */
-	if (cp && *cp && *cp != '/')
+	}
+	*fname = 0;			/* mark end of vector */
+	if (cp && *cp && *cp != '/') {
 		if (_nc_cgetset(cp) < 0)
-			return(-2);
+			return(TC_SYS_ERR);
+	}
 
-	i = _nc_cgetent(&dummy, pathvec, name);
+	i = _nc_cgetent(&dummy, lineno, pathvec, name);
 
-	if (i == 0)
+	if (i >= 0)
 		strcpy(bp, dummy);
 
 	if (dummy)
 		free(dummy);
-	/* no tc reference loop return code in libterm XXX */
-	if (i == -3)
-		return(-1);
-	return(i + 1);
+
+	if (the_source != 0) {
+		free(the_source);
+		the_source = 0;
+	}
+
+	if (i >= 0) {
+		the_source = malloc(strlen(pathvec[i]) + 1);
+		if (the_source != 0)
+			*sourcename = strcpy(the_source, pathvec[i]);
+	}
+
+	return(i);
 }
 
 /*-
@@ -215,7 +230,7 @@ _nc_tgetent(char *bp, char *name)
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
+ *    must display the following acknowledgment:
  *	This product includes software developed by the University of
  *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
@@ -235,9 +250,7 @@ _nc_tgetent(char *bp, char *name)
  * SUCH DAMAGE.
  */
 
-#if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)getcap.c	8.3 (Berkeley) 3/25/94";
-#endif /* LIBC_SCCS and not lint */
+/* static char sccsid[] = "@(#)getcap.c	8.3 (Berkeley) 3/25/94"; */
 
 #define	BFRAG		1024
 #define	BSIZE		1024
@@ -254,46 +267,47 @@ static char	*toprec;	/* Additional record specified by cgetset() */
 static int	 gottoprec;	/* Flag indicating retrieval of toprecord */
 
 /*
- * Cgetset() allows the addition of a user specified buffer to be added
- * to the database array, in effect "pushing" the buffer on top of the
- * virtual database. 0 is returned on success, -1 on failure.
+ * Cgetset() allows the addition of a user specified buffer to be added to the
+ * database array, in effect "pushing" the buffer on top of the virtual
+ * database.  0 is returned on success, -1 on failure.
  */
 static int
-_nc_cgetset(char *ent)
+_nc_cgetset(const char *ent)
 {
-	if (ent == NULL) {
+	if (ent == 0) {
 		if (toprec)
 			free(toprec);
-                toprec = NULL;
-                topreclen = 0;
-                return (0);
-        }
-        topreclen = strlen(ent);
-        if ((toprec = malloc (topreclen + 1)) == NULL) {
+		toprec = 0;
+		topreclen = 0;
+		return (0);
+	}
+	topreclen = strlen(ent);
+	if ((toprec = malloc (topreclen + 1)) == 0) {
 		errno = ENOMEM;
-                return (-1);
+		return (-1);
 	}
 	gottoprec = 0;
-        (void)strcpy(toprec, ent);
-        return (0);
+	(void)strcpy(toprec, ent);
+	return (0);
 }
 
 /*
- * Cgetcap searches the capability record buf for the capability cap with
- * type `type'.  A pointer to the value of cap is returned on success, NULL
- * if the requested capability couldn't be found.
+ * Cgetcap searches the capability record buf for the capability cap with type
+ * `type'.  A pointer to the value of cap is returned on success, 0 if the
+ * requested capability couldn't be found.
  *
- * Specifying a type of ':' means that nothing should follow cap (:cap:).
- * In this case a pointer to the terminating ':' or NUL will be returned if
- * cap is found.
+ * Specifying a type of ':' means that nothing should follow cap (:cap:).  In
+ * this case a pointer to the terminating ':' or NUL will be returned if cap is
+ * found.
  *
  * If (cap, '@') or (cap, terminator, '@') is found before (cap, terminator)
- * return NULL.
+ * return 0.
  */
 static char *
-_nc_cgetcap(char *buf, char *cap, int type)
+_nc_cgetcap(char *buf, const char *cap, int type)
 {
-	register char *bp, *cp;
+	register const char *cp;
+	register char *bp;
 
 	bp = buf;
 	for (;;) {
@@ -302,12 +316,12 @@ _nc_cgetcap(char *buf, char *cap, int type)
 		 * name field if this is the first time through the loop, or
 		 * the remainder of a field whose name failed to match cap.
 		 */
-		for (;;)
+		for (;;) {
 			if (*bp == '\0')
-				return (NULL);
-			else
-				if (*bp++ == ':')
-					break;
+				return (0);
+			else if (*bp++ == ':')
+				break;
+		}
 
 		/*
 		 * Try to match (cap, type) in buf.
@@ -317,7 +331,7 @@ _nc_cgetcap(char *buf, char *cap, int type)
 		if (*cp != '\0')
 			continue;
 		if (*bp == '@')
-			return (NULL);
+			return (0);
 		if (type == ':') {
 			if (*bp != '\0' && *bp != ':')
 				continue;
@@ -326,26 +340,31 @@ _nc_cgetcap(char *buf, char *cap, int type)
 		if (*bp != type)
 			continue;
 		bp++;
-		return (*bp == '@' ? NULL : bp);
+		return (*bp == '@' ? 0 : bp);
 	}
 	/* NOTREACHED */
 }
 
 /*
  * Cgetent extracts the capability record name from the NULL terminated file
- * array db_array and returns a pointer to a malloc'd copy of it in buf.
- * Buf must be retained through all subsequent calls to cgetcap, cgetnum,
- * cgetflag, and cgetstr, but may then be free'd.  0 is returned on success,
- * -1 if the requested record couldn't be found, -2 if a system error was
- * encountered (couldn't open/read a file, etc.), and -3 if a potential
- * reference loop is detected.
+ * array db_array and returns a pointer to a malloc'd copy of it in buf.  Buf
+ * must be retained through all subsequent calls to cgetcap, cgetnum, cgetflag,
+ * and cgetstr, but may then be freed.
+ *
+ * Returns:
+ *
+ * positive #    on success (i.e., the index in db_array)
+ * TC_UNRESOLVED if we had too many recurrences to resolve
+ * TC_NOT_FOUND  if the requested record couldn't be found
+ * TC_SYS_ERR    if a system error was encountered (e.g.,couldn't open a file)
+ * TC_REF_LOOP   if a potential reference loop is detected
  */
 static int
-_nc_cgetent(char **buf, char **db_array, char *name)
+_nc_cgetent(char **buf, int *oline, char **db_array, const char *name)
 {
 	unsigned int dummy;
 
-	return (_nc_getent(buf, &dummy, db_array, -1, name, 0, NULL));
+	return (_nc_getent(buf, &dummy, oline, 0, db_array, -1, name, 0, 0));
 }
 
 /*
@@ -355,7 +374,7 @@ _nc_cgetent(char **buf, char **db_array, char *name)
  * recursions.
  *
  * Getent returns the same success/failure codes as cgetent.  On success, a
- * pointer to a malloc'ed capability record with all tc= capabilities fully
+ * pointer to a malloc'd capability record with all tc= capabilities fully
  * expanded and its length (not including trailing ASCII NUL) are left in
  * *cap and *len.
  *
@@ -368,195 +387,199 @@ _nc_cgetent(char **buf, char **db_array, char *name)
  */
 static int
 _nc_getent(
-	char **cap,
-	unsigned int *len,
-	char **db_array,
+	char **cap,         /* termcap-content */
+	unsigned int *len,  /* length, needed for recursion */
+	int *beginning,     /* line-number at match */
+	int in_array,       /* index in 'db_array[] */
+	char **db_array,    /* list of files to search */
 	int fd,
-	char *name,
+	const char *name,
 	int depth,
 	char *nfield)
 {
-	register char *r_end, *rp, **db_p;
-	int myfd, eof, foundit, retval, clen;
-	char *record, *cbuf;
+	register char *r_end, *rp;
+	int myfd = FALSE;
+	char *record;
 	int tc_not_resolved;
+	int current;
+	int lineno;
 
 	/*
-	 * Return with ``loop detected'' error if we've recursed more than
+	 * Return with ``loop detected'' error if we've recurred more than
 	 * MAX_RECURSION times.
 	 */
 	if (depth > MAX_RECURSION)
-		return (-3);
+		return (TC_REF_LOOP);
 
 	/*
 	 * Check if we have a top record from cgetset().
-         */
-	if (depth == 0 && toprec != NULL && _nc_cgetmatch(toprec, name) == 0) {
-		if ((record = malloc (topreclen + BFRAG)) == NULL) {
+	 */
+	if (depth == 0 && toprec != 0 && _nc_cgetmatch(toprec, name) == 0) {
+		if ((record = malloc (topreclen + BFRAG)) == 0) {
 			errno = ENOMEM;
-			return (-2);
+			return (TC_SYS_ERR);
 		}
 		(void)strcpy(record, toprec);
-		myfd = 0;
-		db_p = db_array;
 		rp = record + topreclen + 1;
 		r_end = rp + BFRAG;
-		goto tc_exp;
-	}
-	/*
-	 * Allocate first chunk of memory.
-	 */
-	if ((record = malloc(BFRAG)) == NULL) {
-		errno = ENOMEM;
-		return (-2);
-	}
-	r_end = record + BFRAG;
-	foundit = 0;
-	/*
-	 * Loop through database array until finding the record.
-	 */
-
-	for (db_p = db_array; *db_p != NULL; db_p++) {
-		eof = 0;
+		current = in_array;
+	} else {
+		int foundit;
 
 		/*
-		 * Open database if not already open.
+		 * Allocate first chunk of memory.
 		 */
-
-		if (fd >= 0) {
-			(void)lseek(fd, (off_t)0, SEEK_SET);
-			myfd = 0;
-		} else {
-			fd = open(*db_p, O_RDONLY, 0);
-			if (fd < 0) {
-				/* No error on unfound file. */
-				if (errno == ENOENT)
-					continue;
-				free(record);
-				return (-2);
-			}
-			myfd = 1;
+		if ((record = malloc(BFRAG)) == 0) {
+			errno = ENOMEM;
+			return (TC_SYS_ERR);
 		}
-		/*
-		 * Find the requested capability record ...
-		 */
-		{
-		char buf[2048];
-		register char *b_end, *bp;
-		register int c;
+		rp = r_end = record + BFRAG;
+		foundit = FALSE;
 
 		/*
-		 * Loop invariants:
-		 *	There is always room for one more character in record.
-		 *	R_end always points just past end of record.
-		 *	Rp always points just past last character in record.
-		 *	B_end always points just past last character in buf.
-		 *	Bp always points at next character in buf.
+		 * Loop through database array until finding the record.
 		 */
-		b_end = buf;
-		bp = buf;
-		for (;;) {
+		for (current = in_array; db_array[current] != 0; current++) {
+			int eof = FALSE;
 
 			/*
-			 * Read in a line implementing (\, newline)
-			 * line continuation.
+			 * Open database if not already open.
 			 */
-			rp = record;
-			for (;;) {
-				if (bp >= b_end) {
-					int n;
-
-					n = read(fd, buf, sizeof(buf));
-					if (n <= 0) {
-						if (myfd)
-							(void)close(fd);
-						if (n < 0) {
-							free(record);
-							return (-2);
-						} else {
-							fd = -1;
-							eof = 1;
-							break;
-						}
-					}
-					b_end = buf+n;
-					bp = buf;
-				}
-
-				c = *bp++;
-				if (c == '\n') {
-					if (rp > record && *(rp-1) == '\\') {
-						rp--;
+			if (fd >= 0) {
+				(void)lseek(fd, (off_t)0, SEEK_SET);
+			} else {
+				fd = open(db_array[current], O_RDONLY, 0);
+				if (fd < 0) {
+					/* No error on unfound file. */
+					if (errno == ENOENT)
 						continue;
-					} else
-						break;
+					free(record);
+					return (TC_SYS_ERR);
 				}
-				*rp++ = c;
+				myfd = TRUE;
+			}
+			lineno = 0;
+
+			/*
+			 * Find the requested capability record ...
+			 */
+			{
+				char buf[2048];
+				register char *b_end = buf;
+				register char *bp = buf;
+				register int c;
 
 				/*
-				 * Enforce loop invariant: if no room
-				 * left in record buffer, try to get
-				 * some more.
+				 * Loop invariants:
+				 *	There is always room for one more character in record.
+				 *	R_end always points just past end of record.
+				 *	Rp always points just past last character in record.
+				 *	B_end always points just past last character in buf.
+				 *	Bp always points at next character in buf.
 				 */
-				if (rp >= r_end) {
-					unsigned int pos;
-					size_t newsize;
 
-					pos = rp - record;
-					newsize = r_end - record + BFRAG;
-					record = realloc(record, newsize);
-					if (record == NULL) {
-						errno = ENOMEM;
-						if (myfd)
-							(void)close(fd);
-						return (-2);
+				for (;;) {
+					int first = lineno + 1;
+
+					/*
+					 * Read in a line implementing (\, newline)
+					 * line continuation.
+					 */
+					rp = record;
+					for (;;) {
+						if (bp >= b_end) {
+							int n;
+
+							n = read(fd, buf, sizeof(buf));
+							if (n <= 0) {
+								if (myfd)
+									(void)close(fd);
+								if (n < 0) {
+									free(record);
+									return (TC_SYS_ERR);
+								}
+								fd = -1;
+								eof = TRUE;
+								break;
+							}
+							b_end = buf+n;
+							bp = buf;
+						}
+
+						c = *bp++;
+						if (c == '\n') {
+							lineno++;
+							if (rp == record || *(rp-1) != '\\')
+								break;
+						}
+						*rp++ = c;
+
+						/*
+						 * Enforce loop invariant: if no room
+						 * left in record buffer, try to get
+						 * some more.
+						 */
+						if (rp >= r_end) {
+							unsigned int pos;
+							size_t newsize;
+
+							pos = rp - record;
+							newsize = r_end - record + BFRAG;
+							record = realloc(record, newsize);
+							if (record == 0) {
+								errno = ENOMEM;
+								if (myfd)
+									(void)close(fd);
+								return (TC_SYS_ERR);
+							}
+							r_end = record + newsize;
+							rp = record + pos;
+						}
 					}
-					r_end = record + newsize;
-					rp = record + pos;
+					/* loop invariant lets us do this */
+					*rp++ = '\0';
+
+					/*
+					 * If encountered eof check next file.
+					 */
+					if (eof)
+						break;
+
+					/*
+					 * Toss blank lines and comments.
+					 */
+					if (*record == '\0' || *record == '#')
+						continue;
+
+					/*
+					 * See if this is the record we want ...
+					 */
+					if (_nc_cgetmatch(record, name) == 0
+					 && (nfield == 0
+					  || !_nc_nfcmp(nfield, record))) {
+						foundit = TRUE;
+						*beginning = first;
+						break;	/* found it! */
+					}
 				}
 			}
-				/* loop invariant let's us do this */
-			*rp++ = '\0';
-
-			/*
-			 * If encountered eof check next file.
-			 */
-			if (eof)
+			if (foundit)
 				break;
-
-			/*
-			 * Toss blank lines and comments.
-			 */
-			if (*record == '\0' || *record == '#')
-				continue;
-
-			/*
-			 * See if this is the record we want ...
-			 */
-			if (_nc_cgetmatch(record, name) == 0) {
-				if (nfield == NULL || !_nc_nfcmp(nfield, record)) {
-					foundit = 1;
-					break;	/* found it! */
-				}
-			}
 		}
-	}
-		if (foundit)
-			break;
-	}
 
-	if (!foundit)
-		return (-1);
+		if (!foundit)
+			return (TC_NOT_FOUND);
+	}
 
 	/*
 	 * Got the capability record, but now we have to expand all tc=name
 	 * references in it ...
 	 */
-tc_exp:	{
+	{
 		register char *newicap, *s;
 		register int newilen;
 		unsigned int ilen;
-		int diff, iret, tclen;
+		int diff, iret, tclen, oline;
 		char *icap, *scan, *tc, *tcstart, *tcend;
 
 		/*
@@ -568,9 +591,9 @@ tc_exp:	{
 		 *	scanned for tc=name constructs.
 		 */
 		scan = record;
-		tc_not_resolved = 0;
+		tc_not_resolved = FALSE;
 		for (;;) {
-			if ((tc = _nc_cgetcap(scan, "tc", '=')) == NULL)
+			if ((tc = _nc_cgetcap(scan, "tc", '=')) == 0)
 				break;
 
 			/*
@@ -578,49 +601,42 @@ tc_exp:	{
 			 * (if present) so we can use it to call ourselves.
 			 */
 			s = tc;
-			for (;;)
-				if (*s == '\0')
+			while (*s != '\0') {
+				if (*s++ == ':') {
+					*(s - 1) = '\0';
 					break;
-				else
-					if (*s++ == ':') {
-						*(s - 1) = '\0';
-						break;
-					}
+				}
+			}
 			tcstart = tc - 3;
 			tclen = s - tcstart;
 			tcend = s;
 
-			iret = _nc_getent(&icap, &ilen, db_p, fd, tc, depth+1,
-				      NULL);
+			iret = _nc_getent(&icap, &ilen, &oline, current, db_array, fd, tc, depth+1, 0);
 			newicap = icap;		/* Put into a register. */
 			newilen = ilen;
-			if (iret != 0) {
+			if (iret != TC_SUCCESS) {
 				/* an error */
-				if (iret < -1) {
+				if (iret < TC_NOT_FOUND) {
 					if (myfd)
 						(void)close(fd);
 					free(record);
 					return (iret);
 				}
-				if (iret == 1)
-					tc_not_resolved = 1;
+				if (iret == TC_UNRESOLVED)
+					tc_not_resolved = TRUE;
 				/* couldn't resolve tc */
-				if (iret == -1) {
+				if (iret == TC_NOT_FOUND) {
 					*(s - 1) = ':';
 					scan = s - 1;
-					tc_not_resolved = 1;
+					tc_not_resolved = TRUE;
 					continue;
-
 				}
 			}
+
 			/* not interested in name field of tc'ed record */
 			s = newicap;
-			for (;;)
-				if (*s == '\0')
-					break;
-				else
-					if (*s++ == ':')
-						break;
+			while (*s != '\0' && *s++ != ':')
+				;
 			newilen -= s - newicap;
 			newicap = s;
 
@@ -645,12 +661,12 @@ tc_exp:	{
 				tcpos = tcstart - record;
 				tcposend = tcend - record;
 				record = realloc(record, newsize);
-				if (record == NULL) {
+				if (record == 0) {
 					errno = ENOMEM;
 					if (myfd)
 						(void)close(fd);
 					free(icap);
-					return (-2);
+					return (TC_SYS_ERR);
 				}
 				r_end = record + newsize;
 				rp = record + pos;
@@ -673,26 +689,26 @@ tc_exp:	{
 			 */
 			scan = s-1;
 		}
-
 	}
+
 	/*
 	 * Close file (if we opened it), give back any extra memory, and
 	 * return capability, length and success.
 	 */
 	if (myfd)
 		(void)close(fd);
-	*len = rp - record - 1;	/* don't count NUL */
-	if (r_end > rp)
-		if ((record =
-		     realloc(record, (size_t)(rp - record))) == NULL) {
+ 	*len = rp - record - 1;	/* don't count NUL */
+	if (r_end > rp) {
+		if ((record = realloc(record, (size_t)(rp - record))) == 0) {
 			errno = ENOMEM;
-			return (-2);
+			return (TC_SYS_ERR);
 		}
+	}
 
 	*cap = record;
 	if (tc_not_resolved)
-		return (1);
-	return (0);
+		return (TC_UNRESOLVED);
+	return (current);
 }
 
 /*
@@ -700,9 +716,10 @@ tc_exp:	{
  * record buf, -1 if not.
  */
 static int
-_nc_cgetmatch(char *buf, char *name)
+_nc_cgetmatch(char *buf, const char *name)
 {
-	register char *np, *bp;
+	register const char *np;
+	register char *bp;
 
 	/*
 	 * Start search at beginning of record.
@@ -713,26 +730,27 @@ _nc_cgetmatch(char *buf, char *name)
 		 * Try to match a record name.
 		 */
 		np = name;
-		for (;;)
-			if (*np == '\0')
+		for (;;) {
+			if (*np == '\0') {
 				if (*bp == '|' || *bp == ':' || *bp == '\0')
 					return (0);
 				else
 					break;
-			else
-				if (*bp++ != *np++)
-					break;
+			} else if (*bp++ != *np++) {
+				break;
+			}
+		}
 
 		/*
 		 * Match failed, skip to next name in record.
 		 */
 		bp--;	/* a '|' or ':' may have stopped the match */
-		for (;;)
+		for (;;) {
 			if (*bp == '\0' || *bp == ':')
 				return (-1);	/* match failed totally */
-			else
-				if (*bp++ == '|')
-					break;	/* found next name */
+			else if (*bp++ == '|')
+				break;	/* found next name */
+		}
 	}
 }
 
@@ -740,7 +758,7 @@ _nc_cgetmatch(char *buf, char *name)
  * Compare name field of record.
  */
 static int
-_nc_nfcmp(char *nf, char *rec)
+_nc_nfcmp(const char *nf, char *rec)
 {
 	char *cp, tmp;
 	int ret;
@@ -759,183 +777,191 @@ _nc_nfcmp(char *nf, char *rec)
 
 int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 {
-    ENTRY	*ep;
-    char	*thisdir;
+	int found = FALSE;
+	ENTRY	*ep;
+	char	cwd_buf[PATH_MAX];
 #ifndef USE_GETCAP
-    /*
-     * Here is what the 4.4BSD termcap(3) page prescribes:
-     *
-     * It will look in the environment for a TERMCAP variable.  If
-     * found, and the value does not begin with a slash, and the
-     * terminal type name is the same as the environment string
-     * TERM, the TERMCAP string is used instead of reading a termcap
-     * file.  If it does begin with a slash, the string is used as a
-     * path name of the termcap file to search.  If TERMCAP does not
-     * begin with a slash and name is different from TERM, tgetent()
-     * searches the files $HOME/.termcap and /usr/share/misc/termcap,
-     * in that order, unless the environment variable TERMPATH exists,
-     * in which case it specifies a list of file pathnames (separated
-     * by spaces or colons) to be searched instead.
-     *
-     * It goes on to state:
-     *
-     * Whenever multiple files are searched and a tc field occurs in the
-     * requested entry, the entry it names must
-     * be found in the same file or one of the succeeding files.
-     *
-     * However, this restriction is relaxed in ncurses; tc references to
-     * previous files are permitted.
-     *
-     * This routine returns 1 if an entry is found, 0 if not found, and -1
-     * if the database is not accessable.
-     */
-    FILE	*fp;
+	/*
+	 * Here is what the 4.4BSD termcap(3) page prescribes:
+	 *
+	 * It will look in the environment for a TERMCAP variable.  If found,
+	 * and the value does not begin with a slash, and the terminal type
+	 * name is the same as the environment string TERM, the TERMCAP string
+	 * is used instead of reading a termcap file.  If it does begin with a
+	 * slash, the string is used as a path name of the termcap file to
+	 * search.  If TERMCAP does not begin with a slash and name is
+	 * different from TERM, tgetent() searches the files $HOME/.termcap and
+	 * /usr/share/misc/termcap, in that order, unless the environment
+	 * variable TERMPATH exists, in which case it specifies a list of file
+	 * pathnames (separated by spaces or colons) to be searched instead.
+	 *
+	 * It goes on to state:
+	 *
+	 * Whenever multiple files are searched and a tc field occurs in the
+	 * requested entry, the entry it names must be found in the same file
+	 * or one of the succeeding files.
+	 *
+	 * However, this restriction is relaxed in ncurses; tc references to
+	 * previous files are permitted.
+	 *
+	 * This routine returns 1 if an entry is found, 0 if not found, and -1
+	 * if the database is not accessible.
+	 */
+	FILE	*fp;
 #define MAXPATHS	32
-    char	*tc, *termpaths[MAXPATHS], pathbuf[2048];
-    int 	filecount = 0;
-    bool	use_buffer = FALSE;
+	char	*tc, *termpaths[MAXPATHS];
+	int 	filecount = 0;
+	bool	use_buffer = FALSE;
+	char	tc_buf[1024];
+	char	pathbuf[PATH_MAX];
 
-    if ((tc = getenv("TERMCAP")) != (char *)NULL)
-    {
-	if (tc[0] == '/')	/* interpret as a filename */
+	if ((tc = getenv("TERMCAP")) != 0)
 	{
-	    termpaths[0] = tc;
-	    termpaths[filecount = 1] = (char *)NULL;
-	}
-	else if (_nc_name_match(tc, tn, "|:"))    /* treat as a capability file */
-	{
-	    use_buffer = TRUE;
-	    (void) strcpy(pathbuf, tc);
-	    (void) strcat(pathbuf, "\n");
-	}
-	else if ((tc = getenv("TERMPATH")) != (char *)NULL)
-	{
-	    char    *cp;
-
-	    for (cp = tc; *cp; cp++)
-	    {
-		if (*cp == ':')
-		    *cp = '\0';
-		else if (cp == tc || cp[-1] == '\0')
+		if (tc[0] == '/')	/* interpret as a filename */
 		{
-		    if (filecount >= MAXPATHS - 1)
-			return(-1);
-
-		    termpaths[filecount++] = cp;
+			termpaths[0] = tc;
+			termpaths[filecount = 1] = 0;
 		}
-	    }
+		else if (_nc_name_match(tc, tn, "|:")) /* treat as a capability file */
+		{
+			use_buffer = TRUE;
+			(void) sprintf(tc_buf, "%.*s\n", (int)sizeof(tc_buf)-2, tc);
+		}
+		else if ((tc = getenv("TERMPATH")) != 0)
+		{
+			char    *cp;
 
-	    termpaths[filecount] = (char *)NULL;
+			for (cp = tc; *cp; cp++)
+			{
+				if (*cp == ':')
+					*cp = '\0';
+				else if (cp == tc || cp[-1] == '\0')
+				{
+					if (filecount >= MAXPATHS - 1)
+						return(-1);
+
+					termpaths[filecount++] = cp;
+				}
+			}
+			termpaths[filecount] = 0;
+		}
 	}
-    }
-    else	/* normal case */
-    {
-	char	envhome[PATH_MAX];
-
-	filecount = 0;
-
-	/*
-	 * Probably /etc/termcap is a symlink to /usr/share/misc/termcap.
-	 * Avoid reading the same file twice.
-	 */
-	if (access("/etc/termcap", R_OK) == 0)
-	    termpaths[filecount++] = "/etc/termcap";
-	else if (access("/usr/share/misc/termcap", R_OK) == 0)
-	    termpaths[filecount++] = "/usr/share/misc/termcap";
-
-	/* user's .termcap, if any, should override it */
-	(void) strncpy(envhome, getenv("HOME"), PATH_MAX - 10);
-	envhome[PATH_MAX - 10] = '\0';
-	(void) sprintf(pathbuf, "%s/.termcap", envhome);
-	termpaths[filecount++] = pathbuf;
-
-	termpaths[filecount] = (char *)NULL;
-    }
-
-    /* parse the sources */
-    if (use_buffer)
-    {
-	_nc_set_source("TERMCAP");
-
-	/*
-	 * We don't suppress warning messages here.  The presumption is
-	 * that since it's just a single entry, they won't be a pain.
-	 */
-	_nc_read_entry_source((FILE *)NULL, pathbuf, FALSE, FALSE, NULLHOOK);
-    }
-    else
-    {
-	int	i;
-
-	for (i = 0; i < filecount; i++)
+	else	/* normal case */
 	{
-	    T(("Looking for %s in %s", tn, termpaths[i]));
-	    if ((fp = fopen(termpaths[i], "r")) != (FILE *)NULL)
-	    {
-		_nc_set_source(termpaths[i]);
+		char	envhome[PATH_MAX];
+
+		filecount = 0;
 
 		/*
-		 * Suppress warning messages.  Otherwise you get 400
-		 * lines of crap from archaic termcap files as ncurses
-		 * complains about all the obsolete capabilities.
+		 * Probably /etc/termcap is a symlink to /usr/share/misc/termcap.
+		 * Avoid reading the same file twice.
 		 */
-		_nc_read_entry_source(fp, (char*)NULL, FALSE, TRUE, NULLHOOK);
+		if (access("/etc/termcap", R_OK) == 0)
+			termpaths[filecount++] = "/etc/termcap";
+		else if (access("/usr/share/misc/termcap", R_OK) == 0)
+			termpaths[filecount++] = "/usr/share/misc/termcap";
 
-		(void) fclose(fp);
-	    }
+		/* user's .termcap, if any, should override it */
+		(void) strncpy(envhome, getenv("HOME"), PATH_MAX - 10);
+		envhome[PATH_MAX - 10] = '\0';
+		(void) sprintf(pathbuf, "%s/.termcap", envhome);
+		termpaths[filecount++] = pathbuf;
+
+		termpaths[filecount] = 0;
 	}
-    }
+
+	/* parse the sources */
+	if (use_buffer)
+	{
+		_nc_set_source("TERMCAP");
+
+		/*
+		 * We don't suppress warning messages here.  The presumption is
+		 * that since it's just a single entry, they won't be a pain.
+		 */
+		_nc_read_entry_source((FILE *)0, tc_buf, FALSE, FALSE, NULLHOOK);
+	} else {
+		int	i;
+
+		for (i = 0; i < filecount; i++) {
+
+			T(("Looking for %s in %s", tn, termpaths[i]));
+			if ((fp = fopen(termpaths[i], "r")) != (FILE *)0)
+			{
+				_nc_set_source(termpaths[i]);
+
+				/*
+				 * Suppress warning messages.  Otherwise you
+				 * get 400 lines of crap from archaic termcap
+				 * files as ncurses complains about all the
+				 * obsolete capabilities.
+				 */
+				_nc_read_entry_source(fp, (char*)0, FALSE, TRUE, NULLHOOK);
+
+				(void) fclose(fp);
+			}
+		}
+	}
 #else
-    char	tc[2048 * 2];
+	char	tc[2048 * 2];
+	static char	*source;
+	static int lineno;
 
-    /* we're using getcap(3) */
-    if (_nc_tgetent(tc, (char *)tn) <= 0)
-	    return (ERR);
+	/* we're using getcap(3) */
+	if (_nc_tgetent(tc, &source, &lineno, tn) <= 0)
+		return (ERR);
 
-    _nc_set_source("TERMCAP");
-    _nc_read_entry_source((FILE *)NULL, tc, FALSE, FALSE, NULLHOOK);
+	_nc_curr_line = lineno;
+	_nc_set_source(source);
+	_nc_read_entry_source((FILE *)0, tc, FALSE, FALSE, NULLHOOK);
 #endif
 
-    if (_nc_head == (ENTRY *)NULL)
-	return(-1);
+	if (_nc_head == 0)
+		return(ERR);
 
-    /* resolve all use references */
-    _nc_resolve_uses();
+	/* resolve all use references */
+	_nc_resolve_uses();
 
-    /* find a terminal matching tn, if we can */
-    if ((thisdir = getcwd(pathbuf, sizeof(pathbuf))))
-    {
-        _nc_set_writedir((char *)NULL);	/* note: this does a chdir */
-	for_entry_list(ep)
-	    if (_nc_name_match(ep->tterm.term_names, tn, "|:"))
-	    {
-		/*
-		 * Make a local copy of the terminal capabilities.  free
-		 * all entry storage except the string table for the
-		 * loaded type (which we disconnected from the list by
-		 * NULLing out ep->tterm.str_table above).
-		 */
-		memcpy(tp, &ep->tterm, sizeof(TERMTYPE));
-		ep->tterm.str_table = (char *)NULL;
-		_nc_free_entries(_nc_head);
+	/* find a terminal matching tn, if we can */
+	if (getcwd(cwd_buf, sizeof(cwd_buf)) != 0)
+	{
+		_nc_set_writedir((char *)0); /* note: this does a chdir */
+		for_entry_list(ep) {
+			if (_nc_name_match(ep->tterm.term_names, tn, "|:"))
+			{
+				/*
+				 * Make a local copy of the terminal
+				 * capabilities.  Free all entry storage except
+				 * the string table for the loaded type (which
+				 * we disconnected from the list by NULLing out
+				 * ep->tterm.str_table above).
+				 */
+				memcpy(tp, &ep->tterm, sizeof(TERMTYPE));
+				ep->tterm.str_table = (char *)0;
 
-		/*
-		 * OK, now try to write the type to user's terminfo directory.
-		 * Next time he loads this, it will come through terminfo.
-		 *
-		 * Advantage: Second and subsequent fetches of this entry
-		 * will be very fast.
-		 *
-		 * Disadvantage: After the first time a termcap type is loaded
-		 * by its user, editing it in the /etc/termcap file, or in
-		 * TERMCAP, or in a local ~/.termcap, will be ineffective
-		 * unless the terminfo entry is explicitly removed.
-		 */
-		(void) _nc_write_entry(tp);
-	    }
-	chdir(thisdir);
-    }
+				/*
+				 * OK, now try to write the type to user's
+				 * terminfo directory.  Next time he loads
+				 * this, it will come through terminfo.
+				 *
+				 * Advantage:  Second and subsequent fetches of
+				 * this entry will be very fast.
+				 *
+				 * Disadvantage:  After the first time a
+				 * termcap type is loaded by its user, editing
+				 * it in the /etc/termcap file, or in TERMCAP,
+				 * or in a local ~/.termcap, will be
+				 * ineffective unless the terminfo entry is
+				 * explicitly removed.
+				 */
+				(void) _nc_write_entry(tp);
+				found = TRUE;
+				break;
+			}
+		}
+		chdir(cwd_buf);
+	}
 
-    _nc_free_entries(_nc_head);
-    return(0);
+	_nc_free_entries(_nc_head);
+	return(found);
 }

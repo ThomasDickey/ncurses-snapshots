@@ -28,7 +28,7 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <term.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.11 1996/08/17 22:31:33 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.12 1996/08/24 19:25:16 tom Exp $")
 
 /*
    some of the code in here was contributed by:
@@ -58,6 +58,9 @@ short ospeed;
 int tgetent(char *bufp GCC_UNUSED, const char *name)
 {
 int errcode;
+#if defined(TERMIOS)
+speed_t speed;
+#endif
 
 	T(("calling tgetent"));
 	setupterm((char *)name, STDOUT_FILENO, &errcode);
@@ -65,7 +68,7 @@ int errcode;
 	if (errcode != 1)
 		return(errcode);
 
-        if (cursor_left)
+	if (cursor_left)
 	    if ((backspaces_with_bs = !strcmp(cursor_left, "\b")) == 0)
 		backspace_if_not_bs = cursor_left;
 
@@ -82,12 +85,12 @@ int errcode;
 	 * curses library.  Method suggested by Andrey Chernov
 	 * <ache@astral.msk.su>
 	 */
-	if ((ospeed = cfgetospeed(&cur_term->Nttyb)) < 0)
+	if ((speed = cfgetospeed(&cur_term->Nttyb)) < 1)
 	    ospeed = 1;		/* assume lowest non-hangup speed */
 	else
 	{
-		const short *sp;
-		static const short speeds[] = {
+		const speed_t *sp;
+		static const speed_t speeds[] = {
 #ifdef B115200
 			B115200,
 #endif
@@ -126,7 +129,7 @@ int errcode;
 #define MAXSPEED	sizeof(speeds)/sizeof(speeds[0])
 
 		for (sp = speeds; sp < speeds + MAXSPEED; sp++) {
-			if (sp[0] <= ospeed) {
+			if (sp[0] <= speed) {
 				break;
 			}
 		}

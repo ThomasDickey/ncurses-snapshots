@@ -31,10 +31,12 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "term.h"
-#include "tic.h"
-#include "term_entry.h"
-#include "dump_entry.h"
+#include <term.h>
+#include <tic.h>
+#include <term_entry.h>
+#include <dump_entry.h>
+
+MODULE_ID("$Id: infocmp.c,v 1.18 1996/08/20 22:34:32 tom Exp $")
 
 #define MAXTERMS	32	/* max # terminal arguments we can handle */
 
@@ -211,7 +213,7 @@ static void compare_predicate(int type, int idx, const char *name)
 		{
 		case C_DIFFERENCE:
 			if (t1->Booleans[idx] != t2->Booleans[idx])
-			(void) printf("\t%s: %c:%c.\n", 
+			(void) printf("\t%s: %c:%c.\n",
 					  name,
 					  t1->Booleans[idx] ? 'T' : 'F',
 					  t2->Booleans[idx] ? 'T' : 'F');
@@ -234,7 +236,7 @@ static void compare_predicate(int type, int idx, const char *name)
 		{
 		case C_DIFFERENCE:
 			if (t1->Numbers[idx] != t2->Numbers[idx])
-			(void) printf("\t%s: %d:%d.\n", 
+			(void) printf("\t%s: %d:%d.\n",
 					  name, t1->Numbers[idx], t2->Numbers[idx]);
 			break;
 
@@ -265,18 +267,18 @@ static void compare_predicate(int type, int idx, const char *name)
 					(void) strcpy(buf1, "NULL");
 				else
 				{
-					(void) strcpy(buf1, "'"); 
+					(void) strcpy(buf1, "'");
 					(void) strcat(buf1, expand(s1));
-					(void) strcat(buf1, "'"); 
+					(void) strcat(buf1, "'");
 				}
 
 				if (s2 == (char *)NULL)
 					(void) strcpy(buf2, "NULL");
 				else
 				{
-					(void) strcpy(buf2, "'"); 
+					(void) strcpy(buf2, "'");
 					(void) strcat(buf2, expand(s2));
-					(void) strcat(buf2, "'"); 
+					(void) strcat(buf2, "'");
 				}
 
 				(void) printf("\t%s: %s, %s.\n",
@@ -324,15 +326,15 @@ static const assoc std_caps[] =
     {"\033)0",	"ISO DEC G1"},	/* enable DEC graphics for G1 */
     {"\033)A",	"ISO UK G1"},	/* enable UK chars for G1 */
     {"\033)B",	"ISO US G1"},	/* enable US chars for G1 */
-  
+
     /* these are DEC private modes widely supported by emulators */
     {"\033=",	"DECPAM"},	/* application keypad mode */
     {"\033>",	"DECPNM"},	/* normal keypad mode */
     {"\033<",	"DECANSI"},	/* enter ANSI mode */
- 
+
     { (char *)0, (char *)0}
 };
-  
+
 static const assoc private_modes[] =
 /* DEC \E[ ... [hl] modes recognized by many emulators */
 {
@@ -424,7 +426,7 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 		/*
 		 * Theoretically we just passed the test for translation
 		 * (equality once the padding is stripped).  However, there
-		 * are a few more hoops that need to be jumped so that 
+		 * are a few more hoops that need to be jumped so that
 		 * identical pairs of initialization and reset strings
 		 * don't just refer to each other.
 		 */
@@ -524,9 +526,9 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 	       } while
 		   ((ep = strtok((char *)NULL, ";")));
 
-  	    buf2[strlen(buf2) - 1] = '\0';
-  	    expansion = buf2;
-  	}
+	    buf2[strlen(buf2) - 1] = '\0';
+	    expansion = buf2;
+	}
 	/* now check for scroll region reset */
 	if (!expansion)
 	{
@@ -534,7 +536,7 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 	    len = strlen(buf2);
 	    if (strncmp(buf2, sp, len) == 0)
 		expansion = "RSR";
-	}	
+	}
 
 	/* now check for home-down */
 	if (!expansion)
@@ -639,7 +641,7 @@ static void file_comparison(int argc, char *argv[])
 		if (qp->nuses < MAX_USES)
 		    qp->uses[qp->nuses].parent = (void *)rp;
 		qp->nuses++;
-			
+
 		if (rp->nuses < MAX_USES)
 		    rp->uses[rp->nuses].parent = (void *)qp;
 		rp->nuses++;
@@ -694,7 +696,7 @@ static void file_comparison(int argc, char *argv[])
     (void) printf("The following entries are equivalent:\n");
     for (qp = heads[0]; qp; qp = qp->next)
     {
-	rp = (ENTRY *)qp->uses[0].parent;    
+	rp = (ENTRY *)qp->uses[0].parent;
 
 	if (qp->nuses == 1 && entryeq(&qp->tterm, &rp->tterm))
 	{
@@ -784,7 +786,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* where is the terminfo database location going to default to? */
-	restdir = firstdir = getenv("TERMINFO");
+	restdir = firstdir = 0;
 
 	while ((c = getopt(argc, argv, "decCFinlLprR:s:uv:Vw:A:B:1T")) != EOF)
 		switch (c)
@@ -1041,7 +1043,7 @@ int main(int argc, char *argv[])
 			str = buf;
 		    }
 		    (void) printf("    /* %s */	%s,\n", strnames[n], str);
-	        }
+		}
 		(void) printf("  }, /* size = %d */\n", size);
 		return EXIT_SUCCESS;
 	    }
@@ -1122,7 +1124,7 @@ int main(int argc, char *argv[])
 	    (void) fprintf(stderr, "Use `tic -[CI] <file>' for this.\n");
 	else if (argc - optind != 2)
 	    (void) fprintf(stderr,
-		"File comparison needs exactly two file arguments.\n");	    
+		"File comparison needs exactly two file arguments.\n");
 	else
 	    file_comparison(argc-optind, argv+optind);
 
