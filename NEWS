@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.558 2000/05/21 01:44:21 tom Exp $
+-- $Id: NEWS,v 1.560 2000/05/28 01:11:04 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000527
+	+ modify echo() behavior of getch() to match Solaris curses for
+	  carriage return and backspace (reported by Neil Zanella).
+	+ change _nc_flush() to a function.
+	+ modify delscreen() to check if the output stream has been closed, and
+	  if so, free the buffer allocated for setbuf (this provides an
+	  ncurses-specific way to avoid a memory leak when repeatedly calling
+	  newterm reported by Chipp C <at_1@zdnetonebox.com>).
+	+ correct typo in curs_getch.3x manpage regarding noecho (reported by
+	  David Malone <dwmalone@maths.tcd.ie>).
+	+ add a "make libs" rule.
+	+ make the Ada95 interface build with configure --enable-widec.
+	+ if the configure --enable-widec option is given, append 'w' to names
+	  of the generated libraries (e.g., libncursesw.so) to avoid conflict
+	  with existing ncurses libraries.
 
 20000520
 	+ modify view.c to make a rudimentary viewer of UTF-8 text if ncurses

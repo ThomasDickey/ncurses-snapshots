@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.198 2000/05/20 21:52:40 tom Exp $
+dnl $Id: aclocal.m4,v 1.201 2000/05/28 01:39:10 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -867,6 +867,7 @@ do
 	if test -f $cf_dir/Makefile ; then
 		case "$cf_dir" in
 		Ada95) #(vi
+			echo 'libs \' >> Makefile
 			echo 'install.libs \' >> Makefile
 			echo 'uninstall.libs ::' >> Makefile
 			echo '	cd '$cf_dir' && $(MAKE) $(CF_MFLAGS) [$]@' >> Makefile
@@ -886,6 +887,7 @@ if test "$cf_dir" != "c++" ; then
 echo 'lint \' >> Makefile
 fi
 cat >> Makefile <<CF_EOF
+libs \\
 lintlib \\
 install.libs \\
 uninstall.libs \\
@@ -896,6 +898,7 @@ CF_EOF
 	elif test -f $srcdir/$cf_dir/headers; then
 cat >> Makefile <<CF_EOF
 
+libs \\
 install.libs \\
 uninstall.libs \\
 install.includes \\
@@ -1011,9 +1014,10 @@ done
 
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl Compute the library-suffix from the given model name
+dnl Compute the library file-suffix from the given model name
 dnl $1 = model name
 dnl $2 = variable to set
+dnl The variable $LIB_SUFFIX, if set, prepends the variable to set.
 AC_DEFUN([CF_LIB_SUFFIX],
 [
 	AC_REQUIRE([CF_SUBST_NCURSES_VERSION])
@@ -1036,9 +1040,13 @@ AC_DEFUN([CF_LIB_SUFFIX],
 		*)	$2='.so'  ;;
 		esac
 	esac
+	test -n "$LIB_SUFFIX" && $2="${LIB_SUFFIX}[$]{$2}"
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Compute the string to append to -library from the given model name
+dnl $1 = model name
+dnl $2 = variable to set
+dnl The variable $LIB_SUFFIX, if set, prepends the variable to set.
 AC_DEFUN([CF_LIB_TYPE],
 [
 	case $1 in
@@ -1047,6 +1055,7 @@ AC_DEFUN([CF_LIB_TYPE],
 	profile) $2='_p' ;;
 	shared)  $2=''   ;;
 	esac
+	test -n "$LIB_SUFFIX" && $2="${LIB_SUFFIX}[$]{$2}"
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Some systems have a non-ANSI linker that doesn't pull in modules that have

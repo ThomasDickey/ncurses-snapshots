@@ -43,7 +43,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.51 2000/03/26 01:03:36 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.52 2000/05/27 23:22:36 tom Exp $");
 
 SCREEN *
 set_term(SCREEN * screenp)
@@ -108,6 +108,18 @@ delscreen(SCREEN * sp)
     FreeIfNeeded(sp->newhash);
 
     del_curterm(sp->_term);
+
+    /*
+     * If the associated output stream has been closed, we can discard the
+     * set-buffer.  Limit the error check to EBADF, since fflush may fail
+     * for other reasons than trying to operate upon a closed stream.
+     */
+    if (sp->_ofp != 0
+	&& sp->_setbuf != 0
+	&& fflush(sp->_ofp) != 0
+	&& errno == EBADF) {
+	free(sp->_setbuf);
+    }
 
     free(sp);
 
