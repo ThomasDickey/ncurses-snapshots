@@ -308,9 +308,8 @@ Other changes and notes from 1.8.2 include:
 * PDCurses seem to assume that wclear() will use current attribute
   when clearing the screen. According to Eric this is not the case
   with SVR4.
-* I have discovered, to my chagrin, the sun (and probably other
-  systems) doesn't have strerror or vsscanf and God knows what else!
-  I've added a strerror() and will do a vsscanf().
+* I have discovered, to my chagrin, SunOS 4.x (and probably other systems)
+  * doesn't have vsscanf and God knows what else!  I've will do a vsscanf().
 * I've also found out that the src/script.* rely on gawk and will not
   work with stock awk or even with nawk. Any changes are welcome.
 * Linux is more tolerant of NULL dereferences than most systems. This

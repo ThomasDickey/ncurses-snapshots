@@ -27,10 +27,9 @@
 /* capability output formats */
 #define F_TERMINFO	0	/* use terminfo names */
 #define F_VARIABLE	1	/* use C variable names */
-#define F_TERMCAP	2	/* termcap names, no capability conversion */
-#define F_TCONVERT	3	/* termcap names, with capability conversion */
-#define F_TCONVERR	4	/* as T_CONVERT, no skip of untranslatables */
-#define F_LITERAL	5	/* like F_TERMINFO, but no smart defaults */
+#define F_TERMCAP	2	/* termcap names with capability conversion */
+#define F_TCONVERR	3	/* as T_TERMCAP, no skip of untranslatables */
+#define F_LITERAL	4	/* like F_TERMINFO, but no smart defaults */
 
 /* capability sort modes */
 #define S_DEFAULT	0	/* sort by terminfo name (implicit) */

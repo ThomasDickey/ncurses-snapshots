@@ -217,6 +217,7 @@ bool _nc_mouse_inline(SCREEN *sp)
 static void mouse_activate(bool on)
 {
     if (mousetype == M_XTERM)
+    {
 	if (on)
 	{
 	    TPUTS_TRACE("xterm mouse initialization");
@@ -227,6 +228,8 @@ static void mouse_activate(bool on)
 	    TPUTS_TRACE("xterm mouse deinitialization");
 	    putp("\033[?1000l");
 	}
+	(void) fflush(SP->_ofp);
+    }
 }
 
 /**************************************************************************

@@ -706,7 +706,7 @@ onscreen_mvcur(int yold,int xold,int ynew,int xnew, bool ovw)
 	else if (tactic == 4)
 	{
 	    (void) strcpy(use, cursor_to_ll);
-	    (void) relative_move(use + cursor_home_length,
+	    (void) relative_move(use + cursor_to_ll_length,
 				 screen_lines-1, 0, ynew, xnew, ovw);
 	}
 	else /* if (tactic == 5) */

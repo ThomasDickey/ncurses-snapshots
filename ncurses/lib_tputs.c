@@ -75,6 +75,7 @@ char	addrbuf[17];
 	 * (like nethack) actually do the likes of tputs("50") to get delays.
 	 */
 	trailpad = 0;
+	number = 0;
 
 	while (isdigit(*string)) {
 		trailpad = trailpad * 10 + *string - '0';

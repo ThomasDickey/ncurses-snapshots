@@ -26,8 +26,9 @@
  *
  */
 
+#include <config.h>
+
 #include <string.h>
-#include "config.h"
 #include "tic.h"
 #include "hashsize.h"
 

@@ -635,9 +635,6 @@ Source-Form Translation
    sigaction.c
           signal calls
           
-   strerror.c
-          uses sys_errlist[]; for non-POSIX systems only
-          
    The following source files will not be needed for a
    single-terminal-type port.
    

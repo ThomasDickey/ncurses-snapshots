@@ -21,7 +21,7 @@ function symlink(src,dst) {
 	}
 function sharedlinks(directory) {
 		if ( end_name != lib_name ) {
-			printf "\t(cd %s ;", directory
+			printf "\tcd %s && (", directory
 			abi_name = sprintf("%s.$(ABI_VERSION)", lib_name);
 			symlink(end_name, abi_name);
 			symlink(abi_name, lib_name);

@@ -180,12 +180,12 @@ int post_menu(MENU * menu)
       if (maxx < menu->width || maxy < menu->height)
 	RETURN(E_NO_ROOM);
       
-      if ( (menu->win = newwin(menu->rows,menu->width,0,0)) )
+      if ( (menu->win = newpad(menu->rows,menu->width)) )
 	{
 	  y = (maxy >= menu->rows) ? menu->rows : maxy;
 	  if (y>=menu->height) 
 	    y = menu->height;
-	  if(!(menu->sub = derwin(menu->win,y,menu->width,0,0)))
+	  if(!(menu->sub = subpad(menu->win,y,menu->width,0,0)))
 	    RETURN(E_SYSTEM_ERROR);
 	}
       else 

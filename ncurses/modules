@@ -71,7 +71,6 @@ write_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 
 # Modules for porting
 sigaction	lib		$(srcdir)
-strerror	lib		$(srcdir)
 vsscanf		lib		$(srcdir)
 
 # Support for termcap (and tic, etc.)

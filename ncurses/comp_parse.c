@@ -35,10 +35,14 @@
  *
  */
 
+#include <config.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
+#include "curses.priv.h"
 #include "tic.h"
 #include "term.h"
 #include "term_entry.h"
@@ -110,7 +114,7 @@ bool _nc_entry_match(char *n1, char *n2)
 /* do any of the aliases in a pair of terminal names match? */
 {
     char	*pstart, *qstart, *pend, *qend;
-    char	nc1[NAMESIZE+1], nc2[NAMESIZE+1];
+    char	nc1[MAX_NAME_SIZE+1], nc2[MAX_NAME_SIZE+1];
 
     if (strchr(n1, '|') == NULL)
     {
@@ -255,7 +259,7 @@ int _nc_resolve_uses(void)
 	    if (!foundit)
 	    {
 		TERMTYPE	thisterm;
-		char		filename[256];
+		char		filename[PATH_MAX];
 
 		if (_nc_read_entry(lookfor, filename, &thisterm) == 1)
 		{

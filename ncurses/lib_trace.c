@@ -37,15 +37,6 @@
 #if HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
-#include <errno.h>
-
-#if !HAVE_EXTERN_ERRNO
-extern int errno;
-#endif
-
-#if !HAVE_STRERROR && !defined(strerror)
-extern char *strerror(int);
-#endif
 
 unsigned _nc_tracing = 0;  
 char *_nc_tputs_trace;
@@ -56,13 +47,11 @@ void trace(const unsigned int tracelevel)
 {
 static bool	been_here = FALSE;
 
-	if (! been_here) {
+	if (! been_here && tracelevel) {
 	   	been_here = TRUE;
 
 	   	if ((tracefd = creat("trace", 0644)) < 0) {
-			write(2, "curses: Can't open 'trace' file: ", 33);
-			write(2, strerror(errno), strlen(strerror(errno)));
-			write(2, "\n", 1);
+			perror("curses: Can't open 'trace' file: ");
 			exit(1);
 	   	}
 	   	_tracef("TRACING NCURSES version %s", NCURSES_VERSION);
@@ -114,9 +103,11 @@ _tracef(const char *fmt, ...)
 va_list ap;
 char buffer[BUFSIZ];
 
-	va_start(ap, fmt);
-	vsprintf(buffer, fmt, ap);
-	write(tracefd, buffer, strlen(buffer));
-	write(tracefd, "\n", 1);
+	if (_nc_tracing) {
+		va_start(ap, fmt);
+		vsprintf(buffer, fmt, ap);
+		write(tracefd, buffer, strlen(buffer));
+		write(tracefd, "\n", 1);
+	}
 }
 
