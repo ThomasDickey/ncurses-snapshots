@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey, 1996 on                                       *
  ****************************************************************************/
 
 /*
@@ -42,7 +43,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.53 2001/06/02 22:53:59 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.55 2002/07/20 17:07:37 tom Exp $")
 
 /*
  *	char *
@@ -108,7 +109,7 @@ MODULE_ID("$Id: lib_tparm.c,v 1.53 2001/06/02 22:53:59 tom Exp $")
 
 typedef struct {
     union {
-	unsigned int num;
+	int num;
 	char *str;
     } data;
     bool num_type;
@@ -341,7 +342,7 @@ tparam_internal(const char *string, va_list ap)
 {
 #define NUM_VARS 26
     char *p_is_s[9];
-    int param[9];
+    long param[9];
     int lastpop;
     int popcount;
     int number;
@@ -477,12 +478,14 @@ tparam_internal(const char *string, va_list ap)
 	/*
 	 * A few caps (such as plab_norm) have string-valued parms.
 	 * We'll have to assume that the caller knows the difference, since
-	 * a char* and an int may not be the same size on the stack.
+	 * a char* and an int may not be the same size on the stack.  The
+	 * normal prototype for this uses 9 long's, which is consistent with
+	 * our va_arg() usage.
 	 */
 	if (p_is_s[i] != 0) {
 	    p_is_s[i] = va_arg(ap, char *);
 	} else {
-	    param[i] = va_arg(ap, int);
+	    param[i] = va_arg(ap, long int);
 	}
     }
 
@@ -740,8 +743,7 @@ tparam_internal(const char *string, va_list ap)
 }
 
 NCURSES_EXPORT(char *)
-tparm
-(NCURSES_CONST char *string,...)
+tparm(NCURSES_CONST char *string,...)
 {
     va_list ap;
     char *result;

@@ -34,7 +34,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_screen.c,v 1.20 2002/07/13 17:46:35 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.21 2002/07/20 17:11:20 tom Exp $")
 
 NCURSES_EXPORT(WINDOW *)
 getwin(FILE * filep)
@@ -155,7 +155,6 @@ NCURSES_EXPORT(int)
 scr_init(const char *file)
 {
     FILE *fp = 0;
-    struct stat stb;
 
     T((T_CALLED("scr_init(%s)"), _nc_visbuf(file)));
 
@@ -164,8 +163,6 @@ scr_init(const char *file)
 
     if (_nc_access(file, R_OK) < 0
 	|| (fp = fopen(file, "rb")) == 0) {
-	returnCode(ERR);
-    } else if (fstat(STDOUT_FILENO, &stb)) {
 	returnCode(ERR);
     } else {
 	delwin(curscr);

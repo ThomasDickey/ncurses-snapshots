@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.15 2002/05/11 21:19:29 tom Exp $
+.\" $Id: curs_terminfo.3x,v 1.16 2002/07/20 16:05:19 tom Exp $
 .TH curs_terminfo 3X ""
 .ds n 5
 .SH NAME
@@ -52,9 +52,9 @@
 .br
 \fB#include <term.h>\fR
 
-\fBint setupterm(const char *\fR\fIterm\fR\fB, int \fR\fIfildes\fR\fB, int *\fR\fIerrret\fR\fB);\fR
+\fBint setupterm(char *\fR\fIterm\fR\fB, int \fR\fIfildes\fR\fB, int *\fR\fIerrret\fR\fB);\fR
 .br
-\fBint setterm(const char *\fR\fIterm\fR\fB);\fR
+\fBint setterm(char *\fR\fIterm\fR\fB);\fR
 .br
 \fBTERMINAL *set_curterm(TERMINAL *\fR\fInterm\fR\fB);\fR
 .br
@@ -62,13 +62,13 @@
 .br
 \fBint restartterm(const char *\fR\fIterm\fR\fB, int \fR\fIfildes\fR\fB, int *\fR\fIerrret\fR\fB);\fR
 .br
-\fBchar *tparm(const char *\fR\fIstr\fR\fB, ...);\fR
+\fBchar *tparm(char *\fR\fIstr\fR\fB, ...);\fR
 .br
 \fBint tputs(const char *\fR\fIstr\fR\fB, int \fR\fIaffcnt\fR\fB, int (*\fR\fIputc\fR\fB)(int));\fR
 .br
 \fBint putp(const char *\fR\fIstr\fR\fB);\fR
 .br
-\fBint vidputs(chtype \fR\fIattrs\fR\fB, int (*\fR\fIputc\fR\fB)(char));\fR
+\fBint vidputs(chtype \fR\fIattrs\fR\fB, int (*\fR\fIputc\fR\fB)(int));\fR
 .br
 \fBint vidattr(chtype \fR\fIattrs\fR\fB);\fR
 .br
@@ -78,11 +78,11 @@
 .br
 \fBint mvcur(int \fR\fIoldrow\fR\fB, int \fR\fIoldcol\fR\fB, int \fR\fInewrow\fR, int \fR\fInewcol\fR\fB);\fR
 .br
-\fBint tigetflag(const char *\fR\fIcapname\fR\fB);\fR
+\fBint tigetflag(char *\fR\fIcapname\fR\fB);\fR
 .br
-\fBint tigetnum(const char *\fR\fIcapname\fR\fB);\fR
+\fBint tigetnum(char *\fR\fIcapname\fR\fB);\fR
 .br
-\fBchar *tigetstr(const char *\fR\fIcapname\fR\fB);\fR
+\fBchar *tigetstr(char *\fR\fIcapname\fR\fB);\fR
 .br
 .fi
 .SH DESCRIPTION
@@ -272,10 +272,9 @@ In System V Release 4, the third argument of \fBtputs\fR has the type
 
 The XSI Curses standard prototypes \fBtparm\fR with a fixed number of parameters,
 rather than a variable argument list.
-That prototype assumes that none of the parameters are strings
-(or if so, that a long is big enough to hold a pointer).
-The variable argument list implemented in ncurses does not rely on
-that assumption.
+This implementation uses a variable argument list.
+Portable applications should provide 9 parameters after the format;
+zeroes are fine for this purpose.
 
 XSI notes that after calling \fBmvcur\fR, the curses state may not match the
 actual terminal state, and that an application should touch and refresh

@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.17 2000/07/01 19:53:01 tom Exp $
+.\" $Id: curs_addch.3x,v 1.18 2002/07/20 14:47:36 tom Exp $
 .TH curs_addch 3X ""
 .SH NAME
 \fBaddch\fR, \fBwaddch\fR, \fBmvaddch\fR, \fBmvwaddch\fR,
@@ -36,17 +36,17 @@
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 
-\fBint addch(chtype ch);\fR
+\fBint addch(const chtype ch);\fR
 .br
-\fBint waddch(WINDOW *win, chtype ch);\fR
+\fBint waddch(WINDOW *win, const chtype ch);\fR
 .br
-\fBint mvaddch(int y, int x, chtype ch);\fR
+\fBint mvaddch(int y, int x, const chtype ch);\fR
 .br
-\fBint mvwaddch(WINDOW *win, int y, int x, chtype ch);\fR
+\fBint mvwaddch(WINDOW *win, int y, int x, const chtype ch);\fR
 .br
-\fBint echochar(chtype ch);\fR
+\fBint echochar(const chtype ch);\fR
 .br
-\fBint wechochar(WINDOW *win, chtype ch);\fR
+\fBint wechochar(WINDOW *win, const chtype ch);\fR
 .br
 .SH DESCRIPTION
 The \fBaddch\fR, \fBwaddch\fR, \fBmvaddch\fR and \fBmvwaddch\fR routines put

@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_overlay.3x,v 1.10 2001/11/03 19:58:30 tom Exp $
+.\" $Id: curs_overlay.3x,v 1.11 2002/07/20 14:53:00 tom Exp $
 .TH curs_overlay 3X ""
 .SH NAME
 \fBoverlay\fR,
@@ -39,7 +39,7 @@
 .br
 \fBint overwrite(const WINDOW *srcwin, WINDOW *dstwin);\fR
 .br
-\fBint copywin(WINDOW *srcwin, WINDOW *dstwin, int sminrow,\fR
+\fBint copywin(const WINDOW *srcwin, WINDOW *dstwin, int sminrow,\fR
       \fBint smincol, int dminrow, int dmincol, int dmaxrow,\fR
       \fBint dmaxcol, int overlay);\fR
 .SH DESCRIPTION

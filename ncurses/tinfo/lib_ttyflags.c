@@ -38,7 +38,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* cur_term */
 
-MODULE_ID("$Id: lib_ttyflags.c,v 1.7 2002/05/25 14:50:00 tom Exp $")
+MODULE_ID("$Id: lib_ttyflags.c,v 1.8 2002/07/20 19:27:20 tom Exp $")
 
 #undef tabs
 
@@ -119,13 +119,14 @@ reset_prog_mode(void)
     T((T_CALLED("reset_prog_mode()")));
 
     if (cur_term != 0) {
-	_nc_set_tty_mode(&cur_term->Nttyb);
-	if (SP) {
-	    if (SP->_keypad_on)
-		_nc_keypad(TRUE);
-	    NC_BUFFERED(TRUE);
+	if (_nc_set_tty_mode(&cur_term->Nttyb) == OK) {
+	    if (SP) {
+		if (SP->_keypad_on)
+		    _nc_keypad(TRUE);
+		NC_BUFFERED(TRUE);
+	    }
+	    returnCode(OK);
 	}
-	returnCode(OK);
     }
     returnCode(ERR);
 }

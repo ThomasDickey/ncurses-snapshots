@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.31 2001/12/19 01:05:52 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.32 2002/07/20 17:07:16 tom Exp $")
 
 #if USE_WIDEC_SUPPORT
 #define CONV_DATA   mbstate_t state; wchar_t cached; int clen = 0
@@ -82,7 +82,7 @@ MODULE_ID("$Id: lib_addstr.c,v 1.31 2001/12/19 01:05:52 tom Exp $")
 #endif
 
 NCURSES_EXPORT(int)
-waddnstr(WINDOW *win, const char *const astr, int n)
+waddnstr(WINDOW *win, const char *astr, int n)
 {
     unsigned const char *str = (unsigned const char *) astr;
     int code = ERR;
@@ -114,7 +114,7 @@ waddnstr(WINDOW *win, const char *const astr, int n)
 }
 
 NCURSES_EXPORT(int)
-waddchnstr(WINDOW *win, const chtype * const astr, int n)
+waddchnstr(WINDOW *win, const chtype * astr, int n)
 {
     NCURSES_SIZE_T y = win->_cury;
     NCURSES_SIZE_T x = win->_curx;

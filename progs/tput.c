@@ -45,7 +45,7 @@
 #endif
 #include <transform.h>
 
-MODULE_ID("$Id: tput.c,v 1.30 2001/07/22 00:16:33 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.31 2002/07/20 19:09:47 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -124,6 +124,25 @@ tparm_type(const char *name)
 }
 
 static int
+exit_code(int token, int value)
+{
+    int result = 99;
+
+    switch (token) {
+    case BOOLEAN:
+	result = !value;	/* TRUE=0, FALSE=1 */
+	break;
+    case NUMBER:
+	result = 0;		/* always zero */
+	break;
+    case STRING:
+	result = value;		/* 0=normal, 1=missing */
+	break;
+    }
+    return result;
+}
+
+static int
 tput(int argc, char *argv[])
 {
     NCURSES_CONST char *name;
@@ -131,6 +150,7 @@ tput(int argc, char *argv[])
     int i, j, c;
     int status;
     FILE *f;
+    int token = UNDEF;
 
     if ((name = argv[0]) == 0)
 	name = "";
@@ -211,7 +231,7 @@ tput(int argc, char *argv[])
 	if (is_reset && reset_file != 0) {
 	    f = fopen(reset_file, "r");
 	    if (f == 0) {
-		quit(errno, "Can't open reset_file: '%s'", reset_file);
+		quit(4 + errno, "Can't open reset_file: '%s'", reset_file);
 	    }
 	    while ((c = fgetc(f)) != EOF) {
 		PUTCHAR(c);
@@ -220,7 +240,7 @@ tput(int argc, char *argv[])
 	} else if (init_file != 0) {
 	    f = fopen(init_file, "r");
 	    if (f == 0) {
-		quit(errno, "Can't open init_file: '%s'", init_file);
+		quit(4 + errno, "Can't open init_file: '%s'", init_file);
 	    }
 	    while ((c = fgetc(f)) != EOF) {
 		PUTCHAR(c);
@@ -267,13 +287,14 @@ tput(int argc, char *argv[])
 #endif
 
     if ((status = tigetflag(name)) != -1) {
-	return (status != 0);
+	return exit_code(BOOLEAN, status);
     } else if ((status = tigetnum(name)) != CANCELLED_NUMERIC) {
 	(void) printf("%d\n", status);
-	return (0);
+	return exit_code(NUMBER, 0);
     } else if ((s = tigetstr(name)) == CANCELLED_STRING) {
 	quit(4, "%s: unknown terminfo capability '%s'", prg_name, name);
     } else if (s != ABSENT_STRING) {
+	token = STRING;
 	if (argc > 1) {
 	    int k;
 	    int numbers[10];
@@ -314,9 +335,9 @@ tput(int argc, char *argv[])
 
 	/* use putp() in order to perform padding */
 	putp(s);
-	return (0);
+	return exit_code(STRING, 0);
     }
-    return (0);
+    return exit_code(STRING, 1);
 }
 
 int
@@ -327,7 +348,8 @@ main(int argc, char **argv)
     bool cmdline = TRUE;
     int c;
     char buf[BUFSIZ];
-    int errors = 0;
+    int result = 0;
+    int err;
 
     check_aliases(prg_name = _nc_rootname(argv[0]));
 
@@ -395,9 +417,12 @@ main(int argc, char **argv)
 	argvec[argnum] = 0;
 
 	if (argnum != 0
-	    && tput(argnum, argvec) != 0)
-	    errors++;
+	    && (err = tput(argnum, argvec)) != 0) {
+	    if (result == 0)
+		result = 4;	/* will return value >4 */
+	    ++result;
+	}
     }
 
-    return errors > 0;
+    return result;
 }

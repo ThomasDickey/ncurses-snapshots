@@ -33,7 +33,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_bkgd.c,v 1.27 2002/06/29 22:11:14 Philippe.Blain Exp $")
+MODULE_ID("$Id: lib_bkgd.c,v 1.28 2002/07/20 16:29:46 tom Exp $")
 
 /*
  * Set the window's background information.
@@ -130,7 +130,7 @@ wbkgrnd(WINDOW *win, const ARG_CH_T ch)
 }
 
 NCURSES_EXPORT(int)
-wbkgd(WINDOW *win, const chtype ch)
+wbkgd(WINDOW *win, chtype ch)
 {
     NCURSES_CH_T wch;
     SetChar2(wch, ch);
