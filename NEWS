@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.765 2003/08/30 22:54:59 tom Exp $
+-- $Id: NEWS,v 1.766 2003/09/06 22:40:56 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030906
+	+ modify configure script to avoid using "head -1", which does not
+	  work if POSIXLY_CORRECT (sic) is set.
+	+ modify run_tic.in to avoid using wrong shared libraries when
+	  cross-compiling (Dan Kegel).
 
 20030830
 	+ alter configure script help message to make it clearer that
