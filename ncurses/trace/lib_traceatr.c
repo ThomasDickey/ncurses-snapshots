@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -39,7 +39,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.47 2003/06/28 23:20:26 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.48 2004/01/25 22:31:38 tom Exp $")
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
@@ -272,8 +272,13 @@ _tracecchar_t2 (int bufnum, const cchar_t *ch)
 		PUTC_n = wcrtomb(PUTC_buf, ch->chars[PUTC_i], &PUT_st);
 		if (PUTC_ch == L'\0')
 		    --PUTC_n;
-		if (PUTC_n <= 0)
+		if (PUTC_n <= 0) {
+		    if (PUTC_ch != L'\0') {
+			/* it could not be a multibyte sequence */
+			(void) _nc_trace_bufcat(bufnum, _tracechar(UChar(ch->chars[PUTC_i])));
+		    }
 		    break;
+		}
 		for (n = 0; n < PUTC_n; n++) {
 		    if (n)
 			(void) _nc_trace_bufcat(bufnum, ", ");
