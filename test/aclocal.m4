@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.4 2003/05/17 22:22:52 tom Exp $
+dnl $Id: aclocal.m4,v 1.6 2003/10/19 00:09:23 tom Exp $
 dnl ---------------------------------------------------------------------------
 dnl ---------------------------------------------------------------------------
 dnl CF_ADD_INCDIR version: 4 updated: 2002/12/21 14:25:52
@@ -113,7 +113,7 @@ else
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CURSES_CPPFLAGS version: 6 updated: 2002/10/27 18:21:42
+dnl CF_CURSES_CPPFLAGS version: 7 updated: 2003/06/06 00:48:41
 dnl ------------------
 dnl Look for the curses headers.
 AC_DEFUN([CF_CURSES_CPPFLAGS],[
@@ -132,7 +132,7 @@ sunos3*|sunos4*)
 	;;
 esac
 ])
-test "$cf_cv_curses_incdir" != no && CPPFLAGS="$CPPFLAGS $cf_cv_curses_incdir"
+test "$cf_cv_curses_incdir" != no && CPPFLAGS="$cf_cv_curses_incdir $CPPFLAGS"
 
 AC_CACHE_CHECK(if we have identified curses headers,cf_cv_ncurses_header,[
 cf_cv_ncurses_header=none
@@ -352,6 +352,36 @@ int main()
 rm -f core])
 test "$cf_cv_func_curses_version" = yes && AC_DEFINE(HAVE_CURSES_VERSION)
 ])
+dnl ---------------------------------------------------------------------------
+dnl CF_GNU_SOURCE version: 3 updated: 2000/10/29 23:30:53
+dnl -------------
+dnl Check if we must define _GNU_SOURCE to get a reasonable value for
+dnl _XOPEN_SOURCE, upon which many POSIX definitions depend.  This is a defect
+dnl (or misfeature) of glibc2, which breaks portability of many applications,
+dnl since it is interwoven with GNU extensions.
+dnl
+dnl Well, yes we could work around it...
+AC_DEFUN([CF_GNU_SOURCE],
+[
+AC_CACHE_CHECK(if we must define _GNU_SOURCE,cf_cv_gnu_source,[
+AC_TRY_COMPILE([#include <sys/types.h>],[
+#ifndef _XOPEN_SOURCE
+make an error
+#endif],
+	[cf_cv_gnu_source=no],
+	[cf_save="$CPPFLAGS"
+	 CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE"
+	 AC_TRY_COMPILE([#include <sys/types.h>],[
+#ifdef _XOPEN_SOURCE
+make an error
+#endif],
+	[cf_cv_gnu_source=no],
+	[cf_cv_gnu_source=yes])
+	CPPFLAGS="$cf_save"
+	])
+])
+test "$cf_cv_gnu_source" = yes && CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE"
+])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_HEADER_PATH version: 8 updated: 2002/11/10 14:46:59
 dnl --------------
@@ -675,6 +705,39 @@ case ".[$]$1" in #(vi
   ifelse($2,,[AC_ERROR([expected a pathname, not \"[$]$1\"])],$2)
   ;;
 esac
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_PREDEFINE version: 1 updated: 2003/07/26 17:53:56
+dnl ------------
+dnl Add definitions to CPPFLAGS to ensure they're predefined for all compiles.
+dnl
+dnl $1 = symbol to test
+dnl $2 = value (if any) to use for a predefinition
+AC_DEFUN([CF_PREDEFINE],
+[
+AC_MSG_CHECKING(if we must define $1)
+AC_TRY_COMPILE([#include <sys/types.h>
+],[
+#ifndef $1
+make an error
+#endif],[cf_result=no],[cf_result=yes])
+AC_MSG_RESULT($cf_result)
+
+if test "$cf_result" = yes ; then
+	CPPFLAGS="$CPPFLAGS ifelse($2,,-D$1,[-D$1=$2])"
+elif test "x$2" != "x" ; then
+	AC_MSG_CHECKING(checking for compatible value versus $2)
+	AC_TRY_COMPILE([#include <sys/types.h>
+],[
+#if $1-$2 < 0
+make an error
+#endif],[cf_result=yes],[cf_result=no])
+	AC_MSG_RESULT($cf_result)
+	if test "$cf_result" = no ; then
+		# perhaps we can override it - try...
+		CPPFLAGS="$CPPFLAGS -D$1=$2"
+	fi
+fi
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_SUBDIR_PATH version: 3 updated: 2002/12/29 18:30:46

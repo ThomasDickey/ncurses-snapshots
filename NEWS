@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.770 2003/10/04 23:08:42 tom Exp $
+-- $Id: NEWS,v 1.771 2003/10/19 00:06:14 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20031018
+	+ updated test/configure to reflect changes for libtool (cf: 20030830).
+	+ fix several places in tack/pad.c which tested and used the parameter-
+	  and parameterless strings inconsistently, i.e., in pad_rin(),
+	  pad_il(), pad_indn() and pad_dl() (Debian #215805).
+	+ minor fixes for configure script and makefiles to cleanup executables
+	  generated when cross-compiling for djgpp.
+	+ modify infocmp to omit check for $TERM for operations that do not
+	  require it, e.g., "infocmp -e" used to build fallback list (report by
+	  Koblinger Egmont).
 
 20031004
 	+ add terminfo entries for djgpp.

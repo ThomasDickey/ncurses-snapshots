@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.60 2003/08/30 21:22:14 tom Exp $
+# $Id: Makefile.in,v 1.61 2003/10/18 20:33:22 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -246,6 +246,7 @@ mostlyclean ::
 	-rm -f $(TESTPROGS)
 
 clean :: mostlyclean
+	-sh -c "if test -n '$x' ; then $(MAKE) clean x=''; fi"
 	-rm -f $(AUTO_SRC)
 	-rm -f $(PROGS)
 	-rm -rf .libs
