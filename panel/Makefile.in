@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.15 1997/02/15 17:10:04 tom Exp $
+# $Id: Makefile.in,v 1.16 1997/09/06 23:35:57 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -73,8 +73,8 @@ LINK		= $(CC)
 LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@
 
 MK_SHARED_LIB	= @MK_SHARED_LIB@
-REL_VERSION	= @nc_cv_rel_version@
-ABI_VERSION	= @nc_cv_abi_version@
+REL_VERSION	= @cf_cv_rel_version@
+ABI_VERSION	= @cf_cv_abi_version@
 
 RANLIB		= @RANLIB@
 

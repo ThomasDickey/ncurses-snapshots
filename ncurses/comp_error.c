@@ -29,9 +29,11 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: comp_error.c,v 1.12 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: comp_error.c,v 1.13 1997/09/02 23:31:08 tom Exp $")
 
-bool _nc_suppress_warnings;
+bool	_nc_suppress_warnings;
+int	_nc_curr_line;		/* current line # in input */
+int	_nc_curr_col;		/* current column # in input */
 
 static const char *sourcename;
 static char termtype[MAX_NAME_SIZE+1];
@@ -58,7 +60,7 @@ static inline void where_is_problem(void)
 {
 	fprintf (stderr, "\"%s\"", sourcename);
 	if (_nc_curr_line >= 0)
-	    fprintf (stderr, ", line %d", _nc_curr_line);
+		fprintf (stderr, ", line %d", _nc_curr_line);
 	if (_nc_curr_col >= 0)
 		fprintf (stderr, ", col %d", _nc_curr_col);
 	if (termtype[0])

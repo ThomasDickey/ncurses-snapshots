@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.13 1996/06/23 00:54:27 tom Exp $
+# $Id: Makefile.in,v 1.14 1997/09/06 23:40:02 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -34,7 +34,7 @@
 SHELL		= /bin/sh
 THIS		= Makefile
 
-NC_MFLAGS 	= @nc_cv_makeflags@
+CF_MFLAGS 	= @cf_cv_makeflags@
 @SET_MAKE@
 
 INSTALL_PREFIX	= @INSTALL_PREFIX@

@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_raw.c,v 1.19 1997/08/09 18:39:33 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.20 1997/09/02 22:41:54 tom Exp $")
 
 #ifdef SVR4_TERMIO
 #define _POSIX_SOURCE
@@ -241,9 +241,7 @@ int raw(void)
 #else
 	cur_term->Nttyb.sg_flags |= RAW;
 #endif
-	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
-		returnCode(ERR);
-	returnCode(OK);
+	returnCode(_nc_set_curterm(&cur_term->Nttyb));
 }
 
 int cbreak(void)
@@ -263,9 +261,7 @@ int cbreak(void)
 #else
 	cur_term->Nttyb.sg_flags |= CBREAK;
 #endif
-	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
-		returnCode(ERR);
-	returnCode(OK);
+	returnCode(_nc_set_curterm( &cur_term->Nttyb));
 }
 
 int echo(void)
@@ -301,10 +297,7 @@ int qiflush(void)
 	BEFORE("qiflush");
 	cur_term->Nttyb.c_lflag &= ~(NOFLSH);
 	AFTER("qiflush");
-	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
-		returnCode(ERR);
-	else
-		returnCode(OK);
+	returnCode(_nc_set_curterm( &cur_term->Nttyb));
 #else
 	returnCode(ERR);
 #endif
@@ -326,9 +319,7 @@ int noraw(void)
 #else
 	cur_term->Nttyb.sg_flags &= ~(RAW|CBREAK);
 #endif
-	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
-		returnCode(ERR);
-	returnCode(OK);
+	returnCode(_nc_set_curterm( &cur_term->Nttyb));
 }
 
 
@@ -346,9 +337,7 @@ int nocbreak(void)
 #else
 	cur_term->Nttyb.sg_flags &= ~CBREAK;
 #endif
-	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
-		returnCode(ERR);
-	returnCode(OK);
+	returnCode(_nc_set_curterm( &cur_term->Nttyb));
 }
 
 int noecho(void)
@@ -381,10 +370,7 @@ int noqiflush(void)
 	BEFORE("noqiflush");
 	cur_term->Nttyb.c_lflag |= NOFLSH;
 	AFTER("noqiflush");
-	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
-		returnCode(ERR);
-	else
-		returnCode(OK);
+	returnCode(_nc_set_curterm( &cur_term->Nttyb));
 #else
 	returnCode(ERR);
 #endif
@@ -410,10 +396,7 @@ int intrflush(WINDOW *win GCC_UNUSED, bool flag)
 	else
 		cur_term->Nttyb.c_lflag |= (NOFLSH);
 	AFTER("intrflush");
-	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
-		returnCode(ERR);
-	else
-		returnCode(OK);
+	returnCode(_nc_set_curterm( &cur_term->Nttyb));
 #else
 	returnCode(ERR);
 #endif

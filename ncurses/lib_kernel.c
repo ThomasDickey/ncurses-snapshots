@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_kernel.c,v 1.13 1997/02/02 00:33:14 tom Exp $")
+MODULE_ID("$Id: lib_kernel.c,v 1.14 1997/09/02 22:41:57 tom Exp $")
 
 int napms(int ms)
 {
@@ -55,7 +55,7 @@ int reset_prog_mode(void)
 {
 	T((T_CALLED("reset_prog_mode()")));
 
-	SET_TTY(cur_term->Filedes, &cur_term->Nttyb);
+	_nc_set_curterm(&cur_term->Nttyb);
 	if (SP && stdscr && stdscr->_use_keypad)
 		_nc_keypad(TRUE);
 
@@ -73,7 +73,7 @@ int reset_shell_mode(void)
 		_nc_keypad(FALSE);
 	}
 
-	SET_TTY(cur_term->Filedes, &cur_term->Ottyb);
+	_nc_set_curterm(&cur_term->Ottyb);
 	returnCode(OK);
 }
 
@@ -160,7 +160,7 @@ int savetty(void)
 {
 	T((T_CALLED("savetty()")));
 
-	GET_TTY(cur_term->Filedes, &buf);
+	_nc_get_curterm(&buf);
 	returnCode(OK);
 }
 
@@ -168,6 +168,6 @@ int resetty(void)
 {
 	T((T_CALLED("resetty()")));
 
-	SET_TTY(cur_term->Filedes, &buf);
+	_nc_set_curterm(&buf);
 	returnCode(OK);
 }

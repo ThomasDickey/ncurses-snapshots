@@ -18,82 +18,42 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR *
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                *
  ******************************************************************************/
-
 /*
-**	lib_printw.c
-**
-**	The routines printw(), wprintw() and friends.
-**
-*/
+ *	trace_buf.c - Tracing/Debugging buffers (attributes)
+ */
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_printw.c,v 1.5 1997/08/31 21:22:33 tom Exp $")
+MODULE_ID("$Id: trace_buf.c,v 1.1 1997/09/02 22:17:48 tom Exp $")
 
-int printw(const char *fmt, ...)
+char * _nc_trace_buf(int bufnum, size_t want)
 {
-	va_list argp;
-	int code;
+	static struct {
+		char *text;
+		size_t size;
+	} *list;
+	static size_t have;
 
-	T(("printw(%s,...) called", _nc_visbuf(fmt)));
+	if (bufnum < 0)
+		bufnum = 0;
 
-	va_start(argp, fmt);
-	code = vwprintw(stdscr, fmt, argp);
-	va_end(argp);
-
-	return code;
-}
-
-int wprintw(WINDOW *win, const char *fmt, ...)
-{
-	va_list argp;
-	int code;
-
-	T(("wprintw(%p,%s,...) called", win, _nc_visbuf(fmt)));
-
-	va_start(argp, fmt);
-	code = vwprintw(win, fmt, argp);
-	va_end(argp);
-
-	return code;
-}
-
-int mvprintw(int y, int x, const char *fmt, ...)
-{
-	va_list argp;
-	int code = move(y, x);
-
-	if (code != ERR) {
-		va_start(argp, fmt);
-		code = vwprintw(stdscr, fmt, argp);
-		va_end(argp);
+	if ((size_t)(bufnum+1) > have) {
+		size_t need = (bufnum + 1) * 2;
+		size_t used = sizeof(*list) * need;
+		list = (list == 0) ? malloc(used) : realloc(list, used);
+		while (need > have)
+			list[have++].text = 0;
 	}
-	return code;
-}
 
-int mvwprintw(WINDOW *win, int y, int x, const char *fmt, ...)
-{
-	va_list argp;
-	int code = wmove(win, y, x);
-
-	if (code != ERR) {
-		va_start(argp, fmt);
-		code = vwprintw(win, fmt, argp);
-		va_end(argp);
+	if (list[bufnum].text == 0)
+	{
+		list[bufnum].text = malloc(want);
+		list[bufnum].size = want;
 	}
-	return code;
-}
-
-int vwprintw(WINDOW *win, const char *fmt, va_list argp)
-{
-	char *buf = _nc_printf_string(fmt, argp);
-	int code = ERR;
-
-	if (buf != 0) {
-		code = waddstr(win, buf);
-#if USE_SAFE_SPRINTF
-		free(buf);
-#endif
+	else if (want > list[bufnum].size) {
+		list[bufnum].text = realloc(list[bufnum].text, want);
+		list[bufnum].size = want;
 	}
-	return code;
+	*(list[bufnum].text) = '\0';
+	return list[bufnum].text;
 }

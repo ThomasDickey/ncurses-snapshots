@@ -274,6 +274,31 @@ void	_nc_do_color(
 		int	p1))
 		{ /* void */ }
 
+/* ./lib_cur_term.c */
+
+#undef cur_term
+TERMINAL *cur_term;
+
+#undef _nc_get_curterm
+int	_nc_get_curterm(
+		struct termios *buf)
+		{ return(*(int *)0); }
+
+#undef _nc_set_curterm
+int	_nc_set_curterm(
+		struct termios *buf)
+		{ return(*(int *)0); }
+
+#undef set_curterm
+TERMINAL *set_curterm(
+		TERMINAL *term)
+		{ return(*(TERMINAL **)0); }
+
+#undef del_curterm
+int	del_curterm(
+		TERMINAL *term)
+		{ return(*(int *)0); }
+
 /* ./lib_data.c */
 
 #undef stdscr
@@ -282,6 +307,8 @@ WINDOW	*stdscr;
 WINDOW	*curscr;
 #undef newscr
 WINDOW	*newscr;
+#undef _nc_screen_chain
+SCREEN	*_nc_screen_chain;
 #undef SP
 SCREEN	*SP;
 
@@ -376,17 +403,17 @@ int	addstr(
 
 #undef attroff
 int	attroff(
-		int	z)
+		attr_t	z)
 		{ return(*(int *)0); }
 
 #undef attron
 int	attron(
-		int	z)
+		attr_t	z)
 		{ return(*(int *)0); }
 
 #undef attrset
 int	attrset(
-		int	z)
+		attr_t	z)
 		{ return(*(int *)0); }
 
 #undef attr_get
@@ -395,17 +422,17 @@ int	attr_get(void)
 
 #undef attr_off
 int	attr_off(
-		int	z)
+		attr_t	z)
 		{ return(*(int *)0); }
 
 #undef attr_on
 int	attr_on(
-		int	z)
+		attr_t	z)
 		{ return(*(int *)0); }
 
 #undef attr_set
 int	attr_set(
-		int	z)
+		attr_t	z)
 		{ return(*(int *)0); }
 
 #undef bkgd
@@ -1048,11 +1075,6 @@ int	ungetch(
 		int	ch)
 		{ return(*(int *)0); }
 
-#undef _nc_backspace
-void	_nc_backspace(
-		WINDOW	*win)
-		{ /* void */ }
-
 #undef wgetch
 int	wgetch(
 		WINDOW	*win)
@@ -1658,16 +1680,6 @@ int	restartterm(
 		int	*errret)
 		{ return(*(int *)0); }
 
-#undef set_curterm
-TERMINAL *set_curterm(
-		TERMINAL *term)
-		{ return(*(TERMINAL **)0); }
-
-#undef del_curterm
-int	del_curterm(
-		TERMINAL *term)
-		{ return(*(int *)0); }
-
 /* ./lib_scanw.c */
 
 #undef vwscanw
@@ -1818,9 +1830,6 @@ int	ripoffline(
 /* ./lib_setup.c */
 
 #include <sys/ioctl.h>
-
-#undef cur_term
-TERMINAL *cur_term;
 
 #undef use_env
 void	use_env(
@@ -2009,6 +2018,10 @@ typedef union {
 	char	       *str;
 } stack_frame;
 
+#undef _nc_free_tparm
+void	_nc_free_tparm(void)
+		{ /* void */ }
+
 #undef tparm
 char	*tparm(
 		const char *string, 
@@ -2091,12 +2104,6 @@ WINDOW	*_nc_retrace_win(
 		{ return(*(WINDOW **)0); }
 
 /* ./lib_traceatr.c */
-
-#undef _nc_trace_buf
-char	*_nc_trace_buf(
-		int	bufnum, 
-		size_t	want)
-		{ return(*(char **)0); }
 
 #undef _traceattr2
 char	*_traceattr2(
@@ -2279,6 +2286,22 @@ int	_nc_read_termcap_entry(
 		TERMTYPE *const tp)
 		{ return(*(int *)0); }
 
+/* ./safe_sprintf.c */
+
+#undef _nc_printf_string
+char	*_nc_printf_string(
+		const char *fmt, 
+		va_list	ap)
+		{ return(*(char **)0); }
+
+/* ./trace_buf.c */
+
+#undef _nc_trace_buf
+char	*_nc_trace_buf(
+		int	bufnum, 
+		size_t	want)
+		{ return(*(char **)0); }
+
 /* ./tries.c */
 
 #undef _nc_add_to_try
@@ -2397,6 +2420,10 @@ const struct name_table_entry *_nc_get_table(
 
 #undef _nc_suppress_warnings
 bool	_nc_suppress_warnings;
+#undef _nc_curr_line
+int	_nc_curr_line;
+#undef _nc_curr_col
+int	_nc_curr_col;
 
 #undef _nc_set_source
 void	_nc_set_source(
@@ -2482,10 +2509,6 @@ int	_nc_resolve_uses(void)
 
 #undef _nc_syntax
 int	_nc_syntax;
-#undef _nc_curr_line
-int	_nc_curr_line;
-#undef _nc_curr_col
-int	_nc_curr_col;
 #undef _nc_curr_file_pos
 long	_nc_curr_file_pos;
 #undef _nc_comment_start
@@ -2545,8 +2568,36 @@ int	define_key(
 
 /* ./expanded.c */
 
-#undef _nc_expanded
-void	_nc_expanded(void)
+#undef _nc_toggle_attr_on
+void	_nc_toggle_attr_on(
+		attr_t	*S, 
+		attr_t	at)
+		{ /* void */ }
+
+#undef _nc_toggle_attr_off
+void	_nc_toggle_attr_off(
+		attr_t	*S, 
+		attr_t	at)
+		{ /* void */ }
+
+#undef _nc_can_clear_with
+int	_nc_can_clear_with(
+		chtype	ch)
+		{ return(*(int *)0); }
+
+#undef _nc_DelCharCost
+int	_nc_DelCharCost(
+		int	count)
+		{ return(*(int *)0); }
+
+#undef _nc_InsCharCost
+int	_nc_InsCharCost(
+		int	count)
+		{ return(*(int *)0); }
+
+#undef _nc_UpdateAttrs
+void	_nc_UpdateAttrs(
+		chtype	c)
 		{ /* void */ }
 
 /* ./keyok.c */

@@ -18,7 +18,7 @@
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
  ******************************************************************************/
 /*
- * $Id: progs.priv.h,v 1.12 1997/08/23 17:50:52 tom Exp $
+ * $Id: progs.priv.h,v 1.13 1997/09/07 00:15:47 tom Exp $
  *
  *	progs.priv.h
  *
@@ -89,7 +89,7 @@
 
 #include <errno.h>
 
-#if !HAVE_EXTERN_ERRNO
+#if DECL_ERRNO
 extern int errno;
 #endif
 

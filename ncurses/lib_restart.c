@@ -35,7 +35,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_restart.c,v 1.11 1997/02/02 01:10:25 tom Exp $")
+MODULE_ID("$Id: lib_restart.c,v 1.12 1997/09/02 22:46:59 tom Exp $")
 
 #undef tabs
 
@@ -57,15 +57,12 @@ int def_shell_mode(void)
 {
 	T((T_CALLED("def_shell_mode()")));
 
-	if (cur_term == 0)
-		returnCode(ERR);
-
 	/*
 	 * Turn off the XTABS bit in the tty structure if it was on.  If XTABS
 	 * was on, remove the tab and backtab capabilities.
 	 */
 
-	if (GET_TTY(cur_term->Filedes, &cur_term->Ottyb) == -1)
+	if (_nc_get_curterm(&cur_term->Ottyb) != OK)
 		returnCode(ERR);
 #ifdef TERMIOS
 	if (cur_term->Ottyb.c_oflag & tabs)
@@ -81,10 +78,7 @@ int def_prog_mode(void)
 {
 	T((T_CALLED("def_prog_mode()")));
 
-	if (cur_term == 0)
-		returnCode(ERR);
-
-	if (GET_TTY(cur_term->Filedes, &cur_term->Nttyb) == -1)
+	if (_nc_get_curterm(&cur_term->Nttyb) != OK)
 		returnCode(ERR);
 #ifdef TERMIOS
 	cur_term->Nttyb.c_oflag &= ~tabs;
@@ -130,25 +124,4 @@ int savenl = SP->_nl;
 	_nc_get_screensize();
 
 	returnCode(OK);
-}
-
-TERMINAL *set_curterm(TERMINAL *term)
-{
-	TERMINAL	*oldterm = cur_term;
-
-	cur_term = term;
-	return oldterm;
-}
-
-int del_curterm(TERMINAL *term)
-{
-	T((T_CALLED("del_curterm(%p)"), term));
-
-	if (term != NULL) {
-		FreeIfNeeded(term->type.str_table);
-		FreeIfNeeded(term->type.term_names);
-		free(term);
-		returnCode(OK);
-	}
-	returnCode(ERR);
 }

@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.96 1997/07/05 20:01:58 tom Exp $
+$Id: ncurses.c,v 1.97 1997/09/06 20:30:52 tom Exp $
 
 ***************************************************************************/
 
@@ -86,7 +86,6 @@ extern int _nc_tracing;
 #define CTRL(x)		((x) & 0x1f)
 #endif
 
-#define SIZEOF(table)	(sizeof(table)/sizeof(table[0]))
 #define QUIT		CTRL('Q')
 #define ESCAPE		CTRL('[')
 #define BLANK		' '		/* this is the background character */

@@ -25,7 +25,7 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: make_keys.c,v 1.1 1997/06/15 18:02:08 tom Exp $")
+MODULE_ID("$Id: make_keys.c,v 1.2 1997/09/02 23:52:08 tom Exp $")
 
 #include <names.c>
 
@@ -33,14 +33,14 @@ static size_t lookup(const char *name)
 {
 	size_t n;
 	bool found = FALSE;
-	for (n = 0; n < SIZEOF(strnames)-1; n++) {
+	for (n = 0; strnames[n] != 0; n++) {
 		if (!strcmp(name, strnames[n])) {
 			found = TRUE;
 			break;
 		}
 	}
 	if (!found) {
-		for (n = 0; n < SIZEOF(strfnames)-1; n++) {
+		for (n = 0; strfnames[n] != 0; n++) {
 			if (!strcmp(name, strfnames[n])) {
 				found = TRUE;
 				break;

@@ -1,4 +1,4 @@
-# $Id: modules,v 1.30 1997/08/30 20:49:11 tom Exp $
+# $Id: modules,v 1.31 1997/09/02 22:28:48 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -34,6 +34,7 @@ lib_clear	lib		$(srcdir)
 lib_clrbot	lib		$(srcdir)
 lib_clreol	lib		$(srcdir)
 lib_color	lib		$(srcdir)	../include/term.h
+lib_cur_term	lib		$(srcdir)
 lib_data	lib		$(srcdir)
 lib_delch	lib		$(srcdir)
 lib_delwin	lib		$(srcdir)
@@ -93,6 +94,7 @@ name_match	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 read_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 read_termcap	lib		$(srcdir)	../include/term.h
 safe_sprintf	lib		$(srcdir)
+trace_buf	lib		$(srcdir)
 tries		lib		$(srcdir)
 unctrl		lib		.
 write_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h

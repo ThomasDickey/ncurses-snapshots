@@ -22,7 +22,9 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: safe_sprintf.c,v 1.1 1997/08/30 23:24:27 tom Exp $")
+MODULE_ID("$Id: safe_sprintf.c,v 1.2 1997/08/31 22:45:05 tom Exp $")
+
+#ifdef USE_SAFE_SPRINTF
 
 typedef enum { Flags, Width, Prec, Type, Format } PRINTF;
 
@@ -185,6 +187,7 @@ _nc_printf_length(const char *fmt, va_list ap)
 	free(format);
 	return len;
 }
+#endif
 
 /*
  * Wrapper for vsprintf that allocates a buffer big enough to hold the result.
@@ -192,12 +195,36 @@ _nc_printf_length(const char *fmt, va_list ap)
 char *
 _nc_printf_string(const char *fmt, va_list ap)
 {
+#if USE_SAFE_SPRINTF
 	char *buf = 0;
 	int len = _nc_printf_length(fmt, ap);
 
 	if (len > 0) {
 		buf = malloc(len+1);
 		vsprintf(buf, fmt, ap);
+	}
+#else
+	static int rows, cols;
+	static char *buf;
+	static size_t len;
+
+	if (LINES > rows || COLS > cols) {
+		if (LINES > rows) rows = LINES;
+		if (COLS  > cols) cols = COLS;
+		len = (rows * (cols + 1)) + 1;
+		if (buf == 0)
+			buf = malloc(len);
+		else
+			buf = realloc(buf, len);
+	}
+
+	if (buf != 0) {
+# if HAVE_VSNPRINTF
+		vsnprintf(buf, len, fmt, ap);	/* GNU extension */
+# else
+		vsprintf(buf, fmt, ap);		/* ANSI */
+# endif
+#endif
 	}
 	return buf;
 }

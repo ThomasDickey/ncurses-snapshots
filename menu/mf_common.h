@@ -31,13 +31,10 @@
 #include <assert.h>
 #include <string.h>
 #include <ctype.h>
-
-#if !HAVE_EXTERN_ERRNO
-extern int errno;
-#endif
-
-#if HAVE_EXTERN_ERRNO
 #include <errno.h>
+
+#if DECL_ERRNO
+extern int errno;
 #endif
 
 /* in case of debug version we ignore the suppression of assertions */
