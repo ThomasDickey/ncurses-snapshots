@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.70 2002/12/31 12:08:30 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.72 2003/06/14 21:36:22 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -68,7 +68,7 @@ render_char(WINDOW *win, NCURSES_CH_T ch)
 	AddAttr(ch, (a & COLOR_MASK(AttrOf(ch))));
     }
 
-    TR(TRACE_VIRTPUT, ("bkg = %s, attrs = %s -> ch = %s",
+    TR(TRACE_VIRTPUT, ("render_char bkg %s, attrs %s -> ch %s",
 		       _tracech_t2(1, CHREF(win->_nc_bkgd)),
 		       _traceattr(win->_attrs),
 		       _tracech_t2(3, CHREF(ch))));
@@ -159,8 +159,8 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
      */
     if_WIDEC({
 	int len = wcwidth(CharOf(ch));
-	if (len > 1) {
-	    if (x + (len - 2) > win->_maxx) {
+	while (len-- > 1) {
+	    if (x + (len - 1) > win->_maxx) {
 		NCURSES_CH_T blank = NewChar2(BLANK_TEXT, BLANK_ATTR);
 		AddAttr(blank, AttrOf(ch));
 		if (waddch_literal(win, blank) != ERR)
@@ -168,6 +168,7 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 		return ERR;
 	    }
 	    AddAttr(line->text[x++], WA_NAC);
+	    TR(TRACE_VIRTPUT, ("added NAC %d", x-1));
 	}
     }
   testwrapping:

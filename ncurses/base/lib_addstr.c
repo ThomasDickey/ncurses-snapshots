@@ -44,7 +44,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.35 2003/06/07 22:22:01 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.36 2003/06/14 22:54:14 tom Exp $")
 
 #if USE_WIDEC_SUPPORT
 #define CONV_DATA   mbstate_t state; wchar_t cached; int clen = 0
@@ -78,8 +78,8 @@ MODULE_ID("$Id: lib_addstr.c,v 1.35 2003/06/07 22:22:01 tom Exp $")
 	    break;							\
     }
 #else
-#define CONV_DATA
-#define CONV_INIT
+#define CONV_DATA	/* nothing */
+#define CONV_INIT	/* nothing */
 #define NEXT_CHAR(s,ch, n)						\
     ch = *s++;								\
     --n
@@ -104,7 +104,7 @@ waddnstr(WINDOW *win, const char *astr, int n)
 	CONV_INIT;
 	while ((n > 0) && (*str != '\0')) {
 	    NCURSES_CH_T ch;
-	    TR(TRACE_VIRTPUT, ("*str = %#x", UChar(*str)));
+	    TR(TRACE_VIRTPUT, ("*str = %#o", UChar(*str)));
 	    NEXT_CHAR(str, ch, n);
 	    if (_nc_waddch_nosync(win, ch) == ERR) {
 		code = ERR;

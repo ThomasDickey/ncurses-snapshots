@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.751 2003/06/07 23:39:50 tom Exp $
+-- $Id: NEWS,v 1.752 2003/06/14 21:15:33 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030614
+	+ modify waddch_literal() in case a multibyte value occupies more than
+	  two cells.
+	+ modify PutAttrChar() to compute the number of character cells that
+	  are used in multibyte values.  This fixes a problem displaying
+	  double-width characters (report/test by Mitsuru Chinen
+	  <mchinen@yamato.ibm.com>).
+	+ add a null-pointer check for result of keyname() in _tracechar()
+	+ modify _tracechar() to work around glibc sprintf bug.
 
 20030607
 	+ add a call to setlocale() in cursesmain.cc, making demo display
