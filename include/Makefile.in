@@ -58,7 +58,7 @@ MKterm.h.awk: $(srcdir)/MKterm.h.awk.in Makefile
 	-@rm -f $@
 	sed <$(srcdir)/$@.in >$@ -e "/@VERSION@/s//$(VERSION)/"
 
-curses.h: $(srcdir)/MKcurses.sh curses.h.in Makefile
+curses.h: $(srcdir)/MKcurses.sh $(srcdir)/curses.h.in Makefile
 	-@rm -f $@
 	sh $(srcdir)/MKcurses.sh $(VERSION) $(BUILTIN_BOOL) $(TYPE_OF_BOOL) $(srcdir)
 
@@ -85,8 +85,8 @@ term.h: Caps.filtered MKterm.h.awk
 hashsize.h: Caps.filtered $(srcdir)/MKhashsize.sh
 	sh $(srcdir)/MKhashsize.sh >$@
 
-parametrized.h: Caps.filtered $(srcdir)/parametrized.sh
-	sh $(srcdir)/parametrized.sh >$@
+parametrized.h: Caps.filtered $(srcdir)/MKparametrized.sh
+	sh $(srcdir)/MKparametrized.sh >$@
 
 tags:
 	ctags *.[ch]

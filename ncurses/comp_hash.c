@@ -249,9 +249,9 @@ int main(int argc, char **argv)
 	 * Read the table into our arrays.
 	 */
 	for (n = 0; (n < CAPTABSIZE) && fgets(buffer, BUFSIZ, stdin); ) {
-		char **list, *nl = strchr(buffer, '\n');
-		if (nl)
-		    *nl = '\0';
+		char **list, *nlp = strchr(buffer, '\n');
+		if (nlp)
+		    *nlp = '\0';
 		list = parse_columns(buffer);
 		if (list == 0)	/* blank or comment */
 		    continue;

@@ -84,17 +84,17 @@ $(libdir) \
 $(ticdir) :
 	$(srcdir)/../mkinstalldirs $@
 
-fallback.c : MKfallback.sh
+fallback.c : $(srcdir)/MKfallback.sh
 	sh $(srcdir)/MKfallback.sh >$@
 
-lib_gen.c : MKlib_gen.sh ../include/curses.h
+lib_gen.c : $(srcdir)/MKlib_gen.sh ../include/curses.h
 	sh $(srcdir)/MKlib_gen.sh "$(CPP)" "$(AWK)" <../include/curses.h >$@
 
 keys.tries: $(srcdir)/keys.list
 	$(AWK) -f $(srcdir)/MKkeys.awk $(srcdir)/keys.list > keys.tries
 
 make_hash : $(srcdir)/comp_hash.c
-	$(CC) -o $@ $(CPPFLAGS) -DMAIN_PROGRAM $(srcdir)/comp_hash.c
+	$(CC) -o $@ $(CCFLAGS) -DMAIN_PROGRAM $(srcdir)/comp_hash.c
 
 comp_captab.c: \
 		make_hash \

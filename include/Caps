@@ -441,7 +441,7 @@ row_address          	vpa	str	cv	-B-GE**	vertical position #1 absolute (P)
 save_cursor          	sc	str	sc	YBCG-	save current cursor position (P)
 scroll_forward        	ind	str	sf	YBCGE	scroll text up (P)
 scroll_reverse        	ri	str	sr	YBCGE	scroll text down (P)
-set_attributes        	sgr	str	sa	YB-G	define video attributes #1-#9 (PG9)
+set_attributes        	sgr	str	sa	YB-G-	define video attributes #1-#9 (PG9)
 set_tab                 hts	str	st	YB-G-	set a tab in every row, current columns
 set_window      	wind	str	wi	-B-GE	current window is lines #1-#2 cols #3-#4
 tab              	ht	str	ta	YBCGE	tab to next 8-space hardware tab stop

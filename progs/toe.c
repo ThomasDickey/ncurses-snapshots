@@ -69,6 +69,7 @@ int main (int argc, char *argv[])
 	    break;
 	case 'V':
 	    (void) fputs(NCURSES_VERSION, stdout);
+	    putchar('\n');
 	    exit(0);
 	default:
 	    (void) fprintf (stderr, "usage: toe [-uUvV] [file...]\n");
@@ -259,13 +260,19 @@ static void typelist(int eargc, char *eargv[],
 
 		/* only visit things once, by primary name */
 		cn = _nc_first_name(lterm.term_names);
-		if (strcmp(cn, name_2))
-		    continue;
-
-		/* apply the selected hook function */
-		(*hook)(cn, &lterm);
+		if (!strcmp(cn, name_2))
+		{
+		    /* apply the selected hook function */
+		    (*hook)(cn, &lterm);
+		}
+		if (lterm.term_names)
+	    	    free(lterm.term_names);
+		if (lterm.str_table)
+	    	    free(lterm.str_table);
 	    }
+	    closedir(entrydir);
 	}
+	closedir(termdir);
     }
 
     exit(0);

@@ -36,6 +36,8 @@
                o Testing for Terminal Capabilities
                o Tuning for Speed
                o Special Features of ncurses
+               o Background Erase -- Compatibility with Old Versions
+          + XSI Curses Conformance
      * The Panels Library
           + Compiling With the Panels Library
           + Overview of Panels
@@ -101,6 +103,13 @@
    Interface (API); that role is filled by the curses manual pages.
    Rather, it is intended to help C programmers ease into using the
    package.
+   
+   This document is aimed at C applications programmers not yet
+   specifically familiar with ncurses. If you are already an experienced
+   curses programmer, you should nevertheless read the sections on Mouse
+   Interfacing, Debugging, and Hints, Tips, and Tricks. These will bring
+   you up to speed on the special features and quirks of the ncurses
+   implementation. If you are not so experienced, keep reading.
    
    The curses package is a subroutine library for terminal-independent
    screen-painting and input-event handling which presents a high level
@@ -591,8 +600,8 @@ Function Descriptions
           This will determine the terminal type and initialize curses
           data structures. initscr() also arranges that the first call to
           refresh() will clear the screen. If an error occurs a message
-          is writen to standard error and the program exits. Otherwise it
-          returns a pointer to stdscr. A few functions may be called
+          is written to standard error and the program exits. Otherwise
+          it returns a pointer to stdscr. A few functions may be called
           before initscr (slk_init(), filter(), ripofflines(), use_env(),
           and, if you are using multiple terminals, newterm().)
           
@@ -600,7 +609,7 @@ Function Descriptions
           Your program should always call endwin() before exiting or
           shelling out of the program. This function will restore tty
           modes, move the cursor to the lower left corner of the screen,
-          reset the terminal into the proper nonvisual mode. Calling
+          reset the terminal into the proper non-visual mode. Calling
           refresh() or doupdate() after a temporary escape from the
           program will restore the ncurses screen from before the escape.
           
@@ -649,10 +658,10 @@ Function Descriptions
           to the virtual screen (wnoutrefresh()), and then calling the
           routine to update the screen (doupdate()). If the programmer
           wishes to output several windows at once, a series of calls to
-          wre- fresh will result in alternating calls to wnoutrefresh()
-          and doupdate(), causing several bursts of output to the screen.
-          By calling wnoutrefresh() for each window, it is then possible
-          to call doupdate() once, resulting in only one burst of output,
+          wrefresh will result in alternating calls to wnoutrefresh() and
+          doupdate(), causing several bursts of output to the screen. By
+          calling wnoutrefresh() for each window, it is then possible to
+          call doupdate() once, resulting in only one burst of output,
           with probably fewer total characters transmitted.
           
   LOW-LEVEL CAPABILITY ACCESS
@@ -661,11 +670,11 @@ Function Descriptions
           a terminal's description, without setting up the curses screen
           structures or changing the tty-driver mode bits. term is the
           character string representing the name of the terminal being
-          used. filenum is the UNIX file descriptor of the ter- minal to
-          be used for output. errret is a pointer to an integer, in which
-          a success or failure indication is returned. The values
-          returned can be 1 (all is well), 0 (no such terminal), or -1
-          (some problem locating the terminfo database).
+          used. filenum is the UNIX file descriptor of the terminal to be
+          used for output. errret is a pointer to an integer, in which a
+          success or failure indication is returned. The values returned
+          can be 1 (all is well), 0 (no such terminal), or -1 (some
+          problem locating the terminfo database).
           
           The value of term can be given as NULL, which will cause the
           value of TERM in the environment to be used. The errret pointer
@@ -822,13 +831,42 @@ Hints, Tips, and Tricks
    display of both high-half ACS graphics and the PC ROM graphics 0-31
    that are normally interpreted as control characters.
    
+  BACKGROUND ERASE -- COMPATIBILITY WITH OLD VERSIONS
+  
+   If you have been using a very old versions of ncurses (1.8.7 or older)
+   you may be surprised by the behavior of the erase functions. In older
+   versions, erased areas of a window were filled with a blank modified
+   by the window's current attribute (as set by _wattrset()_,
+   _wattron()_, _wattroff()_ and friends).
+   
+   In newer versions, this is not so. Instead, the attribute of erased
+   blanks is normal unless and until it is modified by the functions
+   bkgdset() or wbkgdset().
+   
+   This change in behavior conforms ncurses to System V Release 4 and the
+   XSI Curses standard.
+   
+XSI Curses Conformance
+
+   The ncurses library is intended to be base-level conformant with the
+   XSI Curses standard from X/Open. May extended-level features (in fact,
+   almost all features not directly concerned with wide characters and
+   internationalization) are also supported.
+   
+   One effect of XSI conformance is the change in behavior described
+   under "Background Erase -- Compatibility with Old Versions".
+   
+   Also, ncurses meets the XSI requirement that every macro entry point
+   have a corresponding function which may be linked (and will be
+   prototype-checked) if the macro definition is disabled with #undef.
+   
                               THE PANELS LIBRARY
                                        
    The ncurses library by itself provides good support for screen
    displays in which the windows are tiled (non-overlapping). In the more
    general case that windows may overlap, you have to use a series of
-   wnoutrefresh() calls followd by a doupdate(), and be careful about the
-   order you do the window refreshes in. It has to be bottom-upwards,
+   wnoutrefresh() calls followed by a doupdate(), and be careful about
+   the order you do the window refreshes in. It has to be bottom-upwards,
    otherwise parts of windows that should be obscured will show through.
    
    When your interface design is such that windows may dive deeper into
@@ -867,7 +905,7 @@ Overview of Panels
    
    You create a panel from a window by calling new_panel() on a window
    pointer. It then becomes the top of the deck. The panel's window is
-   available as the value of pnel_windo() called with the panel pointer
+   available as the value of panel_window() called with the panel pointer
    as argument.
    
    You can delete a panel (removing it from the deck) with del_panel.
@@ -903,7 +941,7 @@ Panels, Input, and the Standard Screen
    
    Note that wgetch automatically calls wrefresh. Therefore, before
    requesting input from a panel window, you need to be sure that the
-   panel is totally unobscured.
+   panel is totally un-obscured.
    
    There is presently no way to display changes to one obscured panel
    without repainting all panels.
@@ -916,7 +954,7 @@ Hiding Panels
    hidden.
    
    The panel_update code ignores hidden panels. You cannot do top_panel()
-   or bottom_panel on a hiddlen panel(). Other panels operations are
+   or bottom_panel on a hidden panel(). Other panels operations are
    applicable.
    
 Miscellaneous Other Facilities
@@ -927,7 +965,7 @@ Miscellaneous Other Facilities
    top-most panel.
    
    Every panel has an associated user pointer, not used by the panel
-   code, to whicch you can attach application data. See the man page
+   code, to which you can attach application data. See the man page
    documentation of set_panel_userptr() and panel_userptr for details.
    
                                THE MENU LIBRARY
@@ -1091,7 +1129,7 @@ Processing Menu Input
    Each menu has an associated pattern buffer. The menu_driver() logic
    tries to accumulate printable ASCII characters passed in in that
    buffer; when it matches a prefix of an item name, that item (or the
-   next matching item) is selected. If apopending a character yields no
+   next matching item) is selected. If appending a character yields no
    new match, that character is deleted from the pattern buffer, and
    menu_driver() returns E_NO_MATCH.
    
@@ -1219,7 +1257,7 @@ FIELD *new_field(int height, int width,   /* new field size */
    subwindow, which will coincide with stdscr by default but need not be
    stdscr if you've done an explicit set_form_window() call.
    
-   The fifth argument allows you to specify a number of offscreen rows.
+   The fifth argument allows you to specify a number of off-screen rows.
    If this is zero, the entire field will always be displayed. If it is
    nonzero, the form will be scrollable, with only one screen-full
    (initially the top part) displayed at any given time. If you make a
@@ -1287,7 +1325,7 @@ Fetching and Changing Field Attributes
    Each form field has a number of location and size attributes
    associated with it. There are other field attributes used to control
    display and editing of the field. Some (for example, the
-   \fBO_STATIC\fR bit) involve sufficent complications to be covered in
+   \fBO_STATIC\fR bit) involve sufficient complications to be covered in
    sections of their own later on. We cover the functions used to get and
    set several basic attributes here.
    
@@ -1465,7 +1503,7 @@ int field_opts(FIELD *field);             /* field to query */
 Field Status
 
    Every field has a status flag, which is set to FALSE when the field is
-   creaated and TRUE when the value in field buffer 0 changes. This flag
+   created and TRUE when the value in field buffer 0 changes. This flag
    can be queried and set directly:
    
 
@@ -1478,7 +1516,7 @@ int field_status(FIELD *field);         /* fetch mode of field */
    same form repeatedly, looking for modified fields each time.
    
    Calling field_status() on a field not currently selected for input
-   will return a corret value. Calling field_status() on a field that is
+   will return a correct value. Calling field_status() on a field that is
    currently selected for input may not necessarily give a correct field
    status value, because entered data isn't necessarily copied to buffer
    zero before the exit validation check. To guarantee that the returned
@@ -1509,7 +1547,7 @@ char *field_userptr(FIELD *field);        /* fetch mode of field */
    
 Variable-Sized Fields
 
-   Normally, a field is fixed at the size specfied for it at cereation
+   Normally, a field is fixed at the size specified for it at creation
    time. If, however, you turn off its O_STATIC bit, it becomes dynamic
    and will automatically resize itself to accommodate data as it is
    entered. If the field has extra buffers associated with it, they will
@@ -1517,7 +1555,7 @@ Variable-Sized Fields
    
    A one-line dynamic field will have a fixed height (1) but variable
    width, scrolling horizontally to display data within the field area as
-   originally dimensioned and located. A multiline dynamic field will
+   originally dimensioned and located. A multi-line dynamic field will
    have a fixed width, but variable height (number of rows), scrolling
    vertically to display data within the field area as originally
    dimensioned and located.
@@ -1723,7 +1761,7 @@ int set_field_buffer(FIELD *field,        /* field to alter */
    
    Calling field_buffer() with a null field pointer will raise an error.
    Calling field_buffer() on a field not currently selected for input
-   will return a corret value. Calling field_buffer() on a field that is
+   will return a correct value. Calling field_buffer() on a field that is
    currently selected for input may not necessarily give a correct field
    buffer value, because entered data isn't necessarily copied to buffer
    zero before the exit validation check. To guarantee that the returned
@@ -1765,7 +1803,7 @@ int field_count(FORM *form);              /* count connect fields */
 Control of Form Display
 
    In the overview section, you saw that to display a form you normally
-   start by definining its size (and fields), posting it, and refreshing
+   start by defining its size (and fields), posting it, and refreshing
    the screen. There is an hidden step before posting, which is the
    association of the form with a frame window (actually, a pair of
    windows) within which it will be displayed. By default, the forms
@@ -1825,7 +1863,7 @@ int data_behind(FORM *form);              /* form to be queried */
 
    The function data_ahead() returns TRUE if (a) the current field is
    one-line and has undisplayed data off to the right, (b) the current
-   field is multi-line and there is data offscreen below it.
+   field is multi-line and there is data off-screen below it.
    
    The function data_behind() returns TRUE if the first (upper left hand)
    character position is off-screen (not being displayed).
@@ -1970,13 +2008,13 @@ int form_driver(FORM *form,               /* form to pass input to */
           Move to beginning of field.
           
    REQ_END_FIELD
-          Move to ebd of field.
+          Move to end of field.
           
    REQ_BEG_LINE
           Move to beginning of line.
           
    REQ_END_LINE
-          Move to ebd of line.
+          Move to end of line.
           
    REQ_LEFT_CHAR
           Move left in field.
@@ -2207,7 +2245,7 @@ HOOK field_term(FORM *form);     /* form to query */
    Calls to these hooks may be triggered
     1. When user editing requests are processed by the forms driver
     2. When the current page is changed by set_current_field() call
-    3. Wnen the current field is changed by a set_form_page() call
+    3. When the current field is changed by a set_form_page() call
        
    See Field Change Commands for discussion of the latter two cases.
    
@@ -2255,7 +2293,7 @@ int form_page(FORM *form);                /* return form's current page */
 Form Options
 
    Like fields, forms may have control option bits. They can be changed
-   or queiried with these functions:
+   or queried with these functions:
    
 
 
@@ -2291,7 +2329,7 @@ Custom Validation Types
 
    The form library gives you the capability to define custom validation
    types of your own. Further, the optional additional arguments of
-   set_field_type effectively allow you to parametrize validation types.
+   set_field_type effectively allow you to parameterize validation types.
    Most of the complications in the validation-type interface have to do
    with the handling of the additional arguments within custom validation
    functions.
@@ -2424,7 +2462,7 @@ int set_fieldtype_arg(FIELDTYPE *type,    /* type to alter */
    read the current value, and set_field_buffer() on buffer 0 to set the
    next or previous value. Either hook may return TRUE to indicate
    success (a legal next or previous value was set) or FALSE to indicate
-   fialure.
+   failure.
    
   AVOIDING PROBLEMS
   

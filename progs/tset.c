@@ -101,6 +101,10 @@ char *ttyname(int fd);
 #include <term.h>
 #include <dump_entry.h>
 
+#if !HAVE_STRERROR
+extern char *strerror(int);
+#endif
+
 #if !HAVE_STRERROR && !defined(strerror)
 extern char *strerror(int);
 #endif

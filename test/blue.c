@@ -297,7 +297,7 @@ static void play_game(void)
 	    if (c == 'r')
 		display_cards(deal_number);
 	    else if (c == 'q')
-		die(0);
+		die(SIGINT);
 	    else
 	    {
 		i = c-'a';
@@ -400,7 +400,7 @@ int main(int argc, char *argv[])
 
     game_finished(deal_number);
 
-    die(0);
+    die(SIGINT);
     /*NOTREACHED*/
 }
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# termsort.sh -- generate indirection vectors for the various sort methods
+# MKtermsort.sh -- generate indirection vectors for the various sort methods
 #
 # The output of this script is C source for nine arrays that list three sort
 # orders for each of the three different classes of terminfo capabilities.

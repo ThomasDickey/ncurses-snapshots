@@ -1,12 +1,20 @@
 This is a log of changes that ncurses has gone through since I
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
-### ncurses-1.9.7 -> 1.9.8
+### ncurses-1.9.7 -> 1.9.8a
 
 * teach infocmp -i to recognize ECMA highlight sequences
 * infocmp now dumps all SVr4 termcaps (not just the SVr4 ones) on -C
 * support infocmp -RBSD.
 * satisfy XSI Curses requirement that every macro be available as a function.
+* This represents the last big change to the public interface of ncurses. The
+  ABI_VERSION has now been set at 3.0 and should stay there barring any great
+  catastrophies or acts of God.
+* The C++ has been cleaned up in reaction to the changes to satisfy XSI's
+  requirements.
+* libncurses now gets linked to libcurses to help seemless emulation 
+  (replacement) of a vendor's curses. --disable-overwrite turns this behavior
+  off.
 
 ### ncurses-1.9.6 -> 1.9.7
 

@@ -1,6 +1,6 @@
 # Program modules (some are in ncurses lib!)
 clear		progs		$(srcdir)	../include/term.h 
-comp_main	progs		$(srcdir)	../include/term.h $(INCDIR)/tic.h $(srcdir)/dump_entry.h
+tic		progs		$(srcdir)	../include/term.h $(INCDIR)/tic.h $(srcdir)/dump_entry.h
 toe		progs		$(srcdir)	../include/term.h $(INCDIR)/tic.h $(srcdir)/dump_entry.h
 dump_entry	progs		$(srcdir)	../include/term.h $(INCDIR)/tic.h $(srcdir)/dump_entry.h ../include/parametrized.h termsort.c
 infocmp		progs		$(srcdir)	../include/term.h $(INCDIR)/tic.h $(srcdir)/dump_entry.h

@@ -643,7 +643,7 @@ supplement to the manual page descriptions.
 This will determine the terminal type and
 initialize curses data structures. <TT>initscr()</TT> also arranges that
 the first call to <TT>refresh()</TT> will clear the screen.  If an error
-occurs a message is writen to standard error and the program
+occurs a message is written to standard error and the program
 exits. Otherwise it returns a pointer to stdscr.  A few functions may be
 called before initscr (<TT>slk_init()</TT>, <TT>filter()</TT>,
 <TT>ripofflines()</TT>, <TT>use_env()</TT>, and, if you are using multiple
@@ -652,7 +652,7 @@ terminals, <TT>newterm()</TT>.) <P>
 <DD> Your program should always call <TT>endwin()</TT> before exiting or
 shelling out of the program. This function will restore tty modes,
 move the cursor to the lower left corner of the screen, reset the
-terminal into the proper nonvisual mode.  Calling <TT>refresh()</TT>
+terminal into the proper non-visual mode.  Calling <TT>refresh()</TT>
 or <TT>doupdate()</TT> after a temporary escape from the program will
 restore the ncurses screen from before the escape. <P>
 <DT> <TT>newterm(type, ofp, ifp)</TT>
@@ -697,7 +697,7 @@ describing what the programmer wants to have on the screen.  wrefresh
 works by first copying the named window to the virtual screen
 (<TT>wnoutrefresh()</TT>), and then calling the routine to update the
 screen (<TT>doupdate()</TT>).  If the programmer wishes to output
-several windows at once, a series of calls to wre- fresh will result
+several windows at once, a series of calls to <TT>wrefresh</TT> will result
 in alternating calls to <TT>wnoutrefresh()</TT> and <TT>doupdate()</TT>,
 causing several bursts of output to the screen.  By calling
 <TT>wnoutrefresh()</TT> for each window, it is then possible to call
@@ -712,7 +712,7 @@ probably fewer total characters transmitted. <P>
 This routine is called to initialize a terminal's description, without setting
 up the curses screen structures or changing the tty-driver mode bits.
 <TT>term</TT> is the character string representing the name of the terminal
-being used.  <TT>filenum</TT> is the UNIX file descriptor of the ter- minal to
+being used.  <TT>filenum</TT> is the UNIX file descriptor of the terminal to
 be used for output.  <TT>errret</TT> is a pointer to an integer, in which a
 success or failure indication is returned.  The values returned can be 1 (all
 is well), 0 (no such terminal), or -1 (some problem locating the terminfo
@@ -879,7 +879,7 @@ the IBM high-half and ROM characters.  The <TT>A_ALTCHARSET</TT> highlight,
 enables display of both high-half ACS graphics and the PC ROM graphics
 0-31 that are normally interpreted as control characters.
 
-<H3><A NAME="backbug">Background Erase -- Compatibility with Old Versions</A></H1>
+<H3><A NAME="backbug">Background Erase -- Compatibility with Old Versions</A></H3>
 
 If you have been using a very old versions of <TT>ncurses</TT> (1.8.7 or 
 older) you may be surprised by the behavior of the erase functions.  In older
@@ -914,7 +914,7 @@ will be prototype-checked) if the macro definition is disabled with
 The <TT>ncurses</TT> library by itself provides good support for screen
 displays in which the windows are tiled (non-overlapping).  In the more
 general case that windows may overlap, you have to use a series of
-<CODE>wnoutrefresh()</CODE> calls followd by a <CODE>doupdate()</CODE>, and be
+<CODE>wnoutrefresh()</CODE> calls followed by a <CODE>doupdate()</CODE>, and be
 careful about the order you do the window refreshes in.  It has to be
 bottom-upwards, otherwise parts of windows that should be obscured will
 show through. <P>
@@ -955,7 +955,7 @@ hit the highlights here. <P>
 
 You create a panel from a window by calling <CODE>new_panel()</CODE> on a
 window pointer.  It then becomes the top of the deck.  The panel's window
-is available as the value of <CODE>pnel_windo()</CODE> called with the
+is available as the value of <CODE>panel_window()</CODE> called with the
 panel pointer as argument.<P>
 
 You can delete a panel (removing it from the deck) with <CODE>del_panel</CODE>.
@@ -993,7 +993,7 @@ though, you should call <CODE>update_panels()</CODE> before
 
 Note that <CODE>wgetch</CODE> automatically calls <CODE>wrefresh</CODE>.
 Therefore, before requesting input from a panel window, you need to be sure
-that the panel is totally unobscured. <P>
+that the panel is totally un-obscured. <P>
 
 There is presently no way to display changes to one obscured panel without
 repainting all panels. <P>
@@ -1006,7 +1006,7 @@ It's possible to remove a panel from the deck temporarily; use
 tests whether or not a panel is hidden. <P>
 
 The <CODE>panel_update</CODE> code ignores hidden panels.  You cannot do
-<CODE>top_panel()</CODE> or <CODE>bottom_panel</CODE> on a hiddlen panel().
+<CODE>top_panel()</CODE> or <CODE>bottom_panel</CODE> on a hidden panel().
 Other panels operations are applicable. <P>
 
 <H2><A NAME="pmisc">Miscellaneous Other Facilities</A></H2>
@@ -1017,7 +1017,7 @@ pointer, they return the panel above or below that panel.  Handed
 <CODE>NULL</CODE>, they return the bottom-most or top-most panel. <P>
 
 Every panel has an associated user pointer, not used by the panel code, to
-whicch you can attach application data.  See the man page documentation
+which you can attach application data.  See the man page documentation
 of <CODE>set_panel_userptr()</CODE> and <CODE>panel_userptr</CODE> for
 details. <P>
 
@@ -1192,7 +1192,7 @@ Each menu has an associated pattern buffer.  The
 <CODE>menu_driver()</CODE> logic tries to accumulate printable ASCII
 characters passed in in that buffer; when it matches a prefix of an
 item name, that item (or the next matching item) is selected.  If
-apopending a character yields no new match, that character is deleted
+appending a character yields no new match, that character is deleted
 from the pattern buffer, and <CODE>menu_driver()</CODE> returns
 <CODE>E_NO_MATCH</CODE>. <P>
 
@@ -1330,7 +1330,7 @@ subwindow, which will coincide with <TT>stdscr</TT> by default but
 need not be <TT>stdscr</TT> if you've done an explicit
 <TT>set_form_window()</TT> call. <P>
 
-The fifth argument allows you to specify a number of offscreen rows.  If
+The fifth argument allows you to specify a number of off-screen rows.  If
 this is zero, the entire field will always be displayed.  If it is 
 nonzero, the form will be scrollable, with only one screen-full (initially 
 the top part) displayed at any given time.  If you make a field dynamic
@@ -1400,7 +1400,7 @@ your form objects first. <P>
 Each form field has a number of location and size attributes
 associated with it. There are other field attributes used to control
 display and editing of the field.  Some (for example, the \fBO_STATIC\fR bit)
-involve sufficent complications to be covered in sections of their own
+involve sufficient complications to be covered in sections of their own
 later on.  We cover the functions used to get and set several basic
 attributes here. <P>
 
@@ -1572,7 +1572,7 @@ the obvious way. <P>
 <H2><A NAME="fstatus">Field Status</A></H2>
 
 Every field has a status flag, which is set to FALSE when the field is
-creaated and TRUE when the value in field buffer 0 changes.  This flag can
+created and TRUE when the value in field buffer 0 changes.  This flag can
 be queried and set directly: <P>
 
 <PRE>
@@ -1586,7 +1586,7 @@ Setting this flag under program control can be useful if you use the same
 form repeatedly, looking for modified fields each time. <P>
 
 Calling <TT>field_status()</TT> on a field not currently selected
-for input will return a corret value.  Calling <TT>field_status()</TT> on a
+for input will return a correct value.  Calling <TT>field_status()</TT> on a
 field that is currently selected for input may not necessarily give a 
 correct field status value, because entered data isn't necessarily copied to
 buffer zero before the exit validation check.
@@ -1620,7 +1620,7 @@ to initialize the new field's user pointer. <P>
 
 <H2><A NAME="fdynamic">Variable-Sized Fields</A></H2>
 
-Normally, a field is fixed at the size specfied for it at cereation
+Normally, a field is fixed at the size specified for it at creation
 time.  If, however, you turn off its O_STATIC bit, it becomes
 <DFN>dynamic</DFN> and will automatically resize itself to accommodate
 data as it is entered.  If the field has extra buffers associated with it,
@@ -1628,7 +1628,7 @@ they will grow right along with the main input buffer.  <P>
 
 A one-line dynamic field will have a fixed height (1) but variable
 width, scrolling horizontally to display data within the field area as
-originally dimensioned and located.  A multiline dynamic field will
+originally dimensioned and located.  A multi-line dynamic field will
 have a fixed width, but variable height (number of rows), scrolling
 vertically to display data within the field area as originally
 dimensioned and located. <P>
@@ -1842,7 +1842,7 @@ to fit. <P>
 
 Calling <TT>field_buffer()</TT> with a null field pointer will raise an
 error.  Calling <TT>field_buffer()</TT> on a field not currently selected
-for input will return a corret value.  Calling <TT>field_buffer()</TT> on a
+for input will return a correct value.  Calling <TT>field_buffer()</TT> on a
 field that is currently selected for input may not necessarily give a 
 correct field buffer value, because entered data isn't necessarily copied to
 buffer zero before the exit validation check.
@@ -1887,7 +1887,7 @@ is NULL. <P>
 <H2><A NAME="fdisplay">Control of Form Display</A></H2>
 
 In the overview section, you saw that to display a form you normally
-start by definining its size (and fields), posting it, and refreshing
+start by defining its size (and fields), posting it, and refreshing
 the screen.  There is an hidden step before posting, which is the
 association of the form with a frame window (actually, a pair of
 windows) within which it will be displayed.  By default, the forms
@@ -1952,7 +1952,7 @@ int data_behind(FORM *form);              /* form to be queried */
 
 The function <TT>data_ahead()</TT> returns TRUE if (a) the current
 field is one-line and has undisplayed data off to the right, (b) the current
-field is multi-line and there is data offscreen below it. <P>
+field is multi-line and there is data off-screen below it. <P>
 
 The function <TT>data_behind()</TT> returns TRUE if the first (upper
 left hand) character position is off-screen (not being displayed). <P>
@@ -2084,11 +2084,11 @@ selected field. <P>
 <DT> <TT>REQ_BEG_FIELD</TT>
 <DD> Move to beginning of field.
 <DT> <TT>REQ_END_FIELD</TT>
-<DD> Move to ebd of field.
+<DD> Move to end of field.
 <DT> <TT>REQ_BEG_LINE</TT>
 <DD> Move to beginning of line.
 <DT> <TT>REQ_END_LINE</TT>
-<DD> Move to ebd of line.
+<DD> Move to end of line.
 <DT> <TT>REQ_LEFT_CHAR</TT>
 <DD> Move left in field.
 <DT> <TT>REQ_RIGHT_CHAR</TT>
@@ -2297,7 +2297,7 @@ Calls to these hooks may be triggered
 <OL>
 <LI> When user editing requests are processed by the forms driver
 <LI> When the current page is changed by <TT>set_current_field()</TT> call
-<LI> Wnen the current field is changed by a <TT>set_form_page()</TT> call
+<LI> When the current field is changed by a <TT>set_form_page()</TT> call
 </OL>
 
 See <A NAME="ffocus">Field Change Commands</A> for discussion of the latter
@@ -2349,7 +2349,7 @@ The initial page of a newly-created form is 0.  The function
 <H2><A NAME="frmoptions">Form Options</A></H2>
 
 Like fields, forms may have control option bits.  They can be changed
-or queiried with these functions: <P>
+or queried with these functions: <P>
 
 <PRE>
 <PRE>
@@ -2386,7 +2386,7 @@ the obvious way. <P>
 
 The <TT>form</TT> library gives you the capability to define custom
 validation types of your own.  Further, the optional additional arguments
-of <TT>set_field_type</TT> effectively allow you to parametrize validation
+of <TT>set_field_type</TT> effectively allow you to parameterize validation
 types.  Most of the complications in the validation-type interface have to
 do with the handling of the additional arguments within custom validation
 functions. <P>
@@ -2520,7 +2520,7 @@ a field pointer, and a pile pointer (as for the validation functions).  They
 are expected to use the function <TT>field_buffer()</TT> to read the 
 current value, and <TT>set_field_buffer()</TT> on buffer 0 to set the next
 or previous value.  Either hook may return TRUE to indicate success (a
-legal next or previous value was set) or FALSE to indicate fialure. <P>
+legal next or previous value was set) or FALSE to indicate failure. <P>
 
 <H3><A NAME="fcustprobs">Avoiding Problems</A></H3>
 

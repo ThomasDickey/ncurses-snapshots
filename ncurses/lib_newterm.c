@@ -44,9 +44,7 @@ SCREEN * newterm(const char *term, FILE *ofp, FILE *ifp)
 {
 int	errret;
 
-#ifdef TRACE
 	T(("newterm(\"%s\",%p,%p) called", term, ofp, ifp));
-#endif
 
 	/* this loads the capability entry, then sets LINES and COLS */
 	if (setupterm(term, fileno(ofp), &errret) != 1)
@@ -55,6 +53,15 @@ int	errret;
 	/* implement filter mode */
 	if (filter_mode) {
 	    LINES = 1;
+
+#ifdef init_tabs
+	if (init_tabs != -1)
+		TABSIZE = init_tabs;
+	else
+#endif /* init_tabs */
+		TABSIZE = 8;
+
+	T(("TABSIZE = %d", TABSIZE));
 
 #ifdef clear_screen
 	    clear_screen = (char *)NULL;

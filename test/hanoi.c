@@ -151,6 +151,14 @@ unsigned char AutoFlag = 0;
 int
 InvalidMove(int From, int To)
 {
+	if(From >= NPEGS)
+		return TRUE;
+	if(From < 0)
+		return TRUE;
+	if(To >= NPEGS)
+		return TRUE;
+	if(To < 0)
+		return TRUE;
 	if(From == To)
 		return TRUE;
 	if(!Pegs[From].Count)

@@ -41,7 +41,7 @@ char	*cp;
 
 	for (cp = (char *)str; *cp && (n <= 0 || (cp - str) < n); cp++) {
 		if (*cp == '\n' || *cp == '\r' || *cp == '\t' || *cp == '\b')
-			_nc_waddch_nosync(win, (chtype)(*cp), FALSE);
+			_nc_waddch_nosync(win, (chtype)(*cp));
 		else if (is7bits(*cp) && iscntrl(*cp)) {
 			winsch(win, ' ' + (chtype)(*cp));
 			winsch(win, '^');

@@ -323,15 +323,15 @@ static const assoc std_caps[] =
     {"\033)0",	"ISO DEC G1"},	/* enable DEC graphics for G1 */
     {"\033)A",	"ISO UK G1"},	/* enable UK chars for G1 */
     {"\033)B",	"ISO US G1"},	/* enable US chars for G1 */
-
+  
     /* these are DEC private modes widely supported by emulators */
     {"\033=",	"DECPAM"},	/* application keypad mode */
     {"\033>",	"DECPNM"},	/* normal keypad mode */
     {"\033<",	"DECANSI"},	/* enter ANSI mode */
-
+ 
     { (char *)0, (char *)0}
 };
-
+  
 static const assoc private_modes[] =
 /* DEC \E[ ... [hl] modes recognized by many emulators */
 {
@@ -501,10 +501,9 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 	       } while
 		   ((ep = strtok((char *)NULL, ";")));
 
-	    buf2[strlen(buf2) - 1] = '\0';
-	    expansion = buf2;
-	}
-
+  	    buf2[strlen(buf2) - 1] = '\0';
+  	    expansion = buf2;
+  	}
 	/* now check for scroll region reset */
 	if (!expansion)
 	{
@@ -838,6 +837,7 @@ int main(int argc, char *argv[])
 
 		case 'V':
 			(void) fputs(NCURSES_VERSION, stdout);
+			putchar('\n');
 			exit(EXIT_SUCCESS);
 
 		case 'w':

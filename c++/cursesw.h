@@ -8,7 +8,15 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+
+#ifdef __SUNPRO_CC
+#include <generic.h>
+#include <string.h>
+extern "C" { unsigned sleep(int); }
+#else
 #include <builtin.h>
+#endif
+
 #if HAVE_VALUES_H
 #include <values.h>
 #endif
@@ -486,6 +494,7 @@ class NCursesWindow
 {
   private:
     void           init(); 
+    void           err_handler(const char *);
   protected:
     static int     count;            // count of all active windows:
                                      //   We rely on the c++ promise that

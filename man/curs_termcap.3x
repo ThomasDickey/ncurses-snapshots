@@ -57,6 +57,10 @@ be aware that it will be returned in terminfo notation, not the older and
 not-quite-compatible termcap notation.  This won't cause problems if all
 you do with it is call \fBtgoto\fR or \fBtparm\fR, which both expand
 terminfo-style.
+
+Because terminfo conventions for representing padding in string capabilities
+differ from termcaps, \fBtputs("50");\fR will put out a literal "50" rather
+than busy-waiting for 50 milliseconds.  Cope with it.
 .SH PORTABILITY
 The XSI Curses standard, Issue 4 describes these functions.  However, they
 are marked TO BE WITHDRAWN and may be removed in future versions.

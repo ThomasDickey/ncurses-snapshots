@@ -92,7 +92,7 @@ $(bindir) :
 #
 
 DEPS_TIC = \
-	$(MODEL)/comp_main.o \
+	$(MODEL)/tic.o \
 	$(MODEL)/dump_entry.o \
 	$(LIB_CURSES)
 tic: $(DEPS_TIC)
@@ -131,8 +131,8 @@ DEPS_TSET = \
 tset: $(DEPS_TSET)
 	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(DEPS_TSET) $(LDFLAGS) -o $@
 
-termsort.c: ../include/Caps.filtered $(srcdir)/termsort.sh
-	sh -c "$(srcdir)/termsort.sh $(AWK) ../include/Caps.filtered" >$@
+termsort.c: ../include/Caps.filtered $(srcdir)/MKtermsort.sh
+	sh -c "$(srcdir)/MKtermsort.sh $(AWK) ../include/Caps.filtered" >$@
 
 #
 # Test programs (not normally built by make all) start here.

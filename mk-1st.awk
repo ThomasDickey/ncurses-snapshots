@@ -6,6 +6,7 @@
 #	MODEL (e.g., "DEBUG", uppercase; toupper is not portable)
 #	DoLinks ("yes" or "no", flag to add symbolic links)
 #	rmSoLocs ("yes" or "no", flag to add extra clean target)
+#	overwrite ("yes" or "no", flag to add link to libcurses.a
 #
 # Notes:
 #	CLIXs nawk does not like underscores in command-line variable names.
@@ -74,7 +75,8 @@ END	{
 				printf "\t$(MK_SHARED_LIB) $(%s_OBJS)\n", MODEL
 				sharedlinks("../lib")
 				print  ""
-				printf "install.libs :: $(libdir) ../lib/%s\n", end_name
+				print  "install.libs \\"
+				printf "install.%s :: $(libdir) ../lib/%s\n", name, end_name
 				printf "\t@echo installing ../lib/%s as $(libdir)/%s \n", lib_name, end_name
 				printf "\t$(INSTALL_DATA) ../lib/%s $(libdir)/%s \n", lib_name, end_name
 				sharedlinks("$(libdir)")
@@ -91,9 +93,16 @@ END	{
 				printf "\tar rv $@ $?\n"
 				printf "\t$(RANLIB) $@\n"
 				print  ""
-				printf "install.libs :: $(libdir) ../lib/%s\n", lib_name
+				print  "install.libs \\"
+				printf "install.%s :: $(libdir) ../lib/%s\n", name, lib_name
 				printf "\t@echo installing ../lib/%s as $(libdir)/%s \n", lib_name, lib_name
 				printf "\t$(INSTALL_DATA) ../lib/%s $(libdir)/%s \n", lib_name, lib_name
+				if ( overwrite == "yes" && lib_name == "libncurses.a" )
+				{
+					printf "\t@echo linking libcurses.a to libncurses.a \n"
+					printf "\trm -f $(libdir)/libcurses.a \n"
+					printf "\t$(LN_S) $(libdir)/libncurses.a $(libdir)/libcurses.a \n"
+				}
 				printf "\t$(RANLIB) $(libdir)/%s\n", lib_name
 			}
 			print ""
