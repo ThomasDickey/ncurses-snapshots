@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.648 2001/09/30 00:00:29 tom Exp $
+-- $Id: NEWS,v 1.649 2001/10/01 22:53:49 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,6 +6,10 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
+20011001
+	+ simpler fix for signal_name(), to replace the one overlooked in
+	  20010929 (reported by Larry Virden).
+	  
 20010929
 	+ add -i option to view.c, to test ncurses' check for non-default
 	  signal handler for SIGINT, etc.
