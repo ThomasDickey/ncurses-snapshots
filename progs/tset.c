@@ -61,6 +61,7 @@
  * SUCH DAMAGE.
  */
 
+#define __INTERNAL_CAPS_VISIBLE	/* we need to see has_hardware_tabs */
 #include <progs.priv.h>
 
 #include <errno.h>
@@ -89,10 +90,9 @@ char *ttyname(int fd);
 #endif
 
 #include <curses.h>	/* for bool typedef */
-#define __INTERNAL_CAPS_VISIBLE	/* we need to see has_hardware_tabs */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.20 1997/02/15 20:50:07 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.21 1997/03/21 11:52:20 djm Exp $")
 
 extern char **environ;
 

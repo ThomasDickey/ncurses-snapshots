@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.51 1997/03/15 23:02:29 tom Exp $
+dnl $Id: aclocal.m4,v 1.52 1997/03/22 01:28:45 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -87,7 +87,7 @@ main()
 		],
 		[nc_cv_type_of_bool=`cat nc_test.out`],
 		[nc_cv_type_of_bool=unsigned],
-		[nc_cv_type_of_bool=unknown])
+		[nc_cv_type_of_bool=unsigned])
 	])
 	rm -f nc_test.out
 AC_MSG_RESULT($nc_cv_type_of_bool)
@@ -117,23 +117,26 @@ if test "x$prefix" = "xNONE" ; then
 fi
 AC_MSG_RESULT($prefix)
 AC_MSG_CHECKING(for default include-directory)
+test -n "$verbose" && echo 1>&6
 for nc_symbol in \
 	$includedir \
 	$includedir/ncurses \
 	$prefix/include \
 	$prefix/include/ncurses \
-	/usr/include \
-	/usr/include/ncurses \
 	/usr/local/include \
-	/usr/local/include/ncurses
+	/usr/local/include/ncurses \
+	/usr/include \
+	/usr/include/ncurses
 do
 	nc_dir=`eval echo $nc_symbol`
 	if test -f $nc_dir/curses.h ; then
 	if ( fgrep NCURSES_VERSION $nc_dir/curses.h 2>&1 >/dev/null ) ; then
 		includedir="$nc_symbol"
+		test -n "$verbose"  && echo $ac_n "	found " 1>&6
 		break
 	fi
 	fi
+	test -n "$verbose"  && echo "	tested $nc_dir" 1>&6
 done
 AC_MSG_RESULT($includedir)
 ])dnl

@@ -17,10 +17,10 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.54 1997/03/09 00:26:32 tom Exp $
+dnl $Id: configure.in,v 1.55 1997/03/22 01:24:31 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12)
-AC_REVISION($Revision: 1.54 $)
+AC_REVISION($Revision: 1.55 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
@@ -169,7 +169,6 @@ dnl autoconf 2.12 uses different symbol for -g option than autoconf 2.10, etc.
 if test X"$CC_G_OPT" = X"" ; then
 	CC_G_OPT='-g'
 	test -n "$GCC" && test "${ac_cv_prog_cc_g}${ac_cv_prog_gcc_g}" != yes && CC_G_OPT=''
-	test -n "$GCC" && CC_G_OPT="$CC_G_OPT -Dinline="
 fi
 AC_SUBST(CC_G_OPT)
 
@@ -553,7 +552,7 @@ echo "
 #undef inline
 #endif
 
-#ifdef lint
+#if defined(lint) || defined(TRACE)
 #undef inline
 #define inline /* nothing */
 #endif
@@ -581,5 +580,6 @@ nc_cv_abi_version="$nc_cv_abi_version"
 nc_cv_do_symlinks="$nc_cv_do_symlinks"
 nc_cv_rm_so_locs="$nc_cv_rm_so_locs"
 
-})
+})dnl
 changequote([,])dnl
+make preinstall
