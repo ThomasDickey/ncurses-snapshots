@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.63 1997/05/29 10:28:30 tom Exp $
+ * $Id: curses.priv.h,v 1.64 1997/06/15 11:17:01 tom Exp $
  *
  *	curses.priv.h
  *
@@ -311,6 +311,7 @@ typedef	struct {
 
 #define CHANGED     -1
 
+#define SIZEOF(v) (sizeof(v)/sizeof(v[0]))
 #define typeCalloc(type,elts) (type *)calloc(elts,sizeof(type))
 #define FreeIfNeeded(p)  if(p != 0) free(p)
 #define FreeAndNull(p)   free(p); p = 0

@@ -46,7 +46,7 @@ typedef int Item_Options;
 
 typedef struct
 {
-  char*    str;
+  const char* str;
   unsigned short length;
 } TEXT;
 

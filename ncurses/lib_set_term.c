@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.18 1997/05/29 10:23:56 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.19 1997/06/15 18:40:02 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -160,12 +160,13 @@ void delscreen(SCREEN *sp)
 }
 
 ripoff_t rippedoff[5], *rsp = rippedoff;
-#define N_RIPS (int)(sizeof(rippedoff)/sizeof(rippedoff[0]))
+#define N_RIPS SIZEOF(rippedoff)
 
 int _nc_setupscreen(short slines, short const scolumns, FILE *output)
 /* OS-independent screen initializations */
 {
-int	bottom_stolen = 0, i;
+int	bottom_stolen = 0;
+size_t	i;
 
 	if (!_nc_alloc_screen())
 		return ERR;

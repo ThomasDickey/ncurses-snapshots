@@ -27,7 +27,7 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <term.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.13 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.14 1997/06/15 11:16:53 tom Exp $")
 
 /*
    some of the code in here was contributed by:
@@ -125,7 +125,7 @@ speed_t speed;
 			B50,
 			B0,
 		};
-#define MAXSPEED	sizeof(speeds)/sizeof(speeds[0])
+#define MAXSPEED	SIZEOF(speeds)
 
 		for (sp = speeds; sp < speeds + MAXSPEED; sp++) {
 			if (sp[0] <= speed) {

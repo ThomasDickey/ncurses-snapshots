@@ -1,7 +1,22 @@
--- $Id: NEWS,v 1.214 1997/06/15 01:26:47 tom Exp $
+-- $Id: NEWS,v 1.215 1997/06/16 01:23:36 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+970615
+	+ restore logic in _nc_scroll_optimize() which marks as touched the
+	  lines in curscr that are shifted.
+	+ add new utility 'make_keys' to compute keys.tries as a table rather
+	  than a series of function calls.
+	+ correct include-dependency for tic.h used by name_match
+	+ removed buffer-allocation for name and description from m_item_new.c,
+	  since this might result in incompatibilities with SVr4.  Also fixed
+	  the corresponding Ada95 binding module (patch by Juergen Pfeifer,
+	  from report by Avery Pennarun <apenwarr@foxnet.net>)
+	+ removed the mechanism to timestamp the generated Ada95 sources.  This
+	  resulted always in generating patches for the HTML doc, even when
+	  nothing really changed (patch by Juergen Pfeifer).
+	+ improve man page mitem_new.3x (patch by Juergen Pfeifer).
 
 970614
 	+ remove ech capability from rxvt description because it does not work.
@@ -72,8 +87,8 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	> several changes by Juergen Pfeifer:
 	+ correct a missing error-return in form_driver.c when wrapping of a
 	  field is not possible.
-	+ correct login in form_driver.c for configurations that do not have
-	  memccpy().
+	+ correct logic in form_driver.c for configurations that do not have
+	  memccpy() (reported by Sidik Isani <isani@cfht.hawaii.edu>)
 	+ change several c++ binding functions to inline.
 	+ modify c++ menu binding to inherit from panels, for proper
 	  initialization.

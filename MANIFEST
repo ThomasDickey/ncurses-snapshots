@@ -438,7 +438,6 @@
 ./ncurses/MKexpanded.sh
 ./ncurses/MKfallback.sh
 ./ncurses/MKkeyname.awk
-./ncurses/MKkeys.awk
 ./ncurses/MKlib_gen.sh
 ./ncurses/MKnames.awk
 ./ncurses/MKunctrl.awk
@@ -524,6 +523,7 @@
 ./ncurses/lib_vidattr.c
 ./ncurses/lib_window.c
 ./ncurses/llib-lncurses
+./ncurses/make_keys.c
 ./ncurses/modules
 ./ncurses/name_match.c
 ./ncurses/parse_entry.c

@@ -28,7 +28,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_new.c,v 1.5 1997/05/01 16:47:26 juergen Exp $")
+MODULE_ID("$Id: m_item_new.c,v 1.6 1997/06/15 09:35:35 juergen Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -79,35 +79,13 @@ ITEM *new_item(const char *name, const char *description)
 	  *item  = _nc_Default_Item; /* hope we have struct assignment */
 	  
 	  item->name.length	   = strlen(name);
-	  item->name.str 	   = (char *)malloc(1 + item->name.length);
-	  if (item->name.str)
-	    {
-	      strcpy(item->name.str, name);
-	    }
-	  else
-	    {
-	      free(item);
-	      SET_ERROR( E_SYSTEM_ERROR );
-	      return (ITEM *)0;
-	    }
-	  
+	  item->name.str 	   = name;
+
 	  if (description && (*description != '\0') && 
 	      Is_Printable_String(description))
 	    {
 	      item->description.length = strlen(description);	      
-	      item->description.str    = 
-		(char *)malloc(1 + item->description.length);
-	      if (item->description.str)
-		{
-		  strcpy(item->description.str, description);
-		}
-	      else
-		{
-		  free(item->name.str);
-		  free(item);
-		  SET_ERROR( E_SYSTEM_ERROR );
-		  return (ITEM *)0;
-		}
+	      item->description.str    = description;
 	    }
 	  else
 	    {
@@ -140,10 +118,6 @@ int free_item(ITEM * item)
   if (item->imenu)
     RETURN( E_CONNECTED );
   
-  if (item->name.str)
-    free(item->name.str);
-  if (item->description.str)
-    free (item->description.str);
   free(item);
 
   RETURN( E_OK );
