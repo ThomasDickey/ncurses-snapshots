@@ -1,7 +1,18 @@
--- $Id: NEWS,v 1.296 1998/01/04 00:51:00 tom Exp $
+-- $Id: NEWS,v 1.297 1998/01/10 20:52:01 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+980110
+	+ correct "?" command in ncurses.c; it was performing non-screen writes
+	  while the program was in screen mode.  (It "worked" in 1.9.9e because
+	  that version sets OPOST and OCRNL incorrectly).
+	+ return error from functions in lib_kernel, lib_raw and lib_ti if
+	  cur_term is null, or if underlying I/O fails.
+	+ amend change to tputs() so that it does not return an error if
+	  cur_term is null, since some applications depend on being able to use
+	  tputs without initializing the terminal (reported by Christian J. 
+	  Robinson <infynity@cyberhighway.net>).
 
 980103
 	+ add a copy of emx.src from Ripoll's OS/2 EMX version of ncurses

@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.18 1997/11/15 22:49:33 tom Exp $
+dnl $Id: configure.in,v 1.19 1998/01/10 17:12:26 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -130,6 +130,24 @@ AC_SUBST(LIB_PREFIX)
 
 DFT_DEP_SUFFIX=""
 AC_SUBST(DFT_DEP_SUFFIX)
+
+dnl ---------------------------------------------------------------------------
+dnl [CF_SYS_TIME_SELECT]
+AC_MSG_CHECKING(if sys/time.h conflicts with sys/select.h)
+AC_CACHE_VAL(cf_cv_sys_time_select,[
+AC_TRY_COMPILE([
+#if HAVE_SYS_TIME_H
+#include <sys/time.h>
+#endif
+#if HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif
+],[],[cf_cv_sys_time_select=yes],
+     [cf_cv_sys_time_select=no])
+     ])
+AC_MSG_RESULT($cf_cv_sys_time_select)
+test $cf_cv_sys_time_select = yes && AC_DEFINE(HAVE_SYS_TIME_SELECT)
+dnl ---------------------------------------------------------------------------
 
 rm -f config_h.in
 echo '@DEFS@' >config_h.in

@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.104 1997/12/13 21:40:18 tom Exp $
+$Id: ncurses.c,v 1.105 1998/01/10 20:45:12 tom Exp $
 
 ***************************************************************************/
 
@@ -2809,10 +2809,6 @@ do_single_test(const char c)
 #endif
 
     case '?':
-	(void) puts("This is the ncurses capability tester.");
-	(void) puts("You may select a test from the main menu by typing the");
-	(void) puts("key letter of the choice (the letter to left of the =)");
-	(void) puts("at the > prompt.  The commands `x' or `q' will exit.");
 	break;
 
     default:
@@ -3029,6 +3025,12 @@ main(int argc, char *argv[])
 		clear();
 		refresh();
 		endwin();
+		if (command == '?') {
+			(void) puts("This is the ncurses capability tester.");
+			(void) puts("You may select a test from the main menu by typing the");
+			(void) puts("key letter of the choice (the letter to left of the =)");
+			(void) puts("at the > prompt.  The commands `x' or `q' will exit.");
+		}
 		continue;
 	}
     } while

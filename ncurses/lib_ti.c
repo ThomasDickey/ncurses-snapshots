@@ -25,7 +25,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_ti.c,v 1.7 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_ti.c,v 1.8 1998/01/10 20:13:10 tom Exp $")
 
 int tigetflag(const char *str)
 {
@@ -33,9 +33,10 @@ int i;
 
 	T(("tigetflag(%s)", str));
 
-	for (i = 0; i < BOOLCOUNT; i++)
-		if (!strcmp(str, boolnames[i]))
-			return cur_term->type.Booleans[i];
+	if (cur_term != 0)
+		for (i = 0; i < BOOLCOUNT; i++)
+			if (!strcmp(str, boolnames[i]))
+				return cur_term->type.Booleans[i];
 
 	return ABSENT_BOOLEAN;
 }
@@ -46,9 +47,10 @@ int i;
 
 	T(("tigetnum(%s)", str));
 
-	for (i = 0; i < NUMCOUNT; i++)
-		if (!strcmp(str, numnames[i]))
-			return cur_term->type.Numbers[i];
+	if (cur_term != 0)
+		for (i = 0; i < NUMCOUNT; i++)
+			if (!strcmp(str, numnames[i]))
+				return cur_term->type.Numbers[i];
 
 	return CANCELLED_NUMERIC;
 }
@@ -59,9 +61,10 @@ int i;
 
 	T(("tigetstr(%s)", str));
 
-	for (i = 0; i < STRCOUNT; i++)
-		if (!strcmp(str, strnames[i]))
-			return cur_term->type.Strings[i];
+	if (cur_term != 0)
+		for (i = 0; i < STRCOUNT; i++)
+			if (!strcmp(str, strnames[i]))
+				return cur_term->type.Strings[i];
 
 	return CANCELLED_STRING;
 }
