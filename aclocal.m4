@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996-2003
 dnl
-dnl $Id: aclocal.m4,v 1.298 2003/02/15 23:59:55 tom Exp $
+dnl $Id: aclocal.m4,v 1.299 2003/02/23 01:35:47 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -2871,6 +2871,7 @@ AC_TRY_COMPILE([
 
 if test "$cf_cv_$1" = yes ; then
 	AC_DEFINE(NEED_WCHAR_H)
+	NEED_WCHAR_H=1
 fi
 
 ifelse($2,,,[

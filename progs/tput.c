@@ -45,7 +45,7 @@
 #endif
 #include <transform.h>
 
-MODULE_ID("$Id: tput.c,v 1.32 2003/02/09 00:27:38 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.33 2003/02/22 22:10:34 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -297,8 +297,10 @@ tput(int argc, char *argv[])
 	token = STRING;
 	if (argc > 1) {
 	    int k;
-	    int numbers[10];
-	    char *strings[10];
+	    int popcount;
+	    long numbers[1 + NUM_PARM];
+	    char *strings[1 + NUM_PARM];
+	    char *p_is_s[NUM_PARM];
 
 	    /* Nasty hack time. The tparm function needs to see numeric
 	     * parameters as numbers, not as pointers to their string
@@ -312,7 +314,7 @@ tput(int argc, char *argv[])
 		if (tmp == 0 || *tmp != 0)
 		    numbers[k] = 0;
 	    }
-	    for (k = argc; k <= 9; k++) {
+	    for (k = argc; k <= NUM_PARM; k++) {
 		numbers[k] = 0;
 		strings[k] = 0;
 	    }
@@ -325,10 +327,18 @@ tput(int argc, char *argv[])
 		s = tparm(s, numbers[1], strings[2], strings[3]);
 		break;
 	    default:
+		(void) _nc_tparm_analyze(s, p_is_s, &popcount);
+#define myParam(n) (p_is_s[n - 1] != 0 ? ((long) strings[n]) : numbers[n])
 		s = tparm(s,
-			  numbers[1], numbers[2], numbers[3],
-			  numbers[4], numbers[5], numbers[6],
-			  numbers[7], numbers[8], numbers[9]);
+			  myParam(1),
+			  myParam(2),
+			  myParam(3),
+			  myParam(4),
+			  myParam(5),
+			  myParam(6),
+			  myParam(7),
+			  myParam(8),
+			  myParam(9));
 		break;
 	    }
 	}

@@ -154,7 +154,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.89 2003/01/12 01:49:03 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.90 2003/02/23 00:55:01 tom Exp $")
 
 #define CURRENT_ROW	SP->_cursrow	/* phys cursor row */
 #define CURRENT_COLUMN	SP->_curscol	/* phys cursor column */
@@ -301,7 +301,10 @@ _nc_mvcur_init(void)
     /*
      * 9 = 7 bits + 1 parity + 1 stop.
      */
-    SP->_char_padding = (9 * 1000 * 10) / (BAUDRATE > 0 ? BAUDRATE : 9600);
+    if (isatty(fileno(SP->_ofp)))
+	SP->_char_padding = (9 * 1000 * 10) / (BAUDRATE > 0 ? BAUDRATE : 9600);
+    else
+	SP->_char_padding = 1;	/* must be nonzero */
     if (SP->_char_padding <= 0)
 	SP->_char_padding = 1;	/* must be nonzero */
     TR(TRACE_CHARPUT | TRACE_MOVE, ("char_padding %d msecs", SP->_char_padding));
