@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright (c) 1998 Free Software Foundation, Inc.                        *
+dnl Copyright (c) 1998,1999 Free Software Foundation, Inc.                   *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
 dnl copy of this software and associated documentation files (the            *
@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.173 1999/09/18 23:22:27 tom Exp $
+dnl $Id: aclocal.m4,v 1.175 1999/09/23 10:46:15 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -996,8 +996,15 @@ AC_DEFUN([CF_LIB_SUFFIX],
 	profile) $2='_p.a' ;;
 	shared)
 		case $cf_cv_system_name in
-		openbsd*|netbsd*|freebsd*)
+		openbsd*|freebsd*)
 			$2='.so.$(REL_VERSION)' ;;
+		netbsd*)
+			if test -f /usr/libexec/ld.elf_so; then
+				$2='.so'
+			else
+				$2='.so.$(REL_VERSION)'
+			fi
+			;;
 		hpux*)	$2='.sl'  ;;
 		*)	$2='.so'  ;;
 		esac
@@ -1597,9 +1604,22 @@ AC_DEFUN([CF_SHARED_OPTS],
 		CC_SHARED_OPTS='-fpic -DPIC'
 		MK_SHARED_LIB='$(LD) -Bshareable -soname,`basename $[@].$(ABI_VERSION)` -o $[@]'
 		;;
-	openbsd*|netbsd*|freebsd*)
+	openbsd*|freebsd*)
 		CC_SHARED_OPTS='-fpic -DPIC'
 		MK_SHARED_LIB='$(LD) -Bshareable -o $[@]'
+		;;
+	netbsd*)
+		CC_SHARED_OPTS='-fpic -DPIC'
+		test $cf_cv_ld_rpath = yes && cf_ld_rpath_opt="-Wl,-rpath,"
+		if test $DFT_LWR_MODEL = "shared" && test $cf_cv_ld_rpath = yes ; then
+			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
+			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'
+			EXTRA_LDFLAGS="-Wl,-rpath,\$(libdir) $EXTRA_LDFLAGS"
+			MK_SHARED_LIB='$(CC) -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)` -o $[@]'
+			test $cf_cv_shlib_version = auto && cf_cv_shlib_version=rel
+		else
+			MK_SHARED_LIB='$(LD) -Bshareable -o $[@]'
+		fi
 		;;
 	osf*|mls+*)
 		# tested with OSF/1 V3.2 and 'cc'
@@ -1889,9 +1909,10 @@ if test -n "$ADA_SUBDIRS"; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl Check for -lstdc++
+dnl Check for -lstdc++, which is GNU's standard C++ library.
 AC_DEFUN([CF_STDCPP_LIBRARY],
 [
+if test -n "$GXX" ; then
 case $cf_cv_system_name in #(vi
 os2*) #(vi
 	cf_stdcpp_libname=stdcpp
@@ -1914,6 +1935,7 @@ strstreambuf foo(buf, sizeof(buf))
 	LIBS="$cf_save"
 ])
 test $cf_cv_libstdcpp = yes && CXXLIBS="$CXXLIBS -l$cf_stdcpp_libname"
+fi
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl	Remove "-g" option from the compiler options

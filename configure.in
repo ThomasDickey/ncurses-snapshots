@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.174 1999/09/18 22:08:37 tom Exp $
+dnl $Id: configure.in,v 1.176 1999/09/26 01:26:40 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.174 $)
+AC_REVISION($Revision: 1.176 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -264,7 +264,7 @@ if test $with_gpm = yes ; then
 		SHLIB_LIST="-lgpm $SHLIB_LIST"
 		AC_DEFINE(HAVE_LIBGPM)
 		AC_CHECK_HEADERS(gpm.h)
-	],,-lcurses -ltermcap)
+	],AC_MSG_WARN(Cannot link with gpm library - read the FAQ))
 fi
 
 TINFO_LIST="$SHLIB_LIST"

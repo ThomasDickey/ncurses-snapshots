@@ -34,7 +34,7 @@
 /* panel.c -- implementation of panels library, some core routines */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: panel.c,v 1.16 1998/09/19 21:26:31 Todd.Miller Exp $")
+MODULE_ID("$Id: panel.c,v 1.17 1999/09/18 11:03:56 juergen Exp $")
 
 #ifdef TRACE
 #ifndef TRACE_TXT
@@ -261,48 +261,5 @@ _nc_calculate_obscure(void)
     }
 }
 
-/*+-------------------------------------------------------------------------
-	_nc_panel_is_linked(pan) - check to see if panel is in the stack
---------------------------------------------------------------------------*/
-bool
-_nc_panel_is_linked(const PANEL *pan)
-{
-  /* This works! The only case where it would fail is, when the list has
-     only one element. But this could only be the pseudo panel at the bottom */
-  return ( ((pan->above!=(PANEL *)0) ||
-	    (pan->below!=(PANEL *)0) ||
-	    (pan==_nc_bottom_panel)) ? TRUE : FALSE );
-}
 
 
-/*+-------------------------------------------------------------------------
-	__panel_link_bottom(pan) - link panel into stack at bottom
---------------------------------------------------------------------------*/
-void
-_nc_panel_link_bottom(PANEL *pan)
-{
-#ifdef TRACE
-  dStack("<lb%d>",1,pan);
-  if(_nc_panel_is_linked(pan))
-    return;
-#endif
-
-  pan->above = (PANEL *)0;
-  pan->below = (PANEL *)0;
-  if(_nc_bottom_panel)
-    { /* the stdscr pseudo panel always stays real bottom;
-         so we insert after bottom panel*/
-      pan->below = _nc_bottom_panel;
-      pan->above = _nc_bottom_panel->above;
-      if (pan->above)
-	pan->above->below = pan;
-      _nc_bottom_panel->above = pan;
-    }
-  else
-    _nc_bottom_panel = pan;
-  if(!_nc_top_panel)
-    _nc_top_panel = pan;
-  assert(_nc_bottom_panel == _nc_stdscr_pseudo_panel);
-  _nc_calculate_obscure();
-  dStack("<lb%d>",9,pan);
-}
