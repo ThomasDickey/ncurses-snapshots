@@ -1,6 +1,16 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970412
+	+ corrected ifdef'ing of inline (from 970321) for TRACE vs C++.
+	+ corrected toggle_attr_off() macro (patch by Andries.Brouwer).
+	+ modify treatment of empty token in $MANPATH to /usr/man (reported by
+	  <Andries.Brouwer@cwi.nl>)
+	+ modify traces that record functions-called so that chtype and attr_t
+	  values are expressed symbolically, to simplify reuse of generated
+	  test-scripts on SVr4 regression testing.
+	+ add new trace functions _traceattr2() and _tracechtype2()
+
 970405
 	+ add configure option --enable-const, to support the use of 'const'
 	  where XSI should have, but did not, specify.  This defines

@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.58 1997/04/05 23:38:19 tom Exp $
+ * $Id: curses.priv.h,v 1.59 1997/04/12 22:34:05 Andries.Brouwer Exp $
  *
  *	curses.priv.h
  *
@@ -368,12 +368,12 @@ extern long _nc_outchars;
       if (PAIR_NUMBER(at) == 0xff) /* turn off color */\
 	 (S) &= ~(at);\
       else /* leave color alone */\
-	 (S) &= ~((at)|ALL_BUT_COLOR);\
+	 (S) &= ~((at)&ALL_BUT_COLOR);\
    } else {\
       if (PAIR_NUMBER(at) > 0x00) /* turn off color */\
-	 (S) &= ~(at);\
+	 (S) &= ~(at|A_COLOR);\
       else /* leave color alone */\
-	 (S) &= ~((at)|ALL_BUT_COLOR);\
+	 (S) &= ~(at);\
    }\
    T(("new attribute is %s", _traceattr((S))));
 

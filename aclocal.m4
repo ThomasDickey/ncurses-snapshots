@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.53 1997/04/06 00:11:43 tom Exp $
+dnl $Id: aclocal.m4,v 1.54 1997/04/12 17:47:38 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -676,7 +676,7 @@ AC_DEFUN([NC_MAN_PAGES],
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
   nc_form=unknown
   for nc_dir in $MANPATH; do
-    test -z "$nc_dir" && nc_dir=.
+    test -z "$nc_dir" && nc_dir=/usr/man
     nc_rename=""
     nc_format=no
 changequote({{,}})dnl

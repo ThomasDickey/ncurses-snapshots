@@ -30,14 +30,14 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_insch.c,v 1.6 1997/02/09 00:38:59 tom Exp $")
+MODULE_ID("$Id: lib_insch.c,v 1.7 1997/04/12 17:43:02 tom Exp $")
 
 int  winsch(WINDOW *win, chtype c)
 {
 chtype	*temp1, *temp2;
 chtype	*end;
 
-	T((T_CALLED("winsch(%p, %#lx)"), win, c));
+	T((T_CALLED("winsch(%p, %s)"), win, _tracechtype(c)));
 
 	end = &win->_line[win->_cury].text[win->_curx];
 	temp1 = &win->_line[win->_cury].text[win->_maxx];
