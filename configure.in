@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.181 1999/11/13 23:42:32 tom Exp $
+dnl $Id: configure.in,v 1.182 1999/11/27 23:15:20 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.181 $)
+AC_REVISION($Revision: 1.182 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -300,7 +300,7 @@ AC_SUBST(LIB_NAME)
 
 LIB_DIR=../lib
 CF_LIB_PREFIX(cf_prefix)
-LIB_PREFIX=$LIB_DIR/$cf_prefix
+LIB_PREFIX=$cf_prefix
 AC_SUBST(LIB_PREFIX)
 
 dnl Not all ports of gcc support the -g option
@@ -946,7 +946,7 @@ CF_ADA_INCLUDE_DIRS
 ### Set up low-level terminfo dependencies for makefiles.  Note that we
 ### could override this.
 if test "$with_termlib" = yes ; then
-	TEST_DEPS="${LIB_PREFIX}${TINFO_NAME}${DFT_DEP_SUFFIX}"
+	TEST_DEPS="${LIB_DIR}/${LIB_PREFIX}${TINFO_NAME}${DFT_DEP_SUFFIX}"
 	TEST_ARGS="-l${TINFO_NAME}${DFT_ARG_SUFFIX}"
 fi
 PROG_DEPS="$TEST_DEPS"

@@ -40,7 +40,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.39 1999/11/14 03:03:49 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.40 1999/11/27 22:24:18 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -161,6 +161,9 @@ static bool set_original_colors(void)
 
 int start_color(void)
 {
+	int n;
+	const color_t *tp;
+
 	T((T_CALLED("start_color()")));
 
 	if (set_original_colors() != TRUE)
@@ -184,10 +187,24 @@ int start_color(void)
 
 	if ((SP->_color_table = typeMalloc(color_t, COLORS)) == 0)
 		returnCode(ERR);
-	if (hue_lightness_saturation)
-	    memcpy(SP->_color_table, hls_palette, sizeof(color_t) * COLORS);
-	else
-	    memcpy(SP->_color_table, cga_palette, sizeof(color_t) * COLORS);
+	tp = (hue_lightness_saturation) ? hls_palette : cga_palette;
+	for (n = 0; n < COLORS; n++) {
+		if (n < 8) {
+			SP->_color_table[n] = tp[n];
+		} else {
+			SP->_color_table[n] = tp[n % 8];
+			if (hue_lightness_saturation) {
+				SP->_color_table[n].green = 100;
+			} else {
+				if (SP->_color_table[n].red)
+					SP->_color_table[n].red = 1000;
+				if (SP->_color_table[n].green)
+					SP->_color_table[n].green = 1000;
+				if (SP->_color_table[n].blue)
+					SP->_color_table[n].blue = 1000;
+			}
+		}
+	}
 
 	T(("started color: COLORS = %d, COLOR_PAIRS = %d", COLORS, COLOR_PAIRS));
 

@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.145 1999/11/14 00:14:25 tom Exp $
+ * $Id: curses.priv.h,v 1.147 1999/11/28 00:10:37 tom Exp $
  *
  *	curses.priv.h
  *
@@ -492,7 +492,7 @@ typedef	struct {
 #define typeCalloc(type,elts) (type *)calloc((elts),sizeof(type))
 #define typeRealloc(type,elts,ptr) (type *)_nc_doalloc(ptr, (elts)*sizeof(type))
 #define FreeIfNeeded(p)  if(p != 0) free(p)
-#define FreeAndNull(p)   free(p); p = 0
+#define FreeAndNull(p)   free(p); p = 0;
 
 #include <nc_alloc.h>
 
@@ -544,15 +544,15 @@ extern const char *_nc_visbuf2(int, const char *);
 #define XMC_CHANGES(c) ((c) & SP->_xmc_suppress)
 
 
-#define toggle_attr_on(S,at) \
+#define toggle_attr_on(S,at) {\
    if (PAIR_NUMBER(at) > 0)\
       (S) = ((S) & ALL_BUT_COLOR) | (at);\
    else\
       (S) |= (at);\
-   T(("new attribute is %s", _traceattr((S))))
+   T(("new attribute is %s", _traceattr((S))));}
 
 
-#define toggle_attr_off(S,at) \
+#define toggle_attr_off(S,at) {\
    if (IGNORE_COLOR_OFF == TRUE) {\
       if (PAIR_NUMBER(at) == 0xff) /* turn off color */\
 	 (S) &= ~(at);\
@@ -564,7 +564,7 @@ extern const char *_nc_visbuf2(int, const char *);
       else /* leave color alone */\
 	 (S) &= ~(at);\
    }\
-   T(("new attribute is %s", _traceattr((S))));
+   T(("new attribute is %s", _traceattr((S))));}
 
 #define DelCharCost(count) \
 		((parm_dch != 0) \
@@ -597,7 +597,7 @@ extern const char *_nc_visbuf2(int, const char *);
 			}
 #else
 #define UpdateAttrs(c)	if (SP->_current_attr != AttrOf(c)) \
-				vidattr(AttrOf(c));
+				vidattr(AttrOf(c))
 #endif
 
 /*

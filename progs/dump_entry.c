@@ -38,7 +38,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.37 1999/03/14 12:29:30 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.38 1999/11/27 23:00:21 tom Exp $")
 
 #define INDENT			8
 
@@ -626,7 +626,9 @@ bool	outcount = 0;
 	    {
 		char *src = _nc_tic_expand(tterm->Strings[i], outform==F_TERMINFO, numbers);
 		sprintf(buffer, "%s=", name);
-		if (pretty && outform==F_TERMINFO)
+		if (pretty
+		 && (outform == F_TERMINFO
+		  || outform == F_VARIABLE))
 		    fmt_complex(buffer + strlen(buffer), src, 1);
 		else
 		    strcat(buffer, src);

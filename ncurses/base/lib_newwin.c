@@ -42,7 +42,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.21 1999/10/03 00:42:03 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.22 1999/11/25 13:48:24 juergen Exp $")
 
 void _nc_freewin(WINDOW *win)
 {
@@ -59,7 +59,7 @@ int	i;
 				free(p);
 
 				if (! (win->_flags & _SUBWIN)) {
-					for (i = 0; i <= win->_maxy && win->_line[i].text; i++)
+					for (i = 0; i <= win->_maxy; i++)
 						FreeIfNeeded(win->_line[i].text);
 				}
 				free(win->_line);
