@@ -2,7 +2,6 @@
 ./CHANGES
 ./INSTALL
 ./MANIFEST
-./Makefile
 ./README
 ./ncurses.lsm
 ./c++/Makefile
@@ -12,6 +11,7 @@
 ./c++/cursesw.cc
 ./c++/cursesw.h
 ./c++/demo.cc
+./c++/Makefile.in
 ./misc/terminfo.src
 ./misc/color.doc
 ./misc/manual.doc
@@ -64,17 +64,14 @@
 ./man/terminfo.5
 ./man/tic.1m
 ./man/tput.1
+./man/Makefile.in
 ./src/Caps
-./src/Config
-./src/Configure
-./src/MKcaps.awk
 ./src/MKcaptab.awk
 ./src/MKhashsize.sh
 ./src/MKkeyname.awk
 ./src/MKkeys.awk
 ./src/MKnames.awk
 ./src/MKterm.h.awk
-./src/Makefile.dist
 ./src/README
 ./src/SigAction.h
 ./src/alloc_entry.c
@@ -148,7 +145,6 @@
 ./src/lib_unctrl.c
 ./src/lib_vidattr.c
 ./src/lib_window.c
-./src/matrix
 ./src/object.h
 ./src/parametrized.sh
 ./src/panel.c
@@ -156,8 +152,7 @@
 ./src/parse_entry.c
 ./src/read_entry.c
 ./src/read_termcap.c
-./src/script.src
-./src/script.test
+./src/Makefile.in
 ./src/sigaction.c
 ./src/strerror.c
 ./src/term_entry.h
@@ -168,7 +163,9 @@
 ./src/unctrl.h
 ./src/version.h
 ./src/write_entry.c
-./test/Makefile.dist
+./src/edit_cfg.sh
+./src/vsscanf.c
+./test/Makefile.in
 ./test/README
 ./test/battle.c
 ./test/blue.c
@@ -189,3 +186,11 @@
 ./test/view.c
 ./test/worm.c
 ./test/xmas.c
+./Makefile.in
+./include/config_h.in
+./edit_cfg.sh
+./aclocal.m4
+./configure
+./configure.in
+./install-sh
+./mkinstalldirs

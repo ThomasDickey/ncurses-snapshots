@@ -1,3 +1,4 @@
+
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -18,8 +19,6 @@
 *                                                                          *
 ***************************************************************************/
 
-#include "system.h"
-
 /*
  *	comp_main.c --- Main program for terminfo compiler
  *
@@ -27,6 +26,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include "config.h"
 
 #if HAVE_UNISTD_H
 #include <unistd.h>

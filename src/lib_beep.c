@@ -1,3 +1,4 @@
+
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -18,7 +19,6 @@
 *                                                                          *
 ***************************************************************************/
 
-#include "system.h"
 
 /*
  *	beep.c
@@ -43,13 +43,10 @@ int beep(void)
 	T(("beep() called"));
 
 	/* should make sure that we are not in altchar mode */
-	if (bell)
-	{
+	if (bell) {
 		TPUTS_TRACE("bell");
 		return(putp(bell));
-	}
-	else if (flash_screen)
-	{
+	} else if (flash_screen) {
 		TPUTS_TRACE("flash_screen");
 		return(putp(flash_screen));
 	}
@@ -70,13 +67,10 @@ int flash(void)
 	T(("flash() called"));
 
 	/* should make sure that we are not in altchar mode */
-	if (flash_screen)
-	{
+	if (flash_screen) {
 		TPUTS_TRACE("flash_screen");
 		return(putp(flash_screen));
-	}
-	else if (bell)
-	{
+	} else if (bell) {
 		TPUTS_TRACE("bell");
 		return(putp(bell));
 	}

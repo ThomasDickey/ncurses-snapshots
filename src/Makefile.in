@@ -418,6 +418,10 @@ comp_main.o: tic.h term.h version.h dump_entry.h
 
 comp_parse.o: tic.h object.h term.h dump_entry.h
 
+parse_entry.o: parametrized.h
+
+write_entry.o: parametrized.h
+
 infocmp.o: infocmp.c term.h tic.h dump_entry.h
 
 dump_entry.o: dump_entry.c termsort.c term.h tic.h dump_entry.h

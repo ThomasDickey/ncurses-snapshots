@@ -1,3 +1,4 @@
+
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -17,8 +18,6 @@
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
 ***************************************************************************/
-
-#include "system.h"
 
 /*
 **	lib_getch.c
@@ -130,8 +129,7 @@ void _nc_backspace(WINDOW *win)
 	    return;
 	}
 
-	mvwaddstr(curscr, win->_begy + win->_cury, win->_begx + win->_curx,
-		 "\b \b");
+	mvwaddstr(curscr, win->_begy + win->_cury, win->_begx + win->_curx, "\b \b");
 	waddstr(win, "\b \b");
 
 	/*
@@ -160,8 +158,7 @@ int	ch;
 	   &&  win->_curx == win->_maxx &&  win->_cury == win->_maxy)
 		return(ERR);
 
-	if ((is_wintouched(win) || (win->_flags & _HASMOVED)) && 
-						!(win->_flags & _ISPAD))
+	if ((is_wintouched(win) || (win->_flags & _HASMOVED)) && !(win->_flags & _ISPAD))
 		wrefresh(win);
 
 	if (SP->_echo  &&  ! (SP->_raw  ||  SP->_cbreak)) {

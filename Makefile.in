@@ -1,6 +1,7 @@
 # Master Makefile for ncurses library.
 
 SHELL = /bin/sh
+VERSION = 1.9.2
 
 @SET_MAKE@
 
@@ -15,5 +16,12 @@ install ::
 	cd test;  $(MAKE) @nc_cv_makeflags@ $@
 	cd c++;   $(MAKE) @nc_cv_makeflags@ $@
 
+install.data ::
+	cd src;   $(MAKE) @nc_cv_makeflags@ $@
+
 distclean ::
 	rm -f config.cache config.log config.status Makefile include/config.h
+
+dist ::
+	(cd ..;  tar cvf ncurses-$(VERSION).tar `sed <ncurses-$(VERSION)/MANIFEST 's/^./ncurses-$(VERSION)/'`;  gzip ncurses-$(VERSION).tar)
+

@@ -40,7 +40,7 @@
 
 #undef TRUE
 #undef FALSE
-#define CXX_BUILTIN_BOOL 0
+#define CXX_BUILTIN_BOOL 1
 #define CXX_TYPE_OF_BOOL unsigned
 
 #if defined(__cplusplus) && CXX_BUILTIN_BOOL
@@ -306,13 +306,13 @@ extern char *longname(void);
 extern int meta(WINDOW *,bool);
 extern int mvcur(int,int,int,int);
 extern int mvderwin(WINDOW *, int, int);
-extern int mvprintw(int,int,char *,...);
-extern int mvscanw(int,int,char *,...);
+extern int mvprintw(int,int,const char *,...);
+extern int mvscanw(int,int,const char *,...);
 extern int mvwin(WINDOW *,int,int);
-extern int mvwprintw(WINDOW *,int,int,char *,...);
-extern int mvwscanw(WINDOW *,int,int,char *,...);
+extern int mvwprintw(WINDOW *,int,int,const char *,...);
+extern int mvwscanw(WINDOW *,int,int,const char *,...);
 extern WINDOW *newpad(int,int);
-extern SCREEN *newterm(char *,FILE *,FILE *);
+extern SCREEN *newterm(const char *,FILE *,FILE *);
 extern WINDOW *newwin(int,int,int,int);
 extern int nl(void);
 extern int nocbreak(void);
@@ -327,7 +327,7 @@ extern int overwrite(WINDOW *const,WINDOW *);
 extern int pechochar(WINDOW *, chtype);
 extern int pnoutrefresh(WINDOW *,int,int,int,int,int,int);
 extern int prefresh(WINDOW *,int,int,int,int,int,int);
-extern int printw(char *,...);
+extern int printw(const char *,...);
 extern int putwin(WINDOW *, FILE *);
 extern int qiflush(void);
 extern int raw(void);
@@ -336,11 +336,11 @@ extern int reset_shell_mode(void);
 extern int resetty(void);
 extern int ripoffline(int line, int (*init)(WINDOW *, int));
 extern int savetty(void);
-extern int scanw(char *,...);
-extern int scr_dump(char *file);
-extern int scr_init(char *file);
-extern int scr_restore(char *file);
-extern int scr_set(char *file);
+extern int scanw(const char *,...);
+extern int scr_dump(const char *file);
+extern int scr_init(const char *file);
+extern int scr_restore(const char *file);
+extern int scr_set(const char *file);
 extern int scrollok(WINDOW *,bool);
 extern SCREEN *set_term(SCREEN *);
 extern WINDOW *subpad(WINDOW *orig, int l, int c, int begy, int begx);
@@ -354,11 +354,11 @@ extern int ungetch(int);
 extern void use_env(bool);
 extern int vidattr(attr_t);
 extern int vidputs(attr_t,int (*)(int));
-extern int vwscanw(WINDOW *,char *,va_list);
-extern int vwprintw(WINDOW *,char *,va_list);
+extern int vwscanw(WINDOW *,const char *,va_list);
+extern int vwprintw(WINDOW *,const char *,va_list);
 extern int waddch(WINDOW *, const chtype);
-extern int waddchnstr(WINDOW *,chtype *const ,int);
-extern int waddnstr(WINDOW *,char *const,int);
+extern int waddchnstr(WINDOW *,const chtype *,int);
+extern int waddnstr(WINDOW *,const char *,int);
 extern int wattron(WINDOW *,const attr_t);
 extern int wattroff(WINDOW *,const attr_t);
 extern int wbkgd(WINDOW *,const chtype);
@@ -371,18 +371,18 @@ extern int wdelch(WINDOW *);
 extern int wechochar(WINDOW *, chtype);
 extern int werase(WINDOW *);
 extern int wgetch(WINDOW *);
-extern int wgetnstr(WINDOW *,char *,int maxlen);
+extern int wgetnstr(WINDOW *,const char *,int maxlen);
 extern int whline(WINDOW *,chtype,int);
 extern int winsch(WINDOW *,chtype);
 extern int winsdelln(WINDOW *,int);
-extern int winnstr(WINDOW *win, char *str, int n);
-extern int winsnstr(WINDOW *,char *const,int);
+extern int winnstr(WINDOW *win,char *str,int n);
+extern int winsnstr(WINDOW *,char *,int);
 extern int wmove(WINDOW *,int,int);
 extern int wnoutrefresh(WINDOW *);
-extern int wprintw(WINDOW *,char *,...);
+extern int wprintw(WINDOW *,const char *,...);
 extern int wredrawln(WINDOW *,int,int);
 extern int wrefresh(WINDOW *);
-extern int wscanw(WINDOW *,char *,...);
+extern int wscanw(WINDOW *,const char *,...);
 extern int wscrl(WINDOW *,int);
 extern int wsetscrreg(WINDOW *,int,int);
 extern void wsyncdown(WINDOW *);
@@ -400,7 +400,7 @@ extern int pair_content(short,short*,short*);
 extern int start_color(void);
 
 extern int slk_init(int);
-extern int slk_set(int,char *const,int);
+extern int slk_set(int,const char *,int);
 extern int slk_refresh(void);
 extern int slk_noutrefresh(void);
 extern char *slk_label(int);

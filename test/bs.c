@@ -430,6 +430,7 @@ static void initgame()
 
     ss = (ship_t *)NULL;
     do {
+	static int getcoord();
 	char c, docked[SHIPTYPES + 2], *cp = docked;
 
 	/* figure which ships still wait to be placed */
