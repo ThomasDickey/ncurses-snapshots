@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.294 2003/07/19 21:39:47 tom Exp $
+dnl $Id: configure.in,v 1.295 2003/07/26 21:51:55 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.294 $)
+AC_REVISION($Revision: 1.295 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -773,6 +773,9 @@ NCURSES_MBSTATE_T=0
 NCURSES_WCHAR_T=0
 NCURSES_WINT_T=0
 
+# Check to define _XOPEN_SOURCE "automatically"
+CF_GNU_SOURCE
+
 # use these variables to work around a defect in gcc's fixincludes.
 NCURSES_OK_WCHAR_T=
 NCURSES_OK_WINT_T=
@@ -786,7 +789,8 @@ AC_MSG_RESULT($with_widec)
 if test "$with_widec" = yes ; then
 	LIB_SUFFIX="w${LIB_SUFFIX}"
 	AC_DEFINE(USE_WIDEC_SUPPORT)
-	CPPFLAGS="$CPPFLAGS -D_XOPEN_SOURCE=500 -D_XOPEN_SOURCE_EXTENDED"
+	CF_PREDEFINE(_XOPEN_SOURCE,500)
+	CF_PREDEFINE(_XOPEN_SOURCE_EXTENDED)
 	# with_overwrite=no
 	NCURSES_CH_T=cchar_t
 	AC_CHECK_FUNCS(putwc btowc wctob mbtowc wctomb)
@@ -897,7 +901,6 @@ CF_MATH_LIB(MATH_LIB,sin(x))
 AC_SUBST(MATH_LIB)
 
 ###	Checks for header files.
-CF_GNU_SOURCE
 AC_STDC_HEADERS
 AC_HEADER_DIRENT
 AC_HEADER_TIME
