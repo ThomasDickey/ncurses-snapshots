@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- *     and: Thomas E. Dickey 1996-2002                                      *
+ *     and: Thomas E. Dickey 1996-2003                                      *
  ****************************************************************************/
 
 /*
@@ -49,7 +49,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.74 2003/02/15 21:15:49 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.75 2003/04/05 21:27:26 tom Exp $")
 
 /****************************************************************************
  *
@@ -365,7 +365,6 @@ _nc_locale_breaks_acs(void)
 NCURSES_EXPORT(int)
 setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
 {
-    struct term *term_ptr;
     int status;
 
     START_TRACE();
@@ -384,77 +383,89 @@ setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
 
     T(("your terminal name is %s", tname));
 
-    term_ptr = typeCalloc(TERMINAL, 1);
-
-    if (term_ptr == 0) {
-	ret_error0(-1, "Not enough memory to create terminal structure.\n");
-    }
-#if USE_DATABASE || USE_TERMCAP
-    status = grab_entry(tname, &term_ptr->type);
-#else
-    status = 0;
-#endif
-
-    /* try fallback list if entry on disk */
-    if (status != 1) {
-	const TERMTYPE *fallback = _nc_fallback(tname);
-
-	if (fallback) {
-	    term_ptr->type = *fallback;
-	    status = 1;
-	}
-    }
-
-    if (status == -1) {
-	ret_error0(-1, "terminals database is inaccessible\n");
-    } else if (status == 0) {
-	ret_error(0, "'%s': unknown terminal type.\n", tname);
-    }
-
-    /*
-     * Improve on SVr4 curses.  If an application mixes curses and termcap
-     * calls, it may call both initscr and tgetent.  This is not really a
-     * good thing to do, but can happen if someone tries using ncurses with
-     * the readline library.  The problem we are fixing is that when
-     * tgetent calls setupterm, the resulting Ottyb struct in cur_term is
-     * zeroed.  A subsequent call to endwin uses the zeroed terminal
-     * settings rather than the ones saved in initscr.  So we check if
-     * cur_term appears to contain terminal settings for the same output
-     * file as our current call - and copy those terminal settings.  (SVr4
-     * curses does not do this, however applications that are working
-     * around the problem will still work properly with this feature).
-     */
-    if (cur_term != 0) {
-	if (cur_term->Filedes == Filedes)
-	    term_ptr->Ottyb = cur_term->Ottyb;
-    }
-
-    set_curterm(term_ptr);
-
-    if (command_character && getenv("CC"))
-	do_prototype();
-
-    strncpy(ttytype, cur_term->type.term_names, NAMESIZE - 1);
-    ttytype[NAMESIZE - 1] = '\0';
-
     /*
      * Allow output redirection.  This is what SVr3 does.  If stdout is
      * directed to a file, screen updates go to standard error.
      */
     if (Filedes == STDOUT_FILENO && !isatty(Filedes))
 	Filedes = STDERR_FILENO;
-    cur_term->Filedes = Filedes;
 
     /*
-     * If an application calls setupterm() rather than initscr() or newterm(),
-     * we will not have the def_prog_mode() call in _nc_setupscreen().  Do it
-     * now anyway, so we can initialize the baudrate.
+     * Check if we have already initialized to use this terminal.  If so, we
+     * do not need to re-read the terminfo entry, or obtain TTY settings.
+     *
+     * This is an improvement on SVr4 curses.  If an application mixes curses
+     * and termcap calls, it may call both initscr and tgetent.  This is not
+     * really a good thing to do, but can happen if someone tries using ncurses
+     * with the readline library.  The problem we are fixing is that when
+     * tgetent calls setupterm, the resulting Ottyb struct in cur_term is
+     * zeroed.  A subsequent call to endwin uses the zeroed terminal settings
+     * rather than the ones saved in initscr.  So we check if cur_term appears
+     * to contain terminal settings for the same output file as our current
+     * call - and copy those terminal settings.  (SVr4 curses does not do this,
+     * however applications that are working around the problem will still work
+     * properly with this feature).
      */
-    if (isatty(Filedes)) {
-	def_prog_mode();
-	baudrate();
+    if (cur_term != 0
+	&& cur_term->Filedes == Filedes
+	&& _nc_name_match(cur_term->type.term_names, tname, "|")) {
+	T(("reusing existing terminal information and mode-settings"));
+    } else {
+	TERMINAL *term_ptr;
+
+	term_ptr = typeCalloc(TERMINAL, 1);
+
+	if (term_ptr == 0) {
+	    ret_error0(-1,
+		       "Not enough memory to create terminal structure.\n");
+	}
+#if USE_DATABASE || USE_TERMCAP
+	status = grab_entry(tname, &term_ptr->type);
+#else
+	status = 0;
+#endif
+
+	/* try fallback list if entry on disk */
+	if (status != 1) {
+	    const TERMTYPE *fallback = _nc_fallback(tname);
+
+	    if (fallback) {
+		term_ptr->type = *fallback;
+		status = 1;
+	    }
+	}
+
+	if (status == -1) {
+	    ret_error0(-1, "terminals database is inaccessible\n");
+	} else if (status == 0) {
+	    ret_error(0, "'%s': unknown terminal type.\n", tname);
+	}
+
+	set_curterm(term_ptr);
+
+	if (command_character && getenv("CC"))
+	    do_prototype();
+
+	strncpy(ttytype, cur_term->type.term_names, NAMESIZE - 1);
+	ttytype[NAMESIZE - 1] = '\0';
+
+	cur_term->Filedes = Filedes;
+
+	/*
+	 * If an application calls setupterm() rather than initscr() or
+	 * newterm(), we will not have the def_prog_mode() call in
+	 * _nc_setupscreen().  Do it now anyway, so we can initialize the
+	 * baudrate.
+	 */
+	if (isatty(Filedes)) {
+	    def_prog_mode();
+	    baudrate();
+	}
     }
 
+    /*
+     * We should always check the screensize, just in case.
+     */
     _nc_get_screensize(&LINES, &COLS);
 
     if (errret)

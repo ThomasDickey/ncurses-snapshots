@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.185 2003/03/29 22:50:28 tom Exp $
+$Id: ncurses.c,v 1.186 2003/04/05 23:37:35 tom Exp $
 
 ***************************************************************************/
 
@@ -176,6 +176,74 @@ wGetchar(WINDOW *win)
     return c;
 }
 #define Getchar() wGetchar(stdscr)
+
+/* replaces wgetnstr(), since we want to be able to edit values */
+static void
+wGetstring(WINDOW *win, char *buffer, int limit)
+{
+    int y0, x0, x, ch;
+    bool done = FALSE;
+
+    echo();
+    getyx(win, y0, x0);
+    wattrset(win, A_REVERSE);
+
+    x = strlen(buffer);
+    while (!done) {
+	if (x > (int) strlen(buffer))
+	    x = (int) strlen(buffer);
+	wmove(win, y0, x0);
+	wprintw(win, "%-*s", limit, buffer);
+	wmove(win, y0, x0 + x);
+	switch (ch = wGetchar(win)) {
+	case '\n':
+	case KEY_ENTER:
+	    done = TRUE;
+	    break;
+	case CTRL('U'):
+	    *buffer = '\0';
+	    break;
+	case CTRL('H'):
+	case KEY_BACKSPACE:
+	case KEY_DC:
+	    if (x > 0) {
+		int j;
+		for (j = --x; (buffer[j] = buffer[j + 1]) != '\0'; ++j) {
+		    ;
+		}
+	    } else {
+		beep();
+	    }
+	    break;
+	case KEY_LEFT:
+	    if (x > 0) {
+		--x;
+	    } else {
+		flash();
+	    }
+	    break;
+	case KEY_RIGHT:
+	    ++x;
+	    break;
+	default:
+	    if (!isprint(ch) || ch >= KEY_MIN) {
+		beep();
+	    } else if ((int) strlen(buffer) < limit) {
+		int j;
+		for (j = strlen(buffer) + 1; j > x; --j) {
+		    buffer[j] = buffer[j - 1];
+		}
+		buffer[x++] = ch;
+	    } else {
+		flash();
+	    }
+	}
+    }
+
+    wattroff(win, A_REVERSE);
+    wmove(win, y0, x0);
+    noecho();
+}
 
 #if USE_WIDEC_SUPPORT
 static int
@@ -1243,6 +1311,7 @@ slk_test(void)
 {
     int c, fmt = 1;
     char buf[9];
+    char *s;
 
     c = CTRL('l');
     do {
@@ -1314,9 +1383,11 @@ slk_test(void)
 	case '7':
 	case '8':
 	    (void) mvaddstr(20, 0, "Please enter the label value: ");
-	    echo();
-	    wgetnstr(stdscr, buf, 8);
-	    noecho();
+	    strcpy(buf, "");
+	    if ((s = slk_label(c - '0')) != 0) {
+		strncpy(buf, s, 8);
+	    }
+	    wGetstring(stdscr, buf, 8);
 	    slk_set((c - '0'), buf, fmt);
 	    slk_refresh();
 	    move(20, 0);

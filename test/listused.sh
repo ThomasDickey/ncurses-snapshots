@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: listused.sh,v 1.3 2003/03/29 19:32:58 tom Exp $
+# $Id: listused.sh,v 1.4 2003/04/05 19:32:17 tom Exp $
 # A very simple script to list entrypoints that are used by either a test
 # program, or within the libraries.  This relies on the output format of 'nm',
 # and assumes that the libraries are configured using
@@ -7,6 +7,14 @@
 #	--enable-widec
 # Static libraries are used, to provide some filtering based on internal usage
 # of the different symbols.
+
+# keep the sorting independent of locale:
+if test "${LANGUAGE+set}"    = set; then LANGUAGE=C;    export LANGUAGE;    fi
+if test "${LANG+set}"        = set; then LANG=C;        export LANG;        fi
+if test "${LC_ALL+set}"      = set; then LC_ALL=C;      export LC_ALL;      fi
+if test "${LC_MESSAGES+set}" = set; then LC_MESSAGES=C; export LC_MESSAGES; fi
+if test "${LC_CTYPE+set}"    = set; then LC_CTYPE=C;    export LC_CTYPE;    fi
+if test "${LC_COLLATE+set}"  = set; then LC_COLLATE=C;  export LC_COLLATE;  fi
 
 NM_OPTS=
 
