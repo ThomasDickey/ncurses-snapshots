@@ -1,7 +1,11 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
-### ncurses-1.9.9e -> 1.9.9?
+961224	4.0 release
+	+ release as 4.0 to accommodate Linux ld.so.1.8.5
+	+ correct syntax/spelling, regenerated .doc files from .html using
+	  lynx 2.5
+	+ refined forms/menus makefiles (Juergen Pfeifer 961223).
 
 961221	- snapshot
 	+ remove logic in read_entry.c that attempts to refine errno by using

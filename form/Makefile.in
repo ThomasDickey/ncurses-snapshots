@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.12 1996/12/04 12:04:41 juergen Exp $
+# $Id: Makefile.in,v 1.13 1996/12/22 19:00:47 juergen Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -91,7 +91,6 @@ $(INSTALL_PREFIX)$(libdir) :
 	cp $(srcdir)/form.h $@
 
 $(srcdir)/form.priv.h:	$(srcdir)/form.h ../include/mf_common.h ../include/eti.h
-	@
 
 tags:
 	ctags *.[ch]
