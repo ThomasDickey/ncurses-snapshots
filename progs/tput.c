@@ -38,7 +38,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tput.c,v 1.6 1996/08/17 22:42:51 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.7 1996/09/07 15:22:16 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -193,8 +193,10 @@ FILE *f;
 			 */
 
 			 for (k = 1; k < argc; k++)
-			 	if (isdigit(argv[k][0]))
-			 		argv[k] = (char *)atoi(argv[k]);
+			 	if (isdigit(argv[k][0])) {
+			 		long val = atol(argv[k]);
+			 		argv[k] = (char *)val;
+				}
 
 				s = tparm(s,argv[1],argv[2],argv[3],argv[4],
 					    argv[5],argv[6],argv[7],argv[8],

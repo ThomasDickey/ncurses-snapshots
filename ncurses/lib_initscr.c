@@ -35,7 +35,11 @@
 #include <sys/termio.h>	/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.11 1996/08/06 00:24:06 esr Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.13 1996/09/07 17:07:36 tom Exp $")
+
+#ifdef __QNX__		/* Allows compilation under the QNX 4.2 OS */
+#define ONLCR 0
+#endif
 
 /*
  * SVr4/XSI Curses specify that hardware echo is turned off in initscr, and not
@@ -52,15 +56,14 @@ int _nc_initscr(void)
 
 #ifdef TERMIOS
 	cur_term->Nttyb.c_lflag &= ~(ECHO|ECHONL);
-	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
-		return ERR;
-	else
-		return OK;
+	cur_term->Nttyb.c_iflag &= ~(ICRNL|INLCR|IGNCR);
+	cur_term->Nttyb.c_oflag &= ~(ONLCR);
 #else
-	cur_term->Nttyb.sg_flags &= ~ECHO;
-	stty(cur_term->Filedes, &cur_term->Nttyb);
-	return OK;
+	cur_term->Nttyb.sg_flags &= ~(ECHO|CRMOD);
 #endif
+	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
+		return ERR;
+	return OK;
 }
 
 WINDOW *initscr(void)

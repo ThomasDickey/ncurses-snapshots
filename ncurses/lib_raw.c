@@ -43,11 +43,7 @@
 
 #include <string.h>
 
-MODULE_ID("$Id: lib_raw.c,v 1.10 1996/08/10 20:52:40 tom Exp $")
-
-#ifdef __QNX__		/* Allows compilation under the QNX 4.2 OS */
-#define ONLCR 0
-#endif
+MODULE_ID("$Id: lib_raw.c,v 1.12 1996/09/07 17:10:06 tom Exp $")
 
 #ifdef SVR4_TERMIO
 #define _POSIX_SOURCE
@@ -65,41 +61,7 @@ MODULE_ID("$Id: lib_raw.c,v 1.10 1996/08/10 20:52:40 tom Exp $")
 #define IEXTEN 0
 #endif
 
-/*
- * COOKED_INPUT defines the collection of input mode bits to be
- * cleared when entering raw mode, then re-set by noraw().
- *
- * We used to clear ISTRIP and INPCK when going to raw mode.  Keith
- * Bostic says that's wrong, because those are hardware bits that the
- * user has to get right in his/her initial environment -- he says
- * curses can't do any good by clearing these, and may do harm.  In
- * 1995's world of 8N1 connections over error-correcting modems, all
- * the parity-check stuff is pretty nearly irrelevant anyway.
- *
- * What's supposed to happen when noraw() executes has never been very
- * well-defined.  Yes, it should reset ISIG/ICANON/OPOST (historical
- * practice is for it to attempt to take the driver back to cooked
- * mode, rather going to some half-baked cbreak-like intermediate
- * level).
- *
- * We make a design choice here to turn off CR/LF translation a la BSD
- * when raw() is enabled, on the theory that a programmer requesting
- * raw() ideally wants an 8-bit data stream that's been messed with as
- * little as possible.  The man pages document this.
- *
- * We originally opted for the simplest way to handle noraw(); just set all
- * the flags we cleared.  Unfortunately, having noraw() set IGNCR
- * turned out to be too painful.  So raw() now clears the COOKED_INPUT
- * flags, but also clears (ICRNL|INLCR|IGNCR) which noraw() doesn't
- * restore.
- *
- * Unfortunately, this means noraw() may still force some COOKED_INPUT
- * flags on that the user had initially cleared via stty.  It'll all
- * come out in the wash when endwin() restores the user's original
- * input bits (we hope...)
- *
- */
-#define COOKED_INPUT	(IXON|IGNBRK|BRKINT|PARMRK)
+#define COOKED_INPUT	(IXON|BRKINT|PARMRK)
 
 #ifdef TRACE
 char *_tracebits(void)
@@ -288,21 +250,17 @@ int raw(void)
 
 #ifdef TERMIOS
 	BEFORE("raw");
-	cur_term->Nttyb.c_lflag &= ~(ICANON|ISIG|IEXTEN);
-	cur_term->Nttyb.c_iflag &= ~(COOKED_INPUT|ICRNL|INLCR|IGNCR);
-	cur_term->Nttyb.c_oflag &= ~(OPOST);
+	cur_term->Nttyb.c_lflag &= ~(ICANON|ISIG);
+	cur_term->Nttyb.c_iflag &= ~(COOKED_INPUT);
 	cur_term->Nttyb.c_cc[VMIN] = 1;
 	cur_term->Nttyb.c_cc[VTIME] = 0;
 	AFTER("raw");
-	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
-		return ERR;
-	else
-		return OK;
 #else
 	cur_term->Nttyb.sg_flags |= RAW;
-	stty(cur_term->Filedes, &cur_term->Nttyb);
-	return OK;
 #endif
+	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
+		return ERR;
+	return OK;
 }
 
 int cbreak(void)
@@ -314,19 +272,17 @@ int cbreak(void)
 #ifdef TERMIOS
 	BEFORE("cbreak");
 	cur_term->Nttyb.c_lflag &= ~ICANON;
+	cur_term->Nttyb.c_iflag &= ~ICRNL;
 	cur_term->Nttyb.c_lflag |= ISIG;
 	cur_term->Nttyb.c_cc[VMIN] = 1;
 	cur_term->Nttyb.c_cc[VTIME] = 0;
 	AFTER("cbreak");
-	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
-		return ERR;
-	else
-		return OK;
 #else
 	cur_term->Nttyb.sg_flags |= CBREAK;
-	stty(cur_term->Filedes, &cur_term->Nttyb);
-	return OK;
 #endif
+	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
+		return ERR;
+	return OK;
 }
 
 int echo(void)
@@ -362,7 +318,7 @@ int qiflush(void)
 	BEFORE("qiflush");
 	cur_term->Nttyb.c_lflag &= ~(NOFLSH);
 	AFTER("qiflush");
-	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
+	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
 		return ERR;
 	else
 		return OK;
@@ -381,20 +337,15 @@ int noraw(void)
 
 #ifdef TERMIOS
 	BEFORE("noraw");
-	cur_term->Nttyb.c_lflag |= ISIG|ICANON|IEXTEN;
+	cur_term->Nttyb.c_lflag |= ISIG|ICANON;
 	cur_term->Nttyb.c_iflag |= COOKED_INPUT;
-	cur_term->Nttyb.c_oflag |= OPOST;
 	AFTER("noraw");
-	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
-		return ERR;
-	else
-		return OK;
 #else
 	cur_term->Nttyb.sg_flags &= ~(RAW|CBREAK);
-	stty(cur_term->Filedes, &cur_term->Nttyb);
-	return OK;
 #endif
-
+	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
+		return ERR;
+	return OK;
 }
 
 
@@ -407,16 +358,14 @@ int nocbreak(void)
 #ifdef TERMIOS
 	BEFORE("nocbreak");
 	cur_term->Nttyb.c_lflag |= ICANON;
+	cur_term->Nttyb.c_iflag |= ICRNL;
 	AFTER("nocbreak");
-	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
-		return ERR;
-	else
-		return OK;
 #else
 	cur_term->Nttyb.sg_flags &= ~CBREAK;
-	stty(cur_term->Filedes, &cur_term->Nttyb);
-	return OK;
 #endif
+	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
+		return ERR;
+	return OK;
 }
 
 int noecho(void)
@@ -449,7 +398,7 @@ int noqiflush(void)
 	BEFORE("noqiflush");
 	cur_term->Nttyb.c_lflag |= NOFLSH;
 	AFTER("noqiflush");
-	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
+	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
 		return ERR;
 	else
 		return OK;
@@ -478,7 +427,7 @@ int intrflush(WINDOW *win, bool flag)
 	else
 		cur_term->Nttyb.c_lflag |= (NOFLSH);
 	AFTER("intrflush");
-	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
+	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
 		return ERR;
 	else
 		return OK;

@@ -3,6 +3,24 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+960907	- snapshot
+	+ rewrote wgetstr to make it erase control chars and also fix bogus use
+	  of _nc_outstr which caused the display to not wrap properly (display
+	  problem reported by John M. Flinchbaugh <glynis@butterfly.hjs.com>)
+	+ modify ncurses 'f' test to accommodate terminal responses to C1 codes
+	  (and split up this screen to accommodate non-ANSI terminals).
+	+ test enter_insert_mode and exit_insert_mode in has_ic().
+	+ removed bogus logic in mvcur that assumes nl/nonl set output modes
+	  (XSI says they are input modes; SVr4 implements this).
+	+ added macros SET_TTY, GET_TTY to term.h
+	+ correct getstr() logic that altered terminal modes w/o restoring.
+	+ disable ICRNL, etc., during initialization to match SVr4, removing
+	  the corresponding logic from raw, cbreak, etc.
+	+ disable ONLCR during initialization, to match SVr4 (this is needed
+	  for cursor optimization when the cursor-down is a newline).
+	+ replaced Eric's imitation of wresize with my original (his didn't
+	  work).
+
 960831	- snapshot
 	+ memory leaks (Alexander V. Lukyanov).
 	+ modified pnoutrefresh() to be more tolerant of too-large screen

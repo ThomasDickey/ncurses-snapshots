@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_kernel.c,v 1.11 1996/07/31 00:39:42 tom Exp $")
+MODULE_ID("$Id: lib_kernel.c,v 1.12 1996/09/07 17:08:05 tom Exp $")
 
 int napms(int ms)
 {
@@ -55,11 +55,7 @@ int reset_prog_mode(void)
 {
 	T(("reset_prog_mode() called"));
 
-#ifdef TERMIOS
-	tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb);
-#else
-	stty(cur_term->Filedes, &cur_term->Nttyb);
-#endif
+	SET_TTY(cur_term->Filedes, &cur_term->Nttyb);
 	if (SP && stdscr && stdscr->_use_keypad)
 		_nc_keypad(TRUE);
 
@@ -77,11 +73,7 @@ int reset_shell_mode(void)
 		_nc_keypad(FALSE);
 	}
 
-#ifdef TERMIOS
-	tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Ottyb);
-#else
-	stty(cur_term->Filedes, &cur_term->Ottyb);
-#endif
+	SET_TTY(cur_term->Filedes, &cur_term->Ottyb);
 	return OK;
 }
 
@@ -168,11 +160,7 @@ int savetty(void)
 {
 	T(("savetty() called"));
 
-#ifdef TERMIOS
-	tcgetattr(cur_term->Filedes, &buf);
-#else
-	gtty(cur_term->Filedes, &buf);
-#endif
+	GET_TTY(cur_term->Filedes, &buf);
 	return OK;
 }
 
@@ -180,11 +168,6 @@ int resetty(void)
 {
 	T(("resetty() called"));
 
-#ifdef TERMIOS
-	tcsetattr(cur_term->Filedes, TCSANOW, &buf);
-#else
-        stty(cur_term->Filedes, &buf);
-#endif
+	SET_TTY(cur_term->Filedes, &buf);
 	return OK;
 }
-

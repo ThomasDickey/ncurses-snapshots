@@ -1,3 +1,4 @@
+.\" $Id: ncurses.3x,v 1.17 1996/09/07 14:55:20 tom Exp $
 .TH ncurses 3X ""
 .ds n 5
 .ds d @DATADIR@/terminfo
@@ -318,6 +319,7 @@ refresh                curs_refresh(3X)
 reset_prog_mode        curs_kernel(3X)
 reset_shell_mode       curs_kernel(3X)
 resetty                curs_kernel(3X)
+resizeterm             resizeterm(3x)*
 restartterm            curs_terminfo(3X)
 ripoffline             curs_kernel(3X)
 savetty                curs_kernel(3X)
@@ -419,7 +421,7 @@ wnoutrefresh           curs_refresh(3X)
 wprintw                curs_printw(3X)
 wredrawln              curs_refresh(3X)
 wrefresh               curs_refresh(3X)
-wresize                curs_resize(3x)*
+wresize                wresize(3x)*
 wscanw                 curs_scanw(3X)
 wscrl                  curs_scroll(3X)
 wsetscrreg             curs_outopts(3X)
@@ -589,7 +591,7 @@ The routine \fBmcprint\fR was not present in any previous curses
 implementation.  See the \fBcurs_print\fR(3X) manual page for details.
 .PP
 The routine \fBwresize\fR is not part of XPG4, nor is it present in SVr4.  See
-the \fBcurs_resize\fR(3X) manual page for details.
+the \fBwresize\fR(3X) manual page for details.
 .PP
 In historic curses versions, delays embedded in the capabilities \fBcr\fR,
 \fBind\fR, \fBcub1\fR, \fBff\fR and \fBtab\fR activated corresponding delay

@@ -32,9 +32,6 @@ Known Problems:
 * The window classes defined in the c++ subdirectory need documentation.
   Some C++ programmer could earn a lot of good karma by doing this...
 
-* The wresize() code core-dumps occasionally.  Eric hasn't been able to
-  reproduce this.
-
 * Mark McKenzie <mmckenzi@undergrad.math.uwaterloo.ca> writes:
  
         I have noticed a difference in the way the ncurses1.9.8a and System V

@@ -140,12 +140,10 @@
 #include <string.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.19 1996/08/18 01:21:26 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.20 1996/09/07 22:09:10 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
-#define NLMAPPING	SP->_nl			/* nl() on? */
-#define RAWFLAG		SP->_raw		/* raw() on? */
 #define CURRENT_ATTR	SP->_current_attr	/* current phys attribute */
 #define CURRENT_ROW	SP->_cursrow		/* phys cursor row */
 #define CURRENT_COLUMN	SP->_curscol		/* phys cursor column */
@@ -371,7 +369,6 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 /* move via local motions (cuu/cuu1/cud/cud1/cub1/cub/cuf1/cuf/vpa/hpa) */
 {
     int		n, vcost = 0, hcost = 0;
-    bool	used_lf = FALSE;
 
     if (result)
 	result[0] = '\0';
@@ -402,8 +399,6 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 	    {
 		if (result)
 		    result[0] = '\0';
-		if (cursor_down[0] == '\n')
-		    used_lf = TRUE;
 		vcost = repeated_append(vcost, SP->_cud1_cost, n, result, cursor_down);
 	    }
 	}
@@ -429,13 +424,6 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 	if (vcost == INFINITY)
 	    return(INFINITY);
     }
-
-    /*
-     * It may be that we're using a cud1 capability of \n with the
-     * side-effect of taking the cursor to column 0.  Deal with this.
-     */
-    if (used_lf && NLMAPPING && !RAWFLAG)
-	from_x = 0;
 
     if (result)
 	result += strlen(result);
@@ -1158,8 +1146,6 @@ int main(int argc, char *argv[])
 (void) printf("r[eload]         -- reload terminal info for %s\n",
 	      getenv("TERM"));
 (void) puts("l[oad] <term>    -- load terminal info for type <term>");
-(void) puts("nl               -- assume NL -> CR/LF when computing (default)");
-(void) puts("nonl             -- don't assume NL -> CR/LF when computing");
 (void) puts("d[elete] <cap>   -- delete named capability");
 (void) puts("i[nspect]        -- display terminal capabilities");
 (void) puts("c[ost]           -- dump cursor-optimization cost table");
@@ -1201,16 +1187,6 @@ int main(int argc, char *argv[])
 	else if (sscanf(buf, "l %s", tname) == 1)
 	{
 	    load_term();
-	}
-	else if (strncmp(buf, "nl", 2) == 0)
-	{
-	    NLMAPPING = TRUE;
-	    (void) puts("NL -> CR/LF will be assumed.");
-	}
-	else if (strncmp(buf, "nonl", 4) == 0)
-	{
-	    NLMAPPING = FALSE;
-	    (void) puts("NL -> CR/LF will not be assumed.");
 	}
 	else if (sscanf(buf, "d %s", capname) == 1)
 	{

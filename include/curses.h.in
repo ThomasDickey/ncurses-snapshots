@@ -19,7 +19,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.32 1996/08/04 00:58:02 tom Exp $ */
+/* $Id: curses.h.in,v 1.33 1996/09/07 15:04:44 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -274,6 +274,10 @@ extern int	LINES, COLS, TABSIZE;
  * This global was an undocumented feature under AIX curses.
  */
 extern int ESCDELAY;	/* ESC expire time in milliseconds */
+
+/* non-XSI extensions (dickey@clark.net) */
+extern int resizeterm (int, int);
+extern int wresize (WINDOW *, int, int); 
 
 #ifdef __cplusplus
 extern "C" {
@@ -775,7 +779,6 @@ extern int wprintw(WINDOW *,const char *,...)		/* implemented */
 		GCC_PRINTFLIKE(2,3);
 extern int wredrawln(WINDOW *,int,int);			/* implemented */
 extern int wrefresh(WINDOW *);				/* implemented */
-extern int wresize(WINDOW *, int, int);			/* implemented */
 extern int wscanw(WINDOW *,const char *,...)		/* implemented */
 		GCC_SCANFLIKE(2,3);
 extern int wscrl(WINDOW *,int);				/* implemented */

@@ -94,7 +94,6 @@
 ./man/curs_print.3x
 ./man/curs_printw.3x
 ./man/curs_refresh.3x
-./man/curs_resize.3x
 ./man/curs_scanw.3x
 ./man/curs_scr_dmp.3x
 ./man/curs_scroll.3x
@@ -155,6 +154,7 @@
 ./man/mitem_visible.3x
 ./man/ncurses.3x
 ./man/panel.3x
+./man/resizeterm.3x
 ./man/term.5
 ./man/term.7
 ./man/terminfo.head
@@ -163,6 +163,7 @@
 ./man/toe.1m
 ./man/tput.1
 ./man/tset.1
+./man/wresize.3x
 ./menu/Makefile.in
 ./menu/READ.ME
 ./menu/eti.h
@@ -272,7 +273,6 @@
 ./ncurses/lib_printw.c
 ./ncurses/lib_raw.c
 ./ncurses/lib_refresh.c
-./ncurses/lib_resize.c
 ./ncurses/lib_restart.c
 ./ncurses/lib_scanw.c
 ./ncurses/lib_screen.c
@@ -301,8 +301,10 @@
 ./ncurses/parse_entry.c
 ./ncurses/read_entry.c
 ./ncurses/read_termcap.c
+./ncurses/resizeterm.c
 ./ncurses/sigaction.c
 ./ncurses/vsscanf.c
+./ncurses/wresize.c
 ./ncurses/write_entry.c
 ./panel/Makefile.in
 ./panel/headers

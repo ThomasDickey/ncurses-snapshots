@@ -3,13 +3,13 @@
  *
  * by Eric S. Raymond <esr@thyrsus.com>
  *
- * This can't be part of ncurses, because ncurses rips off the bottom line
- * to do labels.
+ * This can't be part of the ncurses test-program, because ncurses rips off the
+ * bottom line to do labels.
+ *
+ * $Id: lrtest.c,v 0.5 1996/09/07 21:28:16 tom Exp $
  */
 
-#include "test.priv.h"
-
-#include <term.h>
+#include <test.priv.h>
 
 int
 main(
@@ -19,9 +19,7 @@ main(
     initscr();
 
     move(LINES/2-1, 4);
-    if (!parm_ich && !insert_character
-		&& (!enter_insert_mode || !exit_insert_mode)
-		&& !insert_character && !parm_ich)
+    if (!has_ic())
     {
 	addstr("Your terminal lacks the capabilities needed to address the\n");
 	move(LINES/2, 4);

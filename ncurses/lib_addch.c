@@ -29,7 +29,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.20 1996/07/31 01:06:51 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.21 1996/09/08 02:05:58 tom Exp $")
 
 int wattr_on(WINDOW *win, const attr_t at)
 {
@@ -240,8 +240,7 @@ register int	x, y;
 
 		/* FALLTHRU */
 	noctrl:
-		waddch_literal(win, ch);
-		return(OK);
+		return waddch_literal(win, ch);
 	}
 
 	win->_curx = x;
