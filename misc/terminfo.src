@@ -1,14 +1,16 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 10.2.0
+#	Version 10.2.1
+#	$Date: 1998/03/10 23:28:04 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
 #	John Kunze, Berkeley
 #	Craig Leres, Berkeley
 #
-# Please e-mail changes to terminfo@ccil.org.  The old termcap@berkeley.edu
-# address is no longer valid.
+# Please e-mail changes to terminfo@ccil.org; the old termcap@berkeley.edu
+# address is no longer valid.  The latest version can always be found at
+# <http://earthspace.net/terminfo>.
 #
 # PURPOSE OF THIS FILE:
 #
@@ -86,7 +88,9 @@
 # FILE ORGANIZATION:
 #
 # Comments in this file begin with # - they cannot appear in the middle
-# of a terminfo/termcap entry.  Individual capabilities are commented out by
+# of a terminfo/termcap entry (this feature had to be sacrificed in order
+# to allow standard terminfo and termcap syntax to be generated cleanly from
+# the master format).  Individual capabilities are commented out by
 # placing a period between the colon and the capability name.
 #
 # The file is divided up into major sections (headed by lines beginning with 
@@ -124,9 +128,6 @@
 #		only support one attribute without magic-cookie lossage.
 #		Their base entry is usually paired with another that
 #		uses magic cookies to support multiple attributes.
-#	-na	No arrow keys - termcap ignores arrow keys which are
-#		actually there on the terminal, so the user can use
-#		the arrow keys locally.
 #	-nam	No auto-margin - suppress <am> capability
 #	-nl	No labels - suppress soft labels
 #	-ns	No status line - suppress status line
@@ -194,14 +195,14 @@
 #
 # All the entries in this file have been edited to assume that the tabset
 # files directory is /usr/share/tabset, in conformance with the File Hierarchy
-# Standard for Linux and free BSD systems.  Some vendors (notably Sun) use
-# /usr/lib/tabset or (more recently) /usr/share/lib/tabset.  
+# Standard for Linux and open-source BSD systems.  Some vendors (notably Sun)
+# use /usr/lib/tabset or (more recently) /usr/share/lib/tabset.  
 #
 # No curses package we know of uses these files.  If their location is an
 # issue, you will have to hand-patch the file locations before compiling
 # this file.
 # 
-# REQUEST FOR CONTACT INFORMATION AND HISTORICAL MATERIAL:
+# REQUEST FOR CONTACT INFORMATION AND HISTORICAL MATERIAL
 #
 # As the ANSI/ECMA-48 standard and variants take firmer hold, and as
 # character-cell terminals are increasingly replaced by X displays, much of
@@ -249,7 +250,7 @@
 # There are no guarantees anywhere.  Svaha!
 #
 
-######## STANDARD AND SPECIAL TYPES
+######## ANSI, CONSOLE, AND SPECIAL TYPES
 #
 # This section describes terminal classes and maker brands that are still
 # quite common.
@@ -316,7 +317,7 @@ klone+sgr-dumb|attribute control for ansi.sys displays (no ESC [ 11 m),
 	use=klone+acs, 
 
 # KOI8-R (RFC1489) acs (alternate character set)
-# From: QingLong <qinglong@Bolizm.ihep.su>, 24 Feb 1996.
+# From: Qing Long <qinglong@Bolizm.ihep.su>, 24 Feb 1996.
 klone+koi8acs|alternate character set for ansi.sys displays with KOI8 charset, 
 	acsc=+\020\,\021-\036.^_0\215`\004a\237f\234g\232h\222i\220j\205k\203l\202m\204n\212o\213p\216q\0r\217s\214t\206u\207v\210w\211x\201y\230z\231{\267|\274}L~\225, 
 	rmacs=\E[10m, smacs=\E[11m, 
@@ -523,8 +524,9 @@ nansi.sysk|nansisysk|PC-DOS Public Domain NANSI.SYS with keypad redefined for vi
 #### ANSI console types
 #
 
-#### BeOS entry for Terminal program. Seems to be almost ANSI
-#	
+#### BeOS entry for Terminal program
+#
+# Seems to be almost ANSI
 beterm|BeOS Terminal, 
 	am, eo, mir, msgr, xenl, xon, 
 	colors#8, cols#80, it#8, lines#25, pairs#64, 
@@ -630,8 +632,8 @@ linux-koi8|linux with koi8 alternate character set,
 	acsc=+\020\,\021-\030.^Y0\215`\004a\221f\234g\237h\220i\276j\205k\203l\202m\204n\212o~p\0q\0r\0s_t\206u\207v\211w\210x\201y\230z\231{\267|\274~\224, 
 	use=linux, use=klone+koi8acs, 
 
-# Another entry for KOI8-r with QingLong's acsc.
-# (which one better complies the standard?)
+# Another entry for KOI8-r with Qing Long's acsc.
+# (which one better complies with the standard?)
 linux-koi8r|linux with koi8-r alternate character set, 
 	use=linux, use=klone+koi8acs, 
 
@@ -929,7 +931,7 @@ ibmpcx|xenix|ibmx|IBM PC xenix console display,
 # handle this case with the <ich1> capability, and prefers <am> for better
 # optimization.  Bug: The <op> capability resets attributes.
 # From: Michael Hunter <mphunter@qnx.com> 30 Jul 1996
-# removed: sgr=%?%p1%t\E<%;%p2%t\E[%;%p3%t\E(%;%p4%t\E{%;%p6%t\E<%;, 
+# (removed: <sgr=%?%p1%t\E<%;%p2%t\E[%;%p3%t\E(%;%p4%t\E{%;%p6%t\E<%;,>)
 qnx|qnx4|qnx console, 
 	daisy, km, mir, msgr, xhpa, xt, 
 	colors#8, cols#80, it#4, lines#25, ncv#3, pairs#8, 
@@ -2312,7 +2314,7 @@ emu|emu native mode,
 	sgr0=\ES, smacs=\0, smir=\EY, smso=\ES\ET, smul=\ES\EV, 
 	tbc=\Ej, 
 
-######## MGR
+#### MGR
 #
 # MGR is a Bell Labs window system lighter-weight than X.
 # These entries describe MGR's xterm-equivalent. 
@@ -2625,7 +2627,7 @@ nextshell|NeXT Shell application,
 	bel=^G, cr=^M, cub1=^H, cud1=^J, ht=^I, kbs=^H, kcub1=^H, 
 	kcud1=^J, nel=^M^J, 
 
-### Sony NEWS workstations
+#### Sony NEWS workstations
 #
 
 # (news-unk: this had :KB=news: -- esr)
@@ -2696,10 +2698,6 @@ nwp512|news|nwp514|news40|vt100-bm|sony vt100 emulator 40 lines,
 #
 # (nwp512-a: this had :TY=ascii: and the alias vt100-bm --esr)
 nwp512-a|nwp514-a|news-a|news42|news40-a|sony vt100 emulator 42 line, 
-	
-	
-	
-s, 
 	lines#42, 
 	is2=\E[?7h\E[?1l\E[?3l\E7\E[1;42r\E8, use=news-old-unk, 
 #
@@ -2797,7 +2795,7 @@ dtterm|CDE desktop terminal,
 	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smir=\E[4h, 
 	smso=\E[2;7m, smul=\E[4m, tbc=\E[3g, 
 
-### Non-Unix Consoles
+#### Non-Unix Consoles
 #
 
 # Except for the "-emx" suffixes, these are as distributed with EMX 0.9b,
@@ -3728,10 +3726,49 @@ adm11|LSI ADM-11,
 	use=adm+sgr, 
 # From: Andrew Scott Beals <bandy@lll-crg.ARPA>
 # Corrected by Olaf Siebert <rhialto@polder.ubc.kun.nl>, 11 May 1995
+# Supervisor mode info by Ari Wuolle, <awuolle@delta.hut.fi>, 27 Aug 1996
 # (adm12: removed obsolete ":kn:ma=j^Jk^P^K^Pl ^R^L^L :".  This formerly had
 # <is2>=\Eq but that looked wrong; this <is2> is from Dave Yost <esquire!yost>
 # via BRL.  That entry asserted <xmc#1>, but I've left that out because 
 # neither earlier nor later ADMSs have it -- esr)
+#
+# You will need to get into the supervisor setup before you can set
+# baudrate etc. for your ADM-12+. Press Shift-Ctrl-Setup and you should
+# see a lot more setup options.
+# 
+# While in supervisor setup you can also use following codes:
+# 
+# Ctrl-P Personality character selections (configure for example what
+#        arrow keys send, if I recall correctly)
+# Ctrl-T tabs 1-80   use left&right to move and up to set and
+# Ctrl-V tabs 81-158 down to clear tab. Shift-Ctrl-M sets right margin at cursor
+# Ctrl-B Binary setup (probably not needed. I think that everything can
+#        be set using normal setup)
+# Ctrl-A Answerback mode (enter answerback message)
+# Ctrl-U User friendly mode (normal setup)
+# Ctrl-D Defaults entire setup and function keys from EPROM tables
+# Ctrl-S Save both setup and functions keys. Takes from 6 to 10 seconds.
+# Ctrl-R Reads both setup and functions keys from NVM.
+# Shift-Ctrl-X Unlock keyboard and cancel received X-OFF status
+# 
+# ADM-12+ supports hardware handshaking, but it is DTR/CTS as opposed to
+# RTS/CTS used nowadays with virtually every modem and computer. 19200
+# bps works fine with hardware flow control.
+# 
+# The following null-modem cable should fix this and enable you to use
+# RTS/CTS handshaking (which Linux supports, use CRTSCTS setting). Also
+# set ADM-12+ for DTR handshaking from supervisor setup.
+# 
+# PC Serial   ADM-12+
+#  --------   -------
+#         2 - 3
+#         3 - 2
+#         4 - 5
+#         5 - 20
+#       6,8 - 4
+#         7 - 7
+#        20 - 6,8
+#
 adm12|lsi adm12, 
 	am, mir, 
 	cols#80, it#8, lines#24, 
@@ -3969,8 +4006,13 @@ adm1178|1178|lsi adm1178,
 
 #### Prime
 #
-# Yes, Prime makes terminals.  These entries were posted by Kevin J. Cummings
-# <cummings@primerd.Prime.COM> on 14 Dec 1992 and lightly edited by esr.
+# Yes, Prime made terminals.  These entries were posted by Kevin J. Cummings
+# <cummings@primerd.prime.com> on 14 Dec 1992 and lightly edited by esr.
+# Prime merged with ComputerVision in the late 1980s; you can reach them at:
+#
+#	ComputerVision Services
+#	500 Old Connecticut Path
+#	Framingham, Mass.
 #
 
 # Standout mode is dim reverse-video.
@@ -4025,6 +4067,9 @@ pt250w|Prime PT250 in 132-column mode,
 # model is the qvt520, which is vt420-compatible.
 #
 # There are some ancient printing Qume terminals under `Daisy Wheel Printers'
+#
+# If you inherit a Qume without docs, try Ctrl-Shift-Setup to enter its
+# setup mode.  Shift-s should be a configuration save to NVRAM.
 
 qvt101|qvt108|qume qvt 101 and QVT 108, 
 	xmc#1, use=qvt101+, 
@@ -4802,7 +4847,7 @@ tvi970-2p|televideo 970 with using 2 pages of memory,
 # padding is needed, but adapted from the tvi920c termcap.  The <smso> and 
 # <smul> strings are klutzy, but at least use no screen space.
 # (tvipt: removed obsolete ":ma=^Kk^Ll^R^L:".  I wish we knew <rmam>,
-# its absence means <smam>=\Ev isn't save to use. -- esr)
+# its absence means <smam>=\Ev isn't safe to use. -- esr)
 # From: Gene Rochlin <armsis@amber.berkeley.edu> 9/19/84. 
 # The <ed>/<kf0>/<kf1>/<khome>/<mc4>, and <mc5> caps are from BRL, which says:
 # F1 and F2 should be programmed as ^A and ^B; required for UNIFY.
@@ -7238,6 +7283,122 @@ att630|AT&T 630 windowing terminal,
 att630-24|5630-24|5630DMD-24|630MTG-24|AT&T 630 windowing terminal 24 lines, 
 	lines#24, use=att630, 
 
+# This is the att700 entry for 700 native emulation of the AT&T 700
+# terminal.  Comments are relative to changes from the 605V2 entry and
+# att730 on which the entry is based.  Comments show the terminfo
+# capability name, termcap name, and description.
+#
+# Here is what's going onm in the init string:
+#	ESC [ 50;4|	set 700 native mode (really is 605)
+# x	ESC [ 56;ps| 	set lines to 24: ps=0; 40: ps=1 (plus status line)
+#	ESC [ 53;0|	set GenFlow to Xon/Xoff
+#	ESC [ 8 ;0|	set CR on NL 
+# x	ESC [ ? 3 l/h	set workspace: 80 col(l); 132 col(h)
+#	ESC [ ? 4 l	jump scroll 
+#	ESC [ ? 5 l/h	video: normal (l); reverse (h)
+#	ESC [ ?13 l	Labels on
+#	ESC [ ?15 l	parity check = no
+#	ESC [ 13 l	monitor mode off
+#	ESC [ 20 l	LF on NL (not CRLF on NL)
+#	ESC [ ? 7 h	autowrap on
+#	ESC [ 12 h	local echo off
+#	ESC ( B		GO = ASCII
+#	ESC ) 0		G1 = Special Char & Line Drawing
+#	ESC [ ? 31 l	Set 7 bit controls
+#
+# Note: Most terminals, especially the 600 family use Reverse Video for
+# standout mode.  DEC also uses reverse video.  The VT100 uses bold in addition
+# Assume we should stay with reverse video for 70..  However, the 605V2 exits
+# standout mode with \E[m (all normal attributes).  The 730 entry simply
+# exits reverse video which would leave other current attributes intact.  It
+# was assumed the 730 entry to be more correct so rmso has changed.  The
+# 605V2 has no sequences to turn individual attributes off, thus its setting
+# and the rmso/smso settings from the 730.
+#
+# Note: For the same reason as above in rmso I changed exit under-score mode
+# to specifically turn off underscore, rather than return to all normal 
+# attributes
+#
+# Note: The following pkey_xmit is taken from the 605V2 which contained the
+# capability as pfxl.  It was changed here to pfx since pfxl
+# will only compile successfully with Unix 4.0 tic.  Also note that pfx only
+# allows strings to be parameters and label values must be programmed as
+# constant strings.  Supposedly the pfxl of Version 4.0 allows both labels
+# and strings to be parameters.  The 605V2 pfx entry should be examined later
+# in this regard. For reference the 730 pfxl entry is shown here for comparison
+# 730 pfx entry:
+#     pfxl=\E[%?%p1%{25}%<%t%p1%e%p1%{24}%-%;%d;%p2%l%02d%?%p1%{25}%<%tq\s\s\s
+# SYS\s\s\s\s\sF%p1%:-2d\s\s%e;0;3q%;%p2%s,
+#
+# (for 4.0 tic)
+#     pfxl=\E[%p1%d;%p2%l%02dq%?%p1%{9}%<%t   F%p1%1d           %;%p2%s,
+#
+# (for <4.0 tic)
+#     pfx=\E[%p1%d;%p2%l%02dq%?%p1%{9}%<%t   F%p1%1d           %;%p2%s,
+#
+# From the AT&T 705 Multi-tasking terminal user's guide Page 8-8,8-9
+#
+# Port1 Interface
+#
+# modular 10 pin Connector
+# Left side       Right side
+# Pin 1 2 3 4 5 6 7 8 9 10
+#
+#        Key (notch) at bottom
+#
+# Pin    1 DSR
+#        3 DCD
+#        4 DTR
+#        5 Sig Ground
+#        6 RD
+#        7 SD
+#        8 CTS
+#        9 RTS
+#        10 Frame Ground
+#
+# The manual is 189 pages and is loaded with details about the escape codes,
+# etc..... Available from AT&T CIC 800-432-6600...
+# ask for Document number 999-300-660..
+#
+att700|AT&T 700 24x80 column display w/102key keyboard, 
+	am, eslok, hs, mir, msgr, xenl, xon, 
+	cols#80, it#8, lh#2, lines#24, lw#8, nlab#8, wsl#80, 
+	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, civis=\E[?25l, 
+	clear=\E[H\E[J, cnorm=\E[?25h\E[?12l, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
+	cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	cvvis=\E[?12;25h, dch=\E[%p1%dP, dch1=\E[P, dim=\E[2m, 
+	dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, el1=\E[1K, 
+	enacs=\E(B\E)0, flash=\E[?5h$<200>\E[?5l, fln=4\,4, 
+	fsl=\E8, home=\E[H, ht=^I, hts=\EH, ich=\E[%p1%d@, 
+	il=\E[%p1%dL, il1=\E[L, ind=\ED, invis=\E[8m, 
+	is2=\E[50;4|\E[53;0|\E[8;0|\E[?4;13;15l\E[13;20l\E[?7h\E[12h\E(B\E)0\E[?31l\E[0m\017, 
+	is3=\E(B\E)0, kLFT=\E[ A, kRIT=\E[ @, kbs=^H, kcbt=\E[Z, 
+	kclr=\E[2J, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
+	kdch1=\E[P, kdl1=\E[M, kend=\E[24;1H, kf1=\EOc, kf10=\ENp, 
+	kf11=\ENq, kf12=\ENr, kf13=\ENs, kf14=\ENt, kf15=\EOC, 
+	kf16=\EOD, kf17=\EOE, kf18=\EOF, kf19=\EOG, kf2=\EOd, 
+	kf20=\EOH, kf21=\EOI, kf22=\EOJ, kf23=\ENO, kf24=\ENP, 
+	kf25=\ENQ, kf26=\ENR, kf27=\ENS, kf28=\ENT, kf29=\EOq, 
+	kf3=\EOe, kf30=\EOr, kf31=\EOs, kf32=\EOt, kf33=\EOu, 
+	kf34=\EOv, kf35=\EOw, kf36=\EOx, kf37=\EOy, kf38=\EOu, 
+	kf39=\EOv, kf4=\EOf, kf40=\EOl, kf41=\EOq, kf42=\EOr, 
+	kf43=\EOs, kf44=\EOp, kf45=\EOn, kf46=\EOM, kf5=\EOg, 
+	kf6=\EOh, kf7=\EOi, kf8=\EOj, kf9=\ENo, khome=\E[H, 
+	kich1=\E[@, kil1=\E[L, knp=\E[U, kpp=\E[V, ll=\E[24H, 
+	mc0=\E[i, mc4=\E[?4i, mc5=\E[?5i, nel=\EE, 
+	pfx=\E[%p1%d;%p2%l%02dq%?%p1%{9}%<%t   F%p1%1d           %;%p2%s, 
+	pln=\E[%p1%d;0;0;0q%p2%:-16.16s, rc=\E8, 
+	rep=%p1%c\E[%p2%{1}%-%db, rev=\E[7m, ri=\EM, rmacs=^O, 
+	rmir=\E[4l, rmln=\E[2p, rmso=\E[27m, rmul=\E[24m, 
+	rmxon=\E[53;3|, rs1=\Ec\E[?3;5l\E[56;0|, sc=\E7, 
+	sgr=\E[0%?%p6%t;1%;%?%p5%t;2%;%?%p2%t;4%;%?%p4%t;5%;%?%p3%p1%|%t;7%;%?%p7%t;8%;m%?%p9%t\016%e\017%;, 
+	sgr0=\E[m\017, smacs=^N, smir=\E[4h, smln=\E[p, smso=\E[7m, 
+	smul=\E[4m, smxon=\E[53;0|, tbc=\E[3g, 
+	tsl=\E7\E[99;%i%p1%dx, 
+
 # This entry was modified 3/13/90 by JWE.
 # fixes include additions of <enacs>, correcting <rep>, and modification
 # of <kHOM>.  (See comments below)
@@ -7494,7 +7655,7 @@ att505-24|pt505-24|gs5430-24|AT&T PT505 or 5430 GETSET version 1 24 lines,
 tt505-22|pt505-22|gs5430-22|AT&T PT505 or 5430 GETSET version 1 22 lines, 
 	lines#22, use=att505, 
 #
-# -------------------- TERMINFO FILE CAN BE SPLIT HERE -----------------------
+#### ------------------ TERMINFO FILE CAN BE SPLIT HERE ---------------------
 # This cut mark helps make life less painful for people running ncurses tic
 # on machines with relatively little RAM.  The file can be broken in half here
 # cleanly and compiled in sections -- no `use' references cross this cut
@@ -7964,6 +8125,7 @@ aaa-rv-unk|ann arbor unknown type,
 #	Hauppauge, NY 11788-3762
 #	Vox: (800)-231-5445
 #	Fax: (516)-342-7378
+#	Web: http://boundless.com
 #
 # Their voice mail used to describe the place as "SunRiver (formerly ADDS)". 
 # In 1995 Boundless acquired DEC's terminals business.  
@@ -8137,7 +8299,7 @@ cit101e|C. Itoh CIT-101e,
 # Background: light; Keyclicks: silent; Auto wraparound: on; CRT saver:
 # on.  I also set up mine for parity (but you may not need it).  Then 
 # save the setup with ^S.
-# 
+# (cit101e-rv: added empty <rmcup> to suppress a tic warning. --esr)
 cit101e-rv|Citoh CIT-101e (sets reverse video), 
 	am, eo, mir, msgr, xenl, xon, 
 	cols#80, it#8, lines#24, 
@@ -8153,11 +8315,11 @@ cit101e-rv|Citoh CIT-101e (sets reverse video),
 	is2=\E<\E>\E[?1l\E[?3l\E[?4l\E[?5h\E[?7h\E[?8h\E[3g\E[>5g\E(B\E[m\E[20l\E[1;24r\E[24;1H, 
 	kbs=\177, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
 	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, nel=\EE, rc=\E8, 
-	rev=\E[7m, ri=\EM, rin=\E[%p1%dT, rmir=\E[4l, rmso=\E[m, 
-	rmul=\E[m, rs1=\Ec\E[?7h\E[>5g, sc=\E7, sgr0=\E[m, 
-	smcup=\E[>5g\E[?7h\E[?5h, smir=\E[4h, smso=\E[7m, 
-	smul=\E[4m, tbc=\E[3g, u6=\E[%i%p1%d;%p2%dR, u7=\E[6n, 
-	u8=\E[?6c, u9=\E[c, 
+	rev=\E[7m, ri=\EM, rin=\E[%p1%dT, rmcup=, rmir=\E[4l, 
+	rmso=\E[m, rmul=\E[m, rs1=\Ec\E[?7h\E[>5g, sc=\E7, 
+	sgr0=\E[m, smcup=\E[>5g\E[?7h\E[?5h, smir=\E[4h, 
+	smso=\E[7m, smul=\E[4m, tbc=\E[3g, u6=\E[%i%p1%d;%p2%dR, 
+	u7=\E[6n, u8=\E[?6c, u9=\E[c, 
 cit101e-n|CIT-101e w/o am, 
 	am@, 
 	cvvis=\E[?1l\E[?4l\E[?7l, kbs=^H, kcub1=^H, kcud1=^J, use=cit101e, 
@@ -9504,9 +9666,10 @@ ha8686|harris 8686,
 
 #### Hazeltine
 #
-# Hazeltine appears to be out of the business now (1995).  These guys were 
-# co-owners of the Terminal Brain Damage Hall Of Fame along with Harris.
-# They have a hazeltine.com domain and can be reached at:
+# Hazeltine appears to be out of the terminal business as of 1995.  These
+# guys were co-owners of the Terminal Brain Damage Hall Of Fame along with
+# Harris. They have a hazeltine.com domain (but no web page there ) and can
+# be reached at:
 #
 #	Hazeltine
 #	450 East Pulaski Road
@@ -9519,6 +9682,10 @@ ha8686|harris 8686,
 #	15 Law Drive
 #	P.O. Box 2076
 #	Fairfield, NJ 07007-2078
+#
+# They're now (1998) a subsidiary of General Electric, operating under the
+# marque "GEC-Marconi Hazeltine" and doing military avionics.  Web page
+# at <http://www.gec.com/cpd/1ncpd.htm#1.55>.
 #
 
 # Since <cuf1> is blank, when you want to erase something you
@@ -9804,11 +9971,11 @@ ibm-system1|system1|ibm system/1 computer,
 	ind=^J, 
 
 # From: <pryor@math.berkeley.edu>
-ibm5081|ibmmpel|IBM 5081 1024x1024 256/4096 color display, 
+ibm5081|ibmmpel|IBM 5081 1024x1024 256/4096 Megapel color display, 
 	eslok, hs, 
 	lines#33, 
 	dsl=\Ej\EYA \EI\Ek, fsl=\Ek, tsl=\Ej\EYA%+ \Eo, use=ibmmono, 
-ibm5081-c|ibmmpel-c|IBM 5081 1024x1024 256/4096 enhanced color display, 
+ibm5081-c|ibmmpel-c|IBM 5081 1024x1024 256/4096 Megapel enhanced color display, 
 	eslok, hs, 
 	lines#33, 
 	dsl=\Ej\EYA \EI\Ek, fsl=\Ek, tsl=\Ej\EYA%+ \Eo, use=ibmega-c, 
@@ -9879,6 +10046,285 @@ infoton,
 	bel=^G, clear=^L, cr=^M, cub1=^Z, cud1=^J, cuf1=^Y, cuu1=^\, 
 	ed=^K, ind=^J, ll=^H^\, 
 
+# The ICL6402 was actually the Kokusai Display System 6402.
+# The 6404 was the KDS7372 (color version of the 6402).
+# 
+# ICL6404 control codes follow:
+#
+#code            function
+#~~~~~~~~~~~     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ctrl-A          set SOM position at cursor position
+#ctrl-G          Bell
+#ctrl-H          Backspace
+#ctrl-I          Horiz tab
+#ctrl-J          Linefeed
+#ctrl-K          Cursor up
+#ctrl-L          Cursor right
+#ctrl-M          Carriage return
+#ctrl-N          Disable xon/xoff to host
+#ctrl-O          Enable xon/xoff to host
+#ctrl-R          Enable bidirectional mode
+#ctrl-T          Disable bidirectional mode
+#ctrl-V          Cursor down
+#ctrl-Z          Clear unprotected data to insert char
+#ctrl-^          Cursor home
+#ctrl-_          Newline
+#
+#ESC             lead-in char for multiple character command
+#
+#ESC space R     execute power on sequence
+#ESC ! p1 p2     define scroll region:
+#                p1 = scroll top    line:  20h - 37h
+#                p1 = scroll bottom line:  20h - 37h
+#ESC "           unlock keyboard
+#ESC #           lock keyboard
+#ESC $           Semi-graphics mode on
+#ESC %           Semi-graphics mode off
+#ESC &           protect mode on
+#ESC '           protect mode off
+#ESC (           write protect mode off (full intensity)
+#ESC )           write protect mode on (half intensity)
+#
+#ESC *           clear screen
+#ESC +           clear unprotected data to insert char
+#ESC ,           clear unprotected data to half intensity spaces
+#ESC - p1 p2 p3 p4     address cursor to page, row, column:
+#                      p1 = page number  0 - 3
+#                      p2 = row          20h - 7fh
+#                      p3 = column (lo)  20h - 7fh
+#                      p4 = column (hi)  20h - 21h (only 132 col)
+#ESC . p1        set cursor style:
+#                p1 = 0  invisible cursor
+#                p1 = 1  block blinking cursor
+#                p1 = 2  block steady cursor
+#                p1 = 3  underline blinking cursor
+#                p1 = 4  underline steady cursor
+#ESC /           transmit cursor location (page, row, column)
+#ESC 0 p1 p2 p3 p4     program edit key:
+#                      p1 = edit key code: '@'-'S', '`'-'s'
+#                      p2 p3 p4 = program data (3 bytes)
+#
+#ESC 1           set tab
+#ESC 2           clear tab at cursor
+#ESC 3           clear all tabs
+#ESC 4           send unprotect line to cursor
+#ESC 5           send unprotect page to cursor
+#ESC 6           send line to cursor
+#ESC 7           send page to cursor
+#ESC 8 n         set scroll mode:
+#                n = 0   set jump scroll
+#                n = 1   set smooth scroll
+#ESC 9 n         control display:
+#                n = 0   display off
+#                n = 1   display on
+#ESC :           clear unprotected data to null
+#ESC ;           clear unprotected data to insert char
+#
+#ESC <           keyclick on
+#ESC = p1 p2     address cursor to row, column
+#                p1 = row          20h - 7fh
+#                p2 = column (lo)  20h - 7fh
+#                p3 = column (hi)  20h - 21h (only 132 col)
+#ESC >           keyclick off
+#ESC ?           transmit cursor location (row, column)
+#
+#ESC @           copy print mode on
+#ESC A           copy print mode off
+#ESC B           block mode on
+#ESC C           block mode off (conversation mode)
+#ESC D F         set full duplex
+#ESC D H         set half duplex
+#ESC E           line insert
+#ESC F p1 p2     set page colour (p1 = f/grnd, p2 = b/grnd)
+#                0 = black, 1 = red,     2 = green, 3 = yellow
+#                4 = blue,  5 = magenta, 6 = cyan,  7 = white
+#ESC G n         set serial field attribute (n = 30h - 3Fh)
+#ESC H n         full graphics mode:
+#                n = 0  exit full graphics mode
+#                n = 1  enter full graphics mode
+#ESC I           back tab
+#ESC J           back page
+#ESC K           forward page
+#
+#ESC L           unformatted page print
+#ESC M L         move window left  (132 col mode only)
+#ESC M R         move window right (132 col mode only)
+#ESC N           set page edit (clear line edit)
+#ESC O           set line edit (clear page edit)
+#ESC P           formatted page print
+#ESC Q           character insert
+#ESC R           line delete
+#ESC S           send message unprotected only
+#ESC T           erase line to insert char
+#ESC U           set monitor mode   (see ESC X, ESC u)
+#
+#ESC V n         select video attribute mode:
+#                n = 0   serial field attribute mode
+#                n = 1   parallel character attribute mode
+#ESC V 2 n       define line attribute:
+#                n = 0   single width single height
+#                n = 1   single width double height
+#                n = 2   double width single height
+#                n = 3   double width double height
+#ESC V 3 n       select character font:
+#                n = 0   system font
+#                n = 1   user defined font
+#ESC V 4 n       select screen mode:
+#                n = 0   page screen mode
+#                n = 1   virtual screen mode
+#ESC V 5 n       control mouse mode:
+#                n = 0   disable mouse
+#                n = 1   enable sample mode
+#                n = 2   send mouse information
+#                n = 3   enable request mode
+#ESC W           character delete
+#ESC X           clear monitor mode (see ESC U, ESC u)
+#ESC Y           erase page to insert char
+#
+#ESC Z n         send user/status line:
+#                n = 0   send user line
+#                n = 1   send status line
+#                n = 2   send terminal ID
+#ESC [ p1 p2 p3  set character attribute (parallel char mode):
+#                p1: 0 = normal
+#                    1 = blank
+#                    2 = blink
+#                    3 = blink blank (= blank)
+#                    4 = reverse
+#                    5 = reverse blank
+#                    6 = reverse blink
+#                    7 = reverse blink blank (= reverse blank)
+#                    8 = underline
+#                    9 = underline blank
+#                    : = underline blink
+#                    ; = underline blink blank
+#                    < = reverse underline
+#                    = = reverse underline blank
+#                    > = reverse underline blink
+#                    ? = reverse underline blink blank
+#                p2, p3: f/grnd, b/grnd colour
+#                (see ESC F for colours)
+#                use ZZ for mono, eg.
+#                    ESC [ 0 Z Z for normal
+#                    ESC [ 4 Z Z for inverse etc.
+#
+#ESC \ n         set page size:
+#                n = 1   24 lines/page
+#                n = 2   48 lines/page
+#                n = 3   72 lines/page
+#                n = 4   96 lines/page
+#ESC ] n         set Wordstar mode:
+#                n = 0   normal (KDS7372) mode
+#                n = 1   Wordstar mode
+#
+#ESC b           set foreground colour screen
+#
+#ESC c n         enter self-test mode:
+#                n = 0   exit self test mode
+#                n = 1   ROM test
+#                n = 2   RAM test
+#                n = 3   NVRAM test
+#                n = 4   screen display test
+#                n = 5   main/printer port test
+#                n = 6   mouse port test
+#                n = 7   graphics board test
+#                n = 8   graphics memory test
+#                n = 9   display all 'E'
+#                n = :   display all 'H'
+#ESC d           set background colour screen
+#
+#ESC e n         program insert char (n = insert char)
+#ESC f text CR   load user status line with 'text'
+#
+#ESC g           display user status line on 25th line
+#ESC h           display system status line on 25th line
+#ESC i           tab
+#ESC j           reverse linefeed
+#ESC k n         duplex/local edit mode:
+#                n = 0   duplex edit mode
+#                n = 1   local edit mode
+#ESC l n         select virtual screen:
+#                n = 0   screen 1
+#                n = 1   screen 2
+#ESC m           save current config to NVRAM
+#ESC n p1        select display screen:
+#                p1 = 0  screen 1
+#                p1 = 1  screen 2
+#                p1 = 2  screen 3
+#                p1 = 3  screen 4
+#ESC o p1 p2     set characters/line and attribute:
+#                p1 = 0  80 chars/line
+#
+#ESC o p1 p2     set characters/line and attribute:
+#                p1 = 0  80 chars/line
+#                p1 = 1  132 chars/line
+#                p2 = 0  single width single height
+#                p2 = 1  single width double height
+#                p2 = 2  double width single height
+#                p2 = 3  double width double height
+#
+#ESC q           insert mode on
+#ESC r           edit mode on
+#ESC s           send message all
+#ESC t           erase line to null
+#ESC u           clear monitor mode (see ESC U, ESC X)
+#ESC v           autopage mode on
+#ESC w           autopage mode off
+#ESC x p1 p2 p3  define delimiter code...
+#ESC y           erase page to null
+#
+#ESC z 2 p1 p2 p3 p4   draw quadrangle:
+#                      p1 = starting row
+#                      p2 = starting column
+#                      p3 = end row
+#                      p4 = end column
+#
+#ESC { p1 p2 p3 p4     configure main port
+#                      (baud, stop bits, parity, word length)
+#
+#ESC | p1 p2 text Ctrl-Y    program function key with 'text':
+#                        p1 = function key code:
+#                             '1' - ';'  normal f1- f11
+#                             '<' - 'F'  shifted f1 - f11
+#                        p2 = program mode:
+#                             1 = FDX
+#                             2 = LOC
+#                             3 = HDX
+#                        Ctrl-Y = terminator
+#                        (use Ctrl-P to escape ^P, ^Y )
+#
+#ESC } p1 p2 p3 p4     configure printer port
+#                      (baud, stop bits, parity, word length)
+#ESC ~           send system status
+#
+# Codes and info from Peter Disdale <pete@pdlmail.demon.co.uk> 12 May 1997
+#
+# Entry is by esr going solely on above information and is UNTESTED.
+# This actually looks a lot like a Televideo 9xx.
+# This entry uses page 0 and is monochrome; I'm not brave enough to try
+# to make color work without a test terminal.  The <am> capability is a guess.
+# The initialization string sets conversation mode, blinking underline cursor,
+# full duplex, parallel attribute mode, display user status line, white
+# foreground, black background, normal highlight.
+#
+icl6404|kds7372|icl6402|kds6402|ICL 6404 aka Kokusai Display Systems 7372, 
+	am, hs, 
+	cols#80, lines#24, 
+	bel=^G, blink=\E[2ZZ, cbt=\EI, civis=\E.0, clear=\E*, 
+	cnorm=\E.3, cr=^M, 
+	csr=\E!%+%p1%{32}%+%p2%{32} cud1=\026, cuf1=^L, 
+	cup=\E=%p1%''%+%c%p2%{80}%m%' '%+%c%p2%{80}%>%' '%+%c, 
+	cuu1=^K, cvvis=\E.1, dch=\EW, dl1=\ER, home=^^, ht=^I, hts=\E1, 
+	il1=\EE, invis=\E[1ZZ, is1=\EC\E.3\EDF\EV1\Eg\E[0ZZ, 
+	nel=^_, rev=\E[4ZZ, rmir=\Er, 
+	rmso=\E[%gh%{4}%^%Ph%gh%dZZ, 
+	rmul=\E[%gh%{8}%^%Ph%gh%dZZ, rs2=\Eo1, 
+	sgr=\E[%{0}%?%p1%t%{4}%|%;%?%p2%t%{8}%|%;%?%p3%t%{4}%|%;%?%p4%t%{2}%|%;%?%p7%t%{1}%|%;ZZ, 
+	sgr0=\E[0ZZ, smir=\Eq, smso=\E[8ZZ, smul=\E[8ZZ, tbc=\E3, 
+icl6404-w|kds7372-w|ICL 6404 aka Kokusai Display Systems 7372 132 cols, 
+	rs2=\Eo1, 
+	use=icl6404, 
+
 #### Interactive Systems Corp
 #
 # ISC used to sell OEMed and customized hardware to support ISC UNIX.
@@ -9918,6 +10364,19 @@ intext2|intextii|INTERACTIVE modified owl 1251,
 	smul=\E[18 D, 
 
 #### Kimtron (abm, kt)
+#
+# Kimtron seems to be history, but as March 1998 these people are still 
+# offering repair services for Kimtron equipment:
+#
+#    Com/Pair Monitor Service
+#    1105 N. Cliff Ave.
+#    Sioux Falls, South Dakota 57103
+#     
+#    WATS voice:  1-800/398-4946
+#    POTS   fax: +1 605/338-8709
+#    POTS voice: +1 605/338-9650
+#         Email: <compair@sd.cybernex.net>
+#  Internet/Web: <http://www.com-pair.com>
 #
 # Kimtron entries include (undocumented) codes for: enter dim mode,
 # enter bold mode, enter reverse mode, turn off all attributes.
@@ -10469,6 +10928,494 @@ ergo4000|microterm ergo 4000,
 #
 # There is an NCR4103 terminal that's just a re-badged Wyse-50.
 #
+
+# The following vendor-supplied termcaps were captured from the Boundless
+# Technologies site, 8 March 1998.  I removed all-upper-case names that were
+# identical, except for case, to lower-case ones.  I also uncommented the acsc
+# capabilities.X
+#
+# The Intecolor emulation of the NCR 2900/260C color terminal is basicly a
+# DEC vt200/300 with color capabilities added.
+ncr260intan|NCR Intecolor emulation of the 2900_260C with an ANSI keyboard, 
+	colors#8, pairs#64, 
+	op=\E[0m, setab=\E[4%p1%dm, setaf=\E[3%p1%dm, use=ncr260vt300an, 
+# The Intecolor emulation of the NCR 2900/260C color terminal is basicly a
+# DEC vt200/300 with color capabilities added.
+ncr260intwan|NCR Intecolor emulation of the 2900_260C with an ANSI keyboard, 
+	colors#8, pairs#64, 
+	op=\E[0m, setab=\E[4%p1%dm, setaf=\E[3%p1%dm, use=ncr260vt300wan, 
+# The Intecolor emulation of the NCR 2900/260C color terminal is basicly a DEC 
+# vt200/300 with color capabilities added.
+ncr260intpp|NCR Intecolor emulation of the 2900_260C with a PC+ keyboard, 
+	colors#8, pairs#64, 
+	op=\E[0m, setab=\E[4%p1%dm, setaf=\E[3%p1%dm, use=ncr260vt300pp, 
+# The Intecolor emulation of the NCR 2900/260C color terminal is basicly a
+# DEC vt200/300 with color capabilities added.
+ncr260intwpp|NCR Intecolor emulation of the 2900_260C with a PC+ keyboard in 132 column mode, 
+	colors#8, pairs#64, 
+	op=\E[0m, setab=\E[4%p1%dm, setaf=\E[3%p1%dm, use=ncr260vt300wpp, 
+# This definition for ViewPoint supports several attributes.  This means
+# that it has magic cookies (extra spaces where the attributes begin).
+# Some applications do not function well with magic cookies.  The System
+# Administrator's Shell in NCR Unix SVR4 1.03 is one such application. 
+# If supporting various attributes is not vital, 'xmc#1' and the extra
+# attributes can be removed. 
+# Mapping to ASCII character set ('acsc' capability) can also be 
+# restored if needed.
+ncr260vppp|NCR 2900_260 viewpoint, 
+	am, bw, hs, km, mc5i, mir, msgr, xon, 
+	cols#80, lines#24, nlab#32, xmc#1, 
+	acsc=07a?h;j5k3l2m1n8q\:t4u9v=w0x6, bel=^G, blink=\EG2, 
+	cbt=\EI, civis=\E`0, clear=\014$<40>, cnorm=\E`5, 
+	cr=\r$<2>, cub1=\010$<2>, cud1=\n$<2>, cuf1=\006$<2>, 
+	cup=\EY%p1%' '%+%c%p2%' '%+%c$<5>, cuu1=\032$<2>, 
+	cvvis=\E`5, dch1=\EW$<2>, dim=\EGp, dl1=\El$<2>, dsl=\E`c, 
+	ed=\Ek$<2>, el=\EK$<2>, fsl=^M, home=\036$<2>, ht=^I, 
+	hts=\E1, il1=\EM$<2>, ind=\n$<2>, invis=\EG1, 
+	is2=\Ee6\E~%$<100>\E+\E`\:\Ed/\E`1\EO\Ee4\Ec@0@\Ec@1A\EcB0\EcC1\Ee7$<100>, 
+	kDC=\El, kEND=\Ek, kHOM=^A, kPRT=\E7, kRIT=^F, ka1=^A, ka3=\EJ, 
+	kbs=^H, kc1=\ET, kc3=\EJ, kcub1=^U, kcud1=^J, kcuf1=^F, 
+	kcuu1=^Z, kdch1=\EW, kend=\EK, kf1=^B1\r, kf10=^B\:\r, 
+	kf11=^B;\r, kf12=^B<\r, kf13=^B=\r, kf14=^B>\r, kf15=^B?\r, 
+	kf16=^B@\r, kf17=^B!\r, kf18=^B"\r, kf19=^B#\r, kf2=^B2\r, 
+	kf20=^B$\r, kf21=\002%^M, kf22=^B&\r, kf23=^B'\r, 
+	kf24=^B(\r, kf25=^B)\r, kf26=^B*\r, kf27=^B+\r, 
+	kf28=^B\,\r, kf29=^B-\r, kf3=^B3\r, kf30=^B.\r, kf31=^B/\r, 
+	kf32=^B0\r, kf4=^B4\r, kf5=^B5\r, kf6=^B6\r, kf7=^B7\r, 
+	kf8=^B8\r, kf9=^B9\r, khome=^A, kich1=\Eq, knp=\EJ, kpp=\EJ, 
+	kprt=\EP, ll=\001$<5>, mc0=\EP$<100>, mc4=^T, mc5=^R, 
+	mrcup=\Ew@%p1%{48}%+%c%p2%' '%+%c%p3%' '%+%c$<5>, 
+	nel=\037$<2>, rev=\EG4, ri=\Ej$<2>, rmacs=\EcB0\EH\003, 
+	rmir=\Er, rmso=\EG0, rmul=\EG0, rmxon=\Ec20, 
+	rs2=\Ee6\E~%$<100>\E+\E`\:\Ed/\E`1\EO\Ee4\Ec@0@\Ec@1A\EcB0\EcC1\Ee7$<100>, 
+	sgr0=\EG0\EH\003, smacs=\EcB1\EH\002, smir=\Eq, 
+	smso=\EG4, smul=\EG8, smxon=\Ec21, tsl=\EF, 
+ncr260vpwpp|NCR 2900_260 viewpoint wide mode, 
+	cols#132, 
+	cup=\Ea%i%p1%dR%p2%dC$<30>, 
+	is2=\Ee6\E~%$<100>\E+\E`;\Ed/\E`1\EO\Ee4\Ec@0@\Ec@1A\EcB0\EcC1\Ee7$<100>, 
+	rs2=\Ee6\E~%$<100>\E+\E`;\Ed/\E`1\EO\Ee4\Ec@0@\Ec@1A\EcB0\EcC1\Ee7$<100>, 
+	use=ncr260vppp, 
+ncr260vt100an|NCR 2900_260 vt100 with ansi kybd, 
+	am, hs, mir, msgr, xenl, xon, 
+	cols#80, lines#24, nlab#32, 
+	acsc=``aaffggjjkkllmmnnooqqssttuuvvwwxx~~, bel=^G, 
+	blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
+	clear=\E[2J\E[1;1H$<20>, cnorm=\E[?25h, cr=\r$<1>, 
+	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD$<5>, 
+	cub1=\E[D$<5>, cud=\E[%p1%dB$<5>, cud1=\E[B$<5>, 
+	cuf=\E[%p1%dC$<5>, cuf1=\E[C$<5>, 
+	cup=\E[%i%p1%d;%p2%dH$<10>, cuu=\E[%p1%dA$<5>, 
+	cuu1=\E[A$<5>, dch=\E[%p1%dP$<5>, dch1=\E[1P$<5>, 
+	dl=\E[%p1%dM$<5>, dl1=\E[M$<5>, dsl=\E[0$~\E[1$~, 
+	ech=\E[%p1%dX, ed=\E[0J$<5>, el=\E[0K$<3>, el1=\E[1K$<3>, 
+	fsl=\E[0$}, home=\E[H$<1>, hpa=\E[%p1%dG$<40>, ht=^I, 
+	hts=\EH, ich=\E[%p1%d@$<5>, il=\E[%p1%dL$<5>, 
+	il1=\E[L$<5>, ind=\ED$<5>, indn=\E[%p1%dE$<5>, 
+	invis=\E[8m, 
+	is2=\E[!p\E[?7;19;67h\E[?1;3;4l\E(B\E)0\017\E[2J\E[1;1H\E>$<200>, 
+	ka1=\EOw, ka3=\EOu, kb2=\EOy, kbs=^H, kc1=\EOq, kc3=\EOs, 
+	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
+	kdch1=\E[3~, kent=\EOM, kf1=\EOP, kf2=\EOQ, kf3=\EOR, 
+	kf4=\EOS, kfnd=\E[1~, khlp=\E[28~, kich1=\E[2~, knp=\E[6~, 
+	kpp=\E[5~, krdo=\E[29~, kslt=\E[4~, nel=\EE$<5>, rc=\E8, 
+	rev=\E[7m, ri=\EM$<5>, rmacs=^O, rmir=\E[4l, 
+	rmkx=\E[?1l\E>, rmso=\E[0m, rmul=\E[0m, 
+	rs2=\E[!p\E[?7;19;67h\E[?1;3;4l\E(B\E)0\017\E[2J\E[1;1H\E>$<200>, 
+	sc=\E7, 
+	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;$<20>, 
+	sgr0=\E[0m\017$<20>, smacs=^N, smir=\E[4h, 
+	smkx=\E[?1h\E=, smso=\E[1;7m, smul=\E[4m, tbc=\E[3g, 
+	tsl=\E[2$~\E[1$}, vpa=\E[%p1%dd$<40>, 
+ncr260vt100wan|NCR 2900_260 vt100 wide mode ansi kybd, 
+	cols#132, 
+	cup=\E[%i%p1%d;%p2%dH$<30>, 
+	is2=\E[!p\E[?3;7;19;67h\E[?1;4l\E(B\E)0\017\E[2J\E[1;1H\E>$<200>, 
+	rs2=\E[!p\E[?3;7;19;67h\E[?1;4l\E(B\E)0\017\E[2J\E[1;1H\E>$<200>, 
+	use=ncr260vt100an, 
+ncr260vt100pp|NCR 2900_260 vt100 with PC+ kybd, 
+	is2=\E[!p\E[?7;19;67h\E[?1;3;4l\E(B\E)0\017\E[2J\E[1;1H\E>$<200>, 
+	ka1=\E[H, ka3=\EOu, kb2=\E[V, kc3=\E[U, kcub1=\E[D, 
+	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\E[4~, 
+	kend=\E[5~, khome=\E[2~, kich1=\E[1~, knp=\E[6~, kpp=\E[3~, 
+	lf1=pf1, lf2=pf2, lf3=pf3, lf4=pf4, rmkx=\E>, 
+	rs2=\E[!p\E[?7;19;67h\E[?1;3;4l\E(B\E)0\017\E[2J\E[1;1H\E>$<200>, 
+	smkx=\E=, 
+	use=ncr260vt100an, 
+ncr260vt100wpp|NCR 2900_260 vt100 wide mode pc+  kybd, 
+	cols#132, 
+	cup=\E[%i%p1%d;%p2%dH$<30>, 
+	is2=\E[!p\E[?3;7;19;67h\E[?1;4l\E(B\E)0\017\E[2J\E[1;1H\E>$<200>, 
+	rs2=\E[!p\E[?3;7;19;67h\E[?1;4l\E(B\E)0\017\E[2J\E[1;1H\E>$<200>, 
+	use=ncr260vt100pp, 
+ncr260vt200an|NCR 2900_260 vt200 with ansi kybd, 
+	am, hs, mir, msgr, xenl, xon, 
+	cols#80, lines#24, nlab#32, 
+	acsc=``aaffggjjkkllmmnnooqqssttuuvvwwxx~~, bel=^G, 
+	blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
+	clear=\E[2J\E[1;1H$<20>, cnorm=\E[?25h, cr=\r$<1>, 
+	csr=\E[%i%p1%d;%p2%dr$<5>, cub=\E[%p1%dD$<5>, 
+	cub1=\E[D$<5>, cud=\E[%p1%dB$<5>, cud1=\E[B$<5>, 
+	cuf=\E[%p1%dC$<5>, cuf1=\E[C$<5>, 
+	cup=\E[%i%p1%d;%p2%dH$<10>, cuu=\E[%p1%dA$<5>, 
+	cuu1=\E[A$<5>, dch=\E[%p1%dP$<5>, dch1=\E[1P$<5>, 
+	dl=\E[%p1%dM$<5>, dl1=\E[M$<5>, dsl=\E[0$~\E[1$~, 
+	ech=\E[%p1%dX$<5>, ed=\E[0J, el=\E[0K$<5>, el1=\E[1K$<5>, 
+	fsl=\E[0$}, home=\E[H, hpa=\E[%p1%dG$<40>, ht=^I, hts=\EH, 
+	ich=\E[%p1%d@$<5>, il=\E[%p1%dL$<5>, il1=\E[L$<5>, 
+	ind=\ED$<5>, indn=\E[%p1%dE$<5>, invis=\E[8m, 
+	is2=\E[!p\E[?7;19;67h\E[?1;3;4l\E(B\E)0\017\E[2J\E[1;1H\E>$<200>, 
+	ka1=\EOw, ka3=\EOu, kb2=\EOy, kbs=^H, kc1=\EOq, kc3=\EOs, 
+	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
+	kdch1=\E[3~, kent=\EOM, kf0=\EOy, kf1=\EOP, kf10=\E[21~, 
+	kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, 
+	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, 
+	kf19=\E[33~, kf2=\EOQ, kf20=\E[34~, kf21=\E[31~, 
+	kf22=\E[32~, kf23=\E[33~, kf24=\E[34~, kf25=\E[35~, 
+	kf26=\E[1~, kf27=\E[2~, kf28=\E[3~, kf29=\E[4~, kf3=\EOR, 
+	kf30=\E[5~, kf31=\E[6~, kf32=\E[7~, kf33=\E[8~, kf34=\E[9~, 
+	kf35=\E[10~, kf4=\EOS, kf5=\E[M, kf6=\E[17~, kf7=\E[18~, 
+	kf8=\E[19~, kf9=\E[20~, kfnd=\E[1~, khlp=\E[28~, 
+	kich1=\E[2~, knp=\E[6~, kpp=\E[5~, krdo=\E[29~, kslt=\E[4~, 
+	mc0=\E[i, mc4=\E[4i, mc5=\E[5i, nel=\EE, rc=\E8, rev=\E[7m, 
+	ri=\EM$<5>, rmacs=\017$<20>, rmam=\E[?7l, rmir=\E[4l, 
+	rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m, 
+	rs2=\E[!p\E[?7;19;67h\E[?1;3;4l\E(B\E)0\017\E[2J\E[1;1H\E>$<200>, 
+	sc=\E7, 
+	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;$<20>, 
+	sgr0=\E[0m\017$<20>, smacs=\016$<20>, smam=\E[?7h, 
+	smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
+	tbc=\E[3g, tsl=\E[2$~\E[1$}, vpa=\E[%p1%dd$<40>, 
+ncr260vt200wan|NCR 2900_260 vt200 wide mode ansi kybd, 
+	cols#132, 
+	cup=\E[%i%p1%d;%p2%dH$<30>, 
+	is2=\E[!p\E[?3;7;19;67h\E[?4l\E(B\E)0\017\E[2J\E[1;1H$<200>, 
+	rs2=\E[!p\E[?3;7;19;67h\E[?4l\E(B\E)0\017\E[2J\E[1;1H$<200>, 
+	use=ncr260vt200an, 
+ncr260vt200pp|NCR 2900_260 vt200 with pc+ kybd, 
+	ka1=\E[H, ka3=\EOu, kb2=\E[V, kc3=\E[U, kcub1=\E[D, 
+	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\E[4~, 
+	kend=\E[1~, khome=\E[H, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, 
+	lf1=pf1, lf2=pf2, lf3=pf3, lf4=pf4, rmkx=\E>, smkx=\E=, 
+	use=ncr260vt200an, 
+ncr260vt200wpp|NCR 2900_260 vt200 wide mode pc+  kybd, 
+	cols#132, 
+	cup=\E[%i%p1%d;%p2%dH$<30>, 
+	is2=\E[!p\E[?3;7;19;67h\E[?1;4l\E(B\E)0\017\E[2J\E[1;1H\E>$<200>, 
+	rs2=\E[!p\E[?3;7;19;67h\E[?1;4l\E(B\E)0\017\E[2J\E[1;1H\E>$<200>, 
+	use=ncr260vt200pp, 
+ncr260vt300an|NCR 2900_260 vt300 with ansi kybd, 
+	am, hs, mir, msgr, xenl, xon, 
+	cols#80, lines#24, nlab#32, 
+	acsc=``aaffggjjkkllmmnnooqqssttuuvvwwxx~~, bel=^G, 
+	blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
+	clear=\E[2J\E[1;1H$<20>, cnorm=\E[?25h, cr=\r$<1>, 
+	csr=\E[%i%p1%d;%p2%dr$<5>, cub=\E[%p1%dD$<5>, 
+	cub1=\E[D$<5>, cud=\E[%p1%dB$<5>, cud1=\E[B$<5>, 
+	cuf=\E[%p1%dC$<5>, cuf1=\E[C$<5>, 
+	cup=\E[%i%p1%d;%p2%dH$<10>, cuu=\E[%p1%dA$<5>, 
+	cuu1=\E[A$<5>, dch=\E[%p1%dP$<5>, dch1=\E[1P$<5>, 
+	dl=\E[%p1%dM$<5>, dl1=\E[M$<5>, dsl=\E[0$~\E[1$~, 
+	ech=\E[%p1%dX$<5>, ed=\E[0J, el=\E[0K$<5>, el1=\E[1K$<5>, 
+	fsl=\E[0$}, home=\E[H, hpa=\E[%p1%dG$<40>, ht=^I, hts=\EH, 
+	ich=\E[%p1%d@$<5>, il=\E[%p1%dL$<5>, il1=\E[L$<5>, 
+	ind=\ED$<5>, indn=\E[%p1%dE$<5>, invis=\E[8m, 
+	is2=\E[!p\E[?7;19;67h\E[?1;3;4l\E[1;0%w\E(B\E)0\017\E[2J\E[1;1H\E>$<200>, 
+	ka1=\EOw, ka3=\EOu, kb2=\EOy, kbs=^H, kc1=\EOq, kc3=\EOs, 
+	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
+	kdch1=\E[3~, kent=\EOM, kf0=\EOy, kf1=\EOP, kf10=\E[21~, 
+	kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, 
+	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, 
+	kf19=\E[33~, kf2=\EOQ, kf20=\E[34~, kf21=\E[31~, 
+	kf22=\E[32~, kf23=\E[33~, kf24=\E[34~, kf25=\E[35~, 
+	kf26=\E[1~, kf27=\E[2~, kf28=\E[3~, kf29=\E[4~, kf3=\EOR, 
+	kf30=\E[5~, kf31=\E[6~, kf32=\E[7~, kf33=\E[8~, kf34=\E[9~, 
+	kf35=\E[10~, kf4=\EOS, kf5=\E[M, kf6=\E[17~, kf7=\E[18~, 
+	kf8=\E[19~, kf9=\E[20~, kfnd=\E[1~, khlp=\E[28~, 
+	kich1=\E[2~, knp=\E[6~, kpp=\E[5~, krdo=\E[29~, kslt=\E[4~, 
+	mc0=\E[i, mc4=\E[4i, mc5=\E[5i, nel=\EE, rc=\E8, rev=\E[7m, 
+	ri=\EM$<5>, rmacs=\017$<20>, rmam=\E[?7l, rmir=\E[4l, 
+	rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m, 
+	rs2=\E[!p\E[?7;19;67h\E[?1;3;4l\E[1;0%w\E(B\E)0\017\E[2J\E[1;1H\E>$<200>, 
+	sc=\E7, 
+	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;$<20>, 
+	sgr0=\E[0m\017$<20>, smacs=\016$<20>, smam=\E[?7h, 
+	smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
+	tbc=\E[3g, tsl=\E[2$~\E[1$}, vpa=\E[%p1%dd$<40>, 
+ncr260vt300wan|NCR 2900_260 vt300 wide mode ansi kybd, 
+	cols#132, 
+	cup=\E[%i%p1%d;%p2%dH$<30>, 
+	is2=\E[!p\E[?3;7;19;67h\E[?4l\E[1;0%w\E(B\E)0\017\E[2J\E[1;1H$<200>, 
+	rs2=\E[!p\E[?3;7;19;67h\E[?4l\E[1;0%w\E(B\E)0\017\E[2J\E[1;1H$<200>, 
+	use=ncr260vt300an, 
+ncr260vt300pp|NCR 2900_260 vt300 with pc+ kybd, 
+	ka1=\E[H, ka3=\EOu, kb2=\E[V, kc3=\E[U, kcub1=\E[D, 
+	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\E[4~, 
+	kend=\E[1~, khome=\E[H, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, 
+	lf1=pf1, lf2=pf2, lf3=pf3, lf4=pf4, rmkx=\E>, smkx=\E=, 
+	use=ncr260vt300an, 
+NCR260VT300WPP|ncr260vt300wpp|NCR 2900_260 vt300 wide mode pc+  kybd, 
+	cols#132, 
+	cup=\E[%i%p1%d;%p2%dH$<30>, 
+	is2=\E[!p\E[?3;7;19;67h\E[?1;4l\E[1;0%w\E(B\E)0\017\E[2J\E[1;1H\E>$<200>, 
+	rs2=\E[!p\E[?3;7;19;67h\E[?1;4l\E[1;0%w\E(B\E)0\017\E[2J\E[1;1H\E>$<200>, 
+	use=ncr260vt300pp, 
+# This terminfo file contains color capabilities for the Wyse325 emulation of 
+# the NCR 2900/260C color terminal.  Because of the structure of the command
+# (escape sequence) used to set color attributes, one of the fore/background
+# colors must be preset to a given value. I have set the background color to
+# black.  The user can change this setup by altering the last section of the
+# 'setf' definition.  The escape sequence to set color attributes is 
+#		ESC d y <foreground_color> <background_color> 1  
+# In addition, the background color can be changed through the desk accessories.
+# The capablitiy 'op' sets colors to green on black (default combination).  
+#
+# NOTE:  The NCR Unix System Administrator's Shell will not function properly
+# 	    if the 'pairs' capability is defined. Un-Comment the 'pairs'
+#	    capability and recompile if you wish to have it included. 
+#
+ncr260wy325pp|NCR 2900_260 wyse 325, 
+	am, bw, hs, km, mc5i, mir, msgr, xon, 
+	colors#16, cols#80, lines#24, ncv#33, nlab#32, 
+	acsc=07a?h;j5k3l2m1n8q\:t4u9v=w0x6, bel=^G, blink=\EG2, 
+	cbt=\EI, civis=\E`0, clear=\E*$<10>, cnorm=\E`1, cr=^M, 
+	cub1=\010$<5>, cud1=\n$<5>, cuf1=\014$<5>, 
+	cup=\E=%p1%' '%+%c%p2%' '%+%c$<10>, cuu1=\013$<5>, 
+	cvvis=\E`5, dch1=\EW$<50>, dl1=\ER$<5>, dsl=\E`c, 
+	ed=\Ey$<5>, el=\Et$<5>, fsl=^M, home=\036$<5>, ht=^I, 
+	hts=\E1, il1=\EE$<5>, ind=\n$<5>, invis=\EG1, 
+	is2=\Ee6\Ed/\Ee1\Ed*\Er\EO\E`1\E`\:\E`@\E~!\E"\Ee4\Ex@\E`9\Ee7$<100>, 
+	kDC=\ER, kEND=\EY, kHOM=\E{, kNXT=\EK, kPRT=\E7, kPRV=\EJ, 
+	kRIT=^L, ka1=^^, kb2=\EJ, kbs=^H, kc1=\ET, kc3=\EK, kcbt=\EI, 
+	kcub1=^H, kcud1=^J, kcuf1=^L, kcuu1=^K, kdch1=\EW, kend=\ET, 
+	kf1=^A@\r, kf10=^AI\r, kf11=^AJ\r, kf12=^AK\r, kf13=^AL\r, 
+	kf14=^AM\r, kf15=^AN\r, kf16=^AO\r, kf17=^A`\r, kf18=^Aa\r, 
+	kf19=^Ab\r, kf2=^AA\r, kf20=^Ac\r, kf21=^Ad\r, kf22=^Ae\r, 
+	kf23=^Af\r, kf24=^Ag\r, kf25=^Ah\r, kf26=^Ai\r, kf27=^Aj\r, 
+	kf28=^Ak\r, kf29=^Al\r, kf3=^AB\r, kf30=^Am\r, kf31=^An\r, 
+	kf32=^Ao\r, kf4=^AC\r, kf5=^AD\r, kf6=^AE\r, kf7=^AF\r, 
+	kf8=^AG\r, kf9=^AH\r, khome=^^, kich1=\Eq, knp=\EK, kpp=\EJ, 
+	kprt=\EP, mc0=\EP, mc4=^T, mc5=^R, 
+	mrcup=\Ew@%p1%{48}%+%c%p2%' '%+%c%p3%' '%+%c$<10>, 
+	nel=\037$<5>, rev=\EG4, ri=\Ej$<5>, rmacs=\EH\003\EcB0, 
+	rmam=\Ed., rmir=\Er, rmso=\EG0, rmul=\EG0, rmxon=\Ec20, 
+	rs2=\Ee6\Ed/\Ee1\Ed*\Er\EO\E`1\E`\:\E`@\E~!\E"\Ee4\Ex@\E`9\Ee7$<100>, 
+	setb=\s, 
+	setf=%?%p1%{0}%=%t%'1'%e%p1%{1}%=%t%'2'%e%p1%{2}%=%t%'3'%e%p1%{3}%=%t%'4'%e%p1%{4}%=%t%'5'%e%p1%{5}%=%t%'6'%e%p1%{6}%=%t%'7'%e%p1%{7}%=%t%'@'%e%p1%{8}%=%t%'9'%e%p1%{9}%=%t%'\:'%e%p1%{10}%=%t%';'%e%p1%{11}%=%t%'<'%e%p1%{12}%=%t%'='%e%p1%{13}%=%t%'>'%e%p1%{14}%=%t%'?'%e%p1%{15}%=%t%'8'%;\Edy%c11$<100>, 
+	sgr0=\EG0\EcB0\EcD$<15>, smacs=\EH\002\EcB1, smam=\Ed/, 
+	smir=\Eq, smso=\EGt, smul=\EG8, smxon=\Ec21, tbc=\E0, 
+	tsl=\EF, 
+ncr260wy325wpp|NCR 2900_260 wyse 325 wide mode, 
+	cols#132, 
+	cup=\Ea%i%p1%dR%p2%dC$<30>, 
+	is2=\Ee6\Ed/\Ee1\Ed*\Er\EO\E`1\E`;\E`@\E~!\E"\Ee4\Ex@\E`9\Ee7$<100>, 
+	rs2=\Ee6\Ed/\Ee1\Ed*\Er\EO\E`1\E`;\E`@\E~!\E"\Ee4\Ex@\E`9\Ee7$<100>, 
+	use=ncr260wy325pp, 
+# This definition for Wyse 350 supports several attributes.  This means
+# that it has magic cookies (extra spaces where the attributes begin).
+# Some applications do not function well with magic cookies.  The System
+# Administrator's Shell in NCR Unix SVR4 1.03 is one such application. 
+# If supporting various attributes is not vital, 'xmc#1' and the extra
+# attributes can be removed. 
+# Mapping to ASCII character set ('acsc' capability) can also be 
+# restored if needed.
+# In addition, color capabilities have been added to this file.  The drawback,
+# however, is that the background color has to be black.  The foreground colors
+# are numbered 0 through 15.  
+#
+# NOTE:  The NCR Unix System Administrator's Shell does not function properly
+# 	    with the 'pairs' capability defined as below.  If you wish to
+#	    have it included, Un-comment it and recompile (using 'tic'). 
+#
+ncr260wy350pp|NCR 2900_260 wyse 350, 
+	am, bw, hs, km, mc5i, mir, msgr, xon, 
+	colors#16, cols#80, lines#24, ncv#33, nlab#32, xmc#1, 
+	acsc=07a?h;j5k3l2m1n8q\:t4u9v=w0x6, bel=^G, blink=\EG2, 
+	cbt=\EI, civis=\E`0, clear=\E+$<20>, cnorm=\E`1, cr=^M, 
+	cub1=\010$<5>, cud1=\n$<5>, cuf1=\014$<5>, 
+	cup=\E=%p1%' '%+%c%p2%' '%+%c$<40>, cuu1=\013$<5>, 
+	cvvis=\E`5, dch1=\EW$<50>, dim=\EGp, dl1=\ER$<5>, dsl=\E`c, 
+	ed=\Ey$<5>, el=\Et$<5>, fsl=^M, home=\036$<10>, ht=^I, 
+	hts=\E1, il1=\EE$<5>, ind=\n$<5>, invis=\EG1, 
+	is2=\Ee6\Ed/\Ee1\Ed*\Er\EO\E`1\E`\:\E`@\E~!\E"\Ee4\Ex@\E`9\Ee7$<100>, 
+	kDC=\ER, kEND=\EY, kHOM=\E{, kPRT=\E7, kRIT=^L, ka1=^^, kbs=^H, 
+	kc1=\ET, kc3=\EK, kcbt=\EI, kcub1=^H, kcud1=^J, kcuf1=^L, 
+	kcuu1=^K, kdch1=\EW, kend=\ET, kf1=^A@\r, kf10=^AI\r, 
+	kf11=^AJ\r, kf12=^AK\r, kf13=^AL\r, kf14=^AM\r, kf15=^AN\r, 
+	kf16=^AO\r, kf17=^A`\r, kf18=^Aa\r, kf19=^Ab\r, kf2=^AA\r, 
+	kf20=^Ac\r, kf21=^Ad\r, kf22=^Ae\r, kf23=^Af\r, kf24=^Ag\r, 
+	kf25=^Ah\r, kf26=^Ai\r, kf27=^Aj\r, kf28=^Ak\r, kf29=^Al\r, 
+	kf3=^AB\r, kf30=^Am\r, kf31=^An\r, kf32=^Ao\r, kf4=^AC\r, 
+	kf5=^AD\r, kf6=^AE\r, kf7=^AF\r, kf8=^AG\r, kf9=^AH\r, 
+	khome=^^, kich1=\Eq, knp=\EK, kpp=\EJ, kprt=\EP, 
+	mc0=\EP$<10>, mc4=^T, mc5=^R, 
+	mrcup=\Ew@%p1%{48}%+%c%p2%' '%+%c%p3%' '%+%c$<20>, 
+	nel=\037$<5>, rev=\EG4, ri=\Ej$<5>, rmacs=\EH\003\EcB0, 
+	rmam=\Ed., rmir=\Er, rmso=\EG0, rmul=\EG0, rmxon=\Ec20, 
+	rs2=\Ee6\Ed/\Ee1\Ed*\Er\EO\E`1\E`\:\E`@\E~!\E"\Ee4\Ex@\E`9\Ee7$<100>, 
+	setb=\s, 
+	setf=%?%p1%{0}%=%t%'1'%e%p1%{1}%=%t%'2'%e%p1%{2}%=%t%'3'%e%p1%{3}%=%t%'4'%e%p1%{4}%=%t%'5'%e%p1%{5}%=%t%'6'%e%p1%{6}%=%t%'7'%e%p1%{7}%=%t%'f'%e%p1%{8}%=%t%'a'%e%p1%{9}%=%t%'b'%e%p1%{10}%=%t%'c'%e%p1%{11}%=%t%'e'%e%p1%{12}%=%t%'j'%e%p1%{13}%=%t%'n'%e%p1%{14}%=%t%'o'%e%p1%{15}%=%t%'8'%;\Em0%c$<100>, 
+	sgr0=\EG0\EH\003\EcD, smacs=\EH\002\EcB1, smam=\Ed/, 
+	smir=\Eq, smso=\EGt, smul=\EG8, smxon=\Ec21, tbc=\E0, 
+	tsl=\EF, 
+ncr260wy350wpp|NCR 2900_260 wyse 350 wide mode, 
+	cols#132, 
+	cup=\Ea%i%p1%dR%p2%dC$<30>, 
+	is2=\Ee6\Ed/\Ee1\Ed*\Er\EO\E`1\E`;\E`@\E~!\E"\Ee4\Ex@\E`9\Ee7$<200>, 
+	rs2=\Ee6\Ed/\Ee1\Ed*\Er\EO\E`1\E`;\E`@\E~!\E"\Ee4\Ex@\E`9\Ee7$<200>, 
+	use=ncr260wy350pp, 
+# This definition for Wyse 50+ supports several attributes.  This means
+# that it has magic cookies (extra spaces where the attributes begin).
+# Some applications do not function well with magic cookies.  The System
+# Administrator's Shell in NCR Unix SVR4 1.03 is one such application. 
+# If supporting various attributes is not vital, 'xmc#1' and the extra
+# attributes can be removed. 
+# Mapping to ASCII character set ('acsc' capability) can also be 
+# restored if needed.
+# (ncr260wy50+pp: originally contained commented-out 
+# <acsc=j5k3l2m1n8q:t4u9v=w0x6>, as well as the commented-out one there -- esr)
+ncr260wy50+pp|NCR 2900_260 wyse 50+, 
+	am, bw, hs, km, mc5i, mir, msgr, xon, 
+	cols#80, lines#24, nlab#32, xmc#1, 
+	acsc=0wa_h[jukslrmqnxqzttuyv]wpxv, bel=^G, blink=\EG2, 
+	cbt=\EI$<5>, civis=\E`0, clear=\E+$<20>, cnorm=\E`1, cr=^M, 
+	cub1=\010$<5>, cud1=\n$<5>, cuf1=\014$<5>, 
+	cup=\E=%p1%' '%+%c%p2%' '%+%c$<30>, cuu1=\013$<5>, 
+	cvvis=\E`5, dch1=\EW$<50>, dim=\EGp, dl1=\ER$<5>, dsl=\E`c, 
+	ed=\EY$<5>, el=\ET$<5>, fsl=^M, home=\036$<10>, 
+	ht=\011$<5>, hts=\E1$<5>, il1=\EE$<5>, ind=\n$<5>, 
+	invis=\EG1, 
+	is2=\Ee6\E~"$<100>\E+\Ed/\Ee1\Ed*\Er\EO\E`1\E`\:\E`@\E~!\E"\Ee4\Ex@\E`9\Ee7$<100>, 
+	kDC=\ER, kEND=\EY, kHOM=\E{, kPRT=\E7, kRIT=^L, ka1=^^, kbs=^H, 
+	kc1=\ET, kc3=\EK, kcbt=\EI, kcub1=^H, kcud1=^J, kcuf1=^L, 
+	kcuu1=^K, kdch1=\EW, kend=\ET, kf1=^A@\r, kf10=^AI\r, 
+	kf11=^AJ\r, kf12=^AK\r, kf13=^AL\r, kf14=^AM\r, kf15=^AN\r, 
+	kf16=^AO\r, kf17=^A`\r, kf18=^Aa\r, kf19=^Ab\r, kf2=^AA\r, 
+	kf20=^Ac\r, kf21=^Ad\r, kf22=^Ae\r, kf23=^Af\r, kf24=^Ag\r, 
+	kf25=^Ah\r, kf26=^Ai\r, kf27=^Aj\r, kf28=^Ak\r, kf29=^Al\r, 
+	kf3=^AB\r, kf30=^Am\r, kf31=^An\r, kf32=^Ao\r, kf4=^AC\r, 
+	kf5=^AD\r, kf6=^AE\r, kf7=^AF\r, kf8=^AG\r, kf9=^AH\r, 
+	khome=^^, kich1=\Eq, knp=\EK, kpp=\EJ, kprt=\EP, 
+	mc0=\EP$<10>, mc4=^T, mc5=^R, 
+	mrcup=\Ew@%p1%{48}%+%c%p2%' '%+%c%p3%' '%+%c$<10>, 
+	nel=\037$<5>, rev=\EG4, ri=\Ej$<5>, rmacs=\EH^C, rmam=\Ed., 
+	rmir=\Er, rmso=\EG0, rmul=\EG0, rmxon=\Ec20, 
+	rs2=\Ee6\E~"$<100>\E+\Ed/\Ee1\Ed*\Er\EO\E`1\E`\:\E`@\E~!\E"\Ee4\Ex@\E`9\Ee7$<100>, 
+	sgr0=\EG0\EH\003$<15>, smacs=\EH^B, smam=\Ed/, smir=\Eq, 
+	smso=\EGt, smul=\EG8, smxon=\Ec21, tbc=\E0$<5>, tsl=\EF, 
+ncr260wy50+wpp|NCR 2900_260 wyse 50+ wide mode, 
+	cols#132, 
+	cup=\Ea%i%p1%dR%p2%dC$<30>, 
+	is2=\Ee6\E~"$<100>\E+\Ed/\Ee1\Ed*\Er\EO\E`1\E`;\E`@\E~!\E"\Ee4\Ex@\E`9\Ee7$<200>, 
+	rs2=\Ee6\E~"$<100>\E+\Ed/\Ee1\Ed*\Er\EO\E`1\E`;\E`@\E~!\E"\Ee4\Ex@\E`9\Ee7$<200>, 
+	use=ncr260wy50+pp, 
+ncr260wy60pp|NCR 2900_260 wyse 60, 
+	am, bw, hs, km, mc5i, mir, msgr, xon, 
+	cols#80, lines#24, nlab#32, 
+	acsc=07a?h;j5k3l2m1n8q\:t4u9v=w0x6, bel=^G, blink=\EG2, 
+	cbt=\EI$<15>, civis=\E`0, clear=\E*$<100>, cnorm=\E`1, 
+	cr=^M, cub1=\010$<5>, cud1=\n$<5>, cuf1=\014$<5>, 
+	cup=\E=%p1%' '%+%c%p2%' '%+%c$<10>, cuu1=\013$<5>, 
+	cvvis=\E`5, dch1=\EW$<50>, dl1=\ER$<5>, dsl=\E`c, 
+	ed=\Ey$<5>, el=\Et$<5>, fsl=^M, home=\036$<25>, 
+	ht=\011$<15>, hts=\E1$<15>, il1=\EE$<5>, ind=\n$<5>, 
+	invis=\EG1, 
+	is2=\Ee6\E~4$<100>\E+\Ed/\Ee1\Ed*\Er\EO\E`1\E`\:\E`@\E~!\E"\Ee4\Ex@\E`9\Ee7$<100>, 
+	kDC=\ER, kEND=\EY, kHOM=\E{, kNXT=\EK, kPRT=\E7, kPRV=\EJ, 
+	kRIT=^L, ka1=^^, kb2=\EJ, kbs=^H, kc1=\ET, kc3=\EK, 
+	kcbt=\EI$<15>, kcub1=^H, kcud1=^J, kcuf1=^L, kcuu1=^K, 
+	kdch1=\EW, kend=\ET, kf1=^A@\r, kf10=^AI\r, kf11=^AJ\r, 
+	kf12=^AK\r, kf13=^AL\r, kf14=^AM\r, kf15=^AN\r, kf16=^AO\r, 
+	kf17=^A`\r, kf18=^Aa\r, kf19=^Ab\r, kf2=^AA\r, kf20=^Ac\r, 
+	kf21=^Ad\r, kf22=^Ae\r, kf23=^Af\r, kf24=^Ag\r, kf25=^Ah\r, 
+	kf26=^Ai\r, kf27=^Aj\r, kf28=^Ak\r, kf29=^Al\r, kf3=^AB\r, 
+	kf30=^Am\r, kf31=^An\r, kf32=^Ao\r, kf4=^AC\r, kf5=^AD\r, 
+	kf6=^AE\r, kf7=^AF\r, kf8=^AG\r, kf9=^AH\r, khome=^^, 
+	kich1=\Eq, knp=\EK, kpp=\EJ, kprt=\EP, mc0=\EP, mc4=^T, mc5=^R, 
+	mrcup=\Ew@%p1%{48}%+%c%p2%' '%+%c%p3%' '%+%c$<30>, 
+	nel=\037$<5>, rev=\EG4, ri=\Ej$<5>, rmacs=\EH^C, rmam=\Ed., 
+	rmir=\Er, rmso=\EG0, rmul=\EG0, rmxon=\Ec20, 
+	rs2=\Ee6\E~4$<100>\E+\Ed/\Ee1\Ed*\Er\EO\E`1\E`\:\E`@\E~!\E"\Ee4\Ex@\E`9\Ee7$<100>, 
+	sgr0=\EG0\EcB0\EcD$<15>, smacs=\EH^B, smam=\Ed/, 
+	smir=\Eq, smso=\EGt, smul=\EG8, smxon=\Ec21, tbc=\E0$<15>, 
+	tsl=\EF, 
+ncr260wy60wpp|NCR 2900_260 wyse 60 wide mode, 
+	cols#132, 
+	cup=\Ea%i%p1%dR%p2%dC$<30>, 
+	is2=\Ee6\E~4$<100>\E+\Ed/\Ee1\Ed*\Er\EO\E`1\E`;\E`@\E~!\E"\Ee4\Ex@\E`9\Ee7$<100>, 
+	rs2=\Ee6\E~4$<100>\E+\Ed/\Ee1\Ed*\Er\EO\E`1\E`;\E`@\E~!\E"\Ee4\Ex@\E`9\Ee7$<100>, 
+	use=ncr260wy60pp, 
+ncr160vppp|NCR 2900_160 viewpoint, 
+	use=ncr260vppp, 
+ncr160vpwpp|NCR 2900_160 viewpoint wide mode, 
+	use=ncr260vpwpp, 
+ncr160vt100an|NCR 2900_160 vt100 with ansi kybd, 
+	use=ncr260vt100an, 
+ncr160vt100pp|NCR 2900_160 vt100 with PC+ kybd, 
+	use=ncr260vt100pp, 
+ncr160vt100wan|NCR 2900_160 vt100 wide mode ansi kybd, 
+	use=ncr260vt100wan, 
+ncr160vt100wpp|NCR 2900_160 vt100 wide mode pc+  kybd, 
+	use=ncr260vt100wpp, 
+ncr160vt200an|NCR 2900_160 vt200 with ansi kybd, 
+	use=ncr260vt200an, 
+ncr160vt200pp|NCR 2900_160 vt200 with pc+ kybd, 
+	use=ncr260vt200pp, 
+ncr160vt200wan|NCR 2900_160 vt200 wide mode ansi kybd, 
+	use=ncr260vt200wan, 
+ncr160vt200wpp|NCR 2900_160 vt200 wide mode pc+  kybd, 
+	use=ncr260vt200wpp, 
+ncr160vt300an|NCR 2900_160 vt300 with ansi kybd, 
+	use=ncr260vt300an, 
+ncr160vt300pp|NCR 2900_160 vt300 with pc+ kybd, 
+	use=ncr260vt300pp, 
+ncr160vt300wan|NCR 2900_160 vt300 wide mode ansi kybd, 
+	use=ncr260vt300wan, 
+ncr160vt300wpp|NCR 2900_160 vt300 wide mode pc+  kybd, 
+	use=ncr260vt300wpp, 
+ncr160wy50+pp|NCR 2900_160 wyse 50+, 
+	use=ncr260wy50+pp, 
+ncr160wy50+wpp|NCR 2900_160 wyse 50+ wide mode, 
+	use=ncr260wy50+wpp, 
+ncr160wy60pp|NCR 2900_160 wyse 60, 
+	use=ncr260wy60pp, 
+ncr160wy60wpp|NCR 2900_160 wyse 60 wide mode, 
+	use=ncr260wy60wpp, 
+ncrvt100an|ncrvt100pp|NCR vt100 for the 2900 terminal, 
+	am, hs, mc5i, mir, msgr, xon, 
+	cols#80, it#8, lines#24, nlab#32, 
+	acsc=``aaffgghhiijjkkllmmnnqqttuuvvwwxxyyzz~~, 
+	bel=^G, blink=\E[5m$<30>, bold=\E[1m$<30>, 
+	clear=\E[2J\E[1;1H$<300>, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr$<100>, cub=\E[%p1%dD$<30>, 
+	cub1=\E[D$<2>, cud=\E[%p1%dB$<30>, cud1=\E[B$<2>, 
+	cuf=\E[%p1%dC$<30>, cuf1=\E[C$<2>, 
+	cup=\E[%i%p1%d;%p2%dH$<100>, cuu=\E[%p1%dA$<30>, 
+	cuu1=\E[A$<2>, dch=\E[%p1%dP$<40>, dch1=\E[1P$<10>, 
+	dl=\E[%p1%dM$<70>, dl1=\E[M$<40>, dsl=\E[31l$<25>, 
+	ed=\E[0J$<300>, el=\E[0K$<30>, el1=\E[1K$<30>, 
+	enacs=\E(B\E)0$<40>, fsl=1$<10>, home=\E[H$<2>$<80>, 
+	ht=^I, hts=\EH, il=\E[%p1%dL$<80>, il1=\E[B\E[L$<80>, 
+	ind=\ED, 
+	is2=\E[12h\E[?10l\E%/0n\E[P\031\E[?3l\E(B\E)0$<200>, 
+	kLFT=\E[D, kRIT=\E[C, ka1=\E[H, kbs=^H, kcub1=\E[D, 
+	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kent=^M, kf1=\EOP, 
+	kf2=\EOQ, kf3=\EOR, kf4=\EOS, mc0=\E[i$<100>, nel=\EE, 
+	rc=\E8, rev=\E[7m$<30>, ri=\EM$<50>, rmacs=\017$<90>, 
+	rmir=\E[4l$<80>, rmso=\E[0m$<30>, rmul=\E[0m$<30>, 
+	rs2=\Ec\E[12;31h\E[?3;4;5;10l\E[?6;7;19;25h\E[33;34l\E[0m\E(B\E)0\E%/0n\E[P\031$<200>, 
+	sc=\E7, 
+	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;$<100>, 
+	sgr0=\017\E[0m$<120>, smacs=\016$<90>, smir=\E[4h$<80>, 
+	smso=\E[7m$<30>, smul=\E[4m$<30>, tbc=\E[3g$<40>, 
+	tsl=\E[>+1$<70>, 
+ncrvt100wan|NCRVT100WPP|ncrvt100wpp|NCR VT100 emulation of the 2900 terminal, 
+	cols#132, 
+	is2=\E[12h\E[?10l\E%/0n\E[P\031\E[?3h\E(B\E)0$<200>, 
+	rs2=\Ec\E[12;31h\E[?4;5;10l\E?3;6;7;19;25h\E[33;34l\E[0m\E(B\E)0\E%/0n\E[P\031$<200>, 
+	use=ncrvt100an, 
+#
+# Vendor-supplied NCR termcaps end here
 
 # NCR7900 DIP switches:
 #
@@ -11239,8 +12186,8 @@ scanset|sc410|sc415|Tymshare Scan Set,
 #
 # If you saw a Byte Magazine cover with a terminal on it during the early
 # 1980s, it was probably one of these.  Carl Helmers liked them because
-# they could crank 19.2 and were cheap (that is, until he tried to program
-# one...)
+# they could crank 19.2 and were cheap (that is, he liked them until he tried
+# to program one...)
 #
 
 # Missing in vc303a and vc303 descriptions:  they scroll 2 lines at a time
@@ -13785,11 +14732,10 @@ teletec|Teletec Datascreen,
 	bel=^G, clear=^L, cr=^M, cub1=^H, cud1=^J, cuf1=^_, cuu1=^K, 
 	home=^^, ind=^J, 
 # From: Mark Dornfeld <romwa@ucbvax.berkeley.edu>
-#		This termcap is for the LANPAR Technologies VISION 3220
-#	terminal.  The function key definitions k0-k5 represent the
-#	edit keypad: FIND, INSERT HERE, REMOVE, SELECT, PREV SCREEN,
-#	NEXT SCREEN. The key definitions k6-k9 represent the PF1 to
-#	PF4 keys.
+# This description is for the LANPAR Technologies VISION 3220
+# terminal from 1984/85.  The function key definitions k0-k5 represent the
+# edit keypad: FIND, INSERT HERE, REMOVE, SELECT, PREV SCREEN,
+# NEXT SCREEN. The key definitions k6-k9 represent the PF1 to PF4 keys.
 # (v3220: removed obsolete ":kn#10:",
 # I added <rmam>/<smam> based on the init string -- esr)
 v3220|LANPAR Vision II model 3220/3221/3222, 
@@ -14998,10 +15944,22 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* Added Sony NEWS workstation entries and cit101e-rv.
 #	* Reverted `amiga'; to Kent Polk's version, as I'm told
 #	  the Verkuil entry messes up with Amiga Telnet.
+# 10.2.1 (Sun Mar  8 18:32:04 EST 1998):
+#	* Corrected attributions in 10.2.0 release notes.
+#	* Scanned the Shuford archive for new terminfos and information.
+#	* Removed sgr from qnx entry (Thomas Dickey).
+#	* Added entries for ICL and Kokusai Data Systems terminals.
+#	* Incorporated NCR terminfos from the Boundless Technology FTP site.
+#	* Incorporated att700 from the Boundless Technology FTP site.
+#	* Miscellaneous contact-address and Web-page updates.
 #
-# The following sets edit modes for GNU EMACS
+# The following sets edit modes for GNU EMACS.
 # Local Variables:
 # fill-prefix:"\t"
 # fill-column:75
+# comment-column:0
+# comment-start-skip:"^#+"
+# comment-start:"# "
+# compile-command:"tic -c terminfo.master"
 # End:
 ######## SHANTIH!  SHANTIH!  SHANTIH!

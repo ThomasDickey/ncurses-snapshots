@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_redrawln.c,v 1.2 1998/02/11 12:13:57 tom Exp $")
+MODULE_ID("$Id: lib_redrawln.c,v 1.3 1998/03/15 00:49:06 tom Exp $")
 
 int wredrawln(WINDOW *win, int beg, int num)
 {
@@ -48,20 +48,18 @@ int i;
 	T((T_CALLED("wredrawln(%p,%d,%d)"), win, beg, num));
 
 	if (touchline(win, beg, num) == OK) {
-		size_t len = win->_maxx * sizeof(chtype);
+		size_t len = (win->_maxx + 1) * sizeof(chtype);
 
 		/*
 		 * XSI says that wredrawln() tells the library not to base
 		 * optimization on the contents of the lines that are marked.
 		 * We do that by changing the contents to nulls after touching
 		 * the corresponding lines to get the optimizer's attention.
-		 *
-		 * FIXME: this won't work if the application makes further
-		 * updates before the next refresh.
 		 */
-		for (i = beg; (i < beg + num) && (i < win->_maxy); i++) {
-			memset(win->_line[i].text, 0, len);
+		for (i = beg; (i < beg + num) && (i <= win->_maxy); i++) {
+			memset(curscr->_line[i].text, 0, len);
 		}
+		returnCode(OK);
 	}
-	returnCode(OK);
+	returnCode(ERR);
 }

@@ -38,10 +38,10 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkatrof.c,v 1.3 1998/02/11 12:13:56 tom Exp $")
+MODULE_ID("$Id: lib_slkatrof.c,v 1.4 1998/03/11 19:26:07 juergen Exp $")
 
 int
-slk_attroff(const attr_t attr)
+slk_attroff(const chtype attr)
 {
   T((T_CALLED("slk_attroff(%s)"), _traceattr(attr)));
 

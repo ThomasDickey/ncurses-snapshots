@@ -542,6 +542,7 @@
 ./ncurses/lib_clrbot.c
 ./ncurses/lib_clreol.c
 ./ncurses/lib_color.c
+./ncurses/lib_colorset.c
 ./ncurses/lib_cur_term.c
 ./ncurses/lib_data.c
 ./ncurses/lib_delch.c
@@ -597,11 +598,13 @@
 ./ncurses/lib_slkatrset.c
 ./ncurses/lib_slkattr.c
 ./ncurses/lib_slkclear.c
+./ncurses/lib_slkcolor.c
 ./ncurses/lib_slkinit.c
 ./ncurses/lib_slklab.c
 ./ncurses/lib_slkrefr.c
 ./ncurses/lib_slkset.c
 ./ncurses/lib_slktouch.c
+./ncurses/lib_slkatr_set.c
 ./ncurses/lib_termcap.c
 ./ncurses/lib_ti.c
 ./ncurses/lib_touch.c

@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.60 1998/02/11 12:13:46 tom Exp $ */
+/* $Id: curses.h.in,v 1.61 1998/03/11 19:29:55 juergen Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -412,7 +412,7 @@ extern int clearok(WINDOW *,bool);			/* implemented */
 extern int clrtobot(void);				/* generated */
 extern int clrtoeol(void);				/* generated */
 extern int color_content(short,short*,short*,short*);	/* implemented */
-extern int color_set(short,void*);			/* missing */
+extern int color_set(short,void*);			/* generated */
 extern int COLOR_PAIR(int);				/* generated */
 extern int copywin(const WINDOW*,WINDOW*,int,int,int,int,int,int,int);	/* implemented */
 extern int curs_set(int);				/* implemented */
@@ -681,14 +681,15 @@ extern int setcchar(cchar_t *, wchar_t *, attr_t, short, const void *);	/* missi
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern int setscrreg(int,int);				/* generated */
 extern SCREEN *set_term(SCREEN *);			/* implemented */
-extern int slk_attroff(const attr_t);			/* implemented */
+extern int slk_attroff(const chtype);			/* implemented */
 extern int slk_attr_off(attr_t);			/* generated:WIDEC */
-extern int slk_attron(const attr_t);			/* implemented */
-extern int slk_attr_on(attr_t);				/* generated:WIDEC */
-extern int slk_attrset(const attr_t);			/* implemented */
+extern int slk_attron(const chtype);			/* implemented */
+extern int slk_attr_on(attr_t,void*);			/* generated:WIDEC */
+extern int slk_attrset(const chtype);			/* implemented */
 extern attr_t slk_attr(void);                           /* implemented */
-extern int slk_attr_set(attr_t);			/* generated:WIDEC */
+extern int slk_attr_set(attr_t,short,void*);		/* implemented */
 extern int slk_clear(void);				/* implemented */
+extern int slk_color(short);				/* implemented */
 extern int slk_init(int);				/* implemented */
 extern char *slk_label(int);				/* implemented */
 extern int slk_noutrefresh(void);			/* implemented */
@@ -765,7 +766,7 @@ extern int wchgat(WINDOW *, int, attr_t, short, const void *);/* implemented */
 extern int wclear(WINDOW *);				/* implemented */
 extern int wclrtobot(WINDOW *);				/* implemented */
 extern int wclrtoeol(WINDOW *);				/* implemented */
-extern int wcolor_set(WINDOW*,short,void*);		/* missing */
+extern int wcolor_set(WINDOW*,short,void*);		/* implemented */
 extern void wcursyncup(WINDOW *);			/* implemented */
 extern int wdelch(WINDOW *);				/* implemented */
 extern int wdeleteln(WINDOW *);				/* generated */
@@ -956,6 +957,7 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define clear()        		wclear(stdscr)
 #define clrtobot()     		wclrtobot(stdscr)
 #define clrtoeol()     		wclrtoeol(stdscr)
+#define color_set(c,o)		wcolor_set(stdscr,c,o)
 #define delch()        		wdelch(stdscr)
 #define deleteln()     		winsdelln(stdscr,-1)
 #define echochar(c)		wechochar(stdscr,c)
@@ -1094,9 +1096,9 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define mvwinwstr(win,y,x,c)		(wmove(win,y,x) == ERR ? ERR : winnwstr(stdscr,c,-1))
 #define mvwvline_set(win,y,x,c,n)	(wmove(win,y,x) == ERR ? ERR : wvline_set(win,c,n))
 
-#define slk_attr_off(a)			slk_attroff(a)
-#define slk_attr_on(a)			slk_attron(a)
-#define slk_attr_set(a)			slk_attrset(a)
+#define slk_attr_off(a,v)		((v) ? ERR : slk_attroff(a))
+#define slk_attr_on(a,v)		((v) ? ERR : slk_attron(a))
+
 #define vid_attr(a)			vidattr(a)
 #define vline_set(c,n)			vhline_set(stdscr,c,n)
 #define waddwstr(win,wstr,n)		waddnwstr(win,wstr,-1)
