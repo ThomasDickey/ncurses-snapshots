@@ -24,6 +24,8 @@
 **
 **	The routine _nc_timed_wait().
 **
+**	(This file was originally written by Eric Raymond; however except for
+**	comments, none of the original code remains - T.Dickey).
 */
 
 #include <curses.priv.h>
@@ -44,7 +46,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.18 1997/02/15 18:27:51 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.19 1997/06/14 13:13:45 tom Exp $")
 
 /*
  * We want to define GOOD_SELECT if the last argument of select(2) is

@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_pad.c,v 1.19 1997/05/31 16:36:29 Kriang.Lerdsuwanakij Exp $")
+MODULE_ID("$Id: lib_pad.c,v 1.20 1997/06/15 00:47:49 tom Exp $")
 
 WINDOW *newpad(int l, int c)
 {
@@ -84,6 +84,7 @@ int prefresh(WINDOW *win, int pminrow, int pmincol,
 int pnoutrefresh(WINDOW *win, int pminrow, int pmincol,
 	int sminrow, int smincol, int smaxrow, int smaxcol)
 {
+const	int my_len = 2;	/* parameterize the threshold for hardscroll */
 short	i, j;
 short	m, n;
 short	pmaxrow;
@@ -153,7 +154,7 @@ bool	wide;
 	 * windows).  Note that changing this formula will not break any code,
 	 * merely change the costs of various update cases.
 	 */
-	wide = (smincol <= 1 && smaxcol >= (newscr->_maxx - 1));
+	wide = (smincol < my_len && smaxcol > (newscr->_maxx - my_len));
 
 	for (i = pminrow, m = sminrow + win->_yoffset;
 		i <= pmaxrow && m <= newscr->_maxy;
@@ -178,8 +179,19 @@ bool	wide;
 		    int nind = m + displaced;
 		    if (oline->oldindex < 0
 		     || nind < sminrow
-		     || nind > smaxrow)
+		     || nind > smaxrow) {
 			nind = _NEWINDEX;
+		    } else if (displaced) {
+			register struct ldat *pline = &curscr->_line[nind];
+			for (j = 0; j <= my_len; j++) {
+			    int k = newscr->_maxx - j;
+			    if (pline->text[j] != nline->text[j]
+			     || pline->text[k] != nline->text[k]) {
+				nind = _NEWINDEX;
+				break;
+			    }
+			}
+		    }
 
 		    nline->oldindex = nind;
 		}

@@ -123,15 +123,14 @@ Thomas Dickey (maintainer since 1.9.9e):
 	configuration scripts, porting, mods to adhere to XSI Curses in the
 	areas of background color, terminal modes.  Also memory leak testing,
 	the wresize extension and numerous bug fixes (more than half of those
-	enumerated in NEWS since release 1.9.2d)
+	enumerated in NEWS beginning with the internal release 1.8.9).
 
 Eric S. Raymond:
 	the man pages, infocmp(1), tput(1), clear(1), captoinfo(1), tset(1),
-	toe(1), most of tic(1), src/lib_twait.c, trace levels, the HTML intro,
-	wgetnstr() and many other entry points,	the cursor-movement
-	optimization, the scroll-pack optimizer for vertical motions,
-	the mouse interface and xterm mouse support, and the ncurses
-	test program.
+	toe(1), most of tic(1), trace levels, the HTML intro, wgetnstr() and
+	many other entry points, the cursor-movement optimization, the
+	scroll-pack optimizer for vertical motions, the mouse interface and
+	xterm mouse support, and the ncurses test program.
 
 Juergen Pfeifer
 	The menu and form code, and the Ada95 binding.  Ongoing support for

@@ -18,12 +18,19 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.46 1997/05/31 13:45:39 J.T.Conklin Exp $ */
+/* $Id: curses.h.in,v 1.47 1997/06/14 20:18:02 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
+
 #define CURSES 1
 #define CURSES_H 1
+
+/* This should be defined for the enhanced functionality to be visible.
+ * However, none of the wide-character (enhanced) functionality is implemented.
+ * So we do not define it (yet).
+#define _XOPEN_CURSES 1
+ */
 
 /* These are defined only in curses.h, and are used for conditional compiles */
 #define NCURSES_VERSION_MAJOR @NCURSES_MAJOR@
@@ -288,9 +295,13 @@ struct _win_st {
 	short   _yoffset;	/* real begy is _begy + _yoffset */
 };
 
-extern WINDOW   *stdscr, *curscr, *newscr;
+extern WINDOW   *stdscr;
+extern WINDOW   *curscr;
+extern WINDOW   *newscr;
 
-extern int	LINES, COLS, TABSIZE;
+extern int	LINES;
+extern int	COLS;
+extern int	TABSIZE;
 
 /*
  * This global was an undocumented feature under AIX curses.
@@ -389,6 +400,7 @@ extern int clearok(WINDOW *,bool);			/* implemented */
 extern int clrtobot(void);				/* generated */
 extern int clrtoeol(void);				/* generated */
 extern int color_content(short,short*,short*,short*);	/* implemented */
+extern int color_set(short,void*);			/* missing */
 extern int COLOR_PAIR(int);				/* generated */
 extern int copywin(const WINDOW*,WINDOW*,int,int,int,int,int,int,int);	/* implemented */
 extern int curs_set(int);				/* implemented */
@@ -406,6 +418,7 @@ extern int echo(void);					/* implemented */
 extern int echochar(const chtype);			/* generated */
 #ifdef _XOPEN_SOURCE_EXTENDED
 extern int echo_wchar(const cchar_t *);			/* missing */
+extern int erasewchar(wchar_t*);			/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern int endwin(void);				/* implemented */
 extern char erasechar(void);				/* implemented */
@@ -429,7 +442,7 @@ extern int getstr(char *);				/* generated */
 #ifdef _XOPEN_SOURCE_EXTENDED
 extern int get_wch(wint_t *);				/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
-extern WINDOW *getwin(FILE *);				/* not in XPG4 */
+extern WINDOW *getwin(FILE *);				/* implemented */
 #ifdef _XOPEN_SOURCE_EXTENDED
 extern int get_wstr(wint_t *);				/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
@@ -686,7 +699,8 @@ extern int start_color(void);				/* implemented */
 extern WINDOW *subpad(WINDOW *, int, int, int, int);	/* implemented */
 extern WINDOW *subwin(WINDOW *,int,int,int,int);	/* implemented */
 extern int syncok(WINDOW *, bool);			/* implemented */
-extern attr_t termattrs(void);				/* implemented */
+extern chtype termattrs(void);				/* implemented */
+extern attr_t term_attrs(void);				/* missing */
 extern char *termname(void);				/* implemented */
 extern int tigetflag(const char *);			/* implemented */
 extern int tigetnum(const char *);			/* implemented */
@@ -747,6 +761,7 @@ extern int wchgat(WINDOW *, int, attr_t, short, const void *);/* implemented */
 extern int wclear(WINDOW *);				/* implemented */
 extern int wclrtobot(WINDOW *);				/* implemented */
 extern int wclrtoeol(WINDOW *);				/* implemented */
+extern int wcolor_set(WINDOW*,short,void*);		/* missing */
 extern void wcursyncup(WINDOW *);			/* implemented */
 extern int wdelch(WINDOW *);				/* implemented */
 extern int wdeleteln(WINDOW *);				/* generated */
