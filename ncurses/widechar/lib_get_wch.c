@@ -38,8 +38,9 @@
 */
 
 #include <curses.priv.h>
+#include <ctype.h>
 
-MODULE_ID("$Id: lib_get_wch.c,v 1.7 2004/02/21 22:22:22 tom Exp $")
+MODULE_ID("$Id: lib_get_wch.c,v 1.8 2004/07/10 22:38:16 tom Exp $")
 
 #if HAVE_MBTOWC && HAVE_MBLEN
 #define reset_mbytes(state) mblen(NULL, 0), mbtowc(NULL, NULL, 0)
@@ -96,6 +97,18 @@ wget_wch(WINDOW *win, wint_t * result)
 	    code = ERR;
 	    break;
 	} else {
+	    if ((is8bits(value) && isprint(value))
+		|| (SP->_legacy_coding && (value >= 160))) {
+		/*
+		 * FIXME: is there a case with multibyte strings where the
+		 * bytes after the first could be printable?
+		 */
+		if (count != 0) {
+		    ungetch(value);
+		    code = ERR;
+		}
+		break;
+	    }
 	    buffer[count++] = UChar(value);
 	    reset_mbytes(state);
 	    status = count_mbytes(buffer, count, state);

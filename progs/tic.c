@@ -45,20 +45,46 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.111 2004/04/17 22:20:51 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.114 2004/07/10 18:18:59 tom Exp $")
 
 const char *_nc_progname = "tic";
 
 static FILE *log_fp;
 static FILE *tmp_fp;
+static bool capdump = FALSE;	/* running as infotocap? */
+static bool infodump = FALSE;	/* running as captoinfo? */
 static bool showsummary = FALSE;
 static const char *to_remove;
-static int tparm_errs;
 
-static void (*save_check_termtype) (TERMTYPE *);
-static void check_termtype(TERMTYPE * tt);
+static void (*save_check_termtype) (TERMTYPE *, bool);
+static void check_termtype(TERMTYPE *tt, bool);
 
-static const char usage_string[] = "[-V] [-v[n]] [-e names] [-o dir] [-R name] [-CILNTcfrswx1] source-file\n";
+static const char usage_string[] = "\
+[-e names] \
+[-o dir] \
+[-R name] \
+[-v[n]] \
+[-V] \
+[-w[n]] \
+[-\
+1\
+a\
+C\
+c\
+f\
+G\
+g\
+I\
+L\
+N\
+r\
+s\
+T\
+t\
+U\
+x\
+] \
+source-file\n";
 
 static void
 cleanup(void)
@@ -109,6 +135,7 @@ usage(void)
 #if NCURSES_XNAMES
 	"  -t         suppress commented-out capabilities",
 #endif
+	"  -U         suppress post-processing of entries",
 	"  -V         print version",
 	"  -v[n]      set verbosity level",
 	"  -w[n]      set format width for translation output",
@@ -436,9 +463,8 @@ main(int argc, char *argv[])
 
     int width = 60;
     bool formatted = FALSE;	/* reformat complex strings? */
+    bool literal = FALSE;	/* suppress post-processing? */
     int numbers = 0;		/* format "%'char'" to/from "%{number}" */
-    bool infodump = FALSE;	/* running as captoinfo? */
-    bool capdump = FALSE;	/* running as infotocap? */
     bool forceresolve = FALSE;	/* force resolution */
     bool limited = TRUE;
     char *tversion = (char *) NULL;
@@ -470,7 +496,7 @@ main(int argc, char *argv[])
      * be optional.
      */
     while ((this_opt = getopt(argc, argv,
-			      "0123456789CILNR:TVace:fGgo:rstvwx")) != EOF) {
+			      "0123456789CILNR:TUVace:fGgo:rstvwx")) != EOF) {
 	if (isdigit(this_opt)) {
 	    switch (last_opt) {
 	    case 'v':
@@ -505,12 +531,16 @@ main(int argc, char *argv[])
 	    break;
 	case 'N':
 	    smart_defaults = FALSE;
+	    literal = TRUE;
 	    break;
 	case 'R':
 	    tversion = optarg;
 	    break;
 	case 'T':
 	    limited = FALSE;
+	    break;
+	case 'U':
+	    literal = TRUE;
 	    break;
 	case 'V':
 	    puts(curses_version());
@@ -567,8 +597,8 @@ main(int argc, char *argv[])
     set_trace_level(debug_level);
 
     if (_nc_tracing) {
-	save_check_termtype = _nc_check_termtype;
-	_nc_check_termtype = check_termtype;
+	save_check_termtype = _nc_check_termtype2;
+	_nc_check_termtype2 = check_termtype;
     }
 #if !HAVE_BIG_CORE
     /*
@@ -653,12 +683,14 @@ main(int argc, char *argv[])
 	_nc_set_writedir(outdir);
 #endif /* HAVE_BIG_CORE */
     _nc_read_entry_source(tmp_fp, (char *) NULL,
-			  !smart_defaults, FALSE,
-			  (check_only || infodump || capdump) ? NULLHOOK : immedhook);
+			  !smart_defaults || literal, FALSE,
+			  ((check_only || infodump || capdump)
+			   ? NULLHOOK
+			   : immedhook));
 
     /* do use resolution */
     if (check_only || (!infodump && !capdump) || forceresolve) {
-	if (!_nc_resolve_uses(TRUE) && !check_only) {
+	if (!_nc_resolve_uses2(TRUE, literal) && !check_only) {
 	    cleanup();
 	    ExitProgram(EXIT_FAILURE);
 	}
@@ -772,7 +804,7 @@ TERMINAL *cur_term;		/* tweak to avoid linking lib_cur_term.c */
  * Check if the alternate character-set capabilities are consistent.
  */
 static void
-check_acs(TERMTYPE * tp)
+check_acs(TERMTYPE *tp)
 {
     if (VALID_STRING(acs_chars)) {
 	const char *boxes = "lmkjtuvwqxn";
@@ -808,7 +840,7 @@ check_acs(TERMTYPE * tp)
  * Check if the color capabilities are consistent
  */
 static void
-check_colors(TERMTYPE * tp)
+check_colors(TERMTYPE *tp)
 {
     if ((max_colors > 0) != (max_pairs > 0)
 	|| ((max_colors > max_pairs) && (initialize_pair == 0)))
@@ -877,7 +909,7 @@ keypad_index(const char *string)
  * is mapped inconsistently.
  */
 static void
-check_keypad(TERMTYPE * tp)
+check_keypad(TERMTYPE *tp)
 {
     char show[80];
 
@@ -1075,7 +1107,7 @@ expected_params(const char *name)
  * markers.
  */
 static void
-check_params(TERMTYPE * tp, const char *name, char *value)
+check_params(TERMTYPE *tp, const char *name, char *value)
 {
     int expected = expected_params(name);
     int actual = 0;
@@ -1200,20 +1232,22 @@ similar_sgr(int num, char *a, char *b)
     return TRUE;
 }
 
-static void
-check_sgr(TERMTYPE * tp, char *zero, int num, char *cap, const char *name)
+static char *
+check_sgr(TERMTYPE *tp, char *zero, int num, char *cap, const char *name)
 {
-    char *test = tparm(set_attributes,
-		       num == 1,
-		       num == 2,
-		       num == 3,
-		       num == 4,
-		       num == 5,
-		       num == 6,
-		       num == 7,
-		       num == 8,
-		       num == 9);
-    tparm_errs += _nc_tparm_err;
+    char *test;
+
+    _nc_tparm_err = 0;
+    test = tparm(set_attributes,
+		 num == 1,
+		 num == 2,
+		 num == 3,
+		 num == 4,
+		 num == 5,
+		 num == 6,
+		 num == 7,
+		 num == 8,
+		 num == 9);
     if (test != 0) {
 	if (PRESENT(cap)) {
 	    if (!similar_sgr(num, test, cap)) {
@@ -1228,6 +1262,9 @@ check_sgr(TERMTYPE * tp, char *zero, int num, char *cap, const char *name)
     } else if (PRESENT(cap)) {
 	_nc_warning("sgr(%d) missing, but %s present", num, name);
     }
+    if (_nc_tparm_err)
+	_nc_warning("stack error in sgr(%d) string", num);
+    return test;
 }
 
 #define CHECK_SGR(num,name) check_sgr(tp, zero, num, name, #name)
@@ -1236,7 +1273,7 @@ check_sgr(TERMTYPE * tp, char *zero, int num, char *cap, const char *name)
  * logic that reads a terminfo entry)
  */
 static void
-check_termtype(TERMTYPE * tp)
+check_termtype(TERMTYPE *tp, bool literal)
 {
     bool conflict = FALSE;
     unsigned j, k;
@@ -1247,37 +1284,39 @@ check_termtype(TERMTYPE * tp)
      * a given string (e.g., KEY_END and KEY_LL).  But curses will only
      * return one (the last one assigned).
      */
-    memset(fkeys, 0, sizeof(fkeys));
-    for (j = 0; _nc_tinfo_fkeys[j].code; j++) {
-	char *a = tp->Strings[_nc_tinfo_fkeys[j].offset];
-	bool first = TRUE;
-	if (!VALID_STRING(a))
-	    continue;
-	for (k = j + 1; _nc_tinfo_fkeys[k].code; k++) {
-	    char *b = tp->Strings[_nc_tinfo_fkeys[k].offset];
-	    if (!VALID_STRING(b)
-		|| fkeys[k])
+    if (!(_nc_syntax == SYN_TERMCAP && capdump)) {
+	memset(fkeys, 0, sizeof(fkeys));
+	for (j = 0; _nc_tinfo_fkeys[j].code; j++) {
+	    char *a = tp->Strings[_nc_tinfo_fkeys[j].offset];
+	    bool first = TRUE;
+	    if (!VALID_STRING(a))
 		continue;
-	    if (!strcmp(a, b)) {
-		fkeys[j] = 1;
-		fkeys[k] = 1;
-		if (first) {
-		    if (!conflict) {
-			_nc_warning("Conflicting key definitions (using the last)");
-			conflict = TRUE;
+	    for (k = j + 1; _nc_tinfo_fkeys[k].code; k++) {
+		char *b = tp->Strings[_nc_tinfo_fkeys[k].offset];
+		if (!VALID_STRING(b)
+		    || fkeys[k])
+		    continue;
+		if (!strcmp(a, b)) {
+		    fkeys[j] = 1;
+		    fkeys[k] = 1;
+		    if (first) {
+			if (!conflict) {
+			    _nc_warning("Conflicting key definitions (using the last)");
+			    conflict = TRUE;
+			}
+			fprintf(stderr, "... %s is the same as %s",
+				keyname(_nc_tinfo_fkeys[j].code),
+				keyname(_nc_tinfo_fkeys[k].code));
+			first = FALSE;
+		    } else {
+			fprintf(stderr, ", %s",
+				keyname(_nc_tinfo_fkeys[k].code));
 		    }
-		    fprintf(stderr, "... %s is the same as %s",
-			    keyname(_nc_tinfo_fkeys[j].code),
-			    keyname(_nc_tinfo_fkeys[k].code));
-		    first = FALSE;
-		} else {
-		    fprintf(stderr, ", %s",
-			    keyname(_nc_tinfo_fkeys[k].code));
 		}
 	    }
+	    if (!first)
+		fprintf(stderr, "\n");
 	}
-	if (!first)
-	    fprintf(stderr, "\n");
     }
 
     for (j = 0; j < NUM_STRINGS(tp); j++) {
@@ -1309,23 +1348,32 @@ check_termtype(TERMTYPE * tp)
     ANDMISSING(change_scroll_region, save_cursor);
     ANDMISSING(change_scroll_region, restore_cursor);
 
-    tparm_errs = 0;
     if (PRESENT(set_attributes)) {
-	char *zero = tparm(set_attributes, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	char *zero = 0;
 
-	zero = strdup(zero);
-	CHECK_SGR(1, enter_standout_mode);
-	CHECK_SGR(2, enter_underline_mode);
-	CHECK_SGR(3, enter_reverse_mode);
-	CHECK_SGR(4, enter_blink_mode);
-	CHECK_SGR(5, enter_dim_mode);
-	CHECK_SGR(6, enter_bold_mode);
-	CHECK_SGR(7, enter_secure_mode);
-	CHECK_SGR(8, enter_protected_mode);
-	CHECK_SGR(9, enter_alt_charset_mode);
-	free(zero);
-	if (tparm_errs)
-	    _nc_warning("stack error in sgr string");
+	_nc_tparm_err = 0;
+	if (PRESENT(exit_attribute_mode)) {
+	    zero = strdup(CHECK_SGR(0, exit_attribute_mode));
+	} else {
+	    zero = strdup(tparm(set_attributes, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+	}
+	if (_nc_tparm_err)
+	    _nc_warning("stack error in sgr(0) string");
+
+	if (zero != 0) {
+	    CHECK_SGR(1, enter_standout_mode);
+	    CHECK_SGR(2, enter_underline_mode);
+	    CHECK_SGR(3, enter_reverse_mode);
+	    CHECK_SGR(4, enter_blink_mode);
+	    CHECK_SGR(5, enter_dim_mode);
+	    CHECK_SGR(6, enter_bold_mode);
+	    CHECK_SGR(7, enter_secure_mode);
+	    CHECK_SGR(8, enter_protected_mode);
+	    CHECK_SGR(9, enter_alt_charset_mode);
+	    free(zero);
+	} else {
+	    _nc_warning("sgr(0) did not return a value");
+	}
     } else if (PRESENT(exit_attribute_mode)) {
 	if (_nc_syntax == SYN_TERMINFO)
 	    _nc_warning("missing sgr string");
@@ -1346,5 +1394,5 @@ check_termtype(TERMTYPE * tp)
      * Finally, do the non-verbose checks
      */
     if (save_check_termtype != 0)
-	save_check_termtype(tp);
+	save_check_termtype(tp, literal);
 }

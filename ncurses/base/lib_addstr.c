@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -44,7 +44,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.39 2003/12/06 18:04:33 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.40 2004/07/10 20:39:03 tom Exp $")
 
 NCURSES_EXPORT(int)
 waddnstr(WINDOW *win, const char *astr, int n)
@@ -131,6 +131,7 @@ _nc_wchstrlen(const cchar_t * s)
 NCURSES_EXPORT(int)
 wadd_wchnstr(WINDOW *win, const cchar_t * astr, int n)
 {
+    NCURSES_CH_T blank = NewChar(BLANK_TEXT);
     NCURSES_SIZE_T y = win->_cury;
     NCURSES_SIZE_T x = win->_curx;
     int code = OK;
@@ -154,20 +155,20 @@ wadd_wchnstr(WINDOW *win, const cchar_t * astr, int n)
     start = x;
     end = x + n - 1;
     if (isnac(line->text[x])) {
-	line->text[x - 1] = win->_nc_bkgd;
+	line->text[x - 1] = _nc_render(win, blank);
 	--start;
     }
     for (i = 0; i < n && x <= win->_maxx; ++i) {
-	line->text[x++] = astr[i];
+	line->text[x++] = _nc_render(win, astr[i]);
 	if (wcwidth(CharOf(astr[i])) > 1) {
 	    if (x <= win->_maxx)
 		AddAttr(line->text[x++], WA_NAC);
 	    else
-		line->text[x - 1] = win->_nc_bkgd;
+		line->text[x - 1] = _nc_render(win, blank);
 	}
     }
     if (x <= win->_maxx && isnac(line->text[x])) {
-	line->text[x] = win->_nc_bkgd;
+	line->text[x] = _nc_render(win, blank);
 	++end;
     }
     CHANGED_RANGE(line, start, end);

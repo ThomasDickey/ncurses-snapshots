@@ -1,4 +1,4 @@
-.\" $Id: terminfo.tail,v 1.40 2004/05/23 01:13:40 tom Exp $
+.\" $Id: terminfo.tail,v 1.41 2004/07/05 13:08:56 tom Exp $
 .\" Beginning of terminfo.tail file
 .\" See "terminfo.head" for copyright.
 .ps +1
@@ -278,7 +278,7 @@ Thus the model 33 teletype is described as
 .\".in +2
 .ft R
 .PP
-while the Lear Siegler \s-1ADM\-3\s0 is described as
+while the Lear Siegler \s-1ADM-3\s0 is described as
 .PP
 .DT
 .nf
@@ -394,11 +394,11 @@ It is possible to form else-if's a la Algol 68:
 .IP
 where c\di\u are conditions, b\di\u are bodies.
 .IP
-Use the \fB\-f\fP option of \fBtic\fP or \fBinfocmp\fP to see
+Use the \fB-f\fP option of \fBtic\fP or \fBinfocmp\fP to see
 the structure of if-the-else's.
 Some strings, e.g., \fBsgr\fP can be very complicated when written
 on one line.
-The \fB\-f\fP option splits the string into lines with the parts indented.
+The \fB-f\fP option splits the string into lines with the parts indented.
 .PP
 Binary operations are in postfix form with the operands in the usual order.
 That is, to get x-5 one would use "%gx%{5}%-".

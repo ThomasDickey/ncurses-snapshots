@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.75 2004/07/04 00:49:07 tom Exp $
+-- $Id: INSTALL,v 1.76 2004/07/10 11:13:26 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -18,9 +18,6 @@ below.
 
 If you are converting from BSD curses and do not have root access, be sure
 to read the BSD CONVERSION NOTES section below.
-
-If you are trying to build GNU Emacs using ncurses for terminal support,
-read the USING NCURSES WITH EMACS section below.
 
 If you are trying to build applications using gpm with ncurses,
 read the USING NCURSES WITH GPM section below.
@@ -1197,17 +1194,6 @@ USING NCURSES WITH AFS:
 	AFS treats each directory as a separate logical filesystem, you
 	can't hard-link across them.  The --enable-symlinks option copes
 	with this by making tic use symbolic links.
-
-USING NCURSES WITH EMACS:
-	GNU Emacs has its own termcap support.  By default, it uses a mixture
-	of those functions and code linked from the host system's libraries.
-	You need to foil this and shut out the GNU termcap library entirely.
-
-	In order to do this, hack the Linux config file (s/linux.h) to contain
-	a #define TERMINFO and set the symbol LIBS_TERMCAP to "-lncurses".
-
-	We have submitted such a change for the 19.30 release, so it may
-	already be applied in your sources -- check for the #define TERMINFO.
 
 USING NCURSES WITH GPM:
 	Ncurses 4.1 and up can be configured to use GPM (General Purpose Mouse)

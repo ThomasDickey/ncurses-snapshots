@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.236 $
-#	$Date: 2004/07/04 00:32:17 $
+#	$Revision: 1.241 $
+#	$Date: 2004/07/10 19:38:47 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a newer version which differs in some cosmetic details; we have decided
@@ -707,12 +707,12 @@ linux-basic|linux console,
 	kf19=\E[33~, kf2=\E[[B, kf20=\E[34~, kf3=\E[[C, kf4=\E[[D, 
 	kf5=\E[[E, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
 	khome=\E[1~, kich1=\E[2~, kmous=\E[M, knp=\E[6~, kpp=\E[5~, 
-	kspd=^Z, nel=^M^J, rc=\E8, rev=\E[7m, ri=\EM, rmir=\E[4l, 
-	rmso=\E[27m, rmul=\E[24m, rs1=\Ec\E]R, sc=\E7, 
+	kspd=^Z, nel=^M^J, rc=\E8, rev=\E[7m, ri=\EM, rmam=\E[?7l, 
+	rmir=\E[4l, rmso=\E[27m, rmul=\E[24m, rs1=\Ec\E]R, sc=\E7, 
 	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m, 
-	smir=\E[4h, smul=\E[4m, tbc=\E[3g, u6=\E[%i%d;%dR, 
-	u7=\E[6n, u8=\E[?6c, u9=\E[c, vpa=\E[%i%p1%dd, 
-	use=klone+sgr, use=ecma+color, 
+	smam=\E[?7h, smir=\E[4h, smul=\E[4m, tbc=\E[3g, 
+	u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?6c, u9=\E[c, 
+	vpa=\E[%i%p1%dd, use=klone+sgr, use=ecma+color, 
 
 linux-m|Linux console no color, 
 	colors@, pairs@, 
@@ -2911,6 +2911,7 @@ xterm-xf86-v44|xterm terminal emulator (XFree86 4.4 Window System),
 # This is the most common alias for xterm-new.
 xterm-xfree86|xterm terminal emulator (XFree86), 
 	use=xterm-new, 
+#	use=xterm-old, 
 
 # This version is current (XFree86 xterm patch #192).
 xterm-new|modern xterm terminal emulator, 
@@ -3093,7 +3094,6 @@ xterm-24|vs100|xterms|xterm terminal emulator (X Window System),
 
 # This is xterm for ncurses.
 xterm|xterm terminal emulator (X Window System), 
-#	use=xterm-old, 
 	use=xterm-new, 
 
 # These entries allow access to the X titlebar and icon name as a status line. 
@@ -3547,8 +3547,12 @@ xterms-sun|small (80x24) xterm with sunFunctionKeys true,
 	cols#80, lines#24, use=xterm-sun, 
 
 # This is for the extensible terminal emulator on the X11R6 contrib tape.
+# It corresponds to emu's internal emulation:
+#	emu -term emu
+# emu's default sets TERM to "xterm", but that doesn't work well -TD
+# fixes: remove bogus rmacs/smacs, change oc to op, add bce, am -TD
 emu|emu native mode, 
-	mir, msgr, xon, 
+	am, bce, mir, msgr, xon, 
 	colors#15, cols#80, it#8, lines#24, pairs#64, vt#200, 
 	acsc=61a\202f\260g2j\213k\214l\215m\216n\217o\220q\222s\224t\225u\226v\227w\230x\231~\244, 
 	bel=^G, blink=\ES\EW, bold=\ES\EU, civis=\EZ, 
@@ -3557,20 +3561,50 @@ emu|emu native mode,
 	cuf=\Eq%p1%d;, cuf1=\ED, cup=\EE%p1%d;%p2%d;, 
 	cuu=\Ep-%p1%d;, cuu1=\EA, dch=\EI%p1%d;, dch1=\EI1;, 
 	dl=\ER%p1%d;, dl1=\ER1;, ech=\Ej%p1%d;, ed=\EN, el=\EK, 
-	el1=\EL, enacs=\0, home=\EE0;0;, ht=^I, hts=\Eh, 
-	il=\EQ%p1%d;, il1=\EQ1;, ind=\EG, is2=\ES\Er0;\Es0;, 
-	kbs=^H, kcub1=\EC, kcud1=\EB, kcuf1=\ED, kcuu1=\EA, 
-	kdch1=\177, kent=^M, kf0=\EF00, kf1=\EF01, kf10=\EF10, 
-	kf11=\EF11, kf12=\EF12, kf13=\EF13, kf14=\EF14, kf15=\EF15, 
-	kf16=\EF16, kf17=\EF17, kf18=\EF18, kf19=\EF19, kf2=\EF02, 
-	kf20=\EF20, kf3=\EF03, kf4=\EF04, kf5=\EF05, kf6=\EF06, 
-	kf7=\EF07, kf8=\EF08, kf9=\EF09, kfnd=\Efind, kich1=\Eins, 
-	knp=\Enext, kpp=\Eprior, kslt=\Esel, oc=\Es0;\Er0;, 
-	rev=\ES\ET, ri=\EF, rmacs=\0, rmir=\EX, rmso=\ES, rmul=\ES, 
-	rs2=\ES\Es0;\Er0;, setab=\Es%i%p1%d;, 
-	setaf=\Er%i%p1%d;, sgr0=\ES, smacs=\0, smir=\EY, 
+	el1=\EL, home=\EE0;0;, ht=^I, hts=\Eh, il=\EQ%p1%d;, 
+	il1=\EQ1;, ind=\EG, is2=\ES\Er0;\Es0;, kbs=^H, kcub1=\EC, 
+	kcud1=\EB, kcuf1=\ED, kcuu1=\EA, kdch1=\177, kent=^M, 
+	kf0=\EF00, kf1=\EF01, kf10=\EF10, kf11=\EF11, kf12=\EF12, 
+	kf13=\EF13, kf14=\EF14, kf15=\EF15, kf16=\EF16, kf17=\EF17, 
+	kf18=\EF18, kf19=\EF19, kf2=\EF02, kf20=\EF20, kf3=\EF03, 
+	kf4=\EF04, kf5=\EF05, kf6=\EF06, kf7=\EF07, kf8=\EF08, 
+	kf9=\EF09, kfnd=\Efind, kich1=\Eins, knp=\Enext, 
+	kpp=\Eprior, kslt=\Esel, op=\Es0;\Er0;, rev=\ES\ET, ri=\EF, 
+	rmir=\EX, rmso=\ES, rmul=\ES, rs2=\ES\Es0;\Er0;, 
+	setab=\Es%i%p1%d;, setaf=\Er%i%p1%d;, sgr0=\ES, smir=\EY, 
 	smso=\ES\ET, smul=\ES\EV, tbc=\Ej, 
 
+# vt220 Terminfo entry for the Emu emulation, corresponds to
+#	emu -term vt220
+# with NumLock set (to make the keypad transmit kf0-kf9).
+# fixes: add am, xenl, corrected sgr0 -TD
+emu-220|Emu-220 (vt200-7bit mode), 
+	am, xenl, xon, 
+	cols#80, it#8, lines#24, vt#200, 
+	acsc=aaffggjjkkllmmnnooqqssttuuvvwwxx~~, bel=^G, 
+	blink=\E[0;5m, bold=\E[0;1m, civis=\E[?25l, 
+	clear=\E[2J\E[H, cnorm=\E[?25h, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=\E[1D, 
+	cud=\E[%p1%dB, cud1=\E[1B, cuf=\E[%p1%dC, cuf1=\E[1C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[1A, 
+	dch=\E[%p1%dP, dch1=\E[1P, dl=\E[%p1%dM, dl1=\E[1M, 
+	ed=\E[0J, el=\E[0K, el1=\E[1K, enacs=\E)0, home=\E[H, ht=^I, 
+	hts=\EH, if=/usr/share/tabset/vt300, il=\E[%p1%dL, 
+	il1=\E[1L, ind=\ED, is2=\E>\E[?1l\E[?3l\E[4l\E[?7h, 
+	kbs=^H, kcmd=\E[29~, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, 
+	kcuu1=\E[A, kdch1=\E[3~, kent=\EOM, kf0=\EOp, kf1=\EOq, 
+	kf10=\EOl, kf11=\EOm, kf12=\EOn, kf13=\EOP, kf14=\EOQ, 
+	kf15=\EOR, kf16=\EOS, kf2=\EOr, kf26=\E[17~, kf27=\E[18~, 
+	kf28=\E[19~, kf29=\E[20~, kf3=\EOs, kf30=\E[21~, 
+	kf34=\E[26~, kf37=\E[31~, kf38=\E[32~, kf39=\E[33~, 
+	kf4=\EOt, kf40=\E[34~, kf5=\EOu, kf6=\EOv, kf7=\EOw, 
+	kf8=\EOx, kf9=\EOy, kfnd=\E[1~, khlp=\E[28~, kich1=\E[2~, 
+	knp=\E[6~, kpp=\E[5~, kslt=\E[4~, rc=\E8, rev=\E[0;7m, 
+	ri=\EM, rmacs=^O, rmcup=\E>, rmkx=\E>, rmso=\E[m, rmul=\E[m, 
+	rs2=\E[4l\E[34l\E[?1l\E[?3l\E[?5l\E[?7h, sc=\E7, 
+	sgr=\E[0%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p6%t;1%;%?%p7%t;8%;m%?%p9%t\016%e\017%;, 
+	sgr0=\E[m, smacs=^N, smcup=\E[?1l\E=, smkx=\E=, 
+	smso=\E[0;7m, smul=\E[0;4m, tbc=\E[3g, 
 # A commercial product, Reportedly a version of Xterm with an OPEN LOOK UI,
 # print interface, ANSI X3.64 colour escape sequences, etc.  Newsgroup postings
 # indicate that it emulates more than one terminal, but incompletely.
@@ -7555,7 +7589,7 @@ wy100|wyse 100,
 wy120|wyse120|wy150|wyse150|Wyse 120/150, 
 	am, bw, hs, km, mc5i, mir, msgr, xon, 
 	cols#80, it#8, lh#1, lines#24, lw#8, nlab#8, pb#9601, wsl#45, 
-	acsc=+/\,.0[Iha2fxgqh1jYk?lZm@nEqDtCu4vAwBx3yszr{c~~, 
+	acsc=+/\,.0[iha2fxgqh1jYk?lZm@nEqDtCu4vAwBx3yszr{c~~, 
 	bel=^G, blink=\EG2, cbt=\EI, civis=\E`0, clear=\E+$<50>, 
 	cnorm=\E`1, cr=^M, cub1=^H, cud1=^J, cuf1=^L, 
 	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, dch1=\EW$<7>, 
@@ -7634,7 +7668,7 @@ wy120-w-vb|wy120-wvb|wyse120-wvb|wy150-w-vb|wyse150-w-vb|Wyse 120/150 132-column
 wy60|wyse60|Wyse 60, 
 	am, bw, hs, km, mc5i, mir, msgr, 
 	cols#80, lh#1, lines#24, lw#8, nlab#8, wsl#45, 
-	acsc=+/\,.0[Iha2fxgqh1jYk?lZm@nEqDtCu4vAwBx3yszr{c~~, 
+	acsc=+/\,.0[iha2fxgqh1jYk?lZm@nEqDtCu4vAwBx3yszr{c~~, 
 	bel=^G, blink=\EG2, cbt=\EI, civis=\E`0, clear=\E+$<100>, 
 	cnorm=\E`1, cr=^M, cub1=^H, cud1=^J, cuf1=^L, 
 	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, 
@@ -7803,7 +7837,7 @@ wy99a-ansi|Wyse WY-99GT in ansi mode (US PC keyboard),
 wy99f|wy99fgt|wy-99fgt|Wyse WY-99GT (int'l PC keyboard), 
 	am, bw, hs, km, mc5i, mir, msgr, xon, 
 	cols#80, it#8, lines#25, wsl#46, 
-	acsc='x+y.wI~_vj(k'l&m%n)o9q*s8t-u.v\,w+x=, bel=^G, 
+	acsc='x+y.wi~_vj(k'l&m%n)o9q*s8t-u.v\,w+x=, bel=^G, 
 	blink=\EG2, cbt=\EI, civis=\E`0, clear=\E'\E(\032, 
 	cnorm=\E`4\E`1, cr=^M, cub1=^H, cud1=\Ej, cuf1=^L, 
 	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, 
@@ -7855,7 +7889,7 @@ wy99fa|wy99fgta|wy-99fgta|Wyse WY-99GT (US PC keyboard),
 wy160|wyse160|Wyse 160, 
 	am, bw, hs, km, mc5i, mir, msgr, 
 	cols#80, lh#1, lines#24, lw#8, nlab#8, wsl#38, 
-	acsc=+/\,.0[Iha2fxgqh1jYk?lZm@nEqDtCu4vAwBx3yszr{c~~, 
+	acsc=+/\,.0[iha2fxgqh1jYk?lZm@nEqDtCu4vAwBx3yszr{c~~, 
 	bel=^G, blink=\EG2, cbt=\EI, civis=\E`0, clear=\E+$<30>, 
 	cnorm=\E`1, cr=^M, cub1=^H, cud1=^J, cuf1=^L, 
 	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, dch1=\EW$<5>, 
@@ -8163,7 +8197,7 @@ wy185-wvb|wyse185-wvb|wyse 185+flash+132 cols,
 wy325|wyse325|Wyse epc, 
 	am, bw, hs, mc5i, mir, 
 	cols#80, lh#1, lines#24, lw#8, nlab#8, pb#9601, wsl#45, 
-	acsc=+/\,.0[Iha2fxgqh1jYk?lZm@nEqDtCu4vAwBx3yszr{c~~, 
+	acsc=+/\,.0[iha2fxgqh1jYk?lZm@nEqDtCu4vAwBx3yszr{c~~, 
 	bel=^G, blink=\EG2, cbt=\EI, civis=\E`0, clear=\E+$<50>, 
 	cnorm=\E`1, cr=^M, cub1=^H, cud1=^J, cuf1=^L, 
 	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, dch1=\EW$<7>, 
@@ -8792,15 +8826,20 @@ vt320-k311|dec vt320 series as defined by kermit 3.11,
 # (The <blink>/<bold>/<rev>/<smacs>/<smul>/<smso> capabilities exist only to
 # tell ncurses that the corresponding highlights exist; it should use <sgr>,
 # which is the only method that will actually work for multiple highlights.)
+#
+# Update by TD - 2004: half of this was inconsistent.  Found documentation
+# and repaired most of the damage.  sgr0 is probably incorrect, but the
+# available documentation gives no clues for a workable string.
 avatar0|avatar terminal emulator level 0, 
 	am, bce, msgr, 
 	cols#80, it#8, lines#25, 
-	blink=^A^V\177, bold=^V^A^P, cr=^M, cub1=^V^E, cud1=^V^D, 
+	blink=^V^B, bold=^V^A^P, cr=^M, cub1=^V^E, cud1=^V^D, 
 	cuf1=^V^F, cup=\026\010%p1%c%p2%c, cuu1=^V^C, el=^V^G, 
-	ind=^J, invis=^V^A\0, rep=\031%p1%c%p2%d, rev=^A^Vp, 
-	rs2=^L, 
-	sgr=\026\001%{0}%?%p1%t%{112}%|%;%?%p2%t%{1}%|%;%?%p3%t%{112}%|%;%?%p4%t{128}%|%;%?%p6%t%{16}%|%;, 
-	sgr0=^V^A^G, smacs=, smso=^A^Vp, smul=^V^A, use=klone+acs, 
+	ind=^J, invis=^V^A\0, rep=\031%p1%c%p2%c, rev=^V^Ap, 
+	rmacs@, rs2=^L, 
+	sgr=%?%p1%p2%|%p3%|%p6%|%p7%|%t\026\001%?%p7%t%{128}%e%{0}%?%p1%t%{112}%|%;%?%p2%t%{1}%|%;%?%p3%t%{112}%|%;%?%p6%t%{16}%|%;%;%c%;%?%p4%t\026\002%;, 
+	sgr0=^V^A^G, smacs@, smso=^V^Ap, smul=^V^A^A, 
+	use=klone+acs, 
 # From: Eric S. Raymond <esr@snark.thyrsus.com> 1 Nov 1995
 avatar0+|avatar terminal emulator level 0+, 
 	dch1=^V^N, rmir=\026\n\0\0\0\0, smir=^V^I, use=avatar0, 
@@ -10618,15 +10657,66 @@ screwpoint|adds viewpoint with ^O bug,
 # underline=01100000, rev=01010000, blink=01000010,dim=01000001,
 # invis=01000100 and %c is the logical or of desired attributes.
 # There is also a `tag bit' enabling attributes, set by \E) and unset by \E(.
+#
+# Update by TD - 2004:
+# Adapted from 
+#	http://www.cs.utk.edu/~shuford/terminal/adds_viewpoint_news.txt
+#
+# COMMANDS                        ASCII CODE
+# 
+# Address, Absolute               ESC,=,row,column
+# Beep                            BEL
+# Aux Port Enable                 ESC,@
+# Aux Port Disable                ESC,A
+# Backspace                       BS
+# Cursor back                     BS
+# Cursor down                     LF
+# Cursor forward                  FF
+# Cursor home                     RS
+# Cursor up                       VT
+# Cursor supress                  ETB
+# Cursor enable                   CAN
+# Erase to end of line            ESC,T
+# Erase to end of page            ESC,Y
+# Erase screen                    SUB
+# Keyboard lock                   SI
+# Keyboard unlock                 SO
+# Read current cursor position    ESC,?
+# Set Attribute                   ESC,0,x  (see below for values of x)
+# Tag bit reset                   ESC,(
+# Tag bit set                     ESC,)
+# Transparent Print on            ESC,3
+# Transparent Print off           ESC,4
+# 
+# 
+# ATTRIBUTES
+# 
+# Normal                          @	0100
+# Half Intensity                  A	0101
+# Blinking                        B	0102
+# Half Intensity Blinking         C	0103
+# Reverse Video                   P	0120
+# Reverse Video Half Intensity    Q	0121
+# Reverse Video Blinking          R	0122
+# Reverse Video Half Intensity
+#    Blinking                     S	0123
+# Underlined                      `	0140
+# Underlined Half Intensity       a	0141
+# Underlined Blinking             b	0142
+# Underlined Half Intensity
+#    Blinking                     c	0143
+# Video suppress                  D	0104
 vp3a+|viewpoint3a+|adds viewpoint 3a+, 
 	am, bw, 
 	cols#80, it#8, lines#24, 
-	civis=^W, clear=\E*$<80>, cnorm=^X, cr=^M, cub1=^H, cud1=^J, 
-	cuf1=^L, cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, 
-	ed=\EY$<80>, el=\ET, home=^^, ht=^I, ind=^J, kbs=^H, kcub1=^H, 
-	kcud1=^J, kcuf1=^L, kcuu1=^K, khome=^^, nel=^M^J, rmso=\E(, 
-	sgr=\E0%{64}%?%p1%tQ%|%;%?%p2%t%{96}%|%;%?%p3%tP%|%;%?%p4%t%{2}%|%;%?%p5%t%{1}%|%;%?%p7%tD%|%;%c\E), 
-	sgr0=\E(, smso=\E0Q\E), 
+	blink=\E0B\E), civis=^W, clear=\E*$<80>, cnorm=^X, cr=^M, 
+	cub1=^H, cud1=^J, cuf1=^L, 
+	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, dim=\E0A\E), 
+	ed=\EY$<80>, el=\ET, home=^^, ht=^I, ind=^J, invis=\E0D\E), 
+	kbs=^H, kcub1=^H, kcud1=^J, kcuf1=^L, kcuu1=^K, khome=^^, 
+	nel=^M^J, rev=\E0P\E), rmso=\E(, 
+	sgr=%?%p1%p2%|%p3%|%p4%|%p5%|%p7%|%t\E0%{64}%?%p1%t%{17}%|%;%?%p2%t%{32}%|%;%?%p3%t%{16}%|%;%?%p4%t%{2}%|%;%?%p5%t%{1}%|%;%c%?%p7%tD%;\E)%e\E(%;, 
+	sgr0=\E(, smso=\E0Q\E), smul=\E0`\E), 
 vp60|viewpoint60|addsvp60|adds viewpoint60, 
 	use=regent40, 
 #
@@ -20608,6 +20698,14 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* align with xterm #192's use of xterm-new -TD
 #	* update xterm-new and xterm-8bit for cvvis/cnorm strings -TD
 #	* make xterm-new the default "xterm" -TD
+#
+# 2004-07-10
+#	* minor fixes for emu -TD
+#	* add emu-220
+#	* add rmam/smam to linux (Trevor Van Bremen)
+#	* change wyse acsc strings to use 'i' map rather than 'I' -TD
+#	* fixes for avatar0 -TD
+#	* fixes for vp3a+ -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
