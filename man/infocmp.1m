@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.38 2004/08/14 23:49:58 tom Exp $
+.\" $Id: infocmp.1m,v 1.39 2004/08/28 22:43:49 tom Exp $
 .TH infocmp 1M ""
 .ds n 5
 .ds d @TERMINFO@
@@ -276,6 +276,9 @@ RC/restore cursor
 LL/home-down
 RSR/reset scroll region
 
+DECSTR/soft reset (VT320)
+S7C1T/7-bit controls (VT220)
+
 ISO DEC G0/enable DEC graphics for G0
 ISO UK G0/enable UK chars for G0
 ISO US G0/enable US chars for G0
@@ -286,6 +289,11 @@ ISO US G1/enable US chars for G1
 DECPAM/application keypad mode
 DECPNM/normal keypad mode
 DECANSI/enter ANSI mode
+
+ECMA[+-]AM/keyboard action mode
+ECMA[+-]IRM/insert replace mode
+ECMA[+-]SRM/send receive mode
+ECMA[+-]LNM/linefeed mode
 
 DEC[+-]CKM/application cursor keys
 DEC[+-]ANM/set VT52 mode

@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.833 2004/08/22 00:59:23 tom Exp $
+-- $Id: NEWS,v 1.834 2004/08/28 22:33:59 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040828
+	+ modify infocmp -i option to match 8-bit controls against its table
+	  entries, e.g., so it can analyze the xterm-8bit entry.
+	+ add morphos terminfo entry, improve amiga-8bit entry (Pavel Fedin).
+	+ correct translation of "%%" in terminfo format to termcap, e.g.,
+	  using "tic -C" (Redhat Bugzilla #130921).
+	+ modified configure script CF_XOPEN_SOURCE macro to ensure that if
+	  it defines _POSIX_C_SOURCE, that it defines it to a specific value
+	  (comp.os.stratus newsgroup comment).
 
 20040821
 	+ fixes to build with Ada95 binding with gnat 3.4 (all warnings are
@@ -162,7 +172,10 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  multibyte character strings, in the wide-character configuration
 	  (adapted from patch by Philipp Tomsich).
 	+ add "-x" option to infocmp like tic's "-x", for use in "-F"
-	  comparisons.
+	  comparisons.  This modifies infocmp to only report extended
+	  capabilities if the -x option is given, making this more consistent
+	  with tic.  Some scripts may break, since infocmp previous gave this
+	  information without an option.
 	+ modify termcap-parsing to retain 2-character aliases at the beginning
 	  of an entry if the "-x" option is used in tic.
 
