@@ -7,11 +7,6 @@
 #include <unistd.h>
 #include <string.h>
 
-#if defined(__386BSD__) || defined(__bsdi__)
-#define srand48 srandom
-#define lrand48 random
-#endif
-
 short   board [64];     /* the squares */
 chtype  row, column;    /* input characters */
 int     rw,col;         /* numeric equivalent of row and column */
@@ -84,7 +79,7 @@ main ()
 void
 init (void)
 {
-	srand48 (getpid());
+	srand (getpid());
 	initscr ();
 	cbreak ();              /* immediate char return */
 	noecho ();              /* no immediate echo */
@@ -160,8 +155,8 @@ int j;
 		row = toupper(getch());
 	} while ((row != 'S') && (row != 'R'));
 	if (row == 'R') {
-		rw = lrand48() % 8;
-		col = lrand48() % 8;
+		rw = rand() % 8;
+		col = rand() % 8;
 		j = 8* rw + col;
 		row = rw + 'A';
 		column = col + '1';

@@ -2,7 +2,7 @@
 .SH NAME
 \fBcurs_getch\fR: \fBgetch\fR, \fBwgetch\fR, \fBmvgetch\fR,
 \fBmvwgetch\fR, \fBungetch\fR - get (or push back) characters from
-\fBncurses\fR terminal keyboard
+\fBcurses\fR terminal keyboard
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 
@@ -46,7 +46,7 @@ intended to hold the return value of a function key must be of short size or
 larger.
 
 When a character that could be the beginning of a function key is received
-(which, on modern terminals, means an escape character), \fBncurses\fR sets a
+(which, on modern terminals, means an escape character), \fBcurses\fR sets a
 timer.  If the remainder of the sequence does not come in within the designated
 time, the character is passed through; otherwise, the function key value is
 returned.  For this reason, many terminals experience a delay between the time
@@ -193,7 +193,7 @@ The echo behavior of these functions on input of \fBKEY_\fR or backspace
 characters was not specified.  This description is adopted from the XSI
 Curses standard.
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_inopts\fR(3X), \fBcurs_move\fR(3X),
+\fBcurses\fR(3X), \fBcurs_inopts\fR(3X), \fBcurs_move\fR(3X),
 \fBcurs_refresh\fR(3X).
 .\"#
 .\"# The following sets edit modes for GNU EMACS

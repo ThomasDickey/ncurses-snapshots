@@ -25,6 +25,7 @@
  */
 
 #include <config.h>
+#define NCURSES_VERSION "1.9.3"
 
 #include <string.h>
 #include <stdlib.h>
@@ -38,7 +39,6 @@
 #endif
 
 #include "tic.h"
-#include "version.h"
 #include "term.h"
 #include "dump_entry.h"
 #include "term_entry.h"
@@ -129,7 +129,7 @@ ENTRY	*qp;
 
 	/* parse entries out of the source file */
 	set_source(source_file);
-	read_entry_source(stdin, !smart_defaults);
+	read_entry_source(stdin, (char *)NULL, !smart_defaults);
 
 	/* do use resolution */
 	if (check_only || (!infodump && !capdump))
@@ -191,7 +191,7 @@ ENTRY	*qp;
 			    (void) printf("tc=%s:", qp->uses[j]);
 		    (void) putchar('\n');
 		}
-		(void) fseek(stdin, tail->cend, SEEK_SET);
+		(void) fseek(stdin, _nc_tail->cend, SEEK_SET);
 		while ((c = getchar()) != EOF)
 		{
 		    if (oldc == '\n' && c == '#')

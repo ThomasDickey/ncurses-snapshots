@@ -2,7 +2,7 @@
 .SH NAME
 \fBcurs_attr\fR: \fBattroff\fR, \fBwattroff\fR, \fBattron\fR, \fBwattron\fR,
 \fBattrset\fR, \fBwattrset\fR, \fBstandend\fR, \fBwstandend\fR, \fBstandout\fR,
-\fBwstandout\fR - \fBncurses\fR character and window attribute control routines
+\fBwstandout\fR - \fBcurses\fR character and window attribute control routines
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 .br
@@ -44,6 +44,15 @@
 .br
 \fBint chgat(int n, attr_t attr, short color, void *const opts)\fR
 .br
+\fBint mvchgat(int y, int x, int n, attr_t attr,
+      short color, void *const opts)\fR
+.br
+\fBint wchgat(WINDOW *, int n, attr_t attr,
+      short color, void *const opts)\fR
+.br
+\fBint mvwchgat(WINDOW *, int y, int x, int n, attr_t attr,
+      short color, void *const opts)\fR
+.br
 .SH DESCRIPTION
 These routines manipulate the current attributes of the named window.  The
 current attributes of a window apply to all characters that are written into
@@ -68,11 +77,14 @@ The remaining \fBattr_\fR* functions operate exactly like the corresponding
 rather than \fBint\fR. 
 
 The routine \fBchgat\fR changes the attributes of a given number of characters
-starting at the current cursor location of \fBstdscr\fR.  It does not update 
+starting at the current cursor location of \fBstdscr\fR.  It does not update
 the cursor and does not perform wrapping.  A character count of -1 or greater
 than the remaining window width means to change attributes all the way to the
 end of the current line.  The \fBwchgat\fR function generalizes this to any
-window; the \fBmvwchgat\fR function does a cursor move before acting.
+window; the \fBmvwchgat\fR function does a cursor move before acting.  In these
+functions, the color argument is a color-pair index (as in the first argument
+of \fIinit_pair\fR, see \fBcurs_color\fR(3x)).  The \fBopts\fR argument is not
+presently used, but is reserved for the future (leave it \fBNULL\fR).
 .SS Attributes
 The following video attributes, defined in \fB<curses.h>\fR, can be passed to
 the routines \fBattron\fR, \fBattroff\fR, and \fBattrset\fR, or OR-ed with the
@@ -122,9 +134,9 @@ not supported under SVr4.
 The XSI Curses standard states that whether the traditional functions
 \fBattron\fR/\fBattroff\fR/\fBattrset\fR can manipulate attributes other than
 \fBA_BLINK\fR, \fBA_BOLD\fR, \fBA_DIM\fR, \fBA_REVERSE\fR, \fBA_STANDOUT\fR, or
-\fBA_UNDERLINE\fR is "unspecified".  Under ncurses as well as SVr4 curses,
-these functions correctly manipulate all other highlights (specifically,
-\fBA_ALTCHARSET\fR, \fBA_PROTECT\fR, and \fBA_INVIS\fR).
+\fBA_UNDERLINE\fR is "unspecified".  Under this implementation as well as 
+SVr4 curses, these functions correctly manipulate all other highlights 
+(specifically, \fBA_ALTCHARSET\fR, \fBA_PROTECT\fR, and \fBA_INVIS\fR).
 
 XSI Curses added the new entry points, \fBattr_get\fR, \fBattr_on\fR,
 \fBattr_off\fR, \fBattr_get\fR, \fBwattr_on\fR, \fBwattr_off\fR,
@@ -149,9 +161,9 @@ information.
 The XSI standard does not support \fBA_PCCHARSET\fR.  The extended
 conformance level adds new highlights \fBA_HORIZONTAL\fR, \fBA_LEFT\fR,
 \fBA_LOW\fR, \fBA_RIGHT\fR, \fBA_TOP\fR, \fBA_VERTICAL\fR (and corresponding
-\fBWA_\fR macros for each) which ncurses does not yet support.
+\fBWA_\fR macros for each) which this curses does not yet support.
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_addch\fR(3X), \fBcurs_addstr\fR(3X),
+\fBcurses\fR(3X), \fBcurs_addch\fR(3X), \fBcurs_addstr\fR(3X),
 \fBcurs_printw\fR(3X)
 .\"#
 .\"# The following sets edit modes for GNU EMACS

@@ -1,15 +1,17 @@
 The programs in this directory are designed to test your newest toy :-)
 Check the sources for any further details.
 
-bs.c - the game of battleship
-gdc.c - Great Digital Clock, gives an example of usng color
-hanoi.c - the game of hanoi, also an example of using color
-knight.c - the game of Knight's Tour
-rain.c - rain drops are falling on my head..
-worm.c - worms run all over your screen
-firework.c - multi-colored fireworks
-testcurs.c - a test from the PDCurses people
-newdemo.c -  another test from PDCurses
-xmas.c - Xmas greeting card
-ncurses.c - multi-test program
-tclock.c - analog/digital clock
+blue       - Blue Moon, a nifty solitaire (uses color)
+bs.c       - the game of battleship (uses color)
+firework.c - multi-colored fireworks (uses color)
+gdc.c      - Great Digital Clock (uses color)
+hanoi.c    - the game of hanoi (uses color essentially)
+knight.c   - the game of Knight's Tour
+ncurses.c  - multi-test program (uses color)
+newdemo.c  -  another test from PDCurses
+rain.c     - rain drops are falling on my head...
+tclock.c   - analog/digital clock
+testcurs.c - a test from the PDCurses people (uses color)
+worm.c     - worms run all over your screen
+xmas.c     - Xmas greeting card
+tracemunch - Perl script to postprocess trace scripts to make them easier to read

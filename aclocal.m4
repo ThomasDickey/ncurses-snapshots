@@ -68,6 +68,21 @@ if test $ac_cv_prog_gxx = yes; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
+AC_DEFUN(NC_DIRS_TO_MAKE,
+[
+DIRS_TO_MAKE="bin lib"
+for nc_item in $nc_list_models
+do
+	NC_OBJ_SUBDIR($nc_item,nc_subdir)
+	DIRS_TO_MAKE="$DIRS_TO_MAKE $nc_subdir"
+done
+for nc_dir in $DIRS_TO_MAKE
+do
+	test ! -d $nc_dir && mkdir $nc_dir
+done
+AC_SUBST(DIRS_TO_MAKE)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl
 AC_DEFUN([NC_ERRNO],
 [
@@ -138,19 +153,7 @@ NC_EOF
 fi
 done
 
-OBJ_SUBDIRS="bin lib"
-for nc_item in $NC_LIST_MODELS
-do
-	NC_OBJ_SUBDIR($nc_item,nc_subdir)
-	OBJ_SUBDIRS="$OBJ_SUBDIRS $nc_subdir"
-done
-for nc_dir in $OBJ_SUBDIRS
-do
-	test ! -d $nc_dir && mkdir $nc_dir
-done
 cat >> Makefile <<NC_EOF
-
-DIRS_TO_MAKE = $OBJ_SUBDIRS
 
 distclean ::
 	rm -f config.cache config.log config.status Makefile include/config.h
@@ -213,7 +216,7 @@ dnl Compute the object-directory name from the given model name
 AC_DEFUN([NC_OBJ_SUBDIR],
 [
 	case $1 in
-	normal)  $2='obj'   ;;
+	normal)  $2='objects' ;;
 	debug)   $2='obj_g' ;;
 	profile) $2='obj_p' ;;
 	shared)  $2='obj_s' ;;

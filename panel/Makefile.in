@@ -74,9 +74,9 @@ $(libdir) :
 
 # make a copy to simplify include-paths while still keeping panel's include
 # file in this directory.
-../include/panel.h : panel.h
+../include/panel.h : $(srcdir)/panel.h
 	-rm -f $@
-	cp panel.h $@
+	cp $(srcdir)/panel.h $@
 
 tags:
 	ctags *.[ch]

@@ -28,7 +28,7 @@ BEGIN		{
 		    print ""
 		    print "#ifndef _TERM_H"
 		    print "#define _TERM_H"
-		    print "#define NCURSES_VERSION \"1.9.3\""
+		    print "#define NCURSES_VERSION \"@VERSION@\""
 		    print ""
 		    print "/* Make this file self-contained by providing defaults for the HAVE_TERMIOS_H"
 		    print " * and UNIX definition (based on the system for which this was configured)."

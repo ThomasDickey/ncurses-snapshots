@@ -7,16 +7,17 @@
 \fB#include <curses.h>\fR
 .br
 .SH DESCRIPTION
-The \fBncurses\fR library routines give the user a terminal-independent
-method of updating character screens with reasonable optimization.
+The \fBcurses\fR library routines give the user a terminal-independent method
+of updating character screens with reasonable optimization.  This
+implementation is ``new curses'' (ncurses) and is the approved replacement for
+4.4BSD classic curses, which is being discontinued.
 
 The \fBncurses\fR routines emulate the \fBcurses\fR(3X) library of System V
 Release 4 UNIX, and the XPG4 curses standard (XSI curses) but the \fBncurses\fR
 library is freely redistributable in source form.  Differences from the SVr4
 curses are summarized under the EXTENSIONS and BUGS sections below and
 described in detail in the EXTENSIONS and BUGS sections of individual man
-pages. There are only few of these, and as ncurses matures they will become
-fewer still.
+pages.
 
 A program using these routines must be linked with the \fB-lncurses\fR option,
 or (if it has been generated) with the debugging library \fB-lncurses_g\fR. 
@@ -25,9 +26,9 @@ current directory) that describe curses actions.
 
 The \fBncurses\fR package supports: overall screen, window and pad
 manipulation; output to windows and pads; reading terminal input; control over
-terminal and \fBncurses\fR input and output options; environment query
+terminal and \fBcurses\fR input and output options; environment query
 routines; color manipulation; use of soft label keys; terminfo capabilities;
-and access to low-level \fBncurses\fR routines.
+and access to low-level terminal-manipulation routines.
 
 To initialize the routines, the routine \fBinitscr\fR or \fBnewterm\fR
 must be called before any of the other routines that deal with windows
@@ -44,20 +45,20 @@ Most programs would additionally use the sequence:
       \fBintrflush(stdscr, FALSE);\fR
       \fBkeypad(stdscr, TRUE);\fR
 
-Before a \fBncurses\fR program is run, the tab stops of the terminal
+Before a \fBcurses\fR program is run, the tab stops of the terminal
 should be set and its initialization strings, if defined, must be
 output.  This can be done by executing the \fBtput init\fR command
 after the shell environment variable \fBTERM\fR has been exported.
 \fBtset(1)\fR is usually responsible for doing this.
 [See \fBterminfo\fR(\*n) for further details.]
 
-The \fBncurses\fR library permits manipulation of data structures,
+The \fBcurses\fR library permits manipulation of data structures,
 called \fIwindows\fR, which can be thought of as two-dimensional
 arrays of characters representing all or part of a CRT screen.  A
 default window called \fBstdscr\fR, which is the size of the terminal
 screen, is supplied.  Others may be created with \fBnewwin\fR.
 
-Note that ncurses does not handle overlapping windows, that's done by
+Note that \fBcurses\fR does not handle overlapping windows, that's done by
 the \fBpanels(3x)\fR library. This means that you can either use
 \fBstdscr\fR or divide the screen into tiled windows and not using
 \fBstdscr\fR at all. Mixing the two will result in unpredictable, and
@@ -72,7 +73,7 @@ allowing the user to specify a window.  The routines not beginning
 with \fBw\fR affect \fBstdscr\fR.)
 
 After using routines to manipulate a window, \fBrefresh\fR is called,
-telling \fBncurses\fR to make the user's CRT screen look like
+telling \fBcurses\fR to make the user's CRT screen look like
 \fBstdscr\fR.  The characters in a window are actually of type
 \fBchtype\fR, (character and attribute data) so that other information
 about the character may also be stored with each character.
@@ -85,7 +86,7 @@ In addition to drawing characters on the screen, video attributes and colors
 may be supported, causing the characters to show up in such modes as
 underlined, in reverse video, or in color on terminals that support such
 display enhancements.  Line drawing characters may be specified to be output.
-On input, \fBncurses\fR is also able to translate arrow and function keys that
+On input, \fBcurses\fR is also able to translate arrow and function keys that
 transmit escape sequences into single values.  The video attributes, line
 drawing characters, and input values use names, defined in \fB<curses.h>\fR,
 such as \fBA_REVERSE\fR, \fBACS_HLINE\fR, and \fBKEY_LEFT\fR.
@@ -97,7 +98,7 @@ effect a program running in an AT&T 630 layer, for example, where the size of a
 screen is changeable.
 
 If the environment variable \fBTERMINFO\fR is defined, any program using
-\fBncurses\fR checks for a local terminal definition before checking in the
+\fBcurses\fR checks for a local terminal definition before checking in the
 standard place.  For example, if \fBTERM\fR is set to \fBatt4424\fR, then the
 compiled terminal definition is found in
 
@@ -105,7 +106,7 @@ compiled terminal definition is found in
 
 (The \fBa\fR is copied from the first letter of \fBatt4424\fR to avoid
 creation of huge directories.)  However, if \fBTERMINFO\fR is set to
-\fB$HOME/myterms\fR, \fBncurses\fR first checks
+\fB$HOME/myterms\fR, \fBcurses\fR first checks
 
       \fB$HOME/myterms/a/att4424\fR,
 
@@ -121,13 +122,13 @@ The integer variables \fBLINES\fR and \fBCOLS\fR are defined in
 screen.  The constants \fBTRUE\fR and \fBFALSE\fR have the values \fB1\fR and
 \fB0\fR, respectively.
 
-The \fBncurses\fR routines also define the \fBWINDOW *\fR variable \fBcurscr\fR
+The \fBcurses\fR routines also define the \fBWINDOW *\fR variable \fBcurscr\fR
 which is used for certain low-level operations like clearing and redrawing a
 screen containing garbage.  The \fBcurscr\fR can be used in only a few
 routines.
 
 .SS Routine and Argument Names
-Many \fBncurses\fR routines have two or more versions.  The routines prefixed
+Many \fBcurses\fR routines have two or more versions.  The routines prefixed
 with \fBw\fR require a window argument.  The routines prefixed with \fBp\fR
 require a pad argument.  Those without a prefix generally use \fBstdscr\fR.
 
@@ -154,11 +155,11 @@ variables \fIch\fR and \fIattrs\fR below are always of type
 is defined in \fB<term.h>\fR.  All other arguments are integers.
 
 .SS Routine Name Index
-The following table lists each \fBncurses\fR routine and the name of
+The following table lists each \fBcurses\fR routine and the name of
 the manual page on which it is described.
 
 .nf 
-\fBncurses\fR Routine Name    Manual Page Name
+\fBcurses\fR Routine Name    Manual Page Name
 ___________________________________________
 addch                  curs_addch(3X)
 addchnstr              curs_addchstr(3X)
@@ -434,11 +435,11 @@ Routines that return pointers return \fBNULL\fR on error.
 \fBterminfo\fR(\*n) and 3X pages whose names begin "curs_" for detailed routine
 descriptions.
 .SH EXTENSIONS
-The \fBncurses\fR library can be compiled with an option (\fB-DTERMCAP_FILE\fR)
+The \fBcurses\fR library can be compiled with an option (\fB-DTERMCAP_FILE\fR)
 that falls back to the old-style /etc/termcap file if the terminal setup code
 cannot find a terminfo entry corresponding to \fBTERM\fR.  Use of this feature
 is not recommended, as it essentially includes an entire termcap compiler in
-the \fBncurses\fR startup code, at significant cost in core and startup cycles.
+the \fBcurses\fR startup code, at significant cost in core and startup cycles.
 
 Compiling with \fB-DTERMCAP_FILE\fR changes the library's initialization
 sequence in a way intended to mimic the behavior of 4.4BSD curses.  If there is
@@ -454,12 +455,12 @@ file is searched for among the colon-separated paths in the environment
 variable \fBTERMPATHS\fR if that is defined, and in ~/.termcap and the file
 value of \fBTERMCAP_FILE\fR otherwise.
 
-Versions of \fBncurses\fR compiled on PC clones support display of the PC ROM
+Versions of \fBcurses\fR compiled on PC clones support display of the PC ROM
 characters (including ROM characters 0-31, which stock SVr4 curses cannot
 display). See the EXTENSIONS sections of \fBcurs_addch\fR(3x) and
 \fBcurs_attr\fR(3x).
 .SH PORTABILITY
-The \fBncurses\fR library is intended to be BASE-level conformant with the XSI
+The \fBcurses\fR library is intended to be BASE-level conformant with the XSI
 Curses standard.  Certain portions of the EXTENDED XSI Curses functionality
 (including color support) are supported.  The following EXTENDED XSI Curses
 calls in support of wide (multibyte) characters are not yet implemented:
@@ -550,10 +551,10 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBmvwinwchnstr\fB.
 .PP
 A small number of local differences (that is, individual differences between
-the XSI Curses and \fBncurses\fR calls) are described in \fBPORTABILITY\fR
+the XSI Curses and \fBcurses\fR calls) are described in \fBPORTABILITY\fR
 sections of the library man pages.
 .PP
-The terminfo format supported by ncurses is binary-compatible with SVr4,
+The terminfo format supported by \fBcurses\fR is binary-compatible with SVr4,
 but not conformant with XSI curses.  This is because the XSI Curses drafters,
 in a remarkable fit of braindamage, changed the undocumented SVr4 capability
 \fBgetm\fR from a string to a boolean, changing the binary offsets of all
@@ -563,7 +564,8 @@ SVr4-compatible implementation to be fully conformant.
 The header file \fB<curses.h>\fR automatically includes the header files
 \fB<stdio.h>\fR and \fB<unctrl.h>\fR.
 .SH AUTHORS
-Pavel Curtis, Zeyd M. Ben-Halim, Eric S. Raymond.
+Zeyd M. Ben-Halim, Eric S. Raymond.  Descends from the original pcurses
+by Pavel Curtis.
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

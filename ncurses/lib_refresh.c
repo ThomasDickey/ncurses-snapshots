@@ -99,9 +99,6 @@ bool	wide;
 		register struct ldat	*nline = &newscr->_line[m];
 		register struct ldat	*oline = &win->_line[i];
 
-		T(("refreshing line %d of newscr with line %d of win", m, i));
-		T(("line %d of newscr: firstchar = %d, lastchar = %d", m, nline->firstchar, nline->lastchar)); 
-		T(("line %d of win: firstchar = %d, lastchar = %d", m, oline->firstchar, oline->lastchar)); 
 		if (oline->firstchar != _NOCHANGE) {
 
 			for (j = oline->firstchar, n = j + begx; j <= oline->lastchar; j++, n++) {
@@ -116,8 +113,6 @@ bool	wide;
 			   			nline->lastchar = n;
 		    		}
 			}
-		T(("line %d of newscr: firstchar = %d, lastchar = %d", m, nline->firstchar, nline->lastchar)); 
-		T(("line %d of win: firstchar = %d, lastchar = %d", m, oline->firstchar, oline->lastchar)); 
 
 		}
 

@@ -30,7 +30,7 @@ lib_mvcur	lib		$(srcdir)	../include/term.h
 lib_mvwin	lib		$(srcdir)
 lib_newterm	lib		$(srcdir)	../include/term.h
 lib_newwin	lib		$(srcdir)
-lib_options	lib		$(srcdir)	../include/term.h
+lib_options	lib		$(srcdir)	../include/term.h keys.tries
 lib_overlay	lib		$(srcdir)
 lib_pad		lib		$(srcdir)
 lib_printw	lib		$(srcdir)

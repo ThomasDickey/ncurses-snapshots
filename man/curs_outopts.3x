@@ -2,7 +2,7 @@
 .SH NAME
 \fBcurs_outopts\fR: \fBclearok\fR, \fBidlok\fR, \fBidcok immedok\fR,
 \fBleaveok\fR, \fBsetscrreg\fR, \fBwsetscrreg\fR, \fBscrollok\fR,
-\fBnl\fR, \fBnonl\fR - \fBncurses\fR output options
+\fBnl\fR, \fBnonl\fR - \fBcurses\fR output options
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 
@@ -28,7 +28,7 @@
 .br
 .SH DESCRIPTION
 These routines set options that change the style of output within
-\fBncurses\fR.  All options are initially \fBFALSE\fR, unless otherwise stated.
+\fBcurses\fR.  All options are initially \fBFALSE\fR, unless otherwise stated.
 It is not necessary to turn these options off before calling \fBendwin\fR.
 
 If \fBclearok\fR is called with \fBTRUE\fR as argument, the next
@@ -40,17 +40,17 @@ the next call to \fBwrefresh\fR with any window causes the screen to be cleared
 and repainted from scratch.
 
 If \fBidlok\fR is called with \fBTRUE\fR as argument,
-\fBncurses\fR considers using the hardware insert/delete line feature of
-terminals so equipped.  If disabled (\fIbf\fR is \fBFALSE\fR), \fBncurses\fR
+\fBcurses\fR considers using the hardware insert/delete line feature of
+terminals so equipped.  If disabled (\fIbf\fR is \fBFALSE\fR), \fBcurses\fR
 very seldom uses this feature.  (The insert/delete character feature is always
 considered.)  This option should be enabled only if the application needs
 insert/delete line, for example, for a screen editor.  It is disabled by
 default because insert/delete line tends to be visually annoying when used in
 applications where it isn't really needed.  If insert/delete line cannot be
-used, \fBncurses\fR redraws the changed portions of all lines.
+used, \fBcurses\fR redraws the changed portions of all lines.
 
 If \fBidcok\fR is called with \fBTRUE\fR as argument,
-\fBncurses\fR considers using the hardware insert/delete character feature of
+\fBcurses\fR considers using the hardware insert/delete character feature of
 terminals so equipped.  This is enabled by default.
 
 If \fBimmedok\fR is called with \fBTRUE as argument\fR, any change
@@ -81,23 +81,35 @@ The \fBscrollok\fR option controls what happens when the cursor of a window is
 moved off the edge of the window or scrolling region, either as a result of a
 newline action on the bottom line, or typing the last character of the last
 line.  If disabled, (\fIbf\fR is \fBFALSE\fR), the cursor is left on the bottom
-line.  If enabled, (\fIbf\fR is \fBTRUE\fR), \fBwrefresh\fR is called on the
-window, and the physical terminal and window are scrolled up one line.  [Note
-that in order to get the physical scrolling effect on the terminal, it is also
-necessary to call \fBidlok\fR.]
+line.  If enabled, (\fIbf\fR is \fBTRUE\fR), the window is scrolled up one line
+(Note that in order to get the physical scrolling effect on the terminal, it is
+also necessary to call \fBidlok\fR).
 
-The \fBnl\fR and \fBnonl\fR routines control whether newline is translated into
-carriage return and line-feed on output, and whether return is translated into
-newline on input.  Initially, the translations do occur.  By disabling these
-translations using \fBnonl\fR, \fBncurses\fR is able to make better use of the
-line-feed capability, resulting in faster cursor motion.  Also, it can then
-then detect the return key.
+The \fBnl\fR and \fBnonl\fR routines control whether the underlying display
+device translates the return key into newline on input, and whether it
+translates newline into return and line-feed on output (in either case, the
+call \fBaddch('\n')\fR does the equivalent of return and line feed on the
+virtual screen).  Initially, these translations do occur.  If you disable them
+using \fBnonl\fR, \fBcurses\fR will be able to make better use of the line-feed
+capability, resulting in faster cursor motion.  Also, \fBcurses\fR will then be
+able to detect the return key.
 .SH RETURN VALUE
 The functions \fBsetscrreg\fR and \fBwsetscrreg\fR return \fBOK\fR upon success
 and \fBERR\fR upon failure. All other routines that return an integer always
 return \fBOK\fR.
 .SH PORTABILITY
 These functions are described in the XSI Curses standard, Issue 4.
+
+Some historic curses implementations had, as an undocumented feature, the
+ability to do the equivalent of \fBclearok(..., 1)\fR by saying
+\fBtouchwin(stdscr)\fR or \fBclear(stdscr)\fR.  This will not work under
+ncurses.
+
+Earlier System V curses implementations specified that with \fBscrollok\fR 
+enabled, any window modification triggering a scroll also forced a physical
+refresh.  XSI Curses does not require this, and \fBncurses\fR avoids doing
+it in order to perform better vertical-motion optimization at \fBwrefresh\fR
+time.
 .SH NOTES
 Note that \fBclearok\fR, \fBleaveok\fR, \fBscrollok\fR, \fBidcok\fR, \fBnl\fR,
 \fBnonl\fR and \fBsetscrreg\fR may be macros.
@@ -105,7 +117,7 @@ Note that \fBclearok\fR, \fBleaveok\fR, \fBscrollok\fR, \fBidcok\fR, \fBnl\fR,
 The \fBimmedok\fR routine is useful for windows that are used as terminal
 emulators.
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_addch\fR(3X), \fBcurs_clear\fR(3X),
+\fBcurses\fR(3X), \fBcurs_addch\fR(3X), \fBcurs_clear\fR(3X),
 \fBcurs_initscr\fR(3X), \fBcurs_scroll\fR(3X), \fBcurs_refresh\fR(3X)
 .\"#
 .\"# The following sets edit modes for GNU EMACS

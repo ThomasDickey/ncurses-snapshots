@@ -49,7 +49,7 @@ bool quit=FALSE;
 #ifdef PDCDEBUG
 	PDC_debug("testcurs started\n");
 #endif
-    if (!initTest (&win)) {return 1;}
+    if (!initTest (&win)) exit(1);
 
 #ifdef A_COLOR
     if (has_colors())
@@ -103,7 +103,7 @@ bool quit=FALSE;
     delwin (win);
 
     endwin();
-    return 0;
+    exit(0);
 }
 
 static
@@ -137,9 +137,9 @@ int initTest (WINDOW **win)
     *win = newwin(height, width, (LINES-height)/2, (COLS-width)/2);
     if(*win == NULL)
     {   endwin();
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 static void

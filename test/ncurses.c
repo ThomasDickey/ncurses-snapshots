@@ -103,10 +103,34 @@ int y, x;
 	    	move(0,0);
 	    clrtoeol();	
 	}
+
+	if (c == 'g')
+	{
+	    char	buf[32];
+
+	    addstr("getstr test: ");
+	    echo(); getstr(buf); noecho();
+	    printw("I saw `%s'.\n", buf);
+	}
+	if (c == 's')
+	{
+	    addstr("Shelling out...");
+	    def_prog_mode();
+	    endwin();
+	    system("sh");
+	    addstr("returned from shellout.\n");
+	    refresh();
+	}
 	if (c == 'x' || c == 'q')
 	    break;
 	if (c == '?')
-	    addstr("Type any key to see its keypad value, `q' to quit, `?' for help.\n");
+	{
+	    addstr("Type any key to see its keypad value.  Also:\n");
+	    addstr("g -- triggers a getstr test\n");
+	    addstr("s -- shell out\n");
+	    addstr("q -- quit\n");
+	    addstr("? -- repeats this help message\n");
+	}
 
 	while ((c = getch()) == ERR)
 	    if (!blocking)
@@ -1180,7 +1204,7 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 	    break;
 
 	case KEY_RIGHT:
-	    if (basex + portx < pxmax)
+	    if (basex + portx - (pymax > porty) < pxmax)
 		basex++;
 	    else
 		beep();
@@ -1194,7 +1218,7 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 	    break;
 
 	case KEY_DOWN:
-	    if (basey + porty < pymax)
+	    if (basey + porty - (pxmax > portx) < pymax)
 		basey++;
 	    else
 		beep();

@@ -162,7 +162,11 @@ int flushinp()
 #ifdef TERMIOS
 	tcflush(cur_term->Filedes, TCIFLUSH);
 #else
-    	ioctl(cur_term->Filedes, TIOCFLUSH, 0);
+	errno = 0;
+	do {
+	    ioctl(cur_term->Filedes, TIOCFLUSH, 0);
+	} while
+	    (errno == EINTR);
 #endif    
     	if (SP) {
 	  	SP->_fifohead = -1;

@@ -2,7 +2,7 @@
 .SH NAME
 \fBcurs_color\fR: \fBstart_color\fR, \fBinit_pair\fR,
 \fBinit_color\fR, \fBhas_colors\fR, \fBcan_change_color\fR,
-\fBcolor_content\fR, \fBpair_content\fR - \fBncurses\fR color
+\fBcolor_content\fR, \fBpair_content\fR - \fBcurses\fR color
 manipulation routines
 .SH SYNOPSIS
 \fB# include <curses.h>\fR
@@ -23,7 +23,7 @@ manipulation routines
 .br
 .SH DESCRIPTION
 .SS Overview
-\fBncurses\fR support color attributes on terminals with that capability.  To
+\fBcurses\fR support color attributes on terminals with that capability.  To
 use these routines \fBstart_color\fR must be called, usually right after
 \fBinitscr\fR.  Colors are always used in pairs (referred to as color-pairs).
 A color-pair consists of a foreground color (for characters) and a background
@@ -98,7 +98,7 @@ and \fBCOLOR_PAIRS-1\fR.  The values that are stored at the addresses pointed
 to by the second and third arguments are between 0 and \fBCOLORS\fR.
 .SS Colors
 In \fB<curses.h>\fR the following macros are defined.  These are the default
-colors.  \fBncurses\fR also assumes that \fBCOLOR_BLACK\fR is the default
+colors.  \fBcurses\fR also assumes that \fBCOLOR_BLACK\fR is the default
 background color for all terminals.
 
 .nf
@@ -131,10 +131,10 @@ Paradise and compatibles) do the wrong thing when you try to set a bright
 
 Color RGB values are not settable.
 .SH PORTABILITY
-The \fBncurses\fR implementation satisfies XSI Curses's minumum maximums
+This implementation satisfies XSI Curses's minumum maximums
 for \fBCOLORS\fR and \fBCOLOR_PAIRS\fR.
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_attr\fR(3X)
+\fBcurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_attr\fR(3X)
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

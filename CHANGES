@@ -274,7 +274,7 @@ Other changes and notes from 1.8.2 include:
 
 One note I forgot to mention in 1.8.3 is that tracing is off by
 default starting in the version. If you want tracing output, put
-traceon(); in your code and link with -lncurses_g.
+traceon(); in your code and link with -ldcurses.
 
 ### ncurses 1.8.4 -> 1.8.5
 *) serious bugs in updating screen which caused erratic non-display,
@@ -412,4 +412,5 @@ traceon(); in your code and link with -lncurses_g.
 
 ### ncurses 1.9.2c -> 1.9.2d
 
-*) 
+*) revised 'configure' script to produce libraries for normal, debug,
+   profile and shared object models. 

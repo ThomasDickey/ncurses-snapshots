@@ -2,7 +2,7 @@
 .SH NAME
 \fBcurs_border\fR: \fBborder\fR, \fBwborder\fR, \fBbox\fR,
 \fBhline\fR, \fBwhline\fR, \fBvline\fR, \fBwvline\fR - create
-\fBncurses\fR borders, horizontal and vertical lines
+\fBcurses\fR borders, horizontal and vertical lines
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 .br
@@ -58,11 +58,11 @@ Note that \fBborder\fR and \fBbox\fR may be macros.
 .SH PORTABILITY
 These functions are described in the XSI Curses standard, Issue 4.  Additional
 functions \fBmvhline\fR, \fBmvvline\fR, \fBmvwhline\fR, and \fBmvwvline\fR are
-described there which \fBncurses\fR does not yet support.  The standard
+described there which this implementation does not yet support.  The standard
 specifies that they return \fBERR\fR on failure, but specifies no error
 conditions.
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_outopts\fR(3X).
+\fBcurses\fR(3X), \fBcurs_outopts\fR(3X).
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

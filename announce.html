@@ -5,26 +5,27 @@
 <link rev=made href=mailto:esr@snark.thyrsus.com>
 </HEAD>
 <BODY>
-<TITLE>Announcing ncurses 1.9.2d</TITLE>
-<H1>Announcing ncurses 1.9.2d</H1>
+<TITLE>Announcing ncurses 1.9.3</TITLE>
+<H1>Announcing ncurses 1.9.3</H1>
 
-<H2>New in 1.9.2d:</H2>
-<UL>
-<LI> Integrated panels support.
-<LI> ncurses output can now be redirected.
-</UL>
-
-<H2>Overview of ncurses 1.9.2d</H2>
+<H2>Overview of ncurses 1.9.3</H2>
 
 The ncurses library is a freeware emulation of System V Release 4.0 curses.
 It uses terminfo format, supports color and multiple highlights and forms
 characters, and function-key mapping, and has all the other SYSV-curses
 enhancements over BSD curses. <P>
 
-The ncurses code was developed under Linux.  It is highly portable, and
-runs on all of the following platforms: 386BSD, SunOS, HP-UX, Ultrix,
+In mid-June 1995, the maintainer of 4.4BSD curses declared that he
+considered 4.4BSD curses obsolete, and is encouraging the keepers of
+Unix releases such as BSD/OS, freeBSD and netBSD to switch over to
+ncurses. <P>
+
+The ncurses code was developed under Linux.  It is highly portable to any
+ANSI/POSIX-conforming unix system using the FSF's autoconf software to 
+generate a configure script.
+The following platforms are reported to work: 386BSD, SunOS, HP-UX, Ultrix,
 NeXTSTEP 3.0, System V Release 4, BSDI BSD/OS, Apollo, AIX 3.2.5, Solaris
-2.3, NeXTSTEP 3.2.  It should port easily to any ANSI/POSIX-conforming UNIX.<P>
+2.3, NeXTSTEP 3.2..<P>
 
 The distribution includes the library and support utilities, including a
 terminfo compiler tic(1), a decompiler infocmp(1), clear(1), tput(1), and a
@@ -57,13 +58,11 @@ or System V's.  <P>
 a novel, simple, and cheap algorithm that enables it to make optimal
 use of hardware scrolling, line-insertion, and line-deletion
 for screen-line movements.  This algorithm is more powerful than
-the BSD curses quickch() routine.  <P>
+the 4.4BSD curses quickch() routine.  <P>
 <LI> An emulation of the System V Release 4 panels library, supporting 
 a stack of windows with backing store, is included. <P>
 <LI> (PC-clone boxes only) Support for access to the IBM PC ROM characters
-through a new highlight, A_PCCHARSET.  Also, ncurses will now
-automatically load a nice set of forms characters when running on
-PC-compatible consoles with no acsc capability specified. <P>
+through a new highlight, A_PCCHARSET. <P>
 <LI> Automatic fallback to the /etc/termcap file can be compiled in
 for systems withould a terminfo tree.  This feature is neither
 fast nor cheap, you don't want to use it unless you have to,
@@ -73,7 +72,7 @@ but it's there. <P>
 
 <H1>State of the Package</H1>
 
-Numerous bugs present in earlier versions through 1.8.7 have been fixed; the
+Numerous bugs present in earlier versions have been fixed; the
 library is far more reliable than it used to be.  Bounds checking in many 
 `dangerous' entry points has been improved.  The code is now type-safe 
 according to gcc -Wall.  The library has been checked for malloc leaks and
@@ -112,7 +111,7 @@ by <A HREF="http://www.ccil.org/~esr/home.html">Eric S. Raymond. </A>
 However, requests for beta releases and other queries should properly
 be directed to Zeyd. <P>
 
-There is an ncurses mailing list.  It is a listserv list; to join, write
+There is an ncurses mailing list.  It is a majordomo list; to join, write
 to <TT>listserv@netcom.com</TT> with a message containing the line
 <LISTING>
              subscribe ncurses-list <name>@<host.domain>
@@ -128,18 +127,6 @@ testing of this package. <P>
 </UL>
 We need people to help with these projects.  If you are interested in working 
 on them, please join the ncurses list.
-
-<H2>Whither BSD curses?</H2>
-
-Keith Bostic, the maintainer of BSD curses, has undertaken that if ncurses
-proves stable and usable with nvi, he will switch to ncurses for the nvi (new
-vi) distribution and pronounce BSD curses officially dead. <P>
-
-It is therefore probable that the next re-packaging of 4.4BSD curses
-will, in fact, use ncurses. <P>
-
-BSDI has said that they will cut over to ncurses if and when Keith gives the
-word. <P>
 
 <H2>The terminfo/termcap database</H2>
 

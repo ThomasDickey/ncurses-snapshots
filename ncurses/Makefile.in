@@ -82,14 +82,6 @@ install.libs: $(LIBRARIES) $(libdir)
 		$(RANLIB) $(libdir)/$${out}; \
 	done
 
-# This rule is provided only as a convenience here; normally "make install"
-# is invoked from the top directory.
-install.man:
-	cd ../man && $(MAKE) $(NC_MFLAGS) TERMINFO=$(ticdir) MAN=$(MAN) $@
-
-install.data: $(ticdir)
-	cd ../misc && $(MAKE) $(NC_MFLAGS) TERMINFO=$(ticdir) MAN=$(MAN) $@
-
 $(libdir) \
 $(ticdir) :
 	$(srcdir)/../mkinstalldirs $@

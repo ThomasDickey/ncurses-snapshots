@@ -240,7 +240,7 @@ struct try  *ptr;
 int ch = 0;
 int timeleft = 1000;
 
-    	T(("kgetch(%p) called", win));
+    	TR(TRACE_FIFO, ("kgetch(%p) called", win));
 
     	ptr = SP->_keytry;
 
@@ -248,27 +248,34 @@ int timeleft = 1000;
 		ch = fifo_push();
 		peek = 0;
     		while (ptr != NULL) {
-			T(("ch = %d", ch));
-			while ((ptr != NULL) && (ptr->ch != (unsigned char)ch)) 
-		    	ptr = ptr->sibling;
-	
+			TR(TRACE_FIFO, ("ch: %s", _tracechar(ch)));
+			while ((ptr != NULL) && (ptr->ch != (unsigned char)ch))
+				ptr = ptr->sibling;
+#ifdef TRACE
+			if (ptr == NULL)
+				{TR(TRACE_FIFO, ("ptr is null"));}
+			else
+				TR(TRACE_FIFO, ("ptr=%p, ch=%d, value=%d",
+						ptr, ptr->ch, ptr->value));
+#endif /* TRACE */
+
 			if (ptr != NULL)
 	    			if (ptr->value != 0) {	/* sequence terminated */
-	    				T(("end of sequence"));
+	    				TR(TRACE_FIFO, ("end of sequence"));
 	    				fifo_clear();
 					return(ptr->value);
-	    			} else {			/* go back for another character */
+	    			} else {		/* go back for another character */
 					ptr = ptr->child;
-					T(("going back for more"));
+					TR(TRACE_FIFO, ("going back for more"));
 	    			} else
 					break;
 
-	    			T(("waiting for rest of sequence"));
+	    			TR(TRACE_FIFO, ("waiting for rest of sequence"));
    				if (_nc_timed_wait(SP->_ifd, timeleft, &timeleft) < 1) {
-					T(("ran out of time"));
+					TR(TRACE_FIFO, ("ran out of time"));
 					return(fifo_pull());
    				} else {
-   					T(("got more!"));
+   					TR(TRACE_FIFO, ("got more!"));
    					fifo_push();
    					ch = fifo_peek();
    				}

@@ -70,6 +70,7 @@ char        **lptr;
         buf[strlen(buf) - 1] = '\0';
         *lptr = (char *)malloc((size_t)(COLS + 1));
         (void) strncpy(*lptr, buf, (size_t)COLS);
+	(*lptr)[COLS] = '\0';
     }
     (void) fclose(fp);
 

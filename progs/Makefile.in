@@ -70,12 +70,9 @@ LIB_CURSES = ../lib/libncurses@DFT_DEP_SUFFIX@
 all:	$(AUTO_SRC) $(PROGS) 
 
 install: install.progs 
-install.libs:
 
-# This rule is provided only as a convenience here; normally "make install"
-# is invoked from the top directory.
-install.man:
-	(cd ../man; $(MAKE) $(NC_MFLAGS) TERMINFO=$(ticdir) MAN=$(MAN) install )
+# this line simplifies the configure-script
+install.libs:
 
 install.progs: $(PROGS) $(bindir)
 	$(INSTALL_PROGRAM) tic $(bindir)/tic
@@ -86,11 +83,12 @@ install.progs: $(PROGS) $(bindir)
 	-@rm -f $(bindir)/captoinfo
 	-@ln $(bindir)/tic $(bindir)/captoinfo
 
-install.data: $(ticdir)
-	cd ../misc; $(MAKE) $(NC_MFLAGS) install
-
 $(bindir) :
 	$(srcdir)/../mkinstalldirs $@
+
+#
+# Utilities normally built by make all start here
+#
 
 DEPS_TIC = \
 	$(MODEL)/comp_main.o \
@@ -119,26 +117,38 @@ DEPS_INFOCMP = \
 infocmp: $(DEPS_INFOCMP)
 	$(LINK) $(CFLAGS_DEFAULT) $(DEPS_INFOCMP) $(LDFLAGS) -o $@
 
-# Use -g for debugging but -O if you're profiling with intent to determine
-# COMPUTE_OVERHEAD
+termsort.c: ../include/Caps.filtered $(srcdir)/termsort.sh
+	sh -c "$(srcdir)/termsort.sh $(AWK) ../include/Caps.filtered" >$@
+
+#
+# Test programs (not normally built by make all) start here.
+#
+
+# Cursor movement optimization tester. Use -g for debugging but -O if you're
+# profiling with intent to determine COMPUTE_OVERHEAD
 MVFLAGS = -O
 DEPS_MVCUR = \
 	$(srcdir)/../ncurses/lib_mvcur.c \
+	$(MODEL)/dump_entry.o \
 	$(LIB_CURSES)
 mvcur: $(DEPS_MVCUR)
 	$(LINK) $(CCFLAGS) -DTRACE -DMAIN $(MVFLAGS) $(DEPS_MVCUR) $(LDFLAGS) -o $@
 
+# Termcap-conversion tester
 DEPS_TCTEST = \
+	$(srcdir)/../ncurses/captoinfo.c \
 	$(LIB_CURSES)
 tctest: $(DEPS_TCTEST)
 	$(LINK) $(CCFLAGS) -DTRACE -DMAIN $(DEPS_TCTEST) $(LDFLAGS) -o $@
 
+# Demonstrator/tester for hardware-scrolling algorithm.
 hardscroll: \
 		$(srcdir)/../ncurses/hardscroll.c
 	$(LINK) $(CCFLAGS) -DMAINDEBUG $(srcdir)/../ncurses/hardscroll.c $(LDFLAGS) -o $@
 
-termsort.c: ../include/Caps.filtered $(srcdir)/termsort.sh
-	sh -c "$(srcdir)/termsort.sh $(AWK) ../include/Caps.filtered" >$@
+#
+# Utility productions start here
+#
 
 tags:
 	ctags *.[ch]

@@ -2,7 +2,7 @@
 .SH NAME
 \fBcurs_addch\fR: \fBaddch\fR, \fBwaddch\fR, \fBmvaddch\fR, \fBmvwaddch\fR,
 \fBechochar\fR, \fBwechochar\fR - add a character (with attributes) to a
-\fBncurses\fR window, then advance the cursor
+\fBcurses\fR window, then advance the cursor
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 
@@ -27,9 +27,10 @@ beginning of the next line.  At the bottom of the scrolling region, if
 \fBscrollok\fR is enabled, the scrolling region is scrolled up one line.
 
 If \fIch\fR is a tab, newline, or backspace, the cursor is moved appropriately
-within the window.  A newline also does a \fBclrtoeol\fR before moving.  The
-behavior of a newline is also controlled by the current status of nonl(). Tabs
-are considered to be at every eighth column.
+within the window.  Backspace moves the cursor one character left; at the left
+edge of a window it does nothing.  Newline does a \fBclrtoeol\fR, then moves
+the cursor to the window left margin on the next line, scrolling the window if
+on the last line).  Tabs are considered to be at every eighth column.
 
 If \fIch\fR is any control character other than tab, newline, or backspace, it
 is drawn in \fB^\fR\fIX\fR notation.  Calling \fBwinch\fR after adding a
@@ -97,14 +98,10 @@ descriptions.
 Note that \fBaddch\fR, \fBmvaddch\fR, \fBmvwaddch\fR, and
 \fBechochar\fR may be macros.
 .SH EXTENSIONS
-The following extended \fBncurses\fR features are available only on PC-clone
+The following extended \fBcurses\fR features are available only on PC-clone
 consoles and compatible terminals (and are not part of XSI curses).
 
-First, ncurses will automatically set up a better set of
-ACS defaults including the IBM high-half forms-drawing characters.  SVr4 does
-not do this.  These defaults may be overridden by an acsc capability.
-
-There is a new attribute PC_CHARSET which forces literal display of PC ROM
+There is a new attribute A_PCCHARSET which forces literal display of PC ROM
 characters.  Your console driver may still capture or translate a few (such as
 ESC) but this feature should give you access to the card-suit characters, up
 and down-arrow, and most others in the range 0-32.
@@ -119,7 +116,7 @@ interpreted as the leader of a control sequence.
 All these functions are described in the XSI Curses standard, Issue 4.
 The defaults specified for forms-drawing characters apply in the POSIX locale.
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_attr\fR(3X), \fBcurs_clear\fR(3X),
+\fBcurses\fR(3X), \fBcurs_attr\fR(3X), \fBcurs_clear\fR(3X),
 \fBcurs_inch\fR(3X), \fBcurs_outopts\fR(3X), \fBcurs_refresh\fR(3X),
 \fBputc\fR(3S).
 .\"#

@@ -75,7 +75,8 @@ int ch;
 		    		if (oldecho == TRUE)
 		    			_nc_backspace(win);
 			}
-		} else if (maxlen >= 0 && str - oldstr >= maxlen) {
+		} else if (ch >= KEY_MIN
+			   || maxlen >= 0 && str - oldstr >= maxlen) {
 		    beep();
 		} else {
 			if (oldecho == TRUE) {

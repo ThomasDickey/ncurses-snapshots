@@ -2,7 +2,7 @@
 .SH NAME
 \fBcurs_refresh\fR: \fBrefresh\fR, \fBwrefresh\fR, \fBwnoutrefresh\fR,
 \fBdoupdate\fR, \fBredrawwin\fR, \fBwredrawln\fR - refresh
-\fBncurses\fR windows and lines
+\fBcurses\fR windows and lines
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 
@@ -30,7 +30,7 @@ cursor for that window.
 
 The \fBwnoutrefresh\fR and \fBdoupdate\fR routines allow multiple updates with
 more efficiency than \fBwrefresh\fR alone.  In addition to all the window
-structures, \fBncurses\fR keeps two data structures representing the terminal
+structures, \fBcurses\fR keeps two data structures representing the terminal
 screen: a physical screen, describing what is actually on the screen, and a
 virtual screen, describing what the programmer wants to have on the screen.
 
@@ -46,7 +46,7 @@ characters transmitted and less CPU time used.  If the \fIwin\fR argument to
 \fBwrefresh\fR is the global variable \fBcurscr\fR, the screen is immediately
 cleared and repainted from scratch.
 
-The \fBredrawwin\fR routine indicates to \fBncurses\fR that some screen lines
+The \fBredrawwin\fR routine indicates to \fBcurses\fR that some screen lines
 are corrupted and should be thrown away before anything is written over them.
 These routines could be used for programs such as editors, which want a command
 to redraw some part of the screen or the entire screen.  The routine
@@ -63,7 +63,7 @@ Note that \fBrefresh\fR and \fBredrawwin\fR may be macros.
 .SH PORTABILITY
 The XSI Curses standard, Issue 4 describes these functions.
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_outopts\fR(3X)
+\fBcurses\fR(3X), \fBcurs_outopts\fR(3X)
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:
