@@ -1,5 +1,5 @@
 /*
- * $Id: demo_defkey.c,v 1.12 2003/12/06 17:25:02 tom Exp $
+ * $Id: demo_defkey.c,v 1.13 2004/01/04 00:01:13 tom Exp $
  *
  * Demonstrate the define_key() function.
  * Thomas Dickey - 2002/11/23
@@ -28,7 +28,7 @@ log_last_line(WINDOW *win)
 	wmove(win, y - 1, 0);
 	n = winnstr(win, temp, sizeof(temp));
 	while (n-- > 0) {
-	    if (isspace(temp[n]))
+	    if (isspace(UChar(temp[n])))
 		temp[n] = '\0';
 	    else
 		break;

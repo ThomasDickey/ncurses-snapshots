@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+.\" Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.67 2003/12/27 18:50:04 tom Exp $
+.\" $Id: ncurses.3x,v 1.68 2004/01/03 22:38:42 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
@@ -69,15 +69,15 @@ and screens are used.  The routine \fBendwin\fR must be called before
 exiting.  To get character-at-a-time input without echoing (most
 interactive, screen oriented programs want this), the following
 sequence should be used:
-
+.sp
       \fBinitscr(); cbreak(); noecho();\fR
-
+.sp
 Most programs would additionally use the sequence:
-
+.sp
       \fBnonl();\fR
       \fBintrflush(stdscr, FALSE);\fR
       \fBkeypad(stdscr, TRUE);\fR
-
+.sp
 Before a \fBcurses\fR program is run, the tab stops of the terminal
 should be set and its initialization strings, if defined, must be
 output.  This can be done by executing the \fBtput init\fR command
@@ -134,19 +134,19 @@ If the environment variable \fBTERMINFO\fR is defined, any program using
 \fBcurses\fR checks for a local terminal definition before checking in the
 standard place.  For example, if \fBTERM\fR is set to \fBatt4424\fR, then the
 compiled terminal definition is found in
-
+.sp
       \fB\*d/a/att4424\fR.
-
+.sp
 (The \fBa\fR is copied from the first letter of \fBatt4424\fR to avoid
 creation of huge directories.)  However, if \fBTERMINFO\fR is set to
 \fB$HOME/myterms\fR, \fBcurses\fR first checks
-
+.sp
       \fB$HOME/myterms/a/att4424\fR,
-
+.sp
 and if that fails, it then checks
-
+.sp
       \fB\*d/a/att4424\fR.
-
+.sp
 This is useful for developing experimental definitions or when write
 permission in \fB\*d\fR is not available.
 .PP
@@ -159,7 +159,7 @@ The \fBcurses\fR routines also define the \fBWINDOW *\fR variable \fBcurscr\fR
 which is used for certain low-level operations like clearing and redrawing a
 screen containing garbage.  The \fBcurscr\fR can be used in only a few
 routines.
-
+.
 .SS Routine and Argument Names
 Many \fBcurses\fR routines have two or more versions.  The routines prefixed
 with \fBw\fR require a window argument.  The routines prefixed with \fBp\fR
@@ -695,13 +695,13 @@ This applies only to the OS/2 EMX port.
 It specifies the order of buttons on the mouse.
 OS/2 numbers a 3-button mouse inconsistently from other
 platforms:
-
+.sp
 1 = left
 .br
 2 = right
 .br
 3 = middle.
-
+.sp
 This symbol lets you customize the mouse.
 The symbol must be three numeric digits 1-3 in any order, e.g., 123 or 321.
 If it is not specified, \fBncurses\fR uses 132.
@@ -864,11 +864,8 @@ to a printer attached to the terminal device.  See the \fBcurs_print\fR(3X)
 manual page for details.
 .SH PORTABILITY
 The \fBncurses\fR library is intended to be BASE-level conformant with the XSI
-Curses standard.  Certain portions of the EXTENDED XSI Curses functionality
-(including color support) are supported.  The following EXTENDED XSI Curses
-calls in support of wide (multibyte) characters are not yet implemented:
-\fBpecho_wchar\fP,
-\fBslk_wset\fP.
+Curses standard.  The EXTENDED XSI Curses functionality
+(including color support) is supported.
 .PP
 A small number of local differences (that is, individual differences between
 the XSI Curses and \fBncurses\fR calls) are described in \fBPORTABILITY\fR
