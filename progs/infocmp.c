@@ -30,7 +30,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.32 1998/01/03 18:54:34 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.33 1998/01/20 16:53:50 Fred.Fish Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -780,7 +780,9 @@ static void usage(void)
 int main(int argc, char *argv[])
 {
 	char *terminal, *firstdir, *restdir;
-	path tfile[MAXTERMS];
+	/* Avoid "local data >32k" error with mwcc */
+	/* Also avoid overflowing smaller stacks on systems like AmigaOS */
+	path *tfile = malloc(sizeof(path)*MAXTERMS);
 	int c, i, len;
 	bool filecompare = FALSE;
 	bool initdump = FALSE;

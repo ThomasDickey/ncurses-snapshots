@@ -29,7 +29,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.21 1997/11/30 00:19:33 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.23 1998/01/25 02:02:09 tom Exp $")
 
 /*
  * Only 8 ANSI colors are defined; the ISO 6429 control sequences work only
@@ -319,9 +319,12 @@ static int toggled_colors(int c)
     return c;
 }
 
-void _nc_do_color(int pair, int  (*outc)(int))
+void _nc_do_color(int pair, bool reverse, int  (*outc)(int))
 {
     short fg, bg;
+
+    if (reverse)
+    	pair = -pair;
 
     if (pair == 0)
     {
@@ -341,6 +344,11 @@ void _nc_do_color(int pair, int  (*outc)(int))
 	else
 	{
 	    pair_content(pair, &fg, &bg);
+	    if (reverse) {
+		short xx = fg;
+		fg = bg;
+		bg = xx;
+	    }
 
 	    T(("setting colors: pair = %d, fg = %d, bg = %d", pair, fg, bg));
 

@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 10.1.19
+#	Version 10.1.20
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -523,6 +523,31 @@ nansi.sysk|nansisysk|PC-DOS Public Domain NANSI.SYS with keypad redefined for vi
 #### ANSI console types
 #
 
+#### BeOS entry for Terminal program. Seems to be almost ANSI
+#	
+beterm|BeOS Terminal, 
+	am, eo, mir, msgr, xenl, xon, 
+	colors#8, cols#80, it#8, lines#25, pairs#64, 
+	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
+	clear=\E[H\E[J, cnorm=\E[?25h, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr, cub1=^H, cud1=^J, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, dch=\E[%p1%dP, 
+	dch1=\E[P, dim=\E[2m, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, 
+	el=\E[K, flash=\E[?5h\E[?5l$<200/>, home=\E[H, 
+	hpa=\E[%i%p1%dG, ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, 
+	il=\E[%p1%dL, il1=\E[L, ind=^J, invis=\E[8m, kb2=\E[G, 
+	kbs=^H, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
+	kend=\E[4~, kf1=\E[11~, kf10=\E[20~, kf11=\E[21~, 
+	kf12=\E[22~, kf2=\E[12~, kf3=\E[13~, kf4=\E[14~, 
+	kf5=\E[15~, kf6=\E[16~, kf7=\E[17~, kf8=\E[18~, kf9=\E[19~, 
+	khome=\E[1~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, kspd=^Z, 
+	nel=^M^J, op=\E[m, rc=\E8, rev=\E[7m, ri=\EM, rmir=\E[4l, 
+	rmso=\E[m, rmul=\E[24m, rs1=\Ec, sc=\E7, setab=\E[4%p1%dm, 
+	setaf=\E[3%p1%dm, setb=\E[%p1%'('%+%cm, 
+	setf=\E[%p1%{30}%+%cm, sgr0=\E[0;10m, smir=\E[4h, 
+	smso=\E[7m, smul=\E[4m, tbc=\E[3g, u6=\E[%i%p1%d;%p2%dR, 
+	u7=\E[6n, u8=\E[?6c, u9=\E[c, vpa=\E[%i%p1%dd, 
+
 # This entry is good for the 1.2.13 version of the Linux console driver.
 #
 # Note: there are numerous broken linux entries out there, which didn't screw
@@ -556,7 +581,7 @@ nansi.sysk|nansisysk|PC-DOS Public Domain NANSI.SYS with keypad redefined for vi
 # From: Eric S. Raymond <esr@snark.thyrsus.com> 15 Dec 1995
 linux|linux console, 
 	am, bce, eo, mir, msgr, xenl, xon, 
-	it#8, 
+	it#8, ncv@, 
 	acsc=+\020\,\021-\030.^Y0\333`\004a\261f\370g\361h\260i\316j\331k\277l\332m\300n\305o~p\304q\304r\304s_t\303u\264v\301w\302x\263y\363z\362{\343|\330}\234~\376, 
 	bel=^G, civis=\E[?25l, clear=\E[H\E[J, cnorm=\E[?25h, 
 	cr=^M, csr=\E[%i%p1%d;%p2%dr, cub1=^H, cud1=^J, cuf1=\E[C, 
@@ -843,6 +868,17 @@ iris-ansi-ap|IRIS ANSI in application-keypad mode,
 	is2=\E[?1l\E>\E[?7h, kf10=\E[010q, kf11=\E[011q, 
 	kf12=\E[012q, rmkx=\E>, smkx=\E=, 
 	use=iris-ansi, 
+
+# From the man-page, this is a quasi-vt100 emulator that runs on SGI's IRIX
+# (T.Dickey 98/1/24)
+iris-color|xwsh|IRIX ANSI with color, 
+	ncv#33, 
+	csr=\E[%i%p1%d;%p2%dr, dch=\E[%p1%dP, dim=\E[2m, 
+	ech=\E[%p1%dX, ich=\E[%p1%d@, rc=\E8, ritm=\E[23m, 
+	rmul=\E[24m, rs1=\Ec, 
+	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, sc=\E7, 
+	sitm=\E[3m, u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
+	use=klone+color, use=iris-ansi-ap, 
 
 # The following is a version of the ibm-pc entry distributed with PC/IX,
 # (Interactive Systems' System 3 for the Big Blue), modified by Richard
@@ -2126,7 +2162,7 @@ color_xterm|cx|cx100|color_xterm color terminal emulator for X,
 	smul=\E[4m, 
 
 # From: Thomas Dickey <dickey@clark.net> 04 Oct 1997
-# Updated: Özgür Kesim <kesim@math.fu-berlin.de> 02 Nov 1997
+# Updated: Oezguer Kesim <kesim@math.fu-berlin.de> 02 Nov 1997
 # Notes:
 # rxvt 2.21b uses
 #	smacs=\E(B\E)U^N, rmacs=\E(B\E)0^O,
@@ -14685,6 +14721,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* rename xterm-xf86-v39t to xterm-xf86-v40
 #	* remove bold/underline from sun console entries since they're not
 #	  implemented.
+# 10.1.20 (Sat Jan 24 11:02:51 EST 1998)
+#	* add beterm entry (Fred Fish)
+#	* add irix-color/xwsh entry.
+#	* turn ncv off for linux.
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

@@ -52,7 +52,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.17 1997/09/28 00:23:21 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.19 1998/01/25 02:31:23 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -67,6 +67,8 @@ int vidputs(attr_t newmode, int  (*outc)(int))
 static attr_t previous_attr = A_NORMAL;
 attr_t turn_on, turn_off;
 int pair, current_pair;
+bool reverse = FALSE;
+bool used_ncv = FALSE;
 
 	T((T_CALLED("vidputs(%s)"), _traceattr(newmode)));
 
@@ -80,20 +82,61 @@ int pair, current_pair;
 	if (magic_cookie_glitch > 0)
 		newmode &= ~(SP->_xmc_suppress);
 #endif
+
+	/*
+	 * If we have a terminal that cannot combine color with video
+	 * attributes, use the colors in preference.
+	 */
+	if ((newmode & A_COLOR)
+	 && (no_color_video > 0)) {
+		static const struct {
+			attr_t video;
+			unsigned bit;
+		} table[] = {
+			{ A_STANDOUT,		1 },
+			{ A_UNDERLINE,		2 },
+			{ A_REVERSE,		4 },
+			{ A_BLINK,		8 },
+			{ A_DIM,		16 },
+			{ A_BOLD, 		32 },
+			{ A_INVIS,		64 },
+			{ A_PROTECT,		128 },
+			{ A_ALTCHARSET,		256 },
+		};
+		size_t n;
+		for (n = 0; n < SIZEOF(table); n++) {
+			if ((table[n].bit & no_color_video)
+			 && (table[n].video & newmode)) {
+				used_ncv = TRUE;
+				if (table[n].video == A_REVERSE)
+					reverse = TRUE;
+				else
+					newmode &= ~table[n].video;
+			}
+		}
+	}
+
 	if (newmode == previous_attr)
 		returnCode(OK);
 
-	turn_off = (~newmode & previous_attr) & ALL_BUT_COLOR;
-	turn_on  = (newmode & ~previous_attr) & ALL_BUT_COLOR;
-
 	pair = PAIR_NUMBER(newmode);
 	current_pair = PAIR_NUMBER(previous_attr);
+
+	if (reverse) {
+		newmode &= ~A_REVERSE;
+		pair = -pair;
+	}
+	if (previous_attr & A_REVERSE)
+		current_pair = -current_pair;
+
+	turn_off = (~newmode & previous_attr) & ALL_BUT_COLOR;
+	turn_on  = (newmode & ~previous_attr) & ALL_BUT_COLOR;
 
 	/* if there is no current screen, assume we *can* do color */
 	if ((!SP || SP->_coloron) && pair == 0) {
 		T(("old pair = %d -- new pair = %d", current_pair, pair));
 		if (pair != current_pair) {
-			_nc_do_color(pair, outc);
+			_nc_do_color(pair, reverse, outc);
 			previous_attr &= ~A_COLOR;
 		}
 	}
@@ -108,7 +151,7 @@ int pair, current_pair;
 			previous_attr &= ~A_COLOR;
 		}
 
-	} else if (set_attributes) {
+	} else if (set_attributes && !used_ncv) {
 		if (turn_on || turn_off) {
 			TPUTS_TRACE("set_attributes");
 			tputs(tparm(set_attributes,
@@ -161,9 +204,12 @@ int pair, current_pair;
 		current_pair = PAIR_NUMBER(previous_attr);
 		T(("old pair = %d -- new pair = %d", current_pair, pair));
 		if (pair != current_pair) {
-			_nc_do_color(pair, outc);
+			_nc_do_color(pair, reverse, outc);
 		}
 	}
+
+	if (reverse)
+		newmode |= A_REVERSE;
 
 	if (SP)
 		SP->_current_attr = newmode;

@@ -2,12 +2,20 @@
 #ifndef _CURSESW_H
 #define _CURSESW_H
 
-// $Id: cursesw.h,v 1.12 1997/10/11 18:49:39 tom Exp $
+// $Id: cursesw.h,v 1.13 1998/01/20 16:53:50 Fred.Fish Exp $
 
 #include <etip.h>
 #include <stdio.h>
 #include <stdarg.h>
+#ifdef __MWERKS__
+/* This is a bogus check, stringstream is actually ANSI C++ standard,
+ * but old compilers like GCC don't have it, and new compilers like Metrowerks
+ * don't have strstream
+ */
+#include <sstream>
+#else
 #include <strstream.h>
+#endif
 
 extern "C" {
 #  include   <curses.h>

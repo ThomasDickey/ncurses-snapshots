@@ -32,7 +32,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.23 1997/10/18 18:21:32 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.24 1998/01/24 20:07:00 tom Exp $")
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
@@ -73,7 +73,7 @@ unsigned save_nc_tracing = _nc_tracing;
 
 	strcpy(tmp++, "{");
 
-	for (n = 0; n < sizeof(names)/sizeof(names[0]); n++) {
+	for (n = 0; n < SIZEOF(names); n++) {
 		if ((newmode & names[n].val) != 0) {
 			if (buf[1] != '\0')
 				strcat(tmp, "|");

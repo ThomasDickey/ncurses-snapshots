@@ -17,10 +17,10 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.117 1998/01/17 22:33:43 tom Exp $
+dnl $Id: configure.in,v 1.121 1998/01/25 00:20:10 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.117 $)
+AC_REVISION($Revision: 1.121 $)
 AC_INIT(ncurses/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -382,13 +382,46 @@ test "$with_getcap_cache" = "yes" && AC_DEFINE(USE_GETCAP_CACHE)
 
 fi
 
-###   use option --enable-symlinks to make tic use symlinks, not hard links
-AC_MSG_CHECKING(if tic should use symbolic links)
-AC_ARG_ENABLE(symlinks,
+###   Use option --enable-symlinks to make tic use symlinks, not hard links
+###   to reduce storage requirements for the terminfo database.
+###
+###   Most Unix systems have both link and symlink, a few don't have symlink.
+###   A few non-Unix systems implement symlink, but not link.
+###   A few non-systems implement neither.
+
+AC_CHECK_FUNCS( \
+	link \
+	symlink )
+
+with_links=no
+with_symlinks=no
+
+if test "$ac_cv_func_link" != yes ; then
+    AC_MSG_CHECKING(if tic should use symbolic links)
+    if test "$ac_cv_func_symlink" = yes ; then
+    	with_symlinks=yes
+    else
+    	with_symlinks=no
+    fi
+    AC_MSG_RESULT($with_symlinks)
+elif test "$ac_cv_func_symlink" != yes ; then
+    AC_MSG_CHECKING(if tic should use hard links)
+    if test "$ac_cv_func_link" = yes ; then
+    	with_links=yes
+    else
+    	with_links=no
+    fi
+    AC_MSG_RESULT($with_links)
+else
+    AC_MSG_CHECKING(if tic should use symbolic links)
+    AC_ARG_ENABLE(symlinks,
 	[  --enable-symlinks       make tic use symbolic links not hard links],
 	[with_symlinks=$enableval],
 	[with_symlinks=no])
-AC_MSG_RESULT($with_symlinks)
+    AC_MSG_RESULT($with_symlinks)
+fi
+
+test "$with_links" = yes && AC_DEFINE(USE_LINKS)
 test "$with_symlinks" = yes && AC_DEFINE(USE_SYMLINKS)
 
 ###   use option --enable-bsdpad to have tputs process BSD-style prefix padding
@@ -549,9 +582,15 @@ AC_ARG_ENABLE(macros,
 ###	Checks for libraries.
 AC_CHECK_FUNC(gettimeofday,
 	AC_DEFINE(HAVE_GETTIMEOFDAY),[
+
 AC_CHECK_LIB(bsd, gettimeofday,
 	AC_DEFINE(HAVE_GETTIMEOFDAY)
 	LIBS="$LIBS -lbsd")])dnl CLIX: bzero, select, gettimeofday
+
+MATH_LIB=""
+AC_CHECK_FUNC(floor,,
+	AC_CHECK_LIB(m, floor,[MATH_LIB="-lm"]))
+AC_SUBST(MATH_LIB)
 
 ###	Checks for header files.
 AC_STDC_HEADERS
@@ -580,6 +619,7 @@ unistd.h \
 values.h \
 )
 
+PROG_EXT=
 case $cf_cv_system_name in
 hpux*)
     # check for HPUX's ANSI compiler
@@ -597,9 +637,13 @@ hpux*)
     fi
     ;;
 os2*)
+    # We make sure -Zexe is not used -- it would interfere with @PROG_EXT@
     CFLAGS="$CFLAGS -Zmt -D__ST_MT_ERRNO__"
+#   LDFLAGS=`echo "$LDFLAGS -Zmt -Zcrtdll" | sed "s/-Zexe//g"`
+#   PROG_EXT=".exe"
     ;;
 esac
+AC_SUBST(PROG_EXT)
 
 # check for ISC (this may also define _POSIX_SOURCE)
 # Note: even non-Posix ISC needs <sys/bsdtypes.h> to declare fd_set
@@ -628,7 +672,6 @@ CF_SPEED_TYPE
 ###	Checks for library functions.
 AC_CHECK_FUNCS( \
 getttynam \
-link \
 memccpy \
 poll \
 remove \
@@ -651,6 +694,7 @@ if test "$with_getcap" = "yes" ; then
 	CF_CGETENT
 fi
 
+CF_ISASCII
 CF_STRUCT_SIGACTION
 CF_STRUCT_TERMIOS
 

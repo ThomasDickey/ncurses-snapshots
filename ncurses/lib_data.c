@@ -28,11 +28,17 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_data.c,v 1.10 1997/09/03 15:27:09 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_data.c,v 1.12 1998/01/24 19:28:31 tom Exp $")
 
-WINDOW *stdscr, *curscr, *newscr;
+/*
+ * OS/2's native linker complains if we don't initialize public data when
+ * constructing a dll (reported by J.J.G.Ripoll).
+ */
+WINDOW *stdscr = 0;
+WINDOW *curscr = 0;
+WINDOW *newscr = 0;
 
-SCREEN *_nc_screen_chain;
+SCREEN *_nc_screen_chain = 0;
 
 /*
  * The variable 'SP' will be defined as a function on systems that cannot link

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.31 1997/12/20 20:47:19 tom Exp $
+# $Id: Makefile.in,v 1.32 1998/01/20 23:26:14 J.J.G.Ripoll Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -36,6 +36,7 @@ THIS		= Makefile
 
 CF_MFLAGS 	= @cf_cv_makeflags@
 @SET_MAKE@
+x		= @PROG_EXT@
 
 MODEL		= ../@DFT_OBJ_SUBDIR@
 INSTALL_PREFIX	= @INSTALL_PREFIX@
@@ -90,9 +91,9 @@ LINT_LIBS	= -lncurses @LIBS@
 AUTO_SRC = \
 	termsort.c
 
-PROGS = tic toe infocmp clear tput tset
+PROGS = tic$x toe$x infocmp$x clear$x tput$x tset$x
 
-TESTPROGS = mvcur tctest hardscroll hashmap
+TESTPROGS = mvcur$x tctest$x hardscroll$x hashmap$x
 
 # Default library, for linking applications
 DEPS_CURSES = ../lib/libncurses@DFT_DEP_SUFFIX@
@@ -110,32 +111,32 @@ install.libs:
 uninstall.libs:
 
 install.progs: $(PROGS) $(INSTALL_PREFIX)$(bindir)
-	$(INSTALL_PROGRAM) tic     $(INSTALL_PREFIX)$(bindir)/tic
-	$(INSTALL_PROGRAM) toe     $(INSTALL_PREFIX)$(bindir)/toe
-	$(INSTALL_PROGRAM) infocmp $(INSTALL_PREFIX)$(bindir)/infocmp
-	$(INSTALL_PROGRAM) clear   $(INSTALL_PREFIX)$(bindir)/clear
-	$(INSTALL_PROGRAM) tput    $(INSTALL_PREFIX)$(bindir)/tput
-	$(INSTALL_PROGRAM) tset    $(INSTALL_PREFIX)$(bindir)/tset
+	$(INSTALL_PROGRAM) tic$x     $(INSTALL_PREFIX)$(bindir)/tic$x
+	$(INSTALL_PROGRAM) toe$x     $(INSTALL_PREFIX)$(bindir)/toe$x
+	$(INSTALL_PROGRAM) infocmp$x $(INSTALL_PREFIX)$(bindir)/infocmp$x
+	$(INSTALL_PROGRAM) clear$x   $(INSTALL_PREFIX)$(bindir)/clear$x
+	$(INSTALL_PROGRAM) tput$x    $(INSTALL_PREFIX)$(bindir)/tput$x
+	$(INSTALL_PROGRAM) tset$x    $(INSTALL_PREFIX)$(bindir)/tset$x
 	@echo "linking captoinfo to tic"
-	-@rm -f $(INSTALL_PREFIX)$(bindir)/captoinfo
-	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) tic captoinfo)
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/captoinfo$x
+	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) tic$x captoinfo$x)
 	@echo "linking infotocap to tic"
-	-@rm -f $(INSTALL_PREFIX)$(bindir)/infotocap
-	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) tic infotocap)
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/infotocap$x
+	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) tic$x infotocap$x)
 	@echo "linking reset to tset"
-	-@rm -f $(INSTALL_PREFIX)$(bindir)/reset
-	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) tset reset)
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/reset$x
+	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) tset$x reset$x)
 
 uninstall.progs:
-	-@rm -f $(INSTALL_PREFIX)$(bindir)/tic
-	-@rm -f $(INSTALL_PREFIX)$(bindir)/toe
-	-@rm -f $(INSTALL_PREFIX)$(bindir)/infocmp
-	-@rm -f $(INSTALL_PREFIX)$(bindir)/clear
-	-@rm -f $(INSTALL_PREFIX)$(bindir)/tput
-	-@rm -f $(INSTALL_PREFIX)$(bindir)/tset
-	-@rm -f $(INSTALL_PREFIX)$(bindir)/captoinfo
-	-@rm -f $(INSTALL_PREFIX)$(bindir)/infotocap
-	-@rm -f $(INSTALL_PREFIX)$(bindir)/reset
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/tic$x
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/toe$x
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/infocmp$x
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/clear$x
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/tput$x
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/tset$x
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/captoinfo$x
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/infotocap$x
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/reset$x
 
 $(INSTALL_PREFIX)$(bindir) :
 	$(srcdir)/../mkinstalldirs $@
@@ -148,40 +149,40 @@ DEPS_TIC = \
 	$(MODEL)/tic.o \
 	$(MODEL)/dump_entry.o
 
-tic: $(DEPS_TIC) $(DEPS_CURSES)
+tic$x: $(DEPS_TIC) $(DEPS_CURSES)
 	@ECHO_LINK@ $(LINK) $(DEPS_TIC) $(LDFLAGS_DEFAULT) -o $@
 
 DEPS_TOE = \
 	$(MODEL)/toe.o \
 	$(MODEL)/dump_entry.o
 
-toe: $(DEPS_TOE) $(DEPS_CURSES)
+toe$x: $(DEPS_TOE) $(DEPS_CURSES)
 	@ECHO_LINK@ $(LINK) $(DEPS_TOE) $(LDFLAGS_DEFAULT) -o $@
 
 DEPS_CLEAR = \
 	$(MODEL)/clear.o
 
-clear: $(DEPS_CLEAR) $(DEPS_CURSES)
+clear$x: $(DEPS_CLEAR) $(DEPS_CURSES)
 	@ECHO_LINK@ $(LINK) $(DEPS_CLEAR) $(LDFLAGS_DEFAULT) -o $@
 
 DEPS_TPUT = \
 	$(MODEL)/tput.o
 
-tput: $(DEPS_TPUT) $(DEPS_CURSES)
+tput$x: $(DEPS_TPUT) $(DEPS_CURSES)
 	@ECHO_LINK@ $(LINK) $(DEPS_TPUT) $(LDFLAGS_DEFAULT) -o $@
 
 DEPS_INFOCMP = \
 	$(MODEL)/infocmp.o \
 	$(MODEL)/dump_entry.o
 
-infocmp: $(DEPS_INFOCMP) $(DEPS_CURSES)
+infocmp$x: $(DEPS_INFOCMP) $(DEPS_CURSES)
 	@ECHO_LINK@ $(LINK) $(DEPS_INFOCMP) $(LDFLAGS_DEFAULT) -o $@
 
 DEPS_TSET = \
 	$(MODEL)/tset.o \
 	$(MODEL)/dump_entry.o
 
-tset: $(DEPS_TSET) $(DEPS_CURSES)
+tset$x: $(DEPS_TSET) $(DEPS_CURSES)
 	@ECHO_LINK@ $(LINK) $(DEPS_TSET) $(LDFLAGS_DEFAULT) -o $@
 
 termsort.c: $(srcdir)/MKtermsort.sh
@@ -198,21 +199,21 @@ DEPS_MVCUR = \
 	$(srcdir)/../ncurses/lib_mvcur.c \
 	$(MODEL)/dump_entry.o
 
-mvcur: $(DEPS_MVCUR) $(DEPS_CURSES)
+mvcur$x: $(DEPS_MVCUR) $(DEPS_CURSES)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) -DTRACE -DMAIN $(MVFLAGS) $(DEPS_MVCUR) $(LDFLAGS_DEFAULT) -o $@
 
 # Termcap-conversion tester
 DEPS_TCTEST = \
 	$(srcdir)/../ncurses/captoinfo.c
 
-tctest: $(DEPS_TCTEST) $(DEPS_CURSES)
+tctest$x: $(DEPS_TCTEST) $(DEPS_CURSES)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) -DTRACE -DMAIN $(DEPS_TCTEST) $(LDFLAGS_DEFAULT) -o $@
 
 # Demonstrator/tester for hardware-scrolling algorithm.
 DEPS_HARDSCROLL = \
 	$(srcdir)/../ncurses/hardscroll.c \
 	$(MODEL)/lib_trace.o	
-hardscroll: 
+hardscroll$x: 
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) -I$(srcdir)/../ncurses -DTRACE -DSCROLLDEBUG $(DEPS_HARDSCROLL) $(LDFLAGS_DEFAULT) -o $@
 
 # Demonstrator-tester for enhanced hardware-scrolling code with hash mapping
@@ -220,7 +221,7 @@ DEPS_HASHMAP = \
 	$(srcdir)/../ncurses/hashmap.c \
 	$(srcdir)/../ncurses/hardscroll.c \
 	$(MODEL)/lib_trace.o	
-hashmap: $(DEPS_HASHMAP)
+hashmap$x: $(DEPS_HASHMAP)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) -I$(srcdir)/../ncurses -DTRACE  -DHASHDEBUG $(DEPS_HASHMAP) -o $@
 
 #

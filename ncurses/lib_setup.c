@@ -35,7 +35,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.35 1997/12/20 22:23:13 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.36 1998/01/24 19:46:03 tom Exp $")
 
 /****************************************************************************
  *
@@ -250,7 +250,7 @@ int status;
 
 	if (tname == 0) {
 		tname = getenv("TERM");
-		if (tname == 0)
+		if (tname == 0 || *tname == '\0')
 			ret_error0(-1, "TERM environment variable not set.\n");
 	}
 

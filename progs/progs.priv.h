@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 1997 by Thomas E. Dickey <dickey@clark.net>                      *
+ * Copyright 1997,1998 by Thomas E. Dickey <dickey@clark.net>                 *
  * All Rights Reserved.                                                       *
  *                                                                            *
  * Permission to use, copy, modify, and distribute this software and its      *
@@ -18,15 +18,11 @@
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
  ******************************************************************************/
 /*
- * $Id: progs.priv.h,v 1.13 1997/09/07 00:15:47 tom Exp $
+ * $Id: progs.priv.h,v 1.15 1998/01/24 20:53:02 tom Exp $
  *
  *	progs.priv.h
  *
  *	Header file for curses utility programs
- *
- * Note: This file was originally marked with the ncurses collective copyright,
- * which was misleading, because it was not written by the original ncurses
- * maintainers.
  */
 
 #include <ncurses_cfg.h>
@@ -138,6 +134,13 @@ extern int optind;
 #define STDERR_FILENO 2
 #endif
 
-#ifndef isascii
-#define isascii(c) (((c) & 0xff) <= 127)
+/* We use isascii only to guard against use of 7-bit ctype tables in the
+ * isprint test in infocmp.
+ */
+#ifndef HAVE_ISASCII
+# if ('z'-'a' == 25) && ('z' < 127) && ('Z'-'A' == 25) && ('Z' < 127) && ('9' < 127)
+#  define isascii(c) (((c) & 0xff) <= 127)
+# else
+#  define isascii(c) 1	/* not really ascii anyway */
+# endif
 #endif
