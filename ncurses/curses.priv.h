@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.141 1999/06/26 22:00:49 tom Exp $
+ * $Id: curses.priv.h,v 1.142 1999/07/04 01:21:35 tom Exp $
  *
  *	curses.priv.h
  *
@@ -419,6 +419,10 @@ typedef	struct {
 #endif
 
 /* usually in <unistd.h> */
+#ifndef STDIN_FILENO
+#define STDIN_FILENO 0
+#endif
+
 #ifndef STDOUT_FILENO
 #define STDOUT_FILENO 1
 #endif

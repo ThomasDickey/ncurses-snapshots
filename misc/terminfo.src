@@ -3,7 +3,7 @@
 # This version of terminfo.src is distributed with ncurses.
 #
 #	Version 10.2.1
-#	$Date: 1999/04/17 21:59:16 $
+#	$Date: 1999/07/04 02:24:20 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -581,24 +581,26 @@ beterm|BeOS Terminal,
 # 1.9.9. All linux kernels since 1.2.13 (at least) set the screen size
 # themselves; this entry assumes that capability.
 #
+# The 2.x kernels add a private mode that sets the cursor type; use that to
+# get a block cursor for cvvis.
 linux|linux console, 
 	am, bce, eo, mir, msgr, xenl, xon, 
 	it#8, ncv#2, 
 	acsc=+\020\,\021-\030.^Y0\333`\004a\261f\370g\361h\260i\316j\331k\277l\332m\300n\305o~p\304q\304r\304s_t\303u\264v\301w\302x\263y\363z\362{\343|\330}\234~\376, 
-	bel=^G, civis=\E[?25l, clear=\E[H\E[J, cnorm=\E[?25h, 
-	cr=^M, csr=\E[%i%p1%d;%p2%dr, cub1=^H, cud1=^J, cuf1=\E[C, 
-	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, dch=\E[%p1%dP, 
-	dch1=\E[P, dim=\E[2m, dl=\E[%p1%dM, dl1=\E[M, 
-	ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K, 
-	flash=\E[?5h\E[?5l$<200/>, home=\E[H, hpa=\E[%i%p1%dG, 
-	ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, 
-	il1=\E[L, ind=^J, kb2=\E[G, kbs=\177, kcbt=\E[Z, kcub1=\E[D, 
-	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\E[3~, 
-	kend=\E[4~, kf1=\E[[A, kf10=\E[21~, kf11=\E[23~, 
-	kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, kf15=\E[28~, 
-	kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, kf19=\E[33~, 
-	kf2=\E[[B, kf20=\E[34~, kf3=\E[[C, kf4=\E[[D, kf5=\E[[E, 
-	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
+	bel=^G, civis=\E[?25l\E[?1c, clear=\E[H\E[J, 
+	cnorm=\E[?25h\E[?0c, cr=^M, csr=\E[%i%p1%d;%p2%dr, 
+	cub1=^H, cud1=^J, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
+	cuu1=\E[A, cvvis=\E[?25h\E[?8c, dch=\E[%p1%dP, dch1=\E[P, 
+	dim=\E[2m, dl=\E[%p1%dM, dl1=\E[M, ech=\E[%p1%dX, ed=\E[J, 
+	el=\E[K, el1=\E[1K, flash=\E[?5h\E[?5l$<200/>, home=\E[H, 
+	hpa=\E[%i%p1%dG, ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, 
+	il=\E[%p1%dL, il1=\E[L, ind=^J, kb2=\E[G, kbs=\177, 
+	kcbt=\E[Z, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
+	kdch1=\E[3~, kend=\E[4~, kf1=\E[[A, kf10=\E[21~, 
+	kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, 
+	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, 
+	kf19=\E[33~, kf2=\E[[B, kf20=\E[34~, kf3=\E[[C, kf4=\E[[D, 
+	kf5=\E[[E, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
 	khome=\E[1~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, kspd=^Z, 
 	nel=^M^J, rc=\E8, rev=\E[7m, ri=\EM, rmir=\E[4l, rmso=\E[27m, 
 	rmul=\E[24m, rs1=\Ec\E]R, sc=\E7, 
@@ -17216,6 +17218,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 1999/4/17
 #	* add complete set of default function-key definitions for scoansi - TD.
+#
+# 1999/7/3
+#	* add cnorm, cvvis for Linux 2.2 kernels
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

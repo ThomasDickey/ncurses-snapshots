@@ -1,10 +1,23 @@
--- $Id: NEWS,v 1.463 1999/06/26 22:25:50 tom Exp $
+-- $Id: NEWS,v 1.464 1999/07/04 02:29:47 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990703	pre-release
+	+ modify linux terminfo description to make use of kernel 2.2 mods that
+	  support cursor style, e.g., to implement cvvis (patch by Frank
+	  Heckenbach <frank@tim.gerwinski.de>)
+	+ add special-case in setupterm to retain previously-saved terminal
+	  settings in cur_term, which happens when curses and termcap calls are
+	  mixed (from report by Bjorn n Helgaas <helgaas@dhc.net>).
+	+ suppress initialization of key-tries in _nc_keypad() if we are only
+	  disabling keypad mode, e.g., in endwin() called when keypad() was not.
+	+ modify the Ada95 makefile to ensure that always the Ada files from
+	  the development tree are used for building and not the eventually
+	  installed ones (patch by Juergen Pfeifer).
 
 990626	pre-release
 	+ use TTY definition in tack/sysdep.c rather than struct termios
