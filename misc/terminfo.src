@@ -981,8 +981,8 @@ qnx|qnx4|qnx console,
 	ktbc=\377\344, kund=\377\365, mvpa=\E!%p1%02d, op=\ER, 
 	rep=\Eg%p2%' '%+%c%p1%c, rev=\E(, ri=\EI, rmcup=\Eh\ER, 
 	rmso=\E), rmul=\E], rs1=\ER, setb=\E@%p1%Pb%gb%gf%d%d, 
-	setf=\E@%p1%Pf%gb%gf%d%d, 
-	sgr0=\E}\E]\E>\E), smcup=\Ei, smso=\E(, smul=\E[, 
+	setf=\E@%p1%Pf%gb%gf%d%d, sgr0=\E}\E]\E>\E), smcup=\Ei, 
+	smso=\E(, smul=\E[, 
 
 #### NetBSD consoles
 #
@@ -2072,18 +2072,18 @@ xterm-8bit|xterm terminal emulator 8-bit controls (X Window System),
 	is2=\E7\E G\233r\233m\233?7h\233?1;3;4;6l\2334l\E8\E>, 
 	ka1=\217w, ka3=\217u, kb2=\217y, kbeg=\217E, kbs=^H, 
 	kc1=\217q, kc3=\217s, kcub1=\217D, kcud1=\217B, 
-	kcuf1=\217C, kcuu1=\217A, kdch1=\177, kend=\217F, 
-	kent=\217M, kf1=\217P, kf10=\23321~, kf11=\23323~, 
+	kcuf1=\217C, kcuu1=\217A, kdch1=\2333~, kend=\217F, 
+	kent=\217M, kf1=\23311~, kf10=\23321~, kf11=\23323~, 
 	kf12=\23324~, kf13=\23325~, kf14=\23326~, kf15=\23328~, 
 	kf16=\23329~, kf17=\23331~, kf18=\23332~, kf19=\23333~, 
-	kf2=\217Q, kf20=\23334~, kf3=\217R, kf4=\217S, kf5=\23315~, 
-	kf6=\23317~, kf7=\23318~, kf8=\23319~, kf9=\23320~, 
-	kfnd=\2331~, khome=\217H, kich1=\2332~, kmous=\233M, 
-	knp=\2336~, kpp=\2335~, kslt=\2334~, mc0=\233i, mc4=\2334i, 
-	mc5=\2335i, meml=\El, memu=\Em, op=\23339;49m, rc=\E8, 
-	rev=\2337m, ri=\215, rmacs=^O, rmam=\233?7l, 
-	rmcup=\2332J\233?47l\E8, rmir=\2334l, rmkx=\233?1l\E>, 
-	rmso=\23327m, rmul=\23324m, rs1=\Ec, 
+	kf2=\23312~, kf20=\23334~, kf3=\23313~, kf4=\23314~, 
+	kf5=\23315~, kf6=\23317~, kf7=\23318~, kf8=\23319~, 
+	kf9=\23320~, kfnd=\2331~, khome=\217H, kich1=\2332~, 
+	kmous=\233M, knp=\2336~, kpp=\2335~, kslt=\2334~, 
+	mc0=\233i, mc4=\2334i, mc5=\2335i, meml=\El, memu=\Em, 
+	op=\23339;49m, rc=\E8, rev=\2337m, ri=\215, rmacs=^O, 
+	rmam=\233?7l, rmcup=\2332J\233?47l\E8, rmir=\2334l, 
+	rmkx=\233?1l\E>, rmso=\23327m, rmul=\23324m, rs1=\Ec, 
 	rs2=\E7\E[62"p\E G\233r\233m\233?7h\233?1;3;4;6l\2334l\E8\E>, 
 	sc=\E7, setab=\2334%p1%dm, setaf=\2333%p1%dm, 
 	setb=\2334%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
@@ -14737,6 +14737,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* remove sgr string from qnx based on report by Xiaodan Tang
 # 10.1.22 (Wed Feb 11 18:40:12 EST 1998)
 #	* remove spurious commas from descriptions
+#	* correct xterm-8bit to match XFree86 3.9Ad F1-F4.
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

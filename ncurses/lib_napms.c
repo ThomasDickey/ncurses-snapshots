@@ -56,7 +56,7 @@
 #endif
 #endif  
 
-MODULE_ID("$Id: lib_napms.c,v 1.3 1998/02/11 12:14:01 tom Exp $")
+MODULE_ID("$Id: lib_napms.c,v 1.4 1998/02/13 10:24:54 jbuhler Exp $")
 
 int napms(int ms)
 {
@@ -65,8 +65,8 @@ int napms(int ms)
 #if HAVE_NANOSLEEP
 	{
 		struct timespec ts;
-		ts.tv_sec = ms / 1000000;
-		ts.tv_nsec = (ms % 1000000) * 1000000;
+		ts.tv_sec = ms / 1000;
+		ts.tv_nsec = (ms % 1000) * 1000000;
 		nanosleep(&ts, NULL);
 	}
 #elif HAVE_USLEEP

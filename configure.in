@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.125 1998/02/11 12:13:42 tom Exp $
+dnl $Id: configure.in,v 1.126 1998/02/12 23:10:43 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.125 $)
+AC_REVISION($Revision: 1.126 $)
 AC_INIT(ncurses/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -599,8 +599,8 @@ AC_CHECK_LIB(bsd, gettimeofday,
 	LIBS="$LIBS -lbsd")])dnl CLIX: bzero, select, gettimeofday
 
 MATH_LIB=""
-AC_CHECK_FUNC(floor,,
-	AC_CHECK_LIB(m, floor,[MATH_LIB="-lm"]))
+AC_CHECK_FUNC(sin,,
+	AC_CHECK_LIB(m, sin,[MATH_LIB="-lm"]))
 AC_SUBST(MATH_LIB)
 
 ###	Checks for header files.
