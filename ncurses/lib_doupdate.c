@@ -649,7 +649,10 @@ int	attrchanged = 0;
 			    GoTo(lineno, nFirstChar - 1);
 			    ClrToBOL();
 
-			    if (nFirstChar > firstChar)
+			    if(nFirstChar == screen_columns)
+				return;
+
+ 			    if (nFirstChar > firstChar)
 				firstChar = nFirstChar;
 			}
 		}

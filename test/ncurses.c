@@ -125,42 +125,7 @@ int y, x;
 		MEVENT	event;
 
 		getmouse(&event);
-		(void) printw("KEY_MOUSE, (%d, %d) %lx = ",
-			      event.x, event.y, event.bstate);
-
-#define SHOW(m, s) if ((event.bstate & m) == m) {addstr(s); addch(' ');}
-		SHOW(BUTTON1_RELEASED,		"release-1")
-		SHOW(BUTTON1_PRESSED,		"press-1")
-		SHOW(BUTTON1_CLICKED,		"click-1")
-		SHOW(BUTTON1_DOUBLE_CLICKED,	"doubleclick-1")
-		SHOW(BUTTON1_TRIPLE_CLICKED,	"tripleclick-1")
-		SHOW(BUTTON1_RESERVED_EVENT,	"reserved-1")
-		SHOW(BUTTON2_RELEASED,		"release-2")
-		SHOW(BUTTON2_PRESSED,		"press-2")
-		SHOW(BUTTON2_CLICKED,		"click-2")
-		SHOW(BUTTON2_DOUBLE_CLICKED,	"doubleclick-2")
-		SHOW(BUTTON2_TRIPLE_CLICKED,	"tripleclick-2")
-		SHOW(BUTTON2_RESERVED_EVENT,	"reserved-2")
-		SHOW(BUTTON3_RELEASED,		"release-3")
-		SHOW(BUTTON3_PRESSED,		"press-3")
-		SHOW(BUTTON3_CLICKED,		"click-3")
-		SHOW(BUTTON3_DOUBLE_CLICKED,	"doubleclick-3")
-		SHOW(BUTTON3_TRIPLE_CLICKED,	"tripleclick-3")
-		SHOW(BUTTON3_RESERVED_EVENT,	"reserved-3")
-		SHOW(BUTTON4_RELEASED,		"release-4")
-		SHOW(BUTTON4_PRESSED,		"press-4")
-		SHOW(BUTTON4_CLICKED,		"click-4")
-		SHOW(BUTTON4_DOUBLE_CLICKED,	"doubleclick-4")
-		SHOW(BUTTON4_TRIPLE_CLICKED,	"tripleclick-4")
-		SHOW(BUTTON4_RESERVED_EVENT,	"reserved-4")
-		SHOW(BUTTON_CTRL,		"ctrl")
-		SHOW(BUTTON_SHIFT,		"shift")
-		SHOW(BUTTON_ALT,		"alt")
-		SHOW(ALL_MOUSE_EVENTS,		"all-events")
-		SHOW(REPORT_MOUSE_POSITION,	"position")
-#undef SHOW
-
-		addch('\n');
+		printw("KEY_MOUSE, %s\n", _tracemouse(&event));
 	    }
 	    else
 #endif	/* NCURSES_VERSION */

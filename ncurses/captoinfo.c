@@ -31,7 +31,7 @@
  *
  *	char *captoinfo(n, s, parametrized)
  *
- *	Convert value s for termcap string capabilitynamed n into terminfo
+ *	Convert value s for termcap string capability named n into terminfo
  *	format.  
  *
  *	Besides all the standard termcap escapes, this translator understands
@@ -254,6 +254,8 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 
     /* skip the initial padding (if we haven't been told not to) */
     capstart = (char *)NULL;
+    if (s == 0)
+    	s = "";
     if (parametrized >= 0 && isdigit(*s))
 	for (capstart = s; ; s++)
 	    if (!(isdigit(*s) || *s == '*' || *s == '.'))

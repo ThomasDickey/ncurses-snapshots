@@ -49,15 +49,21 @@
 #include <string.h>
 #include "term.h"
 
-#define previous_attr SP->_current_attr
-
 int vidputs(attr_t newmode, int  (*outc)(int))
 {
-chtype	turn_off = (~newmode & previous_attr) & (chtype)(~A_COLOR);
-chtype	turn_on  = (newmode & ~previous_attr) & (chtype)(~A_COLOR);
+static attr_t previous_attr;
+attr_t turn_on, turn_off;
 
 	T(("vidputs(%lx) called %s", newmode, _traceattr(newmode)));
+
+	/* this allows us to go on whether or not newterm() has been called */ 
+	if (SP)
+		previous_attr = SP->_current_attr;
+
 	T(("previous attribute was %s", _traceattr(previous_attr)));
+
+	turn_off = (~newmode & previous_attr) & (chtype)(~A_COLOR);
+	turn_on  = (newmode & ~previous_attr) & (chtype)(~A_COLOR);
 
 	if (newmode == previous_attr)
 		return OK;
@@ -213,7 +219,8 @@ chtype	turn_on  = (newmode & ~previous_attr) & (chtype)(~A_COLOR);
 		}
    	}
 
-	previous_attr = newmode;
+	if (SP)
+		SP->_current_attr = newmode;
 
 	T(("vidputs finished"));
 	return OK;

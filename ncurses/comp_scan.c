@@ -172,7 +172,7 @@ start_token:
 
 	    /* have to make some punctuation chars legal for terminfo */
 	    if (!isalnum(ch) && !strchr(terminfo_punct, (char)ch)) {
-		 _nc_warning("Illegal character (expected a/n or %s) - %s",
+		 _nc_warning("Illegal character (expected alphanumeric or %s) - %s",
 		 	terminfo_punct, _tracechar(ch));
 		 _nc_panic_mode(separator);
 		 goto start_token;
@@ -443,7 +443,9 @@ int	number;
 int	i, c;
 chtype	ch, last_ch = '\0';
 
-	while ((ch = c = next_char()) != separator && c != EOF && c != '\n') {
+	while ((ch = c = next_char()) != separator && c != EOF) {
+	    if ((_nc_syntax == SYN_TERMCAP) && c == '\n')
+	    	break;
 	    if (ch == '^' && last_ch != '%') {
 		ch = c = next_char();
 		if (c == EOF)

@@ -15,7 +15,7 @@ SHELL = /bin/sh
 # 1.9a, 1.9b, 1.9foobar, ... when the ncurses release version changes
 # If a new ncurses has an incompatible application binary interface than
 # previous one, the ABI version should be changed.
-VERSION = 1.9.9b
+VERSION = 1.9.9c
 SHARED_ABI = 3.0
 
 dist: announce.html misc/ncurses-intro.doc misc/hackguide.doc
@@ -39,7 +39,7 @@ vcprepare:
 	find . -type d -exec mkdir {}/RCS \;
 
 # Write-lock almost all files not under version control.
-EXCEPTIONS = "announce.html\\|ANNOUNCE\\|misc/.*\\.doc\\|man/terminfo.5\\|lib_gen.c"
+EXCEPTIONS = 'announce.html$\\|ANNOUNCE\\|misc/.*\\.doc\\|man/terminfo.5\\|lib_gen.c'
 writelock:
 	for x in `grep -v $(EXCEPTIONS) MANIFEST`; do if [ ! -f `dirname $$x`/RCS/`basename $$x`,v ]; then chmod a-w $${x}; fi; done
 

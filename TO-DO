@@ -23,17 +23,24 @@ Known Problems:
 * The window classes defined in the c++ subdirectory need documentation.
   Some C++ programmer could earn a lot of good karma by doing this...
 
-Portability (or lack thereof):
+* The wresize() code has been reported to core-dump occasionally.  The
+  maintainers haven't been able to reproduce this.
 
-* The code for function-key recognition doesn't deal gracefully with NULs
-  in the input stream.  This creates a problem for some target environments 
-  (such as OS/2 Warp) using the raw PC BIOS; it uses NUL as a leader character
-  for function-key codes, so normally we translate input NULs into \200 (the
-  character used as a stand-in for NUL in capability strings).  In order to
-  preserve 8-bit cleanliness, we disable this translation when meta() is on.
-  So you can have 8-bit characters, or recognize NULs in function keys, but
-  not both.  The real fix for this would be to remove NUL-sentinel dependencies
-  in the function-key matcher.
+* Mark McKenzie <mmckenzi@undergrad.math.uwaterloo.ca> writes:
+ 
+        I have noticed a difference in the way the ncurses1.9.8a and System V
+        curses implementations of getch handles signals.
+
+        1) When in delay mode, getch does not return if a signal is received.
+        (With System V curses it does).
+
+        2) When in timeout mode, getch will delay until a character is received
+        if it is interrupted by a signal. (With System V curses it exits when
+        the time limit is up even if interrupted by a signal).
+ 
+  These things need to be fixed.
+
+Portability (or lack thereof):
 
 * Users of older System V UNIXes (but not Solaris, and probably not SVr4)
   may trip over a known problem with the signal-handling code which causes

@@ -126,8 +126,8 @@ bool	wide;
 	if (sminrow < 0) sminrow = 0;
 	if (smincol < 0) smincol = 0;
 
-	if (smaxrow >= screen_lines
-	 || smaxcol >= screen_columns
+	if (smaxrow > screen_lines
+	 || smaxcol > screen_columns
 	 || sminrow > smaxrow
 	 || smincol > smaxcol)
 		return ERR;

@@ -51,6 +51,10 @@ extern int errno;
 #define SET_ERROR(code) (errno=(code))
 #define RETURN(code) return( SET_ERROR(code) )
 
+/* The few common values in the status fields for menus and forms */
+#define _POSTED         (0x01)  /* menu or form is posted                  */
+#define _IN_DRIVER      (0x02)  /* menu or form is processing hook routine */
+
 /* Call object hook */
 #define Call_Hook( object, handler ) \
    if ( (object) && ((object)->handler) )\
