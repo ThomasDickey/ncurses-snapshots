@@ -691,6 +691,7 @@
 ./test/bs.6
 ./test/bs.c
 ./test/configure.in
+./test/filter.c
 ./test/firework.c
 ./test/firstlast.c
 ./test/gdc.6

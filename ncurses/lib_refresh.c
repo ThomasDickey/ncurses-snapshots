@@ -42,7 +42,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.20 1998/03/21 22:51:19 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_refresh.c,v 1.21 1998/05/09 14:59:56 tom Exp $")
 
 int wrefresh(WINDOW *win)
 {
@@ -70,6 +70,7 @@ int code;
 
 int wnoutrefresh(WINDOW *win)
 {
+short	limit_x;
 short	i, j;
 short	begx;
 short	begy;
@@ -130,6 +131,13 @@ bool	wide;
 	 * common-subexpression chunking to make it really tense,
 	 * so we'll force the issue.
 	 */
+
+	/* limit(n) */
+	limit_x = win->_maxx;
+	/* limit(j) */
+	if (limit_x > win->_maxx)
+		limit_x = win->_maxx;
+
 	for (i = 0, m = begy + win->_yoffset;
 	     i <= win->_maxy && m <= newscr->_maxy;
 	     i++, m++) {
@@ -139,12 +147,8 @@ bool	wide;
 		if (oline->firstchar != _NOCHANGE) {
 			int last = oline->lastchar;
 
-			/* limit(j) */
-			if (last > win->_maxx)
-				last = win->_maxx;
-			/* limit(n) */
-			if (last > newscr->_maxx - begx)
-				last = newscr->_maxx - begx;
+			if (last > limit_x)
+				last = limit_x;
 
 			for (j = oline->firstchar, n = j + begx; j <= last; j++, n++) {
 				if (oline->text[j] != nline->text[n]) {

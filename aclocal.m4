@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.130 1998/04/25 19:56:59 tom Exp $
+dnl $Id: aclocal.m4,v 1.132 1998/05/10 00:35:50 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1259,6 +1259,21 @@ AC_DEFUN([CF_SHARED_OPTS],
 	cf_cv_rm_so_locs=no
 
 	case $cf_cv_system_name in
+	hpux10.*)
+		# (tested with gcc 2.7.2 -- I don't have c89)
+		if test -n "$GCC"; then
+			CC_SHARED_OPTS='-fPIC'
+			LD_SHARED_OPTS='-Xlinker +b -Xlinker $(libdir)'
+		else
+			CC_SHARED_OPTS='+Z'
+			LD_SHARED_OPTS='+b $(libdir)'
+		fi
+		MK_SHARED_LIB='$(LD) -b +h `basename $[@]` -o $[@]'
+		# HP-UX shared libraries must be executable, and should be
+		# readonly to exploit a quirk in the memory manager.
+		INSTALL_LIB="-m 555"
+		cf_cv_do_symlinks=reverse
+		;;
 	hpux*)
 		# (tested with gcc 2.7.2 -- I don't have c89)
 		if test -n "$GCC"; then
@@ -1510,11 +1525,18 @@ do
 	fi
 done
 AC_MSG_RESULT($cf_cv_src_modules)
-TEST_ARGS="-L${LIB_DIR} -L\$(libdir) $TEST_ARGS"
+TEST_ARGS="-L\$(libdir) -L${LIB_DIR} $TEST_ARGS"
 AC_SUBST(TEST_DEPS)
 AC_SUBST(TEST_ARGS)
 
-PROG_ARGS="-L\$(libdir) -L${LIB_DIR} $PROG_ARGS"
+case $cf_cv_system_name in #(vi
+hpux*) #(vi
+	PROG_ARGS="-L${LIB_DIR} -L\$(libdir) $PROG_ARGS"
+	;;
+*)
+	PROG_ARGS="-L\$(libdir) -L${LIB_DIR} $PROG_ARGS"
+	;;
+esac
 AC_SUBST(PROG_ARGS)
 
 SRC_SUBDIRS="man include"

@@ -7,7 +7,7 @@
  *  wrs(5/28/93) -- modified to be consistent (perform identically) with either
  *                  PDCurses or under Unix System V, R4
  *
- * $Id: testcurs.c,v 1.17 1997/09/20 17:45:04 tom Exp $
+ * $Id: testcurs.c,v 1.18 1998/05/09 20:02:30 tom Exp $
  */
 
 #include <test.priv.h>
@@ -187,7 +187,7 @@ scrollTest (WINDOW *win)
 {
     int i;
     int OldX, OldY;
-    const char *Message = "The window will now scroll slowly";
+    NCURSES_CONST char *Message = "The window will now scroll slowly";
 
     wclear(win);
     mvwprintw (win, height - 2, 1, Message);

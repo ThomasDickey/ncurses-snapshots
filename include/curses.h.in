@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.64 1998/04/25 20:57:40 tom Exp $ */
+/* $Id: curses.h.in,v 1.65 1998/05/10 00:09:17 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -912,13 +912,13 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define getpary(win)		((win)?(win)->_pary:ERR)
 
 #define winch(win)       	((win)?(win)->_line[(win)->_cury].text[(win)->_curx]:0)
-#define wstandout(win)      	(wattr_set(win,A_STANDOUT, 0, (void *)0))
-#define wstandend(win)      	(wattr_set(win,A_NORMAL, 0, (void *)0))
-#define wattr_set(win,at,pair,opts)    	((win)?((win)->_attrs = (at)):0)
+#define wstandout(win)      	(wattrset(win,A_STANDOUT))
+#define wstandend(win)      	(wattrset(win,A_NORMAL))
+#define wattr_set(win,a,p,opts) ((win)->_attrs = (((a) & ~A_COLOR) | COLOR_PAIR(p)), OK)
 
 #define wattron(win,at)		wattr_on(win, at, (void *)0)
 #define wattroff(win,at)	wattr_off(win, at, (void *)0)
-#define wattrset(win,at)    	wattr_set(win, at, 0, (void *)0)
+#define wattrset(win,at)    	((win)->_attrs = (at))
 
 #define scroll(win)		wscrl(win,1)
 
@@ -1101,7 +1101,9 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define vid_attr(a,pair,opts)		vidattr(a)
 #define vline_set(c,n)			vhline_set(stdscr,c,n)
 #define waddwstr(win,wstr,n)		waddnwstr(win,wstr,-1)
-#define wattr_get(win)			((win)->_attrs)
+#define wattr_get(win,a,p,opts)		((void)((a) != 0 && (*(a) = (win)->_attrs)), \
+					 (void)((a) != 0 && (*(p) = PAIR_NUMBER((win)->_attrs))), \
+					 OK)
 #define wget_wstr(w,t)			wgetn_wstr(w,t,-1)
 #define win_wchstr(w,c)			win_wchnstr(w,c,-1)
 #define wins_wstr(w,t)			wins_nwstr(w,t,-1)

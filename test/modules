@@ -1,5 +1,5 @@
 # Test-Program modules
-# $Id: modules,v 1.6 1998/02/11 12:14:04 tom Exp $
+# $Id: modules,v 1.7 1998/05/09 19:28:32 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -34,6 +34,7 @@
 @ base
 blue		progs		$(srcdir)	../include/term.h
 bs		progs		$(srcdir)
+filter		progs		$(srcdir)
 firework	progs		$(srcdir)	../include/term.h
 firstlast	progs		$(srcdir)
 gdc		progs		$(srcdir)

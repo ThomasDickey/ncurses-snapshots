@@ -44,7 +44,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.37 1998/02/11 12:13:57 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.38 1998/05/10 00:54:28 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -222,6 +222,9 @@ size_t	i;
 	SP->_endwin      = TRUE;
 	SP->_ofp         = output;
 	SP->_cursor      = -1;	/* cannot know real cursor shape */
+#ifdef NCURSES_NO_PADDING
+	SP->_no_padding  = getenv("NCURSES_NO_PADDING") != 0;
+#endif
 
 	SP->_maxclick     = DEFAULT_MAXCLICK;
 	SP->_mouse_event  = no_mouse_event;
