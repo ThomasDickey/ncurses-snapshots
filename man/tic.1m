@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.20 1998/03/28 20:18:14 tom Exp $
+.\" $Id: tic.1m,v 1.21 1998/05/17 00:23:46 tom Exp $
 .TH tic 1M ""
 .ds n 5
 .ds d @DATADIR@/terminfo
@@ -212,8 +212,9 @@ If the environment variable \fBTERMINFO\fR is set, the compiled
 results are placed there instead of \fB\*d\fR.
 
 Total compiled entries cannot exceed 4096 bytes.  The name field cannot
-exceed 128 bytes.  Terminal names exceeding 14 characters will be
-truncated to 14 characters and a warning message will be printed.
+exceed 512 bytes.  Terminal names exceeding the maximum alias length
+(32 characters on systems with long filenames, 14 characters otherwise)
+will be truncated to the maximum alias length and a warning message will be printed.
 .SH COMPATIBILITY
 There is some evidence that historic \fBtic\fR implementations treated
 description fields with no whitespace in them as additional aliases or

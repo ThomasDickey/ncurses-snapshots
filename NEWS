@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.334 1998/05/10 00:25:43 tom Exp $
+-- $Id: NEWS,v 1.336 1998/05/17 00:13:43 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,8 +6,21 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
-980509
+980516
+	+ modify write_entry.c so that it will not attempt to link aliases
+	  with embedded '/', but give only a warning.
 	+ put -L$(libdir) first when linking programs, except for HP-UX.
+	+ modify comp_scan.c to handle SVr4 terminfo description for att477,
+	  which contains a colon in the description field.
+	+ modify configure script to support SCO osr5.0.5 shared libraries
+	  (from comp.unix.sco.programmer newsgroup item by Mike Hopkirk
+	  <hops@sco.com>).
+	+ eliminate extra GoTo call in lib_doupdate.c (patch by Alexander V.
+	  Lukyanov).
+	+ minor adjustments of const/NCURSES_CONST from IRIX compile.
+	+ add updates based on esr's 980509 version of terminfo.src.
+
+980509
 	+ correct macros for wattr_set, wattr_get, separate wattrset macro from
 	  these to preserve behavior that allows attributes to be combined with
 	  color pair numbers.

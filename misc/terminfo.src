@@ -1,7 +1,7 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
 #	Version 10.2.1
-#	$Date: 1998/05/09 17:34:20 $
+#	$Date: 1998/05/16 19:43:24 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -101,10 +101,11 @@
 # to see a listing of section headings.  The intent of the divisions is
 # (a) to make it easier to find things, and (b) to order the database so
 # that important and frequently-encountered terminal types are near the
-# front (so that you'll get reasonable search efficiency even if you don't
-# use reorder).  Minor sections usually correspond to manufacturers or
-# standard terminal classes.  Parenthesized words following manufacturer
-# names are type prefixes or product line names used by that manufacturers.
+# front (so that you'll get reasonable search efficiency from a linear
+# search of the termcap form even if you don't use reorder).  Minor sections
+# usually correspond to manufacturers or standard terminal classes. 
+# Parenthesized words following manufacturer names are type prefixes or
+# product line names used by that manufacturers.
 #
 # HOW TO READ THE ENTRIES:
 #
@@ -136,7 +137,7 @@
 #	-vb	Use visible bell (<flash>) rather than <bel>.
 #	-w	Wide - in 132 column mode.
 # If a name has multiple suffixes and one is a line height, that one should 
-# go first.  Thus `aaa-30-s-rv' is recommended over `aaa-s-rv'.  
+# go first.  Thus `aaa-30-s-rv' is recommended over `aaa-s-rv-30'.  
 # 
 # Entries with embedded plus signs are designed to be included through use/tc
 # capabilities, not used as standalone entries. 
@@ -198,8 +199,8 @@
 # Standard for Linux and open-source BSD systems.  Some vendors (notably Sun)
 # use /usr/lib/tabset or (more recently) /usr/share/lib/tabset.  
 #
-# No curses package we know of uses these files.  If their location is an
-# issue, you will have to hand-patch the file locations before compiling
+# No curses package we know of actually uses these files.  If their location
+# is an issue, you will have to hand-patch the file locations before compiling
 # this file.
 # 
 # REQUEST FOR CONTACT INFORMATION AND HISTORICAL MATERIAL
@@ -250,7 +251,7 @@
 # There are no guarantees anywhere.  Svaha!
 #
 
-######## ANSI, CONSOLE, AND SPECIAL TYPES
+######## ANSI, UNIX CONSOLE, AND SPECIAL TYPES
 #
 # This section describes terminal classes and maker brands that are still
 # quite common.
@@ -379,7 +380,7 @@ ansi-mini|any ansi terminal with pessimistic assumptions,
 # not to require any -- even at 9600 bps.  If you encounter problems,
 # try including the padding specifications.
 #
-# Note: the "as" and "ae" specifications are not implemented here, for
+# Note: the :as: and :ae: specifications are not implemented here, for
 # the available termcap documentation does not make clear WHICH alternate
 # character set to specify.  ANSI 3.64 seems to make allowances for several.
 # Please make the appropriate adjustments to fit your needs -- that is
@@ -469,8 +470,7 @@ ansi|ansi/pc-term compatible with color,
 	u9=\E[c, 
 	use=ecma+color, use=klone+sgr, use=ansi-m, 
 
-#
-# ANSI.SYS entries
+#### DOS ANSI.SYS variants
 #
 # This completely describes the sequences specified in the DOS 2.1 ANSI.SYS
 # documentation (except for the keyboard key reassignment feature, which
@@ -524,9 +524,9 @@ nansi.sysk|nansisysk|PC-DOS Public Domain NANSI.SYS with keypad redefined for vi
 #### ANSI console types
 #
 
-#### BeOS entry for Terminal program
+#### BeOS
 #
-# Seems to be almost ANSI
+# BeOS entry for Terminal program Seems to be almost ANSI
 beterm|BeOS Terminal, 
 	am, eo, mir, msgr, xenl, xon, 
 	colors#8, cols#80, it#8, lines#25, pairs#64, 
@@ -550,11 +550,10 @@ beterm|BeOS Terminal,
 	smso=\E[7m, smul=\E[4m, tbc=\E[3g, u6=\E[%i%p1%d;%p2%dR, 
 	u7=\E[6n, u8=\E[?6c, u9=\E[c, vpa=\E[%i%p1%dd, 
 
-# This entry is good for the 1.2.13 version of the Linux console driver.
+#### Linux consoles
 #
-# Note: there are numerous broken linux entries out there, which didn't screw
-# up BSD termcap but hose ncurses's smarter cursor-movement optimization.
-# One common pathology is an incorrect tab length of 4.
+
+# This entry is good for the 1.2.13 or later version of the Linux console.
 #
 # ***************************************************************************
 # *                                                                         *
@@ -569,7 +568,7 @@ beterm|BeOS Terminal,
 #	string F26 ="\033[Z"
 # *                                                                         *
 # * This has to use a key slot which is unfortunate (any unused one will    *
-# # do, F26 is the higher-numbered one).  The change ought to be built      *
+# * do, F26 is the higher-numbered one).  The change ought to be built      *
 # * into the kernel tables.                                                 *
 # *                                                                         *
 # ***************************************************************************
@@ -996,10 +995,8 @@ qnx|qnx4|qnx console,
 # the :Xs: flag. Then I split :is: into a size-independent <is1> and a
 # size-dependent <is2>.  Finally, I added <rmam>/<smam> -- esr)
 
-# NOTE: because the 386BSD "vi"/"elvis" seems to have a bug if
-# both <ich1> and <smir> are specified (an original VT220 
-# shows the same buggy behaviour!), <ich1> has been taken
-# out of this entry. for reference, it should be <ich1=\E[@>.
+# NOTE: <ich1> has been taken out of this entry. for reference, it should
+# be <ich1=\E[@>.  For discussion, see ICH/ICH1 VERSUS RMIR/SMIR below.
 pcvtXX|pcvt vt200 emulator (DEC VT220), 
 	am, km, mir, msgr, xenl, 
 	it#8, vt#3, 
@@ -1244,8 +1241,7 @@ ibmpc3|pc3-bold|IBM PC BSD/386 Console with bold instead of underline,
 # its name to Boundless Technologies; see http://www.boundless.com.
 #
 
-# (The <acsc>, <rmacs>, and <smacs> capabilities aren't in DEC's official
-# entry -- esr)
+# (<acsc>/<rmacs>/<smacs> capabilities aren't in DEC's official entry -- esr)
 vt52|dec vt52, 
 	cols#80, it#8, lines#24, 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
@@ -2303,7 +2299,6 @@ xterms-sun|small (80x24) xterm with sunFunctionKeys true,
 	cols#80, lines#24, use=xterm-sun, 
 
 # This is for the extensible terminal emulator on the X11R6 contrib tape.
-# (emu: I changed <setab>/<setaf> to <setb>/<setf> -- esr)
 emu|emu native mode, 
 	mir, msgr, xon, 
 	colors#15, cols#80, it#8, lines#24, pairs#64, vt#200, 
@@ -2324,7 +2319,7 @@ emu|emu native mode,
 	kf7=\EF07, kf8=\EF08, kf9=\EF09, kfnd=\Efind, kich1=\Eins, 
 	knp=\Enext, kpp=\Eprior, kslt=\Esel, oc=\Es0;\Er0;, 
 	rev=\ES\ET, ri=\EF, rmacs=\0, rmir=\EX, rmso=\ES, rmul=\ES, 
-	rs2=\ES\Es0;\Er0;, setb=\Es%i%p1%d;, setf=\Er%i%p1%d;, 
+	rs2=\ES\Es0;\Er0;, setab=\Es%i%p1%d;, setaf=\Er%i%p1%d;, 
 	sgr0=\ES, smacs=\0, smir=\EY, smso=\ES\ET, smul=\ES\EV, 
 	tbc=\Ej, 
 
@@ -2475,7 +2470,7 @@ pilot|tgtelnet|Top Gun Telnet on the Palm Pilot Professional,
 	ind=^J, kbs=^H, kcub1=^H, kcud1=^J, knp=^L, kpp=^K, nel=\Em~\s, 
 	rmso=\EB, smso=\Eb, 
 
-######## WORKSTATION CONSOLES
+######## COMMERCIAL WORKSTATION CONSOLES
 #
 
 #### Alpha consoles
@@ -2622,7 +2617,7 @@ psterm-fast|NeWS psterm fast version (flaky ctrl chars),
 	rmso=^No, rmul=^Nu, sc=^], sgr0=^N*, smcup=^Ot, smir=^Oi, 
 	smso=^Oo, smul=^Ou, tsl=^Ol, 
 
-#### NeXT Consoles
+#### NeXT consoles
 #
 # Use `glasstty' for the Workspace application
 #
@@ -14490,11 +14485,9 @@ versaterm|versaterm vt100 emulator for the macintosh,
 
 # From: Rick Thomas <ihnp4!btlunix!rbt>
 # (xtalk: I added <rmam>/<smam> based on the init string.
-# I also removed <xmc#1> and the trailing \s characters from the highlight
-# changers, I don't believe these on a VT100-emulating PC display -- esr)
 xtalk|IBM PC with xtalk communication program (versions up to 3.4), 
 	am, mir, msgr, xon, 
-	cols#80, it#8, lines#24, vt#3, 
+	cols#80, it#8, lines#24, vt#3, xmc#1, 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
 	bel=^G, clear=\E[H\E[J$<50>, cr=^M, cub=\E[%p1%dD, cub1=^H, 
 	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C$<2>, 
@@ -14506,9 +14499,9 @@ xtalk|IBM PC with xtalk communication program (versions up to 3.4),
 	kcuu1=\EOA, kent=\EOM, kf0=\EOy, kf1=\EOP, kf10=\EOx, 
 	kf2=\EOQ, kf3=\EOR, kf4=\EOS, kf5=\EOt, kf6=\EOu, kf7=\EOv, 
 	kf8=\EOl, kf9=\EOw, ri=\EM$<5>, rmacs=^O, rmam=\E[?7l, 
-	rmkx=\E[?1l\E>, rmso=\E[m, 
+	rmkx=\E[?1l\E>, rmso=\E[m\s, 
 	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, sgr0=\E[m, 
-	smacs=^N, smam=\E[?7h, smkx=\E[?1h\E=, smso=\E[7m, 
+	smacs=^N, smam=\E[?7h, smkx=\E[?1h\E=, smso=\E[7m\s, 
 	tbc=\E[3g, 
 
 # The official PC terminal emulator program of the AT&T Product Centers.
