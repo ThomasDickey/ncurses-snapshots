@@ -21,7 +21,7 @@
 
 /*
  * This module is intended to encapsulate ncurses's interface to pointing
- * devices. 
+ * devices.
  *
  * The first method used is xterm's internal mouse-tracking facility.
  * The second (not yet implemented) will be Alessandro Rubini's GPM server.
@@ -173,7 +173,7 @@ bool _nc_mouse_inline(SCREEN *sp)
 	     * Release events aren't reported for individual buttons,
 	     * just for the button set as a whole...
 	     */
-	    eventp->bstate = 
+	    eventp->bstate =
 		(BUTTON1_RELEASED |
 		 BUTTON2_RELEASED |
 		 BUTTON3_RELEASED);
@@ -203,8 +203,8 @@ bool _nc_mouse_inline(SCREEN *sp)
 	    eventp->bstate |= BUTTON_CTRL;
 	}
 
-	eventp->x = (kbuf[1] - ' ') - 1; 
-	eventp->y = (kbuf[2] - ' ') - 1; 
+	eventp->x = (kbuf[1] - ' ') - 1;
+	eventp->y = (kbuf[2] - ' ') - 1;
 	TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_inline: primitive mouse-event %s has slot %d", _tracemouse(eventp), eventp - events));
 
 	/* bump the next-free pointer into the circular list */
@@ -257,7 +257,7 @@ bool _nc_mouse_parse(int runcount)
      * pairs into click events.  The second merges runs of click events into
      * double or triple-click events.
      *
-     * It's possible that the run may not resolve to a single event (for 
+     * It's possible that the run may not resolve to a single event (for
      * example, if the user quadruple-clicks).  If so, leading events
      * in the run are ignored.
      *
@@ -333,7 +333,7 @@ bool _nc_mouse_parse(int runcount)
 	}
     } while
 	(merge);
-    
+
 #ifdef TRACE
     if (_nc_tracing & TRACE_IEVENT)
     {
@@ -346,7 +346,7 @@ bool _nc_mouse_parse(int runcount)
     }
 #endif /* TRACE */
 
-    /* 
+    /*
      * Second pass; merge click runs.  At this point, click events are
      * each followed by one invalid event. We merge click events
      * forward in the queue.
@@ -408,8 +408,8 @@ bool _nc_mouse_parse(int runcount)
 
 		/* merge double-click events forward */
 		if ((ep->bstate &
-			(BUTTON1_DOUBLE_CLICKED 
-			 | BUTTON2_DOUBLE_CLICKED 
+			(BUTTON1_DOUBLE_CLICKED
+			 | BUTTON2_DOUBLE_CLICKED
 			 | BUTTON3_DOUBLE_CLICKED))
 		    && (follower->bstate &
 		    	(BUTTON1_CLICKED | BUTTON2_CLICKED | BUTTON3_CLICKED)))
@@ -515,7 +515,7 @@ void _nc_mouse_resume(SCREEN *sp)
 int getmouse(MEVENT *aevent)
 /* grab a copy of the current mouse event */
 {
-    if (mousetype == M_XTERM)
+    if (aevent && mousetype == M_XTERM)
     {
 	/* compute the current-event pointer */
 	MEVENT	*prev = PREV(eventp);
@@ -556,9 +556,9 @@ mmask_t mousemask(mmask_t newmask, mmask_t *oldmask)
 	eventmask = newmask &
 	    (BUTTON_ALT | BUTTON_CTRL | BUTTON_SHIFT
 	     | BUTTON1_PRESSED | BUTTON1_RELEASED | BUTTON1_CLICKED
-	     | BUTTON1_DOUBLE_CLICKED | BUTTON1_TRIPLE_CLICKED 
+	     | BUTTON1_DOUBLE_CLICKED | BUTTON1_TRIPLE_CLICKED
 	     | BUTTON2_PRESSED | BUTTON2_RELEASED | BUTTON2_CLICKED
-	     | BUTTON2_DOUBLE_CLICKED | BUTTON2_TRIPLE_CLICKED 
+	     | BUTTON2_DOUBLE_CLICKED | BUTTON2_TRIPLE_CLICKED
 	     | BUTTON3_PRESSED | BUTTON3_RELEASED | BUTTON3_CLICKED
 	     | BUTTON3_DOUBLE_CLICKED | BUTTON3_TRIPLE_CLICKED);
 
@@ -573,9 +573,13 @@ mmask_t mousemask(mmask_t newmask, mmask_t *oldmask)
 bool wenclose(WINDOW *win, int y, int x)
 /* check to see if given window encloses given screen location */
 {
-    return
-	(win->_begy <= y && win->_begx <= x
-	 && win->_maxx >= x && win->_maxy >= y);
+    if (win)
+    {
+	y -= win->_yoffset;
+	return (win->_begy <= y && win->_begx <= x
+	     && win->_maxx >= x && win->_maxy >= y);
+    }
+    return FALSE;
 }
 
 int mouseinterval(int maxclick)

@@ -38,29 +38,29 @@ short	minx;
 	T(("werase(%p) called", win));
 
 	for (y = 0; y <= win->_maxy; y++) {
-	    	minx = _NOCHANGE;
-	    	start = win->_line[y].text;
-	    	end = &start[win->_maxx];
-	
-	    	maxx = start;
-	    	for (sp = start; sp <= end; sp++) {
-		    	maxx = sp;
-		    	if (minx == _NOCHANGE)
+		minx = _NOCHANGE;
+		start = win->_line[y].text;
+		end = &start[win->_maxx];
+
+		maxx = start;
+		for (sp = start; sp <= end; sp++) {
+			maxx = sp;
+			if (minx == _NOCHANGE)
 					minx = sp - start;
 			*sp = _nc_render(win, *sp, BLANK);
-	    	}
+		}
 
-	    	if (minx != _NOCHANGE) {
+		if (minx != _NOCHANGE) {
 			if (win->_line[y].firstchar > minx ||
-		    	    win->_line[y].firstchar == _NOCHANGE)
-		    		win->_line[y].firstchar = minx;
+			    win->_line[y].firstchar == _NOCHANGE)
+				win->_line[y].firstchar = minx;
 
 			if (win->_line[y].lastchar < maxx - win->_line[y].text)
-		    	    win->_line[y].lastchar = maxx - win->_line[y].text;
-	    	}
+			    win->_line[y].lastchar = maxx - win->_line[y].text;
+		}
 	}
 	win->_curx = win->_cury = 0;
-	win->_flags &= ~_NEED_WRAP;
+	win->_flags &= ~_WRAPPED;
 	_nc_synchook(win);
 	return OK;
 }

@@ -38,7 +38,7 @@ char	erasec;
 char	killc;
 char	*oldstr;
 int ch;
-  
+
 	T(("wgetnstr(%p,%p, %d) called", win, str, maxlen));
 
 	oldnl = SP->_nl;
@@ -61,7 +61,7 @@ int ch;
 		wrefresh(win);
 
 	while ((ch = wgetch(win)) != ERR) {
-	        /*
+		/*
 		 * Some terminals (the Wyse-50 is the most common) generate
 		 * a \n from the down-arrow key.  With this logic, it's the
 		 * user's choice whether to set kcud=\n for wgetch();
@@ -69,39 +69,39 @@ int ch;
 		 */
 		if (ch == '\n' || ch == '\r' || ch == KEY_DOWN)
 			break;
-	   	if (ch == erasec || ch == KEY_LEFT || ch == KEY_BACKSPACE) {
+		if (ch == erasec || ch == KEY_LEFT || ch == KEY_BACKSPACE) {
 			if (str > oldstr) {
-		    		str--;
-		    		if (oldecho == TRUE)
-			    		_nc_backspace(win);
+				str--;
+				if (oldecho == TRUE)
+					_nc_backspace(win);
 			}
-	 	} else if (ch == killc) {
+		} else if (ch == killc) {
 			while (str > oldstr) {
-			    	str--;
-		    		if (oldecho == TRUE)
-		    			_nc_backspace(win);
+				str--;
+				if (oldecho == TRUE)
+					_nc_backspace(win);
 			}
 		} else if (ch >= KEY_MIN
 			   || (maxlen >= 0 && str - oldstr >= maxlen)) {
 		    beep();
 		} else {
 			if (oldecho == TRUE) {
-			        char	*glyph = unctrl(ch);
+				char	*glyph = unctrl(ch);
 
-				mvwaddstr(curscr, win->_begy + win->_cury,
-				  	win->_begx + win->_curx, glyph);
+				mvwaddstr(curscr, win->_begy + win->_cury + win->_yoffset,
+					win->_begx + win->_curx, glyph);
 				waddstr(win, glyph);
 				_nc_outstr(glyph);
 				SP->_curscol += strlen(glyph);
-			} 
+			}
 			*str++ = ch;
-	   	}
+		}
 	}
 
-    	win->_curx = 0;
-	win->_flags &= ~_NEED_WRAP;
-    	if (win->_cury < win->_maxy)
-       		win->_cury++;
+	win->_curx = 0;
+	win->_flags &= ~_WRAPPED;
+	if (win->_cury < win->_maxy)
+		win->_cury++;
 	wrefresh(win);
 
 	if (oldnl == FALSE)

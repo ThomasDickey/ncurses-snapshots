@@ -60,6 +60,27 @@ TERMINAL *cur_term;
 #define IS_NEG2(p)	((BYTE(p,0) == 0376) && (BYTE(p,1) == 0377))
 #define LOW_MSB(p)	(BYTE(p,0) + 256*BYTE(p,1))
 
+static bool have_tic_directory = FALSE;
+
+/*
+ * Record the "official" location of the terminfo directory, according to
+ * the place where we're writing to, or the normal default, if not.
+ */
+char *_nc_tic_dir(char *path)
+{
+	static char *result = TERMINFO;
+
+	if (path != 0) {
+		result = path;
+		have_tic_directory = TRUE;
+	} else if (!have_tic_directory) {
+		char *envp;
+		if ((envp = getenv("TERMINFO")) != NULL)
+			return _nc_tic_dir(envp);
+	}
+	return result;
+}
+
 int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 /* return 1 if read, 0 if not found or garbled, -1 if database inaccessible */
 {
@@ -179,6 +200,31 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 }
 
 /*
+ * Build a terminfo pathname and try to read the data.  Returns 1 on success,
+ * 0 on failure.
+ */
+static int _nc_read_tic_entry(char *const filename,
+	const char *const dir, const char *ttn, TERMTYPE *const tp)
+{
+/* maximum safe length of terminfo root directory name */
+#define MAX_TPATH	(PATH_MAX - MAX_ALIAS - 6)
+
+	if (strlen(dir) > MAX_TPATH)
+		return 0;
+	(void) sprintf(filename, "%s/%s", dir, ttn);
+	return (_nc_read_file_entry(filename, tp) > 0);
+}
+
+static char *RoomFor(const size_t len)
+{
+	static char *result;
+	if (result != 0)
+		free(result);
+	result = malloc(len + 1);
+	return result;
+}
+
+/*
  *	_nc_read_entry(char *tn, char *filename, TERMTYPE *tp)
  *
  *	Find and read the compiled entry for a given terminal type,
@@ -190,56 +236,40 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 int _nc_read_entry(const char *const tn, char *const filename, TERMTYPE *const tp)
 {
 char		*envp;
-char		ttn[MAX_ALIAS + 1];
-
-/* maximum safe length of terminfo root directory name */
-#define MAX_TPATH	(PATH_MAX - MAX_ALIAS - 6)
+char		ttn[MAX_ALIAS + 3];
 
 	/* truncate the terminal name to prevent dangerous buffer airline */
-	(void) strncpy(ttn, tn, MAX_ALIAS);
-	ttn[MAX_ALIAS] = '\0';
+	(void) sprintf(ttn, "%c/%.*s", *tn, MAX_ALIAS, tn);
 
-	/* this is System V behavior */
+	/* This is System V behavior, in conjunction with our requirements for
+	 * writing terminfo entries.
+	 */
+	if (have_tic_directory)
+		return _nc_read_tic_entry(filename, _nc_tic_dir(0), ttn, tp);
+
 	if ((envp = getenv("TERMINFO")) != NULL)
-	{
-		char	terminfo[PATH_MAX];
-
-		(void) strncpy(terminfo, envp, MAX_TPATH);
-		terminfo[MAX_TPATH] = '\0';
-		(void) sprintf(filename, "%s/%c/%s", terminfo, ttn[0], ttn);
-		if (_nc_read_file_entry(filename, tp) == 1)
-			return(1);
-		else
-			return(0);
-	}
+		return _nc_read_tic_entry(filename, _nc_tic_dir(envp), ttn, tp);
 
 	/* this is an ncurses extension */
 	if ((envp = getenv("HOME")) != NULL)
 	{
-		char	home[MAX_TPATH + 1];
+		char	*home = RoomFor(strlen(envp) + strlen(PRIVATE_INFO));
 
-		(void) strncpy(home, envp, MAX_TPATH - strlen(PRIVATE_INFO));
-		home[MAX_TPATH - strlen(PRIVATE_INFO)] = '\0';
-		(void) sprintf(filename, PRIVATE_INFO, home);
-		(void) sprintf(filename + strlen(filename), "/%c/%s",ttn[0],ttn);
-		if (_nc_read_file_entry(filename, tp) == 1)
+		(void) sprintf(home, "%s/%s", envp, PRIVATE_INFO);
+		if (_nc_read_tic_entry(filename, home, ttn, tp) == 1)
 			return(1);
 	}
 
 	/* this is an ncurses extension */
 	if ((envp = getenv("TERMINFO_DIRS")) != NULL)
 	{
-	    char	*cp = strtok(envp, ":");
+	    /* strtok modifies its argument, so we must copy */
+	    char *cp = strtok(envp = strcpy(RoomFor(strlen(envp)), envp), ":");
 
 	    do {
-		char	terminfo[PATH_MAX];
-
 		if (cp[0] == '\0')
 		    cp = TERMINFO;
-		(void) strncpy(terminfo, cp, MAX_TPATH);
-		terminfo[MAX_TPATH] = '\0';
-		(void) sprintf(filename, "%s/%c/%s", terminfo, ttn[0], ttn);
-		if (_nc_read_file_entry(filename, tp) == 1)
+		if (_nc_read_tic_entry(filename, cp, ttn, tp) == 1)
 			return(1);
 	    } while
 		((cp = strtok(NULL, ":")) != (char *)NULL);
@@ -247,8 +277,7 @@ char		ttn[MAX_ALIAS + 1];
 	}
 
 	/* try the system directory */
-	(void) sprintf(filename, "%s/%c/%s", TERMINFO, ttn[0], ttn);
-	return(_nc_read_file_entry(filename, tp));
+	return(_nc_read_tic_entry(filename, TERMINFO, ttn, tp));
 }
 
 /*

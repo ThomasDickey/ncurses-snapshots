@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: run_tic.sh,v 1.2 1996/06/15 22:14:10 tom Exp $
+# $Id: run_tic.sh,v 1.4 1996/06/23 00:54:27 tom Exp $
 # This script is used to install terminfo.src using tic.  We use a script
 # because the path checking is too awkward to do in a makefile.
 #
@@ -45,11 +45,15 @@ if test $# != 0 ; then
 	IP=$1
 	shift
 else
-	IP=:
+	IP=""
 fi
 
 # Allow tic to run either from the install-path, or from the build-directory
-PATH=$IP$bindir:$srcdir/../progs:$PATH ; export PATH
+case "$PATH" in
+:*) PATH=../progs:$IP$bindir$PATH ;;
+*) PATH=../progs:$IP$bindir:$PATH ;;
+esac
+export PATH
 TERMINFO=$IP$ticdir ; export TERMINFO
 umask 022
 
@@ -74,7 +78,7 @@ if test "x$TABSET" != "x/usr/share/tabset" ; then
 	SRC=$TMP
 fi
 
-if ( $srcdir/shlib tic $SRC )
+if ( $srcdir/shlib tic -s $SRC )
 then
 	echo '** built new '$TERMINFO
 else

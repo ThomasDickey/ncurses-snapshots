@@ -3,6 +3,33 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+960622	- snapshot
+	+ modified logic that wraps cursor in addch to follow the XSI spec,
+	  (implemented in svr4) which states that the cursor position is
+	  updated when wrapping.  Renamed _NEED_WRAP to _WRAPPED to reflect the
+	  actual semantics.
+	+ added -s option to tic, to provide better diagnostics in run_tic.sh
+	+ improved error-recovery for tabset install.
+  	+ change ABI to 3.1 (dropped tparam, corrected getbkgd(), added
+  	  _yoffset to WINDOW).
+	+ modified initialization of SP->_ofp so that init_acs() is called with
+	  the "right" file pointer (reported by Rick Marshall <rjm@nlc.net.au>
+	+ documentation fixes (Juergen Pfeifer).
+	+ corrected, using new SCREEN and WINDOW members, the behavior of
+	  ncurses if one uses ripoffline() to remove a line from the top of the
+	  screen (Juergen Pfeifer).
+	+ modified autoconf scripts to prepare for Ada95 (GNAT) binding to
+	  ncurses (Juergen Pfeifer).
+	+ incorrect buffer-size in _nc_read_entry, reported by Eric Raymond.
+
+960617
+	+ corrected two logic errors in read_entry.c, write_entry.c (called by
+	  tic, the write/read of terminfo entries used inconsistent rules for
+	  locating the entries; the $TERMINFO_DIRS code would find only the
+	  first entry in a list).
+	+ refined pathname computation in run_tic.sh and shlib.
+	+ corrected initialization of $IP in misc/run_tic.sh
+
 960615	- snapshot
 	+ display version of gcc if configure script identifies it.
 	+ modify configure script to use /usr as Linux's default prefix.

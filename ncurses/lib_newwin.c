@@ -42,11 +42,11 @@ int	i, j;
 	  return NULL;
 
 	if (num_lines == 0)
-	    num_lines = screen_lines - begy;
+	    num_lines = SP->_lines_avail - begy;
 	if (num_columns == 0)
 	    num_columns = screen_columns - begx;
 
-	if (num_columns + begx > SP->_columns || num_lines + begy > SP->_lines)
+	if (num_columns + begx > SP->_columns || num_lines + begy > SP->_lines_avail)
 		return NULL;
 
 	if ((win = _nc_makenew(num_lines, num_columns, begy, begx, 0)) == NULL)
@@ -83,7 +83,7 @@ int     flags = _SUBWIN;
 	/*
 	** make sure window fits inside the original one
 	*/
-	if ( begy < 0 || begx < 0 || orig==NULL || num_lines < 0 || num_columns < 0) 
+	if ( begy < 0 || begx < 0 || orig==NULL || num_lines < 0 || num_columns < 0)
 		return NULL;
 	if ( begy + num_lines > orig->_maxy + 1
 		|| begx + num_columns > orig->_maxx + 1)
@@ -122,7 +122,7 @@ WINDOW *subwin(WINDOW *w, int l, int c, int y, int x)
 	T(("subwin(%p, %d, %d, %d, %d) called", w, l, c, y, x));
 	T(("parent has begy = %d, begx = %d", w->_begy, w->_begx));
 
-	return derwin(w, l, c, y - w->_begy, x - w->_begx); 
+	return derwin(w, l, c, y - w->_begy, x - w->_begx);
 }
 
 WINDOW *
@@ -135,14 +135,14 @@ bool    is_pad = (flags & _ISPAD);
 	T(("_nc_makenew(%d,%d,%d,%d)", num_lines, num_columns, begy, begx));
 
 	if (num_lines <= 0 || num_columns <= 0)
-	 	return NULL;
+		return NULL;
 
 	if ((win = (WINDOW *) calloc(1, sizeof(WINDOW))) == NULL)
-		return NULL;            
+		return NULL;
 
 	if ((win->_line = (struct ldat *) calloc((unsigned)num_lines, sizeof (struct ldat))) == NULL) {
 		free(win);
-		return NULL;               
+		return NULL;
 	}
 
 	win->_curx       = 0;
@@ -151,10 +151,11 @@ bool    is_pad = (flags & _ISPAD);
 	win->_maxx       = num_columns - 1;
 	win->_begy       = begy;
 	win->_begx       = begx;
+	win->_yoffset    = SP->_topstolen;
 
 	win->_flags      = flags;
 	win->_attrs      = A_NORMAL;
-	win->_bkgd	 = BLANK;
+	win->_bkgd       = BLANK;
 
 	win->_clear      = is_pad ? FALSE : (num_lines == screen_lines  &&  num_columns == screen_columns);
 	win->_idlok      = FALSE;
@@ -162,12 +163,12 @@ bool    is_pad = (flags & _ISPAD);
 	win->_scroll     = FALSE;
 	win->_leaveok    = FALSE;
 	win->_use_keypad = FALSE;
-	win->_delay    	 = -1;   
-	win->_immed	 = FALSE;
-	win->_sync	 = 0;
-	win->_parx	 = -1;
-	win->_pary	 = -1;
-	win->_parent	 = (WINDOW *)NULL;
+	win->_delay      = -1;
+	win->_immed      = FALSE;
+	win->_sync       = 0;
+	win->_parx       = -1;
+	win->_pary       = -1;
+	win->_parent     = (WINDOW *)NULL;
 
 	win->_regtop     = 0;
 	win->_regbottom  = num_lines - 1;

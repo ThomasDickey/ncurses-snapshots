@@ -30,7 +30,7 @@
 typedef unsigned long  chtype;
 #endif
 
-#include <stdio.h>   
+#include <stdio.h>
 #include <unctrl.h>
 #include <stdarg.h>	/* we need va_list */
 #ifdef _XOPEN_SOURCE_EXTENDED
@@ -99,7 +99,7 @@ extern unsigned char *color_pairs;
 
 /* line graphics */
 
-extern 	chtype acs_map[];
+extern	chtype acs_map[];
 
 /* VT100 symbols begin here */
 #define ACS_ULCORNER	(acs_map['l'])	/* upper left corner */
@@ -146,7 +146,7 @@ extern 	chtype acs_map[];
  * is the right, b is the bottom, and l is the left.  t, r, b, and l might
  * be B (blank), S (single), D (double), or T (thick).  The subset defined
  * here only uses B and S.
- */ 
+ */
 #define ACS_BSSB	ACS_ULCORNER
 #define ACS_SSBB	ACS_LLCORNER
 #define ACS_BBSS	ACS_URCORNER
@@ -174,10 +174,10 @@ extern 	chtype acs_map[];
 #define _SCROLLWIN      0x08	/* bottom edge is at screen bottom? */
 #define _ISPAD	        0x10	/* is this window a pad? */
 #define _HASMOVED       0x20	/* has cursor moved since last refresh? */
-#define _NEED_WRAP	0x40	/* cursor wrap pending */
+#define _WRAPPED        0x40	/* cursor was just wrappped */
 
 /*
- * this value is used in the firstchar and lastchar fields to mark 
+ * this value is used in the firstchar and lastchar fields to mark
  * unchanged lines
  */
 #define _NOCHANGE       -1
@@ -216,6 +216,7 @@ struct _win_st {
 	/* window location and size */
 	short   _maxy, _maxx;	/* maximums of x and y, NOT window size */
 	short   _begy, _begx;	/* screen coords of upper-left-hand corner */
+	short   _yoffset;	/* real begy is _begy + _yoffset */
 
 	short   _flags;		/* window state flags */
 
@@ -431,7 +432,7 @@ extern int keypad(WINDOW *,bool);			/* implemented */
 extern char killchar(void);				/* implemented */
 #ifdef _XOPEN_SOURCE_EXTENDED
 extern int killwchar(wchar_t *);			/* missing */
-#endif /* _XOPEN_SOURCE_EXTENDED */	
+#endif /* _XOPEN_SOURCE_EXTENDED */
 extern int leaveok(WINDOW *,bool);			/* implemented */
 extern char *longname(void);				/* implemented */
 extern int meta(WINDOW *,bool);				/* implemented */
@@ -566,7 +567,7 @@ extern int notimeout(WINDOW *,bool);			/* implemented */
 extern int overlay(const WINDOW*,WINDOW *);		/* implemented */
 extern int overwrite(const WINDOW*,WINDOW *);		/* implemented */
 extern int pair_content(short,short*,short*);		/* implemented */
-extern int PAIR_NUMBER(int);				/* generated */	
+extern int PAIR_NUMBER(int);				/* generated */
 extern int pechochar(WINDOW *, chtype);			/* implemented */
 #ifdef _XOPEN_SOURCE_EXTENDED
 extern int pecho_wchar(WINDOW *, const cchar_t *);	/* missing */
@@ -783,7 +784,7 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define A_VERTICAL	0x40000000	/* XSI Curses attr -- not yet used */
 #define A_CHARTEXT	0x000000ff
 #define A_COLOR		0x0000ff00
-#define COLOR_PAIR(n)	((n) << 8) 
+#define COLOR_PAIR(n)	((n) << 8)
 #define PAIR_NUMBER(a)	(((a) & A_COLOR) >> 8)
 
 /*
@@ -799,7 +800,7 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define saveterm()		def_prog_mode()
 #define crmode()		cbreak()
 #define nocrmode()		nocbreak()
-#define gettmode()		
+#define gettmode()
 
 #define getyx(win,y,x)   	(y = (win)->_cury, x = (win)->_curx)
 #define getbegyx(win,y,x)	(y = (win)->_begy, x = (win)->_begx)

@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.22 1996/06/15 22:06:29 tom Exp $
+dnl $Id: aclocal.m4,v 1.23 1996/06/16 16:55:37 Juergen.Pfeifer Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -209,6 +209,21 @@ elif test "$includedir" = "/usr/include"; then
 	CPPFLAGS="$CPPFLAGS -I\$(includedir)"
 fi
 AC_SUBST(CPPFLAGS)
+])dnl
+dnl Construct the list of include-options for the C programs in the Ada95
+dnl binding.
+AC_DEFUN([NC_ADA_INCLUDE_DIRS],
+[
+ACPPFLAGS="$ACPPFLAGS -I. -I../../include"
+if test "$srcdir" != "."; then
+	ACPPFLAGS="$ACPPFLAGS -I\$(srcdir)/../../include"
+fi
+if test -z "$GCC"; then
+	ACPPFLAGS="$ACPPFLAGS -I\$(includedir)"
+elif test "$includedir" = "/usr/include"; then
+	ACPPFLAGS="$ACPPFLAGS -I\$(includedir)"
+fi
+AC_SUBST(ACPPFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Append definitions and rules for the given models to the subdirectory
@@ -843,12 +858,43 @@ done
 SRC_SUBDIRS="$SRC_SUBDIRS misc test"
 test $nc_cxx_library != no && SRC_SUBDIRS="$SRC_SUBDIRS c++"
 
+ADA_SUBDIRS=
+if test "$ac_cv_prog_gnat_correct" = yes && test -d $srcdir/Ada95; then
+   SRC_SUBDIRS="$SRC_SUBDIRS Ada95"
+   ADA_SUBDIRS="gen ada_include samples"
+fi
+
 SUB_MAKEFILES=
 for nc_dir in $SRC_SUBDIRS
 do
 	SUB_MAKEFILES="$SUB_MAKEFILES $nc_dir/Makefile"
 done
+
+if test -n "$ADA_SUBDIRS"; then
+   for nc_dir in $ADA_SUBDIRS
+   do	
+      SUB_MAKEFILES="$SUB_MAKEFILES Ada95/$nc_dir/Makefile"
+   done
+   AC_SUBST(ADA_SUBDIRS)
+fi
 ])dnl
+dnl ---------------------------------------------------------------------------
+dnl Verify Version of GNAT.
+AC_DEFUN([NC_GNAT_VERSION],
+[
+changequote(<<, >>)dnl
+nc_cv_gnat_version=`$nc_ada_make -v 2>&1 | grep '[0-9].[0-9][0-9]*' |\
+  sed -e 's/[^0-9 \.]//g' | $AWK '{print $<<1>>;}'`
+case $nc_cv_gnat_version in
+  3.0[4-9]|3.[1-9]*|[4-9].*)
+    ac_cv_prog_gnat_correct=yes
+    ;;
+  *) echo Unsupported GNAT version $nc_cv_gnat_version. Disabling Ada95 binding.
+     ac_cv_prog_gnat_correct=no
+     ;;
+esac
+changequote([, ])dnl
+])
 dnl ---------------------------------------------------------------------------
 dnl	Remove "-g" option from the compiler options
 AC_DEFUN([NC_STRIP_G_OPT],

@@ -83,7 +83,7 @@ int ungetch(int ch)
 		t_inc()
 	} else
 		h_dec();
-	
+
 	SP->_fifo[head] = ch;
 	T(("ungetch ok"));
 #ifdef TRACE
@@ -99,7 +99,7 @@ unsigned char ch;
 
 	if (tail == -1) return ERR;
 	/* FALLTHRU */
-again:    
+again:
 	n = read(SP->_ifd, &ch, 1);
 	if (n == -1 && errno == EINTR)
 		goto again;
@@ -138,7 +138,8 @@ void _nc_backspace(WINDOW *win)
 	    return;
 	}
 
-	mvwaddstr(curscr, win->_begy + win->_cury, win->_begx + win->_curx, "\b \b");
+	mvwaddstr(curscr, win->_begy + win->_cury + win->_yoffset,
+		  win->_begx + win->_curx, "\b \b");
 	waddstr(win, "\b \b");
 
 	/*
@@ -146,23 +147,27 @@ void _nc_backspace(WINDOW *win)
 	 * would fail on terminals with a non-backspace cursor_left
 	 * character.
 	 */
-	mvcur(win->_begy + win->_cury, win->_begx + win->_curx,
-	      win->_begy + win->_cury, win->_begx + win->_curx - 1);
+	mvcur(win->_begy + win->_cury + win->_yoffset,
+	      win->_begx + win->_curx,
+	      win->_begy + win->_cury + win->_yoffset,
+	      win->_begx + win->_curx - 1);
 	_nc_outstr(" ");
-	mvcur(win->_begy + win->_cury, win->_begx + win->_curx,
-	      win->_begy + win->_cury, win->_begx + win->_curx - 1);
-	SP->_curscol--; 
+	mvcur(win->_begy + win->_cury + win->_yoffset,
+	      win->_begx + win->_curx,
+	      win->_begy + win->_cury + win->_yoffset,
+	      win->_begx + win->_curx - 1);
+	SP->_curscol--;
 }
 
 int
 wgetch(WINDOW *win)
 {
-int	ch; 
+int	ch;
 
 	T(("wgetch(%p) called", win));
 
 	/*
-	 * Handle cooked mode.  Grab a string from the screen, 
+	 * Handle cooked mode.  Grab a string from the screen,
 	 * stuff its contents in the FIFO queue, and pop off
 	 * the first character to return it.
 	 */
@@ -213,7 +218,7 @@ int	ch;
 	if (_nc_mouse_event(SP))
 		ch = KEY_MOUSE;
 	else if (win->_use_keypad) {
-	        /* 
+		/*
 		 * This is tricky.  We only want to get special-key
 		 * events one at a time.  But we want to accumulate
 		 * mouse events until either (a) the mouse logic tells
@@ -222,7 +227,7 @@ int	ch;
 		 *
 		 * Note: if the mouse code starts failing to compose
 		 * press/release events into clicks, you should probably
-		 * increase _nc_max_click_interval.  
+		 * increase _nc_max_click_interval.
 		 */
 	    	int runcount = 0;
 
@@ -265,14 +270,14 @@ int	ch;
 		if (!SP->_use_meta)
 			ch &= 0x7f;
 
-        if (!(win->_flags & _ISPAD) && SP->_echo) {
+	if (!(win->_flags & _ISPAD) && SP->_echo) {
 	    /* there must be a simpler way of doing this */
 	    if (ch == erasechar() || ch == KEY_BACKSPACE || ch == KEY_LEFT)
 		_nc_backspace(win);
 	    else if (ch < KEY_MIN) {
 		mvwaddch(curscr,
-			 win->_begy + win->_cury,
-                         win->_begx + win->_curx,
+			 win->_begy + win->_cury + win->_yoffset,
+			 win->_begx + win->_curx,
 			 (chtype)(ch | win->_attrs));
 		waddch(win, (chtype)(ch | win->_attrs));
 	    }
@@ -348,6 +353,6 @@ int timeleft = ESCDELAY;
    					ch = fifo_peek();
    				}
 		}
-    	}	 
+    	}
 	return(fifo_pull());
 }

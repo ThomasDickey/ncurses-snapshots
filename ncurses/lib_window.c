@@ -58,7 +58,7 @@ int mvderwin(WINDOW *win, int y, int x)
    win->_pary = y;
    for(i=0;i<getmaxy(win);i++)
      win->_line[i].text = &(orig->_line[y++].text[x]);
-   return OK;	
+   return OK;
 }
 
 int syncok(WINDOW *win, bool bf)
@@ -76,14 +76,14 @@ void wsyncup(WINDOW *win)
 /* Rewritten by J. Pfeifer, 1-Apr-96 (don't even think that...)      */
 {
   WINDOW	*wp;
-  
+
   if (win && win->_parent)
     for (wp = win; wp->_parent; wp = wp->_parent)
       {
 	int y;
 	WINDOW *pp = wp->_parent;
-	
-	assert((wp->_pary <= pp->_maxy) && 
+
+	assert((wp->_pary <= pp->_maxy) &&
 	       ((wp->_pary+wp->_maxy) <= pp->_maxy));
 
 	for (y = 0; y <= wp->_maxy; y++)
@@ -93,8 +93,8 @@ void wsyncup(WINDOW *win)
 	      {
 		/* left & right character in parent window coordinates */
 		int right = wp->_line[y].lastchar + wp->_parx;
-		left += wp->_parx; 
-		
+		left += wp->_parx;
+
 		if (pp->_line[wp->_pary + y].firstchar == _NOCHANGE)
 		  {
 		    pp->_line[wp->_pary + y].firstchar = left;
@@ -113,7 +113,7 @@ void wsyncup(WINDOW *win)
 }
 
 void wsyncdown(WINDOW *win)
-/* mark changed every cell in win that is changed in any of its ancestors */ 
+/* mark changed every cell in win that is changed in any of its ancestors */
 /* Rewritten by J. Pfeifer, 1-Apr-96 (don't even think that...)           */
 {
   if (win && win->_parent)
@@ -124,7 +124,7 @@ void wsyncdown(WINDOW *win)
       /* This recursion guarantees, that the changes are propagated down-
 	 wards from the root to our direct parent. */
       wsyncdown(pp);
-      
+
       /* and now we only have to propagate the changes from our direct
 	 parent, if there are any. */
       assert((win->_pary <= pp->_maxy) &&
@@ -165,7 +165,7 @@ void wcursyncup(WINDOW *win)
    WINDOW *wp;
    for( wp = win; wp && wp->_parent; wp = wp->_parent ) {
       wmove( wp->_parent, wp->_pary + wp->_cury, wp->_parx + wp->_curx );
-   }	
+   }
 }
 
 WINDOW *dupwin(WINDOW *win)
@@ -180,29 +180,30 @@ int i;
 	if ((nwin = newwin(win->_maxy + 1, win->_maxx + 1, win->_begy, win->_begx)) == NULL)
 		return NULL;
 
-	nwin->_curx	   = win->_curx;
-	nwin->_cury	   = win->_cury;
-	nwin->_maxy	   = win->_maxy;
-	nwin->_maxx	   = win->_maxx;       
-	nwin->_begy	   = win->_begy;
-	nwin->_begx	   = win->_begx;
+	nwin->_curx        = win->_curx;
+	nwin->_cury        = win->_cury;
+	nwin->_maxy        = win->_maxy;
+	nwin->_maxx        = win->_maxx;
+	nwin->_begy        = win->_begy;
+	nwin->_begx        = win->_begx;
+	nwin->_yoffset     = win->_yoffset;
 
-	nwin->_flags	   = win->_flags;
-	nwin->_attrs	   = win->_attrs;
-	nwin->_bkgd	   = win->_bkgd; 
+	nwin->_flags       = win->_flags;
+	nwin->_attrs       = win->_attrs;
+	nwin->_bkgd        = win->_bkgd;
 
-	nwin->_clear	   = win->_clear; 
-	nwin->_scroll	   = win->_scroll;
-	nwin->_leaveok	   = win->_leaveok;
+	nwin->_clear       = win->_clear;
+	nwin->_scroll      = win->_scroll;
+	nwin->_leaveok     = win->_leaveok;
 	nwin->_use_keypad  = win->_use_keypad;
-	nwin->_delay   	   = win->_delay;
-	nwin->_immed	   = win->_immed;
-	nwin->_sync	   = win->_sync;
-	nwin->_parx	   = win->_parx;
-	nwin->_pary	   = win->_pary;
-	nwin->_parent	   = win->_parent; 
+	nwin->_delay       = win->_delay;
+	nwin->_immed       = win->_immed;
+	nwin->_sync        = win->_sync;
+	nwin->_parx        = win->_parx;
+	nwin->_pary        = win->_pary;
+	nwin->_parent      = win->_parent;
 
-	nwin->_regtop	   = win->_regtop;
+	nwin->_regtop      = win->_regtop;
 	nwin->_regbottom   = win->_regbottom;
 
 	linesize = (win->_maxx + 1) * sizeof(chtype);

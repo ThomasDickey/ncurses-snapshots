@@ -27,7 +27,8 @@ The header file \fB<form.h>\fR automatically includes the header file
 \fB<curses.h>\fR.
 .SH PORTABILITY
 These routines are specific to ncurses.  They were not supported on
-Version 7, BSD or System V implementations.
+Version 7, BSD or System V implementations.  It is recommended that
+any code depending on them be conditioned using NCURSES_VERSION.
 .SH AUTHORS
 Juergen Pfeifer.  Manual pages and adaptation for new curses by Eric
 S. Raymond.

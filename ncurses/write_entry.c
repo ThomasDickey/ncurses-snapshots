@@ -45,9 +45,9 @@ extern int errno;
 #define S_ISDIR(mode) ((mode & S_IFMT) == S_IFDIR)
 #endif
 
-static int write_object(FILE *, TERMTYPE *);
+static int total_written;
 
-static char	*destination = TERMINFO;
+static int write_object(FILE *, TERMTYPE *);
 
 /*
  *	make_directory(char *path)
@@ -59,6 +59,7 @@ static int make_directory(char *path)
 int	rc;
 struct	stat	statbuf;
 char	fullpath[PATH_MAX];
+char	*destination = _nc_tic_dir(0);
 
 	if (path == destination || *path == '/')
 		(void)strcpy(fullpath, path);
@@ -80,11 +81,14 @@ char	fullpath[PATH_MAX];
 void  _nc_set_writedir(char *dir)
 /* set the write directory for compiled entries */
 {
-    if (dir != 0)
-	destination = dir;
-    else if (getenv("TERMINFO") != NULL)
-	destination = getenv("TERMINFO");
+    char *destination;
 
+    if (dir != 0)
+	(void) _nc_tic_dir(dir);
+    else if (getenv("TERMINFO") != NULL)
+	(void) _nc_tic_dir(getenv("TERMINFO"));
+
+    destination = _nc_tic_dir(0);
     if (make_directory(destination) < 0)
     {
 	char	*home;
@@ -105,7 +109,7 @@ void  _nc_set_writedir(char *dir)
      * Note: because of this code, this logic should be exercised
      * *once only* per run.
      */
-    if (chdir(destination) < 0)
+    if (chdir(_nc_tic_dir(destination)) < 0)
 	_nc_err_abort("%s: not a directory", destination);
 }
 
@@ -190,20 +194,20 @@ static time_t	start_time;		/* time at start of writes */
 	other_names = ptr + 1;
 
 	while (ptr > name_list  &&  *ptr != '|')
-	    	ptr--;
+		ptr--;
 
 	if (ptr != name_list) {
-	    	*ptr = '\0';
+		*ptr = '\0';
 
-	    	for (ptr = name_list; *ptr != '\0'  &&  *ptr != '|'; ptr++)
+		for (ptr = name_list; *ptr != '\0' && *ptr != '|'; ptr++)
 			continue;
-	    
-	    	if (*ptr == '\0')
+
+		if (*ptr == '\0')
 			other_names = ptr;
-	    	else {
+		else {
 			*ptr = '\0';
 			other_names = ptr + 1;
-	    	}
+		}
 	}
 
 	DEBUG(7, ("First name = '%s'", first_name));
@@ -212,7 +216,7 @@ static time_t	start_time;		/* time at start of writes */
 	_nc_set_type(first_name);
 
 	if (strlen(first_name) > sizeof(filename)-3)
-	    	_nc_warning("terminal name too long.");
+		_nc_warning("terminal name too long.");
 
 	sprintf(filename, "%c/%s", first_name[0], first_name);
 
@@ -231,49 +235,49 @@ static time_t	start_time;		/* time at start of writes */
 	check_writeable(first_name[0]);
 	fp = fopen(filename, "w");
 	if (fp == NULL) {
-	    	perror(filename);
-	    	_nc_syserr_abort("can't open %s/%s", destination, filename);
+		perror(filename);
+		_nc_syserr_abort("can't open %s/%s", _nc_tic_dir(0), filename);
 	}
 	DEBUG(1, ("Created %s", filename));
 
 	if (write_object(fp, tp) == ERR) {
-	    	_nc_syserr_abort("error writing %s/%s", destination, filename);
+		_nc_syserr_abort("error writing %s/%s", _nc_tic_dir(0), filename);
 	}
 	fclose(fp);
 
 	if (start_time == 0) {
-	    	if (stat(filename, &statbuf) < 0
+		if (stat(filename, &statbuf) < 0
 		 || (start_time = statbuf.st_mtime) == 0) {
-	    		_nc_syserr_abort("error obtaining time from %s/%s",
-				destination, filename);
+			_nc_syserr_abort("error obtaining time from %s/%s",
+				_nc_tic_dir(0), filename);
 		}
 	}
 	while (*other_names != '\0') {
-	    	ptr = other_names++;
-	    	while (*other_names != '|'  &&  *other_names != '\0')
+		ptr = other_names++;
+		while (*other_names != '|'  &&	*other_names != '\0')
 			other_names++;
 
-	    	if (*other_names != '\0')
+		if (*other_names != '\0')
 			*(other_names++) = '\0';
 
-	    	if (strlen(ptr) > sizeof(linkname)-3) {
+		if (strlen(ptr) > sizeof(linkname)-3) {
 			_nc_warning("terminal alias %s too long.", ptr);
 			continue;
-	    	}
+		}
 
 		check_writeable(ptr[0]);
-	    	sprintf(linkname, "%c/%s", ptr[0], ptr);
+		sprintf(linkname, "%c/%s", ptr[0], ptr);
 
-	    	if (strcmp(filename, linkname) == 0) {
+		if (strcmp(filename, linkname) == 0) {
 			_nc_warning("self-synonym ignored");
-	    	}
-	    	else if (stat(linkname, &statbuf) >= 0  &&
+		}
+		else if (stat(linkname, &statbuf) >= 0	&&
 						statbuf.st_mtime < start_time)
-	    	{
+		{
 			_nc_warning("alias %s multiply defined.", ptr);
 		}
 		else
-	    	{
+		{
 #ifdef USE_SYMLINKS
 			strcpy(symlinkname, "../");
 			strcat(symlinkname, filename);
@@ -286,7 +290,7 @@ static time_t	start_time;		/* time at start of writes */
 #endif /* USE_SYMLINKS */
 			    _nc_syserr_abort("can't link %s to %s", filename, linkname);
 			DEBUG(1, ("Linked %s", linkname));
-	    	}
+		}
 	}
 }
 
@@ -347,11 +351,11 @@ unsigned char	buf[MAX_ENTRY_SIZE];
 	if (fwrite(buf, 12, 1, fp) != 1
 		||  fwrite(namelist, sizeof(char), (size_t)namelen, fp) != namelen
 		||  fwrite(tp->Booleans, sizeof(char), (size_t)boolmax, fp) != boolmax)
-	    	return(ERR);
+		return(ERR);
 
 	/* the even-boundary padding byte */
-	if ((namelen+boolmax) % 2 != 0  &&  fwrite(&zero, sizeof(char), 1, fp) != 1)
-	    	return(ERR);
+	if ((namelen+boolmax) % 2 != 0 &&  fwrite(&zero, sizeof(char), 1, fp) != 1)
+		return(ERR);
 
 #ifdef SHOWOFFSET
 	(void) fprintf(stderr, "Numerics begin at %04lx\n", ftell(fp));
@@ -367,7 +371,7 @@ unsigned char	buf[MAX_ENTRY_SIZE];
 	}
 	if (fwrite(buf, 2, (size_t)nummax, fp) != nummax)
 		return(ERR);
- 
+
 #ifdef SHOWOFFSET
 	(void) fprintf(stderr, "String offets begin at %04lx\n", ftell(fp));
 #endif /* SHOWOFFSET */
@@ -396,8 +400,14 @@ unsigned char	buf[MAX_ENTRY_SIZE];
 		if (fwrite(tp->Strings[i], sizeof(char), strlen(tp->Strings[i]) + 1, fp) != strlen(tp->Strings[i]) + 1)
 		    return(ERR);
 
+	total_written++;
         return(OK);
 }
 
-
-
+/*
+ * Returns the total number of entries written by this process
+ */
+int _nc_tic_written(void)
+{
+	return total_written;
+}

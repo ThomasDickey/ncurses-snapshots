@@ -40,7 +40,7 @@ wmove(WINDOW *win, int y, int x)
 		win->_curx = (short)x;
 		win->_cury = (short)y;
 
-		win->_flags &= ~_NEED_WRAP;
+		win->_flags &= ~_WRAPPED;
 		win->_flags |= _HASMOVED;
 		return(OK);
 	} else
