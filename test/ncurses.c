@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.92 1997/05/12 21:35:00 juergen Exp $
+$Id: ncurses.c,v 1.93 1997/05/24 20:12:35 tom Exp $
 
 ***************************************************************************/
 
@@ -327,7 +327,7 @@ static void attr_test(void)
  *
  ****************************************************************************/
 
-static NCURSES_CONST char *colors[] =
+static NCURSES_CONST char *color_names[] =
 {
     "black",
     "red",
@@ -339,45 +339,51 @@ static NCURSES_CONST char *colors[] =
     "white"
 };
 
+static void show_color_name(int y, int x, int color)
+{
+    if (COLORS > 8)
+	mvprintw(y, x, "%02d   ", color);
+    else
+	mvaddstr(y, x, color_names[color]);
+}
+
 static void color_test(void)
 /* generate a color test pattern */
 {
     int i;
+    int base, top, width;
+    char *hello;
 
     refresh();
     (void) printw("There are %d color pairs\n", COLOR_PAIRS);
 
-    (void) mvprintw(1, 0,
-	 "%dx%d matrix of foreground/background colors, bright *off*\n",
-	 COLORS, COLORS);
-    for (i = 0; i < COLORS; i++)
-	mvaddstr(2, (i+1) * 8, colors[i]);
-    for (i = 0; i < COLORS; i++)
-	mvaddstr(3 + i, 0, colors[i]);
-    for (i = 1; i < COLOR_PAIRS; i++)
-    {
-	init_pair(i, i % COLORS, i / COLORS);
-	attron((attr_t)COLOR_PAIR(i));
-	mvaddstr(3 + (i / COLORS), (i % COLORS + 1) * 8, "Hello");
-	attrset(A_NORMAL);
-    }
+    width = (COLORS > 8) ? 4 : 8;
+    hello = (COLORS > 8) ? "Test" : "Hello";
 
-    (void) mvprintw(COLORS + 4, 0,
-	   "%dx%d matrix of foreground/background colors, bright *on*\n",
-	   COLORS, COLORS);
-    for (i = 0; i < COLORS; i++)
-	mvaddstr(5 + COLORS, (i+1) * 8, colors[i]);
-    for (i = 0; i < COLORS; i++)
-	mvaddstr(6 + COLORS + i, 0, colors[i]);
-    for (i = 1; i < COLOR_PAIRS; i++)
+    for (base = 0; base < 2; base++)
     {
-	init_pair(i, i % COLORS, i / COLORS);
-	attron((attr_t)(COLOR_PAIR(i) | A_BOLD));
-	mvaddstr(6 + COLORS + (i / COLORS), (i % COLORS + 1) * 8, "Hello");
-	attrset(A_NORMAL);
+	top = (COLORS > 8) ? 0 : base * (COLORS+3);
+	clrtobot();
+	(void) mvprintw(top + 1, 0,
+		"%dx%d matrix of foreground/background colors, bright *%s*\n",
+		COLORS, COLORS,
+		base ? "on" : "off");
+	for (i = 0; i < COLORS; i++)
+	    show_color_name(top + 2, (i+1) * width, i);
+	for (i = 0; i < COLORS; i++)
+	    show_color_name(top + 3 + i, 0, i);
+	for (i = 1; i < COLOR_PAIRS; i++)
+	{
+	    init_pair(i, i % COLORS, i / COLORS);
+	    attron((attr_t)COLOR_PAIR(i));
+	    if (base)
+		attron((attr_t)A_BOLD);
+	    mvaddstr(top + 3 + (i / COLORS), (i % COLORS + 1) * width, hello);
+	    attrset(A_NORMAL);
+	}
+	if ((COLORS > 8) || base)
+	    Pause();
     }
-
-    Pause();
 
     erase();
     endwin();
@@ -432,8 +438,8 @@ static void color_edit(void)
         {
 	    mvprintw(2 + i, 0, "%c %-8s:",
 		     (i == current ? '>' : ' '),
-		     (i < (int) SIZEOF(colors)
-			? colors[i] : ""));
+		     (i < (int) SIZEOF(color_names)
+			? color_names[i] : ""));
 	    attrset(COLOR_PAIR(i));
 	    addstr("        ");
 	    attrset(A_NORMAL);

@@ -20,7 +20,7 @@
 ***************************************************************************/
 
 /*
- * $Id: progs.priv.h,v 1.9 1997/04/05 23:38:08 tom Exp $
+ * $Id: progs.priv.h,v 1.10 1997/05/24 22:20:27 tom Exp $
  *
  *	progs.priv.h
  *
@@ -37,6 +37,7 @@
 #endif
 
 #include <stdlib.h>
+#include <ctype.h>
 #include <string.h>
 #include <sys/types.h>
 
@@ -133,4 +134,8 @@ extern int optind;
 
 #ifndef STDERR_FILENO
 #define STDERR_FILENO 2
+#endif
+
+#ifndef isascii
+#define isascii(c) (((c) & 0xff) <= 127)
 #endif

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.16 1997/02/15 17:10:04 tom Exp $
+# $Id: Makefile.in,v 1.17 1997/05/24 23:48:22 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -84,8 +84,14 @@ LINT		= @LINT@
 LINT_OPTS	= @LINT_OPTS@
 LINT_LIBS	= -lmenu -lncurses @LIBS@
 
+AUTO_SRC	= \
+		../include/menu.h \
+		../include/eti.h \
+		../include/mf_common.h
+
 ################################################################################
-all ::	../include/menu.h ../include/eti.h ../include/mf_common.h $(LIBRARIES)
+all \
+install ::	$(AUTO_SRC) $(LIBRARIES)
 
 $(INSTALL_PREFIX)$(libdir) :
 	$(srcdir)/../mkinstalldirs $@
@@ -104,10 +110,8 @@ $(INSTALL_PREFIX)$(libdir) :
 
 MENU_PRIV_H = \
 	$(srcdir)/menu.priv.h \
-	$(srcdir)/menu.h \
-	$(srcdir)/mf_common.h \
-	../include/curses.h \
-	$(srcdir)/eti.h
+	$(AUTO_SRC) \
+	../include/curses.h
 
 tags:
 	ctags *.[ch]

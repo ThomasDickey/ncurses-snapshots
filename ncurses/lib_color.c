@@ -29,7 +29,13 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.17 1997/05/03 19:16:05 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.18 1997/05/24 22:32:32 tom Exp $")
+
+/*
+ * Only 8 ANSI colors are defined; the ISO 6429 control sequences work only
+ * for 8 values (0-7).
+ */
+#define MAX_ANSI_COLOR 8
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -351,7 +357,7 @@ void _nc_do_color(int pair, int  (*outc)(int))
 	    }
 	    if (fg != C_MASK)
 	    {
-		if (set_a_foreground)
+		if (set_a_foreground && fg <= MAX_ANSI_COLOR)
 		{
 		    TPUTS_TRACE("set_a_foreground");
 		    tputs(tparm(set_a_foreground, fg), 1, outc);
@@ -364,7 +370,7 @@ void _nc_do_color(int pair, int  (*outc)(int))
 	    }
 	    if (bg != C_MASK)
 	    {
-		if (set_a_background)
+		if (set_a_background && bg <= MAX_ANSI_COLOR)
 		{
 		    TPUTS_TRACE("set_a_background");
 		    tputs(tparm(set_a_background, bg), 1, outc);

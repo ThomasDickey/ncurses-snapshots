@@ -6,7 +6,7 @@
  * modified 10-18-89 for curses (jrl)
  * 10-18-89 added signal handling
  *
- * $Id: gdc.c,v 1.8 1997/01/19 00:59:28 tom Exp $
+ * $Id: gdc.c,v 1.9 1997/05/19 23:28:28 tom Exp $
  */
 
 #include <test.priv.h>
@@ -46,6 +46,36 @@ RETSIGTYPE sighndl(int signo)
 	sigtermed=signo;
 }
 
+static void
+drawbox(void)
+{
+	chtype bottom[XLENGTH+1];
+	int n;
+
+	if(hascolor)
+		attrset(COLOR_PAIR(3));
+
+	mvaddch(YBASE - 1,  XBASE - 1, ACS_ULCORNER);
+	hline(ACS_HLINE, XLENGTH);
+	mvaddch(YBASE - 1,  XBASE + XLENGTH, ACS_URCORNER);
+
+	mvaddch(YBASE + YDEPTH,  XBASE - 1, ACS_LLCORNER);
+	mvinchnstr(YBASE + YDEPTH, XBASE, bottom, XLENGTH);
+	for (n = 0; n < XLENGTH; n++)
+		bottom[n] = ACS_HLINE | (bottom[n] & (A_ATTRIBUTES | A_COLOR));
+	mvaddchnstr(YBASE + YDEPTH, XBASE, bottom, XLENGTH);
+	mvaddch(YBASE + YDEPTH,  XBASE + XLENGTH, ACS_LRCORNER);
+
+	move(YBASE,  XBASE - 1);
+	vline(ACS_VLINE, YDEPTH);
+
+	move(YBASE,  XBASE + XLENGTH);
+	vline(ACS_VLINE, YDEPTH);
+
+	if(hascolor)
+		attrset(COLOR_PAIR(2));
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -61,6 +91,7 @@ int n = 0;
 	cbreak();
 	noecho();
 	nodelay(stdscr, 1);
+    	curs_set(0);
 
 	hascolor = has_colors();
 
@@ -86,25 +117,7 @@ int n = 0;
 			n = atoi(*argv);
 	}
 
-	if(hascolor) {
-		attrset(COLOR_PAIR(3));
-
-		mvaddch(YBASE - 1,  XBASE - 1, ACS_ULCORNER);
-		hline(ACS_HLINE, XLENGTH);
-		mvaddch(YBASE - 1,  XBASE + XLENGTH, ACS_URCORNER);
-
-		mvaddch(YBASE + YDEPTH,  XBASE - 1, ACS_LLCORNER);
-		hline(ACS_HLINE, XLENGTH);
-		mvaddch(YBASE + YDEPTH,  XBASE + XLENGTH, ACS_LRCORNER);
-
-		move(YBASE,  XBASE - 1);
-		vline(ACS_VLINE, YDEPTH);
-
-		move(YBASE,  XBASE + XLENGTH);
-		vline(ACS_VLINE, YDEPTH);
-
-		attrset(COLOR_PAIR(2));
-	}
+	drawbox();
 	do {
 		char	buf[30];
 
@@ -145,7 +158,11 @@ int n = 0;
 					}
 				}
 				if(!s) {
+					if (scrol)
+						drawbox();
 					refresh();
+					if (scrol)
+						napms(150);
 				}
 			}
 		}
@@ -156,6 +173,7 @@ int n = 0;
 		mvaddstr(16, 30, buf);
 
 		movto(6, 0);
+		drawbox();
 		refresh();
 		sleep(1);
 		while(wgetch(stdscr) != ERR)
@@ -164,6 +182,7 @@ int n = 0;
 			standend();
 			clear();
 			refresh();
+    			curs_set(1);
 			endwin();
 			fprintf(stderr, "gdc terminated by signal %d\n", sigtermed);
 			return EXIT_FAILURE;
@@ -172,6 +191,7 @@ int n = 0;
 	standend();
 	clear();
 	refresh();
+    	curs_set(1);
 	endwin();
 	return EXIT_SUCCESS;
 }

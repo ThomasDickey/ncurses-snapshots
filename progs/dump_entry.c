@@ -22,12 +22,11 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <progs.priv.h>
 
-#include <ctype.h>
 #include "dump_entry.h"
 #include "termsort.c"		/* this C file is generated */
 #include "parametrized.h"	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.17 1997/05/10 17:35:30 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.18 1997/05/24 22:18:17 tom Exp $")
 
 #define INDENT			8
 

@@ -24,7 +24,7 @@
 /* panel.c -- implementation of panels library */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: panel.c,v 1.10 1997/05/05 09:42:11 tom Exp $")
+MODULE_ID("$Id: panel.c,v 1.11 1997/05/23 23:17:55 juergen Exp $")
 
 #ifdef TRACE
 extern char *_nc_visbuf(const char *);
@@ -594,7 +594,7 @@ panel_below(const PANEL *pan)
 	set_panel_userptr(pan,uptr)
 --------------------------------------------------------------------------*/
 int
-set_panel_userptr(PANEL *pan, const void *uptr)
+set_panel_userptr(PANEL *pan, void *uptr)
 {
   if(!pan)
     return(ERR);
@@ -605,7 +605,7 @@ set_panel_userptr(PANEL *pan, const void *uptr)
 /*+-------------------------------------------------------------------------
 	panel_userptr(pan)
 --------------------------------------------------------------------------*/
-const void*
+void*
 panel_userptr(const PANEL *pan)
 {
   return(pan ? pan->user : (void *)0);
