@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_kernel.c,v 1.14 1997/09/02 22:41:57 tom Exp $")
+MODULE_ID("$Id: lib_kernel.c,v 1.15 1998/01/10 20:22:58 tom Exp $")
 
 int napms(int ms)
 {
@@ -55,11 +55,13 @@ int reset_prog_mode(void)
 {
 	T((T_CALLED("reset_prog_mode()")));
 
-	_nc_set_curterm(&cur_term->Nttyb);
-	if (SP && stdscr && stdscr->_use_keypad)
-		_nc_keypad(TRUE);
-
-	returnCode(OK);
+	if (cur_term != 0) {
+		_nc_set_curterm(&cur_term->Nttyb);
+		if (SP && stdscr && stdscr->_use_keypad)
+			_nc_keypad(TRUE);
+		returnCode(OK);
+	}
+	returnCode(ERR);
 }
 
 
@@ -67,14 +69,15 @@ int reset_shell_mode(void)
 {
 	T((T_CALLED("reset_shell_mode()")));
 
-	if (SP)
-	{
-		fflush(SP->_ofp);
-		_nc_keypad(FALSE);
+	if (cur_term != 0) {
+		if (SP)
+		{
+			fflush(SP->_ofp);
+			_nc_keypad(FALSE);
+		}
+		returnCode(_nc_set_curterm(&cur_term->Ottyb));
 	}
-
-	_nc_set_curterm(&cur_term->Ottyb);
-	returnCode(OK);
+	returnCode(ERR);
 }
 
 /*
@@ -89,12 +92,14 @@ erasechar(void)
 {
 	T((T_CALLED("erasechar()")));
 
+	if (cur_term != 0) {
 #ifdef TERMIOS
-	returnCode(cur_term->Ottyb.c_cc[VERASE]);
+		returnCode(cur_term->Ottyb.c_cc[VERASE]);
 #else
-	returnCode(cur_term->Ottyb.sg_erase);
+		returnCode(cur_term->Ottyb.sg_erase);
 #endif
-
+	}
+	returnCode(ERR);
 }
 
 
@@ -111,11 +116,14 @@ killchar(void)
 {
 	T((T_CALLED("killchar()")));
 
+	if (cur_term != 0) {
 #ifdef TERMIOS
-	returnCode(cur_term->Ottyb.c_cc[VKILL]);
+		returnCode(cur_term->Ottyb.c_cc[VKILL]);
 #else
-	returnCode(cur_term->Ottyb.sg_kill);
+		returnCode(cur_term->Ottyb.sg_kill);
 #endif
+	}
+	returnCode(ERR);
 }
 
 
@@ -131,22 +139,24 @@ int flushinp(void)
 {
 	T((T_CALLED("flushinp()")));
 
+	if (cur_term != 0) {
 #ifdef TERMIOS
-	tcflush(cur_term->Filedes, TCIFLUSH);
+		tcflush(cur_term->Filedes, TCIFLUSH);
 #else
-	errno = 0;
-	do {
-	    ioctl(cur_term->Filedes, TIOCFLUSH, 0);
-	} while
-	    (errno == EINTR);
+		errno = 0;
+		do {
+		    ioctl(cur_term->Filedes, TIOCFLUSH, 0);
+		} while
+		    (errno == EINTR);
 #endif
-	if (SP) {
-		SP->_fifohead = -1;
-		SP->_fifotail = 0;
-		SP->_fifopeek = 0;
+		if (SP) {
+			SP->_fifohead = -1;
+			SP->_fifotail = 0;
+			SP->_fifopeek = 0;
+		}
+		returnCode(OK);
 	}
-	returnCode(OK);
-
+	returnCode(ERR);
 }
 
 /*
@@ -160,14 +170,12 @@ int savetty(void)
 {
 	T((T_CALLED("savetty()")));
 
-	_nc_get_curterm(&buf);
-	returnCode(OK);
+	returnCode(_nc_get_curterm(&buf));
 }
 
 int resetty(void)
 {
 	T((T_CALLED("resetty()")));
 
-	_nc_set_curterm(&buf);
-	returnCode(OK);
+	returnCode(_nc_set_curterm(&buf));
 }

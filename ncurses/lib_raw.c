@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_raw.c,v 1.22 1998/01/03 21:59:22 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.23 1998/01/10 20:30:20 tom Exp $")
 
 #if defined(SVR4_TERMIO) && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
@@ -232,25 +232,28 @@ cflags[] =
 int raw(void)
 {
 	T((T_CALLED("raw()")));
+	if (SP != 0 && cur_term != 0) {
 
-	SP->_raw = TRUE;
-	SP->_cbreak = TRUE;
+		SP->_raw = TRUE;
+		SP->_cbreak = TRUE;
 
 #ifdef __EMX__
-	setmode(SP->_ifd, O_BINARY);
+		setmode(SP->_ifd, O_BINARY);
 #endif
 
 #ifdef TERMIOS
-	BEFORE("raw");
-	cur_term->Nttyb.c_lflag &= ~(ICANON|ISIG);
-	cur_term->Nttyb.c_iflag &= ~(COOKED_INPUT);
-	cur_term->Nttyb.c_cc[VMIN] = 1;
-	cur_term->Nttyb.c_cc[VTIME] = 0;
-	AFTER("raw");
+		BEFORE("raw");
+		cur_term->Nttyb.c_lflag &= ~(ICANON|ISIG);
+		cur_term->Nttyb.c_iflag &= ~(COOKED_INPUT);
+		cur_term->Nttyb.c_cc[VMIN] = 1;
+		cur_term->Nttyb.c_cc[VTIME] = 0;
+		AFTER("raw");
 #else
-	cur_term->Nttyb.sg_flags |= RAW;
+		cur_term->Nttyb.sg_flags |= RAW;
 #endif
-	returnCode(_nc_set_curterm(&cur_term->Nttyb));
+		returnCode(_nc_set_curterm(&cur_term->Nttyb));
+	}
+	returnCode(ERR);
 }
 
 int cbreak(void)

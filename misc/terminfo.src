@@ -2125,7 +2125,6 @@ color_xterm|cx|cx100|color_xterm color terminal emulator for X,
 	smul=\E[4m, 
 
 # From: Thomas Dickey <dickey@clark.net> 04 Oct 1997
-# Updated: Özgür Kesim <kesim@math.fu-berlin.de> 02 Nov 1997
 # Notes:
 # rxvt 2.21b uses
 #	smacs=\E(B\E)U^N, rmacs=\E(B\E)0^O,
@@ -2173,9 +2172,13 @@ rxvt-basic|rxvt terminal base (X Window System),
 	smcup=\E7\E[?47h, smir=\E[4h, smkx=\E=, smso=\E[7m, 
 	smul=\E[4m, tbc=\E[3g, 
 rxvt|rxvt terminal emulator (X Window System), 
+	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
+	sgr0=\E[m\017, 
+	use=rxvt-basic, 
+rxvt-color|color-rxvt|color rxvt terminal emulator (X Window System), 
 	colors#8, pairs#64, 
 	op=\E[39;49m, setab=\E[%p1%{40}%+%dm, 
-	setaf=\E[%p1%{30}%+%dm, sgr0=\E[m\017, use=rxvt-basic, 
+	setaf=\E[%p1%{30}%+%dm, use=rxvt, 
 
 # From: David J. MacKenzie <djm@va.pubnix.com> 20 Apr 1995
 # Here's a termcap entry I've been using for xterm_color, which comes
@@ -14678,7 +14681,6 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* revised entry for att7300
 # 10.1.18 (Sat Jan  3 17:58:49 EST 1998)
 #	* use \0 rather than \200.
-#	* rename rxvt-color to rxvt to match rxvt 2.4.5 distribution.
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

@@ -33,7 +33,7 @@
 #include <term.h>	/* padding_baud_rate, xon_xoff */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.28 1997/12/11 20:28:17 cls Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.29 1998/01/10 19:52:19 tom Exp $")
 
 #define OUTPUT ((SP != 0) ? SP->_ofp : stdout)
 
@@ -113,20 +113,22 @@ char	addrbuf[17];
 	}
 #endif /* TRACE */
 	
-	if ((string == NULL) || (cur_term == NULL))
-		return ERR;
-
- 	always_delay = (string == bell) || (string == flash_screen);
-	normal_delay =
-	 !xon_xoff
-#ifdef padding_baud_rate
-	 && padding_baud_rate
-	 && (!cur_term || cur_term->_baudrate >= padding_baud_rate)
-#endif
-	 ;
-
 	if (string == ABSENT_STRING || string == CANCELLED_STRING)
 		return ERR;
+
+	if (cur_term == 0) {
+		always_delay = FALSE;
+		normal_delay = TRUE;
+	} else {
+		always_delay = (string == bell) || (string == flash_screen);
+		normal_delay =
+		 !xon_xoff
+#ifdef padding_baud_rate
+		 && padding_baud_rate
+		 && (!cur_term || cur_term->_baudrate >= padding_baud_rate)
+#endif
+		 ;
+	}
 
 #ifdef BSD_TPUTS
 	/*
