@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -43,7 +43,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.62 2002/10/05 19:33:24 Frank.Henigman Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.63 2003/02/02 02:39:43 tom Exp $")
 
 /*
  *	char *
@@ -129,6 +129,9 @@ static char *out_buff;
 static size_t out_size;
 static size_t out_used;
 
+static char *fmt_buff;
+static size_t fmt_size;
+
 #if NO_LEAKS
 NCURSES_EXPORT(void)
 _nc_free_tparm(void)
@@ -137,6 +140,8 @@ _nc_free_tparm(void)
 	FreeAndNull(out_buff);
 	out_size = 0;
 	out_used = 0;
+	FreeAndNull(fmt_buff);
+	fmt_size = 0;
     }
 }
 #endif
@@ -351,9 +356,7 @@ tparam_internal(const char *string, va_list ap)
     int i;
     size_t len2;
     register const char *cp;
-    static size_t len_fmt;
     static char dummy[] = "";
-    static char *format;
     static int dynamic_var[NUM_VARS];
     static int static_vars[NUM_VARS];
 
@@ -361,9 +364,9 @@ tparam_internal(const char *string, va_list ap)
     if (string == NULL)
 	return NULL;
 
-    if ((len2 = strlen(string)) > len_fmt) {
-	len_fmt = len2 + len_fmt + 2;
-	if ((format = typeRealloc(char, len_fmt, format)) == 0)
+    if ((len2 = strlen(string)) > fmt_size) {
+	fmt_size = len2 + fmt_size + 2;
+	if ((fmt_buff = typeRealloc(char, fmt_size, fmt_buff)) == 0)
 	      return 0;
     }
 
@@ -393,7 +396,7 @@ tparam_internal(const char *string, va_list ap)
     for (cp = string; (cp - string) < (int) len2;) {
 	if (*cp == '%') {
 	    cp++;
-	    cp = parse_format(cp, format, &len);
+	    cp = parse_format(cp, fmt_buff, &len);
 	    switch (*cp) {
 	    default:
 		break;
@@ -527,7 +530,7 @@ tparam_internal(const char *string, va_list ap)
 	    save_char(*string);
 	} else {
 	    tparam_base = string++;
-	    string = parse_format(string, format, &len);
+	    string = parse_format(string, fmt_buff, &len);
 	    switch (*string) {
 	    default:
 		break;
@@ -539,7 +542,7 @@ tparam_internal(const char *string, va_list ap)
 	    case 'o':		/* FALLTHRU */
 	    case 'x':		/* FALLTHRU */
 	    case 'X':		/* FALLTHRU */
-		save_number(format, npop(), len);
+		save_number(fmt_buff, npop(), len);
 		break;
 
 	    case 'c':		/* FALLTHRU */
@@ -551,7 +554,7 @@ tparam_internal(const char *string, va_list ap)
 		break;
 
 	    case 's':
-		save_text(format, spop(), len);
+		save_text(fmt_buff, spop(), len);
 		break;
 
 	    case 'p':

@@ -1,10 +1,24 @@
--- $Id: NEWS,v 1.730 2003/01/26 01:41:53 tom Exp $
+-- $Id: NEWS,v 1.731 2003/02/02 02:44:22 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030201
+	+ minor fixes for memory-leak checking in lib_tparm.c, hardscroll.c
+	+ correct a potentially-uninitialized value if _read_termtype() does
+	  not read as much data as expected (report by Wolfgang Rohdewald
+	  <wr6@uni.de>).
+	+ correct several places where the aclocal.m4 macros relied on cache
+	  variable names which were incompatible (as usual) between autoconf
+	  2.13 and 2.5x, causing the test for broken-linker to give incorrect
+	  results (reports by Gerben Wierda <Sherlock@rna.nl> and Thomas Esser
+	  <te@dbs.uni-hannover.de>).
+	+ do not try to open gpm mouse driver if standard output is not a tty;
+	  the gpm library does not make this check (from bug report for dialog
+	  by David Oliveira <davidoliveira@develop.prozone.ws>).
 
 20030125
 	+ modified emx.src to correspond more closely to terminfo.src, added

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -39,7 +39,7 @@
 extern int malloc_errfd;	/* FIXME */
 #endif
 
-MODULE_ID("$Id: lib_freeall.c,v 1.20 2002/07/28 00:35:25 tom Exp $")
+MODULE_ID("$Id: lib_freeall.c,v 1.21 2003/02/02 02:46:10 tom Exp $")
 
 /*
  * Free all ncurses data.  This is used for testing only (there's no practical
@@ -53,6 +53,7 @@ _nc_freeall(void)
 
 #if NO_LEAKS
     _nc_free_tparm();
+    FreeAndNull(_nc_oldnums);
 #endif
     if (SP != 0) {
 	while (_nc_windows != 0) {

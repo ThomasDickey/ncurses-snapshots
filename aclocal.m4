@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996-2003
 dnl
-dnl $Id: aclocal.m4,v 1.295 2003/01/25 23:18:30 tom Exp $
+dnl $Id: aclocal.m4,v 1.296 2003/02/02 01:41:46 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -910,7 +910,7 @@ os2*) #(vi
 	cf_gpp_libname=g++
 	;;
 esac
-if test "$ac_cv_prog_gxx" = yes; then
+if test "$GXX" = yes; then
 	AC_MSG_CHECKING([for lib$cf_gpp_libname])
 	cf_save="$LIBS"
 	LIBS="$LIBS -l$cf_gpp_libname"
@@ -1419,7 +1419,7 @@ int	testdata[[3]] = { 123, 456, 789 };
 EOF
 	if AC_TRY_EVAL(ac_compile) ; then
 		mv conftest.o data.o && \
-		( $AR $AR_OPTS conftest.a data.o ) 2>&5 1>/dev/null
+		( $AR $AR_OPTS conftest.a data.o ) 2>&AC_FD_CC 1>/dev/null
 	fi
 	rm -f conftest.$ac_ext data.o
 	cat >conftest.$ac_ext <<EOF
@@ -1438,10 +1438,10 @@ int	testfunc()
 EOF
 	if AC_TRY_EVAL(ac_compile); then
 		mv conftest.o func.o && \
-		( $AR $AR_OPTS conftest.a func.o ) 2>&5 1>/dev/null
+		( $AR $AR_OPTS conftest.a func.o ) 2>&AC_FD_CC 1>/dev/null
 	fi
 	rm -f conftest.$ac_ext func.o
-	( eval $ac_cv_prog_RANLIB conftest.a ) 2>&5 >/dev/null
+	( eval $RANLIB conftest.a ) 2>&AC_FD_CC >/dev/null
 	cf_saveLIBS="$LIBS"
 	LIBS="conftest.a $LIBS"
 	AC_TRY_RUN([
@@ -1474,7 +1474,7 @@ AC_CHECK_FUNCS( \
 	remove \
 	unlink )
 
-if test "$ac_cv_prog_cc_cross" = yes ; then
+if test "$cross_compiling" = yes ; then
 	AC_CHECK_FUNCS( \
 		link \
 		symlink )
@@ -2365,7 +2365,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	sco3.2v5*)  # (also uw2* and UW7) hops 13-Apr-98
 		# tested with osr5.0.5
-		if test "$ac_cv_prog_gcc" != yes; then
+		if test "$GCC" != yes; then
 			CC_SHARED_OPTS='-belf -KPIC'
 		fi
 		MK_SHARED_LIB='$(LD) -dy -G -h `basename $[@] .$(REL_VERSION)`.$(ABI_VERSION) -o [$]@'
@@ -2379,7 +2379,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	sunos4*)
 		# tested with SunOS 4.1.1 and gcc 2.7.0
-		if test "$ac_cv_prog_gcc" != yes; then
+		if test "$GCC" != yes; then
 			CC_SHARED_OPTS='-KPIC'
 		fi
 		MK_SHARED_LIB='$(LD) -assert pure-text -o $[@]'
@@ -2387,7 +2387,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	solaris2*)
 		# tested with SunOS 5.5.1 (solaris 2.5.1) and gcc 2.7.2
-		if test "$ac_cv_prog_gcc" != yes; then
+		if test "$GCC" != yes; then
 			CC_SHARED_OPTS='-KPIC'
 		fi
 		MK_SHARED_LIB='$(LD) -dy -G -h `basename $[@] .$(REL_VERSION)`.$(ABI_VERSION) -o $[@]'
@@ -2403,7 +2403,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	sysv5uw7*|unix_sv*)
 		# tested with UnixWare 7.1.0 (gcc 2.95.2 and cc)
-		if test "$ac_cv_prog_gcc" != yes; then
+		if test "$GCC" != yes; then
 			CC_SHARED_OPTS='-KPIC'
 		fi
 		MK_SHARED_LIB='$(LD) -d y -G -o [$]@'
