@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.91 2000/04/08 22:15:47 tom Exp $ */
+/* $Id: curses.h.in,v 1.92 2000/04/29 18:52:53 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -64,6 +64,12 @@
 
 #undef  NCURSES_CONST
 #define NCURSES_CONST @NCURSES_CONST@
+
+#undef	NCURSES_COLOR_T
+#define	NCURSES_COLOR_T short
+
+#undef	NCURSES_SIZE_T
+#define	NCURSES_SIZE_T short
 
 typedef unsigned @cf_cv_typeof_chtype@ chtype;
 
@@ -245,18 +251,18 @@ cchar_t;
 struct ldat
 {
 	chtype  *text;		/* text of the line */
-	short   firstchar;	/* first changed character in the line */
-	short   lastchar;	/* last changed character in the line */
-	short   oldindex;	/* index of the line at last update */
+	NCURSES_SIZE_T firstchar; /* first changed character in the line */
+	NCURSES_SIZE_T lastchar; /* last changed character in the line */
+	NCURSES_SIZE_T oldindex; /* index of the line at last update */
 };
 
 struct _win_st
 {
-	short   _cury, _curx;	/* current cursor position */
+	NCURSES_SIZE_T _cury, _curx; /* current cursor position */
 
 	/* window location and size */
-	short   _maxy, _maxx;	/* maximums of x and y, NOT window size */
-	short   _begy, _begx;	/* screen coords of upper-left-hand corner */
+	NCURSES_SIZE_T _maxy, _maxx; /* maximums of x and y, NOT window size */
+	NCURSES_SIZE_T _begy, _begx; /* screen coords of upper-left-hand corner */
 
 	short   _flags;		/* window state flags */
 
@@ -279,8 +285,8 @@ struct _win_st
 	struct ldat *_line;	/* the actual line data */
 
 	/* global screen state */
-	short	_regtop;	/* top line of scrolling region */
-	short	_regbottom;	/* bottom line of scrolling region */
+	NCURSES_SIZE_T _regtop;	/* top line of scrolling region */
+	NCURSES_SIZE_T _regbottom; /* bottom line of scrolling region */
 
 	/* these are used only if this is a sub-window */
 	int	_parx;		/* x coordinate of this window in parent */
@@ -290,12 +296,12 @@ struct _win_st
 	/* these are used only if this is a pad */
 	struct pdat
 	{
-	    short _pad_y,      _pad_x;
-	    short _pad_top,    _pad_left;
-	    short _pad_bottom, _pad_right;
+	    NCURSES_SIZE_T _pad_y,      _pad_x;
+	    NCURSES_SIZE_T _pad_top,    _pad_left;
+	    NCURSES_SIZE_T _pad_bottom, _pad_right;
 	} _pad;
 
-	short   _yoffset;	/* real begy is _begy + _yoffset */
+	NCURSES_SIZE_T _yoffset; /* real begy is _begy + _yoffset */
 };
 
 extern WINDOW   *stdscr;
