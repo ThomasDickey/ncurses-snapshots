@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -37,7 +37,7 @@
 #include <curses.priv.h>
 #include <tic.h>
 
-MODULE_ID("$Id: home_terminfo.c,v 1.6 2000/12/10 02:55:07 tom Exp $")
+MODULE_ID("$Id: home_terminfo.c,v 1.7 2002/09/07 20:04:51 tom Exp $")
 
 #define my_length (strlen(home) + sizeof(PRIVATE_INFO))
 
@@ -55,7 +55,7 @@ _nc_home_terminfo(void)
 		&& my_length <= PATH_MAX) {
 		temp = typeMalloc(char, my_length);
 		if (temp == 0)
-		    _nc_err_abort("Out of memory");
+		    _nc_err_abort(MSG_NO_MEMORY);
 		(void) sprintf(temp, PRIVATE_INFO, home);
 	    }
 	}

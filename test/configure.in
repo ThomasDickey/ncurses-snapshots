@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996, etc.
 dnl
-dnl $Id: configure.in,v 1.35 2002/04/06 22:02:50 tom Exp $
+dnl $Id: configure.in,v 1.36 2002/09/07 16:55:23 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -36,7 +36,7 @@ dnl
 dnl If you're configuring ncurses, you shouldn't need to use this script.
 dnl It's only for testing purposes.
 dnl
-dnl See http://dickey.his.com/autoconf/ for additional information.
+dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20000819)
 AC_INIT(ncurses.c)

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -92,7 +92,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.41 2001/06/02 22:50:31 skimo Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.42 2002/09/07 20:07:13 tom Exp $")
 
 #define MAX_PUSHED	16	/* max # args we can push onto the stack */
 
@@ -115,7 +115,7 @@ init_string(void)
     if (my_string == 0)
 	my_string = typeMalloc(char, my_length = 256);
     if (my_string == 0)
-	_nc_err_abort("Out of memory");
+	_nc_err_abort(MSG_NO_MEMORY);
 
     *my_string = '\0';
     return my_string;
@@ -129,7 +129,7 @@ save_string(char *d, const char *const s)
     if (need > my_length) {
 	my_string = (char *) realloc(my_string, my_length = (need + need));
 	if (my_string == 0)
-	    _nc_err_abort("Out of memory");
+	    _nc_err_abort(MSG_NO_MEMORY);
 	d = my_string + have;
     }
     (void) strcpy(d, s);
@@ -464,7 +464,7 @@ _nc_captoinfo(const char *cap, const char *s, int const parametrized)
 		dp = save_char(dp, '%');
 		s--;
 		_nc_warning("unknown %% code %s (%#x) in %s",
-			    unctrl((chtype) * s), UChar(*s), cap);
+			    unctrl((chtype) *s), UChar(*s), cap);
 		break;
 	    }
 	    break;

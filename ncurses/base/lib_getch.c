@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.66 2002/09/01 17:33:31 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.67 2002/09/07 17:17:59 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -87,7 +87,7 @@ static inline int
 fifo_push(EVENTLIST_0th(_nc_eventlist * evl))
 {
     int n;
-    unsigned int ch = 0;
+    int ch = 0;
     int mask;
 
     (void) mask;
