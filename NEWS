@@ -1,7 +1,25 @@
--- $Id: NEWS,v 1.252 1997/09/20 23:54:43 tom Exp $
+-- $Id: NEWS,v 1.254 1997/09/28 00:49:09 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+970927
+	+ add 'deinstall' rules.
+	+ use explicit assignments in configure --without-progs option to
+	  work around autoconf bug which doesn't always set $withval.
+	+ check for ldconfig, don't try to run it if not found.
+	+ implement simple/unoptimized case in lib_doupdate.c to handle
+	  display with magic cookie glitch, tested with ncurses.c program.
+	+ correct missing _tracef in getmouse(), to balance the returnCode
+	  macro.
+	+ simplify show_attr() in ncurses.c using termattrs().
+	> patches by Juergen Pfeifer:
+	+ provides missing inlines for mvw[hv]line in cursesw.h of the C++
+	  binding
+	+ fixes a typo in a comment of frm_driver.c
+	+ Enhances Ada95 Makefiles to fulfill the requirement of GNAT-3.10 that
+	  generics should be compiled.  Proper fixes to the configuration
+	  scripts are also provided.
 
 970920
 	+ several modifications to the configure script (requested by Ward

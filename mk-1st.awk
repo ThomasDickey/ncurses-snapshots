@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.22 1997/09/20 23:28:51 tom Exp $
+# $Id: mk-1st.awk,v 1.24 1997/09/27 21:44:45 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -41,13 +41,18 @@ function symlink(src,dst) {
 			printf "$(LN_S) %s %s; ", src, dst
 		}
 	}
-function sharedlinks(directory) {
+function sharedlinks(directory, add) {
 		if ( end_name != lib_name ) {
-			printf "\tcd %s && (", directory
 			abi_name = sprintf("%s.$(ABI_VERSION)", lib_name);
-			symlink(end_name, abi_name);
-			symlink(abi_name, lib_name);
-			printf ")\n"
+			if (add) {
+				printf "\tcd %s && (", directory
+				symlink(end_name, abi_name);
+				symlink(abi_name, lib_name);
+				printf ")\n"
+			} else {
+				printf "\t-@rm -f %s/%s\n", directory, abi_name
+				printf "\t-@rm -f %s/%s\n", directory, lib_name
+			}
 		}
 	}
 function removelinks() {
@@ -100,9 +105,9 @@ END	{
 					end_name = lib_name;
 				}
 				printf "../lib/%s : $(%s_OBJS)\n", lib_name, MODEL
-				print  "\t@-rm -f $@"
+				print  "\t-@rm -f $@"
 				printf "\t$(MK_SHARED_LIB) $(%s_OBJS)\n", MODEL
-				sharedlinks("../lib")
+				sharedlinks("../lib", 1)
 				print  ""
 				if ( end_name != lib_name ) {
 					printf "../lib/%s : ../lib/%s\n", end_name, lib_name
@@ -112,22 +117,36 @@ END	{
 				print  "install.libs \\"
 				printf "install.%s :: $(INSTALL_PREFIX)$(libdir) ../lib/%s\n", name, end_name
 				printf "\t@echo installing ../lib/%s as $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, end_name
-				printf "\t-rm -f $(INSTALL_PREFIX)$(libdir)/%s \n", end_name
+				printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/%s \n", end_name
 				printf "\t$(INSTALL) ../lib/%s $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, end_name
-				sharedlinks("$(INSTALL_PREFIX)$(libdir)")
+				sharedlinks("$(INSTALL_PREFIX)$(libdir)", 1)
 				if ( overwrite == "yes" && name == "ncurses" )
 				{
 					ovr_name = sprintf("libcurses%s", suffix)
 					printf "\t@echo linking %s to %s\n", ovr_name, lib_name
-					printf "\t-rm -f $(INSTALL_PREFIX)$(libdir)/%s \n", ovr_name
+					printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/%s \n", ovr_name
 					printf "\t(cd $(INSTALL_PREFIX)$(libdir) && $(LN_S) %s %s)\n", lib_name, ovr_name
 				}
-				printf "\t- test -z \"$(INSTALL_PREFIX)\" && ldconfig\n"
+				if ( ldconfig != "" ) {
+					printf "\t- test -z \"$(INSTALL_PREFIX)\" && %s\n", ldconfig
+				}
+				print  ""
+				print  "deinstall \\"
+				print  "deinstall.libs \\"
+				printf "deinstall.%s ::\n", name
+				printf "\t@echo deinstalling $(INSTALL_PREFIX)$(libdir)/%s \n", end_name
+				printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/%s\n", end_name
+				sharedlinks("$(INSTALL_PREFIX)$(libdir)", 0)
+				if ( overwrite == "yes" && name == "ncurses" )
+				{
+					ovr_name = sprintf("libcurses%s", suffix)
+					printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/%s \n", ovr_name
+				}
 				if ( rmSoLocs == "yes" ) {
 					print  ""
 					print  "mostlyclean \\"
 					print  "clean ::"
-					printf "\t@-rm -f so_locations\n"
+					printf "\t-@rm -f so_locations\n"
 				}
 			}
 			else
@@ -149,7 +168,7 @@ END	{
 				if ( overwrite == "yes" && lib_name == "libncurses.a" )
 				{
 					printf "\t@echo linking libcurses.a to libncurses.a \n"
-					printf "\t-rm -f $(INSTALL_PREFIX)$(libdir)/libcurses.a \n"
+					printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/libcurses.a \n"
 					printf "\t(cd $(INSTALL_PREFIX)$(libdir) && $(LN_S) libncurses.a libcurses.a)\n"
 				}
 				printf "\t$(RANLIB) $(INSTALL_PREFIX)$(libdir)/%s\n", lib_name
@@ -157,6 +176,22 @@ END	{
 				{
 					printf "\t@echo installing ../lib/lib%s.o as $(INSTALL_PREFIX)$(libdir)/lib%s.o\n", name, name
 					printf "\t$(INSTALL_DATA) ../lib/lib%s.o $(INSTALL_PREFIX)$(libdir)/lib%s.o\n", name, name
+				}
+				print  ""
+				print  "deinstall \\"
+				print  "deinstall.libs \\"
+				printf "deinstall.%s ::\n", name
+				printf "\t@echo deinstalling $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name
+				printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/%s\n", lib_name
+				if ( overwrite == "yes" && lib_name == "libncurses.a" )
+				{
+					printf "\t@echo linking libcurses.a to libncurses.a \n"
+					printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/libcurses.a \n"
+				}
+				if ( target == "vxworks" )
+				{
+					printf "\t@echo deinstalling $(INSTALL_PREFIX)$(libdir)/lib%s.o\n", name
+					printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/lib%s.o\n", name
 				}
 			}
 			print ""

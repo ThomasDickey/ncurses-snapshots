@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.98 1997/09/20 15:05:39 tom Exp $
+$Id: ncurses.c,v 1.99 1997/09/27 19:39:42 tom Exp $
 
 ***************************************************************************/
 
@@ -273,7 +273,7 @@ int y, x;
     endwin();
 }
 
-static int show_attr(int row, int skip, chtype attr, const char *name, bool once, const char *capname)
+static int show_attr(int row, int skip, chtype attr, const char *name, bool once)
 {
     mvprintw(row, 8, "%s mode:", name);
     mvprintw(row, 24, "|");
@@ -287,7 +287,7 @@ static int show_attr(int row, int skip, chtype attr, const char *name, bool once
 	attroff(attr);
     if (skip) printw("%*s", skip, " ");
     printw("|");
-    if (capname != 0 && tigetstr(capname) == 0)
+    if (attr != A_NORMAL && !(termattrs() & attr))
 	printw(" (N/A)");
     return row + 2;
 }
@@ -314,15 +314,15 @@ static void attr_test(void)
 
 	mvaddstr(0, 20, "Character attribute test display");
 
-	row = show_attr(row, n, A_STANDOUT,  "STANDOUT",  TRUE, "smso");
-	row = show_attr(row, n, A_REVERSE,   "REVERSE",   TRUE, "rev");
-	row = show_attr(row, n, A_BOLD,      "BOLD",      TRUE, "bold");
-	row = show_attr(row, n, A_UNDERLINE, "UNDERLINE", TRUE, "smul");
-	row = show_attr(row, n, A_DIM,       "DIM",       TRUE, "dim");
-	row = show_attr(row, n, A_BLINK,     "BLINK",     TRUE, "blink");
-	row = show_attr(row, n, A_PROTECT,   "PROTECT",   TRUE, "prot");
-	row = show_attr(row, n, A_INVIS,     "INVISIBLE", TRUE, "invis");
-	row = show_attr(row, n, A_NORMAL,    "NORMAL",    FALSE,0);
+	row = show_attr(row, n, A_STANDOUT,  "STANDOUT",  TRUE);
+	row = show_attr(row, n, A_REVERSE,   "REVERSE",   TRUE);
+	row = show_attr(row, n, A_BOLD,      "BOLD",      TRUE);
+	row = show_attr(row, n, A_UNDERLINE, "UNDERLINE", TRUE);
+	row = show_attr(row, n, A_DIM,       "DIM",       TRUE);
+	row = show_attr(row, n, A_BLINK,     "BLINK",     TRUE);
+	row = show_attr(row, n, A_PROTECT,   "PROTECT",   TRUE);
+	row = show_attr(row, n, A_INVIS,     "INVISIBLE", TRUE);
+	row = show_attr(row, n, A_NORMAL,    "NORMAL",    FALSE);
 
 	mvprintw(row, 8,
 	     "This terminal does %shave the magic-cookie glitch",

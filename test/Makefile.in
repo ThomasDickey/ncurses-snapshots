@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.34 1997/09/06 23:38:49 tom Exp $
+# $Id: Makefile.in,v 1.35 1997/09/27 20:59:39 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -127,6 +127,10 @@ xmas: $(MODEL)/xmas.o $(LOCAL_LIBS)
 install:
 install.libs:
 install.test:
+
+deinstall:
+deinstall.libs:
+deinstall.test:
 
 clean ::
 	-rm -rf *.o trace screendump *.atac *.lis core $(TESTS)

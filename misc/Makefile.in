@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.14 1997/09/06 23:40:02 tom Exp $
+# $Id: Makefile.in,v 1.15 1997/09/27 22:58:19 tom Exp $
 ################################################################################
-# Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
+# Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
 #                                                                              #
 # Permission to use, copy, modify, and distribute this software and its        #
@@ -69,6 +69,12 @@ $(INSTALL_PREFIX)$(libdir) \
 $(INSTALL_PREFIX)$(tabsetdir) \
 $(INSTALL_PREFIX)$(ticdir) :
 	$(srcdir)/../mkinstalldirs $@
+
+deinstall: deinstall.data
+
+deinstall.data:
+	-cd $(INSTALL_PREFIX)$(ticdir) && rm -rf *
+	-cd $(INSTALL_PREFIX)$(tabsetdir) && rm -rf *
 
 tags:
 

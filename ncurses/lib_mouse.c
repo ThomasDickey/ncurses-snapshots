@@ -61,7 +61,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 0.27 1997/09/20 15:02:34 juergen Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 0.28 1997/09/27 19:42:13 tom Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -592,6 +592,8 @@ void _nc_mouse_resume(SCREEN *sp GCC_UNUSED)
 int getmouse(MEVENT *aevent)
 /* grab a copy of the current mouse event */
 {
+    T((T_CALLED("getmouse(%p)"), aevent));
+
     if (aevent && (mousetype == M_XTERM || mousetype == M_GPM))
     {
 	/* compute the current-event pointer */

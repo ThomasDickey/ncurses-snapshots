@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.84 1997/09/20 23:34:06 tom Exp $
+dnl $Id: aclocal.m4,v 1.88 1997/09/27 21:42:25 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -344,6 +344,13 @@ case $cf_cv_gnat_version in
      ac_cv_prog_gnat_correct=no
      ;;
 esac
+case $cf_cv_gnat_version in
+  3.1*|[4-9].*)
+      cf_compile_generics=generics
+      ;;
+  *)  cf_compile_generics=
+      ;;
+esac
 changequote([, ])dnl
 ])
 dnl ---------------------------------------------------------------------------
@@ -440,6 +447,7 @@ do
 				suffix=$cf_suffix \
 				DoLinks=$cf_cv_do_symlinks \
 				rmSoLocs=$cf_cv_rm_so_locs \
+				ldconfig="$LDCONFIG" \
 				overwrite=$WITH_OVERWRITE \
 				depend="$cf_depend" \
 				target="$target" \
@@ -465,6 +473,7 @@ do
 		if test -f $srcdir/$cf_dir/headers; then
 cat >> Makefile <<CF_EOF
 install.includes \\
+deinstall.includes \\
 CF_EOF
 		fi
 if test "$cf_dir" != "c++" ; then
@@ -473,14 +482,18 @@ fi
 cat >> Makefile <<CF_EOF
 lintlib \\
 install.libs \\
-install.$cf_dir ::
+deinstall.libs \\
+install.$cf_dir \\
+deinstall.$cf_dir ::
 	cd $cf_dir && \$(MAKE) \$(CF_MFLAGS) \[$]@
 CF_EOF
 	elif test -f $srcdir/$cf_dir/headers; then
 cat >> Makefile <<CF_EOF
 
 install.libs \\
-install.includes ::
+deinstall.libs \\
+install.includes \\
+deinstall.includes ::
 	cd $cf_dir && \$(MAKE) \$(CF_MFLAGS) \[$]@
 CF_EOF
 fi
@@ -571,6 +584,18 @@ CF_EOF
 		do
 			echo "	@ ../headers.sh \$(INSTALL_DATA) \$(INSTALL_PREFIX)\$(includedir) \$(srcdir) $i" >>$cf_dir/Makefile
 			test $i = curses.h && echo "	@ (cd \$(INSTALL_PREFIX)\$(includedir) && rm -f ncurses.h && \$(LN_S) curses.h ncurses.h)" >>$cf_dir/Makefile
+		done
+
+	cat >>$cf_dir/Makefile <<CF_EOF
+
+deinstall \\
+deinstall.libs \\
+deinstall.includes ::
+CF_EOF
+		for i in `cat $srcdir/$cf_dir/headers |fgrep -v "#"`
+		do
+			echo "	-@rm -f \$(INSTALL_PREFIX)\$(includedir)/$i" >>$cf_dir/Makefile
+			test $i = curses.h && echo "	-@rm -f \$(INSTALL_PREFIX)\$(includedir)/ncurses.h" >>$cf_dir/Makefile
 		done
 	fi
 done
@@ -769,6 +794,9 @@ INSTALL_DATA="$INSTALL_DATA"
 TMP=\${TMPDIR-/tmp}/man\$\$
 trap "rm -f \$TMP" 0 1 2 5 15
 
+verb=\{{$}}1
+shift
+
 mandir=\{{$}}1
 shift
 
@@ -777,8 +805,10 @@ do
 case \$i in
 *.[0-9]*)
 	section=\`expr "\$i" : '.*\\.\\([0-9]\\)[xm]*'\`;
-	if [ ! -d $cf_subdir\${section} ]; then
+	if test \$verb = installing ; then
+	if test ! -d $cf_subdir\${section} ; then
 		\$MKDIRS $cf_subdir\$section
+	fi
 	fi
 	source=\`basename \$i\`
 CF_EOF
@@ -798,29 +828,35 @@ cat >>man/edit_man.sh <<CF_EOF
 	sed -e 's,@DATADIR@,\$datadir,' < \$i | sed -f edit_man.sed >\$TMP
 CF_EOF
 fi
+if test \$verb = installing ; then
 if test $cf_format = yes ; then
 cat >>man/edit_man.sh <<CF_EOF
 	nroff -man \$TMP >\$TMP.out
 	mv \$TMP.out \$TMP
 CF_EOF
 fi
+fi
 case "$cf_form" in
 compress)
 cat >>man/edit_man.sh <<CF_EOF
+	if test \$verb = installing ; then
 	if ( compress -f \$TMP )
 	then
 		mv \$TMP.Z \$TMP
-		target="\$target.Z"
 	fi
+	fi
+	target="\$target.Z"
 CF_EOF
   ;;
 gzip)
 cat >>man/edit_man.sh <<CF_EOF
+	if test \$verb = installing ; then
 	if ( gzip -f \$TMP )
 	then
 		mv \$TMP.gz \$TMP
-		target="\$target.gz"
 	fi
+	fi
+	target="\$target.gz"
 CF_EOF
   ;;
 BSDI)
@@ -831,8 +867,12 @@ CF_EOF
   ;;
 esac
 cat >>man/edit_man.sh <<CF_EOF
-	echo installing \$target
-	\$INSTALL_DATA \$TMP \$target
+	echo \$verb \$target
+	if test \$verb = installing ; then
+		\$INSTALL_DATA \$TMP \$target
+	else
+		rm -f \$target
+	fi
 	;;
 esac
 done 

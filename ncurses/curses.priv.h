@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.80 1997/09/13 23:17:38 tom Exp $
+ * $Id: curses.priv.h,v 1.82 1997/09/28 00:24:30 tom Exp $
  *
  *	curses.priv.h
  *
@@ -260,9 +260,8 @@ struct screen {
 	unsigned short  *_color_pairs;  /* screen's color pair list          */
 	int             _pair_count;    /* count of color pairs              */
 	int             _default_color; /* use default colors                */
-#if !USE_XMC_SUPPORT
 	chtype          _xmc_suppress;  /* attributes to suppress if xmc     */
-#endif
+	chtype          _xmc_triggers;  /* attributes to process if xmc      */
 	chtype          _acs_map[ACS_LEN];
 
 	/*
@@ -400,6 +399,7 @@ extern long _nc_outchars;
 #define ALL_BUT_COLOR ((chtype)~(A_COLOR))
 #define IGNORE_COLOR_OFF FALSE
 #define NONBLANK_ATTR (A_BOLD|A_DIM|A_BLINK)
+#define XMC_CHANGES(c) ((c) & SP->_xmc_suppress)
 
 
 #define toggle_attr_on(S,at) \
@@ -443,11 +443,12 @@ extern long _nc_outchars;
 				attr_t chg = SP->_current_attr; \
 				vidattr(AttrOf(c)); \
 				if (magic_cookie_glitch > 0 \
-				 && ((chg ^ AttrOf(c)) & NONBLANK_ATTR)) { \
-					SP->_curscol += magic_cookie_glitch; \
-					T(("%s @%d: bumped to %d,%d after cookie", \
+				 && XMC_CHANGES((chg ^ SP->_current_attr))) { \
+					T(("%s @%d before glitch %d,%d", \
 						__FILE__, __LINE__, \
-						SP->_cursrow, SP->_curscol)); \
+						SP->_cursrow, \
+						SP->_curscol)); \
+					_nc_do_xmc_glitch(chg); \
 				} \
 			}
 #else
@@ -494,6 +495,11 @@ extern void _nc_UpdateAttrs(chtype);
 
 extern void _nc_expanded(void);
 
+#endif
+
+/* doupdate.c */
+#if USE_XMC_SUPPORT
+extern void _nc_do_xmc_glitch(attr_t);
 #endif
 
 /* hardscroll.c */

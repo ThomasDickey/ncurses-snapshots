@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.16 1997/09/06 23:35:57 tom Exp $
+# $Id: Makefile.in,v 1.17 1997/09/27 22:52:55 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -85,7 +85,7 @@ LINT_OPTS	= @LINT_OPTS@
 LINT_LIBS	= -lpanel -lncurses @LIBS@
 
 ################################################################################
-all ::	../include/panel.h $(LIBRARIES)
+all install ::	../include/panel.h $(LIBRARIES)
 
 $(INSTALL_PREFIX)$(libdir) :
 	$(srcdir)/../mkinstalldirs $@

@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.24 1997/09/09 00:14:40 juergen Exp $
+# $Id: Makefile.in,v 1.25 1997/09/27 21:45:31 tom Exp $
 ################################################################################
-# Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
+# Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
 #                                                                              #
 # Permission to use, copy, modify, and distribute this software and its        #
@@ -87,6 +87,9 @@ demo:	$(OBJS_DEMO) \
 
 install:
 install.libs:
+
+deinstall:
+deinstall.libs:
 
 clean ::
 	-rm -f core demo $(OBJS_DEMO)
