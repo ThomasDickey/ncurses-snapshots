@@ -5,6 +5,7 @@
 ./Makefile.in
 ./README
 ./aclocal.m4
+./announce.html
 ./c++/Makefile.in
 ./c++/README-first
 ./c++/cursesp.cc
@@ -64,8 +65,6 @@
 ./man/terminfo.5
 ./man/tic.1m
 ./man/tput.1
-./misc/color.doc
-./misc/manual.doc
 ./misc/ncurses-intro.html
 ./misc/terminfo.src
 ./mkinstalldirs

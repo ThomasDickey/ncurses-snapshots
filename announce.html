@@ -1,0 +1,158 @@
+<!-- Master version of the ANNOUNCE textfile.  This one is for Web pages; 
+	the ANNOUNCE file is for plaintext distribution -->
+<HTML>
+<HEAD>
+<link rev=made href=mailto:esr@snark.thyrsus.com>
+</HEAD>
+<BODY>
+<TITLE>Announcing ncurses @VERSION@</TITLE>
+<H1>Announcing ncurses @VERSION@</H1>
+
+<H2>New in @VERSION@:</H2>
+<UL>
+<LI> Integrated panels support.
+<LI> ncurses output can now be redirected.
+</UL>
+
+<H2>Overview of ncurses @VERSION@</H2>
+
+The ncurses library is a freeware emulation of System V Release 4.0 curses.
+It uses terminfo format, supports color and multiple highlights and forms
+characters, and function-key mapping, and has all the other SYSV-curses
+enhancements over BSD curses. <P>
+
+The ncurses code was developed under Linux.  It is highly portable, and
+runs on all of the following platforms: 386BSD, SunOS, HP-UX, Ultrix,
+NeXTSTEP 3.0, System V Release 4, BSDI BSD/OS, Apollo, AIX 3.2.5, Solaris
+2.3, NeXTSTEP 3.2.  It should port easily to any ANSI/POSIX-conforming UNIX.<P>
+
+The distribution includes the library and support utilities, including a
+terminfo compiler tic(1), a decompiler infocmp(1), clear(1), tput(1), and a
+termcap conversion tool captoinfo(1).  Full manual pages are provided for
+the library and tools. <P>
+
+The ncurses distribution is available at:
+<A HREF="ftp://ftp.netcom.com/pub/zm/zmbenhal/ncurses">ftp://ftp.netcom.com/pub/zm/zmbenhal/ncurses</A>.
+It is also carried on the GNU distribution site at <A HREF="ftp://prep.ai.mit.edu/pub/gnu">ftp://prep.ai.mit.edu/pub/gnu</A>.
+
+<H1>Features of ncurses</H1>
+
+<UL>
+<LI>All 257 of the SVr4 calls have been implemented (and are documented). <P>
+<LI>Full support for SVr4 curses features including keyboard mapping, color,
+forms-drawing with ACS characters, and automatic recognition of keypad
+and function keys. <P>
+<LI>Unlike SVr4 curses, ncurses can write to the rightmost-bottommost corner
+of the screen if your terminal has an insert-character capability.  <P>
+<LI>The API is 8-bit clean and base-level conformant with the X/OPEN curses
+specification, XSI Curses (that is, it implements all BASE level features,
+but not all EXTENDED features).  Most EXTENDED-level features not directly
+concerned with wide-character support are implemented, including many
+function calls not supported under SVr4 curses (but portability of all
+calls is documented so you can use the SVr4 subset only).  <P>
+<LI>Better cursor-movement optimization.  The package now features a
+cursor-local-movement computation more efficient than either BSD's
+or System V's.  <P>
+<LI>Super hardware scrolling support.  The screen-update code incorporates
+a novel, simple, and cheap algorithm that enables it to make optimal
+use of hardware scrolling, line-insertion, and line-deletion
+for screen-line movements.  This algorithm is more powerful than
+the BSD curses quickch() routine.  <P>
+<LI> An emulation of the System V Release 4 panels library, supporting 
+a stack of windows with backing store, is included. <P>
+<LI> (PC-clone boxes only) Support for access to the IBM PC ROM characters
+through a new highlight, A_PCCHARSET.  Also, ncurses will now
+automatically load a nice set of forms characters when running on
+PC-compatible consoles with no acsc capability specified. <P>
+<LI> Automatic fallback to the /etc/termcap file can be compiled in
+for systems withould a terminfo tree.  This feature is neither
+fast nor cheap, you don't want to use it unless you have to,
+but it's there. <P>
+<LI> An HTML "Introduction to Programming with NCURSES" document. <P>
+</UL>
+
+<H1>State of the Package</H1>
+
+Numerous bugs present in earlier versions through 1.8.7 have been fixed; the
+library is far more reliable than it used to be.  Bounds checking in many 
+`dangerous' entry points has been improved.  The code is now type-safe 
+according to gcc -Wall.  The library has been checked for malloc leaks and
+arena corruption by the Purify memory-allocation tester. <P>
+
+The ncurses code has been tested with a wide variety of games and utilities,
+including: <P>
+<DL>
+<DT> lynx-2.4 
+<DD> the character-screen WWW browser
+<DT> bs-2.0
+<DD> Battleships game with proper visual interface
+<DT> greed-3.1
+<DD> the game of Greed
+<DT> nolan-1.1
+<DD> the World's Smallest Political Quiz
+<DT> vh-1.6
+<DD> Volks-Hypertext browser for the Jargon File
+<DT> blue
+<DD> Blue Moon solitare game
+<DT> u386mon
+<DD> System performance monitor for SVr4
+<DT> nvi
+<DD> New vi alpha version 1.1.34
+</DL>
+
+The ncurses distribution includes a selection of test programs.
+
+<H2>Who's Who and What's What</H2>
+
+The primary maintainer of ncurses is <A
+HREF="mailto:zmbenhal@netcom.com">Zeyd Ben-Halim</A>.  Unfortunately,
+he can only work on the package part time.  As a result, since 1.8.1,
+much of the enhancement work and all the documentation has been done
+by <A HREF="http://www.ccil.org/~esr/home.html">Eric S. Raymond. </A>
+However, requests for beta releases and other queries should properly
+be directed to Zeyd. <P>
+
+There is an ncurses mailing list.  It is a listserv list; to join, write
+to <TT>listserv@netcom.com</TT> with a message containing the line
+<LISTING>
+             subscribe ncurses-list <name>@<host.domain>
+</LISTING>
+
+This list is open to anyone interested in helping with the development and
+testing of this package. <P>
+
+<H2>Future Plans</H2>
+<UL>
+<LI> Extended-level XPG4 conformance, with internationalization support. <P>
+<LI> Ports to more systems, including DOS and Windows.
+</UL>
+We need people to help with these projects.  If you are interested in working 
+on them, please join the ncurses list.
+
+<H2>Whither BSD curses?</H2>
+
+Keith Bostic, the maintainer of BSD curses, has undertaken that if ncurses
+proves stable and usable with nvi, he will switch to ncurses for the nvi (new
+vi) distribution and pronounce BSD curses officially dead. <P>
+
+It is therefore probable that the next re-packaging of 4.4BSD curses
+will, in fact, use ncurses. <P>
+
+BSDI has said that they will cut over to ncurses if and when Keith gives the
+word. <P>
+
+<H2>The terminfo/termcap database</H2>
+
+This distribution now includes (and uses) a copy of the master terminfo
+database maintained by Eric Raymond.  This database (which is the 
+official descendant of the 4.4BSD termcap file) changes faster than this
+code does, so you probably want to pick up new copies occasionally. <P>
+
+You can download either the <A HREF="terminfo/termcap.gz">termcap</A> or
+<A HREF="terminfo/terminfo.gz">terminfo</A> versions of the terminal-type
+database from Eric's ncurses resource page, 
+<A HREF="http://www.ccil.org/~esr/ncurses.html">http://www.ccil.org/~esr/ncurses.html</A>. <P>
+<HR>
+<ADDRESS>Eric S. Raymond &lt;esr@snark.thyrsus.com&gt;</ADDRESS>
+</BODY>
+</HTML>

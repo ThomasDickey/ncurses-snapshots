@@ -328,8 +328,9 @@ install.progs: $(PROGS) $(bindir)
 	-@ln $(bindir)/tic $(bindir)/captoinfo
 
 install.data: $(ticdir)
+	-rm -f do.tic
 	echo "TERMINFO=$(ticdir)">do.tic
-	echo "exprot TERMINFO">>do.tic
+	echo "export TERMINFO">>do.tic
 	echo "rm -fr $(ticdir)/[0-9A-Za-z]">>do.tic
 	echo "$(bindir)/tic -v ../misc/terminfo.src">>do.tic
 	(sh do.tic)
@@ -451,7 +452,7 @@ TAGS:
 	etags *.[ch]
 
 clean:
-	-rm -f tags TAGS *~
+	-rm -f tags TAGS do.tic *~
 	-rm -f *.[od] $(AUTO_SRC) $(TESTPROGS)
 	-rm -f *.a $(PROGS)
 

@@ -81,6 +81,7 @@ typedef unsigned long  chtype;
 #ifdef __i386__
 #define A_PCCHARSET	A_PROTECT	/* corresponds to smpch/rmpch */
 #endif /* __i386__ */
+
 /*
  * XSI attributes.  In the ncurses implementation, they are identical to the
  * A_ attributes because attr_t is just an int.  The XSI Curses attr_* and
@@ -121,7 +122,6 @@ extern unsigned char *color_pairs;
 /* line graphics */
 
 extern 	chtype acs_map[];
-
 
 #define ACS_ULCORNER	(acs_map['l'])	/* upper left corner */
 #define ACS_LLCORNER	(acs_map['m'])	/* lower left corner */
@@ -357,12 +357,18 @@ extern int vidputs(attr_t,int (*)(int));
 extern int vwscanw(WINDOW *,const char *,va_list);
 extern int vwprintw(WINDOW *,const char *,va_list);
 extern int waddch(WINDOW *, const chtype);
+#ifdef XPG4_EXTENDED
+extern int waddchnwstr(WINDOW *,const chtype *,int);
+extern int waddnwstr(WINDOW *,const char *,int);
+#else
 extern int waddchnstr(WINDOW *,const chtype *,int);
 extern int waddnstr(WINDOW *,const char *,int);
+#endif /* XPG4_EXTENDED */
 extern int wattron(WINDOW *,const attr_t);
 extern int wattroff(WINDOW *,const attr_t);
 extern int wbkgd(WINDOW *,const chtype);
 extern int wborder(WINDOW *,chtype,chtype,chtype,chtype,chtype,chtype,chtype,chtype);
+extern int wchget(WINDOW *,int,attr_t,short,void *const);
 extern int wclear(WINDOW *);
 extern int wclrtobot(WINDOW *);
 extern int wclrtoeol(WINDOW *);
@@ -439,28 +445,6 @@ extern int slk_attroff(attr_t);
 
 #define wbkgdset(win,ch)	((win)->_bkgd = ch)
 
-/* XSI curses macros for XPG4 conformance */
-#define wgetbkgd(win)		((win)->_bkgd)
-
-#define wattr_get(win, a)	((win)->_attrs)
-#define wattr_off(win, a)	attroff(win, a)
-#define wattr_on(win, a)	attron(win, a)
-#define wattr_set(win, a)	attrset(win, a)
-
-#define attr_get()		wattr_get(stdscr)
-#define attr_off(a)		wattr_off(stdscr, a)
-#define attr_on(a)		wattr_on(stdscr, a)
-#define attr_set(a)		wattr_set(stdscr, a)
-
-/*
- * XSI curses deprecates SVr4 vwprintw/vwscanw, which are supposed to use
- * varargs.h.  It adds new calls vw_printw/vw_scanw, which are supposed to
- * use POSIX stdarg.h.  The ncurses versions of vwprintw/vwscanw already
- * use stdarg.h, so...
- */
-#define vw_printw		vwprintw
-#define vw_scanw		vwscanw
-
 /* It seems older SYSV curses versions define these */
 #define getattrs(win)		((win)->_attrs)
 #define getmaxx(win)		((win)->_maxx + 1)
@@ -489,6 +473,11 @@ extern int slk_attroff(attr_t);
 #define redrawwin(w)		wredrawln(w, 0, w->_maxy+1)
 #define waddstr(win,str)	waddnstr(win,str,-1)
 #define waddchstr(win,str)	waddchnstr(win,str,-1)
+
+#ifdef XPG4_EXTENDED
+#define waddchnstr(win,str,-1)	waddchnwstr(win,mbstowcs(str),-1)
+#define waddnstr(win,str,-1)	waddnwstr(win,mbstowcs(str),-1)
+#endif /* XPG4_EXTENDED */
 
 /*
  * pseudo functions for standard screen
@@ -571,6 +560,92 @@ extern int slk_attroff(attr_t);
 #define mvwinchnstr(w, y, x, s, n)	(wmove(w,y,x) == ERR ? ERR : winnstr(w,s,n))
 #define mvinchstr(y,x,s)		mvwinstr(stdscr,y,x,s)
 #define mvinchnstr(y,x,s,n)		mvwinnstr(stdscr,y,x,s,n)
+
+/*
+ * XSI curses macros for XPG4 conformance.
+ * The underling functions needed to make these work are:
+ * waddnwstr(), waddchnwstr(), wadd_wch(), wborder_set(), wchgat(),
+ * wecho_wchar(), wgetn_wstr(), wget_wch(), whline_set(), vhline_set(),
+ * winnwstr(), wins_nwstr(), wins_wch(), win_wch(), win_wchnstr().
+ * Except for wchgat(), these are not yet implemented.  They will be someday.
+ */
+#define addnwstr(wstr, n)	waddnwstr(stdscr, wstr, n)
+#define addwstr(wstr, n)	waddnwstr(stdscr, wstr, -1)
+#define mvaddnwstr(y,x,wstr, n)	(wmove(stdscr,y,x) == ERR ? ERR : waddnwstr(stdscr, wstr, n))
+#define mvaddwstr(y,x,wstr, n)	(wmove(stdscr,y,x) == ERR ? ERR : waddnwstr(stdscr, wstr, -1))
+#define mvwaddnwstr(y,x,win,wstr,n)	(wmove(win,y,x) == ERR ? ERR : waddnwstr(stdscr, wstr, n))
+#define mvwaddwstr(y,x,win,wstr,n)	(wmove(win,y,x) == ERR ? ERR : waddnwstr(stdscr, wstr, -1))
+#define waddwstr(win, wstr, n)	waddnwstr(win, wstr, -1)
+#define add_wch(c)		wadd_wch(stsdscr, c)
+#define mvadd_wch(y,x,c)	(wmove(stdscr,y,x) == ERR ? ERR : wadd_wch(stsdscr, c))
+#define mvwadd_wch(y,x,win,c)	(wmove(win,y,x) == ERR ? ERR : wadd_wch(stsdscr, c))
+#define wattr_get(win, a)	((win)->_attrs)
+#define wattr_off(win, a)	attroff(win, a)
+#define wattr_on(win, a)	attron(win, a)
+#define wattr_set(win, a)	attrset(win, a)
+#define attr_get()		wattr_get(stdscr)
+#define attr_off(a)		wattr_off(stdscr, a)
+#define attr_on(a)		wattr_on(stdscr, a)
+#define attr_set(a)		wattr_set(stdscr, a)
+#define wgetbkgd(win)		((win)->_bkgd)
+#define box_set(w,v,h)		wborder_set(w,v,v,h,h,0,0,0,9)
+#define chgat(n, a, c, o)	wchgat(stdscr, n, a, c, o)
+#define mvchgat(y,x, n,a,c, o)	(move(y,x)==ERR ? ERR : wchgat(stdscr,n,a,c,o))
+#define mvwchgat(y,x,w,n,a,c,o)	(wmove(w,y,x) == ERR ? ERR : wchgat(w,n,a,c,o))
+#define echo_wchar(c)		wecho_wchar(stdscr, c)
+#define getn_wstr(t, n)		wgetn_wstr(stdscr, t, n)
+#define get_wstr(t)		wgetn_wstr(stdscr, t, -1)
+#define mvgetn_wstr(y, x, t, n)	(move(y,x)==ERR ? ERR:wgetn_wstr(stdscr,t,n))
+#define mvget_wstr(y, x, t)	(move(y,x)==ERR ? ERR:wgetn_wstr(stdscr,t,-1))
+#define mvwgetn_wstr(w,y,x,t,n)	(wmove(w,y,x)==ERR ? ERR : wgetn_wstr(w,t,n))
+#define mvwget_wstr(w, y, x, t)	(wmove(w,y,x)==ERR ? ERR : wgetn_wstr(w,t,-1))
+#define wget_wstr(w, t)		wgetn_wstr(w, t, -1)
+#define get_wch(c)		wget_wch(stdscr, c)
+#define mvget_wch(y, x, c)	(move(y,x) == ERR ? ERR : wget_wch(stdscr, c))
+#define mvwget_wch(y, x, c)	(wmove(w,y,x) == ERR ? ERR : wget_wch(w, n))
+#define hline_set(c, n)		whline_set(stdscr, c, n)
+#define mvhline_set(y,x,c,n)	(move(y,x)==ERR ? ERR : whline_set(stdscr,c,n))
+#define mvvline_set(y,x,c,n)	(move(y,x)==ERR ? ERR : wvline_set(stdscr,c,n))
+#define mvwhline_set(w,y,x,c,n)	(wmove(w,y,x)==ERR ? ERR : whline_set(w,c,n))
+#define mvwvline_set(w,y,x,c,n)	(wmove(w,y,x)==ERR ? ERR : wvline_set(w,c,n))
+#define vline_set(c, n)		vhline_set(stdscr, c, n)
+#define innwstr(c, n)		winnwstr(stdscr, c, n)
+#define inwstr(c)		winnwstr(stdscr, c, -1)
+#define mvinnwstr(y, x, c, n)	(move(y,x)==ERR ? ERR : winnwstr(stdscr, c, n))
+#define mvinwstr(y, x, c)	(move(y,x)==ERR ? ERR : winnwstr(stdscr, c,-1))
+#define mvwinnwstr(w,y,x,c,n)	(wmove(w,y,x)==ERR ? ERR:winnwstr(stdscr,c,n))
+#define mvwinwstr(w,y,x,c)	(wmove(w,y,x)==ERR ? ERR:winnwstr(stdscr,c,-1))
+#define winwstr(w, c)		winnwstr(w, c, -1)
+#define ins_nwstr(t, n)		wins_nwstr(stdscr, t, n)
+#define ins_wstr(t)		wins_nwstr(stdscr, t, -1)
+#define mvins_nwstr(y,x,t,n)	(move(y,x)==ERR ? ERR: wins_nwstr(stdscr,t,n))
+#define mvins_wstr(y,x,t)	(move(y,x)==ERR ? ERR: wins_nwstr(stdscr,t,-1))
+#define mvwins_nwstr(w,y,x,t,n)	(wmove(w,y,x)==ERR?ERR:wins_nwstr(stdscr,t,n))
+#define mvwins_wstr(w,y,x,t)	(wmove(w,y,x)==ERR?ERR:wins_nwstr(stdscr,t,-1))
+#define wins_wstr(w, t)		wins_nwstr(w, t, -1)
+#define ins_wch(c)		wins_wch(stdscr, c)
+#define mvins_wch(y,x,c)	(move(y,x) == ERR ? ERR : wins_wch(c))
+#define mwvins_wch(w,y,x,c)	(wmove(w,y,x) == ERR ? ERR : wins_wch(c))
+#define in_wch(c)		win_wch(stdscr, c)
+#define mvin_wch(y,x,c)		(move(y,x) == ERR ? ERR : win_wch(stdscr, c))
+#define mvwin_wch(w,y,x,c)	(wmove(w, y,x) == ERR ? ERR : win_wch(w, c))
+#define in_wchnstr(c, n)	win_wchnstr(stdscr, c, n)
+#define in_wchstr(c)		win_wchnstr(stdscr, c, -1)
+#define mvin_wchnstr(y,x,c,n)	(move(y,x)==ERR ? ERR:win_wchnstr(stdscr,c,n))
+#define mvin_wchstr(y, x, c)	(move(y,x)==ERR ? ERR:win_wchnstr(stdscr,c,-1))
+#define mvwin_wchnstr(w,y,x,c,n)	(wmove(w,y,x)==ERR ? ERR:win_wchnstr(stdscr,c,n))
+#define mvwin_wchstr(w,y,x,c)	(wmove(w,y,x)==ERR ? ERR:win_wchnstr(stdscr,c,-1))
+#define win_wchstr(w, c)	win_wchnstr(w, c, -1)
+
+
+/*
+ * XSI curses deprecates SVr4 vwprintw/vwscanw, which are supposed to use
+ * varargs.h.  It adds new calls vw_printw/vw_scanw, which are supposed to
+ * use POSIX stdarg.h.  The ncurses versions of vwprintw/vwscanw already
+ * use stdarg.h, so...
+ */
+#define vw_printw		vwprintw
+#define vw_scanw		vwscanw
 
 /* Funny "characters" enabled for various special function keys for input */
 /* Whether such a key exists depend if its definition is in the terminfo entry */
