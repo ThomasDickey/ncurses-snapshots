@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.179 2002/09/01 21:00:44 tom Exp $
+$Id: ncurses.c,v 1.180 2002/09/15 00:39:33 tom Exp $
 
 ***************************************************************************/
 
@@ -942,9 +942,11 @@ attr_test(void)
 	    }
 	    normal |= COLOR_PAIR(pair);
 	}
+	bkgd(normal);
 	bkgdset(normal);
 	erase();
 
+	box(stdscr, 0, 0);
 	mvaddstr(0, 20, "Character attribute test display");
 
 	row = show_attr(row, n, ac | A_STANDOUT, "STANDOUT");

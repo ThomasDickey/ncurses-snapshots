@@ -43,7 +43,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.59 2002/09/07 20:50:03 Philippe.Blain Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.60 2002/09/14 22:36:13 Philippe.Blain Exp $")
 
 /*
  *	char *
@@ -458,10 +458,14 @@ tparam_internal(const char *string, va_list ap)
 	    case '=':
 	    case '<':
 	    case '>':
+		lastpop = -1;
+		number += 2;
+		break;
+
 	    case '!':
 	    case '~':
 		lastpop = -1;
-		number += 2;
+		++number;
 		break;
 
 	    case 'i':

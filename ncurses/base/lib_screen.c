@@ -34,7 +34,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_screen.c,v 1.26 2002/09/07 20:21:54 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.28 2002/09/14 23:30:41 tom Exp $")
 
 NCURSES_EXPORT(WINDOW *)
 getwin(FILE * filep)
@@ -49,51 +49,60 @@ getwin(FILE * filep)
     if (ferror(filep))
 	returnWin(0);
 
-    if ((nwin = newwin(tmp._maxy + 1, tmp._maxx + 1, 0, 0)) == 0)
-	returnWin(0);
+    if (tmp._flags & _ISPAD) {
+	nwin = newpad(tmp._maxy + 1, tmp._maxx + 1);
+    } else {
+	nwin = newwin(tmp._maxy + 1, tmp._maxx + 1, 0, 0);
+    }
 
     /*
      * We deliberately do not restore the _parx, _pary, or _parent
      * fields, because the window hierarchy within which they
      * made sense is probably gone.
      */
-    nwin->_curx = tmp._curx;
-    nwin->_cury = tmp._cury;
-    nwin->_maxy = tmp._maxy;
-    nwin->_maxx = tmp._maxx;
-    nwin->_begy = tmp._begy;
-    nwin->_begx = tmp._begx;
-    nwin->_yoffset = tmp._yoffset;
-    nwin->_flags = tmp._flags & ~(_SUBWIN | _ISPAD);
+    if (nwin != 0) {
+	nwin->_curx = tmp._curx;
+	nwin->_cury = tmp._cury;
+	nwin->_maxy = tmp._maxy;
+	nwin->_maxx = tmp._maxx;
+	nwin->_begy = tmp._begy;
+	nwin->_begx = tmp._begx;
+	nwin->_yoffset = tmp._yoffset;
+	nwin->_flags = tmp._flags & ~(_SUBWIN);
 
-    nwin->_attrs = tmp._attrs;
-    nwin->_nc_bkgd = tmp._nc_bkgd;
+	nwin->_attrs = tmp._attrs;
+	nwin->_nc_bkgd = tmp._nc_bkgd;
 
-    nwin->_notimeout = tmp._notimeout;
-    nwin->_clear = tmp._clear;
-    nwin->_leaveok = tmp._leaveok;
-    nwin->_idlok = tmp._idlok;
-    nwin->_idcok = tmp._idcok;
-    nwin->_immed = tmp._immed;
-    nwin->_scroll = tmp._scroll;
-    nwin->_sync = tmp._sync;
-    nwin->_use_keypad = tmp._use_keypad;
-    nwin->_delay = tmp._delay;
+	nwin->_notimeout = tmp._notimeout;
+	nwin->_clear = tmp._clear;
+	nwin->_leaveok = tmp._leaveok;
+	nwin->_idlok = tmp._idlok;
+	nwin->_idcok = tmp._idcok;
+	nwin->_immed = tmp._immed;
+	nwin->_scroll = tmp._scroll;
+	nwin->_sync = tmp._sync;
+	nwin->_use_keypad = tmp._use_keypad;
+	nwin->_delay = tmp._delay;
 
-    nwin->_regtop = tmp._regtop;
-    nwin->_regbottom = tmp._regbottom;
+	nwin->_regtop = tmp._regtop;
+	nwin->_regbottom = tmp._regbottom;
 
-    for (n = 0; n <= nwin->_maxy; n++) {
-	clearerr(filep);
-	(void) fread(nwin->_line[n].text,
-		     sizeof(NCURSES_CH_T), (size_t) (nwin->_maxx + 1), filep);
-	if (ferror(filep)) {
-	    delwin(nwin);
-	    returnWin(0);
+	if (tmp._flags & _ISPAD)
+	    nwin->_pad = tmp._pad;
+
+	for (n = 0; n <= nwin->_maxy; n++) {
+	    clearerr(filep);
+	    (void) fread(nwin->_line[n].text,
+			 sizeof(NCURSES_CH_T),
+			 (size_t) (nwin->_maxx + 1),
+			 filep);
+	    if (ferror(filep)) {
+		delwin(nwin);
+		returnWin(0);
+	    }
 	}
+	touchwin(nwin);
     }
-    touchwin(nwin);
-
     returnWin(nwin);
 }
 
@@ -105,7 +114,7 @@ putwin(WINDOW *win, FILE * filep)
 
     T((T_CALLED("putwin(%p,%p)"), win, filep));
 
-    if (win && !(win->_flags & _ISPAD)) {
+    if (win != 0) {
 	size_t len = (win->_maxx + 1);
 
 	clearerr(filep);
@@ -114,9 +123,11 @@ putwin(WINDOW *win, FILE * filep)
 	      returnCode(code);
 
 	for (n = 0; n <= win->_maxy; n++) {
-	    if (fwrite(win->_line[n].text, sizeof(chtype), len, filep) != len
-		|| ferror(filep))
-		  returnCode(code);
+	    if (fwrite(win->_line[n].text,
+		       sizeof(NCURSES_CH_T), len, filep) != len
+		|| ferror(filep)) {
+		returnCode(code);
+	    }
 	}
 	code = OK;
     }

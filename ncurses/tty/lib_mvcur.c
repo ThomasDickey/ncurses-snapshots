@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -152,7 +152,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.85 2001/06/03 01:48:29 skimo Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.86 2002/09/14 23:02:06 Philippe.Blain Exp $")
 
 #define CURRENT_ROW	SP->_cursrow	/* phys cursor row */
 #define CURRENT_COLUMN	SP->_curscol	/* phys cursor column */
@@ -904,8 +904,7 @@ mvcur(int yold, int xold, int ynew, int xnew)
 }
 
 #if defined(TRACE) || defined(NCURSES_TEST)
-NCURSES_EXPORT_VAR(int)
-_nc_optimize_enable = OPTIMIZE_ALL;
+NCURSES_EXPORT_VAR(int) _nc_optimize_enable = OPTIMIZE_ALL;
 #endif
 
 #if defined(MAIN) || defined(NCURSES_TEST)
@@ -918,10 +917,9 @@ _nc_optimize_enable = OPTIMIZE_ALL;
 #include <tic.h>
 #include <dump_entry.h>
 
-NCURSES_EXPORT_VAR(const char *)
-_nc_progname = "mvcur";
+NCURSES_EXPORT_VAR(const char *) _nc_progname = "mvcur";
 
-     static unsigned long xmits;
+static unsigned long xmits;
 
 /* these override lib_tputs.c */
 NCURSES_EXPORT(int)
@@ -947,10 +945,6 @@ _nc_outch(int ch)
     putc(ch, stdout);
     return OK;
 }
-
-NCURSES_EXPORT_VAR(char) PC = 0;	/* used by termcap library */
-NCURSES_EXPORT_VAR(NCURSES_OSPEED) ospeed = 0;	/* used by termcap library */
-NCURSES_EXPORT_VAR(int) _nc_nulls_sent = 0;	/* used by 'tack' program */
 
 NCURSES_EXPORT(int)
 delay_output(int ms GCC_UNUSED)
@@ -1079,7 +1073,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	    }
 	} else if (buf[0] == 'i') {
 	    dump_init((char *) NULL, F_TERMINFO, S_TERMINFO, 70, 0, FALSE);
-	    dump_entry(&cur_term->type, FALSE, TRUE, 0);
+	    dump_entry(&cur_term->type, FALSE, TRUE, 0, 0, 0);
 	    putchar('\n');
 	} else if (buf[0] == 'o') {
 	    if (_nc_optimize_enable & OPTIMIZE_MVCUR) {

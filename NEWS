@@ -1,10 +1,24 @@
--- $Id: NEWS,v 1.707 2002/09/07 20:51:14 tom Exp $
+-- $Id: NEWS,v 1.708 2002/09/15 00:47:23 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020914 pre-release
+	+ modified curses.h so that if the wide-character version is installed
+	  overwriting /usr/include/curses.h, and if it relied on libutf8.h,
+	  then applications that use that header for wide-character support
+	  must define HAVE_LIBUTF8_H.
+	+ modify putwin(), getwin() and dupwin() to allow them to operate on
+	  pads (request by Philippe Blain).
+	+ correct attribute-merging in wborder(), broken in 20020216 (report
+	  by Tomasz Wasiak <tjwasiak@grubasek.komputom.com.pl>).
+	> Philippe Blain:
+	+ corrected pop-counts in tparam_internal() to '!' and '~' cases.
+	+ use sizeof(NCURSES_CH_T) in one place that used sizeof(chtype).
+	+ remove some unused variables from mvcur test-driver.
 
 20020907 pre-release
 	+ change configure script to allow install of widec-character
