@@ -154,12 +154,11 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.91 2003/07/19 22:01:24 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.92 2003/08/16 23:22:42 Philippe.Blain Exp $")
 
 #define CURRENT_ROW	SP->_cursrow	/* phys cursor row */
 #define CURRENT_COLUMN	SP->_curscol	/* phys cursor column */
 #define CURRENT_ATTR	SP->_current_attr	/* current phys attribute */
-#define REAL_ATTR	SP->_current_attr	/* phys current attribute */
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
 #define BAUDRATE	cur_term->_baudrate	/* bits per second */
 
@@ -520,10 +519,10 @@ relative_move(string_desc * target, int from_y, int from_x, int to_y, int
 	    n = (from_y - to_y);
 
 	    if (parm_up_cursor
-		&& SP->_cup_cost < vcost
+		&& SP->_cuu_cost < vcost
 		&& _nc_safe_strcat(_nc_str_copy(target, &save),
 				   tparm(parm_up_cursor, n))) {
-		vcost = SP->_cup_cost;
+		vcost = SP->_cuu_cost;
 	    }
 
 	    if (cursor_up && (n * SP->_cuu1_cost < vcost)) {
@@ -582,7 +581,6 @@ relative_move(string_desc * target, int from_y, int from_x, int to_y, int
 		}
 #endif /* USE_HARD_TABS */
 
-#if defined(REAL_ATTR) && defined(WANT_CHAR)
 		if (n <= 0 || n >= (int) check.s_size)
 		    ovw = FALSE;
 #if BSD_TPUTS
@@ -631,9 +629,7 @@ relative_move(string_desc * target, int from_y, int from_x, int to_y, int
 		    *check.s_tail = '\0';
 		    check.s_size -= n;
 		    lhcost += n * SP->_char_padding;
-		} else
-#endif /* defined(REAL_ATTR) && defined(WANT_CHAR) */
-		{
+		} else {
 		    lhcost = repeated_append(&check, lhcost, SP->_cuf1_cost,
 					     n, cursor_right);
 		}
