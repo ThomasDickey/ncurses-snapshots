@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.250 $
-#	$Date: 2004/07/24 23:16:00 $
+#	$Revision: 1.251 $
+#	$Date: 2004/07/31 16:52:01 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -2934,7 +2934,7 @@ xterm-new|modern xterm terminal emulator,
 	kRIT=\E[1;2C, kb2=\EOE, kcbt=\E[Z, kcub1=\EOD, kcud1=\EOB, 
 	kcuf1=\EOC, kcuu1=\EOA, kend=\EOF, kent=\EOM, khome=\EOH, 
 	kich1=\E[2~, kmous=\E[M, knp=\E[6~, kpp=\E[5~, 
-	rin=\E[%p1%dT, use=xterm-pc-fkeys, use=xterm-basic, 
+	rin=\E[%p1%dT, use=xterm+pcfkeys, use=xterm-basic, 
 #
 # This fragment describes as much of XFree86 xterm's "pc-style" function
 # keys as will fit into terminfo's 60 function keys.
@@ -2951,7 +2951,7 @@ xterm-new|modern xterm terminal emulator,
 #  ---------------------------------
 # The meta key may also be used as a modifier in this scheme, adding another
 # bit to the parameter.
-xterm-pc-fkeys|fragment for PC-style fkeys, 
+xterm+pcfkeys|fragment for PC-style fkeys, 
 	kf1=\EOP, kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, 
 	kf13=\EO2P, kf14=\EO2Q, kf15=\EO2R, kf16=\EO2S, 
 	kf17=\E[15;2~, kf18=\E[17;2~, kf19=\E[18;2~, kf2=\EOQ, 
@@ -3273,7 +3273,7 @@ gnome-rh90|GNOME Terminal,
 	bce, msgr, 
 	hpa=\E[%i%p1%dG, kDC=\E[3;2~, kLFT=\EO2D, kRIT=\EO2C, 
 	kb2=\E[E, kcbt=\E[Z, kend=\EOF, khome=\EOH, tbc=\E[3g, 
-	vpa=\E[%i%p1%dd, use=xterm-pc-fkeys, use=gnome-rh80, 
+	vpa=\E[%i%p1%dd, use=xterm+pcfkeys, use=gnome-rh80, 
 
 gnome|GNOME Terminal, 
 	use=gnome-rh90, 
@@ -20788,6 +20788,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  (Redhat Bugzilla #122815) -Hans de Goede
 #	* modify DEC entries (vt220, etc), to add sgr string, and to use
 #	  ISO-2022 strings for rmacs/smacs -TD
+#
+# 2004-07-31
+#	* rename xterm-pc-fkeys to xterm+pcfkeys -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
