@@ -42,7 +42,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.40 1999/01/03 02:05:50 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.41 1999/01/24 02:55:48 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -153,7 +153,7 @@ static void write_it(ENTRY *ep)
 	_nc_write_entry(&ep->tterm);
 }
 
-static bool immedhook(ENTRY *ep)
+static bool immedhook(ENTRY *ep GCC_UNUSED)
 /* write out entries with no use capabilities immediately to save storage */
 {
 #ifndef HAVE_BIG_CORE

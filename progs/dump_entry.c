@@ -38,7 +38,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include "parametrized.h"	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.29 1998/09/26 13:15:00 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.30 1999/01/24 02:44:40 Jeffrey.C.Honig Exp $")
 
 #define INDENT			8
 
@@ -89,7 +89,7 @@ NCURSES_CONST char *nametrans(const char *name)
 {
     const struct name_table_entry 	*np;
 
-    if ((np = _nc_find_entry(name, _nc_info_hash_table)) != 0)
+    if ((np = _nc_find_entry(name, _nc_get_hash_table(0))) != 0)
         switch(np->nte_type)
 	{
 	case BOOLEAN:
@@ -165,7 +165,7 @@ void dump_init(const char *version, int mode, int sort, int twidth, int traceval
 
     /* implement sort modes */
     switch(sortmode = sort)
-    { 
+    {
     case S_NOSORT:
 	if (traceval)
 	    (void) fprintf(stderr,
@@ -755,7 +755,7 @@ int dump_entry(TERMTYPE *tterm, bool limited, bool numbers, int (*pred)(int type
 	     * is really just an optimization hack.
 	     */
 	    char *oldsgr = set_attributes;
-	    set_attributes = ABSENT_STRING; 
+	    set_attributes = ABSENT_STRING;
 	    (void) printf("# (sgr removed to fit entry within %d bytes)\n",
 			  critlen);
 	    if ((len = fmt_entry(tterm, pred, TRUE, infodump, numbers)) > critlen)

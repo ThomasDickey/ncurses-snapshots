@@ -1,7 +1,7 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
 #	Version 10.2.1
-#	$Date: 1999/01/11 02:14:48 $
+#	$Date: 1999/01/23 22:59:23 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2047,16 +2047,17 @@ teraterm|Tera Term Pro,
 	cnorm=\E[?25h, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
 	cuu1=\E[A, dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, 
 	dl1=\E[M, ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K, 
-	hpa=\E[%i%p1%dG, il=\E[%p1%dL, il1=\E[L, kdch1=\E[3~, 
-	kf1=\E[11~, kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, 
-	kf13=\E[25~, kf14=\E[26~, kf15=\E[28~, kf16=\E[29~, 
-	kf17=\E[31~, kf18=\E[32~, kf19=\E[33~, kf2=\E[12~, 
-	kf20=\E[34~, kf3=\E[13~, kf4=\E[14~, kf5=\E[15~, 
-	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, kfnd=\E[1~, 
-	kich1=\E[2~, knp=\E[6~, kpp=\E[5~, kslt=\E[4~, 
-	op=\E[30m\E[47m, rev=\E[7m, ri=\EM, rmso=\E[m, rmul=\E[m, 
-	sgr0=\E[m, smso=\E[7m, smul=\E[4m, u6=\E[%i%d;%dR, 
-	u7=\E[6n, u8=\E[?1;2c, u9=\E[c, vpa=\E[%i%p1%dd, 
+	flash=\E[?5h\E[?5l$<200/>, hpa=\E[%i%p1%dG, 
+	il=\E[%p1%dL, il1=\E[L, kdch1=\E[3~, kf1=\E[11~, 
+	kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, 
+	kf14=\E[26~, kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, 
+	kf18=\E[32~, kf19=\E[33~, kf2=\E[12~, kf20=\E[34~, 
+	kf3=\E[13~, kf4=\E[14~, kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, 
+	kf8=\E[19~, kf9=\E[20~, kfnd=\E[1~, kich1=\E[2~, knp=\E[6~, 
+	kpp=\E[5~, kslt=\E[4~, op=\E[100m, rev=\E[7m, ri=\EM, 
+	rmso=\E[27m, rmul=\E[24m, sgr0=\E[m, smso=\E[7m, 
+	smul=\E[4m, u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
+	vpa=\E[%i%p1%dd, 
 	use=klone+color, use=vt100, 
 
 #### X terminal emulators
@@ -17150,6 +17151,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 1999/1/10
 #	* add entry for Tera Term - TD
+#
+# 1999/1/23
+#	* minor improvements for teraterm entry - TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
