@@ -19,7 +19,7 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.15 $
+#  $Revision: 1.16 $
 #
 .SUFFIXES:
 
@@ -86,7 +86,8 @@ GEN_FILES1      = Key_Definitions              		\
 		  Color_Defs                   		\
 		  ACS_Map                      		\
 		  Linker_Options               		\
-		  Base_Defs
+		  Base_Defs			        \
+		  Version_Info
 
 GEN_FILES2      = Menu_Opt_Rep        		    	\
 		  Menu_Base_Defs               		\
@@ -186,6 +187,9 @@ AC_Rep: gen
 
 Linker_Options: gen
 	./gen B L >$@
+
+Version_Info: gen
+	./gen B V >$@
 
 Menu_Opt_Rep: gen
 	./gen M R >$@

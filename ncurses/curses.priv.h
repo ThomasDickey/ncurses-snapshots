@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.96 1997/12/27 23:41:30 tom Exp $
+ * $Id: curses.priv.h,v 1.97 1998/01/03 19:57:54 tom Exp $
  *
  *	curses.priv.h
  *
@@ -547,9 +547,6 @@ extern void _nc_UpdateAttrs(chtype);
 extern void _nc_expanded(void);
 
 #endif
-
-/* comp_scan.c */
-extern char _nc_trans_string(char *); /* used by 'tack' program */
 
 /* doupdate.c */
 #if USE_XMC_SUPPORT

@@ -36,7 +36,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.26 1997/10/18 19:26:31 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.29 1998/01/03 17:57:23 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -454,10 +454,13 @@ bool	ignored = FALSE;
 		    _nc_warning("Illegal ^ character - %s",
 			_tracechar((unsigned char)ch));
 		}
-		if (ch == '?')
+		if (ch == '?') {
 		    *(ptr++) = '\177';
-		else
-		    *(ptr++) = (char)(ch & 037);
+		} else {
+		    if ((ch &= 037) == 0)
+		        ch = 128;
+		    *(ptr++) = (char)(ch);
+		}
 	    }
 	    else if (ch == '\\') {
 		ch = c = next_char();
@@ -491,6 +494,8 @@ bool	ignored = FALSE;
 		    switch (c) {
 			case 'E':
 			case 'e':	*(ptr++) = '\033';	break;
+
+			case 'a':	*(ptr++) = '\007';	break;
 
 			case 'l':
 			case 'n':	*(ptr++) = '\n';	break;
@@ -651,6 +656,7 @@ next_char(void)
 	 * don't forget to hack push_back() correspondingly.
 	 */
 	static char line[LEXBUFSIZ];
+	size_t len;
 
 	do {
 	       _nc_curr_file_pos = ftell(yyin);
@@ -668,6 +674,18 @@ next_char(void)
 
 	while (iswhite(*bufptr))
 	    bufptr++;
+
+	/*
+	 * Treat a trailing <cr><lf> the same as a <newline> so we can read
+	 * files on OS/2, etc.
+	 */
+	if ((len = strlen(bufptr)) > 1) {
+	    if (bufptr[len-1] == '\n'
+	     && bufptr[len-2] == '\r') {
+		bufptr[len-2] = '\n';
+		bufptr[len-1] = '\0';
+	    }
+	}
     }
 
     first_column = (bufptr == bufstart);

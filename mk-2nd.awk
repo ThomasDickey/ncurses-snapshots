@@ -1,4 +1,4 @@
-# $Id: mk-2nd.awk,v 1.8 1997/12/20 19:37:01 tom Exp $
+# $Id: mk-2nd.awk,v 1.9 1997/12/28 21:25:42 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -56,8 +56,9 @@ BEGIN	{
 			}
 		}
 	}
-	!/^[@#]/ && !/^$/ {
-		if (using != 0) {
+	!/^[@#]/ {
+		if ($0 != "" \
+		 && using != 0) {
 			found = 1
 			if ( $1 != "" ) {
 				print  ""

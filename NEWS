@@ -1,7 +1,31 @@
--- $Id: NEWS,v 1.291 1997/12/28 00:33:27 tom Exp $
+-- $Id: NEWS,v 1.296 1998/01/04 00:51:00 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+980103
+	+ add a copy of emx.src from Ripoll's OS/2 EMX version of ncurses
+	  1.9.9e, together with fixes/additions for the "ansi" terminal type.
+	+ add tic check for save/restore cursor if change_scroll_region is
+	  defined (from O'Reilly book).
+	+ modify read_termcap.c to handle EMX-style pathnames (reported by
+	  Juan Jose Garcia Ripoll).
+	+ modify lib_raw.c to use EMX's setmode (from Juan Jose Garcia Ripoll,
+	  who says EMX's curses does this).
+	+ modify _nc_tic_expand() to generate \0 rather than \200.
+	+ move/revise 'expand()' from dump_entry.c to ncurses library as
+	  _nc_tic_expand(), for use by tack.
+	+ decode \a as \007 for terminfo, as per XSI.
+	+ correct translation of terminfo "^@", to \200, like \0.
+	+ modify next_char() to treat <cr><lf> the same as <newline>, for
+	  cross-platform compatibility.
+	+ use new version of autoconf (971230) to work around limited
+	  environment on CLIX, due to the way autoconf builds --help message.
+	> patch by Juergen Pfeifer:
+	+ check that the Ada95 binding runs against the correct version of
+	  ncurses.
+	+ insert constants about the library version into the main spec-file of
+	  the Ada95 binding.
 
 971227
 	+ modify open/fopen calls to use binary mode, needed for EMX.

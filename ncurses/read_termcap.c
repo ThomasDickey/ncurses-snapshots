@@ -49,7 +49,14 @@
 #include <fcntl.h>
 #endif
 
-MODULE_ID("$Id: read_termcap.c,v 1.25 1997/11/29 19:07:44 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.26 1998/01/03 21:39:06 tom Exp $")
+
+#ifdef __EMX__
+#define is_pathname(s) ((((s) != 0) && ((s)[0] == '/')) \
+		  || (((s)[0] != 0) && ((s)[1] == ':')))
+#else
+#define is_pathname(s) ((s) != 0 && (s)[0] == '/')
+#endif
 
 #define TC_SUCCESS     0
 #define TC_UNRESOLVED -1
@@ -779,7 +786,7 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
 	 * searched instead.  The path is found in the TERMPATH variable, or
 	 * becomes "$HOME/.termcap /etc/termcap" if no TERMPATH exists.
 	 */
-	if (!cp || *cp != '/') {	/* no TERMCAP or it holds an entry */
+	if (!is_pathname(cp)) {	/* no TERMCAP or it holds an entry */
 		if ((termpath = getenv("TERMPATH")) != 0) {
 			strncpy(pathbuf, termpath, sizeof(pathbuf)-1);
 		} else {
@@ -812,7 +819,7 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
 		}
 	}
 	*fname = 0;			/* mark end of vector */
-	if (cp && *cp && *cp != '/') {
+	if (is_pathname(cp)) {
 		if (_nc_cgetset(cp) < 0) {
 			return(TC_SYS_ERR);
 		}
@@ -931,7 +938,7 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 
 	if ((tc = getenv("TERMCAP")) != 0)
 	{
-		if (tc[0] == '/')	/* interpret as a filename */
+		if (is_pathname(tc))	/* interpret as a filename */
 		{
 			termpaths[0] = tc;
 			termpaths[filecount = 1] = 0;

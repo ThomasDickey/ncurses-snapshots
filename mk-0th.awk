@@ -1,4 +1,4 @@
-# $Id: mk-0th.awk,v 1.5 1997/12/20 18:05:41 tom Exp $
+# $Id: mk-0th.awk,v 1.6 1997/12/28 21:25:22 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -29,16 +29,19 @@ BEGIN	{
 		print  ""
 		found = 0;
 	}
-	!/^[@#]/ && !/^$/ {
-		if ( found == 0 )
+	!/^[@#]/ {
+		if ( $0 != "" )
 		{
-			printf "C_SRC ="
-			if ( $2 == "lib" )
-				found = 1
-			else
-				found = 2
+			if ( found == 0 )
+			{
+				printf "C_SRC ="
+				if ( $2 == "lib" )
+					found = 1
+				else
+					found = 2
+			}
+			printf " \\\n\t%s/%s.c", $3, $1
 		}
-		printf " \\\n\t%s/%s.c", $3, $1
 	}
 END	{
 		print  ""

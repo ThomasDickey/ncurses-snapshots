@@ -330,12 +330,12 @@
 ./include/MKterm.h.awk.in
 ./include/Makefile.in
 ./include/capdefaults.c
-./include/config_h.in
 ./include/curses.h.in
 ./include/edit_cfg.sh
 ./include/headers
 ./include/nc_alloc.h
 ./include/nc_panel.h
+./include/ncurses_cfg.hin
 ./include/term_entry.h
 ./include/termcap.h.in
 ./include/tic.h
@@ -486,6 +486,7 @@
 ./menu/mf_common.h
 ./menu/modules
 ./misc/Makefile.in
+./misc/emx.src
 ./misc/hackguide.doc
 ./misc/hackguide.html
 ./misc/makellib
@@ -517,6 +518,7 @@
 ./ncurses/alloc_entry.c
 ./ncurses/captoinfo.c
 ./ncurses/comp_error.c
+./ncurses/comp_expand.c
 ./ncurses/comp_hash.c
 ./ncurses/comp_parse.c
 ./ncurses/comp_scan.c

@@ -30,7 +30,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.31 1997/10/04 20:56:39 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.32 1998/01/03 18:54:34 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -178,7 +178,7 @@ static int use_predicate(int type, int idx)
 
 		if (usestr == ABSENT_STRING && termstr == ABSENT_STRING)
 			return(FAIL);
-		else if (!usestr || !termstr || capcmp(usestr,termstr))
+		else if (!usestr || !termstr || capcmp(usestr, termstr))
 			return(TRUE);
 		else
 			return(FAIL);
@@ -277,7 +277,7 @@ static void compare_predicate(int type, int idx, const char *name)
 				else
 				{
 					(void) strcpy(buf1, "'");
-					(void) strcat(buf1, expand(s1));
+					(void) strcat(buf1, _nc_tic_expand(s1, outform==F_TERMINFO));
 					(void) strcat(buf1, "'");
 				}
 
@@ -286,7 +286,7 @@ static void compare_predicate(int type, int idx, const char *name)
 				else
 				{
 					(void) strcpy(buf2, "'");
-					(void) strcat(buf2, expand(s2));
+					(void) strcat(buf2, _nc_tic_expand(s2, outform==F_TERMINFO));
 					(void) strcat(buf2, "'");
 				}
 
@@ -297,7 +297,7 @@ static void compare_predicate(int type, int idx, const char *name)
 
 		case C_COMMON:
 			if (s1 && s2 && !capcmp(s1, s2))
-				(void) printf("\t%s= '%s'.\n",name,expand(s1));
+				(void) printf("\t%s= '%s'.\n", name, _nc_tic_expand(s1, outform==F_TERMINFO));
 			break;
 
 		case C_NAND:
@@ -568,7 +568,7 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 	    /* couldn't match anything */
 	    buf2[0] = *sp;
 	    buf2[1] = '\0';
-	    (void) strcat(buf, expand(buf2));
+	    (void) strcat(buf, _nc_tic_expand(buf2, outform==F_TERMINFO));
 	}
     }
     (void) printf("%s\n", buf);
@@ -604,7 +604,7 @@ static void file_comparison(int argc, char *argv[])
 	_nc_read_entry_source(stdin, NULL, TRUE, FALSE, NULLHOOK);
 
 	if (itrace)
-	    (void) fprintf(stderr, "Resolving file %d...\n",n-0);
+	    (void) fprintf(stderr, "Resolving file %d...\n", n-0);
 
 	/* do use resolution */
 	if (!_nc_resolve_uses())
@@ -639,7 +639,7 @@ static void file_comparison(int argc, char *argv[])
     for (qp = heads[0]; qp; qp = qp->next)
     {
 	for (rp = heads[1]; rp; rp = rp->next)
-	    if (_nc_entry_match(qp->tterm.term_names,rp->tterm.term_names))
+	    if (_nc_entry_match(qp->tterm.term_names, rp->tterm.term_names))
 	    {
 		/*
 		 * This is why the uses structure parent element is
@@ -738,7 +738,7 @@ static void file_comparison(int argc, char *argv[])
 	    {
 	    case C_DIFFERENCE:
 		if (itrace)
-		    (void)fprintf(stderr,"infocmp: dumping differences\n");
+		    (void)fprintf(stderr, "infocmp: dumping differences\n");
 		(void) printf("comparing %s to %s.\n", name1, name2);
 		compare_entry(compare_predicate);
 		break;
@@ -1120,12 +1120,12 @@ int main(int argc, char *argv[])
 		len = dump_entry(&term[0], limited, NULL);
 		putchar('\n');
 		if (itrace)
-		    (void)fprintf(stderr,"infocmp: length %d\n", len);
+		    (void)fprintf(stderr, "infocmp: length %d\n", len);
 		break;
 
 	    case C_DIFFERENCE:
 		if (itrace)
-		    (void)fprintf(stderr,"infocmp: dumping differences\n");
+		    (void)fprintf(stderr, "infocmp: dumping differences\n");
 		(void) printf("comparing %s to %s.\n", tname[0], tname[1]);
 		compare_entry(compare_predicate);
 		break;
@@ -1154,7 +1154,7 @@ int main(int argc, char *argv[])
 		    len += dump_uses(tname[i], !(outform==F_TERMCAP || outform==F_TCONVERR));
 		putchar('\n');
 		if (itrace)
-		    (void)fprintf(stderr,"infocmp: length %d\n", len);
+		    (void)fprintf(stderr, "infocmp: length %d\n", len);
 		break;
 	    }
 	}

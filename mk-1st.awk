@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.33 1997/12/27 20:52:20 tom Exp $
+# $Id: mk-1st.awk,v 1.34 1997/12/28 20:07:16 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -94,7 +94,7 @@ BEGIN	{
 			}
 		}
 	}
-	!/^[@#]/ && !/^$/ {
+	!/^[@#]/ {
 		if (using \
 		 && ( $2 == "lib" \
 		   || $2 == "progs" \

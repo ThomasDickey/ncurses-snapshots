@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.115 1997/12/27 20:12:26 tom Exp $
+dnl $Id: aclocal.m4,v 1.116 1997/12/30 00:07:55 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -407,10 +407,7 @@ changequote([, ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Insert text into the help-message, for readability, from AC_ARG_WITH.
 AC_DEFUN([CF_HELP_MESSAGE],
-[AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)dnl
-ac_help="$ac_help
-[$1]"
-AC_DIVERT_POP()dnl
+[AC_DIVERT_HELP([$1])
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Construct the list of include-options according to whether we're building

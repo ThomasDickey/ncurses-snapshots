@@ -1,4 +1,4 @@
-# $Id: modules,v 1.39 1997/12/21 01:00:07 tom Exp $
+# $Id: modules,v 1.40 1998/01/03 18:14:54 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -120,6 +120,7 @@ captoinfo	lib		$(srcdir)
 codes		lib		.
 comp_captab	lib		.		../include/term.h ../include/hashsize.h
 comp_error	lib		$(srcdir)
+comp_expand	lib		$(srcdir)	$(INCDIR)/tic.h
 comp_hash	lib		$(srcdir)	../include/term.h ../include/hashsize.h
 comp_parse	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 comp_scan	lib		$(srcdir)

@@ -22,7 +22,7 @@
 //  This binding comes AS IS with no warranty, implied or expressed.        --
 //----------------------------------------------------------------------------
     Version Control
-    $Revision: 1.12 $
+    $Revision: 1.13 $
   --------------------------------------------------------------------------*/
 /*
   This program generates various record structures and constants from the
@@ -939,6 +939,12 @@ static void gen_panel_linkopts (void)
    printf("   pragma Linker_Options (\"-lpanel\");\n");
 }
 
+static void gen_version_info (void)
+{
+   printf("   NC_Major_Version : constant := %d; --  Major version of ncurses library\n", NCURSES_VERSION_MAJOR);
+   printf("   NC_Minor_Version : constant := %d; --  Minor version of ncurses library\n", NCURSES_VERSION_MINOR);
+   printf("   NC_Version : constant String := %c%d.%d%c;  --  Version of ncurses library\n", '"',NCURSES_VERSION_MAJOR,NCURSES_VERSION_MINOR,'"');
+}
 
 /*
  * main() expects two arguments on the commandline, both single characters.
@@ -991,6 +997,9 @@ int main(int argc, char *argv[])
 	  break;
 	case 'R': /* generate representation clause for Attributed character */
 	  gen_chtype_rep("Attributed_Character");
+	  break;
+	case 'V': /* generate version info */
+	  gen_version_info();
 	  break;
 	default:
 	  break;

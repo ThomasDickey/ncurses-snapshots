@@ -86,6 +86,7 @@ libncurses-routines	= \
 			codes \
 			comp_captab \
 			comp_error \
+			comp_expand \
 			comp_hash \
 			comp_parse \
 			comp_scan \
