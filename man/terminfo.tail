@@ -1,4 +1,4 @@
-.\" $Id: terminfo.tail,v 1.27 1999/01/31 02:07:54 tom Exp $
+.\" $Id: terminfo.tail,v 1.28 1999/02/07 03:30:04 tom Exp $
 .\" Beginning of terminfo.tail file
 .ps +1
 .PP
@@ -1183,6 +1183,14 @@ SVr4 curses does nothing with \fBncv\fR, ncurses recognizes it and optimizes
 the output in favor of colors.
 .PP
 .SS Miscellaneous
+If the terminal requires other than a null (zero) character as a pad, then this
+can be given as pad.
+Only the first character of the pad string is used.
+If the terminal does not have a pad character, specify npc.
+Note that ncurses implements the termcap-compatible \fBPC\fR variable;
+though the application may set this value to something other than
+a null, ncurses will test \fBnpc\fR first and use napms if the terminal
+has no pad character.
 .PP
 If the terminal can move up or down half a line,
 this can be indicated with
