@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.44 2000/10/04 09:53:10 tom Exp $
+-- $Id: INSTALL,v 1.45 2000/10/08 02:17:57 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -299,9 +299,9 @@ SUMMARY OF CONFIGURE OPTIONS:
 
     --disable-root-environ
 	Compile with environment restriction, so certain environment variables
-	are not available when running as root.  These are (for example
-	$TERMINFO) those that allow the search path for the terminfo or termcap
-	entry to be customized.
+	are not available when running as root, or via a setuid/setgid
+	application.  These are (for example $TERMINFO) those that allow the
+	search path for the terminfo or termcap entry to be customized.
 
     --disable-scroll-hints
 	Compile without scroll-hints code.  This option is ignored when

@@ -33,7 +33,7 @@
 #include <curses.priv.h>
 #include <tic.h>
 
-MODULE_ID("$Id: access.c,v 1.3 2000/10/03 02:19:31 tom Exp $")
+MODULE_ID("$Id: access.c,v 1.4 2000/10/08 01:25:06 tom Exp $")
 
 char *
 _nc_basename(char *path)
@@ -72,3 +72,23 @@ _nc_access(const char *path, int mode)
     }
     return 0;
 }
+
+#ifndef USE_ROOT_ENVIRON
+/*
+ * Returns true if we allow application to use environment variables that are
+ * used for searching lists of directories, etc.
+ */
+int
+_nc_env_access(void)
+{
+#if HAVE_ISSETUGID
+    if (issetugid())
+	return FALSE;
+#elif HAVE_GETEUID && HAVE_GETEGID
+    if (getuid() != geteuid()
+     || getgid() != getegid())
+	return FALSE;
+#endif
+    return getuid() != 0;	/* ...finally, disallow root */
+}
+#endif

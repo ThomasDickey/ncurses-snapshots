@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.597 2000/10/05 01:24:51 tom Exp $
+-- $Id: NEWS,v 1.598 2000/10/08 01:18:04 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -7,6 +7,12 @@ Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
 20001004
+	+ change type of ospeed variable back to short to match its use in
+	  legacy applications (reported by Andrey A Chernov).
+	+ add case to configure script for --enable-rpath on IRIX (patch by
+	  Albert Chin-A-Young).
+	+ minor fix to position_check() function, to ensure it gets the whole
+	  cursor report before decoding.
 	+ add configure option --disable-assumed-color, to allow pre-5.1
 	  convention of default colors used for color-pair 0 to be configured
 	  (see assume_default_colors()).
@@ -15,7 +21,8 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  development 
 	+ add configure option --disable-root-environ, which tells ncurses to
 	  disregard $TERMINFO and similar environment variables if the current
-	  user is root (based on discussion with several people).
+	  user is root, or running setuid/setgid (based on discussion with
+	  several people).
 	+ modified misc/run_tic.in to use tic -o, to eliminate dependency on
 	  $TERMINFO variable for installs.
 	+ add table entry for plab_norm to tput, so it passes in strings
@@ -62,7 +69,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ split-out tgoto() again, this time into new file lib_tgoto.c, and
 	  implement a conventional BSD-style tgoto() which is used if the
 	  capability string does not contain terminfo-style padding or
-	  parameters (requested by Andrey A Chernov <ache@nagual.pp.ru>).
+	  parameters (requested by Andrey A Chernov).
 	+ add check to tic which reports capabilities that do not reference
 	  the expected number of parameters.
 	+ add error checking to infocmp's -v and -m options to ensure that

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.233 2000/10/04 09:18:40 tom Exp $
+dnl $Id: aclocal.m4,v 1.235 2000/10/08 01:01:40 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -1829,6 +1829,10 @@ AC_DEFUN([CF_SHARED_OPTS],
 		INSTALL_LIB="-m 555"
 		;;
 	irix*)
+		if test "$cf_cv_ld_rpath" = yes ; then
+			cf_ld_rpath_opt="-Wl,-rpath,"
+			EXTRA_LDFLAGS="-Wl,-rpath,\$(libdir) $EXTRA_LDFLAGS"
+		fi
 		# tested with IRIX 5.2 and 'cc'.
 		if test "$GCC" != yes; then
 			CC_SHARED_OPTS='-KPIC'
@@ -2047,30 +2051,6 @@ if test "$cf_cv_sizechange" != no ; then
 		AC_DEFINE_UNQUOTED($cf_cv_sizechange )
 		;;
 	esac
-fi
-])dnl
-dnl ---------------------------------------------------------------------------
-dnl Check for datatype 'speed_t', which is normally declared via either
-dnl sys/types.h or termios.h
-AC_DEFUN([CF_SPEED_TYPE],
-[
-AC_MSG_CHECKING(for speed_t)
-OSPEED_INCLUDES=
-AC_TRY_COMPILE([#include <sys/types.h>],
-	[speed_t some_variable = 0],
-	[OSPEED_TYPE=speed_t],
-	[OSPEED_TYPE=unsigned])
-AC_TRY_COMPILE([#include <termios.h>],
-	[speed_t some_variable = 0],
-	[OSPEED_TYPE=speed_t
-	 OSPEED_INCLUDES="#include <termios.h>"],[])
-AC_SUBST(OSPEED_TYPE)
-AC_SUBST(OSPEED_INCLUDES)
-if test "$OSPEED_TYPE" = "unsigned" ; then
-	AC_MSG_RESULT(no)
-	AC_DEFINE(speed_t,unsigned)
-else
-	AC_MSG_RESULT(yes)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------

@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.167 2000/10/04 21:49:44 tom Exp $
+ * $Id: curses.priv.h,v 1.168 2000/10/08 01:24:59 tom Exp $
  *
  *	curses.priv.h
  *
@@ -145,13 +145,14 @@ extern int errno;
 #endif
 
 /*
- * If desired, one can configure this disabling environment variables that
+ * If desired, one can configure this, disabling environment variables that
  * point to custom terminfo/termcap locations.
  */
 #ifdef USE_ROOT_ENVIRON
 #define use_terminfo_vars() 1
 #else
-#define use_terminfo_vars() (getuid() != 0)
+#define use_terminfo_vars() _nc_env_access()
+extern int _nc_env_access(void);
 #endif
 
 /*
@@ -680,12 +681,29 @@ extern int _nc_msec_cost(const char *const, int);  /* used by 'tack' program */
 /* lib_mvcur.c */
 #define INFINITY	1000000	/* cost: too high to use */
 
+extern void _nc_mvcur_init(void);
+extern void _nc_mvcur_resume(void);
+extern void _nc_mvcur_wrap(void);
+
+extern int _nc_scrolln(int, int, int, int);
+
+extern void _nc_screen_init(void);
+extern void _nc_screen_resume(void);
+extern void _nc_screen_wrap(void);
+
+/* lib_mouse.c */
+extern int _nc_has_mouse(void);
+
+/* lib_mvcur.c */
+#define INFINITY	1000000	/* cost: too high to use */
+
 typedef struct {
     char *s_head;
     char *s_tail;
     size_t s_size;
 } string_desc;
 
+/* strings.c */
 extern string_desc *_nc_str_init(string_desc * dst, char *src, size_t len);
 extern string_desc *_nc_str_null(string_desc * dst, size_t len);
 extern string_desc *_nc_str_copy(string_desc * dst, string_desc * src);
@@ -706,9 +724,6 @@ extern void _nc_screen_wrap(void);
 #define strstr _nc_strstr
 extern char *_nc_strstr(const char *, const char *);
 #endif
-
-/* lib_mouse.c */
-extern int _nc_has_mouse(void);
 
 /* safe_sprintf.c */
 extern char * _nc_printf_string(const char *fmt, va_list ap);
