@@ -1,6 +1,6 @@
-# $Id: mk-2nd.awk,v 1.13 2000/10/14 17:57:02 Johnny.C.Lam Exp $
+# $Id: mk-2nd.awk,v 1.14 2003/08/30 20:59:40 tom Exp $
 ##############################################################################
-# Copyright (c) 1998 Free Software Foundation, Inc.                          #
+# Copyright (c) 1998-2000,2003 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -100,9 +100,9 @@ BEGIN	{
 					dir = $3 "/"
 					sub("^\\$\\(srcdir\\)/","",dir);
 					sub("^\\./","",dir);
-					printf "\t%scd ../%s; $(LIBTOOL) $(%s) $(CFLAGS_%s) -c ../%s/%s%s%s", atsign, model, compile, MODEL, name, dir, $1, suffix
+					printf "\t%scd ../%s; $(LIBTOOL_COMPILE) $(%s) $(CFLAGS_%s) -c ../%s/%s%s%s", atsign, model, compile, MODEL, name, dir, $1, suffix
 				} else
-					printf "\t%scd ../%s; $(LIBTOOL) $(%s) $(CFLAGS_%s) -c %s/%s%s", atsign, model, compile, MODEL, $3, $1, suffix
+					printf "\t%scd ../%s; $(LIBTOOL_COMPILE) $(%s) $(CFLAGS_%s) -c %s/%s%s", atsign, model, compile, MODEL, $3, $1, suffix
 			} else {
 				printf "%s", $1
 				for (n = 2; n <= NF; n++) printf " %s", $n

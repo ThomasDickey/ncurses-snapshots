@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.63 2003/07/19 21:42:11 tom Exp $
+-- $Id: INSTALL,v 1.65 2003/08/30 22:44:10 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -478,7 +478,7 @@ SUMMARY OF CONFIGURE OPTIONS:
 
     --with-build-cc=XXX
 	If cross-compiling, specify a host C compiler, which is needed to
-	compile a few utilties which generate source modules for ncurses.
+	compile a few utilities which generate source modules for ncurses.
 	If you do not give this option, the configure script checks if the
 	$BUILD_CC variable is set, and otherwise defaults to gcc or cc.
 
@@ -488,7 +488,7 @@ SUMMARY OF CONFIGURE OPTIONS:
 	host compiler.
 
     --with-build-cppflags=XXX
-	If cross-compiling, specify the host C preprocesor-flags.  You might
+	If cross-compiling, specify the host C preprocessor-flags.  You might
 	need to do this if the target compiler has unusual flags which confuse
 	the host compiler.
 
@@ -550,13 +550,17 @@ SUMMARY OF CONFIGURE OPTIONS:
 	NOTE:  a few systems build shared libraries with fixed pathnames; this
 	option probably will not work for those configurations.
 
-     --with-libtool
+     --with-libtool[=XXX]
 	Generate libraries with libtool.  If this option is selected, then it
 	overrides all other library model specifications.  Note that libtool
 	must already be installed, uses makefile rules dependent on GNU make,
 	and does not promise to follow the version numbering convention of
 	other shared libraries on your system.  However, if the --with-shared
 	option does not succeed, you may get better results with this option.
+
+	If a parameter value is given, it must be the full pathname of the
+	particular version of libtool, e.g.,
+		/usr/bin/libtool-1.2.3
 
     --with-manpage-format=XXX
 	Tell the configure script how you would like to install man-pages.  The

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.72 2003/04/26 23:05:33 tom Exp $
+# $Id: Makefile.in,v 1.73 2003/08/24 00:05:14 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -46,6 +46,9 @@ libdir		= @libdir@
 includedir	= @includedir@
 
 LIBTOOL		= @LIBTOOL@
+LIBTOOL_CLEAN	= @LIB_CLEAN@
+LIBTOOL_COMPILE	= @LIB_COMPILE@
+LIBTOOL_LINK	= @LIB_LINK@
 
 CC		= @CC@
 CPP		= @CPP@
@@ -69,7 +72,7 @@ LOCAL_LIBS	= @TEST_DEPS@
 MATH_LIB	= @MATH_LIB@
 
 LD		= @LD@
-LINK		= @LINK_TESTS@ $(LIBTOOL) $(CC) $(CFLAGS)
+LINK		= @LINK_TESTS@ $(LIBTOOL_LINK) $(CC) $(CFLAGS)
 
 LDFLAGS		= @LD_MODEL@ @TEST_ARGS@ @LIBS@ @EXTRA_LIBS@ @LOCAL_LDFLAGS@ @LDFLAGS@
 

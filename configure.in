@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.295 2003/07/26 21:51:55 tom Exp $
+dnl $Id: configure.in,v 1.297 2003/08/30 22:52:21 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.295 $)
+AC_REVISION($Revision: 1.297 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -60,38 +60,6 @@ CF_CFG_DEFAULTS
 ###	Checks for programs.
 AC_PROG_CC
 CF_GCC_VERSION
-
-# If we're cross-compiling, allow the user to override the tools and their
-# options.  The configure script is oriented toward identifying the host
-# compiler, etc., but we need a build compiler to generate parts of the source.
-: ${BUILD_CC:='$(CC)'}
-: ${BUILD_CFLAGS:='$(CFLAGS)'}
-: ${BUILD_CPPFLAGS:='$(CPPFLAGS)'}
-: ${BUILD_LDFLAGS:='$(LDFLAGS)'}
-: ${BUILD_LIBS:='$(LIBS)'}
-if test "$cross_compiling" = yes ; then
-	AC_ARG_WITH(build-cc,
-		[  --with-build-cc=XXX     if cross-compiling, the build C compiler (\$BUILD_CC)],
-		[BUILD_CC="$withval"],
-		[AC_CHECK_PROGS(BUILD_CC, $CC gcc cc)])
-	AC_ARG_WITH(build-cflags,
-		[  --with-build-cflags=XXX if cross-compiling, the build C compiler-flags],
-		[BUILD_CFLAGS="$withval"])
-	AC_ARG_WITH(build-cppflags,
-		[  --with-build-cppflags=XXX if cross-compiling, the build C preprocessor-flags],
-		[BUILD_CPPFLAGS="$withval"])
-	AC_ARG_WITH(build-ldflags,
-		[  --with-build-ldflags=XXX if cross-compiling, the build linker-flags],
-		[BUILD_LDFLAGS="$withval"])
-	AC_ARG_WITH(build-libs,
-		[  --with-build-libs=XXX   if cross-compiling, the build libraries],
-		[BUILD_LIBS="$withval"])
-fi
-AC_SUBST(BUILD_CC)
-AC_SUBST(BUILD_CFLAGS)
-AC_SUBST(BUILD_CPPFLAGS)
-AC_SUBST(BUILD_LDFLAGS)
-AC_SUBST(BUILD_LIBS)
 
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
@@ -218,6 +186,40 @@ AC_MSG_RESULT($DESTDIR)
 AC_SUBST(DESTDIR)
 
 ###############################################################################
+CF_HELP_MESSAGE(Build-Tools Needed to Compile Temporary Applications for Cross-compiling:)
+# If we're cross-compiling, allow the user to override the tools and their
+# options.  The configure script is oriented toward identifying the host
+# compiler, etc., but we need a build compiler to generate parts of the source.
+: ${BUILD_CC:='$(CC)'}
+: ${BUILD_CFLAGS:='$(CFLAGS)'}
+: ${BUILD_CPPFLAGS:='$(CPPFLAGS)'}
+: ${BUILD_LDFLAGS:='$(LDFLAGS)'}
+: ${BUILD_LIBS:='$(LIBS)'}
+if test "$cross_compiling" = yes ; then
+	AC_ARG_WITH(build-cc,
+		[  --with-build-cc=XXX     the build C compiler (\$BUILD_CC)],
+		[BUILD_CC="$withval"],
+		[AC_CHECK_PROGS(BUILD_CC, $CC gcc cc)])
+	AC_ARG_WITH(build-cflags,
+		[  --with-build-cflags=XXX the build C compiler-flags],
+		[BUILD_CFLAGS="$withval"])
+	AC_ARG_WITH(build-cppflags,
+		[  --with-build-cppflags=XXX the build C preprocessor-flags],
+		[BUILD_CPPFLAGS="$withval"])
+	AC_ARG_WITH(build-ldflags,
+		[  --with-build-ldflags=XXX the build linker-flags],
+		[BUILD_LDFLAGS="$withval"])
+	AC_ARG_WITH(build-libs,
+		[  --with-build-libs=XXX   the build libraries],
+		[BUILD_LIBS="$withval"])
+fi
+AC_SUBST(BUILD_CC)
+AC_SUBST(BUILD_CFLAGS)
+AC_SUBST(BUILD_CPPFLAGS)
+AC_SUBST(BUILD_LDFLAGS)
+AC_SUBST(BUILD_LIBS)
+
+###############################################################################
 CF_HELP_MESSAGE(Options to Specify the Libraries Built/Used:)
 
 ### Options to allow the user to specify the set of libraries which are used.
@@ -227,7 +229,7 @@ cf_list_models=""
 AC_SUBST(cf_list_models)dnl	the complete list of models ("normal debug")
 
 CF_WITH_LIBTOOL
-if test "$with_libtool" = "yes" ; then
+if test "$with_libtool" != "no" ; then
 
 cf_list_models="$cf_list_models libtool"
 
@@ -273,7 +275,7 @@ AC_MSG_CHECKING(for specified models)
 test -z "$cf_list_models" && cf_list_models=normal
 dnl If we use libtool to generate libraries, then it must be the only
 dnl specified model.
-test "$with_libtool" = "yes" && cf_list_models=libtool
+test "$with_libtool" != "no" && cf_list_models=libtool
 AC_MSG_RESULT($cf_list_models)
 
 ### Use the first model as the default, and save its suffix for use in building
@@ -1222,7 +1224,7 @@ AC_MSG_RESULT($DFT_OBJ_SUBDIR)
 # libtool thinks it can make c++ shared libraries (perhaps only g++)
 if test "$cf_with_cxx" = yes ; then
 AC_MSG_CHECKING(c++ library-dependency suffix)
-if test "$with_libtool" = "yes"; then
+if test "$with_libtool" != "no"; then
 	CXX_LIB_SUFFIX=$DFT_DEP_SUFFIX
 else
 	CF_LIB_SUFFIX(normal,CXX_LIB_SUFFIX)dnl we normally make a static library
@@ -1232,7 +1234,7 @@ AC_SUBST(CXX_LIB_SUFFIX)
 fi
 
 TINFO_LIST="$SHLIB_LIST"
-if test "$with_libtool" != yes ; then
+if test "$with_libtool" = no ; then
 	test "$with_termlib" = yes && SHLIB_LIST="$SHLIB_LIST -ltinfo${LIB_SUFFIX}"
 fi
 
