@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.63 1998/04/11 23:10:10 tom Exp $ */
+/* $Id: curses.h.in,v 1.64 1998/04/25 20:57:40 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -63,7 +63,7 @@
 #endif
 
 #ifndef NCURSES_CONST
-#define NCURSES_CONST /* nothing */
+#define NCURSES_CONST @NCURSES_CONST@
 #endif
 
 typedef unsigned @cf_cv_typeof_chtype@ chtype;

@@ -1,10 +1,25 @@
--- $Id: NEWS,v 1.330 1998/04/18 21:57:16 tom Exp $
+-- $Id: NEWS,v 1.332 1998/04/25 20:58:16 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980425
+	+ modify configure script to substitute NCURSES_CONST in curses.h
+	+ updated terminfo entries for xterm-xf86-v40, xterm-16color,
+	  xterm-8bit to correspond to XFree86 3.9Ag.
+	+ remove restriction that forces ncurses to use setaf/setab if the
+	  number of colors is greater than 8.  (see 970524 for xterm-16color).
+	+ change order of -L options (so that $(libdir) is searched first) when
+	  linking tic and other programs, to workaround HP's linker. 
+	  Otherwise, the -L../lib is embedded when linking against shared
+	  libraries and the installed program does not run (reported by Ralf
+	  Hildebrandt).
+	+ modify configuration of shared libraries on Digital Unix so that
+	  versioning is embedded in the library, rather than implied by
+	  links (patch by Tim Mooney).
 
 980418
 	+ modify etip.h to avoid conflict with math.h on HP-UX 9.03 with gcc
