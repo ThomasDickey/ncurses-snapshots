@@ -43,7 +43,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.50 2000/02/13 00:59:39 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.51 2000/03/26 01:03:36 tom Exp $")
 
 SCREEN *
 set_term(SCREEN * screenp)
@@ -188,6 +188,8 @@ _nc_setupscreen(short slines, short const scolumns, FILE * output)
     SP->_no_padding = getenv("NCURSES_NO_PADDING") != 0;
 #endif
 #ifdef NCURSES_EXT_FUNCS
+    SP->_default_color = FALSE;
+    SP->_has_sgr_39_49 = FALSE;
     SP->_default_fg = COLOR_WHITE;
     SP->_default_bg = COLOR_BLACK;
 #endif

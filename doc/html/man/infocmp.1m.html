@@ -7,7 +7,7 @@
 
 </PRE>
 <H2>SYNOPSIS</H2><PRE>
-       <B>infocmp</B> [<B>-dceEGgnpILCuV1</B>] [<B>-v</B> <I>n</I>] [<B>-s</B> <B>d</B>| <B>i</B>| <B>l</B>| <B>c</B>]
+       <B>infocmp</B> [<B>-dceEGgnpqrILCuV1</B>] [<B>-v</B> <I>n</I>] [<B>-s</B> <B>d</B>| <B>i</B>| <B>l</B>| <B>c</B>]
              [<B>-w</B> <I>width</I>] [<B>-A</B> <I>directory</I>] [<B>-B</B> <I>directory</I>]
              [<I>termname</I>...]
 
@@ -193,27 +193,39 @@
             do.   The  report  printed  to  standard output lists
             entries with  no  matches  in  the  other  file,  and
             entries  with  more than one match.  For entries with
-            exactly one match it includes a difference report.
+            exactly one match it includes  a  difference  report.
+            Normally,  to  reduce  the  volume of the report, use
+            references are not resolved before looking  for  dif­
+            ferences, but resolution can be forced by also speci­
+            fying <B>-r</B>.
 
        <B>-G</B>   Display constant literals in decimal form rather than
             their character equivalents.
 
+       <B>-a</B>   tells  <B>infocmp</B>  to  retain commented-out capabilities
+            rather than discarding them.  Capabilities  are  com­
+            mented by prefixing them with a period.
+
+       <B>-q</B>   Make  the comparison listing shorter by omitting sub­
+            headings, and using "-" for absent capabilities,  "@"
+            for canceled rather than "NULL".
+
        <B>-R</B><I>subset</I>
             Restrict  output  to  a given subset.  This option is
             for use with archaic versions of terminfo like  those
-            on SVr1, Ultrix, or HP/UX that don't support the full
-            set of SVR4/XSI Curses terminfo; and outright  broken
-            ports  like AIX that have their own extensions incom­
-            patible with SVr4/XSI.   Available  terminfo  subsets
-            are  "SVr1",  "Ultrix",  "HP",  and  "AIX";  see <B>ter­</B>
-            <B><A HREF="minfo.5.html">minfo(5)</A></B> for details.  You can also choose the subset
-            "BSD"  which  selects  only capabilities with termcap
-            equivalents recognized by 4.4BSD.
+            on  SVr1,  Ultrix,  or  HP/UX that do not support the
+            ble with SVr4/XSI.  Available  terminfo  subsets  are
+            "SVr1",  "Ultrix",  "HP",  and "AIX"; see <B><A HREF="terminfo.5.html">terminfo(5)</A></B>
+            for details.  You can also choose  the  subset  "BSD"
+            which  selects only capabilities with termcap equiva­
+            lents recognized by 4.4BSD.
 
        <B>-T</B>   eliminates size-restrictions on the  generated  text.
             This is mainly useful for testing and analysis, since
             the compiled descriptions are limited (e.g., 1023 for
             termcap, 4096 for terminfo).
+
+       <B>-V</B>   prints out the version of the program in use on stan­
             dard error and exits.
 
        <B>-e</B>   Dump the capabilities of the given terminal  as  a  C
@@ -254,8 +266,6 @@
             line  consists  of the capability name, followed by a
             colon and space, followed by a printable expansion of
             the  capability  string with sections matching recog­
-            nized actions translated into  {}-bracketed  descrip­
-            tions.   Here  is  a  list  of  the  DEC/ANSI special
             sequences recognized:
 
                   Action        Meaning
@@ -266,6 +276,7 @@
                   LL            home-down
                   RSR           reset scroll region
 
+                  ISO DEC G0    enable DEC graphics for G0
                   ISO UK G0     enable UK chars for G0
                   ISO US G0     enable US chars for G0
                   ISO DEC G1    enable DEC graphics for G1
@@ -309,11 +320,8 @@
        @DATADIR@/terminfo  Compiled     terminal      description
                            database.
 
-
-</PRE>
-<H2>EXTENSIONS</H2><PRE>
-       The <B>-E</B>, <B>-F</B>, <B>-G</B>, <B>-R</B>, <B>-T</B>, <B>-e</B>, <B>-f</B>, <B>-g</B>, <B>-i</B>, and <B>-p</B> options are
-       not supported in SVr4 curses.
+       The  <B>-E</B>,  <B>-F</B>,  <B>-G</B>,  <B>-R</B>, <B>-T</B>, <B>-a</B>, <B>-e</B>, <B>-f</B>, <B>-g</B>, <B>-i</B>, <B>-p</B>, and <B>-q</B>
+       options are not supported in SVr4 curses.
 
        The <B>-r</B> option's notion of `termcap' capabilities is System
        V  Release  4's.   Actual  BSD curses versions will have a
@@ -324,6 +332,10 @@
 </PRE>
 <H2>BUGS</H2><PRE>
        The -F option of <B><A HREF="infocmp.1m.html">infocmp(1m)</A></B> should be a <B><A HREF="toe.1m.html">toe(1m)</A></B> mode.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
        <B><A HREF="infocmp.1m.html">infocmp(1m)</A></B>,    <B><A HREF="captoinfo.1m.html">captoinfo(1m)</A></B>,   <B><A HREF="infotocap.1m.html">infotocap(1m)</A></B>,   <B><A HREF="tic.1m.html">tic(1m)</A></B>,
        <B><A HREF="toe.1m.html">toe(1m)</A></B>, <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="terminfo.5.html">terminfo(5)</A></B>.
 
@@ -332,18 +344,6 @@
 <H2>AUTHOR</H2><PRE>
        Eric S.  Raymond  &lt;esr@snark.thyrsus.com&gt;  and  Thomas  E.
        Dickey &lt;dickey@clark.net&gt;
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

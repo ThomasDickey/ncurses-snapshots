@@ -23,7 +23,7 @@
 #include <time.h>
 #include <tic.h>
 
-MODULE_ID("$Id: edit.c,v 1.4 2000/03/04 21:11:43 tom Exp $")
+MODULE_ID("$Id: edit.c,v 1.5 2000/03/25 17:26:12 tom Exp $")
 
 /*
  * Terminfo edit features
@@ -341,7 +341,7 @@ show_value(
 	switch (nt->nte_type) {
 	case STRING:
 		_nc_reset_input((FILE *) 0, buf);
-		_nc_trans_string(tmp);
+		_nc_trans_string(tmp, tmp + sizeof(tmp));
 		s = (char *)malloc(strlen(tmp) + 1);
 		strcpy(s, tmp);
 		CUR Strings[nt->nte_index] = s;
@@ -863,7 +863,7 @@ change_one_entry(
 		ptextln("That string is not currently defined.  Please enter a new value, including the padding delay:");
 		read_string(buf, sizeof(buf));
 		_nc_reset_input((FILE *) 0, buf);
-		_nc_trans_string(pad);
+		_nc_trans_string(pad, pad + sizeof(pad));
 		t = (char *)malloc(strlen(pad) + 1);
 		strcpy(t, pad);
 		CUR Strings[x] = t;

@@ -7,7 +7,7 @@
 
 </PRE>
 <H2>SYNOPSIS</H2><PRE>
-       <B>tic</B>  [<B>-1CINRTcfrsx</B>]  [<B>-e</B>  <I>names</I>]  [<B>-o</B> <I>dir</I>] [<B>-v</B>[<I>n</I>]] [<B>-w</B>[<I>n</I>]]
+       <B>tic</B>  [<B>-1CINRTacfrsx</B>]  [<B>-e</B>  <I>names</I>] [<B>-o</B> <I>dir</I>] [<B>-v</B>[<I>n</I>]] [<B>-w</B>[<I>n</I>]]
        <I>file</I>
 
 
@@ -35,7 +35,13 @@
        TERMINFO  is  not  set, and finally look in <I>@DATADIR@/ter­</I>
        <I>minfo</I>.
 
-       <B>-c</B>     specifies to only check <I>file</I> for errors,  including
+       <B>-a</B>     tells  <B>tic</B>  to  retain  commented-out  capabilities
+              rather than discarding them.  Capabilities are com­
+              mented by prefixing them with a period.  This  sets
+              the  <B>-x</B> option, because it treats the commented-out
+              entries as user-defined names.
+
+       <B>-c</B>     tells <B>tic</B> to only check <I>file</I> for errors,  including
               syntax  problems and bad use links.  If you specify
               <B>-C</B> (<B>-I</B>) with this option, the code will print warn­
               ings about entries which, after use resolution, are
@@ -52,12 +58,12 @@
               default level is 1.  If <I>n</I> is specified and  greater
               than 1, the level of detail is increased.
 
-       <B>-o</B><I>dir</I>  Write  compiled  entries to given directory.  Over­
-              rides the TERMINFO environment variable.
 
        <B>-w</B><I>n</I>    specifies the width of the output.
 
        <B>-1</B>     restricts the output to a single column
+
+       <B>-C</B>     Force source translation to termcap format.   Note:
               this  differs  from the -C option of <B><A HREF="infocmp.1m.html">infocmp(1m)</A></B> in
               that it does not merely translate capability names,
               but  also  translates  terminfo  strings to termcap
@@ -104,12 +110,12 @@
               tc  capabilities)  even  when  doing translation to
               termcap format.  This may  be  needed  if  you  are
               preparing  a  termcap  file  for  a termcap library
-              (such as GNU termcap up to version 1.3 or BSD term­
-              cap  up  to 4.3BSD) that doesn't handle multiple tc
-              capabilities per entry.
+              tc capabilities per entry.
 
        <B>-e</B>     Limit writes  and  translations  to  the  following
               comma-separated  list of terminals.  If any name or
+              alias of a terminal matches one of the names in the
+              list,  the  entry  will be written or translated as
               normal.  Otherwise no output will be generated  for
               it.  The option value is interpreted as a file con­
               taining the list if  it  contains  a  '/'.   (Note:
@@ -127,7 +133,11 @@
               which  entries  are  written,  and  the  number  of
               entries which are compiled.
 
-       <B>-x</B>     Treat unknown capabilities as user-defined.
+       <B>-x</B>     Treat  unknown  capabilities as user-defined.  That
+              is, if you supply a capability name which <B>tic</B>  does
+              not  recognize,  it  will  infer its type (boolean,
+              number or string)  from  the  syntax  and  make  an
+              extended table entry for that.
 
        <I>file</I>   contains one or more <B>terminfo</B> terminal descriptions
               in source format [see <B><A HREF="terminfo.5.html">terminfo(5)</A></B>].  Each  descrip­
@@ -152,8 +162,6 @@
               table
 
        If n is not given, it is taken to be one.
-
-       All but one of the capabilities recognized by <B>tic</B> are doc­
        umented in <B><A HREF="terminfo.5.html">terminfo(5)</A></B>.  The exception is the <B>use</B> capabil­
        ity.
 
@@ -162,6 +170,8 @@
        from  <B>@DATADIR@/terminfo</B>  to complete the entry.  (Entries
        created from <I>file</I> will be used first.  If the  environment
        variable  <B>TERMINFO</B>  is  set,  that  directory  is searched
+       instead of <B>@DATADIR@/terminfo</B>.)  <B>tic</B> duplicates the  capa­
+       bilities  in  <I>entry</I>-<I>name</I>  for  the current entry, with the
        exception  of  those  capabilities  that  explicitly   are
        defined in the current entry.
 
@@ -208,16 +218,16 @@
 
        The  error  messages from this <B>tic</B> have the same format as
        GNU C error messages, and can be  parsed  by  GNU  Emacs's
-       compile facility.
-
-       The  <B>-o</B>, <B>-G</B>, <B>-I</B>, <B>-C</B>, <B>-N</B>, <B>-R</B>, <B>-e</B>, <B>-f</B>, <B>-g</B>, <B>-T</B>, <B>-r</B>, <B>-s</B> and <B>-x</B>
-       options are not supported under SVr4.  The  SVr4  -c  mode
+       <B>-x</B> options are not supported under SVr4.  The SVr4 -c mode
        does not report bad use links.
 
        System  V does not compile entries to or read entries from
        your <I>$HOME/.terminfo</I> directory unless TERMINFO is  explic­
        itly set to it.
 
+
+</PRE>
+<H2>FILES</H2><PRE>
        <B>@DATADIR@/terminfo/?/*</B>
             Compiled terminal description database.
 
@@ -226,14 +236,6 @@
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="infocmp.1m.html">infocmp(1m)</A></B>,    <B><A HREF="captoinfo.1m.html">captoinfo(1m)</A></B>,   <B><A HREF="infotocap.1m.html">infotocap(1m)</A></B>,   <B><A HREF="toe.1m.html">toe(1m)</A></B>,
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="terminfo.5.html">terminfo(5)</A></B>.
-
-
-
-
-
-
-
-
 
 
 

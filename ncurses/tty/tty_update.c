@@ -70,7 +70,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.132 2000/03/18 21:56:49 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.134 2000/03/26 02:17:10 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -1237,7 +1237,7 @@ ClearScreen(chtype blank)
 #ifdef NCURSES_EXT_FUNCS
     if (SP->_coloron
 	&& !SP->_default_color) {
-	_nc_do_color(0, FALSE, _nc_outch);
+	_nc_do_color(COLOR_PAIR(SP->_current_attr), 0, FALSE, _nc_outch);
 	if (!back_color_erase) {
 	    fast_clear = FALSE;
 	}
@@ -1722,7 +1722,7 @@ _nc_screen_wrap(void)
     if (SP->_coloron
 	&& !SP->_default_color) {
 	SP->_default_color = TRUE;
-	_nc_do_color(0, FALSE, _nc_outch);
+	_nc_do_color(-1, 0, FALSE, _nc_outch);
 	SP->_default_color = FALSE;
     }
 #endif

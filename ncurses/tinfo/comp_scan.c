@@ -50,7 +50,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.39 2000/03/19 02:10:00 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.41 2000/03/25 17:25:33 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -355,7 +355,7 @@ _nc_get_token(void)
 		break;
 
 	    case '=':
-		ch = _nc_trans_string(ptr);
+		ch = _nc_trans_string(ptr, buffer + sizeof(buffer));
 		if (ch != separator)
 		    _nc_warning("Missing separator");
 		_nc_curr_token.tk_name = buffer;
@@ -449,15 +449,18 @@ _nc_get_token(void)
  */
 
 char
-_nc_trans_string(char *ptr)
+_nc_trans_string(char *ptr, char *last)
 {
     int count = 0;
     int number;
     int i, c;
     chtype ch, last_ch = '\0';
     bool ignored = FALSE;
+    bool long_warning = FALSE;
 
     while ((ch = c = next_char()) != (chtype) separator && c != EOF) {
+	if (ptr == (last - 1))
+	    break;
 	if ((_nc_syntax == SYN_TERMCAP) && c == '\n')
 	    break;
 	if (ch == '^' && last_ch != '%') {
@@ -580,8 +583,10 @@ _nc_trans_string(char *ptr)
 	}
 	ignored = FALSE;
 
-	if (count > MAXCAPLEN)
+	if (count > MAXCAPLEN && !long_warning) {
 	    _nc_warning("Very long string found.  Missing separator?");
+	    long_warning = TRUE;
+	}
     }				/* end while */
 
     *ptr = '\0';

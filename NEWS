@@ -1,10 +1,27 @@
--- $Id: NEWS,v 1.543 2000/03/19 23:14:24 tom Exp $
+-- $Id: NEWS,v 1.546 2000/03/26 03:04:23 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000325
+	+ add screen's AX capability (for ECMA SGR 39 and 49) to applicable
+	  terminfo entries, use presence of this as a check for a small
+	  improvement in setting default colors.
+	+ improve logic in _nc_do_color() implementing assume_default_colors()
+	  by passing in previous color pair info to eliminate redundant call to
+	  set_original_colors().  (Part of this is from a patch by Alexander
+	  Lukyanov).
+	+ modify warning in _nc_trans_string() about a possibly too-long string
+	  to do this once only rather than for each character past the
+	  threshold (600).  Change interface of _nc_trans_string() to allow
+	  check for buffer overflow.
+	+ correct use of memset in _nc_read_entry_source() to initialize ENTRY
+	  struct each time before reading new data into it, rather than once
+	  per loop (cf:  990301).  This affects multi-entry in-core operations
+	  such as "infocmp -Fa".
 
 20000319
 	+ remove a spurious pointer increment in _nc_infotocap() changes from
