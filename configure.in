@@ -1,5 +1,7 @@
+dnl $Id: configure.in,v 1.20 1996/06/01 23:49:40 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.9)
+AC_REVISION($Revision: 1.20 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
@@ -21,8 +23,12 @@ AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_RANLIB
+AC_CHECK_PROGS(LINT, tdlint lint alint)
+AC_CHECK_PROGS(MAN, man man_db)
+AC_SUBST(LINT_OPTS)
 
 NC_MAKEFLAGS
+NC_MAN_PAGES
 
 ### Options to allow the user to specify the set of libraries which are used.
 ### Use "--without-normal --with-shared" to allow the default model to be
@@ -70,6 +76,7 @@ AC_SUBST(LIB_PREFIX)
 dnl Not all ports of gcc support the -g option
 CC_G_OPT='-g'
 test -n "$GCC" && test "$ac_cv_prog_gcc_g" != yes && CC_G_OPT=''
+test -n "$GCC" && CC_G_OPT="$CC_G_OPT -Dinline="
 AC_SUBST(CC_G_OPT)
 
 CXX_G_OPT='-g'
@@ -360,6 +367,11 @@ echo "
 #ifdef __cplusplus
 #undef const
 #undef inline
+#endif
+
+#ifdef lint
+#undef inline
+#define inline /* nothing */
 #endif
 
 #endif /* NC_CONFIG_H */" >> include/config.h

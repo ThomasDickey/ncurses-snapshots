@@ -9,8 +9,10 @@
 #if !HAVE_VSSCANF
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
 
 #if defined(_IOREAD) && defined(_NFILE)
+/*VARARGS2*/
 int vsscanf(const char *str, const char *format, va_list ap)
 {
 	/*
@@ -30,6 +32,7 @@ int vsscanf(const char *str, const char *format, va_list ap)
 #endif
 }
 #else
+/*VARARGS2*/
 int vsscanf(const char *str, const char *format, va_list ap)
 {
 	/*

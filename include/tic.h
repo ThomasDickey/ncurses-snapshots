@@ -149,6 +149,10 @@ extern const struct name_table_entry	*_nc_get_table(bool);
 /* this is a documented limitation of terminfo */
 #define MAX_TERMINFO_LENGTH	4096
 
+#ifndef TERMINFO
+#define TERMINFO "/usr/share/terminfo"
+#endif
+
 /* comp_hash.c: name lookup */
 struct name_table_entry	const *_nc_find_entry(const char *,
 				    const struct name_table_entry *const *);

@@ -139,21 +139,26 @@ char *t = getenv("NCURSES_TRACE");
 #endif /* clear_screen */
 	}
 
-	/* if we must simulate soft labels, grab off the line to be used */
+	/* If we must simulate soft labels, grab off the line to be used.
+	   We assume that we must simulate, if it is none of the standard
+	   formats (4-4  or 3-2-3) for which there may be some hardware
+	   support. */ 
 #ifdef num_labels
-	if (num_labels <= 0)
+	if (num_labels <= 0 || !SLK_STDFMT)
 #endif /* num_labels */
-	    if (_slk_init)
-		ripoffline(-1, slk_initialize);
-
+	    if (_nc_slk_format)
+	      {
+		if (ERR==_nc_ripoffline(-SLK_LINES, _nc_slk_initialize))
+		  return NULL;
+	      }
 	/* this actually allocates the screen structure */
 	if (_nc_setupscreen(LINES, COLS) == ERR)
 	    	return NULL;
 
 #ifdef num_labels
 	/* if the terminal type has real soft labels, set those up */
-	if (_slk_init && num_labels > 0)
-	    slk_initialize(stdscr, COLS);
+	if (_nc_slk_format && num_labels > 0 && SLK_STDFMT)
+	    _nc_slk_initialize(stdscr, COLS);
 #endif /* num_labels */
 
 	SP->_ifd        = fileno(ifp);
@@ -175,11 +180,11 @@ char *t = getenv("NCURSES_TRACE");
 
 #if 0
 	/* initialize soft labels */
-	if (_slk_init)
+	if (_nc_slk_format)
 	    if (num_labels <= 0)
-		ripoffline(-1, slk_initialize);
+		_nc_ripoffline(-SLK_LINES, _nc_slk_initialize);
 	    else
-		slk_initialize(stdscr, COLS);
+		_nc_slk_initialize(stdscr, COLS);
 #endif
 	_nc_signal_handler(TRUE);
 

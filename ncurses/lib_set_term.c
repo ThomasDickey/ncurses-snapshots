@@ -32,9 +32,9 @@
 
 #include "term.h"	/* cur_term */
 
-struct screen * set_term(struct screen *screen)
+SCREEN * set_term(SCREEN *screen)
 {
-struct screen	*oldSP;
+SCREEN	*oldSP;
 
 	T(("set_term(%p) called", screen));
 
@@ -54,17 +54,13 @@ void delscreen(SCREEN *sp)
 	free(sp);
 }
 
-struct ripoff_t
-{
-	int	line;
-	int	(*hook)(WINDOW *, int);
-}
-rippedoff[5], *rsp = rippedoff;
+ripoff_t rippedoff[5], *rsp = rippedoff;
+#define N_RIPS (int)(sizeof(rippedoff)/sizeof(rippedoff[0]))
 
 int _nc_setupscreen(short slines, short const scolumns)
 /* OS-independent screen initializations */
 {
-int	stolen, topstolen;
+int	topstolen, i;
 
 	if (!_nc_alloc_screen())
 	    	return ERR;
@@ -102,15 +98,34 @@ int	stolen, topstolen;
 	newscr->_clear = TRUE;
 	curscr->_clear = FALSE;
 
-	stolen = topstolen = 0;
-	for (rsp = rippedoff; rsp->line; rsp++) {
+	topstolen = 0;
+	for (i=0, rsp = rippedoff; rsp->line && (i < N_RIPS); rsp++, i++) {
 		if (rsp->hook)
-			if (rsp->line < 0)
-				rsp->hook(newwin(1,scolumns, slines-1,0), scolumns);
+		  {
+		    int count = (rsp->line < 0) ? -rsp->line : rsp->line;
+		    WINDOW *w;
+
+		    if (rsp->line < 0)
+		      {
+			w = newwin(count,scolumns,slines+topstolen-count,0);
+			if (w)
+			  rsp->hook(w, scolumns);
 			else
-				rsp->hook(newwin(1,scolumns, topstolen++,0), scolumns);
-		--slines;
-		stolen++;
+			  return ERR;
+		      }
+		    else
+		      {
+			w = newwin(count,scolumns, topstolen,0);
+			if (w)
+			  {
+			    rsp->hook(w, scolumns);
+			    topstolen += count;
+			  }
+			else
+			  return ERR;
+		      }
+		    slines -= count;
+		  }
 	}
 
 	T(("creating stdscr"));
@@ -124,13 +139,16 @@ int	stolen, topstolen;
 	return OK;
 }
 
+/* The internal implementation interprets line as the number of
+   lines to rip off from the top or bottom.
+   */
 int
-ripoffline(int line, int (*init)(WINDOW *, int))
+_nc_ripoffline(int line, int (*init)(WINDOW *,int))
 {
     if (line == 0)
 	return(OK);
 
-    if (rsp >= rippedoff + sizeof(rippedoff)/sizeof(rippedoff[0]))
+    if (rsp >= rippedoff + N_RIPS)
 	return(ERR);
 
     rsp->line = line;
@@ -138,4 +156,13 @@ ripoffline(int line, int (*init)(WINDOW *, int))
     rsp++;
 
     return(OK);
+}
+
+int
+ripoffline(int line, int (*init)(WINDOW *, int))
+{
+    if (line == 0)
+	return(OK);
+
+    return _nc_ripoffline ((line<0) ? -1 : 1, init);
 }

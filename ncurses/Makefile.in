@@ -1,3 +1,4 @@
+# $Id: Makefile.in,v 1.16 1996/06/01 19:51:23 tom Exp $
 # Makefile for ncurses source code.
 #
 # This makes the following:
@@ -64,6 +65,10 @@ RANLIB		= @RANLIB@
 
 LIBRARIES	= @LIBS_TO_MAKE@
 
+LINT		= @LINT@
+LINT_OPTS	= @LINT_OPTS@
+LINT_LIBS	= -lncurses @LIBS@
+
 AUTO_SRC = \
 	comp_captab.c \
 	fallback.c \
@@ -105,9 +110,9 @@ lib_keyname.c: $(srcdir)/keys.list $(srcdir)/MKkeyname.awk
 
 names.c codes.c: $(srcdir)/MKnames.awk
 	$(AWK) -f $(srcdir)/MKnames.awk $(srcdir)/../include/Caps
-	cat namehdr boolnames boolfnames numnames numfnames strnames strfnames >names.c
-	cat namehdr boolcodes numcodes strcodes >codes.c
-	-rm -f namehdr boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes
+	cat namehdr boolnames boolfnames numnames numfnames strnames strfnames nameftr >names.c
+	cat namehdr boolcodes numcodes strcodes codeftr >codes.c
+	-rm -f namehdr nameftr codeftr boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes
 
 tags:
 	ctags *.[ch]
@@ -120,12 +125,12 @@ clean ::
 	-rm -f $(AUTO_SRC)
 	-rm -f make_hash
 
-distclean: clean
+distclean :: clean
 	-rm -f Makefile
 
-mostlyclean: clean
+mostlyclean :: clean
 
-realclean: distclean
+realclean :: distclean
 
 # These rules are used to allow "make -n" to work on a clean directory-tree
 ../include/hashsize.h \

@@ -3,6 +3,22 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+960601	- snapshot
+	+ auto-configure man-page compression-format and renames for Debian.
+	+ corrected several typos in curses.h.in (i.e., the mvXXXX macros).
+	+ re-order curses.priv.h for lint.
+	+ added rules for lintlib, lint
+	+ corrected ifdef for BROKEN_LINKER in MKnames.awk.in
+	+ corrected missing INSTALL_DATA in misc/Makefile.in
+	+ flush output when changing cursor-visibility (Rick Marshall)
+	+ fix a minor bug in the _nc_ripoff() routine and improve error checking
+	  when creating the label window (Juergen Pfeifer).
+	+ enhancement to the control over the new PC-style soft key format.
+	  allow caller now to select whether or not one wants to have
+	  the index-line; see curs_slk.3x for documentation (Juergen Pfeifer).
+	+ typos, don't use inline with -g (Philippe De Muyter)
+	+ fixes for menus & wattr-, slk-functions (Juergen Pfeifer)
+
 960526	- snapshot
 	+ removed --with-ticdir option altogether, maintain compatibility with
 	  existing applications via symbolic link in run_tic.sh

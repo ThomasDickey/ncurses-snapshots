@@ -419,9 +419,7 @@ register char	*cp;
 
 			case 't':
 				x = npop();
-				if (x) {
-					/* do nothing; keep executing */
-				} else {
+				if (!x) {
 					/* scan forward for %e or %; at level zero */
 					string++;
 					level = 0;

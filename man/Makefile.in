@@ -1,3 +1,4 @@
+# $Id: Makefile.in,v 1.16 1996/06/02 00:22:39 tom Exp $
 # Makefile for ncurses manual pages.
 #
 # NOTE: When you add or rename a man page, make sure you update both
@@ -18,48 +19,19 @@ INSTALL_DATA	= @INSTALL_DATA@
 
 all:
 
-# Someday we'll configure this based on which man program we detect in use
-install.man: install.std
+$(mandir) :
+	$(srcdir)/../mkinstalldirs $@
 
-# Use this for ordinary man programs, including the GNU and BSD versions
-install install.std : terminfo.5
-	$(srcdir)/../mkinstalldirs $(mandir)
-	@cd $(srcdir); for i in *.[0-9]*; do \
-		section=`expr "$$i" : '.*\\.\\([0-9]\\)[xm]*'`; \
-		if [ ! -d $(mandir)/man$${section} ]; then $(srcdir)/../mkinstalldirs $(mandir)/man$$section; fi; \
-		sed -e 's,@DATADIR@,$(datadir),' < $$i >/tmp/man.tmp; \
-		echo installing man page $$i;\
-		$(INSTALL_DATA) /tmp/man.tmp $(mandir)/man$${section}/$$i; \
-	done 
-	@rm -f /tmp/man.tmp
-
-# For use with man_db (in particular, on Debian Linux)
-# To change the name mapping, edit man_db.rename.
-# This doesn't fix cross-references yet.
-install.man_db : terminfo.5
-	$(srcdir)/../mkinstalldirs $(mandir)
-	@for i in terminfo $(srcdir)/man/*.[0-9]*; do \
-		section=`expr "$$i" : '.*\\.\\([0-9]\\)[xm]*'`; \
-		if [ ! -d $(mandir)/man$${section} ]; then $(srcdir)/../mkinstalldirs $(mandir)/man$${section}; fi; \
-		sed -e 's,@DATADIR@,$(datadir),' < $$i >/tmp/man.tmp; \
-		target=`grep "$$i" man_db.renames | awk '{print $$2}'`; \
-		echo "installing man page $$target from $$i"; \
-		$(INSTALL_DATA) /tmp/man.tmp $(mandir)/man$${section}/$$target; \
-	done 
-	@rm -f /tmp/man.tmp
+install install.man : terminfo.5 $(mandir)
+	sh edit_man.sh terminfo.5 $(srcdir)/*.[0-9]*
 
 # We compose terminfo.5 from the real sources...
 CAPLIST=$(srcdir)/../include/Caps
 terminfo.5: $(srcdir)/terminfo.head $(CAPLIST) $(srcdir)/terminfo.tail Makefile $(srcdir)/MKterminfo.sh
 	sh $(srcdir)/MKterminfo.sh $(srcdir)/terminfo.head $(CAPLIST) $(srcdir)/terminfo.tail >terminfo.5
-	@if [ ! -d $(mandir)/man5 ]; then $(srcdir)/../mkinstalldirs $(mandir)/man5; fi
-	@sed -e 's,@DATADIR@,$(datadir),' < terminfo.5 >/tmp/man.tmp
-	@echo "installing terminfo.5 man page"
-	@$(INSTALL_DATA) /tmp/man.tmp $(mandir)/man5/terminfo.5
-	@rm -f /tmp/man.tmp
 
 clean mostlyclean:
 	rm -f terminfo.5
 
 distclean realclean: clean
-	rm -f Makefile
+	rm -f Makefile edit_man.*
