@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -42,7 +42,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_options.c,v 1.42 2000/12/10 02:55:07 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.44 2001/08/04 17:18:51 tom Exp $")
 
 NCURSES_EXPORT(int)
 idlok(WINDOW *win, bool flag)
@@ -115,6 +115,7 @@ wtimeout(WINDOW *win, int delay)
     if (win) {
 	win->_delay = delay;
     }
+    returnVoid;
 }
 
 NCURSES_EXPORT(int)

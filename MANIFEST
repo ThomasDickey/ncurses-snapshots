@@ -467,6 +467,7 @@
 ./form/modules
 ./include/Caps
 ./include/Caps.aix4
+./include/Caps.keys
 ./include/Caps.uwin
 ./include/MKhashsize.sh
 ./include/MKkey_defs.sh

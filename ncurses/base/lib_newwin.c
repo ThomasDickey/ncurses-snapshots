@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.30 2001/06/03 01:55:58 skimo Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.31 2001/07/31 17:48:23 tom Exp $")
 
 NCURSES_EXPORT(int)
 _nc_freewin(WINDOW *win)
@@ -117,8 +117,6 @@ newwin
 	    SetChar(*ptr, BLANK_TEXT, BLANK_ATTR);
     }
 
-    T(("newwin: returned window is %p", win));
-
     returnWin(win);
 }
 
@@ -164,8 +162,6 @@ derwin
 	win->_line[i].text = &orig->_line[begy++].text[begx];
 
     win->_parent = orig;
-
-    T(("derwin: returned window is %p", win));
 
     returnWin(win);
 }

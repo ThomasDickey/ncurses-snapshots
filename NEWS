@@ -1,10 +1,32 @@
--- $Id: NEWS,v 1.639 2001/07/29 00:43:05 tom Exp $
+-- $Id: NEWS,v 1.640 2001/08/05 01:33:27 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010804
+	+ add Caps.keys example for experimental extended function keys
+	  (adapted from a patch by Ilya Zakharevich).
+	+ correct parameter types of vidputs() and vidattr() to agree with
+	  header files (report by William P Setzer).
+	+ fix typos in several man-pages (patch by William P Setzer).
+	+ remove unneeded ifdef for __GNUG__ in CF_CPP_VSCAN_FUNC configure
+	  macro, which made ncurses C++ binding fail to build with other
+	  C++ compilers such as HPUX 11.x (report by Albert Chin-A-Young).
+	+ workaround for bug in HPUX 11.x C compiler: add a blank after
+	  NCURSES_EXPORT macro in form.h (report by Albert Chin-A-Young)
+	+ ignore blank lines in Caps* files in MKkey_defs.sh script (report by
+	  Albert Chin-A-Young).
+	+ correct definition of key_end in Caps.aix4, which left KEY_END
+	  undefined (report by Albert Chin-A-Young).
+	+ remove a QNX-specific fallback prototype for vsscanf(), which is
+	  obsolete with QNX RTP.
+	+ review/fix some of the T() and TR() macro calls, having noticed that
+	  there was no data for delwin() in a trace of dialog because there was
+	  no returnVoid call for wtimeout().  Also, traces in lib_twait.c are
+	  now selected under TRACE_IEVENT rather than TRACE_CALLS.
 
 20010728
 	+ add a _nc_access() check before opening files listed via $TERMPATH.
