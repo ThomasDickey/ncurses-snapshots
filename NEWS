@@ -1,10 +1,33 @@
--- $Id: NEWS,v 1.534 2000/02/27 03:08:29 tom Exp $
+-- $Id: NEWS,v 1.536 2000/03/05 04:40:48 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000304
+	+ correct conflicting use of tparm() in 20000226 change to tic, which
+	  made it check only one entry at a time.
+	+ fix errors in ncurses-intro.html and hackguide.html shown by Dave
+	  Raggett's tidy.
+	+ make the example in ncurses-intro.html do something plausible, and
+	  corrected misleading comment (reported by Neil Zanella).
+	+ modify pnoutrefresh() to set newscr->_leaveok as wnoutrefresh() does,
+	  to fix a case where the cursor position was not updated as in
+	  Solaris  (patch by David Mosberger <davidm@hpl.hp.com>).
+	+ add a limit-check for wresize() to ensure that a subwindow does not
+	  address out of bounds.
+	+ correct offsets used for subwindows in wresize() (patch by Michael
+	  Andres <ma@suse.de>).
+	+ regenerate html'ized manual pages with man2html 3.0.1 (patch by
+	  Juergen Pfeifer).  This generated a file with a space in its name,
+	  which I removed.
+	+ fix a few spelling errors in tack.
+	+ modify tack/Makefile.in to match linker options of progs/Makefile.in;
+	  otherwise it does not build properly for older HPUX shared library
+	  configurations.
+	+ add several terminfo entries from esr's "11.0".
 
 20000226
 	+ make 'tput flash' work properly for xterm by flushing output in

@@ -21,7 +21,7 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: charset.c,v 1.3 2000/01/09 01:16:08 tom Exp $")
+MODULE_ID("$Id: charset.c,v 1.4 2000/03/04 20:30:52 tom Exp $")
 
 /*
 	Menu definitions for alternate character set and SGR tests.
@@ -369,7 +369,7 @@ charset_attributes(
 /*
 **	charset_smacs(test_list, status, ch)
 **
-**	display all posible acs characters
+**	display all possible acs characters
 **	(smacs) (rmacs)
 */
 static void
