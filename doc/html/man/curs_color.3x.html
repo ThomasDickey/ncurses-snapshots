@@ -28,14 +28,14 @@
        called, usually right after <B>initscr</B>.   Colors  are  always
        used  in pairs (referred to as color-pairs).  A color-pair
        consists of a foreground  color  (for  characters)  and  a
-       background color (for the blank field on which the charac­
+       background color (for the blank field on which the charac-
        ters are displayed).  A programmer  initializes  a  color-
-       pair  with  the routine <B>init_pair</B>.  After it has been ini­
+       pair  with  the routine <B>init_pair</B>.  After it has been ini-
        tialized, <B>COLOR_PAIR</B>(<I>n</I>), a macro  defined  in  <B>&lt;curses.h&gt;</B>,
        can be used as a new video attribute.
 
-       If  a  terminal  is capable of redefining colors, the pro­
-       grammer can use the routine <B>init_color</B> to change the defi­
+       If  a  terminal  is capable of redefining colors, the pro-
+       grammer can use the routine <B>init_color</B> to change the defi-
        nition   of   a   color.    The  routines  <B>has_colors</B>  and
        <B>can_change_color</B>  return  <B>TRUE</B>  or  <B>FALSE</B>,  depending   on
        whether  the  terminal  has color capabilities and whether
@@ -97,7 +97,7 @@
        the  given color.  The value of the first argument must be
        between 0 and <B>COLORS</B>.  The values that are stored  at  the
        addresses  pointed  to  by  the  last  three arguments are
-       between 0 (no component) and 1000 (maximum amount of  com­
+       between 0 (no component) and 1000 (maximum amount of  com-
        ponent).
 
        The  <B>pair_content</B>  routine  allows programmers to find out
@@ -106,7 +106,7 @@
        of <B>short</B>s for storing the foreground  and  the  background
        color  numbers.   The  value of the first argument must be
        between 1 and <B>COLOR_PAIRS-1</B>.  The values that  are  stored
-       at  the addresses pointed to by the second and third argu­
+       at  the addresses pointed to by the second and third argu-
        ments are between 0 and <B>COLORS</B>.
 
    <B>Colors</B>
@@ -154,7 +154,7 @@
        COLOR_YELLOW  is  actually  brown.   To  get  yellow,  use
        COLOR_YELLOW combined with the <B>A_BOLD</B> attribute.
 
-       The  A_BLINK  attribute  should  in theory cause the back­
+       The  A_BLINK  attribute  should  in theory cause the back-
        ground to go bright.  This often fails to work,  and  even
        some cards for which it mostly works (such as the Paradise
        and compatibles) do the wrong thing when you try to set  a
@@ -166,7 +166,7 @@
 
 </PRE>
 <H2>PORTABILITY</H2><PRE>
-       This implementation satisfies XSI Curses's  minimum  maxi­
+       This implementation satisfies XSI Curses's  minimum  maxi-
        mums for <B>COLORS</B> and <B>COLOR_PAIRS</B>.
        ground   and   background    color    to    support    the
        <B>use_default_colors</B> extension, but only if that routine has

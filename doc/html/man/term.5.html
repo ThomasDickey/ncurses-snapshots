@@ -12,7 +12,7 @@
 
 </PRE>
 <H2>DESCRIPTION</H2><PRE>
-       Compiled terminfo descriptions are placed under the direc­
+       Compiled terminfo descriptions are placed under the direc-
        tory <B>@DATADIR@/terminfo</B>.   In  order  to  avoid  a  linear
        search of a huge UNIX system directory, a two-level scheme
        is used: <B>/c/name</B> where <I>name</I> is the name of  the  terminal,
@@ -28,7 +28,7 @@
 
        The  compiled  file  is  created with the <I>tic</I> program, and
        read by the routine <I>setupterm</I>.  The file is  divided  into
-       six parts: the header, terminal names, boolean flags, num­
+       six parts: the header, terminal names, boolean flags, num-
        bers, strings, and string table.
 
        The header section begins the file.  This section contains
@@ -47,16 +47,16 @@
        value -1 is represented by the two bytes 0377, 0377; other
        negative values are illegal. This  value  generally  means
        that  the  corresponding  capability  is missing from this
-       terminal.  Note that this format corresponds to the  hard­
+       terminal.  Note that this format corresponds to the  hard-
        ware  of  the  VAX  and  PDP-11  (that  is,  little-endian
        machines).  Machines where this does not correspond to the
        hardware  must  read the integers as two bytes and compute
        the little-endian value.
 
        The terminal names section comes next.   It  contains  the
-       first  line of the terminfo description, listing the vari­
-       ous names for the terminal, separated by the  `|'  charac­
-       ter.   The section is terminated with an ASCII NUL charac­
+       first  line of the terminfo description, listing the vari-
+       ous names for the terminal, separated by the  `|'  charac-
+       ter.   The section is terminated with an ASCII NUL charac-
        ter.
        is  either  0  or 1 as the flag is present or absent.  The
        capabilities are in the same order as the file &lt;term.h&gt;.
@@ -79,18 +79,18 @@
        of  -1  means  the  capability is missing.  Otherwise, the
        value is taken as an offset  from  the  beginning  of  the
        string table.  Special characters in ^X or \c notation are
-       stored in their interpreted form, not the printing  repre­
-       sentation.  Padding information $&lt;nn&gt; and parameter infor­
+       stored in their interpreted form, not the printing  repre-
+       sentation.  Padding information $&lt;nn&gt; and parameter infor-
        mation %x are stored intact in uninterpreted form.
 
        The final section is the string table.   It  contains  all
        the values of string capabilities referenced in the string
        section.  Each string is null terminated.
 
-       Note that it is possible for <I>setupterm</I> to expect a differ­
+       Note that it is possible for <I>setupterm</I> to expect a differ-
        ent  set  of capabilities than are actually present in the
        file.  Either the database may  have  been  updated  since
-       <I>setupterm</I> has been recompiled (resulting in extra unrecog­
+       <I>setupterm</I> has been recompiled (resulting in extra unrecog-
        nized entries in the file) or the program  may  have  been
        recompiled  more  recently  than  the database was updated
        (resulting in missing  entries).   The  routine  <I>setupterm</I>
@@ -107,7 +107,7 @@
        OSF/1)  which  diverged from System V terminfo after SVr1,
        and have added extension capabilities to the string  table
        that  (in the binary format) collide with System V and XSI
-       Curses extensions.  See <B><A HREF="terminfo.5.html">terminfo(5)</A></B> for  detailed  discus­
+       Curses extensions.  See <B><A HREF="terminfo.5.html">terminfo(5)</A></B> for  detailed  discus-
        sion of terminfo source compatibility issues.
 
        early terminal:

@@ -34,18 +34,18 @@
        depth.  Panel functions allow the use of  stacked  windows
        and  ensure  the  proper  portions  of each window and the
        curses <B>stdscr</B> window are hidden or displayed  when  panels
-       are  added,  moved,  modified or removed.  The set of cur­
+       are  added,  moved,  modified or removed.  The set of cur-
        rently visible panels is the stack of panels.  The  <B>stdscr</B>
        window  is  beneath all panels, and is not considered part
        of the stack.
 
-       A window is associated with every panel.  The  panel  rou­
+       A window is associated with every panel.  The  panel  rou-
        tines  enable you to create, move, hides, and show panels,
        as well as position a panel at any desired location in the
        stack.
 
        Panel routines are a functional layer added to <B><A HREF="ncurses.3x.html">curses(3x)</A></B>,
-       make only high-level curses calls, and work anywhere  ter­
+       make only high-level curses calls, and work anywhere  ter-
        minfo curses does.
 
 
@@ -58,14 +58,14 @@
               panel) and returns a pointer to the new panel.
 
        <B>void</B> <B>update_panels()</B>
-              refreshes the virtual screen to reflect  the  rela­
+              refreshes the virtual screen to reflect  the  rela-
               tions between the panels in the stack, but does not
               update_panels() may be called more than once before
-              a  call  to doupdate(), but doupdate() is the func­
+              a  call  to doupdate(), but doupdate() is the func-
               tion responsible for updating the physical  screen.
 
        <B>del_panel(pan)</B>
-              removes the given panel from the  stack and deallo­
+              removes the given panel from the  stack and deallo-
               cates the <B>PANEL</B> structure (but not  its  associated
               window).
 
@@ -129,14 +129,14 @@
 <H2>COMPATIBILITY</H2><PRE>
        Reasonable  care  has been taken to  ensure  compatibility
        with  the  native  panel  facility  introduced  in  SVr3.2
-       (inspection of the SVr4 manual pages suggests the program­
+       (inspection of the SVr4 manual pages suggests the program-
        ming interface is unchanged).  The <B>PANEL</B>  data  structures
        are  merely   similar. The  programmer is cautioned not to
        directly use <B>PANEL</B> fields.
 
        The functions <B>show_panel()</B> and <B>top_panel()</B>  are  identical
-       in  this  implementation,  and work equally well with dis­
-       played or hidden panels.  In the native System V implemen­
+       in  this  implementation,  and work equally well with dis-
+       played or hidden panels.  In the native System V implemen-
        tation, <B>show_panel()</B> is intended for making a hidden panel
        visible (at the top  of  the  stack)  and  <B>top_panel()</B>  is
        intended  for  making an already-visible panel move to the
@@ -147,7 +147,7 @@
 
 </PRE>
 <H2>NOTE</H2><PRE>
-       In your library list, libpanel.a should  be  before  libn­
+       In your library list, libpanel.a should  be  before  libn-
        curses.a;  that  is,  you want to say `-lpanel -lncurses',
        not the other way around (which  would  give  you  a  link
        error using GNU <B><A HREF="ld.1.html">ld(1)</A></B> and some other linkers).

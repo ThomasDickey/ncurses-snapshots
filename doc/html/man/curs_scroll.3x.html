@@ -25,7 +25,7 @@
        For  positive  <I>n</I>,  the  <B>scrl</B> and <B>wscrl</B> routines scroll the
        window up <I>n</I> lines (line <I>i</I>+<I>n</I> becomes <I>i</I>);  otherwise  scroll
        the  window  down <I>n</I> lines.  This involves moving the lines
-       in the window character image structure.  The current cur­
+       in the window character image structure.  The current cur-
        sor position is not changed.
 
        For these functions to work, scrolling must be enabled via
@@ -35,7 +35,7 @@
 </PRE>
 <H2>RETURN VALUE</H2><PRE>
        These routines return <B>ERR</B> upon failure, and <B>OK</B> (SVr4  only
-       specifies "an integer value other than <B>ERR</B>") upon success­
+       specifies "an integer value other than <B>ERR</B>") upon success-
        ful completion.
 
 
@@ -43,7 +43,7 @@
 <H2>NOTES</H2><PRE>
        Note that <B>scrl</B> and <B>scroll</B> may be macros.
 
-       The SVr4 documentation says that the optimization of phys­
+       The SVr4 documentation says that the optimization of phys-
        ically  scrolling  immediately if the scroll region is the
        entire screen "is"  performed,  not  "may  be"  performed.
        This  implementation  deliberately does not guarantee that
@@ -52,14 +52,14 @@
        next update.
 
        Neither the SVr4 nor the XSI documentation specify whether
-       the current attribute or current color-pair of blanks gen­
+       the current attribute or current color-pair of blanks gen-
        erated by the  scroll  function  is  zeroed.   Under  this
        implementation it is.
 
 
 </PRE>
 <H2>PORTABILITY</H2><PRE>
-       The  XSI  Curses  standard,  Issue 4 describes these func­
+       The  XSI  Curses  standard,  Issue 4 describes these func-
        tions.
 
 

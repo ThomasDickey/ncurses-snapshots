@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.553 2000/04/30 00:23:37 tom Exp $
+-- $Id: NEWS,v 1.555 2000/05/07 02:16:43 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000506
+	+ correct assignment to SP->_has_sgr_39_49 in lib_dft_fgbg.c, which
+	  broke check for screen's AX capability (reported by Valeriy E Ushakov
+	  <uwe@ptc.spbu.ru>).
+	+ change man2html rule in dist.mk to workaround bug in some man-programs
+	  that ignores local when rendering hyphenation.
+	+ change web- and ftp-site to dickey.his.com
 
 20000429
 	+ move _nc_curr_token from parse_entry.c to comp_scan.c, to work around

@@ -2,7 +2,7 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
-       <B>scanw</B>,  <B>wscanw</B>,  <B>mvscanw</B>, <B>mvwscanw</B>, <B>vwscanw</B> - convert for­
+       <B>scanw</B>,  <B>wscanw</B>,  <B>mvscanw</B>, <B>mvwscanw</B>, <B>vwscanw</B> - convert for-
        matted input from a <B>curses</B> widow
 
 
@@ -22,11 +22,11 @@
 <H2>DESCRIPTION</H2><PRE>
        The <B>scanw</B>, <B>wscanw</B> and <B>mvscanw</B> routines  are  analogous  to
        <B>scanf</B> [see <B><A HREF="scanf.3S.html">scanf(3S)</A></B>].  The effect of these routines is as
-       though <B>wgetstr</B> were called on the window, and the  result­
+       though <B>wgetstr</B> were called on the window, and the  result-
        ing line used as input for <B><A HREF="sscanf.3.html">sscanf(3)</A></B>.  Fields which do not
        map to a variable in the <I>fmt</I> field are lost.
 
-       The <B>vwscanw</B> routine is similar to <B>vwprintw</B> in that it per­
+       The <B>vwscanw</B> routine is similar to <B>vwprintw</B> in that it per-
        forms  a <B>wscanw</B> using a variable argument list.  The third
        argument is a <I>va</I>_<I>list</I>, a pointer to a list  of  arguments,
        as defined in <B>&lt;varargs.h&gt;</B>.
@@ -44,7 +44,7 @@
 
 </PRE>
 <H2>PORTABILITY</H2><PRE>
-       The XSI Curses standard, Issue  4  describes  these  func­
+       The XSI Curses standard, Issue  4  describes  these  func-
        tions.   The  function  <B>vwscanw</B> is marked TO BE WITHDRAWN,
        and is to be replaced by a  function  <B>vw_scanw</B>  using  the
        <B>&lt;stdarg.h&gt;</B> interface.

@@ -24,23 +24,23 @@
        The  <B>addch</B>,  <B>waddch</B>, <B>mvaddch</B> and <B>mvwaddch</B> routines put the
        character <I>ch</I> into the given window at its  current  window
        position,  which  is then advanced.  They are analogous to
-       <B>putchar</B> in <B><A HREF="stdio.3.html">stdio(3)</A></B>.  If the advance is at the right  mar­
+       <B>putchar</B> in <B><A HREF="stdio.3.html">stdio(3)</A></B>.  If the advance is at the right  mar-
        gin,  the  cursor  automatically wraps to the beginning of
        the next line.  At the bottom  of  the  current  scrolling
        region,  if  <B>scrollok</B>  is enabled, the scrolling region is
        scrolled up one line.
 
        If <I>ch</I> is a tab, newline, or backspace, the cursor is moved
-       appropriately within the window.  Backspace moves the cur­
+       appropriately within the window.  Backspace moves the cur-
        sor one character left; at the left edge of  a  window  it
        does  nothing.   Newline  does  a <B>clrtoeol</B>, then moves the
        cursor to  the  window  left  margin  on  the  next  line,
-       scrolling  the window if on the last line).  Tabs are con­
+       scrolling  the window if on the last line).  Tabs are con-
        sidered to be at every eighth column.
 
        If <I>ch</I> is any control character other than tab, newline, or
        backspace,  it  is  drawn  in  <B>^</B><I>X</I> notation.  Calling <B>winch</B>
-       after adding a control character does not return the char­
+       after adding a control character does not return the char-
        acter  itself, but instead returns the ^-representation of
        the control character.
 
@@ -48,7 +48,7 @@
        passed to <B>addch</B> or related functions by logical-ORing them
        into the character.  (Thus,  text,  including  attributes,
        can  be  copied  from  one place to another using <B>inch</B> and
-       <B>addch</B>.).  See the <B><A HREF="curs_attr.3x.html">curs_attr(3x)</A></B> page for values of  prede­
+       <B>addch</B>.).  See the <B><A HREF="curs_attr.3x.html">curs_attr(3x)</A></B> page for values of  prede-
        fined video attribute constants that can be usefully OR'ed
        into characters.
 
@@ -59,7 +59,7 @@
        non-control characters, a  considerable  performance  gain
        may  be  seen  by  using  these  routines instead of their
        The following variables may be used to  add  line  drawing
-       characters  to  the screen with routines of the <B>addch</B> fam­
+       characters  to  the screen with routines of the <B>addch</B> fam-
        ily.  The default character listed below is  used  if  the
        <B>acsc</B>   capability   doesn't   define  a  terminal-specific
        replacement for it (but see the EXTENSIONS section below).
@@ -106,7 +106,7 @@
 <H2>RETURN VALUE</H2><PRE>
        All routines return the integer <B>ERR</B> upon failure and <B>OK</B> on
        success (the SVr4 manuals specify only "an  integer  value
-       other than <B>ERR</B>") upon successful completion, unless other­
+       other than <B>ERR</B>") upon successful completion, unless other-
        wise noted in the preceding routine descriptions.
 
 
@@ -114,7 +114,7 @@
 <H2>NOTES</H2><PRE>
        Note that <B>addch</B>, <B>mvaddch</B>, <B>mvwaddch</B>, and  <B>echochar</B>  may  be
        macros.
-       All  these functions are described in the XSI Curses stan­
+       All  these functions are described in the XSI Curses stan-
        dard, Issue 4.  The defaults specified  for  forms-drawing
        characters apply in the POSIX locale.
 

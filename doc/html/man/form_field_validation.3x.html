@@ -42,7 +42,7 @@
 
        TYPE_INTEGER
             Integer  data,  parsable  to  an  integer by <B>atoi(3)</B>.
-            Requires a third <B>int</B> argument controlling the  preci­
+            Requires a third <B>int</B> argument controlling the  preci-
             sion,  a  fourth  <B>long</B>  argument constraining minimum
             value, and a fifth <B>long</B> constraining  maximum  value.
             If  the  maximum  value  is less or equal the minimum
@@ -54,7 +54,7 @@
 
        TYPE_NUMERIC
             Numeric  data  (may  have  a   decimal-point   part).
-            Requires  a third <B>int</B> argument controlling the preci­
+            Requires  a third <B>int</B> argument controlling the preci-
             sion, a fourth <B>double</B> argument  constraining  minimum
             value, and a fifth <B>double</B> constraining maximum value.
             If your system supports locale's, the  decimal  point
@@ -65,11 +65,11 @@
             the precision handling see <B>printf's</B> man-page.
 
        TYPE_REGEXP
-            Regular  expression data.  Requires a regular expres­
+            Regular  expression data.  Requires a regular expres-
             sion <B>(char</B> <B>*)</B> third argument; the data  is  valid  if
-            the  regular  expression matches it.  Regular expres­
+            the  regular  expression matches it.  Regular expres-
             sions  are  in  the   format   of   <B><A HREF="regcomp.3x.html">regcomp(3x)</A></B>   and
-            <B><A HREF="regexec.3x.html">regexec(3x)</A></B>.  Please  notice that the regular expres­
+            <B><A HREF="regexec.3x.html">regexec(3x)</A></B>.  Please  notice that the regular expres-
             sion must match the whole  field.  If  you  have  for
             example  an  eight  character  wide  field, a regular
             expression "^[0-9]*$" always means that you  have  to
@@ -84,7 +84,7 @@
             no additional argument. It is checked whether or  not
             the  buffer  has  the form a.b.c.d, where a,b,c and d
             are numbers between 0 and 255. Trailing blanks in the
-            buffer  are  ignored. The address itself is not vali­
+            buffer  are  ignored. The address itself is not vali-
             dated. Please note that this is an ncurses extension.
             This  field type may not be available in other curses
             implementations.
@@ -96,7 +96,7 @@
 </PRE>
 <H2>RETURN VALUE</H2><PRE>
        The  functions  <B>field_type</B>  and  <B>field_arg</B>  return <B>NULL</B> on
-       error. The function <B>set_field_type</B> returns one of the fol­
+       error. The function <B>set_field_type</B> returns one of the fol-
        lowing:
 
        <B>E_OK</B> The routine succeeded.

@@ -16,7 +16,7 @@
        for composing form screens  on  character-cell  terminals.
        The  library  includes:  field  routines, which create and
        modify form fields; and form routines, which group  fields
-       into forms, display forms on the screen, and handle inter­
+       into forms, display forms on the screen, and handle inter-
        action with the user.
 
        The <B>form</B> library uses the <B>curses</B> libraries, and  a  curses
@@ -110,7 +110,7 @@
        set_max_field          <B><A HREF="form_field_buffer.3x.html">form_field_buffer(3x)</A></B>
        set_new_page           <B><A HREF="form_new_page.3x.html">form_new_page(3x)</A></B>
        unpost_form            <B><A HREF="form_post.3x.html">form_post(3x)</A></B>
-       Routines  that return pointers return <B>NULL</B> on error.  Rou­
+       Routines  that return pointers return <B>NULL</B> on error.  Rou-
        tines that return an integer return one of  the  following
        error codes:
 
@@ -123,14 +123,14 @@
             System error occurred (see <B>errno</B>).
 
        <B>E_BAD_ARGUMENT</B>
-            Routine  detected  an incorrect or out-of-range argu­
+            Routine  detected  an incorrect or out-of-range argu-
             ment.
 
        <B>E_POSTED</B>
             The form is already posted.
 
        <B>E_BAD_STATE</B>
-            Routine was called from an initialization or termina­
+            Routine was called from an initialization or termina-
             tion function.
 
        <B>E_NO_ROOM</B>
@@ -163,7 +163,7 @@
        The header file <B>&lt;form.h&gt;</B> automatically includes the header
        files <B>&lt;curses.h&gt;</B> and <B>&lt;eti.h&gt;</B>.
 
-       In  your  library  list,  libform.a should be before libn­
+       In  your  library  list,  libform.a should be before libn-
        curses.a; that is, you want to say `-lform -lncurses', not
        the  other  way  around (which would give you a link error
        These routines emulate the System V forms  library.   They

@@ -19,10 +19,10 @@
        for workstation and microcomputer consoles.
 
        If you use a dialup line, the type of device  attached  to
-       it  may vary.  Older UNIX systems pre-set a very dumb ter­
+       it  may vary.  Older UNIX systems pre-set a very dumb ter-
        minal type like `dumb' or `dialup' on dialup lines.  Newer
        ones may pre-set `vt100', reflecting the prevalence of DEC
-       VT100-compatible terminals  and  personal-computer  emula­
+       VT100-compatible terminals  and  personal-computer  emula-
        tors.
 
        Modern  telnets  pass  your <B>TERM</B> environment variable from
@@ -33,7 +33,7 @@
        `vt100' (assuming you are in fact using  a  VT100-superset
        console, terminal, or terminal emulator.)
 
-       In any case, you are free to override the system <B>TERM</B> set­
+       In any case, you are free to override the system <B>TERM</B> set-
        ting to your taste in your  shell  profile.   The  <B><A HREF="tset.1.html">tset(1)</A></B>
        utility  may  be  of  assistance; you can give it a set of
        rules for deducing or requesting a terminal type based  on
@@ -44,7 +44,7 @@
        visual  bell  or reverse-video) which you wish to override
        the system default type for your line.
 
-       Terminal type descriptions are stored as files of capabil­
+       Terminal type descriptions are stored as files of capabil-
        ity  data underneath @DATADIR@/terminfo.  To browse a list
        of all terminal names recognized by the system, do
 
@@ -53,7 +53,7 @@
        from your shell.  These capability files are in  a  binary
        format optimized for retrieval speed (unlike the old text-
        based <B>termcap</B> format they replace); to examine  an  entry,
-       you  must  use  the <B><A HREF="infocmp.1.html">infocmp(1)</A></B> command.  Invoke it as fol­
+       you  must  use  the <B><A HREF="infocmp.1.html">infocmp(1)</A></B> command.  Invoke it as fol-
        lows:
 
        ine  (and the name of its capability file the subdirectory
@@ -72,15 +72,15 @@
        first and last (if present) are aliases for the  terminal,
        usually historical names retained for compatibility.
 
-       There are some conventions for how to choose terminal pri­
+       There are some conventions for how to choose terminal pri-
        mary names that help keep  them  informative  and  unique.
        Here is a step-by-step guide to naming terminals that also
        explains how to parse them:
 
        First, choose a root name.  The root  will  consist  of  a
-       lower-case  letter followed by up to seven lower-case let­
-       ters or digits.  You need to avoid using punctuation char­
-       acters  in  root  names,  because they are used and inter­
+       lower-case  letter followed by up to seven lower-case let-
+       ters or digits.  You need to avoid using punctuation char-
+       acters  in  root  names,  because they are used and inter-
        preted as filenames and shell meta-characters (such as  !,
        $, *, ? etc.) embedded in them may cause odd and unhelpful
        behavior.  The slash (/), or any other character that  may
@@ -94,11 +94,11 @@
 
        The  root  name for a terminal or workstation console type
        should almost always begin with a vendor prefix  (such  as
-       <B>hp</B>  for Hewlett-Packard, <B>wy</B> for Wyse, or <B>att</B> for AT&amp;T ter­
+       <B>hp</B>  for Hewlett-Packard, <B>wy</B> for Wyse, or <B>att</B> for AT&amp;T ter-
        minals), or a common name of the terminal line (<B>vt</B> for the
-       VT  series of terminals from DEC, or <B>sun</B> for Sun Microsys­
+       VT  series of terminals from DEC, or <B>sun</B> for Sun Microsys-
        tems workstation consoles, or <B>regent</B> for the  ADDS  Regent
-       series.   You  can list the terminfo tree to see what pre­
+       series.   You  can list the terminfo tree to see what pre-
        fixes are already in common use.   The  root  name  prefix
        should  be  followed  when  appropriate by a model number;
        thus <B>vt100</B>, <B>hp2621</B>, <B>wy50</B>.
@@ -106,7 +106,7 @@
        The root name for a PC-Unix console type should be the  OS
        name,  i.e.  <B>linux</B>, <B>bsdos</B>, <B>freebsd</B>, <B>netbsd</B>.  It should <I>not</I>
        be <B>console</B> or any other generic that might cause confusion
-       in  a  multi-platform environment!  If a model number fol­
+       in  a  multi-platform environment!  If a model number fol-
        lows, it should indicate either the OS  release  level  or
        fit one of the standard ANSI or vt100 types) should be the
        program  name or a readily recognizable abbreviation of it

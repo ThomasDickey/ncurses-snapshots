@@ -15,7 +15,7 @@
 </PRE>
 <H2>DESCRIPTION</H2><PRE>
        <B>infocmp</B>  can  be  used  to compare a binary <B>terminfo</B> entry
-       with other terminfo entries, rewrite a  <B>terminfo</B>  descrip­
+       with other terminfo entries, rewrite a  <B>terminfo</B>  descrip-
        tion  to  take  advantage  of  the <B>use=</B> terminfo field, or
        print out a <B>terminfo</B>  description  from  the  binary  file
        (<B>term</B>) in a variety of formats.  In all cases, the boolean
@@ -38,7 +38,7 @@
 
        The <B>-d</B> option produces a list of each capability  that  is
        different  between  two entries.  This option is useful to
-       show the difference between two entries, created  by  dif­
+       show the difference between two entries, created  by  dif-
        ferent people, for the same or similar terminals.
 
        The  <B>-c</B>  option produces a list of each capability that is
@@ -47,7 +47,7 @@
        see if the <B>-u</B> option is worth using.
 
        The <B>-n</B> option produces a list of each capability  that  is
-       in neither entry.  If no <I>termnames</I> are given, the environ­
+       in neither entry.  If no <I>termnames</I> are given, the environ-
        ment variable <B>TERM</B> will be used for both of the <I>termnames</I>.
        This  can  be used as a quick check to see if anything was
        left out of a description.
@@ -66,25 +66,25 @@
        The source produced by the <B>-C</B> option may be used  directly
        as  a <B>termcap</B> entry, but not all parameterized strings can
        be changed to the <B>termcap</B> format.  <B>infocmp</B> will attempt to
-       convert  most  of  the parameterized information, and any­
+       convert  most  of  the parameterized information, and any-
        thing not converted will be plainly marked in  the  output
        and commented out.  These should be edited by hand.
 
        All  padding  information  for  strings  will be collected
        together and placed at the beginning of the  string  where
-       <B>termcap</B>  expects  it.  Mandatory padding (padding informa­
+       <B>termcap</B>  expects  it.  Mandatory padding (padding informa-
        tion with a trailing '/') will become optional.
 
        All <B>termcap</B> variables no longer supported by <B>terminfo</B>, but
        which are derivable from other <B>terminfo</B> variables, will be
        output.  Not all <B>terminfo</B> capabilities will be translated;
-       only  those variables which were part of <B>termcap</B> will nor­
+       only  those variables which were part of <B>termcap</B> will nor-
        mally be output.  Specifying the <B>-r</B> option will  take  off
        this  restriction,  allowing all capabilities to be output
        in <I>termcap</I> form.
 
        Note that because padding is collected to the beginning of
-       the  capability,  not all capabilities are output.  Manda­
+       the  capability,  not all capabilities are output.  Manda-
        tory padding is not supported.   Because  <B>termcap</B>  strings
        are  not as flexible, it is not always possible to convert
        a <B>terminfo</B> string capability into  an  equivalent  <B>termcap</B>
@@ -109,13 +109,13 @@
        The  <B>-u</B>  option  produces a <B>terminfo</B> source description of
        the first terminal <I>termname</I> which is relative to  the  sum
        of  the  descriptions  given  by the entries for the other
-       terminals <I>termnames</I>.  It does this by analyzing  the  dif­
+       terminals <I>termnames</I>.  It does this by analyzing  the  dif-
        the  other  terminals.   In this manner, it is possible to
        retrofit  generic  terminfo  entries  into  a   terminal's
        description.  Or, if two similar terminals exist, but were
        coded at different times or by different  people  so  that
        each description is a full description, using <B>infocmp</B> will
-       show what can be done to change one description to be rel­
+       show what can be done to change one description to be rel-
        ative to the other.
 
        A capability will get printed with an at-sign (@) if it no
@@ -123,28 +123,28 @@
        <I>termname</I>  entries contains a value for it.  A capability's
        value gets printed if the value in the first  <I>termname</I>  is
        not  found in any of the other <I>termname</I> entries, or if the
-       first of the other <I>termname</I> entries that has this capabil­
+       first of the other <I>termname</I> entries that has this capabil-
        ity  gives  a different value for the capability than that
        in the first <I>termname</I>.
 
        The order of the other <I>termname</I>  entries  is  significant.
        Since  the terminfo compiler <B>tic</B> does a left-to-right scan
-       of the capabilities, specifying two <B>use=</B> entries that con­
-       tain differing entries for the same capabilities will pro­
+       of the capabilities, specifying two <B>use=</B> entries that con-
+       tain differing entries for the same capabilities will pro-
        duce different results depending on  the  order  that  the
-       entries  are  given in.  <B>infocmp</B> will flag any such incon­
+       entries  are  given in.  <B>infocmp</B> will flag any such incon-
        sistencies between the other <I>termname</I> entries as they  are
        found.
 
        Alternatively,  specifying a capability <I>after</I> a <B>use=</B> entry
-       that contains that capability will cause the second speci­
+       that contains that capability will cause the second speci-
        fication  to  be  ignored.   Using  <B>infocmp</B>  to recreate a
-       description can be a useful check to make sure that every­
+       description can be a useful check to make sure that every-
        thing  was  specified  correctly  in  the  original source
        description.
 
        Another error  that  does  not  cause  incorrect  compiled
-       files,  but will slow down the compilation time, is speci­
+       files,  but will slow down the compilation time, is speci-
        fying extra <B>use=</B> fields  that  are  superfluous.   <B>infocmp</B>
        will  flag  any  other  <I>termname</I> <I>use=</I> fields that were not
        needed.
@@ -152,9 +152,9 @@
    <B>Changing</B> <B>Databases</B> <B>[-A</B> <I>directory</I>] [-B <I>directory</I>]
        The location of the compiled <B>terminfo</B>  database  is  taken
        from  the environment variable <B>TERMINFO</B> .  If the variable
-       is not defined, or the terminal is not found in that loca­
+       is not defined, or the terminal is not found in that loca-
        tion, the system <B>terminfo</B> database, in <B>@DATADIR@/terminfo</B>,
-       will be used.  The options <B>-A</B> and <B>-B</B> may be used to  over­
+       will be used.  The options <B>-A</B> and <B>-B</B> may be used to  over-
        ride  this  location.  The <B>-A</B> option will set <B>TERMINFO</B> for
        the first <I>termname</I> and the <B>-B</B> option will set <B>TERMINFO</B> for
        the other <I>termnames</I>.  With this, it is possible to compare
@@ -179,14 +179,14 @@
             will  be  sorted  alphabetically by the <B>terminfo</B> name
             within each type, except in the case of the <B>-C</B> or the
             <B>-L</B> options, which cause the sorting to be done by the
-            <B>termcap</B> name or the long  C  variable  name,  respec­
+            <B>termcap</B> name or the long  C  variable  name,  respec-
             tively.
 
        <B>-1</B>   causes  the  fields  to be printed out one to a line.
             Otherwise, the fields will be printed  several  to  a
             line to a maximum width of 60 characters.
 
-       <B>-F</B>   compare  terminfo  files.  This assumes that two fol­
+       <B>-F</B>   compare  terminfo  files.  This assumes that two fol-
             lowing  arguments  are  filenames.   The  files   are
             searched  for  pairwise matches between entries, with
             two entries considered to match if any of their names
@@ -195,18 +195,18 @@
             entries  with  more than one match.  For entries with
             exactly one match it includes  a  difference  report.
             Normally,  to  reduce  the  volume of the report, use
-            references are not resolved before looking  for  dif­
-            ferences, but resolution can be forced by also speci­
+            references are not resolved before looking  for  dif-
+            ferences, but resolution can be forced by also speci-
             fying <B>-r</B>.
 
        <B>-G</B>   Display constant literals in decimal form rather than
             their character equivalents.
 
        <B>-a</B>   tells  <B>infocmp</B>  to  retain commented-out capabilities
-            rather than discarding them.  Capabilities  are  com­
+            rather than discarding them.  Capabilities  are  com-
             mented by prefixing them with a period.
 
-       <B>-q</B>   Make  the comparison listing shorter by omitting sub­
+       <B>-q</B>   Make  the comparison listing shorter by omitting sub-
             headings, and using "-" for absent capabilities,  "@"
             for canceled rather than "NULL".
 
@@ -217,7 +217,7 @@
             ble with SVr4/XSI.  Available  terminfo  subsets  are
             "SVr1",  "Ultrix",  "HP",  and "AIX"; see <B><A HREF="terminfo.5.html">terminfo(5)</A></B>
             for details.  You can also choose  the  subset  "BSD"
-            which  selects only capabilities with termcap equiva­
+            which  selects only capabilities with termcap equiva-
             lents recognized by 4.4BSD.
 
        <B>-T</B>   eliminates size-restrictions on the  generated  text.
@@ -225,7 +225,7 @@
             the compiled descriptions are limited (e.g., 1023 for
             termcap, 4096 for terminfo).
 
-       <B>-V</B>   prints out the version of the program in use on stan­
+       <B>-V</B>   prints out the version of the program in use on stan-
             dard error and exits.
 
        <B>-e</B>   Dump the capabilities of the given terminal  as  a  C
@@ -237,7 +237,7 @@
        <B>-E</B>   Dump  the  capabilities  of  the  given  terminal  as
             tables,  needed  in  the C initializer for a TERMTYPE
             structure (the terminal capability structure  in  the
-            <B>&lt;term.h&gt;</B>).   This option is useful for preparing ver­
+            <B>&lt;term.h&gt;</B>).   This option is useful for preparing ver-
             sions of the curses library  hardwired  for  a  given
             terminal  type.   The tables are all declared static,
             and are named according to the type and the  name  of
@@ -245,11 +245,11 @@
 
             Before  ncurses  5.0, the split between the <B>-e</B> and <B>-E</B>
             options was not  needed;  but  support  for  extended
-            names required making the arrays of terminal capabil­
+            names required making the arrays of terminal capabil-
             ities separate from the TERMTYPE structure.
 
        <B>-f</B>   Display  complex  terminfo  strings   which   contain
-            if/then/else/endif expressions indented for readabil­
+            if/then/else/endif expressions indented for readabil-
             ity.
 
        <B>-g</B>   Display constant character literals  in  quoted  form
@@ -260,12 +260,12 @@
             string,  the code tries to analyze it into actions in
             terms of the other capabilities in the entry, certain
             X3.64/ISO  6429/ECMA-48 capabilities, and certain DEC
-            VT-series private modes (the set of  recognized  spe­
+            VT-series private modes (the set of  recognized  spe-
             cial  sequences  has  been  selected for completeness
             over the existing terminfo  database).   Each  report
             line  consists  of the capability name, followed by a
             colon and space, followed by a printable expansion of
-            the  capability  string with sections matching recog­
+            the  capability  string with sections matching recog-
             sequences recognized:
 
                   Action        Meaning

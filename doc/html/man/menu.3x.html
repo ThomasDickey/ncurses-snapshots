@@ -14,7 +14,7 @@
 <H2>DESCRIPTION</H2><PRE>
        The  <B>menu</B> library provides terminal-independent facilities
        for composing menu systems  on  character-cell  terminals.
-       The library includes: item routines, which create and mod­
+       The library includes: item routines, which create and mod-
        ify menu items; and menu routines, which group items  into
        menus, display menus on the screen, and handle interaction
        with the user.
@@ -107,7 +107,7 @@
 
 </PRE>
 <H2>RETURN VALUE</H2><PRE>
-       Routines  that return pointers return <B>NULL</B> on error.  Rou­
+       Routines  that return pointers return <B>NULL</B> on error.  Rou-
        tines that return an integer return one of  the  following
        error codes:
 
@@ -115,14 +115,14 @@
             System error occurred (see <B>errno</B>).
 
        <B>E_BAD_ARGUMENT</B>
-            Routine  detected  an incorrect or out-of-range argu­
+            Routine  detected  an incorrect or out-of-range argu-
             ment.
 
        <B>E_POSTED</B>
             The menu is already posted.
 
        <B>E_BAD_STATE</B>
-            Routine was called from an initialization or termina­
+            Routine was called from an initialization or termina-
             tion function.
 
        <B>E_NO_ROOM</B>
@@ -158,7 +158,7 @@
        The header file <B>&lt;menu.h&gt;</B> automatically includes the header
        files <B>&lt;curses.h&gt;</B> and <B>&lt;eti.h&gt;</B>.
 
-       In  your  library  list,  libmenu.a should be before libn­
+       In  your  library  list,  libmenu.a should be before libn-
        curses.a; that is, you want to say `-lmenu -lncurses', not
        the  other  way  around (which would give you a link error
        using GNU <B><A HREF="ld.1.html">ld(1)</A></B> and many other linkers).

@@ -13,7 +13,7 @@
 </PRE>
 <H2>DESCRIPTION</H2><PRE>
        The  <B>ncurses</B>  library  routines  give the user a terminal-
-       independent method of updating character screens with rea­
+       independent method of updating character screens with rea-
        sonable   optimization.    This  implementation  is  ``new
        curses'' (ncurses) and is  the  approved  replacement  for
        4.4BSD classic curses, which has been discontinued.
@@ -21,7 +21,7 @@
        The  <B>ncurses</B>  routines  emulate  the <B><A HREF="ncurses.3x.html">curses(3x)</A></B> library of
        System V Release 4 UNIX, and the XPG4 curses standard (XSI
        curses)  but the <B>ncurses</B> library is freely redistributable
-       in source form.  Differences from the SVr4 curses are sum­
+       in source form.  Differences from the SVr4 curses are sum-
        marized  under  the EXTENSIONS and BUGS sections below and
        described in detail in the EXTENSIONS and BUGS sections of
        individual man pages.
@@ -31,13 +31,13 @@
        debugging  library  <B>-lncurses_g</B>.   (Your system integrator
        may also have installed these libraries  under  the  names
        <B>-lcurses</B> and <B>-lcurses_g</B>.)  The ncurses_g library generates
-       trace logs (in a file called 'trace' in the current direc­
+       trace logs (in a file called 'trace' in the current direc-
        tory) that describe curses actions.
 
        The  <B>ncurses</B>  package supports: overall screen, window and
-       pad manipulation; output to windows and pads; reading ter­
+       pad manipulation; output to windows and pads; reading ter-
        minal  input;  control  over terminal and <B>curses</B> input and
-       output options; environment query routines; color  manipu­
+       output options; environment query routines; color  manipu-
        lation; use of soft label keys; terminfo capabilities; and
        access to low-level terminal-manipulation routines.
 
@@ -57,12 +57,12 @@
              <B>intrflush(stdscr,</B> <B>FALSE);</B>
              <B>keypad(stdscr,</B> <B>TRUE);</B>
 
-       Before a <B>curses</B> program is run, the tab stops of the  ter­
+       Before a <B>curses</B> program is run, the tab stops of the  ter-
        the <B>tput</B> <B>init</B> command after the shell environment variable
        <B>TERM</B> has been exported.  <B>tset(1)</B>  is  usually  responsible
        for doing this.  [See <B><A HREF="terminfo.5.html">terminfo(5)</A></B> for further details.]
 
-       The  <B>ncurses</B>  library  permits manipulation of data struc­
+       The  <B>ncurses</B>  library  permits manipulation of data struc-
        tures, called <I>windows</I>, which can be  thought  of  as  two-
        dimensional  arrays of characters representing all or part
        of a CRT screen.  A default window called <B>stdscr</B>, which is
@@ -71,7 +71,7 @@
 
        Note that <B>curses</B>  does  not  handle  overlapping  windows,
        that's  done by the <B><A HREF="panel.3x.html">panel(3x)</A></B> library. This means that you
-       can either use <B>stdscr</B> or divide the screen into tiled win­
+       can either use <B>stdscr</B> or divide the screen into tiled win-
        dows  and  not  using  <B>stdscr</B>  at all. Mixing the two will
        result in unpredictable, and undesired, effects.
 
@@ -92,11 +92,11 @@
 
        Special windows  called  <I>pads</I>  may  also  be  manipulated.
        These are windows which are not constrained to the size of
-       the screen and whose contents need not be completely  dis­
+       the screen and whose contents need not be completely  dis-
        played.  See <B><A HREF="curs_pad.3x.html">curs_pad(3x)</A></B> for more information.
 
        In  addition  to  drawing  characters on the screen, video
-       attributes and colors may be supported, causing the  char­
+       attributes and colors may be supported, causing the  char-
        acters  to show up in such modes as underlined, in reverse
        video, or in color on terminals that support such  display
        enhancements.  Line drawing characters may be specified to
@@ -111,10 +111,10 @@
        and column information in the  environment  will  override
        information read by <I>terminfo</I>.  This would effect a program
 
-       If  the environment variable <B>TERMINFO</B> is defined, any pro­
+       If  the environment variable <B>TERMINFO</B> is defined, any pro-
        gram using <B>curses</B> checks for a local  terminal  definition
        before  checking  in  the standard place.  For example, if
-       <B>TERM</B> is set to <B>att4424</B>, then the compiled terminal defini­
+       <B>TERM</B> is set to <B>att4424</B>, then the compiled terminal defini-
        tion is found in
 
              <B>@DATADIR@/terminfo/a/att4424</B>.
@@ -130,12 +130,12 @@
              <B>@DATADIR@/terminfo/a/att4424</B>.
 
        This  is useful for developing experimental definitions or
-       when write permission in <B>@DATADIR@/terminfo</B> is not  avail­
+       when write permission in <B>@DATADIR@/terminfo</B> is not  avail-
        able.
 
        The  integer  variables  <B>LINES</B>  and  <B>COLS</B>  are  defined in
        <B>&lt;curses.h&gt;</B> and will be filled in by <B>initscr</B> with the  size
-       of the screen.  The constants <B>TRUE</B> and <B>FALSE</B> have the val­
+       of the screen.  The constants <B>TRUE</B> and <B>FALSE</B> have the val-
        ues <B>1</B> and <B>0</B>, respectively.
 
        The <B>curses</B> routines also  define  the  <B>WINDOW</B>  <B>*</B>  variable
@@ -145,9 +145,9 @@
 
 
    <B>Routine</B> <B>and</B> <B>Argument</B> <B>Names</B>
-       Many  <B>curses</B> routines have two or more versions.  The rou­
-       tines prefixed with <B>w</B> require a window argument.  The rou­
-       tines prefixed with <B>p</B> require a pad argument.  Those with­
+       Many  <B>curses</B> routines have two or more versions.  The rou-
+       tines prefixed with <B>w</B> require a window argument.  The rou-
+       tines prefixed with <B>p</B> require a pad argument.  Those with-
        out a prefix generally use <B>stdscr</B>.
 
        The routines prefixed with <B>mv</B> require a <I>y</I> and <I>x</I> coordinate
@@ -164,7 +164,7 @@
        In  each  case, <I>win</I> is the window affected, and <I>pad</I> is the
 
        Option setting routines require a Boolean flag <I>bf</I> with the
-       value <B>TRUE</B> or <B>FALSE</B>; <I>bf</I> is always of type <B>bool</B>.  The vari­
+       value <B>TRUE</B> or <B>FALSE</B>; <I>bf</I> is always of type <B>bool</B>.  The vari-
        ables  <I>ch</I>  and <I>attrs</I> below are always of type <B>chtype</B>.  The
        types <B>WINDOW</B>, <B>SCREEN</B>, <B>bool</B>,  and  <B>chtype</B>  are  defined  in
        <B>&lt;curses.h&gt;</B>.   The  type  <B>TERMINAL</B>  is defined in <B>&lt;term.h&gt;</B>.
@@ -480,8 +480,8 @@
 </PRE>
 <H2>RETURN VALUE</H2><PRE>
        Routines  that  return  an integer return <B>ERR</B> upon failure
-       and an integer value other than <B>ERR</B> upon  successful  com­
-       pletion,  unless  otherwise  noted in the routine descrip­
+       and an integer value other than <B>ERR</B> upon  successful  com-
+       pletion,  unless  otherwise  noted in the routine descrip-
        tions.
 
        All macros return the  value  of  the  <B>w</B>  version,  except
@@ -495,7 +495,7 @@
 
 </PRE>
 <H2>ENVIRONMENT</H2><PRE>
-       The following environment symbols are useful for customiz­
+       The following environment symbols are useful for customiz-
        ing the runtime behavior of the <B>ncurses</B> library.  The most
        important ones have been already discussed in detail.
 
@@ -509,12 +509,12 @@
 
        CC   When set, change occurrences of the command_character
             (i.e., the <B>cmdch</B> capability) of the  loaded  terminfo
-            entries  to  the value of this symbol.  Very few ter­
+            entries  to  the value of this symbol.  Very few ter-
             minfo entries provide this feature.
 
        COLUMNS
             Specify  the  width  of  the  screen  in  characters.
-            Applications  running in a windowing environment usu­
+            Applications  running in a windowing environment usu-
             ally are able to obtain the width of  the  window  in
             which  they  are  executing.  If neither the $COLUMNS
             value nor the terminal's screen  size  is  available,
@@ -540,7 +540,7 @@
             Specifies  the total time, in milliseconds, for which
             ncurses will await  a  character  sequence,  e.g.,  a
             function  key.  The default value, 1000 milliseconds,
-            is enough for most uses.  However, it is made a vari­
+            is enough for most uses.  However, it is made a vari-
             able to accommodate unusual applications.
 
             The most common instance where you may wish to change
@@ -550,7 +550,7 @@
             the  terminal did not send characters rapidly enough.
             The library will still see a timeout.
 
-            Note that xterm mouse events are built up from  char­
+            Note that xterm mouse events are built up from  char-
             acter  sequences  received  from  the xterm.  If your
             application makes heavy use of multiple-clicking, you
             may  wish  to lengthen this default value because the
@@ -585,15 +585,15 @@
             Most of the terminal  descriptions  in  the  terminfo
             database  are  written for real "hardware" terminals.
             Many people use terminal emulators  which  run  in  a
-            windowing  environment  and use curses-based applica­
+            windowing  environment  and use curses-based applica-
             tions.  Terminal emulators can duplicate all  of  the
             important aspects of a hardware terminal, but they do
             not have the same limitations.  The chief  limitation
             of  a  hardware  terminal from the standpoint of your
-            application is the management of dataflow, i.e., tim­
+            application is the management of dataflow, i.e., tim-
             ing.  Unless a hardware terminal is interfaced into a
             terminal concentrator (which does flow  control),  it
-            (or  your application) must manage dataflow, prevent­
+            (or  your application) must manage dataflow, prevent-
             ing overruns.  The  cheapest  solution  (no  hardware
             cost) is for your program to do this by pausing after
             operations that the terminal  does  slowly,  such  as
@@ -609,9 +609,9 @@
             part of special control sequences such as <I>flash</I>.
 
        NCURSES_NO_SETBUF
-            Normally <B>ncurses</B> enables buffered output during  ter­
+            Normally <B>ncurses</B> enables buffered output during  ter-
             minal  initialization.   This  is  done  (as  in SVr4
-            curses) for performance reasons.   For  testing  pur­
+            curses) for performance reasons.   For  testing  pur-
             poses, both of <B>ncurses</B> and certain applications, this
             feature    is    made    optional.     Setting    the
             NCURSES_NO_SETBUF variable disables output buffering,
@@ -633,7 +633,7 @@
             distinct, though many are similar.
 
        TERMCAP
-            If the <B>ncurses</B> library has been configured with <I>term­</I>
+            If the <B>ncurses</B> library has been configured with <I>term-</I>
             the terminfo database.
 
             The   TERMCAP   symbol  contains  either  a  terminal
@@ -663,7 +663,7 @@
                @DATADIR@/terminfo
 
        TERMINFO_DIRS
-            Specifies a list of directories to search for  termi­
+            Specifies a list of directories to search for  termi-
             nal  descriptions.   The  list is separated by colons
             (i.e., ":").  All of the terminal descriptions are in
             terminfo  form,  which makes a subdirectory named for
@@ -671,7 +671,7 @@
 
        TERMPATH
             If TERMCAP does not hold a  file  name  then  <B>ncurses</B>
-            checks  the TERMPATH symbol.  This is a list of file­
+            checks  the TERMPATH symbol.  This is a list of file-
             names  separated  by  colons  (i.e.,  ":").   If  the
             TERMPATH  symbol  is  not  set,  <B>ncurses</B> looks in the
             files   /etc/termcap,   /usr/share/misc/termcap   and
@@ -682,7 +682,7 @@
 <H2>FILES</H2><PRE>
        @DATADIR@/tabset
             directory  containing  initialization  files  for the
-            terminal capability database @DATADIR@/terminfo  ter­
+            terminal capability database @DATADIR@/terminfo  ter-
             minal capability database
 
 
@@ -691,7 +691,7 @@
        <B><A HREF="terminfo.5.html">terminfo(5)</A></B>  and  3x  pages  whose names begin "curs_" for
        detailed routine descriptions.
        The  <B>ncurses</B>  library  can  be  compiled  with  an  option
-       (<B>-DUSE_GETCAP</B>) that falls back to the old-style /etc/term­
+       (<B>-DUSE_GETCAP</B>) that falls back to the old-style /etc/term-
        cap file if the terminal setup code cannot find a terminfo
        entry  corresponding  to <B>TERM</B>.  Use of this feature is not
        recommended, as it essentially includes an entire  termcap
@@ -714,12 +714,12 @@
        See  the  <B><A HREF="define_key.3x.html">define_key(3x)</A></B>  and  <B><A HREF="keyok.3x.html">keyok(3x)</A></B>  manual pages for
        details.
 
-       The <B>ncurses</B> library can exploit the capabilities of termi­
-       nals  which  implement the ISO-6429 SGR 39 and SGR 49 con­
+       The <B>ncurses</B> library can exploit the capabilities of termi-
+       nals  which  implement the ISO-6429 SGR 39 and SGR 49 con-
        trols, which allow an application to reset the terminal to
        its  original  foreground and background colors.  From the
-       users' perspective, the application is able to  draw  col­
-       ored  text  on  a  background  whose color is set indepen­
+       users' perspective, the application is able to  draw  col-
+       ored  text  on  a  background  whose color is set indepen-
        dently, providing better  control  over  color  contrasts.
        See the <B><A HREF="use_default_colors.3x.html">use_default_colors(3x)</A></B> manual page for details.
 
@@ -730,24 +730,24 @@
 
 </PRE>
 <H2>PORTABILITY</H2><PRE>
-       The  <B>ncurses</B>  library is intended to be BASE-level confor­
+       The  <B>ncurses</B>  library is intended to be BASE-level confor-
        mant with the XSI Curses standard.   Certain  portions  of
        the  EXTENDED  XSI  Curses  functionality (including color
        support) are supported.  The following EXTENDED XSI Curses
        calls  in  support  of wide (multibyte) characters are not
-       yet implemented: <B>add_wch</B>, <B>add_wchnstr</B>, <B>add_wchstr</B>,  <B>addnw­</B>
+       yet implemented: <B>add_wch</B>, <B>add_wchnstr</B>, <B>add_wchstr</B>,  <B>addnw-</B>
        <B>str</B>,  <B>addwstr</B>,  <B>bkgrnd</B>,  <B>bkgrndset</B>,  <B>border_set</B>,  <B>box_set</B>,
        <B>echo_wchar</B>,  <B>erasewchar</B>,  <B>get_wch</B>,  <B>get_wstr</B>,   <B>getbkgrnd</B>,
        <B>getcchar</B>,   <B>getn_wstr</B>,   <B>getwchtype</B>,   <B>hline_set</B>,  <B>in_wch</B>,
        <B>in_wchnstr</B>,  <B>in_wchstr</B>,   <B>innwstr</B>,   <B>ins_nwstr</B>,   <B>ins_wch</B>,
-       <B>ins_wstr</B>,  <B>inwchnstr</B>,  <B>inwchstr</B>,  <B>inwstr</B>,  <B>key_name</B>, <B>kill­</B>
+       <B>ins_wstr</B>,  <B>inwchnstr</B>,  <B>inwchstr</B>,  <B>inwstr</B>,  <B>key_name</B>, <B>kill-</B>
        <B>wchar</B>, <B>mvadd_wch</B>, <B>mvadd_wchnstr</B>, <B>mvadd_wchstr</B>, <B>mvaddnwstr</B>,
-       <B>mvaddwstr</B>,   <B>mvget_wch</B>,   <B>mvget_wstr</B>,   <B>mvgetn_wstr</B>,  <B>mvh­</B>
+       <B>mvaddwstr</B>,   <B>mvget_wch</B>,   <B>mvget_wstr</B>,   <B>mvgetn_wstr</B>,  <B>mvh-</B>
        <B>line_set</B>,  <B>mvin_wch</B>,  <B>mvinnwstr</B>,  <B>mvins_nwstr</B>,  <B>mvins_wch</B>,
        <B>mvwaddnwstr</B>,     <B>mvwaddwstr</B>,     <B>mvwget_ch</B>,    <B>mvwget_wch</B>,
        <B>mvwget_wstr</B>,   <B>mvwgetn_wstr</B>,   <B>mvwhline_set</B>,    <B>mvwin_wch</B>,
        <B>mvwin_wchnstr</B>,   <B>mvwin_wchstr</B>,  <B>mvwinnwstr</B>,  <B>mvwins_nwstr</B>,
-       <B>mvwins_wch</B>, <B>mvwins_wstr</B>, <B>mvwinwchnstr</B>.   <B>mvwinwstr</B>,  <B>mvwv­</B>
+       <B>mvwins_wch</B>, <B>mvwins_wstr</B>, <B>mvwinwchnstr</B>.   <B>mvwinwstr</B>,  <B>mvwv-</B>
        <B>line_set</B>,  <B>pecho_wchar</B>,  <B>setcchar</B>,  <B>slk_wset</B>,  <B>term_attrs</B>,
        <B>unget_wch</B>,  <B>vhline_set</B>,  <B>vid_attr</B>,  <B>vid_puts</B>,   <B>vline_set</B>,
        <B>wadd_wch</B>,  <B>wadd_wchnstr</B>, <B>wadd_wchstr</B>, <B>waddnwstr</B>, <B>waddwstr</B>,
@@ -765,11 +765,11 @@
        The routine <B>has_key</B> is not part of XPG4, nor is it present
        in SVr4.  See the <B><A HREF="curs_getch.3x.html">curs_getch(3x)</A></B> manual page for  details.
 
-       The  routine  <B>slk_attr</B> is not part of XPG4, nor is it pre­
+       The  routine  <B>slk_attr</B> is not part of XPG4, nor is it pre-
        sent in  SVr4.   See  the  <B><A HREF="curs_slk.3x.html">curs_slk(3x)</A></B>  manual  page  for
        details.
 
-       The  routines <B>getmouse</B>, <B>mousemask</B>, <B>ungetmouse</B>, <B>mouseinter­</B>
+       The  routines <B>getmouse</B>, <B>mousemask</B>, <B>ungetmouse</B>, <B>mouseinter-</B>
        <B>val</B>, and <B>wenclose</B> relating to mouse  interfacing  are  not
        part  of  XPG4,  nor  are  they  present in SVr4.  See the
        <B><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></B> manual page for details.
@@ -781,9 +781,9 @@
        The routine <B>wresize</B> is not part of XPG4, nor is it present
        in SVr4.  See the <B><A HREF="wresize.3x.html">wresize(3x)</A></B> manual page for details.
 
-       In  historic curses versions, delays embedded in the capa­
+       In  historic curses versions, delays embedded in the capa-
        bilities <B>cr</B>, <B>ind</B>, <B>cub1</B>, <B>ff</B> and <B>tab</B> activated corresponding
-       delay  bits  in  the UNIX tty driver.  In this implementa­
+       delay  bits  in  the UNIX tty driver.  In this implementa-
        tion, all padding is done by NUL sends.   This  method  is
        slightly  more expensive, but narrows the interface to the
        UNIX kernel  significantly  and  increases  the  package's
@@ -794,7 +794,7 @@
        <B>cchar_t</B>  <B>*const</B>,  or  <B>wchar_t</B>  <B>*const</B>,  or  <B>void</B>  <B>*const</B>).
        Depending on one's interpretation of the ANSI  C  standard
        (see  section  3.5.4.1), these declarations are either (a)
-       meaningless, or (b) meaningless and illegal.  The declara­
+       meaningless, or (b) meaningless and illegal.  The declara-
        tion <B>const</B> <B>char</B> <B>*x</B> is a modifiable pointer to unmodifiable
        <B>&lt;type&gt;</B> <B>*const</B> as a formal type is at best  dubious.   Some
        compilers  choke  on  the  prototypes.  Therefore, in this
@@ -809,7 +809,7 @@
 
        If standard output from a <B>ncurses</B> program  is  re-directed
        to  something  which  is not a tty, screen updates will be
-       directed to standard error.  This was an undocumented fea­
+       directed to standard error.  This was an undocumented fea-
        ture of AT&amp;T System V Release 3 curses.
 
 

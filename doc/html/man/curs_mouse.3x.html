@@ -95,12 +95,12 @@
 
        The  <B>wenclose</B>  function  tests  whether  a  given  pair of
        screen-relative character-cell coordinates is enclosed  by
-       a  given  window, returning TRUE if it is and FALSE other­
+       a  given  window, returning TRUE if it is and FALSE other-
        wise.  It is useful for determining  what  subset  of  the
        screen windows enclose the location of a mouse event.
 
-       The <B>wmouse_trafo</B> function transforms a given pair of coor­
-       dinates from stdscr-relative coordinates  to  screen-rela­
+       The <B>wmouse_trafo</B> function transforms a given pair of coor-
+       dinates from stdscr-relative coordinates  to  screen-rela-
        tive  coordinates  or  vice  versa.  Please remember, that
        stdscr-relative coordinates are not  always  identical  to
        screen-relative   coordinates  due  to  the  mechanism  to
@@ -109,8 +109,8 @@
        the parameter <B>to_screen</B> is <B>TRUE</B>, the pointers <B>pY,</B> <B>pX</B>  must
        reference  the coordinates of a location inside the window
        <B>win</B>. They are converted to screen-relative coordinates and
-       returned  through the pointers. If the conversion was suc­
-       dow, <B>FALSE</B> is returned. If <B>to_screen</B> is <B>FALSE</B>, the  point­
+       returned  through the pointers. If the conversion was suc-
+       dow, <B>FALSE</B> is returned. If <B>to_screen</B> is <B>FALSE</B>, the  point-
        ers  <B>pY,</B>  <B>pX</B>  must  reference screen-relative coordinates.
        They are converted to stdscr-relative coordinates  if  the
        window  <B>win</B> encloses this point. In this case the function
@@ -120,7 +120,7 @@
        by  the  converted  coordinates  if the transformation was
        successful.
 
-       The <B>mouseinterval</B> function sets the maximum time (in thou­
+       The <B>mouseinterval</B> function sets the maximum time (in thou-
        sands  of  a  second)  that  can  elapse between press and
        release events in order for them to  be  recognized  as  a
        click.  This function returns the previous interval value.
@@ -128,7 +128,7 @@
 
        Note that mouse events will be ignored when  input  is  in
        cooked mode, and will cause an error beep when cooked mode
-       is being simulated in a window by a function such as  <B>get­</B>
+       is being simulated in a window by a function such as  <B>get-</B>
        <B>str</B> that expects a linefeed for input-loop termination.
 
 
@@ -136,7 +136,7 @@
 </PRE>
 <H2>RETURN VALUE</H2><PRE>
        <B>getmouse</B>,  <B>ungetmouse</B> and <B>mouseinterval</B> return the integer
-       <B>ERR</B> upon failure or <B>OK</B> upon successful completion.  <B>mouse­</B>
+       <B>ERR</B> upon failure or <B>OK</B> upon successful completion.  <B>mouse-</B>
        <B>mask</B>  returns  the mask of reportable events. <B>wenclose</B> and
        <B>wmouse_trafo</B> are boolean functions returning <B>TRUE</B> or <B>FALSE</B>
        depending on their test result.
@@ -151,10 +151,10 @@
        The feature macro <B>NCURSES_MOUSE_VERSION</B> is provided so the
        preprocessor can be used to test  whether  these  features
        are  present  (its  value  is  1).   If  the  interface is
-       changed, the value of <B>NCURSES_MOUSE_VERSION</B> will be incre­
+       changed, the value of <B>NCURSES_MOUSE_VERSION</B> will be incre-
        mented.
 
-       The  order  of the <B>MEVENT</B> structure members is not guaran­
+       The  order  of the <B>MEVENT</B> structure members is not guaran-
        teed.  Additional fields may be added to the structure  in
        the future.
 
@@ -171,13 +171,13 @@
 
 </PRE>
 <H2>BUGS</H2><PRE>
-       Mouse  events under xterm will not in fact be ignored dur­
+       Mouse  events under xterm will not in fact be ignored dur-
        ing cooked mode, if they have been enabled by  <B>wmousemask</B>.
        Instead,  the  xterm  mouse report sequence will appear in
        the string read.
 
        Mouse events under xterm will not be detected correctly in
-       a  window  with  its keypad bit off, since they are inter­
+       a  window  with  its keypad bit off, since they are inter-
        preted as  a  variety  of  function  key.   Your  terminfo
        description  must  have <B>kmous</B> set to "\E[M" (the beginning
        of the response from xterm for mouse clicks).

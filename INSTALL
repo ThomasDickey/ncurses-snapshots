@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.35 2000/01/09 00:54:55 tom Exp $
+-- $Id: INSTALL,v 1.36 2000/05/06 17:30:14 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -641,7 +641,7 @@ USING NCURSES WITH GPM:
 	but the linker may not cooperate, producing mysterious errors.
 	A patched version of gpm is available:
 
-		ftp.clark.net:/pub/dickey/ncurses/gpm-1.10-970125.tgz
+		dickey.his.com:/ncurses/gpm-1.10-970125.tar.gz
 
 	This patch is incorporated in gpm 1.12; however some integrators
 	are slow to update this library.

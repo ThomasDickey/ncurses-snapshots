@@ -23,7 +23,7 @@
    
    The ncurses distribution is available via anonymous FTP at the GNU
    distribution site [1]ftp://ftp.gnu.org/pub/gnu/ncurses. It is also
-   available at [2]ftp://ftp.clark.net/pub/dickey/ncurses.
+   available at [2]ftp://dickey.his.com/ncurses.
    
                                  Release Notes
                                        
@@ -253,10 +253,10 @@
    
    cdk
           Curses Development Kit [3]Curses Development Kit
-          [4]ftp://ftp.clark.net/pub/dickey/cdk.
+          [4]ftp://dickey.his.com/cdk.
           
    ded
-          directory-editor [5]ftp://ftp.clark.net/pub/dickey/ded.
+          directory-editor [5]ftp://dickey.his.com/ded.
           
    dialog
           the underlying application used in Slackware's setup, and the
@@ -294,7 +294,7 @@
           terminal emulator
           
    vile
-          vi-like-emacs [7]ftp://ftp.clark.net/pub/dickey/vile.
+          vi-like-emacs [7]ftp://dickey.his.com/vile.
           
    The ncurses distribution includes a selection of test programs
    (including a few games).
@@ -315,7 +315,7 @@ Who's Who and What's What
    and testing of this package.
    
    Beta versions of ncurses and patches to the current release are made
-   available at [14]ftp://ftp.clark.net/pub/dickey/ncurses.
+   available at [14]ftp://dickey.his.com/ncurses.
    
 Future Plans
 
@@ -338,18 +338,18 @@ Other Related Resources
 References
 
    1. ftp://ftp.gnu.org/pub/gnu/ncurses
-   2. ftp://ftp.clark.net/pub/dickey/ncurses
+   2. ftp://dickey.his.com/ncurses
    3. http://www.vexus.ca/CDK.html
-   4. ftp://ftp.clark.net/pub/dickey/cdk
-   5. ftp://ftp.clark.net/pub/dickey/ded
+   4. ftp://dickey.his.com/cdk
+   5. ftp://dickey.his.com/ded
    6. ftp://ftp.akk.uni-karlsruhe.de/pub/news/clients/tin-unoff
-   7. ftp://ftp.clark.net/pub/dickey/vile
+   7. ftp://dickey.his.com/vile
    8. mailto:zmbenhal@netcom.com
    9. http://www.ccil.org/~esr/home.html
   10. mailto:dickey@clark.net
   11. mailto:juergen.pfeifer@gmx.net
   12. mailto:dickey@clark.net
   13. mailto:bug-ncurses@gnu.org
-  14. ftp://ftp.clark.net/pub/dickey/ncurses
+  14. ftp://dickey.his.com/ncurses
   15. http://earthspace.net/~esr/terminfo
   16. http://www.cs.utk.edu/~shuford/terminal_index.html
