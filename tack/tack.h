@@ -19,7 +19,7 @@
 ** Boston, MA 02111-1307, USA.
 */
 
-/* $Id: tack.h,v 1.3 1999/05/17 01:08:14 tom Exp $ */
+/* $Id: tack.h,v 1.4 1999/06/16 00:47:06 tom Exp $ */
 
 #ifndef _TACK_H
 #define _TACK_H 1
@@ -172,14 +172,14 @@ extern const int mode_map[];
 
 extern int tt_delay_max;	/* max number of milliseconds we can delay */
 extern int tt_delay_used;	/* number of milliseconds consumed in delay */
-extern char *tt_cap[TT_MAX]; 	/* value of string */
+extern const char *tt_cap[TT_MAX]; /* value of string */
 extern int tt_affected[TT_MAX];	/* lines or columns effected (repitition
 				   factor) */
 extern int tt_count[TT_MAX];	/* Number of times sent */
 extern int tt_delay[TT_MAX];	/* Number of milliseconds delay */
 extern int ttp;			/* number of entries used */
 
-extern char *tx_cap[TT_MAX]; 	/* value of string */
+extern const char *tx_cap[TT_MAX]; /* value of string */
 extern int tx_affected[TT_MAX];	/* lines or columns effected (repitition
 				   factor) */
 extern int tx_count[TT_MAX];	/* Number of times sent */

@@ -23,7 +23,7 @@
 #include <tack.h>
 #include <time.h>
 
-MODULE_ID("$Id: output.c,v 1.3 1999/05/17 01:08:03 tom Exp $")
+MODULE_ID("$Id: output.c,v 1.4 1999/06/16 00:46:53 tom Exp $")
 
 /* globals */
 long char_sent;			/* number of characters sent */
@@ -156,7 +156,7 @@ tt_tputs(const char *string, int reps)
 	if (string) {
 		for (i = 0; i < TT_MAX; i++) {
 			if (i >= ttp) {
-				tt_cap[i] = (char *)string;
+				tt_cap[i] = string;
 				tt_affected[i] = reps;
 				tt_count[i] = 1;
 				tt_delay[i] = msec_cost(string, reps);
@@ -203,7 +203,7 @@ tt_putparm(
 	if (string) {
 		for (i = 0; i < TT_MAX; i++) {
 			if (i >= ttp) {
-				tt_cap[i] = (char *)string;
+				tt_cap[i] = string;
 				tt_affected[i] = reps;
 				tt_count[i] = 1;
 				tt_delay[i] = msec_cost(string, reps);
@@ -216,7 +216,7 @@ tt_putparm(
 				break;
 			}
 		}
-		(void) tputs(tparm((char *)string, arg1, arg2), reps, tc_putch);
+		(void) tputs(tparm((NCURSES_CONST char *)string, arg1, arg2), reps, tc_putch);
 	}
 }
 

@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.458 1999/06/15 01:20:23 tom Exp $
+-- $Id: NEWS,v 1.461 1999/06/16 09:46:44 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990616	pre-release
+	+ fix some compiler warnings in tack.
+	+ add a check for predefined bool type in CC, based on report that
+	  BeOS predefines a bool type.
+	+ correct logic for infocmp -e option (i.e., the configure
+	  --with-fallbacks option), which I'd not updated when implementing
+	  extended names (cf:  990301).  The new implementation adds a -E
+	  option to infocmp.
+	> patch by Juergen Pfeifer:
+	+ introduce the private type Curses_Bool in the Ada95 binding
+	  implementation.  This is to clearly represent the use of "bool" also
+	  in the binding.  It should have no effect on the generated code.
+	+ improve the man page for field_buffer() to tell the people, that the
+	  whole buffer including leading/trailing spaces is returned.  This is
+	  a common source of confusion, so it's better to document it clearly. 
 
 990614	pre-release
 	> patch by Juergen Pfeifer:

@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: cardfile.c,v 1.1 1999/04/11 02:25:35 tom Exp $
+ * $Id: cardfile.c,v 1.2 1999/06/16 00:41:57 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text forms the content.
  */
@@ -87,7 +87,7 @@ static void trim(char *buffer)
 
 /*******************************************************************************/
 
-static CARD *add_title(char *title)
+static CARD *add_title(const char *title)
 {
     CARD *card, *p, *q;
 
@@ -178,7 +178,7 @@ static void read_data(char *fname)
 
 /*******************************************************************************/
 
-static void write_data(char *fname)
+static void write_data(const char *fname)
 {
     FILE *fp;
     CARD *p = 0;

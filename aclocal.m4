@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.157 1999/04/10 20:57:46 Mark.Kettenis Exp $
+dnl $Id: aclocal.m4,v 1.159 1999/06/16 01:24:58 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -129,13 +129,13 @@ dnl Treat the configuration-variable specially here, since we're directly
 dnl substituting its value (i.e., 1/0).
 AC_DEFUN([CF_BOOL_DECL],
 [
-AC_MSG_CHECKING([for builtin c++ bool type])
-AC_CACHE_VAL(cf_cv_builtin_bool,[
+AC_MSG_CHECKING([for builtin ifelse(AC_LANG,[C],$CC,$CXX) bool type])
+AC_CACHE_VAL(ifelse($1,,cf_cv_builtin_bool,[$1]),[
 	AC_TRY_COMPILE([],[bool x = false],
-		[cf_cv_builtin_bool=1],
-		[cf_cv_builtin_bool=0])
+		[ifelse($1,,cf_cv_builtin_bool,[$1])=1],
+		[ifelse($1,,cf_cv_builtin_bool,[$1])=0])
 	])
-if test $cf_cv_builtin_bool = 1
+if test $ifelse($1,,cf_cv_builtin_bool,[$1]) = 1
 then	AC_MSG_RESULT(yes)
 else	AC_MSG_RESULT(no)
 fi
@@ -145,7 +145,7 @@ dnl Test for the size of 'bool' in the configured C++ compiler (e.g., a type).
 dnl Don't bother looking for bool.h, since it's been deprecated.
 AC_DEFUN([CF_BOOL_SIZE],
 [
-AC_MSG_CHECKING([for size of c++ bool])
+AC_MSG_CHECKING([for size of ifelse(AC_LANG,[C],$CC,$CXX) bool])
 AC_CACHE_VAL(cf_cv_type_of_bool,[
 	rm -f cf_test.out
 	AC_TRY_RUN([
@@ -1826,8 +1826,9 @@ AC_SUBST(NCURSES_PATCH)
 dnl We need these values in the generated makefiles
 AC_SUBST(cf_cv_rel_version)
 AC_SUBST(cf_cv_abi_version)
+AC_SUBST(cf_cv_cc_bool_type)
 AC_SUBST(cf_cv_builtin_bool)
-AC_SUBST(cf_cv_type_of_bool)
+AC_SUBST(cf_cv_type_of_bool)dnl
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Check if we can include <sys/time.h> with <sys/select.h>; this breaks on

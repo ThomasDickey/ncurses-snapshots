@@ -32,7 +32,7 @@
 
 /*
     Version Control
-    $Revision: 1.28 $
+    $Revision: 1.29 $
   --------------------------------------------------------------------------*/
 /*
   This program generates various record structures and constants from the
@@ -1114,6 +1114,7 @@ static void
 gen_offsets(void)
 {
   int o;
+  const char* s_bool = "";
 
   GEN_OFFSET(_maxy,short);
   GEN_OFFSET(_maxx,short);
@@ -1126,10 +1127,13 @@ gen_offsets(void)
   GEN_OFFSET(_parx,int);
   if (sizeof(bool) == sizeof(char)) {
     GEN_OFFSET(_scroll,char);
+    s_bool = "char";
   } else if (sizeof(bool) == sizeof(short)) {
     GEN_OFFSET(_scroll,short);
+    s_bool = "short";
   } else if (sizeof(bool) == sizeof(int)) {
     GEN_OFFSET(_scroll,int);
+    s_bool = "int";
   }
   printf("   Sizeof%-*s : constant Natural := %2d; --  %s\n",
 	 8, "_bool",sizeof(bool),"bool");
@@ -1138,6 +1142,8 @@ gen_offsets(void)
    */
   printf("   Offset%-*s : constant Natural := %2d; --  %s\n",
 	 8, "_XY",1,"int");
+  printf("\n");
+  printf("   type Curses_Bool is mod 2 ** Interfaces.C.%s'Size;\n",s_bool);
 }
 
 /*

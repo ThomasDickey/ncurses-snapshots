@@ -21,7 +21,7 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: fun.c,v 1.1 1998/01/10 00:28:58 tom Exp $")
+MODULE_ID("$Id: fun.c,v 1.2 1999/06/16 00:46:12 tom Exp $")
 
 /*
  * Test the function keys on the terminal.  The code for echo tests
@@ -64,7 +64,7 @@ extern char **scan_up, **scan_down, **scan_name;
 extern int *scan_tested, *scan_length;
 
 /* local definitions */
-static char *fk_name[MAX_STRINGS];
+static const char *fk_name[MAX_STRINGS];
 static char *fkval[MAX_STRINGS];
 static char *fk_label[MAX_STRINGS];	/* function key labels (if any) */
 static int fk_tested[MAX_STRINGS];
@@ -205,7 +205,7 @@ enter_key(
 		fkval[key_count] = value;
 		fk_tested[key_count] = 0;
 		fk_label[key_count] = lab;
-		fk_name[key_count++] = (char *)name;
+		fk_name[key_count++] = name;
 		if (lab) {
 			got_labels = TRUE;
 		}

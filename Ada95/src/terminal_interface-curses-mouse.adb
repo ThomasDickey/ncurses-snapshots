@@ -35,7 +35,7 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.15 $
+--  $Revision: 1.16 $
 --  Binding Version 01.00
 ------------------------------------------------------------------------------
 with System;
@@ -191,10 +191,12 @@ package body Terminal_Interface.Curses.Mouse is
    function Enclosed_In_Window (Win    : Window := Standard_Window;
                                 Event  : Mouse_Event) return Boolean
    is
-      function Wenclose (Win : Window; Y : C_Int; X : C_Int) return C_Int;
+      function Wenclose (Win : Window; Y : C_Int; X : C_Int)
+                         return Curses_Bool;
       pragma Import (C, Wenclose, "wenclose");
    begin
-      if Wenclose (Win, C_Int (Event.Y), C_Int (Event.X)) = Curses_False then
+      if Wenclose (Win, C_Int (Event.Y), C_Int (Event.X))
+        = Curses_Bool_False then
          return False;
       else
          return True;
