@@ -48,7 +48,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.61 2000/10/28 22:25:10 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.62 2000/11/25 22:37:54 Ehud.Karni Exp $")
 
 /****************************************************************************
  *
@@ -165,11 +165,12 @@ _nc_get_screensize(int *linep, int *colp)
 #endif /* HAVE_SIZECHANGE */
 
 	/* if we can't get dynamic info about the size, use static */
-	if (*linep <= 0 || *colp <= 0)
-	    if (lines > 0 && columns > 0) {
-		*linep = (int) lines;
-		*colp = (int) columns;
-	    }
+	if (*linep <= 0 ) {
+	    *linep = (int) lines;
+	}
+	if (*colp <= 0) {
+	    *colp = (int) columns;
+	}
 
 	/* the ultimate fallback, assume fixed 24x80 size */
 	if (*linep <= 0 || *colp <= 0) {

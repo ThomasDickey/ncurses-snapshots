@@ -55,7 +55,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.52 2000/11/12 01:21:26 Solar.Designer Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.53 2000/11/25 21:15:16 tom Exp $")
 
 #if !PURE_TERMINFO
 
@@ -821,10 +821,10 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
 
     *fname++ = pathbuf;		/* tokenize path into vector of names */
     while (*++p) {
-	if (*p == ' ' || *p == ':') {
+	if (*p == ' ' || *p == NCURSES_PATHSEP) {
 	    *p = '\0';
 	    while (*++p)
-		if (*p != ' ' && *p != ':')
+		if (*p != ' ' && *p != NCURSES_PATHSEP)
 		    break;
 	    if (*p == '\0')
 		break;
@@ -990,7 +990,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE * const tp)
 	    char *cp;
 
 	    for (cp = tc; *cp; cp++) {
-		if (*cp == ':')
+		if (*cp == NCURSES_PATHSEP)
 		    *cp = '\0';
 		else if (cp == tc || cp[-1] == '\0') {
 		    ADD_TC(cp, filecount);
