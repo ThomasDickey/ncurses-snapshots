@@ -26,10 +26,20 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getyx.3x,v 1.7 2002/09/07 19:02:28 tom Exp $
+.\" $Id: curs_getyx.3x,v 1.8 2002/09/21 19:00:38 tom Exp $
 .TH curs_getyx 3X ""
 .SH NAME
-\fBgetyx\fR, \fBgetparyx\fR, \fBgetbegyx\fR,
+.IX getbegx
+.IX getbegy
+.IX getcurx
+.IX getcury
+.IX getmaxx
+.IX getmaxy
+.IX getparx
+.IX getpary
+\fBgetyx\fR,
+\fBgetparyx\fR,
+\fBgetbegyx\fR,
 \fBgetmaxyx\fR - get \fBcurses\fR cursor and window coordinates
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
@@ -60,7 +70,23 @@ they should not be used as the right-hand side of assignment statements).
 All of these interfaces are macros.
 A "\fB&\fR" is not necessary before the variables \fIy\fR and \fIx\fR.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.
+The
+\fBgetyx\fR,
+\fBgetparyx\fR,
+\fBgetbegyx\fR and
+\fBgetmaxyx\fR
+functions are described in the XSI Curses standard, Issue 4.
+.PP
+This implementation also provides
+\fBgetbegx\fR,
+\fBgetbegy\fR,
+\fBgetcurx\fR,
+\fBgetcury\fR,
+\fBgetmaxx\fR,
+\fBgetmaxy\fR,
+\fBgetparx\fR and
+\fBgetpary\fR
+for compatibility with older versions of curses.
 .SH SEE ALSO
 \fBcurses\fR(3X)
 .\"#

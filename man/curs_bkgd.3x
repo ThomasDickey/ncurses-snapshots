@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_bkgd.3x,v 1.17 2002/07/20 14:50:13 tom Exp $
+.\" $Id: curs_bkgd.3x,v 1.18 2002/09/21 19:46:26 tom Exp $
 .TH curs_bkgd 3X ""
 .SH NAME
 \fBbkgdset\fR, \fBwbkgdset\fR,
@@ -58,8 +58,8 @@ the blank characters.  The background becomes a property of the
 character and moves with the character through any scrolling and
 insert/delete line/character operations.
 
-To the extent possible on a
-particular terminal, the attribute part of the background is displayed
+To the extent possible on a particular terminal,
+the attribute part of the background is displayed
 as the graphic rendition of the character put on the screen.
 
 The \fBbkgd\fR and \fBwbkgd\fR functions
@@ -83,12 +83,14 @@ but this appears to be an error.
 .SH NOTES
 Note that \fBbkgdset\fR and \fBbkgd\fR may be macros.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.  The draft
-does not include \fBconst\fR qualifiers on the arguments.  The standard
-specifies that \fBbkgd\fR and \fBwbkgd\fR return \fBERR\fR, on failure. but
-gives no failure conditions.
+These functions are described in the XSI Curses standard, Issue 4.
+It specifies that \fBbkgd\fR and \fBwbkgd\fR return \fBERR\fR on failure.
+but gives no failure conditions.
 .SH SEE ALSO
-\fBcurses\fR(3X), \fBcurs_addch\fR(3X), \fBcurs_outopts\fR(3X)
+\fBcurses\fR(3X),
+\fBcurs_addch\fR(3X),
+\fBcurs_attr\fR(3X),
+\fBcurs_outopts\fR(3X)
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

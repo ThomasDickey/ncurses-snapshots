@@ -1,10 +1,22 @@
--- $Id: NEWS,v 1.708 2002/09/15 00:47:23 tom Exp $
+-- $Id: NEWS,v 1.710 2002/09/22 00:27:52 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020921 pre-release
+	+ redid fix for edit_man.sed path.
+	+ workaround for Cygwin bug which makes subprocess writes to stdout
+	  result in core dump.
+	+ documented getbegx(), etc.
+	+ minor fixes to configure script to use '%' consistently as a sed
+	  delimiter rather than '@'.
+	> Philippe Blain:
+	+ add check in lib_overlay.c to ensure that the windows to be merged
+	  actually overlap, and in copywin(), limit the area to be touched
+	  to the lines given for the destination window.
 
 20020914 pre-release
 	+ modified curses.h so that if the wide-character version is installed
