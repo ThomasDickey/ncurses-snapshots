@@ -30,7 +30,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_scanw.c,v 1.4 1997/02/08 14:45:51 tom Exp $")
+MODULE_ID("$Id: lib_scanw.c,v 1.5 1997/08/30 23:49:19 tom Exp $")
 
 #if !HAVE_VSSCANF
 extern int vsscanf(const char *str, const char *format, ...);
@@ -40,7 +40,7 @@ int vwscanw(WINDOW *win, const char *fmt, va_list argp)
 {
 char buf[BUFSIZ];
 
-	if (wgetstr(win, buf) == ERR)
+	if (wgetnstr(win, buf, sizeof(buf)-1) == ERR)
 	    return(ERR);
 
 	return(vsscanf(buf, fmt, argp));

@@ -530,6 +530,7 @@
 ./ncurses/read_entry.c
 ./ncurses/read_termcap.c
 ./ncurses/resizeterm.c
+./ncurses/safe_sprintf.c
 ./ncurses/sigaction.c
 ./ncurses/softscroll.c
 ./ncurses/tries.c
@@ -569,6 +570,7 @@
 ./test/bs.c
 ./test/configure.in
 ./test/firework.c
+./test/firstlast.c
 ./test/gdc.6
 ./test/gdc.c
 ./test/hanoi.c
@@ -583,6 +585,7 @@
 ./test/test.priv.h
 ./test/testaddch.c
 ./test/testcurs.c
+./test/testscanw.c
 ./test/tracemunch
 ./test/view.c
 ./test/worm.c

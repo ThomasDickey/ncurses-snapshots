@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_pad.c,v 1.21 1997/08/09 17:21:49 tom Exp $")
+MODULE_ID("$Id: lib_pad.c,v 1.22 1997/08/25 01:06:52 Alexander.V.Lukyanov Exp $")
 
 WINDOW *newpad(int l, int c)
 {
@@ -256,9 +256,15 @@ int pechochar(WINDOW *pad, chtype ch)
 	T((T_CALLED("pechochar(%p, %s)"), pad, _tracechtype(ch)));
 
 	if (!(pad->_flags & _ISPAD))
-		returnCode(ERR);
+		returnCode(wechochar(pad,ch));
 
-	waddch(curscr, ch);
-	doupdate();
+	waddch(pad, ch);
+	prefresh(pad, pad->_pad._pad_y,
+		      pad->_pad._pad_x,
+		      pad->_pad._pad_top,
+		      pad->_pad._pad_left,
+		      pad->_pad._pad_bottom,
+		      pad->_pad._pad_right);
+	
 	returnCode(OK);
 }

@@ -1,4 +1,4 @@
-# $Id: modules,v 1.29 1997/08/09 12:17:44 tom Exp $
+# $Id: modules,v 1.30 1997/08/30 20:49:11 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -92,6 +92,7 @@ names		lib		.
 name_match	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 read_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 read_termcap	lib		$(srcdir)	../include/term.h
+safe_sprintf	lib		$(srcdir)
 tries		lib		$(srcdir)
 unctrl		lib		.
 write_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h

@@ -70,8 +70,8 @@ libncurses-routines	= alloc_entry captoinfo comp_error comp_hash \
 				lib_traceatr lib_tracechr \
 				lib_tracedmp lib_tracemse lib_tstp \
 				lib_twait lib_vidattr lib_window \
-				name_match parse_entry \
-				read_entry read_termcap resizeterm \
+				name_match parse_entry read_entry \
+				read_termcap resizeterm safe_sprintf \
 				softscroll tries wresize write_entry \
 				codes comp_captab expanded fallback \
 				lib_gen lib_keyname names unctrl

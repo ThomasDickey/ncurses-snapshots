@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.26 1997/08/22 18:22:28 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.29 1997/08/31 02:54:43 tom Exp $")
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail
@@ -176,41 +176,25 @@ int i;
 
 static int kgetch(WINDOW *);
 
-void _nc_backspace(WINDOW *win)
-{
-	if (win->_curx == 0)
-	{
-	    beep();
-	    return;
-	}
-
-	mvwaddstr(curscr, win->_begy + win->_cury + win->_yoffset,
-		  win->_begx + win->_curx, "\b \b");
-	waddstr(win, "\b \b");
-
-	/*
-	 * This used to do the equivalent of _nc_outstr("\b \b"), which
-	 * would fail on terminals with a non-backspace cursor_left
-	 * character.
-	 */
-	mvcur(win->_begy + win->_cury + win->_yoffset,
-	      win->_begx + win->_curx,
-	      win->_begy + win->_cury + win->_yoffset,
-	      win->_begx + win->_curx - 1);
-	_nc_outstr(" ");
-	mvcur(win->_begy + win->_cury + win->_yoffset,
-	      win->_begx + win->_curx,
-	      win->_begy + win->_cury + win->_yoffset,
-	      win->_begx + win->_curx - 1);
-	SP->_curscol--;
-}
-
 int
 wgetch(WINDOW *win)
 {
 int	ch;
 
 	T((T_CALLED("wgetch(%p)"), win));
+
+#undef BUG_970830
+	/* Using this causes my test-driver to abnormally exit from several
+	 * test-cases - TD
+	 */
+#ifdef BUG_970830
+	if (cooked_key_in_fifo())
+	{
+		ch = fifo_pull();
+    		T(("wgetch returning (pre-cooked): %#x = %s", ch, _trace_key(ch));)
+		returnCode(ch);
+	}
+#endif
 
 	/*
 	 * Handle cooked mode.  Grab a string from the screen,
@@ -225,11 +209,12 @@ int	ch;
 
 		wgetnstr(win, buf, MAXCOLUMNS);
 
-		for (sp = buf; *sp; sp++)
-			ungetch(*sp);
+		/* ungetch in reverse order */
 		ungetch('\n');
+		for (sp = buf+strlen(buf); sp>buf; sp--)
+			ungetch(sp[-1]);
 
-		return(fifo_pull());
+		returnCode(fifo_pull());
 	}
 
 	/* this should be eliminated */
@@ -261,9 +246,12 @@ int	ch;
 		/* else go on to read data available */
 	}
 
+#ifndef BUG_970830
 	if (cooked_key_in_fifo())
 		ch = fifo_pull();
-	else if (win->_use_keypad) {
+	else
+#endif
+	if (win->_use_keypad) {
 		/*
 		 * This is tricky.  We only want to get special-key
 		 * events one at a time.  But we want to accumulate
@@ -322,20 +310,8 @@ int	ch;
 		if (!SP->_use_meta)
 			ch &= 0x7f;
 
-	if (!(win->_flags & _ISPAD) && SP->_echo) {
-	    /* there must be a simpler way of doing this */
-	    if (ch == erasechar() || ch == KEY_BACKSPACE || ch == KEY_LEFT)
-		_nc_backspace(win);
-	    else if (ch < KEY_MIN) {
-		mvwaddch(curscr,
-			 win->_begy + win->_cury + win->_yoffset,
-			 win->_begx + win->_curx,
-			 ch);
-		waddch(win, (chtype)ch);
-	    }
-	    else
-		beep();
-	}
+	if (SP->_echo && ch < KEY_MIN && !(win->_flags & _ISPAD))
+		wechochar(win, (chtype)ch);
 
 	T(("wgetch returning : %#x = %s", ch, _trace_key(ch));)
 

@@ -1,5 +1,5 @@
 # Test-Program modules
-# $Id: modules,v 1.3 1997/08/16 20:00:45 tom Exp $
+# $Id: modules,v 1.4 1997/08/30 20:49:35 tom Exp $
 ################################################################################
 # Copyright 1997 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -34,6 +34,7 @@ rain		progs		$(srcdir)	../include/term.h
 tclock		progs		$(srcdir)
 testaddch	progs		$(srcdir)
 testcurs	progs		$(srcdir)
+testscanw	progs		$(srcdir)
 view		progs		$(srcdir)
 worm		progs		$(srcdir)
 xmas		progs		$(srcdir)
