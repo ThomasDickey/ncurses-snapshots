@@ -39,7 +39,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.58 2002/06/01 22:58:11 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.59 2002/07/06 22:41:14 tom Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
@@ -287,6 +287,14 @@ static void set_obsolete_termcaps(TERMTYPE * tp);
 /* is this the index of a function key string? */
 #define FNKEY(i)	(((i)<= 65 && (i)>= 75) || ((i)<= 216 && (i)>= 268))
 
+/*
+ * If we configure with a different Caps file, the offsets into the arrays
+ * will change.  So we use an address expression.
+ */
+#define BOOL_IDX(name) (&(name) - &(CUR Booleans[0]))
+#define NUM_IDX(name)  (&(name) - &(CUR Numbers[0]))
+#define STR_IDX(name)  (&(name) - &(CUR Strings[0]))
+
 static bool
 version_filter(int type, int idx)
 /* filter out capabilities we may want to suppress */
@@ -298,31 +306,28 @@ version_filter(int type, int idx)
     case V_SVR1:		/* System V Release 1, Ultrix */
 	switch (type) {
 	case BOOLEAN:
-	    /* below and including xon_xoff */
-	    return ((idx <= 20) ? TRUE : FALSE);
+	    return ((idx <= BOOL_IDX(xon_xoff)) ? TRUE : FALSE);
 	case NUMBER:
-	    /* below and including width_status_line */
-	    return ((idx <= 7) ? TRUE : FALSE);
+	    return ((idx <= NUM_IDX(width_status_line)) ? TRUE : FALSE);
 	case STRING:
-	    /* below and including prtr_non */
-	    return ((idx <= 144) ? TRUE : FALSE);
+	    return ((idx <= STR_IDX(prtr_non)) ? TRUE : FALSE);
 	}
 	break;
 
     case V_HPUX:		/* Hewlett-Packard */
 	switch (type) {
 	case BOOLEAN:
-	    /* below and including xon_xoff */
-	    return ((idx <= 20) ? TRUE : FALSE);
+	    return ((idx <= BOOL_IDX(xon_xoff)) ? TRUE : FALSE);
 	case NUMBER:
-	    /* below and including label_width */
-	    return ((idx <= 10) ? TRUE : FALSE);
+	    return ((idx <= NUM_IDX(label_width)) ? TRUE : FALSE);
 	case STRING:
-	    if (idx <= 144)	/* below and including prtr_non */
+	    if (idx <= STR_IDX(prtr_non))
 		return (TRUE);
 	    else if (FNKEY(idx))	/* function keys */
 		return (TRUE);
-	    else if (idx == 147 || idx == 156 || idx == 157)	/* plab_norm,label_on,label_off */
+	    else if (idx == STR_IDX(plab_norm)
+		     || idx == STR_IDX(label_on)
+		     || idx == STR_IDX(label_off))
 		return (TRUE);
 	    else
 		return (FALSE);
@@ -332,13 +337,11 @@ version_filter(int type, int idx)
     case V_AIX:		/* AIX */
 	switch (type) {
 	case BOOLEAN:
-	    /* below and including xon_xoff */
-	    return ((idx <= 20) ? TRUE : FALSE);
+	    return ((idx <= BOOL_IDX(xon_xoff)) ? TRUE : FALSE);
 	case NUMBER:
-	    /* below and including width_status_line */
-	    return ((idx <= 7) ? TRUE : FALSE);
+	    return ((idx <= NUM_IDX(width_status_line)) ? TRUE : FALSE);
 	case STRING:
-	    if (idx <= 144)	/* below and including prtr_non */
+	    if (idx <= STR_IDX(prtr_non))
 		return (TRUE);
 	    else if (FNKEY(idx))	/* function keys */
 		return (TRUE);
