@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2000/04/22 22:58:12 $
+#	$Date: 2000/05/14 01:22:36 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2539,7 +2539,7 @@ xterm-xi|xterm on XI Graphics Accelerated X under BSD/OS 3.1,
 
 # This is one of the variants of XFree86 3.3 xterm, updated for 4.0 (T.Dickey)
 xterm-16color|xterm with 16 colors like aixterm, 
-	colors#16, ncv#32, pairs#256, 
+	colors#16, pairs#256, 
 	setab=\E[%?%p1%{8}%<%t%p1%{40}%+%e%p1%{92}%+%;%dm, 
 	setaf=\E[%?%p1%{8}%<%t%p1%{30}%+%e%p1%{82}%+%;%dm, 
 	setb=%p1%{8}%/%{6}%*%{4}%+\E[%d%p1%{8}%m%Pa%?%ga%{1}%=%t4%e%ga%{3}%=%t6%e%ga%{4}%=%t1%e%ga%{6}%=%t3%e%ga%d%;m, 
@@ -2549,7 +2549,7 @@ xterm-16color|xterm with 16 colors like aixterm,
 # These variants of XFree86 3.9.16 xterm are built as a configure option.
 xterm-256color|xterm with 256 colors, 
 	ccc, 
-	colors#256, ncv#32, pairs#256, 
+	colors#256, pairs#256, 
 	initc=\E]4;%p1%d;rgb\:%p2%{255}%*%{1000}%/%2.2X/%p3%{255}%*%{1000}%/%2.2X/%p4%{255}%*%{1000}%/%2.2X\E\\, 
 	setab=\E[48;5;%p1%dm, setaf=\E[38;5;%p1%dm, 
 	setb=\E[48;5;%p1%dm, setf=\E[38;5;%p1%dm, 
@@ -11550,10 +11550,11 @@ ibm8514-c|IBM 8514 color display with standout and underline,
 
 #
 # AIX entries.  IBM ships these with AIX 3.2.5. 
+# -- added rc, sc based on manpage -TD
 aixterm|IBM Aixterm Terminal Emulator, 
 	eslok, hs, 
 	acsc=jjkkllmmnnqqttuuvvwwxx, bold=\E[1m, dsl=\E[?E, 
-	fsl=\E[?F, ri@, s0ds=\E(B, s1ds=\E(0, 
+	fsl=\E[?F, rc=\E8, ri@, s0ds=\E(B, s1ds=\E(0, sc=\E7, 
 	sgr=\E[%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;m%?%p9%t\E(0%e\E(B%;, 
 	sgr0=\E[0;10m\E(B, tsl=\E[?%p1%dT, use=ibm6154, 
 aixterm-m|IBM AIXterm Monochrome Terminal Emulator, 
@@ -18292,6 +18293,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add mgterm, from NetBSD -TD
 #	* add alias sun-cgsix for sun-ss5 as per NetBSD
 #	* change cons25w to use rs2 for reset rather than rs1 -TD
+#	* add rc/sc to aixterm based on manpage -TD
+#
+# 2000/5/13
+#	* remove ncv from xterm-16color, xterm-256 color
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
