@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.35 2002/06/29 23:36:12 tom Exp $ */
+/* $Id: test.priv.h,v 1.36 2002/10/19 22:11:47 tom Exp $ */
 
 #if HAVE_CONFIG_H
 #include <ncurses_cfg.h>
@@ -125,6 +125,9 @@ extern int optind;
 #define setlocale(name,string) /* nothing */
 #endif
 
+#include <assert.h>
+#include <ctype.h>
+
 #ifndef GCC_NORETURN
 #define GCC_NORETURN /* nothing */
 #endif
@@ -160,6 +163,10 @@ extern int optind;
 
 #ifndef CCHARW_MAX
 #define CCHARW_MAX 5
+#endif
+
+#ifndef CTRL
+#define CTRL(x)		((x) & 0x1f)
 #endif
 
 #ifndef KEY_MIN

@@ -1,6 +1,6 @@
-/* $Id: tclock.c,v 1.22 2002/06/29 23:34:13 tom Exp $ */
+/* $Id: tclock.c,v 1.23 2002/10/19 22:12:39 tom Exp $ */
 
-#include "test.priv.h"
+#include <test.priv.h>
 
 #include <math.h>
 

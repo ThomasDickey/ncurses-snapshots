@@ -1,4 +1,4 @@
-# $Id: modules,v 1.90 2002/05/11 20:14:41 tom Exp $
+# $Id: modules,v 1.91 2002/11/02 23:29:08 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -61,7 +61,6 @@ lib_inchstr	lib		$(base)
 lib_initscr	lib		$(base)		$(INCDIR)/tic.h
 lib_insch	lib		$(base)
 lib_insdel	lib		$(base)
-lib_insstr	lib		$(base)
 lib_instr	lib		$(base)
 lib_isendwin	lib		$(base)
 lib_leaveok	lib		$(base)

@@ -1,4 +1,4 @@
-.\" $Id: terminfo.tail,v 1.35 2002/04/20 16:49:33 tom Exp $
+.\" $Id: terminfo.tail,v 1.36 2002/10/26 18:50:12 tom Exp $
 .\" Beginning of terminfo.tail file
 .ps +1
 .PP
@@ -1170,7 +1170,7 @@ defined."
 .PP
 The \fBsetaf\fR/\fBsetab\fR and \fBsetf\fR/\fBsetb\fR capabilities take a
 single numeric argument each.
-Argument values 0-7 are portably defined as
+Argument values 0-7 of \fBsetaf\fR/\fBsetab\fR are portably defined as
 follows (the middle column is the symbolic #define available in the header for
 the \fBcurses\fR or \fBncurses\fR libraries).
 The terminal hardware is free to
@@ -1191,6 +1191,25 @@ magenta	\fBCOLOR_MAGENTA\fR	5	max,0,max
 cyan	\fBCOLOR_CYAN\fR	6	0,max,max
 white	\fBCOLOR_WHITE\fR	7	max,max,max
 .TE
+.PP
+The argument values of \fBsetf\fR/\fBsetb\fR historically correspond to
+a different mapping, i.e.,
+.TS H
+center;
+l c c c
+l l n l.
+\fBColor	#define 	Value	RGB\fR
+black	\fBCOLOR_BLACK\fR	0	0, 0, 0
+blue	\fBCOLOR_BLUE\fR	1	0,0,max
+green	\fBCOLOR_GREEN\fR	2	0,max,0
+cyan	\fBCOLOR_CYAN\fR	3	0,max,max
+red	\fBCOLOR_RED\ \fR	4	max,0,0
+magenta	\fBCOLOR_MAGENTA\fR	5	max,0,max
+yellow	\fBCOLOR_YELLOW\fR	6	max,max,0
+white	\fBCOLOR_WHITE\fR	7	max,max,max
+.TE
+It is important to not confuse the two sets of color capabilities;
+otherwise red/blue will be interchanged on the display.
 .PP
 On an HP-like terminal, use \fBscp\fR with a color-pair number parameter to set
 which color pair is current.

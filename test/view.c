@@ -23,10 +23,9 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.53 2002/06/29 23:28:27 tom Exp $
+ * $Id: view.c,v 1.55 2002/11/03 00:49:56 tom Exp $
  */
 
-#include <ctype.h>
 #include <time.h>
 
 #include <test.priv.h>
@@ -496,12 +495,13 @@ show_all(const char *tag)
 	clrtoeol();
 	if ((s = lptr[i - 1]) != 0) {
 	    int len = ch_len(s);
-	    if (len > shift)
+	    if (len > shift) {
 #if USE_WIDEC_SUPPORT
 		add_wchstr(s + shift);
 #else
 		addchstr(s + shift);
 #endif
+	    }
 	    if (try_color)
 		wchgat(stdscr, -1, A_NORMAL, my_pair, NULL);
 	}

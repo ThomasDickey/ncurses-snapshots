@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.20 2002/07/20 14:52:14 tom Exp $
+.\" $Id: curs_mouse.3x,v 1.21 2002/10/27 00:58:08 tom Exp $
 .TH curs_mouse 3X ""
 .SH NAME
 \fBgetmouse\fR, \fBungetmouse\fR,
@@ -208,6 +208,14 @@ If you are using something other than xterm and there is no gpm daemon
 running on your machine, mouse events will not be visible to
 \fBncurses\fR(3X) (and the \fBwmousemask\fR function will always
 return \fB0\fR).
+
+If the terminfo entry contains a \fBXM\fR string,
+this is used in the xterm mouse driver to control the
+way the terminal is initialized for mouse operation.
+The default, if \fBXM\fR is not found,
+corresponds to private mode 1000 of xterm:
+
+    \\E[?1000%?%p1%{1}%=%th%el%;
 
 The z member in the event structure is not presently used.
 It is intended

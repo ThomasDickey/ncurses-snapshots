@@ -108,7 +108,9 @@
  * LONG_DIST and (b) further inward from the right or left edge than LONG_DIST,
  * we'll consider nonlocal.
  */
-#define NOT_LOCAL(fy, fx, ty, tx)	((tx > LONG_DIST) && (tx < screen_lines - 1 - LONG_DIST) && (abs(ty-fy) + abs(tx-fx) > LONG_DIST))
+#define NOT_LOCAL(fy, fx, ty, tx)	((tx > LONG_DIST) \
+ 		 && (tx < screen_columns - 1 - LONG_DIST) \
+		 && (abs(ty-fy) + abs(tx-fx) > LONG_DIST))
 
 /****************************************************************************
  *
@@ -152,7 +154,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.86 2002/09/14 23:02:06 Philippe.Blain Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.87 2002/10/26 20:39:42 tom Exp $")
 
 #define CURRENT_ROW	SP->_cursrow	/* phys cursor row */
 #define CURRENT_COLUMN	SP->_curscol	/* phys cursor column */

@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.102 2002/10/05 19:59:41 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.104 2002/11/10 01:24:54 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -769,6 +769,169 @@ TERMINAL *cur_term;		/* tweak to avoid linking lib_cur_term.c */
 #define CUR tp->
 
 /*
+ * Check if the color capabilities are consistent
+ */
+static void
+check_colors(TERMTYPE * tp)
+{
+    if ((max_colors > 0) != (max_pairs > 0)
+	|| ((max_colors > max_pairs) && (initialize_pair == 0)))
+	_nc_warning("inconsistent values for max_colors (%d) and max_pairs (%d)",
+		    max_colors, max_pairs);
+
+    PAIRED(set_foreground, set_background);
+    PAIRED(set_a_foreground, set_a_background);
+    PAIRED(set_color_pair, initialize_pair);
+
+    if (VALID_STRING(set_foreground)
+	&& VALID_STRING(set_a_foreground)
+	&& !strcmp(set_foreground, set_a_foreground))
+	_nc_warning("expected setf/setaf to be different");
+
+    if (VALID_STRING(set_background)
+	&& VALID_STRING(set_a_background)
+	&& !strcmp(set_background, set_a_background))
+	_nc_warning("expected setb/setab to be different");
+}
+
+static int
+keypad_final(const char *string)
+{
+    int result = '\0';
+
+    if (VALID_STRING(string)
+	&& *string++ == '\033'
+	&& *string++ == 'O'
+	&& strlen(string) == 1) {
+	result = *string;
+    }
+
+    return result;
+}
+
+static int
+keypad_index(const char *string)
+{
+    char *test;
+    const char *list = "PQRSwxymtuvlqrsPpn";	/* app-keypad except "Enter" */
+    int ch;
+    int result = -1;
+
+    if ((ch = keypad_final(string)) != '\0') {
+	test = strchr(list, ch);
+	if (test != 0)
+	    result = (test - list);
+    }
+    return result;
+}
+
+/*
+ * Do a quick sanity-check for vt100-style keypads to see if the 5-key keypad
+ * is mapped inconsistently.
+ */
+static void
+check_keypad(TERMTYPE * tp)
+{
+    char show[80];
+
+    if (VALID_STRING(key_a1) &&
+	VALID_STRING(key_a3) &&
+	VALID_STRING(key_b2) &&
+	VALID_STRING(key_c1) &&
+	VALID_STRING(key_c3)) {
+	char final[6];
+	int list[5];
+	int increase = 0;
+	int j, k, kk;
+	int last;
+	int test;
+
+	final[0] = keypad_final(key_a1);
+	final[1] = keypad_final(key_a3);
+	final[2] = keypad_final(key_b2);
+	final[3] = keypad_final(key_c1);
+	final[4] = keypad_final(key_c3);
+	final[5] = '\0';
+
+	/* special case: legacy coding using 1,2,3,0,. on the bottom */
+	if (!strcmp(final, "qsrpn"))
+	    return;
+
+	list[0] = keypad_index(key_a1);
+	list[1] = keypad_index(key_a3);
+	list[2] = keypad_index(key_b2);
+	list[3] = keypad_index(key_c1);
+	list[4] = keypad_index(key_c3);
+
+	/* check that they're all vt100 keys */
+	for (j = 0; j < 5; ++j) {
+	    if (list[j] < 0) {
+		return;
+	    }
+	}
+
+	/* check if they're all in increasing order */
+	for (j = 1; j < 5; ++j) {
+	    if (list[j] > list[j - 1]) {
+		++increase;
+	    }
+	}
+	if (increase != 4) {
+	    show[0] = '\0';
+
+	    for (j = 0, last = -1; j < 5; ++j) {
+		for (k = 0, kk = -1, test = 100; k < 5; ++k) {
+		    if (list[k] > last &&
+			list[k] < test) {
+			test = list[k];
+			kk = k;
+		    }
+		}
+		last = test;
+		switch (kk) {
+		case 0:
+		    strcat(show, " ka1");
+		    break;
+		case 1:
+		    strcat(show, " ka3");
+		    break;
+		case 2:
+		    strcat(show, " kb2");
+		    break;
+		case 3:
+		    strcat(show, " kc1");
+		    break;
+		case 4:
+		    strcat(show, " kc3");
+		    break;
+		}
+	    }
+
+	    _nc_warning("vt100 keypad order inconsistent: %s", show);
+	}
+
+    } else if (VALID_STRING(key_a1) ||
+	       VALID_STRING(key_a3) ||
+	       VALID_STRING(key_b2) ||
+	       VALID_STRING(key_c1) ||
+	       VALID_STRING(key_c3)) {
+	show[0] = '\0';
+	if (keypad_index(key_a1) >= 0)
+	    strcat(show, " ka1");
+	if (keypad_index(key_a3) >= 0)
+	    strcat(show, " ka3");
+	if (keypad_index(key_b2) >= 0)
+	    strcat(show, " kb2");
+	if (keypad_index(key_c1) >= 0)
+	    strcat(show, " kc1");
+	if (keypad_index(key_c3) >= 0)
+	    strcat(show, " kc3");
+	if (*show != '\0')
+	    _nc_warning("vt100 keypad map incomplete:%s", show);
+    }
+}
+
+/*
  * Returns the expected number of parameters for the given capability.
  */
 static int
@@ -1076,17 +1239,8 @@ check_termtype(TERMTYPE * tp)
 	    check_params(tp, ExtStrname(tp, j, strnames), a);
     }
 
-    /*
-     * Quick check for color.  We could also check if the ANSI versus
-     * non-ANSI strings are misused.
-     */
-    if ((max_colors > 0) != (max_pairs > 0)
-	|| ((max_colors > max_pairs) && (initialize_pair == 0)))
-	_nc_warning("inconsistent values for max_colors (%d) and max_pairs (%d)",
-		    max_colors, max_pairs);
-
-    PAIRED(set_foreground, set_background);
-    PAIRED(set_a_foreground, set_a_background);
+    check_colors(tp);
+    check_keypad(tp);
 
     /*
      * These may be mismatched because the terminal description relies on

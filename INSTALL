@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.56 2002/09/01 22:42:11 tom Exp $
+-- $Id: INSTALL,v 1.57 2002/10/26 19:03:45 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -545,8 +545,12 @@ SUMMARY OF CONFIGURE OPTIONS:
 	option probably will not work for those configurations.
 
      --with-libtool
-	Generate libraries with libtool.  If this option is selected, then
-	it overrides all other library model specifications.
+	Generate libraries with libtool.  If this option is selected, then it
+	overrides all other library model specifications.  Note that libtool
+	must already be installed, uses makefile rules dependent on GNU make,
+	and does not promise to follow the version numbering convention of
+	other shared libraries on your system.  However, if the --with-shared
+	option does not succeed, you may get better results with this option.
 
     --with-manpage-format=XXX
 	Tell the configure script how you would like to install man-pages.  The

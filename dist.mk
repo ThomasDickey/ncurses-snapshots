@@ -1,4 +1,4 @@
-# $Id: dist.mk,v 1.327 2002/10/12 23:27:36 tom Exp $
+# $Id: dist.mk,v 1.332 2002/11/09 17:20:15 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -10,7 +10,7 @@ SHELL = /bin/sh
 # These define the major/minor/patch versions of ncurses.
 NCURSES_MAJOR = 5
 NCURSES_MINOR = 3
-NCURSES_PATCH = 20021012
+NCURSES_PATCH = 20021109
 
 # We don't append the patch to the version, since this only applies to releases
 VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)
@@ -68,7 +68,7 @@ manhtml: MANIFEST
 	@echo 's/<\/B>/<\/STRONG>/g' >> subst.tmp
 	@echo 's/<I>/<EM>/g'         >> subst.tmp
 	@echo 's/<\/I>/<\/EM>/g'     >> subst.tmp
-	@sort < subst.tmp | uniq > subst.sed
+	@misc/csort < subst.tmp | uniq > subst.sed
 	@echo '/<\/TITLE>/a\' >> subst.sed
 	@echo '<link rev=made href="mailto:bug-ncurses@gnu.org">\' >> subst.sed
 	@echo '<meta http-equiv="Content-Type" content="text\/html; charset=iso-8859-1">' >> subst.sed
@@ -97,7 +97,7 @@ manhtml: MANIFEST
 	@sed -e "\%./doc/html/man/%d" < MANIFEST > MANIFEST.tmp
 	@find ./doc/html/man -type f -print >> MANIFEST.tmp
 	@chmod u+w MANIFEST
-	@sort -u < MANIFEST.tmp > MANIFEST
+	@misc/csort -u < MANIFEST.tmp > MANIFEST
 	@rm -f MANIFEST.tmp
 
 #
@@ -110,7 +110,7 @@ adahtml: MANIFEST
 	  (cd ./Ada95/gen ; make html) ;\
 	  sed -e "\%./doc/html/ada/%d" < MANIFEST > MANIFEST.tmp ;\
 	  find ./doc/html/ada -type f -print >> MANIFEST.tmp ;\
-	  sort -u < MANIFEST.tmp > MANIFEST ;\
+	  misc/csort -u < MANIFEST.tmp > MANIFEST ;\
 	  rm -f MANIFEST.tmp ;\
 	fi
 
@@ -128,7 +128,7 @@ writelock:
 MANIFEST:
 	-rm -f $@
 	touch $@
-	find . -type f -print |sort | fgrep -v .lsm |fgrep -v .spec >$@
+	find . -type f -print |misc/csort | fgrep -v .lsm |fgrep -v .spec >$@
 
 TAGS:
 	etags */*.[ch]

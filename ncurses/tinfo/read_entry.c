@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                                                *
  ****************************************************************************/
 
 /*
@@ -41,7 +42,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.72 2000/12/10 02:55:08 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.73 2002/11/03 01:13:58 tom Exp $")
 
 #if !HAVE_TELL
 #define tell(fd) 0		/* lseek() is POSIX, but not tell() - odd... */
@@ -374,8 +375,7 @@ read_termtype(int fd, TERMTYPE * ptr)
 }
 
 NCURSES_EXPORT(int)
-_nc_read_file_entry
-(const char *const filename, TERMTYPE * ptr)
+_nc_read_file_entry(const char *const filename, TERMTYPE * ptr)
 /* return 1 if read, 0 if not found or garbled */
 {
     int code, fd = -1;
@@ -458,13 +458,20 @@ _nc_read_terminfo_dirs(const char *dirs, char *const filename, const char *const
  */
 
 NCURSES_EXPORT(int)
-_nc_read_entry
-(const char *const tn, char *const filename, TERMTYPE * const tp)
+_nc_read_entry(const char *const tn, char *const filename, TERMTYPE * const tp)
 {
     char *envp;
     char ttn[MAX_ALIAS + 3];
 
-    /* truncate the terminal name to prevent dangerous buffer airline */
+    if (strlen(tn) == 0
+	|| strcmp(tn, ".") == 0
+	|| strcmp(tn, "..") == 0
+	|| _nc_basename((char *)tn) != tn) {
+	T(("illegal or missing entry name '%s'", tn));
+	return 0;
+    }
+
+    /* truncate the terminal name to prevent buffer overflow */
     (void) sprintf(ttn, "%c/%.*s", *tn, MAX_ALIAS, tn);
 
     /* This is System V behavior, in conjunction with our requirements for
@@ -482,7 +489,7 @@ _nc_read_entry
 	/* this is an ncurses extension */
 	if ((envp = _nc_home_terminfo()) != 0) {
 	    if (_nc_read_tic_entry(filename, envp, ttn, tp) == 1) {
-		return (1);
+		return 1;
 	    }
 	}
 
