@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.758 2003/07/26 23:31:27 tom Exp $
+-- $Id: NEWS,v 1.761 2003/08/03 01:00:02 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030802
+	+ modify casts used for ABSENT_BOOLEAN and CANCELLED_BOOLEAN (report by
+	  Daniel Jacobowitz).
+	> Philippe Blain:
+	+ change padding for change_scroll_region to not be proportional to
+	  the size of the scroll-region.
+	+ correct error-return in _nc_safe_strcat().
 
 20030726
 	+ correct limit-checks in _nc_scroll_window() (report and test-case by

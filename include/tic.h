@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000,2001 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2001,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
  ****************************************************************************/
 
 /*
- * $Id: tic.h,v 1.44 2003/07/05 19:23:29 tom Exp $
+ * $Id: tic.h,v 1.45 2003/08/02 23:54:19 tom Exp $
  *	tic.h - Global variables and structures for the terminfo
  *			compiler.
  */
@@ -215,7 +215,7 @@ extern NCURSES_EXPORT(const struct name_table_entry * const *) _nc_get_hash_tabl
 #define NOTFOUND	((struct name_table_entry *) 0)
 
 /* out-of-band values for representing absent capabilities */
-#define ABSENT_BOOLEAN		(-1)		/* 255 */
+#define ABSENT_BOOLEAN		(char)(-1)	/* 255 */
 #define ABSENT_NUMERIC		(-1)
 #define ABSENT_STRING		(char *)0
 

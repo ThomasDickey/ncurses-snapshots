@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.249 2003/07/05 16:50:00 tom Exp $
+ * $Id: curses.priv.h,v 1.250 2003/08/02 22:49:28 Philippe.Blain Exp $
  *
  *	curses.priv.h
  *
@@ -830,7 +830,7 @@ extern	NCURSES_EXPORT(void) name (void); \
 		: ((enter_insert_mode && exit_insert_mode) \
 		  ? SP->_smir_cost + SP->_rmir_cost + (SP->_ip_cost * count) \
 		  : ((insert_character != 0) \
-		    ? (SP->_ich1_cost * count) \
+		    ? ((SP->_ich1_cost + SP->_ip_cost) * count) \
 		    : INFINITY)))
 
 #if USE_XMC_SUPPORT

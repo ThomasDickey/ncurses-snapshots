@@ -73,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.197 2003/06/21 21:55:46 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.198 2003/08/02 22:33:31 Philippe.Blain Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -1712,7 +1712,7 @@ _nc_scrolln(int n, int top, int bot, int maxy)
 	    res = scroll_csr_forward(n, top, bot, top, bot, blank);
 
 	    TPUTS_TRACE("change_scroll_region");
-	    tputs(tparm(change_scroll_region, 0, maxy), maxy, _nc_outch);
+	    putp(tparm(change_scroll_region, 0, maxy));
 	    SP->_cursrow = SP->_curscol = -1;
 	}
 
@@ -1747,7 +1747,7 @@ _nc_scrolln(int n, int top, int bot, int maxy)
 		putp(save_cursor);
 	    }
 	    TPUTS_TRACE("change_scroll_region");
-	    tputs(tparm(change_scroll_region, top, bot), bot + 1 - top, _nc_outch);
+	    putp(tparm(change_scroll_region, top, bot));
 	    if (cursor_saved) {
 		TPUTS_TRACE("restore_cursor");
 		putp(restore_cursor);
@@ -1758,7 +1758,7 @@ _nc_scrolln(int n, int top, int bot, int maxy)
 	    res = scroll_csr_backward(-n, top, bot, top, bot, blank);
 
 	    TPUTS_TRACE("change_scroll_region");
-	    tputs(tparm(change_scroll_region, 0, maxy), maxy, _nc_outch);
+	    putp(tparm(change_scroll_region, 0, maxy));
 	    SP->_cursrow = SP->_curscol = -1;
 	}
 

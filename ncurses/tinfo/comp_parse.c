@@ -52,7 +52,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.54 2003/05/24 21:10:28 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.55 2003/08/02 23:53:42 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype) (TERMTYPE *) = sanity_check;
@@ -398,7 +398,7 @@ _nc_resolve_uses(bool fullresolve)
 	 */
 	for_entry_list(qp) {
 	    for_each_boolean(j, &(qp->tterm)) {
-		if ((int) qp->tterm.Booleans[j] == CANCELLED_BOOLEAN)
+		if (qp->tterm.Booleans[j] == CANCELLED_BOOLEAN)
 		    qp->tterm.Booleans[j] = ABSENT_BOOLEAN;
 	    }
 	    for_each_number(j, &(qp->tterm)) {
