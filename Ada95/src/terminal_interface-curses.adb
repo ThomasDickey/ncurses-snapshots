@@ -35,7 +35,7 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.24 $
+--  $Revision: 1.25 $
 --  Binding Version 01.00
 ------------------------------------------------------------------------------
 with System;
@@ -151,10 +151,10 @@ package body Terminal_Interface.Curses is
 
    function Is_End_Window return Boolean
    is
-      function Isendwin return C_Int;
+      function Isendwin return Curses_Bool;
       pragma Import (C, Isendwin, "isendwin");
    begin
-      if Isendwin = Curses_False then
+      if Isendwin = Curses_Bool_False then
          return False;
       else
          return True;
@@ -392,10 +392,10 @@ package body Terminal_Interface.Curses is
                              Mode : in Boolean := False)
    is
       function Syncok (Win  : Window;
-                       Mode : C_Int) return C_Int;
+                       Mode : Curses_Bool) return C_Int;
       pragma Import (C, Syncok, "syncok");
    begin
-      if Syncok (Win, Boolean'Pos (Mode)) = Curses_Err then
+      if Syncok (Win, Curses_Bool (Boolean'Pos (Mode))) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Set_Synch_Mode;
@@ -839,10 +839,10 @@ package body Terminal_Interface.Curses is
    procedure Set_Meta_Mode (Win      : in Window := Standard_Window;
                             SwitchOn : in Boolean := True)
    is
-      function Meta (W : Window; Mode : C_Int) return C_Int;
+      function Meta (W : Window; Mode : Curses_Bool) return C_Int;
       pragma Import (C, Meta, "meta");
    begin
-      if Meta (Win, Boolean'Pos (SwitchOn)) = Curses_Err then
+      if Meta (Win, Curses_Bool (Boolean'Pos (SwitchOn))) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Set_Meta_Mode;
@@ -850,10 +850,10 @@ package body Terminal_Interface.Curses is
    procedure Set_KeyPad_Mode (Win      : in Window := Standard_Window;
                               SwitchOn : in Boolean := True)
    is
-      function Keypad (W : Window; Mode : C_Int) return C_Int;
+      function Keypad (W : Window; Mode : Curses_Bool) return C_Int;
       pragma Import (C, Keypad, "keypad");
    begin
-      if Keypad (Win, Boolean'Pos (SwitchOn)) = Curses_Err then
+      if Keypad (Win, Curses_Bool (Boolean'Pos (SwitchOn))) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Set_KeyPad_Mode;
@@ -872,10 +872,10 @@ package body Terminal_Interface.Curses is
      (Win  : in Window := Standard_Window;
       Mode : in Boolean := True)
    is
-      function Intrflush (Win : Window; Mode : C_Int) return C_Int;
+      function Intrflush (Win : Window; Mode : Curses_Bool) return C_Int;
       pragma Import (C, Intrflush, "intrflush");
    begin
-      if Intrflush (Win, Boolean'Pos (Mode)) = Curses_Err then
+      if Intrflush (Win, Curses_Bool (Boolean'Pos (Mode))) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Set_Flush_On_Interrupt_Mode;
@@ -900,10 +900,10 @@ package body Terminal_Interface.Curses is
      (Win  : in Window := Standard_Window;
       Mode : in Boolean := False)
    is
-      function Nodelay (Win : Window; Mode : C_Int) return C_Int;
+      function Nodelay (Win : Window; Mode : Curses_Bool) return C_Int;
       pragma Import (C, Nodelay, "nodelay");
    begin
-      if Nodelay (Win, Boolean'Pos (Mode)) = Curses_Err then
+      if Nodelay (Win, Curses_Bool (Boolean'Pos (Mode))) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Set_NoDelay_Mode;
@@ -935,10 +935,11 @@ package body Terminal_Interface.Curses is
      (Win       : in Window := Standard_Window;
       Timer_Off : in Boolean := False)
    is
-      function Notimeout (Win : Window; Mode : C_Int) return C_Int;
+      function Notimeout (Win : Window; Mode : Curses_Bool) return C_Int;
       pragma Import (C, Notimeout, "notimeout");
    begin
-      if Notimeout (Win, Boolean'Pos (Timer_Off)) = Curses_Err then
+      if Notimeout (Win, Curses_Bool (Boolean'Pos (Timer_Off)))
+        = Curses_Err then
          raise Curses_Exception;
       end if;
    end Set_Escape_Timer_Mode;
@@ -967,10 +968,10 @@ package body Terminal_Interface.Curses is
      (Win      : in Window := Standard_Window;
       Do_Clear : in Boolean := True)
    is
-      function Clear_Ok (W : Window; Flag : C_Int) return C_Int;
+      function Clear_Ok (W : Window; Flag : Curses_Bool) return C_Int;
       pragma Import (C, Clear_Ok, "clearok");
    begin
-      if Clear_Ok (Win, Boolean'Pos (Do_Clear)) = Curses_Err then
+      if Clear_Ok (Win, Curses_Bool (Boolean'Pos (Do_Clear))) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Clear_On_Next_Update;
@@ -979,10 +980,10 @@ package body Terminal_Interface.Curses is
      (Win    : in Window := Standard_Window;
       Do_Idl : in Boolean := True)
    is
-      function IDL_Ok (W : Window; Flag : C_Int) return C_Int;
+      function IDL_Ok (W : Window; Flag : Curses_Bool) return C_Int;
       pragma Import (C, IDL_Ok, "idlok");
    begin
-      if IDL_Ok (Win, Boolean'Pos (Do_Idl)) = Curses_Err then
+      if IDL_Ok (Win, Curses_Bool (Boolean'Pos (Do_Idl))) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Use_Insert_Delete_Line;
@@ -991,10 +992,10 @@ package body Terminal_Interface.Curses is
      (Win    : in Window := Standard_Window;
       Do_Idc : in Boolean := True)
    is
-      function IDC_Ok (W : Window; Flag : C_Int) return C_Int;
+      function IDC_Ok (W : Window; Flag : Curses_Bool) return C_Int;
       pragma Import (C, IDC_Ok, "idcok");
    begin
-      if IDC_Ok (Win, Boolean'Pos (Do_Idc)) = Curses_Err then
+      if IDC_Ok (Win, Curses_Bool (Boolean'Pos (Do_Idc))) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Use_Insert_Delete_Character;
@@ -1003,10 +1004,10 @@ package body Terminal_Interface.Curses is
      (Win      : in Window := Standard_Window;
       Do_Leave : in Boolean := True)
    is
-      function Leave_Ok (W : Window; Flag : C_Int) return C_Int;
+      function Leave_Ok (W : Window; Flag : Curses_Bool) return C_Int;
       pragma Import (C, Leave_Ok, "leaveok");
    begin
-      if Leave_Ok (Win, Boolean'Pos (Do_Leave)) = Curses_Err then
+      if Leave_Ok (Win, Curses_Bool (Boolean'Pos (Do_Leave))) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Leave_Cursor_After_Update;
@@ -1015,10 +1016,10 @@ package body Terminal_Interface.Curses is
      (Win  : in Window := Standard_Window;
       Mode : in Boolean := False)
    is
-      function Immedok (Win : Window; Mode : C_Int) return C_Int;
+      function Immedok (Win : Window; Mode : Curses_Bool) return C_Int;
       pragma Import (C, Immedok, "immedok");
    begin
-      if Immedok (Win, Boolean'Pos (Mode)) = Curses_Err then
+      if Immedok (Win, Curses_Bool (Boolean'Pos (Mode))) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Immediate_Update_Mode;
@@ -1027,10 +1028,10 @@ package body Terminal_Interface.Curses is
      (Win  : in Window  := Standard_Window;
       Mode : in Boolean := False)
    is
-      function Scrollok (Win : Window; Mode : C_Int) return C_Int;
+      function Scrollok (Win : Window; Mode : Curses_Bool) return C_Int;
       pragma Import (C, Scrollok, "scrollok");
    begin
-      if Scrollok (Win, Boolean'Pos (Mode)) = Curses_Err then
+      if Scrollok (Win, Curses_Bool (Boolean'Pos (Mode))) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Allow_Scrolling;
@@ -1244,10 +1245,10 @@ package body Terminal_Interface.Curses is
      (Win  : Window := Standard_Window;
       Line : Line_Position) return Boolean
    is
-      function WLineTouched (W : Window; L : C_Int) return C_Int;
+      function WLineTouched (W : Window; L : C_Int) return Curses_Bool;
       pragma Import (C, WLineTouched, "is_linetouched");
    begin
-      if WLineTouched (Win, C_Int (Line)) = Curses_False then
+      if WLineTouched (Win, C_Int (Line)) = Curses_Bool_False then
          return False;
       else
          return True;
@@ -1257,10 +1258,10 @@ package body Terminal_Interface.Curses is
    function Is_Touched
      (Win : Window := Standard_Window) return Boolean
    is
-      function WWinTouched (W : Window) return C_Int;
+      function WWinTouched (W : Window) return Curses_Bool;
       pragma Import (C, WWinTouched, "is_wintouched");
    begin
-      if WWinTouched (Win) = Curses_False then
+      if WWinTouched (Win) = Curses_Bool_False then
          return False;
       else
          return True;
@@ -1982,10 +1983,11 @@ package body Terminal_Interface.Curses is
                          Enable : in Boolean := True)
    is
       function Keyok (Keycode : C_Int;
-                      On_Off  : C_Int) return C_Int;
+                      On_Off  : Curses_Bool) return C_Int;
       pragma Import (C, Keyok, "keyok");
    begin
-      if Keyok (C_Int (Key), Boolean'Pos (Enable)) = Curses_Err then
+      if Keyok (C_Int (Key), Curses_Bool (Boolean'Pos (Enable)))
+        = Curses_Err then
          raise Curses_Exception;
       end if;
    end Enable_Key;
@@ -2070,10 +2072,10 @@ package body Terminal_Interface.Curses is
 
    function Has_Insert_Character return Boolean
    is
-      function Has_Ic return C_Int;
+      function Has_Ic return Curses_Bool;
       pragma Import (C, Has_Ic, "has_ic");
    begin
-      if Has_Ic = Curses_False then
+      if Has_Ic = Curses_Bool_False then
          return False;
       else
          return True;
@@ -2082,10 +2084,10 @@ package body Terminal_Interface.Curses is
 
    function Has_Insert_Line return Boolean
    is
-      function Has_Il return C_Int;
+      function Has_Il return Curses_Bool;
       pragma Import (C, Has_Il, "has_il");
    begin
-      if Has_Il = Curses_False then
+      if Has_Il = Curses_Bool_False then
          return False;
       else
          return True;
@@ -2177,10 +2179,10 @@ package body Terminal_Interface.Curses is
 
    function Has_Colors return Boolean
    is
-      function Hascolors return C_Int;
+      function Hascolors return Curses_Bool;
       pragma Import (C, Hascolors, "has_colors");
    begin
-      if Hascolors = Curses_False then
+      if Hascolors = Curses_Bool_False then
          return False;
       else
          return True;
@@ -2206,10 +2208,10 @@ package body Terminal_Interface.Curses is
 
    function Can_Change_Color return Boolean
    is
-      function Canchangecolor return C_Int;
+      function Canchangecolor return Curses_Bool;
       pragma Import (C, Canchangecolor, "can_change_color");
    begin
-      if Canchangecolor = Curses_False then
+      if Canchangecolor = Curses_Bool_False then
          return False;
       else
          return True;
@@ -2389,12 +2391,12 @@ package body Terminal_Interface.Curses is
       type Int_Access is access all C_Int;
       function Transform (W    : Window;
                           Y, X : Int_Access;
-                          Dir  : C_Int) return C_Int;
+                          Dir  : Curses_Bool) return C_Int;
       pragma Import (C, Transform, "wmouse_trafo");
 
       X : aliased C_Int := C_Int (Column);
       Y : aliased C_Int := C_Int (Line);
-      D : C_Int := 0;
+      D : Curses_Bool := Curses_Bool_False;
       R : C_Int;
    begin
       if Dir = To_Screen then

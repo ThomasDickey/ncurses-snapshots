@@ -39,7 +39,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: sysdep.c,v 1.2 1999/05/09 17:05:03 tom Exp $")
+MODULE_ID("$Id: sysdep.c,v 1.3 1999/06/16 00:48:35 tom Exp $")
 
 #if DECL_ERRNO
 extern int errno;
@@ -354,7 +354,7 @@ read_key(char *buf, int max)
 	for (s = buf, i = 0; i < l; i++) {
 		if ((*s & 0x7f) == 0) {
 			/* convert nulls to 0x80 */
-			*s = 128;
+			*(unsigned char *)s = 128;
 		} else {
 			/* strip high order bits (if any) */
 			*s &= char_mask;

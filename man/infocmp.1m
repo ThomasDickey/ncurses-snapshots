@@ -27,16 +27,18 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.20 1999/03/07 02:07:48 tom Exp $
+.\" $Id: infocmp.1m,v 1.21 1999/06/15 23:12:25 tom Exp $
 .TH infocmp 1M ""
 .ds n 5
 .ds d @DATADIR@/terminfo
 .SH NAME
 \fBinfocmp\fR - compare or print out \fIterminfo\fR descriptions
 .SH SYNOPSIS
-\fBinfocmp\fR [\fB-dcGgnpILCuV1\fR] [\fB-v\fR \fIn\fR] [\fB-s d\fR| \fBi\fR| \fBl\fR| \fBc\fR]
+\fBinfocmp\fR [\fB-dceEGgnpILCuV1\fR] [\fB-v\fR \fIn\fR] [\fB-s d\fR| \fBi\fR| \fBl\fR| \fBc\fR]
 .br
-      [\fB-w\fR \fIwidth\fR] [\fB-A\fR \fIdirectory\fR] [\fB-B\fR \fIdirectory\fR] [\fItermname\fR...]
+      [\fB-w\fR\ \fIwidth\fR] [\fB-A\fR\ \fIdirectory\fR] [\fB-B\fR\ \fIdirectory\fR]
+.br
+      [\fItermname\fR...]
 .SH DESCRIPTION
 \fBinfocmp\fR can be used to compare a binary \fBterminfo\fR entry with other
 terminfo entries, rewrite a \fBterminfo\fR description to take advantage of the
@@ -239,6 +241,19 @@ Dump the capabilities of the given terminal as a C initializer for a
 TERMTYPE structure (the terminal capability structure in the \fB<term.h>\fR).
 This option is useful for preparing versions of the curses library hardwired
 for a given terminal type.
+.TP 5
+\fB-E\fR
+Dump the capabilities of the given terminal as tables, needed in
+the C initializer for a
+TERMTYPE structure (the terminal capability structure in the \fB<term.h>\fR).
+This option is useful for preparing versions of the curses library hardwired
+for a given terminal type.
+The tables are all declared static, and are named according to the type
+and the name of the corresponding terminal entry.
+.sp
+Before ncurses 5.0, the split between the \fB\-e\fP and \fB\-E\fP 
+options was not needed; but support for extended names required making
+the arrays of terminal capabilities separate from the TERMTYPE structure.
 .TP
 \fB-f\fR
 Display complex terminfo strings which contain if/then/else/endif expressions
@@ -316,6 +331,7 @@ Compiled terminal description database.
 ..
 .SH EXTENSIONS
 The
+\fB-E\fR,
 \fB-F\fR,
 \fB-G\fR,
 \fB-R\fR,

@@ -25,7 +25,7 @@
 #include <sys/time.h>
 #endif
 
-MODULE_ID("$Id: control.c,v 1.1 1998/01/10 00:34:23 tom Exp $")
+MODULE_ID("$Id: control.c,v 1.2 1999/06/16 00:45:59 tom Exp $")
 
 /* terminfo test program control subroutines */
 
@@ -52,14 +52,14 @@ char txt_shorter_augment[80];	/* <) use smaller augment */
 /* caps under test data base */
 int tt_delay_max;		/* max number of milliseconds we can delay */
 int tt_delay_used;		/* number of milliseconds consumed in delay */
-char *tt_cap[TT_MAX];		/* value of string */
+const char *tt_cap[TT_MAX];	/* value of string */
 int tt_affected[TT_MAX];	/* lines or columns effected (repitition factor) */
 int tt_count[TT_MAX];		/* Number of times sent */
 int tt_delay[TT_MAX];		/* Number of milliseconds delay */
 int ttp;			/* number of entries used */
 
 /* Saved value of the above data base */
-char *tx_cap[TT_MAX];		/* value of string */
+const char *tx_cap[TT_MAX];	/* value of string */
 int tx_affected[TT_MAX];	/* lines or columns effected (repitition factor) */
 int tx_count[TT_MAX];		/* Number of times sent */
 int tx_index[TT_MAX];		/* String index */
@@ -444,7 +444,7 @@ pad_test_shutdown(
 
 	/* save the data base */
 	for (txp = ss = counts = 0; txp < ttp; txp++) {
-		tx_cap[txp]   = (char *)tt_cap[txp];
+		tx_cap[txp]   = tt_cap[txp];
 		tx_count[txp] = tt_count[txp];
 		tx_delay[txp] = tt_delay[txp];
 		tx_affected[txp] = tt_affected[txp];

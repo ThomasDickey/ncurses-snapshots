@@ -23,7 +23,7 @@
 #include <time.h>
 #include <tic.h>
 
-MODULE_ID("$Id: edit.c,v 1.2 1999/05/09 18:11:09 tom Exp $")
+MODULE_ID("$Id: edit.c,v 1.3 1999/06/16 00:43:43 tom Exp $")
 
 /*
  * Terminfo edit features
@@ -669,24 +669,24 @@ show_report(
 	int *ch)
 {
 	int i, j, nc, flag;
-	char *s;
-	char *nx[BOOLCOUNT + NUMCOUNT + STRCOUNT];
+	const char *s;
+	const char *nx[BOOLCOUNT + NUMCOUNT + STRCOUNT];
 
 	flag = t->flags & 255;
 	nc = 0;
 	for (i = 0; i < BOOLCOUNT; i++) {
 		if (flag_boolean[i] & flag) {
-			nx[nc++] = (char *)boolnames[i];
+			nx[nc++] = boolnames[i];
 		}
 	}
 	for (i = 0; i < NUMCOUNT; i++) {
 		if (flag_numerics[i] & flag) {
-			nx[nc++] = (char *)numnames[i];
+			nx[nc++] = numnames[i];
 		}
 	}
 	for (i = 0; i < STRCOUNT; i++) {
 		if (flag_strings[i] & flag) {
-			nx[nc++] = (char *)strnames[i];
+			nx[nc++] = strnames[i];
 		}
 	}
 	/* sort */
@@ -695,7 +695,7 @@ show_report(
 			if (strcmp(nx[i], nx[j]) > 0) {
 				s = nx[i];
 				nx[i] = nx[j];
-				nx[j] = (char *)s;
+				nx[j] = s;
 			}
 		}
 	}

@@ -37,7 +37,7 @@ include(M4MACRO)----------------------------------------------------------------
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.25 $
+--  $Revision: 1.26 $
 --  Binding Version 01.00
 ------------------------------------------------------------------------------
 include(`Base_Defs')
@@ -1382,6 +1382,7 @@ private
    --  The next constants are generated and may be different on your
    --  architecture.
    --
-include(`Window_Offsets')
+include(`Window_Offsets')dnl
+   Curses_Bool_False : constant Curses_Bool := 0;
 
 end Terminal_Interface.Curses;
