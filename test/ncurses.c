@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.171 2002/05/26 00:47:24 tom Exp $
+$Id: ncurses.c,v 1.173 2002/06/16 00:29:27 tom Exp $
 
 ***************************************************************************/
 
@@ -358,12 +358,78 @@ wgetch_wrap(WINDOW *win, int first_y)
     wclrtoeol(win);
 }
 
+#if defined(NCURSES_VERSION) && defined(KEY_RESIZE)
+typedef struct {
+    WINDOW *text;
+    WINDOW *frame;
+} WINSTACK;
+
+static WINSTACK *winstack = 0;
+static unsigned len_winstack = 0;
+
 static void
-wgetch_test(WINDOW *parent, WINDOW *win, int delay)
+remember_boxes(unsigned level, WINDOW *txt_win, WINDOW *box_win)
+{
+    unsigned need = (level + 1) * 2;
+
+    if (winstack == 0) {
+	len_winstack = 20;
+	winstack = malloc(len_winstack * sizeof(WINSTACK));
+    } else if (need >= len_winstack) {
+	len_winstack = need;
+	winstack = realloc(winstack, len_winstack * sizeof(WINSTACK));
+    }
+    winstack[level].text = txt_win;
+    winstack[level].frame = box_win;
+}
+
+/*
+ * For wgetch_test(), we create pairs of windows - one for a box, one for text.
+ * Resize both and paint the box in the parent.
+ */
+static void
+resize_boxes(int level, WINDOW *win)
+{
+    unsigned n;
+    int base = 5;
+    int high = LINES - base;
+    int wide = COLS;
+
+    touchwin(stdscr);
+    wnoutrefresh(stdscr);
+
+    /* FIXME: this chunk should be done in resizeterm() */
+    slk_touch();
+    slk_clear();
+    slk_noutrefresh();
+
+    for (n = 0; (int) n < level; ++n) {
+	wresize(winstack[n].frame, high, wide);
+	wresize(winstack[n].text, high - 2, wide - 2);
+	high -= 2;
+	wide -= 2;
+	werase(winstack[n].text);
+	box(winstack[n].frame, 0, 0);
+	wnoutrefresh(winstack[n].frame);
+	wprintw(winstack[n].text,
+		"size %dx%d\n",
+		getmaxy(winstack[n].text),
+		getmaxx(winstack[n].text));
+	wnoutrefresh(winstack[n].text);
+	if (winstack[n].text == win)
+	    break;
+    }
+    doupdate();
+}
+#else
+#define remember_boxes(level,text,frame)	/* nothing */
+#endif
+
+static void
+wgetch_test(int level, WINDOW *win, int delay)
 {
     char buf[BUFSIZ];
     int first_y, first_x;
-    int last_y = getmaxy(win) - 1;
     int c;
     int incount = 0;
     bool flags[256];
@@ -378,7 +444,7 @@ wgetch_test(WINDOW *parent, WINDOW *win, int delay)
     getyx(win, first_y, first_x);
 
     wgetch_help(win, flags);
-    wsetscrreg(win, first_y, last_y);
+    wsetscrreg(win, first_y, getmaxy(win) - 1);
     scrollok(win, TRUE);
 
     for (;;) {
@@ -420,7 +486,7 @@ wgetch_test(WINDOW *parent, WINDOW *win, int delay)
 	} else if (c == 's') {
 	    ShellOut(TRUE);
 	} else if (c == 'w') {
-	    int high = last_y - first_y + 1;
+	    int high = getmaxy(win) - 1 - first_y + 1;
 	    int wide = getmaxx(win) - first_x;
 	    int old_y, old_x;
 	    int new_y = first_y + getbegy(win);
@@ -434,7 +500,8 @@ wgetch_test(WINDOW *parent, WINDOW *win, int delay)
 		box(wb, 0, 0);
 		wrefresh(wb);
 		wmove(wi, 0, 0);
-		wgetch_test(wb, wi, delay);
+		remember_boxes(level, wi, wb);
+		wgetch_test(level + 1, wi, delay);
 		delwin(wi);
 		delwin(wb);
 
@@ -442,6 +509,7 @@ wgetch_test(WINDOW *parent, WINDOW *win, int delay)
 		wmove(win, old_y, old_x);
 		touchwin(win);
 		wrefresh(win);
+		doupdate();
 	    }
 #ifdef SIGTSTP
 	} else if (c == 'z') {
@@ -462,14 +530,9 @@ wgetch_test(WINDOW *parent, WINDOW *win, int delay)
 	    } else
 #endif /* NCURSES_MOUSE_VERSION */
 	    if (c >= KEY_MIN) {
-#ifdef KEY_RESIZE
+#if defined(NCURSES_VERSION) && defined(KEY_RESIZE)
 		if (c == KEY_RESIZE) {
-		    if (parent != 0) {
-			wresize(win, getmaxy(parent) - 2, getmaxx(parent) - 2);
-			werase(win);
-			box(parent, 0, 0);
-			wrefresh(parent);
-		    }
+		    resize_boxes(level, win);
 		}
 #endif
 		(void) waddstr(win, keyname(c));
@@ -543,12 +606,50 @@ getch_test(void)
 }
 
 #if USE_WIDEC_SUPPORT
+/*
+ * For wgetch_test(), we create pairs of windows - one for a box, one for text.
+ * Resize both and paint the box in the parent.
+ */
 static void
-wget_wch_test(WINDOW *parent, WINDOW *win, int delay)
+resize_wide_boxes(int level, WINDOW *win)
+{
+    unsigned n;
+    int base = 5;
+    int high = LINES - base;
+    int wide = COLS;
+
+    touchwin(stdscr);
+    wnoutrefresh(stdscr);
+
+    /* FIXME: this chunk should be done in resizeterm() */
+    slk_touch();
+    slk_clear();
+    slk_noutrefresh();
+
+    for (n = 0; (int) n < level; ++n) {
+	wresize(winstack[n].frame, high, wide);
+	wresize(winstack[n].text, high - 2, wide - 2);
+	high -= 2;
+	wide -= 2;
+	werase(winstack[n].text);
+	box_set(winstack[n].frame, 0, 0);
+	wnoutrefresh(winstack[n].frame);
+	wprintw(winstack[n].text,
+		"size %dx%d\n",
+		getmaxy(winstack[n].text),
+		getmaxx(winstack[n].text));
+	wnoutrefresh(winstack[n].text);
+	if (winstack[n].text == win)
+	    break;
+    }
+    doupdate();
+}
+
+static void
+wget_wch_test(int level, WINDOW *win, int delay)
 {
     char buf[BUFSIZ];
     int first_y, first_x;
-    int last_y = getmaxy(win) - 1;
     wint_t c;
     int incount = 0;
     bool flags[256];
@@ -563,7 +664,7 @@ wget_wch_test(WINDOW *parent, WINDOW *win, int delay)
     getyx(win, first_y, first_x);
 
     wgetch_help(win, flags);
-    wsetscrreg(win, first_y, last_y);
+    wsetscrreg(win, first_y, getmaxy(win) - 1);
     scrollok(win, TRUE);
 
     for (;;) {
@@ -605,7 +706,7 @@ wget_wch_test(WINDOW *parent, WINDOW *win, int delay)
 	} else if (c == 's') {
 	    ShellOut(TRUE);
 	} else if (c == 'w') {
-	    int high = last_y - first_y + 1;
+	    int high = getmaxy(win) - 1 - first_y + 1;
 	    int wide = getmaxx(win) - first_x;
 	    int old_y, old_x;
 	    int new_y = first_y + getbegy(win);
@@ -619,7 +720,8 @@ wget_wch_test(WINDOW *parent, WINDOW *win, int delay)
 		box_set(wb, 0, 0);
 		wrefresh(wb);
 		wmove(wi, 0, 0);
-		wget_wch_test(wb, wi, delay);
+		remember_boxes(level, wi, wb);
+		wget_wch_test(level + 1, wi, delay);
 		delwin(wi);
 		delwin(wb);
 
@@ -649,12 +751,7 @@ wget_wch_test(WINDOW *parent, WINDOW *win, int delay)
 	    if (code == KEY_CODE_YES) {
 #ifdef KEY_RESIZE
 		if (c == KEY_RESIZE) {
-		    if (parent != 0) {
-			wresize(win, getmaxy(parent) - 2, getmaxx(parent) - 2);
-			werase(win);
-			box_set(parent, 0, 0);
-			wrefresh(parent);
-		    }
+		    resize_wide_boxes(level, win);
 		}
 #endif
 		(void) waddstr(win, key_name(c));
