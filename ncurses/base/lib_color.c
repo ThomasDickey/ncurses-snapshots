@@ -34,14 +34,13 @@
 /* lib_color.c
  *
  * Handles color emulation of SYS V curses
- *
  */
 
 #include <curses.priv.h>
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.37 1999/10/30 23:00:15 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.39 1999/11/14 03:03:49 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -82,6 +81,23 @@ static const color_t hls_palette[] =
 	{300,	50,	100},	/* COLOR_CYAN */
 	{0,	50,	100},	/* COLOR_WHITE */
 };
+
+#ifdef NCURSES_EXT_FUNCS
+static int
+default_fg(void)
+{
+	return (SP->_default_fg >= 0) ? SP->_default_fg : COLOR_WHITE;
+}
+
+static int
+default_bg(void)
+{
+	return (SP->_default_bg >= 0) ? SP->_default_bg : COLOR_BLACK;
+}
+#else
+#define default_fg() COLOR_WHITE
+#define default_bg() COLOR_BLACK
+#endif
 
 /*
  * SVr4 curses is known to interchange color codes (1,4) and (3,6), possibly
@@ -149,8 +165,8 @@ int start_color(void)
 
 	if (set_original_colors() != TRUE)
 	{
-		set_foreground_color(COLOR_WHITE, _nc_outch);
-		set_background_color(COLOR_BLACK, _nc_outch);
+		set_foreground_color(default_fg(), _nc_outch);
+		set_background_color(default_bg(), _nc_outch);
 	}
 
 	if (max_pairs != -1)
@@ -159,7 +175,7 @@ int start_color(void)
 		returnCode(ERR);
 	if ((SP->_color_pairs = typeCalloc(unsigned short, max_pairs)) == 0)
 		returnCode(ERR);
-	SP->_color_pairs[0] = PAIR_OF(COLOR_WHITE, COLOR_BLACK);
+	SP->_color_pairs[0] = PAIR_OF(default_fg(), default_bg());
 	if (max_colors != -1)
 		COLORS = SP->_color_count = max_colors;
 	else
@@ -226,6 +242,7 @@ int init_pair(short pair, short f, short b)
 
 	if ((pair < 1) || (pair >= COLOR_PAIRS))
 		returnCode(ERR);
+#ifdef NCURSES_EXT_FUNCS
 	if (SP->_default_color)
 	{
 		if (f < 0)
@@ -238,6 +255,7 @@ int init_pair(short pair, short f, short b)
 			returnCode(ERR);
 	}
 	else
+#endif
 	if ((f < 0) || (f >= COLORS)
 	 || (b < 0) || (b >= COLORS))
 		returnCode(ERR);
@@ -372,20 +390,14 @@ void _nc_do_color(int pair, bool reverse, int (*outc)(int))
 
     if (pair == 0)
     {
-	if (orig_pair)
+	if (
+#ifdef NCURSES_EXT_FUNCS
+	    !SP->_default_color ||
+#endif
+	    !set_original_colors())
 	{
-	    TPUTS_TRACE("orig_pair");
-	    tputs(orig_pair, 1, outc);
-	}
-	else if (set_color_pair)
-	{
-	    TPUTS_TRACE("set_color_pair");
-	    tputs(tparm(set_color_pair, pair), 1, outc);
-	}
-	else
-	{
-	    set_foreground_color(COLOR_WHITE, outc);
-	    set_background_color(COLOR_BLACK, outc);
+	    set_foreground_color(default_fg(), outc);
+	    set_background_color(default_bg(), outc);
 	}
     }
     else
@@ -411,9 +423,9 @@ void _nc_do_color(int pair, bool reverse, int (*outc)(int))
 		if (set_original_colors() != TRUE)
 		{
 			if (fg == C_MASK)
-				set_foreground_color(COLOR_WHITE, outc);
+				set_foreground_color(default_fg(), outc);
 			if (bg == C_MASK)
-				set_background_color(COLOR_BLACK, outc);
+				set_background_color(default_bg(), outc);
 		}
 	    }
 	    if (fg != C_MASK)

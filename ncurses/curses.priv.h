@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.144 1999/10/22 23:15:37 tom Exp $
+ * $Id: curses.priv.h,v 1.145 1999/11/14 00:14:25 tom Exp $
  *
  *	curses.priv.h
  *
@@ -332,7 +332,11 @@ struct screen {
 	int             _color_count;   /* count of colors in palette        */
 	unsigned short  *_color_pairs;  /* screen's color pair list          */
 	int             _pair_count;    /* count of color pairs              */
+#ifdef NCURSES_EXT_FUNCS
 	int             _default_color; /* use default colors                */
+	int             _default_fg;    /* assumed default foreground        */
+	int             _default_bg;    /* assumed default background        */
+#endif
 	chtype          _xmc_suppress;  /* attributes to suppress if xmc     */
 	chtype          _xmc_triggers;  /* attributes to process if xmc      */
 	chtype          _acs_map[ACS_LEN];

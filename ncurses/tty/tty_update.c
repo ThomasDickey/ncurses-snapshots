@@ -73,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.117 1999/10/22 23:28:46 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.118 1999/11/14 02:40:11 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -1236,6 +1236,12 @@ static void ClearScreen(chtype blank)
 
 	T(("ClearScreen() called"));
 
+#ifdef NCURSES_EXT_FUNCS
+	if (SP->_coloron
+	 && !SP->_default_color)
+		_nc_do_color(0, FALSE, _nc_outch);
+#endif
+
 	if (clear_screen) {
 		UpdateAttrs(blank);
 		TPUTS_TRACE("clear_screen");
@@ -1260,8 +1266,13 @@ static void ClearScreen(chtype blank)
 		}
 		GoTo(0,0);
 	} else {
-		T(("cannot clear screen"));
-		return;
+		for (i = 0; i < screen_lines; i++) {
+			GoTo(i, 0);
+			UpdateAttrs(blank);
+			for (j = 0; j < screen_columns; j++)
+				PutChar(blank);
+		}
+		GoTo(0,0);
 	}
 
 	for (i = 0; i < screen_lines; i++) {
@@ -1737,6 +1748,14 @@ void _nc_screen_init()
 void _nc_screen_wrap()
 {
     UpdateAttrs(A_NORMAL);
+#ifdef NCURSES_EXT_FUNCS
+    if (SP->_coloron
+     && !SP->_default_color) {
+	SP->_default_color = TRUE;
+	_nc_do_color(0, FALSE, _nc_outch);
+	SP->_default_color = FALSE;
+    }
+#endif
 }
 
 #if USE_XMC_SUPPORT

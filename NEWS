@@ -1,10 +1,25 @@
--- $Id: NEWS,v 1.506 1999/11/07 00:03:32 tom Exp $
+-- $Id: NEWS,v 1.508 1999/11/14 03:00:59 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+19991113
+	+ modify treatment of color pair 0 so that if ncurses is configured
+	  to support default colors, and they are not active, then ncurses
+	  will set that explicitly, not relying on orig_colors or orig_pair.
+	+ add new extension, assume_default_colors() to provide better control
+	  over the use of default colors.
+	+ modify test programs to use more-specific ifdef's for existence of
+	  wresize(), resizeterm() and use_default_colors().
+	+ modify configure script to add specific ifdef's for some functions
+	  that are included when --enable-ext-funcs is in effect, so their
+	  existence can be ifdef'd in the test programs.
+	+ reorder some configure options, moving those extensions that have
+	  evolved from experimental status into a new section.
+	+ change configure --enable-tcap-names to enable this by default.
 
 19991106
 	+ install tack's manpage (reported by Robert Weiner

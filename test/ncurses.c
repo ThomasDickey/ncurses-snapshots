@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.120 1999/10/23 20:01:30 tom Exp $
+$Id: ncurses.c,v 1.121 1999/11/13 23:48:03 tom Exp $
 
 ***************************************************************************/
 
@@ -1075,7 +1075,7 @@ static void newwin_legend(FRAME *curp)
 		{ "^S = scrollok(%s)",		2 },
 		{ "^W = save window to file",	0 },
 		{ "^R = restore window",	0 },
-#ifdef NCURSES_VERSION
+#ifdef HAVE_WRESIZE
 		{ "^X = resize",		0 },
 #endif
 		{ "^Q%s = exit",		3 }
@@ -1383,7 +1383,7 @@ static void acs_and_scroll(void)
 	    }
 	    break;
 
-#ifdef NCURSES_VERSION
+#ifdef HAVE_WRESIZE
 	case CTRL('X'):		/* resize window */
 	    if (current)
 	    {
@@ -1441,7 +1441,7 @@ static void acs_and_scroll(void)
 		doupdate();
 	    }
 	    break;
-#endif	/* NCURSES_VERSION */
+#endif	/* HAVE_WRESIZE */
 
 	case KEY_F(10):	/* undocumented --- use this to test area clears */
 	    selectcell(0, 0, LINES - 1, COLS - 1);

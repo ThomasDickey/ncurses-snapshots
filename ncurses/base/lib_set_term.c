@@ -42,7 +42,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.46 1999/07/24 20:05:49 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.47 1999/11/14 00:14:39 tom Exp $")
 
 SCREEN * set_term(SCREEN *screenp)
 {
@@ -165,6 +165,10 @@ size_t	i;
 	SP->_cursor      = -1;	/* cannot know real cursor shape */
 #ifdef NCURSES_NO_PADDING
 	SP->_no_padding  = getenv("NCURSES_NO_PADDING") != 0;
+#endif
+#ifdef NCURSES_EXT_FUNCS
+	SP->_default_fg   = COLOR_WHITE;
+	SP->_default_bg   = COLOR_BLACK;
 #endif
 
 	SP->_maxclick     = DEFAULT_MAXCLICK;
