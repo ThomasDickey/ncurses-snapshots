@@ -4,7 +4,7 @@ dnl ---------------------------------------------------------------------------
 dnl Test if 'bool' is a builtin type in the configured C++ compiler.  Some
 dnl older compilers (e.g., gcc 2.5.8) don't support 'bool' directly; gcc
 dnl 2.6.3 does, in anticipation of the ANSI C++ standard.
-define([NC_BOOL_DECL],
+AC_DEFUN([NC_BOOL_DECL],
 [
 AC_MSG_CHECKING([for builtin c++ bool type])
 AC_CACHE_VAL(nc_cv_builtin_bool,[
@@ -17,7 +17,7 @@ test $nc_cv_builtin_bool = yes && AC_DEFINE(CXX_BUILTIN_BOOL)
 ])
 dnl ---------------------------------------------------------------------------
 dnl Test for the size of 'bool' in the configured C++ compiler.
-define([NC_BOOL_SIZE],
+AC_DEFUN([NC_BOOL_SIZE],
 [
 AC_MSG_CHECKING([for size of c++ bool])
 AC_CACHE_VAL(nc_cv_sizeof_bool,[
@@ -47,8 +47,29 @@ AC_MSG_RESULT($nc_cv_sizeof_bool)
 test $nc_cv_sizeof_bool != unknown && AC_DEFINE_UNQUOTED(CXX_TYPE_OF_BOOL,$nc_cv_sizeof_bool)
 ])
 dnl ---------------------------------------------------------------------------
+dnl If we're trying to use g++, test if libg++ is installed (a rather common
+dnl problem :-).  If we have the compiler but no library, we'll be able to
+dnl configure, but won't be able to build the c++ demo program.
+AC_DEFUN(NC_CXX_LIBRARY,
+[
+nc_cxx_library=unknown
+if test $ac_cv_prog_gxx = yes; then
+	AC_MSG_CHECKING([for libg++])
+	nc_save="$LIBS"
+	LIBS="$LIBS -lg++"
+	AC_TRY_LINK([
+#include <builtin.h>
+	],
+	[float foo=abs(1.0)],
+	[nc_cxx_library=yes],
+	[nc_cxx_library=no])
+	LIBS="$nc_save"
+	AC_MSG_RESULT($nc_cxx_library)
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl
-define([NC_ERRNO],
+AC_DEFUN([NC_ERRNO],
 [
 AC_MSG_CHECKING([for errno external decl])
 AC_CACHE_VAL(nc_cv_extern_errno,[
@@ -63,38 +84,83 @@ test $nc_cv_extern_errno = yes && AC_DEFINE(HAVE_EXTERN_ERRNO)
 ])
 dnl ---------------------------------------------------------------------------
 dnl Construct the list of include-options according to whether we're building
-dnl in the source directory or using '--srcdir=DIR' option.  The applications
-dnl (in 'test' and 'c++') have a different include-path from the library units
-dnl because the latter are compiled within subdirectories of 'src'.
-define([NC_INCLUDE_DIRS],
+dnl in the source directory or using '--srcdir=DIR' option.
+AC_DEFUN([NC_INCLUDE_DIRS],
 [
-APP_INCLUDES="-I. -I../src -I../include"
-LIB_INCLUDES="-I.. -I../../include"
+INCLUDES="-I. -I../include"
 if test "$srcdir" != "."; then
-	APP_INCLUDES="$APP_INCLUDES -I\$(srcdir)/../src -I\$(srcdir)/../include"
-	LIB_INCLUDES="$LIB_INCLUDES -I\$(srcdir) -I\$(srcdir)/../include"
+	INCLUDES="$INCLUDES -I\$(srcdir)/../include"
 fi
-APP_INCLUDES="$APP_INCLUDES -I\$(includedir)"
-AC_SUBST(APP_INCLUDES)
-AC_SUBST(LIB_INCLUDES)
+INCLUDES="$INCLUDES -I\$(includedir)"
+AC_SUBST(INCLUDES)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl Append definitions and rules for the given models to the src/Makefile
-define([NC_LIB_RULES],
+dnl Append definitions and rules for the given models to the subdirectory
+dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
+dnl subdirectory is a library-source directory, modify the LIBRARIES list in
+dnl the corresponding makefile to list the models that we'll generate.
+AC_DEFUN([NC_LIB_RULES],
 [
+for nc_dir in $SRC_SUBDIRS
+do
+	if test -f $srcdir/$nc_dir/modules; then
+		nc_libs_to_make=
+		for nc_item in $NC_LIST_MODELS
+		do
+			NC_LIB_SUFFIX($nc_item,nc_suffix)
+			nc_libs_to_make="$nc_libs_to_make ../lib/lib${nc_dir}${nc_suffix}"
+		done
+
+		sed -e "s@\@LIBS_TO_MAKE\@@$nc_libs_to_make@" $nc_dir/Makefile >$nc_dir/Makefile.out
+		mv $nc_dir/Makefile.out $nc_dir/Makefile
+
+		for nc_item in $NC_LIST_MODELS
+		do
+			echo 'Appending rules for '$nc_item' model ('$nc_dir')'
+			NC_UPPERCASE($nc_item,NC_ITEM)
+			NC_LIB_SUFFIX($nc_item,nc_suffix)
+			NC_OBJ_SUBDIR($nc_item,nc_subdir)
+			$AWK -f $srcdir/mk-1st.awk -v name=$nc_dir MODEL=$NC_ITEM model=$nc_subdir suffix=$nc_suffix $srcdir/$nc_dir/modules >>$nc_dir/Makefile
+			$AWK -f $srcdir/mk-2nd.awk -v name=$nc_dir MODEL=$NC_ITEM model=$nc_subdir srcdir=$srcdir echo=$WITH_ECHO $srcdir/$nc_dir/modules >>$nc_dir/Makefile
+		done
+	fi
+	echo '	cd '$nc_dir'; $(MAKE) $(NC_MFLAGS) [$]@' >>Makefile
+done
+
+for nc_dir in $SRC_SUBDIRS
+do
+	if test -f $srcdir/$nc_dir/modules; then
+cat >> Makefile <<NC_EOF
+
+install.libs ::
+	cd $nc_dir; \$(MAKE) \$(NC_MFLAGS) \[$]@
+NC_EOF
+fi
+done
+
+OBJ_SUBDIRS="bin lib"
 for nc_item in $NC_LIST_MODELS
 do
-	echo 'Appending rules for '$nc_item' library'
-	NC_UPPERCASE($nc_item,NC_ITEM)
-	NC_LIB_SUFFIX($nc_item,nc_suffix)
-	$AWK -f $srcdir/mk-1st.awk -v MODEL=$NC_ITEM model=$nc_item suffix=$nc_suffix $srcdir/src/modules >>src/Makefile
-	$AWK -f $srcdir/mk-2nd.awk -v MODEL=$NC_ITEM model=$nc_item srcdir=$srcdir echo=$WITH_ECHO $srcdir/src/modules >>src/Makefile
-	test ! -d src/$nc_item && mkdir src/$nc_item
+	NC_OBJ_SUBDIR($nc_item,nc_subdir)
+	OBJ_SUBDIRS="$OBJ_SUBDIRS $nc_subdir"
 done
+for nc_dir in $OBJ_SUBDIRS
+do
+	test ! -d $nc_dir && mkdir $nc_dir
+done
+cat >> Makefile <<NC_EOF
+
+DIRS_TO_MAKE = $OBJ_SUBDIRS
+
+distclean ::
+	rm -f config.cache config.log config.status Makefile include/config.h
+	rm -rf \$(DIRS_TO_MAKE)
+NC_EOF
+
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Compute the library-suffix from the given model name
-define([NC_LIB_SUFFIX],
+AC_DEFUN([NC_LIB_SUFFIX],
 [
 	case $1 in
 	normal)  $2='.a'   ;;
@@ -105,7 +171,7 @@ define([NC_LIB_SUFFIX],
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Compute the string to append to -library from the given model name
-define([NC_LIB_TYPE],
+AC_DEFUN([NC_LIB_TYPE],
 [
 	case $1 in
 	normal)  $2=''   ;;
@@ -115,32 +181,20 @@ define([NC_LIB_TYPE],
 	esac
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl Construct the list of library names to generate.
-define([NC_LIBS_TO_MAKE],
-[
-LIBS_TO_MAKE=""
-for nc_item in $nc_list_models
-do
-	NC_LIB_SUFFIX($nc_item,nc_suffix)
-	LIBS_TO_MAKE="$LIBS_TO_MAKE libncurses$nc_suffix libpanel$nc_suffix"
-done
-AC_SUBST(LIBS_TO_MAKE)dnl
-])dnl
-dnl ---------------------------------------------------------------------------
 dnl Some 'make' programs support $(MAKEFLAGS), some $(MFLAGS), to pass 'make'
 dnl options to lower-levels.  It's very useful for "make -n" -- if we have it.
 dnl (GNU 'make' does both :-)
-define([NC_MAKEFLAGS],
+AC_DEFUN([NC_MAKEFLAGS],
 [
 AC_MSG_CHECKING([for makeflags variable])
 AC_CACHE_VAL(nc_cv_makeflags,[
 	nc_cv_makeflags=''
 	for nc_option in '$(MFLAGS)' '-$(MAKEFLAGS)'
 	do
-		cat >ncurses.tmp <<EOF
+		cat >ncurses.tmp <<NC_EOF
 all :
 	echo '.$nc_option'
-EOF
+NC_EOF
 		set nc_result=`${MAKE-make} -f ncurses.tmp 2>/dev/null`
 		if test "$nc_result" != "."
 		then
@@ -155,9 +209,20 @@ AC_SUBST(nc_cv_makeflags)
 ]
 )
 dnl ---------------------------------------------------------------------------
+dnl Compute the object-directory name from the given model name
+AC_DEFUN([NC_OBJ_SUBDIR],
+[
+	case $1 in
+	normal)  $2='obj'   ;;
+	debug)   $2='obj_g' ;;
+	profile) $2='obj_p' ;;
+	shared)  $2='obj_s' ;;
+	esac
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
 dnl library.
-define([NC_SHARED_OPTS],
+AC_DEFUN([NC_SHARED_OPTS],
 [
 	nc_systype="`(uname -s || hostname) 2>/dev/null | sed 1q`"
 	if test -z "$nc_systype"; then nc_systype=unknown;fi
@@ -179,10 +244,49 @@ define([NC_SHARED_OPTS],
 	AC_SUBST(MK_SHARED_LIB)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl For each parameter, test if the source-directory exists, and if it contains
+dnl a 'modules' file.  If so, add to the list $nc_cv_src_modules which we'll
+dnl use in NC_LIB_RULES.
+dnl
+dnl This uses the configured value to make the lists SRC_SUBDIRS and
+dnl SUB_MAKEFILES which are used in the makefile-generation scheme.
+AC_DEFUN(NC_SRC_MODULES,
+[
+AC_MSG_CHECKING(for src modules)
+AC_CACHE_VAL(nc_cv_src_modules,[
+nc_cv_src_modules=
+for nc_dir in $1
+do
+	if test -f $srcdir/$nc_dir/modules; then
+		if test -z "$nc_cv_src_modules"; then
+			nc_cv_src_modules=$nc_dir
+		else
+			nc_cv_src_modules="$nc_cv_src_modules $nc_dir"
+		fi
+	fi
+done
+])
+AC_MSG_RESULT($nc_cv_src_modules)
+
+SRC_SUBDIRS="include man"
+for nc_dir in $nc_cv_src_modules
+do
+	SRC_SUBDIRS="$SRC_SUBDIRS $nc_dir"
+done
+SRC_SUBDIRS="$SRC_SUBDIRS misc test"
+test $nc_cxx_library != no && SRC_SUBDIRS="$SRC_SUBDIRS c++"
+
+SUB_MAKEFILES=
+for nc_dir in $SRC_SUBDIRS
+do
+	SUB_MAKEFILES="$SUB_MAKEFILES $nc_dir/Makefile"
+done
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl	Check for declarion of sys_errlist in one of stdio.h and errno.h.  
 dnl	Declaration of sys_errlist on BSD4.4 interferes with our declaration.
 dnl	Reported by Keith Bostic.
-define([NC_SYS_ERRLIST],
+AC_DEFUN([NC_SYS_ERRLIST],
 [
 AC_MSG_CHECKING([declaration of sys_errlist])
 AC_CACHE_VAL(nc_cv_dcl_sys_errlist,[
@@ -205,7 +309,7 @@ dnl
 dnl Attempt to determine if we're on such a system by running a test-program.
 dnl This won't work, of course, if the configure script is run in batch mode,
 dnl since we've got to have access to the terminal.
-define([NC_TIOCGWINSZ],
+AC_DEFUN([NC_TIOCGWINSZ],
 [
 AC_MSG_CHECKING([for working TIOCGWINSZ])
 AC_CACHE_VAL(nc_cv_use_tiocgwinsz,[
@@ -238,7 +342,7 @@ test $nc_cv_use_tiocgwinsz != yes && AC_DEFINE(BROKEN_TIOCGETWINSZ)
 ])
 dnl ---------------------------------------------------------------------------
 dnl
-define([NC_TYPE_SIGACTION],
+AC_DEFUN([NC_TYPE_SIGACTION],
 [
 AC_MSG_CHECKING([for type sigaction_t])
 AC_CACHE_VAL(nc_cv_type_sigaction,[
@@ -253,7 +357,7 @@ test $nc_cv_type_sigaction = yes && AC_DEFINE(HAVE_TYPE_SIGACTION)
 ])
 dnl ---------------------------------------------------------------------------
 dnl Make an uppercase version of a given name
-define([NC_UPPERCASE],
+AC_DEFUN([NC_UPPERCASE],
 [
 changequote(,)dnl
 $2=`echo $1 |tr '[a-z]' '[A-Z]'`

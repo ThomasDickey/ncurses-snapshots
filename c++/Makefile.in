@@ -14,12 +14,12 @@ includedir	= @includedir@
 CC		= @CXX@
 CFLAGS		= @CXXFLAGS@
 
-CPPFLAGS	= @APP_INCLUDES@ -DHAVE_CONFIG_H
+CPPFLAGS	= @INCLUDES@ -DHAVE_CONFIG_H
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 
 LINK		= $(CC)
-LDFLAGS		= -L../src -L$(libdir) @LDFLAGS@ @LD_MODEL@ @LIBS@
+LDFLAGS		= -L../lib -L$(libdir) @LDFLAGS@ @LD_MODEL@ @LIBS@
 
 .SUFFIXES: .cc
 .cc.o:

@@ -1,0 +1,74 @@
+# Library objects
+hardscroll	lib		$(srcdir)
+lib_acs		lib		$(srcdir)	../include/term.h
+lib_addch	lib		$(srcdir)
+lib_addstr	lib		$(srcdir)
+lib_beep	lib		$(srcdir)	../include/term.h
+lib_bkgd	lib		$(srcdir)
+lib_box		lib		$(srcdir)
+lib_clear	lib		$(srcdir)
+lib_clrbot	lib		$(srcdir)
+lib_clreol	lib		$(srcdir)
+lib_color	lib		$(srcdir)	../include/term.h
+lib_delch	lib		$(srcdir)
+lib_delwin	lib		$(srcdir)
+lib_doupdate	lib		$(srcdir)	../include/term.h
+lib_endwin	lib		$(srcdir)
+lib_erase	lib		$(srcdir)
+lib_getch	lib		$(srcdir)
+lib_getstr	lib		$(srcdir)
+lib_initscr	lib		$(srcdir)
+lib_insch	lib		$(srcdir)
+lib_insdel	lib		$(srcdir)
+lib_insstr	lib		$(srcdir)
+lib_instr	lib		$(srcdir)
+lib_kernel	lib		$(srcdir)	../include/term.h
+lib_keyname	lib		.		../include/term.h
+lib_longname	lib		$(srcdir)
+lib_move	lib		$(srcdir)
+lib_mvcur	lib		$(srcdir)	../include/term.h
+lib_mvwin	lib		$(srcdir)
+lib_newterm	lib		$(srcdir)	../include/term.h
+lib_newwin	lib		$(srcdir)
+lib_options	lib		$(srcdir)	../include/term.h
+lib_overlay	lib		$(srcdir)
+lib_pad		lib		$(srcdir)
+lib_printw	lib		$(srcdir)
+lib_raw		lib		$(srcdir)	../include/term.h
+lib_refresh	lib		$(srcdir)
+lib_scanw	lib		$(srcdir)
+lib_scroll	lib		$(srcdir)
+lib_screen	lib		$(srcdir)	../include/term.h
+lib_scrreg	lib		$(srcdir)
+lib_set_term	lib		$(srcdir)	../include/term.h
+lib_setup	lib		$(srcdir)	../include/term.h
+lib_slk		lib		$(srcdir)	../include/term.h
+lib_termcap	lib		$(srcdir)	../include/term.h
+lib_ti		lib		$(srcdir)	../include/term.h
+lib_touch	lib		$(srcdir)
+lib_tparm	lib		$(srcdir)	../include/term.h
+lib_tputs	lib		$(srcdir)	../include/term.h 
+lib_trace	lib		$(srcdir)
+lib_tstp	lib		$(srcdir)
+lib_twait	lib		$(srcdir)
+lib_unctrl	lib		$(srcdir)
+lib_vidattr	lib		$(srcdir)	../include/term.h 
+lib_window	lib		$(srcdir)
+names		lib		.
+read_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/object.h 
+read_termcap	lib		$(srcdir)	../include/term.h 
+
+# Modules for porting
+sigaction	lib		$(srcdir)
+strerror	lib		$(srcdir)
+vsscanf		lib		$(srcdir)
+
+# Support for termcap (and tic, etc.)
+alloc_entry	lib		$(srcdir)	../include/term.h
+captoinfo	lib		$(srcdir)
+comp_captab	lib		.		../include/term.h ../include/hashsize.h
+comp_error	lib		$(srcdir)
+comp_hash	lib		$(srcdir)	../include/term.h ../include/hashsize.h
+comp_parse	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
+comp_scan	lib		$(srcdir)
+parse_entry	lib		$(srcdir)	../include/term.h ../include/parametrized.h

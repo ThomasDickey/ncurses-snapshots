@@ -9,14 +9,12 @@ exec_prefix	= @exec_prefix@
 datadir		= @datadir@
 mandir		= $(prefix)/man
 
-OWNER		= -o bin -g bin
-INSTALL		= @INSTALL@ $(OWNER)
-INSTALL_PROGRAM	= @INSTALL_PROGRAM@
+INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
 
 all:
 
-install:
+install install.man :
 	$(srcdir)/../mkinstalldirs $(mandir) $(mandir)/man3 $(mandir)/man5 $(mandir)/man1
 	@cd $(srcdir); for i in *.3x; do \
 		sed 's,@TERMINFO@,$(datadir),' < $$i >/tmp/man.tmp; \

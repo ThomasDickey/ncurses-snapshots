@@ -11,12 +11,12 @@ includedir	= @includedir@
 
 CC		= @CC@
 CFLAGS		= @CFLAGS@
-CPPFLAGS	= @APP_INCLUDES@ -DHAVE_CONFIG_H
+CPPFLAGS	= @INCLUDES@ -DHAVE_CONFIG_H
 
 CCFLAGS		= $(CFLAGS) $(CPPFLAGS)
 
 LINK		= $(CC)
-LDFLAGS		= -L../src -L$(libdir) @LD_MODEL@ -lpanel@DFT_ARG_SUFFIX@ -lncurses@DFT_ARG_SUFFIX@ @LDFLAGS@ @LIBS@
+LDFLAGS		= -L../lib -L$(libdir) @LD_MODEL@ -lpanel@DFT_ARG_SUFFIX@ -lncurses@DFT_ARG_SUFFIX@ @LDFLAGS@ @LIBS@
 
 TESTS = \
 	blue \
