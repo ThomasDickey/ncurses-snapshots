@@ -1,6 +1,15 @@
 This is a log of changes that ncurses has gone through since I
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+### ncurses-1.9.8a -> 1.9.9
+
+* fixed broken wsyncup()/wysncdown(), as a result wnoutrefresh() now has
+  copy-changed-lines behavior.
+* added and documented wresize() function.
+* more fixes to LOWER-RIGHT corner handling.
+* changed the line-breakout optimization code to allow some lines to be
+  emitted before the first check.
+  
 ### ncurses-1.9.7 -> 1.9.8a
 
 * teach infocmp -i to recognize ECMA highlight sequences

@@ -198,7 +198,7 @@ long		token_start;
 				 * be embedded in description fields of
 				 * either syntax.
 				 */
-				/* FALL THROUGH */
+				/* FALLTHRU */
 			    }
 
 			    *ptr++ = ch;
@@ -453,7 +453,7 @@ chtype	ch, last_ch = '\0';
 			number = 0200;
 		    *(ptr++) = (char) number;
 		} else {
-		    switch (ch) {
+		    switch (c) {
 			case 'E':
 			case 'e':	*(ptr++) = '\033';	break;
 			

@@ -62,7 +62,7 @@ TERMINAL *cur_term;
 #define IS_NEG2(p)	((BYTE(p,0) == 0376) && (BYTE(p,1) == 0377))
 #define LOW_MSB(p)	(BYTE(p,0) + 256*BYTE(p,1))
 
-int _nc_read_file_entry(const char *filename, TERMTYPE *ptr)
+int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 /* return 1 if read, 0 if not found or garbled, -1 if database inaccessible */
 {
     int		name_size, bool_count, num_count, str_count, str_size;
@@ -110,7 +110,7 @@ int _nc_read_file_entry(const char *filename, TERMTYPE *ptr)
     /* grab the name */
     read(fd, buf, min(MAX_NAME_SIZE, (unsigned)name_size));
     buf[MAX_NAME_SIZE] = '\0';
-    ptr->term_names = calloc(sizeof(char), strlen(buf) + 1);
+    ptr->term_names = calloc(strlen(buf) + 1, sizeof(char));
     (void) strcpy(ptr->term_names, buf);
     if (name_size > MAX_NAME_SIZE)
 	lseek(fd, (off_t) (name_size - MAX_NAME_SIZE), 1);
@@ -189,7 +189,7 @@ int _nc_read_file_entry(const char *filename, TERMTYPE *ptr)
  *	overrun the file buffer.
  */
 
-int _nc_read_entry(const char *tn, char *filename, TERMTYPE *tp)
+int _nc_read_entry(const char *const tn, char *const filename, TERMTYPE *const tp)
 {
 char		*envp;
 char		ttn[MAX_ALIAS + 1];
@@ -237,7 +237,7 @@ char		ttn[MAX_ALIAS + 1];
  *	Extract the primary name from a compiled entry.
  */
 
-char *_nc_first_name(const char *sp)
+char *_nc_first_name(const char *const sp)
 /* get the first name from the given name list */
 {
     static char	buf[MAX_NAME_SIZE];
@@ -258,7 +258,7 @@ char *_nc_first_name(const char *sp)
  *	Is the given name matched in namelist?
  */
 
-int _nc_name_match(char *namelst, const char *name, const char *delim)
+int _nc_name_match(char *const namelst, const char *const name, const char *const delim)
 /* microtune this, it occurs in several critical loops */
 {
 char namecopy[MAX_ENTRY_SIZE];	/* this may get called on a TERMCAP value */

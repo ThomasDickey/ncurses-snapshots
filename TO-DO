@@ -2,6 +2,29 @@ SHORT-TERM TO-DO ITEMS:
 
 Known Problems:
 
+* The code departs from perfect 8-bit cleanness in one respect; you cannot
+  specify a character \200 as part of a capability string, because the terminfo
+  library interprets \200 as a request to embed NUL (\000) at that point (the
+  actual code that does this is in ncurses/lib_options.c:add_keytry().
+  This is a legacy terminfo property we can't mess with.
+
+* There is no actual support for terminals with the xmc (magic-cookie) glitch.
+  Sytem V Release 4 never handled these properly either, though it claimed to.
+  There is a comment in ncurses_lib_doupdate.c:doupdate() describing how this
+  could be done right, if anyone wants to try.
+
+* Recognition of xterm mouse reports is implemented by setting the kmous 
+  capability to the mouse-report prefix.  As a result, the kmous sequence is
+  eaten even when mouse recognition is disabled.  This could be fixed if 
+  necessary with special code that pokes the kmous value back into the
+  input fifo when KEY_MOUSE is seen and the mousemask is zero, but that would
+  be kind of ugly.
+
+* The window classes defined in the c++ subdirectory need documentation.
+  Some C++ programmer could earn a lot of good karma by doing this...
+
+Portability (or lack thereof):
+
 * The code for function-key recognition doesn't deal gracefully with NULs
   in the input stream.  This creates a problem for some target environments 
   (such as OS/2 Warp) using the raw PC BIOS; it uses NUL as a leader character
@@ -29,7 +52,7 @@ Known Problems:
   2.6.3.  We're told the C++ support in 2.6.3 is broken and that the right
   fix is to upgrade to 2.7.0.
 
-* The window classes defined in the c++ subdirectory need documentation.
+* Under Ultrix, configure craps out (Ultrix sh is lame).  Run it under ksh.
 
 Untested features:
 
@@ -39,6 +62,26 @@ Untested features:
   for them (num_labels > 0, label_height, label_width, label_format, label_off,
   label_on, plab_norm, lab_f*) has not been tested.  The label_format and
   lab_f* capabilities aren't presently used.
+
+REQUESTED FEATURES:
+
+Larry Schwimmer <rosebud@cyclone.Stanford.EDU> writes:
+>       On a somewhat related topic, I have a request if this has not
+> already been implemented.  I install software for the campus, but
+> would like local sysadmins which access the campus software tree to be
+> able to have local control over public software packages.  I would
+> also like binaries built with ncurses to not have dependencies to the
+> campus software tree where possible.  What this would entail is
+> providing a multipart path for TERMINFO.  For example, the path
+>
+> /usr/local/lib/terminfo:/usr/pubsw/lib/terminfo:usr/share/lib/terminfo
+>
+> could correspond to "first look in the local terminfo database, then
+> look in the campus database, then look in the vendor database".
+>
+> It would also be nice if tic had a command line flag to specify the output
+> directory.  I know TERMINFO is honored, but command line (-d dir?
+> -o dir?) would also be nice and intuitive.
 
 LONGER-TERM TO-DO ITEMS:
 

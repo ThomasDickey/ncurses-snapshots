@@ -82,15 +82,28 @@ int errcode;
 	    ospeed = 1;		/* assume lowest non-hangup speed */
 	else
 	{
-		short *sp, speeds[] = {
+		const short *sp;
+		static const short speeds[] = {
 #ifdef B115200
 			B115200,
 #endif
 #ifdef B57600
 			B57600,
 #endif
+#ifdef B38400
 			B38400,
+#else
+#ifdef EXTB
+			EXTB,
+#endif
+#endif /* B38400 */
+#ifdef B19200
 			B19200,
+#else
+#ifdef EXTA
+			EXTA,
+#endif
+#endif /* B19200 */
 			B9600,
 			B4800,
 			B2400,

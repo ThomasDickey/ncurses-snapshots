@@ -43,6 +43,17 @@
 #include "term.h"
 
 /*
+ * This define controls the line-breakout optimization.  Every once in a
+ * while during screen refresh, we want to check for input and abort the
+ * update if there's some waiting.  CHECK_INTERVAL controls the number of
+ * changed lines to be emitted between input checks.
+ *
+ * Note: Input-check-and-abort is no longer done if the screen is being
+ * updated from scratch.  This is a feature, not a bug.
+ */
+#define CHECK_INTERVAL	6
+
+/*
  * Enable checking to see if doupdate and friends are tracking the true
  * cursor position correctly.  NOTE: this is a debugging hack which will
  * work ONLY on ANSI-compatible terminals!
@@ -50,12 +61,18 @@
 /* #define POSITION_DEBUG */
 
 static void ClrUpdate( WINDOW *scr );
-static void TransformLine( int lineno );
-static void NoIDcTransformLine( int lineno );
-static void IDcTransformLine( int lineno );
+static void TransformLine( int const lineno );
+static void NoIDcTransformLine( int const lineno );
+static void IDcTransformLine( int const lineno );
 static void ClearScreen( void );
 static int InsStr( chtype *line, int count );
 static void DelChar( int count );
+
+#define AttrOf(c)	((c) & (chtype)A_ATTRIBUTES)
+#define UpdateAttrs(c)	if (curscr->_attrs != AttrOf(c)) { \
+				curscr->_attrs = AttrOf(c); \
+				vidputs(curscr->_attrs, _nc_outch); \
+			}
 
 #ifdef POSITION_DEBUG
 /****************************************************************************
@@ -95,7 +112,7 @@ void position_check(int expected_y, int expected_x, char *legend)
  *
  ****************************************************************************/
 
-static inline void GoTo(int row, int col)
+static inline void GoTo(int const row, int const col)
 {
 	chtype	oldattr = SP->_current_attr;
 
@@ -127,18 +144,15 @@ static inline void GoTo(int row, int col)
 
 static inline void PutAttrChar(chtype ch)
 {
-	if (tilde_glitch && ((ch & A_CHARTEXT) == '~'))
-		ch = ('`' | (ch & A_ATTRIBUTES));
+	if (tilde_glitch && (TextOf(ch) == '~'))
+		ch = ('`' | AttrOf(ch));
 
 	TR(TRACE_CHARPUT, ("PutAttrChar(%s, %s) at (%d, %d)",
-			  _tracechar((unsigned char)(ch & A_CHARTEXT)),
-			  _traceattr((ch & (chtype)A_ATTRIBUTES)),
+			  _tracechar((unsigned char)TextOf(ch)),
+			  _traceattr(AttrOf(ch)),
 			   SP->_cursrow, SP->_curscol));
-	if (curscr->_attrs != (ch & (chtype)A_ATTRIBUTES)) {
-		curscr->_attrs = ch & (chtype)A_ATTRIBUTES;
-		vidputs(curscr->_attrs, _nc_outch);
-	}
-	putc(ch & A_CHARTEXT, SP->_ofp);
+	UpdateAttrs(ch);
+	putc((int)TextOf(ch), SP->_ofp);
 	SP->_curscol++;
 	if (char_padding) {
 		TPUTS_TRACE("char_padding");
@@ -146,7 +160,38 @@ static inline void PutAttrChar(chtype ch)
 	}
 }
 
-static inline void PutChar(chtype ch)
+static bool check_pending(void)
+/* check for pending input */
+{
+	if (SP->_checkfd >= 0) {
+	fd_set fdset;
+	struct timeval ktimeout;
+
+		ktimeout.tv_sec =
+		ktimeout.tv_usec = 0;
+
+		FD_ZERO(&fdset);
+		FD_SET(SP->_checkfd, &fdset);
+		if (select(SP->_checkfd+1, &fdset, NULL, NULL, &ktimeout) != 0)
+		{
+			fflush(SP->_ofp);
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+/*
+ * No one supports recursive inline functions.  However, gcc is quieter if we
+ * instantiate the recursive part separately.
+ */
+#if CC_HAS_INLINE_FUNCS
+static void callPutChar(chtype const);
+#else
+#define callPutChar(ch) PutChar(ch)
+#endif
+
+static inline void PutChar(chtype const ch)
 /* insert character, handling automargin stuff */
 {
     if (!(SP->_cursrow == screen_lines-1 && SP->_curscol == screen_columns-1
@@ -171,8 +216,14 @@ static inline void PutChar(chtype ch)
 	    putp(enter_am_mode);
 	}
     }
-    else if (InsStr(&ch, 1) == ERR)		/* try inserting the char */
-	return;
+    else
+    {
+	GoTo(screen_lines-1,screen_columns-2);
+	callPutChar(ch);
+	GoTo(screen_lines-1,screen_columns-2);
+	if (InsStr(newscr->_line[screen_lines-1].text+screen_columns-2,1)==ERR)
+	    return;
+    }
 
     if (SP->_curscol >= screen_columns)
     {
@@ -211,6 +262,13 @@ static inline void PutChar(chtype ch)
     position_check(SP->_cursrow, SP->_curscol, "PutChar");
 #endif /* POSITION_DEBUG */
 }
+
+#if CC_HAS_INLINE_FUNCS
+static void callPutChar(chtype const ch)
+{
+	PutChar(ch);
+}
+#endif
 
 int doupdate(void)
 {
@@ -255,21 +313,16 @@ int	i;
 		SP->_endwin = FALSE;
 	}
 
-	/* check for pending input */
-	if (SP->_checkfd >= 0) {
-	fd_set fdset;
-	struct timeval ktimeout;
-
-		ktimeout.tv_sec =
-		ktimeout.tv_usec = 0;
-
-		FD_ZERO(&fdset);
-		FD_SET(SP->_checkfd, &fdset);
-		if (select(SP->_checkfd+1, &fdset, NULL, NULL, &ktimeout) != 0) {
-			fflush(SP->_ofp);
-			return OK;
-		}
-	}
+	/* 
+	 * FIXME: Full support for magic-cookie terminals could go in here.
+	 * The theory: we scan the virtual screen looking for attribute
+	 * changes.  Where we find one, check to make sure it's realizable
+	 * by seeing if the required number of un-attributed blanks are
+	 * present before or after the change.  If not, nuke the attributes
+	 * out of the following or preceding cells on the virtual screen,
+	 * forward to the next change or backwards to the previous one.  If
+	 * so, displace the change by the required number of characters.
+	 */
 
 	if (curscr->_clear) {		/* force refresh ? */
 		T(("clearing and updating curscr"));
@@ -281,10 +334,15 @@ int	i;
 			ClrUpdate(newscr);
 			newscr->_clear = FALSE;
 		} else {
+			int changedlines;
+
 		        _nc_scroll_optimize();
 
 			T(("Transforming lines"));
-			for (i = 0; i < min(screen_lines, newscr->_maxy + 1); i++) {
+			for (i = changedlines = 0;
+			     i < min(screen_lines,newscr->_maxy+1);
+			     i++)
+			{
 				/*
 				 * newscr->line[i].firstchar is normally set
 				 * by wnoutrefresh.  curscr->line[i].firstchar
@@ -293,17 +351,44 @@ int	i;
 				 */
 				if (newscr->_line[i].firstchar != _NOCHANGE
 				    || curscr->_line[i].firstchar != _NOCHANGE)
+				{
 					TransformLine(i);
+					changedlines++;
+				}
+
+				/* mark line changed successfully */
+				if (i <= newscr->_maxy)
+				{
+					newscr->_line[i].firstchar = _NOCHANGE;
+					newscr->_line[i].lastchar = _NOCHANGE;
+					newscr->_line[i].oldindex = i;
+				}
+				if (i <= curscr->_maxy)
+				{
+					curscr->_line[i].firstchar = _NOCHANGE;
+					curscr->_line[i].lastchar = _NOCHANGE;
+					curscr->_line[i].oldindex = i;
+				}
+
+				/*
+				 * Here is our line-breakout optimization.
+				 */
+				if ((changedlines % CHECK_INTERVAL) == changedlines-1
+				 && check_pending())
+					goto cleanup;
 			}
 		}
 	}
-	T(("marking screen as updated"));
-	for (i = 0; i <= newscr->_maxy; i++) {
+
+	/* this code won't be executed often */
+	for (i = screen_lines; i <= newscr->_maxy; i++)
+	{
 		newscr->_line[i].firstchar = _NOCHANGE;
 		newscr->_line[i].lastchar = _NOCHANGE;
 		newscr->_line[i].oldindex = i;
 	}
-	for (i = 0; i <= curscr->_maxy; i++) {
+	for (i = screen_lines; i <= curscr->_maxy; i++)
+	{
 		curscr->_line[i].firstchar = _NOCHANGE;
 		curscr->_line[i].lastchar = _NOCHANGE;
 		curscr->_line[i].oldindex = i;
@@ -312,10 +397,11 @@ int	i;
 	curscr->_curx = newscr->_curx;
 	curscr->_cury = newscr->_cury;
 
+	GoTo(curscr->_cury, curscr->_curx);
+
+    cleanup:
 	if (curscr->_attrs != A_NORMAL)
 		vidattr(curscr->_attrs = A_NORMAL);
-
-	GoTo(curscr->_cury, curscr->_curx);
 
 	fflush(SP->_ofp);
 
@@ -426,7 +512,7 @@ attr_t	oldcolor = 0;	/* initialization pacifies -Wall */
 **	update, depending upon availability of insert/delete character.
 */
 
-static void TransformLine(int lineno)
+static void TransformLine(int const lineno)
 {
 
 	T(("TransformLine(%d) called",lineno));
@@ -453,7 +539,7 @@ static void TransformLine(int lineno)
 **
 */
 
-static void NoIDcTransformLine(int lineno)
+static void NoIDcTransformLine(int const lineno)
 {
 int	firstChar, lastChar;
 chtype	*newLine = newscr->_line[lineno].text;
@@ -466,7 +552,7 @@ int	attrchanged = 0;
 	firstChar = 0;
 	while (firstChar < screen_columns - 1 &&  newLine[firstChar] == oldLine[firstChar]) {
 		if(ceol_standout_glitch) {
-			if((newLine[firstChar] & (chtype)A_ATTRIBUTES) != (oldLine[firstChar] & (chtype)A_ATTRIBUTES))
+			if(AttrOf(newLine[firstChar]) != AttrOf(oldLine[firstChar]))
 			attrchanged = 1;
 		}
 		firstChar++;
@@ -514,7 +600,7 @@ int	attrchanged = 0;
 **			delete oLastChar - nLastChar spaces
 */
 
-static void IDcTransformLine(int lineno)
+static void IDcTransformLine(int const lineno)
 {
 int	firstChar, oLastChar, nLastChar;
 chtype	*newLine = newscr->_line[lineno].text;
@@ -527,7 +613,7 @@ int	attrchanged = 0;
 	if(ceol_standout_glitch && clr_eol) {
 		firstChar = 0;
 		while(firstChar < screen_columns) {
-			if((newLine[firstChar] & (chtype)A_ATTRIBUTES) != (oldLine[firstChar] & (chtype)A_ATTRIBUTES))
+			if(AttrOf(newLine[firstChar]) != AttrOf(oldLine[firstChar]))
 				attrchanged = 1;
 			firstChar++;
 		}
@@ -577,7 +663,9 @@ int	attrchanged = 0;
 		while (nLastChar > firstChar  &&  newLine[nLastChar] == BLANK)
 			nLastChar--;
 
-		if((nLastChar == firstChar) && clr_eol) {
+		if((nLastChar == firstChar)
+		 && clr_eol
+		 && (curscr->_attrs == A_NORMAL)) {
 			GoTo(lineno, firstChar);
 			ClrToEOL();
 			if(newLine[firstChar] != BLANK )
@@ -608,8 +696,17 @@ int	attrchanged = 0;
 			if (oLastChar < nLastChar)
 				InsStr(&newLine[k], nLastChar - oLastChar);
 
-			else if (oLastChar > nLastChar )
+			else if (oLastChar > nLastChar ) {
+				/*
+				 * The delete-char sequence will effectively
+				 * shift in blanks from the right margin of the
+				 * screen.  Ensure that they are the right
+				 * color by setting the video attributes from
+				 * the last character on the row.
+				 */
+				UpdateAttrs(newLine[screen_columns-1]);
 				DelChar(oLastChar - nLastChar);
+			}
 		}
 	}
 	for (k = firstChar; k < screen_columns; k++)
@@ -623,7 +720,7 @@ int	attrchanged = 0;
 **
 */
 
-static void ClearScreen()
+static void ClearScreen(void)
 {
 
 	T(("ClearScreen() called"));
@@ -712,7 +809,7 @@ static int InsStr(chtype *line, int count)
 
 static void DelChar(int count)
 {
-	T(("DelChar(%d) called", count));
+	T(("DelChar(%d) called, position = (%d,%d)", count, newscr->_cury, newscr->_curx));
 
 	if (parm_dch) {
 		TPUTS_TRACE("parm_dch");

@@ -119,8 +119,8 @@ chtype _nc_render(WINDOW *win, chtype oldch, chtype newch)
 /* check if position is legal; if not, return error */
 #define CHECK_POSITION(win, x, y) \
 	if (y > win->_maxy || x > win->_maxx || y < 0 || x < 0) { \
-		TR(TRACE_VIRTPUT, ("Alert! win _curx = %d, _cury = %d " \
-				   "(_maxx = %d, _maxy = %d)", x, y, \
+		TR(TRACE_VIRTPUT, ("Alert! Win=%p _curx = %d, _cury = %d " \
+				   "(_maxx = %d, _maxy = %d)", win, x, y, \
 				   win->_maxx, win->_maxy)); \
 	  	win->_curx = win->_cury = 0; \
 		win->_flags &= ~_NEED_WRAP; \
@@ -196,7 +196,7 @@ int		newx;
 	if (ch & A_ALTCHARSET)
 		goto noctrl;
 
-	switch (ch&A_CHARTEXT) {
+	switch ((int)(ch&A_CHARTEXT)) {
     	case '\t':
 		if (win->_flags & _NEED_WRAP) {
 		  	x = 0;
@@ -226,7 +226,7 @@ int		newx;
 		if (is7bits(ch & A_CHARTEXT) && iscntrl(ch & A_CHARTEXT))
 		    	return(waddstr(win, unctrl((unsigned char)ch)));
 
-		/* FALL THROUGH */
+		/* FALLTHRU */
         noctrl:
 		waddch_literal(win, ch);
 		return(OK);
@@ -270,7 +270,7 @@ int waddch(WINDOW *win, const chtype ch)
 	}
 }
 
-int wechochar(WINDOW *win, chtype ch)
+int wechochar(WINDOW *win, const chtype ch)
 {
 	TR(TRACE_VIRTPUT, ("wechochar(%p,%s (%s)) called", win,
 			  _tracechar((unsigned char)(ch & A_CHARTEXT)),

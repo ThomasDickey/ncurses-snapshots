@@ -31,7 +31,7 @@
 int wclrtobot(WINDOW *win)
 {
 chtype	*ptr, *end, *maxx = NULL;
-int	y, startx, minx;
+short	y, startx, minx;
 
 	T(("wclrtobot(%p) called", win));
 

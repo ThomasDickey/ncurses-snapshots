@@ -22,7 +22,6 @@ NC_MFLAGS 	= @nc_cv_makeflags@
 
 MODEL		= @DFT_LWR_MODEL@
 srcdir		= @srcdir@
-VPATH		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 libdir		= $(exec_prefix)/lib
@@ -42,7 +41,7 @@ CPP		= @CPP@
 CFLAGS		= @CFLAGS@
 
 INCDIR		= $(srcdir)/../include
-CPPFLAGS	= -I../ncurses -I$(srcdir)/../ncurses @INCLUDES@ \
+CPPFLAGS	= -I../ncurses -I$(srcdir)/../ncurses @CPPFLAGS@ \
 		  -DHAVE_CONFIG_H -DTERMINFO=\"$(ticdir)\"
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)

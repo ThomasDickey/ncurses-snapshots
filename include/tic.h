@@ -67,7 +67,7 @@
 #define PRIVATE_INFO	"%s/.terminfo"	/* plug getenv("HOME") into %s */
 
 #define DEBUG(n, a)	if (_nc_tracing & (1 << (n - 1))) _tracef a 
-extern int _nc_tracing;
+extern unsigned _nc_tracing;
 extern void _nc_tracef(char *, ...);
 extern char *_nc_visbuf(const char *);
 
@@ -139,7 +139,7 @@ extern const struct name_table_entry	*_nc_get_table(bool);
 #define ABSENT_STRING		(char *)0
 
 /* out-of-band values for representing cancels */
-#define CANCELLED_BOOLEAN	-2
+#define CANCELLED_BOOLEAN	(char)(-2)
 #define CANCELLED_NUMERIC	-2
 #define CANCELLED_STRING	(char *)-1
 
@@ -170,16 +170,16 @@ extern long _nc_start_line;
 #define SYN_TERMCAP	1
 
 /* comp_error.c: warning & abort messages */
-extern void _nc_set_source(const char *name);
-extern void _nc_set_type(const char *name);
-extern void _nc_syserr_abort(const char *,...);
-extern void _nc_err_abort(const char *,...);
-extern void _nc_warning(const char *,...);
+extern void _nc_set_source(const char *const name);
+extern void _nc_set_type(const char *const name);
+extern void _nc_syserr_abort(const char *const,...);
+extern void _nc_err_abort(const char *const,...);
+extern void _nc_warning(const char *const,...);
 extern bool _nc_suppress_warnings;
 
 /* captoinfo.c: capability conversion */
-extern char *_nc_captoinfo(char *, char *, int);
-extern char *_nc_infotocap(char *, char *, int);
+extern char *_nc_captoinfo(char *const, char *, int const);
+extern char *_nc_infotocap(char *const, char *, int const);
 
 /* comp_main.c: compiler main */
 extern char	*_nc_progname;

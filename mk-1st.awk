@@ -11,6 +11,7 @@
 # Notes:
 #	CLIXs nawk does not like underscores in command-line variable names.
 #	Mixed-case is ok.
+#	HP/UX requires shared libraries to have executable permissions.
 #
 function symlink(src,dst) {
 		if ( src != dst ) {
@@ -20,7 +21,7 @@ function symlink(src,dst) {
 	}
 function sharedlinks(directory) {
 		if ( end_name != lib_name ) {
-			printf "\tcd %s && (", directory
+			printf "\t(cd %s ;", directory
 			abi_name = sprintf("%s.$(ABI_VERSION)", lib_name);
 			symlink(end_name, abi_name);
 			symlink(abi_name, lib_name);
@@ -78,7 +79,7 @@ END	{
 				print  "install.libs \\"
 				printf "install.%s :: $(libdir) ../lib/%s\n", name, end_name
 				printf "\t@echo installing ../lib/%s as $(libdir)/%s \n", lib_name, end_name
-				printf "\t$(INSTALL_DATA) ../lib/%s $(libdir)/%s \n", lib_name, end_name
+				printf "\t$(INSTALL) ../lib/%s $(libdir)/%s \n", lib_name, end_name
 				sharedlinks("$(libdir)")
 				if ( rmSoLocs == "yes" ) {
 					print  ""

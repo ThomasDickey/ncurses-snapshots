@@ -23,7 +23,7 @@
 
 #include <unctrl.h>
 
-char *unctrl(register unsigned char uch)
+char *unctrl(register chtype uch)
 {
     static char buffer[3] = "^x";
 

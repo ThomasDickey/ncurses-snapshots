@@ -301,6 +301,11 @@ The \fB%\fR encodings have the following meanings:
 	%3d	print pop() like %3d
 	%02d
 	%03d	as in printf
+	%x	print pop() as in printf
+	%2x	print pop() like %2x
+	%3x	print pop() like %3x
+	%02x
+	%03x	as in printf
 	%c	print pop() gives %c
 	%s	print pop() gives %s
 
@@ -946,7 +951,7 @@ solid square block	ACS_BLOCK	#	0
 .PP
 The best way to define a new device's graphics set is to add a column
 to a copy of this table for your terminal, giving the character which
-(when emitted between \fBsmacs\/\fBrmacs\fR switches) will be rendered
+(when emitted between \fBsmacs\fR/\fBrmacs\fR switches) will be rendered
 as the corresponding graphic.  Then read off the VT100/your terminal
 character pairs right to left in sequence; these become the ACSC string.
 .PP
@@ -1269,10 +1274,12 @@ of terminfo (under HP-UX and AIX) which diverged from System V terminfo after
 SVr1, and have added extension capabilities to the string table that (in the
 binary format) collide with System V and XSI Curses extensions.
 .SH EXTENSIONS
+The %x operator in parametrized strings is unique to the ncurses implementation
+of \fBtparm\fR (it is required in order to support an unfortunate choice of
+\fBinitc\fR format on the Linux console).
+.PP
 Some SVr4 \fBcurses\fR implementations, and all previous to SVr4, don't
-interpret the %A and %O operators in parameter strings.  SVr4 curses does
-not document a use of the \fBrmpch\fR/\fBsmpch\fR pair, but the \fBncurses\fR
-implementation uses it to enable/disable ROM character display.
+interpret the %A and %O operators in parameter strings.
 .PP
 SVr4/XPG4 do not specify whether \fBmsgr\fR licenses movement while in
 an alternate-character-set mode (such modes may, among other things, map
@@ -1282,9 +1289,9 @@ mode.  This raises the possibility that an XPG4
 implementation making the opposite interpretation may need terminfo
 entries made for \fBncurses\fR to have \fBmsgr\fR turned off.
 .PP
-The (\fBncurses\fR) library handles insert-character and
-insert-character modes in a slightly non-standard way in order to get better
-update efficiency.  See the \fBInsert/Delete Character\fR subsection above.
+The \fBncurses\fR library handles insert-character and insert-character modes
+in a slightly non-standard way in order to get better update efficiency.  See
+the \fBInsert/Delete Character\fR subsection above.
 .PP
 The parameter substitutions for \fBset_clock\fR and \fBdisplay_clock\fR are
 not documented in SVr4 or the XSI Curses standard.  They are deduced from the

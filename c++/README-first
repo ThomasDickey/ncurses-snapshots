@@ -11,7 +11,7 @@ used in order to narrow the interface.  E.g. you don't have the
 distinction between `printw' and `mvprintw' anymore.
 
 A second benefit is the removal of all #defines which are included in
-the ncurses.h file.  This is a steady cause of trouble because many
+the curses.h file.  This is a steady cause of trouble because many
 common identifiers are used.  Instead now all #defines are inline
 functions which also allows strict type checking of arguments.
 
@@ -50,8 +50,8 @@ welcome.  Please let us know which functionality you miss.
 
 
 Original author:
-     Eric Newton         (newton@rocky.oswego.edu) for FSF's libg++
+     Eric Newton         <newton@rocky.oswego.edu> for FSF's libg++
 
 Authors of this release:
-     Ulrich Drepper      (drepper@ira.uka.de)
- and Anatoly Ivasyuk     (anatoly@nick.csh.rit.edu)
+     Ulrich Drepper      <drepper@ira.uka.de>
+ and Anatoly Ivasyuk     <anatoly@nick.csh.rit.edu>

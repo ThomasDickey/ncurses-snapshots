@@ -242,9 +242,6 @@ extern FIELDTYPE *TYPE_ALPHA,
 extern FORM  *_nc_Default_Form;
 extern FIELD *_nc_Default_Field;
 
-#define _DEFAULT_FORM  _nc_Default_Form
-#define _DEFAULT_FIELD _nc_Default_Field
-
 
 	/***********************
 	*  FIELDTYPE routines  *

@@ -81,8 +81,8 @@ void init_acs(void)
 #define ALTCHAR(c)	((chtype)(c) & A_CHARTEXT) | A_ALTCHARSET
 
 	if (acs_chars != NULL) {
-	    int i = 0;
-	    int length = strlen(acs_chars);
+	    size_t i = 0;
+	    size_t length = strlen(acs_chars);
 	    
 		while (i < length) 
 			switch (acs_chars[i]) {
@@ -97,6 +97,7 @@ void init_acs(void)
 				acs_map[(unsigned int)acs_chars[i]] = 
 					ALTCHAR(acs_chars[i+1]);
 				i++;
+				/* FALLTHRU */
 			default:
 				i++;
 				break;

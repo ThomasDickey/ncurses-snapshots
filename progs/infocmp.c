@@ -375,7 +375,8 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
     buf[0] = '\0';
     for (sp = cap; *sp; sp++)
     {
-	int	i, len = 0;
+	int	i;
+	size_t	len = 0;
 	char	*expansion = (char *)NULL;
 
 	/* first, check other capabilities in this entry */
@@ -447,7 +448,7 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 
 		   for (ap = private_modes; ap->from; ap++)
 		   {
-		       int tlen = strlen(ap->from);
+		       size_t tlen = strlen(ap->from);
 
 		       if (strncmp(ap->from, ep, tlen) == 0)
 		       {
@@ -485,7 +486,7 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 
 		   for (ap = ecma_highlights; ap->from; ap++)
 		   {
-		       int tlen = strlen(ap->from);
+		       size_t tlen = strlen(ap->from);
 
 		       if (strncmp(ap->from, ep, tlen) == 0)
 		       {

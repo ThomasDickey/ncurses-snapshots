@@ -88,8 +88,8 @@ ITEM _nc_Default_Item = {
 +--------------------------------------------------------------------------*/
 INLINE static void ComputeMaximum_NameDesc_Lengths(MENU * menu)
 {
-  int MaximumNameLength        = 0;
-  int MaximumDescriptionLength = 0;
+  unsigned MaximumNameLength        = 0;
+  unsigned MaximumDescriptionLength = 0;
   ITEM **items;
   
   assert(menu && menu->items);

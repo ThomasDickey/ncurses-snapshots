@@ -131,7 +131,7 @@ WINDOW	*win;
 	if (num_lines <= 0 || num_columns <= 0)
 	 	return NULL;
 
-	if ((win = (WINDOW *) calloc(sizeof(WINDOW), 1)) == NULL)
+	if ((win = (WINDOW *) calloc(1, sizeof(WINDOW))) == NULL)
 		return NULL;            
 
 	if ((win->_line = (struct ldat *) calloc((unsigned)num_lines, sizeof (struct ldat))) == NULL) {
@@ -165,6 +165,13 @@ WINDOW	*win;
 
 	win->_regtop     = 0;
 	win->_regbottom  = num_lines - 1;
+
+	win->_pad._pad_y      = -1;
+	win->_pad._pad_x      = -1;
+	win->_pad._pad_top    = -1;
+	win->_pad._pad_bottom = -1;
+	win->_pad._pad_left   = -1;
+	win->_pad._pad_right  = -1;
 
 	for (i = 0; i < num_lines; i++)
 	{

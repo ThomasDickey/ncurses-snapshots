@@ -27,13 +27,13 @@ NC_MAKEFLAGS
 ### Use "--without-normal --with-shared" to allow the default model to be
 ### shared, for example.
 nc_list_models=""
-AC_ARG_WITH(normal,
-	[  --with-normal           generate normal-libraries (default)],
-	[test "$withval" = "yes" && nc_list_models="normal"],
-	[nc_list_models="normal"])
 AC_ARG_WITH(shared,
 	[  --with-shared           generate shared-libraries],
 	[test "$withval" = "yes" && nc_list_models="$nc_list_models shared"])
+AC_ARG_WITH(normal,
+	[  --with-normal           generate normal-libraries (default)],
+	[test "$withval" = "yes" && nc_list_models="$nc_list_models normal"],
+	[nc_list_models="$nc_list_models normal"])
 AC_ARG_WITH(debug,
 	[  --with-debug            generate debug-libraries (default)],
 	[test "$withval" = "yes" && nc_list_models="$nc_list_models debug"],
@@ -41,7 +41,10 @@ AC_ARG_WITH(debug,
 AC_ARG_WITH(profile,
 	[  --with-profile          generate profile-libraries],
 	[test "$withval" = "yes" && nc_list_models="$nc_list_models profile"])
+
+AC_MSG_CHECKING(for specified models)
 test -z "$nc_list_models" && nc_list_models=normal
+AC_MSG_RESULT($nc_list_models)
 
 ### Use the first model as the default, and save its suffix for use in building
 ### up test-applications.
@@ -56,6 +59,12 @@ AC_SUBST(DFT_UPR_MODEL)dnl	the default model ("NORMAL")
 AC_SUBST(DFT_DEP_SUFFIX)dnl	the corresponding library-suffix (".a")
 AC_SUBST(DFT_ARG_SUFFIX)dnl	the string to append to "-lncurses" ("")
 AC_SUBST(nc_list_models)dnl	the complete list of models ("normal debug")
+
+LIB_NAME=ncurses
+AC_SUBST(LIB_NAME)
+
+LIB_PREFIX=../lib/lib
+AC_SUBST(LIB_PREFIX)
 
 dnl Not all ports of gcc support the -g option
 CC_G_OPT='-g'
@@ -115,12 +124,24 @@ AC_ARG_ENABLE(termcap,
 	[with_termcap=yes])
 test "$with_termcap" != "yes" && AC_DEFINE(PURE_TERMINFO)
 
-###	use option --enable-getcap to use a hacked getcap for read termcaps
+###	use option --enable-getcap to use a hacked getcap for reading termcaps
 AC_ARG_ENABLE(getcap,
 	[  --enable-getcap         fast termcap load, no xrefs to terminfo],
 	[with_getcap=$enableval],
 	[with_getcap=no])
 test "$with_getcap" = "yes" && AC_DEFINE(USE_GETCAP)
+
+###   use option --enable-symlinks to make tic use symlinks, not hard links
+AC_ARG_ENABLE(symlinks,
+	[  --enable-symlinks       make tic use symbolic links not hard links],
+	[with_symlinks=$enableval]
+	[AC_DEFINE(USE_SYMLINKS)])
+
+###   use option --enable-bsdpad to have tputs process BSD-style prefix padding
+AC_ARG_ENABLE(bsdpad,
+	[  --enable-bsdpad         recognize BSD-style prefix padding],
+	[with_bsdpad=$enableval]
+	[AC_DEFINE(BSD_TPUTS)])
 
 ###	use option --disable-echo to suppress full display compiling commands
 AC_ARG_ENABLE(echo,
@@ -162,7 +183,7 @@ then
 	# -Wmissing-declarations
 	if test -z "$with_assertions"
 	then
-		CFLAGS="$CFLAGS -DNDEBUG"
+		CPPFLAGS="$CPPFLAGS -DNDEBUG"
 	fi
 fi
 
@@ -209,6 +230,7 @@ fi
 AC_LANG_C
 AC_C_CONST
 AC_C_INLINE
+test $ac_cv_c_inline != no && AC_DEFINE(CC_HAS_INLINE_FUNCS)
 
 ###	Checks for external-data
 NC_ERRNO
@@ -309,7 +331,7 @@ sed	-e '/^ -D/!d' \
 	-e 's/ -D/\
 #define /g' \
 	-e 's/\(#define [A-Za-z_][A-Za-z0-9_]*\)=/\1	/g' \
-	-e 's@\\@@g' \
+	-e 's/\\//g' \
 	include/config_h | sort >>include/config.h
 echo "
 	/* The C compiler may not treat these properly, but C++ has to */

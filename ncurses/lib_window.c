@@ -72,26 +72,47 @@ int syncok(WINDOW *win, bool bf)
 }
 
 void wsyncup(WINDOW *win)
-/* touch all of window's ancestors unconditionally */
+/* mark changed every cell in win's ancestors that is changed in win */
 {
-WINDOW	*wp;
+  WINDOW	*wp;
 
-	for (wp = win; wp; wp = wp->_parent) {
-		touchwin(wp);
-	}
+  if (win->_parent)
+    for (wp = win; wp->_parent; wp = wp->_parent)
+    {
+      int i;
+      WINDOW *pp = wp->_parent;
+
+      for (i = 0; i <= wp->_maxy; i++)
+      {
+	if (pp->_line[wp->_pary + i].firstchar >= 0
+		&& pp->_line[wp->_pary + i].firstchar < wp->_line[i].firstchar)
+	  wp->_line[i].firstchar = pp->_line[wp->_pary + i].firstchar;
+	if (pp->_line[wp->_pary + i].lastchar > wp->_line[i].lastchar)
+	  wp->_line[i].lastchar = pp->_line[wp->_pary + i].lastchar;
+      }
+    }
 }
 
 void wsyncdown(WINDOW *win)
-/* touch window if any of its ancestor have been changed */ 
+/* mark changed every cell in win that is changed in any of its ancestors */ 
 {
-WINDOW *wp;
+  WINDOW *wp;
 
-	for (wp = win; wp; wp = wp->_parent) {
-		if (is_wintouched(wp)) {
-			touchwin(win);
-			break;
-		}
-	}
+  if (win->_parent)
+    for (wp = win; wp->_parent; wp = wp->_parent)
+    {
+      int i;
+      WINDOW *pp = wp->_parent;
+
+      for (i = 0; i <= wp->_maxy; i++)
+      {
+	if (wp->_line[i].firstchar >= 0
+		&& wp->_line[i].firstchar < pp->_line[wp->_pary + i].firstchar)
+	  pp->_line[wp->_pary + i].firstchar = wp->_line[i].firstchar;
+	if (wp->_line[i].lastchar > pp->_line[wp->_pary + i].lastchar)
+	  pp->_line[wp->_pary + i].lastchar = wp->_line[i].lastchar;
+      }
+    }
 }
 
 void wcursyncup(WINDOW *win)

@@ -48,17 +48,17 @@ extern ENTRY	*_nc_head, *_nc_tail;
 #define NULLHOOK        (bool(*)(ENTRY *))0
 
 /* alloc_entry.c: elementary allocation code */
-extern void _nc_init_entry(TERMTYPE *);
-extern char *_nc_save_str(const char *);
-extern void _nc_merge_entry(TERMTYPE *, TERMTYPE *);
-extern void _nc_wrap_entry(ENTRY *);
+extern void _nc_init_entry(TERMTYPE *const);
+extern char *_nc_save_str(const char *const);
+extern void _nc_merge_entry(TERMTYPE *const, TERMTYPE *const);
+extern void _nc_wrap_entry(ENTRY *const);
 
 /* parse_entry.c: entry-parsing code */
 extern int _nc_parse_entry(ENTRY *, int, bool);
 extern int _nc_capcmp(const char *, const char *);
 
 /* write_entry.c: writing an entry to the file system */
-extern void _nc_write_entry(TERMTYPE *);
+extern void _nc_write_entry(TERMTYPE *const);
 
 /* comp_parse.c: entry list handling */
 extern void _nc_read_entry_source(FILE*, char*, int, bool, bool (*)(ENTRY*));

@@ -47,6 +47,9 @@ int putp(const char *string)
 int tputs(const char *string, int affcnt, int (*outc)(int))
 {
 float	number;
+#ifdef BSD_TPUTS
+float	trailpad;
+#endif /* BSD_TPUTS */
 
 #ifdef TRACE
 char	addrbuf[17];
@@ -65,6 +68,34 @@ char	addrbuf[17];
 
 	if (string == (char *)0 || string == (char *)-1)
 		return ERR;
+
+#ifdef BSD_TPUTS
+	/*
+	 * This ugly kluge deals with the fact that some ancient BSD programs
+	 * (like nethack) actually do the likes of tputs("50") to get delays.
+	 */
+	trailpad = 0;
+
+	while (isdigit(*string)) {
+		trailpad = trailpad * 10 + *string - '0';
+		string++;
+	}
+
+	if (*string == '.') {
+		string++;
+		if (isdigit(*string)) {
+			trailpad += (float) (*string - '0') / 10.;
+			string++;
+		}
+		while (isdigit(*string))
+			string++;
+	}
+
+	if (*string == '*') {
+		trailpad *= affcnt;
+		string++;
+	}
+#endif /* BSD_TPUTS */
 
 	while (*string) {
 	    	if (*string != '$')
@@ -96,6 +127,8 @@ char	addrbuf[17];
 					    	number += (float) (*string - '0') / 10.;
 					    	string++;
 					}
+					while (isdigit(*string))
+						string++;
 			    	}
 
 				mandatory = !xon_xoff;
@@ -112,9 +145,10 @@ char	addrbuf[17];
 			    	}
 
 #ifdef padding_baud_rate
-			    	if (mandatory && padding_baud_rate && (!SP || SP->_baudrate >= padding_baud_rate))
-					delay_output((float)number);
+			    	if (mandatory && number > 0 && padding_baud_rate && (!SP || SP->_baudrate >= padding_baud_rate))
+					delay_output(number);
 #endif /* padding_baud_rate */
+				number = 0;
 
 			} /* endelse (*string == '<') */
 		} /* endelse (*string == '$') */
@@ -124,6 +158,17 @@ char	addrbuf[17];
 
 		string++;
 	}
+
+#ifdef BSD_TPUTS
+	/*
+	 * Emit any BSD-style prefix padding that we've accumulated now.
+	 */
+#ifdef padding_baud_rate
+	if (trailpad > 0 && !xon_xoff && padding_baud_rate && (!SP || SP->_baudrate >= padding_baud_rate))
+		delay_output(number);
+#endif /* padding_baud_rate */
+#endif /* BSD_TPUTS */
+
 	return OK;
 }
 

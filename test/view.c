@@ -107,7 +107,7 @@ char        **lptr, **olptr;
 		    lptr++;
 	        else
 		    break;
-	    wscrl(stdscr, olptr - lptr);
+	    wscrl(stdscr, lptr - olptr);
             break;
 
         case KEY_UP:
@@ -118,7 +118,7 @@ char        **lptr, **olptr;
 		    lptr--;
 	        else
 		    break;
-	    wscrl(stdscr, olptr - lptr);
+	    wscrl(stdscr, lptr - olptr);
             break;
 	}
     }

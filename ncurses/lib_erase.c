@@ -33,7 +33,7 @@ int  werase(WINDOW	*win)
 {
 int	y;
 chtype	*sp, *end, *start, *maxx = NULL;
-int	minx;
+short	minx;
 
 	T(("werase(%p) called", win));
 
@@ -56,7 +56,7 @@ int	minx;
 		    		win->_line[y].firstchar = minx;
 
 			if (win->_line[y].lastchar < maxx - win->_line[y].text)
-		    	win->_line[y].lastchar = maxx - win->_line[y].text;
+		    	    win->_line[y].lastchar = maxx - win->_line[y].text;
 	    	}
 	}
 	win->_curx = win->_cury = 0;

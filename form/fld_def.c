@@ -241,7 +241,7 @@ FIELD *new_field(int rows, int cols, int frow, int fcol, int nrow, int nbuf)
       fcol>=0 && 
       nrow>=0 && 
       nbuf>=0 &&
-      (err = E_SYSTEM_ERROR) && /* trick: this resets the default error */
+      ((err = E_SYSTEM_ERROR) != 0) && /* trick: this resets the default error */
       (New_Field=(FIELD *)malloc(sizeof(FIELD))) )
     {
       *New_Field       = default_field;
@@ -303,7 +303,7 @@ FIELD *dup_field(FIELD * field, int frow, int fcol)
   int err = E_BAD_ARGUMENT;
 
   if (field && (frow>=0) && (fcol>=0) && 
-      (err=E_SYSTEM_ERROR) && /* trick : this resets the default error */
+      ((err=E_SYSTEM_ERROR) != 0) && /* trick : this resets the default error */
       (New_Field=(FIELD *)malloc(sizeof(FIELD))) )
     {
       *New_Field         = default_field;
@@ -364,7 +364,7 @@ FIELD *link_field(FIELD * field, int frow, int fcol)
   int err = E_BAD_ARGUMENT;
 
   if (field && (frow>=0) && (fcol>=0) &&
-      (err=E_SYSTEM_ERROR) && /* trick: this resets the default error */
+      ((err=E_SYSTEM_ERROR) != 0) && /* trick: this resets the default error */
       (New_Field = (FIELD *)malloc(sizeof(FIELD))) )
     {
       *New_Field        = default_field;

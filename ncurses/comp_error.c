@@ -37,12 +37,12 @@ bool _nc_suppress_warnings;
 static const char *sourcename;
 static char termtype[NAMESIZE];
 
-void _nc_set_source(const char *name)
+void _nc_set_source(const char *const name)
 {
 	sourcename = name;
 }
 
-void _nc_set_type(const char *name)
+void _nc_set_type(const char *const name)
 {
 	if (name)
 		strncpy( termtype, name, NAMESIZE );
@@ -50,7 +50,7 @@ void _nc_set_type(const char *name)
 		termtype[0] = '\0';
 }
 
-void _nc_warning(const char *fmt, ...)
+void _nc_warning(const char *const fmt, ...)
 {
 va_list argp;
 
@@ -67,7 +67,7 @@ va_list argp;
 }
 
 
-void _nc_err_abort(const char *fmt, ...)
+void _nc_err_abort(const char *const fmt, ...)
 {
 va_list argp;
 
@@ -82,7 +82,7 @@ va_list argp;
 }
 
 
-void _nc_syserr_abort(const char *fmt, ...)
+void _nc_syserr_abort(const char *const fmt, ...)
 {
 va_list argp;
 

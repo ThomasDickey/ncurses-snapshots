@@ -50,6 +50,8 @@
 # endif
 #endif
 
+#include <assert.h>
+
 #include <curses.h>	/* we'll use -Ipath directive to get the right one! */
 
 /* The terminfo source is assumed to be 7-bit ASCII */
@@ -85,6 +87,9 @@
 #define	F_OK	0		/* Test for existence.  */
 #endif
 
+#define TextOf(c)    ((c) & (chtype)A_CHARTEXT)
+#define AttrOf(c)    ((c) & (chtype)A_ATTRIBUTES)
+
 #define BLANK        (' '|A_NORMAL)
 
 #define CHANGED     -1
@@ -102,7 +107,7 @@
 #define T(a)	if (_nc_tracing & TRACE_CALLS) _tracef a 
 #define TR(n, a)	if (_nc_tracing & (n)) _tracef a 
 #define TPUTS_TRACE(s)	_nc_tputs_trace = s;
-extern int _nc_tracing;
+extern unsigned _nc_tracing;
 extern char *_nc_tputs_trace;
 extern char *_nc_visbuf(const char *);
 #else	
@@ -135,8 +140,8 @@ extern int _nc_outch(int);
 extern chtype _nc_render(WINDOW *, chtype, chtype);
 extern int _nc_waddch_nosync(WINDOW *, const chtype);
 extern void _nc_scroll_optimize(void);
-extern void _nc_scroll_window(WINDOW *, int, int, int);
-extern int _nc_setupscreen(int, int);
+extern void _nc_scroll_window(WINDOW *, int const, short const, short const);
+extern int _nc_setupscreen(short, short const);
 extern void _nc_backspace(WINDOW *win);
 extern void _nc_outstr(char *str);
 extern void _nc_signal_handler(bool);
@@ -237,7 +242,7 @@ extern int _nc_alloc_screen(void);
 extern void _nc_set_screen(SCREEN *);
 #else
 extern SCREEN *SP;
-#define _nc_alloc_screen() ((SP = (SCREEN *) calloc(sizeof(*SP), 1)) != NULL)
+#define _nc_alloc_screen() ((SP = (SCREEN *) calloc(1, sizeof(*SP))) != NULL)
 #define _nc_set_screen(sp) SP = sp
 #endif
 

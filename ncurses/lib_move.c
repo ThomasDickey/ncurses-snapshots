@@ -37,8 +37,8 @@ wmove(WINDOW *win, int y, int x)
 	if (x >= 0  &&  x <= win->_maxx  &&
 		y >= 0  &&  y <= win->_maxy)
 	{
-		win->_curx = x;
-		win->_cury = y;
+		win->_curx = (short)x;
+		win->_cury = (short)y;
 
 		win->_flags &= ~_NEED_WRAP;
 		win->_flags |= _HASMOVED;

@@ -41,6 +41,10 @@ char	*name = getenv("TERM");
   		exit(1);
 	}
 
+	/* allow user to set maximum escape delay from the environment */
+	if ((name = getenv("ESCDELAY")))
+	    ESCDELAY = atoi(getenv("ESCDELAY"));
+
 	def_shell_mode();
 
 	/* follow the XPG4 requirement to turn echo off at this point */

@@ -7,9 +7,8 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  */
-#define _POSIX_SOURCE
+/* #define _POSIX_SOURCE -- incompatible with solaris termios.h */
 
-#include <curses.h>
 #include <signal.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -17,6 +16,12 @@
 #include <string.h>
 #include <assert.h>
 #include <time.h>
+
+#if HAVE_TERMIOS_H
+#include <sys/termios.h>	/* required before solaris curses.h */
+#endif
+
+#include <curses.h>
 
 #ifndef SIGIOT
 #define SIGIOT SIGABRT

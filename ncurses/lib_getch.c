@@ -43,6 +43,8 @@ extern int errno;
 #define t_inc() { tail == FIFO_SIZE-1 ? tail = 0 : tail++; if (tail == head) tail = -1;}
 #define p_inc() { peek == FIFO_SIZE-1 ? peek = 0 : peek++;}
 
+int ESCDELAY = 1000;	/* max interval betw. chars in funkeys, in millisecs */
+
 static int fifo_peek(void)
 {
 	T(("peeking at %d", peek+1));
@@ -55,7 +57,7 @@ static inline void fifo_dump(void)
 int i;
 	T(("head = %d, tail = %d, peek = %d", head, tail, peek));
 	for (i = 0; i < 10; i++)
-		T(("char %d = %d (%c)", i, SP->_fifo[i], (unsigned char)SP->_fifo[i]));
+		T(("char %d = %s", i, _tracechar(SP->_fifo[i])));
 }
 #endif /* TRACE */
 
@@ -96,20 +98,12 @@ int n;
 unsigned char ch;
 
 	if (tail == -1) return ERR;
+	/* FALLTHRU */
 again:    
 	n = read(SP->_ifd, &ch, 1);
 	if (n == -1 && errno == EINTR)
 		goto again;
 	T(("read %d characters", n));
-
-	/* 
-	 * It's more important to be able to handle NULs in the input stream
-	 * than to be able to distinguish them from meta-NULs.  PC BIOS scan
-	 * codes sometimes contain the former.  This hack means we can use
-	 * \200 in a function-key capability as a stand-in for NUL.
-	 */
-	if (n == 1 && ch == '\0')
-	    ch = '\200';
 
 	SP->_fifo[tail] = ch;
 	if (head == -1) head = tail;
@@ -277,9 +271,9 @@ int	ch;
 **
 **      Get an input character, but take care of keypad sequences, returning
 **      an appropriate code when one matches the input.  After each character
-**      is received, set a one-second alarm call.  If no more of the sequence
-**      is received by the time the alarm goes off, pass through the sequence
-**      gotten so far.
+**      is received, set an alarm call based on ESCDELAY.  If no more of the
+**      sequence is received by the time the alarm goes off, pass through
+**      the sequence gotten so far.
 **
 */
 
@@ -288,7 +282,7 @@ kgetch(WINDOW *win)
 {
 struct try  *ptr;
 int ch = 0;
-int timeleft = 1000;
+int timeleft = ESCDELAY;
 
     	TR(TRACE_FIFO, ("kgetch(%p) called", win));
 

@@ -21,6 +21,13 @@ to read the BSD CONVERSION NOTES section below.
 If you are trying to build GNU Emacs using ncurses for terminal support,
 read the USING NCURSES WITH EMACS section below.
 
+If you are running over the Andrew File System see the note below on
+USING NCURSES WITH AFS.
+
+If you are using anything but (a) Linux, or (b) one of the 4.4BSD-based
+i386 Unixes, go read the Portability section in the TO-DO file before you
+do anything else.
+
 REQUIREMENTS:
 
 You will need the following in order to build and install ncurses under UNIX:
@@ -67,7 +74,7 @@ INSTALLATION PROCEDURE:
 	libncurses.a (normal)
 
 	libcurses.a (normal, a link to libncurses.a)
-    	This gets left out if you use the --disable-overwrite
+		This gets left out if you configure with --disable-overwrite.
 
 	libncurses.so (shared)
 
@@ -76,9 +83,9 @@ INSTALLATION PROCEDURE:
 	libncurses_p.a (profile)
 
     If you do not specify any models, the normal and debug libraries will be
-    configured.  This is equivalent to
+    configured.  Typing `configure' with no arguments is equivalent to:
 
-    	./configure --with-normal --with-debug
+    	./configure --with-normal --with-debug --enable-overwrite
 
     Rules for generating shared libraries are highly dependent upon the choice
     of host system and compiler.  We've been testing shared libraries on linux
@@ -178,6 +185,10 @@ INSTALLATION PROCEDURE:
 
 IF YOU ARE A SYSTEM INTEGRATOR:
 
+    Beginning with 1.9.9, the ncurses distribution includes both a tset
+    utility and /usr/share/tabset directory.  If you are installing ncurses,
+    it is no longer either necessary or desirable to install tset-jv.
+
     Configuration and Installation:
 
 	Configure with --prefix=/usr to make the install productions put
@@ -209,10 +220,6 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 			alt     keycode  15 = Meta_Tab        
 			shift	keycode  15 = F26
 		string F26 ="\033[Z"
-
-	but this is a kluge that uses up the F26 function key binding when
-	it shouldn't.  The compiled-in defaults in the keyboard driver should
-	be changed using the loadkeys -m option.
 
     Naming the Console Terminal
 
@@ -278,6 +285,12 @@ CONFIGURING FALLBACK ENTRIES
 	each one will cost about 2.5K of text space.
 
 BSD CONVERSION NOTES:
+	If you need to support really ancient BSD programs, you probably
+	want to configure with the --enable-bsdpad option.  What this does
+	is enable code in tputs() that recognizes a numeric prefix on a
+	capability as a request for that much trailing padding in milliseconds.
+	There are old BSD programs that do things like tputs("50").
+
 	(If you are distributing ncurses as a support-library component of
 	an application you probably want to put the remainder of this section
 	in the package README file.)
@@ -330,6 +343,11 @@ To avoid these complications, use infocmp(1) and tic(1) to edit the
 terminfo directory directly. 
 
 ------------------------------- CUT HERE --------------------------------
+
+USING NCURSES WITH AFS:
+	AFS treats each directory as a separate logical filesystem, you
+	can't hard-link across them.  The --enable-symlinks option copes
+	with this by making tic use symbolic links.
 
 USING NCURSES WITH EMACS:
 	GNU Emacs has its own termcap support.  By default, it uses a mixture

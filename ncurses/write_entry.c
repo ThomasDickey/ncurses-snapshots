@@ -133,7 +133,7 @@ char		envhome[PATH_MAX], homedir[PATH_MAX], dir[2];
  *	_nc_curr_line is properly set before the write_entry() call.
  */
 
-void _nc_write_entry(TERMTYPE *tp)
+void _nc_write_entry(TERMTYPE *const tp)
 {
 struct stat	statbuf;
 FILE		*fp;
@@ -142,6 +142,9 @@ char		*first_name, *other_names;
 char		*ptr;
 char		filename[PATH_MAX];
 char		linkname[PATH_MAX];
+#ifdef USE_SYMLINKS
+char		symlinkname[PATH_MAX];
+#endif /* USE_SYMLINKS */
 static int	call_count;
 static time_t	start_time;		/* time at start of writes */
 
@@ -241,8 +244,16 @@ static time_t	start_time;		/* time at start of writes */
 		}
 		else
 	    	{
+#ifdef USE_SYMLINKS
+			strcpy(symlinkname, "../");
+			strcat(symlinkname, filename);
+#endif /* USE_SYMLINKS */
 			unlink(linkname);
+#ifndef USE_SYMLINKS
 			if (link(filename, linkname) < 0)
+#else
+			if (symlink(symlinkname, linkname) < 0)
+#endif /* USE_SYMLINKS */
 			    _nc_syserr_abort("can't link %s to %s", filename, linkname);
 			DEBUG(1, ("Linked %s", linkname));
 	    	}
@@ -259,7 +270,7 @@ static int write_object(FILE *fp, TERMTYPE *tp)
 char		*namelist;
 short		namelen, boolmax, nummax, strmax;
 char		zero = '\0';
-int		i, nextfree;
+short		i, nextfree;
 short		offsets[STRCOUNT];
 unsigned char	buf[MAX_ENTRY_SIZE];
 

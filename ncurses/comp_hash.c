@@ -91,12 +91,12 @@ long	sum = 0;
 
 	DEBUG(9, ("hashing %s", string));
 	while (*string) {
-	    sum += *string + (*(string + 1) << 8);
+	    sum += (long)(*string + (*(string + 1) << 8));
 	    string++;
 	}
 
 	DEBUG(9, ("sum is %ld", sum));
-	return (sum % HASHTABSIZE);
+	return (int)(sum % HASHTABSIZE);
 }
 
 
@@ -180,7 +180,7 @@ static char *strdup (char *s)
 #endif /* not HAVE_STRDUP */
 
 #define MAX_COLUMNS BUFSIZ	/* this _has_ to be worst-case */
-#define typeCalloc(type,elts) (type *)calloc(sizeof(type),elts)
+#define typeCalloc(type,elts) (type *)calloc(elts,sizeof(type))
 
 static char **parse_columns(char *buffer)
 {
@@ -230,9 +230,9 @@ int main(int argc, char **argv)
 
 	static const char * typenames[] = { "BOOLEAN", "NUMBER", "STRING" };
 
-	int BoolCount = 0;
-	int NumCount  = 0;
-	int StrCount  = 0;
+	short BoolCount = 0;
+	short NumCount  = 0;
+	short StrCount  = 0;
 
 	/* The first argument is the column-number (starting with 0).
 	 * The second is the root name of the tables to generate.

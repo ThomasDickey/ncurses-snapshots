@@ -89,6 +89,7 @@
 ./man/curs_pad.3x
 ./man/curs_printw.3x
 ./man/curs_refresh.3x
+./man/curs_resize.3x
 ./man/curs_scanw.3x
 ./man/curs_scr_dmp.3x
 ./man/curs_scroll.3x
@@ -185,6 +186,10 @@
 ./misc/hackguide.html
 ./misc/ncurses-intro.doc
 ./misc/ncurses-intro.html
+./misc/tabset/std
+./misc/tabset/stdcrt
+./misc/tabset/vt100
+./misc/tabset/vt300
 ./misc/terminfo.src
 ./mk-1st.awk
 ./mk-2nd.awk
@@ -247,6 +252,7 @@
 ./ncurses/lib_printw.c
 ./ncurses/lib_raw.c
 ./ncurses/lib_refresh.c
+./ncurses/lib_resize.c
 ./ncurses/lib_scanw.c
 ./ncurses/lib_screen.c
 ./ncurses/lib_scroll.c
@@ -300,6 +306,7 @@
 ./test/blue.c
 ./test/bs.6
 ./test/bs.c
+./test/configure.in
 ./test/firework.c
 ./test/gdc.6
 ./test/gdc.c

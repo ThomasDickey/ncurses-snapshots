@@ -3,7 +3,6 @@
 SHELL		= /bin/sh
 
 srcdir		= @srcdir@
-VPATH		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 libdir		= $(exec_prefix)/lib
@@ -11,18 +10,14 @@ includedir	= @includedir@
 
 CC		= @CC@
 CFLAGS		= @CFLAGS@
-CPPFLAGS	= @INCLUDES@ -DHAVE_CONFIG_H
+CPPFLAGS	= @CPPFLAGS@ -DHAVE_CONFIG_H
 
 CCFLAGS		= $(CFLAGS) $(CPPFLAGS)
 
-LIB_DEPS	= \
-		../lib/libform@DFT_DEP_SUFFIX@ \
-		../lib/libmenu@DFT_DEP_SUFFIX@ \
-		../lib/libpanel@DFT_DEP_SUFFIX@ \
-		../lib/libncurses@DFT_DEP_SUFFIX@
+LOCAL_LIBS	= @TEST_DEPS@
 
 LINK		= $(CC)
-LD_FLAGS	= @LD_MODEL@ $(LIB_DEPS) @LDFLAGS@ @LIBS@ @LOCAL_LDFLAGS@ $(LDFLAGS)
+LD_FLAGS	= @LD_MODEL@ $(LOCAL_LIBS) @LDFLAGS@ @LIBS@ @LOCAL_LDFLAGS@ $(LDFLAGS)
 
 TESTS = \
 	blue \
@@ -83,7 +78,7 @@ clean:
 	-rm -rf *.o trace screendump t $(TESTS)
 
 distclean: clean
-	-rm -f Makefile
+	-rm -f Makefile config.*
 
 mostlyclean: clean
 

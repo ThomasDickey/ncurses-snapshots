@@ -89,9 +89,70 @@ static bool immedhook(ENTRY *ep)
 	return(FALSE);
 }
 
+static void put_translate(int c)
+/* emit a comment char, translating terminfo names to termcap names */
+{
+    static bool in_name = FALSE;
+    static char namebuf[132], suffix[132], *sp;
+
+    if (!in_name)
+    {
+	if (c == '<')
+	{
+	    in_name = TRUE;
+	    sp = namebuf;
+	}
+	else
+	    putchar(c);
+    }
+    else if (c == '\n' || c == '@')
+    {
+	*sp++ = '\0';
+	(void) putchar('<');
+	(void) fputs(namebuf, stdout);
+	putchar(c);
+	in_name = FALSE;
+    }
+    else if (c != '>')
+	*sp++ = c;
+    else		/* ah! candidate name! */
+    {
+	char	*up, *tp;
+
+	*sp++ = '\0';
+	in_name = FALSE;
+
+	suffix[0] = '\0';
+	if ((up = strchr(namebuf, '#'))
+		|| (up = strchr(namebuf, '=')) 
+		|| ((up = strchr(namebuf, '@')) && up[1] == '>'))
+	{
+	    (void) strcpy(suffix, up);
+	    *up = '\0';
+	}
+
+	if ((tp = nametrans(namebuf)) != (char *)NULL)
+	{
+	    (void) putchar(':');
+	    (void) fputs(tp, stdout);
+	    (void) fputs(suffix, stdout);
+	    (void) putchar(':');
+	}
+	else
+	{
+	    /* couldn't find a translation, just dump the name */
+	    (void) putchar('<');
+	    (void) fputs(namebuf, stdout);
+	    (void) fputs(suffix, stdout);
+	    (void) putchar('>');
+	}
+
+    }
+}
+
 int main (int argc, char *argv[])
 {
-static	const	char	*usage_string = "tic [-v[n]] source-file\n";
+static	const	char	*usage_string = "[-c] [-v[n]] [-ICNRrw1] source-file\n";
 
 int	i, debug_level = 0;
 int	argflag = FALSE, smart_defaults = TRUE;
@@ -101,6 +162,7 @@ ENTRY	*qp;
 int	width = 60;
 bool	infodump = FALSE;	/* running as captoinfo? */
 bool	capdump = FALSE;	/* running as infotocap? */
+bool	forceresolve = FALSE;	/* force resolution */
 char	*tversion = (char *)NULL;
 char	*source_file = "terminfo";
 bool	check_only = FALSE;
@@ -135,9 +197,9 @@ bool	check_only = FALSE;
 			case 'R':
 				tversion = &argv[i][2];
 				break;
-		    	case '1':
-		    		width = 0;
-		    		break;
+			case 'r':
+				forceresolve = TRUE;
+				break;
 	    	    	case 'w':
 				width = argv[i][2]  ?  atoi(&argv[i][2])  :  1;
 				break;
@@ -145,6 +207,9 @@ bool	check_only = FALSE;
 				(void) fputs(NCURSES_VERSION, stdout);
 				putchar('\n');
 				exit(0);
+		    	case '1':
+		    		width = 0;
+		    		break;
 		    	default:
 				fprintf (stderr, 
 					"%s: Unknown option. Usage is:\n\t%s",
@@ -154,7 +219,8 @@ bool	check_only = FALSE;
 			}
 	    	} else if (argflag) {
 			fprintf (stderr, 
-				"%s: Too many file names.  Usage is:\n\t%s",
+				"%s: Too many file names.  Usage is:\n\t%s %s",
+				_nc_progname,
 				_nc_progname,
 				usage_string);
 			exit(1);
@@ -177,7 +243,8 @@ bool	check_only = FALSE;
 		} else {
 		/* tic */
 			fprintf (stderr, 
-				"%s: File name needed.  Usage is:\n\t%s",
+				"%s: File name needed.  Usage is:\n\t%s %s",
+				_nc_progname,
 				_nc_progname,
 				usage_string);
 			exit(1);
@@ -204,7 +271,7 @@ bool	check_only = FALSE;
 			      (check_only || infodump || capdump) ? NULLHOOK : immedhook);
 
 	/* do use resolution */
-	if (check_only || (!infodump && !capdump))
+	if (check_only || (!infodump && !capdump) || forceresolve)
 	    if (!_nc_resolve_uses() && !check_only)
 		exit(1);
 
@@ -244,7 +311,10 @@ bool	check_only = FALSE;
 
 		    (void) fseek(stdin, qp->cstart, SEEK_SET); 
 		    while (j-- )
-			(void) putchar(getchar());
+			if (infodump)
+			    (void) putchar(getchar());
+			else
+			    put_translate(getchar());
 
 		    dump_entry(&qp->tterm, NULL);
 		    for (j = 0; j < qp->nuses; j++)

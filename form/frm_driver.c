@@ -1912,7 +1912,8 @@ INLINE static bool Is_There_Room_For_A_Char_In_Line(FORM * form)
   wmove(form->w,form->currow,form->current->dcols-1);
   last_char_in_line  = (int)(winch(form->w) & A_CHARTEXT);
   wmove(form->w,form->currow,form->curcol);
-  return ((last_char_in_line == form->current->pad) ? TRUE : FALSE);
+  return (((last_char_in_line == form->current->pad) ||
+	   is_blank(last_char_in_line)) ? TRUE : FALSE);
 }
 
 #define There_Is_No_Room_For_A_Char_In_Line(f) \

@@ -2,7 +2,7 @@
 #
 # MKlib_gen.sh -- generate sources from curses.h macro definitions
 #
-# ($Id: MKlib_gen.sh,v 1.1 1995/11/13 22:31:45 esr Exp $)
+# (@Id: MKlib_gen.sh,v 1.1 1995/11/13 22:31:45 esr Exp @)
 #
 # The XSI Curses standard requires all curses entry points to exist as
 # functions, even though many definitions would normally be shadowed
@@ -37,7 +37,7 @@ trap "rm -f $TMP" 0 1 2 5 15
 DECLARATIONS
 
 EOF
-sed -n -e "/^extern.*generated/s/^extern \([^;]**\);.*/\1/p" \
+sed -n -e "/^extern.*generated/s/^extern \([^;]*\);.*/\1/p" \
 | sed \
 	-e "/(/s// (/" \
 	-e "/(void)/b nc" \

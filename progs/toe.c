@@ -33,6 +33,8 @@
 #include "dump_entry.h"
 #include "term_entry.h"
 
+extern char	*getenv(const char *);
+
 char	*_nc_progname;
 
 static void typelist(int eargc, char *eargv[], bool,
@@ -150,7 +152,6 @@ int main (int argc, char *argv[])
     {
 	char	*explicit, *home, *eargv[3];
 	int	j;
-	extern char	*getenv(const char *);
 
 	j = 0;
 	if ((explicit = getenv("TERMINFO")) != (char *)NULL)

@@ -41,7 +41,7 @@
 static char	stringbuf[MAX_STRTAB];	/* buffer for string capabilities */
 static size_t	next_free;		/* next free character in stringbuf */
 
-void _nc_init_entry(TERMTYPE *tp)
+void _nc_init_entry(TERMTYPE *const tp)
 /* initialize a terminal type data block */
 {
 int	i;
@@ -58,7 +58,7 @@ int	i;
 	next_free = 0;
 }
 
-char *_nc_save_str(const char *string)
+char *_nc_save_str(const char *const string)
 /* save a copy of string in the string buffer */
 {
 size_t	old_next_free = next_free;
@@ -74,7 +74,7 @@ size_t	len = strlen(string) + 1;
 	return(stringbuf + old_next_free);
 }
 
-void _nc_wrap_entry(ENTRY *ep)
+void _nc_wrap_entry(ENTRY *const ep)
 /* copy the string parts to allocated storage, preserving pointers to it */
 {
 int	offsets[STRCOUNT], useoffsets[MAX_USES];
@@ -115,7 +115,7 @@ int	i, n;
 			ep->uses[i] = (char *)(ep->tterm.str_table + useoffsets[i]);
 }
 
-void _nc_merge_entry(TERMTYPE *to, TERMTYPE *from)
+void _nc_merge_entry(TERMTYPE *const to, TERMTYPE *const from)
 /* merge capabilities from `from' entry into `to' entry */
 {
     int	i;

@@ -77,7 +77,7 @@
  */
 #define COOKED_INPUT	(IXON|IGNBRK|BRKINT|PARMRK)
 
-int raw()
+int raw(void)
 {
 	T(("raw() called"));
 
@@ -101,7 +101,7 @@ int raw()
 #endif
 }
 
-int cbreak()
+int cbreak(void)
 {
 	T(("cbreak() called"));
 
@@ -123,7 +123,7 @@ int cbreak()
 #endif
 }
 
-int echo()
+int echo(void)
 {
 	T(("echo() called"));
 
@@ -143,7 +143,7 @@ int echo()
 }
 
 
-int nl()
+int nl(void)
 {
 	T(("nl() called"));
 
@@ -165,7 +165,7 @@ int nl()
 }
 
 
-int qiflush()
+int qiflush(void)
 {
 	T(("qiflush() called"));
 
@@ -186,7 +186,7 @@ int qiflush()
 }
 
 
-int noraw()
+int noraw(void)
 {
 	T(("noraw() called"));
 
@@ -210,7 +210,7 @@ int noraw()
 }
 
 
-int nocbreak()
+int nocbreak(void)
 {
 	T(("nocbreak() called"));
 
@@ -229,7 +229,7 @@ int nocbreak()
 #endif
 }
 
-int noecho()
+int noecho(void)
 {
 	T(("noecho() called"));
 
@@ -253,7 +253,7 @@ int noecho()
 }
 
 
-int nonl()
+int nonl(void)
 {
 	T(("nonl() called"));
 
@@ -273,7 +273,7 @@ int nonl()
 #endif
 }
 
-int noqiflush()
+int noqiflush(void)
 {
 	T(("noqiflush() called"));
 

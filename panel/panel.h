@@ -46,21 +46,21 @@ PANEL;
 extern "C" {
 #endif
 
-extern  WINDOW *panel_window(PANEL *pan);
-extern  void update_panels(void );
-extern  int hide_panel(PANEL *pan);
-extern  int show_panel(PANEL *pan);
-extern  int del_panel(PANEL *pan);
-extern  int top_panel(PANEL *pan);
-extern  int bottom_panel(PANEL *pan);
-extern  PANEL *new_panel(WINDOW *win);
-extern  PANEL *panel_above(PANEL *pan);
-extern  PANEL *panel_below(PANEL *pan);
-extern  int set_panel_userptr(PANEL *pan,char *uptr);
-extern  char *panel_userptr(PANEL *pan);
-extern  int move_panel(PANEL *pan,int starty,int startx);
-extern  int replace_panel(PANEL *pan,WINDOW *win);
-extern	int panel_hidden(PANEL *pan);
+extern  WINDOW *panel_window(PANEL *);
+extern  void update_panels(void);
+extern  int hide_panel(PANEL *);
+extern  int show_panel(PANEL *);
+extern  int del_panel(PANEL *);
+extern  int top_panel(PANEL *);
+extern  int bottom_panel(PANEL *);
+extern  PANEL *new_panel(WINDOW *);
+extern  PANEL *panel_above(PANEL *);
+extern  PANEL *panel_below(PANEL *);
+extern  int set_panel_userptr(PANEL *,char *);
+extern  char *panel_userptr(PANEL *);
+extern  int move_panel(PANEL *, int, int);
+extern  int replace_panel(PANEL *,WINDOW *);
+extern	int panel_hidden(PANEL *);
 
 #if	defined(__cplusplus)
 }
