@@ -55,7 +55,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.49 2000/10/05 00:37:19 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.50 2000/10/10 00:56:46 Todd.Miller Exp $")
 
 #if !PURE_TERMINFO
 
@@ -81,7 +81,8 @@ MODULE_ID("$Id: read_termcap.c,v 1.49 2000/10/05 00:37:19 tom Exp $")
 #define _nc_cgetset   cgetset
 #else
 static int _nc_cgetmatch(char *, const char *);
-static int _nc_getent(char **, unsigned *, int *, int, char **, int, const char *, int, char *);
+static int _nc_getent(char **, unsigned *, int *, int, char **, int, const char
+		      *, int, char *);
 static int _nc_nfcmp(const char *, char *);
 
 /*-
@@ -257,15 +258,15 @@ _nc_cgetent(char **buf, int *oline, char **db_array, const char *name)
 #define DOALLOC(size) typeRealloc(char, size, record)
 static int
 _nc_getent(
-    char **cap,			/* termcap-content */
-    unsigned *len,		/* length, needed for recursion */
-    int *beginning,		/* line-number at match */
-    int in_array,		/* index in 'db_array[] */
-    char **db_array,		/* list of files to search */
-    int fd,
-    const char *name,
-    int depth,
-    char *nfield)
+	      char **cap,	/* termcap-content */
+	      unsigned *len,	/* length, needed for recursion */
+	      int *beginning,	/* line-number at match */
+	      int in_array,	/* index in 'db_array[] */
+	      char **db_array,	/* list of files to search */
+	      int fd,
+	      const char *name,
+	      int depth,
+	      char *nfield)
 {
     register char *r_end, *rp;
     int myfd = FALSE;
@@ -318,7 +319,7 @@ _nc_getent(
 	    if (fd >= 0) {
 		(void) lseek(fd, (off_t) 0, SEEK_SET);
 	    } else if ((_nc_access(db_array[current], R_OK) < 0)
-		|| (fd = open(db_array[current], O_RDONLY, 0)) < 0) {
+		       || (fd = open(db_array[current], O_RDONLY, 0)) < 0) {
 		/* No error on unfound file. */
 		if (errno == ENOENT)
 		    continue;
@@ -481,7 +482,7 @@ _nc_getent(
 	    tcend = s;
 
 	    iret = _nc_getent(&icap, &ilen, &oline, current, db_array, fd,
-		tc, depth + 1, 0);
+			      tc, depth + 1, 0);
 	    newicap = icap;	/* Put into a register. */
 	    newilen = ilen;
 	    if (iret != TC_SUCCESS) {
@@ -783,7 +784,7 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
     pvec = pathvec;
     tbuf = bp;
     p = pathbuf;
-    cp = getenv("TERMCAP");
+    cp = use_terminfo_vars() ? getenv("TERMCAP") : NULL;
 
     /*
      * TERMCAP can have one of two things in it.  It can be the name of a file
@@ -795,23 +796,22 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
      * "$HOME/.termcap /etc/termcap" if no TERMPATH exists.
      */
     _nc_str_init(&desc, pathbuf, sizeof(pathbuf));
-    if (!is_pathname(cp)) {	/* no TERMCAP or it holds an entry */
-	if (use_terminfo_vars()
-	 && (termpath = getenv("TERMPATH")) != 0) {
+    if (cp == NULL) {
+	_nc_safe_strcpy(&desc, "/etc/termcap /usr/share/misc/termcap");
+    } else if (!is_pathname(cp)) {	/* TERMCAP holds an entry */
+	if ((termpath = getenv("TERMPATH")) != 0) {
 	    _nc_safe_strcat(&desc, termpath);
 	} else {
-	    if (use_terminfo_vars()) {
-		char temp[PBUFSIZ];
-		temp[0] = 0;
-		if ((home = getenv("HOME")) != 0
-		 && strchr(home, ' ') == 0
-		 && strlen(home) < sizeof(temp) - 10) {	/* setup path */
-		    sprintf(temp, "%s/", home);	/* $HOME first */
-		}
-		/* if no $HOME look in current directory */
-		strcat(temp, ".termcap");
-		_nc_safe_strcat(&desc, temp);
+	    char temp[PBUFSIZ];
+	    temp[0] = 0;
+	    if ((home = getenv("HOME")) != 0 && *home != '\0'
+		&& strchr(home, ' ') == 0
+		&& strlen(home) < sizeof(temp) - 10) {	/* setup path */
+		sprintf(temp, "%s/", home);	/* $HOME first */
 	    }
+	    /* if no $HOME look in current directory */
+	    strcat(temp, ".termcap");
+	    _nc_safe_strcat(&desc, temp);
 	    _nc_safe_strcat(&desc, " /etc/termcap");
 	    _nc_safe_strcat(&desc, " /usr/share/misc/termcap");
 	}
@@ -930,7 +930,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE * const tp)
     static char *source;
     static int lineno;
 
-    if ((p = getenv("TERMCAP")) != 0
+    if (use_terminfo_vars() && (p = getenv("TERMCAP")) != 0
 	&& !is_pathname(p) && _nc_name_match(p, tn, "|:")) {
 	/* TERMCAP holds a termcap entry */
 	strncpy(tc, p, sizeof(tc) - 1);
@@ -980,7 +980,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE * const tp)
     char pathbuf[PATH_MAX];
 
     termpaths[filecount] = 0;
-    if ((tc = getenv("TERMCAP")) != 0) {
+    if (use_terminfo_vars() && (tc = getenv("TERMCAP")) != 0) {
 	if (is_pathname(tc)) {	/* interpret as a filename */
 	    ADD_TC(tc, 0);
 	} else if (_nc_name_match(tc, tn, "|:")) {	/* treat as a capability file */
@@ -1013,7 +1013,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE * const tp)
 
 #define PRIVATE_CAP "%s/.termcap"
 
-	if ((h = getenv("HOME")) != NULL
+	if ((h = getenv("HOME")) != NULL && *h != '\0'
 	    && (strlen(h) + sizeof(PRIVATE_CAP)) < PATH_MAX) {
 	    /* user's .termcap, if any, should override it */
 	    (void) strcpy(envhome, h);

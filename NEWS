@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.598 2000/10/08 01:18:04 tom Exp $
+-- $Id: NEWS,v 1.599 2000/10/10 01:02:11 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,7 +6,27 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
-20001004
+20001009
+	+ correct order of options/parameters in run_tic.in invocation of tic,
+	  which did not work with standard getopt() (reported by Ethan
+	  Butterfield <primus@veris.org>).
+	+ correct logic for 'reverse' variable in lib_vidattr.c, which was
+	  setting it true without checking if newmode had A_REVERSE set, e.g.,
+	  using $TERM=ansi on OS/2 EMX (see 20000917).
+	> patch by Todd Miller:
+	+ add a few missing use_terminfo_vars() and fixes up _nc_tgetent().
+	  Previously, _nc_cgetset() would still get called on cp so the
+	  simplest thing is to set cp to NULL if !use_terminfo_vars().
+	+ added checks for an empty $HOME environment variable.
+	> patches by Ilya Zakharevich for OS/2 EMX:
+	+ modify convert_configure.pl to support INSTALL.  Change compiler
+	  options in that script to use multithreading, needed for the mouse.
+	+ modify OS/2 mouse support, retrying as a 2-button mouse if code fails
+	  to set up a 3-button mouse.
+	+ improve code for OS/2 mouse support, using _nc_timed_wait() to
+	  replace select() call.
+
+20001007
 	+ change type of ospeed variable back to short to match its use in
 	  legacy applications (reported by Andrey A Chernov).
 	+ add case to configure script for --enable-rpath on IRIX (patch by
