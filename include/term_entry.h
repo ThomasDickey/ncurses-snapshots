@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: term_entry.h,v 1.30 2000/12/09 23:56:20 tom Exp $ */
+/* $Id: term_entry.h,v 1.31 2001/01/13 22:44:41 tom Exp $ */
 
 /*
  *	term_entry.h -- interface to entry-manipulation code
@@ -121,7 +121,7 @@ extern NCURSES_EXPORT(ENTRY *) _nc_copy_entry (ENTRY *oldp);
 extern NCURSES_EXPORT(char *) _nc_save_str (const char *const);
 extern NCURSES_EXPORT(void) _nc_init_entry (TERMTYPE *const);
 extern NCURSES_EXPORT(void) _nc_merge_entry (TERMTYPE *const, TERMTYPE *const);
-extern NCURSES_EXPORT(void) _nc_wrap_entry (ENTRY *const);
+extern NCURSES_EXPORT(void) _nc_wrap_entry (ENTRY *const, bool);
 
 /* alloc_ttype.c: elementary allocation code */
 extern NCURSES_EXPORT(void) _nc_align_termtype (TERMTYPE *, TERMTYPE *);
