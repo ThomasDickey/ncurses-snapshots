@@ -36,8 +36,11 @@
  * This module is intended to encapsulate ncurses's interface to pointing
  * devices.
  *
- * The first method used is xterm's internal mouse-tracking facility.
- * The second is Alessandro Rubini's GPM server.
+ * The primary method used is xterm's internal mouse-tracking facility.
+ * Additional methods depend on the platform:
+ *	Alessandro Rubini's GPM server (Linux)
+ *	sysmouse (FreeBSD)
+ *	special-purpose mouse interface for OS/2 EMX.
  *
  * Notes for implementors of new mouse-interface methods:
  *
@@ -76,7 +79,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.71 2005/02/05 19:13:51 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.72 2005/02/12 20:43:24 tom Exp $")
 
 #include <term.h>
 #include <tic.h>
@@ -142,15 +145,23 @@ make an error
 
 #if USE_GPM_SUPPORT
 #ifndef LINT
+
+#define GET_DLSYM(name) (my_##name = (TYPE_##name) dlsym(obj, #name))
+
 static Gpm_Connect gpm_connect;
-typedef int *dl_INT;
-typedef int (*dl_OPEN) (Gpm_Connect *, int);
-typedef int (*dl_GETEVENT) (Gpm_Event *);
-static dl_INT my_gpm_fd;
-static dl_OPEN my_Gpm_Open;
-static dl_GETEVENT my_Gpm_GetEvent;
-#endif
-#endif
+
+typedef int *TYPE_gpm_fd;
+typedef int (*TYPE_Gpm_Open) (Gpm_Connect *, int);
+typedef int (*TYPE_Gpm_Close) (void);
+typedef int (*TYPE_Gpm_GetEvent) (Gpm_Event *);
+
+static TYPE_gpm_fd my_gpm_fd;
+static TYPE_Gpm_Open my_Gpm_Open;
+static TYPE_Gpm_Close my_Gpm_Close;
+static TYPE_Gpm_GetEvent my_Gpm_GetEvent;
+
+#endif /* LINT */
+#endif /* USE_GPM_SUPPORT */
 
 static mmask_t eventmask;	/* current event mask */
 
@@ -276,12 +287,6 @@ mouse_server(unsigned long ignored GCC_UNUSED)
     DosExit(EXIT_THREAD, 0L);
 }
 
-static void
-server_state(const int state)
-{				/* It would be nice to implement pointer-off and stop looping... */
-    mouse_activated = state;
-}
-
 #endif /* USE_EMX_MOUSE */
 
 #if USE_SYSMOUSE
@@ -341,7 +346,7 @@ handle_sysmouse(int sig GCC_UNUSED)
 	work->y = the_mouse.u.data.y / SP->_sysmouse_char_height;
     }
 }
-#endif
+#endif /* USE_SYSMOUSE */
 
 static int initialized;
 
@@ -354,13 +359,62 @@ init_xterm_mouse(void)
 	SP->_mouse_xtermcap = "\033[?1000%?%p1%{1}%=%th%el%;";
 }
 
-#if !USE_EMX_MOUSE
 static void
 enable_xterm_mouse(int enable)
 {
+#if USE_EMX_MOUSE
+    mouse_activated = enable;
+#else
     putp(tparm(SP->_mouse_xtermcap, enable));
+#endif
 }
-#endif /* !USE_EMX_MOUSE */
+
+#if USE_GPM_SUPPORT
+static int
+allow_gpm_mouse(void)
+{
+    /* GPM does printf's without checking if stdout is a terminal */
+    if (isatty(fileno(stdout))) {
+	char *env = getenv("TERM");
+	/* GPM checks the beginning of the $TERM variable to decide if
+	 * it should pass xterm events through.  There is no real advantage
+	 * in allowing GPM to do this.
+	 */
+	if (env == 0 || strncmp(env, "xterm", 5))
+	    return TRUE;
+    }
+    return FALSE;
+}
+
+static int
+enable_gpm_mouse(int enable)
+{
+    int result;
+
+    if (enable) {
+	/* GPM: initialize connection to gpm server */
+	gpm_connect.eventMask = GPM_DOWN | GPM_UP;
+	gpm_connect.defaultMask = ~(gpm_connect.eventMask | GPM_HARD);
+	gpm_connect.minMod = 0;
+	gpm_connect.maxMod = ~((1 << KG_SHIFT) |
+			       (1 << KG_SHIFTL) |
+			       (1 << KG_SHIFTR));
+	/*
+	 * Note: GPM hardcodes \E[?1001s and \E[?1000h during its open.
+	 * The former is recognized by wscons (SunOS), and the latter by
+	 * xterm.  Those will not show up in ncurses' traces.
+	 */
+	result = (my_Gpm_Open(&gpm_connect, 0) >= 0);
+	T(("GPM open %s", result ? "succeeded" : "failed"));
+    } else {
+	/* GPM: close connection to gpm server */
+	my_Gpm_Close();
+	result = TRUE;
+	T(("GPM closed"));
+    }
+    return result;
+}
+#endif /* USE_GPM_SUPPORT */
 
 static void
 initialize_mousetype(void)
@@ -369,8 +423,7 @@ initialize_mousetype(void)
 
     /* Try gpm first, because gpm may be configured to run in xterm */
 #if USE_GPM_SUPPORT
-    /* GPM does printf's without checking if stdout is a terminal */
-    if (isatty(fileno(stdout))) {
+    if (allow_gpm_mouse()) {
 	static bool first = TRUE;
 	static bool found = FALSE;
 
@@ -379,11 +432,10 @@ initialize_mousetype(void)
 	    first = FALSE;
 
 	    if ((obj = dlopen("libgpm.so", my_RTLD)) != 0) {
-		if ((my_gpm_fd = (dl_INT) dlsym(obj, "gpm_fd")) == 0 ||
-		    (my_Gpm_Open = (dl_OPEN) dlsym(obj, "Gpm_Open")) == 0 ||
-		    (my_Gpm_GetEvent = (dl_GETEVENT) dlsym(obj,
-							   "Gpm_GetEvent"))
-		    == 0) {
+		if (GET_DLSYM(gpm_fd) == 0 ||
+		    GET_DLSYM(Gpm_Open) == 0 ||
+		    GET_DLSYM(Gpm_Close) == 0 ||
+		    GET_DLSYM(Gpm_GetEvent) == 0) {
 		    T(("GPM initialization failed: %s", dlerror()));
 		    dlclose(obj);
 		} else {
@@ -392,22 +444,19 @@ initialize_mousetype(void)
 	    }
 	}
 
-	if (found) {
-	    /* GPM: initialize connection to gpm server */
-	    gpm_connect.eventMask = GPM_DOWN | GPM_UP;
-	    gpm_connect.defaultMask = ~(gpm_connect.eventMask | GPM_HARD);
-	    gpm_connect.minMod = 0;
-	    gpm_connect.maxMod = ~((1 << KG_SHIFT) |
-				   (1 << KG_SHIFTL) |
-				   (1 << KG_SHIFTR));
-	    if (my_Gpm_Open(&gpm_connect, 0) >= 0) {	/* returns the file-descriptor */
-		SP->_mouse_type = M_GPM;
-		SP->_mouse_fd = *my_gpm_fd;
-		return;
-	    }
+	/*
+	 * The gpm_fd file-descriptor may be negative (xterm).  So we have to
+	 * maintain our notion of whether the mouse connection is active
+	 * without testing the file-descriptor.
+	 */
+	if (found && enable_gpm_mouse(TRUE)) {
+	    SP->_mouse_type = M_GPM;
+	    SP->_mouse_fd = *my_gpm_fd;
+	    T(("GPM mouse_fd %d", SP->_mouse_fd));
+	    return;
 	}
     }
-#endif
+#endif /* USE_GPM_SUPPORT */
 
     /* OS/2 VIO */
 #if USE_EMX_MOUSE
@@ -449,7 +498,7 @@ initialize_mousetype(void)
 	    }
 	}
     }
-#endif
+#endif /* USE_EMX_MOUSE */
 
 #if USE_SYSMOUSE
     {
@@ -824,15 +873,14 @@ mouse_activate(bool on)
 	    keyok(KEY_MOUSE, on);
 #endif
 	    TPUTS_TRACE("xterm mouse initialization");
-#if USE_EMX_MOUSE
-	    server_state(1);
-#else
 	    enable_xterm_mouse(1);
-#endif
 	    break;
 #if USE_GPM_SUPPORT
 	case M_GPM:
-	    SP->_mouse_fd = *my_gpm_fd;
+	    if (enable_gpm_mouse(1)) {
+		SP->_mouse_fd = *my_gpm_fd;
+		T(("GPM mouse_fd %d", SP->_mouse_fd));
+	    }
 	    break;
 #endif
 #if USE_SYSMOUSE
@@ -857,14 +905,11 @@ mouse_activate(bool on)
 	switch (SP->_mouse_type) {
 	case M_XTERM:
 	    TPUTS_TRACE("xterm mouse deinitialization");
-#if USE_EMX_MOUSE
-	    server_state(0);
-#else
 	    enable_xterm_mouse(0);
-#endif
 	    break;
 #if USE_GPM_SUPPORT
 	case M_GPM:
+	    enable_gpm_mouse(0);
 	    break;
 #endif
 #if USE_SYSMOUSE
@@ -1099,6 +1144,8 @@ _nc_mouse_wrap(SCREEN *sp GCC_UNUSED)
 #if USE_GPM_SUPPORT
 	/* GPM: pass all mouse events to next client */
     case M_GPM:
+	if (eventmask)
+	    mouse_activate(FALSE);
 	break;
 #endif
 #if USE_SYSMOUSE
@@ -1127,6 +1174,8 @@ _nc_mouse_resume(SCREEN *sp GCC_UNUSED)
 #if USE_GPM_SUPPORT
     case M_GPM:
 	/* GPM: reclaim our event set */
+	if (eventmask)
+	    mouse_activate(TRUE);
 	break;
 #endif
 
