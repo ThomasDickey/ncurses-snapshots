@@ -48,7 +48,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.35 1998/02/11 12:13:59 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.36 1998/05/24 00:30:06 tom Exp $")
 
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -234,6 +234,39 @@ static int _nc_read_tic_entry(char *const filename,
 }
 
 /*
+ * Process the list of :-separated directories, looking for the terminal type.
+ * We don't use strtok because it does not show us empty tokens.
+ */
+static int _nc_read_terminfo_dirs(char *dirs, char *const filename, const char *const ttn, TERMTYPE *const tp)
+{
+	/* we'll modify the argument, so we must copy */
+	char *list = strcpy(malloc(strlen(dirs)+1), dirs);
+	char *a = list;
+	char *b = list;
+	int code = 0;
+
+	for (;;) {
+		int c = *a;
+		if (c == 0 || c == ':') {
+			*a = 0;
+			if ((b + 1) >= a)
+				b = TERMINFO;
+			if (_nc_read_tic_entry(filename, b, ttn, tp) == 1) {
+				code = 1;
+				break;
+			}
+			b = a + 1;
+			if (c == 0)
+				break;
+		}
+		a++;
+	}
+
+	free(list);
+	return(code);
+}
+
+/*
  *	_nc_read_entry(char *tn, char *filename, TERMTYPE *tp)
  *
  *	Find and read the compiled entry for a given terminal type,
@@ -276,27 +309,16 @@ char		ttn[MAX_ALIAS + 3];
 
 	/* this is an ncurses extension */
 	if ((envp = getenv("TERMINFO_DIRS")) != 0)
-	{
-	    /* strtok modifies its argument, so we must copy */
-	    char *list = strcpy(malloc(strlen(envp)+1), envp);
-	    const char *cp = strtok(list, ":");
-	    int code = 0;
+		return _nc_read_terminfo_dirs(envp, filename, ttn, tp);
 
-	    do {
-		if (cp[0] == '\0')
-		    cp = TERMINFO;
-		if (_nc_read_tic_entry(filename, cp, ttn, tp) == 1) {
-			code = 1;
-			break;
-		}
-	    } while
-		((cp = strtok((char *)0, ":")) != 0);
-
-	    free(list);
-	    return(code);
-	}
-
-	/* try the system directory */
-	return(_nc_read_tic_entry(filename, TERMINFO, ttn, tp));
+	/* Try the system directory.  Note that the TERMINFO_DIRS value, if
+	 * defined by the configure script, begins with a ":", which will be
+	 * interpreted as TERMINFO.
+	 */
+#ifdef TERMINFO_DIRS
+	return _nc_read_terminfo_dirs(TERMINFO_DIRS, filename, ttn, tp);
+#else
+	return _nc_read_tic_entry(filename, TERMINFO, ttn, tp);
+#endif
 }
 

@@ -42,7 +42,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.19 1998/02/11 12:13:54 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.20 1998/05/23 23:21:32 Alexander.V.Lukyanov Exp $")
 
 void _nc_freewin(WINDOW *win)
 {
@@ -130,10 +130,10 @@ int     flags = _SUBWIN;
 	    returnWin(0);
 
 	if (num_lines == 0)
-	    num_lines = orig->_maxy - begy;
+	    num_lines = orig->_maxy + 1 - begy; 
 
 	if (num_columns == 0)
-	    num_columns = orig->_maxx - begx;
+	    num_columns = orig->_maxx + 1 - begx; 
 
 	if (orig->_flags & _ISPAD)
 	  flags |= _ISPAD;

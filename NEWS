@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.336 1998/05/17 00:13:43 tom Exp $
+-- $Id: NEWS,v 1.337 1998/05/23 23:26:52 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980523
+	+ correct maxx/maxy expression for num_columns/num_lines in derwin
+	  (patch by Alexander V.  Lukyanov).
+	+ add /usr/share/lib/terminfo and /usr/lib/terminfo as compatibilty
+	  fallbacks to _nc_read_entry(), along with --with-terminfo-dirs
+	  configure option (suggested by Mike Hopkirk).
+	+ modify config.guess to recognize Unixware 2.1 and 7 (patch by Mike
+	  Hopkirk <hops@sco.com>).
+	+ suppress definition of CC_SHARED_OPTS in LDFLAGS_SHARED in c++
+	  Makefile.in, since this conflicts when g++ is used with HP-UX
+	  compiler (reported by Tim Mooney).
+	+ parenthesize 'strcpy' calls in c++ binding to workaround redefinition
+	  in some C++ implementations (reported by several people running
+	  egcs with glibc 2.0.93, analysis by Andreas Jaeger
+	  <aj@arthur.rhein-neckar.de>).
 
 980516
 	+ modify write_entry.c so that it will not attempt to link aliases
