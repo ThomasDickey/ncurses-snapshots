@@ -30,7 +30,7 @@
 #include <string.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.9 1996/08/04 10:46:11 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.10 1996/11/16 23:21:24 tom Exp $")
 
 /*
  *	char *
@@ -487,18 +487,22 @@ register char	*cp;
 char *tparm(const char *string, ...)
 {
 va_list	ap;
+char *result;
 
 	va_start(ap, string);
 #ifdef TRACE
 	tname = "tparm";
 #endif /* TRACE */
-	return(tparam_internal(string, ap));
+	result = tparam_internal(string, ap);
+	va_end(ap);
+	return result;
 }
 
 #ifdef __UNUSED__	/* we never documented this, and it confuses Emacs */
 char *tparam(const char *string, char *buffer, int bufsiz, ...)
 {
 va_list	ap;
+char *result = 0;
 
 	va_start(ap, bufsiz);
 #ifdef TRACE
@@ -506,7 +510,8 @@ va_list	ap;
 #endif /* TRACE */
 	if (tparam_internal(string, ap) != 0
 	 && (int)out_used < bufsiz)
-	 	return strcpy(buffer, out_buff);
-	return 0;
+	 	result = strcpy(buffer, out_buff);
+	va_end(ap);
+	return result;
 }
 #endif /* __UNUSED */

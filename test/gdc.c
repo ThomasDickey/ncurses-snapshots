@@ -5,9 +5,11 @@
  *
  * modified 10-18-89 for curses (jrl)
  * 10-18-89 added signal handling
+ *
+ * $Id: gdc.c,v 1.6 1996/11/17 00:17:45 tom Exp $
  */
 
-#include "test.priv.h"
+#include <test.priv.h>
 
 #include <time.h>
 #include <signal.h>
@@ -19,26 +21,26 @@
 #define YDEPTH	5
 
 /* it won't be */
-time_t now; /* yeah! */
-struct tm *tm;
+static time_t now; /* yeah! */
+static struct tm *tm;
 
-short disp[11] = {
+static short disp[11] = {
 	075557, 011111, 071747, 071717, 055711,
 	074717, 074757, 071111, 075757, 075717, 002020
 };
-long old[6], next[6], new[6], mask;
-char scrol;
+static long old[6], next[6], new[6], mask;
+static char scrol;
 
-int sigtermed=0;
+static int sigtermed = 0;
 
-int hascolor = 0;
+static int hascolor = 0;
 
-void set(int, int);
-void standt(int);
-void movto(int, int);
+static void set(int, int);
+static void standt(int);
+static void movto(int, int);
 
 static
-void sighndl(int signo)
+RETSIGTYPE sighndl(int signo)
 {
 	signal(signo, sighndl);
 	sigtermed=signo;
@@ -59,17 +61,17 @@ int n = 0;
 	cbreak();
 	noecho();
 	nodelay(stdscr, 1);
-	
+
 	hascolor = has_colors();
 
-	if(hascolor) {	
+	if(hascolor) {
 		start_color();
 		init_pair(1, COLOR_BLACK, COLOR_RED);
 		init_pair(2, COLOR_RED, COLOR_BLACK);
 		init_pair(3, COLOR_WHITE, COLOR_BLACK);
 		attrset(COLOR_PAIR(2));
 	}
-	
+
 	clear();
 	refresh();
 	while(--argc > 0) {
@@ -79,7 +81,7 @@ int n = 0;
 			n = atoi(*argv);
 	}
 
-	if(hascolor) {	
+	if(hascolor) {
 		attrset(COLOR_PAIR(3));
 
 		mvaddch(YBASE - 1,  XBASE - 1, ACS_ULCORNER);
@@ -169,7 +171,7 @@ int n = 0;
 	return(0);
 }
 
-void
+static void
 set(int t, int n)
 {
 int i, m;
@@ -183,15 +185,15 @@ int i, m;
 		mask |= m;
 }
 
-void
+static void
 standt(int on)
 {
 	if (on) {
 		if(hascolor) {
 			attron(COLOR_PAIR(1));
 		} else {
-			attron(A_STANDOUT);	
-		}	
+			attron(A_STANDOUT);
+		}
 	} else {
 		if(hascolor) {
 			attron(COLOR_PAIR(2));
@@ -201,9 +203,8 @@ standt(int on)
 	}
 }
 
-void
+static void
 movto(int line, int col)
 {
 	move(line, col);
 }
-

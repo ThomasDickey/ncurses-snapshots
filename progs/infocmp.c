@@ -35,10 +35,12 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.19 1996/09/15 01:44:41 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.20 1996/11/17 01:55:27 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
+
+#define VALID_STRING(s) ((s) != CANCELLED_STRING && (s) != ABSENT_STRING)
 
 #define MAXTERMS	32	/* max # terminal arguments we can handle */
 
@@ -93,9 +95,9 @@ static char *canonical_name(char *ptr, char *buf)
 static int capcmp(const char *s, const char *t)
 /* capability comparison function */
 {
-    if (!s && !t)
+    if (!VALID_STRING(s) && !VALID_STRING(t))
 	return(0);
-    else if (!s || !t)
+    else if (!VALID_STRING(s) || !VALID_STRING(t))
 	return(1);
 
     if (ignorepads)

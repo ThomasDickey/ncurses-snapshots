@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.16 1996/09/22 00:10:38 tom Exp $
+# $Id: Makefile.in,v 1.17 1996/11/16 22:05:54 tom Exp $
 # Makefile for ncurses tests.
 
 SHELL		= /bin/sh
@@ -100,4 +100,4 @@ mostlyclean :: clean
 realclean :: distclean
 
 lint:
-	sh -c 'for N in $(TESTS); do $(LINT) $(LINT_OPTS) $(CPPFLAGS) $(srcdir)/$$N.c $(LINT_LIBS); done'
+	sh -c 'for N in $(TESTS); do echo LINT:$$N; $(LINT) $(LINT_OPTS) $(CPPFLAGS) $(srcdir)/$$N.c $(LINT_LIBS); done'

@@ -1,25 +1,39 @@
-#include "test.priv.h"
+/*
+ * $Id: firework.c,v 1.7 1996/11/17 00:17:32 tom Exp $
+ */
+#include <test.priv.h>
 
-#include <stdio.h>
-#include <sys/types.h>
+#include <term.h>	/* for tparm() */
+
 #include <signal.h>
 #include <ctype.h>
 #include <time.h>
 
+static char *normal, *hidden;
+
 static int get_colour(void);
 static void explode(int row, int col);
 static void showit(void);
+static void onsig(int sig);
 
 int main(
 	int argc GCC_UNUSED,
 	char *argv[] GCC_UNUSED)
 {
+int j;
 int start,end,row,diff,flag = 0,direction;
 unsigned seed;
+
+       for (j=SIGHUP;j<=SIGTERM;j++)
+	   if (signal(j,SIG_IGN)!=SIG_IGN) signal(j,onsig);
 
        initscr();
        if (has_colors())
           start_color();
+       if ((normal = tigetstr("cnorm")) != 0
+        && (hidden = tigetstr("civis")) != 0)
+    	   putp(tparm(hidden));
+
        seed = time((time_t *)0);
        srand(seed);
        cbreak();
@@ -52,6 +66,14 @@ unsigned seed;
             erase();
             showit();
        }
+}
+
+static RETSIGTYPE
+onsig(int n)
+{
+    putp(tparm(normal));
+    endwin();
+    exit(n);
 }
 
 static

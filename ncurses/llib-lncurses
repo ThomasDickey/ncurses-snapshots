@@ -343,6 +343,16 @@ int	attrset(
 int	attr_get(void)
 		{ return(*(int *)0); }
 
+#undef attr_off
+int	attr_off(
+		int	z)
+		{ return(*(int *)0); }
+
+#undef attr_on
+int	attr_on(
+		int	z)
+		{ return(*(int *)0); }
+
 #undef attr_set
 int	attr_set(
 		int	z)
@@ -852,6 +862,11 @@ int	standout(void)
 int	standend(void)
 		{ return(*(int *)0); }
 
+#undef timeout
+int	timeout(
+		int	z)
+		{ return(*(int *)0); }
+
 #undef untouchwin
 int	untouchwin(
 		WINDOW	*z)
@@ -861,6 +876,20 @@ int	untouchwin(
 int	vline(
 		chtype	a1, 
 		int	z)
+		{ return(*(int *)0); }
+
+#undef vw_printw
+int	vw_printw(
+		WINDOW	*a1, 
+		const char *a2, 
+		va_list	z)
+		{ return(*(int *)0); }
+
+#undef vw_scanw
+int	vw_scanw(
+		WINDOW	*a1, 
+		const char *a2, 
+		va_list	z)
 		{ return(*(int *)0); }
 
 #undef waddchstr
@@ -897,6 +926,12 @@ int	wattrset(
 attr_t	wattr_get(
 		WINDOW	*z)
 		{ return(*(attr_t *)0); }
+
+#undef wattr_set
+int	wattr_set(
+		WINDOW	*a1, 
+		attr_t	z)
+		{ return(*(int *)0); }
 
 #undef wbkgdset
 void	wbkgdset(
@@ -2031,7 +2066,7 @@ void	_nc_signal_handler(
 #undef _nc_timed_wait
 int	_nc_timed_wait(
 		int	fd, 
-		int	wait, 
+		int	milliseconds, 
 		int	*timeleft)
 		{ return(*(int *)0); }
 
@@ -2410,3 +2445,64 @@ int	wresize(
 		int	ToLines, 
 		int	ToCols)
 		{ return(*(int *)0); }
+
+/* ./lib_adabind.c */
+
+#undef _nc_ada_getmaxyx
+int	_nc_ada_getmaxyx(
+		WINDOW	*win, 
+		int	*y, 
+		int	*x)
+		{ return(*(int *)0); }
+
+#undef _nc_ada_getbegyx
+int	_nc_ada_getbegyx(
+		WINDOW	*win, 
+		int	*y, 
+		int	*x)
+		{ return(*(int *)0); }
+
+#undef _nc_ada_getyx
+int	_nc_ada_getyx(
+		WINDOW	*win, 
+		int	*y, 
+		int	*x)
+		{ return(*(int *)0); }
+
+#undef _nc_ada_getparyx
+int	_nc_ada_getparyx(
+		WINDOW	*win, 
+		int	*y, 
+		int	*x)
+		{ return(*(int *)0); }
+
+#undef _nc_ada_isscroll
+int	_nc_ada_isscroll(
+		WINDOW	*win)
+		{ return(*(int *)0); }
+
+#undef _nc_ada_coord_transform
+int	_nc_ada_coord_transform(
+		WINDOW	*win, 
+		int	*Y, 
+		int	*X, 
+		int	dir)
+		{ return(*(int *)0); }
+
+#undef _nc_ada_mouse_event
+void	_nc_ada_mouse_event(
+		mmask_t	m, 
+		int	*b, 
+		int	*s)
+		{ /* void */ }
+
+#undef _nc_ada_mouse_mask
+int	_nc_ada_mouse_mask(
+		int	button, 
+		int	state, 
+		mmask_t	*mask)
+		{ return(*(int *)0); }
+
+#undef _nc_ada_unregister_mouse
+void	_nc_ada_unregister_mouse(void)
+		{ /* void */ }

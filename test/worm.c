@@ -33,9 +33,11 @@ Options:
   code.  You can use -T to set the worm move interval over which movement
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
+
+  $Id: worm.c,v 1.14 1996/11/17 00:19:26 tom Exp $
 */
 
-#include "test.priv.h"
+#include <test.priv.h>
 
 #include <signal.h>
 
@@ -149,8 +151,8 @@ static struct options {
     { 0, { 0, 0, 0 } }
 };
 
-void onsig(int sig);
-float ranf(void);
+static RETSIGTYPE onsig(int sig);
+static float ranf(void);
 
 int
 main(int argc, char *argv[])
@@ -336,7 +338,7 @@ int last, bottom;
     }
 }
 
-void
+static RETSIGTYPE
 onsig(int sig)
 {
 	standend();
@@ -345,7 +347,7 @@ onsig(int sig)
 	exit(sig);
 }
 
-float
+static float
 ranf(void)
 {
 float rv;

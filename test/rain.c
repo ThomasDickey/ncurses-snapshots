@@ -1,4 +1,9 @@
-#include "test.priv.h"
+/*
+ * $Id: rain.c,v 1.6 1996/11/16 23:24:54 tom Exp $
+ */
+#include <test.priv.h>
+
+#include <term.h>	/* for tparm() */
 
 #include <signal.h>
 
@@ -6,8 +11,10 @@
 
 #define cursor(col,row) move(row,col)
 
-float ranf(void);
-void onsig(int sig);
+static char *normal, *hidden;
+
+static float ranf(void);
+static void onsig(int sig);
 
 int
 main(
@@ -25,6 +32,10 @@ float c;
     initscr();
     nl();
     noecho();
+    if ((normal = tigetstr("cnorm")) != 0
+     && (hidden = tigetstr("civis")) != 0)
+    	putp(tparm(hidden));
+
     r = (float)(LINES - 4);
     c = (float)(COLS - 4);
     for (j=5;--j>=0;) {
@@ -61,7 +72,7 @@ float c;
 		addstr("\\ /");
 		cursor(xpos[j],ypos[j]+2);
 		addch('-');
-	
+
 		if (j==0) j=4; else --j;
 		cursor(xpos[j],ypos[j]-2);
 		addch(' ');
@@ -79,14 +90,15 @@ float c;
     }
 }
 
-void
+static void
 onsig(int n)
 {
+    putp(tparm(normal));
     endwin();
     exit(n);
 }
 
-float
+static float
 ranf(void)
 {
     float rv;
@@ -96,4 +108,3 @@ ranf(void)
     rv =((float)r/32767.);
     return rv;
 }
-

@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.66 1996/11/03 00:10:34 tom Exp $
+$Id: ncurses.c,v 1.67 1996/11/17 00:23:59 tom Exp $
 
 ***************************************************************************/
 
@@ -2729,7 +2729,7 @@ set_terminal_modes(void)
 }
 
 #ifdef SIGUSR1
-static void announce_sig(int sig)
+static RETSIGTYPE announce_sig(int sig)
 {
     (void) fprintf(stderr, "Handled signal %d\r\n", sig);
 }

@@ -22,7 +22,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.11 1996/09/07 15:03:39 tom Exp $
+ * $Id: view.c,v 1.12 1996/11/17 00:18:36 tom Exp $
  */
 
 #include <test.priv.h>
@@ -55,7 +55,7 @@ static void show_all(void);
 #endif
 
 #if CAN_RESIZE
-static void adjust(int sig);
+static RETSIGTYPE adjust(int sig);
 #endif
 
 static int          waiting;
@@ -213,7 +213,7 @@ int         done = FALSE;
     finish(0);               /* we're done */
 }
 
-static void finish(int sig)
+static RETSIGTYPE finish(int sig)
 {
     endwin();
     exit(sig != 0 ? EXIT_FAILURE : EXIT_SUCCESS);
@@ -225,7 +225,7 @@ static void finish(int sig)
  * Linux.  The 'wrefresh(curscr)' is needed to force the refresh to start from
  * the top of the screen -- some xterms mangle the bitmap while resizing.
  */
-static void adjust(int sig)
+static RETSIGTYPE adjust(int sig)
 {
 	if (waiting || sig == 0) {
 	struct winsize size;

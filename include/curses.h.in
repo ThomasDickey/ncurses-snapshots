@@ -19,7 +19,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.35 1996/10/05 23:30:30 tom Exp $ */
+/* $Id: curses.h.in,v 1.36 1996/11/16 21:55:54 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -91,7 +91,6 @@ extern "C" {
 /* colors */
 extern int COLORS;
 extern int COLOR_PAIRS;
-extern unsigned char *color_pairs;
 
 #define COLOR_BLACK	0
 #define COLOR_RED	1
@@ -341,8 +340,8 @@ extern int attroff(int);				/* generated */
 extern int attron(int);					/* generated */
 extern int attrset(int);				/* generated */
 extern int attr_get(void);				/* generated */
-extern int attr_off(int);				/* implemented */
-extern int attr_on(int);				/* implemented */
+extern int attr_off(int);				/* generated */
+extern int attr_on(int);				/* generated */
 extern int attr_set(int);				/* generated */
 extern int baudrate(void);				/* implemented */
 extern int beep(void);					/* implemented */
@@ -670,7 +669,7 @@ extern char *termname(void);				/* implemented */
 extern int tigetflag(const char *);			/* implemented */
 extern int tigetnum(const char *);			/* implemented */
 extern char *tigetstr(const char *);			/* implemented */
-extern int timeout(int);				/* implemented */
+extern int timeout(int);				/* generated */
 extern int typeahead(int);				/* implemented */
 extern int ungetch(int);				/* implemented */
 #ifdef _XOPEN_SOURCE_EXTENDED
@@ -691,9 +690,9 @@ extern int vline(chtype, int);				/* generated */
 extern int vline_set(const cchar_t *, int);		/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern int vwprintw(WINDOW *,const char *,va_list);	/* implemented */
-extern int vw_printw(WINDOW *,const char *,va_list);	/* implemented */
+extern int vw_printw(WINDOW *,const char *,va_list);	/* generated */
 extern int vwscanw(WINDOW *,const char *,va_list);	/* implemented */
-extern int vw_scanw(WINDOW *,const char *,va_list);	/* implemented */
+extern int vw_scanw(WINDOW *,const char *,va_list);	/* generated */
 extern int waddch(WINDOW *, const chtype);		/* implemented */
 extern int waddchnstr(WINDOW *,const chtype *const,int); /* implemented */
 extern int waddchstr(WINDOW *,const chtype *);		/* generated */
@@ -711,7 +710,7 @@ extern int wattrset(WINDOW *, int);			/* generated */
 extern attr_t wattr_get(WINDOW *);			/* generated */
 extern int wattr_on(WINDOW *, const attr_t);		/* implemented */
 extern int wattr_off(WINDOW *, const attr_t);		/* implemented */
-extern int wattr_set(WINDOW *, attr_t);			/* implemented */
+extern int wattr_set(WINDOW *, attr_t);			/* generated */
 extern int wbkgd(WINDOW *,const chtype);		/* implemented */
 extern void wbkgdset(WINDOW *,chtype);			/* generated */
 #ifdef _XOPEN_SOURCE_EXTENDED

@@ -3,6 +3,22 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+961116	- snapshot
+	+ change ABI to 3.4
+	+ lint found several functions that had only #define implementations
+	  (e.g., attr_off), modified curses.h.in to generate them as per XSI
+	  Curses requirement that every macro be available as a function.
+	+ add check in infocmp.c to guard against string compare of
+	  CANCELLED_STRING values.
+	+ modify firework.c, rain.c to hide cursor while running.
+	+ correct missing va_end in lib_tparm.c
+	+ modify hanoi.c to work on non-color terminals, and to use timing
+	  delays when in autoplay mode.
+	+ correct 'echochar()' to refresh immediately (reported by Adrian
+	  Garside 94ajg2@eng.cam.ac.uk)
+	> patch #321 by eric: 
+	+ reorganize terminfo.src entries for xterm.
+
 961109	- snapshot
 	+ corrected error in line-breakout logic (lib_doupdate.c)
 	+ modified newdemo to use wgetch(win) rather than getch() to eliminate
