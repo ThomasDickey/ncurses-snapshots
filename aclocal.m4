@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.138 1998/07/11 22:42:37 tom Exp $
+dnl $Id: aclocal.m4,v 1.142 1998/07/19 00:25:18 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -990,58 +990,27 @@ dnl Try to determine if the man-pages on the system are compressed, and if
 dnl so, what format is used.  Use this information to construct a script that
 dnl will install man-pages.
 AC_DEFUN([CF_MAN_PAGES],
-[AC_MSG_CHECKING(format of man-pages)
-  if test -z "$MANPATH" ; then
-    MANPATH="/usr/man:/usr/share/man"
-  fi
-  # look for the 'date' man-page (it's most likely to be installed!)
-  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
-  cf_form=unknown
-  for cf_dir in $MANPATH; do
-    test -z "$cf_dir" && cf_dir=/usr/man
-    cf_rename=""
-    cf_format=no
-changequote({{,}})dnl
-    for cf_name in $cf_dir/*/date.[01]* $cf_dir/*/date
-changequote([,])dnl
-    do
-       cf_test=`echo $cf_name | sed -e 's/*//'`
-       if test "x$cf_test" = "x$cf_name" ; then
-	  case "$cf_name" in
-	  *.gz) cf_form=gzip;     cf_name=`basename $cf_name .gz`;;
-	  *.Z)  cf_form=compress; cf_name=`basename $cf_name .Z`;;
-	  *.0)	cf_form=BSDI; cf_format=yes;;
-	  *)    cf_form=cat;;
-	  esac
-	  break
-       fi
-    done
-    if test "$cf_form" != "unknown" ; then
-       break
-    fi
-  done
-  IFS="$ac_save_ifs"
+[
+CF_HELP_MESSAGE(Options to Specify How Manpages are Installed:)
+CF_MANPAGE_FORMAT
+CF_MANPAGE_RENAMES
+
   if test "$prefix" = "NONE" ; then
      cf_prefix="$ac_default_prefix"
   else
      cf_prefix="$prefix"
   fi
 
-  # Debian 'man' program?
-  test -f /etc/debian_version && \
-  cf_rename=`cd $srcdir && pwd`/man/man_db.renames
-
-  test ! -d man && mkdir man
-
-  # Construct a sed-script to perform renaming within man-pages
-  if test -n "$cf_rename" ; then
-    $srcdir/man/make_sed.sh $cf_rename >man/edit_man.sed
-  fi
-  if test $cf_format = yes ; then
+  case "$cf_manpage_form" in # (vi
+  *formatted*) # (vi
     cf_subdir='$mandir/cat'
-  else
+    cf_format=yes
+    ;;
+  *)
     cf_subdir='$mandir/man'
-  fi
+    cf_format=no
+    ;;
+  esac
 
 cat >man/edit_man.sh <<CF_EOF
 changequote({{,}})dnl
@@ -1063,7 +1032,7 @@ shift
 
 for i in \{{$}}*
 do
-case \$i in
+case \$i in #(vi
 *.[0-9]*)
 	section=\`expr "\$i" : '.*\\.\\([0-9]\\)[xm]*'\`;
 	if test \$verb = installing ; then
@@ -1073,14 +1042,14 @@ case \$i in
 	fi
 	source=\`basename \$i\`
 CF_EOF
-if test -z "$cf_rename" ; then
+if test "$cf_manpage_renames" = no ; then
 cat >>man/edit_man.sh <<CF_EOF
 	target=$cf_subdir\${section}/\$source
 	sed -e "s,@DATADIR@,\$datadir," < \$i >\$TMP
 CF_EOF
 else
 cat >>man/edit_man.sh <<CF_EOF
-	target=\`grep "^\$source" $cf_rename | $AWK '{print \{{$}}2}'\`
+	target=\`grep "^\$source" $cf_manpage_renames | $AWK '{print \{{$}}2}'\`
 	if test -z "\$target" ; then
 		echo '? missing rename for '\$source
 		target="\$source"
@@ -1089,16 +1058,14 @@ cat >>man/edit_man.sh <<CF_EOF
 	test \$verb = installing && sed -e "s,@DATADIR@,\$datadir," < \$i | sed -f edit_man.sed >\$TMP
 CF_EOF
 fi
-if test \$verb = installing ; then
 if test $cf_format = yes ; then
 cat >>man/edit_man.sh <<CF_EOF
 	nroff -man \$TMP >\$TMP.out
 	mv \$TMP.out \$TMP
 CF_EOF
 fi
-fi
-case "$cf_form" in
-compress)
+case "$cf_manpage_form" in #(vi
+*compress*) #(vi
 cat >>man/edit_man.sh <<CF_EOF
 	if test \$verb = installing ; then
 	if ( compress -f \$TMP )
@@ -1109,7 +1076,7 @@ cat >>man/edit_man.sh <<CF_EOF
 	target="\$target.Z"
 CF_EOF
   ;;
-gzip)
+*gzip*) #(vi
 cat >>man/edit_man.sh <<CF_EOF
 	if test \$verb = installing ; then
 	if ( gzip -f \$TMP )
@@ -1120,7 +1087,7 @@ cat >>man/edit_man.sh <<CF_EOF
 	target="\$target.gz"
 CF_EOF
   ;;
-BSDI)
+*BSDI*)
 cat >>man/edit_man.sh <<CF_EOF
 	# BSDI installs only .0 suffixes in the cat directories
 	target="\`echo \$target|sed -e 's/\.[1-9]\+.\?/.0/'\`"
@@ -1140,7 +1107,100 @@ done
 CF_EOF
 changequote([,])dnl
 chmod 755 man/edit_man.sh
-AC_MSG_RESULT($cf_form)
+
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Option to allow user to override automatic configuration of manpage format.
+dnl There are several special cases.
+AC_DEFUN([CF_MANPAGE_FORMAT],
+[ AC_MSG_CHECKING(format of man-pages)
+
+AC_ARG_WITH(manpage-format,
+	[  --manpage-format        specify manpage-format: gzip/compress/BSDI/normal and
+                          optionally formatted, e.g., gzip,formatted],
+	[cf_manpage_form=$withval],
+	[cf_manpage_form=unknown])
+
+case ".$cf_manpage_form" in
+.gzip|.compress|.BSDI|.normal|.formatted) # (vi
+  ;;
+.unknown|.) # (vi
+  if test -z "$MANPATH" ; then
+    MANPATH="/usr/man:/usr/share/man"
+  fi
+  # look for the 'date' man-page (it's most likely to be installed!)
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
+  cf_manpage_form=unknown
+  for cf_dir in $MANPATH; do
+    test -z "$cf_dir" && cf_dir=/usr/man
+changequote({{,}})dnl
+    for cf_name in $cf_dir/*/date.[01]* $cf_dir/*/date
+changequote([,])dnl
+    do
+       cf_test=`echo $cf_name | sed -e 's/*//'`
+       if test "x$cf_test" = "x$cf_name" ; then
+	  case "$cf_name" in
+	  *.gz) cf_manpage_form=gzip;;
+	  *.Z)  cf_manpage_form=compress;;
+	  *.0)	cf_manpage_form=BSDI,formatted;;
+	  *)    cf_manpage_form=normal;;
+	  esac
+	  break
+       fi
+    done
+    if test "$cf_manpage_form" != "unknown" ; then
+       break
+    fi
+  done
+  IFS="$ac_save_ifs"
+  ;;
+.*) # (vi
+  AC_MSG_WARN(Unexpected manpage-format)
+  ;;
+esac
+
+AC_MSG_RESULT($cf_manpage_form)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl The Debian people have their own naming convention for manpages.  This
+dnl option lets us override the name of the file containing renaming, or
+dnl disable it altogether.
+AC_DEFUN([CF_MANPAGE_RENAMES],
+[
+AC_MSG_CHECKING(for manpage renaming)
+
+AC_ARG_WITH(manpage-renames,
+	[  --manpage-renames       specify manpage-renaming],
+	[cf_manpage_renames=$withval],
+	[cf_manpage_renames=yes])
+
+case ".$cf_manpage_renames" in #(vi
+.no) #(vi
+  ;;
+.|.yes)
+  # Debian 'man' program?
+  if test -f /etc/debian_version ; then
+    cf_manpage_renames=`cd $srcdir && pwd`/man/man_db.renames
+  else
+    cf_manpage_renames=no
+  fi
+  ;;
+esac
+
+if test "$cf_manpage_renames" != no ; then
+  if test ! -f $cf_manpage_renames ; then
+    AC_MSG_ERROR(not a filename: $cf_manpage_renames)
+  fi
+
+  test ! -d man && mkdir man
+
+  # Construct a sed-script to perform renaming within man-pages
+  if test -n "$cf_manpage_renames" ; then
+    $srcdir/man/make_sed.sh $cf_manpage_renames >man/edit_man.sed
+  fi
+fi
+
+AC_MSG_RESULT($cf_manpage_renames)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Compute the object-directory name from the given model name
@@ -1359,6 +1419,10 @@ AC_DEFUN([CF_SHARED_OPTS],
  			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'
 		fi
 		cf_cv_do_symlinks=yes
+		;;
+	openbsd2*)
+		CC_SHARED_OPTS='-fpic -DPIC'
+		MK_SHARED_LIB='$(LD) -Bshareable -soname,`basename $[@].$(ABI_VERSION)` -o $[@]'
 		;;
 	openbsd*|netbsd*|freebsd*)
 		CC_SHARED_OPTS='-fpic -DPIC'

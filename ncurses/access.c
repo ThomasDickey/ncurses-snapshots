@@ -27,106 +27,29 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
- *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *  Author: Thomas E. Dickey <dickey@clark.net> 1998                        *
  ****************************************************************************/
 
 
-/*
- *	comp_error.c -- Error message routines
- *
- */
-
 #include <curses.priv.h>
 
-#include <tic.h>
+MODULE_ID("$Id: access.c,v 1.1 1998/07/25 20:17:09 tom Exp $")
 
-MODULE_ID("$Id: comp_error.c,v 1.15 1998/07/18 00:04:00 tom Exp $")
-
-bool	_nc_suppress_warnings;
-int	_nc_curr_line;		/* current line # in input */
-int	_nc_curr_col;		/* current column # in input */
-
-static const char *sourcename;
-static char termtype[MAX_NAME_SIZE+1];
-
-void _nc_set_source(const char *const name)
+int _nc_access(const char *path, int mode)
 {
-	sourcename = name;
-}
-
-void _nc_set_type(const char *const name)
-{
-	if (name)
-		strncpy( termtype, name, MAX_NAME_SIZE );
-	else
-		termtype[0] = '\0';
-}
-
-void _nc_get_type(char *name)
-{
-	strcpy( name, termtype );
-}
-
-static inline void where_is_problem(void)
-{
-	fprintf (stderr, "\"%s\"", sourcename);
-	if (_nc_curr_line >= 0)
-		fprintf (stderr, ", line %d", _nc_curr_line);
-	if (_nc_curr_col >= 0)
-		fprintf (stderr, ", col %d", _nc_curr_col);
-	if (termtype[0])
-		fprintf (stderr, ", terminal '%s'", termtype);
-	fputc(':', stderr);
-	fputc(' ', stderr);
-}
-
-void _nc_warning(const char *const fmt, ...)
-{
-va_list argp;
-
-	if (_nc_suppress_warnings)
-	    return;
-
-	where_is_problem();
-	va_start(argp,fmt);
-	vfprintf (stderr, fmt, argp);
-	fprintf (stderr, "\n");
-	va_end(argp);
-}
-
-
-void _nc_err_abort(const char *const fmt, ...)
-{
-va_list argp;
-
-	where_is_problem();
-	va_start(argp,fmt);
-	vfprintf (stderr, fmt, argp);
-	fprintf (stderr, "\n");
-	va_end(argp);
-	exit(EXIT_FAILURE);
-}
-
-
-void _nc_syserr_abort(const char *const fmt, ...)
-{
-va_list argp;
-
-	where_is_problem();
-	va_start(argp,fmt);
-	vfprintf (stderr, fmt, argp);
-	fprintf (stderr, "\n");
-	va_end(argp);
-
-	/* If we're debugging, try to show where the problem occurred - this
-	 * will dump core.
-	 */
-#if defined(TRACE) || defined(NDEBUG)
-	abort();
-#else
-	/* Dumping core in production code is not a good idea.
-	 */
-	exit(EXIT_FAILURE);
-#endif
+	if (access(path, mode) < 0) {
+		if ((mode & W_OK) != 0
+		 && errno == ENOENT) {
+			char head[PATH_MAX];
+			char *leaf = strrchr(strcpy(head, path), '/');
+			if (leaf == 0)
+				leaf = head;
+			*leaf = '\0';
+			if (head == leaf)
+				(void)strcpy(head, ".");
+			return access(head, R_OK|W_OK|X_OK);
+		}
+		return -1;
+	}
+	return 0;
 }

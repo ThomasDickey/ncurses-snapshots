@@ -39,7 +39,7 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <term.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.19 1998/05/10 17:45:48 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.21 1998/07/25 20:58:56 tom Exp $")
 
 /*
    some of the code in here was contributed by:
@@ -174,11 +174,15 @@ int i;
 
 	T(("tgetflag: %s", id));
 	if (cur_term != 0) {
-		for (i = 0; i < BOOLCOUNT; i++)
-			if (!strcmp(id, boolcodes[i]))
+		for (i = 0; i < BOOLCOUNT; i++) {
+			if (!strncmp(id, boolcodes[i], 2)) {
+				if (!VALID_BOOLEAN(cur_term->type.Booleans[i]))
+					return 0;
 				return cur_term->type.Booleans[i];
+			}
+		}
 	}
-	return ERR;
+	return 0;	/* Solaris does this */
 }
 
 /***************************************************************************
@@ -196,9 +200,13 @@ int i;
 
 	T(("tgetnum: %s", id));
 	if (cur_term != 0) {
-		for (i = 0; i < NUMCOUNT; i++)
-			if (!strcmp(id, numcodes[i]))
+		for (i = 0; i < NUMCOUNT; i++) {
+			if (!strncmp(id, numcodes[i], 2)) {
+				if (!VALID_NUMERIC(cur_term->type.Numbers[i]))
+					return -1;
 				return cur_term->type.Numbers[i];
+			}
+		}
 	}
 	return ERR;
 }
@@ -220,8 +228,10 @@ int i;
 	if (cur_term != 0) {
 		for (i = 0; i < STRCOUNT; i++) {
 			T(("trying %s", strcodes[i]));
-			if (!strcmp(id, strcodes[i])) {
-				T(("found match : %s", cur_term->type.Strings[i]));
+			if (!strncmp(id, strcodes[i], 2)) {
+				T(("found match : %s", _nc_visbuf(cur_term->type.Strings[i])));
+				if (!VALID_STRING(cur_term->type.Strings[i]))
+					return 0;
 				return cur_term->type.Strings[i];
 			}
 		}

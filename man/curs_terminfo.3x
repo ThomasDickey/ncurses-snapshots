@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_terminfo.3x,v 1.8 1998/03/11 21:12:53 juergen Exp $
+.\" $Id: curs_terminfo.3x,v 1.9 1998/07/18 02:49:20 tom Exp $
 .TH curs_terminfo 3X ""
 .ds n 5
 .SH NAME
@@ -178,13 +178,16 @@ the value of the capability corresponding to the \fBterminfo\fR
 \fIcapname\fR passed to them, such as \fBxenl\fR.
 
 The \fBtigetflag\fR routine returns the value \fB-1\fR if
-\fIcapname\fR is not a boolean capability.
+\fIcapname\fR is not a boolean capability,
+or if it is cancelled or absent from the terminal description.
 
 The \fBtigetnum\fR routine returns the value \fB-2\fR if
-\fIcapname\fR is not a numeric capability.
+\fIcapname\fR is not a numeric capability,
+or \fB-1\fR if it is cancelled or absent from the terminal description.
 
 The \fBtigetstr\fR routine returns the value \fB(char *)-1\fR
-if \fIcapname\fR is not a string capability.
+if \fIcapname\fR is not a string capability,
+or \fB0\fR if it is cancelled or absent from the terminal description.
 
 The \fIcapname\fR for each capability is given in the table column entitled
 \fIcapname\fR code in the capabilities section of \fBterminfo\fR(\*n).

@@ -514,6 +514,7 @@
 ./ncurses/Makefile.in
 ./ncurses/README
 ./ncurses/SigAction.h
+./ncurses/access.c
 ./ncurses/alloc_entry.c
 ./ncurses/captoinfo.c
 ./ncurses/comp_error.c

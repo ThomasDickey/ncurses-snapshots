@@ -1,4 +1,4 @@
-# $Id: modules,v 1.45 1998/04/11 22:23:40 tom Exp $
+# $Id: modules,v 1.47 1998/07/25 20:00:24 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -61,7 +61,7 @@ lib_getstr	lib		$(srcdir)	../include/term.h
 lib_hline	lib		$(srcdir)
 lib_immedok	lib		$(srcdir)
 lib_inchstr	lib		$(srcdir)
-lib_initscr	lib		$(srcdir)
+lib_initscr	lib		$(srcdir)	$(INCDIR)/tic.h
 lib_insch	lib		$(srcdir)
 lib_insdel	lib		$(srcdir)
 lib_insstr	lib		$(srcdir)
@@ -71,7 +71,7 @@ lib_leaveok	lib		$(srcdir)
 lib_longname	lib		$(srcdir)
 lib_mouse	lib		$(srcdir)	../include/term.h
 lib_move	lib		$(srcdir)
-lib_mvcur	lib		$(srcdir)	../include/term.h
+lib_mvcur	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 lib_mvwin	lib		$(srcdir)
 lib_newterm	lib		$(srcdir)	../include/term.h
 lib_newwin	lib		$(srcdir)
@@ -135,15 +135,16 @@ wresize		lib		$(srcdir)	../include/term.h
 
 # Support for termcap (and tic, etc.), which can be a separate library
 @ termlib
-alloc_entry	lib		$(srcdir)	../include/term.h
-captoinfo	lib		$(srcdir)
+access		lib		$(srcdir)
+alloc_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
+captoinfo	lib		$(srcdir)	$(INCDIR)/tic.h
 codes		lib		.
-comp_captab	lib		.		../include/term.h ../include/hashsize.h
-comp_error	lib		$(srcdir)
+comp_captab	lib		.		$(INCDIR)/tic.h ../include/term.h ../include/hashsize.h
+comp_error	lib		$(srcdir)	$(INCDIR)/tic.h
 comp_expand	lib		$(srcdir)	$(INCDIR)/tic.h
-comp_hash	lib		$(srcdir)	../include/term.h ../include/hashsize.h
+comp_hash	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h ../include/hashsize.h
 comp_parse	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
-comp_scan	lib		$(srcdir)
+comp_scan	lib		$(srcdir)	$(INCDIR)/tic.h
 fallback	lib		.		../include/term.h $(INCDIR)/tic.h
 lib_cur_term	lib		$(srcdir)
 lib_data	lib		$(srcdir)
@@ -153,18 +154,18 @@ lib_napms	lib		$(srcdir)
 lib_options	lib		$(srcdir)	../include/term.h keys.tries
 lib_raw 	lib		$(srcdir)	../include/term.h
 lib_setup	lib		$(srcdir)	../include/term.h
-lib_termcap	lib		$(srcdir)	../include/term.h
-lib_ti		lib		$(srcdir)	../include/term.h
-lib_tparm	lib		$(srcdir)	../include/term.h
-lib_tputs	lib		$(srcdir)	../include/term.h
-lib_trace	lib		$(srcdir)
+lib_termcap	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
+lib_ti		lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
+lib_tparm	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
+lib_tputs	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
+lib_trace	lib		$(srcdir)	$(INCDIR)/tic.h
 lib_tracechr	lib		$(srcdir)
 lib_twait	lib		$(srcdir)
 name_match	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 names		lib		.
-parse_entry	lib		$(srcdir)	../include/term.h ../include/parametrized.h
+parse_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h ../include/parametrized.h
 read_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
-read_termcap	lib		$(srcdir)	../include/term.h
+read_termcap	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 trace_buf	lib		$(srcdir)
 tries		lib		$(srcdir)
 unctrl		lib		.

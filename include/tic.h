@@ -179,6 +179,8 @@ extern const struct name_table_entry	*_nc_get_table(bool);
 #define CANCELLED_NUMERIC	-2
 #define CANCELLED_STRING	(char *)-1
 
+#define VALID_BOOLEAN(s) ((s) >= 0)
+#define VALID_NUMERIC(s) ((s) >= 0)
 #define VALID_STRING(s) ((s) != CANCELLED_STRING && (s) != ABSENT_STRING)
 
 /* termcap entries longer than this may break old binaries */
