@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control
---  $Revision: 1.3 $
+--  $Revision: 1.4 $
 ------------------------------------------------------------------------------
 --  Poor mans help system. This scans a sequential file for key lines and
 --  then reads the lines up to the next key. Those lines are presented in
@@ -43,7 +43,7 @@ package body Sample.Explanation is
    Help_Keys : constant String := "HELPKEYS";
    In_Help   : constant String := "INHELP";
 
-   File_Name : String := "explain.txt";
+   File_Name : String := "explain.msg";
    F : File_Type;
 
    type Help_Line;

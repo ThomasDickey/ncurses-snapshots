@@ -19,7 +19,7 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.4 $
+#  $Revision: 1.5 $
 #
 .SUFFIXES:
 
@@ -44,7 +44,7 @@ CC		= @CC@
 CFLAGS		= @CFLAGS@
 
 CPPFLAGS	= @ACPPFLAGS@ \
-		  -DHAVE_CONFIG_H 
+		  -DHAVE_CONFIG_H -I$(srcdir)
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 
@@ -111,16 +111,16 @@ GEN_TARGETS     = $(ADA_SRCDIR)/$(ABASE).ads         			\
 	          $(ADA_SRCDIR)/$(ABASE)-forms-field_user_data.ads	\
 	          $(ADA_SRCDIR)/$(ABASE)-panels-user_data.ads
 
-GEN_SRC		= $(ABASE).ads.m4					\
-	          $(ABASE)-menus.ads.m4 	  			\
-	          $(ABASE)-forms.ads.m4   				\
-	          $(ABASE)-mouse.ads.m4					\
-	          $(ABASE)-panels.ads.m4				\
-	          $(ABASE)-menus-menu_user_data.ads.m4			\
-	          $(ABASE)-menus-item_user_data.ads.m4			\
-	          $(ABASE)-forms-form_user_data.ads.m4			\
-	          $(ABASE)-forms-field_user_data.ads.m4			\
-	          $(ABASE)-panels-user_data.ads.m4
+GEN_SRC		= $(srcdir)/$(ABASE).ads.m4				\
+	          $(srcdir)/$(ABASE)-menus.ads.m4 	  		\
+	          $(srcdir)/$(ABASE)-forms.ads.m4   			\
+	          $(srcdir)/$(ABASE)-mouse.ads.m4			\
+	          $(srcdir)/$(ABASE)-panels.ads.m4			\
+	          $(srcdir)/$(ABASE)-menus-menu_user_data.ads.m4	\
+	          $(srcdir)/$(ABASE)-menus-item_user_data.ads.m4	\
+	          $(srcdir)/$(ABASE)-forms-form_user_data.ads.m4	\
+	          $(srcdir)/$(ABASE)-forms-field_user_data.ads.m4	\
+	          $(srcdir)/$(ABASE)-panels-user_data.ads.m4
 
 WRAPLIB         = libncwrap.a
 
@@ -130,14 +130,17 @@ WRAPOBJS	= $(OBJDIR)/curs_wrap.o \
 		  $(OBJDIR)/mouse_wrap.o
 
 
-all:	$(GEN_TARGETS) $(OBJDIR)/$(WRAPLIB)
+all:	$(GEN_TARGETS) dirs ../../lib/$(WRAPLIB)
 	@
+
+dirs:
+	@-mkdir $(OBJDIR) $(ADA_OBJDIR)
 
 gen:	gen.o
 	@ECHO_LINK@ $(LINK) $(CFLAGS_NORMAL) gen.o $(LD_FLAGS) -o $@ $(LIB_CURSES)
 
-gen.o:	gen.c
-	$(CC) $(CFLAGS_NORMAL) -c -o $@ gen.c
+gen.o:	$(srcdir)/gen.c
+	$(CC) $(CFLAGS_NORMAL) -c -o $@ $(srcdir)/gen.c
 
 Character_Attribute_Set_Rep: gen
 	./gen B A >$@
@@ -196,54 +199,90 @@ Mouse_Event_Rep: gen
 Panel_Linker_Options: gen
 	./gen P L >$@
 
-$(ADA_SRCDIR)/$(ABASE).ads: $(ABASE).ads.m4 $(GEN_FILES1) normal.m4
-	$(M4) $(M4FLAGS) -DM4MACRO=normal.m4 $(ABASE).ads.m4 | $(DEL_ADAMODE) >$@
+$(ADA_SRCDIR)/$(ABASE).ads: 	$(srcdir)/$(ABASE).ads.m4 \
+				$(GEN_FILES1) $(srcdir)/normal.m4
+	$(M4) $(M4FLAGS) -DM4MACRO=$(srcdir)/normal.m4 \
+	$(srcdir)/$(ABASE).ads.m4 |\
+	$(DEL_ADAMODE) >$@
 
-$(ADA_SRCDIR)/$(ABASE)-menus.ads: $(ABASE)-menus.ads.m4 $(GEN_FILES2) normal.m4
-	$(M4) $(M4FLAGS) -DM4MACRO=normal.m4 $(ABASE)-menus.ads.m4 | $(DEL_ADAMODE) >$@
+$(ADA_SRCDIR)/$(ABASE)-menus.ads: $(srcdir)/$(ABASE)-menus.ads.m4 \
+				  $(GEN_FILES2) $(srcdir)/normal.m4
+	$(M4) $(M4FLAGS) -DM4MACRO=$(srcdir)/normal.m4 \
+	$(srcdir)/$(ABASE)-menus.ads.m4 |\
+	$(DEL_ADAMODE) >$@
 
-$(ADA_SRCDIR)/$(ABASE)-forms.ads: $(ABASE)-forms.ads.m4 $(GEN_FILES3) normal.m4
-	$(M4) $(M4FLAGS) -DM4MACRO=normal.m4 $(ABASE)-forms.ads.m4 | $(DEL_ADAMODE) >$@
+$(ADA_SRCDIR)/$(ABASE)-forms.ads: $(srcdir)/$(ABASE)-forms.ads.m4 \
+				  $(GEN_FILES3) $(srcdir)/normal.m4
+	$(M4) $(M4FLAGS) -DM4MACRO=$(srcdir)/normal.m4 \
+	$(srcdir)/$(ABASE)-forms.ads.m4 |\
+	$(DEL_ADAMODE) >$@
 
-$(ADA_SRCDIR)/$(ABASE)-mouse.ads: $(ABASE)-mouse.ads.m4 $(GEN_FILES4)
-	$(M4) $(M4FLAGS) -DM4MACRO=normal.m4 $(ABASE)-mouse.ads.m4 | $(DEL_ADAMODE) >$@
+$(ADA_SRCDIR)/$(ABASE)-mouse.ads: $(srcdir)/$(ABASE)-mouse.ads.m4 \
+				  $(GEN_FILES4) $(srcdir)/normal.m4
+	$(M4) $(M4FLAGS) -DM4MACRO=$(srcdir)/normal.m4 \
+	$(srcdir)/$(ABASE)-mouse.ads.m4 |\
+	$(DEL_ADAMODE) >$@
 
-$(ADA_SRCDIR)/$(ABASE)-panels.ads: $(ABASE)-panels.ads.m4
-	$(M4) $(M4FLAGS) -DM4MACRO=normal.m4 $(ABASE)-panels.ads.m4 | $(DEL_ADAMODE) >$@
+$(ADA_SRCDIR)/$(ABASE)-panels.ads: $(srcdir)/$(ABASE)-panels.ads.m4 \
+				   $(srcdir)/normal.m4
+	$(M4) $(M4FLAGS) -DM4MACRO=$(srcdir)/normal.m4 \
+	$(srcdir)/$(ABASE)-panels.ads.m4 |\
+	$(DEL_ADAMODE) >$@
 
-$(ADA_SRCDIR)/$(ABASE)-menus-menu_user_data.ads: $(ABASE)-menus-menu_user_data.ads.m4
-	$(M4) $(M4FLAGS) -DM4MACRO=normal.m4 $(ABASE)-menus-menu_user_data.ads.m4 | $(DEL_ADAMODE) >$@
+$(ADA_SRCDIR)/$(ABASE)-menus-menu_user_data.ads: \
+		$(srcdir)/$(ABASE)-menus-menu_user_data.ads.m4 \
+		$(srcdir)/normal.m4
+	$(M4) $(M4FLAGS) -DM4MACRO=$(srcdir)/normal.m4 \
+	$(srcdir)/$(ABASE)-menus-menu_user_data.ads.m4 |\
+	$(DEL_ADAMODE) >$@
 
-$(ADA_SRCDIR)/$(ABASE)-menus-item_user_data.ads: $(ABASE)-menus-item_user_data.ads.m4
-	$(M4) $(M4FLAGS) -DM4MACRO=normal.m4 $(ABASE)-menus-item_user_data.ads.m4 | $(DEL_ADAMODE) >$@
+$(ADA_SRCDIR)/$(ABASE)-menus-item_user_data.ads: \
+		$(srcdir)/$(ABASE)-menus-item_user_data.ads.m4 \
+		$(srcdir)/normal.m4
+	$(M4) $(M4FLAGS) -DM4MACRO=$(srcdir)/normal.m4 \
+	$(srcdir)/$(ABASE)-menus-item_user_data.ads.m4 |\
+	$(DEL_ADAMODE) >$@
 
-$(ADA_SRCDIR)/$(ABASE)-forms-form_user_data.ads: $(ABASE)-forms-form_user_data.ads.m4
-	$(M4) $(M4FLAGS) -DM4MACRO=normal.m4 $(ABASE)-forms-form_user_data.ads.m4 | $(DEL_ADAMODE) >$@
+$(ADA_SRCDIR)/$(ABASE)-forms-form_user_data.ads: \
+		$(srcdir)/$(ABASE)-forms-form_user_data.ads.m4 \
+		$(srcdir)/normal.m4
+	$(M4) $(M4FLAGS) -DM4MACRO=$(srcdir)/normal.m4 \
+	$(srcdir)/$(ABASE)-forms-form_user_data.ads.m4 |\
+	$(DEL_ADAMODE) >$@
 
-$(ADA_SRCDIR)/$(ABASE)-forms-field_user_data.ads: $(ABASE)-forms-field_user_data.ads.m4
-	$(M4) $(M4FLAGS) -DM4MACRO=normal.m4 $(ABASE)-forms-field_user_data.ads.m4 | $(DEL_ADAMODE) >$@
+$(ADA_SRCDIR)/$(ABASE)-forms-field_user_data.ads: \
+		$(srcdir)/$(ABASE)-forms-field_user_data.ads.m4 \
+		$(srcdir)/normal.m4
+	$(M4) $(M4FLAGS) -DM4MACRO=$(srcdir)/normal.m4 \
+	$(srcdir)/$(ABASE)-forms-field_user_data.ads.m4 |\
+	$(DEL_ADAMODE) >$@
 
-$(ADA_SRCDIR)/$(ABASE)-panels-user_data.ads: $(ABASE)-panels-user_data.ads.m4
-	$(M4) $(M4FLAGS) -DM4MACRO=normal.m4 $(ABASE)-panels-user_data.ads.m4 | $(DEL_ADAMODE) >$@
+$(ADA_SRCDIR)/$(ABASE)-panels-user_data.ads: \
+		$(srcdir)/$(ABASE)-panels-user_data.ads.m4 \
+		$(srcdir)/normal.m4
+	$(M4) $(M4FLAGS) -DM4MACRO=$(srcdir)/normal.m4 \
+	$(srcdir)/$(ABASE)-panels-user_data.ads.m4 |\
+	$(DEL_ADAMODE) >$@
 
-$(OBJDIR)/$(WRAPLIB): $(WRAPOBJS)
+../../lib/$(WRAPLIB): $(WRAPOBJS)
 	ar rv $@ $(WRAPOBJS)
 
-$(OBJDIR)/curs_wrap.o: curs_wrap.c
-	$(CC) -o $@ -c $(CFLAGS_NORMAL) curs_wrap.c
+$(OBJDIR)/curs_wrap.o: $(srcdir)/curs_wrap.c
+	$(CC) -o $@ -c $(CFLAGS_NORMAL) $(srcdir)/curs_wrap.c
 
-$(OBJDIR)/menu_wrap.o: menu_wrap.c
-	$(CC) -o $@ -c $(CFLAGS_NORMAL) menu_wrap.c
+$(OBJDIR)/menu_wrap.o: $(srcdir)/menu_wrap.c
+	$(CC) -o $@ -c $(CFLAGS_NORMAL) $(srcdir)/menu_wrap.c
 
-$(OBJDIR)/form_wrap.o: form_wrap.c
-	$(CC) -o $@ -c $(CFLAGS_NORMAL) form_wrap.c
+$(OBJDIR)/form_wrap.o: $(srcdir)/form_wrap.c
+	$(CC) -o $@ -c $(CFLAGS_NORMAL) $(srcdir)/form_wrap.c
 
-$(OBJDIR)/mouse_wrap.o: mouse_wrap.c
-	$(CC) -o $@ -c $(CFLAGS_NORMAL) mouse_wrap.c
+$(OBJDIR)/mouse_wrap.o: $(srcdir)/mouse_wrap.c
+	$(CC) -o $@ -c $(CFLAGS_NORMAL) $(srcdir)/mouse_wrap.c
 
-install ::
+install :: 
 
 install.libs ::
+	cp ../../lib/$(WRAPLIB) $(libdir)
 
 install.progs ::
 
@@ -258,7 +297,7 @@ clean ::
 	$(GEN_FILES4) $(GEN_TARGETS)
 
 mostlyclean :: clean
-	rm -f $(WRAPOBJS) $(OBJDIR)/$(WRAPLIB)
+	rm -f $(WRAPOBJS) ../../lib/$(WRAPLIB)
 
 distclean :: mostlyclean
 	rm -f Makefile

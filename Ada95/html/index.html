@@ -100,8 +100,24 @@ this binding, you will find in the Ada95 directory two subdirectoried:
 <LI>ada_objects</LI>
 </UL>
 You can copy them to the place were you usually store your ada libraries
-or just leave them here. You have to add these directories to the
+or just leave them here. You have to use the <STRONG>-p</STRONG> option
+of the <STRONG>cp</STRONG> command. You have to add these directories to the
 ADA_INCLUDE_PATH or ADA_OBJECTS_PATH environment variables.<P>
+If you use the --srcdir option when configuring your ncurses, the
+ada_include directory is actually splitted across two directory trees.
+One ada_include directory is part of the Ada95 subtree of the ncurses
+source tree. It contains those package specifications and bodies which
+are not generated on the fly. In the Ada95 subdirectory of your build
+tree you'll find the other part of ada_include, which contains those
+specfications and bodies that are generated. You must copy both
+subdirectories into one common target directory where you store your
+GNAT libraries.<P>
+If you perform the install step of the ncurses global Makefile (or
+the install.libs step), a library named libncwrap.a will be installed
+in your selected library target directory. This is a tiny C wrapper
+library required by the binding to encapsulate a few functions of
+(n)curses. We plan to integrate these wrappers into the ncurses main
+library so that this wrapper is no longer required in the future.
 <H2>Hierarchy of packages</H2>
 <UL>
 <LI><A HREF="terminal_interface_s.html">Terminal_Interface</A>

@@ -22,7 +22,7 @@
 //  This binding comes AS IS with no warranty, implied or expressed.        --
 //----------------------------------------------------------------------------
     Version Control
-    $Revision: 1.3 $
+    $Revision: 1.4 $
   --------------------------------------------------------------------------*/
 /*
   This program generates various record structures and constants from the
@@ -847,8 +847,8 @@ static void gen_color (void)
 
 static void gen_linkopts (void)
 {
-  /*printf("   pragma Linker_Options (\"-lncwrap\");\n");*/
    printf("   pragma Linker_Options (\"-lncurses\");\n");
+   printf("   pragma Linker_Options (\"-lncwrap\");\n");
 }
 
 static void gen_menu_linkopts (void)
