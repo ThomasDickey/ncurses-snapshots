@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.382 1998/10/18 00:16:13 tom Exp $
+-- $Id: NEWS,v 1.385 1998/11/01 01:03:46 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+981031
+	+ modify terminfo parsing to accept octal and hexadecimal constants,
+	  like Solaris.
+	+ remove an autoconf 2.10 artifact from the configure script's check
+	  for "-g" compiler options.  (Though harmless, this confused someone
+	  at Debian, who recently issued a patch that results in the opposite
+	  effect).
+	+ add configure option --with-ada-compiler to accommodate installations
+	  that do not use gcc as the driver for GNAT (patch by Juergen
+	  Pfeifer).
 
 981017
 	+ ensure ./man exists in configure script, needed when configuring
@@ -54,10 +65,10 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  to termcap format.
  	> patch by Alexander V Lukyanov:
 	+ improve performance of tparm, now it takes 19% instead of 25% when
-	  profiling worm. 
-	+ rename maxlen/minlen to prec/width for better readability. 
-	+ use format string for printing strings. 
-	+ use len argument correctly in save_text, and pass it to save_number. 
+	  profiling worm.
+	+ rename maxlen/minlen to prec/width for better readability.
+	+ use format string for printing strings.
+	+ use len argument correctly in save_text, and pass it to save_number.
 
 980919
 	+ make test_progs compile (but hashmap does not function).
@@ -69,14 +80,14 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ remove softscroll.c module; no longer needed for testing.
 	> patches by Todd C Miller:
 	+ use strtol(3) instead of atoi(3) when parsing env variables so we can
-	  detect a bogus (non-numeric) value. 
+	  detect a bogus (non-numeric) value.
 	+ check for terminal names > MAX_NAME_SIZE in a few more places when
-	  dealing with env variables again. 
-	+ fix a MAX_NAME_SIZE that should be MAX_NAME_SIZE+1 
+	  dealing with env variables again.
+	+ fix a MAX_NAME_SIZE that should be MAX_NAME_SIZE+1
 	+ use sizeof instead of strlen(3) on PRIVATE_INFO since it is a fixed
-	  string #define (compile time vs runtime). 
+	  string #define (compile time vs runtime).
 	+ when setting errno to ENOMEM, set it right before the return, not
-	  before code that could, possibly, set errno to a different value. 
+	  before code that could, possibly, set errno to a different value.
  	> patches by Alexander V Lukyanov:
 	+ use default background in update_cost_from_blank()
 	+ disable scroll-hints when hashmap is configured.
