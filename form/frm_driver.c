@@ -32,7 +32,7 @@
  ****************************************************************************/
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.39 2002/07/06 15:33:27 juergen Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.40 2003/03/01 21:57:52 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -42,7 +42,7 @@ MODULE_ID("$Id: frm_driver.c,v 1.39 2002/07/06 15:33:27 juergen Exp $")
   all the functions in this module depends on some others in the module,
   so it makes no sense to split them into separate files because they
   will always be linked together. The only acceptable concern is turnaround
-  time for this module, but now we have all Pentiums or Riscs, so what!
+  time for this module, but now we have all Pentiums or RISCs, so what!
 
   The driver routines are grouped into nine generic categories:
 
@@ -55,10 +55,10 @@ MODULE_ID("$Id: frm_driver.c,v 1.39 2002/07/06 15:33:27 juergen Exp $")
    c)   Intra-Field Navigation     ( all functions prefixed by IFN_ )
         The current position in the current field is changed. 
    d)   Vertical Scrolling         ( all functions prefixed by VSC_ )
-        Esseantially this is a specialization of Intra-Field navigation.
+        Essentially this is a specialization of Intra-Field navigation.
         It has to check for a multi-line field.
    e)   Horizontal Scrolling       ( all functions prefixed by HSC_ )
-        Esseantially this is a specialization of Intra-Field navigation.
+        Essentially this is a specialization of Intra-Field navigation.
         It has to check for a single-line field.
    f)   Field Editing              ( all functions prefixed by FE_ )
         The content of the current field is changed
@@ -79,11 +79,11 @@ MODULE_ID("$Id: frm_driver.c,v 1.39 2002/07/06 15:33:27 juergen Exp $")
 
 /*
 Some options that may effect compatibility in behavior to SVr4 forms,
-but they are here to allow a more intuitive and user friendly behaviour of
+but they are here to allow a more intuitive and user friendly behavior of
 our form implementation. This doesn't affect the API, so we feel it is
 uncritical.
 
-The initial implementation tries to stay very close with the behaviour
+The initial implementation tries to stay very close with the behavior
 of the original SVr4 implementation, although in some areas it is quite
 clear that this isn't the most appropriate way. As far as possible this
 sources will allow you to build a forms lib that behaves quite similar
@@ -91,9 +91,9 @@ to SVr4, but now and in the future we will give you better options.
 Perhaps at some time we will make this configurable at runtime.
 */
 
-/* Implement a more user-friendly previous/next word behaviour */
+/* Implement a more user-friendly previous/next word behavior */
 #define FRIENDLY_PREV_NEXT_WORD (1)
-/* Fix the wrong behaviour for forms with all fields inactive */
+/* Fix the wrong behavior for forms with all fields inactive */
 #define FIX_FORM_INACTIVE_BUG (1)
 /* Allow dynamic field growth also when navigating past the end */
 #define GROW_IF_NAVIGATE (1)
@@ -918,7 +918,7 @@ static int Synchronize_Field(FIELD * field)
 |   
 |   Description   :  Propagate the Synchronize_Field function to all linked
 |                    fields. The first error that occurs in the sequence
-|                    of updates is the returnvalue.
+|                    of updates is the return value.
 |
 |   Return Values :  E_OK                - success
 |                    E_BAD_ARGUMENT      - invalid field pointer 
@@ -1012,7 +1012,7 @@ _nc_Synchronize_Attributes (FIELD * field)
 |   
 |   Description   :  If a fields options have changed, this routine is
 |                    called to propagate these changes to the screen and
-|                    to really change the behaviour of the field.
+|                    to really change the behavior of the field.
 |
 |   Return Values :  E_OK                - success
 |                    E_BAD_ARGUMENT      - invalid field pointer 
@@ -1089,7 +1089,7 @@ _nc_Synchronize_Options
 	      (!single_line_field && (field->drows < field->maxgrow)))
 	    {
 	      field->status |= _MAY_GROW;
-	      /* a field with justification now changes its behaviour,
+	      /* a field with justification now changes its behavior,
 		 so we must redisplay it */
 	      if (single_line_field                 &&
 		  (field->just != NO_JUSTIFICATION) &&
@@ -2141,7 +2141,7 @@ static int Field_Editing(int (* const fct) (FORM *), FORM * form)
   int res = E_REQUEST_DENIED;
 
   /* We have to deal here with the specific case of the overloaded 
-     behaviour of New_Line and Delete_Previous requests.
+     behavior of New_Line and Delete_Previous requests.
      They may end up in navigational requests if we are on the first
      character in a field. But navigation is also allowed on non-
      editable fields.
@@ -3053,7 +3053,7 @@ static FIELD *Down_Neighbour_Field(FIELD * field)
 |                                           int (* const fct) (FORM *),
 |                                           FORM * form)
 |   
-|   Description   :  Generic behaviour for changing the current field, the
+|   Description   :  Generic behavior for changing the current field, the
 |                    field is left and a new field is entered. So the field
 |                    must be validated and the field init/term hooks must
 |                    be called.
@@ -3366,7 +3366,7 @@ INLINE static int Previous_Page_Number(const FORM * form)
 |                                               int (* const fct) (FORM *),
 |                                               FORM * form)
 |   
-|   Description   :  Generic behaviour for changing a page. This means
+|   Description   :  Generic behavior for changing a page. This means
 |                    that the field is left and a new field is entered.
 |                    So the field must be validated and the field init/term
 |                    hooks must be called. Because also the page is changed,

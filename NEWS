@@ -1,10 +1,15 @@
--- $Id: NEWS,v 1.735 2003/02/23 01:37:48 tom Exp $
+-- $Id: NEWS,v 1.736 2003/03/02 00:33:41 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030301
+	+ restructured test/configure script, make it work for libncursesw.
+	+ add description of link_fieldtype() to manpage (report by
+	  L Dee Holtsclaw <dee@sunbeltsoft.com>).
 
 20030222
 	+ corrected ifdef's relating to configure check for wchar_t, etc.

@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.              *
+dnl Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
 dnl copy of this software and associated documentation files (the            *
@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996, etc.
 dnl
-dnl $Id: configure.in,v 1.36 2002/09/07 16:55:23 tom Exp $
+dnl $Id: configure.in,v 1.39 2003/03/02 00:28:43 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -38,11 +38,16 @@ dnl It's only for testing purposes.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl ---------------------------------------------------------------------------
-AC_PREREQ(2.13.20000819)
+AC_PREREQ(2.13.20020210)
 AC_INIT(ncurses.c)
 AC_CONFIG_HEADER(ncurses_cfg.h:ncurses_tst.hin)
 
+CF_INHERIT_SCRIPT(config.guess)
+CF_INHERIT_SCRIPT(config.sub)
+CF_CHECK_CACHE
+
 AC_PROG_CC
+AC_PROG_CPP
 
 dnl Things that we don't need (or must override) if we're not building ncurses
 CC_G_OPT="-g"				AC_SUBST(CC_G_OPT)
@@ -71,6 +76,11 @@ TEST_DEPS=""				AC_SUBST(TEST_DEPS)
 cf_cv_abi_version=""			AC_SUBST(cf_cv_abi_version)
 cf_cv_rel_version=""			AC_SUBST(cf_cv_rel_version)
 
+cf_cv_screen=curses
+cf_cv_libtype=
+
+CF_WITH_CURSES_DIR
+
 dnl SunOS 4.x
 AC_ARG_WITH(5lib,
 	[  --with-5lib             use SunOS sysv-libraries],
@@ -78,92 +88,44 @@ AC_ARG_WITH(5lib,
 	 CPPFLAGS="$CPPFLAGS -I/usr/5include"])
 
 dnl ---------------------------------------------------------------------------
-dnl Check for libutf8
-AC_DEFUN([CF_LIBUTF8],
-[
-AC_CACHE_CHECK(for putwc in libutf8,cf_cv_libutf8,[
-	cf_save_LIBS="$LIBS"
-	LIBS="-lutf8 $LIBS"
-AC_TRY_LINK([
-#include <libutf8.h>],[putwc(0,0);],
-	[cf_cv_libutf8=yes],
-	[cf_cv_libutf8=no])
-	LIBS="$cf_save_LIBS"
-])
-
-if test "$cf_cv_libutf8" = yes ; then
-	AC_DEFINE(HAVE_LIBUTF8_H)
-	LIBS="-lutf8 $LIBS"
-fi
-])dnl
-
-dnl ---------------------------------------------------------------------------
 dnl NcursesW, installed in conventional location
 AC_ARG_WITH(ncursesw,
 	[  --with-ncursesw         use wide ncurses-libraries (installed)],
-	[
-	 AC_DEFINE(_GNU_SOURCE)
-	 AC_DEFINE(_XOPEN_SOURCE_EXTENDED)
-	 AC_CHECK_FUNC(initscr,,[
-	 AC_CHECK_LIB(gpm,Gpm_Open)
-	 LIB_NAME=ncursesw
-	 AC_CHECK_FUNC(putwc,,[CF_LIBUTF8])
-	 for p in $HOME /usr/local /usr
-	 do
-	 	if test -f $p/include/ncursesw/curses.h
-		then
-			CPPFLAGS="$CPPFLAGS -I$p/include/ncursesw"
-			test $p != /usr && CPPFLAGS="$CPPFLAGS -I$p/include"
-			test $p != /usr && LIBS="-L$p/lib $LIBS"
-			break
-		elif test $p != /usr
-		then
-			if test -f $p/include/curses.h
-			then
-				CPPFLAGS="$CPPFLAGS -I$p/include"
-				LIBS="-L$p/lib $LIBS"
-				break
-			fi
-		fi
-	 done
-	],[test -d /usr/ccs/lib && LIBS="-L/usr/ccs/lib $LIBS"])])
+	[cf_cv_screen=ncursesw])
 
 dnl Ncurses, installed in conventional location
 AC_ARG_WITH(ncurses,
 	[  --with-ncurses          use ncurses-libraries (installed)],
-	[AC_CHECK_FUNC(initscr,,[
-	 AC_CHECK_LIB(gpm,Gpm_Open)
-	 LIB_NAME=ncurses
-	 for p in $HOME /usr/local /usr
-	 do
-	 	if test -f $p/include/ncurses/curses.h
-		then
-			CPPFLAGS="$CPPFLAGS -I$p/include/ncurses"
-			test $p != /usr && CPPFLAGS="$CPPFLAGS -I$p/include"
-			test $p != /usr && LIBS="-L$p/lib $LIBS"
-			break
-		elif test $p != /usr
-		then
-			if test -f $p/include/curses.h
-			then
-				CPPFLAGS="$CPPFLAGS -I$p/include"
-				LIBS="-L$p/lib $LIBS"
-				break
-			fi
-		fi
-	 done
-	],[test -d /usr/ccs/lib && LIBS="-L/usr/ccs/lib $LIBS"])])
+	[cf_cv_screen=ncurses])
+
+case $cf_cv_screen in
+curses)
+	CF_CURSES_CPPFLAGS
+	CF_NCURSES_VERSION
+	CF_CURSES_LIBS
+	;;
+ncurses)
+	CF_NCURSES_CPPFLAGS
+	CF_NCURSES_LIBS
+	LIB_NAME=ncurses
+	;;
+ncursesw)
+	cf_cv_libtype=w
+	CF_UTF8_LIB
+	CF_NCURSES_CPPFLAGS(ncursesw)
+	CF_NCURSES_LIBS(ncursesw)
+	LIB_NAME=ncursesw
+	;;
+esac
 
 dnl If we've not specified a library, assume we're using sysvr4 libraries
 dnl installed conventionally (e.g., SunOS 5.x - solaris).
 
 dnl Autoconf builds up the $LIBS in reverse order
 
-AC_CHECK_FUNC(initscr,,[
-AC_CHECK_LIB($LIB_NAME,initscr)])
-AC_CHECK_LIB(form,form_driver)
-AC_CHECK_LIB(menu,menu_driver)
-AC_CHECK_LIB(panel,new_panel)
+AC_CHECK_LIB(form$cf_cv_libtype,form_driver)
+AC_CHECK_LIB(menu$cf_cv_libtype,menu_driver)
+AC_CHECK_LIB(panel$cf_cv_libtype,new_panel)
 
 AC_TYPE_SIGNAL
 
@@ -196,111 +158,12 @@ vsscanf \
 wresize \
 )
 
-dnl ---------------------------------------------------------------------------
-dnl Solaris has a data item 'curses_version', which confuses AC_CHECK_FUNCS.
-dnl It's a character string "SVR4", not documented.
-AC_CACHE_CHECK(for function curses_version, cf_cv_func_curses_version,[
-AC_TRY_RUN([
-#include <curses.h>
-int main()
-{
-	char temp[1024];
-	sprintf(temp, "%s\n", curses_version());
-	exit(0);
-}]
-,[cf_cv_func_curses_version=yes]
-,[cf_cv_func_curses_version=no]
-,[cf_cv_func_curses_version=unknown])
-rm -f core])
-test "$cf_cv_func_curses_version" = yes && AC_DEFINE(HAVE_CURSES_VERSION)
-
-dnl ---------------------------------------------------------------------------
-dnl Check for likely values of acs_map[]:
-AC_CACHE_CHECK(for alternate character set array, cf_cv_curses_acs_map,[
-cf_cv_curses_acs_map=unknown
-for name in acs_map _acs_map __acs_map _nc_acs_map
-do
-AC_TRY_LINK([
-#include <curses.h>
-],[
-$name['k'] = ACS_PLUS
-],[cf_cv_curses_acs_map=$name; break])
-done
-])
-
-test "$cf_cv_curses_acs_map" != unknown && AC_DEFINE_UNQUOTED(CURSES_ACS_ARRAY,$cf_cv_curses_acs_map)
-
-dnl ---------------------------------------------------------------------------
-dnl Check for likely values of wacs_map[]:
-AC_CACHE_CHECK(for wide alternate character set array, cf_cv_curses_wacs_map,[
-cf_cv_curses_wacs_map=unknown
-for name in wacs_map _wacs_map __wacs_map _nc_wacs
-do
-AC_TRY_LINK([
-#ifndef _XOPEN_SOURCE_EXTENDED
-#define _XOPEN_SOURCE_EXTENDED
-#endif
-#include <curses.h>
-],[
-$name['k'] = *WACS_PLUS	
-],[cf_cv_curses_wacs_map=$name; break])
-done
-])
-
-test "$cf_cv_curses_wacs_map" != unknown && AC_DEFINE_UNQUOTED(CURSES_WACS_ARRAY,$cf_cv_curses_wacs_map)
-
-dnl --------------------------------------------------------------------------- 
-dnl Make an uppercase version of a variable 
-dnl $1=uppercase($2) 
-AC_DEFUN([CF_UPPER], 
-[ 
-$1=`echo "$2" | sed y%abcdefghijklmnopqrstuvwxyz./-%ABCDEFGHIJKLMNOPQRSTUVWXYZ___%`
-])dnl 
-
-dnl ---------------------------------------------------------------------------
-dnl Check if curses.h defines the given type
-AC_DEFUN([CF_CURSES_TYPE],
-[
-AC_MSG_CHECKING(for type $1 in curses.h)
-AC_TRY_COMPILE([
-#ifndef _XOPEN_SOURCE_EXTENDED
-#define _XOPEN_SOURCE_EXTENDED
-#endif
-#include <curses.h>],[
-$1 foo
-],cf_result=yes,cf_result=no)
-AC_MSG_RESULT($cf_result)
-if test $cf_result = yes ; then
-	CF_UPPER(cf_result,have_type_$1)
-	AC_DEFINE_UNQUOTED($cf_result)
-else
-	AC_DEFINE_UNQUOTED($1,$2)
-fi
-])dnl
-
-CF_CURSES_TYPE(attr_t,long)
-CF_CURSES_TYPE(mbstate_t,long)
-
-dnl ---------------------------------------------------------------------------
-dnl Check if we can include <sys/time.h> with <sys/select.h>; this breaks on
-dnl older SCO configurations.
-dnl [CF_SYS_TIME_SELECT]
-
-AC_MSG_CHECKING(if sys/time.h works with sys/select.h)
-AC_CACHE_VAL(cf_cv_sys_time_select,[
-AC_TRY_COMPILE([
-#include <sys/types.h>
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
-#ifdef HAVE_SYS_SELECT_H
-#include <sys/select.h>
-#endif
-],[],[cf_cv_sys_time_select=yes],
-     [cf_cv_sys_time_select=no])
-     ])
-AC_MSG_RESULT($cf_cv_sys_time_select)
-test "$cf_cv_sys_time_select" = yes && AC_DEFINE(HAVE_SYS_TIME_SELECT)
+CF_SYS_TIME_SELECT
+CF_FUNC_CURSES_VERSION
+CF_CURSES_ACS_MAP
+CF_CURSES_WACS_MAP
+CF_CURSES_CHECK_TYPE(attr_t,long)
+CF_CURSES_CHECK_TYPE(mbstate_t,long)
 
 dnl ---------------------------------------------------------------------------
 
