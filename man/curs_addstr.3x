@@ -6,21 +6,21 @@ string of characters to a \fBcurses\fR window and advance cursor
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 
-\fBint addstr(char *str);\fR
+\fBint addstr(const char *str);\fR
 .br
-\fBint addnstr(char *str, int n);\fR
+\fBint addnstr(const char *str, int n);\fR
 .br
-\fBint waddstr(WINDOW *win, char *str);\fR
+\fBint waddstr(WINDOW *win, const char *str);\fR
 .br
-\fBint waddnstr(WINDOW *win, char *str, int n);\fR
+\fBint waddnstr(WINDOW *win, const char *str, int n);\fR
 .br
-\fBint mvaddstr(int y, int x, char *str);\fR
+\fBint mvaddstr(int y, int x, const char *str);\fR
 .br
-\fBint mvaddnstr(int y, int x, char *str, int n);\fR
+\fBint mvaddnstr(int y, int x, const char *str, int n);\fR
 .br
-\fBint mvwaddstr(WINDOW *win, int y, int x, char *str);\fR
+\fBint mvwaddstr(WINDOW *win, int y, int x, const char *str);\fR
 .br
-\fBint mvwaddnstr(WINDOW *win, int y, int x, char *str, int n);\fR
+\fBint mvwaddnstr(WINDOW *win, int y, int x, const char *str, int n);\fR
 .SH DESCRIPTION
 These routines write the characters of the (null-terminated) character string
 \fIstr\fR on the given window.  It is similar to calling \fBwaddch\fR once for

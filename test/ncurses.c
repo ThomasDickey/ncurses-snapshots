@@ -627,7 +627,7 @@ static void acs_display(void)
  *
  ****************************************************************************/
 
-#define BOTLINES	3	/* number of line stolen from screen bottom */
+#define BOTLINES	4	/* number of line stolen from screen bottom */
 
 typedef struct
 {
@@ -683,14 +683,14 @@ static WINDOW *getwindow(void)
     move(0, 0); clrtoeol();
     addstr("Use arrows to move cursor, anything else to mark corner 1");
     refresh();
-    if ((tmp = selectcell(1,    0,    LINES-BOTLINES, COLS-1)) == (pair *)NULL)
+    if ((tmp = selectcell(2,    1,    LINES-BOTLINES-2, COLS-2)) == (pair *)NULL)
 	return((WINDOW *)NULL);
     memcpy(&ul, tmp, sizeof(pair));
     mvaddch(ul.y-1, ul.x-1, ACS_ULCORNER);
     move(0, 0); clrtoeol();
     addstr("Use arrows to move cursor, anything else to mark corner 2");
     refresh();
-    if ((tmp = selectcell(ul.y, ul.x, LINES-BOTLINES, COLS-1)) == (pair *)NULL)
+    if ((tmp = selectcell(ul.y, ul.x, LINES-BOTLINES-2, COLS-2)) == (pair *)NULL)
 	return((WINDOW *)NULL);
     memcpy(&lr, tmp, sizeof(pair));
 

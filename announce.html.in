@@ -21,7 +21,7 @@ Unix releases such as BSD/OS, freeBSD and netBSD to switch over to
 ncurses. <P>
 
 The ncurses code was developed under Linux.  It should port easily to
-any ANSI/POSIX-conforming UNIX.<P>
+any ANSI/POSIX-conforming UNIX.  It has even been ported to OS/2 Warp! <P>
 
 The distribution includes the library and support utilities, including a
 terminfo compiler tic(1), a decompiler infocmp(1), clear(1), tput(1), tset(1),

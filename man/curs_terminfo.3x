@@ -11,23 +11,23 @@ interfaces to terminfo database
 .br
 \fB#include <term.h>\fR
 
-\fBint setupterm(char *term, int fildes, int *errret);\fR
+\fBint setupterm(const char *term, int fildes, int *errret);\fR
 .br
-\fBint setterm(char *term);\fR
+\fBint setterm(const char *term);\fR
 .br
 \fBTERMINAL *set_curterm(TERMINAL *nterm);\fR
 .br
 \fBint del_curterm(TERMINAL *oterm);\fR
 .br
-\fBint restartterm(char *term, int fildes, int *errret);\fR
+\fBint restartterm(const char *term, int fildes, int *errret);\fR
 .br
-\fBchar *tparm(char *str, long int p1, long int p2, long int p3,
+\fBchar *tparm(const char *str, long int p1, long int p2, long int p3,
       long int p4, long int p5, long int p6, long int p7,\fR
       long int p8, long int p9);\fR
 .br
-\fBint tputs(char *str, int affcnt, int (*putc)(int));\fR
+\fBint tputs(const char *str, int affcnt, int (*putc)(int));\fR
 .br
-\fBint putp(char *str);\fR
+\fBint putp(const char *str);\fR
 .br
 \fBint vidputs(chtype attrs, int (*putc)(char));\fR
 .br
@@ -35,11 +35,11 @@ interfaces to terminfo database
 .br
 \fBint mvcur(int oldrow, int oldcol, int newrow, int newcol);\fR
 .br
-\fBint tigetflag(char *capname);\fR
+\fBint tigetflag(const char *capname);\fR
 .br
-\fBint tigetnum(char *capname);\fR
+\fBint tigetnum(const char *capname);\fR
 .br
-\fBint tigetstr(char *capname);\fR
+\fBint tigetstr(const char *capname);\fR
 .br
 .SH DESCRIPTION
 These low-level routines must be called by programs that have to deal

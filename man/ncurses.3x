@@ -579,6 +579,17 @@ bits in the UNIX tty driver.  In this implementation, all padding is done by
 NUL sends.  This method is slightly more expensive, but narrows the interface
 to the UNIX kernel significantly and increases the package's portability
 correspondingly.
+.PP
+In the XSI standard and SVr4 manual pages, many entry points have prototype
+arguments of the for \fBchar *const\fR (or \fBcchar_t *const\fR, or \fBwchar_t
+*const\fR, or \fBvoid *const\fR).  Depending on one's interpretation of the
+ANSI C standard (see section 3.5.4.1), these declarations are either (a)
+meaningless, or (b) meaningless and illegal.  The declaration \fBconst char
+*x\fR is a modifiable pointer to unmodifiable data, but \fBchar *const x\fR' is
+an unmodifiable pointer to modifiable data.  Given that C passes arguments by
+value, \fB<type> *const\fR as a formal type is at best dubious.  Some compilers
+choke on the prototypes.  Therefore, in this implementation, they have been
+changed to \fBconst <type> *\fR globally.
 .SH NOTES
 The header file \fB<curses.h>\fR automatically includes the header files
 \fB<stdio.h>\fR and \fB<unctrl.h>\fR.

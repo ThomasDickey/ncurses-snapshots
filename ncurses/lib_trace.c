@@ -43,7 +43,7 @@
 extern int errno;
 #endif
 
-#if !HAVE_STRERROR
+#if !HAVE_STRERROR && !defined(strerror)
 extern char *strerror(int);
 #endif
 

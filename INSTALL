@@ -18,6 +18,9 @@ below.
 If you are converting from BSD curses and do not have root access, be sure
 to read the BSD CONVERSION NOTES section below.
 
+If you are trying to build GNU Emacs using ncurses for terminal support,
+read the USING NCURSES WITH EMACS section below.
+
 REQUIREMENTS:
 
 You will need the following in order to build and install ncurses under UNIX:
@@ -192,6 +195,12 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 	that use raw termcap to query terminal characteristics will win 
 	(providing you recompile and relink them!).
 
+	If you must configure with termcap fallback enabled, you may also
+	wish to use the --enable-getcap option.  This option speeds up
+	termcap-based startups, at the expense of not allowing personal
+	termcap entries to reference the terminfo tree.  See the code in 
+	ncurses/read_termcap.c for details.
+
     Keyboard Mapping:
 
 	Some Linux console keyboard mappings as of 1995 are sub-optimal; a
@@ -332,6 +341,44 @@ To avoid these complications, use infocmp(1) and tic(1) to edit the
 terminfo directory directly. 
 
 ------------------------------- CUT HERE --------------------------------
+
+USING NCURSES WITH EMACS:
+	GNU Emacs has its own termcap support.  By default, it uses a mixture
+	of those functions and code linked from the host system's libraries.  
+	You need to foil this and shut out the GNU termcap library entirely.
+	The following patch to the linux config file will accomplish this:
+
+Diffs between last version checked in and current workfile(s):
+
+--- 1.1	1995/11/20 23:37:28
++++ src/s/linux.h	1995/11/25 00:40:52
+@@ -192,7 +192,6 @@
+ 
+ /* Best not to include -lg, unless it is last on the command line */
+ #define LIBS_DEBUG
+-#define LIBS_TERMCAP -ltermcap -lcurses /* save some space with shared libs*/
+ #ifndef __ELF__
+ #define LIB_STANDARD -lc /* avoid -lPW */
+ #else
+@@ -207,6 +206,13 @@
+ #ifdef THIS_IS_CONFIGURE
+ #define C_DEBUG_SWITCH
+ #endif
++
++/* Use terminfo, not termcap, and pick up the ncurses library. 
++   Note: in the future the standard base name of the library will
++   probably become libcurses rather than libncurses.  At that point,
++   the LIBS_TERMCAP line below can go away.  */
++#define TERMINFO
++#define LIBS_TERMCAP	"-lncurses"
+ 
+ /* Let's try this out, just in case.
+    Nah.  Rik Faith <faith@cs.unc.edu> says it doesn't work well.  */
+
+End of diffs.
+
+	We have submitted it for the 19.30 release, so it may already be
+	applied in your sources -- check for the #define TERMINFO.
 
 BUGS:
 	Send any feedback to the ncurses mailing list at

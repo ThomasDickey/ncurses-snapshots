@@ -46,7 +46,7 @@ extern int errno;
  *
  ****************************************************************************/
 
-#if !defined(sun) || !defined(HAVE_TERMIOS_H)
+#if !defined(sun) || !HAVE_TERMIOS_H
 #include <sys/ioctl.h>
 #endif
 

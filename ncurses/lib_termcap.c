@@ -35,7 +35,7 @@
 char PC;
 char *UP;
 char *BC;
-int ospeed;
+short ospeed;
 
 /***************************************************************************
  *
@@ -73,7 +73,50 @@ int errcode;
 	if (backspace_if_not_bs != NULL)
 		BC = backspace_if_not_bs;
 #if defined(TERMIOS)
-	ospeed = cfgetospeed(&cur_term->Nttyb);
+	/*
+	 * Back-convert to the funny speed encoding used by the old BSD
+	 * curses library.  Method suggested by Andrey Chernov
+	 * <ache@astral.msk.su>
+	 */
+	if ((ospeed = cfgetospeed(&cur_term->Nttyb)) < 0)
+	    ospeed = 1;		/* assume lowest non-hangup speed */
+	else
+	{
+		short *sp, speeds[] = {
+#ifdef			B115200
+			B115200,
+#endif
+#ifdef			B57600
+			B57600,
+#endif
+#ifdef			B38400
+			B38400,
+#endif
+			B19200,
+			B9600,
+			B4800,
+			B2400,
+			B1800,
+			B1200,
+			B600,
+			B300,
+			B200,
+			B150,
+			B134,
+			B110,
+			B75,
+			B50,
+			B0,
+		};
+#define MAXSPEED	sizeof(speeds)/sizeof(speeds[0])
+
+		for (sp = speeds; sp < speeds + MAXSPEED; sp++) {
+			if (sp[0] <= ospeed) {
+				break;
+			}
+		}
+		ospeed = MAXSPEED - (sp - speeds);
+	}
 #else
 	ospeed = cur_term->Nttyb.sg_ospeed;
 #endif

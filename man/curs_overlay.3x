@@ -5,9 +5,9 @@ manipulate overlapped \fBcurses\fR windows
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 
-\fBint overlay(WINDOW *const srcwin, WINDOW *dstwin);\fR
+\fBint overlay(const WINDOW *srcwin, WINDOW *dstwin);\fR
 .br
-\fBint overwrite(WINDOW *const srcwin, WINDOW *dstwin);\fR
+\fBint overwrite(const WINDOW *srcwin, WINDOW *dstwin);\fR
 .br
 \fBint copywin(WINDOW *srcwin, WINDOW *dstwin, int sminrow,
       int smincol, int dminrow, int dmincol, int dmaxrow,

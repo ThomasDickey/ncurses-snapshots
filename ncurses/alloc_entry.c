@@ -58,7 +58,7 @@ int	i;
 	next_free = 0;
 }
 
-char *_nc_save_str(char *string)
+char *_nc_save_str(const char *string)
 /* save a copy of string in the string buffer */
 {
 size_t	old_next_free = next_free;

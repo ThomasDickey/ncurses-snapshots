@@ -49,6 +49,7 @@ static char *separator, *trailer;
 #define V_SVR1		1	/* SVR1, Ultrix */
 #define V_HPUX		2	/* HP/UX */
 #define V_AIX		3	/* AIX */
+#define V_BSD		4	/* BSD */
 
 #define OBSOLETE(n) (n[0] == 'O' && n[1] == 'T')
 
@@ -68,6 +69,8 @@ void dump_init(char *version, int mode, int sort, int twidth, int traceval)
 	tversion = V_HPUX;
     else if (!strcmp(version, "AIX"))
 	tversion = V_AIX;
+    else if (!strcmp(version, "BSD"))
+	tversion = V_BSD;
     else
 	tversion = V_ALLCAPS;
 
@@ -225,12 +228,6 @@ static int dump_predicate(int type, int idx)
 
 static void set_obsolete_termcaps(TERMTYPE *tp);
 
-static bool termcap_form(int f)
-/* return true if F indicates a termcap output format */
-{
-    return (f == F_TERMCAP || f == F_TCONVERT || f == F_TCONVERR);
-}
-
 /* is this the index of a function key string? */
 #define FNKEY(i)	(((i)<= 65 && (i)>= 75) || ((i)<= 216 && (i)>= 268))
 
@@ -289,6 +286,18 @@ static bool version_filter(int type, int idx)
 		return(FALSE);
 	}
 	break;
+
+    case V_BSD:		/* BSD */
+	switch (type)
+	{
+	case BOOLEAN:
+	    return bool_from_termcap[idx];
+	case NUMBER:
+	    return num_from_termcap[idx];
+	case STRING:
+	    return str_from_termcap[idx];
+	}
+	break;
     }
 
     return(FALSE);	/* pacify the compiler */
@@ -331,9 +340,7 @@ bool	outcount = 0;
 	else
 	    i = bool_indirect[j];
 
-	if (termcap_form(outform) && !bool_from_termcap[i])
-	    continue;
-	else if (!version_filter(BOOLEAN, i))
+	if (!version_filter(BOOLEAN, i))
 	    continue;
 	else if ((outform == F_LITERAL || outform == F_TERMINFO || outform == F_VARIABLE)
 		 && (OBSOLETE(bool_names[i]) && outform != F_LITERAL))
@@ -360,9 +367,7 @@ bool	outcount = 0;
 	else
 	    i = num_indirect[j];
 
-	if (termcap_form(outform) && !num_from_termcap[i])
-	    continue;
-	else if (!version_filter(NUMBER, i))
+	if (!version_filter(NUMBER, i))
 	    continue;
 	else if ((outform == F_LITERAL || outform == F_TERMINFO || outform == F_VARIABLE)
 		 && (OBSOLETE(num_names[i]) && outform != F_LITERAL))
@@ -390,9 +395,7 @@ bool	outcount = 0;
 	else
 	    i = str_indirect[j];
 
-	if (termcap_form(outform) && !str_from_termcap[i])
-	    continue;
-	else if (!version_filter(STRING, i))
+	if (!version_filter(STRING, i))
 	    continue;
 	else if ((outform == F_LITERAL || outform == F_TERMINFO || outform == F_VARIABLE)
 		 && (OBSOLETE(str_names[i]) && outform != F_LITERAL))
@@ -483,9 +486,9 @@ bool	outcount = 0;
 	{
 	    bool	box_ok = TRUE;
 	    const char	*acstrans = "lqkxjmwuvtn";
-	    char	*cp, *tp, *sp, box[11];
+	    char	*cp, *tp, *sp, boxchars[11];
 
-	    tp = box;
+	    tp = boxchars;
 	    for (cp = (char *)acstrans; *cp; cp++)
 	    {
 		sp = strchr(acs_chars, *cp);
@@ -502,7 +505,7 @@ bool	outcount = 0;
 	    if (box_ok)
 	    {
 		(void) strcpy(buffer, "box1=");
-		(void) strcat(buffer, expand(box));
+		(void) strcat(buffer, expand(boxchars));
 		WRAP_CONCAT;
 	    }
 	}
@@ -517,8 +520,9 @@ bool	outcount = 0;
 	j = strlen(outbuf);
 	if (outbuf[j-1] == '\t' && outbuf[j-2] == '\n')
 	    outbuf[j-2] = '\0';
-	if (outbuf[j-1] == ':' && outbuf[j-2] == '\t' && outbuf[j-3] == '\n')
-	    outbuf[j-3] = '\0';
+	if (outbuf[j-1] == ':' && outbuf[j-2] == '\t'
+	    		&& outbuf[j-3] == '\n' && outbuf[j-4] == '\\')
+	    outbuf[j-4] = '\0';
     }
 
 #if 0
@@ -573,13 +577,23 @@ void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int idx))
 			  critlen);
 	    if ((len=fmt_entry(tterm, pred, outbuf, TRUE, infodump)) > critlen)
 	    {
-		(void) fprintf(stderr,
+
+		int oldversion = tversion;
+		tversion = V_BSD;
+		(void) printf("# (terminfo-only capabilities suppressed to fit entry within %d bytes)\n",
+			      critlen);
+
+		if ((len=fmt_entry(tterm, pred, outbuf, TRUE, infodump)) > critlen)
+		{
+		    (void) fprintf(stderr,
 			       "warning: %s entry is %d bytes long\n",
 			       _nc_first_name(tterm->term_names),
 			       len);
-		(void) printf(
+		    (void) printf(
 			      "# WARNING: this entry, %d bytes long, may core-dump %s libraries!\n",
 			      len, legend);
+		}
+		tversion = oldversion;
 	    }
 	    set_attributes = oldsgr;
 	}
@@ -601,9 +615,7 @@ void compare_entry(void (*hook)(int t, int i, const char *name))
 	else
 	    i = bool_indirect[j];
 
-	if (termcap_form(outform) && !bool_from_termcap[i])
-	    continue;
-	else if ((outform == F_LITERAL || outform == F_TERMINFO || outform == F_VARIABLE)
+	if ((outform == F_LITERAL || outform == F_TERMINFO || outform == F_VARIABLE)
 		 && (OBSOLETE(bool_names[i]) && outform != F_LITERAL))
 	    continue;
 
@@ -618,9 +630,7 @@ void compare_entry(void (*hook)(int t, int i, const char *name))
 	else
 	    i = num_indirect[j];
 
-	if (termcap_form(outform) && !num_from_termcap[i])
-	    continue;
-	else if ((outform == F_LITERAL || outform == F_TERMINFO || outform == F_VARIABLE)
+	if ((outform==F_LITERAL || outform==F_TERMINFO || outform==F_VARIABLE)
 		 && (OBSOLETE(num_names[i]) && outform != F_LITERAL))
 	    continue;
 
@@ -635,9 +645,7 @@ void compare_entry(void (*hook)(int t, int i, const char *name))
 	else
 	    i = str_indirect[j];
 
-	if (termcap_form(outform) && !str_from_termcap[i])
-	    continue;
-	else if ((outform == F_LITERAL || outform == F_TERMINFO || outform == F_VARIABLE)
+	if ((outform==F_LITERAL || outform==F_TERMINFO || outform==F_VARIABLE)
 		 && (OBSOLETE(str_names[i]) && outform != F_LITERAL))
 	    continue;
 

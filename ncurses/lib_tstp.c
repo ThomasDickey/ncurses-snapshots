@@ -29,6 +29,9 @@
 
 #include "curses.priv.h"
 
+#include <signal.h>
+#include <stdlib.h>
+
 #if HAVE_SIGACTION
 #if !HAVE_TYPE_SIGACTION
 typedef struct sigaction sigaction_t;
@@ -40,8 +43,6 @@ typedef struct sigaction sigaction_t;
 #ifdef SVR4_ACTION
 #define _POSIX_SOURCE
 #endif
-#include <signal.h>
-#include <stdlib.h>
 
 /*
  * Note: This code is fragile!  Its problem is that different OSs
@@ -86,6 +87,7 @@ typedef struct sigaction sigaction_t;
  * the future.  If nothing else, it's simpler...
  */
 
+#ifdef SIGTSTP
 static void tstp(int dummy)
 {
 	sigset_t mask, omask;
@@ -152,6 +154,7 @@ static void tstp(int dummy)
 	/* Reset the signals. */
 	(void)sigprocmask(SIG_SETMASK, &omask, NULL);
 }
+#endif	/* defined(SIGTSTP) */
 
 static void cleanup(int sig)
 {
@@ -205,6 +208,7 @@ static int CatchIfDefault(int sig, sigaction_t *act)
  */
 void _nc_signal_handler(bool enable)
 {
+#ifdef SIGTSTP		/* Xenix 2.x doesn't have this */
 static sigaction_t act, oact;
 static int ignore;
 
@@ -236,4 +240,13 @@ static int ignore;
 				ignore = TRUE;
 		}
 	}
+#else
+	if (enable)
+	{
+		static sigaction_t act;
+		act.sa_handler = cleanup;
+		CatchIfDefault(SIGINT,  &act);
+		CatchIfDefault(SIGTERM, &act);
+	}
+#endif
 }

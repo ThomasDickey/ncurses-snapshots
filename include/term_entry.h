@@ -49,7 +49,7 @@ extern ENTRY	*_nc_head, *_nc_tail;
 
 /* alloc_entry.c: elementary allocation code */
 extern void _nc_init_entry(TERMTYPE *);
-extern char *_nc_save_str(char *);
+extern char *_nc_save_str(const char *);
 extern void _nc_merge_entry(TERMTYPE *, TERMTYPE *);
 extern void _nc_wrap_entry(ENTRY *);
 

@@ -21,7 +21,7 @@
 
 /* Common internal header for menu and form library */
 
-#ifdef HAVE_CONFIG_H
+#if HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
@@ -34,7 +34,7 @@
 extern int errno;
 #endif
 
-#ifdef HAVE_EXTERN_ERRNO
+#if HAVE_EXTERN_ERRNO
 #include <errno.h>
 #endif
 

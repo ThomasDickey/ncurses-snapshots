@@ -9,17 +9,17 @@ interface to the terminfo capability database
 .br
 \fB#include <term.h>\fR
 .br
-\fBint tgetent(char *bp, char *name);\fR
+\fBint tgetent(const char *bp, char *name);\fR
 .br
-\fBint tgetflag(char* id);\fR
+\fBint tgetflag(const char *id);\fR
 .br
-\fBint tgetnum(char* id);\fR
+\fBint tgetnum(const char *id);\fR
 .br
-\fBchar *tgetstr(char* id, char **area);\fR
+\fBchar *tgetstr(const char *id, char **area);\fR
 .br
-\fBchar *tgoto(char *cap, int col, int row);\fR
+\fBchar *tgoto(const char *cap, int col, int row);\fR
 .br
-\fBint tputs(char *str, int affcnt, int (*putc)(void));\fR
+\fBint tputs(const char *str, int affcnt, int (*putc)(void));\fR
 .br
 .SH DESCRIPTION
 These routines are included as a conversion aid for programs that use

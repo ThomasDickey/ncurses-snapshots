@@ -31,6 +31,7 @@ TESTS = \
 	gdc \
 	hanoi \
 	knight \
+	lrtest \
 	ncurses \
 	newdemo \
 	rain \
@@ -56,6 +57,8 @@ gdc: $(srcdir)/gdc.c
 hanoi: $(srcdir)/hanoi.c
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
 knight: $(srcdir)/knight.c
+	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+lrtest: $(srcdir)/lrtest.c
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
 ncurses: $(srcdir)/ncurses.c
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@

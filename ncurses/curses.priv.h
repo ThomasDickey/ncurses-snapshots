@@ -52,16 +52,6 @@
 
 #include <curses.h>	/* we'll use -Ipath directive to get the right one! */
 
-#if HAVE_TERMIOS_H
-# include <termios.h>
-# ifndef TERMIOS
-#  define TERMIOS 1
-# endif
-#else
-# include <sgtty.h>
-# include <sys/ioctl.h>
-#endif
-
 /* The terminfo source is assumed to be 7-bit ASCII */
 #define is7bits(c)	((unsigned)(c) < 128)
 
@@ -71,6 +61,28 @@
 
 #ifndef max
 #define max(a,b)	((a) < (b)  ?  (b)  :  (a))
+#endif
+
+/* usually in <unistd.h> */
+#ifndef STDOUT_FILENO
+#define STDOUT_FILENO 1
+#endif
+
+#ifndef STDERR_FILENO
+#define STDERR_FILENO 2
+#endif
+
+#ifndef R_OK
+#define	R_OK	4		/* Test for read permission.  */
+#endif
+#ifndef W_OK
+#define	W_OK	2		/* Test for write permission.  */
+#endif
+#ifndef X_OK
+#define	X_OK	1		/* Test for execute permission.  */
+#endif
+#ifndef F_OK
+#define	F_OK	0		/* Test for existence.  */
 #endif
 
 #define BLANK        (' '|A_NORMAL)

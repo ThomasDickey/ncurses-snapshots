@@ -1,6 +1,13 @@
 This is a log of changes that ncurses has gone through since I
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+### ncurses-1.9.7 -> 1.9.8
+
+* teach infocmp -i to recognize ECMA highlight sequences
+* infocmp now dumps all SVr4 termcaps (not just the SVr4 ones) on -C
+* support infocmp -RBSD.
+* satisfy XSI Curses requirement that every macro be available as a function.
+
 ### ncurses-1.9.6 -> 1.9.7
 
 * corrected return values of setupterm()

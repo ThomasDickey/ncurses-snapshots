@@ -22,10 +22,13 @@ BEGIN	{
 	{
 	if ( $1 != "#" && $1 != "" ) {
 		print  ""
-		if ( $2 == "c++" )
+		if ( $2 == "c++" ) {
+			compile="CXX"
 			suffix=".cc"
-		else
+		} else {
+			compile="CC"
 			suffix=".c"
+		}
 		printf "../%s/%s.o :\t%s/%s%s", model, $1, $3, $1, suffix
 		for (n = 4; n <= NF; n++) printf " \\\n\t\t\t%s", $n
 		print  ""
@@ -36,9 +39,9 @@ BEGIN	{
 			printf "\t@echo 'compiling %s (%s)'\n", $1, model
 		}
 		if ( $3 == "." || srcdir == "." )
-			printf "\t%scd ../%s; $(CC) $(CFLAGS_%s) -c ../%s/%s%s", atsign, model, MODEL, name, $1, suffix
+			printf "\t%scd ../%s; $(%s) $(CFLAGS_%s) -c ../%s/%s%s", atsign, model, compile, MODEL, name, $1, suffix
 		else
-			printf "\t%scd ../%s; $(CC) $(CFLAGS_%s) -c %s/%s%s", atsign, model, MODEL, $3, $1, suffix
+			printf "\t%scd ../%s; $(%s) $(CFLAGS_%s) -c %s/%s%s", atsign, model, compile, MODEL, $3, $1, suffix
 	} else {
 		printf "%s", $1
 		for (n = 2; n <= NF; n++) printf " %s", $n

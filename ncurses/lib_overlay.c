@@ -29,7 +29,7 @@
 
 #include "curses.priv.h"
 
-static void overlap(WINDOW *const s, WINDOW *d, int flag)
+static void overlap(const WINDOW *s, WINDOW *d, int flag)
 { 
 int sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol;
 
@@ -56,7 +56,7 @@ int sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol;
 **
 **/
 
-int overlay(WINDOW *const win1, WINDOW *win2)
+int overlay(const WINDOW *win1, WINDOW *win2)
 {
 	overlap(win1, win2, TRUE);
 	return OK;
@@ -72,13 +72,13 @@ int overlay(WINDOW *const win1, WINDOW *win2)
 **
 **/
 
-int overwrite(WINDOW *const win1, WINDOW *win2)
+int overwrite(const WINDOW *win1, WINDOW *win2)
 {
 	overlap(win1, win2, FALSE);
 	return OK;
 }
 
-int copywin(WINDOW *src, WINDOW *dst, 
+int copywin(const WINDOW *src, WINDOW *dst, 
 	int sminrow, int smincol,
 	int dminrow, int dmincol, int dmaxrow, int dmaxcol, 
 	int over)

@@ -72,6 +72,7 @@
 #else
 # include <sgtty.h>
 # include <sys/ioctl.h>
+extern short ospeed;
 #endif
 
 #include <errno.h>
@@ -83,6 +84,9 @@
 
 #if HAVE_GETTTYNAM && HAVE_TTYENT_H
 #include <ttyent.h>
+#endif
+#ifdef NeXT
+char *ttyname(int fd);
 #endif
 
 #if SYSTEM_LOOKS_LIKE_SCO
@@ -97,6 +101,10 @@
 #include <term.h>
 #include <dump_entry.h>
 
+#if !HAVE_STRERROR && !defined(strerror)
+extern char *strerror(int);
+#endif
+
 extern char **environ;
 
 #undef CTRL
@@ -104,7 +112,7 @@ extern char **environ;
 
 char *_nc_progname = "tset";
 
-static struct termios mode, oldmode;
+static TTY mode, oldmode;
 
 static int	terasechar;		/* new erase character */
 static int	intrchar;		/* new interrupt character */
@@ -455,7 +463,7 @@ get_termcap_entry(char *userarg)
 {
 	int rval, errret;
 	char *p, *ttype;
-#ifdef HAVE_GETTTYNAM
+#if HAVE_GETTTYNAM
 	struct ttyent *t;
 	char *ttypath;
 #endif
@@ -469,7 +477,7 @@ get_termcap_entry(char *userarg)
 	if ((ttype = getenv("TERM")) != 0)
 		goto map;
 
-#ifdef HAVE_GETTTYNAM
+#if HAVE_GETTTYNAM
 	/*
 	 * We have the 4.3BSD library call getttynam(3); that means
 	 * there's an /etc/ttys to look up device-to-type mappings in.
@@ -523,11 +531,18 @@ found:	if ((p = getenv("TERMCAP")) != NULL && *p != '/') {
 			ttype = askuser(NULL);
 
 	/* Find the terminfo entry.  If it doesn't exist, ask the user. */
-	while ((rval = setupterm(ttype, STDOUT_FILENO, &errret)) == ERR) {
-		(void)fprintf(stderr,
-		    "tset: can't initialize terminal type %s (error %d)\n",
-			      ttype, errret);
-		ttype = askuser(NULL);
+	while ((rval = setupterm(ttype, STDOUT_FILENO, &errret)) != 1) {
+		if (rval == 0) {
+			(void)fprintf(stderr, "tset: unknown terminal type %s\n",
+			    ttype);
+			ttype = NULL;
+		}
+		else {
+			(void)fprintf(stderr, "tset: can't initialize terminal\
+			    type %s (error %d)\n", ttype, errret);
+			ttype = NULL;
+		}
+		askuser(ttype);
 	}
 	return (ttype);
 }
@@ -579,8 +594,13 @@ static bool	set_tabs (void);
 static void
 reset_mode(void)
 {
+#ifdef TERMIOS
 	tcgetattr(STDERR_FILENO, &mode);
+#else
+        stty(STDERR_FILENO,&mode);
+#endif
 
+#ifdef TERMIOS
 #if defined(VDISCARD) && defined(CDISCARD)
 	mode.c_cc[VDISCARD] = CHK(mode.c_cc[VDISCARD], CDISCARD);
 #endif
@@ -669,8 +689,13 @@ reset_mode(void)
 			 | ECHOKE
 #endif
  			 );
+#endif
 
+#ifdef TERMIOS
 	tcsetattr(STDERR_FILENO, TCSADRAIN, &mode);
+#else
+	stty(STDERR_FILENO, &mode);
+#endif           
 }
 
 /*
@@ -718,6 +743,7 @@ set_control_chars(void)
 	    terasechar = (bs_char != 0) ? bs_char : CTRL('h');
 #endif /* __OBSOLETE__ */
 
+#ifdef TERMIOS
 	if (mode.c_cc[VERASE] == 0 || terasechar != 0)
 		mode.c_cc[VERASE] = terasechar ? terasechar : CERASE;
 
@@ -726,6 +752,7 @@ set_control_chars(void)
 
 	if (mode.c_cc[VKILL] == 0 || tkillchar != 0)
 		mode.c_cc[VKILL] = tkillchar ? tkillchar : CKILL;
+#endif
 }
 
 /*
@@ -766,6 +793,7 @@ set_conversions(void)
 	}
 #endif /* __OBSOLETE__ */
 
+#ifdef TERMIOS
 #ifdef ONLCR
 	mode.c_oflag |= ONLCR;
 #endif
@@ -774,7 +802,7 @@ set_conversions(void)
 #ifdef OXTABS
 	mode.c_oflag |= OXTABS;
 #endif /* OXTABS */
-
+        
 	/* test used to be tgetflag("NL") */
 	if (newline != (char *)NULL && newline[0] == '\n' && !newline[1]) {
 		/* Newline, not linefeed. */
@@ -793,6 +821,7 @@ set_conversions(void)
 		mode.c_oflag &= ~OXTABS;
 #endif /* OXTABS */
 	mode.c_lflag |= (ECHOE | ECHOK);
+#endif
 }
 
 /* Output startup string. */
@@ -878,6 +907,7 @@ set_tabs()
 static void
 report(char *name, int which, u_int def)
 {
+#ifdef TERMIOS
 	u_int old, new;
 	char *p;
 
@@ -898,6 +928,7 @@ report(char *name, int which, u_int def)
 		(void)fprintf(stderr, "control-%c (^%c).\n", new, new);
 	} else
 		(void)fprintf(stderr, "%c.\n", new);
+#endif
 }
 
 /*
@@ -945,11 +976,19 @@ main(int argc, char **argv)
 	int ch, noinit, noset, quiet, Sflag, sflag, showterm;
 	char *p, *ttype;
 
+#ifdef TERMIOS
 	if (tcgetattr(STDERR_FILENO, &mode) < 0)
 		err("standard error: %s", strerror(errno));
 
 	oldmode = mode;
 	ospeed = cfgetospeed(&mode);
+#else
+	if (gtty(STDERR_FILENO, &mode) < 0)
+		err("standard error: %s", strerror(errno));
+
+	oldmode = mode;
+	ospeed = mode.sg_ospeed;
+#endif
 
 	if ((p = strrchr(*argv, '/')) != 0)
 		++p;
@@ -1060,7 +1099,11 @@ main(int argc, char **argv)
 
 		/* Set the modes if they've changed. */
 		if (memcmp(&mode, &oldmode, sizeof(mode)))
+#ifdef TERMIOS
 			tcsetattr(STDERR_FILENO, TCSADRAIN, &mode);
+#else
+		        stty(STDERR_FILENO, &mode);
+#endif           
 	}
 
 	/* Get the terminal name from the entry. */

@@ -24,7 +24,8 @@
  *
  *	lib_doupdate.c
  *
- *	The routine doupdate() and its dependents
+ *	The routine doupdate() and its dependents.  Also _nc_outstr(),
+ *	so all physcal output is concentrated here.
  *
  *-----------------------------------------------------------------*/
  
@@ -53,7 +54,7 @@ static void TransformLine( int lineno );
 static void NoIDcTransformLine( int lineno );
 static void IDcTransformLine( int lineno );
 static void ClearScreen( void );
-static void InsStr( chtype *line, int count );
+static int InsStr( chtype *line, int count );
 static void DelChar( int count );
 
 #ifdef POSITION_DEBUG
@@ -144,77 +145,70 @@ static inline void PutAttrChar(chtype ch)
 	}
 }
 
-static int LRCORNER = FALSE;
-
 static inline void PutChar(chtype ch)
+/* insert character, handling automargin stuff */
 {
-	if (LRCORNER == TRUE) {
-		if (SP->_curscol == screen_columns-2) {
-			PutAttrChar(newscr->_line[screen_lines-1].text[screen_columns-2]);
-			SP->_curscol++;
-#ifdef POSITION_DEBUG
-			position_check(SP->_cursrow,SP->_curscol,"PutChar");
-#endif /* POSITION_DEBUG */
-			return;
-		} else if (SP->_curscol == screen_columns-1) {
-		int i = screen_lines;
-		int j = screen_columns -1;
-			GoTo(i-1, j);
-			if (enter_insert_mode && exit_insert_mode) {
-				TPUTS_TRACE("enter_insert_mode");
-				putp(enter_insert_mode);
-				PutAttrChar(newscr->_line[i-1].text[j]);
-				if (insert_padding)
-				{
-					TPUTS_TRACE("insert_padding");
-					putp(insert_padding);
-				}
-				TPUTS_TRACE("exit_insert_mode");
-				putp(exit_insert_mode);
-			} else if (insert_character) {
-				TPUTS_TRACE("insert_character");
-				putp(insert_character);
-				PutAttrChar(newscr->_line[i-1].text[j]);
-				if (insert_padding)
-				{
-					TPUTS_TRACE("insert_padding");
-					putp(insert_padding);
-				}
-			}
-			return;
-		}
+    if (!(SP->_cursrow == screen_lines-1 && SP->_curscol == screen_columns-1
+		&& auto_right_margin && !eat_newline_glitch))
+    {
+	PutAttrChar(ch);	/* normal case */
+    }
+    else if (!auto_right_margin 	/* maybe we can suppress automargin */
+	     || (enter_am_mode && exit_am_mode))
+    {
+	bool old_am = auto_right_margin;
+
+	if (old_am)
+	{
+	    TPUTS_TRACE("exit_am_mode");
+	    putp(exit_am_mode);
 	}
 	PutAttrChar(ch);
-	SP->_curscol++; 
-	if (SP->_curscol >= screen_columns) {
-		if (eat_newline_glitch) {
- 			/*
-			 * xenl can manifest two different ways.  The vt100
-			 * way is that, when you'd expect the cursor to wrap,
-			 * it stays hung at the right margin (on top of the
-			 * character just emitted) and doesn't wrap until the
-			 * *next* graphic char is emitted.  The c100 way is
-			 * to ignore LF received just after an am wrap.
-			 *
-			 * An aggressive way to handle this would be to 
-			 * emit CR/LF after the char and then assume the wrap
-			 * is done, you're on the first position of the next
-			 * line, and the terminal out of its weird state.
-			 * Here it's safe to just tell the code that the
-			 * cursor is in hyperspace and let the next mvcur()
-			 * call straighten things out.
-			 */
-			SP->_curscol = -1;	   
-			SP->_cursrow = -1;
-		} else if (auto_right_margin) { 
-			SP->_curscol = 0;	   
-			SP->_cursrow++;
-		} else {
-		 	SP->_curscol--;
-		}
+	if (old_am)
+	{
+	    TPUTS_TRACE("enter_am_mode");
+	    putp(enter_am_mode);
 	}
+    }
+    else if (InsStr(&ch, 1) == ERR)		/* try inserting the char */
+	return;
+
+    SP->_curscol++; 
+    if (SP->_curscol >= screen_columns)
+    {
+	if (eat_newline_glitch)
+	{
+	    /*
+	     * xenl can manifest two different ways.  The vt100
+	     * way is that, when you'd expect the cursor to wrap,
+	     * it stays hung at the right margin (on top of the
+	     * character just emitted) and doesn't wrap until the
+	     * *next* graphic char is emitted.  The c100 way is
+	     * to ignore LF received just after an am wrap.
+	     *
+	     * An aggressive way to handle this would be to 
+	     * emit CR/LF after the char and then assume the wrap
+	     * is done, you're on the first position of the next
+	     * line, and the terminal out of its weird state.
+	     * Here it's safe to just tell the code that the
+	     * cursor is in hyperspace and let the next mvcur()
+	     * call straighten things out.
+	     */
+	    SP->_curscol = -1;	   
+	    SP->_cursrow = -1;
+	}
+	else if (auto_right_margin)
+	{ 
+	    SP->_curscol = 0;	   
+	    SP->_cursrow++;
+	}
+	else
+	{
+	    SP->_curscol--;
+	}
+    }
 #ifdef POSITION_DEBUG
-	position_check(SP->_cursrow, SP->_curscol, "PutChar");
+    position_check(SP->_cursrow, SP->_curscol, "PutChar");
 #endif /* POSITION_DEBUG */
 }	
 
@@ -264,7 +258,10 @@ int	i;
 	/* check for pending input */
 	if (SP->_checkfd >= 0) {
 	fd_set fdset;
-	struct timeval ktimeout = {0,0};
+	struct timeval ktimeout;
+
+		ktimeout.tv_sec =
+		ktimeout.tv_usec = 0;
 
 		FD_ZERO(&fdset);
 		FD_SET(SP->_checkfd, &fdset);
@@ -355,20 +352,10 @@ int	lastNonBlank;
 	T(("updating screen from scratch"));
 	for (i = 0; i < min(screen_lines, scr->_maxy + 1); i++) {
 		GoTo(i, 0);
-		LRCORNER = FALSE;
 		lastNonBlank = scr->_maxx;
 		
 		while (scr->_line[i].text[lastNonBlank] == BLANK && lastNonBlank > 0)
 			lastNonBlank--;
-
-		/* check if we are at the lr corner */
-		if (i == screen_lines-1)
-			if ((auto_right_margin) && !(eat_newline_glitch) &&
-			    (lastNonBlank == screen_columns-1) && !(scr->_scroll)) 
-			{
-				T(("Lower-right corner needs special handling"));
-			    LRCORNER = TRUE;
-			}
 
 		for (j = 0; j <= min(lastNonBlank, screen_columns); j++) {
 			PutChar(scr->_line[i].text[j]);
@@ -502,15 +489,6 @@ int	attrchanged = 0;
 		GoTo(lineno, firstChar);
 	}			
 
-	/* check if we are at the lr corner */
-	if (lineno == screen_lines-1)
-		if ((auto_right_margin) && !(eat_newline_glitch) &&
-		    (lastChar == screen_columns-1) && !(curscr->_scroll)) 
-		{
-			T(("Lower-right corner needs special handling"));
-		    LRCORNER = TRUE;
-		}
-
 	T(("updating chars %d to %d", firstChar, lastChar));
 	for (k = firstChar; k <= lastChar; k++) {
 		PutChar(newLine[k]);
@@ -556,7 +534,7 @@ int	attrchanged = 0;
 	}
 	
 	firstChar = 0;
-	
+
 	if (attrchanged) {
 		GoTo(lineno, firstChar);
 		ClrToEOL();
@@ -606,9 +584,8 @@ int	attrchanged = 0;
 				PutChar(newLine[firstChar]);
 		} else if( newLine[nLastChar] != oldLine[oLastChar] ) {
 			n = max( nLastChar , oLastChar );
-
+			
 			GoTo(lineno, firstChar);
-
 			for( k=firstChar ; k <= n ; k++ )
 				PutChar(newLine[k]);
 		} else {
@@ -623,7 +600,6 @@ int	attrchanged = 0;
 			}
 	
 			n = min(oLastChar, nLastChar);
-
 			GoTo(lineno, firstChar);
 	
 			for (k=firstChar; k <= n; k++)
@@ -686,7 +662,7 @@ static void ClearScreen()
 **
 */
 
-static void InsStr(chtype *line, int count)
+static int InsStr(chtype *line, int count)
 {
 	T(("InsStr(%p,%d) called", line, count));
 
@@ -694,25 +670,27 @@ static void InsStr(chtype *line, int count)
 		TPUTS_TRACE("enter_insert_mode");
 		putp(enter_insert_mode);
 		while (count) {
-			PutChar(*line);
+			PutAttrChar(*line);
 			line++;
 			count--;
 		}
 		TPUTS_TRACE("exit_insert_mode");
 		putp(exit_insert_mode);
+		return(OK);
 	} else if (parm_ich) {
 		TPUTS_TRACE("parm_ich");
 		tputs(tparm(parm_ich, count), count, _nc_outch);
 		while (count) {
-			PutChar(*line);
+			PutAttrChar(*line);
 			line++;
 			count--;
 		}
+		return(OK);
 	} else {
 		while (count) {
 			TPUTS_TRACE("insert_character");
 			putp(insert_character);
-			PutChar(*line);
+			PutAttrChar(*line);
 			if (insert_padding)
 			{
 				TPUTS_TRACE("insert_padding");
@@ -720,8 +698,10 @@ static void InsStr(chtype *line, int count)
 			}
 			line++;
 			count--;
+		return(OK);
 		}
 	}
+	return(ERR);
 }
 
 /*

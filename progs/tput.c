@@ -230,6 +230,7 @@ int c;
 		cmdline = 0;
 		break;
 	    case 'T':
+		use_env(FALSE);
 		term = optarg;
 		break;
 	    default:
