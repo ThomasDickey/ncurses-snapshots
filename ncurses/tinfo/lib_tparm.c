@@ -42,7 +42,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.47 2000/10/04 00:57:13 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.48 2000/10/14 17:45:00 Sergei.Ivanov Exp $")
 
 /*
  *	char *
@@ -717,8 +717,7 @@ tparam_internal(const char *string, va_list ap)
 	string++;
     }				/* endwhile (*string) */
 
-    if (out_buff == 0 && (out_buff = typeCalloc(char, 1)) == NULL)
-	  return (NULL);
+    get_space(1);
     out_buff[out_used] = '\0';
 
     T((T_RETURN("%s"), _nc_visbuf(out_buff)));
