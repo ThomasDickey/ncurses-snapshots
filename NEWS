@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.776 2003/11/23 01:43:04 tom Exp $
+-- $Id: NEWS,v 1.777 2003/11/30 01:32:11 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20031129
+	+ modify _nc_gettime() to avoid a problem with arithmetic on unsigned
+	  values (Philippe Blain).
+	+ improve the nanosleep() logic in napms() by checking for EINTR and
+	  restarting (Philippe Blain).
+	+ correct expression for "%D" in lib_tgoto.c (Juha Jarvi
+	  <mooz@welho.com>).
 
 20031122
 	+ add linux-vt terminfo entry (Andrey V Lukyanov <land@long.yar.ru>).
