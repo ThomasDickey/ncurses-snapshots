@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.318 2004/07/11 13:53:16 tom Exp $
+dnl $Id: configure.in,v 1.320 2004/08/21 22:44:18 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.318 $)
+AC_REVISION($Revision: 1.320 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1155,6 +1155,28 @@ fi
 if test	"$cf_cv_prog_gnat_correct" = yes; then
    ADAFLAGS="-O3 -gnatpn $ADAFLAGS"
 
+   AC_MSG_CHECKING(if GNAT pragma Unreferenced works)
+   CF_GNAT_TRY_LINK([procedure conftest;],
+[with Text_IO;
+with GNAT.OS_Lib;
+procedure conftest is
+   test : Integer;
+   pragma Unreferenced (test);
+begin
+   test := 1;
+   Text_IO.Put ("Hello World");
+   Text_IO.New_Line;
+   GNAT.OS_Lib.OS_Exit (0);
+end conftest;],[cf_cv_pragma_unreferenced=yes],[cf_cv_pragma_unreferenced=no])
+   AC_MSG_RESULT($cf_cv_pragma_unreferenced)
+
+   # if the pragma is supported, use it (needed in the Trace code).
+   if test $cf_cv_pragma_unreferenced = yes ; then
+      PRAGMA_UNREF=TRUE
+   else
+      PRAGMA_UNREF=FALSE
+   fi
+
    AC_ARG_WITH(ada-compiler,
 	[  --with-ada-compiler=CMD specify Ada95 compiler command (default gnatmake)],
 	[cf_ada_compiler=$withval],
@@ -1168,6 +1190,7 @@ if test	"$cf_cv_prog_gnat_correct" = yes; then
    AC_SUBST(ADAFLAGS)
    AC_SUBST(cf_compile_generics)
    AC_SUBST(cf_generic_objects)
+   AC_SUBST(PRAGMA_UNREF)
 
    CF_WITH_PATH(ada-include,
        [  --with-ada-include=DIR  Ada includes are in DIR],
