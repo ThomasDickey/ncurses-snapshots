@@ -1241,9 +1241,9 @@ SCREEN	*newterm(
 /* ./base/lib_newwin.c */
 
 #undef _nc_freewin
-void	_nc_freewin(
+int	_nc_freewin(
 		WINDOW	*win)
-		{ /* void */ }
+		{ return(*(int *)0); }
 
 #undef newwin
 WINDOW	*newwin(

@@ -92,7 +92,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.37 2000/04/01 20:07:34 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.38 2000/10/28 21:25:16 tom Exp $")
 
 #define MAX_PUSHED	16	/* max # args we can push onto the stack */
 
@@ -461,7 +461,7 @@ _nc_captoinfo(
 		dp = save_char(dp, '%');
 		s--;
 		_nc_warning("unknown %% code %s (%#x) in %s",
-		    unctrl(*s), (*s) & 0xff, cap);
+		    unctrl((chtype)*s), (*s) & 0xff, cap);
 		break;
 	    }
 	    break;
@@ -594,7 +594,7 @@ save_tc_char(char *bufptr, int c1)
 	bufptr = save_char(bufptr, c1);
     } else {
 	if (c1 == (c1 & 0x1f))	/* iscntrl() returns T on 255 */
-	    (void) strcpy(temp, unctrl(c1));
+	    (void) strcpy(temp, unctrl((chtype)c1));
 	else
 	    (void) sprintf(temp, "\\%03o", c1);
 	bufptr = save_string(bufptr, temp);

@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.50 2000/10/09 23:53:57 Ilya.Zakharevich Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.51 2000/10/28 21:08:02 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -80,7 +80,7 @@ static inline int
 fifo_push(void)
 {
     int n;
-    unsigned int ch;
+    int ch;
 
     if (tail == -1)
 	return ERR;

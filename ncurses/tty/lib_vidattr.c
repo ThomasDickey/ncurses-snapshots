@@ -64,7 +64,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.33 2000/10/09 22:45:29 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.34 2000/10/28 21:24:14 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -134,9 +134,10 @@ vidputs(attr_t newmode, int (*outc) (int))
 	 * A_ALTCHARSET (256) down 2 to line up.  We use the NCURSES_BITS
 	 * macro so this will work properly for the wide-character layout.
 	 */
-	attr_t mask = NCURSES_BITS((no_color_video & 63)
-				   | ((no_color_video & 192) << 1)
-				   | ((no_color_video & 256) >> 2), 8);
+	unsigned value = no_color_video;
+	attr_t mask = NCURSES_BITS((value & 63)
+				   | ((value & 192) << 1)
+				   | ((value & 256) >> 2), 8);
 
 	if (mask & A_REVERSE && newmode & A_REVERSE) {
 	    reverse = TRUE;

@@ -6,7 +6,7 @@
  * Eric S. Raymond <esr@snark.thyrsus.com> July 22 1995.  Mouse support
  * added September 20th 1995.
  *
- * $Id: knight.c,v 1.19 2000/10/15 20:13:10 tom Exp $
+ * $Id: knight.c,v 1.20 2000/10/29 00:51:51 tom Exp $
  */
 
 #include <test.priv.h>
@@ -35,8 +35,8 @@
 #define PLUS_COLOR	2
 #define MINUS_COLOR	3
 
-#define CX(x)	(2 + 4 * (x))
-#define CY(y)	(1 + 2 * (y))
+#define CX(x)		(2 + 4 * (x))
+#define CY(y)		(1 + 2 * (y))
 #define cellmove(y, x)	wmove(boardwin, CY(y), CX(x))
 #define CXINV(x)	(((x) - 1) / 4)
 #define CYINV(y)	(((y) - 2) / 2)
@@ -45,19 +45,32 @@ typedef struct {
     short x, y;
 } cell;
 
-static short board[BDEPTH][BWIDTH];	/* the squares */
-static int rw, col;		/* current row and column */
-static int lastrow, lastcol;	/* last location visited */
-static cell history[BDEPTH * BWIDTH + 1];	/* choice history */
-static int movecount;		/* count of moves so far */
-static int trialcount;		/* count of trials so far */
 static WINDOW *boardwin;	/* the board window */
 static WINDOW *helpwin;		/* the help window */
 static WINDOW *msgwin;		/* the message window */
-static chtype trail = '#';	/* trail character */
-static chtype plus = '+';	/* cursor hot-spot character */
+static cell history[BDEPTH * BWIDTH + 1];	/* choice history */
 static chtype minus = '-';	/* possible-move character */
 static chtype oldch;
+static chtype plus = '+';	/* cursor hot-spot character */
+static chtype trail = '#';	/* trail character */
+static int movecount;		/* count of moves so far */
+static int trialcount;		/* count of trials so far */
+static short board[BDEPTH][BWIDTH];	/* the squares */
+/* *INDENT-OFF* */
+static const struct {
+    int y;
+    int x;
+} offsets[] = {
+    {  2,  1 },
+    {  1,  2 },
+    { -1,  2 },
+    { -2,  1 },
+    { -2, -1 },
+    { -1, -2 },
+    {  1, -2 },
+    {  2, -1 },
+};
+/* *INDENT-ON* */
 
 static void
 init_program(void)
@@ -136,12 +149,12 @@ help2(void)
     (void) waddstr(helpwin, "x,q -- exit             y k u    7 8 9\n");
     (void) waddstr(helpwin, "r -- redraw screen       \\|/      \\|/ \n");
     (void) waddstr(helpwin, "bksp -- undo move       h-+-l    4-+-6\n");
-    (void) waddstr(helpwin, "                         /|\\      /|\\ \n");
+    (void) waddstr(helpwin, "a -- autojump            /|\\      /|\\ \n");
     (void) waddstr(helpwin, "                        b j n    1 2 3\n");
 
     (void) waddstr(helpwin, "\nYou can place your knight on the selected\n");
     (void) waddstr(helpwin, "square with spacebar, Enter, or the keypad\n");
-    (void) waddstr(helpwin, "center key.  You can quit with `x' or `q'.\n");
+    (void) waddstr(helpwin, "center key.  Use F/B to review the path.\n");
 
     (void) mvwaddstr(helpwin, NOTIFYY - INSTRY, 0,
 		     "Press `?' to go to game explanation");
@@ -172,25 +185,14 @@ chksqr(int r1, int c1)
 }
 
 static bool
-chkmoves(void)
+chkmoves(int rw, int col)
 /* check to see if valid moves are available */
 {
-    if (chksqr(rw + 2, col + 1))
-	return (TRUE);
-    if (chksqr(rw + 2, col - 1))
-	return (TRUE);
-    if (chksqr(rw - 2, col + 1))
-	return (TRUE);
-    if (chksqr(rw - 2, col - 1))
-	return (TRUE);
-    if (chksqr(rw + 1, col + 2))
-	return (TRUE);
-    if (chksqr(rw + 1, col - 2))
-	return (TRUE);
-    if (chksqr(rw - 1, col + 2))
-	return (TRUE);
-    if (chksqr(rw - 1, col - 2))
-	return (TRUE);
+    unsigned n;
+
+    for (n = 0; n < SIZEOF(offsets); n++)
+	if (chksqr(rw + offsets[n].y, col + offsets[n].x))
+	    return (TRUE);
     return (FALSE);
 }
 
@@ -263,37 +265,53 @@ dosquares(void)
 static void
 mark_possibles(int prow, int pcol, chtype mark)
 {
-    if (chksqr(prow + 2, pcol + 1)) {
-	cellmove(prow + 2, pcol + 1);
-	waddch(boardwin, mark);
+    unsigned n;
+
+    for (n = 0; n < SIZEOF(offsets); n++) {
+	if (chksqr(prow + offsets[n].y, pcol + offsets[n].x)) {
+	    cellmove(prow + offsets[n].y, pcol + offsets[n].x);
+	    waddch(boardwin, mark);
+	}
     }
-    if (chksqr(prow + 2, pcol - 1)) {
-	cellmove(prow + 2, pcol - 1);
-	waddch(boardwin, mark);
-    }
-    if (chksqr(prow - 2, pcol + 1)) {
-	cellmove(prow - 2, pcol + 1);
-	waddch(boardwin, mark);
-    }
-    if (chksqr(prow - 2, pcol - 1)) {
-	cellmove(prow - 2, pcol - 1);
-	waddch(boardwin, mark);
-    }
-    if (chksqr(prow + 1, pcol + 2)) {
-	cellmove(prow + 1, pcol + 2);
-	waddch(boardwin, mark);
-    }
-    if (chksqr(prow + 1, pcol - 2)) {
-	cellmove(prow + 1, pcol - 2);
-	waddch(boardwin, mark);
-    }
-    if (chksqr(prow - 1, pcol + 2)) {
-	cellmove(prow - 1, pcol + 2);
-	waddch(boardwin, mark);
-    }
-    if (chksqr(prow - 1, pcol - 2)) {
-	cellmove(prow - 1, pcol - 2);
-	waddch(boardwin, mark);
+}
+
+static void
+find_next_move(int *y, int *x)
+{
+    unsigned j, k;
+    int found = -1;
+    int first = -1;
+    int next = 0;
+    int oldy, oldx;
+    int newy, newx;
+
+    if (movecount > 1) {
+	oldy = history[movecount - 1].y;
+	oldx = history[movecount - 1].x;
+	for (j = 0; j < SIZEOF(offsets) * 2; j++) {
+	    k = j % SIZEOF(offsets);
+	    newy = oldy + offsets[k].y;
+	    newx = oldx + offsets[k].x;
+	    if (chksqr(newy, newx)) {
+		if (first < 0)
+		    first = k;
+		if (newy == *y
+		    && newx == *x) {
+		    found = k;
+		} else if (found >= 0) {
+		    next = k;
+		    break;
+		}
+	    }
+	}
+	if (found < 0)
+	    next = first;
+	if (next >= 0) {
+	    *y = oldy + offsets[next].y;
+	    *x = oldx + offsets[next].x;
+	}
+    } else {
+	beep();
     }
 }
 
@@ -349,6 +367,7 @@ drawmove(chtype tchar, int oldy, int oldx, int row, int column)
     wprintw(msgwin, "\nMove %d", movecount);
     if (trialcount != movecount)
 	wprintw(msgwin, " (%d tries)", trialcount);
+    wclrtoeol(msgwin);
 }
 
 static int
@@ -382,9 +401,23 @@ evalmove(int row, int column)
     return (TRUE);
 }
 
-static void
-review(void)
+static int
+completed(void)
 {
+    int i, j, count = 0;
+
+    for (i = 0; i < BDEPTH; i++)
+	for (j = 0; j < BWIDTH; j++)
+	    if (board[i][j] != 0)
+		count += 1;
+    return (count == (BWIDTH * BDEPTH) ? -1 : count);
+}
+
+static void
+no_previous_move(void)
+{
+    waddstr(msgwin, "\nNo previous move.");
+    beep();
 }
 
 static void
@@ -392,8 +425,12 @@ play(void)
 /* play the game */
 {
     bool keyhelp;		/* TRUE if keystroke help is up */
-    int c, ny = 0, nx = 0;
     int i, j, count;
+    int lastcol = 0;		/* last location visited */
+    int lastrow = 0;
+    int ny = 0, nx = 0;
+    int review = 0;		/* review history */
+    int rw = 0, col = 0;	/* current row and column */
 
     do {
 	/* clear screen and draw board */
@@ -415,7 +452,7 @@ play(void)
 		unmarkcell(i, j);
 	    }
 	}
-	memset(history, '\0', sizeof(history));
+	memset(history, 0, sizeof(history));
 	history[0].y = history[0].x = -1;
 	history[1].y = history[1].x = -1;
 	lastrow = lastcol = -2;
@@ -446,11 +483,7 @@ play(void)
 
 	    wrefresh(msgwin);
 
-	    c = wgetch(boardwin);
-
-	    werase(msgwin);
-
-	    switch (c) {
+	    switch (wgetch(boardwin)) {
 	    case 'k':
 	    case '8':
 	    case KEY_UP:
@@ -522,6 +555,7 @@ play(void)
 	    case KEY_B2:
 	    case '\n':
 	    case ' ':
+		review = 0;
 		if (evalmove(rw, col)) {
 		    drawmove(trail,
 			     history[movecount - 1].y,
@@ -532,27 +566,26 @@ play(void)
 		    movecount++;
 		    trialcount++;
 
-		    if (!chkmoves())
-			goto dropout;
-		} else
+		    if (!chkmoves(rw, col)) {
+			if (completed() < 0) {
+			    waddstr(msgwin, "\nYou won.");
+			} else {
+			    waddstr(msgwin,
+				    "\nNo further moves are possible.");
+			}
+		    }
+		} else {
 		    beep();
-		break;
-
-	    case KEY_REDO:
-	    case '\f':
-	    case 'r':
-		clearok(curscr, TRUE);
-		wnoutrefresh(stdscr);
-		wnoutrefresh(boardwin);
-		wnoutrefresh(msgwin);
-		wnoutrefresh(helpwin);
-		doupdate();
+		}
 		break;
 
 	    case KEY_UNDO:
 	    case KEY_BACKSPACE:
 	    case '\b':
-		if (movecount == 1) {
+		review = 0;
+		if (movecount <= 0) {
+		    no_previous_move();
+		} else if (movecount <= 1) {
 		    ny = history[movecount].y;
 		    nx = history[movecount].x;
 		    if (nx < 0 || ny < 0) {
@@ -560,11 +593,12 @@ play(void)
 			nx = lastcol;
 		    }
 		    movecount = 0;
+		    board[ny][nx] = FALSE;
+		    oldch = minus;
 		    drawmove(' ', ny, nx, -1, -1);
 		    movecount = 1;
 		    trialcount = 1;
-		    waddstr(msgwin, "\nNo previous move.");
-		    beep();
+		    no_previous_move();
 		} else {
 		    int oldy = history[movecount - 1].y;
 		    int oldx = history[movecount - 1].x;
@@ -578,12 +612,53 @@ play(void)
 		    --movecount;
 		    ny = history[movecount - 1].y;
 		    nx = history[movecount - 1].x;
+		    if (nx < 0 || ny < 0) {
+			ny = oldy;
+			nx = oldx;
+		    }
 		    drawmove(' ', oldy, oldx, ny, nx);
 
 		    /* avoid problems if we just changed the current cell */
 		    cellmove(lastrow, lastcol);
 		    oldch = winch(boardwin);
 		}
+		break;
+
+	    case 'a':
+		nx = col;
+		ny = rw;
+		find_next_move(&ny, &nx);
+		break;
+
+	    case 'F':
+		if (review > 0) {
+		    review--;
+		    ny = history[movecount - review - 1].y;
+		    nx = history[movecount - review - 1].x;
+		} else {
+		    beep();
+		}
+		break;
+
+	    case 'B':
+		if (review < movecount - 2) {
+		    review++;
+		    ny = history[movecount - review - 1].y;
+		    nx = history[movecount - review - 1].x;
+		} else {
+		    beep();
+		}
+		break;
+
+	    case KEY_REDO:
+	    case '\f':
+	    case 'r':
+		clearok(curscr, TRUE);
+		wnoutrefresh(stdscr);
+		wnoutrefresh(boardwin);
+		wnoutrefresh(msgwin);
+		wnoutrefresh(helpwin);
+		doupdate();
 		break;
 
 	    case 'q':
@@ -604,15 +679,11 @@ play(void)
 	}
 
       dropout:
-	count = 0;
-	for (i = 0; i < BDEPTH; i++)
-	    for (j = 0; j < BWIDTH; j++)
-		if (board[i][j] != 0)
-		    count += 1;
-	if (count == (BWIDTH * BDEPTH))
+	if ((count = completed()) < 0)
 	    wprintw(msgwin, "\nYou won.  Care to try again? ");
 	else
 	    wprintw(msgwin, "\n%d squares filled.  Try again? ", count);
+	wclrtoeol(msgwin);
     } while
 	(tolower(wgetch(msgwin)) == 'y');
 }
