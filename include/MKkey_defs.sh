@@ -1,7 +1,7 @@
 #! /bin/sh
-# $Id: MKkey_defs.sh,v 1.10 2002/09/28 23:32:16 tom Exp $
+# $Id: MKkey_defs.sh,v 1.11 2003/01/11 22:20:40 tom Exp $
 ##############################################################################
-# Copyright (c) 2001,2002 Free Software Foundation, Inc.                     #
+# Copyright (c) 2001-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -49,10 +49,10 @@ trap 'rm -f $data pass[1234]_$$' 0 1 2 5 15
 if sort -k 6 $DATA >$data 2>/dev/null
 then
 	# POSIX
-	sed -e 's/[	]\+/	/g' < $DATA |sort -n -k 6 >$data
+	sed -e 's/[	][	]*/	/g' < $DATA |sort -n -k 6 >$data
 else
 	# SunOS (and SVr4, marked as obsolete but still recognized)
-	sed -e 's/[	]\+/	/g' < $DATA |sort -n +5 >$data
+	sed -e 's/[	][	]*/	/g' < $DATA |sort -n +5 >$data
 fi
 
 # add keys that we generate automatically:

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -154,7 +154,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.88 2002/12/21 23:52:57 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.89 2003/01/12 01:49:03 tom Exp $")
 
 #define CURRENT_ROW	SP->_cursrow	/* phys cursor row */
 #define CURRENT_COLUMN	SP->_curscol	/* phys cursor column */
@@ -842,67 +842,94 @@ NCURSES_EXPORT(int)
 mvcur(int yold, int xold, int ynew, int xnew)
 /* optimized cursor move from (yold, xold) to (ynew, xnew) */
 {
+    attr_t oldattr;
+    int code;
+
     TR(TRACE_CALLS | TRACE_MOVE, (T_CALLED("mvcur(%d,%d,%d,%d)"),
 				  yold, xold, ynew, xnew));
 
-    if (SP == 0)
-	returnCode(ERR);
+    if (SP == 0) {
+	code = ERR;
+    } else if (yold == ynew && xold == xnew) {
+	code = OK;
+    } else {
 
-    if (yold == ynew && xold == xnew)
-	returnCode(OK);
+	/*
+	 * Most work here is rounding for terminal boundaries getting the
+	 * column position implied by wraparound or the lack thereof and
+	 * rolling up the screen to get ynew on the screen.
+	 */
+	if (xnew >= screen_columns) {
+	    ynew += xnew / screen_columns;
+	    xnew %= screen_columns;
+	}
 
-    /*
-     * Most work here is rounding for terminal boundaries getting the
-     * column position implied by wraparound or the lack thereof and
-     * rolling up the screen to get ynew on the screen.
-     */
+	/*
+	 * Force restore even if msgr is on when we're in an alternate
+	 * character set -- these have a strong tendency to screw up the CR &
+	 * LF used for local character motions!
+	 */
+	oldattr = SP->_current_attr;
+	if ((oldattr & A_ALTCHARSET)
+	    || (oldattr && !move_standout_mode)) {
+	    TR(TRACE_CHARPUT, ("turning off (%#lx) %s before move",
+			       oldattr, _traceattr(oldattr)));
+	    (void) vidattr(A_NORMAL);
+	}
 
-    if (xnew >= screen_columns) {
-	ynew += xnew / screen_columns;
-	xnew %= screen_columns;
-    }
-    if (xold >= screen_columns) {
-	int l;
+	if (xold >= screen_columns) {
+	    int l;
 
-	if (SP->_nl) {
-	    l = (xold + 1) / screen_columns;
-	    yold += l;
-	    if (yold >= screen_lines)
-		l -= (yold - screen_lines - 1);
+	    if (SP->_nl) {
+		l = (xold + 1) / screen_columns;
+		yold += l;
+		if (yold >= screen_lines)
+		    l -= (yold - screen_lines - 1);
 
-	    while (l > 0) {
-		if (newline) {
-		    TPUTS_TRACE("newline");
-		    putp(newline);
-		} else
-		    putchar('\n');
-		l--;
-		if (xold > 0) {
-		    if (carriage_return) {
-			TPUTS_TRACE("carriage_return");
-			putp(carriage_return);
+		while (l > 0) {
+		    if (newline) {
+			TPUTS_TRACE("newline");
+			putp(newline);
 		    } else
-			putchar('\r');
-		    xold = 0;
+			putchar('\n');
+		    l--;
+		    if (xold > 0) {
+			if (carriage_return) {
+			    TPUTS_TRACE("carriage_return");
+			    putp(carriage_return);
+			} else
+			    putchar('\r');
+			xold = 0;
+		    }
 		}
+	    } else {
+		/*
+		 * If caller set nonl(), we cannot really use newlines to
+		 * position to the next row.
+		 */
+		xold = -1;
+		yold = -1;
 	    }
-	} else {
-	    /*
-	     * If caller set nonl(), we cannot really use newlines to position
-	     * to the next row.
-	     */
-	    xold = -1;
-	    yold = -1;
+	}
+
+	if (yold > screen_lines - 1)
+	    yold = screen_lines - 1;
+	if (ynew > screen_lines - 1)
+	    ynew = screen_lines - 1;
+
+	/* destination location is on screen now */
+	code = onscreen_mvcur(yold, xold, ynew, xnew, TRUE);
+
+	/*
+	 * Restore attributes if we disabled them before moving.
+	 */
+	if (oldattr != SP->_current_attr) {
+	    TR(TRACE_CHARPUT, ("turning on (%#lx) %s after move",
+			       oldattr, _traceattr(oldattr)));
+	    (void) vidattr(oldattr);
 	}
     }
-
-    if (yold > screen_lines - 1)
-	yold = screen_lines - 1;
-    if (ynew > screen_lines - 1)
-	ynew = screen_lines - 1;
-
-    /* destination location is on screen now */
-    returnCode(onscreen_mvcur(yold, xold, ynew, xnew, TRUE));
+    returnCode(code);
 }
 
 #if defined(TRACE) || defined(NCURSES_TEST)

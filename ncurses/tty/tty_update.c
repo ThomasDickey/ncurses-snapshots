@@ -73,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.192 2003/01/05 23:55:00 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.193 2003/01/12 01:33:11 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -166,24 +166,10 @@ position_check(int expected_y, int expected_x, char *legend)
 static inline void
 GoTo(int const row, int const col)
 {
-    attr_t oldattr = SP->_current_attr;
-
     TR(TRACE_MOVE, ("GoTo(%d, %d) from (%d, %d)",
 		    row, col, SP->_cursrow, SP->_curscol));
 
     position_check(SP->_cursrow, SP->_curscol, "GoTo");
-
-    /*
-     * Force restore even if msgr is on when we're in an alternate
-     * character set -- these have a strong tendency to screw up the
-     * CR & LF used for local character motions!
-     */
-    if ((oldattr & A_ALTCHARSET)
-	|| (oldattr && !move_standout_mode)) {
-	TR(TRACE_CHARPUT, ("turning off (%#lx) %s before move",
-			   oldattr, _traceattr(oldattr)));
-	vidattr(A_NORMAL);
-    }
 
     mvcur(SP->_cursrow, SP->_curscol, row, col);
     SP->_cursrow = row;

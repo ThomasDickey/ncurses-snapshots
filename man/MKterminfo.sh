@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: MKterminfo.sh,v 1.11 2003/01/05 20:23:39 tom Exp $
+# $Id: MKterminfo.sh,v 1.12 2003/01/11 21:42:12 tom Exp $
 #
 # MKterminfo.sh -- generate terminfo.5 from Caps tabular data
 #
@@ -71,9 +71,9 @@ sed -n <$caps "\
 /%%-STOP-HERE-%%/q
 /^#%/s/#%//p
 /^#/d
-s/[	]\+/	/g
+s/[	][	]*/	/g
 s/$/T}/
-s/	[A-Z0-9_()\-]\+	[0-9\-]\+	[Y\-][B\-][C\-][G\-][EK\-]\**	/	T{/
+s/	[A-Z0-9_()\-][A-Z0-9_()\-]*	[0-9\-][0-9\-]*	[Y\-][B\-][C\-][G\-][EK\-]\**	/	T{/
 s/	bool	/	/p
 s/	num	/	/p
 s/	str	/	/p

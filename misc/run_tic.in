@@ -29,7 +29,7 @@
 #
 # Author: Thomas E. Dickey 1996,2000
 #
-# $Id: run_tic.in,v 1.12 2002/12/21 22:40:44 tom Exp $
+# $Id: run_tic.in,v 1.13 2003/01/12 00:10:32 tom Exp $
 # This script is used to install terminfo.src using tic.  We use a script
 # because the path checking is too awkward to do in a makefile.
 #
@@ -146,7 +146,9 @@ if test "$TICDIR" != "$TERMINFO" ; then
 		fi
 		if ( @LN_S@ $RELATIVE $TICDIR )
 		then
-			echo '** linked '$TICDIR' for compatibility'
+			echo '** sym-linked '$TICDIR' for compatibility'
+		else
+			echo '** could not sym-link '$TICDIR' for compatibility'
 		fi
 	fi
 fi
