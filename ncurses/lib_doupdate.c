@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.78 1997/08/23 19:26:33 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.79 1997/09/03 15:27:09 Alexander.V.Lukyanov Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -470,11 +470,9 @@ struct tms before, after;
 
 	if (SP->_fifohold)
 		SP->_fifohold--;
-	if (SP->_endwin == TRUE) {
 
-		T(("coming back from shell mode"));
-		reset_prog_mode();
-
+	if (SP->_endwin || SP->_sig_winch)
+	{
 		/*
 		 * This is a transparent extension:  XSI does not address it,
 		 * and applications need not know that ncurses can do it.
@@ -485,6 +483,12 @@ struct tms before, after;
 		 */
 		_nc_get_screensize();
 		resizeterm(LINES, COLS);
+	}
+
+	if (SP->_endwin) {
+
+		T(("coming back from shell mode"));
+		reset_prog_mode();
 
 		_nc_mvcur_resume();
 		_nc_screen_resume();

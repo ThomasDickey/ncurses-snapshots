@@ -18,82 +18,53 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR *
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                *
  ******************************************************************************/
-
 /*
-**	lib_printw.c
-**
-**	The routines printw(), wprintw() and friends.
-**
-*/
+ * Module that "owns" the 'cur_term' variable:
+ *
+ *	TERMINAL *set_curterm(TERMINAL *)
+ *	int del_curterm(TERMINAL *)
+ */
 
 #include <curses.priv.h>
+#include <term.h>	/* TTY, cur_term */
 
-MODULE_ID("$Id: lib_printw.c,v 1.5 1997/08/31 21:22:33 tom Exp $")
+MODULE_ID("$Id: lib_cur_term.c,v 1.1 1997/09/02 22:54:44 tom Exp $")
 
-int printw(const char *fmt, ...)
+TERMINAL *cur_term;
+
+int _nc_get_curterm(TTY *buf)
 {
-	va_list argp;
-	int code;
-
-	T(("printw(%s,...) called", _nc_visbuf(fmt)));
-
-	va_start(argp, fmt);
-	code = vwprintw(stdscr, fmt, argp);
-	va_end(argp);
-
-	return code;
+	if (cur_term == 0
+	 || GET_TTY(cur_term->Filedes, buf) != 0)
+		return(ERR);
+	return (OK);
 }
 
-int wprintw(WINDOW *win, const char *fmt, ...)
+int _nc_set_curterm(TTY *buf)
 {
-	va_list argp;
-	int code;
-
-	T(("wprintw(%p,%s,...) called", win, _nc_visbuf(fmt)));
-
-	va_start(argp, fmt);
-	code = vwprintw(win, fmt, argp);
-	va_end(argp);
-
-	return code;
+	if (cur_term == 0
+	 || SET_TTY(cur_term->Filedes, buf) != 0)
+		return(ERR);
+	return (OK);
 }
 
-int mvprintw(int y, int x, const char *fmt, ...)
+TERMINAL *set_curterm(TERMINAL *term)
 {
-	va_list argp;
-	int code = move(y, x);
+	TERMINAL *oldterm = cur_term;
 
-	if (code != ERR) {
-		va_start(argp, fmt);
-		code = vwprintw(stdscr, fmt, argp);
-		va_end(argp);
+	cur_term = term;
+	return oldterm;
+}
+
+int del_curterm(TERMINAL *term)
+{
+	T((T_CALLED("del_curterm(%p)"), term));
+
+	if (term != 0) {
+		FreeIfNeeded(term->type.str_table);
+		FreeIfNeeded(term->type.term_names);
+		free(term);
+		returnCode(OK);
 	}
-	return code;
-}
-
-int mvwprintw(WINDOW *win, int y, int x, const char *fmt, ...)
-{
-	va_list argp;
-	int code = wmove(win, y, x);
-
-	if (code != ERR) {
-		va_start(argp, fmt);
-		code = vwprintw(win, fmt, argp);
-		va_end(argp);
-	}
-	return code;
-}
-
-int vwprintw(WINDOW *win, const char *fmt, va_list argp)
-{
-	char *buf = _nc_printf_string(fmt, argp);
-	int code = ERR;
-
-	if (buf != 0) {
-		code = waddstr(win, buf);
-#if USE_SAFE_SPRINTF
-		free(buf);
-#endif
-	}
-	return code;
+	returnCode(ERR);
 }

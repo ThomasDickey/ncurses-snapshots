@@ -17,7 +17,7 @@
  * CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
  ******************************************************************************/
-/* $Id: test.priv.h,v 1.13 1997/04/06 01:44:04 tom Exp $ */
+/* $Id: test.priv.h,v 1.14 1997/09/06 20:30:47 tom Exp $ */
 #if HAVE_CONFIG_H
 #include <ncurses_cfg.h>
 #endif
@@ -51,6 +51,8 @@ extern int optind;
 #ifndef GCC_UNUSED
 #define GCC_UNUSED /* nothing */
 #endif
+
+#define SIZEOF(table)	(sizeof(table)/sizeof(table[0]))
 
 #if defined(NCURSES_VERSION) && HAVE_NC_ALLOC_H
 #include <nc_alloc.h>

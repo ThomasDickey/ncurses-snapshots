@@ -35,7 +35,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.25 1997/06/01 00:11:01 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.26 1997/09/02 22:29:24 tom Exp $")
 
 /****************************************************************************
  *
@@ -47,7 +47,7 @@ MODULE_ID("$Id: lib_setup.c,v 1.25 1997/06/01 00:11:01 tom Exp $")
 #include <sys/ioctl.h>
 #endif
 
-TERMINAL *cur_term;
+extern TERMINAL *cur_term;
 
 static int _use_env = TRUE;
 
@@ -246,7 +246,7 @@ int status;
 		ret_error(0, "'%s': unknown terminal type.\n", tname);
 	}
 
-	cur_term = term_ptr;
+	set_curterm(term_ptr);
 	if (generic_type)
 		ret_error(0, "'%s': I need something more specific.\n", tname);
 	if (hard_copy)

@@ -5,7 +5,7 @@
  * This program was written by John Burnell (johnb@kea.am.dsir.govt.nz)
  * esr changed the usleep calls to napms calls, 7 Nov 1995
  *
- * $Id: testcurs.c,v 1.14 1997/04/06 01:44:16 tom Exp $
+ * $Id: testcurs.c,v 1.15 1997/09/02 23:57:56 tom Exp $
  */
 
 #include <test.priv.h>
@@ -387,20 +387,26 @@ outputTest (WINDOW *win)
     echo();
     scanw ("%s", Buffer);
 
-    wclear(win);
-    curs_set(2);
-    mvwaddstr(win, 1, 1, "The cursor should appear as a block (visible)");
-    Continue(win);
+    if (tigetstr("cvvis") != 0) {
+	wclear(win);
+	curs_set(2);
+	mvwaddstr(win, 1, 1, "The cursor should appear as a block (visible)");
+	Continue(win);
+    }
 
-    wclear(win);
-    curs_set(0);
-    mvwaddstr(win, 1, 1, "The cursor should have disappeared (invisible)");
-    Continue(win);
+    if (tigetstr("civis") != 0) {
+	wclear(win);
+	curs_set(0);
+	mvwaddstr(win, 1, 1, "The cursor should have disappeared (invisible)");
+	Continue(win);
+    }
 
-    wclear(win);
-    curs_set(1);
-    mvwaddstr(win, 1, 1, "The cursor should be an underline (normal)");
-    Continue(win);
+    if (tigetstr("cnorm") != 0) {
+	wclear(win);
+	curs_set(1);
+	mvwaddstr(win, 1, 1, "The cursor should be an underline (normal)");
+	Continue(win);
+    }
 }
 
 #ifdef __PDCURSES__

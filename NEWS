@@ -1,7 +1,38 @@
--- $Id: NEWS,v 1.241 1997/08/31 01:48:40 tom Exp $
+-- $Id: NEWS,v 1.245 1997/09/07 02:37:35 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+970906
+	+ add configure option --enable-sigwinch
+	+ modify testcurs.c to eliminate misleading display wrt cursor type
+	  by testing if the terminal supports cnorm, civis, cvvis.
+	+ several fixes for m68k/NeXT 4.0, to bring cur_term, _nc_curr_line and
+	  _nc_curr_col variables into linked programs:  move these variables,
+	  making new modules lib_cur_term and trace_buf (reported by Francisco
+	  Alberto Tomei Torres <fatomei@sandburg.unm.edu>).
+	> patches by Alexander V. Lukyanov:
+	+ add pseudo-functionkey KEY_RESIZE which is returned by getch() when
+	  the SIGWINCH handler has been called since the last call to
+	  doupdate().
+	+ modify lib_twait.c to hide EINTR only if HIDE_EINTR is defined.
+	+ add SIGWINCH handler to ncurses library which is used if there is no
+	  application SIGWINCH handler in effect when the screen is
+	  initialized.
+	+ make linked list of all SCREEN structures.
+	+ move curses.h include before definition of SCREEN to use types in
+	  that structure.  (Note:  this may not work with lint - must retest)
+	+ correction to ensure that wgetstr uses only a newline to force a
+	  scroll (970831).
+
+970831
+	+ add experimental configure option --enable-safe-sprintf; the normal
+	  mode now allocates a buffer as large as the screen for the
+	  lib_printw.c functions.
+	+ modify wgetch to refresh screen when reading ungetch'd characters,
+	  since the application may require this - SVr4 does this.
+	+ refine treatment of newline in wgetstr to echo only when this would
+	  force the screen to scroll.
 
 970830
 	+ remove override in wgetstr() that forces keypad(), since SVr4 does

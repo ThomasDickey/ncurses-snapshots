@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.76 1997/08/30 21:45:48 tom Exp $
+ * $Id: curses.priv.h,v 1.78 1997/09/07 00:15:32 tom Exp $
  *
  *	curses.priv.h
  *
@@ -74,7 +74,7 @@
 
 #include <errno.h>
 
-#if !HAVE_EXTERN_ERRNO
+#if DECL_ERRNO
 extern int errno;
 #endif
 
@@ -179,6 +179,8 @@ color_t;
 
 #define WINDOWLIST struct _win_list
 
+#include <curses.h>	/* we'll use -Ipath directive to get the right one! */
+
 struct screen {
 	int             _ifd;           /* input file ptr for screen        */
 	FILE            *_ofp;          /* output file ptr for screen       */
@@ -190,16 +192,16 @@ struct screen {
 	short           _lines_avail;   /* lines available for stdscr       */
 	short           _topstolen;     /* lines stolen from top            */
 
-	struct _win_st  *_curscr;       /* current screen                   */
-	struct _win_st  *_newscr;       /* virtual screen to be updated to  */
-	struct _win_st  *_stdscr;       /* screen's full-window context     */
+	WINDOW          *_curscr;       /* current screen                   */
+	WINDOW          *_newscr;       /* virtual screen to be updated to  */
+	WINDOW          *_stdscr;       /* screen's full-window context     */
 
 	struct tries    *_keytry;       /* "Try" for use with keypad mode   */
 	struct tries    *_key_ok;       /* Disabled keys via keyok(,FALSE)  */
 	int             _tried;         /* keypad mode was initialized      */
 
 	unsigned int    _fifo[FIFO_SIZE];       /* input push-back buffer   */
-	short		_fifohead,      /* head of fifo queue               */
+	short           _fifohead,      /* head of fifo queue               */
 	                _fifotail,      /* tail of fifo queue               */
 	                _fifopeek,      /* where to peek for next char      */
 	                _fifohold;      /* set if breakout marked           */
@@ -264,9 +266,9 @@ struct screen {
 	int             _pair_count;    /* count of color pairs              */
 	int             _default_color; /* use default colors                */
 #if !USE_XMC_SUPPORT
-	unsigned long   _xmc_suppress;  /* attributes to suppress if xmc     */
+	chtype          _xmc_suppress;  /* attributes to suppress if xmc     */
 #endif
-	unsigned long   _acs_map[ACS_LEN];
+	chtype          _acs_map[ACS_LEN];
 
 	/*
 	 * These data correspond to the state of the idcok() and idlok()
@@ -275,8 +277,8 @@ struct screen {
 	 * is given as an argument.  However, ncurses implements this logic
 	 * only for the newscr/curscr update process, _not_ per-window.
 	 */
-	int             _nc_sp_idlok;
-	int             _nc_sp_idcok;
+	bool            _nc_sp_idlok;
+	bool            _nc_sp_idcok;
 #define _nc_idlok SP->_nc_sp_idlok
 #define _nc_idcok SP->_nc_sp_idcok
 
@@ -286,10 +288,12 @@ struct screen {
 	 */
 	WINDOWLIST      *_nc_sp_windows;
 #define _nc_windows SP->_nc_sp_windows
+
+	bool            _sig_winch;
+	SCREEN          *_next_screen;
 };
 
-/* Ncurses' public interface follows the internal types */
-#include <curses.h>	/* we'll use -Ipath directive to get the right one! */
+extern SCREEN *_nc_screen_chain;
 
 #ifdef NCURSES_NOMACROS
 #include <nomacros.h>

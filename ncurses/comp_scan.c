@@ -36,7 +36,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.23 1997/08/20 16:22:38 hjl Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.24 1997/09/02 23:29:55 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -47,8 +47,6 @@ MODULE_ID("$Id: comp_scan.c,v 1.23 1997/08/20 16:22:38 hjl Exp $")
 #define iswhite(ch)	(ch == ' '  ||  ch == '\t')
 
 int	_nc_syntax;		/* termcap or terminfo? */
-int	_nc_curr_line;		/* current line # in input */
-int	_nc_curr_col;		/* current column # in input */
 long	_nc_curr_file_pos;	/* file offset of current line */
 long	_nc_comment_start;	/* start of comment range before name */
 long	_nc_comment_end;	/* end of comment range before name */

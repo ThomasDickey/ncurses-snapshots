@@ -36,7 +36,7 @@
 
 #include <term.h>	/* clear_screen, cup & friends, cur_term */
 
-MODULE_ID("$Id: lib_newterm.c,v 1.25 1997/08/18 13:32:29 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.26 1997/09/02 22:41:59 tom Exp $")
 
 #ifndef ONLCR		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -63,9 +63,7 @@ static inline int _nc_initscr(void)
 #else
 	cur_term->Nttyb.sg_flags &= ~(ECHO|CRMOD);
 #endif
-	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
-		return ERR;
-	return OK;
+	return _nc_set_curterm(&cur_term->Nttyb);
 }
 
 /*

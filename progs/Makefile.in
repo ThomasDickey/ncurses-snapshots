@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.23 1997/07/26 13:51:17 tom Exp $
+# $Id: Makefile.in,v 1.24 1997/09/06 23:40:02 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -34,7 +34,7 @@
 SHELL		= /bin/sh
 THIS		= Makefile
 
-NC_MFLAGS 	= @nc_cv_makeflags@
+CF_MFLAGS 	= @cf_cv_makeflags@
 @SET_MAKE@
 
 MODEL		= ../@DFT_OBJ_SUBDIR@
@@ -233,9 +233,9 @@ realclean :: distclean
 ../include/hashsize.h \
 ../include/parametrized.h \
 ../include/term.h :
-	cd ../include; $(MAKE) $(NC_MFLAGS)
+	cd ../include; $(MAKE) $(CF_MFLAGS)
 $(DEPS_CURSES) :
-	cd ../ncurses; $(MAKE) $(NC_MFLAGS)
+	cd ../ncurses; $(MAKE) $(CF_MFLAGS)
 
 lint:
 	$(LINT) $(LINT_OPTS) $(CPPFLAGS) $(srcdir)/clear.c                          $(LINT_LIBS)

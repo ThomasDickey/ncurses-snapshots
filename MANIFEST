@@ -468,6 +468,7 @@
 ./ncurses/lib_clrbot.c
 ./ncurses/lib_clreol.c
 ./ncurses/lib_color.c
+./ncurses/lib_cur_term.c
 ./ncurses/lib_data.c
 ./ncurses/lib_delch.c
 ./ncurses/lib_delwin.c
@@ -533,6 +534,7 @@
 ./ncurses/safe_sprintf.c
 ./ncurses/sigaction.c
 ./ncurses/softscroll.c
+./ncurses/trace_buf.c
 ./ncurses/tries.c
 ./ncurses/vsscanf.c
 ./ncurses/wresize.c

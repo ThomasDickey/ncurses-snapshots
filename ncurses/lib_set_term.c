@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.24 1997/08/23 16:06:31 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.26 1997/09/06 22:47:16 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -105,7 +105,7 @@ SCREEN	*oldSP;
 	oldSP = SP;
 	_nc_set_screen(screen);
 
-	cur_term    = SP->_term;
+	set_curterm(SP->_term);
 	curscr      = SP->_curscr;
 	newscr      = SP->_newscr;
 	stdscr      = SP->_stdscr;
@@ -131,7 +131,19 @@ static void _nc_free_keytry(struct tries *kt)
  */
 void delscreen(SCREEN *sp)
 {
+	SCREEN **scan = &_nc_screen_chain;
+
 	T((T_CALLED("delscreen(%p)"), sp));
+
+	while(*scan)
+	{
+	    if (*scan == sp)
+	    {
+		*scan = sp->_next_screen;
+		break;
+	    }
+	    scan = &(*scan)->_next_screen;
+	}
 
 	_nc_freewin(sp->_curscr);
 	_nc_freewin(sp->_newscr);
@@ -172,6 +184,9 @@ size_t	i;
 	if (!_nc_alloc_screen())
 		return ERR;
 
+	SP->_next_screen = _nc_screen_chain;
+	_nc_screen_chain = SP;
+	
 	_nc_set_buffer(output, TRUE);
 	SP->_term        = cur_term;
 	SP->_lines       = slines;

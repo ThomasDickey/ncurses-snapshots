@@ -28,9 +28,11 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_data.c,v 1.9 1997/08/15 21:44:16 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_data.c,v 1.10 1997/09/03 15:27:09 Alexander.V.Lukyanov Exp $")
 
 WINDOW *stdscr, *curscr, *newscr;
+
+SCREEN *_nc_screen_chain;
 
 /*
  * The variable 'SP' will be defined as a function on systems that cannot link

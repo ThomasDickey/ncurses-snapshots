@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.29 1997/08/31 02:54:43 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.31 1997/09/07 02:38:22 tom Exp $")
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail
@@ -97,7 +97,7 @@ int ungetch(int ch)
 		h_dec();
 
 	SP->_fifo[head] = ch;
-	T(("ungetch ok"));
+	T(("ungetch %#x ok", ch));
 #ifdef TRACE
 	if (_nc_tracing & TRACE_IEVENT) fifo_dump();
 #endif
@@ -149,7 +149,7 @@ again:
 
 	if ((n == -1) || (n == 0))
 	{
-	    T(("read(%d,&ch,1)=%d", SP->_ifd, n));
+	    T(("read(%d,&ch,1)=%d, errno=%d", SP->_ifd, n, errno));
 	    return ERR;
 	}
 	T(("read %d characters", n));
@@ -176,6 +176,10 @@ int i;
 
 static int kgetch(WINDOW *);
 
+#define wgetch_should_refresh(win) (\
+	(is_wintouched(win) || (win->_flags & _HASMOVED)) \
+	&& !(win->_flags & _ISPAD))
+
 int
 wgetch(WINDOW *win)
 {
@@ -183,18 +187,15 @@ int	ch;
 
 	T((T_CALLED("wgetch(%p)"), win));
 
-#undef BUG_970830
-	/* Using this causes my test-driver to abnormally exit from several
-	 * test-cases - TD
-	 */
-#ifdef BUG_970830
 	if (cooked_key_in_fifo())
 	{
+		if (wgetch_should_refresh(win))
+			wrefresh(win);
+
 		ch = fifo_pull();
     		T(("wgetch returning (pre-cooked): %#x = %s", ch, _trace_key(ch));)
 		returnCode(ch);
 	}
-#endif
 
 	/*
 	 * Handle cooked mode.  Grab a string from the screen,
@@ -226,7 +227,7 @@ int	ch;
 	 &&  win->_cury == win->_maxy)
 		returnCode(ERR);
 
-	if ((is_wintouched(win) || (win->_flags & _HASMOVED)) && !(win->_flags & _ISPAD))
+	if (wgetch_should_refresh(win))
 		wrefresh(win);
 
 	if (!win->_notimeout && (win->_delay >= 0 || SP->_cbreak > 1)) {
@@ -246,11 +247,6 @@ int	ch;
 		/* else go on to read data available */
 	}
 
-#ifndef BUG_970830
-	if (cooked_key_in_fifo())
-		ch = fifo_pull();
-	else
-#endif
 	if (win->_use_keypad) {
 		/*
 		 * This is tricky.  We only want to get special-key

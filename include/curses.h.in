@@ -18,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.50 1997/07/26 21:37:41 tom Exp $ */
+/* $Id: curses.h.in,v 1.52 1997/09/06 23:27:16 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -53,7 +53,7 @@
 #define NCURSES_CONST /* nothing */
 #endif
 
-typedef unsigned @nc_cv_typeof_chtype@ chtype;
+typedef unsigned @cf_cv_typeof_chtype@ chtype;
 
 #include <stdio.h>
 #include <unctrl.h>
@@ -73,8 +73,8 @@ typedef unsigned @nc_cv_typeof_chtype@ chtype;
 
 #undef TRUE
 #undef FALSE
-#define CXX_BUILTIN_BOOL @nc_cv_builtin_bool@
-#define CXX_TYPE_OF_BOOL @nc_cv_type_of_bool@
+#define CXX_BUILTIN_BOOL @cf_cv_builtin_bool@
+#define CXX_TYPE_OF_BOOL @cf_cv_type_of_bool@
 
 #if defined(__cplusplus) && CXX_BUILTIN_BOOL
 #define TRUE    ((CXX_TYPE_OF_BOOL)true)
@@ -824,7 +824,7 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 
 /* attributes */
 
-#define NCURSES_BITS(mask,shift) ((mask) << (shift + @nc_cv_widec_shift@))
+#define NCURSES_BITS(mask,shift) ((mask) << (shift + @cf_cv_widec_shift@))
 
 #define A_NORMAL	0L
 #define A_ATTRIBUTES	NCURSES_BITS(~0L,0)
@@ -842,7 +842,7 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 /* Tradeoff on 32-bit machines ('protect' vs widec).  The others (e.g., left
  * highlight are not implemented in any terminal descriptions, anyway.
  */
-#if ((16 + @nc_cv_widec_shift@) < @nc_cv_shift_limit@)
+#if ((16 + @cf_cv_widec_shift@) < @cf_cv_shift_limit@)
 #define A_PROTECT	NCURSES_BITS(1L,16)
 #define A_HORIZONTAL	NCURSES_BITS(1L,17)
 #define A_LEFT		NCURSES_BITS(1L,18)
@@ -861,7 +861,7 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #endif
 
 #define COLOR_PAIR(n)	NCURSES_BITS(n, 0)
-#define PAIR_NUMBER(a)	(((a) & A_COLOR) >> @nc_cv_widec_shift@)
+#define PAIR_NUMBER(a)	(((a) & A_COLOR) >> @cf_cv_widec_shift@)
 
 /*
  * pseudo functions
@@ -1210,6 +1210,7 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define KEY_SUSPEND	0627		/* Suspend */
 #define KEY_UNDO	0630		/* Undo */
 #define KEY_MOUSE	0631		/* Mouse event has occurred */
+#define KEY_RESIZE	0632		/* Terminal resize event */
 #define KEY_MAX		0777		/* Maximum key value */
 
 /* mouse interface */

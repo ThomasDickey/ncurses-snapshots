@@ -46,7 +46,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.19 1997/06/14 13:13:45 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.22 1997/09/07 01:25:05 tom Exp $")
 
 /*
  * We want to define GOOD_SELECT if the last argument of select(2) is
@@ -67,7 +67,7 @@ MODULE_ID("$Id: lib_twait.c,v 1.19 1997/06/14 13:13:45 tom Exp $")
 static void _nc_gettime(struct timeval *tp)
 {
 	gettimeofday(tp, (struct timezone *)0);
-	T(("time: %ld.%06ld", tp->tv_sec, tp->tv_usec));
+	T(("time: %ld.%06ld", (long) tp->tv_sec, (long) tp->tv_usec));
 }
 #endif
 #endif
@@ -144,11 +144,16 @@ long delta;
 
 	T(("start twait: %lu.%06lu secs", (long) ntimeout.tv_sec, (long) ntimeout.tv_usec));
 
+#ifdef HIDE_EINTR
 	/*
 	 * The do loop tries to make it look like we have restarting signals,
 	 * even if we don't.
 	 */
 	do {
+#endif /* HIDE_EINTR */
+#if !GOOD_SELECT && HAVE_GETTIMEOFDAY
+	retry:
+#endif
 		count = 0;
 #if USE_FUNC_POLL
 
@@ -163,7 +168,6 @@ long delta;
 			fds[count].events = POLLIN;
 			count++;
 		}
-
 		result = poll(fds, count, milliseconds);
 #elif HAVE_SELECT
 		/*
@@ -221,10 +225,12 @@ long delta;
 		if (result == 0
 		 && (ntimeout.tv_sec != 0 || ntimeout.tv_usec > 100000)) {
 			napms(100);
-			continue;
+			goto retry;
 		}
 #endif
+#ifdef HIDE_EINTR
 	} while (result == -1 && errno == EINTR);
+#endif
 
 	/* return approximate time left on the ntimeout, in milliseconds */
 	if (timeleft)

@@ -32,7 +32,7 @@
 #include <term.h>	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
 
-MODULE_ID("$Id: lib_options.c,v 1.24 1997/06/16 00:53:44 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.25 1997/09/07 03:17:44 tom Exp $")
 
 int has_ic(void)
 {
@@ -273,6 +273,7 @@ static void init_keytry(void)
 	SP->_keytry = 0;
 
 	for (n = 0; n < SIZEOF(table); n++)
+		if (table[n].offset < STRCOUNT)
 		_nc_add_to_try(&(SP->_keytry),
 			CUR Strings[table[n].offset],
 			table[n].code);
