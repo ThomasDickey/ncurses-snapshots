@@ -1,10 +1,32 @@
--- $Id: NEWS,v 1.532 2000/02/20 01:27:22 tom Exp $
+-- $Id: NEWS,v 1.534 2000/02/27 03:08:29 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000226
+	+ make 'tput flash' work properly for xterm by flushing output in
+	  delay_output() when using napms(), and modifying xterm's terminfo to
+	  specify no padding character.  Otherwise, xterm's reported baud rate
+	  can mislead ncurses into producing too few padding characters
+	  (Debian #58530).
+	+ add a check to tic for consistency between sgr and the separate
+	  capabilities such as smso, use this to check/correct several
+	  terminfo entries (Debian #58530).
+	+ add a check to tic if cvvis is the same as cnorm, adjusted several
+	  terminfo entries to remove the conflict (Debian #58530).
+	+ correct prototype shown in attr_set()/wattr_set() manpages (fixes
+	  Debian #53962).
+	+ minor clarification for curs_set() and leaveok() manpages.
+	+ use mkstemp() for creating temporary file for tic's processing of
+	  $TERMCAP contents (fixes Debian #56465).
+	+ correct two errors from integrating Alexander's changes:  did not
+	  handle the non-bce case properly in can_erase_with() (noted by
+	  Alexander), and left fg/bg uninitialized in the pair-zero case of
+	  _nc_do_color() (reported by Dr Werner Fink <werner@suse.de> and
+	  Ismael Cordeiro <ismael@cordeiro.com>).
 
 20000219
 	+ store default-color code consistently as C_MASK, even if given as

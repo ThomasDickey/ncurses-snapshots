@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2000/02/13 00:52:31 $
+#	$Date: 2000/02/27 03:57:33 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2258,11 +2258,11 @@ xterm-xf86-v32|xterm terminal emulator (XFree86 3.2 Window System),
 	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
 	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
 	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
-	cvvis=\E[?25h, dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, 
-	dl1=\E[M, ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K, 
-	enacs=\E(B\E)0, flash=\E[?5h\E[?5l, home=\E[H, 
-	hpa=\E[%i%p1%dG, ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, 
-	il=\E[%p1%dL, il1=\E[L, ind=^J, 
+	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, 
+	ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K, enacs=\E(B\E)0, 
+	flash=\E[?5h$<100/>\E[?5l, home=\E[H, hpa=\E[%i%p1%dG, 
+	ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, 
+	il1=\E[L, ind=^J, 
 	is2=\E7\E[r\E[m\E[?7h\E[?1;3;4;6l\E[4l\E8\E>, 
 	ka1=\EOw, ka3=\EOu, kb2=\EOy, kbeg=\EOE, kbs=^H, kc1=\EOq, 
 	kc3=\EOs, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
@@ -2308,6 +2308,7 @@ xterm-xf86-v333|xterm terminal emulator (XFree86 3.3.3 Window System),
 
 # This beta version will probably be released in XFree86 4.0.
 xterm-xf86-v40|xterm terminal emulator (XFree86 4.0 Window System), 
+	npc, 
 	kDC=\E[3;5~, kEND=\EO5F, kHOM=\EO5H, kIC=\E[2;5~, 
 	kLFT=\EO5D, kNXT=\E[6;5~, kPRV=\E[5;5~, kRIT=\EO5C, ka1@, 
 	ka3@, kb2=\EOE, kc1@, kc3@, kcbt=\E[Z, kdch1=\E[3~, kend=\EOF, 
@@ -2322,6 +2323,7 @@ xterm-xf86-v40|xterm terminal emulator (XFree86 4.0 Window System),
 	kf42=\E[17;6~, kf43=\E[18;6~, kf44=\E[19;6~, 
 	kf45=\E[20;6~, kf46=\E[21;6~, kf47=\E[23;6~, 
 	kf48=\E[24;6~, khome=\EOH, rmcup=\E[?1049l, 
+	sgr=\E[0%?%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
 	smcup=\E[?1049h, 
 	use=xterm-xf86-v333, 
 
@@ -2363,7 +2365,7 @@ xterm-88color|xterm with 88 colors,
 #	CSI	\E [	\233
 #
 xterm-8bit|xterm terminal emulator 8-bit controls (X Window System), 
-	OTbs, am, bce, km, mc5i, mir, msgr, xenl, 
+	OTbs, am, bce, km, mc5i, mir, msgr, npc, xenl, 
 	colors#8, cols#80, it#8, lines#24, pairs#64, 
 	acsc=``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
 	bel=^G, blink=\2335m, bold=\2331m, cbt=\233Z, 
@@ -2371,12 +2373,12 @@ xterm-8bit|xterm terminal emulator 8-bit controls (X Window System),
 	csr=\233%i%p1%d;%p2%dr, cub=\233%p1%dD, cub1=^H, 
 	cud=\233%p1%dB, cud1=^J, cuf=\233%p1%dC, cuf1=\233C, 
 	cup=\233%i%p1%d;%p2%dH, cuu=\233%p1%dA, cuu1=\233A, 
-	cvvis=\233?25h, dch=\233%p1%dP, dch1=\233P, 
-	dl=\233%p1%dM, dl1=\233M, ech=\233%p1%dX, ed=\233J, 
-	el=\233K, el1=\2331K, enacs=\E(B\E)0, 
-	flash=\233?5h\233?5l, home=\233H, hpa=\233%i%p1%dG, 
-	ht=^I, hts=\210, ich=\233%p1%d@, il=\233%p1%dL, il1=\233L, 
-	ind=^J, invis=\2338m, 
+	dch=\233%p1%dP, dch1=\233P, dl=\233%p1%dM, dl1=\233M, 
+	ech=\233%p1%dX, ed=\233J, el=\233K, el1=\2331K, 
+	enacs=\E(B\E)0, flash=\233?5h$<100/>\233?5l, 
+	home=\233H, hpa=\233%i%p1%dG, ht=^I, hts=\210, 
+	ich=\233%p1%d@, il=\233%p1%dL, il1=\233L, ind=^J, 
+	invis=\2338m, 
 	is2=\E7\E G\233r\233m\233?7h\233?1;3;4;6l\2334l\E8\E>, 
 	ka1=\217w, ka3=\217u, kb2=\217y, kbeg=\217E, kbs=^H, 
 	kc1=\217q, kc3=\217s, kcub1=\217D, kcud1=\217B, 
@@ -2562,11 +2564,10 @@ rxvt-basic|rxvt terminal base (X Window System),
 	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
 	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
 	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
-	cvvis=\E[?25h, dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, 
-	dl1=\E[M, ed=\E[J, el=\E[K, el1=\E[1K, enacs=\E(B\E)0, 
-	flash=\E[?5h\E[?5l, home=\E[H, ht=^I, hts=\EH, 
-	ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, il1=\E[L, ind=^J, 
-	is1=\E[?47l\E=\E[?1l, 
+	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, 
+	el=\E[K, el1=\E[1K, enacs=\E(B\E)0, flash=\E[?5h\E[?5l, 
+	home=\E[H, ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, 
+	il=\E[%p1%dL, il1=\E[L, ind=^J, is1=\E[?47l\E=\E[?1l, 
 	is2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l, 
 	kDC=\E[3$, kEND=\E[8$, kHOM=\E[7$, kLFT=\E[d, kNXT=\E[6$, 
 	kPRV=\E[5$, kRIT=\E[c, ka1=\EOw, ka3=\EOy, kb2=\EOu, kbs=^H, 
@@ -2692,9 +2693,9 @@ emu|emu native mode,
 	clear=\EP\EE0;0;, cnorm=\Ea, cr=^M, csr=\Ek%p1%d;%p2%d;, 
 	cub=\Eq-%p1%d;, cub1=^H, cud=\Ep%p1%d;, cud1=\EB, 
 	cuf=\Eq%p1%d;, cuf1=\ED, cup=\EE%p1%d;%p2%d;, 
-	cuu=\Ep-%p1%d;, cuu1=\EA, cvvis=\Ea, dch=\EI%p1%d;, 
-	dch1=\EI1;, dl=\ER%p1%d;, dl1=\ER1;, ech=\Ej%p1%d;, ed=\EN, 
-	el=\EK, el1=\EL, enacs=\0, home=\EE0;0;, ht=^I, hts=\Eh, 
+	cuu=\Ep-%p1%d;, cuu1=\EA, dch=\EI%p1%d;, dch1=\EI1;, 
+	dl=\ER%p1%d;, dl1=\ER1;, ech=\Ej%p1%d;, ed=\EN, el=\EK, 
+	el1=\EL, enacs=\0, home=\EE0;0;, ht=^I, hts=\Eh, 
 	il=\EQ%p1%d;, il1=\EQ1;, ind=\EG, is2=\ES\Er0;\Es0;, 
 	kbs=^H, kcub1=\EC, kcud1=\EB, kcuf1=\ED, kcuu1=\EA, 
 	kdch1=\177, kent=^M, kf0=\EF00, kf1=\EF01, kf10=\EF10, 
@@ -17501,6 +17502,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2000/1/12
 #	* remove incorrect khome/kend from xterm-xf86-v333, which was based on
 #	  nonstandard resource settings -TD
+#
+# 2000/2/26
+#	* minor fixes for xterm-*, based on Debian #58530 -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

@@ -41,7 +41,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.44 2000/02/20 01:18:02 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.45 2000/02/27 00:20:31 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -420,6 +420,9 @@ _nc_do_color(int pair, bool reverse, int (*outc) (int))
 	    !set_original_colors()) {
 	    fg = default_fg();
 	    bg = default_bg();
+	} else {
+	    fg = C_MASK;
+	    bg = C_MASK;
 	}
     } else {
 	if (set_color_pair) {
