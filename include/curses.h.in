@@ -19,6 +19,7 @@
 *                                                                          *
 ***************************************************************************/
 
+/* $Id: curses.h.in,v 1.32 1996/08/04 00:58:02 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -305,6 +306,14 @@ extern char ttytype[];		/* needed for backward compatibility */
 #define GCC_SCANFLIKE(fmt,var)  /*nothing*/
 #endif
 
+#ifndef	GCC_NORETURN
+#define	GCC_NORETURN /* nothing */
+#endif
+
+#ifndef	GCC_UNUSED
+#define	GCC_UNUSED /* nothing */
+#endif
+
 /*
  * Function prototypes.  This is the complete XSI Curses list of required
  * functions.  Those marked `generated' will have sources generated from the
@@ -400,16 +409,16 @@ extern WINDOW *getwin(FILE *);				/* not in XPG4 */
 extern int get_wstr(wint_t *);				/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern int halfdelay(int);				/* implemented */
-extern int has_colors(void);				/* implemented */
+extern bool has_colors(void);				/* implemented */
 extern int has_ic(void);				/* implemented */
 extern int has_il(void);				/* implemented */
 extern int hline(chtype, int);				/* generated */
 #ifdef _XOPEN_SOURCE_EXTENDED
 extern int hline_set(const cchar_t *, int);		/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
-extern int idcok(WINDOW *, bool);			/* implemented */
+extern void idcok(WINDOW *, bool);			/* implemented */
 extern int idlok(WINDOW *, bool);			/* implemented */
-extern int immedok(WINDOW *, bool);			/* implemented */
+extern void immedok(WINDOW *, bool);			/* implemented */
 extern chtype inch(void);				/* generated */
 extern int inchnstr(chtype *, int);			/* generated */
 extern int inchstr(chtype *);				/* generated */

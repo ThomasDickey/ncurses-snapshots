@@ -223,9 +223,12 @@ register char	*cp;
 	 * the expansion of (for example) \E[%d;%dH work correctly in termcap
 	 * style, which means tparam() will expand termcap strings OK.
 	 */
-	if (popcount == 0)
-		for (i = popcount = number; i > 0; i++)
+	stack_ptr = 0;
+	if (popcount == 0) {
+		popcount = number;
+		for (i = 1; i <= number; i++)
 			npush(param[i - 1]);
+	}
 
 #ifdef TRACE
 	if (_nc_tracing & TRACE_CALLS) {
@@ -235,8 +238,6 @@ register char	*cp;
 		out_used = 0;
  	}
 #endif /* TRACE */
-
-	stack_ptr = 0;
 
 	while (*string) {
 		if (*string != '%')

@@ -1,9 +1,10 @@
 #!/bin/sh
+# $Id: MKfallback.sh,v 1.7 1996/07/31 00:16:11 tom Exp $
 #
 # MKfallback.sh -- create fallback table for entry reads
 #
 # This script generates source code for a custom version of read_entry.c
-# that (instead of reading capabilities for an argument terminal type 
+# that (instead of reading capabilities for an argument terminal type
 # from an on-disk terminfo tree) tries to match the type with one of a
 # specified list of types generated in.
 #
@@ -13,14 +14,14 @@ cat <<EOF
  */
 
 #include <curses.priv.h>
-#include "term.h"
+#include <term.h>
 
 EOF
 
 if [ "$*" ]
 then
 	cat <<EOF
-#include "tic.h"
+#include <tic.h>
 
 /* fallback entries for: $* */
 

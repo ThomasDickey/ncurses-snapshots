@@ -2,14 +2,12 @@
  * This function is needed to support vwscanw
  */
 
-#if HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include <curses.priv.h>
 
 #if !HAVE_VSSCANF
-#include <stdio.h>
-#include <stdarg.h>
 #include <string.h>
+
+MODULE_ID("$Id: vsscanf.c,v 1.9 1996/07/31 00:05:48 tom Exp $")
 
 #if defined(_IOREAD) && defined(_NFILE)
 /*VARARGS2*/
@@ -37,7 +35,7 @@ int vsscanf(const char *str, const char *format, va_list ap)
 {
 	/*
 	 * You don't have a native vsscanf(3), and you don't have System-V
-	 * compatible stdio internals.  You're probably using a BSD 
+	 * compatible stdio internals.  You're probably using a BSD
 	 * older than 4.4 or a really old Linux.  You lose.  Upgrade
 	 * to a current C library to win.
 	 */

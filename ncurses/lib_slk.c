@@ -28,7 +28,9 @@
 
 #include <string.h>
 #include <ctype.h>
-#include "term.h"	/* num_labels, label_*, plab_norm */
+#include <term.h>	/* num_labels, label_*, plab_norm */
+
+MODULE_ID("$Id: lib_slk.c,v 1.7 1996/07/30 22:49:24 tom Exp $")
 
 #define MAX_SKEY_OLD	   8	/* count of soft keys */
 #define MAX_SKEY_LEN_OLD   8	/* max length of soft key text */

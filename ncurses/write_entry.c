@@ -27,18 +27,18 @@
 
 #include <curses.priv.h>
 
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <stdio.h>
 #include <string.h>
 
-#include "tic.h"
-#include "term.h"
-#include "term_entry.h"
+#include <tic.h>
+#include <term.h>
+#include <term_entry.h>
 
 #ifndef S_ISDIR
 #define S_ISDIR(mode) ((mode & S_IFMT) == S_IFDIR)
 #endif
+
+MODULE_ID("$Id: write_entry.c,v 1.13 1996/07/30 22:54:22 tom Exp $")
 
 static int total_written;
 

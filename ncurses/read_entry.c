@@ -31,12 +31,13 @@
 #if HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <string.h>
 
-#include "term.h"
-#include "tic.h"
+#include <term.h>
+#include <tic.h>
+
+MODULE_ID("$Id: read_entry.c,v 1.20 1996/07/31 00:22:32 tom Exp $")
 
 TERMINAL *cur_term;
 
@@ -82,7 +83,7 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 {
     int		name_size, bool_count, num_count, str_count, str_size;
     int		i, fd, numread;
-    char 	buf[MAX_ENTRY_SIZE];
+    char	buf[MAX_ENTRY_SIZE];
 
     if ((fd = open(filename, O_RDONLY)) < 0)
     {

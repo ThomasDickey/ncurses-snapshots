@@ -25,8 +25,10 @@
  *
  */
 
-#include "curses.priv.h"
-#include "term.h"	/* cur_term, pad_char */
+#include <curses.priv.h>
+#include <term.h>	/* cur_term, pad_char */
+
+MODULE_ID("$Id: lib_baudrate.c,v 1.5 1996/07/31 00:16:37 tom Exp $")
 
 /*
  *	int
@@ -61,7 +63,7 @@ static struct speed const speeds[] = {
 #undef MAX_BAUD
 #define MAX_BAUD	B19200
 	{B19200, 19200},
-#else 
+#else
 #ifdef EXTA
 #define MAX_BAUD	EXTA
 	{EXTA, 19200},
@@ -71,7 +73,7 @@ static struct speed const speeds[] = {
 #undef MAX_BAUD
 #define MAX_BAUD	B38400
 	{B38400, 38400},
-#else 
+#else
 #ifdef EXTB
 #define MAX_BAUD	EXTB
 	{EXTB, 38400},
@@ -114,4 +116,4 @@ int ret;
 	return(SP->_baudrate);
 }
 
-  
+

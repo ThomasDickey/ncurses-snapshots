@@ -27,7 +27,9 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
+
+MODULE_ID("$Id: lib_instr.c,v 1.2 1996/07/30 22:29:50 tom Exp $")
 
 int winnstr(WINDOW *win, char *str, int n)
 {

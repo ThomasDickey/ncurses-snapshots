@@ -27,8 +27,10 @@
  *
  */
 
-#include "curses.priv.h"
-#include "term.h"	/* beep, flash */
+#include <curses.priv.h>
+#include <term.h>	/* beep, flash */
+
+MODULE_ID("$Id: lib_beep.c,v 1.2 1996/07/30 22:49:24 tom Exp $")
 
 /*
  *	beep()

@@ -35,7 +35,9 @@
 #define _POSIX_SOURCE
 #endif
 
-#include "term.h"	/* lines, columns, cur_term */
+#include <term.h>	/* lines, columns, cur_term */
+
+MODULE_ID("$Id: lib_restart.c,v 1.6 1996/07/31 01:16:05 tom Exp $")
 
 #undef tabs
 
@@ -52,9 +54,12 @@
 #  endif
 # endif
 #endif
- 
+
 int def_shell_mode(void)
 {
+	if (cur_term == 0)
+		return ERR;
+
     /*
      *	Turn off the XTABS bit in the tty structure if it was on
      *	If XTABS was on, remove the tab and backtab capabilities.
@@ -63,16 +68,16 @@ int def_shell_mode(void)
 	T(("def_shell_mode() called"));
 
 #ifdef TERMIOS
- 	if((tcgetattr(cur_term->Filedes, &cur_term->Ottyb)) == -1) {
+	if((tcgetattr(cur_term->Filedes, &cur_term->Ottyb)) == -1) {
 		return ERR;
- 	}
- 	if (cur_term->Ottyb.c_oflag & tabs)
+	}
+	if (cur_term->Ottyb.c_oflag & tabs)
 		tab = back_tab = NULL;
-	
+
 #else
 	gtty(cur_term->Filedes, &cur_term->Ottyb);
 	if (cur_term->Ottyb.sg_flags & XTABS)
-	    	tab = back_tab = NULL;
+		tab = back_tab = NULL;
 #endif
 	return OK;
 }
@@ -81,14 +86,17 @@ int def_prog_mode(void)
 {
 	T(("def_prog_mode() called"));
 
-#ifdef TERMIOS
- 	if((tcgetattr(cur_term->Filedes, &cur_term->Nttyb)) == -1) {
+	if (cur_term == 0)
 		return ERR;
- 	}
- 	cur_term->Nttyb.c_oflag &= ~tabs;
+
+#ifdef TERMIOS
+	if((tcgetattr(cur_term->Filedes, &cur_term->Nttyb)) == -1) {
+		return ERR;
+	}
+	cur_term->Nttyb.c_oflag &= ~tabs;
 #else
 	gtty(cur_term->Filedes, &cur_term->Nttyb);
-	
+
 	cur_term->Nttyb.sg_flags &= ~XTABS;
 #endif
 	return OK;

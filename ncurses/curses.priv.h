@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.26 1996/07/21 00:17:44 tom Exp $
+ * $Id: curses.priv.h,v 1.27 1996/07/31 01:17:47 tom Exp $
  *
  *	curses.priv.h
  *
@@ -302,6 +302,7 @@ extern int _nc_max_click_interval;
 extern WINDOW *_nc_makenew(int, int, int, int, int);
 extern chtype _nc_background(WINDOW *);
 extern chtype _nc_render(WINDOW *, chtype);
+extern int _nc_initscr(void);
 extern int _nc_keypad(bool);
 extern int _nc_outch(int);
 extern int _nc_setupscreen(short, short const, FILE *);

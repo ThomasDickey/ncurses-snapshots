@@ -20,8 +20,9 @@
 ***************************************************************************/
 
 
+#include <curses.priv.h>
 
-#include <unctrl.h>
+MODULE_ID("$Id: lib_unctrl.c,v 1.4 1996/07/30 23:28:23 tom Exp $")
 
 char *unctrl(register chtype uch)
 {

@@ -25,8 +25,10 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 #include <string.h>
+
+MODULE_ID("$Id: lib_window.c,v 1.6 1996/07/30 22:29:50 tom Exp $")
 
 void _nc_synchook(WINDOW *win)
 /* hook to be called after each window change */

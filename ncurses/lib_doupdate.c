@@ -31,16 +31,16 @@
 
 #include <curses.priv.h>
 
-#include <sys/types.h>
 #if HAVE_SYS_TIME_H && ! SYSTEM_LOOKS_LIKE_SCO
 #include <sys/time.h>
 #endif
 #if HAVE_SYS_SELECT_H
-#include <sys/types.h>
 #include <sys/select.h>
 #endif
 #include <string.h>
-#include "term.h"
+#include <term.h>
+
+MODULE_ID("$Id: lib_doupdate.c,v 1.28 1996/07/31 00:17:10 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -145,7 +145,7 @@ static inline void GoTo(int const row, int const col)
 	if ((oldattr & A_ALTCHARSET)
 	    || (oldattr && !move_standout_mode))
 	{
-       		TR(TRACE_CHARPUT, ("turning off (%lx) %s before move",
+		TR(TRACE_CHARPUT, ("turning off (%lx) %s before move",
 		   oldattr, _traceattr(oldattr)));
 		vidattr(A_NORMAL);
 	}
@@ -862,7 +862,7 @@ bool	attrchanged = FALSE;
 			    if(nFirstChar == screen_columns)
 				return;
 
- 			    if (nFirstChar > firstChar)
+			    if (nFirstChar > firstChar)
 				firstChar = nFirstChar;
 			}
 		}

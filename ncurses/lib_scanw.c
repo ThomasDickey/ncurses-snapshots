@@ -28,8 +28,9 @@
 **
 */
 
-#include "curses.priv.h"
-#include <stdio.h>
+#include <curses.priv.h>
+
+MODULE_ID("$Id: lib_scanw.c,v 1.3 1996/07/31 00:22:54 tom Exp $")
 
 #if !HAVE_VSSCANF
 extern int vsscanf(const char *str, const char *format, ...);
@@ -41,7 +42,7 @@ char buf[BUFSIZ];
 
 	if (wgetstr(win, buf) == ERR)
 	    return(ERR);
-	
+
 	return(vsscanf(buf, fmt, argp));
 }
 

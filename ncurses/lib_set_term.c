@@ -30,7 +30,9 @@
 
 #include <curses.priv.h>
 
-#include "term.h"	/* cur_term */
+#include <term.h>	/* cur_term */
+
+MODULE_ID("$Id: lib_set_term.c,v 1.10 1996/07/30 22:49:24 tom Exp $")
 
 SCREEN * set_term(SCREEN *screen)
 {

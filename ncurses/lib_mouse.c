@@ -51,10 +51,11 @@
  * used yet, and a couple of bits open at the high end.
  */
 
-#include <curses.h>
+#include <curses.priv.h>
 #include <string.h>
-#include "term.h"
-#include "curses.priv.h"
+#include <term.h>
+
+MODULE_ID("$Id: lib_mouse.c,v 0.13 1996/07/31 00:17:48 tom Exp $")
 
 #define INVALID_EVENT	-1
 
@@ -380,7 +381,7 @@ bool _nc_mouse_parse(int runcount)
 		if ((ep->bstate &
 			(BUTTON1_CLICKED | BUTTON2_CLICKED | BUTTON3_CLICKED))
 		    && (follower->bstate &
-		    	(BUTTON1_CLICKED | BUTTON2_CLICKED | BUTTON3_CLICKED)))
+			(BUTTON1_CLICKED | BUTTON2_CLICKED | BUTTON3_CLICKED)))
 		{
 		    if ((eventmask & BUTTON1_DOUBLE_CLICKED)
 			&& (follower->bstate & BUTTON1_CLICKED))
@@ -413,7 +414,7 @@ bool _nc_mouse_parse(int runcount)
 			 | BUTTON2_DOUBLE_CLICKED
 			 | BUTTON3_DOUBLE_CLICKED))
 		    && (follower->bstate &
-		    	(BUTTON1_CLICKED | BUTTON2_CLICKED | BUTTON3_CLICKED)))
+			(BUTTON1_CLICKED | BUTTON2_CLICKED | BUTTON3_CLICKED)))
 		{
 		    if ((eventmask & BUTTON1_TRIPLE_CLICKED)
 			&& (follower->bstate & BUTTON1_CLICKED))

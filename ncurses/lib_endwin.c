@@ -27,8 +27,10 @@
 **
 */
 
-#include "curses.priv.h"
-#include "term.h"
+#include <curses.priv.h>
+#include <term.h>
+
+MODULE_ID("$Id: lib_endwin.c,v 1.8 1996/07/31 00:17:23 tom Exp $")
 
 int
 endwin(void)
@@ -47,9 +49,9 @@ endwin(void)
 	if (SP->_coloron == TRUE && orig_pair)
 		putp(orig_pair);
 
- 	_nc_mvcur_wrap();	/* wrap up cursor addressing */
+	_nc_mvcur_wrap();	/* wrap up cursor addressing */
 
-	if (SP  &&  (SP->_current_attr != A_NORMAL)) 
+	if (SP  &&  (SP->_current_attr != A_NORMAL))
 	    vidattr(A_NORMAL);
 
 	return(reset_shell_mode());

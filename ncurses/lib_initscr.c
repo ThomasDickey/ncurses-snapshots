@@ -35,14 +35,16 @@
 #include <sys/termio.h>	/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.9 1996/07/28 00:06:55 tom Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.10 1996/07/31 01:20:21 tom Exp $")
 
 /*
  * SVr4/XSI Curses specify that hardware echo is turned off in initscr, and not
  * restored during the curses session.  The library simulates echo in software.
  * (The behavior is unspecified if the application enables hardware echo).
+ *
+ * The newterm function also initializes terminal settings.
  */
-static int _nc_initscr(void)
+int _nc_initscr(void)
 {
 	/* for extended XPG4 conformance requires cbreak() at this point */
 	/* (SVr4 curses does this anyway) */
@@ -63,23 +65,27 @@ static int _nc_initscr(void)
 
 WINDOW *initscr(void)
 {
-char	*name = getenv("TERM");
+static	bool initialized = FALSE;
+char	*name;
 
-	if (name == 0)
-		name = "unknown";
-  	if (newterm(name, stdout, stdin) == NULL) {
-  		fprintf(stderr, "Error opening terminal: %s.\n", name);
-  		exit(EXIT_FAILURE);
+	/* Portable applications must not call initscr() more than once */
+	if (!initialized) {
+		initialized = TRUE;
+
+		if ((name = getenv("TERM")) == 0)
+			name = "unknown";
+		if (newterm(name, stdout, stdin) == NULL) {
+			fprintf(stderr, "Error opening terminal: %s.\n", name);
+			exit(EXIT_FAILURE);
+		}
+
+		/* allow user to set maximum escape delay from the environment */
+		if ((name = getenv("ESCDELAY")) != 0)
+			ESCDELAY = atoi(getenv("ESCDELAY"));
+
+		/* def_shell_mode - done in newterm/_nc_setupscreen */
+		def_prog_mode();
 	}
-
-	/* allow user to set maximum escape delay from the environment */
-	if ((name = getenv("ESCDELAY")))
-	    ESCDELAY = atoi(getenv("ESCDELAY"));
-
-	def_shell_mode();
-	_nc_initscr();
-	def_prog_mode();
-
 	return(stdscr);
 }
 

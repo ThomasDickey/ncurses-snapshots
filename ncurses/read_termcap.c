@@ -36,16 +36,22 @@
  * 4.4BSD getcap code to fetch entries.  There are disadvantages to this;
  * mainly that getcap(3) does its own resolution, meaning that entries
  * read in in this way can't reference the terminfo tree. The only thing
- * it buys is faster startup time, getcap(3) is much faster than our tic 
+ * it buys is faster startup time, getcap(3) is much faster than our tic
  * parser.
  */
 
 #include <curses.priv.h>
 
 #include <string.h>
+#include <term.h>
+#include <tic.h>
+#include <term_entry.h>
+
 #if HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
+
+MODULE_ID("$Id: read_termcap.c,v 1.14 1996/07/31 00:15:21 tom Exp $")
 
 #ifdef USE_GETCAP
 /*
@@ -180,11 +186,11 @@ _nc_tgetent(char *bp, char *name)
 		if (_nc_cgetset(cp) < 0)
 			return(-2);
 
-	i = _nc_cgetent(&dummy, pathvec, name);      
-	
+	i = _nc_cgetent(&dummy, pathvec, name);
+
 	if (i == 0)
 		strcpy(bp, dummy);
-	
+
 	if (dummy)
 		free(dummy);
 	/* no tc reference loop return code in libterm XXX */
@@ -459,7 +465,7 @@ _nc_getent(
 			for (;;) {
 				if (bp >= b_end) {
 					int n;
-		
+
 					n = read(fd, buf, sizeof(buf));
 					if (n <= 0) {
 						if (myfd)
@@ -476,7 +482,7 @@ _nc_getent(
 					b_end = buf+n;
 					bp = buf;
 				}
-	
+
 				c = *bp++;
 				if (c == '\n') {
 					if (rp > record && *(rp-1) == '\\') {
@@ -488,7 +494,7 @@ _nc_getent(
 				*rp++ = c;
 
 				/*
-				 * Enforce loop invariant: if no room 
+				 * Enforce loop invariant: if no room
 				 * left in record buffer, try to get
 				 * some more.
 				 */
@@ -517,13 +523,13 @@ _nc_getent(
 			 */
 			if (eof)
 				break;
-				
+
 			/*
 			 * Toss blank lines and comments.
 			 */
 			if (*record == '\0' || *record == '#')
 				continue;
-	
+
 			/*
 			 * See if this is the record we want ...
 			 */
@@ -584,7 +590,7 @@ tc_exp:	{
 			tclen = s - tcstart;
 			tcend = s;
 
-			iret = _nc_getent(&icap, &ilen, db_p, fd, tc, depth+1, 
+			iret = _nc_getent(&icap, &ilen, db_p, fd, tc, depth+1,
 				      NULL);
 			newicap = icap;		/* Put into a register. */
 			newilen = ilen;
@@ -600,11 +606,11 @@ tc_exp:	{
 					tc_not_resolved = 1;
 				/* couldn't resolve tc */
 				if (iret == -1) {
-					*(s - 1) = ':';			
+					*(s - 1) = ':';
 					scan = s - 1;
 					tc_not_resolved = 1;
 					continue;
-					
+
 				}
 			}
 			/* not interested in name field of tc'ed record */
@@ -667,7 +673,7 @@ tc_exp:	{
 			 */
 			scan = s-1;
 		}
-	
+
 	}
 	/*
 	 * Close file (if we opened it), give back any extra memory, and
@@ -677,17 +683,17 @@ tc_exp:	{
 		(void)close(fd);
 	*len = rp - record - 1;	/* don't count NUL */
 	if (r_end > rp)
-		if ((record = 
+		if ((record =
 		     realloc(record, (size_t)(rp - record))) == NULL) {
 			errno = ENOMEM;
 			return (-2);
 		}
-		
+
 	*cap = record;
 	if (tc_not_resolved)
 		return (1);
 	return (0);
-}	
+}
 
 /*
  * Cgetmatch will return 0 if name is one of the names of the capability
@@ -738,10 +744,10 @@ _nc_nfcmp(char *nf, char *rec)
 {
 	char *cp, tmp;
 	int ret;
-	
+
 	for (cp = rec; *cp != ':'; cp++)
 		;
-	
+
 	tmp = *(cp + 1);
 	*(cp + 1) = '\0';
 	ret = strcmp(nf, rec);
@@ -750,10 +756,6 @@ _nc_nfcmp(char *nf, char *rec)
 	return (ret);
 }
 #endif /* USE_GETCAP */
-
-#include "term.h"
-#include "tic.h"
-#include "term_entry.h"
 
 int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 {
@@ -790,7 +792,7 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
     FILE	*fp;
 #define MAXPATHS	32
     char	*tc, *termpaths[MAXPATHS], pathbuf[2048];
-    int    	filecount = 0;
+    int 	filecount = 0;
     bool	use_buffer = FALSE;
 
     if ((tc = getenv("TERMCAP")) != (char *)NULL)
@@ -802,7 +804,7 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 	}
 	else if (_nc_name_match(tc, tn, "|:"))    /* treat as a capability file */
 	{
- 	    use_buffer = TRUE;
+	    use_buffer = TRUE;
 	    (void) strcpy(pathbuf, tc);
 	    (void) strcat(pathbuf, "\n");
 	}
@@ -863,7 +865,7 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
     }
     else
     {
-	int    	i;
+	int	i;
 
 	for (i = 0; i < filecount; i++)
 	{
@@ -908,7 +910,7 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 	    if (_nc_name_match(ep->tterm.term_names, tn, "|:"))
 	    {
 		/*
-       		 * Make a local copy of the terminal capabilities.  free
+		 * Make a local copy of the terminal capabilities.  free
 		 * all entry storage except the string table for the
 		 * loaded type (which we disconnected from the list by
 		 * NULLing out ep->tterm.str_table above).

@@ -1,10 +1,10 @@
-
+# $Id: MKkeyname.awk,v 1.4 1996/07/30 23:37:27 tom Exp $
 BEGIN {
 	print ""
 	print "#include <config.h>"
 	print "#include <stdlib.h>"
-	print "#include \"term.h\""
-	print "#include \"curses.h\""
+	print "#include <term.h>"
+	print "#include <curses.h>"
 	print ""
 	print "struct kn {"
 	print "\tchar *name;"

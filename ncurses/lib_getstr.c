@@ -27,9 +27,10 @@
 **
 */
 
-#include "curses.priv.h"
-#include "unctrl.h"
+#include <curses.priv.h>
 #include <string.h>
+
+MODULE_ID("$Id: lib_getstr.c,v 1.7 1996/07/30 22:55:53 tom Exp $")
 
 int wgetnstr(WINDOW *win, char *str, int maxlen)
 {

@@ -33,9 +33,11 @@
 #include <curses.priv.h>
 
 #include <string.h>
-#include "tic.h"
-#include "term.h"
-#include "term_entry.h"
+#include <tic.h>
+#include <term.h>
+#include <term_entry.h>
+
+MODULE_ID("$Id: alloc_entry.c,v 1.10 1996/07/31 00:08:08 tom Exp $")
 
 #define MAX_STRTAB	4096	/* documented maximum entry size */
 
@@ -49,7 +51,7 @@ int	i;
 
 	for (i=0; i < BOOLCOUNT; i++)
 		    tp->Booleans[i] = FALSE;
-	
+
 	for (i=0; i < NUMCOUNT; i++)
 		    tp->Numbers[i] = -1;
 
@@ -134,7 +136,7 @@ void _nc_merge_entry(TERMTYPE *const to, TERMTYPE *const from)
     for (i=0; i < NUMCOUNT; i++)
     {
 	int	mergenum = from->Numbers[i];
-	
+
 	if (mergenum == CANCELLED_NUMERIC)
 	    to->Numbers[i] = ABSENT_NUMERIC;
 	else if (mergenum != ABSENT_NUMERIC)

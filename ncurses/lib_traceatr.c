@@ -29,10 +29,12 @@
 #define TRACE			/* turn on internal defs for this module */
 #endif
 
-#include "curses.priv.h"
-#include "term.h"	/* acs_chars */
+#include <curses.priv.h>
+#include <term.h>	/* acs_chars */
 
 #include <string.h>
+
+MODULE_ID("$Id: lib_traceatr.c,v 1.8 1996/07/31 00:19:49 tom Exp $")
 
 char *_traceattr(attr_t newmode)
 {
@@ -41,15 +43,15 @@ static const	struct {unsigned int val; char *name;}
 names[] =
     {
 	{A_STANDOUT,	"A_STANDOUT, ",},
-	{A_UNDERLINE,	"A_UNDERLINE, ",},	
+	{A_UNDERLINE,	"A_UNDERLINE, ",},
 	{A_REVERSE,	"A_REVERSE, ",},
 	{A_BLINK,	"A_BLINK, ",},
 	{A_DIM,		"A_DIM, ",},
-	{A_BOLD,	"A_BOLD, ",},	
-	{A_ALTCHARSET,	"A_ALTCHARSET, ",},	
+	{A_BOLD,	"A_BOLD, ",},
+	{A_ALTCHARSET,	"A_ALTCHARSET, ",},
 	{A_INVIS,	"A_INVIS, ",},
 	{A_PROTECT,	"A_PROTECT, ",},
-	{A_CHARTEXT,	"A_CHARTEXT, ",},	
+	{A_CHARTEXT,	"A_CHARTEXT, ",},
 	{A_NORMAL,	"A_NORMAL, ",},
     },
 colors[] =
@@ -153,7 +155,7 @@ char *_tracechtype(chtype ch)
 	    for (sp = names; sp->val; sp++)
 		if (sp->val == ch)
 		{
-		    (void) sprintf(buf, "%s | %s", 
+		    (void) sprintf(buf, "%s | %s",
 			    sp->name,
 			    _traceattr(AttrOf(ch) & (chtype)(~A_ALTCHARSET)));
 		    return(buf);
@@ -161,7 +163,7 @@ char *_tracechtype(chtype ch)
 	}
     }
 
-    (void) sprintf(buf, "%s | %s", 
+    (void) sprintf(buf, "%s | %s",
 		   _tracechar((unsigned char)(ch & A_CHARTEXT)),
 		   _traceattr(AttrOf(ch)));
     return(buf);
