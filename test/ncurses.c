@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.184 2003/01/26 00:26:11 tom Exp $
+$Id: ncurses.c,v 1.185 2003/03/29 22:50:28 tom Exp $
 
 ***************************************************************************/
 
@@ -1257,7 +1257,7 @@ slk_test(void)
 	    move(2, 0);
 	    P("Available commands are:");
 	    P("");
-	    P("^L         -- refresh screen");
+	    P("^L         -- repaint this message");
 	    P("a          -- activate or restore soft keys");
 	    P("d          -- disable soft keys");
 	    P("c          -- set centered format for labels");
@@ -1337,6 +1337,109 @@ slk_test(void)
     erase();
     endwin();
 }
+
+#if USE_WIDEC_SUPPORT
+static void
+wide_slk_test(void)
+/* exercise the soft keys */
+{
+    int c, fmt = 1;
+    wchar_t buf[9];
+
+    c = CTRL('l');
+    do {
+	move(0, 0);
+	switch (c) {
+	case CTRL('l'):
+	    erase();
+	    attr_on(WA_BOLD, NULL);
+	    mvaddstr(0, 20, "Soft Key Exerciser");
+	    attr_off(WA_BOLD, NULL);
+
+	    move(2, 0);
+	    P("Available commands are:");
+	    P("");
+	    P("^L         -- repaint this message");
+	    P("a          -- activate or restore soft keys");
+	    P("d          -- disable soft keys");
+	    P("c          -- set centered format for labels");
+	    P("l          -- set left-justified format for labels");
+	    P("r          -- set right-justified format for labels");
+	    P("[12345678] -- set label; labels are numbered 1 through 8");
+	    P("e          -- erase stdscr (should not erase labels)");
+	    P("s          -- test scrolling of shortened screen");
+	    P("x, q       -- return to main menu");
+	    P("");
+	    P("Note: if activating the soft keys causes your terminal to");
+	    P("scroll up one line, your terminal auto-scrolls when anything");
+	    P("is written to the last screen position.  The ncurses code");
+	    P("does not yet handle this gracefully.");
+	    refresh();
+	    /* fall through */
+
+	case 'a':
+	    slk_restore();
+	    break;
+
+	case 'e':
+	    wclear(stdscr);
+	    break;
+
+	case 's':
+	    mvprintw(20, 0, "Press Q to stop the scrolling-test: ");
+	    while ((c = Getchar()) != 'Q' && (c != ERR))
+		addch((chtype) c);
+	    break;
+
+	case 'd':
+	    slk_clear();
+	    break;
+
+	case 'l':
+	    fmt = 0;
+	    break;
+
+	case 'c':
+	    fmt = 1;
+	    break;
+
+	case 'r':
+	    fmt = 2;
+	    break;
+
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	    (void) mvaddstr(20, 0, "Please enter the label value: ");
+	    echo();
+	    wgetn_wstr(stdscr, buf, 8);
+	    noecho();
+	    slk_wset((c - '0'), buf, fmt);
+	    slk_refresh();
+	    move(20, 0);
+	    clrtoeol();
+	    break;
+
+	case 'x':
+	case 'q':
+	    goto done;
+
+	default:
+	    beep();
+	}
+    } while
+	((c = Getchar()) != EOF);
+
+  done:
+    erase();
+    endwin();
+}
+#endif
 
 /****************************************************************************
  *
@@ -4055,6 +4158,11 @@ do_single_test(const char c)
 	slk_test();
 	break;
 
+#if USE_WIDEC_SUPPORT
+    case 'E':
+	wide_slk_test();
+	break;
+#endif
     case 'f':
 	acs_display();
 	break;
@@ -4325,6 +4433,9 @@ main(int argc, char *argv[])
 	(void) puts("c = color test pattern");
 	(void) puts("d = edit RGB color values");
 	(void) puts("e = exercise soft keys");
+#if USE_WIDEC_SUPPORT
+	(void) puts("E = exercise soft keys using wide-characters");
+#endif
 	(void) puts("f = display ACS characters");
 #if USE_WIDEC_SUPPORT
 	(void) puts("F = display Wide-ACS characters");

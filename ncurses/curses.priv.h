@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.237 2003/03/15 20:26:57 tom Exp $
+ * $Id: curses.priv.h,v 1.238 2003/03/29 21:33:47 tom Exp $
  *
  *	curses.priv.h
  *
@@ -284,9 +284,9 @@ typedef enum {
 
 typedef struct
 {
-	char *text;             /* text for the label */
+	char *ent_text;         /* text for the label */
 	char *form_text;        /* formatted text (left/center/...) */
-	int x;                  /* x coordinate of this field */
+	int ent_x;              /* x coordinate of this field */
 	char dirty;             /* this label has changed */
 	char visible;           /* field is visible */
 } slk_ent;
@@ -296,11 +296,10 @@ typedef struct {
 	char hidden;            /* soft labels are hidden */
 	WINDOW *win;
 	slk_ent *ent;
-	char*  buffer;           /* buffer for labels */
-	short  maxlab;           /* number of available labels */
-	short  labcnt;           /* number of allocated labels */
-	short  maxlen;           /* length of labels */
-        chtype attr;             /* soft label attribute */
+	short  maxlab;          /* number of available labels */
+	short  labcnt;          /* number of allocated labels */
+	short  maxlen;          /* length of labels */
+	chtype attr;            /* soft label attribute */
 } SLK;
 
 typedef struct {
