@@ -37,59 +37,59 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_ti.c,v 1.12 1998/09/26 12:26:38 tom Exp $")
+MODULE_ID("$Id: lib_ti.c,v 1.13 1999/01/03 01:44:27 tom Exp $")
 
 int tigetflag(NCURSES_CONST char *str)
 {
 int i;
 
-	T(("tigetflag(%s)", str));
+	T((T_CALLED("tigetflag(%s)"), str));
 
 	if (cur_term != 0) {
 		for (i = 0; i < BOOLCOUNT; i++) {
 			if (!strcmp(str, boolnames[i])) {
 				/* setupterm forces invalid booleans to false */
-				return cur_term->type.Booleans[i];
+				returnCode(cur_term->type.Booleans[i]);
 			}
 		}
 	}
 
-	return ABSENT_BOOLEAN;
+	returnCode(ABSENT_BOOLEAN);
 }
 
 int tigetnum(NCURSES_CONST char *str)
 {
 int i;
 
-	T(("tigetnum(%s)", str));
+	T((T_CALLED("tigetnum(%s)"), str));
 
 	if (cur_term != 0) {
 		for (i = 0; i < NUMCOUNT; i++) {
 			if (!strcmp(str, numnames[i])) {
 				if (!VALID_NUMERIC(cur_term->type.Numbers[i]))
 					return -1;
-				return cur_term->type.Numbers[i];
+				returnCode(cur_term->type.Numbers[i]);
 			}
 		}
 	}
 
-	return CANCELLED_NUMERIC;	/* Solaris returns a -1 instead */
+	returnCode(CANCELLED_NUMERIC);	/* Solaris returns a -1 instead */
 }
 
 char *tigetstr(NCURSES_CONST char *str)
 {
 int i;
 
-	T(("tigetstr(%s)", str));
+	T((T_CALLED("tigetstr(%s)"), str));
 
 	if (cur_term != 0) {
 		for (i = 0; i < STRCOUNT; i++) {
 			if (!strcmp(str, strnames[i])) {
 				/* setupterm forces cancelled strings to null */
-				return cur_term->type.Strings[i];
+				returnPtr(cur_term->type.Strings[i]);
 			}
 		}
 	}
 
-	return CANCELLED_STRING;
+	returnPtr(CANCELLED_STRING);
 }

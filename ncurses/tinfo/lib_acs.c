@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* ena_acs, acs_chars */
 
-MODULE_ID("$Id: lib_acs.c,v 1.13 1998/02/11 12:13:57 tom Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.14 1999/01/02 22:37:49 tom Exp $")
 
 chtype acs_map[ACS_LEN];
 
@@ -82,15 +82,12 @@ void init_acs(void)
         ACS_NEQUAL   = '!';	/* should be not-equal */
         ACS_STERLING = 'f';	/* should be pound-sterling symbol */
 
-#ifdef ena_acs
 	if (ena_acs != NULL)
 	{
 		TPUTS_TRACE("ena_acs");
 		putp(ena_acs);
 	}
-#endif /* ena_acs */
 
-#ifdef acs_chars
 #define ALTCHAR(c)	((chtype)(((unsigned char)(c)) | A_ALTCHARSET))
 
 	if (acs_chars != NULL) {
@@ -139,6 +136,4 @@ void init_acs(void)
 			_nc_visbuf(show));
 	}
 #endif /* TRACE */
-#endif /* acs_char */
 }
-

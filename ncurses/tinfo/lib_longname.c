@@ -41,18 +41,18 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_longname.c,v 1.6 1998/02/11 12:13:53 tom Exp $")
+MODULE_ID("$Id: lib_longname.c,v 1.7 1999/01/03 01:47:45 tom Exp $")
 
 char *
 longname(void)
 {
 char	*ptr;
 
-	T(("longname() called"));
+	T((T_CALLED("longname()")));
 
 	for (ptr = ttytype + strlen(ttytype); ptr > ttytype; ptr--)
 		if (*ptr == '|')
-			return(ptr + 1);
+			returnPtr(ptr + 1);
 
-    return(ttytype);
+	returnPtr(ttytype);
 }

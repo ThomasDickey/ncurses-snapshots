@@ -1,10 +1,32 @@
--- $Id: NEWS,v 1.400 1998/12/27 03:43:06 tom Exp $
+-- $Id: NEWS,v 1.402 1999/01/03 02:48:05 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990102
+	+ disable scroll hints when hashmap is enabled (patch by Alexander
+	  Lukyanov).
+	+ move logic for tic's verify of -e option versus -I and -C so that the
+	  terminfo data is not processed if we cannot handle -e (reported by
+	  Steven Schwartz <steves@unitrends.com>.
+	+ add test-driver traces to terminfo and termcap functions.
+	+ provide support for termcap ospeed variable by copying it from the
+	  internal cur_term member, and using ospeed as the baudrate reference
+	  for the delay_output and tputs functions.  If an application does not
+	  set ospeed, the library behaves as before, except that _nc_timed_wait
+	  is no longer used, or needed, since ospeed always has a value.  But
+	  the application can modify ospeed to adjust the output of padding
+	  characters (from a bug report for screen 3.7.6 and email from Michael
+	  Schroeder <Michael.Schroeder@informatik.uni-erlangen.de>).
+	+ removed some unused ifdef's as part of Alexander's restructuring.
+	+ reviewed/updated curses.h, term.h against X/Open Curses Issue 4
+	  Version 2.  This includes making some parameters NCURSES_CONST
+	  rather than const, e.g., in termcap.h.
+	+ change linux terminfo entry to use ncv#2, since underline does not
+	  work with color
 
 981226
 	+ miscellaneous corrections for curses.h to match XSI.

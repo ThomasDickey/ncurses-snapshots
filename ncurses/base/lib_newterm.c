@@ -48,7 +48,7 @@
 
 #include <term.h>	/* clear_screen, cup & friends, cur_term */
 
-MODULE_ID("$Id: lib_newterm.c,v 1.36 1998/12/20 00:42:11 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.37 1999/01/02 22:56:08 tom Exp $")
 
 #ifndef ONLCR		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -128,16 +128,13 @@ int t = _nc_getenv_num("NCURSES_TRACE");
 	if (filter_mode) {
 		LINES = 1;
 
-#ifdef init_tabs
 		if (init_tabs != -1)
 			TABSIZE = init_tabs;
 		else
-#endif /* init_tabs */
 			TABSIZE = 8;
 
 		T(("TABSIZE = %d", TABSIZE));
 
-#ifdef clear_screen
 		clear_screen = 0;
 		cursor_down = parm_down_cursor = 0;
 		cursor_address = 0;
@@ -145,16 +142,13 @@ int t = _nc_getenv_num("NCURSES_TRACE");
 		row_address = 0;
 
 		cursor_home = carriage_return;
-#endif /* clear_screen */
 	}
 
 	/* If we must simulate soft labels, grab off the line to be used.
 	   We assume that we must simulate, if it is none of the standard
 	   formats (4-4  or 3-2-3) for which there may be some hardware
 	   support. */
-#ifdef num_labels
 	if (num_labels <= 0 || !SLK_STDFMT)
-#endif /* num_labels */
 	    if (_nc_slk_format)
 	      {
 		if (ERR==_nc_ripoffline(-SLK_LINES, _nc_slk_initialize))
@@ -170,11 +164,9 @@ int t = _nc_getenv_num("NCURSES_TRACE");
 		return 0;
 	}
 
-#ifdef num_labels
 	/* if the terminal type has real soft labels, set those up */
 	if (_nc_slk_format && num_labels > 0 && SLK_STDFMT)
 	    _nc_slk_initialize(stdscr, COLS);
-#endif /* num_labels */
 
 	SP->_ifd        = fileno(ifp);
 	SP->_checkfd	= fileno(ifp);

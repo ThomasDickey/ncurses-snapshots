@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: termcap.h.in,v 1.8 1998/12/13 03:07:08 tom Exp $ */
+/* $Id: termcap.h.in,v 1.9 1999/01/02 19:45:42 tom Exp $ */
 
 #ifndef _NCU_TERMCAP_H
 #define _NCU_TERMCAP_H	1
@@ -53,11 +53,11 @@ extern char *BC;
 extern @OSPEED_TYPE@ ospeed; 
 
 #if !defined(_NCU_TERM_H)
-extern char *tgetstr(const char *, char **);
+extern char *tgetstr(NCURSES_CONST char *, char **);
 extern char *tgoto(const char *, int, int);
 extern int tgetent(char *, const char *);
-extern int tgetflag(const char *);
-extern int tgetnum(const char *);
+extern int tgetflag(NCURSES_CONST char *);
+extern int tgetnum(NCURSES_CONST char *);
 extern int tputs(const char *, int, int (*)(int));
 #endif
 

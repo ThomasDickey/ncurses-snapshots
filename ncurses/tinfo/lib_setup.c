@@ -48,7 +48,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.46 1998/09/26 12:22:30 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.48 1999/01/02 23:11:56 tom Exp $")
 
 /****************************************************************************
  *
@@ -192,11 +192,9 @@ static void _nc_get_screensize(int *linep, int *colp)
 
 	T(("screen size is %dx%d", *linep, *colp));
 
-#ifdef init_tabs
 	if (init_tabs != -1)
 		TABSIZE = (int)init_tabs;
 	else
-#endif /* init_tabs */
 		TABSIZE = 8;
 	T(("TABSIZE = %d", TABSIZE));
 
@@ -285,7 +283,7 @@ char ttytype[NAMESIZE];
  *
  */
 
-int setupterm(const char *tname, int Filedes, int *errret)
+int setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
 {
 struct term	*term_ptr;
 int status;

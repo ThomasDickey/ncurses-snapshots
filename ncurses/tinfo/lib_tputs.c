@@ -43,11 +43,14 @@
 #include <curses.priv.h>
 #include <ctype.h>
 #include <term.h>	/* padding_baud_rate, xon_xoff */
+#include <termcap.h>	/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.34 1998/12/05 01:33:08 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.37 1999/01/03 03:27:26 tom Exp $")
 
 #define OUTPUT ((SP != 0) ? SP->_ofp : stdout)
+
+speed_t ospeed;		/* used by termcap library */
 
 int _nc_nulls_sent;	/* used by 'tack' program */
 
@@ -57,24 +60,16 @@ int delay_output(int ms)
 {
 	T((T_CALLED("delay_output(%d)"), ms));
 
-	if (cur_term == 0 || cur_term->_baudrate <= 0) {
-		(void) fflush(OUTPUT);
-		_nc_timed_wait(0, ms, (int *)0);
-	}
-#ifdef no_pad_char
-	else if (no_pad_char)
+	if (no_pad_char)
 		napms(ms);
-#endif /* no_pad_char */
 	else {
 		register int	nullcount;
 		char	null = '\0';
 
-#ifdef pad_char
 		if (pad_char)
 			null = pad_char[0];
-#endif /* pad_char */
 
-		nullcount = ms * cur_term->_baudrate / 10000;
+		nullcount = (ms * _nc_baudrate(ospeed)) / 10000;
 		for (_nc_nulls_sent += nullcount; nullcount > 0; nullcount--)
 			my_outch(null);
 		if (my_outch == _nc_outch)
@@ -141,8 +136,7 @@ char	addrbuf[32];
 #ifdef NCURSES_NO_PADDING
 		 && (SP == 0 || !(SP->_no_padding))
 #endif
-		 && (cur_term == 0
-		  || cur_term->_baudrate >= padding_baud_rate);
+		 && (_nc_baudrate(ospeed) >= padding_baud_rate);
 	}
 
 #ifdef BSD_TPUTS

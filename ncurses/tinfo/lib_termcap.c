@@ -39,7 +39,7 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <term.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.22 1998/09/26 12:27:03 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.24 1999/01/03 01:31:58 tom Exp $")
 
 /*
    some of the code in here was contributed by:
@@ -49,7 +49,6 @@ MODULE_ID("$Id: lib_termcap.c,v 1.22 1998/09/26 12:27:03 tom Exp $")
 char PC;
 char *UP;
 char *BC;
-speed_t ospeed;
 
 /***************************************************************************
  *
@@ -69,86 +68,26 @@ speed_t ospeed;
 int tgetent(char *bufp GCC_UNUSED, const char *name)
 {
 int errcode;
-#if defined(TERMIOS)
-speed_t speed;
-#endif
 
-	T(("calling tgetent"));
-	setupterm(name, STDOUT_FILENO, &errcode);
+	T((T_CALLED("tgetent()")));
 
-	if (errcode != 1)
-		return(errcode);
+	setupterm((NCURSES_CONST char *)name, STDOUT_FILENO, &errcode);
 
-	if (cursor_left)
-	    if ((backspaces_with_bs = !strcmp(cursor_left, "\b")) == 0)
-		backspace_if_not_bs = cursor_left;
+	if (errcode == 1) {
 
-	/* we're required to export these */
-	if (pad_char != NULL)
-		PC = pad_char[0];
-	if (cursor_up != NULL)
-		UP = cursor_up;
-	if (backspace_if_not_bs != NULL)
-		BC = backspace_if_not_bs;
-#if defined(TERMIOS)
-	/*
-	 * Back-convert to the funny speed encoding used by the old BSD
-	 * curses library.  Method suggested by Andrey Chernov
-	 * <ache@astral.msk.su>
-	 */
-	if ((speed = cfgetospeed(&cur_term->Nttyb)) < 1)
-	    ospeed = 1;		/* assume lowest non-hangup speed */
-	else
-	{
-		const speed_t *sp;
-		static const speed_t speeds[] = {
-#ifdef B115200
-			B115200,
-#endif
-#ifdef B57600
-			B57600,
-#endif
-#ifdef B38400
-			B38400,
-#else
-#ifdef EXTB
-			EXTB,
-#endif
-#endif /* B38400 */
-#ifdef B19200
-			B19200,
-#else
-#ifdef EXTA
-			EXTA,
-#endif
-#endif /* B19200 */
-			B9600,
-			B4800,
-			B2400,
-			B1800,
-			B1200,
-			B600,
-			B300,
-			B200,
-			B150,
-			B134,
-			B110,
-			B75,
-			B50,
-			B0,
-		};
-#define MAXSPEED	SIZEOF(speeds)
+		if (cursor_left)
+		    if ((backspaces_with_bs = !strcmp(cursor_left, "\b")) == 0)
+			backspace_if_not_bs = cursor_left;
 
-		for (sp = speeds; sp < speeds + MAXSPEED; sp++) {
-			if (sp[0] <= speed) {
-				break;
-			}
-		}
-		ospeed = MAXSPEED - (sp - speeds);
-	}
-#else
-	ospeed = cur_term->Nttyb.sg_ospeed;
-#endif
+		/* we're required to export these */
+		if (pad_char != NULL)
+			PC = pad_char[0];
+		if (cursor_up != NULL)
+			UP = cursor_up;
+		if (backspace_if_not_bs != NULL)
+			BC = backspace_if_not_bs;
+
+		(void) baudrate();	/* sets ospeed as a side-effect */
 
 /* LINT_PREPRO
 #if 0*/
@@ -156,7 +95,8 @@ speed_t speed;
 /* LINT_PREPRO
 #endif*/
 
-	return errcode;
+	}
+	returnCode(errcode);
 }
 
 /***************************************************************************
@@ -168,20 +108,20 @@ speed_t speed;
  *
  ***************************************************************************/
 
-int tgetflag(const char *id)
+int tgetflag(NCURSES_CONST char *id)
 {
 int i;
 
-	T(("tgetflag: %s", id));
+	T((T_CALLED("tgetflag(%s)"), id));
 	if (cur_term != 0) {
 		for (i = 0; i < BOOLCOUNT; i++) {
 			if (!strncmp(id, boolcodes[i], 2)) {
 				/* setupterm forces invalid booleans to false */
-				return cur_term->type.Booleans[i];
+				returnCode(cur_term->type.Booleans[i]);
 			}
 		}
 	}
-	return 0;	/* Solaris does this */
+	returnCode(0);	/* Solaris does this */
 }
 
 /***************************************************************************
@@ -193,21 +133,21 @@ int i;
  *
  ***************************************************************************/
 
-int tgetnum(const char *id)
+int tgetnum(NCURSES_CONST char *id)
 {
 int i;
 
-	T(("tgetnum: %s", id));
+	T((T_CALLED("tgetnum(%s)"), id));
 	if (cur_term != 0) {
 		for (i = 0; i < NUMCOUNT; i++) {
 			if (!strncmp(id, numcodes[i], 2)) {
 				if (!VALID_NUMERIC(cur_term->type.Numbers[i]))
 					return -1;
-				return cur_term->type.Numbers[i];
+				returnCode(cur_term->type.Numbers[i]);
 			}
 		}
 	}
-	return ERR;
+	returnCode(ERR);
 }
 
 /***************************************************************************
@@ -219,22 +159,22 @@ int i;
  *
  ***************************************************************************/
 
-char *tgetstr(const char *id, char **area GCC_UNUSED)
+char *tgetstr(NCURSES_CONST char *id, char **area GCC_UNUSED)
 {
 int i;
 
-	T(("tgetstr: %s", id));
+	T((T_CALLED("tgetstr(%s,%p)"), id, area));
 	if (cur_term != 0) {
 		for (i = 0; i < STRCOUNT; i++) {
 			T(("trying %s", strcodes[i]));
 			if (!strncmp(id, strcodes[i], 2)) {
 				T(("found match : %s", _nc_visbuf(cur_term->type.Strings[i])));
 				/* setupterm forces cancelled strings to null */
-				return cur_term->type.Strings[i];
+				returnPtr(cur_term->type.Strings[i]);
 			}
 		}
 	}
-	return NULL;
+	returnPtr(NULL);
 }
 
 /*
@@ -248,5 +188,6 @@ int i;
 
 char *tgoto(const char *string, int x, int y)
 {
-	return(tparm((NCURSES_CONST char *)string, y, x));
+	T((T_CALLED("tgoto(%s,%d,%d)"), string, x, y));
+	returnPtr(tparm((NCURSES_CONST char *)string, y, x));
 }

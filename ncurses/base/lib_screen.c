@@ -38,7 +38,7 @@
 #include <time.h>
 #include <term.h>	/* exit_ca_mode, non_rev_rmcup */
 
-MODULE_ID("$Id: lib_screen.c,v 1.13 1998/07/25 20:10:48 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.14 1999/01/02 22:56:17 tom Exp $")
 
 static time_t	dumptime;
 
@@ -166,10 +166,8 @@ int scr_init(const char *file)
 
 	T((T_CALLED("scr_init(%s)"), _nc_visbuf(file)));
 
-#ifdef exit_ca_mode
 	if (exit_ca_mode && non_rev_rmcup)
 	    returnCode(ERR);
-#endif /* exit_ca_mode */
 
 	if (_nc_access(file, R_OK) < 0
 	 || (fp = fopen(file, "rb")) == 0)
