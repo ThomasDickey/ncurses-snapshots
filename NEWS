@@ -1,10 +1,13 @@
--- $Id: NEWS,v 1.397 1998/12/20 03:02:23 tom Exp $
+-- $Id: NEWS,v 1.398 1998/12/20 14:35:07 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+981220
+	+ correct default value for BUILD_CC (reported by Larry Virden).
 
 981219
 	+ modify _nc_set_writedir() to set a flag in _nc_tic_dir() to prevent
