@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.322 2004/09/18 18:31:33 tom Exp $
+dnl $Id: configure.in,v 1.324 2004/10/09 18:12:27 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.322 $)
+AC_REVISION($Revision: 1.324 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -281,19 +281,37 @@ CF_WITH_DBMALLOC
 CF_WITH_DMALLOC
 
 SHLIB_LIST=""
-AC_MSG_CHECKING(if you want to link with the gpm mouse library)
+AC_MSG_CHECKING(if you want to link with the GPM mouse library)
 AC_ARG_WITH(gpm,
 	[  --with-gpm              use Alessandro Rubini's GPM library],
 	[with_gpm=$withval],
-	[with_gpm=no])
+	[with_gpm=maybe])
 AC_MSG_RESULT($with_gpm)
-if test "$with_gpm" = yes ; then
+if test "$with_gpm" != no ; then
 	AC_CHECK_LIB(gpm,Gpm_Open,[
-		EXTRA_LIBS="-lgpm -lncurses $EXTRA_LIBS"
-		SHLIB_LIST="-lgpm $SHLIB_LIST"
+		AC_CHECK_HEADER(gpm.h,[
+			AC_DEFINE(HAVE_GPM_H)
+			with_gpm=yes
+		],[
+			if test "$with_gpm" = yes ; then
+				AC_ERROR(Cannot find GPM header)
+			fi
+		])
+	],[
+		if test "$with_gpm" = yes ; then
+			AC_ERROR(Cannot link with GPM library)
+		fi
+		with_gpm=no
+	])
+	if test "$with_gpm" = yes ; then
+		CF_FUNC_DLSYM
+		EXTRA_LIBS="-ldl -lncurses $EXTRA_LIBS"
+		SHLIB_LIST="-ldl $SHLIB_LIST"
 		AC_DEFINE(HAVE_LIBGPM)
-		AC_CHECK_HEADERS(gpm.h)
-	],AC_MSG_WARN(Cannot link with gpm library - read the FAQ))
+		AC_CHECK_LIB(gpm,Gpm_Wgetch,[
+			AC_MSG_WARN(GPM library is already linked with curses - read the FAQ)
+		])
+	fi
 fi
 
 CF_WITH_SYSMOUSE

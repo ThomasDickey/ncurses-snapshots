@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2004
 dnl
-dnl $Id: aclocal.m4,v 1.343 2004/09/18 21:54:53 tom Exp $
+dnl $Id: aclocal.m4,v 1.344 2004/10/09 16:45:50 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -757,6 +757,41 @@ done
 done
 AC_MSG_RESULT($cf_result)
 CXXFLAGS="$cf_save_CXXFLAGS"
+])
+dnl ---------------------------------------------------------------------------
+dnl CF_FUNC_DLSYM version: 1 updated: 2004/06/16 20:52:45
+dnl -------------
+dnl Test for dlsym() and related functions, as well as libdl.
+dnl
+dnl Sets
+dnl	$cf_have_dlsym
+dnl	$cf_have_libdl
+AC_DEFUN([CF_FUNC_DLSYM],[
+cf_have_dlsym=no
+AC_CHECK_FUNC(dlsym,cf_have_dlsym=yes,[
+
+cf_have_libdl=no
+AC_CHECK_LIB(dl,dlsym,[
+	cf_have_dlsym=yes
+	cf_have_libdl=yes])])
+
+if test "$cf_have_dlsym" = yes ; then
+	test "$cf_have_libdl" = yes && LIBS="-ldl $LIBS"
+
+	AC_MSG_CHECKING(whether able to link to dl*() functions)
+	AC_TRY_LINK([#include <dlfcn.h>],[
+		void *obj;
+		if ((obj = dlopen("filename", 0)) != 0) {
+			if (dlsym(obj, "symbolname") == 0) {
+			dlclose(obj);
+			}
+		}],[
+		AC_DEFINE(HAVE_LIBDL)],[
+		AC_MSG_ERROR(Cannot link test program for libdl)])
+	AC_MSG_RESULT(ok)
+else
+	AC_MSG_ERROR(Cannot find dlsym function)
+fi
 ])
 dnl ---------------------------------------------------------------------------
 dnl CF_FUNC_MEMMOVE version: 5 updated: 2000/08/12 23:18:52

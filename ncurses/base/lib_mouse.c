@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- *     and: Thomas E. Dickey 1996-2003                                      *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 /*
@@ -76,7 +76,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.68 2003/11/08 21:50:50 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.69 2004/10/09 17:50:31 tom Exp $")
 
 #include <term.h>
 #include <tic.h>
@@ -86,8 +86,19 @@ MODULE_ID("$Id: lib_mouse.c,v 1.68 2003/11/08 21:50:50 tom Exp $")
 #undef buttons			/* term.h defines this, and gpm uses it! */
 #include <gpm.h>
 #include <linux/keyboard.h>	/* defines KG_* macros */
+/* use dynamic loader to avoid linkage dependency */
+#include <dlfcn.h>
+#ifdef RTLD_NOW
+#define my_RTLD RTLD_NOW
+#else
+#ifdef RTLD_LAZY
+#define my_RTLD RTLD_LAZY
+#else
+make an error
 #endif
 #endif
+#endif
+#endif				/* USE_GPM_SUPPORT */
 
 #if USE_SYSMOUSE
 #undef buttons			/* symbol conflict in consio.h */
@@ -99,7 +110,7 @@ MODULE_ID("$Id: lib_mouse.c,v 1.68 2003/11/08 21:50:50 tom Exp $")
 #else
 #include <machine/console.h>
 #endif
-#endif /* use_SYSMOUSE */
+#endif				/* use_SYSMOUSE */
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -120,6 +131,9 @@ MODULE_ID("$Id: lib_mouse.c,v 1.68 2003/11/08 21:50:50 tom Exp $")
 #if USE_GPM_SUPPORT
 #ifndef LINT
 static Gpm_Connect gpm_connect;
+static int (*my_Gpm_Open) (Gpm_Connect *, int);
+static int (*my_Gpm_GetEvent) (Gpm_Event *);
+static int *my_gpm_fd;
 #endif
 #endif
 
@@ -342,15 +356,38 @@ initialize_mousetype(void)
 #if USE_GPM_SUPPORT
     /* GPM does printf's without checking if stdout is a terminal */
     if (isatty(fileno(stdout))) {
-	/* GPM: initialize connection to gpm server */
-	gpm_connect.eventMask = GPM_DOWN | GPM_UP;
-	gpm_connect.defaultMask = ~(gpm_connect.eventMask | GPM_HARD);
-	gpm_connect.minMod = 0;
-	gpm_connect.maxMod = ~((1 << KG_SHIFT) | (1 << KG_SHIFTL) | (1 << KG_SHIFTR));
-	if (Gpm_Open(&gpm_connect, 0) >= 0) {	/* returns the file-descriptor */
-	    SP->_mouse_type = M_GPM;
-	    SP->_mouse_fd = gpm_fd;
-	    return;
+	static bool first = TRUE;
+	static bool found = FALSE;
+
+	if (first) {
+	    void *obj;
+	    first = FALSE;
+
+	    if ((obj = dlopen("libgpm.so", my_RTLD)) != 0) {
+		if ((my_gpm_fd = dlsym(obj, "gpm_fd")) == 0 ||
+		    (my_Gpm_Open = dlsym(obj, "Gpm_Open")) == 0 ||
+		    (my_Gpm_GetEvent = dlsym(obj, "Gpm_GetEvent")) == 0) {
+		    T(("GPM initialization failed: %s", dlerror()));
+		    dlclose(obj);
+		} else {
+		    found = TRUE;
+		}
+	    }
+	}
+
+	if (found) {
+	    /* GPM: initialize connection to gpm server */
+	    gpm_connect.eventMask = GPM_DOWN | GPM_UP;
+	    gpm_connect.defaultMask = ~(gpm_connect.eventMask | GPM_HARD);
+	    gpm_connect.minMod = 0;
+	    gpm_connect.maxMod = ~((1 << KG_SHIFT) |
+				   (1 << KG_SHIFTL) |
+				   (1 << KG_SHIFTR));
+	    if (my_Gpm_Open(&gpm_connect, 0) >= 0) {	/* returns the file-descriptor */
+		SP->_mouse_type = M_GPM;
+		SP->_mouse_fd = *my_gpm_fd;
+		return;
+	    }
 	}
     }
 #endif
@@ -500,7 +537,7 @@ _nc_mouse_init(void)
  * fifo_push() in lib_getch.c
  */
 static bool
-_nc_mouse_event(SCREEN * sp GCC_UNUSED)
+_nc_mouse_event(SCREEN *sp GCC_UNUSED)
 {
     bool result = FALSE;
 
@@ -530,7 +567,7 @@ _nc_mouse_event(SCREEN * sp GCC_UNUSED)
 	    /* query server for event, return TRUE if we find one */
 	    Gpm_Event ev;
 
-	    if (Gpm_GetEvent(&ev) == 1) {
+	    if (my_Gpm_GetEvent(&ev) == 1) {
 		/* there's only one mouse... */
 		eventp->id = NORMAL_EVENT;
 
@@ -599,7 +636,7 @@ _nc_mouse_event(SCREEN * sp GCC_UNUSED)
 }
 
 static bool
-_nc_mouse_inline(SCREEN * sp)
+_nc_mouse_inline(SCREEN *sp)
 /* mouse report received in the keyboard stream -- parse its info */
 {
     bool result = FALSE;
@@ -769,7 +806,7 @@ mouse_activate(bool on)
 	    break;
 #if USE_GPM_SUPPORT
 	case M_GPM:
-	    SP->_mouse_fd = gpm_fd;
+	    SP->_mouse_fd = *my_gpm_fd;
 	    break;
 #endif
 #if USE_SYSMOUSE
@@ -1050,7 +1087,7 @@ _nc_mouse_parse(int runcount)
 }
 
 static void
-_nc_mouse_wrap(SCREEN * sp GCC_UNUSED)
+_nc_mouse_wrap(SCREEN *sp GCC_UNUSED)
 /* release mouse -- called by endwin() before shellout/exit */
 {
     TR(MY_TRACE, ("_nc_mouse_wrap() called"));
@@ -1076,7 +1113,7 @@ _nc_mouse_wrap(SCREEN * sp GCC_UNUSED)
 }
 
 static void
-_nc_mouse_resume(SCREEN * sp GCC_UNUSED)
+_nc_mouse_resume(SCREEN *sp GCC_UNUSED)
 /* re-connect to mouse -- called by doupdate() after shellout */
 {
     TR(MY_TRACE, ("_nc_mouse_resume() called"));

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,12 +29,13 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 #include <curses.priv.h>
 #include <term.h>		/* ena_acs, acs_chars */
 
-MODULE_ID("$Id: lib_acs.c,v 1.25 2002/12/28 16:26:46 tom Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.26 2004/10/09 19:02:46 tom Exp $")
 
 #if BROKEN_LINKER
 NCURSES_EXPORT_VAR(chtype *)
@@ -119,6 +120,9 @@ _nc_init_acs(void)
     if (_nc_unicode_locale() && _nc_locale_breaks_acs()) {
 	acs_chars = NULL;
 	ena_acs = NULL;
+	enter_alt_charset_mode = NULL;
+	exit_alt_charset_mode = NULL;
+	set_attributes = NULL;
     }
 #endif
 
