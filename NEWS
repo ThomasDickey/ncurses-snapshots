@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.754 2003/06/28 23:18:54 tom Exp $
+-- $Id: NEWS,v 1.755 2003/07/05 22:49:47 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,15 +6,29 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
+20030705
+	+ modify CF_GCC_WARNINGS so it only applies to gcc, not g++.  Some
+	  platforms have installed g++ along with the native C compiler, which
+	  would not accept gcc warning options.
+	+ add -D_XOPEN_SOURCE=500 when configuring with --enable-widec, to
+	  get mbstate_t declaration on HPUX 11.11 (report by David Ellement).
+	+ add _nc_pathlast() to get rid of casts in _nc_basename() calls.
+	+ correct a sign-extension in wadd_wch() and wecho_wchar() from
+	  20030628 (report by Tomohiro KUBOTA).
+	+ work around omission of btowc() and wctob() from wide-character
+	  support (sic) in NetBSD 1.6 using mbtowc() and wctomb() (report by
+	  Gabor Z Papp).
+	+ add portability note to curs_get_wstr.3x (Debian #199957).
+
 20030628
 	+ rewrite wadd_wch() and wecho_wchar() to call waddch() and wechochar()
 	  respectively, to avoid calling waddch_noecho() with wide-character
-	  data, since that function assumes its input is 8-bit data.  Similarly,
-	  modify waddnwstr() to call wadd_wch().
+	  data, since that function assumes its input is 8-bit data. 
+	  Similarly, modify waddnwstr() to call wadd_wch().
 	+ remove logic from waddnstr() which transformed multibyte character
 	  strings into wide-characters.  Rewrite of waddch_literal() from
 	  20030621 assumes its input is raw multibyte data rather than wide
-	  characters (report by Tomohiro KUBOTA <kubota@debian.org>).
+	  characters (report by Tomohiro KUBOTA).
 
 20030621
 	+ write getyx() and related 2-return macros in terms of getcury(),

@@ -862,6 +862,7 @@
 ./ncurses/tty/tty_display.h
 ./ncurses/tty/tty_input.h
 ./ncurses/tty/tty_update.c
+./ncurses/widechar/charable.c
 ./ncurses/widechar/lib_box_set.c
 ./ncurses/widechar/lib_cchar.c
 ./ncurses/widechar/lib_erasewchar.c

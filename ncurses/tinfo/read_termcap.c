@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -57,7 +57,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.59 2002/11/03 01:20:23 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.60 2003/07/05 19:31:16 tom Exp $")
 
 #if !PURE_TERMINFO
 
@@ -949,7 +949,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE * const tp)
     if (strlen(tn) == 0
 	|| strcmp(tn, ".") == 0
 	|| strcmp(tn, "..") == 0
-	|| _nc_basename((char *)tn) != tn) {
+	|| _nc_pathlast(tn) != 0) {
 	T(("illegal or missing entry name '%s'", tn));
 	return 0;
     }

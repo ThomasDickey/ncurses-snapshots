@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.291 2003/06/07 20:15:23 tom Exp $
+dnl $Id: configure.in,v 1.293 2003/07/05 22:47:03 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.291 $)
+AC_REVISION($Revision: 1.293 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -781,10 +781,10 @@ AC_MSG_RESULT($with_widec)
 if test "$with_widec" = yes ; then
 	LIB_SUFFIX="w${LIB_SUFFIX}"
 	AC_DEFINE(USE_WIDEC_SUPPORT)
-	CPPFLAGS="$CPPFLAGS -D_XOPEN_SOURCE_EXTENDED"
+	CPPFLAGS="$CPPFLAGS -D_XOPEN_SOURCE=500 -D_XOPEN_SOURCE_EXTENDED"
 	# with_overwrite=no
 	NCURSES_CH_T=cchar_t
-	AC_CHECK_FUNC(putwc)
+	AC_CHECK_FUNCS(putwc btowc wctob mbtowc wctomb)
 	if test "$ac_cv_func_putwc" != yes ; then
 		CF_LIBUTF8
 		if test "$cf_cv_libutf8" = yes ; then
