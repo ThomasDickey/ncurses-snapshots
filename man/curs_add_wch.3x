@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 2001 Free Software Foundation, Inc.                        *
+.\" Copyright (c) 2001,2002 Free Software Foundation, Inc.                   *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_add_wch.3x,v 1.2 2001/11/04 02:38:23 tom Exp $
+.\" $Id: curs_add_wch.3x,v 1.3 2002/01/19 22:49:26 tom Exp $
 .TH curs_add_wch 3X ""
 .SH NAME
 \fBadd_wch\fP,
@@ -84,7 +84,7 @@ and the rendition specified by \fIwch\fP is ignored.
 -
 If the character part of \fIwch\fP is
 a tab, newline, backspace or other control character,
-the window is updated and the cursor moves as if \fBaddch (3X)\fP were called.
+the window is updated and the cursor moves as if \fBaddch\fR(3X) were called.
 .PP
 The \fBecho_wchar\fP
 function is functionally equivalent to a call to
@@ -122,9 +122,15 @@ line-drawing.
 Those are not currently implemented in \fBncurses\fP.
 .SH SEE ALSO
 .PP
-\fBcurses\fP(3X),
-\fBcurs_attr_get\fP(3X),
-\fBcurs_clear\fP(3X),
-\fBcurs_outopts\fP(3X),
-\fBcurs_refresh\fP(3X),
-\fBputwc\fP(3)
+\fBcurses\fR(3X),
+\fBcurs_attr_get\fR(3X),
+\fBcurs_clear\fR(3X),
+\fBcurs_outopts\fR(3X),
+\fBcurs_refresh\fR(3X),
+\fBputwc\fR(3)
+.\"#
+.\"# The following sets edit modes for GNU EMACS
+.\"# Local Variables:
+.\"# mode:nroff
+.\"# fill-column:79
+.\"# End:

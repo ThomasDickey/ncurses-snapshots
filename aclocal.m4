@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright (c) 1998-2000,2001 Free Software Foundation, Inc.              *
+dnl Copyright (c) 1998-2000,2001,2002 Free Software Foundation, Inc.         *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
 dnl copy of this software and associated documentation files (the            *
@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000,2001
 dnl
-dnl $Id: aclocal.m4,v 1.269 2002/01/12 23:15:18 tom Exp $
+dnl $Id: aclocal.m4,v 1.274 2002/01/20 01:08:08 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -58,33 +58,46 @@ AC_SUBST(ACPPFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Copy non-preprocessor flags to $CFLAGS, preprocessor flags to $CPPFLAGS
+dnl The second parameter if given makes this macro verbose.
 AC_DEFUN([CF_ADD_CFLAGS],
 [
+cf_new_cflags=
+cf_new_cppflags=
 for cf_add_cflags in $1
 do
 	case $cf_add_cflags in #(vi
 	-undef|-nostdinc*|-I*|-D*|-U*|-E|-P|-C) #(vi
 		case "$CPPFLAGS" in
-		*$cf_add_cflags)
+		*$cf_add_cflags) #(vi
 			;;
-		*)
-			CPPFLAGS="$CPPFLAGS $cf_add_cflags"
+		*) #(vi
+			cf_new_cppflags="$cf_new_cppflags $cf_add_cflags"
 			;;
 		esac
 		;;
 	*)
-		CFLAGS="$CFLAGS $cf_add_cflags"
+		cf_new_cflags="$cf_new_cflags $cf_add_cflags"
 		;;
 	esac
 done
+
+if test -n "$cf_new_cflags" ; then
+	ifelse($2,,,[CF_VERBOSE(add to \$CFLAGS $cf_new_cflags)])
+	CFLAGS="$CFLAGS $cf_new_cflags"
+fi
+
+if test -n "$cf_new_cppflags" ; then
+	ifelse($2,,,[CF_VERBOSE(add to \$CPPFLAGS $cf_new_cppflags)])
+	CPPFLAGS="$CPPFLAGS $cf_new_cppflags"
+fi
+
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl This is adapted from the macros 'fp_PROG_CC_STDC' and 'fp_C_PROTOTYPES'
 dnl in the sharutils 4.2 distribution.
 AC_DEFUN([CF_ANSI_CC_CHECK],
 [
-AC_MSG_CHECKING(for ${CC-cc} option to accept ANSI C)
-AC_CACHE_VAL(cf_cv_ansi_cc,[
+AC_CACHE_CHECK(for ${CC-cc} option to accept ANSI C, cf_cv_ansi_cc,[
 cf_cv_ansi_cc=no
 cf_save_CFLAGS="$CFLAGS"
 cf_save_CPPFLAGS="$CPPFLAGS"
@@ -120,7 +133,6 @@ done
 CFLAGS="$cf_save_CFLAGS"
 CPPFLAGS="$cf_save_CPPFLAGS"
 ])
-AC_MSG_RESULT($cf_cv_ansi_cc)
 
 if test "$cf_cv_ansi_cc" != "no"; then
 if test ".$cf_cv_ansi_cc" != ".-DCC_HAS_PROTOS"; then
@@ -343,14 +355,10 @@ dnl Check for data that is usually declared in <stdio.h> or <errno.h>, e.g.,
 dnl the 'errno' variable.  Define a DECL_xxx symbol if we must declare it
 dnl ourselves.
 dnl
-dnl (I would use AC_CACHE_CHECK here, but it will not work when called in a
-dnl loop from CF_SYS_ERRLIST).
-dnl
 dnl $1 = the name to check
 AC_DEFUN([CF_CHECK_ERRNO],
 [
-AC_MSG_CHECKING(if external $1 is declared)
-AC_CACHE_VAL(cf_cv_dcl_$1,[
+AC_CACHE_CHECK(if external $1 is declared, cf_cv_dcl_$1,[
     AC_TRY_COMPILE([
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -359,16 +367,12 @@ AC_CACHE_VAL(cf_cv_dcl_$1,[
 #include <sys/types.h>
 #include <errno.h> ],
     [long x = (long) $1],
-    [eval 'cf_cv_dcl_'$1'=yes'],
-    [eval 'cf_cv_dcl_'$1'=no'])
+    [cf_cv_dcl_$1=yes],
+    [cf_cv_dcl_$1=no])
 ])
 
-eval 'cf_result=$cf_cv_dcl_'$1
-AC_MSG_RESULT($cf_result)
-
-if test "$cf_result" = no ; then
-    eval 'cf_result=DECL_'$1
-    CF_UPPER(cf_result,$cf_result)
+if test "$cf_cv_dcl_$1" = no ; then
+    CF_UPPER(cf_result,decl_$1)
     AC_DEFINE_UNQUOTED($cf_result)
 fi
 
@@ -382,22 +386,18 @@ dnl $1 = the name to check
 dnl $2 = its type
 AC_DEFUN([CF_CHECK_EXTERN_DATA],
 [
-AC_MSG_CHECKING(if external $1 exists)
-AC_CACHE_VAL(cf_cv_have_$1,[
+AC_CACHE_CHECK(if external $1 exists, cf_cv_have_$1,[
     AC_TRY_LINK([
 #undef $1
 extern $2 $1;
 ],
     [$1 = 2],
-    [eval 'cf_cv_have_'$1'=yes'],
-    [eval 'cf_cv_have_'$1'=no'])])
+    [cf_cv_have_$1=yes],
+    [cf_cv_have_$1=no])
+])
 
-eval 'cf_result=$cf_cv_have_'$1
-AC_MSG_RESULT($cf_result)
-
-if test "$cf_result" = yes ; then
-    eval 'cf_result=HAVE_'$1
-    CF_UPPER(cf_result,$cf_result)
+if test "$cf_cv_have_$1" = yes ; then
+    CF_UPPER(cf_result,have_$1)
     AC_DEFINE_UNQUOTED($cf_result)
 fi
 
@@ -971,6 +971,25 @@ AC_MSG_RESULT($cf_cv_have_isascii)
 test "$cf_cv_have_isascii" = yes && AC_DEFINE(HAVE_ISASCII)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Check for libutf8
+AC_DEFUN([CF_LIBUTF8],
+[
+AC_CACHE_CHECK(for putwc in libutf8,cf_cv_libutf8,[
+	cf_save_LIBS="$LIBS"
+	LIBS="-lutf8 $LIBS"
+AC_TRY_LINK([
+#include <libutf8.h>],[putwc(0,0);],
+	[cf_cv_libutf8=yes],
+	[cf_cv_libutf8=no])
+	LIBS="$cf_save_LIBS"
+])
+
+if test "$cf_cv_libutf8" = yes ; then
+	AC_DEFINE(HAVE_LIBUTF8_H)
+	LIBS="-lutf8 $LIBS"
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Compute the library-prefix for the given host system
 dnl $1 = variable to set
 AC_DEFUN([CF_LIB_PREFIX],
@@ -1003,7 +1022,7 @@ for cf_dir in $SRC_SUBDIRS
 do
 	if test -f $srcdir/$cf_dir/modules; then
 
-		cf_libs_to_make=
+		LIBS_TO_MAKE=
 		for cf_item in $CF_LIST_MODELS
 		do
 			CF_LIB_SUFFIX($cf_item,cf_suffix)
@@ -1025,7 +1044,7 @@ do
 				esac
 			fi
 			fi
-			cf_libs_to_make="$cf_libs_to_make ../lib/${cf_prefix}${cf_dir}${cf_suffix}"
+			LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/${cf_prefix}${cf_dir}${cf_suffix}"
 		done
 
 		if test $cf_dir = ncurses ; then
@@ -1033,13 +1052,32 @@ do
 			termlib+*) #(vi
 				;;
 			*) #(vi
-				cf_item=`echo $cf_libs_to_make |sed -e s/$LIB_NAME/$TINFO_NAME/g`
-				cf_libs_to_make="$cf_item $cf_libs_to_make"
+				cf_item=`echo $LIBS_TO_MAKE |sed -e s/$LIB_NAME/$TINFO_NAME/g`
+				LIBS_TO_MAKE="$cf_item $LIBS_TO_MAKE"
 				;;
 			esac
 		fi
 
-		sed -e "s@\@LIBS_TO_MAKE\@@$cf_libs_to_make@" \
+		# add import libraries for cygwin
+		IMPORT_LIB=
+		SHARED_LIB=
+		if test $cf_cv_shlib_version = cygdll ; then
+			cf_item=`echo "$CF_LIST_MODELS" |sed -e 's/ //g'`
+			case $cf_item in #(vi
+			shared) #(vi
+				SHARED_LIB="`echo $LIBS_TO_MAKE | sed -e 's/\.dll/\$(ABI_VERSION).dll/g'`"
+				IMPORT_LIB="`echo $LIBS_TO_MAKE | sed -e 's/\.dll/.dll.a/g'`"
+				LIBS_TO_MAKE='$(SHARED_LIB) $(IMPORT_LIB)'
+				;;
+			*shared*)
+				AC_MSG_ERROR(Cannot mix shared/static models: $CF_LIST_MODELS)
+				;;
+			esac
+		fi
+
+		sed -e "s@\@LIBS_TO_MAKE\@@$LIBS_TO_MAKE@" \
+		    -e "s@\@IMPORT_LIB\@@$IMPORT_LIB@" \
+		    -e "s@\@SHARED_LIB\@@$SHARED_LIB@" \
 			$cf_dir/Makefile >$cf_dir/Makefile.out
 		mv $cf_dir/Makefile.out $cf_dir/Makefile
 
@@ -1330,6 +1368,7 @@ AC_DEFUN([CF_LIB_SUFFIX],
 	profile) $2='_p.a' ;;
 	shared)
 		case $cf_cv_system_name in
+		cygwin*) $2='.dll' ;;
 		darwin*) $2='.dylib' ;;
 		hpux*)	$2='.sl'  ;;
 		*)	$2='.so'  ;;
@@ -1471,8 +1510,7 @@ dnl (GNU 'make' does both, something POSIX 'make', which happens to make the
 dnl $(MAKEFLAGS) variable incompatible because it adds the assignments :-)
 AC_DEFUN([CF_MAKEFLAGS],
 [
-AC_MSG_CHECKING([for makeflags variable])
-AC_CACHE_VAL(cf_cv_makeflags,[
+AC_CACHE_CHECK(for makeflags variable, cf_cv_makeflags,[
 	cf_cv_makeflags=''
 	for cf_option in '-$(MAKEFLAGS)' '$(MFLAGS)'
 	do
@@ -1497,8 +1535,9 @@ CF_EOF
 			;;
 		esac
 	done
-	rm -f cf_makeflags.tmp])
-AC_MSG_RESULT($cf_cv_makeflags)
+	rm -f cf_makeflags.tmp
+])
+
 AC_SUBST(cf_cv_makeflags)
 ])dnl
 dnl ---------------------------------------------------------------------------
@@ -1539,10 +1578,10 @@ AC_MSG_CHECKING(format of man-pages)
 AC_ARG_WITH(manpage-format,
 	[  --with-manpage-format   specify manpage-format: gzip/compress/BSDI/normal and
                           optionally formatted, e.g., gzip,formatted],
-	[cf_manpage_form=$withval],
-	[cf_manpage_form=unknown])
+	[MANPAGE_FORMAT=$withval],
+	[MANPAGE_FORMAT=unknown])
 
-case ".$cf_manpage_form" in
+case ".$MANPAGE_FORMAT" in
 .gzip|.compress|.BSDI|.normal|.formatted) # (vi
   ;;
 .unknown|.) # (vi
@@ -1551,7 +1590,7 @@ case ".$cf_manpage_form" in
   fi
   # look for the 'date' man-page (it's most likely to be installed!)
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}${PATHSEP}"
-  cf_manpage_form=unknown
+  MANPAGE_FORMAT=unknown
   for cf_dir in $MANPATH; do
     test -z "$cf_dir" && cf_dir=/usr/man
     for cf_name in $cf_dir/*/date.[[01]]* $cf_dir/*/date
@@ -1559,15 +1598,15 @@ case ".$cf_manpage_form" in
        cf_test=`echo $cf_name | sed -e 's/*//'`
        if test "x$cf_test" = "x$cf_name" ; then
 	  case "$cf_name" in
-	  *.gz) cf_manpage_form=gzip;;
-	  *.Z)  cf_manpage_form=compress;;
-	  *.0)	cf_manpage_form=BSDI,formatted;;
-	  *)    cf_manpage_form=normal;;
+	  *.gz) MANPAGE_FORMAT=gzip;;
+	  *.Z)  MANPAGE_FORMAT=compress;;
+	  *.0)	MANPAGE_FORMAT=BSDI,formatted;;
+	  *)    MANPAGE_FORMAT=normal;;
 	  esac
 	  break
        fi
     done
-    if test "$cf_manpage_form" != "unknown" ; then
+    if test "$MANPAGE_FORMAT" != "unknown" ; then
        break
     fi
   done
@@ -1578,7 +1617,7 @@ case ".$cf_manpage_form" in
   ;;
 esac
 
-AC_MSG_RESULT($cf_manpage_form)
+AC_MSG_RESULT($MANPAGE_FORMAT)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl The Debian people have their own naming convention for manpages.  This
@@ -1590,37 +1629,40 @@ AC_MSG_CHECKING(for manpage renaming)
 
 AC_ARG_WITH(manpage-renames,
 	[  --with-manpage-renames  specify manpage-renaming],
-	[cf_manpage_renames=$withval],
-	[cf_manpage_renames=yes])
+	[MANPAGE_RENAMES=$withval],
+	[MANPAGE_RENAMES=yes])
 
-case ".$cf_manpage_renames" in #(vi
+case ".$MANPAGE_RENAMES" in #(vi
 .no) #(vi
   ;;
 .|.yes)
   # Debian 'man' program?
   if test -f /etc/debian_version ; then
-    cf_manpage_renames=`cd $srcdir && pwd`/man/man_db.renames
+    MANPAGE_RENAMES=`cd $srcdir && pwd`/man/man_db.renames
   else
-    cf_manpage_renames=no
+    MANPAGE_RENAMES=no
   fi
   ;;
 esac
 
-if test "$cf_manpage_renames" != no ; then
-  if test ! -f $cf_manpage_renames ; then
-    AC_MSG_ERROR(not a filename: $cf_manpage_renames)
+if test "$MANPAGE_RENAMES" != no ; then
+  if test -f $srcdir/man/$MANPAGE_RENAMES ; then
+    MANPAGE_RENAMES=`cd $srcdir/man && pwd`/$MANPAGE_RENAMES
+  elif test ! -f $MANPAGE_RENAMES ; then
+    AC_MSG_ERROR(not a filename: $MANPAGE_RENAMES)
   fi
 
   test ! -d man && mkdir man
 
   # Construct a sed-script to perform renaming within man-pages
-  if test -n "$cf_manpage_renames" ; then
+  if test -n "$MANPAGE_RENAMES" ; then
     test ! -d man && mkdir man
-    sh $srcdir/man/make_sed.sh $cf_manpage_renames >man/edit_man.sed
+    sh $srcdir/man/make_sed.sh $MANPAGE_RENAMES >man/edit_man.sed
   fi
 fi
 
-AC_MSG_RESULT($cf_manpage_renames)
+AC_MSG_RESULT($MANPAGE_RENAMES)
+AC_SUBST(MANPAGE_RENAMES)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Some people expect each tool to make all aliases for manpages in the
@@ -1632,10 +1674,10 @@ AC_MSG_CHECKING(for manpage symlinks)
 
 AC_ARG_WITH(manpage-symlinks,
 	[  --with-manpage-symlinks specify manpage-symlinks],
-	[cf_manpage_symlinks=$withval],
-	[cf_manpage_symlinks=yes])
+	[MANPAGE_SYMLINKS=$withval],
+	[MANPAGE_SYMLINKS=yes])
 
-AC_MSG_RESULT($cf_manpage_symlinks)
+AC_MSG_RESULT($MANPAGE_SYMLINKS)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl This option causes manpages to be run through tbl(1) to generate tables
@@ -1646,10 +1688,10 @@ AC_MSG_CHECKING(for manpage tbl)
 
 AC_ARG_WITH(manpage-tbl,
 	[  --with-manpage-tbl      specify manpage processing with tbl],
-	[cf_manpage_tbl=$withval],
-	[cf_manpage_tbl=no])
+	[MANPAGE_TBL=$withval],
+	[MANPAGE_TBL=no])
 
-AC_MSG_RESULT($cf_manpage_tbl)
+AC_MSG_RESULT($MANPAGE_TBL)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Try to determine if the man-pages on the system are compressed, and if
@@ -1669,7 +1711,7 @@ CF_MANPAGE_TBL
      cf_prefix="$prefix"
   fi
 
-  case "$cf_manpage_form" in # (vi
+  case "$MANPAGE_FORMAT" in # (vi
   *formatted*) # (vi
     cf_subdir='$mandir/cat'
     cf_format=yes
@@ -1723,13 +1765,13 @@ case \$i in #(vi
 		continue
 	fi
 CF_EOF
-if test "$cf_manpage_symlinks" = yes ; then
+if test "$MANPAGE_SYMLINKS" = yes ; then
 cat >>man/edit_man.sh <<CF_EOF
 	aliases=\`sed -f \$srcdir/manlinks.sed \$inalias | sort -u\`
 CF_EOF
 fi
 
-if test "$cf_manpage_renames" = no ; then
+if test "$MANPAGE_RENAMES" = no ; then
 cat >>man/edit_man.sh <<CF_EOF
 	# perform program transformations for section 1 man pages
 	if test \$section = 1 ; then
@@ -1740,7 +1782,7 @@ cat >>man/edit_man.sh <<CF_EOF
 CF_EOF
 else
 cat >>man/edit_man.sh <<CF_EOF
-	target=\`grep "^\$source" $cf_manpage_renames | $AWK '{print \[$]2}'\`
+	target=\`grep "^\$source" $MANPAGE_RENAMES | $AWK '{print \[$]2}'\`
 	if test -z "\$target" ; then
 		echo '? missing rename for '\$source
 		target="\$source"
@@ -1771,10 +1813,16 @@ cat >>man/edit_man.sh <<CF_EOF
 CF_EOF
 	done
 	])
+if test -f $MANPAGE_RENAMES ; then
+cat >>man/edit_man.sh <<CF_EOF
+		< \$i | sed -f edit_man.sed >\$TMP
+CF_EOF
+else
 cat >>man/edit_man.sh <<CF_EOF
 		< \$i >\$TMP
 CF_EOF
-if test $cf_manpage_tbl = yes ; then
+fi
+if test $MANPAGE_TBL = yes ; then
 cat >>man/edit_man.sh <<CF_EOF
 	tbl \$TMP >\$TMP.out
 	mv \$TMP.out \$TMP
@@ -1792,7 +1840,7 @@ cat >>man/edit_man.sh <<CF_EOF
 	mv \$TMP.out \$TMP
 CF_EOF
 fi
-case "$cf_manpage_form" in #(vi
+case "$MANPAGE_FORMAT" in #(vi
 *compress*) #(vi
 cat >>man/edit_man.sh <<CF_EOF
 	if test \$verb = installing ; then
@@ -1903,6 +1951,37 @@ ifelse($1,,[
 ],[$1=-lm])
 fi
 ])
+dnl ---------------------------------------------------------------------------
+dnl Check if mbstate_t is declared, and if so, which header file.
+AC_DEFUN([CF_MBSTATE_T],
+[
+# This is needed on Tru64 5.0 to declare mbstate_t
+AC_CACHE_CHECK(if we must include wchar.h to declare mbstate_t,cf_cv_mbstate_t,[
+AC_TRY_COMPILE([
+#include <stdlib.h>
+#ifdef HAVE_LIBUTF8_H
+#include <libutf8.h>
+#endif],
+	[mbstate_t state],
+	[cf_cv_mbstate_t=no],
+	[AC_TRY_COMPILE([
+#include <stdlib.h>
+#include <wchar.h>
+#ifdef HAVE_LIBUTF8_H
+#include <libutf8.h>
+#endif],
+	[mbstate_t value],
+	[cf_cv_mbstate_t=yes],
+	[cf_cv_mbstate_t=unknown])])])
+
+if test "$cf_cv_mbstate_t" = yes ; then
+	AC_DEFINE(NEED_WCHAR_H)
+fi
+
+if test "$cf_cv_mbstate_t" != unknown ; then
+	AC_DEFINE(HAVE_MBSTATE_T)
+fi
+])dnl
 dnl ---------------------------------------------------------------------------
 dnl Check if the file-system supports mixed-case filenames.  If we're able to
 dnl create a lowercase name and see it as uppercase, it doesn't support that.
@@ -2162,6 +2241,11 @@ AC_DEFUN([CF_SHARED_OPTS],
 	case $cf_cv_system_name in
 	beos*)
 		MK_SHARED_LIB='$(CC) -o $[@] -Xlinker -soname=`basename $[@]` -nostart -e 0'
+		;;
+	cygwin*)
+		MK_SHARED_LIB='$(CC) -shared -Wl,--out-implib=$(IMPLIB) -Wl,--export-all-symbols -o $(SHAREDLIB)'
+		cf_cv_shlib_version=cygdll
+		cf_cv_shlib_version_infix=cygdll
 		;;
 	darwin*)
 		EXTRA_CFLAGS="-no-cpp-precomp"
@@ -2469,11 +2553,11 @@ do
 	fi
 done
 AC_MSG_RESULT($cf_cv_src_modules)
-TEST_ARGS="-L${LIB_DIR} -L\$(libdir) $TEST_ARGS"
+TEST_ARGS="-L${LIB_DIR} $TEST_ARGS"
 AC_SUBST(TEST_DEPS)
 AC_SUBST(TEST_ARGS)
 
-PROG_ARGS="-L${LIB_DIR} -L\$(libdir) $PROG_ARGS"
+PROG_ARGS="-L${LIB_DIR} $PROG_ARGS"
 AC_SUBST(PROG_ARGS)
 
 SRC_SUBDIRS="man include"

@@ -1,5 +1,5 @@
 #! /bin/sh
-# $Id: MKkey_defs.sh,v 1.6 2002/01/12 22:27:12 Robert.Joop Exp $
+# $Id: MKkey_defs.sh,v 1.7 2002/01/13 01:36:32 tom Exp $
 ##############################################################################
 # Copyright (c) 2001,2002 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -86,6 +86,8 @@ function decode(keycode) {
 }
 
 BEGIN	{
+	maxkey='$maxkey';
+	pass='$pass';
 	key_max=1;
 	bits=1;
 	while (key_max < maxkey) {
@@ -148,7 +150,7 @@ END	{
 			print " */";
 		}
 	}
-' maxkey=$maxkey pass=$pass 
+'
 if test $pass = 1 ; then
 	maxkey=`cat $pass1`
 fi

@@ -1,6 +1,7 @@
-# $Id: man_db.renames,v 0.21 2001/11/04 02:02:25 tom Exp $
+# $Id: man_db.renames,v 0.22 2002/01/19 22:37:05 tom Exp $
 # Manual-page renamings for the man_db program
 #
+# Files:
 captoinfo.1m			captoinfo.1
 clear.1				clear.1
 curs_add_wch.3x			add_wch.3ncurses
@@ -117,3 +118,10 @@ tput.1				tput.1
 tset.1				tset.1
 vprintf.3s			vprintf.3
 wresize.3x			wresize.3ncurses
+#
+# Other cross-references:
+addch.3x			addch.3ncurses
+can_change_color.3x		can_change_color.3ncurses
+curs_attr_get.3x		curs_attr_get.3ncurses
+dup_field.3x			dup_field.3ncurses
+init_pair.3x			init_pair.3ncurses

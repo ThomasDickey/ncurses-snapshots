@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.47 2001/12/08 19:16:46 Jason.Evans Exp $
+# $Id: mk-1st.awk,v 1.48 2002/01/20 01:05:15 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -78,7 +78,7 @@ function removelinks(directory) {
 		}
 	}
 function sharedlinks(directory) {
-		if ( ShlibVer != "auto" ) {
+		if ( ShlibVer != "auto" && ShlibVer != "cygdll" ) {
 			printf "\tcd %s && (", directory
 			if ( DoLinks == "reverse" ) {
 				if ( ShlibVer == "rel" ) {
@@ -160,8 +160,10 @@ END	{
 			lib_name = sprintf("%s%s%s", prefix, name, suffix)
 			if ( MODEL == "SHARED" )
 			{
-				if (ShlibVerInfix == "yes")
-				{
+				if (ShlibVerInfix == "cygdll") {
+					abi_name = sprintf("%s%s$(ABI_VERSION)%s", prefix, name, suffix);
+					rel_name = sprintf("%s%s$(REL_VERSION)%s", prefix, name, suffix);
+				} else if (ShlibVerInfix == "yes") {
 					abi_name = sprintf("%s%s.$(ABI_VERSION)%s", prefix, name, suffix);
 					rel_name = sprintf("%s%s.$(REL_VERSION)%s", prefix, name, suffix);
 				} else {
@@ -173,28 +175,48 @@ END	{
 				} else {
 					if ( ShlibVer == "rel" ) {
 						end_name = rel_name;
-					} else if ( ShlibVer == "abi" ) {
+					} else if ( ShlibVer == "abi" || ShlibVer = "cygdll" ) {
 						end_name = abi_name;
 					} else {
 						end_name = lib_name;
 					}
 				}
-				printf "../lib/%s : $(%s_OBJS)\n", end_name, OBJS
-				print  "\t-@rm -f $@"
+
+				if ( ShlibVer == "cygdll" ) {
+					printf "$(SHARED_LIB) $(IMPORT_LIB) : $(%s_OBJS)\n", OBJS
+					print "\t-@rm -f $(SHARED_LIB) $(IMPORT_LIB)";
+				} else {
+					printf "../lib/%s : $(%s_OBJS)\n", end_name, OBJS
+					print "\t-@rm -f $@";
+				}
 				if ( subset == "termlib") {
 					printf "\t$(MK_SHARED_LIB) $(%s_OBJS) $(TINFO_LIST)\n", OBJS
 				} else {
 					printf "\t$(MK_SHARED_LIB) $(%s_OBJS) $(SHLIB_LIST)\n", OBJS
 				}
 				sharedlinks("../lib")
+
 				print  ""
 				print  "install \\"
 				print  "install.libs \\"
-				printf "install.%s :: $(DESTDIR)$(libdir) ../lib/%s\n", name, end_name
-				printf "\t@echo installing ../lib/%s as $(DESTDIR)$(libdir)/%s\n", end_name, end_name
-				printf "\t-@rm -f $(DESTDIR)$(libdir)/%s\n", end_name
-				printf "\t$(INSTALL_LIB) ../lib/%s $(DESTDIR)$(libdir)/%s\n", end_name, end_name
+				printf "install.%s :: $(DESTDIR)$(libdir) $(LIBRARIES)\n", name
+
+				src_name = sprintf("../lib/%s", end_name);
+				dst_name = sprintf("$(DESTDIR)$(libdir)/%s", end_name);
+				printf "\t@echo installing %s as %s\n", src_name, dst_name
+				printf "\t-@rm -f %s\n", dst_name
+				printf "\t$(INSTALL_LIB) %s %s\n", src_name, dst_name
 				sharedlinks("$(DESTDIR)$(libdir)")
+
+				if ( ShlibVer == "cygdll" ) {
+					imp_name = sprintf("%s%s%s", prefix, name, suffix);
+					src_name = sprintf("../lib/%s", imp_name);
+					dst_name = sprintf("$(DESTDIR)$(libdir)/%s", imp_name);
+					printf "\t@echo installing %s as %s\n", src_name, dst_name
+					printf "\t-@rm -f %s\n", dst_name
+					printf "\t$(INSTALL_LIB) %s %s\n", src_name, dst_name
+				}
+
 				if ( overwrite == "yes" && name == "ncurses" )
 				{
 					ovr_name = sprintf("libcurses%s", suffix)
