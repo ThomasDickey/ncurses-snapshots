@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.230 2001/01/28 01:30:19 tom Exp $
+dnl $Id: configure.in,v 1.231 2001/03/10 21:26:58 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20000819)
-AC_REVISION($Revision: 1.230 $)
+AC_REVISION($Revision: 1.231 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -932,7 +932,7 @@ if test -n "$CXX" ; then
 		1*|2.[0-6]*)
 			cf_cxx_library=yes
 			;;
-		2.7*)
+		*-2.7*|2.7*)
 			CF_GPP_LIBRARY
 			;;
 		*)
@@ -942,7 +942,7 @@ if test -n "$CXX" ; then
 	else
 		cf_cxx_library=no
 	fi
-	AC_CHECK_HEADERS(typeinfo)
+	AC_CHECK_HEADERS(typeinfo sstream)
 	CF_BOOL_DECL
 	CF_BOOL_SIZE
 	CF_ETIP_DEFINES

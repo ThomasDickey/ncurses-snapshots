@@ -1,6 +1,6 @@
 // * this is for making emacs happy: -*-Mode: C++;-*-
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -36,12 +36,12 @@
 #include "internal.h"
 #include <string.h>
 
-MODULE_ID("$Id: cursslk.cc,v 1.7 2000/12/09 23:46:12 tom Exp $")
+MODULE_ID("$Id: cursslk.cc,v 1.8 2001/03/10 23:50:40 tom Exp $")
 
 void Soft_Label_Key_Set::Soft_Label_Key::operator=(char *text)  {
   delete[] label;
   label = new char[1 + ::strlen(text)];
-  (strcpy)(label,text);
+  (::strcpy)(label,text);
 }
 
 long Soft_Label_Key_Set::count      = 0L;

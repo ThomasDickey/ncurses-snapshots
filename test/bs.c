@@ -7,7 +7,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.25 2000/11/04 23:13:02 tom Exp $
+ * $Id: bs.c,v 1.26 2001/03/10 19:47:07 tom Exp $
  */
 
 #include <test.priv.h>
@@ -807,7 +807,7 @@ static ship_t *hitship(int x, int y)
     return((ship_t *)NULL);
 }
 
-static int plyturn(void)
+static bool plyturn(void)
 {
     ship_t *ss;
     bool hit;

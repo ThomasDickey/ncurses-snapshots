@@ -3,7 +3,7 @@
  *
  * Generate timing statistics for vertical-motion optimization.
  *
- * $Id: hashtest.c,v 1.16 2000/12/31 01:56:20 tom Exp $
+ * $Id: hashtest.c,v 1.17 2001/03/10 19:47:22 tom Exp $
  */
 
 #ifdef TRACE
@@ -103,7 +103,7 @@ one_cycle(int ch)
 }
 
 static void
-run_test(bool optimized)
+run_test(bool optimized GCC_UNUSED)
 {
     char ch;
     int lo = continuous ? LO_CHAR : 'a' - LINES;
