@@ -1,10 +1,23 @@
--- $Id: NEWS,v 1.364 1998/08/22 19:55:55 tom Exp $
+-- $Id: NEWS,v 1.366 1998/08/30 00:27:23 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980829
+	+ corrections to mailing addresses, and moving the magic line that
+	  causes the man program to invoke tbl to the first line of each
+	  manpage (patch by Rick Ohnemus <rick@ecompcon.com>).
+	+ add Makefile.os2 and supporting scripts to generate dll's on OS/2 EMX
+	  (from J.J.G.Ripoll, with further integration by TD).
+ 	+ correct a typo in icl6404 terminfo entry.
+ 	+ add xtermm and xtermc terminfo entries.
+	> from esr's terminfo version:
+ 	+ Added Francesco Potorti's tuned Wyse 99 entries.
+ 	+ dtterm enacs correction from Alexander V Lukyanov.
+ 	+ Add ncsa-ns, ncsa-m-ns and ncsa-m entries from esr version.
 
 980822
 	+ document AT&T acs characters in terminfo.5 manpage.

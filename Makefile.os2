@@ -1,0 +1,174 @@
+################################################################################
+# Wrapper Makefile for ncurses library under OS/2.
+################################################################################
+# $Id: Makefile.os2,v 1.4 1998/08/30 02:09:41 tom Exp $
+#
+# Author:  Juan Jose Garcia Ripoll <worm@arrakis.es>.
+# Webpage: http://www.arrakis.es/~worm/
+################################################################################
+#
+# Notes (from J J G Ripoll)
+#
+# The `make.defs' rule creates the new '.def' files and outputs a diagnostic
+# about symbols that disappear from one release to the other, as well as checks
+# about the new '.def' consistency.  If there were no problems, the maintainer
+# is free to replace the `.old' files with the newer ones using the `save.defs'
+# rule.  So, the only tough work is assuring that the symbols that disappear
+# are not essential.
+# 
+# I first thought about killing '_nc_*' symbols, but it seems that some of them
+# --_nc_panel_hook, _nc_ada*, etc-- are needed outside ncurses.dll.  However,
+# the whole size of the export table will not be larger than 1k or so.
+# 
+# [installation]
+# 
+# The way things are handled in misc/Makefile is not well suited for OS/2,
+# where only emx.src is needed.  Thus, I've written a few wrapper rules in
+# Makefile.os2 that handle installation/deinstallation.
+# 
+# [distribution]
+# 
+# There's also a new rule that configures and builds a sort of binary
+# distribution, much like the one I prepared for 1.9.9e.  It's `os2dist'.
+# 
+################################################################################
+
+all ::
+
+install ::
+	echo ***
+	echo *** Do not use this command. Use install.os2 instead.
+	echo ***
+	exit 2
+
+install.os2 : install.emxdata install.libs install.progs
+
+include ./Makefile
+
+all :: make.dlls
+
+#
+# DLLs and that stuff
+#
+
+LIBRARIES = ncurses form menu panel
+
+DLL_TAG = $(NCURSES_MAJOR)
+LIB_TAG = _s
+
+DLL_ROOTS = $(addsuffix $(DLL_TAG), $(LIBRARIES))
+DLLS = $(addsuffix .dll, $(addprefix ./lib/, $(DLL_ROOTS)))
+
+LIB_ROOTS = $(addsuffix $(LIB_TAG), $(LIBRARIES))
+LIBS = $(addsuffix .lib, $(addprefix ./lib/, $(LIB_ROOTS)))
+
+DLL_SIGNATURE = NCurses-$(NCURSES_MAJOR)-$(NCURSES_MINOR)-$(NCURSES_PATCH)
+
+./lib/%$(LIB_TAG).lib : ./misc/%.def
+	emximp -o $@ $<
+
+./lib/%$(DLL_TAG).dll : ./lib/%.a
+	emxomf -o ./lib/$*$(DLL_TAG).lib $<
+	if [ "$*" = "ncurses" ]; then \
+		gcc $(LDFLAGS) -Zcrtdll -Zdll -Zomf ./lib/$*$(DLL_TAG).lib \
+				./misc/$*.def -o $@; \
+	else \
+		gcc $(LDFLAGS) -Zcrtdll -Zdll -Zomf ./lib/$*$(DLL_TAG).lib \
+				./lib/ncurses$(LIB_TAG).lib ./misc/$*.def -o $@; \
+	fi
+	-rm -f ./lib/$*$(DLL_TAG).lib
+
+make.dlls : $(LIBS) $(DLLS)
+
+LIBDIR	= $(INSTALL_PREFIX)$(libdir)
+$(LIBDIR) :
+	mkdir -p $@
+
+install.libs :: $(LIBS) $(DLLS) $(LIBDIR)
+	@for i in $(DLL_ROOTS); do \
+	echo installing ./lib/$$i.dll as $(LIBDIR)/$$i.dll; \
+	$(INSTALL_DATA) ./lib/$$i.dll $(LIBDIR)/$$i.dll; done
+	@for i in $(LIB_ROOTS); do \
+	echo installing ./lib/$$i.lib as $(LIBDIR)/$$i.lib; \
+	$(INSTALL_DATA) ./lib/$$i.lib $(LIBDIR)/$$i.lib; done
+
+uninstall.libs ::
+	-@for i in $(DLL_ROOTS); do \
+	echo uninstalling $(LIBDIR)/$$i.dll; \
+	rm -f $(LIBDIR)/$$i.dll; done
+	-@for i in $(LIB_ROOTS); do \
+	echo uninstalling $(LIBDIR)/$$i.lib; \
+	rm -f $(LIBDIR)/$$i.lib; done
+
+make.defs :
+	for i in $(LIBRARIES); do \
+	echo LIBRARY $$i$(DLL_TAG) INITINSTANCE TERMINSTANCE > ./misc/$$i.def; \
+	echo DESCRIPTION \"$(DLL_SIGNATURE), module $$i\" >> ./misc/$$i.def; \
+	echo EXPORTS >> ./misc/$$i.def; \
+	echo Creating $$i.def; \
+	(cmd /C ".\\misc\\makedef.cmd ./lib/$$i.a ./misc/$$i.old >> ./misc/$$i.def" \
+	 && cmd /C ".\\misc\\chkdef.cmd ./misc/$$i.def") \
+	|| exit 1; \
+	done
+
+save.defs :
+	for i in $(LIBRARIES); do \
+	cp ./misc/$$i.def ./misc/$$i.old; \
+	done
+
+clean \
+os2clean ::
+	-rm -f $(DLLS) $(LIBS)
+
+realclean ::
+	-rm -f $(addprefix ./misc/, $(addsuffix .def, $(LIBRARIES)))
+
+#
+# This is a simplified version of misc/Makefile
+#
+
+TICDIR = $(INSTALL_PREFIX)$(datadir)/terminfo
+TABSETDIR = $(INSTALL_PREFIX)$(datadir)/tabset
+
+$(TICDIR) :
+	mkdir -p $@
+
+install \
+install.emxdata :: $(TICDIR)
+	-@rm -fr $(TICDIR)/*
+	echo Building terminfo database, please wait...
+	set TERMINFO=$(TICDIR); ./progs/tic ./misc/emx.src
+	echo Installing the terminfo cleaner and the sources...
+	cp ./misc/emx.src ./misc/cleantic.cmd $(TICDIR)
+	./misc/cleantic.cmd $(TICDIR)
+
+uninstall \
+uninstall.emxdata ::
+	-cd $(TICDIR) && rm -rf *
+	-cd $(TABSETDIR) && rm -rf *
+
+#
+# This is for preparing binary distributions
+#
+
+OS2NAME=ncurses-$(NCURSES_MAJOR).$(NCURSES_MINOR)-emx
+
+#
+# FIXME: this assumes that we can rerun the configure script, changing only
+# the install-prefix.  That means we cannot provide "interesting" options
+# when building.
+#
+os2dist :
+	$(MAKE) -f Makefile.os2 os2clean
+	./configure --without-debug --with-install-prefix=`pwd|sed -e 's@^.:@@'`/$(OS2NAME)
+	$(MAKE) -f Makefile.os2 $(CF_MFLAGS) install.os2
+	-rm -f $(OS2NAME).zip
+	echo NCurses-$(NCURSES_MAJOR).$(NCURSES_MINOR)-$(NCURSES_PATCH) for emx > $(OS2NAME)/FILE_ID.DIZ
+	echo Binary release. >> $(OS2NAME)/FILE_ID.DIZ
+	zip -r $(OS2NAME).zip ./$(OS2NAME)
+
+clean \
+os2clean ::
+	-rm -rf $(OS2NAME)
+	-rm -f $(OS2NAME).zip
+
