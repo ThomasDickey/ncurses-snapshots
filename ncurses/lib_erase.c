@@ -27,7 +27,9 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
+
+MODULE_ID("$Id: lib_erase.c,v 1.6 1996/07/21 00:15:35 tom Exp $")
 
 int  werase(WINDOW	*win)
 {
@@ -47,7 +49,7 @@ short	minx;
 			maxx = sp;
 			if (minx == _NOCHANGE)
 					minx = sp - start;
-			*sp = _nc_render(win, *sp, BLANK);
+			*sp = _nc_background(win);
 		}
 
 		if (minx != _NOCHANGE) {

@@ -27,7 +27,6 @@
 
 #include <curses.priv.h>
 
-#include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -36,10 +35,6 @@
 #include "tic.h"
 #include "term.h"
 #include "term_entry.h"
-
-#if !HAVE_EXTERN_ERRNO
-extern int errno;
-#endif
 
 #ifndef S_ISDIR
 #define S_ISDIR(mode) ((mode & S_IFMT) == S_IFDIR)

@@ -837,7 +837,7 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define	wbkgdset(win, ch) \
 	(((win)->_attrs = (((win)->_attrs & ~((win)->_bkgd & A_ATTRIBUTES)) | \
 	    ((ch) & A_ATTRIBUTES))), \
-	    ((win)->_bkgd = ((ch) & A_CHARTEXT) ? (ch) : ((ch) | ' ')))
+	    ((win)->_bkgd = (ch)))
 
 /* It seems older SYSV curses versions define these */
 #define getattrs(win)		((win)->_attrs)
@@ -1239,7 +1239,7 @@ extern bool no_optimize;	/* suppress optimization */
 
 /* other non-XSI functions */
 
-extern size_t mcprint(char *, size_t);	/* direct data to printer */
+extern int mcprint(char *, int);	/* direct data to printer */
 extern int has_key(int);		/* do we have given key? */
 
 #endif /* __NCURSES_H */

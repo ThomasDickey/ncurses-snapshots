@@ -23,10 +23,9 @@
 #include <curses.priv.h>
 
 #include "term.h"
-#include <errno.h>
 #include <string.h>
 
-size_t mcprint(char *data, size_t len)
+int mcprint(char *data, int len)
 /* ship binary character data to the printer via mc4/mc5/mc5p */
 {
     char	*mybuf, *switchon;

@@ -29,12 +29,6 @@
 
 #include <curses.priv.h>
 
-#include <errno.h>
-
-#if !HAVE_EXTERN_ERRNO
-extern int errno;
-#endif
-
 WINDOW *newpad(int l, int c)
 {
 WINDOW *win;

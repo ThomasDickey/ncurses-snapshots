@@ -26,7 +26,9 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
+
+MODULE_ID("$Id: lib_clrbot.c,v 1.8 1996/07/21 00:15:19 tom Exp $")
 
 int wclrtobot(WINDOW *win)
 {
@@ -44,7 +46,7 @@ short	y, startx, minx;
 		end = &win->_line[y].text[win->_maxx];
 
 		for (ptr = &win->_line[y].text[startx]; ptr <= end; ptr++) {
-			chtype blank = _nc_render(win, *ptr, BLANK);
+			chtype blank = _nc_background(win);
 
 			if (*ptr != blank) {
 				maxx = ptr;

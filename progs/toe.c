@@ -53,7 +53,7 @@ int main (int argc, char *argv[])
     else
 	_nc_progname++;
 
-    while ((c = getopt(argc, argv, "huv:U:V")) != EOF)
+    while ((c = getopt(argc, argv, "huv:UV")) != EOF)
 	switch (c)
 	{
 	case 'h':
@@ -74,7 +74,7 @@ int main (int argc, char *argv[])
 	    putchar('\n');
 	    exit(EXIT_SUCCESS);
 	default:
-	    (void) fprintf (stderr, "usage: toe [-huUvV] [file...]\n");
+	    (void) fprintf (stderr, "usage: toe [-huUV] [-v n] [file...]\n");
 	    exit(EXIT_FAILURE);
 	}
 
@@ -105,7 +105,7 @@ int main (int argc, char *argv[])
 
 		(void) printf("%s:", _nc_first_name(qp->tterm.term_names));
 		for (j = 0; j < qp->nuses; j++)
-		    (void) printf(" %s", (char *)(qp->uses[j]));
+		    (void) printf(" %s", (char *)(qp->uses[j].parent));
 		putchar('\n');
 	    }
 
@@ -127,7 +127,7 @@ int main (int argc, char *argv[])
 		    continue;
 
 		for (i = 0; i < rp->nuses; i++)
-		    if (_nc_name_match(qp->tterm.term_names,(char*)rp->uses[i], "|"))
+		    if (_nc_name_match(qp->tterm.term_names,(char*)rp->uses[i].parent, "|"))
 		    {
 			if (matchcount++ == 0)
 			    (void) printf("%s:",

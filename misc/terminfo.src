@@ -18,9 +18,10 @@
 # Other terminfo and termcap files exist, supported by various OS vendors
 # or as relics of various older versions of UNIX.  This one is the longest
 # and most comprehensive one in existence.  It subsumes not only the entirety
-# of the historical 4.4BSD, GNU, System V and SCO termcap files, but also large
-# numbers of vendor-maintained termcap and terminfo entries more complete
-# and carefully tested than those in historical termcap/terminfo versions.
+# of the historical 4.4BSD, GNU, System V and SCO termcap files and the BRL
+# termcap file, but also large numbers of vendor-maintained termcap and
+# terminfo entries more complete and carefully tested than those in historical
+# termcap/terminfo versions.
 #
 # Pointers to related resources (including the ncurses distribution) may
 # be found at <http://www.ccil.org/terminfo>.
@@ -1704,25 +1705,29 @@ xterm-color|xterm terminal emulator (XFree86 3.1.2E and above),
 	cuu=\E[%p1%dA, cuu1=\E[A, cvvis=\E[?25h, dch=\E[%p1%dP, 
 	dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, 
 	el1=\E[1K, enacs=\E(B\E)0, flash=\E[?5h\E[?5l, home=\E[H, 
-	ht=^I, ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, il1=\E[L, 
-	ind=^J, is2=\E[r\E[m\E[H\E[2J\E[?7h\E[?1;3;4;6l\E[4l, 
-	kbs=^H, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
-	kdch1=\177, kend=\EOF, kent=\EOM, kf1=\E[11~, kf10=\E[21~, 
-	kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, 
-	kf15=\E28~, kf16=\E29~, kf17=\E[31~, kf18=\E[32~, 
-	kf19=\E33~, kf2=\E[12~, kf20=\E34~, kf3=\E[13~, kf4=\E[14~, 
-	kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
-	khome=\EOH, kich1=\E[2~, kmous=\E[M, knp=\E[6~, kpp=\E[5~, 
-	op=\E[39;49m, rc=\E8, rev=\E[7m, ri=\EM, rmacs=^O, 
-	rmam=\E[?7l, rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, 
+	ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, 
+	il1=\E[L, ind=^J, 
+	is2=\E[r\E[m\E[H\E[2J\E[?7h\E[?1;3;4;6l\E[4l, 
+	ka1=\EOw, ka3=\EOu, kb2=\EOy, kbeg=\EOE, kbs=^H, kc1=\EOq, 
+	kc3=\EOs, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
+	kdch1=\177, kend=\EOF, kent=\EOM, kf0=\E[21~, kf1=\E[11~, 
+	kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, 
+	kf14=\E[26~, kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, 
+	kf18=\E[32~, kf19=\E[33~, kf2=\E[12~, kf20=\E[34~, 
+	kf3=\E[13~, kf4=\E[14~, kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, 
+	kf8=\E[19~, kf9=\E[20~, kfnd=\E[1~, khome=\EOH, 
+	kich1=\E[2~, kmous=\E[M, knp=\E[6~, kpp=\E[5~, kslt=\E[4~, 
+	meml=\El, memu=\Em, op=\E[39;49m, rc=\E8, rev=\E[7m, ri=\EM, 
+	rmacs=^O, rmam=\E[?7l, rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, 
 	rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, rs1=^O, 
-	rs2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l\E<, 
-	sc=\E7, setb=\E[4%p1%dm, setf=\E[3%p1%dm, sgr0=\E[m, 
-	smacs=^N, smam=\E[?7h, smcup=\E7\E[?47h, smir=\E[4h, 
-	smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
-	u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
+	rs2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l\E>, 
+	sc=\E7, setb=\E[4%p1%dm, setf=\E[3%p1%dm, 
+	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
+	sgr0=\E[m, smacs=^N, smam=\E[?7h, smcup=\E7\E[?47h, 
+	smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
+	tbc=\E[3g, u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
 xterm-alpha|xterm for XFree86 3.1.2Ec, 
-	hpa=\E[%i%p1%dj, rmso=\E[27m, rmul=\E[24m, 
+	hpa=\E[%i%p1%dG, rmso=\E[27m, rmul=\E[24m, 
 	vpa=\E[%i%p1%dd, 
 	use=xterm-color, 
 # Use this version if you have stock X consortium xterm, 
@@ -1807,7 +1812,7 @@ rxvt|reduced xterm terminal (X Window System),
 	kf2=\E[12~, kf20=\E[34~, kf3=\E[13~, kf4=\E[14~, 
 	kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
 	khome=\E[7~, kich1=\E[2~, kmous=\E[M, knp=\E[6~, kpp=\E[5~, 
-	mc4=\E[4i, op=\E[39m\E[49m, rc=\E8, rev=\E[7m, ri=\EM, 
+	mc4=\E[4i, op=\E[39;49m, rc=\E8, rev=\E[7m, ri=\EM, 
 	rmacs=\E(B\E)0\017, rmcup=\E[?47l\E8, rmir=\E[4l, 
 	rmkx=\E>, rmso=\E[27m, rmul=\E[24m, 
 	rs1=\E>\E[1;3;4;5;6l\E[?7h\E[m\E[r\E[2J\E[H, 
@@ -2017,21 +2022,21 @@ oldsun|Sun Microsystems Workstation console,
 	rmso=\E[m, sgr0=\E[m, smso=\E[7m, 
 # From: Alexander Lukyanov <lav@video.yars.free.net>, 14 Nov 1995
 # lines capability later corrected by J.T. Conklin <jtc@cygnus.com>
+# (sun: It's reported that <il>/<il1> aren't reliable on the last line --esr)
 sun|sun1|sun2|Sun Microsystems Inc. workstation console, 
 	am, km, msgr, 
 	cols#80, lines#34, 
 	bel=^G, bold=\E[1m, clear=^L, cr=^M, cub1=^H, cud1=^J, 
 	cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, 
 	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, 
-	el=\E[K, ht=^I, ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, 
-	il1=\E[L, ind=^J, kb2=\E[218z, kbs=^H, kcub1=\E[D, 
-	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\177, 
-	kend=\E[220z, kf1=\E[224z, kf10=\E[233z, kf11=\E[234z, 
-	kf12=\E[235z, kf2=\E[225z, kf3=\E[226z, kf4=\E[227z, 
-	kf5=\E[228z, kf6=\E[229z, kf7=\E[230z, kf8=\E[231z, 
-	kf9=\E[232z, khome=\E[214z, knp=\E[222z, kopt=\E[194z, 
-	kpp=\E[216z, kres=\E[193z, kund=\E[195z, rev=\E[7m, 
-	rmso=\E[m, rmul=\E[m, rs2=\E[s, 
+	el=\E[K, ht=^I, ich=\E[%p1%d@, ich1=\E[@, ind=^J, 
+	kb2=\E[218z, kbs=^H, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, 
+	kcuu1=\E[A, kdch1=\177, kend=\E[220z, kf1=\E[224z, 
+	kf10=\E[233z, kf11=\E[234z, kf12=\E[235z, kf2=\E[225z, 
+	kf3=\E[226z, kf4=\E[227z, kf5=\E[228z, kf6=\E[229z, 
+	kf7=\E[230z, kf8=\E[231z, kf9=\E[232z, khome=\E[214z, 
+	knp=\E[222z, kopt=\E[194z, kpp=\E[216z, kres=\E[193z, 
+	kund=\E[195z, rev=\E[7m, rmso=\E[m, rmul=\E[m, rs2=\E[s, 
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m, 
 	sgr0=\E[m, smso=\E[7m, smul=\E[4m, 
 # From: <john@ucbrenoir>  Tue Sep 24 13:14:44 1985
@@ -2883,11 +2888,11 @@ adm3|lsi adm3,
 adm3a|lsi adm3a, 
 	am, 
 	cols#80, lines#24, 
-	bel=^G, clear=\032$<1>, cr=^M, cub1=^H, cud1=^J, cuf1=^L, 
-	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, home=^^, 
-	ind=^J, 
+	bel=^G, clear=\032$<1/>, cr=^M, cub1=^H, cud1=^J, cuf1=^L, 
+	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, home=^^, ht=^I, 
+	ind=^J, nel=^M^J, rs1=^N, 
 adm3a+|adm3a plus, 
-	kcub1=^H, kcud1=^J, kcuf1=^L, kcuu1=^K, use=adm3a, 
+	kbs=^H, kcub1=^H, kcud1=^J, kcuf1=^L, kcuu1=^K, use=adm3a, 
 # (adm5: removed obsolete ":ma=^Hh^Jj^Kk^Ll^^H:" & duplicate ":do=^J:" -- esr)
 adm5|lsi adm5, 
 	xmc#1, 
@@ -4004,19 +4009,30 @@ tvipt|televideo personal terminal,
 # Or visit White Pine on the World Wide Web at URL http://www.wpine.com.
 #
 
-# vi50 is from University of Wisconsin
-# This is a provisional vi50 termcap entry.  It was copied from vi500
-# entry.  Note especially the <il1> function.  <kf4>-<kf6> are really l4-l6 in
-# disguise; <kf7>-<kf9> are really l1-l3.  No highlighting enabled at present.
+# Visual 50 from Beau Shekita, BTL-Whippany <whuxlb!ejs>
+# Recently I hacked together the following termcap for Visual
+# Technology's Visual 50 terminal. It's a slight modification of
+# the vt52 termcap. 
+# It's intended to run when the Visual 50 is in vt52 emulation mode
+# (I know what you're thinking; if it's emulating a vt52, then why
+# another termcap? Well, it turns out that the Visual 50 can handle
+# <dl1> and db(?) among other things, which the vt52 can't)
+# The termcap works OK for the most part. The only problem is on
+# character inserts. The whole line gets painfully redrawn for each
+# character typed. Any suggestions?
+# Beau's entry is combined with the vi50 entry from University of Wisconsin.
+# Note especially the <il1> function.  <kf4>-<kf6> are really l4-l6 in
+# disguise; <kf7>-<kf9> are really l1-l3.
 vi50|visual 50, 
 	am, msgr, 
 	cols#80, it#8, lines#24, 
-	cbt=\Ez$<4/>, clear=\Ev, cr=^M, cub1=^H, cud1=\EB, cuf1=\EC, 
-	cup=\EY%p1%{32}%+%c%p2%{32}%+%c, cuu1=\EA, 
-	dl1=\EM$<3*/>, ed=\Ek, el=\EK$<16/>, home=\EH, ht=^I, 
+	bel=^G, cbt=\Ez$<4/>, clear=\EH\EJ, cr=^M, cub1=^H, cud1=\EB, 
+	cuf1=\EC, cup=\EY%p1%{32}%+%c%p2%{32}%+%c, cuu1=\EA, 
+	dl1=\EM$<3*/>, ed=\EJ, el=\EK$<16/>, home=\EH, ht=^I, 
 	il1=\EL, ind=^J, kbs=^H, kcub1=\ED, kcud1=\EB, kcuf1=\EC, 
 	kcuu1=\EA, kf1=\EP, kf2=\EQ, kf3=\ER, kf4=\EV, kf5=\EE, 
 	kf6=\E], kf7=\EL, kf8=\Ev, kf9=\EM, khome=\EH, nel=^M^J, 
+	ri=\EI, rmso=\ET, rmul=\EW, smso=\EU, smul=\ES, 
 # this one was BSD & SCO's vi50
 vi50adm|visual 50 in adm3a mode, 
 	am, msgr, 
@@ -7163,6 +7179,48 @@ cdc456|cdc 456 terminal,
 	bel=^G, clear=^Y^X, cr=^M, cub1=^H, cud1=^J, cuf1=^L, 
 	cup=\E1%p1%{32}%+%c%p2%{32}%+%c, cuu1=^Z, dl1=\EJ, ed=^X, 
 	el=^V, home=^Y, il1=\EL, ind=^J, 
+
+# Assorted CDC terminals from BRL (improvements by DAG & Ferd Brundick)
+cdc721|CDC Viking, 
+	am, 
+	cols#80, lines#24, 
+	bel=^G, clear=^L, cr=^M, cub1=^H, cud1=^J, cuf1=^X, 
+	cup=\002%p2%{32}%+%c%p1%{32}%+%c, cuu1=^W, el=^K, 
+	home=^Y, ht=^I, ind=^J, kbs=^H, kcub1=^H, kcud1=^J, kcuf1=^I, 
+	kcuu1=^W, khome=^Y, nel=^M^J, 
+cdc721ll|CDC Vikingll, 
+	am, 
+	cols#132, lines#24, 
+	bel=^G, clear=^L, cr=^M, cub1=^H, cud1=^J, cuf1=^X, 
+	cup=\002%p2%{32}%+%c%p1%{32}%+%c, cuu1=^W, el=^K, 
+	home=^Y, ht=^I, ind=^J, kbs=^H, kcub1=^H, kcud1=^J, kcuf1=^I, 
+	kcuu1=^W, khome=^Y, nel=^M^J, 
+cdc752|CDC 752, 
+	am, bw, xhp, 
+	cols#80, lines#24, 
+	bel=^G, clear=\030\E1  , cr=^M, cub1=^H, cud1=^J, cuf1=^U, 
+	cup=\E1%p2%{32}%+%c%p1%{32}%+%c, cuu1=^Z, el=^V, 
+	home=\E1  , ht=^I, ind=^J, kbs=^H, kcub1=^H, kcud1=^J, ll=^Y, 
+	nel=^M^J, rs1=\E1  \030\002\003\017, 
+#	:ll=\E1  ^Z:
+# CDC 756
+# The following switch/key settings are assumed for normal operation:
+#	96 chars	SCROLL		FULL duplex	not BLOCK
+# Other switches may be set according to communication requirements.
+# Insert/delete-character cannot be used, as the whole display is affected.
+# "so" & "se" are commented out until jove handles "sg" correctly.
+cdc756|CDC 756, 
+	am, bw, 
+	cols#80, lines#24, 
+	bel=^G, clear=^Y^X, cr=^M, cub1=^H, cud1=^J, cuf1=^U, 
+	cup=\E1%p2%{32}%+%c%p1%{32}%+%c, cuu1=^Z, 
+	dl1=\EJ$<6*/>, ed=^X, el=^V, home=^Y, ht=^I, il1=\EL$<6*/>, 
+	ind=^J, kbs=^H, kcub1=^H, kcud1=^J, kcuf1=^U, kcuu1=^Z, 
+	kdch1=\EI, kdl1=\EL, ked=^X, kel=^V, kf0=\EA, kf1=\EB, kf2=\EC, 
+	kf3=\ED, kf4=\EE, kf5=\EF, kf6=\EG, kf7=\EH, kf8=\Ea, kf9=\Eb, 
+	khome=^Y, khts=^O, kich1=\EK, kil1=\EL, lf0=F1, lf1=F2, lf2=F3, 
+	lf3=F4, lf4=F5, lf5=F6, lf6=F7, lf7=F8, lf8=F9, lf9=F10, ll=^Y^Z, 
+	nel=^M^J, rs1=\031\030\002\003\017, 
 #
 # CDC 721 from Robert Viduya, Ga. Tech. <ihnp4!gatech!gitpyr!robert> via BRL.
 #
@@ -9404,13 +9462,19 @@ vc415|volker-craig 415,
 pcplot|pc-plot terminal emulation program, 
 	xenl@, 
 	csr@, dl@, dl1@, il@, il1@, rc@, sc@, use=vt100, 
-# (kaypro: removed obsolete ":ma=^K^P:" -- esr)
+# KayPro II from Richard G Turner <rturner at Darcom-Hq.ARPA>
+# I've found that my KayPro II, running MDM730, continues to emulate an
+# ADM-3A terminal, just like I was running TERM.COM. On our 4.2 UNIX
+# system the following termcap entry works well:
+# I have noticed a couple of minor glitches, but nothing I can't work
+# around. (I added two capabilities from the BRL entry -- esr)
 kaypro|kaypro2|kaypro II, 
 	am, 
 	cols#80, lines#24, 
-	clear=\032$<1/>, cub1=^H, cuf1=^L, 
-	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, home=^^, 
-	kcub1=^H, kcud1=^J, kcuf1=^L, kcuu1=^K, 
+	bel=^G, clear=\032$<1/>, cr=^M, cub1=^H, cud1=^J, cuf1=^L, 
+	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, dl1=\ER, ed=^W, 
+	el=^X, home=^^, ht=^I, il1=\EE, ind=^J, kbs=^H, kcub1=^H, 
+	kcud1=^J, kcuf1=^L, kcuu1=^K, nel=^M^J, 
 
 # From IBM, Thu May  5 19:35:27 1983
 ibmpc|ibm-pc|ibm5051|5051|IBM Personal Computer (no ANSI.SYS), 
@@ -10450,7 +10514,7 @@ intertube2|intertec data systems intertube 2,
 # However, the outfit went bankrupt years ago.
 #
 
-# The Graphos III was a color graphics terminal frome Ithaca Intersystems.
+# The Graphos III was a color graphics terminal from Ithaca Intersystems.
 # These entries were written (originally in termcap syntax) by Brian Yandell 
 # <yandell@stat.wisc.edu> and Mike Meyer <mikem@stat.wisc.edu> at the 
 # University of Wisconsin.
@@ -10489,7 +10553,7 @@ graphos-30|graphos III with 30 lines,
 # I think Modgraph is long gone.
 #
 
-modgraph|mod|modgraph terminal emulating vt100, 
+modgraph|mod24|modgraph terminal emulating vt100, 
 	xenl@, 
 	cols#80, lines#24, 
 	cvvis=\E\^9;0s\E\^7;1s, 
@@ -10505,6 +10569,32 @@ modgraph2|modgraph gx-1000 80x24 with keypad not enabled,
 	ed=\EJ$<50/>, el=\EK$<3/>, ht=^I, 
 	is2=\E<\E\^5;2s\E\^7;1s\E[3g\E\^11;9s\E\^11;17s\E\^11;25s\E\^11;33s\E\^11;41s\E\^11;49s\E\^11;57s\E\^11;65s\E\^11;73s\E\^11;81s\E\^11;89s\E\^12;0s\E\^14;2s\E\^15;9s\E\^25;1s\E\^9;1s\E\^27;1, 
 	ri=\EI$<5/>, 
+#
+# Modgraph from Nancy L. Cider <nancyc@brl-tbd>
+# BUG NOTE from Barbara E. Ringers <barb@brl-tbd>:
+# If we set TERM=vt100, and set the Modgraph screen to 24 lines, setting a
+# mark and using delete-to-killbuffer work correctly.  However, we would
+# like normal mode of operation to be using a Modgraph with 48 line setting.
+# If we set TERM=mod (which is a valid entry in termcap with 48 lines)
+# the setting mark and delete-to-killbuffer results in the deletion of only
+# the line the mark is set on.
+# We've discovered that the delete-to-killbuffer works correctly
+# with TERM=mod and screen set to 80x48 but it's not obvious.  Only
+# the first line disappears but a ctrl-l shows that it did work
+# correctly.
+modgraph48|mod|Modgraph w/48 lines, 
+	am, xenl, 
+	cols#80, it#8, lines#48, vt#3, 
+	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[;H\E[2J, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr, cub1=^H, cud1=^J, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, ed=\E[J, el=\E[K, 
+	flash=\E[?5h\E[0q\E[1;2q\E[?5l\E[0q\E[4;3q, 
+	home=\E[H, ht=^I, is2=\E<\E[1;48r\E[0q\E[3;4q\E=\E[?1h, 
+	kbs=^H, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
+	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, nel=^M^J, rc=\E8, 
+	rev=\E[7m, ri=\EM, rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, 
+	rs1=\E=\E[0q\E>, sc=\E7, sgr0=\E[m, smkx=\E[?1h\E=, 
+	smso=\E[7m, smul=\E[4m, 
 
 #### Morrow Designs
 # 
@@ -10539,6 +10629,21 @@ mt70|mt-70|Morrow MD-70; native Morrow mode,
 	rmacs=\E%, smacs=\E$, smcup=\E"2\EG0\E], smul=\EG1, 
 	tbc=\E0, 
 	use=adm+sgr, 
+
+#### Motorola
+#
+
+# Motorola EXORterm 155	from {decvax, ihnp4}!philabs!sbcs!megad!seth via BRL
+# (Seth H Zirin)
+ex155|Motorola Exorterm 155, 
+	am, bw, 
+	cols#80, lines#24, 
+	bel=^G, cbt=\E[, clear=\EX, cr=^M, cub1=^H, cud1=\EB, cuf1=\ED, 
+	cup=\EE%p1%{32}%+%c%p2%{32}%+%c, ed=\ET, el=\EU, 
+	home=\E@, ht=\EZ, ind=^J, kbs=^H, kcbt=\E[, kclr=\EX, kcub1=^H, 
+	kcud1=^J, kcuf1=^L, kcuu1=^K, ked=\ET, kel=\EU, khome=\E@, 
+	nel=^M^J, rmso=\Ec\ED, rmul=\Eg\ED, smso=\Eb\ED, 
+	smul=\Ef\ED, 
 
 #### Omron
 #
@@ -10589,6 +10694,18 @@ rt6221|Ramtek 6221, 80x24,
 rt6221-w|Ramtek 6221, 160x48, 
 	cols#160, lines#48, 
 	kbs=^H, kcub1=^H, kcud1=^J, ll=\E[48;1H, use=rt6221, 
+
+#### RCA
+#
+
+# RCA VP3301 or VP3501
+rca|rca vp3301/vp3501, 
+	cols#40, lines#24, 
+	bel=^G, clear=^L, cr=^M, cub1=^H, cud1=^J, cuf1=^U, 
+	cup=\EY%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, home=^Z, ht=^I, 
+	ind=^J, kbs=^H, kcub1=^H, kcud1=^J, nel=^M^J, rmso=\E\ES0, 
+	smso=\E\ES1, 
+
 
 #### Selanar
 #
@@ -10974,6 +11091,19 @@ zen50|z50|zentec zephyr,
 	rmul@, smul@, 
 	use=adm+sgr, 
 
+# CCI 4574 (Office Power) from Will Martin <wmartin@BRL.ARPA> via BRL
+cci|cci1|z8001|zen8001|CCI Custom Zentec 8001, 
+	am, bw, 
+	cols#80, lines#24, 
+	bel=^G, blink=\EM", clear=\EH\EJ, cnorm=\EP, cr=^M, 
+	csr=\ER%p1%{32}%+%c%p2%{32}%+%c, cub1=^H, cud1=^J, 
+	cuf1=\EC, cup=\EY%p1%{32}%+%c%p2%{32}%+%c, cuu1=\EA, 
+	cvvis=\EF\EQ\EM \ER 7, dim=\EM!, ed=\EJ, el=\EK, home=\EH, 
+	ht=^I, ind=^J, invis=\EM(, is2=\EM \EF\ET\EP\ER 7, kbs=^H, 
+	kcub1=\ED, kcud1=\EB, kcuf1=\EC, kcuu1=\EA, khome=\EH, 
+	mc4=^T, mc5=^R, nel=^M^J, rev=\EM$, ri=\EI, rmso=\EM , 
+	rmul=\EM , sgr0=\EM , smso=\EM$, smul=\EM0, 
+
 ######## OBSOLETE UNIX CONSOLES
 #
 
@@ -11002,6 +11132,32 @@ apollo_19L|apollo 19 inch display,
 	rmir@, smir@, use=vt132, 
 apollo_color|apollo color display, 
 	rmir@, smir@, use=vt132, 
+
+#### Convergent Technology
+#
+# Burroughs bought Convergent shortly before it merged with Univac.
+# CTOS is (I believe) dead.  Probably the aws is too (this entry dates
+# from 1991 or earlier).
+#
+
+# Convergent AWS workstation from Gould/SEL UTX/32 via BRL
+aws|Convergent Technologies AWS workstation under UTX,Xenix, 
+	am, 
+	cols#80, lines#28, xmc#0, 
+	acsc=, bel=^G, clear=^L, cr=^M, cub1=^H, cud1=^K, cuf1=^R, 
+	cup=\EC%p2%c%p1%c, cuu1=^A, dch1=\EDC, dl1=\EDL, ed=\EEF, 
+	el=\EEL, hpa=\EH%p1%c, ht=^I, ich1=\EIC, il1=\EIL, ind=\ESU, 
+	kbs=^H, kcub1=^N, kcud1=^K, kcuf1=^R, kcuu1=^A, nel=\r\ESU, 
+	ri=\ESD, rmacs=\EAAF, rmso=\EARF, rmul=\EAUF, smacs=\EAAN, 
+	smso=\EARN, smul=\EAUN, vpa=\EV%p1%c, 
+awsc|Convergent Technologies AWS workstation under CTOS, 
+	am, 
+	cols#80, lines#24, xmc#0, 
+	acsc=, bel=^G, clear=^L, cr=^M, cub1=^N, cud1=^K, cuf1=^R, 
+	cup=\EC%p2%c%p1%c, cuu1=^A, ed=\EEF, el=\EEL, ht=^I, ind=^J, 
+	kbs=^H, kcub1=^N, kcud1=^K, kcuf1=^R, kcuu1=^A, nel=^M^J, 
+	rmacs=\EAAF, rmso=\EAA, rmul=\EAA, smacs=\EAAN, smso=\EAE, 
+	smul=\EAC, 
 
 #### Fortune Systems consoles
 #
@@ -11335,13 +11491,15 @@ cops10|cops|cops-10|cops 10,
 	cup=\020%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, ed=^W, el=^V, 
 	ind=^J, kbs=^H, kcub1=^H, kcud1=^J, kcuf1=^L, kcuu1=^K, 
 	khome=^Y, 
-# (d132: removed duplicate ":ic=\E5:" -- esr)
+# (d132: removed duplicate :ic=\E5:,
+# merged in capabilities from a BRL entry -- esr)
 d132|datagraphix|datagraphix 132a, 
 	da, db, in, 
 	cols#80, lines#30, 
-	bel=^G, clear=^L, cnorm=\Em\En, cr=^M, cud1=^J, cuf1=\El, 
-	cuu1=\Ek, cvvis=\Ex, dch1=\E6, home=\Et, ich1=\E5, il1=\E3, 
-	ind=\Ev, ri=\Ew, 
+	bel=^G, clear=^L, cnorm=\Em\En, cr=^M, cub1=^H, cud1=^J, 
+	cuf1=\EL, cup=\E8%i%p1%3d%p2%3d, cuu1=\EK, cvvis=\Ex, 
+	dch1=\E6, home=\ET, ht=^I, ich1=\E5, il1=\E3, ind=^J, kbs=^H, 
+	kcub1=^H, kcud1=^J, nel=^M^J, ri=\Ew, 
 # The d800 was an early portable terminal from c.1984-85 that looked a lot
 # like the original Compaq `lunchbox' portable (but no handle).  It had a vt220
 # mode (which is what this entry looks like) and several other lesser-known
@@ -12558,7 +12716,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  dw3, ln03, ims-ansi, graphos, t16, zen30, xtalk, simterm, d800,
 #	  ifmr, v3220, wy100q, tandem653, ibmaed.
 #	* Added DWK terminal description.
-# 9.13.8 (Wed Jul 10 11:45:21 EDT 1996)
+# 9.13.8 (Wed Jul 10 11:45:21 EDT 1996):
 #	* Many entries now have highlights inherited from adm+sgr.
 #	* xterm entry now corresponds to XFree86 3.1.2E, with color.
 #	* xtitle and xtitle-twm enable access to the X status line.
@@ -12568,7 +12726,13 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* Aha! The BRL terminals file told us what the Iris extensions mean.
 #	* Added, from the BRL termcap file: rt6221, rt6221-w, northstar,
 #	  commodore, cdc721-esc, excel62, osexec.  Replaced from the BRL file:
-#	  cit500, adm11, 
+#	  cit500, adm11. 
+# 9.13.9 (Mon Jul 15 00:32:51 EDT 1996):
+#	* Added, from the BRL termcap file: cdc721, cdc721l, cdc752, cdc756,
+#	  aws, awsc, zentec8001, modgraph48, rca vp3301/vp3501, ex155.
+#	* Corrected, from BRL termcap file: vi50.
+#	* Better rxvt entry & corrected xterm entries from Thomas Dickey.
+#
 
 ######## REORDER
 #

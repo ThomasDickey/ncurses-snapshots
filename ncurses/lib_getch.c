@@ -26,13 +26,11 @@
 **
 */
 
-#include "curses.priv.h"
-#include <sys/types.h>
+#include <curses.priv.h>
+
 #include <string.h>
-#include <errno.h>
-#if !HAVE_EXTERN_ERRNO
-extern int errno;
-#endif
+
+MODULE_ID("$Id: lib_getch.c,v 1.12 1996/07/21 00:04:12 tom Exp $")
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail
@@ -64,7 +62,7 @@ int i;
 static inline int fifo_pull(void)
 {
 int ch;
- 	ch = SP->_fifo[head];
+	ch = SP->_fifo[head];
 	T(("pulling %d from %d", ch, head));
 
 	h_inc();
@@ -229,7 +227,7 @@ int	ch;
 		 * press/release events into clicks, you should probably
 		 * increase _nc_max_click_interval.
 		 */
-	    	int runcount = 0;
+		int runcount = 0;
 
 		do {
 			ch = kgetch(win);
@@ -279,7 +277,7 @@ int	ch;
 			 win->_begy + win->_cury + win->_yoffset,
 			 win->_begx + win->_curx,
 			 (chtype)(ch | win->_attrs));
-		waddch(win, (chtype)(ch | win->_attrs));
+		waddch(win, (chtype)ch);
 	    }
 	    else
 		beep();
@@ -312,15 +310,15 @@ struct try  *ptr;
 int ch = 0;
 int timeleft = ESCDELAY;
 
-    	TR(TRACE_IEVENT, ("kgetch(%p) called", win));
+	TR(TRACE_IEVENT, ("kgetch(%p) called", win));
 
-    	ptr = SP->_keytry;
+	ptr = SP->_keytry;
 
 	if (head == -1)  {
 		if ((ch = fifo_push()) == ERR)
 		    return ERR;
 		peek = 0;
-    		while (ptr != NULL) {
+		while (ptr != NULL) {
 			TR(TRACE_IEVENT, ("ch: %s", _tracechar((unsigned char)ch)));
 			while ((ptr != NULL) && (ptr->ch != (unsigned char)ch))
 				ptr = ptr->sibling;
@@ -333,26 +331,26 @@ int timeleft = ESCDELAY;
 #endif /* TRACE */
 
 			if (ptr != NULL)
-	    			if (ptr->value != 0) {	/* sequence terminated */
-	    				TR(TRACE_IEVENT, ("end of sequence"));
-	    				fifo_clear();
+				if (ptr->value != 0) {	/* sequence terminated */
+					TR(TRACE_IEVENT, ("end of sequence"));
+					fifo_clear();
 					return(ptr->value);
-	    			} else {		/* go back for another character */
+				} else {		/* go back for another character */
 					ptr = ptr->child;
 					TR(TRACE_IEVENT, ("going back for more"));
-	    			} else
+				} else
 					break;
 
-	    			TR(TRACE_IEVENT, ("waiting for rest of sequence"));
-   				if (_nc_timed_wait(SP->_ifd, timeleft, &timeleft) < 1) {
+				TR(TRACE_IEVENT, ("waiting for rest of sequence"));
+				if (_nc_timed_wait(SP->_ifd, timeleft, &timeleft) < 1) {
 					TR(TRACE_IEVENT, ("ran out of time"));
 					return(fifo_pull());
-   				} else {
-   					TR(TRACE_IEVENT, ("got more!"));
-   					fifo_push();
-   					ch = fifo_peek();
-   				}
+				} else {
+					TR(TRACE_IEVENT, ("got more!"));
+					fifo_push();
+					ch = fifo_peek();
+				}
 		}
-    	}
+	}
 	return(fifo_pull());
 }

@@ -29,14 +29,16 @@
 #include <curses.priv.h>
 
 #include <string.h>
-#include "tic.h"
-#include "hashsize.h"
+#include <tic.h>
+#include <hashsize.h>
 
 #ifdef MAIN_PROGRAM
 #include <ctype.h>
 #undef  DEBUG
 #define DEBUG(level, params) /*nothing*/
 #endif
+
+MODULE_ID("$Id: comp_hash.c,v 1.10 1996/07/21 00:33:53 tom Exp $")
 
 static  int hash_function(const char *);
 
@@ -58,7 +60,7 @@ int	hashvalue;
 int	collisions = 0;
 
 	for (i = 0; i < CAPTABSIZE; i++) {
-	    hashvalue = hash_function(table[i].nte_name);       
+	    hashvalue = hash_function(table[i].nte_name);
 
 	    if (hash_table[hashvalue] != (struct name_table_entry *) 0)
 		collisions++;
@@ -122,7 +124,7 @@ struct name_table_entry	const *ptr;
 		while (strcmp(ptr->nte_name, string) != 0) {
 			if (ptr->nte_link < 0)
 				return 0;
-	    		ptr = ptr->nte_link + hash_table[HASHTABSIZE];
+			ptr = ptr->nte_link + hash_table[HASHTABSIZE];
 		}
 	}
 
@@ -281,7 +283,7 @@ int main(int argc, char **argv)
 		root_name);
 	printf("{\n");
 	for (n = 0; n < CAPTABSIZE; n++) {
-		sprintf(buffer, "\"%s\"", 
+		sprintf(buffer, "\"%s\"",
 			name_table[n].nte_name);
 		printf("\t{ %15s,\t%10s,\t%3d, %3d }%c\n",
 			buffer,
@@ -311,10 +313,10 @@ int main(int argc, char **argv)
 
 	printf("#if (BOOLCOUNT!=%d)||(NUMCOUNT!=%d)||(STRCOUNT!=%d)\n",
 		BoolCount, NumCount, StrCount);
-	printf("#error	--> term.h and comp_captab.c disagree about the <--\n");
-	printf("#error	--> numbers of booleans, numbers and/or strings <--\n");
+	printf("#error\t--> term.h and comp_captab.c disagree about the <--\n");
+	printf("#error\t--> numbers of booleans, numbers and/or strings <--\n");
 	printf("#endif\n\n");
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 #endif

@@ -3,6 +3,22 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+960720	- snapshot
+	+ save previous-attribute in lib_vidattr.c if SP is null (reported by
+	  Ju"rgen Fluk <louis@dachau.marco.de>)
+	+ corrected calls on _nc_render so that background character is set
+	  as per XSI.
+	+ corrected wbkgdset macro (XSI allows background character to be null),
+	  and tests that use it.
+	+ more corrections to terminfo (xterm & rxvt)
+	+ undid change to mcprint prototype (cannot use size_t in curses.h
+	  because not all systems declare it in the headers that we can safely
+	  include therein).
+	+ move the ifdefs for errno into curses.priv.h
+	> patch 308 by eric:
+	+ terminfo changes (9.3.18)
+	+ modified logic of error-reporting in terminfo parser
+
 960713	- snapshot
 	+ always check for <sys/bsdtypes.h> since ISC needs it to declare
 	  fd_set (Juergen Pfeifer)

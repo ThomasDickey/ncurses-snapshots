@@ -30,10 +30,6 @@
 #include <curses.priv.h>
 
 #include <string.h>
-#include <errno.h>
-#if !HAVE_EXTERN_ERRNO
-extern int errno;
-#endif
 
 #ifdef SVR4_TERMIO
 #define _POSIX_SOURCE

@@ -28,8 +28,9 @@
 
 #include <curses.priv.h>
 #include <ctype.h>
-#include "unctrl.h"
+#include <unctrl.h>
 
+MODULE_ID("$Id: lib_addch.c,v 1.17 1996/07/21 00:16:27 tom Exp $")
 
 int wattr_on(WINDOW *win, const attr_t at)
 {
@@ -68,22 +69,28 @@ int wchgat(WINDOW *win, int n, attr_t attr, short color, const void *opts GCC_UN
  * window sync hook, for use by string-put functions.
  */
 
-static inline chtype render_char(WINDOW *win, chtype oldch, chtype newch)
+static inline chtype render_char(WINDOW *win, chtype ch)
 /* compute a rendition of the given char correct for the current context */
 {
-	if (TextOf(oldch) == ' ')
-		newch |= win->_bkgd;
-	else if (!(newch & A_ATTRIBUTES))
-		newch |= (win->_bkgd & A_ATTRIBUTES);
-	TR(TRACE_VIRTPUT, ("bkg = %lx -> ch = %lx", win->_bkgd, newch));
+	if (TextOf(ch) == ' ')
+		ch |= win->_bkgd;
+	else if (!(ch & A_ATTRIBUTES))
+		ch |= (win->_bkgd & A_ATTRIBUTES);
+	TR(TRACE_VIRTPUT, ("bkg = %lx -> ch = %lx", win->_bkgd, ch));
 
-	return(newch);
+	return(ch);
 }
 
-chtype _nc_render(WINDOW *win, chtype oldch, chtype newch)
+chtype _nc_background(WINDOW *win)
 /* make render_char() visible while still allowing us to inline it below */
 {
-    return(render_char(win, oldch, newch));
+    return(render_char(win, BLANK));
+}
+
+chtype _nc_render(WINDOW *win, chtype ch)
+/* make render_char() visible while still allowing us to inline it below */
+{
+    return(render_char(win, ch)) | win->_attrs;
 }
 
 /* check if position is legal; if not, return error */
@@ -92,7 +99,7 @@ chtype _nc_render(WINDOW *win, chtype oldch, chtype newch)
 		TR(TRACE_VIRTPUT, ("Alert! Win=%p _curx = %d, _cury = %d " \
 				   "(_maxx = %d, _maxy = %d)", win, x, y, \
 				   win->_maxx, win->_maxy)); \
-	    	return(ERR); \
+		return(ERR); \
 	}
 
 static inline
@@ -115,16 +122,9 @@ register int x, y;
 		win->_flags &= ~_WRAPPED;
 	}
 
-	/*
-	 * We used to pass in
-	 *	win->_line[y].text[x]
-	 * as a second argument, but the value of the old character
-	 * is not relevant here.
-	 */
-	ch = render_char(win, 0, ch);
+	ch = render_char(win, ch) | win->_attrs; /* same as _nc_render() */
 
 	TR(TRACE_VIRTPUT, ("win attr = %s", _traceattr(win->_attrs)));
-	ch |= win->_attrs;
 
 	if (win->_line[y].text[x] != ch) {
 		if (win->_line[y].firstchar == _NOCHANGE)
@@ -186,7 +186,7 @@ register int	x, y;
 		goto noctrl;
 
 	switch ((int)TextOf(ch)) {
-    	case '\t':
+	case '\t':
 		x += (TABSIZE-(x%TABSIZE));
 
 		/*
@@ -196,7 +196,7 @@ register int	x, y;
 		if ((! win->_scroll && (y == win->_regbottom))
 		 || (x <= win->_maxx)) {
 			while (win->_curx < x) {
-	    			if (waddch_literal(win, (' ' | AttrOf(ch))) == ERR)
+				if (waddch_literal(win, (' ' | AttrOf(ch))) == ERR)
 					return(ERR);
 			}
 			break;
@@ -215,7 +215,7 @@ register int	x, y;
 			}
 		}
 		break;
-    	case '\n':
+	case '\n':
 		wclrtoeol(win);
 		if (++y > win->_regbottom) {
 			y--;
@@ -225,22 +225,22 @@ register int	x, y;
 				return (ERR);
 		}
 		/* FALLTHRU */
-    	case '\r':
+	case '\r':
 		x = 0;
 		win->_flags &= ~_WRAPPED;
 		break;
-    	case '\b':
+	case '\b':
 		if (x > 0) {
 			x--;
 			win->_flags &= ~_WRAPPED;
 		}
 		break;
-    	default:
+	default:
 		if (is7bits(TextOf(ch)) && iscntrl(TextOf(ch)))
-		    	return(waddstr(win, unctrl((unsigned char)ch)));
+			return(waddstr(win, unctrl((unsigned char)ch)));
 
 		/* FALLTHRU */
-        noctrl:
+	noctrl:
 		waddch_literal(win, ch);
 		return(OK);
 	}

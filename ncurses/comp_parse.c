@@ -232,15 +232,20 @@ int _nc_resolve_uses(void)
      * match once for each time a use entry is itself unresolved.
      */
     total_unresolved = 0;
+    _nc_curr_col = -1;
     for_entry_list(qp)
     {
 	unresolved = 0;
 	for (i = 0; i < qp->nuses; i++)
 	{
 	    bool	foundit;
-	    char	*lookfor = (char *)(qp->uses[i]);
+	    char	*child = _nc_first_name(qp->tterm.term_names);
+	    char	*lookfor = (char *)(qp->uses[i].parent);
+	    long	lookline = qp->uses[i].line;
 
 	    foundit = FALSE;
+
+	    _nc_set_type(child);
 
 	    /* first, try to resolve from in-core records */
 	    for_entry_list(rp)
@@ -248,9 +253,9 @@ int _nc_resolve_uses(void)
 		    && _nc_name_match(rp->tterm.term_names, lookfor, "|"))
 		{
 		    DEBUG(2, ("%s: resolving use=%s (in core)",
-			      _nc_first_name(qp->tterm.term_names), lookfor));
+			      child, lookfor));
 
-		    qp->uses[i] = rp;
+		    qp->uses[i].parent = rp;
 		    foundit = TRUE;
 		}
 
@@ -263,7 +268,7 @@ int _nc_resolve_uses(void)
 		if (_nc_read_entry(lookfor, filename, &thisterm) == 1)
 		{
 		    DEBUG(2, ("%s: resolving use=%s (compiled)",
-			      _nc_first_name(qp->tterm.term_names), lookfor));
+			      child, lookfor));
 
 		    rp = (ENTRY *)malloc(sizeof(ENTRY));
 		    memcpy(&rp->tterm, &thisterm, sizeof(TERMTYPE));
@@ -271,7 +276,7 @@ int _nc_resolve_uses(void)
 		    rp->next = lastread;
 		    lastread = rp;
 
-		    qp->uses[i] = rp;
+		    qp->uses[i].parent = rp;
 		    foundit = TRUE;
 		}
 	    }
@@ -282,21 +287,11 @@ int _nc_resolve_uses(void)
 		unresolved++;
 		total_unresolved++;
 
-		if (!_nc_suppress_warnings)
-		{
-		    if (unresolved == 1)
-			(void) fprintf(stderr,
-			   "%s: use resolution failed on",
-			   _nc_first_name(qp->tterm.term_names));
-		    (void) fputc(' ', stderr);
-		    (void) fputs(lookfor, stderr);
-		}
-
-		qp->uses[i] = (ENTRY *)NULL;
+		_nc_curr_line = lookline;
+		_nc_warning("resolution of use=%s failed", lookfor);
+		qp->uses[i].parent = (ENTRY *)NULL;
 	    }
 	}
-	if (!_nc_suppress_warnings && unresolved)
-	    (void) fputc('\n', stderr);
     }
     if (total_unresolved)
     {
@@ -326,7 +321,7 @@ int _nc_resolve_uses(void)
 		 * subsequent pass.
 		 */
 		for (i = 0; i < qp->nuses; i++)
-		    if (((ENTRY *)qp->uses[i])->nuses)
+		    if (((ENTRY *)qp->uses[i].parent)->nuses)
 		    {
 			DEBUG(2, ("%s: use entry %d unresolved",
 				  _nc_first_name(qp->tterm.term_names), i));
@@ -346,7 +341,7 @@ int _nc_resolve_uses(void)
 		 */
 		for (; qp->nuses; qp->nuses--)
 		    _nc_merge_entry(&merged,
-				&((ENTRY *)qp->uses[qp->nuses-1])->tterm);
+				&((ENTRY *)qp->uses[qp->nuses-1].parent)->tterm);
 
 		/*
 		 * Now merge in the original entry.
@@ -428,29 +423,51 @@ int _nc_resolve_uses(void)
 #define PRESENT(s)	(((s) != (char *)0) && ((s) != CANCELLED_STRING))
 
 #define ANDMISSING(p,q) \
-		if (PRESENT(p) && !PRESENT(q)) \
-			_nc_warning(#p " but no " #q)
+		{if (PRESENT(p) && !PRESENT(q)) _nc_warning(#p " but no " #q);}
 
 #define PAIRED(p,q) \
+		{ \
 		if (PRESENT(q) && !PRESENT(p)) \
 			_nc_warning(#q " but no " #p); \
 		if (PRESENT(p) && !PRESENT(q)) \
-			_nc_warning(#p " but no " #q)
+			_nc_warning(#p " but no " #q); \
+		}
 
 static void sanity_check(TERMTYPE *tp)
 {
+    bool       terminal_entry = !strchr(tp->term_names, '+');
+
     if (!PRESENT(exit_attribute_mode))
     {
-	PAIRED(enter_alt_charset_mode,  exit_alt_charset_mode);
-	PAIRED(enter_standout_mode,     exit_standout_mode);
-	PAIRED(enter_underline_mode,    exit_underline_mode);
-	ANDMISSING(exit_ca_mode,        enter_ca_mode);
-	PAIRED(from_status_line,        to_status_line);
-	PAIRED(prtr_on,                 prtr_off);
-	PAIRED(enter_xon_mode,          exit_xon_mode);
-	PAIRED(label_off,               label_on);
-	PAIRED(display_clock,           remove_clock);
+#ifdef __UNUSED__	/* this casts too wide a net */
+	if (terminal_entry &&
+		(PRESENT(set_attributes)
+		|| PRESENT(enter_standout_mode) 
+		|| PRESENT(enter_underline_mode) 
+		|| PRESENT(enter_blink_mode) 
+		|| PRESENT(enter_bold_mode) 
+		|| PRESENT(enter_dim_mode) 
+		|| PRESENT(enter_secure_mode) 
+		|| PRESENT(enter_protected_mode) 
+		|| PRESENT(enter_reverse_mode)))
+	    _nc_warning("no exit_attribute_mode");
+#endif /* __UNUSED__ */
+	PAIRED(enter_alt_charset_mode,  exit_alt_charset_mode)
+	PAIRED(enter_standout_mode,     exit_standout_mode)
+	PAIRED(enter_underline_mode,    exit_underline_mode)
     }
 
+    /* allow entries like guru+s to hack rmcup but not smcup */
+    if (terminal_entry)
+	ANDMISSING(exit_ca_mode,                enter_ca_mode)
+
+    PAIRED(from_status_line,                to_status_line)
+    PAIRED(prtr_on,                         prtr_off)
+    PAIRED(enter_xon_mode,                  exit_xon_mode)
+    ANDMISSING(label_off,                   label_on)
+    PAIRED(display_clock,                   remove_clock)
+    ANDMISSING(enter_alt_charset_mode,      acs_chars)
+    ANDMISSING(exit_alt_charset_mode,       acs_chars)
 #undef PAIRED
+#undef ANDMISSING
 }
