@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.564 2000/06/18 02:08:18 tom Exp $
+-- $Id: NEWS,v 1.566 2000/06/25 01:25:40 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000624 pre-release
+	+ modify TransformLine() to check for cells with different color pairs
+	  that happen to render the same display colors.
+	+ apply $NCURSES_NO_PADDING to cost-computation in mvcur().
+	+ improve cost computation in PutRange() by accounting for the use
+	  of parm_right_cursor in mvcur().
+	+ correct cost computation in EmitRange(), which was not using the
+	  normalized value for cursor_address.
+	+ newer config.guess, config.sub (reference version used in TIN 1.5.6).
 
 20000617
 	+ update config.guess, config.sub (reference version used in PCRE 3.2).
