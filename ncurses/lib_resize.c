@@ -25,9 +25,11 @@
 
 #include <curses.priv.h>
 
+MODULE_ID("$Id: lib_resize.c,v 1.7 1996/07/21 00:15:44 tom Exp $")
+
 int wresize(WINDOW *win, int new_lines, int new_cols)
 {
-  chtype	blank	= _nc_render(win, ' ', BLANK);
+  chtype	blank	= _nc_background(win);
   register int	i, j;
 
   T(("wresize(win=%p, lines=%d, cols=%d) called", win, new_lines, new_cols));

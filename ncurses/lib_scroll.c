@@ -31,13 +31,14 @@
 */
 
 #include <curses.priv.h>
-
 #include <string.h>
+
+MODULE_ID("$Id: lib_scroll.c,v 1.9 1996/07/21 00:15:54 tom Exp $")
 
 void _nc_scroll_window(WINDOW *win, int const n, short const top, short const bottom)
 {
 int	line, j;
-chtype	blank = _nc_render(win, ' ', BLANK);
+chtype	blank = _nc_background(win);
 size_t	to_copy = (size_t)(sizeof(chtype) * (win->_maxx + 1));
 
 	TR(TRACE_MOVE, ("_nc_scroll_window(%p, %d, %d, %d)", win, n, top,bottom)); 

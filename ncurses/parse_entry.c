@@ -129,7 +129,9 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
     {
 	if (strcmp(_nc_curr_token.tk_name, "use") == 0
 	    || strcmp(_nc_curr_token.tk_name, "tc") == 0) {
-	    entryp->uses[entryp->nuses++] = (void *)_nc_save_str(_nc_curr_token.tk_valstring);
+	    entryp->uses[entryp->nuses].parent = (void *)_nc_save_str(_nc_curr_token.tk_valstring);
+	    entryp->uses[entryp->nuses].line = _nc_curr_line;
+	    entryp->nuses++;
 	} else {
 	    /* normal token lookup */
 	    entry_ptr = _nc_find_entry(_nc_curr_token.tk_name,
@@ -327,7 +329,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 		 * have picked up defaults via translation.
 		 */
 		for (i = 0; i < entryp->nuses; i++)
-		    if (!strchr(entryp->uses[i], '+'))
+		    if (!strchr(entryp->uses[i].parent, '+'))
 			has_base_entry = TRUE;
 
 	    postprocess_termcap(&entryp->tterm, has_base_entry);

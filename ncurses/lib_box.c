@@ -31,7 +31,9 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
+
+MODULE_ID("$Id: lib_box.c,v 1.4 1996/07/21 00:16:50 tom Exp $")
 
 int wborder(WINDOW *win, chtype ls, chtype rs, chtype ts,
 	chtype bs, chtype tl, chtype tr, chtype bl, chtype br)
@@ -50,14 +52,14 @@ short endx, endy;
 	if (bl == 0) bl = ACS_LLCORNER;
 	if (br == 0) br = ACS_LRCORNER;
 
-	ls |= (win->_attrs ? win->_attrs : (win->_bkgd & A_ATTRIBUTES));
-	rs |= (win->_attrs ? win->_attrs : (win->_bkgd & A_ATTRIBUTES));
-	ts |= (win->_attrs ? win->_attrs : (win->_bkgd & A_ATTRIBUTES));
-	bs |= (win->_attrs ? win->_attrs : (win->_bkgd & A_ATTRIBUTES));
-	tl |= (win->_attrs ? win->_attrs : (win->_bkgd & A_ATTRIBUTES));
-	tr |= (win->_attrs ? win->_attrs : (win->_bkgd & A_ATTRIBUTES));
-	bl |= (win->_attrs ? win->_attrs : (win->_bkgd & A_ATTRIBUTES));
-	br |= (win->_attrs ? win->_attrs : (win->_bkgd & A_ATTRIBUTES));
+	ls = _nc_render(win, ls);
+	rs = _nc_render(win, rs);
+	ts = _nc_render(win, ts);
+	bs = _nc_render(win, bs);
+	tl = _nc_render(win, tl);
+	tr = _nc_render(win, tr);
+	bl = _nc_render(win, bl);
+	br = _nc_render(win, br);
 
 	T(("using %lx, %lx, %lx, %lx, %lx, %lx, %lx, %lx", ls, rs, ts, bs, tl, tr, bl, br));
 
@@ -65,8 +67,8 @@ short endx, endy;
 	endy = win->_maxy;
 
 	for (i = 0; i <= endx; i++) {
-		win->_line[0].text[i] = ts; 
-		win->_line[endy].text[i] = bs; 
+		win->_line[0].text[i] = ts;
+		win->_line[endy].text[i] = bs;
 	}
 	win->_line[endy].firstchar = win->_line[0].firstchar = 0;
 	win->_line[endy].lastchar = win->_line[0].lastchar = endx;
@@ -97,18 +99,20 @@ short end;
 	line = win->_cury;
 	start = win->_curx;
 	end = start + n - 1;
-	if (end > win->_maxx) 
+	if (end > win->_maxx)
 		end = win->_maxx;
 
-	if (win->_line[line].firstchar == _NOCHANGE || win->_line[line].firstchar > start) 
+	if (win->_line[line].firstchar == _NOCHANGE || win->_line[line].firstchar > start)
 		win->_line[line].firstchar = start;
-	if (win->_line[line].lastchar == _NOCHANGE || win->_line[line].lastchar < start) 
+	if (win->_line[line].lastchar == _NOCHANGE || win->_line[line].lastchar < start)
 		win->_line[line].lastchar = end;
 
 	if (ch == 0)
 		ch = ACS_HLINE;
+	ch = _nc_render(win, ch);
+
 	while ( end >= start) {
-		win->_line[line].text[end] = ch | win->_attrs;
+		win->_line[line].text[end] = ch;
 		end--;
 	}
 
@@ -125,17 +129,18 @@ short end;
 	row = win->_cury;
 	col = win->_curx;
 	end = row + n - 1;
-	if (end > win->_maxy) 
+	if (end > win->_maxy)
 		end = win->_maxy;
 
 	if (ch == 0)
 		ch = ACS_VLINE;
+	ch = _nc_render(win, ch);
 
 	while(end >= row) {
-		win->_line[end].text[col] = ch | win->_attrs;
-		if (win->_line[end].firstchar == _NOCHANGE || win->_line[end].firstchar > col) 
+		win->_line[end].text[col] = ch;
+		if (win->_line[end].firstchar == _NOCHANGE || win->_line[end].firstchar > col)
 			win->_line[end].firstchar = col;
-		if (win->_line[end].lastchar == _NOCHANGE || win->_line[end].lastchar < col) 
+		if (win->_line[end].lastchar == _NOCHANGE || win->_line[end].lastchar < col)
 			win->_line[end].lastchar = col;
 		end--;
 	}
@@ -143,4 +148,4 @@ short end;
 	_nc_synchook(win);
 	return OK;
 }
-	
+

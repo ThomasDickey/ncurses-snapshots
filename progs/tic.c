@@ -518,7 +518,7 @@ bool	check_only = FALSE;
 
 			len = dump_entry(&qp->tterm, limited, NULL);
 			for (j = 0; j < qp->nuses; j++)
-			    len += dump_uses((char *)(qp->uses[j]), infodump);
+			    len += dump_uses((char *)(qp->uses[j].parent), infodump);
 			(void) putchar('\n');
 			if (debug_level != 0 && !limited)
 			    printf("# length=%d\n", len);

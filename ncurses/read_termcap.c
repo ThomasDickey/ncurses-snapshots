@@ -46,7 +46,6 @@
 #if HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
-#include <errno.h>
 
 #ifdef USE_GETCAP
 /*

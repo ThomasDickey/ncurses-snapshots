@@ -91,10 +91,10 @@ int	i, n;
 			offsets[i] = ep->tterm.Strings[i] - stringbuf;
 
 	for (i=0; i < ep->nuses; i++)
-		if (ep->uses[i] == (void *)NULL)
+		if (ep->uses[i].parent == (void *)NULL)
 			useoffsets[i] = -1;
 		else
-			useoffsets[i] = (char *)(ep->uses[i]) - stringbuf;
+			useoffsets[i] = (char *)(ep->uses[i].parent) - stringbuf;
 
 	if ((ep->tterm.str_table = (char *)malloc(next_free)) == (char *)NULL)
 		_nc_err_abort("Out of memory");
@@ -111,9 +111,9 @@ int	i, n;
 
 	for (i=0; i < ep->nuses; i++)
 		if (useoffsets[i] == -1)
-			ep->uses[i] = (void *)NULL;
+			ep->uses[i].parent = (void *)NULL;
 		else
-			ep->uses[i] = (char *)(ep->tterm.str_table + useoffsets[i]);
+			ep->uses[i].parent = (char *)(ep->tterm.str_table + useoffsets[i]);
 }
 
 void _nc_merge_entry(TERMTYPE *const to, TERMTYPE *const from)

@@ -32,7 +32,12 @@
 typedef struct entry {
 	TERMTYPE	tterm;
 	int		nuses;
-	void		*uses[MAX_USES];	/* (char *) or (ENTRY *) */
+	struct
+        {
+	    void	*parent;	/* (char *) or (ENTRY *) */
+	    long	line;
+        }
+	uses[MAX_USES];
 	long		cstart, cend;
 	long		startline;
 	struct entry	*next;

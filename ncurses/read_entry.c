@@ -34,10 +34,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <string.h>
-#include <errno.h>
-#if !HAVE_EXTERN_ERRNO
-extern int errno;
-#endif
 
 #include "term.h"
 #include "tic.h"

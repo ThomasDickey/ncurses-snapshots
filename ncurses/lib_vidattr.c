@@ -23,7 +23,7 @@
  *	vidputs(newmode, outc)
  *
  *	newmode is taken to be the logical 'or' of the symbols in curses.h
- *	representing graphic renditions.  The teminal is set to be in all of
+ *	representing graphic renditions.  The terminal is set to be in all of
  *	the given modes, if possible.
  *
  *	if the new attribute is normal
@@ -45,14 +45,16 @@
  *	actually impossible, anyway, so...
  */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 #include <string.h>
-#include "term.h"
+#include <term.h>
+
+MODULE_ID("$Id: lib_vidattr.c,v 1.8 1996/07/21 00:41:01 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
 #define TurnOn(mask,mode) \
- 	if ((turn_on & mask) && mode) { doPut(mode); }
+	if ((turn_on & mask) && mode) { doPut(mode); }
 
 #define TurnOff(mask,mode) \
 	if ((turn_off & mask) && mode) { doPut(mode); turn_off &= ~mask; }
@@ -140,7 +142,7 @@ attr_t turn_on, turn_off;
 		TurnOn (A_VERTICAL,   enter_vertical_hl_mode);
 	}
 
-	/* if there is no crrent screen, assume we *can* do color */
+	/* if there is no current screen, assume we *can* do color */
 	if (!SP || SP->_coloron) {
 	int pair = PAIR_NUMBER(newmode);
 	int current_pair = PAIR_NUMBER(previous_attr);
@@ -153,6 +155,8 @@ attr_t turn_on, turn_off;
 
 	if (SP)
 		SP->_current_attr = newmode;
+	else
+		previous_attr = newmode;
 
 	T(("vidputs finished"));
 	return OK;

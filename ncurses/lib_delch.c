@@ -26,13 +26,15 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
+
+MODULE_ID("$Id: lib_delch.c,v 1.4 1996/07/21 00:17:20 tom Exp $")
 
 int wdelch(WINDOW *win)
 {
 chtype	*temp1, *temp2;
 chtype	*end;
-chtype	blank = _nc_render(win, ' ', BLANK | win->_attrs);
+chtype	blank = _nc_background(win);
 
 	T(("wdelch(%p) called", win));
 

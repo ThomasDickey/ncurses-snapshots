@@ -40,10 +40,6 @@
 
 #include "curses.priv.h"
 #include "term.h"	/* cur_term */
-#include <errno.h>
-#if !HAVE_EXTERN_ERRNO
-extern int errno;
-#endif
 
 int napms(int ms)
 {

@@ -27,7 +27,9 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
+
+MODULE_ID("$Id: lib_clreol.c,v 1.8 1996/07/21 00:15:27 tom Exp $")
 
 int  wclrtoeol(WINDOW *win)
 {
@@ -46,14 +48,14 @@ short	y, x, minx;
 	if (win->_flags & _WRAPPED
 	 || y > win->_maxy
 	 || x > win->_maxx)
-	 	return ERR;
+		return ERR;
 
 	end = &win->_line[y].text[win->_maxx];
 	minx = _NOCHANGE;
 	maxx = &win->_line[y].text[x];
 
 	for (ptr = maxx; ptr <= end; ptr++) {
-	    chtype blank = _nc_render(win, win->_line[y].text[x], BLANK);
+	    chtype blank = _nc_background(win);
 
 	    if (*ptr != blank) {
 			maxx = ptr;

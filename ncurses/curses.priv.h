@@ -21,6 +21,8 @@
 
 
 /*
+ * $Id: curses.priv.h,v 1.26 1996/07/21 00:17:44 tom Exp $
+ *
  *	curses.priv.h
  *
  *	Header file for curses library objects which are private to
@@ -30,6 +32,8 @@
 
 #ifndef CURSES_PRIV_H
 #define CURSES_PRIV_H 1
+
+#define MODULE_ID(id) /*nothing*/
 
 #include <config.h>
 
@@ -62,6 +66,12 @@
 
 #include <assert.h>
 #include <stdio.h>
+
+#include <errno.h>
+
+#if !HAVE_EXTERN_ERRNO
+extern int errno;
+#endif
 
 /*
  * The internal types (e.g., struct screen) must precede <curses.h>, otherwise
@@ -290,7 +300,8 @@ extern int _nc_max_click_interval;
 
 /* elsewhere ... */
 extern WINDOW *_nc_makenew(int, int, int, int, int);
-extern chtype _nc_render(WINDOW *, chtype, chtype);
+extern chtype _nc_background(WINDOW *);
+extern chtype _nc_render(WINDOW *, chtype);
 extern int _nc_keypad(bool);
 extern int _nc_outch(int);
 extern int _nc_setupscreen(short, short const, FILE *);

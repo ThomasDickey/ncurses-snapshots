@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.41 1996/07/06 21:23:18 esr Exp $
+$Id: ncurses.c,v 1.42 1996/07/21 00:24:15 tom Exp $
 
 ***************************************************************************/
 /*LINTLIBRARY */
@@ -80,6 +80,7 @@ extern int _nc_tracing;
 #define SIZEOF(table)	(sizeof(table)/sizeof(table[0]))
 #define QUIT		CTRL('Q')
 #define ESCAPE		CTRL('[')
+#define BLANK		' '		/* this is the background character */
 
 /* The behavior of mvhline, mvvline for negative/zero length is unspecified,
  * though we can rely on negative x/y values to stop the macro.
@@ -696,7 +697,7 @@ test_sgr_attributes(void)
     int pass;
 
     for (pass = 0; pass < 2; pass++) {
-	int normal = ((pass == 0 ? A_NORMAL : A_REVERSE));
+	int normal = ((pass == 0 ? A_NORMAL : A_REVERSE)) | BLANK;
 
 	/* Use non-default colors if possible to exercise bce a little */
 	if (has_colors()) {
@@ -761,7 +762,7 @@ test_sgr_attributes(void)
 	Pause();
     }
 
-    bkgdset(A_NORMAL);
+    bkgdset(A_NORMAL | BLANK);
     erase();
     endwin();
 }
@@ -2631,6 +2632,7 @@ main(int argc, char *argv[])
 
     /* we must initialize the curses data structure only once */
     initscr();
+    bkgdset(BLANK);
 
     /* tests, in general, will want these modes */
     start_color();

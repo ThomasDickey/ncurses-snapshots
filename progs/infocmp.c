@@ -609,16 +609,17 @@ static void file_comparison(int argc, char *argv[])
 	    if (_nc_entry_match(qp->tterm.term_names,rp->tterm.term_names))
 	    {
 		/*
-		 * This is why the uses[] array is (void *) -- so we
-		 * can have either (char *) for names or entry 
-		 * structure pointers in them and still be type-safe.
+		 * This is why the uses structure parent element is
+		 * (void *) -- so we can have either (char *) for
+		 * names or entry structure pointers in them and still
+		 * be type-safe.
 		 */
 		if (qp->nuses < MAX_USES)
-		    qp->uses[qp->nuses] = (void *)rp;
+		    qp->uses[qp->nuses].parent = (void *)rp;
 		qp->nuses++;
 			
 		if (rp->nuses < MAX_USES)
-		    rp->uses[rp->nuses] = (void *)qp;
+		    rp->uses[rp->nuses].parent = (void *)qp;
 		rp->nuses++;
 	    }
     }
@@ -639,7 +640,7 @@ static void file_comparison(int argc, char *argv[])
 	    for (i = 0; i < qp->nuses; i++)
 		(void) fprintf(stderr,
 			       "\t%s\n",
-			       _nc_first_name(((ENTRY *)qp->uses[i])->tterm.term_names));
+			       _nc_first_name(((ENTRY *)qp->uses[i].parent)->tterm.term_names));
 	}
     for (rp = heads[1]; rp; rp = rp->next)
 	if (rp->nuses > 1)
@@ -653,7 +654,7 @@ static void file_comparison(int argc, char *argv[])
 	    for (i = 0; i < rp->nuses; i++)
 		(void) fprintf(stderr,
 			       "\t%s\n",
-			       _nc_first_name(((ENTRY *)rp->uses[i])->tterm.term_names));
+			       _nc_first_name(((ENTRY *)rp->uses[i].parent)->tterm.term_names));
 	}
 
     (void) printf("In file 1 (%s) only:\n", argv[0]);
@@ -671,7 +672,7 @@ static void file_comparison(int argc, char *argv[])
     (void) printf("The following entries are equivalent:\n");
     for (qp = heads[0]; qp; qp = qp->next)
     {
-	rp = (ENTRY *)qp->uses[0];    
+	rp = (ENTRY *)qp->uses[0].parent;    
 
 	if (qp->nuses == 1 && entryeq(&qp->tterm, &rp->tterm))
 	{
@@ -688,7 +689,7 @@ static void file_comparison(int argc, char *argv[])
     termcount = 2;
     for (qp = heads[0]; qp; qp = qp->next)
     {
-	rp = (ENTRY *)qp->uses[0];
+	rp = (ENTRY *)qp->uses[0].parent;
 
 	if (qp->nuses == 1 && !entryeq(&qp->tterm, &rp->tterm))
 	{

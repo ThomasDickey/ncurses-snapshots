@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: tdlint,v 1.1 1996/06/01 19:51:23 tom Exp $
+# $Id: tdlint,v 1.2 1996/07/15 00:47:21 tom Exp $
 #
 # Lint-script that allows user's own lint libraries, in addition to the ones
 # installed in the system.
@@ -14,11 +14,14 @@ if test -z "$ARCH" ; then
 	exit 1
 else
 	case $ARCH in
+	AIX)	set - $* -Nn4000
+		;;
 	IRIX)	set - $* -n -lc
 		;;
 	SunOS)
 		case `uname -r` in
 		5.*)	ARCH=Solaris
+			set - $* -n -lc
 			;;
 		esac
 		;;
