@@ -446,6 +446,10 @@ extern int slk_attrset(attr_t);
 extern int slk_attron(attr_t);
 extern int slk_attroff(attr_t);
 
+/* non-XSI extensions */
+extern int resizeterm (int, int);
+extern int wresize (WINDOW *, int, int);
+
 #ifdef __cplusplus
 }
 #endif

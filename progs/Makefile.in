@@ -50,12 +50,7 @@ CFLAGS_SHARED	= $(CCFLAGS) @CC_SHARED_OPTS@
 CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
 LINK		= $(CC)
-LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@ @LD_RPATH@
-
-MK_SHARED_LIB	= @MK_SHARED_LIB@
-MK_SHARED_LIB_LINK= @MK_SHARED_LIB_LINK@
-
-RANLIB		= @RANLIB@
+LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@ @LOCAL_LDFLAGS@
 
 AUTO_SRC = \
 	termsort.c
@@ -97,26 +92,26 @@ DEPS_TIC = \
 	$(MODEL)/write_entry.o \
 	$(LIB_CURSES)
 tic: $(DEPS_TIC)
-	$(LINK) $(CFLAGS_DEFAULT) $(DEPS_TIC) $(LDFLAGS) -o $@
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(DEPS_TIC) $(LDFLAGS) -o $@
 
 DEPS_CLEAR = \
 	$(MODEL)/clear.o \
 	$(LIB_CURSES)
 clear: $(DEPS_CLEAR)
-	$(LINK) $(CFLAGS_DEFAULT) $(DEPS_CLEAR) $(LDFLAGS) -o $@
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(DEPS_CLEAR) $(LDFLAGS) -o $@
 
 DEPS_TPUT = \
 	$(MODEL)/tput.o \
 	$(LIB_CURSES)
 tput: $(DEPS_TPUT)
-	$(LINK) $(CFLAGS_DEFAULT) $(DEPS_TPUT) $(LDFLAGS) -o $@
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(DEPS_TPUT) $(LDFLAGS) -o $@
 
 DEPS_INFOCMP = \
 	$(MODEL)/infocmp.o \
 	$(MODEL)/dump_entry.o \
 	$(LIB_CURSES)
 infocmp: $(DEPS_INFOCMP)
-	$(LINK) $(CFLAGS_DEFAULT) $(DEPS_INFOCMP) $(LDFLAGS) -o $@
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(DEPS_INFOCMP) $(LDFLAGS) -o $@
 
 termsort.c: ../include/Caps.filtered $(srcdir)/termsort.sh
 	sh -c "$(srcdir)/termsort.sh $(AWK) ../include/Caps.filtered" >$@
@@ -133,19 +128,19 @@ DEPS_MVCUR = \
 	$(MODEL)/dump_entry.o \
 	$(LIB_CURSES)
 mvcur: $(DEPS_MVCUR)
-	$(LINK) $(CCFLAGS) -DTRACE -DMAIN $(MVFLAGS) $(DEPS_MVCUR) $(LDFLAGS) -o $@
+	@ECHO_LINK@ $(LINK) $(CCFLAGS) -DTRACE -DMAIN $(MVFLAGS) $(DEPS_MVCUR) $(LDFLAGS) -o $@
 
 # Termcap-conversion tester
 DEPS_TCTEST = \
 	$(srcdir)/../ncurses/captoinfo.c \
 	$(LIB_CURSES)
 tctest: $(DEPS_TCTEST)
-	$(LINK) $(CCFLAGS) -DTRACE -DMAIN $(DEPS_TCTEST) $(LDFLAGS) -o $@
+	@ECHO_LINK@ $(LINK) $(CCFLAGS) -DTRACE -DMAIN $(DEPS_TCTEST) $(LDFLAGS) -o $@
 
 # Demonstrator/tester for hardware-scrolling algorithm.
 hardscroll: \
 		$(srcdir)/../ncurses/hardscroll.c
-	$(LINK) $(CCFLAGS) -DMAINDEBUG $(srcdir)/../ncurses/hardscroll.c $(LDFLAGS) -o $@
+	@ECHO_LINK@ $(LINK) $(CCFLAGS) -DMAINDEBUG $(srcdir)/../ncurses/hardscroll.c $(LDFLAGS) -o $@
 
 #
 # Utility productions start here

@@ -170,6 +170,9 @@ static int	carriage_return_length;
 static int	cursor_home_length;
 static int	cursor_to_ll_length;
 
+static void save_curs(void);
+static void restore_curs(void);
+
 /****************************************************************************
  *
  * Initialization/wrapup (including cost pre-computation)
@@ -346,8 +349,6 @@ void _nc_mvcur_init(SCREEN *sp)
 void _nc_mvcur_wrap(void)
 /* wrap up cursor-addressing mode */
 {
-    static void save_curs(void), restore_curs(void);
-
     /* change_scroll_region may trash the cursor location */
     save_curs();
     if (change_scroll_region)

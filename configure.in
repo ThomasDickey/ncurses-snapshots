@@ -1,8 +1,14 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.0)
 AC_INIT(ncurses/lib_initscr.c)
+
+NC_VERSION
+NC_SYSTYPE
+
+###	Default install-location
 AC_PREFIX_DEFAULT(/usr)
 AC_PREFIX_PROGRAM(tic)
+
 ###	Checks for programs.
 AC_PROG_CC
 AC_PROG_GCC_TRADITIONAL
@@ -10,6 +16,7 @@ AC_PROG_CXX
 AC_PROG_AWK
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
+AC_PROG_LN_S
 AC_PROG_RANLIB
 
 NC_MAKEFLAGS
@@ -73,7 +80,7 @@ AC_SUBST(includedir)
 
 ###	use option --disable-termcap to leave out the termcap fallback support
 AC_ARG_ENABLE(termcap,
-	[  --disable-termcap         leave out the termcap fallback support],
+	[  --disable-termcap       leave out the termcap fallback support],
 	[with_termcap=$enableval]
 	[AC_DEFINE(PURE_TERMINFO)])
 
@@ -82,6 +89,12 @@ AC_ARG_ENABLE(echo,
 	[  --enable-echo           display \"compiling\" commands (default)],
 	[with_echo=$enableval],
 	[with_echo=yes])
+if test "$with_echo" = yes; then
+	ECHO_LINK=
+else
+	ECHO_LINK='@ echo linking $@ ... ;'
+fi
+AC_SUBST(ECHO_LINK)
 
 ###	use option --with-warnings to turn on all gcc warnings
 AC_ARG_ENABLE(warnings,
@@ -118,6 +131,7 @@ AC_C_INLINE
 NC_ERRNO
 NC_SYS_ERRLIST
 NC_LINK_DATAONLY
+NC_SPEED_TYPE
 
 ###	Checks for library functions.
 AC_CHECK_FUNCS(sigaction usleep strerror setvbuf setbuffer vsscanf)
@@ -151,12 +165,20 @@ else
 fi
 
 ### It's not possible to appease gcc 2.6.3's conversion-warnings if we're
-### using a 'char' for bools.
+### using a 'char' for bools.  gcc 2.7.0's conversion-warnings are broken too
+### badly to consider using for development purposes, but 2.5.8 is okay.
 if test -n "$with_warnings"; then
 	if test -n "$GCC"; then
-		if test "$nc_cv_sizeof_bool" != "char"; then
+		case "`gcc --version`" in
+		2.6.3)
+			if test "$nc_cv_sizeof_bool" != "char"; then
+				CFLAGS="$CFLAGS -Wconversion"
+			fi
+			;;
+		2.5*)
 			CFLAGS="$CFLAGS -Wconversion"
-		fi
+			;;
+		esac
 	fi
 fi
 
@@ -238,10 +260,14 @@ SYS_NAME="`(uname -a || hostname) 2>/dev/null | sed 1q`"
 if test -z "\$SYS_NAME"; then SYS_NAME=unknown;fi
 
 AWK=$AWK
+DFT_LWR_MODEL="$DFT_LWR_MODEL"
 NC_LIST_MODELS="$nc_list_models"
 WITH_ECHO="$with_echo"
 SRC_SUBDIRS="$SRC_SUBDIRS"
 nc_cxx_library="$nc_cxx_library"
+nc_cv_systype="$nc_cv_systype"
+nc_cv_rel_version="$nc_cv_rel_version"
+nc_cv_abi_version="$nc_cv_abi_version"
 
 })
 changequote([,])dnl

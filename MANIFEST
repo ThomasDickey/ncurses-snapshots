@@ -1,8 +1,8 @@
 ./ANNOUNCE
 ./INSTALL
 ./MANIFEST
-./NEWS
 ./Makefile.in
+./NEWS
 ./README
 ./TO-DO
 ./aclocal.m4
@@ -109,8 +109,6 @@
 ./menu/Makefile.in
 ./menu/READ.ME
 ./menu/eti.h
-./menu/menu.h
-./menu/menu.priv.h
 ./menu/m_attribs.c
 ./menu/m_cursor.c
 ./menu/m_driver.c
@@ -130,9 +128,11 @@
 ./menu/m_post.c
 ./menu/m_userptr.c
 ./menu/m_win.c
+./menu/menu.h
+./menu/menu.priv.h
 ./menu/modules
-./misc/dotic.in
 ./misc/Makefile.in
+./misc/dotic.in
 ./misc/ncurses-intro.doc
 ./misc/ncurses-intro.html
 ./misc/terminfo.src
@@ -237,6 +237,7 @@
 ./progs/termsort.sh
 ./progs/tput.c
 ./progs/write_entry.c
+./shlib
 ./test/Makefile.in
 ./test/README
 ./test/blue.c

@@ -1,6 +1,6 @@
 ####### TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 9.8.2
+#	Version 9.9.0
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -475,10 +475,9 @@ linux|linux console,
 	sgr0=\E[0;10m, smacs=\E[11m, smir=\E[4h, 
 	smpch=\E[11m, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
 	u6=\E[%d;%dR, u7=\E[6n, u8=\E[?6c, u9=\E[c, 
-# I (Zeyd) added (or is it deleted) op, setaf - 950910
 linux-mono|Linux console, no color, 
-	colors@, pairs@, op@,
-	setab@, setaf@, setb@, setf@, use=linux,
+	colors@, pairs@, 
+	setab@, setb@, setf@, use=linux,
 
 # See the note on ICH/ICH1 VERSUS RMIR/SMIR near the end of file
 linux-nic|linux with ich/ich1 suppressed for non-curses programs, 
@@ -1062,14 +1061,76 @@ vt220-8|dec vt220 8 bit terminal,
 	sc=\E7, sgr0=\E[0m, smacs=^N, smam=\E[?7h, 
 	smir=\E[4h, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
 
-vt320|DEC VT320 in vt100 emulation mode, 
-	use=vt220,
+# This was DEC's vt320.  Use the purpose-built one below instead 
+#vt320|DEC VT320 in vt100 emulation mode,
+#	use=vt220,
+
 #
-#  Use v320n for LYRIX
+# Use v320n for SCO's LYRIX.  Otherwise, use Adam Thompson's vt320-nam.
 #
 vt320nam|vt320-nam|v320n|DEC VT320 in vt100 emul. mode with NO AUTO WRAP mode, 
 	am@, 
 	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7l\E[?8h, use=vt220,
+
+# These entries are not DEC's official ones, they were purpose-built for the 
+# VT320.  Here are the designer's notes:
+# Specifying am kills SAS, so a vt320-sas with .am is needed for such
+# situations... I think this is a bug in SAS v6.07, where am2 actually
+# *overrides* am, and causes goofy behaviour.
+# kel is end on a PC kbd.  Actually 'select' on a VT.  Mapped to 'Erase to End
+# of Field'... since nothing seems to use 'end' anyways...
+# khome is Home on a PC kbd.  Actually 'FIND' on a VT.
+# Things that use knxt usually use tab anyways... and things that don't use
+# tab usually use knxt instead...
+# kprv is same as tab - Backtab is useless...
+# I left out sgr because of its RIDICULOUS complexity,
+# and the resulting fact that it causes the termcap translation of the entry
+# to SMASH the 1k-barrier...
+# From: Adam Thompson <thompson@xanth.magic.mb.ca> Sept 10 1995
+vt320|vt300|dec vt320 7 bit terminal, 
+	am, eslok, hs, mir, msgr, xenl, 
+	cols#80, lines#24, wsl#80, 
+	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
+	clear=\E[;H\E[2J, cnorm=\E[?25h, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
+	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, 
+	ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K, 
+	home=\E[H, ht=^I, hts=\EH, ich=\E[%p1%d@, 
+	il=\E[%p1%dL, il1=\E[L, ind=\ED, 
+	is2=\E>\E[?3l\E[?4l\E[5?l\E[?7h\E[?8h\E[1;24r\E[24;1H, 
+	ka1=\EOw, ka3=\EOy, kb2=\EOu, kbs=\177, kc1=\EOq, 
+	kc3=\EOs, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, 
+	kcuu1=\EOA, kdch1=\E[3~, kel=\E[4~, kent=\EOM, 
+	kf1=\EOP, kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, 
+	kf13=\E[25~, kf14=\E[26~, kf15=\E[28~, kf16=\E[29~, 
+	kf17=\E[31~, kf18=\E[32~, kf19=\E[33~, kf2=\EOQ, 
+	kf20=\E[34~, kf3=\EOR, kf4=\EOS, kf6=\E[17~, 
+	kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, khome=\E[1~, 
+	kich1=\E[2~, knp=\E[6~, knxt=^I, kpp=\E[5~, 
+	kprv=\E[Z, kslt=\E[4~, mc0=\E[i, mc4=\E[?4i, 
+	mc5=\E[?5i, nel=\EE, rc=\E8, rev=\E[7m, 
+	rf=/usr/lib/tabset/vt100, ri=\EM, rmacs=\E(B, 
+	rmam=\E[?7l, rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[m, 
+	rmul=\E[m, 
+	rs2=\E>\E[?3l\E[?4l\E[5?l\E[?7h\E[?8h\E[1;24r\E[24;1H, 
+	sc=\E7, sgr0=\E[m, smacs=\E(0, smam=\E[?7h, 
+	smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
+	tbc=\E[3g, tsl=\E[1$}\E[;H\E[K, 
+vt320-nam|vt300-nam|dec vt320 7 bit terminal with no am to make SAS happy, 
+	am@, 
+	is2=\E>\E[?3l\E[?4l\E[5?l\E[?7l\E[?8h\E[1;24r\E[24;1H, 
+	rs2=\E>\E[?3l\E[?4l\E[5?l\E[?7l\E[?8h\E[1;24r\E[24;1H, use=vt320,
+# We have to init 132-col mode, not 80-col mode.
+vt320-w|vt300-w|dec vt320 wide 7 bit terminal, 
+	cols#132, wsl#132, 
+	is2=\E>\E[?3h\E[?4l\E[5?l\E[?7h\E[?8h\E[1;24r\E[24;1H, 
+	rs2=\E>\E[?3h\E[?4l\E[5?l\E[?7h\E[?8h\E[1;24r\E[24;1H, use=vt320,
+vt320-w-nam|vt300-w-nam|dec vt320 wide 7 bit terminal with no am, 
+	am@, 
+	is2=\E>\E[?3h\E[?4l\E[5?l\E[?7l\E[?8h\E[1;24r\E[24;1H, 
+	rs2=\E>\E[?3h\E[?4l\E[5?l\E[?7l\E[?8h\E[1;24r\E[24;1H, use=vt320-w,
 
 vt420|DEC VT420, 
 	am, mir, xenl, xon, 
@@ -1236,6 +1297,30 @@ vt525nam|vt525-nam|v525n|DEC VT525 with NO AUTO WRAP,
 	am@, 
 	use=vt525,
 
+#### VT100 emulations
+#
+
+# John Hawkinson <jhawk@MIT.EDU> tells us that the EWAN telnet for Windows
+# (the best Windows telnet as of September 1995) presents the name `dec-vt100'
+# to telnetd.  We'll guess that it's vt102-like but doesn't grok ^N/^O.
+dec-vt100|EWAN telnet's vt100 emulation, 
+	use=vt102-nsgr,
+
+# Zstem340 is an (IMHO) excellent VT emulator for PC's.  I recommend it to
+# anyone who needs PC VT340 emulation. (or anything below that level, for
+# that matter -- DEC's ALL-in-1 seems happy with it, as does INFOPLUS's
+# RDBM systems, it includes ReGIS and SiXel support!  I'm impressed...
+# I can send the address if requested.
+# From: Adam Thompson <thompson@xanth.magic.mb.ca> Sept 10 1995
+z340|zstem vt340 terminal emulator 132col 42line, 
+	lines#42, 
+	is2=\E>\E[?3h\E[?4l\E[5?l\E[?7h\E[?8h\E[1;42r\E[42;1H, 
+	rs2=\E>\E[?3h\E[?4l\E[5?l\E[?7h\E[?8h\E[1;42r\E[42;1H, use=vt320-w,
+z340-nam|zstem vt340 terminal emulator 132col 42line, 
+	am@, 
+	is2=\E>\E[?3h\E[?4l\E[5?l\E[?7l\E[?8h\E[1;42r\E[42;1H, 
+	rs2=\E>\E[?3h\E[?4l\E[5?l\E[?7l\E[?8h\E[1;42r\E[42;1H, use=z340,
+
 #### Xterm variants
 #
 
@@ -1259,13 +1344,17 @@ x10term|vs100-x10|xterm terminal emulator (X10 window system),
 	smul=\E[4m, 
 # X11R6 xterm.  This is known good for the XFree86 version under Linux.
 # From: Eric S. Raymond <esr@snark.thyrsus.com> 9 Jul 1995
-# Note: If you use the line-drawing character set, the disable afterwards
-# will leave you in US-ASCII.  If you live somewhere that wants a pound sign
-# at 2/3, change rmacs to "\E(A".  Further note: cuf and cub don't seem
-# to be reliable under my xterm, so they're commented out.  Final note:
-# Older versions of this entry set/reset application keypad mode (\EO-prefix
-# cursor keys) in the [sr]mkx caps, but it wasn't necessary, and doesn't
-# actually fit the terminfo model properly.
+# 1. If you use the line-drawing character set, the disable afterwards
+#    will leave you in US-ASCII.  If you live somewhere that wants a pound sign
+#    at 2/3, change rmacs to "\E(A". 
+# 2. The cuf and cub capabilities don't seem to be reliable under my xterm,
+#    so they're commented out.
+# 3. Older versions of this entry set/reset application keypad mode (\EO-prefix
+#    cursor keys) in the [sr]mkx caps, but it wasn't necessary, and doesn't
+#    actually fit the terminfo model properly.
+# 4. The kmous key is actually the \E[M prefix returned by xterm's internal
+#    mouse-tracking facility.  ncurses will interpret the following six bytes
+#    of mouse status information.
 xterm|vs100|xterm terminal emulator (X11R6 Window System), 
 	am, km, mir, msgr, xenl, xon, 
 	cols#80, it#8, lines#65, 
@@ -1283,9 +1372,10 @@ xterm|vs100|xterm terminal emulator (X11R6 Window System),
 	kf11=\E[23~, kf12=\E[24~, kf2=\E[12~, kf3=\E[13~, 
 	kf4=\E[14~, kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, 
 	kf8=\E[19~, kf9=\E[20~, khome=\E[@, kich1=\E[2~, 
-	knp=\E[6~, kpp=\E[5~, rc=\E8, rev=\E[7m, ri=\EM, 
-	rmacs=\E(B, rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, 
-	rmso=\E[m, rmul=\E[m, 
+	kmous=\E[M, knp=\E[6~, kpp=\E[5~, rc=\E8, 
+	rev=\E[7m, ri=\EM, rmacs=\E(B, 
+	rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, rmso=\E[m, 
+	rmul=\E[m, 
 	rs2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l\E<, 
 	sc=\E7, sgr0=\E[m, smacs=\E(0, smcup=\E7\E[?47h, 
 	smir=\E[4h, smso=\E[7m, smul=\E[4m, tbc=\E[3k, 
@@ -1899,7 +1989,7 @@ hp2624|hp2624a|hp2624b|hp2624b-4p|2624-4p|2624|2624a|2624b|Hewlett Packard 2624 
 # or even dl1 which is probably faster!
 # 
 # \ED\EJ\EC hack for ed from Ed Bradford - apparently ed is only 
-# extra slow # on the last line of the window. 
+# extra slow on the last line of the window. 
 # 
 # The padding probably should be changed.
 #
@@ -3803,7 +3893,7 @@ wy185-24|wyse185-24|wyse 185 with 24 data lines,
 	dsl@, fsl@, rs3=\E[?5l\E[47h\E[40l\E[1;24r, tsl@, use=wy185,
 #
 #	Wyse 185 with visual bell.
-wy185-vb|wyse185-vb|wyse 185 with visible bell, 
+wy185-vb|wyse185-vb|wyse 185+flash, 
 	flash=\E[30h\E\\\054\E[30l$<100>, use=wy185,
 #
 #	Wyse 185 in 132-column mode.
@@ -3813,7 +3903,7 @@ wy185-w|wyse185-w|wyse 185 in 132-column mode,
 	ich=\E[%p1%d@$<7>, ip=$<7>, rs2=\E[35h\E[?3h, use=wy185,
 #
 #	Wyse 185 in 132-column mode with visual bell.
-wy185-wvb|wyse185-wvb|wyse 185 with visible bell 132-columns, 
+wy185-wvb|wyse185-wvb|wyse 185+flash+132 cols, 
 	flash=\E[30h\E\\\054\E[30l$<100>, use=wy185-w,
 
 # wy325 terminfo entries
@@ -4384,10 +4474,10 @@ att4415-w|tty5420-w|att5420-w|AT&T 4415/5420 132 cols,
 	cols#132, lm#54, wsl#97, 
 	is1=\E[?3h$<100>, use=att4415,
 
-att4415-rv|tty5420-rv|att5420-rv|AT&T 4415/5420 80 cols/reverse-video, 
+att4415-rv|tty5420-rv|att5420-rv|AT&T 4415/5420 80 cols/rv, 
 	flash=\E[?5l$<200>\E[?5h, is3=\E[?5h, use=att4415,
 
-att4415-w-rv|tty5420-w-rv|att5420-w-rv|AT&T 4415/5420 132 cols/reverse-video, 
+att4415-w-rv|tty5420-w-rv|att5420-w-rv|AT&T 4415/5420 132 cols/rv, 
 	cols#132, lm#54, wsl#97, 
 	flash=\E[?5l$<200>\E[?5h, is1=\E[?3h$<100>, 
 	is3=\E[?5h, use=att4415,
@@ -4412,7 +4502,7 @@ att4415-w-nl|tty5420-w-nl|att5420-w-nl|AT&T 4415/5420 132 cols without changing 
 att4415-w-rv-n|tty5420-w-rv-n|att5420-w-rv-n|AT&T 4415/5420 132 cols reverse without changing labels, 
 	kf1@, kf2@, kf3@, kf4@, kf5@, kf6@, kf7@, kf8@, use=att4415+nl,use=att4415-w-rv,
 
-otty5420|teletype 5420 for SVR2 curses on the 3B20, 
+otty5420|5420 for SVR2 curses on 3B20, 
 	hpa=\E[%p1%{1}%+%dG, vpa=\E[%p1%{1}%+%dd, use=tty5420,
 
 att5420_2|AT&T 5420 model 2 80 cols, 
@@ -5849,12 +5939,12 @@ aaa-30-s|aaa-s|ann arbor ambassador/30 lines w/status,
 	rmcup=\E[60;1;0;30p\E[29;1H\E[K, 
 	smcup=\E[H\E[J$<156>\E[30;1;0;30p\E[30;1H\E[K, 
 	tsl=\E[>51h\E[1;%p1%dH\E[2K, use=aaa+unk,
-aaa-30-s-rv|aaa-s-rv|ann arbor ambassador/30 lines+status line+reverse video, 
+aaa-30-s-rv|aaa-s-rv|ann arbor ambassador/30 lines+status+reverse video, 
 	use=aaa+rv,use=aaa-30-s,
-aaa-s-ctxt|aaa-30-s-ctxt|ann arbor ambassador/30 lines+status line+save context, 
+aaa-s-ctxt|aaa-30-s-ctxt|ann arbor ambassador/30 lines+status+save context, 
 	rmcup=\E[60;1;0;30p\E[59;1H\E[K, 
 	smcup=\E[30;1H\E[K\E[30;1;0;30p, use=aaa-30-s,
-aaa-s-rv-ctxt|aaa-30-s-rv-ct|aaa-30-srvctxt|ann arbor ambassador/30 lines; status line; saving context, 
+aaa-s-rv-ctxt|aaa-30-s-rv-ct|ann arbor ambassador/30 lines+status+save context, 
 	rmcup=\E[60;1;0;30p\E[59;1H\E[K, 
 	smcup=\E[30;1H\E[K\E[30;1;0;30p, use=aaa-30-s-rv,
 aaa|aaa-30|ambas|ambassador|ann arbor ambassador/30 lines, 
@@ -5891,15 +5981,15 @@ aaa-48|ann arbor ambassador/48 lines,
 	smcup=\E[H\E[J$<156>\E[48;0;0;48p, use=aaa+unk,
 aaa-48-rv|ann arbor ambassador/48 lines+reverse video, 
 	use=aaa+rv,use=aaa-48,
-aaa-60-s|ann arbor ambassador/59 lines plus status line, 
+aaa-60-s|ann arbor ambassador/59 lines+status, 
 	eslok, hs, 
 	lines#59, 
 	dsl=\E7\E[60;0;0;60p\E[1;1H\E[K\E[H\E8\r\n\E[K, 
 	fsl=\E[>51l, is2=\r\n\E[A\E7\E[60;1;0;60p\E8, 
 	tsl=\E[>51h\E[1;%p1%dH\E[2K, use=aaa+unk,
-aaa-60-s-rv|ann arbor ambassador/59 lines+status line+reverse video, 
+aaa-60-s-rv|ann arbor ambassador/59 lines+status+reverse video, 
 	use=aaa+rv,use=aaa-60-s,
-aaa-60-s-rv-dec|ann arbor ambassador/dec mode+59 lines+status line+rev video, 
+aaa-60-s-rv-dec|ann arbor ambassador/dec mode+59 lines+status+rev video, 
 	use=aaa+dec,use=aaa+rv,use=aaa-60-s,
 aaa-60|ann arbor ambassador/60 lines, 
 	lines#60, 
@@ -5918,14 +6008,14 @@ guru+rv|guru changes for reverse video,
 	flash=\E[>59l$<100>\E[>59h, is3=\E[>59h, 
 guru-rv|guru-33-rv|ann arbor guru/33 lines+reverse video, 
 	use=guru+rv,use=guru-33,
-guru+s|changes for status line, 
+guru+s|guru status line, 
 	eslok, hs, 
 	dsl=\E7\E[;0p\E[1;1H\E[K\E[H\E8\r\n\E[K, 
 	fsl=\E[>51l, rmcup=\E[255;1p\E[255;1H\E[K, 
 	tsl=\E[>51h\E[1;%p1%dH\E[2K, 
 guru-nctxt, 
 	smcup=\E[H\E[J$<156>\E[33p\E[255;1H\E[K, use=guru,
-guru-s|guru-33-s|ann arbor guru/33 lines w/status line, 
+guru-s|guru-33-s|ann arbor guru/33 lines+status, 
 	lines#32, 
 	is2=\r\n\E[A\E7\E[255;1;0;33;80;80p\E8\E[J, 
 	smcup=\E[33;1p\E[255;1H\E[K, use=guru+s,use=guru+unk,
@@ -5935,14 +6025,14 @@ guru-24,
 guru-44, 
 	cols#97, lines#44, 
 	is2=\E7\E[255;0;0;44;97;100p\E8\E[J, smcup=\E[44p, use=guru+unk,
-guru-44-s|ann arbor guru/44 lines w/status line, 
+guru-44-s|ann arbor guru/44 lines+status, 
 	lines#43, 
 	is2=\r\n\E[A\E7\E[255;1;0;44;80;80p\E8\E[J, 
 	smcup=\E[44;1p\E[255;1H\E[K, use=guru+s,use=guru+unk,
 guru-76|guru with 76 lines by 89 cols, 
 	cols#89, lines#76, 
 	is2=\E7\E[255;0;0;76;89;100p\E8\E[J, smcup=\E[76p, use=guru+unk,
-guru-76-s|ann arbor guru/76 lines w/status line, 
+guru-76-s|ann arbor guru/76 lines+status, 
 	cols#89, lines#75, 
 	is2=\r\n\E[A\E7\E[255;1;0;76;89;100p\E8\E[J, 
 	smcup=\E[76;1p\E[255;1H\E[K, use=guru+s,use=guru+unk,
@@ -5952,7 +6042,7 @@ guru-76-lp|guru-lp|guru with page bigger than line printer,
 guru-76-w|guru 76 lines by 178 cols, 
 	cols#178, lines#76, 
 	is2=\E7\E[255;0;0;76;178;178p\E8\E[J, smcup=\E[76p, use=guru+unk,
-guru-76-w-s|ann arbor guru/76 lines w/status line in wide mode, 
+guru-76-w-s|ann arbor guru/76 lines+status+wide, 
 	cols#178, lines#75, 
 	is2=\r\n\E[A\E7\E[255;1;0;76;178;178p\E8\E[J, 
 	smcup=\E[76;1p\E[255;1H\E[K, use=guru+s,use=guru+unk,
@@ -6375,7 +6465,7 @@ oc100|oconcept|c100-1p|old 1 page concept 100,
 	is3@, use=c100,
 
 # ht through el included to specify padding needed in raw mode.
-avt-ns|concept avt with status lins disabled, 
+avt-ns|concept avt no status line, 
 	am, eo, mir, ul, xenl, xon, 
 	cols#80, it#8, lines#24, lm#192, 
 	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, 
@@ -6430,11 +6520,11 @@ avt+s|concept avt status line changes,
 	tsl=\E[2;1!w\E[;%p1%dH\E[2K, 
 avt|avt-s|concept-avt|avt w/80 columns, 
 	use=avt+s,use=avt-ns,
-avt-rv|avt-s-rv|avt-rv-s|concept avt in reverse video w/status line, 
+avt-rv|avt-rv-s|avt reverse video w/sl, 
 	flash=\E[=205l$<50>\E[=205h, is1=\E[=103l\E[=205h, use=avt+s,use=avt-ns,
-avt-w|avt-w-s|concept avt in 132 column mode w/status line, 
+avt-w|avt-w-s|concept avt 132 cols+status, 
 	is1=\E[=103h\E[=205l, smcup=\E[H\E[1;24;1;132w, use=avt+s,use=avt-ns,
-avt-w-rv|avt-rv-w|avt-w-s-rv|avt-w-rv-s|avt 132 cols w/status line, 
+avt-w-rv|avt-w-rv-s|avt wide+status+rv, 
 	flash=\E[=205l$<50>\E[=205h, is1=\E[=103h\E[=205h, 
 	smcup=\E[H\E[1;24;1;132w, use=avt+s,use=avt-ns,
 
@@ -6636,6 +6726,20 @@ dm80w|dmdt80w|dt80w|datamedia dt80/1 in 132 char mode,
 	clear=\E[H\E[2J$<50/>, cud1=^J, 
 	cup=\E[%i%p1%d;%p2%dH$<5/>, cuu1=\E[A$<5/>, 
 	ed=\E[0J$<20/>, el=\E[0K$<20/>, use=dm80,
+# From: Adam Thompson <thompson@xanth.magic.mb.ca> Sept 10 1995
+dtx-sas|dt80-sas|Datamedia DT803/DTX for SAS usage, 
+	am, bw, 
+	cols#80, lines#24, 
+	bel=^G, clear=^L, cr=^M, 
+	csr=\E=%p1%' '%+%c%' '%c\E#1\E=%p2%' '%+%c%' '%c\E#2, 
+	cub1=^H, cud1=\EB, cuf1=^\, 
+	cup=\E=%p2%' '%+%c%p1%' '%+%c, cuu1=^_, dl1=\EM, 
+	ed=^K, el=^], ff=^L, home=^Y, ht=^I, hts=\E'1, 
+	il1=\EL, ind=\EB, is2=\E)0\E<\EP\E'0\E$2, kclr=^L, 
+	kcub1=^H, kcud1=^J, kcuf1=^\, kcuu1=^_, ked=^K, 
+	kel=^], khome=^Y, mc4=^O, mc5=^N, rev=\E$2\004, 
+	ri=\EI, rmacs=\EG, rmso=^X, sgr0=^X, smacs=\EF, 
+	smso=\E$2\004, tbc=\E'0, 
 
 #### Falco
 #
@@ -10155,8 +10259,10 @@ d132|datagraphix|datagraphix 132a,
 	bel=^G, clear=^L, cnorm=\Em\En, cr=^M, cud1=^J, 
 	cuf1=\El, cuu1=\Ek, cvvis=\Ex, dch1=\E6, home=\Et, 
 	ich1=\E5, il1=\E3, ind=\Ev, ri=\Ew, 
-# I'm told the d800 was an early portable terminal that looked a lot like the
-# original Compaq portable.
+# The d800 was an early portable terminal from c.1984-85 that looked a lot
+# like the original Compaq `lunchbox' portable (but no handle).  It had a vt220
+# mode (which is what this entry looks like) and several other lesser-known
+# emulations.
 # (d800: mapped ":pt:" to default tabs -- esr)
 d800|Direct 800/A, 
 	am, da, db, msgr, xhp, 
@@ -10209,6 +10315,17 @@ ep40|ep4000|execuport 4000,
 	cols#136, 
 	bel=^G, cr=^M, cub1=^H, cud1=^J, hd=^\, hu=^^, 
 	ind=^J, 
+# Adam Thompson <thompson@xanth.magic.mb.ca> tells us:
+# Informer series - these are all portable units, resembling older
+# automatic bread-baking machines.  The terminal looks like a `clamshell'
+# design, but isn't.  The structure is similar to the Direct terminals,
+# but only half the width.  The entire unit is only about 10" wide.
+# It features an 8" screen (6" or 7" if you have color!), and an 9"x6"
+# keyboard.  All the keys are crammed together, much like some laptop
+# PCs today, but perhaps less well organized...all these units have a
+# bewildering array of plugs on the back, including a built-in modem.
+# The 305 was a color version of the 304; the 306 and 307 were mono and
+# color terminals built for IBM bisync protocols.
 # From: Paul Leondis <unllab@amber.berkeley.edu>
 ifmr|Informer D304, 
 	am, 
@@ -10995,13 +11112,21 @@ ttywilliams,
 #	* Some commented-out caps in long entries come back in, my code 
 #	  for computing string-table lengths had a bug in it.
 #	* pcansi series modified to fit comm-program reality better.
-# 9.8.2 (Sat Sep  9 23:35:00 EDT 1995)
+# 9.8.2 (Sat Sep  9 23:35:00 EDT 1995):
 #	* BSD/OS actually ships the ibmpc3 bold entry as its console.
 #	* Correct some bad aliases in the pcansi series
 #	* Added entry for QNX console.
 #	* Clean up duplicate long names for use with 4.4 library.
 #	* Change vt100 standout to be normal reverse vide, not bright reverse;
 #	  this makes the Emacs status line look better.
+# 9.8.3 (Sun Sep 10 13:07:34 EDT 1995):
+#	* Added Adam Thompson's VT320 entries, also his dtx-sas and z340.
+#	* Minor surgery, mostly on name strings, to shorten termcap version.
+#
+# 9.9.0 (Sat Sep 16 23:03:48 EDT 1995):
+#	* Added dec-vt100 for use with the EWAN emulator.
+#	* Added kmous to xterm for use with xterm's mouse-tracking facility.
+#	* Freeze for 1.9.5 release.
 #
 ######## REORDER
 #

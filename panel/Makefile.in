@@ -29,6 +29,7 @@ INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
 
 AWK		= @AWK@
+LN_S		= @LN_S@
 
 CC		= @CC@
 CFLAGS		= @CFLAGS@
@@ -49,7 +50,6 @@ LINK		= $(CC)
 LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@
 
 MK_SHARED_LIB	= @MK_SHARED_LIB@
-MK_SHARED_LIB_LINK= @MK_SHARED_LIB_LINK@
 
 RANLIB		= @RANLIB@
 
@@ -60,13 +60,8 @@ all ::	../include/panel.h $(LIBRARIES)
 
 install :: install.libs
 
-install.libs:: $(LIBRARIES) $(includedir) $(libdir)
+install.libs:: $(includedir) $(libdir)
 	$(INSTALL_DATA) $(srcdir)/panel.h $(includedir)/panel.h
-	@for lib in $(LIBRARIES); do \
-		echo installing $${lib} as $(libdir)/$${lib}; \
-		$(INSTALL_DATA) $${lib} $(libdir)/$${lib}; \
-		$(RANLIB) $(libdir)/$${lib}; \
-	done
 	@echo "Make sure you delete any old header files!"
 
 $(includedir) \

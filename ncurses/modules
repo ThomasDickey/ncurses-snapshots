@@ -19,6 +19,7 @@ lib_erase	lib		$(srcdir)
 lib_getch	lib		$(srcdir)
 lib_getstr	lib		$(srcdir)
 lib_initscr	lib		$(srcdir)
+lib_inchstr	lib		$(srcdir)
 lib_insch	lib		$(srcdir)
 lib_insdel	lib		$(srcdir)
 lib_insstr	lib		$(srcdir)
@@ -77,3 +78,6 @@ comp_hash	lib		$(srcdir)	../include/term.h ../include/hashsize.h
 comp_parse	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 comp_scan	lib		$(srcdir)
 parse_entry	lib		$(srcdir)	../include/term.h ../include/parametrized.h
+
+# Extensions
+lib_resize	lib		$(srcdir)
