@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996,1997                   *
  ****************************************************************************/
-/* $Id: nc_alloc.h,v 1.12 2004/05/08 18:44:57 tom Exp $ */
+/* $Id: nc_alloc.h,v 1.13 2005/01/16 00:27:35 tom Exp $ */
 
 #ifndef NC_ALLOC_included
 #define NC_ALLOC_included 1
@@ -50,6 +50,13 @@ extern "C" {
 #else
 #undef  HAVE_LIBDBMALLOC
 #define HAVE_LIBDBMALLOC 0
+#endif
+
+#if HAVE_LIBMPATROL
+#include <mpatrol.h>    /* Memory-Patrol library */
+#else
+#undef  HAVE_LIBMPATROL
+#define HAVE_LIBMPATROL 0
 #endif
 
 #ifndef NO_LEAKS

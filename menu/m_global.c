@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_global.c,v 1.18 2004/12/26 00:57:50 tom Exp $")
+MODULE_ID("$Id: m_global.c,v 1.19 2005/01/16 01:02:23 tom Exp $")
 
 static char mark[] = "-";
 /* *INDENT-OFF* */
@@ -205,7 +205,7 @@ _nc_Connect_Items(MENU * menu, ITEM ** items)
       menu->items = items;
       menu->nitems = ItemCount;
       ComputeMaximum_NameDesc_Lengths(menu);
-      if ((menu->pattern = (char *)malloc((unsigned)(1 + menu->namelen))))
+      if ((menu->pattern = typeMalloc(char, (unsigned)(1 + menu->namelen))))
 	{
 	  Reset_Pattern(menu);
 	  set_menu_format(menu, menu->frows, menu->fcols);
@@ -254,7 +254,7 @@ _nc_Calculate_Text_Width(const TEXT * item /*FIXME: limit length */ )
 
   T((T_CALLED("_nc_menu_text_width(%p)"), item));
   if (count > 0
-      && (temp = malloc(sizeof(*temp) * (2 + count))) != 0)
+      && (temp = typeMalloc(wchar_t, 2 + count)) != 0)
     {
       int n;
 

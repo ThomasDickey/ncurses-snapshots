@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -38,7 +38,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_new.c,v 1.21 2004/12/26 00:59:45 tom Exp $")
+MODULE_ID("$Id: m_item_new.c,v 1.22 2005/01/16 01:02:23 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -62,7 +62,7 @@ Is_Printable_String(const char *s)
   assert(s);
 
   if (count > 0
-      && (temp = malloc(sizeof(*temp) * (2 + count))) != 0)
+      && (temp = typeMalloc(wchar_t, (2 + count))) != 0)
     {
       int n;
 

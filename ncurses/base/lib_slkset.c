@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -42,7 +42,7 @@
 #include <wctype.h>
 #endif
 
-MODULE_ID("$Id: lib_slkset.c,v 1.12 2004/11/20 21:54:50 tom Exp $")
+MODULE_ID("$Id: lib_slkset.c,v 1.13 2005/01/16 01:09:13 tom Exp $")
 
 NCURSES_EXPORT(int)
 slk_set(int i, const char *astr, int format)
@@ -103,8 +103,9 @@ slk_set(int i, const char *astr, int format)
 	returnCode(ERR);
     slk->ent[i].ent_text[numchrs] = '\0';
 
-    if ((slk->ent[i].form_text = _nc_doalloc(slk->ent[i].form_text,
-					     limit + numchrs + 1)) == 0)
+    if ((slk->ent[i].form_text = (char *) _nc_doalloc(slk->ent[i].form_text,
+						      limit + numchrs + 1)
+	) == 0)
 	returnCode(ERR);
 
     switch (format) {

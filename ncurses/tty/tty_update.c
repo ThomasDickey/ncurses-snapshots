@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.213 2005/01/02 01:33:32 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.214 2005/01/15 20:16:22 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -1298,8 +1298,11 @@ TransformLine(int const lineno)
 	    if (oLastChar < nLastChar) {
 		int m = max(nLastNonblank, oLastNonblank);
 		GoTo(lineno, n + 1);
-		if (InsCharCost(nLastChar - oLastChar)
-		    > (m - n)) {
+		if (
+#if USE_WIDEC_SUPPORT
+		       isWidecExt(newLine[n + 1]) ||
+#endif
+		       InsCharCost(nLastChar - oLastChar) > (m - n)) {
 		    PutRange(oldLine, newLine, lineno, n + 1, m);
 		} else {
 		    InsStr(&newLine[n + 1], nLastChar - oLastChar);

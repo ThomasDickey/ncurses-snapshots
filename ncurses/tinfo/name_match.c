@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1999-2002,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1999-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -34,7 +34,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: name_match.c,v 1.13 2004/04/17 22:11:21 tom Exp $")
+MODULE_ID("$Id: name_match.c,v 1.14 2005/01/16 00:34:52 tom Exp $")
 
 /*
  *	_nc_first_name(char *names)
@@ -50,7 +50,7 @@ _nc_first_name(const char *const sp)
     register unsigned n;
 
 #if NO_LEAKS
-    if (sp == 0) {
+    if (sp == 0 && buf != 0) {
 	FreeAndNull(buf);	/* for leak-testing */
 	return 0;
     }

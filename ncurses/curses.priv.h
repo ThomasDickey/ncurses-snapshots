@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.271 2005/01/08 21:07:48 tom Exp $
+ * $Id: curses.priv.h,v 1.272 2005/01/16 01:02:23 tom Exp $
  *
  *	curses.priv.h
  *
@@ -655,6 +655,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 			} } } while (0)
 
 #define BLANK		{ WA_NORMAL, {' '} NulColor }
+#define ZEROS		{ WA_NORMAL, {'\0'} NulColor }
 #define ISBLANK(ch)	((ch).chars[0] == L' ' && (ch).chars[1] == L'\0')
 
 	/*
@@ -696,6 +697,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define PUTC(a,b)	do { data = CharOf(ch); putc(data,b); } while (0)
 
 #define BLANK		(' '|A_NORMAL)
+#define ZEROS		('\0'|A_NORMAL)
 #define ISBLANK(ch)	(CharOf(ch) == ' ')
 
 #define isWidecExt(ch)	(0)
