@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.547 2000/04/01 23:04:01 tom Exp $
+-- $Id: NEWS,v 1.548 2000/04/09 02:04:52 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000408
+	+ add terminfo entries bsdos-pc-m, bsdos-pc-mono (Jeffrey C Honig)
+	+ correct spelling error in terminfo entry name:  bq300-rv was given as
+	  bg300-rv in esr's version.
+	+ modify redrawwin() macro so its parameter is fully parenthesized
+	  (fixes Debian bug report #61088).
+	+ correct formatting error in dump_entry() which set incorrect column
+	  value when no newline trimming was needed at the end of an entry,
+	  before appending "use=" clauses (cf: 960406).
 
 20000401
 	+ add configure option --with-manpage-symlinks

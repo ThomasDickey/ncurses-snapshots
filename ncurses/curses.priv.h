@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.157 2000/03/26 01:01:14 tom Exp $
+ * $Id: curses.priv.h,v 1.158 2000/04/08 23:43:08 tom Exp $
  *
  *	curses.priv.h
  *
@@ -503,10 +503,6 @@ typedef	struct {
 
 #define SIZEOF(v) (sizeof(v)/sizeof(v[0]))
 
-#define typeMalloc(type,elts) (type *)malloc((elts)*sizeof(type))
-#define typeCalloc(type,elts) (type *)calloc((elts),sizeof(type))
-#define typeRealloc(type,elts,ptr) (type *)_nc_doalloc(ptr, (elts)*sizeof(type))
-
 #define FreeIfNeeded(p)  if ((p) != 0) free(p)
 
 /* FreeAndNull() is not a comma-separated expression because some compilers
@@ -650,13 +646,6 @@ extern void _nc_expanded(void);
 
 #if !HAVE_GETCWD
 #define getcwd(buf,len) getwd(buf)
-#endif
-
-/* doalloc.c */
-extern void *_nc_doalloc(void *, size_t);
-#if !HAVE_STRDUP
-#define strdup _nc_strdup
-extern char *_nc_strdup(const char *);
 #endif
 
 /* doupdate.c */

@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2000/03/26 00:53:29 $
+#	$Date: 2000/04/08 21:09:14 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -1489,7 +1489,14 @@ oldpc3|oldibmpc3|old IBM PC BSD/386 Console,
 # "stty rows NN", e.g. to use 24 lines.
 # (Color support from Kevin Rosenberg <kevin@cyberport.com>, 2 May 1996) 
 # Bug: The <op> capability resets attributes.
+bsdos-pc|IBM PC BSD/OS Console,
+	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;1%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m,
+	use=bsdos-pc-nobold,
+
 bsdos-pc-nobold|BSD/OS PC console w/o bold, 
+	use=klone+color, use=bsdos-pc-m,
+
+bsdos-pc-m|bsdos-pc-mono|BSD/OS PC console mono,
 	OTbs, am, eo, km, xon, 
 	cols#80, it#8, lines#25, 
 	bel=^G, clear=\Ec, cr=^M, cub=\E[%p1%dD, cub1=^H, 
@@ -1500,9 +1507,7 @@ bsdos-pc-nobold|BSD/OS PC console w/o bold,
 	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, khome=\E[H, kich1=\E[L, 
 	kll=\E[F, knp=\E[G, kpp=\E[I, nel=^M^J, rc=\E8, sc=\E7, 
 	sgr=\E[0;10%?%p1%t;7%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m%?%p5%t\E[=8F%;, 
-	use=klone+sgr, use=klone+color, 
-bsdos-pc|IBM PC BSD/OS Console, 
-	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;1%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m, use=bsdos-pc-nobold, 
+	use=klone+sgr,
 
 # Old names for BSD/OS PC console used in releases before 4.1. 
 pc3|BSD/OS on the PC Console, 
@@ -18360,6 +18365,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2000/3/26
 #	* move screen's AX extension to ecma+color, modify several entries to
 #	  use that, adjusting ncv as needed -TD
+#
+# 2000/4/8
+#	* add  bsdos-pc-m, bsdos-pc-mono (Jeffrey C Honig)
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

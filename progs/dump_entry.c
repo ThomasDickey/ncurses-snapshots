@@ -38,7 +38,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.48 2000/03/12 02:33:01 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.50 2000/04/09 01:59:11 tom Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
@@ -337,10 +337,7 @@ append_output(const char *src)
 	size_t want = need + out_used + 1;
 	if (want > out_size) {
 	    out_size += want;	/* be generous */
-	    if (outbuf == 0)
-		outbuf = malloc(out_size);
-	    else
-		outbuf = realloc(outbuf, out_size);
+	    outbuf = typeRealloc(char, out_size, outbuf);
 	}
 	(void) strcpy(outbuf + out_used, src);
 	out_used += need;
@@ -706,20 +703,25 @@ fmt_entry(TERMTYPE * tterm,
      * in infocmp -u output when there are no string differences
      */
     if (outcount) {
+	bool trimmed = FALSE;
 	j = out_used;
 	if (j >= 2
 	    && outbuf[j - 1] == '\t'
 	    && outbuf[j - 2] == '\n') {
 	    out_used -= 2;
+	    trimmed = TRUE;
 	} else if (j >= 4
 		&& outbuf[j - 1] == ':'
 		&& outbuf[j - 2] == '\t'
 		&& outbuf[j - 3] == '\n'
 	    && outbuf[j - 4] == '\\') {
 	    out_used -= 4;
+	    trimmed = TRUE;
 	}
-	outbuf[out_used] = '\0';
-	column = oldcol;
+	if (trimmed) {
+	    outbuf[out_used] = '\0';
+	    column = oldcol;
+	}
     }
 #if 0
     fprintf(stderr, "num_bools = %d\n", num_bools);
@@ -820,13 +822,15 @@ dump_uses(const char *name, bool infodump)
 }
 
 void
-compare_entry(void (*hook) (int t, int i, const char *name), TERMTYPE * tp GCC_UNUSED, bool quiet)
+compare_entry(void (*hook) (int t, int i, const char *name), TERMTYPE * tp
+    GCC_UNUSED, bool quiet)
 /* compare two entries */
 {
     int i, j;
     NCURSES_CONST char *name;
 
-    if (!quiet) fputs("    comparing booleans.\n", stdout);
+    if (!quiet)
+	fputs("    comparing booleans.\n", stdout);
     for_each_boolean(j, tp) {
 	i = BoolIndirect(j);
 	name = ExtBoolname(tp, i, bool_names);
@@ -837,7 +841,8 @@ compare_entry(void (*hook) (int t, int i, const char *name), TERMTYPE * tp GCC_U
 	(*hook) (CMP_BOOLEAN, i, name);
     }
 
-    if (!quiet) fputs("    comparing numbers.\n", stdout);
+    if (!quiet)
+	fputs("    comparing numbers.\n", stdout);
     for_each_number(j, tp) {
 	i = NumIndirect(j);
 	name = ExtNumname(tp, i, num_names);
@@ -848,7 +853,8 @@ compare_entry(void (*hook) (int t, int i, const char *name), TERMTYPE * tp GCC_U
 	(*hook) (CMP_NUMBER, i, name);
     }
 
-    if (!quiet) fputs("    comparing strings.\n", stdout);
+    if (!quiet)
+	fputs("    comparing strings.\n", stdout);
     for_each_string(j, tp) {
 	i = StrIndirect(j);
 	name = ExtStrname(tp, i, str_names);
