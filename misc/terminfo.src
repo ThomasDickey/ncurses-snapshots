@@ -1,7 +1,7 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
 #	Version 10.2.1
-#	$Date: 1998/08/06 20:00:24 $
+#	$Date: 1998/08/15 21:36:00 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2529,32 +2529,51 @@ screen3|older VT 100/ANSI X3.64 virtual terminal,
 #
 # Application mode is not used.  The function-key mapping refers to the Apple
 # Extended Keyboard (e.g., NCSA Telnet's F1 corresponds to a VT220 F6).
+# Other special mappings:
+#	Apple		VT220
+#	HELP 		Find
+#	HOME		Insert here
+#	PAGEUP		Remove
+#	DEL		Select
+#	END		Prev Screen
+#	PAGEDOWN	Next Screen
+#
+# Though it supports ANSI color, NCSA Telnet uses color to represent blinking
+# text.
+#
+# The status-line manipulation is a mapping of the xterm-compatible control
+# sequences for setting the window-title.  So you must use tsl and fsl in
+# pairs, since the latter ends the string that is loaded to the window-title.
 ncsa|ncsa-vt220|ncsa-vt220-8|NCSA Telnet 2.6 for Macintosh in vt220-8 mode, 
 	am, hs, km, mir, msgr, xenl, 
-	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+	acsc=``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
 	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
 	clear=\E[H\E[2J, cnorm=\E[?25h, cr=^M, 
 	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
 	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
 	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
 	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, 
-	dsl=\E]0;\007, ed=\E[J, el=\E[K, enacs=\E)0, fsl=^G, 
-	home=\E[H, ht=^I, if=/usr/share/tabset/vt100, 
+	dsl=\E]0;\007, ed=\E[J, el=\E[K, el1=\E[1K, enacs=\E)0, 
+	flash=\E[?5h\E[?5l, fsl=^G, home=\E[H, ht=^I, hts=\EH, 
+	ich=\E[%p1%d@, if=/usr/share/tabset/vt100, 
 	il=\E[%p1%dL, il1=\E[L, ind=^J, 
 	is2=\E7\E[r\E[m\E[?7h\E[?1;4;6l\E[4l\E8\E>, kbs=^H, 
 	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
-	kdch1=\E[4~, kf1=\E[17~, kf10=\E[28~, kf11=\E[29~, 
-	kf12=\E[31~, kf13=\E[32~, kf14=\E[33~, kf15=\E[34~, 
-	kf2=\E[18, kf3=\E[19~, kf4=\E[20~, kf5=\E[21~, kf6=\E23~, 
-	kf7=\E[24~, kf8=\E[25~, kf9=\E[26~, khome=\E[2~, 
-	kich1=\E[1~, kll=\E[5~, knp=\E[6~, kpp=\E[3~, rc=\E8, 
-	rev=\E[7m, rf=/usr/share/tabset/vt100, ri=\EM, rmacs=^O, 
-	rmam=\E[?7l, rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, 
-	rmso=\E[27m, rmul=\E[24m, 
+	kdch1=\E[4~, kend=\E[5~, kf1=\E[17~, kf10=\E[28~, 
+	kf11=\E[29~, kf12=\E[31~, kf13=\E[32~, kf14=\E[33~, 
+	kf15=\E[34~, kf2=\E[18, kf3=\E[19~, kf4=\E[20~, kf5=\E[21~, 
+	kf6=\E23~, kf7=\E[24~, kf8=\E[25~, kf9=\E[26~, kfnd=\E[1~, 
+	khlp=\E[1~, khome=\E[2~, kich1=\E[1~, kll=\E[5~, knp=\E[6~, 
+	kpp=\E[3~, mc4=\E[4i, mc5=\E[5i, rc=\E8, rev=\E[7m, 
+	rf=/usr/share/tabset/vt100, ri=\EM, rmacs=^O, 
+	rmam=\E[?7l, rmcup=\E[2J\E8, rmir=\E[4l, rmso=\E[27m, 
+	rmul=\E[24m, 
 	rs2=\E7\E[r\E[m\E[?7h\E[?1;4;6l\E[4l\E8\E>, sc=\E7, 
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p4%t;5%;%?%p1%p3%|%t;7%;m%?%p9%t\E(0%e\E(B%;, 
-	sgr0=\E[m, smacs=^N, smam=\E[?7h', smcup=\E7\E[?47h, 
+	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smcup=\E7, 
 	smir=\E[4h, smso=\E[7m, smul=\E[4m, tbc=\E[3g, tsl=\E]0;, 
+	u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?62;1;6c, u9=\E[c, 
+	use=klone+color, 
 
 #### Pilot Pro Palm-Top
 #
@@ -16116,6 +16135,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 1998/8/6
 #	* Added ncsa telnet entries Francesco Potorti
+#
+# 1998/8/15
+#	* modify ncsa telnet entry to reflect color, other capabilities based on
+#	  examination of the source code - T.Dickey.
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

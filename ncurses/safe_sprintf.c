@@ -33,7 +33,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: safe_sprintf.c,v 1.8 1998/07/11 20:31:37 Bernhard.Rosenkraenzer Exp $")
+MODULE_ID("$Id: safe_sprintf.c,v 1.9 1998/08/15 23:58:49 tom Exp $")
 
 #if USE_SAFE_SPRINTF
 
@@ -66,8 +66,9 @@ _nc_printf_length(const char *fmt, va_list ap)
 
 	while (*fmt != '\0') {
 		if (*fmt == '%') {
+			static char dummy[] = "";
 			PRINTF state = Flags;
-			char *pval   = "";
+			char *pval   = dummy;	/* avoid const-cast */
 			double fval  = 0.0;
 			int done     = FALSE;
 			int ival     = 0;
@@ -149,7 +150,7 @@ _nc_printf_length(const char *fmt, va_list ap)
 							prec = strlen(pval);
 						if (prec > (int)length) {
 							length = length + prec;
-							buffer = realloc(buffer, length);
+							buffer = (char *)_nc_doalloc(buffer, length);
 							if (buffer == 0) {
 								free(format);
 								return -1;
@@ -211,8 +212,8 @@ _nc_printf_string(const char *fmt, va_list ap)
 	int len = _nc_printf_length(fmt, ap);
 
 	if (len > 0) {
-		if ((buf = malloc(len+1)) == NULL)
-			return(NULL);
+		if ((buf = malloc(len+1)) == 0)
+			return(0);
 		vsprintf(buf, fmt, ap);
 	}
 #else
@@ -224,12 +225,10 @@ _nc_printf_string(const char *fmt, va_list ap)
 		if (screen_lines   > rows) rows = screen_lines;
 		if (screen_columns > cols) cols = screen_columns;
 		len = (rows * (cols + 1)) + 1;
-		if (buf == 0)
-			buf = malloc(len);
-		else
-			buf = realloc(buf, len);
-		if (buf == NULL)
-			return(NULL);
+		buf = (char *)_nc_doalloc(buf, len);
+		if (buf == 0) {
+			return(0);
+		}
 	}
 
 	if (buf != 0) {

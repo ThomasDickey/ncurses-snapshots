@@ -92,6 +92,7 @@ libncurses-routines	= \
 			comp_parse \
 			comp_scan \
 			define_key \
+			doalloc \
 			expanded \
 			fallback \
 			hardscroll \
@@ -306,7 +307,7 @@ endif
 
 LDLIBS-tclock = math/libm
 
-tests: $(test-srcs:%=$(objpfx)%) 
+tests: $(test-srcs:%=$(objpfx)%)
 
 $(objpfx)clear: $(addprefix $(objpfx),$(clear-objs))
 $(objpfx)infocmp: $(addprefix $(objpfx),$(infocmp-objs))
@@ -365,7 +366,7 @@ $(inst_tabsetdir)/std: \
 	  echo installing $$f; \
 	  $(INSTALL_DATA) $$f $(inst_tabsetdir); \
 	done
-	
+
 
 ifeq (no,$(cross-compiling))
 subdir_install: $(inst_terminfodir)/v/vt100

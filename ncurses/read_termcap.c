@@ -61,7 +61,7 @@
 #include <fcntl.h>
 #endif
 
-MODULE_ID("$Id: read_termcap.c,v 1.33 1998/07/25 20:22:11 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.34 1998/08/15 23:44:21 tom Exp $")
 
 #ifndef PURE_TERMINFO
 
@@ -260,6 +260,7 @@ _nc_cgetent(char **buf, int *oline, char **db_array, const char *name)
  *	  names interpolated, a name can't be found, or depth exceeds
  *	  MAX_RECURSION.
  */
+#define DOALLOC(size) (char *)_nc_doalloc(record, size)
 static int
 _nc_getent(
 	char **cap,         /* termcap-content */
@@ -274,7 +275,7 @@ _nc_getent(
 {
 	register char *r_end, *rp;
 	int myfd = FALSE;
-	char *record;
+	char *record = 0;
 	int tc_not_resolved;
 	int current;
 	int lineno;
@@ -290,7 +291,7 @@ _nc_getent(
 	 * Check if we have a top record from cgetset().
 	 */
 	if (depth == 0 && toprec != 0 && _nc_cgetmatch(toprec, name) == 0) {
-		if ((record = malloc (topreclen + BFRAG)) == 0) {
+		if ((record = DOALLOC(topreclen + BFRAG)) == 0) {
 			errno = ENOMEM;
 			return (TC_SYS_ERR);
 		}
@@ -304,7 +305,7 @@ _nc_getent(
 		/*
 		 * Allocate first chunk of memory.
 		 */
-		if ((record = malloc(BFRAG)) == 0) {
+		if ((record = DOALLOC(BFRAG)) == 0) {
 			errno = ENOMEM;
 			return (TC_SYS_ERR);
 		}
@@ -399,7 +400,7 @@ _nc_getent(
 
 							pos = rp - record;
 							newsize = r_end - record + BFRAG;
-							record = realloc(record, newsize);
+							record = DOALLOC(newsize);
 							if (record == 0) {
 								errno = ENOMEM;
 								if (myfd)
@@ -534,7 +535,7 @@ _nc_getent(
 				newsize = r_end - record + diff + BFRAG;
 				tcpos = tcstart - record;
 				tcposend = tcend - record;
-				record = realloc(record, newsize);
+				record = DOALLOC(newsize);
 				if (record == 0) {
 					errno = ENOMEM;
 					if (myfd)
@@ -573,7 +574,7 @@ _nc_getent(
 		(void)close(fd);
 	*len = rp - record - 1; /* don't count NUL */
 	if (r_end > rp) {
-		if ((record = realloc(record, (size_t)(rp - record))) == 0) {
+		if ((record = DOALLOC((size_t)(rp - record))) == 0) {
 			errno = ENOMEM;
 			return (TC_SYS_ERR);
 		}

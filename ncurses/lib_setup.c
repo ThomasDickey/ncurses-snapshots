@@ -47,7 +47,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.39 1998/08/09 00:21:41 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.40 1998/08/15 22:50:48 Todd.Miller Exp $")
 
 /****************************************************************************
  *
@@ -56,7 +56,7 @@ MODULE_ID("$Id: lib_setup.c,v 1.39 1998/08/09 00:21:41 tom Exp $")
  ****************************************************************************/
 
 #if HAVE_SIZECHANGE
-# if !defined(sun) || !HAVE_TERMIOS_H
+# if !defined(sun) || !TERMIOS
 #  if HAVE_SYS_IOCTL_H
 #   include <sys/ioctl.h>
 #  endif

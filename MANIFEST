@@ -524,6 +524,7 @@
 ./ncurses/comp_scan.c
 ./ncurses/curses.priv.h
 ./ncurses/define_key.c
+./ncurses/doalloc.c
 ./ncurses/fifo_defs.h
 ./ncurses/hardscroll.c
 ./ncurses/hashmap.c

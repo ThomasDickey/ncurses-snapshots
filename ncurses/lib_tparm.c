@@ -43,7 +43,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.31 1998/06/21 00:55:35 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.32 1998/08/15 23:37:16 tom Exp $")
 
 /*
  *	char *
@@ -141,10 +141,7 @@ static void save_text(size_t limit, char *s)
 
 	if (need > out_size) {
 		out_size = need * 2;
-		if (out_buff == 0)
-			out_buff = malloc(out_size);
-		else
-			out_buff = realloc(out_buff, out_size);
+		out_buff = (char *)_nc_doalloc(out_buff, out_size);
 	}
 	if (out_buff == 0)
 		_nc_err_abort("Out of memory");
@@ -183,7 +180,8 @@ static inline int npop(void)
 
 static inline char *spop(void)
 {
-	return   (stack_ptr > 0  ?  stack[--stack_ptr].str  :  "");
+	static char dummy[] = "";	/* avoid const-cast */
+	return   (stack_ptr > 0  ?  stack[--stack_ptr].str  :  dummy);
 }
 
 static inline const char *parse_format(const char *s, char *format, int *len)
@@ -301,8 +299,7 @@ static	int static_vars[NUM_VARS];
 	}
 	if ((size_t)(cp - string) > len_fmt) {
 		len_fmt = (cp - string) + len_fmt + 2;
-		format = format ? realloc(format, len_fmt) : malloc(len_fmt);
-		if (format == 0)
+		if ((format = _nc_doalloc(format, len_fmt)) == 0)
 			return 0;
 	}
 
