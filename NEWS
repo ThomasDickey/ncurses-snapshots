@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.541 2000/03/19 05:04:32 tom Exp $
+-- $Id: NEWS,v 1.543 2000/03/19 23:14:24 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000319
+	+ remove a spurious pointer increment in _nc_infotocap() changes from
+	  20000311.  Add check for '.' in format of number, since that also
+	  is not permitted in termcap.
+	+ correct typo in rxvt-basic terminfo from temporary change made while
+	  integrating 20000318.
 
 20000318
 	+ revert part of the vt220 change (request by Todd C Miller).
