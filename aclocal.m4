@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.235 2000/10/08 01:01:40 tom Exp $
+dnl $Id: aclocal.m4,v 1.237 2000/10/14 21:45:11 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -1000,26 +1000,61 @@ done
 DST=\[$]1
 REF=\[$]2
 SRC=\[$]3
+TMPSRC=\${TMPDIR-/tmp}/\`basename \$SRC\`\$\$
+TMPSED=\${TMPDIR-/tmp}/headers.sed\$\$
 echo installing \$SRC in \$DST
+CF_EOF
+if test $WITH_CURSES_H = yes; then
+	cat >>headers.sh <<CF_EOF
 case \$DST in
 /*/include/*)
-	TMPSRC=\${TMPDIR-/tmp}/\`basename \$SRC\`\$\$
-	TMPSED=\${TMPDIR-/tmp}/headers.sed\$\$
 	END=\`basename \$DST\`
 	for i in \`cat \$REF/../*/headers |fgrep -v "#"\`
 	do
 		NAME=\`basename \$i\`
 		echo "s/<\$NAME>/<\$END\/\$NAME>/" >> \$TMPSED
 	done
-	rm -f \$TMPSRC
-	sed -f \$TMPSED \$SRC > \$TMPSRC
-	eval \$PRG \$TMPSRC \$DST/\`basename \$SRC\`
-	rm -f \$TMPSRC \$TMPSED
 	;;
 *)
-	eval \$PRG \$SRC \$DST
+	echo "" >> \$TMPSED
 	;;
 esac
+CF_EOF
+else
+	cat >>headers.sh <<CF_EOF
+case \$DST in
+/*/include/*)
+	END=\`basename \$DST\`
+	for i in \`cat \$REF/../*/headers |fgrep -v "#"\`
+	do
+		NAME=\`basename \$i\`
+		if test "\$NAME" = "curses.h"
+		then
+			echo "s/<curses.h>/<ncurses.h>/" >> \$TMPSED
+			NAME=ncurses.h
+		fi
+		echo "s/<\$NAME>/<\$END\/\$NAME>/" >> \$TMPSED
+	done
+	;;
+*)
+	echo "s/<curses.h>/<ncurses.h>/" >> \$TMPSED
+	;;
+esac
+CF_EOF
+fi
+cat >>headers.sh <<CF_EOF
+rm -f \$TMPSRC
+sed -f \$TMPSED \$SRC > \$TMPSRC
+NAME=\`basename \$SRC\`
+CF_EOF
+if test $WITH_CURSES_H != yes; then
+	cat >>headers.sh <<CF_EOF
+test "\$NAME" = "curses.h" && NAME=ncurses.h
+CF_EOF
+fi
+cat >>headers.sh <<CF_EOF
+eval \$PRG \$TMPSRC \$DST/\$NAME
+rm -f \$TMPSRC \$TMPSED
 CF_EOF
 
 chmod 0755 headers.sh
@@ -1045,7 +1080,7 @@ CF_EOF
 		for i in `cat $srcdir/$cf_dir/headers |fgrep -v "#"`
 		do
 			echo "	@ (cd \$(DESTDIR)\$(includedir) && rm -f `basename $i`) ; ../headers.sh \$(INSTALL_DATA) \$(DESTDIR)\$(includedir) \$(srcdir) $i" >>$cf_dir/Makefile
-			test $i = curses.h && echo "	@ (cd \$(DESTDIR)\$(includedir) && rm -f ncurses.h && \$(LN_S) curses.h ncurses.h)" >>$cf_dir/Makefile
+			test $i = curses.h && test $WITH_CURSES_H = yes && echo "	@ (cd \$(DESTDIR)\$(includedir) && rm -f ncurses.h && \$(LN_S) curses.h ncurses.h)" >>$cf_dir/Makefile
 		done
 
 	cat >>$cf_dir/Makefile <<CF_EOF
@@ -1073,6 +1108,7 @@ AC_DEFUN([CF_LIB_SUFFIX],
 [
 	AC_REQUIRE([CF_SUBST_NCURSES_VERSION])
 	case $1 in
+	libtool) $2='.la'  ;;
 	normal)  $2='.a'   ;;
 	debug)   $2='_g.a' ;;
 	profile) $2='_p.a' ;;
@@ -1092,6 +1128,7 @@ dnl The variable $LIB_SUFFIX, if set, prepends the variable to set.
 AC_DEFUN([CF_LIB_TYPE],
 [
 	case $1 in
+	libtool) $2=''   ;;
 	normal)  $2=''   ;;
 	debug)   $2='_g' ;;
 	profile) $2='_p' ;;
@@ -1387,6 +1424,20 @@ AC_ARG_WITH(manpage-symlinks,
 AC_MSG_RESULT($cf_manpage_symlinks)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl This option causes manpages to be run through tbl(1) to generate tables
+dnl correctly.
+AC_DEFUN([CF_MANPAGE_TBL],
+[
+AC_MSG_CHECKING(for manpage tbl)
+
+AC_ARG_WITH(manpage-tbl,
+	[  --with-manpage-tbl      specify manpage processing with tbl],
+	[cf_manpage_tbl=$withval],
+	[cf_manpage_tbl=no])
+
+AC_MSG_RESULT($cf_manpage_tbl)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Try to determine if the man-pages on the system are compressed, and if
 dnl so, what format is used.  Use this information to construct a script that
 dnl will install man-pages.
@@ -1396,6 +1447,7 @@ CF_HELP_MESSAGE(Options to Specify How Manpages are Installed:)
 CF_MANPAGE_FORMAT
 CF_MANPAGE_RENAMES
 CF_MANPAGE_SYMLINKS
+CF_MANPAGE_TBL
 
   if test "$prefix" = "NONE" ; then
      cf_prefix="$ac_default_prefix"
@@ -1507,6 +1559,18 @@ cat >>man/edit_man.sh <<CF_EOF
 	fi
 	target="$cf_subdir\$section/\$target"
 	test \$verb = installing && sed -e "s,@DATADIR@,\$datadir," < \$i | sed -f edit_man.sed >\$TMP
+CF_EOF
+fi
+if test $cf_manpage_tbl = yes ; then
+cat >>man/edit_man.sh <<CF_EOF
+	tbl \$TMP >\$TMP.out
+	mv \$TMP.out \$TMP
+CF_EOF
+fi
+if test $with_curses_h != yes ; then
+cat >>man/edit_man.sh <<CF_EOF
+	sed -e "/\#[    ]*include/s,curses.h,ncurses.h," < \$TMP >\$TMP.out
+	mv \$TMP.out \$TMP
 CF_EOF
 fi
 if test $cf_format = yes ; then
@@ -1645,6 +1709,7 @@ dnl Compute the object-directory name from the given model name
 AC_DEFUN([CF_OBJ_SUBDIR],
 [
 	case $1 in
+	libtool) $2='obj_lo'  ;;
 	normal)  $2='objects' ;;
 	debug)   $2='obj_g' ;;
 	profile) $2='obj_p' ;;
@@ -2066,7 +2131,11 @@ AC_MSG_CHECKING(for src modules)
 
 # dependencies and linker-arguments for test-programs
 TEST_DEPS="${LIB_DIR}/${LIB_PREFIX}${LIB_NAME}${DFT_DEP_SUFFIX} $TEST_DEPS"
-TEST_ARGS="-l${LIB_NAME}${DFT_ARG_SUFFIX} $TEST_ARGS"
+if test "$DFT_LWR_MODEL" = "libtool"; then
+	TEST_ARGS="${TEST_DEPS}"
+else
+	TEST_ARGS="-l${LIB_NAME}${DFT_ARG_SUFFIX} $TEST_ARGS"
+fi
 
 # dependencies and linker-arguments for utility-programs
 PROG_ARGS="$TEST_ARGS"
@@ -2101,7 +2170,11 @@ do
 			AC_DEFINE_UNQUOTED(HAVE_${cf_have_include}_H)
 			AC_DEFINE_UNQUOTED(HAVE_LIB${cf_have_include})
 			TEST_DEPS="${LIB_DIR}/${LIB_PREFIX}${cf_dir}${DFT_DEP_SUFFIX} $TEST_DEPS"
-			TEST_ARGS="-l${cf_dir}${DFT_ARG_SUFFIX} $TEST_ARGS"
+			if test "$DFT_LWR_MODEL" = "libtool"; then
+				TEST_ARGS="${TEST_DEPS}"
+			else
+				TEST_ARGS="-l${cf_dir}${DFT_ARG_SUFFIX} $TEST_ARGS"
+			fi
 		fi
 	fi
 done

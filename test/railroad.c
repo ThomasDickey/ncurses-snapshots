@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 2000
  *
- * $Id: railroad.c,v 1.3 2000/09/24 00:20:33 tom Exp $
+ * $Id: railroad.c,v 1.4 2000/10/15 00:21:33 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -120,7 +120,7 @@ ShowSign(char *string)
     while (*string != 0) {
 	ch = *string;
 	if (moveit != 0) {
-	    for (first = length - 1; first > (string - base); first--) {
+	    for (first = length - 2; first >= (string - base); first--) {
 		if (first < length - 1) {
 		    tputs(tgoto(moveit, first + 1, height - 1), 1, outc);
 		    PutChar(' ');

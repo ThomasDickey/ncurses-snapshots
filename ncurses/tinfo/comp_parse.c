@@ -52,7 +52,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.41 2000/10/03 09:53:49 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.42 2000/10/14 17:50:45 Bernhard.Rosenkraenzer Exp $")
 
 static void sanity_check(TERMTYPE *);
 void (*_nc_check_termtype) (TERMTYPE *) = sanity_check;
@@ -127,7 +127,7 @@ force_bar(char *dst, char *src)
 {
     if (strchr(src, '|') == 0) {
 	size_t len = strlen(src);
-	if (len >= MAX_NAME_SIZE)
+	if (len > MAX_NAME_SIZE)
 	    len = MAX_NAME_SIZE;
 	(void) strncpy(dst, src, len);
 	(void) strcpy(dst + len, "|");

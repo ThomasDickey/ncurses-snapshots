@@ -1,10 +1,41 @@
--- $Id: NEWS,v 1.599 2000/10/10 01:02:11 tom Exp $
+-- $Id: NEWS,v 1.601 2000/10/15 01:09:46 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20001014
+	+ correct an off-by-one position in test/railroad.c which could cause
+	  wrapping at the right margin.
+	+ test/repair some issues with libtool configuration.  Make
+	  --disable-echo force libtool --silent.  (Libtool does not work for
+	  OS/2 EMX, works partly for SCO - libtool is still very specific to
+	  gcc).
+	+ change default of --with-manpage-tbl to "no", since for most of the
+	  platforms which do have tbl installed, the system "man" program
+	  understands how to run tbl automatically.
+	+ minor improvement to force_bar() in comp_parse.c (Bernhard
+	  Rosenkraenzer <bero@redhat.de>).
+	+ modify lib_tparm.c to use get_space() before writing terminating
+	  null character, both for consistency as well as to ensure that if
+	  save_char() was called immediately before, that the allocated memory
+	  is enough (patch by Sergei Ivanov).
+	+ add note about termcap ML capability which is duplicated between two
+	  different capabilities:  smgl and smglr (reported by Sergei Ivanov
+	  <svivanov@pdmi.ras.ru>).
+	+ correct parameter counts in include/Caps for dclk as well as some
+	  printer-specific capabilities: csnm, defc, scs, scsd, smgtp, smglp.
+	> patch by Johnny C Lam <lamj@stat.cmu.edu>:
+	+ add support for building with libtool (apparently version 1.3.5,
+	  since old versions do not handle -L../lib), using new configure
+	  option --with-libtool.
+	+ add configure option --with-manpage-tbl, which causes the manpages to
+	  be preprocessed by tbl(1) prior to installation,
+	+ add configure option --without-curses-h, which causes the
+	  installation process to install curses.h as ncurses.h and make
+	  appropriate changes to headers and manpages.
 
 20001009
 	+ correct order of options/parameters in run_tic.in invocation of tic,
