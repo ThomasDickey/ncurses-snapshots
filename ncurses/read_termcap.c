@@ -61,7 +61,7 @@
 #include <fcntl.h>
 #endif
 
-MODULE_ID("$Id: read_termcap.c,v 1.34 1998/08/15 23:44:21 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.35 1998/08/18 01:37:53 tom Exp $")
 
 #ifndef PURE_TERMINFO
 
@@ -323,8 +323,8 @@ _nc_getent(
 			 */
 			if (fd >= 0) {
 				(void)lseek(fd, (off_t)0, SEEK_SET);
-			} else if (_nc_access(db_array[current], R_OK) < 0
-			  || (fd = open(db_array[current], O_RDONLY, 0) < 0)) {
+			} else if ((_nc_access(db_array[current], R_OK) < 0)
+			  || (fd = open(db_array[current], O_RDONLY, 0)) < 0) {
 				/* No error on unfound file. */
 				if (errno == ENOENT)
 					continue;

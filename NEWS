@@ -1,10 +1,23 @@
--- $Id: NEWS,v 1.362 1998/08/16 00:04:26 tom Exp $
+-- $Id: NEWS,v 1.364 1998/08/22 19:55:55 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980822
+	+ document AT&T acs characters in terminfo.5 manpage.
+	+ use EMX _scrsize() function if terminfo and environment do not
+	  declare the screen size (reported by Ilya Zakharevich
+	  <ilya@math.ohio-state.edu>).
+	+ remove spurious '\' characters from eterm and osborne terminfo
+	  entries (prompted by an old Debian bug report).
+	+ correct reversed malloc/realloc calls in _nc_doalloc (reported by
+	  Hans-Joachim Widmaier <hjwidmai@foxboro.com>).
+	+ correct misplaced parenthesis which caused file-descriptor from
+	  opening termcap to be lost, from 980725 changes (reported by Andreas
+	  Jaeger).
 
 980815
 	+ modify lib_setup.c to eliminate unneeded include of <sys/ioctl.h> when
@@ -168,8 +181,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  compiler (reported by Tim Mooney).
 	+ parenthesize 'strcpy' calls in c++ binding to workaround redefinition
 	  in some C++ implementations (reported by several people running
-	  egcs with glibc 2.0.93, analysis by Andreas Jaeger
-	  <aj@arthur.rhein-neckar.de>).
+	  egcs with glibc 2.0.93, analysis by Andreas Jaeger.
 
 980516
 	+ modify write_entry.c so that it will not attempt to link aliases
