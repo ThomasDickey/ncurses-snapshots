@@ -25,7 +25,7 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.4 $
+--  $Revision: 1.5 $
 ------------------------------------------------------------------------------
 include(`Form_Base_Defs')
 with System;
@@ -457,7 +457,7 @@ include(`Form_Opt_Rep')
    --  AKA
    pragma Import (C, Get_Form_Term_Hook, "form_term");
 
-   --  MANPAGE(`form_fields.3x')
+   --  MANPAGE(`form_field.3x')
 
    --  ANCHOR(`set_form_fields()',`Redefine')
    procedure Redefine (Frm  : in Form;

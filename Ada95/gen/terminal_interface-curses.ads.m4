@@ -24,7 +24,7 @@ include(M4MACRO)----------------------------------------------------------------
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.4 $
+--  $Revision: 1.5 $
 ------------------------------------------------------------------------------
 include(`Base_Defs')
 with System;
@@ -79,11 +79,6 @@ include(`Key_Definitions')
 include(`Old_Keys')
 
 ------------------------------------------------------------------------------
-
-   procedure Key_Name (Key  : in  Real_Key_Code;
-                       Name : out String);
-   --  The external name for a real keystroke.
-   --  AKA: keyname() for some keys.
 
    type Color_Number is range 0 .. Integer (Interfaces.C.short'Last);
    for Color_Number'Size use Interfaces.C.short'Size;
@@ -1041,6 +1036,12 @@ include(`ACS_Map')
 
    --  | Not implemented : filter, use_env, putwin, getwin
    --
+   --  ANCHOR(`keyname()',`Key_Name')
+   procedure Key_Name (Key  : in  Real_Key_Code;
+                       Name : out String);
+   --  AKA
+   --  The external name for a real keystroke.
+
    --  ANCHOR(`unctrl()',`Un_Control')
    procedure Un_Control (Ch  : in Attributed_Character;
                          Str : out String);

@@ -16,7 +16,7 @@
 <I>--  Version 00.91                                                           --</I>
 <I>--                                                                          --</I>
 <I>--  The ncurses Ada95 binding is copyrighted 1996 by                        --</I>
-<I>--  <A HREF="http://home.t-online.de/home/Juergen.Pfeifer">Juergen Pfeifer</A>, Email: <A HREF="mailto:Juergen.Pfeifer@T-Online.de">Juergen.Pfeifer@T-Online.de</A>                     --</I>
+<I>--  <A HREF="http://home.t-online.de/home/Juergen.Pfeifer">J&uuml;rgen Pfeifer</A>, Email: <A HREF="mailto:Juergen.Pfeifer@T-Online.de">Juergen.Pfeifer@T-Online.de</A>                      --</I>
 <I>--                                                                          --</I>
 <I>--  Permission is hereby granted to reproduce and distribute this           --</I>
 <I>--  binding by any means and for any fee, whether alone or as part          --</I>
@@ -29,7 +29,7 @@
 <I>--  This binding comes AS IS with no warranty, implied or expressed.        --</I>
 <I>------------------------------------------------------------------------------</I>
 <I>--  Version Control:</I>
-<I>--  $Revision: 1.3 $</I>
+<I>--  $Revision: 1.4 $</I>
 <I>------------------------------------------------------------------------------</I>
 <B>with</B> System;
 
@@ -52,41 +52,41 @@
    Panel_Exception : <B>exception</B>;
 
    <I>--  |=====================================================================</I>
-   <I>--  | Man page panel.3x</I>
+   <I>--  | Man page <A HREF="panel.3x.html">panel.3x</A></I>
    <I>--  |=====================================================================</I>
 
    <I>--  <A NAME="AFU_1">|</I>
    <B>function</B> Create (Win : Window) <B>return</B> Panel;
-   <I>--  AKA: new_panel()</I>
+   <I>--  AKA: <A HREF="panel.3x.html">new_panel()</A></I>
 
    <I>--  <A NAME="AFU_2">|</I>
    <B>function</B> New_Panel (Win : Window) <B>return</B> Panel <B>renames</B> Create;
-   <I>--  AKA: new_panel()</I>
+   <I>--  AKA: <A HREF="panel.3x.html">new_panel()</A></I>
 
    <I>--  <A NAME="AFU_3">|</I>
    <B>procedure</B> Bottom (Pan : <B>in</B> Panel);
-   <I>--  AKA: bottom_panel()</I>
+   <I>--  AKA: <A HREF="panel.3x.html">bottom_panel()</A></I>
 
    <I>--  <A NAME="AFU_4">|</I>
    <B>procedure</B> Top (Pan : <B>in</B> Panel);
-   <I>--  AKA: top_panel()</I>
+   <I>--  AKA: <A HREF="panel.3x.html">top_panel()</A></I>
 
    <I>--  <A NAME="AFU_5">|</I>
    <B>procedure</B> Show (Pan : <B>in</B> Panel);
-   <I>--  AKA: show_panel()</I>
+   <I>--  AKA: <A HREF="panel.3x.html">show_panel()</A></I>
 
    <I>--  <A NAME="AFU_6">|</I>
    <B>procedure</B> Update_Panels;
-   <I>--  AKA: update_panels()</I>
+   <I>--  AKA: <A HREF="panel.3x.html">update_panels()</A></I>
    <B>pragma</B> Import (C, Update_Panels, "update_panels");
 
    <I>--  <A NAME="AFU_7">|</I>
    <B>procedure</B> Hide (Pan : <B>in</B> Panel);
-   <I>--  AKA: hide_panel()</I>
+   <I>--  AKA: <A HREF="panel.3x.html">hide_panel()</A></I>
 
    <I>--  <A NAME="AFU_8">|</I>
    <B>function</B> Get_Window (Pan : Panel) <B>return</B> Window;
-   <I>--  AKA: panel_window()</I>
+   <I>--  AKA: <A HREF="panel.3x.html">panel_window()</A></I>
 
    <I>--  <A NAME="AFU_9">|</I>
    <B>function</B> Panel_Window (Pan : Panel) <B>return</B> Window <B>renames</B> Get_Window;
@@ -94,31 +94,31 @@
    <I>--  <A NAME="AFU_10">|</I>
    <B>procedure</B> Replace (Pan : <B>in</B> Panel;
                       Win : <B>in</B> Window);
-   <I>--  AKA: replace_panel()</I>
+   <I>--  AKA: <A HREF="panel.3x.html">replace_panel()</A></I>
 
    <I>--  <A NAME="AFU_11">|</I>
    <B>procedure</B> Move (Pan    : <B>in</B> Panel;
                    Line   : <B>in</B> Line_Position;
                    Column : <B>in</B> Column_Position);
-   <I>--  AKA: move_panel()</I>
+   <I>--  AKA: <A HREF="panel.3x.html">move_panel()</A></I>
 
    <I>--  <A NAME="AFU_12">|</I>
    <B>function</B> Is_Hidden (Pan : Panel) <B>return</B> Boolean;
-   <I>--  AKA: panel_hidden()</I>
+   <I>--  AKA: <A HREF="panel.3x.html">panel_hidden()</A></I>
 
    <I>--  <A NAME="AFU_13">|</I>
    <B>function</B> Above (Pan : Panel) <B>return</B> Panel;
-   <I>--  AKA: panel_above()</I>
+   <I>--  AKA: <A HREF="panel.3x.html">panel_above()</A></I>
    <B>pragma</B> Import (C, Above, "panel_above");
 
    <I>--  <A NAME="AFU_14">|</I>
    <B>function</B> Below (Pan : Panel) <B>return</B> Panel;
-   <I>--  AKA: panel_below()</I>
+   <I>--  AKA: <A HREF="panel.3x.html">panel_below()</A></I>
    <B>pragma</B> Import (C, Below, "panel_below");
 
    <I>--  <A NAME="AFU_15">|</I>
    <B>procedure</B> Delete (Pan : <B>in</B> <B>out</B> Panel);
-   <I>--  AKA: del_panel()</I>
+   <I>--  AKA: <A HREF="panel.3x.html">del_panel()</A></I>
 
    <B>private</B>
       type Panel <B>is</B> <B>new</B> System.Address;
