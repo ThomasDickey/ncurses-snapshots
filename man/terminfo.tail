@@ -1,4 +1,4 @@
-.\" $Id: terminfo.tail,v 1.20 1998/08/22 19:43:59 tom Exp $
+.\" $Id: terminfo.tail,v 1.21 1998/11/01 01:02:42 tom Exp $
 .\" Beginning of terminfo.tail file
 .ps +1
 .PP
@@ -55,9 +55,11 @@ ANSI-standard terminals have
 (i.e., an automatic return and line-feed
 when the end of a line is reached) is indicated by the capability \fBam\fR.
 Hence the description of ansi includes \fBam\fR.
-Numeric capabilities are followed by the character `#' and then the value.
+Numeric capabilities are followed by the character `#' and then a positive value.
 Thus \fBcols\fR, which indicates the number of columns the terminal has,
 gives the value `80' for ansi.
+Values for numeric capabilities may be specified in decimal, octal or hexadecimal,
+using the C programming language conventions (e.g., 255, 0377 and 0xff or 0xFF).
 .PP
 Finally, string valued capabilities, such as \fBel\fR (clear to end of line
 sequence) are given by the two-character code, an `=', and then a string
