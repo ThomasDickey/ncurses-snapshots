@@ -7,7 +7,6 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  */
-/* #define _POSIX_SOURCE -- incompatible with solaris termios.h */
 
 #include "test.priv.h"
 
@@ -195,7 +194,6 @@ static void announceopts(void)
 
 static void intro(void)
 {
-    extern char *getlogin(void);
     char *tmpname;
 
     srand((unsigned)(time(0L)+getpid()));	/* Kick the random number generator */

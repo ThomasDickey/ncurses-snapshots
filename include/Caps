@@ -1222,6 +1222,21 @@ capalias	GG	IGNORE	XENIX	acs-glitch
 #
 capalias	kq	%1	IBM	key_help
 #
+# Iris extensions:
+#
+capalias	HS	mh	IRIS	enter_dim_mode
+#
+# Tektronix extensions:
+#
+capalias	KA	k;	Tek	key_f10
+capalias	KB	F1	Tek	key_f11
+capalias	KC	F2	Tek	key_f12
+capalias	KD	F3	Tek	key_f13
+capalias	KE	F4	Tek	key_f14
+capalias	KF	F5	Tek	key_f15
+capalias	BC	Sb	Tek	set_background
+capalias	FC	Sf	Tek	set_foreground
+#
 # There are also the following:
 #
 #	XENIX	XENIX variable name	name clash with terminfo?

@@ -26,11 +26,11 @@
 #include <errno.h>
 #include <string.h>
 
-int mcprint(char *data, int len)
+size_t mcprint(char *data, size_t len)
 /* ship binary character data to the printer via mc4/mc5/mc5p */
 {
     char	*mybuf, *switchon;
-    int		onsize,	offsize, res;
+    size_t	onsize,	offsize, res;
 
     errno = 0;
     if (!prtr_non && (!prtr_on || !prtr_off))

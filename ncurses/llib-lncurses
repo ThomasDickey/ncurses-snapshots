@@ -1926,7 +1926,7 @@ char	*tparm(
 
 #undef delay_output
 int	delay_output(
-		float	ms)
+		int	ms)
 		{ return(*(int *)0); }
 
 #undef _nc_outch

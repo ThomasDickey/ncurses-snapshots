@@ -3,6 +3,17 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+960713	- snapshot
+	+ always check for <sys/bsdtypes.h> since ISC needs it to declare
+	  fd_set (Juergen Pfeifer)
+	+ install shared-libraries on NetBSD/FreeBSD with ABI-version (reported
+	  by several people:  Juergen Pfeifer, Mike Long)
+	+ add LOCAL_LDFLAGS2 symbol (Juergen Pfeifer)
+	+ corrected prototype for delay_output() -- bump ABI to 3.2
+	+ terminfo patches #306/307 from Eric.
+	+ moved logic that filters out rmul and rmso from setupterm to newterm
+	  where it is less likely to interfere with termcap applications.
+
 960707
 	+ rollback Eric's #305 change to terminfo.src (it breaks existing
 	  applications, e.g., 'less 290').

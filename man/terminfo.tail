@@ -982,9 +982,40 @@ than the power-up default background; these should have the boolean capability
 .PP
 To change the current foreground or background color on a Tektronix-type
 terminal, use \fBsetaf\fR (set ANSI foreground) and \fBsetab\fR (set ANSI
-background).  These take one parameter, the color number.  On an HP-like
-terminal, use \fBscp\fR with a color-pair number parameter to set which
-color pair is current.
+background) or \fBsetf\fR (set foreground) and \fBsetb\fR (set background).
+These take one parameter, the color number.  The SVr4 documentation describes 
+only \fBsetaf\fR/\fBsetab\fR; the XPG4 draft says that "If the terminal
+supports ANSI escape sequences to set background and foreground, they should
+be coded as \fBsetaf\fR and \fBsetab\fR, respectively.  If the terminal
+supports other escape sequences to set background and foreground, they should
+be coded as \fBsetf\fR and \fBsetb\fR, respectively.  The \fIvidputs()\fR
+function and the refresh functions use \fBsetaf\fR and \fBsetab\fR if they are
+defined."
+.PP
+The \fBsetaf\fR/\fBsetab\fR and \fBsetf\fR/\fBsetb\fR capabilities take a
+single numeric argument each.  Argument values 0-7 are portably defined as
+follows (the middle column is the symbolic #define available in the header for
+the \fBcurses\fR or \fBncurses\fR libraries).  The terminal hardware is free to
+map these as it likes, but the RGB values indicate normal locations in color
+space.
+.PP
+.TS H
+.center;
+c c c c
+l l n l.
+\fBColor	#define 	Value	RGB
+black	\fBCOLOR_BLACK\fR	0	0, 0, 0
+red	\fBCOLOR_RED\ \fR	1	max,0,0
+green	\fBCOLOR_GREEN\fR	2	0,max,0
+yellow	\fBCOLOR_YELLOW\fR	3	max,max,0
+blue	\fBCOLOR_BLUE\fR	4	0,0,max
+magenta	\fBCOLOR_MAGENTA\fR	5	max,0,max
+cyan	\fBCOLOR_CYAN\fR	6	0,max,max
+white	\fBCOLOR_WHITE\fR	7	max,max,max
+.TE
+.PP
+On an HP-like terminal, use \fBscp\fR with a color-pair number parameter to set
+which color pair is current.
 .PP
 On a Tektronix-like terminal, the capability \fBccc\fR may be present to
 indicate that colors can be modified.  If so, the \fBinitc\fR capability will

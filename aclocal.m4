@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.29 1996/07/08 00:24:57 tom Exp $
+dnl $Id: aclocal.m4,v 1.31 1996/07/14 01:07:59 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -456,6 +456,8 @@ AC_DEFUN([NC_LIB_SUFFIX],
 	profile) $2='_p.a' ;;
 	shared)
 		case $nc_cv_systype in
+		NetBSD|FreeBSD)
+			$2='.so.$(ABI_VERSION)' ;;
 		HP_UX)	$2='.sl'  ;;
 		*)	$2='.so'  ;;
 		esac
@@ -768,6 +770,8 @@ dnl Note: $(LOCAL_LDFLAGS) is used to link executables that will run within the
 dnl build-tree, i.e., by making use of the libraries that are compiled in ../lib
 dnl We avoid compiling-in a ../lib path for the shared library since that can
 dnl lead to unexpected results at runtime.
+dnl $(LOCAL_LDFLAGS2) has the same intention but assumes that the shared libraries
+dnl are compiled in ../../lib
 dnl
 dnl The variable 'nc_cv_do_symlinks' is used to control whether we configure
 dnl to install symbolic links to the rel/abi versions of shared libraries.
@@ -778,6 +782,7 @@ AC_DEFUN([NC_SHARED_OPTS],
 	AC_REQUIRE([NC_SYSTYPE])
 	AC_REQUIRE([NC_VERSION])
  	LOCAL_LDFLAGS=
+ 	LOCAL_LDFLAGS2=
 
 	nc_cv_do_symlinks=no
 	nc_cv_rm_so_locs=no
@@ -808,17 +813,13 @@ AC_DEFUN([NC_SHARED_OPTS],
  		MK_SHARED_LIB="gcc -o \$[@].\$(REL_VERSION) -shared -Wl,-soname,\`basename \$[@].\$(ABI_VERSION)\`,-stats"
 		if test $DFT_LWR_MODEL = "shared" ; then
  			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
+ 			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'
 		fi
 		nc_cv_do_symlinks=yes
 		;;
-	NetBSD)
+	NetBSD|FreeBSD)
 		CC_SHARED_OPTS='-fpic -DPIC'
-		MK_SHARED_LIB='ld -Bshareable -o $[@]'
-		;;
-	FreeBSD)
-		CC_SHARED_OPTS='-fpic -DPIC'
-		MK_SHARED_LIB="ld -Bshareable -o \$[@].\$(REL_VERSION)"
-		nc_cv_do_symlinks=yes
+		MK_SHARED_LIB="ld -Bshareable -o \$[@]"
 		;;
 	OSF1|MLS+)
 		# tested with OSF/1 V3.2 and 'cc'
@@ -828,6 +829,7 @@ AC_DEFUN([NC_SHARED_OPTS],
  		MK_SHARED_LIB="ld -o \$[@].\$(REL_VERSION) -shared -soname \`basename \$[@].\$(ABI_VERSION)\`"
 		if test $DFT_LWR_MODEL = "shared" ; then
  			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
+ 			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'
 		fi
 		nc_cv_do_symlinks=yes
 		nc_cv_rm_so_locs=yes
@@ -863,6 +865,7 @@ AC_DEFUN([NC_SHARED_OPTS],
 	AC_SUBST(CC_SHARED_OPTS)
 	AC_SUBST(MK_SHARED_LIB)
 	AC_SUBST(LOCAL_LDFLAGS)
+	AC_SUBST(LOCAL_LDFLAGS2)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Check for datatype 'speed_t', which is normally declared via either
@@ -953,7 +956,7 @@ changequote(<<, >>)dnl
 nc_cv_gnat_version=`$nc_ada_make -v 2>&1 | grep '[0-9].[0-9][0-9]*' |\
   sed -e 's/[^0-9 \.]//g' | $AWK '{print $<<1>>;}'`
 case $nc_cv_gnat_version in
-  3.0[4-9]|3.[1-9]*|[4-9].*)
+  3.0[5-9]|3.[1-9]*|[4-9].*)
     ac_cv_prog_gnat_correct=yes
     ;;
   *) echo Unsupported GNAT version $nc_cv_gnat_version. Disabling Ada95 binding.

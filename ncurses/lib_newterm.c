@@ -60,6 +60,22 @@ char *t = getenv("NCURSES_TRACE");
 	if (setupterm(term, fileno(ofp), &errret) == ERR)
 	    	return NULL;
 
+	/*
+	 * Check for mismatched graphic-rendition capabilities.  Most svr4
+	 * terminfo tree contain entries that have rmul or rmso equated to sgr0
+	 * (Solaris curses copes with those entries).  We do this only for
+	 * curses, since many termcap applications assume that smso/rmso and
+	 * smul/rmul are paired, and will not function properly if we remove
+	 * rmso or rmul.  Curses applications shouldn't be looking at this
+	 * detail.
+	 */
+	if (exit_attribute_mode) {
+#define SGR0_FIX(mode) if (mode != 0 && !strcmp(mode, exit_attribute_mode)) \
+			mode = 0
+		SGR0_FIX(exit_underline_mode);
+		SGR0_FIX(exit_standout_mode);
+	}
+
 	/* optional optimization hack -- do before any output to ofp */
 #if HAVE_SETVBUF || HAVE_SETBUFFER
 	{
