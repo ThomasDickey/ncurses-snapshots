@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.125 2002/03/23 23:15:10 tom Exp $ */
+/* $Id: curses.h.in,v 1.126 2002/04/13 20:52:00 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -647,7 +647,6 @@ extern NCURSES_EXPORT(WINDOW *) subpad (WINDOW *, int, int, int, int);	/* implem
 extern NCURSES_EXPORT(WINDOW *) subwin (WINDOW *,int,int,int,int);	/* implemented */
 extern NCURSES_EXPORT(int) syncok (WINDOW *, bool);			/* implemented */
 extern NCURSES_EXPORT(chtype) termattrs (void);				/* implemented */
-extern NCURSES_EXPORT(attr_t) term_attrs (void);			/* missing */
 extern NCURSES_EXPORT(char *) termname (void);				/* implemented */
 extern NCURSES_EXPORT(int) tigetflag (NCURSES_CONST char *);		/* implemented */
 extern NCURSES_EXPORT(int) tigetnum (NCURSES_CONST char *);		/* implemented */
