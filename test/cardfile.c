@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: cardfile.c,v 1.18 2002/08/10 22:21:14 tom Exp $
+ * $Id: cardfile.c,v 1.19 2002/09/01 17:59:48 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text forms the content.
  */
@@ -330,6 +330,7 @@ show_legend(void)
     addstr("Arrow keys move left/right within a field, up/down between fields");
 }
 
+#if (defined(KEY_RESIZE) && HAVE_WRESIZE) || NO_LEAKS
 static void
 free_form_fields(FIELD ** f)
 {
@@ -340,6 +341,7 @@ free_form_fields(FIELD ** f)
     }
     free(f);
 }
+#endif
 
 /*******************************************************************************/
 
@@ -406,7 +408,7 @@ cardfile(char *fname)
 	    case MAX_FORM_COMMAND + 4:
 		write_data(fname);
 		break;
-#ifdef KEY_RESIZE
+#if defined(KEY_RESIZE) && HAVE_WRESIZE
 	    case KEY_RESIZE:
 		/* resizeterm already did "something" reasonable, but it cannot
 		 * know much about layout.  So let's make it nicer.

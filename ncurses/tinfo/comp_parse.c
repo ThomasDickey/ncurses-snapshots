@@ -52,7 +52,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.51 2002/08/11 00:59:06 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.52 2002/08/31 17:14:56 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype) (TERMTYPE *) = sanity_check;
@@ -81,8 +81,8 @@ NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype) (TERMTYPE *) = sanity_check
 NCURSES_EXPORT_VAR(ENTRY *) _nc_head = 0;
 NCURSES_EXPORT_VAR(ENTRY *) _nc_tail = 0;
 
-     static void
-       enqueue(ENTRY * ep)
+static void
+enqueue(ENTRY * ep)
 /* add an entry to the in-core list */
 {
     ENTRY *newp = _nc_copy_entry(ep);
@@ -461,9 +461,17 @@ sanity_check(TERMTYPE * tp)
 	     || PRESENT(enter_reverse_mode)))
 	    _nc_warning("no exit_attribute_mode");
 #endif /* __UNUSED__ */
-	PAIRED(enter_standout_mode, exit_standout_mode)
-	    PAIRED(enter_underline_mode, exit_underline_mode)
+	PAIRED(enter_standout_mode, exit_standout_mode);
+	PAIRED(enter_underline_mode, exit_underline_mode);
     }
+
+    /* we do this check/fix in postprocess_termcap(), but some packagers
+     * prefer to bypass it...
+     */
+    if (acs_chars == 0
+	&& enter_alt_charset_mode != 0
+	&& exit_alt_charset_mode != 0)
+	acs_chars = strdup(VT_ACSC);
 
     /* listed in structure-member order of first argument */
     PAIRED(enter_alt_charset_mode, exit_alt_charset_mode);

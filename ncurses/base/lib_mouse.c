@@ -84,7 +84,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.58 2002/01/12 22:38:07 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.60 2002/09/01 21:14:16 tom Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -327,17 +327,18 @@ _nc_mouse_init(void)
     }
 }
 
+/*
+ * Query to see if there is a pending mouse event.  This is called from
+ * fifo_push() in lib_getch.c
+ */
 static bool
 _nc_mouse_event(SCREEN * sp GCC_UNUSED)
-/* query to see if there is a pending mouse event */
 {
 #if USE_GPM_SUPPORT
     /* GPM: query server for event, return TRUE if we find one */
     Gpm_Event ev;
 
-    if (gpm_fd >= 0
-	&& (_nc_timed_wait(3, 0, (int *) 0) & 2) != 0
-	&& Gpm_GetEvent(&ev) == 1) {
+    if (Gpm_GetEvent(&ev) == 1) {
 	eventp->id = 0;		/* there's only one mouse... */
 
 	eventp->bstate = 0;
@@ -373,8 +374,7 @@ _nc_mouse_event(SCREEN * sp GCC_UNUSED)
 #endif
 
 #ifdef USE_EMX_MOUSE
-    if (SP->_mouse_fd >= 0
-	&& (_nc_timed_wait(3, 0, (int *) 0) & 2) != 0) {
+    {
 	char kbuf[3];
 
 	int i, res = read(M_FD(sp), &kbuf, 3);	/* Eat the prefix */

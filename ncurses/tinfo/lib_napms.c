@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -47,7 +47,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_napms.c,v 1.12 2001/12/22 22:20:40 tom Exp $")
+MODULE_ID("$Id: lib_napms.c,v 1.13 2002/09/01 17:46:11 tom Exp $")
 
 NCURSES_EXPORT(int)
 napms(int ms)
@@ -62,7 +62,7 @@ napms(int ms)
 	nanosleep(&ts, NULL);
     }
 #else
-    _nc_timed_wait(0, ms, (int *) 0);
+    _nc_timed_wait(0, ms, (int *) 0 EVENTLIST_2nd(0));
 #endif
 
     returnCode(OK);

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,7 +41,7 @@
 #include <ctype.h>
 #include <term.h>		/* num_labels, label_*, plab_norm */
 
-MODULE_ID("$Id: lib_slk.c,v 1.20 2000/12/10 02:43:27 tom Exp $")
+MODULE_ID("$Id: lib_slk.c,v 1.22 2002/08/31 16:11:21 tom Exp $")
 
 /*
  * We'd like to move these into the screen context structure, but cannot,
@@ -54,8 +54,8 @@ _nc_slk_format = 0;		/* one more than format specified in slk_init() */
  * Paint the info line for the PC style SLK emulation.
  *
  */
-     static void
-       slk_paint_info(WINDOW *win)
+static void
+slk_paint_info(WINDOW *win)
 {
     if (win && SP->slk_format == 4) {
 	int i;
@@ -64,15 +64,7 @@ _nc_slk_format = 0;		/* one more than format specified in slk_init() */
 	wmove(win, 0, 0);
 
 	for (i = 0; i < SP->_slk->maxlab; i++) {
-	    if (win && SP->slk_format == 4) {
-		mvwaddch(win, 0, SP->_slk->ent[i].x, (chtype) 'F');
-		if (i < 9)
-		    waddch(win, (chtype) '1' + i);
-		else {
-		    waddch(win, (chtype) '1');
-		    waddch(win, (chtype) '0' + (i - 9));
-		}
-	    }
+	    mvwprintw(win, 0, SP->_slk->ent[i].x, "F%d", i + 1);
 	}
     }
 }
@@ -99,12 +91,15 @@ _nc_slk_initialize(WINDOW *stwin, int cols)
     SP->_slk->buffer = NULL;
     SP->_slk->attr = A_STANDOUT;
 
-    SP->_slk->maxlab = (num_labels > 0) ?
-	num_labels : MAX_SKEY(_nc_slk_format);
-    SP->_slk->maxlen = (num_labels > 0) ?
-	label_width * label_height : MAX_SKEY_LEN(_nc_slk_format);
-    SP->_slk->labcnt = (SP->_slk->maxlab < MAX_SKEY(_nc_slk_format)) ?
-	MAX_SKEY(_nc_slk_format) : SP->_slk->maxlab;
+    SP->_slk->maxlab = ((num_labels > 0)
+			? num_labels
+			: MAX_SKEY(_nc_slk_format));
+    SP->_slk->maxlen = ((num_labels > 0)
+			? label_width * label_height
+			: MAX_SKEY_LEN(_nc_slk_format));
+    SP->_slk->labcnt = ((SP->_slk->maxlab < MAX_SKEY(_nc_slk_format))
+			? MAX_SKEY(_nc_slk_format)
+			: SP->_slk->maxlab);
 
     SP->_slk->ent = typeCalloc(slk_ent, SP->_slk->labcnt);
     if (SP->_slk->ent == NULL)
@@ -133,8 +128,7 @@ _nc_slk_initialize(WINDOW *stwin, int cols)
 	    x += SP->_slk->maxlen;
 	    x += (i == 3 || i == 7) ? gap : 1;
 	}
-	if (_nc_slk_format == 4)
-	    slk_paint_info(stwin);
+	slk_paint_info(stwin);
     } else {
 	if (_nc_slk_format == 2) {	/* 4-4 */
 	    int gap = cols - (SP->_slk->maxlab * SP->_slk->maxlen) - 6;

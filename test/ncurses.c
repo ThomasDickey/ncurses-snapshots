@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.177 2002/06/30 00:36:02 tom Exp $
+$Id: ncurses.c,v 1.179 2002/09/01 21:00:44 tom Exp $
 
 ***************************************************************************/
 
@@ -354,7 +354,7 @@ wgetch_wrap(WINDOW *win, int first_y)
     wclrtoeol(win);
 }
 
-#if defined(NCURSES_VERSION) && defined(KEY_RESIZE)
+#if defined(NCURSES_VERSION) && defined(KEY_RESIZE) && HAVE_WRESIZE
 typedef struct {
     WINDOW *text;
     WINDOW *frame;
@@ -526,7 +526,7 @@ wgetch_test(int level, WINDOW *win, int delay)
 	    } else
 #endif /* NCURSES_MOUSE_VERSION */
 	    if (c >= KEY_MIN) {
-#if defined(NCURSES_VERSION) && defined(KEY_RESIZE)
+#if defined(NCURSES_VERSION) && defined(KEY_RESIZE) && HAVE_WRESIZE
 		if (c == KEY_RESIZE) {
 		    resize_boxes(level, win);
 		}
@@ -2179,11 +2179,12 @@ acs_and_scroll(void)
 	    break;
 
 	case CTRL('W'):	/* save and delete window */
-	    if (current == current->next)
+	    if (current == current->next) {
+		transient(current, "Will not save/delete ONLY window");
 		break;
-	    if ((fp = fopen(DUMPFILE, "w")) == (FILE *) 0)
+	    } else if ((fp = fopen(DUMPFILE, "w")) == (FILE *) 0) {
 		transient(current, "Can't open screen dump file");
-	    else {
+	    } else {
 		(void) putwin(current->wind, fp);
 		(void) fclose(fp);
 
@@ -2192,9 +2193,9 @@ acs_and_scroll(void)
 	    break;
 
 	case CTRL('R'):	/* restore window */
-	    if ((fp = fopen(DUMPFILE, "r")) == (FILE *) 0)
+	    if ((fp = fopen(DUMPFILE, "r")) == (FILE *) 0) {
 		transient(current, "Can't open screen dump file");
-	    else {
+	    } else {
 		neww = (FRAME *) calloc(1, sizeof(FRAME));
 
 		neww->next = current->next;

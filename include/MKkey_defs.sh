@@ -1,5 +1,5 @@
 #! /bin/sh
-# $Id: MKkey_defs.sh,v 1.8 2002/06/01 17:24:28 tom Exp $
+# $Id: MKkey_defs.sh,v 1.9 2002/08/31 22:56:32 tom Exp $
 ##############################################################################
 # Copyright (c) 2001,2002 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -46,6 +46,7 @@ trap 'rm -f $data pass[1234]_$$' 0 1 2 5 15
 sed -e 's/[	]\+/	/g' < $DATA |sort -n +5 >$data
 cat >>$data <<EOF
 key_resize	kr1	str	R1	KEY_RESIZE	+	-----	Terminal resize event
+key_event	kv1	str	V1	KEY_EVENT	+	-----	We were interrupted by an event
 EOF
 
 cat <<EOF

@@ -41,7 +41,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.59 2002/08/10 19:25:14 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.60 2002/08/31 19:21:22 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -398,6 +398,7 @@ color_content(short color, short *r, short *g, short *b)
 	*g = SP->_color_table[color].green;
     if (b)
 	*b = SP->_color_table[color].blue;
+    T(("...color_content(%d,%d,%d,%d)", color, *r, *g, *b));
     returnCode(OK);
 }
 
@@ -413,6 +414,7 @@ pair_content(short pair, short *f, short *b)
     if (b)
 	*b = (SP->_color_pairs[pair] & C_MASK);
 
+    T(("...pair_content(%d,%d,%d)", pair, *f, *b));
     returnCode(OK);
 }
 

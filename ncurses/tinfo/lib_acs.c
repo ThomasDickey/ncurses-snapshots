@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -34,7 +34,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* ena_acs, acs_chars */
 
-MODULE_ID("$Id: lib_acs.c,v 1.21 2001/12/23 00:15:10 tom Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.22 2002/09/01 19:26:57 tom Exp $")
 
 #if BROKEN_LINKER
 NCURSES_EXPORT_VAR(chtype *)
@@ -56,6 +56,9 @@ NCURSES_EXPORT(void)
 _nc_init_acs(void)
 {
     T(("initializing ACS map"));
+#if !BROKEN_LINKER
+    memset(acs_map, 0, sizeof(acs_map));
+#endif
 
     /*
      * Initializations for a UNIX-like multi-terminal environment.  Use

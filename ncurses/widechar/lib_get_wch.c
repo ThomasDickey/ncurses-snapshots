@@ -39,13 +39,13 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_get_wch.c,v 1.4 2002/06/29 21:10:36 tom Exp $")
+MODULE_ID("$Id: lib_get_wch.c,v 1.5 2002/09/02 00:04:25 tom Exp $")
 
 NCURSES_EXPORT(int)
 wget_wch(WINDOW *win, wint_t * result)
 {
     int code;
-    char buffer[(MB_CUR_MAX * 9) + 1];	/* allow some redundant shifts */
+    char buffer[(MB_LEN_MAX * 9) + 1];	/* allow some redundant shifts */
     int status;
     mbstate_t state;
     size_t count = 0;
@@ -58,7 +58,7 @@ wget_wch(WINDOW *win, wint_t * result)
      * _nc_wgetch(), while we want to return a wide character or KEY_xxx code.
      */
     for (;;) {
-	    T(("reading %d of %d", count + 1, sizeof(buffer)));
+	T(("reading %d of %d", count + 1, sizeof(buffer)));
 	code = _nc_wgetch(win, &value, TRUE);
 	if (code == ERR) {
 	    break;

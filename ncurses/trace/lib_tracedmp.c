@@ -39,7 +39,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_tracedmp.c,v 1.23 2002/08/10 19:42:12 tom Exp $")
+MODULE_ID("$Id: lib_tracedmp.c,v 1.24 2002/08/31 22:09:26 Philippe.Blain Exp $")
 
 #ifdef TRACE
 NCURSES_EXPORT(void)
@@ -64,7 +64,7 @@ _tracedump(const char *name, WINDOW *win)
 	++width;
     if (++width + 1 > (int) used) {
 	used = 2 * (width + 1);
-	buf = _nc_doalloc(buf, used);
+	buf = typeRealloc(char, used, buf);
     }
 
     for (n = 0; n <= win->_maxy; ++n) {

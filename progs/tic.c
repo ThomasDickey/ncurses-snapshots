@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.100 2002/08/17 23:04:58 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.101 2002/08/31 16:49:51 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -1126,13 +1126,13 @@ check_termtype(TERMTYPE * tp)
 
     /*
      * Some standard applications (e.g., vi) and some non-curses
-     * applications (e.g., jove) get confused if we have both ich/ich1 and
+     * applications (e.g., jove) get confused if we have both ich1 and
      * smir/rmir.  Let's be nice and warn about that, too, even though
      * ncurses handles it.
      */
     if ((PRESENT(enter_insert_mode) || PRESENT(exit_insert_mode))
-	&& (PRESENT(insert_character) || PRESENT(parm_ich))) {
-	_nc_warning("non-curses applications may be confused by ich/ich1 with smir/rmir");
+	&& PRESENT(parm_ich)) {
+	_nc_warning("non-curses applications may be confused by ich1 with smir/rmir");
     }
 
     /*

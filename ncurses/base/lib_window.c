@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_window.c,v 1.18 2001/12/19 01:07:15 tom Exp $")
+MODULE_ID("$Id: lib_window.c,v 1.19 2002/08/31 21:44:13 Philippe.Blain Exp $")
 
 NCURSES_EXPORT(void)
 _nc_synchook(WINDOW *win)
@@ -185,6 +185,7 @@ dupwin(WINDOW *win)
     T((T_CALLED("dupwin(%p)"), win));
 
     if ((win == NULL) ||
+	(win->_flags & _ISPAD) ||
 	((nwin = newwin(win->_maxy + 1, win->_maxx + 1, win->_begy,
 			win->_begx)) == NULL))
 	returnWin(0);
@@ -221,7 +222,7 @@ dupwin(WINDOW *win)
     nwin->_regtop = win->_regtop;
     nwin->_regbottom = win->_regbottom;
 
-    linesize = (win->_maxx + 1) * sizeof(chtype);
+    linesize = (win->_maxx + 1) * sizeof(NCURSES_CH_T);
     for (i = 0; i <= nwin->_maxy; i++) {
 	memcpy(nwin->_line[i].text, win->_line[i].text, linesize);
 	nwin->_line[i].firstchar = win->_line[i].firstchar;

@@ -33,7 +33,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_wacs.c,v 1.4 2002/06/29 21:51:02 tom Exp $")
+MODULE_ID("$Id: lib_wacs.c,v 1.5 2002/08/31 19:44:17 tom Exp $")
 
 NCURSES_EXPORT_VAR(cchar_t) * _nc_wacs = 0;
 
@@ -72,7 +72,7 @@ _nc_init_wacs(void)
 	{ 'n',	{ '+',	0x253c }},	/* large plus or crossover */
 	{ 'o',	{ '~',	0x23ba }},	/* scan line 1 */
 	{ 's',	{ '_',	0x23bd }},	/* scan line 9 */
-	{ '\'',	{ '+',	0x25c6 }},	/* diamond */
+	{ '`',	{ '+',	0x25c6 }},	/* diamond */
 	{ 'a',	{ ':',	0x2592 }},	/* checker board (stipple) */
 	{ 'f',	{ '\'',	0x00b0 }},	/* degree symbol */
 	{ 'g',	{ '#',	0x00b1 }},	/* plus/minus */
@@ -104,7 +104,7 @@ _nc_init_wacs(void)
      * rather than the terminfo information.  Actually the terminfo should
      * be the rule, but there are people who are offended by the notion that
      * a Unicode-capable terminal would have something resembling a mode.
-     * So the smacs/rmacs may be disabled.
+     * So the smacs/rmacs may be disabled -- sometime.
      */
     T(("initializing WIDE-ACS map (Unicode is%s active)",
        active ? "" : " not"));
@@ -112,7 +112,13 @@ _nc_init_wacs(void)
     _nc_wacs = typeCalloc(cchar_t, ACS_LEN);
     for (n = 0; n < SIZEOF(table); ++n) {
 	m = table[n].map;
-	SetChar(_nc_wacs[m], table[n].value[active], A_NORMAL);
+	if (active) {
+	    SetChar(_nc_wacs[m], table[n].value[active], A_NORMAL);
+	} else if (acs_map[m] & A_ALTCHARSET) {
+	    SetChar(_nc_wacs[m], m, A_ALTCHARSET);
+	} else {
+	    SetChar(_nc_wacs[m], table[n].value[0], A_NORMAL);
+	}
 	T(("#%d, SetChar(%c, %#04x) = %s",
 	   n, m,
 	   table[n].value[active],
