@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.433 1999/03/08 02:34:49 tom Exp $
+-- $Id: NEWS,v 1.435 1999/03/14 01:17:31 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990313	pre-release
+	+ correct typos in linux-c initc string - TD
+	+ add 'crt' terminfo entry, update xterm-xfree86 entry - TD
+	+ remove a spurious argument to tparm() in lib_sklrefr.c (patch by
+	  Alexander Lukyanov).
 
 990307	pre-release
 	+ back-out change to wgetch because it causes a problem with ^Z

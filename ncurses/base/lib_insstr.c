@@ -43,7 +43,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insstr.c,v 1.12 1998/02/23 12:12:16 tom Exp $")
+MODULE_ID("$Id: lib_insstr.c,v 1.13 1999/03/14 00:27:21 tom Exp $")
 
 int winsnstr(WINDOW *win, const char *s, int n)
 {
@@ -53,7 +53,7 @@ short	ox ;
 const unsigned char *str = (const unsigned char *)s;
 const unsigned char *cp;
 
-        T((T_CALLED("winsnstr(%p,%s,%d)"), win, _nc_visbuf(str), n));
+        T((T_CALLED("winsnstr(%p,%s,%d)"), win, _nc_visbuf(s), n));
 
 	if (win && str) {
 	  oy = win->_cury; ox = win->_curx;

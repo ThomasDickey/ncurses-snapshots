@@ -3,7 +3,7 @@
 # This version of terminfo.src is distributed with ncurses.
 #
 #	Version 10.2.1
-#	$Date: 1999/02/20 11:56:23 $
+#	$Date: 1999/03/14 01:16:38 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -618,7 +618,7 @@ linux-c-nc|linux console 1.3.x hack for ncurses only,
 linux-c|linux console 1.3.6+ with private palette for each virtual console, 
 	ccc, 
 	colors#8, pairs#64, 
-	initc=\E]P%?%p1%{9}%>%t%p1%{10}%-%p'a'%+%c%e%p1%d%p2%{255}%&%Pr%gr%{16}%/%Px%?%gx%{9}%>%t%gx%{10}%-%{65}%+%c%e%gx%d%;%gr%{15}%&%Px%?%gx%{9}%>%t%gx%{10}%-%{65}%+%c%e%gx%d%;%p3%{255}%&%Pr%gr%{16}%/%Px%?%gx%{9}%>%t%gx%{10}%-%{65}%+%c%e%gx%d%;%gr%{15}%&%Px%?%gx%{9}%>%t%gx%{10}%-%{65}%+%c%e%gx%d%;%p4%{255}%&%Pr%gr%{16}%/%Px%?%gx%{9}%>%t%gx%{10}%-%{65}%+%c%e%gx%d%;%gr%{15}%&%Px%?%gx%{9}%>%t%gx%{10}%-%{65}%+%c%e%gx%d%;, 
+	initc=\E]P%?%p1%{9}%>%t%p1%{10}%-%'a'%+%c%e%p1%d%;%p2%{255}%&%Pr%gr%{16}%/%Px%?%gx%{9}%>%t%gx%{10}%-%'A'%+%c%e%gx%d%;%gr%{15}%&%Px%?%gx%{9}%>%t%gx%{10}%-%'A'%+%c%e%gx%d%;%p3%{255}%&%Pr%gr%{16}%/%Px%?%gx%{9}%>%t%gx%{10}%-%'A'%+%c%e%gx%d%;%gr%{15}%&%Px%?%gx%{9}%>%t%gx%{10}%-%'A'%+%c%e%gx%d%;%p4%{255}%&%Pr%gr%{16}%/%Px%?%gx%{9}%>%t%gx%{10}%-%'A'%+%c%e%gx%d%;%gr%{15}%&%Px%?%gx%{9}%>%t%gx%{10}%-%'A'%+%c%e%gx%d%;,
 	oc=\E]R, 
 	use=linux, 
 
@@ -2007,6 +2007,15 @@ z340-nam|zstem vt340 terminal emulator 132col 42line (no automatic margins),
 	rs2=\E>\E[?3h\E[?4l\E[?5l\E[?7l\E[?8h\E[1;42r\E[42;1H, 
 	use=z340, 
 
+# CRT is shareware.  It implements some xterm features, including mouse.
+crt|crt-vt220|CRT 2.3 emulating VT220, 
+	bce, msgr, 
+	colors#8, pairs#64, 
+	hts=\EH, op=\E[39;49m, setab=\E[4%p1%dm, 
+	setaf=\E[3%p1%dm, setb=\E[4%p1%dm, setf=\E[3%p1%dm, 
+	u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
+	use=vt220, 
+
 # This entry is for Tera Term Pro version 2.3, for MS-Windows 95/NT written by
 # T. Teranishi dated Mar 10, 1998.  It is a free software terminal emulator
 # (communication program) which supports:
@@ -2213,6 +2222,7 @@ xterm-xf86-v333|xterm terminal emulator (XFree86 3.3.3 Window System),
 
 # This beta version will probably be released in XFree86 4.0.
 xterm-xf86-v40|xterm terminal emulator (XFree86 4.0 Window System), 
+	khome=\EOH, kend=\EOF,
 	rmcup=\E[?1049l, smcup=\E[?1049h, 
 	use=xterm-xf86-v333, 
 
@@ -17168,6 +17178,12 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  xterm and ncsa entries by removing the unneeded ones.  Note that
 #	  some entries will return kend & khome versus kslt and kfnd, for
 #	  PC-style keyboards versus strict vt220 compatiblity - TD
+#
+# 1999/3/13
+#	* adjust xterm-xfree86 khome/kend to match default PC-style keyboard
+#	  tables - TD
+#	* add 'crt' entry - TD
+#	* correct typos in 'linux-c' entry - TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
