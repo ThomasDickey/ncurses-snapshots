@@ -5,95 +5,95 @@
      
                                    Contents
                                        
-     * [1]Introduction
-          + [2]A Brief History of Curses
-          + [3]Scope of This Document
-          + [4]Terminology
-     * [5]The Curses Library
-          + [6]An Overview of Curses
-               o [7]Compiling Programs using Curses
-               o [8]Updating the Screen
-               o [9]Standard Windows and Function Naming Conventions
-               o [10]Variables
-          + [11]Using the Library
-               o [12]Starting up
-               o [13]Output
-               o [14]Input
-               o [15]Using Forms Characters
-               o [16]Character Attributes and Color
-               o [17]Mouse Interfacing
-               o [18]Finishing Up
-          + [19]Function Descriptions
-               o [20]Initialization and Wrapup
-               o [21]Causing Output to the Terminal
-               o [22]Low-Level Capability Access
-               o [23]Debugging
-          + [24]Hints, Tips, and Tricks
-               o [25]Some Notes of Caution
-               o [26]Temporarily Leaving ncurses Mode
-               o [27]Using ncurses under xterm
-               o [28]Handling Multiple Terminal Screens
-               o [29]Testing for Terminal Capabilities
-               o [30]Tuning for Speed
-               o [31]Special Features of ncurses
-          + [32]Compatibility with Older Versions
-               o [33]Refresh of Overlapping Windows
-               o [34]Background Erase
-          + [35]XSI Curses Conformance
-     * [36]The Panels Library
-          + [37]Compiling With the Panels Library
-          + [38]Overview of Panels
-          + [39]Panels, Input, and the Standard Screen
-          + [40]Hiding Panels
-          + [41]Miscellaneous Other Facilities
-     * [42]The Menu Library
-          + [43]Compiling with the menu Library
-          + [44]Overview of Menus
-          + [45]Selecting items
-          + [46]Menu Display
-          + [47]Menu Windows
-          + [48]Processing Menu Input
-          + [49]Miscellaneous Other Features
-     * [50]The Forms Library
-          + [51]Compiling with the forms Library
-          + [52]Overview of Forms
-          + [53]Creating and Freeing Fields and Forms
-          + [54]Fetching and Changing Field Attributes
-               o [55]Fetching Size and Location Data
-               o [56]Changing the Field Location
-               o [57]The Justification Attribute
-               o [58]Field Display Attributes
-               o [59]Field Option Bits
-               o [60]Field Status
-               o [61]Field User Pointer
-          + [62]Variable-Sized Fields
-          + [63]Field Validation
-               o [64]TYPE_ALPHA
-               o [65]TYPE_ALNUM
-               o [66]TYPE_ENUM
-               o [67]TYPE_INTEGER
-               o [68]TYPE_NUMERIC
-               o [69]TYPE_REGEXP
-          + [70]Direct Field Buffer Manipulation
-          + [71]Attributes of Forms
-          + [72]Control of Form Display
-          + [73]Input Processing in the Forms Driver
-               o [74]Page Navigation Requests
-               o [75]Inter-Field Navigation Requests
-               o [76]Intra-Field Navigation Requests
-               o [77]Scrolling Requests
-               o [78]Field Editing Requests
-               o [79]Order Requests
-               o [80]Application Commands
-          + [81]Field Change Hooks
-          + [82]Field Change Commands
-          + [83]Form Options
-          + [84]Custom Validation Types
-               o [85]Union Types
-               o [86]New Field Types
-               o [87]Validation Function Arguments
-               o [88]Order Functions For Custom Types
-               o [89]Avoiding Problems
+     * Introduction
+          + A Brief History of Curses
+          + Scope of This Document
+          + Terminology
+     * The Curses Library
+          + An Overview of Curses
+               o Compiling Programs using Curses
+               o Updating the Screen
+               o Standard Windows and Function Naming Conventions
+               o Variables
+          + Using the Library
+               o Starting up
+               o Output
+               o Input
+               o Using Forms Characters
+               o Character Attributes and Color
+               o Mouse Interfacing
+               o Finishing Up
+          + Function Descriptions
+               o Initialization and Wrapup
+               o Causing Output to the Terminal
+               o Low-Level Capability Access
+               o Debugging
+          + Hints, Tips, and Tricks
+               o Some Notes of Caution
+               o Temporarily Leaving ncurses Mode
+               o Using ncurses under xterm
+               o Handling Multiple Terminal Screens
+               o Testing for Terminal Capabilities
+               o Tuning for Speed
+               o Special Features of ncurses
+          + Compatibility with Older Versions
+               o Refresh of Overlapping Windows
+               o Background Erase
+          + XSI Curses Conformance
+     * The Panels Library
+          + Compiling With the Panels Library
+          + Overview of Panels
+          + Panels, Input, and the Standard Screen
+          + Hiding Panels
+          + Miscellaneous Other Facilities
+     * The Menu Library
+          + Compiling with the menu Library
+          + Overview of Menus
+          + Selecting items
+          + Menu Display
+          + Menu Windows
+          + Processing Menu Input
+          + Miscellaneous Other Features
+     * The Forms Library
+          + Compiling with the forms Library
+          + Overview of Forms
+          + Creating and Freeing Fields and Forms
+          + Fetching and Changing Field Attributes
+               o Fetching Size and Location Data
+               o Changing the Field Location
+               o The Justification Attribute
+               o Field Display Attributes
+               o Field Option Bits
+               o Field Status
+               o Field User Pointer
+          + Variable-Sized Fields
+          + Field Validation
+               o TYPE_ALPHA
+               o TYPE_ALNUM
+               o TYPE_ENUM
+               o TYPE_INTEGER
+               o TYPE_NUMERIC
+               o TYPE_REGEXP
+          + Direct Field Buffer Manipulation
+          + Attributes of Forms
+          + Control of Form Display
+          + Input Processing in the Forms Driver
+               o Page Navigation Requests
+               o Inter-Field Navigation Requests
+               o Intra-Field Navigation Requests
+               o Scrolling Requests
+               o Field Editing Requests
+               o Order Requests
+               o Application Commands
+          + Field Change Hooks
+          + Field Change Commands
+          + Form Options
+          + Custom Validation Types
+               o Union Types
+               o New Field Types
+               o Validation Function Arguments
+               o Order Functions For Custom Types
+               o Avoiding Problems
      _________________________________________________________________
    
                                  Introduction
@@ -106,11 +106,11 @@
    
    This document is aimed at C applications programmers not yet
    specifically familiar with ncurses. If you are already an experienced
-   curses programmer, you should nevertheless read the sections on
-   [90]Mouse Interfacing, [91]Debugging, [92]Compatibility with Older
-   Versions, and [93]Hints, Tips, and Tricks. These will bring you up to
-   speed on the special features and quirks of the ncurses
-   implementation. If you are not so experienced, keep reading.
+   curses programmer, you should nevertheless read the sections on Mouse
+   Interfacing, Debugging, Compatibility with Older Versions, and Hints,
+   Tips, and Tricks. These will bring you up to speed on the special
+   features and quirks of the ncurses implementation. If you are not so
+   experienced, keep reading.
    
    The curses package is a subroutine library for terminal-independent
    screen-painting and input-event handling which presents a high level
@@ -173,24 +173,23 @@ Scope of This Document
    This document includes tips for using the mouse.
    
    The ncurses package was originated by Pavel Curtis. The original
-   maintainer of the package is [94]Zeyd Ben-Halim <zmbenhal@netcom.com>.
-   [95]Eric S. Raymond <esr@snark.thyrsus.com> wrote many of the new
-   features in versions after 1.8.1 and wrote most of this introduction.
-   The current primary maintainers are [96]Thomas Dickey
-   <dickey@clark.net> and [97]Juergen Pfeifer.
-   <Juergen.Pfeifer@T-Online.de>
+   maintainer of the package is Zeyd Ben-Halim <zmbenhal@netcom.com>.
+   Eric S. Raymond <esr@snark.thyrsus.com> wrote many of the new features
+   in versions after 1.8.1 and wrote most of this introduction. The
+   current primary maintainers are Thomas Dickey <dickey@clark.net> and
+   Juergen Pfeifer. <Juergen.Pfeifer@T-Online.de>
    
-   This document also describes the [98]panels extension library,
-   similarly modeled on the SVr4 panels facility. This library allows you
-   to associate backing store with each of a stack or deck of overlapping
+   This document also describes the panels extension library, similarly
+   modeled on the SVr4 panels facility. This library allows you to
+   associate backing store with each of a stack or deck of overlapping
    windows, and provides operations for moving windows around in the
    stack that change their visibility in the natural way (handling window
    overlaps).
    
-   Finally, this document describes in detail the [99]menus and
-   [100]forms extension libraries, also cloned from System V, which
-   support easy construction and sequences of menus and fill-in forms.
-   This code was contributed to the project by [101]Jürgen Pfeifer.
+   Finally, this document describes in detail the menus and forms
+   extension libraries, also cloned from System V, which support easy
+   construction and sequences of menus and fill-in forms. This code was
+   contributed to the project by Jürgen Pfeifer.
    
 Terminology
 
@@ -921,7 +920,7 @@ XSI Curses Conformance
    and internationalization) are also supported.
    
    One effect of XSI conformance is the change in behavior described
-   under [102]"Background Erase -- Compatibility with Old Versions".
+   under "Background Erase -- Compatibility with Old Versions".
    
    Also, ncurses meets the XSI requirement that every macro entry point
    have a corresponding function which may be linked (and will be
@@ -1137,7 +1136,7 @@ Menu Display
    scrollable.
    
    You can scroll it with requests to the menu driver, which will be
-   described in the section on [103]menu input handling.
+   described in the section on menu input handling.
    
    Each menu has a mark string used to visually tag selected items; see
    the menu_mark(3x) manual page for details. The mark string length also
@@ -1294,7 +1293,7 @@ Overview of Forms
        
    Note that this looks much like a menu program; the form library
    handles tasks which are in many ways similar, and its interface was
-   obviously designed to resemble that of the [104]menu library wherever
+   obviously designed to resemble that of the menu library wherever
    possible.
    
    In forms programs, however, the `process user requests' is somewhat
@@ -1534,7 +1533,7 @@ int field_opts(FIELD *field);             /* field to query */
           have not reached their size limit.
           
    O_NULLOK
-          Controls whether [105]validation is applied to blank fields.
+          Controls whether validation is applied to blank fields.
           Normally, it is not; the user can leave a field blank without
           invoking the usual validation check on exit. If this option is
           off on a field, exit from it will invoke a validation check.
@@ -1547,7 +1546,7 @@ int field_opts(FIELD *field);             /* field to query */
           
    O_STATIC
           Controls whether the field is fixed to its initial dimensions.
-          If you turn this off, the field becomes [106]dynamic and will
+          If you turn this off, the field becomes dynamic and will
           stretch to fit entered data.
           
    A field's options cannot be changed while the field is currently
@@ -1858,11 +1857,11 @@ Control of Form Display
    frame window on your screen display. This can be useful if you want to
    adapt the form display to different screen sizes, dynamically tile
    forms on the screen, or use a form as part of an interface layout
-   managed by [107]panels.
+   managed by panels.
    
    The two windows associated with each form have the same functions as
-   their analogues in the [108]menu library. Both these windows are
-   painted when the form is posted and erased when the form is unposted.
+   their analogues in the menu library. Both these windows are painted
+   when the form is posted and erased when the form is unposted.
    
    The outer or frame window is not otherwise touched by the form
    routines. It exists so the programmer can associate a title, a border,
@@ -1923,7 +1922,7 @@ Input Processing in the Forms Driver
 
    The function form_driver() handles virtualized input requests for form
    navigation, editing, and validation requests, just as menu_driver does
-   for menus (see the section on [109]menu input handling).
+   for menus (see the section on menu input handling).
    
 int form_driver(FORM *form,               /* form to pass input to */
                 int request);             /* form request code */
@@ -2202,8 +2201,8 @@ int form_driver(FORM *form,               /* form to pass input to */
    If the O_BS_OVERLOAD option is off, this special action is disabled
    and the forms driver just returns E_REQUEST_DENIED.
    
-   See [110]Form Options for discussion of how to set and clear the
-   overload options.
+   See Form Options for discussion of how to set and clear the overload
+   options.
    
   Order Requests
   
@@ -2219,7 +2218,7 @@ int form_driver(FORM *form,               /* form to pass input to */
           
    Of the built-in field types, only TYPE_ENUM has built-in successor and
    predecessor functions. When you define a field type of your own (see
-   [111]Custom Validation Types), you can associate our own ordering
+   Custom Validation Types), you can associate our own ordering
    functions.
    
   Application Commands
@@ -2292,7 +2291,7 @@ HOOK field_term(FORM *form);     /* form to query */
    You can disable any of these hooks by (re)setting them to NULL, the
    default value.
    
-[112]Field Change Commands
+Field Change Commands
 
    Normally, navigation through the form will be driven by the user's
    input requests. But sometimes it is useful to be able to move the
@@ -2379,10 +2378,10 @@ FIELD *link_fieldtype(FIELDTYPE *type1,
    predefined or programmer-defined). If a set_field_type() call later
    requires arguments, the new composite type expects all arguments for
    the first type, than all arguments for the second. Order functions
-   (see [113]Order Requests) associated with the component types will
-   work on the composite; what it does is check the validation function
-   for the first type, then for the second, to figure what type the
-   buffer contents should be treated as.
+   (see Order Requests) associated with the component types will work on
+   the composite; what it does is check the validation function for the
+   first type, then for the second, to figure what type the buffer
+   contents should be treated as.
    
   New Field Types
   
@@ -2507,119 +2506,3 @@ int set_fieldtype_arg(FIELDTYPE *type,    /* type to alter */
    intuitive with a blank field. A useful convention is to make the
    successor of a blank field the types minimum value, and its
    predecessor the maximum.
-
-References
-
-   1. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#introduction
-   2. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#history
-   3. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#scope
-   4. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#terminology
-   5. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#curses
-   6. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#overview
-   7. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#compiling
-   8. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#updating
-   9. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#stdscr
-  10. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#variables
-  11. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#using
-  12. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#starting
-  13. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#output
-  14. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#input
-  15. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#formschars
-  16. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#attributes
-  17. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#mouse
-  18. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#finishing
-  19. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#functions
-  20. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#init
-  21. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#flush
-  22. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#lowlevel
-  23. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#debugging
-  24. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#hints
-  25. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#caution
-  26. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#leaving
-  27. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#xterm
-  28. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#screens
-  29. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#testing
-  30. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#tuning
-  31. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#special
-  32. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#compat
-  33. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#refbug
-  34. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#backbug
-  35. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#xsifuncs
-  36. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#panels
-  37. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#pcompile
-  38. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#poverview
-  39. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#pstdscr
-  40. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#hiding
-  41. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#pmisc
-  42. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#menu
-  43. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#mcompile
-  44. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#moverview
-  45. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#mselect
-  46. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#mdisplay
-  47. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#mwindows
-  48. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#minput
-  49. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#mmisc
-  50. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#form
-  51. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fcompile
-  52. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#foverview
-  53. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fcreate
-  54. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fattributes
-  55. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fsizes
-  56. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#flocation
-  57. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fjust
-  58. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fdispatts
-  59. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#foptions
-  60. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fstatus
-  61. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fuser
-  62. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fdynamic
-  63. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fvalidation
-  64. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#ftype_alpha
-  65. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#ftype_alnum
-  66. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#ftype_enum
-  67. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#ftype_integer
-  68. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#ftype_numeric
-  69. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#ftype_regexp
-  70. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fbuffer
-  71. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#formattrs
-  72. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fdisplay
-  73. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fdriver
-  74. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fpage
-  75. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#ffield
-  76. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fifield
-  77. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fscroll
-  78. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fedit
-  79. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#forder
-  80. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fappcmds
-  81. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fhooks
-  82. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#ffocus
-  83. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#frmoptions
-  84. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fcustom
-  85. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#flinktypes
-  86. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fnewtypes
-  87. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fcheckargs
-  88. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fcustorder
-  89. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fcustprobs
-  90. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#mouse
-  91. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#debugging
-  92. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/compat
-  93. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#hints
-  94. mailto:zmbenhal@netcom.com
-  95. mailto:esr@snark.thyrsus.com
-  96. mailto:dickey@clark.net
-  97. mailto:Juergen.Pfeifer@T-Online.de
-  98. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/panels
-  99. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#menu
- 100. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#form
- 101. mailto:Juergen.Pfeifer@T-Online.de
- 102. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#backbug
- 103. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#minput
- 104. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#menu
- 105. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fvalidation
- 106. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fdynamic
- 107. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#panels
- 108. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#menu
- 109. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#minput
- 110. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#frmoptions
- 111. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#fcustom
- 112. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#ffocus
- 113. file://localhost/usr/build/ncurses/ncurses-4.0-970426/misc/ncurses-intro.html#forder

@@ -23,11 +23,14 @@
 
 #include "internal.h"
 
-MODULE_ID("$Id: cursesm.cc,v 1.2 1997/05/04 01:01:28 tom Exp $")
+MODULE_ID("$Id: cursesm.cc,v 1.4 1997/05/05 20:27:32 tom Exp $")
 
 #pragma implementation
 
 #include "cursesm.h"
+
+const int CMD_ACTION = MAX_COMMAND + 1;
+const int CMD_QUIT   = MAX_COMMAND + 2;
 
 unsigned long NCursesMenu::total_count = 0;
 
@@ -129,11 +132,11 @@ NCursesMenu::InitMenu(NCursesMenuItem* nitems[],
       OnError(E_NO_ROOM);  
     sub = new NCursesWindow(*this,mrows,mcols,1,1,'r');
     ::set_menu_sub(menu, sub->w);
-    b_sub_owner = true;
+    b_sub_owner = TRUE;
   }
   else {
     sub = (NCursesWindow*)0;
-    b_sub_owner = false;
+    b_sub_owner = FALSE;
   }
   setDefaultAttributes();
 }
@@ -222,11 +225,14 @@ bool
 NCursesMenu::set_pattern (const char *pat) {
   int res = ::set_menu_pattern (menu, pat);
   switch(res) {
-    case E_OK: return true;
-  case E_NO_MATCH: return false;
+  case E_OK:
+    break;
+  case E_NO_MATCH:
+    return FALSE;
   default:
     OnError (res);
   }
+  return TRUE;
 }
 
 // Provide a default key virtualization. Translate the keyboard
@@ -270,12 +276,13 @@ NCursesMenu::operator()(void) {
   int drvCmnd;
   int err;
   int c;
+  bool b_action = FALSE;
 
   post();
   show();
   refresh();
   
-  while ((drvCmnd = virtualize((c=getch()))) != CMD_QUIT) {
+  while (!b_action && ((drvCmnd = virtualize((c=getch()))) != CMD_QUIT)) {
     switch((err=driver(drvCmnd))) {
     case E_REQUEST_DENIED:
       On_Request_Denied(c);
@@ -286,7 +293,7 @@ NCursesMenu::operator()(void) {
     case E_UNKNOWN_COMMAND:
       if (drvCmnd == CMD_ACTION) {
 	NCursesMenuItem& itm = current_item();
-	itm.action();
+	b_action = itm.action();
       } else
 	On_Unknown_Command(c);
       break;
@@ -299,7 +306,7 @@ NCursesMenu::operator()(void) {
       OnError(err);
     }
   }
-  
+
   unpost();
   hide();
   refresh();

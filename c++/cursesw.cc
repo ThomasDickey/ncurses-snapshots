@@ -24,7 +24,7 @@
 
 #include "internal.h"
 
-MODULE_ID("$Id: cursesw.cc,v 1.4 1997/05/03 10:51:07 juergen Exp $")
+MODULE_ID("$Id: cursesw.cc,v 1.5 1997/05/05 20:04:59 tom Exp $")
 
 #pragma implementation
 
@@ -42,9 +42,7 @@ int NCursesWindow::count = 0;
 int
 NCursesWindow::scanw(const char* fmt, ...)
 {
-#if defined(__SUNPRO_CC)
-    return ERR;
-#else
+#if defined(__GNUG__)
     va_list args;
     va_start(args, fmt);
     char buf[BUFSIZ];
@@ -55,6 +53,8 @@ NCursesWindow::scanw(const char* fmt, ...)
     }
     va_end(args);
     return result;
+#else
+    return ERR;
 #endif
 }
 
@@ -62,9 +62,7 @@ NCursesWindow::scanw(const char* fmt, ...)
 int
 NCursesWindow::scanw(int y, int x, const char* fmt, ...)
 {
-#if defined(__SUNPRO_CC)
-    return ERR;
-#else
+#if defined(__GNUG__)
     va_list args;
     va_start(args, fmt);
     char buf[BUFSIZ];
@@ -78,6 +76,8 @@ NCursesWindow::scanw(int y, int x, const char* fmt, ...)
     }
     va_end(args);
     return result;
+#else
+    return ERR;
 #endif
 }
 
@@ -197,13 +197,13 @@ bool
 NCursesWindow::isDescendant(NCursesWindow& win) {
   for (NCursesWindow* p = subwins; p != NULL; p = p->sib) {
     if (p==&win)
-      return true;
+      return TRUE;
     else {
       if (p->isDescendant(win))
-	return true;
+	return TRUE;
     }
   }
-  return false;
+  return FALSE;
 }
 
 void

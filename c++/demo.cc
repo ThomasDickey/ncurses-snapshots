@@ -3,13 +3,15 @@
  *
  *   written by Anatoly Ivasyuk (anatoly@nick.csh.rit.edu)
  *
- * $Id: demo.cc,v 1.5 1997/05/03 10:51:07 juergen Exp $
+ * $Id: demo.cc,v 1.7 1997/05/05 20:53:41 tom Exp $
  */
+
+#include <stdlib.h>
 
 #include "cursesm.h"
 
 #if HAVE_LIBC_H
-#  include "libc.h"
+#  include <libc.h>
 #endif
 
 class SillyDemo 
@@ -125,14 +127,17 @@ public:
 template<class T> class MyAction : public NCursesUserItem<T>
 {
 public:
-  MyAction (const UserData* p_UserData,
-	    const char*     p_name)
+  MyAction (const T* p_UserData,
+	    const char* p_name)
     : NCursesUserItem<T>(p_UserData, p_name)
   {};
 
-  void action() {
+  ~MyAction() {}
+
+  bool action() {
     SillyDemo a;
     a.run(UserData()->sleeptime());
+    return FALSE;
   }
 };
 
@@ -142,9 +147,9 @@ public:
   QuitItem() : NCursesMenuItem("Quit") {
   }
 
-  void action() {
+  bool action() {
     endwin();
-    exit(0);
+    return TRUE;
   }
 };
 
@@ -155,7 +160,7 @@ private:
 
 public:
   MyMenu (NCursesMenuItem* menu[]) 
-    : NCursesMenu (menu, 7, 8, 2, 2, true)
+    : NCursesMenu (menu, 7, 8, 2, 2, TRUE)
   {
     if (NCursesWindow::NumberOfColors() > 2) {
       setcolor(1);
@@ -209,20 +214,27 @@ public:
 
 main()
 {
-  UserData u(1);
+  UserData* u = new UserData(1);
 
   NCursesWindow::useColors();
 
-  NCursesMenuItem** I = new NCursesMenuItem*[5] = {
-    &NCursesMenuItem("One"),
-    &NCursesMenuItem("Two"),
-    &MyAction<UserData> (&u, "Silly"),
-    &NCursesMenuItem("Four"),
-    &QuitItem(),
-    &NCursesMenuItem()
-  };
+  NCursesMenuItem** I = new NCursesMenuItem*[6];
+  I[0] = new NCursesMenuItem("One");
+  I[1] = new NCursesMenuItem("Two");
+  I[2] = new MyAction<UserData> (u, "Silly");
+  I[3] = new NCursesMenuItem("Four");
+  I[4] = new QuitItem();
+  I[5] = new NCursesMenuItem();
   
   MyMenu m(I);
 
   m();
+
+  for(int i=0; i < 6; i++) {
+    delete I[i];
+  }
+  delete I;
+  delete u;
+
+  exit(0);
 }

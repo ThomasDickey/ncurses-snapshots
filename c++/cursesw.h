@@ -9,14 +9,16 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#ifdef __SUNPRO_CC
+#if defined(__GNUG__)
+#  if HAVE_BUILTIN_H
+#    define exception builtin_exception
+#    include <builtin.h>
+#    undef exception
+#  endif
+#else  // #elif defined (__SUNPRO_CC)
 #  include <generic.h>
 #  include <string.h>
    extern "C" { unsigned sleep(int); }
-#else
-#  if HAVE_BUILTIN_H
-#    include <builtin.h>
-#  endif
 #endif
 
 #if HAVE_VALUES_H
@@ -572,9 +574,9 @@ public:
   // largest  x coord in window
   short  getcolor() const;
   // actual color pair
-  short  foreground() const { getcolor(0); }
+  short  foreground() const { return getcolor(0); }
   // actual foreground color
-  short  background() const { getcolor(1); }
+  short  background() const { return getcolor(1); }
   // actual background color
   int    setpalette(short fore, short back);
   // set color palette entry
@@ -630,7 +632,7 @@ public:
 #endif
   int            inch() { return ::winch(w); }
   int            inch(int y, int x) {
-    return (::wmove(w, y, x)==ERR) ? ERR : ::winch(w); }
+    return (::wmove(w, y, x)==ERR) ? ERR : (int) ::winch(w); }
   int            insch(chtype ch) { return ::winsch(w, ch); }
   int            insch(int y, int x, chtype ch) {
     return (::wmove(w, y, x)==ERR) ? ERR : ::winsch(w, ch); }

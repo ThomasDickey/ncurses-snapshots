@@ -1,5 +1,5 @@
 /*-----------------------------------------------------------------------------+
-|           The ncurses menu library is  Copyright (C) 1995-1997               |
+|   The ncurses Extended Terminal Interface (ETI) is Copyright (C) 1995-1997   |
 |             by Juergen Pfeifer <Juergen.Pfeifer@T-Online.de>                 |
 |                          All Rights Reserved.                                |
 |                                                                              |
