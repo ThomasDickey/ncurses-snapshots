@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,7 +41,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.61 2001/06/18 18:43:41 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.62 2001/08/25 22:45:16 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -1042,18 +1042,32 @@ dump_initializers(TERMTYPE * term)
 	    size += (strlen(term->Strings[n]) + 1);
 	    str = buf;
 	}
-#if NCURSES_XNAMES
-	if (n == STRCOUNT) {
-	    (void) printf("%s;\n", R_CURL);
-
-	    (void) printf("static char * %s[] = %s\n",
-			  name_initializer("string_ext"), L_CURL);
-	}
-#endif
 	(void) printf("\t/* %3d: %-8s */\t%s,\n", n,
 		      ExtStrname(term, n, strnames), str);
     }
     (void) printf("%s;\n", R_CURL);
+
+#if NCURSES_XNAMES
+    if ((NUM_BOOLEANS(term) != BOOLCOUNT)
+	|| (NUM_NUMBERS(term) != NUMCOUNT)
+	|| (NUM_STRINGS(term) != STRCOUNT)) {
+	(void) printf("static char * %s[] = %s\n",
+		      name_initializer("string_ext"), L_CURL);
+	for (n = BOOLCOUNT; n < NUM_BOOLEANS(term); ++n) {
+	    (void) printf("\t/* %3d: bool */\t\"%s\",\n",
+			  n, ExtBoolname(term, n, boolnames));
+	}
+	for (n = NUMCOUNT; n < NUM_NUMBERS(term); ++n) {
+	    (void) printf("\t/* %3d: num */\t\"%s\",\n",
+			  n, ExtNumname(term, n, numnames));
+	}
+	for (n = STRCOUNT; n < NUM_STRINGS(term); ++n) {
+	    (void) printf("\t/* %3d: str */\t\"%s\",\n",
+			  n, ExtStrname(term, n, strnames));
+	}
+	(void) printf("%s;\n", R_CURL);
+    }
+#endif
 }
 
 /* dump C initializers for the terminal type */
@@ -1072,7 +1086,9 @@ dump_termtype(TERMTYPE * term)
     (void) printf("#if NCURSES_XNAMES\n");
     (void) printf("\t\t(char *)0,\t/* pointer to extended string table */\n");
     (void) printf("\t\t%s,\t/* ...corresponding names */\n",
-		  (NUM_STRINGS(term) != STRCOUNT)
+		  ((NUM_BOOLEANS(term) != BOOLCOUNT)
+		   || (NUM_NUMBERS(term) != NUMCOUNT)
+		   || (NUM_STRINGS(term) != STRCOUNT))
 		  ? name_initializer("string_ext")
 		  : "(char **)0");
 

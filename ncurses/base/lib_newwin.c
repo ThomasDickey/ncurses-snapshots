@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.31 2001/07/31 17:48:23 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.32 2001/08/26 00:24:14 tom Exp $")
 
 NCURSES_EXPORT(int)
 _nc_freewin(WINDOW *win)
@@ -51,19 +51,18 @@ _nc_freewin(WINDOW *win)
 
     if (win != 0) {
 	for (p = _nc_windows, q = 0; p != 0; q = p, p = p->next) {
-	    if (p->win == win) {
+	    if (&(p->win) == win) {
 		if (q == 0)
 		    _nc_windows = p->next;
 		else
 		    q->next = p->next;
-		free(p);
 
 		if (!(win->_flags & _SUBWIN)) {
 		    for (i = 0; i <= win->_maxy; i++)
 			FreeIfNeeded(win->_line[i].text);
 		}
 		free(win->_line);
-		free(win);
+		free(p);
 
 		if (win == curscr)
 		    curscr = 0;
@@ -82,8 +81,7 @@ _nc_freewin(WINDOW *win)
 }
 
 NCURSES_EXPORT(WINDOW *)
-newwin
-(int num_lines, int num_columns, int begy, int begx)
+newwin(int num_lines, int num_columns, int begy, int begx)
 {
     WINDOW *win;
     NCURSES_CH_T *ptr;
@@ -121,8 +119,7 @@ newwin
 }
 
 NCURSES_EXPORT(WINDOW *)
-derwin
-(WINDOW *orig, int num_lines, int num_columns, int begy, int begx)
+derwin(WINDOW *orig, int num_lines, int num_columns, int begy, int begx)
 {
     WINDOW *win;
     int i;
@@ -132,7 +129,7 @@ derwin
        begy, begx));
 
     /*
-       ** make sure window fits inside the original one
+     * make sure window fits inside the original one
      */
     if (begy < 0 || begx < 0 || orig == 0 || num_lines < 0 || num_columns < 0)
 	returnWin(0);
@@ -167,8 +164,7 @@ derwin
 }
 
 NCURSES_EXPORT(WINDOW *)
-subwin
-(WINDOW *w, int l, int c, int y, int x)
+subwin(WINDOW *w, int l, int c, int y, int x)
 {
     T((T_CALLED("subwin(%p, %d, %d, %d, %d)"), w, l, c, y, x));
     T(("parent has begy = %d, begx = %d", w->_begy, w->_begx));
@@ -184,8 +180,7 @@ dimension_limit(int value)
 }
 
 NCURSES_EXPORT(WINDOW *)
-_nc_makenew
-(int num_lines, int num_columns, int begy, int begx, int flags)
+_nc_makenew(int num_lines, int num_columns, int begy, int begx, int flags)
 {
     int i;
     WINDOWLIST *wp;
@@ -200,8 +195,7 @@ _nc_makenew
     if ((wp = typeCalloc(WINDOWLIST, 1)) == 0)
 	return 0;
 
-    if ((win = typeCalloc(WINDOW, 1)) == 0)
-	  return 0;
+    win = &(wp->win);
 
     if ((win->_line = typeCalloc(struct ldat, ((unsigned) num_lines))) == 0) {
 	free(win);
@@ -281,7 +275,6 @@ _nc_makenew
     }
 
     wp->next = _nc_windows;
-    wp->win = win;
     _nc_windows = wp;
 
     T((T_CREATE("window %p"), win));

@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.203 2001/08/04 18:30:54 tom Exp $
+ * $Id: curses.priv.h,v 1.204 2001/08/26 00:22:11 tom Exp $
  *
  *	curses.priv.h
  *
@@ -443,7 +443,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 
 	WINDOWLIST {
 	WINDOWLIST *next;
-	WINDOW	*win;
+	WINDOW	win;
 };
 
 typedef	struct {

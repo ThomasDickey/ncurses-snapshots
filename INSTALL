@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.48 2001/05/26 17:33:07 tom Exp $
+-- $Id: INSTALL,v 1.49 2001/08/25 23:30:37 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -277,7 +277,9 @@ SUMMARY OF CONFIGURE OPTIONS:
 	Use only built-in data.  The ncurses libraries normally read terminfo
 	and termcap data from disk.  You can configure ncurses to have a
 	built-in database, aka "fallback" entries.  Embedded applications may
-	have no need for an external database.
+	have no need for an external database.  Some, but not all of the
+	programs are useful in this configuration, e.g., reset and tput versus
+	infocmp and tic.
 
     --disable-ext-funcs
 	Disable function-extensions.  Configure ncurses without the functions
@@ -463,6 +465,26 @@ SUMMARY OF CONFIGURE OPTIONS:
 
     --with-ada-objects=DIR
 	Tell where to install the Ada objects (default:  PREFIX/lib/ada/adalib)
+
+    --with-build-cc=XXX
+	If cross-compiling, specify a host C compiler, which is needed to
+	compile a few utilties which generate source modules for ncurses.
+	If you do not give this option, the configure script checks if the
+	$BUILD_CC variable is set, and otherwise defaults to gcc or cc.
+
+    --with-build-cflags=XXX
+	If cross-compiling, specify the host C compiler-flags.  You might need
+	to do this if the target compiler has unusual flags which confuse the
+	host compiler.
+
+    --with-build-ldflags=XXX
+	If cross-compiling, specify the host linker-flags.  You might need to
+	do this if the target linker has unusual flags which confuse the host
+	compiler.
+
+    --with-build-libs=XXX
+	If cross-compiling, the host libraries.  You might need to do this if
+	the target environment requires unusual libraries.
 
     --with-caps=XXX
 	Specify an alternate terminfo capabilities file, which makes the

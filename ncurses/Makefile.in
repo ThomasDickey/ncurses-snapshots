@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.75 2001/06/16 16:46:09 tom Exp $
+# $Id: Makefile.in,v 1.76 2001/08/25 23:14:55 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.           #
 #                                                                            #
@@ -86,8 +86,9 @@ CPPFLAGS	= -I../ncurses -I$(srcdir) @CPPFLAGS@ \
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 
 HOSTCC		= @BUILD_CC@
-HOSTCCFLAGS	= @CFLAGS@ $(CPPFLAGS)
-HOSTLDFLAGS	= @LDFLAGS@ @LIBS@
+HOSTCCFLAGS	= @BUILD_CFLAGS@ $(CPPFLAGS)
+HOSTLDFLAGS	= @BUILD_LDFLAGS@
+HOSTLIBS	= @BUILD_LIBS@
 
 CFLAGS_LIBTOOL	= $(CCFLAGS)
 CFLAGS_NORMAL	= $(CCFLAGS)
@@ -181,12 +182,12 @@ keys.list :	$(tinfo)/MKkeys_list.sh
 make_keys$x : \
 		$(tinfo)/make_keys.c \
 		names.c
-	$(HOSTCC) -o $@ $(HOSTCCFLAGS) $(tinfo)/make_keys.c $(HOSTLDFLAGS)
+	$(HOSTCC) -o $@ $(HOSTCCFLAGS) $(tinfo)/make_keys.c $(HOSTLDFLAGS) $(HOSTLIBS)
 
 make_hash$x : \
 		$(tinfo)/comp_hash.c \
 		../include/hashsize.h
-	$(HOSTCC) -o $@ $(HOSTCCFLAGS) -DMAIN_PROGRAM $(tinfo)/comp_hash.c $(HOSTLDFLAGS)
+	$(HOSTCC) -o $@ $(HOSTCCFLAGS) -DMAIN_PROGRAM $(tinfo)/comp_hash.c $(HOSTLDFLAGS) $(HOSTLIBS)
 
 expanded.c : $(serial)/MKexpanded.sh
 	sh $(serial)/MKexpanded.sh "$(CPP)" $(CPPFLAGS) > $@

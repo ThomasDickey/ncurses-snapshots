@@ -70,7 +70,7 @@ AUTHOR
 #include <curses.priv.h>
 #include <term.h>		/* for back_color_erase */
 
-MODULE_ID("$Id: hashmap.c,v 1.42 2001/06/03 03:03:21 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.43 2001/08/25 21:00:44 tom Exp $")
 
 #ifdef HASHDEBUG
 
@@ -410,7 +410,7 @@ _nc_make_oldhash(int i)
 NCURSES_EXPORT(void)
 _nc_scroll_oldhash(int n, int top, int bot)
 {
-    int size;
+    size_t size;
     int i;
 
     if (!oldhash)

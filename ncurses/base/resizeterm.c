@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: resizeterm.c,v 1.9 2000/12/10 02:43:28 tom Exp $")
+MODULE_ID("$Id: resizeterm.c,v 1.10 2001/08/26 00:40:09 tom Exp $")
 
 /*
  * This function reallocates NCURSES window structures.  It is invoked in
@@ -73,7 +73,7 @@ resizeterm(int ToLines, int ToCols)
 #endif
 
 	for (wp = _nc_windows; wp != 0; wp = wp->next) {
-	    WINDOW *win = wp->win;
+	    WINDOW *win = &(wp->win);
 	    int myLines = win->_maxy + 1;
 	    int myCols = win->_maxx + 1;
 
