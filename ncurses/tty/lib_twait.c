@@ -59,7 +59,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.41 2000/12/10 03:04:30 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.42 2001/07/31 17:46:00 tom Exp $")
 
 static long
 _nc_gettime(bool first)
@@ -85,7 +85,7 @@ _nc_gettime(bool first)
     }
     res = (t1 - t0) * 1000;
 #endif
-    T(("%s time: %ld msec", first ? "get" : "elapsed", res));
+    TR(TRACE_IEVENT, ("%s time: %ld msec", first ? "get" : "elapsed", res));
     return res;
 }
 
@@ -120,7 +120,8 @@ _nc_timed_wait
 
     long starttime, returntime;
 
-    T(("start twait: %d milliseconds, mode: %d", milliseconds, mode));
+    TR(TRACE_IEVENT, ("start twait: %d milliseconds, mode: %d",
+		      milliseconds, mode));
 
 #if PRECISE_GETTIME
   retry:
@@ -228,8 +229,8 @@ _nc_timed_wait
     if (timeleft)
 	*timeleft = milliseconds;
 
-    T(("end twait: returned %d (%d), remaining time %d msec",
-       result, errno, milliseconds));
+    TR(TRACE_IEVENT, ("end twait: returned %d (%d), remaining time %d msec",
+		      result, errno, milliseconds));
 
     /*
      * Both 'poll()' and 'select()' return the number of file descriptors

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -48,7 +48,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.64 2000/12/10 02:55:07 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.66 2001/08/04 17:18:21 tom Exp $")
 
 /****************************************************************************
  *
@@ -97,18 +97,17 @@ static void do_prototype(void);
 NCURSES_EXPORT(void)
 use_env(bool f)
 {
+    T((T_CALLED("use_env()")));
     _use_env = f;
+    returnVoid;
 }
 
-NCURSES_EXPORT_VAR(int)
-LINES = 0;
-NCURSES_EXPORT_VAR(int)
-COLS = 0;
-NCURSES_EXPORT_VAR(int)
-TABSIZE = 0;
+NCURSES_EXPORT_VAR(int) LINES = 0;
+NCURSES_EXPORT_VAR(int) COLS = 0;
+NCURSES_EXPORT_VAR(int) TABSIZE = 0;
 
-     static void
-       _nc_get_screensize(int *linep, int *colp)
+static void
+_nc_get_screensize(int *linep, int *colp)
 /* Obtain lines/columns values from the environment and/or terminfo entry */
 {
     /* figure out the size of the screen */
@@ -295,8 +294,7 @@ NCURSES_EXPORT_VAR(char) ttytype[NAMESIZE] = "";
  */
 
 NCURSES_EXPORT(int)
-setupterm
-(NCURSES_CONST char *tname, int Filedes, int *errret)
+setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
 {
     struct term *term_ptr;
     int status;

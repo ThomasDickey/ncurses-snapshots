@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.254 2001/07/14 21:07:12 tom Exp $
+dnl $Id: aclocal.m4,v 1.255 2001/08/04 23:31:23 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -444,7 +444,6 @@ AC_CACHE_CHECK(if $CXX supports vscan function,cf_cv_cpp_vscan_func,[
 int scanw(const char* fmt, ...)
 {
     int result = -1;
-#if defined(__GNUG__)
     char buf[BUFSIZ];
 
     va_list args;
@@ -464,9 +463,6 @@ int scanw(const char* fmt, ...)
 #error case $cf_vscan_func failed
 #endif
     va_end(args);
-#else
-#error sorry, we only know about the GNU compiler case
-#endif
     return result;
 }
 ],[int tmp, foo = scanw("%d", &tmp)],

@@ -47,7 +47,7 @@
 #include <term.h>		/* clear_screen, cup & friends, cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.51 2001/06/02 21:27:47 skimo Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.52 2001/08/04 16:47:48 tom Exp $")
 
 #ifndef ONLCR			/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -89,7 +89,9 @@ static int filter_mode = FALSE;
 NCURSES_EXPORT(void)
 filter(void)
 {
+    T((T_CALLED("filter")));
     filter_mode = TRUE;
+    returnVoid;
 }
 
 NCURSES_EXPORT(SCREEN *)
@@ -110,7 +112,7 @@ newterm
 
     /* this loads the capability entry, then sets LINES and COLS */
     if (setupterm(name, fileno(ofp), &errret) == ERR)
-	return 0;
+	returnSP(0);
 
     /* implement filter mode */
     if (filter_mode) {
@@ -140,7 +142,7 @@ newterm
 	if (slk_format) {
 	    if (ERR == _nc_ripoffline(-SLK_LINES(slk_format),
 				      _nc_slk_initialize))
-		return 0;
+		returnSP(0);
 	}
     /* this actually allocates the screen structure, and saves the
      * original terminal settings.
@@ -149,7 +151,7 @@ newterm
     _nc_set_screen(0);
     if (_nc_setupscreen(LINES, COLS, ofp) == ERR) {
 	_nc_set_screen(current);
-	return 0;
+	returnSP(0);
     }
 
     /* if the terminal type has real soft labels, set those up */
@@ -203,6 +205,5 @@ newterm
 
     _nc_signal_handler(TRUE);
 
-    T((T_RETURN("%p"), SP));
-    return (SP);
+    returnSP(SP);
 }

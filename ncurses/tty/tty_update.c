@@ -70,7 +70,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.167 2001/07/08 00:55:02 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.168 2001/08/04 18:30:17 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -791,8 +791,8 @@ doupdate(void)
     TR(TRACE_TIMES,
        ("Update cost: %ld chars, %ld clocks system time, %ld clocks user time",
 	_nc_outchars,
-	after.tms_stime - before.tms_stime,
-	after.tms_utime - before.tms_utime));
+	(long) (after.tms_stime - before.tms_stime),
+	(long) (after.tms_utime - before.tms_utime)));
 #endif /* USE_TRACE_TIMES */
 
     _nc_signal_handler(TRUE);

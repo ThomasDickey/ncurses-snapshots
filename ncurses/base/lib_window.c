@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_window.c,v 1.16 2001/06/03 01:54:23 skimo Exp $")
+MODULE_ID("$Id: lib_window.c,v 1.17 2001/07/31 17:53:35 tom Exp $")
 
 NCURSES_EXPORT(void)
 _nc_synchook(WINDOW *win)
@@ -98,7 +98,8 @@ wsyncup(WINDOW *win)
 {
     WINDOW *wp;
 
-    if (win && win->_parent)
+    T((T_CALLED("wsyncup(%p)"), win));
+    if (win && win->_parent) {
 	for (wp = win; wp->_parent; wp = wp->_parent) {
 	    int y;
 	    WINDOW *pp = wp->_parent;
@@ -118,6 +119,8 @@ wsyncup(WINDOW *win)
 		}
 	    }
 	}
+    }
+    returnVoid;
 }
 
 NCURSES_EXPORT(void)
@@ -125,6 +128,8 @@ wsyncdown(WINDOW *win)
 /* mark changed every cell in win that is changed in any of its ancestors */
 /* Rewritten by J. Pfeifer, 1-Apr-96 (don't even think that...)           */
 {
+    T((T_CALLED("wsyncdown(%p)"), win));
+
     if (win && win->_parent) {
 	WINDOW *pp = win->_parent;
 	int y;
@@ -153,6 +158,7 @@ wsyncdown(WINDOW *win)
 	    }
 	}
     }
+    returnVoid;
 }
 
 NCURSES_EXPORT(void)
@@ -160,9 +166,12 @@ wcursyncup(WINDOW *win)
 /* sync the cursor in all derived windows to its value in the base window */
 {
     WINDOW *wp;
+
+    T((T_CALLED("wcursyncup(%p)"), win));
     for (wp = win; wp && wp->_parent; wp = wp->_parent) {
 	wmove(wp->_parent, wp->_pary + wp->_cury, wp->_parx + wp->_curx);
     }
+    returnVoid;
 }
 
 NCURSES_EXPORT(WINDOW *)

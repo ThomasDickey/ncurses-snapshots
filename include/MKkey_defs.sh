@@ -1,5 +1,5 @@
 #! /bin/sh
-# $Id: MKkey_defs.sh,v 1.2 2001/06/16 16:03:01 tom Exp $
+# $Id: MKkey_defs.sh,v 1.5 2001/08/05 01:46:52 tom Exp $
 ##############################################################################
 # Copyright (c) 2001 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -38,8 +38,12 @@
 DATA=${1-Caps}
 
 data=data$$
-trap 'rm -f $data' 0 1 2 5 15
-sed -e 's/[	]\+/	/g' < $DATA | sort -n +5 >$data
+pass1=pass1_$$
+pass2=pass2_$$
+pass3=pass3_$$
+pass4=pass4_$$
+trap 'rm -f $data pass[1234]_$$' 0 1 2 5 15
+sed -e 's/[	]\+/	/g' < $DATA |sort -n +5 >$data
 
 cat <<EOF
 /*
@@ -47,7 +51,15 @@ cat <<EOF
  */
 EOF
 
-${AWK-awk} <$data '
+# KEY_RESIZE
+maxkey=410
+
+for pass in 1 2 3 4
+do
+
+output=pass${pass}_$$
+
+${AWK-awk} -v maxkey=$maxkey -v pass=$pass >$output <$data '
 function print_cols(text,cols) {
 	printf "%s", text
 	len = length(text);
@@ -74,50 +86,75 @@ function decode(keycode) {
 }
 
 BEGIN	{
-	maxkey=0
+	key_max=1;
+	bits=1;
+	while (key_max < maxkey) {
+		bits = bits + 1;
+		key_max = (key_max * 2) + 1;
+	}
+	octal_fmt = sprintf ("%%0%do", (bits + 2) / 3 + 1);
 }
 
+/^$/		{next;}
 /^#/		{next;}
 /^capalias/	{next;}
 /^infoalias/	{next;}
 
 $5 != "-" && $6 != "-" {
-		if ($5 == "KEY_F(0)" ) {
-			printf "#define "
-			print_cols("KEY_F0", 16);
-			print_cols($6, 16);
-			print "/* Function keys.  Space for 64 */";
-			printf "#define "
-			print_cols("KEY_F(n)", 16);
-			print_cols("(KEY_F0+(n))", 16);
-			print "/* Value of function key n */"
+		if ($6 == "+") {
+			if (pass == 1 || pass == 2)
+				next;
+			thiskey=maxkey + 1;
 		} else {
-			name=$5
-			code=$6
-			printf "#define "
-			print_cols($5, 16);
-			print_cols($6, 16);
-			printf "/*"
-			for (i = 8; i <= NF; i++)
-				printf " %s", $i
-			print " */"
+			if (pass == 3)
+				next;
+			thiskey=decode($6);
 		}
-		thiskey=decode($6);
 		if (thiskey > maxkey)
 			maxkey = thiskey;
+		if (pass == 2 || pass == 3) {
+			showkey=sprintf(octal_fmt, thiskey);
+			if ($5 == "KEY_F(0)" ) {
+				printf "#define "
+				print_cols("KEY_F0", 16);
+				print_cols(showkey, 16);
+				print "/* Function keys.  Space for 64 */";
+				printf "#define "
+				print_cols("KEY_F(n)", 16);
+				print_cols("(KEY_F0+(n))", 16);
+				print "/* Value of function key n */"
+			} else {
+				printf "#define "
+				print_cols($5, 16);
+				print_cols(showkey, 16);
+				printf "/*"
+				for (i = 8; i <= NF; i++)
+					printf " %s", $i
+				print " */"
+			}
+		}
 	}
 END	{
-		testkey=1;
-		bits=1;
-		while (testkey < maxkey) {
-			bits = bits + 1;
-			testkey = (testkey * 2) + 1;
+		if (pass == 1) {
+			print maxkey;
+		} else if (pass == 4) {
+			print "";
+			printf "#define ";
+			print_cols("KEY_MAX", 16);
+			result = sprintf (octal_fmt, key_max);
+			print_cols(result, 16);
+			printf "/* Maximum key value is ";
+			printf octal_fmt, maxkey;
+			print " */";
 		}
-		printf "#define ";
-		print_cols("KEY_MAX", 16);
-		format = sprintf ("%%0%do", (bits + 2) / 3 + 1);
-		result = sprintf (format, testkey);
-		print_cols(result, 16);
-		print "/* Maximum key value */";
 	}
 '
+if test $pass = 1 ; then
+	maxkey=`cat $pass1`
+fi
+
+done
+
+cat $pass2
+cat $pass3
+cat $pass4

@@ -40,18 +40,16 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.43 2001/07/08 00:54:59 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.45 2001/08/04 16:51:47 tom Exp $")
 
 NCURSES_EXPORT_VAR(unsigned)
 _nc_tracing = 0;		/* always define this */
 
 #ifdef TRACE
-NCURSES_EXPORT_VAR(const char *)
-_nc_tputs_trace = "";
-NCURSES_EXPORT_VAR(long)
-_nc_outchars = 0;
+NCURSES_EXPORT_VAR(const char *) _nc_tputs_trace = "";
+NCURSES_EXPORT_VAR(long) _nc_outchars = 0;
 
-     static FILE *tracefp;	/* default to writing to stderr */
+static FILE *tracefp;	/* default to writing to stderr */
 
 NCURSES_EXPORT(void)
 trace(const unsigned int tracelevel GCC_UNUSED)
@@ -59,10 +57,10 @@ trace(const unsigned int tracelevel GCC_UNUSED)
     static bool been_here = FALSE;
     static char my_name[] = "trace";
 
-    _nc_tracing = tracelevel;
     if (!been_here && tracelevel) {
 	been_here = TRUE;
 
+	_nc_tracing = tracelevel;
 	if (_nc_access(my_name, W_OK) < 0
 	    || (tracefp = fopen(my_name, "wb")) == 0) {
 	    perror("curses: Can't open 'trace' file: ");
@@ -77,7 +75,11 @@ trace(const unsigned int tracelevel GCC_UNUSED)
 #elif HAVE_SETBUF		/* POSIX */
 	(void) setbuffer(tracefp, (char *) 0);
 #endif
-	_tracef("TRACING NCURSES version %s", curses_version());
+	_tracef("TRACING NCURSES version %s (tracelevel=%#x)",
+		curses_version(), tracelevel);
+    } else if (_nc_tracing != tracelevel) {
+	_nc_tracing = tracelevel;
+	_tracef("tracelevel=%#x", tracelevel);
     }
 }
 #endif
@@ -249,6 +251,14 @@ NCURSES_EXPORT(char *)
 _nc_retrace_ptr(char *code)
 {
     T((T_RETURN("%s"), _nc_visbuf(code)));
+    return code;
+}
+
+/* Trace 'SCREEN *' return-values */
+NCURSES_EXPORT(SCREEN *)
+_nc_retrace_sp(SCREEN *code)
+{
+    T((T_RETURN("%p"), code));
     return code;
 }
 

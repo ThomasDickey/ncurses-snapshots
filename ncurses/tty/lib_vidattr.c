@@ -64,7 +64,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.37 2001/06/16 17:51:45 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.38 2001/08/04 20:41:04 William.Setzer Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -88,7 +88,7 @@ MODULE_ID("$Id: lib_vidattr.c,v 1.37 2001/06/16 17:51:45 tom Exp $")
 
 NCURSES_EXPORT(int)
 vidputs
-(attr_t newmode, int (*outc) (int))
+(chtype newmode, int (*outc) (int))
 {
     static attr_t previous_attr = A_NORMAL;
     attr_t turn_on, turn_off;
@@ -264,7 +264,7 @@ vidputs
 }
 
 NCURSES_EXPORT(int)
-vidattr(attr_t newmode)
+vidattr(chtype newmode)
 {
     T((T_CALLED("vidattr(%s)"), _traceattr(newmode)));
 

@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.201 2001/07/14 23:44:23 tom Exp $
+ * $Id: curses.priv.h,v 1.203 2001/08/04 18:30:54 tom Exp $
  *
  *	curses.priv.h
  *
@@ -642,16 +642,18 @@ typedef	struct {
 #define returnChar(code) TRACE_RETURN(code,chtype)
 #define returnCode(code) TRACE_RETURN(code,int)
 #define returnPtr(code)  TRACE_RETURN(code,ptr)
+#define returnSP(code)   TRACE_RETURN(code,sp)
 #define returnVoid       T((T_RETURN(""))); return
 #define returnWin(code)  TRACE_RETURN(code,win)
+extern NCURSES_EXPORT(SCREEN *) _nc_retrace_sp (SCREEN *);
 extern NCURSES_EXPORT(WINDOW *) _nc_retrace_win (WINDOW *);
 extern NCURSES_EXPORT(attr_t) _nc_retrace_attr_t (attr_t);
 extern NCURSES_EXPORT(attr_t) _nc_retrace_chtype (chtype);
 extern NCURSES_EXPORT(char *) _nc_retrace_ptr (char *);
-extern NCURSES_EXPORT_VAR(const char *) _nc_tputs_trace;
 extern NCURSES_EXPORT(int) _nc_retrace_int (int);
-extern NCURSES_EXPORT_VAR(long) _nc_outchars;
 extern NCURSES_EXPORT(void) _nc_fifo_dump (void);
+extern NCURSES_EXPORT_VAR(const char *) _nc_tputs_trace;
+extern NCURSES_EXPORT_VAR(long) _nc_outchars;
 #else
 #define T(a)
 #define TR(n, a)
@@ -660,6 +662,7 @@ extern NCURSES_EXPORT(void) _nc_fifo_dump (void);
 #define returnChar(code) return code
 #define returnCode(code) return code
 #define returnPtr(code)  return code
+#define returnSP(code)   return code
 #define returnVoid       return
 #define returnWin(code)  return code
 #endif
@@ -877,11 +880,7 @@ extern NCURSES_EXPORT(void) _nc_update_screensize (void);
  * Not everyone has vsscanf(), but we'd like to use it for scanw().
  */
 #if !HAVE_VSSCANF
-#if defined(__QNX__)
-extern int vsscanf(const char *str, const char *format, __va_list __arg);
-#else
 extern int vsscanf(const char *str, const char *format, va_list __arg);
-#endif
 #endif
 
 /* scroll indices */
