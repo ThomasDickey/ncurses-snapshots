@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.69 2004/01/14 02:28:44 tom Exp $
+-- $Id: INSTALL,v 1.70 2004/01/31 16:52:08 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -714,6 +714,52 @@ COMPATIBILITY WITH OLDER VERSIONS OF NCURSES:
     you may encounter when building a system with different versions of
     ncurses:
 
+    5.4 (February 1, 2004)
+	Interface changes:
+
+	+ add the remaining functions for X/Open curses wide-character support. 
+	  These are only available if the library is configured using the
+	  --enable-widec option.
+		pecho_wchar()
+		slk_wset()
+
+	+ write getyx() and related 2-return macros in terms of getcury(),
+	  getcurx(), etc.
+
+	+ simplify ifdef for bool declaration in curses.h
+
+	+ modify ifdef's in curses.h that disabled use of __attribute__() for
+	  g++, since recent versions implement the cases which ncurses uses.
+
+	+ change some interfaces to use const:
+		define_key()
+		mvprintw()
+		mvwprintw()
+		printw()
+		vw_printw()
+		winsnstr()
+		wprintw()
+
+	Added extensions:
+		key_defined()
+	Added internal functions:
+		_nc_get_locale()
+		_nc_insert_ch()
+		_nc_is_charable()	wide
+		_nc_locale_breaks_acs()
+		_nc_pathlast()
+		_nc_to_char()		wide
+		_nc_to_widechar()	wide
+		_nc_tparm_analyze()
+		_nc_trace_bufcat()	debug
+		_nc_unicode_locale()
+	Removed internal functions:
+		_nc_outstr()
+		_nc_sigaction()
+	Modified internal functions:
+		_nc_remove_string()
+		_nc_retrace_chtype()
+
     5.3 (October 12, 2002)
 	Interface changes:
 
@@ -734,9 +780,13 @@ COMPATIBILITY WITH OLDER VERSIONS OF NCURSES:
 		resize_term()
 	Added internal functions:
 		_nc_altcharset_name()	debug
+		_nc_reset_colors()
+		_nc_retrace_bool()	debug
+		_nc_retrace_unsigned()	debug
 		_nc_rootname()
 		_nc_trace_ttymode()	debug
 		_nc_varargs()		debug
+		_nc_visbufn()		debug
 		_nc_wgetch()
 	Removed internal functions:
 		_nc_background()

@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.78 2004/01/03 21:21:20 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.79 2004/01/31 01:40:16 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -253,14 +253,22 @@ waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
 /* the workhorse function -- add a character to the given window */
 {
     int x, y;
-    chtype t = 0;
+    chtype t = CharOf(ch);
     const char *s = 0;
 
+    /*
+     * If we are using the alternate character set, forget about locale.
+     * Otherwise, if unctrl() returns a single-character or the locale
+     * claims the code is printable, treat it that way.
+     */
     if ((AttrOf(ch) & A_ALTCHARSET)
-	|| ((t = CharOf(ch)) > 127)
-	|| ((s = unctrl(t))[1] == 0))
+	|| ((s = unctrl(t))[1] == 0 || isprint(t)))
 	return waddch_literal(win, ch);
 
+    /*
+     * Handle carriage control and other codes that are not printable, or are
+     * known to expand to more than one character according to unctrl().
+     */
     x = win->_curx;
     y = win->_cury;
 
