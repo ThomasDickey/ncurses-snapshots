@@ -341,6 +341,8 @@ int last, bottom;
 void
 onsig(int sig)
 {
+	standend();
+	refresh();
 	endwin();
 	exit(sig);
 }

@@ -61,7 +61,7 @@
 #endif
 
 #if !HAVE_USLEEP
-void usleep(unsigned int usec)
+int usleep(unsigned int usec)
 {
 struct timeval tval;
 
