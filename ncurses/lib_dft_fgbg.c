@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                      *
+ * Copyright 1997 by Thomas E. Dickey <dickey@clark.net>                      *
  * All Rights Reserved.                                                       *
  *                                                                            *
  * Permission to use, copy, modify, and distribute this software and its      *
@@ -17,59 +17,30 @@
  * CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
  ******************************************************************************/
-/* $Id: test.priv.h,v 1.10 1997/01/18 19:38:20 tom Exp $ */
-#if HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include <curses.priv.h>
+#include <term.h>
 
-#include <stdlib.h>
-#include <sys/types.h>
+MODULE_ID("$Id: lib_dft_fgbg.c,v 1.1 1997/01/19 00:43:34 tom Exp $")
 
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
-#include <curses.h>
-
-#if HAVE_GETOPT_H
-#include <getopt.h>
-#else
-/* 'getopt()' may be prototyped in <stdlib.h>, but declaring its variables
- * doesn't hurt.
+/*
+ * Modify the behavior of color-pair 0 so that the library doesn't assume that
+ * it is black on white.  This is an extension to XSI curses.
+ *
+ * Invoke this function after 'start_color()'.
  */
-extern char *optarg;
-extern int optind;
-#endif /* HAVE_GETOPT_H */
+int
+use_default_colors(void)
+{
+	if (!SP->_coloron)
+		return ERR;
 
-#ifndef GCC_NORETURN
-#define GCC_NORETURN /* nothing */
-#endif
-#ifndef GCC_UNUSED
-#define GCC_UNUSED /* nothing */
-#endif
+	if (!orig_pair && !orig_colors)
+		return ERR;
 
-#if defined(NCURSES_VERSION) && defined(HAVE_NC_ALLOC_H)
-#include <nc_alloc.h>
-#endif
+	if (initialize_pair)	/* don't know how to handle this */
+		return ERR;
 
-#ifndef ExitProgram
-#define ExitProgram(code) return code
-#endif
-
-#ifndef EXIT_SUCCESS
-#define EXIT_SUCCESS 0
-#endif
-#ifndef EXIT_FAILURE
-#define EXIT_FAILURE 1
-#endif
-
-/* Use this to quiet gcc's -Wwrite-strings warnings, but accommodate SVr4
- * curses which doesn't have const parameters declared (so far) in the places
- * that XSI shows.
- */
-#undef CONST
-#ifdef NCURSES_VERSION
-#define CONST const
-#else
-#define CONST /*nothing*/
-#endif
+	SP->_default_color = TRUE;
+	SP->_color_pairs[0] = PAIR_OF(C_MASK, C_MASK);
+	return OK;
+}

@@ -35,7 +35,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.20 1996/12/21 20:33:16 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.21 1997/01/18 23:05:32 tom Exp $")
 
 /****************************************************************************
  *
@@ -211,7 +211,7 @@ int status;
 
 	T(("your terminal name is %s", tname));
 
-	term_ptr = (TERMINAL *) calloc(1, sizeof(TERMINAL));
+	term_ptr = typeCalloc(TERMINAL, 1);
 
 	if (term_ptr == NULL)
 		ret_error0(-1, "Not enough memory to create terminal structure.\n") ;

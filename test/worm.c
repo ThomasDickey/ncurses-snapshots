@@ -34,7 +34,7 @@ Options:
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.17 1997/01/01 23:58:09 tom Exp $
+  $Id: worm.c,v 1.18 1997/01/19 01:13:53 tom Exp $
 */
 
 #include <test.priv.h>
@@ -221,23 +221,28 @@ int last, bottom;
 #ifdef A_COLOR
     if (has_colors())
     {
+	int bg = COLOR_BLACK;
 	start_color();
+#ifdef NCURSES_VERSION
+	if (use_default_colors() == OK)
+	    bg = -1;
+#endif
  
-	init_pair(COLOR_GREEN, COLOR_GREEN, COLOR_BLACK);
-	init_pair(COLOR_RED, COLOR_RED, COLOR_BLACK);
-	init_pair(COLOR_CYAN, COLOR_CYAN, COLOR_BLACK);
-	init_pair(COLOR_WHITE, COLOR_WHITE, COLOR_BLACK);
-	init_pair(COLOR_MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
-	init_pair(COLOR_BLUE, COLOR_BLUE, COLOR_BLACK);
-	init_pair(COLOR_YELLOW, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(COLOR_GREEN,   COLOR_GREEN,   -1);
+	init_pair(COLOR_RED,     COLOR_RED,     -1);
+	init_pair(COLOR_CYAN,    COLOR_CYAN,    -1);
+	init_pair(COLOR_WHITE,   COLOR_WHITE,   -1);
+	init_pair(COLOR_MAGENTA, COLOR_MAGENTA, -1);
+	init_pair(COLOR_BLUE,    COLOR_BLUE,    -1);
+	init_pair(COLOR_YELLOW,  COLOR_YELLOW,  -1);
 
-	flavor[0] |= COLOR_PAIR(COLOR_GREEN) | A_BOLD;
-	flavor[1] |= COLOR_PAIR(COLOR_RED) | A_BOLD;
-	flavor[2] |= COLOR_PAIR(COLOR_CYAN) | A_BOLD;
-	flavor[3] |= COLOR_PAIR(COLOR_WHITE) | A_BOLD;
+	flavor[0] |= COLOR_PAIR(COLOR_GREEN)   | A_BOLD;
+	flavor[1] |= COLOR_PAIR(COLOR_RED)     | A_BOLD;
+	flavor[2] |= COLOR_PAIR(COLOR_CYAN)    | A_BOLD;
+	flavor[3] |= COLOR_PAIR(COLOR_WHITE)   | A_BOLD;
 	flavor[4] |= COLOR_PAIR(COLOR_MAGENTA) | A_BOLD;
-	flavor[5] |= COLOR_PAIR(COLOR_BLUE) | A_BOLD;
-	flavor[6] |= COLOR_PAIR(COLOR_YELLOW) | A_BOLD;
+	flavor[5] |= COLOR_PAIR(COLOR_BLUE)    | A_BOLD;
+	flavor[6] |= COLOR_PAIR(COLOR_YELLOW)  | A_BOLD;
     }
 #endif /* A_COLOR */
 

@@ -29,7 +29,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.12 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.13 1997/01/19 00:48:24 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -90,7 +90,8 @@ int start_color(void)
 		COLOR_PAIRS = SP->_pair_count = max_pairs;
 	else
 		return ERR;
-	SP->_color_pairs = calloc((unsigned int)max_pairs, sizeof(char));
+	SP->_color_pairs = typeCalloc(unsigned short, max_pairs);
+	SP->_color_pairs[0] = PAIR_OF(COLOR_WHITE, COLOR_BLACK);
 	if (max_colors != -1)
 		COLORS = SP->_color_count = max_colors;
 	else
@@ -153,13 +154,30 @@ static void rgb2hls(short r, short g, short b, short *h, short *l, short *s)
 }
 #endif /* hue_lightness_saturation */
 
+/*
+ * Extension (1997/1/18) - Allow negative f/b values to set default color
+ * values.
+ */
 int init_pair(short pair, short f, short b)
 {
 	T(("init_pair( %d, %d, %d )", pair, f, b));
 
 	if ((pair < 1) || (pair >= COLOR_PAIRS))
 		return ERR;
-	if ((f  < 0) || (f >= COLORS) || (b < 0) || (b >= COLORS))
+	if (SP->_default_color)
+	{
+		if (f < 0)
+			f = C_MASK;
+		if (b < 0)
+			b = C_MASK;
+		if (f >= COLORS && f != C_MASK)
+			return ERR;
+		if (b >= COLORS && b != C_MASK)
+			return ERR;
+	}
+	else
+	if ((f < 0) || (f >= COLORS)
+	 || (b < 0) || (b >= COLORS))
 		return ERR;
 
 	/*
@@ -168,7 +186,7 @@ int init_pair(short pair, short f, short b)
 	 * replacing original pair colors with the new ones)
 	 */
 
-	SP->_color_pairs[pair] = ( (f & 0x0f) | (b & 0x0f) << 4 );
+	SP->_color_pairs[pair] = PAIR_OF(f,b);
 
 	if (initialize_pair)
 	{
@@ -264,11 +282,10 @@ int color_content(short color, short *r, short *g, short *b)
 int pair_content(short pair, short *f, short *b)
 {
 
-	if ((pair < 1) || (pair > COLOR_PAIRS))
+	if ((pair < 0) || (pair > COLOR_PAIRS))
 		return ERR;
-	*f = SP->_color_pairs[pair] & 0x0f;
-	*b = SP->_color_pairs[pair] & 0xf0;
-	*b >>= 4;
+	*f = ((SP->_color_pairs[pair] >> C_SHIFT) & C_MASK);
+	*b =  (SP->_color_pairs[pair] & C_MASK);
 	return OK;
 }
 
@@ -298,25 +315,44 @@ void _nc_do_color(int pair, int  (*outc)(int))
 
 	    T(("setting colors: pair = %d, fg = %d, bg = %d\n", pair, fg, bg));
 
-	    if (set_a_foreground)
+	    if (fg == C_MASK || bg == C_MASK)
 	    {
-		TPUTS_TRACE("set_a_foreground");
-		tputs(tparm(set_a_foreground, fg), 1, outc);
+		if (orig_pair)
+		{
+		    TPUTS_TRACE("orig_pair");
+		    tputs(orig_pair, 1, outc);
+		}
+		else
+		{
+		    TPUTS_TRACE("orig_colors");
+		    tputs(orig_colors, 1, outc);
+		}
 	    }
-	    else
+	    if (fg != C_MASK)
 	    {
-		TPUTS_TRACE("set_foreground");
-		tputs(tparm(set_foreground, fg), 1, outc);
+		if (set_a_foreground)
+		{
+		    TPUTS_TRACE("set_a_foreground");
+		    tputs(tparm(set_a_foreground, fg), 1, outc);
+		}
+		else
+		{
+		    TPUTS_TRACE("set_foreground");
+		    tputs(tparm(set_foreground, fg), 1, outc);
+		}
 	    }
-	    if (set_a_background)
+	    if (bg != C_MASK)
 	    {
-		TPUTS_TRACE("set_a_background");
-		tputs(tparm(set_a_background, bg), 1, outc);
-	    }
-	    else
-	    {
-		TPUTS_TRACE("set_background");
-		tputs(tparm(set_background, bg), 1, outc);
+		if (set_a_background)
+		{
+		    TPUTS_TRACE("set_a_background");
+		    tputs(tparm(set_a_background, bg), 1, outc);
+		}
+		else
+		{
+		    TPUTS_TRACE("set_background");
+		    tputs(tparm(set_background, bg), 1, outc);
+		}
 	    }
 	}
     }

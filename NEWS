@@ -1,6 +1,22 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970118
+	+ add extension 'use_default_colors()', modified test applications that
+	  use default background (firework, gdc, hanoi, knight, worm) to
+	  demonstrate.
+	+ correct some limit checks in lib_doupdate.c exposed while running
+	  worm.
+	+ use typeCalloc macro for readability.
+	+ add/use definition for CONST to accommodate testing with Solaris
+	  (SVr4) curses, which doesn't use 'const' in its prototypes.
+	+ modify ifdef's in test/hashtest.c and test/view.c to compile with
+	  Solaris curses.
+	+ modify _tracedump() to pad pad colors & attrs lines to match change
+	  in 970101 showing first/last changes.
+	+ corrected location of terminating null on dynamically allocated forms
+	  fields (patch by Per Foreby).
+
 970111
 	+ added headers to make view.c compile on SCO with the resizeterm()
 	  code (i.e., struct winsize) - though this compiles, I don't have a

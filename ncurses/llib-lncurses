@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                      *
+ * Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                 *
  * All Rights Reserved.                                                       *
  *                                                                            *
  * Permission to use, copy, modify, and distribute this software and its      *
@@ -296,7 +296,7 @@ int	doupdate(void)
 
 #undef _nc_outstr
 void	_nc_outstr(
-		char	*str)
+		const char *str)
 		{ /* void */ }
 
 /* ./lib_endwin.c */
@@ -1140,7 +1140,7 @@ int	resetty(void)
 #include <stdlib.h>
 
 struct kn {
-	char *name;
+	const char *name;
 	int code;
 };
 
@@ -2023,7 +2023,7 @@ int	tputs(
 #undef _nc_tracing
 unsigned _nc_tracing;
 #undef _nc_tputs_trace
-char	*_nc_tputs_trace;
+const char *_nc_tputs_trace = {0};
 #undef _nc_outchars
 long	_nc_outchars;
 #undef _nc_optimize_enable
@@ -2035,9 +2035,9 @@ void	trace(
 		{ /* void */ }
 
 #undef _nc_visbuf
-char	*_nc_visbuf(
+const char *_nc_visbuf(
 		const char *buf)
-		{ return(*(char **)0); }
+		{ return(*(const char **)0); }
 
 #undef _tracef
 void	_tracef(
@@ -2068,7 +2068,7 @@ char	*_tracechar(
 
 #undef _tracedump
 void	_tracedump(
-		char	*name, 
+		const char *name, 
 		WINDOW	*win)
 		{ /* void */ }
 
@@ -2456,7 +2456,13 @@ int	_nc_capcmp(
 		const char *t)
 		{ return(*(int *)0); }
 
-typedef struct {char *from; char *to;} assoc;
+typedef struct {const char *from; const char *to;} assoc;
+
+/* ./lib_dft_fgbg.c */
+
+#undef use_default_colors
+int	use_default_colors(void)
+		{ return(*(int *)0); }
 
 /* ./lib_freeall.c */
 

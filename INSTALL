@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.21 1997/01/11 23:09:46 tom Exp $
+-- $Id: INSTALL,v 1.22 1997/01/18 21:37:09 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -118,6 +118,12 @@ INSTALLATION PROCEDURE:
     verify that ncurses functions correctly before doing an install that
     may overwrite system files.  Read the file test/README for details on
     the test programs.
+    
+    NOTE: You must have installed the terminfo database, or set the
+    environment variable $TERMINFO to point to a SVr4-compatible terminfo
+    database before running the test programs.  Not all vendors' terminfo
+    databases are SVr4-compatible, but most seem to be.  Exceptions include
+    DEC's Digital Unix (formerly known as OSF/1).
 
     The ncurses program is designed specifically to test the ncurses library.
     You can use it to verify that the screen highlights work correctly, that

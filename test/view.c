@@ -22,7 +22,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.14 1997/01/11 19:41:44 tom Exp $
+ * $Id: view.c,v 1.16 1997/01/19 00:15:47 tom Exp $
  */
 
 #include <test.priv.h>
@@ -54,7 +54,7 @@
 static void finish(int sig) GCC_NORETURN;
 static void show_all(void);
  
-#if defined(SIGWINCH) && defined(TIOCGWINSZ) && !HAVE_RESIZETERM
+#if defined(SIGWINCH) && defined(TIOCGWINSZ) && defined(NCURSES_VERSION)
 #define CAN_RESIZE 1
 #else
 #define CAN_RESIZE 0
@@ -62,10 +62,10 @@ static void show_all(void);
 
 #if CAN_RESIZE
 static RETSIGTYPE adjust(int sig);
+static int          interrupted;
 #endif
 
 static int          waiting;
-static int          interrupted;
 static int          shift;
 
 static char        *fname;
@@ -261,7 +261,7 @@ static void show_all(void)
 	i = strlen(temp);
 	sprintf(temp+i, "view %.*s", (int)(sizeof(temp)-7-i), fname);
 #else
-	sprintf(temp, "view %.*s", sizeof(temp)-7, fname);
+	sprintf(temp, "view %.*s", (int)sizeof(temp)-7, fname);
 #endif
 	move(0,0);
 	printw("%.*s", COLS, temp);

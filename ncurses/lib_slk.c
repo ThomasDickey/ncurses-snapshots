@@ -29,7 +29,7 @@
 #include <ctype.h>
 #include <term.h>	/* num_labels, label_*, plab_norm */
 
-MODULE_ID("$Id: lib_slk.c,v 1.10 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_slk.c,v 1.11 1997/01/18 23:06:32 tom Exp $")
 
 #define MAX_SKEY_OLD	   8	/* count of soft keys */
 #define MAX_SKEY_LEN_OLD   8	/* max length of soft key text */
@@ -308,7 +308,7 @@ char *p;
 	    return(OK);
 	  }
 	else
-	  if ((SP->_slk = _slk = (SLK*) calloc(1,sizeof(SLK))) == NULL)
+	  if ((SP->_slk = _slk = typeCalloc(SLK, 1)) == 0)
 	    return(ERR);
 
 	_slk->ent = NULL;
@@ -323,7 +323,7 @@ char *p;
 	_slk->maxlen = MAX_SKEY_LEN;
 #endif /* num_labels */
 
-	_slk->ent = (slk_ent*) calloc(_slk->labcnt,sizeof(slk_ent));
+	_slk->ent = typeCalloc(slk_ent, _slk->labcnt);
 	if (_slk->ent == NULL)
 	  goto exception;
 

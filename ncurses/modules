@@ -1,6 +1,6 @@
-# $Id: modules,v 1.21 1996/12/07 21:35:44 tom Exp $
+# $Id: modules,v 1.22 1997/01/19 02:36:48 tom Exp $
 ################################################################################
-# Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
+# Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
 #                                                                              #
 # Permission to use, copy, modify, and distribute this software and its        #
@@ -109,6 +109,7 @@ comp_scan	lib		$(srcdir)
 parse_entry	lib		$(srcdir)	../include/term.h ../include/parametrized.h
 
 # Extensions
+lib_dft_fgbg	lib		$(srcdir)
 lib_freeall	lib		$(srcdir)
 resizeterm	lib		$(srcdir)	../include/term.h
 wresize		lib		$(srcdir)	../include/term.h

@@ -247,6 +247,7 @@
 ./form/fty_alpha.c
 ./form/fty_enum.c
 ./form/fty_int.c
+./form/fty_ipv4.c
 ./form/fty_num.c
 ./form/fty_regex.c
 ./form/headers
@@ -313,6 +314,7 @@
 ./man/curs_touch.3x
 ./man/curs_util.3x
 ./man/curs_window.3x
+./man/dft_fgbg.3x
 ./man/form.3x
 ./man/form_cursor.3x
 ./man/form_data.3x
@@ -457,9 +459,11 @@
 ./ncurses/lib_data.c
 ./ncurses/lib_delch.c
 ./ncurses/lib_delwin.c
+./ncurses/lib_dft_fgbg.c
 ./ncurses/lib_doupdate.c
 ./ncurses/lib_endwin.c
 ./ncurses/lib_erase.c
+./ncurses/lib_freeall.c
 ./ncurses/lib_getch.c
 ./ncurses/lib_getstr.c
 ./ncurses/lib_inchstr.c

@@ -6,7 +6,7 @@
  * Eric S. Raymond <esr@snark.thyrsus.com> July 22 1995.  Mouse support
  * added September 20th 1995.
  *
- * $Id: knight.c,v 1.12 1996/12/14 23:23:24 tom Exp $
+ * $Id: knight.c,v 1.13 1997/01/19 00:55:17 tom Exp $
  */
 
 #include <test.priv.h>
@@ -95,11 +95,17 @@ static void init (void)
 
     if (has_colors())
     {
-	start_color();
+	int bg = COLOR_BLACK;
 
-	(void) init_pair(TRAIL_COLOR, COLOR_CYAN,  COLOR_BLACK);
-	(void) init_pair(PLUS_COLOR,  COLOR_RED,   COLOR_BLACK);
-	(void) init_pair(MINUS_COLOR, COLOR_GREEN, COLOR_BLACK);
+	start_color();
+#ifdef NCURSES_VERSION
+	if (use_default_colors() == OK)
+	    bg = -1;
+#endif
+
+	(void) init_pair(TRAIL_COLOR, COLOR_CYAN,  bg);
+	(void) init_pair(PLUS_COLOR,  COLOR_RED,   bg);
+	(void) init_pair(MINUS_COLOR, COLOR_GREEN, bg);
 
 	trail |= COLOR_PAIR(TRAIL_COLOR);
 	plus  |= COLOR_PAIR(PLUS_COLOR);

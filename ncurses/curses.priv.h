@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.46 1996/12/30 01:39:55 tom Exp $
+ * $Id: curses.priv.h,v 1.47 1997/01/19 00:36:03 tom Exp $
  *
  *	curses.priv.h
  *
@@ -127,6 +127,14 @@ typedef struct {
 } SLK;
 
 /*
+ * Definitions for color pairs
+ */
+#define C_SHIFT 8		/* we need more bits than there are colors */
+#define C_MASK  ((1 << C_SHIFT) - 1)
+
+#define PAIR_OF(fg, bg) ((((fg) & C_MASK) << C_SHIFT) | ((bg) & C_MASK))
+
+/*
  * Structure for palette tables
  */
 
@@ -211,8 +219,9 @@ struct screen {
 	/* used in lib_color.c */
 	color_t         *_color_table;  /* screen's color palette            */
 	int             _color_count;   /* count of colors in palette        */
-	unsigned char   *_color_pairs;  /* screen's color pair list          */
+	unsigned short  *_color_pairs;  /* screen's color pair list          */
 	int             _pair_count;    /* count of color pairs              */
+	int             _default_color; /* use default colors                */
 };
 
 /* Ncurses' public interface follows the internal types */
@@ -278,6 +287,7 @@ typedef	struct {
 
 #define CHANGED     -1
 
+#define typeCalloc(type,elts) (type *)calloc(elts,sizeof(type))
 #define FreeIfNeeded(p)  if(p != 0) free(p)
 #define FreeAndNull(p)   free(p); p = 0
 
@@ -397,7 +407,7 @@ extern int _nc_alloc_screen(void);
 extern void _nc_set_screen(SCREEN *);
 #else
 extern SCREEN *SP;
-#define _nc_alloc_screen() ((SP = (SCREEN *) calloc(1, sizeof(*SP))) != NULL)
+#define _nc_alloc_screen() ((SP = typeCalloc(SCREEN, 1)) != 0)
 #define _nc_set_screen(sp) SP = sp
 #endif
 
