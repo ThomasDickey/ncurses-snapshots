@@ -3,6 +3,16 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+960831	- snapshot
+	+ memory leaks (Alexander V. Lukyanov).
+	+ modified pnoutrefresh() to be more tolerant of too-large screen
+	  size (reported by Michael Elkins).
+	+ correct handling of terminfo files with no strings (Philippe De
+	  Muyter)
+	+ correct "tic -s" to take into account -I, -C options.
+	+ modify ncurses 'f' test to not print codes 80 through 9F, since they
+	  are considered control codes by ANSI terminals.
+
 960824	- snapshot
 	+ correct speed variable-type in 'tgetent()' (reported by Peter Wemm)
 	+ make "--enable-getcap" configuration-option work (reported by

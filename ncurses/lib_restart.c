@@ -37,7 +37,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_restart.c,v 1.6 1996/07/31 01:16:05 tom Exp $")
+MODULE_ID("$Id: lib_restart.c,v 1.7 1996/09/01 01:35:47 Alexander.V.Lukyanov Exp $")
 
 #undef tabs
 
@@ -60,10 +60,10 @@ int def_shell_mode(void)
 	if (cur_term == 0)
 		return ERR;
 
-    /*
-     *	Turn off the XTABS bit in the tty structure if it was on
-     *	If XTABS was on, remove the tab and backtab capabilities.
-     */
+	/*
+	 * Turn off the XTABS bit in the tty structure if it was on.  If XTABS
+	 * was on, remove the tab and backtab capabilities.
+	 */
 
 	T(("def_shell_mode() called"));
 
@@ -148,13 +148,13 @@ TERMINAL *set_curterm(TERMINAL *term)
 
 int del_curterm(TERMINAL *term)
 {
-
 	if (term != NULL) {
 		if (term->type.str_table != NULL)
 			free(term->type.str_table);
+		if (term->type.term_names != NULL)
+			free(term->type.term_names);
 		free(term);
 		return OK;
 	}
 	return ERR;
 }
-

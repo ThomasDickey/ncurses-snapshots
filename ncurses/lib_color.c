@@ -30,7 +30,7 @@
 #include <string.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.8 1996/07/31 01:00:00 esr Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.9 1996/09/01 01:24:17 Alexander.V.Lukyanov Exp $")
 
 int COLOR_PAIRS;
 int COLORS;
@@ -101,8 +101,8 @@ int start_color(void)
 		return ERR;
 	SP->_coloron = 1;
 
-#ifdef hue_lightness_saturation
 	color_table = malloc(sizeof(color_t) * COLORS);
+#ifdef hue_lightness_saturation
 	if (hue_lightness_saturation)
 	    memcpy(color_table, hls_palette, sizeof(color_t) * COLORS);
 	else

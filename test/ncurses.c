@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.48 1996/08/17 23:01:31 tom Exp $
+$Id: ncurses.c,v 1.49 1996/08/31 19:16:10 tom Exp $
 
 ***************************************************************************/
 /*LINTLIBRARY */
@@ -677,10 +677,13 @@ static void acs_display(void)
     mvaddstr(ACSY + 15,40, "ACS_STERLING: "); addch(ACS_STERLING);
 
 #define HYBASE 	(ACSY + 17)
-    mvprintw(HYBASE, 0, "High-half characters via echochar:\n");
-    for (i = 0; i < 4; i++)
+    /* ISO 6429:  codes 0x80 to 0x9f may be control characters that cause the
+     * terminal to perform functions.  The remaining codes can be graphic.
+     */
+    mvprintw(HYBASE, 0, "High-half characters (0xa0 to 0xff) via echochar:\n");
+    for (i = 1; i < 4; i++)
     {
-	move(HYBASE + 1 + i, 24);
+	move(HYBASE + i, 24);
 	for (j = 0; j < 32; j++)
 	    echochar((chtype)(128 + 32 * i + j));
     }
