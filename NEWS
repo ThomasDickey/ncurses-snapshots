@@ -1,10 +1,13 @@
--- $Id: NEWS,v 1.655 2001/11/18 02:09:42 tom Exp $
+-- $Id: NEWS,v 1.656 2001/11/25 02:15:52 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20011124
+	+ added/updated terminfo entries for M$ telnet and KDE konsole -TD
 
 20011117
 	+ updated/expanded Apple_Terminal and Darwin PowerPC terminfo entries
