@@ -1,10 +1,33 @@
--- $Id: NEWS,v 1.476 1999/08/29 01:05:16 tom Exp $
+-- $Id: NEWS,v 1.480 1999/09/05 01:33:21 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990904	pre-release
+	+ move definition for builtin.h in configure tests to specific check
+	  for libg++, since qt uses the same filename incompatibly.
+	+ correct logic of lib_termcap.c tgetstr function, which did not copy
+	  the result to the buffer parameter.  Testing shows Solaris does
+	  update this, though of course tgetent's buffer is untouched (from
+	  mpc.lists.freebsd.current newsgroup item by Peter Edwards
+	  <peter.edwards@ireland.com>).
+	+ corrected beterm terminfo entry, which lists some capabilities which
+	  are not actually provided by the BeOS Terminal.
+	+ add special logic to replace select() calls on BeOS, whose select()
+	  function works only for sockets.
+	+ correct missing escape in mkterm.h.awk.in, which caused part
+	  of the copyright noticed to be omitted (reported by Peter
+	  Wemm <peter@netplex.com.au>).
+	> several small changes to make the c++ binding and demo work on OS/2
+	  EMX (related to a clean reinstall of EMX):
+	+ correct library-prefix for c++ binding; none is needed.
+	+ add $x suffix to make_hash and make_keys so 'make distclean' works.
+	+ correct missing $x suffix for tack, c++ demo executables.
+	+ split CF_CXX_LIBRARY into CF_GPP_LIBRARY (for -lg++) and
+	  CF_STDCPP_LIBRARY (for -lstdc++)
 
 990828	pre-release
 	+ add cygwin terminfo entry -TD
@@ -113,9 +136,9 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  handle SIGTSTP if neither is available (from report by Philippe De
 	  Muyter).
 	> patch by Philippe De Muyter:
-	+ in tic.c, use `unlink' if `remove' is not available. 
+	+ in tic.c, use `unlink' if `remove' is not available.
 	+ use only `unsigned' as fallback value for `speed_t'.  Some files used
-	  `short' instead. 
+	  `short' instead.
 
 990616	pre-release
 	+ fix some compiler warnings in tack.
@@ -131,7 +154,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  in the binding.  It should have no effect on the generated code.
 	+ improve the man page for field_buffer() to tell the people, that the
 	  whole buffer including leading/trailing spaces is returned.  This is
-	  a common source of confusion, so it's better to document it clearly. 
+	  a common source of confusion, so it's better to document it clearly.
 
 990614	pre-release
 	> patch by Juergen Pfeifer:
@@ -142,7 +165,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 
 990612	pre-release
 	+ modify lib_endwin.c to avoid calling reset_shell_mode(), return ERR
-	  if it appears that curses was never initialized, e.g., by initscr(). 
+	  if it appears that curses was never initialized, e.g., by initscr().
 	  For instance, this guards against setting the terminal modes to
 	  strange values if endwin() is called after setupterm().  In the same
 	  context, Solaris curses will dump core.
@@ -168,9 +191,9 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ minor fix to build tack on CLIX (mismatched const).
 	> patch by Juergen Pfeifer:
 	+ change Juergen's old email address with new one in the files where it
-	  is referenced.  The Ada95 HTML pages are regenerated. 
+	  is referenced.  The Ada95 HTML pages are regenerated.
 	+ update MANIFEST to list the tack files.
- 
+
 990509	pre-release
 	+ minor fixes to make 'tack' build/link on NeXT (reported by Francisco
 	  A. Tomei Torres).

@@ -3,7 +3,7 @@
 # This version of terminfo.src is distributed with ncurses.
 #
 #	Version 10.2.1
-#	$Date: 1999/08/29 01:18:28 $
+#	$Date: 1999/09/04 22:56:33 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -532,24 +532,23 @@ nansi.sysk|nansisysk|PC-DOS Public Domain NANSI.SYS with keypad redefined for vi
 beterm|BeOS Terminal, 
 	am, eo, mir, msgr, xenl, xon, 
 	colors#8, cols#80, it#8, lines#25, ncv#5, pairs#64, 
-	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[H\E[J, cr=^M, 
+	bel=^G, bold=\E[1m, clear=\E[H\E[J, cr=^M, 
 	csr=\E[%i%p1%d;%p2%dr, cub1=^H, cud1=^J, cuf1=\E[C, 
 	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, dch=\E[%p1%dP, 
-	dch1=\E[P, dim=\E[2m, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, 
-	el=\E[K, flash=\E[?5h\E[?5l$<200/>, home=\E[H, 
-	hpa=\E[%i%p1%dG, ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, 
-	il=\E[%p1%dL, il1=\E[L, ind=^J, invis=\E[8m, kb2=\E[G, 
-	kbs=^H, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
-	kend=\E[4~, kf1=\E[11~, kf10=\E[20~, kf11=\E[21~, 
-	kf12=\E[22~, kf2=\E[12~, kf3=\E[13~, kf4=\E[14~, 
-	kf5=\E[15~, kf6=\E[16~, kf7=\E[17~, kf8=\E[18~, kf9=\E[19~, 
-	khome=\E[1~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, kspd=^Z, 
-	nel=^M^J, op=\E[m, rc=\E8, rev=\E[7m, ri=\EM, rmir=\E[4l, 
-	rmso=\E[m, rmul=\E[24m, rs1=\Ec, sc=\E7, setab=\E[4%p1%dm, 
-	setaf=\E[3%p1%dm, setb=\E[%p1%{40}%+%cm, 
-	setf=\E[%p1%{30}%+%cm, sgr0=\E[0;10m, smir=\E[4h, 
-	smso=\E[7m, smul=\E[4m, u6=\E[%i%p1%d;%p2%dR, u7=\E[6n, 
-	u8=\E[?6c, u9=\E[c, vpa=\E[%i%p1%dd, 
+	dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, 
+	home=\E[H, hpa=\E[%i%p1%dG, ht=^I, hts=\EH, ich=\E[%p1%d@, 
+	ich1=\E[@, il=\E[%p1%dL, il1=\E[L, ind=^J, kbs=^H, 
+	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
+	kdch1=\E[3~, kend=\E[4~, kf1=\E[11~, kf10=\E[20~, 
+	kf11=\E[21~, kf12=\E[22~, kf2=\E[12~, kf3=\E[13~, 
+	kf4=\E[14~, kf5=\E[15~, kf6=\E[16~, kf7=\E[17~, kf8=\E[18~, 
+	kf9=\E[19~, khome=\E[1~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, 
+	kspd=^Z, nel=^M^J, op=\E[m, rc=\E8, rev=\E[7m, ri=\EM, 
+	rmir=\E[4l, rmso=\E[m, rmul=\E[24m, rs1=\Ec, sc=\E7, 
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
+	setb=\E[%p1%{40}%+%cm, setf=\E[%p1%{30}%+%cm, 
+	sgr0=\E[0;10m, smir=\E[4h, smso=\E[7m, smul=\E[4m, 
+	u6=\E[%i%p1%d;%p2%dR, u7=\E[6n, vpa=\E[%i%p1%dd, 
 
 #### Linux consoles
 #
@@ -17260,6 +17259,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 1999/8/28
 #	* add cygwin entry -TD
+#
+# 1999/9/4
+#	* minor corrections for beterm entry -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

@@ -40,6 +40,10 @@
 **	comments, none of the original code remains - T.Dickey).
 */
 
+#ifdef __BEOS__
+#include <OS.h>
+#endif
+
 #include <curses.priv.h>
 
 #if USE_FUNC_POLL
@@ -57,13 +61,7 @@
 # endif
 #endif
 
-#ifdef __BEOS__
-/* BeOS select() only works on sockets.  Use the tty hack instead */
-#include <socket.h>
-#define select check_select
-#endif
-
-MODULE_ID("$Id: lib_twait.c,v 1.32 1998/06/06 22:44:14 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.33 1999/09/04 13:13:41 tom Exp $")
 
 static int _nc_gettime(void)
 {
@@ -104,6 +102,7 @@ int result;
 
 #if USE_FUNC_POLL
 struct pollfd fds[2];
+#elif defined(__BEOS__)
 #elif HAVE_SELECT
 static fd_set set;
 #endif
@@ -133,6 +132,36 @@ retry:
 	}
 	result = poll(fds, count, milliseconds);
 
+#elif defined(__BEOS__)
+	/*
+	 * BeOS's select() is declared in socket.h, so the configure script does
+	 * not see it.  That's just as well, since that function works only for
+	 * sockets.  This (using snooze and ioctl) was distilled from Be's patch
+	 * for ncurses which uses a separate thread to simulate select().
+	 *
+	 * FIXME: the return values from the ioctl aren't very clear if we get
+	 * interrupted.
+	 */
+	if (mode & 1) {
+		bigtime_t d;
+		bigtime_t useconds = milliseconds * 1000;
+		int n, howmany;
+
+		for (d = 0; d < useconds; d += 5000) {
+			n = 0;
+			howmany = ioctl(0, 'ichr', &n);
+			if (howmany >= 0 && n > 0) {
+				result = 1;
+				break;
+			}
+			snooze(5000);
+			milliseconds -= 5;
+		}
+	} else {
+		snooze(milliseconds * 1000);
+		result = 0;
+		milliseconds = 0;
+	}
 #elif HAVE_SELECT
 	/*
 	 * select() modifies the fd_set arguments; do this in the
@@ -203,6 +232,8 @@ retry:
 					count++;
 				}
 			}
+#elif defined(__BEOS__)
+			result = 1;	/* redundant, but simple */
 #elif HAVE_SELECT
 			if ((mode & 2)
 			 && (fd = SP->_mouse_fd) >= 0

@@ -42,6 +42,10 @@
  *
  *-----------------------------------------------------------------*/
 
+#ifdef __BEOS__
+#include <OS.h>
+#endif
+
 #include <curses.priv.h>
 
 #if defined(TRACE) && HAVE_SYS_TIMES_H && HAVE_TIMES
@@ -67,15 +71,9 @@
 #endif
 #endif
 
-#ifdef __BEOS__
-/* BeOS select() only works on sockets.  Use the tty hack instead */
-#include <socket.h>
-#define select check_select
-#endif
-
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.111 1999/02/27 20:07:56 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.112 1999/09/04 13:13:45 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -210,6 +208,21 @@ static bool check_pending(void)
 		fds[0].events = POLLIN;
 		if (poll(fds, 1, 0) > 0)
 		{
+			have_pending = TRUE;
+		}
+#elif defined(__BEOS__)
+		/*
+		 * BeOS's select() is declared in socket.h, so the configure script does
+		 * not see it.  That's just as well, since that function works only for
+		 * sockets.  This (using snooze and ioctl) was distilled from Be's patch
+		 * for ncurses which uses a separate thread to simulate select().
+		 *
+		 * FIXME: the return values from the ioctl aren't very clear if we get
+		 * interrupted.
+		 */
+		int n = 0;
+		int howmany = ioctl(0, 'ichr', &n);
+		if (howmany >= 0 && n > 0) {
 			have_pending = TRUE;
 		}
 #elif HAVE_SELECT
