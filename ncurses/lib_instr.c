@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_instr.c,v 1.3 1997/02/02 00:28:02 tom Exp $")
+MODULE_ID("$Id: lib_instr.c,v 1.4 1997/03/01 21:56:17 tom Exp $")
 
 int winnstr(WINDOW *win, char *str, int n)
 {
@@ -38,7 +38,7 @@ int winnstr(WINDOW *win, char *str, int n)
 	T((T_CALLED("winnstr(%p,%p,%d)"), win, str, n));
 
 	for (i = 0; (n < 0 || (i < n)) && (win->_curx + i <= win->_maxx); i++)
-	    str[i] = win->_line[win->_cury].text[win->_curx + i] & A_CHARTEXT;
+	    str[i] = TextOf(win->_line[win->_cury].text[win->_curx + i]);
 	str[i] = '\0';
 
 	returnCode(i);

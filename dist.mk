@@ -1,4 +1,4 @@
-# $Id: dist.mk,v 1.22 1997/02/08 21:09:19 tom Exp $
+# $Id: dist.mk,v 1.23 1997/03/01 22:01:54 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -14,7 +14,6 @@ NCURSES_PATCH = 970208
 
 # We don't append the patch to the version, since this only applies to releases
 VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)
-SHARED_ABI = $(NCURSES_MAJOR)
 
 dist: announce.html misc/ncurses-intro.doc misc/hackguide.doc
 	(cd ..;  tar cvf ncurses-$(VERSION).tar `sed <ncurses-$(VERSION)/MANIFEST 's/^./ncurses-$(VERSION)/'`;  gzip ncurses-$(VERSION).tar)

@@ -18,7 +18,7 @@
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR    #
 # PERFORMANCE OF THIS SOFTWARE.                                                #
 ################################################################################
-# $Id: makellib,v 1.4 1997/02/13 00:46:18 tom Exp $
+# $Id: makellib,v 1.6 1997/03/02 01:28:36 tom Exp $
 # System-dependent wrapper for 'lint' that creates a lint-library via the
 # following method (XXX is the name of the library):
 #	a.  If the file llib-lXXX doesn't exist, create it using the make-rule
@@ -96,7 +96,7 @@ TARGET=$LLIB
 
 case "$ARCH" in
 AIX)
-	CREATE="-uvxo$llib -Nn4000"
+	CREATE="-uvxo$LLIB -Nn4000"
 	TARGET=$llib.c
 	ln $llib $TARGET
 	;;
@@ -120,6 +120,9 @@ UNIX_SV)
 	TARGET=$llib.c
 	ln $llib $TARGET
 	;;
+*)
+	echo "Sorry.  I do not know how to build a lint-library for $ARCH"
+	exit 1
 esac
 
 echo OPT    "$OPT"

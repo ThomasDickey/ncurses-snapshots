@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.17 1997/02/15 22:51:34 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.18 1997/03/01 21:00:17 tom Exp $")
 
 #include <ctype.h>
 #if HAVE_FCNTL_H
@@ -76,6 +76,7 @@ static size_t have;
 static char *vbuf;
 size_t need;
 char *tp = vbuf;
+int c;
 
 	if (buf == 0)
 	    return("(null)");
@@ -86,30 +87,23 @@ char *tp = vbuf;
 	}
 
 	*tp++ = '"';
-    	while (*buf) {
-		if (*buf == '"') {
-			*tp++ = '\\';
-			*tp++ = '"';
-		} else if (is7bits(*buf) && (isgraph(*buf) || *buf == ' '))
-			*tp++ = *buf++;
-		else if (*buf == '\n') {
+    	while ((c = *buf++) != '\0') {
+		if (c == '"') {
+			*tp++ = '\\'; *tp++ = '"';
+		} else if (is7bits(c) && (isgraph(c) || c == ' ')) {
+			*tp++ = c;
+		} else if (c == '\n') {
 			*tp++ = '\\'; *tp++ = 'n';
-			buf++;
-		}
-		else if (*buf == '\r') {
+		} else if (c == '\r') {
 			*tp++ = '\\'; *tp++ = 'r';
-			buf++;
-		} else if (*buf == '\b') {
+		} else if (c == '\b') {
 			*tp++ = '\\'; *tp++ = 'b';
-			buf++;
-		} else if (*buf == '\033') {
+		} else if (c == '\033') {
 			*tp++ = '\\'; *tp++ = 'e';
-			buf++;
-		} else if (is7bits(*buf) && iscntrl(*buf)) {
-			*tp++ = '\\'; *tp++ = '^'; *tp++ = '@' + *buf;
-			buf++;
+		} else if (is7bits(c) && iscntrl(c)) {
+			*tp++ = '\\'; *tp++ = '^'; *tp++ = '@' + c;
 		} else {
-			sprintf(tp, "\\0x%02x", *buf++);
+			sprintf(tp, "\\0x%02x", c);
 			tp += strlen(tp);
 		}
 	}
