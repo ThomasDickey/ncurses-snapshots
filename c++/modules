@@ -1,4 +1,0 @@
-# Program modules
-cursesp		c++		$(srcdir)	$(srcdir)/cursesp.h
-cursesw		c++		$(srcdir)	$(srcdir)/cursesw.h
-demo		c++		$(srcdir)	$(srcdir)/cursesp.h $(srcdir)/cursesw.h
