@@ -36,7 +36,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.21 1997/04/24 10:37:34 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.22 1997/06/28 23:39:50 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -443,6 +443,7 @@ int	count = 0;
 int	number;
 int	i, c;
 chtype	ch, last_ch = '\0';
+bool	ignored = FALSE;
 
 	while ((ch = c = next_char()) != (chtype)separator && c != EOF) {
 	    if ((_nc_syntax == SYN_TERMCAP) && c == '\n')
@@ -509,7 +510,7 @@ chtype	ch, last_ch = '\0';
 
 			case '\\':	*(ptr++) = '\\';	break;
 
-			case '^':	*(ptr++) = '^'; 	break;
+			case '^':	*(ptr++) = '^';		break;
 
 			case ',':	*(ptr++) = ',';		break;
 
@@ -525,13 +526,18 @@ chtype	ch, last_ch = '\0';
 		    } /* endswitch (ch) */
 		} /* endelse (ch < '0' ||  ch > '7') */
 	    } /* end else if (ch == '\\') */
-	    else {
+	    else if (ch == '\n' && (_nc_syntax == SYN_TERMINFO)) {
+		/* newlines embedded in a terminfo string are ignored */
+		ignored = TRUE;
+	    } else {
 		*(ptr++) = (char)ch;
 	    }
 
-	    count ++;
-
-	    last_ch = ch;
+	    if (!ignored) {
+		last_ch = ch;
+		count ++;
+	    }
+	    ignored = FALSE;
 
 	    if (count > MAXCAPLEN)
 		_nc_warning("Very long string found.  Missing separator?");

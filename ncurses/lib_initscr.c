@@ -27,42 +27,12 @@
 */
 
 #include <curses.priv.h>
-#include <term.h>	/* cur_term */
 
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>	/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.18 1997/03/08 14:03:59 tom Exp $")
-
-#ifndef ONLCR		/* Allows compilation under the QNX 4.2 OS */
-#define ONLCR 0
-#endif
-
-/*
- * SVr4/XSI Curses specify that hardware echo is turned off in initscr, and not
- * restored during the curses session.  The library simulates echo in software.
- * (The behavior is unspecified if the application enables hardware echo).
- *
- * The newterm function also initializes terminal settings.
- */
-int _nc_initscr(void)
-{
-	/* for extended XPG4 conformance requires cbreak() at this point */
-	/* (SVr4 curses does this anyway) */
-	cbreak();
-
-#ifdef TERMIOS
-	cur_term->Nttyb.c_lflag &= ~(ECHO|ECHONL);
-	cur_term->Nttyb.c_iflag &= ~(ICRNL|INLCR|IGNCR);
-	cur_term->Nttyb.c_oflag &= ~(ONLCR);
-#else
-	cur_term->Nttyb.sg_flags &= ~(ECHO|CRMOD);
-#endif
-	if ((SET_TTY(cur_term->Filedes, &cur_term->Nttyb)) == -1)
-		return ERR;
-	return OK;
-}
+MODULE_ID("$Id: lib_initscr.c,v 1.19 1997/06/28 17:41:12 tom Exp $")
 
 WINDOW *initscr(void)
 {

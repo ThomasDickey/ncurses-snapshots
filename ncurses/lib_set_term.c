@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.19 1997/06/15 18:40:02 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.20 1997/06/28 17:45:19 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -187,6 +187,25 @@ size_t	i;
 	SP->_ofp         = output;
 	SP->_cursor      = -1;	/* cannot know real cursor shape */
 
+#if !USE_XMC_SUPPORT
+	/*
+	 * If we've no magic cookie support, we suppress attributes that xmc
+	 * would affect, i.e., the attributes that affect the rendition of a
+	 * space.  Note that this impacts the alternate character set mapping
+	 * as well.
+	 */
+	if (magic_cookie_glitch > 0) {
+		SP->_xmc_suppress = (
+			A_ALTCHARSET |
+			A_BLINK |
+			A_REVERSE |
+			A_STANDOUT |
+			A_UNDERLINE
+			);
+		magic_cookie_glitch = -1;
+		acs_chars = 0;
+	}
+#endif
 	init_acs();
 
 	T(("creating newscr"));

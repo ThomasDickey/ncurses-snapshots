@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.31 1997/06/21 22:45:03 tom Exp $
+# $Id: Makefile.in,v 1.32 1997/06/22 23:32:44 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -125,7 +125,7 @@ $(INSTALL_PREFIX)$(libdir) :
 		fgrep undef >$@
 
 keys.tries: make_keys
-	make_keys $(srcdir)/keys.list > keys.tries
+	./make_keys $(srcdir)/keys.list > keys.tries
 
 make_keys : \
 		$(srcdir)/make_keys.c \

@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.64 1997/06/12 17:22:50 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.65 1997/06/28 21:53:45 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -80,7 +80,7 @@ static inline chtype ClrBlank ( WINDOW *win );
 static int ClrBottom(int total);
 static int InsStr( chtype *line, int count );
 static void ClearScreen( chtype blank );
-static void ClrUpdate( void );
+static void ClrUpdate( WINDOW *win );
 static void DelChar( int count );
 static void TransformLine( int const lineno );
 
@@ -463,7 +463,7 @@ struct tms before, after;
 
 		/*
 		 * This is a transparent extension:  XSI does not address it,
-		 * and applications need not know that ncurses can do it. 
+		 * and applications need not know that ncurses can do it.
 		 *
 		 * Check if the terminal size has changed while curses was off
 		 * (this can happen in an xterm, for example), and resize the
@@ -497,6 +497,7 @@ struct tms before, after;
 	 * guaranteed room for its cookie). If not, nuke the added
 	 * attributes out of the span.
 	 */
+#if USE_XMC_SUPPORT
 	if (magic_cookie_glitch > 0) {
 	    int	j, k;
 	    attr_t rattr = A_NORMAL;
@@ -617,15 +618,21 @@ struct tms before, after;
 	    }
 #endif /* TRACE */
 	}
+#endif	/* USE_XMC_SUPPORT */
 
 	nonempty = 0;
 	if (curscr->_clear) {		/* force refresh ? */
+		/* yes, clear all & update */
 		T(("clearing and updating curscr"));
-		ClrUpdate();	/* yes, clear all & update */
+		if (is_wintouched(newscr))
+			ClrUpdate(newscr);
+		else
+			ClrUpdate(curscr);
 		curscr->_clear = FALSE;	/* reset flag */
+		newscr->_clear = FALSE;	/* reset flag */
 	} else if (newscr->_clear) {
 		T(("clearing and updating newscr"));
-		ClrUpdate();
+		ClrUpdate(newscr);
 		newscr->_clear = FALSE;
 	} else {
 		int changedlines = 0;
@@ -673,7 +680,7 @@ struct tms before, after;
 			{
 			    if(check_pending())
 				goto cleanup;
-	    		    changedlines = 0;
+			    changedlines = 0;
 			}
 		}
 	}
@@ -735,19 +742,26 @@ chtype	blank = BLANK;
 }
 
 /*
-**	ClrUpdate()
+**	ClrUpdate(win)
 **
 **	Update by clearing and redrawing the entire screen.
 **
 */
 
-static void ClrUpdate()
+static void ClrUpdate(WINDOW *win)
 {
-	int i;
+	int i, j;
+	chtype blank = ClrBlank(win);
 
 	T(("ClrUpdate() called"));
-	
-	ClearScreen(ClrBlank(newscr));
+
+	ClearScreen(blank);
+
+	if (win != curscr) {
+		for (i = 0; i < screen_lines ; i++)
+			for (j = 0; j < screen_columns; j++)
+				curscr->_line[i].text[j] = blank;
+	}
 
 	T(("updating screen from scratch"));
 	for (i = 0; i < min(screen_lines, newscr->_maxy + 1); i++)
@@ -800,12 +814,12 @@ bool	needclear = FALSE;
 static void ClrToEOS(chtype blank)
 {
 int row, col;
-	
+
 	UpdateAttrs(blank);
 	TPUTS_TRACE("clr_eos");
 	row = SP->_cursrow;
 	tputs(clr_eos, screen_lines-row, _nc_outch);
-	
+
 	for (col = SP->_curscol; col < screen_columns; col++)
 		curscr->_line[row].text[col] = blank;
 
@@ -955,7 +969,7 @@ bool	attrchanged = FALSE;
 		{
 			/* find the last differing character */
 			nLastChar = screen_columns - 1;
-			
+
 			while (nLastChar > firstChar
 			 && newLine[nLastChar] == oldLine[nLastChar])
 				nLastChar--;
@@ -1066,7 +1080,7 @@ bool	attrchanged = FALSE;
 
 static void ClearScreen(chtype blank)
 {
-	int	i,j;
+	int	i;
 
 	T(("ClearScreen() called"));
 
@@ -1099,10 +1113,6 @@ static void ClearScreen(chtype blank)
 		T(("cannot clear screen"));
 		return;
 	}
-
-	for (i = 0; i < screen_lines ; i++)
-		for (j = 0; j < screen_columns; j++)
-			curscr->_line[i].text[j] = blank;
 
 	T(("screen cleared"));
 }
@@ -1435,7 +1445,7 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 	else
 	    return(ERR);
     }
-    
+
     /* this is mainly for doupdate not to skip those lines */
     for (i = top; i >= bot; i++)
     {

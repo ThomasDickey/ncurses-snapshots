@@ -19,7 +19,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: capdefaults.c,v 1.4 1996/08/18 00:56:09 tom Exp $ */
+/* $Id: capdefaults.c,v 1.5 1997/06/27 09:55:40 tom Exp $ */
 
 	/*
 	 * Compute obsolete capabilities.  The reason this is an include file
@@ -57,8 +57,12 @@
 			termcap_reset = reset_1string;
 			reset_1string = (char *)NULL;
 		}
+#if USE_XMC_SUPPORT
 		if (magic_cookie_glitch_ul < 0 && magic_cookie_glitch && VALID_STRING(enter_underline_mode))
 			magic_cookie_glitch_ul = magic_cookie_glitch;
+#else
+		magic_cookie_glitch_ul = -1;
+#endif
 
 		/* totally obsolete capabilities */
 		linefeed_is_newline = VALID_STRING(newline)
