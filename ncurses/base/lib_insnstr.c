@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 2004 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,125 +27,31 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
- *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- *     and: Sven Verdoolaege                                                *
- *     and: Thomas E. Dickey                                                *
+ *  Author: Thomas E. Dickey                                                *
  ****************************************************************************/
 
 /*
-**	lib_insch.c
+**	lib_insnstr.c
 **
-**	The routine winsch().
+**	The routine winsnstr().
 **
 */
 
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insch.c,v 1.19 2004/02/29 01:13:43 tom Exp $")
-
-/*
- * Insert the given character, updating the current location to simplify
- * inserting a string.
- */
-void
-_nc_insert_ch(WINDOW *win, chtype ch)
-{
-    NCURSES_CH_T wch;
-    int count;
-    char *s;
-
-    switch (ch) {
-    case '\t':
-	for (count = (TABSIZE - (win->_curx % TABSIZE)); count > 0; count--)
-	    _nc_insert_ch(win, ' ');
-	break;
-    case '\n':
-    case '\r':
-    case '\b':
-	SetChar2(wch, ch);
-	_nc_waddch_nosync(win, wch);
-	break;
-    default:
-	if (
-#if USE_WIDEC_SUPPORT
-	       WINDOW_EXT(win, addch_used) == 0 &&
-#endif
-	       isprint(ChCharOf(ch))) {
-	    if (win->_curx <= win->_maxx) {
-		struct ldat *line = &(win->_line[win->_cury]);
-		NCURSES_CH_T *end = &(line->text[win->_curx]);
-		NCURSES_CH_T *temp1 = &(line->text[win->_maxx]);
-		NCURSES_CH_T *temp2 = temp1 - 1;
-
-		SetChar2(wch, ch);
-
-		CHANGED_TO_EOL(line, win->_curx, win->_maxx);
-		while (temp1 > end)
-		    *temp1-- = *temp2--;
-
-		*temp1 = _nc_render(win, wch);
-
-		win->_curx++;
-	    }
-	} else if (iscntrl(ChCharOf(ch))) {
-	    s = unctrl(ChCharOf(ch));
-	    while (*s != '\0') {
-		_nc_insert_ch(win, ChAttrOf(ch) | UChar(*s));
-		++s;
-	    }
-	}
-#if USE_WIDEC_SUPPORT
-	else {
-	    /*
-	     * Handle multibyte characters here
-	     */
-	    if (WINDOW_EXT(win, addch_used) == 0) {
-		_nc_insert_ch(win, ChAttrOf(ch) | ' ');
-	    }
-	    SetChar2(wch, ch);
-	    _nc_waddch_nosync(win, wch);
-	}
-#endif
-	break;
-    }
-}
+MODULE_ID("$Id: lib_insnstr.c,v 1.1 2004/02/28 23:44:56 tom Exp $")
 
 NCURSES_EXPORT(int)
-winsch(WINDOW *win, chtype c)
+winsnstr(WINDOW *win, const char *s, int n)
 {
-    NCURSES_SIZE_T oy;
-    NCURSES_SIZE_T ox;
-    int code = ERR;
-
-    T((T_CALLED("winsch(%p, %s)"), win, _tracechtype(c)));
-
-    if (win != 0) {
-	oy = win->_cury;
-	ox = win->_curx;
-
-	_nc_insert_ch(win, c);
-
-	win->_curx = ox;
-	win->_cury = oy;
-	_nc_synchook(win);
-	code = OK;
-    }
-    returnCode(code);
-}
-
-NCURSES_EXPORT(int)
-winsstr(WINDOW *win, const char *s)
-{
-    int n = strlen(s);
     int code = ERR;
     NCURSES_SIZE_T oy;
     NCURSES_SIZE_T ox;
     const unsigned char *str = (const unsigned char *) s;
     const unsigned char *cp;
 
-    T((T_CALLED("winsstr(%p,%s,%d)"), win, _nc_visbufn(s, n), n));
+    T((T_CALLED("winsnstr(%p,%s,%d)"), win, _nc_visbufn(s, n), n));
 
     if (win != 0 && str != 0) {
 	oy = win->_cury;

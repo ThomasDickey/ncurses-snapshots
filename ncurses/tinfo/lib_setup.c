@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -49,7 +49,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.79 2003/12/27 18:24:26 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.81 2004/02/28 21:29:33 tom Exp $")
 
 /****************************************************************************
  *
@@ -71,6 +71,10 @@ MODULE_ID("$Id: lib_setup.c,v 1.79 2003/12/27 18:24:26 tom Exp $")
   */
 # include <sys/stream.h>
 # include <sys/ptem.h>
+#endif
+
+#ifdef HAVE_LANGINFO_CODESET
+#include <langinfo.h>
 #endif
 
 /*
@@ -327,6 +331,7 @@ _nc_get_locale(void)
     if (((env = getenv("LC_ALL")) != 0 && *env != '\0')
 	|| ((env = getenv("LC_CTYPE")) != 0 && *env != '\0')
 	|| ((env = getenv("LANG")) != 0 && *env != '\0')) {
+	T(("_nc_get_locale %s", env));
 	return env;
     }
     return 0;
@@ -338,12 +343,21 @@ _nc_get_locale(void)
 NCURSES_EXPORT(int)
 _nc_unicode_locale(void)
 {
+    int result = 0;
+#ifdef HAVE_LANGINFO_CODESET
+    char *env = nl_langinfo(CODESET);
+    result = !strcmp(env, "UTF-8");
+    T(("_nc_unicode_locale(%s) ->%d", env, result));
+#else
     char *env = _nc_get_locale();
     if (env != 0) {
-	if (strstr(env, ".UTF-8") != 0)
-	    return 1;
+	if (strstr(env, ".UTF-8") != 0) {
+	    result = 1;
+	    T(("_nc_unicode_locale(%s) ->%d", env, result));
+	}
     }
-    return 0;
+#endif
+    return result;
 }
 
 /*

@@ -1,4 +1,4 @@
-# $Id: ncurses_defs,v 1.21 2004/01/18 01:03:24 tom Exp $
+# $Id: ncurses_defs,v 1.22 2004/02/28 19:31:56 tom Exp $
 ##############################################################################
 # Copyright (c) 2000-2003,2004 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -64,6 +64,7 @@ HAVE_GXX_BUILTIN_H
 HAVE_HAS_KEY
 HAVE_ISASCII
 HAVE_ISSETUGID
+HAVE_LANGINFO_CODESET
 HAVE_LIBC_H
 HAVE_LIBDBMALLOC
 HAVE_LIBDMALLOC

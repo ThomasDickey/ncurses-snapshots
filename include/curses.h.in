@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey 1996-on                                        *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.149 2004/02/22 01:32:01 tom Exp $ */
+/* $Id: curses.h.in,v 1.150 2004/02/28 23:07:06 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -763,7 +763,7 @@ extern NCURSES_EXPORT(int) winsch (WINDOW *, chtype);			/* implemented */
 extern NCURSES_EXPORT(int) winsdelln (WINDOW *,int);			/* implemented */
 extern NCURSES_EXPORT(int) winsertln (WINDOW *);			/* generated */
 extern NCURSES_EXPORT(int) winsnstr (WINDOW *, const char *,int);	/* implemented */
-extern NCURSES_EXPORT(int) winsstr (WINDOW *, const char *);		/* generated */
+extern NCURSES_EXPORT(int) winsstr (WINDOW *, const char *);		/* implemented */
 extern NCURSES_EXPORT(int) winstr (WINDOW *, char *);			/* generated */
 extern NCURSES_EXPORT(int) wmove (WINDOW *,int,int);			/* implemented */
 extern NCURSES_EXPORT(int) wnoutrefresh (WINDOW *);			/* implemented */
@@ -877,7 +877,6 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 
 #define winstr(w, s)		winnstr(w, s, -1)
 #define winchstr(w, s)		winchnstr(w, s, -1)
-#define winsstr(w, s)		winsnstr(w, s, -1)
 
 #define redrawwin(win)		wredrawln(win, 0, (win)->_maxy+1)
 #define waddstr(win,str)	waddnstr(win,str,-1)

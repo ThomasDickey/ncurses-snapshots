@@ -738,6 +738,7 @@
 ./ncurses/base/lib_initscr.c
 ./ncurses/base/lib_insch.c
 ./ncurses/base/lib_insdel.c
+./ncurses/base/lib_insnstr.c
 ./ncurses/base/lib_instr.c
 ./ncurses/base/lib_isendwin.c
 ./ncurses/base/lib_leaveok.c
