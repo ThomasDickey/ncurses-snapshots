@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.52 1996/09/08 00:36:15 tom Exp $
+$Id: ncurses.c,v 1.54 1996/09/15 04:28:56 tom Exp $
 
 ***************************************************************************/
 /*LINTLIBRARY */
@@ -960,7 +960,7 @@ static WINDOW *getwindow(void)
 static void newwin_legend(void)
 {
 	static const char *const legend[] = {
-	"^C = make new window, ^N = next window, ^P = previous window,",
+	"^C = create window, ^N = next window, ^P = previous window,",
 	"^F = scroll forward, ^B = scroll backward, ^S toggle scrollok",
 	"^W = save window to file, ^R = restore window, ^X = resize, ^Q/ESC = exit"
 	};
@@ -1114,8 +1114,11 @@ static void acs_and_scroll(void)
 		getbegyx(current->wind, ul.y, ul.x);
 
 		tmp = selectcell(ul.y, ul.x, LINES-BOTLINES-2, COLS-2);
-		if (tmp == (pair *)NULL)
+		if (tmp == (pair *)NULL) 
+		{
+		    beep();
 		    break;
+		}
 
 		getmaxyx(current->wind, lr.y, lr.x);
 		lr.y += (ul.y - 1);
@@ -1140,7 +1143,7 @@ static void acs_and_scroll(void)
 		wnoutrefresh(current->wind);
 
 		memcpy(&lr, tmp, sizeof(pair));
-		(void) wresize(current->wind, lr.y-ul.y+1, lr.x-ul.x+1);
+		(void) wresize(current->wind, lr.y-ul.y+0, lr.x-ul.x+0);
 
 		getbegyx(current->wind, ul.y, ul.x);
 		getmaxyx(current->wind, lr.y, lr.x);
@@ -1150,6 +1153,7 @@ static void acs_and_scroll(void)
 		wnoutrefresh(stdscr);
 
 		wnoutrefresh(current->wind);
+		move(0, 0); clrtoeol();
 		doupdate();
 	    }
 	    break;
@@ -1172,6 +1176,21 @@ static void acs_and_scroll(void)
 	    break;
 	case KEY_RIGHT:
 	    newwin_move(current,  0,  1);
+	    break;
+
+	case KEY_BACKSPACE:
+	    /* FALLTHROUGH */
+	case KEY_DC:
+	    {
+		int y, x;
+		getyx(current->wind, y, x);
+		if (--x < 0) {
+			if (--y < 0)
+				break;
+			x = getmaxx(current->wind) - 1;
+		}
+		mvwdelch(current->wind, y, x);
+	    }
 	    break;
 
 	case '\r':
@@ -1387,7 +1406,7 @@ register y,x;
 		wait_a_while(nap_msec);
 
 		saywhat("m2; press any key to continue");
-		move_panel(p2,10,10);
+		move_panel(p2,9,10);
 		pflush();
 		wait_a_while(nap_msec);
 

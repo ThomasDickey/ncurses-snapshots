@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.30 1996/08/18 01:17:31 tom Exp $
+ * $Id: curses.priv.h,v 1.31 1996/09/13 09:44:57 esr Exp $
  *
  *	curses.priv.h
  *
@@ -109,6 +109,16 @@ typedef struct {
 	short maxlen;           /* length of labels */
 } SLK;
 
+/*
+ * Structure for palette tables
+ */
+
+typedef struct
+{
+    short red, green, blue;
+}
+color_t;
+
 #define MAXCOLUMNS    135
 #define MAXLINES      66
 #define FIFO_SIZE     MAXLINES
@@ -178,6 +188,11 @@ struct screen {
 	int             _carriage_return_length;
 	int             _cursor_home_length;
 	int             _cursor_to_ll_length;
+	/* used in lib_color.c */
+	color_t		*_color_table;	/* screen's color palette	     */
+	int		_color_count;	/* count of colors in palette	     */
+	unsigned char	*_color_pairs;	/* screen's color pair list	     */
+	int		_pair_count;	/* count of color pairs		     */
 };
 
 /* Ncurses' public interface follows the internal types */

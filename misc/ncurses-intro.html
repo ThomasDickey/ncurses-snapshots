@@ -1868,16 +1868,17 @@ with the C library function <TT>atoi(3)</TT>.
 This field type accepts a decimal number.  It is set up as follows: <P>
 
 <PRE>
-int set_field_type(FIELD *field,          /* field to alter */
-                   TYPE_NUMERIC,          /* type to associate */
-                   int padding,           /* # places of precision */
-                   int vmin, int vmax);   /* valid range */
+int set_field_type(FIELD *field,              /* field to alter */
+                   TYPE_NUMERIC,              /* type to associate */
+                   int padding,               /* # places of precision */
+                   double vmin, double vmax); /* valid range */
 </PRE>
 
 Valid characters consist of an optional leading minus and digits. possibly
-including a decimal point.  The range check is performed on exit.  If the
-range maximum is less than or equal to the minimum, the range is
-ignored. <P>
+including a decimal point. If your system supports locale's, the decimal point
+character used must be the one defined by your locale. The range check is 
+performed on exit. If the range maximum is less than or equal to the minimum,
+the range is ignored. <P>
 
 If the value passes its range check, it is padded with as many trailing
 zero digits as necessary to meet the padding argument. <P>

@@ -99,10 +99,10 @@ static unsigned long hash(chtype *text)
 #else
 
 /* Chris Torek's hash function (from his DB package). */
-unsigned long hash4(const void *key, size_t len)
+static unsigned long hash4(const void *key, size_t len)
 {
-    long h, loop;
-    unsigned char *k;
+    register long h, loop;
+    register unsigned char *k;
 
 #define HASH4a   h = (h << 5) - h + *k++;
 #define HASH4b   h = (h << 5) + h + *k++;
@@ -135,7 +135,7 @@ unsigned long hash4(const void *key, size_t len)
     return ((unsigned long)h);
 }
 
-unsigned long hash(chtype *text)
+static inline unsigned long hash(chtype *text)
 {
     return(hash4(text, strlen(text)));
 }
@@ -152,7 +152,7 @@ void _nc_hash_map(void)
     }
     sym;
     sym hashtab[MAXLINES*2], *sp;
-    int i;
+    register int i;
     long oldhash[MAXLINES], newhash[MAXLINES];
     bool keepgoing;
 

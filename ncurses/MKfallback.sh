@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: MKfallback.sh,v 1.7 1996/07/31 00:16:11 tom Exp $
+# $Id: MKfallback.sh,v 1.8 1996/09/15 01:44:13 tom Exp $
 #
 # MKfallback.sh -- create fallback table for entry reads
 #
@@ -28,10 +28,12 @@ then
 static const TERMTYPE fallbacks[$#] =
 {
 EOF
-
+	comma=""
 	for x in $*
 	do
+		echo "$comma /* $x */"
 		infocmp -e $x
+		comma=","
 	done
 
 	cat <<EOF

@@ -140,7 +140,7 @@
 #include <string.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.20 1996/09/07 22:09:10 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.21 1996/09/13 09:44:57 esr Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -303,6 +303,20 @@ void _nc_mvcur_init(void)
 	putp(enter_ca_mode);
     }
 
+    /*
+     * Doing this here rather than in _nc_mvcur_wrap() ensures that
+     * ncurses programs will see a reset scroll region even if a
+     * program that messed with it diead ungracefully.
+     */
+    if (change_scroll_region)
+    {
+	/* change_scroll_region may trash the cursor location */
+	save_curs();
+	TPUTS_TRACE("change_scroll_region");
+	putp(tparm(change_scroll_region, 0, screen_lines - 1));
+	restore_curs();
+    }
+
     /* pre-compute some capability lengths */
     SP->_carriage_return_length = STRLEN(carriage_return);
     SP->_cursor_home_length     = STRLEN(cursor_home);
@@ -312,15 +326,6 @@ void _nc_mvcur_init(void)
 void _nc_mvcur_wrap(void)
 /* wrap up cursor-addressing mode */
 {
-    /* change_scroll_region may trash the cursor location */
-    if (change_scroll_region)
-    {
-	save_curs();
-	TPUTS_TRACE("change_scroll_region");
-	putp(tparm(change_scroll_region, 0, screen_lines - 1));
-	restore_curs();
-    }
-
     if (exit_ca_mode)
     {
 	TPUTS_TRACE("exit_ca_mode");

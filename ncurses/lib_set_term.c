@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.10 1996/07/30 22:49:24 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.11 1996/09/13 09:44:57 esr Exp $")
 
 SCREEN * set_term(SCREEN *screen)
 {
@@ -43,10 +43,12 @@ SCREEN	*oldSP;
 	oldSP = SP;
 	_nc_set_screen(screen);
 
-	cur_term = SP->_term;
-	curscr   = SP->_curscr;
-	newscr   = SP->_newscr;
-	stdscr   = SP->_stdscr;
+	cur_term    = SP->_term;
+	curscr      = SP->_curscr;
+	newscr      = SP->_newscr;
+	stdscr      = SP->_stdscr;
+	COLORS      = SP->_color_count;
+	COLOR_PAIRS = SP->_pair_count;
 
 	return(oldSP);
 }

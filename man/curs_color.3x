@@ -119,6 +119,12 @@ All other routines return the integer \fBERR\fR upon failure and an \fBOK\fR
 (SVr4 specifies only "an integer value other than \fBERR\fR") upon successful
 completion.
 .SH NOTES
+In the \fIncurses\fR implementation, there is a separate color activation flag,
+color palette, color pairs table, and associated COLORS and COLOR_PAIRS counts
+for each screen; the \fBstart_color\fR function only affects the current
+screen.  The SVr4/XSI interface is not really designed with this in mind, and
+historical implementations may use a single shared color palette.
+
 Note that setting an implicit background color via a color pair affects only
 character cells that a character write operation explicitly touches.  To change
 the background color used when parts of a window are blanked by erasing or

@@ -30,7 +30,7 @@
 #include <string.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_error.c,v 1.10 1996/07/30 22:56:14 tom Exp $")
+MODULE_ID("$Id: comp_error.c,v 1.11 1996/09/13 09:44:57 esr Exp $")
 
 bool _nc_suppress_warnings;
 
@@ -57,11 +57,15 @@ void _nc_get_type(char *name)
 
 static inline void where_is_problem(void)
 {
-	fprintf (stderr, "\"%s\", line %d: ", sourcename, _nc_curr_line);
+	fprintf (stderr, "\"%s\"", sourcename);
+	if (_nc_curr_line >= 0)
+	    fprintf (stderr, ", line %d", _nc_curr_line);
 	if (_nc_curr_col >= 0)
-		fprintf (stderr, " col %d: ", _nc_curr_col);
+		fprintf (stderr, ", col %d", _nc_curr_col);
 	if (termtype[0])
-		fprintf (stderr, "terminal '%s', ", termtype);
+		fprintf (stderr, ", terminal '%s'", termtype);
+	fputc(':', stderr);
+	fputc(' ', stderr);
 }
 
 void _nc_warning(const char *const fmt, ...)

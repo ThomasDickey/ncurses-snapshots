@@ -35,7 +35,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.16 1996/08/31 20:43:20 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.17 1996/09/13 09:44:57 esr Exp $")
 
 char	*_nc_progname = "tic";
 
@@ -515,11 +515,17 @@ bool	check_only = FALSE;
 		bool	trailing_comment = FALSE;
 		int	c, oldc = '\0';
 
+		/* this is in case infotocap() generates warnings */
+		_nc_curr_col = _nc_curr_line = -1;
+
 		for_entry_list(qp)
 		    if (matches(namelst, qp->tterm.term_names))
 		    {
 			int	j = qp->cend - qp->cstart;
 			int	len = 0;
+
+			/* this is in case infotocap() generates warnings */
+			_nc_set_type(_nc_first_name(qp->tterm.term_names));
 
 			(void) fseek(stdin, qp->cstart, SEEK_SET);
 			while (j-- )

@@ -23,7 +23,6 @@
 /*
  *	infocmp.c -- decompile an entry, or compare two entries
  *		written by Eric S. Raymond
- *
  */
 
 #include <progs.priv.h>
@@ -36,7 +35,10 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.18 1996/08/20 22:34:32 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.19 1996/09/15 01:44:41 tom Exp $")
+
+#define L_CURL "{"
+#define R_CURL "}"
 
 #define MAXTERMS	32	/* max # terminal arguments we can handle */
 
@@ -921,6 +923,7 @@ int main(int argc, char *argv[])
 	    /* grab the entries */
 	    termcount = 0;
 	    for (; optind < argc; optind++)
+	    {
 		if (termcount >= MAXTERMS)
 		{
 		    (void) fprintf(stderr,
@@ -976,6 +979,7 @@ int main(int argc, char *argv[])
 		    }
 		    termcount++;
 		}
+	    }
 
 	    /* dump as C initializer for the terminal type */
 	    if (initdump)
@@ -984,8 +988,11 @@ int main(int argc, char *argv[])
 		char	*str = 0;
 		int	size;
 
-		(void) printf("  {\n    \"%s\",\n    (char *)0,\n    /* BOOLEANS */\n",
-			      term->term_names);
+		(void) printf("\t%s\n\t\t\"%s\",\n",
+			      L_CURL, term->term_names);
+		(void) printf("\t\t(char *)0,\n");
+
+		(void) printf("\t\t%s /* BOOLEANS */\n", L_CURL);
 		for (n = 0; n < BOOLCOUNT; n++)
 		{
 		    switch((int)(term->Booleans[n]))
@@ -1006,17 +1013,37 @@ int main(int argc, char *argv[])
 			str = "CANCELLED_BOOLEAN";
 			break;
 		    }
-		    (void) printf("    /* %s */	%s,\n",
-				  boolnames[n], str);
+		    (void) printf("\t\t/* %s */\t%s%s,\n",
+				  boolnames[n], str,
+				  n == BOOLCOUNT-1 ? R_CURL : "");
 		}
-		(void) printf("    /* NUMERICS */\n");
+
+		(void) printf("\t\t%s /* NUMERICS */\n", L_CURL);
 		for (n = 0; n < NUMCOUNT; n++)
-		    (void) printf("    /* %s */	%d,\n",
-				  numnames[n], term->Numbers[n]);
+		{
+		    char	buf[BUFSIZ];
+		    switch (term->Numbers[n])
+		    {
+		    case ABSENT_NUMERIC:
+			str = "ABSENT_NUMERIC";
+			break;
+		    case CANCELLED_NUMERIC:
+			str = "CANCELLED_NUMERIC";
+			break;
+		    default:
+			sprintf(str = buf, "%d", term->Numbers[n]);
+			break;
+		    }
+		    (void) printf("\t\t/* %s */\t%s%s,\n",
+			numnames[n], str,
+			n == NUMCOUNT-1 ? R_CURL : "");
+		}
+
 		size = sizeof(TERMTYPE)
 		    + (BOOLCOUNT * sizeof(term->Booleans[0]))
 		    + (NUMCOUNT * sizeof(term->Numbers[0]));
-		(void) printf("    /* STRINGS */\n");
+
+		(void) printf("\t\t%s /* STRINGS */\n", L_CURL);
 		for (n = 0; n < STRCOUNT; n++)
 		{
 		    char	buf[BUFSIZ], *sp, *tp;
@@ -1042,9 +1069,12 @@ int main(int argc, char *argv[])
 			size += (strlen(term->Strings[n]) + 1);
 			str = buf;
 		    }
-		    (void) printf("    /* %s */	%s,\n", strnames[n], str);
+		    (void) printf("\t\t/* %s */\t%s%s%s\n",
+		    	strnames[n], str,
+			n == STRCOUNT-1 ? R_CURL : "",
+			n == STRCOUNT-1 ? ""     : ",");
 		}
-		(void) printf("  }, /* size = %d */\n", size);
+		(void) printf("\t%s /* size = %d */\n", R_CURL, size);
 		return EXIT_SUCCESS;
 	    }
 
