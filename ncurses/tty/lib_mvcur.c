@@ -154,7 +154,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.96 2003/09/13 22:58:27 Philippe.Blain Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.97 2003/12/27 16:43:59 tom Exp $")
 
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
 #define BAUDRATE	cur_term->_baudrate	/* bits per second */
@@ -985,7 +985,7 @@ delay_output(int ms GCC_UNUSED)
     return OK;
 }
 
-static char tname[MAX_ALIAS];
+static char tname[PATH_MAX];
 
 static void
 load_term(void)

@@ -42,7 +42,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.77 2003/12/06 21:30:12 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.78 2003/12/27 19:18:55 tom Exp $")
 
 #if !HAVE_TELL
 #define tell(fd) lseek(fd, 0, SEEK_CUR)		/* lseek() is POSIX, but not tell() */
@@ -386,13 +386,13 @@ _nc_read_file_entry(const char *const filename, TERMTYPE * ptr)
     if (_nc_access(filename, R_OK) < 0
 	|| (fd = open(filename, O_RDONLY | O_BINARY)) < 0) {
 	T(("cannot open terminfo %s (errno=%d)", filename, errno));
-	return (0);
+	code = 0;
+    } else {
+	T(("read terminfo %s", filename));
+	if ((code = read_termtype(fd, ptr)) == 0)
+	    _nc_free_termtype(ptr);
+	close(fd);
     }
-
-    T(("read terminfo %s", filename));
-    if ((code = read_termtype(fd, ptr)) == 0)
-	_nc_free_termtype(ptr);
-    close(fd);
 
     return (code);
 }
@@ -405,10 +405,9 @@ static int
 _nc_read_tic_entry(char *const filename,
 		   const char *const dir, const char *ttn, TERMTYPE * const tp)
 {
-/* maximum safe length of terminfo root directory name */
-#define MAX_TPATH	(PATH_MAX - MAX_ALIAS - 6)
+    int need = 2 + strlen(dir) + strlen(ttn);
 
-    if (strlen(dir) > MAX_TPATH)
+    if (need > PATH_MAX)
 	return 0;
     (void) sprintf(filename, "%s/%s", dir, ttn);
     return _nc_read_file_entry(filename, tp);
@@ -464,7 +463,7 @@ NCURSES_EXPORT(int)
 _nc_read_entry(const char *const tn, char *const filename, TERMTYPE * const tp)
 {
     char *envp;
-    char ttn[MAX_ALIAS + 3];
+    char ttn[PATH_MAX];
 
     if (strlen(tn) == 0
 	|| strcmp(tn, ".") == 0
@@ -475,7 +474,7 @@ _nc_read_entry(const char *const tn, char *const filename, TERMTYPE * const tp)
     }
 
     /* truncate the terminal name to prevent buffer overflow */
-    (void) sprintf(ttn, "%c/%.*s", *tn, MAX_ALIAS, tn);
+    (void) sprintf(ttn, "%c/%.*s", *tn, sizeof(ttn) - 3, tn);
 
     /* This is System V behavior, in conjunction with our requirements for
      * writing terminfo entries.

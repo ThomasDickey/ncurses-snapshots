@@ -32,7 +32,7 @@
  ****************************************************************************/
 
 /*
- * $Id: tic.h,v 1.45 2003/08/02 23:54:19 tom Exp $
+ * $Id: tic.h,v 1.46 2003/12/27 19:05:32 tom Exp $
  *	tic.h - Global variables and structures for the terminfo
  *			compiler.
  */
@@ -83,13 +83,14 @@ extern "C" {
 #define MAX_NAME_SIZE	512	/* maximum legal name field size (XSI:127) */
 #define MAX_ENTRY_SIZE	4096	/* maximum legal entry size */
 
-/* The maximum size of individual name or alias is guaranteed in XSI to
- * be 14, since that corresponds to the older filename lengths.  Newer
- * systems allow longer aliases, though not many terminal descriptions
- * are written to use them.
+/*
+ * The maximum size of individual name or alias is guaranteed in XSI to be at
+ * least 14, since that corresponds to the older filename lengths.  Newer
+ * systems allow longer aliases, though not many terminal descriptions are
+ * written to use them.  The MAX_ALIAS symbol is used for warnings.
  */
 #if HAVE_LONG_FILE_NAMES
-#define MAX_ALIAS	32	/* POSIX minimum for PATH_MAX */
+#define MAX_ALIAS	32	/* smaller than POSIX minimum for PATH_MAX */
 #else
 #define MAX_ALIAS	14	/* SVr3 filename length */
 #endif
