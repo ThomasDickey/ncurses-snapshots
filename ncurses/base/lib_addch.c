@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.93 2005/03/26 20:04:03 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.95 2005/03/27 16:52:16 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -371,7 +371,7 @@ waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
 {
     int x, y;
     chtype t = CharOf(ch);
-    const char *s = 0;
+    const char *s = unctrl(t);
 
     /*
      * If we are using the alternate character set, forget about locale.
@@ -383,13 +383,14 @@ waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
 #if USE_WIDEC_SUPPORT
 	       (SP != 0 && SP->_legacy_coding) &&
 #endif
-	       (s = unctrl(t))[1] == 0
+	       s[1] == 0
 	)
 	|| (
 	       isprint(t)
 #if USE_WIDEC_SUPPORT
-	       || WINDOW_EXT(win, addch_used)
-	       || !_nc_is_charable(CharOf(ch))
+	       || ((SP == 0 || !SP->_legacy_coding) &&
+		   (WINDOW_EXT(win, addch_used)
+		    || !_nc_is_charable(CharOf(ch))))
 #endif
 	))
 	return waddch_literal(win, ch);
