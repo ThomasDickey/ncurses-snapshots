@@ -1,10 +1,14 @@
--- $Id: NEWS,v 1.769 2003/09/27 22:01:42 tom Exp $
+-- $Id: NEWS,v 1.770 2003/10/04 23:08:42 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20031004
+	+ add terminfo entries for djgpp.
+	+ updated note about maintainer in ncurses-intro.html
 
 20030927
 	+ update terminfo entries for gnome terminal.
