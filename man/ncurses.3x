@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.43 2000/10/05 01:19:16 tom Exp $
+.\" $Id: ncurses.3x,v 1.44 2000/10/08 01:39:26 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
@@ -711,7 +711,8 @@ If the TERMPATH symbol is not set, \fBncurses\fR looks in the files
 /etc/termcap, /usr/share/misc/termcap and $HOME/.termcap, in that order.
 .PP
 The library may be configured to disregard the following variables when the
-current user is the superuser (root):
+current user is the superuser (root), or if the application uses setuid or
+setgid permissions:
 $TERMINFO, $TERMINFO_DIRS, $TERMPATH, as well as $HOME.
 .SH FILES
 .TP 5

@@ -1,4 +1,4 @@
-# $Id: ncurses_defs,v 1.3 2000/09/16 16:10:25 tom Exp $
+# $Id: ncurses_defs,v 1.4 2000/10/08 01:04:00 tom Exp $
 ##############################################################################
 # Copyright (c) 2000 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -48,6 +48,8 @@ HAVE_ERRNO
 HAVE_FCNTL_H
 HAVE_FORM_H
 HAVE_GETCWD
+HAVE_GETEGID
+HAVE_GETEUID
 HAVE_GETOPT_H
 HAVE_GETTIMEOFDAY
 HAVE_GETTTYNAM
@@ -55,6 +57,7 @@ HAVE_GPP_BUILTIN_H
 HAVE_GXX_BUILTIN_H
 HAVE_HAS_KEY
 HAVE_ISASCII
+HAVE_ISSETUGID
 HAVE_LIBDBMALLOC
 HAVE_LIBDMALLOC
 HAVE_LIBFORM

@@ -70,7 +70,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.145 2000/09/02 18:02:18 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.146 2000/10/07 01:11:44 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -112,15 +112,24 @@ position_check(int expected_y, int expected_x, char *legend)
 /* check to see if the real cursor position matches the virtual */
 {
     char buf[20];
+    char *s;
     int y, x;
 
     if (!_nc_tracing || (expected_y < 0 && expected_x < 0))
 	return;
 
+    _nc_flush();
     memset(buf, '\0', sizeof(buf));
     putp("\033[6n");		/* only works on ANSI-compatibles */
     _nc_flush();
-    (void) read(0, buf, sizeof(buf) - 1);
+    *(s = buf) = 0;
+    do {
+	int ask = sizeof(buf) - 1 - (s - buf);
+	int got = read(0, s, ask);
+	if (got == 0)
+	    break;
+	s += got;
+    } while (strchr(buf, 'R') == 0);
     _tracef("probe returned %s", _nc_visbuf(buf));
 
     /* try to interpret as a position report */
@@ -133,6 +142,7 @@ position_check(int expected_y, int expected_x, char *legend)
 	    expected_y = y - 1;
 	if (y - 1 != expected_y || x - 1 != expected_x) {
 	    beep();
+	    tputs(tparm("\033[%d;%dH", expected_y + 1, expected_x + 1), 1, _nc_outch);
 	    _tracef("position seen (%d, %d) doesn't match expected one (%d, %d) in %s",
 		    y - 1, x - 1, expected_y, expected_x, legend);
 	} else {

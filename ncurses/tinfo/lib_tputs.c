@@ -45,10 +45,10 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.50 2000/09/23 23:45:08 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.51 2000/10/08 00:22:24 tom Exp $")
 
 char PC = 0;			/* used by termcap library */
-speed_t ospeed = 0;		/* used by termcap library */
+short ospeed = 0;		/* used by termcap library */
 
 int _nc_nulls_sent = 0;		/* used by 'tack' program */
 

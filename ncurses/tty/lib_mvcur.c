@@ -152,7 +152,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.70 2000/10/03 21:21:44 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.72 2000/10/08 00:58:25 tom Exp $")
 
 #define CURRENT_ROW	SP->_cursrow	/* phys cursor row */
 #define CURRENT_COLUMN	SP->_curscol	/* phys cursor column */
@@ -444,13 +444,19 @@ _nc_mvcur_wrap(void)
 static inline int
 repeated_append(string_desc * target, int total, int num, int repeat, const char *src)
 {
-    while (repeat-- > 0) {
-	if (_nc_safe_strcat(target, src)) {
-	    total += num;
-	} else {
-	    total = INFINITY;
-	    break;
+    size_t need = repeat * strlen(src);
+
+    if (need < target->s_size) {
+	while (repeat-- > 0) {
+	    if (_nc_safe_strcat(target, src)) {
+		total += num;
+	    } else {
+		total = INFINITY;
+		break;
+	    }
 	}
+    } else {
+	total = INFINITY;
     }
     return total;
 }
@@ -918,7 +924,7 @@ _nc_outch(int ch)
 }
 
 char PC = 0;			/* used by termcap library */
-speed_t ospeed = 0;		/* used by termcap library */
+short ospeed = 0;		/* used by termcap library */
 int _nc_nulls_sent = 0;		/* used by 'tack' program */
 
 int
