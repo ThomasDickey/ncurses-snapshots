@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2000 Free Software Foundation, Inc.                        *
+ * Copyright (c) 2000,2003 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -36,7 +36,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: strings.c,v 1.3 2000/12/10 02:55:08 tom Exp $")
+MODULE_ID("$Id: strings.c,v 1.4 2003/08/02 22:46:31 Philippe.Blain Exp $")
 
 /****************************************************************************
  * Useful string functions (especially for mvcur)
@@ -44,8 +44,7 @@ MODULE_ID("$Id: strings.c,v 1.3 2000/12/10 02:55:08 tom Exp $")
 
 #if !HAVE_STRSTR
 NCURSES_EXPORT(char *)
-_nc_strstr
-(const char *haystack, const char *needle)
+_nc_strstr(const char *haystack, const char *needle)
 {
     size_t len1 = strlen(haystack);
     size_t len2 = strlen(needle);
@@ -66,8 +65,7 @@ _nc_strstr
  * Initialize the descriptor so we can append to it.
  */
 NCURSES_EXPORT(string_desc *)
-_nc_str_init
-(string_desc * dst, char *src, size_t len)
+_nc_str_init(string_desc * dst, char *src, size_t len)
 {
     if (dst != 0) {
 	dst->s_head = src;
@@ -83,8 +81,7 @@ _nc_str_init
  * Initialize the descriptor for only tracking the amount of memory used.
  */
 NCURSES_EXPORT(string_desc *)
-_nc_str_null
-(string_desc * dst, size_t len)
+_nc_str_null(string_desc * dst, size_t len)
 {
     return _nc_str_init(dst, 0, len);
 }
@@ -93,8 +90,7 @@ _nc_str_null
  * Copy a descriptor
  */
 NCURSES_EXPORT(string_desc *)
-_nc_str_copy
-(string_desc * dst, string_desc * src)
+_nc_str_copy(string_desc * dst, string_desc * src)
 {
     *dst = *src;
     return dst;
@@ -113,9 +109,9 @@ _nc_safe_strcat(string_desc * dst, const char *src)
 	    if (dst->s_tail != 0) {
 		strcpy(dst->s_tail, src);
 		dst->s_tail += len;
+		dst->s_size -= len;
+		return TRUE;
 	    }
-	    dst->s_size -= len;
-	    return TRUE;
 	}
     }
     return FALSE;
