@@ -54,7 +54,7 @@ chtype	blank = wrenderchar(win, ' ', BLANK, TRUE);
 
 	/* shift n lines downwards */
     	if (n < 0) {
-		for (line = bottom; line > top-n; line--)
+		for (line = bottom; line >= top-n; line--)
 		{
 		    	memcpy(win->_line[line].text,
 			       win->_line[line+n].text,
@@ -71,12 +71,12 @@ chtype	blank = wrenderchar(win, ' ', BLANK, TRUE);
 
 	/* shift n lines upwards */
     	if (n > 0) {
-		for (line = top; line < bottom-n; line++)
+		for (line = top; line <= bottom-n; line++)
 		{
 		    	memcpy(win->_line[line].text,
 			       win->_line[line+n].text,
 			       sizeof(chtype) * win->_maxx);
-			win->_line[line].oldindex=win->_line[line+n].oldindex;
+			win->_line[line].oldindex = win->_line[line+n].oldindex;
 		}
 		for (line = bottom; line > bottom-n; line--)
 		{

@@ -1,4 +1,4 @@
-/* $Header: /users/source/archives/ncurses.vcs/test/RCS/newdemo.c,v 0.9 1992/11/15 03:32:03 MH Rel $
+/* $Header: /users/source/archives/ncurses.vcs/test/RCS/newdemo.c,v 1.1 1995/04/21 16:39:03 djm Exp $
  *
  *  newdemo.c	-	A demo program using PDCurses. The program illustrate
  *  	 		the use of colours for text output.
@@ -7,7 +7,14 @@
 #include <stdio.h>
 #include <signal.h>
 #include <time.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <curses.h>
+
+int SubWinTest(WINDOW *win);
+int WaitForUser();
+int BouncingBalls(WINDOW *win);
 
 #define delay_output(x) 
 
@@ -49,11 +56,11 @@ char    *messages[] =
 /*
  *  Main driver
  */
+int
 main()
 {
 WINDOW  *win;
 int     w, x, y, i, j, c, len;
-time_t  t;
 char    buffer[80], *message;
 int     width, height;
 chtype  save[80];
@@ -195,7 +202,6 @@ void    trap();
         if(WaitForUser() == 1)
             break;
     }
-exit:
     endwin();
     return 0;
 }
@@ -203,6 +209,7 @@ exit:
 /*
  * Test sub windows
  */
+int
 SubWinTest(WINDOW *win)
 {
 int     w, h, sw, sh, bx, by;
@@ -249,6 +256,7 @@ WINDOW  *swin1, *swin2, *swin3;
 /*
  *  Bouncing balls
  */
+int
 BouncingBalls(WINDOW *win)
 {
 chtype     c1, c2, c3;
