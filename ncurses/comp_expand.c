@@ -35,7 +35,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_expand.c,v 1.7 1998/05/30 23:32:45 Todd.Miller Exp $")
+MODULE_ID("$Id: comp_expand.c,v 1.8 1998/08/15 23:01:54 tom Exp $")
 
 static int trailing_spaces(const char *src)
 {
@@ -60,13 +60,10 @@ bool		islong = (strlen(str) > 3);
 size_t		need = (2 + strlen(str)) * 4;
 int		ch;
 
-	if (buffer == 0) {
-		buffer = malloc(length = need);
-	} else if (need > length) {
-		buffer = realloc(buffer, length = need);
+	if (buffer == 0 || need > length) {
+		if ((buffer = (char *)_nc_doalloc(buffer, length = need)) == 0)
+			return 0;
 	}
-	if (buffer == 0)
-		return(NULL);
 
 	bufp = 0;
 	ptr = str;

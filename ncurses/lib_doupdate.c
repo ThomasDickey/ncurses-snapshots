@@ -75,7 +75,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.102 1998/05/30 23:37:01 Todd.Miller Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.103 1998/08/15 23:34:47 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -931,10 +931,9 @@ chtype	blank  = newscr->_line[total-1].text[last-1]; /* lower right char */
 	if(!clr_eos || !can_clear_with(blank))
 		return total;
 
-	if (tstLine == 0)
-		tstLine = (chtype *)malloc(length);
-	else if (length > lenLine)
-		tstLine = (chtype *)realloc(tstLine, length);
+	if (tstLine == 0 || length > lenLine) {
+		tstLine = (chtype *)_nc_doalloc(tstLine, length);
+	}
 
 	if (tstLine != 0) {
 		lenLine = length;

@@ -33,7 +33,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: wresize.c,v 1.9 1998/02/11 12:13:54 tom Exp $")
+MODULE_ID("$Id: wresize.c,v 1.10 1998/08/15 22:59:39 tom Exp $")
 
 /*
  * Reallocate a curses WINDOW struct to either shrink or grow to the specified
@@ -41,16 +41,7 @@ MODULE_ID("$Id: wresize.c,v 1.9 1998/02/11 12:13:54 tom Exp $")
  * blanks.  The application is responsible for repainting the blank area.
  */
 
-static void *doalloc(void *p, size_t n)
-{
-	if (p == 0)
-		p = malloc(n);
-	else
-		p = realloc(p, n);
-	return p;
-}
-
-#define DOALLOC(p,t,n)  (t *)doalloc(p, sizeof(t)*(n))
+#define DOALLOC(p,t,n)  (t *)_nc_doalloc(p, sizeof(t)*(n))
 #define	ld_ALLOC(p,n)	DOALLOC(p,struct ldat,n)
 #define	c_ALLOC(p,n)	DOALLOC(p,chtype,n)
 

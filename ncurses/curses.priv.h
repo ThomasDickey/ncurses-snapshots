@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.106 1998/07/25 20:07:29 tom Exp $
+ * $Id: curses.priv.h,v 1.107 1998/08/15 22:58:47 tom Exp $
  *
  *	curses.priv.h
  *
@@ -590,6 +590,9 @@ extern void _nc_UpdateAttrs(chtype);
 extern void _nc_expanded(void);
 
 #endif
+
+/* doalloc.c */
+extern void *_nc_doalloc(void *, size_t);
 
 /* doupdate.c */
 #if USE_XMC_SUPPORT
