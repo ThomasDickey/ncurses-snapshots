@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.35 1998/02/11 12:14:03 tom Exp $
+# $Id: Makefile.in,v 1.36 1998/05/16 20:46:17 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -84,7 +84,7 @@ CFLAGS_SHARED	= $(CCFLAGS) # @CC_SHARED_OPTS@
 CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
 LD		= @LD@
-LINK		= $(CC)
+LINK		= @LINK_PROGS@ $(CC)
 LDFLAGS		= @EXTRA_LDFLAGS@ \
 		@PROG_ARGS@ @LDFLAGS@ @LD_MODEL@ @LIBS@ @EXTRA_LIBS@
 

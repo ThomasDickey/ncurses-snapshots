@@ -49,7 +49,7 @@
 #define S_ISDIR(mode) ((mode & S_IFMT) == S_IFDIR)
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.22 1998/02/11 12:13:59 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.23 1998/05/17 00:10:56 tom Exp $")
 
 static int total_written;
 
@@ -277,6 +277,10 @@ static time_t	start_time;		/* time at start of writes */
 
 		if (strlen(ptr) > sizeof(linkname)-3) {
 			_nc_warning("terminal alias %s too long.", ptr);
+			continue;
+		}
+		if (strchr(ptr, '/') != 0) {
+			_nc_warning("cannot link alias %s.", ptr);
 			continue;
 		}
 

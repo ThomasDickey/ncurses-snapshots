@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.46 1998/05/09 19:28:58 tom Exp $
+# $Id: Makefile.in,v 1.47 1998/05/16 20:47:51 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -65,7 +65,7 @@ LOCAL_LIBS	= @TEST_DEPS@
 MATH_LIB	= @MATH_LIB@
 
 LD		= @LD@
-LINK		= $(CC)
+LINK		= @LINK_TESTS@ $(CC)
 
 LDFLAGS		= @LD_MODEL@ @TEST_ARGS@ @LIBS@ @EXTRA_LIBS@ @LOCAL_LDFLAGS@ @LDFLAGS@
 

@@ -39,7 +39,7 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <term.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.18 1998/03/21 23:30:52 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.19 1998/05/10 17:45:48 tom Exp $")
 
 /*
    some of the code in here was contributed by:
@@ -240,5 +240,5 @@ int i;
 
 char *tgoto(const char *string, int x, int y)
 {
-	return(tparm(string, y, x));
+	return(tparm((NCURSES_CONST char *)string, y, x));
 }

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.44 1998/03/21 23:41:29 Thomas.Graf Exp $
+# $Id: Makefile.in,v 1.45 1998/05/16 20:51:13 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -70,7 +70,7 @@ CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 REL_VERSION     = @cf_cv_rel_version@
 ABI_VERSION	= @cf_cv_abi_version@
 
-LINK		= $(CXX)
+LINK		= @LINK_PROGS@ $(CXX)
 
 LIBROOT	= ncurses++
 LIBNAME	= lib$(LIBROOT).a

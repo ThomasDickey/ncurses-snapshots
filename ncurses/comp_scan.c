@@ -49,7 +49,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.32 1998/04/04 19:08:09 juergen Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.33 1998/05/16 22:48:23 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -76,6 +76,7 @@ static char separator;		/* capability separator */
 static int pushtype;		/* type of pushback token */
 static char pushname[MAX_NAME_SIZE+1];
 
+static int  last_char(void);
 static int  next_char(void);
 static long stream_pos(void);
 static bool end_of_stream(void);
@@ -203,7 +204,7 @@ start_token:
 			{
 			    if (ch == EOF)
 				_nc_err_abort("premature EOF");
-			    else if (ch == ':')
+			    else if (ch == ':' && last_char() != ',')
 			    {
 				_nc_syntax = SYN_TERMCAP;
 				separator = ':';
@@ -635,6 +636,22 @@ void _nc_reset_input(FILE *fp, char *buf)
 	if (fp != 0)
 		_nc_curr_line = 0;
 	_nc_curr_col = 0;
+}
+
+/*
+ *	int last_char()
+ *
+ *	Returns the final nonblank character on the current input buffer
+ */
+static int
+last_char(void)
+{
+	size_t len = strlen(bufptr);
+	while (len--) {
+		if (!isspace(bufptr[len]))
+			return bufptr[len];
+	}
+	return 0;
 }
 
 /*

@@ -75,7 +75,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.100 1998/05/05 10:01:07 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.101 1998/05/10 19:24:00 Alexander.V.Lukyanov Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -1176,10 +1176,10 @@ bool	attrchanged = FALSE;
 				GoTo(lineno, firstChar);
 				PutRange(oldLine, newLine, lineno, firstChar, n);
 			}
-			GoTo(lineno, n+1);
 
 			if (oLastChar < nLastChar) {
 				int m = max(nLastNonblank, oLastNonblank);
+				GoTo(lineno, n+1);
 				if (InsCharCost(nLastChar - oLastChar)
 				 > (m - n)) {
 					PutRange(oldLine, newLine, lineno, n+1, m);
@@ -1187,6 +1187,7 @@ bool	attrchanged = FALSE;
 					InsStr(&newLine[n+1], nLastChar - oLastChar);
 				}
 			} else if (oLastChar > nLastChar ) {
+				GoTo(lineno, n+1);
 				if (DelCharCost(oLastChar - nLastChar)
 				    > SP->_el_cost + nLastNonblank - (n+1)) {
 					if(PutRange(oldLine, newLine, lineno,
