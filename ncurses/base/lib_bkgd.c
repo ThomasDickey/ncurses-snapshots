@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -33,51 +33,69 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_bkgd.c,v 1.14 2000/12/10 02:43:26 tom Exp $")
+MODULE_ID("$Id: lib_bkgd.c,v 1.24 2001/06/03 03:08:52 tom Exp $")
 
+#if USE_WIDEC_SUPPORT
 NCURSES_EXPORT(void)
-wbkgdset(WINDOW *win, chtype ch)
+#else
+static inline void
+#endif
+wbkgrndset(WINDOW *win, const ARG_CH_T ch)
 {
-    T((T_CALLED("wbkgdset(%p,%s)"), win, _tracechtype(ch)));
+    T((T_CALLED("wbkgdset(%p,%s)"), win, _tracech_t(ch)));
 
     if (win) {
-	chtype off = AttrOf(win->_bkgd);
-	chtype on = AttrOf(ch);
+	attr_t off = AttrOf(win->_bkgrnd);
+	attr_t on = AttrOf(CHDEREF(ch));
 
 	toggle_attr_off(win->_attrs, off);
 	toggle_attr_on(win->_attrs, on);
 
-	if (TextOf(ch) == 0)
-	    ch |= BLANK;
-	win->_bkgd = ch;
+	if (CharOf(CHDEREF(ch)) == L('\0'))
+	    SetChar(win->_bkgrnd, BLANK_TEXT, AttrOf(CHDEREF(ch)));
+	else
+	    win->_bkgrnd = CHDEREF(ch);
     }
     returnVoid;
 }
 
+NCURSES_EXPORT(void)
+wbkgdset(WINDOW *win, chtype ch)
+{
+    NCURSES_CH_T wch = NewChar(ch);
+    wbkgrndset(win, CHREF(wch));
+}
+
+#if USE_WIDEC_SUPPORT
 NCURSES_EXPORT(int)
-wbkgd(WINDOW *win, const chtype ch)
+#else
+static inline int
+#undef wbkgrnd
+#endif
+wbkgrnd(WINDOW *win, const ARG_CH_T ch)
 {
     int code = ERR;
     int x, y;
-    chtype new_bkgd = ch;
+    NCURSES_CH_T new_bkgd = CHDEREF(ch);
 
-    T((T_CALLED("wbkgd(%p,%s)"), win, _tracechtype(new_bkgd)));
+    T((T_CALLED("wbkgd(%p,%s)"), win, _tracech_t(ch)));
 
     if (win) {
-	chtype old_bkgd = getbkgd(win);
+	NCURSES_CH_T old_bkgrnd;
+	wgetbkgrnd(win, &old_bkgrnd);
 
-	wbkgdset(win, new_bkgd);
-	wattrset(win, AttrOf(win->_bkgd));
+	wbkgrndset(win, CHREF(new_bkgd));
+	wattrset(win, AttrOf(win->_bkgrnd));
 
 	for (y = 0; y <= win->_maxy; y++) {
 	    for (x = 0; x <= win->_maxx; x++) {
-		if (win->_line[y].text[x] == old_bkgd)
-		    win->_line[y].text[x] = win->_bkgd;
-		else
-		    win->_line[y].text[x] =
-			_nc_render(win, (A_ALTCHARSET &
-					 AttrOf(win->_line[y].text[x]))
-				   | TextOf(win->_line[y].text[x]));
+		if (CharEq(win->_line[y].text[x], old_bkgrnd))
+		    win->_line[y].text[x] = win->_bkgrnd;
+		else {
+		    NCURSES_CH_T wch = win->_line[y].text[x];
+		    RemAttr(wch, ~A_ALTCHARSET);
+		    win->_line[y].text[x] = _nc_render(win, wch);
+		}
 	    }
 	}
 	touchwin(win);
@@ -86,3 +104,24 @@ wbkgd(WINDOW *win, const chtype ch)
     }
     returnCode(code);
 }
+
+NCURSES_EXPORT(int)
+wbkgd(WINDOW *win, const chtype ch)
+{
+    NCURSES_CH_T wch = NewChar(ch);
+    return wbkgrnd(win, CHREF(wch));
+}
+
+#if USE_WIDEC_SUPPORT
+NCURSES_EXPORT(chtype)
+getbkgd(WINDOW *win)
+{
+    cchar_t wch;
+    int ch;
+
+    wgetbkgrnd(win, &wch);
+    ch = wctob(CharOf(wch));
+
+    return ((ch == EOF) ? ' ' : (chtype)ch) | AttrOf(wch);
+}
+#endif

@@ -50,7 +50,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.56 2001/04/21 18:53:34 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.57 2001/06/02 22:54:42 skimo Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -302,7 +302,7 @@ _nc_get_token(bool silent)
 	     * special characters can be dangerous due to shell expansion.
 	     */
 	    for (ptr = buffer; ptr < desc; ptr++) {
-		if (isspace(CharOf(*ptr))) {
+		if (isspace(UChar(*ptr))) {
 		    if (!silent)
 			_nc_warning("whitespace in name or alias field");
 		    break;
@@ -699,7 +699,7 @@ last_char(void)
 {
     size_t len = strlen(bufptr);
     while (len--) {
-	if (!isspace(CharOf(bufptr[len])))
+	if (!isspace(UChar(bufptr[len])))
 	    return bufptr[len];
     }
     return 0;

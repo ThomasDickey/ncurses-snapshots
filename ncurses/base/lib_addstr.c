@@ -40,7 +40,34 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.19 2000/12/10 01:24:50 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.21 2001/06/03 03:03:02 tom Exp $")
+
+#if USE_WIDEC_SUPPORT
+#define NEXT_CHAR(s,ch, n)						\
+    {									\
+	int len, i;							\
+	memset(&ch, 0, sizeof(cchar_t));				\
+	for (i = 0; i < CCHARW_MAX && n > 0; ++i) {			\
+	    if ((len = mbtowc(&ch.chars[i], s, n)) < 0) {		\
+		code = ERR;						\
+		break;							\
+	    }								\
+	    if (i == 0 || wcwidth(ch.chars[i]) == 0) {			\
+		n -= len;						\
+		s += len;						\
+	    } else {							\
+		ch.chars[i] = L'\0';					\
+		break;							\
+	    }								\
+	}								\
+	if (code == ERR)						\
+	    break;							\
+    }
+#else
+#define NEXT_CHAR(s,ch, n)						\
+    ch = *s++;								\
+    ++n
+#endif
 
 NCURSES_EXPORT(int)
 waddnstr
@@ -58,9 +85,11 @@ waddnstr
 	if (n < 0)
 	    n = (int) strlen(astr);
 
-	while ((n-- > 0) && (*str != '\0')) {
+	while ((n > 0) && (*str != '\0')) {
+	    NCURSES_CH_T ch;
 	    TR(TRACE_VIRTPUT, ("*str = %#x", *str));
-	    if (_nc_waddch_nosync(win, (chtype) * str++) == ERR) {
+	    NEXT_CHAR(str, ch, n);
+	    if (_nc_waddch_nosync(win, ch) == ERR) {
 		code = ERR;
 		break;
 	    }
@@ -97,9 +126,49 @@ waddchnstr
 	returnCode(code);
 
     line = &(win->_line[y]);
+#if USE_WIDEC_SUPPORT
+    {
+	int i;
+	for (i = 0; i < n; ++i)
+	    SetChar(line->text[i + x], ChCharOf(astr[i]), ChAttrOf(astr[i]));
+    }
+#else
     memcpy(line->text + x, astr, n * sizeof(*astr));
+#endif
     CHANGED_RANGE(line, x, x + n - 1);
 
     _nc_synchook(win);
     returnCode(code);
 }
+
+#if USE_WIDEC_SUPPORT
+
+NCURSES_EXPORT(int)
+waddnwstr(WINDOW *win, const wchar_t * str, int n)
+{
+    int code = ERR;
+
+    T((T_CALLED("waddnwstr(%p,%s,%d)"), win, _nc_viswbuf(str), n));
+
+    if (win && (str != 0)) {
+	TR(TRACE_VIRTPUT | TRACE_ATTRS, ("... current %s", _traceattr(win->_attrs)));
+	TR(TRACE_VIRTPUT, ("str is not null"));
+	code = OK;
+	if (n < 0)
+	    n = (int) wcslen(str);
+
+	while ((n-- > 0) && (*str != '\0')) {
+	    NCURSES_CH_T ch = NewChar2(*str++, A_NORMAL);
+	    TR(TRACE_VIRTPUT, ("*str = %#x", *str));
+	    if (_nc_waddch_nosync(win, ch) == ERR) {
+		code = ERR;
+		break;
+	    }
+	}
+	_nc_synchook(win);
+    }
+    TR(TRACE_VIRTPUT, ("waddnwstr returns %d", code));
+    returnCode(code);
+}
+
+#endif

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: wresize.c,v 1.18 2000/12/10 02:43:28 tom Exp $")
+MODULE_ID("$Id: wresize.c,v 1.19 2001/06/03 00:52:14 skimo Exp $")
 
 /*
  * Reallocate a curses WINDOW struct to either shrink or grow to the specified
@@ -42,7 +42,7 @@ MODULE_ID("$Id: wresize.c,v 1.18 2000/12/10 02:43:28 tom Exp $")
 
 #define DOALLOC(p,t,n)  typeRealloc(t, n, p)
 #define	ld_ALLOC(p,n)	DOALLOC(p,struct ldat,n)
-#define	c_ALLOC(p,n)	DOALLOC(p,chtype,n)
+#define	c_ALLOC(p,n)	DOALLOC(p,NCURSES_CH_T,n)
 
 NCURSES_EXPORT(int)
 wresize(WINDOW *win, int ToLines, int ToCols)
@@ -50,7 +50,7 @@ wresize(WINDOW *win, int ToLines, int ToCols)
     register int row;
     int size_x, size_y;
     struct ldat *pline;
-    chtype blank;
+    NCURSES_CH_T blank;
 
 #ifdef TRACE
     T((T_CALLED("wresize(%p,%d,%d)"), win, ToLines, ToCols));
@@ -119,7 +119,7 @@ wresize(WINDOW *win, int ToLines, int ToCols)
      */
     blank = _nc_background(win);
     for (row = 0; row <= ToLines; row++) {
-	chtype *s = win->_line[row].text;
+	NCURSES_CH_T *s = win->_line[row].text;
 	int begin = (s == 0) ? 0 : size_x + 1;
 	int end = ToCols;
 

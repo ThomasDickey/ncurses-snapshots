@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.54 2000/12/10 02:43:27 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.55 2001/06/02 21:16:23 skimo Exp $")
 
 #include <fifo_defs.h>
 
@@ -102,7 +102,7 @@ fifo_push(void)
     {
 	unsigned char c2 = 0;
 	n = read(SP->_ifd, &c2, 1);
-	ch = CharOf(c2);
+	ch = c2;
     }
 
 #ifdef HIDE_EINTR

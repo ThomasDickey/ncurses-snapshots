@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -70,7 +70,7 @@ AUTHOR
 #include <curses.priv.h>
 #include <term.h>		/* for back_color_erase */
 
-MODULE_ID("$Id: hashmap.c,v 1.36 2000/12/10 03:04:30 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.42 2001/06/03 03:03:21 tom Exp $")
 
 #ifdef HASHDEBUG
 
@@ -100,44 +100,50 @@ static chtype oldtext[MAXLINES][TEXTWIDTH], newtext[MAXLINES][TEXTWIDTH];
 #define oldhash	(SP->oldhash)
 #define newhash	(SP->newhash)
 
+#if USE_WIDEC_SUPPORT
+#define HASH_VAL(ch) (ch.chars[0])
+#else
+#define HASH_VAL(ch) (ch)
+#endif
+
 static inline unsigned long
-hash(chtype * text)
+hash(NCURSES_CH_T * text)
 {
     int i;
-    chtype ch;
+    NCURSES_CH_T ch;
     unsigned long result = 0;
     for (i = TEXTWIDTH; i > 0; i--) {
 	ch = *text++;
-	result += (result << 5) + ch;
+	result += (result << 5) + HASH_VAL(ch);
     }
     return result;
 }
 
 /* approximate update cost */
 static int
-update_cost(chtype * from, chtype * to)
+update_cost(NCURSES_CH_T * from, NCURSES_CH_T * to)
 {
     int cost = 0;
     int i;
 
     for (i = TEXTWIDTH; i > 0; i--)
-	if (*from++ != *to++)
+	if (!(CharEq(*from++, *to++)))
 	    cost++;
 
     return cost;
 }
 static int
-update_cost_from_blank(chtype * to)
+update_cost_from_blank(NCURSES_CH_T * to)
 {
     int cost = 0;
     int i;
-    chtype blank = BLANK;
+    NCURSES_CH_T blank = NewChar2(BLANK_TEXT, BLANK_ATTR);
 
     if (back_color_erase)
-	blank |= (stdscr->_bkgd & A_COLOR);
+	AddAttr(blank, (AttrOf(stdscr->_bkgrnd) & A_COLOR));
 
     for (i = TEXTWIDTH; i > 0; i--)
-	if (blank != *to++)
+	if (!(CharEq(blank, *to++)))
 	    cost++;
 
     return cost;

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -47,7 +47,7 @@
 #include <term.h>		/* clear_screen, cup & friends, cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.50 2000/12/10 02:43:27 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.51 2001/06/02 21:27:47 skimo Exp $")
 
 #ifndef ONLCR			/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -191,26 +191,6 @@ newterm
 #define SGR0_TEST(mode) (mode != 0) && (exit_attribute_mode == 0 || strcmp(mode, exit_attribute_mode))
     SP->_use_rmso = SGR0_TEST(exit_standout_mode);
     SP->_use_rmul = SGR0_TEST(exit_underline_mode);
-
-#if USE_WIDEC_SUPPORT
-    /*
-     * XFree86 xterm can be configured to support UTF-8 based on environment
-     * variable settings.
-     */
-    {
-	char *s;
-	s = getenv("LC_ALL");
-	if (s == NULL || *s == '\0') {
-	    s = getenv("LC_CTYPE");
-	    if (s == NULL || *s == '\0') {
-		s = getenv("LANG");
-	    }
-	}
-	if (s != NULL && *s != '\0' && strstr(s, "UTF-8") != NULL) {
-	    SP->_outch = _nc_utf8_outch;
-	}
-    }
-#endif
 
     /* compute movement costs so we can do better move optimization */
     _nc_mvcur_init();

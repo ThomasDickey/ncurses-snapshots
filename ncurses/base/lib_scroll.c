@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -42,15 +42,15 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_scroll.c,v 1.20 2000/12/10 02:54:03 tom Exp $")
+MODULE_ID("$Id: lib_scroll.c,v 1.21 2001/06/03 00:52:10 skimo Exp $")
 
 NCURSES_EXPORT(void)
 _nc_scroll_window
 (WINDOW *win, int const n, NCURSES_SIZE_T const top,
- NCURSES_SIZE_T const bottom, chtype blank)
+ NCURSES_SIZE_T const bottom, NCURSES_CH_T blank)
 {
     int line, j;
-    size_t to_copy = (size_t) (sizeof(chtype) * (win->_maxx + 1));
+    size_t to_copy = (size_t) (sizeof(NCURSES_CH_T) * (win->_maxx + 1));
 
     TR(TRACE_MOVE, ("_nc_scroll_window(%p, %d, %d, %d)", win, n, top, bottom));
 

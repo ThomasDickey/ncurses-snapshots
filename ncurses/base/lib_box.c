@@ -40,56 +40,51 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_box.c,v 1.13 2000/12/10 02:43:26 tom Exp $")
+MODULE_ID("$Id: lib_box.c,v 1.14 2001/06/03 02:33:59 skimo Exp $")
 
+#if USE_WIDEC_SUPPORT
 NCURSES_EXPORT(int)
-wborder
-(WINDOW *win,
- chtype ls, chtype rs, chtype ts, chtype bs,
- chtype tl, chtype tr, chtype bl, chtype br)
+#else
+static inline int
+#endif
+wborder_set(WINDOW *win,
+	    const ARG_CH_T ls, const ARG_CH_T rs,
+	    const ARG_CH_T ts, const ARG_CH_T bs,
+	    const ARG_CH_T tl, const ARG_CH_T tr,
+	    const ARG_CH_T bl, const ARG_CH_T br)
 {
     NCURSES_SIZE_T i;
     NCURSES_SIZE_T endx, endy;
+    NCURSES_CH_T wls, wrs, wts, wbs, wtl, wtr, wbl, wbr;
 
     T((T_CALLED("wborder(%p,%s,%s,%s,%s,%s,%s,%s,%s)"),
        win,
-       _tracechtype2(1, ls),
-       _tracechtype2(2, rs),
-       _tracechtype2(3, ts),
-       _tracechtype2(4, bs),
-       _tracechtype2(5, tl),
-       _tracechtype2(6, tr),
-       _tracechtype2(7, bl),
-       _tracechtype2(8, br)));
+       _tracech_t2(1, ls),
+       _tracech_t2(2, rs),
+       _tracech_t2(3, ts),
+       _tracech_t2(4, bs),
+       _tracech_t2(5, tl),
+       _tracech_t2(6, tr),
+       _tracech_t2(7, bl),
+       _tracech_t2(8, br)));
 
     if (!win)
 	returnCode(ERR);
 
-    if (ls == 0)
-	ls = ACS_VLINE;
-    if (rs == 0)
-	rs = ACS_VLINE;
-    if (ts == 0)
-	ts = ACS_HLINE;
-    if (bs == 0)
-	bs = ACS_HLINE;
-    if (tl == 0)
-	tl = ACS_ULCORNER;
-    if (tr == 0)
-	tr = ACS_URCORNER;
-    if (bl == 0)
-	bl = ACS_LLCORNER;
-    if (br == 0)
-	br = ACS_LRCORNER;
+#define RENDER_WITH_DEFAULT(ch,def)					\
+    if (ch == 0)							\
+	SetChar(w ## ch,ChCharOf(def),ChAttrOf(def));			\
+    else w ## ch = CHDEREF(ch);						\
+    w ## ch = _nc_render(win, w ## ch)
 
-    ls = _nc_render(win, ls);
-    rs = _nc_render(win, rs);
-    ts = _nc_render(win, ts);
-    bs = _nc_render(win, bs);
-    tl = _nc_render(win, tl);
-    tr = _nc_render(win, tr);
-    bl = _nc_render(win, bl);
-    br = _nc_render(win, br);
+    RENDER_WITH_DEFAULT(ls, ACS_VLINE);
+    RENDER_WITH_DEFAULT(rs, ACS_VLINE);
+    RENDER_WITH_DEFAULT(ts, ACS_HLINE);
+    RENDER_WITH_DEFAULT(bs, ACS_HLINE);
+    RENDER_WITH_DEFAULT(tl, ACS_ULCORNER);
+    RENDER_WITH_DEFAULT(tr, ACS_URCORNER);
+    RENDER_WITH_DEFAULT(bl, ACS_LLCORNER);
+    RENDER_WITH_DEFAULT(br, ACS_LRCORNER);
 
     T(("using %#lx, %#lx, %#lx, %#lx, %#lx, %#lx, %#lx, %#lx",
        ls, rs, ts, bs, tl, tr, bl, br));
@@ -98,23 +93,46 @@ wborder
     endy = win->_maxy;
 
     for (i = 0; i <= endx; i++) {
-	win->_line[0].text[i] = ts;
-	win->_line[endy].text[i] = bs;
+	win->_line[0].text[i] = wts;
+	win->_line[endy].text[i] = wbs;
     }
     win->_line[endy].firstchar = win->_line[0].firstchar = 0;
     win->_line[endy].lastchar = win->_line[0].lastchar = endx;
 
     for (i = 0; i <= endy; i++) {
-	win->_line[i].text[0] = ls;
-	win->_line[i].text[endx] = rs;
+	win->_line[i].text[0] = wls;
+	win->_line[i].text[endx] = wrs;
 	win->_line[i].firstchar = 0;
 	win->_line[i].lastchar = endx;
     }
-    win->_line[0].text[0] = tl;
-    win->_line[0].text[endx] = tr;
-    win->_line[endy].text[0] = bl;
-    win->_line[endy].text[endx] = br;
+    win->_line[0].text[0] = wtl;
+    win->_line[0].text[endx] = wtr;
+    win->_line[endy].text[0] = wbl;
+    win->_line[endy].text[endx] = wbr;
 
     _nc_synchook(win);
     returnCode(OK);
+}
+
+#define WIDEVAR(v) \
+    NCURSES_CH_T    w ## v = NewChar(v)
+#define WIDEPASS(v) \
+    (v ? CHREF(w ## v) : (ARG_CH_T) 0)
+
+NCURSES_EXPORT(int)
+wborder(WINDOW *win,
+	chtype ls, chtype rs, chtype ts, chtype bs,
+	chtype tl, chtype tr, chtype bl, chtype br)
+{
+    WIDEVAR(ls);
+    WIDEVAR(rs);
+    WIDEVAR(ts);
+    WIDEVAR(bs);
+    WIDEVAR(tl);
+    WIDEVAR(tr);
+    WIDEVAR(bl);
+    WIDEVAR(br);
+    return wborder_set(win,
+		       WIDEPASS(ls), WIDEPASS(rs), WIDEPASS(ts), WIDEPASS(bs),
+		       WIDEPASS(tl), WIDEPASS(tr), WIDEPASS(bl), WIDEPASS(br));
 }
