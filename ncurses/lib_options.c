@@ -32,7 +32,7 @@
 #include <term.h>	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
 
-MODULE_ID("$Id: lib_options.c,v 1.20 1997/02/02 02:36:15 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.21 1997/02/15 16:36:48 tom Exp $")
 
 int has_ic(void)
 {
@@ -251,11 +251,11 @@ int cursor = SP->_cursor;
 */
 
 
-static struct  try *newtry;
+static struct  tries *newtry;
 
 static void init_keytry(void)
 {
-    newtry = NULL;
+	newtry = 0;
 
 /* LINT_PREPRO
 #if 0*/
@@ -270,76 +270,74 @@ static void init_keytry(void)
 static void add_to_try(char *str, short code)
 {
 static bool     out_of_memory = FALSE;
-struct try      *ptr, *savedptr;
+struct tries    *ptr, *savedptr;
 
 	if (! str  ||  out_of_memory)
 		return;
 
-	if (newtry != NULL)    {
-	ptr = savedptr = newtry;
+	if (newtry != 0) {
+		ptr = savedptr = newtry;
 
-	for (;;) {
-		while (ptr->ch != (unsigned char) *str
-		       &&  ptr->sibling != NULL)
-			ptr = ptr->sibling;
-
-		if (ptr->ch == (unsigned char) *str) {
-			if (*(++str)) {
-				if (ptr->child != NULL)
-					ptr = ptr->child;
-			else
-					break;
-			} else {
-				ptr->value = code;
+		for (;;) {
+			while (ptr->ch != (unsigned char) *str
+			       &&  ptr->sibling != 0)
+				ptr = ptr->sibling;
+	
+			if (ptr->ch == (unsigned char) *str) {
+				if (*(++str)) {
+					if (ptr->child != 0)
+						ptr = ptr->child;
+					else
+						break;
+				} else {
+					ptr->value = code;
 					return;
 				}
 			} else {
-			if ((ptr->sibling = (struct try *) malloc(sizeof *ptr)) == NULL) {
-				out_of_memory = TRUE;
+				if ((ptr->sibling = typeCalloc(struct tries,1)) == 0) {
+					out_of_memory = TRUE;
 					return;
+				}
+
+				savedptr = ptr = ptr->sibling;
+				if (*str == '\200')
+					ptr->ch = '\0';
+				else
+					ptr->ch = (unsigned char) *str;
+				str++;
+				ptr->value = 0;
+
+				break;
 			}
-
-			savedptr = ptr = ptr->sibling;
-			ptr->child = ptr->sibling = NULL;
-			if (*str == '\200')
-				ptr->ch = '\0';
-			else
-				ptr->ch = (unsigned char) *str;
-			str++;
-			ptr->value = (short) NULL;
-
-			break;
-		}
 		} /* end for (;;) */
-	} else {   /* newtry == NULL :: First sequence to be added */
-		savedptr = ptr = newtry = (struct try *) malloc(sizeof *ptr);
+	} else {   /* newtry == 0 :: First sequence to be added */
+		savedptr = ptr = newtry = typeCalloc(struct tries,1);
 
-		if (ptr == NULL) {
+		if (ptr == 0) {
 			out_of_memory = TRUE;
 				return;
 		}
 
-		ptr->child = ptr->sibling = NULL;
 		if (*str == '\200')
 			ptr->ch = '\0';
 		else
 			ptr->ch = (unsigned char) *str;
 		str++;
-		ptr->value = (short) NULL;
+		ptr->value = 0;
 	}
 
-	    /* at this point, we are adding to the try.  ptr->child == NULL */
+	    /* at this point, we are adding to the try.  ptr->child == 0 */
 
 	while (*str) {
-		ptr->child = (struct try *) malloc(sizeof *ptr);
+		ptr->child = typeCalloc(struct tries,1);
 
 		ptr = ptr->child;
 
-		if (ptr == NULL) {
+		if (ptr == 0) {
 			out_of_memory = TRUE;
 
 			ptr = savedptr;
-			while (ptr != NULL) {
+			while (ptr != 0) {
 				savedptr = ptr->child;
 				free(ptr);
 				ptr = savedptr;
@@ -348,13 +346,12 @@ struct try      *ptr, *savedptr;
 			return;
 		}
 
-		ptr->child = ptr->sibling = NULL;
 		if (*str == '\200')
 			ptr->ch = '\0';
 		else
 			ptr->ch = (unsigned char) *str;
 		str++;
-		ptr->value = (short) NULL;
+		ptr->value = 0;
 	}
 
 	ptr->value = code;
@@ -376,7 +373,7 @@ int typeahead(int fd)
 */
 
 
-static int has_key_internal(int keycode, struct try *tp)
+static int has_key_internal(int keycode, struct tries *tp)
 {
     if (!tp)
 	return(FALSE);

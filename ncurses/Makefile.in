@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.20 1997/02/09 01:09:27 tom Exp $
+# $Id: Makefile.in,v 1.22 1997/02/16 01:47:11 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -54,7 +54,10 @@ ticdir		= $(datadir)/terminfo
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
 
+AR		= @AR@
+AR_OPTS		= @AR_OPTS@
 AWK		= @AWK@
+LD		= @LD@
 LN_S		= @LN_S@
 
 CC		= @CC@
@@ -91,6 +94,7 @@ LINT_LIBS	= -lncurses @LIBS@
 
 AUTO_SRC = \
 	comp_captab.c \
+	expanded.c \
 	fallback.c \
 	keys.tries \
 	lib_keyname.c \
@@ -117,6 +121,9 @@ keys.tries: $(srcdir)/keys.list
 
 make_hash : $(srcdir)/comp_hash.c
 	$(CC) -o $@ $(CCFLAGS) -DMAIN_PROGRAM $(srcdir)/comp_hash.c $(LDFLAGS)
+
+expanded.c : $(srcdir)/MKexpanded.sh
+	sh $(srcdir)/MKexpanded.sh "$(CPP)"
 
 comp_captab.c: \
 		make_hash \

@@ -1,6 +1,35 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970215
+	+ add configure option --enable-expanded, together with code that
+	  implements an expanded form of certain complex macros, for testing
+	  with ATAC.
+	+ disable CHECK_POSITION unless --with-assertions is configured
+	  (Alexander Lukyanov pointed out that this is redundant).
+	+ use keyname() to show traced chtype values where applicable rather
+	  than _tracechar(), which truncates the value to 8-bits.
+	+ minor fixes to TRACE_ICALLS, added T_CREATE, TRACE_CCALLS macros.
+	+ modify makefiles in progs and test directories to avoid using C
+	  preprocessor options on link commands (reported by Ward Horner)
+	+ correct ifdef/include-order for nc_alloc.h vs lib_freeall.c (reported
+	  by Ward Horner)
+	+ modify ifdef's to use configure-defined symbols consistently
+	  (reported by Ward Horner)
+	+ add/use new makefile symbols AR, AR_OPTS and LD to assist in non-UNIX
+	  ports (reported by Ward Horner <whorner@tsi-telsys.com>)
+	+ rename struct try to struct tries, to avoid name conflict with C++
+	  (reported by Gary Johnson).
+	+ modify worm.c to hide cursor while running.
+	+ add -Wcast-qual to gcc warnings, fix accordingly.
+	+ use PutChar rather than PutAttrChar in ClrToEOL to properly handle
+	  wrapping (Alexander Lukyanov).
+	+ correct spurious echoing of input in hanoi.c from eric's #291 & #292
+	  patches (reported by Vernon C. Hoxie <vern@zebra.alphacdc.com>).
+	+ extend IRIX configuration to IRIX64
+	+ supply missing install.libs rule needed after restructuring
+	  test/Makefile.in
+
 970208
 	+ modify "make mostlyclean" to leave automatically-generated source
 	  in the ncurses directory, for use in cross-compiles.

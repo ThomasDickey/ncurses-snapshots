@@ -31,17 +31,17 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insstr.c,v 1.8 1997/02/02 00:32:17 tom Exp $")
+MODULE_ID("$Id: lib_insstr.c,v 1.9 1997/02/15 16:09:53 tom Exp $")
 
 int winsnstr(WINDOW *win, const char *str, int n)
 {
 short	oy = win->_cury;
 short	ox = win->_curx;
-char	*cp;
+const char *cp;
 
 	T((T_CALLED("winsstr(%p,%s,%d)"), win, _nc_visbuf(str), n));
 
-	for (cp = (char *)str; *cp && (n <= 0 || (cp - str) < n); cp++) {
+	for (cp = str; *cp && (n <= 0 || (cp - str) < n); cp++) {
 		if (*cp == '\n' || *cp == '\r' || *cp == '\t' || *cp == '\b')
 			_nc_waddch_nosync(win, (chtype)(*cp));
 		else if (is7bits(*cp) && iscntrl(*cp)) {

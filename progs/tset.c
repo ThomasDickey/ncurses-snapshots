@@ -92,7 +92,7 @@ char *ttyname(int fd);
 #define __INTERNAL_CAPS_VISIBLE	/* we need to see has_hardware_tabs */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.19 1997/01/01 23:25:50 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.20 1997/02/15 20:50:07 tom Exp $")
 
 extern char **environ;
 
@@ -123,7 +123,7 @@ CaselessCmp(char *a, char *b)	/* strcasecmp isn't portable */
 	return LOWERCASE(*a) - LOWERCASE(*b);
 }
 
-#ifndef HAVE_STRDUP
+#if !HAVE_STRDUP
 static char *strdup (char *s)
 {
   char *p;
@@ -540,7 +540,7 @@ found:	if ((p = getenv("TERMCAP")) != NULL && *p != '/') {
 		}
 		ttype = askuser(ttype);
 	}
-#ifdef BROKEN_LINKER
+#if BROKEN_LINKER
 	tgetflag("am");	/* force lib_termcap.o to be linked for 'ospeed' */
 #endif
 	return (ttype);

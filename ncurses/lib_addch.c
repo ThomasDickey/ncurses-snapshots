@@ -29,7 +29,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.25 1997/02/09 00:37:50 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.27 1997/02/16 00:46:28 tom Exp $")
 
 int wattr_on(WINDOW *win, const attr_t at)
 {
@@ -96,13 +96,20 @@ chtype _nc_render(WINDOW *win, chtype ch)
 }
 
 /* check if position is legal; if not, return error */
+#ifdef NDEBUG			/* treat this like an assertion */
 #define CHECK_POSITION(win, x, y) \
-	if (y > win->_maxy || x > win->_maxx || y < 0 || x < 0) { \
+	if (y > win->_maxy \
+	 || x > win->_maxx \
+	 || y < 0 \
+	 || x < 0) { \
 		TR(TRACE_VIRTPUT, ("Alert! Win=%p _curx = %d, _cury = %d " \
 				   "(_maxx = %d, _maxy = %d)", win, x, y, \
 				   win->_maxx, win->_maxy)); \
 		return(ERR); \
 	}
+#else
+#define CHECK_POSITION(win, x, y) /* nothing */
+#endif
 
 static inline
 int waddch_literal(WINDOW *win, chtype ch)
@@ -270,7 +277,7 @@ int waddch(WINDOW *win, const chtype ch)
 {
 	int code = ERR;
 
-	TR(TRACE_VIRTPUT|TRACE_CALLS, (T_CALLED("waddch(%p, %s)"), win, _tracechtype(ch)));
+	TR(TRACE_VIRTPUT|TRACE_CCALLS, (T_CALLED("waddch(%p, %s)"), win, _tracechtype(ch)));
 
 	if (waddch_nosync(win, ch) != ERR)
 	{
@@ -278,7 +285,7 @@ int waddch(WINDOW *win, const chtype ch)
 		code = OK;
 	}
 
-	TR(TRACE_VIRTPUT|TRACE_CALLS, (T_RETURN("%d"), code));
+	TR(TRACE_VIRTPUT|TRACE_CCALLS, (T_RETURN("%d"), code));
 	return(code);
 }
 
@@ -286,7 +293,7 @@ int wechochar(WINDOW *win, const chtype ch)
 {
 	int code = ERR;
 
-	TR(TRACE_VIRTPUT, (T_CALLED("wechochar(%p, %s)"), win, _tracechtype(ch)));
+	TR(TRACE_VIRTPUT|TRACE_CCALLS, (T_CALLED("wechochar(%p, %s)"), win, _tracechtype(ch)));
 
 	if (waddch_literal(win, ch) != ERR)
 	{
@@ -296,6 +303,6 @@ int wechochar(WINDOW *win, const chtype ch)
 		win->_immed = save_immed;
 		code = OK;
 	}
-	TR(TRACE_VIRTPUT|TRACE_CALLS, (T_RETURN("%d"), code));
+	TR(TRACE_VIRTPUT|TRACE_CCALLS, (T_RETURN("%d"), code));
 	return(code);
 }

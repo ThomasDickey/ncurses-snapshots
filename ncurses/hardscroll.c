@@ -183,7 +183,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hardscroll.c,v 1.16 1996/12/21 15:08:40 tom Exp $")
+MODULE_ID("$Id: hardscroll.c,v 1.17 1997/02/15 22:33:12 tom Exp $")
 
 #if defined(TRACE) || defined(SCROLLDEBUG)
 void _nc_linedump(void);
@@ -229,7 +229,7 @@ void _nc_scroll_optimize(void)
     int	pass = 0;
 #endif /* defined(TRACE) || defined(SCROLLDEBUG) */
 
-    TR(TRACE_CALLS, ("_nc_scroll_optimize() begins"));
+    TR(TRACE_ICALLS, ("_nc_scroll_optimize() begins"));
 
     /* mark any line not carried over with _NEWINDEX */
     for (n = 0; n < LINES; n++)

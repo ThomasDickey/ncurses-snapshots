@@ -29,7 +29,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.14 1997/02/02 01:54:57 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.16 1997/02/15 18:53:41 tom Exp $")
 
 /*
  *	char *
@@ -113,7 +113,7 @@ static char  *out_buff;
 static size_t out_size;
 static size_t out_used;
 
-#ifdef NO_LEAKS
+#if NO_LEAKS
 void _nc_free_tparm(void)
 {
 	if (out_buff != 0) {
@@ -182,7 +182,7 @@ int	number;
 int	level;
 int	x, y;
 int	i;
-register char	*cp;
+register const char *cp;
 
 	out_used = 0;
 	if (string == NULL)
@@ -193,7 +193,7 @@ register char	*cp;
 	 * Use this value to limit the number of arguments copied from the
 	 * variable-length argument list.
 	 */
-	for (cp = (char *)string, popcount = number = 0; *cp != '\0'; cp++) {
+	for (cp = string, popcount = number = 0; *cp != '\0'; cp++) {
 		if (cp[0] == '%' && cp[1] != '\0') {
 			switch (cp[1]) {
 			case '%':

@@ -27,7 +27,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include "parametrized.h"	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.15 1996/12/30 02:29:00 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.16 1997/02/15 18:54:40 tom Exp $")
 
 #define INDENT			8
 
@@ -58,7 +58,7 @@ static const char *separator, *trailer;
 
 #define OBSOLETE(n) (n[0] == 'O' && n[1] == 'T')
 
-#ifdef NO_LEAKS
+#if NO_LEAKS
 void _nc_leaks_dump_entry(void)
 {
 	if (outbuf != 0) {

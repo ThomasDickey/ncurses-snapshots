@@ -2,12 +2,14 @@
  *   Silly demo program for the NCursesPanel class.
  *
  *   written by Anatoly Ivasyuk (anatoly@nick.csh.rit.edu)
+ *
+ * $Id: demo.cc,v 1.4 1997/02/15 21:18:55 tom Exp $
  */
 
 #include "cursesw.h"
 #include "cursesp.h"
 
-#ifdef HAVE_LIBC_H
+#if HAVE_LIBC_H
 #include "libc.h"
 #endif
 

@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_alpha.c,v 1.5 1996/11/26 10:05:27 juergen Exp $")
+MODULE_ID("$Id: fty_alpha.c,v 1.6 1997/02/15 17:31:08 tom Exp $")
 
 typedef struct {
   int width;
@@ -47,7 +47,7 @@ static void *Make_Alpha_Type(va_list * ap)
 +--------------------------------------------------------------------------*/
 static void *Copy_Alpha_Type(const void * argp)
 {
-  alphaARG *ap  = (alphaARG *)argp;
+  const alphaARG *ap = (const alphaARG *)argp;
   alphaARG *new = (alphaARG *)malloc(sizeof(alphaARG));
   
   if (new)
@@ -84,7 +84,7 @@ static void Free_Alpha_Type(void * argp)
 +--------------------------------------------------------------------------*/
 static bool Check_Alpha_Field(FIELD * field, const void * argp)
 {
-  int width = ((alphaARG *)argp)->width;
+  int width = ((const alphaARG *)argp)->width;
   unsigned char *bp  = (unsigned char *)field_buffer(field,0);
   int  l = -1;
   unsigned char *s;

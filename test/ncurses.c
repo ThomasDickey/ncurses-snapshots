@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.79 1997/02/09 00:03:06 tom Exp $
+$Id: ncurses.c,v 1.82 1997/02/15 23:59:55 tom Exp $
 
 ***************************************************************************/
 
@@ -63,7 +63,7 @@ static int save_trace = TRACE_ORDINARY|TRACE_CALLS;
 extern int _nc_tracing;
 #endif
 
-#ifndef HAVE_NAPMS
+#if !HAVE_NAPMS
 #define HAVE_NAPMS 1
 #endif
 
@@ -175,7 +175,7 @@ int y, x;
     refresh();
 
 #ifdef NCURSES_VERSION
-    mousemask(ALL_MOUSE_EVENTS, (mmask_t *)NULL);
+    mousemask(ALL_MOUSE_EVENTS, (mmask_t *)0);
 #endif
 
     (void) printw("Delay in 10ths of a second (<CR> for blocking input)? ");
@@ -265,7 +265,7 @@ int y, x;
     }
 
 #ifdef NCURSES_VERSION
-    mousemask(0, (mmask_t *)NULL);
+    mousemask(0, (mmask_t *)0);
 #endif
     timeout(-1);
     erase();
@@ -937,7 +937,7 @@ static pair *selectcell(int uli, int ulj, int lri, int lrj)
 	case KEY_LEFT:	j += sj - 1; break;
 	case KEY_RIGHT:	j++; break;
 	case QUIT:
-	case ESCAPE:	return((pair *)NULL);
+	case ESCAPE:	return((pair *)0);
 	default:	res.y = uli + i; res.x = ulj + j; return(&res);
 	}
 	i %= si;
@@ -967,15 +967,15 @@ static WINDOW *getwindow(void)
     move(0, 0); clrtoeol();
     addstr("Use arrows to move cursor, anything else to mark corner 1");
     refresh();
-    if ((tmp = selectcell(2, 1, LINES-BOTLINES-2, COLS-2)) == (pair *)NULL)
-	return((WINDOW *)NULL);
+    if ((tmp = selectcell(2, 1, LINES-BOTLINES-2, COLS-2)) == (pair *)0)
+	return((WINDOW *)0);
     memcpy(&ul, tmp, sizeof(pair));
     mvaddch(ul.y-1, ul.x-1, ACS_ULCORNER);
     move(0, 0); clrtoeol();
     addstr("Use arrows to move cursor, anything else to mark corner 2");
     refresh();
-    if ((tmp = selectcell(ul.y, ul.x, LINES-BOTLINES-2, COLS-2)) == (pair *)NULL)
-	return((WINDOW *)NULL);
+    if ((tmp = selectcell(ul.y, ul.x, LINES-BOTLINES-2, COLS-2)) == (pair *)0)
+	return((WINDOW *)0);
     memcpy(&lr, tmp, sizeof(pair));
 
     rwindow = subwin(stdscr, lr.y - ul.y + 1, lr.x - ul.x + 1, ul.y, ul.x);
@@ -1060,10 +1060,10 @@ static void acs_and_scroll(void)
 	{
 	case CTRL('C'):
 	    neww = (struct frame *) calloc(1, sizeof(struct frame));
-	    if ((neww->wind = getwindow()) == (WINDOW *)NULL)
+	    if ((neww->wind = getwindow()) == (WINDOW *)0)
 		goto breakout;
 
-	    if (current == NULL)	/* First element,  */
+	    if (current == 0)	/* First element,  */
 	    {
 		neww->next = neww; /*   so point it at itself */
 		neww->last = neww;
@@ -1112,7 +1112,7 @@ static void acs_and_scroll(void)
 	case CTRL('W'):		/* save and delete window */
 	    if (current == current->next)
 		break;
-	    if ((fp = fopen(DUMPFILE, "w")) == (FILE *)NULL)
+	    if ((fp = fopen(DUMPFILE, "w")) == (FILE *)0)
 		transient(current, "Can't open screen dump file");
 	    else
 	    {
@@ -1124,7 +1124,7 @@ static void acs_and_scroll(void)
 	    break;
 
 	case CTRL('R'):		/* restore window */
-	    if ((fp = fopen(DUMPFILE, "r")) == (FILE *)NULL)
+	    if ((fp = fopen(DUMPFILE, "r")) == (FILE *)0)
 		transient(current, "Can't open screen dump file");
 	    else
 	    {
@@ -1155,7 +1155,7 @@ static void acs_and_scroll(void)
 		getbegyx(current->wind, ul.y, ul.x);
 
 		tmp = selectcell(ul.y, ul.x, LINES-BOTLINES-2, COLS-2);
-		if (tmp == (pair *)NULL)
+		if (tmp == (pair *)0)
 		{
 		    beep();
 		    break;
@@ -1368,7 +1368,7 @@ static void
 fill_panel(PANEL *pan)
 {
 WINDOW *win = panel_window(pan);
-int num = ((char *)panel_userptr(pan))[1];
+int num = ((const char *)panel_userptr(pan))[1];
 int y,x;
 
 	box(win, 0, 0);
@@ -1833,8 +1833,8 @@ static void panner(WINDOW *pad,
 	mvaddch(porty - 1, top_x - 1, ACS_LLCORNER);
 	mvaddch(porty - 1, portx - 1, ACS_LRCORNER);
 
-#if defined(HAVE_GETTIMEOFDAY)
-	gettimeofday(&before, NULL);
+#if HAVE_GETTIMEOFDAY
+	gettimeofday(&before, 0);
 #endif
 	wnoutrefresh(stdscr);
 
@@ -1845,10 +1845,10 @@ static void panner(WINDOW *pad,
 		 portx - (pymax > porty) - 1);
 
 	doupdate();
-#if defined(HAVE_GETTIMEOFDAY)
+#if HAVE_GETTIMEOFDAY
 	if (timing) {
 		double elapsed;
-		gettimeofday(&after, NULL);
+		gettimeofday(&after, 0);
 		elapsed = (after.tv_sec  + after.tv_usec  / 1.0e6)
 			- (before.tv_sec + before.tv_usec / 1.0e6);
 		move(LINES-1, COLS-20);
@@ -1960,7 +1960,7 @@ static void flushinp_test(WINDOW *win)
     by = win->_begy;
     sw = w / 3;
     sh = h / 3;
-    if((subWin = subwin(win, sh, sw, by + h - sh - 2, bx + w - sw - 2)) == NULL)
+    if((subWin = subwin(win, sh, sw, by + h - sh - 2, bx + w - sw - 2)) == 0)
         return;
 
 #ifdef A_COLOR
@@ -2056,7 +2056,7 @@ static int menu_virtualize(int c)
 static const char *animals[] =
 {
     "Lions", "Tigers", "Bears", "(Oh my!)", "Newts", "Platypi", "Lemurs",
-    (char *)NULL
+    (char *)0
 };
 
 static void menu_test(void)
@@ -2076,7 +2076,7 @@ static void menu_test(void)
 
     for (ap = animals; *ap; ap++)
 	*ip++ = new_item(*ap, "");
-    *ip = (ITEM *)NULL;
+    *ip = (ITEM *)0;
 
     m = new_menu(items);
 
@@ -2108,61 +2108,47 @@ static void menu_test(void)
 }
 
 #ifdef TRACE
-static char *levels[] =
-{
-    "TRACE_DISABLE",
-    "TRACE_TIMES",
-    "TRACE_TPUTS",
-    "TRACE_UPDATE",
-    "TRACE_MOVE",
-    "TRACE_CHARPUT",
-    "TRACE_ORDINARY",
-    "TRACE_CALLS",
-    "TRACE_VIRTPUT",
-    "TRACE_IEVENT",
-    "TRACE_BITS",
-    "TRACE_ICALLS",
-    "TRACE_MAXIMUM",
-    (char *)NULL
-};
-
-static int masks[] =	/* must parallel the array above */
-{
-    TRACE_DISABLE,
-    TRACE_TIMES,
-    TRACE_TPUTS,
-    TRACE_UPDATE,
-    TRACE_MOVE,
-    TRACE_CHARPUT,
-    TRACE_ORDINARY,
-    TRACE_CALLS,
-    TRACE_VIRTPUT,
-    TRACE_IEVENT,
-    TRACE_BITS,
-    TRACE_ICALLS,
-    TRACE_MAXIMUM,
+#define T_TBL(name) { #name, name }
+static struct {
+	const char *name;
+	int mask;
+} t_tbl[] = {
+	T_TBL(TRACE_DISABLE),
+	T_TBL(TRACE_TIMES),
+	T_TBL(TRACE_TPUTS),
+	T_TBL(TRACE_UPDATE),
+	T_TBL(TRACE_MOVE),
+	T_TBL(TRACE_CHARPUT),
+	T_TBL(TRACE_ORDINARY),
+	T_TBL(TRACE_CALLS),
+	T_TBL(TRACE_VIRTPUT),
+	T_TBL(TRACE_IEVENT),
+	T_TBL(TRACE_BITS),
+	T_TBL(TRACE_ICALLS),
+	T_TBL(TRACE_CCALLS),
+	T_TBL(TRACE_MAXIMUM),
+	{ (char *)0, 0 }
 };
 
 static char *tracetrace(int tlevel)
 {
     static char	*buf;
-    char	**sp;
+    int		n;
 
     if (buf == 0) {
 	size_t need = 12;
-	int n;
-	for (n = 0; levels[n] != 0; n++)
-	    need += strlen(levels[n]) + 2;
+	for (n = 0; t_tbl[n].name != 0; n++)
+	    need += strlen(t_tbl[n].name) + 2;
 	buf = malloc(need);
     }
     sprintf(buf, "0x%02x = {", tlevel);
     if (tlevel == 0) {
-	sprintf(buf + strlen(buf), "%s, ", levels[0]);
+	sprintf(buf + strlen(buf), "%s, ", t_tbl[0].name);
     } else {
-	for (sp = levels + 1; *sp; sp++)
-	    if ((tlevel & masks[sp - levels]) == masks[sp - levels])
+	for (n = 1; t_tbl[n].name != 0; n++)
+	    if ((tlevel & t_tbl[n].mask) == t_tbl[n].mask)
 	    {
-		strcat(buf, *sp);
+		strcat(buf, t_tbl[n].name);
 		strcat(buf, ", ");
 	    }
     }
@@ -2213,10 +2199,10 @@ static void trace_set(void)
 /* interactively set the trace level */
 {
     MENU	*m;
-    ITEM	*items[SIZEOF(levels)];
+    ITEM	*items[SIZEOF(t_tbl)];
     ITEM	**ip = items;
-    char	**ap;
     int		mrows, mcols, newtrace;
+    int		n;
     WINDOW	*menuwin;
 
     mvaddstr(0, 0, "Interactively set trace level:");
@@ -2227,12 +2213,13 @@ static void trace_set(void)
 
     refresh();
 
-    for (ap = levels; *ap; ap++)
-	*ip++ = new_item(*ap, "");
-    *ip = (ITEM *)NULL;
+    for (n = 0; t_tbl[n].name != 0; n++)
+	*ip++ = new_item(t_tbl[n].name, "");
+    *ip = (ITEM *)0;
 
     m = new_menu(items);
 
+    set_menu_format(m, 0, 2);
     scale_menu(m, &mrows, &mcols);
 
     menu_opts_off(m, O_ONEVALUE);
@@ -2245,11 +2232,13 @@ static void trace_set(void)
 
     post_menu(m);
 
-    for (ip = menu_items(m); *ip; ip++)
-	if (masks[item_index(*ip)] == 0)
+    for (ip = menu_items(m); *ip; ip++) {
+	int mask = t_tbl[item_index(*ip)].mask;
+	if (mask == 0)
 	    set_item_value(*ip, _nc_tracing == 0);
-	else if ((masks[item_index(*ip)] & _nc_tracing) == masks[item_index(*ip)])
+	else if ((mask & _nc_tracing) == mask)
 	    set_item_value(*ip, TRUE);
+    }
 
     while (run_trace_menu(m))
 	continue;
@@ -2257,7 +2246,7 @@ static void trace_set(void)
     newtrace = 0;
     for (ip = menu_items(m); *ip; ip++)
 	if (item_value(*ip))
-	    newtrace |= masks[item_index(*ip)];
+	    newtrace |= t_tbl[item_index(*ip)].mask;
     trace(newtrace);
     _tracef("trace level interactively set to %s", tracetrace(_nc_tracing));
 
@@ -2310,7 +2299,7 @@ static void display_form(FORM *f)
 
     scale_form(f, &rows, &cols);
 
-    if ((w =newwin(rows+2, cols+4, 0, 0)) != (WINDOW *)NULL)
+    if ((w =newwin(rows+2, cols+4, 0, 0)) != (WINDOW *)0)
     {
 	set_form_win(f, w);
 	set_form_sub(f, derwin(w, rows, cols, 1, 2));
@@ -2476,7 +2465,7 @@ static void demo_forms(void)
     f[6] = make_field(3, 34, 1, 12);
     f[7] = make_label(5, 0, "Comments");
     f[8] = make_field(6, 0, 4, 46);
-    f[9] = (FIELD *)NULL;
+    f[9] = (FIELD *)0;
 
     form = new_form(f);
 

@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.18 1997/02/09 01:33:37 tom Exp $
+# $Id: mk-1st.awk,v 1.19 1997/02/15 17:01:59 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -131,7 +131,7 @@ END	{
 			{
 				end_name = lib_name;
 				printf "../lib/%s : $(%s_OBJS)\n", lib_name, MODEL
-				printf "\tar rv $@ $?\n"
+				printf "\t$(AR) $(AR_OPTS) $@ $?\n"
 				printf "\t$(RANLIB) $@\n"
 				print  ""
 				print  "install \\"

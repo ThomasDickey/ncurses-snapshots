@@ -33,9 +33,9 @@
 #include <sys/termio.h>	/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.16 1996/12/30 01:03:59 tom Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.17 1997/02/15 20:53:28 tom Exp $")
 
-#ifdef __QNX__		/* Allows compilation under the QNX 4.2 OS */
+#ifndef ONLCR		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
 #endif
 

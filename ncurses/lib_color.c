@@ -29,7 +29,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.14 1997/02/02 01:44:55 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.15 1997/02/15 23:59:04 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -192,7 +192,7 @@ int init_pair(short pair, short f, short b)
 	{
 	    const color_t	*tp = hue_lightness_saturation ? hls_palette : cga_palette;
 
-	    T(("initializing pair: pair = %d, fg=(%d,%d,%d), bg=(%d,%d,%d)\n",
+	    T(("initializing pair: pair = %d, fg=(%d,%d,%d), bg=(%d,%d,%d)",
 	       pair,
 	       tp[f].red, tp[f].green, tp[f].blue,
 	       tp[b].red, tp[b].green, tp[b].blue));
@@ -319,7 +319,7 @@ void _nc_do_color(int pair, int  (*outc)(int))
 	{
 	    pair_content(pair, &fg, &bg);
 
-	    T(("setting colors: pair = %d, fg = %d, bg = %d\n", pair, fg, bg));
+	    T(("setting colors: pair = %d, fg = %d, bg = %d", pair, fg, bg));
 
 	    if (fg == C_MASK || bg == C_MASK)
 	    {

@@ -425,6 +425,7 @@
 ./mkinstalldirs
 ./ncurses.lsm
 ./ncurses/MKcaptab.awk
+./ncurses/MKexpanded.sh
 ./ncurses/MKfallback.sh
 ./ncurses/MKkeyname.awk
 ./ncurses/MKkeys.awk

@@ -30,14 +30,14 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_printw.c,v 1.2 1996/07/30 22:29:50 tom Exp $")
+MODULE_ID("$Id: lib_printw.c,v 1.3 1997/02/16 00:07:23 tom Exp $")
 
 int printw(const char *fmt, ...)
 {
 va_list argp;
 char buf[BUFSIZ];
 
-	T(("printw(\"%s\",...) called", fmt));
+	T(("printw(%s,...) called", _nc_visbuf(fmt)));
 
 	va_start(argp, fmt);
 	vsprintf(buf, fmt, argp);
@@ -52,7 +52,7 @@ int wprintw(WINDOW *win, const char *fmt, ...)
 va_list argp;
 char buf[BUFSIZ];
 
-	T(("wprintw(%p,\"%s\",...) called", win, fmt));
+	T(("wprintw(%p,%s,...) called", win, _nc_visbuf(fmt)));
 
 	va_start(argp, fmt);
 	vsprintf(buf, fmt, argp);

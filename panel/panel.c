@@ -24,7 +24,12 @@
 /* panel.c -- implementation of panels library */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: panel.c,v 1.8 1996/12/28 21:44:17 juergen Exp $")
+MODULE_ID("$Id: panel.c,v 1.9 1997/02/16 00:39:28 tom Exp $")
+
+#ifdef TRACE
+extern char *_nc_visbuf(const char *);
+#define USER_PTR(ptr) _nc_visbuf((const char *)ptr)
+#endif
 
 static PANEL *__bottom_panel = (PANEL *)0;
 static PANEL *__top_panel    = (PANEL *)0;
@@ -46,9 +51,9 @@ static void
 dPanel(const char *text, const PANEL *pan)
 {
 	_tracef("%s id=%s b=%s a=%s y=%d x=%d",
-		text,(char *)(pan->user),
-		(pan->below) ? (char *)(pan->below->user) : "--",
-		(pan->above) ? (char *)(pan->above->user) : "--",
+		text, USER_PTR(pan->user),
+		(pan->below) ?  USER_PTR(pan->below->user) : "--",
+		(pan->above) ?  USER_PTR(pan->above->user) : "--",
 		pan->wstarty, pan->wstartx);
 } /* end of dPanel */
 #else
@@ -66,10 +71,10 @@ dStack(const char *fmt, int num, const PANEL *pan)
 
   sprintf(s80,fmt,num,pan);
   _tracef("%s b=%s t=%s",s80,
-	  (__bottom_panel) ? (char *)(__bottom_panel->user) : "--",
-	  (__top_panel)    ? (char *)(__top_panel->user)    : "--");
+	  (__bottom_panel) ?  USER_PTR(__bottom_panel->user) : "--",
+	  (__top_panel)    ?  USER_PTR(__top_panel->user)    : "--");
   if(pan)
-    _tracef("pan id=%s",(char *)(pan->user));
+    _tracef("pan id=%s", USER_PTR(pan->user));
   pan = __bottom_panel;
   while(pan)
     {
@@ -133,7 +138,7 @@ __panels_overlapped(register const PANEL *pan1, register const PANEL *pan2)
 {
   if(!pan1 || !pan2)
     return(FALSE);
-  dBug(("__panels_overlapped %s %s",(char *)(pan1->user),(char *)(pan2->user)));
+  dBug(("__panels_overlapped %s %s", USER_PTR(pan1->user), USER_PTR(pan2->user)));
   /* pan1 intersects with pan2 ? */
   if((pan1->wstarty >= pan2->wstarty) && (pan1->wstarty < pan2->wendy) &&
      (pan1->wstartx >= pan2->wstartx) && (pan1->wstartx < pan2->wendx))
@@ -195,7 +200,7 @@ __override(const PANEL *pan, int show)
   PANEL *pan2;
   PANELCONS *tobs = pan->obscure;			   /* "this" one */
 
-  dBug(("__override %s,%d",(char *)(pan->user),show));
+  dBug(("__override %s,%d", USER_PTR(pan->user),show));
 
   switch (show)
     {
@@ -223,7 +228,7 @@ __override(const PANEL *pan, int show)
   while(tobs)
     {
       if((pan2 = tobs->pan) != pan) {
-	dBug(("test obs pan=%s pan2=%s",(char *)(pan->user),(char *)(pan2->user)));
+	dBug(("test obs pan=%s pan2=%s", USER_PTR(pan->user), USER_PTR(pan2->user)));
 	for(y = pan->wstarty; y < pan->wendy; y++) {
 	  if( (y >= pan2->wstarty) && (y < pan2->wendy) &&
 	      ((is_linetouched(pan->win,y - pan->wstarty) == TRUE)) )
@@ -250,7 +255,7 @@ __calculate_obscure(void)
     {
       if(pan->obscure)
 	__free_obscure(pan);
-      dBug(("--> __calculate_obscure %s",(char *)(pan->user)));
+      dBug(("--> __calculate_obscure %s", USER_PTR(pan->user)));
       lobs = (PANELCONS *)0;		/* last one */
       pan2 = __bottom_panel;
       /* This loop builds a list of panels obsured by pan or obscuring
@@ -434,7 +439,7 @@ hide_panel(register PANEL *pan)
   if(!pan)
     return(ERR);
 
-  dBug(("--> hide_panel %s",(char *)(pan->user)));
+  dBug(("--> hide_panel %s", USER_PTR(pan->user)));
 
   if(!__panel_is_linked(pan))
     {
@@ -458,7 +463,7 @@ show_panel(register PANEL *pan)
     return(ERR);
   if(pan == __top_panel)
     return(OK);
-  dBug(("--> show_panel %s",(char *)(pan->user)));
+  dBug(("--> show_panel %s", USER_PTR(pan->user)));
   if(__panel_is_linked(pan))
     (void)hide_panel(pan);
   __panel_link_top(pan);
@@ -482,7 +487,7 @@ del_panel(register PANEL *pan)
 {
   if(pan)
     {
-      dBug(("--> del_panel %s",(char *)(pan->user)));
+      dBug(("--> del_panel %s", USER_PTR(pan->user)));
       if(__panel_is_linked(pan))
 	(void)hide_panel(pan);
       free((void *)pan);
@@ -502,7 +507,7 @@ bottom_panel(register PANEL *pan)
     return(ERR);
   if(pan == __bottom_panel)
     return(OK);
-  dBug(("--> bottom_panel %s",(char *)(pan->user)));
+  dBug(("--> bottom_panel %s", USER_PTR(pan->user)));
   if(__panel_is_linked(pan))
     (void)hide_panel(pan);
   __panel_link_bottom(pan);

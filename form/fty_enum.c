@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_enum.c,v 1.4 1996/11/19 15:23:53 juergen Exp $")
+MODULE_ID("$Id: fty_enum.c,v 1.5 1997/02/15 17:33:59 tom Exp $")
 
 typedef struct {
   char **kwds;
@@ -62,7 +62,7 @@ static void *Make_Enum_Type(va_list * ap)
 +--------------------------------------------------------------------------*/
 static void *Copy_Enum_Type(const void * argp)
 {
-  enumARG *ap  = (enumARG *)argp;
+  const enumARG *ap = (const enumARG *)argp;
   enumARG *new = (enumARG *)0;
 
   if (argp)
@@ -159,9 +159,9 @@ static int Compare(const unsigned char *s, const unsigned char *buf,
 +--------------------------------------------------------------------------*/
 static bool Check_Enum_Field(FIELD * field, const void  * argp)
 {
-  char **kwds       = ((enumARG *)argp)->kwds;
-  bool ccase        = ((enumARG *)argp)->checkcase;
-  bool unique       = ((enumARG *)argp)->checkunique;
+  char **kwds       = ((const enumARG *)argp)->kwds;
+  bool ccase        = ((const enumARG *)argp)->checkcase;
+  bool unique       = ((const enumARG *)argp)->checkunique;
   unsigned char *bp = (unsigned char *)field_buffer(field,0);
   char *s, *t, *p;
   int res;
@@ -210,7 +210,7 @@ static const char *dummy[] = { (char *)0 };
 +--------------------------------------------------------------------------*/
 static bool Next_Enum(FIELD * field, const void * argp)
 {
-  enumARG *args     = (enumARG *)argp;
+  const enumARG *args = (const enumARG *)argp;
   char **kwds       = args->kwds;
   bool ccase        = args->checkcase;
   int cnt           = args->count;
@@ -244,7 +244,7 @@ static bool Next_Enum(FIELD * field, const void * argp)
 +--------------------------------------------------------------------------*/
 static bool Previous_Enum(FIELD * field, const void * argp)
 {
-  enumARG *args = (enumARG *)argp;
+  const enumARG *args = (const enumARG *)argp;
   int cnt       = args->count;
   char **kwds   = &args->kwds[cnt-1];
   bool ccase    = args->checkcase;

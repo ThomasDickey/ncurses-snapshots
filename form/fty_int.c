@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_int.c,v 1.5 1996/11/26 10:05:41 juergen Exp $")
+MODULE_ID("$Id: fty_int.c,v 1.6 1997/02/15 17:30:09 tom Exp $")
 
 typedef struct {
   int precision;
@@ -52,7 +52,7 @@ static void *Make_Integer_Type(va_list * ap)
 +--------------------------------------------------------------------------*/
 static void *Copy_Integer_Type(const void * argp)
 {
-  integerARG *ap  = (integerARG *)argp;
+  const integerARG *ap = (const integerARG *)argp;
   integerARG *new = (integerARG *)0;
 
   if (argp)
@@ -91,7 +91,7 @@ static void Free_Integer_Type(void * argp)
 +--------------------------------------------------------------------------*/
 static bool Check_Integer_Field(FIELD * field, const void * argp)
 {
-  integerARG *argi  = (integerARG *)argp;
+  const integerARG *argi = (const integerARG *)argp;
   int low           = argi->low;
   int high          = argi->high;
   int prec          = argi->precision;
