@@ -1,7 +1,7 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
 #	Version 10.2.1
-#	$Date: 1998/04/25 19:44:29 $
+#	$Date: 1998/05/09 17:34:20 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -600,7 +600,7 @@ linux|linux console,
 	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
 	khome=\E[1~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, kspd=^Z, 
 	nel=^M^J, rc=\E8, rev=\E[7m, ri=\EM, rmir=\E[4l, rmso=\E[27m, 
-	rmul=\E[24m, rs1=\Ec, sc=\E7, 
+	rmul=\E[24m, rs1=\Ec\E]R, sc=\E7, 
 	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m, 
 	smir=\E[4h, smul=\E[4m, tbc=\E[3g, u6=\E[%i%d;%dR, 
 	u7=\E[6n, u8=\E[?6c, u9=\E[c, vpa=\E[%i%p1%dd, 
@@ -2047,7 +2047,7 @@ xterm-xi|xterm on XI Graphics Accelerated X under BSD/OS 3.1,
 	rmso=\E[m, rmul=\E[m, 
 	use=xterm-xf86-v33, 
 
-# This is one of the variants from XFree86 3.3, updated for 4.0 (T.Dickey)
+# This is one of the variants of XFree86 3.3 xterm, updated for 4.0 (T.Dickey)
 xterm-16color|xterm with 16 colors like aixterm, 
 	colors#16, ncv#32, pairs#256, 
 	setab=\E[%?%p1%{8}%<%t%p1%{40}%+%e%p1%{92}%+%;%dm, 
@@ -2153,6 +2153,8 @@ xterm1|xterm terminal emulator ignoring the alternate screen buffer,
 # before ECMA-64 color support was folded into the main-line xterm release.
 # This entry is straight from color_xterm's maintainer.
 # From: Jacob Mandelson <jlm@ugcs.caltech.edu>, 09 Nov 1996
+# The README's with the distribution also say that it supports SGR 21, 24, 25
+# and 27, but they are not present in the terminfo or termcap.
 color_xterm|cx|cx100|color_xterm color terminal emulator for X, 
 	am, km, mir, msgr, xenl, 
 	colors#8, cols#80, it#8, lines#65, pairs#64, 
@@ -2179,6 +2181,16 @@ color_xterm|cx|cx100|color_xterm color terminal emulator for X,
 	sgr0=\E[m, smacs=^N, smam=\E[?7h, 
 	smcup=\E[?1;41s\E[?1;41h\E=, smir=\E[4h, smso=\E[7m, 
 	smul=\E[4m, 
+
+# The 'nxterm' distributed with Redhat Linux is a slight rehack of
+# xterm-sb_right-ansi-3d, which implements ANSI colors, but does not support
+# SGR 39 or 49.  SGR 0 does reset colors (along with everything else).  This
+# description is "compatible" with color_xterm, rxvt and XFree86 xterm, except
+# that each of those implements the home, end, delete keys differently.
+nxterm|xterm-color|generic color xterm,
+	use=xterm-r6,
+	use=klone+color,
+	op=\E[m,
 
 # From: Thomas Dickey <dickey@clark.net> 04 Oct 1997
 # Updated: Oezguer Kesim <kesim@math.fu-berlin.de> 02 Nov 1997
@@ -2221,7 +2233,7 @@ rxvt-basic|rxvt terminal base (X Window System),
 	kf4=\E[14~, kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, 
 	kf9=\E[20~, kfnd=\E[1~, khome=\E[7~, kich1=\E[2~, 
 	kmous=\E[M, knp=\E[6~, kpp=\E[5~, kslt=\E[4~, rc=\E8, 
-	rev=\E[7m, ri=\EM, rmacs=^O, rmcup=\E[?47l\E8, rmir=\E[4l, 
+	rev=\E[7m, ri=\EM, rmacs=^O, rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, 
 	rmkx=\E>, rmso=\E[27m, rmul=\E[24m, 
 	rs1=\E>\E[1;3;4;5;6l\E[?7h\E[m\E[r\E[2J\E[H, 
 	rs2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l\E>, 

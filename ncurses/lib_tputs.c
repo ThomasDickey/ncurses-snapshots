@@ -45,7 +45,7 @@
 #include <term.h>	/* padding_baud_rate, xon_xoff */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.31 1998/04/04 19:08:49 juergen Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.32 1998/05/09 23:01:25 tom Exp $")
 
 #define OUTPUT ((SP != 0) ? SP->_ofp : stdout)
 
@@ -137,11 +137,12 @@ char	addrbuf[17];
 		always_delay = (string == bell) || (string == flash_screen);
 		normal_delay =
 		 !xon_xoff
-#ifdef padding_baud_rate
 		 && padding_baud_rate
-		 && (!cur_term || cur_term->_baudrate >= padding_baud_rate)
+#ifdef NCURSES_NO_PADDING
+		 && (SP == 0 || !(SP->_no_padding))
 #endif
-		 ;
+		 && (cur_term == 0
+		  || cur_term->_baudrate >= padding_baud_rate);
 	}
 
 #ifdef BSD_TPUTS

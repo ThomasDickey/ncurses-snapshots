@@ -75,7 +75,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.99 1998/03/21 22:51:19 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.100 1998/05/05 10:01:07 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -1144,8 +1144,9 @@ bool	attrchanged = FALSE;
 			if(newLine[firstChar] != blank )
 				PutChar(newLine[firstChar]);
 			ClrToEOL(blank);
-		} else if( newLine[nLastChar] != oldLine[oLastChar]
-				|| !(_nc_idcok && has_ic()) ) {
+		} else if( (nLastChar != oLastChar)
+			&& (newLine[nLastChar] != oldLine[oLastChar]
+				|| !(_nc_idcok && has_ic())) ) {
 			GoTo(lineno, firstChar);
 			if ((oLastChar - nLastChar) > SP->_el_cost) {
 				if(PutRange(oldLine, newLine, lineno, firstChar, nLastChar))

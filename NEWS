@@ -1,10 +1,38 @@
--- $Id: NEWS,v 1.332 1998/04/25 20:58:16 tom Exp $
+-- $Id: NEWS,v 1.334 1998/05/10 00:25:43 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980509
+	+ put -L$(libdir) first when linking programs, except for HP-UX.
+	+ correct macros for wattr_set, wattr_get, separate wattrset macro from
+	  these to preserve behavior that allows attributes to be combined with
+	  color pair numbers.
+	+ add configure option --enable-no-padding, to allow environment
+	  variable $NCURSES_NO_PADDING to eliminate non-mandatory padding,
+	  thereby making terminal emulators (e.g., for vt100) a little more
+	  efficient (request by Daniel Eisenbud <eisenbud@cs.swarthmore.edu>).
+	+ modify configure script to embed ABI in shared libraries for HP-UX
+	  10.x (detailed request by Tim Mooney).
+	+ add test/example of the 'filter()' function.
+	+ add nxterm and xterm-color terminfo description (request by Cristian
+	  Gafton <gafton@redhat.com>).
+	+ modify rxvt terminfo description to clear alternate screen before
+	  switching back to normal screen, for compatibility with applications
+	  which use xterm (reported by Manoj Kasichainula <manojk@io.com>).
+	+ modify linux terminfo description to reset color palette (reported
+	  by Telford Tendys <telford@eng.uts.edu.au>).
+	+ correction to doupdate, for case where terminal does not support
+	  insert/delete character.  The logic did not check that there was a
+	  difference in alignment of changes to old/new screens before
+	  repainting the whole non-blank portion of the line.  Modified to fall
+	  through into logic that reduces by the portion which does not differ
+	  (reported by Daniel Eisenbud <eisenbud@cs.swarthmore.edu>).
+	+ minor performance improvement to wnoutrefresh by moving some
+	  comparisons out of inner loop.
 
 980425
 	+ modify configure script to substitute NCURSES_CONST in curses.h
@@ -36,7 +64,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 980411
 	+ ifdef'd has_key() and mcprint() as extended functions.
 	+ modified several prototypes to correspond with 1997 version of
-	  X/Open Curses.
+	  X/Open Curses (affects ABI since developers have used attr_get).
 	+ remove spurious trailing blanks in glibc addon-scripts (patch by
 	  H.J.Lu).
 	+ insert a few braces at locations where gcc-2.8.x asks to use them to
