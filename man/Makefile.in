@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.26 2000/04/01 22:15:22 tom Exp $
+# $Id: Makefile.in,v 1.27 2000/08/13 00:11:25 tom Exp $
 ##############################################################################
-# Copyright (c) 1998 Free Software Foundation, Inc.                          #
+# Copyright (c) 1998,2000 Free Software Foundation, Inc.                     #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -42,8 +42,6 @@ prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 datadir		= @datadir@
 mandir		= @mandir@
-
-ticdir		= $(datadir)/terminfo
 
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@

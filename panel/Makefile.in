@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.31 2000/05/28 01:40:32 tom Exp $
+# $Id: Makefile.in,v 1.32 2000/08/13 00:09:19 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2000 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -54,8 +54,6 @@ libdir		= @libdir@
 includedir	= @includedir@
 datadir		= @datadir@
 
-ticdir		= $(datadir)/terminfo
-
 INSTALL		= @INSTALL@
 INSTALL_LIB	= @INSTALL@ @INSTALL_LIB@
 INSTALL_DATA	= @INSTALL_DATA@
@@ -71,7 +69,7 @@ CPP		= @CPP@
 CFLAGS		= @CFLAGS@
 
 CPPFLAGS	= @CPPFLAGS@ \
-		  -DHAVE_CONFIG_H -DTERMINFO=\"$(ticdir)\"
+		  -DHAVE_CONFIG_H
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 

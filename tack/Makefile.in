@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.19 2000/07/08 01:56:35 tom Exp $
+# $Id: Makefile.in,v 1.20 2000/08/13 00:07:21 tom Exp $
 # Makefile for tack
 #
 # The variable 'srcdir' refers to the source-distribution, and can be set with
@@ -27,8 +27,6 @@ libdir		= @libdir@
 mandir		= @mandir@/man1
 includedir	= @includedir@
 datadir		= @datadir@
-
-ticdir		= $(datadir)/terminfo
 
 INSTALL		= @INSTALL@
 INSTALL_PROGRAM	= @INSTALL_PROGRAM@
