@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.168 2000/10/08 01:24:59 tom Exp $
+ * $Id: curses.priv.h,v 1.169 2000/10/28 20:19:08 tom Exp $
  *
  *	curses.priv.h
  *
@@ -742,6 +742,7 @@ extern chtype _nc_background(WINDOW *);
 extern chtype _nc_render(WINDOW *, chtype);
 extern int _nc_access(const char *, int);
 extern int _nc_baudrate(int);
+extern int _nc_freewin(WINDOW *win);
 extern int _nc_getenv_num(const char *);
 extern int _nc_keypad(bool);
 extern int _nc_ospeed(int);
@@ -750,13 +751,12 @@ extern int _nc_setupscreen(short, short const, FILE *);
 extern int _nc_timed_wait(int, int, int *);
 extern int _nc_waddch_nosync(WINDOW *, const chtype);
 extern void _nc_do_color(int, int, bool, int (*)(int));
+extern void _nc_flush(void);
 extern void _nc_freeall(void);
-extern void _nc_freewin(WINDOW *win);
 extern void _nc_hash_map(void);
 extern void _nc_init_keytry(void);
 extern void _nc_keep_tic_dir(const char *);
 extern void _nc_make_oldhash(int i);
-extern void _nc_flush(void);
 extern void _nc_outstr(const char *str);
 extern void _nc_scroll_oldhash(int n, int top, int bot);
 extern void _nc_scroll_optimize(void);

@@ -48,7 +48,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.60 2000/09/02 18:13:12 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.61 2000/10/28 22:25:10 tom Exp $")
 
 /****************************************************************************
  *
@@ -133,7 +133,7 @@ _nc_get_screensize(int *linep, int *colp)
 	    *colp = screendata[0];
 	    *linep = screendata[1];
 	    T(("EMX screen size: environment LINES = %d COLUMNS = %d",
-		    *linep, *colp));
+	       *linep, *colp));
 	}
 #endif
 #if HAVE_SIZECHANGE
@@ -265,12 +265,14 @@ grab_entry(const char *const tn, TERMTYPE * const tp)
      */
     if (status == 1) {
 	int n;
-	for_each_boolean(n, tp)
+	for_each_boolean(n, tp) {
 	    if (!VALID_BOOLEAN(tp->Booleans[n]))
-	    tp->Booleans[n] = FALSE;
-	for_each_string(n, tp)
+		tp->Booleans[n] = FALSE;
+	}
+	for_each_string(n, tp) {
 	    if (tp->Strings[n] == CANCELLED_STRING)
-	    tp->Strings[n] = ABSENT_STRING;
+		tp->Strings[n] = ABSENT_STRING;
+	}
     }
     return (status);
 }
@@ -302,7 +304,7 @@ setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
     }
     if (strlen(tname) > MAX_NAME_SIZE) {
 	ret_error(-1, "TERM environment must be <= %d characters.\n",
-	    MAX_NAME_SIZE);
+		  MAX_NAME_SIZE);
     }
 
     T(("your terminal name is %s", tname));

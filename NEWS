@@ -1,10 +1,22 @@
--- $Id: NEWS,v 1.602 2000/10/21 00:42:11 tom Exp $
+-- $Id: NEWS,v 1.603 2000/10/29 01:44:04 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20001028
+	+ add message to configure script showing g++ version.
+	+ resync config.guess, config.sub
+	+ modify lib_delwin.c, making it return ERR if the window did not exist
+	  (suggested by Neil Zanella).
+	+ add cases for FreeBSD 3.1 to tdlint and makellib scripts, used this
+	  to test/review ncurses library.  (Would use lclint, but it doesn't
+	  work).
+	+ reorganized knight.c to avoid forward references.  Correct screen
+	  updates when backtracking, especially to the first cell.  Add F/B/a
+	  commands.
 
 20001021 5.2 release for upload to ftp.gnu.org
 	+ update generated html files from manpages.

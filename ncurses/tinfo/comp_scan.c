@@ -50,7 +50,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.47 2000/09/24 01:15:17 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.48 2000/10/28 21:25:44 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -203,7 +203,7 @@ _nc_get_token(void)
 #endif
 	    && !strchr(terminfo_punct, (char) ch)) {
 	    _nc_warning("Illegal character (expected alphanumeric or %s) - %s",
-			terminfo_punct, unctrl(ch));
+			terminfo_punct, unctrl((chtype)ch));
 	    _nc_panic_mode(separator);
 	    goto start_token;
 	}
@@ -338,7 +338,7 @@ _nc_get_token(void)
 	    case '@':
 		if ((ch = next_char()) != separator)
 		    _nc_warning("Missing separator after `%s', have %s",
-				buffer, unctrl(ch));
+				buffer, unctrl((chtype)ch));
 		_nc_curr_token.tk_name = buffer;
 		type = CANCEL;
 		break;
@@ -376,7 +376,7 @@ _nc_get_token(void)
 	    default:
 		/* just to get rid of the compiler warning */
 		type = UNDEF;
-		_nc_warning("Illegal character - %s", unctrl(ch));
+		_nc_warning("Illegal character - %s", unctrl((chtype)ch));
 	    }
 	}			/* end else (first_column == FALSE) */
     }				/* end else (ch != EOF) */

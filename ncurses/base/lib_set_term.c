@@ -43,7 +43,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.58 2000/10/04 22:05:48 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.59 2000/10/28 20:20:28 tom Exp $")
 
 SCREEN *
 set_term(SCREEN * screenp)
@@ -95,9 +95,9 @@ delscreen(SCREEN * sp)
 	scan = &(*scan)->_next_screen;
     }
 
-    _nc_freewin(sp->_curscr);
-    _nc_freewin(sp->_newscr);
-    _nc_freewin(sp->_stdscr);
+    (void) _nc_freewin(sp->_curscr);
+    (void) _nc_freewin(sp->_newscr);
+    (void) _nc_freewin(sp->_stdscr);
     _nc_free_keytry(sp->_keytry);
     _nc_free_keytry(sp->_key_ok);
 

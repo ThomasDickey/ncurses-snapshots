@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_pad.c,v 1.29 2000/04/29 21:19:44 tom Exp $")
+MODULE_ID("$Id: lib_pad.c,v 1.30 2000/10/28 21:11:28 tom Exp $")
 
 WINDOW *
 newpad(int l, int c)
@@ -60,7 +60,7 @@ newpad(int l, int c)
     for (i = 0; i < l; i++) {
 	if_USE_SCROLL_HINTS(win->_line[i].oldindex = _NEWINDEX);
 	if ((win->_line[i].text = typeCalloc(chtype, ((size_t) c))) == 0) {
-	    _nc_freewin(win);
+	    (void) _nc_freewin(win);
 	    returnWin(0);
 	}
 	for (ptr = win->_line[i].text; ptr < win->_line[i].text + c;)
@@ -102,13 +102,16 @@ int
 pnoutrefresh(WINDOW *win, int pminrow, int pmincol,
     int sminrow, int smincol, int smaxrow, int smaxcol)
 {
-    const int my_len = 2;	/* parameterize the threshold for hardscroll */
     NCURSES_SIZE_T i, j;
     NCURSES_SIZE_T m, n;
     NCURSES_SIZE_T pmaxrow;
     NCURSES_SIZE_T pmaxcol;
+
+#if USE_SCROLL_HINTS
+    const int my_len = 2;	/* parameterize the threshold for hardscroll */
     NCURSES_SIZE_T displaced;
     bool wide;
+#endif
 
     T((T_CALLED("pnoutrefresh(%p, %d, %d, %d, %d, %d, %d)"),
 	    win, pminrow, pmincol, sminrow, smincol, smaxrow, smaxcol));
@@ -155,12 +158,14 @@ pnoutrefresh(WINDOW *win, int pminrow, int pmincol,
 
     T(("pad being refreshed"));
 
+#if USE_SCROLL_HINTS
     if (win->_pad._pad_y >= 0) {
 	displaced = pminrow - win->_pad._pad_y
 	    - (sminrow - win->_pad._pad_top);
 	T(("pad being shifted by %d line(s)", displaced));
     } else
 	displaced = 0;
+#endif
 
     /*
      * For pure efficiency, we'd want to transfer scrolling information
@@ -176,7 +181,9 @@ pnoutrefresh(WINDOW *win, int pminrow, int pmincol,
      * windows).  Note that changing this formula will not break any code,
      * merely change the costs of various update cases.
      */
+#if USE_SCROLL_HINTS
     wide = (smincol < my_len && smaxcol > (newscr->_maxx - my_len));
+#endif
 
     for (i = pminrow, m = sminrow + win->_yoffset;
 	i <= pmaxrow && m <= newscr->_maxy;

@@ -40,13 +40,14 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.24 2000/04/29 18:49:51 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.25 2000/10/28 22:12:24 tom Exp $")
 
-void
+int
 _nc_freewin(WINDOW *win)
 {
     WINDOWLIST *p, *q;
     int i;
+    int result = ERR;
 
     if (win != 0) {
 	for (p = _nc_windows, q = 0; p != 0; q = p, p = p->next) {
@@ -71,11 +72,13 @@ _nc_freewin(WINDOW *win)
 		if (win == newscr)
 		    newscr = 0;
 
+		result = OK;
 		T(("...deleted win=%p", win));
 		break;
 	    }
 	}
     }
+    return result;
 }
 
 WINDOW *
@@ -104,11 +107,11 @@ newwin(int num_lines, int num_columns, int begy, int begx)
     for (i = 0; i < num_lines; i++) {
 	win->_line[i].text = typeCalloc(chtype, (unsigned) num_columns);
 	if (win->_line[i].text == 0) {
-	    _nc_freewin(win);
+	    (void) _nc_freewin(win);
 	    returnWin(0);
 	}
 	for (ptr = win->_line[i].text; ptr < win->_line[i].text +
-	    num_columns;)
+	     num_columns;)
 	    *ptr++ = ' ';
     }
 
@@ -125,7 +128,7 @@ derwin(WINDOW *orig, int num_lines, int num_columns, int begy, int begx)
     int flags = _SUBWIN;
 
     T((T_CALLED("derwin(%p,%d,%d,%d,%d)"), orig, num_lines, num_columns,
-	    begy, begx));
+       begy, begx));
 
     /*
        ** make sure window fits inside the original one
@@ -146,7 +149,7 @@ derwin(WINDOW *orig, int num_lines, int num_columns, int begy, int begx)
 	flags |= _ISPAD;
 
     if ((win = _nc_makenew(num_lines, num_columns, orig->_begy + begy,
-		orig->_begx + begx, flags)) == 0)
+			   orig->_begx + begx, flags)) == 0)
 	returnWin(0);
 
     win->_pary = begy;
@@ -216,8 +219,8 @@ _nc_makenew(int num_lines, int num_columns, int begy, int begx, int flags)
     win->_attrs = A_NORMAL;
     win->_bkgd = BLANK;
 
-    win->_clear = is_pad ? FALSE : (num_lines == screen_lines && num_columns
-	== screen_columns);
+    win->_clear = is_pad ? FALSE : (num_lines == screen_lines
+				    && num_columns == screen_columns);
     win->_idlok = FALSE;
     win->_idcok = TRUE;
     win->_scroll = FALSE;
