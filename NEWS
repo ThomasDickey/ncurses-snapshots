@@ -1,10 +1,14 @@
--- $Id: NEWS,v 1.653 2001/11/04 01:47:31 tom Exp $
+-- $Id: NEWS,v 1.654 2001/11/10 23:45:30 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20011110
+	+ review/correct several missing/generated items in curses.wide, sorted
+	  the lists to make subsequent diff's easier to track.
 
 20011103
 	+ add manual pages for add_wch(), echo_wchar(), getcchar(),
