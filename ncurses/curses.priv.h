@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.109 1998/09/05 22:10:02 tom Exp $
+ * $Id: curses.priv.h,v 1.110 1998/09/12 22:50:21 tom Exp $
  *
  *	curses.priv.h
  *
@@ -660,6 +660,10 @@ extern void _nc_synchook(WINDOW *win);
 #if USE_SIZECHANGE
 extern void _nc_update_screensize(void);
 #endif
+
+#define NC_BUFFERED(flag) \
+	if ((SP->_setbuf == 0) != flag) \
+		_nc_set_buffer(SP->_ofp, flag)
 
 /*
  * On systems with a broken linker, define 'SP' as a function to force the

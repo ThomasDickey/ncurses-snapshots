@@ -163,7 +163,7 @@ If autoconf Fails
                               How to Report Bugs
                                        
    The reporting address for bugs is bug-ncurses@gnu.org. This is a
-   majordomo list; to join, write to bug-ncurses-request@gnu.org with a 
+   majordomo list; to join, write to bug-ncurses-request@gnu.org with a
    message containing the line:
              subscribe <name>@<host.domain>
 

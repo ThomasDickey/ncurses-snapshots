@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.369 1998/09/06 00:22:45 tom Exp $
+-- $Id: NEWS,v 1.371 1998/09/13 01:33:50 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980912
+	+ modify test-driver in lib_mvcur.s to use _nc_setbuffer, for consistent
+	  treatment.
+	+ modify ncurses to restore output to unbuffered on endwin, and resume
+	  buffering in refresh (see lib_set_term.c and NC_BUFFERED macro).
+	+ corrected HTML version numbers (according to the W3C validator, they
+	  never were HTML 2.0-compliant, but are acceptable 3.0).
 
 980905
 	+ modify MKterminfo.sh to generate terminfo.5 with tables sorted by
