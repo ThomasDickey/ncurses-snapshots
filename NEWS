@@ -1,10 +1,15 @@
--- $Id: NEWS,v 1.358 1998/08/09 02:36:26 tom Exp $
+-- $Id: NEWS,v 1.360 1998/08/09 14:03:10 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980809
+	+ correct missing braces around a trace statement in read_entry.c,
+	  from 980808 (reported by Kim DeVaughn <kimdv@best.com> and Liviu
+	  Daia).
 
 980808
 	+ fix missing include <errno.h> in ditto.c (reported by Bernhard
