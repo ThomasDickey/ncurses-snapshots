@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2001/05/19 20:52:11 $
+#	$Date: 2001/07/21 23:22:57 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2967,7 +2967,6 @@ rxvt|rxvt terminal emulator (X Window System),
 # From: Michael Jennings <mej@valinux.com>
 # removed kf0 which conflicts with kf10 -TD
 # remove cvvis which conflicts with cnorm -TD
-# There's no u6 because Eterm appears to lack CPR (cursor position report).
 Eterm|Eterm-color|Eterm with xterm-style color support (X Window System), 
 	am, bce, bw, eo, km, mc5i, mir, msgr, xenl, xon, 
 	btns#5, cols#80, it#8, lines#24, lm#0, ncv@, 
@@ -3003,8 +3002,8 @@ Eterm|Eterm-color|Eterm with xterm-style color support (X Window System),
 	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
 	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smcup=\E7\E[?47h, 
 	smir=\E[4h, smkx=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
-	u7=\E[6n, u8=\E[?1;2c, u9=\E[c, vpa=\E[%i%p1%dd, 
-	use=ecma+color, 
+	u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
+	vpa=\E[%i%p1%dd, use=ecma+color, 
 
 # These (xtermc and xtermm) are distributed with Solaris.  They refer to a
 # variant of xterm which is apparently no longer supported, but are interesting
@@ -14455,27 +14454,54 @@ mac|macintosh|Macintosh with MacTerminal,
 mac-w|macterminal-w|Apple Macintosh with Macterminal in 132 column mode, 
 	cols#132, use=mac, 
 
+# nsterm - AppKit Terminal.app
+#
 # Apple's MacOS X includes a Terminal.app derived from the old NeXT
-# Terminal.app. It is a partial VT100 emulation with some extensions.
+# Terminal.app. It is a partial VT100 emulation with some xterm-like
+# extensions. This terminfo was written to describe version 41 of
+# Terminal.app.
+#
+# Terminal.app runs under the MacOS X Quartz windowing system (and
+# other AppKit-supported windowing systems.)  On the MacOS X machine I
+# use, the executable for Terminal.app is:
+# /Applications/Utilities/Terminal.app/Contents/MacOS/Terminal
+#
+# If you're looking for a description of the full-screen system
+# console which runs under Apple's Darwin operating system on PowerPC
+# platforms, see the "xnuppc" entry instead.
 #
 # There are no function keys, at least not in version 41.
 #
-# It supports mouse pointer position reporting using xterm-like
-# sequences (not used in these entries.) When using emacs, the cursor
-# can be positioned using option-click.
+# It does not support mouse pointer position reporting. Under some
+# circumstances the cursor can be positioned using option-click; this
+# works by comparing the cursor position and the selected position,
+# and simulating enough cursor-key presses to move the cursor to the
+# selected position. This technique fails in all but the simplest
+# applications.
 #
 # It provides partial ANSI color support (background colors interact
-# badly with bold, though.) The monochrome (-m) entries are useful if
-# you've disabled color support.
+# badly with bold, though, as reflected in :ncv:.) The monochrome (-m)
+# entries are useful if you've disabled color support or use a
+# monochrome monitor. The full color (-c) entries are useful in
+# versions of Terminal.app which don't exhibit the background color
+# bug
 #
 # The configurable titlebar is set using xterm-compatible sequences;
-# it is used as a status bar in these entries.
+# it is used as a status bar in the statusline (-s) entries. Its width
+# depends on font sizes and window sizes, but 50 characters seems to
+# be the default for an 80x24 window.
 #
 # The MacRoman character encoding is used for some of the alternate
-# characters in the "MacRoman" entries; the "ASCII" (-ascii) entries
-# rely instead on Terminal.app's own buggy VT100 graphics emulation,
-# which seems to think the character encoding is the old NeXT charset
-# instead of MacRoman.
+# characters in the "MacRoman" entries; the "ASCII" (-7) entries
+# disable alternate character set support entirely, and the "VT100"
+# (-acs) entries rely instead on Terminal.app's own buggy VT100
+# graphics emulation, which seems to think the character encoding is
+# the old NeXT charset instead of MacRoman. The "ASCII" (-7) entries
+# will be useful in Terminal.app versions which support UTF-8 and
+# other ASCII-compatible character encodings but do not correctly
+# implement VT100 graphics; once VT100 graphics are correctly
+# implemented in Terminal.app, the "VT100" (-acs) entries should be
+# usable in any ASCII-compatible character encoding.
 #
 # Terminal.app reports "vt100" as the terminal type, but exports
 # several environment variables which may aid detection in a shell
@@ -14484,40 +14510,336 @@ mac-w|macterminal-w|Apple Macintosh with Macterminal in 132 column mode,
 # TERM=vt100
 # TERM_PROGRAM=Apple_Terminal
 # TERM_PROGRAM_VERSION=41
+#
+# For example, the following Bourne shell script would detect the
+# correct terminal type:
+#
+# if [ :"$TERM" = :"vt100" -a :"$TERM_PROGRAM" = :"Apple_Terminal" ]
+# then
+#     export TERM
+#     TERM="nsterm"
+# fi
+#
+# In a C shell derivative, this would be accomplished by:
+#
+# if ( $?TERM && $?TERM_PROGRAM ) then
+#     if ( :"$TERM" == :"vt100" && :"$TERM_PROGRAM" == :"Apple_Terminal" ) then
+#          setenv TERM "nsterm"
+#     endif
+# endif
 
-Apple_Terminal-ascii-m|Apple MacOS X Terminal.app v41 w/ASCII charset (monochrome), 
-	am, bw, hs, msgr, xenl, xon, 
-	cols#80, it#8, lines#24, vt#3, wsl#40, 
-	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+# The '+' entries are building blocks
+nsterm+7|AppKit Terminal.app v41 basic capabilities w/ASCII charset, 
+	am, bw, msgr, xenl, xon, 
+	cols#80, it#8, lines#24, 
 	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[H\E[J, cr=^M, 
 	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
 	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
 	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
-	dl=\E[%p1%dM, dl1=\E[M, dsl=\E]2;\007, ed=\E[J, el=\E[K, 
-	el1=\E[1K, enacs=\E(B\E)0, fsl=^G, home=\E[H, ht=^I, hts=\EH, 
-	il=\E[%p1%dL, il1=\E[L, ind=^J, ka1=\EOq, ka3=\EOs, kb2=\EOr, 
-	kbs=\177, kc1=\EOp, kc3=\EOn, kcub1=\EOD, kcud1=\EOB, 
-	kcuf1=\EOC, kcuu1=\EOA, kent=\EOM, rc=\E8, rev=\E[7m, ri=\EM, 
-	rmacs=^O, rmam=\E[?7l, rmkx=\E[?1l\E>, rmso=\E[m, 
-	rmul=\E[m, rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, 
-	sc=\E7, 
-	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
-	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smkx=\E[?1h\E=, 
-	smso=\E[7m, smul=\E[4m, tbc=\E[3g, tsl=\E]2;, u8=\E[?1;2c, 
-	u9=\E[c, 
+	dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, el1=\E[1K, 
+	home=\E[H, ht=^I, hts=\EH, il=\E[%p1%dL, il1=\E[L, ind=^J, 
+	ka1=\EOq, ka3=\EOs, kb2=\EOr, kbs=\177, kc1=\EOp, kc3=\EOn, 
+	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kent=\EOM, 
+	rc=\E8, rev=\E[7m, ri=\EM, rmam=\E[?7l, rmkx=\E[?1l\E>, 
+	rmso=\E[m, rmul=\E[m, 
+	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, sc=\E7, 
+	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m, 
+	sgr0=\E[m\017, smam=\E[?7h, smkx=\E[?1h\E=, smso=\E[7m, 
+	smul=\E[4m, tbc=\E[3g, u6=\E[%i%d;%dR, u7=\E[6n, 
+	u8=\E[?1;2c, u9=\E[c, 
 
-Apple_Terminal-ascii|Apple MacOS X Terminal.app v41 w/ASCII charset (color), 
-	colors#8, ncv#37, pairs#64, 
+nsterm+acs|AppKit Terminal.app v41 basic capabilities w/VT100 alternate-charset, 
+	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+	enacs=\E(B\E)0, rmacs=^O, 
+	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
+	smacs=^N, use=nsterm+7, 
+
+nsterm+mac|AppKit Terminal.app v41 basic capabilities w/MacRoman alternate-charset, 
+	acsc=0#`\327a*f\241g\261h#i\360jjkkllmmnno\370p\370q\321rrssttuuvvwwxxy\262z\263{\271|\255}\243~\245+\335-\366\,\334.\377, 
+	enacs=\E(B\E)0, rmacs=^O, 
+	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
+	smacs=^N, use=nsterm+7, 
+
+nsterm+s|AppKit Terminal.app v41 status-line (window titlebar) support, 
+	hs, 
+	wsl#50, 
+	dsl=\E]2;\007, fsl=^G, tsl=\E]2;, 
+
+nsterm+c|AppKit Terminal.app v51 ANSI color support, 
+	colors#8, pairs#64, 
+	op=\E[0m, setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
+
+nsterm+c41|AppKit Terminal.app v41 ANSI color support, 
+	ncv#37, use=nsterm+c, 
+
+# These are different combinations of the building blocks
+
+# ASCII charset (-7)
+nsterm-m-7|nsterm-7-m|AppKit Terminal.app v41 w/ASCII charset (monochrome), 
+	use=nsterm+7, 
+
+nsterm-m-s-7|nsterm-7-m-s|AppKit Terminal.app v41 w/ASCII charset (monochrome w/statusline), 
+	use=nsterm+7, use=nsterm+s, 
+
+nsterm-7|AppKit Terminal.app v41 w/ASCII charset (color), 
+	use=nsterm+7, use=nsterm+c41, 
+
+nsterm-7-c|nsterm-c-7|AppKit Terminal.app v51 w/ASCII charset (full color), 
+	use=nsterm+7, use=nsterm+c, 
+
+nsterm-s-7|nsterm-7-s|AppKit Terminal.app v41 w/ASCII charset (color w/statusline), 
+	use=nsterm+7, use=nsterm+c41, use=nsterm+s, 
+
+nsterm-c-s-7|nsterm-7-c-s|AppKit Terminal.app v51 w/ASCII charset (full color w/statusline), 
+	use=nsterm+7, use=nsterm+c, use=nsterm+s, 
+
+# VT100 alternate-charset (-acs)
+nsterm-m-acs|nsterm-acs-m|AppKit Terminal.app v41 w/VT100 alternate-charset (monochrome), 
+	use=nsterm+acs, 
+
+nsterm-m-s-acs|nsterm-acs-m-s|AppKit Terminal.app v41 w/VT100 alternate-charset (monochrome w/statusline), 
+	use=nsterm+s, use=nsterm+acs, 
+
+nsterm-acs|AppKit Terminal.app v41 w/VT100 alternate-charset (color), 
+	use=nsterm+c41, use=nsterm+acs, 
+
+nsterm-c-acs|nsterm-acs-c|AppKit Terminal.app v51 w/VT100 alternate-charset (full color), 
+	use=nsterm+c, use=nsterm+acs, 
+
+nsterm-s-acs|nsterm-acs-s|AppKit Terminal.app v41 w/VT100 alternate-charset (color w/statusline), 
+	use=nsterm+c41, use=nsterm+s, use=nsterm+acs, 
+
+nsterm-c-s-acs|nsterm-acs-c-s|AppKit Terminal.app v51 w/VT100 alternate-charset (full color w/statusline), 
+	use=nsterm+c, use=nsterm+s, use=nsterm+acs, 
+
+# MacRoman charset
+nsterm-m|AppKit Terminal.app v41 w/MacRoman charset (monochrome), 
+	use=nsterm+mac, 
+
+nsterm-m-s|AppKit Terminal.app v41 w/MacRoman charset (monochrome w/statusline), 
+	use=nsterm+mac, use=nsterm+s, 
+
+nsterm|Apple_Terminal|AppKit Terminal.app v41 w/MacRoman charset (color), 
+	use=nsterm+mac, use=nsterm+c41, 
+
+nsterm-c|AppKit Terminal.app v51 w/MacRoman charset (full color), 
+	use=nsterm+mac, use=nsterm+c, 
+
+nsterm-s|AppKit Terminal.app v41 w/MacRoman charset (color w/statusline), 
+	use=nsterm+mac, use=nsterm+c41, use=nsterm+s, 
+
+nsterm-c-s|AppKit Terminal.app v51 w/MacRoman charset (full color w/statusline), 
+	use=nsterm+mac, use=nsterm+c, use=nsterm+s, 
+
+# xnuppc - Darwin PowerPC Console (a.k.a. "darwin")
+#
+# On PowerPC platforms, Apple's Darwin operating system uses a
+# full-screen system console derived from a NetBSD framebuffer
+# console. It is an ANSI-style terminal, and is not really VT-100
+# compatible.
+#
+# Under MacOS X, this is the system console driver used while in
+# single-user mode [reachable by holding down Command-S during the
+# boot process] and when logged in using console mode [reachable by
+# typing ">console" at the graphical login prompt.]
+#
+# If you're looking for a description of the Terminal.app terminal
+# emulator which runs under the MacOS X Quartz windowing system (and
+# other AppKit-supported windowing systems,) see the "nsterm"
+# entry instead.
+#
+# There are no function keys, at least not in Darwin 1.3.
+#
+# It has no mouse support.
+#
+# It has full ANSI color support, and color combines correctly with
+# all three supported attributes: bold, inverse-video and underline.
+# However, bold colored text is almost unreadable (bolding is
+# accomplished using shifting and or-ing, and looks smeared) so bold
+# has been excluded from the list of color-compatible attributes
+# [using (ncv)]. The monochrome entry (-m) is useful if you use a
+# monochrome monitor.
+#
+# The "standout" chosen was simple reverse-video, although a colorful
+# standout might be more aesthetically pleasing. Similarly, the bold
+# chosen is the terminal's own smeared bold, although a simple
+# color-change might be more readable.
+#
+# Apparently the terminal emulator does support a VT-100-style
+# alternate character set, but all the alternate character set
+# positions have been left blank in the font. For this reason, no
+# alternate character set capabilities have been included in this
+# description. The console driver appears to be ASCII-only, so (enacs)
+# has been excluded [although the VT-100 sequence does work.]
+#
+# The default MacOS X and Darwin installation reports "vt100" as the
+# terminal type, and exports no helpful environment variables. To fix
+# this, change the "console" entry in /etc/ttys from "vt100" to
+# "xnuppc-WxH", where W and H are the character dimensions of your
+# console (see below.)
+#
+# The font used by the terminal emulator is apparently one originally
+# drawn by Ka-Ping Yee, and uses 8x16-pixel characters. This
+# file includes descriptions for the following geometries:
+#
+#     Pixels        Characters   Entry Name (append -m for monochrome)
+#    -------------------------------------------------------------------
+#     640x400       80x25        xnuppc-80x25
+#     640x480       80x30        xnuppc-80x30
+#     720x480       90x30        xnuppc-90x30
+#     800x600       100x37       xnuppc-100x37
+#     896x600       112x37       xnuppc-112x37
+#     1024x640      128x40       xnuppc-128x40
+#     1024x768      128x48       xnuppc-128x48
+#     1152x768      144x48       xnuppc-144x48
+#     1280x1024     160x64       xnuppc-160x64
+#     1600x1024     200x64       xnuppc-200x64
+#     1600x1200     200x75       xnuppc-200x75
+#     2048x1536     256x96       xnuppc-256x96
+#
+# The basic "xnuppc" entry includes no size information, and the
+# emulator includes no reporting capability, so you'll be at the mercy
+# of the TTY device (which reports incorrectly on my hardware.)
+
+# The '+' entries are building blocks
+xnuppc+basic|Darwin PowerPC Console basic capabilities, 
+	am, bce, mir, msgr, xenl, 
+	it#8, 
+	bold=\E[1m, clear=\E[H\E[J, cr=^M, csr=\E[%i%p1%d;%p2%dr, 
+	cub=\E[%p1%dD, cub1=\E[D, cud=\E[%p1%dB, cud1=\E[B, 
+	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
+	cuu=\E[%p1%dA, cuu1=\E[A, dsl=\E]2;\007, ed=\E[J, el=\E[K, 
+	el1=\E[1K, home=\E[H, ht=^I, hts=\EH, ind=^J, ka1=\EOq, 
+	ka3=\EOs, kb2=\EOr, kbs=\177, kc1=\EOp, kc3=\EOn, kcub1=\EOD, 
+	kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, rc=\E8, rev=\E[7m, 
+	ri=\EM, rmam=\E[?7l, rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, 
+	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, sc=\E7, 
+	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m, 
+	sgr0=\E[m\017, smam=\E[?7h, smkx=\E[?1h\E=, smso=\E[7m, 
+	smul=\E[4m, tbc=\E[3g, 
+
+xnuppc+c|Darwin PowerPC Console ANSI color support, 
+	colors#8, ncv#32, pairs#64, 
 	op=\E[37;40m, setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
-	use=Apple_Terminal-ascii-m, 
 
-Apple_Terminal-m|Apple MacOS X Terminal.app v41 w/MacRoman charset (monochrome), 
-	acsc=0#`\327a*f\241g\261h#i\360jjkkllmmnno\370p\370q\321rrssttuuvvwwxxy\262z\263{\271|\255}\243~\245+\335-\366\,\334.\377, 
-	use=Apple_Terminal-ascii-m, 
+# Building blocks for specific screen sizes
+xnuppc+80x25|Darwin PowerPC Console 80x25 support (640x400 pixels), 
+	cols#80, lines#25, 
 
-Apple_Terminal|Apple MacOS X Terminal.app v41 w/MacRoman charset (color), 
-	acsc=0#`\327a*f\241g\261h#i\360jjkkllmmnno\370p\370q\321rrssttuuvvwwxxy\262z\263{\271|\255}\243~\245+\335-\366\,\334.\377, 
-	use=Apple_Terminal-ascii, 
+xnuppc+80x30|Darwin PowerPC Console 80x30 support (640x480 pixels), 
+	cols#80, lines#30, 
+
+xnuppc+90x30|Darwin PowerPC Console 90x30 support (720x480 pixels), 
+	cols#90, lines#30, 
+
+xnuppc+100x37|Darwin PowerPC Console 100x37 support (800x600 pixels), 
+	cols#100, lines#37, 
+
+xnuppc+112x37|Darwin PowerPC Console 112x37 support (896x600 pixels), 
+	cols#112, lines#37, 
+
+xnuppc+128x40|Darwin PowerPC Console 128x40 support (1024x640 pixels), 
+	cols#128, lines#40, 
+
+xnuppc+128x48|Darwin PowerPC Console 128x48 support (1024x768 pixels), 
+	cols#128, lines#48, 
+
+xnuppc+144x48|Darwin PowerPC Console 144x48 support (1152x768 pixels), 
+	cols#144, lines#48, 
+
+xnuppc+160x64|Darwin PowerPC Console 160x64 support (1280x1024 pixels), 
+	cols#160, lines#64, 
+
+xnuppc+200x64|Darwin PowerPC Console 200x64 support (1600x1024 pixels), 
+	cols#200, lines#64, 
+
+xnuppc+200x75|Darwin PowerPC Console 200x75 support (1600x1200 pixels), 
+	cols#200, lines#75, 
+
+xnuppc+256x96|Darwin PowerPC Console 256x96 support (2048x1536 pixels), 
+	cols#256, lines#96, 
+
+# These are different combinations of the building blocks
+
+xnuppc-m|darwin-m|Darwin PowerPC Console (monochrome), 
+	use=xnuppc+basic, 
+
+xnuppc|darwin|Darwin PowerPC Console (color), 
+	use=xnuppc+basic, use=xnuppc+c, 
+
+# Combinations for specific screen sizes
+xnuppc-80x25-m|darwin-80x25-m|Darwin PowerPC Console (monochrome) 80x25, 
+	use=xnuppc+basic, use=xnuppc+80x25, 
+
+xnuppc-80x25|darwin-80x25|Darwin PowerPC Console (color) 80x25, 
+	use=xnuppc+basic, use=xnuppc+c, use=xnuppc+80x25, 
+
+xnuppc-80x30-m|darwin-80x30-m|Darwin PowerPC Console (monochrome) 80x30, 
+	use=xnuppc+basic, use=xnuppc+80x30, 
+
+xnuppc-80x30|darwin-80x30|Darwin PowerPC Console (color) 80x30, 
+	use=xnuppc+basic, use=xnuppc+c, use=xnuppc+80x30, 
+
+xnuppc-90x30-m|darwin-90x30-m|Darwin PowerPC Console (monochrome) 90x30, 
+	use=xnuppc+basic, use=xnuppc+90x30, 
+
+xnuppc-90x30|darwin-90x30|Darwin PowerPC Console (color) 90x30, 
+	use=xnuppc+basic, use=xnuppc+c, use=xnuppc+90x30, 
+
+xnuppc-100x37-m|darwin-100x37-m|Darwin PowerPC Console (monochrome) 100x37, 
+	use=xnuppc+basic, use=xnuppc+100x37, 
+
+xnuppc-100x37|darwin-100x37|Darwin PowerPC Console (color) 100x37, 
+	use=xnuppc+basic, use=xnuppc+c, use=xnuppc+100x37, 
+
+xnuppc-112x37-m|darwin-112x37-m|Darwin PowerPC Console (monochrome) 112x37, 
+	use=xnuppc+basic, use=xnuppc+112x37, 
+
+xnuppc-112x37|darwin-112x37|Darwin PowerPC Console (color) 112x37, 
+	use=xnuppc+basic, use=xnuppc+c, use=xnuppc+112x37, 
+
+xnuppc-128x40-m|darwin-128x40-m|Darwin PowerPC Console (monochrome) 128x40, 
+	use=xnuppc+basic, use=xnuppc+128x40, 
+
+xnuppc-128x40|darwin-128x40|Darwin PowerPC Console (color) 128x40, 
+	use=xnuppc+basic, use=xnuppc+c, use=xnuppc+128x40, 
+
+xnuppc-128x48-m|darwin-128x48-m|Darwin PowerPC Console (monochrome) 128x48, 
+	use=xnuppc+basic, use=xnuppc+128x48, 
+
+xnuppc-128x48|darwin-128x48|Darwin PowerPC Console (color) 128x48, 
+	use=xnuppc+basic, use=xnuppc+c, use=xnuppc+128x48, 
+
+xnuppc-144x48-m|darwin-144x48-m|Darwin PowerPC Console (monochrome) 144x48, 
+	use=xnuppc+basic, use=xnuppc+144x48, 
+
+xnuppc-144x48|darwin-144x48|Darwin PowerPC Console (color) 144x48, 
+	use=xnuppc+basic, use=xnuppc+c, use=xnuppc+144x48, 
+
+xnuppc-160x64-m|darwin-160x64-m|Darwin PowerPC Console (monochrome) 160x64, 
+	use=xnuppc+basic, use=xnuppc+160x64, 
+
+xnuppc-160x64|darwin-160x64|Darwin PowerPC Console (color) 160x64, 
+	use=xnuppc+basic, use=xnuppc+c, use=xnuppc+160x64, 
+
+xnuppc-200x64-m|darwin-200x64-m|Darwin PowerPC Console (monochrome) 200x64, 
+	use=xnuppc+basic, use=xnuppc+200x64, 
+
+xnuppc-200x64|darwin-200x64|Darwin PowerPC Console (color) 200x64, 
+	use=xnuppc+basic, use=xnuppc+c, use=xnuppc+200x64, 
+
+xnuppc-200x75-m|darwin-200x75-m|Darwin PowerPC Console (monochrome) 200x75, 
+	use=xnuppc+basic, use=xnuppc+200x75, 
+
+xnuppc-200x75|darwin-200x75|Darwin PowerPC Console (color) 200x75, 
+	use=xnuppc+basic, use=xnuppc+c, use=xnuppc+200x75, 
+
+xnuppc-256x96-m|darwin-256x96-m|Darwin PowerPC Console (monochrome) 256x96, 
+	use=xnuppc+basic, use=xnuppc+256x96, 
+
+xnuppc-256x96|darwin-256x96|Darwin PowerPC Console (color) 256x96, 
+	use=xnuppc+basic, use=xnuppc+c, use=xnuppc+256x96, 
+
 
 #### Radio Shack/Tandy
 #
@@ -18821,6 +19143,13 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2001-05-19
 #	* ELKS descriptions, from Federico Bianchi
+#	* add u6 (CSR) to Eterm (Michael Jennings).
+#
+# 2001-07-21
+#	* renamed "Apple_Terminal" entries to "nsterm" to work with Solaris's
+#	  tic which handles names no longer than 14 characters.  Add
+#	  corresponding descriptions for the Darwin PowerPC console named
+#	  "xnuppc" -Benjamin Sittler
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

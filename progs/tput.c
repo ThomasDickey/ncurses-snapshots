@@ -45,7 +45,7 @@
 #endif
 #include <transform.h>
 
-MODULE_ID("$Id: tput.c,v 1.29 2001/06/18 18:44:06 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.30 2001/07/22 00:16:33 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -132,7 +132,9 @@ tput(int argc, char *argv[])
     int status;
     FILE *f;
 
-    check_aliases(name = argv[0]);
+    if ((name = argv[0]) == 0)
+	name = "";
+    check_aliases(name);
     if (is_reset || is_init) {
 	if (init_prog != 0) {
 	    system(init_prog);
@@ -382,14 +384,18 @@ main(int argc, char **argv)
 
 	/* crack the argument list into a dope vector */
 	for (cp = buf; *cp; cp++) {
-	    if (isspace(UChar(*cp)))
+	    if (isspace(UChar(*cp))) {
 		*cp = '\0';
-	    else if (cp == buf || cp[-1] == 0)
+	    } else if (cp == buf || cp[-1] == 0) {
 		argvec[argnum++] = cp;
+		if (argnum >= (int) SIZEOF(argvec) - 1)
+		    break;
+	    }
 	}
 	argvec[argnum] = 0;
 
-	if (tput(argnum, argvec) != 0)
+	if (argnum != 0
+	    && tput(argnum, argvec) != 0)
 	    errors++;
     }
 
