@@ -64,7 +64,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.28 2000/07/29 15:13:09 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.30 2000/09/10 01:11:53 Don.Lewis Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -95,7 +95,7 @@ vidputs(attr_t newmode, int (*outc) (int))
     bool reverse = FALSE;
     bool used_ncv = FALSE;
     bool can_color = (SP == 0 || SP->_coloron);
-#ifdef NCURSES_EXT_FUNCS
+#if NCURSES_EXT_FUNCS
     bool fix_pair0 = (SP != 0 && SP->_coloron && !SP->_default_color);
 #else
 #define fix_pair0 FALSE
@@ -172,7 +172,16 @@ vidputs(attr_t newmode, int (*outc) (int))
 	    previous_attr &= ~A_ALTCHARSET;
 	}
 	if (previous_attr) {
-	    doPut(exit_attribute_mode);
+	    if (exit_attribute_mode) {
+		doPut(exit_attribute_mode);
+	    } else {
+		if (!SP || SP->_use_rmul) {
+		    TurnOff(A_UNDERLINE, exit_underline_mode);
+		}
+		if (!SP || SP->_use_rmso) {
+		    TurnOff(A_STANDOUT, exit_standout_mode);
+		}
+	    }
 	    previous_attr &= ~A_COLOR;
 	}
 

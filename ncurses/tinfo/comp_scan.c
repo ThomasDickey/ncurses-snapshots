@@ -50,7 +50,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.45 2000/07/08 00:43:55 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.46 2000/09/02 18:02:13 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -80,7 +80,7 @@ static char separator;		/* capability separator */
 static int pushtype;		/* type of pushback token */
 static char pushname[MAX_NAME_SIZE + 1];
 
-#ifdef NCURSES_EXT_FUNCS
+#if NCURSES_EXT_FUNCS
 bool _nc_disable_period = FALSE; /* used by tic -a option */
 #endif
 
@@ -180,7 +180,7 @@ _nc_get_token(void)
 	    ch = next_char();
 
 	if (ch == '.'
-#ifdef NCURSES_EXT_FUNCS
+#if NCURSES_EXT_FUNCS
 	 && !_nc_disable_period
 #endif
 	) {
@@ -198,7 +198,7 @@ _nc_get_token(void)
 
 	/* have to make some punctuation chars legal for terminfo */
 	if (!isalnum(ch)
-#ifdef NCURSES_EXT_FUNCS
+#if NCURSES_EXT_FUNCS
 	 && !(ch == '.' && _nc_disable_period)
 #endif
 	 && !strchr(terminfo_punct, (char) ch)) {

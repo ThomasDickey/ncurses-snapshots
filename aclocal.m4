@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.223 2000/08/26 22:03:25 tom Exp $
+dnl $Id: aclocal.m4,v 1.225 2000/09/02 20:41:53 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -154,7 +154,7 @@ AC_CACHE_VAL(cf_cv_type_of_bool,[
 	AC_TRY_RUN([
 #include <stdlib.h>
 #include <stdio.h>
-#if HAVE_GXX_BUILTIN_H
+#ifdef HAVE_GXX_BUILTIN_H
 #include <g++/builtin.h>
 #elif HAVE_GPP_BUILTIN_H
 #include <gpp/builtin.h>
@@ -1795,20 +1795,6 @@ AC_DEFUN([CF_SHARED_OPTS],
 	beos*)
 		MK_SHARED_LIB='$(CC) -o $[@] -Xlinker -soname=`basename $[@]` -nostart -e 0'
 		;;
-	hpux10.*)
-		# (tested with gcc 2.7.2 -- I don't have c89)
-		if test -n "$GCC"; then
-			LD_SHARED_OPTS='-Xlinker +b -Xlinker $(libdir)'
-		else
-			CC_SHARED_OPTS='+Z'
-			LD_SHARED_OPTS='-Wl,+b,$(libdir)'
-		fi
-		MK_SHARED_LIB='$(LD) +b $(libdir) -b +h `basename $[@]` -o $[@]'
-		# HP-UX shared libraries must be executable, and should be
-		# readonly to exploit a quirk in the memory manager.
-		INSTALL_LIB="-m 555"
-		cf_cv_do_symlinks=reverse
-		;;
 	hpux*)
 		# (tested with gcc 2.7.2 -- I don't have c89)
 		if test -n "$GCC"; then
@@ -1982,14 +1968,14 @@ do
     CFLAGS="$cf_save_CFLAGS"
     test -n "$cf_opts" && CFLAGS="$CFLAGS -D$cf_opts"
     AC_TRY_COMPILE([#include <sys/types.h>
-#if HAVE_TERMIOS_H
+#ifdef HAVE_TERMIOS_H
 #include <termios.h>
 #else
-#if HAVE_TERMIO_H
+#ifdef HAVE_TERMIO_H
 #include <termio.h>
 #endif
 #endif
-#if NEED_PTEM_H
+#ifdef NEED_PTEM_H
 /* This is a workaround for SCO:  they neglected to define struct winsize in
  * termios.h -- it's only in termio.h and ptem.h
  */
@@ -2286,10 +2272,10 @@ AC_MSG_CHECKING(if sys/time.h works with sys/select.h)
 AC_CACHE_VAL(cf_cv_sys_time_select,[
 AC_TRY_COMPILE([
 #include <sys/types.h>
-#if HAVE_SYS_TIME_H
+#ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
-#if HAVE_SYS_SELECT_H
+#ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
 ],[],[cf_cv_sys_time_select=yes],
@@ -2309,7 +2295,7 @@ AC_REQUIRE([CF_UNSIGNED_LITERALS])
 AC_MSG_CHECKING([for type of chtype])
 AC_CACHE_VAL(cf_cv_typeof_chtype,[
 		AC_TRY_RUN([
-#if USE_WIDEC_SUPPORT
+#ifdef USE_WIDEC_SUPPORT
 #include <stddef.h>	/* we want wchar_t */
 #define WANT_BITS 39
 #else
@@ -2321,7 +2307,7 @@ int main()
 	FILE *fp = fopen("cf_test.out", "w");
 	if (fp != 0) {
 		char *result = "long";
-#if USE_WIDEC_SUPPORT
+#ifdef USE_WIDEC_SUPPORT
 		/*
 		 * If wchar_t is smaller than a long, it must be an int or a
 		 * short.  We prefer not to use a short anyway.

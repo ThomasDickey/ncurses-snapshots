@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.133 2000/07/30 01:04:29 tom Exp $
+$Id: ncurses.c,v 1.135 2000/09/02 19:23:53 tom Exp $
 
 ***************************************************************************/
 
@@ -92,7 +92,7 @@ static int save_trace = TRACE_ORDINARY | TRACE_CALLS;
 extern int _nc_tracing;
 #endif
 
-#if !HAVE_NAPMS
+#if !defined(HAVE_NAPMS)
 #define HAVE_NAPMS 1
 #endif
 
@@ -1146,7 +1146,7 @@ newwin_legend(FRAME * curp)
 	{
 	    "^R = restore window", 0
 	},
-#ifdef HAVE_WRESIZE
+#if HAVE_WRESIZE
 	{
 	    "^X = resize", 0
 	},
@@ -1477,7 +1477,7 @@ acs_and_scroll(void)
 	    }
 	    break;
 
-#ifdef HAVE_WRESIZE
+#if HAVE_WRESIZE
 	case CTRL('X'):	/* resize window */
 	    if (current) {
 		pair *tmp, ul, lr;

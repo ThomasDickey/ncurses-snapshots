@@ -43,7 +43,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: sysdep.c,v 1.8 2000/07/09 22:31:11 tom Exp $")
+MODULE_ID("$Id: sysdep.c,v 1.9 2000/09/02 19:17:39 tom Exp $")
 
 #if DECL_ERRNO
 extern int errno;
@@ -151,7 +151,7 @@ tty_set(void)
 		new_modes.c_iflag &= ~(IXON | IXOFF);
 		break;
 	case 1:
-#if sequent
+#if defined(sequent) && sequent
 		/* the sequent System V emulation is broken */
 		new_modes = old_modes;
 		new_modes.c_cc[VEOL] = 6;	/* control F  (ACK) */

@@ -43,7 +43,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.55 2000/07/02 00:22:18 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.57 2000/09/02 18:20:35 tom Exp $")
 
 SCREEN *
 set_term(SCREEN * screenp)
@@ -171,7 +171,7 @@ no_mouse_wrap(SCREEN * sp GCC_UNUSED)
 {
 }
 
-#if defined(NCURSES_EXT_FUNCS) && defined(USE_COLORFGBG)
+#if NCURSES_EXT_FUNCS && USE_COLORFGBG
 static char *
 extract_fgbg(char *src, int *result)
 {
@@ -220,17 +220,17 @@ _nc_setupscreen(short slines, short const scolumns, FILE * output)
     SP->_endwin = TRUE;
     SP->_ofp = output;
     SP->_cursor = -1;		/* cannot know real cursor shape */
-#ifdef NCURSES_NO_PADDING
+#if NCURSES_NO_PADDING
     SP->_no_padding = getenv("NCURSES_NO_PADDING") != 0;
     TR(TRACE_CHARPUT | TRACE_MOVE, ("padding will%s be used",
 	    SP->_no_padding ? " not" : ""));
 #endif
-#ifdef NCURSES_EXT_FUNCS
+#if NCURSES_EXT_FUNCS
     SP->_default_color = FALSE;
     SP->_has_sgr_39_49 = FALSE;
     SP->_default_fg = COLOR_WHITE;
     SP->_default_bg = COLOR_BLACK;
-#ifdef USE_COLORFGBG
+#if USE_COLORFGBG
     /*
      * If rxvt's $COLORFGBG variable is set, use it to specify the assumed
      * default colors.  Note that rxvt (mis)uses bold colors, equating a bold

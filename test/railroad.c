@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 2000
  *
- * $Id: railroad.c,v 1.1 2000/01/15 02:41:27 tom Exp $
+ * $Id: railroad.c,v 1.2 2000/09/09 19:19:18 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -153,7 +153,7 @@ onsig(int n GCC_UNUSED)
 static void
 railroad(char **args)
 {
-    char *name = getenv("TERM");
+    NCURSES_CONST char *name = getenv("TERM");
     char buffer[1024];
     char area[1024], *ap = area;
     int j;
@@ -186,9 +186,7 @@ railroad(char **args)
 }
 
 int
-main(
-    int argc,
-    char *argv[])
+main(int argc, char *argv[])
 {
     if (argc > 1) {
 	railroad(argv + 1);

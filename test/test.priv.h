@@ -29,9 +29,31 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.17 2000/07/15 21:36:55 tom Exp $ */
+/* $Id: test.priv.h,v 1.19 2000/09/02 19:31:58 tom Exp $ */
+
 #if HAVE_CONFIG_H
 #include <ncurses_cfg.h>
+#else
+#define HAVE_CURSES_VERSION 0
+#define HAVE_RESIZETERM 0
+#define HAVE_USE_DEFAULT_COLORS 0
+#define HAVE_WRESIZE 0
+#endif
+
+#ifndef HAVE_NC_ALLOC_H
+#define HAVE_NC_ALLOC_H 0
+#endif
+
+#ifndef HAVE_LOCALE_H
+#define HAVE_LOCALE_H 0
+#endif
+
+#ifndef NCURSES_NOMACROS
+#define NCURSES_NOMACROS 0
+#endif
+
+#ifndef NEED_PTEM_H
+#define NEED_PTEM_H 0
 #endif
 
 #include <stdlib.h>
@@ -44,7 +66,7 @@
 
 #include <curses.h>
 
-#ifdef NCURSES_NOMACROS
+#if NCURSES_NOMACROS
 #include <nomacros.h>
 #endif
 

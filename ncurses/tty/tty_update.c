@@ -70,7 +70,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.144 2000/07/30 00:11:05 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.145 2000/09/02 18:02:18 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -361,7 +361,7 @@ can_clear_with(chtype ch)
     if (!back_color_erase && SP->_coloron) {
 	if (ch & A_COLOR)
 	    return FALSE;
-#ifdef NCURSES_EXT_FUNCS
+#if NCURSES_EXT_FUNCS
 	if (!SP->_default_color)
 	    return FALSE;
 	if (SP->_default_fg != C_MASK || SP->_default_bg != C_MASK)
@@ -1266,7 +1266,7 @@ ClearScreen(chtype blank)
 
     TR(TRACE_UPDATE, ("ClearScreen() called"));
 
-#ifdef NCURSES_EXT_FUNCS
+#if NCURSES_EXT_FUNCS
     if (SP->_coloron
 	&& !SP->_default_color) {
 	_nc_do_color(COLOR_PAIR(SP->_current_attr), 0, FALSE, _nc_outch);
@@ -1486,7 +1486,7 @@ scroll_csr_forward(int n, int top, int bot, int miny, int maxy, chtype blank)
     } else
 	return ERR;
 
-#ifdef NCURSES_EXT_FUNCS
+#if NCURSES_EXT_FUNCS
     if (FILL_BCE()) {
 	for (i = 0; i < n; i++) {
 	    GoTo(bot - i, 0);
@@ -1542,7 +1542,7 @@ scroll_csr_backward(int n, int top, int bot, int miny, int maxy, chtype blank)
     } else
 	return ERR;
 
-#ifdef NCURSES_EXT_FUNCS
+#if NCURSES_EXT_FUNCS
     if (FILL_BCE()) {
 	for (i = 0; i < n; i++) {
 	    GoTo(top + i, 0);
@@ -1756,7 +1756,7 @@ void
 _nc_screen_wrap(void)
 {
     UpdateAttrs(A_NORMAL);
-#ifdef NCURSES_EXT_FUNCS
+#if NCURSES_EXT_FUNCS
     if (SP->_coloron
 	&& !SP->_default_color) {
 	SP->_default_color = TRUE;

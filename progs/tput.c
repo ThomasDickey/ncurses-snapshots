@@ -39,18 +39,27 @@
  */
 
 #include <progs.priv.h>
-#ifndef	PURE_TERMINFO
+
+#if !PURE_TERMINFO
 #include <termsort.c>
 #endif
 #include <transform.h>
 
-MODULE_ID("$Id: tput.c,v 1.19 2000/08/19 20:39:22 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.22 2000/09/10 00:32:45 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
 #define FLUSH		fflush(stdout)
 
+typedef enum {
+    Numbers = 0
+    ,Num_Str
+    ,Num_Str_Str
+} TParams;
+
 static char *prg_name;
+static bool is_init = FALSE;
+static bool is_reset = FALSE;
 
 static void
 quit(int status, const char *fmt,...)
@@ -71,34 +80,79 @@ usage(void)
     exit(EXIT_FAILURE);
 }
 
+static void
+check_aliases(const char *name)
+{
+    is_init = (strcmp(name, PROG_INIT) == 0);
+    is_reset = (strcmp(name, PROG_RESET) == 0);
+}
+
+/*
+ * Lookup the type of call we should make to tparm().  This ignores the actual
+ * terminfo capability (bad, because it is not extensible), but makes this
+ * code portable to platforms where sizeof(int) != sizeof(char *).
+ *
+ * FIXME: If we want extensibility, analyze the capability string as we do
+ * in tparm() to decide how to parse the varargs list.
+ */
+static TParams
+tparm_type(char *name)
+{
+    TParams result = Numbers;
+    /* *INDENT-OFF* */
+    static const struct {
+	TParams code;
+	const char *name;
+    } table[] = {
+	{ Num_Str,	"pfkey" },
+	{ Num_Str,	"pfloc" },
+	{ Num_Str,	"pfx" },
+	{ Num_Str,	"pk" },
+	{ Num_Str,	"pkey_key" },
+	{ Num_Str,	"pkey_local" },
+	{ Num_Str,	"pkey_xmit" },
+	{ Num_Str,	"pl" },
+	{ Num_Str,	"px" },
+	{ Num_Str_Str,	"pfxl" },
+	{ Num_Str_Str,	"pkey_plab" },
+	{ Num_Str_Str,	"xl" },
+    };
+    /* *INDENT-ON* */
+
+    unsigned n;
+    for (n = 0; n < sizeof(table) / sizeof(table[0]); n++) {
+	if (!strcmp(name, table[n].name)) {
+	    result = table[n].code;
+	    break;
+	}
+    }
+    return result;
+}
+
 static int
 tput(int argc, char *argv[])
 {
     NCURSES_CONST char *name;
     char *s;
     int i, j, c;
-    int reset, status;
+    int status;
     FILE *f;
 
-    reset = 0;
-    name = argv[0];
-    if (strcmp(name, PROG_RESET) == 0) {
-	reset = 1;
-    }
-    if (reset || strcmp(name, PROG_INIT) == 0) {
+    check_aliases(name = argv[0]);
+    if (is_reset || is_init) {
 	if (init_prog != 0) {
 	    system(init_prog);
 	}
 	FLUSH;
 
-	if (reset && reset_1string != 0) {
+	if (is_reset && reset_1string != 0) {
 	    PUTS(reset_1string);
 	} else if (init_1string != 0) {
 	    PUTS(init_1string);
 	}
 	FLUSH;
 
-	if (reset && reset_2string != 0) {
+	if (is_reset && reset_2string != 0) {
 	    PUTS(reset_2string);
 	} else if (init_2string != 0) {
 	    PUTS(init_2string);
@@ -108,12 +162,12 @@ tput(int argc, char *argv[])
 	if (set_lr_margin != 0) {
 	    PUTS(tparm(set_lr_margin, 0, columns - 1));
 	} else if (set_left_margin_parm != 0
-	    && set_right_margin_parm != 0) {
+		   && set_right_margin_parm != 0) {
 	    PUTS(tparm(set_left_margin_parm, 0));
 	    PUTS(tparm(set_right_margin_parm, columns - 1));
 	} else if (clear_margins != 0
-	    && set_left_margin != 0
-	    && set_right_margin != 0) {
+		   && set_left_margin != 0
+		   && set_right_margin != 0) {
 	    PUTS(clear_margins);
 	    if (carriage_return != 0) {
 		PUTS(carriage_return);
@@ -152,7 +206,7 @@ tput(int argc, char *argv[])
 	    }
 	}
 
-	if (reset && reset_file != 0) {
+	if (is_reset && reset_file != 0) {
 	    f = fopen(reset_file, "r");
 	    if (f == 0) {
 		quit(errno, "Can't open reset_file: '%s'", reset_file);
@@ -173,7 +227,7 @@ tput(int argc, char *argv[])
 	}
 	FLUSH;
 
-	if (reset && reset_3string != 0) {
+	if (is_reset && reset_3string != 0) {
 	    PUTS(reset_3string);
 	} else if (init_2string != 0) {
 	    PUTS(init_2string);
@@ -186,7 +240,7 @@ tput(int argc, char *argv[])
 	PUTS(longname());
 	return 0;
     }
-#ifndef	PURE_TERMINFO
+#if !PURE_TERMINFO
     {
 	const struct name_table_entry *np;
 
@@ -217,10 +271,11 @@ tput(int argc, char *argv[])
 	return (0);
     } else if ((s = tigetstr(name)) == CANCELLED_STRING) {
 	quit(4, "%s: unknown terminfo capability '%s'", prg_name, name);
-    } else if (s != 0) {
+    } else if (s != ABSENT_STRING) {
 	if (argc > 1) {
 	    int k;
-	    char * params[10];
+	    int numbers[10];
+	    char *strings[10];
 
 	    /* Nasty hack time. The tparm function needs to see numeric
 	     * parameters as numbers, not as pointers to their string
@@ -228,20 +283,31 @@ tput(int argc, char *argv[])
 	     */
 
 	    for (k = 1; k < argc; k++) {
-		if (isdigit(argv[k][0])) {
-		    long val = atol(argv[k]);
-		    params[k] = (char *)val;
-		} else {
-		    params[k] = argv[k];
-		}
+		char *tmp = 0;
+		strings[k] = argv[k];
+		numbers[k] = strtol(argv[k], &tmp, 0);
+		if (tmp == 0 || *tmp != 0)
+		    numbers[k] = 0;
 	    }
-	    for (k = argc; k <= 9; k++)
-		params[k] = 0;
+	    for (k = argc; k <= 9; k++) {
+		numbers[k] = 0;
+		strings[k] = 0;
+	    }
 
-	    s = tparm(s,
-	    	params[1], params[2], params[3],
-		params[4], params[5], params[6],
-		params[7], params[8], params[9]);
+	    switch (tparm_type(name)) {
+	    case Num_Str:
+		s = tparm(s, numbers[1], strings[2]);
+		break;
+	    case Num_Str_Str:
+		s = tparm(s, numbers[1], strings[2], strings[3]);
+		break;
+	    default:
+		s = tparm(s,
+			  numbers[1], numbers[2], numbers[3],
+			  numbers[4], numbers[5], numbers[6],
+			  numbers[7], numbers[8], numbers[9]);
+		break;
+	    }
 	}
 
 	/* use putp() in order to perform padding */
@@ -254,21 +320,18 @@ tput(int argc, char *argv[])
 int
 main(int argc, char **argv)
 {
-    char *s, *term;
+    char *term;
     int errret;
     bool cmdline = TRUE;
     int c;
     char buf[BUFSIZ];
     int errors = 0;
 
-    prg_name = argv[0];
-    s = strrchr(prg_name, '/');
-    if (s != 0 && *++s != '\0')
-	prg_name = s;
+    check_aliases(prg_name = _nc_basename(argv[0]));
 
     term = getenv("TERM");
 
-    while ((c = getopt(argc, argv, "ST:V")) != EOF)
+    while ((c = getopt(argc, argv, "ST:V")) != EOF) {
 	switch (c) {
 	case 'S':
 	    cmdline = FALSE;
@@ -284,12 +347,20 @@ main(int argc, char **argv)
 	    usage();
 	    /* NOTREACHED */
 	}
-    argc -= optind;
-    argv += optind;
+    }
 
-    if (cmdline && argc == 0) {
-	usage();
-	/* NOTREACHED */
+    /*
+     * Modify the argument list to omit the options we processed.
+     */
+    if (is_reset || is_init) {
+	if (optind-- < argc) {
+	    argc -= optind;
+	    argv += optind;
+	}
+	argv[0] = prg_name;
+    } else {
+	argc -= optind;
+	argv += optind;
     }
 
     if (term == 0 || *term == '\0')
@@ -298,8 +369,11 @@ main(int argc, char **argv)
     if (setupterm(term, STDOUT_FILENO, &errret) != OK && errret <= 0)
 	quit(3, "unknown terminal \"%s\"", term);
 
-    if (cmdline)
+    if (cmdline) {
+	if ((argc <= 0) && !is_reset && !is_init)
+	    usage();
 	return tput(argc, argv);
+    }
 
     while (fgets(buf, sizeof(buf), stdin) != 0) {
 	char *argvec[16];	/* command, 9 parms, null, & slop */

@@ -1,10 +1,53 @@
--- $Id: NEWS,v 1.585 2000/08/27 02:18:23 tom Exp $
+-- $Id: NEWS,v 1.589 2000/09/10 01:31:50 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000909
+	+ correct an uninitialized parameter to open_tempfile() in tic.c which
+	  made "tic -I" give an ambiguous error message about tmpnam.
+	+ add special case in lib_vidattr.c to reset underline and standout for
+	  devices that have no sgr0 defined (patch by Don Lewis
+	  <Don.Lewis@tsc.tdk.com>).  Note that this will not work for bold
+	  mode, since there is no exit-bold-mode capability.
+	+ improved patch for Make_Enum_Type (patch by Juergen Pfeifer).
+	+ modify tparm to disallow arithmetic on strings, analyze the varargs
+	  list to read strings as strings and numbers as numbers.
+	+ modify tparm's internal function spop() to treat a null pointer as
+	  an empty string.
+	+ modify tput program so it can be renamed or invoked via a link as
+	  'reset' or 'init', producing the same effect as 'tput reset' or 'tput
+	  init'.
+	+ add private entrypoint _nc_basename(), use to consolidate related
+	  code in progs, as well as accommodating OS/2 EMX pathnames.
+	+ remove NCURSES_CONST line from edit_cfg.sh to compensate for its
+	  removal (except via AC_SUBST) from configure.in, making --enable-const
+	  work again (reported by Juergen Pfeifer).
+	+ regen'd configure to pick up "hpux*" change from 20000902.
+
+20000902
+	+ modify tset.c to check for transformed "reset" program name, if any.
+	+ add a check for null pointer in Make_Enum_Type() (reported by Steven
+	  W Orr <steveo@world.std.com>).
+	+ change functions _nc_parse_entry() and postprocess_termcap() to avoid
+	  using strtok(), because it is non-reentrant (reported by Andrey A
+	  Chernov <ache@nagual.pp.ru>).
+	+ remove "hpux10.*" case from CF_SHARED_OPTS configure script macro.
+	  This differed from the "hpux*" case by using reversed symbolic
+	  links, which made the 5.1 version not match the configuration of
+	  5.0 shared libraries (reported by Albert Chin-A-Young).
+	+ correct a dependency in Ada95/src/Makefile.in which prevented
+	  building with configure --srcdir (patch by H Nanosecond
+	  <aldomel@ix.netcom.com>).
+	+ modify ifdef's in curses.h.in to avoid warning if GCC_PRINTF or
+	  GCC_SCANF was not previously defined (reported by Pavel Roskin
+	  <proski@gnu.org>).
+	+ add MKncurses_def.sh to generate fallback definitions for
+	  ncurses_cfg.h, to quiet gcc -Wundef warnings, modified ifdef's in
+	  code to consistently use "#if" rather than "#ifdef".
 
 20000826
 	+ add QNX qansi entries to terminfo -TD

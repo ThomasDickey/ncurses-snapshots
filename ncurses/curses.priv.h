@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.164 2000/07/31 00:26:20 tom Exp $
+ * $Id: curses.priv.h,v 1.165 2000/09/02 18:37:30 tom Exp $
  *
  *	curses.priv.h
  *
@@ -99,7 +99,7 @@ extern int errno;
 /* Some systems have a broken 'select()', but workable 'poll()'.  Use that */
 #if HAVE_WORKING_POLL
 #define USE_FUNC_POLL 1
-#ifdef HAVE_POLL_H
+#if HAVE_POLL_H
 #include <poll.h>
 #else
 #include <sys/poll.h>
@@ -134,7 +134,7 @@ extern int errno;
  * If we don't have signals to support it, don't add a sigwinch handler.
  * In any case, resizing is an extended feature.  Use it if we've got it.
  */
-#ifndef NCURSES_EXT_FUNCS
+#if !NCURSES_EXT_FUNCS
 #undef HAVE_SIZECHANGE
 #endif
 
@@ -288,7 +288,7 @@ struct screen {
 	SLK             *_slk;          /* ptr to soft key struct / NULL    */
         int             slk_format;     /* selected format for this screen  */
 	/* cursor movement costs; units are 10ths of milliseconds */
-#ifdef NCURSES_NO_PADDING
+#if NCURSES_NO_PADDING
 	int             _no_padding;    /* flag to set if padding disabled  */
 #endif
 	int             _char_padding;  /* cost of character put            */
@@ -339,7 +339,7 @@ struct screen {
 	int             _color_count;   /* count of colors in palette        */
 	unsigned short  *_color_pairs;  /* screen's color pair list          */
 	int             _pair_count;    /* count of color pairs              */
-#ifdef NCURSES_EXT_FUNCS
+#if NCURSES_EXT_FUNCS
 	bool            _default_color; /* use default colors                */
 	bool            _has_sgr_39_49; /* has ECMA default color support    */
 	int             _default_fg;    /* assumed default foreground        */
@@ -407,7 +407,7 @@ struct screen {
 
 extern SCREEN *_nc_screen_chain;
 
-#ifdef NCURSES_NOMACROS
+#if NCURSES_NOMACROS
 #include <nomacros.h>
 #endif
 
@@ -623,7 +623,7 @@ extern const char *_nc_visbuf2(int, const char *);
 				vidattr(AttrOf(c))
 #endif
 
-#if defined(NCURSES_EXPANDED) && defined(NCURSES_EXT_FUNCS)
+#if NCURSES_EXPANDED && NCURSES_EXT_FUNCS
 
 #undef  toggle_attr_on
 #define toggle_attr_on(S,at) _nc_toggle_attr_on(&(S), at)
@@ -735,7 +735,7 @@ extern void _nc_trace_tries(struct tries *tree);
 extern void _nc_update_screensize(void);
 #endif
 
-#ifdef USE_WIDEC_SUPPORT
+#if USE_WIDEC_SUPPORT
 extern int _nc_utf8_outch(int);
 #endif
 
@@ -754,10 +754,6 @@ extern int *_nc_oldnums;
  * On systems with a broken linker, define 'SP' as a function to force the
  * linker to pull in the data-only module with 'SP'.
  */
-#ifndef BROKEN_LINKER
-#define BROKEN_LINKER 0
-#endif
-
 #if BROKEN_LINKER
 #define SP _nc_screen()
 extern SCREEN *_nc_screen(void);
