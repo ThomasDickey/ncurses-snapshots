@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.145 1998/09/26 20:45:09 tom Exp $
+dnl $Id: aclocal.m4,v 1.147 1998/10/11 00:16:45 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -402,11 +402,10 @@ dnl Check for memmove, or a bcopy that can handle overlapping copy.  If neither
 dnl is found, add our own version of memmove to the list of objects.
 AC_DEFUN([CF_FUNC_MEMMOVE],
 [
-if test ".$ac_cv_func_memmove" != .yes ; then
-	if test ".$ac_cv_func_bcopy" = ".yes" ; then
-		AC_MSG_CHECKING(if bcopy does overlapping moves)
-		AC_CACHE_VAL(cf_cv_good_bcopy,[
-			AC_TRY_RUN([
+AC_CHECK_FUNC(memmove,,[
+AC_CHECK_FUNC(bcopy,[
+	AC_CACHE_CHECK(if bcopy does overlapping moves,cf_cv_good_bcopy,[
+		AC_TRY_RUN([
 int main() {
 	static char data[] = "abcdefghijklmnopqrstuwwxyz";
 	char temp[40];
@@ -420,17 +419,13 @@ int main() {
 		[cf_cv_good_bcopy=no],
 		[cf_cv_good_bcopy=unknown])
 		])
-		AC_MSG_RESULT($cf_cv_good_bcopy)
-	else
-		cf_cv_good_bcopy=no
-	fi
+	],[cf_cv_good_bcopy=no])
 	if test $cf_cv_good_bcopy = yes ; then
 		AC_DEFINE(USE_OK_BCOPY)
 	else
 		AC_DEFINE(USE_MY_MEMMOVE)
 	fi
-fi
-])dnl
+])])dnl
 dnl ---------------------------------------------------------------------------
 dnl Test for availability of useful gcc __attribute__ directives to quiet
 dnl compiler warnings.  Though useful, not all are supported -- and contrary
@@ -1248,6 +1243,31 @@ AC_DEFUN([CF_OBJ_SUBDIR],
 	esac
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Check the argument to see that it looks like a pathname.  Rewrite it if it
+dnl begins with one of the prefix/exec_prefix variables, and then again if the
+dnl result begins with 'NONE'.  This is necessary to workaround autoconf's
+dnl delayed evaluation of those symbols.
+AC_DEFUN([CF_PATH_SYNTAX],[
+case ".[$]$1" in #(vi
+./*) #(vi
+  ;;
+.\[$]{*prefix}*) #(vi
+  eval $1="[$]$1"
+  case ".[$]$1" in #(vi
+  .NONE/*)
+    $1=`echo [$]$1 | sed -e s@NONE@$ac_default_prefix@`
+    ;;
+  esac
+  ;; #(vi
+.NONE/*)
+  $1=`echo [$]$1 | sed -e s@NONE@$ac_default_prefix@`
+  ;;
+*)
+  AC_ERROR(expected a pathname)
+  ;;
+esac
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Compute $PROG_EXT, used for non-Unix ports, such as OS/2 EMX.
 AC_DEFUN([CF_PROG_EXT],
 [
@@ -1949,24 +1969,33 @@ dnl
 AC_DEFUN([CF_WITH_PATH],
 [AC_ARG_WITH($1,[$2 ](default: ifelse($4,,empty,$4)),,
 ifelse($4,,[withval="${$3}"],[withval="${$3-ifelse($5,,$4,$5)}"]))dnl
-case ".$withval" in #(vi
-./*) #(vi
-  ;;
-.\[$]{*prefix}*) #(vi
-  eval withval="$withval"
-  case ".$withval" in #(vi
-  .NONE/*)
-    withval=`echo $withval | sed -e s@NONE@$ac_default_prefix@`
-    ;;
-  esac
-  ;; #(vi
-.NONE/*)
-  withval=`echo $withval | sed -e s@NONE@$ac_default_prefix@`
-  ;;
-*)
-  AC_ERROR(expected a pathname for $1)
-  ;;
-esac
+CF_PATH_SYNTAX(withval)
 eval $3="$withval"
+AC_SUBST($3)dnl
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Process an option specifying a list of colon-separated paths.
+dnl
+dnl $1 = option name
+dnl $2 = help-text
+dnl $3 = environment variable to set
+dnl $4 = default value, shown in the help-message, must be a constant
+dnl $5 = default value, if it's an expression & cannot be in the help-message
+dnl
+AC_DEFUN([CF_WITH_PATHLIST],[
+AC_ARG_WITH($1,[$2 ](default: ifelse($4,,empty,$4)),,
+ifelse($4,,[withval="${$3}"],[withval="${$3-ifelse($5,,$4,$5)}"]))dnl
+
+IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
+cf_dst_path=
+for cf_src_path in $withval
+do
+  CF_PATH_SYNTAX(cf_src_path)
+  test -n "$cf_dst_path" && cf_dst_path="${cf_dst_path}:"
+  cf_dst_path="${cf_dst_path}${cf_src_path}"
+done
+IFS="$ac_save_ifs"
+
+eval $3="$cf_dst_path"
 AC_SUBST($3)dnl
 ])dnl
