@@ -97,7 +97,7 @@ ENTRY	*qp;
 				exit(0);
 		    	default:
 				fprintf (stderr, 
-					"%s: Unknown option. Usage is:\n\t%s\n",
+					"%s: Unknown option. Usage is:\n\t%s",
 					_nc_progname,
 				        usage_string);
 				exit(1);

@@ -97,24 +97,24 @@ echo "";
 
 echo "int bool_from_termcap[] = {";
 $AWK <$DATA '
-$3 == "bool" && $5 == "-"       {print "0,\t/* ", $2, " */";}
-$3 == "bool" && $5 == "Y"       {print "1,\t/* ", $2, " */";}
+$3 == "bool" && substr($5, 0, 1) == "-"       {print "0,\t/* ", $2, " */";}
+$3 == "bool" && substr($5, 0, 1) == "Y"       {print "1,\t/* ", $2, " */";}
 '
 echo "};";
 echo "";
 
 echo "int num_from_termcap[] = {";
 $AWK <$DATA '
-$3 == "num" && $5 == "-"        {print "0,\t/* ", $2, " */";}
-$3 == "num" && $5 == "Y"        {print "1,\t/* ", $2, " */";}
+$3 == "num" && substr($5, 0, 1) == "-"        {print "0,\t/* ", $2, " */";}
+$3 == "num" && substr($5, 0, 1) == "Y"        {print "1,\t/* ", $2, " */";}
 '
 echo "};";
 echo "";
 
 echo "int str_from_termcap[] = {";
 $AWK <$DATA '
-$3 == "str" && $5 == "-"        {print "0,\t/* ", $2, " */";}
-$3 == "str" && $5 == "Y"        {print "1,\t/* ", $2, " */";}
+$3 == "str" && substr($5, 0, 1) == "-"        {print "0,\t/* ", $2, " */";}
+$3 == "str" && substr($5, 0, 1) == "Y"        {print "1,\t/* ", $2, " */";}
 '
 echo "};";
 echo "";

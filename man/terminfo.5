@@ -1808,6 +1808,78 @@ defines a 2621-nl that does not have the \fBsmkx\fR or \fBrmkx\fR capabilities,
 and hence does not turn on the function key labels when in visual mode.
 This is useful for different modes for a terminal, or for different
 user preferences.
+.SS Pitfalls of Long Entries
+Long terminfo entries are unlikely to be a problem; to date, no entry has even
+approached terminfo's 4K string-table maximum.  Unfortunately, the termcap
+translations are much more strictly limited (to 1K), thus termcap translations
+of long terminfo entries can cause problems.
+.PP
+The man pages for 4.3BSD and older versions of tgetent() instruct the user to
+allocate a 1K buffer for the termcap entry.  The entry gets null-terminated by
+the termcap library, so that makes the maximum safe length for a termcap entry
+1k-1 (1023) bytes.  Depending on what the application and the termcap library
+being used do, and where in the termcap file the terminal type that tgetent()
+is searching for is, several bad things can happen.
+.PP
+Some termcap libraries print a warning message or exit if they find an
+entry that's longer than 1023 bytes; others don't; others truncate the
+entries to 1023 bytes.  Some application programs allocate more than
+the recommended 1K for the termcap entry; others don't.
+.PP
+Each termcap entry has two important sizes associated with it: before
+"tc" expansion, and after "tc" expansion.  "tc" is the capability that
+tacks on another termcap entry to the end of the current one, to add
+on its capabilities.  If a termcap entry doesn't use the "tc"
+capability, then of course the two lengths are the same.
+.PP
+The "before tc expansion" length is the most important one, because it
+affects more than just users of that particular terminal.  This is the
+length of the entry as it exists in /etc/termcap, minus the
+backslash-newline pairs, which tgetent() strips out while reading it.
+Some termcap libraries strip off the final newline, too (GNU termcap does not).
+Now suppose:
+.TP 5
+*
+a termcap entry before expansion is more than 1023 bytes long,
+.TP 5
+*
+and the application has only allocated a 1k buffer,
+.TP 5
+*
+and the termcap library (like the one in BSD/OS 1.1 and GNU) reads
+the whole entry into the buffer, no matter what its length, to see
+if it's the entry it wants,
+.TP 5
+*
+and tgetent() is searching for a terminal type that either is the
+long entry, appears in the termcap file after the long entry, or
+doesn't appear in the file at all (so that tgetent() has to search
+the whole termcap file).
+.PP
+Then tgetent() will overwrite memory, perhaps its stack, and probably core dump
+the program.  Programs like telnet are particularly vulnerable; modern telnets
+pass along values like the terminal type automatically.  The results are almost
+as undesirable with a termcap library, like SunOS 4.1.3 and Ultrix 4.4, that
+prints warning messages when it reads an overly long termcap entry.  If a
+termcap library truncates long entries, like OSF/1 3.0, it is immune to dying
+here but will return incorrect data for the terminal.
+.PP
+The "after tc expansion" length will have a similar effect to the
+above, but only for people who actually set TERM to that terminal
+type, since tgetent() only does "tc" expansion once it's found the
+terminal type it was looking for, not while searching.
+.PP
+In summary, a termcap entry that is longer than 1023 bytes can cause,
+on various combinations of termcap libraries and applications, a core
+dump, warnings, or incorrect operation.  If it's too long even before
+"tc" expansion, it will have this effect even for users of some other
+terminal types and users whose TERM variable does not have a termcap
+entry.
+.PP
+When in -C (translate to termcap) mode, the \fBncurses\fR implementation of
+\fBtic\fR(1) issues warning messages when the pre-tc length of a termcap
+translation is too long.  The -c (check) option also checks resolved (after tc
+expansion) lengths.
 .SH EXTENSIONS
 Some SVr4 \fBcurses\fR implementations, and all previous to SVr4, don't
 interpret the %A and %O operators in parameter strings.  SVr4 curses does

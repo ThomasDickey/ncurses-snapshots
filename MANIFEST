@@ -62,6 +62,7 @@
 ./man/curs_insstr.3x
 ./man/curs_instr.3x
 ./man/curs_kernel.3x
+./man/curs_mouse.3x
 ./man/curs_move.3x
 ./man/curs_outopts.3x
 ./man/curs_overlay.3x
@@ -106,6 +107,7 @@
 ./man/terminfo.5
 ./man/tic.1m
 ./man/tput.1
+./man/tset.1
 ./menu/Makefile.in
 ./menu/READ.ME
 ./menu/eti.h
@@ -183,6 +185,7 @@
 ./ncurses/lib_isendwin.c
 ./ncurses/lib_kernel.c
 ./ncurses/lib_longname.c
+./ncurses/lib_mouse.c
 ./ncurses/lib_move.c
 ./ncurses/lib_mvcur.c
 ./ncurses/lib_mvwin.c
@@ -236,6 +239,7 @@
 ./progs/modules
 ./progs/termsort.sh
 ./progs/tput.c
+./progs/tset.c
 ./progs/write_entry.c
 ./shlib
 ./test/Makefile.in

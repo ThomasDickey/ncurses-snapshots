@@ -183,9 +183,45 @@ int	ch;
 		/* else go on to read data available */
 	}
 
-	if (win->_use_keypad)
-		ch = kgetch(win);
-	else {
+	/*
+	 * Give the mouse interface a chance to pick up an event.
+	 * If no mouse event, check for keyboard input.
+	 */
+	if (_nc_mouse_event(SP))
+		ch = KEY_MOUSE;
+	else if (win->_use_keypad) {
+	        /* 
+		 * This is tricky.  We only want to get special-key
+		 * events one at a time.  But we want to accumulate
+		 * mouse events until either (a) the mouse logic tells
+		 * us it's picked up a complete gesture, or (b)
+		 * there's a detectable time lapse after one.
+		 *
+		 * Note: if the mouse code starts failing to compose
+		 * press/release events into clicks, you should probably
+		 * increase _nc_max_click_interval.  
+		 */
+	    	int runcount = 0;
+
+		do {
+			ch = kgetch(win);
+			if (ch == KEY_MOUSE)
+			{
+				++runcount;
+				if (_nc_mouse_inline(SP))
+				    break;
+			}
+		} while
+		    (ch == KEY_MOUSE
+		     && (_nc_timed_wait(SP->_ifd, _nc_max_click_interval, NULL)
+			 || !_nc_mouse_parse(runcount)));
+		if (runcount > 0 && ch != KEY_MOUSE)
+		{
+		    /* mouse event sequence ended by keystroke, push it */
+		    ungetch(ch);
+		    ch = KEY_MOUSE;
+		}
+	} else {
 		if (head == -1)
 			fifo_push();
 		ch = fifo_pull();

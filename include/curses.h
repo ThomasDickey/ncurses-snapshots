@@ -783,6 +783,64 @@ extern int wresize (WINDOW *, int, int);
 #define KEY_SUNDO	0626		/* Shifted Undo */
 #define KEY_SUSPEND	0627		/* Suspend */
 #define KEY_UNDO	0630		/* Undo */
+#define	KEY_MOUSE	0631		/* Mouse event has occurred */
 #define KEY_MAX		0777		/* Maximum key value */
+
+/* mouse interface */
+
+/* event masks */
+#define	BUTTON1_RELEASED	000000000001L
+#define	BUTTON1_PRESSED		000000000002L
+#define	BUTTON1_CLICKED		000000000004L
+#define	BUTTON1_DOUBLE_CLICKED	000000000010L
+#define	BUTTON1_TRIPLE_CLICKED	000000000020L
+#define BUTTON1_RESERVED_EVENT	000000000040L
+#define	BUTTON2_RELEASED	000000000100L
+#define	BUTTON2_PRESSED		000000000200L
+#define	BUTTON2_CLICKED		000000000400L
+#define	BUTTON2_DOUBLE_CLICKED	000000001000L
+#define	BUTTON2_TRIPLE_CLICKED	000000002000L
+#define BUTTON2_RESERVED_EVENT	000000004000L
+#define	BUTTON3_RELEASED	000000010000L
+#define	BUTTON3_PRESSED		000000020000L
+#define	BUTTON3_CLICKED		000000040000L
+#define	BUTTON3_DOUBLE_CLICKED	000000100000L
+#define	BUTTON3_TRIPLE_CLICKED	000000200000L
+#define BUTTON3_RESERVED_EVENT	000000400000L
+#define	BUTTON4_RELEASED	000001000000L
+#define	BUTTON4_PRESSED		000002000000L
+#define	BUTTON4_CLICKED		000004000000L
+#define	BUTTON4_DOUBLE_CLICKED	000010000000L
+#define	BUTTON4_TRIPLE_CLICKED	000020000000L
+#define BUTTON4_RESERVED_EVENT	000040000000L
+#define BUTTON_CTRL		000100000000L
+#define BUTTON_SHIFT		000200000000L
+#define BUTTON_ALT		000400000000L
+#define	ALL_MOUSE_EVENTS	000777777777L
+#define	REPORT_MOUSE_POSITION	001000000000L
+
+/* macros to extract single event-bits from masks */
+#define	BUTTON_RELEASED(e, x)		((e) & (001 << (6 * ((x) - 1))))
+#define	BUTTON_PRESSED(e, x)		((e) & (002 << (6 * ((x) - 1))))
+#define	BUTTON_CLICKED(e, x)		((e) & (004 << (6 * ((x) - 1))))
+#define	BUTTON_DOUBLE_CLICKED(e, x)	((e) & (010 << (6 * ((x) - 1))))
+#define	BUTTON_TRIPLE_CLICKED(e, x)	((e) & (020 << (6 * ((x) - 1))))
+#define	BUTTON_RESERVED_EVENT(e, x)	((e) & (040 << (6 * ((x) - 1))))
+
+typedef unsigned long mmask_t;
+
+typedef struct
+{
+    short id;		/* ID to distinguish multiple devices */
+    int x, y, z;	/* event coordinates (character-cell) */
+    mmask_t bstate;	/* button state bits */
+}
+MEVENT;
+
+int getmouse(MEVENT *event);
+int ungetmouse(MEVENT *event);
+mmask_t mousemask(mmask_t newmask, mmask_t *oldmask);
+bool wenclose(WINDOW *win, int y, int x);
+int mouseinterval(int);
 
 #endif /* __NCURSES_H */

@@ -5,493 +5,533 @@
 # Column 2: terminfo capability name
 # Column 3: capability type
 # Column 4: termcap capability name
-# Column 5: `Y' if capability was used in termcap, `-' otherwise
+# Column 5: Lead with `Y' if capability should be emitted in termcap
+#           translations, `-' otherwise
 # Column 6: capability description
 #
-# Note that many capabilities that the 4.4BSD termcap(5) page documents are
-# not actually used by the 4.4BSD curses library.  Column 5 is based on the
-# 4.4BSD documentation, except that string caps are marked `Y' only if they
-# are actually *used* by the 4.4BSD curses library or the GNU termcap library. 
-# This helps us avoid putting out termcap entries that are more than 1023
-# bytes long (and tank a lot of old termcap-using programs) because they're
-# full of unused string capabilities.
-
+# The codes following [Y-] in column 5 describe the versions of termcap which
+# use the given capability.  This information is not used by the curses library
+# proper; rather, it's there to help the terminfo maintainer avoid emitting
+# termcap entry translations that are more than 1023 bytes long (and tank a
+# lot of old termcap-using programs).  The codes read as follows:
+#	B = mentioned in the BSD man page for 4.4BSD curses
+#	C = used by the 4.4BSD curses library
+#	G = mentioned in the documentation for GNU termcap
+#	E = used by GNU Emacs.
+# The important codes are C and E.  A cap with C or E should be preserved in
+# translation if possible.  The problem is that preserving all such caps may
+# lead to some termcap translations being too long.  The termcap maintainer
+# has a bit of a juggling act to do...potential problem cases are marked with
+# a * or **.
+#
+# Notes on specific elisions made to fit translations within 1023 bytes:
+#
+# Machines with IBM PC-like keyboards want to be able to define the following
+# keys: key_npage, key_ppage, key_home, key_ll (which is used for in termcap-
+# only environments for End or Home-Down), key_dc, and key_ic.  This is also
+# the set of keys the `joe' editor will be upset if it can't see.  So don't 
+# trim those out of the set to be translated to termcap, or various users of
+# the termcap file will become irate.
+#
+# It might look tempting to leave those long init strings out of translations.
+# We can't do it (yet); 4.4BSD tput and tset use them.
+#
+# We retain the sgr capability in translation in spite of the fact that neither
+# 4.4BSD nor GNU Emacs uses it, because (a) some entry naming distinctions are
+# hard to understand without it, and (b) the entries in which it is long tend
+# to be older types that don't use up a lot of string space on function keys.
+# The tic(1) translation code will complain and elide it if it makes a critical
+# difference (there is special code in tic to recognize this situation).
+#
+# Yes, BSD tset(1) uses hpa.  We elide hpa/vpa anyway because the motion
+# optimizer in BSD curses didn't use them.  This omission seems to be the
+# single most effective one, it shortened the resolved length of all thirteen
+# problem entries in the 9.9.0 version below critical.
+#
+# It would be nice to keep f11 and f12 for Emacs use, but a couple of termcap
+# translations go back over critical if we do this.  As 4.4BSD curses fades
+# into history and GNU termcap's application base shrinks towards being GNU 
+# Emacs only, we'll probably elide out some BCG-only capabilities in order
+# to buy space for non-essentials Emacs is still using.  Capabilities high
+# on that hit list: rc, sc, uc.
+#
+#############################################################################
 #
 # These are the boolean capabilities
 #
-auto_left_margin        	"bw"	bool	"bw"	Y	cub1 wraps from column 0 to last column
-auto_right_margin       	"am"	bool	"am"	Y	terminal has automatic margins
-no_esc_ctlc             	"xsb"	bool	"xb"	Y	beehive (f1=escape, f2=ctrl C)
-ceol_standout_glitch    	"xhp"	bool	"xs"	Y	standout not erased by overwriting (hp)
-eat_newline_glitch      	"xenl"	bool	"xn"	Y	newline ignored after 80 cols (concept)
-erase_overstrike        	"eo"	bool	"eo"	Y	can erase overstrikes with a blank
-generic_type            	"gn"	bool	"gn"	Y	generic line type
-hard_copy               	"hc"	bool	"hc"	Y	hardcopy terminal
-has_meta_key            	"km"	bool	"km"	Y	Has a meta key, sets msb high
-has_status_line         	"hs"	bool	"hs"	Y	has extra status line
-insert_null_glitch      	"in"	bool	"in"	Y	insert mode distinguishes nulls
-memory_above            	"da"	bool	"da"	Y	display may be retained above the screen
-memory_below            	"db"	bool	"db"	Y	display may be retained below the screen
-move_insert_mode        	"mir"	bool	"mi"	Y	safe to move while in insert mode
-move_standout_mode      	"msgr"	bool	"ms"	Y	safe to move while in standout mode
-over_strike             	"os"	bool	"os"	Y	terminal can overstrike
-status_line_esc_ok      	"eslok"	bool	"es"	Y	escape can be used on the status line
-dest_tabs_magic_smso    	"xt"	bool	"xt"	Y	tabs destructive, magic so char (t1061)
-tilde_glitch            	"hz"	bool	"hz"	Y	can't print ~'s (hazeltine)
-transparent_underline   	"ul"	bool	"ul"	Y	underline character overstrikes
-xon_xoff                	"xon"	bool	"xo"	Y	terminal uses xon/xoff handshaking
-needs_xon_xoff          	"nxon"	bool	"nx"	-	padding won't work, xon/xoff required
-prtr_silent             	"mc5i"	bool	"5i"	-	printer won't echo on screen
-hard_cursor             	"chts"	bool	"HC"	-	cursor is hard to see
-non_rev_rmcup           	"nrrmc"	bool	"NR"	-	smcup does not revrse rmcup
-no_pad_char             	"npc"	bool	"NP"	-	pad character does not exist
-non_dest_scroll_region  	"ndscr"	bool	"ND"	-	scrolling region is non-destructive
-can_change              	"ccc"	bool	"cc"	-	terminal can re-define existing colors
-back_color_erase        	"bce"	bool	"ut"	-	screen erased with background color
-hue_lightness_saturation	"hls"	bool	"hl"	-	terminal uses only HLS color notation (tektronix)
-col_addr_glitch         	"xhpa"	bool	"YA"	-	only positive motion for hpa/mhpa caps
-cr_cancels_micro_mode   	"crxm"	bool	"YB"	-	using cr turns off micro mode
-has_print_wheel         	"daisy"	bool	"YC"	-	printer needs operator to change character set
-row_addr_glitch         	"xvpa"	bool	"YD"	-	only positive motion for vpa/mvpa caps
-semi_auto_right_margin  	"sam"	bool	"YE"	-	printing in last column causes cr
-cpi_changes_res         	"cpix"	bool	"YF"	-	changing character pitch changes resolution
-lpi_changes_res         	"lpix"	bool	"YG"	-	changing line pitch changes resolution
-get_mouse               	"getm"	bool	"Gm"	-	Curses should get button events
+auto_left_margin        	"bw"	bool	"bw"	YB-G-	cub1 wraps from column 0 to last column
+auto_right_margin       	"am"	bool	"am"	YBCGE	terminal has automatic margins
+no_esc_ctlc             	"xsb"	bool	"xb"	YBCG-	beehive (f1=escape, f2=ctrl C)
+ceol_standout_glitch    	"xhp"	bool	"xs"	YBCGE	standout not erased by overwriting (hp)
+eat_newline_glitch      	"xenl"	bool	"xn"	YBCGE	newline ignored after 80 cols (concept)
+erase_overstrike        	"eo"	bool	"eo"	YBCG-	can erase overstrikes with a blank
+generic_type            	"gn"	bool	"gn"	YB-G-	generic line type
+hard_copy               	"hc"	bool	"hc"	YBCG-	hardcopy terminal
+has_meta_key            	"km"	bool	"km"	YB-GE	Has a meta key, sets msb high
+has_status_line         	"hs"	bool	"hs"	YB-G-	has extra status line
+insert_null_glitch      	"in"	bool	"in"	YBCGE	insert mode distinguishes nulls
+memory_above            	"da"	bool	"da"	YBCG-	display may be retained above the screen
+memory_below            	"db"	bool	"db"	YB-GE	display may be retained below the screen
+move_insert_mode        	"mir"	bool	"mi"	YBCGE	safe to move while in insert mode
+move_standout_mode      	"msgr"	bool	"ms"	YBCGE	safe to move while in standout mode
+over_strike             	"os"	bool	"os"	YBCG-	terminal can overstrike
+status_line_esc_ok      	"eslok"	bool	"es"	YB-G-	escape can be used on the status line
+dest_tabs_magic_smso    	"xt"	bool	"xt"	YBCGE	tabs destructive, magic so char (t1061)
+tilde_glitch            	"hz"	bool	"hz"	YB-GE	can't print ~'s (hazeltine)
+transparent_underline   	"ul"	bool	"ul"	YBCGE	underline character overstrikes
+xon_xoff                	"xon"	bool	"xo"	YB---	terminal uses xon/xoff handshaking
+needs_xon_xoff          	"nxon"	bool	"nx"	-----	padding won't work, xon/xoff required
+prtr_silent             	"mc5i"	bool	"5i"	-----	printer won't echo on screen
+hard_cursor             	"chts"	bool	"HC"	-----	cursor is hard to see
+non_rev_rmcup           	"nrrmc"	bool	"NR"	-----	smcup does not revrse rmcup
+no_pad_char             	"npc"	bool	"NP"	-----	pad character does not exist
+non_dest_scroll_region  	"ndscr"	bool	"ND"	-----	scrolling region is non-destructive
+can_change              	"ccc"	bool	"cc"	-----	terminal can re-define existing colors
+back_color_erase        	"bce"	bool	"ut"	-----	screen erased with background color
+hue_lightness_saturation	"hls"	bool	"hl"	-----	terminal uses only HLS color notation (tektronix)
+col_addr_glitch         	"xhpa"	bool	"YA"	-----	only positive motion for hpa/mhpa caps
+cr_cancels_micro_mode   	"crxm"	bool	"YB"	-----	using cr turns off micro mode
+has_print_wheel         	"daisy"	bool	"YC"	-----	printer needs operator to change character set
+row_addr_glitch         	"xvpa"	bool	"YD"	-----	only positive motion for vpa/mvpa caps
+semi_auto_right_margin  	"sam"	bool	"YE"	-----	printing in last column causes cr
+cpi_changes_res         	"cpix"	bool	"YF"	-----	changing character pitch changes resolution
+lpi_changes_res         	"lpix"	bool	"YG"	-----	changing line pitch changes resolution
+get_mouse               	"getm"	bool	"Gm"	-----	Curses should get button events
 #
 # These are the numerical capabilities
 #
-columns                 	"cols"	num	"co"	Y	number of columns in aline
-init_tabs               	"it"	num	"it"	Y	tabs initially every # spaces
-lines                   	"lines"	num	"li"	Y	number of lines on screen or page
-lines_of_memory         	"lm"	num	"lm"	Y	lines of memory if > line. 0 => varies
-magic_cookie_glitch     	"xmc"	num	"sg"	Y	number of blank chars left by smso or rmso
-padding_baud_rate       	"pb"	num	"pb"	Y	lowest baud rate where padding needed
-virtual_terminal        	"vt"	num	"vt"	Y	virtual terminal number (CB/unix)
-width_status_line       	"wsl"	num	"ws"	Y	columns in status line
-num_labels              	"nlab"	num	"Nl"	-	number of lables on screen
-label_height            	"lh"	num	"lh"	-	rows in each label
-label_width             	"lw"	num	"lw"	-	columns in each label
-max_attributes          	"ma"	num	"ma"	Y	maximum combined attributes terminal can handle
-maximum_windows         	"wnum"	num	"MW"	-	maxumum number of defineable windows
+columns                 	"cols"	num	"co"	YBCGE	number of columns in aline
+init_tabs               	"it"	num	"it"	YB-G-	tabs initially every # spaces
+lines                   	"lines"	num	"li"	YBCGE	number of lines on screen or page
+lines_of_memory         	"lm"	num	"lm"	YB-G-	lines of memory if > line. 0 => varies
+magic_cookie_glitch     	"xmc"	num	"sg"	YBCGE	number of blank chars left by smso or rmso
+padding_baud_rate       	"pb"	num	"pb"	YB-GE	lowest baud rate where padding needed
+virtual_terminal        	"vt"	num	"vt"	YB---	virtual terminal number (CB/unix)
+width_status_line       	"wsl"	num	"ws"	YB-G-	columns in status line
+num_labels              	"nlab"	num	"Nl"	-----	number of lables on screen
+label_height            	"lh"	num	"lh"	-----	rows in each label
+label_width             	"lw"	num	"lw"	-----	columns in each label
+max_attributes          	"ma"	num	"ma"	YBC--	maximum combined attributes terminal can handle
+maximum_windows         	"wnum"	num	"MW"	-----	maxumum number of defineable windows
 # These are newer capabilities
-max_colors              	"colors"	num	"Co"	-	maximum numbers of colors on screen
-max_pairs               	"pairs"	num	"pa"	-	maximum number of color-pairs on the screen
-no_color_video          	"ncv"	num	"NC"	-	video attributes that can't be used with colors
-buffer_capacity         	"bufsz"	num	"Ya"	-	numbers of bytes buffered before printing
-dot_vert_spacing        	"spinv"	num	"Yb"	-	spacing of pins vertically in pins per inch
-dot_horz_spacing        	"spinh"	num	"Yc"	-	spacing of dots horizontally in dots per inch
-max_micro_address       	"maddr"	num	"Yd"	-	maximum value in micro_..._address
-max_micro_jump          	"mjump"	num	"Ye"	-	maximum value in parm_..._micro
-micro_char_size         	"mcs"	num	"Yf"	-	character size when in micro mode
-micro_line_size         	"mls"	num	"Yg"	-	line size when in micro mode
-number_of_pins          	"npins"	num	"Yh"	-	numbers of pins in print-head
-output_res_char         	"orc"	num	"Yi"	-	horizontal resolution in units per line
-output_res_line         	"orl"	num	"Yj"	-	vertical resolution in units per line
-output_res_horz_inch    	"orhi"	num	"Yk"	-	horizontal resolution in units per inch
-output_res_vert_inch    	"orvi"	num	"Yl"	-	vertical resolution in units per inch
-print_rate              	"cps"	num	"Ym"	-	print rate in chars per second
-wide_char_size          	"widcs"	num	"Yn"	-	character step size when in double wide mode
-buttons                 	"btns"	num	"BT"	-	number of buttons on mouse
-bit_image_entwining     	"bitwin"	num	"Yo"	-	number of passed for each bit-image row
-bit_image_type          	"bitype"	num	"Yp"	-	type of bit-image device
+max_colors              	"colors"	num	"Co"	-----	maximum numbers of colors on screen
+max_pairs               	"pairs"	num	"pa"	-----	maximum number of color-pairs on the screen
+no_color_video          	"ncv"	num	"NC"	-----	video attributes that can't be used with colors
+buffer_capacity         	"bufsz"	num	"Ya"	-----	numbers of bytes buffered before printing
+dot_vert_spacing        	"spinv"	num	"Yb"	-----	spacing of pins vertically in pins per inch
+dot_horz_spacing        	"spinh"	num	"Yc"	-----	spacing of dots horizontally in dots per inch
+max_micro_address       	"maddr"	num	"Yd"	-----	maximum value in micro_..._address
+max_micro_jump          	"mjump"	num	"Ye"	-----	maximum value in parm_..._micro
+micro_char_size         	"mcs"	num	"Yf"	-----	character size when in micro mode
+micro_line_size         	"mls"	num	"Yg"	-----	line size when in micro mode
+number_of_pins          	"npins"	num	"Yh"	-----	numbers of pins in print-head
+output_res_char         	"orc"	num	"Yi"	-----	horizontal resolution in units per line
+output_res_line         	"orl"	num	"Yj"	-----	vertical resolution in units per line
+output_res_horz_inch    	"orhi"	num	"Yk"	-----	horizontal resolution in units per inch
+output_res_vert_inch    	"orvi"	num	"Yl"	-----	vertical resolution in units per inch
+print_rate              	"cps"	num	"Ym"	-----	print rate in chars per second
+wide_char_size          	"widcs"	num	"Yn"	-----	character step size when in double wide mode
+buttons                 	"btns"	num	"BT"	-----	number of buttons on mouse
+bit_image_entwining     	"bitwin"	num	"Yo"	-----	number of passed for each bit-image row
+bit_image_type          	"bitype"	num	"Yp"	-----	type of bit-image device
 #
 # These are the string capabilities
 #
-back_tab                	"cbt"	str	"bt"	Y	back tab
-bell                    	"bel"	str	"bl"	Y	audible signal (bell)
-carriage_return         	"cr"	str	"cr"	Y	carriage return
-change_scroll_region    	"csr"	str	"cs"	Y	change region to line #1 to line #2
-clear_all_tabs          	"tbc"	str	"ct"	Y	clear all tab stops
-clear_screen            	"clear"	str	"cl"	Y	clear screen and home cursor
-clr_eol                 	"el"	str	"ce"	Y	clear to end of line
-clr_eos                 	"ed"	str	"cd"	Y	clear to end of screen
-column_address          	"hpa"	str	"ch"	Y	horizontal position #1, absolute
-command_character       	"cmdch"	str	"CC"	Y	terminal settable cmd character in prototype !?
-cursor_address          	"cup"	str	"cm"	Y	move to row #1 columns #2
-cursor_down             	"cud1"	str	"do"	Y	down one line
-cursor_home             	"home"	str	"ho"	Y	home cursor (if no cup)
-cursor_invisible        	"civis"	str	"vi"	Y	make cursor invisible
-cursor_left             	"cub1"	str	"le"	Y	move left one space
-cursor_mem_address      	"mrcup"	str	"CM"	Y	memory relative cursor addressing
-cursor_normal           	"cnorm"	str	"ve"	Y	make cursor appear normal (undo civis/cvvis)
-cursor_right            	"cuf1"	str	"nd"	Y	move right one space
-cursor_to_ll            	"ll"	str	"ll"	Y	last line, first column (if no cup)
-cursor_up               	"cuu1"	str	"up"	Y	up one line
-cursor_visible          	"cvvis"	str	"vs"	Y	make cursor very visible
-delete_character        	"dch1"	str	"dc"	Y	delete character
-delete_line             	"dl1"	str	"dl"	Y	delete line
-dis_status_line         	"dsl"	str	"ds"	Y	disable status line
-down_half_line          	"hd"	str	"hd"	Y	half a line down
-enter_alt_charset_mode  	"smacs"	str	"as"	Y	start alternate character set
-enter_blink_mode        	"blink"	str	"mb"	Y	turn on blinking
-enter_bold_mode         	"bold"	str	"md"	Y	turn on bold (extra bright) mode
-enter_ca_mode           	"smcup"	str	"ti"	Y	string to start programs using cup
-enter_delete_mode       	"smdc"	str	"dm"	Y	enter delete mode
-enter_dim_mode          	"dim"	str	"mh"	Y	turn on half-bright mode
-enter_insert_mode       	"smir"	str	"im"	Y	enter insert mode
-enter_secure_mode       	"invis"	str	"mk"	Y	turn on blank mode (characters invisible)
-enter_protected_mode    	"prot"	str	"mp"	Y	turn on protected mode
-enter_reverse_mode      	"rev"	str	"mr"	Y	turn on reverse video mode
-enter_standout_mode     	"smso"	str	"so"	Y	begin standout mode
-enter_underline_mode    	"smul"	str	"us"	Y	begin underline mode
-erase_chars             	"ech"	str	"ec"	Y	erase #1 characters
-exit_alt_charset_mode   	"rmacs"	str	"ae"	Y	end alternate character set
-exit_attribute_mode     	"sgr0"	str	"me"	Y	turn off all attributes
-exit_ca_mode            	"rmcup"	str	"te"	Y	strings to end programs using cup
-exit_delete_mode        	"rmdc"	str	"ed"	Y	end delete mode
-exit_insert_mode        	"rmir"	str	"ei"	Y	exit insert mode
-exit_standout_mode      	"rmso"	str	"se"	Y	exit standout mode
-exit_underline_mode     	"rmul"	str	"ue"	Y	exit underline mode
-flash_screen            	"flash"	str	"vb"	Y	visible bell (may not move cursor)
-form_feed               	"ff"	str	"ff"	Y	hardcopy terminal page eject
-from_status_line        	"fsl"	str	"fs"	Y	return from status line
-init_1string            	"is1"	str	"i1"	Y	initialization string
-init_2string            	"is2"	str	"is"	Y	initialization string
-init_3string            	"is3"	str	"i3"	Y	initialization string
-init_file               	"if"	str	"if"	Y	name of initialization file
-insert_character        	"ich1"	str	"ic"	Y	insert character
-insert_line             	"il1"	str	"al"	Y	insert line
-insert_padding          	"ip"	str	"ip"	Y	insert padding after inserted character
-key_backspace           	"kbs"	str	"kb"	Y	backspace key
-key_catab               	"ktbc"	str	"ka"	-	clear-all-tabs key
-key_clear               	"kclr"	str	"kC"	-	clear-screen or erase key
-key_ctab                	"kctab"	str	"kt"	-	clear-tab key
-key_dc                  	"kdch1"	str	"kD"	-	delete-character key
-key_dl                  	"kdl1"	str	"kL"	-	delete-line key
-key_down                	"kcud1"	str	"kd"	Y	down-arrow key
-key_eic                 	"krmir"	str	"kM"	-	sent by rmir or smir in insert mode
-key_eol                 	"kel"	str	"kE"	-	clear-to-end-of-line key
-key_eos                 	"ked"	str	"kS"	-	clear-to-end-of-screen key
-key_f0                  	"kf0"	str	"k0"	Y	F0 function key
-key_f1                  	"kf1"	str	"k1"	Y	F1 function key
-key_f10                 	"kf10"	str	"k;"	-	F10 function key
-key_f2				"kf2"   str	"k2"	Y	F2 function key
-key_f3				"kf3"   str	"k3"	Y	F3 function key
-key_f4				"kf4"   str	"k4"	Y	F4 function key
-key_f5				"kf5"   str	"k5"	Y	F5 function key
-key_f6				"kf6"   str	"k6"	Y	F6 function key
-key_f7                  	"kf7"	str	"k7"	Y	F7 function key
-key_f8                  	"kf8"	str	"k8"	Y	F8 fucntion key
-key_f9                  	"kf9"	str	"k9"	Y	F9 function key
-key_home                	"khome"	str	"kh"	Y	home key
-key_ic                  	"kich1"	str	"kI"	-	insert-character key
-key_il                  	"kil1"	str	"kA"	-	insert-line key
-key_left                	"kcub1"	str	"kl"	Y	left-arrow key
-key_ll                  	"kll"	str	"kH"	-	last-line key
-key_npage               	"knp"	str	"kN"	-	next-page key
-key_ppage               	"kpp"	str	"kP"	-	prev-page key
-key_right               	"kcuf1"	str	"kr"	Y	right-arrow key
-key_sf                  	"kind"	str	"kF"	-	scroll-forward key
-key_sr                  	"kri"	str	"kR"	-	scroll-backward key
-key_stab                	"khts"	str	"kT"	-	set-tab key
-key_up                  	"kcuu1"	str	"ku"	Y	up-arrow key
-keypad_local            	"rmkx"	str	"ke"	Y	out of 'keyboard_transmit' mode
-keypad_xmit             	"smkx"	str	"ks"	Y	enter into 'keyboard_transmit' mode
-lab_f0                  	"lf0"	str	"l0"	-	label on function key f0 if not f0
-lab_f1                  	"lf1"	str	"l1"	-	label on function key f1 if not f1
-lab_f10                 	"lf10"	str	"la"	-	label on function key f10 if not f10
-lab_f2                  	"lf2"	str	"l2"	-	label on function key f2 if not f2
-lab_f3                  	"lf3"	str	"l3"	-	label on function key f3 if not f3
-lab_f4                  	"lf4"	str	"l4"	-	label on function key f4 if not f4
-lab_f5                  	"lf5"	str	"l5"	-	lable on function key f5 if not f5
-lab_f6                  	"lf6"	str	"l6"	-	label on function key f6 if not f6
-lab_f7                  	"lf7"	str	"l7"	-	label on function key f7 if not f7
-lab_f8                  	"lf8"	str	"l8"	-	label on function key f8 if not f8
-lab_f9                  	"lf9"	str	"l9"	-	label on function key f9 if not f9
-meta_off                	"rmm"	str	"mo"	Y	turn off meta mode
-meta_on                 	"smm"	str	"mm"	Y	turn on meta mode (8th-bit on)
-newline                 	"nel"	str	"nw"	Y	newline (behave like cr followed by lf)
-pad_char                	"pad"	str	"pc"	Y	padding char (instead of null)
-parm_dch                	"dch"	str	"DC"	Y	delete #1 chars
-parm_delete_line        	"dl"	str	"DL"	Y	delete #1 lines
-parm_down_cursor        	"cud"	str	"DO"	Y	down #1 lines
-parm_ich                	"ich"	str	"IC"	Y	insert #1 chars
-parm_index              	"indn"	str	"SF"	Y	scroll forward #1 lines
-parm_insert_line        	"il"	str	"AL"	Y	insert #1 lines
-parm_left_cursor        	"cub"	str	"LE"	Y	move #1 chars to the left
-parm_right_cursor       	"cuf"	str	"RI"	Y	move #1 chars to the right
-parm_rindex             	"rin"	str	"SR"	Y	scroll back #1 lines
-parm_up_cursor          	"cuu"	str	"UP"	Y	up #1 lines
-pkey_key                	"pfkey"	str	"pk"	-	program function key #1 to type string #2
-pkey_local              	"pfloc"	str	"pl"	-	program function key #1 to execute string #2
-pkey_xmit               	"pfx"	str	"px"	-	program function key #1 to transmit string #2
-print_screen            	"mc0"	str	"ps"	Y	print contents of screen
-prtr_off                	"mc4"	str	"pf"	Y	turn off printer
-prtr_on                 	"mc5"	str	"po"	Y	turn on printer
-repeat_char             	"rep"	str	"rp"	Y	repeat char #1 #2 times
-reset_1string           	"rs1"	str	"r1"	-	reset string
-reset_2string           	"rs2"	str	"r2"	-	reset string
-reset_3string           	"rs3"	str	"r3"	-	reset string
-reset_file              	"rf"	str	"rf"	-	name of reset file
-restore_cursor          	"rc"	str	"rc"	Y	restore cursor to last position of sc
-row_address             	"vpa"	str	"cv"	Y	vertical position #1 absolute
-save_cursor             	"sc"	str	"sc"	Y	save current cursor position
-scroll_forward          	"ind"	str	"sf"	Y	scroll text up
-scroll_reverse          	"ri"	str	"sr"	Y	scroll text down
-set_attributes          	"sgr"	str	"sa"	Y	define video attributes #1-#9
-set_tab                 	"hts"	str	"st"	Y	set a tab in every row, current columns
-set_window              	"wind"	str	"wi"	Y	current window is lines #1-#2 cols #3-#4
-tab                     	"ht"	str	"ta"	Y	tab to next 8-space hardware tab stop
-to_status_line          	"tsl"	str	"ts"	Y	move to status line
-underline_char          	"uc"	str	"uc"	Y	underline char and move past it
-up_half_line            	"hu"	str	"hu"	Y	half a line up
-init_prog               	"iprog"	str	"iP"	-	path name of program for initialization
-key_a1                  	"ka1"	str	"K1"	Y	upper left of keypad
-key_a3                  	"ka3"	str	"K3"	Y	upper right of keypad
-key_b2                  	"kb2"	str	"K2"	Y	center of keypad
-key_c1                  	"kc1"	str	"K4"	Y	lower left of keypad
-key_c3                  	"kc3"	str	"K5"	Y	lower right of keypad
-prtr_non                	"mc5p"	str	"pO"	Y	turn on printer for #1 bytes
-char_padding            	"rmp"	str	"rP"	-	like ip but when in insert mode
-acs_chars               	"acsc"	str	"ac"	-	graphics charset pairs - def=vt100
-plab_norm               	"pln"	str	"pn"	-	program label #1 to show string #2
-key_btab                	"kcbt"	str	"kB"	-	back-tab key
-enter_xon_mode          	"smxon"	str	"SX"	-	turn on xon/xoff handshaking
-exit_xon_mode           	"rmxon"	str	"RX"	-	turn off xon/xoff handshaking
-enter_am_mode           	"smam"	str	"SA"	-	turn on automatic margins
-exit_am_mode            	"rmam"	str	"RA"	-	turn off automatic margins
-xon_character           	"xonc"	str	"XN"	-	XON character
-xoff_character          	"xoffc"	str	"XF"	-	XOFF character
-ena_acs                 	"enacs"	str	"eA"	-	enable alternate char set
-label_on                	"smln"	str	"LO"	-	turn on soft labels
-label_off               	"rmln"	str	"LF"	-	turn off soft labels
-key_beg                 	"kbeg"	str	"@1"	-	begin key
-key_cancel              	"kcan"	str	"@2"	-	cancel key
-key_close               	"kclo"	str	"@3"	-	close key
-key_command             	"kcmd"	str	"@4"	-	command key
-key_copy                	"kcpy"	str	"@5"	-	copy key
-key_create              	"kcrt"	str	"@6"	-	create key
-key_end                 	"kend"	str	"@7"	-	end key
-key_enter               	"kent"	str	"@8"	-	enter/send key
-key_exit                	"kext"	str	"@9"	-	exit key
-key_find                	"kfnd"	str	"@0"	-	find key
-key_help                	"khlp"	str	"%1"	-	help key
-key_mark                	"kmrk"	str	"%2"	-	mark key
-key_message             	"kmsg"	str	"%3"	-	message key
-key_move                	"kmov"	str	"%4"	-	move key
-key_next                	"knxt"	str	"%5"	-	next key
-key_open                	"kopn"	str	"%6"	-	open key
-key_options             	"kopt"	str	"%7"	-	options key
-key_previous            	"kprv"	str	"%8"	-	previous key
-key_print               	"kprt"	str	"%9"	-	print key
-key_redo                	"krdo"	str	"%0"	-	redo key
-key_reference           	"kref"	str	"&1"	-	reference key
-key_refresh             	"krfr"	str	"&2"	-	refresh key
-key_replace             	"krpl"	str	"&3"	-	replace key
-key_restart             	"krst"	str	"&4"	-	restart key
-key_resume              	"kres"	str	"&5"	-	resume key
-key_save                	"ksav"	str	"&6"	-	save key
-key_suspend             	"kspd"	str	"&7"	-	suspend key
-key_undo                	"kund"	str	"&8"	-	undo key
-key_sbeg                	"kBEG"	str	"&9"	-	shifted key
-key_scancel             	"kCAN"	str	"&0"	-	shifted key
-key_scommand            	"kCMD"	str	"*1"	-	shifted key
-key_scopy               	"kCPY"	str	"*2"	-	shifted key
-key_screate             	"kCRT"	str	"*3"	-	shifted key
-key_sdc                 	"kDC"	str	"*4"	-	shifted key
-key_sdl                 	"kDL"	str	"*5"	-	shifted key
-key_select              	"kslt"	str	"*6"	-
-key_send                	"kEND"	str	"*7"	-	shifted key
-key_seol                	"kEOL"	str	"*8"	-	shifted key
-key_sexit               	"kEXT"	str	"*9"	-	shifted key
-key_sfind               	"kFND"	str	"*0"	-	shifted key
-key_shelp               	"kHLP"	str	"#1"	-	shifted key
-key_shome               	"kHOM"	str	"#2"	-	shifted key
-key_sic                 	"kIC"	str	"#3"	-	shifted key
-key_sleft               	"kLFT"	str	"#4"	-	shifted key
-key_smessage            	"kMSG"	str	"%a"	-	shifted key
-key_smove               	"kMOV"	str	"%b"	-	shifted key
-key_snext               	"kNXT"	str	"%c"	-	shifted key
-key_soptions            	"kOPT"	str	"%d"	-	shifted key
-key_sprevious           	"kPRV"	str	"%e"	-	shifted key
-key_sprint              	"kPRT"	str	"%f"	-	shifted key
-key_sredo               	"kRDO"	str	"%g"	-	shifted key
-key_sreplace            	"kRPL"	str	"%h"	-	shifted key
-key_sright              	"kRIT"	str	"%i"	-	shifted key
-key_srsume              	"kRES"	str	"%j"	-	shifted key
-key_ssave               	"kSAV"	str	"!1"	-	shifted key
-key_ssuspend            	"kSPD"	str	"!2"	-	shifted key
-key_sundo               	"kUND"	str	"!3"	-	shifted key
-req_for_input           	"rfi"	str	"RF"	-	send next input char (for ptys)
-key_f11                 	"kf11"	str	"F1"	-	F11 function key
-key_f12                 	"kf12"	str	"F2"	-	F12 function key
-key_f13                 	"kf13"	str	"F3"	-	F13 function key
-key_f14                 	"kf14"	str	"F4"	-	F14 function key
-key_f15                 	"kf15"	str	"F5"	-	F15 function key
-key_f16                 	"kf16"	str	"F6"	-	F16 function key
-key_f17                 	"kf17"	str	"F7"	-	F17 function key
-key_f18                 	"kf18"	str	"F8"	-	F18 function key
-key_f19                 	"kf19"	str	"F9"	-	F19 function key
-key_f20                 	"kf20"	str	"FA"	-	F20 function key
-key_f21                 	"kf21"	str	"FB"	-	F21 function key
-key_f22                 	"kf22"	str	"FC"	-	F22 function key
-key_f23                 	"kf23"	str	"FD"	-	F23 function key
-key_f24                 	"kf24"	str	"FE"	-	F24 function key
-key_f25                 	"kf25"	str	"FF"	-	F25 function key
-key_f26                 	"kf26"	str	"FG"	-	F26 function key
-key_f27                 	"kf27"	str	"FH"	-	F27 function key
-key_f28                 	"kf28"	str	"FI"	-	F28 function key
-key_f29                 	"kf29"	str	"FJ"	-	F29 function key
-key_f30                 	"kf30"	str	"FK"	-	F30 function key
-key_f31                 	"kf31"	str	"FL"	-	F31 function key
-key_f32                 	"kf32"	str	"FM"	-	F32 function key
-key_f33                 	"kf33"	str	"FN"	-	F33 function key
-key_f34                 	"kf34"	str	"FO"	-	F34 function key
-key_f35                 	"kf35"	str	"FP"	-	F35 function key
-key_f36                 	"kf36"	str	"FQ"	-	F36 function key
-key_f37                 	"kf37"	str	"FR"	-	F37 function key
-key_f38                 	"kf38"	str	"FS"	-	F38 function key
-key_f39                 	"kf39"	str	"FT"	-	F39 function key
-key_f40                 	"kf40"	str	"FU"	-	F40 function key
-key_f41                 	"kf41"	str	"FV"	-	F41 function key
-key_f42                 	"kf42"	str	"FW"	-	F42 function key
-key_f43                 	"kf43"	str	"FX"	-	F43 function key
-key_f44                 	"kf44"	str	"FY"	-	F44 function key
-key_f45                 	"kf45"	str	"FZ"	-	F45 function key
-key_f46                 	"kf46"	str	"Fa"	-	F46 function key
-key_f47                 	"kf47"	str	"Fb"	-	F47 function key
-key_f48                 	"kf48"	str	"Fc"	-	F48 function key
-key_f49                 	"kf49"	str	"Fd"	-	F49 function key
-key_f50                 	"kf50"	str	"Fe"	-	F50 function key
-key_f51                 	"kf51"	str	"Ff"	-	F51 function key
-key_f52                 	"kf52"	str	"Fg"	-	F52 function key
-key_f53                 	"kf53"	str	"Fh"	-	F53 function key
-key_f54                 	"kf54"	str	"Fi"	-	F54 function key
-key_f55                 	"kf55"	str	"Fj"	-	F55 function key
-key_f56                 	"kf56"	str	"Fk"	-	F56 function key
-key_f57                 	"kf57"	str	"Fl"	-	F57 function key
-key_f58                 	"kf58"	str	"Fm"	-	F58 function key
-key_f59                 	"kf59"	str	"Fn"	-	F59 function key
-key_f60                 	"kf60"	str	"Fo"	-	F60 function key
-key_f61                 	"kf61"	str	"Fp"	-	F61 function key
-key_f62                 	"kf62"	str	"Fq"	-	F62 function key
-key_f63                 	"kf63"	str	"Fr"	-	F63 function key
-clr_bol                 	"el1"	str	"cb"	-	Clear to beginning of line
-clear_margins           	"mgc"	str	"MC"	-	clear right and left soft margins
-set_left_margin         	"smgl"	str	"ML"	-	set left soft margin
-set_right_margin        	"smgr"	str	"MR"	-	set right soft margin
-label_format            	"fln"	str	"Lf"	-	label format
-set_clock               	"sclk"	str	"SC"	-	set clock
-display_clock           	"dclk"	str	"DK"	-	display clock
-remove_clock            	"rmclk"	str	"RC"	-	remove clock
-create_window           	"cwin"	str	"CW"	-	define a window #1 from #2, #3 to #4, #5
-goto_window             	"wingo"	str	"WG"	-	go to window #1
-hangup                  	"hup"	str	"HU"	-	hang-up phone
-dial_phone              	"dial"	str	"DI"	-	dial number #1
-quick_dial              	"qdial"	str	"QD"	-	dial number #1 without checking
-tone                    	"tone"	str	"TO"	-	select touch tone dialing
-pulse                   	"pulse"	str	"PU"	-	select pulse dialling
-flash_hook              	"hook"	str	"fh"	-	flash switch hook
-fixed_pause             	"pause"	str	"PA"	-	pause for 2-3 seconds
-wait_tone               	"wait"	str	"WA"	-	wait for dial-tone
-user0                   	"u0"	str	"u0"	-	User string #0
-user1                   	"u1"	str	"u1"	-	User string #1
-user2                   	"u2"	str	"u2"	-	User string #2
-user3                   	"u3"	str	"u3"	-	User string #3
-user4                   	"u4"	str	"u4"	-	User string #4
-user5                   	"u5"	str	"u5"	-	User string #5
-user6                   	"u6"	str	"u6"	-	User string #6
-user7                   	"u7"	str	"u7"	-	User string #7
-user8                   	"u8"	str	"u8"	-	User string #8
-user9                   	"u9"	str	"u9"	-	User string #9
+back_tab                	"cbt"	str	"bt"	YBCGE	back tab
+bell                    	"bel"	str	"bl"	YB-GE	audible signal (bell)
+carriage_return         	"cr"	str	"cr"	YBCGE	carriage return
+change_scroll_region    	"csr"	str	"cs"	YBCGE	change region to line #1 to line #2
+clear_all_tabs          	"tbc"	str	"ct"	YB-G-	clear all tab stops
+clear_screen            	"clear"	str	"cl"	YBCGE	clear screen and home cursor
+clr_eol                 	"el"	str	"ce"	YBCGE	clear to end of line
+clr_eos                 	"ed"	str	"cd"	YBCGE	clear to end of screen
+column_address          	"hpa"	str	"ch"	-B-GE**	horizontal position #1, absolute
+command_character       	"cmdch"	str	"CC"	YB-G-	terminal settable cmd character in prototype !?
+cursor_address          	"cup"	str	"cm"	YBCGE	move to row #1 columns #2
+cursor_down             	"cud1"	str	"do"	YBCGE	down one line
+cursor_home             	"home"	str	"ho"	YBCGE	home cursor (if no cup)
+cursor_invisible        	"civis"	str	"vi"	YB-G-	make cursor invisible
+cursor_left             	"cub1"	str	"le"	YBCGE	move left one space
+cursor_mem_address      	"mrcup"	str	"CM"	YB-G-	memory relative cursor addressing
+cursor_normal           	"cnorm"	str	"ve"	YBCGE	make cursor appear normal (undo civis/cvvis)
+cursor_right            	"cuf1"	str	"nd"	YBCGE	move right one space
+cursor_to_ll            	"ll"	str	"ll"	YBCGE	last line, first column (if no cup)
+cursor_up               	"cuu1"	str	"up"	YBCGE	up one line
+cursor_visible          	"cvvis"	str	"vs"	YBCGE	make cursor very visible
+delete_character        	"dch1"	str	"dc"	YBCGE	delete character
+delete_line             	"dl1"	str	"dl"	YBCGE	delete line
+dis_status_line         	"dsl"	str	"ds"	YB-G-	disable status line
+down_half_line          	"hd"	str	"hd"	YB-G-	half a line down
+enter_alt_charset_mode  	"smacs"	str	"as"	YB-G-	start alternate character set
+enter_blink_mode        	"blink"	str	"mb"	YB-G-	turn on blinking
+enter_bold_mode         	"bold"	str	"md"	YB-G-	turn on bold (extra bright) mode
+enter_ca_mode           	"smcup"	str	"ti"	YBCGE	string to start programs using cup
+enter_delete_mode       	"smdc"	str	"dm"	YBCGE	enter delete mode
+enter_dim_mode          	"dim"	str	"mh"	YB-G-	turn on half-bright mode
+enter_insert_mode       	"smir"	str	"im"	YBCGE	enter insert mode
+enter_secure_mode       	"invis"	str	"mk"	-B-G-*	turn on blank mode (characters invisible)
+enter_protected_mode    	"prot"	str	"mp"	-B-G-*	turn on protected mode
+enter_reverse_mode      	"rev"	str	"mr"	YB-G-	turn on reverse video mode
+enter_standout_mode     	"smso"	str	"so"	YBCGE	begin standout mode
+enter_underline_mode    	"smul"	str	"us"	YBCGE	begin underline mode
+erase_chars             	"ech"	str	"ec"	YB-G-	erase #1 characters
+exit_alt_charset_mode   	"rmacs"	str	"ae"	YB-G-	end alternate character set
+exit_attribute_mode     	"sgr0"	str	"me"	YB-GE	turn off all attributes
+exit_ca_mode            	"rmcup"	str	"te"	YBCGE	strings to end programs using cup
+exit_delete_mode        	"rmdc"	str	"ed"	YBCGE	end delete mode
+exit_insert_mode        	"rmir"	str	"ei"	YBCGE	exit insert mode
+exit_standout_mode      	"rmso"	str	"se"	YBCGE	exit standout mode
+exit_underline_mode     	"rmul"	str	"ue"	YBCGE	exit underline mode
+flash_screen            	"flash"	str	"vb"	YBCGE	visible bell (may not move cursor)
+form_feed               	"ff"	str	"ff"	YB-G-	hardcopy terminal page eject
+from_status_line        	"fsl"	str	"fs"	YB-G-	return from status line
+init_1string            	"is1"	str	"i1"	YB-G-	initialization string
+init_2string            	"is2"	str	"is"	YB-G-	initialization string
+init_3string            	"is3"	str	"i3"	YB-G-	initialization string
+init_file               	"if"	str	"if"	YB-G-	name of initialization file
+insert_character        	"ich1"	str	"ic"	YBCGE	insert character
+insert_line             	"il1"	str	"al"	YBCGE	insert line
+insert_padding          	"ip"	str	"ip"	YBCGE	insert padding after inserted character
+key_backspace           	"kbs"	str	"kb"	YB-G-	backspace key
+key_catab               	"ktbc"	str	"ka"	-B-G-*	clear-all-tabs key
+key_clear               	"kclr"	str	"kC"	-B-G-*	clear-screen or erase key
+key_ctab                	"kctab"	str	"kt"	-B-G-*	clear-tab key
+key_dc                  	"kdch1"	str	"kD"	YB-G-	delete-character key
+key_dl                  	"kdl1"	str	"kL"	-B-G-*	delete-line key
+key_down                	"kcud1"	str	"kd"	YBCGE	down-arrow key
+key_eic                 	"krmir"	str	"kM"	-B-G-*	sent by rmir or smir in insert mode
+key_eol                 	"kel"	str	"kE"	-B-G-*	clear-to-end-of-line key
+key_eos                 	"ked"	str	"kS"	-B-G-*	clear-to-end-of-screen key
+key_f0                  	"kf0"	str	"k0"	YBCGE	F0 function key
+key_f1                  	"kf1"	str	"k1"	YBCGE	F1 function key
+key_f10                 	"kf10"	str	"k;"	----E	F10 function key
+key_f2				"kf2"   str	"k2"	YBCGE	F2 function key
+key_f3				"kf3"   str	"k3"	YBCGE	F3 function key
+key_f4				"kf4"   str	"k4"	YBCGE	F4 function key
+key_f5				"kf5"   str	"k5"	YBCGE	F5 function key
+key_f6				"kf6"   str	"k6"	YBCGE	F6 function key
+key_f7                  	"kf7"	str	"k7"	YBCGE	F7 function key
+key_f8                  	"kf8"	str	"k8"	YBCGE	F8 fucntion key
+key_f9                  	"kf9"	str	"k9"	YBCGE	F9 function key
+key_home                	"khome"	str	"kh"	YBCGE	home key
+key_ic                  	"kich1"	str	"kI"	YB-GE	insert-character key
+key_il                  	"kil1"	str	"kA"	-B-G-*	insert-line key
+key_left                	"kcub1"	str	"kl"	YBCGE	left-arrow key
+key_ll                  	"kll"	str	"kH"	YB-G-	last-line key
+key_npage               	"knp"	str	"kN"	YB-GE	next-page key
+key_ppage               	"kpp"	str	"kP"	YB-GE	prev-page key
+key_right               	"kcuf1"	str	"kr"	YBCGE	right-arrow key
+key_sf                  	"kind"	str	"kF"	-B-G-*	scroll-forward key
+key_sr                  	"kri"	str	"kR"	-B-G-*	scroll-backward key
+key_stab                	"khts"	str	"kT"	-B-G-*	set-tab key
+key_up                  	"kcuu1"	str	"ku"	YBCGE	up-arrow key
+keypad_local            	"rmkx"	str	"ke"	YBCGE	leave 'keyboard_transmit' mode
+keypad_xmit             	"smkx"	str	"ks"	YBCGE	enter 'keyboard_transmit' mode
+lab_f0                  	"lf0"	str	"l0"	-B-G-*	label on function key f0 if not f0
+lab_f1                  	"lf1"	str	"l1"	-B-G-*	label on function key f1 if not f1
+lab_f10                 	"lf10"	str	"la"	-----	label on function key f10 if not f10
+lab_f2                  	"lf2"	str	"l2"	-B-G-*	label on function key f2 if not f2
+lab_f3                  	"lf3"	str	"l3"	-B-G-*	label on function key f3 if not f3
+lab_f4                  	"lf4"	str	"l4"	-B-G-*	label on function key f4 if not f4
+lab_f5                  	"lf5"	str	"l5"	-B-G-*	lable on function key f5 if not f5
+lab_f6                  	"lf6"	str	"l6"	-B-G-*	label on function key f6 if not f6
+lab_f7                  	"lf7"	str	"l7"	-B-G-*	label on function key f7 if not f7
+lab_f8                  	"lf8"	str	"l8"	-B-G-*	label on function key f8 if not f8
+lab_f9                  	"lf9"	str	"l9"	-B-G-*	label on function key f9 if not f9
+meta_off                	"rmm"	str	"mo"	YB-G-*	turn off meta mode
+meta_on                 	"smm"	str	"mm"	YB-G-*	turn on meta mode (8th-bit on)
+newline                 	"nel"	str	"nw"	YB-G-*	newline (behave like cr followed by lf)
+pad_char                	"pad"	str	"pc"	YBCGE	padding char (instead of null)
+parm_dch                	"dch"	str	"DC"	YB-GE	delete #1 chars
+parm_delete_line        	"dl"	str	"DL"	YBCGE	delete #1 lines
+parm_down_cursor        	"cud"	str	"DO"	YBCGE	down #1 lines
+parm_ich                	"ich"	str	"IC"	YB-GE	insert #1 chars
+parm_index              	"indn"	str	"SF"	YBCG-	scroll forward #1 lines
+parm_insert_line        	"il"	str	"AL"	YBCGE	insert #1 lines
+parm_left_cursor        	"cub"	str	"LE"	YBCGE	move #1 chars to the left
+parm_right_cursor       	"cuf"	str	"RI"	YBCGE	move #1 chars to the right
+parm_rindex             	"rin"	str	"SR"	YBCG-	scroll back #1 lines
+parm_up_cursor          	"cuu"	str	"UP"	YBCGE	up #1 lines
+pkey_key                	"pfkey"	str	"pk"	-B---	program function key #1 to type string #2
+pkey_local              	"pfloc"	str	"pl"	-B---	program function key #1 to execute string #2
+pkey_xmit               	"pfx"	str	"px"	-B---	program function key #1 to transmit string #2
+print_screen            	"mc0"	str	"ps"	-B-G-*	print contents of screen
+prtr_off                	"mc4"	str	"pf"	-B-G-*	turn off printer
+prtr_on                 	"mc5"	str	"po"	-B-G-*	turn on printer
+repeat_char             	"rep"	str	"rp"	YB-GE	repeat char #1 #2 times
+reset_1string           	"rs1"	str	"r1"	-B---	reset string
+reset_2string           	"rs2"	str	"r2"	-B---	reset string
+reset_3string           	"rs3"	str	"r3"	-B---	reset string
+reset_file              	"rf"	str	"rf"	-B---	name of reset file
+restore_cursor          	"rc"	str	"rc"	YBCG-	restore cursor to last position of sc
+row_address             	"vpa"	str	"cv"	-B-GE**	vertical position #1 absolute
+save_cursor             	"sc"	str	"sc"	YBCG-	save current cursor position
+scroll_forward          	"ind"	str	"sf"	YBCGE	scroll text up
+scroll_reverse          	"ri"	str	"sr"	YBCGE	scroll text down
+set_attributes          	"sgr"	str	"sa"	YB-G	define video attributes #1-#9
+set_tab                 	"hts"	str	"st"	YB-G-	set a tab in every row, current columns
+set_window              	"wind"	str	"wi"	-B-GE	current window is lines #1-#2 cols #3-#4
+tab                     	"ht"	str	"ta"	YBCGE	tab to next 8-space hardware tab stop
+to_status_line          	"tsl"	str	"ts"	YB-G-	move to status line
+underline_char          	"uc"	str	"uc"	YBCG-	underline char and move past it
+up_half_line            	"hu"	str	"hu"	YB-G-	half a line up
+init_prog               	"iprog"	str	"iP"	-B---	path name of program for initialization
+key_a1                  	"ka1"	str	"K1"	YB-GE	upper left of keypad
+key_a3                  	"ka3"	str	"K3"	YB-GE	upper right of keypad
+key_b2                  	"kb2"	str	"K2"	YB-GE	center of keypad
+key_c1                  	"kc1"	str	"K4"	YB-GE	lower left of keypad
+key_c3                  	"kc3"	str	"K5"	YB-GE	lower right of keypad
+prtr_non                	"mc5p"	str	"pO"	-B-G-*	turn on printer for #1 bytes
+char_padding            	"rmp"	str	"rP"	-----	like ip but when in insert mode
+acs_chars               	"acsc"	str	"ac"	-----	graphics charset pairs - def=vt100
+plab_norm               	"pln"	str	"pn"	-----	program label #1 to show string #2
+key_btab                	"kcbt"	str	"kB"	-----	back-tab key
+enter_xon_mode          	"smxon"	str	"SX"	-----	turn on xon/xoff handshaking
+exit_xon_mode           	"rmxon"	str	"RX"	-----	turn off xon/xoff handshaking
+enter_am_mode           	"smam"	str	"SA"	-----	turn on automatic margins
+exit_am_mode            	"rmam"	str	"RA"	-----	turn off automatic margins
+xon_character           	"xonc"	str	"XN"	-----	XON character
+xoff_character          	"xoffc"	str	"XF"	-----	XOFF character
+ena_acs                 	"enacs"	str	"eA"	-----	enable alternate char set
+label_on                	"smln"	str	"LO"	-----	turn on soft labels
+label_off               	"rmln"	str	"LF"	-----	turn off soft labels
+key_beg                 	"kbeg"	str	"@1"	-----	begin key
+key_cancel              	"kcan"	str	"@2"	-----	cancel key
+key_close               	"kclo"	str	"@3"	-----	close key
+key_command             	"kcmd"	str	"@4"	-----	command key
+key_copy                	"kcpy"	str	"@5"	-----	copy key
+key_create              	"kcrt"	str	"@6"	-----	create key
+key_end                 	"kend"	str	"@7"	-----	end key
+key_enter               	"kent"	str	"@8"	-----	enter/send key
+key_exit                	"kext"	str	"@9"	-----	exit key
+key_find                	"kfnd"	str	"@0"	-----	find key
+key_help                	"khlp"	str	"%1"	-----	help key
+key_mark                	"kmrk"	str	"%2"	-----	mark key
+key_message             	"kmsg"	str	"%3"	-----	message key
+key_move                	"kmov"	str	"%4"	-----	move key
+key_next                	"knxt"	str	"%5"	-----	next key
+key_open                	"kopn"	str	"%6"	-----	open key
+key_options             	"kopt"	str	"%7"	-----	options key
+key_previous            	"kprv"	str	"%8"	-----	previous key
+key_print               	"kprt"	str	"%9"	-----	print key
+key_redo                	"krdo"	str	"%0"	-----	redo key
+key_reference           	"kref"	str	"&1"	-----	reference key
+key_refresh             	"krfr"	str	"&2"	-----	refresh key
+key_replace             	"krpl"	str	"&3"	-----	replace key
+key_restart             	"krst"	str	"&4"	-----	restart key
+key_resume              	"kres"	str	"&5"	-----	resume key
+key_save                	"ksav"	str	"&6"	-----	save key
+key_suspend             	"kspd"	str	"&7"	-----	suspend key
+key_undo                	"kund"	str	"&8"	-----	undo key
+key_sbeg                	"kBEG"	str	"&9"	-----	shifted key
+key_scancel             	"kCAN"	str	"&0"	-----	shifted key
+key_scommand            	"kCMD"	str	"*1"	-----	shifted key
+key_scopy               	"kCPY"	str	"*2"	-----	shifted key
+key_screate             	"kCRT"	str	"*3"	-----	shifted key
+key_sdc                 	"kDC"	str	"*4"	-----	shifted key
+key_sdl                 	"kDL"	str	"*5"	-----	shifted key
+key_select              	"kslt"	str	"*6"	-----	select key
+key_send                	"kEND"	str	"*7"	-----	shifted key
+key_seol                	"kEOL"	str	"*8"	-----	shifted key
+key_sexit               	"kEXT"	str	"*9"	-----	shifted key
+key_sfind               	"kFND"	str	"*0"	-----	shifted key
+key_shelp               	"kHLP"	str	"#1"	-----	shifted key
+key_shome               	"kHOM"	str	"#2"	-----	shifted key
+key_sic                 	"kIC"	str	"#3"	-----	shifted key
+key_sleft               	"kLFT"	str	"#4"	-----	shifted key
+key_smessage            	"kMSG"	str	"%a"	-----	shifted key
+key_smove               	"kMOV"	str	"%b"	-----	shifted key
+key_snext               	"kNXT"	str	"%c"	-----	shifted key
+key_soptions            	"kOPT"	str	"%d"	-----	shifted key
+key_sprevious           	"kPRV"	str	"%e"	-----	shifted key
+key_sprint              	"kPRT"	str	"%f"	-----	shifted key
+key_sredo               	"kRDO"	str	"%g"	-----	shifted key
+key_sreplace            	"kRPL"	str	"%h"	-----	shifted key
+key_sright              	"kRIT"	str	"%i"	-----	shifted key
+key_srsume              	"kRES"	str	"%j"	-----	shifted key
+key_ssave               	"kSAV"	str	"!1"	-----	shifted key
+key_ssuspend            	"kSPD"	str	"!2"	-----	shifted key
+key_sundo               	"kUND"	str	"!3"	-----	shifted key
+req_for_input           	"rfi"	str	"RF"	-----	send next input char (for ptys)
+key_f11                 	"kf11"	str	"F1"	----E	F11 funct key
+key_f12                 	"kf12"	str	"F2"	----E	F12 funct key
+key_f13                 	"kf13"	str	"F3"	----E	F13 funct key
+key_f14                 	"kf14"	str	"F4"	----E	F14 funct key
+key_f15                 	"kf15"	str	"F5"	----E	F15 funct key
+key_f16                 	"kf16"	str	"F6"	----E	F16 funct key
+key_f17                 	"kf17"	str	"F7"	----E	F17 funct key
+key_f18                 	"kf18"	str	"F8"	----E	F18 funct key
+key_f19                 	"kf19"	str	"F9"	----E	F19 funct key
+key_f20                 	"kf20"	str	"FA"	----E	F20 funct key
+key_f21                 	"kf21"	str	"FB"	----E	F21 funct key
+key_f22                 	"kf22"	str	"FC"	----E	F22 funct key
+key_f23                 	"kf23"	str	"FD"	----E	F23 funct key
+key_f24                 	"kf24"	str	"FE"	----E	F24 funct key
+key_f25                 	"kf25"	str	"FF"	----E	F25 funct key
+key_f26                 	"kf26"	str	"FG"	----E	F26 funct key
+key_f27                 	"kf27"	str	"FH"	----E	F27 funct key
+key_f28                 	"kf28"	str	"FI"	----E	F28 funct key
+key_f29                 	"kf29"	str	"FJ"	----E	F29 funct key
+key_f30                 	"kf30"	str	"FK"	----E	F30 funct key
+key_f31                 	"kf31"	str	"FL"	----E	F31 funct key
+key_f32                 	"kf32"	str	"FM"	----E	F32 funct key
+key_f33                 	"kf33"	str	"FN"	----E	F33 funct key
+key_f34                 	"kf34"	str	"FO"	----E	F34 funct key
+key_f35                 	"kf35"	str	"FP"	----E	F35 funct key
+key_f36                 	"kf36"	str	"FQ"	----E	F36 funct key
+key_f37                 	"kf37"	str	"FR"	----E	F37 funct key
+key_f38                 	"kf38"	str	"FS"	----E	F38 funct key
+key_f39                 	"kf39"	str	"FT"	----E	F39 funct key
+key_f40                 	"kf40"	str	"FU"	----E	F40 funct key
+key_f41                 	"kf41"	str	"FV"	----E	F41 funct key
+key_f42                 	"kf42"	str	"FW"	----E	F42 funct key
+key_f43                 	"kf43"	str	"FX"	----E	F43 funct key
+key_f44                 	"kf44"	str	"FY"	----E	F44 funct key
+key_f45                 	"kf45"	str	"FZ"	----E	F45 funct key
+key_f46                 	"kf46"	str	"Fa"	----E	F46 funct key
+key_f47                 	"kf47"	str	"Fb"	----E	F47 funct key
+key_f48                 	"kf48"	str	"Fc"	----E	F48 funct key
+key_f49                 	"kf49"	str	"Fd"	----E	F49 funct key
+key_f50                 	"kf50"	str	"Fe"	----E	F50 funct key
+key_f51                 	"kf51"	str	"Ff"	----E	F51 funct key
+key_f52                 	"kf52"	str	"Fg"	----E	F52 funct key
+key_f53                 	"kf53"	str	"Fh"	----E	F53 funct key
+key_f54                 	"kf54"	str	"Fi"	----E	F54 funct key
+key_f55                 	"kf55"	str	"Fj"	----E	F55 funct key
+key_f56                 	"kf56"	str	"Fk"	----E	F56 funct key
+key_f57                 	"kf57"	str	"Fl"	----E	F57 funct key
+key_f58                 	"kf58"	str	"Fm"	----E	F58 funct key
+key_f59                 	"kf59"	str	"Fn"	----E	F59 funct key
+key_f60                 	"kf60"	str	"Fo"	----E	F60 funct key
+key_f61                 	"kf61"	str	"Fp"	----E	F61 funct key
+key_f62                 	"kf62"	str	"Fq"	----E	F62 funct key
+key_f63                 	"kf63"	str	"Fr"	----E	F63 funct key
+clr_bol                 	"el1"	str	"cb"	-----	Clear to beginning of line
+clear_margins           	"mgc"	str	"MC"	-----	clear right and left soft margins
+set_left_margin         	"smgl"	str	"ML"	-----	set left soft margin
+set_right_margin        	"smgr"	str	"MR"	-----	set right soft margin
+label_format            	"fln"	str	"Lf"	-----	label format
+set_clock               	"sclk"	str	"SC"	-----	set clock
+display_clock           	"dclk"	str	"DK"	-----	display clock
+remove_clock            	"rmclk"	str	"RC"	-----	remove clock
+create_window           	"cwin"	str	"CW"	-----	define a window #1 from #2, #3 to #4, #5
+goto_window             	"wingo"	str	"WG"	-----	go to window #1
+hangup                  	"hup"	str	"HU"	-----	hang-up phone
+dial_phone              	"dial"	str	"DI"	-----	dial number #1
+quick_dial              	"qdial"	str	"QD"	-----	dial number #1 without checking
+tone                    	"tone"	str	"TO"	-----	select touch tone dialing
+pulse                   	"pulse"	str	"PU"	-----	select pulse dialling
+flash_hook              	"hook"	str	"fh"	-----	flash switch hook
+fixed_pause             	"pause"	str	"PA"	-----	pause for 2-3 seconds
+wait_tone               	"wait"	str	"WA"	-----	wait for dial-tone
+user0                   	"u0"	str	"u0"	-----	User string #0
+user1                   	"u1"	str	"u1"	-----	User string #1
+user2                   	"u2"	str	"u2"	-----	User string #2
+user3                   	"u3"	str	"u3"	-----	User string #3
+user4                   	"u4"	str	"u4"	-----	User string #4
+user5                   	"u5"	str	"u5"	-----	User string #5
+user6                   	"u6"	str	"u6"	-----	User string #6
+user7                   	"u7"	str	"u7"	-----	User string #7
+user8                   	"u8"	str	"u8"	-----	User string #8
+user9                   	"u9"	str	"u9"	-----	User string #9
 #
 # SVr4 added these capabilities to support color
 #
-orig_pair               	"op"	str	"op"	-	Set default pair to its original value
-orig_colors             	"oc"	str	"oc"	-	Set all color pairs to the original ones
-initialize_color        	"initc"	str	"Ic"	-	Initialize color #1 to (#2,#3,#4)
-initialize_pair         	"initp"	str	"Ip"	-	Initialize color pair #1 to (#2,#3)
-set_color_pair          	"scp"	str	"sp"	-	Set current color pair to #1
-set_foreground          	"setf"	str	"Sf"	-	Set foreground color #1
-set_background          	"setb"	str	"Sb"	-	Set background color #1
+orig_pair               	"op"	str	"op"	-----	Set default pair to its original value
+orig_colors             	"oc"	str	"oc"	-----	Set all color pairs to the original ones
+initialize_color        	"initc"	str	"Ic"	-----	Initialize color #1 to (#2,#3,#4)
+initialize_pair         	"initp"	str	"Ip"	-----	Initialize color pair #1 to (#2,#3)
+set_color_pair          	"scp"	str	"sp"	-----	Set current color pair to #1
+set_foreground          	"setf"	str	"Sf"	-----	Set foreground color #1
+set_background          	"setb"	str	"Sb"	-----	Set background color #1
 #
 # SVr4 added these capabilities to support printers
 #
-change_char_pitch       	"cpi"	str	"ZA"	-	Change number of characters per inch
-change_line_pitch       	"lpi"	str	"ZB"	-	Change number of lines per inch
-change_res_horz         	"chr"	str	"ZC"	-	Change horizontal resolution
-change_res_vert         	"cvr"	str	"ZD"	-	Change vertical resolution
-define_char             	"defc"	str	"ZE"	-	Define a character
-enter_doublewide_mode   	"swidm"	str	"ZF"	-	Enter double-wide mode
-enter_draft_quality     	"sdrfq"	str	"ZG"	-	Enter draft-quality mode
-enter_italics_mode      	"sitm"	str	"ZH"	-	Enter italic mode
-enter_leftward_mode     	"slm"	str	"ZI"	-	Start leftward carriage motion
-enter_micro_mode        	"smicm"	str	"ZJ"	-	Start micro-motion mode
-enter_near_letter_quality	"snlq"	str	"ZK"	-	Enter NLQ mode
-enter_normal_quality    	"snrmq"	str	"ZL"	-	Wnter normal-quality mode
-enter_shadow_mode       	"sshm"	str	"ZM"	-	Enter shadow-print mode
-enter_subscript_mode    	"ssubm"	str	"ZN"	-	Enter subscript mode
-enter_superscript_mode  	"ssupm"	str	"ZO"	-	Enter superscript mode
-enter_upward_mode       	"sum"	str	"ZP"	-	Start upward carriage motion
-exit_doublewide_mode    	"rwidm"	str	"ZQ"	-	End double-wide mode
-exit_italics_mode       	"ritm"	str	"ZR"	-	End italic mode
-exit_leftward_mode      	"rlm"	str	"ZS"	-	End left-motion mode
-exit_micro_mode         	"rmicm"	str	"ZT"	-	End micro-motion mode
-exit_shadow_mode        	"rshm"	str	"ZU"	-	End shadow-print mode
-exit_subscript_mode     	"rsubm"	str	"ZV"	-	End subscript mode
-exit_superscript_mode   	"rsupm"	str	"ZW"	-	End superscript mode
-exit_upward_mode        	"rum"	str	"ZX"	-	End reverse character motion
-micro_column_address    	"mhpa"	str	"ZY"	-	Like column_address in micro mode
-micro_down              	"mcud1"	str	"ZZ"	-	Like cursor_down in micro mode
-micro_left              	"mcub1"	str	"Za"	-	Like cursor_left in micro mode
-micro_right             	"mcuf1"	str	"Zb"	-	Like cursor_right in micro mode
-micro_row_address       	"mvpa"	str	"Zc"	-	Like row_address in micro mode
-micro_up                	"mcuu1"	str	"Zd"	-	Like cursor_up in micro mode
-order_of_pins           	"porder"	str	"Ze"	-	Match software bits to print-head pins
-parm_down_micro         	"mcud"	str	"Zf"	-	Like parm_down_cursor in micro mode
-parm_left_micro         	"mcub"	str	"Zg"	-	Like parm_left_cursor in micro mode
-parm_right_micro        	"mcuf"	str	"Zh"	-	Like parm_right_cursor in micro mode
-parm_up_micro           	"mcuu"	str	"Zi"	-	Like parm_up_cursor in micro mode
-select_char_set         	"scs"	str	"Zj"	-	Select character set
-set_bottom_margin       	"smgb"	str	"Zk"	-	Set bottom margin at current line
-set_bottom_margin_parm  	"smgbp"	str	"Zl"	-	Set bottom margin at line #1 or #2 lines from bottom
-set_left_margin_parm    	"smglp"	str	"Zm"	-	Set left (right) margin at column #1 (#2)
-set_right_margin_parm   	"smgrp"	str	"Zn"	-	Set right margin at column #1
-set_top_margin          	"smgt"	str	"Zo"	-	Set top margin at current line
-set_top_margin_parm     	"smgtp"	str	"Zp"	-	Set top (bottom) margin at row #1 (#2)
-start_bit_image         	"sbim"	str	"Zq"	-	Start printing bit image braphics
-start_char_set_def      	"scsd"	str	"Zr"	-	Start character set definition
-stop_bit_image          	"rbim"	str	"Zs"	-	Stop printing bit image graphics
-stop_char_set_def       	"rcsd"	str	"Zt"	-	End definition of character aet
-subscript_characters    	"subcs"	str	"Zu"	-	List of subscriptable characters
-superscript_characters  	"supcs"	str	"Zv"	-	List of superscriptable characters
-these_cause_cr          	"docr"	str	"Zw"	-	Printing any of these chars causes CR
-zero_motion             	"zerom"	str	"Zx"	-	No motion for subsequent character
-char_set_names          	"csnm"	str	"Zy"	-	List of character set names
-key_mouse               	"kmous"	str	"Km"	-	Mouse event has occurred
-mouse_info              	"minfo"	str	"Mi"	-	Mouse status information
-req_mouse_pos           	"reqmp"	str	"RQ"	-	Request mouse position
-get_mouse               	"getm"	str	"Gm"	-	Curses should get button events
-set_a_foreground        	"setaf"	str	"AF"	-	Set ANSI foreground color
-set_a_background        	"setab"	str	"AB"	-	Set ANSI background color
-pkey_plab               	"pfxl"	str	"xl"	-	Program function key #1 to type string #2 and show string #3
-device_type             	"devt"	str	"dv"	-	Indicate language/codeset support
-code_set_init           	"csin"	str	"ci"	-	Init sequence for multiple codesets
-set0_des_seq            	"s0ds"	str	"s0"	-	Shift to code set 0 (EUC set 0, ASCII)
-set1_des_seq            	"s1ds"	str	"s1"	-	Shift to code set 1
-set2_des_seq            	"s2ds"	str	"s2"	-	Shift to code set 2
-set3_des_seq            	"s3ds"	str	"s3"	-	Shift to code set 3
-set_lr_margin           	"smglr"	str	"ML"	-	Set both left and right margins to #1, #2
-set_tb_margin           	"smgtb"	str	"MT"	-	Sets both top and bottom margins to #1, #2
-bit_image_repeat        	"birep"	str	"Xy"	-	Repeat bit image cell #1 #2 times
-bit_image_newline       	"binel"	str	"Zz"	-	Move to next row of the bit image
-bit_image_carriage_return	"bicr"	str	"Yv"	-	Move to beginning of same row
-color_names             	"colornm"	str	"Yw"	-	Give name for color #1
-define_bit_image_region 	"defbi"	str	"Yx"	-	Define rectangualar bit image region
-end_bit_image_region    	"endbi"	str	"Yy"	-	End a bit-image region
-set_color_band          	"setcolor"	str	"Yz"	-	Change to ribbon color #1
-set_page_length         	"slines"	str	"YZ"	-	Set page length to #1 lines
+change_char_pitch       	"cpi"	str	"ZA"	-----	Change number of characters per inch
+change_line_pitch       	"lpi"	str	"ZB"	-----	Change number of lines per inch
+change_res_horz         	"chr"	str	"ZC"	-----	Change horizontal resolution
+change_res_vert         	"cvr"	str	"ZD"	-----	Change vertical resolution
+define_char             	"defc"	str	"ZE"	-----	Define a character
+enter_doublewide_mode   	"swidm"	str	"ZF"	-----	Enter double-wide mode
+enter_draft_quality     	"sdrfq"	str	"ZG"	-----	Enter draft-quality mode
+enter_italics_mode      	"sitm"	str	"ZH"	-----	Enter italic mode
+enter_leftward_mode     	"slm"	str	"ZI"	-----	Start leftward carriage motion
+enter_micro_mode        	"smicm"	str	"ZJ"	-----	Start micro-motion mode
+enter_near_letter_quality	"snlq"	str	"ZK"	-----	Enter NLQ mode
+enter_normal_quality    	"snrmq"	str	"ZL"	-----	Wnter normal-quality mode
+enter_shadow_mode       	"sshm"	str	"ZM"	-----	Enter shadow-print mode
+enter_subscript_mode    	"ssubm"	str	"ZN"	-----	Enter subscript mode
+enter_superscript_mode  	"ssupm"	str	"ZO"	-----	Enter superscript mode
+enter_upward_mode       	"sum"	str	"ZP"	-----	Start upward carriage motion
+exit_doublewide_mode    	"rwidm"	str	"ZQ"	-----	End double-wide mode
+exit_italics_mode       	"ritm"	str	"ZR"	-----	End italic mode
+exit_leftward_mode      	"rlm"	str	"ZS"	-----	End left-motion mode
+exit_micro_mode         	"rmicm"	str	"ZT"	-----	End micro-motion mode
+exit_shadow_mode        	"rshm"	str	"ZU"	-----	End shadow-print mode
+exit_subscript_mode     	"rsubm"	str	"ZV"	-----	End subscript mode
+exit_superscript_mode   	"rsupm"	str	"ZW"	-----	End superscript mode
+exit_upward_mode        	"rum"	str	"ZX"	-----	End reverse character motion
+micro_column_address    	"mhpa"	str	"ZY"	-----	Like column_address in micro mode
+micro_down              	"mcud1"	str	"ZZ"	-----	Like cursor_down in micro mode
+micro_left              	"mcub1"	str	"Za"	-----	Like cursor_left in micro mode
+micro_right             	"mcuf1"	str	"Zb"	-----	Like cursor_right in micro mode
+micro_row_address       	"mvpa"	str	"Zc"	-----	Like row_address in micro mode
+micro_up                	"mcuu1"	str	"Zd"	-----	Like cursor_up in micro mode
+order_of_pins           	"porder"	str	"Ze"	-----	Match software bits to print-head pins
+parm_down_micro         	"mcud"	str	"Zf"	-----	Like parm_down_cursor in micro mode
+parm_left_micro         	"mcub"	str	"Zg"	-----	Like parm_left_cursor in micro mode
+parm_right_micro        	"mcuf"	str	"Zh"	-----	Like parm_right_cursor in micro mode
+parm_up_micro           	"mcuu"	str	"Zi"	-----	Like parm_up_cursor in micro mode
+select_char_set         	"scs"	str	"Zj"	-----	Select character set
+set_bottom_margin       	"smgb"	str	"Zk"	-----	Set bottom margin at current line
+set_bottom_margin_parm  	"smgbp"	str	"Zl"	-----	Set bottom margin at line #1 or #2 lines from bottom
+set_left_margin_parm    	"smglp"	str	"Zm"	-----	Set left (right) margin at column #1 (#2)
+set_right_margin_parm   	"smgrp"	str	"Zn"	-----	Set right margin at column #1
+set_top_margin          	"smgt"	str	"Zo"	-----	Set top margin at current line
+set_top_margin_parm     	"smgtp"	str	"Zp"	-----	Set top (bottom) margin at row #1 (#2)
+start_bit_image         	"sbim"	str	"Zq"	-----	Start printing bit image braphics
+start_char_set_def      	"scsd"	str	"Zr"	-----	Start character set definition
+stop_bit_image          	"rbim"	str	"Zs"	-----	Stop printing bit image graphics
+stop_char_set_def       	"rcsd"	str	"Zt"	-----	End definition of character aet
+subscript_characters    	"subcs"	str	"Zu"	-----	List of subscriptable characters
+superscript_characters  	"supcs"	str	"Zv"	-----	List of superscriptable characters
+these_cause_cr          	"docr"	str	"Zw"	-----	Printing any of these chars causes CR
+zero_motion             	"zerom"	str	"Zx"	-----	No motion for subsequent character
+char_set_names          	"csnm"	str	"Zy"	-----	List of character set names
+key_mouse               	"kmous"	str	"Km"	-----	Mouse event has occurred
+mouse_info              	"minfo"	str	"Mi"	-----	Mouse status information
+req_mouse_pos           	"reqmp"	str	"RQ"	-----	Request mouse position
+get_mouse               	"getm"	str	"Gm"	-----	Curses should get button events
+set_a_foreground        	"setaf"	str	"AF"	-----	Set ANSI foreground color
+set_a_background        	"setab"	str	"AB"	-----	Set ANSI background color
+pkey_plab               	"pfxl"	str	"xl"	-----	Program function key #1 to type string #2 and show string #3
+device_type             	"devt"	str	"dv"	-----	Indicate language/codeset support
+code_set_init           	"csin"	str	"ci"	-----	Init sequence for multiple codesets
+set0_des_seq            	"s0ds"	str	"s0"	-----	Shift to code set 0 (EUC set 0, ASCII)
+set1_des_seq            	"s1ds"	str	"s1"	-----	Shift to code set 1
+set2_des_seq            	"s2ds"	str	"s2"	-----	Shift to code set 2
+set3_des_seq            	"s3ds"	str	"s3"	-----	Shift to code set 3
+set_lr_margin           	"smglr"	str	"ML"	-----	Set both left and right margins to #1, #2
+set_tb_margin           	"smgtb"	str	"MT"	-----	Sets both top and bottom margins to #1, #2
+bit_image_repeat        	"birep"	str	"Xy"	-----	Repeat bit image cell #1 #2 times
+bit_image_newline       	"binel"	str	"Zz"	-----	Move to next row of the bit image
+bit_image_carriage_return	"bicr"	str	"Yv"	-----	Move to beginning of same row
+color_names             	"colornm"	str	"Yw"	-----	Give name for color #1
+define_bit_image_region 	"defbi"	str	"Yx"	-----	Define rectangualar bit image region
+end_bit_image_region    	"endbi"	str	"Yy"	-----	End a bit-image region
+set_color_band          	"setcolor"	str	"Yz"	-----	Change to ribbon color #1
+set_page_length         	"slines"	str	"YZ"	-----	Set page length to #1 lines
 #
 # SVr4 added these capabilities for direct PC-clone support
 #
-display_pc_char         	"dispc"	str	"S1"	-	Display PC character
-enter_pc_charset_mode   	"smpch"	str	"S2"	-	Enter PC character display mode
-exit_pc_charset_mode    	"rmpch"	str	"S3"	-	Exit PC character display mode
-enter_scancode_mode     	"smsc"	str	"S4"	-	Enter PC scancode mode
-exit_scancode_mode      	"rmsc"	str	"S5"	-	Exit PC scancode mode
-pc_term_options         	"pctrm"	str	"S6"	-	PC terminal options
-scancode_escape         	"scesc"	str	"S7"	-	Escape for scancode emulation
-alt_scancode_esc        	"scesa"	str	"S8"	-	Alternate escape for scancode emulation
+display_pc_char         	"dispc"	str	"S1"	-----	Display PC character
+enter_pc_charset_mode   	"smpch"	str	"S2"	-----	Enter PC character display mode
+exit_pc_charset_mode    	"rmpch"	str	"S3"	-----	Exit PC character display mode
+enter_scancode_mode     	"smsc"	str	"S4"	-----	Enter PC scancode mode
+exit_scancode_mode      	"rmsc"	str	"S5"	-----	Exit PC scancode mode
+pc_term_options         	"pctrm"	str	"S6"	-----	PC terminal options
+scancode_escape         	"scesc"	str	"S7"	-----	Escape for scancode emulation
+alt_scancode_esc        	"scesa"	str	"S8"	-----	Alternate escape for scancode emulation
 #
 # The XSI Curses standard added these.  They are probably in SV 4.2 curses as
 # well, but because XSI Curses lists them is strict alphabetical order we can't
@@ -500,12 +540,12 @@ alt_scancode_esc        	"scesa"	str	"S8"	-	Alternate escape for scancode emulat
 # If your compiled terminfo entries use these, they may not be binary-
 # compatible with SVr4.2 entries; beware!
 #
-enter_horizontal_hl_mode	"ehhlm"	str	"Xh"	-	Enter horizontal highlight mode
-enter_left_hl_mode      	"elhlm"	str	"Xl"	-	Enter left highlight mode
-enter_low_hl_mode       	"elohlm"	str	"Xo"	-	Enter low highlight mode
-enter_right_hl_mode     	"erhlm"	str	"Xr"	-	Enter right highlight mode
-enter_top_hl_mode        	"ethlm"	str	"Xt"	-	Enter top highlight mode
-enter_vertical_hl_mode     	"evhlm"	str	"Xv"	-	Enter vertical highlight mode
+enter_horizontal_hl_mode	"ehhlm"	str	"Xh"	-----	Enter horizontal highlight mode
+enter_left_hl_mode      	"elhlm"	str	"Xl"	-----	Enter left highlight mode
+enter_low_hl_mode       	"elohlm"	str	"Xo"	-----	Enter low highlight mode
+enter_right_hl_mode     	"erhlm"	str	"Xr"	-----	Enter right highlight mode
+enter_top_hl_mode        	"ethlm"	str	"Xt"	-----	Enter top highlight mode
+enter_vertical_hl_mode     	"evhlm"	str	"Xv"	-----	Enter vertical highlight mode
 #
 # The magic token below tells the tic compiler-generator code that all the caps
 # caps it should be ignored (not written out) when dumping terminfo objects.
@@ -529,34 +569,34 @@ enter_vertical_hl_mode     	"evhlm"	str	"Xv"	-	Enter vertical highlight mode
 # The ug capability is thrown away, but assumed to be whatever sg is if the
 # latter is nonzero and we're dumping in termcap format.
 #
-termcap_init2			"OTi2"	str	"i2"	Y	(used)
-termcap_reset			"OTrs"	str	"rs"	Y	(used)
-magic_cookie_glitch_ul		"OTug"	num	"ug"	Y	(used)
+termcap_init2			"OTi2"	str	"i2"	YB---	(used)
+termcap_reset			"OTrs"	str	"rs"	YB-G-	(used)
+magic_cookie_glitch_ul		"OTug"	num	"ug"	YBCGE	(used)
 #
 # Obsolete termcap capabilities.  Some are used for termcap translation.  The
 # code uses the 'OT' prefix we put on obsolete capabilities to suppress
 # printing them in terminfo source dumps of compiled entries.
 #
-backspaces_with_bs      	"OTbs"	bool	"bs"	Y	(used)
-crt_without_scrolling     	"OTns"	bool	"ns"	Y	(used)
-no_correctly_working_cr   	"OTnc"	bool	"nc"	Y	(used)
-carriage_return_delay		"OTdC"	num	"dC"	Y	(used)
-new_line_delay			"OTdN"	num	"dN"	Y	(used)
-linefeed_if_not_lf      	"OTnl"	str	"nl"	Y	(used)
-backspace_if_not_bs     	"OTbc"	str	"bc"	Y	(used)
+backspaces_with_bs      	"OTbs"	bool	"bs"	YBCGE	(used)
+crt_without_scrolling     	"OTns"	bool	"ns"	YBCG-	(used)
+no_correctly_working_cr   	"OTnc"	bool	"nc"	YBCG-	(used)
+carriage_return_delay		"OTdC"	num	"dC"	YB-G-	(used)
+new_line_delay			"OTdN"	num	"dN"	YB-G-	(used)
+linefeed_if_not_lf      	"OTnl"	str	"nl"	YBCGE	(used)
+backspace_if_not_bs     	"OTbc"	str	"bc"	YBCGE	(used)
 #
-# GNU termcap library extensions (according to mytinfo).  These are no longer
-# supported in GNU termcap, if they ever were, but MT shows up in pre-9.0
-# versions of the BSD termcap file.  The name clash with terminfo MT is
-# resolved by type info; MT is converted to km.
+# GNU termcap library extensions.  The GNU termcap file distributed with
+# Emacs no longer uses these, but MT showed up in pre-9.0 versions of the
+# BSD termcap file.  The name clash with terminfo MT is resolved by type
+# info; MT is converted to km.
 #
-gnu_has_meta_key		"OTMT"	bool	"MT"	-	(not used)
-# gnu_tab_width			"OTtw"	num	"tw"	-	(not used)
+gnu_has_meta_key		"OTMT"	bool	"MT"	----E	(not used)
+# gnu_tab_width			"OTtw"	num	"tw"	----E	(not used)
 #
 # GNU termcap *does* include the following extended capability,  Only the
 # now-obsolete Ann Arbor terminals used it.
 #
-# gnu_change_scroll_region	"OTcS"	str	"cS"	Y	(not used)
+# gnu_change_scroll_region	"OTcS"	str	"cS"	---GE	(not used)
 #
 # The following comments describe capnames so ancient that I believe no
 # software uses them any longer.  Some of these have to go because they
@@ -569,49 +609,49 @@ gnu_has_meta_key		"OTMT"	bool	"MT"	-	(not used)
 # There is one conflict with terminfo; "ma" is in both.  This conflict is
 # resolved by type information.
 #
-linefeed_is_newline     	"OTNL"	bool	"NL"	Y	(used)
-# even_parity			"OTEP"	bool	"EP"	Y	(not used)
-# odd_parity			"OTOP"	bool	"OP"	Y	(not used)
-# half_duplex			"OTHD"	bool	"HD"	Y	(not used)
-# lower_case_only		"OTLC"	bool	"LC"	Y	(not used)
-# upper_case_only		"OTUC"	bool	"UC"	Y	(not used)
-backspace_delay			"OTdB"	num	"dB"	Y	(used)
-# form_feed_delay		"OTdF"	num	"dF"	Y	(not used)
-horizontal_tab_delay		"OTdT"	num	"dT"	Y	(used)
-# vertical_tab_delay		"OTdV"	num	"dV"	Y	(not used)
-# number_of_function_keys	"OTkn"	num	"kn"	Y	(not used)
-# other_non_function_keys 	"OTko"	str	"ko"	Y	(not used)
-arrow_key_map           	"OTma"	str	"ma"	Y	(not used)
-# memory_lock_above       	"OTml"	str	"ml"	Y	(not used)
-# memory_unlock           	"OTmu"	str	"mu"	Y	(not used)
-has_hardware_tabs       	"OTpt"	bool	"pt"	Y	(used)
-return_does_clr_eol        	"OTxr"	bool	"xr"	Y	(used)
-# tek_4025_insert_line		"OTxx"	bool	"xx"	Y	(not used)
+linefeed_is_newline     	"OTNL"	bool	"NL"	YB---	(used)
+# even_parity			"OTEP"	bool	"EP"	-B---	(not used)
+# odd_parity			"OTOP"	bool	"OP"	-B---	(not used)
+# half_duplex			"OTHD"	bool	"HD"	-B---	(not used)
+# lower_case_only		"OTLC"	bool	"LC"	-B---	(not used)
+# upper_case_only		"OTUC"	bool	"UC"	-B---	(not used)
+backspace_delay			"OTdB"	num	"dB"	YB-G-	(used)
+# form_feed_delay		"OTdF"	num	"dF"	-B-G-	(not used)
+horizontal_tab_delay		"OTdT"	num	"dT"	YB-G-	(used)
+# vertical_tab_delay		"OTdV"	num	"dV"	-B---	(not used)
+# number_of_function_keys	"OTkn"	num	"kn"	-B-G-	(not used)
+# other_non_function_keys 	"OTko"	str	"ko"	-B-G-	(not used)
+arrow_key_map           	"OTma"	str	"ma"	YBC--	(not used)
+# memory_lock_above       	"OTml"	str	"ml"	-B---	(not used)
+# memory_unlock           	"OTmu"	str	"mu"	-B---	(not used)
+has_hardware_tabs       	"OTpt"	bool	"pt"	YB---	(used)
+return_does_clr_eol        	"OTxr"	bool	"xr"	YB---	(used)
+# tek_4025_insert_line		"OTxx"	bool	"xx"	-BC--	(not used)
 #
 # mytinfo described this as a termcap capability, but it's not listed in the
 # 4.4BSD man pages, and not found in the 4.4BSD termcap file.  The ncurses
 # package, like System V, behaves as though it is always true.
 #
-# rind_only_at_top		"OTxq"	bool	"xq"	-	(not used)
+# rind_only_at_top		"OTxq"	bool	"xq"	-----	(not used)
 #
 # University of Waterloo termcap extensions (as described in mytinfo).
 # The `xl' termcap file clashes with a terminfo name; this ambiguity cannot
 # be resolved by a type check.
 #
-# key_interrupt_char      	"OTki"	str	"ki"	-	(not used)
-# key_kill_char           	"OTkk"	str	"kk"	-	(not used)
-# key_suspend_char        	"OTkz"	str	"kz"	-	(not used)
-# initialization_messy		"OTxc"	bool	"xc"	-	(not used)
-# index_at_bottom_does_cr	"OTxl"	bool	"xl"	-	(not used)
+# key_interrupt_char      	"OTki"	str	"ki"	-----	(not used)
+# key_kill_char           	"OTkk"	str	"kk"	-----	(not used)
+# key_suspend_char        	"OTkz"	str	"kz"	-----	(not used)
+# initialization_messy		"OTxc"	bool	"xc"	-----	(not used)
+# index_at_bottom_does_cr	"OTxl"	bool	"xl"	-----	(not used)
 #
 # Nonstandard capabilities from Ross Ridge's `mytinfo' package 
 # (comp.sources.unix, volume 26).  SR clashes with a terminfo name; this
 # ambiguity cannot be resolved by a type check.
 #
-# scroll_left             	"OTsl1"	str	"Sl"	-	(not used)
-# scroll_right            	"OTsr1"	str	"Sr"	-	(not used)
-# parm_scroll_left        	"OTsl"	str	"SL"	-	(not used)
-# parm_scroll_right       	"OTsr"	str	"SR"	-	(not used)
+# scroll_left             	"OTsl1"	str	"Sl"	-----	(not used)
+# scroll_right            	"OTsr1"	str	"Sr"	-----	(not used)
+# parm_scroll_left        	"OTsl"	str	"SL"	-----	(not used)
+# parm_scroll_right       	"OTsr"	str	"SR"	-----	(not used)
 #
 # Alias declarations.  Here we set up aliases for translating extensions 
 # into standard terminfo.

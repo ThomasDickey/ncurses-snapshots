@@ -139,6 +139,7 @@ extern void _nc_set_type(const char *name);
 extern void _nc_syserr_abort(const char *,...);
 extern void _nc_err_abort(const char *,...);
 extern void _nc_warning(const char *,...);
+extern bool _nc_suppress_warnings;
 
 /* captoinfo.c: capability conversion */
 extern char *_nc_captoinfo(char *, char *, bool);

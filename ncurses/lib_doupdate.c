@@ -257,6 +257,7 @@ int	i;
 			TPUTS_TRACE("change_scroll_region");
 			putp(tparm(change_scroll_region, 0, screen_lines - 1));
 		}
+		_nc_mouse_resume(SP);
 		newscr->_clear = TRUE;
 		SP->_endwin = FALSE;
 	}

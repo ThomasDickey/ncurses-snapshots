@@ -68,15 +68,8 @@
 #include <unctrl.h>
 #include "tic.h"
 
-#ifndef MAX_PUSHED
-/* maximum # of parameters that can be pushed onto the stack */
-#define MAX_PUSHED 16
-#endif
-
-#ifndef MAX_ENTRY
-/* maximum characters in a translated capability */
-#define MAX_ENTRY	80
-#endif
+#define MAX_PUSHED	16	/* max # args we can push onto the stack */
+#define MAX_ENTRY	2048	/* maximum chars in a translated capability */
 
 static int stack[MAX_PUSHED];	/* the stack */
 static int stackptr;		/* the next empty place on the stack */
