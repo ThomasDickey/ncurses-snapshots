@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.757 2003/07/19 21:54:13 tom Exp $
+-- $Id: NEWS,v 1.758 2003/07/26 23:31:27 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030726
+	+ correct limit-checks in _nc_scroll_window() (report and test-case by
+	  Thomas Graf <graf@dms.at> cf: 20011020).
+	+ re-order configure checks for _XOPEN_SOURCE to avoid conflict with
+	  _GNU_SOURCE check.
 
 20030719
 	+ use clr_eol in preference to blanks for bce terminals, so select and

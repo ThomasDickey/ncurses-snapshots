@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.310 2003/07/19 21:50:04 tom Exp $
+dnl $Id: aclocal.m4,v 1.311 2003/07/26 21:55:30 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -2233,6 +2233,39 @@ case ".[$]$1" in #(vi
   ifelse($2,,[AC_ERROR([expected a pathname, not \"[$]$1\"])],$2)
   ;;
 esac
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_PREDEFINE version: 1 updated: 2003/07/26 17:53:56
+dnl ------------
+dnl Add definitions to CPPFLAGS to ensure they're predefined for all compiles.
+dnl
+dnl $1 = symbol to test
+dnl $2 = value (if any) to use for a predefinition
+AC_DEFUN([CF_PREDEFINE],
+[
+AC_MSG_CHECKING(if we must define $1)
+AC_TRY_COMPILE([#include <sys/types.h>
+],[
+#ifndef $1
+make an error
+#endif],[cf_result=no],[cf_result=yes])
+AC_MSG_RESULT($cf_result)
+
+if test "$cf_result" = yes ; then
+	CPPFLAGS="$CPPFLAGS ifelse($2,,-D$1,[-D$1=$2])"
+elif test "x$2" != "x" ; then
+	AC_MSG_CHECKING(checking for compatible value versus $2)
+	AC_TRY_COMPILE([#include <sys/types.h>
+],[
+#if $1-$2 < 0
+make an error
+#endif],[cf_result=yes],[cf_result=no])
+	AC_MSG_RESULT($cf_result)
+	if test "$cf_result" = no ; then
+		# perhaps we can override it - try...
+		CPPFLAGS="$CPPFLAGS -D$1=$2"
+	fi
+fi
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_PROG_EXT version: 8 updated: 2002/12/21 19:25:52
