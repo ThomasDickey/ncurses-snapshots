@@ -22,11 +22,12 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: scan.c,v 1.3 2004/09/25 21:50:50 tom Exp $")
+MODULE_ID("$Id: scan.c,v 1.4 2004/12/04 16:06:02 tom Exp $")
 
 unsigned scan_max;		/* length of longest scan code */
 char **scan_up, **scan_down, **scan_name;
-unsigned *scan_tested, *scan_length, *scan_value;
+unsigned *scan_tested, *scan_length;
+static unsigned *scan_value;
 
 static int shift_state;
 static char *str;

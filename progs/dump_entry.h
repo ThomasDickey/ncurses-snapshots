@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: dump_entry.h,v 1.26 2004/09/25 22:37:41 tom Exp $
+ * $Id: dump_entry.h,v 1.27 2004/12/04 15:37:17 tom Exp $
  *
  * Dump control definitions and variables
  */
@@ -63,7 +63,7 @@
 #define CMP_USE		3	/* comparison on use capabilities */
 
 typedef unsigned PredType;
-typedef unsigned PredIdx;
+typedef int PredIdx;
 typedef int (*PredFunc)(PredType, PredIdx);
 
 extern NCURSES_CONST char *nametrans(const char *);

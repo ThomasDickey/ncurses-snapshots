@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.847 2004/11/28 01:11:30 tom Exp $
+-- $Id: NEWS,v 1.848 2004/12/05 01:18:45 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20041204
+	+ replace some references on Linux to wcrtomb() which use it to obtain
+	  the length of a multibyte string with _nc_wcrtomb, since wcrtomb() is
+	  broken in glibc (see Debian #284260).
+	+ corrected length-computation in wide-character support for
+	  field_buffer().
+	+ some fixes to frm_driver.c to allow it to accept multibyte input.
+	+ modify configure script to work with Intel 8.0 compiler.
 
 20041127
 	+ amend change to setupterm() in 20030405 which would reuse the value

@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.265 2004/11/28 00:58:26 tom Exp $
+ * $Id: curses.priv.h,v 1.267 2004/12/05 00:31:29 tom Exp $
  *
  *	curses.priv.h
  *
@@ -699,6 +699,11 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 
 #define CHANGED     -1
 
+#define LEGALYX(w, y, x) \
+	      ((w) != 0 && \
+		((x) >= 0 && (x) <= (w)->_maxx && \
+		 (y) >= 0 && (y) <= (w)->_maxy))
+
 #define CHANGED_CELL(line,col) \
 	if (line->firstchar == _NOCHANGE) \
 		line->firstchar = line->lastchar = col; \
@@ -1001,16 +1006,6 @@ extern NCURSES_EXPORT(string_desc *) _nc_str_copy (string_desc *, string_desc *)
 extern NCURSES_EXPORT(bool) _nc_safe_strcat (string_desc *, const char *);
 extern NCURSES_EXPORT(bool) _nc_safe_strcpy (string_desc *, const char *);
 
-extern NCURSES_EXPORT(void) _nc_mvcur_init (void);
-extern NCURSES_EXPORT(void) _nc_mvcur_resume (void);
-extern NCURSES_EXPORT(void) _nc_mvcur_wrap (void);
-
-extern NCURSES_EXPORT(int) _nc_scrolln (int, int, int, int);
-
-extern NCURSES_EXPORT(void) _nc_screen_init (void);
-extern NCURSES_EXPORT(void) _nc_screen_resume (void);
-extern NCURSES_EXPORT(void) _nc_screen_wrap (void);
-
 #if !HAVE_STRSTR
 #define strstr _nc_strstr
 extern NCURSES_EXPORT(char *) _nc_strstr (const char *, const char *);
@@ -1055,6 +1050,14 @@ extern NCURSES_EXPORT(void) _nc_set_buffer (FILE *, bool);
 extern NCURSES_EXPORT(void) _nc_signal_handler (bool);
 extern NCURSES_EXPORT(void) _nc_synchook (WINDOW *);
 extern NCURSES_EXPORT(void) _nc_trace_tries (struct tries *);
+
+#if USE_WIDEC_SUPPORT
+#ifdef linux
+extern NCURSES_EXPORT(size_t) _nc_wcrtomb (char *, wchar_t, mbstate_t *);
+#else
+#define _nc_wcrtomb(s,wc,ps) wcrtomb(s,wc,ps)
+#endif
+#endif
 
 #if USE_SIZECHANGE
 extern NCURSES_EXPORT(void) _nc_update_screensize (void);

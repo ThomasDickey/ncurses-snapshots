@@ -30,7 +30,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: form.priv.h,v 0.19 2004/05/30 01:04:08 tom Exp $ */
+/* $Id: form.priv.h,v 0.20 2004/12/04 22:50:01 tom Exp $ */
 
 #ifndef FORM_PRIV_H
 #define FORM_PRIV_H 1
@@ -62,31 +62,33 @@
 #include "form.h"
 
 /* form  status values */
-#define _OVLMODE         (0x04) /* Form is in overlay mode                */
-#define _WINDOW_MODIFIED (0x10) /* Current field window has been modified */
-#define _FCHECK_REQUIRED (0x20) /* Current field needs validation         */
+#define _OVLMODE         (0x04U) /* Form is in overlay mode                */
+#define _WINDOW_MODIFIED (0x10U) /* Current field window has been modified */
+#define _FCHECK_REQUIRED (0x20U) /* Current field needs validation         */
 
 /* field status values */
-#define _CHANGED         (0x01) /* Field has been changed                 */
-#define _NEWTOP          (0x02) /* Vertical scrolling occurred            */
-#define _NEWPAGE         (0x04) /* field begins new page of form          */
-#define _MAY_GROW        (0x08) /* dynamic field may still grow           */
+#define _CHANGED         (0x01U) /* Field has been changed                 */
+#define _NEWTOP          (0x02U) /* Vertical scrolling occurred            */
+#define _NEWPAGE         (0x04U) /* field begins new page of form          */
+#define _MAY_GROW        (0x08U) /* dynamic field may still grow           */
 
 /* fieldtype status values */
-#define _LINKED_TYPE     (0x01) /* Type is a linked type                  */
-#define _HAS_ARGS        (0x02) /* Type has arguments                     */
-#define _HAS_CHOICE      (0x04) /* Type has choice methods                */
-#define _RESIDENT        (0x08) /* Type is built-in                       */
+#define _LINKED_TYPE     (0x01U) /* Type is a linked type                  */
+#define _HAS_ARGS        (0x02U) /* Type has arguments                     */
+#define _HAS_CHOICE      (0x04U) /* Type has choice methods                */
+#define _RESIDENT        (0x08U) /* Type is built-in                       */
 
 /* This are the field options required to be a selectable field in field
    navigation requests */
 #define O_SELECTABLE (O_ACTIVE | O_VISIBLE)
 
 /* If form is NULL replace form argument by default-form */
-#define Normalize_Form(form)  ((form)=(form)?(form):_nc_Default_Form)
+#define Normalize_Form(form) \
+  ((form) = (form != 0) ? (form) : _nc_Default_Form)
 
 /* If field is NULL replace field argument by default-field */
-#define Normalize_Field(field)  ((field)=(field)?(field):_nc_Default_Field)
+#define Normalize_Field(field) \
+  ((field) = (field != 0) ? (field) : _nc_Default_Field)
 
 /* Retrieve forms window */
 #define Get_Form_Window(form) \
@@ -104,8 +106,8 @@
    (((field)->rows + (field)->nrow) == 1)
 
 /* Logic to determine whether or not a field is selectable */
-#define Field_Is_Selectable(f)     (((f)->opts & O_SELECTABLE)==O_SELECTABLE)
-#define Field_Is_Not_Selectable(f) (((f)->opts & O_SELECTABLE)!=O_SELECTABLE)
+#define Field_Is_Selectable(f)     (((unsigned)((f)->opts) & O_SELECTABLE)==O_SELECTABLE)
+#define Field_Is_Not_Selectable(f) (((unsigned)((f)->opts) & O_SELECTABLE)!=O_SELECTABLE)
 
 typedef struct typearg
   {
@@ -124,7 +126,7 @@ TypeArgument;
 			O_NL_OVERLOAD  |\
 			O_BS_OVERLOAD   )
 
-#define ALL_FIELD_OPTS (           \
+#define ALL_FIELD_OPTS (Field_Options)( \
 			O_VISIBLE |\
 			O_ACTIVE  |\
 			O_PUBLIC  |\
@@ -143,19 +145,19 @@ TypeArgument;
 
 extern NCURSES_EXPORT_VAR(const FIELDTYPE *) _nc_Default_FieldType;
 
-extern NCURSES_EXPORT(TypeArgument *) _nc_Make_Argument (const FIELDTYPE*,va_list*,int*);
-extern NCURSES_EXPORT(TypeArgument *) _nc_Copy_Argument (const FIELDTYPE*,const TypeArgument*, int*);
-extern NCURSES_EXPORT(void) _nc_Free_Argument (const FIELDTYPE*,TypeArgument*);
+extern NCURSES_EXPORT(TypeArgument *) _nc_Make_Argument (const FIELDTYPE*, va_list*, int*);
+extern NCURSES_EXPORT(TypeArgument *) _nc_Copy_Argument (const FIELDTYPE*, const TypeArgument*, int*);
+extern NCURSES_EXPORT(void) _nc_Free_Argument (const FIELDTYPE*, TypeArgument*);
 extern NCURSES_EXPORT(bool) _nc_Copy_Type (FIELD*, FIELD const *);
 extern NCURSES_EXPORT(void) _nc_Free_Type (FIELD *);
 
 extern NCURSES_EXPORT(int) _nc_Synchronize_Attributes (FIELD*);
-extern NCURSES_EXPORT(int) _nc_Synchronize_Options (FIELD*,Field_Options);
-extern NCURSES_EXPORT(int) _nc_Set_Form_Page (FORM*,int,FIELD*);
+extern NCURSES_EXPORT(int) _nc_Synchronize_Options (FIELD*, Field_Options);
+extern NCURSES_EXPORT(int) _nc_Set_Form_Page (FORM*, int, FIELD*);
 extern NCURSES_EXPORT(int) _nc_Refresh_Current_Field (FORM*);
 extern NCURSES_EXPORT(FIELD *) _nc_First_Active_Field (FORM*);
 extern NCURSES_EXPORT(bool) _nc_Internal_Validation (FORM*);
-extern NCURSES_EXPORT(int) _nc_Set_Current_Field (FORM*,FIELD*);
+extern NCURSES_EXPORT(int) _nc_Set_Current_Field (FORM*, FIELD*);
 extern NCURSES_EXPORT(int) _nc_Position_Form_Cursor (FORM*);
 
 #if USE_WIDEC_SUPPORT

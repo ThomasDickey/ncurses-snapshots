@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_attr.c,v 1.8 2004/05/29 19:22:20 tom Exp $")
+MODULE_ID("$Id: fld_attr.c,v 1.9 2004/12/04 22:06:39 tom Exp $")
 
 /*----------------------------------------------------------------------------
   Field-Attribute manipulation routines
@@ -45,13 +45,18 @@ NCURSES_IMPEXP int NCURSES_API set_field_ ## name (FIELD * field, chtype attr)\
    if ( attr==A_NORMAL || ((attr & A_ATTRIBUTES)==attr) )\
      {\
        Normalize_Field( field );\
-       if ((field -> name) != attr)\
-         {\
-           field -> name = attr;\
-           res = _nc_Synchronize_Attributes( field );\
-         }\
-       else\
-	 res = E_OK;\
+       if (field != 0) \
+	 { \
+	 if ((field -> name) != attr)\
+	   {\
+	     field -> name = attr;\
+	     res = _nc_Synchronize_Attributes( field );\
+	   }\
+	 else\
+	   {\
+	     res = E_OK;\
+	   }\
+	 }\
      }\
    RETURN(res);\
 }

@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.116 2004/09/25 19:24:54 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.117 2004/12/04 15:35:59 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -408,7 +408,7 @@ make_namelist(char *src)
     if (showsummary) {
 	fprintf(log_fp, "Entries that will be compiled:\n");
 	for (n = 0; dst[n] != 0; n++)
-	    fprintf(log_fp, "%d:%s\n", n + 1, dst[n]);
+	    fprintf(log_fp, "%u:%s\n", n + 1, dst[n]);
     }
     return dst;
 }
