@@ -28,7 +28,7 @@
 .\"
 .\" Author: Thomas E. Dickey <dickey@clark.net> 1997
 .\"
-.\" $Id: define_key.3x,v 1.5 1998/03/14 23:43:22 tom Exp $
+.\" $Id: define_key.3x,v 1.6 1999/02/19 11:43:17 tom Exp $
 .TH define_key 3X ""
 .SH NAME
 \fBdefine_key\fP \- define a keycode
@@ -46,6 +46,8 @@ the predefined codes in the terminfo database.
 .PP
 If the given string is null, any existing definition for the keycode is
 removed.
+Similarly, if the given keycode is negative or zero, any existing string
+for the given definition is removed.
 ..
 .SH RETURN VALUE
 The keycode must be greater than zero, else ERR is returned.

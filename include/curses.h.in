@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.78 1999/01/10 03:21:11 tom Exp $ */
+/* $Id: curses.h.in,v 1.79 1999/02/19 12:03:06 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -318,6 +318,7 @@ extern int	TABSIZE;
  */
 extern int ESCDELAY;	/* ESC expire time in milliseconds */
 
+extern char *keybound (int, int);
 extern int define_key (char *, int);
 extern int keyok (int, bool);
 extern int resizeterm (int, int);

@@ -27,7 +27,7 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998              *
+ *  Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998,1999         *
  ****************************************************************************/
 /* LINTLIBRARY */
 
@@ -1398,6 +1398,15 @@ int	wnoutrefresh(
 		WINDOW	*win)
 		{ return(*(int *)0); }
 
+/* ./base/lib_restart.c */
+
+#undef restartterm
+int	restartterm(
+		char	*term, 
+		int	filenum, 
+		int	*errret)
+		{ return(*(int *)0); }
+
 /* ./base/lib_scanw.c */
 
 #undef vwscanw
@@ -1905,67 +1914,20 @@ void	_nc_UpdateAttrs(
 		chtype	c)
 		{ /* void */ }
 
+/* ./base/keybound.c */
+
+#undef keybound
+char	*keybound(
+		int	code, 
+		int	count)
+		{ return(*(char **)0); }
+
 /* ./base/keyok.c */
 
 #undef keyok
 int	keyok(
 		int	c, 
 		bool	flag)
-		{ return(*(int *)0); }
-
-/* ./base/lib_adabind.c */
-
-#undef _nc_ada_getmaxyx
-int	_nc_ada_getmaxyx(
-		const WINDOW *win, 
-		int	*y, 
-		int	*x)
-		{ return(*(int *)0); }
-
-#undef _nc_ada_getbegyx
-int	_nc_ada_getbegyx(
-		const WINDOW *win, 
-		int	*y, 
-		int	*x)
-		{ return(*(int *)0); }
-
-#undef _nc_ada_getyx
-int	_nc_ada_getyx(
-		const WINDOW *win, 
-		int	*y, 
-		int	*x)
-		{ return(*(int *)0); }
-
-#undef _nc_ada_getparyx
-int	_nc_ada_getparyx(
-		const WINDOW *win, 
-		int	*y, 
-		int	*x)
-		{ return(*(int *)0); }
-
-#undef _nc_ada_isscroll
-int	_nc_ada_isscroll(
-		const WINDOW *win)
-		{ return(*(int *)0); }
-
-#undef _nc_ada_mouse_event
-void	_nc_ada_mouse_event(
-		mmask_t	m, 
-		int	*b, 
-		int	*s)
-		{ /* void */ }
-
-#undef _nc_ada_mouse_mask
-int	_nc_ada_mouse_mask(
-		int	button, 
-		int	state, 
-		mmask_t	*mask)
-		{ return(*(int *)0); }
-
-#undef _nc_ada_vcheck
-int	_nc_ada_vcheck(
-		int	major, 
-		int	minor)
 		{ return(*(int *)0); }
 
 /* ./base/lib_dft_fgbg.c */
@@ -1996,12 +1958,20 @@ int	resizeterm(
 		int	ToCols)
 		{ return(*(int *)0); }
 
+/* ./trace/trace_tries.c */
+
+#undef _nc_trace_tries
+void	_nc_trace_tries(
+		struct tries *tree)
+		{ /* void */ }
+
 /* ./base/tries.c */
 
 #undef _nc_expand_try
 char	*_nc_expand_try(
 		struct tries *tree, 
 		unsigned short code, 
+		int	*count, 
 		size_t	len)
 		{ return(*(char **)0); }
 
@@ -2009,6 +1979,12 @@ char	*_nc_expand_try(
 int	_nc_remove_key(
 		struct tries **tree, 
 		unsigned short code)
+		{ return(*(int *)0); }
+
+#undef _nc_remove_string
+int	_nc_remove_string(
+		struct tries **tree, 
+		char	*string)
 		{ return(*(int *)0); }
 
 /* ./base/wresize.c */
@@ -2083,9 +2059,9 @@ char	*const strcodes[] = {0};
 #include <ncurses_cfg.h>
 
 #undef _nc_info_hash_table
-const struct name_table_entry *const _nc_info_hash_table[991] = {0};
+const struct name_table_entry *const _nc_info_hash_table[995] = {0};
 #undef _nc_cap_hash_table
-const struct name_table_entry *const _nc_cap_hash_table[991] = {0};
+const struct name_table_entry *const _nc_cap_hash_table[995] = {0};
 #undef _nc_capalias_table
 const struct alias _nc_capalias_table[] = {0};
 #undef _nc_infoalias_table
@@ -2093,6 +2069,11 @@ const struct alias _nc_infoalias_table[] = {0};
 
 #undef _nc_get_table
 const struct name_table_entry *_nc_get_table(
+		bool	termcap)
+		{ return(*(const struct name_table_entry **)0); }
+
+#undef _nc_get_hash_table
+const struct name_table_entry *const *_nc_get_hash_table(
 		bool	termcap)
 		{ return(*(const struct name_table_entry **)0); }
 
@@ -2166,6 +2147,9 @@ struct name_table_entry const *_nc_find_type_entry(
 
 /* ./tinfo/comp_parse.c */
 
+#undef _nc_check_termtype
+void	(*_nc_check_termtype)(
+		TERMTYPE *p1);
 #undef _nc_head
 ENTRY	*_nc_head;
 #undef _nc_tail
@@ -2262,13 +2246,28 @@ int	_nc_getenv_num(
 char	*_nc_home_terminfo(void)
 		{ return(*(char **)0); }
 
+/* ./tinfo/init_keytry.c */
+
+#if 0
+
+#include <init_keytry.h>
+
+#undef _nc_tinfo_fkeys
+struct tinfo_fkeys _nc_tinfo_fkeys[];
+
+#endif
+
+#undef _nc_init_keytry
+void	_nc_init_keytry(void)
+		{ /* void */ }
+
 /* ./tinfo/lib_acs.c */
 
 #undef acs_map
 chtype	acs_map[128 ];
 
-#undef init_acs
-void	init_acs(void)
+#undef _nc_init_acs
+void	_nc_init_acs(void)
 		{ /* void */ }
 
 /* ./tinfo/lib_baudrate.c */
@@ -2332,25 +2331,6 @@ bool	has_ic(void)
 bool	has_il(void)
 		{ return(*(bool *)0); }
 
-/* ./lib_keyname.c */
-
-#include <stdlib.h>
-#include <string.h>
-#include <curses.h>
-
-struct kn {
-	const char *name;
-	int code;
-};
-
-#undef key_names
-const struct kn key_names[] = {0};
-
-#undef keyname
-char	*keyname(
-		int	c)
-		{ return(*(char **)0); }
-
 /* ./tinfo/lib_kernel.c */
 
 #undef erasechar
@@ -2364,6 +2344,20 @@ char	killchar(void)
 #undef flushinp
 int	flushinp(void)
 		{ return(*(int *)0); }
+
+/* ./lib_keyname.c */
+
+#include <stdlib.h>
+#include <string.h>
+#include <curses.h>
+
+#undef _nc_key_names
+const struct kn _nc_key_names[] = {0};
+
+#undef keyname
+char	*keyname(
+		int	c)
+		{ return(*(char **)0); }
 
 /* ./tinfo/lib_longname.c */
 
@@ -2442,12 +2436,6 @@ int	has_key(
 		int	keycode)
 		{ return(*(int *)0); }
 
-#if 0
-
-#include <keys.tries>
-
-#endif
-
 #undef _nc_keypad
 int	_nc_keypad(
 		bool	flag)
@@ -2485,15 +2473,6 @@ int	intrflush(
 		bool	flag)
 		{ return(*(int *)0); }
 
-/* ./tinfo/lib_restart.c */
-
-#undef restartterm
-int	restartterm(
-		char	*term, 
-		int	filenum, 
-		int	*errret)
-		{ return(*(int *)0); }
-
 /* ./tinfo/lib_setup.c */
 
 #include <sys/ioctl.h>
@@ -2526,8 +2505,6 @@ int	setupterm(
 
 /* ./tinfo/lib_termcap.c */
 
-#undef PC
-char	PC;
 #undef UP
 char	*UP;
 #undef BC
@@ -2606,6 +2583,8 @@ char	*tparm(
 
 /* ./tinfo/lib_tputs.c */
 
+#undef PC
+char	PC;
 #undef ospeed
 speed_t	ospeed;
 #undef _nc_nulls_sent

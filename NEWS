@@ -1,10 +1,44 @@
--- $Id: NEWS,v 1.416 1999/02/09 23:28:04 tom Exp $
+-- $Id: NEWS,v 1.420 1999/02/20 12:04:24 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990220	pre-release
+	+ resolve ambiguity of kend/kll/kslt and khome/kfnd/kich1 strings in
+	  xterm and ncsa terminfo entries by removing the unneeded ones.  Note
+	  that some entries will return kend & khome versus kslt and kfnd, for
+	  PC-style keyboards versus strict vt220 compatiblity - TD
+	+ add function keybound(), which returns the definition associated with
+	  a given keycode.
+	+ modify define_key() to undefine the given string when no keycode is
+	  given.
+	+ modify keyok() so it works properly if there is more than one string
+	  defined for a keycode.
+	+ add check to tic to warn about terminfo descriptions that contain
+	  more than one key assigned to the same string.  This is shown only if
+	  the verbose (-v) option is given.  Moved related logic (tic -v) from
+	  comp_parse.c into the tic program.
+	+ add/use _nc_trace_tries() to show the function keys that will be
+	  recognized.
+	+ rename init_acs to _nc_init_acs (request by Alexander Lukyanov).
+	> patch by Juergen Pfeifer, for Ada95 binding:
+	+ remove all the *_adabind.c from ncurses, menu and form projects. 
+	  Those little helper routines have all been implemented in Ada and are
+	  no longer required. 
+	+ The option handling routines in menu and form have been made more
+	  save.  They now make sure that the unused bits in options are always
+	  zero. 
+	+ modify configuration scripts to 
+	  + use gnatmake as default compiler name.  This is a safer choice than
+	    gcc, because some GNAT implementations use other names for the
+	    compilerdriver to avoid conflicts. 
+	  + use new default installation locations for the Ada files according
+	    to the proposed GNU Ada filesystem standard (for Linux). 
+	+ simplify the Makefiles for the Ada binding 
+	+ rename ada_include directory to src. 
 
 990213
 	+ enable sigwinch handler by default.
