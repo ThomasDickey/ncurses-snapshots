@@ -409,8 +409,26 @@ traceon(); in your code and link with -ldcurses.
 ### ncurses 1.9.1 -> 1.9.2
 
 *) use 'autoconf' to implement 'configure' script.
+*) panels support added
+*) tic now checks for excessively long termcap entries when doing translation
+*) first cut at eliminating namespace pollution.
 
 ### ncurses 1.9.2c -> 1.9.2d
 
 *) revised 'configure' script to produce libraries for normal, debug,
    profile and shared object models. 
+
+### ncurses 1.9.2c -> 1.9.3
+
+* fixed the TERMCAP_FILE Support.
+* fixed off-by-one errors in scrolling code
+* added tracemunch to the test tools
+* took steps to cut the running time of make install.data
+
+### ncurses 1.9.3 -> 1.9.4
+
+* fixed an undefined-order-of-evaluation bug in lib_acs.c
+* systematically gave non-API public functions and data an _nc_ prefix.
+* integrated Juergen Pfeifer's menu code into the distribution.
+* totally rewrote the knight test game's interface
+

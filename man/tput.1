@@ -27,7 +27,7 @@ FALSE if it does not), and produces no output.  Before using a value
 returned on standard output, the user should test the exit code
 [\fB$?\fR, see \fBsh\fR(1)] to be sure it is \fB0\fR.  (See the \fBEXIT
 CODES\fR and \fBDIAGNOSTICS\fR sections.)  For a complete list of capabilities
-and the \fIcapname\fR associated with each, see \fBterminfo\fR(4).
+and the \fIcapname\fR associated with each, see \fBterminfo\fR(\*n).
 .TP
 \fB-T\fR\fItype\fR
 indicates the \fItype\fR of terminal.  Normally this option is
@@ -189,7 +189,7 @@ codes.
 l l.
 exit code	error message
 \fB0\fR	(\fIcapname\fR is a numeric variable that is not specified in the
-	\fBterminfo\fR(4) database for this terminal type, e.g.
+	\fBterminfo\fR(\*n) database for this terminal type, e.g.
 	\fBtput -T450 lines\fR and \fBtput -T2621 xmc\fR)
 \fB1\fR	no error message is printed, see the \fBEXIT CODES\fR section.
 \fB2\fR	usage error

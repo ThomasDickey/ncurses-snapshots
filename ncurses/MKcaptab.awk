@@ -13,7 +13,7 @@ cat <<'EOF'
 #include "term.h"
 #include "hashsize.h"
 
-struct name_table_entry	info_table[] =
+struct name_table_entry	_nc_info_table[] =
 {
 EOF
 
@@ -41,7 +41,7 @@ $3 == "str"	{
 cat <<'EOF'
 };
 
-struct alias alias_table[] =
+struct alias _nc_alias_table[] =
 {
 EOF
 
@@ -55,7 +55,7 @@ cat <<'EOF'
 	{(char *)NULL, (char *)NULL}
 };
 
-struct name_table_entry	cap_table[] =
+struct name_table_entry	_nc_cap_table[] =
 {
 EOF
 
@@ -86,8 +86,8 @@ $3 == "str"	{
 END	{
 	    print  "} /* " tablesize " entries */;"
 	    print  ""
-	    print  "struct name_table_entry *info_hash_table[HASHTABSIZE];"
-	    print  "struct name_table_entry *cap_hash_table[HASHTABSIZE];"
+	    print  "struct name_table_entry *_nc_info_hash_table[HASHTABSIZE];"
+	    print  "struct name_table_entry *_nc_cap_hash_table[HASHTABSIZE];"
 	    print  ""
 	    printf "#if (BOOLCOUNT!=%d)||(NUMCOUNT!=%d)||(STRCOUNT!=%d)\n",\
 						BoolCount, NumCount, StrCount

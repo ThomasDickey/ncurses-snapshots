@@ -1,332 +1,437 @@
-/* Knights Tour - a brain game */
+/*
+ * Knight's Tour - a brain game
+ *
+ * The original of this game was anonymous.  It had an unbelievably bogus
+ * interface, you actually had to enter square coordinates!  Redesign by
+ * Eric S. Raymond <esr@snark.thyrsus.com> July 22 1995.
+ */
 
 #include <curses.h>
-#include <signal.h>
 #include <ctype.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
 
-short   board [64];     /* the squares */
-chtype  row, column;    /* input characters */
-int     rw,col;         /* numeric equivalent of row and column */
-int     curow,curcol;   /* current row and column integers */
-int     rdif, cdif;     /* difference between input and current */
+/* board size */
+#define BDEPTH	8
+#define BWIDTH	8
 
-char	script[]={"'_)//,/(-)/__/__(_<_(__),|/|/_///_/_<//_/_)__o__o'______///_(--_(_)___,(_/,_/__(_\0"};
+/* where to start the instructions */
+#define INSTRY	2
+#define INSTRX	36
 
-int	ypos[] ={1,0,1,2,3,0,1,2,2,3,3,2,2,3,2,2,3,3,3,3,3,2,3,3,2,4,5,5,
-	4,3,3,2,1,2,3,3,3,2,1,3,3,2,3,3,3,2,1,1,0,1,4,4,4,4,4,4,5,6,7,7,
-	7,6,6,6,7,7,7,6,6,6,6,7,7,7,6,7,7,6,6,7,7};
+/* corner of board */
+#define BOARDY	2
+#define BOARDX	0
 
-int	xpos[]={0,1,2,1,0,5,4,3,2,4,6,7,8,8,9,10,10,11,12,13,14,15,15,16,
-	16,16,15,14,15,17,18,19,20,20,20,21,22,23,24,23,25,26,27,26,28,
-	13,23,25,27,27,2,3,4,5,6,7,4,3,2,1,0,1,2,5,4,5,6,6,7,8,9,8,9,10,
-	11,11,12,13,14,14,15};
+/* notification line */
+#define NOTIFYY	21
 
-static char *instructions[] = 
+#define cellmove(y, x)	move (BOARDY+1 + 2*(y),       BOARDX+2 + 4 * (x));
+
+static short	board[BDEPTH * BWIDTH];	/* the squares */
+static lastrow, lastcol;		/* location of last move */
+static int	rw,col;			/* current row and column */
+static int	movecount;		/* count of moves so far */
+static WINDOW	*helpwin;		/* the help window */
+
+static void init(void);
+static bool play(void);
+static void dosquares(void);
+static int  getrc(void);
+static void putstars(int);
+static bool evalmove(int);
+static bool chkmoves(void);
+static bool endgame(void);
+static bool chksqr(int, int);
+
+int main(int argc, char *argv[])
 {
-"     Knight's Tour is a board game for one player.   It is played on",
-"an eight by eight board and is based on the allowable moves that a knight",
-"can make in the game of chess.  For those who are unfamiliar with the",
-"game, a knight may move either on a row or a column but not diagonally.",
-"He may move one square in any direction and two squares in a perpendicular",
-"direction >or< two squares in any direction and one square in a",
-"perpendicular direction.  He may not, of course, move off the board.",
-"",
-"     At the beginning of a game you will be asked to either choose a",
-"starting square or allow the computer to select a random location.",
-"Squares are designated by a letter-number combination where the row is",
-"specified by a letter A-H and the numbers 1-8 define a column.  Invalid",
-"entries are ignored and illegal moves produce a beep at the terminal.",
-"",
-"     The objective is to visit every square on the board.  When you claim",
-"a square a marker is placed on it to show where you've been.  You may",
-"not revisit a square that you've landed on before.",
-"",
-"     After each move the program checks to see if you have any legal",
-"moves left.  If not, the game ends and your squares are counted.  If",
-"you've made all the squares you win the game.  Otherwise, you are told",
-"the number of squares you did make.",
-"END"
-};
-
-void init(void);
-int play(void);
-void drawboard(void);
-void dosquares(void);
-void getfirst(void); 
-int  getrc(void);
-void putstars(int);
-int evalmove(int);
-int chkmoves(void);
-int endgame(void);
-int chksqr(int, int);
-void instruct(void);
-void title(int, int);
-
-int
-main ()
-{
-	init ();
-	for (;;)  
-		if (!play ()) {
-			endwin ();
-			exit (0);
-		}
-}
-
-void
-init (void)
-{
-	srand (getpid());
-	initscr ();
-	cbreak ();              /* immediate char return */
-	noecho ();              /* no immediate echo */
-	title (1,23);
-	mvaddstr (23, 25, "Would you like instructions? ");
-	refresh();
-	if ((toupper(getch())) == 'Y') 
-		instruct();
-	clear ();
-}
-
-int 
-play (void)
-{
-int j;
-
-	drawboard ();           /* clear screen and drawboard */
-	for (j = 0; j < 64; j++)
-		board[j] = 0;
-	getfirst ();            /* get the starting square */
-	for (;;) {
-		j = getrc();
-		if (evalmove(j)) {
-			putstars (j);
-			if (!chkmoves()) 
-				return (endgame ());
-		}
-		else beep();
+    init ();
+    for (;;)  
+	if (!play ())
+	{
+	    endwin ();
+	    exit (0);
 	}
 }
 
-void
-drawboard (void)
+static void init (void)
 {
-	int	j;
-
-	erase ();
-	dosquares ();
-	refresh ();
-	mvaddstr (0, 7, "1   2   3   4   5   6   7   8");
-	for (j = 0; j < 8; j++)
-		mvaddch (2*j+2, 3, (chtype)(j + 'A'));
-	refresh ();
-	mvaddstr (20,  5, "ROW:");
-	mvaddstr (20, 27, "COLUMN:");
-	mvaddstr (14, 49, "CURRENT ROW");
-	mvaddstr (16, 49, "CURRENT COL");
-	mvaddstr (22,  5, "A - H or Q to quit");
-	mvaddstr (22, 27, "1 - 8 or ESC to cancel row");
-	refresh ();
-	title (1,40);
+    srand ((unsigned)getpid());
+    initscr ();
+    cbreak ();			/* immediate char return */
+    noecho ();			/* no immediate echo */
+    keypad(stdscr, TRUE);
+    helpwin = subwin(stdscr, 0, 0, INSTRY, INSTRX);
 }
 
-void
-dosquares (void)
+static void help1(void)
+/* game explanation -- initial help screen */
 {
-int j;
+    (void)waddstr(helpwin, "Knight's move is a solitaire puzzle.  Your\n");
+    (void)waddstr(helpwin, "objective is to visit each square of the  \n");
+    (void)waddstr(helpwin, "chessboard exactly once by making knight's\n");
+    (void)waddstr(helpwin, "moves (one square right or left followed  \n");
+    (void)waddstr(helpwin, "by two squares up or down, or two squares \n");
+    (void)waddstr(helpwin, "right or left followed by one square up or\n");
+    (void)waddstr(helpwin, "down).  You may start anywhere.\n\n");
 
-	mvaddstr (1, 6, "-------------------------------");
-	for (j = 1; j < 9; j++) {
-		mvaddstr (2*j, 5,  "|   |   |   |   |   |   |   |   |");
-		mvaddstr (2*j+1, 6, "-------------------------------");
+    (void)waddstr(helpwin, "Use arrow keys to move the cursor around.\n");
+    (void)waddstr(helpwin, "When you want to move your knight to the \n");
+    (void)waddstr(helpwin, "cursor location, press <space> or Enter.\n");
+    (void)waddstr(helpwin, "Illegal moves will be rejected with an  \n");
+    (void)waddstr(helpwin, "audible beep.\n\n");
+    (void)waddstr(helpwin, "The program will detect if you solve the\n");
+    (void)waddstr(helpwin, "puzzle; also inform you when you run out\n");
+    (void)waddstr(helpwin, "of legal moves.\n\n");
+
+    (void)mvwaddstr(helpwin, NOTIFYY-INSTRY, 0,
+		    "Press `?' to go to keystroke help."); 
+}
+
+static void help2(void)
+/* keystroke help screen */
+{
+    (void)waddstr(helpwin, "Possible moves are shown with `-'.\n\n");
+
+    (void)waddstr(helpwin, "You can move around with the arrow keys,:\n");
+    (void)waddstr(helpwin, "or with the rogue/hack movement keys, or:\n");
+    (void)waddstr(helpwin, "with your keypad digit keys, as follows:\n\n");
+
+    (void)waddstr(helpwin, "             y k u    7 8 9\n");
+    (void)waddstr(helpwin, "              \\|/      \\|/ \n");
+    (void)waddstr(helpwin, "             h-+-l    4-+-6\n");
+    (void)waddstr(helpwin, "              /|\\      /|\\ \n");
+    (void)waddstr(helpwin, "             b j n    1 2 3\n");
+
+    (void)waddstr(helpwin,"\nYou can place your knight on the selected\n");
+    (void)waddstr(helpwin, "square with spacebar, Enter, or the keypad\n");
+    (void)waddstr(helpwin, "center key.\n\n");
+
+    (void)waddstr(helpwin, "You can quit with `x' or `q'.\n");
+
+    (void)mvwaddstr(helpwin, NOTIFYY-INSTRY, 0,
+		    "Press `?' to go to game explanation"); 
+}
+
+static bool play (void)
+/* play the game */
+{
+    int i, j;
+
+    /* clear screen and draw board */
+    erase ();
+    dosquares ();
+    refresh ();
+    help1();
+
+    for (j = 0; j < (BWIDTH * BDEPTH); j++)
+	board[j] = 0;
+    for (i = 0; i < BDEPTH; i++)
+	for (j = 0; j < BWIDTH; j++)
+	{
+	    cellmove(i, j);
+	    addch('-');
 	}
-}
-
-void
-getfirst (void)                         /* get first square */
-{
-int j;
-
-	mvaddstr (23, 25, "(S)elect or (R)andom "); refresh ();
-	do {
-		row = toupper(getch());
-	} while ((row != 'S') && (row != 'R'));
-	if (row == 'R') {
-		rw = rand() % 8;
-		col = rand() % 8;
-		j = 8* rw + col;
-		row = rw + 'A';
-		column = col + '1';
+    rw = col = 0;
+    for (movecount = 0;;)
+    {
+	j = getrc();
+	if (j == KEY_EXIT)
+	    return(FALSE);
+	if (evalmove(j))
+	{
+	    putstars (j);
+	    if (!chkmoves()) 
+		return (endgame ());
 	}
-	else {
-		mvaddstr (23, 25, "Enter starting row and column");
-		refresh ();
-		j = getrc();            /* get row and column */
+	else beep();
+    }
+}
+
+static void dosquares (void)
+{
+    int i, j;
+
+    mvaddstr(0, 20, "KNIGHT'S MOVE -- a logical solitaire");
+
+    move(BOARDY,BOARDX);
+    addch(ACS_ULCORNER);
+    for (j = 0; j < 7; j++)
+    {
+	addch(ACS_HLINE);
+	addch(ACS_HLINE);
+	addch(ACS_HLINE);
+	addch(ACS_TTEE);
+    }
+    addch(ACS_HLINE);
+    addch(ACS_HLINE);
+    addch(ACS_HLINE);
+    addch(ACS_URCORNER);
+
+    for (i = 1; i < BDEPTH; i++)
+    {
+	move(BOARDY + i * 2 - 1, BOARDX);
+	addch(ACS_VLINE); 
+	for (j = 0; j < BWIDTH; j++)
+	{
+	    addch(' ');
+	    addch(' ');
+	    addch(' ');
+	    addch(ACS_VLINE);
 	}
-	putstars (j);
-	move (23, 0);
-	clrtobot();
-}       
+	move(BOARDY + i * 2, BOARDX);
+	addch(ACS_LTEE); 
+	for (j = 0; j < BWIDTH - 1; j++)
+	{
+	    addch(ACS_HLINE);
+	    addch(ACS_HLINE);
+	    addch(ACS_HLINE);
+	    addch(ACS_PLUS);
+	}
+	addch(ACS_HLINE);
+	addch(ACS_HLINE);
+	addch(ACS_HLINE);
+	addch(ACS_RTEE);
+    }
 
-int
-getrc (void)                            /* get row and column */
-{
-	noecho ();
-	do {
-		mvaddstr (20, 35, "  ");
-		refresh ();
-		do {
-			mvaddch (20, 11, ' ');
-			move (20, 11);
-			refresh ();
-			row=toupper(getch());
-			if (row == 'Q') {
-				endwin ();
-				exit (1);
-			}
-		} while ((row < 'A') || (row > 'H'));
-		addch (row);
-		move (20, 35);
-		refresh ();
-		do {
-			column=getch();
-			if (column == '\033') break;
-		} while ((column < '1') || (column > '8'));
-		if (column != '\033') addch (column);
-	} while (column == '\033');
-	refresh();
-	rw = row - 'A';
-	col= column - '1';
-	return (8 * rw) + col;
+    move(BOARDY + i * 2 - 1, BOARDX);
+    addch(ACS_VLINE);
+    for (j = 0; j < BWIDTH; j++)
+    {
+	addch(' ');
+	addch(' ');
+	addch(' ');
+	addch(ACS_VLINE);
+    }
+
+    move(BOARDY + i * 2, BOARDX);
+    addch(ACS_LLCORNER);
+    for (j = 0; j < BWIDTH - 1; j++)
+    {
+	addch(ACS_HLINE);
+	addch(ACS_HLINE);
+	addch(ACS_HLINE);
+	addch(ACS_BTEE);
+    }
+    addch(ACS_HLINE);
+    addch(ACS_HLINE);
+    addch(ACS_HLINE);
+    addch(ACS_LRCORNER);
 }
 
-void
-putstars (int j)          /* place the stars, update board & currents */
+static void mark_possibles(int prow, int pcol, chtype mark)
 {
-	mvaddch (2*curow+2, 38, ' ');
-	mvaddch (2*rw+2, 38, '<');
-	mvaddch (18, curcol*4+7, ' ');
-	mvaddch (18, col*4+7, '^');
-	curow = rw;
-	curcol= col;
-	mvaddstr (2 * rw + 2, 4*col+6, "***");
-	mvaddch (14, 61, row);
-	mvaddch (16, 61, column);
-	refresh ();
-	board[j] = 1;
+    if (chksqr(prow+2,pcol+1))  {cellmove(prow+2, pcol+1); addch(mark);};
+    if (chksqr(prow+2,pcol-1))  {cellmove(prow+2, pcol-1); addch(mark);};
+    if (chksqr(prow-2,pcol+1))  {cellmove(prow-2, pcol+1); addch(mark);};
+    if (chksqr(prow-2,pcol-1))  {cellmove(prow-2, pcol-1); addch(mark);};
+    if (chksqr(prow+1,pcol+2))  {cellmove(prow+1, pcol+2); addch(mark);};
+    if (chksqr(prow+1,pcol-2))  {cellmove(prow+1, pcol-2); addch(mark);};
+    if (chksqr(prow-1,pcol+2))  {cellmove(prow-1, pcol+2); addch(mark);};
+    if (chksqr(prow-1,pcol-2))  {cellmove(prow-1, pcol-2); addch(mark);};
 }
 
-int
-evalmove(int j)                 /* convert row and column to integers */
-		                /* and evaluate move */
+static int getrc (void)
+/* interactively select a square to move the knight to */
 {
-	rdif = rw - curow;
-	cdif = col - curcol;
-	rdif = abs(rw  - curow);
-	cdif = abs(col - curcol);
-	refresh ();
-	if (((rdif == 1) && (cdif == 2))
-	 || ((rdif == 2) && (cdif == 1)))
-		if (board [j] == 0)
-			return (1);
-	return (0);
+    static int		curow,curcol;   /* current row and column integers */
+    static bool		keyhelp;	/* TRUE if keystroke help is up */
+    static chtype	oldch = '-';
+    int	c, ny = 0, nx = 0;
+
+    for (;;)
+    {
+	if (rw != curow || col != curcol)
+	{
+	    cellmove(curow, curcol);
+	    if (board[curow*BWIDTH + curcol])
+		addch('#');
+	    else
+		addch(oldch);
+
+	    cellmove(rw, col);
+	    oldch = inch();
+
+	    curow = rw;
+	    curcol= col;
+	}
+	cellmove(rw, col);
+	addch('+');
+	cellmove(rw, col);
+
+	switch (c = getch())
+	{
+	case 'k': case '8':
+	case KEY_UP:
+	    ny = rw+BDEPTH-1; nx = col;
+	    break;
+	case 'j': case '2':
+	case KEY_DOWN:
+	    ny = rw+1;        nx = col;
+	    break;
+	case 'h': case '4':
+	case KEY_LEFT:
+	    ny = rw;          nx = col+BWIDTH-1;
+	    break;
+	case 'l': case '6':
+	case KEY_RIGHT:
+	    ny = rw;          nx = col+1;
+	    break;
+	case 'y': case '7':
+	case KEY_A1:
+	    ny = rw+BDEPTH-1; nx = col+BWIDTH-1;
+	    break;
+	case 'b': case '1':
+	case KEY_C1:
+	    ny = rw+1;        nx = col+BWIDTH-1;
+	    break;
+	case 'u': case '9':
+	case KEY_A3:
+	    ny = rw+BDEPTH-1; nx = col+1;
+	    break;
+	case 'n': case '3':
+	case KEY_C3:
+	    ny = rw+1;        nx = col+1;
+	    break;
+
+	case KEY_B2:
+	case '\n':
+	case ' ':
+	    return((BWIDTH * rw) + col);
+	    break;
+
+	case 'q':
+	case 'x':
+	    return(KEY_EXIT);
+	    break;
+
+	case '?':
+	    werase(helpwin);
+	    if (keyhelp)
+	    {
+		help1();
+		keyhelp = FALSE;
+	    }
+	    else
+	    {
+		help2();
+		keyhelp = TRUE;
+	    }
+	    wrefresh(helpwin);
+	    break;
+
+	default:
+	    beep();
+	    break;
+	}
+
+	col = nx % BWIDTH;
+	rw = ny % BDEPTH;
+    }
 }
 
-int
-chkmoves (void)                 /* check to see if valid moves are available */
+static void putstars (int loc)
+/* place the stars, update board & currents */
 {
-	if (chksqr(2,1))   return (1);
-	if (chksqr(2,-1))  return (1);
-	if (chksqr(-2,1))  return (1);
-	if (chksqr(-2,-1)) return (1);
-	if (chksqr(1,2))   return (1);
-	if (chksqr(1,-2))  return (1);
-	if (chksqr(-1,2))  return (1);
-	if (chksqr(-1,-2)) return (1);
-	return (0);
+    if (movecount == 0)
+    {
+	int i, j;
+
+	for (i = 0; i < BDEPTH; i++)
+	    for (j = 0; j < BWIDTH; j++)
+	    {
+		cellmove(i, j);
+		if (inch() == '-')
+		    addch(' ');
+	    }
+    }
+    else
+    {
+	cellmove(lastrow, lastcol);
+	addch('\b'); addstr("###");
+	mark_possibles(lastrow, lastcol, ' ');
+    }    
+
+    cellmove(rw, col);
+    addch('\b'); addstr("###");
+    mark_possibles(rw, col, '-');
+    board[loc] = 1;
+    mvprintw(NOTIFYY,0, "Move %d", movecount+1);
+
+    lastrow = rw;
+    lastcol = col;
+
+    movecount++;
 }
 
-int
-endgame (void)                  /* check for filled board or not */
+static bool evalmove(int j)
+/* evaluate move */
 {
-int j;
+    int	rdif, cdif;		/* difference between input and current */
 
-	rw = 0;
-	for (j = 0; j < 64; j++)
-		if (board[j] != 0)
-			rw += 1;
-	if (rw == 64)
-		mvaddstr (20, 20, "Congratulations !! You got 'em all");
-	else
-		mvprintw (20, 20, "You have ended up with %2d squares",rw);
-	mvaddstr (21, 25, "Play again ? (y/n) ");
-	refresh ();
-	if ((row=tolower(getch())) == 'y')
-		return (1);
-	else
-		return (0);
+    if (movecount == 0)
+	return(TRUE);
+
+    rdif = abs(rw  - lastrow);
+    cdif = abs(col - lastcol);
+    if (((rdif == 1) && (cdif == 2)) || ((rdif == 2) && (cdif == 1)))
+	if (board [j] == 0)
+	    return(TRUE);
+    return(FALSE);
+}
+
+static bool chkmoves (void)
+/* check to see if valid moves are available */
+{
+    if (chksqr(rw+2,col+1)) return(TRUE);
+    if (chksqr(rw+2,col-1)) return(TRUE);
+    if (chksqr(rw-2,col+1)) return(TRUE);
+    if (chksqr(rw-2,col-1)) return(TRUE);
+    if (chksqr(rw+1,col+2)) return(TRUE);
+    if (chksqr(rw+1,col-2)) return(TRUE);
+    if (chksqr(rw-1,col+2)) return(TRUE);
+    if (chksqr(rw-1,col-2)) return(TRUE);
+    return (FALSE);
+}
+
+static bool endgame (void)
+/* check for filled board or not */
+{
+    int j;
+
+    rw = 0;
+    for (j = 0; j < (BWIDTH * BDEPTH); j++)
+	if (board[j] != 0)
+	    rw += 1;
+    if (rw == (BWIDTH * BDEPTH))
+	mvaddstr (NOTIFYY, 0, "Congratulations!! You got 'em all.");
+    else
+	mvprintw (NOTIFYY, 0, "%2d squares are filled", rw);
+    mvaddstr (NOTIFYY+1, 0, "Play again? (y/n) ");
+    if (tolower(getch()) == 'y')
+	return(TRUE);
+    else
+	return (FALSE);
 }
 
 #ifndef abs
-int
-abs(int num)
+static int abs(int num)
 {
 	if (num < 0) return (-num);
 		else return (num);
 }
 #endif
 
-int
-chksqr (int n1, int n2)
+static bool chksqr (int r1, int c1)
 {
-int	r1, c1;
-
-	r1 = rw + n1;
-	c1 = col + n2;
-	if ((r1<0) || (r1>7)) return (0);
-	if ((c1<0) || (c1>7)) return (0);
-	if (board[r1*8+c1] == 0) return (1);
-		else return (0);
+    if ((r1 < 0) || (r1 > BDEPTH - 1))
+	return(FALSE);
+    if ((c1 < 0) || (c1 > BWIDTH - 1))
+	return(FALSE);
+    return (!board[r1*BWIDTH+c1]);
 }
 
-void
-instruct(void)
-{
-int i;
+/* knight.c ends here */
 
-	clear ();
-	for (i=0;;i++) {
-		if ((strcmp(instructions[i],"END"))) mvaddstr (i, 0, instructions[i]);
-			else {
-				mvaddstr (23, 25, "Ready to play ? (y/n) ");
-				refresh();
-				if (toupper(getch()) == 'Y') {
-					clear ();
-					return ;
-				} else {
-					clear ();
-					refresh ();
-					endwin ();
-					exit (0);
-				}
-			}
-	}
-}
-
-void
-title (int y, int x)
-{
-chtype c;
-int j = 0;
-
-	do {
-		c = script[j];
-		if (c == 0) break ;
-		mvaddch (ypos[j]+y, xpos[j]+x, c);
-		j++;
-	} while (c != 0);
-	refresh ();
-}

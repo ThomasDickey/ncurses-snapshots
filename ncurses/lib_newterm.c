@@ -99,10 +99,10 @@ int	errret;
 	baudrate();	/* sets a field in the SP structure */
 
 	/* compute movement costs so we can do better move optimization */
-	mvcur_init(SP);
+	_nc_mvcur_init(SP);
 
 	/* optional optimization hack */
-#if HAVE_SETVBUF
+#if defined(HAVE_SETVBUF) || defined(HAVE_SETBUFFER)
 	{
 	    /* 
 	     * If the output file descriptor is connected to a tty
@@ -124,11 +124,16 @@ int	errret;
 	     * atomically (it also protects against the rare case of
 	     * no cursor addressing).
 	     */
-	    int bufsiz = min(LINES * (COLS + SP->_cup_cost), 1400);
+	    unsigned int bufsiz = min(LINES * (COLS + SP->_cup_cost), 1400);
 
+#if HAVE_SETVBUF
 	    (void) setvbuf(SP->_ofp, malloc(bufsiz), _IOFBF, bufsiz);
-	}
 #endif /* HAVE_SETVBUF */
+#if HAVE_SETBUFFER
+	    (void) setbuffer(SP->_ofp, malloc(bufsiz), (int)bufsiz);
+#endif /* HAVE_SETBUFFER */
+	}
+#endif /* defined(HAVE_SETVBUF) || defined(HAVE_SETBUFFER) */
 
 #if 0
 	/* initialize soft labels */

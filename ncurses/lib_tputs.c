@@ -40,12 +40,12 @@ int tputs(const char *string, int affcnt, int (*outc)(int))
 float	number;
 
 #ifdef TRACE
-	if (_tputs_trace)
-		TR(TRACE_MAXIMUM, ("tputs(%s = \"%s\", %d, %p) called", _tputs_trace, visbuf(string), affcnt, outc));
+	if (_nc_tputs_trace)
+		TR(TRACE_MAXIMUM, ("tputs(%s = \"%s\", %d, %p) called", _nc_tputs_trace, _nc_visbuf(string), affcnt, outc));
 	else
 
-		TR(TRACE_MAXIMUM, ("tputs(\"%s\", %d, %p) called", visbuf(string), affcnt, outc));
-	_tputs_trace = (char *)NULL;
+		TR(TRACE_MAXIMUM, ("tputs(\"%s\", %d, %p) called", _nc_visbuf(string), affcnt, outc));
+	_nc_tputs_trace = (char *)NULL;
 #endif /* TRACE */
 
 	if (string == NULL)
@@ -89,7 +89,7 @@ float	number;
 
 #ifdef padding_baud_rate
 			    	if (!xon_xoff && padding_baud_rate && (!SP || SP->_baudrate >= padding_baud_rate))
-					delay_output(number);
+					delay_output((float)number);
 #endif /* padding_baud_rate */
 
 			} /* endelse (*string == '<') */

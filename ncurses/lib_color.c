@@ -82,7 +82,7 @@ int start_color(void)
 		COLOR_PAIRS = max_pairs;
 	else
 		return ERR;
-	color_pairs = calloc(sizeof(char), max_pairs);
+	color_pairs = calloc(sizeof(char), (unsigned int)max_pairs);
 	if (max_colors != -1)
 		COLORS = max_colors;
 	else

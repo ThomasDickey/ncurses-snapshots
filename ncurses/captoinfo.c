@@ -65,9 +65,8 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <unctrl.h>
+#include <curses.h>
 #include "tic.h"
-
-extern _tracechar(unsigned char c);	/* avoid including curses.h */
 
 #ifndef MAX_PUSHED
 /* maximum # of parameters that can be pushed onto the stack */
@@ -92,7 +91,7 @@ static void push(void)
 /* push onstack on to the stack */
 {
     if (stackptr > MAX_PUSHED)
-	warning("string too complex to convert");
+	_nc_warning("string too complex to convert");
     else
 	stack[stackptr++] = onstack;
 }
@@ -102,7 +101,7 @@ static void pop(void)
 {
     if (stackptr == 0) 
 	if (onstack == 0)
-	    warning("I'm confused");
+	    _nc_warning("I'm confused");
 	else
 	    onstack = 0;
     else
@@ -180,7 +179,7 @@ static void getparm(int parm, int n)
 		}
 	if (onstack == parm) {
 		if (n > 1) {
-			warning("string may not be optimal");
+			_nc_warning("string may not be optimal");
 			*dp++ = '%'; *dp++ = 'P'; *dp++ = 'a';
 			while(n--) {
 				*dp++ = '%'; *dp++ = 'g'; *dp++ = 'a';
@@ -208,7 +207,7 @@ static void getparm(int parm, int n)
 	}
 }
 
-char *captoinfo(
+char *_nc_captoinfo(
 /* convert a termcap string to terminfo format */
 register char *cap,	/* relevant terminfo capability index */
 register char *s,	/* string value of the capability */
@@ -237,7 +236,7 @@ int parametrized)	/* do % translations? */
 	switch(*s) {
 	case '%':
 	    s++;
-	    if (parametrized) {
+	    if (!parametrized) {
 		*dp++ = '%';
 		break;
 	    }
@@ -245,17 +244,17 @@ int parametrized)	/* do % translations? */
 	    case '%': *dp++ = '%'; break;
 	    case 'r':
 		if (seenr++ == 1) {
-		    warning("saw %%r twice");
+		    _nc_warning("saw %%r twice");
 		}
 		break;
 	    case 'm':
 		if (seenm++ == 1) {
-		    warning("saw %%m twice");
+		    _nc_warning("saw %%m twice");
 		}
 		break;
 	    case 'n':
 		if (seenn++ == 1) {
-		    warning("saw %%n twice");
+		    _nc_warning("saw %%n twice");
 		}
 		break;
 	    case 'i': *dp++ = '%'; *dp++ = 'i'; break;
@@ -396,7 +395,7 @@ int parametrized)	/* do % translations? */
 	    default:
 		*dp++ = '%';
 		s--;
-		warning("'%s' unknown %% code %s",
+		_nc_warning("'%s' unknown %% code %s",
 			cap, _tracechar(*s));
 		break;
 	    }
@@ -492,7 +491,7 @@ int parametrized)	/* do % translations? */
 static	char	buffer[256];
 static	char	*bufptr;
 
-char *infotocap(
+char *_nc_infotocap(
 /* convert a terminfo string to termcap format */
 register char *cap,	/* relevant termcap capability index */
 register char *str,	/* string value of the capability */
@@ -643,7 +642,7 @@ int parametrized)	/* do % translations? */
 		if (*str == 'd')
 		    str++;
 		else
-		    warning("numeric prefix is missing trailing d");
+		    _nc_warning("numeric prefix is missing trailing d");
 		--str;
 		break;
 
@@ -735,7 +734,7 @@ int main(int argc, char *argv[])
 	if (fgets(buf, sizeof(buf), stdin) == (char *)NULL)
 	    break;
 	buf[strlen(buf) - 1] = '\0';
-	set_source(buf);
+	_nc_set_source(buf);
 
 	if (tc)
 	{

@@ -141,7 +141,7 @@ chtype	ch = c;
 		break;
     	default:
 		if (isascii(ch & A_CHARTEXT) && iscntrl(ch & A_CHARTEXT))
-		    	return(waddstr(win, unctrl(ch)));
+		    	return(waddstr(win, unctrl((unsigned char)ch)));
 
 		/* FALL THROUGH */
         noctrl:

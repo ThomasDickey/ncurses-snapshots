@@ -24,6 +24,7 @@ library source.
 #include <assert.h>
 #include <curses.h>
 #include <panel.h>
+#include <menu.h>
 
 #define P(string)	printw("%s\n", string)
 #ifndef CTRL
@@ -106,8 +107,6 @@ int y, x;
 
 	if (c == 'g')
 	{
-	    char	buf[32];
-
 	    addstr("getstr test: ");
 	    echo(); getstr(buf); noecho();
 	    printw("I saw `%s'.\n", buf);
@@ -1432,6 +1431,77 @@ static void input_test(WINDOW *win)
 
 /****************************************************************************
  *
+ * Menu test
+ *
+ ****************************************************************************/
+
+#define MENU_Y	4
+#define MENU_X	4
+
+static int input_virtualize(int c)
+{
+    if (c == '\n' || c == KEY_EXIT)
+	return(MAX_COMMAND + 1);
+    else if (c == 'n' || c == KEY_DOWN)
+	return(REQ_NEXT_ITEM);
+    else if (c == 'p' || c == KEY_UP)
+	return(REQ_PREV_ITEM);
+    else
+	return(c);
+}
+
+static char *animals[] =
+{
+    "Lions", "Tigers", "Bears", "(Oh my!)", "Newts", "Platypi", "Lemurs",
+    (char *)NULL
+};
+static ITEM *items[sizeof(animals)/sizeof(char *)];
+
+static void menu_test(void)
+{
+    MENU	*m;
+    ITEM	**ip = items;
+    char	**ap;
+    int		mrows, mcols;
+    WINDOW	*menuwin;
+
+    mvaddstr(LINES - 3, 0, "This is the menu test.");
+
+    for (ap = animals; *ap; ap++)
+	*ip++ = new_item(*ap, "");
+    *ip = (ITEM *)NULL;
+
+    m = new_menu(items);
+
+    scale_menu(m, &mrows, &mcols);
+
+    menuwin = newwin(mrows + 2, mcols +  2, MENU_Y, MENU_X);
+    set_menu_win(m, menuwin);
+    keypad(menuwin, TRUE);
+    box(menuwin, 0, 0);
+
+    set_menu_sub(m, derwin(menuwin, mrows, mcols, 1, 1));
+
+    post_menu(m);
+
+    while (menu_driver(m, input_virtualize(wgetch(menuwin))) != E_UNKNOWN_COMMAND)
+	continue;
+
+    (void) mvprintw(LINES - 2, 0,
+		     "You chose: %s\n", item_name(current_item(m)));
+    (void) addstr("Press any key to continue...");
+    wgetch(stdscr);
+
+    unpost_menu(m);
+    delwin(menuwin);
+
+    for (ip = items; *ip; ip++)
+	free_item(*ip);
+    free_menu(m);
+}
+
+/****************************************************************************
+ *
  * Main sequence
  *
  ****************************************************************************/
@@ -1480,6 +1550,10 @@ do_single_test(const char c)
 
     case 'g':
 	acs_and_scroll();
+	return(TRUE);
+
+    case 'm':
+	menu_test();
 	return(TRUE);
 
     case 'p':
@@ -1538,6 +1612,7 @@ int main(const int argc, const char *argv[])
 	(void) puts("e = exercise soft keys");
 	(void) puts("f = display ACS characters");
 	(void) puts("g = display windows and scrolling");
+	(void) puts("m = menu code test");
 	(void) puts("o = exercise panels library");
 	(void) puts("p = exercise pad features");
 	(void) puts("i = subwindow input test");

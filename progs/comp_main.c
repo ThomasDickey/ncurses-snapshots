@@ -25,8 +25,7 @@
  */
 
 #include <config.h>
-#define NCURSES_VERSION "1.9.3"
-
+#include <curses.h>	/* solely for the ncurses version number define */
 #include <string.h>
 #include <stdlib.h>
 
@@ -43,7 +42,7 @@
 #include "dump_entry.h"
 #include "term_entry.h"
 
-char	*progname;
+char	*_nc_progname;
 
 static int	width = 60;
 static int	infodump = 0;		/* running as captoinfo? */
@@ -59,9 +58,13 @@ int	argflag = FALSE, smart_defaults = TRUE;
 char    *termcap;
 ENTRY	*qp;
 
-	progname = argv[0];
-	infodump = (strcmp(progname, "captoinfo") == 0);
-	capdump = (strcmp(progname, "infotocap") == 0);
+	if ((_nc_progname = strrchr(argv[0], '/')) == NULL)
+		_nc_progname = argv[0];
+	else
+		_nc_progname++;
+
+	infodump = (strcmp(_nc_progname, "captoinfo") == 0);
+	capdump = (strcmp(_nc_progname, "infotocap") == 0);
 
 	for (i = 1; i < argc; i++) {
 	    	if (argv[i][0] == '-') {
@@ -71,7 +74,7 @@ ENTRY	*qp;
 				break;
 		    	case 'v':
 				debug_level = argv[i][2] ? atoi(&argv[i][2]):1;
-				_tracing = (1 << debug_level) - 1;
+				_nc_tracing = (1 << debug_level) - 1;
 				break;
 		    	case 'I':
 				infodump = 1;
@@ -92,12 +95,18 @@ ENTRY	*qp;
 				(void) fputs(NCURSES_VERSION, stdout);
 				exit(0);
 		    	default:
-				err_abort("Unknown option. Usage is:\n\t%s",
+				fprintf (stderr, 
+					"%s: Unknown option. Usage is:\n\t%s",
+					_nc_progname,
 				        usage_string);
+				exit(1);
 			}
 	    	} else if (argflag) {
-			err_abort("Too many file names.  Usage is:\n\t%s\n",
+			fprintf (stderr, 
+				"%s: Too many file names.  Usage is:\n\t%s\n",
+				_nc_progname,
 				usage_string);
+			exit(1);
 		} else {
 			argflag = TRUE;
 			source_file = argv[i];
@@ -116,11 +125,12 @@ ENTRY	*qp;
 	}
 
 	if (freopen(source_file, "r", stdin) == NULL) {
-	    	err_abort("Can't open %s", source_file);
+		fprintf (stderr, "%s: Can't open %s", _nc_progname, source_file);
+		exit (1);
 	}
 
-	make_hash_table(info_table, info_hash_table);
-	make_hash_table(cap_table, cap_hash_table);
+	_nc_make_hash_table(_nc_info_table, _nc_info_hash_table);
+	_nc_make_hash_table(_nc_cap_table, _nc_cap_hash_table);
 	if (infodump)
 		dump_init(smart_defaults ? F_TERMINFO : F_LITERAL,
 			  S_TERMINFO, width, debug_level);
@@ -128,13 +138,13 @@ ENTRY	*qp;
 		dump_init(F_TCONVERT, S_TERMCAP, width, debug_level);
 
 	/* parse entries out of the source file */
-	set_source(source_file);
-	read_entry_source(stdin, (char *)NULL, !smart_defaults);
+	_nc_set_source(source_file);
+	_nc_read_entry_source(stdin, (char *)NULL, !smart_defaults, FALSE);
 
 	/* do use resolution */
 	if (check_only || (!infodump && !capdump))
 	{
-	    if (!resolve_uses())
+	    if (!_nc_resolve_uses())
 	    {
 		(void) fprintf(stderr, "There are unresolved use entries:\n");
 		for_entry_list(qp)
@@ -166,9 +176,9 @@ ENTRY	*qp;
 	if (!check_only)
 	    if (!infodump && !capdump)
 	    {
-		set_type((char *)NULL);
+		_nc_set_type((char *)NULL);
 		for_entry_list(qp)
-		    write_entry(&qp->tterm);
+		    _nc_write_entry(&qp->tterm);
 	    }
 	    else
 	    {

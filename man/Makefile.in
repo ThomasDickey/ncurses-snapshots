@@ -21,7 +21,7 @@ install install.man :
 		echo installing man page $$i;\
 		$(INSTALL_DATA) /tmp/man.tmp $(mandir)/man3/$$i; \
 	done 
-	@cd $(srcdir); for i in *.1m; do \
+	@cd $(srcdir); for i in *.1 *.1m; do \
 		sed 's,@TERMINFO@,$(datadir),' < $$i >/tmp/man.tmp; \
 		echo installing man page $$i;\
 		$(INSTALL_DATA) /tmp/man.tmp $(mandir)/man1/$$i; \

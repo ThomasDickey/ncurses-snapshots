@@ -27,6 +27,7 @@
  */
 
 #include <string.h>
+#include <curses.h>	/* solely for the _tracef() prototype */
 #include "tic.h"
 #include "term.h"
 #include "hashsize.h"
@@ -34,7 +35,7 @@
 static  int hash_function(char *);
 
 /*
- *	make_hash_table()
+ *	_nc_make_hash_table()
  *
  *	Takes the entries in cap_table[] and hashes them into cap_hash_table[]
  *	by name.  There are Captabsize entries in cap_table[] and Hashtabsize
@@ -42,7 +43,7 @@ static  int hash_function(char *);
  *
  */
 
-void make_hash_table(struct name_table_entry *table,
+void _nc_make_hash_table(struct name_table_entry *table,
 		     struct name_table_entry **hash_table)
 {
 int	i;
@@ -101,7 +102,7 @@ long	sum = 0;
  */
 
 struct name_table_entry *
-find_entry(char *string, struct name_table_entry **hash_table)
+_nc_find_entry(char *string, struct name_table_entry **hash_table)
 {
 int	hashvalue;
 struct name_table_entry	*ptr;
@@ -128,7 +129,7 @@ struct name_table_entry	*ptr;
  */
 
 struct name_table_entry *
-find_type_entry(char *string, int type, struct name_table_entry *table)
+_nc_find_type_entry(char *string, int type, struct name_table_entry *table)
 {
 struct name_table_entry	*ptr;
 

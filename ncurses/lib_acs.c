@@ -86,7 +86,8 @@ void init_acs(void)
 			case '.':case '-':case 'h':case 'I':
 			case '0': 
 				acs_map[(unsigned int)acs_chars[i]] = 
-					ALTCHAR(acs_chars[++i]);
+					ALTCHAR(acs_chars[i+1]);
+				i++;
 			default:
 				i++;
 				break;

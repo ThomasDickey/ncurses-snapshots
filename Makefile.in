@@ -1,7 +1,6 @@
 # Master Makefile for ncurses library.
 
 SHELL = /bin/sh
-VERSION = 1.9.3
 
 NC_MFLAGS = @nc_cv_makeflags@
 

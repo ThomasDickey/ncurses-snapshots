@@ -67,13 +67,13 @@ void position_check(int expected_y, int expected_x, char *legend)
     static char  buf[9];
     int y, x;
 
-    if (_tracing)
+    if (_nc_tracing)
 	return;
 
     memset(buf, '\0', sizeof(buf));
     (void) write(1, "\033[6n", 4);	/* only works on ANSI-compatibles */
     (void) read(0, (void *)buf, 8);
-    _tracef("probe returned %s", visbuf(buf));
+    _tracef("probe returned %s", _nc_visbuf(buf));
 
     /* try to interpret as a position report */
     if (sscanf(buf, "\033[%d;%dR", &y, &x) != 2)
@@ -235,7 +235,7 @@ int	i;
 	T(("doupdate() called"));
 
 #ifdef TRACE
-	if (_tracing & TRACE_UPDATE)
+	if (_nc_tracing & TRACE_UPDATE)
 	{
 	    if (curscr->_clear)
 		_tracef("curscr is clear");
@@ -273,11 +273,11 @@ int	i;
 	/* check for pending input */
 	if (SP->_checkfd >= 0) {
 	fd_set fdset;
-	struct timeval timeout = {0,0};
+	struct timeval ktimeout = {0,0};
 
 		FD_ZERO(&fdset);
 		FD_SET(SP->_checkfd, &fdset);
-		if (select(SP->_checkfd+1, &fdset, NULL, NULL, &timeout) != 0) {
+		if (select(SP->_checkfd+1, &fdset, NULL, NULL, &ktimeout) != 0) {
 			fflush(SP->_ofp);
 			return OK;
 		}
@@ -404,15 +404,18 @@ int	lastNonBlank;
 static void ClrToEOL(void)
 {
 int	j;
+attr_t	oldcolor = 0;	/* initialization pacifies -Wall */
 
 	if (back_color_erase) {
 		TPUTS_TRACE("orig_pair");
 		putp(orig_pair);
+		oldcolor = SP->_current_attr & A_COLOR;
+		SP->_current_attr &=~ A_COLOR;
 	}
 	TPUTS_TRACE("clr_eol");
 	putp(clr_eol);
 	if (back_color_erase)
-		vidattr(SP->_current_attr);
+		vidattr(SP->_current_attr | oldcolor);
 
 	for (j = SP->_curscol; j < screen_columns; j++)
 	    curscr->_line[SP->_cursrow].text[j] = ' ';
@@ -421,15 +424,18 @@ int	j;
 static void ClrToBOL(void)
 {
 int j;
+attr_t	oldcolor = 0;	/* initialization pacifies -Wall */
 
 	if (back_color_erase) {
 		TPUTS_TRACE("orig_pair");
 		putp(orig_pair);
+		oldcolor = SP->_current_attr & A_COLOR;
+		SP->_current_attr &=~ A_COLOR;
 	}
 	TPUTS_TRACE("clr_bol");
 	putp(clr_bol);
 	if (back_color_erase)
-		vidattr(SP->_current_attr);
+		vidattr(SP->_current_attr | oldcolor);
 
 	for (j = 0; j <= SP->_curscol; j++)
 	    curscr->_line[SP->_cursrow].text[j] = ' ';

@@ -234,6 +234,10 @@ AC_DEFUN([NC_SHARED_OPTS],
 		CC_SHARED_OPTS='-fPIC'
 		MK_SHARED_LIB='gcc -o $[@] -shared -Wl,-soname,$[@],-stats'
 		;;
+	NetBSD)
+		CC_SHARED_OPTS='-fpic -DPIC'
+		MK_SHARED_LIB='ld -Bshareable -o $[@]'
+		;;
 	SunOS)
 		CC_SHARED_OPTS='-pic'
 		MK_SHARED_LIB='ld --assert-pure-text -o $[@]'

@@ -26,20 +26,24 @@
  *
  */
 
+#include <config.h>
+
 #include <stdlib.h>
 #include <sys/param.h>		/* for MAXPATHLEN */
 #include <string.h>
 #include <ctype.h>
+#include <curses.h>	/* solely for the ncurses version number define */
+#ifdef HAVE_GETOPT_H
+#include <getopt.h>
+#endif /* HAVE_GETOPT_H */
 #include "term.h"
 #include "tic.h"
 #include "term_entry.h"
 #include "dump_entry.h"
 
-#define VERSION		"infocmp 1.1"
-
 #define MAXTERMS	32	/* max # terminal arguments we can handle */
 
-char *progname = "infocmp";
+char *_nc_progname = "infocmp";
 
 typedef char	path[MAXPATHLEN];
 
@@ -56,7 +60,7 @@ static int termcount;		/* count of terminal entries */
 
 static int outform;		/* output format */
 static int sortmode;		/* sort_mode */
-static int trace;		/* trace flag for debugging */
+static int itrace;		/* trace flag for debugging */
 static int mwidth = 60;
 
 /* main comparison mode */
@@ -74,7 +78,7 @@ static bool ignorepads;		/* ignore pad prefixes when diffing */
  *
  ***************************************************************************/
 
-static int use_predicate(int type, int index)
+static int use_predicate(int type, int idx)
 /* predicate function to use for use decompilation */
 {
 	TERMTYPE *tp;
@@ -92,11 +96,11 @@ static int use_predicate(int type, int index)
 		 * in the sequence of use entries'.
 		 */
 		for (tp = &term[1]; tp < term + termcount; tp++)
-			if (tp->Booleans[index]) {
+			if (tp->Booleans[idx]) {
 				is_set = TRUE;
 				break;
 			}
-			if (is_set != term->Booleans[index])
+			if (is_set != term->Booleans[idx])
 				return(!is_set);
 			else
 				return(FAIL);
@@ -112,12 +116,12 @@ static int use_predicate(int type, int index)
 		 * in the sequence of use entries'.
 		 */
 		for (tp = &term[1]; tp < term + termcount; tp++)
-			if (tp->Numbers[index] >= 0) {
-				value = tp->Numbers[index];
+			if (tp->Numbers[idx] >= 0) {
+				value = tp->Numbers[idx];
 				break;
 			}
 
-		if (value != term->Numbers[index])
+		if (value != term->Numbers[idx])
 			return(value != -1);
 		else
 			return(FAIL);
@@ -125,10 +129,9 @@ static int use_predicate(int type, int index)
 		break;
 
 	case STRING: {
-		TERMTYPE *tp;
 		char *termstr, *usestr = (char *)NULL;
 
-		termstr = term->Strings[index];
+		termstr = term->Strings[idx];
 
 		/*
 		 * We take the semantics of multiple uses to be 'each
@@ -136,9 +139,9 @@ static int use_predicate(int type, int index)
 		 * in the sequence of use entries'.
 		 */
 		for (tp = &term[1]; tp < term + termcount; tp++)
-			if (tp->Strings[index])
+			if (tp->Strings[idx])
 			{
-				usestr = tp->Strings[index];
+				usestr = tp->Strings[idx];
 				break;
 			}
 
@@ -208,7 +211,7 @@ static bool entryeq(TERMTYPE *t1, TERMTYPE *t2)
     return(TRUE);
 }
 
-static void compare_predicate(int type, int index, char *name)
+static void compare_predicate(int type, int idx, char *name)
 /* predicate function to use for ordinary decompilation */
 {
 	register TERMTYPE *t1 = &term[0];
@@ -221,20 +224,20 @@ static void compare_predicate(int type, int index, char *name)
 		switch(compare)
 		{
 		case C_DIFFERENCE:
-			if (t1->Booleans[index] != t2->Booleans[index])
+			if (t1->Booleans[idx] != t2->Booleans[idx])
 			(void) printf("\t%s: %c:%c.\n", 
 					  name,
-					  t1->Booleans[index] ? 'T' : 'F',
-					  t2->Booleans[index] ? 'T' : 'F');
+					  t1->Booleans[idx] ? 'T' : 'F',
+					  t2->Booleans[idx] ? 'T' : 'F');
 			break;
 
 		case C_COMMON:
-			if (t1->Booleans[index] && t2->Booleans[index])
+			if (t1->Booleans[idx] && t2->Booleans[idx])
 			(void) printf("\t%s= T.\n", name);
 			break;
 
 		case C_NAND:
-			if (!t1->Booleans[index] && !t2->Booleans[index])
+			if (!t1->Booleans[idx] && !t2->Booleans[idx])
 			(void) printf("\t!%s.\n", name);
 			break;
 		}
@@ -244,27 +247,27 @@ static void compare_predicate(int type, int index, char *name)
 		switch(compare)
 		{
 		case C_DIFFERENCE:
-			if (t1->Numbers[index] != t2->Numbers[index])
+			if (t1->Numbers[idx] != t2->Numbers[idx])
 			(void) printf("\t%s: %d:%d.\n", 
-					  name, t1->Numbers[index], t2->Numbers[index]);
+					  name, t1->Numbers[idx], t2->Numbers[idx]);
 			break;
 
 		case C_COMMON:
-			if (t1->Numbers[index]!=-1 && t2->Numbers[index]!=-1
-				&& t1->Numbers[index] == t2->Numbers[index])
-			(void) printf("\t%s= %d.\n", name, t1->Numbers[index]);
+			if (t1->Numbers[idx]!=-1 && t2->Numbers[idx]!=-1
+				&& t1->Numbers[idx] == t2->Numbers[idx])
+			(void) printf("\t%s= %d.\n", name, t1->Numbers[idx]);
 			break;
 
 		case C_NAND:
-			if (t1->Numbers[index]==-1 && t2->Numbers[index] == -1)
+			if (t1->Numbers[idx]==-1 && t2->Numbers[idx] == -1)
 			(void) printf("\t!%s.\n", name);
 			break;
 		}
 	break;
 
 	case STRING:
-		s1 = t1->Strings[index];
-		s2 = t2->Strings[index];
+		s1 = t1->Strings[idx];
+		s2 = t2->Strings[idx];
 		switch(compare)
 		{
 		case C_DIFFERENCE:
@@ -316,8 +319,12 @@ static void compare_predicate(int type, int index, char *name)
  *
  ***************************************************************************/
 
+#ifdef HAVE_GETOPT_H
+#include <getopt.h>
+#else
 extern char *optarg;
 extern int optind;
+#endif /* HAVE_GETOPT_H */
 
 int main(int argc, char *argv[])
 {
@@ -403,11 +410,11 @@ int main(int argc, char *argv[])
 			break;
 
 		case 'v':
-			trace = 1;
+			itrace = 1;
 			break;
 
 		case 'V':
-			(void) fputs(VERSION, stdout);
+			(void) fputs(NCURSES_VERSION, stdout);
 			exit(0);
 
 		case 'w':
@@ -432,7 +439,7 @@ int main(int argc, char *argv[])
 		sortmode = S_TERMINFO;
 
 	/* set up for display */
-	dump_init(outform, sortmode, mwidth, trace);
+	dump_init(outform, sortmode, mwidth, itrace);
 
 	/* make sure we have at least one terminal name to work with */
 	if (optind >= argc)
@@ -465,11 +472,11 @@ int main(int argc, char *argv[])
 		    (void) sprintf(tfile[termcount], "%s/%c/%s",
 				   directory,
 				   *argv[optind], argv[optind]);
-		    if (trace)
+		    if (itrace)
 			(void) fprintf(stderr,
 			       "infocmp: reading entry %s from file %s\n",
 			       argv[optind], tfile[termcount]);
-		    if (read_file_entry(tfile[termcount],&term[termcount])==-1)
+		    if (_nc_read_file_entry(tfile[termcount],&term[termcount])==-1)
 		    {
 			(void) fprintf(stderr,
 				       "couldn't open terminfo file %s.\n",
@@ -487,7 +494,7 @@ int main(int argc, char *argv[])
 	    switch (compare)
 	    {
 	    case C_DEFAULT:
-		if (trace)
+		if (itrace)
 		    (void) fprintf(stderr,
 				   "infocmp: about to dump %s\n",
 				   tname[0]);
@@ -498,14 +505,14 @@ int main(int argc, char *argv[])
 		break;
 
 	    case C_DIFFERENCE:
-		if (trace)
+		if (itrace)
 		    (void)fprintf(stderr,"infocmp: dumping differences\n");
 		(void) printf("comparing %s to %s.\n", tname[0], tname[1]);
 		compare_entry(compare_predicate);
 		break;
 
 	    case C_COMMON:
-		if (trace)
+		if (itrace)
 		    (void) fprintf(stderr,
 				   "infocmp: dumping common capabilities\n");
 		(void) printf("comparing %s to %s.\n", tname[0], tname[1]);
@@ -513,7 +520,7 @@ int main(int argc, char *argv[])
 		break;
 
 	    case C_NAND:
-		if (trace)
+		if (itrace)
 		    (void) fprintf(stderr,
 				   "infocmp: dumping differences\n");
 		(void) printf("comparing %s to %s.\n", tname[0], tname[1]);
@@ -521,7 +528,7 @@ int main(int argc, char *argv[])
 		break;
 
 	    case C_USEALL:
-		if (trace)
+		if (itrace)
 		    (void) fprintf(stderr, "infocmp: dumping use entry\n");
 		dump_entry(&term[0], use_predicate);
 		putchar('\n');
@@ -549,26 +556,25 @@ int main(int argc, char *argv[])
 	    ENTRY	*heads[2];
 	    ENTRY	*tails[2];
 	    ENTRY	*qp, *rp;
-	    int		i;
 
-	    make_hash_table(info_table, info_hash_table);
-	    make_hash_table(cap_table, cap_hash_table);
-	    dump_init(F_LITERAL, S_TERMINFO, 0, trace);
+	    _nc_make_hash_table(_nc_info_table, _nc_info_hash_table);
+	    _nc_make_hash_table(_nc_cap_table, _nc_cap_hash_table);
+	    dump_init(F_LITERAL, S_TERMINFO, 0, itrace);
 
 	    for (saveoptind = optind; optind < argc; optind++)
 	    {
 		if (freopen(argv[optind], "r", stdin) == NULL) {
-		    err_abort("Can't open %s", argv[optind]);
+		    _nc_err_abort("Can't open %s", argv[optind]);
 		}
 
 		_nc_head = _nc_tail = (ENTRY *)NULL;
 
 		/* parse entries out of the source file */
-		set_source(argv[optind]);
-		read_entry_source(stdin, NULL, TRUE);
+		_nc_set_source(argv[optind]);
+		_nc_read_entry_source(stdin, NULL, TRUE, FALSE);
 
 		/* do use resolution */
-		if (!resolve_uses())
+		if (!_nc_resolve_uses())
 		{
 		    (void) fprintf(stderr,
 			"There are unresolved use entries in %s:\n",
@@ -588,7 +594,7 @@ int main(int argc, char *argv[])
 	    }
 
 	    /* OK, all entries are in core.  Ready to do the comparison */
-	    if (trace)
+	    if (itrace)
 		(void) fprintf(stderr, "Entries are now in core...\n");
 
 	    /*
@@ -600,7 +606,7 @@ int main(int argc, char *argv[])
 	    for (qp = heads[0]; qp; qp = qp->next)
 	    {
 		for (rp = heads[1]; rp; rp = rp->next)
-		    if (entry_match(qp->tterm.term_names,rp->tterm.term_names))
+		    if (_nc_entry_match(qp->tterm.term_names,rp->tterm.term_names))
 		    {
 			/*
 			 * This is a kluge.  We should be OK stuffing entry
@@ -622,7 +628,7 @@ int main(int argc, char *argv[])
 	    }
 
 	    /* now we have two circular lists with crosslinks */
-	    if (trace)
+	    if (itrace)
 		(void) fprintf(stderr, "Name matches are done...\n");
 
 	    for (qp = heads[0]; qp; qp = qp->next)
@@ -697,14 +703,14 @@ int main(int argc, char *argv[])
 		    switch (compare)
 		    {
 		    case C_DIFFERENCE:
-			if (trace)
+			if (itrace)
 			    (void)fprintf(stderr,"infocmp: dumping differences\n");
 			(void) printf("comparing %s to %s.\n", name1, name2);
 			compare_entry(compare_predicate);
 			break;
 
 		    case C_COMMON:
-			if (trace)
+			if (itrace)
 			    (void) fprintf(stderr,
 					   "infocmp: dumping common capabilities\n");
 			(void) printf("comparing %s to %s.\n", name1, name2);
@@ -712,7 +718,7 @@ int main(int argc, char *argv[])
 			break;
 
 		    case C_NAND:
-			if (trace)
+			if (itrace)
 			    (void) fprintf(stderr,
 					   "infocmp: dumping differences\n");
 			(void) printf("comparing %s to %s.\n", name1, name2);

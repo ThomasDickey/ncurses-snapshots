@@ -63,15 +63,10 @@ va_list argp;
 	exit(status);
 }
 
-static void clean(int e)
+static void usage(void)
 {
-	return;
-}
-
-static void usage(int e)
-{
-	fprintf(stderr, "usage: %s [-T term] capname\n", prg_name);
-	return;
+	fprintf(stderr, "usage: %s [-S] [-T term] capname\n", prg_name);
+	exit(2);
 }
 
 static int tput(int argc, char *argv[])
@@ -88,99 +83,99 @@ FILE *f;
 	if (reset || strcmp(argv[0], "init") == 0) {
 		if (init_prog != NULL) {
 			system(init_prog);
-	}
-	FLUSH;
-
-	if (reset && reset_1string != NULL) {
-		PUTS(reset_1string);
-	} else if (init_1string != NULL) {
-		PUTS(init_1string);
-	}
-	FLUSH;
-
-	if (reset && reset_2string != NULL) {
-		PUTS(reset_2string);
-	} else if (init_2string != NULL) {
-		PUTS(init_2string);
-	}
-	FLUSH;
-
-	if (set_lr_margin != NULL) {
-		PUTS(tparm(set_lr_margin, 0, columns - 1));
-	} else if (set_left_margin_parm != NULL
-		   && set_right_margin_parm != NULL) {
-		PUTS(tparm(set_left_margin_parm, 0));
-		PUTS(tparm(set_right_margin_parm, columns - 1));
-	} else if (clear_margins != NULL && set_left_margin != NULL
-		   && set_right_margin != NULL) {
-		PUTS(clear_margins);
-		if (carriage_return != NULL) {
-			PUTS(carriage_return);
-		} else {
-			PUTCHAR('\r');
 		}
-		PUTS(set_left_margin);
-		if (parm_right_cursor) {
-			PUTS(tparm(parm_right_cursor, columns - 1));
-		} else {
-			for(i = 0; i < columns - 1; i++) {
-				PUTCHAR(' ');
+		FLUSH;
+
+		if (reset && reset_1string != NULL) {
+			PUTS(reset_1string);
+		} else if (init_1string != NULL) {
+			PUTS(init_1string);
+		}
+		FLUSH;
+	
+		if (reset && reset_2string != NULL) {
+			PUTS(reset_2string);
+		} else if (init_2string != NULL) {
+			PUTS(init_2string);
+		}
+		FLUSH;
+	
+		if (set_lr_margin != NULL) {
+			PUTS(tparm(set_lr_margin, 0, columns - 1));
+		} else if (set_left_margin_parm != NULL
+			   && set_right_margin_parm != NULL) {
+			PUTS(tparm(set_left_margin_parm, 0));
+			PUTS(tparm(set_right_margin_parm, columns - 1));
+		} else if (clear_margins != NULL && set_left_margin != NULL
+			   && set_right_margin != NULL) {
+			PUTS(clear_margins);
+			if (carriage_return != NULL) {
+				PUTS(carriage_return);
+			} else {
+				PUTCHAR('\r');
 			}
-		}
-		PUTS(set_right_margin);
-		if (carriage_return != NULL) {
-			PUTS(carriage_return);
-		} else {
-			PUTCHAR('\r');
-		}
-	}
-	FLUSH;
-
-	if (init_tabs != 8) {
-		if (clear_all_tabs != NULL && set_tab != NULL) {
-			for(i = 0; i < columns - 1; i += 8) {
-				if (parm_right_cursor) {
-					PUTS(tparm(parm_right_cursor, 8));
-				} else {
-					for(j = 0; j < 8; j++) 
-						PUTCHAR(' ');
+			PUTS(set_left_margin);
+			if (parm_right_cursor) {
+				PUTS(tparm(parm_right_cursor, columns - 1));
+			} else {
+				for(i = 0; i < columns - 1; i++) {
+					PUTCHAR(' ');
 				}
-				PUTS(set_tab);
 			}
-			FLUSH;
+			PUTS(set_right_margin);
+			if (carriage_return != NULL) {
+				PUTS(carriage_return);
+			} else {
+				PUTCHAR('\r');
+			}
 		}
+		FLUSH;
+	
+		if (init_tabs != 8) {
+			if (clear_all_tabs != NULL && set_tab != NULL) {
+				for(i = 0; i < columns - 1; i += 8) {
+					if (parm_right_cursor) {
+						PUTS(tparm(parm_right_cursor, 8));
+					} else {
+						for(j = 0; j < 8; j++) 
+							PUTCHAR(' ');
+					}
+					PUTS(set_tab);
+				}
+				FLUSH;
+			}
+		}
+	
+		if (reset && reset_file != NULL) {
+			f = fopen(reset_file, "r");
+			if (f == NULL) {
+				quit(errno, "Can't open reset_file: '%s'", reset_file);
+			}
+			while((c = fgetc(f)) != EOF) {
+				PUTCHAR(c);
+			}
+			fclose(f);
+		} else if (init_file != NULL) {
+			f = fopen(init_file, "r");
+			if (f == NULL) {
+				quit(errno, "Can't open init_file: '%s'", init_file);
+			}
+			while((c = fgetc(f)) != EOF) {
+				PUTCHAR(c);
+			}
+			fclose(f);
+		}
+		FLUSH;
+	
+		if (reset && reset_3string != NULL) {
+			PUTS(reset_3string);
+		} else if (init_2string != NULL) {
+			PUTS(init_2string);
+		}
+		FLUSH;
+		return 0;
 	}
-
-	if (reset && reset_file != NULL) {
-		f = fopen(reset_file, "r");
-		if (f == NULL) {
-			quit(errno, "Can't open reset_file: '%s'", reset_file);
-		}
-		while((c = fgetc(f)) != EOF) {
-			PUTCHAR(c);
-		}
-		fclose(f);
-	} else if (init_file != NULL) {
-		f = fopen(init_file, "r");
-		if (f == NULL) {
-			quit(errno, "Can't open init_file: '%s'", init_file);
-		}
-		while((c = fgetc(f)) != EOF) {
-			PUTCHAR(c);
-		}
-		fclose(f);
-	}
-	FLUSH;
-
-	if (reset && reset_3string != NULL) {
-		PUTS(reset_3string);
-	} else if (init_2string != NULL) {
-		PUTS(init_2string);
-	}
-	FLUSH;
-	return 0;
-	}
-
+	
 	if (strcmp(argv[0], "longname") == 0) {
 		PUTS(longname());
 		return 0;
@@ -217,10 +212,14 @@ FILE *f;
 	return(0);
 }
 
+extern char *optarg;
+extern int optind;
+
 int main(int argc, char **argv)
 {
 char *s, *term;
 int errret, cmdline = 1;
+int c;
 
 	prg_name = argv[0];
 	s = strrchr(prg_name, '/');
@@ -229,26 +228,29 @@ int errret, cmdline = 1;
 
 	term = getenv("TERM");
 
-	if (argc > 2 && argv[1][0] == '-' && argv[1][1] == 'S') {
-	cmdline = 0;
-	argc--;
-	argv++;
+	while ((c = getopt (argc, argv, "ST:")) != EOF)
+	    switch (c)
+	    {
+	    case 'S':
+		cmdline = 0;
+		break;
+	    case 'T':
+		term = optarg;
+		break;
+	    default:
+		usage();
+		/* NOTREACHED */
+	    }
+	argc -= optind;
+	argv += optind;
+
+	if (cmdline && argc == 0) {
+		usage();
+		/* NOTREACHED */
 	}
 
-	if (argc > 2 && argv[1][0] == '-' && argv[1][1] == 'T') {
-	if (argv[1][2] == '\0' && argc > 3) {
-		term = argv[2];
-		argc--;
-		argv++;
-	} else {
-		term = argv[1] + 2;
-	}
-	argc--;
-	argv++;
-	}
-
-	if (argc < 2) {
-	quit(2, "usage error");
+	if (term == NULL || *term == '\0') {
+		quit(2, "No value for $TERM and no -T specified");
 	}
 
 	setupterm(term, STDOUT_FILENO, &errret);
@@ -256,12 +258,13 @@ int errret, cmdline = 1;
 	quit(3, "unknown terminal \"%s\"", term);
 
 	if (cmdline)
-	return(tput(argc - 1, argv + 1));
+	return(tput(argc, argv));
 	else {
 	char	buf[BUFSIZ];
 	int errors = 0;
 
 	while (fgets(buf, sizeof(buf), stdin) != (char *)NULL) {
+		char	*argvec[16];	/* command, 9 parms, null, & slop */
 		int	 argnum = 0;
 		char    *cp;
 
@@ -270,11 +273,11 @@ int errret, cmdline = 1;
 		if (isspace(*cp))
 			*cp = '\0';
 		else if (cp == buf || cp[-1] == 0)
-			argv[argnum++] = cp;
+			argvec[argnum++] = cp;
 		}
-		argv[argnum] = (char *)NULL;
+		argvec[argnum] = (char *)NULL;
 
-		if (tput(argnum, argv) != 0)
+		if (tput(argnum, argvec) != 0)
 		errors++;
 	}
 

@@ -61,6 +61,8 @@ for screen-line movements.  This algorithm is more powerful than
 the 4.4BSD curses quickch() routine.  <P>
 <LI> An emulation of the System V Release 4 panels library, supporting 
 a stack of windows with backing store, is included. <P>
+<LI> An emulation of the System V Release 4 menus library, supporting 
+a uniform but flexible interface for menu programming, is included. <P>
 <LI> (PC-clone boxes only) Support for access to the IBM PC ROM characters
 through a new highlight, A_PCCHARSET. <P>
 <LI> Automatic fallback to the /etc/termcap file can be compiled in

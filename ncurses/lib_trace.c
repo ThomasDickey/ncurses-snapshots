@@ -45,8 +45,8 @@ extern int errno;
 extern char *strerror(int);
 #endif
 
-int _tracing = 0;  
-char *_tputs_trace;
+int _nc_tracing = 0;  
+char *_nc_tputs_trace;
 
 static int	tracefd = 2;	/* default to writing to stderr */
 
@@ -66,7 +66,7 @@ static int	been_here = 0;
 	   	_tracef("TRACING NCURSES version %s", NCURSES_VERSION);
 	}
 
-   	_tracing = tracelevel;
+   	_nc_tracing = tracelevel;
 }
 
 
@@ -129,7 +129,7 @@ colors[] =
 	return(strcat(buf,"}"));
 }
 
-char *visbuf(const char *buf)
+char *_nc_visbuf(const char *buf)
 /* visibilize a given string */
 {
 static char vbuf[BUFSIZ];
@@ -177,10 +177,10 @@ char *_tracechar(const unsigned char ch)
     {
 	crep[0] = '\'';
 	crep[1] = ch;	/* necessary; printf tries too hard on metachars */
-	(void) sprintf(crep + 2, "' = 0x%02x", ch);
+	(void) sprintf(crep + 2, "' = 0x%02x", (unsigned)ch);
     }
     else
-	(void) sprintf(crep, "0x%02x", ch);
+	(void) sprintf(crep, "0x%02x", (unsigned)ch);
     return(crep);
 }
 

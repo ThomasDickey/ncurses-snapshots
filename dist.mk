@@ -2,6 +2,9 @@
 # This only needs to be used by developers
 #
 SHELL = /bin/sh
+
+# This is the master version number.  If you change it here and do a configure,
+# this value will be patched in everywhere a version is needed.
 VERSION = 1.9.3
 
 dist: ANNOUNCE INTRO

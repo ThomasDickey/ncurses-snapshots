@@ -35,7 +35,7 @@ waddnstr(WINDOW *win, const char *astr, int n)
 unsigned char *str = (unsigned char *)astr;
 int code = ERR;
 
-	T(("waddnstr(%p,\"%s\",%d) called %s", win, visbuf(astr), n, _traceattr(win->_attrs)));
+	T(("waddnstr(%p,\"%s\",%d) called %s", win, _nc_visbuf(astr), n, _traceattr(win->_attrs)));
 
 	if (str != NULL) {
 

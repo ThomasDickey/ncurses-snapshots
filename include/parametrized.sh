@@ -13,8 +13,8 @@ echo " */";
 
 echo "static bool parametrized[] = {";
 awk <Caps.filtered '
-$3 == "str" && !($0 ~ /#1/)     {print "0,\t/* ", $2, " */";}
-$3 == "str" && $0 ~ /#1/        {print "1,\t/* ", $2, " */";}
+$3 == "str" && !($0 ~ /#[0-9]/)     {print "0,\t/* ", $2, " */";}
+$3 == "str" && $0 ~ /#[0-9]/        {print "1,\t/* ", $2, " */";}
 '
 echo "};";
 echo "";

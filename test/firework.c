@@ -10,7 +10,7 @@ static int get_colour(void);
 static void explode(int row, int col);
 static void showit(void);
 
-int main()
+int main(int argc, char *argv[])
 {
 int start,end,row,diff,flag = 0,direction;
 unsigned seed;
