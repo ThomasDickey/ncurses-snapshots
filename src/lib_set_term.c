@@ -28,8 +28,8 @@
 **
 */
 
-#include <stdlib.h>
 #include "curses.priv.h"
+#include <stdlib.h>
 #include "term.h"	/* cur_term */
 
 struct screen * set_term(struct screen *screen)

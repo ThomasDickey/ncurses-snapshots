@@ -26,13 +26,13 @@
 **
 */
 
+#include "curses.priv.h"
 #include <sys/types.h>
 #include <string.h>
 #include <errno.h>
 #if !HAVE_EXTERN_ERRNO
 extern int errno;
 #endif
-#include "curses.priv.h"
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail

@@ -25,7 +25,7 @@ library source.
 #include <curses.h>
 #include <panel.h>
 
-#define P(s)		printw("%s\n", s)
+#define P(string)	printw("%s\n", string)
 #ifndef CTRL
 #define CTRL(x)		((x) & 0x1f)
 #endif

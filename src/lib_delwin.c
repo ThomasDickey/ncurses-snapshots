@@ -26,8 +26,8 @@
 **
 */
 
-#include <stdlib.h>
 #include "curses.priv.h"
+#include <stdlib.h>
 
 int delwin(WINDOW *win)
 {

@@ -21,6 +21,7 @@ CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 LINK		= $(CC)
 LDFLAGS		= -L../src -L$(libdir) @LDFLAGS@ @LIBS@
 
+.SUFFIXES: .cc
 .cc.o:
 	@echo compiling $@
 	@$(CC) -c $(CCFLAGS) -o $*.o $(srcdir)/$*.cc

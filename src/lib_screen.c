@@ -20,13 +20,13 @@
 ***************************************************************************/
 
 
+#include "curses.priv.h"
 
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <time.h>
 #include "term.h"	/* exit_ca_mode, non_rev_rmcup */
-#include "curses.priv.h"
 
 static time_t	dumptime;
 

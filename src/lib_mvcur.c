@@ -129,10 +129,9 @@
  * have parm_right_cursor, tab motions don't win you a lot anyhow.
  */
 
-#include "curses.h"
-
-#include "term.h"
 #include "curses.priv.h"
+#include "term.h"
+
 #define NLMAPPING	SP->_nl			/* nl() on? */
 #define RAW		SP->_raw		/* raw() on? */
 #define CURRENT_ATTR	SP->_current_attr	/* current phys attribute */

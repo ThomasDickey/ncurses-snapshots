@@ -30,9 +30,9 @@
 **
 */
 
+#include "curses.priv.h"
 #include <stdlib.h>
 #include <string.h>
-#include "curses.priv.h"
 
 void _nc_scroll_window(WINDOW *win, int n, int top, int bottom)
 {

@@ -25,17 +25,17 @@
  *	lib_trace.c - Tracing/Debugging routines
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <fcntl.h>
-#include <errno.h>
-
 #ifndef TRACE
 #define TRACE			/* turn on internal defs for this module */
 #endif
 
 #include "curses.priv.h"
+
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <fcntl.h>
+#include <errno.h>
 
 #if !HAVE_EXTERN_ERRNO
 extern int errno;

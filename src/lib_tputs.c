@@ -25,9 +25,9 @@
  *
  */
 
+#include "curses.priv.h"
 #include <string.h>
 #include <ctype.h>
-#include "curses.priv.h"
 #include "term.h"	/* padding_baud_rate, xon_xoff */
 
 int putp(char *string)

@@ -25,9 +25,9 @@
  *
  */
 
+#include "curses.priv.h"
 #include <string.h>
 #include <term.h>
-#include "curses.priv.h"
 
 /*
  *	char *

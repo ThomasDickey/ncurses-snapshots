@@ -35,6 +35,7 @@
  *
  */
 
+#include "curses.priv.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -42,7 +43,6 @@
 #include <unistd.h>
 #endif
 
-#include "curses.priv.h"
 #include "term.h"
 #include "tic.h"
 #include "term_entry.h"

@@ -26,6 +26,8 @@
 **
 */
 
+#include "curses.priv.h"
+
 #include <sys/types.h>		/* some systems can't live without this */
 #include <string.h>
 #include <sys/time.h>
@@ -37,7 +39,6 @@
 #if HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
-#include "curses.priv.h"
 
 #if !HAVE_USLEEP
 void usleep(unsigned int usec)

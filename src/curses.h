@@ -40,8 +40,8 @@
 
 #undef TRUE
 #undef FALSE
-#define CXX_BUILTIN_BOOL 0
-#define CXX_TYPE_OF_BOOL unsigned
+#define CXX_BUILTIN_BOOL 1
+#define CXX_TYPE_OF_BOOL char
 
 #if defined(__cplusplus) && CXX_BUILTIN_BOOL
 #define TRUE    ((CXX_TYPE_OF_BOOL)true)
@@ -421,7 +421,6 @@ extern int slk_attroff(attr_t);
 #define wgetstr(w, s)		wgetnstr(w, s, -1)
 #define getnstr(w, s, n)	wgetnstr(stdscr, s, n)
 
-#define napms(x)		usleep(1000*x)
 #define setterm(term)		setupterm(term, 1, (int *)0)
 
 #define fixterm()		reset_prog_mode()

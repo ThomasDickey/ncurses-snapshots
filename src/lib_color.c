@@ -25,9 +25,9 @@
  *
  */
 
+#include "curses.priv.h"
 #include <stdlib.h>
 #include <string.h>
-#include "curses.priv.h"
 #include "term.h"
 
 int COLOR_PAIRS;

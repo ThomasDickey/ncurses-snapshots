@@ -30,8 +30,8 @@
 **
 */
 
-#include <stdlib.h>
 #include "curses.priv.h"
+#include <stdlib.h>
 
 int
 winsdelln(WINDOW *win, int n)

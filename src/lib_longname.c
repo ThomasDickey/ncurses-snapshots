@@ -27,8 +27,8 @@
 **
 */
 
-#include <string.h>
 #include "curses.priv.h"
+#include <string.h>
 
 char *
 longname()

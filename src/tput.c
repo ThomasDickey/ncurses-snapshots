@@ -27,9 +27,10 @@
  * Ross Ridge's mytinfo package.
  */
 
+#include "config.h"
+
 #include <ctype.h>
 #include <stdlib.h>
-#include "config.h"
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
