@@ -38,12 +38,13 @@
  */
 
 #include <progs.priv.h>
+#include <sys/stat.h>
 
 #include <dump_entry.h>
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.76 2000/09/10 01:25:47 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.80 2000/09/24 02:09:38 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -303,6 +304,24 @@ stripped(char *src)
     return 0;
 }
 
+static FILE *
+open_input(const char *filename)
+{
+    FILE *fp = fopen(filename, "r");
+    struct stat sb;
+
+    if (fp == 0) {
+	fprintf(stderr, "%s: Can't open %s\n", _nc_progname, filename);
+	exit(EXIT_FAILURE);
+    }
+    if (fstat(fileno(fp), &sb) < 0
+	|| (sb.st_mode & S_IFMT) != S_IFREG) {
+	fprintf(stderr, "%s: %s is not a file\n", _nc_progname, filename);
+	exit(EXIT_FAILURE);
+    }
+    return fp;
+}
+
 /* Parse the "-e" option-value into a list of names */
 static const char **
 make_namelist(char *src)
@@ -316,9 +335,7 @@ make_namelist(char *src)
     if (src == 0) {
 	/* EMPTY */ ;
     } else if (strchr(src, '/') != 0) {		/* a filename */
-	FILE *fp = fopen(src, "r");
-	if (fp == 0)
-	    failed(src);
+	FILE *fp = open_input(src);
 
 	for (pass = 1; pass <= 2; pass++) {
 	    nn = 0;
@@ -587,7 +604,7 @@ main(int argc, char *argv[])
 		    source_file = my_tmpname;
 		    fprintf(tmp_fp, "%s\n", termcap);
 		    fclose(tmp_fp);
-		    tmp_fp = fopen(source_file, "r");
+		    tmp_fp = open_input(source_file);
 		    to_remove = source_file;
 		} else {
 		    failed("tmpnam");
@@ -605,11 +622,8 @@ main(int argc, char *argv[])
 	}
     }
 
-    if (tmp_fp == 0
-	&& (tmp_fp = fopen(source_file, "r")) == 0) {
-	fprintf(stderr, "%s: Can't open %s\n", _nc_progname, source_file);
-	return EXIT_FAILURE;
-    }
+    if (tmp_fp == 0)
+	tmp_fp = open_input(source_file);
 
     if (infodump)
 	dump_init(tversion,
@@ -744,6 +758,143 @@ TERMINAL *cur_term;		/* tweak to avoid linking lib_cur_term.c */
 #define CUR tp->
 
 /*
+ * Returns the expected number of parameters for the given capability.
+ */
+static int
+expected_params(char *name)
+{
+    /* *INDENT-OFF* */
+    static const struct {
+	const char *name;
+	int count;
+    } table[] = {
+	{ "birep",		2 },
+	{ "colornm",		1 },
+	{ "cpi",		1 },
+	{ "csr",		2 },
+	{ "cub",		1 },
+	{ "cud",		1 },
+	{ "cuf",		1 },
+	{ "cup",		2 },
+	{ "cuu",		1 },
+	{ "cwin",		5 },
+	{ "dch",		1 },
+	{ "dclk",		2 },
+	{ "dial",		1 },
+	{ "dispc",		1 },
+	{ "dl",			1 },
+	{ "ech",		1 },
+	{ "getm",		1 },
+	{ "hpa",		1 },
+	{ "ich",		1 },
+	{ "il",			1 },
+	{ "indn",		1 },
+	{ "initc",		4 },
+	{ "initp",		7 },
+	{ "lpi",		1 },
+	{ "mc5p",		1 },
+	{ "mrcup",		2 },
+	{ "mvpa",		1 },
+	{ "pfkey",		2 },
+	{ "pfloc",		2 },
+	{ "pfx",		2 },
+	{ "pfxl",		3 },
+	{ "pln",		2 },
+	{ "qdial",		1 },
+	{ "rep",		2 },
+	{ "rin",		1 },
+	{ "sclk",		3 },
+	{ "scp",		1 },
+	{ "scs",		1 },
+	{ "setab",		1 },
+	{ "setaf",		1 },
+	{ "setb",		1 },
+	{ "setcolor",		1 },
+	{ "setf",		1 },
+	{ "sgr",		9 },
+	{ "sgr1",		6 },
+	{ "slength",		1 },
+	{ "slines",		1 },
+	{ "smgbp",		2 },
+	{ "smglp",		2 },
+	{ "smglr",		2 },
+	{ "smgrp",		1 },
+	{ "smgtb",		2 },
+	{ "smgtp",		2 },
+	{ "tsl",		1 },
+	{ "u6",			-1 },
+	{ "vpa",		1 },
+	{ "wind",		4 },
+	{ "wingo",		1 },
+    };
+    /* *INDENT-ON* */
+
+    unsigned n;
+    int result = 0;		/* function-keys, etc., use none */
+
+    for (n = 0; n < sizeof(table) / sizeof(table[0]); n++) {
+	if (!strcmp(name, table[n].name)) {
+	    result = table[n].count;
+	    break;
+	}
+    }
+
+    return result;
+}
+
+/*
+ * Make a quick sanity check for the parameters which are used in the given
+ * strings.  If there are no "%p" tokens, then there should be no other "%"
+ * markers.
+ */
+static void
+check_params(TERMTYPE * tp, char *name, char *value)
+{
+    int expected = expected_params(name);
+    int actual = 0;
+    int n;
+    bool params[10];
+    char *s = value;
+
+    for (n = 0; n < 10; n++)
+	params[n] = FALSE;
+
+    while (*s != 0) {
+	if (*s == '%') {
+	    if (*++s == '\0') {
+		_nc_warning("expected character after %% in %s", name);
+		break;
+	    } else if (*s == 'p') {
+		if (*++s == '\0' || !isdigit((int) *s)) {
+		    _nc_warning("expected digit after %%p in %s", name);
+		    return;
+		} else {
+		    n = (*s - '0');
+		    if (n > actual)
+			actual = n;
+		    params[n] = TRUE;
+		}
+	    }
+	}
+	s++;
+    }
+
+    if (params[0]) {
+	_nc_warning("%s refers to parameter 0 (%%p0), which is not allowed", name);
+    }
+    if (value == set_attributes || expected < 0) {
+	;
+    } else if (expected != actual) {
+	_nc_warning("%s uses %d parameters, expected %d", name,
+		    actual, expected);
+	for (n = 1; n < actual; n++) {
+	    if (!params[n])
+		_nc_warning("%s omits parameter %d", name, n);
+	}
+    }
+}
+
+/*
  * An sgr string may contain several settings other than the one we're
  * interested in, essentially sgr0 + rmacs + whatever.  As long as the
  * "whatever" is contained in the sgr string, that is close enough for our
@@ -839,6 +990,12 @@ check_termtype(TERMTYPE * tp)
 	}
 	if (!first)
 	    fprintf(stderr, "\n");
+    }
+
+    for (j = 0; j < NUM_STRINGS(tp); j++) {
+	char *a = tp->Strings[j];
+	if (VALID_STRING(a))
+	    check_params(tp, ExtStrname(tp, j, strnames), a);
     }
 
     /*

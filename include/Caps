@@ -29,7 +29,7 @@
 # Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995
 #    and: Eric S. Raymond <esr@snark.thyrsus.com>
 #
-# $Id: Caps,v 1.25 1999/11/27 20:13:55 tom Exp $
+# $Id: Caps,v 1.26 2000/09/23 20:21:25 tom Exp $
 #
 # This is the master termcap/terminfo capability table.
 #
@@ -454,7 +454,7 @@ set_attributes        	sgr	str	sa	YB-G-	define video attributes #1-#9 (PG9)
 set_tab         	hts	str	st	YB-G-	set a tab in every row, current columns
 set_window      	wind	str	wi	-B-GE	current window is lines #1-#2 cols #3-#4
 tab             	ht	str	ta	YBCGE	tab to next 8-space hardware tab stop
-to_status_line  	tsl	str	ts	YB-G-	move to status line
+to_status_line  	tsl	str	ts	YB-G-	move to status line, column #1
 underline_char  	uc	str	uc	YBCG-	underline char and move past it
 up_half_line    	hu	str	hu	YB-G-	half a line up
 init_prog       	iprog	str	iP	-B---	path name of program for initialization

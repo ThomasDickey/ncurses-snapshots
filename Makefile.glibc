@@ -198,6 +198,7 @@ libncurses-routines	= \
 			tinfo/lib_setup \
 			tinfo/lib_termcap \
 			tinfo/lib_termname \
+			tinfo/lib_tgoto \
 			tinfo/lib_ti \
 			tinfo/lib_tparm \
 			tinfo/lib_tputs \

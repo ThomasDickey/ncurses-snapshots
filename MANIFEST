@@ -730,6 +730,7 @@
 ./ncurses/tinfo/lib_setup.c
 ./ncurses/tinfo/lib_termcap.c
 ./ncurses/tinfo/lib_termname.c
+./ncurses/tinfo/lib_tgoto.c
 ./ncurses/tinfo/lib_ti.c
 ./ncurses/tinfo/lib_tparm.c
 ./ncurses/tinfo/lib_tputs.c

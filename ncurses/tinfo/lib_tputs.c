@@ -45,7 +45,7 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.49 2000/09/02 18:19:45 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.50 2000/09/23 23:45:08 tom Exp $")
 
 char PC = 0;			/* used by termcap library */
 speed_t ospeed = 0;		/* used by termcap library */
@@ -141,20 +141,26 @@ _nc_utf8_outch(int ch)
     case 6:
 	*--ptr = (ch | otherMark) & byteMask;
 	ch >>= 6;
+	/* FALLTHRU */
     case 5:
 	*--ptr = (ch | otherMark) & byteMask;
 	ch >>= 6;
+	/* FALLTHRU */
     case 4:
 	*--ptr = (ch | otherMark) & byteMask;
 	ch >>= 6;
+	/* FALLTHRU */
     case 3:
 	*--ptr = (ch | otherMark) & byteMask;
 	ch >>= 6;
+	/* FALLTHRU */
     case 2:
 	*--ptr = (ch | otherMark) & byteMask;
 	ch >>= 6;
+	/* FALLTHRU */
     case 1:
 	*--ptr = (ch | firstMark[count]);
+	break;
     }
     while (count--)
 	_nc_outch(*ptr++);
@@ -188,7 +194,7 @@ tputs(const char *string, int affcnt, int (*outc) (int))
 	    (void) sprintf(addrbuf, "%p", outc);
 	if (_nc_tputs_trace) {
 	    _tracef("tputs(%s = %s, %d, %s) called", _nc_tputs_trace,
-		_nc_visbuf(string), affcnt, addrbuf);
+		    _nc_visbuf(string), affcnt, addrbuf);
 	} else {
 	    _tracef("tputs(%s, %d, %s) called", _nc_visbuf(string), affcnt, addrbuf);
 	}
