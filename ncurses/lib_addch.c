@@ -45,7 +45,7 @@ int wattr_off(WINDOW *win, const attr_t at)
 	return OK;
 }
 
-int wchgat(WINDOW *win, int n, attr_t attr, short color, const void *opts)
+int wchgat(WINDOW *win, int n, attr_t attr, short color, const void *opts GCC_UNUSED)
 {
     int	i;
 
@@ -109,11 +109,11 @@ register int x, y;
 	 * If we're trying to add a character at the lower-right corner more
 	 * than once, fail.  (Moving the cursor will clear the flag).
 	 */
-#if 0	/* FIXME: ncurses 'p' test failed with this enabled */
-	if ((win->_flags & _WRAPPED)
-	 && (x != 0))
-		return (ERR);
-#endif
+	if (win->_flags & _WRAPPED) {
+		if (x >= win->_maxx)
+			return (ERR);
+		win->_flags &= ~_WRAPPED;
+	}
 
 	/*
 	 * We used to pass in
@@ -201,6 +201,7 @@ register int	x, y;
 			}
 			break;
 		} else {
+			wclrtoeol(win);
 			win->_flags |= _WRAPPED;
 			if (++y > win->_regbottom) {
 				x = win->_maxx;
@@ -210,24 +211,20 @@ register int	x, y;
 					x = 0;
 				}
 			} else {
-				wclrtoeol(win);
 				x = 0;
 			}
 		}
 		break;
     	case '\n':
-		x = 0;
+		wclrtoeol(win);
 		if (++y > win->_regbottom) {
 			y--;
 			if (win->_scroll)
 				scroll(win);
 			else
 				return (ERR);
-		} else {
-			wclrtoeol(win);
-			win->_flags &= ~_WRAPPED;
 		}
-		break;
+		/* FALLTHRU */
     	case '\r':
 		x = 0;
 		win->_flags &= ~_WRAPPED;

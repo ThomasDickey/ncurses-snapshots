@@ -3,6 +3,30 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+960629	- snapshot
+	+ check return code of _nc_mvcur_scrolln() in _nc_scroll_optimize() for
+	  terminals with no scrolling-support (reported by Nikolay Shadrin
+	  <queen@qh.mirea.ac.ru>)
+	+ added ^S scrollok-toggle to ncurses 'g' test.
+	+ added ^T trace-toggle to ncurses tests.
+	+ modified ncurses test program to use ^Q or ESC consistently for
+	  terminating tests (rather than ^D), and to use control keys rather
+	  than function keys in 'g' test.
+	+ corrected misplaced wclrtoeol calls in addch to accommodate wrapping
+	  (reported by Philippe De Muyter).
+	+ modify lib_doupdate.c to use effective costs to tradeoff between
+	  delete-character/insert-character vs normal updating (reported by
+	  David MacKenzie).
+	+ compute effective costs for screen update operations (e.g., clr_eos,
+	  delete_character).
+	+ corrected error in knight.c exposed by wrap fixes in 960622; the
+	  msgwin needed scrollok set.
+	+ corrected last change to IDcTransformLine logic to avoid conflict
+	  between PutRange and InsStr
+	+ modified run_tic.sh to not use /usr/tmp (reported by David MacKenzie),
+	  and further revised it and aclocal.m4 to use $TMPDIR if set.
+	+ corrected off-by-one in RoomFor call in read_entry.c
+
 960622	- snapshot
 	+ modified logic that wraps cursor in addch to follow the XSI spec,
 	  (implemented in svr4) which states that the cursor position is

@@ -253,7 +253,7 @@ char		ttn[MAX_ALIAS + 3];
 	/* this is an ncurses extension */
 	if ((envp = getenv("HOME")) != NULL)
 	{
-		char	*home = RoomFor(strlen(envp) + strlen(PRIVATE_INFO));
+		char *home = RoomFor(strlen(envp) + strlen(PRIVATE_INFO) + 1);
 
 		(void) sprintf(home, "%s/%s", envp, PRIVATE_INFO);
 		if (_nc_read_tic_entry(filename, home, ttn, tp) == 1)

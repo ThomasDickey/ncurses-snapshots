@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.23 1996/06/16 16:55:37 Juergen.Pfeifer Exp $
+dnl $Id: aclocal.m4,v 1.24 1996/06/26 10:24:16 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -376,7 +376,7 @@ SRC=\[$]3
 echo installing \$SRC in \$DST
 case \$DST in
 /*/include/*)
-	TMP=/tmp/\`basename \$SRC\`
+	TMP=\${TMPDIR-/tmp}/\`basename \$SRC\`
 	if test ! -f ../headers.sed ; then
 		END=\`basename \$DST\`
 		for i in \`cat \$REF/../*/headers\`
@@ -595,7 +595,7 @@ datadir="$datadir"
 MKDIRS="`cd $srcdir;pwd`/mkinstalldirs"
 INSTALL="$INSTALL"
 INSTALL_DATA="$INSTALL_DATA"
-TMP=/tmp/man\$\$
+TMP=\${TMPDIR-/tmp}/man\$\$
 trap "rm -f \$TMP" 0 1 2 5 15
 
 mandir=\{{$}}1

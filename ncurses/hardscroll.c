@@ -322,7 +322,8 @@ void _nc_scroll_optimize(void)
 
 		    TR(TRACE_UPDATE | TRACE_MOVE, ("scroll [%d, %d] by %d", ofirst, olast, -disp));
 #if !defined(SCROLLDEBUG) && !defined(HASHDEBUG)
-		    (void) _nc_mvcur_scrolln(-disp, ofirst, olast, LINES - 1);
+		    if (_nc_mvcur_scrolln(-disp, ofirst, olast, LINES - 1) == ERR)
+		    	break;
 		    _nc_scroll_window(curscr, -disp, ofirst, olast);
 #endif /* !defined(SCROLLDEBUG) && !defined(HASHDEBUG) */		    
 

@@ -63,7 +63,7 @@ char *t = getenv("NCURSES_TRACE");
 	/* optional optimization hack -- do before any output to ofp */
 #if HAVE_SETVBUF || HAVE_SETBUFFER
 	{
-	  /* 
+	  /*
 	   * If the output file descriptor is connected to a tty
 	   * (the typical case) it will probably be line-buffered.
 	   * Keith Bostic pointed out that we don't want this; it
@@ -139,7 +139,7 @@ char *t = getenv("NCURSES_TRACE");
 	/* If we must simulate soft labels, grab off the line to be used.
 	   We assume that we must simulate, if it is none of the standard
 	   formats (4-4  or 3-2-3) for which there may be some hardware
-	   support. */ 
+	   support. */
 #ifdef num_labels
 	if (num_labels <= 0 || !SLK_STDFMT)
 #endif /* num_labels */
@@ -172,7 +172,7 @@ char *t = getenv("NCURSES_TRACE");
 	baudrate();	/* sets a field in the SP structure */
 
 	/* compute movement costs so we can do better move optimization */
-	_nc_mvcur_init(SP);
+	_nc_mvcur_init();
 
 #if 0
 	/* initialize soft labels */

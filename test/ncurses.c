@@ -45,7 +45,11 @@ library source.
 #include <form.h>
 #endif
 
-#ifndef NCURSES_VERSION
+#ifdef NCURSES_VERSION
+#ifdef TRACE
+extern int _nc_tracing;
+#endif
+#else
 #define mmask_t chtype		/* not specified in XSI */
 #define attr_t chtype		/* not specified in XSI */
 #define ACS_S3          (acs_map['p'])  /* scan line 3 */
@@ -62,6 +66,10 @@ library source.
 #define CTRL(x)		((x) & 0x1f)
 #endif
 
+#define SIZEOF(table)	(sizeof(table)/sizeof(table[0]))
+#define QUIT		CTRL('Q')
+#define ESCAPE		CTRL('[')
+
 /* The behavior of mvhline, mvvline for negative/zero length is unspecified,
  * though we can rely on negative x/y values to stop the macro.
  */
@@ -77,11 +85,38 @@ static void do_v_line(int y, int x, chtype c, int to)
 		mvvline(y, x, c, (to) - (y));
 }
 
+/* Common function to allow ^T to toggle trace-mode in the middle of a test
+ * so that trace-files can be made smaller.
+ */
+static int wGetchar(WINDOW *win)
+{
+	int c;
+#ifdef TRACE
+	while ((c = wgetch(win)) == CTRL('T')) {
+		static int save;
+		if (_nc_tracing) {
+			save = _nc_tracing;
+			_tracef("TOGGLE-TRACING OFF");
+			_nc_tracing = 0;
+		} else {
+			_nc_tracing = save;
+		}
+		trace(_nc_tracing);
+		if (_nc_tracing)
+			_tracef("TOGGLE-TRACING ON");
+	}
+#else
+	c = wgetch(win);
+#endif
+	return c;
+}
+#define Getchar() wGetchar(stdscr)
+
 static void Pause(void)
 {
 	move(LINES - 1, 0);
 	addstr("Press any key to continue... ");
-	(void) getch();
+	(void) Getchar();
 }
 
 static void Cannot(char *what)
@@ -110,18 +145,18 @@ int y, x;
 #ifdef NCURSES_VERSION
      mousemask(ALL_MOUSE_EVENTS, (mmask_t *)NULL);
 #endif
-  
+
      (void) printw("Delay in 10ths of a second (<CR> for blocking input)? ");
      echo();
      getstr(buf);
      noecho();
- 
+
      if (isdigit(buf[0]))
      {
  	timeout(atoi(buf) * 100);
  	blocking = FALSE;
      }
- 
+
      c = '?';
      raw();
      for (;;)
@@ -163,7 +198,7 @@ int y, x;
 	    getyx(stdscr, y, x);
 	    if (y >= LINES-1)
 	    	move(0,0);
-	    clrtoeol();	
+	    clrtoeol();
 	}
 
 	if (c == 'g')
@@ -192,13 +227,13 @@ int y, x;
 	    addstr("? -- repeats this help message\n");
 	}
 
-	while ((c = getch()) == ERR)
+	while ((c = Getchar()) == ERR)
 	    if (!blocking)
 		(void) printw("%05d: input timed out\n", incount++);
     }
 
 #ifdef NCURSES_VERSION
-    mousemask(0, (mmask_t *)NULL);  
+    mousemask(0, (mmask_t *)NULL);
 #endif
     timeout(-1);
     erase();
@@ -271,7 +306,7 @@ static void attr_test(void)
 
 static char	*colors[] =
 {
-    "black", 
+    "black",
     "red",
     "green",
     "yellow",
@@ -345,8 +380,8 @@ static void color_edit(void)
 	for (i = 0; i < COLORS; i++)
         {
 	    mvprintw(2 + i, 0, "%c %-8s:",
-		     (i == current ? '>' : ' '), 
-		     (i < (int)(sizeof(colors)/sizeof(colors[0]))
+		     (i == current ? '>' : ' '),
+		     (i < (int) SIZEOF(colors)
 		     	? colors[i] : ""));
 	    attrset(COLOR_PAIR(i));
 	    addstr("        ");
@@ -384,7 +419,7 @@ static void color_edit(void)
 
 	move(2 + current, 0);
 
-	switch (c = getch())
+	switch (c = Getchar())
 	{
 	case KEY_UP:
 	    current = (current == 0 ? (COLORS - 1) : current - 1);
@@ -410,7 +445,7 @@ static void color_edit(void)
 	case '5': case '6': case '7': case '8': case '9':
 	    do {
 		value = value * 10 + (c - '0');
-		c = getch();
+		c = Getchar();
 	    } while
 		(isdigit(c));
 	    if (c != '+' && c != '-' && c != '=')
@@ -429,7 +464,7 @@ static void color_edit(void)
 	    goto changeit;
 
 	case '=':
-	    usebase = 0; 
+	    usebase = 0;
 	changeit:
 	    color_content(current, &red, &green, &blue);
 	    if (field == 0)
@@ -447,7 +482,7 @@ static void color_edit(void)
     P("");
     P("You are in the RGB value editor.  Use the arrow keys to select one of");
     P("the fields in one of the RGB triples of the current colors; the one");
-    P("currently selected will be reverse-video highlighted.");    
+    P("currently selected will be reverse-video highlighted.");
     P("");
     P("To change a field, enter the digits of the new value; they won't be");
     P("echoed.  Finish by typing `='; the change will take effect instantly.");
@@ -528,7 +563,7 @@ static void slk_test(void)
 
 	case 's':
 	    move(20, 0);
-	    while ((c = getch()) != 'Q' && (c != ERR))
+	    while ((c = Getchar()) != 'Q' && (c != ERR))
 		addch((chtype)c);
 	    break;
 
@@ -566,7 +601,7 @@ static void slk_test(void)
 	    beep();
 	}
     } while
-	((c = getch()) != EOF);
+	((c = Getchar()) != EOF);
 
  done:
     erase();
@@ -625,7 +660,7 @@ static void acs_display(void)
     mvaddstr(ACSY + 14,40, "ACS_NEQUAL: "); addch(ACS_NEQUAL);
     mvaddstr(ACSY + 15,40, "ACS_STERLING: "); addch(ACS_STERLING);
 
-#define HYBASE 	(ACSY + 17)    
+#define HYBASE 	(ACSY + 17)
     mvprintw(HYBASE, 0, "High-half characters via echochar:\n");
     for (i = 0; i < 4; i++)
     {
@@ -654,15 +689,44 @@ typedef struct
 }
 pair;
 
-static void report(void)
+struct frame
+{
+	struct frame	*next, *last;
+	bool		flag;
+	WINDOW		*wind;
+};
+
+static void transient(struct frame *curp, char *msg)
+{
+    if (msg)
+    {
+	mvaddstr(LINES - 1, 0, msg);
+	refresh();
+	sleep(1);
+    }
+
+    move(LINES-1, 0);
+    printw("All other characters are echoed, window should %sscroll.",
+    	((curp != 0) && curp->flag) ? "" : "not " );
+    clrtoeol();
+    refresh();
+}
+
+static void newwin_report(struct frame *curp)
 /* report on the cursor's current position, then restore it */
 {
-    int y, x;
+	WINDOW *win = (curp != 0) ? curp->wind : stdscr;
+	int y, x;
 
-    getyx(stdscr, y, x);
-    move(LINES - 1, COLS - 17);
-    printw("Y = %2d X = %2d", y, x);
-    move(y, x);
+	if (win != stdscr)
+		transient(curp, (char *)0);
+	getyx(win, y, x);
+	move(LINES - 1, COLS - 17);
+	printw("Y = %2d X = %2d", y, x);
+	if (win != stdscr)
+		refresh();
+	else
+		wmove(win, y, x);
 }
 
 static pair *selectcell(int uli, int ulj, int lri, int lrj)
@@ -677,18 +741,17 @@ static pair *selectcell(int uli, int ulj, int lri, int lrj)
     res.x = ulj;
     for (;;)
     {
-	move(LINES - 1, COLS - 17);
-	clrtoeol();
-	printw("Y = %2d X = %2d", uli + i, ulj + j);
 	move(uli + i, ulj + j);
+	newwin_report((struct frame *)0);
 
-	switch(getch())
+	switch(Getchar())
 	{
 	case KEY_UP:	i += si - 1; break;
 	case KEY_DOWN:	i++; break;
 	case KEY_LEFT:	j += sj - 1; break;
 	case KEY_RIGHT:	j++; break;
-	case '\004':	return((pair *)NULL);
+	case QUIT:
+	case ESCAPE:	return((pair *)NULL);
 	default:	res.y = uli + i; res.x = ulj + j; return(&res);
 	}
 	i %= si;
@@ -734,25 +797,44 @@ static WINDOW *getwindow(void)
     outerbox(ul, lr, TRUE);
     refresh();
 
-    scrollok(rwindow, TRUE);
-/*    immedok(rwindow);	*/
     wrefresh(rwindow);
 
+    move(0, 0); clrtoeol();
     return(rwindow);
 }
 
-static void transient(char *msg)
+static void newwin_legend(void)
 {
-    if (msg)
-    {
-	mvaddstr(LINES - 1, 0, msg);
-	refresh();
-	sleep(1);
-    }
+	static const char *const legend[] = {
+	"^C = make new window, ^N = next window, ^P = previous window,",
+	"^F = scroll forward, ^B = scroll backward, ^S toggle scrollok",
+	"^W = save window to file, ^R = restore window, ^X = resize, ^Q/ESC = exit"
+	};
+	size_t n;
+	for (n = 0; n < SIZEOF(legend); n++) {
+		int line = LINES - SIZEOF(legend) - 1 + n;
+		mvprintw(line, 0, legend[n]);
+		clrtoeol();
+	}
+}
 
-    mvaddstr(LINES - 1, 0,
-	     "All other characters are echoed, windows should scroll.");
-    refresh();
+static void newwin_move(struct frame *curp, int dy, int dx)
+{
+	WINDOW *win = (curp != 0) ? curp->wind : stdscr;
+	int cur_y, cur_x;
+	int max_y, max_x;
+
+	getyx(win, cur_y, cur_x);
+	getmaxyx(win, max_y, max_x);
+	if ((cur_x += dx) < 0)
+		cur_x = 0;
+	else if (cur_x >= max_x)
+		cur_x = max_x - 1;
+	if ((cur_y += dy) < 0)
+		cur_y = 0;
+	else if (cur_y >= max_y)
+		cur_y = max_y - 1;
+	wmove(win, cur_y, cur_x);
 }
 
 static void acs_and_scroll(void)
@@ -760,33 +842,19 @@ static void acs_and_scroll(void)
 {
     int	c, i;
     FILE *fp;
-    struct frame
-    {
-        struct frame	*next, *last;
-        WINDOW		*wind;
-    }
-    *current = (struct frame *)NULL, *neww;
+    struct frame *current = (struct frame *)0, *neww;
 
 #define DUMPFILE	"screendump"
 
-    refresh();
-    mvaddstr(LINES - 4, 0,
-     "F1 = make new window, F2 = next window, F3 = previous window, ");
-    mvaddstr(LINES - 3, 0,
-     "F4 = scroll current window forward, F5 = scroll current window backward");
-    mvaddstr(LINES - 2, 0,
-     "F6 = save window to file, F7 = restore window, F8 = resize, Ctrl-D = exit");
-    transient((char *)NULL);
+    newwin_legend();
+    transient((struct frame *)0, (char *)0);
 
-    c = KEY_F(1);
+    c = CTRL('C');
+    raw();
     do {
-	report();
-	if (current)
-	    wrefresh(current->wind);
-
 	switch(c)
 	{
-	case KEY_F(1):
+	case CTRL('C'):
 	    neww = (struct frame *) malloc(sizeof(struct frame));
 	    if ((neww->wind = getwindow()) == (WINDOW *)NULL)
 		goto breakout;
@@ -805,31 +873,43 @@ static void acs_and_scroll(void)
 	    }
 	    current = neww;
 	    keypad(neww->wind, TRUE);
+	    scrollok(current->wind, current->flag = TRUE);
+	    transient(current, (char *)0);
 	    break;
 
-	case KEY_F(2):		/* go to next window */
-	    current = current->next;
+	case CTRL('N'):		/* go to next window */
+	    if (current)
+		current = current->next;
 	    break;
 
-	case KEY_F(3):		/* go to previous window */
-	    current = current->last;
+	case CTRL('P'):		/* go to previous window */
+	    if (current)
+		current = current->last;
 	    break;
 
-	case KEY_F(4):		/* scroll current window forward */
+	case CTRL('F'):		/* scroll current window forward */
 	    if (current)
 		wscrl(current->wind, 1);
 	    break;
 
-	case KEY_F(5):		/* scroll current window backwards */
+	case CTRL('B'):		/* scroll current window backwards */
 	    if (current)
 		wscrl(current->wind, -1);
 	    break;
 
-	case KEY_F(6):		/* save and delete window */
+	case CTRL('S'):
+	    if (current) {
+		current->flag = !current->flag;
+		scrollok(current->wind, current->flag);
+	    }
+	    transient(current, (char *)0);
+	    break;
+	
+	case CTRL('W'):		/* save and delete window */
 	    if (current == current->next)
 		break;
 	    if ((fp = fopen(DUMPFILE, "w")) == (FILE *)NULL)
-		transient("Can't open screen dump file");
+		transient(current, "Can't open screen dump file");
 	    else
 	    {
 		(void) putwin(current->wind, fp);
@@ -848,9 +928,9 @@ static void acs_and_scroll(void)
 	    }
 	    break;
 
-	case KEY_F(7):		/* restore window */
+	case CTRL('R'):		/* restore window */
 	    if ((fp = fopen(DUMPFILE, "r")) == (FILE *)NULL)
-		transient("Can't open screen dump file");
+		transient(current, "Can't open screen dump file");
 	    else
 	    {
 		neww = (struct frame *) malloc(sizeof(struct frame));
@@ -868,7 +948,7 @@ static void acs_and_scroll(void)
 	    break;
 
 #ifdef NCURSES_VERSION
-	case KEY_F(8):		/* resize window */
+	case CTRL('X'):		/* resize window */
 	    if (current)
 	    {
 		pair *tmp, ul, lr;
@@ -927,18 +1007,35 @@ static void acs_and_scroll(void)
 	    refresh();
 	    break;
 
+	case KEY_UP:
+	    newwin_move(current, -1,  0);
+	    break;
+	case KEY_DOWN:
+	    newwin_move(current,  1,  0);
+	    break;
+	case KEY_LEFT:
+	    newwin_move(current,  0, -1);
+	    break;
+	case KEY_RIGHT:
+	    newwin_move(current,  0,  1);
+	    break;
+
 	case '\r':
 	    c = '\n';
 	    /* FALLTHROUGH */
 
 	default:
-	    waddch(current->wind, (chtype)c);
+	    if (current)
+		waddch(current->wind, (chtype)c);
+	    else
+		beep();
 	    break;
 	}
-	report();
-	wrefresh(current->wind);
+	newwin_report(current);
+	wrefresh(current ? current->wind : stdscr);
     } while
-	((c = wgetch(current->wind)) != '\004'
+	((c = wGetchar(current ? current->wind : stdscr)) != QUIT
+	 && (c != ESCAPE)
 	 && (c != ERR));
 
  breakout:
@@ -966,7 +1063,7 @@ static WINDOW *w5;
 
 static unsigned long nap_msec = 1;
 
-char *mod[] = 
+char *mod[] =
 {
 	"test ",
 	"TEST ",
@@ -1056,7 +1153,7 @@ WINDOW *win = pan->win;
 chtype num = *(pan->user + 1);
 int y,x;
 
-	box(win, 0, 0);  
+	box(win, 0, 0);
 	wmove(win,1,1);
 	wprintw(win,"-pan%c-",num);
 	for(y = 2; y < getmaxy(win) - 1; y++)
@@ -1286,7 +1383,7 @@ static int panner_legend(int line)
 		"Use +,- (or j,k) to grow/shrink the panner vertically.",
 		"Use <,> (or h,l) to grow/shrink the panner horizontally."
 	};
-	int n = (sizeof(legend)/sizeof(legend[0]) - (LINES - line));
+	int n = (SIZEOF(legend) - (LINES - line));
 	if (line < LINES && (n >= 0)) {
 		mvprintw(line, 0, legend[n]);
 		clrtoeol();
@@ -1307,7 +1404,7 @@ static void panner_v_cleanup(int from_y, int from_x, int to_y)
 		do_v_line(from_y, from_x, ' ', to_y);
 }
 
-static void panner(WINDOW *pad, 
+static void panner(WINDOW *pad,
 		   int hx, int hy, int iy, int ix,
 		   int (*pgetc)(WINDOW *))
 {
@@ -1511,7 +1608,7 @@ static void panner(WINDOW *pad,
 		 basey, basex,
 		 top_y, top_x,
 		 porty - (pxmax > portx) - 1,
-		 portx - (pymax > porty) - 1); 
+		 portx - (pymax > porty) - 1);
 
 	doupdate();
 #if defined(HAVE_GETTIMEOFDAY)
@@ -1535,7 +1632,7 @@ int padgetch(WINDOW *win)
 {
     int	c;
 
-    switch(c = wgetch(win))
+    switch(c = wGetchar(win))
     {
     case 'U': return(KEY_UP);
     case 'D': return(KEY_DOWN);
@@ -1604,7 +1701,7 @@ static void Continue (WINDOW *win)
     wmove(win, 10, 1);
     mvwaddstr(win, 10, 1, " Press any key to continue");
     wrefresh(win);
-    wgetch(win);
+    wGetchar(win);
 }
 
 static void input_test(WINDOW *win)
@@ -1670,7 +1767,7 @@ static void input_test(WINDOW *win)
     wmove(win, 9, 10);
     wrefresh(win);
     echo();
-    wgetch(win);
+    wGetchar(win);
     flushinp();
     mvwaddstr(win, 12, 0,
 	      "If you see any key other than what you typed, flushinp() is broken.");
@@ -1745,7 +1842,7 @@ static char *levels[] =
     (char *)NULL
 };
 
-static ITEM *items[sizeof(levels)/sizeof(char *)];
+static ITEM *items[SIZEOF(levels)];
 
 static void menu_test(void)
 {
@@ -1777,13 +1874,13 @@ static void menu_test(void)
 
     post_menu(m);
 
-    while (menu_driver(m, menu_virtualize(wgetch(menuwin))) != E_UNKNOWN_COMMAND)
+    while (menu_driver(m, menu_virtualize(wGetchar(menuwin))) != E_UNKNOWN_COMMAND)
 	continue;
 
     (void) mvprintw(LINES - 2, 0,
 		     "You chose: %s\n", item_name(current_item(m)));
     (void) addstr("Press any key to continue...");
-    wgetch(stdscr);
+    wGetchar(stdscr);
 
     unpost_menu(m);
     delwin(menuwin);
@@ -1831,7 +1928,6 @@ static char *tracetrace(int tlevel)
 static void trace_set(void)
 /* interactively set the trace level */
 {
-    extern int	_nc_tracing;
     MENU	*m;
     ITEM	**ip = items;
     char	**ap;
@@ -1842,7 +1938,7 @@ static void trace_set(void)
     mvaddstr(2, 0, "  Press space bar to toggle a selection.");
     mvaddstr(3, 0, "  Use up and down arrow to move the select bar.");
     mvaddstr(4, 0, "  Press return to set the trace level.");
-    mvprintw(6, 0, "(Current trace level is %s)", tracetrace(_nc_tracing)); 
+    mvprintw(6, 0, "(Current trace level is %s)", tracetrace(_nc_tracing));
 
     refresh();
 
@@ -1868,7 +1964,7 @@ static void trace_set(void)
 	if ((masks[item_index(*ip)] & _nc_tracing) == masks[item_index(*ip)])
 	    set_item_value(*ip, TRUE);
 
-    while (menu_driver(m, menu_virtualize(wgetch(menuwin))) != E_UNKNOWN_COMMAND)
+    while (menu_driver(m, menu_virtualize(wGetchar(menuwin))) != E_UNKNOWN_COMMAND)
 	continue;
 
     newtrace = 0;
@@ -1881,14 +1977,14 @@ static void trace_set(void)
     (void) mvprintw(LINES - 2, 0,
 		     "Trace level is %s\n", tracetrace(_nc_tracing));
     (void) addstr("Press any key to continue...");
-    wgetch(stdscr);
+    wGetchar(stdscr);
 
     unpost_menu(m);
     delwin(menuwin);
 
     for (ip = items; *ip; ip++)
 	free_item(*ip);
-    free_menu(m);    
+    free_menu(m);
 }
 #endif /* TRACE */
 #endif /* HAVE_MENU_H */
@@ -1954,12 +2050,12 @@ static void erase_form(FORM *f)
 static int form_virtualize(WINDOW *w)
 {
     static int	mode = REQ_INS_MODE;
-    int		c = wgetch(w);
+    int		c = wGetchar(w);
 
     switch(c)
     {
-    case CTRL('Q'):
-    case CTRL('['):
+    case QUIT:
+    case ESCAPE:
 	return(MAX_FORM_COMMAND + 1);
 
     /* demo doesn't use these three, leave them in anyway as sample code */
@@ -1993,7 +2089,7 @@ static int form_virtualize(WINDOW *w)
 
     case CTRL('W'):
 	return(REQ_NEXT_WORD);
-    case CTRL('T'):
+    case CTRL('B'):
 	return(REQ_PREV_WORD);
     case CTRL('S'):
 	return(REQ_BEG_FIELD);
@@ -2041,7 +2137,7 @@ static int form_virtualize(WINDOW *w)
 	if (mode == REQ_INS_MODE)
 	    return(mode = REQ_OVL_MODE);
 	else
-	    return(mode = REQ_INS_MODE);	
+	    return(mode = REQ_INS_MODE);
 
     default:
 	return(c);
@@ -2075,7 +2171,7 @@ static void demo_forms(void)
     addstr("Home -- go to first field      End -- go to last field\n");
     addstr("^L   -- go to field to left    ^R  -- go to field to right\n");
     addstr("^U   -- move upward to field   ^D  -- move downward to field\n");
-    addstr("^W   -- go to next word        ^T  -- go to previous word\n");
+    addstr("^W   -- go to next word        ^B  -- go to previous word\n");
     addstr("^S   -- go to start of field   ^E  -- go to end of field\n");
     addstr("^H   -- delete previous char   ^Y  -- delete line\n");
     addstr("^G   -- delete current word    ^C  -- clear to end of line\n");
@@ -2113,7 +2209,7 @@ static void demo_forms(void)
 	default:
 	    beep();
 	    break;
-	}       
+	}
     }
 
     erase_form(form);
@@ -2177,9 +2273,9 @@ static void overlap_test(void)
     printw("3 = fill window A with letter A.  4 = fill window B with letter B.\n");
     printw("5 = cross pattern in window A.    6 = cross pattern in window B.\n");
     printw("7 = clear window A.               8 = clear window B.\n");
-    printw("9 = terminate test.");
+    printw("^Q/ESC = terminate test.");
 
-    while ((ch = getch()) != CTRL('D') && ch != '9')
+    while ((ch = Getchar()) != QUIT && ch != ESCAPE)
 	switch (ch)
 	{
 	case '1':		/* refresh window A first, then B */
@@ -2334,7 +2430,7 @@ int main(
     trace(TRACE_ORDINARY|TRACE_CALLS);
 #endif /* HAVE_MENU_H */
 #endif /* TRACE */
- 
+
     /* tell it we're going to play with soft keys */
     slk_init(1);
 
