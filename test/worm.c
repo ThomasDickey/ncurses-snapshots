@@ -197,7 +197,7 @@ int last, bottom;
 		    trace_end   = atoi(argv[++x]);
 		    break;
 		case 'N':
-		    no_optimize = TRUE;		/* declared by ncurses */
+		    _nc_optimize_enable ^= OPTIMIZE_ALL;		/* declared by ncurses */
 		    break;
 #endif /* TRACE */
 		default:

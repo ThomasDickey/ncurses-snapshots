@@ -168,7 +168,7 @@ a key with that value.
 
 .SH RETURN VALUE
 All routines return the integer \fBERR\fR upon failure and an integer value 
-other than \fBERR\fR" (\fBOK\fR in the case of ungetch()) upon successful
+other than \fBERR\fR (\fBOK\fR in the case of ungetch()) upon successful
 completion.
 .SH NOTES
 Use of the escape key by a programmer for a single character function is
@@ -196,8 +196,21 @@ read single-byte characters only.  The standard specifies that they return
 \fBERR\fR on failure, but specifies no error conditions.
 
 The echo behavior of these functions on input of \fBKEY_\fR or backspace
-characters was not specified.  This description is adopted from the XSI
-Curses standard.
+characters was not specified in the SVr4 documentation.  This description is
+adopted from the XSI Curses standard.
+
+The behavior of \fBgetch\fR and friends in the presence of handled signals is
+unspecified in the SVr4 and XSI Curses documentation.  Under historical curses
+implementations, it varied depending on whether the operating system's
+implementation of handled signal receipt interrupts a \fBread\fR(2) call in
+progress or not, and also (in some implementations) depending on whether an
+input timeout or non-blocking mode hsd been set.
+
+Programmers concerned about portability should be prepared for either of two
+cases: (a) signal receipt does not interrupt \fBgetch\fR; (b) signal receipt
+interrupts \fBgetch\fR and causes it to return ERR with \fBerrno\fR set to
+\fBEINTR\fR.  Under the \fBncurses\fR implementation, handled signals never
+interrupt \fBgetch\fR.
 
 The \fBhas_key\fR function is unique to \fBncurses\fR.  We recommend that
 any code using it be conditionalized on the NCURSES feature macro.

@@ -1,11 +1,27 @@
-dnl $Id: configure.in,v 1.26 1996/08/08 22:39:56 tom Exp $
+dnl $Id: configure.in,v 1.31 1996/09/26 09:39:11 esr Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.9)
-AC_REVISION($Revision: 1.26 $)
+AC_REVISION($Revision: 1.31 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
 NC_SYSTYPE
+
+###	Derive the system name, as a check for reusing the autoconf cache
+system_name="`(uname -s -r || hostname || echo unknown) 2>/dev/null`"
+if test -n "$system_name" ; then
+	AC_DEFINE_UNQUOTED(SYSTEM_NAME,"$system_name")
+else
+	system_name="`(hostname) 2>/dev/null`"
+fi
+AC_CACHE_VAL(nc_cv_system_name,[nc_cv_system_name="$system_name"])
+test -z "$system_name" && system_name="$nc_cv_system_name"
+test -n "$nc_cv_system_name" && AC_MSG_RESULT("Configuring for $nc_cv_system_name")
+
+if test ".$system_name" != ".$nc_cv_system_name" ; then
+	AC_MSG_RESULT("Cached system name does not agree with actual")
+	AC_ERROR("Please remove config.cache and try again.")
+fi
 
 ###	Default install-location
 dnl We don't use AC_PREFIX_DEFAULT, because it gets evaluated too soon, and
@@ -147,11 +163,11 @@ AC_ARG_ENABLE(overwrite,
 	[with_overwrite=yes])
 AC_MSG_RESULT($includedir)
 
-###	use option --disable-termcap to leave out the termcap fallback support
+###	use option --enable-termcap to compile in the termcap fallback support
 AC_ARG_ENABLE(termcap,
-	[  --disable-termcap       leave out the termcap fallback support],
+	[  --enable-termcap        compile in termcap fallback support],
 	[with_termcap=$enableval],
-	[with_termcap=yes])
+	[with_termcap=no])
 test "$with_termcap" != "yes" && AC_DEFINE(PURE_TERMINFO)
 
 ###	use option --enable-getcap to use a hacked getcap for reading termcaps
@@ -229,6 +245,7 @@ sys/ioctl.h \
 sys/param.h \
 sys/select.h \
 sys/time.h \
+sys/times.h \
 termio.h \
 termios.h \
 ttyent.h \
@@ -254,8 +271,8 @@ fi;fi
 # check for ISC (this may also define _POSIX_SOURCE)
 # Note: even non-Posix ISC needs <sys/bsdtypes.h> to declare fd_set
 if test "$ISC" = yes ; then
-	AC_CHECK_LIB(main,cposix)
-	AC_CHECK_LIB(main,inet,,,"$LIBS")
+	AC_CHECK_LIB(cposix,main)
+	AC_CHECK_LIB(inet,bzero,LIBS="$LIBS -linet")dnl also 'select()'
 	AC_CHECK_HEADERS( sys/termio.h )
 fi
 
@@ -292,6 +309,7 @@ sigaction \
 sigvec \
 strdup \
 tcgetattr \
+times \
 usleep \
 vfscanf \
 vsscanf \
@@ -328,6 +346,7 @@ if test $ac_cv_header_termios_h = yes ; then
 	fi
 fi
 
+AC_SYS_RESTARTABLE_SYSCALLS
 AC_FUNC_SETVBUF_REVERSED
 NC_TYPE_SIGACTION
 NC_TIOCGWINSZ

@@ -14,17 +14,17 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.54 1996/09/15 04:28:56 tom Exp $
+$Id: ncurses.c,v 1.61 1996/09/28 22:05:58 tom Exp $
 
 ***************************************************************************/
-/*LINTLIBRARY */
 
-#include "test.priv.h"
+#include <test.priv.h>
 
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
 #include <assert.h>
+#include <signal.h>
 
 #if HAVE_GETTIMEOFDAY
 #if HAVE_SYS_TIME_H && ! SYSTEM_LOOKS_LIKE_SCO
@@ -36,15 +36,24 @@ $Id: ncurses.c,v 1.54 1996/09/15 04:28:56 tom Exp $
 #endif
 
 #if HAVE_PANEL_H
+#define USE_LIBPANEL 1
 #include <panel.h>
+#else
+#define USE_LIBPANEL 0
 #endif
 
 #if HAVE_MENU_H && HAVE_LIBMENU
+#define USE_LIBMENU 1
 #include <menu.h>
+#else
+#define USE_LIBMENU 0
 #endif
 
-#if HAVE_FORM_H
+#if HAVE_FORM_H && HAVE_LIBFORM
+#define USE_LIBFORM 1
 #include <form.h>
+#else
+#define USE_LIBFORM 0
 #endif
 
 #ifdef NCURSES_VERSION
@@ -296,13 +305,25 @@ static void attr_test(void)
     addstr("abcde fghij klmno pqrst uvwxy z");
     attroff(A_PROTECT);
 
-    attrset(A_INVIS);
     mvaddstr(16,8,"This is INVISIBLE mode: ");
+    attrset(A_INVIS);
     addstr("abcde fghij klmno pqrst uvwxy z");
-
     attrset(A_NORMAL);
+
     mvaddstr(18,8,"This is NORMAL mode: ");
     addstr("abcde fghij klmno pqrst uvwxy z");
+
+    mvprintw(20, 8,
+	     "This terminal does %shave the magic-cookie glitch",
+	     tigetnum("xmc") > -1 ? "" : "not ");
+
+    move(21, 8);
+    printw("|");
+    attron(A_STANDOUT);
+    printw("This text between bars should %sbe highlighted",
+	     tigetnum("xmc") > -1 ? "not " : "");
+    attroff(A_STANDOUT);
+    printw("|");
 
     refresh();
 
@@ -577,7 +598,7 @@ static void slk_test(void)
 	    break;
 
 	case 's':
-	    move(20, 0);
+	    mvprintw(20, 0, "Press Q to stop the scrolling-test: ");
 	    while ((c = Getchar()) != 'Q' && (c != ERR))
 		addch((chtype)c);
 	    break;
@@ -662,7 +683,7 @@ static void show_upper_chars(int first)
 				addch(reply);
 				napms(10);
 			}
-			nodelay(stdscr, TRUE);
+			nodelay(stdscr, FALSE);
 		}
 	}
 }
@@ -1009,7 +1030,7 @@ static void acs_and_scroll(void)
 	switch(c)
 	{
 	case CTRL('C'):
-	    neww = (struct frame *) malloc(sizeof(struct frame));
+	    neww = (struct frame *) calloc(1, sizeof(struct frame));
 	    if ((neww->wind = getwindow()) == (WINDOW *)NULL)
 		goto breakout;
 
@@ -1087,7 +1108,7 @@ static void acs_and_scroll(void)
 		transient(current, "Can't open screen dump file");
 	    else
 	    {
-		neww = (struct frame *) malloc(sizeof(struct frame));
+		neww = (struct frame *) calloc(1, sizeof(struct frame));
 
 		neww->next = current->next;
 		neww->last = current;
@@ -1223,7 +1244,7 @@ static void acs_and_scroll(void)
  *
  ****************************************************************************/
 
-#if HAVE_PANEL_H
+#if USE_LIBPANEL
 static PANEL *p1;
 static PANEL *p2;
 static PANEL *p3;
@@ -1255,12 +1276,12 @@ wait_a_while(unsigned long msec GCC_UNUSED)
 {
 #if HAVE_NAPMS
 	if(nap_msec == 1)
-		getchar();
+		wGetchar(stdscr);
 	else
 		napms(nap_msec);
 #else
 	if(nap_msec == 1)
-		getchar();
+		wGetchar(stdscr);
 	else if(msec > 1000L)
 		sleep((int)msec/1000L);
 	else
@@ -1869,7 +1890,7 @@ static void demo_pad(void)
     endwin();
     erase();
 }
-#endif /* HAVE_PANEL_H */
+#endif /* USE_LIBPANEL */
 
 /****************************************************************************
  *
@@ -1974,7 +1995,7 @@ static void flushinp_test(WINDOW *win)
  *
  ****************************************************************************/
 
-#if HAVE_MENU_H
+#if USE_LIBMENU
 
 #define MENU_Y	8
 #define MENU_X	8
@@ -2050,6 +2071,7 @@ static void menu_test(void)
 static char *levels[] =
 {
     "TRACE_DISABLE",
+    "TRACE_TIMES",
     "TRACE_TPUTS",
     "TRACE_UPDATE",
     "TRACE_MOVE",
@@ -2066,6 +2088,7 @@ static char *levels[] =
 static int masks[] =	/* must parallel the array above */
 {
     TRACE_DISABLE,
+    TRACE_TIMES,
     TRACE_TPUTS,
     TRACE_UPDATE,
     TRACE_MOVE,
@@ -2092,7 +2115,7 @@ static char *tracetrace(int tlevel)
     }
     sprintf(buf, "0x%02x = {", tlevel);
     if (tlevel == 0) {
-	sprintf(buf, "%s, ", levels[0]);
+	sprintf(buf + strlen(buf), "%s, ", levels[0]);
     } else {
 	for (sp = levels + 1; *sp; sp++)
 	    if ((tlevel & masks[sp - levels]) == masks[sp - levels])
@@ -2209,14 +2232,14 @@ static void trace_set(void)
     free_menu(m);
 }
 #endif /* TRACE */
-#endif /* HAVE_MENU_H */
+#endif /* USE_LIBMENU */
 
 /****************************************************************************
  *
  * Forms test
  *
  ****************************************************************************/
-#if HAVE_FORM_H
+#if USE_LIBFORM
 static FIELD *make_label(int frow, int fcol, char *label)
 {
     FIELD	*f = new_field(1, strlen(label), frow, fcol, 0, 0);
@@ -2439,7 +2462,7 @@ static void demo_forms(void)
     free_form(form);
     noraw();
 }
-#endif	/* HAVE_FORM_H */
+#endif	/* USE_LIBFORM */
 
 /****************************************************************************
  *
@@ -2486,57 +2509,65 @@ static void overlap_test(void)
     refresh();
     move(0, 0);
     printw("This test shows the behavior of wnoutrefresh() with respect to\n");
-    printw("the shared region of two overlapping windows.  The cross pattern\n");
-    printw("in each window does not overlap the other.\n");
+    printw("the shared region of two overlapping windows A and B.  The cross\n");
+    printw("pattern in each window does not overlap the other.\n");
 
 
     move(18, 0);
-    printw("1 = refresh window A, then window B, then doupdaute.\n");
-    printw("2 = refresh window B, then window A, then doupdaute.\n");
-    printw("3 = fill window A with letter A.  4 = fill window B with letter B.\n");
-    printw("5 = cross pattern in window A.    6 = cross pattern in window B.\n");
-    printw("7 = clear window A.               8 = clear window B.\n");
+    printw("a = refresh A, then B, then doupdate. b = refresh B, then A, then doupdaute\n");
+    printw("c = fill window A with letter A.      d = fill window B with letter B.\n");
+    printw("e = cross pattern in window A.        f = cross pattern in window B.\n");
+    printw("g = clear window A.                   h = clear window B.\n");
+    printw("i = overwrite A onto B.               j = overwrite B onto A.\n");
     printw("^Q/ESC = terminate test.");
 
     while ((ch = Getchar()) != QUIT && ch != ESCAPE)
 	switch (ch)
 	{
-	case '1':		/* refresh window A first, then B */
+	case 'a':		/* refresh window A first, then B */
 	    wnoutrefresh(win1);
 	    wnoutrefresh(win2);
 	    doupdate();
 	    break;
 
-	case '2':		/* refresh window B first, then A */
+	case 'b':		/* refresh window B first, then A */
 	    wnoutrefresh(win2);
 	    wnoutrefresh(win1);
 	    doupdate();
 	    break;
 
-	case '3':		/* fill window A so it's visible */
+	case 'c':		/* fill window A so it's visible */
 	    fillwin(win1, 'A');
 	    break;
 
-	case '4':		/* fill window B so it's visible */
+	case 'd':		/* fill window B so it's visible */
 	    fillwin(win2, 'B');
 	    break;
 
-	case '5':		/* cross test pattern in window A */
+	case 'e':		/* cross test pattern in window A */
 	    crosswin(win1, 'A');
 	    break;
 
-	case '6':		/* cross test pattern in window A */
+	case 'f':		/* cross test pattern in window A */
 	    crosswin(win2, 'B');
 	    break;
 
-	case '7':		/* clear window A */
+	case 'g':		/* clear window A */
 	    wclear(win1);
 	    wmove(win1, 0, 0);
 	    break;
 
-	case '8':		/* clear window B */
+	case 'h':		/* clear window B */
 	    wclear(win2);
 	    wmove(win2, 0, 0);
+	    break;
+
+	case 'i':		/* overwrite A onto B */
+	    overwrite(win1, win2);
+	    break;
+
+	case 'j':		/* overwrite B onto A */
+	    overwrite(win2, win1);
 	    break;
 	}
 
@@ -2588,7 +2619,7 @@ do_single_test(const char c)
 	acs_display();
 	break;
 
-#if HAVE_PANEL_H
+#if USE_LIBPANEL
     case 'o':
 	demo_panels();
 	break;
@@ -2606,19 +2637,19 @@ do_single_test(const char c)
 	test_sgr_attributes();
 	break;
 
-#if HAVE_MENU_H
+#if USE_LIBMENU
     case 'm':
 	menu_test();
 	break;
 #endif
 
-#if HAVE_PANEL_H
+#if USE_LIBPANEL
     case 'p':
 	demo_pad();
 	break;
 #endif
 
-#if HAVE_FORM_H
+#if USE_LIBFORM
     case 'r':
 	demo_forms();
 	break;
@@ -2628,7 +2659,7 @@ do_single_test(const char c)
         overlap_test();
 	break;
 
-#if defined(HAVE_MENU_H) && defined(TRACE)
+#if USE_LIBMENU && defined(TRACE)
     case 't':
         trace_set();
 	break;
@@ -2676,6 +2707,13 @@ set_terminal_modes(void)
     keypad(stdscr, TRUE);
 }
 
+#ifdef SIGUSR1
+static void announce_sig(int sig)
+{
+    (void) fprintf(stderr, "Handled signal %d\r\n", sig);
+}
+#endif */
+
 /*+-------------------------------------------------------------------------
 	main(argc,argv)
 --------------------------------------------------------------------------*/
@@ -2708,13 +2746,18 @@ main(int argc, char *argv[])
      */
 #ifdef TRACE
     /* enable debugging */
-#ifndef HAVE_MENU_H
+#if !USE_LIBMENU
     trace(save_trace);
-#endif /* HAVE_MENU_H */
+#endif /* USE_LIBMENU */
 #endif /* TRACE */
 
     /* tell it we're going to play with soft keys */
     slk_init(1);
+
+#ifdef SIGUSR1
+    /* set up null signal catcher so we can see what interrupts to getch do */
+    signal(SIGUSR1, announce_sig);
+#endif */
 
     /* we must initialize the curses data structure only once */
     initscr();
@@ -2744,19 +2787,19 @@ main(int argc, char *argv[])
 	(void) puts("g = display windows and scrolling");
 	(void) puts("i = test of flushinp()");
 	(void) puts("k = display character attributes");
-#if HAVE_MENU_H
+#if USE_LIBMENU
 	(void) puts("m = menu code test");
 #endif
-#if HAVE_PANEL_H
+#if USE_LIBPANEL
 	(void) puts("o = exercise panels library");
 	(void) puts("p = exercise pad features");
 	(void) puts("q = quit");
 #endif
-#if HAVE_FORM_H
+#if USE_LIBFORM
 	(void) puts("r = exercise forms code");
 #endif
 	(void) puts("s = overlapping-refresh test");
-#if defined(HAVE_MENU_H) && defined(TRACE)
+#if USE_LIBMENU && defined(TRACE)
 	(void) puts("t = set trace level");
 #endif
 	(void) puts("? = repeat this command summary");

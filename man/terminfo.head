@@ -1,3 +1,4 @@
+.\" $Id: terminfo.head,v 1.5 1996/09/21 23:26:20 tom Exp $
 .TH TERMINFO 5 "" "" "File Formats"
 .ds n 5
 .ds d @DATADIR@/terminfo
@@ -41,7 +42,7 @@ Thus, a vt100 in 132 column mode would be vt100-w.
 The following suffixes should be used where possible:
 .PP
 .TS
-center;
+center expand;
 l c l
 l l l.
 \fBSuffix	Meaning	Example\fP
@@ -59,6 +60,7 @@ l l l.
 -vb	Use visible bell instead of beep	wy370-vb
 -w	Wide mode (> 80 columns, usually 132)	vt100-w
 .TE
+.PP
 For more on terminal naming conventions, see the \fBterm(7)\fR manual page.
 .SS Capabilities
 .\" Head of terminfo man page ends here

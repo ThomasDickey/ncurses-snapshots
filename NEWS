@@ -3,6 +3,51 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+	+ ifdef'd out _nc_hash_map (still slower)
+	+ add graphic characters to vt52 description.
+	+ use PutAttrChar in ClrToEOL to ensure proper background, position.
+	+ simplify/correct logic in 'mvcur()' that does wrapping; it was
+	  updating the position w/o actually moving the cursor, which broke
+	  relative moves.
+	+ ensure that 'doupdate()' sets the .oldindex values back to a sane
+	  state; this was causing a spurious refresh in ncurses 'r'.
+	+ add logic to configure (from vile) to guard against builders who
+	  don't remove config.cache & config.status when doing new builds.
+	+ corrected logic for 'repeat_char' in EmitRange (from #317), which
+	  did not follow the 2-parameter scheme specified in XSI.
+	+ corrected logic of wrefresh, wnoutrefresh broken in #319, making
+	  clearok work properly (from report by Michael Elkins).
+	+ corrected problem with endwin introduced by #314 (removing the
+	  scrolling-region reset) that broke ncurses.c tests.
+	+ corrected order of args in AC_CHECK_LIB (from report by Ami Fischman
+	  <fischman@math.ucla.edu>).
+	+ corrected formatting of terminfo.5 tables (Juergen Ehling)
+	> patch 320 by eric:
+	+ change ABI to 3.3
+	+ emit a carriage-return in 'endwin()' to workaround a kernel bug in
+	  BSDI.  (requested by Mike Karels <karels@redrock.bsdi.com>)
+	+ reverse the default o configure --enable-termcap (consensus).
+	> patch 319 by eric:
+	+ modified logic for clearok and related functions (from report by
+	  Michael Elkins) - untested
+	> patch 318 by eric:
+	+ correction to #317.
+	> patch 317 by eric:
+	+ re-add _nc_hash_map
+	+ modify EmitRange to maintain position as per original design.
+	+ add hashtest.c, program to time the hashmap optimization.
+	> patch 316 by eric:
+	+ add logic to deal with magic-cookie (how was this tested?)
+	  (lib_doupdate.c).
+	+ add ncurses.c driver for magic-cookie, some fixes to ncurses.c
+	> patch 315 by eric:
+	+ merged A. Lukyanov's patch to use ech and rep - untested
+	  (lib_doupdate.c).
+	+ modified handling of interrupted system calls - untested
+	  (lib_getch.c, lib_twait.c).
+	+ new function _nc_mvcur_resume()
+	+ fix return value for 'overlay()', 'overwrite()'
+
 960914	- snapshot
 	+ implement subwindow-logic in wresize, minor fixes to ncurses 'g'
 	  test.
@@ -215,6 +260,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	+ corrected initialization of $IP in misc/run_tic.sh
 
 960615	- snapshot
+	+ ifdef'd out _nc_hash_map() call because it does not improve speed.
 	+ display version of gcc if configure script identifies it.
 	+ modify configure script to use /usr as Linux's default prefix.
 	+ modify run_tic.sh to use shlib script, fixes some problems installing
@@ -238,7 +284,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	+ correction to IDcTransformLine logic which controls where InsStr is
 	  invoked (refined by lav@yars.free.net).
 	> patches 303 by eric
-	+ conditionally include Chris Torek's hash function.
+	+ conditionally include Chris Torek's hash function _nc_hash_map().
 	+ better fix for nvi refresh-bug (Rick Marshall)
 	+ fix for bug in handling of interrupted keystroke waits,
 	  (Werner Fleck).

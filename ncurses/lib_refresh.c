@@ -30,7 +30,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.9 1996/07/30 22:29:50 tom Exp $")
+MODULE_ID("$Id: lib_refresh.c,v 1.11 1996/09/24 00:41:09 tom Exp $")
 
 int wredrawln(WINDOW *win, int beg, int num)
 {
@@ -50,6 +50,8 @@ int code;
 		curscr->_clear = TRUE;
 		code = doupdate();
 	} else if ((code = wnoutrefresh(win)) == OK) {
+		if (win->_clear)
+			newscr->_clear = TRUE;
 		code = doupdate();
 		/*
 		 * Reset the clearok() flag in case it was set for the special
@@ -150,6 +152,7 @@ bool	wide;
 
 	if (win->_clear) {
 		win->_clear = FALSE;
+		newscr->_clear = TRUE;
 	}
 
 	if (! win->_leaveok) {

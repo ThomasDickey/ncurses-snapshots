@@ -89,6 +89,14 @@ use of hardware scrolling, line-insertion, and line-deletion
 for screen-line movements.  This algorithm is more powerful than
 the 4.4BSD curses quickch() routine.  <P>
 
+<LI> Real support for terminals with the magic-cookie glitch.  The
+screen-update code will refrain from drawing a highlight if the magic-
+cookie unattributed spaces required just before the beginning and
+after the end would step on a non-space character.  It will
+automatically shift highlight boundaries when doing so would make it
+possible to draw the highlight without changing the visual appearance
+of the screen.
+
 <LI> It is possible to generate the library with a list of pre-loaded 
 fallback entries linked to it so that it can serve those terminal types even
 when no terminfo tree or termcap file is accessible (this may be useful

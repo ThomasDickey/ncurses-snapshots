@@ -34,7 +34,7 @@
 #include <term.h>	/* padding_baud_rate, xon_xoff */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.14 1996/08/17 22:36:01 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.15 1996/09/20 09:35:58 esr Exp $")
 
 int delay_output(int ms)
 {
@@ -65,6 +65,10 @@ int delay_output(int ms)
 
 int _nc_outch(int ch)
 {
+#ifdef TRACE
+    	_nc_outchars++;
+#endif /* TRACE */
+
 	if (SP != NULL)
 		putc(ch, SP->_ofp);
 	else

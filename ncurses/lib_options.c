@@ -32,7 +32,7 @@
 #include <term.h>	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
 
-MODULE_ID("$Id: lib_options.c,v 1.15 1996/09/07 21:12:25 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.16 1996/09/20 19:44:36 esr Exp $")
 
 int has_ic(void)
 {
@@ -70,10 +70,7 @@ int clearok(WINDOW *win, bool flag)
 {
 	T(("clearok(%p,%d) called", win, flag));
 
-	if (win == curscr)
-	    newscr->_clear = flag;
-	else
-	    win->_clear = flag;
+	win->_clear = flag;
 	return OK;
 }
 

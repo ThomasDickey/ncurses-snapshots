@@ -31,16 +31,17 @@
 #define MAX_SPC_ROWS (3)
 
 /*---------------------------------------------------------------------------
-|   Facility      :  libnmenu  
+|   Facility      :  libnmenu
 |   Function      :  int set_menu_spacing(MENU *menu,int desc, int r, int c);
-|   
+|
 |   Description   :  Set the spacing between entried
 |
 |   Return Values :  E_OK                 - on success
 +--------------------------------------------------------------------------*/
 int set_menu_spacing(MENU *menu, int s_desc, int s_row, int s_col )
 {
-  MENU *m = Normalize_Menu(menu);
+  MENU *m; /* split for ATAC workaround */
+  m = Normalize_Menu(menu);
 
   assert(m);
   if (m->status & _POSTED)
@@ -61,17 +62,18 @@ int set_menu_spacing(MENU *menu, int s_desc, int s_row, int s_col )
 
 
 /*---------------------------------------------------------------------------
-|   Facility      :  libnmenu  
+|   Facility      :  libnmenu
 |   Function      :  int menu_spacing (const MENU *,int *,int *,int *);
-|   
+|
 |   Description   :  Retrieve info about spacing between the entries
 |
 |   Return Values :  E_OK             - on success
 +--------------------------------------------------------------------------*/
-int menu_spacing( const MENU *menu, int* s_desc, int* s_row, int* s_col) 
-{ 
-  const MENU *m = Normalize_Menu(menu);
-  
+int menu_spacing( const MENU *menu, int* s_desc, int* s_row, int* s_col)
+{
+  const MENU *m; /* split for ATAC workaround */
+  m = Normalize_Menu(menu);
+
   assert(m);
   if (s_desc) *s_desc = m->spc_desc;
   if (s_row)  *s_row  = m->spc_rows;

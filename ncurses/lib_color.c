@@ -30,12 +30,12 @@
 #include <string.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.10 1996/09/13 09:44:57 esr Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.11 1996/09/23 00:39:33 tom Exp $")
 
 /*
- * These should be screen structure members.  They need to be globals
- * for hysterical raisins.  So we assign them in start_color() and
- * also in set_term()'s screen-switching logic. 
+ * These should be screen structure members.  They need to be globals for
+ * hystorical reasons.  So we assign them in start_color() and also in
+ * set_term()'s screen-switching logic.
  */
 int COLOR_PAIRS;
 int COLORS;

@@ -39,6 +39,8 @@
 
 unsigned _nc_tracing = 0;  
 char *_nc_tputs_trace;
+long _nc_outchars;
+int _nc_optimize_enable = OPTIMIZE_ALL;
 
 static int	tracefd = 2;	/* default to writing to stderr */
 

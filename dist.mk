@@ -16,7 +16,7 @@ SHELL = /bin/sh
 # If a new ncurses has an incompatible application binary interface than
 # previous one, the ABI version should be changed.
 VERSION = 1.9.9g
-SHARED_ABI = 3.2
+SHARED_ABI = 3.3
 
 dist: announce.html misc/ncurses-intro.doc misc/hackguide.doc
 	(cd ..;  tar cvf ncurses-$(VERSION).tar `sed <ncurses-$(VERSION)/MANIFEST 's/^./ncurses-$(VERSION)/'`;  gzip ncurses-$(VERSION).tar)
