@@ -53,7 +53,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.82 2004/03/28 00:23:25 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.83 2004/03/28 23:48:56 tom Exp $")
 
 /****************************************************************************
  *
@@ -346,7 +346,7 @@ _nc_get_locale(void)
     }
 #endif
     T(("_nc_get_locale %s", _nc_visbuf(env)));
-    return 0;
+    return env;
 }
 
 /*

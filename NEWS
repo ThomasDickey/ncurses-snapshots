@@ -1,10 +1,13 @@
--- $Id: NEWS,v 1.804 2004/03/28 00:27:13 tom Exp $
+-- $Id: NEWS,v 1.805 2004/03/28 23:49:33 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040328
+	+ fix a typo in the _nc_get_locale() change.
 
 20040327
 	+ modify _nc_get_locale() to use setlocale() to query the program's
