@@ -58,6 +58,7 @@ s%@cf_cv_shift_limit@%32%g
 s%@cf_cv_widec_shift@%8%g
 s%@cf_cv_typeof_chtype@%long%g
 s%@cf_cv_1UL@%1UL%g
+s%@cf_cv_cc_bool_type@%0%g
 
 EOF
 
