@@ -65,8 +65,8 @@ the \fBpanels(3x)\fR library. This means that you can either use
 undesired, effects.
 
 Windows are referred to by variables declared as \fBWINDOW *\fR.
-These data structures are manipulated with routines described on 3X
-pages (whose names begin "curs_").  Among which the most basic
+These data structures are manipulated with routines described here and
+elsewhere in the \fBncurses\fR manual pages.  Among which the most basic
 routines are \fBmove\fR and \fBaddch\fR.  More general versions of
 these routines are included with names beginning with \fBw\fR,
 allowing the user to specify a window.  The routines not beginning
@@ -572,6 +572,13 @@ The routines \fBgetmouse\fR, \fBmousemask\fR, \fBungetmouse\fR,
 \fBmouseinterval\fR, and \fBwenclose\fR relating to mouse interfacing are not
 part of XPG4, nor are they present in SVr4.  See the \fBcurs_mouse\fR(3X)
 manual page for details.
+.PP
+In historic curses versions, delays embedded in the capabilities \fBcr\fR,
+\fBind\fR, \fBcub1\fR, \fBff\fR and \fBtab\fR activated corresponding delay
+bits in the UNIX tty driver.  In this implementation, all padding is done by
+NUL sends.  This method is slightly more expensive, but narrows the interface
+to the UNIX kernel significantly and increases the package's portability
+correspondingly.
 .SH NOTES
 The header file \fB<curses.h>\fR automatically includes the header files
 \fB<stdio.h>\fR and \fB<unctrl.h>\fR.

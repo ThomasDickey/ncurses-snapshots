@@ -190,6 +190,9 @@ AUTHOR
 static void linedump(void);
 #endif /* defined(TRACE) || defined(MAINDEBUG) */
 
+/* if only this number of lines is carried over, nuke the screen and redraw */
+#define CLEAR_THRESHOLD		3
+
 #ifdef MAINDEBUG
 #define LINES	24
 static int oldnums[LINES], reallines[LINES];
@@ -222,12 +225,12 @@ void _nc_scroll_optimize(void)
 /* scroll optimization to transform curscr to newscr */
 {
     bool no_hunk_moved;		/* no hunk moved on this pass? */
-    int	n;
+    int	n, new_lines;
 #if defined(TRACE) || defined(MAINDEBUG)
     int	pass = 0;
 #endif /* defined(TRACE) || defined(MAINDEBUG) */
 
-    T(("_nc_scroll_optimize() begins"));
+    TR(TRACE_CALLS, ("_nc_scroll_optimize() begins"));
 
     /* mark any line not carried over with _NEWINDEX */
     for (n = 0; n < LINES; n++)
@@ -235,9 +238,34 @@ void _nc_scroll_optimize(void)
     for (n = 0; n < LINES; n++)
 	if (OLDNUM(n) != _NEWINDEX)
 	    REAL(OLDNUM(n)) -= (MAXLINES + 1);
-    for (n = 0; n < LINES; n++)    
+    for (n = new_lines = 0; n < LINES; n++)    
 	if (REAL(n) > MAXLINES)
+	{
 	    REAL(n) = _NEWINDEX;
+	    new_lines++;
+	}
+
+    /* 
+     * ^F in vi (which scrolls forward by LINES-2 in the file) exposes
+     * a weakness in this design.  Ideally, vertical motion
+     * optimization should cost its actions and then force a
+     * ClrUpdate() and complete redraw if that would be faster than
+     * the scroll.  Unfortunately, this would be a serious pain to
+     * arrange; hence, this hack.  If there are few enough lines
+     * carried over, don't bother with the scrolling, we just nuke the
+     * screen and redraw the whole thing.  Keith Bostic argues that
+     * this will be a win on strictly visual grounds even if the
+     * resulting update is theoretically sub-optimal.  Experience 
+     * with vi says he's probably right.
+     */
+    if (LINES - new_lines <= CLEAR_THRESHOLD)
+    {
+	T(("too few lines carried over, nuking screen"));
+#ifndef MAINDEBUG
+	clearok(stdscr, TRUE);
+#endif /* MAINDEBUG */
+	return;
+    }
 
 #ifdef TRACE
     TR(TRACE_UPDATE | TRACE_MOVE, ("After real line marking:"));
@@ -338,6 +366,7 @@ main()
 {
     char	line[BUFSIZ], *st;
 
+    _nc_tracing = TRACE_MOVE;
     for (;;)
     {
 	int	n;

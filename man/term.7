@@ -17,7 +17,7 @@ consoles.
 If you use a dialup line, the type of device attached to it may vary.  Older
 UNIX systems pre-set a very dumb terminal type like `dumb' or `dialup' on
 dialup lines.  Newer ones may pre-set `vt100', relecting the prevalence of DEC
-VT100-compatible terminals an terminal-computer emulators.
+VT100-compatible terminals and personal-computer emulators.
 .PP
 Modern telnets pass your \fBTERM\fR environment variable from the local side to
 the remote one.  There can be problems if the remote terminfo or termcap entry
@@ -37,7 +37,7 @@ which you wish to override the system default type for your line.
 Terminal type descriptions are stored as files of capability data underneath
 \*d.  To browse a list of all terminal names recognized by the system, do 
 
-	infocmp -T | more
+	toe | more
 
 from your shell.  These capability files are in a binary format optimized for
 retrieval speed (unlike the old text-based \fBtermcap\fR format they replace);

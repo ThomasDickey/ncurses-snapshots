@@ -127,7 +127,7 @@
 # Yes, BSD tset(1) uses hpa.  We elide hpa/vpa anyway because the motion
 # optimizer in BSD curses didn't use them.  This omission seems to be the
 # single most effective one, it shortened the resolved length of all thirteen
-# problem entries in the 9.9.0 version below critical.
+# problem entries in the 9.9.0 version of the terminfo master below critical.
 #
 # It would be nice to keep f11 and f12 for Emacs use, but a couple of termcap
 # translations go back over critical if we do this.  As 4.4BSD curses fades
@@ -767,9 +767,9 @@ enter_vertical_hl_mode	evhlm	str	Xv	-----	Enter vertical highlight mode
 # cares about them enough to hack in code that will translate them into
 # terminfo capabilities.
 #
-# The first part of the list is from Ross Ridge's `mytinfo' package; the
-# variable names and terminfo names (as well as the termcap codes) match
-# his list.
+# The first part of the list is from Ross Ridge's `mytinfo' package
+# (comp.sources.unix, volume 26); the variable names and terminfo names (as
+# well as the termcap codes) match his list.
 #
 # This group of codes is not marked obsolete in 4.4BSD, but have no direct
 # terminfo equivalents.  The rs capability is specially translated to terminfo
@@ -822,6 +822,22 @@ gnu_has_meta_key	OTMT	bool	MT	----E	has meta key
 # comma-separated list of capabilities for which there are corresponding keys.
 # The `kn' code is accepted but ignored.
 #
+# The `ma' capability seems to have been designed to map between the rogue(2)
+# motion keys (including jkhl) and characters emitted by arrow keys on some
+# primitive pre-ANSI terminals.  It's so obsolete it's fossilized...
+#
+# Here is a description of memory_lock_above and memory_unlock:
+# "You can 'freeze' data on the screen by turning on Memory Lock in a line of
+# text.  All lines above the cursor's current line become locked in place on
+# the screen.  Then enter data normally.  When the screen fills up, any
+# further data entered forces the first line of unfrozen line text to scroll
+# under the frozen data.  Lines scrolled off the screen are inserted into
+# memory immediately preceding the first frozen line." (from the HP 700/96
+# User's manual).  VT100/ANSI memory lock set is \E[>2h, reset is \E[>2l.
+#
+# Applications that use terminfo are supposed to behave as though xr is
+# always true.
+#
 linefeed_is_newline     OTNL	bool	NL	YB---	move down with \n
 # even_parity		OTEP	bool	EP	-B---	terminal requires even parity
 # odd_parity		OTOP	bool	OP	-B---	terminal requires odd parity
@@ -832,14 +848,14 @@ backspace_delay		OTdB	num	dB	YB-G-	padding required for ^H
 # form_feed_delay	OTdF	num	dF	-B-G-	padding required for ^L
 horizontal_tab_delay	OTdT	num	dT	YB-G-	padding required for ^I
 # vertical_tab_delay	OTdV	num	dV	-B---	padding required for ^V
-number_of_function_keys	OTkn	num	kn	-B-G-	(not used)
-other_non_function_keys OTko	str	ko	-B-G-	(not used)
-arrow_key_map           OTma	str	ma	YBC--	(not used)
-# memory_lock_above     OTml	str	ml	-B---	(not used)
-# memory_unlock         OTmu	str	mu	-B---	(not used)
-has_hardware_tabs       OTpt	bool	pt	YB---	has 8-char tabs invooked with ^I
+number_of_function_keys	OTkn	num	kn	-B-G-	count of function keys
+other_non_function_keys OTko	str	ko	-B-G-	list of self-mapped keycaps
+arrow_key_map           OTma	str	ma	YBC--	map arrow keys rogue(1) motion keys
+# memory_lock_above     OTml	str	ml	-B---	lock visible screen memory above the current line
+# memory_unlock         OTmu	str	mu	-B---	unlock visible screen memory above the current line
+has_hardware_tabs       OTpt	bool	pt	YB---	has 8-char tabs invoked with ^I
 return_does_clr_eol	OTxr	bool	xr	YB---	return clears the line
-# tek_4025_insert_line	OTxx	bool	xx	-BC--	(not used)
+# tek_4025_insert_line	OTxx	bool	xx	-BC--	Tektronix 4025 insert-line glitch
 #
 # mytinfo described this as a termcap capability, but it's not listed in the
 # 4.4BSD man pages, and not found in the 4.4BSD termcap file.  The ncurses
@@ -849,17 +865,18 @@ return_does_clr_eol	OTxr	bool	xr	YB---	return clears the line
 #
 # University of Waterloo termcap extensions (as described in mytinfo).
 # The `xl' termcap file clashes with a terminfo name; this ambiguity cannot
-# be resolved by a type check.
+# be resolved by a type check.  The descriptions are guesses from what was
+# in the nytinfo tables. 
 #
-# key_interrupt_char    OTki	str	ki	-----	(not used)
-# key_kill_char         OTkk	str	kk	-----	(not used)
-# key_suspend_char      OTkz	str	kz	-----	(not used)
-# initialization_messy	OTxc	bool	xc	-----	(not used)
-# ind_at_bottom_does_cr	OTxl	bool	xl	-----	(not used)
+# key_interrupt_char    OTki	str	ki	-----	string set by interrupt key (?)
+# key_kill_char         OTkk	str	kk	-----	string set by kill key (?)
+# key_suspend_char      OTkz	str	kz	-----	string set by suspend key (?)
+# initialization_messy	OTxc	bool	xc	-----	initialization leaves garbage on the screen (?)
+# ind_at_bottom_does_cr	OTxl	bool	xl	-----	index does a carriage return
 #
-# Nonstandard capabilities from Ross Ridge's `mytinfo' package 
-# (comp.sources.unix, volume 26).  SR clashes with a terminfo name; this
-# ambiguity cannot be resolved by a type check.
+# Nonstandard capabilities unique to Ross Ridge's `mytinfo' package.
+# SR clashes with a terminfo name; this ambiguity cannot be resolved by a type
+# check.
 #
 # scroll_left          	OTsl1	str	Sl	-----	scroll screen leftward
 # scroll_right         	OTsr1	str	Sr	-----	scroll screen rightward
@@ -1151,5 +1168,6 @@ infoalias	ksel	kslt	IBM	key_select
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:
+# case-fold-search:nil
 # truncate-lines:t
 # End:

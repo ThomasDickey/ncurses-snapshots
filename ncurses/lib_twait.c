@@ -30,7 +30,10 @@
 
 #include <sys/types.h>		/* some systems can't live without this */
 #include <string.h>
+
+#if HAVE_SYS_TIME_H && ! SYSTEM_LOOKS_LIKE_SCO
 #include <sys/time.h>
+#endif
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
@@ -57,7 +60,7 @@ int _nc_timed_wait(int fd, int wait, int *timeleft)
 int result;
 struct timeval ntimeout;
 static fd_set set;
-#ifndef GOOD_SELECT
+#if !defined(GOOD_SELECT) && HAVE_GETTIMEOFDAY
 struct timeval starttime, returntime;
 
 	 gettimeofday(&starttime, NULL);
@@ -74,7 +77,7 @@ struct timeval starttime, returntime;
 
 	 result = select(fd+1, &set, NULL, NULL, &ntimeout);
 
-#ifndef GOOD_SELECT
+#if !defined(GOOD_SELECT) && HAVE_GETTIMEOFDAY
 	 gettimeofday(&returntime, NULL);
 	 ntimeout.tv_sec -= (returntime.tv_sec - starttime.tv_sec);
 	 ntimeout.tv_usec -= (returntime.tv_usec - starttime.tv_usec);

@@ -35,10 +35,13 @@
 #include <sys/param.h>		/* for MAXPATHLEN */
 #include <string.h>
 #include <ctype.h>
-#include <dirent.h>
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
 #endif /* HAVE_GETOPT_H */
+
+#ifndef MAXPATHLEN
+#define MAXPATHLEN 256
+#endif
 
 #include "term.h"
 #include "tic.h"
@@ -300,7 +303,6 @@ int main(int argc, char *argv[])
 	path tfile[MAXTERMS];
 	int saveoptind, c, i;
 	bool filecompare = FALSE;
-	bool typelist = FALSE;
 
 	if ((terminal = getenv("TERM")) == NULL)
 	{
@@ -314,7 +316,7 @@ int main(int argc, char *argv[])
 		firstdir = TERMINFO;
 	restdir = firstdir;
 
-	while ((c = getopt(argc, argv, "dcCFnlLprs:TuvVw:A:B:1")) != EOF)
+	while ((c = getopt(argc, argv, "dcCFnlLprs:uvVw:A:B:1")) != EOF)
 		switch (c)
 		{
 		case 'd':
@@ -374,10 +376,6 @@ int main(int argc, char *argv[])
 			}
 			break;
 
-		case 'T':
-			typelist = TRUE;
-			break;
-
 		case 'u':
 			compare = C_USEALL;
 			break;
@@ -406,71 +404,6 @@ int main(int argc, char *argv[])
 			mwidth = 0;
 			break;
 		}
-
-	/* user may want a simple terminal type listing */
-	if (typelist)
-	{
-	    DIR	*termdir;
-	    struct dirent *subdir;
-
-	    if ((termdir = opendir(firstdir)) == (DIR *)NULL)
-	    {
-		(void) fprintf(stderr,
-			"infocmp: can't open terminfo directory %s\n",
-			firstdir);
-		return(0);
-	    }
-
-	    while ((subdir = readdir(termdir)) != NULL)
-	    {
-		char	buf[256];
-		DIR	*entrydir;
-		struct dirent *entry;
-
-		if (!strcmp(subdir->d_name, ".")
-			|| !strcmp(subdir->d_name, ".."))
-		    continue;
-
-		(void) strcpy(buf, firstdir);
-		(void) strcat(buf, "/");
-		(void) strcat(buf, subdir->d_name);
-		(void) strcat(buf, "/");
-		chdir(buf);
-		entrydir = opendir(".");
-		while ((entry = readdir(entrydir)) != NULL)
-		{
-		    TERMTYPE	lterm;
-		    char	*cn, *desc;
-
-		    if (!strcmp(entry->d_name, ".")
-				|| !strcmp(entry->d_name, ".."))
-			continue;
-
-		    if (_nc_read_file_entry(entry->d_name, &lterm)==-1)
-		    {
-			(void) fprintf(stderr,
-				       "couldn't open terminfo file %s.\n",
-				       tfile[termcount]);
-			return(1);
-		    }
-
-		    /* only list things once, by primary name */
-		    cn = canonical_name(lterm.term_names, (char *)NULL);
-		    if (strcmp(cn, entry->d_name))
-			continue;
-
-		    /* get a description for the type */
-		    if ((desc = strrchr(lterm.term_names,'|')) == (char *)NULL)
-			desc = "(No description)";
-		    else
-			++desc;
-
-		    (void) printf("%-10s\t%s\n", cn, desc);
-		}
-	    }
-
-	    return 0;
-	}
 
 	/* by default, sort by terminfo name */
 	if (sortmode == S_DEFAULT)
@@ -505,6 +438,7 @@ int main(int argc, char *argv[])
 		else
 		{
 		    char	*directory = termcount ? restdir : firstdir;
+		    int		status;
 
 		    tname[termcount] = argv[optind];
 		    (void) sprintf(tfile[termcount], "%s/%c/%s",
@@ -514,13 +448,20 @@ int main(int argc, char *argv[])
 			(void) fprintf(stderr,
 			       "infocmp: reading entry %s from file %s\n",
 			       argv[optind], tfile[termcount]);
-		    if (_nc_read_file_entry(tfile[termcount],&term[termcount])==-1)
+		    status = _nc_read_file_entry(tfile[termcount],
+						 &term[termcount]);
+		    if (status == -1)
 		    {
 			(void) fprintf(stderr,
-				       "couldn't open terminfo file %s.\n",
-				       tfile[termcount]);
+				       "infocmp: couldn't open terminfo directory %s.\n",
+				       directory);
+			return(1);
+		    }
+		    else if (status == 0)
+		    {
 			(void) fprintf(stderr,
-				       "The terminal you are using is not defined.\n");
+				       "infocmp: couldn't open terminfo file %s.\n",
+				       tfile[termcount]);
 			exit(1);
 		    }
 		    termcount++;
@@ -606,7 +547,7 @@ int main(int argc, char *argv[])
 
 		/* parse entries out of the source file */
 		_nc_set_source(argv[optind]);
-		_nc_read_entry_source(stdin, NULL, TRUE, FALSE);
+		_nc_read_entry_source(stdin, NULL, TRUE, FALSE, NULLHOOK);
 
 		/* do use resolution */
 		if (!_nc_resolve_uses())

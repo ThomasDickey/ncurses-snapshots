@@ -184,7 +184,7 @@ FILE *f;
 	if ((status = tigetflag(argv[0])) != -1)
 		return(status != 0);
 	else if ((status = tigetnum(argv[0])) != -2) {
-		(void) printf("%d", status);
+		(void) printf("%d\n", status);
 		return(0);
 	}
 	else if ((s = tigetstr(argv[0])) == (char *)-1)
@@ -206,7 +206,9 @@ FILE *f;
 					    argv[5],argv[6],argv[7],argv[8],
 					    argv[9]);
 		}
-		fputs(s, stdout);
+
+		/* use putp() in order to perform padding */
+		putp(s);
 		return(0);
 	}
 	return(0);

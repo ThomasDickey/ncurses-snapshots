@@ -45,19 +45,21 @@
 
 char	*_nc_progname;
 
-static int	width = 60;
-static bool	infodump = FALSE;	/* running as captoinfo? */
-static bool	capdump = FALSE;	/* running as infotocap? */
-static char	*source_file = "terminfo";
-static char	*const usage_string = "tic [-v[n]] source-file\n";
-static char	check_only = 0;
-
 int main (int argc, char *argv[])
 {
 int	i, debug_level = 0;
 int	argflag = FALSE, smart_defaults = TRUE;
 char    *termcap;
 ENTRY	*qp;
+
+int	width = 60;
+bool	infodump = FALSE;	/* running as captoinfo? */
+bool	capdump = FALSE;	/* running as infotocap? */
+char	*source_file = "terminfo";
+char	*const usage_string = "tic [-v[n]] source-file\n";
+bool	check_only = FALSE;
+bool	direct_dependencies = FALSE;
+bool	invert_dependencies = FALSE;
 
 	if ((_nc_progname = strrchr(argv[0], '/')) == NULL)
 		_nc_progname = argv[0];
@@ -91,6 +93,12 @@ ENTRY	*qp;
 		    		break;
 	    	    	case 'w':
 				width = argv[i][2]  ?  atoi(&argv[i][2])  :  1;
+				break;
+			case 'u':
+				direct_dependencies = TRUE;
+				break;
+			case 'U':
+				invert_dependencies = TRUE;
 				break;
 		    	case 'V':
 				(void) fputs(NCURSES_VERSION, stdout);
@@ -147,43 +155,26 @@ ENTRY	*qp;
 
 	/* parse entries out of the source file */
 	_nc_set_source(source_file);
-	_nc_read_entry_source(stdin, (char *)NULL, !smart_defaults, FALSE);
+	_nc_read_entry_source(stdin, (char *)NULL,
+			      !smart_defaults, FALSE,
+			      NULLHOOK);
 
 	/* do use resolution */
 	if (check_only || (!infodump && !capdump))
-	{
-	    if (!_nc_resolve_uses())
-	    {
-		(void) fprintf(stderr, "There are unresolved use entries:\n");
-		for_entry_list(qp)
-		    if (qp->nuses)
-		    {
-			for (i = 0; i < qp->nuses; i++)
-			{
-			    (void) fputs(canonical_name((char *)qp->uses[i], (char *)NULL),
-					 stderr);
-			    (void) fputc(' ', stderr);
-			}    
-			(void) fprintf(stderr,
-				       "in %s\n",
-				      canonical_name(qp->tterm.term_names, (char *)NULL));
-		   }
-		if (!check_only)
-		    exit(1);
-	    }
-	}
+	    if (!_nc_resolve_uses() && !check_only)
+		exit(1);
 
 	/* length check */
 	if (check_only && (capdump || infodump))
 	    for_entry_list(qp)
 	    {
 		char	outbuf[MAX_TERMINFO_LENGTH * 2];
-		int	len = fmt_entry(&qp->tterm, NULL, outbuf, TRUE, infodump);
+		int	len = fmt_entry(&qp->tterm, NULL,outbuf,TRUE,infodump);
 
 		if (len > (infodump?MAX_TERMINFO_LENGTH:MAX_TERMCAP_LENGTH))
 		    	    (void) fprintf(stderr,
 			   "warning: resolved %s entry is %d bytes long\n",
-			   canonical_name(qp->tterm.term_names, (char *)NULL),
+			   _nc_first_name(&qp->tterm),
 			   len);
 	    }
 

@@ -1,4 +1,7 @@
 # Makefile for ncurses manual pages.
+#
+# NOTE: When you add or rename a man page, make sure you update both
+# the top-level MANIFEST and any man/*.renames files!
 
 SHELL		= /bin/sh
 
@@ -14,14 +17,33 @@ INSTALL_DATA	= @INSTALL_DATA@
 
 all:
 
-install install.man : terminfo.5
+# Someday we'll configure this based on which man program we detect in use
+install.man: install.std
+
+# Use this for ordinary man programs, including the GNU and BSD versions
+install install.std : terminfo.5
 	$(srcdir)/../mkinstalldirs $(mandir)
 	@cd $(srcdir); for i in *.[0-9]*; do \
-		if [ ! -d $(mandir)/man$${section} ]; then $(srcdir)/../mkinstalldirs $(mandir)/man$$section]; fi; \
 		section=`expr "$$i" : '.*\\.\\([0-9]\\)[xm]*'`; \
+		if [ ! -d $(mandir)/man$${section} ]; then $(srcdir)/../mkinstalldirs $(mandir)/man$$section]; fi; \
 		sed -e 's,@TERMINFO@,$(datadir),' < $$i >/tmp/man.tmp; \
 		echo installing man page $$i;\
 		$(INSTALL_DATA) /tmp/man.tmp $(mandir)/man$${section}/$$i; \
+	done 
+	rm -f /tmp/man.tmp
+
+# For use with man_db (in particular, on Debian Linux)
+# To change the name mapping, edit man_db.rename.
+# This doesn't fix cross-references yet.
+install.man_db : terminfo.5
+	$(srcdir)/../mkinstalldirs $(mandir)
+	@cd $(srcdir); for i in *.[0-9]*; do \
+		section=`expr "$$i" : '.*\\.\\([0-9]\\)[xm]*'`; \
+		if [ ! -d $(mandir)/man$${section} ]; then $(srcdir)/../mkinstalldirs $(mandir)/man$$section]; fi; \
+		sed -e 's,@TERMINFO@,$(datadir),' < $$i >/tmp/man.tmp; \
+		target=`grep "$$i" man_db.renames | awk '{print $$2}'`; \
+		echo "installing man page $$target from $$i"; \
+		$(INSTALL_DATA) /tmp/man.tmp $(mandir)/man$${section}/$$target; \
 	done 
 	rm -f /tmp/man.tmp
 

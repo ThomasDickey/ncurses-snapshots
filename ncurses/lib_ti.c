@@ -25,7 +25,7 @@
 #include <string.h>
 #include "term.h"
 
-int tigetflag(char *str)
+int tigetflag(const char *str)
 {
 int i;
 
@@ -38,7 +38,7 @@ int i;
 	return -1;
 }
 
-int tigetnum(char *str)
+int tigetnum(const char *str)
 {
 int i;
 
@@ -51,7 +51,7 @@ int i;
 	return -2;
 }
 
-char *tigetstr(char *str)
+char *tigetstr(const char *str)
 {
 int i;
 

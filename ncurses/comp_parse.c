@@ -49,7 +49,7 @@
  *
  ****************************************************************************/
 
-static char *first_name(TERMTYPE *tp)
+char *_nc_first_name(TERMTYPE *tp)
 /* get the first name of the given terminal */
 {
     static char	buf[NAMESIZE], *cp;
@@ -104,19 +104,9 @@ static void enqueue(ENTRY *ep)
 	    newp->last->next = newp;
 }
 
-
-static void check_name(char *name)
-/* abort on illegal name */
-{
-    if (!isalnum(name[0])) {
-	fprintf(stderr, "compile: Line %d: Illegal terminal name - '%s'\n",
-		_nc_curr_line, name);
-	fprintf(stderr,	"Terminal names must start with letter or digit\n");
-	exit(1);
-    }
-}
-
-void _nc_read_entry_source(FILE *fp, char *buf, int literal, bool silent)
+void _nc_read_entry_source(FILE *fp, char *buf,
+			   int literal, bool silent,
+			   bool (*hook)(ENTRY *))
 /* slurp all entries in the given file into core */
 {
     ENTRY	thisentry;
@@ -127,8 +117,16 @@ void _nc_read_entry_source(FILE *fp, char *buf, int literal, bool silent)
 
     for (_nc_reset_input(fp, buf); _nc_parse_entry(&thisentry, literal, silent) != ERR; )
     {
-	check_name(thisentry.tterm.term_names);
-	enqueue(&thisentry);
+	if (!isalnum(thisentry.tterm.term_names[0]))
+	    _nc_err_abort("terminal names must start with letter or digit");
+
+	/*
+	 * This can be used for immediate compilation of entries with no
+	 * use references to disk, so as to avoid chewing up a lot of
+	 * core when the resolution code could fetch entries off disk.
+	 */
+	if (hook == NULLHOOK || !(*hook)(&thisentry))
+	    enqueue(&thisentry);
     }
 
     if (_nc_tail)
@@ -178,78 +176,15 @@ bool _nc_entry_match(char *n1, char *n2)
 int _nc_resolve_uses(void)
 /* try to resolve all use capabilities */
 {
-    ENTRY	*qp, *rp;
+    ENTRY	*qp, *rp, *lastread = NULL;
     bool	keepgoing;
-    int		unresolved, multiples;
+    int		i, j, unresolved, total_unresolved, multiples;
 
-    do {
-	keepgoing = FALSE;
+    DEBUG(2, ("RESOLUTION BEGINNING"));
 
-	for_entry_list(qp)
-	    if (qp->nuses > 0)
-	    {
-		char	*lookfor = (char *)(qp->uses[qp->nuses - 1]);
-
-		DEBUG(2, ("%s: attempting resolution of %s",
-			  first_name(&qp->tterm), lookfor));
-
-		/* first, try to resolve from in-core records */
-		for_entry_list(rp)
-		    if (rp != qp
-			&& _nc_name_match(rp->tterm.term_names, lookfor, "|")
-			&& rp->nuses == 0)
-		    {
-			keepgoing = TRUE;
-			DEBUG(1, ("%s: resolving use=%s (in core)",
-				  first_name(&qp->tterm), lookfor));
-			_nc_merge_entry(&qp->tterm, &rp->tterm);
-			qp->nuses--;
-		    }
-
-		/* if that didn't work, try to merge in a compiled entry */
-		if (!keepgoing)
-		{
-		    TERMTYPE	thisterm;
-
-		    if (_nc_read_entry(lookfor, &thisterm) == OK)
-		    {
-			keepgoing = TRUE;
-			_nc_merge_entry(&qp->tterm, &thisterm);
-			DEBUG(1, ("%s: resolving use=%s (compiled)",
-				  first_name(&qp->tterm), lookfor));
-			qp->nuses--;
-		    }
-		}
-	    }
-
-    } while
-	(keepgoing);
-
-    unresolved = 0;
-    for_entry_list(qp)
-    {
-	int	i;
-
-	for (i = 0; i < BOOLCOUNT; i++) {
-	    if (qp->tterm.Booleans[i] == CANCELLED_BOOLEAN)
-		qp->tterm.Booleans[i] = FALSE;
-	}
-
-	for (i = 0; i < NUMCOUNT; i++) {
-	    if (qp->tterm.Numbers[i] == CANCELLED_NUMERIC)
-		qp->tterm.Numbers[i] = -1;
-	}
-
-	for (i = 0; i < STRCOUNT; i++) {
-	    if (qp->tterm.Strings[i] == CANCELLED_STRING)
-		qp->tterm.Strings[i] = (char *)NULL;
-	}
-
-
-	if (qp->nuses)
-	    unresolved++;
-    }
-
+    /*
+     * Check for multiple occurrences of the same name.
+     */
     multiples = 0;
     for_entry_list(qp)
     {
@@ -261,31 +196,202 @@ int _nc_resolve_uses(void)
 		if (matchcount == 2)
 		{
 		    (void) fprintf(stderr, "Name collision: %s",
-			   first_name(&qp->tterm));
+			   _nc_first_name(&qp->tterm));
 		    multiples++;
 		}
 		if (matchcount >= 2)
-		    (void) fprintf(stderr, " %s", first_name(&rp->tterm));
+		    (void) fprintf(stderr, " %s", _nc_first_name(&rp->tterm));
 		matchcount++;
 	    }
 	if (matchcount >= 2)
 	    (void) putc('\n', stderr);
     }
+    if (multiples > 0)
+	return(FALSE);
 
-    return(unresolved == 0 && multiples == 0);
+    DEBUG(2, ("NO MULTIPLE NAME OCCURRANCES"));
+
+    /*
+     * First resolution stage: replace names in use arrays with entry
+     * pointers.  By doing this, we avoid having to do the same name
+     * match once for each time a use entry is itself unresolved.
+     */
+    total_unresolved = 0;
+    for_entry_list(qp)
+    {
+	unresolved = 0;
+	for (i = 0; i < qp->nuses; i++)
+	{
+	    bool	foundit;
+	    char	*lookfor = (char *)(qp->uses[i]);
+
+	    foundit = FALSE;
+
+	    /* first, try to resolve from in-core records */
+	    for_entry_list(rp)
+		if (rp != qp
+		    && _nc_name_match(rp->tterm.term_names, lookfor, "|"))
+		{
+		    DEBUG(2, ("%s: resolving use=%s (in core)",
+			      _nc_first_name(&qp->tterm), lookfor));
+
+		    qp->uses[i] = rp;
+		    foundit = TRUE;
+		}
+
+	    /* if that didn't work, try to merge in a compiled entry */
+	    if (!foundit)
+	    {
+		TERMTYPE	thisterm;
+
+		if (_nc_read_entry(lookfor, &thisterm) == 1)
+		{
+		    DEBUG(2, ("%s: resolving use=%s (compiled)",
+			      _nc_first_name(&qp->tterm), lookfor));
+
+		    rp = (ENTRY *)malloc(sizeof(ENTRY));
+		    memcpy(&rp->tterm, &thisterm, sizeof(TERMTYPE));
+		    rp->nuses = 0;
+		    rp->next = lastread;
+		    lastread = rp;
+
+		    qp->uses[i] = rp;
+		    foundit = TRUE;
+		}
+	    }
+
+	    /* no good, mark this one unresolvable and complain */
+	    if (!foundit)
+	    {
+		unresolved++;
+		total_unresolved++;
+
+		if (!_nc_suppress_warnings)
+		{
+		    if (unresolved == 1)
+			(void) fprintf(stderr,
+			   "%s: use resolution failed on",
+			   _nc_first_name(&qp->tterm));
+		    (void) fputc(' ', stderr);
+		    (void) fputs(lookfor, stderr);
+		}
+
+		qp->uses[i] = (ENTRY *)NULL;
+	    }
+	}
+	if (!_nc_suppress_warnings && unresolved)
+	    (void) fputc('\n', stderr);
+    }
+    if (total_unresolved)
+    {
+	/* free entries read in off disk */
+	_nc_free_entries(lastread);
+	return(FALSE);
+    }
+
+    DEBUG(2, ("NAME RESOLUTION COMPLETED OK"));
+
+    /*
+     * OK, at this point all (char *) references have been successfully 
+     * replaced by (ENTRY *) pointers.  Time to do the actual merges.
+     */
+    do {
+	TERMTYPE	merged;
+
+	keepgoing = FALSE;
+
+	for_entry_list(qp)
+	    if (qp->nuses > 0)
+	    {
+		DEBUG(2, ("%s: attempting merge", _nc_first_name(&qp->tterm)));
+		/*
+		 * If any of the use entries we're looking for is
+		 * incomplete, punt.  We'll catch this entry on a
+		 * subsequent pass.
+		 */
+		for (i = 0; i < qp->nuses; i++)
+		    if (((ENTRY *)qp->uses[i])->nuses)
+		    {
+			DEBUG(2, ("%s: use entry %d unresolved",
+				  _nc_first_name(&qp->tterm), i));
+			goto incomplete;
+		    }
+
+		/*
+		 * First, make sure there's no garbage in the merge block.  
+		 * as a side effect, copy into the merged entry the name
+		 * field and string table pointer.
+		 */
+		memcpy(&merged, &qp->tterm, sizeof(TERMTYPE));
+
+		/*
+		 * Now merge in each use entry in the proper 
+		 * (reverse) order.
+		 */
+		for (; qp->nuses; qp->nuses--)
+		    _nc_merge_entry(&merged,
+				&((ENTRY *)qp->uses[qp->nuses-1])->tterm);
+
+		/*
+		 * Now merge in the original entry.
+		 */
+		_nc_merge_entry(&merged, &qp->tterm);
+
+		/*
+		 * Replace the original entry with the merged one.
+		 */
+		memcpy(&qp->tterm, &merged, sizeof(TERMTYPE));
+
+		/*
+		 * We know every entry is resolvable because name resolution
+		 * didn't bomb.  So go back for another pass.
+		 */
+	    incomplete:
+		keepgoing = TRUE;
+	    }
+    } while
+	(keepgoing);
+
+    DEBUG(2, ("MERGES COMPLETED OK"));
+
+    /*
+     * The exit condition of the loop above is such that all entries
+     * must now be resolved.  Now handle cancellations.  In a resolved
+     * entry there should be no cancellation markers.
+     */
+    for_entry_list(qp)
+    {
+	for (j = 0; j < BOOLCOUNT; j++)
+	    if (qp->tterm.Booleans[j] == CANCELLED_BOOLEAN)
+		qp->tterm.Booleans[j] = FALSE;
+	for (j = 0; j < NUMCOUNT; j++)
+	    if (qp->tterm.Numbers[j] == CANCELLED_NUMERIC)
+		qp->tterm.Numbers[j] = ABSENT_NUMERIC;
+	for (j = 0; j < STRCOUNT; j++)
+	    if (qp->tterm.Strings[j] == CANCELLED_STRING)
+		qp->tterm.Strings[j] = ABSENT_STRING;
+    }
+
+    /* free entries read in off disk */
+    _nc_free_entries(lastread);
+
+    DEBUG(2, ("RESOLUTION FINISHED"));
+
+    return(TRUE);
 }
 
-void _nc_free_entries(void)
+void _nc_free_entries(ENTRY *head)
 /* free the allocated storage consumed by list entries */
 {
     ENTRY	*ep, *next;
 
-    for (ep = _nc_head; ep; ep = next)
+    for (ep = head; ep; ep = next)
     {
 	/*
 	 * This conditional lets us disconnect storage from the list.
 	 * To do this, copy an entry out of the list, then null out
-	 * the string-table member in the original.
+	 * the string-table member in the original and any use entries
+	 * it references.
 	 */
 	if (ep->tterm.str_table)
 	    free(ep->tterm.str_table);
@@ -294,5 +400,4 @@ void _nc_free_entries(void)
 
 	free(ep);
     }
-    _nc_head = _nc_tail = (ENTRY *)NULL;
 }

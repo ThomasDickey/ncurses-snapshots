@@ -34,7 +34,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#if HAVE_FCNTL_H
 #include <fcntl.h>
+#endif
 #include <errno.h>
 
 #if !HAVE_EXTERN_ERRNO

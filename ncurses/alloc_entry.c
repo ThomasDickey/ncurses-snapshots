@@ -117,29 +117,43 @@ int	i, n;
 }
 
 void _nc_merge_entry(TERMTYPE *to, TERMTYPE *from)
-/* merge capabilities from `from' entry to un-occupied slots in `to' entry */
+/* merge capabilities from `from' entry into `to' entry */
 {
-int	i;
+    int	i;
 
-	/*
-	 * Note: the copies of strings this makes don't have their own
-	 * storage.  This is OK right now, but will be a problem if we
-	 * we ever want to deallocate entries.
-	 */
+    for (i=0; i < BOOLCOUNT; i++)
+    {
+	int	mergebool = from->Booleans[i];
 
-    	for (i=0; i < BOOLCOUNT; i++) {
-		if (to->Booleans[i] == (char)FALSE && from->Booleans[i] == (char)TRUE)
-		    to->Booleans[i] = TRUE;
-    	}
+	if (mergebool == CANCELLED_BOOLEAN)
+	    to->Booleans[i] = FALSE;
+	else if (mergebool != ABSENT_BOOLEAN)
+	    to->Booleans[i] = mergebool;
+    }
 
-    	for (i=0; i < NUMCOUNT; i++) {
-		if (to->Numbers[i] == -1 && from->Numbers[i] != -1)
-		    to->Numbers[i] = from->Numbers[i];
-    	}
+    for (i=0; i < NUMCOUNT; i++)
+    {
+	int	mergenum = from->Numbers[i];
+	
+	if (mergenum == CANCELLED_NUMERIC)
+	    to->Numbers[i] = ABSENT_NUMERIC;
+	else if (mergenum != ABSENT_NUMERIC)
+	    to->Numbers[i] = mergenum;
+    }
 
-    	for (i=0; i < STRCOUNT; i++) {
-		if (to->Strings[i] == (char *)NULL && from->Strings[i] != (char *)NULL)
-		    to->Strings[i] = from->Strings[i];
-    	}
+    /*
+     * Note: the copies of strings this makes don't have their own
+     * storage.  This is OK right now, but will be a problem if we
+     * we ever want to deallocate entries.
+     */
+    for (i=0; i < STRCOUNT; i++)
+    {
+	char	*mergestring = from->Strings[i];
+
+	if (mergestring == CANCELLED_STRING)
+	    to->Strings[i] = ABSENT_STRING;
+	else if (mergestring != ABSENT_STRING)
+	    to->Strings[i] = mergestring;
+    }
 }
 
