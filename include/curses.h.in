@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.89 2000/01/09 01:10:20 tom Exp $ */
+/* $Id: curses.h.in,v 1.90 2000/02/19 22:15:43 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
