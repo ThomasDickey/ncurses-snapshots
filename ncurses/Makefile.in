@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.38 1997/09/20 23:07:22 tom Exp $
+# $Id: Makefile.in,v 1.40 1997/10/25 21:17:27 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -84,6 +84,7 @@ CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 LINK		= $(CC)
 LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@
 
+SHLIB_LIST	= @SHLIB_LIST@
 MK_SHARED_LIB	= @MK_SHARED_LIB@
 REL_VERSION	= @cf_cv_rel_version@
 ABI_VERSION	= @cf_cv_abi_version@
@@ -138,7 +139,7 @@ $(INSTALL_PREFIX)$(libdir) :
 	sh $(srcdir)/MKlib_gen.sh "$(CPP)" "$(AWK)" <../include/curses.h | \
 		fgrep undef >$@
 
-keys.tries: make_keys
+keys.tries: make_keys $(srcdir)/keys.list 
 	./make_keys $(srcdir)/keys.list > keys.tries
 
 make_keys : \

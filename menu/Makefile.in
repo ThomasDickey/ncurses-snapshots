@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.18 1997/09/06 23:36:05 tom Exp $
+# $Id: Makefile.in,v 1.19 1997/10/25 21:33:54 tom Exp $
 ################################################################################
-# Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
+# Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
 #                                                                              #
 # Permission to use, copy, modify, and distribute this software and its        #
@@ -72,6 +72,7 @@ CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 LINK		= $(CC)
 LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@
 
+SHLIB_LIST	= -lncurses @SHLIB_LIST@
 MK_SHARED_LIB	= @MK_SHARED_LIB@
 REL_VERSION	= @cf_cv_rel_version@
 ABI_VERSION	= @cf_cv_abi_version@

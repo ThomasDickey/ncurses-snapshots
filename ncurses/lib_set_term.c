@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.33 1997/10/19 02:42:09 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.34 1997/10/21 10:20:31 juergen Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -220,9 +220,9 @@ size_t	i;
 	SP->_mouse_fd     = -1;
 
 	/* initialize the panel hooks */
-	SP->top_panel = (struct panel*)0;
-	SP->bottom_panel = (struct panel*)0;
-	SP->stdscr_pseudo_panel = (struct panel*)0;
+	SP->_panelHook.top_panel = (struct panel*)0;
+	SP->_panelHook.bottom_panel = (struct panel*)0;
+	SP->_panelHook.stdscr_pseudo_panel = (struct panel*)0;
 
 	/*
 	 * If we've no magic cookie support, we suppress attributes that xmc

@@ -17,15 +17,17 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.98 1997/10/11 19:35:57 tom Exp $
+dnl $Id: configure.in,v 1.100 1997/10/25 21:15:57 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12)
-AC_REVISION($Revision: 1.98 $)
+AC_REVISION($Revision: 1.100 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 CF_SUBST_NCURSES_VERSION
-CF_SYSTYPE
-CF_SYSRELV
+CF_CHECK_CACHE
+AC_ARG_WITH(system-type,
+[  --with-system-type=XXX  test: override derived host system-type],
+[cf_cv_system_name=$withval])
 
 # We need a configure script only when compiling as part of GNU C library.
 # Here we have to generate one of the files we need while compiling.
@@ -58,22 +60,6 @@ changequote([,])dnl
 
 ###	Save the given $CFLAGS to allow user-override.
 cf_user_CFLAGS="$CFLAGS"
-
-###	Derive the system name, as a check for reusing the autoconf cache
-system_name="$cf_cv_systype $cf_cv_sysrelv"
-if test -n "$system_name" ; then
-	AC_DEFINE_UNQUOTED(SYSTEM_NAME,"$system_name")
-else
-	system_name="`(hostname) 2>/dev/null`"
-fi
-AC_CACHE_VAL(cf_cv_system_name,[cf_cv_system_name="$system_name"])
-test -z "$system_name" && system_name="$cf_cv_system_name"
-test -n "$cf_cv_system_name" && AC_MSG_RESULT("Configuring for $cf_cv_system_name")
-
-if test ".$system_name" != ".$cf_cv_system_name" ; then
-	AC_MSG_RESULT("Cached system name does not agree with actual")
-	AC_ERROR("Please remove config.cache and try again.")
-fi
 
 ###	Default install-location
 CF_CFG_DEFAULTS
@@ -221,12 +207,14 @@ AC_MSG_RESULT($with_gpm)
 if test $with_gpm = yes ; then
 	AC_CHECK_LIB(gpm,Gpm_Open,[
 		EXTRA_LIBS="$EXTRA_LIBS -lgpm -lncurses"
+		SHLIB_LIST="$SHLIB_DEPS -lgpm "
 		AC_DEFINE(HAVE_LIBGPM)
 		AC_CHECK_HEADERS(gpm.h)
 	],,-lcurses -ltermcap)
 fi
 
 AC_SUBST(EXTRA_LIBS)
+AC_SUBST(SHLIB_LIST)
 
 AC_MSG_CHECKING(for specified models)
 test -z "$cf_list_models" && cf_list_models=normal
@@ -572,8 +560,9 @@ values.h \
 )
 
 # check for HPUX's ANSI compiler
-if test $cf_cv_systype = HP_UX; then
-if test -z "$GCC"; then
+case $cf_cv_system_name in
+hpux*)
+    if test -z "$GCC"; then
 	AC_MSG_CHECKING([for HP/UX ANSI compiler])
 	cf_save_CFLAGS="$CFLAGS"
 	CFLAGS="$CFLAGS -Aa"
@@ -584,7 +573,9 @@ if test -z "$GCC"; then
 	else
 		CFLAGS="$cf_save_CFLAGS"
 	fi
-fi;fi
+    fi
+    ;;
+esac
 
 # check for ISC (this may also define _POSIX_SOURCE)
 # Note: even non-Posix ISC needs <sys/bsdtypes.h> to declare fd_set
@@ -680,8 +671,8 @@ CF_TYPE_SIGACTION
 CF_SIZECHANGE
 
 dnl FIXME checks we don't do (but neither does the old Configure script):
-case "$cf_cv_systype" in
-Linux)
+case "$cf_cv_system_name" in
+linux*)
 	AC_DEFINE(GOOD_SELECT)
 	;;
 esac
@@ -839,8 +830,6 @@ cf_cv_abi_version="$cf_cv_abi_version"
 cf_cv_do_symlinks="$cf_cv_do_symlinks"
 cf_cv_rel_version="$cf_cv_rel_version"
 cf_cv_rm_so_locs="$cf_cv_rm_so_locs"
-cf_cv_sysrelv="$cf_cv_sysrelv"
-cf_cv_systype="$cf_cv_systype"
 cf_cxx_library="$cf_cxx_library"
 target="$target"
 

@@ -141,7 +141,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.47 1997/10/18 19:19:52 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.48 1997/10/25 23:34:11 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -150,7 +150,7 @@ MODULE_ID("$Id: lib_mvcur.c,v 1.47 1997/10/18 19:19:52 tom Exp $")
 #define CURRENT_COLUMN	SP->_curscol		/* phys cursor column */
 #define REAL_ATTR	SP->_current_attr	/* phys current attribute */
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
-#define BAUDRATE	SP->_baudrate		/* bits per second */
+#define BAUDRATE	cur_term->_baudrate	/* bits per second */
 
 #if defined(MAIN) || defined(NCURSES_TEST)
 #include <sys/time.h>

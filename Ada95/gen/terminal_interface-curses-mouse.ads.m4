@@ -25,7 +25,7 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.7 $
+--  $Revision: 1.8 $
 ------------------------------------------------------------------------------
 include(`Mouse_Base_Defs')
 with System;
@@ -76,7 +76,6 @@ package Terminal_Interface.Curses.Mouse is
    --  AKA
 
    procedure End_Mouse;
-   pragma Import (C, End_Mouse, "_nc_ada_unregister_mouse");
    --  Terminates the mouse
 
    --  ANCHOR(`getmouse()',`Get_Mouse')

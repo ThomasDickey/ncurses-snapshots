@@ -21,13 +21,13 @@
 +-----------------------------------------------------------------------------*/
 
 /***************************************************************************
-* Module menu_spacing                                                      *
+* Module m_spacing                                                         *
 * Routines to handle spacing between entries                               *
 ***************************************************************************/
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_spacing.c,v 1.7 1997/05/01 16:47:26 juergen Exp $")
+MODULE_ID("$Id: m_spacing.c,v 1.8 1997/10/21 08:40:51 juergen Exp $")
 
 #define MAX_SPC_DESC ((TABSIZE) ? (TABSIZE) : 8)
 #define MAX_SPC_COLS ((TABSIZE) ? (TABSIZE) : 8)

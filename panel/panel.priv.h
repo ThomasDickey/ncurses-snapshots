@@ -1,4 +1,4 @@
-/* $Id: panel.priv.h,v 1.7 1997/10/18 18:34:36 tom Exp $ */
+/* $Id: panel.priv.h,v 1.8 1997/10/21 10:19:37 juergen Exp $ */
 
 #ifndef _PANEL_PRIV_H
 #define _PANEL_PRIV_H
@@ -19,6 +19,7 @@
 #  include <dbmalloc.h>   /* Conor Cahill's library */
 #endif
 
+#include <nc_panel.h>
 #include "panel.h"
 
 #if ( CC_HAS_INLINE_FUNCS && !defined(TRACE) )
@@ -71,20 +72,14 @@ typedef struct panelcons
 #  define Touchline(pan,start,count) touchline((pan)->win,start,count)
 #endif
 
-#define _nc_stdscr_pseudo_panel SP->stdscr_pseudo_panel
-#define _nc_top_panel SP->top_panel
-#define _nc_bottom_panel SP->bottom_panel
+#define _nc_stdscr_pseudo_panel _nc_panelhook()->stdscr_pseudo_panel
+#define _nc_top_panel _nc_panelhook()->top_panel
+#define _nc_bottom_panel _nc_panelhook()->bottom_panel
 
 extern void _nc_panel_link_bottom(PANEL*);
 extern bool _nc_panel_is_linked(const PANEL*);
 extern void _nc_calculate_obscure(void);
 extern void _nc_free_obscure(PANEL*);
 extern void _nc_override(const PANEL*,int);
-
-/* We need this reference to the internals of ncurses, because
- * we have to store the panel stack handles on a per screen basis,
- * so we need access to SP!
- */
-#include <curses.priv.h>
 
 #endif /* _PANEL_PRIV_H */

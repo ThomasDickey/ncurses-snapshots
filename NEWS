@@ -1,7 +1,30 @@
--- $Id: NEWS,v 1.266 1997/10/19 02:55:08 tom Exp $
+-- $Id: NEWS,v 1.269 1997/10/26 00:14:47 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+971025
+	+ add definition for $(REL_VERSION) to test/Makefile.in, so *BSD
+	  shared libraries link properly (see 970524).
+	+ modify Linux shared-library generation to include library
+	  dependencies (e.g., -lncurses and -lgpm) in the forms, menu and
+	  panel libraries (suggested by Juergen Pfeifer).
+	+ modify configure script to use config.guess and config.sub rather
+	  than uname, which is unreliable on some systems.
+	+ updated Makefile.glibc, test-built with glibc 2.0.5c
+	+ modify keyname() to return values consistent with SVr4 curses (patch
+	  by Ju"rgen Fluk).
+	> changes requested by Daniel Weaver:
+	+ modify delay_output() so that it uses the same output function as
+	  tputs() if called from that function.
+	+ move _baudrate from SCREEN to TERMINAL so that low-level use of
+	  tputs works when SP is not set.
+	> patch by Juergen Pfeifer:
+	+ factor lib_menu and lib_form into smaller modules
+	+ clean up the interface between panel and SCREEN
+	+ minor changes to the Ada95 mouse support implemenation
+	+ minor bugfix in C++ binding to ripoff windows
+	+ fix a few Ada95 html documentation pages
 
 971018
 	+ split-out lib_ungetch.c, make runtime link to resizeterm() to

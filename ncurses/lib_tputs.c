@@ -33,15 +33,19 @@
 #include <term.h>	/* padding_baud_rate, xon_xoff */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.19 1997/10/11 16:38:15 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.21 1997/10/26 00:13:12 tom Exp $")
+
+#define OUTPUT ((SP != 0) ? SP->_ofp : stdout)
 
 int _nc_nulls_sent;	/* used by 'tack' program */
+
+static int (*my_outch)(int c) = _nc_outch;
 
 int delay_output(int ms)
 {
 	T((T_CALLED("delay_output(%d)"), ms));
 
-	if (SP == 0 || SP->_baudrate <= 0)
+	if (cur_term == 0 || cur_term->_baudrate <= 0)
 		returnCode(ERR);
 #ifdef no_pad_char
 	else if (no_pad_char)
@@ -56,10 +60,11 @@ int delay_output(int ms)
 			null = pad_char[0];
 #endif /* pad_char */
 
-		nullcount = ms * 1000 / SP->_baudrate;
+		nullcount = ms * 1000 / cur_term->_baudrate;
 		for (_nc_nulls_sent = nullcount; nullcount > 0; nullcount--)
-			putc(null, SP->_ofp);
-		(void) fflush(SP->_ofp);
+			my_outch(null);
+		if (my_outch == _nc_outch)
+			(void) fflush(OUTPUT);
 	}
 
 	returnCode(OK);
@@ -71,10 +76,7 @@ int _nc_outch(int ch)
     	_nc_outchars++;
 #endif /* TRACE */
 
-	if (SP != NULL)
-		putc(ch, SP->_ofp);
-	else
-		putc(ch, stdout);
+	putc(ch, OUTPUT);
 	return OK;
 }
 
@@ -139,6 +141,7 @@ char	addrbuf[17];
 	}
 #endif /* BSD_TPUTS */
 
+	my_outch = outc;	/* redirect delay_output() */
 	while (*string) {
 		if (*string != '$')
 			(*outc)(*string);
@@ -188,7 +191,10 @@ char	addrbuf[17];
 				}
 
 #ifdef padding_baud_rate
-				if (mandatory && number > 0 && padding_baud_rate && (!SP || SP->_baudrate >= padding_baud_rate))
+				if (mandatory
+				 && number > 0
+				 && padding_baud_rate
+				 && (!cur_term || cur_term->_baudrate >= padding_baud_rate))
 					delay_output(number);
 #endif /* padding_baud_rate */
 				number = 0;
@@ -207,10 +213,14 @@ char	addrbuf[17];
 	 * Emit any BSD-style prefix padding that we've accumulated now.
 	 */
 #ifdef padding_baud_rate
-	if (trailpad > 0 && !xon_xoff && padding_baud_rate && (!SP || SP->_baudrate >= padding_baud_rate))
+	if (trailpad > 0
+	 && !xon_xoff
+	 && padding_baud_rate
+	 && (!cur_term || cur_term->_baudrate >= padding_baud_rate))
 		delay_output(number);
 #endif /* padding_baud_rate */
 #endif /* BSD_TPUTS */
 
+	my_outch = _nc_outch;
 	return OK;
 }

@@ -20,9 +20,27 @@
  ******************************************************************************/
 /* LINTLIBRARY */
 
-/* ./m_attribs.c */
+/* ./m_adabind.c */
 
 #include "menu.priv.h"
+
+#undef _nc_ada_normalize_menu_opts
+void	_nc_ada_normalize_menu_opts(
+		int	*opt)
+		{ /* void */ }
+
+#undef _nc_ada_normalize_item_opts
+void	_nc_ada_normalize_item_opts(
+		int	*opt)
+		{ /* void */ }
+
+#undef _nc_get_item
+ITEM	*_nc_get_item(
+		const MENU *menu, 
+		int	idx)
+		{ return(*(ITEM **)0); }
+
+/* ./m_attribs.c */
 
 #undef set_menu_fore
 int	set_menu_fore(
@@ -57,17 +75,6 @@ chtype	menu_grey(
 		const MENU *menu)
 		{ return(*(chtype *)0); }
 
-#undef set_menu_pad
-int	set_menu_pad(
-		MENU	*menu, 
-		int	pad)
-		{ return(*(int *)0); }
-
-#undef menu_pad
-int	menu_pad(
-		const MENU *menu)
-		{ return(*(int *)0); }
-
 /* ./m_cursor.c */
 
 #undef pos_menu_cursor
@@ -77,15 +84,11 @@ int	pos_menu_cursor(
 
 /* ./m_driver.c */
 
-#undef menu_pattern
-char	*menu_pattern(
-		const MENU *menu)
-		{ return(*(char **)0); }
-
-#undef set_menu_pattern
-int	set_menu_pattern(
+#undef _nc_Match_Next_Character_In_Item_Name
+int	_nc_Match_Next_Character_In_Item_Name(
 		MENU	*menu, 
-		const char *p)
+		int	ch, 
+		ITEM	**item)
 		{ return(*(int *)0); }
 
 #undef menu_driver
@@ -214,17 +217,6 @@ int	item_index(
 		const ITEM *item)
 		{ return(*(int *)0); }
 
-#undef set_top_row
-int	set_top_row(
-		MENU	*menu, 
-		int	row)
-		{ return(*(int *)0); }
-
-#undef top_row
-int	top_row(
-		const MENU *menu)
-		{ return(*(int *)0); }
-
 /* ./m_item_nam.c */
 
 #undef item_name
@@ -285,6 +277,19 @@ int	item_opts_on(
 Item_Options item_opts(
 		const ITEM *item)
 		{ return(*(Item_Options *)0); }
+
+/* ./m_item_top.c */
+
+#undef set_top_row
+int	set_top_row(
+		MENU	*menu, 
+		int	row)
+		{ return(*(int *)0); }
+
+#undef top_row
+int	top_row(
+		const MENU *menu)
+		{ return(*(int *)0); }
 
 /* ./m_item_use.c */
 
@@ -374,6 +379,32 @@ Menu_Options menu_opts(
 		const MENU *menu)
 		{ return(*(Menu_Options *)0); }
 
+/* ./m_pad.c */
+
+#undef set_menu_pad
+int	set_menu_pad(
+		MENU	*menu, 
+		int	pad)
+		{ return(*(int *)0); }
+
+#undef menu_pad
+int	menu_pad(
+		const MENU *menu)
+		{ return(*(int *)0); }
+
+/* ./m_pattern.c */
+
+#undef menu_pattern
+char	*menu_pattern(
+		const MENU *menu)
+		{ return(*(char **)0); }
+
+#undef set_menu_pattern
+int	set_menu_pattern(
+		MENU	*menu, 
+		const char *p)
+		{ return(*(int *)0); }
+
 /* ./m_post.c */
 
 #undef _nc_Post_Item
@@ -409,6 +440,15 @@ int	menu_request_by_name(
 		const char *str)
 		{ return(*(int *)0); }
 
+/* ./m_scale.c */
+
+#undef scale_menu
+int	scale_menu(
+		const MENU *menu, 
+		int	*rows, 
+		int	*cols)
+		{ return(*(int *)0); }
+
 /* ./m_spacing.c */
 
 #undef set_menu_spacing
@@ -426,6 +466,19 @@ int	menu_spacing(
 		int	*s_row, 
 		int	*s_col)
 		{ return(*(int *)0); }
+
+/* ./m_sub.c */
+
+#undef set_menu_sub
+int	set_menu_sub(
+		MENU	*menu, 
+		WINDOW	*win)
+		{ return(*(int *)0); }
+
+#undef menu_sub
+WINDOW	*menu_sub(
+		const MENU *menu)
+		{ return(*(WINDOW **)0); }
 
 /* ./m_userptr.c */
 
@@ -452,39 +505,3 @@ int	set_menu_win(
 WINDOW	*menu_win(
 		const MENU *menu)
 		{ return(*(WINDOW **)0); }
-
-#undef set_menu_sub
-int	set_menu_sub(
-		MENU	*menu, 
-		WINDOW	*win)
-		{ return(*(int *)0); }
-
-#undef menu_sub
-WINDOW	*menu_sub(
-		const MENU *menu)
-		{ return(*(WINDOW **)0); }
-
-#undef scale_menu
-int	scale_menu(
-		const MENU *menu, 
-		int	*rows, 
-		int	*cols)
-		{ return(*(int *)0); }
-
-/* ./m_adabind.c */
-
-#undef _nc_ada_normalize_menu_opts
-void	_nc_ada_normalize_menu_opts(
-		int	*opt)
-		{ /* void */ }
-
-#undef _nc_ada_normalize_item_opts
-void	_nc_ada_normalize_item_opts(
-		int	*opt)
-		{ /* void */ }
-
-#undef _nc_get_item
-ITEM	*_nc_get_item(
-		const MENU *menu, 
-		int	idx)
-		{ return(*(ITEM **)0); }

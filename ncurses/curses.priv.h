@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.90 1997/10/19 02:46:53 tom Exp $
+ * $Id: curses.priv.h,v 1.92 1997/10/25 23:32:52 tom Exp $
  *
  *	curses.priv.h
  *
@@ -81,6 +81,8 @@ extern "C" {
 #if DECL_ERRNO
 extern int errno;
 #endif
+
+#include <nc_panel.h>
 
 /* Some systems have a broken 'select()', but workable 'poll()'.  Use that */
 #if HAVE_POLL && HAVE_SYS_STROPTS_H && HAVE_POLL_H
@@ -183,8 +185,6 @@ typedef struct {
         chtype attr;             /* soft label attribute */
 } SLK;
 
-struct panel; /* Forward Declaration */
-
 struct screen {
 	int             _ifd;           /* input file ptr for screen        */
 	FILE            *_ofp;          /* output file ptr for screen       */
@@ -223,7 +223,6 @@ struct screen {
 	int             _echo;          /* True if echo on                  */
 	int             _use_meta;      /* use the meta key?                */
 	SLK             *_slk;          /* ptr to soft key struct / NULL    */
-	int             _baudrate;      /* used to compute padding          */
 
 	/* cursor movement costs; units are 10ths of milliseconds */
 	int             _char_padding;  /* cost of character put            */
@@ -305,10 +304,7 @@ struct screen {
 	 * These are data that support the proper handling of the panel stack on an
 	 * per screen basis.
 	 */
-        struct panel*   top_panel;
-        struct panel*   bottom_panel;
-        struct panel*   stdscr_pseudo_panel;
-
+        struct panelhook _panelHook;
 	/*
 	 * Linked-list of all windows, to support '_nc_resizeall()' and
 	 * '_nc_freeall()'
