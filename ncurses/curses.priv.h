@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.238 2003/03/29 21:33:47 tom Exp $
+ * $Id: curses.priv.h,v 1.240 2003/04/05 20:44:40 tom Exp $
  *
  *	curses.priv.h
  *
@@ -320,7 +320,7 @@ struct screen {
 	char            *_setbuf;       /* buffered I/O for output          */
 	int		_buffered;      /* setvbuf uses _setbuf data        */
 	int             _checkfd;       /* filedesc for typeahead check     */
-	struct term     *_term;         /* terminal type information        */
+	TERMINAL        *_term;         /* terminal type information        */
 	short           _lines;         /* screen lines                     */
 	short           _columns;       /* screen columns                   */
 

@@ -1,4 +1,4 @@
--- $Id: README,v 1.11 2003/03/29 19:36:36 tom Exp $
+-- $Id: README,v 1.13 2003/04/05 23:47:22 tom Exp $
 -------------------------------------------------------------------------------
 
 The programs in this directory are designed to test your newest toy :-)
@@ -120,7 +120,7 @@ free_item			test: ncurses
 free_menu			test: ncurses
 item_count			-
 item_description		-
-item_index			-
+item_index			test: ncurses
 item_init			-
 item_name			test: ncurses
 item_opts			-
@@ -128,7 +128,7 @@ item_opts_off			-
 item_opts_on			-
 item_term			-
 item_userptr			-
-item_value			-
+item_value			test: ncurses
 item_visible			-
 menu_back			-
 menu_driver			test: ncurses
@@ -136,10 +136,10 @@ menu_fore			-
 menu_format			-
 menu_grey			-
 menu_init			-
-menu_items			-
+menu_items			test: ncurses
 menu_mark			-
 menu_opts			-
-menu_opts_off			-
+menu_opts_off			test: ncurses
 menu_opts_on			-
 menu_pad			-
 menu_pattern			-
@@ -149,7 +149,7 @@ menu_spacing			-
 menu_sub			-
 menu_term			-
 menu_userptr			-
-menu_win			-
+menu_win			test: ncurses
 new_item			test: ncurses
 new_menu			test: ncurses
 pos_menu_cursor			lib: menu
@@ -160,7 +160,7 @@ set_item_init			-
 set_item_opts			-
 set_item_term			-
 set_item_userptr		-
-set_item_value			-
+set_item_value			test: ncurses
 set_menu_back			-
 set_menu_fore			-
 set_menu_format			test: ncurses
@@ -207,8 +207,8 @@ addstr				test: blue bs cardfile gdc hanoi lrtest ncurses
 addwstr				-
 assume_default_colors		test: ncurses
 attr_get			-
-attr_off			-
-attr_on				-
+attr_off			test: ncurses
+attr_on				test: ncurses
 attr_set			-
 attroff				test: filter gdc ncurses tclock
 attron				test: bs filter gdc ncurses
@@ -415,7 +415,7 @@ newterm				test: ditto filter gdc
 newwin				test: cardfile demo_defkey demo_keyok firstlast ins_wide inserts knight ncurses newdemo testcurs xmas
 nl				test: ncurses rain testcurs
 nocbreak			test: testcurs
-nodelay				test: firework gdc lrtest ncurses newdemo rain tclock view worm xmas
+nodelay				test: firework gdc lrtest ncurses newdemo rain tclock view xmas
 noecho				test: bs cardfile demo_defkey demo_keyok ditto firework firstlast gdc hanoi hashtest ins_wide inserts knight lrtest ncurses rain tclock testcurs view worm xmas
 nonl				test: bs hashtest ncurses view worm xmas
 noqiflush			-
@@ -469,16 +469,17 @@ slk_attrset			-
 slk_clear			test: ncurses
 slk_color			-
 slk_init			test: ncurses
-slk_label			-
+slk_label			test: ncurses
 slk_noutrefresh			test: ncurses
 slk_refresh			test: ncurses
 slk_restore			test: ncurses
 slk_set				test: ncurses
 slk_touch			test: ncurses
+slk_wset			test: ncurses
 standend			test: blue gdc ncurses worm
 standout			test: blue ncurses
 start_color			test: blue bs filter firework gdc hanoi ins_wide inserts knight ncurses newdemo rain tclock testaddch testcurs view worm xmas
-stdscr				test: bs ditto filter firework gdc hanoi hashtest ins_wide inserts knight lrtest ncurses rain tclock testcurs testscanw view worm xmas
+stdscr				test: bs ditto filter firework gdc hanoi hashtest ins_wide inserts knight lrtest ncurses rain tclock testcurs testscanw view xmas
 strcodes			progs: dump_entry
 strfnames			progs: dump_entry
 strnames			progs: dump_entry infocmp tic
@@ -501,6 +502,7 @@ touchline			lib: ncurses
 touchwin			test: filter firstlast ncurses xmas
 tparm				test: dots progs: tic tput
 tputs				test: dots railroad progs: clear tset
+trace				test: hanoi hashtest lrtest ncurses testcurs view worm
 ttytype				lib: ncurses
 typeahead			test: testcurs
 unctrl				test: ncurses testcurs
@@ -559,7 +561,7 @@ werase				test: cardfile firstlast knight ncurses newdemo testcurs xmas
 wget_wch			test: ins_wide ncurses
 wget_wstr			-
 wgetch				test: cardfile demo_defkey demo_keyok gdc inserts knight ncurses newdemo testcurs
-wgetn_wstr			lib: ncurses
+wgetn_wstr			test: ncurses
 wgetnstr			test: ncurses
 wgetstr				-
 whline				test: testcurs

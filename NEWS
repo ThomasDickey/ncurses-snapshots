@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.741 2003/03/29 23:16:18 tom Exp $
+-- $Id: NEWS,v 1.742 2003/04/05 21:26:54 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030405
+	+ modify setupterm() to check if the terminfo and terminal-modes have
+	  already been read.  This ensures that it does not reinvoke
+	  def_prog_mode() when an application calls more than one function,
+	  such as tgetent() and initscr() (report by Olaf Buddenhagen).
 
 20030329
 	+ add 'E' test to ncurses.c, to exercise slk_wset().
