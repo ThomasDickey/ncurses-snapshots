@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.269 2004/12/26 00:56:58 tom Exp $
+ * $Id: curses.priv.h,v 1.270 2005/01/01 22:49:55 tom Exp $
  *
  *	curses.priv.h
  *
@@ -259,6 +259,19 @@ color_t;
 #include <curses.h>	/* we'll use -Ipath directive to get the right one! */
 #include <term.h>
 
+#define SetPair(value,p)	RemAttr(value, A_COLOR), \
+				SetAttr(value, (A_COLOR & COLOR_PAIR(p)))
+#define GetPair(value)		PAIR_NUMBER(AttrOf(value))
+#define unColor(n)		(AttrOf(n) & ALL_BUT_COLOR)
+#define GET_WINDOW_PAIR(w)	PAIR_NUMBER((w)->_attrs)
+#define SET_WINDOW_PAIR(w,p)	(w)->_attrs &= ALL_BUT_COLOR, \
+				(w)->_attrs |= (A_COLOR & COLOR_PAIR(p))
+#define SameAttrOf(a,b)		(AttrOf(a) == AttrOf(b))
+#define VIDATTR(attr, pair)	vidattr(attr)
+
+#define GET_SCREEN_PAIR(s)	GetPair((s)->_current_attr)
+#define SET_SCREEN_PAIR(s,p)	SetPair((s)->_current_attr, p)
+
 struct ldat
 {
 	NCURSES_CH_T	*text;		/* text of the line */
@@ -346,7 +359,7 @@ struct screen {
 	                _fifohold;      /* set if breakout marked           */
 
 	int             _endwin;        /* are we out of window mode?       */
-	attr_t          _current_attr;  /* terminal attribute current set   */
+	NCURSES_CH_T	_current_attr;  /* holds current attributes set     */
 	int             _coloron;       /* is color enabled?                */
 	int		_color_defs;	/* are colors modified		    */
 	int             _cursor;        /* visibility of the cursor         */
@@ -598,14 +611,15 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 
 #define init_mb(state)	memset(&state, 0, sizeof(state))
 
+#define NulColor	/* nothing */
 #define NulChar		0,0,0,0	/* FIXME: see CCHARW_MAX */
 #define CharOf(c)	((c).chars[0])
 #define AttrOf(c)	((c).attr)
 #define AddAttr(c,a)	AttrOf(c) |= a
 #define RemAttr(c,a)	AttrOf(c) &= ~(a)
 #define SetAttr(c,a)	AttrOf(c) = a
-#define NewChar(ch)	{ ChAttrOf(ch), { ChCharOf(ch), NulChar } }
-#define NewChar2(c,a)	{ a, { c, NulChar } }
+#define NewChar(ch)	{ ChAttrOf(ch), { ChCharOf(ch), NulChar } NulColor }
+#define NewChar2(c,a)	{ a, { c, NulChar } NulColor }
 #define CharEq(a,b)	(!memcmp(&a, &b, sizeof(a)))
 #define SetChar(ch,c,a)	do { 							    \
 			    NCURSES_CH_T *_cp = &ch;				    \
@@ -640,7 +654,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 			    TRACE_OUTCHARS(PUTC_i);				    \
 			} } } while (0)
 
-#define BLANK		{ WA_NORMAL, {' '} }
+#define BLANK		{ WA_NORMAL, {' '} NulColor }
 #define ISBLANK(ch)	((ch).chars[0] == L' ' && (ch).chars[1] == L'\0')
 
 	/*
@@ -827,29 +841,23 @@ extern	NCURSES_EXPORT(void) name (void); \
 	NCURSES_EXPORT(void) name (void) { }
 
 #define ALL_BUT_COLOR ((chtype)~(A_COLOR))
-#define IGNORE_COLOR_OFF FALSE
 #define NONBLANK_ATTR (A_NORMAL|A_BOLD|A_DIM|A_BLINK)
 #define XMC_CHANGES(c) ((c) & SP->_xmc_suppress)
 
 #define toggle_attr_on(S,at) {\
-   if (PAIR_NUMBER(at) > 0)\
+   if (PAIR_NUMBER(at) > 0) {\
       (S) = ((S) & ALL_BUT_COLOR) | (at);\
-   else\
+   } else {\
       (S) |= (at);\
+   }\
    TR(TRACE_ATTRS, ("new attribute is %s", _traceattr((S))));}
 
 
 #define toggle_attr_off(S,at) {\
-   if (IGNORE_COLOR_OFF == TRUE) {\
-      if (PAIR_NUMBER(at) == 0xff) /* turn off color */\
-	 (S) &= ~(at);\
-      else /* leave color alone */\
-	 (S) &= ~((at)&ALL_BUT_COLOR);\
+   if (PAIR_NUMBER(at) > 0) {\
+      (S) &= ~(at|A_COLOR);\
    } else {\
-      if (PAIR_NUMBER(at) > 0x00) /* turn off color */\
-	 (S) &= ~(at|A_COLOR);\
-      else /* leave color alone */\
-	 (S) &= ~(at);\
+      (S) &= ~(at);\
    }\
    TR(TRACE_ATTRS, ("new attribute is %s", _traceattr((S))));}
 
@@ -870,11 +878,11 @@ extern	NCURSES_EXPORT(void) name (void); \
 		    : INFINITY)))
 
 #if USE_XMC_SUPPORT
-#define UpdateAttrs(a)	if (SP->_current_attr != (a)) { \
-				attr_t chg = SP->_current_attr; \
-				vidattr((a)); \
+#define UpdateAttrs(c)	if (!SameAttrOf(SP->_current_attr, c)) { \
+				attr_t chg = AttrOf(SP->_current_attr); \
+				VIDATTR(AttrOf(c), GetPair(c)); \
 				if (magic_cookie_glitch > 0 \
-				 && XMC_CHANGES((chg ^ SP->_current_attr))) { \
+				 && XMC_CHANGES((chg ^ AttrOf(SP->_current_attr)))) { \
 					T(("%s @%d before glitch %d,%d", \
 						__FILE__, __LINE__, \
 						SP->_cursrow, \
@@ -883,8 +891,8 @@ extern	NCURSES_EXPORT(void) name (void); \
 				} \
 			}
 #else
-#define UpdateAttrs(a)	if (SP->_current_attr != (a)) \
-				vidattr((a));
+#define UpdateAttrs(c)	if (!SameAttrOf(SP->_current_attr, c)) \
+				VIDATTR(AttrOf(c), GetPair(c));
 #endif
 
 /*

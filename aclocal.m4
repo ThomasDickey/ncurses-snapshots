@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+dnl Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
 dnl copy of this software and associated documentation files (the            *
@@ -26,9 +26,9 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl Author: Thomas E. Dickey 1995-2004
+dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.348 2004/12/04 15:31:42 tom Exp $
+dnl $Id: aclocal.m4,v 1.350 2005/01/02 01:26:26 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -2981,7 +2981,7 @@ case $cf_cv_regex in
 esac
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SHARED_OPTS version: 30 updated: 2003/12/27 20:48:07
+dnl CF_SHARED_OPTS version: 31 updated: 2005/01/01 16:39:44
 dnl --------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
 dnl library.
@@ -3083,8 +3083,13 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	irix*)
 		if test "$cf_cv_ld_rpath" = yes ; then
-			cf_ld_rpath_opt="-Wl,-rpath,"
-			EXTRA_LDFLAGS="-Wl,-rpath,\$(libdir) $EXTRA_LDFLAGS"
+			if test "$GCC" = yes; then
+				cf_ld_rpath_opt="-Wl,-rpath,"
+				EXTRA_LDFLAGS="-Wl,-rpath,\$(libdir) $EXTRA_LDFLAGS"
+			else
+				cf_ld_rpath_opt="-rpath "
+				EXTRA_LDFLAGS="-rpath \$(libdir) $EXTRA_LDFLAGS"
+			fi
 		fi
 		# tested with IRIX 5.2 and 'cc'.
 		if test "$GCC" != yes; then

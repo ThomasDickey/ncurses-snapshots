@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.211 2004/10/23 15:17:16 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.213 2005/01/02 01:33:32 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -88,6 +88,8 @@ MODULE_ID("$Id: tty_update.c,v 1.211 2004/10/23 15:17:16 tom Exp $")
 #define CHECK_INTERVAL	5
 
 #define FILL_BCE() (SP->_coloron && !SP->_default_color && !back_color_erase)
+
+static const NCURSES_CH_T normal = NewChar2(BLANK_TEXT, BLANK_ATTR);
 
 /*
  * Enable checking to see if doupdate and friends are tracking the true
@@ -183,7 +185,7 @@ PutAttrChar(CARG_CH_T ch)
     NCURSES_CH_T my_ch;
     PUTC_DATA;
     NCURSES_CH_T tilde;
-    NCURSES_ATTR_T attr = AttrOfD(ch);
+    NCURSES_CH_T attr = CHDEREF(ch);
 
     TR(TRACE_CHARPUT, ("PutAttrChar(%s) at (%d, %d)",
 		       _tracech_t(ch),
@@ -213,7 +215,7 @@ PutAttrChar(CARG_CH_T ch)
     }
 #endif
 
-    if ((attr & A_ALTCHARSET)
+    if ((AttrOf(attr) & A_ALTCHARSET)
 	&& SP->_acs_map != 0
 	&& CharOfD(ch) < ACS_LEN) {
 	my_ch = CHDEREF(ch);	/* work around const param */
@@ -226,7 +228,7 @@ PutAttrChar(CARG_CH_T ch)
 	 */
 	if (SP->_screen_acs_fix
 	    && SP->_screen_acs_map[CharOf(my_ch)]) {
-	    attr &= ~(A_ALTCHARSET);
+	    RemAttr(attr, A_ALTCHARSET);
 	    my_ch = _nc_wacs[CharOf(my_ch)];
 	}
 #endif
@@ -236,19 +238,19 @@ PutAttrChar(CARG_CH_T ch)
 	 * really in acs_chars, needed because of the way wide/normal line
 	 * drawing flavors are integrated.
 	 */
-	if (attr & A_ALTCHARSET) {
+	if (AttrOf(attr) & A_ALTCHARSET) {
 	    int j = CharOfD(ch);
 	    chtype temp = UChar(SP->_acs_map[j]);
 
 	    if (!(SP->_screen_acs_map[j]))
-		attr &= ~(A_ALTCHARSET);
+		RemAttr(attr, A_ALTCHARSET);
 	    if (temp != 0)
-		SetChar(my_ch, temp, attr);
+		SetChar(my_ch, temp, AttrOf(attr));
 	}
 	ch = CHREF(my_ch);
     }
     if (tilde_glitch && (CharOfD(ch) == L('~'))) {
-	SetChar(tilde, L('`'), attr);
+	SetChar(tilde, L('`'), AttrOf(attr));
 	ch = CHREF(tilde);
     }
 
@@ -414,13 +416,15 @@ can_clear_with(ARG_CH_T ch)
 {
     if (!back_color_erase && SP->_coloron) {
 #if NCURSES_EXT_FUNCS
+	int pair;
+
 	if (!SP->_default_color)
 	    return FALSE;
 	if (SP->_default_fg != C_MASK || SP->_default_bg != C_MASK)
 	    return FALSE;
-	if (AttrOfD(ch) & A_COLOR) {
+	if ((pair = GetPair(CHDEREF(ch))) != 0) {
 	    short fg, bg;
-	    pair_content(PAIR_NUMBER(AttrOfD(ch)), &fg, &bg);
+	    pair_content(pair, &fg, &bg);
 	    if (fg != C_MASK || bg != C_MASK)
 		return FALSE;
 	}
@@ -481,7 +485,7 @@ EmitRange(const NCURSES_CH_T * ntext, int num)
 	    if (erase_chars
 		&& runcount > SP->_ech_cost + SP->_cup_ch_cost
 		&& can_clear_with(CHREF(ntext0))) {
-		UpdateAttrs(AttrOf(ntext0));
+		UpdateAttrs(ntext0);
 		putp(tparm(erase_chars, runcount));
 
 		/*
@@ -501,7 +505,7 @@ EmitRange(const NCURSES_CH_T * ntext, int num)
 		if (wrap_possible)
 		    rep_count--;
 
-		UpdateAttrs(AttrOf(ntext0));
+		UpdateAttrs(ntext0);
 		tputs(tparm(repeat_char, CharOf(ntext0), rep_count),
 		      rep_count, _nc_outch);
 		SP->_curscol += rep_count;
@@ -843,7 +847,7 @@ doupdate(void)
      * Keep the physical screen in normal mode in case we get other
      * processes writing to the screen.
      */
-    UpdateAttrs(A_NORMAL);
+    UpdateAttrs(normal);
 
     _nc_flush();
     curscr->_attrs = newscr->_attrs;
@@ -938,7 +942,7 @@ ClrToEOL(NCURSES_CH_T blank, bool needclear)
     }
 
     if (needclear) {
-	UpdateAttrs(AttrOf(blank));
+	UpdateAttrs(blank);
 	TPUTS_TRACE("clr_eol");
 	if (clr_eol && SP->_el_cost <= (screen_columns - SP->_curscol)) {
 	    putp(clr_eol);
@@ -964,7 +968,7 @@ ClrToEOS(NCURSES_CH_T blank)
     row = SP->_cursrow;
     col = SP->_curscol;
 
-    UpdateAttrs(AttrOf(blank));
+    UpdateAttrs(blank);
     TPUTS_TRACE("clr_eos");
     tputs(clr_eos, screen_lines - row, _nc_outch);
 
@@ -1075,8 +1079,6 @@ TransformLine(int const lineno)
     if (SP->oldhash && SP->newhash)
 	SP->oldhash[lineno] = SP->newhash[lineno];
 
-#define ColorOf(n) (AttrOf(n) & A_COLOR)
-#define unColor(n) (AttrOf(n) & ALL_BUT_COLOR)
     /*
      * If we have colors, there is the possibility of having two color pairs
      * that display as the same colors.  For instance, Lynx does this.  Check
@@ -1084,24 +1086,19 @@ TransformLine(int const lineno)
      * they are equivalent.
      */
     if (SP->_coloron) {
-	attr_t oldColor;
-	attr_t newColor;
 	int oldPair;
 	int newPair;
 
 	for (n = 0; n < screen_columns; n++) {
 	    if (!CharEq(newLine[n], oldLine[n])) {
-		oldColor = ColorOf(oldLine[n]);
-		newColor = ColorOf(newLine[n]);
-		if (oldColor != newColor
+		oldPair = GetPair(oldLine[n]);
+		newPair = GetPair(newLine[n]);
+		if (oldPair != newPair
 		    && unColor(oldLine[n]) == unColor(newLine[n])) {
-		    oldPair = PAIR_NUMBER(oldColor);
-		    newPair = PAIR_NUMBER(newColor);
 		    if (oldPair < COLOR_PAIRS
 			&& newPair < COLOR_PAIRS
 			&& SP->_color_pairs[oldPair] == SP->_color_pairs[newPair]) {
-			RemAttr(oldLine[n], A_COLOR);
-			AddAttr(oldLine[n], ColorOf(newLine[n]));
+			SetPair(oldLine[n], GetPair(newLine[n]));
 		    }
 		}
 	    }
@@ -1111,7 +1108,7 @@ TransformLine(int const lineno)
     if (ceol_standout_glitch && clr_eol) {
 	firstChar = 0;
 	while (firstChar < screen_columns) {
-	    if (AttrOf(newLine[firstChar]) != AttrOf(oldLine[firstChar])) {
+	    if (!SameAttrOf(newLine[firstChar], oldLine[firstChar])) {
 		attrchanged = TRUE;
 		break;
 	    }
@@ -1203,12 +1200,12 @@ TransformLine(int const lineno)
 		    if (nFirstChar >= screen_columns
 			&& SP->_el_cost <= SP->_el1_cost) {
 			GoTo(lineno, 0);
-			UpdateAttrs(AttrOf(blank));
+			UpdateAttrs(blank);
 			TPUTS_TRACE("clr_eol");
 			putp(clr_eol);
 		    } else {
 			GoTo(lineno, nFirstChar - 1);
-			UpdateAttrs(AttrOf(blank));
+			UpdateAttrs(blank);
 			TPUTS_TRACE("clr_bol");
 			putp(clr_bol);
 		    }
@@ -1324,7 +1321,7 @@ TransformLine(int const lineno)
 		     * setting the video attributes from
 		     * the last character on the row.
 		     */
-		    UpdateAttrs(AttrOf(blank));
+		    UpdateAttrs(blank);
 		    DelChar(oLastChar - nLastChar);
 		}
 	    }
@@ -1356,7 +1353,7 @@ ClearScreen(NCURSES_CH_T blank)
 #if NCURSES_EXT_FUNCS
     if (SP->_coloron
 	&& !SP->_default_color) {
-	_nc_do_color((int) COLOR_PAIR(SP->_current_attr), 0, FALSE, _nc_outch);
+	_nc_do_color(GET_SCREEN_PAIR(SP), 0, FALSE, _nc_outch);
 	if (!back_color_erase) {
 	    fast_clear = FALSE;
 	}
@@ -1365,7 +1362,7 @@ ClearScreen(NCURSES_CH_T blank)
 
     if (fast_clear) {
 	if (clear_screen) {
-	    UpdateAttrs(AttrOf(blank));
+	    UpdateAttrs(blank);
 	    TPUTS_TRACE("clear_screen");
 	    putp(clear_screen);
 	    SP->_cursrow = SP->_curscol = 0;
@@ -1374,13 +1371,13 @@ ClearScreen(NCURSES_CH_T blank)
 	    SP->_cursrow = SP->_curscol = -1;
 	    GoTo(0, 0);
 
-	    UpdateAttrs(AttrOf(blank));
+	    UpdateAttrs(blank);
 	    TPUTS_TRACE("clr_eos");
 	    tputs(clr_eos, screen_lines, _nc_outch);
 	} else if (clr_eol) {
 	    SP->_cursrow = SP->_curscol = -1;
 
-	    UpdateAttrs(AttrOf(blank));
+	    UpdateAttrs(blank);
 	    for (i = 0; i < screen_lines; i++) {
 		GoTo(i, 0);
 		TPUTS_TRACE("clr_eol");
@@ -1389,7 +1386,7 @@ ClearScreen(NCURSES_CH_T blank)
 	    GoTo(0, 0);
 	}
     } else {
-	UpdateAttrs(AttrOf(blank));
+	UpdateAttrs(blank);
 	for (i = 0; i < screen_lines; i++) {
 	    GoTo(i, 0);
 	    for (j = 0; j < screen_columns; j++)
@@ -1525,34 +1522,34 @@ scroll_csr_forward(int n, int top, int bot, int miny, int maxy, NCURSES_CH_T bla
 
     if (n == 1 && scroll_forward && top == miny && bot == maxy) {
 	GoTo(bot, 0);
-	UpdateAttrs(AttrOf(blank));
+	UpdateAttrs(blank);
 	TPUTS_TRACE("scroll_forward");
 	putp(scroll_forward);
     } else if (n == 1 && delete_line && bot == maxy) {
 	GoTo(top, 0);
-	UpdateAttrs(AttrOf(blank));
+	UpdateAttrs(blank);
 	TPUTS_TRACE("delete_line");
 	putp(delete_line);
     } else if (parm_index && top == miny && bot == maxy) {
 	GoTo(bot, 0);
-	UpdateAttrs(AttrOf(blank));
+	UpdateAttrs(blank);
 	TPUTS_TRACE("parm_index");
 	tputs(tparm(parm_index, n, 0), n, _nc_outch);
     } else if (parm_delete_line && bot == maxy) {
 	GoTo(top, 0);
-	UpdateAttrs(AttrOf(blank));
+	UpdateAttrs(blank);
 	TPUTS_TRACE("parm_delete_line");
 	tputs(tparm(parm_delete_line, n, 0), n, _nc_outch);
     } else if (scroll_forward && top == miny && bot == maxy) {
 	GoTo(bot, 0);
-	UpdateAttrs(AttrOf(blank));
+	UpdateAttrs(blank);
 	for (i = 0; i < n; i++) {
 	    TPUTS_TRACE("scroll_forward");
 	    putp(scroll_forward);
 	}
     } else if (delete_line && bot == maxy) {
 	GoTo(top, 0);
-	UpdateAttrs(AttrOf(blank));
+	UpdateAttrs(blank);
 	for (i = 0; i < n; i++) {
 	    TPUTS_TRACE("delete_line");
 	    putp(delete_line);
@@ -1583,34 +1580,34 @@ scroll_csr_backward(int n, int top, int bot, int miny, int maxy,
 
     if (n == 1 && scroll_reverse && top == miny && bot == maxy) {
 	GoTo(top, 0);
-	UpdateAttrs(AttrOf(blank));
+	UpdateAttrs(blank);
 	TPUTS_TRACE("scroll_reverse");
 	putp(scroll_reverse);
     } else if (n == 1 && insert_line && bot == maxy) {
 	GoTo(top, 0);
-	UpdateAttrs(AttrOf(blank));
+	UpdateAttrs(blank);
 	TPUTS_TRACE("insert_line");
 	putp(insert_line);
     } else if (parm_rindex && top == miny && bot == maxy) {
 	GoTo(top, 0);
-	UpdateAttrs(AttrOf(blank));
+	UpdateAttrs(blank);
 	TPUTS_TRACE("parm_rindex");
 	tputs(tparm(parm_rindex, n, 0), n, _nc_outch);
     } else if (parm_insert_line && bot == maxy) {
 	GoTo(top, 0);
-	UpdateAttrs(AttrOf(blank));
+	UpdateAttrs(blank);
 	TPUTS_TRACE("parm_insert_line");
 	tputs(tparm(parm_insert_line, n, 0), n, _nc_outch);
     } else if (scroll_reverse && top == miny && bot == maxy) {
 	GoTo(top, 0);
-	UpdateAttrs(AttrOf(blank));
+	UpdateAttrs(blank);
 	for (i = 0; i < n; i++) {
 	    TPUTS_TRACE("scroll_reverse");
 	    putp(scroll_reverse);
 	}
     } else if (insert_line && bot == maxy) {
 	GoTo(top, 0);
-	UpdateAttrs(AttrOf(blank));
+	UpdateAttrs(blank);
 	for (i = 0; i < n; i++) {
 	    TPUTS_TRACE("insert_line");
 	    putp(insert_line);
@@ -1642,7 +1639,7 @@ scroll_idl(int n, int del, int ins, NCURSES_CH_T blank)
 	return ERR;
 
     GoTo(del, 0);
-    UpdateAttrs(AttrOf(blank));
+    UpdateAttrs(blank);
     if (n == 1 && delete_line) {
 	TPUTS_TRACE("delete_line");
 	putp(delete_line);
@@ -1657,7 +1654,7 @@ scroll_idl(int n, int del, int ins, NCURSES_CH_T blank)
     }
 
     GoTo(ins, 0);
-    UpdateAttrs(AttrOf(blank));
+    UpdateAttrs(blank);
     if (n == 1 && insert_line) {
 	TPUTS_TRACE("insert_line");
 	putp(insert_line);
@@ -1810,7 +1807,7 @@ NCURSES_EXPORT(void)
 _nc_screen_resume(void)
 {
     /* make sure terminal is in a sane known state */
-    SP->_current_attr = A_NORMAL;
+    SetAttr(SP->_current_attr, A_NORMAL);
     newscr->_clear = TRUE;
 
     /* reset color pairs and definitions */
@@ -1858,7 +1855,7 @@ _nc_screen_init(void)
 NCURSES_EXPORT(void)
 _nc_screen_wrap(void)
 {
-    UpdateAttrs(A_NORMAL);
+    UpdateAttrs(normal);
 #if NCURSES_EXT_FUNCS
     if (SP->_coloron
 	&& !SP->_default_color) {
@@ -1881,7 +1878,7 @@ _nc_screen_wrap(void)
 NCURSES_EXPORT(void)
 _nc_do_xmc_glitch(attr_t previous)
 {
-    attr_t chg = XMC_CHANGES(previous ^ SP->_current_attr);
+    attr_t chg = XMC_CHANGES(previous ^ AttrOf(SP->_current_attr));
 
     while (chg != 0) {
 	if (chg & 1) {

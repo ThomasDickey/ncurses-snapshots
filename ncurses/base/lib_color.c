@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -42,7 +42,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.66 2004/10/30 22:30:23 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.67 2005/01/02 01:03:29 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -336,13 +336,12 @@ init_pair(short pair, short f, short b)
     if (SP->_color_pairs[pair] != 0
 	&& SP->_color_pairs[pair] != result) {
 	int y, x;
-	attr_t z = COLOR_PAIR(pair);
 
 	for (y = 0; y <= curscr->_maxy; y++) {
 	    struct ldat *ptr = &(curscr->_line[y]);
 	    bool changed = FALSE;
 	    for (x = 0; x <= curscr->_maxx; x++) {
-		if ((AttrOf(ptr->text[x]) & A_COLOR) == z) {
+		if (GetPair(ptr->text[x]) == pair) {
 		    /* Set the old cell to zero to ensure it will be
 		       updated on the next doupdate() */
 		    SetChar(ptr->text[x], 0, 0);
@@ -355,8 +354,8 @@ init_pair(short pair, short f, short b)
 	}
     }
     SP->_color_pairs[pair] = result;
-    if ((int) (SP->_current_attr & A_COLOR) == COLOR_PAIR(pair))
-	SP->_current_attr |= A_COLOR;	/* force attribute update */
+    if (GET_SCREEN_PAIR(SP) == pair)
+	SET_SCREEN_PAIR(SP, ~0);	/* force attribute update */
 
     if (initialize_pair) {
 	const color_t *tp = hue_lightness_saturation ? hls_palette : cga_palette;
