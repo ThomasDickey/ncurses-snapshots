@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- *     and: Thomas E. Dickey                        1996-2003               *
+ *     and: Thomas E. Dickey                        1996-2004               *
  ****************************************************************************/
 
 /*
@@ -48,7 +48,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.60 2003/11/08 21:57:09 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.61 2004/05/01 21:33:25 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -232,7 +232,11 @@ _nc_parse_entry(struct entry *entryp, int literal, bool silent)
      * 2-character name, but was instead the first alias after that.
      */
     ptr = _nc_curr_token.tk_name;
-    if (_nc_syntax == SYN_TERMCAP) {
+    if (_nc_syntax == SYN_TERMCAP
+#if NCURSES_XNAMES
+	&& !_nc_user_definable
+#endif
+	) {
 	if (ptr[2] == '|') {
 	    ptr += 3;
 	    _nc_curr_token.tk_name[2] = '\0';

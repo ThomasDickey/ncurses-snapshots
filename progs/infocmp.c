@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 /*
@@ -41,7 +42,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.71 2003/10/18 18:01:54 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.72 2004/05/01 22:07:43 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -87,11 +88,10 @@ static bool ignorepads;		/* ignore pad prefixes when diffing */
 
 #if NO_LEAKS
 #undef ExitProgram
-static void
-ExitProgram(int code) GCC_NORETURN;
+static void ExitProgram(int code) GCC_NORETURN;
 /* prototype is to get gcc to accept the noreturn attribute */
-     static void
-       ExitProgram(int code)
+static void
+ExitProgram(int code)
 {
     while (termcount-- > 0)
 	_nc_free_termtype(&entries[termcount].tterm);
@@ -1186,9 +1186,13 @@ main(int argc, char *argv[])
     /* where is the terminfo database location going to default to? */
     restdir = firstdir = 0;
 
+#if NCURSES_XNAMES
+    use_extended_names(FALSE);
+#endif
+
     while ((c = getopt(argc,
 		       argv,
-		       "1A:aB:CcdEeFfGgIiLlnpqR:rs:TtuVv:w:")) != EOF)
+		       "1A:aB:CcdEeFfGgIiLlnpqR:rs:TtuVv:w:x")) != EOF)
 	switch (c) {
 	case '1':
 	    mwidth = 0;
@@ -1335,6 +1339,12 @@ main(int argc, char *argv[])
 	case 'w':
 	    mwidth = optarg_to_number();
 	    break;
+
+#if NCURSES_XNAMES
+	case 'x':
+	    use_extended_names(TRUE);
+	    break;
+#endif
 
 	default:
 	    usage();

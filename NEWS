@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.809 2004/04/24 21:56:22 tom Exp $
+-- $Id: NEWS,v 1.811 2004/05/02 00:31:22 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040501
+	+ modify menu library to account for actual number of columns used by
+	  multibyte character strings, in the wide-character configuration
+	  (adapted from patch by Philipp Tomsich).
+	+ add "-x" option to infocmp like tic's "-x", for use in "-F"
+	  comparisons.
+	+ modify termcap-parsing to retain 2-character aliases at the beginning
+	  of an entry if the "-x" option is used in tic.
 
 20040424
 	+ minor compiler-warning and test-program fixes.

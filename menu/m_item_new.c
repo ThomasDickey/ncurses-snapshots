@@ -38,7 +38,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_new.c,v 1.16 2004/04/03 23:09:47 tom Exp $")
+MODULE_ID("$Id: m_item_new.c,v 1.17 2004/05/02 00:13:22 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -53,14 +53,45 @@ MODULE_ID("$Id: m_item_new.c,v 1.16 2004/04/03 23:09:47 tom Exp $")
 static bool
 Is_Printable_String(const char *s)
 {
+  int result = TRUE;
+
+#ifdef USE_WIDEC_SUPPORT
+  int count = mbstowcs(0, s, 0);
+  wchar_t *temp = 0;
+
+  assert(s);
+
+  if (count > 0
+      && (temp = malloc(sizeof(*temp) * (2 + count))) != 0)
+    {
+      int n;
+
+      mbstowcs(temp, s, count);
+      for (n = 0; n < count; ++n)
+	{
+	  int test = wcwidth(temp[n]);
+
+	  if (test <= 0)
+	    {
+	      result = FALSE;
+	      break;
+	    }
+	}
+      free(temp);
+    }
+#else
   assert(s);
   while (*s)
     {
       if (!isprint(UChar(*s)))
-	return FALSE;
+	{
+	  result = FALSE;
+	  break;
+	}
       s++;
     }
-  return TRUE;
+#endif
+  return result;
 }
 
 /*---------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+.\" Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.34 2003/10/25 16:19:01 tom Exp $
+.\" $Id: infocmp.1m,v 1.36 2004/05/01 22:51:00 tom Exp $
 .TH infocmp 1M ""
 .ds n 5
 .ds d @TERMINFO@
@@ -56,6 +56,7 @@ q\
 r\
 t\
 u\
+x\
 \fR]
 .br
       [\fB\-v\fR \fIn\fR] [\fB\-s d\fR| \fBi\fR| \fBl\fR| \fBc\fR] [\fB\-R \fR\fBsubset\fR]
@@ -365,6 +366,14 @@ Higher values of n induce greater verbosity.
 .TP 5
 \fB\-w\fR \fIwidth\fR
 changes the output to \fIwidth\fR characters.
+.TP
+\fB\-x\fR
+Treat unknown capabilities as user-defined.
+That is, if you supply a capability name which \fBtic\fP does not recognize,
+it will infer its type (boolean, number or string) from the syntax and
+make an extended table entry for that.
+If the source is termcap, accept the 2-character names required by version 6.
+Otherwise these are ignored.
 .SH FILES
 .TP 20
 \*d

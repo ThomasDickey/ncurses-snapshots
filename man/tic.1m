@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+.\" Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.35 2003/05/11 00:32:53 tom Exp $
+.\" $Id: tic.1m,v 1.36 2004/05/01 22:51:00 tom Exp $
 .TH tic 1M ""
 .ds n 5
 .ds d @TERMINFO@
@@ -86,6 +86,8 @@ tells \fBtic\fP to retain commented-out capabilities rather than discarding
 them.  Capabilities are commented by prefixing them with a period.
 This sets the \fB\-x\fR option, because it treats the commented-out
 entries as user-defined names.
+If the source is termcap, accept the 2-character names required by version 6.
+Otherwise these are ignored.
 .TP
 \fB\-C\fR
 Force source translation to termcap format.  Note: this differs from the \fB\-C\fR
