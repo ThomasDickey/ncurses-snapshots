@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.139 2000/11/04 23:14:28 tom Exp $
+$Id: ncurses.c,v 1.140 2000/12/31 01:56:46 tom Exp $
 
 ***************************************************************************/
 
@@ -405,7 +405,7 @@ show_attr(int row, int skip, chtype attr, const char *name)
 	    };
 	    unsigned n;
 	    bool found = FALSE;
-	    for (n = 0; n < sizeof(table) / sizeof(table[0]); n++) {
+	    for (n = 0; n < SIZEOF(table); n++) {
 		if ((table[n] & attr) != 0
 		    && ((1 << n) & ncv) != 0) {
 		    found = TRUE;
@@ -3022,7 +3022,7 @@ form_virtualize(FORM * f, WINDOW *w)
 	    mode = REQ_INS_MODE;
 	c = mode;
     } else {
-	for (n = 0; n < sizeof(lookup) / sizeof(lookup[0]); n++) {
+	for (n = 0; n < SIZEOF(lookup); n++) {
 	    if (lookup[n].code == c) {
 		c = lookup[n].result;
 		break;
@@ -3366,7 +3366,7 @@ usage(void)
 #endif
     };
     size_t n;
-    for (n = 0; n < sizeof(tbl) / sizeof(tbl[0]); n++)
+    for (n = 0; n < SIZEOF(tbl); n++)
 	fprintf(stderr, "%s\n", tbl[n]);
     exit(EXIT_FAILURE);
 }
@@ -3504,11 +3504,13 @@ main(int argc, char *argv[])
     /* tests, in general, will want these modes */
     if (has_colors()) {
 	start_color();
-#ifdef NCURSES_VERSION
+#ifdef NCURSES_VERSION_PATCH
 	if (default_colors)
 	    use_default_colors();
+#if NCURSES_VERSION_PATCH >= 20000708
 	else if (assumed_colors)
 	    assume_default_colors(default_fg, default_bg);
+#endif
 #endif
     }
     set_terminal_modes();

@@ -7,7 +7,7 @@
  *  wrs(5/28/93) -- modified to be consistent (perform identically) with either
  *                  PDCurses or under Unix System V, R4
  *
- * $Id: testcurs.c,v 1.22 2000/06/17 23:23:34 tom Exp $
+ * $Id: testcurs.c,v 1.23 2000/12/31 01:55:22 tom Exp $
  */
 
 #include <test.priv.h>
@@ -45,7 +45,7 @@ const COMMAND command[] =
     {"Input Test", inputTest},
     {"Output Test", outputTest}
 };
-#define MAX_OPTIONS ((sizeof(command)/sizeof(command[0])))
+#define MAX_OPTIONS SIZEOF(command)
 
 int width, height;
 
