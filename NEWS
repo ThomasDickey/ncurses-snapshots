@@ -1,10 +1,22 @@
--- $Id: NEWS,v 1.329 1998/04/11 23:41:18 tom Exp $
+-- $Id: NEWS,v 1.330 1998/04/18 21:57:16 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980418
+	+ modify etip.h to avoid conflict with math.h on HP-UX 9.03 with gcc
+	  2.8.1 which redefines 'exception' (reported by Ralf Hildebrandt
+	  <R.Hildebrandt@tu-bs.de>).
+	+ correct configure tests in CF_SHARED_OPTS which used $CC value to
+	  check for gcc, rather than autoconf's $GCC value.  This did not
+	  work properly if the full pathname of the compiler were given
+	  (reported by Michael Yount <yount@csf.Colorado.edu>).
+	+ revise check for compiler options to force ANSI mode since repeating
+	  an option such as -Aa causes HP's compiler to fail on its own headers
+	  (reported by Clint Olsen <olsenc@ichips.intel.com>).
 
 980411
 	+ ifdef'd has_key() and mcprint() as extended functions.

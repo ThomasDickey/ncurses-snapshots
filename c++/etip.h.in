@@ -31,7 +31,7 @@
  *   Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1997             *
  ****************************************************************************/
 
-// $Id: etip.h.in,v 1.4 1998/02/17 09:01:38 juergen Exp $
+// $Id: etip.h.in,v 1.5 1998/04/18 21:54:07 tom Exp $
 
 #ifndef _ETIP_H
 #define _ETIP_H
@@ -59,6 +59,8 @@
 
 #if defined(__GNUG__)
 #  if HAVE_BUILTIN_H
+#    include <math.h>
+#    undef exception
 #    define exception builtin_exception
 #    include <builtin.h>
 #    undef exception

@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.132 1998/04/04 00:50:38 tom Exp $
+dnl $Id: configure.in,v 1.134 1998/04/18 21:06:48 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.132 $)
+AC_REVISION($Revision: 1.134 $)
 AC_INIT(ncurses/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -87,6 +87,8 @@ AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
 AC_ISC_POSIX
 AC_PATH_PROG(LDCONFIG,ldconfig,,$PATH:/sbin:/usr/sbin)
+CF_ANSI_CC_REQD
+CF_PROG_EXT
 
 dnl DEFECT in autoconf 2.12:	an attempt to set policy, this breaks the
 dnl				configure script by not letting us test if C++
@@ -634,32 +636,6 @@ ttyent.h \
 unistd.h \
 values.h \
 )
-
-PROG_EXT=
-case $cf_cv_system_name in
-hpux*)
-    # check for HPUX's ANSI compiler
-    if test -z "$GCC"; then
-	AC_MSG_CHECKING([for HP/UX ANSI compiler])
-	cf_save_CFLAGS="$CFLAGS"
-	CFLAGS="$CFLAGS -Aa"
-	AC_TRY_COMPILE([],[void (*f)(void)=0],[cf_hpux_cc=yes],[cf_hpux_cc=no])
-	AC_MSG_RESULT($cf_hpux_cc)
-	if test $cf_hpux_cc = yes; then
-		AC_DEFINE(_HPUX_SOURCE)
-	else
-		CFLAGS="$cf_save_CFLAGS"
-	fi
-    fi
-    ;;
-os2*)
-    # We make sure -Zexe is not used -- it would interfere with @PROG_EXT@
-    CFLAGS="$CFLAGS -Zmt -D__ST_MT_ERRNO__"
-    LDFLAGS=`echo "$LDFLAGS -Zmt -Zcrtdll" | sed "s/-Zexe//g"`
-    PROG_EXT=".exe"
-    ;;
-esac
-AC_SUBST(PROG_EXT)
 
 # check for ISC (this may also define _POSIX_SOURCE)
 # Note: even non-Posix ISC needs <sys/bsdtypes.h> to declare fd_set

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.126 1998/04/04 19:21:12 juergen Exp $
+dnl $Id: aclocal.m4,v 1.128 1998/04/18 21:23:56 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -53,6 +53,72 @@ elif test "$includedir" != "/usr/include"; then
 	fi
 fi
 AC_SUBST(ACPPFLAGS)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl This is adapted from the macros 'fp_PROG_CC_STDC' and 'fp_C_PROTOTYPES'
+dnl in the sharutils 4.2 distribution.
+AC_DEFUN([CF_ANSI_CC_CHECK],
+[
+AC_MSG_CHECKING(for ${CC-cc} option to accept ANSI C)
+AC_CACHE_VAL(cf_cv_ansi_cc,[
+cf_cv_ansi_cc=no
+cf_save_CFLAGS="$CFLAGS"
+# Don't try gcc -ansi; that turns off useful extensions and
+# breaks some systems' header files.
+# AIX			-qlanglvl=ansi
+# Ultrix and OSF/1	-std1
+# HP-UX			-Aa -D_HPUX_SOURCE
+# SVR4			-Xc
+# UnixWare 1.2		(cannot use -Xc, since ANSI/POSIX clashes)
+for cf_arg in "-DCC_HAS_PROTOS" \
+	"" \
+	-qlanglvl=ansi \
+	-std1 \
+	"-Aa -D_HPUX_SOURCE +e" \
+	"-Aa -D_HPUX_SOURCE" \
+	-Xc
+do
+	CFLAGS="$cf_save_CFLAGS $cf_arg"
+	AC_TRY_COMPILE(
+[
+#ifndef CC_HAS_PROTOS
+#if !defined(__STDC__) || __STDC__ != 1
+choke me
+#endif
+#endif
+],[
+	int test (int i, double x);
+	struct s1 {int (*f) (int a);};
+	struct s2 {int (*f) (double a);};],
+	[cf_cv_ansi_cc="$cf_arg"; break])
+done
+CFLAGS="$cf_save_CFLAGS"
+])
+AC_MSG_RESULT($cf_cv_ansi_cc)
+
+if test "$cf_cv_ansi_cc" != "no"; then
+if test ".$cf_cv_ansi_cc" != ".-DCC_HAS_PROTOS"; then
+	CFLAGS="$CFLAGS $cf_cv_ansi_cc"
+else
+	AC_DEFINE(CC_HAS_PROTOS)
+fi
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl For programs that must use an ANSI compiler, obtain compiler options that
+dnl will make it recognize prototypes.  We'll do preprocessor checks in other
+dnl macros, since tools such as unproto can fake prototypes, but only part of
+dnl the preprocessor.
+AC_DEFUN([CF_ANSI_CC_REQD],
+[AC_REQUIRE([CF_ANSI_CC_CHECK])
+if test "$cf_cv_ansi_cc" = "no"; then
+	AC_ERROR(
+[Your compiler does not appear to recognize prototypes.
+You have the following choices:
+	a. adjust your compiler options
+	b. get an up-to-date compiler
+	c. use a wrapper such as unproto])
+fi
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Test if 'bool' is a builtin type in the configured C++ compiler.  Some
@@ -168,50 +234,6 @@ AC_MSG_RESULT($includedir)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl Check for data that is usually declared in <stdio.h> or <errno.h>
-dnl $1 = the name to check
-AC_DEFUN([CF_CHECK_ERRNO],
-[
-AC_MSG_CHECKING([declaration of $1])
-AC_CACHE_VAL(cf_cv_dcl_$1,[
-    AC_TRY_COMPILE([
-#if HAVE_STDLIB_H
-#include <stdlib.h>
-#endif
-#include <stdio.h>
-#include <sys/types.h>
-#include <errno.h> ],
-    [long x = (long) $1],
-    [eval 'cf_cv_dcl_'$1'=yes'],
-    [eval 'cf_cv_dcl_'$1'=no]')])
-eval 'cf_result=$cf_cv_dcl_'$1
-AC_MSG_RESULT($cf_result)
-
-# It's possible (for near-UNIX clones) that the data doesn't exist
-AC_CACHE_VAL(cf_cv_have_$1,[
-if test $cf_result = no ; then
-    eval 'cf_result=DECL_'$1
-    CF_UPPER(cf_result,$cf_result)
-    AC_DEFINE_UNQUOTED($cf_result)
-    AC_MSG_CHECKING([existence of $1])
-        AC_TRY_LINK([
-#undef $1
-extern long $1;
-],
-            [$1 = 2],
-            [eval 'cf_cv_have_'$1'=yes'],
-            [eval 'cf_cv_have_'$1'=no'])
-        eval 'cf_result=$cf_cv_have_'$1
-        AC_MSG_RESULT($cf_result)
-else
-    eval 'cf_cv_have_'$1'=yes'
-fi
-])
-eval 'cf_result=HAVE_'$1
-CF_UPPER(cf_result,$cf_result)
-eval 'test $cf_cv_have_'$1' = yes && AC_DEFINE_UNQUOTED($cf_result)'
-])dnl
-dnl ---------------------------------------------------------------------------
 dnl Check if the terminal-capability database functions are available.  If not,
 dnl ncurses has a much-reduced version.
 AC_DEFUN([CF_CGETENT],[
@@ -259,6 +281,50 @@ if test ".$system_name" != ".$cf_cv_system_name" ; then
 	AC_MSG_RESULT(Cached system name ($system_name) does not agree with actual ($cf_cv_system_name))
 	AC_ERROR("Please remove config.cache and try again.")
 fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Check for data that is usually declared in <stdio.h> or <errno.h>
+dnl $1 = the name to check
+AC_DEFUN([CF_CHECK_ERRNO],
+[
+AC_MSG_CHECKING([declaration of $1])
+AC_CACHE_VAL(cf_cv_dcl_$1,[
+    AC_TRY_COMPILE([
+#if HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+#include <stdio.h>
+#include <sys/types.h>
+#include <errno.h> ],
+    [long x = (long) $1],
+    [eval 'cf_cv_dcl_'$1'=yes'],
+    [eval 'cf_cv_dcl_'$1'=no]')])
+eval 'cf_result=$cf_cv_dcl_'$1
+AC_MSG_RESULT($cf_result)
+
+# It's possible (for near-UNIX clones) that the data doesn't exist
+AC_CACHE_VAL(cf_cv_have_$1,[
+if test $cf_result = no ; then
+    eval 'cf_result=DECL_'$1
+    CF_UPPER(cf_result,$cf_result)
+    AC_DEFINE_UNQUOTED($cf_result)
+    AC_MSG_CHECKING([existence of $1])
+        AC_TRY_LINK([
+#undef $1
+extern long $1;
+],
+            [$1 = 2],
+            [eval 'cf_cv_have_'$1'=yes'],
+            [eval 'cf_cv_have_'$1'=no'])
+        eval 'cf_result=$cf_cv_have_'$1
+        AC_MSG_RESULT($cf_result)
+else
+    eval 'cf_cv_have_'$1'=yes'
+fi
+])
+eval 'cf_result=HAVE_'$1
+CF_UPPER(cf_result,$cf_result)
+eval 'test $cf_cv_have_'$1' = yes && AC_DEFINE_UNQUOTED($cf_result)'
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl If we're trying to use g++, test if libg++ is installed (a rather common
@@ -494,6 +560,16 @@ AC_CACHE_VAL(cf_cv_have_isascii,[
 ])dnl
 AC_MSG_RESULT($cf_cv_have_isascii)
 test $cf_cv_have_isascii = yes && AC_DEFINE(HAVE_ISASCII)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Compute the library-prefix for the given host system
+dnl $1 = variable to set
+AC_DEFUN([CF_LIB_PREFIX],
+[
+	case $cf_cv_system_name in
+	os2)	$1=''     ;;
+	*)	$1='lib'  ;;
+	esac
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Append definitions and rules for the given models to the subdirectory
@@ -740,16 +816,6 @@ CF_EOF
 	fi
 done
 
-])dnl
-dnl ---------------------------------------------------------------------------
-dnl Compute the library-prefix for the given host system
-dnl $1 = variable to set
-AC_DEFUN([CF_LIB_PREFIX],
-[
-	case $cf_cv_system_name in
-	os2)	$1=''     ;;
-	*)	$1='lib'  ;;
-	esac
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Compute the library-suffix from the given model name
@@ -1056,6 +1122,22 @@ else
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Compute $PROG_EXT, used for non-Unix ports, such as OS/2 EMX.
+AC_DEFUN([CF_PROG_EXT],
+[
+AC_REQUIRE([CF_CHECK_CACHE])
+PROG_EXT=
+case $cf_cv_system_name in
+os2*)
+    # We make sure -Zexe is not used -- it would interfere with @PROG_EXT@
+    CFLAGS="$CFLAGS -Zmt -D__ST_MT_ERRNO__"
+    LDFLAGS=`echo "$LDFLAGS -Zmt -Zcrtdll" | sed "s/-Zexe//g"`
+    PROG_EXT=".exe"
+    ;;
+esac
+AC_SUBST(PROG_EXT)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Force $INSTALL to be an absolute-path.  Otherwise, edit_man.sh and the
 dnl misc/tabset install won't work properly.  Usually this happens only when
 dnl using the fallback mkinstalldirs script
@@ -1179,7 +1261,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 	case $cf_cv_system_name in
 	hpux*)
 		# (tested with gcc 2.7.2 -- I don't have c89)
-		if test "${CC}" = "gcc"; then
+		if test -n "$GCC"; then
 			CC_SHARED_OPTS='-fPIC'
 			LD_SHARED_OPTS='-Xlinker +b -Xlinker $(libdir)'
 		else
@@ -1193,7 +1275,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	irix*)
 		# tested with IRIX 5.2 and 'cc'.
-		if test "${CC}" = "gcc"; then
+		if test -n "$GCC"; then
 			CC_SHARED_OPTS='-fPIC'
 		else
 			CC_SHARED_OPTS='-KPIC'
