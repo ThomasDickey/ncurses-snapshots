@@ -33,15 +33,15 @@
 #include <ctype.h>
 #include "term.h"	/* padding_baud_rate, xon_xoff */
 
-int delay_output(float ms)
+int delay_output(int ms)
 {
-	T(("delay_output(%f) called", ms));
+	T(("delay_output(%d) called", ms));
 
     	if (SP == 0 || SP->_baudrate <= 0)
 		return(ERR);
 #ifdef no_pad_char
     	else if (no_pad_char)
-		_nc_timed_wait(0, (int)ms, (int *)NULL);
+		_nc_timed_wait(0, ms, (int *)NULL);
 #endif /* no_pad_char */
 	else {
 		register int	nullcount;

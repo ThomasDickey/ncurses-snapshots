@@ -53,7 +53,7 @@ int main (int argc, char *argv[])
     else
 	_nc_progname++;
 
-    while ((c = getopt(argc, argv, "hu:v:U:V")) != EOF)
+    while ((c = getopt(argc, argv, "huv:U:V")) != EOF)
 	switch (c)
 	{
 	case 'h':

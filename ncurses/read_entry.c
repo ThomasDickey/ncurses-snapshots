@@ -88,7 +88,7 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
     int		i, fd, numread;
     char 	buf[MAX_ENTRY_SIZE];
 
-    if ((fd = open(filename, 0)) < 0)
+    if ((fd = open(filename, O_RDONLY)) < 0)
     {
 	if (errno == ENOENT)
 	{

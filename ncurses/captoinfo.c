@@ -626,7 +626,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 	    if (ch1)
 		c1 = ch1;
 	    if (is7bits(c1) && isprint(c1))
-		bufptr = save_char(bufptr, c1);
+		bufptr = save_char(bufptr, (char)c1);
 	    else
 	    {
 		if (c1 == (c1 & 0x1f)) /* iscntrl() returns T on 255 */

@@ -173,7 +173,7 @@ start_token:
 	    /* have to make some punctuation chars legal for terminfo */
 	    if (!isalnum(ch) && !strchr(terminfo_punct, (char)ch)) {
 		 _nc_warning("Illegal character (expected alphanumeric or %s) - %s",
-		 	terminfo_punct, _tracechar(ch));
+		 	terminfo_punct, _tracechar((chtype)ch));
 		 _nc_panic_mode(separator);
 		 goto start_token;
 	    }
@@ -321,7 +321,7 @@ start_token:
 			case '@':
 				if ((ch = next_char()) != separator)
 					_nc_warning("Missing separator after `%s', have %s",
-						buffer, _tracechar(ch));
+						buffer, _tracechar((chtype)ch));
 				_nc_curr_token.tk_name = buffer;
 				type = CANCEL;
 				break;
@@ -358,7 +358,7 @@ start_token:
 				/* just to get rid of the compiler warning */
 				type = UNDEF;
 				_nc_warning("Illegal character - %s",
-					_tracechar(ch));
+					_tracechar((chtype)ch));
 			}
 		} /* end else (first_column == FALSE) */
 	} /* end else (ch != EOF) */
@@ -478,7 +478,7 @@ chtype	ch, last_ch = '\0';
 				_nc_warning("Non-octal digit `%c' in \\ sequence", c);
 				/* allow the digit; it'll do less harm */
 			    } else {
-				push_back(c);
+				push_back((char)c);
 				break;
 			    }
 			}

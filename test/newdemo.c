@@ -61,7 +61,7 @@ main(
 	char *argv[] GCC_UNUSED)
 {
 WINDOW  *win;
-int     w, x, y, i, j, len;
+int     w, x, y, i, j, k, len;
 char    buffer[80], *message;
 int     width, height;
 chtype  save[80];
@@ -173,9 +173,12 @@ chtype  c;
         init_pair(7,COLOR_RED,COLOR_GREEN);
         wattron(win, COLOR_PAIR(7));
 	for(i=2; i < width - 4; ++i)
-        {   c = mvwinch(win, 4, i);
-            save[j++] = c;
-            c = c & A_CHARTEXT;
+        {
+            k = mvwinch(win, 4, i);
+	    if (k == ERR)
+	    	break;
+            save[j++] = c = k;
+            c &= A_CHARTEXT;
 	    mvwaddch(win, 4, i, c);
         }
         wrefresh(win);

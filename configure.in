@@ -1,7 +1,7 @@
-dnl $Id: configure.in,v 1.24 1996/07/06 18:15:56 tom Exp $
+dnl $Id: configure.in,v 1.25 1996/07/14 01:06:54 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.9)
-AC_REVISION($Revision: 1.24 $)
+AC_REVISION($Revision: 1.25 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
@@ -219,6 +219,7 @@ getopt.h \
 libc.h \
 limits.h \
 locale.h \
+sys/bsdtypes.h \
 sys/ioctl.h \
 sys/param.h \
 sys/select.h \
@@ -246,10 +247,11 @@ if test -z "$GCC"; then
 fi;fi
 
 # check for ISC (this may also define _POSIX_SOURCE)
+# Note: even non-Posix ISC needs <sys/bsdtypes.h> to declare fd_set
 if test "$ISC" = yes ; then
 	AC_CHECK_LIB(main,cposix)
 	AC_CHECK_LIB(main,inet,,,"$LIBS")
-	AC_CHECK_HEADERS( sys/bsdtypes.h sys/termio.h )
+	AC_CHECK_HEADERS( sys/termio.h )
 fi
 
 # check for SCO.  this is a hack, and should be split into individual

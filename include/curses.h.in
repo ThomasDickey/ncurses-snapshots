@@ -360,7 +360,7 @@ extern int copywin(const WINDOW*,WINDOW*,int,int,int,int,int,int,int);	/* implem
 extern int curs_set(int);				/* implemented */
 extern int def_prog_mode(void);				/* implemented */
 extern int def_shell_mode(void);			/* implemented */
-extern int delay_output(float);				/* implemented */
+extern int delay_output(int);				/* implemented */
 extern int delch(void);					/* generated */
 extern void delscreen(SCREEN *);			/* implemented */
 extern int delwin(WINDOW *);				/* implemented */
@@ -929,7 +929,7 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define mvwgetnstr(win,y,x,str,n)    	(wmove(win,y,x) == ERR ? ERR : wgetnstr(win,str,n))
 #define mvwgetstr(win,y,x,str)      	(wmove(win,y,x) == ERR ? ERR : wgetstr(win,str))
 #define mvwhline(win,y,x,c,n)     	(wmove(win,y,x) == ERR ? ERR : whline(win,c,n))
-#define mvwinch(win,y,x)        	(wmove(win,y,x) == ERR ? ERR : winch(win))
+#define mvwinch(win,y,x)        	(wmove(win,y,x) == ERR ? (chtype)ERR : winch(win))
 #define mvwinchnstr(win,y,x,s,n)	(wmove(win,y,x) == ERR ? ERR : winchnstr(win,s,n))
 #define mvwinchstr(win,y,x,s)		(wmove(win,y,x) == ERR ? ERR : winchstr(win,s))
 #define mvwinnstr(win,y,x,s,n)		(wmove(win,y,x) == ERR ? ERR : winnstr(win,s,n))
@@ -1239,7 +1239,7 @@ extern bool no_optimize;	/* suppress optimization */
 
 /* other non-XSI functions */
 
-extern int mcprint(char *, int);	/* direct data to printer */
+extern size_t mcprint(char *, size_t);	/* direct data to printer */
 extern int has_key(int);		/* do we have given key? */
 
 #endif /* __NCURSES_H */

@@ -154,8 +154,8 @@ char *_tracechtype(chtype ch)
 		if (sp->val == ch)
 		{
 		    (void) sprintf(buf, "%s | %s", 
-				   sp->name,
-				   _traceattr((ch & (chtype)A_ATTRIBUTES &~ A_ALTCHARSET)));
+			    sp->name,
+			    _traceattr(AttrOf(ch) & (chtype)(~A_ALTCHARSET)));
 		    return(buf);
 		}
 	}
@@ -163,6 +163,6 @@ char *_tracechtype(chtype ch)
 
     (void) sprintf(buf, "%s | %s", 
 		   _tracechar((unsigned char)(ch & A_CHARTEXT)),
-		   _traceattr((ch & (chtype)A_ATTRIBUTES)));
+		   _traceattr(AttrOf(ch)));
     return(buf);
 }
