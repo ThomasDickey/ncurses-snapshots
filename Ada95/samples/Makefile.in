@@ -1,0 +1,72 @@
+#----------------------------------------------------------------------------
+#                                                                          --
+#                            GNAT ncurses Binding                          --
+#                              samples/Makefile                            --
+#                                                                          --
+#  Version 00.91                                                           --
+#                                                                          --
+#  The ncurses Ada95 binding is copyrighted 1996 by                        --
+#  Juergen Pfeifer, Email: Juergen.Pfeifer@T-Online.de                     --
+#                                                                          --
+#  Permission is hereby granted to reproduce and distribute this           --
+#  binding by any means and for any fee, whether alone or as part          --
+#  of a larger distribution, in source or in binary form, PROVIDED         --
+#  this notice is included with any such distribution, and is not          --
+#  removed from any of its header files. Mention of ncurses and the        --
+#  author of this binding in any applications linked with it is            --
+#  highly appreciated.                                                     --
+#                                                                          --
+#  This binding comes AS IS with no warranty, implied or expressed.        --
+#----------------------------------------------------------------------------
+#  Version Control
+#  $Revision: 1.3 $
+#
+srcdir=../ada_include
+objdir=../ada_objects
+
+CC           = gcc
+CFLAGS       = -I../../include
+LD_FLAGS     = @LD_MODEL@ $(LOCAL_LIBS) @LDFLAGS@ @LIBS@ @LOCAL_LDFLAGS2@ $(LDFLAGS)
+
+ADA          = @nc_ada_compiler@
+ADAFLAGS     = @ADAFLAGS@
+
+ADAMAKE      = @nc_ada_make@
+ADAMAKEFLAGS = -aI$(srcdir) -aO$(objdir)
+
+ALIB         = @nc_ada_package@
+ABASE        = $(ALIB)-curses
+
+CARGS        =-cargs $(ADAFLAGS)
+LARGS        =-largs -L../../lib $(LD_FLAGS)
+
+PROGS        = tour
+
+TOUR_OBJS    =	tour.o sample.o sample-curses_demo.o sample-explanation.o 	\
+		sample-form_demo.o sample-function_key_setting.o 		\
+		sample-header_handler.o sample-helpers.o 			\
+		sample-keyboard_handler.o sample-manifest.o sample-menu_demo.o	\
+		sample-menu_demo-aux.o sample-text_io_demo.o			\
+		sample-curses_demo-attributes.o sample-curses_demo-mouse.o	\
+		sample-form_demo-aux.o sample-my_field_type.o
+
+all ::  demo1
+	@
+
+demo1:	explain.txt
+	$(ADAMAKE) $(ADAMAKEFLAGS) tour $(CARGS) $(LARGS)
+
+clean ::
+	rm -f *.o *.ali b_t*.* *.s $(PROGS) a.out core b_*_test.c *.xr[bs]
+
+distclean :: clean
+	rm -f Makefile
+
+mostlyclean :: clean
+	@
+
+realclean :: distclean
+	@
+
+include dependencies
+
