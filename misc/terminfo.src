@@ -1,12 +1,7 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 10.1.23
+#	Version 10.2.0
 #	terminfo syntax
-#
-# This version of terminfo.src is distributed with ncurses.  It is based mainly
-# on the terminfo maintained by Eric Raymond.  However, it contains many
-# corrections which are not in that source, including some which are necessary
-# for proper functioning of ncurses 4.1 and above.
 #
 #	Eric S. Raymond		(current maintainer)
 #	John Kunze, Berkeley
@@ -29,7 +24,7 @@
 # termcap/terminfo versions.
 #
 # Pointers to related resources (including the ncurses distribution) may
-# be found at <http://www.ccil.org/terminfo>.
+# be found at <http://earthspace.net/terminfo>.
 #
 # INTERNATIONALIZATION:
 #
@@ -583,7 +578,6 @@ beterm|BeOS Terminal,
 # 1.9.9. All linux kernels since 1.2.13 (at least) set the screen size
 # themselves; this entry assumes that capability.
 #
-# From: Eric S. Raymond <esr@snark.thyrsus.com> 15 Dec 1995
 linux|linux console, 
 	am, bce, eo, mir, msgr, xenl, xon, 
 	it#8, ncv@, 
@@ -849,9 +843,9 @@ att7300|unixpc|pc7300|3b1|s4|AT&T UNIX PC Model 7300,
 	rmso=\E[m, rmul=\E[m, sgr0=\E[0;10m, smso=\E[7m, 
 	smul=\E[4m, 
 
-# From: davis@unidata.ucar.edu
+# From: Stefan Stapelberg <stefan@rent-a-guru.de>, 24 Feb 1997
 # (iris-ansi: added rmam/smam based on init string -- esr)
-iris-ansi|iris-ansi-net|IRIS emulating ANSI terminal, 
+iris-ansi|IRIS emulating 40 line ANSI terminal (almost VT100), 
 	am, 
 	cols#80, it#8, lines#40, 
 	bel=^G, bold=\E[1m, clear=\E[H\E[2J, 
@@ -986,8 +980,9 @@ qnx|qnx4|qnx console,
 	ktbc=\377\344, kund=\377\365, mvpa=\E!%p1%02d, op=\ER, 
 	rep=\Eg%p2%' '%+%c%p1%c, rev=\E(, ri=\EI, rmcup=\Eh\ER, 
 	rmso=\E), rmul=\E], rs1=\ER, setb=\E@%p1%Pb%gb%gf%d%d, 
-	setf=\E@%p1%Pf%gb%gf%d%d, sgr0=\E}\E]\E>\E), smcup=\Ei, 
-	smso=\E(, smul=\E[, 
+	setf=\E@%p1%Pf%gb%gf%d%d, 
+	sgr=%?%p1%t\E<%;%p2%t\E[%;%p3%t\E(%;%p4%t\E{%;%p6%t\E<%;, 
+	sgr0=\E}\E]\E>\E), smcup=\Ei, smso=\E(, smul=\E[, 
 
 #### NetBSD consoles
 #
@@ -1246,6 +1241,7 @@ ibmpc3|pc3-bold|IBM PC BSD/386 Console with bold instead of underline,
 # line and trademark, to SunRiver Data Systems.  SunRiver has since changed
 # its name to Boundless Technologies; see http://www.boundless.com.
 #
+
 # (The <acsc>, <rmacs>, and <smacs> capabilities aren't in DEC's official
 # entry -- esr)
 vt52|dec vt52, 
@@ -1340,7 +1336,7 @@ vt52|dec vt52,
 # (and even then, whenever it can be arranged!) you should set
 #	INTERLACE_OFF
 #
-# (I added <rmam>/<smam> based on the init string, also <OTbs> -- esr)
+# (vt100: I added <rmam>/<smam> based on the init string, also <OTbs>. -- esr)
 vt100|vt100-am|dec vt100 (w/advanced video), 
 	am, msgr, xenl, xon, 
 	cols#80, it#8, lines#24, vt#3, 
@@ -1364,6 +1360,8 @@ vt100|vt100-am|dec vt100 (w/advanced video),
 	smso=\E[7m$<2>, smul=\E[4m$<2>, tbc=\E[3g, 
 vt100nam|vt100-nam|vt100 no automargins, 
 	am@, xenl@, use=vt100-am, 
+vt100-vb|dec vt100 (w/advanced video) & no beep, 
+	bel@, flash=\E[?5h\E[?5l, use=vt100, 
 
 # Ordinary vt100 in 132 column ("wide") mode.
 vt100-w|vt100-w-am|dec vt100 132 cols (w/advanced video), 
@@ -1564,7 +1562,7 @@ vt200-js|vt220-js|dec vt200 series with jump scroll,
 	rmkx=\E[?1l\E>, rmso=\E[27m$<5/>, rmul=\E[24m, 
 	rs1=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, smdc=, 
 	smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m$<5/>, smul=\E[4m, 
-
+ 
 # This was DEC's vt320.  Use the purpose-built one below instead 
 #vt320|DEC VT320 in vt100 emulation mode,
 #	use=vt220,
@@ -1904,7 +1902,7 @@ z340|zstem vt340 terminal emulator 132col 42line,
 	is2=\E>\E[?3h\E[?4l\E[?5l\E[?7h\E[?8h\E[1;42r\E[42;1H, 
 	rs2=\E>\E[?3h\E[?4l\E[?5l\E[?7h\E[?8h\E[1;42r\E[42;1H, 
 	use=vt320-w, 
-z340-nam|zstem vt340 terminal emulator 132col 42line, 
+z340-nam|zstem vt340 terminal emulator 132col 42line (no automatic margins), 
 	am@, 
 	is2=\E>\E[?3h\E[?4l\E[?5l\E[?7l\E[?8h\E[1;42r\E[42;1H, 
 	rs2=\E>\E[?3h\E[?4l\E[?5l\E[?7l\E[?8h\E[1;42r\E[42;1H, 
@@ -1991,7 +1989,7 @@ xterm-r6|xterm-old|xterm X11R6 version,
 	smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
 # This is the base xterm entry for the xterm supplied with XFree86 3.2 & up.
 # The name has been changed and some aliases have been removed.
-xterm-xf86-v32|xterm terminal emulator (X Window System), 
+xterm-xf86-v32|xterm terminal emulator (XFree86 3.2 Window System), 
 	am, bce, km, mir, msgr, xenl, 
 	colors#8, cols#80, it#8, lines#24, pairs#64, 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
@@ -2029,17 +2027,22 @@ xterm-xf86-v32|xterm terminal emulator (X Window System),
 
 # This is the stock xterm entry supplied with XFree86 3.3, which uses VT100
 # codes for F1-F4 except while in VT220 mode.
-xterm-xf86-v33|xterm terminal emulator (X Window System), 
+xterm-xf86-v33|xterm terminal emulator (XFree86 3.3 Window System), 
 	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, 
 	use=xterm-xf86-v32, 
 
 # This beta version will probably be released in XFree86 4.0 in 1998.
 # Besides providing printer support, it exploits a new feature that allows
 # xterm to use terminfo-based descriptions with the titeInhibit resource.
-xterm-xf86-v40|xterm terminal emulator (X Window System), 
+xterm-xf86-v40|xterm terminal emulator (XFree86 4.0 Window System), 
 	mc5i, 
 	mc0=\E[i, mc4=\E[4i, mc5=\E[5i, rmcup=\E[?1047l\E[?1048l, 
 	rs1=\Ec, smcup=\E[?1048h\E[?1047h, 
+	use=xterm-xf86-v33, 
+
+# From: David J. MacKenzie <djm@va.pubnix.com>, 14 Nov 1997
+xterm-xi|xterm on XI Graphics Accelerated X under BSD/OS 3.1, 
+	rmso=\E[m, rmul=\E[m, 
 	use=xterm-xf86-v33, 
 
 # This is one of the variants from XFree86 3.3 (T.Dickey)
@@ -2415,7 +2418,7 @@ screen|VT 100/ANSI X3.64 virtual terminal,
 screen-w|VT 100/ANSI X3.64 virtual terminal with 132 cols, 
 	cols#132, use=screen, 
 
-screen2|VT 100/ANSI X3.64 virtual terminal, 
+screen2|old VT 100/ANSI X3.64 virtual terminal, 
 	cols#80, it#8, lines#24, 
 	cbt=\E[Z, clear=\E[2J\E[H, cr=^M, cub=\E[%p1%dD, cub1=^H, 
 	cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC, cuf1=\E[C, 
@@ -2429,7 +2432,7 @@ screen2|VT 100/ANSI X3.64 virtual terminal,
 	rmul=\E[24m, rs1=\Ec, sc=\E7, sgr0=\E[m, smir=\E[4h, 
 	smso=\E[3m, smul=\E[4m, tbc=\E[3g, 
 # (screen3: removed unknown ":xv:LP:G0:" -- esr)
-screen3|VT 100/ANSI X3.64 virtual terminal, 
+screen3|older VT 100/ANSI X3.64 virtual terminal, 
 	km, mir, msgr, 
 	cols#80, it#8, lines#24, 
 	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, clear=\E[H\E[J, 
@@ -2458,6 +2461,19 @@ pilot|tgtelnet|Top Gun Telnet on the Palm Pilot Professional,
 
 ######## WORKSTATION CONSOLES
 #
+
+#### Alpha consoles
+#
+
+# This is from the OSF/1 Release 1.0 termcap file
+pccons|pcconsole|ANSI (mostly) Alpha PC console terminal emulation, 
+	am, xon, 
+	cols#80, lines#25, 
+	bel=^G, clear=\E[H\E[2J, cr=^M, cub1=^H, cud1=^J, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, dch1=\E[P, dl1=\E[M, 
+	el=\E[K, home=\E[H, ht=^I, ich1=\E[@, il1=\E[L, kbs=^H, 
+	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, khome=\E[H, 
+	nel=^M^J, rev=\E[7m, rmso=\E[m, sgr0=\E[m, smso=\E[7m, 
 
 #### Sun consoles
 #
@@ -2609,6 +2625,144 @@ nextshell|NeXT Shell application,
 	bel=^G, cr=^M, cub1=^H, cud1=^J, ht=^I, kbs=^H, kcub1=^H, 
 	kcud1=^J, nel=^M^J, 
 
+### Sony NEWS workstations
+#
+
+# (news-unk: this had :KB=news: -- esr)
+news-unk|SONY NEWS vt100 emulator common entry, 
+	am, xenl, 
+	cols#80, 
+	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[H\E[2J, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr, cub1=^H, cud1=^J, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, dl=\E[%p1%dM, dl1=\E[M, 
+	ed=\E[J, el=\E[K, home=\E[H, ht=^I, 
+	if=/usr/lib/tabset/vt100, il=\E[%p1%dL, il1=\E[L, 
+	is2=\E[?7h\E[?1l\E[?3l\E7\E8, kbs=^H, kcub1=\EOD, 
+	kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kf0=\EOY, kf1=\EOP, 
+	kf2=\EOQ, kf3=\EOR, kf4=\EOS, kf5=\EOT, kf6=\EOU, kf7=\EOV, 
+	kf8=\EOW, kf9=\EOX, rc=\E8, rev=\E[7m, ri=\EM, 
+	rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, sc=\E7, sgr0=\E[m, 
+	smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
+#
+# (news-29: this had :TY=ascii: --esr)
+news-29, 
+	lines#29, use=news-unk, 
+# (news-29-euc: this had :TY=euc: --esr)
+news-29-euc, 
+	use=news-29, 
+# (news-29-sjis: this had :TY=sjis: --esr)
+news-29-sjis, 
+	use=news-29, 
+#
+# (news-33: this had :TY=ascii: --esr)
+news-33, 
+	lines#33, use=news-unk, 
+# (news-33-euc: this had :TY=euc: --esr)
+news-33-euc, 
+	use=news-33, 
+# (news-33-sjis: this had :TY=sjis: --esr)
+news-33-sjis, 
+	use=news-33, 
+#
+# (news-42: this had :TY=ascii: --esr)
+news-42, 
+	lines#42, use=news-unk, 
+# (news-42-euc: this had :TY=euc: --esr)
+news-42-euc, 
+	use=news-42, 
+# (news-42-sjis: this had :TY=sjis: --esr)
+news-42-sjis, 
+	use=news-42, 
+#
+#	NEWS-OS old termcap entry 
+#
+# (news-old-unk: this had :KB=news:TY=sjis: --esr)
+news-old-unk|SONY NEWS vt100 emulator common entry, 
+	am, xenl, 
+	cols#80, vt#3, 
+	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[;H\E[2J, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr, cub1=^H, cud1=^J, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, ed=\E[J, el=\E[K, 
+	home=\E[H, ht=^I, if=/usr/lib/tabset/vt100, kbs=^H, 
+	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kf1=\EOP, 
+	kf2=\EOQ, kf3=\EOR, kf4=\EOS, rc=\E8, rev=\E[7m, ri=\EM, 
+	rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, sc=\E7, sgr0=\E[m, 
+	smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
+#
+# (nwp512: this had :DE=^H:, which I think means <OTbs> --esr)
+nwp512|news|nwp514|news40|vt100-bm|sony vt100 emulator 40 lines, 
+	lines#40, 
+	is2=\E7\E[r\E8\EE\EE\EE\EM\EM\EM\E[?7h\E[?1l\E[?3l\E7\E[1;40r\E8, use=news-old-unk, 
+#
+# (nwp512-a: this had :TY=ascii: and the alias vt100-bm --esr)
+nwp512-a|nwp514-a|news-a|news42|news40-a|sony vt100 emulator 42 line, 
+	
+	
+s, 
+	lines#42, 
+	is2=\E[?7h\E[?1l\E[?3l\E7\E[1;42r\E8, use=news-old-unk, 
+#
+# (nwp-512-o: this had :KB=nwp410:DE=^H:  I interpret the latter as <OTbs>. --esr)
+nwp512-o|nwp514-o|news-o|news40-o|vt100-bm-o|sony vt100 emulator 40 lines, 
+	lines#40, 
+	is2=\E7\E[r\E8\EE\EE\EE\EM\EM\EM\E[?7h\E[?1l\E[?3l\E7\E[1;40r\E8, use=news-old-unk, 
+#
+# (nwp513: this had :DE=^H: and the alias vt100-bm --esr)
+nwp513|nwp518|nwe501|newscbm|news31|sony vt100 emulator 33 lines, 
+	lines#31, 
+	is2=\E7\E[r\E8\EE\EE\EE\EM\EM\EM\E[?7h\E[?1l\E[?3l\E7\E[1;31r\E8, use=news-old-unk, 
+#
+# (nwp513-a: this had :TY=ascii: and :DE=^H:, which I interpret as <OTbs>; --esr)
+# also the alias vt100-bm.
+nwp513-a|nwp518-a|nwe501-a|nwp251-a|newscbm-a|news31-a|newscbm33|news33|sony vt100 emulator 33 lines, 
+	lines#33, 
+	is2=\E7\E[r\E8\EE\EE\EE\EM\EM\EM\E[?7h\E[?1l\E[?3l\E7\E[1;33r\E8, use=news-old-unk, 
+#
+# (nwp513-o: had :DE=^H:, I think that's <OTbs>; also the alias vt100-bm --esr)
+nwp513-o|nwp518-o|nwe501-o|nwp251-o|newscbm-o|news31-o|sony vt100 emulator 33 lines, 
+	lines#31, 
+	is2=\E7\E[r\E8\EE\EE\EE\EM\EM\EM\E[?7h\E[?1l\E[?3l\E7\E[1;31r\E8, use=news-old-unk, 
+#
+# (news28: this had :DE=^H:, I think that's <OTbs>, and :KB=nws1200: --esr)
+news28|sony vt100 emulator 28 lines, 
+	lines#28, 
+	is2=\E7\E[r\E8\EE\EE\EE\EM\EM\EM\E[?7h\E[?1l\E[?3l\E7\E[1;28r\E8, use=news-old-unk, 
+#
+# (news29: this had :TY=ascii:KB=nws1200:\ --esr)
+news29|news28-a|sony vt100 emulator 29 lines, 
+	lines#29, 
+	is2=\E7\E[r\E8\EE\EE\EE\EM\EM\EM\E[?7h\E[?1l\E[?3l\E7\E[1;29r\E8, use=news-old-unk, 
+#
+# (news511: this had :TY=sjis: --esr)
+nwp511|nwp-511|nwp-511 vt100, 
+	am, xenl, 
+	cols#80, lines#24, 
+	clear=\E[;H\E[2J$<20/>, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A$<2/>, dl1=\E[M, 
+	ed=\E[J$<30/>, el=\E[K$<3/>, 
+	flash=\E[?5h\0\0\0\0\0\0\0\0\0\0\0\0\0\E[?5l, 
+	il1=\E[L, is2=\E[?5l\E[?1l\E>\E[?7h\E[?8h, kcub1=\E[D, 
+	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kf1=\EOP, kf2=\EOQ, 
+	kf3=\EOR, kf4=\EOS, kf5=\EOT, kf6=\E#W, khome=\E[H, 
+	ri=\EM$<5/>, rmso=\E[m$<2/>, rmul=\E[m$<2/>, 
+	smso=\E[7m$<2/>, smul=\E[4m$<2/>, 
+# (news517: this had :TY=sjis:. --esr)
+nwp517|nwp-517|nwp-517 vt200 80 cols 30 rows, 
+	eslok, hs, 
+	cols#80, lines#30, 
+	dsl=\E[1$~, fsl=\E[0$}, 
+	is2=\E7\E[r\E8\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, 
+	tsl=\E[1$}\E[;%df, 
+	use=vt200, 
+# (news517-w: this had :TY=sjis:. --esr)
+nwp517-w|nwp-517-w|nwp-517 vt200 132 cols 50 rows, 
+	eslok, hs, 
+	cols#132, lines#50, 
+	dsl=\E[1$~, fsl=\E[0$}, 
+	is2=\E7\E[r\E8\E>\E[?3h\E[?4l\E[?5l\E[?7h\E[?8h, 
+	tsl=\E[1$}\E[;%df, 
+	use=vt200, 
+
 #### Common Desktop Environment
 #
 
@@ -2643,6 +2797,7 @@ dtterm|CDE desktop terminal,
 	smso=\E[2;7m, smul=\E[4m, tbc=\E[3g, 
 
 ### Non-Unix Consoles
+#
 
 # Except for the "-emx" suffixes, these are as distributed with EMX 0.9b,
 # a Unix-style environment used on OS/2.  (Note that the suffix makes some
@@ -2718,7 +2873,27 @@ mono-emx|stupid monochrome ansi terminal with only one kind of emphasis,
 # systems is not, and (surprise!) they match very well.
 #
 # See:  MS Knowledge Base item Q108581, dated 13-MAY-1997, titled "Setting Up
-# VI POSIX Editor for Windows NT 3.1".
+# VI POSIX Editor for Windows NT 3.1".  True to Microsoft form, not only
+# are the installation instructions a pile of mind-numbing bureaucratese,
+# but the termcap entry is actually broken and unusable as given; the :do:
+# capability is misspelled "d".
+#
+# To use this, you need to a bunch of environment variables: 
+#
+# SET _POSIX_TERM=on
+# SET TERM=ansi
+# SET TERMCAP=location of termcap file in POSIX file format
+# which is case-sensitive.
+# e.g. SET TERMCAP=//D/RESKIT35/posix/termcap
+# SET TMP=//C/TEMP
+#
+# Important note: setting the TMP environment variable in POSIX style renders
+# it incompatible with a lot of other applications, including Visual C++. So
+# you should have a separate command window just for vi. All the other
+# variables may be permanently set in the Control Panel\System applet. 
+#
+# You can find out more about the restrictions of this facility at
+# <http://www.nentug.org/unix-to-nt/ntposix.htm>.
 #
 # From: Federico Bianchi <bianchi@magna.cisid.unipi.it>, 15 Jan 1997
 ansi-nt|psx_ansi|Microsoft Windows NT console POSIX ANSI mode, 
@@ -4196,7 +4371,7 @@ tvi921|televideo model 921 with sysline same as page & real vi function,
 # without the beeper
 # (tvi92B: removed :ko=bt: before translation, I see no backtab cap;
 # also added empty <acsc> to suppress tic warning -- esr)
-tvi92B|televideo model 921 with sysline same as page & real vi function, 
+tvi92B|televideo model 921 with sysline same as page & real vi function & no beeper, 
 	am, hs, xenl, xhp, 
 	cols#80, lines#24, xmc#0, 
 	acsc=, clear=^Z, cnorm=\E.3, cr=^M, cub1=^H, cud1=^V, cuf1=^L, 
@@ -4207,7 +4382,7 @@ tvi92B|televideo model 921 with sysline same as page & real vi function,
 	invis@, is2=\El\E"\EF1\E.3\017\EA\E<, kbs=^H, kclr=^Z, 
 	kcub1=^H, kcud1=^V, kcuf1=^L, kcuu1=^K, kdch1=\EW, 
 	kdl1=\ER$<1*/>, ked=\EY, kel=\ET, kich1=\EQ, kil1=\EE, 
-	nel=^M^J, rmacs=\E%, rmir=, smacs=\E$, smir=, tsl=\Ef\EG0, 
+	nel=^M^J, rmacs=\E%, smacs=\E$, tsl=\Ef\EG0, 
 	use=adm+sgr, 
 # (tvi92D: removed :ko=bt: before translation, I see no backtab cap -- esr)
 tvi92D|tvi92B with DTR instead of XON/XOFF & better padding, 
@@ -4754,8 +4929,8 @@ vi200|visual 200,
 	kf7=\E?w, kf8=\E?x, kf9=\E?y, khome=\EH, khts=\E1, kich1=\Ei, 
 	kil1=\EL, krmir=\Ej, mc0=\EH\E], mc4=\EX, mc5=\EW, ri=\EI, 
 	rmacs=\EG, rmkx=\E>, rmso=\E3, 
-	rs1=\E3\Eb\Ej\E\\\El\EG\Ec\Ek\EX, sgr0=\E3\Eb, 
-	smacs=\EF, smkx=\E=, smso=\E4, tbc=\Eg, 
+	rs1=\E3\Eb\Ej\E\El\EG\Ec\Ek\EX, sgr0=\E3\Eb, smacs=\EF, 
+	smkx=\E=, smso=\E4, tbc=\Eg, 
 # The older Visuals didn't come with function keys. This entry uses
 # <smkx> and <rmkx> so that the keypad keys can be used as function keys.
 # If your version of vi doesn't support function keys you may want
@@ -4845,20 +5020,14 @@ vi603|visual603|visual 603,
 #
 # Wyse sales can be reached by phone at 1-800-GET-WYSE.  Tech support is at
 # (800)-800-WYSE (option 5 gets you a human).  There's a Web page at the
-# obvious address, http://www.wyse.com.
+# obvious address, <http://www.wyse.com>.  They keep terminfo entries at
+# <http://www.wyse.co.uk/support/appnotes/idxappnt.htm>.
 #
 # Wyse bought out Link Technology, Inc. in 1990 and closed it down in 1995.
 # They now own the Qume and Amdek brands, too.  So these are the people to
 # talk with about all Link, Qume, and Amdek terminals.
 #
-# Wyse has a BBS containing termcap and terminfo stuff for their terminals
-# (though this may not last long -- I expect the Web will kill it off by
-# mid-1997 or so).  According to their tech support, at 800-800-9973, it's
-# at 408-922-4400 thru 4405.  The 4400 modem is flaky as of 5/96, so
-# call 4401 etc.  Come in at 9600 hard; don't use autospeed sense.
-#
-# All the following entries until (but not including) wy520 are direct from
-# Wyse technical support and represent their best knowledge as of January 1995.
+# These entries include a few small fixes.
 # I canceled the bel capacities in the vb entries.
 # I made two trivial syntax fixes in the wyse30 entry.
 # I made some entries relative to adm+sgr.
@@ -5877,7 +6046,7 @@ wy520-wvb|wyse520-wvb|wyse 520 with visible bell 132-columns,
 #       - Delete : delete a character (have to change interrupt character
 #                  to CTRL-C: stty intr '^c') for it to work since the
 #                  Delete key sends 7FH.
-wy520-epc|wyse520-epc|wyse 520 with EPC kb, 
+wy520-epc|wyse520-epc|wyse 520 with EPC keyboard, 
 	kdch1=\177, kel=\E[4~, kend=\E[4~, kf0=\E[21~, kf1=\E[11~, 
 	kf2=\E[12~, kf3=\E[13~, kf4=\E[14~, kf5=\E[15~, khome=\E[H, 
 	use=wy520, 
@@ -5894,7 +6063,7 @@ wy520-epc-vb|wyse520-pc-vb|wyse 520 with visible bell,
 	use=wy520-epc, 
 #
 #       Wyse 520 in 132-column mode.
-wy520-epc-w|wyse520-epc-w|wyse 520 in 132-column mode, 
+wy520-epc-w|wyse520-epc-w|wyse 520 in 132-column mode with EPC keyboard, 
 	cols#132, wsl#132, 
 	dch=\E[%p1%dP$<7>, dch1=\E[P$<7>, ich=\E[%p1%d@$<7>, 
 	ip=$<7>, rs2=\E[35h\E[?3h, 
@@ -5918,7 +6087,7 @@ wy520-48|wyse520-48|wyse 520 with 48 data lines,
 	dsl@, fsl@, rs3=\E[?5l\E[48*|\E[48t\E[40l\E[1;48r, tsl@, use=wy520, 
 #
 #       Wyse 520 in 132-column, 36 lines
-wy520-36w|wyse520-36w|wyse 520 with 36 data lines, 
+wy520-36w|wyse520-36w|wyse 520 with 132 columns and 36 data lines, 
 	cols#132, wsl#132, 
 	rs2=\E[?3h, 
 	rs3=\E[?5l\E[36*|\E[36t\E[40l\E[1;36r\E[132$|, use=wy520-36, 
@@ -5931,19 +6100,19 @@ wy520-48w|wyse520-48w|wyse 520 with 48 data lines,
 #
 #
 #       Wyse 520 in 80-column, 36 lines with EPC keyboard
-wy520-36pc|wyse520-36pc|wyse 520 with 36 data lines, 
+wy520-36pc|wyse520-36pc|wyse 520 with 36 data lines and EPC keyboard, 
 	hs@, 
 	lines#36, 
 	dsl@, fsl@, rs3=\E[?5l\E[36*|\E[36t\E[40l\E[1;36r, tsl@, use=wy520-epc, 
 #
 #       Wyse 520 in 80-column, 48 lines with EPC keyboard
-wy520-48pc|wyse520-48pc|wyse 520 with 48 data lines, 
+wy520-48pc|wyse520-48pc|wyse 520 with 48 data lines and EPC keyboard, 
 	hs@, 
 	lines#48, 
 	dsl@, fsl@, rs3=\E[?5l\E[48*|\E[48t\E[40l\E[1;48r, tsl@, use=wy520-epc, 
 #
 #       Wyse 520 in 132-column, 36 lines with EPC keyboard
-wy520-36wpc|wyse520-36wpc|wyse 520 with 36 data lines, 
+wy520-36wpc|wyse520-36wpc|wyse 520 with 36 data lines and EPC keyboard, 
 	cols#132, wsl#132, 
 	rs2=\E[?3h, 
 	rs3=\E[?5l\E[36*|\E[36t\E[40l\E[1;36r\E[132$|, use=wy520-36pc, 
@@ -6136,6 +6305,43 @@ vt320-k311|dec vt320 series as defined by kermit 3.11,
 #
 # I wrote these entries while looking at the Avatar spec.  I don't have
 # the facilities to test them.  Let me know if they work, or don't.
+#
+# Avatar escapes not used by these entries (because maybe you're smarter
+# and more motivated than I am and can figure out how to wrap terminfo
+# around some of them, and because they are weird enough to be funny):
+#				level 0:
+# ^L		-- clear window/reset current attribute to default
+# ^V^A%p1%c	-- set current color attribute, parameter decodes as follows:
+# 
+#      bit:         6   5   4   3   2   1   0
+#                   |       |   |   |       |
+#                   +---+---+   |   +---+---+
+#                       |       |       |
+#                       |       |  foreground color
+#                       |  foreground intensity
+#                  background color
+#				level 0+:
+# ^V^J%p1%c%p2%c%p3%c%p4%c%p5%c	-- scroll (p2,p3) to (p4,p5) up by p1 lines
+# ^V^K%p1%c%p2%c%p3%c%p4%c%p5%c	-- scroll (p2,p3) to (p4,p5) down by p1 lines
+# ^V^L%p1%c%p2%c%p3%c		-- clear p2 lines and p3 cols w/attr %p1 
+# ^V^M%p1%c%p2%c%p3%c%p4%c	-- fill p3 lines & p4 cols w/char p2+attr %p1 
+# (^V^L and ^V^M set the current attribute as a side-effect.)
+# ^V ^Y <a> [...] <c>	-- repeat pattern. <a> specifies the number of bytes
+#			   in the pattern, <c> the number of times the pattern
+#		  	   should be repeated. If either value is 0, no-op.
+#			   The pattern can contain Avatar console codes,
+#			   including other ^V ^Y patterns.
+#				level 1:
+# ^V^O		-- clockwise mode on; turn print direction right each time you
+#		   hit a window edge (yes, really).  Turned off by CR
+# ^V^P		-- no-op
+# ^V^Q%c	-- query the driver
+# ^V^R		-- driver reset
+# ^V^S		-- Sound tone (PC-specific)
+# ^V^T			-- change highlight at current cursor poition to %c
+# ^V^U%p1%c%p2%c	-- highlight window <a> with attribute <b>
+# ^V^V%p1%c%p2%c%p3%c%p4%c%p5%c
+#			-- define window 
 #
 # From: Eric S. Raymond <esr@snark.thyrsus.com> 1 Nov 1995
 # (The <blink>/<bold>/<rev>/<smacs>/<smul>/<smso> capabilities exist only to
@@ -7623,7 +7829,7 @@ aaa-30-s-rv|aaa-s-rv|ann arbor ambassador/30 lines+status+reverse video,
 aaa-s-ctxt|aaa-30-s-ctxt|ann arbor ambassador/30 lines+status+save context, 
 	rmcup=\E[60;1;0;30p\E[59;1H\E[K, 
 	smcup=\E[30;1H\E[K\E[30;1;0;30p, use=aaa-30-s, 
-aaa-s-rv-ctxt|aaa-30-s-rv-ct|ann arbor ambassador/30 lines+status+save context, 
+aaa-s-rv-ctxt|aaa-30-s-rv-ct|ann arbor ambassador/30 lines+status+save context+reverse video, 
 	rmcup=\E[60;1;0;30p\E[59;1H\E[K, 
 	smcup=\E[30;1H\E[K\E[30;1;0;30p, use=aaa-30-s-rv, 
 aaa|aaa-30|ambas|ambassador|ann arbor ambassador/30 lines, 
@@ -7899,7 +8105,7 @@ cit101|citc|C.itoh fast vt100,
 # The following termcap entry was created from the Callan cd100 entry.  The
 # last two lines (with the capabilities in caps) are used by RM-cobol to allow
 # full selection of combinations of reverse video, underline, and blink.
-# (cit101e: emoved unknown :f0=\EOp:f1=\EOq:f2=\EOr:f3=\EOs:f4=\EOt:f5=\EOu:\
+# (cit101e: removed unknown :f0=\EOp:f1=\EOq:f2=\EOr:f3=\EOs:f4=\EOt:f5=\EOu:\
 # f6=\EOv:f7=\EOw:f8=\EOx:f9=\EOy:AB=\E[0;5m:AL=\E[m:AR=\E[0;7m:AS=\E[0;5;7m:\
 # :NB=\E[0;1;5m:NM=\E[0;1m:NR=\E[0;1;7m:NS=\E[0;1;5;7m: -- esr)
 cit101e|C. Itoh CIT-101e, 
@@ -7914,6 +8120,43 @@ cit101e|C. Itoh CIT-101e,
 	kf7=\EOM, kf8=\EOn, rc=\E8, ri=\EM, rmacs=^O, rmir=\E[4l, 
 	rmkx=\E>, rmso=\E[m, rmul=\E[m, sc=\E7, smacs=^N, smir=\E[4h, 
 	smkx=\E=, smso=\E[7m, smul=\E[4m, 
+# From: David S. Lawyer, June 1997:
+# The CIT 101-e was made in Japan in 1983-4 and imported by CIE
+# Terminals in Irvine, CA.  It was part of CITOH Electronics.  In the
+# late 1980's CIT Terminals went out of business.
+# There is no need to use the initialization string is=... (by invoking
+# tset or setterm etc.) provided that the terminal has been manually set
+# up (and the setup saved with ^S) to be compatible with this termcap.  To be
+# compatible it should be in ANSI mode (not VT52).   A set-up that
+# works is to set all the manually setable stuff to factory defaults
+# by pressing ^D in set-up mode.  Then increse the brighness with the
+# up-arrow key since the factory default will likely be dim on an old
+# terminal.  Then change any options you want (provided that they are
+# compatible with the termcap).  For my terminal I set: Screen
+# Background: light; Keyclicks: silent; Auto wraparound: on; CRT saver:
+# on.  I also set up mine for parity (but you may not need it).  Then 
+# save the setup with ^S.
+# 
+cit101e-rv|Citoh CIT-101e (sets reverse video), 
+	am, eo, mir, msgr, xenl, xon, 
+	cols#80, it#8, lines#24, 
+	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, civis=\E[1v, 
+	clear=\E[H\E[J, cnorm=\E[0;3;4v, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
+	cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	cvvis=\E[3;5v, dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, 
+	dl1=\E[M, ed=\E[J, el=\E[K, flash=\E[?5l\E[?5h$<200/>, 
+	home=\E[H, hpa=\E[%i%p1%dG, ht=^I, hts=\EH, ich=\E[%p1%d@, 
+	ich1=\E[@, il=\E[%p1%dL, il1=\E[L, ind=^J, indn=\E[%p1%dS, 
+	is2=\E<\E>\E[?1l\E[?3l\E[?4l\E[?5h\E[?7h\E[?8h\E[3g\E[>5g\E(B\E[m\E[20l\E[1;24r\E[24;1H, 
+	kbs=\177, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
+	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, nel=\EE, rc=\E8, 
+	rev=\E[7m, ri=\EM, rin=\E[%p1%dT, rmir=\E[4l, rmso=\E[m, 
+	rmul=\E[m, rs1=\Ec\E[?7h\E[>5g, sc=\E7, sgr0=\E[m, 
+	smcup=\E[>5g\E[?7h\E[?5h, smir=\E[4h, smso=\E[7m, 
+	smul=\E[4m, tbc=\E[3g, u6=\E[%i%p1%d;%p2%dR, u7=\E[6n, 
+	u8=\E[?6c, u9=\E[c, 
 cit101e-n|CIT-101e w/o am, 
 	am@, 
 	cvvis=\E[?1l\E[?4l\E[?7l, kbs=^H, kcub1=^H, kcud1=^J, use=cit101e, 
@@ -8052,7 +8295,7 @@ cdc721-esc|Control Data 721,
 	cuf1=^X, cup=\002%p2%{32}%+%c%p1%{32}%+%c, cuu1=^W, 
 	dch1=^^N, dim=^\, dl1=^^Q, ed=^^P, el=^K, home=^Y, hts=^^^RW, 
 	ich1=^^O, il1=^^R, ind=\036W =\036U, invis=^^^R[, 
-	is2=\036\022B\003\036\035\017\022\025\035\036E\036\022H\036\022J\036\022L\036\022N\036\022P\036\022Q\036\022\\\036\022\^\036\022b\036\022i\036W =\036\022Z\036\011C1-` `!k/o, 
+	is2=\036\022B\003\036\035\017\022\025\035\036E\036\022H\036\022J\036\022L\036\022N\036\022P\036\022Q\036\022\036\022\^\036\022b\036\022i\036W =\036\022Z\036\011C1-` `!k/o, 
 	kbs=^H, kcub1=^H, kcud1=^Z, kcuf1=^X, kcuu1=^W, kf0=^^q, 
 	kf1=^^r, kf2=^^s, kf3=^^t, kf4=^^u, kf5=^^v, kf6=^^w, kf7=^^x, 
 	kf8=^^y, kf9=^^z, khome=^Y, ll=^B =, rev=^^D, 
@@ -8736,6 +8979,8 @@ dm1520|dm1521|datamedia 1520,
 	cup=\036%p2%{32}%+%c%p1%{32}%+%c, cuu1=^_, ed=^K, el=^], 
 	home=^Y, ht=^I, ind=^J, kcub1=^H, kcud1=^J, kcuf1=^\, kcuu1=^_, 
 	khome=^Y, 
+# dm2500: this terminal has both <ich> and <smir>. Applications using 
+# termcap/terminfo directly (rather than through ncurses) might be confused.
 dm2500|datamedia2500|datamedia 2500, 
 	cols#80, lines#24, 
 	bel=^G, clear=^^^^\177, cub1=^H, cud1=^J, cuf1=^\, 
@@ -9491,8 +9736,9 @@ ibmega|ibm5154|IBM Enhanced Color Display,
 	cr=^M, cud1=^J, ht=^I, ind=^J, kbs=^H, kcub1=^H, kcud1=^J, 
 	nel=^M^J, 
 	use=ibmmono, 
-ibmega-c|ibm5154-c|IBM Enhanced Color Display, 
-	rmso=\EB, rmul=\EB, smso=\EF\Ef3;, smul=\EF\Ef2;, use=ibmmono, 
+ibmega-c|ibm5154-c|IBM Enhanced Color Display with standout and underline, 
+	rmso=\EB, rmul=\EB, smso=\EF\Ef3;, smul=\EF\Ef2;, 
+	use=ibmmono, 
 ibmvga-c|IBM VGA display color termcap, 
 	cr=^M, cud1=^J, ht=^I, ind=^J, kbs=^H, kcub1=^H, kcud1=^J, 
 	nel=^M^J, 
@@ -9571,7 +9817,7 @@ ibm8514|IBM 8514 color display,
 	cr=^M, cud1=^J, dsl=\Ej\EYI \EI\Ek, fsl=\Ek, ht=^I, ind=^J, 
 	kbs=^H, kcub1=^H, kcud1=^J, nel=^M^J, tsl=\Ej\EYI%+ \Eo, 
 	use=ibmega, 
-ibm8514-c|IBM 8514 color display, 
+ibm8514-c|IBM 8514 color display with standout and underline, 
 	eslok, hs, 
 	lines#41, 
 	cr=^M, cud1=^J, dsl=\Ej\EYI \EI\Ek, fsl=\Ek, ht=^I, ind=^J, 
@@ -9590,7 +9836,7 @@ aixterm-m|IBM AIXterm Monochrome Terminal Emulator,
 	sgr=\E[%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;m, 
 	sgr0=\E[0;10m\E(B, tsl=\E[?%p1%dT, 
 	use=ibm6153, 
-aixterm-m-old|IBM AIXterm Monochrome Terminal Emulator, 
+aixterm-m-old|old IBM AIXterm Monochrome Terminal Emulator, 
 	eslok, hs, 
 	bold=\E[1m, dsl=\E[?E, fsl=\E[?F, ri@, 
 	sgr=\E[%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;m, 
@@ -9861,7 +10107,7 @@ prism4|p4|P4|MDC Prism-4,
 	cnorm=^]\342, cr=^M, cub1=^H, cud1=^J, cuf1=^F, 
 	cup=\013%p1%' '%+%c\020%p2%{10}%/%{16}%*%p2%{10}%m%+%Pc%?%{17}%gc%=%{19}%gc%=%|%gc%!%|%t%{1}%gc%+%c%{8}%e%gc%;%c, 
 	cuu1=^Z, dim=^CA, dsl=\035\343\035\345, ed=\EJ, el=\EK, 
-	fsl=^]\345, home=^A^J, 
+	fsl=^]\345, home=^A, 
 	hpa=\020%p1%{10}%/%{16}%*%p1%{10}%m%+%Pc%?%{17}%gc%=%{19}%gc%=%|%gc%!%|%t%{1}%gc%+%c%{8}%e%gc%;%c, 
 	ind=^J, invis=^CH, kbs=^H, khome=^A, mc0=\EU, mc4=\ET, mc5=\ER, 
 	rev=^CD, rmso=^C\s, rmul=^C\s, 
@@ -11394,7 +11640,7 @@ st52|Atari ST with VT52 emulation,
 # :k0=\E9~:	map F10 to k0 - could have F0-9 -> k0-9, but ... F10 was 'k;'
 # (amiga: removed obsolete :kn#10:,
 # also added empty <acsc> to suppress a warning --esr)
-amiga-old|Amiga ANSI, 
+amiga|Amiga ANSI, 
 	am, bw, xenl, 
 	cols#80, lines#24, 
 	acsc=, bel=^G, blink=\E[7;2m, bold=\E[1m, cbt=\E[Z, 
@@ -11412,8 +11658,10 @@ amiga-old|Amiga ANSI,
 	smso=\E[7m, smul=\E[4m, 
 
 # From: Hans Verkuil <hans@wyst.hobby.nl>, 4 Dec 1995
-# (amiga: added empty <acsc> to suppress a warning --esr)
-amiga|Amiga ANSI, 
+# (amiga: added empty <acsc> to suppress a warning.
+# I'm told this entry screws up badly with AS225, the Amiga
+# TCP/IP package once from Commodore, and now sold by InterWorks.--esr)
+amiga-h|Hans Verkuil's Amiga ANSI, 
 	bw, msgr, 
 	cols#80, lines#24, 
 	acsc=, bel=^G, blink=\2337;2m, bold=\2331m, cbt=\233Z, 
@@ -11591,6 +11839,28 @@ pc-venix|venix|IBM PC console running Venix,
 # If you know anything more about any of these, please tell me.
 #
 
+# The MAI Basic Four computer was obsolete at the end of the 1980s.
+# It may be used as a terminal by putting it in "line" mode as seen on 
+# one of the status lines.
+# Initialization is similar to CIT80. <is2> will set ANSI mode for you.  
+# Hardware tabs set by <if> at 8-spacing.  Auto line wrap causes glitches so
+# wrap mode is reset by <cvvis>.  Using <ind>=\E[S caused errors so I 
+# used \ED instead.
+# From: bf347@lafn.org (David Lawyer), 28 Jun 1997
+mai|basic4|MAI Basic Four in ansi mode, 
+	am, da, db, mir, msgr, 
+	cols#82, it#8, lines#25, 
+	bel=^G, blink=\E[5m, bold=\E[1m, clear=^]^_, cnorm=\E[?7h, 
+	cr=^M, csr=\E[%i%p1%d;%p2%dr, cub1=^H, cud1=^J, cuf1=^X, 
+	cup=\E[%i%p1%d;%p2%dH, cuu1=^Z, cvvis=\E[?7l, dch1=\E[1P, 
+	dl1=\E[M, ed=^_, el=^^, home=^], ht=^I, 
+	if=/usr/lib/tabset/vt100, il1=\E[L, ind=\ED, 
+	is2=\E>\E[?1h\E[?7h\E[?5l\017\E(B\E[m\E[20l\E[1;24r\E[24;1H, 
+	kbs=^H, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
+	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, kf5=\EOT, kf6=\EOU, 
+	kf7=\EOV, kf8=\EOW, nel=^M\ED, rc=\E8, rev=\E[7m, ri=\E[T, 
+	rmir=\E[4l, rmso=\E[m, rmul=\E[m, sc=\E7, sgr0=\E[m, 
+	smir=\E[4h, smso=\E[7m, smul=\E[4m, 
 # basis from Peter Harrison, Computer Graphics Lab, San Francisco
 #   ucbvax!ucsfmis!harrison ...uucp / ucbvax!ucsfmis!harrison@BERKELEY ...ARPA
 # (basis: removed obsolete ":ma=^K^P^R^L^L :nl=5000*^J:" -- esr)
@@ -11722,6 +11992,18 @@ oblit|ojerq|first version of blit rom,
 # The parent company, best known as the architects of the Internet, is
 # still around.
 #
+# Jeff DelPapa <dp@world.std.com> writes:
+# The bitgraph was a large white box that contained a monochrome bitmap
+# display, and a 68000 to run it.  You could download code and run it on
+# the cpu, it had 128kb (I think) of memory.  I used one in the late
+# 70's, sure beat a vt100.  It had one strange feature tho -- it used
+# the cpu to bitblt pixels to scroll, it took longer than the refresh
+# rate, and looked like a rubber sheet stretching, then snapping
+# upwards.  It had everything the early mac had, except a floppy drive a
+# small screen (it had a 17" crisp beauty) and a real OS. They (Bolt
+# Beranek and Neuman) sold at most a few hundred of them to the real
+# world.  DOD may have bought more...
+# 
 
 # Entries for the BitGraph terminals.  The problem 
 # with scrolling in vi can only be fixed by getting BBN to put 
@@ -12107,28 +12389,38 @@ h19-a|h19a|heath-ansi|heathkit-a|heathkit h19 ansi mode,
 	smacs=\E[10m, smam=\E[?7h, smir=\E[4h, smso=\E[7m, 
 h19-bs|heathkit w/keypad shifted, 
 	rmkx=\Eu, smkx=\Et, use=h19-b, 
-h19-smul|heathkit w/keypad shifted/underscore cursor, 
+h19-us|h19us|h19-smul|heathkit w/keypad shifted/underscore cursor, 
 	rmkx=\Eu, smkx=\Et, 
 	use=h19-u, 
 # (h19: merged in <ip> from BSDI hp19-e entry>;
 # also added empty <acsc> to suppress a tic warning --esr)
+# From: Tim Pierce <twp@skepsis.com>, 23 Feb 1998 
+# Tim tells us that:
+# I have an old Zenith-19 terminal at home that still gets a lot of use.
+# This terminal suffers from the same famous insert-mode padding lossage
+# that has been acknowledged for the Z29 terminal.  Emacs is nearly
+# unusable on this box, since even a half-scroll up or down the window
+# causes flaming terminal death.
+#   
+# On the Z19, the only way I have found around this problem is to remove
+# the :al: and :dl: entries entirely.  No amount of extra padding will
+# help (I have tried up to 20000).  Removing <il1=\EL$> and <dl1=\EM$>
+# makes Emacs a little slower, but it remains in the land of the living.
+# Big win.
 h19|heath|h19-b|heathkit|heath-19|z19|zenith|heathkit h19, 
 	am, eslok, hs, mir, msgr, 
 	cols#80, it#8, lines#24, 
 	acsc=, bel=^G, clear=\EE, cnorm=\Ey4, cr=^M, cub1=^H, cud1=\EB, 
 	cuf1=\EC, cup=\EY%p1%{32}%+%c%p2%{32}%+%c, cuu1=\EA, 
-	cvvis=\Ex4, dch1=\EN, dl1=\EM$<1*>, ed=\EJ, el=\EK, 
-	fsl=\Ek\Ey5, home=\EH, ht=^I, il1=\EL$<1*>, ind=^J, 
-	ip=<1.5/>, kbs=^H, kcub1=\ED, kcud1=\EB, kcuf1=\EC, 
-	kcuu1=\EA, kf1=\ES, kf2=\ET, kf3=\EU, kf4=\EV, kf5=\EW, 
-	kf6=\EP, kf7=\EQ, kf8=\ER, khome=\EH, lf6=blue, lf7=red, 
-	lf8=white, ri=\EI, rmacs=\EG, rmir=\EO, rmso=\Eq, smacs=\EF, 
-	smir=\E@, smso=\Ep, tsl=\Ej\Ex5\EY8%p1%{32}%+%c\Eo\Eo, 
+	cvvis=\Ex4, dch1=\EN, ed=\EJ, el=\EK, fsl=\Ek\Ey5, home=\EH, 
+	ht=^I, ind=^J, ip=<1.5/>, kbs=^H, kcub1=\ED, kcud1=\EB, 
+	kcuf1=\EC, kcuu1=\EA, kf1=\ES, kf2=\ET, kf3=\EU, kf4=\EV, 
+	kf5=\EW, kf6=\EP, kf7=\EQ, kf8=\ER, khome=\EH, lf6=blue, 
+	lf7=red, lf8=white, ri=\EI, rmacs=\EG, rmir=\EO, rmso=\Eq, 
+	smacs=\EF, smir=\E@, smso=\Ep, 
+	tsl=\Ej\Ex5\EY8%p1%{32}%+%c\Eo\Eo, 
 h19-u|heathkit with underscore cursor, 
 	cnorm@, cvvis@, use=h19-b, 
-h19-us|h19us|heathkit w/keypad shifted/underscore cursor, 
-	rmkx=\Eu, smkx=\Et, 
-	use=h19-u, 
 h19-g|h19g|heathkit w/block cursor, 
 	cnorm=\Ex4, use=h19-b, 
 alto-h19|altoh19|altoheath|alto-heath|alto emulating heathkit h19, 
@@ -12401,6 +12693,10 @@ graphos-30|graphos III with 30 lines,
 # for ~7 years.  Modgraph still in business.  Products are rugged laptop and
 # portable PC's and specialized CRT and LCD monitors (rugged, rack-mount
 # panel-mount etc).  I can be emailed at sonfour@aol.com
+#
+# Peter D. Smith <pdsmith@nbbn.com> notes that his modgraph manual was
+# dated 1984.  According to the manual, it featured Tek 4010/4014
+# graphics and DEC VT100/VT52 + ADM-3A emulation with a VT220-style keyboard.
 #
 
 modgraph|mod24|modgraph terminal emulating vt100, 
@@ -12857,7 +13153,7 @@ ti916-132|Texas Instruments 916 VDT vt220 132 column,
 #
 # Texas Instruments 916 VDT 8859/1 8 bit control 132 column mode
 #
-ti916-8-132|Texas Instruments 916 VDT vt220 132 column, 
+ti916-8-132|Texas Instruments 916 VDT 8-bit vt220 132 column, 
 	cols#132, use=ti916-8, 
 ti924|Texas Instruments 924 VDT 8859/1 7 bit CTRL, 
 	am, xon, 
@@ -13290,7 +13586,7 @@ diablo1640-lm|diablo-lm|xerox-lm|diablo 1640 with indented left margin,
 diablo1740-lm|630-lm|1730-lm|x1700-lm|diablo 1740 printer, 
 	use=diablo1640-lm, 
 # DTC 382 with VDU.  Has no <ed> so we fake it with <el>.  Standout
-# <smso=^P\s\002^PF> works but won't go away without dynamite <rmso=^P\s\200>.
+# <smso=^P\s\002^PF> works but won't go away without dynamite <rmso=^P\s\0>.
 # The terminal has tabs, but I'm getting tired of fighting the braindamage. 
 # If no tab is set or the terminal's in a bad mood, it glitches the screen
 # around all of memory.  Note that return puts a blank ("a return character")
@@ -13513,9 +13809,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # are present; the symptom is doubled characters in an update using insert.
 # These applications are technically correct; in both 4.3BSD termcap and
 # terminfo, you're not actually supposed to specify both ich/ich1 and rmir/smir
-# unless the terminal needs both.  This requirement is now rare; most ich
-# sequences do not require previous smir, and most smir insert modes do not
-# require ich1 before each character.
+# unless the terminal needs both.  To my knowledge, no terminal still in this
+# file requires both other than the very obsolete dm2500.
 #
 # For ncurses-based applications this is not a problem, as ncurses uses
 # one or the other as appropriate but never mixes the two.  Therefore we
@@ -14659,93 +14954,44 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* Back off the xterm entry to use r6 as a base.
 # 9.13.22 (Sat Nov 30 11:51:31 EST 1996):
 #	* Added dec-vt220 at Adrian Garside's request.
-# 10.1.0 (Sun Dec 29 02:36:31 EST 1996): withdrawn
-#	* Minor corrections to xterm entries.
-#	* Replaced EWAN telnet entry.
-#	* Dropped the reorder script generator.  It was a fossil.
 # 9.13.23 (Fri Feb 21 16:36:06 EST 1997):
 #	* Replaced minitel-2 entry.
 #	* Added MGR, ansi-nt.
+#	* Minor corrections to xterm entries.
+#	* Replaced EWAN telnet entry.
+#	* Dropped the reorder script generator.  It was a fossil.
 # 9.13.24 (Sun Feb 23 20:55:23 EST 1997):
 #	* Thorsten Lockert added termcap `bs' to a lot of types, working from
 #	  the 4.4BSD Lite2 file.
+# 9.13.25 (Fri Jun 20 12:33:36 EDT 1997):
+#	* Added Datapoint 8242, pilot, ansi_psx, rbcomm, vt220js.
+#	* Updated iris-ansi; corrected vt102-w.
+#	* Switch base xterm entry to 3.3 level.
+# 9.13.26 (Mon Jun 30 22:45:45 EDT 1997)
+#	* Added basic4.
+#	* Removed rmir/smir from tv92B.
 #
-# 10.1.1 (Sat May  3 21:41:27 EDT 1997):
-#	* Use setaf/setab consistently with SVr4.
-#	* Remove ech, el1 from cons25w, they do not work in FreeBSD 2.1.5
-# 10.1.2 (Sat May 24 21:10:57 EDT 1997)
-#	* update xterm-xf86-v32 to match XFree86 3.2A (changes F1-F4)
-#	* add xterm-16color, for XFree86 3.3
-# 10.1.3 (Sat May 31 12:21:05 EDT 1997)
-#	* correct typo in emu
-#	* correct typo in vt102-w (Robert Wuest)
-#	* make new entry xterm-xf86-v33, restored xterm-xf86-v32.
-# 10.1.4 (Sun Jun 15 08:29:05 EDT 1997)
-#	* remove ech capability from rxvt (it does the wrong thing)
-# 10.1.5 (Sat Jun 28 21:34:36 EDT 1997)
-#	* remove spurious newlines from several entries (hp+color, wy50,
-#	  wy350, wy370-nk, wy99gt-tek, wy370-tek, ibm3161, tek4205, ctrm,
-#	  gs6300)
-# 10.1.6 (Sat Jul  5 15:08:16 EDT 1997)
-#	* correct rmso capability of wy50-mc
-# 10.1.7 (Sat Jul 12 20:05:55 EDT 1997)
-#	* add cbt to xterm-xf86-v32
-#	* disentangle some entries from 'xterm', preferring xterm-r6 in case
-#	  'xterm' is derived from xterm-xf86-v32, which implements ech and
-#	  other capabilities not in xterm-r6.
-#	* remove alternate character set from kterm entry.
-# 10.1.8 (Sat Aug  2 18:43:18 EDT 1997)
-#	* correct acsc entries for ACS_LANTERN, which is 'i', not 'I'.
-# 10.1.9 (Sat Aug 23 17:54:38 EDT 1997)
-#	* add xterm-8bit entry.
-# 10.1.10 (Sat Oct  4 18:17:13 EDT 1997)
-#	* repair several places where early version of tic replaced \, with \\\,
-#	* make acsc entries canonical form (sorted, uniq).
-#	* modify acsc entries for linux, linux-koi8
-#	* new rxvt entry, from corrected copy of distribution in rxvt 2.21b
-#	* add color, mouse support to kterm.
-# 10.1.11 (Sat Oct 11 14:57:10 EDT 1997)
-#	* correct wy120 smxon/tbc capabilities which were stuck together.
-# 10.1.12 (Sat Oct 18 17:38:41 EDT 1997)
-#	* add entry for xterm-xf86-v39t
-# 10.1.13 (Sat Nov  8 13:43:33 EST 1997)
-#	* add u8,u9 to sun-il description
-# 10.1.14 (Sat Nov 22 19:59:03 EST 1997)
-#	* add vt220-js, pilot, rbcomm, datapoint entries from esr's 27-jun-97
-#	  version.
-#	* add hds200 description (Walter Skorski)
-#	* add EMX 0.9b descriptions
-#	* correct rmso/smso capabilities in wy30-mc and wy50-mc (Daniel Weaver)
-#	* rename xhpterm back to hpterm.
-# 10.1.15 (Sat Nov 29 19:21:59 EST 1997)
-#	* change initc in linux-c-nc to use 0..1000 range.
-# 10.1.16 (Sat Dec 13 19:41:59 EST 1997)
-#	* remove hpa/vpa from rxvt, which implements them incorrectly.
-#	* add sgr0 for rxvt.
-#	* remove bogus smacs/rmacs from EMX descriptions.
-# 10.1.17 (Sat Dec 20 17:54:10 EST 1997)
-#	* revised entry for att7300
-# 10.1.18 (Sat Jan  3 17:58:49 EST 1998)
-#	* use \0 rather than \200.
-#	* rename rxvt-color to rxvt to match rxvt 2.4.5 distribution.
-# 10.1.19 (Sat Jan 17 14:24:57 EST 1998)
-#	* change xterm (xterm-xf86-v40), xterm-8bit rs1 to use hard reset.
-#	* rename xterm-xf86-v39t to xterm-xf86-v40
-#	* remove bold/underline from sun console entries since they're not
-#	  implemented.
-# 10.1.20 (Sat Jan 24 11:02:51 EST 1998)
-#	* add beterm entry (Fred Fish)
-#	* add irix-color/xwsh entry.
-#	* turn ncv off for linux.
-# 10.1.21 (Sat Jan 31 17:39:16 EST 1998)
-#	* set ncv for FreeBSD console (treat colors with reverse specially).
-#	* remove sgr string from qnx based on report by Xiaodan Tang
-# 10.1.22 (Wed Feb 11 18:40:12 EST 1998)
-#	* remove spurious commas from descriptions
-#	* correct xterm-8bit to match XFree86 3.9Ad F1-F4.
-# 10.1.23 (Sat Feb 28 17:48:38 EST 1998)
-#	* add linux-koi8r to replace linux-koi8 (which uses a corrupt acsc,
-#	  apparently based on cp-866).
+# 10.2.0 (Sat Feb 28 12:47:36 EST 1998):
+#	* Added Thomas Dickey's acsc string for linux.
+#	* Merged in BeOS, iris-color, hds200, xterm-xf86-v40, xterm-8bit,
+#	  and emx entries.
+#	* Replaced unixpc entry with Benjamin Sittler's corrected version.
+#	* Replaced xterm/rxvt/emu/syscons entries with Thomas Dickey's
+#	  versions.
+#	* Added u8/u9, removed rmul/smul from sun-il.
+#	* 4.2 tic allows us to use \0 instead of \200 now.
+#	* Merged in Pavel Roskin's acsc for linux-koi8
+#	* Corrected some erroneous \\\s to \.
+#	* 4.2 ncurses has been changed to use setaf/setab, consistent w/SysV.
+#	* II -> ii in pcvtXX, screen, xterm.
+#	* Removed \n chars following ANSI escapes in sgr & friends.
+#	* Updated Wyse entries.
+#	* h19 corrections from Tim Pierce.
+#	* Noted that the dm2500 has both ich and smir.
+#	* added pccons for the Alpha under OSF/1.
+#	* Added Sony NEWS workstation entries and cit101e-rv.
+#	* Reverted `amiga'; to Kent Polk's version, as I'm told
+#	  the Verkuil entry messes up with Amiga Telnet.
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:
