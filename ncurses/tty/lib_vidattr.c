@@ -64,7 +64,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.27 2000/04/29 23:25:27 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.28 2000/07/29 15:13:09 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -78,7 +78,7 @@ MODULE_ID("$Id: lib_vidattr.c,v 1.27 2000/04/29 23:25:27 tom Exp $")
 #define SetColorsIf(why,old_attr) \
 	if (can_color && (why)) { \
 		int old_pair = PAIR_NUMBER(old_attr); \
-		T(("old pair = %d -- new pair = %d", old_pair, pair)); \
+		TR(TRACE_ATTRS, ("old pair = %d -- new pair = %d", old_pair, pair)); \
 		if ((pair != old_pair) \
 		 || (fix_pair0 && (pair == 0)) \
 		 || (reverse ^ ((old_attr & A_REVERSE) != 0))) { \
@@ -107,7 +107,7 @@ vidputs(attr_t newmode, int (*outc) (int))
     if (SP)
 	previous_attr = SP->_current_attr;
 
-    T(("previous attribute was %s", _traceattr(previous_attr)));
+    TR(TRACE_ATTRS, ("previous attribute was %s", _traceattr(previous_attr)));
 
 #if !USE_XMC_SUPPORT
     if ((SP != 0)
@@ -195,7 +195,7 @@ vidputs(attr_t newmode, int (*outc) (int))
 	SetColorsIf((pair != 0) || fix_pair0, previous_attr);
     } else {
 
-	T(("turning %s off", _traceattr(turn_off)));
+	TR(TRACE_ATTRS, ("turning %s off", _traceattr(turn_off)));
 
 	TurnOff(A_ALTCHARSET, exit_alt_charset_mode);
 
@@ -214,7 +214,7 @@ vidputs(attr_t newmode, int (*outc) (int))
 	}
 	SetColorsIf((pair != 0) || fix_pair0, previous_attr);
 
-	T(("turning %s on", _traceattr(turn_on)));
+	TR(TRACE_ATTRS, ("turning %s on", _traceattr(turn_on)));
 	/* *INDENT-OFF* */
 	TurnOn(A_ALTCHARSET,	enter_alt_charset_mode);
 	TurnOn(A_BLINK,		enter_blink_mode);
@@ -259,6 +259,7 @@ termattrs(void)
 {
     chtype attrs = A_NORMAL;
 
+    T((T_CALLED("termattrs()")));
     if (enter_alt_charset_mode)
 	attrs |= A_ALTCHARSET;
 
@@ -289,5 +290,5 @@ termattrs(void)
     if (SP->_coloron)
 	attrs |= A_COLOR;
 
-    return (attrs);
+    returnChar(attrs);
 }

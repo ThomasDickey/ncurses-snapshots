@@ -1,10 +1,24 @@
--- $Id: NEWS,v 1.580 2000/07/23 01:43:49 tom Exp $
+-- $Id: NEWS,v 1.581 2000/07/30 00:15:32 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000729
+	+ change handling of non_dest_scroll_region in tty_update.c to clear
+	  text after it is shifted in rather than before shifting out.  Also
+	  correct row computation (reported by Ruediger Kuhlmann
+	  <uck4@rz.uni-karlsruhe.de>).
+	+ add/use new trace function to display chtype values from winch() and
+	  getbkgd().
+	+ add trace mask TRACE_ATTRS, alter several existing _tracef calls that
+	  trace attribute changes under TRACE_CALLS to use this.
+	+ modify MKlib_gen.sh so that functions returning chtype will call
+	  returnChar().
+	+ add returnChar() trace, for functions returning chtype.
+	+ change indent.pro to line up parenthesis.
 
 20000722
 	+ fix a heap problem with the c++ binding (report by
