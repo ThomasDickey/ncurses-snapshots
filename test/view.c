@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.55 2002/11/03 00:49:56 tom Exp $
+ * $Id: view.c,v 1.56 2003/04/26 23:38:02 tom Exp $
  */
 
 #include <time.h>
@@ -502,8 +502,10 @@ show_all(const char *tag)
 		addchstr(s + shift);
 #endif
 	    }
+#if defined(NCURSES_VERSION) || defined(HAVE_WCHGAT)
 	    if (try_color)
 		wchgat(stdscr, -1, A_NORMAL, my_pair, NULL);
+#endif
 	}
     }
     setscrreg(1, LINES - 1);

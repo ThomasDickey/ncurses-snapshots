@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2000,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -30,6 +30,8 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  *   Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en             *
  ****************************************************************************/
+
+/* $Id: form.h,v 0.15 2003/05/03 21:59:32 tom Exp $ */
 
 #ifndef FORM_H
 #define FORM_H
@@ -208,7 +210,7 @@ typedef void (*Form_Hook)(FORM *);
 #define REQ_DEL_CHAR	 (KEY_MAX + 34)	/* delete char at cursor	*/
 #define REQ_DEL_PREV	 (KEY_MAX + 35)	/* delete char before cursor	*/
 #define REQ_DEL_LINE	 (KEY_MAX + 36)	/* delete line at cursor	*/
-#define REQ_DEL_WORD	 (KEY_MAX + 37)	/* delete line at cursor	*/
+#define REQ_DEL_WORD	 (KEY_MAX + 37)	/* delete word at cursor	*/
 #define REQ_CLR_EOL	 (KEY_MAX + 38)	/* clear to end of line		*/
 #define REQ_CLR_EOF	 (KEY_MAX + 39)	/* clear to end of field	*/
 #define REQ_CLR_FIELD	 (KEY_MAX + 40)	/* clear entire field		*/

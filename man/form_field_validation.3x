@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1998,2002 Free Software Foundation, Inc.                   *
+.\" Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_field_validation.3x,v 1.12 2002/02/16 22:39:52 tom Exp $
+.\" $Id: form_field_validation.3x,v 1.13 2003/05/03 18:26:41 tom Exp $
 .TH form_field_validation 3X ""
 .SH NAME
 \fBform_field_validation\fR - data type validation for fields 
@@ -38,10 +38,25 @@ int set_field_type(FIELD *field, FIELDTYPE *type, ...);
 FIELDTYPE *field_type(const FIELD *field);
 .br
 void *field_arg(const FIELD *field);
+.sp
+FIELDTYPE *TYPE_ALNUM;
+.br
+FIELDTYPE *TYPE_ALPHA;
+.br
+FIELDTYPE *TYPE_ENUM;
+.br
+FIELDTYPE *TYPE_INTEGER;
+.br
+FIELDTYPE *TYPE_NUMERIC;
+.br
+FIELDTYPE *TYPE_REGEXP;
+.br
+FIELDTYPE *TYPE_IPV4;
 .br
 .SH DESCRIPTION
 The function \fBset_field_type\fR declares a data type for a given form field.
-This is the type checked by validation functions.  The types are as follows:
+This is the type checked by validation functions.
+The predefined types are as follows:
 .TP 5
 TYPE_ALNUM
 Alphanumeric data.  Requires a third \fBint\fR argument, a minimum field width.
@@ -96,7 +111,7 @@ is checked whether or not the buffer has the form a.b.c.d, where a,b,c and d are
 numbers between 0 and 255. Trailing blanks in the buffer are ignored. The address
 itself is not validated. Please note that this is an ncurses extension. This
 field type may not be available in other curses implementations.
-
+.PP
 It is possible to set up new programmer-defined field types.  See the
 \fBform_fieldtype\fR(3X) manual page.
 .SH RETURN VALUE

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.71 2003/04/19 22:41:48 tom Exp $
+# $Id: Makefile.in,v 1.72 2003/04/26 23:05:33 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -90,7 +90,10 @@ TESTS = \
 	bs$x \
 	cardfile$x \
 	demo_defkey$x \
+	demo_forms$x \
 	demo_keyok$x \
+	demo_menus$x \
+	demo_panels$x \
 	ditto$x \
 	dots$x \
 	filter$x \
@@ -99,15 +102,15 @@ TESTS = \
 	gdc$x \
 	hanoi$x \
 	hashtest$x \
-	inserts$x \
 	ins_wide$x \
+	inserts$x \
 	keynames$x \
 	knight$x \
 	lrtest$x \
 	ncurses$x \
 	newdemo$x \
-	rain$x \
 	railroad$x \
+	rain$x \
 	tclock$x \
 	testaddch$x \
 	testcurs$x \
@@ -132,8 +135,17 @@ cardfile$x: $(MODEL)/cardfile.o $(LOCAL_LIBS)
 demo_defkey$x: $(MODEL)/demo_defkey.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/demo_defkey.o $(LDFLAGS_DEFAULT)
 
+demo_forms$x: $(MODEL)/demo_forms.o $(MODEL)/edit_field.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/demo_forms.o $(MODEL)/edit_field.o $(LDFLAGS_DEFAULT)
+
 demo_keyok$x: $(MODEL)/demo_keyok.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/demo_keyok.o $(LDFLAGS_DEFAULT)
+
+demo_menus$x: $(MODEL)/demo_menus.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/demo_menus.o $(LDFLAGS_DEFAULT)
+
+demo_panels$x: $(MODEL)/demo_panels.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/demo_panels.o $(LDFLAGS_DEFAULT)
 
 ditto$x: $(MODEL)/ditto.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/ditto.o $(LDFLAGS_DEFAULT)
@@ -229,9 +241,3 @@ realclean :: distclean
 
 lint:
 	sh -c 'for N in $(TESTS); do echo LINT:$$N; $(LINT) $(LINT_OPTS) $(CPPFLAGS) $(srcdir)/$$N.c $(LINT_LIBS); done'
-
-# Use this to get a list of test-programs for the standalone configure script.
-echo_tests :
-	@echo "$(TESTS)"
-echo_suffix :
-	@echo "$x"

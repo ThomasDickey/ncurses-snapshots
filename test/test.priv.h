@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.43 2003/04/19 22:41:48 tom Exp $ */
+/* $Id: test.priv.h,v 1.45 2003/04/26 18:23:36 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -170,6 +170,24 @@ extern int optind;
 #endif
 #endif
 
+#if HAVE_PANEL_H && HAVE_LIBPANEL
+#define USE_LIBPANEL 1
+#else
+#define USE_LIBPANEL 0
+#endif
+
+#if HAVE_MENU_H && HAVE_LIBMENU
+#define USE_LIBMENU 1
+#else
+#define USE_LIBMENU 0
+#endif
+
+#if HAVE_FORM_H && HAVE_LIBFORM
+#define USE_LIBFORM 1
+#else
+#define USE_LIBFORM 0
+#endif
+
 #ifndef HAVE_TYPE_ATTR_T
 #if !USE_WIDEC_SUPPORT
 #define attr_t long
@@ -190,6 +208,9 @@ extern int optind;
 #ifndef CTRL
 #define CTRL(x)		((x) & 0x1f)
 #endif
+
+#define QUIT		CTRL('Q')
+#define ESCAPE		CTRL('[')
 
 #ifndef KEY_MIN
 #define KEY_MIN 256	/* not defined in Solaris 8 */

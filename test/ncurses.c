@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.192 2003/04/19 21:49:50 tom Exp $
+$Id: ncurses.c,v 1.194 2003/04/26 18:23:36 tom Exp $
 
 ***************************************************************************/
 
@@ -55,25 +55,16 @@ $Id: ncurses.c,v 1.192 2003/04/19 21:49:50 tom Exp $
 #endif
 #endif
 
-#if HAVE_PANEL_H && HAVE_LIBPANEL
-#define USE_LIBPANEL 1
+#if USE_LIBPANEL
 #include <panel.h>
-#else
-#define USE_LIBPANEL 0
 #endif
 
-#if HAVE_MENU_H && HAVE_LIBMENU
-#define USE_LIBMENU 1
+#if USE_LIBMENU
 #include <menu.h>
-#else
-#define USE_LIBMENU 0
 #endif
 
-#if HAVE_FORM_H && HAVE_LIBFORM
-#define USE_LIBFORM 1
+#if USE_LIBFORM
 #include <form.h>
-#else
-#define USE_LIBFORM 0
 #endif
 
 #ifdef NCURSES_VERSION
@@ -118,13 +109,7 @@ extern int _nc_tracing;
 #endif
 
 #define P(string)	printw("%s\n", string)
-#ifdef CTRL
-#undef CTRL
-#endif
-#define CTRL(x)		((x) & 0x1f)
 
-#define QUIT		CTRL('Q')
-#define ESCAPE		CTRL('[')
 #define BLANK		' '	/* this is the background character */
 
 #undef max_colors

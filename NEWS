@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.745 2003/04/19 22:01:15 tom Exp $
+-- $Id: NEWS,v 1.746 2003/05/03 23:35:35 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030503
+	+ fix form_driver() cases for REQ_CLR_EOF, REQ_CLR_EOL, REQ_DEL_CHAR,
+	  REQ_DEL_PREV and REQ_NEW_LINE, which did not ensure the cursor was at
+	  the editing position before making modifications. 
+	+ add test/demo_forms and associated test/edit_field.c demos.
+	+ modify test/configure.in to use test/modules for the list of objects
+	  to compile rather than using the list of programs.
 
 20030419
 	+ modify logic of acsc to use the original character if no mapping is

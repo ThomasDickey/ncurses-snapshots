@@ -32,7 +32,7 @@
  ****************************************************************************/
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.40 2003/03/01 21:57:52 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.42 2003/05/03 23:05:21 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -2205,6 +2205,7 @@ static int FE_New_Line(FORM * form)
 	{
 	  if (!(form->opts & O_NL_OVERLOAD))
 	    return(E_REQUEST_DENIED);
+	  wmove(form->w,form->currow,form->curcol);
 	  wclrtoeol(form->w);
 	  /* we have to set this here, although it is also
 	     handled in the generic routine. The reason is,
@@ -2221,6 +2222,7 @@ static int FE_New_Line(FORM * form)
 		 a single-line field */
 	      return(E_SYSTEM_ERROR);
 	    }
+	  wmove(form->w,form->currow,form->curcol);
 	  wclrtoeol(form->w);
 	  form->currow++;
 	  form->curcol = 0;
@@ -2248,6 +2250,7 @@ static int FE_New_Line(FORM * form)
 	  
 	  bp= Address_Of_Current_Position_In_Buffer(form);
 	  t = After_End_Of_Data(bp,field->dcols - form->curcol);
+	  wmove(form->w,form->currow,form->curcol);
 	  wclrtoeol(form->w);
 	  form->currow++;
 	  form->curcol=0;
@@ -2338,6 +2341,7 @@ static int FE_Insert_Line(FORM * form)
 +--------------------------------------------------------------------------*/
 static int FE_Delete_Character(FORM * form)
 {
+  wmove(form->w,form->currow,form->curcol);
   wdelch(form->w);
   return E_OK;
 }
@@ -2378,6 +2382,7 @@ static int FE_Delete_Previous(FORM * form)
       if ((int)(this_end-this_line) > 
 	  (field->cols-(int)(prev_end-prev_line))) 
 	return E_REQUEST_DENIED;
+      wmove(form->w,form->currow,form->curcol);
       wdeleteln(form->w);
       Adjust_Cursor_Position(form,prev_end);
       wmove(form->w,form->currow,form->curcol);
@@ -2455,20 +2460,22 @@ static int FE_Delete_Word(FORM * form)
 +--------------------------------------------------------------------------*/
 static int FE_Clear_To_End_Of_Line(FORM * form)
 {
+  wmove(form->w,form->currow,form->curcol);
   wclrtoeol(form->w);
   return E_OK;
 }
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
-|   Function      :  static int FE_Clear_To_End_Of_Form(FORM * form)
+|   Function      :  static int FE_Clear_To_End_Of_Field(FORM * form)
 |   
-|   Description   :  Clear to end of form.
+|   Description   :  Clear to end of field.
 |
 |   Return Values :  E_OK   - success
 +--------------------------------------------------------------------------*/
-static int FE_Clear_To_End_Of_Form(FORM * form)
+static int FE_Clear_To_End_Of_Field(FORM * form)
 {
+  wmove(form->w,form->currow,form->curcol);
   wclrtobot(form->w);
   return E_OK;
 }
@@ -3598,7 +3605,7 @@ static const Binding_Info bindings[MAX_FORM_COMMAND - MIN_FORM_COMMAND + 1] =
   { REQ_DEL_LINE     |ID_FE  ,FE_Delete_Line},
   { REQ_DEL_WORD     |ID_FE  ,FE_Delete_Word},
   { REQ_CLR_EOL      |ID_FE  ,FE_Clear_To_End_Of_Line},
-  { REQ_CLR_EOF      |ID_FE  ,FE_Clear_To_End_Of_Form},
+  { REQ_CLR_EOF      |ID_FE  ,FE_Clear_To_End_Of_Field},
   { REQ_CLR_FIELD    |ID_FE  ,FE_Clear_Field},
   
   { REQ_OVL_MODE     |ID_EM  ,EM_Overlay_Mode},

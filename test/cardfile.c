@@ -29,14 +29,14 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: cardfile.c,v 1.22 2003/03/16 01:04:51 tom Exp $
+ * $Id: cardfile.c,v 1.23 2003/04/26 16:43:56 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text is content.
  */
 
 #include <test.priv.h>
 
-#if HAVE_FORM_H && HAVE_PANEL_H && HAVE_LIBFORM && HAVE_LIBPANEL
+#if USE_LIBFORM && USE_LIBPANEL
 
 #include <form.h>
 #include <panel.h>

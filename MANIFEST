@@ -948,9 +948,14 @@
 ./test/configure
 ./test/configure.in
 ./test/demo_defkey.c
+./test/demo_forms.c
 ./test/demo_keyok.c
+./test/demo_menus.c
+./test/demo_panels.c
 ./test/ditto.c
 ./test/dots.c
+./test/edit_field.c
+./test/edit_field.h
 ./test/filter.c
 ./test/firework.c
 ./test/firstlast.c

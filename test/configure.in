@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996, etc.
 dnl
-dnl $Id: configure.in,v 1.40 2003/04/19 20:25:54 tom Exp $
+dnl $Id: configure.in,v 1.42 2003/04/26 23:37:25 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -156,6 +156,7 @@ slk_color \
 strdup \
 use_default_colors \
 vsscanf \
+wchgat \
 wresize \
 )
 
@@ -175,11 +176,9 @@ AC_OUTPUT(Makefile,[
 # work consistently for different make-programs (the '\$(MODEL)/' confuses
 # some, and the '\$x' confuses others).
 TEST_EOF
-LIST=`make echo_tests`
-LAST=`make echo_suffix`
-for n in $LIST
+LIST=`sed -e 's/[[ 	]].*//' -e '/^[[#@]]/d' $srcdir/modules`
+for N in $LIST
 do
-	N=`echo $n | sed -e s/${LAST}\$//`
 	cat >>Makefile <<TEST_EOF
 
 \$(MODEL)/$N.o : $N.c \\
