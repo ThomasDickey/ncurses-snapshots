@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.170 1999/08/28 23:19:07 tom Exp $
+dnl $Id: configure.in,v 1.172 1999/09/05 01:31:59 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.170 $)
+AC_REVISION($Revision: 1.172 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -788,18 +788,19 @@ dnl Check for C++ compiler characteristics (and ensure that it's there!)
 CF_BOOL_DECL(cf_cv_cc_bool_type)
 if test -n "$CXX" ; then
 	AC_LANG_CPLUSPLUS
+	CF_STDCPP_LIBRARY
 	case "`${CXX-g++} --version`" in
 	1*|2.[0-6]*)
 	    cf_cxx_library=yes
 	    ;;
 	2.7*)
-	    CF_CXX_LIBRARY
+	    CF_GPP_LIBRARY
 	    ;;
 	*)
 	    cf_cxx_library=no
 	    ;;
 	esac
-	AC_CHECK_HEADERS(builtin.h typeinfo)
+	AC_CHECK_HEADERS(typeinfo)
 	CF_BOOL_DECL
 	CF_BOOL_SIZE
 	CF_ETIP_DEFINES

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.164 1999/08/29 01:04:26 tom Exp $
+dnl $Id: aclocal.m4,v 1.166 1999/09/05 01:31:41 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -350,28 +350,6 @@ fi
 
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl If we're trying to use g++, test if libg++ is installed (a rather common
-dnl problem :-).  If we have the compiler but no library, we'll be able to
-dnl configure, but won't be able to build the c++ demo program.
-AC_DEFUN([CF_CXX_LIBRARY],
-[
-cf_cxx_library=unknown
-if test $ac_cv_prog_gxx = yes; then
-	AC_MSG_CHECKING([for libg++])
-	cf_save="$LIBS"
-	LIBS="$LIBS -lg++ -lm"
-	AC_TRY_LINK([
-#include <builtin.h>
-	],
-	[float foo=abs(1.0)],
-	[cf_cxx_library=yes
-	 CXXLIBS="$CXXLIBS -lg++ -lm"],
-	[cf_cxx_library=no])
-	LIBS="$cf_save"
-	AC_MSG_RESULT($cf_cxx_library)
-fi
-])dnl
-dnl ---------------------------------------------------------------------------
 AC_DEFUN([CF_DIRS_TO_MAKE],
 [
 DIRS_TO_MAKE="lib"
@@ -625,6 +603,37 @@ esac
 changequote([, ])dnl
 ])
 dnl ---------------------------------------------------------------------------
+dnl If we're trying to use g++, test if libg++ is installed (a rather common
+dnl problem :-).  If we have the compiler but no library, we'll be able to
+dnl configure, but won't be able to build the c++ demo program.
+AC_DEFUN([CF_GPP_LIBRARY],
+[
+cf_cxx_library=unknown
+case $cf_cv_system_name in #(vi
+os2*) #(vi
+	cf_gpp_libname=gpp
+	;;
+*)
+	cf_gpp_libname=g++
+	;;
+esac
+if test $ac_cv_prog_gxx = yes; then
+	AC_MSG_CHECKING([for lib$cf_gpp_libname])
+	cf_save="$LIBS"
+	LIBS="$LIBS -l$cf_gpp_libname -lm"
+	AC_TRY_LINK([
+#include <builtin.h>
+	],
+	[float foo=abs(1.0)],
+	[cf_cxx_library=yes
+	 CXXLIBS="$CXXLIBS -l$cf_gpp_libname -lm"],
+	 AC_DEFINE(HAVE_BUILTIN_H)
+	[cf_cxx_library=no])
+	LIBS="$cf_save"
+	AC_MSG_RESULT($cf_cxx_library)
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Insert text into the help-message, for readability, from AC_ARG_WITH.
 AC_DEFUN([CF_HELP_MESSAGE],
 [AC_DIVERT_HELP([$1])dnl
@@ -675,6 +684,8 @@ AC_DEFUN([CF_LIB_PREFIX],
 	os2)	$1=''     ;;
 	*)	$1='lib'  ;;
 	esac
+	LIB_PREFIX=$1
+	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Append definitions and rules for the given models to the subdirectory
@@ -1367,6 +1378,7 @@ case $cf_cv_system_name in
 os2*)
     # We make sure -Zexe is not used -- it would interfere with @PROG_EXT@
     CFLAGS="$CFLAGS -Zmt -D__ST_MT_ERRNO__"
+    CXXFLAGS="$CXXFLAGS -Zmt -D__ST_MT_ERRNO__"
     LDFLAGS=`echo "$LDFLAGS -Zmt -Zcrtdll" | sed "s/-Zexe//g"`
     PROG_EXT=".exe"
     ;;
@@ -1823,6 +1835,33 @@ if test -n "$ADA_SUBDIRS"; then
    done
    AC_SUBST(ADA_SUBDIRS)
 fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Check for -lstdc++
+AC_DEFUN([CF_STDCPP_LIBRARY],
+[
+case $cf_cv_system_name in #(vi
+os2*) #(vi
+	cf_stdcpp_libname=stdcpp
+	;;
+*)
+	cf_stdcpp_libname=stdc++
+	;;
+esac
+AC_CACHE_CHECK(for library $cf_stdcpp_libname,cf_cv_libstdcpp,[
+	cf_save="$LIBS"
+	LIBS="$LIBS -l$cf_stdcpp_libname -lm"
+AC_TRY_LINK([
+#include <strstream.h>],[
+char buf[80];
+strstreambuf foo(buf, sizeof(buf))
+//destroy foo
+],
+	[cf_cv_libstdcpp=yes],
+	[cf_cv_libstdcpp=no])
+	LIBS="$cf_save"
+])
+test $cf_cv_libstdcpp = yes && CXXLIBS="$CXXLIBS -l$cf_stdcpp_libname"
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl	Remove "-g" option from the compiler options
