@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.160 1999/01/31 01:06:04 tom Exp $
+dnl $Id: configure.in,v 1.161 1999/02/09 23:27:44 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.160 $)
+AC_REVISION($Revision: 1.161 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -579,7 +579,7 @@ AC_MSG_CHECKING(if you want experimental SIGWINCH handler)
 AC_ARG_ENABLE(sigwinch,
 	[  --enable-sigwinch       compile with experimental SIGWINCH handler],
 	[with_sigwinch=$enableval],
-	[with_sigwinch=$with_develop])
+	[with_sigwinch=yes])
 AC_MSG_RESULT($with_sigwinch)
 test "$with_sigwinch" = yes && AC_DEFINE(USE_SIGWINCH)
 

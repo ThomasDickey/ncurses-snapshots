@@ -42,7 +42,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: setbuf.c,v 1.2 1998/12/13 03:48:09 tom Exp $")
+MODULE_ID("$Id: setbuf.c,v 1.4 1999/02/10 03:15:09 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -95,7 +95,9 @@ MODULE_ID("$Id: setbuf.c,v 1.2 1998/12/13 03:48:09 tom Exp $")
  *	itself, which is certainly no improvement.
  *
  * Just in case it does not work well on a particular system, the calls to
- * change buffering are all via the macro NC_BUFFERED.
+ * change buffering are all via the macro NC_BUFFERED.  Some implementations
+ * do indeed get confused by changing setbuf on/off, and will overrun the
+ * buffer.  So we disable this by default (there may yet be a workaround).
  */
 void _nc_set_buffer(FILE *ofp, bool buffered)
 {
@@ -116,9 +118,16 @@ void _nc_set_buffer(FILE *ofp, bool buffered)
 			SP->_setbuf = buf_ptr;
 			/* Don't try to free this! */
 		}
+#if !USE_SETBUF_0
+		else return;
+#endif
 	} else {
+#if !USE_SETBUF_0
+		return;
+#else
 		buf_len = 0;
 		buf_ptr = 0;
+#endif
 	}
 
 #if HAVE_SETVBUF

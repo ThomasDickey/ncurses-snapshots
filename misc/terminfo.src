@@ -1,7 +1,9 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
+# This version of terminfo.src is distributed with ncurses.
+#
 #	Version 10.2.1
-#	$Date: 1999/01/23 22:59:23 $
+#	$Date: 1999/02/20 11:56:23 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -1292,7 +1294,7 @@ oldpc3|oldibmpc3|old IBM PC BSD/386 Console,
 # "stty rows NN", e.g. to use 24 lines.
 # (Color support from Kevin Rosenberg <kevin@cyberport.com>, 2 May 1996) 
 # Bug: The <op> capability resets attributes.
-bsdos|BSD/OS console, 
+bsdos-pc-nobold|BSD/OS PC console w/o bold, 
 	am, bw, eo, km, xon, 
 	colors#8, cols#80, it#8, lines#25, pairs#64, 
 	bel=^G, blink=\E[5m, bold=\E[1m, clear=\Ec, cr=^M, 
@@ -1305,17 +1307,22 @@ bsdos|BSD/OS console,
 	kpp=\E[I, nel=^M^J, op=\E[x, rc=\E8, rev=\E[7m, rmso=\E[0m, 
 	sc=\E7, setab=\E[4%p1%dm, setaf=\E[3%p1%dm, sgr0=\E[0m, 
 	smso=\E[7m, 
-bsdos-bold|IBM PC BSD/386 Console with bold instead of underline, 
-	rmul=\E[0m, smul=\E[1m, 
-	use=bsdos, 
+bsdos-pc|IBM PC BSD/OS Console, 
+	rmul=\E[0m, smul=\E[1m, use=bsdos-pc-nobold, 
 
-# If you are BSDI, you want the following entries, for the moment.  
-# In release 2.0 they will probably phase out the pc3 and ibmpc3 names
-pc3|IBM PC BSD/386 Console, 
-	use=bsdos, 
-ibmpc3|pc3-bold|IBM PC BSD/386 Console with bold instead of underline, 
-	smul=\E[1m, 
-	use=bsdos-bold, 
+# Old names for BSD/OS PC console used in releases before 4.1. 
+pc3|BSD/OS on the PC Console, 
+	use=bsdos-pc-nobold, 
+ibmpc3|pc3-bold|BSD/OS on the PC Console with bold instead of underline, 
+	use=bsdos-pc, 
+ 
+# BSD/OS on the SPARC 
+bsdos-sparc|Sun SPARC BSD/OS Console, 
+	use=sun, 
+	 
+# BSD/OS on the PowerPC 
+bsdos-ppc|PowerPC BSD/OS Console, 
+	use=bsdos-pc, 
 
 #### DEC VT100 and compatibles
 #
@@ -2132,15 +2139,15 @@ xterm-r6|xterm-old|xterm X11R6 version,
 	il1=\E[L, ind=^J, 
 	is2=\E7\E[r\E[m\E[?7h\E[?1;3;4;6l\E[4l\E8\E>, kbs=^H, 
 	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
-	kdch1=\E[3~, kend=\E[4~, kf1=\EOP, kf10=\E[21~, 
-	kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, 
-	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, 
-	kf19=\E[33~, kf2=\EOQ, kf20=\E[34~, kf3=\EOR, kf4=\EOS, 
-	kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
-	kfnd=\E[1~, khome=\E[1~, kich1=\E[2~, kmous=\E[M, 
-	knp=\E[6~, kpp=\E[5~, kslt=\E[4~, meml=\El, memu=\Em, rc=\E8, 
-	rev=\E[7m, ri=\EM, rmacs=^O, rmcup=\E[2J\E[?47l\E8, 
-	rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, 
+	kdch1=\E[3~, kf1=\EOP, kf10=\E[21~, kf11=\E[23~, 
+	kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, kf15=\E[28~, 
+	kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, kf19=\E[33~, 
+	kf2=\EOQ, kf20=\E[34~, kf3=\EOR, kf4=\EOS, kf5=\E[15~, 
+	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, kfnd=\E[1~, 
+	kich1=\E[2~, kmous=\E[M, knp=\E[6~, kpp=\E[5~, kslt=\E[4~, 
+	meml=\El, memu=\Em, rc=\E8, rev=\E[7m, ri=\EM, rmacs=^O, 
+	rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, rmkx=\E[?1l\E>, 
+	rmso=\E[m, rmul=\E[m, 
 	rs2=\E7\E[r\E[m\E[?7h\E[?1;3;4;6l\E[4l\E8\E>, sc=\E7, 
 	sgr0=\E[m, smacs=^N, smcup=\E7\E[?47h, smir=\E[4h, 
 	smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
@@ -2197,7 +2204,7 @@ xterm-xf86-v333|xterm terminal emulator (XFree86 3.3.3 Window System),
 	mc5i, 
 	blink=\E[5m, ich1@, invis=\E[8m, 
 	is2=\E[!p\E[?3;4l\E[4l\E>, kdch1=\E[3~, kend=\E[4~, 
-	khome=\E[1~, kll=\E[4~, mc0=\E[i, mc4=\E[4i, mc5=\E[5i, 
+	kfnd@, khome=\E[1~, kslt@, mc0=\E[i, mc4=\E[4i, mc5=\E[5i, 
 	rmcup=\E[?1047l\E[?1048l, rs1=\Ec, 
 	rs2=\E[!p\E[?3;4l\E[4l\E>, 
 	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m%?%p9%t\016%e\017%;, 
@@ -2259,12 +2266,12 @@ xterm-8bit|xterm terminal emulator 8-bit controls (X Window System),
 	kf16=\23329~, kf17=\23331~, kf18=\23332~, kf19=\23333~, 
 	kf2=\23312~, kf20=\23334~, kf3=\23313~, kf4=\23314~, 
 	kf5=\23315~, kf6=\23317~, kf7=\23318~, kf8=\23319~, 
-	kf9=\23320~, kfnd=\2331~, khome=\2331~, kich1=\2332~, 
-	kmous=\233M, knp=\2336~, kpp=\2335~, kslt=\2334~, 
-	mc0=\233i, mc4=\2334i, mc5=\2335i, meml=\El, memu=\Em, 
-	op=\23339;49m, rc=\E8, rev=\2337m, ri=\215, rmacs=^O, 
-	rmam=\233?7l, rmcup=\233?1049l, rmir=\2334l, 
-	rmkx=\233?1l\E>, rmso=\23327m, rmul=\23324m, rs1=\Ec, 
+	kf9=\23320~, khome=\2331~, kich1=\2332~, kmous=\233M, 
+	knp=\2336~, kpp=\2335~, mc0=\233i, mc4=\2334i, mc5=\2335i, 
+	meml=\El, memu=\Em, op=\23339;49m, rc=\E8, rev=\2337m, 
+	ri=\215, rmacs=^O, rmam=\233?7l, rmcup=\233?1049l, 
+	rmir=\2334l, rmkx=\233?1l\E>, rmso=\23327m, rmul=\23324m, 
+	rs1=\Ec, 
 	rs2=\E7\E[62"p\E G\233r\233m\233?7h\233?1;3;4;6l\2334l\E8\E>, 
 	sc=\E7, setab=\2334%p1%dm, setaf=\2333%p1%dm, 
 	setb=\2334%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
@@ -2730,12 +2737,11 @@ ncsa-m|ncsa-vt220|ncsa-vt220-8|NCSA Telnet 2.6 for Macintosh in vt220-8 mode,
 	kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, 
 	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, 
 	kf19=\E[33~, kf2=\EOQ, kf20=\E[34~, kf3=\EOR, kf4=\EOS, 
-	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, kfnd=\E[1~, 
-	khlp=\E[1~, khome=\E[2~, kich1=\E[1~, kll=\E[5~, knp=\E[6~, 
-	kpp=\E[3~, mc4=\E[4i, mc5=\E[5i, rc=\E8, rev=\E[7m, 
-	rf=/usr/share/tabset/vt100, ri=\EM, rmacs=^O, 
-	rmam=\E[?7l, rmcup=\E[2J\E8, rmir=\E[4l, rmso=\E[27m, 
-	rmul=\E[24m, 
+	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, khlp=\E[1~, 
+	khome=\E[2~, knp=\E[6~, kpp=\E[3~, mc4=\E[4i, mc5=\E[5i, 
+	rc=\E8, rev=\E[7m, rf=/usr/share/tabset/vt100, ri=\EM, 
+	rmacs=^O, rmam=\E[?7l, rmcup=\E[2J\E8, rmir=\E[4l, 
+	rmso=\E[27m, rmul=\E[24m, 
 	rs2=\E7\E[r\E[m\E[?7h\E[?1;4;6l\E[4l\E8\E>, sc=\E7, 
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p4%t;5%;%?%p1%p3%|%t;7%;m%?%p9%t\E(0%e\E(B%;, 
 	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smcup=\E7, 
@@ -17154,6 +17160,14 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 1999/1/23
 #	* minor improvements for teraterm entry - TD
+#	* rename several entries used by BSDI: bsdos to bsdos-pc-nobold,
+#	  and bsdos-bold to bsdos-pc (Jeffrey C Honig)
+#
+# 1999/2/20
+#	* resolve ambiguity of kend/kll/kslt and khome/kfnd/kich1 strings in
+#	  xterm and ncsa entries by removing the unneeded ones.  Note that
+#	  some entries will return kend & khome versus kslt and kfnd, for
+#	  PC-style keyboards versus strict vt220 compatiblity - TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
