@@ -1,10 +1,25 @@
--- $Id: NEWS,v 1.701 2002/08/11 00:31:36 tom Exp $
+-- $Id: NEWS,v 1.702 2002/08/18 00:28:17 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020817
+	+ modify lib_screen.c and lib_newwin.c to maintain the SCREEN-specific
+	  pointers for curscr/stdscr/newscr when scr_save() and scr_restore()
+	  modify the global curscr/stdscr/newscr variables.  Fixes Redhat
+	  bugzilla #68199 dated 2002-07-07.
+	+ add checks for null pointer in calls to tparm() and tgoto() based on
+	  FreeBSD bug report.  If ncurses were built with termcap support, and
+	  the first call to tgoto() were a zero-length string, the result would
+	  be a null pointer, which was not handled properly.
+	+ correct a typo in terminfo.head, which gave the octal code for colon
+	  rather than comma.
+	+ remove the "tic -u" option from 20020810, since it did not account
+	  for nested "tc=" clauses, and when that was addressed, was still
+	  unsatisfactory.
 
 20020810
 	+ add tic -A option to suppress capabilities which are commented out

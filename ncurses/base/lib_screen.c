@@ -34,7 +34,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_screen.c,v 1.22 2002/08/04 22:54:53 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.23 2002/08/18 00:13:08 tom Exp $")
 
 NCURSES_EXPORT(WINDOW *)
 getwin(FILE * filep)
@@ -128,7 +128,7 @@ scr_restore(const char *file)
 	returnCode(ERR);
     } else {
 	delwin(newscr);
-	newscr = getwin(fp);
+	SP->_newscr = newscr = getwin(fp);
 	(void) fclose(fp);
 	returnCode(OK);
     }
@@ -166,7 +166,7 @@ scr_init(const char *file)
 	returnCode(ERR);
     } else {
 	delwin(curscr);
-	curscr = getwin(fp);
+	SP->_curscr = curscr = getwin(fp);
 	(void) fclose(fp);
 	returnCode(OK);
     }

@@ -39,7 +39,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.62 2002/08/11 00:56:55 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.63 2002/08/17 21:45:13 tom Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
@@ -941,13 +941,13 @@ dump_entry(TERMTYPE * tterm,
 			     critlen);
 		    len = FMT_ENTRY();
 		}
-		if (len > critlen) {
+		if (len > critlen && !already_used) {
 		    (void) fprintf(stderr,
 				   "warning: %s entry is %d bytes long\n",
 				   _nc_first_name(tterm->term_names),
 				   len);
 		    SHOW_WHY("# WARNING: this entry, %d bytes long, may core-dump %s libraries!\n",
-			     len, legend);
+			     already_used + len, legend);
 		}
 		tversion = oldversion;
 	    }

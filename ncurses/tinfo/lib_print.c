@@ -35,7 +35,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_print.c,v 1.14 2002/03/16 21:45:08 tom Exp $")
+MODULE_ID("$Id: lib_print.c,v 1.15 2002/08/17 23:41:34 tom Exp $")
 
 NCURSES_EXPORT(int)
 mcprint(char *data, int len)
@@ -60,7 +60,8 @@ mcprint(char *data, int len)
 	offsize = strlen(prtr_off);
     }
 
-    if ((mybuf = typeMalloc(char, onsize + len + offsize + 1)) == (char *) 0) {
+    if (switchon == 0
+	|| (mybuf = typeMalloc(char, onsize + len + offsize + 1)) == 0) {
 	errno = ENOMEM;
 	return (ERR);
     }

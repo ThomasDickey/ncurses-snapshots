@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2000,2001 Free Software Foundation, Inc.                   *
+ * Copyright (c) 2000-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -35,7 +35,7 @@
 #include <ctype.h>
 #include <termcap.h>
 
-MODULE_ID("$Id: lib_tgoto.c,v 1.8 2001/06/02 22:44:42 tom Exp $")
+MODULE_ID("$Id: lib_tgoto.c,v 1.9 2002/08/17 23:41:11 tom Exp $")
 
 #if !PURE_TERMINFO
 static bool
@@ -172,11 +172,13 @@ tgoto_internal(const char *string, int x, int y)
 	}
 	string++;
     }
-    if (need_BC) {
-	strcpy(result + used, BC);
-	used += strlen(BC);
+    if (result != 0) {
+	if (need_BC) {
+	    strcpy(result + used, BC);
+	    used += strlen(BC);
+	}
+	result[used] = '\0';
     }
-    result[used] = '\0';
     return result;
 }
 #endif
@@ -186,8 +188,7 @@ tgoto_internal(const char *string, int x, int y)
  * the last two arguments when invoking tparm().
  */
 NCURSES_EXPORT(char *)
-tgoto
-(const char *string, int x, int y)
+tgoto(const char *string, int x, int y)
 {
     char *result;
 

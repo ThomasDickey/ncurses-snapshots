@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -45,16 +45,14 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.59 2001/09/22 18:35:23 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.60 2002/08/17 23:44:08 tom Exp $")
 
-NCURSES_EXPORT_VAR(char)
-PC = 0;				/* used by termcap library */
+NCURSES_EXPORT_VAR(char) PC = 0;		/* used by termcap library */
 NCURSES_EXPORT_VAR(NCURSES_OSPEED) ospeed = 0;	/* used by termcap library */
 
-NCURSES_EXPORT_VAR(int)
-_nc_nulls_sent = 0;		/* used by 'tack' program */
+NCURSES_EXPORT_VAR(int) _nc_nulls_sent = 0;	/* used by 'tack' program */
 
-     static int (*my_outch) (int c) = _nc_outch;
+static int (*my_outch) (int c) = _nc_outch;
 
 NCURSES_EXPORT(int)
 delay_output(int ms)
@@ -111,8 +109,7 @@ putp(const char *string)
 }
 
 NCURSES_EXPORT(int)
-tputs
-(const char *string, int affcnt, int (*outc) (int))
+tputs(const char *string, int affcnt, int (*outc) (int))
 {
     bool always_delay;
     bool normal_delay;
