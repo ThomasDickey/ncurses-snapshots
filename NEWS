@@ -1,10 +1,25 @@
--- $Id: NEWS,v 1.750 2003/05/31 23:07:29 tom Exp $
+-- $Id: NEWS,v 1.751 2003/06/07 23:39:50 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030607
+	+ add a call to setlocale() in cursesmain.cc, making demo display
+	  properly in a UTF-8 locale.
+	+ add a fallback definition in curses.priv.h for MB_LEN_MAX (prompted
+	  by discussion with Gabor Z Papp).
+	+ use macros NCURSES_ACS() and NCURSES_WACS() to hide cast needed to
+	  appease -Wchar-subscript with g++ 3.3 (Debian #195732).
+	+ fix a redefinition of $RANLIB in the configure script when libtool
+	  is used, which broke configure on Mac OS X (report by Chris Zubrzycki
+	  <beren@mac.com>).
+	+ simplify ifdef for bool declaration in curses.h.in (suggested by
+	  Albert Chin-A-Young).
+	+ remove configure script check to allow -Wconversion for older
+	  versions of gcc (suggested by Albert Chin-A-Young).
 
 20030531
 	+ regenerated html manpages.

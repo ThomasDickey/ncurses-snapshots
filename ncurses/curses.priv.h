@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.244 2003/05/17 23:47:01 tom Exp $
+ * $Id: curses.priv.h,v 1.245 2003/06/07 22:34:18 tom Exp $
  *
  *	curses.priv.h
  *
@@ -575,6 +575,10 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define UChar(c)	((unsigned char)(c))
 #define ChCharOf(c)	((c) & (chtype)A_CHARTEXT)
 #define ChAttrOf(c)     ((c) & (chtype)A_ATTRIBUTES)
+
+#ifndef MB_LEN_MAX
+#define MB_LEN_MAX 8 /* should be >= MB_CUR_MAX, but that may be a function */
+#endif
 
 #if USE_WIDEC_SUPPORT /* { */
 #define NulChar		0,0,0,0	/* FIXME: see CCHARW_MAX */

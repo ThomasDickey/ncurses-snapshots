@@ -37,7 +37,7 @@
 #include <curses.priv.h>
 #include <wctype.h>
 
-MODULE_ID("$Id: lib_slk_wset.c,v 1.3 2003/04/12 21:06:18 tom Exp $")
+MODULE_ID("$Id: lib_slk_wset.c,v 1.4 2003/06/07 22:17:43 tom Exp $")
 
 NCURSES_EXPORT(int)
 slk_wset(int i, const wchar_t * astr, int format)
@@ -91,7 +91,7 @@ slk_wset(int i, const wchar_t * astr, int format)
 	 */
 	memset(&state, 0, sizeof(state));
 
-	if ((new_text = _nc_doalloc(0, MB_LEN_MAX * arglen)) == 0)
+	if ((new_text = (char *) _nc_doalloc(0, MB_LEN_MAX * arglen)) == 0)
 	    returnCode(ERR);
 
 	for (n = 0; n < arglen; ++n) {
@@ -100,11 +100,11 @@ slk_wset(int i, const wchar_t * astr, int format)
 	new_text[used] = '\0';
 
 	if (used >= (size_t) (slk->maxlen + 1)) {
-	    if ((slk->ent[i].ent_text = _nc_doalloc(slk->ent[i].ent_text,
-						    used + 1)) == 0)
+	    if ((slk->ent[i].ent_text = (char *) _nc_doalloc(slk->ent[i].ent_text,
+							     used + 1)) == 0)
 		returnCode(ERR);
-	    if ((slk->ent[i].form_text = _nc_doalloc(slk->ent[i].form_text,
-						     used + 1)) == 0)
+	    if ((slk->ent[i].form_text = (char *) _nc_doalloc(slk->ent[i].form_text,
+							      used + 1)) == 0)
 		returnCode(ERR);
 	}
 
