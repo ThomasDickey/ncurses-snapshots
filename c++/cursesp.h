@@ -37,7 +37,7 @@ protected:
     return uptr->m_user;
   }
   
-  OnError (int err) const THROWS((NCursesPanelException)) {
+  void OnError (int err) const THROWS((NCursesPanelException)) {
     if (err != OK)
       THROW(new NCursesPanelException (this, err));
   }

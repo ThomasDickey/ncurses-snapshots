@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.19 1997/02/15 17:01:59 tom Exp $
+# $Id: mk-1st.awk,v 1.20 1997/05/05 21:28:17 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -110,6 +110,7 @@ END	{
 				print  "install.libs \\"
 				printf "install.%s :: $(INSTALL_PREFIX)$(libdir) ../lib/%s\n", name, end_name
 				printf "\t@echo installing ../lib/%s as $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, end_name
+				printf "\t-rm -f $(INSTALL_PREFIX)$(libdir)/%s \n", end_name
 				printf "\t$(INSTALL) ../lib/%s $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, end_name
 				sharedlinks("$(INSTALL_PREFIX)$(libdir)")
 				if ( overwrite == "yes" && name == "ncurses" )

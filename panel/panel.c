@@ -24,11 +24,24 @@
 /* panel.c -- implementation of panels library */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: panel.c,v 1.9 1997/02/16 00:39:28 tom Exp $")
+MODULE_ID("$Id: panel.c,v 1.10 1997/05/05 09:42:11 tom Exp $")
 
 #ifdef TRACE
 extern char *_nc_visbuf(const char *);
+#ifdef TRACE_TXT
 #define USER_PTR(ptr) _nc_visbuf((const char *)ptr)
+#else
+static char *my_nc_visbuf(const void *ptr)
+{
+	char temp[20];
+	if (ptr != 0)
+		sprintf(temp, "ptr:%p", ptr);
+	else
+		strcpy(temp, "<null>");
+	return _nc_visbuf(temp);
+}
+#define USER_PTR(ptr) my_nc_visbuf((const char *)ptr)
+#endif
 #endif
 
 static PANEL *__bottom_panel = (PANEL *)0;

@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <!--
-  $Id: announce.html.in,v 1.15 1997/04/26 19:29:00 tom Exp $
+  $Id: announce.html.in,v 1.16 1997/05/05 22:50:41 tom Exp $
 -->
 <HTML>
 <HEAD>
@@ -12,7 +12,7 @@
 <H1>Announcing ncurses @VERSION@</H1>
 
 The ncurses (new curses) library is a freeware emulation of System V
-Release @VERSION@ curses.  It uses terminfo format, supports pads and color
+Release 4.0 curses.  It uses terminfo format, supports pads and color
 and multiple highlights and forms characters and function-key mapping,
 and has all the other SYSV-curses enhancements over BSD curses. <P>
 

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.16 1997/02/15 17:10:04 tom Exp $
+# $Id: Makefile.in,v 1.17 1997/05/05 22:39:30 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -118,7 +118,7 @@ mostlyclean :: clean
 realclean :: distclean
 
 ../include/mf_common.h \
-../include/eti.h ::
+../include/eti.h :
 	cd ../menu && $(MAKE) $@
 
 ###############################################################################

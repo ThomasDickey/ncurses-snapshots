@@ -39,7 +39,7 @@ class NCursesMenuItem
 protected:
   ITEM *item;
 
-  OnError (int err) const THROWS(NCursesMenuException)
+  void OnError (int err) const THROWS(NCursesMenuException)
   {
     if (err != E_OK)
       THROW(new NCursesMenuException (err));
@@ -127,12 +127,14 @@ public:
   // perform an action associated with this item; you may use this in an
   // user supplied driver for a menu; you may derive from this class and
   // overload action() to supply items with different actions.
-  virtual void action() {
+  // If an action returns true, the menu will be exited.
+  virtual bool action() {
+    return FALSE;
   };
 };
 
 // Prototype for an items callback function.
-typedef void ITEMCALLBACK(NCursesMenuItem&);
+typedef bool ITEMCALLBACK(NCursesMenuItem&);
 
 // If you don't like to create a child class for individual items to
 // overload action(), you may use this class and provide a callback
@@ -153,9 +155,11 @@ public:
   virtual ~NCursesMenuCallbackItem() {
   };
 
-  void action() {
+  bool action() {
     if (p_fct)
-      p_fct (*this);
+      return p_fct (*this);
+    else
+      return FALSE;
   }
 };
 
@@ -218,9 +222,9 @@ protected:
   }
 
 
-  void InitMenu (NCursesMenuItem* menu[], bool with_frame=false);
+  void InitMenu (NCursesMenuItem* menu[], bool with_frame=FALSE);
 
-  OnError (int err) const THROWS(NCursesMenuException)
+  void OnError (int err) const THROWS(NCursesMenuException)
   {
     if (err != E_OK)
       THROW(new NCursesMenuException (this, err));
@@ -228,9 +232,6 @@ protected:
   
   // this wraps the menu_driver call.
   virtual int driver (int c) ;
-
-  const int CMD_ACTION = MAX_COMMAND + 1;
-  const int CMD_QUIT   = MAX_COMMAND + 2;
 
 public:
   // make a full window size menu
@@ -242,7 +243,7 @@ public:
 	       int  cols, 
 	       int  begin_y, 
 	       int  begin_x,
-	       bool with_frame=false);
+	       bool with_frame=FALSE);
   
   virtual ~NCursesMenu ();
 
@@ -265,9 +266,9 @@ public:
   }
   
   // Post the menu to the screen if flag is true, unpost it otherwise
-  inline void post(bool flag = true)
+  inline void post(bool flag = TRUE)
   {
-    flag ? OnError (::post_menu(menu)) : unpost();
+    flag ? OnError (::post_menu(menu)) : OnError (::unpost_menu (menu)); 
   }
 
   // Get the numer of rows and columns for this menu
@@ -596,8 +597,9 @@ public:
 		   int lines, 
 		   int cols, 
 		   int begin_y, 
-		   int begin_x)
-    : NCursesMenu (menu, lines, cols, begin_y, begin_x)
+		   int begin_x,
+		   bool with_frame=FALSE)
+    : NCursesMenu (menu, lines, cols, begin_y, begin_x, with_frame)
   {
     if (m)
       set_user ((const void *)p_UserData);
