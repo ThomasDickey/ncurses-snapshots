@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 10.1.22
+#	Version 10.1.23
 #	terminfo syntax
 #
 # This version of terminfo.src is distributed with ncurses.  It is based mainly
@@ -320,8 +320,8 @@ klone+sgr-dumb|attribute control for ansi.sys displays (no ESC [ 11 m),
 	sgr0=\E[0;10m, smacs=\E[12m, smso=\E[7m, smul=\E[4m, 
 	use=klone+acs, 
 
-# KOI8 (RFC1489) alternate character set 
-# From: Qing Long <qinglong@Bolizm.ihep.su>, 24 Feb 1996.
+# KOI8-R (RFC1489) acs (alternate character set)
+# From: QingLong <qinglong@Bolizm.ihep.su>, 24 Feb 1996.
 klone+koi8acs|alternate character set for ansi.sys displays with KOI8 charset, 
 	acsc=+\020\,\021-\036.^_0\215`\004a\237f\234g\232h\222i\220j\205k\203l\202m\204n\212o\213p\216q\0r\217s\214t\206u\207v\210w\211x\201y\230z\231{\267|\274}L~\225, 
 	rmacs=\E[10m, smacs=\E[11m, 
@@ -634,6 +634,11 @@ linux-nic|linux with ich/ich1 suppressed for non-curses programs,
 # acsc entry from Pavel Roskin" <pavel@absolute.spb.su>, 29 Sep 1997.
 linux-koi8|linux with koi8 alternate character set, 
 	acsc=+\020\,\021-\030.^Y0\215`\004a\221f\234g\237h\220i\276j\205k\203l\202m\204n\212o~p\0q\0r\0s_t\206u\207v\211w\210x\201y\230z\231{\267|\274~\224, 
+	use=linux, use=klone+koi8acs, 
+
+# Another entry for KOI8-r with QingLong's acsc.
+# (which one better complies the standard?)
+linux-koi8r|linux with koi8-r alternate character set, 
 	use=linux, use=klone+koi8acs, 
 
 # SCO console and SOS-Syscons console for 386bsd
@@ -14738,6 +14743,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 10.1.22 (Wed Feb 11 18:40:12 EST 1998)
 #	* remove spurious commas from descriptions
 #	* correct xterm-8bit to match XFree86 3.9Ad F1-F4.
+# 10.1.23 (Sat Feb 28 17:48:38 EST 1998)
+#	* add linux-koi8r to replace linux-koi8 (which uses a corrupt acsc,
+#	  apparently based on cp-866).
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.314 1998/02/21 23:49:17 tom Exp $
+-- $Id: NEWS,v 1.315 1998/02/28 01:12:38 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980227	pre-release
+	+ minor documentation fixes (patch by Juergen Pfeifer).
+	+ add setlocale() call to ncurses.c (reported by Claes G. Lindblad
+	  <claesg@algonet.se>).
+	+ correct sign-extension in lib_insstr.c (reported by Sotiris
+	  Vassilopoulos <svas@leon.nrcps.ariadne-t.gr>)
 
 980221	pre-release
 	+ regenerated some documentation overlooked in 980214 patch
