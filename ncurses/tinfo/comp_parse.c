@@ -52,7 +52,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.46 2000/12/10 02:55:07 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.47 2001/01/13 22:43:57 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype) (TERMTYPE *) = sanity_check;
@@ -366,6 +366,7 @@ _nc_resolve_uses(bool fullresolve)
 		     * Now merge in the original entry.
 		     */
 		    _nc_merge_entry(&merged, &qp->tterm);
+		    _nc_wrap_entry(qp, TRUE);
 
 		    /*
 		     * Replace the original entry with the merged one.

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.241 2000/11/18 23:30:03 tom Exp $
+dnl $Id: aclocal.m4,v 1.242 2001/01/11 00:41:25 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -63,8 +63,14 @@ AC_DEFUN([CF_ADD_CFLAGS],
 for cf_add_cflags in $1
 do
 	case $cf_add_cflags in #(vi
-	-I*|-D*|-U*|-E|-P|-C) #(vi
-		CPPFLAGS="$CPPFLAGS $cf_add_cflags"
+	-undef|-nostdinc*|-I*|-D*|-U*|-E|-P|-C) #(vi
+		case "$CPPFLAGS" in
+		*$cf_add_cflags)
+			;;
+		*)
+			CPPFLAGS="$CPPFLAGS $cf_add_cflags"
+			;;
+		esac
 		;;
 	*)
 		CFLAGS="$CFLAGS $cf_add_cflags"
@@ -118,7 +124,7 @@ AC_MSG_RESULT($cf_cv_ansi_cc)
 
 if test "$cf_cv_ansi_cc" != "no"; then
 if test ".$cf_cv_ansi_cc" != ".-DCC_HAS_PROTOS"; then
-	CFLAGS="$CFLAGS $cf_cv_ansi_cc"
+	CF_ADD_CFLAGS($cf_cv_ansi_cc)
 else
 	AC_DEFINE(CC_HAS_PROTOS)
 fi

@@ -47,7 +47,7 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.51 2000/12/10 02:55:08 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.52 2001/01/13 22:44:29 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -465,7 +465,7 @@ _nc_parse_entry
 	} else
 	    postprocess_terminfo(&entryp->tterm);
     }
-    _nc_wrap_entry(entryp);
+    _nc_wrap_entry(entryp, FALSE);
 
     return (OK);
 }
@@ -820,13 +820,15 @@ postprocess_termcap(TERMTYPE * tp, bool has_base)
 	}
     }
 
-    if (!hard_copy) {
-	if (WANTED(key_backspace))
-	    key_backspace = _nc_save_str(C_BS);
-	if (WANTED(key_left))
-	    key_left = _nc_save_str(C_BS);
-	if (WANTED(key_down))
-	    key_down = _nc_save_str(C_LF);
+    if (!has_base) {
+	if (!hard_copy) {
+	    if (WANTED(key_backspace))
+		key_backspace = _nc_save_str(C_BS);
+	    if (WANTED(key_left))
+		key_left = _nc_save_str(C_BS);
+	    if (WANTED(key_down))
+		key_down = _nc_save_str(C_LF);
+	}
     }
 
     /*

@@ -70,7 +70,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.149 2000/12/10 03:04:30 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.150 2001/01/14 00:16:22 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -764,20 +764,20 @@ doupdate(void)
 
 	    /* mark line changed successfully */
 	    if (i <= newscr->_maxy) {
-		MARK_NOCHANGE(newscr, i)
+		MARK_NOCHANGE(newscr, i);
 	    }
 	    if (i <= curscr->_maxy) {
-		MARK_NOCHANGE(curscr, i)
+		MARK_NOCHANGE(curscr, i);
 	    }
 	}
     }
 
     /* put everything back in sync */
     for (i = nonempty; i <= newscr->_maxy; i++) {
-	MARK_NOCHANGE(newscr, i)
+	MARK_NOCHANGE(newscr, i);
     }
     for (i = nonempty; i <= curscr->_maxy; i++) {
-	MARK_NOCHANGE(curscr, i)
+	MARK_NOCHANGE(curscr, i);
     }
 
     if (!newscr->_leaveok) {

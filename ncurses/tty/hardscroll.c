@@ -145,7 +145,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hardscroll.c,v 1.35 2000/12/10 03:04:29 tom Exp $")
+MODULE_ID("$Id: hardscroll.c,v 1.36 2001/01/14 00:17:28 tom Exp $")
 
 #if defined(SCROLLDEBUG) || defined(HASHDEBUG)
 
@@ -163,9 +163,10 @@ oldnums[MAXLINES];
 /* OLDNUM(n) indicates which line will be shifted to the position n.
    if OLDNUM(n) == _NEWINDEX, then the line n in new, not shifted from
    somewhere. */
-# if USE_HASHMAP
 NCURSES_EXPORT_VAR(int *)
 _nc_oldnums = 0;
+
+# if USE_HASHMAP
      static int oldnums_allocated = 0;
 #  define oldnums       _nc_oldnums
 #  define OLDNUM(n)	oldnums[n]

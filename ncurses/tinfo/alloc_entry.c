@@ -47,7 +47,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.34 2000/12/10 02:55:07 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.35 2001/01/13 22:40:17 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -119,12 +119,33 @@ _nc_save_str(const char *const string)
 }
 
 NCURSES_EXPORT(void)
-_nc_wrap_entry(ENTRY * const ep)
+_nc_wrap_entry(ENTRY * const ep, bool copy_strings)
 /* copy the string parts to allocated storage, preserving pointers to it */
 {
     int offsets[MAX_ENTRY_SIZE / 2], useoffsets[MAX_USES];
     int i, n;
     TERMTYPE *tp = &(ep->tterm);
+
+    if (copy_strings) {
+	next_free = 0;		/* clear static storage */
+
+	/* copy term_names, Strings, uses */
+	tp->term_names = _nc_save_str(tp->term_names);
+	for_each_string(i, tp) {
+	    if (tp->Strings[i] != ABSENT_STRING &&
+		tp->Strings[i] != CANCELLED_STRING) {
+		tp->Strings[i] = _nc_save_str(tp->Strings[i]);
+	    }
+	}
+
+	for (i = 0; i < ep->nuses; i++) {
+	    if (ep->uses[i].name == 0) {
+		ep->uses[i].name = _nc_save_str(ep->uses[i].name);
+	    }
+	}
+
+	free(tp->str_table);
+    }
 
     n = tp->term_names - stringbuf;
     for_each_string(i, &(ep->tterm)) {
@@ -158,18 +179,20 @@ _nc_wrap_entry(ENTRY * const ep)
     }
 
 #if NCURSES_XNAMES
-    if ((n = NUM_EXT_NAMES(tp)) != 0) {
-	unsigned length = 0;
-	for (i = 0; i < n; i++) {
-	    length += strlen(tp->ext_Names[i]) + 1;
-	    offsets[i] = tp->ext_Names[i] - stringbuf;
-	}
-	if ((tp->ext_str_table = typeMalloc(char, length)) == 0)
-	      _nc_err_abort("Out of memory");
-	for (i = 0, length = 0; i < n; i++) {
-	    tp->ext_Names[i] = tp->ext_str_table + length;
-	    strcpy(tp->ext_Names[i], stringbuf + offsets[i]);
-	    length += strlen(tp->ext_Names[i]) + 1;
+    if (!copy_strings) {
+	if ((n = NUM_EXT_NAMES(tp)) != 0) {
+	    unsigned length = 0;
+	    for (i = 0; i < n; i++) {
+		length += strlen(tp->ext_Names[i]) + 1;
+		offsets[i] = tp->ext_Names[i] - stringbuf;
+	    }
+	    if ((tp->ext_str_table = typeMalloc(char, length)) == 0)
+		  _nc_err_abort("Out of memory");
+	    for (i = 0, length = 0; i < n; i++) {
+		tp->ext_Names[i] = tp->ext_str_table + length;
+		strcpy(tp->ext_Names[i], stringbuf + offsets[i]);
+		length += strlen(tp->ext_Names[i]) + 1;
+	    }
 	}
     }
 #endif

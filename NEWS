@@ -1,10 +1,27 @@
--- $Id: NEWS,v 1.611 2000/12/31 02:11:31 tom Exp $
+-- $Id: NEWS,v 1.612 2001/01/14 00:53:19 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010113
+	+ modify view.c to test halfdelay().  Like other tests, this recognizes
+	  the 's' and space commands for stopping/starting polled input, shows
+	  a freerunning clock in the header.  If given a parameter to 's', that
+	  makes view.c use halfdelay() with that parameter rather than
+	  nodelay().
+	+ fix to allow compile with the experimental configure option
+	  --disable-hashmap.
+	+ modify postprocess_termcap() to avoid overwriting key_backspace,
+	  key_left, key_down when processing a non-base entry (report/patch by
+	  Tom Riddle).
+	+ modify _nc_wrap_entry(), adding option to reallocate the string
+	  table, needed in _nc_merge_entry() when merging termcap entries. 
+	  (adapted from report/patch by Tom Riddle <ftr@oracom.com>).
+	+ modify a few configure script macros to keep $CFLAGS used only for
+	  compiler options, preprocessor options in $CPPFLAGS.
 
 20001230
 	+ correct marker positions in lrtest.c after receiving a sigwinch.
