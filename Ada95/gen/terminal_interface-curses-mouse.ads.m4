@@ -38,7 +38,7 @@ include(M4MACRO)dnl
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996
 --  Version Control:
---  $Revision: 1.12 $
+--  $Revision: 1.13 $
 --  Binding Version 00.93
 ------------------------------------------------------------------------------
 include(`Mouse_Base_Defs')
@@ -70,6 +70,13 @@ package Terminal_Interface.Curses.Mouse is
                          Double_Clicked,
                          Triple_Clicked);
 
+   type Button_States is array (Button_State) of Boolean;
+   pragma Pack (Button_States);
+
+   All_Clicks : constant Button_States := (Clicked .. Triple_Clicked => True,
+                                           others => False);
+   All_States : constant Button_States := (others => True);
+
    type Mouse_Event is private;
 
    --  MANPAGE(`curs_mouse.3x')
@@ -86,14 +93,24 @@ package Terminal_Interface.Curses.Mouse is
    --  with the Empty_Mask constant
    pragma Inline (Register_Reportable_Event);
 
+   procedure Register_Reportable_Events
+     (B    : in Mouse_Button;
+      S    : in Button_States;
+      Mask : in out Event_Mask);
+   --  Stores the events described by the button and the states in the mask.
+   --  Before you call this the first time, you should init the mask
+   --  with the Empty_Mask constant
+
    --  ANCHOR(`mousemask()',`Start_Mouse')
+   --  There is one difference to mousmask(): we return the value of the
+   --  old mask, that means the event mask value before this call.
    function Start_Mouse (Mask : Event_Mask := All_Events)
                          return Event_Mask;
    --  AKA
    pragma Inline (Start_Mouse);
 
-   procedure End_Mouse;
-   --  Terminates the mouse
+   procedure End_Mouse (Mask : in Event_Mask := No_Events);
+   --  Terminates the mouse, restores the specified event mask
    pragma Inline (End_Mouse);
 
    --  ANCHOR(`getmouse()',`Get_Mouse')

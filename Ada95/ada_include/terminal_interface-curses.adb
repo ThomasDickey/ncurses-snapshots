@@ -35,7 +35,7 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996
 --  Version Control:
---  $Revision: 1.18 $
+--  $Revision: 1.19 $
 --  Binding Version 00.93
 ------------------------------------------------------------------------------
 with System;
@@ -2391,7 +2391,7 @@ package body Terminal_Interface.Curses is
       function Transform (W    : Window;
                           Y, X : Int_Access;
                           Dir  : C_Int) return C_Int;
-      pragma Import (C, Transform, "_nc_ada_coord_transform");
+      pragma Import (C, Transform, "wmouse_trafo");
 
       X : aliased C_Int := C_Int (Column);
       Y : aliased C_Int := C_Int (Line);

@@ -35,7 +35,7 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996
 --  Version Control:
---  $Revision: 1.9 $
+--  $Revision: 1.10 $
 --  Binding Version 00.93
 ------------------------------------------------------------------------------
 with System;
@@ -92,36 +92,46 @@ package body Terminal_Interface.Curses.Mouse is
       type Evt_Access is access all Event_Mask;
       function Register (B : C_Int;
                          S : C_Int;
-                         M : Evt_Access) return C_Int;
+                         M : access Event_Mask) return C_Int;
       pragma Import (C, Register, "_nc_ada_mouse_mask");
 
-      T : aliased Event_Mask := Mask;
-      M : Evt_Access := T'Access;
       R : constant C_Int := Register (C_Int (Mouse_Button'Pos (B)),
                                       C_Int (Button_State'Pos (S)),
-                                      M);
+                                      Mask'Unrestricted_Access);
    begin
       if R = Curses_Err then
          raise Curses_Exception;
       end if;
-      Mask := T;
    end Register_Reportable_Event;
+
+   procedure Register_Reportable_Events (B    : in Mouse_Button;
+                                         S    : in Button_States;
+                                         Mask : in out Event_Mask)
+   is
+   begin
+      for State in Button_States'Range loop
+         if S (State) then
+            Register_Reportable_Event (B, State, Mask);
+         end if;
+      end loop;
+   end Register_Reportable_Events;
 
    function Start_Mouse (Mask : Event_Mask := All_Events)
                          return Event_Mask
    is
-      type Int_Access is access all C_Int;
-      function MMask (M : C_Int; O : Int_Access := null) return C_Int;
+      function MMask (M : C_Int;
+                      O : access C_Int) return C_Int;
       pragma Import (C, MMask, "mousemask");
       R : C_Int;
+      Old : aliased C_Int;
    begin
-      R := MMask (Mask_To_CInt (Mask));
-      return CInt_To_Mask (R);
+      R := MMask (Mask_To_CInt (Mask), Old'Access);
+      return CInt_To_Mask (Old);
    end Start_Mouse;
 
-   procedure End_Mouse
+   procedure End_Mouse (Mask : in Event_Mask := No_Events)
    is
-      Old : constant Event_Mask := Start_Mouse (No_Events);
+      Old : constant Event_Mask := Start_Mouse (Mask);
    begin
       null;
    end End_Mouse;

@@ -45,7 +45,7 @@
 #include <term.h>	/* padding_baud_rate, xon_xoff */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.33 1998/09/19 20:35:49 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.34 1998/12/05 01:33:08 tom Exp $")
 
 #define OUTPUT ((SP != 0) ? SP->_ofp : stdout)
 
@@ -151,24 +151,26 @@ char	addrbuf[32];
 	 * (like nethack) actually do the likes of tputs("50") to get delays.
 	 */
 	trailpad = 0;
-	while (isdigit(*string)) {
-		trailpad = trailpad * 10 + (*string - '0');
-		string++;
-	}
-	trailpad *= 10;
-	if (*string == '.') {
-		string++;
-		if (isdigit(*string)) {
-			trailpad += (*string - '0');
+	if (isdigit(*string)) {
+		while (isdigit(*string)) {
+			trailpad = trailpad * 10 + (*string - '0');
 			string++;
 		}
-		while (isdigit(*string))
+		trailpad *= 10;
+		if (*string == '.') {
 			string++;
-	}
+			if (isdigit(*string)) {
+				trailpad += (*string - '0');
+				string++;
+			}
+			while (isdigit(*string))
+				string++;
+		}
 
-	if (*string == '*') {
-		trailpad *= affcnt;
-		string++;
+		if (*string == '*') {
+			trailpad *= affcnt;
+			string++;
+		}
 	}
 #endif /* BSD_TPUTS */
 

@@ -35,12 +35,13 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996
 --  Version Control
---  $Revision: 1.5 $
+--  $Revision: 1.7 $
 --  Binding Version 00.93
 ------------------------------------------------------------------------------
 with Sample.Menu_Demo.Aux;
 with Sample.Explanation; use Sample.Explanation;
 with Sample.Manifest; use Sample.Manifest;
+with Terminal_Interface.Curses.Mouse;  use Terminal_Interface.Curses.Mouse;
 
 package body Sample.Menu_Demo.Handler is
 
@@ -63,9 +64,14 @@ package body Sample.Menu_Demo.Handler is
                        Col   : in Column_Position;
                        Title : in String := "")
    is
-      Pan : Panel := Aux.Create (M, Title, Lin, Col);
-      V   : Cursor_Visibility := Invisible;
+      Mask : Event_Mask := No_Events;
+      Old  : Event_Mask;
+      Pan  : Panel := Aux.Create (M, Title, Lin, Col);
+      V    : Cursor_Visibility := Invisible;
    begin
+      --  We are only interested in Clicks with the left button
+      Register_Reportable_Events (Left, All_Clicks, Mask);
+      Old := Start_Mouse (Mask);
       Set_Cursor_Visibility (V);
       loop
          declare
@@ -79,6 +85,9 @@ package body Sample.Menu_Demo.Handler is
                      I : constant Item := Current (M);
                      O : Item_Option_Set;
                   begin
+                     if K = Key_Mouse then
+                        K := SELECT_ITEM;
+                     end if;
                      Get_Options (I, O);
                      if K = SELECT_ITEM and then not O.Selectable then
                         Beep;
@@ -92,7 +101,7 @@ package body Sample.Menu_Demo.Handler is
             end case;
          end;
       end loop;
-      Set_Cursor_Visibility (V);
+      End_Mouse (Old);
       Aux.Destroy (M, Pan);
    end Drive_Me;
 

@@ -84,7 +84,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.40 1998/11/29 01:42:46 Ilya.Zakharevich Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.41 1998/12/02 15:03:22 juergen Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -934,6 +934,39 @@ int mouseinterval(int maxclick)
    support */
 int _nc_has_mouse(void) {
   return (mousetype==M_NONE ? 0:1);
+}
+
+bool wmouse_trafo(const WINDOW* win, int* pY, int* pX, bool to_screen)
+{
+  bool result = FALSE;
+
+  if (win && pY && pX)
+    {
+      int y = *pY; int x = *pX;
+
+      if (to_screen)
+	{
+	  y += win->_begy + win->_yoffset;
+	  x += win->_begx;
+	  if (wenclose(win,y,x))
+	    result = TRUE;
+	}
+      else
+	{
+	  if (wenclose(win,y,x))
+	    {
+	      y -= (win->_begy + win->_yoffset);
+	      x -= win->_begx;
+	      result = TRUE;
+	    }	    
+	}
+      if (result)
+	{
+	  *pX = x;
+	  *pY = y;
+	}
+    }
+  return(result);
 }
 
 /* lib_mouse.c ends here */
