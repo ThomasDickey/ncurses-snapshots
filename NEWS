@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.435 1999/03/14 01:17:31 tom Exp $
+-- $Id: NEWS,v 1.440 1999/03/15 01:52:18 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990314	pre-release
+	+ modify lib_color.c to handle a special case where the curscr
+	  attributes have been made obsolete (patch by Alexander Lukyanov).
+	+ update BSD/OS console terminfo entries to use klone+sgr and
+	  klone+color (patch by Jeffrey Honig).
+	+ update glibc addon configure script for extended capabilities.
+	+ correct a couple of warnings in the --enable-const configuration.
+	+ make comp_hash build properly with _nc_strdup(), on NeXT (reported by
+	  Francisco A. Tomei Torres <francisco.tomei@cwix.com>).
 
 990313	pre-release
 	+ correct typos in linux-c initc string - TD

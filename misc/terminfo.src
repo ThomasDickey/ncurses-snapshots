@@ -3,7 +3,7 @@
 # This version of terminfo.src is distributed with ncurses.
 #
 #	Version 10.2.1
-#	$Date: 1999/03/14 01:16:38 $
+#	$Date: 1999/03/15 00:23:39 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -1295,20 +1295,19 @@ oldpc3|oldibmpc3|old IBM PC BSD/386 Console,
 # (Color support from Kevin Rosenberg <kevin@cyberport.com>, 2 May 1996) 
 # Bug: The <op> capability resets attributes.
 bsdos-pc-nobold|BSD/OS PC console w/o bold, 
-	am, bw, eo, km, xon, 
-	colors#8, cols#80, it#8, lines#25, pairs#64, 
-	bel=^G, blink=\E[5m, bold=\E[1m, clear=\Ec, cr=^M, 
-	cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=^J, 
-	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
-	cuu=\E[%p1%dA, cuu1=\E[A, dim=\E[=8F, dl=\E[%p1%dM, 
-	dl1=\E[M, ed=\E[J, el=\E[K, home=\E[H, ht=^I, il=\E[%p1%dL, 
-	il1=\E[L, ind=^J, kbs=^H, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, 
-	kcuu1=\E[A, khome=\E[H, kich1=\E[L, kll=\E[F, knp=\E[G, 
-	kpp=\E[I, nel=^M^J, op=\E[x, rc=\E8, rev=\E[7m, rmso=\E[0m, 
-	sc=\E7, setab=\E[4%p1%dm, setaf=\E[3%p1%dm, sgr0=\E[0m, 
-	smso=\E[7m, 
+	am, eo, km, xon, 
+	cols#80, it#8, lines#25, 
+	bel=^G, clear=\Ec, cr=^M, cub=\E[%p1%dD, cub1=^H, 
+	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, home=\E[H, ht=^I, 
+	il=\E[%p1%dL, il1=\E[L, ind=^J, kbs=^H, kcub1=\E[D, 
+	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, khome=\E[H, kich1=\E[L, 
+	kll=\E[F, knp=\E[G, kpp=\E[I, nel=^M^J, rc=\E8, sc=\E7, 
+	sgr=\E[0;10%?%p1%t;7%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m%?%p5%t\E[=8F%;, 
+	use=klone+sgr, use=klone+color, 
 bsdos-pc|IBM PC BSD/OS Console, 
-	rmul=\E[0m, smul=\E[1m, use=bsdos-pc-nobold, 
+	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;1%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m, use=bsdos-pc-nobold, 
 
 # Old names for BSD/OS PC console used in releases before 4.1. 
 pc3|BSD/OS on the PC Console, 
@@ -2222,8 +2221,7 @@ xterm-xf86-v333|xterm terminal emulator (XFree86 3.3.3 Window System),
 
 # This beta version will probably be released in XFree86 4.0.
 xterm-xf86-v40|xterm terminal emulator (XFree86 4.0 Window System), 
-	khome=\EOH, kend=\EOF,
-	rmcup=\E[?1049l, smcup=\E[?1049h, 
+	kend=\EOF, khome=\EOH, rmcup=\E[?1049l, smcup=\E[?1049h, 
 	use=xterm-xf86-v333, 
 
 xterm-xfree86|xterm-new|xterm terminal emulator (XFree86 4.0 Window System), 
@@ -17184,6 +17182,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  tables - TD
 #	* add 'crt' entry - TD
 #	* correct typos in 'linux-c' entry - TD
+#
+# 1999/3/14
+#	* update entries for BSD/OS console to use klone+sgr and klone+color
+#	  (Jeffrey C Honig)
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

@@ -41,7 +41,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.34 1999/02/27 19:54:51 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.35 1999/03/15 01:45:14 Alexander.V.Lukyanov Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -258,7 +258,9 @@ int init_pair(short pair, short f, short b)
 		bool changed = FALSE;
 		for (x = 0; x <= curscr->_maxx; x++) {
 		    if ((ptr->text[x] & A_COLOR) == z) {
-			ptr->text[x] &= ~A_COLOR;
+			/* Set the old cell to zero to ensure it will be
+			   updated on the next doupdate() */
+			ptr->text[x] = 0;
 			CHANGED_CELL(ptr,x);
 			changed = TRUE;
 		    }

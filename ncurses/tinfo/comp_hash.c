@@ -49,7 +49,7 @@
 #define DEBUG(level, params) /*nothing*/
 #endif
 
-MODULE_ID("$Id: comp_hash.c,v 1.19 1999/02/22 22:49:43 tom Exp $")
+MODULE_ID("$Id: comp_hash.c,v 1.20 1999/03/14 12:23:26 tom Exp $")
 
 static  int hash_function(const char *);
 
@@ -63,6 +63,10 @@ static  int hash_function(const char *);
  */
 
 #ifdef MAIN_PROGRAM
+
+#undef USE_RCS_IDS
+#include <tinfo/doalloc.c>
+
 static void _nc_make_hash_table(struct name_table_entry *table,
 		     struct name_table_entry **hash_table)
 {
