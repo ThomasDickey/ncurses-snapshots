@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2001/01/28 02:42:04 $
+#	$Date: 2001/01/28 02:39:03 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2843,7 +2843,7 @@ kterm|kterm kanji terminal emulator (X window system),
 	acsc=++\,\,--..00II``aaffgghhjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
 	csr=\E[%i%p1%d;%p2%dr, dsl=\E[?H, enacs=, fsl=\E[?F, 
 	kmous=\E[M, rc=\E8, rmacs=\E(B, sc=\E7, smacs=\E(0, 
-	tsl=\E[?E\E[?%i%dT, use=xterm-r6, use=ecma+color, 
+	tsl=\E[?E\E[?%i%dT, use=xterm, use=ecma+color, 
 kterm-color|kterm-co|kterm with ANSI colors, 
 	ncv@, use=kterm, use=ecma+color, 
 # See the note on ICH/ICH1 VERSUS RMIR/SMIR near the end of file

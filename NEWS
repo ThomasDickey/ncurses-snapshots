@@ -1,10 +1,24 @@
--- $Id: NEWS,v 1.614 2001/01/28 02:35:24 tom Exp $
+-- $Id: NEWS,v 1.615 2001/02/04 00:17:11 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010203
+	+ broaden patterns used to match OS/2 EMX in configure script to cover
+	  variant used in newer config.guess/config.sub
+	+ remove changequote() calls from configure script, since this feature
+	  is broken in the autoconf 2.49c alpha, maintainers decline to fix.
+	+ remove macro callPutChar() from tty_update.c, since this is no longer
+	  needed (reported by Philippe Blain).
+	+ add a null-pointer check in tic.c to handle the case when the input
+	  file is really empty.  Modify the next_char() function in comp_scan.c
+	  to allow arbitrarily long lines, and incidentally supply a newline to
+	  files that do not end in a newline.  These changes improve tic's
+	  recovery from attempts to read binary files, e.g., its output from
+	  the terminfo database (reported by Bernhard Rosenkraenzer).
 
 20010127
 	+ revert change to c++/demo.cc from 20001209, which changed definition
