@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.651 2001/10/20 22:39:19 tom Exp $
+-- $Id: NEWS,v 1.652 2001/10/28 01:09:05 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20011027
+	+ modify configure script to allow building with termcap only, or with
+	  fallbacks only.  In this case, we do not build tic and toe.
+	+ add configure --with-termpath option, to override default TERMPATH
+	  value of /etc/termcap:/usr/share/misc/termcap.
+	+ cosmetic change to tack: make menu descriptions agree with menu
+	  titles.
 
 20011020
 	+ rewrote limit-checks in wscrl() and associated _nc_scroll_window(),

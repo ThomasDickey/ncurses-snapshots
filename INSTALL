@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.49 2001/08/25 23:30:37 tom Exp $
+-- $Id: INSTALL,v 1.50 2001/10/27 18:56:28 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -614,6 +614,10 @@ SUMMARY OF CONFIGURE OPTIONS:
 	curses library (libncurses) and the low-level terminfo library
 	(libtinfo).  This is done to accommodate applications that use only
 	the latter.  The terminfo library is about half the size of the total.
+
+    --with-termpath=XXX
+	Specify a search-list of termcap files which will be compiled into the
+	ncurses library (default:  /etc/termcap:/usr/share/misc/termcap)
 
     --without-ada
 	Suppress the configure script's check for Ada95, do not build the

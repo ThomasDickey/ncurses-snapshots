@@ -48,7 +48,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.66 2001/08/04 17:18:21 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.67 2001/10/27 20:19:19 tom Exp $")
 
 /****************************************************************************
  *
@@ -234,7 +234,7 @@ _nc_update_screensize(void)
 					    exit(EXIT_FAILURE);\
 					}
 
-#if USE_DATABASE
+#if USE_DATABASE || USE_TERMCAP
 static int
 grab_entry(const char *const tn, TERMTYPE * const tp)
 /* return 1 if entry found, 0 if not found, -1 if database not accessible */
@@ -248,6 +248,7 @@ grab_entry(const char *const tn, TERMTYPE * const tp)
     if (strchr(tn, '/'))
 	return 0;
 
+#if USE_DATABASE
     if ((status = _nc_read_entry(tn, filename, tp)) != 1) {
 
 #if !PURE_TERMINFO
@@ -261,6 +262,9 @@ grab_entry(const char *const tn, TERMTYPE * const tp)
 #endif /* PURE_TERMINFO */
 
     }
+#else
+    status = _nc_read_termcap_entry(tn, tp);
+#endif
 
     /*
      * If we have an entry, force all of the cancelled strings to null
@@ -319,7 +323,7 @@ setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
     if (term_ptr == 0) {
 	ret_error0(-1, "Not enough memory to create terminal structure.\n");
     }
-#if USE_DATABASE
+#if USE_DATABASE || USE_TERMCAP
     status = grab_entry(tname, &term_ptr->type);
 #else
     status = 0;
