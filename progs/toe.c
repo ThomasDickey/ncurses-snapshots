@@ -29,7 +29,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: toe.c,v 0.15 1997/02/15 18:54:47 tom Exp $")
+MODULE_ID("$Id: toe.c,v 0.16 1997/07/06 00:26:56 tom Exp $")
 
 const char *_nc_progname;
 
@@ -90,6 +90,7 @@ int main (int argc, char *argv[])
     {
 	if (freopen(argv[optind], "r", stdin) == NULL)
 	{
+	    (void) fflush(stdout);
 	    fprintf(stderr, "%s: can't open %s\n", _nc_progname, argv[optind]);
 	    ExitProgram(EXIT_FAILURE);
 	}
@@ -210,6 +211,7 @@ static int typelist(int eargc, char *eargv[],
 
 	if ((termdir = opendir(eargv[i])) == (DIR *)NULL)
 	{
+	    (void) fflush(stdout);
 	    (void) fprintf(stderr,
 			   "%s: can't open terminfo directory %s\n",
 			   _nc_progname, eargv[i]);
@@ -253,6 +255,7 @@ static int typelist(int eargc, char *eargv[],
 		status = _nc_read_file_entry(name_2, &lterm);
 		if (status <= 0)
 		{
+		    (void) fflush(stdout);
 		    (void) fprintf(stderr,
 				   "toe: couldn't open terminfo file %s.\n",
 				   name_2);

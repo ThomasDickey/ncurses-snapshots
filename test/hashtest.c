@@ -3,7 +3,7 @@
  *
  * Generate timing statistics for vertical-motion optimization.
  *
- * $Id: hashtest.c,v 1.9 1997/05/31 21:26:10 tom Exp $
+ * $Id: hashtest.c,v 1.10 1997/07/05 16:49:22 tom Exp $
  */
 
 #define NCURSES_TRACE
@@ -25,13 +25,25 @@
 #define LO_CHAR ' '
 #define HI_CHAR '~'
 
-static void finish(int sig) GCC_NORETURN;
-
 static bool continuous = FALSE;
 static bool reverse_loops = FALSE;
 static bool extend_corner = FALSE;
 static int foot_lines = 0;
 static int head_lines = 0;
+
+static void cleanup(void)
+{
+	move(LINES-1,0);
+	clrtoeol();
+	refresh();
+	endwin();
+}
+
+static RETSIGTYPE finish(int sig GCC_UNUSED)
+{
+	cleanup();
+	exit(EXIT_FAILURE);
+}
 
 static void genlines(int base)
 {
@@ -181,16 +193,7 @@ int main(int argc, char *argv[])
 			run_test(TRUE);
 	}
 
-	finish(0);               /* we're done */
+	cleanup();               /* we're done */
+	return(EXIT_SUCCESS);
 }
-
-static RETSIGTYPE finish(int sig)
-{
-	move(LINES-1,0);
-	clrtoeol();
-	refresh();
-	endwin();
-	exit(sig != 0 ? EXIT_FAILURE : EXIT_SUCCESS);
-}
-
 /* hashtest.c ends here */

@@ -92,7 +92,7 @@
 /******************************************************************************/
 
 /*
- * $Id: xmas.c,v 1.9 1997/05/24 22:00:57 tom Exp $
+ * $Id: xmas.c,v 1.10 1997/07/05 16:49:22 tom Exp $
  */
 #include <test.priv.h>
 
@@ -134,7 +134,7 @@ static RETSIGTYPE done(int sig) GCC_NORETURN ;
 static void
 set_color(WINDOW *win, chtype color)
 {
-	if (has_colors) {
+	if (has_colors()) {
 		init_pair(1, color, my_bg);
 		wattroff(win, A_COLOR);
 		wattron(win, COLOR_PAIR(1));
@@ -144,7 +144,7 @@ set_color(WINDOW *win, chtype color)
 static void
 unset_color(WINDOW *win)
 {
-	if (has_colors)
+	if (has_colors())
 		wattrset(win, COLOR_PAIR(0));
 }
 
@@ -174,7 +174,7 @@ int loopy;
 	signal(SIGHUP,done);
 	signal(SIGQUIT,done);
 #endif
-	if (has_colors) {
+	if (has_colors()) {
 		start_color();
 #ifdef NCURSES_VERSION
 		if (use_default_colors() == OK)

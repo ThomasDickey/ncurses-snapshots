@@ -60,6 +60,7 @@ extern int errno;
 #define MAX_REGULAR_CHARACTER (0xff)
 
 #define SET_ERROR(code) (errno=(code))
+#define GET_ERROR() (errno)
 #define RETURN(code) return( SET_ERROR(code) )
 
 /* The few common values in the status fields for menus and forms */

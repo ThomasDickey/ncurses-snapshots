@@ -27,7 +27,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: tries.c,v 1.1 1997/05/29 10:56:36 tom Exp $")
+MODULE_ID("$Id: tries.c,v 1.2 1997/07/05 16:49:22 tom Exp $")
 
 #define SET_TRY(dst,src) if ((dst->ch = *src++) == 128) dst->ch = '\0'
 
@@ -35,7 +35,7 @@ void _nc_add_to_try(struct tries **tree, char *str, unsigned short code)
 {
 	static bool     out_of_memory = FALSE;
 	struct tries    *ptr, *savedptr;
-	unsigned char	*txt = str;
+	unsigned char	*txt = (unsigned char *)str;
 
 	if (txt == 0 || out_of_memory || code == 0)
 		return;

@@ -65,7 +65,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.22 1997/05/25 17:52:55 juergen Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.23 1997/07/05 16:49:22 tom Exp $")
 
 /*
 Some options that may effect compatibility in behavior to SVr4 forms,
@@ -3651,10 +3651,10 @@ int form_driver(FORM * form, int  c)
 	  NULL,                    /* Field Validation is generic         */
 	  NULL                     /* Choice Request is generic           */
 	};
-      int nMethods = (sizeof(Generic_Methods)/sizeof(Generic_Methods[0]));
-      int method   = ((BI->keycode & ID_Mask) >> ID_Shft) & 0xffff;
+      size_t nMethods = (sizeof(Generic_Methods)/sizeof(Generic_Methods[0]));
+      size_t method   = ((BI->keycode & ID_Mask) >> ID_Shft) & 0xffff;
       
-      if ( (method < 0) || (method >= nMethods) || !(BI->cmd) )
+      if ( (method >= nMethods) || !(BI->cmd) )
 	res = E_SYSTEM_ERROR;
       else
 	{

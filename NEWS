@@ -1,14 +1,33 @@
--- $Id: NEWS,v 1.218 1997/06/29 01:58:10 tom Exp $
+-- $Id: NEWS,v 1.220 1997/07/06 00:25:59 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+970705
+	+ add limit checks to _nc_read_file_entry() to guard against overflow
+	  of buffer when reading incompatible terminfo format, e.g, from OSF/1. 
+	+ correct some loop-variable errors in xmc support in lib_doupdate.c
+	+ modify ncurses 'b' test to add gaps, specified by user, to allow
+	  investigation of interaction with xmc (magic cookie) code.
+	+ correct typo in 970524 mods to xmas.c, had omitted empty parameter
+	  list from has_colors(), which gcc ignores, but SVr4 does not
+	  (reported by Larry Virden).
+	+ correct rmso capability in wy50-mc description.
+	+ add configure option "--enable-hard-tabs", renamed TABS_OK ifdef to
+	  USE_HARD_TABS.
+	> patch by Juergen Pfeifer:
+	+ Add bindings for keyok() and define_key() to the Ada95 packages.
+	+ Improve man pages menu_post.3x and menu_format.3x
+	+ Fix the HTML pages in the Ada95/html directory to reflect the above
+	  changes.
 
 970628
 	+ modify change from 970101 to ClrUpdate() in lib_doupdate.c so that
 	  pending changes to both curscr and newscr are flushed properly.
 	  This fixes a case where the first scrolling operation in nvi would
 	  cause the screen to be cleared unnecessarily and repainted before
-	  doing the indexing (i.e., by repeatedly pressing 'j').
+	  doing the indexing, i.e., by repeatedly pressing 'j' (reported by
+	  Juergen Pfeifer).
 	+ correct error in trans_string() which added embedded newlines in a
 	  terminfo description to the stored strings.
 	+ remove spurious newlines from sgr in wyse50 (and several other)

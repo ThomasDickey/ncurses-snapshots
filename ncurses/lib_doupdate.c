@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.65 1997/06/28 21:53:45 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.66 1997/07/05 22:04:04 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -509,8 +509,10 @@ struct tms before, after;
 		    chtype turnon = AttrOf(newscr->_line[i].text[j]) & ~rattr;
 
 		    /* is an attribute turned on here? */
-		    if (turnon == 0)
+		    if (turnon == 0) {
+			rattr = AttrOf(newscr->_line[i].text[j]);
 			continue;
+		    }
 
 		    T(("At (%d, %d): from %s...", i, j, _traceattr(rattr)));
 		    T(("...to %s",_traceattr(turnon)));
@@ -537,11 +539,13 @@ struct tms before, after;
 		    if (!failed)
 		    {
 			bool	end_onscreen = FALSE;
-			int	m, n = -1;
+			int	m, n = j;
 
 			/* find end of span, if it's onscreen */
 			for (m = i; m < screen_lines; m++)
-			    for (n = j; n < screen_columns; n++)
+			{
+			    for ( ; n < screen_columns; n++)
+			    {
 				if (AttrOf(newscr->_line[m].text[n]) == rattr)
 				{
 				    end_onscreen = TRUE;
@@ -549,6 +553,9 @@ struct tms before, after;
 				       _traceattr(turnon),m,n));
 				    goto foundit;
 				}
+			    }
+			    n = 0;
+			}
 			T(("Range attributed with %s ends offscreen",
 			    _traceattr(turnon)));
 		    foundit:;
@@ -566,7 +573,7 @@ struct tms before, after;
 			    while (n >= 0
 				   && TextOf(lastline[n]) == ' '
 				   && SAFE(AttrOf(lastline[n])))
-				lastline[n--] &=~ turnon;
+				lastline[n--] &= ~turnon;
 
 			    /* check that there's enough room at end of span */
 			    for (k = 1; k <= magic_cookie_glitch; k++)
@@ -579,18 +586,22 @@ struct tms before, after;
 
 		    if (failed)
 		    {
-			int p, q;
+			int p, q = j;
 
 			T(("Clearing %s beginning at (%d, %d)",
 						_traceattr(turnon), i, j));
 
 			/* turn off new attributes over span */
 			for (p = i; p < screen_lines; p++)
-			    for (q = j; q < screen_columns; q++)
+			{
+			    for ( ; q < screen_columns; q++)
+			    {
 				if (AttrOf(newscr->_line[p].text[q]) == rattr)
 				    goto foundend;
-				else
-				    newscr->_line[p].text[q] &=~ turnon;
+				newscr->_line[p].text[q] &= ~turnon;
+			    }
+			    q = 0;
+			}
 		    foundend:;
 		    }
 		    else

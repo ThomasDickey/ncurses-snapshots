@@ -1,4 +1,4 @@
--- $Id: TO-DO,v 1.33 1997/06/22 00:29:46 tom Exp $
+-- $Id: TO-DO,v 1.34 1997/07/05 22:59:38 tom Exp $
 
 SHORT-TERM TO-DO ITEMS:
 
@@ -14,8 +14,9 @@ Known Problems:
   develop a good set of regression tests to cover lib_doupdate.c and
   lib_mvcur.c.
 
-* Ncurses cursor movement does not make effective use of hard tabs, as SVr4
-  does.
+* Magic cookie support does not work, since the logic does not take into account
+  refresh.  Also, the initial optimize does not adjust the current location
+  when a cookie is emitted.
 
 * Scrolling optimization has holes: for example, it forces repaints of the
   screen between calls to refresh().

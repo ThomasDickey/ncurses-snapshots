@@ -82,7 +82,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.15 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.16 1997/07/05 18:24:01 tom Exp $")
 
 #define MAX_PUSHED	16	/* max # args we can push onto the stack */
 #define MAX_ENTRY	2048	/* maximum chars in a translated capability */
@@ -152,7 +152,7 @@ static void pop(void)
     param++;
 }
 
-static int cvtchar(register char *sp)
+static int cvtchar(register const char *sp)
 /* convert a character to a terminfo push */
 {
     unsigned char c = 0;
@@ -252,12 +252,12 @@ static void getparm(int parm, int n)
 
 char *_nc_captoinfo(
 /* convert a termcap string to terminfo format */
-register char *const cap,	/* relevant terminfo capability index */
-register char *s,		/* string value of the capability */
+register const char *cap,	/* relevant terminfo capability index */
+register const char *s,		/* string value of the capability */
 int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 {
     static char line[MAX_ENTRY];
-    char *capstart;
+    const char *capstart;
 
     stackptr = 0;
     onstack = 0;
@@ -269,7 +269,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
     dp = line;
 
     /* skip the initial padding (if we haven't been told not to) */
-    capstart = (char *)NULL;
+    capstart = 0;
     if (s == 0)
 	s = "";
     if (parametrized >= 0 && isdigit(*s))
@@ -541,12 +541,14 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 
 char *_nc_infotocap(
 /* convert a terminfo string to termcap format */
-register char *const cap GCC_UNUSED, /* relevant termcap capability index */
-register char *str,		/* string value of the capability */
+register const char *cap GCC_UNUSED, /* relevant termcap capability index */
+register const char *str,	/* string value of the capability */
 int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 {
     int	seenone = 0, seentwo = 0, saw_m = 0, saw_n = 0;
-    char *padding, ch1 = 0, ch2 = 0;
+    const char *padding;
+    const char *trimmed = 0;
+    char ch1 = 0, ch2 = 0;
     char *bufptr = init_string();
     char temp[256];
 
@@ -558,14 +560,14 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 	while (isdigit(*padding) || *padding == '.' || *padding == '*')
 	    padding--;
 	if (*padding == '<' && *--padding == '$')
-	    *padding = '\0';
+	    trimmed = padding;
 	padding += 2;
 
 	while (isdigit(*padding) || *padding == '.' || *padding == '*')
 	    bufptr = save_char(bufptr, *padding++);
     }
 
-    for (; *str; str++)
+    for (; *str && str != trimmed; str++)
     {
 	int	c1, c2;
 	char	*cp;
@@ -723,7 +725,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 		    }
 		}
 		else if (*str >= '3')
-		    return((char *)NULL);
+		    return(0);
 		break;
 
 	    case 'i':
@@ -732,7 +734,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 		break;
 
 	    default:
-		return((char *)NULL);
+		return(0);
 
 	    } /* endswitch (*str) */
 	} /* endelse (*str == '%') */
@@ -767,7 +769,7 @@ int main(int argc, char *argv[])
 	char	buf[BUFSIZ];
 
 	++curr_line;
-	if (fgets(buf, sizeof(buf), stdin) == (char *)NULL)
+	if (fgets(buf, sizeof(buf), stdin) == 0)
 	    break;
 	buf[strlen(buf) - 1] = '\0';
 	_nc_set_source(buf);

@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_num.c,v 1.9 1997/04/19 17:26:38 juergen Exp $")
+MODULE_ID("$Id: fty_num.c,v 1.10 1997/07/05 16:49:22 tom Exp $")
 
 #if HAVE_LOCALE_H
 #include <locale.h>
@@ -169,7 +169,7 @@ static bool Check_Numeric_Character(int c, const void * argp)
 	  c == '+'    || 
 	  c == '-'    || 
 	  c == (
-#ifdef HAVE_LOCALE_H
+#if HAVE_LOCALE_H
 		(L && L->decimal_point) ? *(L->decimal_point) :
 #endif
 		'.')

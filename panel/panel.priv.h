@@ -1,4 +1,4 @@
-/* $Id: panel.priv.h,v 1.4 1997/04/05 23:38:02 tom Exp $ */
+/* $Id: panel.priv.h,v 1.5 1997/07/05 16:49:22 tom Exp $ */
 
 #ifndef _PANEL_PRIV_H
 #define _PANEL_PRIV_H
@@ -8,6 +8,7 @@
 #endif
 
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 
 #if HAVE_LIBDMALLOC

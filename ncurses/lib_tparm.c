@@ -29,7 +29,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.18 1997/04/26 18:37:50 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.19 1997/07/05 16:49:22 tom Exp $")
 
 /*
  *	char *
@@ -530,4 +530,4 @@ char *result = 0;
 	va_end(ap);
 	return result;
 }
-#endif /* __UNUSED */
+#endif /* __UNUSED__ */

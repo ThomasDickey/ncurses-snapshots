@@ -116,10 +116,10 @@
  *	int		_cup_cost;	// cost of (cursor_address)
  *	int		_home_cost;	// cost of (cursor_home)
  *	int		_ll_cost;	// cost of (cursor_to_ll)
- *#ifdef TABS_OK
+ *#if USE_HARD_TABS
  *	int		_ht_cost;	// cost of (tab)
- *	int		_cbt_cost;	// cost of (backtab)
- *#endif TABS_OK
+ *	int		_cbt_cost;	// cost of (back_tab)
+ *#endif USE_HARD_TABS
  *	int		_cub1_cost;	// cost of (cursor_left)
  *	int		_cuf1_cost;	// cost of (cursor_right)
  *	int		_cud1_cost;	// cost of (cursor_down)
@@ -133,7 +133,7 @@
  *	int		_ech_cost;	// cost of (erase_chars)
  *	int		_rep_cost;	// cost of (repeat_char)
  *
- * The TABS_OK switch controls whether it is reliable to use tab/backtabs
+ * The USE_HARD_TABS switch controls whether it is reliable to use tab/backtabs
  * for local motions.  On many systems, it's not, due to uncertainties about
  * tab delays and whether or not tabs will be expanded in raw mode.  If you
  * have parm_right_cursor, tab motions don't win you a lot anyhow.
@@ -143,7 +143,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.38 1997/05/13 15:44:13 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.39 1997/07/05 19:06:19 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -296,10 +296,10 @@ void _nc_mvcur_init(void)
     SP->_cr_cost   = CostOf(carriage_return, 0);
     SP->_home_cost = CostOf(cursor_home, 0);
     SP->_ll_cost   = CostOf(cursor_to_ll, 0);
-#ifdef TABS_OK
+#if USE_HARD_TABS
     SP->_ht_cost   = CostOf(tab, 0);
     SP->_cbt_cost  = CostOf(back_tab, 0);
-#endif /* TABS_OK */
+#endif /* USE_HARD_TABS */
     SP->_cub1_cost = CostOf(cursor_left, 0);
     SP->_cuf1_cost = CostOf(cursor_right, 0);
     SP->_cud1_cost = CostOf(cursor_down, 0);
@@ -515,7 +515,7 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 
 		try[0] = '\0';
 
-#ifdef TABS_OK
+#if USE_HARD_TABS
 		/* use hard tabs, if we have them, to do as much as possible */
 		if (init_tabs > 0 && tab)
 		{
@@ -531,7 +531,7 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 		    n = to_x - fr;
 		    from_x = fr;
 		}
-#endif /* TABS_OK */
+#endif /* USE_HARD_TABS */
 
 #if defined(REAL_ATTR) && defined(WANT_CHAR)
 		/*
@@ -596,7 +596,7 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 
 		try[0] = '\0';
 
-#ifdef TABS_OK
+#if USE_HARD_TABS
 		if (init_tabs > 0 && back_tab)
 		{
 		    int	nxt, fr;
@@ -610,7 +610,7 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 
 		    n = to_x - fr;
 		}
-#endif /* TABS_OK */
+#endif /* USE_HARD_TABS */
 
 		lhcost = repeated_append(lhcost, SP->_cub1_cost, n, try, cursor_left);
 
@@ -1167,10 +1167,10 @@ int main(int argc, char *argv[])
 	    (void) printf("cup cost: %d\n", SP->_cup_cost);
 	    (void) printf("home cost: %d\n", SP->_home_cost);
 	    (void) printf("ll cost: %d\n", SP->_ll_cost);
-#ifdef TABS_OK
+#if USE_HARD_TABS
 	    (void) printf("ht cost: %d\n", SP->_ht_cost);
 	    (void) printf("cbt cost: %d\n", SP->_cbt_cost);
-#endif /* TABS_OK */
+#endif /* USE_HARD_TABS */
 	    (void) printf("cub1 cost: %d\n", SP->_cub1_cost);
 	    (void) printf("cuf1 cost: %d\n", SP->_cuf1_cost);
 	    (void) printf("cud1 cost: %d\n", SP->_cud1_cost);

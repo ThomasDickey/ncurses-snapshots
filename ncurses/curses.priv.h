@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.65 1997/06/28 22:13:23 tom Exp $
+ * $Id: curses.priv.h,v 1.66 1997/07/05 21:06:57 tom Exp $
  *
  *	curses.priv.h
  *
@@ -93,13 +93,12 @@ extern int errno;
 #endif
 
 /*
- * ht/cbt expansion flakes out randomly under Linux 1.1.47, but only when
- * we're throwing control codes at the screen at high volume.  To see this,
- * re-enable TABS_OK and run worm for a while.  Other systems probably don't
- * want to define this either due to uncertainties about tab delays and
- * expansion in raw mode.
+ * Note:  ht/cbt expansion flakes out randomly under Linux 1.1.47, but only
+ * when we're throwing control codes at the screen at high volume.  To see
+ * this, re-enable USE_HARD_TABS and run worm for a while.  Other systems
+ * probably don't want to define this either due to uncertainties about tab
+ * delays and expansion in raw mode.
  */
-#undef TABS_OK	/* OK to use tab/backtab for local motions? */
 
 /*
  * The internal types (e.g., struct screen) must precede <curses.h>, otherwise
@@ -204,10 +203,10 @@ struct screen {
 	int             _cup_cost;      /* cost of (cursor_address)         */
 	int             _home_cost;     /* cost of (cursor_home)            */
 	int             _ll_cost;       /* cost of (cursor_to_ll)           */
-#ifdef TABS_OK
+#if USE_HARD_TABS
 	int             _ht_cost;       /* cost of (tab)                    */
 	int             _cbt_cost;      /* cost of (backtab)                */
-#endif /* TABS_OK */
+#endif /* USE_HARD_TABS */
 	int             _cub1_cost;     /* cost of (cursor_left)            */
 	int             _cuf1_cost;     /* cost of (cursor_right)           */
 	int             _cud1_cost;     /* cost of (cursor_down)            */
@@ -360,7 +359,7 @@ extern long _nc_outchars;
 
 #define ALL_BUT_COLOR ((chtype)~(A_COLOR))
 #define IGNORE_COLOR_OFF FALSE
-
+#define NONBLANK_ATTR (A_BOLD|A_DIM|A_BLINK)
 
 /* Macro to put together character and attribute info and return it.
    If colors are in the attribute, they have precedence. */
@@ -405,8 +404,22 @@ extern long _nc_outchars;
 			? (SP->_ich1_cost * count) \
 			: INFINITY))
 
+#if USE_XMC_SUPPORT
+#define UpdateAttrs(c)	if (SP->_current_attr != AttrOf(c)) { \
+				attr_t chg = SP->_current_attr; \
+				vidattr(AttrOf(c)); \
+				if (magic_cookie_glitch > 0 \
+				 && ((chg ^ AttrOf(c)) & NONBLANK_ATTR)) { \
+					SP->_curscol += magic_cookie_glitch; \
+					T(("%s @%d: bumped to %d,%d after cookie", \
+						__FILE__, __LINE__, \
+						SP->_cursrow, SP->_curscol)); \
+				} \
+			}
+#else
 #define UpdateAttrs(c)	if (SP->_current_attr != AttrOf(c)) \
 				vidattr(AttrOf(c));
+#endif
 
 /*
  * Check whether the given character can be output by clearing commands.  This
@@ -414,7 +427,6 @@ extern long _nc_outchars;
  * as A_REVERSE.  All attribute flags which don't affect appearance of a space
  * or can be output by clearing (A_COLOR in case of bce-terminal) are excluded.
  */
-#define NONBLANK_ATTR (A_BOLD|A_DIM|A_BLINK)
 #define can_clear_with(ch) \
 	((ch & ~(NONBLANK_ATTR|(back_color_erase ? A_COLOR:0))) == BLANK)
 

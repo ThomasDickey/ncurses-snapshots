@@ -184,8 +184,8 @@ extern void _nc_warning(const char *const,...) GCC_PRINTFLIKE(1,2);
 extern bool _nc_suppress_warnings;
 
 /* captoinfo.c: capability conversion */
-extern char *_nc_captoinfo(char *const, char *, int const);
-extern char *_nc_infotocap(char *const, char *, int const);
+extern char *_nc_captoinfo(const char *, const char *, int const);
+extern char *_nc_infotocap(const char *, const char *, int const);
 
 /* comp_main.c: compiler main */
 extern const char *_nc_progname;
