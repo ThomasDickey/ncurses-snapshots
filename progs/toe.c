@@ -43,7 +43,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: toe.c,v 1.23 2000/08/19 18:25:19 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.24 2000/09/09 19:52:35 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -87,10 +87,7 @@ main(int argc, char *argv[])
     int i, c;
     int code;
 
-    if ((_nc_progname = strrchr(argv[0], '/')) == 0)
-	_nc_progname = argv[0];
-    else
-	_nc_progname++;
+    _nc_progname = _nc_basename(argv[0]);
 
     while ((c = getopt(argc, argv, "huv:UV")) != EOF)
 	switch (c) {
@@ -190,7 +187,7 @@ main(int argc, char *argv[])
 		if ((eargv[j] = get_directory(personal)) != 0)
 		    j++;
 	    }
-	    if ((eargv[j] = get_directory(TERMINFO)) != 0)
+	    if ((eargv[j] = get_directory(strcpy(personal, TERMINFO))) != 0)
 		j++;
 	}
 	eargv[j] = 0;

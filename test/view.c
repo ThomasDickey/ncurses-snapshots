@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.30 2000/08/26 22:09:49 tom Exp $
+ * $Id: view.c,v 1.31 2000/09/02 18:14:52 tom Exp $
  */
 
 #include <test.priv.h>
@@ -53,7 +53,7 @@
 static RETSIGTYPE finish(int sig) GCC_NORETURN;
 static void show_all(void);
 
-#if defined(SIGWINCH) && defined(TIOCGWINSZ) && defined(HAVE_RESIZETERM)
+#if defined(SIGWINCH) && defined(TIOCGWINSZ) && HAVE_RESIZETERM
 #define CAN_RESIZE 1
 #else
 #define CAN_RESIZE 0

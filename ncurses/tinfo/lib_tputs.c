@@ -45,7 +45,7 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.48 2000/07/22 22:33:23 Bruno.Haible Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.49 2000/09/02 18:19:45 tom Exp $")
 
 char PC = 0;			/* used by termcap library */
 speed_t ospeed = 0;		/* used by termcap library */
@@ -102,7 +102,7 @@ _nc_outch(int ch)
     return OK;
 }
 
-#ifdef USE_WIDEC_SUPPORT
+#if USE_WIDEC_SUPPORT
 /*
  * Reference: The Unicode Standard 2.0
  *
@@ -174,7 +174,7 @@ tputs(const char *string, int affcnt, int (*outc) (int))
     bool always_delay;
     bool normal_delay;
     int number;
-#ifdef BSD_TPUTS
+#if BSD_TPUTS
     int trailpad;
 #endif /* BSD_TPUTS */
 
@@ -207,13 +207,13 @@ tputs(const char *string, int affcnt, int (*outc) (int))
 	normal_delay =
 	    !xon_xoff
 	    && padding_baud_rate
-#ifdef NCURSES_NO_PADDING
+#if NCURSES_NO_PADDING
 	    && (SP == 0 || !(SP->_no_padding))
 #endif
 	    && (_nc_baudrate(ospeed) >= padding_baud_rate);
     }
 
-#ifdef BSD_TPUTS
+#if BSD_TPUTS
     /*
      * This ugly kluge deals with the fact that some ancient BSD programs
      * (like nethack) actually do the likes of tputs("50") to get delays.
@@ -304,7 +304,7 @@ tputs(const char *string, int affcnt, int (*outc) (int))
 	string++;
     }
 
-#ifdef BSD_TPUTS
+#if BSD_TPUTS
     /*
      * Emit any BSD-style prefix padding that we've accumulated now.
      */

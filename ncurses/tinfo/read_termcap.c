@@ -55,9 +55,9 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.47 2000/04/15 16:53:19 Todd.C.Miller Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.48 2000/09/02 18:16:42 tom Exp $")
 
-#ifndef PURE_TERMINFO
+#if !PURE_TERMINFO
 
 #ifdef __EMX__
 #define is_pathname(s) ((((s) != 0) && ((s)[0] == '/')) \

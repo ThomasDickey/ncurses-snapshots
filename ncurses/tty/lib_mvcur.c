@@ -152,7 +152,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.67 2000/06/24 21:13:51 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.68 2000/09/02 18:19:45 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -251,7 +251,7 @@ _nc_msec_cost(const char *const cap, int affcnt)
 			number += (*cp - '0') / 10.0;
 		}
 
-#ifdef NCURSES_NO_PADDING
+#if NCURSES_NO_PADDING
 		if (!(SP->_no_padding))
 #endif
 		    cum_cost += number * 10;
@@ -597,7 +597,7 @@ relative_move(char *result, int from_y, int from_x, int to_y, int to_x, bool ovw
 #endif /* USE_HARD_TABS */
 
 #if defined(REAL_ATTR) && defined(WANT_CHAR)
-#ifdef BSD_TPUTS
+#if BSD_TPUTS
 		/*
 		 * If we're allowing BSD-style padding in tputs, don't generate
 		 * a string with a leading digit.  Otherwise, that will be
