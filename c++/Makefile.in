@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.47 1998/05/31 00:07:43 tom Exp $
+# $Id: Makefile.in,v 1.48 1999/07/31 09:47:11 juergen Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -101,6 +101,7 @@ LIB_OBJS = \
 	$(MODEL)/cursesf.o \
 	$(MODEL)/cursesm.o \
 	$(MODEL)/cursesw.o \
+	$(MODEL)/cursespad.o \
 	$(MODEL)/cursesp.o \
 	$(MODEL)/cursslk.o \
 	$(MODEL)/cursesapp.o \

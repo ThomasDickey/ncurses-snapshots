@@ -44,7 +44,7 @@
 #include <termsort.c>
 #endif
 
-MODULE_ID("$Id: tput.c,v 1.13 1999/01/24 02:56:39 Jeffrey.C.Honig Exp $")
+MODULE_ID("$Id: tput.c,v 1.14 1999/07/31 21:18:29 Goran.Uddeborg Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -283,7 +283,7 @@ int errors = 0;
 	if (term == NULL || *term == '\0')
 		quit(2, "No value for $TERM and no -T specified");
 
-	if (setupterm(term, STDOUT_FILENO, &errret) != OK)
+	if (setupterm(term, STDOUT_FILENO, &errret) != OK && errret <= 0) 
 		quit(3, "unknown terminal \"%s\"", term);
 
 	if (cmdline)

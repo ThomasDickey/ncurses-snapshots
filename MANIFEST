@@ -285,6 +285,7 @@
 ./c++/cursesmain.cc
 ./c++/cursesp.cc
 ./c++/cursesp.h
+./c++/cursespad.cc
 ./c++/cursesw.cc
 ./c++/cursesw.h
 ./c++/cursslk.cc
