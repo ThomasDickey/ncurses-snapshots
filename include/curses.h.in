@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey 1996-on                                        *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.140 2003/05/17 22:59:48 tom Exp $ */
+/* $Id: curses.h.in,v 1.141 2003/05/31 22:23:08 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -451,21 +451,11 @@ extern NCURSES_EXPORT(int) wgetnstr_events(WINDOW *,char *,int,_nc_eventlist *);
  * GCC (and some other compilers) define '__attribute__'; we're using this
  * macro to alert the compiler to flag inconsistencies in printf/scanf-like
  * function calls.  Just in case '__attribute__' isn't defined, make a dummy.
- * G++ doesn't accept it anyway.
+ * Old versions of G++ do not accept it anyway, at least not consistently with
+ * GCC.
  */
-#if !defined(__GNUC__) && !defined(__attribute__)
+#if !(defined(__GNUC__) || defined(__GNUG__) || defined(__attribute__))
 #define __attribute__(p) /* nothing */
-#endif
-
-/*
- * For g++, turn off our macros that use __attribute__ (g++ recognizes some
- * of them, but not at the same version levels as gcc).
- */
-#ifdef __cplusplus
-#undef GCC_NORETURN
-#undef GCC_PRINTF
-#undef GCC_SCANF
-#undef GCC_UNUSED
 #endif
 
 /*

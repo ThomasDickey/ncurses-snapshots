@@ -1,4 +1,4 @@
-/* $Id: ncurses_dll.h,v 1.2 2001/12/09 01:36:34 tom Exp $ */
+/* $Id: ncurses_dll.h,v 1.3 2003/05/31 18:03:54 tom Exp $ */
 
 #ifndef NCURSES_DLL_H_incl
 #define NCURSES_DLL_H_incl 1
@@ -14,8 +14,8 @@
 #  endif
 #  undef NCURSES_IMPEXP
 #  undef NCURSES_API
-#  undef NCURSES_EXPORT(type)
-#  undef NCURSES_EXPORT_VAR(type)
+#  undef NCURSES_EXPORT
+#  undef NCURSES_EXPORT_VAR
 #  if defined(NCURSES_DLL)
 /* building a DLL */
 #    define NCURSES_IMPEXP __declspec(dllexport)

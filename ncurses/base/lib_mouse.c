@@ -76,7 +76,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.66 2003/02/01 22:38:36 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.67 2003/05/31 22:18:18 tom Exp $")
 
 #include <term.h>
 #include <tic.h>
@@ -137,7 +137,11 @@ static void _nc_mouse_wrap(SCREEN *);
  */
 static MEVENT events[EV_MAX];	/* hold the last mouse event seen */
 static MEVENT *eventp = events;	/* next free slot in event queue */
+
+#undef  NEXT
 #define NEXT(ep)	((ep == events + EV_MAX - 1) ? events : ep + 1)
+
+#undef  PREV
 #define PREV(ep)	((ep == events) ? events + EV_MAX - 1 : ep - 1)
 
 #ifdef TRACE
