@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.31 1997/09/07 02:38:22 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.32 1997/09/09 17:37:14 Alexander.V.Lukyanov Exp $")
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail
@@ -128,7 +128,7 @@ again:
 	} else
 #endif
 	{
-		unsigned char c2;
+		unsigned char c2=0;
 		n = read(SP->_ifd, &c2, 1);
 		ch = c2;
 	}
@@ -218,15 +218,6 @@ int	ch;
 		returnCode(fifo_pull());
 	}
 
-	/* this should be eliminated */
-	if (!has_ic()
-	 && !win->_scroll
-	 &&  (SP->_echo)
-	 &&  (win->_flags & _FULLWIN)
-	 &&  win->_curx == win->_maxx
-	 &&  win->_cury == win->_maxy)
-		returnCode(ERR);
-
 	if (wgetch_should_refresh(win))
 		wrefresh(win);
 
@@ -287,6 +278,18 @@ int	ch;
 
 	if (ch == ERR)
 	{
+	    if(SP->_sig_winch)
+	    {
+		_nc_get_screensize();
+		resizeterm(LINES, COLS);
+		/* resizeterm can push KEY_RESIZE */
+		if(cooked_key_in_fifo())
+		{
+		    ch = fifo_pull();
+		    T(("wgetch returning (pre-cooked): %#x = %s", ch, _trace_key(ch));)
+		    returnCode(ch);
+		}
+	    }
 	    T(("wgetch returning ERR"));
 	    returnCode(ERR);
 	}
@@ -352,7 +355,7 @@ int timeleft = ESCDELAY;
 		    }
 		}
 		ch = fifo_peek();
-		if (ch > KEY_MIN)
+		if (ch >= KEY_MIN)
 		{
 		    peek = head;
 		    /* assume the key is the last in fifo */

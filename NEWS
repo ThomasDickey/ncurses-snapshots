@@ -1,10 +1,98 @@
--- $Id: NEWS,v 1.245 1997/09/07 02:37:35 tom Exp $
+-- $Id: NEWS,v 1.250 1997/09/14 01:17:04 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970913
+	+ modify rain.c to use color.
+	+ correct scroll_csr_backward() to match scroll_csr_forward().
+	+ minor adjustment to llib-lncurses, to work with Solaris 2.5.1
+	+ minor fixes to sysdeps/unix/sysv/linux/configure to reflect renaming
+	  of configure cache variables in 970906.
+	+ correct logic involving changes to O_VISIBLE option in
+	  Synchronize_Options function in frm_driver.c (Tony Hoffmann
+	  <Tony.Hoffmann@hia.nrc.ca>)
+	+ add $(HOSTCC) symbol to ncurses Makefile.in, to simplify setup for
+	  cross compiling (suggested by Chris Johns).
+	+ modify ifdef in lib_setup.c to only include <sys/ioctl.h> if we can
+	  use it to support screen-size calculation (reported by Chris Johns).
+	+ #undef unctrl to avoid symbol conflict in port to RTEMS (reported by
+	  Chris Johns <cjohns@plessey.com.au>)
+	> patches by Juergen Pfeifer:
+	+ simplified, made minor corrections to Ada95 binding to form fieldtype.
+	+ The C++ binding has been enhanced:
+	  + Improve NCursesWindow class:  added additional methods to cover
+	    more ncurses functionality.  Make refresh() and noutrefresh()
+	    virtual members to allow different implementation in the
+	    NCursesPanel class.
+	  + CAUTION:  changed order of parameters in vline() and hline() of
+	    NCursesWindow class.
+	  + Make refresh() in NCursesPanel non-static, it is now a
+	    reimplementation of refresh() in the base class.  Added
+	    noutrefresh() to NCursesPanel.
+	  + Added NCursesForm and related classes to support libform
+	    functionality.
+	  + Moved most of configuration related stuff from cursesw.h to etip.h
+	  + Added NCursesApplication class to support easy configuration of
+	    menu and forms related attributes as well as ripped of title lines
+	    and Soft-Label-Keys for an application.
+	  + Support of Auto-Cleanup for a menu's fieldlist.
+	  + Change of return type for current_item() and operator[] for menus.
+	  + Enhanced demo.
+	+ Fixed a bug in form/fld_def.c:  take into account that copyarg and
+	  freearg for a fieldtype may be NULL, makearg must not be NULL
+	+ Fixed a bug in form/fld_type.c:  in set_fieldtype_arg() makearg must
+	  not be NULL, copyarg and freearg may be NULL.
+	+ Fixed a bug in form/frm_def.c:  Allow Disconnect_Fields() if it is
+	  already disconnected.
+	+ Enhance form/frm_driver.c:  Allow growth of dynamic fields also on
+	  navigation requests.
+	+ Fixed a bug in form/fty_enum.c:  wrong position of postincrement in
+	  case-insensitiva comparision routine.
+	+ Enhanced form/lib_adabind.c with function _nc_get_field() to get a
+	  forms field by index.
+	+ Enhanced menu/m_adabind.c with function _nc_get_item() to get a menus
+	  item by index.
+	+ Fixed in curses.h.in:  make chtype argument for pechochar() constant. 
+	  Mark wbkgdset() as implemented, remove wbkgdset macro, because it was
+	  broken (didn't handle colors correctly).
+	+ Enhanced lib_mouse.c: added _nc_has_mouse() function
+	+ Added _nc_has_mouse() prototype to curses.priv.h
+	+ Modified lib_bkgd.c:  hopefully correct implementation of wbkgdset();
+	  streamlined implementation of wbkgd()
+	+ Modified lib_mvwin.c:  Disable move of a pad.  Implement (costly)
+	  move of subwindows.  Fixed update behaviour of movements of regular
+	  windows. 
+	+ Fixed lib_pad.c:  make chtype argument of pechochar() const.
+	+ Fixed lib_window.c:  dupwin() is not(!) in every bit a really clone
+	  of the original.  Subwindows become regular windows by doing a
+	  dupwin().
+	+ Improved manpage form_fieldtype.3x
+	> patches by Alexander V. Lukyanov:
+	+ simplify the PutChar() handling of exit_am_mode, because we already
+	  know that auto_right_margin is true.
+	+ add a check in PutChar() for ability to insert to the case of
+	  shifting character to LR corner.
+	+ in terminal initialization by _nc_screen_resume(), make sure that
+	  terminal right margin mode is known.
+	+ move logic that invokes touchline(), or does the equivalent, into
+	  _nc_scroll_window().
+	+ modify scrolling logic use of insert/delete line capability, assuming
+	  that they affect the screen contents only within the current
+	  scrolling region.
+	+ modify rain.c to demonstrate SIGWINCH handler.
+	+ remove logic from getch() that would return an ERR if the application
+	  called getch() when the cursor was at the lower-right corner of the
+	  physical screen, and the terminal does not have insert-character
+	  ability.
+	+ change view.c so that it breaks out of getch() loop if a KEY_RESIZE
+	  is read, and modify logic in getch() so this fix will yield the
+	  desired behavior, i.e., the screen is repainted automatically when
+	  the terminal window is resized.
+
 970906
 	+ add configure option --enable-sigwinch
+	+ modify view.c to test KEY_RESIZE logic, with "-r" option.
 	+ modify testcurs.c to eliminate misleading display wrt cursor type
 	  by testing if the terminal supports cnorm, civis, cvvis.
 	+ several fixes for m68k/NeXT 4.0, to bring cur_term, _nc_curr_line and
@@ -21,7 +109,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 	  initialized.
 	+ make linked list of all SCREEN structures.
 	+ move curses.h include before definition of SCREEN to use types in
-	  that structure.  (Note:  this may not work with lint - must retest)
+	  that structure.
 	+ correction to ensure that wgetstr uses only a newline to force a
 	  scroll (970831).
 

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.23 1997/09/06 23:25:41 tom Exp $
+# $Id: Makefile.in,v 1.24 1997/09/09 00:14:40 juergen Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -52,7 +52,8 @@ ABI_VERSION	= @cf_cv_abi_version@
 
 LINK		= $(CXX)
 LDFLAGS		= -L../lib \
-	-lmenu@DFT_ARG_SUFFIX@ \
+	-lform@DFT_ARG_SUFFIX@  \
+	-lmenu@DFT_ARG_SUFFIX@  \
 	-lpanel@DFT_ARG_SUFFIX@ \
 	-lncurses@DFT_ARG_SUFFIX@ \
 	@LDFLAGS@ \
@@ -68,13 +69,18 @@ LDFLAGS_DEFAULT	= $(LDFLAGS_@DFT_UPR_MODEL@)
 all: demo
 
 OBJS_DEMO = \
+	$(MODEL)/cursesf.o \
 	$(MODEL)/cursesm.o \
 	$(MODEL)/cursesw.o \
 	$(MODEL)/cursesp.o \
+	$(MODEL)/cursslk.o \
+	$(MODEL)/cursesapp.o \
+	$(MODEL)/cursesmain.o \
 	$(MODEL)/demo.o
 
 demo:	$(OBJS_DEMO) \
-	../lib/libmenu@DFT_DEP_SUFFIX@ \
+	../lib/libform@DFT_DEP_SUFFIX@  \
+	../lib/libmenu@DFT_DEP_SUFFIX@  \
 	../lib/libpanel@DFT_DEP_SUFFIX@ \
 	../lib/libncurses@DFT_DEP_SUFFIX@
 	@ECHO_LINK@ $(LINK) -o $@ $(OBJS_DEMO) $(LDFLAGS_DEFAULT)

@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.79 1997/09/03 15:27:09 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.82 1997/09/13 22:41:32 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -233,31 +233,27 @@ static inline void PutChar(chtype const ch)
     {
 	PutAttrChar(ch);	/* normal case */
     }
-    else if (!auto_right_margin	/* maybe we can suppress automargin */
-	     || (enter_am_mode && exit_am_mode))
+    else if (enter_am_mode && exit_am_mode)
     {
-	bool old_am = auto_right_margin;
-
-	if (old_am)
-	{
-	    TPUTS_TRACE("exit_am_mode");
-	    putp(exit_am_mode);
-	}
+	/* we can suppress automargin */
+	TPUTS_TRACE("exit_am_mode");
+	putp(exit_am_mode);
+	
 	PutAttrChar(ch);
-	if (old_am)
-	{
-	    TPUTS_TRACE("enter_am_mode");
-	    putp(enter_am_mode);
-	}
+
+	TPUTS_TRACE("enter_am_mode");
+	putp(enter_am_mode);
     }
-    else
+    else if ((enter_insert_mode && exit_insert_mode)
+	     || insert_character || parm_ich)
     {
 	GoTo(screen_lines-1,screen_columns-2);
 	callPutChar(ch);
 	GoTo(screen_lines-1,screen_columns-2);
-	if (InsStr(newscr->_line[screen_lines-1].text+screen_columns-2,1)==ERR)
-	    return;
+	InsStr(newscr->_line[screen_lines-1].text+screen_columns-2,1);
     }
+    else
+	return;
 
     if (SP->_curscol >= screen_columns)
     {
@@ -1268,11 +1264,210 @@ void _nc_outstr(const char *str)
 #endif /* TRACE */
 }
 
-/****************************************************************************
- *
+/*
  * Physical-scrolling support
  *
- ****************************************************************************/
+ * This code was adapted from Keith Bostic's hardware scrolling
+ * support for 4.4BSD curses.  I (esr) translated it to use terminfo
+ * capabilities, narrowed the call interface slightly, and cleaned
+ * up some convoluted tests.  I also added support for the memory_above
+ * memory_below, and non_dest_scroll_region capabilities.
+ *
+ * For this code to work, we must have either
+ * change_scroll_region and scroll forward/reverse commands, or
+ * insert and delete line capabilities.
+ * When the scrolling region has been set, the cursor has to
+ * be at the last line of the region to make the scroll up
+ * happen, or on the first line of region to scroll down.
+ *
+ * This code makes one aesthetic decision in the opposite way from
+ * BSD curses.  BSD curses preferred pairs of il/dl operations
+ * over scrolls, allegedly because il/dl looked faster.  We, on
+ * the other hand, prefer scrolls because (a) they're just as fast
+ * on many terminals and (b) using them avoids bouncing an
+ * unchanged bottom section of the screen up and down, which is
+ * visually nasty.
+ *
+ * (lav): added more cases, used dl/il when bot==maxy and in csr case.
+ *
+ * I used assumption that capabilities il/il1/dl/dl1 work inside
+ * changed scroll region not shifting screen contents outside of it.
+ * If there are any terminals behaving different way, it would be
+ * necessary to add some conditions to scroll_csr_forward/backward.
+ */
+
+/* Try to scroll up assuming given csr (miny, maxy). Returns ERR on failure */ 
+static int scroll_csr_forward(int n, int top, int bot, int miny, int maxy, chtype blank)
+{
+    int i;
+
+    if (n == 1 && scroll_forward && top == miny && bot == maxy)
+    {
+	GoTo(bot, 0);
+	UpdateAttrs(blank);
+	TPUTS_TRACE("scroll_forward");
+	tputs(scroll_forward, 0, _nc_outch);
+    }
+    else if (n == 1 && delete_line && bot == maxy)
+    {
+	GoTo(top, 0);
+	UpdateAttrs(blank);
+	TPUTS_TRACE("delete_line");
+	tputs(delete_line, 0, _nc_outch);
+    }
+    else if (parm_index && top == miny && bot == maxy)
+    {
+	GoTo(bot, 0);
+	UpdateAttrs(blank);
+	TPUTS_TRACE("parm_index");
+	tputs(tparm(parm_index, n, 0), n, _nc_outch);
+    }
+    else if (parm_delete_line && bot == maxy)
+    {
+	GoTo(top, 0);
+	UpdateAttrs(blank);
+	TPUTS_TRACE("parm_delete_line");
+	tputs(tparm(parm_delete_line, n, 0), n, _nc_outch);
+    }
+    else if (scroll_forward && top == miny && bot == maxy)
+    {
+	GoTo(bot, 0);
+	UpdateAttrs(blank);
+	for (i = 0; i < n; i++)
+	{
+	    TPUTS_TRACE("scroll_forward");
+	    tputs(scroll_forward, 0, _nc_outch);
+	}
+    }
+    else if (delete_line && bot == maxy)
+    {
+	GoTo(top, 0);
+	UpdateAttrs(blank);
+	for (i = 0; i < n; i++)
+	{
+	    TPUTS_TRACE("delete_line");
+	    tputs(delete_line, 0, _nc_outch);
+	}
+    }
+    else
+	return ERR;
+    
+    return OK;
+}
+
+/* Try to scroll down assuming given csr (miny, maxy). Returns ERR on failure */
+/* n > 0 */
+static int scroll_csr_backward(int n, int top, int bot, int miny, int maxy, chtype blank)
+{
+    int i;
+
+    if (n == 1 && scroll_reverse && top == 0 && bot == maxy)
+    {
+	GoTo(top, 0);
+	UpdateAttrs(blank);
+	TPUTS_TRACE("scroll_reverse");
+	tputs(scroll_reverse, 0, _nc_outch);
+    }
+    else if (n == 1 && insert_line && bot == maxy)
+    {
+	GoTo(top, 0);
+	UpdateAttrs(blank);
+	TPUTS_TRACE("insert_line");
+	tputs(insert_line, 0, _nc_outch);
+    }
+    else if (parm_rindex && top == miny && bot == maxy)
+    {
+	GoTo(top, 0);
+	UpdateAttrs(blank);
+	TPUTS_TRACE("parm_rindex");
+	tputs(tparm(parm_rindex, n, 0), n, _nc_outch);
+    }
+    else if (parm_insert_line && bot == maxy)
+    {
+	GoTo(top, 0);
+	UpdateAttrs(blank);
+	TPUTS_TRACE("parm_insert_line");
+	tputs(tparm(parm_insert_line, n, 0), n, _nc_outch);
+    }
+    else if (scroll_reverse && top == miny && bot == maxy)
+    {
+	GoTo(top, 0);
+	UpdateAttrs(blank);
+	for (i = 0; i < n; i++)
+	{
+	    TPUTS_TRACE("scroll_reverse");
+	    tputs(scroll_reverse, 0, _nc_outch);
+	}
+    }
+    else if (insert_line && bot == maxy)
+    {
+	GoTo(top, 0);
+	UpdateAttrs(blank);
+	for (i = 0; i < n; i++)
+	{
+	    TPUTS_TRACE("insert_line");
+	    tputs(insert_line, 0, _nc_outch);
+	}
+    }
+    else
+	return ERR;
+	
+    return OK;
+}
+
+/* scroll by using delete_line at del and insert_line at ins */
+/* n > 0 */
+static int scroll_idl(int n, int del, int ins, chtype blank)
+{
+    int i;
+
+    if(!((parm_delete_line || delete_line) && (parm_insert_line || insert_line)))
+	return ERR;
+
+    GoTo(del, 0);
+    UpdateAttrs(blank);
+    if (n == 1 && delete_line)
+    {
+	TPUTS_TRACE("delete_line");
+	tputs(delete_line, 0, _nc_outch);
+    }
+    else if (parm_delete_line)
+    {
+	TPUTS_TRACE("parm_delete_line");
+	tputs(tparm(parm_delete_line, n, 0), n, _nc_outch);
+    }
+    else /* if (delete_line) */
+    {
+	for (i = 0; i < n; i++)
+	{
+	    TPUTS_TRACE("delete_line");
+	    tputs(delete_line, 0, _nc_outch);
+	}
+    }
+
+    GoTo(ins, 0);
+    UpdateAttrs(blank);
+    if (n == 1 && insert_line)
+    {
+	TPUTS_TRACE("insert_line");
+	tputs(insert_line, 0, _nc_outch);
+    }
+    else if (parm_insert_line)
+    {
+	TPUTS_TRACE("parm_insert_line");
+	tputs(tparm(parm_insert_line, n, 0), n, _nc_outch);
+    }
+    else /* if (insert_line) */
+    {
+	for (i = 0; i < n; i++)
+	{
+	    TPUTS_TRACE("insert_line");
+	    tputs(insert_line, 0, _nc_outch);
+	}
+    }
+    
+    return OK;
+}
 
 int _nc_scrolln(int n, int top, int bot, int maxy)
 /* scroll region from top to bot by n lines */
@@ -1280,31 +1475,10 @@ int _nc_scrolln(int n, int top, int bot, int maxy)
     chtype blank=ClrBlank(stdscr);
     int i;
     bool cursor_saved=FALSE;
+    int res;
 
     TR(TRACE_MOVE, ("mvcur_scrolln(%d, %d, %d, %d)", n, top, bot, maxy));
 
-    /*
-     * This code was adapted from Keith Bostic's hardware scrolling
-     * support for 4.4BSD curses.  I (esr) translated it to use terminfo
-     * capabilities, narrowed the call interface slightly, and cleaned
-     * up some convoluted tests.  I also added support for the memory_above
-     * memory_below, and non_dest_scroll_region capabilities.
-     *
-     * For this code to work, we must have either
-     * change_scroll_region and scroll forward/reverse commands, or
-     * insert and delete line capabilities.
-     * When the scrolling region has been set, the cursor has to
-     * be at the last line of the region to make the scroll
-     * happen.
-     *
-     * This code makes one aesthetic decision in the opposite way from
-     * BSD curses.  BSD curses preferred pairs of il/dl operations
-     * over scrolls, allegedly because il/dl looked faster.  We, on
-     * the other hand, prefer scrolls because (a) they're just as fast
-     * on many terminals and (b) using them avoids bouncing an
-     * unchanged bottom section of the screen up and down, which is
-     * visually nasty.
-     */
     if (n > 0) /* scroll up (forward) */
     {
 	/*
@@ -1319,68 +1493,23 @@ int _nc_scrolln(int n, int top, int bot, int maxy)
 	    }
 	}
 
-	if (n == 1 && scroll_forward && top == 0 && bot == maxy)
+	res = scroll_csr_forward(n, top, bot, 0, maxy, blank);
+	
+	if (res == ERR && change_scroll_region)
 	{
-	    GoTo(bot, 0);
-	    UpdateAttrs(blank);
-	    TPUTS_TRACE("scroll_forward");
-	    tputs(scroll_forward, 0, _nc_outch);
-	}
-	else if (n == 1 && delete_line && bot == maxy)
-	{
-	    GoTo(top, 0);
-	    UpdateAttrs(blank);
-	    TPUTS_TRACE("delete_line");
-	    tputs(delete_line, 0, _nc_outch);
-	}
-	else if (parm_index && top == 0 && bot == maxy)
-	{
-	    GoTo(bot, 0);
-	    UpdateAttrs(blank);
-	    TPUTS_TRACE("parm_index");
-	    tputs(tparm(parm_index, n, 0), n, _nc_outch);
-	}
-	else if (parm_delete_line && bot == maxy)
-	{
-	    GoTo(top, 0);
-	    UpdateAttrs(blank);
-	    TPUTS_TRACE("parm_delete_line");
-	    tputs(tparm(parm_delete_line, n, 0), n, _nc_outch);
-	}
-	else if (scroll_forward && top == 0 && bot == maxy)
-	{
-	    GoTo(bot, 0);
-	    UpdateAttrs(blank);
-	    for (i = 0; i < n; i++)
-	    {
-		TPUTS_TRACE("scroll_forward");
-		tputs(scroll_forward, 0, _nc_outch);
-	    }
-	}
-	else if (delete_line && bot == maxy)
-	{
-	    GoTo(top, 0);
-	    UpdateAttrs(blank);
-	    for (i = 0; i < n; i++)
-	    {
-		TPUTS_TRACE("delete_line");
-		tputs(delete_line, 0, _nc_outch);
-	    }
-	}
-	else if (change_scroll_region && (scroll_forward || parm_index))
-	{
-	    if ((SP->_cursrow == bot || SP->_cursrow == bot-1)
-	        && save_cursor && restore_cursor)
+	    if ((((n==1 && scroll_forward) || parm_index)
+		 && (SP->_cursrow == bot || SP->_cursrow == bot-1))
+		&& save_cursor && restore_cursor)
 	    {
 		cursor_saved=TRUE;
-	    	TPUTS_TRACE("save_cursor");
+		TPUTS_TRACE("save_cursor");
 		tputs(save_cursor, 0, _nc_outch);
 	    }
 	    TPUTS_TRACE("change_scroll_region");
 	    tputs(tparm(change_scroll_region, top, bot), 0, _nc_outch);
 	    if (cursor_saved)
 	    {
-	    	TPUTS_TRACE("restore_cursor");
+		TPUTS_TRACE("restore_cursor");
 		tputs(restore_cursor, 0, _nc_outch);
 	    }
 	    else
@@ -1388,80 +1517,15 @@ int _nc_scrolln(int n, int top, int bot, int maxy)
 		SP->_cursrow = SP->_curscol = -1;
 	    }
 
-	    GoTo(bot, 0);
-	    UpdateAttrs(blank);
-	    if (n == 1 && scroll_forward)
-	    {
-		TPUTS_TRACE("scroll_forward");
-		tputs(scroll_forward, 0, _nc_outch);
-	    }
-	    else if (parm_index)
-	    {
-		TPUTS_TRACE("parm_index");
-		tputs(tparm(parm_index, n, 0), n, _nc_outch);
-	    }
-	    else
-	    {
-		for (i = 0; i < n; i++)
-		{
-		    TPUTS_TRACE("scroll_forward");
-		    tputs(scroll_forward, 0, _nc_outch);
-		}
-	    }
+	    res = scroll_csr_forward(n, top, bot, top, bot, blank);
+
 	    TPUTS_TRACE("change_scroll_region");
 	    tputs(tparm(change_scroll_region, 0, maxy), 0, _nc_outch);
 	    SP->_cursrow = SP->_curscol = -1;
 	}
-	else if (_nc_idlok
-	 && (parm_delete_line || delete_line)
-	 && (parm_insert_line || insert_line))
-	{
-	    GoTo(top, 0);
-	    UpdateAttrs(blank);
-	    if (n == 1 && delete_line)
-	    {
-		TPUTS_TRACE("delete_line");
-		tputs(delete_line, 0, _nc_outch);
-	    }
-	    else if (parm_delete_line)
-	    {
-		TPUTS_TRACE("parm_delete_line");
-		tputs(tparm(parm_delete_line, n, 0), n, _nc_outch);
-	    }
-	    else
-	    {
-		for (i = 0; i < n; i++)
-		{
-		    TPUTS_TRACE("delete_line");
-		    tputs(delete_line, 0, _nc_outch);
-		}
-	    }
-
-	    GoTo(bot - n + 1, 0);
-
-	    /* Push down the bottom region. */
-	    UpdateAttrs(blank);
-	    if (n == 1 && insert_line)
-	    {
-		TPUTS_TRACE("insert_line");
-		tputs(insert_line, 0, _nc_outch);
-	    }
-	    else if (parm_insert_line)
-	    {
-		TPUTS_TRACE("parm_insert_line");
-		tputs(tparm(parm_insert_line, n, 0), n, _nc_outch);
-	    }
-	    else
-	    {
-		for (i = 0; i < n; i++)
-		{
-		    TPUTS_TRACE("insert_line");
-		    tputs(insert_line, 0, _nc_outch);
-		}
-	    }
-	}
-	else
-	    return(ERR);
+	
+	if (res == ERR && _nc_idlok)
+	    res = scroll_idl(n, top, bot-n+1, blank);
     }
     else /* (n < 0) - scroll down (backward) */
     {
@@ -1486,55 +1550,9 @@ int _nc_scrolln(int n, int top, int bot, int maxy)
 	    }
 	}
 
-	if (n == -1 && scroll_reverse && top == 0 && bot == maxy)
-	{
-	    GoTo(top, 0);
-	    UpdateAttrs(blank);
-	    TPUTS_TRACE("scroll_reverse");
-	    tputs(scroll_reverse, 0, _nc_outch);
-	}
-	else if (n == -1 && insert_line && bot == maxy)
-	{
-	    GoTo(top, 0);
-	    UpdateAttrs(blank);
-	    TPUTS_TRACE("insert_line");
-	    tputs(insert_line, 0, _nc_outch);
-	}
-	else if (parm_rindex && top == 0 && bot == maxy)
-	{
-	    GoTo(top, 0);
-	    UpdateAttrs(blank);
-	    TPUTS_TRACE("parm_rindex");
-	    tputs(tparm(parm_rindex, -n, 0), -n, _nc_outch);
-	}
-	else if (parm_insert_line && bot == maxy)
-	{
-	    GoTo(top, 0);
-	    UpdateAttrs(blank);
-	    TPUTS_TRACE("parm_insert_line");
-	    tputs(tparm(parm_insert_line, -n, 0), -n, _nc_outch);
-	}
-	else if (scroll_reverse && top == 0 && bot == maxy)
-	{
-	    GoTo(top, 0);
-	    UpdateAttrs(blank);
-	    for (i = n; i < 0; i++)
-	    {
-		TPUTS_TRACE("scroll_reverse");
-		tputs(scroll_reverse, 0, _nc_outch);
-	    }
-	}
-	else if (insert_line && bot == maxy)
-	{
-	    GoTo(top, 0);
-	    UpdateAttrs(blank);
-	    for (i = n; i < 0; i++)
-	    {
-		TPUTS_TRACE("insert_line");
-		tputs(insert_line, 0, _nc_outch);
-	    }
-	}
-	else if (change_scroll_region && (scroll_reverse || parm_rindex))
+	res = scroll_csr_backward(-n, top, bot, 0, maxy, blank);
+	
+	if (res == ERR && change_scroll_region)
 	{
 	    if (top != 0 && (SP->_cursrow == top || SP->_cursrow == top-1)
 	        && save_cursor && restore_cursor)
@@ -1555,88 +1573,19 @@ int _nc_scrolln(int n, int top, int bot, int maxy)
 		SP->_cursrow = SP->_curscol = -1;
 	    }
 
-	    GoTo(top, 0);
-	    UpdateAttrs(blank);
-	    if (n == -1 && scroll_reverse)
-	    {
-		TPUTS_TRACE("scroll_reverse");
-		tputs(scroll_reverse, 0, _nc_outch);
-	    }
-	    else if (parm_rindex)
-	    {
-		TPUTS_TRACE("parm_rindex");
-		tputs(tparm(parm_rindex, -n, 0), -n, _nc_outch);
-	    }
-	    else
-	    {
-		for (i = n; i < 0; i++)
-		{
-		    TPUTS_TRACE("scroll_reverse");
-		    tputs(scroll_reverse, 0, _nc_outch);
-		}
-	    }
+	    res = scroll_csr_backward(-n, top, bot, top, bot, blank);
+
 	    TPUTS_TRACE("change_scroll_region");
 	    tputs(tparm(change_scroll_region, 0, maxy), 0, _nc_outch);
 	    SP->_cursrow = SP->_curscol = -1;
 	}
-	else if (_nc_idlok
-	 && (parm_delete_line || delete_line)
-	 && (parm_insert_line || insert_line))
-	{
-	    GoTo(bot + n + 1, 0);
-	    UpdateAttrs(blank);
-	    if (n == -1 && delete_line)
-	    {
-		TPUTS_TRACE("delete_line");
-		tputs(delete_line, 0, _nc_outch);
-	    }
-	    else if (parm_delete_line)
-	    {
-		TPUTS_TRACE("parm_delete_line");
-		tputs(tparm(parm_delete_line, -n, 0), -n, _nc_outch);
-	    }
-	    else
-	    {
-		for (i = n; i < 0; i++)
-		{
-		    TPUTS_TRACE("delete_line");
-		    tputs(delete_line, 0, _nc_outch);
-		}
-	    }
-
-	    GoTo(top, 0);
-
-	    /* Scroll the block down. */
-	    UpdateAttrs(blank);
-	    if (n == -1 && insert_line)
-	    {
-		TPUTS_TRACE("insert_line");
-		tputs(insert_line, 0, _nc_outch);
-	    }
-	    else if (parm_insert_line)
-	    {
-		TPUTS_TRACE("parm_insert_line");
-		tputs(tparm(parm_insert_line, -n, 0), -n, _nc_outch);
-	    }
-	    else
-	    {
-		for (i = n; i < 0; i++)
-		{
-		    TPUTS_TRACE("insert_line");
-		    tputs(insert_line, 0, _nc_outch);
-		}
-	    }
-	}
-	else
-	    return(ERR);
+	
+	if (res == ERR && _nc_idlok)
+	    res = scroll_idl(-n, bot+n+1, top, blank);
     }
 
-    /* this is mainly for doupdate not to skip those lines */
-    for (i = top; i <= bot; i++)
-    {
-	curscr->_line[i].firstchar = 0;
-	curscr->_line[i].lastchar = curscr->_maxx;
-    }
+    if (res == ERR)
+	return(ERR);
 
     _nc_scroll_window(curscr, n, top, bot, blank);
 
@@ -1666,6 +1615,8 @@ void _nc_screen_resume()
     }
     if (exit_insert_mode)
 	putp(exit_insert_mode);
+    if (enter_am_mode && exit_am_mode)
+	putp(auto_right_margin ? enter_am_mode : exit_am_mode);
 }
 
 void _nc_screen_init()

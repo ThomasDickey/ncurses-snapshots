@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.35 1997/09/06 23:40:02 tom Exp $
+# $Id: Makefile.in,v 1.37 1997/09/13 23:59:38 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -61,6 +61,7 @@ LD		= @LD@
 LN_S		= @LN_S@
 
 CC		= @CC@
+HOSTCC		= @CC@
 CPP		= @CPP@
 CFLAGS		= @CFLAGS@
 
@@ -140,12 +141,12 @@ keys.tries: make_keys
 make_keys : \
 		$(srcdir)/make_keys.c \
 		./names.c
-	$(CC) -o $@ $(CCFLAGS) $(srcdir)/make_keys.c $(LDFLAGS)
+	$(HOSTCC) -o $@ $(CCFLAGS) $(srcdir)/make_keys.c $(LDFLAGS)
 
 make_hash : \
 		$(srcdir)/comp_hash.c \
 		../include/hashsize.h
-	$(CC) -o $@ $(CCFLAGS) -DMAIN_PROGRAM $(srcdir)/comp_hash.c $(LDFLAGS)
+	$(HOSTCC) -o $@ $(CCFLAGS) -DMAIN_PROGRAM $(srcdir)/comp_hash.c $(LDFLAGS)
 
 ./expanded.c : $(srcdir)/MKexpanded.sh
 	sh $(srcdir)/MKexpanded.sh "$(CPP)" $(CPPFLAGS)
@@ -175,7 +176,7 @@ TAGS:
 	etags *.[ch]
 
 mostlyclean ::
-	-rm -f tags TAGS core *~
+	-rm -f tags TAGS core *.ln *~
 
 clean :: mostlyclean
 	-rm -f $(AUTO_SRC)

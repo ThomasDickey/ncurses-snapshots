@@ -27,7 +27,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: tries.c,v 1.2 1997/07/05 16:49:22 tom Exp $")
+MODULE_ID("$Id: tries.c,v 1.3 1997/09/11 17:24:44 tom Exp $")
 
 #define SET_TRY(dst,src) if ((dst->ch = *src++) == 128) dst->ch = '\0'
 
@@ -119,7 +119,7 @@ char *_nc_expand_try(struct tries *tree, unsigned short code, size_t len)
 	struct tries *ptr = tree;
 	char *result = 0;
 
-	if (code > 0) {
+	if (code != 0) {
 		while (ptr != 0) {
 			if ((result = _nc_expand_try(ptr->child, code, len + 1)) != 0) {
 				break;
@@ -133,7 +133,7 @@ char *_nc_expand_try(struct tries *tree, unsigned short code, size_t len)
 	}
 	if (result != 0) {
 		if ((result[len] = ptr->ch) == 0)
-			result[len] = 128;
+			*((unsigned char *)(result+len)) = 128;
 #ifdef TRACE
 		if (len == 0)
 			_tracef("expand_key %s %s", _trace_key(code), _nc_visbuf(result));
@@ -150,7 +150,7 @@ int _nc_remove_key(struct tries **tree, unsigned short code)
 {
 	struct tries *ptr = (*tree);
 
-	if (code > 0) {
+	if (code != 0) {
 		while (ptr != 0) {
 			if (_nc_remove_key(&(ptr->child), code)) {
 				return TRUE;

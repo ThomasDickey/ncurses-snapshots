@@ -18,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.52 1997/09/06 23:27:16 tom Exp $ */
+/* $Id: curses.h.in,v 1.53 1997/09/07 22:13:03 juergen Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -633,7 +633,7 @@ extern int overlay(const WINDOW*,WINDOW *);		/* implemented */
 extern int overwrite(const WINDOW*,WINDOW *);		/* implemented */
 extern int pair_content(short,short*,short*);		/* implemented */
 extern int PAIR_NUMBER(int);				/* generated */
-extern int pechochar(WINDOW *, chtype);			/* implemented */
+extern int pechochar(WINDOW *, const chtype);		/* implemented */
 #ifdef _XOPEN_SOURCE_EXTENDED
 extern int pecho_wchar(WINDOW *, const cchar_t *);	/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
@@ -737,7 +737,7 @@ extern int wattr_on(WINDOW *, const attr_t);		/* implemented */
 extern int wattr_off(WINDOW *, const attr_t);		/* implemented */
 extern int wattr_set(WINDOW *, attr_t);			/* generated */
 extern int wbkgd(WINDOW *,const chtype);		/* implemented */
-extern void wbkgdset(WINDOW *,chtype);			/* generated */
+extern void wbkgdset(WINDOW *,chtype);			/* implemented */
 #ifdef _XOPEN_SOURCE_EXTENDED
 extern int wbkgrndset(WINDOW *,const cchar_t *);	/* missing */
 extern int wbkgrnd(WINDOW *,const cchar_t *);		/* missing */
@@ -884,11 +884,6 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define getparyx(win,y,x)	(y = (win)->_pary, x = (win)->_parx)
 #define getsyx(y,x)		getyx(stdscr, y, x)
 #define setsyx(y,x)		(stdscr->_cury = y, stdscr->_curx = x)
-
-#define	wbkgdset(win, ch) \
-	(((win)->_attrs = (((win)->_attrs & ~((win)->_bkgd & A_ATTRIBUTES)) | \
-	    ((ch) & A_ATTRIBUTES))), \
-	    ((win)->_bkgd = (ch)))
 
 /* It seems older SYSV curses versions define these */
 #define getattrs(win)		((win)->_attrs)

@@ -403,17 +403,17 @@ int	addstr(
 
 #undef attroff
 int	attroff(
-		attr_t	z)
+		NCURSES_ATTR_T	z)
 		{ return(*(int *)0); }
 
 #undef attron
 int	attron(
-		attr_t	z)
+		NCURSES_ATTR_T	z)
 		{ return(*(int *)0); }
 
 #undef attrset
 int	attrset(
-		attr_t	z)
+		NCURSES_ATTR_T	z)
 		{ return(*(int *)0); }
 
 #undef attr_get
@@ -422,17 +422,17 @@ int	attr_get(void)
 
 #undef attr_off
 int	attr_off(
-		attr_t	z)
+		NCURSES_ATTR_T	z)
 		{ return(*(int *)0); }
 
 #undef attr_on
 int	attr_on(
-		attr_t	z)
+		NCURSES_ATTR_T	z)
 		{ return(*(int *)0); }
 
 #undef attr_set
 int	attr_set(
-		attr_t	z)
+		NCURSES_ATTR_T	z)
 		{ return(*(int *)0); }
 
 #undef bkgd

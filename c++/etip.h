@@ -1,13 +1,61 @@
+// * This makes emacs happy -*-Mode: C++;-*-
+/*----------------------------------------------------------------------------+
+|       The ncurses menu and forms C++ binding is Copyright (C) 1997          |
+|             by Juergen Pfeifer <Juergen.Pfeifer@T-Online.de>                |
+|                          All Rights Reserved.                               |
+|                                                                             |
+| Permission to use, copy, modify, and distribute this software and its       |
+| documentation for any purpose and without fee is hereby granted, provided   |
+| that the above copyright notice appear in all copies and that both that     |
+| copyright notice and this permission notice appear in supporting            |
+| documentation, and that the name of the above listed copyright holder(s)    |
+| not be used in advertising or publicity pertaining to distribution of the   |
+| software without specific, written prior permission.                        |
+|                                                                             |
+| THE ABOVE LISTED COPYRIGHT HOLDER(S) DISCLAIM ALL WARRANTIES WITH REGARD TO |
+| THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FIT- |
+| NESS, IN NO EVENT SHALL THE ABOVE LISTED COPYRIGHT HOLDER(S) BE LIABLE FOR  |
+| ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER    |
+| RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CON-   |
+| TRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION |
+| WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                               |
++----------------------------------------------------------------------------*/
+
+// $Id: etip.h,v 1.8 1997/09/13 10:59:03 juergen Exp $
+
 #ifndef _ETIP_H
 #define _ETIP_H
 
+#include <ncurses_cfg.h>
+
 #ifdef __GNUG__
-#if HAVE_TYPEINFO
-#  include <typeinfo>
-#endif
+#  if HAVE_TYPEINFO
+#    include <typeinfo>
+#  endif
 #endif
 
+#if defined(__GNUG__)
+#  if HAVE_BUILTIN_H
+#    define exception builtin_exception
+#    include <builtin.h>
+#    undef exception
+#  endif
+#elif defined (__SUNPRO_CC)
+#  include <generic.h>
+#  include <string.h>
+#else
+#  include <string.h>
+#endif
+
+extern "C" {
+#if HAVE_VALUES_H
+#  include <values.h>
+#endif
+
+#include <assert.h>
 #include <eti.h>
+#include <errno.h>
+}
 
 // Forward Declarations
 class NCursesPanel;
@@ -153,5 +201,5 @@ inline void THROW(const NCursesException *e) {
 }
 
 #define THROWS(s)
- 
-#endif
+
+#endif // _ETIP_H

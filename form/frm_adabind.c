@@ -28,12 +28,13 @@
 ***************************************************************************/
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_adabind.c,v 1.3 1997/05/01 16:47:54 juergen Exp $")
+MODULE_ID("$Id: frm_adabind.c,v 1.4 1997/09/05 23:04:11 juergen Exp $")
 
 /* Prototypes for the functions in this module */
-void _nc_ada_normalize_field_opts (int *opt);
-void _nc_ada_normalize_form_opts (int *opt);
-void *_nc_ada_getvarg(va_list *);
+void   _nc_ada_normalize_field_opts (int *opt);
+void   _nc_ada_normalize_form_opts (int *opt);
+void*  _nc_ada_getvarg(va_list *);
+FIELD* _nc_get_field(const FORM*, int);
 
 
 void _nc_ada_normalize_field_opts (int *opt)
@@ -58,4 +59,13 @@ void _nc_ada_normalize_form_opts (int *opt)
 void *_nc_ada_getvarg(va_list *ap)
 {
   return va_arg(*ap,void*);
+}
+
+FIELD* _nc_get_field(const FORM* frm, int idx) {
+  if (frm && frm->field && idx>=0 && (idx<frm->maxfield))
+    {
+      return frm->field[idx];
+    }
+  else
+    return (FIELD*)0;
 }

@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_enum.c,v 1.6 1997/06/09 22:15:30 juergen Exp $")
+MODULE_ID("$Id: fty_enum.c,v 1.7 1997/08/30 20:02:31 juergen Exp $")
 
 typedef struct {
   char **kwds;
@@ -127,9 +127,8 @@ static int Compare(const unsigned char *s, const unsigned char *buf,
 	} 
       else 
 	{
-	  while(toupper(*s)==toupper(*buf))
+	  while(toupper(*s++)==toupper(*buf))
 	    {
-	      s++;
 	      if (*buf++=='\0') return EXACT;
 	    }
 	}

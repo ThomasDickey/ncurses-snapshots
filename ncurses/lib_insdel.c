@@ -30,7 +30,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_insdel.c,v 1.5 1997/05/13 15:44:13 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_insdel.c,v 1.6 1997/09/06 23:45:38 Alexander.V.Lukyanov Exp $")
 
 int
 winsdelln(WINDOW *win, int n)
@@ -41,7 +41,6 @@ winsdelln(WINDOW *win, int n)
 		returnCode(OK);
 
 	_nc_scroll_window(win, -n, win->_cury, win->_maxy, _nc_background(win));
-	touchline(win, win->_cury, win->_maxy - win->_cury + 1);
 
 	_nc_synchook(win);
 	returnCode(OK);

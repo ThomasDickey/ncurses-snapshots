@@ -20,18 +20,22 @@
 | TRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION |
 | WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                               |
 +----------------------------------------------------------------------------*/
+
+// $Id: cursesm.h,v 1.7 1997/09/09 00:14:40 juergen Exp $
+
 #ifndef _CURSESM_H
 #define _CURSESM_H
 
-#include <assert.h>
 #include <cursesp.h>
-#include <etip.h>
 
 extern "C" {
 #  include <menu.h>
 }
-
+//
+// -------------------------------------------------------------------------
 // This wraps the ITEM type of <menu.h>
+// -------------------------------------------------------------------------
+//
 class NCursesMenuItem {
   friend class NCursesMenu;
   
@@ -67,47 +71,47 @@ public:
     return ::item_description (item);
   }
   
-  // index of the item in an item array (or -1)
+  // Index of the item in an item array (or -1)
   inline int index (void) const {
     return ::item_index (item);
   }
 
-  // switch on an item's option
+  // Switch on the items options
   inline void options_on (Item_Options options) {
     OnError (::item_opts_on (item, options));
   }
 
-  // switch off an item's option
+  // Switch off the item's option
   inline void options_off (Item_Options options) {
     OnError (::item_opts_off (item, options));
   }
 
-  // return the item's options
+  // Retrieve the items options
   inline Item_Options options () const {
     return ::item_opts (item);
   }
 
-  // set the item's options
+  // Set the items options
   inline void set_options (Item_Options options) {
     OnError (::set_item_opts (item, options));
   }
 
-  // set/reset the item's selection state
+  // Set/Reset the items selection state
   inline void set_value (bool f) {
     OnError (::set_item_value (item,f));
   }
 
-  // return the item's selection state
+  // Retrieve the items selection state
   inline bool value () const {
     return ::item_value (item);
   }
   
-  // return visibility of the item
+  // Retrieve visibility of the item
   inline bool visible () const {
     return ::item_visible (item);
   }
 
-  // perform an action associated with this item; you may use this in an
+  // Perform an action associated with this item; you may use this in an
   // user supplied driver for a menu; you may derive from this class and
   // overload action() to supply items with different actions.
   // If an action returns true, the menu will be exited.
@@ -136,19 +140,20 @@ public:
 
   bool action();
 };
-
-
+//
+// -------------------------------------------------------------------------
+// This wraps the MENU type of <menu.h>
+// -------------------------------------------------------------------------
+//
 class NCursesMenu : public NCursesPanel {
 protected:
   MENU *menu;
 
 private:
-  // Keep book of the number of instantiated C++ menus.
-  static unsigned long total_count;
-
   NCursesWindow* sub;   // the subwindow object
   bool b_sub_owner;     // is this our own subwindow?
   bool b_framed;        // has the menu a border?
+  bool b_autoDelete;    // Delete items when deleting menu?
 
   NCursesMenuItem** my_items; // The array of items for this menu
 
@@ -192,7 +197,9 @@ protected:
     return uptr->m_user;
   }  
   
-  void InitMenu (NCursesMenuItem* menu[], bool with_frame);
+  void InitMenu (NCursesMenuItem* menu[],
+		 bool with_frame,
+		 bool autoDeleteItems);
 
   inline void OnError (int err) const THROWS(NCursesMenuException) {
     if (err != E_OK)
@@ -202,23 +209,35 @@ protected:
   // this wraps the menu_driver call.
   virtual int driver (int c) ;
   
-public:
-  // make a full window size menu
-  NCursesMenu (NCursesMenuItem* Items[],
-	       bool with_frame=FALSE)
-    : NCursesPanel() {
-      InitMenu(Items, with_frame);
+  // 'Internal' constructor to create a menu without association to
+  // an array of items.
+  NCursesMenu( int  lines, 
+	       int  cols, 
+	       int  begin_y = 0, 
+	       int  begin_x = 0) 
+    : NCursesPanel(lines,cols,begin_y,begin_x), 
+      menu ((MENU*)0) {
   }
 
-  // make a menu with a window of this size.
+public:
+  // Make a full window size menu
+  NCursesMenu (NCursesMenuItem* Items[],
+	       bool with_frame=FALSE,        // Reserve space for a frame?
+	       bool autoDelete_Items=FALSE)  // Autocleanup of Items?
+    : NCursesPanel() {
+      InitMenu(Items, with_frame, autoDelete_Items);
+  }
+
+  // Make a menu with a window of this size.
   NCursesMenu (NCursesMenuItem* Items[], 
 	       int  lines, 
 	       int  cols, 
 	       int  begin_y = 0, 
 	       int  begin_x = 0,
-	       bool with_frame=FALSE)
+	       bool with_frame=FALSE,        // Reserve space for a frame?
+	       bool autoDelete_Items=FALSE)  // Autocleanup of Items?
     : NCursesPanel(lines, cols, begin_y, begin_x) {
-      InitMenu(Items, with_frame);
+      InitMenu(Items, with_frame, autoDelete_Items);
   }
 
   virtual ~NCursesMenu ();
@@ -262,7 +281,7 @@ public:
     ::menu_format(menu,&rows,&cols); 
   }
   
-  // item things
+  // Items of the menu
   inline NCursesMenuItem* items() const {
     return *my_items; 
   }
@@ -273,8 +292,8 @@ public:
   }
 
   // Get the current item (i.e. the one the cursor is located)
-  inline NCursesMenuItem& current_item() const {
-    return *(my_items[::item_index(::current_item(menu))]);
+  inline NCursesMenuItem* current_item() const {
+    return my_items[::item_index(::current_item(menu))];
   }
   
   // Get the marker string
@@ -447,15 +466,16 @@ public:
 
 
   // Operators
-  inline NCursesMenuItem& operator[](int i) const {
+  inline NCursesMenuItem* operator[](int i) const {
     if ( (i < 0) || (i >= ::item_count (menu)) )
       OnError (E_BAD_ARGUMENT);
-    return *(my_items[i]);
+    return (my_items[i]);
   }
 
   // Perform the menu's operation
-  // Return the item where you left the selection mark.
-  virtual NCursesMenuItem& operator()(void);
+  // Return the item where you left the selection mark for a single
+  // selection menu, or NULL for a multivalued menu.
+  virtual NCursesMenuItem* operator()(void);
 
   // --------------------
   // Exception handlers
@@ -475,28 +495,25 @@ public:
   virtual void On_Unknown_Command(int c) const;
 
 };
-
-
+//
+// -------------------------------------------------------------------------
 // This is the typical C++ typesafe way to allow to attach
 // user data to an item of a menu. Its assumed that the user
 // data belongs to some class T. Use T as template argument
 // to create a UserItem.
+// -------------------------------------------------------------------------
+//
 template<class T> class NCursesUserItem : public NCursesMenuItem
 {
 public:
-  NCursesUserItem (const char* p_name     = NULL,
-		   const char* p_descript = NULL )
-    : NCursesMenuItem (p_name, p_descript) {
-  };
-
-  NCursesUserItem (const T*    p_UserData,
-		   const char* p_name,
-		   const char* p_descript = NULL )
+  NCursesUserItem (const char* p_name,
+		   const char* p_descript = NULL,
+		   const T* p_UserData    = (T*)0)
     : NCursesMenuItem (p_name, p_descript) {
       if (item)
 	OnError (::set_item_userptr (item, (void *)p_UserData));
   };
-  
+
   virtual ~NCursesUserItem() {};
 
   inline const T* UserData (void) const {
@@ -508,29 +525,40 @@ public:
       OnError (::set_item_userptr (item, (void *)p_UserData));
   }
 };
-
+//
+// -------------------------------------------------------------------------
 // The same mechanism is used to attach user data to a menu
+// -------------------------------------------------------------------------
+//
 template<class T> class NCursesUserMenu : public NCursesMenu
 {
-public:
-  NCursesUserMenu (NCursesMenuItem Items[], bool with_frame=FALSE)
-    : NCursesMenu (Items, with_frame) {
-  };
+protected:
+  NCursesUserMenu( int  lines, 
+		   int  cols, 
+		   int  begin_y = 0, 
+		   int  begin_x = 0,
+		   const T* p_UserData = (T*)0) 
+    : NCursesMenu(lines,cols,begin_y,begin_x) {
+      if (menu)
+	set_user ((void *)p_UserData);
+  }
 
-  NCursesUserMenu (const T* p_UserData,
-		   NCursesMenuItem Items[],
-		   bool with_frame=FALSE)
-    : NCursesMenu (Items, with_frame) {
+public:
+  NCursesUserMenu (NCursesMenuItem Items[],
+		   const T* p_UserData = (T*)0,
+		   bool with_frame=FALSE,
+		   bool autoDelete_Items=FALSE)
+    : NCursesMenu (Items, with_frame, autoDelete_Items) {
       if (menu)
 	set_user ((void *)p_UserData);
   };
   
-  NCursesUserMenu (const T* p_UserData,
-		   NCursesMenuItem Items[],
+  NCursesUserMenu (NCursesMenuItem Items[],
 		   int lines, 
 		   int cols, 
 		   int begin_y = 0, 
 		   int begin_x = 0,
+		   const T* p_UserData = (T*)0,
 		   bool with_frame=FALSE)
     : NCursesMenu (Items, lines, cols, begin_y, begin_x, with_frame) {
       if (menu)
