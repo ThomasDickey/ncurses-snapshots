@@ -32,7 +32,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.18 1997/04/24 23:22:42 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.19 1997/05/02 17:36:01 tom Exp $")
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
@@ -50,9 +50,9 @@ char * _nc_trace_buf(int bufnum, size_t want)
 	if ((size_t)(bufnum+1) > have) {
 		size_t need = (bufnum + 1) * 2;
 		size_t used = sizeof(*list) * need;
-		list = (list != 0) ? malloc(used) : realloc(list, used);
+		list = (list == 0) ? malloc(used) : realloc(list, used);
 		while (need > have)
-			list[--need].text = 0;
+			list[have++].text = 0;
 	}
 
 	if (list[bufnum].text == 0)

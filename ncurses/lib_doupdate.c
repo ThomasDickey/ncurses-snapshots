@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.59 1997/04/26 20:55:22 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.60 1997/05/03 19:32:55 Alexander.V.Lukyanov Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -83,8 +83,6 @@ static int InsStr( chtype *line, int count );
 static void ClearScreen( void );
 static void ClrUpdate( WINDOW *scr );
 static void DelChar( int count );
-static void IDcTransformLine( int const lineno );
-static void NoIDcTransformLine( int const lineno );
 static void TransformLine( int const lineno );
 
 #ifdef POSITION_DEBUG
@@ -890,89 +888,12 @@ chtype	blank  = newscr->_line[total-1].text[last-1]; /* lower right char */
 	return total;
 }
 
+
 /*
 **	TransformLine(lineno)
 **
-**	Call either IDcTransformLine or NoIDcTransformLine to do the
-**	update, depending upon availability of insert/delete character.
-*/
-
-static void TransformLine(int const lineno)
-{
-
-	T(("TransformLine(%d) called",lineno));
-
-	if ( _nc_idcok && has_ic())
-		IDcTransformLine(lineno);
-	else
-		NoIDcTransformLine(lineno);
-}
-
-
-
-/*
-**	NoIDcTransformLine(lineno)
-**
-**	Transform the given line in curscr to the one in newscr, without
-**	using Insert/Delete Character.
-**
-**		firstChar = position of first different character in line
-**		lastChar = position of last different character in line
-**
-**		overwrite all characters between firstChar and lastChar.
-**
-*/
-
-static void NoIDcTransformLine(int const lineno)
-{
-int	firstChar, lastChar;
-chtype	*newLine = newscr->_line[lineno].text;
-chtype	*oldLine = curscr->_line[lineno].text;
-bool	attrchanged = FALSE;
-
-	T(("NoIDcTransformLine(%d) called", lineno));
-
-	firstChar = 0;
-	while (firstChar < screen_columns - 1 &&  newLine[firstChar] == oldLine[firstChar]) {
-		if(ceol_standout_glitch) {
-			if(AttrOf(newLine[firstChar]) != AttrOf(oldLine[firstChar]))
-			attrchanged = TRUE;
-		}
-		firstChar++;
-	}
-
-	T(("first char at %d is %#lx", firstChar, newLine[firstChar]));
-	if (firstChar > screen_columns)
-		return;
-
-	if(ceol_standout_glitch && attrchanged) {
-		firstChar = 0;
-		lastChar = screen_columns - 1;
-		GoTo(lineno, firstChar);
-		if(clr_eol)
-			ClrToEOL(ClrBlank(curscr));
-	} else {
-		lastChar = screen_columns - 1;
-		while (lastChar > firstChar  &&  newLine[lastChar] == oldLine[lastChar])
-			lastChar--;
-		GoTo(lineno, firstChar);
-	}
-
-	T(("updating chars %d to %d", firstChar, lastChar));
-
-	if (lastChar >= firstChar) {
-		PutRange(oldLine, newLine, lineno, firstChar, lastChar);
-		memcpy(oldLine + firstChar,
-		       newLine + firstChar,
-		       (lastChar - firstChar + 1) * sizeof(chtype));
-	}
-}
-
-/*
-**	IDcTransformLine(lineno)
-**
 **	Transform the given line in curscr to the one in newscr, using
-**	Insert/Delete Character.
+**	Insert/Delete Character if _nc_idcok && has_ic().
 **
 **		firstChar = position of first different character in line
 **		oLastChar = position of last different character in old line
@@ -986,7 +907,7 @@ bool	attrchanged = FALSE;
 **			delete oLastChar - nLastChar spaces
 */
 
-static void IDcTransformLine(int const lineno)
+static void TransformLine(int const lineno)
 {
 int	firstChar, oLastChar, nLastChar;
 chtype	*newLine = newscr->_line[lineno].text;
@@ -994,7 +915,7 @@ chtype	*oldLine = curscr->_line[lineno].text;
 int	n;
 bool	attrchanged = FALSE;
 
-	T(("IDcTransformLine(%d) called", lineno));
+	T(("TransformLine(%d) called", lineno));
 
 	if(ceol_standout_glitch && clr_eol) {
 		firstChar = 0;
@@ -1087,7 +1008,8 @@ bool	attrchanged = FALSE;
 			ClrToEOL(blank);
 			if(newLine[firstChar] != blank )
 				PutChar(newLine[firstChar]);
-		} else if( newLine[nLastChar] != oldLine[oLastChar] ) {
+		} else if( newLine[nLastChar] != oldLine[oLastChar]
+				|| !(_nc_idcok && has_ic()) ) {
 			GoTo(lineno, firstChar);
 			if ((oLastChar - nLastChar) > SP->_el_cost) {
 				if(PutRange(oldLine, newLine, lineno, firstChar, nLastChar))

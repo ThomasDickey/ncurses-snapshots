@@ -1,6 +1,38 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970503
+	+ correct memory leak in _nc_trace_buf().
+	+ add configure test for regexpr.h, for Unixware 1.x.
+	+ correct missing "./" prefixing names of generated files in ncurses
+	  directory.
+	+ use single-quotes in configure scripts assignments for MK_SHARED_LIB
+	  to workaround shell bug on FreeBSD 2.1.5
+	+ remove tabs from intermediate #define's for GCC_PRINTF, GCC_SCANF
+	  that caused incorrect result in ncurses_cfg.h
+	+ correct initialization in lib_trace.c, which omitted version info.
+	+ remove ech, el1 attributes from cons25w description; they appear to
+	  malfunction in FreeBSD 2.1.5
+	+ correct color attributes in terminfo.src and lib_color.c to match
+	  SVr4 behavior by interchanging codes 1,4, 3,6 in the setf/setb
+	  capabilities.
+	+ use curs_set() rather than checks via tigetstr() for test programs
+	  that hide the cursor: firework, rain, worm.
+	+ ensure that if the terminal lacks change_scroll_region, parm_index
+	  and parm_rindex are used only to scroll the whole screen (patch by
+	  Peter Wemm).
+	+ correct curs_set() logic, which did not return ERR if the requested
+	  attributes did not exist, nor did it assume an unknown initial state
+	  for the cursor (patch by Alexander V. Lukyanov).
+	+ combine IDcTransformLine and NoIDcTransformLine to new TransformLine
+	  function in lib_doupdate.c (patch by Alexander V. Lukyanov).
+	+ correct hashmap.c, which did not update index information (patch by
+	  Alexander V. Lukyanov).
+	+ patch by Juergen Pfeifer for C++ binding and demo (see c++/NEWS)
+	+ correct index in lib_instr.c (Juergen Pfeifer).
+	+ correct typo in 970426 patch from Tom's cleanup of lib_overlay.c
+	  (Juergen Pfeifer).
+
 970426
 	+ corrected cost computation in PutRange(), which was using
 	  milliseconds compared to characters by adding two new members to the

@@ -32,7 +32,7 @@
 #include <term.h>	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
 
-MODULE_ID("$Id: lib_options.c,v 1.21 1997/02/15 16:36:48 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.22 1997/05/01 23:46:18 Alexander.V.Lukyanov Exp $")
 
 int has_ic(void)
 {
@@ -214,6 +214,9 @@ int cursor = SP->_cursor;
 	if (vis < 0 || vis > 2)
 		returnCode(ERR);
 
+	if (vis == cursor)
+		returnCode(cursor);
+
 	switch(vis) {
 	case 2:
 		if (cursor_visible)
@@ -221,6 +224,8 @@ int cursor = SP->_cursor;
 			TPUTS_TRACE("cursor_visible");
 			putp(cursor_visible);
 		}
+		else
+			returnCode(ERR);
 		break;
 	case 1:
 		if (cursor_normal)
@@ -228,6 +233,8 @@ int cursor = SP->_cursor;
 			TPUTS_TRACE("cursor_normal");
 			putp(cursor_normal);
 		}
+		else
+			returnCode(ERR);
 		break;
 	case 0:
 		if (cursor_invisible)
@@ -235,12 +242,14 @@ int cursor = SP->_cursor;
 			TPUTS_TRACE("cursor_invisible");
 			putp(cursor_invisible);
 		}
+		else
+			returnCode(ERR);
 		break;
 	}
 	SP->_cursor = vis;
 	(void) fflush(SP->_ofp);
 
-	returnCode(cursor);
+	returnCode(cursor==-1 ? 1 : cursor);
 }
 
 /*

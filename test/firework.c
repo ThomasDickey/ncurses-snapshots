@@ -1,5 +1,5 @@
 /*
- * $Id: firework.c,v 1.9 1997/01/19 01:08:45 tom Exp $
+ * $Id: firework.c,v 1.10 1997/05/03 18:37:56 tom Exp $
  */
 #include <test.priv.h>
 
@@ -8,8 +8,6 @@
 #include <signal.h>
 #include <ctype.h>
 #include <time.h>
-
-static char *normal, *hidden;
 
 static int get_colour(chtype *);
 static void explode(int row, int col);
@@ -38,9 +36,7 @@ unsigned seed;
 			my_bg = -1;
 #endif
 	}
-	if ((normal = tigetstr("cnorm")) != 0
-	&& (hidden = tigetstr("civis")) != 0)
-		putp(tparm(hidden));
+	curs_set(0);
 
        seed = time((time_t *)0);
        srand(seed);
@@ -79,7 +75,7 @@ unsigned seed;
 static RETSIGTYPE
 onsig(int n GCC_UNUSED)
 {
-    putp(tparm(normal));
+    curs_set(1);
     endwin();
     exit(EXIT_FAILURE);
 }

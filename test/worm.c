@@ -34,7 +34,7 @@ Options:
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.19 1997/02/15 16:21:13 tom Exp $
+  $Id: worm.c,v 1.20 1997/05/03 18:38:57 tom Exp $
 */
 
 #include <test.priv.h>
@@ -60,7 +60,6 @@ static struct worm {
     short *xpos, *ypos;
 } worm[40];
 
-static char *revert, *hidden;
 static const char *field;
 static int length=16, number=3;
 static chtype trail=' ';
@@ -219,9 +218,7 @@ int last, bottom;
     cbreak();
     nonl();
 
-    if ((revert = tigetstr("cnorm")) != 0
-     && (hidden = tigetstr("civis")) != 0)
-    	putp(tparm(hidden));
+    curs_set(0);
 
     bottom = LINES-1;
     last = COLS-1;
@@ -333,7 +330,7 @@ int last, bottom;
 		    switch (op->nopts) {
 		    case 0:
 				refresh();
-				putp(tparm(revert));
+				curs_set(1);
 				endwin();
 				return EXIT_SUCCESS;
 		    case 1:
@@ -357,7 +354,7 @@ onsig(int sig GCC_UNUSED)
 {
 	standend();
 	refresh();
-	putp(tparm(revert));
+	curs_set(1);
 	endwin();
 	exit(EXIT_FAILURE);
 }

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.16 1997/01/04 23:55:10 tom Exp $
+# $Id: Makefile.in,v 1.19 1997/05/03 21:04:27 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -37,7 +37,7 @@ CXXFLAGS	= @CXXFLAGS@
 CXXLIBS		= @CXXLIBS@
 
 INCDIR		= ../include
-CPPFLAGS	= @CPPFLAGS@ -I$(INCDIR) -DHAVE_CONFIG_H
+CPPFLAGS	= @CPPFLAGS@ -I$(INCDIR) -I$(srcdir)/../c++ -DHAVE_CONFIG_H
 
 CCFLAGS		= $(CPPFLAGS) $(CXXFLAGS)
 
@@ -50,6 +50,7 @@ CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
 LINK		= $(CXX)
 LDFLAGS		= -L../lib \
+	-lmenu@DFT_ARG_SUFFIX@ \
 	-lpanel@DFT_ARG_SUFFIX@ \
 	-lncurses@DFT_ARG_SUFFIX@ \
 	@LDFLAGS@ \
@@ -58,11 +59,13 @@ LDFLAGS		= -L../lib \
 all: demo
 
 OBJS_DEMO = \
+	$(MODEL)/cursesm.o \
 	$(MODEL)/cursesw.o \
 	$(MODEL)/cursesp.o \
 	$(MODEL)/demo.o
 
 demo:	$(OBJS_DEMO) \
+	../lib/libmenu@DFT_DEP_SUFFIX@ \
 	../lib/libpanel@DFT_DEP_SUFFIX@ \
 	../lib/libncurses@DFT_DEP_SUFFIX@
 	@ECHO_LINK@ $(LINK) -o $@ $(OBJS_DEMO) $(LDFLAGS)

@@ -59,7 +59,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hashmap.c,v 1.10 1996/12/21 15:08:16 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.12 1997/05/03 20:30:06 tom Exp $")
 
 #ifdef HASHDEBUG
 #define LINES	24
@@ -84,31 +84,17 @@ static chtype oldtext[LINES][TEXTWIDTH], newtext[LINES][TEXTWIDTH];
 #endif /* _NEWINDEX */
 #endif /* HASHDEBUG */
 
-#ifndef HEAVYHASH
-
-static unsigned long hash(chtype *text)
-{
-    unsigned long res = 0;
-    int i;
-
-    for (i = 0; i < TEXTWIDTH; i++)
-	res = (res << 1) ^ text[i];
-    return(res);
-}
-
-#else
-
 /* Chris Torek's hash function (from his DB package). */
-static unsigned long hash4(const void *key, size_t len)
+static inline unsigned long hash4(const void *key, size_t len)
 {
     register long h, loop;
-    register unsigned char *k;
+    register unsigned const char *k;
 
 #define HASH4a   h = (h << 5) - h + *k++;
 #define HASH4b   h = (h << 5) + h + *k++;
 #define HASH4 HASH4b
     h = 0;
-    k = (unsigned char *)key;
+    k = (unsigned const char *)key;
     if (len > 0) {
 	loop = (len + 8 - 1) >> 3;
 	switch (len & (8 - 1)) {
@@ -137,10 +123,8 @@ static unsigned long hash4(const void *key, size_t len)
 
 static inline unsigned long hash(chtype *text)
 {
-    return(hash4(text, strlen(text)));
+    return(hash4(text, TEXTWIDTH*sizeof(*text)));
 }
-
-#endif /* HEAVYHASH */
 
 void _nc_hash_map(void)
 {
@@ -183,6 +167,8 @@ void _nc_hash_map(void)
 	newhash[i] = hashval;
 	sp->newcount++;
 	sp->newindex = i;
+    
+	OLDNUM(i) = _NEWINDEX;
     }
 
     /*
