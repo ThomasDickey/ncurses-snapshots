@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.260 2004/10/16 15:19:14 tom Exp $
+ * $Id: curses.priv.h,v 1.262 2004/10/23 21:22:47 tom Exp $
  *
  *	curses.priv.h
  *
@@ -615,7 +615,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 			mbstate_t PUT_st; wchar_t PUTC_ch
 #define PUTC_INIT	memset (&PUT_st, '\0', sizeof (PUT_st));		    \
 			PUTC_i = 0
-#define PUTC(ch,b)	do { if(!isnac(ch)) { 					    \
+#define PUTC(ch,b)	do { if(!isWidecExt(ch)) {				    \
 			if (Charable(ch)) {					    \
 			    fputc(CharOf(ch), b);				    \
 			    TRACE_OUTCHARS(1);					    \
@@ -639,12 +639,23 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define BLANK		{ WA_NORMAL, {' '} }
 #define ISBLANK(ch)	((ch).chars[0] == L' ' && (ch).chars[1] == L'\0')
 
-#define WA_NAC		1
-#define isnac(ch)	(AttrOf(ch) & WA_NAC)
+	/*
+	 * Wide characters cannot be represented in the A_CHARTEXT mask of
+	 * attr_t's but an application might have set a narrow character there. 
+	 * But even in that case, it would only be a printable character, or
+	 * zero.  Otherwise we can use those bits to tell if a cell is the
+	 * first or extension part of a wide character.
+	 */
+#define WidecExt(ch)	(AttrOf(ch) & A_CHARTEXT)
+#define isWidecBase(ch)	(WidecExt(ch) == 1)
+#define isWidecExt(ch)	(WidecExt(ch) > 1 && WidecExt(ch) < 32)
+#define SetWidecExt(dst, ext)	AttrOf(dst) &= ~A_CHARTEXT,		\
+	 			AttrOf(dst) |= (ext + 1)
+
 #define if_WIDEC(code)  code
 #define Charable(ch)	((SP != 0 && SP->_legacy_coding)		\
 			 || (AttrOf(ch) & A_ALTCHARSET)			\
-			 || (!isnac(ch) &&				\
+			 || (!isWidecExt(ch) &&				\
 			     (ch).chars[1] == L'\0' &&			\
                              _nc_is_charable(CharOf(ch))))
 
@@ -669,7 +680,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define BLANK		(' '|A_NORMAL)
 #define ISBLANK(ch)	(CharOf(ch) == ' ')
 
-#define isnac(ch)	(0)
+#define isWidecExt(ch)	(0)
 #define if_WIDEC(code) /* nothing */
 
 #define L(ch)		ch

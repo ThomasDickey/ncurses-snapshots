@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.210 2004/10/16 16:01:40 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.211 2004/10/23 15:17:16 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -192,7 +192,7 @@ PutAttrChar(CARG_CH_T ch)
     /*
      * If this is not a valid character, there is nothing more to do.
      */
-    if (isnac(CHDEREF(ch)))
+    if (isWidecExt(CHDEREF(ch)))
 	return;
     /*
      * Determine the number of character cells which the 'ch' value will use
@@ -545,7 +545,7 @@ PutRange(const NCURSES_CH_T * otext,
     if (otext != ntext
 	&& (last - first + 1) > SP->_inline_cost) {
 	for (j = first, same = 0; j <= last; j++) {
-	    if (!same && isnac(otext[j]))
+	    if (!same && isWidecExt(otext[j]))
 		continue;
 	    if (CharEq(otext[j], ntext[j])) {
 		same++;
@@ -1283,7 +1283,7 @@ TransformLine(int const lineno)
 	    /* can be -1 if no characters differ */
 	    while (CharEq(newLine[nLastChar], oldLine[oLastChar])) {
 		/* don't split a wide char */
-		if (isnac(newLine[nLastChar]) &&
+		if (isWidecExt(newLine[nLastChar]) &&
 		    !CharEq(newLine[nLastChar - 1], oldLine[oLastChar - 1]))
 		    break;
 		nLastChar--;

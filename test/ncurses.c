@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.230 2004/10/02 23:44:22 tom Exp $
+$Id: ncurses.c,v 1.231 2004/10/23 21:40:18 tom Exp $
 
 ***************************************************************************/
 
@@ -273,6 +273,7 @@ wGet_wstring(WINDOW *win, wchar_t *buffer, int limit)
     int y0, x0, x;
     wint_t ch;
     bool done = FALSE;
+    bool fkey = FALSE;
 
     echo();
     getyx(win, y0, x0);
@@ -289,13 +290,16 @@ wGet_wstring(WINDOW *win, wchar_t *buffer, int limit)
 	wmove(win, y0, x0 + x);
 	switch (wGet_wchar(win, &ch)) {
 	case KEY_CODE_YES:
+	    fkey = TRUE;
 	    switch (ch) {
 	    case KEY_ENTER:
 		ch = '\n';
+		fkey = FALSE;
 		break;
 	    case KEY_BACKSPACE:
 	    case KEY_DC:
 		ch = '\b';
+		fkey = FALSE;
 		break;
 	    case KEY_LEFT:
 	    case KEY_RIGHT:
@@ -309,6 +313,7 @@ wGet_wstring(WINDOW *win, wchar_t *buffer, int limit)
 	    break;
 	default:
 	    ch = (wint_t) -1;
+	    fkey = TRUE;
 	    break;
 	}
 
@@ -340,7 +345,7 @@ wGet_wstring(WINDOW *win, wchar_t *buffer, int limit)
 	    ++x;
 	    break;
 	default:
-	    if (!isprint(ch) || ch >= KEY_MIN) {
+	    if (fkey) {
 		beep();
 	    } else if ((int) wcslen(buffer) < limit) {
 		int j;

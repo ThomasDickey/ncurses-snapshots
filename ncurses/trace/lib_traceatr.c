@@ -39,7 +39,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.49 2004/10/16 21:43:13 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.50 2004/10/23 20:43:04 tom Exp $")
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
@@ -259,9 +259,9 @@ _tracecchar_t2 (int bufnum, const cchar_t *ch)
 	if ((found = _nc_altcharset_name(attr, CharOfD(ch))) != 0) {
 	    (void) _nc_trace_bufcat(bufnum, found);
 	    attr &= ~A_ALTCHARSET;
-	} else if (isnac(CHDEREF(ch))) {
+	} else if (isWidecExt(CHDEREF(ch))) {
 	    (void) _nc_trace_bufcat(bufnum, "{NAC}");
-	    attr &= ~WA_NAC;
+	    attr &= ~A_CHARTEXT;
 	} else {
 	    PUTC_DATA;
 	    int n;

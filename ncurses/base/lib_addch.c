@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.84 2004/09/26 00:10:54 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.85 2004/10/23 18:29:07 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -99,6 +99,50 @@ _nc_render(WINDOW *win, NCURSES_CH_T ch)
 #define CHECK_POSITION(win, x, y)	/* nothing */
 #endif
 
+/*
+ * The _WRAPPED flag is useful only for telling an application that we've just
+ * wrapped the cursor.  We don't do anything with this flag except set it when
+ * wrapping, and clear it whenever we move the cursor.  If we try to wrap at
+ * the lower-right corner of a window, we cannot move the cursor (since that
+ * wouldn't be legal).  So we return an error (which is what SVr4 does). 
+ * Unlike SVr4, we can successfully add a character to the lower-right corner
+ * (Solaris 2.6 does this also, however).
+ */
+static int
+wrap_to_next_line(WINDOW *win)
+{
+    win->_flags |= _WRAPPED;
+    if (++win->_cury > win->_regbottom) {
+	win->_cury = win->_regbottom;
+	win->_curx = win->_maxx;
+	if (!win->_scroll)
+	    return (ERR);
+	scroll(win);
+    }
+    win->_curx = 0;
+    return (OK);
+}
+
+#if USE_WIDEC_SUPPORT
+static int waddch_literal(WINDOW *, NCURSES_CH_T);
+/*
+ * Fill the given number of cells with blanks using the current background
+ * rendition.  This saves/restores the current x-position.
+ */
+static void
+fill_cells(WINDOW *win, int count)
+{
+    NCURSES_CH_T blank = NewChar2(BLANK_TEXT, BLANK_ATTR);
+    int save_x = win->_curx;
+
+    while (count-- > 0) {
+	if (waddch_literal(win, blank) == ERR)
+	    break;
+    }
+    win->_curx = save_x;
+}
+#endif
+
 static
 #if !USE_WIDEC_SUPPORT		/* cannot be inline if it is recursive */
 inline
@@ -114,18 +158,6 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
     y = win->_cury;
 
     CHECK_POSITION(win, x, y);
-
-    /*
-     * If we're trying to add a character at the lower-right corner more
-     * than once, fail.  (Moving the cursor will clear the flag).
-     */
-#if 0				/* Solaris 2.6 allows updating the corner more than once */
-    if (win->_flags & _WRAPPED) {
-	if (x >= win->_maxx)
-	    return (ERR);
-	win->_flags &= ~_WRAPPED;
-    }
-#endif
 
     ch = render_char(win, ch);
 
@@ -188,44 +220,89 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 	}
     });
 
-    /*
-     * Handle non-spacing characters
-     */
     if_WIDEC({
-	if (wcwidth(CharOf(ch)) == 0) {
-	    int i;
+	int len = wcwidth(CharOf(ch));
+	int i;
+	int j;
+
+	if (len == 0) {		/* non-spacing */
 	    if ((x > 0 && y >= 0)
 		|| ((y = win->_cury - 1) >= 0 &&
 		    (x = win->_maxx) > 0)) {
 		wchar_t *chars = (win->_line[y].text[x - 1].chars);
 		for (i = 0; i < CCHARW_MAX; ++i) {
 		    if (chars[i] == 0) {
+			TR(TRACE_VIRTPUT,
+			   ("added non-spacing %d: %lx",
+			    x, CharOf(ch)));
 			chars[i] = CharOf(ch);
 			break;
 		    }
 		}
 	    }
 	    goto testwrapping;
+	} else if (len > 1) {	/* multi-column characters */
+	    /*
+	     * Check if the character will fit on the current line.  If it does
+	     * not fit, fill in the remainder of the line with blanks.  and
+	     * move to the next line.
+	     */
+	    if (len > win->_maxx) {
+		TR(TRACE_VIRTPUT, ("character will not fit"));
+		return ERR;
+	    } else if (x + len > win->_maxx) {
+		int count = win->_maxx + 1 - x;
+		TR(TRACE_VIRTPUT, ("fill %d remaining cells", count));
+		fill_cells(win, count);
+		if (wrap_to_next_line(win) == ERR)
+		    return ERR;
+		x = win->_curx;
+		y = win->_cury;
+	    }
+	    /*
+	     * Check for cells which are orphaned by adding this character, set
+	     * those to blanks.
+	     *
+	     * FIXME: this actually could fill j-i cells, more complicated to
+	     * setup though.
+	     */
+	    for (i = 0; i < len; ++i) {
+		if (isWidecBase(win->_line[y].text[i])) {
+		    break;
+		} else if (isWidecExt(win->_line[y].text[x + i])) {
+		    for (j = i; x + j <= win->_maxx; ++j) {
+			if (!isWidecExt(win->_line[y].text[x + j])) {
+			    TR(TRACE_VIRTPUT, ("fill %d orphan cells", j));
+			    fill_cells(win, j);
+			    break;
+			}
+		    }
+		    break;
+		}
+	    }
+	    /*
+	     * Finally, add the cells for this character.
+	     */
+	    for (i = 0; i < len; ++i) {
+		NCURSES_CH_T value = ch;
+		SetWidecExt(value, i);
+		TR(TRACE_VIRTPUT, ("multicolumn %d:%d", i + 1, len));
+		line->text[x] = value;
+		CHANGED_CELL(line, x);
+		++x;
+	    }
+	    goto testwrapping;
 	}
     });
+
+    /*
+     * Single-column characters.
+     */
     line->text[x++] = ch;
     /*
-     * Provide for multi-column characters
+     * This label is used only for wide-characters.
      */
-    if_WIDEC({
-	int len = wcwidth(CharOf(ch));
-	while (len-- > 1) {
-	    if (x + (len - 1) > win->_maxx) {
-		NCURSES_CH_T blank = NewChar2(BLANK_TEXT, BLANK_ATTR);
-		AddAttr(blank, AttrOf(ch));
-		if (waddch_literal(win, blank) != ERR)
-		    return waddch_literal(win, ch);
-		return ERR;
-	    }
-	    AddAttr(line->text[x++], WA_NAC);
-	    TR(TRACE_VIRTPUT, ("added NAC %d", x - 1));
-	}
-    }
+    if_WIDEC(
   testwrapping:
     );
 
@@ -234,26 +311,7 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 		       _tracech_t(CHREF(ch))));
 
     if (x > win->_maxx) {
-	/*
-	 * The _WRAPPED flag is useful only for telling an application that
-	 * we've just wrapped the cursor.  We don't do anything with this flag
-	 * except set it when wrapping, and clear it whenever we move the
-	 * cursor.  If we try to wrap at the lower-right corner of a window, we
-	 * cannot move the cursor (since that wouldn't be legal).  So we return
-	 * an error (which is what SVr4 does).  Unlike SVr4, we can
-	 * successfully add a character to the lower-right corner (Solaris 2.6
-	 * does this also, however).
-	 */
-	win->_flags |= _WRAPPED;
-	if (++win->_cury > win->_regbottom) {
-	    win->_cury = win->_regbottom;
-	    win->_curx = win->_maxx;
-	    if (!win->_scroll)
-		return (ERR);
-	    scroll(win);
-	}
-	win->_curx = 0;
-	return (OK);
+	return wrap_to_next_line(win);
     }
     win->_curx = x;
     return OK;

@@ -30,7 +30,7 @@
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  *                                                                          *
- *  Rewritten 2001-2002 to support wide-characters by                       *
+ *  Rewritten 2001-2004 to support wide-characters by                       *
  *	Sven Verdoolaege                                                    *
  *	Thomas Dickey                                                       *
  ****************************************************************************/
@@ -44,7 +44,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.40 2004/07/10 20:39:03 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.41 2004/10/23 20:13:52 tom Exp $")
 
 NCURSES_EXPORT(int)
 waddnstr(WINDOW *win, const char *astr, int n)
@@ -119,7 +119,7 @@ waddchnstr(WINDOW *win, const chtype *astr, int n)
 #if USE_WIDEC_SUPPORT
 
 NCURSES_EXPORT(int)
-_nc_wchstrlen(const cchar_t * s)
+_nc_wchstrlen(const cchar_t *s)
 {
     int result = 0;
     while (CharOf(s[result]) != L'\0') {
@@ -129,14 +129,14 @@ _nc_wchstrlen(const cchar_t * s)
 }
 
 NCURSES_EXPORT(int)
-wadd_wchnstr(WINDOW *win, const cchar_t * astr, int n)
+wadd_wchnstr(WINDOW *win, const cchar_t *astr, int n)
 {
     NCURSES_CH_T blank = NewChar(BLANK_TEXT);
     NCURSES_SIZE_T y = win->_cury;
     NCURSES_SIZE_T x = win->_curx;
     int code = OK;
     struct ldat *line;
-    int i, start, end;
+    int i, j, start, end;
 
     T((T_CALLED("wadd_wchnstr(%p,%s,%d)"), win, _nc_viscbuf(astr, n), n));
 
@@ -154,22 +154,54 @@ wadd_wchnstr(WINDOW *win, const cchar_t * astr, int n)
     line = &(win->_line[y]);
     start = x;
     end = x + n - 1;
-    if (isnac(line->text[x])) {
-	line->text[x - 1] = _nc_render(win, blank);
-	--start;
-    }
-    for (i = 0; i < n && x <= win->_maxx; ++i) {
-	line->text[x++] = _nc_render(win, astr[i]);
-	if (wcwidth(CharOf(astr[i])) > 1) {
-	    if (x <= win->_maxx)
-		AddAttr(line->text[x++], WA_NAC);
-	    else
-		line->text[x - 1] = _nc_render(win, blank);
+
+    /*
+     * Reset orphaned cells of multi-column characters that extend up to the
+     * new string's location to blanks.
+     */
+    if (x > 0 && isWidecExt(line->text[x])) {
+	for (i = 0; i <= x; ++i) {
+	    if (!isWidecExt(line->text[x - i])) {
+		/* must be isWidecBase() */
+		start -= i;
+		while (i > 0)
+		    line->text[x - i--] = _nc_render(win, blank);
+		break;
+	    }
 	}
     }
-    if (x <= win->_maxx && isnac(line->text[x])) {
+
+    /*
+     * Copy the new string to the window.
+     */
+    for (i = 0; i < n && x <= win->_maxx; ++i) {
+	int len = wcwidth(CharOf(astr[i]));
+
+	if (x + len <= win->_maxx) {
+	    line->text[x] = _nc_render(win, astr[i]);
+	    if (len > 1) {
+		for (j = 0; j < len; ++j) {
+		    if (j != 0) {
+			line->text[x + j] = line->text[x];
+		    }
+		    SetWidecExt(line->text[x + j], j);
+		}
+	    }
+	    x += len;
+	    end += len - 1;
+	} else {
+	    break;
+	}
+    }
+
+    /*
+     * Set orphaned cells of multi-column characters which lie after the new
+     * string to blanks.
+     */
+    while (x <= win->_maxx && isWidecExt(line->text[x])) {
 	line->text[x] = _nc_render(win, blank);
 	++end;
+	++x;
     }
     CHANGED_RANGE(line, start, end);
 
@@ -178,7 +210,7 @@ wadd_wchnstr(WINDOW *win, const cchar_t * astr, int n)
 }
 
 NCURSES_EXPORT(int)
-waddnwstr(WINDOW *win, const wchar_t * str, int n)
+waddnwstr(WINDOW *win, const wchar_t *str, int n)
 {
     int code = ERR;
 

@@ -41,7 +41,7 @@
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.10 2004/09/25 20:56:22 tom Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.11 2004/10/23 20:42:26 tom Exp $")
 
 static char *
 _nc_vischar(char *tp, unsigned c)
@@ -129,7 +129,7 @@ _nc_visbufn(const char *buf, int len)
 #if USE_WIDEC_SUPPORT
 #ifdef TRACE
 static const char *
-_nc_viswbuf2n(int bufnum, const wchar_t * buf, int len)
+_nc_viswbuf2n(int bufnum, const wchar_t *buf, int len)
 {
     char *vbuf;
     char *tp;
@@ -168,26 +168,26 @@ _nc_viswbuf2n(int bufnum, const wchar_t * buf, int len)
 }
 
 NCURSES_EXPORT(const char *)
-_nc_viswbuf2(int bufnum, const wchar_t * buf)
+_nc_viswbuf2(int bufnum, const wchar_t *buf)
 {
     return _nc_viswbuf2n(bufnum, buf, -1);
 }
 
 NCURSES_EXPORT(const char *)
-_nc_viswbuf(const wchar_t * buf)
+_nc_viswbuf(const wchar_t *buf)
 {
     return _nc_viswbuf2(0, buf);
 }
 
 NCURSES_EXPORT(const char *)
-_nc_viswbufn(const wchar_t * buf, int len)
+_nc_viswbufn(const wchar_t *buf, int len)
 {
     return _nc_viswbuf2n(0, buf, len);
 }
 
 /* this special case is used for wget_wstr() */
 NCURSES_EXPORT(const char *)
-_nc_viswibuf(const wint_t * buf)
+_nc_viswibuf(const wint_t *buf)
 {
     static wchar_t *mybuf;
     static unsigned mylen;
@@ -208,7 +208,7 @@ _nc_viswibuf(const wint_t * buf)
 }
 
 NCURSES_EXPORT(const char *)
-_nc_viscbuf2(int bufnum, const cchar_t * buf, int len)
+_nc_viscbuf2(int bufnum, const cchar_t *buf, int len)
 {
     char *result = _nc_trace_buf(bufnum, BUFSIZ);
     int n;
@@ -240,7 +240,7 @@ _nc_viscbuf2(int bufnum, const cchar_t * buf, int len)
 	    if ((found = _nc_altcharset_name(attr, CharOfD(buf))) != 0) {
 		result = _nc_trace_bufcat(bufnum, found);
 		attr &= ~A_ALTCHARSET;
-	    } else if (!isnac(CHDEREF(buf))) {
+	    } else if (!isWidecExt(CHDEREF(buf))) {
 		PUTC_DATA;
 
 		PUTC_INIT;
@@ -282,7 +282,7 @@ _nc_viscbuf2(int bufnum, const cchar_t * buf, int len)
 }
 
 NCURSES_EXPORT(const char *)
-_nc_viscbuf(const cchar_t * buf, int len)
+_nc_viscbuf(const cchar_t *buf, int len)
 {
     return _nc_viscbuf2(0, buf, len);
 }
