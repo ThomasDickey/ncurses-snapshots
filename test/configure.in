@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.5 1996/09/07 15:02:15 tom Exp $
+dnl $Id: configure.in,v 1.6 1996/11/17 00:25:44 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -56,6 +56,8 @@ AC_CHECK_LIB($LIB_NAME,initscr)
 AC_CHECK_LIB(form,form_driver,,,-lcurses)
 AC_CHECK_LIB(menu,menu_driver,,,-lcurses)
 AC_CHECK_LIB(panel,new_panel,,,-lcurses)
+
+AC_TYPE_SIGNAL
 
 AC_STDC_HEADERS
 AC_HEADER_TIME

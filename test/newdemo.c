@@ -2,7 +2,7 @@
  *  newdemo.c	-	A demo program using PDCurses. The program illustrate
  *  	 		the use of colours for text output.
  *
- * $Id: newdemo.c,v 1.9 1996/11/10 00:11:17 tom Exp $
+ * $Id: newdemo.c,v 1.10 1996/11/17 00:23:29 tom Exp $
  */
 
 #include <test.priv.h>
@@ -11,10 +11,10 @@
 #include <time.h>
 #include <string.h>
 
-int SubWinTest(WINDOW *win);
-int WaitForUser(WINDOW *win);
-int BouncingBalls(WINDOW *win);
-void trap(int);
+static int SubWinTest(WINDOW *win);
+static int WaitForUser(WINDOW *win);
+static int BouncingBalls(WINDOW *win);
+static RETSIGTYPE trap(int);
 
 #define delay_output(x) napms(x)
 
@@ -215,7 +215,7 @@ chtype  c;
 /*
  * Test sub windows
  */
-int
+static int
 SubWinTest(WINDOW *win)
 {
 int     w, h, sw, sh, bx, by;
@@ -262,7 +262,7 @@ WINDOW  *swin1, *swin2, *swin3;
 /*
  *  Bouncing balls
  */
-int
+static int
 BouncingBalls(WINDOW *win)
 {
 int	w, h;
@@ -323,7 +323,7 @@ int     x3, y3, xd3, yd3;
 /*
  *  Wait for user
  */
-int WaitForUser(WINDOW *win)
+static int WaitForUser(WINDOW *win)
 {
  time_t  t;
  chtype key;
@@ -347,7 +347,7 @@ int WaitForUser(WINDOW *win)
 /*
  *  Trap interrupt
  */
-void trap(int sig)
+static RETSIGTYPE trap(int sig)
 {
     endwin();
     exit(sig);

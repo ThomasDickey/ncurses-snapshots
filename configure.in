@@ -1,7 +1,7 @@
-dnl $Id: configure.in,v 1.35 1996/11/03 18:01:29 tom Exp $
+dnl $Id: configure.in,v 1.36 1996/11/17 00:10:16 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.9)
-AC_REVISION($Revision: 1.35 $)
+AC_REVISION($Revision: 1.36 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
@@ -340,6 +340,7 @@ fi
 
 AC_SYS_RESTARTABLE_SYSCALLS
 AC_FUNC_SETVBUF_REVERSED
+AC_TYPE_SIGNAL
 NC_TYPE_SIGACTION
 NC_TIOCGWINSZ
 

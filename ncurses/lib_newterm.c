@@ -30,13 +30,15 @@
 
 #include <curses.priv.h>
 
+#include <string.h>
+
 #ifdef SVR4_TERMIO
 #define _POSIX_SOURCE
 #endif
 
 #include <term.h>	/* clear_screen, cup & friends, cur_term */
 
-MODULE_ID("$Id: lib_newterm.c,v 1.18 1996/07/31 01:19:42 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.19 1996/11/16 21:31:23 tom Exp $")
 
 /* This should moved to TERMINAL */
 static filter_mode = FALSE;

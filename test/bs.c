@@ -6,9 +6,11 @@
  * v1.2 with color support and minor portability fixes, November 1990
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
+ *
+ * $Id: bs.c,v 1.13 1996/11/17 00:17:12 tom Exp $
  */
 
-#include "test.priv.h"
+#include <test.priv.h>
 
 #include <signal.h>
 #include <ctype.h>
@@ -127,7 +129,7 @@ ship_t;
 
 static bool checkplace(int b, ship_t *ss, int vis);
 
-ship_t plyship[SHIPTYPES] =
+static ship_t plyship[SHIPTYPES] =
 {
     { carrier,	0, 'A', 5},
     { battle,	0, 'B', 4},
@@ -136,7 +138,7 @@ ship_t plyship[SHIPTYPES] =
     { ptboat,	0, 'P', 2},
 };
 
-ship_t cpuship[SHIPTYPES] =
+static ship_t cpuship[SHIPTYPES] =
 {
     { carrier,	0, 'A', 5},
     { battle,	0, 'B', 4},
@@ -155,7 +157,7 @@ static int salvo, blitz, closepack;
 
 #define	PR	(void)addstr
 
-static void uninitgame(int sig)  GCC_NORETURN;
+static RETSIGTYPE uninitgame(int sig)  GCC_NORETURN;
 
 static void uninitgame(int sig GCC_UNUSED)
 /* end the game, either normally or due to signal */
@@ -725,7 +727,7 @@ static ship_t *hitship(int x, int y)
 
     getyx(stdscr, oldy, oldx);
     sb = (turn) ? plyship : cpuship;
-    if(!(sym = board[OTHER][x][y]))
+    if((sym = board[OTHER][x][y]) == 0)
 	return((ship_t *)NULL);
     for(ss = sb; ss < sb + SHIPTYPES; ++ss)
 	if(ss->symbol == sym)
@@ -942,7 +944,7 @@ static bool cpufire(int x, int y)
     hits[COMPUTER][x][y] = (hit = (board[PLAYER][x][y])) ? MARK_HIT : MARK_MISS;
     (void) mvprintw(PROMPTLINE, 0,
 	"I shoot at %c%d. I %s!", y + 'A', x, hit ? "hit" : "miss");
-    if ((sunk = (hit && (ss = hitship(x, y)))))
+    if ((sunk = (hit && (ss = hitship(x, y)))) != 0)
 	(void) printw(" I've sunk your %s", ss->name);
     (void)clrtoeol();
 

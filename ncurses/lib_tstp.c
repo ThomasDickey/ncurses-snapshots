@@ -45,7 +45,7 @@ typedef struct sigaction sigaction_t;
 #define _POSIX_SOURCE
 #endif
 
-MODULE_ID("$Id: lib_tstp.c,v 1.7 1996/07/31 00:04:35 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.8 1996/11/17 00:11:41 tom Exp $")
 
 /*
  * Note: This code is fragile!  Its problem is that different OSs
@@ -205,7 +205,7 @@ static int CatchIfDefault(int sig, sigaction_t *act)
 	return FALSE;
 }
 #else
-static int CatchIfDefault(int sig, void (*handler)())
+static int CatchIfDefault(int sig, RETSIGTYPE (*handler)())
 {
 	void	(*ohandler)();
 

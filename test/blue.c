@@ -12,9 +12,11 @@
  * Compile this with the command `cc -O blue.c -lcurses -o blue'. For best
  * results, use the portable freeware ncurses(3) library.  On non-Intel
  * machines, SVr4 curses is just as good.
+ *
+ * $Id: blue.c,v 1.14 1996/11/17 00:22:23 tom Exp $
  */
 
-#include "test.priv.h"
+#include <test.priv.h>
 
 #include <string.h>
 #include <signal.h>
@@ -45,7 +47,7 @@
 #define BLACK_ON_WHITE  2
 #define BLUE_ON_WHITE   3
 
-static void die(int onsig) GCC_NORETURN;
+static RETSIGTYPE die(int onsig) GCC_NORETURN;
 
 static int deck_size = PACK_SIZE;	/* initial deck */
 static int deck[PACK_SIZE];
@@ -96,11 +98,11 @@ static chtype glyphs[] =
 
 static chtype *suits = letters;	/* this may change to glyphs below */
 
-static void die(int onsig)
+static RETSIGTYPE die(int onsig)
 {
-    signal(onsig, SIG_IGN);
+    (void) signal(onsig, SIG_IGN);
     endwin();
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
 
 static void init_vars(void)

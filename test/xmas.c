@@ -91,15 +91,16 @@
 /*                                                                            */
 /******************************************************************************/
 
-#include "test.priv.h"
+#include <test.priv.h>
 
 #include <signal.h>
 
 #define FROMWHO "Mark Hessling - (M.Hessling@gu.edu.au)"
 
-int y_pos, x_pos;
+static int y_pos, x_pos;
 
-WINDOW 	*treescrn, *treescrn2,*treescrn3, *treescrn4,*treescrn5, *treescrn6,
+static WINDOW
+	*treescrn, *treescrn2,*treescrn3, *treescrn4,*treescrn5, *treescrn6,
 	*treescrn7, *treescrn8,
 	*dotdeer0,
 	*stardeer0,
@@ -110,21 +111,21 @@ WINDOW 	*treescrn, *treescrn2,*treescrn3, *treescrn4,*treescrn5, *treescrn6,
 	*w_holiday,
 	*w_del_msg;
 
-int boxit(void);
-int seas(void);
-int greet(void);
-int fromwho(void);
-int tree(void);
-int balls(void);
-int star(void);
-int strng1(void);
-int strng2(void);
-int strng3(void);
-int strng4(void);
-int strng5(void);
-int reindeer(void);
-int blinkit(void);
-void done(int sig) GCC_NORETURN ;
+static int boxit(void);
+static int seas(void);
+static int greet(void);
+static int fromwho(void);
+static int tree(void);
+static int balls(void);
+static int star(void);
+static int strng1(void);
+static int strng2(void);
+static int strng3(void);
+static int strng4(void);
+static int strng5(void);
+static int reindeer(void);
+static int blinkit(void);
+static RETSIGTYPE done(int sig) GCC_NORETURN ;
 
 int main(
 	int argc GCC_UNUSED,
@@ -618,7 +619,7 @@ int loopy;
 	/*NOTREACHED*/
 }
 
-int boxit(void)
+static int boxit(void)
 {
  int x = 0;
 
@@ -644,7 +645,7 @@ int boxit(void)
 	return( 0 );
 }
 
-int seas(void)
+static int seas(void)
 {
 	mvaddch(4, 1, 'S');
 	mvaddch(6, 1, 'E');
@@ -659,7 +660,7 @@ int seas(void)
 }
 
 
-int greet(void)
+static int greet(void)
 {
 	mvaddch(3, 5, 'G');
 	mvaddch(5, 5, 'R');
@@ -675,13 +676,13 @@ int greet(void)
 }
 
 
-int fromwho(void)
+static int fromwho(void)
 {
 	mvaddstr(21, 13, FROMWHO);
 	return( 0 );
 }
 
-int tree(void)
+static int tree(void)
 {
 	mvwaddch(treescrn, 1, 11, (chtype)'/');
 	mvwaddch(treescrn, 2, 11, (chtype)'/');
@@ -726,7 +727,7 @@ int tree(void)
 }
 
 
-int balls(void)
+static int balls(void)
 {
 
 	overlay(treescrn, treescrn2);
@@ -754,7 +755,7 @@ int balls(void)
 }
 
 
-int star(void)
+static int star(void)
 {
 	wstandout(treescrn2);
 	mvwaddch(treescrn2, 0, 12, (chtype)'*');
@@ -766,7 +767,7 @@ int star(void)
 }
 
 
-int strng1(void)
+static int strng1(void)
 {
 	mvwaddch(treescrn2, 3, 13, (chtype)'\'');
 	mvwaddch(treescrn2, 3, 12, (chtype)':');
@@ -778,7 +779,7 @@ int strng1(void)
 }
 
 
-int strng2(void)
+static int strng2(void)
 {
 	mvwaddch(treescrn2, 5, 14, (chtype)'\'');
 	mvwaddch(treescrn2, 5, 13, (chtype)':');
@@ -793,7 +794,7 @@ int strng2(void)
 }
 
 
-int strng3(void)
+static int strng3(void)
 {
 	mvwaddch(treescrn2, 7, 16, (chtype)'\'');
 	mvwaddch(treescrn2, 7, 15, (chtype)':');
@@ -810,7 +811,7 @@ int strng3(void)
 }
 
 
-int strng4(void)
+static int strng4(void)
 {
 	mvwaddch(treescrn2, 9, 17, (chtype)'\'');
 	mvwaddch(treescrn2, 9, 16, (chtype)':');
@@ -832,7 +833,7 @@ int strng4(void)
 }
 
 
-int strng5(void)
+static int strng5(void)
 {
 	mvwaddch(treescrn2, 11, 19, (chtype)'\'');
 	mvwaddch(treescrn2, 11, 18, (chtype)':');
@@ -853,7 +854,7 @@ int strng5(void)
 
 
 
-int blinkit(void)
+static int blinkit(void)
 {
 static int cycle;
 
@@ -912,7 +913,7 @@ deer_step(WINDOW *win, int y, int x)
 	    napms(5);
 }
 
-int reindeer(void)
+static int reindeer(void)
 {
  int looper;
  y_pos = 0;
@@ -1053,7 +1054,7 @@ int reindeer(void)
 	return( 0 );
 }
 
-void done(int sig GCC_UNUSED)
+static RETSIGTYPE done(int sig GCC_UNUSED)
 {
 	signal(SIGINT,done);
 	signal(SIGTERM,done);
@@ -1064,5 +1065,5 @@ void done(int sig GCC_UNUSED)
 	clear();
 	refresh();
 	endwin();
-	exit(0);
+	exit(EXIT_SUCCESS);
 }

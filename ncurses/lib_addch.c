@@ -29,7 +29,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.23 1996/11/03 00:57:17 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.24 1996/11/16 21:16:39 tom Exp $")
 
 int wattr_on(WINDOW *win, const attr_t at)
 {
@@ -286,7 +286,10 @@ int wechochar(WINDOW *win, const chtype ch)
 		return(ERR);
 	else
 	{
+		bool	save_immed = win->_immed;
+		win->_immed = TRUE;
 		_nc_synchook(win);
+		win->_immed = save_immed;
 		TR(TRACE_VIRTPUT, ("wechochar() is done"));
 		return(OK);
 	}

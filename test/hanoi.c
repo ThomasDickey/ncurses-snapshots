@@ -14,9 +14,10 @@
  *
  *	Date: 05.Nov.90
  *
+ * $Id: hanoi.c,v 1.9 1996/11/16 22:29:35 tom Exp $
  */
 
-#include "test.priv.h"
+#include <test.priv.h>
 
 #include <string.h>
 
@@ -39,9 +40,9 @@ struct Peg {
 	int Count;
 };
 
-struct Peg Pegs[NPEGS];
-int PegPos[] = { LEFTPEG, MIDPEG, RIGHTPEG };
-int TileColour[] = {
+static struct Peg Pegs[NPEGS];
+static int PegPos[] = { LEFTPEG, MIDPEG, RIGHTPEG };
+static int TileColour[] = {
 	COLOR_GREEN,	/* Length 3 */
 	COLOR_MAGENTA,	/* Length 5 */
 	COLOR_RED,	/* Length 7 */
@@ -52,16 +53,16 @@ int TileColour[] = {
 	COLOR_MAGENTA,	/* Length 17 */
 	COLOR_RED,	/* Length 19 */
 };
-int NMoves = 0;
+static int NMoves = 0;
 
-void InitTiles(int NTiles);
-void DisplayTiles(void);
-void MakeMove(int From, int To);
-void AutoMove(int From, int To, int Num);
-void Usage(void);
-int Solved(int NumTiles);
-int GetMove(int *From, int *To);
-int InvalidMove(int From, int To);
+static void InitTiles(int NTiles);
+static void DisplayTiles(void);
+static void MakeMove(int From, int To);
+static void AutoMove(int From, int To, int Num);
+static void Usage(void);
+static int Solved(int NumTiles);
+static int GetMove(int *From, int *To);
+static int InvalidMove(int From, int To);
 
 int
 main(int argc, char **argv)
@@ -100,16 +101,11 @@ unsigned char AutoFlag = 0;
 	trace(TRACE_MAXIMUM);
 #endif
 	initscr();
-	if (!has_colors()) {
-		endwin();
-		puts("terminal doesn't support color.");
-		exit(1);
-	}
-	start_color();
-	{
-	int i;
-	for (i = 0; i < 9; i++)
-		init_pair(i+1, COLOR_BLACK, TileColour[i]);
+	if (has_colors()) {
+		int i;
+		start_color();
+		for (i = 0; i < 9; i++)
+			init_pair(i+1, COLOR_BLACK, TileColour[i]);
 	}
 	cbreak();
 	if (LINES < 24) {
@@ -151,7 +147,7 @@ unsigned char AutoFlag = 0;
 	exit(0);
 }
 
-int
+static int
 InvalidMove(int From, int To)
 {
 	if(From >= NPEGS)
@@ -173,20 +169,20 @@ InvalidMove(int From, int To)
 	return FALSE;
 }
 
-void
+static void
 InitTiles(int NTiles)
 {
-int Size, SlotNo;
-	
+	int Size, SlotNo;
+
 	for(Size=NTiles*2+1, SlotNo=0; Size>=3; Size-=2)
 		Pegs[0].Length[SlotNo++] = Size;
-	
+
 	Pegs[0].Count = NTiles;
 	Pegs[1].Count = 0;
 	Pegs[2].Count = 0;
 }
 
-void
+static void
 DisplayTiles()
 {
 	int Line, Peg, SlotNo;
@@ -214,7 +210,10 @@ DisplayTiles()
 		for(SlotNo=0; SlotNo<Pegs[Peg].Count; SlotNo++) {
 			memset(TileBuf, ' ', Pegs[Peg].Length[SlotNo]);
 			TileBuf[Pegs[Peg].Length[SlotNo]] = '\0';
-			attrset(COLOR_PAIR(LENTOIND(Pegs[Peg].Length[SlotNo])));
+			if (has_colors())
+				attrset(COLOR_PAIR(LENTOIND(Pegs[Peg].Length[SlotNo])));
+			else
+				attrset(A_REVERSE);
 			mvaddstr(BASELINE-(SlotNo+1),
 				(int)(PegPos[Peg] - Pegs[Peg].Length[SlotNo]/2),
 				TileBuf);
@@ -224,7 +223,7 @@ DisplayTiles()
 	refresh();
 }
 
-int
+static int
 GetMove(int *From, int *To)
 {
 	mvaddstr(STATUSLINE, 0, "Next move ('q' to quit) from ");
@@ -247,10 +246,9 @@ GetMove(int *From, int *To)
 	return FALSE;
 }
 
-void
+static void
 MakeMove(int From, int To)
 {
-
 	Pegs[From].Count--;
 	Pegs[To].Length[Pegs[To].Count] = Pegs[From].Length[Pegs[From].Count];
 	Pegs[To].Count++;
@@ -258,23 +256,24 @@ MakeMove(int From, int To)
 	DisplayTiles();
 }
 
-void
+static void
 AutoMove(int From, int To, int Num)
 {
-
 	if(Num == 1) {
 		MakeMove(From, To);
+		napms(500);
 		return;
 	}
 	AutoMove(From, OTHER(From, To), Num-1);
 	MakeMove(From, To);
+	napms(500);
 	AutoMove(OTHER(From, To), To, Num-1);
 }
 
-int
+static int
 Solved(int NumTiles)
 {
-int i;
+	int i;
 
 	for(i = 1; i < NPEGS; i++)
 		if (Pegs[i].Count == NumTiles)
@@ -282,10 +281,9 @@ int i;
 	return FALSE;
 }
 
-void
+static void
 Usage()
 {
 	fprintf(stderr, "Usage: hanoi [<No Of Tiles>] [a]\n");
 	fprintf(stderr, "The 'a' option causes the tower to be solved automatically\n");
 }
-

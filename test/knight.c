@@ -5,9 +5,11 @@
  * interface, you actually had to enter square coordinates!  Redesign by
  * Eric S. Raymond <esr@snark.thyrsus.com> July 22 1995.  Mouse support
  * added September 20th 1995.
+ *
+ * $Id: knight.c,v 1.11 1996/11/16 23:57:45 tom Exp $
  */
 
-#include "test.priv.h"
+#include <test.priv.h>
 
 #include <ctype.h>
 #include <signal.h>
@@ -76,7 +78,7 @@ int main(
     play();
 
     endwin();
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
 
 static void init (void)

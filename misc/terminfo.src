@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 9.13.18
+#	Version 9.13.19
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -313,6 +313,12 @@ klone+sgr-dumb|attribute control for ansi.sys displays (no ESC [ 11 m),
 	sgr0=\E[0;10m, smacs=\E[12m, smso=\E[7m, smul=\E[4m, 
 	use=klone+acs, 
 
+# KOI8 (RFC1489) alternate character set 
+# From: Qing Long <qinglong@Bolizm.ihep.su>, 24 Feb 1996.
+klone+koi8acs|alternate character set for ansi.sys displays with KOI8 charset, 
+	acsc=l\202m\204k\203j\205u\207t\206v\210w\211q\200x\201n\212o\213s\214p\216r\217`\004a\237f\234g\232~\225.\037-\036+\020\,\021h\222I\2200\215y\230z\231{\267}L|\274, 
+	rmacs=\E[10m, smacs=\E[11m, 
+
 # ANSI.SYS color control.  The setb/setf caps depend on the coincidence
 # between SVr4/XPG4's color numbers and ANSI.SYS attributes.  Here are longer
 # but equivalent strings that don't rely on that coincidence:
@@ -564,8 +570,8 @@ linux|linux console,
 	kf2=\E[[B, kf20=\E[34~, kf3=\E[[C, kf4=\E[[D, kf5=\E[[E, 
 	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
 	khome=\E[1~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, kspd=^Z, 
-	nel=^M^J, rc=\E8, rev=\E[7m, ri=\EM, rmir=\E[4l, rmul=\E[24m, 
-	rs1=\Ec, sc=\E7, 
+	nel=^M^J, rc=\E8, rev=\E[7m, ri=\EM, rmir=\E[4l, rmso=\E[27m, 
+	rmul=\E[24m, rs1=\Ec, sc=\E7, 
 	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m, 
 	smir=\E[4h, smul=\E[4m, tbc=\E[3g, u6=\E[%i%d;%dR, 
 	u7=\E[6n, u8=\E[?6c, u9=\E[c, vpa=\E[%i%p1%dd, 
@@ -589,9 +595,9 @@ linux-nic|linux with ich/ich1 suppressed for non-curses programs,
 	ich@, ich1@, 
 	use=linux, 
 
-# Obsolete:
-#linux-old|linux console with hardwired screen size,
-#	cols#80, lines#25, use=linux,
+# This assumes you have used setfont(8) to load one of the Linux koi8-r fonts.
+linux-koi8|linux with koi8 alternate character set, 
+	use=linux, use=klone+koi8acs, 
 
 # SCO console and SOS-Syscons console for 386bsd
 # (scoansi: had unknown capabilities
@@ -1771,18 +1777,29 @@ x10term|vs100-x10|xterm terminal emulator (X10 window system),
 	rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, 
 	sgr0=\E[m, smam=\E[?7h, smir=\E[4h, smkx=\E[?1h\E=, 
 	smso=\E[7m, smul=\E[4m, 
-# This entry is designed for XFree86 version 3.1.2E.
-# It is *way* more featureful than the stock X consortium entry (has <acsc>,
-# for starters -- note that this only works for some fonts, including the
-# `fixed' series).  The <kmous> key is actually the \E[M prefix returned by
-# xterm's internal mouse-tracking facility; ncurses will interpret the
-# following three bytes of mouse status information.
-# From: Eric S. Raymond <esr@snark.thyrsus.com> 14 Dec 1995
-# Updated: T.Dickey <dickey@clark.net> 12 May 1996, for XFree86 3.1.2E
-xterm-color|xterm terminal emulator (XFree86 3.1.2E and above), 
-	use=xterm-xf312e, 
-# This version is distributed with X11R6.1
-xterm-x11r6|xterm terminal emulator (X Window System X11R6.1), 
+# Compatible with the R5 xterm (straight from the XFree86 3.2 distribution)
+xterm-r5|xterm R5 version, 
+	am, km, msgr, xenl, 
+	cols#80, it#8, lines#24, 
+	bel=^G, blink=@, bold=\E[1m, clear=\E[H\E[2J, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
+	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, 
+	el=\E[K, home=\E[H, ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, 
+	il=\E[%p1%dL, il1=\E[L, ind=^J, kbs=^H, kcub1=\EOD, 
+	kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kdch1=\E[3~, 
+	kdl1=\E[31~, kel=\E[8~, kf0=\EOq, kf1=\E[11~, kf10=\E[21~, 
+	kf11=\E[23~, kf12=\E[24~, kf2=\E[12~, kf3=\E[13~, 
+	kf4=\E[14~, kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, 
+	kf9=\E[20~, khome=\E[7~, kich1=\E[2~, kil1=\E[30~, 
+	knp=\E[6~, kpp=\E[5~, rc=\E8, rev=\E[7m, ri=\EM, 
+	rmkx=\E[?1l\E>, rmso=\E[m, 
+	rs1=\E>\E[1;3;4;5;6l\E[?7h\E[m\E[r\E[2J\E[H, sc=\E7, 
+	sgr=\E[%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;m, 
+	sgr0=\E[m, smkx=\E[?1h\E=, smso=\E[7m, tbc=\E[3g, 
+# Compatible with the R6 xterm (straight from the XFree86 3.2 distribution)
+xterm-r6|xterm-old|xterm X11R6 version, 
 	am, km, mir, msgr, xenl, 
 	cols#80, lines#24, 
 	bel=^G, blink@, bold=\E[1m, clear=\E[H\E[2J, cr=^M, 
@@ -1790,7 +1807,8 @@ xterm-x11r6|xterm terminal emulator (X Window System X11R6.1),
 	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
 	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
 	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, 
-	el=\E[K, home=\E[H, ht=^I, il=\E[%p1%dL, il1=\E[L, ind=^J, 
+	el=\E[K, enacs=\E)0, home=\E[H, ht=^I, il=\E[%p1%dL, 
+	il1=\E[L, ind=^J, 
 	is2=\E7\E[r\E[m\E[?7h\E[?1;3;4;6l\E[4l\E8\E>, kbs=^H, 
 	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
 	kdch1=\E[3~, kf1=\EOP, kf10=\E[21~, kf11=\E[23~, 
@@ -1798,59 +1816,56 @@ xterm-x11r6|xterm terminal emulator (X Window System X11R6.1),
 	kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, kf19=\E[33~, 
 	kf2=\EOQ, kf20=\E[34~, kf3=\EOR, kf4=\EOS, kf5=\E[15~, 
 	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, kfnd=\E[1~, 
-	kich1=\E[2~, knp=\E[6~, kpp=\E[5~, kslt=\E[4~, rc=\E8, 
-	rev=\E[7m, ri=\EM, rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, 
-	rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, 
+	kich1=\E[2~, knp=\E[6~, kpp=\E[5~, kslt=\E[4~, meml=\El, 
+	memu=\Em, rc=\E8, rev=\E[7m, ri=\EM, rmacs=^O, 
+	rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, rmkx=\E[?1l\E>, 
+	rmso=\E[m, rmul=\E[m, 
 	rs2=\E7\E[r\E[m\E[?7h\E[?1;3;4;6l\E[4l\E8\E>, sc=\E7, 
-	sgr0=\E[m, smcup=\E7\E[?47h, smir=\E[4h, smkx=\E[?1h\E=, 
-	smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
-# Use this version if you have an XFree86 xterm at version 3.1.2D or older.
-# Note that due to an array indexing error in the xterm code, even these
-# codes for <kend>/<khome> will probably fail in versions earlier than
-# XFree86's 3.1.2C.
-# Use this entry for extensions/revisions above X11R6.1 (including corrections
-# to the standard terminfo distributed with X11R6.1):
-xterm-base|xterm terminal emulator (X Window System X11R6.1), 
-	it#8, lines#65, 
-	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~..--++\,\,II00, 
-	enacs=\E(B\E)0, flash=\E[?5h\E[?5l, hts=\EH, 
-	ich=\E[%p1%d@, ich1=\E[@, 
-	is2=\E[r\E[m\E[H\E[2J\E[?7h\E[?1;3;4;6l\E[4l, 
-	ka1=\EOw, ka3=\EOu, kb2=\EOy, kbeg=\EOE, kc1=\EOq, kc3=\EOs, 
-	kdch1=\177, kend=\EOe, kent=\EOM, kf0=\E[21~, kf1=\E[11~, 
-	kf2=\E[12~, kf3=\E[13~, kf4=\E[14~, khome=\EO\200, 
-	kmous=\E[M, rmacs=^O, rmam=\E[?7l, rs1=^O, 
-	rs2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l\E>, 
-	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
-	smacs=^N, smam=\E[?7h, u6=\E[%i%d;%dR, u7=\E[6n, 
-	u8=\E[?1;2c, u9=\E[c, 
-	use=xterm-x11r6, 
-# This implements color, but is incompatible with the older color_xterm
-# program, which does not support bce.
-xterm-xf312e|xterm terminal emulator (XFree86 3.1.2E), 
-	bce, 
-	colors#8, ncv#7, pairs#64, 
-	civis=\E[?25l, cnorm=\E[?25h, cvvis=\E[?25h, 
-	enacs=\E(B\E)0, hts=\EH, kend=\EOF, khome=\EOH, op=\E[100m, 
+	sgr0=\E[m, smacs=^N, smcup=\E7\E[?47h, smir=\E[4h, 
+	smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
+# This is the stock xterm entry supplied with XFree86 3.2
+# The name has been changed and some aliases have been removed.
+xterm-xf86-v32|xterm terminal emulator (X Window System), 
+	am, bce, km, mir, msgr, xenl, 
+	colors#8, cols#80, it#8, lines#24, pairs#64, 
+	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+	bel=^G, bold=\E[1m, civis=\E[?25l, clear=\E[H\E[2J, 
+	cnorm=\E[?25h, cr=^M, csr=\E[%i%p1%d;%p2%dr, 
+	cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=^J, 
+	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
+	cuu=\E[%p1%dA, cuu1=\E[A, cvvis=\E[?25h, dch=\E[%p1%dP, 
+	dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ech=\E[%p1%dX, ed=\E[J, 
+	el=\E[K, el1=\E[1K, enacs=\E(B\E)0, flash=\E[?5h\E[?5l, 
+	home=\E[H, hpa=\E[%i%p1%dG, ht=^I, hts=\EH, ich=\E[%p1%d@, 
+	ich1=\E[@, il=\E[%p1%dL, il1=\E[L, ind=^J, 
+	is2=\E7\E[r\E[m\E[?7h\E[?1;3;4;6l\E[4l\E8\E>, 
+	ka1=\EOw, ka3=\EOu, kb2=\EOy, kbeg=\EOE, kbs=^H, kc1=\EOq, 
+	kc3=\EOs, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
+	kdch1=\177, kend=\EOF, kent=\EOM, kf1=\E[11~, kf10=\E[21~, 
+	kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, 
+	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, 
+	kf19=\E[33~, kf2=\E[12~, kf20=\E[34~, kf3=\E[13~, 
+	kf4=\E[14~, kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, 
+	kf9=\E[20~, kfnd=\E[1~, khome=\EOH, kich1=\E[2~, 
+	kmous=\E[M, knp=\E[6~, kpp=\E[5~, kslt=\E[4~, meml=\El, 
+	memu=\Em, op=\E[39;49m, rc=\E8, rev=\E[7m, ri=\EM, rmacs=^O, 
+	rmam=\E[?7l, rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, 
+	rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m, rs1=^O, 
+	rs2=\E7\E[r\E[m\E[?7h\E[?1;3;4;6l\E[4l\E8\E>, sc=\E7, 
 	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
 	setb=\E[4%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
 	setf=\E[3%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
 	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
-	sgr0=\E[m\017, 
-	use=xterm-base, 
-# This requires the newer xterm.
-xterm-xf312f|xterm terminal emulator (XFree86 3.1.2F), 
-	ncv@, 
-	ech=\E[%p1%dX, el1=\E[1K, hpa=\E[%i%p1%dG, op=\E[39;49m, 
-	rmso=\E[27m, rmul=\E[24m, vpa=\E[%i%p1%dd, 
-	use=xterm-xf312e, 
+	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smcup=\E7\E[?47h, 
+	smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
+	tbc=\E[3g, vpa=\E[%i%p1%dd, 
 
-# Updated: T.Dickey <dickey@clark.net> 14 Sep 1996, for XFree86 3.1.2G
-xterm-alpha|xterm for XFree86 3.1.2G, 
-	use=xterm-xf312f, 
-
-xterm|vs100|xterm terminal emulator (X11R6 Window System), 
-	use=xterm-xf312f, 
+# This is xterm for ncurses. It mainly adds mappings for more high-half
+# characters.  Note that these will only work for fixed-width fonts.
+xterm|vs100|xterms|xterm terminal emulator (X Window System), 
+	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~..--++\,\,II00, 
+	u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
+	use=xterm-xf86-v32, 
 
 # These entries allow access to the X titlebar and icon name as a status line. 
 # Note that twm (and possibly window managers descended from it such as tvtwm, 
@@ -1871,8 +1886,6 @@ xterm+sl-twm|access X title line (pacify twm-descended window managers),
 xterm-bold|xterm terminal emulator (X11R6 Window System) standout w/bold, 
 	smso=\E[1m, 
 	use=xterm, 
-xterms|vs100s|xterm terminal emulator (small screen 24x80), 
-	cols#80, lines#24, use=xterm, 
 # (kterm: this had extension capabilities ":KJ:TY=ascii:" -- esr)
 # (kterm should not invoke DEC Graphics as the alternate character set
 #  -- Kenji Rikitake)
@@ -12780,7 +12793,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # ED   Erase in Display          \E [ Ps J           0         eF     ed  (J)
 # EF   Erase in Field            \E [ Ps N           0         eF     -
 # EL   Erase in Line             \E [ Ps K           0         eF     el  (J)
-# EM   Eend of Medium *          ^Y                  -         -      -
+# EM   End of Medium *           ^Y                  -         -      -
 # EMI  Enable Manual Input       \E b                          Fs     -
 # ENQ  Enquire                   ^E                  -         -      -
 # EOT  End Of Transmission       ^D                  -         *      -
@@ -12923,7 +12936,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # (D) terminfo (nel) is usually \r\n rather than ANSI \EE.
 #
-# (E) ECNA-48 calls this "Active Position Report" but preserves the CPR 
+# (E) ECMA-48 calls this "Active Position Report" but preserves the CPR 
 # abbreviation.
 # 
 # (F) CTC parameter values: 0 = set char tab, 1 = set line tab, 2 = clear
@@ -12976,7 +12989,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # (R) Some ANSI.SYS versions accept VPR, but more commonly `ANSI' terminals
 # use CUD for this function and ignore VPR.  ECMA calls it `Line Position
-# Absolute but retains the VPA abbreviation.
+# Absolute' but retains the VPA abbreviation.
 #
 # (S) MC parameters: 0 = start xfer to primary aux device, 1 = start xfer from
 # primary aux device, 2 = start xfer to secondary aux device, 3 = start xfer
@@ -13830,6 +13843,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 9.13.18 (Mon Oct 28 13:24:59 EST 1996):
 #	* Merged in Thomas Dickey's reorganization of the xterm entries;
 #	  added technical corrections to avoid warning messages.
+# 9.13.19 (Sat Nov 16 16:05:49 EST 1996):
+#	* Added rmso=\E[27m in Linux entry.
+#	* Added koi8-r support for Linux console.
+#	* Replace xterm entries with canonical ones from XFree86 3.2.
 #
 
 ######## REORDER
