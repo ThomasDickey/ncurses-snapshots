@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.31 2001/05/26 17:36:36 tom Exp $
+# $Id: Makefile.in,v 1.32 2001/12/08 18:48:01 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -51,7 +51,7 @@ sources :	terminfo.5
 depend :
 
 $(DESTDIR)$(mandir) :
-	$(srcdir)/../mkinstalldirs $@
+	sh $(srcdir)/../mkinstalldirs $@
 
 EDITARGS = $(DESTDIR)$(mandir) $(srcdir) terminfo.5 $(srcdir)/*.[0-9]*
 

@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.46 2000/10/14 17:57:02 Johnny.C.Lam Exp $
+# $Id: mk-1st.awk,v 1.47 2001/12/08 19:16:46 Jason.Evans Exp $
 ##############################################################################
 # Copyright (c) 1998,2000 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -40,6 +40,7 @@
 #	subset ("none", "base", "base+ext_funcs" or "termlib")
 #	target (cross-compile target, if any)
 #	ShlibVer ("rel", "abi" or "auto", to augment DoLinks variable)
+#	ShlibVerInfix ("yes" or "no", determines location of version #)
 #	DoLinks ("yes", "reverse" or "no", flag to add symbolic links)
 #	rmSoLocs ("yes" or "no", flag to add extra clean target)
 #	overwrite ("yes" or "no", flag to add link to libcurses.a
@@ -159,8 +160,14 @@ END	{
 			lib_name = sprintf("%s%s%s", prefix, name, suffix)
 			if ( MODEL == "SHARED" )
 			{
-				abi_name = sprintf("%s.$(ABI_VERSION)", lib_name);
-				rel_name = sprintf("%s.$(REL_VERSION)", lib_name);
+				if (ShlibVerInfix == "yes")
+				{
+					abi_name = sprintf("%s%s.$(ABI_VERSION)%s", prefix, name, suffix);
+					rel_name = sprintf("%s%s.$(REL_VERSION)%s", prefix, name, suffix);
+				} else {
+					abi_name = sprintf("%s.$(ABI_VERSION)", lib_name);
+					rel_name = sprintf("%s.$(REL_VERSION)", lib_name);
+				}
 				if ( DoLinks == "reverse") {
 					end_name = lib_name;
 				} else {

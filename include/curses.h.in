@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.116 2001/12/02 01:13:21 tom Exp $ */
+/* $Id: curses.h.in,v 1.117 2001/12/08 21:37:39 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -162,7 +162,12 @@ extern NCURSES_EXPORT_VAR(int) COLOR_PAIRS;
 
 /* line graphics */
 
+#if @BROKEN_LINKER@
+extern NCURSES_EXPORT_VAR(chtype*) _nc_acs_map(void);
+#define acs_map (_nc_acs_map())
+#else
 extern NCURSES_EXPORT_VAR(chtype) acs_map[];
+#endif
 
 /* VT100 symbols begin here */
 #define ACS_ULCORNER	(acs_map['l'])	/* upper left corner */

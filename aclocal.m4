@@ -26,9 +26,9 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
+dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000,2001
 dnl
-dnl $Id: aclocal.m4,v 1.260 2001/12/02 01:39:28 tom Exp $
+dnl $Id: aclocal.m4,v 1.265 2001/12/08 21:03:08 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -647,6 +647,49 @@ tcgetattr(1, &foo);],
 test "$cf_cv_have_tcgetattr" = yes && AC_DEFINE(HAVE_TCGETATTR)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Check for vsscanf() function, which is in c9x but generally not in earlier
+dnl versions of C.  It is in the GNU C library, and can often be simulated by
+dnl other functions.
+AC_DEFUN([CF_FUNC_VSSCANF],
+[
+AC_CACHE_CHECK(for vsscanf function or workaround,cf_cv_func_vsscanf,[
+AC_TRY_LINK([
+#include <stdarg.h>
+#include <stdio.h>],[
+	va_list ap;
+	vsscanf("from", "%d", ap)],[cf_cv_func_vsscanf=yes],[
+AC_TRY_LINK([
+#include <stdarg.h>
+#include <stdio.h>],[
+    FILE strbuf;
+    char *str = "from";
+
+    strbuf._flag = _IOREAD;
+    strbuf._ptr = strbuf._base = (unsigned char *) str;
+    strbuf._cnt = strlen(str);
+    strbuf._file = _NFILE;
+    return (vfscanf(&strbuf, "%d", ap))],[cf_cv_func_vsscanf=vfscanf],[
+AC_TRY_LINK([
+#include <stdarg.h>
+#include <stdio.h>],[
+    FILE strbuf;
+    char *str = "from";
+
+    strbuf._flag = _IOREAD;
+    strbuf._ptr = strbuf._base = (unsigned char *) str;
+    strbuf._cnt = strlen(str);
+    strbuf._file = _NFILE;
+    return (_doscan(&strbuf, "%d", ap))],[cf_cv_func_vsscanf=_doscan],[
+cf_cv_func_vsscanf=no])])])])
+
+case $cf_cv_func_vsscanf in #(vi
+vsscanf) AC_DEFINE(HAVE_VSSCANF);; #(vi
+vfscanf) AC_DEFINE(HAVE_VFSCANF);; #(vi
+_doscan) AC_DEFINE(HAVE__DOSCAN);;
+esac
+
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Test for availability of useful gcc __attribute__ directives to quiet
 dnl compiler warnings.  Though useful, not all are supported -- and contrary
 dnl to documentation, unrecognized directives cause older compilers to barf.
@@ -967,8 +1010,18 @@ do
 			if test $cf_item = shared ; then
 			if test "$cf_cv_do_symlinks" = yes ; then
 				case "$cf_cv_shlib_version" in #(vi
-				rel) cf_suffix="$cf_suffix"'.$(REL_VERSION)' ;; #(vi
-				abi) cf_suffix="$cf_suffix"'.$(ABI_VERSION)' ;;
+				rel) #(vi
+					case "$cf_cv_system_name" in #(vi
+					darwin*) cf_suffix='.$(REL_VERSION)'"$cf_suffix" ;; #(vi
+					*) cf_suffix="$cf_suffix"'.$(REL_VERSION)' ;;
+					esac
+					;;
+				abi)
+					case "$cf_cv_system_name" in #(vi
+					darwin*) cf_suffix='.$(ABI_VERSION)'"$cf_suffix" ;; #(vi
+					*) cf_suffix="$cf_suffix"'.$(ABI_VERSION)' ;;
+					esac
+					;;
 				esac
 			fi
 			fi
@@ -1027,6 +1080,7 @@ do
 				suffix=$cf_suffix \
 				subset=$cf_subset \
 				ShlibVer=$cf_cv_shlib_version \
+				ShlibVerInfix=$cf_cv_shlib_version_infix \
 				DoLinks=$cf_cv_do_symlinks \
 				rmSoLocs=$cf_cv_rm_so_locs \
 				ldconfig="$LDCONFIG" \
@@ -1212,7 +1266,7 @@ do
 	if test -f $srcdir/$cf_dir/headers; then
 	cat >>$cf_dir/Makefile <<CF_EOF
 \$(DESTDIR)\$(includedir) :
-	\$(srcdir)/../mkinstalldirs \[$]@
+	sh \$(srcdir)/../mkinstalldirs \[$]@
 
 install \\
 install.libs \\
@@ -1559,7 +1613,7 @@ if test "$cf_manpage_renames" != no ; then
   # Construct a sed-script to perform renaming within man-pages
   if test -n "$cf_manpage_renames" ; then
     test ! -d man && mkdir man
-    $srcdir/man/make_sed.sh $cf_manpage_renames >man/edit_man.sed
+    sh $srcdir/man/make_sed.sh $cf_manpage_renames >man/edit_man.sed
   fi
 fi
 
@@ -1630,7 +1684,7 @@ cat >man/edit_man.sh <<CF_EOF
 prefix="$cf_prefix"
 datadir="$datadir"
 TERMINFO="$TERMINFO"
-MKDIRS="`cd $srcdir && pwd`/mkinstalldirs"
+MKDIRS="sh `cd $srcdir && pwd`/mkinstalldirs"
 INSTALL="$INSTALL"
 INSTALL_DATA="$INSTALL_DATA"
 transform="$program_transform_name"
@@ -1864,6 +1918,54 @@ AC_CACHE_CHECK(if filesystem supports mixed-case filenames,cf_cv_mixedcase,[
 test "$cf_cv_mixedcase" = yes && AC_DEFINE(MIXEDCASE_FILENAMES)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Check for a working mkstemp.  This creates two files, checks that they are
+dnl successfully created and distinct (AmigaOS apparently fails on the last).
+AC_DEFUN([CF_MKSTEMP],[
+AC_CACHE_CHECK(for working mkstemp, cf_cv_func_mkstemp,[
+rm -f conftest*
+AC_TRY_RUN([
+#include <sys/types.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+int main()
+{
+	char *tmpl = "conftestXXXXXX";
+	char name[2][80];
+	int n;
+	int result = 0;
+	int fd;
+	struct stat sb;
+
+	umask(077);
+	for (n = 0; n < 2; ++n) {
+		strcpy(name[n], tmpl);
+		if ((fd = mkstemp(name[n])) >= 0) {
+			if (!strcmp(name[n], tmpl)
+			 || stat(name[n], &sb) != 0
+			 || (sb.st_mode & S_IFMT) != S_IFREG
+			 || (sb.st_mode & 077) != 0) {
+				result = 1;
+			}
+			close(fd);
+		}
+	}
+	if (result == 0
+	 && !strcmp(name[0], name[1]))
+		result = 1;
+	exit(result);
+}
+],[cf_cv_func_mkstemp=yes
+],[cf_cv_func_mkstemp=no
+],[AC_CHECK_FUNC(mkstemp)
+])
+])
+if test "$cf_cv_func_mkstemp" = yes ; then
+	AC_DEFINE(HAVE_MKSTEMP)
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Compute the object-directory name from the given model name
 AC_DEFUN([CF_OBJ_SUBDIR],
 [
@@ -1911,7 +2013,7 @@ case ".[$]$1" in #(vi
   $1=`echo [$]$1 | sed -e s@NONE@$ac_default_prefix@`
   ;;
 *)
-  AC_ERROR([expected a pathname, not \"[$]$1\"])
+  ifelse($2,,[AC_ERROR([expected a pathname, not \"[$]$1\"])],$2)
   ;;
 esac
 ])dnl
@@ -2002,12 +2104,16 @@ dnl
 dnl The variable 'cf_cv_shlib_version' controls whether we use the rel or abi
 dnl version when making symbolic links.
 dnl
+dnl The variable 'cf_cv_shlib_version_infix' controls whether shared library
+dnl version numbers are infix (ex: libncurses.<ver>.dylib) or postfix
+dnl (ex: libncurses.so.<ver>).
+dnl
 dnl Some loaders leave 'so_locations' lying around.  It's nice to clean up.
 AC_DEFUN([CF_SHARED_OPTS],
 [
 	AC_REQUIRE([CF_SUBST_NCURSES_VERSION])
- 	LOCAL_LDFLAGS=
- 	LOCAL_LDFLAGS2=
+	LOCAL_LDFLAGS=
+	LOCAL_LDFLAGS2=
 	LD_SHARED_OPTS=
 	INSTALL_LIB="-m 644"
 
@@ -2048,6 +2154,8 @@ AC_DEFUN([CF_SHARED_OPTS],
 		CFLAGS="$cf_save_CFLAGS"
 	fi
 
+	cf_cv_shlib_version_infix=no
+
 	case $cf_cv_system_name in
 	beos*)
 		MK_SHARED_LIB='$(CC) -o $[@] -Xlinker -soname=`basename $[@]` -nostart -e 0'
@@ -2055,7 +2163,9 @@ AC_DEFUN([CF_SHARED_OPTS],
 	darwin*)
 		EXTRA_CFLAGS="-no-cpp-precomp"
 		CC_SHARED_OPTS="-dynamic"
-		MK_SHARED_LIB='$(CC) -dynamiclib -o $[@]'
+		MK_SHARED_LIB='$(CC) -dynamiclib -install_name $(DESTDIR)$(libdir)/`basename $[@]` -compatibility_version $(ABI_VERSION) -current_version $(ABI_VERSION) -o $[@]'
+		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=abi
+		cf_cv_shlib_version_infix=yes
 		;;
 	hpux*)
 		# (tested with gcc 2.7.2 -- I don't have c89)
@@ -2084,8 +2194,8 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	linux*|gnu*)
 		if test "$DFT_LWR_MODEL" = "shared" ; then
- 			LOCAL_LDFLAGS="-Wl,-rpath,`pwd`/lib"
- 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
+			LOCAL_LDFLAGS="-Wl,-rpath,`pwd`/lib"
+			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
 		fi
 		if test "$cf_cv_ld_rpath" = yes ; then
 			cf_ld_rpath_opt="-Wl,-rpath,"
@@ -2107,8 +2217,8 @@ AC_DEFUN([CF_SHARED_OPTS],
 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
 		test "$cf_cv_ld_rpath" = yes && cf_ld_rpath_opt="-Wl,-rpath,"
 		if test "$DFT_LWR_MODEL" = "shared" && test "$cf_cv_ld_rpath" = yes ; then
- 			LOCAL_LDFLAGS="-Wl,-rpath,`pwd`/lib"
- 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
+			LOCAL_LDFLAGS="-Wl,-rpath,`pwd`/lib"
+			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
 			EXTRA_LDFLAGS="-Wl,-rpath,\$(libdir) $EXTRA_LDFLAGS"
 			MK_SHARED_LIB='$(CC) -shared -Wl,-soname,`basename $[@] .$(REL_VERSION)`.$(ABI_VERSION) -o $[@]'
 			if test "$cf_cv_shlib_version" = auto; then
@@ -2124,16 +2234,16 @@ AC_DEFUN([CF_SHARED_OPTS],
 		# tested with OSF/1 V3.2 and 'cc'
 		# tested with OSF/1 V3.2 and gcc 2.6.3 (but the c++ demo didn't
 		# link with shared libs).
- 		MK_SHARED_LIB='$(LD) -set_version $(REL_VERSION):$(ABI_VERSION) -expect_unresolved "*" -shared -soname `basename $[@]`'
+		MK_SHARED_LIB='$(LD) -set_version $(REL_VERSION):$(ABI_VERSION) -expect_unresolved "*" -shared -soname `basename $[@]`'
 		case $host_os in
 		osf4*)
- 			MK_SHARED_LIB="${MK_SHARED_LIB} -msym"
+			MK_SHARED_LIB="${MK_SHARED_LIB} -msym"
 			;;
 		esac
 		MK_SHARED_LIB="${MK_SHARED_LIB}"' -o $[@]'
 		if test "$DFT_LWR_MODEL" = "shared" ; then
- 			LOCAL_LDFLAGS="-Wl,-rpath,`pwd`/lib"
- 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
+			LOCAL_LDFLAGS="-Wl,-rpath,`pwd`/lib"
+			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
 		fi
 		if test "$cf_cv_ld_rpath" = yes ; then
 			cf_ld_rpath_opt="-rpath"
@@ -2171,7 +2281,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		MK_SHARED_LIB='$(LD) -dy -G -h `basename $[@] .$(REL_VERSION)`.$(ABI_VERSION) -o $[@]'
 		if test "$DFT_LWR_MODEL" = "shared" ; then
 			LOCAL_LDFLAGS="-R `pwd`/lib:\$(libdir)"
- 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
+			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
 		fi
 		if test "$cf_cv_ld_rpath" = yes ; then
 			cf_ld_rpath_opt="-R"
