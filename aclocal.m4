@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000,2001
 dnl
-dnl $Id: aclocal.m4,v 1.274 2002/01/20 01:08:08 tom Exp $
+dnl $Id: aclocal.m4,v 1.276 2002/01/27 00:23:24 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -521,7 +521,11 @@ DIRS_TO_MAKE="lib"
 for cf_item in $cf_list_models
 do
 	CF_OBJ_SUBDIR($cf_item,cf_subdir)
-	DIRS_TO_MAKE="$DIRS_TO_MAKE $cf_subdir"
+	for cf_item2 in $DIRS_TO_MAKE
+	do
+		test $cf_item2 = $cf_subdir && break
+	done
+	test ".$cf_item2" != ".$cf_subdir" && DIRS_TO_MAKE="$DIRS_TO_MAKE $cf_subdir"
 done
 for cf_dir in $DIRS_TO_MAKE
 do
@@ -1022,6 +1026,8 @@ for cf_dir in $SRC_SUBDIRS
 do
 	if test -f $srcdir/$cf_dir/modules; then
 
+		IMPORT_LIB=
+		SHARED_LIB=
 		LIBS_TO_MAKE=
 		for cf_item in $CF_LIST_MODELS
 		do
@@ -1043,6 +1049,13 @@ do
 					;;
 				esac
 			fi
+			# cygwin needs import library, and has unique naming convention
+			if test $cf_cv_shlib_version = cygdll ; then
+				SHARED_LIB="../lib/${cf_prefix}${cf_dir}\$(ABI_VERSION).dll"
+				IMPORT_LIB="../lib/${cf_prefix}${cf_dir}.dll.a"
+				LIBS_TO_MAKE="$LIBS_TO_MAKE \$(SHARED_LIB) \$(IMPORT_LIB)"
+				continue
+			fi
 			fi
 			LIBS_TO_MAKE="$LIBS_TO_MAKE ../lib/${cf_prefix}${cf_dir}${cf_suffix}"
 		done
@@ -1058,23 +1071,6 @@ do
 			esac
 		fi
 
-		# add import libraries for cygwin
-		IMPORT_LIB=
-		SHARED_LIB=
-		if test $cf_cv_shlib_version = cygdll ; then
-			cf_item=`echo "$CF_LIST_MODELS" |sed -e 's/ //g'`
-			case $cf_item in #(vi
-			shared) #(vi
-				SHARED_LIB="`echo $LIBS_TO_MAKE | sed -e 's/\.dll/\$(ABI_VERSION).dll/g'`"
-				IMPORT_LIB="`echo $LIBS_TO_MAKE | sed -e 's/\.dll/.dll.a/g'`"
-				LIBS_TO_MAKE='$(SHARED_LIB) $(IMPORT_LIB)'
-				;;
-			*shared*)
-				AC_MSG_ERROR(Cannot mix shared/static models: $CF_LIST_MODELS)
-				;;
-			esac
-		fi
-
 		sed -e "s@\@LIBS_TO_MAKE\@@$LIBS_TO_MAKE@" \
 		    -e "s@\@IMPORT_LIB\@@$IMPORT_LIB@" \
 		    -e "s@\@SHARED_LIB\@@$SHARED_LIB@" \
@@ -1085,6 +1081,7 @@ do
 			libname="${cf_dir}${LIB_SUFFIX}" \
 			$srcdir/$cf_dir/modules >>$cf_dir/Makefile
 
+		cf_subdirs=
 		for cf_item in $CF_LIST_MODELS
 		do
 			echo 'Appending rules for '$cf_item' model ('$cf_dir')'
@@ -1126,6 +1123,11 @@ do
 				depend="$cf_depend" \
 				target="$target" \
 				$srcdir/$cf_dir/modules >>$cf_dir/Makefile
+			for cf_subdir2 in $cf_subdirs lib
+			do
+				test $cf_subdir = $cf_subdir2 && break
+			done
+			test ".$cf_subdir2" != ".$cf_subdir" && \
 			$AWK -f $srcdir/mk-2nd.awk \
 				name=$cf_dir \
 				traces=$LIB_TRACING \
@@ -1135,6 +1137,7 @@ do
 				srcdir=$srcdir \
 				echo=$WITH_ECHO \
 				$srcdir/$cf_dir/modules >>$cf_dir/Makefile
+			cf_subdirs="$cf_subdirs $cf_subdir"
 			done
 		done
 	fi
@@ -1446,7 +1449,12 @@ EOF
 	LIBS="$cf_saveLIBS"
 	])
 AC_MSG_RESULT($cf_cv_link_dataonly)
-test "$cf_cv_link_dataonly" = no && AC_DEFINE(BROKEN_LINKER)
+
+if test "$cf_cv_link_dataonly" = no ; then
+	AC_DEFINE(BROKEN_LINKER)
+	BROKEN_LINKER=1
+fi
+
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Most Unix systems have both link and symlink, a few don't have symlink.
@@ -2056,7 +2064,13 @@ AC_DEFUN([CF_OBJ_SUBDIR],
 	normal)  $2='objects' ;;
 	debug)   $2='obj_g' ;;
 	profile) $2='obj_p' ;;
-	shared)  $2='obj_s' ;;
+	shared)
+		case $cf_cv_system_name in #(vi
+		cygwin) #(vi
+			$2='objects' ;;
+		*)
+			$2='obj_s' ;;
+		esac
 	esac
 ])dnl
 dnl ---------------------------------------------------------------------------
@@ -2243,7 +2257,8 @@ AC_DEFUN([CF_SHARED_OPTS],
 		MK_SHARED_LIB='$(CC) -o $[@] -Xlinker -soname=`basename $[@]` -nostart -e 0'
 		;;
 	cygwin*)
-		MK_SHARED_LIB='$(CC) -shared -Wl,--out-implib=$(IMPLIB) -Wl,--export-all-symbols -o $(SHAREDLIB)'
+		CC_SHARED_OPTS=
+		MK_SHARED_LIB='$(CC) -shared -Wl,--out-implib=$(IMPORT_LIB) -Wl,--export-all-symbols -o $(SHARED_LIB)'
 		cf_cv_shlib_version=cygdll
 		cf_cv_shlib_version_infix=cygdll
 		;;
@@ -2843,6 +2858,11 @@ dnl $1=uppercase($2)
 AC_DEFUN([CF_UPPER],
 [
 $1=`echo "$2" | sed y%abcdefghijklmnopqrstuvwxyz./-%ABCDEFGHIJKLMNOPQRSTUVWXYZ___%`
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Use AC_VERBOSE w/o the warnings
+AC_DEFUN([CF_VERBOSE],
+[test -n "$verbose" && echo "	$1" 1>&AC_FD_MSG
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Wrapper for AC_ARG_WITH to ensure that user supplies a pathname, not just
