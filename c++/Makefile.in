@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.58 2001/04/21 21:31:08 tom Exp $
+# $Id: Makefile.in,v 1.60 2001/05/19 23:25:48 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.           #
 #                                                                            #
@@ -117,6 +117,8 @@ all ::		demo$x
 
 sources :	$(AUTO_SRC)
 
+depend :
+
 # Build a conventional library for installing, since a shared library would
 # pull in all of the ncurses libraries (panel, menu, form, ncurses) as direct
 # dependencies.
@@ -165,7 +167,7 @@ uninstall.libs::
 	-$(LIBTOOL) rm -f $(DESTDIR)$(libdir)/$(LIBNAME)
 
 mostlyclean ::
-	-rm -f core tags TAGS *~ *.i *.ii *.ln *.atac trace
+	-rm -f core tags TAGS *~ *.bak *.i *.ii *.ln *.atac trace
 
 clean :: mostlyclean
 	-$(LIBTOOL) rm -f demo$x $(AUTO_SRC) ../lib/$(LIBNAME) $(LIB_OBJS) $(LIB_OBJS:.o=.lo) $(OBJS_DEMO)

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.61 2001/03/24 19:53:31 tom Exp $
+# $Id: Makefile.in,v 1.62 2001/05/19 23:25:52 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.           #
 #                                                                            #
@@ -201,7 +201,7 @@ uninstall.libs:
 uninstall.test:
 
 mostlyclean ::
-	-rm -f core tags TAGS *~ *.i *.ln *.atac trace
+	-rm -f core tags TAGS *~ *.bak *.i *.ln *.atac trace
 
 clean :: mostlyclean
 	-rm -rf *.o screendump *.lis $(TESTS) .libs

@@ -1,10 +1,24 @@
--- $Id: NEWS,v 1.626 2001/05/13 00:11:58 tom Exp $
+-- $Id: NEWS,v 1.627 2001/05/19 23:43:04 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010519
+	+ add top-level 'depend' rule for the C sources, assuming that the
+	  makedepend program is available.  As a side-effect, this makes
+	  the generated sources, as in "make sources" (prompted by a report
+	  by Mike Castle that "make -j" fails because the resulting parallel
+	  processes race to generate ncurses/names.c).
+	+ modify configure script so that --disable-overwrite option's action
+	  to add a symbolic link for libcurses applies to the static library as
+	  well as the shared library when both are configured (report by Felix
+	  Natter <f.natter@ndh.net>).
+	+ add ELKS terminfo entries (Federico Bianchi
+	  <bianchi@www.arte.unipi.it>)
+	+ add u6 (CSR) to Eterm (Michael Jennings).
 
 20010512
 	+ modify test/ncurses.c to work with xterm-256color, which has fewer
