@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.207 2001/10/20 19:28:03 tom Exp $
+ * $Id: curses.priv.h,v 1.208 2001/11/02 01:01:03 tom Exp $
  *
  *	curses.priv.h
  *
@@ -214,6 +214,7 @@ struct tries {
 #define L_BRACE '{'
 #define R_BRACE '}'
 #define S_QUOTE '\''
+#define D_QUOTE '"'
 
 /*
  * Structure for palette tables
@@ -637,9 +638,9 @@ typedef	struct {
  * instrument the public functions so that the traces can be easily transformed
  * into regression scripts.
  */
-#define T_CALLED(fmt) "called " fmt
-#define T_CREATE(fmt) "create " fmt
-#define T_RETURN(fmt) "return " fmt
+#define T_CALLED(fmt) "called {" fmt
+#define T_CREATE(fmt) "create :" fmt
+#define T_RETURN(fmt) "return }" fmt
 
 #ifdef TRACE
 #define TR(n, a)	if (_nc_tracing & (n)) _tracef a
@@ -660,6 +661,7 @@ extern NCURSES_EXPORT(attr_t) _nc_retrace_attr_t (attr_t);
 extern NCURSES_EXPORT(attr_t) _nc_retrace_chtype (chtype);
 extern NCURSES_EXPORT(char *) _nc_retrace_ptr (char *);
 extern NCURSES_EXPORT(char *) _nc_varargs (const char *, va_list);
+extern NCURSES_EXPORT(const char *) _nc_altcharset_name(attr_t, chtype);
 extern NCURSES_EXPORT(int) _nc_retrace_int (int);
 extern NCURSES_EXPORT(void) _nc_fifo_dump (void);
 extern NCURSES_EXPORT_VAR(const char *) _nc_tputs_trace;
@@ -667,6 +669,8 @@ extern NCURSES_EXPORT_VAR(long) _nc_outchars;
 extern NCURSES_EXPORT_VAR(unsigned) _nc_tracing;
 #if USE_WIDEC_SUPPORT
 extern NCURSES_EXPORT(const char *) _nc_viswbuf2 (int, const wchar_t *);
+extern NCURSES_EXPORT(const char *) _nc_viscbuf2 (int, const cchar_t *, int);
+extern NCURSES_EXPORT(const char *) _nc_viscbuf (const cchar_t *, int);
 #endif
 #else
 #define T(a)
@@ -795,6 +799,11 @@ extern NCURSES_EXPORT(void) _nc_linedump (void);
 /* lib_acs.c */
 extern NCURSES_EXPORT(void) _nc_init_acs (void);	/* corresponds to traditional 'init_acs()' */
 extern NCURSES_EXPORT(int) _nc_msec_cost (const char *const, int);  /* used by 'tack' program */
+
+/* lib_addstr.c */
+#if USE_WIDEC_SUPPORT
+extern NCURSES_EXPORT(int) _nc_wchstrlen(const cchar_t *);
+#endif
 
 /* lib_mvcur.c */
 #define INFINITY	1000000	/* cost: too high to use */

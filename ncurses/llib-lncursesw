@@ -50,12 +50,6 @@ void	_nc_linedump(void)
 
 #include <term.h>
 
-typedef struct {
-    unsigned long hashval;
-    int oldcount, newcount;
-    int oldindex, newindex;
-} sym;
-
 #undef _nc_hash_map
 void	_nc_hash_map(void)
 		{ /* void */ }
@@ -127,6 +121,11 @@ int	waddchnstr(
 		int	n)
 		{ return(*(int *)0); }
 
+#undef _nc_wchstrlen
+int	_nc_wchstrlen(
+		const cchar_t *s)
+		{ return(*(int *)0); }
+
 #undef wadd_wchnstr
 int	wadd_wchnstr(
 		WINDOW	*win, 
@@ -137,7 +136,7 @@ int	wadd_wchnstr(
 #undef waddnwstr
 int	waddnwstr(
 		WINDOW	*win, 
-		const utf8_wchar_t *str, 
+		const wchar_t *str, 
 		int	n)
 		{ return(*(int *)0); }
 
@@ -211,7 +210,7 @@ int	wborder(
 #undef setcchar
 int	setcchar(
 		cchar_t	*wcval, 
-		const utf8_wchar_t *wch, 
+		const wchar_t *wch, 
 		const attr_t attrs, 
 		short	color_pair, 
 		const void *opts)
@@ -220,7 +219,7 @@ int	setcchar(
 #undef getcchar
 int	getcchar(
 		const cchar_t *wcval, 
-		utf8_wchar_t *wch, 
+		wchar_t	*wch, 
 		attr_t	*attrs, 
 		short	*color_pair, 
 		void	*opts)
@@ -1108,22 +1107,15 @@ int	wstandend(
 		WINDOW	*z)
 		{ return(*(int *)0); }
 
-#undef mouse_trafo
-bool	mouse_trafo(
-		int	*a1, 
-		int	*a2, 
-		bool	z)
-		{ return(*(bool *)0); }
-
 #undef addnwstr
 int	addnwstr(
-		const utf8_wchar_t *a1, 
+		const wchar_t *a1, 
 		int	z)
 		{ return(*(int *)0); }
 
 #undef addwstr
 int	addwstr(
-		const utf8_wchar_t *z)
+		const wchar_t *z)
 		{ return(*(int *)0); }
 
 #undef add_wch
@@ -1145,7 +1137,7 @@ int	getbkgrnd(
 int	mvaddnwstr(
 		int	a1, 
 		int	a2, 
-		const utf8_wchar_t *a3, 
+		const wchar_t *a3, 
 		int	z)
 		{ return(*(int *)0); }
 
@@ -1153,7 +1145,7 @@ int	mvaddnwstr(
 int	mvaddwstr(
 		int	a1, 
 		int	a2, 
-		const utf8_wchar_t *z)
+		const wchar_t *z)
 		{ return(*(int *)0); }
 
 #undef mvadd_wch
@@ -1175,7 +1167,7 @@ int	mvwaddnwstr(
 		WINDOW	*a1, 
 		int	a2, 
 		int	a3, 
-		const utf8_wchar_t *a4, 
+		const wchar_t *a4, 
 		int	z)
 		{ return(*(int *)0); }
 
@@ -1184,7 +1176,7 @@ int	mvwaddwstr(
 		WINDOW	*a1, 
 		int	a2, 
 		int	a3, 
-		const utf8_wchar_t *z)
+		const wchar_t *z)
 		{ return(*(int *)0); }
 
 #undef mvwadd_wch
@@ -1206,7 +1198,7 @@ int	mvwadd_wchstr(
 #undef waddwstr
 int	waddwstr(
 		WINDOW	*a1, 
-		const utf8_wchar_t *z)
+		const wchar_t *z)
 		{ return(*(int *)0); }
 
 #undef wadd_wchstr
@@ -1220,6 +1212,13 @@ int	wgetbkgrnd(
 		WINDOW	*a1, 
 		cchar_t	*z)
 		{ return(*(int *)0); }
+
+#undef mouse_trafo
+bool	mouse_trafo(
+		int	*a1, 
+		int	*a2, 
+		bool	z)
+		{ return(*(bool *)0); }
 
 /* ./base/lib_getch.c */
 
@@ -1904,6 +1903,12 @@ attr_t	_nc_retrace_attr_t(
 		attr_t	code)
 		{ return(*(attr_t *)0); }
 
+#undef _nc_altcharset_name
+const char *_nc_altcharset_name(
+		attr_t	attr, 
+		chtype	ch)
+		{ return(*(const char **)0); }
+
 #undef _tracechtype2
 char	*_tracechtype2(
 		int	bufnum, 
@@ -2062,9 +2067,9 @@ WINDOW	*dupwin(
 /* ./base/lib_wunctrl.c */
 
 #undef wunctrl
-utf8_wchar_t *wunctrl(
+wchar_t	*wunctrl(
 		cchar_t	*wc)
-		{ return(*(utf8_wchar_t **)0); }
+		{ return(*(wchar_t **)0); }
 
 /* ./base/nc_panel.c */
 
@@ -2118,6 +2123,18 @@ void	_nc_screen_wrap(void)
 void	_nc_do_xmc_glitch(
 		attr_t	previous)
 		{ /* void */ }
+
+/* ./trace/varargs.c */
+
+typedef enum {
+    atUnknown = 0, atInteger, atFloat, atPoint, atString
+} ARGTYPE;
+
+#undef _nc_varargs
+char	*_nc_varargs(
+		const char *fmt, 
+		va_list	ap)
+		{ return(*(char **)0); }
 
 /* ./base/memmove.c */
 
@@ -2684,10 +2701,6 @@ int	flushinp(void)
 
 /* ./lib_keyname.c */
 
-#include <stdlib.h>
-#include <string.h>
-#include <curses.h>
-
 #undef _nc_key_names
 const struct kn _nc_key_names[] = {0};
 
@@ -2976,28 +2989,6 @@ void	trace(
 		const unsigned int tracelevel)
 		{ /* void */ }
 
-#undef _nc_visbuf2
-const char *_nc_visbuf2(
-		int	bufnum, 
-		const char *buf)
-		{ return(*(const char **)0); }
-
-#undef _nc_visbuf
-const char *_nc_visbuf(
-		const char *buf)
-		{ return(*(const char **)0); }
-
-#undef _nc_viswbuf2
-const char *_nc_viswbuf2(
-		int	bufnum, 
-		const utf8_wchar_t *buf)
-		{ return(*(const char **)0); }
-
-#undef _nc_viswbuf
-const char *_nc_viswbuf(
-		const utf8_wchar_t *buf)
-		{ return(*(const char **)0); }
-
 #undef _tracef
 void	_tracef(
 		const char *fmt, 
@@ -3236,6 +3227,43 @@ void	_nc_trace_tries(
 char	*unctrl(
 		 chtype	ch)
 		{ return(*(char **)0); }
+
+/* ./trace/visbuf.c */
+
+#undef _nc_visbuf2
+const char *_nc_visbuf2(
+		int	bufnum, 
+		const char *buf)
+		{ return(*(const char **)0); }
+
+#undef _nc_visbuf
+const char *_nc_visbuf(
+		const char *buf)
+		{ return(*(const char **)0); }
+
+#undef _nc_viswbuf2
+const char *_nc_viswbuf2(
+		int	bufnum, 
+		const wchar_t *buf)
+		{ return(*(const char **)0); }
+
+#undef _nc_viswbuf
+const char *_nc_viswbuf(
+		const wchar_t *buf)
+		{ return(*(const char **)0); }
+
+#undef _nc_viscbuf2
+const char *_nc_viscbuf2(
+		int	bufnum, 
+		const cchar_t *buf, 
+		int	len)
+		{ return(*(const char **)0); }
+
+#undef _nc_viscbuf
+const char *_nc_viscbuf(
+		const cchar_t *buf, 
+		int	len)
+		{ return(*(const char **)0); }
 
 /* ./tinfo/write_entry.c */
 

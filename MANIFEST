@@ -312,6 +312,7 @@
 ./doc/html/index.html
 ./doc/html/man/captoinfo.1m.html
 ./doc/html/man/clear.1.html
+./doc/html/man/curs_add_wch.3x.html
 ./doc/html/man/curs_addch.3x.html
 ./doc/html/man/curs_addchstr.3x.html
 ./doc/html/man/curs_addstr.3x.html
@@ -324,6 +325,7 @@
 ./doc/html/man/curs_delch.3x.html
 ./doc/html/man/curs_deleteln.3x.html
 ./doc/html/man/curs_extend.3x.html
+./doc/html/man/curs_getcchar.3x.html
 ./doc/html/man/curs_getch.3x.html
 ./doc/html/man/curs_getstr.3x.html
 ./doc/html/man/curs_getyx.3x.html
@@ -495,6 +497,7 @@
 ./man/Makefile.in
 ./man/captoinfo.1m
 ./man/clear.1
+./man/curs_add_wch.3x
 ./man/curs_addch.3x
 ./man/curs_addchstr.3x
 ./man/curs_addstr.3x
@@ -507,6 +510,7 @@
 ./man/curs_delch.3x
 ./man/curs_deleteln.3x
 ./man/curs_extend.3x
+./man/curs_getcchar.3x
 ./man/curs_getch.3x
 ./man/curs_getstr.3x
 ./man/curs_getyx.3x
@@ -682,7 +686,6 @@
 ./ncurses/base/lib_beep.c
 ./ncurses/base/lib_bkgd.c
 ./ncurses/base/lib_box.c
-./ncurses/base/lib_cchar.c
 ./ncurses/base/lib_chgat.c
 ./ncurses/base/lib_clear.c
 ./ncurses/base/lib_clearok.c
@@ -748,7 +751,6 @@
 ./ncurses/base/lib_wattron.c
 ./ncurses/base/lib_winch.c
 ./ncurses/base/lib_window.c
-./ncurses/base/lib_wunctrl.c
 ./ncurses/base/memmove.c
 ./ncurses/base/nc_panel.c
 ./ncurses/base/resizeterm.c
@@ -832,6 +834,8 @@
 ./ncurses/tty/tty_display.h
 ./ncurses/tty/tty_input.h
 ./ncurses/tty/tty_update.c
+./ncurses/widechar/lib_cchar.c
+./ncurses/widechar/lib_wunctrl.c
 ./panel/Makefile.in
 ./panel/headers
 ./panel/llib-lpanel

@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.29 2001/07/07 23:53:25 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.30 2001/11/02 21:34:40 tom Exp $")
 
 #if USE_WIDEC_SUPPORT
 #define CONV_DATA   mbstate_t state; wchar_t cached; int clen = 0
@@ -92,11 +92,11 @@ waddnstr(WINDOW *win, const char *const astr, int n)
 
     if (win && (str != 0)) {
 	TR(TRACE_VIRTPUT | TRACE_ATTRS, ("... current %s", _traceattr(win->_attrs)));
-	TR(TRACE_VIRTPUT, ("str is not null"));
 	code = OK;
 	if (n < 0)
 	    n = (int) strlen(astr);
 
+	TR(TRACE_VIRTPUT, ("str is not null, length = %d", n));
 	CONV_INIT;
 	while ((n > 0) && (*str != '\0')) {
 	    NCURSES_CH_T ch;
@@ -155,6 +155,16 @@ waddchnstr(WINDOW *win, const chtype * const astr, int n)
 
 #if USE_WIDEC_SUPPORT
 
+int
+_nc_wchstrlen(const cchar_t * s)
+{
+    int result = 0;
+    while (CharOf(s[result]) != L'\0') {
+	result++;
+    }
+    return result;
+}
+
 NCURSES_EXPORT(int)
 wadd_wchnstr(WINDOW *win, const cchar_t * const astr, int n)
 {
@@ -164,16 +174,13 @@ wadd_wchnstr(WINDOW *win, const cchar_t * const astr, int n)
     struct ldat *line;
     int i, start, end;
 
-    T((T_CALLED("waddchnstr(%p,%p,%d)"), win, astr, n));
+    T((T_CALLED("wadd_wchnstr(%p,%s,%d)"), win, _nc_viscbuf(astr, n), n));
 
     if (!win)
 	returnCode(ERR);
 
     if (n < 0) {
-	const cchar_t *str;
-	n = 0;
-	for (str = (const cchar_t *) astr; CharOf(*str) != L'\0'; str++)
-	    n++;
+	n = _nc_wchstrlen(astr);
     }
     if (n > win->_maxx - x + 1)
 	n = win->_maxx - x + 1;
@@ -216,21 +223,22 @@ waddnwstr(WINDOW *win, const wchar_t * str, int n)
 
     if (win && (str != 0)) {
 	TR(TRACE_VIRTPUT | TRACE_ATTRS, ("... current %s", _traceattr(win->_attrs)));
-	TR(TRACE_VIRTPUT, ("str is not null"));
 	code = OK;
 	if (n < 0)
 	    n = (int) wcslen(str);
 
+	TR(TRACE_VIRTPUT, ("str is not null, length = %d", n));
 	while ((n-- > 0) && (*str != L('\0'))) {
 	    NCURSES_CH_T ch;
+	    TR(TRACE_VIRTPUT, ("*str[0] = %#lx", *str));
 	    SetChar(ch, *str++, A_NORMAL);
 	    i = 1;
 	    while (i < CCHARW_MAX && n > 0 && (*str != L('\0'))
 		   && wcwidth(*str) == 0) {
+		TR(TRACE_VIRTPUT, ("*str[%d] = %#lx", i, *str));
 		ch.chars[i++] = *str++;
 		--n;
 	    }
-	    TR(TRACE_VIRTPUT, ("*str = %#lx", *str));
 	    if (_nc_waddch_nosync(win, ch) == ERR) {
 		code = ERR;
 		break;

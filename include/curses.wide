@@ -1,12 +1,17 @@
 
 #ifdef _XOPEN_SOURCE_EXTENDED
 
-/* $Id: curses.wide,v 1.2 2001/09/22 19:08:51 tom Exp $ */
+/* $Id: curses.wide,v 1.3 2001/11/04 00:09:05 tom Exp $ */
 
 #include <wchar.h>	/* we want mbstate_t */
 
 /*
  * Function prototypes for wide-character operations.
+ *
+ * "generated" comments should include ":WIDEC" to make the corresponding
+ * functions ifdef'd in lib_gen.c
+ *
+ * "implemented" comments do not need this marker.
  */
 
 extern NCURSES_EXPORT(int) addnwstr (const wchar_t *, int);		/* generated:WIDEC */
@@ -18,7 +23,7 @@ extern NCURSES_EXPORT(void) bkgrndset (const cchar_t *);		/* missing */
 extern NCURSES_EXPORT(int) bkgrnd (const cchar_t *);			/* missing */
 extern NCURSES_EXPORT(int) border_set (const cchar_t*,const cchar_t*,const cchar_t*,const cchar_t*,const cchar_t*,const cchar_t*,const cchar_t*,const cchar_t*);	/* missing */
 extern NCURSES_EXPORT(int) box_set (WINDOW *, const cchar_t *, const cchar_t *);	/* missing */
-extern NCURSES_EXPORT(int) echo_wchar (const cchar_t *);		/* missing */
+extern NCURSES_EXPORT(int) echo_wchar (const cchar_t *);		/* generated:WIDEC */
 extern NCURSES_EXPORT(int) erasewchar (wchar_t*);			/* missing */
 extern NCURSES_EXPORT(int) getbkgrnd (cchar_t *);			/* generated:WIDEC */
 extern NCURSES_EXPORT(int) getcchar (const cchar_t *, wchar_t*, attr_t*, short*, void*);	/* implemented */
@@ -79,14 +84,14 @@ extern NCURSES_EXPORT(int) unget_wch (const wchar_t);			/* missing */
 extern NCURSES_EXPORT(int) vid_puts (attr_t, short, void *, int (*)(int)); /* missing */
 extern NCURSES_EXPORT(int) vline_set (const cchar_t *, int);		/* missing */
 extern NCURSES_EXPORT(int) waddwstr (WINDOW *,const wchar_t *);		/* generated:WIDEC */
-extern NCURSES_EXPORT(int) waddnwstr (WINDOW *,const wchar_t *,int);	/* implemented:WIDEC */
-extern NCURSES_EXPORT(int) wadd_wch (WINDOW *,const cchar_t *);		/* implemented:WIDEC */
+extern NCURSES_EXPORT(int) waddnwstr (WINDOW *,const wchar_t *,int);	/* implemented */
+extern NCURSES_EXPORT(int) wadd_wch (WINDOW *,const cchar_t *);		/* implemented */
 extern NCURSES_EXPORT(int) wadd_wchnstr (WINDOW *,const cchar_t *,int);	/* missing */
 extern NCURSES_EXPORT(int) wadd_wchstr (WINDOW *,const cchar_t *);	/* generated:WIDEC */
 extern NCURSES_EXPORT(void) wbkgrndset (WINDOW *,const cchar_t *);	/* missing */
-extern NCURSES_EXPORT(int) wbkgrnd (WINDOW *,const cchar_t *);		/* implemented:WIDEC */
+extern NCURSES_EXPORT(int) wbkgrnd (WINDOW *,const cchar_t *);		/* implemented */
 extern NCURSES_EXPORT(int) wborder_set (WINDOW *,const cchar_t*,const cchar_t*,const cchar_t*,const cchar_t*,const cchar_t*,const cchar_t*,const cchar_t*,const cchar_t*);	/* missing */
-extern NCURSES_EXPORT(int) wecho_wchar (WINDOW *, const cchar_t *);	/* missing */
+extern NCURSES_EXPORT(int) wecho_wchar (WINDOW *, const cchar_t *);	/* implemented */
 extern NCURSES_EXPORT(int) wgetbkgrnd (WINDOW *, cchar_t *);		/* generated:WIDEC */
 extern NCURSES_EXPORT(int) wgetn_wstr (WINDOW *,wint_t *, int);		/* missing */
 extern NCURSES_EXPORT(int) wget_wch (WINDOW *, wint_t *);		/* missing */
@@ -100,7 +105,7 @@ extern NCURSES_EXPORT(int) winwstr (WINDOW *, wchar_t *);		/* missing */
 extern NCURSES_EXPORT(int) win_wch (WINDOW *, NCURSES_CONST cchar_t *);	/* missing */
 extern NCURSES_EXPORT(int) win_wchnstr (WINDOW *, NCURSES_CONST cchar_t *, int);	/* missing */
 extern NCURSES_EXPORT(int) win_wchstr (WINDOW *, NCURSES_CONST cchar_t *);	/* missing */
-extern NCURSES_EXPORT(wchar_t *) wunctrl (cchar_t *);			/* implemented:WIDEC */
+extern NCURSES_EXPORT(wchar_t *) wunctrl (cchar_t *);			/* implemented */
 extern NCURSES_EXPORT(int) wvline_set (WINDOW *, const cchar_t *, int);	/* missing */
 
 /*

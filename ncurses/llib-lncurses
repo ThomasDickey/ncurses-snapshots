@@ -50,12 +50,6 @@ void	_nc_linedump(void)
 
 #include <term.h>
 
-typedef struct {
-    unsigned long hashval;
-    int oldcount, newcount;
-    int oldindex, newindex;
-} sym;
-
 #undef _nc_hash_map
 void	_nc_hash_map(void)
 		{ /* void */ }
@@ -155,6 +149,8 @@ int	wborder(
 		chtype	bl, 
 		chtype	br)
 		{ return(*(int *)0); }
+
+/* ./base/lib_cchar.c */
 
 /* ./base/lib_chgat.c */
 
@@ -1470,7 +1466,6 @@ int	mvwscanw(
 
 /* ./base/lib_screen.c */
 
-#include <sys/stat.h>
 #include <time.h>
 
 #undef getwin
@@ -1715,6 +1710,12 @@ attr_t	_nc_retrace_attr_t(
 		attr_t	code)
 		{ return(*(attr_t *)0); }
 
+#undef _nc_altcharset_name
+const char *_nc_altcharset_name(
+		attr_t	attr, 
+		chtype	ch)
+		{ return(*(const char **)0); }
+
 #undef _tracechtype2
 char	*_tracechtype2(
 		int	bufnum, 
@@ -1913,6 +1914,18 @@ void	_nc_screen_wrap(void)
 void	_nc_do_xmc_glitch(
 		attr_t	previous)
 		{ /* void */ }
+
+/* ./trace/varargs.c */
+
+typedef enum {
+    atUnknown = 0, atInteger, atFloat, atPoint, atString
+} ARGTYPE;
+
+#undef _nc_varargs
+char	*_nc_varargs(
+		const char *fmt, 
+		va_list	ap)
+		{ return(*(char **)0); }
 
 /* ./base/memmove.c */
 
@@ -2479,10 +2492,6 @@ int	flushinp(void)
 
 /* ./lib_keyname.c */
 
-#include <stdlib.h>
-#include <string.h>
-#include <curses.h>
-
 #undef _nc_key_names
 const struct kn _nc_key_names[] = {0};
 
@@ -2771,17 +2780,6 @@ void	trace(
 		const unsigned int tracelevel)
 		{ /* void */ }
 
-#undef _nc_visbuf2
-const char *_nc_visbuf2(
-		int	bufnum, 
-		const char *buf)
-		{ return(*(const char **)0); }
-
-#undef _nc_visbuf
-const char *_nc_visbuf(
-		const char *buf)
-		{ return(*(const char **)0); }
-
 #undef _tracef
 void	_tracef(
 		const char *fmt, 
@@ -2797,6 +2795,11 @@ int	_nc_retrace_int(
 char	*_nc_retrace_ptr(
 		char	*code)
 		{ return(*(char **)0); }
+
+#undef _nc_retrace_sp
+SCREEN	*_nc_retrace_sp(
+		SCREEN	*code)
+		{ return(*(SCREEN **)0); }
 
 #undef _nc_retrace_win
 WINDOW	*_nc_retrace_win(
@@ -2942,10 +2945,6 @@ int	_nc_read_entry(
 
 /* ./tinfo/read_termcap.c */
 
-#undef _nc_read_termcap
-void	_nc_read_termcap(void)
-		{ /* void */ }
-
 #undef _nc_read_termcap_entry
 int	_nc_read_termcap_entry(
 		const char *const tn, 
@@ -3019,6 +3018,19 @@ void	_nc_trace_tries(
 char	*unctrl(
 		 chtype	ch)
 		{ return(*(char **)0); }
+
+/* ./trace/visbuf.c */
+
+#undef _nc_visbuf2
+const char *_nc_visbuf2(
+		int	bufnum, 
+		const char *buf)
+		{ return(*(const char **)0); }
+
+#undef _nc_visbuf
+const char *_nc_visbuf(
+		const char *buf)
+		{ return(*(const char **)0); }
 
 /* ./tinfo/write_entry.c */
 

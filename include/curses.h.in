@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.114 2001/10/13 23:33:44 tom Exp $ */
+/* $Id: curses.h.in,v 1.115 2001/11/03 15:10:04 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -363,16 +363,20 @@ extern NCURSES_EXPORT(int) wresize (WINDOW *, int, int);
  * We cannot define these in ncurses_cfg.h, since they require parameters to be
  * passed (that's non-portable).
  */
+#ifndef GCC_PRINTFLIKE
 #if defined(GCC_PRINTF) && !defined(printf)
 #define GCC_PRINTFLIKE(fmt,var) __attribute__((format(printf,fmt,var)))
 #else
 #define GCC_PRINTFLIKE(fmt,var) /*nothing*/
 #endif
+#endif
 
+#ifndef GCC_SCANFLIKE
 #if defined(GCC_SCANF) && !defined(scanf)
 #define GCC_SCANFLIKE(fmt,var)  __attribute__((format(scanf,fmt,var)))
 #else
 #define GCC_SCANFLIKE(fmt,var)  /*nothing*/
+#endif
 #endif
 
 #ifndef	GCC_NORETURN
@@ -672,6 +676,7 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 
 /* attributes */
 
+#define NCURSES_ATTR_SHIFT       (@cf_cv_widec_shift@)
 #define NCURSES_BITS(mask,shift) ((mask) << ((shift) + @cf_cv_widec_shift@))
 
 #define A_NORMAL	0L

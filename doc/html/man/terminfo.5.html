@@ -34,7 +34,7 @@
   ****************************************************************************
   * @Id: terminfo.head,v 1.9 2000/08/13 01:56:40 tom Exp @
   * Head of terminfo man page ends here
-  * @Id: terminfo.tail,v 1.33 2000/10/14 14:06:50 tom Exp @
+  * @Id: terminfo.tail,v 1.34 2001/10/14 00:54:21 tom Exp @
   * Beginning of terminfo.tail file
   *.TH
 -->
@@ -1427,10 +1427,10 @@
        onto the next as you insert, you have the second  type  of
        terminal,  and should give the capability <STRONG>in</STRONG>, which stands
        for "insert null".  While these are two logically separate
-       attributes  (one line vs. multi-line insert mode, and spe-
-       cial treatment of untyped spaces) we have seen  no  termi-
-       nals whose insert mode cannot be described with the single
-       attribute.
+       attributes  (one  line  versus multi-line insert mode, and
+       special treatment of untyped spaces) we have seen no  ter-
+       minals whose insert mode cannot be described with the sin-
+       gle attribute.
 
        Terminfo can describe both terminals which have an  insert
        mode, and terminals which send a simple sequence to open a
@@ -1615,9 +1615,9 @@
 
    <STRONG>Keypad</STRONG> <STRONG>and</STRONG> <STRONG>Function</STRONG> <STRONG>Keys</STRONG>
        If the terminal has a keypad that transmits codes when the
-       keys are pressed, this information can be given. Note that
-       it  is  not  possible to handle terminals where the keypad
-       only works in local (this applies,  for  example,  to  the
+       keys are pressed, this information  can  be  given.   Note
+       that it is not possible to handle terminals where the key-
+       pad only works in local (this applies, for example, to the
        unshifted  HP  2621  keys).   If  the keypad can be set to
        transmit or not transmit, give these  codes  as  <STRONG>smkx</STRONG>  and
        <STRONG>rmkx</STRONG>.  Otherwise the keypad is assumed to always transmit.
@@ -1774,7 +1774,7 @@
        fied as <STRONG>dsl</STRONG>.
 
        The   boolean   capability  <STRONG>eslok</STRONG>  specifies  that  escape
-       sequences, tabs, etc. work ordinarily in the status  line.
+       sequences, tabs, etc., work ordinarily in the status line.
 
        The  <STRONG>ncurses</STRONG>  implementation does not yet use any of these
        capabilities.  They are documented here in case they  ever
@@ -2173,9 +2173,9 @@
        to have <STRONG>msgr</STRONG> turned off.
 
        The <STRONG>ncurses</STRONG> library handles insert-character  and  insert-
-       character modes in a slightly non-standard way in order to
-       get better update efficiency.  See the <STRONG>Insert/Delete</STRONG> <STRONG>Char-</STRONG>
-       <STRONG>acter</STRONG> subsection above.
+       character modes in a slightly non-standard way to get bet-
+       ter update efficiency.  See  the  <STRONG>Insert/Delete</STRONG>  <STRONG>Character</STRONG>
+       subsection above.
 
        The   parameter   substitutions  for  <STRONG>set_clock</STRONG>  and  <STRONG>dis-</STRONG>
        <STRONG>play_clock</STRONG> are not documented in SVr4 or  the  XSI  Curses

@@ -39,7 +39,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.38 2001/10/20 22:45:09 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.39 2001/11/02 22:18:06 tom Exp $");
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
@@ -141,8 +141,8 @@ _nc_retrace_attr_t(attr_t code)
     return code;
 }
 
-static const char *
-altcharset_name(attr_t attr, chtype ch)
+const char *
+_nc_altcharset_name(attr_t attr, chtype ch)
 {
     const char *result = 0;
 
@@ -218,7 +218,7 @@ _tracechtype2(int bufnum, chtype ch)
     const char *found;
 
     strcpy(buf, l_brace);
-    if ((found = altcharset_name(ChAttrOf(ch), ch)) != 0) {
+    if ((found = _nc_altcharset_name(ChAttrOf(ch), ch)) != 0) {
 	(void) strcat(buf, found);
     } else
 	(void) strcat(buf, _tracechar(ChCharOf(ch)));
@@ -253,7 +253,7 @@ _tracecchar_t2 (int bufnum, const cchar_t *ch)
     const char *found;
 
     strcpy(buf, l_brace);
-    if ((found = altcharset_name(attr, CharOfD(ch))) != 0) {
+    if ((found = _nc_altcharset_name(attr, CharOfD(ch))) != 0) {
 	(void) strcat(buf, found);
 	attr &= ~A_ALTCHARSET;
     } else if (!isnac(CHDEREF(ch))) {
