@@ -1,7 +1,7 @@
 
 #ifdef _XOPEN_SOURCE_EXTENDED
 
-/* $Id: curses.wide,v 1.12 2002/03/10 00:53:53 tom Exp $ */
+/* $Id: curses.wide,v 1.13 2002/03/10 19:41:50 tom Exp $ */
 
 extern NCURSES_EXPORT_VAR(cchar_t *) _nc_wacs;
 
@@ -81,13 +81,13 @@ extern NCURSES_EXPORT(int) getbkgrnd (cchar_t *);			/* generated:WIDEC */
 extern NCURSES_EXPORT(int) getcchar (const cchar_t *, wchar_t*, attr_t*, short*, void*);	/* implemented */
 extern NCURSES_EXPORT(int) getn_wstr (wint_t *, int);			/* missing */
 extern NCURSES_EXPORT(int) hline_set (const cchar_t *, int);		/* generated:WIDEC */
-extern NCURSES_EXPORT(int) in_wch (NCURSES_CONST cchar_t *);		/* missing */
+extern NCURSES_EXPORT(int) in_wch (NCURSES_CONST cchar_t *);		/* generated:WIDEC */
 extern NCURSES_EXPORT(int) in_wchnstr (NCURSES_CONST cchar_t *, int);	/* missing */
 extern NCURSES_EXPORT(int) in_wchstr (NCURSES_CONST cchar_t *);		/* missing */
 extern NCURSES_EXPORT(int) innwstr (wchar_t *, int);			/* generated:WIDEC */
-extern NCURSES_EXPORT(int) ins_nwstr (const wchar_t *, int);		/* missing */
-extern NCURSES_EXPORT(int) ins_wch (const cchar_t *);			/* missing */
-extern NCURSES_EXPORT(int) ins_wstr (const wchar_t *);			/* missing */
+extern NCURSES_EXPORT(int) ins_nwstr (const wchar_t *, int);		/* generated:WIDEC */
+extern NCURSES_EXPORT(int) ins_wch (const cchar_t *);			/* generated:WIDEC */
+extern NCURSES_EXPORT(int) ins_wstr (const wchar_t *);			/* generated:WIDEC */
 extern NCURSES_EXPORT(int) inwstr (wchar_t *);				/* generated:WIDEC */
 extern NCURSES_EXPORT(char*) key_name (wchar_t);			/* implemented */
 extern NCURSES_EXPORT(int) killwchar (wchar_t *);			/* missing */
@@ -100,13 +100,13 @@ extern NCURSES_EXPORT(int) mvget_wch (int, int, wint_t *);		/* missing */
 extern NCURSES_EXPORT(int) mvget_wstr (int, int, wint_t *);		/* missing */
 extern NCURSES_EXPORT(int) mvgetn_wstr (int, int, wint_t *, int);	/* missing */
 extern NCURSES_EXPORT(int) mvhline_set (int, int, const cchar_t *, int);	/* generated:WIDEC */
-extern NCURSES_EXPORT(int) mvin_wch (int, int, NCURSES_CONST cchar_t *);	/* missing */
+extern NCURSES_EXPORT(int) mvin_wch (int, int, NCURSES_CONST cchar_t *);	/* generated:WIDEC */
 extern NCURSES_EXPORT(int) mvin_wchnstr (int, int, NCURSES_CONST cchar_t *, int);	/* missing */
 extern NCURSES_EXPORT(int) mvin_wchstr (int, int, NCURSES_CONST cchar_t *);	/* missing */
 extern NCURSES_EXPORT(int) mvinnwstr (int, int, wchar_t *, int);	/* generated:WIDEC */
-extern NCURSES_EXPORT(int) mvins_nwstr (int, int, const wchar_t *, int);	/* missing */
-extern NCURSES_EXPORT(int) mvins_wch (int, int, const cchar_t *);	/* missing */
-extern NCURSES_EXPORT(int) mvins_wstr (int, int, const wchar_t *);	/* missing */
+extern NCURSES_EXPORT(int) mvins_nwstr (int, int, const wchar_t *, int);	/* generated:WIDEC */
+extern NCURSES_EXPORT(int) mvins_wch (int, int, const cchar_t *);	/* generated:WIDEC */
+extern NCURSES_EXPORT(int) mvins_wstr (int, int, const wchar_t *);	/* generated:WIDEC */
 extern NCURSES_EXPORT(int) mvinwstr (int, int, wchar_t *);		/* generated:WIDEC */
 extern NCURSES_EXPORT(int) mvvline_set (int, int, const cchar_t *, int);	/* generated:WIDEC */
 extern NCURSES_EXPORT(int) mvwadd_wch (WINDOW *, int, int, const cchar_t *);	/* generated:WIDEC */
@@ -118,13 +118,13 @@ extern NCURSES_EXPORT(int) mvwget_wch (WINDOW *, int, int, wint_t *);	/* missing
 extern NCURSES_EXPORT(int) mvwget_wstr (WINDOW *, int, int, wint_t *);	/* missing */
 extern NCURSES_EXPORT(int) mvwgetn_wstr (WINDOW *, int, int, wint_t *, int);/* missing */
 extern NCURSES_EXPORT(int) mvwhline_set (WINDOW *, int, int, const cchar_t *, int);/* generated:WIDEC */
-extern NCURSES_EXPORT(int) mvwin_wch (WINDOW *, int, int, NCURSES_CONST cchar_t *);	/* missing */
+extern NCURSES_EXPORT(int) mvwin_wch (WINDOW *, int, int, NCURSES_CONST cchar_t *);	/* generated:WIDEC */
 extern NCURSES_EXPORT(int) mvwin_wchnstr (WINDOW *, int,int, NCURSES_CONST cchar_t *,int); /* missing */
 extern NCURSES_EXPORT(int) mvwin_wchstr (WINDOW *, int, int, NCURSES_CONST cchar_t *);	/* missing */
 extern NCURSES_EXPORT(int) mvwinnwstr (WINDOW *, int, int, wchar_t *, int);	/* generated:WIDEC */
-extern NCURSES_EXPORT(int) mvwins_nwstr (WINDOW *, int,int, const wchar_t *,int); /* missing */
-extern NCURSES_EXPORT(int) mvwins_wch (WINDOW *, int, int, const cchar_t *);	/* missing */
-extern NCURSES_EXPORT(int) mvwins_wstr (WINDOW *, int, int, const wchar_t *);	/* missing */
+extern NCURSES_EXPORT(int) mvwins_nwstr (WINDOW *, int,int, const wchar_t *,int); /* generated:WIDEC */
+extern NCURSES_EXPORT(int) mvwins_wch (WINDOW *, int, int, const cchar_t *);	/* generated:WIDEC */
+extern NCURSES_EXPORT(int) mvwins_wstr (WINDOW *, int, int, const wchar_t *);	/* generated:WIDEC */
 extern NCURSES_EXPORT(int) mvwinwstr (WINDOW *, int, int, wchar_t *);		/* generated:WIDEC */
 extern NCURSES_EXPORT(int) mvwvline_set (WINDOW *, int,int, const cchar_t *,int); /* generated:WIDEC */
 extern NCURSES_EXPORT(int) pecho_wchar (WINDOW *, const cchar_t *);	/* missing */
@@ -147,13 +147,13 @@ extern NCURSES_EXPORT(int) wget_wstr (WINDOW *, wint_t *);		/* missing */
 extern NCURSES_EXPORT(int) wgetbkgrnd (WINDOW *, cchar_t *);		/* implemented */
 extern NCURSES_EXPORT(int) wgetn_wstr (WINDOW *,wint_t *, int);		/* missing */
 extern NCURSES_EXPORT(int) whline_set (WINDOW *, const cchar_t *, int);	/* implemented */
-extern NCURSES_EXPORT(int) win_wch (WINDOW *, NCURSES_CONST cchar_t *);	/* missing */
+extern NCURSES_EXPORT(int) win_wch (WINDOW *, NCURSES_CONST cchar_t *);	/* implemented */
 extern NCURSES_EXPORT(int) win_wchnstr (WINDOW *, NCURSES_CONST cchar_t *, int);	/* missing */
 extern NCURSES_EXPORT(int) win_wchstr (WINDOW *, NCURSES_CONST cchar_t *);	/* missing */
 extern NCURSES_EXPORT(int) winnwstr (WINDOW *, wchar_t *, int);		/* implemented */
-extern NCURSES_EXPORT(int) wins_nwstr (WINDOW *, const wchar_t *, int);	/* missing */
-extern NCURSES_EXPORT(int) wins_wch (WINDOW *, const cchar_t *);	/* missing */
-extern NCURSES_EXPORT(int) wins_wstr (WINDOW *, const wchar_t *);	/* missing */
+extern NCURSES_EXPORT(int) wins_nwstr (WINDOW *, const wchar_t *, int);	/* implemented */
+extern NCURSES_EXPORT(int) wins_wch (WINDOW *, const cchar_t *);	/* implemented */
+extern NCURSES_EXPORT(int) wins_wstr (WINDOW *, const wchar_t *);	/* generated_WIDEC */
 extern NCURSES_EXPORT(int) winwstr (WINDOW *, wchar_t *);		/* implemented */
 extern NCURSES_EXPORT(wchar_t*) wunctrl (cchar_t *);			/* implemented */
 extern NCURSES_EXPORT(int) wvline_set (WINDOW *, const cchar_t *, int);	/* implemented */

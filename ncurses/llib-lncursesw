@@ -94,6 +94,12 @@ int	wechochar(
 		const chtype ch)
 		{ return(*(int *)0); }
 
+#undef wins_wch
+int	wins_wch(
+		WINDOW	*win, 
+		const cchar_t *wch)
+		{ return(*(int *)0); }
+
 #undef wadd_wch
 int	wadd_wch(
 		WINDOW	*win, 
@@ -1147,6 +1153,38 @@ int	hline_set(
 		int	z)
 		{ return(*(int *)0); }
 
+#undef in_wch
+int	in_wch(
+		cchar_t	*z)
+		{ return(*(int *)0); }
+
+#undef innwstr
+int	innwstr(
+		wchar_t *a1, 
+		int	z)
+		{ return(*(int *)0); }
+
+#undef ins_nwstr
+int	ins_nwstr(
+		const wchar_t *a1, 
+		int	z)
+		{ return(*(int *)0); }
+
+#undef ins_wch
+int	ins_wch(
+		const cchar_t *z)
+		{ return(*(int *)0); }
+
+#undef ins_wstr
+int	ins_wstr(
+		const wchar_t *z)
+		{ return(*(int *)0); }
+
+#undef inwstr
+int	inwstr(
+		wchar_t *z)
+		{ return(*(int *)0); }
+
 #undef mvadd_wch
 int	mvadd_wch(
 		int	a1, 
@@ -1190,6 +1228,50 @@ int	mvhline_set(
 		int	a2, 
 		const cchar_t *a3, 
 		int	z)
+		{ return(*(int *)0); }
+
+#undef mvin_wch
+int	mvin_wch(
+		int	a1, 
+		int	a2, 
+		cchar_t	*z)
+		{ return(*(int *)0); }
+
+#undef mvinnwstr
+int	mvinnwstr(
+		int	a1, 
+		int	a2, 
+		wchar_t *a3, 
+		int	z)
+		{ return(*(int *)0); }
+
+#undef mvins_nwstr
+int	mvins_nwstr(
+		int	a1, 
+		int	a2, 
+		const wchar_t *a3, 
+		int	z)
+		{ return(*(int *)0); }
+
+#undef mvins_wch
+int	mvins_wch(
+		int	a1, 
+		int	a2, 
+		const cchar_t *z)
+		{ return(*(int *)0); }
+
+#undef mvins_wstr
+int	mvins_wstr(
+		int	a1, 
+		int	a2, 
+		const wchar_t *z)
+		{ return(*(int *)0); }
+
+#undef mvinwstr
+int	mvinwstr(
+		int	a1, 
+		int	a2, 
+		wchar_t *z)
 		{ return(*(int *)0); }
 
 #undef mvvline_set
@@ -1251,6 +1333,56 @@ int	mvwhline_set(
 		int	z)
 		{ return(*(int *)0); }
 
+#undef mvwin_wch
+int	mvwin_wch(
+		WINDOW	*a1, 
+		int	a2, 
+		int	a3, 
+		cchar_t	*z)
+		{ return(*(int *)0); }
+
+#undef mvwinnwstr
+int	mvwinnwstr(
+		WINDOW	*a1, 
+		int	a2, 
+		int	a3, 
+		wchar_t *a4, 
+		int	z)
+		{ return(*(int *)0); }
+
+#undef mvwins_nwstr
+int	mvwins_nwstr(
+		WINDOW	*a1, 
+		int	a2, 
+		int	a3, 
+		const wchar_t *a4, 
+		int	z)
+		{ return(*(int *)0); }
+
+#undef mvwins_wch
+int	mvwins_wch(
+		WINDOW	*a1, 
+		int	a2, 
+		int	a3, 
+		const cchar_t *z)
+		{ return(*(int *)0); }
+
+#undef mvwins_wstr
+int	mvwins_wstr(
+		WINDOW	*a1, 
+		int	a2, 
+		int	a3, 
+		const wchar_t *z)
+		{ return(*(int *)0); }
+
+#undef mvwinwstr
+int	mvwinwstr(
+		WINDOW	*a1, 
+		int	a2, 
+		int	a3, 
+		wchar_t *z)
+		{ return(*(int *)0); }
+
 #undef mvwvline_set
 int	mvwvline_set(
 		WINDOW	*a1, 
@@ -1274,6 +1406,12 @@ int	wadd_wchstr(
 
 #undef waddwstr
 int	waddwstr(
+		WINDOW	*a1, 
+		const wchar_t *z)
+		{ return(*(int *)0); }
+
+#undef wins_wstr
+int	wins_wstr(
 		WINDOW	*a1, 
 		const wchar_t *z)
 		{ return(*(int *)0); }
@@ -2256,6 +2394,38 @@ int	whline_set(
 		int	n)
 		{ return(*(int *)0); }
 
+/* ./widechar/lib_in_wch.c */
+
+#undef win_wch
+int	win_wch(
+		WINDOW	*win, 
+		cchar_t	*wcval)
+		{ return(*(int *)0); }
+
+/* ./widechar/lib_ins_nwstr.c */
+
+#undef wins_nwstr
+int	wins_nwstr(
+		WINDOW	*win, 
+		const wchar_t *wstr, 
+		int	n)
+		{ return(*(int *)0); }
+
+/* ./widechar/lib_inwstr.c */
+
+#undef winnwstr
+int	winnwstr(
+		WINDOW	*win, 
+		wchar_t *wstr, 
+		int	n)
+		{ return(*(int *)0); }
+
+#undef winwstr
+int	winwstr(
+		WINDOW	*win, 
+		wchar_t *wstr)
+		{ return(*(int *)0); }
+
 /* ./widechar/lib_vline_set.c */
 
 #undef wvline_set
@@ -2846,6 +3016,11 @@ const struct kn _nc_key_names[] = {0};
 #undef keyname
 char	*keyname(
 		int	c)
+		{ return(*(char **)0); }
+
+#undef key_name
+char	*key_name(
+		wchar_t c)
 		{ return(*(char **)0); }
 
 /* ./tinfo/lib_longname.c */

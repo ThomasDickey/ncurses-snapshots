@@ -2,7 +2,7 @@
 #
 # MKlib_gen.sh -- generate sources from curses.h macro definitions
 #
-# ($Id: MKlib_gen.sh,v 1.13 2000/12/10 00:30:25 tom Exp $)
+# ($Id: MKlib_gen.sh,v 1.14 2002/03/10 20:09:06 tom Exp $)
 #
 # The XSI Curses standard requires all curses entry points to exist as
 # functions, even though many definitions would normally be shadowed
@@ -133,7 +133,9 @@ BEGIN	{
 	# suppress trace-code for functions that we cannot do properly here,
 	# since they return data.
 	dotrace = 1;
-	if ($2 == "innstr")
+	if ($2 ~ /innstr/)
+		dotrace = 0;
+	if ($2 ~ /innwstr/)
 		dotrace = 0;
 
 	call = "%%T((T_CALLED(\""
