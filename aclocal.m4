@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000,2001
 dnl
-dnl $Id: aclocal.m4,v 1.266 2001/12/15 18:23:54 tom Exp $
+dnl $Id: aclocal.m4,v 1.267 2001/12/19 00:50:10 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -657,7 +657,7 @@ AC_TRY_LINK([
 #include <stdarg.h>
 #include <stdio.h>],[
 	va_list ap;
-	vsscanf("from", "%d", ap)],[cf_cv_func_vsscanf=yes],[
+	vsscanf("from", "%d", ap)],[cf_cv_func_vsscanf=vsscanf],[
 AC_TRY_LINK([
 #include <stdarg.h>
 #include <stdio.h>],[
@@ -2756,59 +2756,6 @@ dnl $1=uppercase($2)
 AC_DEFUN([CF_UPPER],
 [
 $1=`echo "$2" | sed y%abcdefghijklmnopqrstuvwxyz./-%ABCDEFGHIJKLMNOPQRSTUVWXYZ___%`
-])dnl
-dnl ---------------------------------------------------------------------------
-dnl Compute the shift-mask that we'll use for wide-character indices.  We use
-dnl all but the index portion of chtype for storing attributes.
-AC_DEFUN([CF_WIDEC_SHIFT],
-[
-AC_REQUIRE([CF_TYPEOF_CHTYPE])
-AC_MSG_CHECKING([for number of bits in chtype])
-AC_CACHE_VAL(cf_cv_shift_limit,[
-	AC_TRY_RUN([
-#include <stdio.h>
-int main()
-{
-	FILE *fp = fopen("cf_test.out", "w");
-	if (fp != 0) {
-		int n;
-		unsigned TYPEOF_CHTYPE x = 1L;
-		for (n = 0; ; n++) {
-			unsigned long y = (x >> n);
-			if (y != 1 || x == 0)
-				break;
-			x <<= 1;
-		}
-		fprintf(fp, "%d", n);
-		fclose(fp);
-	}
-	exit(0);
-}
-		],
-		[cf_cv_shift_limit=`cat cf_test.out`],
-		[cf_cv_shift_limit=32],
-		[cf_cv_shift_limit=32])
-		rm -f cf_test.out
-	])
-AC_MSG_RESULT($cf_cv_shift_limit)
-AC_SUBST(cf_cv_shift_limit)
-
-AC_MSG_CHECKING([for width of character-index])
-AC_CACHE_VAL(cf_cv_widec_shift,[
-if test ".$with_widec" = ".yes" ; then
-	cf_attrs_width=39
-	if ( expr $cf_cv_shift_limit \> $cf_attrs_width >/dev/null )
-	then
-		cf_cv_widec_shift=`expr 16 + $cf_cv_shift_limit - $cf_attrs_width`
-	else
-		cf_cv_widec_shift=16
-	fi
-else
-	cf_cv_widec_shift=8
-fi
-])
-AC_MSG_RESULT($cf_cv_widec_shift)
-AC_SUBST(cf_cv_widec_shift)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Wrapper for AC_ARG_WITH to ensure that user supplies a pathname, not just

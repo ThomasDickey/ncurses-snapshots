@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.62 2001/11/03 23:50:54 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.63 2001/12/19 01:05:42 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -59,28 +59,21 @@ render_char(WINDOW *win, NCURSES_CH_T ch)
 
     if (ISBLANK(ch) && AttrOf(ch) == A_NORMAL) {
 	/* color in attrs has precedence over bkgrnd */
-	ch = win->_bkgrnd;
-	SetAttr(ch, a | (AttrOf(win->_bkgrnd) & COLOR_MASK(a)));
+	ch = win->_nc_bkgd;
+	SetAttr(ch, a | (AttrOf(win->_nc_bkgd) & COLOR_MASK(a)));
     } else {
 	/* color in attrs has precedence over bkgrnd */
-	a |= (AttrOf(win->_bkgrnd) & A_ATTRIBUTES) & COLOR_MASK(a);
+	a |= (AttrOf(win->_nc_bkgd) & A_ATTRIBUTES) & COLOR_MASK(a);
 	/* color in ch has precedence */
 	AddAttr(ch, (a & COLOR_MASK(AttrOf(ch))));
     }
 
     TR(TRACE_VIRTPUT, ("bkg = %s, attrs = %s -> ch = %s",
-		       _tracech_t2(1, CHREF(win->_bkgrnd)),
+		       _tracech_t2(1, CHREF(win->_nc_bkgd)),
 		       _traceattr(win->_attrs),
 		       _tracech_t2(3, CHREF(ch))));
 
     return (ch);
-}
-
-NCURSES_EXPORT(NCURSES_CH_T)
-_nc_background(WINDOW *win)
-/* make render_char() visible while still allowing us to inline it below */
-{
-    return (win->_bkgrnd);
 }
 
 NCURSES_EXPORT(NCURSES_CH_T)

@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.57 2001/12/16 01:13:48 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.58 2001/12/18 23:27:45 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -193,6 +193,9 @@ wgetch(WINDOW *win)
 	returnCode(fifo_pull());
     }
 
+    if (win->_use_keypad != SP->_keypad_on)
+	_nc_keypad(win->_use_keypad);
+
     if (wgetch_should_refresh(win))
 	wrefresh(win);
 
@@ -226,9 +229,6 @@ wgetch(WINDOW *win)
 	 * increase the wait with mouseinterval().
 	 */
 	int runcount = 0;
-
-	if (win->_use_keypad != SP->_keypad_on)
-	    _nc_keypad(win->_use_keypad);
 
 	do {
 	    ch = kgetch(win);

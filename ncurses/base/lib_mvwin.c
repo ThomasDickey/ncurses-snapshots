@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mvwin.c,v 1.11 2001/06/03 01:53:41 skimo Exp $")
+MODULE_ID("$Id: lib_mvwin.c,v 1.12 2001/12/19 01:06:22 tom Exp $")
 
 NCURSES_EXPORT(int)
 mvwin(WINDOW *win, int by, int bx)
@@ -70,7 +70,7 @@ mvwin(WINDOW *win, int by, int bx)
 
 		    werase(win);	/* Erase the original place     */
 		    /* fill with parents background */
-		    wbkgrnd(win, CHREF(parent->_bkgrnd));
+		    wbkgrnd(win, CHREF(parent->_nc_bkgd));
 		    wsyncup(win);	/* Tell the parent(s)           */
 
 		    err = mvderwin(win,

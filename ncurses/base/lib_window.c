@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_window.c,v 1.17 2001/07/31 17:53:35 tom Exp $")
+MODULE_ID("$Id: lib_window.c,v 1.18 2001/12/19 01:07:15 tom Exp $")
 
 NCURSES_EXPORT(void)
 _nc_synchook(WINDOW *win)
@@ -203,7 +203,7 @@ dupwin(WINDOW *win)
      */
 
     nwin->_attrs = win->_attrs;
-    nwin->_bkgrnd = win->_bkgrnd;
+    nwin->_nc_bkgd = win->_nc_bkgd;
 
     nwin->_clear = win->_clear;
     nwin->_scroll = win->_scroll;

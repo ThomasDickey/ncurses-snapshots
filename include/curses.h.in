@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.117 2001/12/08 21:37:39 tom Exp $ */
+/* $Id: curses.h.in,v 1.118 2001/12/19 00:14:40 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -295,7 +295,7 @@ struct _win_st
 
 	/* attribute tracking */
 	attr_t  _attrs;		/* current attribute for non-space character */
-	@NCURSES_bkgd_field@	/* current background char/attribute pair */
+	chtype  _bkgd;		/* current background char/attribute pair */
 
 	/* option values set by user */
 	bool	_notimeout;	/* no time out on function-key entry? */
@@ -331,7 +331,7 @@ struct _win_st
 	NCURSES_SIZE_T _yoffset; /* real begy is _begy + _yoffset */
 
 #ifdef _XOPEN_SOURCE_EXTENDED
-	NCURSES_CH_T  _bkgrnd;	/* current background char/attribute pair */
+	cchar_t  _bkgrnd;	/* current background char/attribute pair */
 #endif
 };
 
@@ -467,7 +467,7 @@ extern NCURSES_EXPORT(char) erasechar (void);				/* implemented */
 extern NCURSES_EXPORT(void) filter (void);				/* implemented */
 extern NCURSES_EXPORT(int) flash (void);				/* implemented */
 extern NCURSES_EXPORT(int) flushinp (void);				/* implemented */
-extern NCURSES_EXPORT(chtype) getbkgd (WINDOW *);			/* @NCURSES_getbkgd_gen@ */
+extern NCURSES_EXPORT(chtype) getbkgd (WINDOW *);			/* generated */
 extern NCURSES_EXPORT(int) getch (void);				/* generated */
 extern NCURSES_EXPORT(int) getnstr (char *, int);			/* generated */
 extern NCURSES_EXPORT(int) getstr (char *);				/* generated */
@@ -701,8 +701,8 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 
 /* attributes */
 
-#define NCURSES_ATTR_SHIFT       (@cf_cv_widec_shift@)
-#define NCURSES_BITS(mask,shift) ((mask) << ((shift) + @cf_cv_widec_shift@))
+#define NCURSES_ATTR_SHIFT       8
+#define NCURSES_BITS(mask,shift) ((mask) << ((shift) + NCURSES_ATTR_SHIFT))
 
 #define A_NORMAL	0L
 #define A_ATTRIBUTES	NCURSES_BITS(~(@cf_cv_1UL@ - @cf_cv_1UL@),0)
@@ -716,11 +716,6 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 #define A_BOLD		NCURSES_BITS(@cf_cv_1UL@,13)
 #define A_ALTCHARSET	NCURSES_BITS(@cf_cv_1UL@,14)
 #define A_INVIS		NCURSES_BITS(@cf_cv_1UL@,15)
-
-/* Tradeoff on 32-bit machines ('protect' vs widec).  The others (e.g., left
- * highlight are not implemented in any terminal descriptions, anyway.
- */
-#if ((16 + @cf_cv_widec_shift@) < @cf_cv_shift_limit@)
 #define A_PROTECT	NCURSES_BITS(@cf_cv_1UL@,16)
 #define A_HORIZONTAL	NCURSES_BITS(@cf_cv_1UL@,17)
 #define A_LEFT		NCURSES_BITS(@cf_cv_1UL@,18)
@@ -728,18 +723,9 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 #define A_RIGHT		NCURSES_BITS(@cf_cv_1UL@,20)
 #define A_TOP		NCURSES_BITS(@cf_cv_1UL@,21)
 #define A_VERTICAL	NCURSES_BITS(@cf_cv_1UL@,22)
-#else
-#define A_PROTECT	0L
-#define A_HORIZONTAL	0L
-#define A_LEFT		0L
-#define A_LOW		0L
-#define A_RIGHT		0L
-#define A_TOP		0L
-#define A_VERTICAL	0L
-#endif
 
 #define COLOR_PAIR(n)	NCURSES_BITS(n, 0)
-#define PAIR_NUMBER(a)	(((a) & A_COLOR) >> @cf_cv_widec_shift@)
+#define PAIR_NUMBER(a)	(((a) & A_COLOR) >> NCURSES_ATTR_SHIFT)
 
 /*
  * pseudo functions
@@ -903,7 +889,7 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 /*
  * Some wide-character functions do not depend on the extensions.
  */
-@NCURSES_getbkgd_def@
+#define getbkgd(win)                    ((win)->_bkgd)
 
 #define slk_attr_off(a,v)		((v) ? ERR : slk_attroff(a))
 #define slk_attr_on(a,v)		((v) ? ERR : slk_attron(a))

@@ -37,7 +37,7 @@
 #include <time.h>
 #include <term.h>		/* exit_ca_mode, non_rev_rmcup */
 
-MODULE_ID("$Id: lib_screen.c,v 1.18 2001/06/03 01:54:44 skimo Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.19 2001/12/19 00:55:28 tom Exp $")
 
 static time_t dumptime;
 
@@ -71,7 +71,7 @@ getwin(FILE * filep)
     nwin->_flags = tmp._flags & ~(_SUBWIN | _ISPAD);
 
     nwin->_attrs = tmp._attrs;
-    nwin->_bkgrnd = tmp._bkgrnd;
+    nwin->_nc_bkgd = tmp._nc_bkgd;
 
     nwin->_clear = tmp._clear;
     nwin->_scroll = tmp._scroll;

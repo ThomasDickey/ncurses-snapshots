@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.211 2001/12/16 01:03:12 tom Exp $
+ * $Id: curses.priv.h,v 1.212 2001/12/19 01:05:15 tom Exp $
  *
  *	curses.priv.h
  *
@@ -234,9 +234,11 @@ color_t;
 
 #define WINDOWLIST struct _win_list
 
-#if !USE_WIDEC_SUPPORT
+#if USE_WIDEC_SUPPORT
+#define _nc_bkgd    _bkgrnd
+#else
 #undef _XOPEN_SOURCE_EXTENDED
-#define _bkgrnd	    _bkgd
+#define _nc_bkgd    _bkgd
 #define wgetbkgrnd(win, wch)	*wch = win->_bkgd
 #define wbkgrnd	    wbkgd
 #endif
@@ -861,7 +863,6 @@ extern NCURSES_EXPORT(int) _nc_remove_string (struct tries **tree, char *string)
 extern NCURSES_EXPORT(WINDOW *) _nc_makenew (int, int, int, int, int);
 extern NCURSES_EXPORT(char *) _nc_home_terminfo (void);
 extern NCURSES_EXPORT(char *) _nc_trace_buf (int, size_t);
-extern NCURSES_EXPORT(NCURSES_CH_T) _nc_background (WINDOW *);
 extern NCURSES_EXPORT(NCURSES_CH_T) _nc_render (WINDOW *, NCURSES_CH_T);
 extern NCURSES_EXPORT(int)  _nc_access (const char *, int);
 extern NCURSES_EXPORT(int) _nc_baudrate (int);

@@ -38,7 +38,7 @@
  */
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_slkclear.c,v 1.7 2001/06/03 01:54:36 skimo Exp $")
+MODULE_ID("$Id: lib_slkclear.c,v 1.8 2001/12/19 01:07:01 tom Exp $")
 
 NCURSES_EXPORT(int)
 slk_clear(void)
@@ -50,7 +50,7 @@ slk_clear(void)
     SP->_slk->hidden = TRUE;
     /* For simulated SLK's it's looks much more natural to
        inherit those attributes from the standard screen */
-    SP->_slk->win->_bkgrnd = stdscr->_bkgrnd;
+    SP->_slk->win->_nc_bkgd = stdscr->_nc_bkgd;
     SP->_slk->win->_attrs = stdscr->_attrs;
     if (SP->_slk->win == stdscr) {
 	returnCode(OK);

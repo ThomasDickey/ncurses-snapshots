@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_erase.c,v 1.14 2001/06/03 00:51:58 skimo Exp $")
+MODULE_ID("$Id: lib_erase.c,v 1.15 2001/12/19 01:06:13 tom Exp $")
 
 NCURSES_EXPORT(int)
 werase(WINDOW *win)
@@ -53,7 +53,7 @@ werase(WINDOW *win)
     T((T_CALLED("werase(%p)"), win));
 
     if (win) {
-	blank = _nc_background(win);
+	blank = win->_nc_bkgd;
 	for (y = 0; y <= win->_maxy; y++) {
 	    start = win->_line[y].text;
 	    end = &start[win->_maxx];

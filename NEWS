@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.659 2001/12/16 01:37:06 tom Exp $
+-- $Id: NEWS,v 1.660 2001/12/19 01:39:42 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20011218
+	+ drop configure macro CF_WIDEC_SHIFT, since that was rendered obsolete
+	  by Sven Verdoolaege's rewrite of wide-character support.  This makes
+	  libncursesw incompatible again, but makes the header files almost the
+	  same as in the narrow-character configuration.
+	+ simplify definitions that combine wide/narrow versions of bkgd, etc.,
+	  to eliminate differences between the wide/narrow versions of curses.h
+	+ correct typo in configure macro CF_FUNC_VSSCANF
+	+ correct location of call to _nc_keypad() from 20011215 changes which
+	  prevented keypad() from being disabled (reported by Lars Hecking).
 
 20011215
 	+ rewrote ncurses 'a' test to exercise wgetch() and keypad() functions
@@ -21,6 +32,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  at
 		ftp://invisible-island.net/autoconf/
 	+ update config.guess, config.sub from
+		http://subversions.gnu.org/cgi-bin/viewcvs/config/config/
 	+ minor changes to quoting in configure script to allow it to work
 	  with autoconf 2.52
 

@@ -43,7 +43,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_scroll.c,v 1.22 2001/10/20 22:28:58 tom Exp $")
+MODULE_ID("$Id: lib_scroll.c,v 1.23 2001/12/19 01:06:55 tom Exp $")
 
 NCURSES_EXPORT(void)
 _nc_scroll_window(WINDOW *win, int const n, NCURSES_SIZE_T const top,
@@ -145,7 +145,7 @@ wscrl(WINDOW *win, int n)
     if (n == 0)
 	returnCode(OK);
 
-    _nc_scroll_window(win, n, win->_regtop, win->_regbottom, _nc_background(win));
+    _nc_scroll_window(win, n, win->_regtop, win->_regbottom, win->_nc_bkgd);
 
     _nc_synchook(win);
     returnCode(OK);
