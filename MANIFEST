@@ -321,6 +321,7 @@
 ./man/curs_touch.3x
 ./man/curs_util.3x
 ./man/curs_window.3x
+./man/define_key.3x
 ./man/dft_fgbg.3x
 ./man/form.3x
 ./man/form_cursor.3x
@@ -346,6 +347,7 @@
 ./man/form_userptr.3x
 ./man/form_win.3x
 ./man/infocmp.1m
+./man/keyok.3x
 ./man/man_db.renames
 ./man/menu.3x
 ./man/menu_attribs.3x
@@ -450,8 +452,10 @@
 ./ncurses/comp_parse.c
 ./ncurses/comp_scan.c
 ./ncurses/curses.priv.h
+./ncurses/define_key.c
 ./ncurses/hardscroll.c
 ./ncurses/hashmap.c
+./ncurses/keyok.c
 ./ncurses/keys.list
 ./ncurses/lib_acs.c
 ./ncurses/lib_adabind.c
@@ -521,11 +525,13 @@
 ./ncurses/lib_window.c
 ./ncurses/llib-lncurses
 ./ncurses/modules
+./ncurses/name_match.c
 ./ncurses/parse_entry.c
 ./ncurses/read_entry.c
 ./ncurses/read_termcap.c
 ./ncurses/resizeterm.c
 ./ncurses/sigaction.c
+./ncurses/tries.c
 ./ncurses/vsscanf.c
 ./ncurses/wresize.c
 ./ncurses/write_entry.c
@@ -550,6 +556,7 @@
 ./progs/toe.c
 ./progs/tput.c
 ./progs/tset.c
+./shlib-versions
 ./sysdeps/unix/sysv/linux/Makefile
 ./sysdeps/unix/sysv/linux/configure
 ./sysdeps/unix/sysv/linux/edit_man.sed

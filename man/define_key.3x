@@ -1,0 +1,58 @@
+.\"*****************************************************************************
+.\" Copyright 1997 by Thomas E. Dickey <dickey@clark.net>                      *
+.\" All Rights Reserved.                                                       *
+.\"                                                                            *
+.\" Permission to use, copy, modify, and distribute this software and its      *
+.\" documentation for any purpose and without fee is hereby granted, provided  *
+.\" that the above copyright notice appear in all copies and that both that    *
+.\" copyright notice and this permission notice appear in supporting           *
+.\" documentation, and that the name of the above listed copyright holder(s)   *
+.\" not be used in advertising or publicity pertaining to distribution of the  *
+.\" software without specific, written prior permission. THE ABOVE LISTED      *
+.\" COPYRIGHT HOLDER(S) DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,  *
+.\" INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO     *
+.\" EVENT SHALL THE ABOVE LISTED COPYRIGHT HOLDER(S) BE LIABLE FOR ANY         *
+.\" SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER       *
+.\" RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
+.\" CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
+.\" CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
+.\"*****************************************************************************
+.\" $Id: define_key.3x,v 1.1 1997/05/29 10:58:47 tom Exp $
+.TH define_key 3X ""
+.
+.SH NAME
+\fBdefine_key\fP \- define a keycode
+.
+.SH SYNOPSIS
+\fB#include <curses.h>\fP
+
+\fBint define_key(char *definition, int keycode);\fP
+.
+.SH DESCRIPTION
+This is an extension to the curses library.
+It permits an application to define keycodes with their corresponding control
+strings, so that the ncurses library will interpret them just as it would
+the predefined codes in the terminfo database.
+.PP
+If the given string is null, any existing definition for the keycode is
+removed.
+.
+.SH RETURN VALUE
+The keycode must be greater than zero, else ERR is returned.
+.
+.SH PORTABILITY
+These routines are specific to ncurses.  They were not supported on
+Version 7, BSD or System V implementations.  It is recommended that
+any code depending on them be conditioned using NCURSES_VERSION.
+.
+.SH SEE ALSO
+\fBkeyok\fP(3x).
+.
+.SH AUTHOR
+Thomas Dickey.
+.\"#
+.\"# The following sets edit modes for GNU EMACS
+.\"# Local Variables:
+.\"# mode:nroff
+.\"# fill-column:79
+.\"# End:

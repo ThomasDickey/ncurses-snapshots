@@ -28,10 +28,11 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_clrbot.c,v 1.9 1997/02/01 23:18:18 tom Exp $")
+MODULE_ID("$Id: lib_clrbot.c,v 1.10 1997/05/28 09:01:48 J.T.Conklin Exp $")
 
 int wclrtobot(WINDOW *win)
 {
+chtype	blank = _nc_background(win);
 chtype	*ptr, *end, *maxx = NULL;
 short	y, startx, minx;
 
@@ -46,8 +47,6 @@ short	y, startx, minx;
 		end = &win->_line[y].text[win->_maxx];
 
 		for (ptr = &win->_line[y].text[startx]; ptr <= end; ptr++) {
-			chtype blank = _nc_background(win);
-
 			if (*ptr != blank) {
 				maxx = ptr;
 				if (minx == _NOCHANGE)

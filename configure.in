@@ -17,10 +17,10 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.66 1997/05/18 01:27:53 tom Exp $
+dnl $Id: configure.in,v 1.69 1997/05/31 23:43:03 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12)
-AC_REVISION($Revision: 1.66 $)
+AC_REVISION($Revision: 1.69 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
@@ -45,7 +45,6 @@ AC_ARG_ENABLE(add-ons, dnl
 dnl We need to use [ and ] for other purposes for a while now.
 changequote(,)dnl
 if test x"$glibc_add_on" = "xyes" ; then
-if test -f $srcdir/../glibcbug.in; then
   rm -f $srcdir/Banner
   # We are in glibc.
   rm -f $srcdir/Makefile
@@ -54,7 +53,6 @@ if test -f $srcdir/../glibcbug.in; then
 		$srcdir/Makefile | sed -e \
 		's/^[ 	]*ncurses-version[ 	]*=[ 	]*\([^	^ ]*\)[ 	]*$/\1/'`" > $srcdir/Banner
   exit 0
-fi
 fi
 changequote([,])dnl
 
@@ -243,6 +241,29 @@ AC_ARG_ENABLE(overwrite,
 	],
 	[with_overwrite=yes])
 AC_MSG_RESULT($includedir)
+
+AC_MSG_CHECKING(if external terminfo-database is used)
+AC_ARG_ENABLE(database,
+	[  --disable-database      use only built-in data],
+	[with_database=$enableval],
+	[with_database=yes])
+AC_MSG_RESULT($with_database)
+test $with_database != no && AC_DEFINE(USE_DATABASE)
+
+AC_MSG_CHECKING(for list of fallback descriptions)
+AC_ARG_WITH(fallbacks,
+	[  --with-fallbacks=XXX    specify list of fallback terminal descriptions],
+	[with_fallback=$withval],
+	[with_fallback=])
+AC_MSG_RESULT($with_fallback)
+FALLBACK_LIST=`echo $with_fallback|sed -e 's/,/ /'`
+AC_SUBST(FALLBACK_LIST)
+
+if test $with_database = no ; then
+	if test -z $with_fallback ; then
+		AC_ERROR(You have disabled the database w/o specifying fallbacks)
+	fi
+fi
 
 ###	use option --enable-big-core to make tic run faster on big machines
 AC_MSG_CHECKING(if big-core option selected)

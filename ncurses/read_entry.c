@@ -36,9 +36,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.31 1997/05/10 17:31:08 tom Exp $")
-
-TERMINAL *cur_term;
+MODULE_ID("$Id: read_entry.c,v 1.32 1997/06/01 00:18:58 tom Exp $")
 
 /*
  *	int
@@ -279,49 +277,3 @@ char		ttn[MAX_ALIAS + 3];
 	return(_nc_read_tic_entry(filename, TERMINFO, ttn, tp));
 }
 
-/*
- *	_nc_first_name(char *names)
- *
- *	Extract the primary name from a compiled entry.
- */
-
-char *_nc_first_name(const char *const sp)
-/* get the first name from the given name list */
-{
-    static char	buf[MAX_NAME_SIZE];
-    register char *cp;
-
-    (void) strcpy(buf, sp);
-
-    cp = strchr(buf, '|');
-    if (cp)
-	*cp = '\0';
-
-    return(buf);
-}
-
-/*
- *	bool _nc_name_match(namelist, name, delim)
- *
- *	Is the given name matched in namelist?
- */
-
-int _nc_name_match(const char *const namelst, const char *const name, const char *const delim)
-/* microtune this, it occurs in several critical loops */
-{
-char namecopy[MAX_ENTRY_SIZE];	/* this may get called on a TERMCAP value */
-register char *cp;
-
-	if (namelst == 0)
-		return(FALSE);
-	(void) strcpy(namecopy, namelst);
-	if ((cp = strtok(namecopy, delim)) != 0) {
-		do {
-			/* avoid strcmp() function-call cost if possible */
-			if (cp[0] == name[0] && strcmp(cp, name) == 0)
-			    return(TRUE);
-		} while
-		    ((cp = strtok((char *)0, delim)) != 0);
-	}
-	return(FALSE);
-}

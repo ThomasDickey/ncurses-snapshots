@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.93 1997/05/24 20:12:35 tom Exp $
+$Id: ncurses.c,v 1.95 1997/05/31 21:22:37 tom Exp $
 
 ***************************************************************************/
 
@@ -1142,6 +1142,11 @@ static void acs_and_scroll(void)
 		neww->next->last = neww;
 	    }
 	    current = neww;
+	    /* SVr4 curses sets the keypad on all newly-created windows to
+	     * false.  Someone reported that PDCurses makes new windows inherit
+	     * this flag.  Remove the following 'keypad()' call to test this
+	     */
+	    keypad(current->wind, TRUE);
 	    current->do_keypad = HaveKeypad(current);
 	    current->do_scroll = HaveScroll(current);
 	    break;
@@ -1320,7 +1325,7 @@ static void acs_and_scroll(void)
 	usescr = (current ? current->wind : stdscr);
 	wrefresh(usescr);
     } while
-	((c = wGetchar(usescr))
+	((c = wGetchar(usescr)) != QUIT
 	 && !((c == ESCAPE) && (usescr->_use_keypad))
 	 && (c != ERR));
 

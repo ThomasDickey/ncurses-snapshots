@@ -3,7 +3,7 @@
  *
  * Generate timing statistics for vertical-motion optimization.
  *
- * $Id: hashtest.c,v 1.8 1997/01/18 19:09:30 tom Exp $
+ * $Id: hashtest.c,v 1.9 1997/05/31 21:26:10 tom Exp $
  */
 
 #define NCURSES_TRACE
@@ -186,6 +186,9 @@ int main(int argc, char *argv[])
 
 static RETSIGTYPE finish(int sig)
 {
+	move(LINES-1,0);
+	clrtoeol();
+	refresh();
 	endwin();
 	exit(sig != 0 ? EXIT_FAILURE : EXIT_SUCCESS);
 }

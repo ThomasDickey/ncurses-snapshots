@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                      *
+ * Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                 *
  * All Rights Reserved.                                                       *
  *                                                                            *
  * Permission to use, copy, modify, and distribute this software and its      *
@@ -27,7 +27,7 @@
 extern int malloc_errfd;	/* FIXME */
 #endif
 
-MODULE_ID("$Id: lib_freeall.c,v 1.8 1997/02/15 18:53:43 tom Exp $")
+MODULE_ID("$Id: lib_freeall.c,v 1.9 1997/05/29 01:16:49 tom Exp $")
 
 static void free_slk(SLK *p)
 {
@@ -95,6 +95,7 @@ void _nc_freeall(void)
 
 	if (SP != 0) {
 		free_tries (SP->_keytry);
+		free_tries (SP->_key_ok);
 	    	free_slk(SP->_slk);
 		FreeIfNeeded(SP->_color_pairs);
 		FreeIfNeeded(SP->_color_table);

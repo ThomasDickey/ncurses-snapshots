@@ -21,7 +21,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: wresize.c,v 1.5 1997/02/01 23:22:54 tom Exp $")
+MODULE_ID("$Id: wresize.c,v 1.6 1997/05/28 09:01:48 J.T.Conklin Exp $")
 
 /*
  * Reallocate a curses WINDOW struct to either shrink or grow to the specified
@@ -48,6 +48,7 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 	register int	row;
 	int	size_x, size_y;
 	struct ldat *pline = (win->_flags & _SUBWIN) ? win->_parent->_line : 0;
+	chtype	blank;
 
 #ifdef TRACE
 	T((T_CALLED("wresize(%p,%d,%d)"), win, ToLines, ToCols));
@@ -97,11 +98,11 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 	/*
 	 * Adjust the width of the columns:
 	 */
+	blank = _nc_background(win);
 	for (row = 0; row <= ToLines; row++) {
 		chtype	*s	= win->_line[row].text;
 		int	begin	= (s == 0) ? 0 : size_x + 1;
 		int	end	= ToCols;
-		chtype	blank	= _nc_background(win);
 
 		win->_line[row].oldindex = row;
 

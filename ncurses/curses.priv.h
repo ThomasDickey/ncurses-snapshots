@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.62 1997/05/17 21:46:58 tom Exp $
+ * $Id: curses.priv.h,v 1.63 1997/05/29 10:28:30 tom Exp $
  *
  *	curses.priv.h
  *
@@ -169,14 +169,20 @@ struct screen {
 	short           _columns;       /* screen columns                   */
 	short           _lines_avail;   /* lines available for stdscr       */
 	short           _topstolen;     /* lines stolen from top            */
+
 	struct _win_st  *_curscr;       /* current screen                   */
 	struct _win_st  *_newscr;       /* virtual screen to be updated to  */
 	struct _win_st  *_stdscr;       /* screen's full-window context     */
+
 	struct tries    *_keytry;       /* "Try" for use with keypad mode   */
+	struct tries    *_key_ok;       /* Disabled keys via keyok(,FALSE)  */
+	int             _tried;         /* keypad mode was initialized      */
+
 	unsigned int    _fifo[FIFO_SIZE];       /* input push-back buffer   */
 	signed char     _fifohead,      /* head of fifo queue               */
 	                _fifotail,      /* tail of fifo queue               */
 	                _fifopeek;      /* where to peek for next char      */
+
 	int             _endwin;        /* are we out of window mode?       */
 	unsigned long   _current_attr;  /* terminal attribute current set   */
 	int             _coloron;       /* is color enabled?                */
@@ -229,6 +235,7 @@ struct screen {
 	int             _carriage_return_length;
 	int             _cursor_home_length;
 	int             _cursor_to_ll_length;
+
 	/* used in lib_color.c */
 	color_t         *_color_table;  /* screen's color palette            */
 	int             _color_count;   /* count of colors in palette        */
@@ -464,6 +471,11 @@ extern void _nc_mouse_resume(SCREEN *);
 extern int _nc_max_click_interval;
 extern int _nc_mouse_fd(void);
 
+/* tries.c */
+extern void _nc_add_to_try(struct tries **tree, char *str, unsigned short code);
+extern char *_nc_expand_try(struct tries *tree, unsigned short code, size_t len);
+extern int _nc_remove_key(struct tries **tree, unsigned short code);
+
 /* elsewhere ... */
 extern WINDOW *_nc_makenew(int, int, int, int, int);
 extern chtype _nc_background(WINDOW *);
@@ -531,8 +543,6 @@ extern int _nc_slk_initialize(WINDOW *, int);
 #define SLK_LINES  (SLK_STDFMT ? 1 : (_nc_slk_format - 2))
 
 extern int _nc_ripoffline(int line, int (*init)(WINDOW *,int));
-
-#define UNINITIALISED ((struct tries * ) -1)
 
 extern bool _nc_idlok, _nc_idcok;
 

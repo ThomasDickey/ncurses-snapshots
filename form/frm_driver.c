@@ -65,7 +65,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.20 1997/05/01 16:47:54 juergen Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.22 1997/05/25 17:52:55 juergen Exp $")
 
 /*
 Some options that may effect compatibility in behavior to SVr4 forms,
@@ -2025,7 +2025,7 @@ static int Wrapping_Not_Necessary_Or_Wrapping_Ok(FORM * form)
 
   if ( (field->opts & O_WRAP)                     &&  /* wrapping wanted     */
       (!Single_Line_Field(field))                 &&  /* must be multi-line  */
-      (There_Is_No_Room_For_A_Char_In_Line(form)) &&  /* line id full        */
+      (There_Is_No_Room_For_A_Char_In_Line(form)) &&  /* line is full        */
       (!Last_Row || Growable(field))               )  /* there are more lines*/
     {
       char *bp;
@@ -2060,6 +2060,8 @@ static int Wrapping_Not_Necessary_Or_Wrapping_Ok(FORM * form)
 	      return E_OK;
 	    }
 	}
+      else
+	return E_OK;
       if (result!=E_OK)
 	{
 	  wmove(form->w,form->currow,form->curcol);
@@ -3423,7 +3425,6 @@ static int Data_Entry(FORM * form, int c)
 {
   FIELD  *field = form->current;
   int result = E_REQUEST_DENIED;
-  bool End_Of_Field;
 
   if ( (field->opts & O_EDIT) 
 #if FIX_FORM_INACTIVE_BUG
@@ -3457,9 +3458,9 @@ static int Data_Entry(FORM * form, int c)
 
       if ((result=Wrapping_Not_Necessary_Or_Wrapping_Ok(form))==E_OK)
 	{
+	  bool End_Of_Field= (((field->drows-1)==form->currow) &&
+			      ((field->dcols-1)==form->curcol));
 	  form->status |= _WINDOW_MODIFIED;
-	  End_Of_Field= (((field->drows-1)==form->currow) &&
-			 ((field->dcols-1)==form->curcol));
 	  if (End_Of_Field && !Growable(field) && (field->opts & O_AUTOSKIP))
 	    result = Inter_Field_Navigation(FN_Next_Field,form);
 	  else
@@ -4016,14 +4017,19 @@ int set_field_buffer(FIELD * field, int buffer, const char * value)
   for(s=(char *)value; *s && (s < (value+len)); s++)
     p[s-value] = *s;
   if (s < (value+len))
-    p[s-value] = *s++; 
+    {
+      p[s-value] = *s++;
+      s = p + (s-value);
+    }
   else 
     s=(char *)0;
 #endif
 
   if (s) 
     { /* this means, value was null terminated and not greater than the
-	 buffer. We have to pad with blanks */
+	 buffer. We have to pad with blanks. Please note that due to memccpy
+	 logic s points after the terminating null. */
+      s--; /* now we point to the terminator. */
       assert(len >= (unsigned int)(s-p));
       if (len > (unsigned int)(s-p))
 	memset(s,C_BLANK,len-(unsigned int)(s-p));

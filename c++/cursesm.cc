@@ -1,36 +1,34 @@
 // * this is for making emacs happy: -*-Mode: C++;-*-
-/*-----------------------------------------------------------------------------+
-|            The ncurses menu C++ binding is Copyright (C) 1997                |
-|             by Juergen Pfeifer <Juergen.Pfeifer@T-Online.de>                 |
-|                          All Rights Reserved.                                |
-|                                                                              |
-| Permission to use, copy, modify, and distribute this software and its        |
-| documentation for any purpose and without fee is hereby granted, provided    |
-| that the above copyright notice appear in all copies and that both that      |
-| copyright notice and this permission notice appear in supporting             |
-| documentation, and that the name of the above listed copyright holder(s) not |
-| be used in advertising or publicity pertaining to distribution of the        |
-| software without specific, written prior permission.                         | 
-|                                                                              |
-| THE ABOVE LISTED COPYRIGHT HOLDER(S) DISCLAIM ALL WARRANTIES WITH REGARD TO  |
-| THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FIT-  |
-| NESS, IN NO EVENT SHALL THE ABOVE LISTED COPYRIGHT HOLDER(S) BE LIABLE FOR   |
-| ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RE- |
-| SULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, |
-| NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH    |
-| THE USE OR PERFORMANCE OF THIS SOFTWARE.                                     |
-+-----------------------------------------------------------------------------*/
-
-#include "internal.h"
-
-MODULE_ID("$Id: cursesm.cc,v 1.4 1997/05/05 20:27:32 tom Exp $")
-
-#pragma implementation
+/*----------------------------------------------------------------------------+
+|            The ncurses menu C++ binding is Copyright (C) 1997               |
+|             by Juergen Pfeifer <Juergen.Pfeifer@T-Online.de>                |
+|                          All Rights Reserved.                               |
+|                                                                             |
+| Permission to use, copy, modify, and distribute this software and its       |
+| documentation for any purpose and without fee is hereby granted, provided   |
+| that the above copyright notice appear in all copies and that both that     |
+| copyright notice and this permission notice appear in supporting            |
+| documentation, and that the name of the above listed copyright holder(s)    |
+| not be used in advertising or publicity pertaining to distribution of the   |
+| software without specific, written prior permission.                        |
+|                                                                             |
+| THE ABOVE LISTED COPYRIGHT HOLDER(S) DISCLAIM ALL WARRANTIES WITH REGARD TO |
+| THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FIT- |
+| NESS, IN NO EVENT SHALL THE ABOVE LISTED COPYRIGHT HOLDER(S) BE LIABLE FOR  |
+| ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER    |
+| RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CON-   |
+| TRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION |
+| WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                               |
++----------------------------------------------------------------------------*/
 
 #include "cursesm.h"
+#include "internal.h"
+#pragma implementation
 
-const int CMD_ACTION = MAX_COMMAND + 1;
-const int CMD_QUIT   = MAX_COMMAND + 2;
+MODULE_ID("$Id: cursesm.cc,v 1.5 1997/05/25 09:22:22 juergen Exp $")
+
+const int CMD_QUIT   = MAX_COMMAND + 1;
+const int CMD_ACTION = MAX_COMMAND + 2;
 
 unsigned long NCursesMenu::total_count = 0;
 
@@ -40,27 +38,23 @@ unsigned long NCursesMenu::total_count = 0;
  * implementing a virtual method in a derived class
  */
 void
-NCursesMenu::mnu_init(MENU *m)
-{
+NCursesMenu::mnu_init(MENU *m) {
   getHook(m)->On_Menu_Init();
 }
 
 void
-NCursesMenu::mnu_term(MENU *m)
-{
+NCursesMenu::mnu_term(MENU *m) {
   getHook(m)->On_Menu_Termination();
 }
 
 void
-NCursesMenu::itm_init(MENU *m)
-{
+NCursesMenu::itm_init(MENU *m) {
   NCursesMenu* M = getHook(m);
   M->On_Item_Init (M->current_item ());
 }
 
 void
-NCursesMenu::itm_term(MENU *m)
-{
+NCursesMenu::itm_term(MENU *m) {
   NCursesMenu* M = getHook(m);
   M->On_Item_Termination (M->current_item ());
 }
@@ -70,30 +64,23 @@ NCursesMenu::itm_term(MENU *m)
  */
 ITEM**
 NCursesMenu::mapItems(NCursesMenuItem* nitems[]) {
-    int itemCount = 0,lcv;
-
-    for (lcv=0; nitems[lcv]->item; ++lcv)
-      ++itemCount;
-
-    ITEM** items = new ITEM*[itemCount + 1];
-
-    for (lcv=0;nitems[lcv]->item;++lcv) {
-      items[lcv] = nitems[lcv]->item;
-    }
-    items[lcv] = NULL;
-
-    my_items = nitems;
-
-    if (menu)
-      delete[] ::menu_items(menu);  
-    return items;
-}
-
-
-void
-NCursesMenu::setItems(NCursesMenuItem* nitems[])
-{
-  OnError(::set_menu_items(menu,mapItems(nitems)));
+  int itemCount = 0,lcv;
+  
+  for (lcv=0; nitems[lcv]->item; ++lcv)
+    ++itemCount;
+  
+  ITEM** items = new ITEM*[itemCount + 1];
+  
+  for (lcv=0;nitems[lcv]->item;++lcv) {
+    items[lcv] = nitems[lcv]->item;
+  }
+  items[lcv] = NULL;
+  
+  my_items = nitems;
+  
+  if (menu)
+    delete[] ::menu_items(menu);  
+  return items;
 }
 
 void
@@ -105,7 +92,7 @@ NCursesMenu::InitMenu(NCursesMenuItem* nitems[],
     raw();
     keypad(TRUE);
   }
-
+  
   b_framed = with_frame;
 
   menu = (MENU*)0;
@@ -117,7 +104,7 @@ NCursesMenu::InitMenu(NCursesMenuItem* nitems[],
   hook->m_user   = NULL;
   hook->m_back   = this;
   hook->m_owner  = menu;
-  ::set_menu_userptr(menu,(const void*)hook);
+  ::set_menu_userptr(menu,(void*)hook);
   
   ::set_menu_init (menu, NCursesMenu::mnu_init);
   ::set_menu_term (menu, NCursesMenu::mnu_term);
@@ -161,22 +148,6 @@ NCursesMenu::setDefaultAttributes() {
   }
 }
 
-
-NCursesMenu::NCursesMenu(NCursesMenuItem* menu[])
-  : NCursesPanel() {
-    InitMenu(menu);
-}
-
-NCursesMenu::NCursesMenu(NCursesMenuItem* menu[], 
-			 int lines,
-			 int cols,
-			 int begin_y,
-			 int begin_x,
-			 bool with_frame)
-  : NCursesPanel(lines, cols, begin_y, begin_x) {
-    InitMenu(menu,with_frame);
-}
-
 NCursesMenu::~NCursesMenu() {
   UserHook* hook = (UserHook*)::menu_userptr(menu);
   delete hook;
@@ -184,16 +155,17 @@ NCursesMenu::~NCursesMenu() {
     delete sub;
     ::set_menu_sub(menu,(WINDOW *)0);
   }
-  free_menu(menu);
-  
-  // It's essential to do this after free_menu()
-  delete[] ::menu_items(menu);  
+  if (menu) {
+    ITEM** itms = ::menu_items(menu);
+    ::free_menu(menu);
+    // It's essential to do this after free_menu()
+    delete[] itms;  
+  }
   --total_count;
 }
 
 void
-NCursesMenu::setSubWindow(NCursesWindow& nsub)
-{
+NCursesMenu::setSubWindow(NCursesWindow& nsub) {
   if (!isDescendant(nsub))
     OnError(E_SYSTEM_ERROR);
   else {

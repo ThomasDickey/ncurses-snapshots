@@ -59,7 +59,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hashmap.c,v 1.12 1997/05/03 20:30:06 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.13 1997/05/27 14:57:24 Alexander.V.Lukyanov Exp $")
 
 #ifdef HASHDEBUG
 #define LINES	24
@@ -85,6 +85,10 @@ static chtype oldtext[LINES][TEXTWIDTH], newtext[LINES][TEXTWIDTH];
 #endif /* HASHDEBUG */
 
 /* Chris Torek's hash function (from his DB package). */
+/* The loop in this function is equivalent to:
+    while(len--)
+	h += (h<<5) + *k++;
+*/
 static inline unsigned long hash4(const void *key, size_t len)
 {
     register long h, loop;
@@ -135,15 +139,49 @@ void _nc_hash_map(void)
 	int		oldindex, newindex;
     }
     sym;
-    sym hashtab[MAXLINES*2], *sp;
+    
+    sym *sp;
     register int i;
-    long oldhash[MAXLINES], newhash[MAXLINES];
+
+    static sym *hashtab=0;
+    static int lines_alloc=0; 
+    static long *oldhash=0;
+
+    long *newhash;
     bool keepgoing;
+	
+    if (LINES > lines_alloc)
+    {
+	if (hashtab)
+	    free (hashtab);
+	hashtab = malloc (sizeof(*hashtab)*(LINES+1)*2);
+	if (!hashtab)
+	{
+	    if (oldhash)
+		FreeAndNull(oldhash);
+	    lines_alloc = 0;
+	    return;
+	}
+  
+	if (oldhash)
+	    free (oldhash);
+	oldhash = malloc (sizeof(*oldhash)*LINES*2);
+	if (!oldhash)
+	{
+	    if (hashtab)
+		FreeAndNull(hashtab);
+	    lines_alloc = 0;
+	    return;
+	}
+	
+	lines_alloc = LINES;
+    }
+    newhash = oldhash + LINES;	/* two arrays in the same memory block */
 
     /*
      * Set up and count line-hash values.
      */
-    memset(hashtab, '\0', sizeof(sym) * MAXLINES);
+    memset(hashtab, '\0', sizeof(*hashtab)*(LINES+1)*2);
     for (i = 0; i < LINES; i++)
     {
 	unsigned long hashval = hash(OLDTEXT(i));
@@ -223,6 +261,12 @@ void _nc_hash_map(void)
 	    }
     } while
 	(keepgoing);
+
+#if NO_LEAKS
+    FreeAndNull(hashtab);
+    FreeAndNull(oldhash);
+    alloc_lines = 0;
+#endif
 }
 
 #ifdef HASHDEBUG

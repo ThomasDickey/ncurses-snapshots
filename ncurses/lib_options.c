@@ -32,7 +32,7 @@
 #include <term.h>	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
 
-MODULE_ID("$Id: lib_options.c,v 1.22 1997/05/01 23:46:18 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.23 1997/05/29 10:22:23 tom Exp $")
 
 int has_ic(void)
 {
@@ -145,36 +145,6 @@ int wtimeout(WINDOW *win, int delay)
 	returnCode(OK);
 }
 
-static void init_keytry(void);
-static void add_to_try(char *, short);
-
-/* Turn the keypad on/off
- *
- * Note:  we flush the output because changing this mode causes some terminals
- * to emit different escape sequences for cursor and keypad keys.  If we don't
- * flush, then the next wgetch may get the escape sequence that corresponds to
- * the terminal state _before_ switching modes.
- */
-int _nc_keypad(bool flag)
-{
-	if (flag  &&  keypad_xmit)
-	{
-	    TPUTS_TRACE("keypad_xmit");
-	    putp(keypad_xmit);
-	    (void) fflush(SP->_ofp);
-	}
-	else if (! flag  &&  keypad_local)
-	{
-	    TPUTS_TRACE("keypad_local");
-	    putp(keypad_local);
-	    (void) fflush(SP->_ofp);
-	}
-
-	if (SP->_keytry == UNINITIALISED)
-	    init_keytry();
-	return(OK);
-}
-
 int keypad(WINDOW *win, bool flag)
 {
 	T((T_CALLED("keypad(%p,%d)"), win, flag));
@@ -252,121 +222,6 @@ int cursor = SP->_cursor;
 	returnCode(cursor==-1 ? 1 : cursor);
 }
 
-/*
-**      init_keytry()
-**
-**      Construct the try for the current terminal's keypad keys.
-**
-*/
-
-
-static struct  tries *newtry;
-
-static void init_keytry(void)
-{
-	newtry = 0;
-
-/* LINT_PREPRO
-#if 0*/
-#include <keys.tries>
-/* LINT_PREPRO
-#endif*/
-
-	SP->_keytry = newtry;
-}
-
-
-static void add_to_try(char *str, short code)
-{
-static bool     out_of_memory = FALSE;
-struct tries    *ptr, *savedptr;
-
-	if (! str  ||  out_of_memory)
-		return;
-
-	if (newtry != 0) {
-		ptr = savedptr = newtry;
-
-		for (;;) {
-			while (ptr->ch != (unsigned char) *str
-			       &&  ptr->sibling != 0)
-				ptr = ptr->sibling;
-	
-			if (ptr->ch == (unsigned char) *str) {
-				if (*(++str)) {
-					if (ptr->child != 0)
-						ptr = ptr->child;
-					else
-						break;
-				} else {
-					ptr->value = code;
-					return;
-				}
-			} else {
-				if ((ptr->sibling = typeCalloc(struct tries,1)) == 0) {
-					out_of_memory = TRUE;
-					return;
-				}
-
-				savedptr = ptr = ptr->sibling;
-				if (*str == '\200')
-					ptr->ch = '\0';
-				else
-					ptr->ch = (unsigned char) *str;
-				str++;
-				ptr->value = 0;
-
-				break;
-			}
-		} /* end for (;;) */
-	} else {   /* newtry == 0 :: First sequence to be added */
-		savedptr = ptr = newtry = typeCalloc(struct tries,1);
-
-		if (ptr == 0) {
-			out_of_memory = TRUE;
-				return;
-		}
-
-		if (*str == '\200')
-			ptr->ch = '\0';
-		else
-			ptr->ch = (unsigned char) *str;
-		str++;
-		ptr->value = 0;
-	}
-
-	    /* at this point, we are adding to the try.  ptr->child == 0 */
-
-	while (*str) {
-		ptr->child = typeCalloc(struct tries,1);
-
-		ptr = ptr->child;
-
-		if (ptr == 0) {
-			out_of_memory = TRUE;
-
-			ptr = savedptr;
-			while (ptr != 0) {
-				savedptr = ptr->child;
-				free(ptr);
-				ptr = savedptr;
-			}
-
-			return;
-		}
-
-		if (*str == '\200')
-			ptr->ch = '\0';
-		else
-			ptr->ch = (unsigned char) *str;
-		str++;
-		ptr->value = 0;
-	}
-
-	ptr->value = code;
-	return;
-}
-
 int typeahead(int fd)
 {
 	T((T_CALLED("typeahead(%d)"), fd));
@@ -384,7 +239,7 @@ int typeahead(int fd)
 
 static int has_key_internal(int keycode, struct tries *tp)
 {
-    if (!tp)
+    if (tp == 0)
 	return(FALSE);
     else if (tp->value == keycode)
 	return(TRUE);
@@ -397,4 +252,53 @@ int has_key(int keycode)
 {
     T((T_CALLED("has_key(%d)"), keycode));
     returnCode(has_key_internal(keycode, SP->_keytry));
+}
+
+/*
+**      init_keytry()
+**
+**      Construct the try for the current terminal's keypad keys.
+**
+*/
+
+#define add_to_try(str,code) _nc_add_to_try(&(SP->_keytry), str, code)
+
+static void init_keytry(void)
+{
+	SP->_keytry = 0;
+
+/* LINT_PREPRO
+#if 0*/
+#include <keys.tries>
+/* LINT_PREPRO
+#endif*/
+}
+
+/* Turn the keypad on/off
+ *
+ * Note:  we flush the output because changing this mode causes some terminals
+ * to emit different escape sequences for cursor and keypad keys.  If we don't
+ * flush, then the next wgetch may get the escape sequence that corresponds to
+ * the terminal state _before_ switching modes.
+ */
+int _nc_keypad(bool flag)
+{
+	if (flag  &&  keypad_xmit)
+	{
+	    TPUTS_TRACE("keypad_xmit");
+	    putp(keypad_xmit);
+	    (void) fflush(SP->_ofp);
+	}
+	else if (! flag  &&  keypad_local)
+	{
+	    TPUTS_TRACE("keypad_local");
+	    putp(keypad_local);
+	    (void) fflush(SP->_ofp);
+	}
+
+	if (!SP->_tried) {
+	    init_keytry();
+	    SP->_tried = TRUE;
+	}
+	return(OK);
 }
