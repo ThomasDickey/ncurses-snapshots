@@ -28,15 +28,15 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.206 2000/08/19 19:08:11 tom Exp $
+dnl $Id: configure.in,v 1.213 2000/08/27 02:29:53 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
-AC_PREREQ(2.12.971230)
-AC_REVISION($Revision: 1.206 $)
+AC_PREREQ(2.13.20000819)
+AC_REVISION($Revision: 1.213 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
 CF_SUBST_NCURSES_VERSION
-CF_CHECK_CACHE
+CF_CHECK_CACHE([AC_CANONICAL_SYSTEM])
 AC_ARG_WITH(system-type,
 [  --with-system-type=XXX  test: override derived host system-type],
 [AC_MSG_WARN(overriding system type to $withval)
@@ -84,8 +84,11 @@ AC_MSG_CHECKING(version of gcc)
 eval "$CC --version"
 fi
 if test "$host" != $build; then
-  AC_CHECK_PROGS(BUILD_CC, $CC gcc cc)
+	AC_CHECK_PROGS(BUILD_CC, $CC gcc cc)
+else
+	BUILD_CC="$CC"
 fi
+AC_SUBST(BUILD_CC)
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
 AC_ISC_POSIX
@@ -157,8 +160,10 @@ AC_PROG_AWK
 AC_PROG_MAKE_SET
 CF_PROG_INSTALL
 AC_SYS_LONG_FILE_NAMES
+CF_MIXEDCASE_FILENAMES
 AC_PROG_LN_S
 AC_PROG_RANLIB
+CF_MAKE_TAGS
 AC_CHECK_PROGS(LINT, tdlint lint alint)
 AC_CHECK_PROGS(MAN, man man_db)
 AC_SUBST(LINT_OPTS)
@@ -357,10 +362,28 @@ AC_MSG_RESULT($with_overwrite)
 AC_MSG_CHECKING(if external terminfo-database is used)
 AC_ARG_ENABLE(database,
 	[  --disable-database      use only built-in data],
-	[with_database=$enableval],
-	[with_database=yes])
-AC_MSG_RESULT($with_database)
-test "$with_database" != no && AC_DEFINE(USE_DATABASE)
+	[use_database=$enableval],
+	[use_database=yes])
+AC_MSG_RESULT($use_database)
+
+case $host_os in #(vi
+os2*) #(vi
+	TERMINFO_SRC='${top_srcdir}/misc/emx.src'
+	;;
+*) #(vi
+	TERMINFO_SRC='${top_srcdir}/misc/terminfo.src'
+	;;
+esac
+AC_SUBST(TERMINFO_SRC)
+
+if test "$use_database" != no ; then
+	AC_DEFINE(USE_DATABASE)
+	AC_MSG_CHECKING(which terminfo source-file will be installed)
+	AC_ARG_ENABLE(database,
+		[  --with-database=XXX     specify terminfo source to install],
+		[TERMINFO_SRC=$withval])
+	AC_MSG_RESULT($TERMINFO_SRC)
+fi
 
 AC_MSG_CHECKING(for list of fallback descriptions)
 AC_ARG_WITH(fallbacks,
@@ -371,7 +394,7 @@ AC_MSG_RESULT($with_fallback)
 FALLBACK_LIST=`echo $with_fallback|sed -e 's/,/ /g'`
 AC_SUBST(FALLBACK_LIST)
 
-if test "$with_database" = no ; then
+if test "$use_database" = no ; then
 	if test -z $with_fallback ; then
 		AC_ERROR(You have disabled the database w/o specifying fallbacks)
 	fi
@@ -1024,6 +1047,7 @@ AC_OUTPUT( \
 	include/curses.h \
 	include/termcap.h \
 	include/unctrl.h \
+	misc/run_tic.sh:misc/run_tic.in \
 	$SUB_MAKEFILES \
 	Makefile,[
 CF_LIB_RULES
