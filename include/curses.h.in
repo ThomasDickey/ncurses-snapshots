@@ -18,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.42 1997/04/06 01:40:57 tom Exp $ */
+/* $Id: curses.h.in,v 1.43 1997/04/12 18:13:08 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -1238,9 +1238,11 @@ extern int has_key(int);		/* do we have given key? */
 extern void _tracef(const char *, ...) GCC_PRINTFLIKE(1,2);
 extern void _tracedump(const char *, WINDOW *);
 extern char *_traceattr(attr_t);
+extern char *_traceattr2(int, chtype);
 extern char *_tracebits(void);
 extern char *_tracechar(const unsigned char);
 extern char *_tracechtype(chtype);
+extern char *_tracechtype2(int, chtype);
 extern char *_tracemouse(const MEVENT *);
 extern void trace(const unsigned int);
 

@@ -48,7 +48,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.11 1997/02/09 00:42:14 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.12 1997/04/12 17:42:43 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -63,7 +63,7 @@ int vidputs(attr_t newmode, int  (*outc)(int))
 static attr_t previous_attr = A_NORMAL;
 attr_t turn_on, turn_off;
 
-	T((T_CALLED("vidputs(%#lx) %s"), newmode, _traceattr(newmode)));
+	T((T_CALLED("vidputs(%s)"), _traceattr(newmode)));
 
 	/* this allows us to go on whether or not newterm() has been called */
 	if (SP)
@@ -163,7 +163,7 @@ attr_t turn_on, turn_off;
 
 int vidattr(attr_t newmode)
 {
-	T((T_CALLED("vidattr(%#lx)"), newmode));
+	T((T_CALLED("vidattr(%s)"), _traceattr(newmode)));
 
 	returnCode(vidputs(newmode, _nc_outch));
 }

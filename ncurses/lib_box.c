@@ -33,7 +33,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_box.c,v 1.6 1997/02/09 00:38:39 tom Exp $")
+MODULE_ID("$Id: lib_box.c,v 1.7 1997/04/12 17:51:49 tom Exp $")
 
 int wborder(WINDOW *win, chtype ls, chtype rs, chtype ts,
 	chtype bs, chtype tl, chtype tr, chtype bl, chtype br)
@@ -41,8 +41,16 @@ int wborder(WINDOW *win, chtype ls, chtype rs, chtype ts,
 short i;
 short endx, endy;
 
-    T((T_CALLED("wborder(%p,%#lx,%#lx,%#lx,%#lx,%#lx,%#lx,%#lx,%#lx)"),
-	win, ls, rs, ts, bs, tl, tr, bl, br));
+    T((T_CALLED("wborder(%p,%s,%s,%s,%s,%s,%s,%s,%s)"),
+	win,
+	_tracechtype2(1,ls),
+	_tracechtype2(2,rs),
+	_tracechtype2(3,ts),
+	_tracechtype2(4,bs),
+	_tracechtype2(5,tl),
+	_tracechtype2(6,tr),
+	_tracechtype2(7,bl),
+	_tracechtype2(8,br)));
 
 	if (ls == 0) ls = ACS_VLINE;
 	if (rs == 0) rs = ACS_VLINE;
@@ -95,7 +103,7 @@ short line;
 short start;
 short end;
 
-	T((T_CALLED("whline(%p,%#lx,%d)"), win, ch, n));
+	T((T_CALLED("whline(%p,%s,%d)"), win, _tracechtype(ch), n));
 
 	line = win->_cury;
 	start = win->_curx;
@@ -125,7 +133,7 @@ int wvline(WINDOW *win, chtype ch, int n)
 short row, col;
 short end;
 
-	T((T_CALLED("wvline(%p,%#lx,%d)"), win, ch, n));
+	T((T_CALLED("wvline(%p,%s,%d)"), win, _tracechtype(ch), n));
 
 	row = win->_cury;
 	col = win->_curx;

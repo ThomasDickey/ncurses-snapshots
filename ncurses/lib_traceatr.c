@@ -32,74 +32,109 @@
 #include <curses.priv.h>
 #include <term.h>	/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.11 1997/01/19 01:45:06 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.12 1997/04/12 22:04:53 tom Exp $")
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
-char *_traceattr(attr_t newmode)
+static char * trace_buf(int bufnum)
 {
-static char	buf[BUFSIZ];
+	static char **list;
+	static size_t have;
+
+	if (bufnum < 0)
+		bufnum = 0;
+
+	if ((size_t)(bufnum+1) > have) {
+		size_t need = (bufnum + 1) * 2;
+		size_t used = sizeof(*list) * need;
+		list = (list != 0) ? malloc(used) : realloc(list, used);
+		while (need > have)
+			list[--need] = 0;
+	}
+
+	if (list[bufnum] == 0)
+		list[bufnum] = malloc(BUFSIZ);
+	*(list[bufnum]) = '\0';
+	return list[bufnum];
+}
+
+char *_traceattr2(int bufnum, attr_t newmode)
+{
+char	*buf = trace_buf(bufnum);
+char	*tmp = buf;
 static const	struct {unsigned int val; const char *name;}
 names[] =
     {
-	{A_STANDOUT,	"A_STANDOUT, ",},
-	{A_UNDERLINE,	"A_UNDERLINE, ",},
-	{A_REVERSE,	"A_REVERSE, ",},
-	{A_BLINK,	"A_BLINK, ",},
-	{A_DIM,		"A_DIM, ",},
-	{A_BOLD,	"A_BOLD, ",},
-	{A_ALTCHARSET,	"A_ALTCHARSET, ",},
-	{A_INVIS,	"A_INVIS, ",},
-	{A_PROTECT,	"A_PROTECT, ",},
-	{A_CHARTEXT,	"A_CHARTEXT, ",},
-	{A_NORMAL,	"A_NORMAL, ",},
+	{ A_STANDOUT,		"A_STANDOUT" },
+	{ A_UNDERLINE,		"A_UNDERLINE" },
+	{ A_REVERSE,		"A_REVERSE" },
+	{ A_BLINK,		"A_BLINK" },
+	{ A_DIM,		"A_DIM" },
+	{ A_BOLD,		"A_BOLD" },
+	{ A_ALTCHARSET,		"A_ALTCHARSET" },
+	{ A_INVIS,		"A_INVIS" },
+	{ A_PROTECT,		"A_PROTECT" },
+	{ A_CHARTEXT,		"A_CHARTEXT" },
+	{ A_NORMAL,		"A_NORMAL" },
+	{ A_COLOR,		"A_COLOR" },
     },
 colors[] =
     {
-	{COLOR_BLACK,	"COLOR_BLACK",},
-	{COLOR_RED,	"COLOR_RED",},
-	{COLOR_GREEN,	"COLOR_GREEN",},
-	{COLOR_YELLOW,	"COLOR_YELLOW",},
-	{COLOR_BLUE,	"COLOR_BLUE",},
-	{COLOR_MAGENTA,	"COLOR_MAGENTA",},
-	{COLOR_CYAN,	"COLOR_CYAN",},
-	{COLOR_WHITE,	"COLOR_WHITE",},
-    },
-    *sp;
+	{ COLOR_BLACK,		"COLOR_BLACK" },
+	{ COLOR_RED,		"COLOR_RED" },
+	{ COLOR_GREEN,		"COLOR_GREEN" },
+	{ COLOR_YELLOW,		"COLOR_YELLOW" },
+	{ COLOR_BLUE,		"COLOR_BLUE" },
+	{ COLOR_MAGENTA,	"COLOR_MAGENTA" },
+	{ COLOR_CYAN,		"COLOR_CYAN" },
+	{ COLOR_WHITE,		"COLOR_WHITE" },
+    };
+size_t n;
 
-	strcpy(buf, "{");
-	for (sp = names; sp->val; sp++)
-	    if (newmode & sp->val)
-		strcat(buf, sp->name);
-	if (newmode & A_COLOR)
-	{
-	    short pairnum = PAIR_NUMBER(newmode);
-	    short fg, bg;
+	strcpy(tmp++, "{");
 
-	    if (pair_content(pairnum, &fg, &bg) == OK)
-		(void) sprintf(buf + strlen(buf),
-			       "COLOR_PAIR(%d) = (%s, %s), ",
-			       pairnum,
-			       COLOR_OF(fg),
-			       COLOR_OF(bg)
-			       );
-	    else
-		(void) sprintf(buf + strlen(buf), "COLOR_PAIR(%d) ", pairnum);
+	for (n = 0; n < sizeof(names)/sizeof(names[0]); n++) {
+		if ((newmode & names[n].val) != 0) {
+			if (buf[1] != '\0')
+				strcat(tmp, "|");
+			strcat(tmp, names[n].name);
+			tmp += strlen(tmp);
+
+			if (names[n].val == A_COLOR)
+			{
+				short pairnum = PAIR_NUMBER(newmode);
+				short fg, bg;
+	
+				if (pair_content(pairnum, &fg, &bg) == OK)
+					(void) sprintf(tmp,
+						"{%d = {%s, %s}}",
+						pairnum,
+						COLOR_OF(fg),
+						COLOR_OF(bg)
+						);
+				else
+					(void) sprintf(tmp, "{%d}", pairnum);
+			}
+		}
 	}
-	if ((newmode & A_ATTRIBUTES) == 0)
-	    strcat(buf,"A_NORMAL, ");
-	if (buf[strlen(buf) - 2] == ',')
-	    buf[strlen(buf) - 2] = '\0';
-	return(strcat(buf,"}"));
+	if (AttrOf(newmode) == A_NORMAL)
+		strcat(tmp, "A_NORMAL");
+
+	return (strcat(buf,"}"));
 }
 
-char *_tracechtype(chtype ch)
+char *_traceattr(attr_t newmode)
 {
-    static char	buf[BUFSIZ];
+	return _traceattr2(0, newmode);
+}
+
+char *_tracechtype2(int bufnum, chtype ch)
+{
+char	*buf = trace_buf(bufnum);
+bool	found = FALSE;
 
     if (ch & A_ALTCHARSET)
     {
-	bool	found = FALSE;
 	char	*cp;
 	static const	struct {unsigned int val; const char *name;}
 	names[] =
@@ -155,16 +190,23 @@ char *_tracechtype(chtype ch)
 	    for (sp = names; sp->val; sp++)
 		if (sp->val == ch)
 		{
-		    (void) sprintf(buf, "%s | %s",
-			    sp->name,
-			    _traceattr(AttrOf(ch) & (chtype)(~A_ALTCHARSET)));
-		    return(buf);
+		    (void) strcpy(buf, sp->name);
+		    ch &= ~A_ALTCHARSET;
+		    break;
 		}
 	}
     }
 
-    (void) sprintf(buf, "%s | %s",
-		   _tracechar((unsigned char)(ch & A_CHARTEXT)),
-		   _traceattr(AttrOf(ch)));
+    if (!found)
+	(void) strcpy(buf, _tracechar(TextOf(ch)));
+
+    if (AttrOf(ch) != A_NORMAL)
+	(void) sprintf(buf + strlen(buf), " | %s", _traceattr(AttrOf(ch)));
+
     return(buf);
+}
+
+char *_tracechtype(chtype ch)
+{
+	return _tracechtype2(0, ch);
 }

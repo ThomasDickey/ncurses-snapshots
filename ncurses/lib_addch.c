@@ -29,11 +29,11 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.29 1997/03/16 00:58:34 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.30 1997/04/12 17:45:55 tom Exp $")
 
 int wattr_on(WINDOW *win, const attr_t at)
 {
-	T((T_CALLED("wattr_on(%p,%#lx)"), win, at));
+	T((T_CALLED("wattr_on(%p,%s)"), win, _traceattr(at)));
 	T(("... current %s", _traceattr(win->_attrs)));
 	toggle_attr_on(win->_attrs,at);
 	returnCode(OK);
@@ -41,7 +41,7 @@ int wattr_on(WINDOW *win, const attr_t at)
 
 int wattr_off(WINDOW *win, const attr_t at)
 {
-	T((T_CALLED("wattr_off(%p,%#lx)"), win, at));
+	T((T_CALLED("wattr_off(%p,%s)"), win, _traceattr(at)));
 	T(("... current %s", _traceattr(win->_attrs)));
 	toggle_attr_off(win->_attrs,at);
 	returnCode(OK);
@@ -51,7 +51,7 @@ int wchgat(WINDOW *win, int n, attr_t attr, short color, const void *opts GCC_UN
 {
     int	i;
 
-    T((T_CALLED("wchgat(%p,%d,%#lx,%d)"), win, n, attr, color));
+    T((T_CALLED("wchgat(%p,%d,%s,%d)"), win, n, _traceattr(attr), color));
 
     toggle_attr_on(attr,COLOR_PAIR(color));
 
@@ -279,7 +279,7 @@ int waddch(WINDOW *win, const chtype ch)
 {
 	int code = ERR;
 
-	TR(TRACE_VIRTPUT|TRACE_CCALLS, (T_CALLED("waddch(%p, %#lx) %s"), win, ch, _tracechtype(ch)));
+	TR(TRACE_VIRTPUT|TRACE_CCALLS, (T_CALLED("waddch(%p, %s)"), win, _tracechtype(ch)));
 
 	if (waddch_nosync(win, ch) != ERR)
 	{
@@ -295,7 +295,7 @@ int wechochar(WINDOW *win, const chtype ch)
 {
 	int code = ERR;
 
-	TR(TRACE_VIRTPUT|TRACE_CCALLS, (T_CALLED("wechochar(%p, %#lx) %s"), win, ch, _tracechtype(ch)));
+	TR(TRACE_VIRTPUT|TRACE_CCALLS, (T_CALLED("wechochar(%p, %s)"), win, _tracechtype(ch)));
 
 	if (waddch_literal(win, ch) != ERR)
 	{
