@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.69 2002/12/14 22:20:49 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.70 2002/12/31 12:08:30 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -99,7 +99,11 @@ _nc_render(WINDOW *win, NCURSES_CH_T ch)
 #define CHECK_POSITION(win, x, y)	/* nothing */
 #endif
 
-static inline int
+static
+#if !USE_WIDEC_SUPPORT
+inline
+#endif
+int
 waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 {
     int x;
