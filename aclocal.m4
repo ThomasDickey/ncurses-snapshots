@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.256 2001/08/11 19:55:21 tom Exp $
+dnl $Id: aclocal.m4,v 1.257 2001/09/29 22:39:03 Rob.Braun Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -1252,6 +1252,7 @@ AC_DEFUN([CF_LIB_SUFFIX],
 	profile) $2='_p.a' ;;
 	shared)
 		case $cf_cv_system_name in
+		darwin*) $2='.dylib' ;;
 		hpux*)	$2='.sl'  ;;
 		*)	$2='.so'  ;;
 		esac
@@ -2026,6 +2027,11 @@ AC_DEFUN([CF_SHARED_OPTS],
 	case $cf_cv_system_name in
 	beos*)
 		MK_SHARED_LIB='$(CC) -o $[@] -Xlinker -soname=`basename $[@]` -nostart -e 0'
+		;;
+	darwin*)
+		EXTRA_CFLAGS="-no-cpp-precomp"
+		CC_SHARED_OPTS="-dynamic"
+		MK_SHARED_LIB='$(CC) -dynamiclib -o $[@]'
 		;;
 	hpux*)
 		# (tested with gcc 2.7.2 -- I don't have c89)
