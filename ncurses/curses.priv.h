@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.73 1997/08/23 15:21:25 Alexander.V.Lukyanov Exp $
+ * $Id: curses.priv.h,v 1.76 1997/08/30 21:45:48 tom Exp $
  *
  *	curses.priv.h
  *
@@ -173,7 +173,7 @@ color_t;
 
 #define MAXCOLUMNS    135
 #define MAXLINES      66
-#define FIFO_SIZE     MAXLINES
+#define FIFO_SIZE     MAXCOLUMNS+2  /* for nocbreak mode input */
 
 #define ACS_LEN       128
 
@@ -199,7 +199,7 @@ struct screen {
 	int             _tried;         /* keypad mode was initialized      */
 
 	unsigned int    _fifo[FIFO_SIZE];       /* input push-back buffer   */
-	signed char     _fifohead,      /* head of fifo queue               */
+	short		_fifohead,      /* head of fifo queue               */
 	                _fifotail,      /* tail of fifo queue               */
 	                _fifopeek,      /* where to peek for next char      */
 	                _fifohold;      /* set if breakout marked           */
@@ -533,6 +533,9 @@ extern void _nc_mouse_resume(SCREEN *);
 extern int _nc_max_click_interval;
 extern int _nc_mouse_fd(void);
 
+/* safe_sprintf.c */
+extern char * _nc_printf_string(const char *fmt, va_list ap);
+
 /* softscroll.c */
 extern void _nc_setup_scroll(void);
 extern void _nc_perform_scroll(void);
@@ -552,7 +555,6 @@ extern int _nc_outch(int);
 extern int _nc_setupscreen(short, short const, FILE *);
 extern int _nc_timed_wait(int, int, int *);
 extern int _nc_waddch_nosync(WINDOW *, const chtype);
-extern void _nc_backspace(WINDOW *win);
 extern void _nc_do_color(int, int (*)(int));
 extern void _nc_freeall(void);
 extern void _nc_free_and_exit(int);

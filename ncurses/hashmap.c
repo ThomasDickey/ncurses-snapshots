@@ -56,7 +56,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hashmap.c,v 1.21 1997/08/21 13:52:03 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.22 1997/08/31 01:54:39 tom Exp $")
 
 #ifdef HASHDEBUG
 #define LINES	24
@@ -370,7 +370,7 @@ void _nc_hash_map(void)
 #if NO_LEAKS
     FreeAndNull(hashtab);
     FreeAndNull(oldhash);
-    alloc_lines = 0;
+    lines_alloc = 0;
 #endif
 }
 

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.32 1997/08/16 20:01:37 tom Exp $
+# $Id: Makefile.in,v 1.33 1997/08/30 20:50:23 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -78,6 +78,7 @@ TESTS = \
 	tclock \
 	testaddch \
 	testcurs \
+	testscanw \
 	view \
 	worm \
 	xmas
@@ -113,6 +114,8 @@ tclock: $(MODEL)/tclock.o $(LOCAL_LIBS)
 testaddch: $(MODEL)/testaddch.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
 testcurs: $(MODEL)/testcurs.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
+testscanw: $(MODEL)/testscanw.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)
 view: $(MODEL)/view.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/$@.o $(LDFLAGS_DEFAULT)

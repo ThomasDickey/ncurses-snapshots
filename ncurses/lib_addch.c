@@ -29,7 +29,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.32 1997/08/14 20:03:38 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.34 1997/08/31 01:14:25 tom Exp $")
 
 int wattr_on(WINDOW *win, const attr_t at)
 {
@@ -177,12 +177,9 @@ int waddch_literal(WINDOW *win, chtype ch)
 		if (++win->_cury > win->_regbottom) {
 			win->_cury = win->_regbottom;
 			win->_curx = win->_maxx;
-			if (win->_scroll)
-			{
-				scroll(win);
-				return (OK);
-			}
-			return (ERR);
+			if (!win->_scroll)
+				return (ERR);
+			scroll(win);
 		}
 		win->_curx = 0;
 		return (OK);
@@ -307,7 +304,7 @@ int wechochar(WINDOW *win, const chtype ch)
 
 	TR(TRACE_VIRTPUT|TRACE_CCALLS, (T_CALLED("wechochar(%p, %s)"), win, _tracechtype(ch)));
 
-	if (waddch_literal(win, ch) != ERR)
+	if (waddch_nosync(win, ch) != ERR)
 	{
 		bool	save_immed = win->_immed;
 		win->_immed = TRUE;

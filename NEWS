@@ -1,7 +1,30 @@
--- $Id: NEWS,v 1.236 1997/08/23 21:45:54 tom Exp $
+-- $Id: NEWS,v 1.241 1997/08/31 01:48:40 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+970830
+	+ remove override in wgetstr() that forces keypad(), since SVr4 does
+	  not do this.
+	+ correct y-reference for erasure in wgetstr() when a wrap forces a
+	  scroll.
+	+ correct x-position in waddch() after a wrap forces a scroll.
+	+ echo newline in wgetstr(), making testscanw.c scroll properly when
+	  scanw is done.
+	+ modify vwscanw() to avoid potential buffer overflow.
+	+ rewrote lib_printw.c to eliminate fixed-buffer limits.
+	> patches by Alexander V. Lukyanov:
+	+ correct an error in handling cooked mode in wgetch(); processing
+	  was in the wrong order.
+	+ simplified logic in wgetch() that handles backspace, etc., by using
+	  wechochar().
+	+ correct wechochar() so that it interprets the output character as
+	  in waddch().
+	+ modify pechochar() to use prefresh() rather than doupdate(), since
+	  the latter does not guarantee immediate refresh of the pad.
+	+ modify pechochar() so that if called with a non-pad WINDOW, will
+	  invoke wechochar() instead.
+	+ modify fifo indices to allow fifo to be longer than 127 bytes.
 
 970823
 	+ add xterm-8bit to terminfo.src
