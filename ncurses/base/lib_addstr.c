@@ -44,7 +44,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.41 2004/10/23 20:13:52 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.42 2004/11/20 22:35:58 tom Exp $")
 
 NCURSES_EXPORT(int)
 waddnstr(WINDOW *win, const char *astr, int n)
@@ -136,7 +136,7 @@ wadd_wchnstr(WINDOW *win, const cchar_t *astr, int n)
     NCURSES_SIZE_T x = win->_curx;
     int code = OK;
     struct ldat *line;
-    int i, j, start, end;
+    int i, j, start, len, end;
 
     T((T_CALLED("wadd_wchnstr(%p,%s,%d)"), win, _nc_viscbuf(astr, n), n));
 
@@ -175,7 +175,10 @@ wadd_wchnstr(WINDOW *win, const cchar_t *astr, int n)
      * Copy the new string to the window.
      */
     for (i = 0; i < n && x <= win->_maxx; ++i) {
-	int len = wcwidth(CharOf(astr[i]));
+	if (isWidecExt(astr[i]))
+	    continue;
+
+	len = wcwidth(CharOf(astr[i]));
 
 	if (x + len <= win->_maxx) {
 	    line->text[x] = _nc_render(win, astr[i]);

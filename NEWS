@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.845 2004/11/06 22:58:35 tom Exp $
+-- $Id: NEWS,v 1.846 2004/11/21 01:19:12 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20041120
+	+ update wsvt25 terminfo entry -TD
+	+ modify test/ins_wide.c to test all flavors of ins_wstr().
+	+ ignore filler-cells in wadd_wchnstr() when adding a cchar_t array
+	  which consists of multi-column characters, since this function
+	  constructs them (cf: 20041023).
+	+ modify winnstr() to return multibyte character strings for the
+	  wide-character configuration.
 
 20041106
 	+ fixes to make slk_set() and slk_wset() accept and store multibyte

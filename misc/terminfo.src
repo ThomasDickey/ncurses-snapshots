@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.256 $
-#	$Date: 2004/08/28 21:58:59 $
+#	$Revision: 1.257 $
+#	$Date: 2004/11/21 01:15:54 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -1542,15 +1542,29 @@ ofcons|DNARD OpenFirmware console,
 	sgr=\2330%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m, 
 	sgr0=\2330m, 
 
-# NetBSD "wscons" emulator in vt220 mode
-# These are micro-minimal and probably need to be redone for real
-# after the manner of the pcvt entries.
+# NetBSD "wscons" emulator in vt220 mode.
+# This entry is based on the NetBSD termcap entry, correcting the ncv value.
+# The emulator renders underlined text in red.  Colors are otherwise usable.
+#
+# Testing the emulator and reading the source code (NetBSD 2.0), it appears
+# that "vt220" is inaccurate.  There are a few vt220-features, but most of the
+# vt220 screens in vttest do not work with this emulator.  For instance, it
+# identifies itself (primary DA response) as a vt220 with selective erase.  But
+# the selective erase feature does not work.  The secondary response is copied
+# from Kermit's emulation of vt220, does not correspond to actual vt220.  At
+# the level of detail in a termcap, it is a passable emulator, since ECH does
+# work.  Don't use it on a VMS system -TD
 wsvt25|NetBSD wscons in 25 line DEC VT220 mode, 
-	cols#80, lines#25, use=vt220, 
+	bce, msgr, 
+	colors#8, cols#80, it#8, lines#25, ncv#2, pairs#64, 
+	is2=\E[r\E[25;1H, kend=\E[8~, kf1=\E[11~, kf10=\E[21~, 
+	kf11=\E[23~, kf12=\E[24~, kf2=\E[12~, kf3=\E[13~, 
+	kf4=\E[14~, kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, 
+	kf9=\E[20~, khome=\E[7~, op=\E[m, setab=\E[4%p1%dm, 
+	setaf=\E[3%p1%dm, use=vt220, 
 
 wsvt25m|NetBSD wscons in 25 line DEC VT220 mode with Meta, 
-	km, 
-	cols#80, lines#25, use=vt220, 
+	km, use=wsvt25, 
 
 # `rasterconsole' provided by 4.4BSD, NetBSD and OpenBSD on SPARC, and 
 # DECstation/pmax.
@@ -20922,6 +20936,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add morphos entry -Pavel Fedin
 #	* modify amiga-8bit to add khome/kend/knp/kpp -Pavel Fedin
 #	* corrected \E[5?l to \E[?5l in vt320 entries -TD
+#
+# 2004-11-20
+#	* update wsvt25 entry -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

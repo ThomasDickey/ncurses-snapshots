@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2002,2003 Free Software Foundation, Inc.                        *
+ * Copyright (c) 2002-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_unget_wch.c,v 1.5 2003/07/05 19:46:51 tom Exp $")
+MODULE_ID("$Id: lib_unget_wch.c,v 1.6 2004/11/20 21:55:51 tom Exp $")
 
 NCURSES_EXPORT(int)
 unget_wch(const wchar_t wch)
@@ -51,7 +51,7 @@ unget_wch(const wchar_t wch)
 
     T((T_CALLED("unget_wch(%#lx)"), (unsigned long) wch));
 
-    memset(&state, 0, sizeof(state));
+    init_mb(state);
     length = wcrtomb(0, wch, &state);
 
     if (length != (size_t) (-1)
@@ -59,7 +59,7 @@ unget_wch(const wchar_t wch)
 	char *string;
 
 	if ((string = (char *) malloc(length)) != 0) {
-	    memset(&state, 0, sizeof(state));
+	    init_mb(state);
 	    wcrtomb(string, wch, &state);
 
 	    for (n = (int) (length - 1); n >= 0; --n) {

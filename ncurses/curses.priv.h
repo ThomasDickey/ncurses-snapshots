@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.263 2004/10/30 23:08:15 tom Exp $
+ * $Id: curses.priv.h,v 1.264 2004/11/20 19:58:18 tom Exp $
  *
  *	curses.priv.h
  *
@@ -594,6 +594,10 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #endif
 
 #if USE_WIDEC_SUPPORT /* { */
+#define isEILSEQ(status) ((status == (size_t)-1) && (errno == EILSEQ))
+
+#define init_mb(state)	memset(&state, 0, sizeof(state))
+
 #define NulChar		0,0,0,0	/* FIXME: see CCHARW_MAX */
 #define CharOf(c)	((c).chars[0])
 #define AttrOf(c)	((c).attr)
@@ -613,7 +617,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define CARG_CH_T	const NCURSES_CH_T *
 #define PUTC_DATA	char PUTC_buf[MB_LEN_MAX]; int PUTC_i, PUTC_n; \
 			mbstate_t PUT_st; wchar_t PUTC_ch
-#define PUTC_INIT	memset (&PUT_st, '\0', sizeof (PUT_st));		    \
+#define PUTC_INIT	init_mb (PUT_st);					    \
 			PUTC_i = 0
 #define PUTC(ch,b)	do { if(!isWidecExt(ch)) {				    \
 			if (Charable(ch)) {					    \

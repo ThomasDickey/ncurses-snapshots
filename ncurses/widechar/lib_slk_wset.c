@@ -40,7 +40,7 @@
 #include <wctype.h>
 #endif
 
-MODULE_ID("$Id: lib_slk_wset.c,v 1.9 2004/11/07 00:01:56 tom Exp $")
+MODULE_ID("$Id: lib_slk_wset.c,v 1.10 2004/11/20 21:52:56 tom Exp $")
 
 NCURSES_EXPORT(int)
 slk_wset(int i, const wchar_t *astr, int format)
@@ -53,7 +53,7 @@ slk_wset(int i, const wchar_t *astr, int format)
 
     T((T_CALLED("slk_wset(%d, %s, %d)"), i, _nc_viswbuf(astr), format));
 
-    memset(&state, 0, sizeof(state));
+    init_mb(state);
     str = astr;
     if ((arglen = wcsrtombs(NULL, &str, 0, &state)) != (size_t) -1) {
 	if ((mystr = _nc_doalloc(0, arglen + 1)) != 0) {

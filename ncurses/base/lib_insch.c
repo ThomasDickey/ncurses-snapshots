@@ -43,7 +43,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insch.c,v 1.21 2004/06/19 22:52:59 tom Exp $")
+MODULE_ID("$Id: lib_insch.c,v 1.22 2004/11/20 22:35:02 tom Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
@@ -102,9 +102,6 @@ _nc_insert_ch(WINDOW *win, chtype ch)
 	    /*
 	     * Handle multibyte characters here
 	     */
-	    if (WINDOW_EXT(win, addch_used) == 0) {
-		_nc_insert_ch(win, ChAttrOf(ch) | ' ');
-	    }
 	    SetChar2(wch, ch);
 	    _nc_waddch_nosync(win, wch);
 	}

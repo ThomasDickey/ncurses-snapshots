@@ -1,11 +1,25 @@
 /*
- * $Id: inserts.c,v 1.11 2004/08/07 20:10:04 tom Exp $
+ * $Id: inserts.c,v 1.12 2004/11/21 00:23:19 tom Exp $
  *
  * Demonstrate the winsstr() and winsch functions.
  * Thomas Dickey - 2002/10/19
  */
 
 #include <test.priv.h>
+
+#define InsNStr    insnstr
+#define InsStr     insstr
+#define MvInsNStr  mvinsnstr
+#define MvInsStr   mvinsstr
+#define MvWInsNStr mvwinsnstr
+#define MvWInsStr  mvwinsstr
+#define WInsNStr   winsnstr
+#define WInsStr    winsstr
+
+#define InsCh      insch
+#define MvInsCh    mvinsch
+#define MvWInsCh   mvwinsch
+#define WInsCh     winsch
 
 #define TABSIZE 8
 
@@ -193,12 +207,12 @@ test_inserts(int level)
 			for (col = 0; col < length; col += n_opt) {
 			    col2 = ColOf(buffer, col, margin);
 			    if (move(row, col2) != ERR) {
-				insnstr(buffer + col, LEN(col));
+				InsNStr(buffer + col, LEN(col));
 			    }
 			}
 		    } else {
 			if (move(row, col2) != ERR) {
-			    insstr(buffer);
+			    InsStr(buffer);
 			}
 		    }
 		    break;
@@ -206,10 +220,10 @@ test_inserts(int level)
 		    if (n_opt > 1) {
 			for (col = 0; col < length; col += n_opt) {
 			    col2 = ColOf(buffer, col, margin);
-			    mvinsnstr(row, col2, buffer + col, LEN(col));
+			    MvInsNStr(row, col2, buffer + col, LEN(col));
 			}
 		    } else {
-			mvinsstr(row, col2, buffer);
+			MvInsStr(row, col2, buffer);
 		    }
 		    break;
 		case oWindow:
@@ -217,12 +231,12 @@ test_inserts(int level)
 			for (col = 0; col < length; col += n_opt) {
 			    col2 = ColOf(buffer, col, margin);
 			    if (wmove(work, row, col2) != ERR) {
-				winsnstr(work, buffer + col, LEN(col));
+				WInsNStr(work, buffer + col, LEN(col));
 			    }
 			}
 		    } else {
 			if (wmove(work, row, col2) != ERR) {
-			    winsstr(work, buffer);
+			    WInsStr(work, buffer);
 			}
 		    }
 		    break;
@@ -230,10 +244,10 @@ test_inserts(int level)
 		    if (n_opt > 1) {
 			for (col = 0; col < length; col += n_opt) {
 			    col2 = ColOf(buffer, col, margin);
-			    mvwinsnstr(work, row, col2, buffer + col, LEN(col));
+			    MvWInsNStr(work, row, col2, buffer + col, LEN(col));
 			}
 		    } else {
-			mvwinsstr(work, row, col2, buffer);
+			MvWInsStr(work, row, col2, buffer);
 		    }
 		    break;
 		}
@@ -245,19 +259,19 @@ test_inserts(int level)
 		    switch (option) {
 		    case oDefault:
 			if (move(row2, col2) != ERR) {
-			    insch(buffer[col]);
+			    InsCh(buffer[col]);
 			}
 			break;
 		    case oMove:
-			mvinsch(row2, col2, buffer[col]);
+			MvInsCh(row2, col2, buffer[col]);
 			break;
 		    case oWindow:
 			if (wmove(work, row2, col2) != ERR) {
-			    winsch(work, buffer[col]);
+			    WInsCh(work, buffer[col]);
 			}
 			break;
 		    case oMoveWindow:
-			mvwinsch(work, row2, col2, buffer[col]);
+			MvWInsCh(work, row2, col2, buffer[col]);
 			break;
 		    }
 		}
@@ -281,19 +295,19 @@ test_inserts(int level)
 	    switch (option) {
 	    case oDefault:
 		if (move(row, col) != ERR) {
-		    insstr(buffer + length - 1);
+		    InsStr(buffer + length - 1);
 		}
 		break;
 	    case oMove:
-		mvinsstr(row, col, buffer + length - 1);
+		MvInsStr(row, col, buffer + length - 1);
 		break;
 	    case oWindow:
 		if (wmove(work, row, col) != ERR) {
-		    winsstr(work, buffer + length - 1);
+		    WInsStr(work, buffer + length - 1);
 		}
 		break;
 	    case oMoveWindow:
-		mvwinsstr(work, row, col, buffer + length - 1);
+		MvWInsStr(work, row, col, buffer + length - 1);
 		break;
 	    }
 
@@ -301,19 +315,19 @@ test_inserts(int level)
 	    switch (option) {
 	    case oDefault:
 		if (move(limit + row, col) != ERR) {
-		    insch(ch);
+		    InsCh(ch);
 		}
 		break;
 	    case oMove:
-		mvinsch(limit + row, col, ch);
+		MvInsCh(limit + row, col, ch);
 		break;
 	    case oWindow:
 		if (wmove(work, limit + row, col) != ERR) {
-		    winsch(work, ch);
+		    WInsCh(work, ch);
 		}
 		break;
 	    case oMoveWindow:
-		mvwinsch(work, limit + row, col, ch);
+		MvWInsCh(work, limit + row, col, ch);
 		break;
 	    }
 

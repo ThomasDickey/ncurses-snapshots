@@ -40,7 +40,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_get_wch.c,v 1.9 2004/09/19 01:13:44 tom Exp $")
+MODULE_ID("$Id: lib_get_wch.c,v 1.10 2004/11/20 21:53:47 tom Exp $")
 
 #if HAVE_MBTOWC && HAVE_MBLEN
 #define reset_mbytes(state) mblen(NULL, 0), mbtowc(NULL, NULL, 0)
@@ -48,7 +48,7 @@ MODULE_ID("$Id: lib_get_wch.c,v 1.9 2004/09/19 01:13:44 tom Exp $")
 #define check_mbytes(wch,buffer,length,state) \
 	(int) mbtowc(&wch, buffer, length)
 #elif HAVE_MBRTOWC && HAVE_MBRLEN
-#define reset_mbytes(state) memset(&state, 0, sizeof(state))
+#define reset_mbytes(state) init_mb(state)
 #define count_mbytes(buffer,length,state) mbrlen(buffer,length,&state)
 #define check_mbytes(wch,buffer,length,state) \
 	(int) mbrtowc(&wch, buffer, length, &state)
@@ -57,7 +57,7 @@ make an error
 #endif
 
 NCURSES_EXPORT(int)
-wget_wch(WINDOW *win, wint_t * result)
+wget_wch(WINDOW *win, wint_t *result)
 {
     int code;
     char buffer[(MB_LEN_MAX * 9) + 1];	/* allow some redundant shifts */
