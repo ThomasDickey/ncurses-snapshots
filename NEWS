@@ -1,7 +1,14 @@
--- $Id: NEWS,v 1.220 1997/07/06 00:25:59 tom Exp $
+-- $Id: NEWS,v 1.221 1997/07/06 21:53:55 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+970706
+	+ correct change from 970628 to ClrUpdate() in lib_doupdate.c so that
+	  contents of curscr are saved in newscr before clearing the screen. 
+	  This is needed to make repainting work with the present logic of
+	  TransformLine().
+	+ use napms() rather than sleep() in tset.c to avoid interrupting I/O.
 
 970705
 	+ add limit checks to _nc_read_file_entry() to guard against overflow
