@@ -30,18 +30,15 @@
 #include <string.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.9 1996/09/01 01:24:17 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.10 1996/09/13 09:44:57 esr Exp $")
 
+/*
+ * These should be screen structure members.  They need to be globals
+ * for hysterical raisins.  So we assign them in start_color() and
+ * also in set_term()'s screen-switching logic. 
+ */
 int COLOR_PAIRS;
 int COLORS;
-unsigned char *color_pairs;
-
-typedef struct
-{
-    short red, green, blue;
-}
-color_t;
-static color_t	*color_table;
 
 static const color_t cga_palette[] =
 {
@@ -91,23 +88,23 @@ int start_color(void)
 		return ERR;
 #endif /* defined(orig_pair) && defined(orig_colors) */
 	if (max_pairs != -1)
-		COLOR_PAIRS = max_pairs;
+		COLOR_PAIRS = SP->_pair_count = max_pairs;
 	else
 		return ERR;
-	color_pairs = calloc((unsigned int)max_pairs, sizeof(char));
+	SP->_color_pairs = calloc((unsigned int)max_pairs, sizeof(char));
 	if (max_colors != -1)
-		COLORS = max_colors;
+		COLORS = SP->_color_count = max_colors;
 	else
 		return ERR;
 	SP->_coloron = 1;
 
-	color_table = malloc(sizeof(color_t) * COLORS);
+	SP->_color_table = malloc(sizeof(color_t) * COLORS);
 #ifdef hue_lightness_saturation
 	if (hue_lightness_saturation)
-	    memcpy(color_table, hls_palette, sizeof(color_t) * COLORS);
+	    memcpy(SP->_color_table, hls_palette, sizeof(color_t) * COLORS);
 	else
 #endif /* hue_lightness_saturation */
-	    memcpy(color_table, cga_palette, sizeof(color_t) * COLORS);
+	    memcpy(SP->_color_table, cga_palette, sizeof(color_t) * COLORS);
 
 	if (orig_colors)
 	{
@@ -172,7 +169,7 @@ int init_pair(short pair, short f, short b)
 	 * replacing original pair colors with the new ones)
 	 */
 
-	color_pairs[pair] = ( (f & 0x0f) | (b & 0x0f) << 4 );
+	SP->_color_pairs[pair] = ( (f & 0x0f) | (b & 0x0f) << 4 );
 
 	if (initialize_pair)
 	{
@@ -217,15 +214,15 @@ int init_color(short color, short r, short g, short b)
 #ifdef hue_lightness_saturation
 	if (hue_lightness_saturation)
 	    rgb2hls(r, g, b,
-		      &color_table[color].red,
-		      &color_table[color].green,
-		      &color_table[color].blue);
+		      &SP->_color_table[color].red,
+		      &SP->_color_table[color].green,
+		      &SP->_color_table[color].blue);
 	else
 #endif /* hue_lightness_saturation */
 	{
-		color_table[color].red = r;
-		color_table[color].green = g;
-		color_table[color].blue = b;
+		SP->_color_table[color].red = r;
+		SP->_color_table[color].green = g;
+		SP->_color_table[color].blue = b;
 	}
 
 #ifdef initialize_color
@@ -259,9 +256,9 @@ int color_content(short color, short *r, short *g, short *b)
     if (color < 0 || color > COLORS)
 	return ERR;
 
-    *r = color_table[color].red;
-    *g = color_table[color].green;
-    *b = color_table[color].blue;
+    *r = SP->_color_table[color].red;
+    *g = SP->_color_table[color].green;
+    *b = SP->_color_table[color].blue;
     return OK;
 }
 
@@ -270,8 +267,8 @@ int pair_content(short pair, short *f, short *b)
 
 	if ((pair < 1) || (pair > COLOR_PAIRS))
 		return ERR;
-	*f = color_pairs[pair] & 0x0f;
-	*b = color_pairs[pair] & 0xf0;
+	*f = SP->_color_pairs[pair] & 0x0f;
+	*b = SP->_color_pairs[pair] & 0xf0;
 	*b >>= 4;
 	return OK;
 }

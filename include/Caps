@@ -151,7 +151,8 @@
 #%The \fBcapname\fR is the short name used in the text of the database,
 #%and is used by a person updating the database.
 #%Whenever possible, capnames are chosen to be the same as or similar to
-#%the ANSI X3.64-1979 standard.  Semantics are also intended to match
+#%the ANSI X3.64-1979 standard (now superseded by ECMA-48, which uses 
+#%identical or very similar names).  Semantics are also intended to match
 #%those of the specification.
 #%
 #%The termcap code is the old

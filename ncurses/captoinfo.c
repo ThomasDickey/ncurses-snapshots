@@ -83,7 +83,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.13 1996/07/31 00:07:42 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.14 1996/09/13 09:44:57 esr Exp $")
 
 #define MAX_PUSHED	16	/* max # args we can push onto the stack */
 #define MAX_ENTRY	2048	/* maximum chars in a translated capability */
@@ -290,17 +290,17 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 	    case '%': *dp++ = '%'; break;
 	    case 'r':
 		if (seenr++ == 1) {
-		    _nc_warning("saw %%r twice");
+		    _nc_warning("saw %%r twice in %s", cap);
 		}
 		break;
 	    case 'm':
 		if (seenm++ == 1) {
-		    _nc_warning("saw %%m twice");
+		    _nc_warning("saw %%m twice in %s", cap);
 		}
 		break;
 	    case 'n':
 		if (seenn++ == 1) {
-		    _nc_warning("saw %%n twice");
+		    _nc_warning("saw %%n twice in %s", cap);
 		}
 		break;
 	    case 'i': *dp++ = '%'; *dp++ = 'i'; break;
@@ -447,8 +447,8 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 	    default: invalid:
 		*dp++ = '%';
 		s--;
-		_nc_warning("'%s' unknown %% code %s",
-			cap, _tracechar(*s));
+		_nc_warning("unknown %% code %s in %s",
+			_tracechar(*s), cap);
 		break;
 	    }
 	    break;
@@ -685,7 +685,8 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 		if (*str == 'd')
 		    str++;
 		else
-		    _nc_warning("numeric prefix is missing trailing d");
+		    _nc_warning("numeric prefix is missing trailing d in %s",
+				cap);
 		--str;
 		break;
 

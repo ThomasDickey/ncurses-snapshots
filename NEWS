@@ -3,10 +3,29 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+960914	- snapshot
+	+ implement subwindow-logic in wresize, minor fixes to ncurses 'g'
+	  test.
+	+ corrected bracketing of fallback.c (reported/suggested fix by Juergen
+	  Ehling <eh@eclipse.aball.de>).
+	+ update xterm-color to reflect XFree86 3.1.3G release.
+	+ correct broken dtterm description from #314 patch (e.g., spurious
+	  newline.  The 'pairs' change might work, but no one's tested it
+	  either ;-)
+	+ clarify the documentation for the builtin form fieldtypes (Juergen
+	  Pfeifer)
+	> patch 314 by eric:
+	+ Enhancement suggested by A. Lukyanov -- reset scroll region on 
+	  startup rather than at wrapup time.
+	+ Fix suggested by A. Lukyanov, make storage of palette tables
+	  and their size counts per-screen for multi-terminal applications.
+	+ Improved error reporting for infotocap translation errors.
+	+ Update terminfo.src to 9.13.14.
+
 960907	- snapshot
 	+ rewrote wgetstr to make it erase control chars and also fix bogus use
 	  of _nc_outstr which caused the display to not wrap properly (display
-	  problem reported by John M. Flinchbaugh <glynis@butterfly.hjs.com>)
+	  problem reported by John M. Flinchbaugh <glynis@netrax.net>)
 	+ modify ncurses 'f' test to accommodate terminal responses to C1 codes
 	  (and split up this screen to accommodate non-ANSI terminals).
 	+ test enter_insert_mode and exit_insert_mode in has_ic().

@@ -188,14 +188,6 @@ int	wclrtoeol(
 int	COLOR_PAIRS;
 #undef COLORS
 int	COLORS;
-#undef color_pairs
-unsigned char *color_pairs;
-
-typedef struct
-{
-    short red, green, blue;
-}
-color_t;
 
 #undef start_color
 int	start_color(void)

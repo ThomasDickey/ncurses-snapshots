@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 9.13.13
+#	Version 9.13.14
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -944,11 +944,11 @@ x68k|x68k-ite|NetBSD/x68k ITE,
 
 #### FreeBSD console entries
 #
-# From: Andrew Chernov <ache@astral.msk.su> 29 Mar 1996
-# Andew Chernov maintains the FreeBSD termcap distributions.
+# From: Andrey Chernov <ache@astral.msk.su> 29 Mar 1996
+# Andrey Chernov maintains the FreeBSD termcap distributions.
 #
 # Note: Users of FreeBSD 2.1.0 and older versions must either upgrade
-# or comment out the <el1> capability in the console entry.
+# or comment out the :cb: capability in the console entry.
 #
 
 # for syscons
@@ -1211,7 +1211,7 @@ vt100-w-nam|vt100-nam-w|dec vt100 132 cols (w/advanced video no automargin),
 # vt100 with no advanced video.
 vt100-nav|vt100 without advanced video option, 
 	xmc#1, 
-	blink@, bold@, rev@, rmso=\E[m, rmul@, sgr@, sgr0=, smso=\E[7m, 
+	blink@, bold@, rev@, rmso=\E[m, rmul@, sgr@, sgr0@, smso=\E[7m, 
 	smul@, 
 	use=vt100, 
 vt100-nav-w|vt100-w-nav|dec vt100 132 cols 14 lines (no advanced video option), 
@@ -1739,8 +1739,8 @@ x10term|vs100-x10|xterm terminal emulator (X10 window system),
 # xterm's internal mouse-tracking facility; ncurses will interpret the
 # following three bytes of mouse status information.
 # From: Eric S. Raymond <esr@snark.thyrsus.com> 14 Dec 1995
-# Updated: T.Dickey <dickey@clark.net> 12 May 1996, for XFree86 3.1.2E
-xterm-color|xterm terminal emulator (XFree86 3.1.2E and above), 
+# Updated: T.Dickey <dickey@clark.net> 14 Sep 1996, for XFree86 3.1.2G
+xterm-color|xterm terminal emulator (XFree86 3.1.2G and above), 
 	am, bce, km, mir, msgr, xenl, 
 	colors#8, cols#80, it#8, lines#65, pairs#64, 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~..--++\054\054II00, 
@@ -1749,10 +1749,10 @@ xterm-color|xterm terminal emulator (XFree86 3.1.2E and above),
 	cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=^J, 
 	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
 	cuu=\E[%p1%dA, cuu1=\E[A, cvvis=\E[?25h, dch=\E[%p1%dP, 
-	dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, 
-	el1=\E[1K, enacs=\E(B\E)0, flash=\E[?5h\E[?5l, home=\E[H, 
-	ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, 
-	il1=\E[L, ind=^J, 
+	dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ech=\E[%p1%dX, ed=\E[J, 
+	el=\E[K, el1=\E[1K, enacs=\E(B\E)0, flash=\E[?5h\E[?5l, 
+	home=\E[H, hpa=\E[%i%p1%dG, ht=^I, hts=\EH, ich=\E[%p1%d@, 
+	ich1=\E[@, il=\E[%p1%dL, il1=\E[L, ind=^J, 
 	is2=\E[r\E[m\E[H\E[2J\E[?7h\E[?1;3;4;6l\E[4l, 
 	ka1=\EOw, ka3=\EOu, kb2=\EOy, kbeg=\EOE, kbs=^H, kc1=\EOq, 
 	kc3=\EOs, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
@@ -1765,16 +1765,15 @@ xterm-color|xterm terminal emulator (XFree86 3.1.2E and above),
 	kich1=\E[2~, kmous=\E[M, knp=\E[6~, kpp=\E[5~, kslt=\E[4~, 
 	meml=\El, memu=\Em, op=\E[39;49m, rc=\E8, rev=\E[7m, ri=\EM, 
 	rmacs=^O, rmam=\E[?7l, rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, 
-	rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, rs1=^O, 
+	rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m, rs1=^O, 
 	rs2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l\E>, 
 	sc=\E7, setb=\E[4%p1%dm, setf=\E[3%p1%dm, 
 	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
 	sgr0=\E[m, smacs=^N, smam=\E[?7h, smcup=\E7\E[?47h, 
 	smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
 	tbc=\E[3g, u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
-xterm-alpha|xterm for XFree86 3.1.2Ec, 
-	hpa=\E[%i%p1%dG, rmso=\E[27m, rmul=\E[24m, 
 	vpa=\E[%i%p1%dd, 
+xterm-alpha|xterm for XFree86 3.1.2G, 
 	use=xterm-color, 
 # Use this version if you have stock X consortium xterm, 
 # or an XFree86 xterm at version 3.1.2D or older.
@@ -2233,7 +2232,7 @@ dtterm|CDE desktop terminal,
 	rmul=\E[24m, sc=\E7, setab=\E[%p1%{40}%+%dm, 
 	setaf=\E[%p1%{30}%+%dm, 
 	sgr=\E[0%?%p1%t;2;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p6%t;1%;%?%p7%t;8%;m%?%p9%t\016%e\017%;, 
-	sgr0=\E[0m, smacs=^N, smam=\E[?7h, smir=\E[4h, 
+	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smir=\E[4h, 
 	smso=\E[2;7m, smul=\E[4m, tbc=\E[3g, 
 
 ######## COMMON TERMINAL TYPES
@@ -4142,6 +4141,43 @@ tvipt|televideo personal terminal,
 	il1=\EE$<5*>, is2=\Ev\Eu\EK, kbs=^H, kcub1=^H, kcud1=^J, 
 	kcuf1=^L, kcuu1=^K, kf0=^A, kf1=^B, khome=^^, mc4=^T, mc5=^R, 
 	rmso=\EF, rmul=\EF, smso=\EG1@A\EH, smul=\EG1B@\EH, 
+# From: Nathan Peterson <nathan@sco.com>, 03 Sep 1996
+tvi9065|televideo 9065, 
+	am, bw, chts, hs, mc5i, mir, msgr, xenl, xon, 
+	cols#80, it#8, lh#1, lines#25, lm#0, lw#9, ma#4, nlab#8, vt#0, 
+	wnum#0, wsl#30, 
+	acsc=0_'rjhkglfmeniopxjqksqtmulvown, bel=^G, 
+	blink=\EG2, bold=\EG\\\054, cbt=\EI, civis=\E.0, clear=^Z, 
+	cnorm=\E.3, cr=^M, csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, 
+	cub1=^H, cud=\E[%p1%dB, cud1=^V, cuf=\E[%p1%dC, cuf1=^L, 
+	cup=\E=%p1%' '%+%c%p2%' '%+%c, cuu=\E[%p1%dA, cuu1=^K, 
+	cvvis=\E.2, dch=\E[%p1%dP, dch1=\EW, dim=\EGp, 
+	dl=\E[%p1%dM, dl1=\ER, dsl=\E_30\r, ech=\E[%p1%d@, ed=\EY, 
+	el=\ET, flash=\Eb$<15>\Ed, fsl=^M, home=^^, ht=^I, hts=\E1, 
+	ich=\E[%p1%d@, if=/usr/lib/tabset/stdcrt, il=\E[%p1%dL, 
+	il1=\EE, ind=^J, indn=\E[%p1%dS, invis=\EG1, ip=$<3>, 
+	is1=\E"\E%\E'\E(\EG@\EO\EX\E[=5l\E[=6l\E[=7h\Ed\Er, 
+	is2=\EF2\EG0\E\\L, is3=\E<\E[=4l\E[=8h, kHOM=\E   , 
+	kbs=^H, kcbt=\EI, kcub1=^H, kcud1=^V, kcuf1=^L, kcuu1=^K, 
+	kdch1=\EW, kf1=^A@\r, kf10=^AI\r, kf11=^AJ\r, kf12=^AK\r, 
+	kf2=^AA\r, kf3=^AB\r, kf4=^AC\r, kf5=^AD\r, kf6=^AE\r, 
+	kf7=^AF\r, kf8=^AG\r, kf9=^AH\r, khome=^^, ll=\E[25;1H, 
+	mc0=\E[0;0i, mc4=\Ea, mc5=\E`, nel=^M^J, 
+	pfkey=\E|%p1%'0'%+%c3%p2%s\031, 
+	pfloc=\E|%p1%'0'%+%c2%p2%s\031, 
+	pfx=\E|%p1%'0'%+%c1%p2%s\031, 
+	pln=\E_%p1%'?'%+%c%p2%s\r, prot=\E&, 
+	rep=\E[%p2%db%p1%c, rev=\EG4, 
+	rf=/usr/lib/tabset/stdcrt, ri=\Ej, rin=\E[%p1%dT, 
+	rmacs=\E%, rmam=\E[=7l, rmcup=\E.3\Er\E[1;25r\E[25;0H, 
+	rmdc=\200, rmir=\Er, rmln=\E[4;1v, rmso=\EG0, rmul=\EG0, 
+	rmxon=^N, rs1=\EC\EDF\E[0;0v\E[8;1v\E[=65l, 
+	rs2=\E.b\E[10;20v\E[14;1v\E[3;0v\E[7;0v\E[=11.h\E[=12.h\E[=13.h\E[=14.h\E[=15l\E[=20h\E[=60l\E[=61h\E[=9l\E[=10l\E[=21l\E[=23l\E[=3l\E_40\E_50\En\Ew\Ee \Ex0\200\200\Ex1\200\200\Ex2\200\200\Ex3\200\200\Ex4\200\200\E1, 
+	rs3=\E[=19h\E.3\E9\E0O\200\200\200\200\200\E0o\200\200\200\200\200\E0J\177\200\200\200\200, 
+	sgr=\EG0%?%p1%t\EGt%;%?%p2%t\EG8%;%?%p3%t\EG4%;%?%p4%t\EG2%;%?%p5%t\EGp%;%?%p6%t\EG\\\054%;%?%p7%t\EG1%;%?%p9%t\E$%e\E%%%;, 
+	sgr0=\EG0, smacs=\E$, smam=\E=7h, smcup=\E.2, smdc=\Er, 
+	smir=\Eq, smln=\E[4;2v, smso=\EGt, smul=\EG8, smxon=^O, 
+	tbc=\E3, tsl=\E[4;1v\E_30, uc=\EG8\EG0, 
 
 #### Visual (vi)
 #
@@ -10155,7 +10191,7 @@ uniterm|uniterm49|UniTerm VT220 emulator with 49 lines,
 # MiNT is Now TOS, the operating system which comes with all Ataris now
 # (mainly Atari Falcon). This termcap is for the VT52 emulation you get
 # under tcsh/zsh/bash/sh/ksh/ash/csh when you run MiNT in `console' mode
-# From: Per Persson <pp@pfawww.pp.se>, 27 Feb 1996
+# From: Per Persson <pp@gnu.ai.mit.edu>, 27 Feb 1996
 st52|Atari ST with VT52 emulation, 
 	am, km, 
 	cols#80, lines#25, 
@@ -13354,6 +13390,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* Fixed a bug that ran the qnx and pcvtXX together.
 # 9.13.13 (Fri Aug  9 01:16:17 EDT 1996):
 #	* Added dtterm entry from Solaris CDE.
+# 9.13.14 (Tue Sep 10 15:31:56 EDT 1996):
+#	* corrected pairs#8 typo in dtterm entry.
+#	* added tvi9065.
 #
 
 ######## REORDER

@@ -21,7 +21,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: wresize.c,v 1.1 1996/09/07 14:59:00 tom Exp $")
+MODULE_ID("$Id: wresize.c,v 1.2 1996/09/15 04:40:57 tom Exp $")
 
 /*
  * Reallocate a curses WINDOW struct to either shrink or grow to the specified
@@ -47,6 +47,7 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 {
 	register int	row;
 	int	size_x, size_y;
+	struct ldat *pline = (win->_flags & _SUBWIN) ? win->_parent->_line : 0;
 
 #ifdef TRACE
 	T(("wresize(win=%p, lines=%d, cols=%d) called", win, ToLines, ToCols));
@@ -57,19 +58,21 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 	_tracedump("...before", win);
 #endif
 
-	if (ToLines <= 0 || ToCols <= 0)
+	if (--ToLines < 0 || --ToCols < 0)
 		return ERR;
 
-	size_x = (win->_maxx - win->_begx);
-	size_y = (win->_maxy - win->_begy);
+	size_x = win->_maxx;
+	size_y = win->_maxy;
 
 	/*
 	 * If the number of lines has changed, adjust the size of the overall
 	 * vector:
 	 */
 	if (ToLines != size_y) {
-		for (row = ToLines+1; row <= size_y; row++)
-			free((char *)(win->_line[row].text));
+		if (! (win->_flags & _SUBWIN)) {
+			for (row = ToLines+1; row <= size_y; row++)
+				free((char *)(win->_line[row].text));
+		}
 
 		win->_line = ld_ALLOC(win->_line, ToLines+1);
 		if (win->_line == 0)
@@ -79,6 +82,10 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 			win->_line[row].text      = 0;
 			win->_line[row].firstchar = 0;
 			win->_line[row].lastchar  = ToCols;
+			if ((win->_flags & _SUBWIN)) {
+				win->_line[row].text =
+	    			&pline[win->_begy + row].text[win->_begx];
+			}
 		}
 	}
 
@@ -87,18 +94,23 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 	 */
 	for (row = 0; row <= ToLines; row++) {
 		chtype	*s	= win->_line[row].text;
-		int	begin	= (s == 0) ? 0 : size_x;
+		int	begin	= (s == 0) ? 0 : size_x + 1;
 		int	end	= ToCols;
 		chtype	blank	= _nc_background(win);
 
 		win->_line[row].oldindex = row;
 
-		if (ToCols != begin) {
-			win->_line[row].text = s = c_ALLOC(s, ToCols+1);
-			if (win->_line[row].text == 0)
-				return ERR;
+		if (ToCols != size_x) {
+			if (! (win->_flags & _SUBWIN)) {
+				win->_line[row].text = s = c_ALLOC(s, ToCols+1);
+				if (win->_line[row].text == 0)
+					return ERR;
+			} else if (s == 0) {
+				win->_line[row].text = s =
+	    			&pline[win->_begy + row].text[win->_begx];
+			}
 
-			if (end > begin) {	/* growing */
+			if (end >= begin) {	/* growing */
 				if (win->_line[row].firstchar < begin)
 					win->_line[row].firstchar = begin;
 				win->_line[row].lastchar = ToCols;
@@ -116,23 +128,19 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 	 * Finally, adjust the parameters showing screen size and cursor
 	 * position:
 	 */
-	if (win->_regtop > ToLines)	win->_regtop    = ToLines;
-	if (win->_regbottom > ToLines)	win->_regbottom = ToLines;
+	win->_maxx = ToCols;
+	win->_maxy = ToLines;
 
-	if (win->_curx > ToCols)	win->_curx      = ToCols;
-	if (win->_cury > ToLines)	win->_cury      = ToLines;
+	if (win->_regtop > win->_maxy)
+		win->_regtop = win->_maxy;
+	if (win->_regbottom > win->_maxy
+	 || win->_regbottom == size_y)
+		win->_regbottom = win->_maxy;
 
-	if (win->_begx == 0
-	 && win->_maxx == COLS-1)
-	 	win->_maxx = ToCols - 1;
-	else if (size_x >= ToCols)
-		win->_maxx = ToCols - 1 + win->_begx;
-
-	if (win->_begy == 0
-	 && win->_maxy == LINES-1)
-	 	win->_maxy = ToLines - 1;
-	else if (size_y >= ToLines)
-		win->_maxy = ToLines - 1 + win->_begy;
+	if (win->_curx > win->_maxx)
+		win->_curx = win->_maxx;
+	if (win->_cury > win->_maxy)
+		win->_cury = win->_maxy;
 
 #ifdef TRACE
 	TR(TRACE_UPDATE, ("...beg (%d, %d), max(%d,%d), reg(%d,%d)",
