@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.15 1997/02/01 18:49:32 tom Exp $
+# $Id: Makefile.in,v 1.16 1997/02/15 17:10:04 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -45,7 +45,10 @@ includedir	= @includedir@
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
 
+AR		= @AR@
+AR_OPTS		= @AR_OPTS@
 AWK		= @AWK@
+LD		= @LD@
 LN_S		= @LN_S@
 
 CC		= @CC@

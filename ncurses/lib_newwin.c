@@ -30,7 +30,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.16 1997/02/02 01:47:50 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.17 1997/02/15 21:46:05 tom Exp $")
 
 void _nc_freewin(WINDOW *win)
 {
@@ -83,7 +83,7 @@ int	i;
 	if (num_columns + begx > SP->_columns || num_lines + begy > SP->_lines_avail)
 		returnWin(0);
 
-	if ((win = _nc_makenew(num_lines, num_columns, begy, begx, 0)) == NULL)
+	if ((win = _nc_makenew(num_lines, num_columns, begy, begx, 0)) == 0)
 		returnWin(0);
 
 	for (i = 0; i < num_lines; i++) {
@@ -111,7 +111,7 @@ int     flags = _SUBWIN;
 	/*
 	** make sure window fits inside the original one
 	*/
-	if ( begy < 0 || begx < 0 || orig==NULL || num_lines < 0 || num_columns < 0)
+	if ( begy < 0 || begx < 0 || orig == 0 || num_lines < 0 || num_columns < 0)
 	    returnWin(0);
 	if ( begy + num_lines > orig->_maxy + 1
 		|| begx + num_columns > orig->_maxx + 1)
@@ -126,7 +126,7 @@ int     flags = _SUBWIN;
 	if (orig->_flags & _ISPAD)
 	  flags |= _ISPAD;
 
-	if ((win = _nc_makenew(num_lines, num_columns, orig->_begy + begy, orig->_begx + begx, flags)) == NULL)
+	if ((win = _nc_makenew(num_lines, num_columns, orig->_begy + begy, orig->_begx + begx, flags)) == 0)
 	    returnWin(0);
 
 	win->_pary = begy;
@@ -164,17 +164,17 @@ bool    is_pad = (flags & _ISPAD);
 	T(("_nc_makenew(%d,%d,%d,%d)", num_lines, num_columns, begy, begx));
 
 	if (num_lines <= 0 || num_columns <= 0)
-		return NULL;
+		return 0;
 
 	if ((wp = typeCalloc(WINDOWLIST, 1)) == 0)
 		return 0;
 
 	if ((win = typeCalloc(WINDOW, 1)) == 0)
-		return NULL;
+		return 0;
 
 	if ((win->_line = typeCalloc(struct ldat, ((unsigned)num_lines))) == 0) {
 		free(win);
-		return NULL;
+		return 0;
 	}
 
 	win->_curx       = 0;
@@ -200,7 +200,7 @@ bool    is_pad = (flags & _ISPAD);
 	win->_sync       = 0;
 	win->_parx       = -1;
 	win->_pary       = -1;
-	win->_parent     = (WINDOW *)NULL;
+	win->_parent     = 0;
 
 	win->_regtop     = 0;
 	win->_regbottom  = num_lines - 1;
@@ -252,7 +252,8 @@ bool    is_pad = (flags & _ISPAD);
 	wp->next = _nc_windows;
 	wp->win  = win;
 	_nc_windows = wp;
-	T(("...created win=%p", win));
+
+	T((T_CREATE("window %p"), win));
 
 	return(win);
 }

@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.44 1997/02/08 22:36:19 tom Exp $
+dnl $Id: aclocal.m4,v 1.49 1997/02/15 23:17:25 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -266,11 +266,10 @@ dnl ---------------------------------------------------------------------------
 dnl Check if the compiler supports useful warning options.  There's a few that
 dnl we don't use, simply because they're too noisy:
 dnl
-dnl	-Wcast-qual (a little too noisy -- later)
 dnl	-Wconversion (useful in older versions of gcc, but not in gcc 2.7.x)
 dnl	-Wredundant-decls (system headers make this too noisy)
 dnl	-Wtraditional (combines too many unrelated messages, only a few useful)
-dnl	-Wwrite-strings (same as -Wcast-qual)
+dnl	-Wwrite-strings (too noisy, but should review occasionally)
 dnl
 AC_DEFUN([NC_GCC_WARNINGS],
 [nc_warn_CFLAGS=""
@@ -288,6 +287,7 @@ EOF
 	for nc_opt in \
 		Wbad-function-cast \
 		Wcast-align \
+		Wcast-qual \
 		Winline \
 		Wmissing-declarations \
 		Wmissing-prototypes \
@@ -456,9 +456,6 @@ done
 
 cat >> Makefile <<NC_EOF
 
-lint ::
-	cd test; \$(MAKE) \$(NC_MFLAGS) \[$]@
-
 install.data ::
 	cd misc; \$(MAKE) \$(NC_MFLAGS) \[$]@
 
@@ -586,8 +583,8 @@ int	testdata[3] = { 123, 456, 789 };
 EOF
 	changequote([,])dnl
 	if AC_TRY_EVAL(ac_compile) ; then
-		mv conftest.o data.o
-		ar cr conftest.a data.o
+		mv conftest.o data.o && \
+		( $AR $AR_OPTS conftest.a data.o 2>&1 >/dev/null )
 	fi
 	rm -f conftest.$ac_ext data.o
 	changequote(,)dnl
@@ -607,8 +604,8 @@ int	testfunc()
 EOF
 	changequote([,])dnl
 	if AC_TRY_EVAL(ac_compile); then
-		mv conftest.o func.o
-		ar cr conftest.a func.o
+		mv conftest.o func.o && \
+		( $AR $AR_OPTS conftest.a func.o 2>&1 >/dev/null )
 	fi
 	rm -f conftest.$ac_ext func.o
 	eval $ac_cv_prog_RANLIB conftest.a 2>&1 >/dev/null
@@ -890,16 +887,16 @@ AC_DEFUN([NC_SHARED_OPTS],
 		else
 			CC_SHARED_OPTS='+Z'
 		fi
-		MK_SHARED_LIB='ld -b -o $[@]'
+		MK_SHARED_LIB='$(LD) -b -o $[@]'
 		;;
-	IRIX)
+	IRIX*)
 		# tested with IRIX 5.2 and 'cc'.
 		if test "${CC}" = "gcc"; then
 			CC_SHARED_OPTS='-fPIC'
 		else
 			CC_SHARED_OPTS='-KPIC'
 		fi
-		MK_SHARED_LIB='ld -shared -rdata_shared -soname `basename $[@]` -o $[@]'
+		MK_SHARED_LIB='$(LD) -shared -rdata_shared -soname `basename $[@]` -o $[@]'
 		nc_cv_rm_so_locs=yes
 		;;
 	Linux)
@@ -914,14 +911,14 @@ AC_DEFUN([NC_SHARED_OPTS],
 		;;
 	NetBSD|FreeBSD)
 		CC_SHARED_OPTS='-fpic -DPIC'
-		MK_SHARED_LIB="ld -Bshareable -o \$[@]"
+		MK_SHARED_LIB="$(LD) -Bshareable -o \$[@]"
 		;;
 	OSF1|MLS+)
 		# tested with OSF/1 V3.2 and 'cc'
 		# tested with OSF/1 V3.2 and gcc 2.6.3 (but the c++ demo didn't
 		# link with shared libs).
 		CC_SHARED_OPTS=''
- 		MK_SHARED_LIB="ld -o \$[@].\$(REL_VERSION) -shared -soname \`basename \$[@].\$(ABI_VERSION)\`"
+ 		MK_SHARED_LIB="$(LD) -o \$[@].\$(REL_VERSION) -shared -soname \`basename \$[@].\$(ABI_VERSION)\`"
 		if test $DFT_LWR_MODEL = "shared" ; then
  			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
  			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'
@@ -939,10 +936,10 @@ AC_DEFUN([NC_SHARED_OPTS],
 		fi
 		case `uname -r` in
 		4.*)
-			MK_SHARED_LIB="ld -assert pure-text -o \$[@].\$(REL_VERSION)"
+			MK_SHARED_LIB="$(LD) -assert pure-text -o \$[@].\$(REL_VERSION)"
 			;;
 		5.*)
-			MK_SHARED_LIB="ld -d y -G -h \`basename \$[@].\$(ABI_VERSION)\` -o \$[@].\$(REL_VERSION)"
+			MK_SHARED_LIB="$(LD) -d y -G -h \`basename \$[@].\$(ABI_VERSION)\` -o \$[@].\$(REL_VERSION)"
 			;;
 		esac
 		nc_cv_do_symlinks=yes
@@ -950,7 +947,7 @@ AC_DEFUN([NC_SHARED_OPTS],
 	UNIX_SV)
 		# tested with UnixWare 1.1.2
 		CC_SHARED_OPTS='-KPIC'
-		MK_SHARED_LIB='ld -d y -G -o $[@]'
+		MK_SHARED_LIB='$(LD) -d y -G -o $[@]'
 		;;
 	*)
 		CC_SHARED_OPTS='unknown'

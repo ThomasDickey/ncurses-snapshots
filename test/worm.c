@@ -34,10 +34,12 @@ Options:
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.18 1997/01/19 01:13:53 tom Exp $
+  $Id: worm.c,v 1.19 1997/02/15 16:21:13 tom Exp $
 */
 
 #include <test.priv.h>
+
+#include <term.h>	/* for tparm() */
 
 #include <signal.h>
 
@@ -48,7 +50,7 @@ static chtype flavor[]={
     'O' , '*', '#', '$', '%', '0', '@',
 };
 #define MAXWORMS	(sizeof(flavor)/sizeof(chtype))
-static short xinc[]={
+static const short xinc[]={
      1,  1,  1,  0, -1, -1, -1,  0
 }, yinc[]={
     -1,  0,  1,  1,  1,  0, -1, -1
@@ -58,6 +60,7 @@ static struct worm {
     short *xpos, *ypos;
 } worm[40];
 
+static char *revert, *hidden;
 static const char *field;
 static int length=16, number=3;
 static chtype trail=' ';
@@ -65,7 +68,7 @@ static chtype trail=' ';
 #ifdef TRACE
 int generation, trace_start, trace_end, singlestep;
 #endif /* TRACE */
-static struct options {
+static const struct options {
     int nopts;
     int opts[3];
 } normal[8]={
@@ -160,7 +163,7 @@ main(int argc, char *argv[])
 int x, y;
 int n;
 struct worm *w;
-struct options *op;
+const struct options *op;
 int h;
 short *ip;
 int last, bottom;
@@ -215,6 +218,11 @@ int last, bottom;
     noecho();
     cbreak();
     nonl();
+
+    if ((revert = tigetstr("cnorm")) != 0
+     && (hidden = tigetstr("civis")) != 0)
+    	putp(tparm(hidden));
+
     bottom = LINES-1;
     last = COLS-1;
 
@@ -325,6 +333,7 @@ int last, bottom;
 		    switch (op->nopts) {
 		    case 0:
 				refresh();
+				putp(tparm(revert));
 				endwin();
 				return EXIT_SUCCESS;
 		    case 1:
@@ -348,6 +357,7 @@ onsig(int sig GCC_UNUSED)
 {
 	standend();
 	refresh();
+	putp(tparm(revert));
 	endwin();
 	exit(EXIT_FAILURE);
 }

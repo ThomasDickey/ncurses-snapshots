@@ -28,12 +28,12 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.9 1997/02/09 00:49:52 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.10 1997/02/15 16:09:13 tom Exp $")
 
 int
 waddnstr(WINDOW *win, const char *const astr, int n)
 {
-unsigned char *str = (unsigned char *)astr;
+unsigned const char *str = (unsigned const char *)astr;
 int code = ERR;
 
 	T((T_CALLED("waddnstr(%p,%s,%d) %s"), win, _nc_visbuf(astr), n, _traceattr(win->_attrs)));
@@ -63,7 +63,7 @@ waddchnstr(WINDOW *win, const chtype *const astr, int n)
 {
 short oy = win->_cury;
 short ox = win->_curx;
-chtype *str = (chtype *)astr;
+const chtype *str = (const chtype *)astr;
 int code = OK;
 
 	T((T_CALLED("waddchnstr(%p,%p,%d)"), win, str, n));
@@ -72,7 +72,7 @@ int code = OK;
 		n = 0;
 		while (*str++ != 0)
 			n++;
-		str = (chtype *)astr;
+		str = (const chtype *)astr;
 	}
 
 	while(n-- > 0) {

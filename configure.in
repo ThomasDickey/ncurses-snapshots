@@ -17,10 +17,10 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.50 1997/02/08 23:55:47 tom Exp $
+dnl $Id: configure.in,v 1.52 1997/02/16 01:44:11 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12)
-AC_REVISION($Revision: 1.50 $)
+AC_REVISION($Revision: 1.52 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
@@ -75,6 +75,11 @@ AC_PROG_RANLIB
 AC_CHECK_PROGS(LINT, tdlint lint alint)
 AC_CHECK_PROGS(MAN, man man_db)
 AC_SUBST(LINT_OPTS)
+
+AC_PATH_PROG(LD, ld)
+AC_PATH_PROG(AR, ar)
+AR_OPTS="rv"
+AC_SUBST(AR_OPTS)
 
 NC_MAKEFLAGS
 NC_MAN_PAGES
@@ -260,7 +265,7 @@ NC_GCC_ATTRIBUTES
 
 ###	use option --enable-assertions to turn on generation of assertion code
 AC_ARG_ENABLE(assertions,
-	[  --enable-assertions     turn on generation of assertion code],
+	[  --enable-assertions     test: turn on generation of assertion code],
 	[with_assertions=$enableval])
 if test -n "$GCC"
 then
@@ -274,9 +279,14 @@ fi
 
 ###	use option --disable-leaks to suppress "permanent" leaks, for testing
 AC_ARG_ENABLE(leaks,
-	[  --disable-leaks         suppress permanent memory-leaks],
+	[  --disable-leaks         test: suppress permanent memory-leaks],
 	[test $enableval = no && AC_DEFINE(NO_LEAKS)])
 AC_DEFINE(HAVE_NC_ALLOC_H)
+
+###	use option --enable-expanded to generate certain macros as functions
+AC_ARG_ENABLE(expanded,
+	[  --enable-expanded       test: generate functions for certain macros],
+	[test $enableval = yes && AC_DEFINE(NCURSES_EXPANDED)])
 
 ###	Checks for libraries.
 AC_CHECK_FUNC(gettimeofday,

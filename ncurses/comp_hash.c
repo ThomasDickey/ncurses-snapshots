@@ -37,7 +37,7 @@
 #define DEBUG(level, params) /*nothing*/
 #endif
 
-MODULE_ID("$Id: comp_hash.c,v 1.13 1997/01/18 23:01:07 tom Exp $")
+MODULE_ID("$Id: comp_hash.c,v 1.14 1997/02/15 20:49:17 tom Exp $")
 
 static  int hash_function(const char *);
 
@@ -168,7 +168,7 @@ struct name_table_entry	const *ptr;
  * performance enhancement).
  */
 
-#ifndef HAVE_STRDUP
+#if !HAVE_STRDUP
 static char *strdup (char *s)
 {
   char *p;

@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.51 1997/02/08 21:56:53 tom Exp $
+ * $Id: curses.priv.h,v 1.55 1997/02/16 01:19:02 tom Exp $
  *
  *	curses.priv.h
  *
@@ -78,17 +78,15 @@
 extern int errno;
 #endif
 
-#include <nc_alloc.h>
-
 /* Some systems have a broken 'select()', but workable 'poll()'.  Use that */
-#if defined(HAVE_POLL) && defined(HAVE_SYS_STROPTS_H) && defined(HAVE_POLL_H)
+#if HAVE_POLL && HAVE_SYS_STROPTS_H && HAVE_POLL_H
 #define USE_FUNC_POLL 1
 #else
 #define USE_FUNC_POLL 0
 #endif
 
 /* Alessandro Rubini's GPM (general-purpose mouse) */
-#if defined(HAVE_LIBGPM) && defined(HAVE_GPM_H)
+#if HAVE_LIBGPM && HAVE_GPM_H
 #define USE_GPM_SUPPORT 1
 #else
 #define USE_GPM_SUPPORT 0
@@ -108,9 +106,9 @@ extern int errno;
  * we cannot construct lint-libraries (structures must be fully-defined).
  */
 
-struct try {
-	struct try      *child;     /* ptr to child.  NULL if none          */
-	struct try      *sibling;   /* ptr to sibling.  NULL if none        */
+struct tries {
+	struct tries    *child;     /* ptr to child.  NULL if none          */
+	struct tries    *sibling;   /* ptr to sibling.  NULL if none        */
 	unsigned char    ch;        /* character at this node               */
 	unsigned short   value;     /* code of string so far.  0 if none.   */
 };
@@ -174,7 +172,7 @@ struct screen {
 	struct _win_st  *_curscr;       /* current screen                   */
 	struct _win_st  *_newscr;       /* virtual screen to be updated to  */
 	struct _win_st  *_stdscr;       /* screen's full-window context     */
-	struct try      *_keytry;       /* "Try" for use with keypad mode   */
+	struct tries    *_keytry;       /* "Try" for use with keypad mode   */
 	unsigned int    _fifo[FIFO_SIZE];       /* input push-back buffer   */
 	signed char     _fifohead,      /* head of fifo queue               */
 	                _fifotail,      /* tail of fifo queue               */
@@ -304,12 +302,15 @@ typedef	struct {
 #define FreeIfNeeded(p)  if(p != 0) free(p)
 #define FreeAndNull(p)   free(p); p = 0
 
+#include <nc_alloc.h>
+
 /*
  * Prefixes for call/return points of library function traces.  We use these to
  * instrument the public functions so that the traces can be easily transformed
  * into regression scripts.
  */
 #define T_CALLED(fmt) "called " fmt
+#define T_CREATE(fmt) "create " fmt
 #define T_RETURN(fmt) "return " fmt
 
 #ifdef TRACE
@@ -334,6 +335,8 @@ extern long _nc_outchars;
 #define returnCode(code) return code
 #define returnVoid       return
 #endif
+
+#define _trace_key(ch) ((ch > KEY_MIN) ? keyname(ch) : _tracechar((unsigned char)ch))
 
 #define ALL_BUT_COLOR ((chtype)~(A_COLOR))
 #define IGNORE_COLOR_OFF FALSE
@@ -367,6 +370,22 @@ extern long _nc_outchars;
 	 (S) &= ~((at)|ALL_BUT_COLOR);\
    }\
    T(("new attribute is %s", _traceattr((S))));
+
+#ifdef NCURSES_EXPANDED
+
+#undef  ch_or_attr
+#define ch_or_attr(ch,at) _nc_ch_or_attr(ch,at)
+extern chtype _nc_ch_or_attr(chtype, attr_t);
+
+#undef  toggle_attr_on
+#define toggle_attr_on(S,at) _nc_toggle_attr_on(&(S), at)
+extern void _nc_toggle_attr_on(attr_t *, attr_t);
+
+#undef  toggle_attr_off
+#define toggle_attr_off(S,at) _nc_toggle_attr_off(&(S), at)
+extern void _nc_toggle_attr_off(attr_t *, attr_t);
+
+#endif
 
 /* lib_acs.c */
 extern void init_acs(void);	/* no prefix, this name is traditional */
@@ -456,7 +475,7 @@ extern int _nc_slk_initialize(WINDOW *, int);
 
 extern int _nc_ripoffline(int line, int (*init)(WINDOW *,int));
 
-#define UNINITIALISED ((struct try * ) -1)
+#define UNINITIALISED ((struct tries * ) -1)
 
 extern bool _nc_idlok, _nc_idcok;
 

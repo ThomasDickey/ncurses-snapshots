@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.22 1997/02/09 00:49:41 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.24 1997/02/15 21:12:16 tom Exp $")
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail
@@ -53,7 +53,7 @@ static inline void fifo_dump(void)
 int i;
 	T(("head = %d, tail = %d, peek = %d", head, tail, peek));
 	for (i = 0; i < 10; i++)
-		T(("char %d = %s", i, _tracechar(SP->_fifo[i])));
+		T(("char %d = %s", i, _trace_key(SP->_fifo[i])));
 }
 #endif /* TRACE */
 
@@ -310,9 +310,7 @@ int	ch;
 		beep();
 	}
 
-	T(("wgetch returning : %#x = %s",
-	   ch,
-	   (ch > KEY_MIN) ? keyname(ch) : unctrl(ch)));
+	T(("wgetch returning : %#x = %s", ch, _trace_key(ch));)
 
 	returnCode(ch);
 }
@@ -333,7 +331,7 @@ int	ch;
 static int
 kgetch(WINDOW *win GCC_UNUSED)
 {
-struct try  *ptr;
+struct tries  *ptr;
 int ch = 0;
 int timeleft = ESCDELAY;
 
@@ -346,7 +344,7 @@ int timeleft = ESCDELAY;
 		    return ERR;
 		peek = 0;
 		while (ptr != NULL) {
-			TR(TRACE_IEVENT, ("ch: %s", _tracechar((unsigned char)ch)));
+			TR(TRACE_IEVENT, ("ch: %s", _trace_key((unsigned char)ch)));
 			while ((ptr != NULL) && (ptr->ch != (unsigned char)ch))
 				ptr = ptr->sibling;
 #ifdef TRACE

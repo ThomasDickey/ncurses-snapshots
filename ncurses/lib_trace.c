@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.16 1997/02/09 00:45:37 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.17 1997/02/15 22:51:34 tom Exp $")
 
 #include <ctype.h>
 #if HAVE_FCNTL_H
@@ -139,9 +139,9 @@ int	doit = _nc_tracing;
 		if (before || after) {
 			if ((level <= 1)
 			 || (doit & TRACE_ICALLS) != 0)
-				doit &= TRACE_CALLS;
+				doit &= (TRACE_CALLS|TRACE_CCALLS);
 			else
-				doit = 0;
+				doit &= ~(TRACE_CALLS|TRACE_CCALLS);
 		}
 	}
 

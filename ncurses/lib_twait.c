@@ -34,7 +34,7 @@
 #if HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
-#elif defined(HAVE_SELECT)
+#elif HAVE_SELECT
 /* on SCO, <sys/time.h> conflicts with <sys/select.h> */
 #if HAVE_SYS_TIME_H && ! SYSTEM_LOOKS_LIKE_SCO
 #include <sys/time.h>
@@ -44,7 +44,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.17 1997/01/01 23:26:38 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.18 1997/02/15 18:27:51 tom Exp $")
 
 /*
  * We want to define GOOD_SELECT if the last argument of select(2) is
@@ -61,7 +61,7 @@ MODULE_ID("$Id: lib_twait.c,v 1.17 1997/01/01 23:26:38 tom Exp $")
  */
 
 #if HAVE_GETTIMEOFDAY
-#if (defined(TRACE) && !defined(HAVE_USLEEP)) || !defined(GOOD_SELECT)
+#if (defined(TRACE) && !HAVE_USLEEP) || ! GOOD_SELECT
 static void _nc_gettime(struct timeval *tp)
 {
 	gettimeofday(tp, (struct timezone *)0);
@@ -84,7 +84,7 @@ struct timeval tval;
 	struct pollfd fds[1];
 	code = poll(fds, 0, usec / 1000);
 	}
-#elif defined(HAVE_SELECT)
+#elif HAVE_SELECT
 	tval.tv_sec = usec / 1000000;
 	tval.tv_usec = usec % 1000000;
 	code = select(0, NULL, NULL, NULL, &tval);
@@ -121,11 +121,11 @@ struct timeval ntimeout;
 
 #if USE_FUNC_POLL
 struct pollfd fds[2];
-#elif defined(HAVE_SELECT)
+#elif HAVE_SELECT
 static fd_set set;
 #endif
 
-#if !defined(GOOD_SELECT) && HAVE_GETTIMEOFDAY
+#if !GOOD_SELECT && HAVE_GETTIMEOFDAY
 struct timeval starttime, returntime;
 long delta;
 
@@ -163,7 +163,7 @@ long delta;
 		}
 
 		result = poll(fds, count, milliseconds);
-#elif defined(HAVE_SELECT)
+#elif HAVE_SELECT
 		/*
 		 * Some systems modify the fd_set arguments; do this in the
 		 * loop.
@@ -184,7 +184,7 @@ long delta;
 		result = select(count, &set, NULL, NULL, milliseconds >= 0 ? &ntimeout : 0);
 #endif
 
-#if !defined(GOOD_SELECT) && HAVE_GETTIMEOFDAY
+#if !GOOD_SELECT && HAVE_GETTIMEOFDAY
 		_nc_gettime(&returntime);
 
 		/* The contents of ntimeout aren't guaranteed after return from
@@ -249,7 +249,7 @@ long delta;
 					count++;
 				}
 			}
-#elif defined(HAVE_SELECT)
+#elif HAVE_SELECT
 			if ((mode & 2)
 			 && (fd = _nc_mouse_fd()) >= 0
 			 && FD_ISSET(fd, &set))

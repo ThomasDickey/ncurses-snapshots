@@ -61,7 +61,9 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 0.21 1996/12/30 00:18:46 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 0.22 1997/02/15 22:33:37 tom Exp $")
+
+#define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
 #define INVALID_EVENT	-1
 
@@ -104,7 +106,7 @@ void _nc_mouse_init(SCREEN *sp GCC_UNUSED)
 {
     int i;
 
-    TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_init() called"));
+    TR(MY_TRACE, ("_nc_mouse_init() called"));
 
     for (i = 0; i < EV_MAX; i++)
 	events[i].id = INVALID_EVENT;
@@ -184,7 +186,7 @@ bool _nc_mouse_event(SCREEN *sp GCC_UNUSED)
 bool _nc_mouse_inline(SCREEN *sp)
 /* mouse report received in the keyboard stream -- parse its info */
 {
-    TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_inline() called"));
+    TR(MY_TRACE, ("_nc_mouse_inline() called"));
 
     if (mousetype == M_XTERM)
     {
@@ -288,7 +290,7 @@ bool _nc_mouse_inline(SCREEN *sp)
 
 	eventp->x = (kbuf[1] - ' ') - 1;
 	eventp->y = (kbuf[2] - ' ') - 1;
-	TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_inline: primitive mouse-event %s has slot %d", _tracemouse(eventp), eventp - events));
+	TR(MY_TRACE, ("_nc_mouse_inline: primitive mouse-event %s has slot %d", _tracemouse(eventp), eventp - events));
 
 	/* bump the next-free pointer into the circular list */
 	eventp = NEXT(eventp);
@@ -328,7 +330,7 @@ bool _nc_mouse_parse(int runcount)
     int		n;
     bool	merge;
 
-    TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_parse(%d) called", runcount));
+    TR(MY_TRACE, ("_nc_mouse_parse(%d) called", runcount));
 
     /*
      * When we enter this routine, the event list next-free pointer
@@ -353,7 +355,7 @@ bool _nc_mouse_parse(int runcount)
      */
     if (runcount == 1)
     {
-	TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_parse: returning simple mouse event %s at slot %d",
+	TR(MY_TRACE, ("_nc_mouse_parse: returning simple mouse event %s at slot %d",
 	   _tracemouse(prev), prev-events));
 	return (PREV(prev)->id >= 0) ? (PREV(prev)->bstate & eventmask) : 0;
     }
@@ -546,7 +548,7 @@ bool _nc_mouse_parse(int runcount)
     }
     for (ep = runp; ep != eventp; ep = NEXT(ep))
 	if (ep->id != INVALID_EVENT)
-	    TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_parse: returning composite mouse event %s at slot %d",
+	    TR(MY_TRACE, ("_nc_mouse_parse: returning composite mouse event %s at slot %d",
 		_tracemouse(ep), ep-events));
 #endif /* TRACE */
 
@@ -557,7 +559,7 @@ bool _nc_mouse_parse(int runcount)
 void _nc_mouse_wrap(SCREEN *sp GCC_UNUSED)
 /* release mouse -- called by endwin() before shellout/exit */
 {
-    TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_wrap() called"));
+    TR(MY_TRACE, ("_nc_mouse_wrap() called"));
 
     /* xterm: turn off reporting */
     if (mousetype == M_XTERM && eventmask)
@@ -569,7 +571,7 @@ void _nc_mouse_wrap(SCREEN *sp GCC_UNUSED)
 void _nc_mouse_resume(SCREEN *sp GCC_UNUSED)
 /* re-connect to mouse -- called by doupdate() after shellout */
 {
-    TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_resume() called"));
+    TR(MY_TRACE, ("_nc_mouse_resume() called"));
 
     /* xterm: re-enable reporting */
     if (mousetype == M_XTERM && eventmask)

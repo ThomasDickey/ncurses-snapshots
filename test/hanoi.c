@@ -14,7 +14,7 @@
  *
  *	Date: 05.Nov.90
  *
- * $Id: hanoi.c,v 1.11 1997/01/19 00:57:31 tom Exp $
+ * $Id: hanoi.c,v 1.12 1997/02/13 00:35:52 tom Exp $
  */
 
 #include <test.priv.h>
@@ -236,14 +236,12 @@ GetMove(int *From, int *To)
 	refresh();
 	if((*From = getch()) == 'q')
 		return TRUE;
-	addch(*From);
 	*From -= ('0'+1);
 	addstr(" to ");
 	clrtoeol();
 	refresh();
 	if((*To = getch()) == 'q')
 		return TRUE;
-	addch(*To);
 	*To -= ('0'+1);
 	move(STATUSLINE, 0);
 	clrtoeol();

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.14 1996/12/30 00:06:51 tom Exp $
+# $Id: Makefile.in,v 1.15 1997/02/15 17:10:04 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -48,7 +48,10 @@ ticdir		= $(datadir)/terminfo
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
 
+AR		= @AR@
+AR_OPTS		= @AR_OPTS@
 AWK		= @AWK@
+LD		= @LD@
 LN_S		= @LN_S@
 
 CC		= @CC@

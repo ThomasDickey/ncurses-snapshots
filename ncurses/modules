@@ -1,4 +1,4 @@
-# $Id: modules,v 1.22 1997/01/19 02:36:48 tom Exp $
+# $Id: modules,v 1.24 1997/02/16 02:56:23 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -114,3 +114,4 @@ lib_freeall	lib		$(srcdir)
 resizeterm	lib		$(srcdir)	../include/term.h
 wresize		lib		$(srcdir)	../include/term.h
 lib_adabind	lib		$(srcdir)
+expanded	lib		.

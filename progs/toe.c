@@ -29,7 +29,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: toe.c,v 0.14 1997/01/26 01:32:05 tom Exp $")
+MODULE_ID("$Id: toe.c,v 0.15 1997/02/15 18:54:47 tom Exp $")
 
 const char *_nc_progname;
 
@@ -37,7 +37,7 @@ static int typelist(int eargc, char *eargv[], bool,
 		     void (*)(const char *, TERMTYPE *));
 static void deschook(const char *, TERMTYPE *);
 
-#ifdef NO_LEAKS
+#if NO_LEAKS
 #undef ExitProgram
 static void ExitProgram(int code) GCC_NORETURN;
 static void ExitProgram(int code)

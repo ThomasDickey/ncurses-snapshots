@@ -18,16 +18,16 @@
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
  ******************************************************************************/
 
-#define HAVE_NC_FREEALL
+#define HAVE_NC_FREEALL 1
 
 #include <curses.priv.h>
 #include <term.h>
 
-#if defined(HAVE_LIBDBMALLOC)
+#if HAVE_LIBDBMALLOC
 extern int malloc_errfd;	/* FIXME */
 #endif
 
-MODULE_ID("$Id: lib_freeall.c,v 1.6 1996/12/30 01:51:00 tom Exp $")
+MODULE_ID("$Id: lib_freeall.c,v 1.8 1997/02/15 18:53:43 tom Exp $")
 
 static void free_slk(SLK *p)
 {
@@ -48,9 +48,9 @@ void _nc_free_termtype(struct termtype *p, int base)
 	}
 }
 
-static void free_tries(struct try *p)
+static void free_tries(struct tries *p)
 {
-	struct try *q;
+	struct tries *q;
 
 	while (p != 0) {
 		q = p->sibling;
@@ -69,7 +69,7 @@ void _nc_freeall(void)
 {
 	WINDOWLIST *p, *q;
 
-#ifdef NO_LEAKS
+#if NO_LEAKS
 	_nc_free_tparm();
 #endif
 	while (_nc_windows != 0) {
@@ -108,10 +108,10 @@ void _nc_freeall(void)
 		_nc_free_termtype(&(cur_term->type), TRUE);
 	}
 
-#if defined(HAVE_LIBDBMALLOC)
+#if HAVE_LIBDBMALLOC
 	malloc_dump(malloc_errfd);
-#elif defined(HAVE_LIBDMALLOC)
-#elif defined(HAVE_PURIFY)
+#elif HAVE_LIBDMALLOC
+#elif HAVE_PURIFY
 	purify_all_inuse();
 #endif
 }

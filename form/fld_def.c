@@ -25,7 +25,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_def.c,v 1.4 1996/11/19 15:23:53 juergen Exp $")
+MODULE_ID("$Id: fld_def.c,v 1.5 1997/02/15 17:34:10 tom Exp $")
 
 /* this can't be readonly */
 static FIELD default_field = {
@@ -135,7 +135,7 @@ static TypeArgument *Copy_Argument(const FIELDTYPE *typ,
       } 
       else 
 	{
-	  if (!(res = (TypeArgument *)(typ->copyarg((void *)argp)))) 
+	  if (!(res = (TypeArgument *)(typ->copyarg((const void *)argp)))) 
 	    *err += 1;
 	}
     }

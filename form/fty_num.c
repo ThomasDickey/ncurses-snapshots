@@ -13,9 +13,9 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_num.c,v 1.6 1996/11/19 15:23:53 juergen Exp $")
+MODULE_ID("$Id: fty_num.c,v 1.8 1997/02/15 20:47:19 tom Exp $")
 
-#ifdef HAVE_LOCALE_H
+#if HAVE_LOCALE_H
 #include <locale.h>
 #endif
 
@@ -43,7 +43,7 @@ static void *Make_Numeric_Type(va_list * ap)
       argn->precision = va_arg(*ap,int);
       argn->low       = va_arg(*ap,double);
       argn->high      = va_arg(*ap,double);
-#ifdef HAVE_LOCALE_H
+#if HAVE_LOCALE_H
       argn->L         = localeconv();
 #else
       argn->L         = NULL;
@@ -62,7 +62,7 @@ static void *Make_Numeric_Type(va_list * ap)
 +--------------------------------------------------------------------------*/
 static void *Copy_Numeric_Type(const void * argp)
 {
-  numericARG *ap  = (numericARG *)argp;
+  const numericARG *ap = (const numericARG *)argp;
   numericARG *new = (numericARG *)0;
 
   if (argp)
@@ -100,7 +100,7 @@ static void Free_Numeric_Type(void * argp)
 +--------------------------------------------------------------------------*/
 static bool Check_Numeric_Field(FIELD * field, const void * argp)
 {
-  numericARG *argn    = (numericARG *)argp;
+  const numericARG *argn = (const numericARG *)argp;
   double low          = argn->low;
   double high         = argn->high;
   int prec            = argn->precision;
@@ -121,7 +121,7 @@ static bool Check_Numeric_Field(FIELD * field, const void * argp)
 	  bp++;
 	}
       if (*bp==(
-#ifdef HAVE_LOCALE_H
+#if HAVE_LOCALE_H
 		(L && L->decimal_point) ? *(L->decimal_point) :
 #endif
 		'.'))
@@ -162,7 +162,7 @@ static bool Check_Numeric_Field(FIELD * field, const void * argp)
 +--------------------------------------------------------------------------*/
 static bool Check_Numeric_Character(int c, const void * argp)
 {
-  numericARG *argn = (numericARG *)argp;
+  const numericARG *argn = (const numericARG *)argp;
   struct lconv* L  = argn->L;  
 
   return (isdigit(c)  || 

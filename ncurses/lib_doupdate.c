@@ -48,7 +48,7 @@
 #if USE_FUNC_POLL
 #include <stropts.h>
 #include <poll.h>
-#elif defined(HAVE_SELECT)
+#elif HAVE_SELECT
 #if HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.53 1997/02/09 00:38:50 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.55 1997/02/15 18:53:46 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -204,7 +204,7 @@ static bool check_pending(void)
 			fflush(SP->_ofp);
 			return TRUE;
 		}
-#elif defined(HAVE_SELECT)
+#elif HAVE_SELECT
 		fd_set fdset;
 		struct timeval ktimeout;
 
@@ -854,7 +854,7 @@ bool	needclear = FALSE;
 	    {
 		int count = (screen_columns - SP->_curscol);
 		while (count-- > 0)
-			PutAttrChar(blank);
+			PutChar(blank);
 	    }
 	    else
 		putp(clr_eol);
@@ -911,7 +911,7 @@ chtype	blank  = newscr->_line[total-1].text[last-1]; /* lower right char */
 			total++;
 		}
 	}
-#ifdef NO_LEAKS
+#if NO_LEAKS
 	FreeAndNull(tstLine);
 #endif
 	return total;

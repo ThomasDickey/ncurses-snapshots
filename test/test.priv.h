@@ -17,7 +17,7 @@
  * CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
  ******************************************************************************/
-/* $Id: test.priv.h,v 1.10 1997/01/18 19:38:20 tom Exp $ */
+/* $Id: test.priv.h,v 1.11 1997/02/15 18:25:20 tom Exp $ */
 #if HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -48,7 +48,7 @@ extern int optind;
 #define GCC_UNUSED /* nothing */
 #endif
 
-#if defined(NCURSES_VERSION) && defined(HAVE_NC_ALLOC_H)
+#if defined(NCURSES_VERSION) && HAVE_NC_ALLOC_H
 #include <nc_alloc.h>
 #endif
 

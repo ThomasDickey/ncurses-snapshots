@@ -35,7 +35,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.22 1997/02/02 02:05:46 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.23 1997/02/15 18:29:30 tom Exp $")
 
 /****************************************************************************
  *
@@ -84,7 +84,7 @@ char		*rows, *cols;
 		COLS = atoi(cols);
 	    T(("screen size: environment LINES = %d COLUMNS = %d",LINES,COLS));
 
-#if defined(TIOCGWINSZ) && !defined(BROKEN_TIOCGWINSZ)
+#if defined(TIOCGWINSZ) && !BROKEN_TIOCGWINSZ
 	    /* if that didn't work, maybe we can try asking the OS */
 	    if (LINES <= 0 || COLS <= 0)
 	    {

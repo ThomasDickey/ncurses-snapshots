@@ -37,7 +37,7 @@
 #define S_ISDIR(mode) ((mode & S_IFMT) == S_IFDIR)
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.14 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.15 1997/02/15 20:52:18 tom Exp $")
 
 static int total_written;
 
@@ -169,7 +169,7 @@ char		*first_name, *other_names;
 char		*ptr;
 char		filename[PATH_MAX];
 char		linkname[PATH_MAX];
-#ifdef USE_SYMLINKS
+#if USE_SYMLINKS
 char		symlinkname[PATH_MAX];
 #endif /* USE_SYMLINKS */
 static int	call_count;
@@ -272,15 +272,15 @@ static time_t	start_time;		/* time at start of writes */
 		}
 		else
 		{
-#ifdef USE_SYMLINKS
+#if USE_SYMLINKS
 			strcpy(symlinkname, "../");
 			strcat(symlinkname, filename);
 #endif /* USE_SYMLINKS */
 			unlink(linkname);
-#ifndef USE_SYMLINKS
-			if (link(filename, linkname) < 0)
-#else
+#if USE_SYMLINKS
 			if (symlink(symlinkname, linkname) < 0)
+#else
+			if (link(filename, linkname) < 0)
 #endif /* USE_SYMLINKS */
 			    _nc_syserr_abort("can't link %s to %s", filename, linkname);
 			DEBUG(1, ("Linked %s", linkname));

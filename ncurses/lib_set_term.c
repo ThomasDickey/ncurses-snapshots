@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.14 1997/02/02 01:33:28 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.15 1997/02/15 16:28:16 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -116,7 +116,7 @@ SCREEN	*oldSP;
 	return(oldSP);
 }
 
-static void _nc_free_keytry(struct try *kt)
+static void _nc_free_keytry(struct tries *kt)
 {
 	if (kt != 0) {
 		_nc_free_keytry(kt->child);

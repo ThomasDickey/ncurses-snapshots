@@ -32,7 +32,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.26 1997/01/26 00:43:13 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.27 1997/02/15 18:54:44 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -71,7 +71,7 @@ static int compare;
 #define C_USEALL	4	/* generate relative use-form entry */
 static bool ignorepads;		/* ignore pad prefixes when diffing */
 
-#ifdef NO_LEAKS
+#if NO_LEAKS
 #undef ExitProgram
 static void ExitProgram(int code) GCC_NORETURN;
 static void ExitProgram(int code)
