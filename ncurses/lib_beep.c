@@ -42,7 +42,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* beep, flash */
 
-MODULE_ID("$Id: lib_beep.c,v 1.5 1998/02/11 12:13:55 tom Exp $")
+MODULE_ID("$Id: lib_beep.c,v 1.6 1998/06/29 19:34:16 Alexander.V.Lukyanov Exp $")
 
 /*
  *	beep()
@@ -54,16 +54,20 @@ MODULE_ID("$Id: lib_beep.c,v 1.5 1998/02/11 12:13:55 tom Exp $")
 
 int beep(void)
 {
+	int res = ERR;
+
 	T((T_CALLED("beep()")));
 
 	/* FIXME: should make sure that we are not in altchar mode */
 	if (bell) {
 		TPUTS_TRACE("bell");
-		return(putp(bell));
+		res = putp(bell);
+		fflush(SP->_ofp);
 	} else if (flash_screen) {
 		TPUTS_TRACE("flash_screen");
-		return(putp(flash_screen));
+		res = putp(flash_screen);
+		fflush(SP->_ofp);
 	}
-	else
-		returnCode(ERR);
+
+	returnCode(res);
 }

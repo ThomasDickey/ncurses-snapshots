@@ -40,39 +40,35 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_clrbot.c,v 1.13 1998/02/11 12:13:54 tom Exp $")
+MODULE_ID("$Id: lib_clrbot.c,v 1.14 1998/06/28 00:36:26 tom Exp $")
 
 int wclrtobot(WINDOW *win)
 {
 int     code = ERR;
-chtype	blank;
-chtype	*ptr, *end;
-short	y, startx;
 
 	T((T_CALLED("wclrtobot(%p)"), win));
 
 	if (win) {
-	  startx = win->_curx;
-	  
-	  T(("clearing from y = %d to y = %d with maxx =  %d", win->_cury, win->_maxy, win->_maxx));
-	  
-	  for (y = win->_cury; y <= win->_maxy; y++) {
-	    end = &win->_line[y].text[win->_maxx];
-	    
-	    blank = _nc_background(win);
-	    for (ptr = &win->_line[y].text[startx]; ptr <= end; ptr++)
-	      *ptr = blank;
-	    
-	    if (win->_line[y].firstchar > startx
-		||  win->_line[y].firstchar == _NOCHANGE)
-	      win->_line[y].firstchar = startx;
-	    
-	    win->_line[y].lastchar = win->_maxx;
-	    
-	    startx = 0;
-	  }
-	  _nc_synchook(win);
-	  code = OK;
+		short y;
+		short startx = win->_curx;
+		chtype blank = _nc_background(win);
+
+		T(("clearing from y = %d to y = %d with maxx =  %d", win->_cury, win->_maxy, win->_maxx));
+
+		for (y = win->_cury; y <= win->_maxy; y++) {
+			struct ldat *line = &(win->_line[y]);
+			chtype *ptr = &(line->text[startx]);
+			chtype *end = &(line->text[win->_maxx]);
+
+			CHANGED_TO_EOL(line, startx, win->_maxx);
+
+			while (ptr <= end)
+				*ptr++ = blank;
+
+			startx = 0;
+		}
+		_nc_synchook(win);
+		code = OK;
 	}
 	returnCode(code);
 }

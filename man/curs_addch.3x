@@ -27,7 +27,7 @@
 .\"***************************************************************************
 .\"
 '\" t
-.\" $Id: curs_addch.3x,v 1.11 1998/03/11 21:12:53 juergen Exp $
+.\" $Id: curs_addch.3x,v 1.12 1998/06/13 21:44:11 Alexander.V.Lukyanov Exp $
 .TH curs_addch 3X ""
 .SH NAME
 \fBaddch\fR, \fBwaddch\fR, \fBmvaddch\fR, \fBmvwaddch\fR,
@@ -65,8 +65,7 @@ on the last line).  Tabs are considered to be at every eighth column.
 If \fIch\fR is any control character other than tab, newline, or backspace, it
 is drawn in \fB^\fR\fIX\fR notation.  Calling \fBwinch\fR after adding a
 control character does not return the character itself, but instead returns
-the ^-representation of the control character.  (To emit control characters
-literally, use \fBechochar\fR.)
+the ^-representation of the control character.
 
 Video attributes can be combined with a character argument passed to
 \fBaddch\fR or related functions by logical-ORing them into the character.
@@ -144,7 +143,7 @@ The attribute A_ALTCHARSET actually forces literal display of PC ROM characters
 including the high-half graphics.  Your console driver may still capture or
 translate a few (such as ESC) but this feature should give you access to the
 card-suit characters, up and down-arrow, and most others in the range 0-32.
-(In a terminfo entry designed for use with \fBncurses\fR, the high-half 
+(In a terminfo entry designed for use with \fBncurses\fR, the high-half
 characters are obtained using this attribute with an \fBacsc\fR string in
 which the second of each pair is a high-half character.)
 
@@ -160,7 +159,7 @@ The defaults specified for forms-drawing characters apply in the POSIX locale.
 
 The seven ACS symbols starting with \fBACS_S3\fR were not documented in
 any publicly released System V.  However, many publicly available terminfos
-include \fBacsc\fR strings in which their key characters (pryz{|}) are 
+include \fBacsc\fR strings in which their key characters (pryz{|}) are
 embedded, and a second-hand list of their character descriptions has come
 to light.  The ACS-prefixed names for them were invented for \fBncurses\fR(3X).
 .SH SEE ALSO

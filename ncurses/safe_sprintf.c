@@ -33,7 +33,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: safe_sprintf.c,v 1.7 1998/05/30 23:30:34 Todd.Miller Exp $")
+MODULE_ID("$Id: safe_sprintf.c,v 1.8 1998/07/11 20:31:37 Bernhard.Rosenkraenzer Exp $")
 
 #if USE_SAFE_SPRINTF
 
@@ -238,7 +238,7 @@ _nc_printf_string(const char *fmt, va_list ap)
 # else
 		vsprintf(buf, fmt, ap);		/* ANSI */
 # endif
-#endif
 	}
+#endif
 	return buf;
 }

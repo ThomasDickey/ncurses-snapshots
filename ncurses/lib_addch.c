@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.39 1998/02/11 12:13:57 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.41 1998/06/28 00:10:21 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -133,12 +133,7 @@ int waddch_literal(WINDOW *win, chtype ch)
 
 	line = win->_line+win->_cury;
 	
-	if (line->firstchar == _NOCHANGE)
-		line->firstchar = line->lastchar = x;
-	else if (x < line->firstchar)
-		line->firstchar = x;
-	else if (x > line->lastchar)
-		line->lastchar = x;
+	CHANGED_CELL(line,x);
 
 	line->text[x++] = ch;
 	

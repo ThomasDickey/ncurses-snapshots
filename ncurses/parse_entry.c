@@ -49,7 +49,7 @@
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.23 1998/04/04 19:08:59 juergen Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.24 1998/07/04 23:08:38 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] = { 0 };
@@ -124,12 +124,12 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
     /* check for overly-long names and aliases */
     (void) strncpy(namecpy, entryp->tterm.term_names, MAX_NAME_SIZE);
     namecpy[MAX_NAME_SIZE] = '\0';
-    if ((ptr = strrchr(namecpy, '|')) != (char *)NULL)
+    if ((ptr = strrchr(namecpy, '|')) != (char *)0)
 	*ptr = '\0';
     ptr = strtok(namecpy, "|");
     if (strlen(ptr) > MAX_ALIAS)
 	_nc_warning("primary name may be too long");
-    while ((ptr = strtok((char *)NULL, "|")) != (char *)NULL)
+    while ((ptr = strtok((char *)0, "|")) != (char *)0)
 	if (strlen(ptr) > MAX_ALIAS)
 	    _nc_warning("alias `%s' may be too long", ptr);
 
@@ -166,7 +166,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 		    for (ap = _nc_capalias_table; ap->from; ap++)
 			if (strcmp(ap->from, _nc_curr_token.tk_name) == 0)
 			{
-			    if (ap->to == (char *)NULL)
+			    if (ap->to == (char *)0)
 			    {
 				_nc_warning("%s (%s termcap extension) ignored",
 					    ap->from, ap->source);
@@ -184,7 +184,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 		    for (ap = _nc_infoalias_table; ap->from; ap++)
 			if (strcmp(ap->from, _nc_curr_token.tk_name) == 0)
 			{
-			    if (ap->to == (char *)NULL)
+			    if (ap->to == (char *)0)
 			    {
 				_nc_warning("%s (%s terminfo extension) ignored",
 					    ap->from, ap->source);
@@ -418,7 +418,7 @@ static assoc const ko_xlate[] =
     {"st",	"khts"},	/* set-tab key      -> KEY_STAB  */
     {"ta",	CANCELLED_STRING},
     {"up",	"kcuu1"},	/* up-arrow key     -> KEY_UP    */
-    {(char *)NULL, (char *)NULL},
+    {(char *)0, (char *)0},
 };
 
 /*
@@ -436,8 +436,8 @@ static const char C_HT[] = "\t";
  * Note that WANTED and PRESENT are not simple inverses!  If a capability
  * has been explicitly cancelled, it's not considered WANTED.
  */
-#define WANTED(s)	((s) == (char *)NULL)
-#define PRESENT(s)	(((s) != (char *)NULL) && ((s) != CANCELLED_STRING))
+#define WANTED(s)	((s) == ABSENT_STRING)
+#define PRESENT(s)	(((s) != ABSENT_STRING) && ((s) != CANCELLED_STRING))
 
 /*
  * This bit of legerdemain turns all the terminfo variable names into
@@ -467,8 +467,8 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
 	if (WANTED(init_3string) && termcap_init2)
 	    init_3string = _nc_save_str(termcap_init2);
 
-	if (WANTED(reset_1string) && termcap_reset)
-	    reset_1string = _nc_save_str(termcap_reset);
+	if (WANTED(reset_2string) && termcap_reset)
+	    reset_2string = _nc_save_str(termcap_reset);
 
 	if (WANTED(carriage_return)) {
 	    if (carriage_return_delay > 0) {
@@ -549,7 +549,7 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
 	 * space allocated for it is wasted.
 	 */
 	if (return_does_clr_eol == 1 || no_correctly_working_cr == 1)
-	    carriage_return = NULL;
+	    carriage_return = ABSENT_STRING;
 
 	/*
 	 * Supposedly most termcap entries have ta now and '\t' is no longer a
@@ -671,7 +671,7 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
 
 	    tp->Strings[to_ptr->nte_index] = _nc_save_str(buf2);
 	} while
-	    ((cp = strtok((char *)NULL, ",")) != 0);
+	    ((cp = strtok((char *)0, ",")) != 0);
 
 	/*
 	 * Note: ko=im and ko=ic both want to grab the `Insert'
@@ -782,6 +782,12 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
 	    acs_chars = _nc_save_str(buf2);
 	    _nc_warning("acsc string synthesized from XENIX capabilities");
 	}
+    }
+    else if (acs_chars == 0
+	&& enter_alt_charset_mode != 0
+	&& exit_alt_charset_mode != 0)
+    {
+	acs_chars = _nc_save_str("``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~");
     }
 }
 

@@ -42,37 +42,32 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_hline.c,v 1.2 1998/02/11 12:13:55 tom Exp $")
+MODULE_ID("$Id: lib_hline.c,v 1.4 1998/06/28 00:11:01 tom Exp $")
 
 int whline(WINDOW *win, chtype ch, int n)
 {
 int   code = ERR;
-short line;
 short start;
 short end;
 
 	T((T_CALLED("whline(%p,%s,%d)"), win, _tracechtype(ch), n));
 
 	if (win) {
-		line  = win->_cury;
+		struct ldat *line = &(win->_line[win->_cury]);
+
 		start = win->_curx;
 		end   = start + n - 1;
 		if (end > win->_maxx)
 			end   = win->_maxx;
 
-		if (win->_line[line].firstchar == _NOCHANGE
-		 || win->_line[line].firstchar > start)
-			win->_line[line].firstchar = start;
-		if (win->_line[line].lastchar == _NOCHANGE
-		 || win->_line[line].lastchar < start)
-			win->_line[line].lastchar = end;
+		CHANGED_RANGE(line, start, end);
 
 		if (ch == 0)
 			ch = ACS_HLINE;
 		ch = _nc_render(win, ch);
 
 		while ( end >= start) {
-			win->_line[line].text[end] = ch;
+			line->text[end] = ch;
 			end--;
 		}
 		code = OK;

@@ -41,7 +41,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.27 1998/05/30 23:29:24 Todd.Miller Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.30 1998/06/28 00:10:19 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -220,6 +220,8 @@ static void rgb2hls(short r, short g, short b, short *h, short *l, short *s)
  */
 int init_pair(short pair, short f, short b)
 {
+	unsigned result;
+
 	T((T_CALLED("init_pair(%d,%d,%d)"), pair, f, b));
 
 	if ((pair < 1) || (pair >= COLOR_PAIRS))
@@ -241,12 +243,27 @@ int init_pair(short pair, short f, short b)
 		returnCode(ERR);
 
 	/*
-	 * FIXME: when a pair's content is changed, replace its colors
-	 * (if pair was initialized before a screen update is performed
-	 * replacing original pair colors with the new ones)
+	 * When a pair's content is changed, replace its colors (if pair was
+	 * initialized before a screen update is performed replacing original
+	 * pair colors with the new ones).
 	 */
+	result = PAIR_OF(f,b);
+	if (SP->_color_pairs[pair] != 0
+	 && SP->_color_pairs[pair] != result) {
+	    int y, x;
+	    attr_t z = COLOR_PAIR(pair);
 
-	SP->_color_pairs[pair] = PAIR_OF(f,b);
+	    for (y = 0; y <= curscr->_maxy; y++) {
+		struct ldat *ptr = &(curscr->_line[y]);
+		for (x = 0; x <= curscr->_maxx; x++) {
+		    if ((ptr->text[x] & A_COLOR) == z) {
+			ptr->text[x] &= ~A_COLOR;
+			CHANGED_CELL(ptr,x);
+		    }
+		}
+	    }
+	}
+	SP->_color_pairs[pair] = result;
 
 	if (initialize_pair)
 	{

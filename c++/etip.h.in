@@ -31,7 +31,7 @@
  *   Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1997             *
  ****************************************************************************/
 
-// $Id: etip.h.in,v 1.6 1998/05/16 21:48:20 tom Exp $
+// $Id: etip.h.in,v 1.8 1998/07/11 23:11:39 Chris.Johns Exp $
 
 #ifndef _ETIP_H
 #define _ETIP_H
@@ -49,6 +49,14 @@
 #define HAVE_VALUES_H 0
 #endif
 
+#ifndef ETIP_NEEDS_MATH_H
+#define ETIP_NEEDS_MATH_H 0
+#endif
+
+#ifndef ETIP_NEEDS_MATH_EXCEPTION
+#define ETIP_NEEDS_MATH_EXCEPTION 0
+#endif
+
 #ifdef __GNUG__
 #  if ((__GNUG__ <= 2) && (__GNUC_MINOR__ < 8))
 #    if HAVE_TYPEINFO
@@ -59,8 +67,13 @@
 
 #if defined(__GNUG__)
 #  if HAVE_BUILTIN_H
-#    undef exception
-#    include <math.h>
+#    if ETIP_NEEDS_MATH_H
+#      if ETIP_NEEDS_MATH_EXCEPTION
+#        undef exception
+#        define exception math_exception
+#      endif
+#      include <math.h>
+#    endif
 #    undef exception
 #    define exception builtin_exception
 #    include <builtin.h>
@@ -91,8 +104,8 @@ class NCursesForm;
 class NCursesException
 {
 public:
-  int errorno;
   const char *message;
+  int errorno;
 
   NCursesException (const char* msg, int err)
     : message(msg), errorno (err)

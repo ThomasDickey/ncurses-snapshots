@@ -48,7 +48,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.37 1998/05/30 23:43:06 Todd.Miller Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.38 1998/06/06 22:47:24 tom Exp $")
 
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -243,13 +243,14 @@ static int _nc_read_tic_entry(char *const filename,
  * Process the list of :-separated directories, looking for the terminal type.
  * We don't use strtok because it does not show us empty tokens.
  */
-static int _nc_read_terminfo_dirs(char *dirs, char *const filename, const char *const ttn, TERMTYPE *const tp)
+static int _nc_read_terminfo_dirs(const char *dirs, char *const filename, const char *const ttn, TERMTYPE *const tp)
 {
-	char *list, *a, *b;
+	char *list, *a;
+	const char *b;
 	int code = 0;
 
 	/* we'll modify the argument, so we must copy */
-	if ((a = b = list = malloc(strlen(dirs) + 1)) == NULL)
+	if ((b = a = list = malloc(strlen(dirs) + 1)) == NULL)
 		return(0);
 	(void) strcpy(list, dirs);
 

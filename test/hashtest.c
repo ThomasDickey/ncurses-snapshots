@@ -3,7 +3,7 @@
  *
  * Generate timing statistics for vertical-motion optimization.
  *
- * $Id: hashtest.c,v 1.13 1998/03/21 18:41:34 tom Exp $
+ * $Id: hashtest.c,v 1.14 1998/06/13 22:45:39 tom Exp $
  */
 
 #ifdef TRACE
@@ -102,6 +102,11 @@ static void run_test(bool optimized)
 	char	ch;
 	int	lo = continuous ? LO_CHAR : 'a' - LINES;
 	int	hi = continuous ? HI_CHAR : 'a' + LINES;
+
+	if (lo < LO_CHAR)
+		lo = LO_CHAR;
+	if (hi > HI_CHAR)
+		hi = HI_CHAR;
 
 #if defined(TRACE) || defined(NCURSES_TEST)
 	if (optimized) {

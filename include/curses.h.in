@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.65 1998/05/10 00:09:17 tom Exp $ */
+/* $Id: curses.h.in,v 1.67 1998/07/11 20:17:07 dnelson Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -897,8 +897,12 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define getbegyx(win,y,x)	(y = (win)?(win)->_begy:ERR, x = (win)?(win)->_begx:ERR)
 #define getmaxyx(win,y,x)	(y = (win)?((win)->_maxy + 1):ERR, x = (win)?((win)->_maxx + 1):ERR)
 #define getparyx(win,y,x)	(y = (win)?(win)->_pary:ERR, x = (win)?(win)->_parx:ERR)
-#define getsyx(y,x)		getyx(stdscr, y, x)
-#define setsyx(y,x)		(stdscr->_cury = y, stdscr->_curx = x)
+#define getsyx(y,x) do { if(newscr->_leaveok) (y)=(x)=-1; \
+			 else getyx(newscr,(y),(x)); \
+		    } while(0)
+#define setsyx(y,x) do { if((y)==-1 && (x)==-1) newscr->_leaveok=TRUE; \
+			 else {newscr->_leaveok=FALSE;wmove(newscr,(y),(x));} \
+		    } while(0)
 
 /* It seems older SYSV curses versions define these */
 #define getattrs(win)		((win)?(win)->_attrs:A_NORMAL)
@@ -1102,7 +1106,7 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define vline_set(c,n)			vhline_set(stdscr,c,n)
 #define waddwstr(win,wstr,n)		waddnwstr(win,wstr,-1)
 #define wattr_get(win,a,p,opts)		((void)((a) != 0 && (*(a) = (win)->_attrs)), \
-					 (void)((a) != 0 && (*(p) = PAIR_NUMBER((win)->_attrs))), \
+					 (void)((p) != 0 && (*(p) = PAIR_NUMBER((win)->_attrs))), \
 					 OK)
 #define wget_wstr(w,t)			wgetn_wstr(w,t,-1)
 #define win_wchstr(w,c)			win_wchnstr(w,c,-1)

@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_window.c,v 1.11 1998/02/11 12:13:53 tom Exp $")
+MODULE_ID("$Id: lib_window.c,v 1.13 1998/06/28 00:10:59 tom Exp $")
 
 void _nc_synchook(WINDOW *win)
 /* hook to be called after each window change */
@@ -108,22 +108,12 @@ void wsyncup(WINDOW *win)
 	    int left = wp->_line[y].firstchar;
 	    if (left >= 0) /* line is touched */
 	      {
+		struct ldat *line = &(pp->_line[wp->_pary + y]);
 		/* left & right character in parent window coordinates */
 		int right = wp->_line[y].lastchar + wp->_parx;
 		left += wp->_parx;
 
-		if (pp->_line[wp->_pary + y].firstchar == _NOCHANGE)
-		  {
-		    pp->_line[wp->_pary + y].firstchar = left;
-		    pp->_line[wp->_pary + y].lastchar  = right;
-		  }
-		else
-		  {
-		    if (left < pp->_line[wp->_pary + y].firstchar)
-		      pp->_line[wp->_pary + y].firstchar = left;
-		    if (pp->_line[wp->_pary + y].lastchar < right)
-		      pp->_line[wp->_pary + y].lastchar = right;
-		  }
+		CHANGED_RANGE(line, left, right);
 	      }
 	  }
       }
@@ -151,6 +141,7 @@ void wsyncdown(WINDOW *win)
 	{
 	  if (pp->_line[win->_pary + y].firstchar >= 0) /* parent changed */
 	    {
+	      struct ldat *line = &(win->_line[y]);
 	      /* left and right character in child coordinates */
 	      int left  = pp->_line[win->_pary + y].firstchar - win->_parx;
 	      int right = pp->_line[win->_pary + y].lastchar  - win->_parx;
@@ -159,18 +150,7 @@ void wsyncdown(WINDOW *win)
 		left = 0;
 	      if (right > win->_maxx)
 		right = win->_maxx;
-	      if (win->_line[y].firstchar == _NOCHANGE)
-		{
-		  win->_line[y].firstchar = left;
-		  win->_line[y].lastchar  = right;
-		}
-	      else
-		{
-		  if (left < win->_line[y].firstchar)
-		    win->_line[y].firstchar = left;
-		  if (win->_line[y].lastchar < right)
-		    win->_line[y].lastchar = right;
-		}
+	      CHANGED_RANGE(line, left, right);
 	    }
 	}
     }

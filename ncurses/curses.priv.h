@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.102 1998/03/21 17:52:50 tom Exp $
+ * $Id: curses.priv.h,v 1.105 1998/06/28 00:11:47 tom Exp $
  *
  *	curses.priv.h
  *
@@ -417,6 +417,28 @@ typedef	struct {
 #define BLANK        (' '|A_NORMAL)
 
 #define CHANGED     -1
+
+#define CHANGED_CELL(line,col) \
+	if (line->firstchar == _NOCHANGE) \
+		line->firstchar = line->lastchar = col; \
+	else if ((col) < line->firstchar) \
+		line->firstchar = col; \
+	else if ((col) > line->lastchar) \
+		line->lastchar = col
+
+#define CHANGED_RANGE(line,start,end) \
+	if (line->firstchar == _NOCHANGE \
+	 || line->firstchar > (start)) \
+		line->firstchar = start; \
+	if (line->lastchar == _NOCHANGE \
+	 || line->lastchar < (end)) \
+		line->lastchar = end
+
+#define CHANGED_TO_EOL(line,start,end) \
+	if (line->firstchar == _NOCHANGE \
+	 || line->firstchar > (start)) \
+		line->firstchar = start; \
+	line->lastchar = end
 
 #define SIZEOF(v) (sizeof(v)/sizeof(v[0]))
 #define typeCalloc(type,elts) (type *)calloc(elts,sizeof(type))
