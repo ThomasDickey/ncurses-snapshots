@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.164 1999/03/16 01:46:15 tom Exp $
+dnl $Id: configure.in,v 1.165 1999/03/28 00:21:39 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.164 $)
+AC_REVISION($Revision: 1.165 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -96,8 +96,8 @@ case "$cf_cv_system_name" in
 freebsd*) #(vi
   test -z "$LDCONFIG" && LDCONFIG="/sbin/ldconfig -R"
   ;;
-*)
-  AC_PATH_PROG(LDCONFIG,ldconfig,,$PATH:/sbin:/usr/sbin)
+*) LDPATH=$PATH:/sbin:/usr/sbin
+  AC_PATH_PROG(LDCONFIG,ldconfig,,$LDPATH)
   ;;
 esac
 AC_SUBST(LDCONFIG)
