@@ -46,6 +46,9 @@
 # include <sys/ioctl.h>
 #endif
 
+/* The terminfo source is assumed to be 7-bit ASCII */
+#define is7bits(c)	((unsigned)(c) < 128)
+
 #ifndef min
 #define min(a,b)	((a) > (b)  ?  (b)  :  (a))
 #endif
@@ -53,9 +56,6 @@
 #ifndef max
 #define max(a,b)	((a) < (b)  ?  (b)  :  (a))
 #endif
-
-#define FG(n)	((n) & 0x0f)
-#define BG(n)	(((n) & 0xf0) >> 4)
 
 #define BLANK        (' '|A_NORMAL)
 
@@ -183,6 +183,23 @@ struct screen {
 };
 
 /*
+ * On systems with a broken linker, define 'SP' as a function to force the
+ * linker to pull in the data-only module with 'SP'.
+ */
+#ifndef BROKEN_LINKER
+#define BROKEN_LINKER 0
+#endif
+
+#if BROKEN_LINKER
+#define SP _nc_screen()
+extern int _nc_alloc_screen(void);
+extern void _nc_set_screen(SCREEN *);
+#else
+#define _nc_alloc_screen() ((SP = (SCREEN *) calloc(sizeof(*SP), 1)) != NULL)
+#define _nc_set_screen(sp) SP = sp
+#endif
+
+/*
  * We don't want to use the lines or columns capabilities internally,
  * because if the application is running multiple screens under
  * X windows, it's quite possible they could all have type xterm
@@ -191,7 +208,7 @@ struct screen {
 #define screen_lines	SP->_lines
 #define screen_columns	SP->_columns
 
-extern struct screen	*SP;
+extern SCREEN *SP;
 
 extern int _slk_init;			/* TRUE if slk_init() called */
 extern int slk_initialize(WINDOW *, int);

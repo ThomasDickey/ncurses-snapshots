@@ -29,15 +29,8 @@
 
 #include "curses.priv.h"
 
-int isendwin()
-{
-	if (SP == NULL)
-		return FALSE;
-	return SP->_endwin;
-}
-
 int
-endwin()
+endwin(void)
 {
 	T(("endwin() called"));
 

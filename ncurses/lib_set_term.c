@@ -39,7 +39,7 @@ struct screen	*oldSP;
 	T(("set_term(%p) called", screen));
 
 	oldSP = SP;
-	SP = screen;
+	_nc_set_screen(screen);
 
 	cur_term = SP->_term;
 	curscr   = SP->_curscr;
@@ -66,7 +66,7 @@ int _nc_setupscreen(int slines, int scolumns)
 {
 int	stolen, topstolen;
 
-	if ((SP = (SCREEN *) calloc(sizeof(*SP), 1)) == NULL)
+	if (!_nc_alloc_screen())
 	    	return ERR;
 
 	SP->_term      	= cur_term;

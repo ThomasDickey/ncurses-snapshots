@@ -42,7 +42,7 @@ char	*cp;
 	for (cp = (char *)str; *cp && (n > 0 || (cp - str) >= n); cp++) {
 		if (*cp == '\n' || *cp == '\r' || *cp == '\t' || *cp == '\b')
 			addch((chtype)(*cp));
-		else if (isascii(*cp) && iscntrl(*cp)) {
+		else if (is7bits(*cp) && iscntrl(*cp)) {
 			winsch(win, ' ' + (chtype)(*cp));
 			winsch(win, '^');
 			win->_curx += 2;

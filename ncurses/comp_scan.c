@@ -27,11 +27,11 @@
  *	int _nc_syntax;
  */
 
+#include "curses.priv.h"
+
 #include <stdarg.h>
-#include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include <curses.h>	/* solely for the _tracef() prototype */
 #include "tic.h"
 
 /*
@@ -42,7 +42,7 @@
 
 #define iswhite(ch)	(ch == ' '  ||  ch == '\t')
 
-int	_nc_syntax;		/* termcap or terminfo? */
+bool	_nc_syntax;		/* termcap or terminfo? */
 int	_nc_curr_line;		/* current line # in input */
 long	_nc_curr_file_pos;	/* file offset of current line */
 long	_nc_comment_start;	/* start of comment range before name */
@@ -487,31 +487,31 @@ char	*ptr;
 {
 int	count = 0;
 int	number;
-int	i;
+int	i, c;
 chtype	ch, last_ch = '\0';
 
-	while ((ch = next_char()) != separator  &&  ch != EOF) {
+	while ((ch = c = next_char()) != separator  &&  c != EOF) {
 	    if (ch == '^' && last_ch != '%') {
-		ch = next_char();
-		if (ch == EOF)
+		ch = c = next_char();
+		if (c == EOF)
 		    _nc_err_abort("Premature EOF");
 
-		if (! (isascii(ch) && isprint(ch))) {
+		if (! (is7bits(ch) && isprint(ch))) {
 		    _nc_warning("Illegal ^ character - %s",
 		    	_tracechar((unsigned char)ch));
 		}
 		*(ptr++) = ch & 037;
 	    }
 	    else if (ch == '\\') {
-		ch = next_char();
-		if (ch == EOF)
+		ch = c = next_char();
+		if (c == EOF)
 		    _nc_err_abort("Premature EOF");
 		
 		if (ch >= '0'  &&  ch <= '7') {
 		    number = ch - '0';
 		    for (i=0; i < 2; i++) {
-			ch = next_char();
-			if (ch == EOF)
+			ch = c = next_char();
+			if (c == EOF)
 			    _nc_err_abort("Premature EOF");
 			
 			if (ch < '0'  ||  ch > '7') {

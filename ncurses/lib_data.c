@@ -19,29 +19,44 @@
 *                                                                          *
 ***************************************************************************/
 
+/*
+**	lib_data.c
+**
+**	Common data that may/may not be allocated, but is referenced globally
+**
+*/
 
+#include "curses.priv.h"
 
-#include <unctrl.h>
+WINDOW *stdscr, *curscr, *newscr;
 
-char *unctrl(register unsigned char uch)
+/*
+ * The variable 'SP' will be defined as a function on systems that cannot link
+ * data-only modules, since it is used in a lot of places within ncurses and we
+ * cannot guarantee that any application will use any particular function.  We
+ * put the WINDOW variables in this module, because it appears that any
+ * application that uses them will also use 'SP'.
+ *
+ * This module intentionally does not reference other ncurses modules, to avoid
+ * module coupling that increases the size of the executable.
+ */
+#if BROKEN_LINKER
+static	SCREEN *my_screen;
+
+SCREEN *_nc_screen(void)
 {
-    static char buffer[3] = "^x";
-
-    if ((uch & 0x60) != 0 && uch != 0x7F) {
-	/*
-	 * Printable character. Simply return the character as a one-character
-	 * string.
-	 */
-	buffer[1] = uch;
-	return &buffer[1];
-    }
-    /*
-     * It is a control character. DEL is handled specially (^?). All others
-     * use ^x notation, where x is the character code for the control character
-     * with 0x40 ORed in. (Control-A becomes ^A etc.).
-     */
-    buffer[1] = (uch == 0x7F ? '?' : (uch | 0x40));
-
-    return buffer;
-
+	return my_screen;
 }
+
+int _nc_alloc_screen(void)
+{
+	return ((my_screen = (SCREEN *) calloc(sizeof(*SP), 1)) != NULL);
+}
+
+void _nc_set_screen(SCREEN *sp)
+{
+	my_screen = sp;
+}
+#else
+SCREEN *SP;
+#endif

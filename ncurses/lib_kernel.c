@@ -82,7 +82,7 @@ int delay_output(float ms)
 {
 	T(("delay_output(%f) called", ms));
 
-    	if (SP->_baudrate == ERR)
+    	if (SP == 0 || SP->_baudrate == ERR)
 		return(ERR);
 #ifdef no_pad_char
     	else if (no_pad_char)

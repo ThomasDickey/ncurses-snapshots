@@ -30,9 +30,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-WINDOW *stdscr, *curscr, *newscr;
-SCREEN *SP;
-
 WINDOW *initscr(void)
 {
 char	*name = getenv("TERM");
@@ -42,11 +39,10 @@ char	*name = getenv("TERM");
   	if (newterm(name, stdout, stdin) == NULL) {
   		fprintf(stderr, "Error opening terminal: %s.\n", name);
   		exit(1);
-	} else {
-		def_shell_mode();
-		def_prog_mode();
-		return(stdscr);
 	}
+	def_shell_mode();
+	def_prog_mode();
+	return(stdscr);
 }
 
 char *termname(void)

@@ -43,6 +43,7 @@ static void putstars(int);
 static bool evalmove(int);
 static bool chkmoves(void);
 static bool endgame(void);
+static int  iabs(int);			/* <stdlib.h> declares 'abs()' */
 static bool chksqr(int, int);
 
 int main(int argc, char *argv[])
@@ -300,12 +301,10 @@ static int getrc (void)
 	case '\n':
 	case ' ':
 	    return((BWIDTH * rw) + col);
-	    break;
 
 	case 'q':
 	case 'x':
 	    return(KEY_EXIT);
-	    break;
 
 	case '?':
 	    werase(helpwin);
@@ -374,8 +373,8 @@ static bool evalmove(int j)
     if (movecount == 0)
 	return(TRUE);
 
-    rdif = abs(rw  - lastrow);
-    cdif = abs(col - lastcol);
+    rdif = iabs(rw  - lastrow);
+    cdif = iabs(col - lastcol);
     if (((rdif == 1) && (cdif == 2)) || ((rdif == 2) && (cdif == 1)))
 	if (board [j] == 0)
 	    return(TRUE);
@@ -416,13 +415,11 @@ static bool endgame (void)
 	return (FALSE);
 }
 
-#ifndef abs
-static int abs(int num)
+static int iabs(int num)
 {
 	if (num < 0) return (-num);
 		else return (num);
 }
-#endif
 
 static bool chksqr (int r1, int c1)
 {

@@ -45,11 +45,11 @@ static char *separator, *trailer;
 
 #define OBSOLETE(n) (n[0] == 'O' && n[1] == 'T')
 
-void dump_init(int mode, int sort, int twidth, int trace)
+void dump_init(int mode, int sort, int twidth, int traceval)
 /* set up for entry display */
 {
     width = twidth;
-    tracelevel = trace;
+    tracelevel = traceval;
 
     /* implement display modes */
     switch (outform = mode)
@@ -86,13 +86,13 @@ void dump_init(int mode, int sort, int twidth, int trace)
     switch(sortmode = sort)
     { 
     case S_NOSORT:
-	if (trace)
+	if (traceval)
 	    (void) fprintf(stderr,
 			   "%s: sorting by term structure order\n", _nc_progname);
 	break;
 
     case S_TERMINFO:
-	if (trace)
+	if (traceval)
 	    (void) fprintf(stderr,
 			   "%s: sorting by terminfo name order\n", _nc_progname);
 	bool_indirect = bool_terminfo_sort;
@@ -101,7 +101,7 @@ void dump_init(int mode, int sort, int twidth, int trace)
 	break;
 
     case S_VARIABLE:
-	if (trace)
+	if (traceval)
 	    (void) fprintf(stderr,
 			   "%s: sorting by C variable order\n", _nc_progname);
 	bool_indirect = bool_variable_sort;
@@ -110,7 +110,7 @@ void dump_init(int mode, int sort, int twidth, int trace)
 	break;
 
     case S_TERMCAP:
-	if (trace)
+	if (traceval)
 	    (void) fprintf(stderr,
 			   "%s: sorting by termcap name order\n", _nc_progname);
 	bool_indirect = bool_termcap_sort;
@@ -119,14 +119,14 @@ void dump_init(int mode, int sort, int twidth, int trace)
 	break;
     }
 
-    if (trace)
+    if (traceval)
 	(void) fprintf(stderr,
 		       "%s: width = %d, outform = %d\n",
 		       _nc_progname, width, outform);
 }
 
 /* this deals with differences over whether 0x7f and 0x80..0x9f are controls */
-#define REALCTL(c) (isascii(c) && iscntrl(c) && (c != '\177'))
+#define REALCTL(c) ((c) < 127 && iscntrl(c))
 
 char *expand(unsigned char *srcp)
 {
@@ -211,7 +211,7 @@ static int dump_predicate(int type, int idx)
 
     	case STRING:
 		return (cur_type->Strings[idx] != ABSENT_STRING)
-		    ? TRUE : FAIL;
+		    ? (int)TRUE : FAIL;
     	}
 
     	return(FALSE);	/* pacify compiler */

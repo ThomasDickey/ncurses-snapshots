@@ -116,7 +116,6 @@ int scr_restore(const char *file)
 	    (void) fclose(fp);
 	    return OK;
 	}
-	return ERR;
 }
 
 int scr_dump(const char *file)
@@ -155,8 +154,6 @@ int scr_init(const char *file)
 	    (void) fclose(fp);
 	    return OK;
 	}
-
-	return ERR;
 }
 
 int scr_set(const char *file)

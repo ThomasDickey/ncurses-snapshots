@@ -184,6 +184,62 @@ AC_DEFUN([NC_LIB_TYPE],
 	esac
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Some systems have a non-ANSI linker that doesn't pull in modules that have
+dnl only data (i.e., no functions), for example NeXT.  On those systems we'll
+dnl have to provide wrappers for global tables to ensure they're linked
+dnl properly.
+AC_DEFUN([NC_LINK_DATAONLY],
+[
+AC_MSG_CHECKING([if data-only library module links])
+AC_CACHE_VAL(nc_cv_link_dataonly,[
+	rm -f conftest.a
+	changequote(,)dnl
+	cat >conftest.$ac_ext <<EOF
+#line __oline__ "configure"
+int	testdata[3] = { 123, 456, 789 };
+EOF
+	changequote([,])dnl
+	if eval $ac_compile; then
+		mv conftest.o data.o
+		ar cr conftest.a data.o
+	fi
+	rm -f conftest.$ac_ext data.o
+	changequote(,)dnl
+	cat >conftest.$ac_ext <<EOF
+#line __oline__ "configure"
+int	testfunc()
+{
+	extern int testdata[3];
+	return testdata[0] == 123
+	   &&  testdata[1] == 456
+	   &&  testdata[2] == 789;
+}
+EOF
+	changequote([,])dnl
+	if eval $ac_compile; then
+		mv conftest.o func.o
+		ar cr conftest.a func.o
+	fi
+	rm -f conftest.$ac_ext func.o
+	eval $ac_cv_prog_RANLIB conftest.a 2>&1 >/dev/null
+	nc_saveLIBS="$LIBS"
+	LIBS="conftest.a $LIBS"
+	AC_TRY_RUN([
+	int main()
+	{
+		extern int testfunc();
+		exit (!testfunc());
+	}
+	],
+	[nc_cv_link_dataonly=yes],
+	[nc_cv_link_dataonly=no],
+	[nc_cv_link_dataonly=unknown])
+	LIBS="$nc_saveLIBS"
+	])
+AC_MSG_RESULT($nc_cv_link_dataonly)
+test $nc_cv_link_dataonly = no && AC_DEFINE(BROKEN_LINKER)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Some 'make' programs support $(MAKEFLAGS), some $(MFLAGS), to pass 'make'
 dnl options to lower-levels.  It's very useful for "make -n" -- if we have it.
 dnl (GNU 'make' does both :-)

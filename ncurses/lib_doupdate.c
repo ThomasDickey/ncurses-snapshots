@@ -131,7 +131,7 @@ static inline void PutAttrChar(chtype ch)
 		ch = ('`' | (ch & A_ATTRIBUTES));
 
 	TR(TRACE_CHARPUT, ("PutAttrChar(%s, %s) at (%d, %d)",
-			  _tracechar((ch & (chtype)A_CHARTEXT)),
+			  _tracechar((unsigned char)(ch & A_CHARTEXT)),
 			  _traceattr((ch & (chtype)A_ATTRIBUTES)),
 			   SP->_cursrow, SP->_curscol));
 	if (curscr->_attrs != (ch & (chtype)A_ATTRIBUTES)) {
@@ -218,15 +218,6 @@ static inline void PutChar(chtype ch)
 	position_check(SP->_cursrow, SP->_curscol, "PutChar");
 #endif /* POSITION_DEBUG */
 }	
-
-int _nc_outch(int ch)
-{
-	if (SP != NULL)
-		putc(ch, SP->_ofp);
-	else
-		putc(ch, stdout);
-	return OK;
-}
 
 int doupdate(void)
 {

@@ -31,7 +31,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <curses.h>	/* solely for the _tracef() prototype */
 #include "tic.h"
 #include "term.h"
 #include "term_entry.h"
@@ -156,12 +155,12 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 		/* tell max_attributes from arrow_key_map */
 		if (token_type == NUMBER && !strcmp("ma", _nc_curr_token.tk_name))
 		    entry_ptr = _nc_find_type_entry("ma", NUMBER,
-					_nc_syntax ? _nc_cap_table : _nc_info_table);
+					_nc_get_table(_nc_syntax));
 
 		/* map terminfo's string MT to MT */
 		else if (token_type==STRING &&!strcmp("MT",_nc_curr_token.tk_name))
 		    entry_ptr = _nc_find_type_entry("MT", STRING,
-					_nc_syntax ? _nc_cap_table : _nc_info_table);
+					_nc_get_table(_nc_syntax));
 
 		/* we couldn't recover; skip this token */
 		else

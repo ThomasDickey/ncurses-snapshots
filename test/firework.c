@@ -50,8 +50,6 @@ unsigned seed;
             erase();
             showit();
        }
-       endwin();
-       exit(0);
 }
 
 static

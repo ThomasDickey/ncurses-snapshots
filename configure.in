@@ -117,6 +117,7 @@ AC_C_INLINE
 ###	Checks for external-data
 NC_ERRNO
 NC_SYS_ERRLIST
+NC_LINK_DATAONLY
 
 ###	Checks for library functions.
 AC_CHECK_FUNCS(sigaction usleep strerror setvbuf setbuffer vsscanf)

@@ -140,7 +140,7 @@ chtype	ch = c;
 		    	x = 0;
 		break;
     	default:
-		if (isascii(ch & A_CHARTEXT) && iscntrl(ch & A_CHARTEXT))
+		if (is7bits(ch & A_CHARTEXT) && iscntrl(ch & A_CHARTEXT))
 		    	return(waddstr(win, unctrl((unsigned char)ch)));
 
 		/* FALL THROUGH */
@@ -160,7 +160,7 @@ chtype	ch = c;
 		win->_line[y].text[x++] = ch;
 		TR(TRACE_VIRTPUT, ("(%d, %d) = %s | %s", 
 				   y, x,
-				   _tracechar(ch & A_CHARTEXT),
+				   _tracechar((unsigned char)(ch & A_CHARTEXT)),
 				   _traceattr((ch & (chtype)A_ATTRIBUTES))));
 		if (x > win->_maxx) {
 		    	x = 0;
@@ -187,7 +187,7 @@ do_newline:
 int waddch(WINDOW *win, const chtype ch)
 {
 	TR(TRACE_VIRTPUT, ("waddch(%p, %s | %s) called", win,
-			  _tracechar(ch & A_CHARTEXT),
+			  _tracechar((unsigned char)(ch & A_CHARTEXT)),
 			  _traceattr((ch & (chtype)A_ATTRIBUTES))));
 	return wladdch(win, ch, FALSE);
 }
@@ -195,7 +195,7 @@ int waddch(WINDOW *win, const chtype ch)
 int wechochar(WINDOW *win, chtype ch)
 {
 	TR(TRACE_VIRTPUT, ("wechochar(%p,%s (%s)) called", win,
-			  _tracechar(ch & A_CHARTEXT),
+			  _tracechar((unsigned char)(ch & A_CHARTEXT)),
 			  _traceattr((ch & (chtype)A_ATTRIBUTES))));
 
 	return wladdch(win, ch, TRUE);

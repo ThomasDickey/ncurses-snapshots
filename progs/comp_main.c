@@ -25,7 +25,8 @@
  */
 
 #include <config.h>
-#include <curses.h>	/* solely for the ncurses version number define */
+#include "tic.h"
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -37,7 +38,6 @@
 # endif
 #endif
 
-#include "tic.h"
 #include "term.h"
 #include "dump_entry.h"
 #include "term_entry.h"
@@ -129,8 +129,8 @@ ENTRY	*qp;
 		exit (1);
 	}
 
-	_nc_make_hash_table(_nc_info_table, _nc_info_hash_table);
-	_nc_make_hash_table(_nc_cap_table, _nc_cap_hash_table);
+	_nc_make_hash_table(_nc_get_table(FALSE), _nc_info_hash_table);
+	_nc_make_hash_table(_nc_get_table(TRUE),  _nc_cap_hash_table);
 	if (infodump)
 		dump_init(smart_defaults ? F_TERMINFO : F_LITERAL,
 			  S_TERMINFO, width, debug_level);

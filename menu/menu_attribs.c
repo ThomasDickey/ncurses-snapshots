@@ -76,7 +76,7 @@ chtype menu_ ## name (\
 |                    E_BAD_ARGUMENT    - an invalid value has been passed   
 |
 +--------------------------------------------------------------------------*/
-GEN_MENU_ATTR_SET_FCT( fore );
+GEN_MENU_ATTR_SET_FCT( fore )
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -89,7 +89,7 @@ GEN_MENU_ATTR_SET_FCT( fore );
 |   Return Values :  Attribute value
 |
 +--------------------------------------------------------------------------*/
-GEN_MENU_ATTR_GET_FCT( fore );
+GEN_MENU_ATTR_GET_FCT( fore )
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  

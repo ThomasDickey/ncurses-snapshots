@@ -60,12 +60,12 @@
  *	is translated.
  */
 
+#include "curses.priv.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <stdio.h>
 #include <unctrl.h>
-#include <curses.h>
 #include "tic.h"
 
 #ifndef MAX_PUSHED
@@ -211,7 +211,7 @@ char *_nc_captoinfo(
 /* convert a termcap string to terminfo format */
 register char *cap,	/* relevant terminfo capability index */
 register char *s,	/* string value of the capability */
-int parametrized)	/* do % translations? */	
+bool parametrized)	/* do % translations? */	
 {
     static char line[MAX_ENTRY];
     char *capstart;
@@ -495,7 +495,7 @@ char *_nc_infotocap(
 /* convert a terminfo string to termcap format */
 register char *cap,	/* relevant termcap capability index */
 register char *str,	/* string value of the capability */
-int parametrized)	/* do % translations? */
+bool parametrized)	/* do % translations? */
 {
     int	seenone = 0, seentwo = 0, saw_m = 0, saw_n = 0;
     char *padding, ch1 = 0, ch2 = 0;
@@ -583,7 +583,7 @@ int parametrized)	/* do % translations? */
 
 	    if (ch1)
 		c1 = ch1;
-	    if (isascii(c1) && isprint(c1))
+	    if (is7bits(c1) && isprint(c1))
 		*bufptr++ = c1;
 	    else
 	    {
