@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.380 1998/10/11 00:19:35 tom Exp $
+-- $Id: NEWS,v 1.382 1998/10/18 00:16:13 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+981017
+	+ ensure ./man exists in configure script, needed when configuring
+	  with --srcdir option.
+	+ modify infocmp "-r" option to remove limit on formatted termcap
+	  output, which makes it more like Solaris' version.
+	+ modify captoinfo to treat no-argument case more like Solaris' version,
+	  which uses the contents of $TERMCAP as the entry to format.
+	+ modify mk-2nd.awk to handle subdirectories, e.g., ncurses/tty
+	  (patch by Alexander V Lukyanov).
 
 981010
 	+ modify --with-terminfo-dirs option so that the default value is the

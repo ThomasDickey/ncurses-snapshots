@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.147 1998/10/11 00:16:45 tom Exp $
+dnl $Id: aclocal.m4,v 1.148 1998/10/18 00:08:26 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1101,6 +1101,7 @@ if test "$cf_manpage_renames" != no ; then
 
   # Construct a sed-script to perform renaming within man-pages
   if test -n "$cf_manpage_renames" ; then
+    test ! -d man && mkdir man
     $srcdir/man/make_sed.sh $cf_manpage_renames >man/edit_man.sed
   fi
 fi
@@ -1134,6 +1135,7 @@ CF_MANPAGE_RENAMES
     ;;
   esac
 
+test ! -d man && mkdir man
 cat >man/edit_man.sh <<CF_EOF
 changequote({{,}})dnl
 #! /bin/sh
