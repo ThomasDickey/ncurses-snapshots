@@ -6,7 +6,7 @@
  * Eric S. Raymond <esr@snark.thyrsus.com> July 22 1995.  Mouse support
  * added September 20th 1995.
  *
- * $Id: knight.c,v 1.17 2000/09/02 18:48:19 tom Exp $
+ * $Id: knight.c,v 1.19 2000/10/15 20:13:10 tom Exp $
  */
 
 #include <test.priv.h>
@@ -48,8 +48,9 @@ typedef struct {
 static short board[BDEPTH][BWIDTH];	/* the squares */
 static int rw, col;		/* current row and column */
 static int lastrow, lastcol;	/* last location visited */
-static cell history[BDEPTH * BWIDTH];	/* choice history */
+static cell history[BDEPTH * BWIDTH + 1];	/* choice history */
 static int movecount;		/* count of moves so far */
+static int trialcount;		/* count of trials so far */
 static WINDOW *boardwin;	/* the board window */
 static WINDOW *helpwin;		/* the help window */
 static WINDOW *msgwin;		/* the message window */
@@ -58,28 +59,8 @@ static chtype plus = '+';	/* cursor hot-spot character */
 static chtype minus = '-';	/* possible-move character */
 static chtype oldch;
 
-static void init(void);
-static void play(void);
-static void dosquares(void);
-static void drawmove(char, int, int, int, int);
-static bool evalmove(int, int);
-static bool chkmoves(void);
-static bool chksqr(int, int);
-static int iabs(int);
-
-int
-main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
-{
-    init();
-
-    play();
-
-    endwin();
-    return EXIT_SUCCESS;
-}
-
 static void
-init(void)
+init_program(void)
 {
     srand((unsigned) getpid());
     initscr();
@@ -154,7 +135,7 @@ help2(void)
 
     (void) waddstr(helpwin, "x,q -- exit             y k u    7 8 9\n");
     (void) waddstr(helpwin, "r -- redraw screen       \\|/      \\|/ \n");
-    (void) waddstr(helpwin, "u -- undo move          h-+-l    4-+-6\n");
+    (void) waddstr(helpwin, "bksp -- undo move       h-+-l    4-+-6\n");
     (void) waddstr(helpwin, "                         /|\\      /|\\ \n");
     (void) waddstr(helpwin, "                        b j n    1 2 3\n");
 
@@ -164,6 +145,246 @@ help2(void)
 
     (void) mvwaddstr(helpwin, NOTIFYY - INSTRY, 0,
 		     "Press `?' to go to game explanation");
+}
+
+static void
+show_help(bool * keyhelp)
+{
+    werase(helpwin);
+    if (*keyhelp) {
+	help1();
+	*keyhelp = FALSE;
+    } else {
+	help2();
+	*keyhelp = TRUE;
+    }
+    wrefresh(helpwin);
+}
+
+static bool
+chksqr(int r1, int c1)
+{
+    if ((r1 < 0) || (r1 > BDEPTH - 1))
+	return (FALSE);
+    if ((c1 < 0) || (c1 > BWIDTH - 1))
+	return (FALSE);
+    return ((!board[r1][c1]) ? TRUE : FALSE);
+}
+
+static bool
+chkmoves(void)
+/* check to see if valid moves are available */
+{
+    if (chksqr(rw + 2, col + 1))
+	return (TRUE);
+    if (chksqr(rw + 2, col - 1))
+	return (TRUE);
+    if (chksqr(rw - 2, col + 1))
+	return (TRUE);
+    if (chksqr(rw - 2, col - 1))
+	return (TRUE);
+    if (chksqr(rw + 1, col + 2))
+	return (TRUE);
+    if (chksqr(rw + 1, col - 2))
+	return (TRUE);
+    if (chksqr(rw - 1, col + 2))
+	return (TRUE);
+    if (chksqr(rw - 1, col - 2))
+	return (TRUE);
+    return (FALSE);
+}
+
+static void
+dosquares(void)
+{
+    int i, j;
+
+    mvaddstr(0, 20, "KNIGHT'S MOVE -- a logical solitaire");
+
+    move(BOARDY, BOARDX);
+    waddch(boardwin, ACS_ULCORNER);
+    for (j = 0; j < 7; j++) {
+	waddch(boardwin, ACS_HLINE);
+	waddch(boardwin, ACS_HLINE);
+	waddch(boardwin, ACS_HLINE);
+	waddch(boardwin, ACS_TTEE);
+    }
+    waddch(boardwin, ACS_HLINE);
+    waddch(boardwin, ACS_HLINE);
+    waddch(boardwin, ACS_HLINE);
+    waddch(boardwin, ACS_URCORNER);
+
+    for (i = 1; i < BDEPTH; i++) {
+	move(BOARDY + i * 2 - 1, BOARDX);
+	waddch(boardwin, ACS_VLINE);
+	for (j = 0; j < BWIDTH; j++) {
+	    waddch(boardwin, ' ');
+	    waddch(boardwin, ' ');
+	    waddch(boardwin, ' ');
+	    waddch(boardwin, ACS_VLINE);
+	}
+	move(BOARDY + i * 2, BOARDX);
+	waddch(boardwin, ACS_LTEE);
+	for (j = 0; j < BWIDTH - 1; j++) {
+	    waddch(boardwin, ACS_HLINE);
+	    waddch(boardwin, ACS_HLINE);
+	    waddch(boardwin, ACS_HLINE);
+	    waddch(boardwin, ACS_PLUS);
+	}
+	waddch(boardwin, ACS_HLINE);
+	waddch(boardwin, ACS_HLINE);
+	waddch(boardwin, ACS_HLINE);
+	waddch(boardwin, ACS_RTEE);
+    }
+
+    move(BOARDY + i * 2 - 1, BOARDX);
+    waddch(boardwin, ACS_VLINE);
+    for (j = 0; j < BWIDTH; j++) {
+	waddch(boardwin, ' ');
+	waddch(boardwin, ' ');
+	waddch(boardwin, ' ');
+	waddch(boardwin, ACS_VLINE);
+    }
+
+    move(BOARDY + i * 2, BOARDX);
+    waddch(boardwin, ACS_LLCORNER);
+    for (j = 0; j < BWIDTH - 1; j++) {
+	waddch(boardwin, ACS_HLINE);
+	waddch(boardwin, ACS_HLINE);
+	waddch(boardwin, ACS_HLINE);
+	waddch(boardwin, ACS_BTEE);
+    }
+    waddch(boardwin, ACS_HLINE);
+    waddch(boardwin, ACS_HLINE);
+    waddch(boardwin, ACS_HLINE);
+    waddch(boardwin, ACS_LRCORNER);
+}
+
+static void
+mark_possibles(int prow, int pcol, chtype mark)
+{
+    if (chksqr(prow + 2, pcol + 1)) {
+	cellmove(prow + 2, pcol + 1);
+	waddch(boardwin, mark);
+    }
+    if (chksqr(prow + 2, pcol - 1)) {
+	cellmove(prow + 2, pcol - 1);
+	waddch(boardwin, mark);
+    }
+    if (chksqr(prow - 2, pcol + 1)) {
+	cellmove(prow - 2, pcol + 1);
+	waddch(boardwin, mark);
+    }
+    if (chksqr(prow - 2, pcol - 1)) {
+	cellmove(prow - 2, pcol - 1);
+	waddch(boardwin, mark);
+    }
+    if (chksqr(prow + 1, pcol + 2)) {
+	cellmove(prow + 1, pcol + 2);
+	waddch(boardwin, mark);
+    }
+    if (chksqr(prow + 1, pcol - 2)) {
+	cellmove(prow + 1, pcol - 2);
+	waddch(boardwin, mark);
+    }
+    if (chksqr(prow - 1, pcol + 2)) {
+	cellmove(prow - 1, pcol + 2);
+	waddch(boardwin, mark);
+    }
+    if (chksqr(prow - 1, pcol - 2)) {
+	cellmove(prow - 1, pcol - 2);
+	waddch(boardwin, mark);
+    }
+}
+
+static void
+unmarkcell(int row, int column)
+{
+    cellmove(row, column);
+    waddch(boardwin, '\b');
+    waddch(boardwin, ' ');
+    waddch(boardwin, minus);
+    waddch(boardwin, ' ');
+}
+
+static void
+markcell(chtype tchar, int row, int column)
+{
+    cellmove(row, column);
+    waddch(boardwin, '\b');
+    waddch(boardwin, tchar);
+    waddch(boardwin, tchar);
+    waddch(boardwin, tchar);
+}
+
+static void
+drawmove(chtype tchar, int oldy, int oldx, int row, int column)
+/* place the stars, update board & currents */
+{
+    if (movecount <= 1) {
+	int i, j;
+
+	for (i = 0; i < BDEPTH; i++) {
+	    for (j = 0; j < BWIDTH; j++) {
+		if (movecount == 0) {
+		    unmarkcell(i, j);
+		} else {
+		    cellmove(i, j);
+		    if (winch(boardwin) == minus)
+			waddch(boardwin, movecount ? ' ' : minus);
+		}
+	    }
+	}
+    } else {
+	markcell(tchar, oldy, oldx);
+	mark_possibles(oldy, oldx, ' ');
+    }
+
+    if (row != -1 && column != -1) {
+	markcell(trail, row, column);
+	mark_possibles(row, column, minus);
+	board[row][column] = TRUE;
+    }
+
+    wprintw(msgwin, "\nMove %d", movecount);
+    if (trialcount != movecount)
+	wprintw(msgwin, " (%d tries)", trialcount);
+}
+
+static int
+iabs(int num)
+{
+    if (num < 0)
+	return (-num);
+    else
+	return (num);
+}
+
+static bool
+evalmove(int row, int column)
+/* evaluate move */
+{
+    if (movecount == 1)
+	return (TRUE);
+    else if (board[row][column] == TRUE) {
+	waddstr(msgwin, "\nYou've already been there.");
+	return (FALSE);
+    } else {
+	int rdif = iabs(row - history[movecount - 1].y);
+	int cdif = iabs(column - history[movecount - 1].x);
+
+	if (!((rdif == 1) && (cdif == 2)) && !((rdif == 2) && (cdif == 1))) {
+	    waddstr(msgwin, "\nThat's not a legal knight's move.");
+	    return (FALSE);
+	}
+    }
+
+    return (TRUE);
+}
+
+static void
+review(void)
+{
 }
 
 static void
@@ -187,17 +408,21 @@ play(void)
 	wnoutrefresh(boardwin);
 	doupdate();
 
-	for (i = 0; i < BDEPTH; i++)
+	movecount = 0;
+	for (i = 0; i < BDEPTH; i++) {
 	    for (j = 0; j < BWIDTH; j++) {
 		board[i][j] = FALSE;
-		cellmove(i, j);
-		waddch(boardwin, minus);
+		unmarkcell(i, j);
 	    }
+	}
 	memset(history, '\0', sizeof(history));
 	history[0].y = history[0].x = -1;
+	history[1].y = history[1].x = -1;
 	lastrow = lastcol = -2;
 	movecount = 1;
+	trialcount = 1;
 	keyhelp = FALSE;
+	show_help(&keyhelp);
 
 	for (;;) {
 	    if (rw != lastrow || col != lastcol) {
@@ -299,12 +524,13 @@ play(void)
 	    case ' ':
 		if (evalmove(rw, col)) {
 		    drawmove(trail,
-			     history[movecount - 1].y, history[movecount -
-			     1].x,
+			     history[movecount - 1].y,
+			     history[movecount - 1].x,
 			     rw, col);
 		    history[movecount].y = rw;
 		    history[movecount].x = col;
 		    movecount++;
+		    trialcount++;
 
 		    if (!chkmoves())
 			goto dropout;
@@ -327,13 +553,26 @@ play(void)
 	    case KEY_BACKSPACE:
 	    case '\b':
 		if (movecount == 1) {
-		    ny = lastrow;
-		    nx = lastcol;
+		    ny = history[movecount].y;
+		    nx = history[movecount].x;
+		    if (nx < 0 || ny < 0) {
+			ny = lastrow;
+			nx = lastcol;
+		    }
+		    movecount = 0;
+		    drawmove(' ', ny, nx, -1, -1);
+		    movecount = 1;
+		    trialcount = 1;
 		    waddstr(msgwin, "\nNo previous move.");
 		    beep();
 		} else {
 		    int oldy = history[movecount - 1].y;
 		    int oldx = history[movecount - 1].x;
+
+		    if (!board[rw][col]) {
+			cellmove(rw, col);
+			waddch(boardwin, ' ');
+		    }
 
 		    board[oldy][oldx] = FALSE;
 		    --movecount;
@@ -352,15 +591,7 @@ play(void)
 		goto dropout;
 
 	    case '?':
-		werase(helpwin);
-		if (keyhelp) {
-		    help1();
-		    keyhelp = FALSE;
-		} else {
-		    help2();
-		    keyhelp = TRUE;
-		}
-		wrefresh(helpwin);
+		show_help(&keyhelp);
 		break;
 
 	    default:
@@ -386,206 +617,15 @@ play(void)
 	(tolower(wgetch(msgwin)) == 'y');
 }
 
-static void
-dosquares(void)
+int
+main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 {
-    int i, j;
+    init_program();
 
-    mvaddstr(0, 20, "KNIGHT'S MOVE -- a logical solitaire");
+    play();
 
-    move(BOARDY, BOARDX);
-    waddch(boardwin, ACS_ULCORNER);
-    for (j = 0; j < 7; j++) {
-	waddch(boardwin, ACS_HLINE);
-	waddch(boardwin, ACS_HLINE);
-	waddch(boardwin, ACS_HLINE);
-	waddch(boardwin, ACS_TTEE);
-    }
-    waddch(boardwin, ACS_HLINE);
-    waddch(boardwin, ACS_HLINE);
-    waddch(boardwin, ACS_HLINE);
-    waddch(boardwin, ACS_URCORNER);
-
-    for (i = 1; i < BDEPTH; i++) {
-	move(BOARDY + i * 2 - 1, BOARDX);
-	waddch(boardwin, ACS_VLINE);
-	for (j = 0; j < BWIDTH; j++) {
-	    waddch(boardwin, ' ');
-	    waddch(boardwin, ' ');
-	    waddch(boardwin, ' ');
-	    waddch(boardwin, ACS_VLINE);
-	}
-	move(BOARDY + i * 2, BOARDX);
-	waddch(boardwin, ACS_LTEE);
-	for (j = 0; j < BWIDTH - 1; j++) {
-	    waddch(boardwin, ACS_HLINE);
-	    waddch(boardwin, ACS_HLINE);
-	    waddch(boardwin, ACS_HLINE);
-	    waddch(boardwin, ACS_PLUS);
-	}
-	waddch(boardwin, ACS_HLINE);
-	waddch(boardwin, ACS_HLINE);
-	waddch(boardwin, ACS_HLINE);
-	waddch(boardwin, ACS_RTEE);
-    }
-
-    move(BOARDY + i * 2 - 1, BOARDX);
-    waddch(boardwin, ACS_VLINE);
-    for (j = 0; j < BWIDTH; j++) {
-	waddch(boardwin, ' ');
-	waddch(boardwin, ' ');
-	waddch(boardwin, ' ');
-	waddch(boardwin, ACS_VLINE);
-    }
-
-    move(BOARDY + i * 2, BOARDX);
-    waddch(boardwin, ACS_LLCORNER);
-    for (j = 0; j < BWIDTH - 1; j++) {
-	waddch(boardwin, ACS_HLINE);
-	waddch(boardwin, ACS_HLINE);
-	waddch(boardwin, ACS_HLINE);
-	waddch(boardwin, ACS_BTEE);
-    }
-    waddch(boardwin, ACS_HLINE);
-    waddch(boardwin, ACS_HLINE);
-    waddch(boardwin, ACS_HLINE);
-    waddch(boardwin, ACS_LRCORNER);
-}
-
-static void
-mark_possibles(int prow, int pcol, chtype mark)
-{
-    if (chksqr(prow + 2, pcol + 1)) {
-	cellmove(prow + 2, pcol + 1);
-	waddch(boardwin, mark);
-    };
-    if (chksqr(prow + 2, pcol - 1)) {
-	cellmove(prow + 2, pcol - 1);
-	waddch(boardwin, mark);
-    };
-    if (chksqr(prow - 2, pcol + 1)) {
-	cellmove(prow - 2, pcol + 1);
-	waddch(boardwin, mark);
-    };
-    if (chksqr(prow - 2, pcol - 1)) {
-	cellmove(prow - 2, pcol - 1);
-	waddch(boardwin, mark);
-    };
-    if (chksqr(prow + 1, pcol + 2)) {
-	cellmove(prow + 1, pcol + 2);
-	waddch(boardwin, mark);
-    };
-    if (chksqr(prow + 1, pcol - 2)) {
-	cellmove(prow + 1, pcol - 2);
-	waddch(boardwin, mark);
-    };
-    if (chksqr(prow - 1, pcol + 2)) {
-	cellmove(prow - 1, pcol + 2);
-	waddch(boardwin, mark);
-    };
-    if (chksqr(prow - 1, pcol - 2)) {
-	cellmove(prow - 1, pcol - 2);
-	waddch(boardwin, mark);
-    };
-}
-
-static void
-drawmove(char tchar, int oldy, int oldx, int row, int column)
-/* place the stars, update board & currents */
-{
-    if (movecount <= 1) {
-	int i, j;
-
-	for (i = 0; i < BDEPTH; i++)
-	    for (j = 0; j < BWIDTH; j++) {
-		cellmove(i, j);
-		if (winch(boardwin) == minus)
-		    waddch(boardwin, movecount ? ' ' : minus);
-	    }
-    } else {
-	cellmove(oldy, oldx);
-	waddch(boardwin, '\b');
-	waddch(boardwin, tchar);
-	waddch(boardwin, tchar);
-	waddch(boardwin, tchar);
-	mark_possibles(oldy, oldx, ' ');
-    }
-
-    if (row != -1 && column != -1) {
-	cellmove(row, column);
-	waddch(boardwin, '\b');
-	waddch(boardwin, trail);
-	waddch(boardwin, trail);
-	waddch(boardwin, trail);
-	mark_possibles(row, column, minus);
-	board[row][column] = TRUE;
-    }
-
-    wprintw(msgwin, "\nMove %d", movecount);
-}
-
-static bool
-evalmove(int row, int column)
-/* evaluate move */
-{
-    if (movecount == 1)
-	return (TRUE);
-    else if (board[row][column] == TRUE) {
-	waddstr(msgwin, "\nYou've already been there.");
-	return (FALSE);
-    } else {
-	int rdif = iabs(row - history[movecount - 1].y);
-	int cdif = iabs(column - history[movecount - 1].x);
-
-	if (!((rdif == 1) && (cdif == 2)) && !((rdif == 2) && (cdif == 1))) {
-	    waddstr(msgwin, "\nThat's not a legal knight's move.");
-	    return (FALSE);
-	}
-    }
-
-    return (TRUE);
-}
-
-static bool
-chkmoves(void)
-/* check to see if valid moves are available */
-{
-    if (chksqr(rw + 2, col + 1))
-	return (TRUE);
-    if (chksqr(rw + 2, col - 1))
-	return (TRUE);
-    if (chksqr(rw - 2, col + 1))
-	return (TRUE);
-    if (chksqr(rw - 2, col - 1))
-	return (TRUE);
-    if (chksqr(rw + 1, col + 2))
-	return (TRUE);
-    if (chksqr(rw + 1, col - 2))
-	return (TRUE);
-    if (chksqr(rw - 1, col + 2))
-	return (TRUE);
-    if (chksqr(rw - 1, col - 2))
-	return (TRUE);
-    return (FALSE);
-}
-
-static int
-iabs(int num)
-{
-    if (num < 0)
-	return (-num);
-    else
-	return (num);
-}
-
-static bool
-chksqr(int r1, int c1)
-{
-    if ((r1 < 0) || (r1 > BDEPTH - 1))
-	return (FALSE);
-    if ((c1 < 0) || (c1 > BWIDTH - 1))
-	return (FALSE);
-    return ((!board[r1][c1]) ? TRUE : FALSE);
+    endwin();
+    return EXIT_SUCCESS;
 }
 
 /* knight.c ends here */
