@@ -84,7 +84,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.37 1998/09/27 00:18:46 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.38 1998/10/03 19:08:33 tom Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -180,7 +180,13 @@ mouse_server(unsigned long ignored GCC_UNUSED)
 		if (MouReadEventQue(&mouev,&fWait,hmou))
 			break;
 
-		/* MouRemovePtr(&mourt,hmou); */
+		/*
+		 * OS/2 numbers a 3-button mouse inconsistently from other
+		 * platforms:
+		 *	1 = left
+		 *	2 = right
+		 *	3 = middle.
+		 */
 		if ((mouev.fs ^ oldstate) & MOUSE_BN1_DOWN)
 		    write_event(mouev.fs  & MOUSE_BN1_DOWN, 1, mouev.col, mouev.row);
 		if ((mouev.fs ^ oldstate) & MOUSE_BN2_DOWN)

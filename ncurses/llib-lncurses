@@ -35,11 +35,16 @@
 
 #include <curses.priv.h>
 
+#undef _nc_oldnums
+int	*_nc_oldnums;
+
 #undef _nc_scroll_optimize
 void	_nc_scroll_optimize(void)
 		{ /* void */ }
 
 /* ./hashmap.c */
+
+#include <term.h>
 
 typedef struct
 {
@@ -53,9 +58,19 @@ typedef struct
 void	_nc_hash_map(void)
 		{ /* void */ }
 
-/* ./lib_acs.c */
+#undef _nc_make_oldhash
+void	_nc_make_oldhash(
+		int	i)
+		{ /* void */ }
 
-#include <term.h>
+#undef _nc_scroll_oldhash
+void	_nc_scroll_oldhash(
+		int	n, 
+		int	top, 
+		int	bot)
+		{ /* void */ }
+
+/* ./lib_acs.c */
 
 #undef acs_map
 chtype	acs_map[128 ];
@@ -1867,23 +1882,14 @@ char	*_nc_printf_string(
 		va_list	ap)
 		{ return(*(char **)0); }
 
-/* ./write_entry.c */
+/* ./memmove.c */
 
-#include <term_entry.h>
-
-#undef _nc_set_writedir
-void	_nc_set_writedir(
-		char	*dir)
-		{ /* void */ }
-
-#undef _nc_write_entry
-void	_nc_write_entry(
-		TERMTYPE *const tp)
-		{ /* void */ }
-
-#undef _nc_tic_written
-int	_nc_tic_written(void)
-		{ return(*(int *)0); }
+#undef _nc_memmove
+void	*_nc_memmove(
+		void	*s1, 
+		const void *s2, 
+		size_t	n)
+		{ return(*(void **)0); }
 
 /* ./sigaction.c */
 
@@ -2049,16 +2055,6 @@ int	resizeterm(
 		int	ToCols)
 		{ return(*(int *)0); }
 
-/* ./softscroll.c */
-
-#undef _nc_setup_scroll
-void	_nc_setup_scroll(void)
-		{ /* void */ }
-
-#undef _nc_perform_scroll
-void	_nc_perform_scroll(void)
-		{ /* void */ }
-
 /* ./wresize.c */
 
 #undef wresize
@@ -2077,6 +2073,8 @@ int	_nc_access(
 		{ return(*(int *)0); }
 
 /* ./alloc_entry.c */
+
+#include <term_entry.h>
 
 #undef _nc_init_entry
 void	_nc_init_entry(
@@ -2189,7 +2187,8 @@ void	_nc_syserr_abort(
 #undef _nc_tic_expand
 char	*_nc_tic_expand(
 		const char *srcp, 
-		bool	tic_format)
+		bool	tic_format, 
+		bool	numbers)
 		{ return(*(char **)0); }
 
 /* ./comp_hash.c */
@@ -2293,6 +2292,19 @@ void	*_nc_doalloc(
 const TERMTYPE *_nc_fallback(
 		const char *name)
 		{ return(*(const TERMTYPE **)0); }
+
+/* ./getenv_num.c */
+
+#undef _nc_getenv_num
+int	_nc_getenv_num(
+		const char *name)
+		{ return(*(int *)0); }
+
+/* ./home_terminfo.c */
+
+#undef _nc_home_terminfo
+char	*_nc_home_terminfo(void)
+		{ return(*(char **)0); }
 
 /* ./lib_cur_term.c */
 
@@ -2793,3 +2805,19 @@ int	_nc_remove_key(
 char	*unctrl(
 		 chtype	ch)
 		{ return(*(char **)0); }
+
+/* ./write_entry.c */
+
+#undef _nc_set_writedir
+void	_nc_set_writedir(
+		char	*dir)
+		{ /* void */ }
+
+#undef _nc_write_entry
+void	_nc_write_entry(
+		TERMTYPE *const tp)
+		{ /* void */ }
+
+#undef _nc_tic_written
+int	_nc_tic_written(void)
+		{ return(*(int *)0); }

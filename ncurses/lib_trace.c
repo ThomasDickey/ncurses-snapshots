@@ -38,7 +38,7 @@
 #include <curses.priv.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.29 1998/07/25 20:11:02 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.30 1998/10/03 23:41:42 tom Exp $")
 
 #include <ctype.h>
 #if HAVE_FCNTL_H
@@ -50,7 +50,6 @@ unsigned _nc_tracing = 0;	/* always define this */
 #ifdef TRACE
 const char *_nc_tputs_trace = "";
 long _nc_outchars;
-int _nc_optimize_enable = OPTIMIZE_ALL;
 
 static FILE *	tracefp;	/* default to writing to stderr */
 #endif

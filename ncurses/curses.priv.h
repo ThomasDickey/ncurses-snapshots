@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.122 1998/09/27 00:18:05 tom Exp $
+ * $Id: curses.priv.h,v 1.123 1998/10/03 23:35:34 tom Exp $
  *
  *	curses.priv.h
  *
@@ -496,7 +496,6 @@ typedef	struct {
 #define returnPtr(code)  TRACE_RETURN(code,ptr)
 #define returnVoid       T((T_RETURN(""))); return
 #define returnWin(code)  TRACE_RETURN(code,win)
-extern unsigned _nc_tracing;
 extern WINDOW * _nc_retrace_win(WINDOW *);
 extern attr_t _nc_retrace_attr_t(attr_t);
 extern char *_nc_retrace_ptr(char *);
@@ -515,6 +514,7 @@ extern void _nc_fifo_dump(void);
 #define returnWin(code)  return code
 #endif
 
+extern unsigned _nc_tracing;
 extern const char *_nc_visbuf2(int, const char *);
 
 #define _trace_key(ch) ((ch > KEY_MIN) ? keyname(ch) : _tracechar((unsigned char)ch))

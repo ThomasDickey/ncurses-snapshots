@@ -153,7 +153,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.53 1998/09/19 18:07:21 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.54 1998/10/03 23:41:21 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -897,6 +897,10 @@ int mvcur(int yold, int xold, int ynew, int xnew)
     return(onscreen_mvcur(yold, xold, ynew, xnew, TRUE));
 }
 
+#if defined(TRACE) || defined(NCURSES_TEST)
+int _nc_optimize_enable = OPTIMIZE_ALL;
+#endif
+
 #if defined(MAIN) || defined(NCURSES_TEST)
 /****************************************************************************
  *
@@ -1055,7 +1059,7 @@ int main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 	else if (buf[0] == 'i')
 	{
 	     dump_init((char *)NULL, F_TERMINFO, S_TERMINFO, 70, 0, FALSE);
-	     dump_entry(&cur_term->type, 0, 0);
+	     dump_entry(&cur_term->type, FALSE, TRUE, 0);
 	     putchar('\n');
 	}
 	else if (buf[0] == 'o')
