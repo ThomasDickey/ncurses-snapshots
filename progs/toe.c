@@ -28,12 +28,12 @@
 
 #include <string.h>
 
-#include "tic.h"
-#include "term.h"
-#include "dump_entry.h"
-#include "term_entry.h"
+#include <tic.h>
+#include <term.h>
+#include <dump_entry.h>
+#include <term_entry.h>
 
-extern char	*getenv(const char *);
+MODULE_ID("$Id: toe.c,v 0.9 1996/08/20 22:38:27 tom Exp $")
 
 char	*_nc_progname;
 
@@ -132,7 +132,7 @@ int main (int argc, char *argv[])
 			if (matchcount++ == 0)
 			    (void) printf("%s:",
 					  _nc_first_name(qp->tterm.term_names));
-			(void) printf(" %s", 
+			(void) printf(" %s",
 				      _nc_first_name(rp->tterm.term_names));
 		    }
 	    }
@@ -267,9 +267,9 @@ static void typelist(int eargc, char *eargv[],
 		    (*hook)(cn, &lterm);
 		}
 		if (lterm.term_names)
-	    	    free(lterm.term_names);
+		    free(lterm.term_names);
 		if (lterm.str_table)
-	    	    free(lterm.str_table);
+		    free(lterm.str_table);
 	    }
 	    closedir(entrydir);
 	}

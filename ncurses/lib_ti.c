@@ -26,7 +26,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_ti.c,v 1.5 1996/08/17 22:51:09 tom Exp $")
+MODULE_ID("$Id: lib_ti.c,v 1.6 1996/08/20 22:31:19 tom Exp $")
 
 int tigetflag(const char *str)
 {
@@ -38,7 +38,7 @@ int i;
 		if (!strcmp(str, boolnames[i]))
 			return cur_term->type.Booleans[i];
 
-	return CANCELLED_BOOLEAN;
+	return ABSENT_BOOLEAN;
 }
 
 int tigetnum(const char *str)

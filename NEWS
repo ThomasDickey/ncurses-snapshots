@@ -3,6 +3,17 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+960824	- snapshot
+	+ correct speed variable-type in 'tgetent()' (reported by Peter Wemm)
+	+ make "--enable-getcap" configuration-option work (reported by
+	  Peter Wemm <peter@spinner.DIALix.COM>)
+
+960820
+	+ correct err in 960817 that changed return-value of tigetflag()
+	  (reported by Alexander V. Lukyanov).
+	+ modify infocmp to use library default search-path for terminfo
+	  directory (Alexander V. Lukyanov).
+
 960817	- snapshot
 	+ corrected an err in mvcur that broke resizing-behavior.
 	+ correct fall-thru behavior of _nc_read_entry(), which was not finding

@@ -58,11 +58,15 @@ int	wchgat(
 		const void *opts)
 		{ return(*(int *)0); }
 
+#undef _nc_background
+chtype	_nc_background(
+		WINDOW	*win)
+		{ return(*(chtype *)0); }
+
 #undef _nc_render
 chtype	_nc_render(
 		WINDOW	*win, 
-		chtype	oldch, 
-		chtype	newch)
+		chtype	ch)
 		{ return(*(chtype *)0); }
 
 #undef _nc_waddch_nosync
@@ -217,8 +221,8 @@ bool	can_change_color(void)
 		{ return(*(bool *)0); }
 
 #undef has_colors
-int	has_colors(void)
-		{ return(*(int *)0); }
+bool	has_colors(void)
+		{ return(*(bool *)0); }
 
 #undef color_content
 int	color_content(
@@ -250,6 +254,10 @@ WINDOW	*stdscr;
 WINDOW	*curscr;
 #undef newscr
 WINDOW	*newscr;
+#undef _nc_idcok
+bool	_nc_idcok;
+#undef _nc_idlok
+bool	_nc_idlok;
 #undef SP
 SCREEN	*SP;
 
@@ -993,6 +1001,10 @@ int	winchnstr(
 
 /* ./lib_initscr.c */
 
+#undef _nc_initscr
+int	_nc_initscr(void)
+		{ return(*(int *)0); }
+
 #undef initscr
 WINDOW	*initscr(void)
 		{ return(*(WINDOW **)0); }
@@ -1222,6 +1234,11 @@ SCREEN	*newterm(
 
 /* ./lib_newwin.c */
 
+#undef _nc_freewin
+void	_nc_freewin(
+		WINDOW	*win)
+		{ /* void */ }
+
 #undef newwin
 WINDOW	*newwin(
 		int	num_lines, 
@@ -1274,10 +1291,10 @@ int	idlok(
 		{ return(*(int *)0); }
 
 #undef idcok
-int	idcok(
+void	idcok(
 		WINDOW	*win, 
 		bool	flag)
-		{ return(*(int *)0); }
+		{ /* void */ }
 
 #undef clearok
 int	clearok(
@@ -1286,10 +1303,10 @@ int	clearok(
 		{ return(*(int *)0); }
 
 #undef immedok
-int	immedok(
+void	immedok(
 		WINDOW	*win, 
 		bool	flag)
-		{ return(*(int *)0); }
+		{ /* void */ }
 
 #undef leaveok
 int	leaveok(
@@ -1826,6 +1843,7 @@ attr_t	slk_attr(void)
 /* ./lib_termcap.c */
 
 #include <termcap.h>
+#include <tic.h>
 
 #undef PC
 char	PC;
@@ -2028,8 +2046,6 @@ int	_nc_timed_wait(
 
 /* ./lib_unctrl.c */
 
-#include <unctrl.h>
-
 #undef unctrl
 char	*unctrl(
 		 chtype	uch)
@@ -2117,9 +2133,6 @@ char	*const numcodes[] = {0};
 char	*const strcodes[] = {0};
 
 /* ./read_entry.c */
-
-#include <tic.h>
-
 #undef cur_term
 TERMINAL *cur_term;
 
@@ -2371,8 +2384,6 @@ void	_nc_reset_input(
 		{ /* void */ }
 
 /* ./parse_entry.c */
-
-#include <stdio.h>
 
 #undef _nc_curr_token
 struct token _nc_curr_token;

@@ -37,7 +37,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.16 1996/07/31 00:07:01 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.17 1996/08/24 22:43:21 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -609,7 +609,8 @@ void _nc_reset_input(FILE *fp, char *buf)
 	yyin = fp;
 	bufstart = bufptr = buf;
 	_nc_curr_file_pos = 0L;
-	_nc_curr_line = 0;
+	if (fp != 0)
+		_nc_curr_line = 0;
 	_nc_curr_col = 0;
 }
 
@@ -634,6 +635,10 @@ next_char(void)
     {
 	if (*bufptr == '\0')
 	    return(EOF);
+	if (*bufptr == '\n') {
+	    _nc_curr_line++;
+	    _nc_curr_col = 0;
+	}
     }
     else if (!bufptr || !*bufptr)
     {

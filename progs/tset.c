@@ -89,6 +89,8 @@ char *ttyname(int fd);
 #include <term.h>
 #include <dump_entry.h>
 
+MODULE_ID("$Id: tset.c,v 0.15 1996/08/20 22:40:10 tom Exp $")
+
 extern char **environ;
 
 #undef CTRL
@@ -103,8 +105,6 @@ static int	intrchar;		/* new interrupt character */
 static int	isreset;		/* invoked as reset */
 static int	tkillchar;		/* new kill character */
 static int	tlines, tcolumns;		/* window size */
-
-#include <stdarg.h>
 
 #define LOWERCASE(c) ((isalpha(c) && isupper(c)) ? tolower(c) : (c))
 
@@ -593,7 +593,7 @@ reset_mode(void)
 #ifdef TERMIOS
 	tcgetattr(STDERR_FILENO, &mode);
 #else
-        stty(STDERR_FILENO,&mode);
+	stty(STDERR_FILENO,&mode);
 #endif
 
 #ifdef TERMIOS
@@ -700,7 +700,7 @@ reset_mode(void)
 	tcsetattr(STDERR_FILENO, TCSADRAIN, &mode);
 #else
 	stty(STDERR_FILENO, &mode);
-#endif           
+#endif
 }
 
 /*
@@ -807,7 +807,7 @@ set_conversions(void)
 #ifdef OXTABS
 	mode.c_oflag |= OXTABS;
 #endif /* OXTABS */
-        
+
 	/* test used to be tgetflag("NL") */
 	if (newline != (char *)NULL && newline[0] == '\n' && !newline[1]) {
 		/* Newline, not linefeed. */
@@ -956,7 +956,7 @@ obsolete(char **argv)
 		char *parm = argv[0];
 
 		if (parm[0] == '-' && parm[1] == '\0')
-	        {
+		{
 		    argv[0] = "-q";
 		    continue;
 		}
@@ -1109,8 +1109,8 @@ main(int argc, char **argv)
 #ifdef TERMIOS
 			tcsetattr(STDERR_FILENO, TCSADRAIN, &mode);
 #else
-		        stty(STDERR_FILENO, &mode);
-#endif           
+			stty(STDERR_FILENO, &mode);
+#endif
 	}
 
 	/* Get the terminal name from the entry. */
