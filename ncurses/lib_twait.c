@@ -45,7 +45,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.25 1997/11/15 22:51:37 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.26 1997/11/30 01:09:23 tom Exp $")
 
 /*
  * We want to define GOOD_SELECT if the last argument of select(2) is
@@ -236,8 +236,9 @@ long delta;
 	if (timeleft)
 		*timeleft = (ntimeout.tv_sec * 1000) + (ntimeout.tv_usec / 1000);
 
-	T(("end twait: returned %d, remaining time %lu.%06lu secs (%d msec)",
-		result, (long) ntimeout.tv_sec, (long) ntimeout.tv_usec,
+	T(("end twait: returned %d (%d), remaining time %lu.%06lu secs (%d msec)",
+		result, errno,
+		(long) ntimeout.tv_sec, (long) ntimeout.tv_usec,
 		timeleft ? *timeleft : -1));
 
 	/*

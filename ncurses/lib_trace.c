@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.23 1997/05/02 00:13:07 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.24 1997/11/30 00:47:42 tom Exp $")
 
 #include <ctype.h>
 #if HAVE_FCNTL_H
@@ -121,6 +121,7 @@ va_list ap;
 bool	before = FALSE;
 bool	after = FALSE;
 int	doit = _nc_tracing;
+int	save_err = errno;
 
 	if (strlen(fmt) >= sizeof(Called) - 1) {
 		if (!strncmp(fmt, Called, sizeof(Called)-1)) {
@@ -155,6 +156,7 @@ int	doit = _nc_tracing;
 
 	if (after && level)
 		level--;
+	errno = save_err;
 }
 
 /* Trace 'int' return-values */

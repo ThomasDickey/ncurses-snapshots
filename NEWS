@@ -1,7 +1,34 @@
--- $Id: NEWS,v 1.280 1997/11/23 01:05:24 tom Exp $
+-- $Id: NEWS,v 1.283 1997/11/30 01:19:20 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+971129
+	+ save/restore errno in _tracef() function
+	+ change treatment of initialize_color to use a range of 0..1000
+	  (recommended by Daniel Weaver).
+	+ set umask in mkinstalldirs, fixing problems reported by users who
+	  have set root's umask to 077.
+	+ correct bug in tic that caused capabilities to be reprinted at the
+	  end of output when they had embedded comments.
+	+ rewrote wredrawln to correspond to XSI, and split-out since it is
+	  not often used (from report by Alexander V. Lukyanov, 970825)
+	+ rewrote Dan Nelson's change to make it portable, as well as to
+	  correct logic for handling backslashes.
+	+ add code to _nc_tgetent() to make it work more like a real tgetent(). 
+	  It removes all empty fields, and removes all but the first in a group
+	  of duplicate caps.  The code was pulled from the BSD libtermcap code
+	  in termcap.c (patch by Dan Nelson <dnelson@emsphone.com>
+	+ don't include --enable-widec in the --with-develop configure option,
+	  since it is not binary-compatible with 4.1 (noted by Alexander V. 
+	  Lukyanov)
+	> patch by Juergen Pfeifer:
+	+ further improvements of the usage of elaboration pragmas in the Ada95
+	  binding
+	+ enhanced Ada95 sample to use the user_data mechanism for panels.
+	+ a fix for the configuration script to make gnat-3.10 the required
+	  version.
+	+ resync of the html version of the manpages
 
 971122
 	> fixes/updates for terminfo.src:

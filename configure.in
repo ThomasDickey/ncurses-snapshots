@@ -17,10 +17,10 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.104 1997/11/15 22:50:07 tom Exp $
+dnl $Id: configure.in,v 1.105 1997/11/29 16:29:30 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12)
-AC_REVISION($Revision: 1.104 $)
+AC_REVISION($Revision: 1.105 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 CF_SUBST_NCURSES_VERSION
@@ -456,7 +456,7 @@ AC_MSG_CHECKING(if you want experimental wide-character code)
 AC_ARG_ENABLE(widec,
 	[  --enable-widec          compile with experimental wide-char code],
 	[with_widec=$enableval],
-	[with_widec=$with_develop])
+	[with_widec=no])
 AC_MSG_RESULT($with_widec)
 test "$with_widec" = yes && AC_DEFINE(USE_WIDEC_SUPPORT)
 

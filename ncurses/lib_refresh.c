@@ -24,23 +24,13 @@
 /*
  *	lib_refresh.c
  *
- *	The routines wredrawln(), wrefresh() and wnoutrefresh().
+ *	The routines wrefresh() and wnoutrefresh().
  *
  */
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.16 1997/09/20 15:02:34 juergen Exp $")
-
-int wredrawln(WINDOW *win, int beg, int num)
-{
-	T((T_CALLED("wredrawln(%p,%d,%d)"), win, beg, num));
-	if (win) {
-	  touchline(win, beg, num);
-	  wrefresh(win);
-	  returnCode(OK);
-	} else returnCode(ERR);
-}
+MODULE_ID("$Id: lib_refresh.c,v 1.17 1997/11/29 19:54:29 tom Exp $")
 
 int wrefresh(WINDOW *win)
 {

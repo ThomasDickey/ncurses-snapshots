@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.36 1997/10/19 02:31:20 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.37 1997/11/30 00:37:38 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -187,11 +187,11 @@ int	ch;
 
 		T(("timed delay in wgetch()"));
 		if (SP->_cbreak > 1)
-		    delay = (SP->_cbreak-1) * 100;
+		    delay = (SP->_cbreak - 1) * 100;
 		else
 		    delay = win->_delay;
 
-		T(("delay is %d microseconds", delay));
+		T(("delay is %d milliseconds", delay));
 
 		if (head == -1)	/* fifo is empty */
 			if (!_nc_timed_wait(3, delay, (int *)0))

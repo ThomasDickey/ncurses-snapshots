@@ -30,7 +30,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.24 1997/11/08 18:35:08 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.26 1997/11/30 01:40:54 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -508,9 +508,6 @@ bool	check_only = FALSE;
 	    }
 	    else
 	    {
-		bool	trailing_comment = FALSE;
-		int	c, oldc = '\0';
-
 		/* this is in case infotocap() generates warnings */
 		_nc_curr_col = _nc_curr_line = -1;
 
@@ -539,12 +536,23 @@ bool	check_only = FALSE;
 		    }
 		if (!namelst)
 		{
+		    int  c, oldc = '\0';
+		    bool in_comment = FALSE;
+		    bool trailing_comment = FALSE;
+
 		    (void) fseek(stdin, _nc_tail->cend, SEEK_SET);
 		    while ((c = getchar()) != EOF)
 		    {
-			if (oldc == '\n' && c == '#')
-			    trailing_comment = TRUE;
-			if (trailing_comment)
+			if (oldc == '\n') {
+			    if (c == '#') {
+				trailing_comment = TRUE;
+				in_comment = TRUE;
+			    } else {
+				in_comment = FALSE;
+			    }
+			}
+			if (trailing_comment
+			 && (in_comment || (oldc == '\n' && c == '\n')))
 			    putchar(c);
 			oldc = c;
 		    }

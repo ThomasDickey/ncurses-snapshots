@@ -22,12 +22,13 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.1 $
+--  $Revision: 1.2 $
 ------------------------------------------------------------------------------
 generic
    type T is (<>);
 
 package Terminal_Interface.Curses.Forms.Field_Types.Enumeration.Ada is
+   pragma Preelaborate (Enumeration.Ada);
 
    function Create (Set            : Type_Set := Mixed_Case;
                     Case_Sensitive : Boolean  := False;
