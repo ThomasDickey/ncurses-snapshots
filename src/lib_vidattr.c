@@ -41,6 +41,7 @@
  */
 
 #include <string.h>
+#include <termcap.h>
 #include "curses.priv.h"
 #include "terminfo.h"
 
@@ -69,12 +70,14 @@ int fg, bg;
 
 #define previous_attr SP->_current_attr
 
+#define SetAttr(flag, s) if ((flag) && (s != 0)) tputs(s, 1, outc)
+
 int vidputs(attr_t newmode, int  (*outc)(char))
 {
-chtype	turn_off = (~newmode & previous_attr) & ~A_COLOR;
-chtype	turn_on  = (newmode & ~previous_attr) & ~A_COLOR;
+chtype	turn_off = (~newmode & previous_attr) & (chtype)(~A_COLOR);
+chtype	turn_on  = (newmode & ~previous_attr) & (chtype)(~A_COLOR);
 
-	T(("vidputs(%x) called %s", newmode, _traceattr(newmode)));
+	T(("vidputs(%lx) called %s", newmode, _traceattr(newmode)));
 	T(("previous attribute was %s", _traceattr(previous_attr)));
 
 	if (newmode == previous_attr)
@@ -102,80 +105,44 @@ chtype	turn_on  = (newmode & ~previous_attr) & ~A_COLOR;
 		}
 	} else {
 
-		T(("turning %x off", _traceattr(turn_off)));
+		T(("turning %s off", _traceattr(turn_off)));
 			
-		if ((turn_off & A_ALTCHARSET) && exit_alt_charset_mode) 
-			tputs(exit_alt_charset_mode, 1, outc);
-
-		if ((turn_off & A_BOLD)  &&  exit_standout_mode)
-			tputs(exit_standout_mode, 1, outc);
-
-		if ((turn_off & A_DIM)  && exit_standout_mode)
-		    tputs(exit_standout_mode, 1, outc);
-
-		if ((turn_off & A_BLINK)  && exit_standout_mode)
-		    tputs(exit_standout_mode, 1, outc);
-
-		if ((turn_off & A_INVIS)  && exit_standout_mode)
-		    tputs(exit_standout_mode, 1, outc);
-
-		if ((turn_off & A_PROTECT)  && exit_standout_mode)
-		    tputs(exit_standout_mode, 1, outc);
-
-		if ((turn_off & A_UNDERLINE)  &&  exit_underline_mode)
-		    tputs(exit_underline_mode, 1, outc);
-
-   	 	if ((turn_off & A_REVERSE)  &&  exit_standout_mode)
-		    tputs(exit_standout_mode, 1, outc);
-
-		if ((turn_off & A_STANDOUT)  &&  exit_standout_mode)
-		    tputs(exit_standout_mode, 1, outc);
+		SetAttr(turn_off & A_ALTCHARSET, exit_alt_charset_mode);
+		SetAttr(turn_off & A_BOLD,       exit_standout_mode);
+		SetAttr(turn_off & A_DIM,        exit_standout_mode);
+		SetAttr(turn_off & A_BLINK,      exit_standout_mode);
+		SetAttr(turn_off & A_INVIS,      exit_standout_mode);
+		SetAttr(turn_off & A_PROTECT,    exit_standout_mode);
+		SetAttr(turn_off & A_UNDERLINE,  exit_underline_mode);
+   	 	SetAttr(turn_off & A_REVERSE,    exit_standout_mode);
+		SetAttr(turn_off & A_STANDOUT,   exit_standout_mode);
 
 #ifdef A_PCCHARSET
 		/*
 		 * exit_pc_charset_mode is a defined SVr4 terminfo
 		 * A_PCCHARSET is an ncurses invention to invoke it
 		 */
-		if ((turn_off & A_PCCHARSET)  &&  exit_pc_charset_mode)
-			tputs(exit_pc_charset_mode, 1, outc);
+		SetAttr(turn_off & A_PCCHARSET,  exit_pc_charset_mode);
 #endif /* A_PCCHARSET */
 
-		T(("turning %x on", _traceattr(turn_on)));
+		T(("turning %s on", _traceattr(turn_on)));
 
-		if ((turn_on & A_ALTCHARSET) && enter_alt_charset_mode) 
-			tputs(enter_alt_charset_mode, 1, outc);
-
-		if ((turn_on & A_BLINK)  &&  enter_blink_mode)
-			tputs(enter_blink_mode, 1, outc);
-
-		if ((turn_on & A_BOLD)  &&  enter_bold_mode)
-			tputs(enter_bold_mode, 1, outc);
-
-		if ((turn_on & A_DIM)  &&  enter_dim_mode)
-			tputs(enter_dim_mode, 1, outc);
-
-		if ((turn_on & A_REVERSE)  &&  enter_reverse_mode)
-			tputs(enter_reverse_mode, 1, outc);
-
-		if ((turn_on & A_STANDOUT)  &&  enter_standout_mode)
-			tputs(enter_standout_mode, 1, outc);
-
-		if ((turn_on & A_PROTECT)  &&  enter_protected_mode)
-			tputs(enter_protected_mode, 1, outc);
-
-		if ((turn_on & A_INVIS)  &&  enter_secure_mode)
-			tputs(enter_secure_mode, 1, outc);
-
-		if ((turn_on & A_UNDERLINE)  &&  enter_underline_mode)
-			tputs(enter_underline_mode, 1, outc);
+		SetAttr(turn_on & A_ALTCHARSET,  enter_alt_charset_mode); 
+		SetAttr(turn_on & A_BLINK,       enter_blink_mode);
+		SetAttr(turn_on & A_BOLD,        enter_bold_mode);
+		SetAttr(turn_on & A_DIM,         enter_dim_mode);
+		SetAttr(turn_on & A_REVERSE,     enter_reverse_mode);
+		SetAttr(turn_on & A_STANDOUT,    enter_standout_mode);
+		SetAttr(turn_on & A_PROTECT,     enter_protected_mode);
+		SetAttr(turn_on & A_INVIS,       enter_secure_mode);
+		SetAttr(turn_on & A_UNDERLINE,   enter_underline_mode);
 
 #ifdef A_PCCHARSET
 		/*
 		 * enter_pc_charset_mode is a defined SVr4 terminfo
 		 * A_PCCHARSET is an ncurses invention to invoke it
 		 */
-		if ((turn_on & A_PCCHARSET)  &&  enter_pc_charset_mode)
-			tputs(enter_pc_charset_mode, 1, outc);
+		SetAttr(turn_on & A_PCCHARSET,   enter_pc_charset_mode);
 #endif /* A_PCCHARSET */
 
 	}
@@ -199,7 +166,7 @@ chtype	turn_on  = (newmode & ~previous_attr) & ~A_COLOR;
 int vidattr(attr_t newmode)
 {
 
-	T(("vidattr(%x) called", newmode));
+	T(("vidattr(%lx) called", newmode));
 
 	return(vidputs(newmode, _outch));
 }

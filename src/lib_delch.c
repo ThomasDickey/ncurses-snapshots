@@ -33,7 +33,7 @@ int wdelch(WINDOW *win)
 chtype	*temp1, *temp2;
 chtype	*end;
 
-	T(("wdelch(%x) called", win));
+	T(("wdelch(%p) called", win));
 
 	end = &win->_line[win->_cury].text[win->_maxx];
 	temp2 = &win->_line[win->_cury].text[win->_curx + 1];

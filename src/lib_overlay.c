@@ -84,7 +84,7 @@ int copywin(WINDOW *src, WINDOW *dst,
 {
 int sx, sy, dx, dy;
 
-	T(("copywin(%x, %x, %d, %d, %d, %d, %d, %d, %d)",
+	T(("copywin(%p, %p, %d, %d, %d, %d, %d, %d, %d)",
 	    	src, dst, sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol, over));
 	
 	/* make sure rectangle exists in source */

@@ -32,7 +32,7 @@ int winnstr(WINDOW *win, char *str, int n)
 {
 	int	i;
 
-	T(("winnstr(%x,'%x',%d) called", win, str, n));
+	T(("winnstr(%p,'%p',%d) called", win, str, n));
 
 	for (i = 0; (n < 0 || (i < n)) && (win->_curx + i <= win->_maxx); i++)
 	    str[i] = win->_line[win->_cury].text[win->_curx + i] & A_CHARTEXT;

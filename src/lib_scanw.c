@@ -28,6 +28,7 @@
 
 #include <stdio.h>
 #include "curses.priv.h"
+#include <termcap.h>
 
 int vwscanw(WINDOW *win, char *fmt, va_list argp)
 {
@@ -53,7 +54,7 @@ int wscanw(WINDOW *win, char *fmt, ...)
 {
 va_list ap;
 
-	T(("wscanw(%x,\"%s\",...) called", win, fmt));
+	T(("wscanw(%p,\"%s\",...) called", win, fmt));
 
 	va_start(ap, fmt);
 	return(vwscanw(win, fmt, ap));

@@ -23,7 +23,7 @@ int wbkgd(WINDOW *win, const chtype ch)
 {
 int x, y;
 
-	T(("wbkgd(%x, %x) called", win, ch));
+	T(("wbkgd(%p, %lx) called", win, ch));
 	wbkgdset(win, ch);
 
 	for (y = 0; y <= win->_maxy; y++)

@@ -30,8 +30,12 @@
 
 WINDOW *initscr()
 {
-  	if (newterm(getenv("TERM"), stdout, stdin) == NULL) {
-  		fprintf(stderr, "Error opening terminal: %s.\n", getenv("TERM"));
+char	*name = getenv("TERM");
+
+	if (name == 0)
+		name = "unknown";
+  	if (newterm(name, stdout, stdin) == NULL) {
+  		fprintf(stderr, "Error opening terminal: %s.\n", name);
   		exit(1);
 	} else {
 		def_shell_mode();

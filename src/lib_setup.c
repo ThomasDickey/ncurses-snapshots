@@ -220,7 +220,7 @@ static void do_prototype(void);
 
 #ifdef TRACE
 	_init_trace();
-	T(("setupterm(%s,%d,%x) called", termname, Filedes, errret));
+	T(("setupterm(%s,%d,%p) called", termname, Filedes, errret));
 #endif
 
 	if (termname == NULL) {
@@ -234,14 +234,14 @@ static void do_prototype(void);
 	if (name_match(ttytype, termname) == FALSE || isendwin()) {
 	
 		if (isendwin()) {
-			extern int del_curterm();
+			extern int del_curterm(TERMINAL *term);
 
 			T(("deleting cur_term"));
 			T(("must be resizing"));
 			del_curterm(cur_term);
 		}
 
-       		term_ptr = (struct term *) malloc(sizeof(struct term));
+       	term_ptr = TypeAllocN(struct term, 1);
 
 		if (term_ptr == NULL)
 	    		ret_error0(-1, "Not enough memory to create terminal structure.\n") ;
@@ -333,7 +333,7 @@ int del_curterm(TERMINAL *term)
 */
 
 static void
-do_prototype()
+do_prototype(void)
 {
 int	i, j;
 char	CC;

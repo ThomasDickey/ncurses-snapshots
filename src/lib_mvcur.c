@@ -99,6 +99,7 @@
 
 #include "curses.h"
 
+#include <termcap.h>
 #include "terminfo.h"
 #include "curses.priv.h"
 #define NLMAPPING	SP->_nl			/* nl() on? */

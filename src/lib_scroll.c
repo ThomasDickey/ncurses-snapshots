@@ -36,7 +36,7 @@ void scroll_window(WINDOW *win, int n, int top, int bottom)
 {
 int	line;
 
-	TR(TRACE_MOVE, ("scroll_window(%x, %d, %d, %d)", win, n, top,bottom)); 
+	TR(TRACE_MOVE, ("scroll_window(%p, %d, %d, %d)", win, n, top,bottom)); 
 
 	/*
 	 * This used to do a line-text pointer-shuffle instead of text copies.
@@ -87,7 +87,7 @@ int	line;
 int
 wscrl(WINDOW *win, int n)
 {
-	T(("wscrl(%x,%d) called", win, n));
+	T(("wscrl(%p,%d) called", win, n));
 
 	if (! win->_scroll)
 		return ERR;

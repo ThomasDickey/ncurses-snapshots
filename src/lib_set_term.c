@@ -36,7 +36,7 @@ struct screen *screen;
 {
 struct screen	*oldSP;
 
-	T(("set_term(%o) called", screen));
+	T(("set_term(%p) called", screen));
 
 	oldSP = SP;
 	SP = screen;
@@ -69,7 +69,7 @@ int setupscreen(int slines, int scolumns)
 {
 int	stolen, topstolen;
 
-	if ((SP = (SCREEN *) malloc(sizeof *SP)) == NULL)
+	if ((SP = TypeAllocN(SCREEN, 1)) == NULL)
 	    	return ERR;
 
 	SP->_term      	= cur_term;

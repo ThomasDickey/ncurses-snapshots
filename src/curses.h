@@ -133,7 +133,7 @@ extern 	chtype acs_map[];
 typedef struct screen  SCREEN;
 typedef struct _win_st WINDOW;
 
-typedef	int	attr_t;
+typedef	chtype	attr_t;
 
 struct _win_st {
 	short   _cury, _curx;	/* current cursor position */
@@ -194,12 +194,21 @@ extern int tigetflag(char *);
 extern int tigetnum(char *);
 extern char *tigetstr(char *);
 
+/*
+ * GCC (and some other compilers) define '__attribute__'; we're using this
+ * macro to alert the compiler to flag inconsistencies in printf/scanf-like
+ * function calls.  Just in case '__attribute__' isn't defined, make a dummy.
+ */
+#if !defined(__GNUC__) && !defined(__attribute__)
+#define __attribute__(p) /* nothing */
+#endif
+
 /* Debugging : use with libdcurses.a */
 
 extern void _init_trace(void);
-extern void _tracef(char *, ...);
+extern void _tracef(char *, ...) __attribute__((format(printf,1,2)));
 extern void _tracedump(char *, WINDOW *);
-extern char *_traceattr(int mode);
+extern char *_traceattr(chtype mode);
 extern char *_tracechar(const unsigned char mode);
 extern void trace(const unsigned int tracelevel);
 
@@ -210,6 +219,7 @@ extern void trace(const unsigned int tracelevel);
 #define TRACE_CALLS	0x04	/* trace curses calls */
 #define TRACE_CHARPUT	0x08	/* trace all character outputs */
 #define TRACE_VIRTPUT	0x10	/* trace virtual character puts */
+#define TRACE_DETAILS	0x20	/* also internal details */
 #define TRACE_MAXIMUM	0x0f	/* maximum trace level */
 
 #ifdef TRACE
@@ -295,10 +305,8 @@ extern WINDOW *subwin(WINDOW *,int,int,int,int);
 extern int syncok(WINDOW *win, bool bf);
 extern attr_t termattrs(void);
 extern char *termname(void);
-extern char *tgoto(char *, int, int);
 extern int timeout(int);
 extern char *tparm(char *, ...);
-extern int tputs(char *,int,int (*)(char));
 extern int typeahead(int);
 extern int ungetch(int);
 extern void use_env(bool);

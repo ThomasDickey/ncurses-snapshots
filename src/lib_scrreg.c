@@ -30,7 +30,7 @@
 
 int wsetscrreg(WINDOW *win, int top, int bottom)
 {
-	T(("wsetscrreg(%x,%d,%d) called", win, top, bottom));
+	T(("wsetscrreg(%p,%d,%d) called", win, top, bottom));
 
     	if (top >= 0  && top <= win->_maxy &&
 		bottom >= 0  &&  bottom <= win->_maxy &&

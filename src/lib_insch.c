@@ -33,7 +33,7 @@ int  winsch(WINDOW *win, chtype c)
 chtype	*temp1, *temp2;
 chtype	*end;
 
-	T(("winsch(%x,'%x') called", win, c));
+	T(("winsch(%p,'%lx') called", win, c));
 
 	end = &win->_line[win->_cury].text[win->_curx];
 	temp1 = &win->_line[win->_cury].text[win->_maxx];

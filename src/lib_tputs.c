@@ -26,6 +26,7 @@
 
 #include <string.h>
 #include <ctype.h>
+#include <termcap.h>
 #include "curses.priv.h"
 #include "terminfo.h"	/* padding_baud_rate, xon_xoff */
 
@@ -34,11 +35,11 @@ int putp(char *string)
 	return tputs(string, 1, _outch);
 }
 
-int tputs(char *string, int affcnt, int (*outc)(char))
+int tputs(const char *string, int affcnt, int (*outc)(char))
 {
 float	number;
 
-	TR(TRACE_MAXIMUM, ("tputs(\"%s\", %d, %o) called", visbuf(string), affcnt, outc));
+	TR(TRACE_MAXIMUM, ("tputs(\"%s\", %d, %p) called", visbuf(string), affcnt, outc));
 
 	if (string == NULL)
 		return ERR;

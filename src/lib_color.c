@@ -58,7 +58,7 @@ int start_color()
 	if (max_pairs != -1)
 		COLOR_PAIRS = max_pairs;
 	else return ERR;
-	color_pairs = malloc(max_pairs);
+	color_pairs = TypeAllocN(unsigned char, max_pairs);
 	if (max_colors != -1)
 		COLORS = max_colors;
 	else
@@ -67,7 +67,7 @@ int start_color()
 
 	if (can_change)
 	{
-	    color_table = malloc(sizeof(color_t) * COLORS);
+	    color_table = TypeAllocN(color_t, COLORS);
 	    if (hue_lightness_saturation)
 		memcpy(color_table, hls_palette, sizeof(color_t) * COLORS);
 	    else

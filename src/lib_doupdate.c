@@ -32,6 +32,7 @@
 #include <sys/select.h>
 #endif
 #include <string.h>
+#include <termcap.h>
 #include "curses.priv.h"
 #include "terminfo.h"
 
@@ -193,7 +194,7 @@ int	i;
 	}
 
 	/* check for pending input */
-	{
+	if (SP->_checkfd >= 0) {
 	fd_set fdset;
 	struct timeval timeout = {0,0};
 
@@ -264,7 +265,7 @@ int	i = 0, j = 0;
 int	lastNonBlank;
 int	inspace;
 
-	T(("ClrUpdate(%x) called", scr));
+	T(("ClrUpdate(%p) called", scr));
 	if (back_color_erase) {
 		T(("back_color_erase, turning attributes off"));
 		vidattr(A_NORMAL);
@@ -366,7 +367,7 @@ int	attrchanged = 0;
 		firstChar++;
 	}
 
-	T(("first char at %d is %x", firstChar, newLine[firstChar]));
+	T(("first char at %d is %lx", firstChar, newLine[firstChar]));
 	if (firstChar > screen_columns)
 		return;
 
@@ -540,7 +541,7 @@ static void ClearScreen()
 
 static void InsStr(chtype *line, int count)
 {
-	T(("InsStr(%x,%d) called", line, count));
+	T(("InsStr(%p,%d) called", line, count));
 
 	if (enter_insert_mode  &&  exit_insert_mode) {
 		putp(enter_insert_mode);

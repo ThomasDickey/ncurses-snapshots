@@ -53,7 +53,7 @@ int wtouchln(WINDOW *win, int y, int n, int changed)
 {
 int i;
 
-	T(("wtouchln(%x,%d,%d,%d)", win, y, n, changed));
+	T(("wtouchln(%p,%d,%d,%d)", win, y, n, changed));
 
 	for (i = y; i < y+n; i++) {
 		win->_line[i].firstchar = changed ? 0 : _NOCHANGE;

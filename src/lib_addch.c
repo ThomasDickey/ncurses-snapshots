@@ -32,7 +32,7 @@
 
 int wattron(WINDOW *win, const attr_t at)
 {
-	T(("wattron(%x,%s) current = %s", win, _traceattr(at), _traceattr(win->_attrs)));
+	T(("wattron(%p,%s) current = %s", win, _traceattr(at), _traceattr(win->_attrs)));
 	if (PAIR_NUMBER(at) > 0x00) {
 		win->_attrs = (win->_attrs & ALL_BUT_COLOR) | at ;
 		T(("new attribute is %s", _traceattr(win->_attrs)));
@@ -47,7 +47,7 @@ int wattroff(WINDOW *win, const attr_t at)
 {
 #define IGNORE_COLOR_OFF FALSE
 
-	T(("wattroff(%x,%s) current = %s", win, _traceattr(at), _traceattr(win->_attrs)));
+	T(("wattroff(%p,%s) current = %s", win, _traceattr(at), _traceattr(win->_attrs)));
 	if (IGNORE_COLOR_OFF == TRUE) {
 		if (PAIR_NUMBER(at) == 0xff) /* turn off color */
 			win->_attrs &= ~at;
@@ -111,14 +111,14 @@ chtype	ch = c;
 
 		/* FALL THROUGH */
         noctrl:
-        	TR(TRACE_VIRTPUT, ("win attr = %x", win->_attrs));
+        	TR(TRACE_VIRTPUT, ("win attr = %lx", win->_attrs));
 		ch |= win->_attrs;
 
 		if (win->_line[y].text[x]&A_CHARTEXT == ' ')
 			ch |= win->_bkgd;
 		else
 			ch |= (win->_bkgd&A_ATTRIBUTES);
-		TR(TRACE_VIRTPUT, ("bkg = %x -> ch = %x", win->_bkgd, ch));
+		TR(TRACE_VIRTPUT, ("bkg = %lx -> ch = %lx", win->_bkgd, ch));
 
 		if (win->_line[y].text[x] != ch) {
 		    	if (win->_line[y].firstchar == _NOCHANGE)
@@ -131,7 +131,7 @@ chtype	ch = c;
 		}
 
 		win->_line[y].text[x++] = ch;
-		TR(TRACE_VIRTPUT, ("char %d of line %d is %x", x, y, ch));
+		TR(TRACE_VIRTPUT, ("char %d of line %d is %lx", x, y, ch));
 		if (x > win->_maxx) {
 		    	x = 0;
 do_newline:
@@ -156,13 +156,13 @@ do_newline:
 
 int waddch(WINDOW *win, const chtype ch)
 {
-	TR(TRACE_VIRTPUT, ("waddch(%x,%c (%x)) called", win, ch&A_CHARTEXT, ch));
+	TR(TRACE_VIRTPUT, ("waddch(%p,%c (%lx)) called", win, (int)(ch&A_CHARTEXT), ch));
 	return wladdch(win, ch, FALSE);
 }
 
 int wechochar(WINDOW *win, chtype ch)
 {
-	TR(TRACE_VIRTPUT, ("wechochar(%x,%c (%x)) called", win, ch&A_CHARTEXT, ch));
+	TR(TRACE_VIRTPUT, ("wechochar(%p,%c (%lx)) called", win, (int)(ch&A_CHARTEXT), ch));
 
 	return wladdch(win, ch, TRUE);
 }

@@ -24,6 +24,7 @@
  */
 
 #include <string.h>
+#include <termcap.h>
 #include "curses.priv.h"
 
 /*
@@ -417,3 +418,17 @@ int	i;
 	return(buffer);
 }
 
+
+/*
+ *	char *
+ *	tgoto(string, x, y)
+ *
+ *	Retained solely for upward compatibility.  Note the intentional
+ *	reversing of the last two arguments.
+ *
+ */
+
+char *tgoto(const char *string, int x, int y)
+{
+	return(tparm((char *)string, y, x));
+}

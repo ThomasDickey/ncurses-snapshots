@@ -31,7 +31,7 @@
 int
 wmove(WINDOW *win, int y, int x)
 {
-	T(("wmove(%x,%d,%d) called", win, y, x));
+	T(("wmove(%p,%d,%d) called", win, y, x));
 
 	if (x >= 0  &&  x <= win->_maxx  &&
 		y >= 0  &&  y <= win->_maxy)

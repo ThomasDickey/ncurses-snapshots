@@ -30,12 +30,15 @@
 
 int mvwin(WINDOW *win, int by, int bx)
 {
-	T(("mvwin(%x,%d,%d) called", win, by, bx));
+	T(("mvwin(%p,%d,%d) called", win, by, bx));
 
 	if (win->_flags & _SUBWIN)
 	    return(ERR);
 
-	if (by + win->_maxy > screen_lines - 1  ||  bx + win->_maxx > screen_columns - 1)
+	if (by + win->_maxy > screen_lines - 1
+	||  bx + win->_maxx > screen_columns - 1
+	||  by < 0
+	||  bx < 0)
 	    return(ERR);
 
 	win->_begy = by;

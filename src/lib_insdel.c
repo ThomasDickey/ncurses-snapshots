@@ -34,7 +34,7 @@
 int
 winsdelln(WINDOW *win, int n)
 {
-	T(("winsdel(%x,%d) called", win, n));
+	T(("winsdel(%p,%d) called", win, n));
 
 	if (n == 0)
 		return OK;

@@ -48,7 +48,7 @@ int wprintw(WINDOW *win, char *fmt, ...)
 va_list argp;
 char buf[BUFSIZ];
 
-	T(("wprintw(%x,\"%s\",...) called", win, fmt));
+	T(("wprintw(%p,\"%s\",...) called", win, fmt));
 
 	va_start(argp, fmt);
 	vsprintf(buf, fmt, argp);

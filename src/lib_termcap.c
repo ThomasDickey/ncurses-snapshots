@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "curses.priv.h"
+#include <termcap.h>
 #include "terminfo.h"
 
 /* 
@@ -47,11 +48,11 @@ speed_t ospeed;
  *
  ***************************************************************************/
 
-int tgetent(char *bp, char *name)
+int tgetent(char *bp, const char *name)
 {
 int errcode;
 
-	setupterm(name, 1, &errcode);
+	setupterm((char *)name, 1, &errcode);
 
 	if (errcode != 1)
 		return(errcode);
@@ -83,7 +84,7 @@ int errcode;
  *
  ***************************************************************************/
 
-int tgetflag(char *id)
+int tgetflag(const char *id)
 {
 int i;
 
@@ -102,7 +103,7 @@ int i;
  *
  ***************************************************************************/
 
-int tgetnum(char *id)
+int tgetnum(const char *id)
 {
 int i;
 
@@ -121,7 +122,7 @@ int i;
  *
  ***************************************************************************/
 
-char *tgetstr(char *id, char **area)
+char *tgetstr(const char *id, char **area)
 {
 int i;
 
@@ -129,18 +130,4 @@ int i;
 		if (!strcmp(id, strcodes[i])) 
 			return cur_term->type.Strings[i];
 	return NULL;
-}
-
-/*
- *	char *
- *	tgoto(string, x, y)
- *
- *	Retained solely for upward compatibility.  Note the intentional
- *	reversing of the last two arguments.
- *
- */
-
-char *tgoto(char *string, int x, int y)
-{
-	return(tparm(string, y, x));
 }

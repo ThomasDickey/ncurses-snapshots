@@ -35,7 +35,7 @@ int oy = win->_cury;
 int ox = win->_curx;
 char	*cp;
 
-	T(("winsstr(%x,'%x',%d) called", win, str, n));
+	T(("winsstr(%p,'%s',%d) called", win, str, n));
 
 	for (cp = str; *cp && (n > 0 || (cp - str) >= n); cp++)
 	{
