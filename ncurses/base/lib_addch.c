@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.88 2005/01/29 21:54:32 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.89 2005/02/26 18:17:01 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -164,6 +164,60 @@ fill_cells(WINDOW *win, int count)
 }
 #endif
 
+/*
+ * Build up the bytes for a multibyte character, returning the length when
+ * complete (a positive number), -1 for error and -2 for incomplete.
+ */
+#if USE_WIDEC_SUPPORT
+NCURSES_EXPORT(int)
+_nc_build_wch(WINDOW *win, ARG_CH_T ch)
+{
+    char *buffer = WINDOW_EXT(win, addch_work);
+    int len;
+    int x = win->_curx;
+    int y = win->_cury;
+    mbstate_t state;
+    wchar_t result;
+
+    if ((WINDOW_EXT(win, addch_used) != 0) &&
+	(WINDOW_EXT(win, addch_x) != x ||
+	 WINDOW_EXT(win, addch_y) != y)) {
+	/* discard the incomplete multibyte character */
+	WINDOW_EXT(win, addch_used) = 0;
+	TR(TRACE_VIRTPUT,
+	   ("Alert discarded multibyte on move (%d,%d) -> (%d,%d)",
+	    WINDOW_EXT(win, addch_y), WINDOW_EXT(win, addch_x),
+	    y, x));
+    }
+    WINDOW_EXT(win, addch_x) = x;
+    WINDOW_EXT(win, addch_y) = y;
+
+    init_mb(state);
+    buffer[WINDOW_EXT(win, addch_used)] = CharOf(CHDEREF(ch));
+    WINDOW_EXT(win, addch_used) += 1;
+    buffer[WINDOW_EXT(win, addch_used)] = '\0';
+    if ((len = mbrtowc(&result,
+		       buffer,
+		       WINDOW_EXT(win, addch_used), &state)) > 0) {
+	attr_t attrs = AttrOf(CHDEREF(ch));
+	SetChar(CHDEREF(ch), result, attrs);
+	WINDOW_EXT(win, addch_used) = 0;
+    } else {
+	if (len == -1) {
+	    /*
+	     * An error occurred.  We could either discard everything,
+	     * or assume that the error was in the previous input.
+	     * Try the latter.
+	     */
+	    TR(TRACE_VIRTPUT, ("Alert! mbrtowc returns error"));
+	    buffer[0] = CharOf(CHDEREF(ch));
+	    WINDOW_EXT(win, addch_used) = 1;
+	}
+    }
+    return len;
+}
+#endif /* USE_WIDEC_SUPPORT */
+
 static
 #if !USE_WIDEC_SUPPORT		/* cannot be inline if it is recursive */
 inline
@@ -191,34 +245,9 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
      */
     if_WIDEC({
 	if (WINDOW_EXT(win, addch_used) != 0 || !Charable(ch)) {
-	    char *buffer = WINDOW_EXT(win, addch_work);
-	    int len;
-	    mbstate_t state;
-	    wchar_t result;
+	    int len = _nc_build_wch(win, CHREF(ch));
 
-	    if ((WINDOW_EXT(win, addch_used) != 0) &&
-		(WINDOW_EXT(win, addch_x) != x ||
-		 WINDOW_EXT(win, addch_y) != y)) {
-		/* discard the incomplete multibyte character */
-		WINDOW_EXT(win, addch_used) = 0;
-		TR(TRACE_VIRTPUT,
-		   ("Alert discarded multibyte on move (%d,%d) -> (%d,%d)",
-		    WINDOW_EXT(win, addch_y), WINDOW_EXT(win, addch_x),
-		    y, x));
-	    }
-	    WINDOW_EXT(win, addch_x) = x;
-	    WINDOW_EXT(win, addch_y) = y;
-
-	    init_mb(state);
-	    buffer[WINDOW_EXT(win, addch_used)] = CharOf(ch);
-	    WINDOW_EXT(win, addch_used) += 1;
-	    buffer[WINDOW_EXT(win, addch_used)] = '\0';
-	    if ((len = mbrtowc(&result,
-			       buffer,
-			       WINDOW_EXT(win, addch_used), &state)) > 0) {
-		attr_t attrs = AttrOf(ch);
-		SetChar(ch, result, attrs);
-		WINDOW_EXT(win, addch_used) = 0;
+	    if (len > 0) {
 		if (is8bits(CharOf(ch))) {
 		    const char *s = unctrl(CharOf(ch));
 		    if (s[1] != 0) {
@@ -226,21 +255,17 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 		    }
 		}
 	    } else {
-		if (len == -1) {
-		    /*
-		     * An error occurred.  We could either discard everything,
-		     * or assume that the error was in the previous input.
-		     * Try the latter.
-		     */
-		    TR(TRACE_VIRTPUT, ("Alert! mbrtowc returns error"));
-		    buffer[0] = CharOf(ch);
-		    WINDOW_EXT(win, addch_used) = 1;
-		}
 		return OK;
 	    }
 	}
     });
 
+    /*
+     * Non-spacing characters are added to the current cell.
+     *
+     * Spacing characters that are wider than one column require some display
+     * adjustments.
+     */
     if_WIDEC({
 	int len = wcwidth(CharOf(ch));
 	int i;

@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.258 $
-#	$Date: 2005/01/29 22:38:14 $
+#	$Revision: 1.260 $
+#	$Date: 2005/02/26 23:46:26 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -3023,8 +3023,8 @@ xterm-basic|xterm terminal emulator - common (XFree86),
 	setaf=\E[3%p1%dm, 
 	setb=\E[4%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
 	setf=\E[3%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
-	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m%?%p9%t\E(0%e\E(B%;, 
-	sgr0=\E[m\E(B, smacs=\E(0, smam=\E[?7h, smcup=\E[?1049h, 
+	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m, 
+	sgr0=\E(B\E[m, smacs=\E(0, smam=\E[?7h, smcup=\E[?1049h, 
 	smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
 	tbc=\E[3g, u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
 	vpa=\E[%i%p1%dd, 
@@ -4011,7 +4011,7 @@ screen.xterm-xfree86|screen.xterm-new|screen customized for modern xterm,
 	bce@, bw, 
 	invis@, kIC@, kNXT@, kPRV@, kend=\E[4~, khome=\E[1~, meml@, 
 	memu@, 
-	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\E(0%e\E(B%;, 
+	sgr=%?%p9%t\E(0%e\E(B%;\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m, 
 	use=xterm-new, 
 # xterm-r6 does not really support khome/kend unless it is propped up by
 # the translations resource.
@@ -13446,6 +13446,10 @@ jaixterm|IBM Kanji Aixterm Terminal Eemulator,
 jaixterm-m|IBM Kanji AIXterm Monochrome Terminal Emulator, 
 	acsc@, use=aixterm-m, 
 
+# This flavor is adapted from xterm, in turn from aixterm documentation -TD
+aixterm-16color|IBM Aixterm Terminal Emulator with 16 colors, 
+	use=ibm+16color, use=aixterm, 
+
 #### Infoton/General Terminal Corp.
 #
 
@@ -20943,6 +20947,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2005-01-29
 #	* update pairs for xterm-88color and xterm-256color to reflect the
 #	  ncurses extended-color support -TD
+#
+# 2005-02-26
+#	* modify sgr/sgr0 in xterm-new to improve tgetent's derived "me" -TD
+#	* add aixterm-16color to demonstrate 16-color capability -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

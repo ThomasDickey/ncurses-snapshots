@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -43,23 +43,26 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insch.c,v 1.22 2004/11/20 22:35:02 tom Exp $")
+MODULE_ID("$Id: lib_insch.c,v 1.24 2005/02/26 19:27:28 tom Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
  * inserting a string.
  */
-void
+NCURSES_EXPORT(int)
 _nc_insert_ch(WINDOW *win, chtype ch)
 {
+    int code = OK;
     NCURSES_CH_T wch;
     int count;
     NCURSES_CONST char *s;
 
     switch (ch) {
     case '\t':
-	for (count = (TABSIZE - (win->_curx % TABSIZE)); count > 0; count--)
-	    _nc_insert_ch(win, ' ');
+	for (count = (TABSIZE - (win->_curx % TABSIZE)); count > 0; count--) {
+	    if ((code = _nc_insert_ch(win, ' ')) != OK)
+		break;
+	}
 	break;
     case '\n':
     case '\r':
@@ -87,13 +90,13 @@ _nc_insert_ch(WINDOW *win, chtype ch)
 		    *temp1-- = *temp2--;
 
 		*temp1 = _nc_render(win, wch);
-
 		win->_curx++;
 	    }
 	} else if (is8bits(ChCharOf(ch)) && iscntrl(ChCharOf(ch))) {
 	    s = unctrl(ChCharOf(ch));
 	    while (*s != '\0') {
-		_nc_insert_ch(win, ChAttrOf(ch) | UChar(*s));
+		if ((code = _nc_insert_ch(win, ChAttrOf(ch) | UChar(*s))) != OK)
+		    break;
 		++s;
 	    }
 	}
@@ -103,11 +106,14 @@ _nc_insert_ch(WINDOW *win, chtype ch)
 	     * Handle multibyte characters here
 	     */
 	    SetChar2(wch, ch);
-	    _nc_waddch_nosync(win, wch);
+	    wch = _nc_render(win, wch);
+	    if (_nc_build_wch(win, &wch) >= 0)
+		code = wins_wch(win, &wch);
 	}
 #endif
 	break;
     }
+    return code;
 }
 
 NCURSES_EXPORT(int)
@@ -123,12 +129,11 @@ winsch(WINDOW *win, chtype c)
 	oy = win->_cury;
 	ox = win->_curx;
 
-	_nc_insert_ch(win, c);
+	code = _nc_insert_ch(win, c);
 
 	win->_curx = ox;
 	win->_cury = oy;
 	_nc_synchook(win);
-	code = OK;
     }
     returnCode(code);
 }

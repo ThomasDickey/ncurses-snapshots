@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.278 2005/02/19 17:15:00 tom Exp $
+ * $Id: curses.priv.h,v 1.280 2005/02/26 19:26:49 tom Exp $
  *
  *	curses.priv.h
  *
@@ -285,7 +285,7 @@ color_t;
  */
 typedef unsigned colorpair_t;	/* type big enough to store PAIR_OF() */
 #define C_SHIFT 9		/* we need more bits than there are colors */
-#define C_MASK 			((1 << C_SHIFT) - 1)
+#define C_MASK			((1 << C_SHIFT) - 1)
 #define PAIR_OF(fg, bg)		((((fg) & C_MASK) << C_SHIFT) | ((bg) & C_MASK))
 #define isDefaultColor(c)	((c) >= COLOR_DEFAULT || (c) < 0)
 
@@ -390,7 +390,7 @@ struct screen {
 	bool            _keypad_on;     /* keypad mode is currently on      */
 
 	bool		_called_wgetch;	/* check for recursion in wgetch()  */
-	int    	        _fifo[FIFO_SIZE];       /* input push-back buffer   */
+	int		_fifo[FIFO_SIZE];	/* input push-back buffer   */
 	short           _fifohead,      /* head of fifo queue               */
 	                _fifotail,      /* tail of fifo queue               */
 	                _fifopeek,      /* where to peek for next char      */
@@ -534,7 +534,7 @@ struct screen {
 
 	/* hashes for old and new lines */
 	unsigned long	*oldhash, *newhash;
-	HASHMAP 	*hashtab;
+	HASHMAP		*hashtab;
 	int		hashtab_len;
 
 	bool            _cleanup;	/* cleanup after int/quit signal */
@@ -561,9 +561,9 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 	WINDOWLIST *next;
 #ifdef _XOPEN_SOURCE_EXTENDED
 	char addch_work[(MB_LEN_MAX * 9) + 1];
-	int addch_used;
-	int addch_x;
-	int addch_y;
+	int addch_used;		/* number of bytes in addch_work[] */
+	int addch_x;		/* x-position for addch_work[] */
+	int addch_y;		/* y-position for addch_work[] */
 #endif
 };
 
@@ -664,7 +664,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define NewChar(ch)	{ ChAttrOf(ch), { ChCharOf(ch), NulChar } NulColor }
 #define NewChar2(c,a)	{ a, { c, NulChar } NulColor }
 #define CharEq(a,b)	(!memcmp(&a, &b, sizeof(a)))
-#define SetChar(ch,c,a)	do { 							    \
+#define SetChar(ch,c,a) do {							    \
 			    NCURSES_CH_T *_cp = &ch;				    \
 			    memset(_cp, 0, sizeof(ch));				    \
 			    _cp->chars[0] = c;					    \
@@ -715,7 +715,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define isWidecBase(ch)	(WidecExt(ch) == 1)
 #define isWidecExt(ch)	(WidecExt(ch) > 1 && WidecExt(ch) < 32)
 #define SetWidecExt(dst, ext)	AttrOf(dst) &= ~A_CHARTEXT,		\
-	 			AttrOf(dst) |= (ext + 1)
+				AttrOf(dst) |= (ext + 1)
 
 #define if_WIDEC(code)  code
 #define Charable(ch)	((SP != 0 && SP->_legacy_coding)		\
@@ -822,18 +822,18 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define TPUTS_TRACE(s)	_nc_tputs_trace = s;
 #define TRACE_RETURN(value,type) return _nc_retrace_##type(value)
 
-#define returnAttr(code) 	TRACE_RETURN(code,attr_t)
-#define returnBits(code) 	TRACE_RETURN(code,unsigned)
-#define returnBool(code) 	TRACE_RETURN(code,bool)
-#define returnCPtr(code) 	TRACE_RETURN(code,cptr)
+#define returnAttr(code)	TRACE_RETURN(code,attr_t)
+#define returnBits(code)	TRACE_RETURN(code,unsigned)
+#define returnBool(code)	TRACE_RETURN(code,bool)
+#define returnCPtr(code)	TRACE_RETURN(code,cptr)
 #define returnCVoidPtr(code)	TRACE_RETURN(code,cvoid_ptr)
-#define returnChar(code) 	TRACE_RETURN(code,chtype)
-#define returnCode(code) 	TRACE_RETURN(code,int)
-#define returnPtr(code)  	TRACE_RETURN(code,ptr)
-#define returnSP(code)   	TRACE_RETURN(code,sp)
-#define returnVoid       	T((T_RETURN(""))); return
+#define returnChar(code)	TRACE_RETURN(code,chtype)
+#define returnCode(code)	TRACE_RETURN(code,int)
+#define returnPtr(code)		TRACE_RETURN(code,ptr)
+#define returnSP(code)		TRACE_RETURN(code,sp)
+#define returnVoid		T((T_RETURN(""))); return
 #define returnVoidPtr(code)	TRACE_RETURN(code,void_ptr)
-#define returnWin(code)  	TRACE_RETURN(code,win)
+#define returnWin(code)		TRACE_RETURN(code,win)
 
 extern NCURSES_EXPORT(NCURSES_BOOL)     _nc_retrace_bool (NCURSES_BOOL);
 extern NCURSES_EXPORT(NCURSES_CONST void *) _nc_retrace_cvoid_ptr (NCURSES_CONST void *);
@@ -1012,6 +1012,11 @@ extern NCURSES_EXPORT(void) _nc_linedump (void);
 extern NCURSES_EXPORT(void) _nc_init_acs (void);	/* corresponds to traditional 'init_acs()' */
 extern NCURSES_EXPORT(int) _nc_msec_cost (const char *const, int);  /* used by 'tack' program */
 
+/* lib_addch.c */
+#if USE_WIDEC_SUPPORT
+NCURSES_EXPORT(int) _nc_build_wch(WINDOW *win, ARG_CH_T ch);
+#endif
+
 /* lib_addstr.c */
 #if USE_WIDEC_SUPPORT
 extern NCURSES_EXPORT(int) _nc_wchstrlen(const cchar_t *);
@@ -1024,7 +1029,7 @@ extern NCURSES_EXPORT(bool) _nc_reset_colors(void);
 extern NCURSES_EXPORT(int) _nc_wgetch(WINDOW *, unsigned long *, int EVENTLIST_2nd(_nc_eventlist *));
 
 /* lib_insch.c */
-extern NCURSES_EXPORT(void) _nc_insert_ch(WINDOW *, chtype);
+extern NCURSES_EXPORT(int) _nc_insert_ch(WINDOW *, chtype);
 
 /* lib_mvcur.c */
 #define INFINITY	1000000	/* cost: too high to use */

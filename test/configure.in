@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996, etc.
 dnl
-dnl $Id: configure.in,v 1.50 2005/01/22 20:54:15 tom Exp $
+dnl $Id: configure.in,v 1.51 2005/02/26 23:58:27 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -84,7 +84,10 @@ cf_cv_libtype=
 
 AC_EXEEXT
 AC_OBJEXT
-CF_GNU_SOURCE
+
+CF_ANSI_CC_REQD
+CF_XOPEN_SOURCE
+
 CF_WITH_CURSES_DIR
 
 dnl SunOS 4.x
@@ -118,8 +121,6 @@ ncurses)
 ncursesw)
 	cf_cv_libtype=w
 	CF_UTF8_LIB
-	CF_PREDEFINE(_XOPEN_SOURCE,500)
-	CF_PREDEFINE(_XOPEN_SOURCE_EXTENDED)
 	CF_NCURSES_CPPFLAGS(ncursesw)
 	CF_NCURSES_LIBS(ncursesw)
 	LIB_NAME=ncursesw

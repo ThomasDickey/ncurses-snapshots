@@ -1,10 +1,27 @@
--- $Id: NEWS,v 1.871 2005/02/19 21:58:16 tom Exp $
+-- $Id: NEWS,v 1.873 2005/02/27 00:01:07 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050226
+	+ improve test/configure script, adding tests for _XOPEN_SOURCE, etc.,
+	  from lynx.
+	+ add aixterm-16color terminfo entry -TD
+	+ modified xterm-new terminfo entry to work with tgetent() changes -TD
+	+ extended changes in tgetent() from 20040710 to allow the substring of
+	  sgr0 which matches rmacs to be at the beginning of the sgr0 string
+	  (request by Thomas Wolff, who says the visual effect in combination
+	  with pre-20040710 ncurses is improved).
+	+ fix off-by-one in winnstr() call which caused form field validation
+	  of multibyte characters to ignore the last character in a field.
+	+ correct logic in winsch() for inserting multibyte strings; the code
+	  would clear cells after the insertion rather than push them to the
+	  right (cf: 20040228).
+	+ fix an inconsistency in Check_Alpha_Field() between normal and wide
+	  character logic (report by Wolfgang Gutjahr).
 
 20050219
 	+ fix a bug in editing wide-characters in form library: deleting a
