@@ -35,8 +35,8 @@
    
                            Objective of the Package
                                        
-   The objective of the ncurses package is to provide a freeware API for
-   character-cell terminals and terminal emulators with the following
+   The objective of the ncurses package is to provide a free software API
+   for character-cell terminals and terminal emulators with the following
    characteristics:
    
      * Source-compatible with historical curses implementations

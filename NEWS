@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.407 1999/01/11 02:16:36 tom Exp $
+-- $Id: NEWS,v 1.409 1999/01/17 01:01:24 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990116
+	+ change default for configure --enable-big-core to assume machines do
+	  have enough memory to resolve terminfo.src in-memory.
+	+ correct name of ncurses library in TEST_ARGS when configuring with
+	  debug library.
+	+ minor fixes to compile ncurses library with broken-linker with g++.
+	+ add --enable-broken-linker configure option, default to environment
+	  variable $BROKEN_LINKER (request by Jeffrey C Honig).
+	+ change key_names[] array to static since it is not part of the curses
+	  interface (reported by Jeffrey C Honig <jch@bsdi.com>).
 
 990110
 	+ add Tera Term terminfo entry - TD

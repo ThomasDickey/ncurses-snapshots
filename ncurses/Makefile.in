@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.60 1999/01/03 19:29:54 tom Exp $
+# $Id: Makefile.in,v 1.61 1999/01/17 00:38:50 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -130,7 +130,7 @@ AUTO_SRC = \
 	./unctrl.c
 
 TEST_DEPS	= @LIB_PREFIX@ncurses@DFT_DEP_SUFFIX@
-TEST_ARGS	= -L../lib -lncurses
+TEST_ARGS	= -L../lib -lncurses@DFT_ARG_SUFFIX@
 TEST_LDFLAGS	= @LD_MODEL@ $(TEST_ARGS) @LIBS@ @EXTRA_LIBS@ @LOCAL_LDFLAGS@ @LDFLAGS@
 
 TEST_PROGS = \
