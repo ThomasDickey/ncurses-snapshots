@@ -1,4 +1,4 @@
-# $Id: mk-0th.awk,v 1.10 2001/05/19 23:12:28 tom Exp $
+# $Id: mk-0th.awk,v 1.11 2001/08/11 20:18:43 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2001 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -32,7 +32,7 @@
 # Generate list of sources for a library, together with lint/lintlib rules
 #
 # Variables:
-#	name (library name, e.g., "ncurses", "panel", "forms", "menus")
+#	libname (library name, e.g., "ncurses", "panel", "forms", "menus")
 #
 BEGIN	{
 		print  ""
@@ -59,7 +59,7 @@ BEGIN	{
 				else
 					found = 2
 			}
-			if ( name == "c++" ) {
+			if ( libname == "c++" || libname == "c++w" ) {
 				printf " \\\n\t%s/%s.cc", $3, $1
 			} else {
 				printf " \\\n\t%s/%s.c", $3, $1
@@ -71,19 +71,19 @@ END	{
 		if ( found == 1 )
 		{
 			print  ""
-			printf "# Producing llib-l%s is time-consuming, so there's no direct-dependency for\n", name
+			printf "# Producing llib-l%s is time-consuming, so there's no direct-dependency for\n", libname
 			print  "# it in the lintlib rule.  We'll only remove in the cleanest setup."
 			print  "clean ::"
-			printf "\trm -f llib-l%s.*\n", name
+			printf "\trm -f llib-l%s.*\n", libname
 			print  ""
 			print  "realclean ::"
-			printf "\trm -f llib-l%s\n", name
+			printf "\trm -f llib-l%s\n", libname
 			print  ""
-			printf "llib-l%s : $(C_SRC)\n", name
+			printf "llib-l%s : $(C_SRC)\n", libname
 			printf "\tcproto -a -l -DLINT $(CPPFLAGS) $(C_SRC) >$@\n"
 			print  ""
 			print  "lintlib :"
-			printf "\t$(srcdir)/../misc/makellib %s $(CPPFLAGS)", name
+			printf "\t$(srcdir)/../misc/makellib %s $(CPPFLAGS)", libname
 			print ""
 			print "lint :"
 			print "\t$(LINT) $(LINT_OPTS) $(CPPFLAGS) $(C_SRC) $(LINT_LIBS)"

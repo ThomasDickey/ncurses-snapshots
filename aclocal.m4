@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.255 2001/08/04 23:31:23 tom Exp $
+dnl $Id: aclocal.m4,v 1.256 2001/08/11 19:55:21 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -970,7 +970,7 @@ do
 		mv $cf_dir/Makefile.out $cf_dir/Makefile
 
 		$AWK -f $srcdir/mk-0th.awk \
-			name=$cf_dir \
+			libname="${cf_dir}${LIB_SUFFIX}" \
 			$srcdir/$cf_dir/modules >>$cf_dir/Makefile
 
 		for cf_item in $CF_LIST_MODELS

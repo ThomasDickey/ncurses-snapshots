@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 2001 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey 1996-2001                                      *
+ *  Author: Thomas E. Dickey 2001                                           *
  ****************************************************************************/
 /* LINTLIBRARY */
 
@@ -77,20 +77,26 @@ void	_nc_scroll_oldhash(
 #include <ctype.h>
 
 #undef _nc_background
-chtype	_nc_background(
+cchar_t	_nc_background(
 		WINDOW	*win)
-		{ return(*(chtype *)0); }
+		{ return(*(cchar_t *)0); }
 
 #undef _nc_render
-chtype	_nc_render(
+cchar_t	_nc_render(
 		WINDOW	*win, 
-		chtype	ch)
-		{ return(*(chtype *)0); }
+		cchar_t	ch)
+		{ return(*(cchar_t *)0); }
 
 #undef _nc_waddch_nosync
 int	_nc_waddch_nosync(
 		WINDOW	*win, 
-		const chtype c)
+		const cchar_t c)
+		{ return(*(int *)0); }
+
+#undef wadd_wch
+int	wadd_wch(
+		WINDOW	*win, 
+		const cchar_t *wch)
 		{ return(*(int *)0); }
 
 #undef waddch
@@ -121,6 +127,20 @@ int	waddchnstr(
 		int	n)
 		{ return(*(int *)0); }
 
+#undef wadd_wchnstr
+int	wadd_wchnstr(
+		WINDOW	*win, 
+		const cchar_t *const astr, 
+		int	n)
+		{ return(*(int *)0); }
+
+#undef waddnwstr
+int	waddnwstr(
+		WINDOW	*win, 
+		const utf8_wchar_t *str, 
+		int	n)
+		{ return(*(int *)0); }
+
 /* ./base/lib_beep.c */
 
 #undef beep
@@ -129,11 +149,23 @@ int	beep(void)
 
 /* ./base/lib_bkgd.c */
 
+#undef wbkgrndset
+void	wbkgrndset(
+		WINDOW	*win, 
+		const cchar_t *ch)
+		{ /* void */ }
+
 #undef wbkgdset
 void	wbkgdset(
 		WINDOW	*win, 
 		chtype	ch)
 		{ /* void */ }
+
+#undef wbkgrnd
+int	wbkgrnd(
+		WINDOW	*win, 
+		const cchar_t *ch)
+		{ return(*(int *)0); }
 
 #undef wbkgd
 int	wbkgd(
@@ -141,7 +173,25 @@ int	wbkgd(
 		const chtype ch)
 		{ return(*(int *)0); }
 
+#undef getbkgd
+chtype	getbkgd(
+		WINDOW	*win)
+		{ return(*(chtype *)0); }
+
 /* ./base/lib_box.c */
+
+#undef wborder_set
+int	wborder_set(
+		WINDOW	*win, 
+		const cchar_t *ls, 
+		const cchar_t *rs, 
+		const cchar_t *ts, 
+		const cchar_t *bs, 
+		const cchar_t *tl, 
+		const cchar_t *tr, 
+		const cchar_t *bl, 
+		const cchar_t *br)
+		{ return(*(int *)0); }
 
 #undef wborder
 int	wborder(
@@ -154,6 +204,26 @@ int	wborder(
 		chtype	tr, 
 		chtype	bl, 
 		chtype	br)
+		{ return(*(int *)0); }
+
+/* ./base/lib_cchar.c */
+
+#undef setcchar
+int	setcchar(
+		cchar_t	*wcval, 
+		const utf8_wchar_t *wch, 
+		const attr_t attrs, 
+		short	color_pair, 
+		const void *opts)
+		{ return(*(int *)0); }
+
+#undef getcchar
+int	getcchar(
+		const cchar_t *wcval, 
+		utf8_wchar_t *wch, 
+		attr_t	*attrs, 
+		short	*color_pair, 
+		void	*opts)
 		{ return(*(int *)0); }
 
 /* ./base/lib_chgat.c */
@@ -454,11 +524,6 @@ int	echochar(
 #undef erase
 int	erase(void)
 		{ return(*(int *)0); }
-
-#undef getbkgd
-chtype	getbkgd(
-		WINDOW	*z)
-		{ return(*(chtype *)0); }
 
 #undef getch
 int	getch(void)
@@ -884,6 +949,18 @@ int	setscrreg(
 		int	z)
 		{ return(*(int *)0); }
 
+#undef slk_attr_off
+int	slk_attr_off(
+		const attr_t a1, 
+		void	*z)
+		{ return(*(int *)0); }
+
+#undef slk_attr_on
+int	slk_attr_on(
+		attr_t	a1, 
+		void	*z)
+		{ return(*(int *)0); }
+
 #undef standout
 int	standout(void)
 		{ return(*(int *)0); }
@@ -912,6 +989,13 @@ int	touchwin(
 #undef untouchwin
 int	untouchwin(
 		WINDOW	*z)
+		{ return(*(int *)0); }
+
+#undef vid_attr
+int	vid_attr(
+		attr_t	a1, 
+		short	a2, 
+		void	*z)
 		{ return(*(int *)0); }
 
 #undef vline
@@ -1030,6 +1114,112 @@ bool	mouse_trafo(
 		int	*a2, 
 		bool	z)
 		{ return(*(bool *)0); }
+
+#undef addnwstr
+int	addnwstr(
+		const utf8_wchar_t *a1, 
+		int	z)
+		{ return(*(int *)0); }
+
+#undef addwstr
+int	addwstr(
+		const utf8_wchar_t *z)
+		{ return(*(int *)0); }
+
+#undef add_wch
+int	add_wch(
+		const cchar_t *z)
+		{ return(*(int *)0); }
+
+#undef add_wchstr
+int	add_wchstr(
+		const cchar_t *z)
+		{ return(*(int *)0); }
+
+#undef getbkgrnd
+int	getbkgrnd(
+		cchar_t	*z)
+		{ return(*(int *)0); }
+
+#undef mvaddnwstr
+int	mvaddnwstr(
+		int	a1, 
+		int	a2, 
+		const utf8_wchar_t *a3, 
+		int	z)
+		{ return(*(int *)0); }
+
+#undef mvaddwstr
+int	mvaddwstr(
+		int	a1, 
+		int	a2, 
+		const utf8_wchar_t *z)
+		{ return(*(int *)0); }
+
+#undef mvadd_wch
+int	mvadd_wch(
+		int	a1, 
+		int	a2, 
+		const cchar_t *z)
+		{ return(*(int *)0); }
+
+#undef mvadd_wchstr
+int	mvadd_wchstr(
+		int	a1, 
+		int	a2, 
+		const cchar_t *z)
+		{ return(*(int *)0); }
+
+#undef mvwaddnwstr
+int	mvwaddnwstr(
+		WINDOW	*a1, 
+		int	a2, 
+		int	a3, 
+		const utf8_wchar_t *a4, 
+		int	z)
+		{ return(*(int *)0); }
+
+#undef mvwaddwstr
+int	mvwaddwstr(
+		WINDOW	*a1, 
+		int	a2, 
+		int	a3, 
+		const utf8_wchar_t *z)
+		{ return(*(int *)0); }
+
+#undef mvwadd_wch
+int	mvwadd_wch(
+		WINDOW	*a1, 
+		int	a2, 
+		int	a3, 
+		const cchar_t *z)
+		{ return(*(int *)0); }
+
+#undef mvwadd_wchstr
+int	mvwadd_wchstr(
+		WINDOW	*a1, 
+		int	a2, 
+		int	a3, 
+		const cchar_t *z)
+		{ return(*(int *)0); }
+
+#undef waddwstr
+int	waddwstr(
+		WINDOW	*a1, 
+		const utf8_wchar_t *z)
+		{ return(*(int *)0); }
+
+#undef wadd_wchstr
+int	wadd_wchstr(
+		WINDOW	*a1, 
+		const cchar_t *z)
+		{ return(*(int *)0); }
+
+#undef wgetbkgrnd
+int	wgetbkgrnd(
+		WINDOW	*a1, 
+		cchar_t	*z)
+		{ return(*(int *)0); }
 
 /* ./base/lib_getch.c */
 
@@ -1470,7 +1660,6 @@ int	mvwscanw(
 
 /* ./base/lib_screen.c */
 
-#include <sys/stat.h>
 #include <time.h>
 
 #undef getwin
@@ -1512,7 +1701,7 @@ void	_nc_scroll_window(
 		int const n, 
 		short const top, 
 		short const bottom, 
-		chtype	blank)
+		cchar_t	blank)
 		{ /* void */ }
 
 #undef wscrl
@@ -1731,6 +1920,17 @@ attr_t	_nc_retrace_chtype(
 		attr_t	code)
 		{ return(*(attr_t *)0); }
 
+#undef _tracecchar_t2
+char	*_tracecchar_t2(
+		int	bufnum, 
+		const cchar_t *ch)
+		{ return(*(char **)0); }
+
+#undef _tracecchar_t
+char	*_tracecchar_t(
+		const cchar_t *ch)
+		{ return(*(char **)0); }
+
 /* ./trace/lib_tracedmp.c */
 
 #undef _tracedump
@@ -1860,6 +2060,11 @@ WINDOW	*dupwin(
 		{ return(*(WINDOW **)0); }
 
 /* ./base/lib_wunctrl.c */
+
+#undef wunctrl
+utf8_wchar_t *wunctrl(
+		cchar_t	*wc)
+		{ return(*(utf8_wchar_t **)0); }
 
 /* ./base/nc_panel.c */
 
@@ -2782,6 +2987,17 @@ const char *_nc_visbuf(
 		const char *buf)
 		{ return(*(const char **)0); }
 
+#undef _nc_viswbuf2
+const char *_nc_viswbuf2(
+		int	bufnum, 
+		const utf8_wchar_t *buf)
+		{ return(*(const char **)0); }
+
+#undef _nc_viswbuf
+const char *_nc_viswbuf(
+		const utf8_wchar_t *buf)
+		{ return(*(const char **)0); }
+
 #undef _tracef
 void	_tracef(
 		const char *fmt, 
@@ -2797,6 +3013,11 @@ int	_nc_retrace_int(
 char	*_nc_retrace_ptr(
 		char	*code)
 		{ return(*(char **)0); }
+
+#undef _nc_retrace_sp
+SCREEN	*_nc_retrace_sp(
+		SCREEN	*code)
+		{ return(*(SCREEN **)0); }
 
 #undef _nc_retrace_win
 WINDOW	*_nc_retrace_win(
@@ -2941,10 +3162,6 @@ int	_nc_read_entry(
 		{ return(*(int *)0); }
 
 /* ./tinfo/read_termcap.c */
-
-#undef _nc_read_termcap
-void	_nc_read_termcap(void)
-		{ /* void */ }
 
 #undef _nc_read_termcap_entry
 int	_nc_read_termcap_entry(
