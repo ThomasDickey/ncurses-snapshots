@@ -1,10 +1,13 @@
--- $Id: NEWS,v 1.834 2004/08/28 22:33:59 tom Exp $
+-- $Id: NEWS,v 1.835 2004/09/11 23:51:03 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040911
+	+ add 'B' test to ncurses.c, to exercise some wide-character functions.
 
 20040828
 	+ modify infocmp -i option to match 8-bit controls against its table
