@@ -60,7 +60,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 0.33 1998/01/31 21:59:02 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.34 1998/02/08 01:24:20 tom Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -311,7 +311,9 @@ static bool _nc_mouse_inline(SCREEN *sp)
 
 	/* bump the next-free pointer into the circular list */
 	eventp = NEXT(eventp);
+#if 0	/* this return would be needed for QNX's mods to lib_getch.c */
 	return(TRUE);
+#endif
     }
 
     return(FALSE);

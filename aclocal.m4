@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.119 1998/01/30 21:17:29 tom Exp $
+dnl $Id: aclocal.m4,v 1.120 1998/02/07 22:46:39 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -157,6 +157,47 @@ AC_MSG_RESULT($includedir)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Check for data that is usually declared in <stdio.h> or <errno.h>
+dnl $1 = the name to check
+AC_DEFUN([CF_CHECK_ERRNO],
+[
+AC_MSG_CHECKING([declaration of $1])
+AC_CACHE_VAL(cf_cv_dcl_$1,[
+    AC_TRY_COMPILE([
+#include <stdio.h>
+#include <sys/types.h>
+#include <errno.h> ],
+    [long x = (long) $1],
+    [eval 'cf_cv_dcl_'$1'=yes'],
+    [eval 'cf_cv_dcl_'$1'=no]')])
+eval 'cf_result=$cf_cv_dcl_'$1
+AC_MSG_RESULT($cf_result)
+
+# It's possible (for near-UNIX clones) that the data doesn't exist
+AC_CACHE_VAL(cf_cv_have_$1,[
+if test $cf_result = no ; then
+    eval 'cf_result=DECL_'$1
+    CF_UPPER(cf_result,$cf_result)
+    AC_DEFINE_UNQUOTED($cf_result)
+    AC_MSG_CHECKING([existence of $1])
+        AC_TRY_LINK([
+#undef $1
+extern long $1;
+],
+            [$1 = 2],
+            [eval 'cf_cv_have_'$1'=yes'],
+            [eval 'cf_cv_have_'$1'=no'])
+        eval 'cf_result=$cf_cv_have_'$1
+        AC_MSG_RESULT($cf_result)
+else
+    eval 'cf_cv_have_'$1'=yes'
+fi
+])
+eval 'cf_result=HAVE_'$1
+CF_UPPER(cf_result,$cf_result)
+eval 'test $cf_cv_have_'$1' = yes && AC_DEFINE_UNQUOTED($cf_result)'
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Check if the terminal-capability database functions are available.  If not,
 dnl ncurses has a much-reduced version.
 AC_DEFUN([CF_CGETENT],[
@@ -246,15 +287,7 @@ dnl ---------------------------------------------------------------------------
 dnl Check if 'errno' is declared in <errno.h>
 AC_DEFUN([CF_ERRNO],
 [
-AC_MSG_CHECKING([for errno external decl])
-AC_CACHE_VAL(cf_cv_extern_errno,[
-    AC_TRY_COMPILE([
-#include <errno.h>],
-        [int x = errno],
-        [cf_cv_extern_errno=yes],
-        [cf_cv_extern_errno=no])])
-AC_MSG_RESULT($cf_cv_extern_errno)
-test $cf_cv_extern_errno = no && AC_DEFINE(DECL_ERRNO)
+CF_CHECK_ERRNO(errno)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Test for availability of useful gcc __attribute__ directives to quiet
@@ -409,7 +442,7 @@ changequote([, ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Insert text into the help-message, for readability, from AC_ARG_WITH.
 AC_DEFUN([CF_HELP_MESSAGE],
-[AC_DIVERT_HELP([$1])
+[AC_DIVERT_HELP([$1])dnl
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Construct the list of include-options according to whether we're building
@@ -1260,6 +1293,10 @@ do
     AC_TRY_COMPILE([#include <sys/types.h>
 #if HAVE_TERMIOS_H
 #include <termios.h>
+#else
+#if HAVE_TERMIO_H
+#include <termio.h>
+#endif
 #endif
 #if NEED_PTEM_H
 /* This is a workaround for SCO:  they neglected to define struct winsize in

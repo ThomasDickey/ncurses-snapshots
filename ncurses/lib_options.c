@@ -32,7 +32,7 @@
 #include <term.h>	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
 
-MODULE_ID("$Id: lib_options.c,v 1.27 1998/01/31 21:12:24 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.28 1998/02/07 22:09:32 J.T.Conklin Exp $")
 
 int has_ic(void)
 {
@@ -70,59 +70,6 @@ void idcok(WINDOW *win, bool flag)
 	  _nc_idcok = win->_idcok = flag && has_ic();
 
 	returnVoid;
-}
-
-
-int clearok(WINDOW *win, bool flag)
-{
-	T((T_CALLED("clearok(%p,%d)"), win, flag));
-
-	if (win) {
-	  win->_clear = flag;
-	  returnCode(OK);
-	}
-	else
-	  returnCode(ERR);
-}
-
-
-void immedok(WINDOW *win, bool flag)
-{
-	T((T_CALLED("immedok(%p,%d)"), win, flag));
-
-	if (win)
-	  win->_immed = flag;
-
-	returnVoid;
-}
-
-int leaveok(WINDOW *win, bool flag)
-{
-	T((T_CALLED("leaveok(%p,%d)"), win, flag));
-
-	if (win) {
-	  win->_leaveok = flag;
-	  if (flag == TRUE)
-	    curs_set(0);
-	  else
-	    curs_set(1);
-	  returnCode(OK);
-	}
-	else
-	  returnCode(ERR);
-}
-
-
-int scrollok(WINDOW *win, bool flag)
-{
-	T((T_CALLED("scrollok(%p,%d)"), win, flag));
-
-	if (win) {
-	  win->_scroll = flag;
-	  returnCode(OK);
-	}
-	else
-	  returnCode(ERR);
 }
 
 int halfdelay(int t)

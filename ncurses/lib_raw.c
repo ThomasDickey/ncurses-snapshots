@@ -25,12 +25,8 @@
  *
  *	Routines:
  *		raw()
- *		echo()
- *		nl()
  *		cbreak()
  *		noraw()
- *		noecho()
- *		nonl()
  *		nocbreak()
  *		qiflush()
  *		noqiflush()
@@ -41,7 +37,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_raw.c,v 1.23 1998/01/10 20:30:20 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.24 1998/02/07 22:09:32 J.T.Conklin Exp $")
 
 #if defined(SVR4_TERMIO) && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
@@ -280,31 +276,6 @@ int cbreak(void)
 	returnCode(_nc_set_curterm( &cur_term->Nttyb));
 }
 
-int echo(void)
-{
-	T((T_CALLED("echo()")));
-
-	SP->_echo = TRUE;
-
-	returnCode(OK);
-}
-
-
-int nl(void)
-{
-	T((T_CALLED("nl()")));
-
-	SP->_nl = TRUE;
-
-#ifdef __EMX__
-	fflush(SP->_ofp);
-	_fsetmode(SP->_ofp, "t");
-#endif
-
-	returnCode(OK);
-}
-
-
 int qiflush(void)
 {
 	T((T_CALLED("qiflush()")));
@@ -367,28 +338,6 @@ int nocbreak(void)
 	cur_term->Nttyb.sg_flags &= ~CBREAK;
 #endif
 	returnCode(_nc_set_curterm( &cur_term->Nttyb));
-}
-
-int noecho(void)
-{
-	T((T_CALLED("noecho()")));
-	SP->_echo = FALSE;
-	returnCode(OK);
-}
-
-
-int nonl(void)
-{
-	T((T_CALLED("nonl()")));
-
-	SP->_nl = FALSE;
-
-#ifdef __EMX__
-	fflush(SP->_ofp);
-	_fsetmode(SP->_ofp, "b");
-#endif
-
-	returnCode(OK);
 }
 
 int noqiflush(void)
