@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.219 2002/05/25 12:22:43 tom Exp $
+ * $Id: curses.priv.h,v 1.220 2002/08/24 23:12:30 tom Exp $
  *
  *	curses.priv.h
  *
@@ -274,7 +274,7 @@ typedef struct
 typedef struct {
 	char dirty;             /* all labels have changed */
 	char hidden;            /* soft labels are hidden */
-	struct _win_st *win;
+	WINDOW *win;
 	slk_ent *ent;
 	char*  buffer;           /* buffer for labels */
 	short  maxlab;           /* number of available labels */
@@ -470,9 +470,9 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 };
 
 typedef	struct {
-	int	line;                   /* lines to take, < 0 => from bottom*/
-	int	(*hook)(struct _win_st *, int); /* callback for user        */
-	struct _win_st *w;              /* maybe we need this for cleanup   */
+	int	line;           /* lines to take, < 0 => from bottom*/
+	int	(*hook)(WINDOW *, int); /* callback for user        */
+	WINDOW *w;              /* maybe we need this for cleanup   */
 } ripoff_t;
 
 /* The terminfo source is assumed to be 7-bit ASCII */

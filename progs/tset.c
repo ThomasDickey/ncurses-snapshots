@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -103,7 +103,7 @@ char *ttyname(int fd);
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tset.c,v 0.52 2001/09/29 21:13:56 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.53 2002/08/24 23:18:16 tom Exp $")
 
 extern char **environ;
 
@@ -197,6 +197,7 @@ askuser(const char *dflt)
     char *p;
 
     /* We can get recalled; if so, don't continue uselessly. */
+    clearerr(stdin);
     if (feof(stdin) || ferror(stdin)) {
 	(void) fprintf(stderr, "\n");
 	exit_error();
