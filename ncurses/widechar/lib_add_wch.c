@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_add_wch.c,v 1.2 2004/02/07 17:53:33 tom Exp $")
+MODULE_ID("$Id: lib_add_wch.c,v 1.3 2004/04/03 20:19:31 tom Exp $")
 
 NCURSES_EXPORT(int)
 wadd_wch(WINDOW *win, const cchar_t * wch)
@@ -54,7 +54,7 @@ wadd_wch(WINDOW *win, const cchar_t * wch)
 		break;
 	    if ((PUTC_n = wcrtomb(PUTC_buf, PUTC_ch, &PUT_st)) <= 0) {
 		code = ERR;
-		if (PUTC_ch < 256)
+		if (is8bits(PUTC_ch))
 		    code = waddch(win, UChar(PUTC_ch));
 		break;
 	    }
@@ -89,7 +89,7 @@ wecho_wchar(WINDOW *win, const cchar_t * wch)
 		break;
 	    if ((PUTC_n = wcrtomb(PUTC_buf, PUTC_ch, &PUT_st)) <= 0) {
 		code = ERR;
-		if (PUTC_ch < 256)
+		if (is8bits(PUTC_ch))
 		    code = waddch(win, UChar(PUTC_ch));
 		break;
 	    }

@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_alpha.c,v 1.13 2004/02/22 00:17:10 tom Exp $")
+MODULE_ID("$Id: fty_alpha.c,v 1.14 2004/04/03 23:00:47 tom Exp $")
 
 typedef struct
   {
@@ -95,7 +95,7 @@ Check_Alpha_Character(int c, const void *argp GCC_UNUSED)
   if (iswalpha(c))
     return TRUE;
 #endif
-  return (isalpha(c) ? TRUE : FALSE);
+  return (isalpha(UChar(c)) ? TRUE : FALSE);
 }
 
 /*---------------------------------------------------------------------------
@@ -155,7 +155,7 @@ Check_Alpha_Field(FIELD *field, const void *argp)
       unsigned char *s = bp;
       int l = -1;
 
-      while (*bp && isalpha(*bp))
+      while (*bp && isalpha(UChar(*bp)))
 	bp++;
       l = (int)(bp - s);
       while (*bp && *bp == ' ')

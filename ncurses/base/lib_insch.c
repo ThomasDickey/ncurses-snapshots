@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -43,7 +43,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insch.c,v 1.19 2004/02/29 01:13:43 tom Exp $")
+MODULE_ID("$Id: lib_insch.c,v 1.20 2004/04/03 21:33:00 tom Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
@@ -54,7 +54,7 @@ _nc_insert_ch(WINDOW *win, chtype ch)
 {
     NCURSES_CH_T wch;
     int count;
-    char *s;
+    NCURSES_CONST char *s;
 
     switch (ch) {
     case '\t':
@@ -72,6 +72,7 @@ _nc_insert_ch(WINDOW *win, chtype ch)
 #if USE_WIDEC_SUPPORT
 	       WINDOW_EXT(win, addch_used) == 0 &&
 #endif
+	       is8bits(ChCharOf(ch)) &&
 	       isprint(ChCharOf(ch))) {
 	    if (win->_curx <= win->_maxx) {
 		struct ldat *line = &(win->_line[win->_cury]);
@@ -89,7 +90,7 @@ _nc_insert_ch(WINDOW *win, chtype ch)
 
 		win->_curx++;
 	    }
-	} else if (iscntrl(ChCharOf(ch))) {
+	} else if (is8bits(ChCharOf(ch)) && iscntrl(ChCharOf(ch))) {
 	    s = unctrl(ChCharOf(ch));
 	    while (*s != '\0') {
 		_nc_insert_ch(win, ChAttrOf(ch) | UChar(*s));

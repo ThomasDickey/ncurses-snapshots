@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.82 2004/03/06 21:03:54 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.83 2004/04/03 20:18:43 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -166,7 +166,7 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 		attr_t attrs = AttrOf(ch);
 		SetChar(ch, result, attrs);
 		WINDOW_EXT(win, addch_used) = 0;
-		if (CharOf(ch) < 256) {
+		if (is8bits(CharOf(ch))) {
 		    const char *s = unctrl(CharOf(ch));
 		    if (s[1] != 0) {
 			return waddstr(win, s);

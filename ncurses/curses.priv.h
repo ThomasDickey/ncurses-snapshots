@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.256 2004/03/20 23:36:28 tom Exp $
+ * $Id: curses.priv.h,v 1.257 2004/04/03 20:37:36 tom Exp $
  *
  *	curses.priv.h
  *
@@ -78,6 +78,11 @@ extern "C" {
 # include <sys/param.h>
 #endif
 
+#include <assert.h>
+#include <stdio.h>
+
+#include <errno.h>
+
 #ifndef PATH_MAX
 # if defined(_POSIX_PATH_MAX)
 #  define PATH_MAX _POSIX_PATH_MAX
@@ -87,11 +92,6 @@ extern "C" {
 #  define PATH_MAX 255	/* the Posix minimum path-size */
 # endif
 #endif
-
-#include <assert.h>
-#include <stdio.h>
-
-#include <errno.h>
 
 #if DECL_ERRNO
 extern int errno;
@@ -517,8 +517,16 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 
 #define WINDOW_EXT(win,field) (((WINDOWLIST *)(win))->field)
 
+/* usually in <limits.h> */
+#ifndef UCHAR_MAX
+#define UCHAR_MAX 255
+#endif
+
 /* The terminfo source is assumed to be 7-bit ASCII */
 #define is7bits(c)	((unsigned)(c) < 128)
+
+/* Checks for isprint() should be done on 8-bit characters (non-wide) */
+#define is8bits(c)	((unsigned)(c) <= UCHAR_MAX)
 
 #ifndef min
 #define min(a,b)	((a) > (b)  ?  (b)  :  (a))

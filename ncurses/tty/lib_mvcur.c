@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -154,7 +154,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.97 2003/12/27 16:43:59 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.98 2004/04/03 22:32:24 tom Exp $")
 
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
 #define BAUDRATE	cur_term->_baudrate	/* bits per second */
@@ -589,9 +589,11 @@ relative_move(string_desc * target, int from_y, int from_x, int to_y, int
 		    && n > 0
 		    && n < (int) check.s_size
 		    && vcost == 0
-		    && str[0] == '\0'
-		    && isdigit(CharOf(WANT_CHAR(to_y, from_x))))
-		    ovw = FALSE;
+		    && str[0] == '\0') {
+		    int wanted = CharOf(WANT_CHAR(to_y, from_x));
+		    if (is8bits(wanted) && isdigit(wanted))
+			ovw = FALSE;
+		}
 #endif
 		/*
 		 * If we have no attribute changes, overwrite is cheaper.

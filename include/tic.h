@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,10 +29,11 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey 1996 on                                        *
  ****************************************************************************/
 
 /*
- * $Id: tic.h,v 1.48 2004/03/27 21:51:24 tom Exp $
+ * $Id: tic.h,v 1.49 2004/04/03 20:22:58 tom Exp $
  *	tic.h - Global variables and structures for the terminfo
  *			compiler.
  */
@@ -108,7 +109,7 @@ extern "C" {
 #define DEBUG_LEVEL(n)	((n) << TRACE_SHIFT)
 
 #define set_trace_level(n) \
- 	_nc_tracing &= DEBUG_LEVEL(MAX_DEBUG_LEVEL), \
+	_nc_tracing &= DEBUG_LEVEL(MAX_DEBUG_LEVEL), \
 	_nc_tracing |= DEBUG_LEVEL(n)
 
 #ifdef TRACE
@@ -278,7 +279,7 @@ extern NCURSES_EXPORT_VAR(bool) _nc_suppress_warnings;
 extern NCURSES_EXPORT(char *) _nc_tic_expand (const char *, bool, int);
 
 /* comp_scan.c: decode string from readable form */
-extern NCURSES_EXPORT(char) _nc_trans_string (char *, char *);
+extern NCURSES_EXPORT(int) _nc_trans_string (char *, char *);
 
 /* captoinfo.c: capability conversion */
 extern NCURSES_EXPORT(char *) _nc_captoinfo (const char *, const char *, int const);

@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_num.c,v 1.16 2003/10/25 14:54:48 tom Exp $")
+MODULE_ID("$Id: fty_num.c,v 1.17 2004/04/03 23:00:47 tom Exp $")
 
 #if HAVE_LOCALE_H
 #include <locale.h>
@@ -117,7 +117,7 @@ static bool Check_Numeric_Field(FIELD * field, const void * argp)
 	bp++;
       while(*bp)
 	{
-	  if (!isdigit(*bp)) break;
+	  if (!isdigit(UChar(*bp))) break;
 	  bp++;
 	}
       if (*bp==(
@@ -129,7 +129,7 @@ static bool Check_Numeric_Field(FIELD * field, const void * argp)
 	  bp++;
 	  while(*bp)
 	    {
-	      if (!isdigit(*bp)) break;
+	      if (!isdigit(UChar(*bp))) break;
 	      bp++;
 	    }
 	}
@@ -165,7 +165,7 @@ static bool Check_Numeric_Character(int c, const void * argp)
   const numericARG *argn = (const numericARG *)argp;
   struct lconv* L  = argn->L;  
 
-  return (isdigit(c)  || 
+  return (isdigit(UChar(c))  || 
 	  c == '+'    || 
 	  c == '-'    || 
 	  c == (

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -30,7 +30,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: menu.priv.h,v 1.16 2003/10/25 15:24:29 tom Exp $ */
+/* $Id: menu.priv.h,v 1.17 2004/04/03 23:08:32 tom Exp $ */
 
 /***************************************************************************
 * Module menu.priv.h                                                       *
@@ -107,6 +107,8 @@ extern NCURSES_EXPORT_VAR(MENU) _nc_Default_Menu;
 #define Reset_Pattern(menu) \
   { (menu)->pindex = 0; \
     (menu)->pattern[0] = '\0'; }
+
+#define UChar(c)	((unsigned char)(c))
 
 /* Internal functions. */
 extern NCURSES_EXPORT(void) _nc_Draw_Menu (const MENU *);
