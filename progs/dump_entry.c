@@ -30,6 +30,8 @@
 #include "termsort.c"		/* this C file is generated */
 #include "parametrized.h"	/* so is this */
 
+MODULE_ID("$Id: dump_entry.c,v 1.12 1996/10/09 10:15:14 tom Exp $")
+
 #define INDENT			8
 
 static int tversion;		/* terminfo version */
@@ -189,8 +191,9 @@ char *expand(char *srcp)
 {
 static char	buffer[1024];
 int		bufp;
-char		*ptr, *str = srcp;
-bool		islong = (strlen(srcp) > 3);
+char		*ptr, *str = (srcp == ABSENT_STRING
+			   || srcp == CANCELLED_STRING) ? "" : srcp;
+bool		islong = (strlen(str) > 3);
 
     	bufp = 0;
     	ptr = str;

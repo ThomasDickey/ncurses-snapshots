@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: run_tic.sh,v 1.5 1996/06/26 10:23:10 tom Exp $
+# $Id: run_tic.sh,v 1.6 1996/10/19 21:20:22 tom Exp $
 # This script is used to install terminfo.src using tic.  We use a script
 # because the path checking is too awkward to do in a makefile.
 #
@@ -105,7 +105,12 @@ if test "$TICDIR" != "$TERMINFO" ; then
 		fi
 	else
 		cd $IP$prefix
-		RELATIVE=`echo $prefix/lib|sed -e 's:/[^/]\+:../:g'``echo $ticdir|sed -e 's:^/::'`
+		# Construct a symbolic link that only assumes $ticdir has the
+		# same $prefix as the other installed directories.
+		RELATIVE=`echo $ticdir|sed -e 's:^'$prefix'/::'`
+		if test "$RELATIVE" = "$ticdir" ; then
+			RELATIVE=`echo $prefix|sed -e 's:/[^/]\+:../:g'``echo $ticdir|sed -e 's:^/::'`
+		fi
 		if ( ln -s $RELATIVE $TICDIR )
 		then
 			echo '** linked '$TICDIR' for compatibility'

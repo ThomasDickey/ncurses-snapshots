@@ -1,7 +1,7 @@
-dnl $Id: configure.in,v 1.31 1996/09/26 09:39:11 esr Exp $
+dnl $Id: configure.in,v 1.32 1996/10/19 19:46:46 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.9)
-AC_REVISION($Revision: 1.31 $)
+AC_REVISION($Revision: 1.32 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
@@ -24,19 +24,7 @@ if test ".$system_name" != ".$nc_cv_system_name" ; then
 fi
 
 ###	Default install-location
-dnl We don't use AC_PREFIX_DEFAULT, because it gets evaluated too soon, and
-dnl we don't use AC_PREFIX_PROGRAM, because we cannot distinguish ncurses's
-dnl programs from a vendor's.
-AC_MSG_CHECKING(for prefix)
-if test "x$prefix" = "xNONE" ; then
-	case "$nc_cv_systype" in
-	Linux)	prefix=/usr
-		;;
-	*)	prefix=$ac_default_prefix
-		;;
-	esac
-fi
-AC_MSG_RESULT($prefix)
+NC_CFG_DEFAULTS
 
 ###	Checks for programs.
 AC_PROG_CC

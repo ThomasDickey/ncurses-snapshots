@@ -30,7 +30,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.11 1996/09/24 00:41:09 tom Exp $")
+MODULE_ID("$Id: lib_refresh.c,v 1.12 1996/10/20 00:53:11 tom Exp $")
 
 int wredrawln(WINDOW *win, int beg, int num)
 {
@@ -124,8 +124,16 @@ bool	wide;
 		register struct ldat	*oline = &win->_line[i];
 
 		if (oline->firstchar != _NOCHANGE) {
+			int last = oline->lastchar;
 
-			for (j = oline->firstchar, n = j + begx; j <= oline->lastchar; j++, n++) {
+			/* limit(j) */
+			if (last > win->_maxx)
+				last = win->_maxx;
+			/* limit(n) */
+			if (last > newscr->_maxx - begx)
+				last = newscr->_maxx - begx;
+
+			for (j = oline->firstchar, n = j + begx; j <= last; j++, n++) {
 				if (oline->text[j] != nline->text[n]) {
 					nline->text[n] = oline->text[j];
 
