@@ -61,7 +61,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.46 2002/09/01 00:28:18 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.47 2003/01/25 18:21:17 tom Exp $")
 
 static long
 _nc_gettime(bool first)
@@ -388,7 +388,7 @@ _nc_timed_wait(int mode,
      * then come back for more.
      */
     if (result == 0 && milliseconds > 100) {
-	napms(100);
+	napms(100);	/* FIXME: this won't be right if I recur! */
 	milliseconds -= 100;
 	goto retry;
     }

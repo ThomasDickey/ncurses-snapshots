@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.183 2003/01/05 21:59:54 tom Exp $
+$Id: ncurses.c,v 1.184 2003/01/26 00:26:11 tom Exp $
 
 ***************************************************************************/
 
@@ -3760,20 +3760,20 @@ mi_field_check(FIELD *fld, const void *data GCC_UNUSED)
 		if (n != 1)
 		    return FALSE;
 		state = 2;
-	    } else if (isspace(s[n])) {
+	    } else if (isspace(UChar(s[n]))) {
 		state = 2;
 	    }
 	    break;
 	case 2:
-	    if (!isspace(s[n]))
+	    if (!isspace(UChar(s[n])))
 		return FALSE;
 	    break;
 	}
     }
 
     /* force the form to display a leading capital */
-    if (islower(s[0])) {
-	s[0] = toupper(s[0]);
+    if (islower(UChar(s[0]))) {
+	s[0] = toupper(UChar(s[0]));
 	set_field_buffer(fld, 0, s);
     }
     return TRUE;
@@ -3795,7 +3795,7 @@ pw_field_check(FIELD *fld, const void *data GCC_UNUSED)
     int n;
 
     for (n = 0; s[n] != '\0'; ++n) {
-	if (isspace(s[n])) {
+	if (isspace(UChar(s[n]))) {
 	    if (n < 6)
 		return FALSE;
 	}

@@ -10,7 +10,7 @@
 #
 #------------------------------------------------------------------------------
 #	Version 10.2.1
-#	$Date: 2003/01/12 00:24:15 $
+#	$Date: 2003/01/26 01:16:06 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2994,7 +2994,7 @@ xterm-bold|xterm terminal emulator (X11R6 Window System) standout w/bold,
 #  -- MATSUMOTO Shoji)
 kterm|kterm kanji terminal emulator (X window system), 
 	eslok, hs, 
-	acsc=++\,\,--..00II``aaffgghhjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+	acsc=++\,\,--..00ii``aaffgghhjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
 	csr=\E[%i%p1%d;%p2%dr, dsl=\E[?H, enacs=, fsl=\E[?F, 
 	kmous=\E[M, rc=\E8, rmacs=\E(B, sc=\E7, smacs=\E(0, 
 	tsl=\E[?E\E[?%i%dT, use=xterm-r6, use=ecma+color, 
@@ -4133,62 +4133,79 @@ dtterm|CDE desktop terminal,
 #### Non-Unix Consoles
 #
 
+### EMX termcap.dat compatibility modes
+#
+# Keypad:	Home=\0G	Up=\0H	PrPag=\0I
+#		ka1,kh		kcuu1		kpp,ka3
+#
+#		Left=\0K	5=\0L		Right=\0M
+#		kcub1		kb2		kcuf1
+#
+#		End=\0O		Down=\0P	NxPag=\0Q
+#		kc1,kend	kcud1		kc3,knp
+#
+#		Ins=\0R		Del=\0S
+#		kich1		kdch1
+#
+# On keyboard with 12 function keys,
+#	shifted f-keys: F13-F24
+#	control f-keys: F25-F36
+#	alt f-keys:     F37-F48
+# The shift/control/alt keys do not modify each other, but alt overrides both,
+# and control overrides shift.
+#
+# Also (possibly only EMX, so we don't put it in ansi.sys, etc): set the
+# no_color_video to inform the application that standout(1), underline(2)
+# reverse(4) and invisible(64) don't work with color.
+emx-base|DOS special keys, 
+	bce, bw, 
+	it#8, ncv#71, 
+	bel=^G, ka1=\0G, ka3=\0I, kb2=\0L, kbs=^H, kc1=\0O, kc3=\0Q, 
+	kcbt=\0^O, kcub1=\0K, kcud1=\0P, kcuf1=\0M, kcuu1=\0H, 
+	kdch1=\0S, kend=\0O, kf1=\0;, kf10=\0D, kf11=\0\205, 
+	kf12=\0\206, kf13=\0T, kf14=\0U, kf15=\0V, kf16=\0W, 
+	kf17=\0X, kf18=\0Y, kf19=\0Z, kf2=\0<, kf20=\0[, kf21=\0\\, 
+	kf22=\0], kf23=\0\207, kf24=\0\210, kf25=\0\^, kf26=\0_, 
+	kf27=\0`, kf28=\0a, kf29=\0b, kf3=\0=, kf30=\0c, kf31=\0d, 
+	kf32=\0e, kf33=\0f, kf34=\0g, kf35=\0\211, kf36=\0\212, 
+	kf37=\0h, kf38=\0i, kf39=\0j, kf4=\0>, kf40=\0k, kf41=\0l, 
+	kf42=\0m, kf43=\0n, kf44=\0o, kf45=\0p, kf46=\0q, 
+	kf47=\0\213, kf48=\0\214, kf5=\0?, kf6=\0@, kf7=\0A, kf8=\0B, 
+	kf9=\0C, khome=\0G, kich1=\0R, knp=\0Q, kpp=\0I, 
+	use=ansi.sys, 
+
 # Except for the "-emx" suffixes, these are as distributed with EMX 0.9b,
 # a Unix-style environment used on OS/2.  (Note that the suffix makes some
 # names longer than 14 characters, the nominal maximum).
 #
 # Removed: rmacs=\E[10m, smacs=\E[11m, because OS/2 does not implement acs.
 ansi-emx|ANSI.SYS color, 
-	am, bce, eo, mir, msgr, xenl, xon, 
+	am, bce, eo, mir, msgr, xon, 
 	colors#8, cols#80, it#8, lines#25, pairs#64, 
 	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
 	clear=\E[1;33;44m\E[H\E[J, cnorm=\E[?25h, cr=^M, cub1=^H, 
 	cud1=^J, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, 
 	dch=\E[%p1%dp, ed=\E[J, el=\E[K, flash=\E[?5h\E[?5l, 
 	home=\E[H, ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, ind=^J, 
-	kb2=\E[G, kbs=^H, kcub1=\0K, kcud1=\0P, kcuf1=\0M, kcuu1=\0H, 
-	kf0=\0D, kf1=\0;, kf2=\0<, kf3=\0=, kf4=\0>, kf5=\0?, kf6=\0@, 
-	kf7=\0A, kf8=\0B, kf9=\0C, khome=\0G, kich1=\0R, kll=\0O, 
-	knp=\0Q, kpp=\0I, kspd=^Z, nel=^M^J, rev=\E[5;37;41m, 
-	rmir=\E[4l, rmpch=\E[10m, rmso=\E[0;44m\E[1;33m, 
-	rmul=\E[0;44m\E[1;33m, rs1=\Ec, setab=\E[4%p1%dm, 
-	setaf=\E[3%p1%dm, sgr0=\E[0m\E[1;33;44m, smir=\E[4h, 
-	smpch=\E[11m, smso=\E[0;31;47m, smul=\E[1;31;44m, 
-	tbc=\E[3g, u8=\E[?6c, u9=\E[c, 
+	kb2=\E[G, kbs=^H, kf0=\0D, kll=\0O, kspd=^Z, nel=^M^J, 
+	rev=\E[5;37;41m, rmir=\E[4l, rmpch=\E[10m, 
+	rmso=\E[0;44m\E[1;33m, rmul=\E[0;44m\E[1;33m, rs1=\Ec, 
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
+	sgr0=\E[0m\E[1;33;44m, smir=\E[4h, smpch=\E[11m, 
+	smso=\E[0;31;47m, smul=\E[1;31;44m, tbc=\E[3g, u8=\E[?6c, 
+	u9=\E[c, use=emx-base, 
+# nice colors for Emacs (white on blue, mode line white on cyan)
 ansi-color-2-emx|ANSI.SYS color 2, 
-	am, bce, eo, mir, msgr, xenl, xon, 
-	colors#8, cols#80, it#8, lines#25, pairs#64, 
-	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
-	clear=\E[0;37;44m\E[H\E[J, cnorm=\E[?25h, cr=^M, cub1=^H, 
-	cud1=^J, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, 
-	dch=\E[%p1%dp, ed=\E[J, el=\E[K, flash=\E[?5h\E[?5l, 
-	home=\E[H, ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, ind=^J, 
-	kb2=\E[G, kbs=^H, kcub1=\0K, kcud1=\0P, kcuf1=\0M, kcuu1=\0H, 
-	kf0=\0D, kf1=\0;, kf2=\0<, kf3=\0=, kf4=\0>, kf5=\0?, kf6=\0@, 
-	kf7=\0A, kf8=\0B, kf9=\0C, khome=\0G, kich1=\0R, kll=\0O, 
-	knp=\0Q, kpp=\0I, kspd=^Z, nel=^M^J, rev=\E[1;37;46m, 
-	rmir=\E[4l, rmpch=\E[10m, rmso=\E[0;37;44m, 
-	rmul=\E[0;37;44m, rs1=\Ec, setab=\E[4%p1%dm, 
-	setaf=\E[3%p1%dm, sgr0=\E[0;37;44m, smir=\E[4h, 
-	smpch=\E[11m, smso=\E[1;37;46m, smul=\E[1;36;44m, 
-	tbc=\E[3g, u8=\E[?6c, u9=\E[c, 
+	clear=\E[0;37;44m\E[H\E[J, rev=\E[1;37;46m, 
+	rmso=\E[0;37;44m, rmul=\E[0;37;44m, rs1=\Ec, 
+	setaf=\E[3%p1%dm, sgr0=\E[0;37;44m, smso=\E[1;37;46m, 
+	smul=\E[1;36;44m, use=ansi-emx, 
+# nice colors for Emacs (white on black, mode line black on cyan)
 ansi-color-3-emx|ANSI.SYS color 3, 
-	am, bce, eo, mir, msgr, xenl, xon, 
-	colors#8, cols#80, it#8, lines#25, pairs#64, 
-	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
-	clear=\E[0;37;40m\E[H\E[J, cnorm=\E[?25h, cr=^M, cub1=^H, 
-	cud1=^J, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, 
-	dch=\E[%p1%dp, ed=\E[J, el=\E[K, flash=\E[?5h\E[?5l, 
-	home=\E[H, ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, ind=^J, 
-	kb2=\E[G, kbs=^H, kcub1=\0K, kcud1=\0P, kcuf1=\0M, kcuu1=\0H, 
-	kf0=\0D, kf1=\0;, kf2=\0<, kf3=\0=, kf4=\0>, kf5=\0?, kf6=\0@, 
-	kf7=\0A, kf8=\0B, kf9=\0C, khome=\0G, kich1=\0R, kll=\0O, 
-	knp=\0Q, kpp=\0I, kspd=^Z, nel=^M^J, rev=\E[1;37;46m, 
-	rmir=\E[4l, rmpch=\E[10m, rmso=\E[0;37;40m, 
-	rmul=\E[0;37;40m, rs1=\Ec, setab=\E[4%p1%dm, 
-	setaf=\E[3%p1%dm, sgr0=\E[0;10m, smir=\E[4h, 
-	smpch=\E[11m, smso=\E[1;37;46m, smul=\E[0;36;40m, 
-	tbc=\E[3g, u8=\E[?6c, u9=\E[c, 
+	clear=\E[0;37;40m\E[H\E[J, rev=\E[1;37;46m, 
+	rmso=\E[0;37;40m, rmul=\E[0;37;40m, rs1=\Ec, 
+	setaf=\E[3%p1%dm, sgr0=\E[0;10m, smso=\E[1;37;46m, 
+	smul=\E[0;36;40m, use=ansi-emx, 
 mono-emx|stupid monochrome ansi terminal with only one kind of emphasis, 
 	am, 
 	cols#80, it#8, lines#24, 
@@ -19635,6 +19652,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2003-01-11
 #	* update homepage for Top Gun Telnet/SSH
+#
+# 2003-01-25
+#	* reduce duplication in emx entries, added emx-base -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

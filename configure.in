@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.280 2002/12/15 01:55:59 tom Exp $
+dnl $Id: configure.in,v 1.282 2003/01/25 23:17:03 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.280 $)
+AC_REVISION($Revision: 1.282 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -316,25 +316,8 @@ AC_ARG_WITH(termlib,
 AC_MSG_RESULT($with_termlib)
 
 ### Checks for special libraries, must be done up-front.
-AC_MSG_CHECKING(if you want to link with dbmalloc for testing)
-AC_ARG_WITH(dbmalloc,
-	[  --with-dbmalloc         test: use Conor Cahill's dbmalloc library],
-	[with_dbmalloc=$withval],
-	[with_dbmalloc=no])
-AC_MSG_RESULT($with_dbmalloc)
-if test "$with_dbmalloc" = yes ; then
-	AC_CHECK_LIB(dbmalloc,debug_malloc)
-fi
-
-AC_MSG_CHECKING(if you want to link with dmalloc for testing)
-AC_ARG_WITH(dmalloc,
-	[  --with-dmalloc          test: use Gray Watson's dmalloc library],
-	[with_dmalloc=$withval],
-	[with_dmalloc=no])
-AC_MSG_RESULT($with_dmalloc)
-if test "$with_dmalloc" = yes ; then
-	AC_CHECK_LIB(dmalloc,dmalloc_debug)
-fi
+CF_WITH_DBMALLOC
+CF_WITH_DMALLOC
 
 SHLIB_LIST=""
 AC_MSG_CHECKING(if you want to link with the gpm mouse library)
@@ -351,6 +334,8 @@ if test "$with_gpm" = yes ; then
 		AC_CHECK_HEADERS(gpm.h)
 	],AC_MSG_WARN(Cannot link with gpm library - read the FAQ))
 fi
+
+CF_WITH_SYSMOUSE
 
 dnl Not all ports of gcc support the -g option
 
