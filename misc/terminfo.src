@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2000/03/19 02:52:18 $
+#	$Date: 2000/03/19 23:06:50 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -1818,6 +1818,8 @@ vt220-old|vt200-old|DEC VT220 in vt100 emulation mode,
 	smso=\E[7m, smul=\E[4m, 
 
 # A much better description of the VT200/220; used to be vt220-8
+# changed rmacs/smacs from shift-in/shift-out to vt200-old's explicit G0/G1
+# designation to accommodate bug in pcvt -TD
 vt220|vt200|dec vt220, 
 	OTbs, am, mc5i, mir, msgr, xenl, xon, 
 	cols#80, it#8, lines#24, vt#3, 
@@ -1840,8 +1842,8 @@ vt220|vt200|dec vt220,
 	khome=\E[H, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, krdo=\E[29~, 
 	kslt=\E[4~, lf1=pf1, lf2=pf2, lf3=pf3, lf4=pf4, mc0=\E[i, 
 	mc4=\E[4i, mc5=\E[5i, nel=\EE, rc=\E8, rev=\E[7m, ri=\EM, 
-	rmacs=^O, rmam=\E[?7l, rmir=\E[4l, rmso=\E[27m, 
-	rmul=\E[24m, rs1=\E[?3l, sc=\E7, sgr0=\E[m, smacs=^N, 
+	rmacs=\E(B$<4>, rmam=\E[?7l, rmir=\E[4l, rmso=\E[27m, 
+	rmul=\E[24m, rs1=\E[?3l, sc=\E7, sgr0=\E[m, smacs=\E(0$<2>, 
 	smam=\E[?7h, smir=\E[4h, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
 vt220-w|vt200-w|DEC vt220 in wide mode, 
 	cols#132, 
@@ -2406,6 +2408,8 @@ xterm-r5|xterm R5 version,
 # Compatible with the R6 xterm
 # (from XFree86 3.2 distribution, <acsc> and <it> added, <blink@> removed)
 # added khome/kend, hts based on the R6 xterm code - TD
+# (khome/kend do not actually work in X11R5 or X11R6, but many people use this
+# for compatibility with other emulators).
 xterm-r6|xterm-old|xterm X11R6 version, 
 	OTbs, am, km, mir, msgr, xenl, 
 	cols#80, it#8, lines#24, 
@@ -2740,7 +2744,7 @@ kvt|KDE terminal,
 # rxvt is normally configured to look for "xterm" or "xterm-color" as $TERM.
 # Since rxvt is not really compatible with xterm, it should be configured as
 # "rxvt" (monochrome) and "rxvt-color". 
-rxvtbasic|rxvt terminal base (X Window System), 
+rxvt-basic|rxvt terminal base (X Window System), 
 	OTbs, am, bce, eo, km, mir, msgr, xenl, xon, 
 	cols#80, it#8, lines#24, 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
@@ -18353,6 +18357,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2000/3/18
 #	* add several terminal types from esr's "11.0.1" (ansi-*).
 #	* update OTxx capabilities for changes on 2000/3/4.
+#	* revert part of vt220 change (request by Todd C Miller for OpenBSD)
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
