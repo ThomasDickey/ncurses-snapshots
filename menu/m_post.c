@@ -37,7 +37,39 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_post.c,v 1.21 2004/04/10 23:45:59 tom Exp $")
+MODULE_ID("$Id: m_post.c,v 1.22 2004/05/02 00:20:34 tom Exp $")
+
+#ifdef USE_WIDEC_SUPPORT
+static int
+text_columns(const TEXT * item)
+{
+  int result = item->length;
+  int count = mbstowcs(0, item->str, 0);
+  wchar_t *temp = 0;
+
+  if (count > 0
+      && (temp = malloc(sizeof(*temp) * (2 + count))) != 0)
+    {
+      int n;
+
+      result = 0;
+      mbstowcs(temp, item->str, count);
+      for (n = 0; n < count; ++n)
+	{
+	  int test = wcwidth(temp[n]);
+
+	  if (test <= 0)
+	    test = 1;
+	  result += test;
+	}
+      free(temp);
+    }
+  return result;
+}
+#define TEXT_COLS(item) text_columns(&(item))
+#else
+#define TEXT_COLS(item) item.length
+#endif
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu
@@ -56,14 +88,16 @@ _nc_Post_Item(const MENU * menu, const ITEM * item)
   int item_x, item_y;
   int count = 0;
   bool isfore = FALSE, isback = FALSE, isgrey = FALSE;
+  int name_len;
+  int desc_len;
 
   assert(menu->win);
 
   getyx(menu->win, item_y, item_x);
 
   /* We need a marker iff
-   - it is a onevalued menu and it is the current item
-   - or it has a selection value
+     - it is a onevalued menu and it is the current item
+     - or it has a selection value
    */
   wattron(menu->win, menu->back);
   if (item->value || (item == menu->curitem))
@@ -117,7 +151,8 @@ _nc_Post_Item(const MENU * menu, const ITEM * item)
     }
 
   waddnstr(menu->win, item->name.str, item->name.length);
-  for (ch = ' ', i = menu->namelen - item->name.length; i > 0; i--)
+  name_len = TEXT_COLS(item->name);
+  for (ch = ' ', i = menu->namelen - name_len; i > 0; i--)
     {
       waddch(menu->win, ch);
     }
@@ -141,7 +176,8 @@ _nc_Post_Item(const MENU * menu, const ITEM * item)
 	}
       if (item->description.length)
 	waddnstr(menu->win, item->description.str, item->description.length);
-      for (ch = ' ', i = menu->desclen - item->description.length; i > 0; i--)
+      desc_len = TEXT_COLS(item->description);
+      for (ch = ' ', i = menu->desclen - desc_len; i > 0; i--)
 	{
 	  waddch(menu->win, ch);
 	}
