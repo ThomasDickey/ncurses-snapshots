@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.52 2002/01/27 02:09:37 tom Exp $
+# $Id: mk-1st.awk,v 1.53 2002/01/27 23:37:05 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000,2002 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -176,7 +176,7 @@ END	{
 				} else {
 					if ( ShlibVer == "rel" ) {
 						end_name = rel_name;
-					} else if ( ShlibVer == "abi" || ShlibVer = "cygdll" ) {
+					} else if ( ShlibVer == "abi" || ShlibVer == "cygdll" ) {
 						end_name = abi_name;
 					} else {
 						end_name = lib_name;

@@ -1,10 +1,14 @@
--- $Id: NEWS,v 1.666 2002/01/26 17:53:08 tom Exp $
+-- $Id: NEWS,v 1.667 2002/01/27 23:37:39 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020127
+	+ fix a typo in change to mk-1st.awk, which broke the shared-library
+	  makefile rules (reported by Martin Mokrejs).
 
 20020126
 	+ update config.guess, config.sub
