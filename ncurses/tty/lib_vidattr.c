@@ -64,7 +64,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.32 2000/09/17 00:15:23 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.33 2000/10/09 22:45:29 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -138,7 +138,7 @@ vidputs(attr_t newmode, int (*outc) (int))
 				   | ((no_color_video & 192) << 1)
 				   | ((no_color_video & 256) >> 2), 8);
 
-	if (mask & A_REVERSE) {
+	if (mask & A_REVERSE && newmode & A_REVERSE) {
 	    reverse = TRUE;
 	    mask &= ~A_REVERSE;
 	}
