@@ -237,6 +237,7 @@ int cursor = SP->_cursor;
 		break;
 	}
 	SP->_cursor = vis;
+	(void) fflush(SP->_ofp);
 	return cursor;	
 }
 
@@ -253,8 +254,12 @@ static struct  try *newtry;
 static void init_keytry(void)
 {
     newtry = NULL;
-	
+
+/* LINT_PREPRO
+#if 0*/
 #include "keys.tries"
+/* LINT_PREPRO
+#endif*/
 
 	SP->_keytry = newtry;
 }

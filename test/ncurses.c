@@ -1959,6 +1959,7 @@ static int form_virtualize(WINDOW *w)
     switch(c)
     {
     case CTRL('Q'):
+    case CTRL('['):
 	return(MAX_FORM_COMMAND + 1);
 
     /* demo doesn't use these three, leave them in anyway as sample code */
@@ -2069,11 +2070,11 @@ static void demo_forms(void)
     mvaddstr(10, 57, "Forms Entry Test");
 
     move(18, 0);
-    addstr("Defined form-traversal keys:   ^Q   -- exit form\n");
+    addstr("Defined form-traversal keys:   ^Q/ESC- exit form\n");
     addstr("^N   -- go to next field       ^P  -- go to previous field\n");
     addstr("Home -- go to first field      End -- go to last field\n");
     addstr("^L   -- go to field to left    ^R  -- go to field to right\n");
-    addstr("^U   -- move upward to field   ^D  -- move downard to field\n");
+    addstr("^U   -- move upward to field   ^D  -- move downward to field\n");
     addstr("^W   -- go to next word        ^T  -- go to previous word\n");
     addstr("^S   -- go to start of field   ^E  -- go to end of field\n");
     addstr("^H   -- delete previous char   ^Y  -- delete line\n");
@@ -2171,50 +2172,50 @@ static void overlap_test(void)
 
 
     move(18, 0);
-    printw("F1 = refresh window A, then window B, then doupdaute.\n");
-    printw("F2 = refresh window B, then window A, then doupdaute.\n");
-    printw("F3 = fill window A with letter A.  F4 = fill window B with letter B.\n");
-    printw("F5 = cross pattern in window A.    F6 = cross pattern in window B.\n");
-    printw("F7 = clear window A.               F8 = clear window B.\n");
-    printw("F9 = terminate test.");
+    printw("1 = refresh window A, then window B, then doupdaute.\n");
+    printw("2 = refresh window B, then window A, then doupdaute.\n");
+    printw("3 = fill window A with letter A.  4 = fill window B with letter B.\n");
+    printw("5 = cross pattern in window A.    6 = cross pattern in window B.\n");
+    printw("7 = clear window A.               8 = clear window B.\n");
+    printw("9 = terminate test.");
 
-    while ((ch = getch()) != CTRL('D') && ch != KEY_F(9))
+    while ((ch = getch()) != CTRL('D') && ch != '9')
 	switch (ch)
 	{
-	case KEY_F(1):		/* refresh window A first, then B */
+	case '1':		/* refresh window A first, then B */
 	    wnoutrefresh(win1);
 	    wnoutrefresh(win2);
 	    doupdate();
 	    break;
 
-	case KEY_F(2):		/* refresh window B first, then A */
+	case '2':		/* refresh window B first, then A */
 	    wnoutrefresh(win2);
 	    wnoutrefresh(win1);
 	    doupdate();
 	    break;
 
-	case KEY_F(3):		/* fill window A so it's visible */
+	case '3':		/* fill window A so it's visible */
 	    fillwin(win1, 'A');
 	    break;
 
-	case KEY_F(4):		/* fill window B so it's visible */
+	case '4':		/* fill window B so it's visible */
 	    fillwin(win2, 'B');
 	    break;
 
-	case KEY_F(5):		/* cross test pattern in window A */
+	case '5':		/* cross test pattern in window A */
 	    crosswin(win1, 'A');
 	    break;
 
-	case KEY_F(6):		/* cross test pattern in window A */
+	case '6':		/* cross test pattern in window A */
 	    crosswin(win2, 'B');
 	    break;
 
-	case KEY_F(7):		/* clear window A */
+	case '7':		/* clear window A */
 	    wclear(win1);
 	    wmove(win1, 0, 0);
 	    break;
 
-	case KEY_F(8):		/* clear window B */
+	case '8':		/* clear window B */
 	    wclear(win2);
 	    wmove(win2, 0, 0);
 	    break;

@@ -415,7 +415,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 		    goto see03;
 		else if (*s != '2')
 		    goto invalid;
-		/* FALL THROUGH */
+		/* FALLTHRU */
 	    case '2':
 		getparm(param, 1);
 		*dp++ = '%'; /* *dp++ = '0'; */

@@ -1,4 +1,4 @@
-#
+# $Id: man_db.renames,v 0.3 1996/06/01 23:45:00 tom Exp $
 # Manual-page renamings for the man_db program
 #
 captoinfo.1m			captoinfo.1m
@@ -30,8 +30,10 @@ curs_move.3x			move.3ncurses
 curs_outopts.3x			outopts.3ncurses
 curs_overlay.3x			overlay.3ncurses
 curs_pad.3x			pad.3ncurses
+curs_print.3x			print.3ncurses
 curs_printw.3x			printw.3ncurses
 curs_refresh.3x			refresh.3ncurses
+curs_resize.3x			resize.3ncurses
 curs_scanw.3x			scanw.3ncurses
 curs_scr_dmp.3x			scr_dmp.3ncurses
 curs_scroll.3x			scroll.3ncurses
@@ -62,6 +64,7 @@ form_new_page.3x		new_page.3form
 form_opts.3x			opts.3form
 form_page.3x			page.3form
 form_post.3x			post.3form
+form_requestname.3x		requestname.3form
 form_userptr.3x			userptr.3form
 form_win.3x			win.3form
 infocmp.1m			infocmp.1m
@@ -77,6 +80,8 @@ menu_new.3x			new.3menu
 menu_opts.3x			opts.3menu
 menu_pattern.3x			pattern.3menu
 menu_post.3x			post.3menu
+menu_requestname.3x		requestname.3menu
+menu_spacing.3x			spacing.3menu
 menu_userptr.3x			userptr.3menu
 menu_win.3x			win.3menu
 mitem_current.3x		menu_current.3menu
@@ -90,8 +95,8 @@ ncurses.3x			ncurses.3ncurses
 panel.3x			panel.3curses
 term.5				term.5
 term.7				term.7
+terminfo.5			terminfo.5
 tic.1m				tic.1m
+toe.1m				toe.1m
 tput.1				tput.1
 tset.1				tset.1
-toe.1m				toe.1m
-terminfo.5			terminfo.5

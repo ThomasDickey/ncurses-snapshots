@@ -38,7 +38,12 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include "term.h"
 #include "term_entry.h"
+
+#ifdef LINT
+static short const parametrized[] = { 0 };
+#else
 #include "parametrized.h"
+#endif
 
 struct token	_nc_curr_token;
 
@@ -859,7 +864,7 @@ struct name_table_entry	const * lookup_fullname(const char *find)
 
     for (;;) {
 	int count = 0;
-	char **names;
+	char *const *names;
 
 	switch (++state) {
 	case BOOLEAN:

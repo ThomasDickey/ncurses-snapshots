@@ -32,6 +32,7 @@
 ./form/frm_driver.c
 ./form/frm_hook.c
 ./form/frm_opts.c
+./form/frm_req_name.c
 ./form/frm_user.c
 ./form/frm_win.c
 ./form/fty_alnum.c
@@ -41,6 +42,7 @@
 ./form/fty_num.c
 ./form/fty_regex.c
 ./form/headers
+./form/llib-lform
 ./form/modules
 ./include/Caps
 ./include/MKcurses.sh
@@ -123,6 +125,7 @@
 ./man/form_opts.3x
 ./man/form_page.3x
 ./man/form_post.3x
+./man/form_requestname.3x
 ./man/form_userptr.3x
 ./man/form_win.3x
 ./man/infocmp.1m
@@ -139,6 +142,8 @@
 ./man/menu_opts.3x
 ./man/menu_pattern.3x
 ./man/menu_post.3x
+./man/menu_requestname.3x
+./man/menu_spacing.3x
 ./man/menu_userptr.3x
 ./man/menu_win.3x
 ./man/mitem_current.3x
@@ -162,6 +167,7 @@
 ./menu/READ.ME
 ./menu/eti.h
 ./menu/headers
+./menu/llib-lmenu
 ./menu/m_attribs.c
 ./menu/m_cursor.c
 ./menu/m_driver.c
@@ -179,6 +185,8 @@
 ./menu/m_new.c
 ./menu/m_opts.c
 ./menu/m_post.c
+./menu/m_req_name.c
+./menu/m_spacing.c
 ./menu/m_userptr.c
 ./menu/m_win.c
 ./menu/menu.h
@@ -188,13 +196,17 @@
 ./misc/Makefile.in
 ./misc/hackguide.doc
 ./misc/hackguide.html
+./misc/makellib
 ./misc/ncurses-intro.doc
 ./misc/ncurses-intro.html
+./misc/run_tic.sh
 ./misc/tabset/std
 ./misc/tabset/stdcrt
 ./misc/tabset/vt100
 ./misc/tabset/vt300
+./misc/tdlint
 ./misc/terminfo.src
+./mk-0th.awk
 ./mk-1st.awk
 ./mk-2nd.awk
 ./mkinstalldirs
@@ -246,7 +258,6 @@
 ./ncurses/lib_isendwin.c
 ./ncurses/lib_kernel.c
 ./ncurses/lib_longname.c
-./ncurses/lib_print.c
 ./ncurses/lib_mouse.c
 ./ncurses/lib_move.c
 ./ncurses/lib_mvcur.c
@@ -256,6 +267,7 @@
 ./ncurses/lib_options.c
 ./ncurses/lib_overlay.c
 ./ncurses/lib_pad.c
+./ncurses/lib_print.c
 ./ncurses/lib_printw.c
 ./ncurses/lib_raw.c
 ./ncurses/lib_refresh.c
@@ -283,6 +295,7 @@
 ./ncurses/lib_unctrl.c
 ./ncurses/lib_vidattr.c
 ./ncurses/lib_window.c
+./ncurses/llib-lncurses
 ./ncurses/modules
 ./ncurses/parse_entry.c
 ./ncurses/read_entry.c
@@ -292,6 +305,7 @@
 ./ncurses/write_entry.c
 ./panel/Makefile.in
 ./panel/headers
+./panel/llib-lpanel
 ./panel/modules
 ./panel/panel.c
 ./panel/panel.h

@@ -24,6 +24,7 @@
 
 #include "term.h"
 #include <errno.h>
+#include <string.h>
 
 int mcprint(char *data, int len)
 /* ship binary character data to the printer via mc4/mc5/mc5p */

@@ -39,10 +39,30 @@ void _nc_Post_Item(const MENU * menu, const ITEM * item)
 {
   int i;
   chtype ch;
+  int item_x, item_y;
+  int count = 0;
   bool isfore = FALSE, isback=FALSE, isgrey = FALSE;
   
   assert(menu->win);
   
+  getyx(menu->win,item_y,item_x);
+  
+  /* We need a marker iff
+     - it is a onevalued menu and it is the current item
+     - or it has a selection value
+     */
+  wattron(menu->win,menu->back);
+  if (item->value || ((menu->opt&O_ONEVALUE) && (item==menu->curitem))	)
+    {
+      if (menu->marklen) 
+	waddstr(menu->win,menu->mark);
+    }
+  else			/* otherwise we have to wipe out the marker area */ 
+    for(ch=' ',i=menu->marklen;i>0;i--) 
+      waddch(menu->win,ch);
+  wattroff(menu->win,menu->back);
+  count += menu->marklen;
+
   /* First we have to calculate the attribute depending on selectability
      and selection status
      */
@@ -64,26 +84,14 @@ void _nc_Post_Item(const MENU * menu, const ITEM * item)
 	  isback = TRUE;
 	}
     }
-  
-  /* We need a marker iff
-     - it is a onevalued menu and it is the current item
-     - or it has a selection value
-     */
-  if (item->value || ((menu->opt&O_ONEVALUE) && (item==menu->curitem))	)
-    {
-      if (menu->marklen) 
-	waddstr(menu->win,menu->mark);
-    }
-  else			/* otherwise we have to wipe out the marker area */ 
-    for(ch=' ',i=menu->marklen;i>0;i--) 
-      waddch(menu->win,ch);
-  
+
   waddnstr(menu->win,item->name.str,item->name.length);
   for(ch=' ',i=menu->namelen-item->name.length;i>0;i--)
     {
       waddch(menu->win,ch);
     }
-  
+  count += menu->namelen;
+
   /* Show description if required and available */
   if ( (menu->opt & O_SHOWDESC) && menu->desclen>0 )
     {
@@ -106,9 +114,11 @@ void _nc_Post_Item(const MENU * menu, const ITEM * item)
 	{
 	  waddch(menu->win,ch);
 	}
+      count += menu->desclen + menu->spc_desc;
+
       if (menu->spc_rows > 1)
 	{
-	  int j, ncy, ncx;
+	  int j, k, ncy, ncx;
 
 	  assert(cx>=0 && cy>=0);
 	  getyx(menu->win,ncy,ncx);
@@ -117,6 +127,12 @@ void _nc_Post_Item(const MENU * menu, const ITEM * item)
 	  wattron(menu->win,menu->back);
 	  for(j=1; j < menu->spc_rows;j++)
 	    {
+	      if ((item_y+j) < getmaxy(menu->win))
+		{
+		  wmove (menu->win,item_y+j,item_x);
+		  for(k=0;k<count;k++)
+		    waddch(menu->win,' ');
+		}
 	      if ((cy+j) < getmaxy(menu->win))
 		mvwaddch(menu->win,cy+j,cx-1,menu->pad);
 	    }
@@ -149,11 +165,17 @@ void _nc_Draw_Menu(const MENU * menu)
   ITEM *lasthor, *lastvert;
   ITEM *hitem;
   int y = 0;
-  
+  chtype s_bkgd;
+
   assert(item && menu->win);
-  
+
+  s_bkgd = wgetbkgd(menu->win);
+  wbkgdset(menu->win,menu->back);
+  werase(menu->win);
+  wbkgdset(menu->win,s_bkgd);
+
   lastvert = (menu->opt & O_NONCYCLIC) ? (ITEM *)0 : item;  
-  
+
   do
     {  
       wmove(menu->win,y,0);
@@ -165,21 +187,30 @@ void _nc_Draw_Menu(const MENU * menu)
 	{
 	  _nc_Post_Item( menu, hitem);
 
+	  wattron(menu->win,menu->back);
 	  if ( ((hitem = hitem->right) != lasthor) && hitem )
 	    {
-	      int i;
+	      int i,j, cy, cx;
 	      chtype ch = ' ';
-	      for(i=0; i < menu->spc_cols; i++)
+
+	      getyx(menu->win,cy,cx);
+	      for(j=0;j<menu->spc_rows;j++)
 		{
-		  waddch( menu->win,ch);
+		  wmove(menu->win,cy+j,cx);
+		  for(i=0; i < menu->spc_cols; i++)
+		    {
+		      waddch( menu->win,ch);
+		    }
 		}
+	      wmove(menu->win,cy,cx+menu->spc_cols);
 	    }
 	} while (hitem && (hitem != lasthor));
+      wattroff(menu->win,menu->back);
       
       item = item->down;
       y += menu->spc_rows;
       
-    } while( item && (item != lastvert) );	
+    } while( item && (item != lastvert) );
 }
 
 /*---------------------------------------------------------------------------

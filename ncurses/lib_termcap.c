@@ -63,7 +63,7 @@ int errcode;
 		return(errcode);
 
         if (cursor_left)
-	    if (!(backspaces_with_bs = !strcmp(cursor_left, "\b")))
+	    if ((backspaces_with_bs = !strcmp(cursor_left, "\b")) == 0)
 		backspace_if_not_bs = cursor_left;
 
 	/* we're required to export these */
@@ -133,7 +133,11 @@ int errcode;
 	ospeed = cur_term->Nttyb.sg_ospeed;
 #endif
 
+/* LINT_PREPRO
+#if 0*/
 #include "capdefaults.c"
+/* LINT_PREPRO
+#endif*/
 
 	return errcode;
 }

@@ -1,3 +1,4 @@
+# $Id: Makefile.in,v 1.10 1996/06/01 19:51:23 tom Exp $
 # Makefile for ncurses miscellany directory
 #
 # This makes/installs the terminfo database
@@ -25,6 +26,9 @@ datadir		= @datadir@
 
 tabsetdir	= $(datadir)/tabset
 ticdir		= $(datadir)/terminfo
+
+INSTALL		= @INSTALL@
+INSTALL_DATA	= @INSTALL_DATA@
 
 ################################################################################
 all:

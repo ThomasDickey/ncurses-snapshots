@@ -28,6 +28,9 @@
  *
  */
 
+#ifndef CURSES_PRIV_H
+#define CURSES_PRIV_H 1
+
 #include <config.h>
 
 #include <stdlib.h>
@@ -53,13 +56,112 @@
 # elif defined(MAXPATHLEN)
 #  define PATH_MAX MAXPATHLEN
 # else
-#  define PATH_MAX 255	/* the Posix minimum pathsize */
+#  define PATH_MAX 255	/* the Posix minimum path-size */
 # endif
 #endif
 
 #include <assert.h>
+#include <stdio.h>
 
+/*
+ * The internal types (e.g., struct screen) must precede <curses.h>, otherwise
+ * we cannot construct lint-libraries (structures must be fully-defined).
+ */
+
+struct try {
+	struct try      *child;     /* ptr to child.  NULL if none          */
+	struct try      *sibling;   /* ptr to sibling.  NULL if none        */
+	unsigned char    ch;        /* character at this node               */
+	unsigned short   value;     /* code of string so far.  0 if none.   */
+};
+  
+/*
+ * Structure for soft labels.
+ */
+
+typedef struct 
+{
+	char *text;		/* text for the label */
+	char *form_text;	/* formatted text (left/center/...) */
+	int x;			/* x coordinate of this field */
+	char dirty;		/* this label has changed */
+	char visible;		/* field is visible */
+} slk_ent;
+  
+typedef struct {
+	char dirty;		/* all labels have changed */
+	char hidden;		/* soft labels are hidden */
+	struct _win_st *win;
+	slk_ent *ent;
+	char *buffer;           /* buffer for labels */
+	short maxlab;           /* number of available labels */
+	short labcnt;           /* number of allocated labels */  
+	short maxlen;           /* length of labels */    
+} SLK;
+
+#define MAXCOLUMNS    135
+#define MAXLINES      66
+#define FIFO_SIZE     MAXLINES
+
+struct screen {
+	int		_ifd;	    	/* input file ptr for screen        */
+	FILE		*_ofp;	    	/* output file ptr for screen       */
+	int		_checkfd;	/* filedesc for typeahead check     */ 
+	struct term	*_term;	    	/* terminal type information        */
+	short		_lines;		/* screen lines			    */
+	short		_columns;	/* screen columns		    */
+	struct _win_st	*_curscr;   	/* current screen                   */
+	struct _win_st	*_newscr;	/* virtual screen to be updated to  */
+	struct _win_st	*_stdscr;	/* screen's full-window context     */
+	struct try  	*_keytry;   	/* "Try" for use with keypad mode   */
+	unsigned int	_fifo[FIFO_SIZE]; 	/* input push-back buffer    */
+	signed char	_fifohead, 	/* head of fifo queue               */
+			_fifotail, 	/* tail of fifo queue               */
+			_fifopeek;	/* where to peek for next char      */
+	int		_endwin;	/* are we out of window mode?       */
+	unsigned long	_current_attr;	/* terminal attribute current set   */
+	int		_coloron;	/* is color enabled?                */
+	int		_cursor;	/* visibility of the cursor         */
+	int         	_cursrow;   	/* physical cursor row              */
+	int         	_curscol;   	/* physical cursor column           */
+	int		_nl;	    	/* True if NL -> CR/NL is on        */
+	int		_raw;	    	/* True if in raw mode              */
+	int		_cbreak;    	/* 1 if in cbreak mode              */
+					/* > 1 if in halfdelay mode         */
+	int		_echo;	    	/* True if echo on                  */
+	int		_use_meta;      /* use the meta key?		    */
+	SLK		*_slk;	    	/* ptr to soft key struct / NULL    */
+	int		_baudrate;	/* used to compute padding	    */
+
+	/* cursor movement costs; units are 10ths of milliseconds */
+	int		_char_padding;	/* cost of character put	    */
+	int		_cr_cost;	/* cost of (carriage_return)	    */
+	int		_cup_cost;	/* cost of (cursor_address)	    */
+	int		_home_cost;	/* cost of (cursor_home)	    */
+	int		_ll_cost;	/* cost of (cursor_to_ll)	    */
+#ifdef TABS_OK
+	int		_ht_cost;	/* cost of (tab)		    */
+	int		_cbt_cost;	/* cost of (backtab)		    */
+#endif /* TABS_OK */
+	int		_cub1_cost;	/* cost of (cursor_left)	    */
+	int		_cuf1_cost;	/* cost of (cursor_right)	    */
+	int		_cud1_cost;	/* cost of (cursor_down)	    */
+	int		_cuu1_cost;	/* cost of (cursor_up)		    */
+	int		_cub_cost;	/* cost of (parm_cursor_left)	    */
+	int		_cuf_cost;	/* cost of (parm_cursor_right)	    */
+	int		_cud_cost;	/* cost of (parm_cursor_down)	    */
+	int		_cuu_cost;	/* cost of (parm_cursor_up)	    */
+	int		_hpa_cost;	/* cost of (column_address)	    */
+	int		_vpa_cost;	/* cost of (row_address)	    */
+};
+
+/* Ncurses' public interface follows the internal types */
 #include <curses.h>	/* we'll use -Ipath directive to get the right one! */
+
+typedef	struct {
+	int	line;
+	int	(*hook)(struct _win_st *, int);
+} ripoff_t;
 
 /* The terminfo source is assumed to be 7-bit ASCII */
 #define is7bits(c)	((unsigned)(c) < 128)
@@ -131,6 +233,31 @@ extern char *_nc_visbuf(const char *);
 #define TPUTS_TRACE(s)
 #endif
 
+#define ALL_BUT_COLOR ((chtype)~(A_COLOR))
+#define IGNORE_COLOR_OFF FALSE
+
+#define toggle_attr_on(S,at) \
+   if (PAIR_NUMBER(at) > 0)\
+      (S) = ((S) & ALL_BUT_COLOR) | (at);\
+   else\
+      (S) |= (at);\
+   T(("new attribute is %s", _traceattr((S))))
+
+
+#define toggle_attr_off(S,at) \
+   if (IGNORE_COLOR_OFF == TRUE) {\
+      if (PAIR_NUMBER(at) == 0xff) /* turn off color */\
+         (S) &= ~(at);\
+      else /* leave color alone */\
+         (S) &= ~((at)|ALL_BUT_COLOR);\
+   } else {\
+      if (PAIR_NUMBER(at) > 0x00) /* turn off color */\
+         (S) &= ~(at);\
+      else /* leave color alone */\
+         (S) &= ~((at)|ALL_BUT_COLOR);\
+   }\
+   T(("new attribute is %s", _traceattr((S))));
+
 /* lib_acs.c */
 extern void init_acs(void);	/* no prefix, this name is traditional */
 
@@ -166,86 +293,6 @@ extern void _nc_synchook(WINDOW *win);
 extern int _nc_timed_wait(int fd, int wait, int *timeleft);
 extern void _nc_do_color(int, int (*)(int));
 
-struct try {
-        struct try      *child;     /* ptr to child.  NULL if none          */
-        struct try      *sibling;   /* ptr to sibling.  NULL if none        */
-        unsigned char    ch;        /* character at this node               */
-        unsigned short   value;     /* code of string so far.  0 if none.   */
-};
-  
-/*
- * Structure for soft labels.
- */
-  
-typedef struct {
-	char dirty;			/* all labels have changed */
-	char hidden;			/* soft lables are hidden */
-	WINDOW *win;
- 	struct slk_ent {
- 	    char text[9];		/* text for the label */
- 	    char form_text[9];		/* formatted text (left/center/...) */
- 	    int x;			/* x coordinate of this field */
- 	    char dirty;			/* this label has changed */
- 	    char visible;		/* field is visible */
-	} ent[8];
-} SLK;
-
-#define MAXCOLUMNS    135
-#define MAXLINES      66
-#define FIFO_SIZE	MAXLINES
-
-struct screen {
-       	int		_ifd;	    	/* input file ptr for screen        */
-   	FILE		*_ofp;	    	/* output file ptr for screen       */
-   	int		_checkfd;	/* filedesc for typeahead check     */ 
-	struct term	*_term;	    	/* terminal type information        */
-	short		_lines;		/* screen lines			    */
-	short		_columns;	/* screen columns		    */
-	WINDOW		*_curscr;   	/* current screen                   */
-	WINDOW		*_newscr;	/* virtual screen to be updated to  */
-	WINDOW		*_stdscr;	/* screen's full-window context     */
-	struct try  	*_keytry;   	/* "Try" for use with keypad mode   */
-	unsigned int	_fifo[FIFO_SIZE]; 	/* input pushback buffer    */
-	signed char	_fifohead, 	/* head of fifo queue               */
-			_fifotail, 	/* tail of fifo queue               */
-			_fifopeek;	/* where to peek for next char      */
-	bool		_endwin;	/* are we out of window mode?       */
-	chtype		_current_attr;	/* terminal attribute current set   */
-	bool		_coloron;	/* is color enabled?                */
-	int		_cursor;	/* visibility of the cursor         */
-	int         	_cursrow;   	/* physical cursor row              */
-	int         	_curscol;   	/* physical cursor column           */
-	bool		_nl;	    	/* True if NL -> CR/NL is on        */
-	bool		_raw;	    	/* True if in raw mode              */
-	int		_cbreak;    	/* 1 if in cbreak mode              */
-                       		    	/* > 1 if in halfdelay mode         */
-	bool		_echo;	    	/* True if echo on                  */
-	bool		_use_meta;      /* use the meta key?		    */
- 	SLK		*_slk;	    	/* ptr to soft key struct / NULL    */
-	int		_baudrate;	/* used to compute padding	    */
-
-	/* cursor movement costs; units are 10ths of milliseconds */
-	int		_char_padding;	/* cost of character put	    */
-	int		_cr_cost;	/* cost of (carriage_return)	    */
-	int		_cup_cost;	/* cost of (cursor_address)	    */
-	int		_home_cost;	/* cost of (cursor_home)	    */
-	int		_ll_cost;	/* cost of (cursor_to_ll)	    */
-#ifdef TABS_OK
-	int		_ht_cost;	/* cost of (tab)		    */
-	int		_cbt_cost;	/* cost of (backtab)		    */
-#endif /* TABS_OK */
-	int		_cub1_cost;	/* cost of (cursor_left)	    */
-	int		_cuf1_cost;	/* cost of (cursor_right)	    */
-	int		_cud1_cost;	/* cost of (cursor_down)	    */
-	int		_cuu1_cost;	/* cost of (cursor_up)		    */
-	int		_cub_cost;	/* cost of (parm_cursor_left)	    */
-	int		_cuf_cost;	/* cost of (parm_cursor_right)	    */
-	int		_cud_cost;	/* cost of (parm_cursor_down)	    */
-	int		_cuu_cost;	/* cost of (parm_cursor_up)	    */
-	int		_hpa_cost;	/* cost of (column_address)	    */
-	int		_vpa_cost;	/* cost of (row_address)	    */
-};
-
 /*
  * On systems with a broken linker, define 'SP' as a function to force the
  * linker to pull in the data-only module with 'SP'.
@@ -274,7 +321,16 @@ extern SCREEN *SP;
 #define screen_lines	SP->_lines
 #define screen_columns	SP->_columns
 
-extern int _slk_init;			/* TRUE if slk_init() called */
-extern int slk_initialize(WINDOW *, int);
+extern int _nc_slk_format;  /* != 0 if slk_init() called */
+extern int _nc_slk_initialize(WINDOW *, int);
+
+/* Macro to check whether or not we use a standard format */
+#define SLK_STDFMT (_nc_slk_format < 3)
+/* Macro to determine height of label window */
+#define SLK_LINES  (SLK_STDFMT ? 1 : (_nc_slk_format - 2))
+
+extern int _nc_ripoffline(int line, int (*init)(WINDOW *,int));
 
 #define UNINITIALISED ((struct try * ) -1)
+
+#endif /* CURSES_PRIV_H */

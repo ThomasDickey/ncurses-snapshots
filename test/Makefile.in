@@ -1,3 +1,4 @@
+# $Id: Makefile.in,v 1.14 1996/06/01 19:51:24 tom Exp $
 # Makefile for ncurses tests.
 
 SHELL		= /bin/sh
@@ -25,6 +26,10 @@ LOCAL_LIBS	= @TEST_DEPS@
 
 LINK		= $(CC)
 LD_FLAGS	= @LD_MODEL@ $(LOCAL_LIBS) @LDFLAGS@ @LIBS@ @LOCAL_LDFLAGS@ $(LDFLAGS)
+
+LINT		= @LINT@
+LINT_OPTS	= @LINT_OPTS@
+LINT_LIBS	= -lform -lmenu -lpanel -lncurses @LIBS@
 
 TESTS = \
 	blue \
@@ -84,9 +89,12 @@ install:
 clean:
 	-rm -rf *.o trace screendump t $(TESTS)
 
-distclean: clean
+distclean :: clean
 	-rm -f Makefile config.*
 
-mostlyclean: clean
+mostlyclean :: clean
 
-realclean: distclean
+realclean :: distclean
+
+lint:
+	sh -c 'for N in $(TESTS); do $(LINT) $(LINT_OPTS) $(CPPFLAGS) $(srcdir)/$$N.c $(LINT_LIBS); done'
