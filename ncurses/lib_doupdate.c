@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.86 1997/09/28 00:23:45 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.88 1997/10/02 12:06:26 Alexander.V.Lukyanov Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -230,7 +230,7 @@ static inline void PutChar(chtype const ch);	/* forward declaration */
 /* put char at lower right corner */
 static void PutCharLR(chtype const ch)
 {
-    if (!auto_right_margin || eat_newline_glitch)
+    if (!auto_right_margin)
     {
 	/* we can put the char directly */
 	PutAttrChar(ch);
@@ -1427,7 +1427,7 @@ static int scroll_csr_backward(int n, int top, int bot, int miny, int maxy, chty
 {
     int i;
 
-    if (n == 1 && scroll_reverse && top == 0 && bot == maxy)
+    if (n == 1 && scroll_reverse && top == miny && bot == maxy)
     {
 	GoTo(top, 0);
 	UpdateAttrs(blank);

@@ -2,7 +2,7 @@
 #ifndef _CURSESP_H
 #define _CURSESP_H
 
-// $Id: cursesp.h,v 1.7 1997/09/09 00:14:40 juergen Exp $
+// $Id: cursesp.h,v 1.8 1997/10/03 10:32:17 juergen Exp $
 
 #include <cursesw.h>
 
@@ -95,6 +95,21 @@ public:
   }
   // Return TRUE if the panel is hidden, FALSE otherwise.
 
+/* The functions panel_above() and panel_below() are not reflected in
+   the NCursesPanel class. The reason for this is, that we cannot
+   assume that a panel retrieved by those operations is one wrapped
+   by a C++ class. Although this situation might be handled, we also
+   need a reverse mapping from PANEL to NCursesPanel which needs some
+   redesign of the low level stuff. At the moment, we define them in the
+   interface but they will always produce an error. */
+  inline NCursesPanel& above() const {
+    OnError(ERR);
+  }
+
+  inline NCursesPanel& below() const {
+    OnError(ERR);
+  }
+
   // Those two are rewrites of the corresponding virtual members of
   // NCursesWindow
   int refresh();
@@ -124,7 +139,6 @@ public:
   virtual void centertext(int row,const char* label);
   // Put the label text centered in the specified row.
 };
-
 
 /* We use templates to provide a typesafe mechanism to associate
  * user data with a panel. A NCursesUserPanel<T> is a panel 

@@ -6,7 +6,7 @@
  *   Demo code for NCursesMenu and NCursesForm written by
  *   Juergen Pfeifer <Juergen.Pfeifer@T-Online.de>
  *
- * $Id: demo.cc,v 1.11 1997/09/13 10:10:20 juergen Exp $
+ * $Id: demo.cc,v 1.12 1997/09/21 15:51:37 juergen Exp $
  */
 
 #include "cursesapp.h"
@@ -394,6 +394,7 @@ void TestApplication::title() {
 int TestApplication::run() {
   MyMenu M;
   M();
+  return 0;
 }
 
 //

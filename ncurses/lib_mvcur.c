@@ -141,7 +141,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.44 1997/08/23 15:59:31 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.45 1997/10/01 19:18:30 Alexander.V.Lukyanov Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -723,15 +723,12 @@ onscreen_mvcur(int yold,int xold,int ynew,int xnew, bool ovw)
     }
 
     /* tactic #2: use carriage-return + local movement */
-    if (yold < screen_lines - 1 && xold < screen_columns - 1)
-    {
-	if (carriage_return
+    if (yold != -1 && carriage_return
 		&& ((newcost=relative_move(NULL, yold,0,ynew,xnew, ovw)) != INFINITY)
 		&& SP->_cr_cost + newcost < usecost)
-	{
-	    tactic = 2;
-	    usecost = SP->_cr_cost + newcost;
-	}
+    {
+	tactic = 2;
+	usecost = SP->_cr_cost + newcost;
     }
 
     /* tactic #3: use home-cursor + local movement */
@@ -757,7 +754,7 @@ onscreen_mvcur(int yold,int xold,int ynew,int xnew, bool ovw)
      * unless strange wrap behavior indicated by xenl might hose us.
      */
     if (auto_left_margin && !eat_newline_glitch
-	&& yold > 0 && yold < screen_lines - 1 && cursor_left
+	&& yold > 0 && cursor_left
 	&& ((newcost=relative_move(NULL, yold-1, screen_columns-1, ynew, xnew, ovw)) != INFINITY)
 	&& SP->_cr_cost + SP->_cub1_cost + newcost + newcost < usecost)
     {

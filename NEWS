@@ -1,7 +1,48 @@
--- $Id: NEWS,v 1.254 1997/09/28 00:49:09 tom Exp $
+-- $Id: NEWS,v 1.258 1997/10/05 01:25:43 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+971004
+	+ add color, mouse support to kterm terminfo entry.
+	+ modify lib_mouse.c to recognize rxvt, kterm, color_xterm also as
+	  providing "xterm"-style mouse.
+	+ updated rxvt's terminfo description to correspond to 2.21b, with
+	  fixes for the acsc (the box1 capability is incorrect, ech1 does not
+	  work).
+	+ fix logic in parse_entry.c that discarded acsc when 'synthesizing'
+	  an entry from equivalents in XENIX or AIX.  This lets ncurses handle
+	  the distribution copy of rxvt's terminfo.
+	+ modify acsc capability for linux and linux-koi8 terminfo descriptions
+	  (from Pavel Roskin <pavel@absolute.spb.su>).
+	+ corrected definition in curses.h for ACS_LANTERN, which was 'I'
+	  rather than 'i' (see 970802).
+	+ updated terminfo.src with reformatted acsc entries, and repaired the
+	  trashed entries with spurious '\' characters that this exposed.
+	+ add logic to dump_entry.c to reformat acsc entries into canonical
+	  form (sorted, unique mapping).
+	+ add configure script to generate c++/etip.h
+	+ add configure --with-develop option, to enable by default most of the
+	  experimental options (requested by Alexander V. Lukyanov).
+	+ rename 'deinstall' to 'uninstall', following GNU convention (suggested
+	  by Alexander V. Lukyanov).
+	> patches by Alexander V. Lukyanov:
+	+ modify tactics 2 and 5 in onscreen_mvcur(), to allow them on the last
+	  line of the screen, since carriage return will not cause a newline. 
+	+ remove clause from PutCharLR() that would try to use
+	  eat_newline_glitch since that apparently does not work on some
+	  terminals (e.g., M$ telnet).
+	+ correct a limit check in scroll_csr_backward()
+	> patches by Juergen Pfeifer:
+	+ adds dummy implementations of methods above() and below() to the
+	  NCursesPanel class.
+	+ fixes missing returncode in NCursesWindow::ripoffline()
+	+ fixes missing returncode in TestApplication::run() in demo.cc
+	+ We should at least give a comment in etip.h why it is currently a
+	  problem to install the C++ binding somewhere
+	+ makes the WINDOW* argument of wenclose() a const.
+	+ modifies several of the routines in lib_adabind.c to use a const
+	  WINDOW* argument.
 
 970927
 	+ add 'deinstall' rules.

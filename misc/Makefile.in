@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.15 1997/09/27 22:58:19 tom Exp $
+# $Id: Makefile.in,v 1.16 1997/10/04 17:07:45 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -70,9 +70,9 @@ $(INSTALL_PREFIX)$(tabsetdir) \
 $(INSTALL_PREFIX)$(ticdir) :
 	$(srcdir)/../mkinstalldirs $@
 
-deinstall: deinstall.data
+uninstall: uninstall.data
 
-deinstall.data:
+uninstall.data:
 	-cd $(INSTALL_PREFIX)$(ticdir) && rm -rf *
 	-cd $(INSTALL_PREFIX)$(tabsetdir) && rm -rf *
 

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.35 1997/09/27 20:59:39 tom Exp $
+# $Id: Makefile.in,v 1.36 1997/10/04 17:07:55 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -128,9 +128,9 @@ install:
 install.libs:
 install.test:
 
-deinstall:
-deinstall.libs:
-deinstall.test:
+uninstall:
+uninstall.libs:
+uninstall.test:
 
 clean ::
 	-rm -rf *.o trace screendump *.atac *.lis core $(TESTS)

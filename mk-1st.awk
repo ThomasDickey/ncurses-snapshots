@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.24 1997/09/27 21:44:45 tom Exp $
+# $Id: mk-1st.awk,v 1.25 1997/10/04 17:08:16 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -131,10 +131,10 @@ END	{
 					printf "\t- test -z \"$(INSTALL_PREFIX)\" && %s\n", ldconfig
 				}
 				print  ""
-				print  "deinstall \\"
-				print  "deinstall.libs \\"
-				printf "deinstall.%s ::\n", name
-				printf "\t@echo deinstalling $(INSTALL_PREFIX)$(libdir)/%s \n", end_name
+				print  "uninstall \\"
+				print  "uninstall.libs \\"
+				printf "uninstall.%s ::\n", name
+				printf "\t@echo uninstalling $(INSTALL_PREFIX)$(libdir)/%s \n", end_name
 				printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/%s\n", end_name
 				sharedlinks("$(INSTALL_PREFIX)$(libdir)", 0)
 				if ( overwrite == "yes" && name == "ncurses" )
@@ -178,10 +178,10 @@ END	{
 					printf "\t$(INSTALL_DATA) ../lib/lib%s.o $(INSTALL_PREFIX)$(libdir)/lib%s.o\n", name, name
 				}
 				print  ""
-				print  "deinstall \\"
-				print  "deinstall.libs \\"
-				printf "deinstall.%s ::\n", name
-				printf "\t@echo deinstalling $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name
+				print  "uninstall \\"
+				print  "uninstall.libs \\"
+				printf "uninstall.%s ::\n", name
+				printf "\t@echo uninstalling $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name
 				printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/%s\n", lib_name
 				if ( overwrite == "yes" && lib_name == "libncurses.a" )
 				{
@@ -190,7 +190,7 @@ END	{
 				}
 				if ( target == "vxworks" )
 				{
-					printf "\t@echo deinstalling $(INSTALL_PREFIX)$(libdir)/lib%s.o\n", name
+					printf "\t@echo uninstalling $(INSTALL_PREFIX)$(libdir)/lib%s.o\n", name
 					printf "\t-@rm -f $(INSTALL_PREFIX)$(libdir)/lib%s.o\n", name
 				}
 			}

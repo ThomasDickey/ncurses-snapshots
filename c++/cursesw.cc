@@ -25,7 +25,7 @@
 #include "cursesw.h"
 #include "internal.h"
 
-MODULE_ID("$Id: cursesw.cc,v 1.8 1997/09/07 23:26:19 juergen Exp $")
+MODULE_ID("$Id: cursesw.cc,v 1.9 1997/09/21 15:50:00 juergen Exp $")
 
 #define COLORS_NEED_INITIALIZATION  -1
 #define COLORS_NOT_INITIALIZED       0
@@ -241,6 +241,7 @@ int NCursesWindow::ripoffline(int ripoff_lines,
   if (code==OK && init) {
     R_INIT[r_init_idx++] = init;
   }
+  return code;
 }
 
 bool
