@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.57 2000/02/13 01:05:13 tom Exp $
+# $Id: Makefile.in,v 1.58 2000/05/28 01:28:39 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -187,8 +187,9 @@ worm$x: $(MODEL)/worm.o $(LOCAL_LIBS)
 xmas$x: $(MODEL)/xmas.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/xmas.o $(LDFLAGS_DEFAULT)
 
-install:
-install.libs:
+libs \
+install \
+install.libs \
 install.test:
 
 uninstall:

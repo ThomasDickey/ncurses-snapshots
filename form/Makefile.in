@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.26 2000/01/08 23:17:22 tom Exp $
+# $Id: Makefile.in,v 1.28 2000/05/28 01:40:18 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2000 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -83,7 +83,7 @@ LINK		= $(CC)
 LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@
 
 SHLIB_DIRS	= -L../lib -L$(libdir)
-SHLIB_LIST	= $(SHLIB_DIRS) -lncurses @SHLIB_LIST@
+SHLIB_LIST	= $(SHLIB_DIRS) -lncurses@LIB_SUFFIX@ @SHLIB_LIST@
 
 MK_SHARED_LIB	= @MK_SHARED_LIB@
 
@@ -103,6 +103,7 @@ AUTO_SRC	= \
 
 ################################################################################
 all \
+libs \
 install ::	$(AUTO_SRC) $(LIBRARIES)
 
 sources :	$(AUTO_SRC)

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.16 2000/03/19 01:01:58 Bruno.Haible Exp $
+# $Id: Makefile.in,v 1.18 2000/05/28 01:28:24 tom Exp $
 # Makefile for tack
 #
 # The variable 'srcdir' refers to the source-distribution, and can be set with
@@ -67,7 +67,7 @@ LDFLAGS_DEFAULT	= $(LDFLAGS_@DFT_UPR_MODEL@)
 
 LINT		= @LINT@
 LINT_OPTS	= @LINT_OPTS@
-LINT_LIBS	= -lncurses @LIBS@
+LINT_LIBS	= -lncurses@LIB_SUFFIX@ @LIBS@
 
 PROGS = tack$x
 
@@ -83,7 +83,8 @@ install: install.tack
 uninstall: uninstall.tack
 
 # this line simplifies the configure-script
-install.libs:
+libs \
+install.libs \
 uninstall.libs:
 
 install.tack: $(PROGS) \

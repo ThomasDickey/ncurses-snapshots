@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.160 2000/05/20 23:46:58 tom Exp $
+ * $Id: curses.priv.h,v 1.161 2000/05/27 23:10:03 tom Exp $
  *
  *	curses.priv.h
  *
@@ -715,11 +715,12 @@ extern void _nc_hash_map(void);
 extern void _nc_init_keytry(void);
 extern void _nc_keep_tic_dir(const char *);
 extern void _nc_make_oldhash(int i);
+extern void _nc_flush(void);
 extern void _nc_outstr(const char *str);
 extern void _nc_scroll_oldhash(int n, int top, int bot);
 extern void _nc_scroll_optimize(void);
 extern void _nc_scroll_window(WINDOW *, int const, short const, short const, chtype);
-extern void _nc_set_buffer(FILE *ofp, bool buffered);
+extern void _nc_set_buffer(FILE *, bool);
 extern void _nc_signal_handler(bool);
 extern void _nc_synchook(WINDOW *win);
 extern void _nc_trace_tries(struct tries *tree);
@@ -742,7 +743,6 @@ extern int *_nc_oldnums;
 		_nc_set_buffer(SP->_ofp, flag)
 
 #define NC_OUTPUT ((SP != 0) ? SP->_ofp : stdout)
-#define _nc_flush() (void)fflush(NC_OUTPUT)
 
 /*
  * On systems with a broken linker, define 'SP' as a function to force the

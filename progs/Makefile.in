@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.39 2000/03/19 01:01:58 Bruno.Haible Exp $
+# $Id: Makefile.in,v 1.40 2000/05/28 01:28:09 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2000 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -119,7 +119,8 @@ install: install.progs
 uninstall: uninstall.progs 
 
 # this line simplifies the configure-script
-install.libs:
+libs \
+install.libs \
 uninstall.libs:
 
 install.progs: $(PROGS) $(INSTALL_PREFIX)$(bindir)

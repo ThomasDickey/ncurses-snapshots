@@ -45,7 +45,7 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.46 2000/05/21 00:38:19 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.47 2000/05/27 23:08:41 tom Exp $")
 
 char PC = 0;			/* used by termcap library */
 speed_t ospeed = 0;		/* used by termcap library */
@@ -73,6 +73,12 @@ delay_output(int ms)
     }
 
     returnCode(OK);
+}
+
+void
+_nc_flush(void)
+{
+    (void)fflush(NC_OUTPUT);
 }
 
 int
