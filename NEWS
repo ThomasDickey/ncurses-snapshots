@@ -1,10 +1,33 @@
--- $Id: NEWS,v 1.389 1998/11/15 00:24:09 tom Exp $
+-- $Id: NEWS,v 1.390 1998/11/22 03:38:52 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+981121
+	+ modify misc/makedef.cmd to report old-style .def file symbols, and to
+	  generate the .def files sorted by increasing names rather than the
+	  reverse.
+	+ add misc/*.ref which are J.J.G.Ripoll's dll definition files (renamed
+	  from misc/*.old), and updated based on the entrypoint coding he used
+	  for an older version of ncurses.
+	+ add README.emx, to document how to build on OS/2 EMX.
+	+ updates for config.guess, config.sub from Lynx
+	> patches by Ilya Zakharevich:
+	+ minor fixes for mouse handling mode:
+	  a) Do not initialized mouse if the request is to have no mouse;
+	  b) Allow switching of OS/2 VIO mouse on and off.
+	+ modify Makefile.os2 to support alternative means of generating
+	  configure script, by translating Unix script with Perl.
+	> patches by Juergen Pfeifer:
+	+ Updates MANIFEST to reflect changes in source structure
+	+ Eliminates a problem introduced with my last patch for the C++
+	  binding in the panels code.  It removes the update() call done in the
+	  panel destructor.
+	+ Changes in the Ada95 binding to better support systems where
+	  sizeof(chtype)!=sizeof(int) (e.g.  DEC Alpha).
 
 981114
 	+ modify install-script for manpages to skip over .orig and .rej files
@@ -17,10 +40,10 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  be linked into the normal ncurses library.
 	+ move macro winch to a function, to hide details of struct ldat
 	> patches by Juergen Pfeifer:
-	+ fix a potential compile problem in cursesw.cc 
-	+ some Ada95 cosmetics 
-	+ fix a gen.c problem when compiling on 64-Bit machines 
-	+ fix Ada95/gen/Makefile.in "-L" linker switch 
+	+ fix a potential compile problem in cursesw.cc
+	+ some Ada95 cosmetics
+	+ fix a gen.c problem when compiling on 64-Bit machines
+	+ fix Ada95/gen/Makefile.in "-L" linker switch
 	+ modify Ada95 makefiles to use the INSTALL_PREFIX setting.
 
 981107

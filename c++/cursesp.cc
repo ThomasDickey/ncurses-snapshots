@@ -34,7 +34,7 @@
 #include "cursesp.h"
 #include "internal.h"
 
-MODULE_ID("$Id: cursesp.cc,v 1.11 1998/02/17 09:04:12 juergen Exp $")
+MODULE_ID("$Id: cursesp.cc,v 1.12 1998/11/10 18:29:48 juergen Exp $")
 
 NCursesPanel* NCursesPanel::dummy = (NCursesPanel*)0;
 
@@ -56,7 +56,6 @@ NCursesPanel::~NCursesPanel() {
   delete hook;
   ::del_panel(p);
   ::update_panels();
-  ::doupdate();
 }
 
 void

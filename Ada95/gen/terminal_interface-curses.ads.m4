@@ -37,7 +37,7 @@ include(M4MACRO)----------------------------------------------------------------
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996
 --  Version Control:
---  $Revision: 1.17 $
+--  $Revision: 1.19 $
 --  Binding Version 00.93
 ------------------------------------------------------------------------------
 include(`Base_Defs')
@@ -116,7 +116,7 @@ include(`Color_Defs')
    --  the other for the background
 
 include(`Character_Attribute_Set_Rep')
-   --  (n)curses uses half of an integer for attributes.
+   --  (n)curses uses all but the lowes 16 Bits for Attributes.
 
    Normal_Video : constant Character_Attribute_Set := (others => False);
 

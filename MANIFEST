@@ -4,7 +4,6 @@
 ./Ada95/TODO
 ./Ada95/ada_include/Makefile.in
 ./Ada95/ada_include/terminal_interface-curses-aux.adb
-./Ada95/ada_include/terminal_interface-curses-aux.ads
 ./Ada95/ada_include/terminal_interface-curses-forms-field_types-alpha.adb
 ./Ada95/ada_include/terminal_interface-curses-forms-field_types-alpha.ads
 ./Ada95/ada_include/terminal_interface-curses-forms-field_types-alphanumeric.adb
@@ -58,6 +57,7 @@
 ./Ada95/gen/Makefile.in
 ./Ada95/gen/gen.c
 ./Ada95/gen/normal.m4
+./Ada95/gen/terminal_interface-curses-aux.ads.m4
 ./Ada95/gen/terminal_interface-curses-forms-field_types.ads.m4
 ./Ada95/gen/terminal_interface-curses-forms-field_user_data.ads.m4
 ./Ada95/gen/terminal_interface-curses-forms-form_user_data.ads.m4
@@ -245,6 +245,7 @@
 ./Makefile.os2
 ./NEWS
 ./README
+./README.emx
 ./README.glibc
 ./TO-DO
 ./aclocal.m4
@@ -277,6 +278,7 @@
 ./config.sub
 ./configure
 ./configure.in
+./convert_configure.pl
 ./dist.mk
 ./form/Makefile.in
 ./form/READ.ME
@@ -492,15 +494,19 @@
 ./misc/cmpdef.cmd
 ./misc/emx.src
 ./misc/form.def
+./misc/form.ref
 ./misc/hackguide.doc
 ./misc/hackguide.html
 ./misc/makedef.cmd
 ./misc/makellib
 ./misc/menu.def
+./misc/menu.ref
 ./misc/ncurses-intro.doc
 ./misc/ncurses-intro.html
 ./misc/ncurses.def
+./misc/ncurses.ref
 ./misc/panel.def
+./misc/panel.ref
 ./misc/run_tic.sh
 ./misc/shlib
 ./misc/tabset/std
@@ -513,7 +519,6 @@
 ./mk-1st.awk
 ./mk-2nd.awk
 ./mkinstalldirs
-./ncurses/MKexpanded.sh
 ./ncurses/Makefile.in
 ./ncurses/README
 ./ncurses/SigAction.h
@@ -604,11 +609,6 @@
 ./ncurses/base/wresize.c
 ./ncurses/curses.priv.h
 ./ncurses/fifo_defs.h
-./ncurses/hardscroll.c
-./ncurses/hashmap.c
-./ncurses/lib_mvcur.c
-./ncurses/lib_tstp.c
-./ncurses/lib_vidattr.c
 ./ncurses/llib-lncurses
 ./ncurses/modules
 ./ncurses/tinfo/MKcaptab.awk
@@ -660,6 +660,12 @@
 ./ncurses/trace/lib_tracedmp.c
 ./ncurses/trace/lib_tracemse.c
 ./ncurses/trace/trace_buf.c
+./ncurses/tty/MKexpanded.sh
+./ncurses/tty/hardscroll.c
+./ncurses/tty/hashmap.c
+./ncurses/tty/lib_mvcur.c
+./ncurses/tty/lib_tstp.c
+./ncurses/tty/lib_vidattr.c
 ./panel/Makefile.in
 ./panel/headers
 ./panel/llib-lpanel

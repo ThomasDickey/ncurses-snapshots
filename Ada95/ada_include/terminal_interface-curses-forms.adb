@@ -35,7 +35,7 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996
 --  Version Control:
---  $Revision: 1.14 $
+--  $Revision: 1.15 $
 --  Binding Version 00.93
 ------------------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
@@ -402,13 +402,14 @@ package body Terminal_Interface.Curses.Forms is
       Color : in Color_Pair := Color_Pair'First)
    is
       function Set_Field_Fore (Fld  : Field;
-                               Attr : C_Int) return C_Int;
+                               Attr : C_Chtype) return C_Int;
       pragma Import (C, Set_Field_Fore, "set_field_fore");
 
       Ch : constant Attributed_Character := (Ch    => Character'First,
                                              Color => Color,
                                              Attr  => Fore);
-      Res : constant Eti_Error := Set_Field_Fore (Fld, Chtype_To_CInt (Ch));
+      Res : constant Eti_Error :=
+        Set_Field_Fore (Fld, AttrChar_To_Chtype (Ch));
    begin
       if  Res /= E_Ok then
          Eti_Exception (Res);
@@ -420,21 +421,21 @@ package body Terminal_Interface.Curses.Forms is
    procedure Foreground (Fld  : in  Field;
                          Fore : out Character_Attribute_Set)
    is
-      function Field_Fore (Fld : Field) return C_Int;
+      function Field_Fore (Fld : Field) return C_Chtype;
       pragma Import (C, Field_Fore, "field_fore");
    begin
-      Fore := CInt_To_Chtype (Field_Fore (Fld)).Attr;
+      Fore := Chtype_To_AttrChar (Field_Fore (Fld)).Attr;
    end Foreground;
 
    procedure Foreground (Fld   : in  Field;
                          Fore  : out Character_Attribute_Set;
                          Color : out Color_Pair)
    is
-      function Field_Fore (Fld : Field) return C_Int;
+      function Field_Fore (Fld : Field) return C_Chtype;
       pragma Import (C, Field_Fore, "field_fore");
    begin
-      Fore  := CInt_To_Chtype (Field_Fore (Fld)).Attr;
-      Color := CInt_To_Chtype (Field_Fore (Fld)).Color;
+      Fore  := Chtype_To_AttrChar (Field_Fore (Fld)).Attr;
+      Color := Chtype_To_AttrChar (Field_Fore (Fld)).Color;
    end Foreground;
    --  |
    --  |
@@ -445,13 +446,14 @@ package body Terminal_Interface.Curses.Forms is
       Color : in Color_Pair := Color_Pair'First)
    is
       function Set_Field_Back (Fld  : Field;
-                               Attr : C_Int) return C_Int;
+                               Attr : C_Chtype) return C_Int;
       pragma Import (C, Set_Field_Back, "set_field_back");
 
       Ch : constant Attributed_Character := (Ch    => Character'First,
                                              Color => Color,
                                              Attr  => Back);
-      Res : constant Eti_Error := Set_Field_Back (Fld, Chtype_To_CInt (Ch));
+      Res : constant Eti_Error :=
+        Set_Field_Back (Fld, AttrChar_To_Chtype (Ch));
    begin
       if  Res /= E_Ok then
          Eti_Exception (Res);
@@ -463,21 +465,21 @@ package body Terminal_Interface.Curses.Forms is
    procedure Background (Fld  : in  Field;
                          Back : out Character_Attribute_Set)
    is
-      function Field_Back (Fld : Field) return C_Int;
+      function Field_Back (Fld : Field) return C_Chtype;
       pragma Import (C, Field_Back, "field_back");
    begin
-      Back := CInt_To_Chtype (Field_Back (Fld)).Attr;
+      Back := Chtype_To_AttrChar (Field_Back (Fld)).Attr;
    end Background;
 
    procedure Background (Fld   : in  Field;
                          Back  : out Character_Attribute_Set;
                          Color : out Color_Pair)
    is
-      function Field_Back (Fld : Field) return C_Int;
+      function Field_Back (Fld : Field) return C_Chtype;
       pragma Import (C, Field_Back, "field_back");
    begin
-      Back  := CInt_To_Chtype (Field_Back (Fld)).Attr;
-      Color := CInt_To_Chtype (Field_Back (Fld)).Color;
+      Back  := Chtype_To_AttrChar (Field_Back (Fld)).Attr;
+      Color := Chtype_To_AttrChar (Field_Back (Fld)).Color;
    end Background;
    --  |
    --  |

@@ -84,7 +84,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.38 1998/10/03 19:08:33 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.39 1998/11/22 03:41:02 tom Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -141,6 +141,7 @@ static void _trace_slot(const char *tag)
 
 static int mouse_wfd;
 static int mouse_thread;
+static int mouse_activated;
 
 #  define M_FD(sp) sp->_mouse_fd
 
@@ -179,6 +180,8 @@ mouse_server(unsigned long ignored GCC_UNUSED)
 		/* sit and wait on the event queue */
 		if (MouReadEventQue(&mouev,&fWait,hmou))
 			break;
+		if (!mouse_activated)
+		    goto finish;
 
 		/*
 		 * OS/2 numbers a 3-button mouse inconsistently from other
@@ -194,6 +197,7 @@ mouse_server(unsigned long ignored GCC_UNUSED)
 		if ((mouev.fs ^ oldstate) & MOUSE_BN3_DOWN)
 		    write_event(mouev.fs  & MOUSE_BN3_DOWN, 3, mouev.col, mouev.row);
 
+	      finish:
 		oldstate = mouev.fs;
 	    }
 	}
@@ -203,6 +207,12 @@ mouse_server(unsigned long ignored GCC_UNUSED)
     }
     DosExit(EXIT_THREAD, 0L );
 }
+static void
+server_state(const int state)
+{ /* It would be nice to implement pointer-off and stop looping... */
+    mouse_activated = state;
+}
+
 #endif
 
 /* FIXME: The list of names should be configurable */
@@ -214,11 +224,12 @@ static int is_xterm(const char *name)
       ||    !strncmp(name, "color_xterm", 11));
 }
 
+static int initialized;
+
 static void _nc_mouse_init(void)
 /* initialize the mouse */
 {
     int i;
-    static int initialized;
 
     if (initialized) {
 	return;
@@ -462,6 +473,9 @@ static bool _nc_mouse_inline(SCREEN *sp)
 
 static void mouse_activate(bool on)
 {
+    if (!on && !initialized)
+	return;
+
     _nc_mouse_init();
 
     if (on) {
@@ -472,7 +486,11 @@ static void mouse_activate(bool on)
 	    keyok(KEY_MOUSE, on);
 #endif
 	    TPUTS_TRACE("xterm mouse initialization");
+#ifdef USE_EMX_MOUSE
+	    server_state(1);
+#else
 	    putp("\033[?1000h");
+#endif
 	    break;
 #if USE_GPM_SUPPORT
 	case M_GPM:
@@ -494,7 +512,11 @@ static void mouse_activate(bool on)
 	switch (mousetype) {
 	case M_XTERM:
 	    TPUTS_TRACE("xterm mouse deinitialization");
+#ifdef USE_EMX_MOUSE
+	    server_state(0);
+#else
 	    putp("\033[?1000l");
+#endif
 	    break;
 #if USE_GPM_SUPPORT
 	case M_GPM:
@@ -839,6 +861,9 @@ mmask_t mousemask(mmask_t newmask, mmask_t *oldmask)
 
     if (oldmask)
 	*oldmask = eventmask;
+
+    if (!newmask && !initialized)
+	returnCode(0);
 
     _nc_mouse_init();
     if ( mousetype != M_NONE )

@@ -35,7 +35,7 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996
 --  Version Control:
---  $Revision: 1.14 $
+--  $Revision: 1.15 $
 --  Binding Version 00.93
 ------------------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
@@ -556,13 +556,13 @@ package body Terminal_Interface.Curses.Menus is
       Color : in Color_Pair := Color_Pair'First)
    is
       function Set_Menu_Fore (Men  : Menu;
-                              Attr : C_Int) return C_Int;
+                              Attr : C_Chtype) return C_Int;
       pragma Import (C, Set_Menu_Fore, "set_menu_fore");
 
       Ch : constant Attributed_Character := (Ch    => Character'First,
                                              Color => Color,
                                              Attr  => Fore);
-      Res : constant Eti_Error := Set_Menu_Fore (Men, Chtype_To_CInt (Ch));
+      Res : constant Eti_Error := Set_Menu_Fore (Men, AttrChar_To_Chtype (Ch));
    begin
       if  Res /= E_Ok then
          Eti_Exception (Res);
@@ -572,21 +572,21 @@ package body Terminal_Interface.Curses.Menus is
    procedure Foreground (Men  : in  Menu;
                          Fore : out Character_Attribute_Set)
    is
-      function Menu_Fore (Men : Menu) return C_Int;
+      function Menu_Fore (Men : Menu) return C_Chtype;
       pragma Import (C, Menu_Fore, "menu_fore");
    begin
-      Fore := CInt_To_Chtype (Menu_Fore (Men)).Attr;
+      Fore := Chtype_To_AttrChar (Menu_Fore (Men)).Attr;
    end Foreground;
 
    procedure Foreground (Men   : in  Menu;
                          Fore  : out Character_Attribute_Set;
                          Color : out Color_Pair)
    is
-      function Menu_Fore (Men : Menu) return C_Int;
+      function Menu_Fore (Men : Menu) return C_Chtype;
       pragma Import (C, Menu_Fore, "menu_fore");
    begin
-      Fore  := CInt_To_Chtype (Menu_Fore (Men)).Attr;
-      Color := CInt_To_Chtype (Menu_Fore (Men)).Color;
+      Fore  := Chtype_To_AttrChar (Menu_Fore (Men)).Attr;
+      Color := Chtype_To_AttrChar (Menu_Fore (Men)).Color;
    end Foreground;
 
    procedure Set_Background
@@ -595,13 +595,13 @@ package body Terminal_Interface.Curses.Menus is
       Color : in Color_Pair := Color_Pair'First)
    is
       function Set_Menu_Back (Men  : Menu;
-                              Attr : C_Int) return C_Int;
+                              Attr : C_Chtype) return C_Int;
       pragma Import (C, Set_Menu_Back, "set_menu_back");
 
       Ch : constant Attributed_Character := (Ch    => Character'First,
                                              Color => Color,
                                              Attr  => Back);
-      Res : constant Eti_Error := Set_Menu_Back (Men, Chtype_To_CInt (Ch));
+      Res : constant Eti_Error := Set_Menu_Back (Men, AttrChar_To_Chtype (Ch));
    begin
       if  Res /= E_Ok then
          Eti_Exception (Res);
@@ -611,21 +611,21 @@ package body Terminal_Interface.Curses.Menus is
    procedure Background (Men  : in  Menu;
                          Back : out Character_Attribute_Set)
    is
-      function Menu_Back (Men : Menu) return C_Int;
+      function Menu_Back (Men : Menu) return C_Chtype;
       pragma Import (C, Menu_Back, "menu_back");
    begin
-      Back := CInt_To_Chtype (Menu_Back (Men)).Attr;
+      Back := Chtype_To_AttrChar (Menu_Back (Men)).Attr;
    end Background;
 
    procedure Background (Men   : in  Menu;
                          Back  : out Character_Attribute_Set;
                          Color : out Color_Pair)
    is
-      function Menu_Back (Men : Menu) return C_Int;
+      function Menu_Back (Men : Menu) return C_Chtype;
       pragma Import (C, Menu_Back, "menu_back");
    begin
-      Back  := CInt_To_Chtype (Menu_Back (Men)).Attr;
-      Color := CInt_To_Chtype (Menu_Back (Men)).Color;
+      Back  := Chtype_To_AttrChar (Menu_Back (Men)).Attr;
+      Color := Chtype_To_AttrChar (Menu_Back (Men)).Color;
    end Background;
 
    procedure Set_Grey (Men   : in Menu;
@@ -633,14 +633,14 @@ package body Terminal_Interface.Curses.Menus is
                        Color : in Color_Pair := Color_Pair'First)
    is
       function Set_Menu_Grey (Men  : Menu;
-                              Attr : C_Int) return C_Int;
+                              Attr : C_Chtype) return C_Int;
       pragma Import (C, Set_Menu_Grey, "set_menu_grey");
 
       Ch : constant Attributed_Character := (Ch    => Character'First,
                                              Color => Color,
                                              Attr  => Grey);
 
-      Res : constant Eti_Error := Set_Menu_Grey (Men, Chtype_To_CInt (Ch));
+      Res : constant Eti_Error := Set_Menu_Grey (Men, AttrChar_To_Chtype (Ch));
    begin
       if  Res /= E_Ok then
          Eti_Exception (Res);
@@ -650,21 +650,21 @@ package body Terminal_Interface.Curses.Menus is
    procedure Grey (Men  : in  Menu;
                    Grey : out Character_Attribute_Set)
    is
-      function Menu_Grey (Men : Menu) return C_Int;
+      function Menu_Grey (Men : Menu) return C_Chtype;
       pragma Import (C, Menu_Grey, "menu_grey");
    begin
-      Grey := CInt_To_Chtype (Menu_Grey (Men)).Attr;
+      Grey := Chtype_To_AttrChar (Menu_Grey (Men)).Attr;
    end Grey;
 
    procedure Grey (Men  : in  Menu;
                    Grey : out Character_Attribute_Set;
                    Color : out Color_Pair)
    is
-      function Menu_Grey (Men : Menu) return C_Int;
+      function Menu_Grey (Men : Menu) return C_Chtype;
       pragma Import (C, Menu_Grey, "menu_grey");
    begin
-      Grey  := CInt_To_Chtype (Menu_Grey (Men)).Attr;
-      Color := CInt_To_Chtype (Menu_Grey (Men)).Color;
+      Grey  := Chtype_To_AttrChar (Menu_Grey (Men)).Attr;
+      Color := Chtype_To_AttrChar (Menu_Grey (Men)).Color;
    end Grey;
 
    procedure Set_Pad_Character (Men : in Menu;

@@ -35,7 +35,7 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996
 --  Version Control:
---  $Revision: 1.17 $
+--  $Revision: 1.18 $
 --  Binding Version 00.93
 ------------------------------------------------------------------------------
 with System;
@@ -156,10 +156,10 @@ package body Terminal_Interface.Curses is
                   Ch  : in Attributed_Character)
    is
       function Waddch (W  : Window;
-                       Ch : C_Int) return C_Int;
+                       Ch : C_Chtype) return C_Int;
       pragma Import (C, Waddch, "waddch");
    begin
-      if Waddch (Win, Chtype_To_Cint (Ch)) = Curses_Err then
+      if Waddch (Win, AttrChar_To_Chtype (Ch)) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Add;
@@ -183,12 +183,12 @@ package body Terminal_Interface.Curses is
       function mvwaddch (W  : Window;
                          Y  : C_Int;
                          X  : C_Int;
-                         Ch : C_Int) return C_Int;
+                         Ch : C_Chtype) return C_Int;
       pragma Import (C, mvwaddch, "mvwaddch");
    begin
       if mvwaddch (Win, C_Int (Line),
                    C_Int (Column),
-                   Chtype_To_CInt (Ch)) = Curses_Err then
+                   AttrChar_To_Chtype (Ch)) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Add;
@@ -213,10 +213,10 @@ package body Terminal_Interface.Curses is
       Ch  : in Attributed_Character)
    is
       function Wechochar (W  : Window;
-                          Ch : C_Int) return C_Int;
+                          Ch : C_Chtype) return C_Int;
       pragma Import (C, Wechochar, "wechochar");
    begin
-      if Wechochar (Win, Chtype_To_CInt (Ch)) = Curses_Err then
+      if Wechochar (Win, AttrChar_To_Chtype (Ch)) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Add_With_Immediate_Echo;
@@ -455,25 +455,25 @@ package body Terminal_Interface.Curses is
       Lower_Right_Corner_Symbol : in Attributed_Character := Default_Character)
    is
       function Wborder (W   : Window;
-                        LS  : C_Int;
-                        RS  : C_Int;
-                        TS  : C_Int;
-                        BS  : C_Int;
-                        ULC : C_Int;
-                        URC : C_Int;
-                        LLC : C_Int;
-                        LRC : C_Int) return C_Int;
+                        LS  : C_Chtype;
+                        RS  : C_Chtype;
+                        TS  : C_Chtype;
+                        BS  : C_Chtype;
+                        ULC : C_Chtype;
+                        URC : C_Chtype;
+                        LLC : C_Chtype;
+                        LRC : C_Chtype) return C_Int;
       pragma Import (C, Wborder, "wborder");
    begin
       if Wborder (Win,
-                  Chtype_To_CInt (Left_Side_Symbol),
-                  Chtype_To_CInt (Right_Side_Symbol),
-                  Chtype_To_CInt (Top_Side_Symbol),
-                  Chtype_To_CInt (Bottom_Side_Symbol),
-                  Chtype_To_CInt (Upper_Left_Corner_Symbol),
-                  Chtype_To_CInt (Upper_Right_Corner_Symbol),
-                  Chtype_To_CInt (Lower_Left_Corner_Symbol),
-                  Chtype_To_CInt (Lower_Right_Corner_Symbol)
+                  AttrChar_To_Chtype (Left_Side_Symbol),
+                  AttrChar_To_Chtype (Right_Side_Symbol),
+                  AttrChar_To_Chtype (Top_Side_Symbol),
+                  AttrChar_To_Chtype (Bottom_Side_Symbol),
+                  AttrChar_To_Chtype (Upper_Left_Corner_Symbol),
+                  AttrChar_To_Chtype (Upper_Right_Corner_Symbol),
+                  AttrChar_To_Chtype (Lower_Left_Corner_Symbol),
+                  AttrChar_To_Chtype (Lower_Right_Corner_Symbol)
                   ) = Curses_Err
       then
          raise Curses_Exception;
@@ -497,12 +497,12 @@ package body Terminal_Interface.Curses is
       Line_Symbol : in Attributed_Character := Default_Character)
    is
       function Whline (W   : Window;
-                       Ch  : C_Int;
+                       Ch  : C_Chtype;
                        Len : C_Int) return C_Int;
       pragma Import (C, Whline, "whline");
    begin
       if Whline (Win,
-                 Chtype_To_CInt (Line_Symbol),
+                 AttrChar_To_Chtype (Line_Symbol),
                  C_Int (Line_Size)) = Curses_Err then
          raise Curses_Exception;
       end if;
@@ -514,12 +514,12 @@ package body Terminal_Interface.Curses is
       Line_Symbol : in Attributed_Character := Default_Character)
    is
       function Wvline (W   : Window;
-                       Ch  : C_Int;
+                       Ch  : C_Chtype;
                        Len : C_Int) return C_Int;
       pragma Import (C, Wvline, "wvline");
    begin
       if Wvline (Win,
-                 Chtype_To_CInt (Line_Symbol),
+                 AttrChar_To_Chtype (Line_Symbol),
                  C_Int (Line_Size)) = Curses_Err then
          raise Curses_Exception;
       end if;
@@ -598,10 +598,10 @@ package body Terminal_Interface.Curses is
       On   : in Boolean := True)
    is
       function Wattron (Win    : Window;
-                        C_Attr : C_Int) return C_Int;
+                        C_Attr : C_AttrType) return C_Int;
       pragma Import (C, Wattron, "wattr_on");
       function Wattroff (Win    : Window;
-                         C_Attr : C_Int) return C_Int;
+                         C_Attr : C_AttrType) return C_Int;
       pragma Import (C, Wattroff, "wattr_off");
       --  In Ada we use the On Boolean to control whether or not we want to
       --  switch on or off the attributes in the set.
@@ -611,9 +611,9 @@ package body Terminal_Interface.Curses is
                                               Attr  => Attr);
    begin
       if On then
-         Err := Wattron (Win, Chtype_To_CInt (AC));
+         Err := Wattron  (Win, AttrChar_To_AttrType (AC));
       else
-         Err := Wattroff (Win, Chtype_To_CInt (AC));
+         Err := Wattroff (Win, AttrChar_To_AttrType (AC));
       end if;
       if Err = Curses_Err then
          raise Curses_Exception;
@@ -626,14 +626,14 @@ package body Terminal_Interface.Curses is
       Color : in Color_Pair := Color_Pair'First)
    is
       function Wattrset (Win    : Window;
-                         C_Attr : C_Int) return C_Int;
+                         C_Attr : C_AttrType) return C_Int;
       pragma Import (C, Wattrset, "wattrset"); -- ??? wattr_set
    begin
       if Wattrset (Win,
-                   Chtype_To_CInt (Attributed_Character'
-                                   (Ch    => Character'First,
-                                    Color => Color,
-                                    Attr  => Attr))) = Curses_Err then
+                   AttrChar_To_AttrType (Attributed_Character'
+                                         (Ch    => Character'First,
+                                          Color => Color,
+                                          Attr  => Attr))) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Set_Character_Attributes;
@@ -641,23 +641,47 @@ package body Terminal_Interface.Curses is
    function Get_Character_Attribute (Win : Window := Standard_Window)
                                      return Character_Attribute_Set
    is
-      function Wattrget (Win : Window) return C_Int;
+      function Wattrget (Win : Window;
+                         Atr : access C_AttrType;
+                         Col : access C_Short;
+                         Opt : System.Address) return C_Int;
       pragma Import (C, Wattrget, "wattr_get");
 
-      Ch : Attributed_Character := CInt_To_Chtype (Wattrget (Win));
+      Attr : aliased C_AttrType;
+      Col  : aliased C_Short;
+      Res  : constant C_Int := Wattrget (Win, Attr'Access, Col'Access,
+                                         System.Null_Address);
+      Ch   : Attributed_Character;
    begin
-      return Ch.Attr;
+      if Res = Curses_Ok then
+         Ch := AttrType_To_AttrChar (Attr);
+         return Ch.Attr;
+      else
+         raise Curses_Exception;
+      end if;
    end Get_Character_Attribute;
 
    function Get_Character_Attribute (Win : Window := Standard_Window)
                                      return Color_Pair
    is
-      function Wattrget (Win : Window) return C_Int;
+      function Wattrget (Win : Window;
+                         Atr : access C_AttrType;
+                         Col : access C_Short;
+                         Opt : System.Address) return C_Int;
       pragma Import (C, Wattrget, "wattr_get");
 
-      Ch : Attributed_Character := CInt_To_Chtype (Wattrget (Win));
+      Attr : aliased C_AttrType;
+      Col  : aliased C_Short;
+      Res  : constant C_Int := Wattrget (Win, Attr'Access, Col'Access,
+                                         System.Null_Address);
+      Ch   : Attributed_Character;
    begin
-      return Ch.Color;
+      if Res = Curses_Ok then
+         Ch := AttrType_To_AttrChar (Attr);
+         return Ch.Color;
+      else
+         raise Curses_Exception;
+      end if;
    end Get_Character_Attribute;
 
    procedure Set_Color (Win  : in Window := Standard_Window;
@@ -683,7 +707,7 @@ package body Terminal_Interface.Curses is
    is
       function Wchgat (Win   : Window;
                        Cnt   : C_Int;
-                       Attr  : C_Int;
+                       Attr  : C_AttrType;
                        Color : C_Short;
                        Opts  : System.Address := System.Null_Address)
                        return C_Int;
@@ -692,7 +716,7 @@ package body Terminal_Interface.Curses is
       Ch : constant Attributed_Character :=
         (Ch => Character'First, Color => Color_Pair'First, Attr => Attr);
    begin
-      if Wchgat (Win, C_Int (Count), Chtype_To_CInt (Ch),
+      if Wchgat (Win, C_Int (Count), AttrChar_To_AttrType (Ch),
                  C_Short (Color)) = Curses_Err then
          raise Curses_Exception;
       end if;
@@ -1119,21 +1143,20 @@ package body Terminal_Interface.Curses is
      (Win : in Window := Standard_Window;
       Ch  : in Attributed_Character)
    is
-      procedure WBackground (W : in Window; Ch : in C_Int);
+      procedure WBackground (W : in Window; Ch : in C_Chtype);
       pragma Import (C, WBackground, "wbkgdset");
    begin
-      WBackground (Win, Chtype_To_CInt (Ch));
+      WBackground (Win, AttrChar_To_Chtype (Ch));
    end Set_Background;
 
    procedure Change_Background
      (Win : in Window := Standard_Window;
       Ch  : in Attributed_Character)
    is
-      function WChangeBkgd (W : Window; Ch : C_Int)
-                            return C_Int;
+      function WChangeBkgd (W : Window; Ch : C_Chtype) return C_Int;
       pragma Import (C, WChangeBkgd, "wbkgd");
    begin
-      if WChangeBkgd (Win, Chtype_To_CInt (Ch)) = Curses_Err then
+      if WChangeBkgd (Win, AttrChar_To_Chtype (Ch)) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Change_Background;
@@ -1141,10 +1164,10 @@ package body Terminal_Interface.Curses is
    function Get_Background (Win : Window := Standard_Window)
      return Attributed_Character
    is
-      function Wgetbkgd (Win : Window) return C_Int;
+      function Wgetbkgd (Win : Window) return C_Chtype;
       pragma Import (C, Wgetbkgd, "getbkgd");
    begin
-      return CInt_To_Chtype (Wgetbkgd (Win));
+      return Chtype_To_AttrChar (Wgetbkgd (Win));
    end Get_Background;
 ------------------------------------------------------------------------------
    procedure Change_Lines_Status (Win   : in Window := Standard_Window;
@@ -1497,11 +1520,11 @@ package body Terminal_Interface.Curses is
      (Pad : in Window;
       Ch  : in Attributed_Character)
    is
-      function Pechochar (Pad : Window; Ch : C_Int)
+      function Pechochar (Pad : Window; Ch : C_Chtype)
                           return C_Int;
       pragma Import (C, Pechochar, "pechochar");
    begin
-      if Pechochar (Pad, Chtype_To_CInt (Ch)) = Curses_Err then
+      if Pechochar (Pad, AttrChar_To_Chtype (Ch)) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Add_Character_To_Pad_And_Echo_It;
@@ -1559,10 +1582,10 @@ package body Terminal_Interface.Curses is
    function Peek (Win : Window := Standard_Window)
      return Attributed_Character
    is
-      function Winch (Win : Window) return C_Int;
+      function Winch (Win : Window) return C_Chtype;
       pragma Import (C, Winch, "winch");
    begin
-      return CInt_To_Chtype (Winch (Win));
+      return Chtype_To_AttrChar (Winch (Win));
    end Peek;
 
    function Peek
@@ -1572,19 +1595,19 @@ package body Terminal_Interface.Curses is
    is
       function Mvwinch (Win : Window;
                         Lin : C_Int;
-                        Col : C_Int) return C_Int;
+                        Col : C_Int) return C_Chtype;
       pragma Import (C, Mvwinch, "mvwinch");
    begin
-      return CInt_To_Chtype (Mvwinch (Win, C_Int (Line), C_Int (Column)));
+      return Chtype_To_AttrChar (Mvwinch (Win, C_Int (Line), C_Int (Column)));
    end Peek;
 ------------------------------------------------------------------------------
    procedure Insert (Win : in Window := Standard_Window;
                      Ch  : in Attributed_Character)
    is
-      function Winsch (Win : Window; Ch : C_Int) return C_Int;
+      function Winsch (Win : Window; Ch : C_Chtype) return C_Int;
       pragma Import (C, Winsch, "winsch");
    begin
-      if Winsch (Win, Chtype_To_CInt (Ch)) = Curses_Err then
+      if Winsch (Win, AttrChar_To_Chtype (Ch)) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Insert;
@@ -1598,13 +1621,13 @@ package body Terminal_Interface.Curses is
       function Mvwinsch (Win : Window;
                          Lin : C_Int;
                          Col : C_Int;
-                         Ch  : C_Int) return C_Int;
+                         Ch  : C_Chtype) return C_Int;
       pragma Import (C, Mvwinsch, "mvwinsch");
    begin
       if Mvwinsch (Win,
                    C_Int (Line),
                    C_Int (Column),
-                   Chtype_To_CInt (Ch)) = Curses_Err then
+                   AttrChar_To_Chtype (Ch)) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Insert;
@@ -1889,9 +1912,9 @@ package body Terminal_Interface.Curses is
      (Attr : in Character_Attribute_Set;
       On   : in Boolean := True)
    is
-      function Slk_Attron (Ch : C_Int) return C_Int;
+      function Slk_Attron (Ch : C_Chtype) return C_Int;
       pragma Import (C, Slk_Attron, "slk_attron");
-      function Slk_Attroff (Ch : C_Int) return C_Int;
+      function Slk_Attroff (Ch : C_Chtype) return C_Int;
       pragma Import (C, Slk_Attroff, "slk_attroff");
 
       Err : C_Int;
@@ -1900,9 +1923,9 @@ package body Terminal_Interface.Curses is
                                               Color => Color_Pair'First);
    begin
       if On then
-         Err := Slk_Attron  (Chtype_To_CInt (Ch));
+         Err := Slk_Attron  (AttrChar_To_Chtype (Ch));
       else
-         Err := Slk_Attroff (Chtype_To_CInt (Ch));
+         Err := Slk_Attroff (AttrChar_To_Chtype (Ch));
       end if;
       if Err = Curses_Err then
          raise Curses_Exception;
@@ -1913,36 +1936,36 @@ package body Terminal_Interface.Curses is
      (Attr  : in Character_Attribute_Set := Normal_Video;
       Color : in Color_Pair := Color_Pair'First)
    is
-      function Slk_Attrset (Ch : C_Int) return C_Int;
+      function Slk_Attrset (Ch : C_Chtype) return C_Int;
       pragma Import (C, Slk_Attrset, "slk_attrset");
 
       Ch : constant Attributed_Character := (Ch    => Character'First,
                                              Attr  => Attr,
                                              Color => Color);
    begin
-      if Slk_Attrset (Chtype_To_CInt (Ch)) = Curses_Err then
+      if Slk_Attrset (AttrChar_To_Chtype (Ch)) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Set_Soft_Label_Key_Attributes;
 
    function Get_Soft_Label_Key_Attributes return Character_Attribute_Set
    is
-      function Slk_Attr return C_Int;
+      function Slk_Attr return C_Chtype;
       pragma Import (C, Slk_Attr, "slk_attr");
 
-      Attr : constant C_Int := Slk_Attr;
+      Attr : constant C_Chtype := Slk_Attr;
    begin
-      return CInt_To_Chtype (Attr).Attr;
+      return Chtype_To_AttrChar (Attr).Attr;
    end Get_Soft_Label_Key_Attributes;
 
    function Get_Soft_Label_Key_Attributes return Color_Pair
    is
-      function Slk_Attr return C_Int;
+      function Slk_Attr return C_Chtype;
       pragma Import (C, Slk_Attr, "slk_attr");
 
-      Attr : constant C_Int := Slk_Attr;
+      Attr : constant C_Chtype := Slk_Attr;
    begin
-      return CInt_To_Chtype (Attr).Color;
+      return Chtype_To_AttrChar (Attr).Color;
    end Get_Soft_Label_Key_Attributes;
 
    procedure Set_Soft_Label_Key_Color (Pair : in Color_Pair)
@@ -1988,18 +2011,18 @@ package body Terminal_Interface.Curses is
    procedure Un_Control (Ch  : in Attributed_Character;
                          Str : out String)
    is
-      function Unctrl (Ch : C_Int) return chars_ptr;
+      function Unctrl (Ch : C_Chtype) return chars_ptr;
       pragma Import (C, Unctrl, "unctrl");
    begin
-      Fill_String (Unctrl (Chtype_To_CInt (Ch)), Str);
+      Fill_String (Unctrl (AttrChar_To_Chtype (Ch)), Str);
    end Un_Control;
 
    function Un_Control (Ch : in Attributed_Character) return String
    is
-      function Unctrl (Ch : C_Int) return chars_ptr;
+      function Unctrl (Ch : C_Chtype) return chars_ptr;
       pragma Import (C, Unctrl, "unctrl");
    begin
-      return Fill_String (Unctrl (Chtype_To_CInt (Ch)));
+      return Fill_String (Unctrl (AttrChar_To_Chtype (Ch)));
    end Un_Control;
 
    procedure Delay_Output (Msecs : in Natural)
@@ -2072,10 +2095,10 @@ package body Terminal_Interface.Curses is
 
    function Supported_Attributes return Character_Attribute_Set
    is
-      function Termattrs return C_Int;
+      function Termattrs return C_Chtype;
       pragma Import (C, Termattrs, "termattrs");
 
-      Ch : constant Attributed_Character := CInt_To_Chtype (Termattrs);
+      Ch : constant Attributed_Character := Chtype_To_AttrChar (Termattrs);
    begin
       return Ch.Attr;
    end Supported_Attributes;
