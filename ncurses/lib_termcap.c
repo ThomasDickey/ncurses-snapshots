@@ -56,6 +56,7 @@ int tgetent(char *bp, const char *name)
 {
 int errcode;
 
+	T(("calling tgetent"));
 	setupterm((char *)name, STDOUT_FILENO, &errcode);
 
 	if (errcode != 1)
@@ -150,6 +151,7 @@ int tgetflag(const char *id)
 {
 int i;
 
+	T(("tgetflag: %s", id));
 	for (i = 0; i < BOOLCOUNT; i++)
 		if (!strcmp(id, boolcodes[i])) 
 			return cur_term->type.Booleans[i];
@@ -169,6 +171,7 @@ int tgetnum(const char *id)
 {
 int i;
 
+	T(("tgetnum: %s", id));
 	for (i = 0; i < NUMCOUNT; i++)
 		if (!strcmp(id, numcodes[i])) 
 			return cur_term->type.Numbers[i];
@@ -188,9 +191,14 @@ char *tgetstr(const char *id, char **area)
 {
 int i;
 
-	for (i = 0; i < STRCOUNT; i++)
-		if (!strcmp(id, strcodes[i])) 
+	T(("tgetstr: %s", id));
+	for (i = 0; i < STRCOUNT; i++) {
+		T(("trying %s", strcodes[i]));
+		if (!strcmp(id, strcodes[i])) {
+			T(("found match : %s", cur_term->type.Strings[i]));
 			return cur_term->type.Strings[i];
+		}
+	}
 	return NULL;
 }
 

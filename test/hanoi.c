@@ -10,6 +10,7 @@
  *		'hanoi n a' will give an auto solved game with n playing pieces.
  *
  *	Author: Simon J Raybould	(sie@fulcrum.bt.co.uk).
+ * 	(This version has been slightly modified by the ncurses maintainers.)
  *
  *	Date: 05.Nov.90
  *
@@ -186,8 +187,6 @@ int Size, SlotNo;
 	Pegs[2].Count = 0;
 }
 
-#define gc()	{noecho();getch();echo();}
-
 void
 DisplayTiles()
 {
@@ -234,12 +233,14 @@ GetMove(int *From, int *To)
 	refresh();
 	if((*From = getch()) == 'q')
 		return TRUE;
+	addch(*From);
 	*From -= ('0'+1);
 	addstr(" to ");
 	clrtoeol();
 	refresh();
 	if((*To = getch()) == 'q')
 		return TRUE;
+	addch(*To);
 	*To -= ('0'+1);
 	move(STATUSLINE, 0);
 	clrtoeol();

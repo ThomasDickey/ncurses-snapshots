@@ -9,7 +9,9 @@ Known Problems:
   This is a legacy terminfo property we can't mess with.
 
 * There is no actual support for terminals with the xmc (magic-cookie) glitch.
-  Sytem V Release 4 never handled these properly either, though it claimed to.
+  (They'll work fine, unless you try to draw highlights on them and don't
+  leave the required A_NORMAL spaces on either side in the screen layout.)
+  System V Release 4 never handled these properly either, though it claimed to.
   There is a comment in ncurses_lib_doupdate.c:doupdate() describing how this
   could be done right, if anyone wants to try.
 
@@ -35,10 +37,15 @@ Known Problems:
         (With System V curses it does).
 
         2) When in timeout mode, getch will delay until a character is received
-        if it is interrupted by a signal. (With System V curses it exits when
-        the time limit is up even if interrupted by a signal).
+        if it is interrupted by a signal [and then returns ERR].
+        (With System V curses it exits when the time limit is up even if
+        interrupted by a signal).
  
   These things need to be fixed.
+
+* On bce terminals (including the Linux console, the Xfree86 3.1.2D xterm,
+  and rxvt), ncurses does more work than it needs to when erasing colored
+  backgrounds (it blank-fills after issuing clr_eol/clr_eos).
 
 Portability (or lack thereof):
 

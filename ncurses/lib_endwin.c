@@ -28,6 +28,7 @@
 */
 
 #include "curses.priv.h"
+#include "term.h"
 
 int
 endwin(void)
@@ -42,7 +43,10 @@ endwin(void)
 
 	curs_set(1);	/* set cursor to normal mode */
 
-	_nc_mvcur_wrap();	/* wrap up cursor addressing */
+	if (SP->_coloron == TRUE && orig_pair)
+		putp(orig_pair);
+
+ 	_nc_mvcur_wrap();	/* wrap up cursor addressing */
 
 	if (curscr  &&  (curscr->_attrs != A_NORMAL)) 
 	    vidattr(curscr->_attrs = A_NORMAL);

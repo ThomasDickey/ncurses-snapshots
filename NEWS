@@ -9,6 +9,21 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 * more fixes to LOWER-RIGHT corner handling.
 * changed the line-breakout optimization code to allow some lines to be
   emitted before the first check.
+# added option for tic to use symbolic instead of hard links (for AFS)
+* fix to restore auto-wrap mode.
+* trace level can be controlled by environment variable.
+* better handling of NULs in terminal descriptions.
+* improved compatibility with observed SVR4 behavior.
+* the refresh behavior of over-lapping windows is now more efficient and
+  behaves like SVR4.
+* use autoconf 2.7, which results in a working setup for SCO 5.0.
+* support for ESCDELAY.
+* small fixes for menu/form code.
+* the test directory has its own configure.
+* fixes to pads when optimizing scrolling.
+* fixed several off-by-one bugs.
+* fixes for termcap->terminfo translation; less restrictions more correct
+  behavior.
   
 ### ncurses-1.9.7 -> 1.9.8a
 
