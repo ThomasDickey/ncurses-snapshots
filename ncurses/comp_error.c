@@ -30,12 +30,10 @@
 #include <stdarg.h>
 #include "tic.h"
 
-#define NAMESIZE 64
-
 bool _nc_suppress_warnings;
 
 static const char *sourcename;
-static char termtype[NAMESIZE];
+static char termtype[MAX_NAME_SIZE+1];
 
 void _nc_set_source(const char *const name)
 {
@@ -45,9 +43,22 @@ void _nc_set_source(const char *const name)
 void _nc_set_type(const char *const name)
 {
 	if (name)
-		strncpy( termtype, name, NAMESIZE );
+		strncpy( termtype, name, MAX_NAME_SIZE );
 	else
 		termtype[0] = '\0';
+}
+
+void _nc_get_type(char *name)
+{
+	strcpy( name, termtype );
+}
+
+static inline void where_is_problem(void)
+{
+	fprintf (stderr, "\"%s\", line %d: col %d: ",
+		sourcename, _nc_curr_line, _nc_curr_col);
+	if (termtype[0])
+		fprintf (stderr, "terminal '%s', ", termtype);
 }
 
 void _nc_warning(const char *const fmt, ...)
@@ -57,10 +68,8 @@ va_list argp;
 	if (_nc_suppress_warnings)
 	    return;
 
+	where_is_problem();
 	va_start(argp,fmt);
-	fprintf (stderr, "\"%s\", line %d: ", sourcename, _nc_curr_line);
-	if (termtype[0])
-		fprintf (stderr, "terminal '%s', ", termtype);
 	vfprintf (stderr, fmt, argp);
 	fprintf (stderr, "\n");
 	va_end(argp);
@@ -71,10 +80,8 @@ void _nc_err_abort(const char *const fmt, ...)
 {
 va_list argp;
 
+	where_is_problem();
 	va_start(argp,fmt);
-	fprintf (stderr, "\"%s\", line %d: ", sourcename, _nc_curr_line);
-	if (termtype[0])
-		fprintf (stderr, "terminal '%s', ", termtype);
 	vfprintf (stderr, fmt, argp);
 	fprintf (stderr, "\n");
 	va_end(argp);
@@ -86,10 +93,8 @@ void _nc_syserr_abort(const char *const fmt, ...)
 {
 va_list argp;
 
+	where_is_problem();
 	va_start(argp,fmt);
-	fprintf (stderr, "\"%s\", line %d: ", sourcename, _nc_curr_line);
-	if (termtype[0])
-		fprintf (stderr, "terminal '%s', ", termtype);
 	vfprintf (stderr, fmt, argp);
 	fprintf (stderr, "\n");
 	va_end(argp);

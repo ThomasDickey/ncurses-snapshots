@@ -162,6 +162,7 @@ extern void _nc_push_token(int);
 extern void _nc_reset_input(FILE *, char *);
 extern void _nc_panic_mode(char);
 extern int _nc_curr_line;
+extern int _nc_curr_col;
 extern long _nc_curr_file_pos;
 extern long _nc_comment_start, _nc_comment_end;
 extern int _nc_syntax;
@@ -171,6 +172,7 @@ extern long _nc_start_line;
 
 /* comp_error.c: warning & abort messages */
 extern void _nc_set_source(const char *const name);
+extern void _nc_get_type(char *name);
 extern void _nc_set_type(const char *const name);
 extern void _nc_syserr_abort(const char *const,...);
 extern void _nc_err_abort(const char *const,...);

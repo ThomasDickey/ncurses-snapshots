@@ -101,14 +101,6 @@ char *ttyname(int fd);
 #include <term.h>
 #include <dump_entry.h>
 
-#if !HAVE_STRERROR
-extern char *strerror(int);
-#endif
-
-#if !HAVE_STRERROR && !defined(strerror)
-extern char *strerror(int);
-#endif
-
 extern char **environ;
 
 #undef CTRL
@@ -166,19 +158,28 @@ err(const char *fmt, ...)
 }
 
 static void
+failed(const char *msg)
+{
+	char	temp[BUFSIZ];
+	perror(strcat(strcpy(temp, "tset: "), msg));
+	exit(1);
+	/* NOTREACHED */
+}
+
+static void
 cat(char *file)
 {
 	register int fd, nr, nw;
 	char buf[1024];
 
 	if ((fd = open(file, O_RDONLY, 0)) < 0)
-		err("%s: %s", file, strerror(errno));
+		failed(file);
 
 	while ((nr = read(fd, buf, sizeof(buf))) > 0)
 		if ((nw = write(STDERR_FILENO, buf, (size_t)nr)) == -1)
-			err("write to stderr: %s", strerror(errno));
+			failed("write to stderr");
 	if (nr != 0)
-		err("%s: %s", file, strerror(errno));
+		failed(file);
 	(void)close(fd);
 }
 
@@ -311,7 +312,7 @@ add_mapping(char *port, char *arg)
 	copy = strdup(arg);
 	mapp = malloc((u_int)sizeof(MAP));
 	if (copy == NULL || mapp == NULL)
-		err("%s", strerror(errno));
+		failed("malloc");
 	mapp->next = NULL;
 	if (maplist == NULL)
 		cur = maplist = mapp;
@@ -988,13 +989,13 @@ main(int argc, char **argv)
 
 #ifdef TERMIOS
 	if (tcgetattr(STDERR_FILENO, &mode) < 0)
-		err("standard error: %s", strerror(errno));
+		failed("standard error");
 
 	oldmode = mode;
 	ospeed = cfgetospeed(&mode);
 #else
 	if (gtty(STDERR_FILENO, &mode) < 0)
-		err("standard error: %s", strerror(errno));
+		failed("standard error");
 
 	oldmode = mode;
 	ospeed = mode.sg_ospeed;

@@ -80,6 +80,40 @@ static int seenr;		/* seen a %r */
 static int param;		/* current parameter */
 static char *dp;		/* pointer to end of the converted string */
 
+static char  *my_string;
+static size_t my_length;
+
+static char *init_string(void)
+/* initialize 'my_string', 'my_length' */
+{
+	if (my_string == 0)
+		my_string = malloc(my_length = 256);
+	if (my_string == 0)
+	    _nc_err_abort("Out of memory");
+
+	*my_string = '\0';
+	return my_string;
+}
+
+static char *save_string(char *d, const char *const s)
+{
+	size_t have = (d - my_string);
+	size_t need = have + strlen(s) + 2;
+	if (need > my_length) {
+		my_string = realloc(my_string, my_length = (need + need));
+		d = my_string + have;
+	}
+	(void) strcpy(d, s);
+	return d + strlen(d);
+}
+
+static inline char *save_char(char *s, char c)
+{
+	static char temp[2];
+	temp[0] = c;
+	return save_string(s, temp);
+}
+
 static void push(void)
 /* push onstack on to the stack */
 {
@@ -481,9 +515,6 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
  *     %m       exclusive-or all parameters with 0177 (not in 4.4BSD)
  */
 
-static	char	buffer[256];
-static	char	*bufptr;
-
 char *_nc_infotocap(
 /* convert a terminfo string to termcap format */
 register char *const cap,	/* relevant termcap capability index */
@@ -492,14 +523,8 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 {
     int	seenone = 0, seentwo = 0, saw_m = 0, saw_n = 0;
     char *padding, ch1 = 0, ch2 = 0;
-
-    /*
-     * Yes, this code is rather ad-hoc.  It passes the only important
-     * test, which is that it correctly back-translates a terminfo version
-     * of the historical termcap database -- esr.
-     */
-    memset(buffer, '\0', sizeof(buffer));
-    bufptr = buffer;
+    char *bufptr = init_string();
+    char temp[256];
 
     /* we may have to move some trailing mandatory padding up front */
     padding = str + strlen(str) - 1;
@@ -513,7 +538,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 	padding += 2;
 
 	while (isdigit(*padding) || *padding == '.' || *padding == '*')
-	    *bufptr++ = *padding++;
+	    bufptr = save_char(bufptr, *padding++);
     }
 
     for (; *str; str++)
@@ -523,7 +548,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 
 	if (str[0] == '\\' && (str[1] == '^' || str[1] == ','))
 	{
-	    *(bufptr++) = *++str;
+	    bufptr = save_char(bufptr, *++str);
 	}
 	else if (str[0] == '$' && str[1] == '<')	/* discard padding */
 	{
@@ -533,73 +558,73 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 	    --str;
 	}	
 	else if (*str != '%' || (parametrized < 1))
-	    *(bufptr++) = *str;
+	    bufptr = save_char(bufptr, *str);
 	else if (sscanf(str, "%%?%%{%d}%%>%%t%%{%d}%%+%%;", &c1,&c2) == 2)
 	{
 	    str = strchr(str, ';');
-	    (void) sprintf(bufptr, "%%>");
-	    (void) strcat(bufptr, unctrl(c1));
-	    (void) strcat(bufptr, unctrl(c2));
-	    bufptr += strlen(bufptr);
+	    (void) sprintf(temp, "%%>");
+	    (void) strcat(temp, unctrl(c1));
+	    (void) strcat(temp, unctrl(c2));
+	    bufptr = save_string(bufptr, temp);
 	}
 	else if (sscanf(str, "%%?%%{%d}%%>%%t%%'%c'%%+%%;", &c1,&ch2) == 2)
 	{
 	    str = strchr(str, ';');
-	    (void) sprintf(bufptr, "%%>%s%c", unctrl(c1), ch2);
-	    bufptr += strlen(bufptr);
+	    (void) sprintf(temp, "%%>%s%c", unctrl(c1), ch2);
+	    bufptr = save_string(bufptr, temp);
 	}
 	else if (sscanf(str, "%%?%%'%c'%%>%%t%%{%d}%%+%%;", &ch1,&c2) == 2)
 	{
 	    str = strchr(str, ';');
-	    (void) sprintf(bufptr, "%%>%c%c", ch1, c2);
-	    bufptr += strlen(bufptr);
+	    (void) sprintf(temp, "%%>%c%c", ch1, c2);
+	    bufptr = save_string(bufptr, temp);
 	}
 	else if (sscanf(str, "%%?%%'%c'%%>%%t%%'%c'%%+%%;", &ch1, &ch2) == 2)
 	{
 	    str = strchr(str, ';');
-	    (void) sprintf(bufptr, "%%>%c%c", ch1, ch2);
-	    bufptr += strlen(bufptr);
+	    (void) sprintf(temp, "%%>%c%c", ch1, ch2);
+	    bufptr = save_string(bufptr, temp);
 	}
 	else if (strncmp(str, "%{6}%*%+", 8) == 0)
 	{
 	    str += 7;
-	    (void) sprintf(bufptr, "%%B");
-	    bufptr += strlen(bufptr);
+	    (void) sprintf(temp, "%%B");
+	    bufptr = save_string(bufptr, temp);
 	}
 	else if ((sscanf(str, "%%{%d}%%+%%c", &c1) == 1
 		  || sscanf(str, "%%'%c'%%+%%c", &ch1) == 1)
 		 && (cp = strchr(str, '+')))
 	{
 	    str = cp + 2;
-	    *bufptr++ = '%';
-	    *bufptr++ = '+';
+	    bufptr = save_char(bufptr, '%');
+	    bufptr = save_char(bufptr, '+');
 
 	    if (ch1)
 		c1 = ch1;
 	    if (is7bits(c1) && isprint(c1))
-		*bufptr++ = c1;
+		bufptr = save_char(bufptr, c1);
 	    else
 	    {
 		if (c1 == (c1 & 0x1f)) /* iscntrl() returns T on 255 */
-		    (void) strcat(bufptr, unctrl(c1));
+		    (void) strcpy(temp, unctrl(c1));
 		else
-		    (void) sprintf(bufptr, "\\%03o", c1);
-		bufptr += strlen(bufptr);
+		    (void) sprintf(temp, "\\%03o", c1);
+		bufptr = save_string(bufptr, temp);
 	    }
 	}
 	else if (strncmp(str, "%{2}%*%-", 8) == 0)
 	{
 	    str += 7;
-	    (void) sprintf(bufptr, "%%D");
-	    bufptr += strlen(bufptr);
+	    (void) sprintf(temp, "%%D");
+	    bufptr = save_string(bufptr, temp);
 	}
 	else if (strncmp(str, "%{96}%^", 7) == 0)
 	{
 	    str += 6;
 	    if (saw_m++ == 0)
 	    {
-		(void) sprintf(bufptr, "%%n");
-		bufptr += strlen(bufptr);
+		(void) sprintf(temp, "%%n");
+		bufptr = save_string(bufptr, temp);
 	    }
 	}
 	else if (strncmp(str, "%{127}%^", 8) == 0)
@@ -607,8 +632,8 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 	    str += 7;
 	    if (saw_n++ == 0)
 	    {
-		(void) sprintf(bufptr, "%%m");
-		bufptr += strlen(bufptr);
+		(void) sprintf(temp, "%%m");
+		bufptr = save_string(bufptr, temp);
 	    }
 	}
 	else
@@ -616,7 +641,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 	    str++;
 	    switch (*str) {
 	    case '%':
-		*(bufptr++) = '%';
+		bufptr = save_char(bufptr, '%');
 		break;
 
 	    case '0':
@@ -629,9 +654,9 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 	    case '7':
 	    case '8':
 	    case '9':
-		*(bufptr++) = '%';
+		bufptr = save_char(bufptr, '%');
 		while (isdigit(*str))
-		    *bufptr++ = *str++;
+		    bufptr = save_char(bufptr, *str++);
 		if (*str == 'd')
 		    str++;
 		else
@@ -640,13 +665,13 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 		break;
 
 	    case 'd':
-		*(bufptr++) = '%';
-		*(bufptr++) = 'd';
+		bufptr = save_char(bufptr, '%');
+		bufptr = save_char(bufptr, 'd');
 		break;
 
 	    case 'c':
-		*(bufptr++) = '%';
-		*(bufptr++) = '.';
+		bufptr = save_char(bufptr, '%');
+		bufptr = save_char(bufptr, '.');
 		break;
 
 	    /*
@@ -655,8 +680,8 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 	     * termcap notation.
 	     */
 	    case 's':
-		*(bufptr++) = '%';
-		*(bufptr++) = 's';
+		bufptr = save_char(bufptr, '%');
+		bufptr = save_char(bufptr, 's');
 		break;
 
 	    case 'p':
@@ -667,8 +692,8 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 		{
 		    if (!seenone && !seentwo)
 		    {
-			*(bufptr++) = '%';
-			*(bufptr++) = 'r';
+			bufptr = save_char(bufptr, '%');
+			bufptr = save_char(bufptr, 'r');
 			seentwo++;
 		    }
 		}
@@ -677,8 +702,8 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 		break;
 
 	    case 'i':
-		*(bufptr++) = '%';
-		*(bufptr++) = 'i';
+		bufptr = save_char(bufptr, '%');
+		bufptr = save_char(bufptr, 'i');
 		break;
 
 	    default:
@@ -692,9 +717,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 
     } /* endwhile (*str) */
 
-    *bufptr = '\0';
-    return(buffer);
-
+    return(my_string);
 }
 
 #ifdef MAIN

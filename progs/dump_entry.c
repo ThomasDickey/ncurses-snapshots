@@ -122,7 +122,6 @@ void dump_init(char *version, int mode, int sort, int twidth, int traceval)
 	break;
 
     case F_TERMCAP:
-    case F_TCONVERT:
     case F_TCONVERR:
 	bool_names = boolcodes;
 	num_names = numcodes;
@@ -433,7 +432,7 @@ bool	outcount = 0;
 	 * for ich/ich1 to work.  If they're not defined, force
 	 * them to be output as defined and empty.
 	 */
-	if (outform==F_TERMCAP || outform==F_TCONVERT || outform==F_TCONVERR)
+	if (outform==F_TERMCAP)
 #undef CUR
 #define CUR tterm->
 	    if (insert_character || parm_ich)
@@ -460,7 +459,7 @@ bool	outcount = 0;
 	if (predval != FAIL) {
 	    if (tterm->Strings[i] == ABSENT_STRING || tterm->Strings[i] == CANCELLED_STRING)
 		sprintf(buffer, "%s@", str_names[i]);
-	    else if ((outform == F_TCONVERT || outform == F_TCONVERR))
+	    else if (outform == F_TERMCAP || outform == F_TCONVERR)
 	    {
 		char *srccap = expand(tterm->Strings[i]);
 		char *cv = _nc_infotocap(str_names[i], srccap,parametrized[i]);
@@ -575,7 +574,7 @@ void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int idx))
     char	*legend, outbuf[MAX_TERMINFO_LENGTH * 2];
     bool	infodump;
 
-    if (outform==F_TERMCAP || outform==F_TCONVERT || outform==F_TCONVERR)
+    if (outform==F_TERMCAP || outform==F_TCONVERR)
     {
 	critlen = MAX_TERMCAP_LENGTH;
 	legend = "older termcap";

@@ -886,6 +886,7 @@ static void acs_and_scroll(void)
 	    }
 	    break;
 
+#ifdef NCURSES_VERSION
 	case KEY_F(8):		/* resize window */
 	    if (current)
 	    {
@@ -937,6 +938,7 @@ static void acs_and_scroll(void)
 		doupdate();
 	    }
 	    break;
+#endif	/* NCURSES_VERSION */
 
 	case KEY_F(10):	/* undocumented --- use this to test area clears */
 	    selectcell(0, 0, LINES - 1, COLS - 1);

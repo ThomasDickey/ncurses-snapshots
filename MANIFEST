@@ -279,7 +279,6 @@
 ./ncurses/read_entry.c
 ./ncurses/read_termcap.c
 ./ncurses/sigaction.c
-./ncurses/strerror.c
 ./ncurses/vsscanf.c
 ./ncurses/write_entry.c
 ./panel/Makefile.in

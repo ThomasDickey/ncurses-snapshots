@@ -48,6 +48,7 @@
 
 int	_nc_syntax;		/* termcap or terminfo? */
 int	_nc_curr_line;		/* current line # in input */
+int	_nc_curr_col;		/* current column # in input */
 long	_nc_curr_file_pos;	/* file offset of current line */
 long	_nc_comment_start;	/* start of comment range before name */
 long	_nc_comment_end;	/* end of comment range before name */
@@ -62,12 +63,22 @@ long	_nc_start_line;		/* start line of current entry */
 static bool first_column;	/* See 'next_char()' below */
 static char separator;		/* capability separator */
 static int pushtype;		/* type of pushback token */
+static char pushname[MAX_NAME_SIZE+1];
 
 static int  next_char(void);
 static long stream_pos(void);
 static bool end_of_stream(void);
 static char trans_string(char *);
 static void push_back(char c);
+
+/* Assume we may be looking at a termcap-style continuation */
+static inline int eat_escaped_newline(int ch)
+{
+	if (ch == '\\')
+		while ((ch = next_char()) == '\n'  ||  iswhite(ch))
+			continue;
+	return ch;
+}
 
 /*
  *	int
@@ -104,9 +115,11 @@ static void push_back(char c);
 
 int _nc_get_token(void)
 {
+static const char terminfo_punct[] = "@%&*!#";
 long		number;
 int		type;
 int		ch;
+bool		found;
 static char	buffer[MAX_ENTRY_SIZE];
 char		*ptr;
 int		dot_flag = FALSE;
@@ -116,10 +129,12 @@ long		token_start;
 	{
 	    int retval = pushtype;
 
+	    _nc_set_type(pushname);
 	    DEBUG(3, ("pushed-back token: `%s', class %d",
 		      _nc_curr_token.tk_name, pushtype));
 
 	    pushtype = NO_PUSHBACK;
+	    pushname[0] = '\0';
 
 	    /* currtok wasn't altered by _nc_push_token() */
 	    return(retval);
@@ -128,14 +143,12 @@ long		token_start;
 	if (end_of_stream())
 	    return(EOF);
 
+start_token:
 	token_start = stream_pos();
 	while ((ch = next_char()) == '\n'  ||  iswhite(ch))
 	    continue;
 
-	/* we may be looking at a termcap-style continuation */
-	if (ch == '\\')
-	    while ((ch = next_char()) == '\n'  ||  iswhite(ch))
-		continue;
+	ch = eat_escaped_newline(ch);
 	
 	if (ch == EOF)
 	    type = EOF;
@@ -158,9 +171,11 @@ long		token_start;
 	    }
 
 	    /* have to make some punctuation chars legal for terminfo */
-	    if (!isalnum(ch) && !strchr("@%&*!#", (char)ch)) {
-		 	_nc_warning("Illegal character - %s", _tracechar(ch));
-		 	_nc_panic_mode(separator);
+	    if (!isalnum(ch) && !strchr(terminfo_punct, (char)ch)) {
+		 _nc_warning("Illegal character (expected a/n or %s) - %s",
+		 	terminfo_punct, _tracechar(ch));
+		 _nc_panic_mode(separator);
+		 goto start_token;
 	    }
 
 	    ptr = buffer;
@@ -200,6 +215,8 @@ long		token_start;
 				 */
 				/* FALLTHRU */
 			    }
+			    else
+				ch = eat_escaped_newline(ch);
 
 			    *ptr++ = ch;
 			}
@@ -244,11 +261,13 @@ long		token_start;
 			if (desc)
 			    if (*desc == '\0')
 				_nc_warning("empty longname field");
+#if UNUSED	/* Solaris doesn't do this */
 			    else if (strchr(desc, ' ') == (char *)NULL)
 			    {
 				_nc_warning("older tic versions may treat the description field as an alias");
 				desc = (char *)NULL;
 			    }
+#endif
 			if (!desc)
 			    desc = buffer + strlen(buffer);
 
@@ -259,18 +278,23 @@ long		token_start;
 			 * dangerous due to shell expansion.
 			 */
 			for (ptr = buffer; ptr < desc; ptr++)
+			{
 			    if (isspace(*ptr))
 			    {
 				_nc_warning("whitespace in name or alias field");
 				break;
 			    }
 			    else if (*ptr == '/')
-				_nc_err_abort("slashes aren't allowed in names or aliases");
+			    {
+				_nc_warning("slashes aren't allowed in names or aliases");
+				break;
+			    }
 			    else if (strchr("$[]!*?", *ptr))
 			    {
 				_nc_warning("dubious character `%c' in name or alias field", *ptr);
 				break;
 			    }
+			}
 
 			ptr = buffer;
 
@@ -294,16 +318,22 @@ long		token_start;
 				type = BOOLEAN;
 				break;
 			case '@':
-				if (next_char() != separator)
-					_nc_warning("Missing separator");
+				if ((ch = next_char()) != separator)
+					_nc_warning("Missing separator after `%s', have %s",
+						buffer, _tracechar(ch));
 				_nc_curr_token.tk_name = buffer;
 				type = CANCEL;
 				break;
 
 		    	case '#':
 				number = 0;
-				while (isdigit(ch = next_char()))
+				found  = FALSE;
+				while (isdigit(ch = next_char())) {
 					number = number * 10 + ch - '0';
+					found  = TRUE;
+				}
+				if (found == FALSE)
+					_nc_warning("no value given for `%s'", buffer);
 				if (ch != separator)
 					_nc_warning("Missing separator");
 				_nc_curr_token.tk_name = buffer;
@@ -406,15 +436,14 @@ end_of_token:
  */
 
 static char
-trans_string(ptr)
-char	*ptr;
+trans_string(char *ptr)
 {
 int	count = 0;
 int	number;
 int	i, c;
 chtype	ch, last_ch = '\0';
 
-	while ((ch = c = next_char()) != separator  &&  c != EOF) {
+	while ((ch = c = next_char()) != separator && c != EOF && c != '\n') {
 	    if (ch == '^' && last_ch != '%') {
 		ch = c = next_char();
 		if (c == EOF)
@@ -442,8 +471,13 @@ chtype	ch, last_ch = '\0';
 			    _nc_err_abort("Premature EOF");
 			
 			if (ch < '0'  ||  ch > '7') {
-			    push_back(c);
-			    break;
+			    if (isdigit(ch)) {
+				_nc_warning("Non-octal digit `%c' in \\ sequence", ch);
+				/* allow the digit; it'll do less harm */
+			    } else {
+				push_back(c);
+				break;
+			    }
 			}
 
 			number = number * 8 + ch - '0';
@@ -522,6 +556,7 @@ void _nc_push_token(int class)
      * but get_token() touches.
      */
     pushtype = class;
+    _nc_get_type(pushname);
 
     DEBUG(3, ("pushing token: `%s', class %d",
 	      _nc_curr_token.tk_name, pushtype));
@@ -566,10 +601,12 @@ static FILE *yyin;		/* scanner's input file descriptor */
 void _nc_reset_input(FILE *fp, char *buf)
 {
 	pushtype = NO_PUSHBACK;
+	pushname[0] = '\0';
 	yyin = fp;
 	bufstart = bufptr = buf;
 	_nc_curr_file_pos = 0L;
 	_nc_curr_line = 0;
+	_nc_curr_col = 0;
 }
 
 /*
@@ -608,8 +645,10 @@ next_char(void)
 	do {
 	       _nc_curr_file_pos = ftell(yyin);
 
-	       if ((bufstart = fgets(line, LEXBUFSIZ, yyin)) != NULL)
+	       if ((bufstart = fgets(line, LEXBUFSIZ, yyin)) != NULL) {
 		   _nc_curr_line++;
+		   _nc_curr_col = 0;
+	       }
 	       bufptr = bufstart;
 	   } while
 	       (bufstart != NULL && line[0] == '#');
@@ -623,6 +662,7 @@ next_char(void)
 
     first_column = (bufptr == bufstart);
 
+    _nc_curr_col++;
     return(*bufptr++);
 }
 

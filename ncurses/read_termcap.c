@@ -378,8 +378,7 @@ _nc_getent(
 	int myfd, eof, foundit, retval, clen;
 	char *record, *cbuf;
 	int tc_not_resolved;
-	char pbuf[1024];
-	
+
 	/*
 	 * Return with ``loop detected'' error if we've recursed more than
 	 * MAX_RECURSION times.

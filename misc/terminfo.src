@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 9.12.6
+#	Version 9.13.0
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -46,8 +46,8 @@
 # you have ncurses `tic -I' is nicer.
 #
 # The termcap version is generated automatically from the master version
-# using tic -C.  This filtering leaves in the OT capabilities under their
-# original termcap names.  All translated entries fit within the
+# using tic -C -RBSD.  This filtering leaves in the OT capabilities under 
+# their original termcap names.  All translated entries fit within the
 # 1023-byte string-table limit of archaic termcap libraries except where
 # explicitly noted below.  Note that the termcap translation assumes that
 # your termcap library can handle multiple tc capabilities in an entry.
@@ -3862,6 +3862,12 @@ tvipt|televideo personal terminal,
 
 #### Visual (vi)
 #
+# In September 1993, Visual Technology of Westboro, Massachusetts,
+# merged with White Pine Software of Nashua, New Hampshire.
+#
+# White Pine Software may be contacted at +1 603/886-9050.
+# Or visit White Pine on the World Wide Web at URL http://www.wpine.com.
+#
 
 # vi50 is from University of Wisconsin
 # This is a provisional vi50 termcap entry.  It was copied from vi500
@@ -4008,6 +4014,9 @@ vi603|visual603|visual 603,
 #
 # Wyse sales can be reached by phone at 1-800-GET-WYSE.  Tech support is at
 # (800)-800-WYSE (option 5 gets you a human).
+#
+# Wyse bought out Link Technology, Inc. in 1990 and closed it down in 1995.
+# So these are the people to talk with about all Link terminals.
 #
 # All the following entries until (but not including) wy100q are direct from
 # Wyse technical support and represent their best knowledge as of January 1995.
@@ -6920,6 +6929,57 @@ cdc456|cdc 456 terminal,
 	cuf1=^L, cup=\E1%p1%{32}%+%c%p2%{32}%+%c, cuu1=^Z, 
 	dl1=\EJ, ed=^X, el=^V, home=^Y, il1=\EL, ind=^J, 
 
+#### Getronics
+#
+# Getronics is a Dutch electronics company that at one time was called 
+# `Geveke' and made async terminals; but (according to the company itself!)
+# they've lost all their documentation on the command set.  The hardware
+# documentation suggests the terminals were actually manufactured by a
+# Taiwanese electronics company named Cal-Comp.  There are known
+# to have been at least two models, the 33 and the 50.
+#
+
+# The 50 seems to be a top end vt220 clone, with the addition of a higher
+# screen resolution, a larger screen, at least 1 page of memory above and
+# below the screen, apparently pages of memory right and left of the screen
+# which can be panned, and about 75 function keys (15 function keys x normal,
+# shift, control, func A, func B). It also has more setup possibilities than
+# the vt220. The monitor case is dated November 1978 and the keyboard case is
+# May 1982.
+#
+# The vt100 emulation works as is.  The entry below describes the rather
+# non-conformant (but more featureful) ANSI mode.
+#
+# From: Stephen Peterson <stv@utrecht.ow.nl>, 27 May 1995
+visa50|geveke visa 50 terminal in ansi 80 character mode, 
+	bw, mir, msgr, 
+	cols#80, lines#25, 
+	acsc=0_aaffggjjkkllmmnnqqttuuvvwwxxh ooss, bel=^G, 
+	blink=\E[5m, bold=\E[1m, cbt=\E[Z, clear=\E[H\E[2J, 
+	cr=^M, csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, 
+	cub1=\E[D, cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC, 
+	cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, 
+	cuu1=\E[A, dch=\E[%p1%dX, dch1=\E[X, dim=\E[2m, 
+	dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, 
+	flash=\E[?5h\E[?5l, home=\E[H, hpa=\E[%i%p1%dG, 
+	ht=^I, ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, 
+	il1=\E[L, ind=^J, invis=\E[8m, 
+	is2=\E0;2m\E[1;25r\E[25;1H\E[?3l\E[?7h\E[?8h, 
+	ka1=\E[f, ka3=\EOQ, kb2=\EOP, kbs=^H, kc1=\EOR, 
+	kc3=\EOS, kcub1=\E[D, kcud1=\E[A, kcuf1=\E[C, 
+	kcuu1=\E[A, kdch1=\177, kdl1=\EOS, kf0=\E010, 
+	kf1=\E001, kf10=\E011, kf2=\E002, kf3=\E003, 
+	kf4=\E004, kf5=\E005, kf6=\E006, kf7=\E007, 
+	kf8=\E008, kf9=\E009, khome=\E[f, 
+	lf2=A delete char, lf3=A insert line, 
+	lf4=A delete line, lf5=A clear, lf6=A ce of/cf gn, 
+	lf7=A print, lf8=A on-line, lf9=A funcl0=A send, 
+	nel=^M^J, rev=\E[7m, rmacs=\E[3l, rmam=\E[?7l, 
+	rmir=\E[4l, rmkx=\E>, rmso=\E[0;2m, rmul=\E[0m, 
+	sgr0=\E[0;2m, smacs=\E3h, smam=\E?7h, smir=\E[4h, 
+	smkx=\E=, smso=\E[2;7m, smul=\E[4m, tbc=\E[3g, 
+	vpa=\E[%i%p1%dd, 
+
 #### Human Designed Systems (Concept)
 #
 #	Human Designed Systems
@@ -6933,6 +6993,7 @@ cdc456|cdc 456 terminal,
 # the character-terminal business now (1995) and making X terminals.  In
 # particular, the whole `Concept' line described here was discontinued long
 # ago.
+#
 
 # From: <vax135!hpk>  Sat Jun 27 07:41:20 1981
 # Extensive changes to c108 by arpavax:eric Feb 1982
@@ -7208,8 +7269,10 @@ dg460-ansi|Data General Dasher 460 in ANSI-mode,
 # Data General 605x     
 # Ought to work for a Model 6242, Type D210 as well as a 605x.
 # Note that the cursor-down key transmits ^Z.  Job control users, beware!
+# This also matches a posted description of something called A `Dasher 100'
+# so there's a dg100 alias here. 
 # (dg6053: the 4.4BSD file had <cub1=^H>, <cud1=^J>, <cuf1=^S>. -- esr) 
-dg6053|data general 6053, 
+dg6053|dg100|data general 6053, 
 	am, bw, ul, 
 	cols#80, lines#24, 
 	bel=^G, clear=^L, cnorm=^L, cr=^M, cub1=^Y, 
@@ -11732,7 +11795,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* Better XENIX keycap translation.  Describe TC termcaps.
 #	* Contact and history info supplied by Qume.
 # 9.3.2 (Sat Feb 11 23:40:02 EST 1995):
-#	* Raided the Shufort FTP site for recent termcaps/terminfos.
+#	* Raided the Shuford FTP site for recent termcaps/terminfos.
 #	* Added information on X3.64 and VT100 standard escape sequences.
 # 9.3.3 (Mon Feb 13 12:26:15 EST 1995):
 #	* Added a correct X11R6 xterm entry.
@@ -12017,26 +12080,21 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* Sent t500 to the UFI file.
 #	* I think we've sucked all the juice out of BSDI's termcap file now.
 #	* Freeze for ncurses 1.9.8 release
-#
 # 9.12.1 (Thu Nov 30 03:14:06 EST 1995)
 #	* Unfreeze, linux kbs needed to be fixed.
 #	* Tim Theisen pinned down a bug in the DMD firmware.
-#
 # 9.12.2 (Thu Nov 30 19:08:55 EST 1995):
 #	* Fixes to ansi and klone capabilities (thank you, Aaron Ucko).
 #	  (The broken ones had been shadowed by sgr.)
-#
 # 9.12.3 (Thu Dec  7 17:47:22 EST 1995):
 #	* Added documentation on ECMA-48 standard.
 #	* New Amiga entry.
-#
 # 9.12.4 (Thu Dec 14 04:16:39 EST 1995):
 #	* More ECMA-48 stuff
 #	* Corrected typo in minix entry, added pc-minix.
 #	* Corrected khome/kend in xterm (thank you again, Aaron Ucko).
 #	* Added rxvt entry.
 #	* Added 1.3.x color-change capabilities to linux entry.
-#
 # 9.12.5 (Tue Dec 19 00:22:10 EST 1995):
 #	* Corrected rxvt entry khome/kend.
 #	* Corrected linux color change capabilities.
@@ -12044,10 +12102,17 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* Cleaned up if and rf file names (all in /usr/share now).
 #	* Changed linux op capability to avoid screwing up a background color
 #	  pair set by setterm.
-#
 # 9.12.6 (Wed Feb  7 16:14:35 EST 1996):
 #	* Added xterm-sun.
+# 9.12.7 (Fri Feb  9 13:27:35 EST 1996):
+#	* Added visa50.
 #
+# 9.13.0 (Wed Feb 14 22:59:12 EST 1996):
+#	* Another sweep through the Shuford archive looking for new info.
+#	* Added dg100 alias to dg6053 based on a comp.terminals posting.
+#	* Freeze for 1.9.9.
+#
+
 ######## REORDER
 #
 # Older termcap distributions featured a kluge called `reorder' intended to

@@ -772,6 +772,7 @@ int main(int argc, char *argv[])
 
 		case 'C':
 			outform = F_TERMCAP;
+			tversion = "BSD";
 			if (sortmode == S_DEFAULT)
 			    sortmode = S_TERMCAP;
 			break;
@@ -803,7 +804,7 @@ int main(int argc, char *argv[])
 			break;
 
 		case 'r':
-			outform = F_TCONVERR;
+			tversion = (char *)NULL;
 			break;
 
 		case 'R':
@@ -1068,9 +1069,7 @@ int main(int argc, char *argv[])
 		    (void) fprintf(stderr, "infocmp: dumping use entry\n");
 		dump_entry(&term[0], use_predicate);
 		for (i = 1; i < termcount; i++)
-		    if (outform==F_TERMCAP
-			|| outform==F_TCONVERT
-			|| outform==F_TCONVERR)
+		    if (outform==F_TERMCAP || outform==F_TCONVERR)
 			(void) printf("tc=%s:", tname[i]);
 		    else
 			(void) printf("use=%s, ", tname[i]);

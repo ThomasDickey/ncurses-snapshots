@@ -247,7 +247,6 @@ setbuffer \
 setvbuf \
 sigaction \
 strdup \
-strerror \
 usleep \
 vsscanf \
 )

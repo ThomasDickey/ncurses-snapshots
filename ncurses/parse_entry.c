@@ -208,12 +208,33 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 		    entry_ptr = _nc_find_type_entry("MT", STRING,
 					_nc_get_table(_nc_syntax != 0));
 
+		/* treat strings without following "=" as empty strings */
+		else if (token_type==BOOLEAN && entry_ptr->nte_type==STRING)
+		    token_type = STRING;
 		/* we couldn't recover; skip this token */
 		else
 		{
 		    if (!silent)
-			_nc_warning("wrong type used for capability '%s'",
-				    _nc_curr_token.tk_name);
+		    {
+			char *type_name;
+			switch (entry_ptr->nte_type)
+			{
+			case BOOLEAN:
+				type_name = "boolean";
+				break;
+			case STRING:
+				type_name = "string";
+				break;
+			case NUMBER:
+				type_name = "numeric";
+				break;
+			default:
+				type_name = "unknown";
+				break;
+			}
+			_nc_warning("wrong type used for %s capability '%s'",
+				type_name, _nc_curr_token.tk_name);
+		    }
 		    continue;
 		}
 	    }
@@ -266,6 +287,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
     } /* endwhile (not EOF and not NAMES) */
 
     _nc_push_token(token_type);
+    _nc_set_type(_nc_first_name(entryp->tterm.term_names));
 
     /*
      * Try to deduce as much as possible from extension capabilities
@@ -342,7 +364,8 @@ static assoc const ko_xlate[] =
     {"ho",	"khome"},	/* home key         -> KEY_HOME  */
     {"ic",	"kich1"},	/* insert char key  -> KEY_IC    */
     {"im",	"kIC"},		/* insert-mode key  -> KEY_SIC   */
-    {"nd",	"kcuf1"},	/* nd space key     -> KEY_RIGHT */
+    {"le",	"kcub1"},	/* le key           -> KEY_LEFT  */
+    {"nd",	"kcuf1"},	/* nd key           -> KEY_RIGHT */
     {"nl",	"kent"},	/* new line key     -> KEY_ENTER */
     {"st",	"khts"},	/* set-tab key      -> KEY_STAB  */
     {"ta",	CANCELLED_STRING},
@@ -485,7 +508,7 @@ void postprocess_termcap(TERMTYPE *tp)
 	} else
 	    tab = _nc_save_str(C_HT);
     }
-    if (init_tabs == -1 && has_hardware_tabs == 1)
+    if (init_tabs == -1 && has_hardware_tabs == TRUE)
 	init_tabs = 8;
 
     /*
@@ -497,9 +520,9 @@ void postprocess_termcap(TERMTYPE *tp)
     /*
      * Translate the old termcap :pt: capability to it#8 + ht=\t
      */
-    if (has_hardware_tabs)
+    if (has_hardware_tabs == TRUE)
 	if (init_tabs != 8)
-	    _nc_warning("hardware tabs with a width other than 8");
+	    _nc_warning("hardware tabs with a width other than 8: %d", init_tabs);
         else
 	{
 	    if (tab && _nc_capcmp(tab, C_HT))
@@ -551,16 +574,23 @@ void postprocess_termcap(TERMTYPE *tp)
 	    if (!from_ptr || !to_ptr)	/* should never happen! */
 		_nc_err_abort("ko translation table is invalid, I give up");
 
-	    if (tp->Strings[to_ptr->nte_index])
-	    {
-		_nc_warning("%s already has an explicit value, ignoring ko",
-			    ap->to);
-		continue;
-	    }
-
 	    if (WANTED(tp->Strings[from_ptr->nte_index]))
 	    {
 		_nc_warning("no value for ko capability %s", ap->from);
+		continue;
+	    }
+
+	    if (tp->Strings[to_ptr->nte_index])
+	    {
+		/* There's no point in warning about it if it's the same
+		 * string; that's just an inefficiency.
+		 */
+		if (strcmp(
+			tp->Strings[from_ptr->nte_index],
+			tp->Strings[to_ptr->nte_index]) != 0)
+		    _nc_warning("%s (%s) already has an explicit value (%s), ignoring ko",
+			    ap->to, ap->from,
+			    _nc_visbuf(tp->Strings[to_ptr->nte_index]) );
 		continue;
 	    }
 

@@ -68,7 +68,6 @@ static void ClearScreen( void );
 static int InsStr( chtype *line, int count );
 static void DelChar( int count );
 
-#define AttrOf(c)	((c) & (chtype)A_ATTRIBUTES)
 #define UpdateAttrs(c)	if (curscr->_attrs != AttrOf(c)) { \
 				curscr->_attrs = AttrOf(c); \
 				vidputs(curscr->_attrs, _nc_outch); \

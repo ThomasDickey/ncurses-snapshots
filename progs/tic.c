@@ -262,7 +262,7 @@ bool	check_only = FALSE;
 			  S_TERMINFO, width, debug_level);
 	else if (capdump)
 		dump_init(tversion,
-			  F_TCONVERT, S_TERMCAP, width, debug_level);
+			  F_TERMCAP, S_TERMCAP, width, debug_level);
 
 	/* parse entries out of the source file */
 	_nc_set_source(source_file);

@@ -21,6 +21,9 @@ to read the BSD CONVERSION NOTES section below.
 If you are trying to build GNU Emacs using ncurses for terminal support,
 read the USING NCURSES WITH EMACS section below.
 
+If you are trying to build Elvis using ncurses for terminal support,
+read the USING NCURSES WITH ELVIS section below.
+
 If you are running over the Andrew File System see the note below on
 USING NCURSES WITH AFS.
 
@@ -359,6 +362,36 @@ USING NCURSES WITH EMACS:
 
 	We have submitted such a change for the 19.30 release, so it may
 	already be applied in your sources -- check for the #define TERMINFO.
+
+USING NCURSES WITH ELVIS:
+	To use ncurses as the screen-painting library for Elvis, apply the
+	following patch to the Elvis curses
+
+*** curses.c.orig       Sun Jun 26 05:48:23 1994
+--- curses.c    Sun Feb 11 16:50:41 1996
+***************
+*** 986,992 ****
+  {
+        if (has_IM)
+                do_IM();
+!       do_IC();
+        qaddch(ch);
+        if (has_EI)
+                do_EI();
+--- 986,995 ----
+  {
+        if (has_IM)
+                do_IM();
+!#ifdef NCURSES_VERSION
+!       else	/* ncurses does insertion in a slightly nonstandard way */
+!#endif
+!               do_IC();
+        qaddch(ch);
+        if (has_EI)
+                do_EI();
+
+This patch is for elvis-1.8pl4 but it can even be used for elvis-1.8pl3 with
+an offset of -11 lines.
 
 BUGS:
 	Send any feedback to the ncurses mailing list at
