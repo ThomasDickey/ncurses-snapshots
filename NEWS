@@ -1,10 +1,29 @@
--- $Id: NEWS,v 1.548 2000/04/09 02:04:52 tom Exp $
+-- $Id: NEWS,v 1.550 2000/04/16 02:12:32 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000415
+	+ minor additions to beterm entry (feedback from Rico Tudor) -TD
+	+ corrections/updates for some IBM terminfo entries -TD
+	+ modify _nc_screen_wrap() so that when exiting curses mode with
+	  non-default colors, the last line on the screen will be cleared to
+	  the screen's default colors (request by Alexander Lukyanov).
+	+ modify ncurses.c 'r' example to set nonl(), allowing control/M to be
+	  read for demonstrating the REQ_NEW_LINE operation (prompted by a
+	  question by Tony L Keith" <tlkeith@keithconsulting.com>).
+	+ modify ncurses.c 'r' example of field_info() to work on Solaris 2.7,
+	  documented extension of ncurses which allows a zero pointer.
+	+ modify fmt_complex() to avoid buffer overflow in case of excess
+	  recursion, and to recognize "%e%?" as a synonym for else-if, which
+	  means that it will not recur for that special case.
+	+ add logic to support $TERMCAP variable in case the USE_GETCAP symbol
+	  is defined (patch by Todd C Miller).
+	+ modify one of the m4 files used to generate the Ada95 sources,
+	  to avoid using the token "symbols" (patch by Juergen Pfeifer).
 
 20000408
 	+ add terminfo entries bsdos-pc-m, bsdos-pc-mono (Jeffrey C Honig)

@@ -1,4 +1,4 @@
-.\" $Id: terminfo.tail,v 1.31 2000/03/12 00:36:41 tom Exp $
+.\" $Id: terminfo.tail,v 1.32 2000/04/15 20:04:58 tom Exp $
 .\" Beginning of terminfo.tail file
 .ps +1
 .PP
@@ -310,7 +310,8 @@ The \fB%\fR encodings have the following meanings:
 	\s-1%%	outputs `%'
 	%\fI[[\fP:\fI]flags][width[.precision]][\fPdoxXs\fI]\fP
 		as in \fBprintf\fP, flags are [-+#] and space
-	%c	print pop() gives %c
+	%c	print pop() like %c in printf()
+	%s	print pop() like %s in printf()
 
 	%p[1-9]	push \fIi\fP'th parm
 	%P[a-z]	set dynamic variable [a-z] to pop()
@@ -327,7 +328,7 @@ The \fB%\fR encodings have the following meanings:
 	%= %> %<	logical operations: push(pop() op pop())
 	%A, %O	logical and & or operations (for conditionals)
 	%! %~	unary operations push(op pop())
-	%i	add 1 to first two parms (for ANSI terminals)
+	%i	add 1 to first two parameters (for ANSI terminals)
 
 	%? expr %t thenpart %e elsepart %;
 		if-then-else, %e elsepart is optional.

@@ -55,7 +55,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.46 2000/03/18 21:53:26 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.47 2000/04/15 16:53:19 Todd.C.Miller Exp $")
 
 #ifndef PURE_TERMINFO
 
@@ -917,16 +917,24 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE * const tp)
     char cwd_buf[PATH_MAX];
 #endif
 #if USE_GETCAP
-    char tc[TBUFSIZ];
+    char *p, tc[TBUFSIZ];
     static char *source;
     static int lineno;
 
-    /* we're using getcap(3) */
-    if (_nc_tgetent(tc, &source, &lineno, tn) < 0)
-	return (ERR);
+    if ((p = getenv("TERMCAP")) != 0
+	&& !is_pathname(p) && _nc_name_match(p, tn, "|:")) {
+	/* TERMCAP holds a termcap entry */
+	strncpy(tc, p, sizeof(tc) - 1);
+	tc[sizeof(tc) - 1] = '\0';
+	_nc_set_source("TERMCAP");
+    } else {
+	/* we're using getcap(3) */
+	if (_nc_tgetent(tc, &source, &lineno, tn) < 0)
+	    return (ERR);
 
-    _nc_curr_line = lineno;
-    _nc_set_source(source);
+	_nc_curr_line = lineno;
+	_nc_set_source(source);
+    }
     _nc_read_entry_source((FILE *) 0, tc, FALSE, FALSE, NULLHOOK);
 #else
     /*

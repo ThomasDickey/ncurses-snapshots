@@ -38,11 +38,17 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.50 2000/04/09 01:59:11 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.53 2000/04/15 21:23:30 tom Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
 #define PRINTF (void) printf
+
+typedef struct {
+    char *text;
+    size_t used;
+    size_t size;
+} DYNBUF;
 
 static int tversion;		/* terminfo version */
 static int outform;		/* output format to use */
@@ -53,9 +59,8 @@ static int oldcol;		/* last value of column before wrap */
 static int tracelevel;		/* level of debug output */
 static bool pretty;		/* true if we format if-then-else strings */
 
-static char *outbuf;		/* the output-buffer */
-static size_t out_used;		/* ...its current length */
-static size_t out_size;		/* ...and its allocated length */
+static DYNBUF outbuf;
+static DYNBUF tmpbuf;
 
 /* indirection pointers for implementing sort and display modes */
 static const int *bool_indirect, *num_indirect, *str_indirect;
@@ -90,14 +95,46 @@ static const char *separator, *trailer;
 #define StrIndirect(j)  ((sortmode == S_NOSORT) ? (j) : str_indirect[j])
 #endif
 
+static void
+strncpy_DYN(DYNBUF * dst, const char *src, size_t need)
+{
+    size_t want = need + dst->used + 1;
+    if (want > dst->size) {
+	dst->size += (want + 1024);	/* be generous */
+	dst->text = typeRealloc(char, dst->size, dst->text);
+    }
+    (void) strncpy(dst->text + dst->used, src, need);
+    dst->used += need;
+    dst->text[dst->used] = 0;
+}
+
+static void
+strcpy_DYN(DYNBUF * dst, const char *src)
+{
+    if (src == 0) {
+	dst->used = 0;
+	strcpy_DYN(dst, "");
+    } else {
+	strncpy_DYN(dst, src, strlen(src));
+    }
+}
+
 #if NO_LEAKS
+static void
+free_DYN(DYNBUF * p)
+{
+    if (p->text != 0)
+	free(p->text);
+    p->text = 0;
+    p->size = 0;
+    p->used = 0;
+}
+
 void
 _nc_leaks_dump_entry(void)
 {
-    if (outbuf != 0) {
-	free(outbuf);
-	outbuf = 0;
-    }
+    free_DYN(&outbuf);
+    free_DYN(&tmpbuf);
 }
 #endif
 
@@ -327,28 +364,10 @@ version_filter(int type, int idx)
 }
 
 static void
-append_output(const char *src)
-{
-    if (src == 0) {
-	out_used = 0;
-	append_output("");
-    } else {
-	size_t need = strlen(src);
-	size_t want = need + out_used + 1;
-	if (want > out_size) {
-	    out_size += want;	/* be generous */
-	    outbuf = typeRealloc(char, out_size, outbuf);
-	}
-	(void) strcpy(outbuf + out_used, src);
-	out_used += need;
-    }
-}
-
-static void
 force_wrap(void)
 {
     oldcol = column;
-    append_output(trailer);
+    strcpy_DYN(&outbuf, trailer);
     column = INDENT;
 }
 
@@ -362,8 +381,8 @@ wrap_concat(const char *src)
 	&& column + want > width) {
 	force_wrap();
     }
-    append_output(src);
-    append_output(separator);
+    strcpy_DYN(&outbuf, src);
+    strcpy_DYN(&outbuf, separator);
     column += need;
 }
 
@@ -402,19 +421,18 @@ termcap_length(const char *src)
 #endif
 
 static char *
-fmt_complex(char *dst, char *src, int level)
+fmt_complex(char *src, int level)
 {
     int percent = 0;
     int n;
     bool if_then = strstr(src, "%?") != 0;
     bool params = !if_then && (strlen(src) > 50) && (strstr(src, "%p") != 0);
 
-    dst += strlen(dst);
     while (*src != '\0') {
 	switch (*src) {
 	case '\\':
 	    percent = 0;
-	    *dst++ = *src++;
+	    strncpy_DYN(&tmpbuf, src++, 1);
 	    break;
 	case '%':
 	    percent = 1;
@@ -424,17 +442,24 @@ fmt_complex(char *dst, char *src, int level)
 	case 'e':		/* "else" */
 	    if (percent) {
 		percent = 0;
-		dst[-1] = '\n';
-		for (n = 0; n <= level; n++)
-		    *dst++ = '\t';
-		*dst++ = '%';
-		*dst++ = *src;
-		*dst = '\0';
-		if (*src++ == '?') {
-		    src = fmt_complex(dst, src, level + 1);
-		    dst += strlen(dst);
-		} else if (level == 1) {
-		    _nc_warning("%%%c without %%?", *src);
+		tmpbuf.text[tmpbuf.used - 1] = '\n';
+		/* treat a "%e%?" as else-if, on the same level */
+		if (!strncmp(src, "e%?", 3)) {
+		    for (n = 0; n < level; n++)
+			strncpy_DYN(&tmpbuf, "\t", 1);
+		    strncpy_DYN(&tmpbuf, "%", 1);
+		    strncpy_DYN(&tmpbuf, src, 3);
+		    src += 3;
+		} else {
+		    for (n = 0; n <= level; n++)
+			strncpy_DYN(&tmpbuf, "\t", 1);
+		    strncpy_DYN(&tmpbuf, "%", 1);
+		    strncpy_DYN(&tmpbuf, src, 1);
+		    if (*src++ == '?') {
+			src = fmt_complex(src, level + 1);
+		    } else if (level == 1) {
+			_nc_warning("%%%c without %%?", *src);
+		    }
 		}
 		continue;
 	    }
@@ -443,12 +468,11 @@ fmt_complex(char *dst, char *src, int level)
 	    if (percent) {
 		percent = 0;
 		if (level > 1) {
-		    dst[-1] = '\n';
+		    tmpbuf.text[tmpbuf.used - 1] = '\n';
 		    for (n = 0; n < level; n++)
-			*dst++ = '\t';
-		    *dst++ = '%';
-		    *dst++ = *src++;
-		    *dst = '\0';
+			strncpy_DYN(&tmpbuf, "\t", 1);
+		    strncpy_DYN(&tmpbuf, "%", 1);
+		    strncpy_DYN(&tmpbuf, src++, 1);
 		    return src;
 		}
 		_nc_warning("%%; without %%?");
@@ -456,10 +480,10 @@ fmt_complex(char *dst, char *src, int level)
 	    break;
 	case 'p':
 	    if (percent && params) {
-		dst[-1] = '\n';
+		tmpbuf.text[tmpbuf.used - 1] = '\n';
 		for (n = 0; n <= level; n++)
-		    *dst++ = '\t';
-		*dst++ = '%';
+		    strncpy_DYN(&tmpbuf, "\t", 1);
+		strncpy_DYN(&tmpbuf, "%", 1);
 	    }
 	    percent = 0;
 	    break;
@@ -467,9 +491,8 @@ fmt_complex(char *dst, char *src, int level)
 	    percent = 0;
 	    break;
 	}
-	*dst++ = *src++;
+	strncpy_DYN(&tmpbuf, src++, 1);
     }
-    *dst = '\0';
     return src;
 }
 
@@ -500,10 +523,10 @@ fmt_entry(TERMTYPE * tterm,
 	pred = dump_predicate;
     }
 
-    append_output(0);
-    append_output(tterm->term_names);
-    append_output(separator);
-    column = out_used;
+    strcpy_DYN(&outbuf, 0);
+    strcpy_DYN(&outbuf, tterm->term_names);
+    strcpy_DYN(&outbuf, separator);
+    column = outbuf.used;
     force_wrap();
 
     for_each_boolean(j, tterm) {
@@ -560,6 +583,20 @@ fmt_entry(TERMTYPE * tterm,
     if (len & 1)
 	len++;
 
+#undef CUR
+#define CUR tterm->
+    if (outform == F_TERMCAP) {
+	if (termcap_reset != ABSENT_STRING) {
+	    if (init_3string != ABSENT_STRING
+		&& !strcmp(init_3string, termcap_reset))
+		DISCARD(init_3string);
+
+	    if (reset_2string != ABSENT_STRING
+		&& !strcmp(reset_2string, termcap_reset))
+		DISCARD(reset_2string);
+	}
+    }
+
     for_each_string(j, tterm) {
 	i = StrIndirect(j);
 	name = ExtStrname(tterm, i, str_names);
@@ -575,52 +612,45 @@ fmt_entry(TERMTYPE * tterm,
 	 * them to be output as defined and empty.
 	 */
 	if (outform == F_TERMCAP) {
-#undef CUR
-#define CUR tterm->
 	    if (insert_character || parm_ich) {
 		if (&tterm->Strings[i] == &enter_insert_mode
 		    && enter_insert_mode == ABSENT_STRING) {
 		    (void) strcpy(buffer, "im=");
-		    goto catenate;
+		    WRAP_CONCAT;
+		    continue;
 		}
 
 		if (&tterm->Strings[i] == &exit_insert_mode
 		    && exit_insert_mode == ABSENT_STRING) {
 		    (void) strcpy(buffer, "ei=");
-		    goto catenate;
+		    WRAP_CONCAT;
+		    continue;
 		}
-	    }
-
-	    if (termcap_reset != ABSENT_STRING) {
-		if (init_3string != ABSENT_STRING
-		    && !strcmp(init_3string, termcap_reset))
-		    DISCARD(init_3string);
-
-		if (reset_2string != ABSENT_STRING
-		    && !strcmp(reset_2string, termcap_reset))
-		    DISCARD(reset_2string);
 	    }
 	}
 
 	predval = pred(STRING, i);
 	buffer[0] = '\0';
+
 	if (predval != FAIL) {
 	    if (tterm->Strings[i] != ABSENT_STRING
 		&& i + 1 > num_strings)
 		num_strings = i + 1;
-	    if (!VALID_STRING(tterm->Strings[i]))
+
+	    if (!VALID_STRING(tterm->Strings[i])) {
 		sprintf(buffer, "%s@", name);
-	    else if (outform == F_TERMCAP || outform == F_TCONVERR) {
+		WRAP_CONCAT;
+	    } else if (outform == F_TERMCAP || outform == F_TCONVERR) {
 		char *srccap = _nc_tic_expand(tterm->Strings[i], TRUE, numbers);
 		char *cv = _nc_infotocap(name, srccap, parametrized[i]);
 
 		if (cv == 0) {
-		    if (outform == F_TCONVERR)
+		    if (outform == F_TCONVERR) {
 			sprintf(buffer, "%s=!!! %s WILL NOT CONVERT !!!",
 			    name, srccap);
-		    else if (suppress_untranslatable)
+		    } else if (suppress_untranslatable) {
 			continue;
-		    else {
+		    } else {
 			char *s = srccap, *d = buffer;
 			sprintf(d, "..%s=", name);
 			d += strlen(d);
@@ -634,24 +664,29 @@ fmt_entry(TERMTYPE * tterm,
 			    d++;
 			}
 		    }
-		} else
+		} else {
 		    sprintf(buffer, "%s=%s", name, cv);
+		}
 		len += strlen(tterm->Strings[i]) + 1;
+		WRAP_CONCAT;
 	    } else {
 		char *src = _nc_tic_expand(tterm->Strings[i],
 		    outform == F_TERMINFO, numbers);
-		sprintf(buffer, "%s=", name);
+
+		strcpy_DYN(&tmpbuf, 0);
+		strcpy_DYN(&tmpbuf, name);
+		strcpy_DYN(&tmpbuf, "=");
 		if (pretty
 		    && (outform == F_TERMINFO
-			|| outform == F_VARIABLE))
-		    fmt_complex(buffer + strlen(buffer), src, 1);
-		else
-		    strcat(buffer, src);
+			|| outform == F_VARIABLE)) {
+		    fmt_complex(src, 1);
+		} else {
+		    strcpy_DYN(&tmpbuf, src);
+		}
 		len += strlen(tterm->Strings[i]) + 1;
+		wrap_concat(tmpbuf.text);
+		outcount = TRUE;
 	    }
-
-	  catenate:
-	    WRAP_CONCAT;
 	}
     }
     len += num_strings * 2;
@@ -704,22 +739,22 @@ fmt_entry(TERMTYPE * tterm,
      */
     if (outcount) {
 	bool trimmed = FALSE;
-	j = out_used;
+	j = outbuf.used;
 	if (j >= 2
-	    && outbuf[j - 1] == '\t'
-	    && outbuf[j - 2] == '\n') {
-	    out_used -= 2;
+	    && outbuf.text[j - 1] == '\t'
+	    && outbuf.text[j - 2] == '\n') {
+	    outbuf.used -= 2;
 	    trimmed = TRUE;
 	} else if (j >= 4
-		&& outbuf[j - 1] == ':'
-		&& outbuf[j - 2] == '\t'
-		&& outbuf[j - 3] == '\n'
-	    && outbuf[j - 4] == '\\') {
-	    out_used -= 4;
+		&& outbuf.text[j - 1] == ':'
+		&& outbuf.text[j - 2] == '\t'
+		&& outbuf.text[j - 3] == '\n'
+	    && outbuf.text[j - 4] == '\\') {
+	    outbuf.used -= 4;
 	    trimmed = TRUE;
 	}
 	if (trimmed) {
-	    outbuf[out_used] = '\0';
+	    outbuf.text[outbuf.used] = '\0';
 	    column = oldcol;
 	}
     }
@@ -728,7 +763,7 @@ fmt_entry(TERMTYPE * tterm,
     fprintf(stderr, "num_values = %d\n", num_values);
     fprintf(stderr, "num_strings = %d\n", num_strings);
     fprintf(stderr, "term_names=%s, len=%d, strlen(outbuf)=%d, outbuf=%s\n",
-	tterm->term_names, len, out_used, outbuf);
+	tterm->term_names, len, outbuf.used, outbuf.text);
 #endif
     /*
      * Here's where we use infodump to trigger a more stringent length check
@@ -737,7 +772,7 @@ fmt_entry(TERMTYPE * tterm,
      * It gives an idea of which entries are deadly to even *scan past*,
      * as opposed to *use*.
      */
-    return (infodump ? len : termcap_length(outbuf));
+    return (infodump ? len : termcap_length(outbuf.text));
 }
 
 int
@@ -804,7 +839,7 @@ dump_entry(TERMTYPE * tterm, bool limited, int numbers, int (*pred) (int
 	}
     }
 
-    (void) fputs(outbuf, stdout);
+    (void) fputs(outbuf.text, stdout);
     return len;
 }
 
@@ -814,11 +849,11 @@ dump_uses(const char *name, bool infodump)
 {
     char buffer[MAX_TERMINFO_LENGTH];
 
-    append_output(0);
+    strcpy_DYN(&outbuf, 0);
     (void) sprintf(buffer, "%s%s", infodump ? "use=" : "tc=", name);
     wrap_concat(buffer);
-    (void) fputs(outbuf, stdout);
-    return out_used;
+    (void) fputs(outbuf.text, stdout);
+    return outbuf.used;
 }
 
 void
