@@ -1,16 +1,18 @@
-# $Id: man_db.renames,v 0.23 2002/02/16 22:48:44 tom Exp $
+# $Id: man_db.renames,v 0.25 2002/02/23 23:26:30 tom Exp $
 # Manual-page renamings for the man_db program
 #
 # Files:
 captoinfo.1m			captoinfo.1
 clear.1				clear.1
 curs_add_wch.3x			add_wch.3ncurses
+curs_add_wchstr.3x		add_wchstr.3ncurses
 curs_addch.3x			addch.3ncurses
 curs_addchstr.3x		addchstr.3ncurses
 curs_addstr.3x			addstr.3ncurses
 curs_attr.3x			attr.3ncurses
 curs_beep.3x			beep.3ncurses
 curs_bkgd.3x			bkgd.3ncurses
+curs_bkgrnd.3x			bkgrnd.3ncurses
 curs_border.3x			border.3ncurses
 curs_border_set.3x		border_set.3ncurses
 curs_clear.3x			clear.3ncurses

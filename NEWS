@@ -1,10 +1,22 @@
--- $Id: NEWS,v 1.670 2002/02/17 00:05:07 tom Exp $
+-- $Id: NEWS,v 1.672 2002/02/23 23:26:52 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020223
+	+ add manpages: curs_add_wchstr.3x, curs_bkgrnd.3x
+	+ document wunctrl, key_name.
+	+ implement key_name().
+	+ remove const's in lib_box.c incorrectly leftover after splitting off
+	  lib_box_set.c
+	+ update llib-lncurses, llib-ncursesw, fix configure script related to these.
+
+20020218
+	+ remove quotes on "SYNOPSIS" in man/curs_box_set.3x, which resulted
+	  in spurious symlinks on install.
 
 20020216
 	+ implement whline_set(), wvline_set(), add manpage curs_border_set.

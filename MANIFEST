@@ -500,12 +500,14 @@
 ./man/captoinfo.1m
 ./man/clear.1
 ./man/curs_add_wch.3x
+./man/curs_add_wchstr.3x
 ./man/curs_addch.3x
 ./man/curs_addchstr.3x
 ./man/curs_addstr.3x
 ./man/curs_attr.3x
 ./man/curs_beep.3x
 ./man/curs_bkgd.3x
+./man/curs_bkgrnd.3x
 ./man/curs_border.3x
 ./man/curs_border_set.3x
 ./man/curs_clear.3x
