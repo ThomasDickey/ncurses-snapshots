@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.47 2001/11/02 19:55:16 tom Exp $
+ * $Id: view.c,v 1.48 2002/02/02 18:58:28 tom Exp $
  */
 
 #include <string.h>
@@ -454,7 +454,7 @@ adjust(int sig)
 	struct winsize size;
 
 	if (ioctl(fileno(stdout), TIOCGWINSZ, &size) == 0) {
-	    resizeterm(size.ws_row, size.ws_col);
+	    resize_term(size.ws_row, size.ws_col);
 	    wrefresh(curscr);	/* Linux needs this */
 	    show_all(sig ? "SIGWINCH" : "interrupt");
 	}

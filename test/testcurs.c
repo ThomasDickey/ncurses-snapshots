@@ -7,7 +7,7 @@
  *  wrs(5/28/93) -- modified to be consistent (perform identically) with either
  *                  PDCurses or under Unix System V, R4
  *
- * $Id: testcurs.c,v 1.26 2001/09/15 22:36:45 tom Exp $
+ * $Id: testcurs.c,v 1.28 2002/02/03 00:29:22 tom Exp $
  */
 
 #include <test.priv.h>
@@ -36,7 +36,7 @@ typedef struct commands COMMAND;
 
 const COMMAND command[] =
 {
-    {"Intro Test", introTest},
+    {"General Test", introTest},
     {"Pad Test", padTest},
 #if defined(PDCURSES) && !defined(XCURSES)
     {"Resize Test", resizeTest},
@@ -55,8 +55,11 @@ main(
 	char *argv[]GCC_UNUSED)
 {
     WINDOW *win;
-    int key, old_option = (-1), new_option = 0;
+    int key;
+    int old_option = (-1);
+    int new_option = 0;
     bool quit = FALSE;
+    unsigned n;
 
 #ifdef PDCDEBUG
     PDC_debug("testcurs started\n");
@@ -66,7 +69,7 @@ main(
 
     erase();
     display_menu(old_option, new_option);
-    while (1) {
+    for (;;) {
 #ifdef A_COLOR
 	if (has_colors()) {
 	    init_pair(1, COLOR_WHITE, COLOR_BLUE);
@@ -82,6 +85,17 @@ main(
 	keypad(stdscr, TRUE);
 	raw();
 	key = getch();
+	if (key < KEY_MIN && key > 0 && isalpha(key)) {
+	    if (islower(key))
+		key = toupper(key);
+	    for (n = 0; n < MAX_OPTIONS; ++n) {
+		if (key == command[n].text[0]) {
+		    display_menu(old_option, new_option = n);
+		    key = ' ';
+		    break;
+		}
+	    }
+	}
 	switch (key) {
 	case 10:
 	case 13:
@@ -106,6 +120,9 @@ main(
 	    quit = TRUE;
 	    break;
 	default:
+	    beep();
+	    break;
+	case ' ':
 	    break;
 	}
 	if (quit == TRUE)
@@ -249,6 +266,8 @@ scrollTest(WINDOW *win)
 static void
 inputTest(WINDOW *win)
 {
+    int answered;
+    int repeat;
     int w, h, bx, by, sw, sh, i, c, num;
     char buffer[80];
     WINDOW *subWin;
@@ -317,7 +336,7 @@ inputTest(WINDOW *win)
 #if defined(PDCURSES)
     mouse_set(ALL_MOUSE_EVENTS);
 #endif
-    while (1) {
+    for (;;) {
 	wmove(win, 3, 5);
 	c = wgetch(win);
 	wclrtobot(win);
@@ -365,20 +384,38 @@ inputTest(WINDOW *win)
     mouse_set(0L);
 #endif
     refresh();
-    wclear(win);
-    mvwaddstr(win, 3, 2, "The window should have moved");
-    mvwaddstr(win, 4, 2,
-	      "This text should have appeared without you pressing a key");
-    mvwaddstr(win, 6, 2, "Enter a number then a string separated by space");
-    mvwin(win, 2, 1);
-    wrefresh(win);
-    echo();
-    noraw();
-    num = 0;
-    *buffer = 0;
-    mvwscanw(win, 7, 6, "%d %s", &num, buffer);
-    mvwprintw(win, 8, 6, "String: %s Number: %d", buffer, num);
-    Continue(win);
+
+    repeat = 0;
+    do {
+	static char *fmt[] = {
+	    "%d %10s",
+	    "%d %[a-zA-Z]s",
+	    "%d %[][a-zA-Z]s",
+	    "%d %[^0-9]"
+	};
+	char *format = fmt[repeat % SIZEOF(fmt)];
+
+	wclear(win);
+	mvwaddstr(win, 3, 2, "The window should have moved");
+	mvwaddstr(win, 4, 2,
+		  "This text should have appeared without you pressing a key");
+	mvwprintw(win, 6, 2,
+		  "Scanning with format \"%s\"", format);
+	mvwin(win, 2 + 2 * (repeat % 4), 1 + 2 * (repeat % 4));
+	erase();
+	refresh();
+	wrefresh(win);
+	echo();
+	noraw();
+	num = 0;
+	*buffer = 0;
+	answered = mvwscanw(win, 7, 6, format, &num, buffer);
+	mvwprintw(win, 8, 6,
+		  "String: %s Number: %d (%d values read)",
+		  buffer, num, answered);
+	Continue(win);
+	++repeat;
+    } while (answered > 0);
 }
 
 static void

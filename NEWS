@@ -1,10 +1,29 @@
--- $Id: NEWS,v 1.667 2002/01/27 23:37:39 tom Exp $
+-- $Id: NEWS,v 1.668 2002/02/03 00:58:38 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020202
+	+ add several cases to the wscanw() example in testcurs.c, showing the
+	  format.
+	+ implement a simple vsscanf() fallback function which uses the %n
+	  conversion to help parse the input data (prompted by discussion with
+	  Albert Chin-A-Young).
+	+ modify mk-1st.awk and test/Makefile.in to add $(LDFLAGS) when making
+	  shared libraries, and to use $(CFLAGS) when linking test programs
+	  (patch by Albert Chin-A-Young).
+	+ add a call to _nc_keypad() in keypad() to accommodate applications
+	  such as nvi, which use curses for output but not for input (fixes
+	  Debian #131263, cf: 20011215).
+	+ add entrypoints to resizeterm.c which provide better control over the
+	  process:  is_term_resized() and resize_term().  The latter restores
+	  the original design of resizeterm() before KEY_RESIZE was added in
+	  970906.  Do this to accommodate 20010922 changes to view.c, but allow
+	  for programs with their own sigwinch handler, such as lynx (reported
+	  by Russell Ruby <russ@math.orst.edu>).
 
 20020127
 	+ fix a typo in change to mk-1st.awk, which broke the shared-library
@@ -46,7 +65,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  target file if it exists, in case non-gzip'd manpages are installed
 	  into a directory where gzip'd ones exist.  In that case, the latter
 	  would be found.
-	+ corrected a redundant initialization of signal handlers from 20010923
+	+ corrected a redundant initialization of signal handlers from 20010922
 	  changes.
 	+ clarified bug-reporting address in terminfo.src (report by John H
 	  DuBois III <spcecdt@armory.com>).
@@ -59,7 +78,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  case it uses multiple tokens.
 
 20011229
-	+ restore special case from 20010923 changes to omit SA_RESTART when
+	+ restore special case from 20010922 changes to omit SA_RESTART when
 	  setting up SIGWINCH handler, which is needed to allow wgetch() to be
 	  interrupted by that signal.
 	+ update configure macro CF_WITH_PATHLIST, to omit some double quotes
