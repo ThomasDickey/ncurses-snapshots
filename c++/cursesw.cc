@@ -21,7 +21,7 @@
 */
 
 #if !defined(lint)
-static char vcid[] = "$Id: cursesw.cc,v 0.3.1.1 1995/05/10 20:30:52 tom Exp $";
+static char vcid[] = "$id: cursesw.cc,v 1.3 1994/02/04 22:05:45 anatoly Exp tom $";
 #endif // !lint
 
 
@@ -245,7 +245,7 @@ NCursesColorWindow::NCursesColorWindow(int lines, int cols,
 
 NCursesColorWindow::NCursesColorWindow(NCursesWindow& par,
 		                       int lines, int cols,
-		                       int by, int bx, char absrel)
+		                       int by, int bx, char absrel = 'a')
 : NCursesWindow(par, lines, cols, by, bx, absrel) 
 {
     colorInit();

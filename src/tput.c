@@ -1,3 +1,4 @@
+
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -18,7 +19,6 @@
 *                                                                          *
 ***************************************************************************/
 
-#include "system.h"
 
 /*
  * tput.c -- shellscript access to terminal capabilities
@@ -29,6 +29,7 @@
 
 #include <ctype.h>
 #include <stdlib.h>
+#include "config.h"
 
 #if HAVE_UNISTD_H
 #include <unistd.h>

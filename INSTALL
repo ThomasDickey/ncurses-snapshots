@@ -1,9 +1,9 @@
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system 
 ---------------------------------------------------------------------
-************************************************************
-* READ ALL OF THIS FILE BEFORE YOU TRY TO INSTALL NCURSES. *
-************************************************************
+    ************************************************************
+    * READ ALL OF THIS FILE BEFORE YOU TRY TO INSTALL NCURSES. *
+    ************************************************************
 
 You should be reading the file INSTALL in a directory called:
 ncurses-d.d.d, where d.d.d is the current version number (see README).
@@ -41,23 +41,6 @@ INSTALLATION PROCEDURE:
     /usr/lib/terminfo, you can either make that a symbolic link to
     /usr/share/terminfo, or type 'make datadir=/usr/lib'.
 
-    On my system (and I recommend it for you), the directory /usr/lib/terminfo
-    is used.  If your system already has a terminfo database and you want to
-    keep separate databases you can put it somewhere else.
-
-    Remember, this is not where the C language source code to the library will
-    go; this is where the actual binary terminal descriptions will go.
-
-    To use a non-default location, you'll need to do these steps (skip these if
-    you're being reasonable or lazy):
-
-	a.  Keep in mind that this directory should probably be in your root
-	    filesystem so that programs which use terminfo can be used even
-	    when the system is only up single-user.
-
-	b.  Change the value of the entry for TERMINFO in src/Makefile (after
-	    running 'configure') to the name of the directory you've chosen.
-
 2.  Type 'configure' to configure ncurses for your operating system and create
     the Makefiles.  You can optionally give configure options, such as
     '--prefix=/usr/local'.  Use `configure --help' to list the available
@@ -92,7 +75,8 @@ INSTALLATION PROCEDURE:
 	'make install' will do all the above.
 
 5.  The c++ directory has C++ classes that are built on top of ncurses and
-    panels.  You need to have installed panels to compile and run the demo.
+    panels.  You need to have panels installed before you can compile and 
+    run the demo.
 
 5a. If you're running under Linux, you must either (a) tell Linux that the
     console terminal type is `linux', or (b) make a link to or copy of the 
@@ -143,10 +127,8 @@ NOTES:
 	On many systems, the make production `install.sys' will install
 	ncurses over the system curses libraries.  Don't do this casually!
 
-	The c++ directory has C++ classes that are built on top of ncurses and
-	panels.  You need to have installed panels to compile and run the demo.
-
 BUGS:
-	Send any feedback to me: zmbenhal@netcom.com 
+	Send any feedback to me: zmbenhal@netcom.com or to the ncurses mailing
+	list at ncurses-list@netcom.com 
 
 

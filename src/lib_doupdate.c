@@ -1,3 +1,4 @@
+
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -18,7 +19,6 @@
 *                                                                          *
 ***************************************************************************/
 
-#include "system.h"
 
 /*-----------------------------------------------------------------
  *
@@ -221,6 +221,7 @@ static inline void PutChar(chtype ch)
 
 int _nc_outch(int ch)
 {
+	T(("outputting %d", ch));
 	if (SP != NULL)
 		putc(ch, SP->_ofp);
 	else
@@ -263,7 +264,7 @@ int	i;
 		if (change_scroll_region)
 		{
 			TPUTS_TRACE("change_scroll_region");
-			putp(tparm(change_scroll_region, 0, lines - 1));
+			putp(tparm("change_scroll_region", 0, lines - 1));
 		}
 		newscr->_clear = TRUE;
 		SP->_endwin = FALSE;

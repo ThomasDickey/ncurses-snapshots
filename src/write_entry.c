@@ -1,3 +1,4 @@
+
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -18,13 +19,14 @@
 *                                                                          *
 ***************************************************************************/
 
-#include "system.h"
+
 
 /*
  *	write_entry.c -- write a terminfo structure onto the file system
  */
 
 #include <stdlib.h>
+#include "config.h"
 
 #include <errno.h>
 #if !HAVE_EXTERN_ERRNO

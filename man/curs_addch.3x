@@ -27,7 +27,8 @@ beginning of the next line.  At the bottom of the scrolling region, if
 \fBscrollok\fR is enabled, the scrolling region is scrolled up one line.
 
 If \fIch\fR is a tab, newline, or backspace, the cursor is moved appropriately
-within the window.  A newline also does a \fBclrtoeol\fR before moving.  Tabs
+within the window.  A newline also does a \fBclrtoeol\fR before moving.  The
+behavior of a newline is also controlled by the current status of nonl(). Tabs
 are considered to be at every eighth column.
 
 If \fIch\fR is any control character other than tab, newline, or backspace, it
