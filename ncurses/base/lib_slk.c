@@ -41,7 +41,7 @@
 #include <ctype.h>
 #include <term.h>		/* num_labels, label_*, plab_norm */
 
-MODULE_ID("$Id: lib_slk.c,v 1.25 2003/03/29 22:56:32 tom Exp $")
+MODULE_ID("$Id: lib_slk.c,v 1.26 2003/04/12 21:07:44 tom Exp $")
 
 /*
  * We'd like to move these into the screen context structure, but cannot,
@@ -94,12 +94,12 @@ _nc_slk_initialize(WINDOW *stwin, int cols)
     int res = OK;
     unsigned max_length;
 
-    T(("slk_initialize()"));
+    T((T_CALLED("_nc_slk_initialize()")));
 
     if (SP->_slk) {		/* we did this already, so simply return */
-	return (OK);
+	returnCode(OK);
     } else if ((SP->_slk = typeCalloc(SLK, 1)) == 0)
-	return (ERR);
+	returnCode(ERR);
 
     SP->_slk->ent = NULL;
     SP->_slk->attr = A_STANDOUT;
@@ -118,18 +118,18 @@ _nc_slk_initialize(WINDOW *stwin, int cols)
 	|| SP->_slk->labcnt <= 0
 	|| (SP->_slk->ent = typeCalloc(slk_ent,
 				       (unsigned) SP->_slk->labcnt)) == NULL)
-	return slk_failed();
+	returnCode(slk_failed());
 
     max_length = SP->_slk->maxlen;
     for (i = 0; i < SP->_slk->labcnt; i++) {
 
 	if ((SP->_slk->ent[i].ent_text = _nc_doalloc(0, max_length + 1)) == 0)
-	    return slk_failed();
-	SP->_slk->ent[i].ent_text[max_length] = '\0';
+	    returnCode(slk_failed());
+	memset(SP->_slk->ent[i].ent_text, 0, max_length + 1);
 
 	if ((SP->_slk->ent[i].form_text = _nc_doalloc(0, max_length + 1)) == 0)
-	    return slk_failed();
-	SP->_slk->ent[i].form_text[max_length] = '\0';
+	    returnCode(slk_failed());
+	memset(SP->_slk->ent[i].form_text, 0, max_length + 1);
 
 	memset(SP->_slk->ent[i].form_text, ' ', max_length);
 	SP->_slk->ent[i].visible = (i < SP->_slk->maxlab);
@@ -170,12 +170,12 @@ _nc_slk_initialize(WINDOW *stwin, int cols)
 		    x += (i == 2 || i == 4) ? gap : 1;
 		}
 	    } else
-		return slk_failed();
+		returnCode(slk_failed());
 	}
     }
     SP->_slk->dirty = TRUE;
     if ((SP->_slk->win = stwin) == NULL) {
-	return slk_failed();
+	returnCode(slk_failed());
     }
 
     /* We now reset the format so that the next newterm has again
@@ -184,7 +184,7 @@ _nc_slk_initialize(WINDOW *stwin, int cols)
      */
     SP->slk_format = _nc_slk_format;
     _nc_slk_format = 0;
-    return (res);
+    returnCode(res);
 }
 
 /*

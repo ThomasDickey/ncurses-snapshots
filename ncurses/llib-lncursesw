@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2001,2002 Free Software Foundation, Inc.                   *
+ * Copyright (c) 2001-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey 2001,2002                                      *
+ *  Author: Thomas E. Dickey 2001-2003                                      *
  ****************************************************************************/
 /* LINTLIBRARY */
 
@@ -234,6 +234,10 @@ int	wclrtoeol(
 int	COLOR_PAIRS;
 #undef COLORS
 int	COLORS;
+
+#undef _nc_reset_colors
+NCURSES_BOOL _nc_reset_colors(void)
+		{ return(*(NCURSES_BOOL *)0); }
 
 #undef start_color
 int	start_color(void)
@@ -965,7 +969,7 @@ int	vline(
 #undef vw_printw
 int	vw_printw(
 		WINDOW	*a1, 
-		char	*a2, 
+		const char *a2, 
 		va_list	z)
 		{ return(*(int *)0); }
 
@@ -1588,10 +1592,23 @@ WINDOW	*initscr(void)
 
 /* ./base/lib_insch.c */
 
+#undef _nc_insert_ch
+void	_nc_insert_ch(
+		WINDOW	*win, 
+		chtype	ch)
+		{ /* void */ }
+
 #undef winsch
 int	winsch(
 		WINDOW	*win, 
 		chtype	c)
+		{ return(*(int *)0); }
+
+#undef winsnstr
+int	winsnstr(
+		WINDOW	*win, 
+		const char *s, 
+		int	n)
 		{ return(*(int *)0); }
 
 /* ./base/lib_insdel.c */
@@ -1599,15 +1616,6 @@ int	winsch(
 #undef winsdelln
 int	winsdelln(
 		WINDOW	*win, 
-		int	n)
-		{ return(*(int *)0); }
-
-/* ./base/lib_insstr.c */
-
-#undef winsnstr
-int	winsnstr(
-		WINDOW	*win, 
-		const char *s, 
 		int	n)
 		{ return(*(int *)0); }
 
@@ -1866,14 +1874,14 @@ int	pechochar(
 
 #undef printw
 int	printw(
-		char	*fmt, 
+		const char *fmt, 
 		...)
 		{ return(*(int *)0); }
 
 #undef wprintw
 int	wprintw(
 		WINDOW	*win, 
-		char	*fmt, 
+		const char *fmt, 
 		...)
 		{ return(*(int *)0); }
 
@@ -1881,7 +1889,7 @@ int	wprintw(
 int	mvprintw(
 		int	y, 
 		int	x, 
-		char	*fmt, 
+		const char *fmt, 
 		...)
 		{ return(*(int *)0); }
 
@@ -1890,14 +1898,14 @@ int	mvwprintw(
 		WINDOW	*win, 
 		int	y, 
 		int	x, 
-		char	*fmt, 
+		const char *fmt, 
 		...)
 		{ return(*(int *)0); }
 
 #undef vwprintw
 int	vwprintw(
 		WINDOW	*win, 
-		char	*fmt, 
+		const char *fmt, 
 		va_list	argp)
 		{ return(*(int *)0); }
 
@@ -2232,9 +2240,9 @@ char	*_tracechtype(
 		{ return(*(char **)0); }
 
 #undef _nc_retrace_chtype
-attr_t	_nc_retrace_chtype(
-		attr_t	code)
-		{ return(*(attr_t *)0); }
+chtype	_nc_retrace_chtype(
+		chtype	code)
+		{ return(*(chtype *)0); }
 
 #undef _tracecchar_t2
 char	*_tracecchar_t2(
@@ -2457,6 +2465,14 @@ void	_nc_sigaction(void)
 void	_nc_vsscanf(void)
 		{ /* void */ }
 
+/* ./base/lib_freeall.c */
+
+#include <term_entry.h>
+
+#undef _nc_freeall
+void	_nc_freeall(void)
+		{ /* void */ }
+
 /* ./widechar/lib_box_set.c */
 
 #undef wborder_set
@@ -2547,21 +2563,19 @@ int	win_wchnstr(
 		int	n)
 		{ return(*(int *)0); }
 
-/* ./widechar/lib_ins_nwstr.c */
-
-#undef wins_nwstr
-int	wins_nwstr(
-		WINDOW	*win, 
-		const wchar_t *wstr, 
-		int	n)
-		{ return(*(int *)0); }
-
 /* ./widechar/lib_ins_wch.c */
 
 #undef wins_wch
 int	wins_wch(
 		WINDOW	*win, 
 		const cchar_t *wch)
+		{ return(*(int *)0); }
+
+#undef wins_nwstr
+int	wins_nwstr(
+		WINDOW	*win, 
+		const wchar_t *wstr, 
+		int	n)
 		{ return(*(int *)0); }
 
 /* ./widechar/lib_inwstr.c */
@@ -2577,6 +2591,15 @@ int	winnwstr(
 int	winwstr(
 		WINDOW	*win, 
 		wchar_t *wstr)
+		{ return(*(int *)0); }
+
+/* ./widechar/lib_slk_wset.c */
+
+#undef slk_wset
+int	slk_wset(
+		int	i, 
+		const wchar_t *astr, 
+		int	format)
 		{ return(*(int *)0); }
 
 /* ./widechar/lib_unget_wch.c */
@@ -2670,6 +2693,13 @@ void	_nc_UpdateAttrs(
 		chtype	c)
 		{ /* void */ }
 
+/* ./base/key_defined.c */
+
+#undef key_defined
+int	key_defined(
+		char	*str)
+		{ return(*(int *)0); }
+
 /* ./base/keybound.c */
 
 #undef keybound
@@ -2697,14 +2727,6 @@ int	assume_default_colors(
 		int	fg, 
 		int	bg)
 		{ return(*(int *)0); }
-
-/* ./base/lib_freeall.c */
-
-#include <term_entry.h>
-
-#undef _nc_freeall
-void	_nc_freeall(void)
-		{ /* void */ }
 
 /* ./tinfo/lib_print.c */
 
@@ -3325,11 +3347,8 @@ int	intrflush(
 
 #include <sys/ioctl.h>
 
-#undef use_env
-void	use_env(
-		NCURSES_BOOL f)
-		{ /* void */ }
-
+#undef ttytype
+char	ttytype[256 ];
 #undef LINES
 int	LINES;
 #undef COLS
@@ -3337,12 +3356,22 @@ int	COLS;
 #undef TABSIZE
 int	TABSIZE;
 
+#undef use_env
+void	use_env(
+		NCURSES_BOOL f)
+		{ /* void */ }
+
 #undef _nc_update_screensize
 void	_nc_update_screensize(void)
 		{ /* void */ }
 
-#undef ttytype
-char	ttytype[256 ];
+#undef _nc_unicode_locale
+int	_nc_unicode_locale(void)
+		{ return(*(int *)0); }
+
+#undef _nc_locale_breaks_acs
+int	_nc_locale_breaks_acs(void)
+		{ return(*(int *)0); }
 
 #undef setupterm
 int	setupterm(
@@ -3431,6 +3460,13 @@ typedef struct {
 #undef _nc_tparm_err
 int	_nc_tparm_err;
 
+#undef _nc_tparm_analyze
+int	_nc_tparm_analyze(
+		const char *string, 
+		char	*p_is_s[9 ], 
+		int	*popcount)
+		{ return(*(int *)0); }
+
 #undef tparm
 char	*tparm(
 		char	*string, 
@@ -3493,10 +3529,20 @@ void	_tracef(
 		...)
 		{ /* void */ }
 
+#undef _nc_retrace_bool
+NCURSES_BOOL _nc_retrace_bool(
+		NCURSES_BOOL code)
+		{ return(*(NCURSES_BOOL *)0); }
+
 #undef _nc_retrace_int
 int	_nc_retrace_int(
 		int	code)
 		{ return(*(int *)0); }
+
+#undef _nc_retrace_unsigned
+unsigned _nc_retrace_unsigned(
+		unsigned code)
+		{ return(*(unsigned *)0); }
 
 #undef _nc_retrace_ptr
 char	*_nc_retrace_ptr(
@@ -3717,6 +3763,12 @@ char	*_nc_trace_buf(
 		size_t	want)
 		{ return(*(char **)0); }
 
+#undef _nc_trace_bufcat
+char	*_nc_trace_bufcat(
+		int	bufnum, 
+		const char *value)
+		{ return(*(char **)0); }
+
 /* ./trace/trace_tries.c */
 
 #undef _nc_trace_tries
@@ -3744,6 +3796,12 @@ const char *_nc_visbuf(
 		const char *buf)
 		{ return(*(const char **)0); }
 
+#undef _nc_visbufn
+const char *_nc_visbufn(
+		const char *buf, 
+		int	len)
+		{ return(*(const char **)0); }
+
 #undef _nc_viswbuf2
 const char *_nc_viswbuf2(
 		int	bufnum, 
@@ -3753,6 +3811,12 @@ const char *_nc_viswbuf2(
 #undef _nc_viswbuf
 const char *_nc_viswbuf(
 		const wchar_t *buf)
+		{ return(*(const char **)0); }
+
+#undef _nc_viswbufn
+const char *_nc_viswbufn(
+		const wchar_t *buf, 
+		int	len)
 		{ return(*(const char **)0); }
 
 #undef _nc_viscbuf2

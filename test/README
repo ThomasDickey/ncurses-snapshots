@@ -1,4 +1,4 @@
--- $Id: README,v 1.13 2003/04/05 23:47:22 tom Exp $
+-- $Id: README,v 1.14 2003/04/12 22:30:01 tom Exp $
 -------------------------------------------------------------------------------
 
 The programs in this directory are designed to test your newest toy :-)
@@ -467,7 +467,7 @@ slk_attroff			lib: ncurses
 slk_attron			lib: ncurses
 slk_attrset			-
 slk_clear			test: ncurses
-slk_color			-
+slk_color			test: ncurses
 slk_init			test: ncurses
 slk_label			test: ncurses
 slk_noutrefresh			test: ncurses
