@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.126 2002/04/13 20:52:00 tom Exp $ */
+/* $Id: curses.h.in,v 1.127 2002/04/20 23:04:19 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -611,7 +611,7 @@ extern NCURSES_EXPORT(int) refresh (void);				/* generated */
 extern NCURSES_EXPORT(int) resetty (void);				/* implemented */
 extern NCURSES_EXPORT(int) reset_prog_mode (void);			/* implemented */
 extern NCURSES_EXPORT(int) reset_shell_mode (void);			/* implemented */
-extern NCURSES_EXPORT(int) ripoffline (int, int (*init)(WINDOW *, int));	/* implemented */
+extern NCURSES_EXPORT(int) ripoffline (int, int (*)(WINDOW *, int));	/* implemented */
 extern NCURSES_EXPORT(int) savetty (void);				/* implemented */
 extern NCURSES_EXPORT(int) scanw (NCURSES_CONST char *,...)		/* implemented */
 		GCC_SCANFLIKE(1,2);

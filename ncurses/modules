@@ -1,4 +1,4 @@
-# $Id: modules,v 1.88 2002/04/13 20:54:43 tom Exp $
+# $Id: modules,v 1.89 2002/04/20 17:26:53 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -109,6 +109,7 @@ lib_wattroff	lib		$(base)
 lib_wattron	lib		$(base)
 lib_winch	lib		$(base)
 lib_window	lib		$(base)
+link_test 	lib		.		../include/curses.h
 nc_panel	lib		$(base)
 safe_sprintf	lib		$(base)
 tty_update	lib		$(serial)	../include/term.h
