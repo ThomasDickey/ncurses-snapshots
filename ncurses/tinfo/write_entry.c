@@ -52,7 +52,7 @@
 #define TRACE_OUT(p)		/*nothing */
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.57 2002/03/16 21:42:23 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.58 2002/04/21 20:35:08 tom Exp $")
 
 static int total_written;
 
@@ -214,6 +214,10 @@ _nc_write_entry(TERMTYPE * const tp)
     char linkname[PATH_MAX];
 #if USE_SYMLINKS
     char symlinkname[PATH_MAX];
+#if !HAVE_LINK
+#undef HAVE_LINK
+#define HAVE_LINK 1
+#endif
 #endif /* USE_SYMLINKS */
     static int call_count;
     static time_t start_time;	/* time at start of writes */

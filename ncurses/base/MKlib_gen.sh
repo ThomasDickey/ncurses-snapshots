@@ -2,7 +2,7 @@
 #
 # MKlib_gen.sh -- generate sources from curses.h macro definitions
 #
-# ($Id: MKlib_gen.sh,v 1.16 2002/04/20 23:56:58 tom Exp $)
+# ($Id: MKlib_gen.sh,v 1.17 2002/04/21 17:54:17 tom Exp $)
 #
 ##############################################################################
 # Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.                #
@@ -200,15 +200,15 @@ $0 !~ /^P_/ {
 	} else {
 		returnType = "Code";
 	}
-	func = second;
+	myfunc = second;
 	for (i = second; i <= NF; i++) {
 		if ($i != "*") {
-			func = i;
+			myfunc = i;
 			break;
 		}
 	}
 	if (using == "generated") {
-		print "M_" $func
+		print "M_" $myfunc
 	}
 	print $0;
 	print "{";
@@ -225,17 +225,17 @@ $0 !~ /^P_/ {
 	# suppress trace-code for functions that we cannot do properly here,
 	# since they return data.
 	dotrace = 1;
-	if ($func ~ /innstr/)
+	if ($myfunc ~ /innstr/)
 		dotrace = 0;
-	if ($func ~ /innwstr/)
+	if ($myfunc ~ /innwstr/)
 		dotrace = 0;
 
 	# workaround functions that we do not parse properly
-	if ($func ~ /ripoffline/) {
+	if ($myfunc ~ /ripoffline/) {
 		dotrace = 0;
 		argcount = 2;
 	}
-	if ($func ~ /wunctrl/) {
+	if ($myfunc ~ /wunctrl/) {
 		dotrace = 0;
 	}
 
@@ -245,7 +245,7 @@ $0 !~ /^P_/ {
 	num = 0;
 	pointer = 0;
 	argtype = ""
-	for (i = func; i <= NF; i++) {
+	for (i = myfunc; i <= NF; i++) {
 		ch = $i;
 		if ( ch == "*" )
 			pointer = 1;
@@ -312,7 +312,7 @@ $0 !~ /^P_/ {
 	else
 		call = "%%return ";
 
-	call = call $func "(";
+	call = call $myfunc "(";
 	for (i = 1; i < argcount; i++) {
 		if (i != 1)
 			call = call ", ";

@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.680 2002/04/20 23:34:49 tom Exp $
+-- $Id: NEWS,v 1.682 2002/04/22 00:03:03 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020421
+	+ modify ifdef's in write_entry.c to allow use of symbolic links on
+	  platforms with no hard links, e.g., BeOS.
+	+ modify a few includes to allow compile with BeOS, which has stdbool.h
+	  with a conflicting definition for 'bool' versus its OS.h definition.
+	+ amend MKlib_gen.sh to work with gawk, which defines 'func' as an
+	  alias for 'function'.
 
 20020420
 	+ correct form of prototype for ripoffline().
