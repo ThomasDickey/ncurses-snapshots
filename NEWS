@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.354 1998/07/25 23:36:03 tom Exp $
+-- $Id: NEWS,v 1.356 1998/08/01 22:31:45 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980801
+	+ modify lib_vidattr.c to allow for terminal types (e.g., xterm-color)
+	  which may reset all attributes in the 'op' capability, so that colors
+	  are set before turning on bold and other attributes, but still after
+	  turning attributes off.
+	+ add 'ditto.c' to test directory to illustrate use of newterm for
+	  initializing multiple screens.
+	+ modify _nc_write_entry() to recover from failed attempt to link alias
+	  for a terminfo on a filesystem which does not preserve character case
+	  (reported by Peter L Jordan <PJordan@chla.usc.edu>).
 
 980725
 	+ updated versions of config.guess and config.sub based on automake 1.3

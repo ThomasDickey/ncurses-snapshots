@@ -594,6 +594,7 @@
 ./ncurses/lib_set_term.c
 ./ncurses/lib_setup.c
 ./ncurses/lib_slk.c
+./ncurses/lib_slkatr_set.c
 ./ncurses/lib_slkatrof.c
 ./ncurses/lib_slkatron.c
 ./ncurses/lib_slkatrset.c
@@ -605,7 +606,6 @@
 ./ncurses/lib_slkrefr.c
 ./ncurses/lib_slkset.c
 ./ncurses/lib_slktouch.c
-./ncurses/lib_slkatr_set.c
 ./ncurses/lib_termcap.c
 ./ncurses/lib_ti.c
 ./ncurses/lib_touch.c
@@ -692,6 +692,7 @@
 ./test/bs.6
 ./test/bs.c
 ./test/configure.in
+./test/ditto.c
 ./test/filter.c
 ./test/firework.c
 ./test/firstlast.c

@@ -26,107 +26,122 @@
  * authorization.                                                           *
  ****************************************************************************/
 
-/****************************************************************************
- *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
- *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- ****************************************************************************/
-
-
 /*
- *	comp_error.c -- Error message routines
+ * Author: Thomas E. Dickey <dickey@clark.net> 1998
  *
+ * $Id: ditto.c,v 1.1 1998/08/01 20:35:53 tom Exp $
+ *
+ * The program illustrates how to set up multiple screens from a single
+ * program.  Invoke the program by specifying another terminal on the same
+ * machine by specifying its device, e.g.,
+ *	ditto /dev/ttyp1
  */
+#include <test.priv.h>
+#include <sys/stat.h>
 
-#include <curses.priv.h>
+typedef struct {
+	FILE *input;
+	FILE *output;
+	SCREEN *screen;
+} DITTO;
 
-#include <tic.h>
-
-MODULE_ID("$Id: comp_error.c,v 1.16 1998/08/01 23:39:51 tom Exp $")
-
-bool	_nc_suppress_warnings;
-int	_nc_curr_line;		/* current line # in input */
-int	_nc_curr_col;		/* current column # in input */
-
-static const char *sourcename;
-static char termtype[MAX_NAME_SIZE+1];
-
-void _nc_set_source(const char *const name)
+static void
+failed(char *s)
 {
-	sourcename = name;
-}
-
-void _nc_set_type(const char *const name)
-{
-	if (name)
-		strncpy( termtype, name, MAX_NAME_SIZE );
-	else
-		termtype[0] = '\0';
-}
-
-void _nc_get_type(char *name)
-{
-	strcpy( name, termtype );
-}
-
-static inline void where_is_problem(void)
-{
-	fprintf (stderr, "\"%s\"", sourcename);
-	if (_nc_curr_line >= 0)
-		fprintf (stderr, ", line %d", _nc_curr_line);
-	if (_nc_curr_col >= 0)
-		fprintf (stderr, ", col %d", _nc_curr_col);
-	if (termtype[0])
-		fprintf (stderr, ", terminal '%s'", termtype);
-	fputc(':', stderr);
-	fputc(' ', stderr);
-}
-
-void _nc_warning(const char *const fmt, ...)
-{
-va_list argp;
-
-	if (_nc_suppress_warnings)
-	    return;
-
-	where_is_problem();
-	va_start(argp,fmt);
-	vfprintf (stderr, fmt, argp);
-	fprintf (stderr, "\n");
-	va_end(argp);
-}
-
-
-void _nc_err_abort(const char *const fmt, ...)
-{
-va_list argp;
-
-	where_is_problem();
-	va_start(argp,fmt);
-	vfprintf (stderr, fmt, argp);
-	fprintf (stderr, "\n");
-	va_end(argp);
+	perror(s);
 	exit(EXIT_FAILURE);
 }
 
-
-void _nc_syserr_abort(const char *const fmt, ...)
+static void
+usage(void)
 {
-va_list argp;
-
-	where_is_problem();
-	va_start(argp,fmt);
-	vfprintf (stderr, fmt, argp);
-	fprintf (stderr, "\n");
-	va_end(argp);
-
-	/* If we're debugging, try to show where the problem occurred - this
-	 * will dump core.
-	 */
-#if defined(TRACE) || !defined(NDEBUG)
-	abort();
-#else
-	/* Dumping core in production code is not a good idea.
-	 */
+	fprintf(stderr, "usage: ditto [terminal1 ...]\n");
 	exit(EXIT_FAILURE);
-#endif
+}
+
+static FILE *
+open_tty(char *path)
+{
+	FILE *fp;
+	struct stat sb;
+
+	if (stat(path, &sb) < 0)
+		failed(path);
+	if ((sb.st_mode & S_IFMT) != S_IFCHR) {
+		errno = ENOTTY;
+		failed(path);
+	}
+	fp = fopen(path, "a+");
+	if (fp == 0)
+		failed(path);
+	printf("opened %s\n", path);
+	return fp;
+}
+
+int
+main(
+	int argc GCC_UNUSED,
+	char *argv[] GCC_UNUSED)
+{
+	int j;
+	int active_tty = 0;
+	DITTO *data;
+
+	if (argc <= 1)
+		usage();
+
+	if ((data = (DITTO *)calloc(argc, sizeof(DITTO))) == 0)
+		failed("calloc data");
+
+	data[0].input = stdin;
+	data[0].output = stdout;
+	for (j = 1; j < argc; j++) {
+		data[j].input =
+		data[j].output = open_tty(argv[j]);
+	}
+
+	/*
+	 * If we got this far, we have open connection(s) to the terminal(s).
+	 * Set up the screens.
+	 */
+	for (j = 0; j < argc; j++) {
+		active_tty++;
+		data[j].screen = newterm(
+			(char *)0,	/* assume $TERM is the same */
+			data[j].output,
+			data[j].input);
+		if (data[j].screen == 0)
+			failed("newterm");
+		cbreak();
+		noecho();
+		scrollok(stdscr, TRUE);
+	}
+
+	/*
+	 * Loop, reading characters from any of the inputs and writing to all
+	 * of the screens.
+	 */
+	for(;;) {
+		int ch;
+		set_term(data[0].screen);
+		ch = getch();
+		if (ch == ERR)
+			continue;
+		if (ch == 4)
+			break;
+		for (j = 0; j < argc; j++) {
+			set_term(data[j].screen);
+			addch(ch);
+			refresh();
+		}
+	}
+
+	/*
+	 * Cleanup and exit
+	 */
+	for (j = argc-1; j >= 0; j--) {
+		set_term(data[j].screen);
+		endwin();
+	}
+	return EXIT_SUCCESS;
 }
