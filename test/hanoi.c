@@ -14,7 +14,7 @@
  *
  *	Date: 05.Nov.90
  *
- * $Id: hanoi.c,v 1.17 1999/11/13 23:39:12 tom Exp $
+ * $Id: hanoi.c,v 1.18 2000/04/01 20:01:08 tom Exp $
  */
 
 #include <test.priv.h>
@@ -97,7 +97,7 @@ unsigned char AutoFlag = 0;
 		Usage();
 		return EXIT_FAILURE;
 	}
-#ifdef NCURSES_VERSION
+#ifdef TRACE
 	trace(TRACE_MAXIMUM);
 #endif
 	initscr();

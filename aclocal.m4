@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.192 2000/03/19 00:05:42 tom Exp $
+dnl $Id: aclocal.m4,v 1.196 2000/04/02 01:31:11 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -832,6 +832,7 @@ do
 			do
 			$AWK -f $srcdir/mk-1st.awk \
 				name=$cf_dir \
+				traces=$LIB_TRACING \
 				MODEL=$CF_ITEM \
 				model=$cf_subdir \
 				prefix=$cf_prefix \
@@ -847,6 +848,7 @@ do
 			test $cf_dir = ncurses && WITH_OVERWRITE=no
 			$AWK -f $srcdir/mk-2nd.awk \
 				name=$cf_dir \
+				traces=$LIB_TRACING \
 				MODEL=$CF_ITEM \
 				model=$cf_subdir \
 				subset=$cf_subset \
@@ -1292,6 +1294,21 @@ fi
 AC_MSG_RESULT($cf_manpage_renames)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Some people expect each tool to make all aliases for manpages in the
+dnl man-directory.  This accommodates the older, less-capable implementations
+dnl of 'man', and is optional.
+AC_DEFUN([CF_MANPAGE_SYMLINKS],
+[
+AC_MSG_CHECKING(for manpage symlinks)
+
+AC_ARG_WITH(manpage-symlinks,
+	[  --with-manpage-symlinks specify manpage-symlinks],
+	[cf_manpage_symlinks=$withval],
+	[cf_manpage_symlinks=yes])
+
+AC_MSG_RESULT($cf_manpage_symlinks)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Try to determine if the man-pages on the system are compressed, and if
 dnl so, what format is used.  Use this information to construct a script that
 dnl will install man-pages.
@@ -1300,6 +1317,7 @@ AC_DEFUN([CF_MAN_PAGES],
 CF_HELP_MESSAGE(Options to Specify How Manpages are Installed:)
 CF_MANPAGE_FORMAT
 CF_MANPAGE_RENAMES
+CF_MANPAGE_SYMLINKS
 
   if test "$prefix" = "NONE" ; then
      cf_prefix="$ac_default_prefix"
@@ -1328,6 +1346,7 @@ datadir="$datadir"
 MKDIRS="`cd $srcdir && pwd`/mkinstalldirs"
 INSTALL="$INSTALL"
 INSTALL_DATA="$INSTALL_DATA"
+
 TMP=\${TMPDIR-/tmp}/man\$\$
 trap "rm -f \$TMP" 0 1 2 5 15
 
@@ -1335,6 +1354,9 @@ verb=\{{$}}1
 shift
 
 mandir=\{{$}}1
+shift
+
+srcdir=\{{$}}1
 shift
 
 for i in \{{$}}* ; do
@@ -1347,8 +1369,14 @@ case \$i in #(vi
 		\$MKDIRS $cf_subdir\$section
 	fi
 	fi
+	aliases=
 	source=\`basename \$i\`
 CF_EOF
+if test "$cf_manpage_symlinks" = yes ; then
+cat >>man/edit_man.sh <<CF_EOF
+	aliases=\`sed -f \$srcdir/manlinks.sed \$source\`
+CF_EOF
+fi
 if test "$cf_manpage_renames" = no ; then
 cat >>man/edit_man.sh <<CF_EOF
 	target=$cf_subdir\${section}/\$source
@@ -1403,14 +1431,47 @@ CF_EOF
 esac
 cat >>man/edit_man.sh <<CF_EOF
 	echo \$verb \$target
+	suffix=\`echo \$target | sed -e 's/^[^.]*//'\`
 	if test \$verb = installing ; then
 		\$INSTALL_DATA \$TMP \$target
+		test -n "\$aliases" && (
+			cd $cf_subdir\${section} && (
+				target=\`basename \$target\`
+				for cf_alias in \$aliases
+				do
+					if test -f \$cf_alias\${suffix} ; then
+						if ( cmp -s \$target \$cf_alias\${suffix} )
+						then
+							:
+						else
+							echo .. \$verb alias \$cf_alias\${suffix}
+							rm -f \$cf_alias\${suffix}
+							$LN_S \$target \$cf_alias\${suffix}
+						fi
+					else
+						echo .. \$verb alias \$cf_alias\${suffix}
+						rm -f \$cf_alias\${suffix}
+						$LN_S \$target \$cf_alias\${suffix}
+					fi
+				done
+			)
+		)
 	else
 		rm -f \$target
+		test -n "\$aliases" && (
+			cd $cf_subdir\${section} && (
+				for cf_alias in \$aliases
+				do
+					echo .. \$verb alias \$cf_alias\${suffix}
+					rm -f \$cf_alias\${suffix}
+				done
+			)
+		)
 	fi
 	;;
 esac
 done
+exit 0
 CF_EOF
 changequote([,])dnl
 chmod 755 man/edit_man.sh

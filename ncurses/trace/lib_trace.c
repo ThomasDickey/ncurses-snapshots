@@ -40,7 +40,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.33 2000/02/13 01:01:55 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.34 2000/04/01 20:25:47 tom Exp $")
 
 unsigned _nc_tracing = 0;	/* always define this */
 
@@ -49,12 +49,10 @@ const char *_nc_tputs_trace = "";
 long _nc_outchars = 0;
 
 static FILE *tracefp;		/* default to writing to stderr */
-#endif
 
 void
 trace(const unsigned int tracelevel GCC_UNUSED)
 {
-#ifdef TRACE
     static bool been_here = FALSE;
     static char my_name[] = "trace";
 
@@ -79,8 +77,8 @@ trace(const unsigned int tracelevel GCC_UNUSED)
 	_tracef("TRACING NCURSES version %s (%d)",
 	    NCURSES_VERSION, NCURSES_VERSION_PATCH);
     }
-#endif
 }
+#endif
 
 const char *
 _nc_visbuf2(int bufnum, const char *buf)
@@ -95,7 +93,15 @@ _nc_visbuf2(int bufnum, const char *buf)
     if (buf == CANCELLED_STRING)
 	return ("(cancelled)");
 
+#ifdef TRACE
     tp = vbuf = _nc_trace_buf(bufnum, (strlen(buf) * 4) + 5);
+#else
+    {
+    static char *mybuf[2];
+    mybuf[bufnum] = _nc_doalloc(mybuf[bufnum], (strlen(buf) * 4) + 5);
+    tp = vbuf = mybuf[bufnum];
+    }
+#endif
     *tp++ = '"';
     while ((c = *buf++) != '\0') {
 	if (c == '"') {

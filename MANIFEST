@@ -500,6 +500,7 @@
 ./man/keyok.3x
 ./man/make_sed.sh
 ./man/man_db.renames
+./man/manlinks.sed
 ./man/menu.3x
 ./man/menu_attribs.3x
 ./man/menu_cursor.3x
