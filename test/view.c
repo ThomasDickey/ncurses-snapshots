@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.58 2004/03/13 19:13:48 tom Exp $
+ * $Id: view.c,v 1.59 2004/04/24 21:53:06 tom Exp $
  */
 
 #include <time.h>
@@ -71,8 +71,9 @@ static int shift = 0;
 static bool try_color = FALSE;
 
 static char *fname;
-static NCURSES_CH_T **my_lines;
+static NCURSES_CH_T **vec_lines;
 static NCURSES_CH_T **lptr;
+static int num_lines;
 
 static void
 usage(void)
@@ -182,7 +183,6 @@ main(int argc, char *argv[])
     int i;
     int my_delay = 0;
     NCURSES_CH_T **olptr;
-    int length = 0;
     int value = 0;
     bool done = FALSE;
     bool got_number = FALSE;
@@ -235,7 +235,7 @@ main(int argc, char *argv[])
     if (optind + 1 != argc)
 	usage();
 
-    if ((my_lines = typeMalloc(NCURSES_CH_T *, MAXLINES + 2)) == 0)
+    if ((vec_lines = typeMalloc(NCURSES_CH_T *, MAXLINES + 2)) == 0)
 	usage();
 
     fname = argv[optind];
@@ -249,7 +249,7 @@ main(int argc, char *argv[])
 #endif
 
     /* slurp the file */
-    for (lptr = &my_lines[0]; (lptr - my_lines) < MAXLINES; lptr++) {
+    for (lptr = &vec_lines[0]; (lptr - vec_lines) < MAXLINES; lptr++) {
 	char temp[BUFSIZ], *s, *d;
 	int col;
 
@@ -282,7 +282,7 @@ main(int argc, char *argv[])
 	*lptr = ch_dup(temp);
     }
     (void) fclose(fp);
-    length = lptr - my_lines;
+    num_lines = lptr - vec_lines;
 
     (void) initscr();		/* initialize the curses library */
     keypad(stdscr, TRUE);	/* enable keyboard mapping */
@@ -302,7 +302,7 @@ main(int argc, char *argv[])
 	}
     }
 
-    lptr = my_lines;
+    lptr = vec_lines;
     while (!done) {
 	int n, c;
 
@@ -344,7 +344,7 @@ main(int argc, char *argv[])
 	case 'n':
 	    olptr = lptr;
 	    for (i = 0; i < n; i++)
-		if ((lptr - my_lines) < (length - LINES + 1))
+		if ((lptr - vec_lines) < (num_lines - LINES + 1))
 		    lptr++;
 		else
 		    break;
@@ -355,7 +355,7 @@ main(int argc, char *argv[])
 	case 'p':
 	    olptr = lptr;
 	    for (i = 0; i < n; i++)
-		if (lptr > my_lines)
+		if (lptr > vec_lines)
 		    lptr--;
 		else
 		    break;
@@ -364,15 +364,15 @@ main(int argc, char *argv[])
 
 	case 'h':
 	case KEY_HOME:
-	    lptr = my_lines;
+	    lptr = vec_lines;
 	    break;
 
 	case 'e':
 	case KEY_END:
-	    if (length > LINES)
-		lptr = my_lines + length - LINES + 1;
+	    if (num_lines > LINES)
+		lptr = vec_lines + num_lines - LINES + 1;
 	    else
-		lptr = my_lines;
+		lptr = vec_lines;
 	    break;
 
 	case 'r':
@@ -430,6 +430,15 @@ static RETSIGTYPE
 finish(int sig)
 {
     endwin();
+#if NO_LEAKS
+    if (vec_lines != 0) {
+	int n;
+	for (n = 0; n < num_lines; ++n) {
+	    free(vec_lines[n]);
+	}
+	free(vec_lines);
+    }
+#endif
     ExitProgram(sig != 0 ? EXIT_FAILURE : EXIT_SUCCESS);
 }
 
@@ -493,7 +502,7 @@ show_all(const char *tag)
     scrollok(stdscr, FALSE);	/* prevent screen from moving */
     for (i = 1; i < LINES; i++) {
 	move(i, 0);
-	printw("%3ld:", (long) (lptr + i - my_lines));
+	printw("%3ld:", (long) (lptr + i - vec_lines));
 	clrtoeol();
 	if ((s = lptr[i - 1]) != 0) {
 	    int len = ch_len(s);

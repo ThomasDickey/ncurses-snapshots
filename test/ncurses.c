@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.206 2004/04/10 23:50:12 tom Exp $
+$Id: ncurses.c,v 1.207 2004/04/24 21:42:54 tom Exp $
 
 ***************************************************************************/
 
@@ -3059,6 +3059,10 @@ demo_panels(void)
 	saywhat("d5; press any key to continue");
 	rmpanel(p5);
 	pflush();
+
+	rmpanel(p3);
+	pflush();
+
 	wait_a_while(nap_msec);
 	if (nap_msec == 1)
 	    break;
@@ -4573,7 +4577,9 @@ usage(void)
 	,"  -e fmt   specify format for soft-keys test (e)"
 	,"  -f       rip-off footer line (can repeat)"
 	,"  -h       rip-off header line (can repeat)"
+#if USE_LIBPANEL
 	,"  -s msec  specify nominal time for panel-demo (default: 1, to hold)"
+#endif
 #ifdef TRACE
 	,"  -t mask  specify default trace-level (may toggle with ^T)"
 #endif

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- *     and: Thomas E. Dickey                        1996-2003               *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 /*
@@ -44,7 +44,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.81 2003/11/15 23:57:01 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.82 2004/04/24 20:17:39 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN * screenp)
@@ -392,7 +392,7 @@ _nc_setupscreen(short slines, short const scolumns, FILE *output)
     SP->_screen_acs_fix = (_nc_unicode_locale() && _nc_locale_breaks_acs());
     {
 	char *env = _nc_get_locale();
-	SP->_posix_locale = ((env == 0)
+	SP->_legacy_coding = ((env == 0)
 			     || !strcmp(env, "C")
 			     || !strcmp(env, "POSIX"));
     }
