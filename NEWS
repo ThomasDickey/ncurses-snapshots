@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.356 1998/08/01 22:31:45 tom Exp $
+-- $Id: NEWS,v 1.358 1998/08/09 02:36:26 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980808
+	+ fix missing include <errno.h> in ditto.c (reported by Bernhard
+	  Rosenkraenzer <bero@k5.sucks.eu.org>)
+	+ add NCSA telnet terminfo entries from Francesco Potorti
+	  <F.Potorti@cnuce.cnr.it>, from Debian bug reports.
+	+ make handling of $LINES and $COLUMNS variables more compatible with
+	  Solaris by allowing them to individually override the window size
+	  as obtained via ioctl.
 
 980801
 	+ modify lib_vidattr.c to allow for terminal types (e.g., xterm-color)

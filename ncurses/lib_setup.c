@@ -47,7 +47,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.38 1998/04/04 19:08:22 juergen Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.39 1998/08/09 00:21:41 tom Exp $")
 
 /****************************************************************************
  *
@@ -144,8 +144,14 @@ char	*rows, *cols;
 		    } while
 			(errno == EINTR);
 
-		    *linep = WINSIZE_ROWS(size);
-		    *colp  = WINSIZE_COLS(size);
+		    /*
+		     * Solaris lets users override either dimension with an
+		     * environment variable.
+		     */
+		    if (*linep <= 0)
+			*linep = WINSIZE_ROWS(size);
+		    if (*colp <= 0)
+			*colp  = WINSIZE_COLS(size);
 		}
 		/* FALLTHRU */
 	    failure:;

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.142 1998/07/19 00:25:18 tom Exp $
+dnl $Id: aclocal.m4,v 1.143 1998/08/09 00:28:10 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1116,7 +1116,7 @@ AC_DEFUN([CF_MANPAGE_FORMAT],
 [ AC_MSG_CHECKING(format of man-pages)
 
 AC_ARG_WITH(manpage-format,
-	[  --manpage-format        specify manpage-format: gzip/compress/BSDI/normal and
+	[  --with-manpage-format   specify manpage-format: gzip/compress/BSDI/normal and
                           optionally formatted, e.g., gzip,formatted],
 	[cf_manpage_form=$withval],
 	[cf_manpage_form=unknown])
@@ -1170,7 +1170,7 @@ AC_DEFUN([CF_MANPAGE_RENAMES],
 AC_MSG_CHECKING(for manpage renaming)
 
 AC_ARG_WITH(manpage-renames,
-	[  --manpage-renames       specify manpage-renaming],
+	[  --with-manpage-renames  specify manpage-renaming],
 	[cf_manpage_renames=$withval],
 	[cf_manpage_renames=yes])
 
