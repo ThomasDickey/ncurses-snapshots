@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.242 2005/02/19 21:27:15 tom Exp $
+$Id: ncurses.c,v 1.243 2005/03/12 20:36:52 tom Exp $
 
 ***************************************************************************/
 
@@ -3854,7 +3854,7 @@ panner_legend(int line)
 	"Use arrow keys (or U,D,L,R) to pan, q to quit, ! to shell-out.",
 	"Use +,- (or j,k) to grow/shrink the panner vertically.",
 	"Use <,> (or h,l) to grow/shrink the panner horizontally.",
-	"Number repeats.  Toggle legend:?, timer:t, scroll mark:s."
+	"Number repeats.  Toggle legend:? filler:a timer:t scrollmark:s."
     };
     int n = (SIZEOF(legend) - (LINES - line));
     if (line < LINES && (n >= 0)) {
@@ -3882,6 +3882,35 @@ panner_v_cleanup(int from_y, int from_x, int to_y)
 }
 
 static void
+fill_pad(WINDOW *panpad, bool pan_lines)
+{
+    int y, x;
+    unsigned gridcount = 0;
+
+    wmove(panpad, 0, 0);
+    for (y = 0; y < getmaxy(panpad); y++) {
+	for (x = 0; x < getmaxx(panpad); x++) {
+	    if (y % GRIDSIZE == 0 && x % GRIDSIZE == 0) {
+		if (y == 0 && x == 0)
+		    waddch(panpad, pan_lines ? ACS_ULCORNER : '+');
+		else if (y == 0)
+		    waddch(panpad, pan_lines ? ACS_TTEE : '+');
+		else if (y == 0 || x == 0)
+		    waddch(panpad, pan_lines ? ACS_LTEE : '+');
+		else
+		    waddch(panpad, (chtype) ((pan_lines ? 'a' : 'A') +
+					     (gridcount++ % 26)));
+	    } else if (y % GRIDSIZE == 0)
+		waddch(panpad, pan_lines ? ACS_HLINE : '-');
+	    else if (x % GRIDSIZE == 0)
+		waddch(panpad, pan_lines ? ACS_VLINE : '|');
+	    else
+		waddch(panpad, ' ');
+	}
+    }
+}
+
+static void
 panner(WINDOW *pad,
        int top_x, int top_y, int porty, int portx,
        int (*pgetc) (WINDOW *))
@@ -3890,6 +3919,7 @@ panner(WINDOW *pad,
     struct timeval before, after;
     bool timing = TRUE;
 #endif
+    bool pan_lines = FALSE;
     bool scrollers = TRUE;
     int basex = 0;
     int basey = 0;
@@ -3928,6 +3958,12 @@ panner(WINDOW *pad,
 	    panner_legend(LINES - 2);
 	    panner_legend(LINES - 1);
 	    break;
+	case 'a':
+	    pan_lines = !pan_lines;
+	    fill_pad(pad, pan_lines);
+	    pending_pan = FALSE;
+	    break;
+
 #if HAVE_GETTIMEOFDAY
 	case 't':
 	    timing = !timing;
@@ -4125,7 +4161,7 @@ panner(WINDOW *pad,
 		gettimeofday(&after, 0);
 		elapsed = (after.tv_sec + after.tv_usec / 1.0e6)
 		    - (before.tv_sec + before.tv_usec / 1.0e6);
-		move(LINES - 1, COLS - 20);
+		move(LINES - 1, COLS - 12);
 		printw("Secs: %2.03f", elapsed);
 		refresh();
 	    }
@@ -4214,8 +4250,6 @@ static void
 demo_pad(void)
 /* Demonstrate pads. */
 {
-    int i, j;
-    unsigned gridcount = 0;
     WINDOW *panpad = newpad(PAD_HIGH, PAD_WIDE);
 
     if (panpad == 0) {
@@ -4223,20 +4257,8 @@ demo_pad(void)
 	return;
     }
 
-    for (i = 0; i < PAD_HIGH; i++) {
-	for (j = 0; j < PAD_WIDE; j++)
-	    if (i % GRIDSIZE == 0 && j % GRIDSIZE == 0) {
-		if (i == 0 || j == 0)
-		    waddch(panpad, '+');
-		else
-		    waddch(panpad, (chtype) ('A' + (gridcount++ % 26)));
-	    } else if (i % GRIDSIZE == 0)
-		waddch(panpad, '-');
-	    else if (j % GRIDSIZE == 0)
-		waddch(panpad, '|');
-	    else
-		waddch(panpad, ' ');
-    }
+    fill_pad(panpad, FALSE);
+
     panner_legend(LINES - 4);
     panner_legend(LINES - 3);
     panner_legend(LINES - 2);
