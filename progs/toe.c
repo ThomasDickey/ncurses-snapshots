@@ -43,7 +43,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: toe.c,v 1.20 2000/01/01 23:37:06 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.21 2000/01/15 22:40:58 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -84,7 +84,7 @@ main(int argc, char *argv[])
     bool direct_dependencies = FALSE;
     bool invert_dependencies = FALSE;
     bool header = FALSE;
-    int i, c, debug_level = 0;
+    int i, c;
     int code;
 
     if ((_nc_progname = strrchr(argv[0], '/')) == 0)
@@ -101,8 +101,7 @@ main(int argc, char *argv[])
 	    direct_dependencies = TRUE;
 	    break;
 	case 'v':
-	    debug_level = atoi(optarg);
-	    _nc_tracing = (1 << debug_level) - 1;
+	    set_trace_level(atoi(optarg));
 	    break;
 	case 'U':
 	    invert_dependencies = TRUE;

@@ -1,10 +1,46 @@
--- $Id: NEWS,v 1.521 2000/01/09 01:12:37 tom Exp $
+-- $Id: NEWS,v 1.530 2000/02/06 03:34:32 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000205
+	+ minor corrections/updates to several terminfo entries: rxvt-basic,
+	  vt520, vt525, ibm5151, xterm-xf86-v40 -TD
+	+ modify ifdef's for poll() to allow it to use <sys/poll.h>, thereby
+	  allowing poll() to be used on Linux.
+	+ add CF_FUNC_POLL macro to check if poll() is able to select from
+	  standard input.  If not we will not use it, preferring select()
+	  (adapted from patch by Michael Pakovic <mpakovic@fdn.com>).
+	+ update CF_SHARED_OPTS macro for SCO Unixware 7.1 to allow building
+	  shared libraries (reported/tested by Thanh <thanhma@mediaone.net>).
+	+ override $LANGUAGE in build to avoid incorrect ordering of keynames.
+	+ correct CF_MATH_LIB parameter, must be sin(x), not sqrt(x).
+
+20000122
+	+ resync CF_CHECK_ERRNO and CF_LIB_PREFIX macros from tin and xterm.
+	+ modify CF_MATH_LIB configure macro to parameterize the test function
+	  used, for reuse in dialog and similar packages.
+	+ correct tests for file-descriptors in OS/2 EMX mouse support.  A
+	  negative value could be used by FD_SET, causing the select() call
+	  to wait indefinitely.
+
+20000115
+	+ additional fixes for non-bce terminals (handling of delete_character)
+	  to work when assume_default_colors() is not specified.
+	+ modify warning message from _nc_parse_entry() regarding extended
+	  capability names to print only if tic/infocmp/toe have the -v flag
+	  set, and not at all in ordinary user applications.  Otherwise, this
+	  warning would be shown for screen's extended capabilities in programs
+	  that use the termcap interface (reported by Todd C Miller).
+	+ modify use of _nc_tracing from programs such as tic so their debug
+	  level is not in the same range as values set by trace() function.
+	+ small panel header cleanup (patch by Juergen Pfeifer).
+	+ add 'railroad' demo for termcap interface.
+	+ modify 'tic' to write its usage message to stderr (patch by Todd C
+	  Miller).
 
 20000108
 	+ add prototype for erase() to curses.h.in, needed to make test
@@ -920,7 +956,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  tic, infocmp).
 	+ modify tic, infocmp to discard redundant i3, r3 strings when output
 	  to termcap format.
- 	> patch by Alexander V Lukyanov:
+	> patch by Alexander V Lukyanov:
 	+ improve performance of tparm, now it takes 19% instead of 25% when
 	  profiling worm.
 	+ rename maxlen/minlen to prec/width for better readability.
@@ -945,7 +981,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  string #define (compile time vs runtime).
 	+ when setting errno to ENOMEM, set it right before the return, not
 	  before code that could, possibly, set errno to a different value.
- 	> patches by Alexander V Lukyanov:
+	> patches by Alexander V Lukyanov:
 	+ use default background in update_cost_from_blank()
 	+ disable scroll-hints when hashmap is configured.
 	+ improve integration of hashmap scrolling code, by adding oldhash and
@@ -980,12 +1016,12 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  manpage (patch by Rick Ohnemus <rick@ecompcon.com>).
 	+ add Makefile.os2 and supporting scripts to generate dll's on OS/2 EMX
 	  (from J.J.G.Ripoll, with further integration by TD).
- 	+ correct a typo in icl6404 terminfo entry.
- 	+ add xtermm and xtermc terminfo entries.
+	+ correct a typo in icl6404 terminfo entry.
+	+ add xtermm and xtermc terminfo entries.
 	> from esr's terminfo version:
- 	+ Added Francesco Potorti's tuned Wyse 99 entries.
- 	+ dtterm enacs correction from Alexander V Lukyanov.
- 	+ Add ncsa-ns, ncsa-m-ns and ncsa-m entries from esr version.
+	+ Added Francesco Potorti's tuned Wyse 99 entries.
+	+ dtterm enacs correction from Alexander V Lukyanov.
+	+ Add ncsa-ns, ncsa-m-ns and ncsa-m entries from esr version.
 
 980822
 	+ document AT&T acs characters in terminfo.5 manpage.
@@ -1300,7 +1336,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ the slk_attr_{set,off,on} functions need an additional void*
 	  parameter according to XSI.
 	+ fix the C++ and Ada95 binding as well as the man pages to
-    	  reflect above enhancements.
+	  reflect above enhancements.
 
 980307
 	+ use 'stat()' rather than 'access()' in toe.c to check for the

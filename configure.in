@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.182 1999/11/27 23:15:20 tom Exp $
+dnl $Id: configure.in,v 1.185 2000/02/06 01:33:04 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.182 $)
+AC_REVISION($Revision: 1.185 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -689,7 +689,7 @@ AC_CHECK_LIB(bsd, gettimeofday,
 	AC_DEFINE(HAVE_GETTIMEOFDAY)
 	LIBS="$LIBS -lbsd")])dnl CLIX: bzero, select, gettimeofday
 
-CF_MATH_LIB(MATH_LIB)
+CF_MATH_LIB(MATH_LIB,sin(x))
 AC_SUBST(MATH_LIB)
 
 ###	Checks for header files.
@@ -704,19 +704,18 @@ getopt.h \
 libc.h \
 limits.h \
 locale.h \
+poll.h \
 sys/bsdtypes.h \
 sys/ioctl.h \
 sys/param.h \
-poll.h \
+sys/poll.h \
 sys/select.h \
-sys/stropts.h \
 sys/time.h \
 sys/times.h \
 termio.h \
 termios.h \
 ttyent.h \
 unistd.h \
-values.h \
 )
 
 # check for ISC (this may also define _POSIX_SOURCE)
@@ -744,7 +743,8 @@ CF_LINK_DATAONLY
 CF_SPEED_TYPE
 
 ###	Checks for library functions.
-AC_CHECK_FUNCS( getcwd \
+AC_CHECK_FUNCS( \
+getcwd \
 getttynam \
 memccpy \
 nanosleep \
@@ -766,7 +766,6 @@ vsnprintf \
 vsscanf \
 )
 
-
 if test "$with_getcap" = "yes" ; then
 	CF_CGETENT
 fi
@@ -785,6 +784,7 @@ AC_TYPE_SIGNAL
 CF_TYPE_SIGACTION
 CF_SIZECHANGE
 CF_FUNC_MEMMOVE
+CF_FUNC_POLL
 
 dnl We'll do our own -g libraries, unless the user's overridden via $CFLAGS
 if test -z "$cf_user_CFLAGS" ; then

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.55 2000/01/08 23:18:20 tom Exp $
+# $Id: Makefile.in,v 1.56 2000/01/15 01:27:05 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2000 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -99,6 +99,7 @@ TESTS = \
 	ncurses$x \
 	newdemo$x \
 	rain$x \
+	railroad$x \
 	tclock$x \
 	testaddch$x \
 	testcurs$x \
@@ -161,6 +162,9 @@ newdemo$x: $(MODEL)/newdemo.o $(LOCAL_LIBS)
 
 rain$x: $(MODEL)/rain.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/rain.o $(LDFLAGS_DEFAULT)
+
+railroad$x: $(MODEL)/railroad.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/railroad.o $(LDFLAGS_DEFAULT)
 
 tclock$x: $(MODEL)/tclock.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/tclock.o $(LDFLAGS_DEFAULT) $(MATH_LIB)

@@ -1,4 +1,4 @@
-/* $Id: panel.priv.h,v 1.12 1999/11/25 13:49:26 juergen Exp $ */
+/* $Id: panel.priv.h,v 1.13 2000/01/15 20:39:53 juergen Exp $ */
 
 #ifndef _PANEL_PRIV_H
 #define _PANEL_PRIV_H
@@ -123,13 +123,12 @@
         updated. 
 ---------------------------------------------------------------------------*/
 #define PANEL_UPDATE(pan,panstart,touch)\
-{  int y;\
-   PANEL* pan2 = ((panstart) ? (panstart) : _nc_bottom_panel);\
+{  PANEL* pan2 = ((panstart) ? (panstart) : _nc_bottom_panel);\
    if (touch)\
       Touchpan(pan);\
    while(pan2) {\
       if ((pan2 != pan) && PANELS_OVERLAPPED(pan,pan2)) {\
-        int ix1,ix2,iy1,iy2;\
+        int y,ix1,ix2,iy1,iy2;\
         COMPUTE_INTERSECTION(pan,pan2,ix1,ix2,iy1,iy2);\
 	for(y = iy1; y <= iy2; y++) {\
 	  if (is_linetouched(pan->win,y - PSTARTY(pan))) {\

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2000 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -42,7 +42,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.55 1999/12/11 20:20:54 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.57 2000/01/15 21:44:28 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -110,9 +110,11 @@ usage(void)
     };
     size_t j;
 
-    printf("Usage: %s %s\n", _nc_progname, usage_string);
-    for (j = 0; j < sizeof(tbl) / sizeof(tbl[0]); j++)
-	puts(tbl[j]);
+    fprintf(stderr, "Usage: %s %s\n", _nc_progname, usage_string);
+    for (j = 0; j < sizeof(tbl) / sizeof(tbl[0]); j++) {
+	fputs(tbl[j], stderr);
+	putc('\n', stderr);
+    }
     exit(EXIT_FAILURE);
 }
 
@@ -515,7 +517,7 @@ main(int argc, char *argv[])
     }
 
     debug_level = (v_opt > 0) ? v_opt : (v_opt == 0);
-    _nc_tracing = (1 << debug_level) - 1;
+    set_trace_level(debug_level);
 
     if (_nc_tracing) {
 	save_check_termtype = _nc_check_termtype;

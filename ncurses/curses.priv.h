@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.149 2000/01/08 17:17:39 tom Exp $
+ * $Id: curses.priv.h,v 1.151 2000/02/06 01:57:01 tom Exp $
  *
  *	curses.priv.h
  *
@@ -97,8 +97,13 @@ extern int errno;
 #include <nc_panel.h>
 
 /* Some systems have a broken 'select()', but workable 'poll()'.  Use that */
-#if HAVE_POLL && HAVE_SYS_STROPTS_H && HAVE_POLL_H
+#if HAVE_WORKING_POLL
 #define USE_FUNC_POLL 1
+#ifdef HAVE_POLL_H
+#include <poll.h>
+#else
+#include <sys/poll.h>
+#endif
 #else
 #define USE_FUNC_POLL 0
 #endif

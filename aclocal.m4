@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.184 2000/01/01 17:55:56 tom Exp $
+dnl $Id: aclocal.m4,v 1.190 2000/02/06 01:17:36 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -303,7 +303,7 @@ AC_DEFUN([CF_CHECK_ERRNO],
 AC_MSG_CHECKING(if external $1 is declared)
 AC_CACHE_VAL(cf_cv_dcl_$1,[
     AC_TRY_COMPILE([
-#if HAVE_STDLIB_H
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
 #include <stdio.h>
@@ -462,6 +462,33 @@ int main() {
 		AC_DEFINE(USE_MY_MEMMOVE)
 	fi
 ])])dnl
+dnl ---------------------------------------------------------------------------
+dnl See if the poll function really works.  Some platforms have poll(), but
+dnl it does not work for terminals or files.
+AC_DEFUN([CF_FUNC_POLL],[
+AC_CACHE_CHECK(if poll really works,cf_cv_working_poll,[
+AC_TRY_RUN([
+#include <stdio.h>
+#ifdef HAVE_POLL_H
+#include <poll.h>
+#else
+#include <sys/poll.h>
+#endif
+int main() {
+	struct pollfd myfds;
+	int ret;
+
+	myfds.fd = 0;
+	myfds.events = POLLIN;
+
+	ret = poll(&myfds, 1, 100);
+	exit(ret != 0);
+}],
+	[cf_cv_working_poll=yes],
+	[cf_cv_working_poll=no],
+	[cf_cv_working_poll=unknown])])
+test "$cf_cv_working_poll" = "yes" && AC_DEFINE(HAVE_WORKING_POLL)
+])dnl
 dnl ---------------------------------------------------------------------------
 dnl Test for availability of useful gcc __attribute__ directives to quiet
 dnl compiler warnings.  Though useful, not all are supported -- and contrary
@@ -727,10 +754,10 @@ dnl $1 = variable to set
 AC_DEFUN([CF_LIB_PREFIX],
 [
 	case $cf_cv_system_name in
-	os2)	$1=''     ;;
-	*)	$1='lib'  ;;
+	os2)	LIB_PREFIX=''     ;;
+	*)	LIB_PREFIX='lib'  ;;
 	esac
-	LIB_PREFIX=[$]$1
+ifelse($1,,,[$1=$LIB_PREFIX])
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
@@ -1401,7 +1428,7 @@ AC_CACHE_CHECK(if -lm needed for math functions,
 	#include <stdio.h>
 	#include <math.h>
 	],
-	[double x; printf("sin(1.0) = %g\n", sin(1.0));],
+	[double x = rand(); printf("result = %g\n", ]ifelse($2,,sin(x),$2)[)],
 	[cf_cv_need_libm=no],
 	[cf_cv_need_libm=yes])])
 ifelse($1,,[
@@ -1430,6 +1457,8 @@ dnl delayed evaluation of those symbols.
 AC_DEFUN([CF_PATH_SYNTAX],[
 case ".[$]$1" in #(vi
 ./*) #(vi
+  ;;
+.[a-zA-Z]:[\\/]*) #(vi OS/2 EMX
   ;;
 .\[$]{*prefix}*) #(vi
   eval $1="[$]$1"
@@ -1701,10 +1730,14 @@ AC_DEFUN([CF_SHARED_OPTS],
 		fi
 		test $cf_cv_shlib_version = auto && cf_cv_shlib_version=rel
 		;;
-	unix_sv*)
-		# tested with UnixWare 1.1.2
-		CC_SHARED_OPTS='-KPIC'
-		MK_SHARED_LIB='$(LD) -d y -G -o $[@]'
+	sysv5uw7*|unix_sv*)
+		# tested with UnixWare 7.1.0 (gcc 2.95.2 and cc)
+		if test $ac_cv_prog_gcc = yes; then
+			CC_SHARED_OPTS='-fpic'
+		else
+			CC_SHARED_OPTS='-KPIC'
+		fi
+		MK_SHARED_LIB='$(LD) -d y -G -o $@'
 		;;
 	*)
 		CC_SHARED_OPTS='unknown'
