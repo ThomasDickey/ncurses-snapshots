@@ -9,7 +9,8 @@ Description:	SVr4 and XSI-Curses compatible curses library and terminfo
 		includes a copy of the master terminfo database.  Supports
 		color, multiple highlights, forms-drawing characters, and
 		automatic recognition of keypad and function-key sequences.
-		Includes full man pages, test programs.
+		Includes full man pages, test programs.  Approved to
+		replace 4.4BSD curses, June 1995.
 Keywords:	curses, interface, screen, library
 Author: 	zmbenhal@netcom.com (Zeyd Ben-Halim)
 		esr@snark.thyrsus.com (Eric S. Raymond)

@@ -19,8 +19,6 @@
 *                                                                          *
 ***************************************************************************/
 
-
-
 /*
  * unctrl.h
  *
@@ -35,6 +33,7 @@
  */
 #ifndef _UNCTRL_H
 #define _UNCTRL_H	1
+#define NCURSES_VERSION "1.9.3"
 
 extern char *unctrl(unsigned char);
 

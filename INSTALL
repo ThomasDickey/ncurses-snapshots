@@ -5,10 +5,13 @@
     * READ ALL OF THIS FILE BEFORE YOU TRY TO INSTALL NCURSES. *
     ************************************************************
 
-You should be reading the file INSTALL in a directory called:
-ncurses-d.d.d, where d.d.d is the current version number (see README).
-There are several subdirectories, called 'src', 'test', 'misc', 'doc',
-and 'man'.
+You should be reading the file INSTALL in a directory called ncurses-d.d.d,
+where d.d.d is the current version number.  There should be several
+subdirectories, including 'c++', 'man', 'misc', 'ncurses', 'panel', 'progs',
+and 'test'.  See the README file for a roadmap to the package.
+
+If you are a Linux or FreeBSD or NetBSD distribution integrator or packager,
+please read and act on the note addressed to you below.
 
 REQUIREMENTS:
 
@@ -16,9 +19,9 @@ You will need the following in order to build and install ncurses under UNIX:
 
 	* ANSI C compiler  (gcc is recommended)
 	* sh               (bash will do)
-	* awk
+	* awk              (mawk or gawk will do)
 	* sed
-	* BSD or System V style install
+	* BSD or System V style install (a script is enclosed)
 
 INSTALLATION PROCEDURE:
 
@@ -29,26 +32,50 @@ INSTALLATION PROCEDURE:
     terminfo can be used even when the system is only up single-user.
 
     The --prefix option to configure changes the root directory for installing
-    ncurses; the default is in subdirectories of /usr:
+    ncurses; the default is in subdirectories of /usr/local, unless the
+    configure script finds the 'tic' program installed in a different place
+    within your path (e.g., finding /usr/bin/tic makes the default prefix
+    /usr/bin):
 
     bin - tic, infocmp, clear, tput
-    lib - lib?curses.a
-    share - compiled terminal descriptions
+    lib - libncurses*.*
+    lib/terminfo - compiled terminal descriptions
     man - man pages
     include - C header files
 
     If you want to put the terminal descriptions in, for example,
-    /usr/lib/terminfo, you can either make that a symbolic link to
-    /usr/share/terminfo, or type 'make datadir=/usr/lib'.
+    /usr/share/lib/terminfo, you can either make that a symbolic link to
+    /usr/share/terminfo, or type 'configure --datadir=/usr/share/lib/terminfo'.
 
 2.  Type 'configure' to configure ncurses for your operating system and create
     the Makefiles.  You can optionally give configure options, such as
     '--prefix=/usr/local'.  Use `configure --help' to list the available
     options.
 
-    It will create your Makefile.  If your operating system is not supported,
-    read the PORTABILITY section in the file src/README for information on how
-    to create a configuration file for your system.
+    It will create your Makefiles.  If your operating system is not supported,
+    read the PORTABILITY section in the file ncurses/README for information on
+    how to create a configuration file for your system.
+
+    The 'configure' script generates makefile rules for one or more object
+    models and their associated libraries:
+
+	libncurses.a (normal)
+
+	libncurses.so (shared)
+
+	libncurses_g.a (debug)
+
+	libncurses_p.a (profile)
+
+    If you do not specify any models, the normal and debug libraries will be
+    configured.  This is equivalent to
+
+    	configure --with-normal --with-debug
+
+    Rules for generating shared libraries are highly dependent upon the choice
+    of host system and compiler.  We've been testing shared libraries on linux
+    and sunos with gcc, but more work needs to be done to make shared libraries
+    work on other systems.
 
 3.  Type 'make'.  Ignore any warnings, no error messages should be produced. 
     This should compile the library, the terminfo compiler (tic), the infocmp,
@@ -57,30 +84,43 @@ INSTALLATION PROCEDURE:
     implementation of PANELS.  Read the file test/README for details on the
     test programs.
 
-4.  Type 'make install' to install the libraries, the programs, and the man
-    pages.  Alternately, you can type 'make install' in each directory you want
-    to install.  In the src directory, you can do a partial install using these
-    commands:
+4.  Type 'make install' to install the libraries, the programs, the terminfo
+    database and the man pages.  Alternately, you can type 'make install' in
+    each directory you want to install.  In the top-level directory, you can do
+    a partial install using these commands:
  
-	'make install.progs' installs tic, infocmp, clear and tput.
-  	'make install.libs' installs the headers and libraries.
-	'make install.man' installs the man pages.
+	'make install.progs'    installs tic, infocmp, clear and tput.
+  	'make install.includes' installs the headers.
+  	'make install.libs'     installs the libraries.
+  	'make install.data'     installs the terminfo data. (Note: 'tic' must
+	                        be installed before the terminfo data can be
+			        compiled).
+	'make install.man'      installs the man pages.
 
 5.  Type 'make install.data' installs the terminfo database. You can skip this
-  		part if your system already has such a database.
-  
-  ##############################################################################
-  #             CAVEAT EMPTOR: 'install.data' will NUKE any existing           #
-  #     terminfo database. If you have any custom or unusual entries SAVE them #
-  #     before you install ncurses. I have a file called terminfo.custom for   #
-  #     this purpose. Don't forget to run tic on the file once your done.      #
-  ##############################################################################
+    part if your system already has such a database.
+
+  ############################################################################
+  #           CAVEAT EMPTOR: 'install.data' will NUKE any existing           #
+  #  terminfo database. If you have any custom or unusual entries SAVE them  #
+  #  before you install ncurses.  I have a file called terminfo.custom for   #
+  #  this purpose.  Don't forget to run tic on the file once you're done.    #
+  ############################################################################
+
+    Also note that 'tic misc/terminfo.src' uses large amounts of core.
+    on machines with less than 16 megabytes of physical RAM and slow disks,
+    paging overhead has been known to slow the running time from a few
+    minutes to a couple of hours!
+ 
+    We have attacked this problem by breaking the file in half, cutting 
+    each section's core requirements drastically (the cut point was chosen
+    so there are no `use' references that cross the cut going forward).  
 
 7.  The c++ directory has C++ classes that are built on top of ncurses and
-    panels.  You need to have panels installed before you can compile and 
-    run the demo.
+    panels.  You need to have c++ (and its libraries) installed before you can
+    compile and run the demo.
 
-8. If you're running under Linux, you must either (a) tell Linux that the
+8.  If you're running under Linux, you must either (a) tell Linux that the
     console terminal type is `linux', or (b) make a link to or copy of the 
     linux entry in the appropriate place under your terminfo directory,
     named `console'.
@@ -88,13 +128,14 @@ INSTALLATION PROCEDURE:
     The way to change the wired-in console type is by editing /etc/inittab.
     Warning: this is not for the fainthearted, if you mess up your console
     getty entries you can make your system unusable!  However, if you are
-    a Linux distribution maker, this is the right thing to do.
+    a distribution maker, this is the right thing to do (see the note for
+    integrators near the end of this file).
 
     The easier way is to link or copy l/linux to c/console under your terminfo
     directory.  Note: this will go away next time you do `make install.data'
     and you'll have to redo it. 
 
-9.  Run ncurses and several other test programs.
+9.  Run ncurses and several other test programs (see the test directory).
 
     The ncurses program is designed specifically to test the ncurses library.
     You can use it to verify that the screen highlights work correctly, that
@@ -114,15 +155,31 @@ NOTES:
 	compile using its curses.h you'll end up with a large number of
 	undefined symbols at link time. _waddbytes is one of them.
 
-	The include files will be installed in /usr/include/ncurses.  To 
-	arrange for your programs to see them by default, copy them to
-	/usr/include from there.
+	The include files will normally be installed in /usr/include/ncurses. 
+	To arrange for your programs to see them by default, copy or link them
+	to /usr/include from there.
 
-	On many systems, the make production `install.sys' will install
-	ncurses over the system curses libraries.  Don't do this casually!
+	On many systems, the make production `install' will install ncurses
+	over the system curses libraries.  Don't do this casually!
+
+IF YOU ARE A SYSTEM INTEGRATOR:
+
+	In various Linuxes (and possibly elsewhere) there has been a practice
+	of designating the system console driver type as `console'.  Please
+	do not do this any more!  It complicates peoples' lives, because it
+	can mean that several different terminfo entries from different 
+	operating systems all logically want to be called `console'.
+
+	Please pick a name unique to your console driver (such as `linux' for
+	the standard Linux driver or `ibmpc3' for the BSDI one) and set that up
+	in the /etc/inittab table.  Send the entry to the terminfo maintainer
+	(listed in the misc/terminfo file) to be included in the master, if
+	it's not already there.
+
+	Thank you for your cooperation.  With your help, we can stamp out
+	`console' in your lifetime!
 
 BUGS:
 	Send any feedback to me: zmbenhal@netcom.com or to the ncurses mailing
 	list at ncurses-list@netcom.com 
-
 

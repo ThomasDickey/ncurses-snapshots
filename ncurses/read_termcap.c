@@ -23,16 +23,14 @@
 /*
  * Termcap compatibility support
  *
- * If your OS integrator didn't install a terminfo database,
- * use -DTERMCAP_FILE to compile this code giving runtime support
- * for reading and translating capabilities from the termcap
- * database.  This is a kluge; it will bulk up and slow down
- * every program that uses ncurses, and translated termcap
- * entries cannot use full terminfo capabilities.  Don't use
- * it unless you absolutely have to; instead, get your system
- * people to run tic(1) from root on the existing termcap file
- * to translate it into a terminfo database.
- *
+ * If your OS integrator didn't install a terminfo database, use
+ * -DTERMCAP_FILE on lib_setup to link in this code giving runtime
+ * support for reading and translating capabilities from the termcap
+ * database.  This is a kluge; it will bulk up and slow down every
+ * program that uses ncurses, and translated termcap entries cannot
+ * use full terminfo capabilities.  Don't use it unless you absolutely
+ * have to; instead, get your system people to run tic(1) from root on
+ * the existing termcap file to translate it into a terminfo database.
  */
 
 #include "curses.priv.h"
@@ -47,9 +45,10 @@
 #include "tic.h"
 #include "term_entry.h"
 
-int read_termcap_entry(char *tn, TERMTYPE *tp)
+#define TERMTMP	"/tmp/tcXXXXXX"
+
+int read_termcap_entry(const char *tn, TERMTYPE *tp)
 {
-#ifdef TERMCAP_FILE
     /*
      * Here is what the BSD termcap(3) page prescribes:
      *
@@ -79,7 +78,7 @@ int read_termcap_entry(char *tn, TERMTYPE *tp)
 #define MAXPATHS	32
     char	*tc, *termpaths[MAXPATHS], pathbuf[BUFSIZ];
     int    	i, filecount = 0;
-    bool	delete = FALSE;
+    bool	use_buffer = FALSE;
 
     if ((tc = getenv("TERMCAP")) != (char *)NULL)
     {
@@ -88,19 +87,12 @@ int read_termcap_entry(char *tn, TERMTYPE *tp)
 	    termpaths[0] = tc;
 	    termpaths[filecount = 1] = (char *)NULL;
 	}
-	else if (name_match(tc, tn))    /* treat it as a capability file */
+	else if (name_match(tc, tn, "|:"))    /* treat as a capability file */
 	{
-	    termpaths[0] = mktemp("/tmp/tcXXXXXX");
-	    termpaths[filecount = 1] = (char *)NULL;
-
-	    if ((fp = fopen(termpaths[0], "w")) != (FILE *)NULL)
-	    {
-		(void) fwrite(tc, strlen(tc), sizeof(char), fp);
-		(void) fclose(fp);
-		delete = TRUE;
-	    }
+ 	    use_buffer = TRUE;
+	    (void) strcat(tc, "\n");
 	}
-	else if ((tc = getenv("TERMPATHS")) != (char *)NULL)
+	else if ((tc = getenv("TERMPATH")) != (char *)NULL)
 	{
 	    char    *cp;
 
@@ -122,37 +114,59 @@ int read_termcap_entry(char *tn, TERMTYPE *tp)
     }
     else	/* normal case */
     {
+	filecount = 0;
+
+	/*
+	 * Probably /etc/termcap is a symlink to /usr/share/misc/termcap.
+	 * Avoid reading the same file twice.
+	 */
+	if (access("/etc/termcap", R_OK) == 0)
+	    termpaths[filecount++] = "/etc/termcap";
+	else if (access("/usr/share/misc/termcap", R_OK) == 0)
+	    termpaths[filecount++] = "/usr/share/misc/termcap";
+
+	/* user's .termcap, if any, should override it */
 	(void) sprintf(pathbuf, "%s/.termcap", getenv("HOME"));
-	termpaths[0] = pathbuf;
-	termpaths[1] = TERMCAP_FILE;
-	termpaths[filecount = 2] = (char *)NULL;
+	termpaths[filecount++] = pathbuf;
+
+	termpaths[filecount] = (char *)NULL;
     }
 
-    /* get the data from all designated files */
+    /* get the data from all designated files or the buffer */
     make_hash_table(info_table, info_hash_table);
     make_hash_table(cap_table, cap_hash_table);
-    for (i = 0; i < filecount; i++)
+
+    /* parse the sources */
+    if (use_buffer)
     {
-	T(("Looking for %s in %s", tn, termpaths[i]));
-	if ((fp = fopen(termpaths[i], "r")) != (FILE *)NULL)
+	set_source("TERMCAP");
+	read_entry_source((FILE *)NULL, tc, FALSE);
+    }
+    else
+    {
+	int    	i;
+
+	for (i = 0; i < filecount; i++)
 	{
-	    set_source(termpaths[i]);
-	    read_entry_source(fp, FALSE);
-	    (void) fclose(fp);
+	    T(("Looking for %s in %s", tn, termpaths[i]));
+	    if ((fp = fopen(termpaths[i], "r")) != (FILE *)NULL)
+	    {
+		set_source(termpaths[i]);
+		read_entry_source(fp, (char*)NULL, FALSE);
+		(void) fclose(fp);
+	    }
 	}
     }
 
-    if (delete)
-	(void) remove(termpaths[0]);
-
-    if (head == (ENTRY *)NULL)
+    if (_nc_head == (ENTRY *)NULL)
 	return(ERR);
 
+    /* resolve all use references */
     resolve_uses();
 
     /* find a terminal matching tn, if we can */
     for_entry_list(ep)
-	if (name_match(ep->tterm.term_names, tn))
+	if (name_match(ep->tterm.term_names, tn, "|:"))
 	{
 	    memcpy(tp, &ep->tterm, sizeof(TERMTYPE));
 	    ep->tterm.str_table = (char *)NULL;
@@ -166,7 +180,6 @@ int read_termcap_entry(char *tn, TERMTYPE *tp)
      * ep->tterm.str_table above).
      */
     free_entries();
-#endif /* TERMCAP_FILE */
 
     return(ERR);
 }

@@ -4,7 +4,7 @@
 \fBcurs_terminfo\fR: \fBsetupterm\fR, \fBsetterm\fR,
 \fBset_curterm\fR, \fBdel_curterm\fR, \fBrestartterm\fR, \fBtparm\fR,
 \fBtputs\fR, \fBputp\fR, \fBvidputs\fR, \fBvidattr\fR, \fBmvcur\fR,
-\fBtigetflag\fR, \fBtigetnum\fR, \fBtigetstr\fR - \fBncurses\fR
+\fBtigetflag\fR, \fBtigetnum\fR, \fBtigetstr\fR - \fBcurses\fR
 interfaces to terminfo database
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
@@ -45,7 +45,7 @@ interfaces to terminfo database
 These low-level routines must be called by programs that have to deal
 directly with the \fBterminfo\fR database to handle certain terminal
 capabilities, such as programming function keys.  For all other
-functionality, \fBncurses\fR routines are more suitable and their use is
+functionality, \fBcurses\fR routines are more suitable and their use is
 recommended.
 
 Initially, \fBsetupterm\fR should be called.  Note that
@@ -78,7 +78,7 @@ is called and should output \fBenter_ca_mode\fR and call
 
 The \fBsetupterm\fR routine reads in the \fBterminfo\fR database,
 initializing the \fBterminfo\fR structures, but does not set up the
-output virtualization structures used by \fBncurses\fR.  The terminal
+output virtualization structures used by \fBcurses\fR.  The terminal
 type is the character string \fIterm\fR; if \fIterm\fR is null, the
 environment variable \fBTERM\fR is used.  All output is to file
 descriptor \fBfildes\fR which is initialized for output.  If
@@ -137,7 +137,7 @@ the \fIfildes\fR specified in \fBsetupterm\fR.
 
 The \fBvidputs\fR routine displays the string on the terminal in the
 video attribute mode \fIattrs\fR, which is any combination of the
-attributes listed in \fBncurses\fR(3X).  The characters are passed to
+attributes listed in \fBcurses\fR(3X).  The characters are passed to
 the \fBputchar\fR-like routine \fIputc\fR.
 
 The \fBvidattr\fR routine is like the \fBvidputs\fR routine, except
@@ -195,7 +195,7 @@ semantics.
 In System V Release 4, the third argument of \fBtputs\fR has the type
 \fBint (*putc)(char)\fR.
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_kernel\fR(3X), \fBcurs_termcap\fR(3X),
+\fBcurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_kernel\fR(3X), \fBcurs_termcap\fR(3X),
 \fBputc\fR(3S), \fBterminfo\fR(\*n)
 .\"#
 .\"# The following sets edit modes for GNU EMACS

@@ -1,6 +1,6 @@
-# Makefile for ncurses source code.
+# Makefile for ncurses miscellany directory
 #
-# This makes/installs the ncurses manual-pages.
+# This makes/installs the terminfo database
 #
 # The variable 'srcdir' refers to the source-distribution, and can be set with
 # the configure script by "--srcdir=DIR".
@@ -31,7 +31,23 @@ all:
 
 install: install.data
 
+# Kluge alert: we compile terminfo.src in two pieces because a lot of machines
+# with < 16MB RAM choke on tic's core-hog habits.  It would be much nicer to
+# use csplit -k -f tsplit $(srcdir)/terminfo.src '/SPLIT HERE/' '{99}' to split
+# the file (permitting any number of cut marks), but BSD systems don't have it.
 install.data: $(ticdir)
+	-rm -f do.tic
+	echo "TERMINFO=$(ticdir)">do.tic
+	echo "export TERMINFO">>do.tic
+	echo "rm -fr $(ticdir)/[0-9A-Za-z]">>do.tic
+	echo "sed -n <$(srcdir)/terminfo.src -e '1,/SPLIT HERE/w tsplit01' -e '/SPLIT HERE/,"'$$'"w tsplit02' 2>/dev/null">>do.tic
+	echo "for x in tsplit*; do $(bindir)/tic "'$$'"x; done">>do.tic
+	echo "rm tsplit*">>do.tic
+	(sh do.tic)
+	rm do.tic
+
+# On machines with kots of memory, this is simpler and faster
+install.bigmem: $(ticdir)
 	-rm -f do.tic
 	echo "TERMINFO=$(ticdir)">do.tic
 	echo "export TERMINFO">>do.tic
@@ -48,7 +64,7 @@ tags:
 TAGS:
 
 clean ::
-	-rm -f tags TAGS do.tic *~
+	-rm -f tags TAGS do.tic tsplit* *~
 
 distclean: clean
 	-rm -f Makefile

@@ -14,7 +14,7 @@ is a data base describing terminals, used by screen-oriented programs such as
 .IR vi (1),
 .IR rogue (1)
 and libraries such as
-.IR ncurses (3X).
+.IR curses (3X).
 .I Terminfo
 describes terminals by giving a set of capabilities which they
 have, by specifying how to perform screen operations, and by
@@ -1060,7 +1060,7 @@ off the bottom of the region by the \fBri\fR re-appears, then scrolling
 is non-destructive.  System V and XSI Curses expect that \fBind\fR, \fBri\fR,
 \fBindn\fR, and \fBrin\fR will simulate destructive scrolling; their
 documentation cautions you not to define \fBcsr\fR unless this is true.
-The ncurses implementation is more liberal and will do explicit erases
+This \fBcurses\fR implementation is more liberal and will do explicit erases
 after scrolling if \fBndstr\fR is defined.
 .PP
 If the terminal has the ability to define a window as part of
@@ -1469,7 +1469,7 @@ Slow terminals, including hardcopy terminals and some very archaic CRTs
 certain cursor motions and screen changes.  In historic curses versions, delays
 embedded in the capabilities \fBcr\fR, \fBind\fR, \fBcub1\fR, \fBff\fR and
 \fBtab\fR activated corresponding delay bits in the UNIX tty driver.  In
-\fBncurses\fR, all padding is done by NUL sends.  This method is slightly
+this implementation, all padding is done by NUL sends.  This method is slightly
 more expensive, but narrows the interface to the UNIX kernel significantly
 and increases the package's portability correspondingly.
 .PP
@@ -1507,13 +1507,13 @@ A command to erase or blank the status line may be specified as \fBdsl\fR.
 The boolean capability \fBeslok\fR specifies that escape sequences, tabs,
 etc. work ordinarily in the status line.
 .PP
-The \fBncurses\fR library does not yet use any of these capabilities.
+The \fBncurses\fR implementation does not yet use any of these capabilities.
 They are documented here in case they ever become important.
 .PP
 .SS Line Graphics
 .PP
 Many terminals have alternate character sets useful for forms-drawing.
-Terminfo and \fBncurses\fR built in support for the drawing characters
+Terminfo and \fBcurses\fR build in support for the drawing characters
 supported by the VT100, with some characters fromm the AT&T 4410v1 added.
 This alternate character set may be specified by the \fBacsc\fR capability.
 .PP
@@ -1548,7 +1548,7 @@ arrow pointing right	ACS_RARROW	>	+
 arrow pointing down	ACS_DARROW	v	.
 arrow pointing up	ACS_UARROW	^	-
 board of squares	ACS_BOARD	#	h
-lantern symbol          ACS_LANTERN	#	I
+lantern symbol  	ACS_LANTERN	#	I
 solid square block	ACS_BLOCK	#	0
 .TE
 .PP
@@ -1569,7 +1569,7 @@ Up to M color-pairs may be set up from 2*M different colors.  ANSI-compatible
 terminals are Tektronix-like.
 .PP
 Some basic color capabilities are independent of the color method.  The numeric
-capabilities \fBcolors\fR and \fBpairsfR specify the maximum numbers of colors
+capabilities \fBcolors\fR and \fBpairs\fR specify the maximum numbers of colors
 and color-pairs that can be displayed simultaneously.  The \fBop\fR (original
 pair) string resets foreground and background colors to their default values
 for the terminal.  The \fBoc\fR string resets all colors or color-pairs to
@@ -1601,7 +1601,7 @@ foreground colors.  These parameters must be (Red, Green, Blue) or
 On some color terminals, colors collide with highlights.  You can register
 these collisions with the \fBncv\fR capability.  This is a bit-mask of
 attributes not to be used when colors are enabled.  The correspondence with the
-attributes understood by \fBncurses\fR is as follows:
+attributes understood by \fBcurses\fR is as follows:
 .PP
 .TS
 center;
@@ -1811,16 +1811,16 @@ user preferences.
 .SH EXTENSIONS
 Some SVr4 \fBcurses\fR implementations, and all previous to SVr4, don't
 interpret the %A and %O operators in parameter strings.  SVr4 curses does
-not document a use of the \fBrmpch\fR/\fBsmpch\fR pair, but \fBncurses\fR
-uses it to enable/disable ROM character display.
+not document a use of the \fBrmpch\fR/\fBsmpch\fR pair, but the \fBncurses\fR
+implementation uses it to enable/disable ROM character display.
 .PP
 SVr4/XPG4 do not specify whether \fBmsgr\fR licenses movement while in
 an alternate-character-set mode (such modes may, among other things, map
 CR and NL to characters that don't trigger local motions).
-The \fBncurses\fR library ignores \fBmsgr\fR in \fBALTCHARSET\fR and
+The \fBncurses\fR implementation ignores \fBmsgr\fR in \fBALTCHARSET\fR and
 \fBA_PCCHARSET\fR modes.  This raises the possibility that an XPG4 
 implementation making the opposite interpretation may need terminfo
-entries made for ncurses to have \fBmsgr\fR turned off.
+entries made for \fBncurses\fR to have \fBmsgr\fR turned off.
 .PP
 The (\fBncurses\fR) library handles insert-character and
 insert-character modes in a slightly non-standard way in order to get better
@@ -1863,7 +1863,8 @@ files containing terminal descriptions
 .SH "SEE ALSO"
 tic(1m), curses(3X), printf(3S), term(\*n).
 .SH AUTHORS
-Pavel Curtis, Zeyd M. Ben-Halim, Eric S. Raymond.
+Zeyd M. Ben-Halim, Eric S. Raymond.  Descends from the original pcurses
+by Pavel Curtis.
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

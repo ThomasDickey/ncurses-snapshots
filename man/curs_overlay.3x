@@ -1,7 +1,7 @@
 .TH curs_overlay 3X ""
 .SH NAME
 \fBcurs_overlay\fR: \fBoverlay\fR, \fBoverwrite\fR, \fBcopywin\fR - overlay and
-manipulate overlapped \fBncurses\fR windows
+manipulate overlapped \fBcurses\fR windows
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 
@@ -35,9 +35,9 @@ Note that \fBoverlay\fR and \fBoverwrite\fR may be macros.
 .SH PORTABILITY
 The XSI Curses standard, Issue 4 describes these functions (adding the const
 qualifiers).  It further specifies their behavior in the presence of characters
-with multi-byte renditions (not yet supported in ncurses).
+with multi-byte renditions (not yet supported in this implementation).
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_pad\fR(3X), \fBcurs_refresh\fR(3X)
+\fBcurses\fR(3X), \fBcurs_pad\fR(3X), \fBcurs_refresh\fR(3X)
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

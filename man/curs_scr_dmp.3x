@@ -1,7 +1,7 @@
 .TH curs_scr_dump 3X ""
 .SH NAME
 \fBcurs_scr_dump\fR: \fBscr_dump\fR, \fBscr_restore\fR,
-\fBscr_init\fR, \fBscr_set\fR - read (write) a \fBncurses\fR screen
+\fBscr_init\fR, \fBscr_set\fR - read (write) a \fBcurses\fR screen
 from (to) a file
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
@@ -24,9 +24,9 @@ call to \fBdoupdate\fR restores the screen to the way it looked in the dump
 file.
 
 The \fBscr_init\fR routine reads in the contents of \fIfilename\fR and uses
-them to initialize the \fBncurses\fR data structures about what the terminal
+them to initialize the \fBcurses\fR data structures about what the terminal
 currently has on its screen.  If the data is determined to be valid,
-\fBncurses\fR bases its next update of the screen on this information rather
+\fBcurses\fR bases its next update of the screen on this information rather
 than clearing the screen and starting from scratch.  \fBscr_init\fR is used
 after \fBinitscr\fR or a \fBsystem\fR [see \fBsystem\fR(BA_LIB)] call to share
 the screen with another process which has done a \fBscr_dump\fR after its
@@ -54,7 +54,7 @@ The SVr4 docs merely say under \fBscr_init\fR that the dump data is also
 considered invalid "if the time-stamp of the tty is old" but don't define
 "old".
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_refresh\fR(3X),
+\fBcurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_refresh\fR(3X),
 \fBcurs_util\fR(3X), \fBsystem\fR(3S)
 .\"#
 .\"# The following sets edit modes for GNU EMACS

@@ -52,6 +52,8 @@ long	comment_end;		/* end of comment range before name */
 static int first_column;	/* See 'next_char()' below */
 static char separator = ',';	/* capability separator */
 static FILE *yyin;		/* scanner's input file descriptor */
+static char *bufptr;		/* otherwise, the input buffer pointer */
+static char *bufstart;		/* start of buffer so we can compute offsets */
 static int pushtype;		/* type of pushback token */
 
 static void reset_to(char);
@@ -115,10 +117,10 @@ long		token_start;
 	    return(retval);
 	}
 
-	if (feof(yyin))
+	if (bufptr ? (*bufptr == '\0') : feof(yyin))
 	    return(EOF);
 
-	token_start = ftell(yyin);
+	token_start = bufptr ? (bufptr - bufstart) : ftell(yyin);
 	while ((ch = next_char()) == '\n'  ||  iswhite(ch))
 	    continue;
 
@@ -386,10 +388,22 @@ next_char(void)
 	if (curr_column < 0 || curr_column >= LEXBUFSIZ || line[curr_column] == '\0')
 	{
 	    do {
-		curr_file_pos = ftell(yyin);
+		curr_file_pos = bufptr ? (bufptr - bufstart) : ftell(yyin);
 
-		if ((rtn_value = fgets(line, LEXBUFSIZ, yyin)) != NULL)
-		    curr_line++;
+		if (bufptr)
+		{
+		    if ((rtn_value = strchr(bufptr, '\n')) != NULL)
+		    {
+			memcpy(line, bufptr, rtn_value + 1 - bufptr);
+			bufptr = rtn_value + 1;
+			curr_line++;
+		    }
+		}
+		else
+		{
+		    if ((rtn_value = fgets(line, LEXBUFSIZ, yyin)) != NULL)
+			curr_line++;
+		}
 	    } while
 		(rtn_value != NULL && line[0] == '#');
 
@@ -436,11 +450,12 @@ void backspace(void)
  *	or after a seek has been done.
  */
 
-void reset_input(FILE *fp)
+void reset_input(FILE *fp, char *buf)
 {
 	curr_column = -1;
 	pushtype = NO_PUSHBACK;
 	yyin = fp;
+	bufptr = bufstart = buf;
 	curr_file_pos = 0L;
 	curr_line = 0;
 }

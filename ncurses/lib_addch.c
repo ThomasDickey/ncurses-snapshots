@@ -73,7 +73,9 @@ int wchgat(WINDOW *win, int n, attr_t attr, short color, void *const opts)
 
     for (i = win->_curx; i <= win->_maxx && (n == -1 || (n-- > 0)); i++)
 	win->_line[win->_cury].text[i]
-	    = (win->_line[win->_cury].text[i] & A_CHARTEXT) | attr;
+	    = (win->_line[win->_cury].text[i] & A_CHARTEXT)
+		| attr
+		| COLOR_PAIR(color);
 
     return OK;
 }

@@ -3,21 +3,23 @@
 \fBcurs_window\fR: \fBnewwin\fR, \fBdelwin\fR, \fBmvwin\fR,
 \fBsubwin\fR, \fBderwin\fR, \fBmvderwin\fR, \fBdupwin\fR,
 \fBwsyncup\fR, \fBsyncok\fR, \fBwcursyncup\fR, \fBwsyncdown\fR -
-create \fBncurses\fR windows
+create \fBcurses\fR windows
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 
 \fBWINDOW *newwin(int nlines, int ncols, int begin_y,\fR
       \fBintbegin_x);\fR
-
+.br
 \fBint delwin(WINDOW *win);\fR
 .br
 \fBint mvwin(WINDOW *win, int y, int x);\fR
 .br
 \fBWINDOW *subwin(WINDOW *orig, int nlines, int ncols,
       int begin_y, int begin_x);\fR
+.br
 \fBWINDOW *derwin(WINDOW *orig, int nlines, int ncols,
       int begin_y, int begin_x);\fR
+.br
 \fBint mvderwin(WINDOW *win, int par_y, int par_x);\fR
 .br
 \fBWINDOW *dupwin(WINDOW *win);\fR
@@ -105,13 +107,13 @@ incompletely implemented, and not well tested.
 The System V curses documentation is very unclear about what \fBwsyncup\fR
 and \fBwsyncdown\fR actually do.  It seems to imply that they are only 
 supposed to touch exactly those lines that are affected by ancestor changes.
-The language here, and the behavior of the \fBncurses\fR implementation,
+The language here, and the behavior of the \fBcurses\fR implementation,
 is patterned on the XPG4 curses standard.  The weaker XPG4 spec may result
 in slower updates.
 .SH PORTABILITY
 The XSI Curses standard, Issue 4 describes these functions.
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_refresh\fR(3X), \fBcurs_touch\fR(3X)
+\fBcurses\fR(3X), \fBcurs_refresh\fR(3X), \fBcurs_touch\fR(3X)
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

@@ -81,10 +81,10 @@ static char *first_name(TERMTYPE *tp)
  *	      ^                       ^
  *	      |                       |
  *	      |                       |
- *	     head                    tail
+ *	   _nc_head                _nc_tail
  */
 
-ENTRY *head, *tail;
+ENTRY *_nc_head, *_nc_tail;
 
 static void enqueue(ENTRY *ep)
 /* add an entry to the in-core list */
@@ -96,8 +96,8 @@ static void enqueue(ENTRY *ep)
 
 	(void) memcpy(newp, ep, sizeof(ENTRY));
 
-	newp->last = tail;
-	tail = newp;
+	newp->last = _nc_tail;
+	_nc_tail = newp;
 
 	newp->next = (ENTRY *)NULL;
 	if (newp->last)
@@ -116,23 +116,28 @@ static void check_name(char *name)
     }
 }
 
-void read_entry_source(FILE *fp, int literal)
+void read_entry_source(FILE *fp, char *buf, int literal)
 /* slurp all entries in the given file into core */
 {
     ENTRY	thisentry;
 
-    for (reset_input(fp); parse_entry(&thisentry, literal) != ERR; )
+    for (reset_input(fp, buf); parse_entry(&thisentry, literal) != ERR; )
     {
 	check_name(thisentry.tterm.term_names);
 	enqueue(&thisentry);
     }
 
-    /* set up the head pointer */
-    for (head = tail; head->last; head = head->last)
-	continue;
+    if (_nc_tail)
+    {
+	/* set up the head pointer */
+	for (_nc_head = _nc_tail; _nc_head->last; _nc_head = _nc_head->last)
+	    continue;
 
-    DEBUG(1, ("head = %s", head->tterm.term_names));
-    DEBUG(1, ("tail = %s", tail->tterm.term_names));
+	DEBUG(1, ("head = %s", _nc_head->tterm.term_names));
+	DEBUG(1, ("tail = %s", _nc_tail->tterm.term_names));
+    }
+    else
+	DEBUG(1, ("no entries parsed"));
 }
 
 bool entry_match(char *n1, char *n2)
@@ -184,7 +189,7 @@ int resolve_uses(void)
 		/* first, try to resolve from in-core records */
 		for_entry_list(rp)
 		    if (rp != qp
-			&& name_match(rp->tterm.term_names, lookfor)
+			&& name_match(rp->tterm.term_names, lookfor, "|")
 			&& rp->nuses == 0)
 		    {
 			keepgoing = TRUE;
@@ -266,7 +271,7 @@ void free_entries(void)
 {
     ENTRY	*ep, *next;
 
-    for (ep = head; ep; ep = next)
+    for (ep = _nc_head; ep; ep = next)
     {
 	/*
 	 * This conditional lets us disconnect storage from the list.

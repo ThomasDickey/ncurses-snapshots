@@ -4,7 +4,7 @@
 \fBnoecho\fR, \fBhalfdelay\fR, \fBintrflush\fR, \fBkeypad\fR,
 \fBmeta\fR, \fBnodelay\fR, \fBnotimeout\fR, \fBraw\fR, \fBnoraw\fR,
 \fBnoqiflush\fR, \fBqiflush\fR, \fBtimeout\fR, \fBwtimeout\fR,
-\fBtypeahead\fR - \fBncurses\fR input options
+\fBtypeahead\fR - \fBcurses\fR input options
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 
@@ -52,7 +52,7 @@ mode.
 
 Initially the terminal may or may not be in \fBcbreak\fR mode, as the mode is
 inherited; therefore, a program should call \fBcbreak\fR or \fBnocbreak\fR
-explicitly.  Most interactive programs using \fBncurses\fR set the \fBcbreak\fR
+explicitly.  Most interactive programs using \fBcurses\fR set the \fBcbreak\fR
 mode.  Note that \fBcbreak\fR overrides \fBraw\fR.  [See curs_getch(3X) for a
 discussion of how these routines interact with \fBecho\fR and \fBnoecho\fR.]
 
@@ -75,7 +75,7 @@ mode.
 If the \fBintrflush\fR option is enabled, (\fIbf\fR is \fBTRUE\fR), when an
 interrupt key is pressed on the keyboard (interrupt, break, quit) all output in
 the tty driver queue will be flushed, giving the effect of faster response to
-the interrupt, but causing \fBncurses\fR to have the wrong idea of what is on
+the interrupt, but causing \fBcurses\fR to have the wrong idea of what is on
 the screen.  Disabling (\fIbf\fR is \fBFALSE\fR), the option prevents the
 flush.  The default for the option is inherited from the tty driver settings.
 The window argument is ignored.
@@ -84,7 +84,7 @@ The \fBkeypad\fR option enables the keypad of the user's terminal.  If
 enabled (\fIbf\fR is \fBTRUE\fR), the user can press a function key
 (such as an arrow key) and \fBwgetch\fR returns a single value
 representing the function key, as in \fBKEY_LEFT\fR.  If disabled
-(\fIbf\fR is \fBFALSE\fR), \fBncurses\fR does not treat function keys
+(\fIbf\fR is \fBFALSE\fR), \fBcurses\fR does not treat function keys
 specially and the program has to interpret the escape sequences
 itself.  If the keypad in the terminal can be turned on (made to
 transmit) and off (made to work locally), turning on this option
@@ -120,7 +120,7 @@ immediately passed through to the user program.  The differences are that in
 raw mode, the interrupt, quit, suspend, and flow control characters are all
 passed through uninterpreted, instead of generating a signal.  The behavior of
 the BREAK key depends on other bits in the tty driver that are not set by
-\fBncurses\fR.
+\fBcurses\fR.
 
 When the \fBnoqiflush\fR routine is used, normal flush of input and
 output queues associated with the \fBINTR\fR, \fBQUIT\fR and
@@ -141,7 +141,7 @@ Hence, these routines provide the same functionality as \fBnodelay\fR,
 plus the additional capability of being able to block for only
 \fIdelay\fR milliseconds (where \fIdelay\fR is positive).
 
-\fBncurses\fR does ``line-breakout optimization'' by looking for
+The \fBcurses\fR library does ``line-breakout optimization'' by looking for
 typeahead periodically while updating the screen.  If input is found,
 and it is coming from a tty, the current update is postponed until
 \fBrefresh\fR or \fBdoupdate\fR is called again.  This allows faster
@@ -162,7 +162,7 @@ Note that \fBecho\fR, \fBnoecho\fR, \fBhalfdelay\fR, \fBintrflush\fR,
 \fBmeta\fR, \fBnodelay\fR, \fBnotimeout\fR, \fBnoqiflush\fR,
 \fBqiflush\fR, \fBtimeout\fR, and \fBwtimeout\fR may be macros.
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_getch\fR(3X), \fBcurs_initscr\fR(3X), \fBtermio\fR(7)
+\fBcurses\fR(3X), \fBcurs_getch\fR(3X), \fBcurs_initscr\fR(3X), \fBtermio\fR(7)
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

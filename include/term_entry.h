@@ -39,8 +39,8 @@ typedef struct entry {
 }
 ENTRY;
 
-extern ENTRY	*head, *tail;
-#define for_entry_list(qp)	for (qp = head; qp; qp = qp->next)
+extern ENTRY	*_nc_head, *_nc_tail;
+#define for_entry_list(qp)	for (qp = _nc_head; qp; qp = qp->next)
 
 #define MAX_LINE	132
 
@@ -57,7 +57,7 @@ extern int parse_entry(ENTRY *, int);
 extern void write_entry(TERMTYPE *tp);
 
 /* comp_parse.c: entry list handling */
-extern void read_entry_source(FILE *fp, int);
+extern void read_entry_source(FILE *fp, char *, int);
 extern bool entry_match(char *, char *);
 extern int resolve_uses(void);
 extern void free_entries(void);

@@ -2,7 +2,7 @@
 .SH NAME
 \fBcurs_touch\fR: \fBtouchwin\fR, \fBtouchline\fR, \fBuntouchwin\fR,
 \fBwtouchln\fR, \fBis_linetouched\fR, \fBis_wintouched\fR -
-\fBncurses\fR refresh control routines
+\fBcurses\fR refresh control routines
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 .br
@@ -47,10 +47,15 @@ other than \fBERR\fR upon successful completion, unless otherwise noted in the
 preceding routine descriptions.
 .SH PORTABILITY
 The XSI Curses standard, Issue 4 describes these functions.
+
+Some historic curses implementations had, as an undocumented feature, the
+ability to do the equivalent of \fBclearok(..., 1)\fR by saying
+\fBtouchwin(stdscr)\fR or \fBclear(stdscr)\fR.  This will not work under
+ncurses.
 .SH NOTES
 Note that all routines except \fBwtouchln\fR may be macros.
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_refresh\fR(3X).
+\fBcurses\fR(3X), \fBcurs_refresh\fR(3X).
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

@@ -28,7 +28,6 @@
  *
  */
 
-#include <version.h>
 #include <config.h>
 
 #if HAVE_UNISTD_H

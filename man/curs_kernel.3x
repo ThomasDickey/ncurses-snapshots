@@ -3,7 +3,7 @@
 \fBcurs_kernel\fR: \fBdef_prog_mode\fR, \fBdef_shell_mode\fR,
 \fBreset_prog_mode\fR, \fBreset_shell_mode\fR, \fBresetty\fR,
 \fBsavetty\fR, \fBgetsyx\fR, \fBsetsyx\fR, \fBripoffline\fR,
-\fBcurs_set\fR, \fBnapms\fR - low-level \fBncurses\fR routines
+\fBcurs_set\fR, \fBnapms\fR - low-level \fBxscurses\fR routines
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 
@@ -30,20 +30,20 @@
 \fBint napms(int ms);\fR
 .br
 .SH DESCRIPTION
-The following routines give low-level access to various \fBncurses\fR
+The following routines give low-level access to various \fBcurses\fR
 capabilities.  Theses routines typically are used inside library
 routines.
 
 The \fBdef_prog_mode\fR and \fBdef_shell_mode\fR routines save the
-current terminal modes as the "program" (in \fBncurses\fR) or "shell"
-(not in \fBncurses\fR) state for use by the \fBreset_prog_mode\fR and
+current terminal modes as the "program" (in \fBcurses\fR) or "shell"
+(not in \fBcurses\fR) state for use by the \fBreset_prog_mode\fR and
 \fBreset_shell_mode\fR routines.  This is done automatically by
 \fBinitscr\fR.  There is one such save area for each screen context
 allocated by \fBnewterm()\fR.
 
 The \fBreset_prog_mode\fR and \fBreset_shell_mode\fR routines restore
-the terminal to "program" (in \fBncurses\fR) or "shell" (out of
-\fBncurses\fR) state.  These are done automatically by \fBendwin\fR
+the terminal to "program" (in \fBcurses\fR) or "shell" (out of
+\fBcurses\fR) state.  These are done automatically by \fBendwin\fR
 and, after an \fBendwin\fR, by \fBdoupdate\fR, so they normally are
 not called.
 
@@ -63,7 +63,7 @@ The \fBsetsyx\fR routine sets the virtual screen cursor to
 \fIy\fR, \fIx\fR.  If \fIy\fR and \fIx\fR are both \fB-1\fR, then
 \fBleaveok\fR is set.  The two routines \fBgetsyx\fR and \fBsetsyx\fR
 are designed to be used by a library routine, which manipulates
-\fBncurses\fR windows but does not want to change the current position
+\fBcurses\fR windows but does not want to change the current position
 of the program's cursor.  The library routine would call \fBgetsyx\fR
 at the beginning, do its manipulation of its own windows, do a
 \fBwnoutrefresh\fR on its windows, call \fBsetsyx\fR, and then call
@@ -109,7 +109,7 @@ on the correctness of the return value anywhere else.
 The functions \fBsetsyx\fR and \fBgetsyx\fR are not described in the XSI
 Curses standard, Issue 4.  All other functions are as described in XSI Curses.
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_outopts\fR(3X), \fBcurs_refresh\fR(3X),
+\fBcurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_outopts\fR(3X), \fBcurs_refresh\fR(3X),
 \fBcurs_scr_dump\fR(3X), \fBcurs_slk\fR(3X)
 .\"#
 .\"# The following sets edit modes for GNU EMACS

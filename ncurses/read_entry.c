@@ -237,24 +237,24 @@ union {
 }
 
 /*
- *	bool name_match(namelist, name)
+ *	bool name_match(namelist, name, delim)
  *
  *	Is the given name matched in namelist?
  */
 
-int name_match(char *namelst, const char *name)
+int name_match(char *namelst, const char *name, const char *delim)
 {
-char *cp, namecopy[NAMESIZE];
+char *cp, namecopy[2048];
 
 	if (namelst == NULL)
 		return(FALSE);
     	(void) strcpy(namecopy, namelst);
-    	if ((cp = strtok(namecopy, "|")) != NULL)
+    	if ((cp = strtok(namecopy, delim)) != NULL)
     		do {
 			if (strcmp(cp, name) == 0)
 			    return(TRUE);
     		} while
-		    ((cp = strtok((char *)NULL, "|")) != NULL);
+		    ((cp = strtok((char *)NULL, delim)) != NULL);
 
     	return(FALSE);
 }

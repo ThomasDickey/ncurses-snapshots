@@ -33,7 +33,41 @@ or #define's may be needed.
 	HP-UX:	-D_HPUX_SOURCE so that we get POSIX and XOPEN features.
 	SVR4:	-DBROKEN_TIOCGETWINSZ guess what?
 
-THINGS TO DO:
+SHORT-TERM TO-DO ITEMS:
+
+Bugs:
+
+* Eric Raymond reports that under BSD/OS, lynx sometimes core-dumps or freezes
+  on receipt of arrow keys.  The bug seems to be timing-dependent, more likely
+  to happen if you type several arrows in rapid succession.  This bug was
+  *not* present in the 1.8.7 version of the library; it was introduced before
+  1.9.1.
+
+Tweaks:
+
+* Reverse the sense on --with-termcap, so that the TERMCAP_FILE support is
+  compiled in by default (we needn't specify a file, the code now looks for
+  /etc/termcap and /usr/share/misc/termcap).  (Keith Bostic wants this.)
+
+* Speed tuning.  The _nc_render code and move_relative code appear to be eating
+  too many clocks.
+
+* Ian Jackson reported on the Debian list that the update code seems to be
+  using many  delete-character sequences to avoid a few character overwrites.
+  This probably reflects poor cost computation in doupdate().
+
+* We need documentation (man pages) for Jurgen Pfeifer's menu library clone,
+  so it can be shipped with ncurses.  Zeyd warns:
+  "Be careful, SYSV man pages are close to useless. Many subtle points are
+  never mentioned. You'll need something like "SCO UNIX Developer's Guide"
+  for more comprehensive treatment."
+
+* A hook for resizing (Thomas Dickey is working on this).
+
+* Investigate the file descriptor usage (SVr4 appears to use both stdin
+  and stdout for getting screen size, setting terminal mode).
+
+LONGER-TERM TO-DO ITEMS:
 
 1. Extended COSE conformance
 

@@ -141,12 +141,6 @@
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
 #define BAUDRATE	SP->_baudrate		/* bits per second */
 
-/****************************************************************************
- *
- * Optimized cursor movement
- *
- ****************************************************************************/
-
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -171,6 +165,45 @@ static int	onscreen_mvcur(int, int, int, int, bool);
 #ifndef NO_OPTIMIZE
 static int	relative_move(char *, int, int, int, int, bool);
 #endif /* !NO_OPTIMIZE */
+
+/****************************************************************************
+ *
+ * Cursor save_restore
+ *
+ ****************************************************************************/
+
+/* assumption: sc/rc is faster than cursor addressing */
+
+static int	oy, ox;		/* ugh, mvcur_scrolln() needs to see this */
+
+static void save_curs(void)
+{
+    if (save_cursor && restore_cursor)
+    {
+	TPUTS_TRACE("save_cursor");
+	putp(save_cursor);
+    }
+
+    oy = CURRENT_ROW;
+    ox = CURRENT_COLUMN;
+}
+
+static void restore_curs(void)
+{
+    if (save_cursor && restore_cursor)
+    {
+	TPUTS_TRACE("restore_cursor");
+	putp(restore_cursor);
+    }
+    else
+	onscreen_mvcur(-1, -1, oy, ox, FALSE);
+}
+
+/****************************************************************************
+ *
+ * Optimized cursor movement
+ *
+ ****************************************************************************/
 
 #define INFINITY	1000000	/* too high to use */
 
@@ -296,11 +329,15 @@ void mvcur_init(SCREEN *sp)
 void mvcur_wrap(void)
 /* wrap up cursor-addressing mode */
 {
+    /* change_scroll_region may trash the cursor location */
+    save_curs();
     if (change_scroll_region)
     {
 	TPUTS_TRACE("change_scroll_region");
 	putp(tparm(change_scroll_region, 0, screen_lines - 1));
     }
+    restore_curs();
+
     if (exit_ca_mode)
     {
 	TPUTS_TRACE("exit_ca_mode");
@@ -768,33 +805,6 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
  *
  ****************************************************************************/
 
-/* assumption: src/rc is faster than cursor addressing */
-
-static int	oy, ox;		/* ugh, mvcur_scrolln() needs to see this */
-
-static void save_curs(void)
-{
-    if (save_cursor && restore_cursor)
-    {
-	TPUTS_TRACE("save_cursor");
-	putp(save_cursor);
-    }
-
-    oy = CURRENT_ROW;
-    ox = CURRENT_COLUMN;
-}
-
-static void restore_curs(void)
-{
-    if (save_cursor && restore_cursor)
-    {
-	TPUTS_TRACE("restore_cursor");
-	putp(restore_cursor);
-    }
-    else
-	onscreen_mvcur(-1, -1, oy, ox, FALSE);
-}
-
 int mvcur_scrolln(int n, int top, int bot, int maxy)
 /* scroll region from top to bot by n lines */
 {
@@ -1042,13 +1052,7 @@ static char	tname[BUFSIZ];
 
 static void load_term(void)
 {
-    int	errret;
-
-    (void) setupterm(tname, STDOUT_FILENO, &errret);
-    if (errret == 1)
-	(void) printf("Loaded \"%s\" entry.\n", tname);
-    else
-	(void) printf("Load failed, error %d.\n", errret);
+    (void) setupterm(tname, STDOUT_FILENO, NULL);
 }
 
 int roll(int n)
@@ -1095,6 +1099,7 @@ int main(int argc, char *argv[])
 (void) puts("nonl             -- don't assume NL -> CR/LF when computing");
 (void) puts("d[elete] <cap>   -- delete named capability");
 (void) puts("i[nspect]        -- display terminal capabilities");
+(void) puts("c[ost]           -- dump cursor-optimization cost table");
 (void) puts("t[orture] <num>  -- torture-test with <num> random moves");
 (void) puts("q[uit]           -- quit the program");
 	}
@@ -1202,6 +1207,28 @@ int main(int argc, char *argv[])
 	    for (i = 0; speeds[i]; i++)
 		(void) printf("\t%3.2f char-xmits @ %d bps.\n",
 			      speeds[i] * perchar / 1e6, speeds[i]);
+	}
+	else if (buf[0] == 'c')
+	{
+	    (void) printf("char padding: %d\n", SP->_char_padding);
+	    (void) printf("cr cost: %d\n", SP->_cr_cost);
+	    (void) printf("cup cost: %d\n", SP->_cup_cost);
+	    (void) printf("home cost: %d\n", SP->_home_cost);
+	    (void) printf("ll cost: %d\n", SP->_ll_cost);
+#ifdef TABS_OK
+	    (void) printf("ht cost: %d\n", SP->_ht_cost);
+	    (void) printf("cbt cost: %d\n", SP->_cbt_cost);
+#endif /* TABS_OK */
+	    (void) printf("cub1 cost: %d\n", SP->_cub1_cost);
+	    (void) printf("cuf1 cost: %d\n", SP->_cuf1_cost);
+	    (void) printf("cud1 cost: %d\n", SP->_cud1_cost);
+	    (void) printf("cuu1 cost: %d\n", SP->_cuu1_cost);
+	    (void) printf("cub cost: %d\n", SP->_cub_cost);
+	    (void) printf("cuf cost: %d\n", SP->_cuf_cost);
+	    (void) printf("cud cost: %d\n", SP->_cud_cost);
+	    (void) printf("cuu cost: %d\n", SP->_cuu_cost);
+	    (void) printf("hpa cost: %d\n", SP->_hpa_cost);
+	    (void) printf("vpa cost: %d\n", SP->_vpa_cost);
 	}
 	else if (buf[0] == 'x' || buf[0] == 'q')
 	    break;

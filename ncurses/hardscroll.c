@@ -261,7 +261,7 @@ void _nc_scroll_optimize(void)
 	while (first < LINES)
 	{
 	    /* find the beginning of a hunk */
-	    while (OLDNUM(first) == NEWINDEX)
+	    while (first < LINES && OLDNUM(first) == NEWINDEX)
 		first++;
 	    if (first >= LINES)
 		break;

@@ -2,7 +2,7 @@
 .SH NAME
 \fBcurs_util\fR: \fBunctrl\fR, \fBkeyname\fR, \fBfilter\fR,
 \fBuse_env\fR, \fBputwin\fR, \fBgetwin\fR, \fBdelay_output\fR,
-\fBflushinp\fR - miscellaneous \fBncurses\fR utility routines
+\fBflushinp\fR - miscellaneous \fBcurses\fR utility routines
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 
@@ -41,7 +41,7 @@ The \fBuse_env\fR routine, if used, is called before \fBinitscr\fR or
 argument, the values of \fBlines\fR and \fBcolumns\fR specified in the
 \fIterminfo\fR database will be used, even if environment variables
 \fBLINES\fR and \fBCOLUMNS\fR (used by default) are set, or if
-\fBncurses\fR is running in a window (in which case default behavior
+\fBcurses\fR is running in a window (in which case default behavior
 would be to use the window size if \fBLINES\fR and \fBCOLUMNS\fR are
 not set).
 
@@ -76,7 +76,7 @@ erroneously fails to describe the disabling of \fBcuu\fR).
 .SH NOTES
 Note that \fBunctrl\fR is a macro, which is defined in <\fBunctrl.h\fR>.
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_scr_dump\fR(3X).
+\fBcurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_scr_dump\fR(3X).
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

@@ -221,7 +221,6 @@ static inline void PutChar(chtype ch)
 
 int _nc_outch(int ch)
 {
-	TR(TRACE_MAXIMUM, ("outputting %d", ch));
 	if (SP != NULL)
 		putc(ch, SP->_ofp);
 	else
@@ -259,12 +258,13 @@ int	i;
 		/*
 		 * Undo the effects of terminal init strings that assume
 		 * they know the screen size.  Useful when you're running
-		 * a vt100 emulation through xterm.
+		 * a vt100 emulation through xterm.  Note: this may change
+		 * the physical cursor location.
 		 */
 		if (change_scroll_region)
 		{
 			TPUTS_TRACE("change_scroll_region");
-			putp(tparm(change_scroll_region, 0, lines - 1));
+			putp(tparm(change_scroll_region, 0, screen_lines - 1));
 		}
 		newscr->_clear = TRUE;
 		SP->_endwin = FALSE;

@@ -2,12 +2,18 @@
 # This only needs to be used by developers
 #
 SHELL = /bin/sh
-VERSION = 1.9.2d
+VERSION = 1.9.3
 
 dist: ANNOUNCE INTRO
 	(cd ..;  tar cvf ncurses-$(VERSION).tar `sed <ncurses-$(VERSION)/MANIFEST 's/^./ncurses-$(VERSION)/'`;  gzip ncurses-$(VERSION).tar)
 
-# Don't mess with announce.html unless you have lynx available!
+stamp:
+	(cd include;\
+	 for N in MKterm.h.awk termcap.h curses.h unctrl.h; do \
+	 rm -f $$N; sed 's,@VERSION@,$(VERSION),' <$$N.in >$$N; done)
+
+
+# Don't mess with announce.html.in unless you have lynx available!
 ANNOUNCE: announce.html.in
 	sed 's,@VERSION@,$(VERSION),' <announce.html.in >announce.html
 	lynx -dump announce.html > ANNOUNCE
@@ -17,5 +23,10 @@ INTRO: misc/ncurses-intro.html
 
 # Prepare distribution for version control
 vcprepare:
-	find `cat MANIFEST` -type f -exec chmod -w {} \;
 	find . -type d -exec mkdir {}/RCS \;
+
+# Write-lock almost all files not under version control.
+EXCEPTIONS = "announce.html\\|ANNOUNCE\\|src/curses.h\\|misc/ncurses-intro.doc"
+writelock:
+	for x in `grep -v $(EXCEPTIONS) MANIFEST`; do if [ ! -f `dirname $$x`/RCS/`basename $$x`,v ]; then chmod a-w $${x}; fi; done
+

@@ -168,16 +168,16 @@ static int capcmp(const char *s, const char *t)
 	if (s[0] == '$' && s[1] == '<')
 	{
 	    for (s += 2; ; s++)
-		if (isdigit(*s) || *s=='.' || *s=='*' || *s=='/'  || *s=='>')
-		    continue;
+		if (!(isdigit(*s) || *s=='.' || *s=='*' || *s=='/' || *s=='>'))
+		    break;
 	    --s;
 	}
 
 	if (t[0] == '$' && t[1] == '<')
 	{
 	    for (t += 2; ; t++)
-		if (isdigit(*t) || *t=='.' || *t=='*' || *t=='/'  || *t=='>')
-		    continue;
+		if (!(isdigit(*t) || *t=='.' || *t=='*' || *t=='/' || *t=='>'))
+		    break;
 	    --t;
 	}
 
@@ -561,11 +561,11 @@ int main(int argc, char *argv[])
 		    err_abort("Can't open %s", argv[optind]);
 		}
 
-		head = tail = (ENTRY *)NULL;
+		_nc_head = _nc_tail = (ENTRY *)NULL;
 
 		/* parse entries out of the source file */
 		set_source(argv[optind]);
-		read_entry_source(stdin, TRUE);
+		read_entry_source(stdin, NULL, TRUE);
 
 		/* do use resolution */
 		if (!resolve_uses())
@@ -582,8 +582,8 @@ int main(int argc, char *argv[])
 		    exit(1);
 		}
 
-		heads[filecount] = head;
-		tails[filecount] = tail;
+		heads[filecount] = _nc_head;
+		tails[filecount] = _nc_tail;
 		filecount++;
 	    }
 

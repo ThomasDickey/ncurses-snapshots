@@ -63,7 +63,7 @@ int parse_entry(struct entry *entryp, int literal)
 {
     int			token_type;
     struct name_table_entry	*entry_ptr;
-    char			*ptr, *bp, buf[NAMESIZE];
+    char			*ptr, *bp, buf[MAX_TERMCAP_LENGTH];
 
     token_type = get_token();
 
@@ -105,6 +105,7 @@ int parse_entry(struct entry *entryp, int literal)
 	    || strcmp(curr_token.tk_name, "tc") == 0) {
 	    entryp->uses[entryp->nuses++] = save_str(curr_token.tk_valstring);
 	} else {
+	    /* normal token lookup */
 	    entry_ptr = find_entry(curr_token.tk_name,
 	    				syntax ? cap_hash_table : info_hash_table);
 
@@ -130,17 +131,16 @@ int parse_entry(struct entry *entryp, int literal)
 		    }
 	    }
 
+	    /* can't find this cap name, not even as an alias */
 	    if (entry_ptr == NOTFOUND) {
 		warning("Unknown Capability - '%s'",
 			curr_token.tk_name);
 		continue;
 	    }
 
-
+	    /* deal with bad type/value combinations. */
 	    if (token_type != CANCEL &&  entry_ptr->nte_type != token_type)
 	    {
-		entry_ptr = NOTFOUND;
-
 		/*
 		 * Nasty special cases here handle situations in which type
 		 * information can resolve name clashes.  Normal lookup
@@ -153,18 +153,24 @@ int parse_entry(struct entry *entryp, int literal)
 
 		/* tell max_attributes from arrow_key_map */
 		if (token_type == NUMBER && !strcmp("ma", curr_token.tk_name))
-			entry_ptr = find_type_entry("ma", NUMBER,
-	    				syntax ? cap_table : info_table);
+		    entry_ptr = find_type_entry("ma", NUMBER,
+					syntax ? cap_table : info_table);
 
 		/* map terminfo's string MT to MT */
-		if (token_type == STRING && !strcmp("MT", curr_token.tk_name))
-			entry_ptr = find_type_entry("MT", STRING,
-	    				syntax ? cap_table : info_table);
+		else if (token_type==STRING &&!strcmp("MT",curr_token.tk_name))
+		    entry_ptr = find_type_entry("MT", STRING,
+					syntax ? cap_table : info_table);
 
-		if (entry_ptr == NOTFOUND)
-			warning("Wrong type used for capability '%s'",
-				curr_token.tk_name);
+		/* we couldn't recover; skip this token */
+		else
+		{
+		    warning("Wrong type used for capability '%s'",
+			    curr_token.tk_name);
+		    continue;
+		}
 	    }
+
+	    /* now we know that the type/value combination is OK */
 	    switch (token_type) {
 	    case CANCEL:
 		switch (entry_ptr->nte_type) {

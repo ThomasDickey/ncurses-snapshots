@@ -1,0 +1,74 @@
+#!/usr/bin/perl
+#
+# tracemunch -- compactify ncurses trace logs
+#
+# The error logs produced by ncurses with tracing enabled can be very tedious
+# to wade through.  This script helps by compacting runs of log lines that
+# can be conveniently expressed as higher-level operations.
+#
+# ($Id: tracemunch,v 1.1 1995/06/16 06:44:42 esr Exp $)
+
+$putattr="PutAttrChar\\('(.)' = 0x.., {A_NORMAL}\\) at \\(([0-9]+), ([0-9]+)\\)";
+$waddnstr="waddnstr\\(0x([0-9a-f]+),\"([^\"]+)\",[0-9]+\\) called {A_NORMAL}";
+
+while (<STDIN>)
+{
+CLASSIFY: {
+	# Compactify runs of PutAttrChar calls (TR_CHARPUT)
+	if ($_ =~ /$putattr/)
+	{
+		$putattr_chars = $1;
+		$starty = $2;
+		$startx = $3;
+		while (<STDIN>)
+		{
+			if ($_ =~ /$putattr/) {
+				$putattr_chars .= $1;
+			} else {
+				last;
+			}
+		}
+		print "RUN of PutAttrChar()s: \"$putattr_chars\" from ${starty}, ${startx}\n";
+		redo CLASSIFY;
+	}
+
+	# Compactify runs of waddnstr calls (TR_CALLS)
+	if ($_ =~ /$waddnstr/)
+	{
+		$waddnstr_chars = $2;
+		$winaddr = $1;
+		while (<STDIN>)
+		{
+			if ($_ =~ /$waddnstr/ && $1 eq $winaddr) {
+				$waddnstr_chars .= $2;
+			} else {
+				last;
+			}
+		}
+		print "RUN of waddnstr()s: $winaddr, \"$waddnstr_chars\"\n";
+		redo CLASSIFY;
+	}
+
+	# More transformations can go here
+
+	# Repeated runs of anything
+	$anyline = $_;
+	$repeatcount = 1;
+	while (<STDIN>) {
+	    if ($_ eq $anyline) {
+		$repeatcount++;
+	    } else {
+		last;
+	    }
+	}
+	if ($repeatcount > 1) {
+		print "${repeatcount} REPEATS OF $anyline";
+	} else {
+		print $anyline
+	}
+	redo CLASSIFY if $_;
+
+	} # :CLASSIFY
+}
+
+# tracemunch ends here

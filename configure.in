@@ -107,7 +107,7 @@ AC_STDC_HEADERS
 
 dnl These are some other potentially nonportable headers.
 dnl AC_CHECK_HEADERS(fcntl.h sys/time.h)
-AC_CHECK_HEADERS(termios.h sys/ioctl.h sys/select.h libc.h unistd.h)
+AC_CHECK_HEADERS(termios.h sys/ioctl.h sys/select.h libc.h unistd.h values.h)
 
 ###	checks for compiler characteristics
 AC_LANG_C
@@ -119,7 +119,7 @@ NC_ERRNO
 NC_SYS_ERRLIST
 
 ###	Checks for library functions.
-AC_CHECK_FUNCS(sigaction usleep strerror vsscanf)
+AC_CHECK_FUNCS(sigaction usleep strerror setvbuf vsscanf)
 
 if test $ac_cv_func_sigaction = yes; then
 AC_MSG_CHECKING(whether sigaction needs _POSIX_SOURCE)
@@ -139,11 +139,14 @@ dnl We'll do our own -g libraries
 CFLAGS=`echo ${CFLAGS} | sed -e s/-g//`
 
 dnl Check for C++ compiler characteristics (and ensure that it's there!)
-if test -n "$CXX"; then
+AC_CHECK_PROG(CXX_EXISTS, $CXX, yes, no)
+if test "$ac_cv_prog_CXX_EXISTS" = yes; then
 	AC_LANG_CPLUSPLUS
 	NC_CXX_LIBRARY
 	NC_BOOL_DECL
 	NC_BOOL_SIZE
+else
+	nc_cxx_library=no
 fi
 
 ### It's not possible to appease gcc 2.6.3's conversion-warnings if we're
@@ -162,6 +165,7 @@ NC_INCLUDE_DIRS
 ### Construct the list of subdirectories for which we'll customize makefiles
 ### with the appropriate compile-rules.
 NC_SRC_MODULES(ncurses progs panel menus forms)
+NC_DIRS_TO_MAKE
 
 ################################################################################
 changequote({,})dnl
@@ -226,8 +230,8 @@ fi
 ### Special initialization commands, used to pass information from the
 ### configuration-run into config.status
 
-if test $nc_cv_builtin_bool = yes; then BUILTIN_BOOL=1;else BUILTIN_BOOL=0;fi
-TYPE_OF_BOOL=$nc_cv_sizeof_bool
+if test ".$nc_cv_builtin_bool" = ".yes"; then BUILTIN_BOOL=1;else BUILTIN_BOOL=0;fi
+TYPE_OF_BOOL=${nc_cv_sizeof_bool-unsigned}
 
 SYS_NAME="`(uname -a || hostname) 2>/dev/null | sed 1q`"
 if test -z "\$SYS_NAME"; then SYS_NAME=unknown;fi

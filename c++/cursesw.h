@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <builtin.h>
-#ifndef BSD_NET2
+#if HAVE_VALUES_H
 #include <values.h>
 #endif
 #include <strstream.h>
@@ -135,7 +135,7 @@ inline int (move)(int x, int y)  { return move(x, y); }
 #undef move
 #endif
 #ifdef refresh
-inline int (rfresh)()  { return refresh(); }
+inline int (refresh)()  { return refresh(); }
 #undef refresh
 #endif
 #ifdef scrl
@@ -150,7 +150,7 @@ inline int (scroll)(WINDOW *win) { return scroll(win); }
 inline int (scrollok)(WINDOW* win, int bf)  { return scrollok(win, bf); }
 #undef scrollok
 #else
-#ifndef hpux
+#if	defined(__NCURSES_H)
 extern "C" int scrollok(WINDOW*, bool);
 #else
 extern "C" int scrollok(WINDOW*, char);

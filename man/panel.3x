@@ -1,4 +1,4 @@
-.TH ncurses 3X ""
+.TH panel 3X ""
 .ds n 5
 .ds d @TERMINFO@
 .SH NAME
@@ -39,7 +39,7 @@ panel - panel stack extension for curses
 \fBint del_panel(PANEL *pan)\fR
 .br
 .SH DESCRIPTION
-Panels are curses(3) windows with the added feature of
+Panels are curses(3X) windows with the added feature of
 depth.  Panel functions allow the use of stacked windows and ensure
 the proper portions of each window and the curses stdscr window are
 hidden or displayed when panels are added, moved, modified or removed.
@@ -51,7 +51,7 @@ A window is associated with every panel. The panel rou- tines enable
 you to create, move, hides, and show panels, as well as position a
 panel at any desired location in the stack.
 .P
-Panel routines are a functional layer added to curses(3), make only
+Panel routines are a functional layer added to curses(3X), make only
 high-level curses calls, and work anywhere terminfo curses does.
 .SH FUNCTIONS
 .TP
@@ -123,8 +123,8 @@ executes successfully and \fBERR\fR if not.
 Reasonable care has been taken to  ensure  compatibility
 with  the  native  panel facility introduced in SVr3.2 (inspection of
 the SVr4 manual pages suggests the programming interface is unchanged).
-The \fBPANEL\fR data structures are merely  similar. The  pro-
-grammer is cautioned not to directly use \fBPANEL\fR fields.
+The \fBPANEL\fR data structures are merely  similar. The  programmer
+is cautioned not to directly use \fBPANEL\fR fields.
 .P
 The functions \fBshow_panel()\fR and \fBtop_panel()\fR are identical
 in this implementation, and work equally well with displayed or hidden
@@ -141,7 +141,7 @@ interface for the panels library
 libpanel.a
 the panels library itself
 .SH SEE ALSO
-curses(3)
+curses(3X)
 .SH AUTHOR
 Originally written by Warren Tucker <wht@n4hgf.mt-park.ga.us>,
 primarily to assist in porting u386mon to systems without a native

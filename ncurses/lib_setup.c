@@ -33,6 +33,11 @@
 #include "curses.priv.h"
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
+#if !HAVE_EXTERN_ERRNO
+extern int errno;
+#endif
+
 #include "term.h"	/* lines, columns, cur_term */
 
 /****************************************************************************
@@ -68,9 +73,14 @@ static int resize(int fd)
 #if defined(TIOCGWINSZ) && !defined(BROKEN_TIOCGWINSZ)
 struct winsize size;
 
-	if (ioctl(fd, TIOCGWINSZ, &size) < 0) {
-		return TRUE;
-	}
+	errno = 0;
+	do {
+		if (ioctl(fd, TIOCGWINSZ, &size) < 0 && errno != EINTR) {
+			return TRUE;
+		}
+	} while
+	    (errno == EINTR);
+
 	LINES = size.ws_row;
 	COLS = size.ws_col;
 	if (LINES == 0 || COLS == 0)
@@ -229,7 +239,10 @@ static int grab_entry(const char *tn, TERMTYPE *tp)
 	    return(OK);
 
 #ifdef TERMCAP_FILE
-	/* try falling back on the termcap file */
+	/*
+	 * Try falling back on the termcap file.  Note: allowing this call
+	 * links the entire terminfo/termcap compiler into the startup code.
+	 */
 	if (read_termcap_entry(tn, tp) == OK)
 		return(OK);
 #endif /* TERMCAP_FILE */
@@ -261,11 +274,9 @@ struct term	*term_ptr;
 
 	T(("your terminal name is %s", termname));
 
-	if (name_match(ttytype, termname) == FALSE || isendwin()) {
+	if (name_match(ttytype, termname, "|") == FALSE || isendwin()) {
 	
 		if (isendwin()) {
-			extern int del_curterm(TERMINAL *term);
-
 			T(("deleting cur_term"));
 			T(("must be resizing"));
 			del_curterm(cur_term);

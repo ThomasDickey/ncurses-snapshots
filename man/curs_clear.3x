@@ -2,7 +2,7 @@
 .SH NAME
 \fBcurs_clear\fR: \fBerase\fR, \fBwerase\fR, \fBclear\fR,
 \fBwclear\fR, \fBclrtobot\fR, \fBwclrtobot\fR, \fBclrtoeol\fR,
-\fBwclrtoeol\fR - clear all or part of a \fBncurses\fR window
+\fBwclrtoeol\fR - clear all or part of a \fBcurses\fR window
 .SH SYNOPSIS
 \fB# include <curses.h>\fR
 
@@ -50,8 +50,13 @@ Note that \fBerase\fR, \fBwerase\fR, \fBclear\fR, \fBwclear\fR,
 These functions are described in the XSI Curses standard, Issue 4.  The
 standard specifies that they return \fBERR\fR on failure, but specifies no
 error conditions.
+
+Some historic curses implementations had, as an undocumented feature, the
+ability to do the equivalent of \fBclearok(..., 1)\fR by saying
+\fBtouchwin(stdscr)\fR or \fBclear(stdscr)\fR.  This will not work under
+ncurses.
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_outopts\fR(3X), \fBcurs_refresh\fR(3X)
+\fBcurses\fR(3X), \fBcurs_outopts\fR(3X), \fBcurs_refresh\fR(3X)
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

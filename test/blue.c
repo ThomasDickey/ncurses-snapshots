@@ -246,7 +246,7 @@ static void play_game(void)
 
 	if (dead < 4)
 	{
-	    char	live[NSUITS], *lp = live;
+	    char	live[NSUITS+1], *lp = live;
 
 	    for (i=0;i<4;i++)
 	    {

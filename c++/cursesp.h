@@ -16,7 +16,7 @@ class NCursesPanel : public NCursesWindow {
     public:
 	NCursesPanel();		// make a full window size panel
 	NCursesPanel(int lines, int cols, int begin_y, int begin_x);
-	~NCursesPanel();
+	inline ~NCursesPanel();
 
 	// basic manipulation
 	int hide() { return hide_panel(p); }

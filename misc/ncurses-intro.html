@@ -580,20 +580,17 @@ test whether <TT>ncurses</TT> screen mode is active.  It returns <TT>TRUE</TT>
 in the interval between an <TT>endwin()</TT> call and the following
 <TT>refresh()</TT>, <TT>FALSE</TT> otherwise.  <P>
 
-<H2>Using <TT>ncurses</TT> With X</H2>
+<H2>Using <TT>ncurses</TT> Under <TT>xterm</TT></H2>
 
-A resize operation in X sends SIGWINCH to the running application.  The
-<TT>ncurses</TT> library does not catch this signal, because it cannot in
-general know how you want the screen re-painted.  You will have to write
-the SIGWINCH handler yourself. <P>
+A resize operation in X sends SIGWINCH to the application running under xterm.
+The <TT>ncurses</TT> library does not catch this signal, because it cannot in
+general know how you want the screen re-painted.  You will have to write the
+SIGWINCH handler yourself. <P>
 
-At the moment, <TT>ncurses</TT> has no hooks that are specialized to
-help you do this, though future versions will probably have them. <P>
-
-At minimum, your SIGWINCH handler should do a <TT>clearok()</TT>, followed by a
-<TT>wrefresh()</TT> on each of your windows (or, equivalently but more
-efficiently, <TT>wnoutrefresh()</TT> on each one followed by
-<TT>doupdate()</TT>). <P>
+The easiest way to code your SIGWINCH handler is to have it do an
+<TT>endwin</TT>, followed by an <TT>initscr</TT> and a screen repaint you code
+yourself.  The <TT>initscr</TT> will pick up the new screen size from the
+xterm's environment.
 
 <H2>Handling Multiple Terminal Screens</H2>
 

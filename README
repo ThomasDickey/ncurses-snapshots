@@ -1,13 +1,79 @@
 		README file for the ncurses package
 
-DOCUMENTATION:
-
 See the file ANNOUNCE for a summary of ncurses features and ports.
 See the file INSTALL for instructions on how to build and install ncurses.
 See the file CHANGES for a release history and bug-fix notes.
 
-Detailed documentation can be found in the man directory.  An HTML
-introduction to ncurses programming lives in the doc directory.
+ROADMAP AND PACKAGE OVERVIEW:
+
+You should be reading this file in a directory called: ncurses-d.d.d, where
+d.d.d is the current version number (see the Makefile.in file in this
+directory for that).  There should be several subdirectories, including 'c++',
+'man', 'misc', 'ncurses', 'panel', 'progs', and 'test'.
+
+A full build/install of this package typically installs several libraries, a
+handful of utilities, and a database hierarchy under /usr/share.  Here is an
+inventory of the pieces:
+
+The libraries are:
+
+	libncurses.a       (normal)
+	libncurses.so      (shared)
+	libncurses_g.a     (debug and trace code enabled)
+	libncurses_p.a     (profiling enabled)
+
+	libpanel.a         (normal)
+	libpanel_g.a       (debug and trace code enabled)
+
+The ncurses libraries implement the curses API.  The panel libraries
+implement a clone of the SVr4 panels API.  The source code for these
+lives in the `ncurses' and `panels' directories.
+
+In the `c++' directory, you'll find code that defines an interface to the
+curses and panels library packaged as a C++ class, and a demo program in C++
+to test it.  These class definition modules are not installed anywhere by
+default; it's up to you what you do with them.
+
+In order to do its job, the ncurses code needs your terminal type to be set in
+the environment variable TERM (normally set by your OS); and, it needs a
+database of terminal descriptions in which to look up your terminal type's
+capabilities.
+
+In older (V7/BSD) versions of curses, the database was a flat text file,
+/etc/termcap; in newer (USG/USL) versions, the database is a hierarchy of
+fast-loading binary description blocks under /usr/share.  These binary blocks
+are compiled from an improved editable text representation called `terminfo'
+format (documented in man/terminfo.5).  The ncurses library can use either
+/etc/termcap or the compiled binary terminfo blocks, but prefers the second
+form.
+
+In the `misc' directory, there is a text file terminfo.src, in editable
+terminfo format, which can be used to generate the terminfo binaries (that's
+what make install.data does).  If the package was built with the
+--with-termcap option enabled, and the ncurses library can't find a terminfo
+description for your terminal, it will fall back to the termcap file supplied
+with your system (which the ncurses package installation leaves strictly
+alone).
+
+The utilities are as follows:
+
+	tic             -- terminfo source to binary compiler
+	infocmp         -- terminfo binary to source decompiler/comparator
+	clear           -- emits clear-screen for current terminal
+	tput            -- shell-script access to terminal capabilities.
+
+The first two are used for manipulating terminfo descriptions; the last two
+are for use inshell scripts.  The source code for all of these lives in the
+`progs' directory.
+
+Detailed documentation for all libraries and utilities can be found in the
+`man' directory.  An HTML introduction to ncurses programming lives in the
+`misc' directory.
+
+The `test' directory contains programs that can be used to verify the 
+functions of the ncurses libraries.  See test/README for descriptions of
+these programs.  Notably, the `ncurses' utility is designed to help you
+systematically exercise the library functions.
 
 RELATED RESOURCES:
 
@@ -32,7 +98,7 @@ Zeyd M. Ben-Halim:
 Eric S. Raymond:
 	the man pages, infocmp(1), tput(1), clear(1), captoinfo(1),
 	most of tic(1), src/lib_twait.c, trace levels, the HTML intro,
-	wgetnstr() and 36 other entry points, the A_PCCHARSET code, 
+	wgetnstr() and many other entry points, the A_PCCHARSET code, 
 	the cursor-movement optimization, the scroll-pack optimizer
         for vertical motions, and the ncurses test program.
 
@@ -55,6 +121,10 @@ Eric Newton, Ulrich Drepper, and Anatoly Ivasyuk:
 
 Jonathan Ross,
 	for lessons in using sed.
+
+Keith Bostic (maintainer of 4.4BSD curses)
+	for help, criticism, comments, bug-finding, and being willing to
+	deep-six BSD curses for this one when it grew up.
 
 Countless other people have contributed by reporting bugs, sending fixes,
 suggesting improvements, and generally whining about ncurses :-)

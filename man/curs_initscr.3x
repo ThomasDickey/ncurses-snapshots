@@ -1,7 +1,7 @@
 .TH curs_initscr 3X ""
 .SH NAME
 \fBcurs_initscr\fR: \fBinitscr\fR, \fBnewterm\fR, \fBendwin\fR,
-\fBisendwin\fR, \fBset_term\fR, \fBdelscreen\fR - \fBncurses\fR screen
+\fBisendwin\fR, \fBset_term\fR, \fBdelscreen\fR - \fBcurses\fR screen
 initialization and manipulation routines
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
@@ -19,13 +19,13 @@ initialization and manipulation routines
 \fBvoid delscreen(SCREEN* sp);\fR
 .br
 .SH DESCRIPTION
-\fBinitscr\fR is normally the first \fBncurses\fR routine to call when
+\fBinitscr\fR is normally the first \fBcurses\fR routine to call when
 initializing a program.  A few special routines sometimes need to be
 called before it; these are \fBslk_init\fR, \fBfilter\fR, \fBripoffline\fR,
 \fBuse_env\fR.  For multiple-terminal applications, \fBnewterm\fR may be
 called before \fBinitscr\fR.
 
-The initscr code determines the terminal type and initializes all \fBncurses\fR
+The initscr code determines the terminal type and initializes all \fBcurses\fR
 data structures.  \fBinitscr\fR also causes the first call to \fBrefresh\fR to
 clear the screen.  If errors occur, \fBinitscr\fR writes an appropriate error
 message to standard error and exits; otherwise, a pointer is returned to
@@ -41,12 +41,12 @@ as a reference to that terminal.  The arguments are the \fItype\fR of the
 terminal to be used in place of \fB$TERM\fR, a file pointer for output to the
 terminal, and another file pointer for input from the terminal (if \fItype\fR
 is \fBNULL\fR, \fB$TERM\fR will be used).  The program must also call
-\fBendwin\fR for each terminal being used before exiting from ncurses.  If
-\fBnewterm\fR is called more than once for the same terminal, the first
+\fBendwin\fR for each terminal being used before exiting from \fBcurses\fR.
+If \fBnewterm\fR is called more than once for the same terminal, the first
 terminal referred to must be the last one for which \fBendwin\fR is called.
 
 A program should always call \fBendwin\fR before exiting or escaping from
-\fBncurses\fR mode temporarily.  This routine restores tty modes, moves the
+\fBcurses\fR mode temporarily.  This routine restores tty modes, moves the
 cursor to the lower left-hand corner of the screen and resets the terminal into
 the proper non-visual mode.  Calling \fBrefresh\fR or \fBdoupdate\fR after a
 temporary escape causes the program to resume visual mode.
@@ -77,7 +77,7 @@ These functions are described in the XSI Curses standard, Issue 4.  It
 specifies that portable applications must not call \fBinitscr\fR more than
 once.
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_kernel\fR(3X), \fBcurs_refresh\fR(3X),
+\fBcurses\fR(3X), \fBcurs_kernel\fR(3X), \fBcurs_refresh\fR(3X),
 \fBcurs_slk\fR(3X), \fBcurs_util\fR(3X)
 .\"#
 .\"# The following sets edit modes for GNU EMACS

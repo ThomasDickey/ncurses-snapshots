@@ -2,7 +2,7 @@
 .SH NAME
 \fBcurs_instr\fR: \fBinsstr\fR, \fBinsnstr\fR, \fBwinsstr\fR, \fBwinsnstr\fR,
 \fBmvinsstr\fR, \fBmvinsnstr\fR, \fBmvwinsstr\fR, \fBmvwinsnstr\fR - insert
-string before cursor a \fBncurses\fR window
+string before cursor in a \fBcurses\fR window
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 .br
@@ -49,10 +49,10 @@ Note that all but \fBwinsnstr\fR may be macros.
 These functions are described in the XSI Curses standard, Issue 4, which adds
 const qualifiers to the arguments.  The XSI Curses error conditions
 \fBEILSEQ\fR and \fBEILOVERFLOW\fR associated with extended-level conformance
-are not yet detected (\fBncurses\fR does not yet support XPG4 multibyte
+are not yet detected (this implementation does not yet support XPG4 multibyte
 characters).
 .SH SEE ALSO
-\fBncurses\fR(3X), \fBcurs_clear\fR(3X), \fBcurs_inch\fR(3X).
+\fBcurses\fR(3X), \fBcurs_clear\fR(3X), \fBcurs_inch\fR(3X).
 .\"#
 .\"# The following sets edit modes for GNU EMACS
 .\"# Local Variables:

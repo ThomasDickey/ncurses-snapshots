@@ -136,7 +136,7 @@ struct name_table_entry *find_type_entry(char *,
 /* comp_scan.c: lexical analysis */
 extern int  get_token(void);
 extern void push_token(int);
-extern void reset_input(FILE *);
+extern void reset_input(FILE *, char *);
 extern void panic_mode(char);
 extern int curr_line;
 extern long curr_file_pos;
