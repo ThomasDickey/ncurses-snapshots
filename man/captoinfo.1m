@@ -1,7 +1,7 @@
 '\" t
 .TH captoinfo 1M ""
 .ds n 5
-.ds d @TERMINFO@
+.ds d @DATADIR@/terminfo
 .SH NAME
 \fBcaptoinfo\fR - convert a \fItermcap\fR description into a \fIterminfo\fR description
 .SH SYNOPSIS
@@ -9,7 +9,7 @@
 .SH DESCRIPTION
 \fBcaptoinfo\fR looks in \fIfile\fR for \fBtermcap\fR descriptions.  For each
 one found, an equivalent \fBterminfo\fR description is written to standard
-output.  Termcap \fBtc\fR capabilities are trnslated directly to terminfo
+output.  Termcap \fBtc\fR capabilities are translated directly to terminfo
 \fBuse\fR capabilities.
 
 If no \fIfile\fR is given, then the environment variable \fBTERMCAP\fR is used

@@ -27,7 +27,6 @@
 
 #include <curses.priv.h>
 
-#include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
 #include "tic.h"

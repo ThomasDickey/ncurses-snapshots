@@ -43,7 +43,7 @@ bool item_visible(const ITEM * item)
   if ( item                                               && 
       (menu=item->imenu)                                  && 
       (menu->status & _POSTED)                            &&
-      ( (menu->toprow + menu->height - 1) >= (item->y) )  &&
+      ( (menu->toprow + menu->arows - 1) >= (item->y) )   &&
       ( item->y >= menu->toprow) )
     return TRUE;
   else

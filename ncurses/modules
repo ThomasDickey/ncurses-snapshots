@@ -1,5 +1,6 @@
 # Library objects
 fallback	lib		.		../include/term.h $(INCDIR)/tic.h
+hashmap		lib		$(srcdir)
 hardscroll	lib		$(srcdir)
 lib_acs 	lib		$(srcdir)	../include/term.h
 lib_addch	lib		$(srcdir)

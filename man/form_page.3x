@@ -5,13 +5,13 @@
 .SH SYNOPSIS
 \fB#include <form.h>\fR
 .br
-int set_current_field(FORM *form, int page);
+int set_current_field(FORM *form, FIELD *field);
 .br
-FIELD *current_field(FORM *);
+FIELD *current_field(const FORM *);
 .br
 int set_form_page(FORM *form, int n);
 .br
-int form_page(FORM *form);
+int form_page(const FORM *form);
 .br
 .SH DESCRIPTION
 The function \fBset_current field\fR sets the current field of the given

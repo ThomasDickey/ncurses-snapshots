@@ -24,9 +24,9 @@
  *	Soft key routines.
  */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
+
 #include <string.h>
-#include <stdlib.h>
 #include "term.h"	/* num_labels, label_*, plab_norm */
 
 #define MAX_SKEY	8	/* count of soft keys */

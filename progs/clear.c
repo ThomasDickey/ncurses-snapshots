@@ -35,8 +35,8 @@ static int putch(int c)
 }
 
 int main(
-	int argc __attribute__((unused)),
-	char *argv[] __attribute__((unused)))
+	int argc GCC_UNUSED,
+	char *argv[] GCC_UNUSED)
 {
 	setupterm((char *) 0, STDOUT_FILENO, (int *) 0); 
 	if (clear_screen == (char *) 0)

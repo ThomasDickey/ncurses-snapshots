@@ -30,7 +30,8 @@
  *
  */
 
-#include <stdlib.h>
+#include <curses.priv.h>
+
 #include <string.h>
 #include "tic.h"
 #include "term.h"

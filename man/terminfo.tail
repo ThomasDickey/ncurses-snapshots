@@ -84,7 +84,7 @@ affected by the operation, and the amount given is the per-affected-unit
 padding required.  (In the case of insert character, the factor is still the
 number of
 .IR lines
-affected.)  Normally, padding is advisory if the decice has the \fBxon\fR
+affected.)  Normally, padding is advisory if the device has the \fBxon\fR
 capability; it is used for cost computation but does not trigger delays.  A `/'
 suffix indicates that the padding is mandatory and forces a delay of the given
 number of milliseconds even on devices for which \fBxon\fR is present to
@@ -314,7 +314,7 @@ The \fB%\fR encodings have the following meanings:
 	%c	print pop() gives %c
 	%s	print pop() gives %s
 
-	%p[1-9]	push ith parm
+	%p[1-9]	push i'th parm
 	%P[a-z]	set variable [a-z] to pop()
 	%g[a-z]	get variable [a-z] and push it
 	%'c'	char constant c
@@ -330,7 +330,7 @@ The \fB%\fR encodings have the following meanings:
 
 	%? expr %t thenpart %e elsepart %;
 		if-then-else, %e elsepart is optional.
-		else-if's are possible ala Algol 68:
+		else-if's are possible a la Algol 68:
 		%? c\d1\u %t b\d1\u %e c\d2\u %t b\d2\u %e c\d3\u %t b\d3\u %e c\d4\u %t b\d4\u %e %;
 \s+1		c\di\u are conditions, b\di\u are bodies.
 .fi
@@ -462,7 +462,7 @@ on many terminals without a true insert/delete line,
 and is often faster even on terminals with those features.
 .PP
 The boolean \fBnon_dest_scroll_region\fR should be set if each scrolling
-window is effectively a viewport on a screen-sized canvas.  To test for
+window is effectively a view port on a screen-sized canvas.  To test for
 this capability, create a scrolling region in the middle of the screen, 
 write something to the bottom line, move the cursor to the top of the region,
 and do \fBri\fR followed by \fBdl1\fR or \fBind\fR.  If the data scrolled
@@ -858,7 +858,7 @@ or
 .SS Delays and Padding
 .PP
 Many older and slower terminals don't support either XON/XOFF or DTR
-handshaking, including hardcopy terminals and some very archaic CRTs
+handshaking, including hard copy terminals and some very archaic CRTs
 (including, for example, DEC VT100s).  These may require padding characters
 after certain cursor motions and screen changes.
 .PP
@@ -895,8 +895,8 @@ by the \fBhs\fR capability.
 Some terminals with status lines need special sequences to access the
 status line.  These may be expressed as a string with single parameter
 \fBtsl\fR which takes the cursor to a given zero-origin column on the
-status line. The capability \fBfsl\fR must resturn to the main-screen
-cursor positions befor the last \fBtsl\fR.  You may need to embed the
+status line. The capability \fBfsl\fR must return to the main-screen
+cursor positions before the last \fBtsl\fR.  You may need to embed the
 string values of \fBsc\fR (save cursor) and \fBrc\fR (restore cursor)
 in \fBtsl\fR and \fBfsl\fR to accomplish this.
 .PP
@@ -916,7 +916,7 @@ They are documented here in case they ever become important.
 .PP
 Many terminals have alternate character sets useful for forms-drawing.
 Terminfo and \fBcurses\fR build in support for the drawing characters
-supported by the VT100, with some characters fromm the AT&T 4410v1 added.
+supported by the VT100, with some characters from the AT&T 4410v1 added.
 This alternate character set may be specified by the \fBacsc\fR capability.
 .PP
 .TS H
@@ -1188,7 +1188,7 @@ The capabilities given before
 .B use
 override those in the terminal type invoked by
 .BR use .
-A capability can be cancelled by placing \fBxx@\fR to the left of the
+A capability can be canceled by placing \fBxx@\fR to the left of the
 capability definition, where xx is the capability.
 For example, the entry
 .PP
@@ -1279,7 +1279,7 @@ of terminfo (under HP-UX and AIX) which diverged from System V terminfo after
 SVr1, and have added extension capabilities to the string table that (in the
 binary format) collide with System V and XSI Curses extensions.
 .SH EXTENSIONS
-The %x operator in parametrized strings is unique to the ncurses implementation
+The %x operator in parameterized strings is unique to the ncurses implementation
 of \fBtparm\fR (it is required in order to support an unfortunate choice of
 \fBinitc\fR format on the Linux console).
 .PP
@@ -1304,7 +1304,7 @@ documentation for the AT&T 505 terminal.
 .PP
 Be careful assigning the \fBkmous\fR capability.  The \fBncurses\fR wants to
 interpret it as \fBKEY_MOUSE\fR, for use by terminals and emulators like xterm
-that can return mouse-traking information in the keyboard-input stream.
+that can return mouse-tracking information in the keyboard-input stream.
 .PP
 Different commercial ports of terminfo and curses support different subsets of
 the XSI Curses standard and (in some cases) different extension sets.  Here

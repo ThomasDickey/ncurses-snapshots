@@ -59,7 +59,7 @@ static bool Is_Printable_String(const char *s)
 |
 |   Return Values :  The item pointer or NULL if creation failed.
 +--------------------------------------------------------------------------*/
-ITEM *new_item(char *name, char *description)
+ITEM *new_item(const char *name, const char *description)
 {
   ITEM *item;
   
@@ -75,12 +75,37 @@ ITEM *new_item(char *name, char *description)
 	{
 	  *item  = _nc_Default_Item; /* hope we have struct assignment */
 	  
-	  item->name.str 	   = name;
 	  item->name.length	   = strlen(name);
+	  item->name.str 	   = (char *)malloc(1 + item->name.length);
+	  if (item->name.str)
+	    {
+	      strcpy(item->name.str, name);
+	    }
+	  else
+	    {
+	      free(item);
+	      SET_ERROR( E_SYSTEM_ERROR );
+	      return (ITEM *)0;
+	    }
 	  
-	  item->description.str    = description;
-	  if (description && Is_Printable_String(description))
-	    item->description.length = strlen(description);
+	  if (description && (*description != '\0') && 
+	      Is_Printable_String(description))
+	    {
+	      item->description.length = strlen(description);	      
+	      item->description.str    = 
+		(char *)malloc(1 + item->description.length);
+	      if (item->description.str)
+		{
+		  strcpy(item->description.str, description);
+		}
+	      else
+		{
+		  free(item->name.str);
+		  free(item);
+		  SET_ERROR( E_SYSTEM_ERROR );
+		  return (ITEM *)0;
+		}
+	    }
 	  else
 	    {
 	      item->description.length = 0;
@@ -112,13 +137,18 @@ int free_item(ITEM * item)
   if (item->imenu)
     RETURN( E_CONNECTED );
   
+  if (item->name.str)
+    free(item->name.str);
+  if (item->description.str)
+    free (item->description.str);
   free(item);
+
   RETURN( E_OK );
 }
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
-|   Function      :  int set_menu_mark( MENU *menu, char *mark )
+|   Function      :  int set_menu_mark( MENU *menu, const char *mark )
 |   
 |   Description   :  Set the mark string used to indicate the current
 |                    item (single-valued menu) or the selected items
@@ -131,18 +161,22 @@ int free_item(ITEM * item)
 |
 |   Return Values :  E_OK               - success
 |                    E_BAD_ARGUMENT     - an invalid value has been passed
+|                    E_SYSTEM_ERROR     - no memory to store mark
 +--------------------------------------------------------------------------*/
-int set_menu_mark(MENU * menu, char * mark)
+int set_menu_mark(MENU * menu, const char * mark)
 {
   int l;
-  
-  if ( mark && *mark && Is_Printable_String(mark) )
+
+  if ( mark && (*mark != '\0') && Is_Printable_String(mark) )
     l = strlen(mark);
   else
     l = 0;
-  
+
   if ( menu )
     {
+      char *old_mark = menu->mark;
+      unsigned short old_status = menu->status;
+
       if (menu->status & _POSTED)
 	{
 	  /* If the menu is already posted, the geometry is fixed. Then
@@ -150,9 +184,27 @@ int set_menu_mark(MENU * menu, char * mark)
 	  if (menu->marklen != l) 
 	    RETURN(E_BAD_ARGUMENT);
 	}	
-      menu->mark    = l ? mark : (char *)0;
       menu->marklen = l;
+      if (l)
+	{
+	  menu->mark = (char *)malloc(l+1);
+	  if (menu->mark)
+	    {
+	      strcpy(menu->mark, mark);
+	      menu->status |= _MARK_ALLOCATED;
+	    }
+	  else
+	    {
+	      menu->mark = old_mark;
+	      RETURN(E_SYSTEM_ERROR);
+	    }
+	}
+      else
+	menu->mark = (char *)0;
       
+      if ((old_status & _MARK_ALLOCATED) && old_mark)
+	free(old_mark);
+
       if (menu->status & _POSTED)
 	{
 	  _nc_Draw_Menu( menu );
@@ -166,8 +218,7 @@ int set_menu_mark(MENU * menu, char * mark)
     }
   else
     {
-      _nc_Default_Menu.mark    = l ? mark : (char *)0;
-      _nc_Default_Menu.marklen = l;
+      return set_menu_mark(&_nc_Default_Menu, mark);
     }
   RETURN(E_OK);
 }
@@ -180,7 +231,7 @@ int set_menu_mark(MENU * menu, char * mark)
 |
 |   Return Values :  The marker string pointer or NULL if no marker defined
 +--------------------------------------------------------------------------*/
-char *menu_mark(const MENU * menu)
+const char *menu_mark(const MENU * menu)
 {
   return Normalize_Menu( menu )->mark;
 }

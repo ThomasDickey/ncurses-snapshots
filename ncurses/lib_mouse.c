@@ -108,6 +108,7 @@ bool _nc_mouse_inline(SCREEN *sp)
     {
 	char	kbuf[4];
 	MEVENT	*prev;
+	int	grabbed, res;
 
 	/* This code requires that your xterm entry contain the kmous
 	 * capability and that it be set to the \E[M documented in the
@@ -134,9 +135,17 @@ bool _nc_mouse_inline(SCREEN *sp)
 	 * of the mouse event.  The upper left corner is (1,1).
 	 *
 	 * (End quote)  By the time we get here, we've eaten the
-	 * key prefix.
+	 * key prefix.  FYI, the loop below is necessary because
+	 * mouse click info isn't guaranteed to present as a
+	 * single clist item.  It always does under Linux but often
+	 * fails to under Solaris.
 	 */
-	(void) read(sp->_ifd, &kbuf, 3);
+	for (grabbed = 0; grabbed < 3; grabbed += res)
+	{
+	     res = read(sp->_ifd, kbuf + grabbed, 3-grabbed);
+	     if (res == -1)
+		 break;
+	}
 	kbuf[3] = '\0';
 
 	TR(TRACE_IEVENT, ("_nc_mouse_inline sees the following xterm data: '%s'", kbuf));

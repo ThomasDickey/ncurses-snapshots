@@ -9,6 +9,7 @@ cat <<'EOF'
  *
  */
 
+#include "config.h"
 #include "tic.h"
 #include "term.h"
 #include "hashsize.h"

@@ -1,6 +1,6 @@
 .TH TERM 7
 .ds n 5
-.ds d @TERMINFO@
+.ds d @DATADIR@/terminfo
 .SH NAME
 term \- conventions for naming terminal types
 .SH DESCRIPTION
@@ -16,7 +16,7 @@ consoles.
 .PP
 If you use a dialup line, the type of device attached to it may vary.  Older
 UNIX systems pre-set a very dumb terminal type like `dumb' or `dialup' on
-dialup lines.  Newer ones may pre-set `vt100', relecting the prevalence of DEC
+dialup lines.  Newer ones may pre-set `vt100', reflecting the prevalence of DEC
 VT100-compatible terminals and personal-computer emulators.
 .PP
 Modern telnets pass your \fBTERM\fR environment variable from the local side to
@@ -67,7 +67,7 @@ terminals that also explains how to parse them:
 First, choose a root name.  The root will consist of a lower-case letter
 followed by up to seven lower-case letters or digits.  You need to avoid using
 punctuation characters in root names, because they are used and interpreted as
-filenames and shell metacharacters (such as !, $, *, ? etc.) embedded in them
+filenames and shell meta-characters (such as !, $, *, ? etc.) embedded in them
 may cause odd and unhelpful behavior.  The slash (/), or any other character
 that may be interpreted by anyone's file system (\e, $, [, ]), is especially
 dangerous (terminfo is platform-independent, and choosing names with special
@@ -79,12 +79,12 @@ The root name for a terminal or workstation console type should almost always
 begin with a vendor prefix (such as \fBhp\fR for Hewlett-Packard, \fBwy\fR for
 Wyse, or \fBatt\fR for AT&T terminals), or a common name of the terminal line
 (\fBvt\fR for the VT series of terminals from DEC, or \fBsun\fR for Sun
-Microsytems workstation consoles, or \fBregent\fR for the ADDS Regent series.
+Microsystems workstation consoles, or \fBregent\fR for the ADDS Regent series.
 You can list the terminfo tree to see what prefixes are already in common use.
 The root name prefix should be followed when appropriate by a model number;
 thus \fBvt100\fR, \fBhp2621\fR, \fBwy50\fR.
 .PP
-The root name for a PC-unix console type should be the OS name,
+The root name for a PC-Unix console type should be the OS name,
 i.e. \fBlinux\fR, \fBbsdos\fR, \fBfreebsd\fB, \fBnetbsd\fR.  It should
 \fInot\fR be \fBconsole\fR or any other generic that might cause confusion in a
 multi-platform environment!  If a model number follows, it should indicate

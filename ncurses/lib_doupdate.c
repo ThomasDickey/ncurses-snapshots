@@ -29,8 +29,8 @@
  *
  *-----------------------------------------------------------------*/
 
-#include "curses.priv.h"
-#include <stdlib.h>
+#include <curses.priv.h>
+
 #include <sys/types.h>
 #if HAVE_SYS_TIME_H && ! SYSTEM_LOOKS_LIKE_SCO
 #include <sys/time.h>
@@ -149,9 +149,8 @@ static inline void PutAttrChar(chtype ch)
 	if (tilde_glitch && (TextOf(ch) == '~'))
 		ch = ('`' | AttrOf(ch));
 
-	TR(TRACE_CHARPUT, ("PutAttrChar(%s, %s) at (%d, %d)",
-			  _tracechar((unsigned char)TextOf(ch)),
-			  _traceattr(AttrOf(ch)),
+	TR(TRACE_CHARPUT, ("PutAttrChar(%s) at (%d, %d)",
+			  _tracechtype(ch),
 			   SP->_cursrow, SP->_curscol));
 	UpdateAttrs(ch);
 	putc((int)TextOf(ch), SP->_ofp);
@@ -266,6 +265,51 @@ static inline void PutChar(chtype const ch)
 }
 
 /*
+ * Issue a given span of characters from an array.  Must be
+ * functionally equivalent to:
+ *	for (i = 0; i < num; i++)
+ *	    PutChar(ntext[i]);
+ * Soon we'll optimize using ech and rep.
+ */
+static inline void EmitRange(const chtype *ntext, int num)
+{
+    int	i;
+
+#ifdef __UNFINISHED__
+    if (erase_chars || repeat_chars)
+    { 
+	bool wrap_possible = (SP->_curscol + num >= screen_columns);
+	chtype lastchar;
+
+	if (wrap_possible)
+	    lastchar = ntext[num--];
+
+	while (num)
+	{
+	    int	runcount = 1;
+
+	    PutChar(ntext[0]);
+
+	    while (runcount < num && ntext[runcount] = ntext[0])
+		runcount++;
+
+	    /* more */
+	    
+	}
+
+	if (wrap_possible)
+	    PutChar(lastchar);
+
+	return;
+    }
+#endif 
+
+    /* code actually used */
+    for (i = 0; i < num; i++)
+	PutChar(ntext[i]);
+}
+
+/*
  * Output the line in the given range [first .. last]
  *
  * If there's a run of identical characters that's long enough to justify
@@ -277,8 +321,11 @@ static void PutRange(
 	int row,
 	int first, int last)
 {
-	int j, k, run;
+	int j, run;
 	int cost = min(SP->_cup_cost, SP->_hpa_cost);
+
+	TR(TRACE_CHARPUT, ("PutRange(%p, %p, %d, %d, %d)",
+			 otext, ntext, row, first, last));
 
 	if (otext != ntext
 	 && (last-first+1) > cost) {
@@ -288,17 +335,14 @@ static void PutRange(
 			} else {
 				if (run > cost) {
 					int before_run = (j - run);
-					for (k = first; k < before_run; k++)
-						PutChar(ntext[k]);
-					(void) mvcur(row, before_run, row, j);
-					first = j;
+					EmitRange(ntext+first, before_run-first);
+					GoTo(row, first = j);
 				}
 				run = 0;
 			}
 		}
 	}
-	for (j = first; j <= last; j++)
-		PutChar(ntext[j]);
+	EmitRange(ntext + first, last-first+1);
 }
 
 #if CC_HAS_INLINE_FUNCS
@@ -382,6 +426,9 @@ int	i;
 			int changedlines;
 			int total = min(screen_lines, newscr->_maxy+1);
 
+#if UNUSED	/* 960526 - curses still runs slower with this code */
+			_nc_hash_map();
+#endif
 		        _nc_scroll_optimize();
 
 			if (clr_eos)
@@ -708,12 +755,13 @@ bool	attrchanged = FALSE;
 	}
 
 	T(("updating chars %d to %d", firstChar, lastChar));
-	PutRange(oldLine, newLine, lineno, firstChar, lastChar);
 
-	if (lastChar >= firstChar)
+	if (lastChar >= firstChar) {
+		PutRange(oldLine, newLine, lineno, firstChar, lastChar);
 		memcpy(oldLine + firstChar,
 		       newLine + firstChar,
 		       (lastChar - firstChar + 1) * sizeof(chtype));
+	}
 }
 
 /*
@@ -755,20 +803,23 @@ bool	attrchanged = FALSE;
 
 	firstChar = 0;
 
-	if (attrchanged) {
+	if (attrchanged) {	/* we may have to disregard the whole line */
 		GoTo(lineno, firstChar);
 		ClrToEOL();
 		PutRange(oldLine, newLine, lineno, 0, (screen_columns-1));
 	} else {
 		chtype blank = ClrBlank(curscr);
 
+		/* find the first differing character */
 		while (firstChar < screen_columns  &&
 				newLine[firstChar] == oldLine[firstChar])
 			firstChar++;
 
+		/* if there wasn't one, we're done */
 		if (firstChar >= screen_columns)
 			return;
 
+		/* it may be cheap to clear leading whitespace with clr_bol */
 		if (clr_bol)
 		{
 			int oFirstChar, nFirstChar;
@@ -793,10 +844,12 @@ bool	attrchanged = FALSE;
 			}
 		}
 
+		/* find last non-blank character on old line */
 		oLastChar = screen_columns - 1;
 		while (oLastChar > firstChar  &&  oldLine[oLastChar] == blank)
 			oLastChar--;
 
+		/* find last non-blank character on new line */
 		nLastChar = screen_columns - 1;
 		while (nLastChar > firstChar  &&  newLine[nLastChar] == blank)
 			nLastChar--;
@@ -809,11 +862,18 @@ bool	attrchanged = FALSE;
 			if(newLine[firstChar] != blank )
 				PutChar(newLine[firstChar]);
 		} else if( newLine[nLastChar] != oldLine[oLastChar] ) {
-			n = max( nLastChar , oLastChar );
-
+#define COST_CLREOL 3	/* FIXME */
 			GoTo(lineno, firstChar);
-			PutRange(oldLine, newLine, lineno, firstChar, n);
+			if (clr_eol != 0
+			 && (oLastChar - nLastChar) > COST_CLREOL) {
+				PutRange(oldLine, newLine, lineno, firstChar, nLastChar);
+				ClrToEOL();
+			} else {
+				n = max( nLastChar , oLastChar );
+				PutRange(oldLine, newLine, lineno, firstChar, n);
+			}
 		} else {
+			/* find the last characters that really differ */
 			while (newLine[nLastChar] == oldLine[oLastChar]) {
 				if (nLastChar != 0
 				 && oLastChar != 0) {
@@ -830,7 +890,7 @@ bool	attrchanged = FALSE;
 			PutRange(oldLine, newLine, lineno, firstChar, n);
 
 			if (oLastChar < nLastChar)
-				InsStr(&newLine[n], nLastChar - oLastChar);
+				InsStr(&newLine[n+1], nLastChar - oLastChar);
 
 			else if (oLastChar > nLastChar ) {
 				/*
@@ -845,6 +905,8 @@ bool	attrchanged = FALSE;
 			}
 		}
 	}
+
+	/* update the code's internal representation */
 	if (screen_columns > firstChar)
 		memcpy( oldLine + firstChar,
 			newLine + firstChar,

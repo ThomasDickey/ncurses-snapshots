@@ -27,9 +27,8 @@
  * pechochar	-- add a char to a pad and refresh
  */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 
-#include <stdlib.h>
 #include <errno.h>
 
 #if !HAVE_EXTERN_ERRNO
@@ -47,10 +46,8 @@ int i, j;
 	if (l <= 0 || c <= 0)
 		return NULL;
 
-	if ((win = _nc_makenew(l,c,0,0)) == NULL)
+	if ((win = _nc_makenew(l,c,0,0,_ISPAD)) == NULL)
 		return NULL;
-
-	win->_flags |= _ISPAD;
 
 	for (i = 0; i < l; i++) {
 	    win->_line[i].oldindex = _NEWINDEX;
@@ -80,10 +77,8 @@ WINDOW	*win;
 
 	T(("subpad(%d, %d) called", l, c));
 
-	if ((win = derwin(orig, l, c, begy, begx)) == NULL)
+	if (!(orig->_flags & _ISPAD) || ((win = derwin(orig, l, c, begy, begx)) == NULL))
 	    return NULL;
-
-	win->_flags |= _ISPAD;
 
 	T(("subpad: returned window is %p", win));
 

@@ -72,7 +72,7 @@ typedef struct fieldnode {
   struct typenode *	type;	  /* field type		        */
   void *		arg;	  /* argument for type	        */
   char *		buf;	  /* field buffers	        */
-  void *		usrptr;	  /* user pointer		*/
+  const void *		usrptr;	  /* user pointer		*/
 } FIELD;
 
 	/**************
@@ -119,7 +119,7 @@ typedef struct formnode {
   FIELD **		field;	  /* field [maxfield]	        */
   FIELD *		current;  /* current field	        */
   _PAGE *		page;	  /* page [maxpage]	        */
-  void *		usrptr;	  /* user pointer		*/
+  const void *		usrptr;	  /* user pointer		*/
 
   void                  (*forminit)(struct formnode *);
   void                  (*formterm)(struct formnode *);
@@ -222,8 +222,14 @@ typedef void (*Form_Hook)(FORM *);
 #define MIN_FORM_COMMAND (KEY_MAX + 1)	/* used by form_driver		*/
 #define MAX_FORM_COMMAND (KEY_MAX + 57)	/* used by form_driver		*/
 
-#if defined(MAX_COMMAND) && (MAX_FORM_COMMAND > MAX_COMMAND)
-#error Something is wrong -- MAX_FORM_COMMAND is greater than MAX_COMMAND
+#if defined(MAX_COMMAND)
+#  if (MAX_FORM_COMMAND > MAX_COMMAND)
+#    error Something is wrong -- MAX_FORM_COMMAND is greater than MAX_COMMAND
+#  elif (MAX_COMMAND != (KEY_MAX + 128))
+#    error Something is wrong -- MAX_COMMAND is already inconsistently defined.
+#  endif
+#else
+#  define MAX_COMMAND (KEY_MAX + 128)
 #endif
 
 	/*************************
@@ -283,7 +289,7 @@ extern int      free_field(FIELD *),
                 field_pad(const FIELD *),
                 set_field_buffer(FIELD *,int,const char *),
                 set_field_status(FIELD *,bool),
-                set_field_userptr(FIELD *,void *),
+                set_field_userptr(FIELD *,const void *),
                 set_field_opts(FIELD *,Field_Options),
                 field_opts_on(FIELD *,Field_Options),
                 field_opts_off(FIELD *,Field_Options);
@@ -294,7 +300,9 @@ extern chtype   field_fore(const FIELD *),
 extern bool     new_page(const FIELD *),
                 field_status(const FIELD *);
 
-extern void     *field_arg(const FIELD *),
+extern void     *field_arg(const FIELD *);
+
+extern const void                
                 *field_userptr(const FIELD *);
 
 extern FIELDTYPE
@@ -340,12 +348,17 @@ extern int      free_form(FORM *),
                 unpost_form(FORM *),
                 pos_form_cursor(FORM *),
                 form_driver(FORM *,int),
-                set_form_userptr(FORM *,void *),
+                set_form_userptr(FORM *,const void *),
                 set_form_opts(FORM *,Form_Options),
                 form_opts_on(FORM *,Form_Options),
-                form_opts_off(FORM *,Form_Options);
+                form_opts_off(FORM *,Form_Options),
+                form_request_by_name(const char *);
 
-extern void     *form_userptr(const FORM *);
+extern const char
+                *form_request_name(int);
+
+extern const void
+                *form_userptr(const FORM *);
 
 extern Form_Options
                 form_opts(const FORM *);

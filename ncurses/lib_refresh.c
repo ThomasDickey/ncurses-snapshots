@@ -49,6 +49,13 @@ int code;
 		code = doupdate();
 	} else if ((code = wnoutrefresh(win)) == OK) {
 		code = doupdate();
+		/*
+		 * Reset the clearok() flag in case it was set for the special
+		 * case in hardscroll.c (if we don't reset it here, we'll get 2
+		 * refreshes because the flag is copied from stdscr to newscr). 
+		 * Resetting the flag shouldn't do any harm, anyway.
+		 */
+	    	win->_clear = FALSE;
 	}
 	return(code);
 }

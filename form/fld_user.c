@@ -30,7 +30,7 @@
 |
 |   Return Values :  E_OK         - on success
 +--------------------------------------------------------------------------*/
-int set_field_userptr(FIELD * field, void  *usrptr)
+int set_field_userptr(FIELD * field, const void  *usrptr)
 {
   Normalize_Field( field )->usrptr = usrptr;
   RETURN(E_OK);
@@ -46,7 +46,7 @@ int set_field_userptr(FIELD * field, void  *usrptr)
 |   Return Values :  Value of pointer. If no such pointer has been set,
 |                    NULL is returned
 +--------------------------------------------------------------------------*/
-void *field_userptr(const FIELD *field)
+const void *field_userptr(const FIELD *field)
 {
   return Normalize_Field( field )->usrptr;
 }

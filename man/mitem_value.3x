@@ -5,9 +5,9 @@
 .SH SYNOPSIS
 \fB#include <menu.h>\fR
 .br
-char *set_item_value(ITEM *item, int bool);
+int set_item_value(ITEM *item, bool value);
 .br
-char *item_value(ITEM *item);
+bool item_value(const ITEM *item);
 .br
 .SH DESCRIPTION
 If you turn off the menu option \fBO_ONEVALUE\fR (e.g., with

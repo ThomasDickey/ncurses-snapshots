@@ -20,22 +20,25 @@ NC_MFLAGS 	= @nc_cv_makeflags@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
-bindir		= $(exec_prefix)/bin
+bindir		= @bindir@
+datadir		= @datadir@
 
-# We'd put terminfo in /usr/share/terminfo, but that's not the convention...
-ticdir		= @datadir@
+tabsetdir	= $(datadir)/tabset
+ticdir		= $(datadir)/terminfo
 
 ################################################################################
 all:
 
 install: install.data
 
-install.data: $(ticdir)
-	rm -fr $(ticdir)/[0-9A-Za-z]
-	@echo "Building terminfo database, please wait..."
-	umask 022; TERMINFO=$(ticdir) $(bindir)/tic $(srcdir)/terminfo.src
-	cp -r $(srcdir)/tabset $(prefix)/share
+install.data: $(ticdir) $(tabsetdir)
+	sh $(srcdir)/run_tic.sh $(bindir) $(srcdir) $(ticdir)
+	@cd $(srcdir)/tabset; \
+		for i in *; do \
+		echo installing $$i; \
+		$(INSTALL_DATA) $$i $(tabsetdir); done
 
+$(tabsetdir) :
 $(ticdir) :
 	$(srcdir)/../mkinstalldirs $@
 

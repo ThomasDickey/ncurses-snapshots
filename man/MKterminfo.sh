@@ -8,8 +8,8 @@
 # commands for better formatting of the table.
 #
 # NOTE: The s in this script really are control characters.  It translates
-#  to \n because I couldn't get sed to insert linefeeds directly.  There
-# better not be s in the table source text.
+#  to \n because I couldn't get used to inserting linefeeds directly.  There
+# had better be no s in the table source text.
 #
 head=$1
 caps=$2

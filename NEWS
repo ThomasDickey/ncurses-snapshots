@@ -1,40 +1,106 @@
-This is a log of changes that ncurses has gone through since I
+This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
-* use autoconf 2.9
-* fixes for NeXT, ISC and HPUX auto-configure
-* fix for AIX 3.2.5 (must define _POSIX_SOURCE to get termios struct
-  definitions via <termios.h>, modified macros in lib_raw.c to avoid
-  K&R-style substitution)
-* autogenerate development header-dependencies (config.h, *.priv.h)
-* corrected single-column formatting of "use=" (e.g., in tic)
-* modify tic to read full terminfo-names
-* corrected divide-by-zero that caused hang (or worse) when redirecting output
-* modify tic to generate directories only as-needed (and corrected instance
-  of use of data from function that had already returned).
-* split lib_kernel.c, lib_setup.c and names.c in order to reduce overhead for
-  programs that use only termcap features.
-* change ncurses 'a' test to run in raw mode.
-* make TIOCGWINSZ configure test less stringent, in case user configures via
-  terminal that cannot get screen size.
-* implemented logic to support terminals with background color erase (e.g.,
-  rxvt and the newer color xterm).
-* improved screen update logic (off-by-one logic error; use clr_eos if possible)
-* protect wrefresh, wnoutrefresh from invocation with pad argument.
-* corrected default CCFLAGS in test/Makefile.
-* don't use fixed buffer-size in fmt_entry() or tparm().
-* added usage-message to 'infocmp'.
-* modified install.includes rules to prepend subdirectory-name to "#include"
-  if needed.
-* modified tic to create terminfo directory if it doesn't exist.
-* added -T options to tic and infocmp (for testing/analysis)
-* refined the length criteria for termcap and terminfo
-* removed tparam() from ABI to satisfy hardcoded configuration requirement of
-  GNU Emacs.
-* optimize lib_doupdate with memcpy, PutRange
-* implement TERMINFO_DIRS, and -o option of tic
+960526	- snapshot
+	+ removed --with-ticdir option altogether, maintain compatibility with
+	  existing applications via symbolic link in run_tic.sh
+	+ patch for termio.h, signal (Philippe De Muyter)
+	+ auto-configure gcc warning options rather than infer from version.
+	+ auto-configure __attribute__ for different gcc versions.
+	+ corrected special use of clearok() in hardscroll.c by resetting flag
+	  in wrefresh().
+	+ include stdlib.h before defs for EXIT_SUCCESS, for OSF/1.
+	+ include sys/types.h in case stdlib.h does not declare size_t.
+	+ fixes for makefile (Tim Mooney)
+	+ fixes for menus & forms (Juergen.Pfeifer@T-Online.de)
+
+960518	- snapshot
+	+ revised ncurses.c panner test, let pad abut all 4 sides of screen.
+	+ refined case in lib_doupdate.c for ClrToEOL().
+	+ corrected prior change for PutRange (lav@video.yars.free.net)
+	+ autoconf mods (Tim Mooney: mooney@dogbert.cc.ndsu.NoDak.edu).
+	+ locale fix for forms (Philippe De Muyter: phdemuyt@ulb.ac.be)
+	+ renamed "--with-datadir" option to "--with-ticdir" to avoid
+	  confusion, and made this check for the /usr/lib/terminfo pre-existing
+	  directory.
+	> patches 299-301 by eric:
+	+ added hashmap.c
+	+ mods to tracing, especially for ACS chars.
+	+ corrected off-by-one in IDCtransform.
+	+ corrected intermittent mouse bug by using return-value from read().
+	+ mods to parse_entry.c, for smarter defaults.
+
+960512
+	+ use getopt in 'tic'; added -L option and modified -e option to allow
+	  list from a file.
+
+960511
+	+ don't use fixed buffer-size in tparm().
+	+ modified tic to create terminfo directory if it doesn't exist.
+	+ added -T options to tic and infocmp (for testing/analysis)
+	+ refined the length criteria for termcap and terminfo
+	+ optimize lib_doupdate with memcpy, PutRange
+	> patches 297, 298 by eric
+	+ implement TERMINFO_DIRS, and -o option of tic
+	+ added TRACE_IEVENT
+	+ removed boolean version of 'getm'
+	+ added lib_print.c (for Rick Marshall)
+	+ added has_key()
+	+ added 't' to ncurses.c test.
+	+ moved delay_output() to lib_tputs.c
+	+ removed tparam().
+	+ misc cursor & optimization fixes.
+
+960504	- snapshot
+	+ modified ncurses 'p' test to allow full-screen range for panner size.
+	+ fixes for locale (phdm@labauto1.ulb.ac.be)
+	+ don't use fixed buffer-size in fmt_entry().
+	+ added usage-message to 'infocmp'.
+	+ modified install.includes rules to prepend subdirectory-name to
+	  "#include" if needed.
+
+960430
+	+ protect wrefresh, wnoutrefresh from invocation with pad argument.
+	+ corrected default CCFLAGS in test/Makefile.
+
+960428	- snapshot
+	+ implemented logic to support terminals with background color erase
+	  (e.g., rxvt and the newer color xterm).
+	+ improved screen update logic (off-by-one logic error; use clr_eos if
+	  possible)
+
+960426	- snapshot
+	+ change ncurses 'a' test to run in raw mode.
+	+ make TIOCGWINSZ configure test less stringent, in case user
+	  configures via terminal that cannot get screen size.
+	> patches 295, 296 by eric:
+	+ new "-e" option of tic.
+	+ fix for "infocmp -e".
+	+ restore working-directory in read_termcap.c
+	+ split lib_kernel.c, lib_setup.c and names.c in order to reduce
+	  overhead for programs that use only termcap features.
+
+960418	- snapshot
+	+ use autoconf 2.9
+	+ fix for AIX 3.2.5 (must define _POSIX_SOURCE to get termios struct
+	  definitions via <termios.h>, modified macros in lib_raw.c to avoid
+	  K&R-style substitution)
+	> patches 293, 294 by eric:
+	+ mods to wgetch() in cooked mode
+	+ corrected askuser() logic in tset
+	+ correct interaction of endwin() with mouse processing
+	+ added trace support for TTY flags
+
+960406
+	+ fixes for NeXT, ISC and HPUX auto-configure
+	+ autogenerate development header-dependencies (config.h, *.priv.h)
+	+ corrected single-column formatting of "use=" (e.g., in tic)
+	+ modify tic to read full terminfo-names
+	+ corrected divide-by-zero that caused hang (or worse) when redirecting output
+	+ modify tic to generate directories only as-needed (and corrected
+	  instance of use of data from function that had already returned).
 
 ### ncurses-1.9.8a -> 1.9.9e
 

@@ -44,7 +44,7 @@ You will need the following in order to build and install ncurses under UNIX:
 INSTALLATION PROCEDURE:
 
 1.  First, decide whether you want ncurses to replace your existing library (in
-    which case you'll need super-user privilages) or be installed in parallel 
+    which case you'll need super-user privileges) or be installed in parallel 
     with it.  
 
     The --prefix option to configure changes the root directory for installing
@@ -91,8 +91,8 @@ INSTALLATION PROCEDURE:
     	./configure --with-normal --with-debug --enable-overwrite
 
     Rules for generating shared libraries are highly dependent upon the choice
-    of host system and compiler.  We've been testing shared libraries on linux
-    and sunos with gcc, but more work needs to be done to make shared libraries
+    of host system and compiler.  We've been testing shared libraries on Linux
+    and SunOS with gcc, but more work needs to be done to make shared libraries
     work on other systems.
 
     If you have the capability to make a publicly accessible terminfo database,
@@ -122,7 +122,7 @@ INSTALLATION PROCEDURE:
     top-level directory, you can do a partial install using these commands:
  
 	'make install.progs'    installs tic, infocmp, etc...
-  	'make install.include' installs the headers.
+  	'make install.includes' installs the headers.
   	'make install.libs'     installs the libraries.
   	'make install.data'     installs the terminfo data. (Note: `tic' must
 	                        be installed before the terminfo data can be
@@ -281,7 +281,7 @@ CONFIGURING FALLBACK ENTRIES
 		MKfallback.sh >fallback.c
 
 	The overhead for an empty fallback list is one trivial stub function.
-	Any non-empty fallback list is consted and therefore lives in sharable
+	Any non-empty fallback list is const-ed and therefore lives in sharable
 	text space.  You can look at the comment trailing each initializer in
 	the generated ncurses/fallback.c file to see the core cost of the
 	fallbacks.  A good rule of thumb for modern vt100-like entries is that

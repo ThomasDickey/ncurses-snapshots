@@ -3935,6 +3935,8 @@ int form_page(const FORM * form)
 |                    For dynamic fields this may grow the fieldbuffers if
 |                    the length of the value exceeds the current buffer
 |                    length. For buffer 0 only printable values are allowed.
+|                    For static fields, the value needs not to be zero ter-
+|                    minated. It is copied up to the length of the buffer.   
 |
 |   Return Values :  E_OK            - success
 |                    E_BAD_ARGUMENT  - invalid argument
@@ -3945,44 +3947,65 @@ int set_field_buffer(FIELD * field, int buffer, const char * value)
   char *s, *p;
   int res = E_OK;
   unsigned int len;
-  unsigned int vlen;
 
   if ( !field || !value || ((buffer < 0)||(buffer > field->nbuf)) )
     RETURN(E_BAD_ARGUMENT);
 
+  len  = Buffer_Length(field);
+
   if (buffer==0)
     {
       const char *v;
+      unsigned int i = 0;
 
-      for(v=value;*v;v++)
+      for(v=value; *v && (i<len); v++,i++)
 	{
 	  if (!isprint((unsigned char)*v))
 	    RETURN(E_BAD_ARGUMENT);
 	}
     }
 
-  len  = Buffer_Length(field);
-  vlen = strlen(value);
-  if ((vlen>len) && Growable(field))
+  if (Growable(field))
     {
-      if (!Field_Grown(field,
-	      (int)(1 + (vlen-len)/((field->rows+field->nrow)*field->cols))))
-	RETURN(E_SYSTEM_ERROR);
-    }
+      /* for a growable field we must assume zero terminated strings, because
+	 somehow we have to detect the length of what should be copied.
+      */
+      unsigned int vlen = strlen(value);
+      if (vlen > len)
+	{
+	  unsigned int i;
 
+	  if (!Field_Grown(field,
+			   (int)(1 + (vlen-len)/((field->rows+field->nrow)*field->cols))))
+	    RETURN(E_SYSTEM_ERROR);
+
+	  /* in this case we also have to check, wether or not the remaining
+	     characters in value are also printable. */
+	  for(i=len; i<vlen; i++)
+	    if (!isprint(value[i]))
+	      RETURN(E_BAD_ARGUMENT);
+	}
+    }
+  
   p   = Address_Of_Nth_Buffer(field,buffer);
 
 #if HAVE_MEMCCPY
   s = memccpy(p,value,0,len);
 #else
-  for(s=(char *)value;*s && (s<value+len);s++) p[s-value]=*s;
-  if (s<value+len) p[s-value]=*s++; else s=0;
+  for(s=(char *)value; *s && (s < (value+len)); s++)
+    p[s-value] = *s;
+  if (s < (value+len))
+    p[s-value] = *s++; 
+  else 
+    s=(char *)0;
 #endif
 
   if (s) 
-    {
+    { /* this means, value was null terminated and not greater than the
+	 buffer. We have to pad with blanks */
       assert(len >= (unsigned int)(s-p));
-      memset(s,C_BLANK,len-(unsigned int)(s-p));
+      if (len > (unsigned int)(s-p))
+	memset(s,C_BLANK,len-(unsigned int)(s-p));
     }
 
   if (buffer==0)

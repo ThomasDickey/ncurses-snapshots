@@ -261,13 +261,8 @@ start_token:
 			if (desc)
 			    if (*desc == '\0')
 				_nc_warning("empty longname field");
-#if UNUSED	/* Solaris doesn't do this */
 			    else if (strchr(desc, ' ') == (char *)NULL)
-			    {
 				_nc_warning("older tic versions may treat the description field as an alias");
-				desc = (char *)NULL;
-			    }
-#endif
 			if (!desc)
 			    desc = buffer + strlen(buffer);
 

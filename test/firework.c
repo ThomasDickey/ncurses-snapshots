@@ -11,8 +11,8 @@ static void explode(int row, int col);
 static void showit(void);
 
 int main(
-	int argc __attribute__((unused)),
-	char *argv[] __attribute__((unused)))
+	int argc GCC_UNUSED,
+	char *argv[] GCC_UNUSED)
 {
 int start,end,row,diff,flag = 0,direction;
 unsigned seed;

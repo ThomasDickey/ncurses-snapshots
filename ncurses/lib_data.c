@@ -28,8 +28,6 @@
 
 #include "curses.priv.h"
 
-#include <stdlib.h>
-
 WINDOW *stdscr, *curscr, *newscr;
 
 /*

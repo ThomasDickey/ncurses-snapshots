@@ -156,9 +156,9 @@ static int salvo, blitz, closepack;
 
 #define	PR	(void)addstr
 
-static void uninitgame(int sig)  __attribute__((noreturn));
+static void uninitgame(int sig)  GCC_NORETURN;
 
-static void uninitgame(int sig __attribute__((unused)))
+static void uninitgame(int sig GCC_UNUSED)
 /* end the game, either normally or due to signal */
 {
     clear();

@@ -33,10 +33,14 @@ MENU _nc_Default_Menu = {
   1,			          /* Nr. of items wide */
   16,				  /* Nr. of formatted items high */
   1,				  /* Nr. of formatted items wide */
+  16,				  /* Nr. of items high (actual) */
   0,				  /* length of widest name */
   0,				  /* length of widest description */
   1,				  /* length of mark */
   1,				  /* length of one item */
+  1,                              /* Spacing for descriptor */ 
+  1,                              /* Spacing for columns */
+  1,                              /* Spacing for rows */
   (char *)0,			  /* buffer used to store match chars */
   0,				  /* Index into pattern buffer */
   (WINDOW *)0,			  /* Window containing entire menu */
@@ -225,18 +229,18 @@ void _nc_Calculate_Item_Length_and_Width(MENU * menu)
   int l;
   
   assert(menu);
-  if (menu->items && *(menu->items))
-    {
-      l = menu->namelen + menu->marklen;
-      if ( (menu->opt & O_SHOWDESC) && (menu->desclen > 0) )
-	l += (menu->desclen + 1);
-      
-      menu->itemlen = l;
-      l *= menu->cols;
-      l += (menu->cols-1);	/* for the padding between the columns */
-      menu->width = l;
-    }
-}
+
+  menu->height  = 1 + menu->spc_rows * (menu->arows - 1);
+
+  l = menu->namelen + menu->marklen;
+  if ( (menu->opt & O_SHOWDESC) && (menu->desclen > 0) )
+    l += (menu->desclen + menu->spc_desc);
+  
+  menu->itemlen = l;
+  l *= menu->cols;
+  l += (menu->cols-1)*menu->spc_cols; /* for the padding between the columns */
+  menu->width = l;
+}  
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -384,7 +388,7 @@ void _nc_Show_Menu(const MENU *menu)
     {
       /* adjust the internal subwindow to start on the current top */
       assert(menu->sub);
-      mvderwin(menu->sub,menu->toprow,0);
+      mvderwin(menu->sub,menu->spc_rows * menu->toprow,0);
       win = Get_Menu_Window(menu);
       
       maxy = getmaxy(win);

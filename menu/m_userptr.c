@@ -28,14 +28,14 @@
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
-|   Function      :  int set_menu_userptr(MENU *menu, char *userptr)
+|   Function      :  int set_menu_userptr(MENU *menu, const void *userptr)
 |   
 |   Description   :  Set the pointer that is reserved in any menu to store
 |                    application relevant informations.
 |
 |   Return Values :  E_OK         - success
 +--------------------------------------------------------------------------*/
-int set_menu_userptr(MENU * menu, char * userptr)
+int set_menu_userptr(MENU * menu, const void * userptr)
 {
   Normalize_Menu(menu)->userptr = userptr;
   RETURN( E_OK );
@@ -51,7 +51,7 @@ int set_menu_userptr(MENU * menu, char * userptr)
 |   Return Values :  Value of the pointer. If no such pointer has been set,
 |                    NULL is returned
 +--------------------------------------------------------------------------*/
-char *menu_userptr(const MENU * menu)
+const void *menu_userptr(const MENU * menu)
 {
   return( Normalize_Menu(menu)->userptr);
 }

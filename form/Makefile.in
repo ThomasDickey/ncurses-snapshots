@@ -18,7 +18,7 @@ MODEL		= @DFT_LWR_MODEL@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
-libdir		= $(exec_prefix)/lib
+libdir		= @libdir@
 includedir	= @includedir@
 
 INSTALL		= @INSTALL@

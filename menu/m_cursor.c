@@ -52,8 +52,8 @@ int pos_menu_cursor(const MENU * menu)
       item = menu->curitem;
       assert(item);
       
-      x = item->x * (1 + menu->itemlen);
-      y = item->y - menu->toprow;
+      x = item->x * (menu->spc_cols + menu->itemlen);
+      y = (item->y - menu->toprow) * menu->spc_rows;
       win = menu->userwin ? menu->userwin : stdscr;
       sub = menu->usersub ? menu->usersub : win;
       assert(win && sub);

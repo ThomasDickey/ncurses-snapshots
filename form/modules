@@ -10,6 +10,7 @@ frm_win		lib		$(srcdir)	$(srcdir)/form.h
 frm_user	lib		$(srcdir)	$(srcdir)/form.h
 frm_opts	lib		$(srcdir)	$(srcdir)/form.h
 frm_hook	lib		$(srcdir)	$(srcdir)/form.h
+frm_req_name	lib		$(srcdir)	$(srcdir)/form.h
 fld_user	lib		$(srcdir)	$(srcdir)/form.h
 fld_type	lib		$(srcdir)	$(srcdir)/form.h
 fld_stat	lib		$(srcdir)	$(srcdir)/form.h

@@ -33,7 +33,6 @@
 #include "hashsize.h"
 
 #ifdef MAIN_PROGRAM
-#include <stdlib.h>
 #include <ctype.h>
 #undef  DEBUG
 #define DEBUG(level, params) /*nothing*/

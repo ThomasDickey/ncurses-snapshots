@@ -68,8 +68,8 @@ static bool chksqr(int, int);
 static int  iabs(int);
 
 int main(
-	int argc __attribute__((unused)),
-	char *argv[] __attribute__((unused)))
+	int argc GCC_UNUSED,
+	char *argv[] GCC_UNUSED)
 {
     init();
 

@@ -42,13 +42,13 @@
 
 struct token	_nc_curr_token;
 
-static	void postprocess_termcap(TERMTYPE *);
+static	void postprocess_termcap(TERMTYPE *, bool);
 static	void postprocess_terminfo(TERMTYPE *);
 static	struct name_table_entry	const * lookup_fullname(const char *name);
 
 /*
  *	int
- *	parse_entry(entry, literal, silent)
+ *	_nc_parse_entry(entry, literal, silent)
  *
  *	Compile one entry.  Doesn't try to resolve use or tc capabilities.
  *
@@ -305,7 +305,28 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
      */
     if (!literal)
 	if (_nc_syntax == SYN_TERMCAP)
-	    postprocess_termcap(&entryp->tterm);
+	{
+	    bool	has_base_entry = FALSE;
+	    int		i;
+
+	    /*
+	     * Don't insert defaults if this is a `+' entry meant only
+	     * for inclusion in other entries (not sure termcap ever
+	     * had these, actually).
+	     */
+	    if (strchr(entryp->tterm.term_names, '+'))
+		has_base_entry = TRUE;
+	    else
+		/*
+		 * Otherwise, look for a base entry that will already
+		 * have picked up defaults via translation.
+		 */
+		for (i = 0; i < entryp->nuses; i++)
+		    if (!strchr(entryp->uses[i], '+'))
+			has_base_entry = TRUE;
+
+	    postprocess_termcap(&entryp->tterm, has_base_entry);
+        }
 	else 
 	    postprocess_terminfo(&entryp->tterm);
 
@@ -409,7 +430,7 @@ static const char C_HT[] = "\t";
 #define CUR tp->
 
 static
-void postprocess_termcap(TERMTYPE *tp)
+void postprocess_termcap(TERMTYPE *tp, bool has_base)
 {
     char buf[MAX_LINE * 2 + 2];
 
@@ -421,70 +442,74 @@ void postprocess_termcap(TERMTYPE *tp)
      * ----------------------------------------------------------------------
      */
 
-    if (WANTED(init_3string) && termcap_init2)
-	init_3string = _nc_save_str(termcap_init2);
+    /* if there was a tc entry, assume we picked up defaults via that */
+    if (!has_base)
+    {
+	if (WANTED(init_3string) && termcap_init2)
+	    init_3string = _nc_save_str(termcap_init2);
 
-    if (WANTED(reset_1string) && termcap_reset)
-	reset_1string = _nc_save_str(termcap_reset);
+	if (WANTED(reset_1string) && termcap_reset)
+	    reset_1string = _nc_save_str(termcap_reset);
 
-    if (WANTED(carriage_return)) {
-	if (carriage_return_delay > 0) {
-	    sprintf(buf, "%s$<%d>", C_CR, carriage_return_delay);
-	    carriage_return = _nc_save_str(buf);
-	} else
-	    carriage_return = _nc_save_str(C_CR);
-    }
-    if (WANTED(cursor_left)) {
-	if (backspace_delay > 0) {
-	    sprintf(buf, "%s$<%d>", C_BS, backspace_delay);
-	    cursor_left = _nc_save_str(buf);
-	} else if (backspaces_with_bs == 1)
-	    cursor_left = _nc_save_str(C_BS);
-	else if (PRESENT(backspace_if_not_bs))
-	    cursor_left = backspace_if_not_bs;
-    }
-    /* vi doesn't use "do", but it does seems to use nl (or '\n') instead */
-    if (WANTED(cursor_down)) {
-	if (PRESENT(linefeed_if_not_lf)) 
-	    cursor_down = linefeed_if_not_lf;
-	else if (linefeed_is_newline != 1) {
-	    if (new_line_delay > 0) {
-		sprintf(buf, "%s$<%d>", C_LF, new_line_delay);
-		cursor_down = _nc_save_str(buf);
+	if (WANTED(carriage_return)) {
+	    if (carriage_return_delay > 0) {
+		sprintf(buf, "%s$<%d>", C_CR, carriage_return_delay);
+		carriage_return = _nc_save_str(buf);
 	    } else
-		cursor_down = _nc_save_str(C_LF);
+		carriage_return = _nc_save_str(C_CR);
 	}
-    }
-    if (WANTED(scroll_forward) && crt_no_scrolling != 1) {
-	if (PRESENT(linefeed_if_not_lf)) 
-	    cursor_down = linefeed_if_not_lf;
-	else if (linefeed_is_newline != 1) {
-	    if (new_line_delay > 0) {
-		sprintf(buf, "%s$<%d>", C_LF, new_line_delay);
-		scroll_forward = _nc_save_str(buf);
-	    } else
-		scroll_forward = _nc_save_str(C_LF);
+	if (WANTED(cursor_left)) {
+	    if (backspace_delay > 0) {
+		sprintf(buf, "%s$<%d>", C_BS, backspace_delay);
+		cursor_left = _nc_save_str(buf);
+	    } else if (backspaces_with_bs == 1)
+		cursor_left = _nc_save_str(C_BS);
+	    else if (PRESENT(backspace_if_not_bs))
+		cursor_left = backspace_if_not_bs;
 	}
-    }
-    if (WANTED(newline)) {
-	if (linefeed_is_newline == 1) {
-	    if (new_line_delay > 0) {
-		sprintf(buf, "%s$<%d>", C_LF, new_line_delay);
+	/* vi doesn't use "do", but it does seems to use nl (or '\n') instead */
+	if (WANTED(cursor_down)) {
+	    if (PRESENT(linefeed_if_not_lf)) 
+		cursor_down = linefeed_if_not_lf;
+	    else if (linefeed_is_newline != 1) {
+		if (new_line_delay > 0) {
+		    sprintf(buf, "%s$<%d>", C_LF, new_line_delay);
+		    cursor_down = _nc_save_str(buf);
+		} else
+		    cursor_down = _nc_save_str(C_LF);
+	    }
+	}
+	if (WANTED(scroll_forward) && crt_no_scrolling != 1) {
+	    if (PRESENT(linefeed_if_not_lf)) 
+		cursor_down = linefeed_if_not_lf;
+	    else if (linefeed_is_newline != 1) {
+		if (new_line_delay > 0) {
+		    sprintf(buf, "%s$<%d>", C_LF, new_line_delay);
+		    scroll_forward = _nc_save_str(buf);
+		} else
+		    scroll_forward = _nc_save_str(C_LF);
+	    }
+	}
+	if (WANTED(newline)) {
+	    if (linefeed_is_newline == 1) {
+		if (new_line_delay > 0) {
+		    sprintf(buf, "%s$<%d>", C_LF, new_line_delay);
+		    newline = _nc_save_str(buf);
+		} else
+		    newline = _nc_save_str(C_LF);
+	    } else if (PRESENT(carriage_return) && PRESENT(scroll_forward)) {
+		strncpy(buf, carriage_return, MAX_LINE-2);
+		buf[MAX_LINE-1] = '\0';
+		strncat(buf, scroll_forward, MAX_LINE-strlen(buf)-1);
+		buf[MAX_LINE] = '\0';
 		newline = _nc_save_str(buf);
-	    } else
-		newline = _nc_save_str(C_LF);
-	} else if (PRESENT(carriage_return) && PRESENT(scroll_forward)) {
-	    strncpy(buf, carriage_return, MAX_LINE-2);
-	    buf[MAX_LINE-1] = '\0';
-	    strncat(buf, scroll_forward, MAX_LINE-strlen(buf)-1);
-	    buf[MAX_LINE] = '\0';
-	    newline = _nc_save_str(buf);
-	} else if (PRESENT(carriage_return) && PRESENT(cursor_down)) {
-	    strncpy(buf, carriage_return, MAX_LINE-2);
-	    buf[MAX_LINE-1] = '\0';
-	    strncat(buf, cursor_down, MAX_LINE-strlen(buf)-1);
-	    buf[MAX_LINE] = '\0';
-	    newline = _nc_save_str(buf);
+	    } else if (PRESENT(carriage_return) && PRESENT(cursor_down)) {
+		strncpy(buf, carriage_return, MAX_LINE-2);
+		buf[MAX_LINE-1] = '\0';
+		strncat(buf, cursor_down, MAX_LINE-strlen(buf)-1);
+		buf[MAX_LINE] = '\0';
+		newline = _nc_save_str(buf);
+	    }
 	}
     }
 
@@ -497,33 +522,36 @@ void postprocess_termcap(TERMTYPE *tp)
      * These translations will *not* be inverted by tgetent().
      */
 
-    /*
-     * We wait until now to decide if we've got a working cr because even
-     * one that doesn't work can be used for newline. Unfortunately the
-     * space allocated for it is wasted.
-     */
-    if (return_does_clr_eol == 1 || no_correctly_working_cr == 1)
-	carriage_return = NULL;
+    if (!has_base)
+    {
+	/*
+	 * We wait until now to decide if we've got a working cr because even
+	 * one that doesn't work can be used for newline. Unfortunately the
+	 * space allocated for it is wasted.
+	 */
+	if (return_does_clr_eol == 1 || no_correctly_working_cr == 1)
+	    carriage_return = NULL;
 
-    /*
-     * Supposedly most termcap entries have ta now and '\t' is no longer a
-     * default, but it doesn't seem to be true...
-     */
-    if (WANTED(tab)) {
-	if (horizontal_tab_delay > 0) {
-	    sprintf(buf, "%s$<%d>", C_HT, horizontal_tab_delay);
-	    tab = _nc_save_str(buf);
-	} else
-	    tab = _nc_save_str(C_HT);
+	/*
+	 * Supposedly most termcap entries have ta now and '\t' is no longer a
+	 * default, but it doesn't seem to be true...
+	 */
+	if (WANTED(tab)) {
+	    if (horizontal_tab_delay > 0) {
+		sprintf(buf, "%s$<%d>", C_HT, horizontal_tab_delay);
+		tab = _nc_save_str(buf);
+	    } else
+		tab = _nc_save_str(C_HT);
+	}
+	if (init_tabs == -1 && has_hardware_tabs == TRUE)
+	    init_tabs = 8;
+
+	/*
+	 * Assume we can beep with ^G unless we're given bl@.
+	 */
+	if (WANTED(bell))
+	    bell = _nc_save_str("\007");
     }
-    if (init_tabs == -1 && has_hardware_tabs == TRUE)
-	init_tabs = 8;
-
-    /*
-     * Assume we can beep with ^G unless we're given bl@.
-     */
-    if (WANTED(bell))
-	bell = _nc_save_str("\007");
 
     /*
      * Translate the old termcap :pt: capability to it#8 + ht=\t
@@ -858,4 +886,5 @@ struct name_table_entry	const * lookup_fullname(const char *find)
 	}
     }
 }
+
 /* parse_entry.c ends here */

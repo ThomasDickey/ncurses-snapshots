@@ -46,6 +46,7 @@ extern MENU _nc_Default_Menu;
 
 /* menu specific status flags */
 #define _LINK_NEEDED    (0x04)
+#define _MARK_ALLOCATED (0x08)
 
 #define ALL_MENU_OPTS (                 \
 		       O_ONEVALUE     | \
@@ -59,7 +60,7 @@ extern MENU _nc_Default_Menu;
 
 /* Move to the window position of an item and draw it */
 #define Move_And_Post_Item(menu,item) \
-  {wmove((menu)->win,(item)->y,((menu)->itemlen+1)*(item)->x);\
+  {wmove((menu)->win,(menu)->spc_rows*(item)->y,((menu)->itemlen+(menu)->spc_cols)*(item)->x);\
    _nc_Post_Item((menu),(item));}
 
 #define Move_To_Current_Item(menu,item) \
@@ -76,9 +77,9 @@ extern MENU _nc_Default_Menu;
 #define Adjust_Current_Item(menu,row,item) \
   { if ((item)->y < row) \
       row = (item)->y;\
-    if ( (item)->y >= (row + (menu)->height) )\
+    if ( (item)->y >= (row + (menu)->arows) )\
       row = ( (item)->y < ((menu)->rows - row) ) ? \
-            (item)->y : (menu)->rows - (menu)->height;\
+            (item)->y : (menu)->rows - (menu)->arows;\
     _nc_New_TopRow_and_CurrentItem(menu,row,item); }
 
 /* Reset the match pattern buffer */

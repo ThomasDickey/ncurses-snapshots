@@ -216,6 +216,7 @@
 ./ncurses/comp_scan.c
 ./ncurses/curses.priv.h
 ./ncurses/hardscroll.c
+./ncurses/hashmap.c
 ./ncurses/keys.list
 ./ncurses/lib_acs.c
 ./ncurses/lib_addch.c

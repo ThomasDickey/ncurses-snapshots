@@ -75,11 +75,11 @@ void _nc_Post_Item(const MENU * menu, const ITEM * item)
 	waddstr(menu->win,menu->mark);
     }
   else			/* otherwise we have to wipe out the marker area */ 
-    for(ch=menu->pad,i=menu->marklen;i>0;i--) 
+    for(ch=' ',i=menu->marklen;i>0;i--) 
       waddch(menu->win,ch);
   
   waddnstr(menu->win,item->name.str,item->name.length);
-  for(ch=menu->pad,i=menu->namelen-item->name.length;i>0;i--)
+  for(ch=' ',i=menu->namelen-item->name.length;i>0;i--)
     {
       waddch(menu->win,ch);
     }
@@ -87,12 +87,42 @@ void _nc_Post_Item(const MENU * menu, const ITEM * item)
   /* Show description if required and available */
   if ( (menu->opt & O_SHOWDESC) && menu->desclen>0 )
     {
-      waddch(menu->win,menu->pad);
+      int m = menu->spc_desc/2;
+      int cy = -1, cx = -1;
+
+      for(ch=' ',i=0; i < menu->spc_desc; i++)
+	{
+	  if (i==m)
+	    {
+	      waddch(menu->win,menu->pad);
+	      getyx(menu->win,cy,cx);
+	    }
+	  else
+	    waddch(menu->win,ch);
+	}
       if (item->description.length)
 	waddnstr(menu->win,item->description.str,item->description.length);
-      for(ch=menu->pad,i=menu->desclen-item->description.length; i>0; i--)
+      for(ch=' ',i=menu->desclen-item->description.length; i>0; i--)
 	{
 	  waddch(menu->win,ch);
+	}
+      if (menu->spc_rows > 1)
+	{
+	  int j, ncy, ncx;
+
+	  assert(cx>=0 && cy>=0);
+	  getyx(menu->win,ncy,ncx);
+	  if (isgrey) wattroff(menu->win,menu->grey);
+	  else if (isfore) wattroff(menu->win,menu->fore);
+	  wattron(menu->win,menu->back);
+	  for(j=1; j < menu->spc_rows;j++)
+	    {
+	      if ((cy+j) < getmaxy(menu->win))
+		mvwaddch(menu->win,cy+j,cx-1,menu->pad);
+	    }
+	  wmove(menu->win,ncy,ncx);
+	  if (!isback)
+	    wattroff(menu->win,menu->back);
 	}
     }
   
@@ -126,21 +156,28 @@ void _nc_Draw_Menu(const MENU * menu)
   
   do
     {  
-      wmove(menu->win,y++,0);
-      
+      wmove(menu->win,y,0);
+
       hitem   = item;
       lasthor = (menu->opt & O_NONCYCLIC) ? (ITEM *)0 : hitem;
       
       do
 	{
 	  _nc_Post_Item( menu, hitem);
+
 	  if ( ((hitem = hitem->right) != lasthor) && hitem )
 	    {
-	      waddch( menu->win,menu->pad);
+	      int i;
+	      chtype ch = ' ';
+	      for(i=0; i < menu->spc_cols; i++)
+		{
+		  waddch( menu->win,ch);
+		}
 	    }
 	} while (hitem && (hitem != lasthor));
       
       item = item->down;
+      y += menu->spc_rows;
       
     } while( item && (item != lastvert) );	
 }
@@ -173,6 +210,8 @@ int post_menu(MENU * menu)
   if (menu->items && *(menu->items))
     {
       int y;
+      int h = 1 + menu->spc_rows * (menu->rows - 1);
+
       WINDOW *win = Get_Menu_Window(menu);
       int maxy = getmaxy(win);
       int maxx = getmaxx(win);
@@ -180,9 +219,9 @@ int post_menu(MENU * menu)
       if (maxx < menu->width || maxy < menu->height)
 	RETURN(E_NO_ROOM);
 
-      if ( (menu->win = newpad(menu->rows,menu->width)) )
+      if ( (menu->win = newpad(h,menu->width)) )
 	{
-	  y = (maxy >= menu->rows) ? menu->rows : maxy;
+	  y = (maxy >= h) ? h : maxy;
 	  if (y>=menu->height) 
 	    y = menu->height;
 	  if(!(menu->sub = subpad(menu->win,y,menu->width,0,0)))

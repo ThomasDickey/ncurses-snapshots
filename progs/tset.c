@@ -63,18 +63,6 @@
 
 #include <progs.priv.h>
 
-#include <sys/types.h>
-#if HAVE_TERMIOS_H
-# include <termios.h>
-# ifndef TERMIOS
-#  define TERMIOS 1
-# endif
-#else
-# include <sgtty.h>
-# include <sys/ioctl.h>
-extern short ospeed;
-#endif
-
 #include <errno.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -626,9 +614,15 @@ reset_mode(void)
 #if defined(VREPRINT) && defined(CRPRNT)
 	mode.c_cc[VREPRINT] = CHK(mode.c_cc[VREPRINT], CRPRNT);
 #endif
+#if defined(VSTART) && defined(CSTART)
 	mode.c_cc[VSTART] = CHK(mode.c_cc[VSTART], CSTART);
+#endif
+#if defined(VSTOP) && defined(CSTOP)
 	mode.c_cc[VSTOP] = CHK(mode.c_cc[VSTOP], CSTOP);
+#endif
+#if defined(VSUSP) && defined(CSUSP)
 	mode.c_cc[VSUSP] = CHK(mode.c_cc[VSUSP], CSUSP);
+#endif
 #if defined(VWERASE) && defined(CWERASE)
 	mode.c_cc[VWERASE] = CHK(mode.c_cc[VWERASE], CWERASE);
 #endif
@@ -680,7 +674,10 @@ reset_mode(void)
 
 	mode.c_cflag &= ~(CSIZE | CSTOPB | PARENB | PARODD | CLOCAL);
 	mode.c_cflag |= (CS8 | CREAD);
-	mode.c_lflag &= ~(ECHONL | NOFLSH | TOSTOP
+	mode.c_lflag &= ~(ECHONL | NOFLSH
+#ifdef TOSTOP
+			  | TOSTOP
+#endif
 #ifdef ECHOPTR
 			  | ECHOPRT
 #endif

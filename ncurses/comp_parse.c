@@ -35,14 +35,11 @@
  *
  */
 
-#include <config.h>
+#include <curses.priv.h>
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
-#include "curses.priv.h"
 #include "tic.h"
 #include "term.h"
 #include "term_entry.h"

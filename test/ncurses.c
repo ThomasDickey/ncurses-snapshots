@@ -62,6 +62,21 @@ library source.
 #define CTRL(x)		((x) & 0x1f)
 #endif
 
+/* The behavior of mvhline, mvvline for negative/zero length is unspecified,
+ * though we can rely on negative x/y values to stop the macro.
+ */
+static void do_h_line(int y, int x, chtype c, int to)
+{
+	if ((to) > (x))
+		mvhline(y, x, c, (to) - (x));
+}
+
+static void do_v_line(int y, int x, chtype c, int to)
+{
+	if ((to) > (y))
+		mvvline(y, x, c, (to) - (y));
+}
+
 static void Pause(void)
 {
 	move(LINES - 1, 0);
@@ -810,7 +825,9 @@ static void acs_and_scroll(void)
 		wscrl(current->wind, -1);
 	    break;
 
-	case KEY_F(6):		/* save window */
+	case KEY_F(6):		/* save and delete window */
+	    if (current == current->next)
+		break;
 	    if ((fp = fopen(DUMPFILE, "w")) == (FILE *)NULL)
 		transient("Can't open screen dump file");
 	    else
@@ -963,7 +980,7 @@ char *mod[] =
 	wait_a_while(msec)
 --------------------------------------------------------------------------*/
 static void
-wait_a_while(unsigned long msec __attribute__((unused)))
+wait_a_while(unsigned long msec GCC_UNUSED)
 {
 #ifdef NONAP
 	if(nap_msec == 1)
@@ -1262,16 +1279,50 @@ register y,x;
 
 #define GRIDSIZE	3
 
-static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
+static int panner_legend(int line)
+{
+	static const char *const legend[] = {
+		"Use arrow keys (or U,D,L,R) to pan, q to quit (t,s flags)",
+		"Use +,- (or j,k) to grow/shrink the panner vertically.",
+		"Use <,> (or h,l) to grow/shrink the panner horizontally."
+	};
+	int n = (sizeof(legend)/sizeof(legend[0]) - (LINES - line));
+	if (line < LINES && (n >= 0)) {
+		mvprintw(line, 0, legend[n]);
+		clrtoeol();
+		return TRUE;
+	}
+	return FALSE;
+}
+
+static void panner_h_cleanup(int from_y, int from_x, int to_x)
+{
+	if (!panner_legend(from_y))
+		do_h_line(from_y, from_x, ' ', to_x);
+}
+
+static void panner_v_cleanup(int from_y, int from_x, int to_y)
+{
+	if (!panner_legend(from_y))
+		do_v_line(from_y, from_x, ' ', to_y);
+}
+
+static void panner(WINDOW *pad, 
+		   int hx, int hy, int iy, int ix,
+		   int (*pgetc)(WINDOW *))
 {
 #if HAVE_GETTIMEOFDAY
     struct timeval before, after;
+    bool timing = TRUE;
 #endif
-    static int porty, portx, basex = 0, basey = 0;
-    int pxmax, pymax, lowend, highend, i, j, c;
-    int top_x = 0, top_y = 0;
-
-    porty = iy; portx = ix;
+    bool scrollers = TRUE;
+    int basex = 0;
+    int basey = 0;
+    int portx = ix;
+    int porty = iy;
+    int top_x = hx;
+    int top_y = hy;
+    int pxmax, pymax, lowend, highend, c;
 
     getmaxyx(pad, pymax, pxmax);
 
@@ -1279,6 +1330,17 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
     do {
 	switch(c)
 	{
+#if HAVE_GETTIMEOFDAY
+	case 't':
+	    timing = !timing;
+	    if (!timing)
+		panner_legend(LINES-1);
+	    break;
+#endif
+	case 's':
+	    scrollers = !scrollers;
+	    break;
+
 	case KEY_REFRESH:
 	    /* do nothing */
 	    break;
@@ -1286,48 +1348,42 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 	    /* Move the top-left corner of the pad, keeping the bottom-right
 	     * corner fixed.
 	     */
-	case 'h':	/* increase-columns */
+	case 'h':	/* increase-columns: move left edge to left */
 	    if (top_x <= 0)
 		beep();
 	    else
 	    {
-		if (top_x-- > 0)
-		    for (i = top_y; i < porty; i++)
-			mvaddch(i, top_x, ' ');
+		panner_v_cleanup(top_y, top_x, porty);
+		top_x--;
 	    }
 	    break;
 
-	case 'j':	/* decrease-lines */
+	case 'j':	/* decrease-lines: move top-edge down */
 	    if (top_y >= porty)
 		beep();
 	    else
 	    {
-		if (top_y > 0)
-		    for (j = top_x - (top_x > 0); j < portx; j++)
-			mvaddch(top_y-1, j, ' ');
+		panner_h_cleanup(top_y - 1, top_x - (top_x > 0), portx);
 		top_y++;
 	    }
 	    break;
 
-	case 'k':	/* increase-lines */
+	case 'k':	/* increase-lines: move top-edge up */
 	    if (top_y <= 0)
 		beep();
 	    else
 	    {
 		top_y--;
-		for (j = top_x; j < portx; j++)
-		    mvaddch(top_y, j, ' ');
+		panner_h_cleanup(top_y, top_x, portx);
 	    }
 	    break;
 
-	case 'l':	/* decrease-columns */
+	case 'l':	/* decrease-columns: move left-edge to right */
 	    if (top_x >= portx)
 		beep();
 	    else
 	    {
-		if (top_x > 0)
-		    for (i = top_y - (top_y > 0); i <= porty; i++)
-			mvaddch(i, top_x-1, ' ');
+		panner_v_cleanup(top_y - (top_y > 0), top_x - 1, porty);
 		top_x++;
 	    }
 	    break;
@@ -1335,36 +1391,33 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 	    /* Move the bottom-right corner of the pad, keeping the top-left
 	     * corner fixed.
 	     */
-	case KEY_IC:	/* increase-columns */
-	    if (portx >= pxmax || portx >= ix)
+	case KEY_IC:	/* increase-columns: move right-edge to right */
+	    if (portx >= pxmax || portx >= COLS)
 		beep();
 	    else
 	    {
-		for (i = top_y; i < porty; i++)
-		    mvaddch(i, portx-1, ' ');
+		panner_v_cleanup(top_y - (top_y > 0), portx - 1, porty);
 		++portx;
 	    }
 	    break;
 
-	case KEY_IL:	/* increase-lines */
-	    if (porty >= pymax || porty >= iy)
+	case KEY_IL:	/* increase-lines: move bottom-edge down */
+	    if (porty >= pymax || porty >= LINES)
 		beep();
 	    else
 	    {
-		for (j = top_x; j < portx; j++)
-		    mvaddch(porty-1, j, ' ');
+		panner_h_cleanup(porty - 1, top_x - (top_x > 0), portx);
 		++porty;
 	    }
 	    break;
 
-	case KEY_DC:	/* decrease-columns */
+	case KEY_DC:	/* decrease-columns: move bottom edge up */
 	    if (portx <= top_x)
 		beep();
 	    else
 	    {
-		for (i = top_y - (top_y > 0); i < porty; i++)
-		    mvaddch(i, portx-1, ' ');
-		--portx;
+		portx--;
+		panner_v_cleanup(top_y - (top_y > 0), portx, porty);
 	    }
 	    break;
 
@@ -1373,34 +1426,33 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 		beep();
 	    else
 	    {
-		for (j = top_x; j < portx; j++)
-		    mvaddch(porty-1, j, ' ');
-		--porty;
+		porty--;
+		panner_h_cleanup(porty, top_x - (top_x > 0), portx);
 	    }
 	    break;
 
-	case KEY_LEFT:
+	case KEY_LEFT:	/* pan leftwards */
 	    if (basex > 0)
 		basex--;
 	    else
 		beep();
 	    break;
 
-	case KEY_RIGHT:
+	case KEY_RIGHT:	/* pan rightwards */
 	    if (basex + portx - (pymax > porty) < pxmax)
 		basex++;
 	    else
 		beep();
 	    break;
 
-	case KEY_UP:
+	case KEY_UP:	/* pan upwards */
 	    if (basey > 0)
 		basey--;
 	    else
 		beep();
 	    break;
 
-	case KEY_DOWN:
+	case KEY_DOWN:	/* pan downwards */
 	    if (basey + porty - (pxmax > portx) < pymax)
 		basey++;
 	    else
@@ -1408,80 +1460,68 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 	    break;
 	}
 
-	if (top_x > 0) {
-	    for (i = top_y; i < porty; i++)
-		mvaddch(i, top_x - 1, ACS_VLINE);
-	}
+	mvaddch(top_y - 1, top_x - 1, ACS_ULCORNER);
+	do_v_line(top_y, top_x - 1, ACS_VLINE, porty);
+	do_h_line(top_y - 1, top_x, ACS_HLINE, portx);
 
-	if (top_y > 0) {
-	    for (j = top_x; j < portx; j++)
-		mvaddch(top_y - 1, j, ACS_HLINE);
-	}
-
-	if (top_x > 0 && top_y > 0)
-		mvaddch(top_y - 1, top_x - 1, ACS_ULCORNER);
-
-	if (pxmax > portx - 1) {
+	if (scrollers && (pxmax > portx - 1)) {
 	    int length  = (portx - top_x - 1);
 	    float ratio = ((float) length) / ((float) pxmax);
 
 	    lowend  = top_x + (basex * ratio);
 	    highend = top_x + ((basex + length) * ratio);
 
-	    for (j = top_x; j < lowend; j++)
-		mvaddch(porty - 1, j, ACS_HLINE);
-	    attron(A_REVERSE);
-	    for (j = lowend; j <= highend; j++)
-		mvaddch(porty - 1, j, ' ');
-	    attroff(A_REVERSE);
-	    for (j = highend + 1; j < portx; j++)
-		mvaddch(porty - 1, j, ACS_HLINE);
-        }
-	if (pymax > porty - 1) {
+	    do_h_line(porty - 1, top_x, ACS_HLINE, lowend);
+	    if (highend < portx) {
+		attron(A_REVERSE);
+		do_h_line(porty - 1, lowend, ' ', highend + 1);
+		attroff(A_REVERSE);
+		do_h_line(porty - 1, highend + 1, ACS_HLINE, portx);
+	    }
+        } else
+	    do_h_line(porty - 1, top_x, ACS_HLINE, portx);
+
+	if (scrollers && (pymax > porty - 1)) {
 	    int length  = (porty - top_y - 1);
 	    float ratio = ((float) length) / ((float) pymax);
 
 	    lowend  = top_y + (basey * ratio);
 	    highend = top_y + ((basey + length) * ratio);
 
-	    for (i = top_y; i < lowend; i++)
-		mvaddch(i, portx - 1, ACS_VLINE);
-	    attron(A_REVERSE);
-	    for (i = lowend; i <= highend; i++)
-		mvaddch(i, portx - 1, ' ');
-	    attroff(A_REVERSE);
-	    for (i = highend + 1; i < porty; i++)
-		mvaddch(i, portx - 1, ACS_VLINE);
-        }
+	    do_v_line(top_y, portx - 1, ACS_VLINE, lowend);
+		if (highend < porty) {
+		attron(A_REVERSE);
+		do_v_line(lowend, portx - 1, ' ', highend + 1);
+		attroff(A_REVERSE);
+		do_v_line(highend + 1, portx - 1, ACS_VLINE, porty);
+	    }
+        } else
+	    do_v_line(top_y, portx - 1, ACS_VLINE, porty);
 
-	if (top_y > 0)
-	    mvaddch(top_y - 1, portx - 1, ACS_URCORNER);
-
-	if (top_x > 0)
-	    mvaddch(porty - 1, top_x - 1, ACS_LLCORNER);
-
+	mvaddch(top_y - 1, portx - 1, ACS_URCORNER);
+	mvaddch(porty - 1, top_x - 1, ACS_LLCORNER);
 	mvaddch(porty - 1, portx - 1, ACS_LRCORNER);
 
-#if HAVE_GETTIMEOFDAY
+#if defined(HAVE_GETTIMEOFDAY)
 	gettimeofday(&before, NULL);
 #endif
 	wnoutrefresh(stdscr);
 
-	prefresh(pad,
+	pnoutrefresh(pad,
 		 basey, basex,
 		 top_y, top_x,
 		 porty - (pxmax > portx) - 1,
 		 portx - (pymax > porty) - 1); 
 
 	doupdate();
-#if HAVE_GETTIMEOFDAY
-	{
+#if defined(HAVE_GETTIMEOFDAY)
+	if (timing) {
 		double elapsed;
 		gettimeofday(&after, NULL);
 		elapsed = (after.tv_sec  + after.tv_usec  / 1.0e6)
 	 		- (before.tv_sec + before.tv_usec / 1.0e6);
-		move(LINES-1, COLS-15);
-		printw("Secs: %8.03f", elapsed);
+		move(LINES-1, COLS-20);
+		printw("Secs: %2.03f", elapsed);
 		refresh();
 	}
 #endif
@@ -1534,13 +1574,19 @@ static void demo_pad(void)
 	    else
 		waddch(panpad, ' ');
     }
-    mvprintw(LINES - 3, 0, "Use arrow keys (or U,D,L,R) to pan over the test pattern - 'q' to quit");
-    mvprintw(LINES - 2, 0, "Use +,- (or j,k) to grow/shrink the panner vertically.");
-    mvprintw(LINES - 1, 0, "Use <,> (or h,l) to grow/shrink the panner horizontally.");
+    panner_legend(LINES - 3);
+    panner_legend(LINES - 2);
+    panner_legend(LINES - 1);
 
     keypad(panpad, TRUE);
-    panner(panpad, LINES - 4, COLS, padgetch);
 
+    /* Make the pad (initially) narrow enough that a trace file won't wrap.
+     * We'll still be able to widen it during a test, since that's required
+     * for testing boundaries.
+     */
+    panner(panpad, 2, 2, LINES - 4, COLS-15, padgetch);
+
+    delwin(panpad);
     endwin();
     erase();
 }
@@ -1830,7 +1876,7 @@ static void trace_set(void)
 	if (item_value(*ip))
 	    newtrace |= masks[item_index(*ip)];
     trace(newtrace);
-    _tracef("trace level interactively set to 0x%02x", _nc_tracing);
+    _tracef("trace level interactively set to %s", tracetrace(_nc_tracing));
 
     (void) mvprintw(LINES - 2, 0,
 		     "Trace level is %s\n", tracetrace(_nc_tracing));
@@ -2276,8 +2322,8 @@ do_single_test(const char c)
 }
 
 int main(
-	int argc __attribute__((unused)),
-	char *argv[] __attribute__((unused)))
+	int argc GCC_UNUSED,
+	char *argv[] GCC_UNUSED)
 {
     char	buf[BUFSIZ];
 

@@ -3,6 +3,7 @@
 #endif
 
 #include <stdlib.h>
+#include <sys/types.h>
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
@@ -10,7 +11,9 @@
 
 #include <curses.h>
 
-#if !defined(__GNUC__) && !defined(__attribute__)
-#define __attribute__(p) /*nothing*/
+#ifndef GCC_NORETURN
+#define GCC_NORETURN /* nothing */
 #endif
-
+#ifndef GCC_UNUSED
+#define GCC_UNUSED /* nothing */
+#endif

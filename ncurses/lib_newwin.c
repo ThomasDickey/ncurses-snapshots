@@ -28,8 +28,7 @@
 **
 */
 
-#include "curses.priv.h"
-#include <stdlib.h>
+#include <curses.priv.h>
 
 WINDOW * newwin(int num_lines, int num_columns, int begy, int begx)
 {
@@ -39,6 +38,9 @@ int	i, j;
 
 	T(("newwin(%d,%d,%d,%d) called", num_lines, num_columns, begy, begx));
 
+	if (begy < 0 || begx < 0 || num_lines < 0 || num_columns < 0)
+	  return NULL;
+
 	if (num_lines == 0)
 	    num_lines = screen_lines - begy;
 	if (num_columns == 0)
@@ -47,7 +49,7 @@ int	i, j;
 	if (num_columns + begx > SP->_columns || num_lines + begy > SP->_lines)
 		return NULL;
 
-	if ((win = _nc_makenew(num_lines, num_columns, begy, begx)) == NULL)
+	if ((win = _nc_makenew(num_lines, num_columns, begy, begx, 0)) == NULL)
 		return NULL;
 
 	for (i = 0; i < num_lines; i++) {
@@ -74,13 +76,14 @@ WINDOW * derwin(WINDOW *orig, int num_lines, int num_columns, int begy, int begx
 {
 WINDOW	*win;
 int	i;
+int     flags = _SUBWIN;
 
 	T(("derwin(%p, %d,%d,%d,%d) called", orig, num_lines, num_columns, begy, begx));
 
 	/*
 	** make sure window fits inside the original one
 	*/
-	if ( begy < 0 || begx < 0) 
+	if ( begy < 0 || begx < 0 || orig==NULL || num_lines < 0 || num_columns < 0) 
 		return NULL;
 	if ( begy + num_lines > orig->_maxy + 1
 		|| begx + num_columns > orig->_maxx + 1)
@@ -92,7 +95,10 @@ int	i;
 	if (num_columns == 0)
 	    num_columns = orig->_maxx - begx;
 
-	if ((win = _nc_makenew(num_lines, num_columns, orig->_begy + begy, orig->_begx + begx)) == NULL)
+	if (orig->_flags & _ISPAD)
+	  flags |= _ISPAD;
+
+	if ((win = _nc_makenew(num_lines, num_columns, orig->_begy + begy, orig->_begx + begx, flags)) == NULL)
 	    return NULL;
 
 	win->_pary = begy;
@@ -103,7 +109,6 @@ int	i;
 	for (i = 0; i < num_lines; i++)
 	    win->_line[i].text = &orig->_line[begy++].text[begx];
 
-	win->_flags = _SUBWIN;
 	win->_parent = orig;
 
 	T(("derwin: returned window is %p", win));
@@ -121,10 +126,11 @@ WINDOW *subwin(WINDOW *w, int l, int c, int y, int x)
 }
 
 WINDOW *
-_nc_makenew(int num_lines, int num_columns, int begy, int begx)
+_nc_makenew(int num_lines, int num_columns, int begy, int begx, int flags)
 {
 int	i;
 WINDOW	*win;
+bool    is_pad = (flags & _ISPAD);
 
 	T(("_nc_makenew(%d,%d,%d,%d)", num_lines, num_columns, begy, begx));
 
@@ -146,11 +152,11 @@ WINDOW	*win;
 	win->_begy       = begy;
 	win->_begx       = begx;
 
-	win->_flags      = 0;
+	win->_flags      = flags;
 	win->_attrs      = A_NORMAL;
 	win->_bkgd	 = A_NORMAL;
 
-	win->_clear      = (num_lines == screen_lines  &&  num_columns == screen_columns);
+	win->_clear      = is_pad ? FALSE : (num_lines == screen_lines  &&  num_columns == screen_columns);
 	win->_idlok      = FALSE;
 	win->_idcok      = TRUE;
 	win->_scroll     = FALSE;
@@ -179,7 +185,7 @@ WINDOW	*win;
 	    win->_line[i].oldindex = i;
 	}
 
-	if (begx + num_columns == screen_columns) {
+	if (!is_pad && (begx + num_columns == screen_columns)) {
 		win->_flags |= _ENDLINE;
 
 		if (begx == 0  &&  num_lines == screen_lines  &&  begy == 0)

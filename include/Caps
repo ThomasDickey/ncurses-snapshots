@@ -1060,15 +1060,15 @@ box_chars_1    	box1	str	bx	----K	box chars primary set
 #key_scroll_left	kscl	str	kz	----K	scroll left
 #key_scroll_right	kscr	str	kZ	----K	scroll right
 #key_tab        	ktab	str	ko	----K	tab key
-#key_smap_in1   	kmpf1	str	kv	----K	special mapped key 1 input
+#key_smap_in1   	kmpf1	str	Kv	----K	special mapped key 1 input
 #key_smap_out1  	kmpt1	str	KV	----K	special mapped key 1 output
-#key_smap_in2   	kmpf2	str	kw	----K	special mapped key 2 input
+#key_smap_in2   	kmpf2	str	Kw	----K	special mapped key 2 input
 #key_smap_out2  	kmpt2	str	KW	----K	special mapped key 2 output
-#key_smap_in3   	kmpf3	str	kx	----K	special mapped key 3 input
+#key_smap_in3   	kmpf3	str	Kx	----K	special mapped key 3 input
 #key_smap_out3  	kmpt3	str	KX	----K	special mapped key 3 output
-#key_smap_in4   	kmpf4	str	ky	----K	special mapped key 4 input
+#key_smap_in4   	kmpf4	str	Ky	----K	special mapped key 4 input
 #key_smap_out4  	kmpt4	str	KY	----K	special mapped key 4 output
-#key_smap_in5   	kmpf5	str	kz	----K	special mapped key 5 input
+#key_smap_in5   	kmpf5	str	Kz	----K	special mapped key 5 input
 #key_smap_out5  	kmpt5	str	KZ	----K	special mapped key 5 output
 #appl_defined_str      	apstr	str	za	----K	application-defined string
 # The key_smap_in[6789] and key_smap_out[6789] capabilities aren't described in
@@ -1164,6 +1164,8 @@ box_chars_1    	box1	str	bx	----K	box chars primary set
 #
 # Here we set up aliases for translating extensions into standard terminfo.
 #
+#---------------------------------- Termcap aliases -------------------------
+#
 # BSD aliases:
 #
 # This is a common error in many termcap files.  We'll get notified during
@@ -1216,6 +1218,10 @@ capalias	Gv	IGNORE	XENIX	double-ACS_VLINE
 capalias	Gc	IGNORE	XENIX	double-ACS_PLUS
 capalias	GG	IGNORE	XENIX	acs-glitch
 #
+# IBM extensions:
+#
+capalias	kq	%1	IBM	key_help
+#
 # There are also the following:
 #
 #	XENIX	XENIX variable name	name clash with terminfo?
@@ -1235,7 +1241,7 @@ capalias	GG	IGNORE	XENIX	acs-glitch
 #
 # If you know what any of the questionmarked ones mean, please tell us.
 #
-# These are the old HP memory-lock/memory-unlock capablities (termcap ml/mu).
+#--------------------------------- Terminfo aliases ------------------------
 #
 # IBM extensions:
 #

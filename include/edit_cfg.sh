@@ -8,6 +8,7 @@
 for name in \
 	HAVE_TCGETATTR \
 	HAVE_TERMIOS_H \
+	HAVE_TERMIO_H \
 	BROKEN_LINKER
 do
 	mv $2 $2.bak

@@ -181,9 +181,9 @@ be directed to Zeyd. <P>
 
 There is an ncurses mailing list.  It is a majordomo list; to join, write
 to <TT>listserv@netcom.com</TT> with a message containing the line:
-<LISTING>
+<PRE>
              subscribe ncurses-list &lt;name&gt;@&lt;host.domain&gt;
-</LISTING>
+</PRE>
 
 This list is open to anyone interested in helping with the development and
 testing of this package. <P>

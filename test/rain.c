@@ -11,8 +11,8 @@ void onsig(int sig);
 
 int
 main(
-	int argc __attribute__((unused)),
-	char *argv[] __attribute__((unused)))
+	int argc GCC_UNUSED,
+	char *argv[] GCC_UNUSED)
 {
 int x, y, j;
 static int xpos[5], ypos[5];

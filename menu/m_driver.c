@@ -329,7 +329,7 @@ int menu_driver(MENU * menu, int   c)
 	case REQ_SCR_DLINE:
 	  /*=================*/  
 	  my_top_row++;
-	  if ((menu->rows - menu->height)>0)
+	  if ((menu->rows - menu->arows)>0)
 	    {
 	      /* only if the menu has less items than rows, we can deny the
 		 request. Otherwise the epilogue of this routine adjusts the
@@ -343,9 +343,9 @@ int menu_driver(MENU * menu, int   c)
 	  
 	case REQ_SCR_DPAGE:
 	  /*=================*/  
-	  rdiff = menu->rows - menu->height - my_top_row;
-	  if (rdiff > menu->height) 
-	    rdiff = menu->height;
+	  rdiff = menu->rows - menu->arows - my_top_row;
+	  if (rdiff > menu->arows) 
+	    rdiff = menu->arows;
 	  if (rdiff==0)
 	    result = E_REQUEST_DENIED;
 	  else
@@ -358,8 +358,8 @@ int menu_driver(MENU * menu, int   c)
 	  
 	case REQ_SCR_UPAGE:
 	  /*=================*/  
-	  rdiff = (menu->height < my_top_row) ?
-	    menu->height : my_top_row;
+	  rdiff = (menu->arows < my_top_row) ?
+	    menu->arows : my_top_row;
 	  if (rdiff==0)
 	    result = E_REQUEST_DENIED;
 	  else
@@ -498,8 +498,8 @@ int menu_driver(MENU * menu, int   c)
      doesn't appear in the menu window */
   if ( item->y < my_top_row )
     my_top_row = item->y;
-  else if ( item->y >= (my_top_row + menu->height) )
-    my_top_row = item->y - menu->height + 1;
+  else if ( item->y >= (my_top_row + menu->arows) )
+    my_top_row = item->y - menu->arows + 1;
   
   _nc_New_TopRow_and_CurrentItem( menu, my_top_row, item );
   

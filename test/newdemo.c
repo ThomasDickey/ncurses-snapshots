@@ -57,8 +57,8 @@ char    *messages[] =
  */
 int
 main(
-	int argc __attribute__((unused)),
-	char *argv[] __attribute__((unused)))
+	int argc GCC_UNUSED,
+	char *argv[] GCC_UNUSED)
 {
 WINDOW  *win;
 int     w, x, y, i, j, len;
