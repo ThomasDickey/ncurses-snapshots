@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.76 2004/07/10 11:13:26 tom Exp $
+-- $Id: INSTALL,v 1.77 2004/07/11 13:57:48 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -715,6 +715,11 @@ SUMMARY OF CONFIGURE OPTIONS:
 	programs (e.g., tic).  The test applications will still be built if you
 	type "make", though not if you simply do "make install".
 
+    --without-xterm-new
+	Tell the configure script to use "xterm-old" for the entry used in
+	the terminfo database.  This will work with variations such as
+	X11R5 and X11R6 xterm.
+
 
 COMPATIBILITY WITH OLDER VERSIONS OF NCURSES:
 --------------------------------------------
@@ -1082,7 +1087,8 @@ RECENT XTERM VERSIONS:
 	The terminfo database file included with this distribution assumes you
 	are running a modern xterm based on XFree86 (i.e., xterm-new).  The
 	earlier X11R6 entry (xterm-r6) and X11R5 entry (xterm-r5) is provided
-	as well.
+	as well.  See the --without-xterm-new configure script option if you
+	are unable to update your system.
 
 
 CONFIGURING FALLBACK ENTRIES:
