@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,7 +41,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.60 2002/08/31 19:21:22 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.61 2002/09/07 18:15:32 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -179,7 +179,8 @@ start_color(void)
 	COLOR_PAIRS = SP->_pair_count = max_pairs;
     else
 	returnCode(ERR);
-    if ((SP->_color_pairs = typeCalloc(unsigned short, max_pairs)) == 0)
+    if ((SP->_color_pairs = typeCalloc(unsigned short,
+				         (unsigned) max_pairs)) == 0)
 	  returnCode(ERR);
     SP->_color_pairs[0] = PAIR_OF(default_fg(), default_bg());
     if (VALID_NUMERIC(max_colors))

@@ -52,7 +52,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.52 2002/08/31 17:14:56 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.53 2002/09/07 20:01:28 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype) (TERMTYPE *) = sanity_check;
@@ -88,7 +88,7 @@ enqueue(ENTRY * ep)
     ENTRY *newp = _nc_copy_entry(ep);
 
     if (newp == 0)
-	_nc_err_abort("Out of memory");
+	_nc_err_abort(MSG_NO_MEMORY);
 
     newp->last = _nc_tail;
     _nc_tail = newp;
@@ -289,7 +289,7 @@ _nc_resolve_uses(bool fullresolve)
 
 		    rp = typeMalloc(ENTRY, 1);
 		    if (rp == 0)
-			_nc_err_abort("Out of memory");
+			_nc_err_abort(MSG_NO_MEMORY);
 		    rp->tterm = thisterm;
 		    rp->nuses = 0;
 		    rp->next = lastread;

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -50,7 +50,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.60 2002/08/31 22:08:37 Philippe.Blain Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.61 2002/09/07 20:04:09 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -236,7 +236,7 @@ _nc_get_token(bool silent)
 	    _nc_syntax = ERR;
 	    while ((ch = next_char()) != '\n') {
 		if (ch == EOF)
-		    _nc_err_abort("premature EOF");
+		    _nc_err_abort(MSG_NO_MEMORY);
 		else if (ch == ':' && last_char() != ',') {
 		    _nc_syntax = SYN_TERMCAP;
 		    separator = ':';
@@ -492,7 +492,7 @@ _nc_trans_string(char *ptr, char *last)
 	if (ch == '^' && last_ch != '%') {
 	    ch = c = next_char();
 	    if (c == EOF)
-		_nc_err_abort("Premature EOF");
+		_nc_err_abort(MSG_NO_INPUTS);
 
 	    if (!(is7bits(ch) && isprint(ch))) {
 		_nc_warning("Illegal ^ character - %s", unctrl(ch));
@@ -509,14 +509,14 @@ _nc_trans_string(char *ptr, char *last)
 	} else if (ch == '\\') {
 	    ch = c = next_char();
 	    if (c == EOF)
-		_nc_err_abort("Premature EOF");
+		_nc_err_abort(MSG_NO_INPUTS);
 
 	    if (ch >= '0' && ch <= '7') {
 		number = ch - '0';
 		for (i = 0; i < 2; i++) {
 		    ch = c = next_char();
 		    if (c == EOF)
-			_nc_err_abort("Premature EOF");
+			_nc_err_abort(MSG_NO_INPUTS);
 
 		    if (c < '0' || c > '7') {
 			if (isdigit(c)) {

@@ -43,7 +43,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.55 2002/07/20 17:07:37 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.59 2002/09/07 20:50:03 Philippe.Blain Exp $")
 
 /*
  *	char *
@@ -141,21 +141,16 @@ _nc_free_tparm(void)
 }
 #endif
 
-static void
-really_get_space(size_t need)
-{
-    out_size = need * 2;
-    out_buff = typeRealloc(char, out_size, out_buff);
-    if (out_buff == 0)
-	_nc_err_abort("Out of memory");
-}
-
 static inline void
 get_space(size_t need)
 {
     need += out_used;
-    if (need > out_size)
-	really_get_space(need);
+    if (need > out_size) {
+	out_size = need * 2;
+	out_buff = typeRealloc(char, out_size, out_buff);
+	if (out_buff == 0)
+	    _nc_err_abort(MSG_NO_MEMORY);
+    }
 }
 
 static inline void
@@ -257,8 +252,8 @@ parse_format(const char *s, char *format, int *len)
     bool dot = FALSE;
     bool err = FALSE;
     char *fmt = format;
-    int prec = 0;
-    int width = 0;
+    int my_width = 0;
+    int my_prec = 0;
     int value = 0;
 
     *len = 0;
@@ -278,9 +273,9 @@ parse_format(const char *s, char *format, int *len)
 	    *format++ = *s++;
 	    if (dot) {
 		err = TRUE;
-	    } else {
+	    } else {		/* value before '.' is the width */
 		dot = TRUE;
-		prec = value;
+		my_width = value;
 	    }
 	    value = 0;
 	    break;
@@ -317,20 +312,24 @@ parse_format(const char *s, char *format, int *len)
      * If we found an error, ignore (and remove) the flags.
      */
     if (err) {
-	prec = width = value = 0;
+	my_width = my_prec = value = 0;
 	format = fmt;
 	*format++ = '%';
 	*format++ = *s;
     }
 
+    /*
+     * Any value after '.' is the precision.  If we did not see '.', then
+     * the value is the width.
+     */
     if (dot)
-	width = value;
+	my_prec = value;
     else
-	prec = value;
+	my_width = value;
 
     *format = '\0';
     /* return maximum string length in print */
-    *len = (prec > width) ? prec : width;
+    *len = (my_width > my_prec) ? my_width : my_prec;
     return s;
 }
 
@@ -426,6 +425,10 @@ tparam_internal(const char *string, va_list ap)
 		break;
 
 	    case 'P':
+		++number;
+		++cp;
+		break;
+
 	    case 'g':
 		cp++;
 		break;

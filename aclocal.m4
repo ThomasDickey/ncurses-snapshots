@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000,2001
 dnl
-dnl $Id: aclocal.m4,v 1.281 2002/07/06 19:41:58 tom Exp $
+dnl $Id: aclocal.m4,v 1.283 2002/09/07 18:21:13 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
-dnl See http://dickey.his.com/autoconf/ for additional information.
+dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 dnl ---------------------------------------------------------------------------
@@ -1832,7 +1832,7 @@ CF_EOF
 	])
 if test -f $MANPAGE_RENAMES ; then
 cat >>man/edit_man.sh <<CF_EOF
-		< \$i | sed -f edit_man.sed >\$TMP
+		< \$i | sed -f man/edit_man.sed >\$TMP
 CF_EOF
 else
 cat >>man/edit_man.sh <<CF_EOF

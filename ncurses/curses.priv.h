@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.222 2002/09/01 17:51:07 tom Exp $
+ * $Id: curses.priv.h,v 1.224 2002/09/07 20:00:52 tom Exp $
  *
  *	curses.priv.h
  *
@@ -324,7 +324,7 @@ struct screen {
 	bool            _tried;         /* keypad mode was initialized      */
 	bool            _keypad_on;     /* keypad mode is currently on      */
 
-	unsigned int    _fifo[FIFO_SIZE];       /* input push-back buffer   */
+	int    	        _fifo[FIFO_SIZE];       /* input push-back buffer   */
 	short           _fifohead,      /* head of fifo queue               */
 	                _fifotail,      /* tail of fifo queue               */
 	                _fifopeek,      /* where to peek for next char      */
@@ -711,7 +711,6 @@ extern NCURSES_EXPORT(const char *) _nc_viscbuf (const cchar_t *, int);
 extern	NCURSES_EXPORT(void) name (void); \
 	NCURSES_EXPORT(void) name (void) { }
 
-#
 /* used in _nc_visbuf() whether or not we're tracing */
 extern NCURSES_EXPORT(const char *) _nc_visbuf2 (int, const char *);
 
@@ -1014,6 +1013,12 @@ extern NCURSES_EXPORT(int) _nc_slk_initialize (WINDOW *, int);
 #define MAX_SKEY_LEN(fmt) (SLK_STDFMT(fmt)? MAX_SKEY_LEN_OLD : MAX_SKEY_LEN_PC)
 
 extern NCURSES_EXPORT(int) _nc_ripoffline (int line, int (*init)(WINDOW *,int));
+
+/*
+ * Common error messages
+ */
+#define MSG_NO_MEMORY "Out of memory"
+#define MSG_NO_INPUTS "Premature EOF"
 
 #ifdef __cplusplus
 }

@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.271 2002/07/20 17:30:48 tom Exp $
+dnl $Id: configure.in,v 1.273 2002/09/07 17:51:33 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
-dnl See http://dickey.his.com/autoconf/ for additional information.
+dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.271 $)
+AC_REVISION($Revision: 1.273 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -818,7 +818,7 @@ if test "$with_widec" = yes ; then
 	LIB_SUFFIX="w${LIB_SUFFIX}"
 	AC_DEFINE(USE_WIDEC_SUPPORT)
 	CPPFLAGS="$CPPFLAGS -D_XOPEN_SOURCE_EXTENDED"
-	with_overwrite=no
+	# with_overwrite=no
 	NCURSES_CH_T=cchar_t
 	AC_CHECK_FUNC(putwc)
 if test "$ac_cv_func_putwc" != yes ; then

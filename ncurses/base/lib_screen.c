@@ -34,7 +34,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_screen.c,v 1.25 2002/08/31 21:43:21 Philippe.Blain Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.26 2002/09/07 20:21:54 tom Exp $")
 
 NCURSES_EXPORT(WINDOW *)
 getwin(FILE * filep)
@@ -69,13 +69,16 @@ getwin(FILE * filep)
     nwin->_attrs = tmp._attrs;
     nwin->_nc_bkgd = tmp._nc_bkgd;
 
+    nwin->_notimeout = tmp._notimeout;
     nwin->_clear = tmp._clear;
-    nwin->_scroll = tmp._scroll;
     nwin->_leaveok = tmp._leaveok;
+    nwin->_idlok = tmp._idlok;
+    nwin->_idcok = tmp._idcok;
+    nwin->_immed = tmp._immed;
+    nwin->_scroll = tmp._scroll;
+    nwin->_sync = tmp._sync;
     nwin->_use_keypad = tmp._use_keypad;
     nwin->_delay = tmp._delay;
-    nwin->_immed = tmp._immed;
-    nwin->_sync = tmp._sync;
 
     nwin->_regtop = tmp._regtop;
     nwin->_regbottom = tmp._regbottom;
@@ -103,13 +106,14 @@ putwin(WINDOW *win, FILE * filep)
     T((T_CALLED("putwin(%p,%p)"), win, filep));
 
     if (win && !(win->_flags & _ISPAD)) {
+	size_t len = (win->_maxx + 1);
+
 	clearerr(filep);
 	if (fwrite(win, sizeof(WINDOW), 1, filep) != 1
 	    || ferror(filep))
 	      returnCode(code);
 
 	for (n = 0; n <= win->_maxy; n++) {
-	    size_t len = (win->_maxx + 1);
 	    if (fwrite(win->_line[n].text, sizeof(chtype), len, filep) != len
 		|| ferror(filep))
 		  returnCode(code);

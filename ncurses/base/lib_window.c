@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_window.c,v 1.19 2002/08/31 21:44:13 Philippe.Blain Exp $")
+MODULE_ID("$Id: lib_window.c,v 1.20 2002/09/07 20:28:46 tom Exp $")
 
 NCURSES_EXPORT(void)
 _nc_synchook(WINDOW *win)
@@ -206,13 +206,16 @@ dupwin(WINDOW *win)
     nwin->_attrs = win->_attrs;
     nwin->_nc_bkgd = win->_nc_bkgd;
 
+    nwin->_notimeout = win->_notimeout;
     nwin->_clear = win->_clear;
-    nwin->_scroll = win->_scroll;
     nwin->_leaveok = win->_leaveok;
-    nwin->_use_keypad = win->_use_keypad;
-    nwin->_delay = win->_delay;
+    nwin->_scroll = win->_scroll;
+    nwin->_idlok = win->_idlok;
+    nwin->_idcok = win->_idcok;
     nwin->_immed = win->_immed;
     nwin->_sync = win->_sync;
+    nwin->_use_keypad = win->_use_keypad;
+    nwin->_delay = win->_delay;
 
     nwin->_parx = 0;
     nwin->_pary = 0;

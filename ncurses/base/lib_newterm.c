@@ -47,7 +47,7 @@
 #include <term.h>		/* clear_screen, cup & friends, cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.54 2002/08/31 21:46:41 Philippe.Blain Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.55 2002/09/07 18:11:03 tom Exp $")
 
 #ifndef ONLCR			/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -111,7 +111,7 @@ newterm(NCURSES_CONST char *name, FILE * ofp, FILE * ifp)
     int t = _nc_getenv_num("NCURSES_TRACE");
 
     if (t >= 0)
-	trace(t);
+	trace((unsigned) t);
 #endif
 
     T((T_CALLED("newterm(\"%s\",%p,%p)"), name, ofp, ifp));

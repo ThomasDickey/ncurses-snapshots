@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -47,7 +47,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.36 2001/09/22 21:10:26 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.37 2002/09/07 20:04:15 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -168,7 +168,7 @@ _nc_wrap_entry(ENTRY * const ep, bool copy_strings)
     }
 
     if ((tp->str_table = typeMalloc(char, next_free)) == (char *) 0)
-	  _nc_err_abort("Out of memory");
+	  _nc_err_abort(MSG_NO_MEMORY);
     (void) memcpy(tp->str_table, stringbuf, next_free);
 
     tp->term_names = tp->str_table + n;
@@ -190,7 +190,7 @@ _nc_wrap_entry(ENTRY * const ep, bool copy_strings)
 		offsets[i] = tp->ext_Names[i] - stringbuf;
 	    }
 	    if ((tp->ext_str_table = typeMalloc(char, length)) == 0)
-		  _nc_err_abort("Out of memory");
+		  _nc_err_abort(MSG_NO_MEMORY);
 	    for (i = 0, length = 0; i < n; i++) {
 		tp->ext_Names[i] = tp->ext_str_table + length;
 		strcpy(tp->ext_Names[i], stringbuf + offsets[i]);

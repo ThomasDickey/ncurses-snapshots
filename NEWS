@@ -1,10 +1,29 @@
--- $Id: NEWS,v 1.706 2002/09/01 19:46:02 tom Exp $
+-- $Id: NEWS,v 1.707 2002/09/07 20:51:14 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020907 pre-release
+	+ change configure script to allow install of widec-character
+	  (ncursesw) headers to overwrite normal (ncurses) headers, since the
+	  latter is a compatible subset of the former.
+	+ fix path of edit_man.sed in configure script, needed to regenerate
+	  html manpages on Debian.
+	+ fix mismatched enums in vsscanf.c, which caused warning on Solaris.
+	+ update README.emx to reflect current patch used for autoconf.
+	+ change web- and ftp-site to invisible-island.net
+	> Philippe Blain:
+	+ change case for 'P' in tparam_internal() to indicate that it pops
+	  a variable from the stack.
+	+ correct sense of precision and width in parse_format(), to avoid
+	  confusion.
+	+ modify lib_tparm.c, absorb really_get_space() into get_space().
+	+ modify getwin() and dupwin() to copy the _notimeout, _idlok and
+	  _idcok window fields.
+	+ better fix for _nc_set_type(), using typeMalloc().
 
 20020901 pre-release
 	+ change minor version to 3, i.e., ncurses 5.3
