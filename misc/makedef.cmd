@@ -1,5 +1,5 @@
 /*
- * $Id: makedef.cmd,v 1.3 1998/08/29 21:43:56 tom Exp $
+ * $Id: makedef.cmd,v 1.4 1998/11/22 03:14:08 tom Exp $
  *
  * Author:  Juan Jose Garcia Ripoll <worm@arrakis.es>.
  * Webpage: http://www.arrakis.es/~worm/
@@ -42,7 +42,7 @@ tmp_name = 'foo.tmp'
  * This sed expression cleans empty lines, comments and special .DEF
  * commands, such as LIBRARY..., EXPORTS..., etc
  */
-tidy_up  = '"s/[ 	][ 	]*/ /g;s/;.*$//g;s/^[ ]*//g;/^[ ]*$/d;/^[a-zA-Z]/d;"'
+tidy_up  = '"/^[A-Z]/d;s/[ 	][ 	]*/ /g;s/;.*$//g;s/^[ ]*//g;/^[ ]*$/d"'
 
 /*
  * First we find all public symbols (functions and variables). Next we
@@ -66,7 +66,15 @@ do while queued() > 0
     * When the line comes from `emximp's output, there's no number, so
     * we assign it the special value 0.
     */
-   parse pull '"' new_name '"' '@'new_code rest
+   parse pull new_symbol '@'new_code rest
+   if Left(new_symbol,1) = '"' then
+      parse var new_symbol '"' new_name '"' rest
+   else
+      do
+      echo 'Symbol 'new_symbol' was not quoted'
+      new_name = new_symbol
+      end
+
    if new_code = '' then
       new_code = 0
    /*
@@ -114,18 +122,20 @@ end /* do while queued() */
  * Those that did not have a valid one (just 0) are assigned a new one.
  */
 new_code = 1
-do while last > 0
-   if codes.last = 0 then
+inx = 1
+do while inx <= last
+   if codes.inx = 0 then
       do
       do while used.new_code \= 0
          new_code = new_code + 1
       end
-      codes.last = new_code
+      codes.inx = new_code
       used.new_code = 1
       end
-   say '"'names.last'"	@'codes.last'	NONAME'
-   last = last - 1
+   say '	"'names.inx'"	@'codes.inx'	NONAME'
+   inx = inx + 1
 end
+'del foo2.tmp 1>NUL'
 exit 0
 
 /*

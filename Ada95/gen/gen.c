@@ -32,7 +32,7 @@
 
 /*
     Version Control
-    $Revision: 1.16 $
+    $Revision: 1.19 $
   --------------------------------------------------------------------------*/
 /*
   This program generates various record structures and constants from the
@@ -41,6 +41,7 @@
   to produce the real source.
   */
 
+#include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 #include <ctype.h>
@@ -50,7 +51,7 @@
 
 #define RES_NAME "Reserved"
 
-static char *model = "";
+static const char *model = "";
 static int little_endian = 0;
 
 typedef struct {
@@ -99,30 +100,20 @@ static int find_pos (char *s, unsigned len, int *low, int *high)
  * We are only dealing with record types which are of 32 or 16
  * bit size, i.e. they fit into an (u)int or a (u)short.
  */
-static void gen_reps
+static void 
+gen_reps 
 (const name_attribute_pair *nap, /* array of name_attribute_pair records */
  const char *name,               /* name of the represented record type  */
- int len)                        /* size of the record in bytes          */
+ int len,                        /* size of the record in bytes          */
+ int bias)
 {
-  int i,l,cnt = 0,low,high;
+  int i,n,l,cnt = 0,low,high;
   int width = strlen(RES_NAME);
-  int bias = 0;
   unsigned int a;
   unsigned int mask = 0;
-  char *suffix;
+  char buf[32];
 
   assert (nap!=NULL);
-
-  if (len == sizeof(int)/2)
-    {
-      bias = little_endian ? 8 * len : 0;
-      suffix = " / 2";
-    }
-  else
-    {
-      assert(len==sizeof(int));
-      suffix = "";
-    }
 
   for (i=0; nap[i].name != (char *)0; i++)
     {
@@ -139,9 +130,12 @@ static void gen_reps
     {
       printf("         %-*s : Boolean;\n",width,nap[i].name);
     }  
-  if (cnt != 8*len)
+  i = 1; n = cnt;
+  while (n < 8*len)
     {
-      printf("         %-*s : Boolean;\n",width,RES_NAME);
+      sprintf(buf,"%s%02d",RES_NAME,i);
+      printf("         %-*s : Boolean;\n",width,buf);
+      i++; n++;
     }
   printf("      end record;\n");
   printf("   pragma Pack (%s);\n",name);
@@ -156,20 +150,25 @@ static void gen_reps
       mask |= a;
       l = find_pos( (char *)&a,sizeof(a),&low,&high );
       if (l>=0)
-	printf("         %-*s at 0 range %2d .. %2d;\n",width,nap[i].name,low-bias,high-bias);
+	printf("         %-*s at 0 range %2d .. %2d;\n",width,nap[i].name,
+	       low-bias,high-bias);
     }  
-  if (cnt != 8*len)
+  i = 1; n = cnt;
+  while (n < 8*len)
     {
       mask = ~mask;
       assert(mask);
       if (little_endian)
-	l = 8*len - 1;
+	l = n;
       else
-	l = 0;
-      printf("         %-*s at 0 range %2d .. %2d;\n",width,RES_NAME,l,l);
+	l = n - (i - 1);
+      sprintf(buf,"%s%02d",RES_NAME,i);
+      printf("         %-*s at 0 range %2d .. %2d;\n",
+	     width,buf,l,l);
+      i++; n++;
     }
   printf("      end record;\n");
-  printf("   for %s'Size use Interfaces.C.int'Size%s;\n", name, suffix);
+  printf("   for %s'Size use %d;\n", name, 8*len);
   printf("   --  Please note: this rep. clause is generated and may be\n");
   printf("   --               different on your system.");
 }
@@ -177,8 +176,8 @@ static void gen_reps
 
 static void chtype_rep (const char *name, attr_t mask)
 {
-  int x = -1;
-  int t = x & mask;
+  attr_t x = -1;
+  attr_t t = x & mask;
   int low, high;
   int l = find_pos ((char *)&t, sizeof(t), &low, &high);
   if (l>=0)
@@ -191,7 +190,7 @@ static void gen_chtype_rep(const char *name)
   chtype_rep("Ch",A_CHARTEXT);
   chtype_rep("Color",A_COLOR);
   chtype_rep("Attr",(A_ATTRIBUTES&~A_COLOR));
-  printf("      end record;\n   for %s'Size use Interfaces.C.int'Size;\n",name);
+  printf("      end record;\n   for %s'Size use %d;\n",name,8*sizeof(chtype));
   printf("      --  Please note: this rep. clause is generated and may be\n");
   printf("      --               different on your system.\n");
 }
@@ -287,7 +286,20 @@ static void gen_attr_set( const char *name )
 #endif
     {(char *)0,                 0}
   };
-  gen_reps (nap, name, sizeof(int)/2);
+  chtype attr = A_ATTRIBUTES & ~A_COLOR;
+  int start=-1, len=0, i, set;
+  for(i=0;i<(int)(8*sizeof(chtype));i++) {
+    set = attr&1;
+    if (set) {
+      if (start<0)
+	start = i;
+      if (start>=0) {
+	len++;
+      }
+    }
+    attr = attr >> 1;
+  }
+  gen_reps (nap, name, (len+7)/8, little_endian?start:0);
 }
 
 static void gen_menu_opt_rep(const char *name)
@@ -313,7 +325,7 @@ static void gen_menu_opt_rep(const char *name)
 #endif
     {(char *)0, 0}
   };
-  gen_reps (nap, name, sizeof(int));
+  gen_reps (nap, name, sizeof(int),0);
 }
 
 static void gen_item_opt_rep(const char *name)
@@ -324,7 +336,7 @@ static void gen_item_opt_rep(const char *name)
 #endif
     {(char *)0   , 0}
   };  
-  gen_reps (nap, name, sizeof(int));
+  gen_reps (nap, name, sizeof(int),0);
 }
 
 static void gen_form_opt_rep(const char *name)
@@ -338,7 +350,7 @@ static void gen_form_opt_rep(const char *name)
 #endif
     {(char *)0    , 0}
   };
-  gen_reps (nap, name, sizeof(int));
+  gen_reps (nap, name, sizeof(int),0);
 }
 
 /*
@@ -379,7 +391,7 @@ static void gen_field_opt_rep(const char *name)
 #endif
     {(char *)0, 0}
   };
-  gen_reps (nap, name, sizeof(int));
+  gen_reps (nap, name, sizeof(int),0);
 }
 
 /*
@@ -831,7 +843,8 @@ static void prologue(const char *name)
   printf("--  This module is generated. Please don't change it manually!\n");
   printf("--  Run the generator instead.\n--  |");
 
-  printf("define(`M4_BIT_ORDER',`%s_Order_First')",little_endian ? "Low":"High");
+  printf("define(`M4_BIT_ORDER',`%s_Order_First')",
+	 little_endian ? "Low":"High");
 }
 
 /*
@@ -952,9 +965,28 @@ static void gen_panel_linkopts (void)
 
 static void gen_version_info (void)
 {
-   printf("   NC_Major_Version : constant := %d; --  Major version of ncurses library\n", NCURSES_VERSION_MAJOR);
-   printf("   NC_Minor_Version : constant := %d; --  Minor version of ncurses library\n", NCURSES_VERSION_MINOR);
-   printf("   NC_Version : constant String := %c%d.%d%c;  --  Version of ncurses library\n", '"',NCURSES_VERSION_MAJOR,NCURSES_VERSION_MINOR,'"');
+  static const char* v1 =
+    "   NC_Major_Version : constant := %d; --  Major version of the library\n";
+  static const char* v2 =
+    "   NC_Minor_Version : constant := %d; --  Minor version of the library\n";
+  static const char* v3 =
+    "   NC_Version : constant String := %c%d.%d%c;  --  Version of library\n";
+  
+  printf(v1, NCURSES_VERSION_MAJOR);
+  printf(v2, NCURSES_VERSION_MINOR);
+  printf(v3, '"',NCURSES_VERSION_MAJOR,NCURSES_VERSION_MINOR,'"');
+}
+
+static int
+eti_gen(char*buf, int code, const char* name, int* etimin, int* etimax)
+{
+  int ret = sprintf(buf,"   E_%-16s : constant Eti_Error := %d;\n",name,code);
+
+  if (code < *etimin)
+    *etimin = code;
+  if (code > *etimax)
+    *etimax = code;
+  return  (ret);
 }
 
 /*
@@ -965,6 +997,7 @@ static void gen_version_info (void)
  *   M - Menus
  *   F - Forms
  *   P - Pointer Device (Mouse)
+ *   E - ETI base definitions
  *
  * The second character then denotes the specific output that should be
  * generated for the selected facility.
@@ -1056,8 +1089,7 @@ int main(int argc, char *argv[])
 	}
       break;
     case 'P': /* The Pointer(=Mouse) facility */
-      switch(argv[2][0])
-	{
+      switch(argv[2][0]) {
 	case 'B': /* write some initial comment lines */
 	  mouse_basedefs();
 	  break;
@@ -1071,6 +1103,81 @@ int main(int argc, char *argv[])
 	  break;
 	}
 	break;
+    case 'E' : /* chtype size detection */
+      switch(argv[2][0]) {
+      case 'C':
+	{
+	  const char* fmt  = "   type    C_Chtype   is new %s;\n";
+	  const char* afmt = "   type    C_AttrType is new %s;\n";
+	  
+	  if (sizeof(chtype)==sizeof(int)) {
+	    if (sizeof(int)==sizeof(long))
+	      printf(fmt,"C_ULong");
+	    else
+	      printf(fmt,"C_UInt");
+	  }
+	  else if (sizeof(chtype)==sizeof(long)) {
+	    printf(fmt,"C_ULong");
+	  }
+	  else
+	    printf("Error\n");
+	  
+	  if (sizeof(attr_t)==sizeof(int)) {
+	    if (sizeof(int)==sizeof(long))
+	      printf(afmt,"C_ULong");
+	    else
+	      printf(afmt,"C_UInt");
+	  }
+	  else if (sizeof(attr_t)==sizeof(long)) {
+	    printf(afmt,"C_ULong");
+	  }
+	  else
+	    printf("Error\n");
+
+	  printf("define(`CF_CURSES_OK',`%d')",OK);
+	  printf("define(`CF_CURSES_ERR',`%d')",ERR);
+	  printf("define(`CF_CURSES_TRUE',`%d')",TRUE);
+	  printf("define(`CF_CURSES_FALSE',`%d')",FALSE);
+	}
+	break;
+      case 'E':
+	{
+	  char* buf  = (char*)malloc(2048);
+	  char* p    = buf;
+	  int etimin = E_OK;
+	  int etimax = E_OK;
+	  if (p) {
+	    p += eti_gen(p, E_OK, "Ok", &etimin, &etimax);
+	    p += eti_gen(p, E_SYSTEM_ERROR,"System_Error", &etimin, &etimax);
+	    p += eti_gen(p, E_BAD_ARGUMENT, "Bad_Argument", &etimin, &etimax);
+	    p += eti_gen(p, E_POSTED, "Posted", &etimin, &etimax);
+	    p += eti_gen(p, E_CONNECTED, "Connected", &etimin, &etimax);
+	    p += eti_gen(p, E_BAD_STATE, "Bad_State", &etimin, &etimax);
+	    p += eti_gen(p, E_NO_ROOM, "No_Room", &etimin, &etimax);
+	    p += eti_gen(p, E_NOT_POSTED, "Not_Posted", &etimin, &etimax);
+	    p += eti_gen(p, E_UNKNOWN_COMMAND,
+			 "Unknown_Command", &etimin, &etimax);
+	    p += eti_gen(p, E_NO_MATCH, "No_Match", &etimin, &etimax);
+	    p += eti_gen(p, E_NOT_SELECTABLE,
+			 "Not_Selectable", &etimin, &etimax);
+	    p += eti_gen(p, E_NOT_CONNECTED,
+			 "Not_Connected", &etimin, &etimax);
+	    p += eti_gen(p, E_REQUEST_DENIED,
+			 "Request_Denied", &etimin, &etimax);
+	    p += eti_gen(p, E_INVALID_FIELD,
+			 "Invalid_Field", &etimin, &etimax);
+	    p += eti_gen(p, E_CURRENT,
+			 "Current", &etimin, &etimax);
+	  }
+	  printf("   subtype Eti_Error is C_Int range %d .. %d;\n\n",
+		 etimin,etimax);
+	  printf(buf);
+	}
+	break;
+      default:
+	break;
+      }
+      break;
     default:
       break;
     }
