@@ -2,7 +2,7 @@
 <!-- 
   * t
   ****************************************************************************
-  * Copyright (c) 1998,1999,2001,2002 Free Software Foundation, Inc.         *
+  * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
   * copy of this software and associated documentation files (the            *
@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: ncurses.3x,v 1.63 2002/08/10 21:56:07 tom Exp @
+  * @Id: ncurses.3x,v 1.66 2003/05/11 00:32:53 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -354,6 +354,7 @@
               is_linetouched          <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>
               is_wintouched           <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>
               isendwin                <STRONG><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></STRONG>
+              key_defined             <STRONG><A HREF="key_defined.3x.html">key_defined(3x)</A></STRONG>*
               key_name                <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
               keybound                <STRONG><A HREF="keybound.3x.html">keybound(3x)</A></STRONG>*
               keyname                 <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
@@ -369,8 +370,8 @@
               mouseinterval           <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>*
               mousemask               <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>*
               move                    <STRONG><A HREF="curs_move.3x.html">curs_move(3x)</A></STRONG>
-              mvadd_wch               <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
 
+              mvadd_wch               <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
               mvadd_wchnstr           <STRONG><A HREF="curs_add_wchstr.3x.html">curs_add_wchstr(3x)</A></STRONG>
               mvadd_wchstr            <STRONG><A HREF="curs_add_wchstr.3x.html">curs_add_wchstr(3x)</A></STRONG>
               mvaddch                 <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
@@ -423,8 +424,8 @@
               mvwaddstr               <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
               mvwaddwstr              <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
               mvwchgat                <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
-              mvwdelch                <STRONG><A HREF="curs_delch.3x.html">curs_delch(3x)</A></STRONG>
 
+              mvwdelch                <STRONG><A HREF="curs_delch.3x.html">curs_delch(3x)</A></STRONG>
               mvwget_wch              <STRONG><A HREF="curs_get_wch.3x.html">curs_get_wch(3x)</A></STRONG>
               mvwget_wstr             <STRONG><A HREF="curs_get_wstr.3x.html">curs_get_wstr(3x)</A></STRONG>
               mvwgetch                <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
@@ -477,8 +478,8 @@
               putwin                  <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
               qiflush                 <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
               raw                     <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
-              redrawwin               <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>
 
+              redrawwin               <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>
               refresh                 <STRONG><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></STRONG>
               reset_prog_mode         <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
               reset_shell_mode        <STRONG><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></STRONG>
@@ -531,8 +532,8 @@
               tgetflag                <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
               tgetnum                 <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
               tgetstr                 <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
-              tgoto                   <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
 
+              tgoto                   <STRONG><A HREF="curs_termcap.3x.html">curs_termcap(3x)</A></STRONG>
               tigetflag               <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
               tigetnum                <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
               tigetstr                <STRONG><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></STRONG>
@@ -585,8 +586,8 @@
               wbkgrndset              <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
               wborder                 <STRONG><A HREF="curs_border.3x.html">curs_border(3x)</A></STRONG>
               wborder_set             <STRONG><A HREF="curs_border_set.3x.html">curs_border_set(3x)</A></STRONG>
-              wchgat                  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
 
+              wchgat                  <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
               wclear                  <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>
               wclrtobot               <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>
               wclrtoeol               <STRONG><A HREF="curs_clear.3x.html">curs_clear(3x)</A></STRONG>
@@ -639,8 +640,8 @@
               wstandout               <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
               wsyncdown               <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
               wsyncup                 <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
-              wtimeout                <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
 
+              wtimeout                <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
               wtouchln                <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>
               wunctrl                 <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
               wvline                  <STRONG><A HREF="curs_border.3x.html">curs_border(3x)</A></STRONG>
@@ -655,9 +656,9 @@
        descriptions.
 
        All  macros  return  the  value  of  the <STRONG>w</STRONG> version, except
-       <STRONG>setscrreg</STRONG>, <STRONG>wsetscrreg</STRONG>,  <STRONG>getyx</STRONG>,  <STRONG>getbegyx</STRONG>,  <STRONG>getmaxyx</STRONG>.   The
+       <STRONG>setscrreg</STRONG>, <STRONG>wsetscrreg</STRONG>, <STRONG>getyx</STRONG>, <STRONG>getbegyx</STRONG>, and <STRONG>getmaxyx</STRONG>.  The
        return  values  of <STRONG>setscrreg</STRONG>, <STRONG>wsetscrreg</STRONG>, <STRONG>getyx</STRONG>, <STRONG>getbegyx</STRONG>,
-       and <STRONG>getmaxyx</STRONG> are undefined (<EM>i</EM>.<EM>e</EM>., these should not be used
+       and <STRONG>getmaxyx</STRONG> are undefined (i.e., these should not be used
        as the right-hand side of assignment statements).
 
        Routines that return pointers return <STRONG>NULL</STRONG> on error.
@@ -674,7 +675,7 @@
             The debugging library checks this environment  symbol
             when the application has redirected output to a file.
             The symbol's numeric value is used for the  baudrate.
-            If  no value is found <STRONG>ncurses</STRONG> uses 9600.  This allows
+            If no value is found, <STRONG>ncurses</STRONG> uses 9600.  This allows
             testers to construct repeatable test-cases that  take
             into account costs that depend on baudrate.
 
@@ -698,7 +699,6 @@
             host  which  does  not honor NAWS (Negotiations About
             Window Size), or because you are temporarily  running
             as another user.
-
             Either  COLUMNS  or  LINES  symbols  may be specified
             independently.  This is mainly useful  to  circumvent
             legacy  misfeatures  of  terminal descriptions, e.g.,
@@ -838,7 +838,7 @@
             The complete list of directories in order follows:
 
             -  the last directory to which <STRONG>ncurses</STRONG> wrote, if any,
-               is searched first.
+               is searched first
 
             -  the directory specified by the TERMINFO symbol
 
@@ -910,8 +910,8 @@
        The <STRONG>ncurses</STRONG> library extends the fixed set of function  key
        capabilities  of  terminals  by  allowing  the application
        designer to define additional key  sequences  at  runtime.
-       See  the  <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>  and  <STRONG><A HREF="keyok.3x.html">keyok(3x)</A></STRONG>  manual pages for
-       details.
+       See  the  <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>  <STRONG><A HREF="key_defined.3x.html">key_defined(3x)</A></STRONG>,  and  <STRONG><A HREF="keyok.3x.html">keyok(3x)</A></STRONG>
+       manual pages for details.
 
        The  <STRONG>ncurses</STRONG>  library  can  exploit  the  capabilities  of
        terminals  which  implement the ISO-6429 SGR 39 and SGR 49

@@ -2,7 +2,7 @@
 <!-- 
   * t
   ****************************************************************************
-  * Copyright (c) 1998-2001,2003 Free Software Foundation, Inc.              *
+  * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
   * copy of this software and associated documentation files (the            *
@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: form_fieldtype.3x,v 1.10 2003/01/05 21:05:54 tom Exp @
+  * @Id: form_fieldtype.3x,v 1.12 2003/05/10 20:33:49 jmc Exp @
 -->
 <HTML>
 <HEAD>
@@ -72,11 +72,11 @@
        The function <STRONG>new_fieldtype</STRONG> creates a new field type usable
        for data validation.  You supply it  with  <EM>field</EM><STRONG>_</STRONG><EM>check</EM>,  a
        predicate  to check the validity of an entered data string
-       whenever the user attempt to leave a field.  The (FIELD *)
-       argument  is passed in so the validation predicate can see
-       the field's buffer, sizes and other attributes; the second
-       argument  is an argument-block structure, about which more
-       below.
+       whenever the user attempts to leave a field.   The  (FIELD
+       *)  argument  is passed in so the validation predicate can
+       see the field's buffer, sizes and  other  attributes;  the
+       second  argument  is  an  argument-block  structure, about
+       which more below.
 
        You also supply <STRONG>new_fieldtype</STRONG> with <EM>char</EM><STRONG>_</STRONG><EM>check</EM>, a  function
        to  validate input characters as they are entered; it will
@@ -99,6 +99,10 @@
        In this case it is assumed that <EM>make</EM><STRONG>_</STRONG><EM>arg</EM> does not allocate
        memory  but simply loads the argument into a single scalar
        value.
+
+       The function <STRONG>link_fieldtype</STRONG> creates a new field type  from
+       the  two  given  types.   They are connected by an logical
+       'OR'.
 
        The   form    driver    requests    <STRONG>REQ_NEXT_CHOICE</STRONG>    and
        <STRONG>REQ_PREV_CHOICE</STRONG> assume that the possible values of a field
@@ -155,10 +159,6 @@
 <H2>AUTHORS</H2><PRE>
        Juergen  Pfeifer.   Manual  pages  and  adaptation for new
        curses by Eric S. Raymond.
-
-
-
-
 
 
 

@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.749 2003/05/25 00:13:21 tom Exp $
+-- $Id: NEWS,v 1.750 2003/05/31 23:07:29 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030531
+	+ regenerated html manpages.
+	+ modify ifdef's in curses.h.in that disabled use of __attribute__()
+	  for g++, since recent versions implement the cases which ncurses uses
+	  (Debian #195230).
+	+ modify _nc_get_token() to handle a case where an entry has no
+	  description, and capabilities begin on the same line as the entry
+	  name.
+	+ fix a typo in ncurses_dll.h reported by gcc 3.3.
+	+ add an entry for key_defined.3x to man_db.renames.
 
 20030524
 	+ modify setcchar() to allow converting control characters to complex
