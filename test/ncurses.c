@@ -1722,7 +1722,7 @@ static void demo_forms(void)
 {
     WINDOW	*w;
     FORM	*form;
-    FIELD	*f[9];
+    FIELD	*f[10];
     int		finished = 0, c;
 
     mvaddstr(10, 57, "Forms Entry Test");

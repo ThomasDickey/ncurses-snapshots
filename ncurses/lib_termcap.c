@@ -23,6 +23,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "termcap.h"
+
+#define __INTERNAL_CAPS_VISIBLE
 #include "term.h"
 
 /* 

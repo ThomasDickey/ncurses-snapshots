@@ -14,5 +14,5 @@ int vsscanf(const char *str, const char *format, va_list ap)
 	return -1;	/* not implemented */
 }
 #else
-void _nc_vsscanf() { }	/* nonempty for strict ANSI compilers */
+void _nc_vsscanf(void) { }	/* nonempty for strict ANSI compilers */
 #endif

@@ -335,7 +335,7 @@ extern int is_linetouched(WINDOW *,int);
 extern int is_wintouched(WINDOW *);
 extern WINDOW *initscr(void);
 extern int isendwin(void);
-extern char *keyname(int);
+extern const char *keyname(int);
 extern int keypad(WINDOW *,bool);
 extern char killchar(void);
 extern int leaveok(WINDOW *,bool);

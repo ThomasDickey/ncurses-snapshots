@@ -8,7 +8,7 @@
 #	rmSoLocs ("yes" or "no", flag to add extra clean target)
 #
 # Notes:
-#	CLIX's nawk doesn't like underscores in command-line variable names.
+#	CLIXs nawk does not like underscores in command-line variable names.
 #	Mixed-case is ok.
 #
 function symlink(src,dst) {

@@ -71,6 +71,7 @@ $2 == "%%-STOP-HERE-%%"	{
 			printf "#define NUMWRITE  %d\n", NumberCount
 			printf "#define STRWRITE  %d\n", StringCount
 			print  ""
+			print  "#ifdef __INTERNAL_CAPS_VISIBLE"
 		}
 
 /^#/		{next;}
@@ -88,6 +89,7 @@ $3 == "str"	{
 		}
 
 END		{
+			print  "#endif /* __INTERNAL_CAPS_VISIBLE */"
 			print  ""
 			print  ""
 			printf "#define BOOLCOUNT %d\n", BoolCount

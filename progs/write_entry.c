@@ -48,7 +48,6 @@ extern int errno;
 #include <tic.h>
 #include "term.h"
 #include "term_entry.h"
-#include "object.h"
 
 static int write_object(FILE *, TERMTYPE *);
 
@@ -224,33 +223,65 @@ static int	call_count;
 	}
 }
 
-
 /*
  *	int
- *	write_object(fp, tp)
+ *	_nc_must_swap(void)
  *
- *	Write out the compiled entry to the given file.
- *	Return 0 if OK or -1 if not.
+ *	Test whether this machine will need byte-swapping
  *
  */
 
+static inline int
+must_swap(void)
+{
+union {
+    short num;
+    unsigned char  byte[2];
+}test;
+
+	test.num = 1;
+	return(test.byte[1]);
+}
+
 #define swap(x)		(((x >> 8) & 0377) + 256 * (x & 0377))
+
+#define HI(x)			((x) / 256)
+#define LO(x)			((x) % 256)
+#define LITTLE_ENDIAN(p, x)	(p)[0] = LO(x), (p)[1] = HI(x)
+#define min(a, b)		((a) > (b)  ?  (b)  :  (a))
+
+#define SHOWOFFSET
 
 static int write_object(FILE *fp, TERMTYPE *tp)
 {
-struct header	header;
 char		*namelist;
-short		namelen;
+short		namelen, boolmax, nummax, strmax;
 char		zero = '\0';
 int		i, nextfree;
 short		offsets[STRCOUNT];
+unsigned char	buf[MAX_ENTRY_SIZE];
 
 	namelist = tp->term_names;
 	namelen = strlen(namelist) + 1;
 
-	nextfree = 0;
+	boolmax = 0;
+	for (i = 0; i < BOOLWRITE; i++)
+		if (tp->Booleans[i])
+			boolmax = i+1;
+
+	nummax = 0;
+	for (i = 0; i < NUMWRITE; i++)
+		if (tp->Numbers[i] != ABSENT_NUMERIC)
+			nummax = i+1;
+
+	strmax = 0;
 	for (i = 0; i < STRWRITE; i++)
-	    if (tp->Strings[i] == (char *)NULL)
+		if (tp->Strings[i] != ABSENT_STRING)
+			strmax = i+1;
+
+	nextfree = 0;
+	for (i = 0; i < strmax; i++)
+	    if (tp->Strings[i] == ABSENT_STRING)
 		offsets[i] = -1;
 	    else
 	    {
@@ -258,46 +289,64 @@ short		offsets[STRCOUNT];
 		nextfree += strlen(tp->Strings[i]) + 1;
 	    }
 
-	if (_nc_must_swap()) {
-	    	header.magic = swap(MAGIC);
-	    	header.name_size = swap(namelen);
-	    	header.bool_count = swap(BOOLWRITE);
-	    	header.num_count = swap(NUMWRITE);
-	    	header.str_count = swap(STRWRITE);
-	    	header.str_size = swap(nextfree);
-	} else {
-	    	header.magic = MAGIC;
-	    	header.name_size = namelen;
-	    	header.bool_count = BOOLWRITE;
-	    	header.num_count = NUMWRITE;
-	    	header.str_count = STRWRITE;
-	    	header.str_size = nextfree;
-	}
+	/* fill in the header */
+	LITTLE_ENDIAN(buf,    MAGIC);
+	LITTLE_ENDIAN(buf+2,  min(namelen, MAX_NAME_SIZE + 1));
+	LITTLE_ENDIAN(buf+4,  boolmax);
+	LITTLE_ENDIAN(buf+6,  nummax);
+	LITTLE_ENDIAN(buf+8,  strmax);
+	LITTLE_ENDIAN(buf+10, nextfree);
 
-	if (fwrite(&header, sizeof(header), 1, fp) != 1
+	/* write out the header */
+	if (fwrite(buf, 12, 1, fp) != 1
 		||  fwrite(namelist, sizeof(char), (size_t)namelen, fp) != namelen
-		||  fwrite(tp->Booleans, sizeof(char), BOOLWRITE, fp) != BOOLWRITE)
-	    	return(ERR);
-	
-	if ((namelen+BOOLWRITE) % 2 != 0  &&  fwrite(&zero, sizeof(char), 1, fp) != 1)
+		||  fwrite(tp->Booleans, sizeof(char), boolmax, fp) != boolmax)
 	    	return(ERR);
 
-	if (_nc_must_swap()) {
-	    	for (i = 0; i < NUMWRITE; i++)
-			tp->Numbers[i] = swap(tp->Numbers[i]);
-	    	for (i = 0; i < STRWRITE; i++)
-			offsets[i] = swap(offsets[i]);
+	/* the even-boundary padding byte */
+	if ((namelen+boolmax) % 2 != 0  &&  fwrite(&zero, sizeof(char), 1, fp) != 1)
+	    	return(ERR);
+
+#ifdef SHOWOFFSET
+	(void) fprintf(stderr, "Numerics begin at %04lx\n", ftell(fp));
+#endif /* SHOWOFFSET */
+
+	/* the numerics */
+	for (i = 0; i < nummax; i++)
+	{
+		if (tp->Numbers[i] == -1)	/* HI/LO won't work */
+			buf[2*i] = buf[2*i + 1] = 0377;
+		else
+			LITTLE_ENDIAN(buf + 2*i, tp->Numbers[i]);
 	}
+	if (fwrite(buf, 2, nummax, fp) != nummax)
+		return(ERR);
+ 
+#ifdef SHOWOFFSET
+	(void) fprintf(stderr, "String offets begin at %04lx\n", ftell(fp));
+#endif /* SHOWOFFSET */
 
-	if (fwrite(tp->Numbers, sizeof(short), NUMWRITE, fp) != NUMWRITE
-			|| fwrite(offsets, sizeof(short), STRWRITE, fp) != STRWRITE)
+	/* the string offsets */
+	for (i = 0; i < strmax; i++)
+		if (offsets[i] == -1)	/* HI/LO won't work */
+			buf[2*i] = buf[2*i + 1] = 0377;
+		else
+			LITTLE_ENDIAN(buf + 2*i, offsets[i]);
+	if (fwrite(buf, 2, strmax, fp) != strmax)
 		return(ERR);
 
-	for (i = 0; i < STRWRITE; i++)
+#ifdef SHOWOFFSET
+	(void) fprintf(stderr, "String table begins at %04lx\n", ftell(fp));
+#endif /* SHOWOFFSET */
+
+	/* the strings */
+	for (i = 0; i < strmax; i++)
 	    if (tp->Strings[i] != (char *)NULL)
 		if (fwrite(tp->Strings[i], sizeof(char), strlen(tp->Strings[i]) + 1, fp) != strlen(tp->Strings[i]) + 1)
 		    return(ERR);
 
         return(OK);
 }
+
+
 

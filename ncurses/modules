@@ -62,7 +62,7 @@ lib_unctrl	lib		$(srcdir)
 lib_vidattr	lib		$(srcdir)	../include/term.h 
 lib_window	lib		$(srcdir)
 names		lib		.
-read_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/object.h 
+read_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 read_termcap	lib		$(srcdir)	../include/term.h 
 
 # Modules for porting

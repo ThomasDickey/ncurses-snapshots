@@ -33,13 +33,15 @@
 #include <string.h>
 #include <stdlib.h>
 #include "tic.h"
+#define __INTERNAL_CAPS_VISIBLE
 #include "term.h"
 #include "term_entry.h"
 #include "parametrized.h"
 
 struct token	_nc_curr_token;
 
-static	void set_termcap_defaults(TERMTYPE *);
+static	void postprocess_termcap(TERMTYPE *);
+static	void postprocess_terminfo(TERMTYPE *);
 
 /*
  *	int
@@ -63,7 +65,7 @@ static	void set_termcap_defaults(TERMTYPE *);
 int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 {
     int			token_type;
-    struct name_table_entry	*entry_ptr;
+    struct name_table_entry	const *entry_ptr;
     char			*ptr, *bp, buf[MAX_TERMCAP_LENGTH];
 
     token_type = _nc_get_token();
@@ -118,24 +120,52 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 	     * making this case fast, aliased caps aren't common now
 	     * and will get rarer.
 	     */
-	    if (_nc_syntax && entry_ptr == NOTFOUND)
+	    if (entry_ptr == NOTFOUND)
 	    {
 		const struct alias	*ap;
 
-		for (ap = _nc_alias_table; ap->from; ap++)
-		    if (strcmp(ap->from, _nc_curr_token.tk_name) == 0)
-		    {
-			entry_ptr = _nc_find_entry(ap->to, _nc_cap_hash_table);
-			if (entry_ptr && !silent)
-			    _nc_warning("%s aliased to %s", ap->from, ap->to);
-			break;
-		    }
+		if (_nc_syntax == SYN_TERMCAP)
+		{
+		    for (ap = _nc_capalias_table; ap->from; ap++)
+			if (strcmp(ap->from, _nc_curr_token.tk_name) == 0)
+			{
+			    if (ap->to == (char *)NULL)
+			    {
+				_nc_warning("%s (%s termcap extension) ignored",
+					    ap->from, ap->source);
+				goto nexttok;
+			    }
+
+			    entry_ptr = _nc_find_entry(ap->to, _nc_cap_hash_table);
+			    if (entry_ptr && !silent)
+				_nc_warning("%s (%s termcap extension) aliased to %s", ap->from, ap->source, ap->to);
+			    break;
+			}
+		}
+		else /* if (_nc_syntax == SYN_TERMINFO) */
+		{
+		    for (ap = _nc_infoalias_table; ap->from; ap++)
+			if (strcmp(ap->from, _nc_curr_token.tk_name) == 0)
+			{
+			    if (ap->to == (char *)NULL)
+			    {
+				_nc_warning("%s (%s terminfo extension) ignored",
+					    ap->from, ap->source);
+				goto nexttok;
+			    }
+
+			    entry_ptr = _nc_find_entry(ap->to, _nc_info_hash_table);
+			    if (entry_ptr && !silent)
+				_nc_warning("%s (%s terminfo extension) aliased to %s", ap->from, ap->source, ap->to);
+			    break;
+			}
+		}
 	    }
 
 	    /* can't find this cap name, not even as an alias */
 	    if (entry_ptr == NOTFOUND) {
 		if (!silent)
-		    _nc_warning("Unknown Capability - '%s'",
+		    _nc_warning("unknown capability '%s'",
 				_nc_curr_token.tk_name);
 		continue;
 	    }
@@ -167,7 +197,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 		else
 		{
 		    if (!silent)
-			_nc_warning("Wrong type used for capability '%s'",
+			_nc_warning("wrong type used for capability '%s'",
 				    _nc_curr_token.tk_name);
 		    continue;
 		}
@@ -211,22 +241,28 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 
 	    default:
 		if (!silent)
-		    _nc_warning("Unknown token type");
+		    _nc_warning("unknown token type");
 		_nc_panic_mode((_nc_syntax==SYN_TERMCAP) ? ':' : ',');
 		continue;
 	    }
 	} /* end else cur_token.name != "use" */
-
+    nexttok:
+	continue;	/* cannot have a label w/o statement */
     } /* endwhile (not EOF and not NAMES) */
 
     _nc_push_token(token_type);
 
     /*
-     * If this is a termcap entry, try to deduce as much as possible
-     * from obsolete termcap capabilities.
+     * Try to deduce as much as possible from extension capabilities
+     * (this includes obsolete BSD capabilities).  Sigh...it would be more
+     * space-efficient to call this after use resolution, but it has
+     * to be done before entry allocation is wrapped up.
      */
-    if (_nc_syntax == SYN_TERMCAP && !literal)
-	set_termcap_defaults(&entryp->tterm);
+    if (!literal)
+	if (_nc_syntax == SYN_TERMCAP)
+	    postprocess_termcap(&entryp->tterm);
+	else 
+	    postprocess_terminfo(&entryp->tterm);
 
     _nc_wrap_entry(entryp);
 
@@ -323,16 +359,23 @@ static char *C_HT = "\t";
  * This bit of legerdemain turns all the terminfo variable names into
  * references to locations in the arrays Booleans, Numbers, and Strings ---
  * precisely what's needed.
- *
- * Note: This code is the functional inverse of the fragment in capdefaults.c.
  */
+
 #undef CUR
 #define CUR tp->
 
 static
-void set_termcap_defaults(TERMTYPE *tp)
+void postprocess_termcap(TERMTYPE *tp)
 {
     char buf[MAX_LINE * 2 + 2];
+
+    /*
+     * TERMCAP DEFAULTS AND OBSOLETE-CAPABILITY TRANSLATIONS
+     *
+     * This first part of the code is the functional inverse of the
+     * fragment in capdefaults.c.
+     * ----------------------------------------------------------------------
+     */
 
     if (WANTED(init_3string) && termcap_init2)
 	init_3string = _nc_save_str(termcap_init2);
@@ -368,7 +411,7 @@ void set_termcap_defaults(TERMTYPE *tp)
 		cursor_down = _nc_save_str(C_LF);
 	}
     }
-    if (WANTED(scroll_forward) && crt_without_scrolling != 1) {
+    if (WANTED(scroll_forward) && crt_no_scrolling != 1) {
 	if (PRESENT(linefeed_if_not_lf)) 
 	    cursor_down = linefeed_if_not_lf;
 	else if (linefeed_is_newline != 1) {
@@ -400,6 +443,15 @@ void set_termcap_defaults(TERMTYPE *tp)
 	    newline = _nc_save_str(buf);
 	}
     }
+
+    /*
+     * Inverse of capdefaults.c code ends here.
+     * ----------------------------------------------------------------------
+     *
+     * TERMCAP-TO TERMINFO MAPPINGS FOR SOURCE TRANSLATION
+     *
+     * These translations will *not* be inverted by tgetent().
+     */
 
     /*
      * We wait until now to decide if we've got a working cr because even
@@ -455,7 +507,8 @@ void set_termcap_defaults(TERMTYPE *tp)
     if (PRESENT(other_non_function_keys))
     {
 	char	*dp, *cp = strtok(other_non_function_keys, ",");
-	struct name_table_entry	*from_ptr, *to_ptr;
+	struct name_table_entry	const *from_ptr;
+	struct name_table_entry	const *to_ptr;
 	assoc	*ap;
 	char	buf2[MAX_TERMINFO_LENGTH];
 	bool	foundim;
@@ -544,4 +597,100 @@ void set_termcap_defaults(TERMTYPE *tp)
 	if (WANTED(key_down))
 	    key_down = _nc_save_str(C_LF);
     }
+
+    /*
+     * Translate XENIX forms characters.
+     */ 
+    if (PRESENT(acs_ulcorner) ||
+	PRESENT(acs_llcorner) ||
+	PRESENT(acs_urcorner) ||
+	PRESENT(acs_lrcorner) ||
+	PRESENT(acs_ltee) ||
+	PRESENT(acs_rtee) ||
+	PRESENT(acs_btee) ||
+	PRESENT(acs_ttee) ||
+	PRESENT(acs_hline) ||
+	PRESENT(acs_vline) ||
+	PRESENT(acs_plus))
+    {
+	char	buf2[MAX_TERMCAP_LENGTH], *bp = buf2;
+
+	if (acs_ulcorner && acs_ulcorner[1] == '\0')
+	{
+	    *bp++ = 'l';
+	    *bp++ = *acs_ulcorner;
+	}
+	if (acs_llcorner && acs_llcorner[1] == '\0')
+	{
+	    *bp++ = 'm';
+	    *bp++ = *acs_llcorner;
+	}
+	if (acs_urcorner && acs_urcorner[1] == '\0')
+	{
+	    *bp++ = 'k';
+	    *bp++ = *acs_urcorner;
+	}
+	if (acs_lrcorner && acs_lrcorner[1] == '\0')
+	{
+	    *bp++ = 'j';
+	    *bp++ = *acs_lrcorner;
+	}
+	if (acs_ltee && acs_ltee[1] == '\0')
+   	{
+	    *bp++ = 't';
+	    *bp++ = *acs_ltee;
+	}
+	if (acs_rtee && acs_rtee[1] == '\0')
+   	{
+	    *bp++ = 'u';
+	    *bp++ = *acs_rtee;
+	}
+	if (acs_btee && acs_btee[1] == '\0')
+   	{
+	    *bp++ = 'v';
+	    *bp++ = *acs_btee;
+	}
+	if (acs_ttee && acs_ttee[1] == '\0')
+   	{
+	    *bp++ = 'w';
+	    *bp++ = *acs_ttee;
+	}
+	if (acs_hline && acs_hline[1] == '\0')
+  	{
+	    *bp++ = 'q';
+	    *bp++ = *acs_hline;
+	}
+	if (acs_vline && acs_vline[1] == '\0')
+  	{
+	    *bp++ = 'x';
+	    *bp++ = *acs_vline;
+	}
+	if (acs_plus)
+   	{
+	    *bp++ = 'n';
+	    strcpy(bp, acs_plus);
+	    bp = buf2 + strlen(buf2);
+	}
+
+	if (bp != buf2)
+	{
+	    *bp++ = '\0';
+	    acs_chars = _nc_save_str(buf2);
+	    _nc_warning("acsc string synthesized from XENIX capabilities");
+	}
+    }
 }
+
+static
+void postprocess_terminfo(TERMTYPE *tp)
+{
+    /*
+     * TERMINFO-TO-TERMINFO TRANSLATIONS
+     *
+     * ...will go here.  There aren't any yet, but when we figure out
+     * how the characters in an AIX box1 or box2 capability map to
+     * ACSC characters (for example) there will be.
+     */
+}
+
+/* parse_entry.c ends here */

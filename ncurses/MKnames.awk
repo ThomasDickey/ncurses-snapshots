@@ -29,22 +29,24 @@ BEGIN		{
 			print  "DCL(strcodes)   = {"		> "strcodes"
 		}
 
+$1 == "SKIPWARN"	{next;}
+
 $3 == "bool"	{
-			printf "\t\t%s,\n", $2 > "boolnames"
+			printf "\t\t\"%s\",\n", $2 > "boolnames"
 			printf "\t\t\"%s\",\n", $1 > "boolfnames"
-			printf "\t\t%s,\n", $4 > "boolcodes"
+			printf "\t\t\"%s\",\n", $4 > "boolcodes"
 		}
 
 $3 == "num"	{
-			printf "\t\t%s,\n", $2 > "numnames"
+			printf "\t\t\"%s\",\n", $2 > "numnames"
 			printf "\t\t\"%s\",\n", $1 > "numfnames"
-			printf "\t\t%s,\n", $4 > "numcodes"
+			printf "\t\t\"%s\",\n", $4 > "numcodes"
 		}
 
 $3 == "str"	{
-			printf "\t\t%s,\n", $2 > "strnames"
+			printf "\t\t\"%s\",\n", $2 > "strnames"
 			printf "\t\t\"%s\",\n", $1 > "strfnames"
-			printf "\t\t%s,\n", $4 > "strcodes"
+			printf "\t\t\"%s\",\n", $4 > "strcodes"
 		}
 
 END		{

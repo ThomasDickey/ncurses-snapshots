@@ -125,6 +125,81 @@ The error messages from this \fBtic\fR have the same format as GNU C
 error messages, and can be parsed by GNU Emacs's compile facility.
 
 The -I, -C, and -p options are not supported under SVr4.
+.SH TRANSLATIONS FROM NONSTANDARD CAPABILITIES
+.PP
+Some obsolete nonstandard capabilities will automatically be translated
+into standard (SVr4/XSI Curses) terminfo capabilities by \fBtic\fR.
+Whenever one of these automatic translations is done, the compiler
+will issue an notification to stderr, inviting the user to check that
+it has not mistakenly translated a completely unknown and random
+capability and/or syntax error.
+.TS H
+center;
+c c c c
+c c c c
+l l l l.
+Nonstd	Std	From	Terminfo
+name	name		capability
+.\".TH
+BO	mr	AT&T	enter_reverse_mode
+CI	vi	AT&T	cursor_invisible
+CV	ve	AT&T	cursor_normal
+DS	mh	AT&T	enter_dim_mode
+EE	me	AT&T	exit_attribute_mode	
+FE	LF	AT&T	label_on
+FL	LO	AT&T	label_off
+XS	mk	AT&T	enter_secure_mode
+EN	@7	XENIX	key_end
+GE	ae	XENIX	exit_alt_charset_mode
+GS	as	XENIX	enter_alt_charset_mode
+HM	kh	XENIX	key_home
+LD	kL	XENIX	key_dl
+PD	kN	XENIX	key_npage
+PN	po	XENIX	prtr_off
+PS	pf	XENIX	prtr_on
+PU	kP	XENIX	key_ppage
+RT	@8	XENIX	kent
+UP	ku	XENIX	kcuu1
+.TE
+XENIX termcap also used to have a set of extension capabilities
+for forms drawing, designed to take advantage of the IBM PC
+high-half graphics.  They were as follows:
+.TS H
+center;
+c c
+c c
+l l.
+G2	upper left
+G3	lower left
+G1	upper right
+G4	lower right
+GR	pointing right
+GL	pointing left
+GU	pointing up
+GD	pointing down
+GH	horizontal line
+GV	vertical line
+GC	intersection
+G6	upper left
+G7	lower left
+G5	upper right
+G8	lower right
+Gr	tee pointing right
+Gr	tee pointing left
+Gu	tee pointing up
+Gd	tee pointing down
+Gh	horizontal line
+Gv	vertical line
+Gc	intersection
+.TE
+If the single-line capabilities occur in an entry, they will automatically
+be composed into an \fBacsc\fR string.  The double-line capabilities are
+discarded with a warning message.
+.PP
+IBM's AIX has a terminfo facility descended from SVr1 terminfo but incompatible
+with the SVr4 format.  Two of its extension capabilities \fBksel\fR and
+\fBkbtab\fR, will automatically be translated to their standard equivalents
+(\fBkslt\fR and \fBkcbt\fR).
 .SH FILES
 .TP 5
 \fB\*d/?/*\fR

@@ -49,7 +49,6 @@
 ./include/config_h.in
 ./include/curses.h.in
 ./include/edit_cfg.sh
-./include/object.h
 ./include/parametrized.sh
 ./include/term_entry.h
 ./include/termcap.h.in

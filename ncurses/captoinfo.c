@@ -204,7 +204,7 @@ char *_nc_captoinfo(
 /* convert a termcap string to terminfo format */
 register char *cap,	/* relevant terminfo capability index */
 register char *s,	/* string value of the capability */
-bool parametrized)	/* do % translations? */	
+int parametrized)	/* do % translations if 1, pad translations if >=0 */
 {
     static char line[MAX_ENTRY];
     char *capstart;
@@ -218,9 +218,9 @@ bool parametrized)	/* do % translations? */
 
     dp = line;
 
-    /* skip the initial padding */
+    /* skip the initial padding (if we haven't been told not to) */
     capstart = (char *)NULL;
-    if (isdigit(*s))
+    if (parametrized >= 0 && isdigit(*s))
 	for (capstart = s; ; s++)
 	    if (!(isdigit(*s) || *s == '*' || *s == '.'))
 		break;
@@ -229,7 +229,7 @@ bool parametrized)	/* do % translations? */
 	switch(*s) {
 	case '%':
 	    s++;
-	    if (!parametrized) {
+	    if (parametrized < 1) {
 		*dp++ = '%';
 		break;
 	    }
@@ -488,7 +488,7 @@ char *_nc_infotocap(
 /* convert a terminfo string to termcap format */
 register char *cap,	/* relevant termcap capability index */
 register char *str,	/* string value of the capability */
-bool parametrized)	/* do % translations? */
+int parametrized)	/* do % translations if 1, pad translations if >=0 */
 {
     int	seenone = 0, seentwo = 0, saw_m = 0, saw_n = 0;
     char *padding, ch1 = 0, ch2 = 0;
@@ -532,7 +532,7 @@ bool parametrized)	/* do % translations? */
 		str++;
 	    --str;
 	}	
-	else if (*str != '%' || !parametrized)
+	else if (*str != '%' || (parametrized < 1))
 	    *(bufptr++) = *str;
 	else if (sscanf(str, "%%?%%{%d}%%>%%t%%{%d}%%+%%;", &c1,&c2) == 2)
 	{

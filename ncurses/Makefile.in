@@ -84,7 +84,11 @@ $(ticdir) :
 keys.tries: $(srcdir)/keys.list
 	$(AWK) -f $(srcdir)/MKkeys.awk $(srcdir)/keys.list > keys.tries
 
+make_hash : $(srcdir)/comp_hash.c
+	$(CC) -o $@ $(CPPFLAGS) -DMAIN_PROGRAM $(srcdir)/comp_hash.c
+
 comp_captab.c: \
+		make_hash \
 		../include/hashsize.h \
 		../include/Caps.filtered \
 		$(srcdir)/MKcaptab.awk
@@ -107,6 +111,7 @@ TAGS:
 clean ::
 	-rm -f tags TAGS *~
 	-rm -f $(AUTO_SRC)
+	-rm -f make_hash
 
 distclean: clean
 	-rm -f Makefile

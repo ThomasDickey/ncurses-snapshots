@@ -66,7 +66,7 @@ Overview of ncurses 1.9.4
        characters through a new highlight, A_PCCHARSET.
        
      * Automatic fallback to the /etc/termcap file can be compiled in for
-       systems withould a terminfo tree. This feature is neither fast nor
+       systems without a terminfo tree. This feature is neither fast nor
        cheap, you don't want to use it unless you have to, but it's
        there.
        
@@ -98,7 +98,7 @@ Overview of ncurses 1.9.4
    vh-1.6
           Volks-Hypertext browser for the Jargon File
           
-   blue   Blue Moon solitare game
+   blue   Blue Moon solitaire game
           
    u386mon
           System performance monitor for SVr4

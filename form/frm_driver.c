@@ -70,6 +70,8 @@
 static int Inter_Field_Navigation ( int (* const fct) (FORM *), FORM * form );
 static int FN_Next_Field (FORM * form);
 static int FN_Previous_Field (FORM * form);
+static int FE_New_Line(FORM *);
+static int FE_Delete_Previous(FORM *);
 
 /*----------------------------------------------------------------------------
   Macro Definitions.
@@ -2059,8 +2061,6 @@ static int Wrapping_Not_Necessary_Or_Wrapping_Ok(FORM * form)
 +--------------------------------------------------------------------------*/
 static int Field_Editing(int (* const fct) (FORM *), FORM * form)
 {
-  static int FE_New_Line(FORM *);
-  static int FE_Delete_Previous(FORM *);
   int res = E_REQUEST_DENIED;
 
   /* We have to deal here with the specific case of the overloaded 
