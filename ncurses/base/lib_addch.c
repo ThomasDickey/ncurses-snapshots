@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.63 2001/12/19 01:05:42 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.64 2002/05/11 18:16:43 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -129,13 +129,12 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
     CHANGED_CELL(line, x);
 
     line->text[x++] = ch;
-    if_WIDEC( {
-	     if (wcwidth(CharOf(ch)) > 1)
-	     AddAttr(line->text[x++], WA_NAC);
-	     }
-    )
+    if_WIDEC({
+	if (wcwidth(CharOf(ch)) > 1)
+	    AddAttr(line->text[x++], WA_NAC);
+    });
 
-	TR(TRACE_VIRTPUT, ("(%d, %d) = %s", win->_cury, x, _tracech_t(CHREF(ch))));
+    TR(TRACE_VIRTPUT, ("(%d, %d) = %s", win->_cury, x, _tracech_t(CHREF(ch))));
     if (x > win->_maxx) {
 	/*
 	 * The _WRAPPED flag is useful only for telling an application that

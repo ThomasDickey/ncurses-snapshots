@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.127 2002/04/20 23:04:19 tom Exp $ */
+/* $Id: curses.h.in,v 1.128 2002/05/11 21:38:02 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -660,7 +660,6 @@ extern NCURSES_EXPORT(int) ungetch (int);				/* implemented */
 extern NCURSES_EXPORT(int) untouchwin (WINDOW *);			/* generated */
 extern NCURSES_EXPORT(void) use_env (bool);				/* implemented */
 extern NCURSES_EXPORT(int) vidattr (chtype);				/* implemented */
-extern NCURSES_EXPORT(int) vid_attr (attr_t, short, void *);		/* generated:WIDEC */
 extern NCURSES_EXPORT(int) vidputs (chtype, int (*)(int));		/* implemented */
 extern NCURSES_EXPORT(int) vline (chtype, int);				/* generated */
 extern NCURSES_EXPORT(int) vwprintw (WINDOW *, NCURSES_CONST char *,va_list);	/* implemented */
@@ -723,6 +722,13 @@ extern NCURSES_EXPORT(void) wsyncup (WINDOW *);				/* implemented */
 extern NCURSES_EXPORT(void) wtimeout (WINDOW *,int);			/* implemented */
 extern NCURSES_EXPORT(int) wtouchln (WINDOW *,int,int,int);		/* implemented */
 extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
+
+/*
+ * vid_attr() was implemented originally based on the draft of XSI curses.
+ */
+#ifndef _XOPEN_SOURCE_EXTENDED
+#define vid_attr(a,pair,opts) vidattr(a)
+#endif
 
 /* attributes */
 
@@ -919,7 +925,6 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 #define slk_attr_off(a,v)		((v) ? ERR : slk_attroff(a))
 #define slk_attr_on(a,v)		((v) ? ERR : slk_attron(a))
 
-#define vid_attr(a,pair,opts)		vidattr(a)
 #define wattr_get(win,a,p,opts)		((void)((a) != 0 && (*(a) = (win)->_attrs)), \
 					 (void)((p) != 0 && (*(p) = PAIR_NUMBER((win)->_attrs))), \
 					 OK)

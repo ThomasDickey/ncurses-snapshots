@@ -1,10 +1,23 @@
--- $Id: NEWS,v 1.684 2002/04/30 00:40:55 tom Exp $
+-- $Id: NEWS,v 1.685 2002/05/11 22:14:24 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020511
+	+ implement vid_puts(), vid_attr(), term_attrs() based on the narrow-
+	  character versions as well.
+	+ implement erasewchar(), killwchar() based on erasechar() and
+	  killchar().
+	+ modify erasechar() and killchar() to return ERR if the value was
+	  VDISABLE.
+	+ correct a bug in wresize() in handling subwindows (based on patch by
+	  Roger Gammans <rgammans@computer-surgery.co.uk>, report by Scott Beck
+	  <scott@gossamer-threads.com>).
+	+ improve test/tclock.c by making the second-hand update more often
+	  if gettimeofday() is available.
 
 20020429
 	+ workaround for Solaris sed with MKlib_gen.sh (reported by Andy

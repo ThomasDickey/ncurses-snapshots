@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.60 2002/04/13 22:26:48 tom Exp $
+.\" $Id: ncurses.3x,v 1.61 2002/05/11 21:15:32 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
@@ -267,6 +267,7 @@ echochar/\fBcurs_addch\fR(3X)
 endwin/\fBcurs_initscr\fR(3X)
 erase/\fBcurs_clear\fR(3X)
 erasechar/\fBcurs_termattrs\fR(3X)
+erasewchar/\fBcurs_termattrs\fR(3X)
 filter/\fBcurs_util\fR(3X)
 flash/\fBcurs_beep\fR(3X)
 flushinp/\fBcurs_util\fR(3X)
@@ -327,6 +328,7 @@ keyname/\fBcurs_util\fR(3X)
 keyok/\fBkeyok\fR(3X)*
 keypad/\fBcurs_inopts\fR(3X)
 killchar/\fBcurs_termattrs\fR(3X)
+killwchar/\fBcurs_termattrs\fR(3X)
 leaveok/\fBcurs_outopts\fR(3X)
 longname/\fBcurs_termattrs\fR(3X)
 mcprint/\fBcurs_print\fR(3X)*
@@ -487,6 +489,7 @@ start_color/\fBcurs_color\fR(3X)
 subpad/\fBcurs_pad\fR(3X)
 subwin/\fBcurs_window\fR(3X)
 syncok/\fBcurs_window\fR(3X)
+term_attrs/\fBcurs_termattrs\fR(3X)
 termattrs/\fBcurs_termattrs\fR(3X)
 termname/\fBcurs_termattrs\fR(3X)
 tgetent/\fBcurs_termcap\fR(3X)
@@ -513,6 +516,8 @@ untouchwin/\fBcurs_touch\fR(3X)
 use_default_colors/\fBdefault_colors\fR(3X)*
 use_env/\fBcurs_util\fR(3X)
 use_extended_names/\fBcurs_extend\fR(3X)*
+vid_attr/\fBcurs_terminfo\fR(3X)
+vid_puts/\fBcurs_terminfo\fR(3X)
 vidattr/\fBcurs_terminfo\fR(3X)
 vidputs/\fBcurs_terminfo\fR(3X)
 vline/\fBcurs_border\fR(3X)
@@ -850,12 +855,8 @@ The \fBncurses\fR library is intended to be BASE-level conformant with the XSI
 Curses standard.  Certain portions of the EXTENDED XSI Curses functionality
 (including color support) are supported.  The following EXTENDED XSI Curses
 calls in support of wide (multibyte) characters are not yet implemented:
-\fBerasewchar\fP,
-\fBkillwchar\fP,
 \fBpecho_wchar\fP,
-\fBslk_wset\fP,
-\fBterm_attrs\fP,
-\fBvid_puts\fP.
+\fBslk_wset\fP.
 .PP
 A small number of local differences (that is, individual differences between
 the XSI Curses and \fBncurses\fR calls) are described in \fBPORTABILITY\fR
