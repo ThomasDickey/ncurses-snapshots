@@ -3,6 +3,16 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+960817	- snapshot
+	+ corrected an err in mvcur that broke resizing-behavior.
+	+ correct fall-thru behavior of _nc_read_entry(), which was not finding
+	  descriptions that existed in directories past the first one searched
+	  (reported by Alexander V. Lukyanov)
+	+ corrected typo in dtterm description.
+	> patch 313 by eric:
+	+ add dtterm description
+	+ clarify ncurses 'i' test (drop vscanf subtest)
+
 960810	- snapshot
 	+ correct nl()/nonl() to work as per SVr4 & XSI.
 	+ minor fixes to ncurses.c (use 'noraw()', mvscanw return-code)

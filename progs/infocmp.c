@@ -129,7 +129,7 @@ static int use_predicate(int type, int idx)
 		}
 
 	case NUMBER: {
-		int	value = -1;
+		int	value = ABSENT_NUMERIC;
 
 		/*
 		 * We take the semantics of multiple uses to be 'each
@@ -143,13 +143,13 @@ static int use_predicate(int type, int idx)
 			}
 
 		if (value != term->Numbers[idx])
-			return(value != -1);
+			return(value != ABSENT_NUMERIC);
 		else
 			return(FAIL);
 		}
 
 	case STRING: {
-		char *termstr, *usestr = (char *)NULL;
+		char *termstr, *usestr = ABSENT_STRING;
 
 		termstr = term->Strings[idx];
 
@@ -165,7 +165,7 @@ static int use_predicate(int type, int idx)
 				break;
 			}
 
-		if (usestr == (char *)NULL && termstr == (char *)NULL)
+		if (usestr == ABSENT_STRING && termstr == ABSENT_STRING)
 			return(FAIL);
 		else if (!usestr || !termstr || capcmp(usestr,termstr))
 			return(TRUE);

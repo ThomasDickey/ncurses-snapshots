@@ -854,8 +854,8 @@ general know how you want the screen re-painted.  You will have to write the
 SIGWINCH handler yourself. <P>
 
 The easiest way to code your SIGWINCH handler is to have it do an
-<TT>endwin</TT>, followed by an <TT>initscr</TT> and a screen repaint you code
-yourself.  The <TT>initscr</TT> will pick up the new screen size from the
+<TT>endwin</TT>, followed by an <TT>refresh</TT> and a screen repaint you code
+yourself.  The <TT>refresh</TT> will pick up the new screen size from the
 xterm's environment.
 
 <H3><A NAME="screens">Handling Multiple Terminal Screens</A></H3>

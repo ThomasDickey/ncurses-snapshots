@@ -23,11 +23,12 @@
 
 #include <string.h>
 #include <termcap.h>
+#include <tic.h>
 
 #define __INTERNAL_CAPS_VISIBLE
 #include <term.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.10 1996/07/31 00:14:56 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.11 1996/08/17 22:31:33 tom Exp $")
 
 /*
    some of the code in here was contributed by:

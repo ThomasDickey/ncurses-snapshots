@@ -44,7 +44,7 @@
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.14 1996/07/31 01:00:00 esr Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.15 1996/08/17 21:48:17 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 
@@ -421,8 +421,8 @@ int _nc_resolve_uses(void)
  * Note that WANTED and PRESENT are not simple inverses!  If a capability
  * has been explicitly cancelled, it's not considered WANTED.
  */
-#define WANTED(s)	((s) == (char *)0)
-#define PRESENT(s)	(((s) != (char *)0) && ((s) != CANCELLED_STRING))
+#define WANTED(s)	((s) == ABSENT_STRING)
+#define PRESENT(s)	(((s) != ABSENT_STRING) && ((s) != CANCELLED_STRING))
 
 #define ANDMISSING(p,q) \
 		{if (PRESENT(p) && !PRESENT(q)) _nc_warning(#p " but no " #q);}

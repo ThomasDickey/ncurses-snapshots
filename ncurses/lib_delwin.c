@@ -28,25 +28,17 @@
 
 #include <curses.priv.h>
 
+MODULE_ID("$Id: lib_delwin.c,v 1.5 1996/08/18 01:37:19 tom Exp $")
+
 int delwin(WINDOW *win)
 {
-int	i;
-
 	T(("delwin(%p) called", win));
 
 	if (win == NULL)
 	    return(ERR);
 
-	if (! (win->_flags & _SUBWIN)) {
-	    for (i = 0; i <= win->_maxy  &&  win->_line[i].text; i++)
-			free(win->_line[i].text);
-	}
-
-	free(win->_line);
-
 	touchwin((win->_flags & _SUBWIN) ? win->_parent : curscr);
-
-	free(win);
+	_nc_freewin(win);
 
 	return(OK);
 }

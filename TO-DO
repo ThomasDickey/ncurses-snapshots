@@ -2,6 +2,13 @@ SHORT-TERM TO-DO ITEMS:
 
 Known Problems:
 
+* The endwin/initscr paradigm previously described to "solve" xterm resizing
+  has been dropped, since XSI says that's a no-no.  The portable solution
+  would be to use endwin/refresh, and detect the xterm resizing during the
+  first refresh (or doupdate).  Doing this will correcting the allocation
+  of SP (a long-known bug ;-), and taking into account the ripped-off-lines,
+  and reallocating where necessary the subwindows of stdscr.
+
 * The code departs from perfect 8-bit cleanness in one respect; you cannot
   specify a character \200 as part of a capability string, because the terminfo
   library interprets \200 as a request to embed NUL (\000) at that point (the
@@ -25,8 +32,8 @@ Known Problems:
 * The window classes defined in the c++ subdirectory need documentation.
   Some C++ programmer could earn a lot of good karma by doing this...
 
-* The wresize() code has been reported to core-dump occasionally.  The
-  maintainers haven't been able to reproduce this.
+* The wresize() code core-dumps occasionally.  Eric hasn't been able to
+  reproduce this.
 
 * Mark McKenzie <mmckenzi@undergrad.math.uwaterloo.ca> writes:
  
@@ -55,19 +62,6 @@ Known Problems:
         passed to copywin.
 
   We're working on this.
-
-* Leonardo Campos Cordeiro says:
-
-	The form_field_opts man page states
-
-	 O_BLANK
-	   The field is cleared whenever a character is entered at the first
-	   position.
-
-	but it works only for the first field of a form, or if the previous
-	field is not edited (it can be seen with the ncurses test program).
-
-  Juergen Pfeifer (the forms & menus author) has been notified.
 
 Portability (or lack thereof):
 
