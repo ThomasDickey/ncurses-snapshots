@@ -45,7 +45,7 @@
 #endif
 #include <transform.h>
 
-MODULE_ID("$Id: tput.c,v 1.22 2000/09/10 00:32:45 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.23 2000/10/01 01:26:25 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -120,7 +120,7 @@ tparm_type(char *name)
     /* *INDENT-ON* */
 
     unsigned n;
-    for (n = 0; n < sizeof(table) / sizeof(table[0]); n++) {
+    for (n = 0; n < SIZEOF(table); n++) {
 	if (!strcmp(name, table[n].name)) {
 	    result = table[n].code;
 	    break;

@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.214 2000/09/02 19:25:12 tom Exp $
+dnl $Id: configure.in,v 1.215 2000/09/30 15:51:47 china Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.13.20000819)
-AC_REVISION($Revision: 1.214 $)
+AC_REVISION($Revision: 1.215 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -79,9 +79,9 @@ CF_CFG_DEFAULTS
 
 ###	Checks for programs.
 AC_PROG_CC
-if test -n "$GCC" ; then
-AC_MSG_CHECKING(version of gcc)
-eval "$CC --version"
+if test "$GCC" = yes ; then
+	AC_MSG_CHECKING(version of gcc)
+	eval "$CC --version"
 fi
 if test "$host" != $build; then
 	AC_CHECK_PROGS(BUILD_CC, $CC gcc cc)
@@ -124,8 +124,17 @@ else
 	AC_PROG_CXX
 	popdef([AC_MSG_ERROR])dnl
 fi
+
 changequote(,)dnl
-if test -n "$GXX" ; then case "`${CXX-g++} --version`" in 1*|2.[0-6]*) GXX=""; CXX=""; ac_cv_prog_gxx=no; cf_cxx_library=no ; echo No: templates do not work;; esac; fi
+if test "$GXX" = yes; then
+	case "`${CXX-g++} --version`" in
+	1*|2.[0-6]*)
+		GXX=""; CXX=""; ac_cv_prog_gxx=no
+		cf_cxx_library=no
+		echo No: templates do not work
+		;;
+	esac
+fi
 changequote([,])dnl
 
 AC_MSG_CHECKING(if you want to build C++ binding and demo)
@@ -846,17 +855,21 @@ CF_BOOL_DECL(cf_cv_cc_bool_type)
 if test -n "$CXX" ; then
 	AC_LANG_CPLUSPLUS
 	CF_STDCPP_LIBRARY
-	case "`${CXX-g++} --version`" in
-	1*|2.[0-6]*)
-	    cf_cxx_library=yes
-	    ;;
-	2.7*)
-	    CF_GPP_LIBRARY
-	    ;;
-	*)
-	    cf_cxx_library=no
-	    ;;
-	esac
+	if test "$GXX" = yes; then
+		case "`${CXX-g++} --version`" in
+		1*|2.[0-6]*)
+			cf_cxx_library=yes
+			;;
+		2.7*)
+			CF_GPP_LIBRARY
+			;;
+		*)
+			cf_cxx_library=no
+			;;
+		esac
+	else
+		cf_cxx_library=no
+	fi
 	AC_CHECK_HEADERS(typeinfo)
 	CF_BOOL_DECL
 	CF_BOOL_SIZE
@@ -958,7 +971,7 @@ fi
 ### using a 'char' for bools.  gcc 2.7.0's conversion-warnings are broken too
 ### badly to consider using for development purposes, but 2.5.8 is okay.
 if test -n "$with_warnings"; then
-	if test -n "$GCC"; then
+	if test "$GCC" = yes; then
 		case "`$CC --version`" in
 		2.6.3)
 			if test "$cf_cv_type_of_bool" != "char"; then

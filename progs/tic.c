@@ -44,7 +44,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.80 2000/09/24 02:09:38 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.82 2000/10/01 02:11:39 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -117,7 +117,7 @@ usage(void)
     size_t j;
 
     fprintf(stderr, "Usage: %s %s\n", _nc_progname, usage_string);
-    for (j = 0; j < sizeof(tbl) / sizeof(tbl[0]); j++) {
+    for (j = 0; j < SIZEOF(tbl); j++) {
 	fputs(tbl[j], stderr);
 	putc('\n', stderr);
     }
@@ -769,6 +769,7 @@ expected_params(char *name)
 	int count;
     } table[] = {
 	{ "birep",		2 },
+	{ "chr",		1 },
 	{ "colornm",		1 },
 	{ "cpi",		1 },
 	{ "csr",		2 },
@@ -776,6 +777,7 @@ expected_params(char *name)
 	{ "cud",		1 },
 	{ "cuf",		1 },
 	{ "cup",		2 },
+	{ "cvr",		1 },
 	{ "cuu",		1 },
 	{ "cwin",		5 },
 	{ "dch",		1 },
@@ -832,7 +834,7 @@ expected_params(char *name)
     unsigned n;
     int result = 0;		/* function-keys, etc., use none */
 
-    for (n = 0; n < sizeof(table) / sizeof(table[0]); n++) {
+    for (n = 0; n < SIZEOF(table); n++) {
 	if (!strcmp(name, table[n].name)) {
 	    result = table[n].count;
 	    break;

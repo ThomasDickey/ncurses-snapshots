@@ -1,4 +1,4 @@
-# $Id: manlinks.sed,v 1.8 2000/07/16 00:27:42 china Exp $
+# $Id: manlinks.sed,v 1.9 2000/09/30 23:32:24 tom Exp $
 ##############################################################################
 # Copyright (c) 2000 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -53,7 +53,6 @@ s/\\-.*/ -/
 s/ /\
 /g
 }
-:syn
 /^\.SH_(SYNOPSIS/,/^\.SH_(DESCRIPTION/{
 	/^#/d
 	/^[^(]*$/d

@@ -26,9 +26,9 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
+dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.225 2000/09/02 20:41:53 tom Exp $
+dnl $Id: aclocal.m4,v 1.232 2000/10/01 00:01:25 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -41,7 +41,7 @@ ACPPFLAGS="$ACPPFLAGS -I. -I../../include"
 if test "$srcdir" != "."; then
 	ACPPFLAGS="$ACPPFLAGS -I\$(srcdir)/../../include"
 fi
-if test -z "$GCC"; then
+if test "$GCC" != yes; then
 	ACPPFLAGS="$ACPPFLAGS -I\$(includedir)"
 elif test "$includedir" != "/usr/include"; then
 	if test "$includedir" = '${prefix}/include' ; then
@@ -361,7 +361,7 @@ dnl is a late feature for the standard and is not in some recent compilers
 dnl (1999/9/11).
 AC_DEFUN([CF_CPP_PARAM_INIT],
 [
-if test -n "$CXX" ; then
+if test "$CXX" = yes ; then
 AC_CACHE_CHECK(if $CXX accepts parameter initialization,cf_cv_cpp_param_init,[
 	AC_LANG_CPLUSPLUS
 	AC_TRY_RUN([
@@ -524,7 +524,7 @@ dnl compiler warnings.  Though useful, not all are supported -- and contrary
 dnl to documentation, unrecognized directives cause older compilers to barf.
 AC_DEFUN([CF_GCC_ATTRIBUTES],
 [
-if test -n "$GCC"
+if test "$GCC" = yes
 then
 cat > conftest.i <<EOF
 #ifndef GCC_PRINTF
@@ -540,7 +540,7 @@ cat > conftest.i <<EOF
 #define GCC_UNUSED /* nothing */
 #endif
 EOF
-if test -n "$GCC"
+if test "$GCC" = yes
 then
 	AC_CHECKING([for $CC __attribute__ directives])
 	changequote(,)dnl
@@ -607,7 +607,7 @@ dnl	-pedantic
 dnl
 AC_DEFUN([CF_GCC_WARNINGS],
 [
-if test -n "$GCC"
+if test "$GCC" = yes
 then
 	changequote(,)dnl
 	cat > conftest.$ac_ext <<EOF
@@ -751,7 +751,7 @@ CPPFLAGS="$CPPFLAGS -I. -I../include"
 if test "$srcdir" != "."; then
 	CPPFLAGS="$CPPFLAGS -I\$(srcdir)/../include"
 fi
-if test -z "$GCC"; then
+if test "$GCC" != yes; then
 	CPPFLAGS="$CPPFLAGS -I\$(includedir)"
 elif test "$includedir" != "/usr/include"; then
 	if test "$includedir" = '${prefix}/include' ; then
@@ -962,6 +962,18 @@ distclean ::
 	rm -rf \$(DIRS_TO_MAKE)
 CF_EOF
 
+# Special case: tack's manpage lives in its own directory.
+if test -d tack ; then
+if test -f $srcdir/$tack.h; then
+cat >> Makefile <<CF_EOF
+
+install.man \
+uninstall.man ::
+	cd tack && \$(MAKE) \$(CF_MFLAGS) \[$]@
+CF_EOF
+fi
+fi
+
 dnl If we're installing into a subdirectory of /usr/include, etc., we should
 dnl prepend the subdirectory's name to the "#include" paths.  It won't hurt
 dnl anything, and will make it more standardized.  It's awkward to decide this
@@ -999,7 +1011,7 @@ case \$DST in
 	done
 	rm -f \$TMPSRC
 	sed -f \$TMPSED \$SRC > \$TMPSRC
-	eval \$PRG \$TMPSRC \$DST/\$SRC
+	eval \$PRG \$TMPSRC \$DST/\`basename \$SRC\`
 	rm -f \$TMPSRC \$TMPSED
 	;;
 *)
@@ -1019,7 +1031,7 @@ do
 
 install \\
 install.libs \\
-install.includes :: \$(DESTDIR)\$(includedir) \\
+install.includes :: \$(AUTO_SRC) \$(DESTDIR)\$(includedir) \\
 CF_EOF
 		j=""
 		for i in `cat $srcdir/$cf_dir/headers |fgrep -v "#"`
@@ -1437,10 +1449,16 @@ case \$i in #(vi
 	fi
 	aliases=
 	source=\`basename \$i\`
+	inalias=\$source
+	test ! -f \$inalias && inalias="\$srcdir/\$inalias"
+	if test ! -f \$inalias ; then
+		echo .. skipped \$source
+		continue
+	fi
 CF_EOF
 if test "$cf_manpage_symlinks" = yes ; then
 cat >>man/edit_man.sh <<CF_EOF
-	aliases=\`sed -f \$srcdir/manlinks.sed \$source | sort -u\`
+	aliases=\`sed -f \$srcdir/manlinks.sed \$inalias | sort -u\`
 CF_EOF
 fi
 if test "$cf_manpage_renames" = no ; then
@@ -1778,7 +1796,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 
 	# Some less-capable ports of gcc support only -fpic
 	CC_SHARED_OPTS=
-	if test -n "$GCC"
+	if test "$GCC" = yes
 	then
 		AC_MSG_CHECKING(which $CC option to use)
 		cf_save_CFLAGS="$CFLAGS"
@@ -1797,7 +1815,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	hpux*)
 		# (tested with gcc 2.7.2 -- I don't have c89)
-		if test -n "$GCC"; then
+		if test "$GCC" = yes; then
 			LD_SHARED_OPTS='-Xlinker +b -Xlinker $(libdir)'
 		else
 			CC_SHARED_OPTS='+Z'
@@ -1810,18 +1828,20 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	irix*)
 		# tested with IRIX 5.2 and 'cc'.
-		if test -z "$GCC"; then
+		if test "$GCC" != yes; then
 			CC_SHARED_OPTS='-KPIC'
 		fi
 		MK_SHARED_LIB='$(LD) -shared -rdata_shared -soname `basename $[@]` -o $[@]'
 		cf_cv_rm_so_locs=yes
 		;;
 	linux*|gnu*)
-		# tested with Linux 2.0.29 and gcc 2.7.2 (ELF)
-		test "$cf_cv_ld_rpath" = yes && cf_ld_rpath_opt="-Wl,-rpath,"
 		if test "$DFT_LWR_MODEL" = "shared" ; then
- 			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
- 			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'
+ 			LOCAL_LDFLAGS="-Wl,-rpath,`pwd`/lib"
+ 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
+		fi
+		if test "$cf_cv_ld_rpath" = yes ; then
+			cf_ld_rpath_opt="-Wl,-rpath,"
+			EXTRA_LDFLAGS="$LOCAL_LDFLAGS $EXTRA_LDFLAGS"
 		fi
 		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=rel
 		MK_SHARED_LIB='$(CC) -shared -Wl,-soname,`basename $[@] .$(REL_VERSION)`.$(ABI_VERSION),-stats,-lc -o $[@]'
@@ -1839,8 +1859,8 @@ AC_DEFUN([CF_SHARED_OPTS],
 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
 		test "$cf_cv_ld_rpath" = yes && cf_ld_rpath_opt="-Wl,-rpath,"
 		if test "$DFT_LWR_MODEL" = "shared" && test "$cf_cv_ld_rpath" = yes ; then
-			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
-			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'
+ 			LOCAL_LDFLAGS="-Wl,-rpath,`pwd`/lib"
+ 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
 			EXTRA_LDFLAGS="-Wl,-rpath,\$(libdir) $EXTRA_LDFLAGS"
 			MK_SHARED_LIB='$(CC) -shared -Wl,-soname,`basename $[@] .$(REL_VERSION)`.$(ABI_VERSION) -o $[@]'
 			if test "$cf_cv_shlib_version" = auto; then
@@ -1857,7 +1877,6 @@ AC_DEFUN([CF_SHARED_OPTS],
 		# tested with OSF/1 V3.2 and gcc 2.6.3 (but the c++ demo didn't
 		# link with shared libs).
  		MK_SHARED_LIB='$(LD) -set_version $(REL_VERSION):$(ABI_VERSION) -expect_unresolved "*" -shared -soname `basename $[@]`'
-		test "$cf_cv_ld_rpath" = yes && cf_ld_rpath_opt="-rpath"
 		case $host_os in
 		osf4*)
  			MK_SHARED_LIB="${MK_SHARED_LIB} -msym"
@@ -1865,8 +1884,12 @@ AC_DEFUN([CF_SHARED_OPTS],
 		esac
 		MK_SHARED_LIB="${MK_SHARED_LIB}"' -o $[@]'
 		if test "$DFT_LWR_MODEL" = "shared" ; then
- 			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
- 			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'
+ 			LOCAL_LDFLAGS="-Wl,-rpath,`pwd`/lib"
+ 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
+		fi
+		if test "$cf_cv_ld_rpath" = yes ; then
+			cf_ld_rpath_opt="-rpath"
+			# EXTRA_LDFLAGS="$LOCAL_LDFLAGS $EXTRA_LDFLAGS"
 		fi
 		cf_cv_rm_so_locs=yes
 		;;
@@ -1898,9 +1921,13 @@ AC_DEFUN([CF_SHARED_OPTS],
 			CC_SHARED_OPTS='-KPIC'
 		fi
 		MK_SHARED_LIB='$(LD) -dy -G -h `basename $[@] .$(REL_VERSION)`.$(ABI_VERSION) -o $[@]'
+		if test "$DFT_LWR_MODEL" = "shared" ; then
+			LOCAL_LDFLAGS="-R `pwd`/lib:\$(libdir)"
+ 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
+		fi
 		if test "$cf_cv_ld_rpath" = yes ; then
 			cf_ld_rpath_opt="-R"
-			EXTRA_LDFLAGS="-R ../lib:\$(libdir) $EXTRA_LDFLAGS"
+			EXTRA_LDFLAGS="$LOCAL_LDFLAGS $EXTRA_LDFLAGS"
 		fi
 		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=rel
 		;;
@@ -1934,7 +1961,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 	if test -n "$cf_ld_rpath_opt" ; then
 		AC_MSG_CHECKING(if we need a space after rpath option)
 		cf_save_LIBS="$LIBS"
-		LIBS="$LIBS ${cf_ld_rpath_opt}/usr/lib"
+		LIBS="$LIBS ${cf_ld_rpath_opt}$libdir"
 		AC_TRY_LINK(, , cf_rpath_space=no, cf_rpath_space=yes)
 		LIBS="$cf_save_LIBS"
 		AC_MSG_RESULT($cf_rpath_space)

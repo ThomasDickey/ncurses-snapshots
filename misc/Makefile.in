@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.27 2000/08/27 02:36:56 tom Exp $
+# $Id: Makefile.in,v 1.29 2000/09/30 20:01:10 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -71,7 +71,7 @@ sources:
 
 install: install.data
 
-install.data:	$(DESTDIR)$(libdir) \
+install.data :	$(DESTDIR)$(libdir) \
 		$(DESTDIR)$(ticdir) \
 		$(DESTDIR)$(tabsetdir)
 	DESTDIR=${DESTDIR} \
@@ -83,11 +83,13 @@ install.data:	$(DESTDIR)$(libdir) \
 	datadir=${datadir} \
 	ticdir=${ticdir} \
 	source=${source} \
-	$(SHELL) $(srcdir)/run_tic.sh
+	$(SHELL) ./run_tic.sh
 	@cd $(srcdir)/tabset && \
-		$(SHELL) -c 'for i in `echo * | fgrep -v CVS | fgrep -v RCS`; do \
-		echo installing $$i; \
-		$(INSTALL_DATA) $$i $(DESTDIR)$(tabsetdir); done'
+		$(SHELL) -c 'for i in * ; do \
+			if test -f $$i ; then \
+			echo installing $$i; \
+			$(INSTALL_DATA) $$i $(DESTDIR)$(tabsetdir)/$$i; \
+			fi; done'
 
 $(DESTDIR)$(libdir) \
 $(DESTDIR)$(tabsetdir) \

@@ -1,10 +1,29 @@
--- $Id: NEWS,v 1.593 2000/09/24 02:35:41 tom Exp $
+-- $Id: NEWS,v 1.595 2000/10/01 02:16:44 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000930
+	+ modify several descriptions, including those for setaf, setab, in
+	  include/Caps to indicate that the entries are parameterized.  This
+	  information is used to tell which strings are translated when
+	  converting to termcap.  Fixes a problem where the generated termcap
+	  would contain a spurious "%p1" for the terminfo "%p1%d".
+	+ modify ld -rpath options (e.g., Linux, and Solaris) to use an
+	  absolute pathname for the build tree's lib directory (prompted by
+	  discussion with Albert Chin-A-Young).
+	+ modify "make install.man" and "make uninstall.man" to include tack's
+	  man-page.
+	+ various fixes for install scripts used to support configure --srcdir
+	  and --with-install-prefix (reported by Matthew Clarke
+	  <Matthew_Clarke@mindlink.bc.ca>).
+	+ make configure script checks on variables $GCC and $GXX consistently
+	  compare against 'yes' rather than test if they are nonnull, since
+	  either may be set to the corresponding name of the C or C++ compiler
+	  (report/patch by Albert Chin-A-Young).
 
 20000923
 	+ modify rs2 capability in xterm-r6 and similar where cursor
@@ -203,7 +222,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  out-of-range value.
 
 20000715
-	+ correct man_links.sed script to avoid using ERE "\+", which is not
+	+ correct manlinks.sed script to avoid using ERE "\+", which is not
 	  understood by older versions of sed (patch by Albert Chin-A-Young).
 	+ implement configure script options that transform installed program
 	  names, e.g., --program-prefix, including the manpage names and cross
