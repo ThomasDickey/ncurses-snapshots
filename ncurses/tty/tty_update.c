@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.205 2004/02/07 18:02:42 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.206 2004/03/21 00:53:07 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -233,7 +233,6 @@ PutAttrChar(CARG_CH_T ch)
 	    chtype temp = UChar(SP->_acs_map[CharOfD(ch)]);
 	    if (temp != 0)
 		SetChar(my_ch, temp, attr);
-	    RemAttr(my_ch, A_ALTCHARSET);
 	}
 	ch = CHREF(my_ch);
     }

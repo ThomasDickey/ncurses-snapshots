@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.255 2004/02/01 01:05:58 Stanislav.Ievlev Exp $
+ * $Id: curses.priv.h,v 1.256 2004/03/20 23:36:28 tom Exp $
  *
  *	curses.priv.h
  *
@@ -634,6 +634,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define isnac(ch)	(AttrOf(ch) & WA_NAC)
 #define if_WIDEC(code)  code
 #define Charable(ch)	((SP != 0 && SP->_posix_locale)			\
+			 || (AttrOf(ch) & A_ALTCHARSET)			\
 			 || (!isnac(ch) &&				\
 			     (ch).chars[1] == L'\0' &&			\
                              _nc_is_charable(CharOf(ch))))
