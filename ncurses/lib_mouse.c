@@ -61,7 +61,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 0.23 1997/05/29 10:18:47 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 0.25 1997/08/22 18:22:28 Alexander.V.Lukyanov Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -358,7 +358,9 @@ bool _nc_mouse_parse(int runcount)
     {
 	TR(MY_TRACE, ("_nc_mouse_parse: returning simple mouse event %s at slot %d",
 	   _tracemouse(prev), prev-events));
-	return (PREV(prev)->id >= 0) ? (PREV(prev)->bstate & eventmask) : 0;
+	return (prev->id >= 0)
+		? ((prev->bstate & eventmask) ? TRUE : FALSE)
+		: FALSE;
     }
 
     /* find the start of the run */
@@ -651,10 +653,10 @@ bool wenclose(WINDOW *win, int y, int x)
     if (win)
     {
 	y -= win->_yoffset;
-	return (win->_begy <= y && 
-		win->_begx <= x &&
-		(win->_begx + win->_maxx) >= x && 
-		(win->_begy + win->_maxy) >= y);
+	return ((win->_begy <= y && 
+		 win->_begx <= x &&
+		 (win->_begx + win->_maxx) >= x && 
+		 (win->_begy + win->_maxy) >= y) ? TRUE : FALSE);
     }
     return FALSE;
 }

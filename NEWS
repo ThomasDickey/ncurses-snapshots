@@ -1,7 +1,49 @@
--- $Id: NEWS,v 1.234 1997/08/17 01:19:19 tom Exp $
+-- $Id: NEWS,v 1.236 1997/08/23 21:45:54 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+970823
+	+ add xterm-8bit to terminfo.src
+	+ moved logic for SP->_fifohold inside check_pending() to make it
+	  work properly when we add calls to that function.
+	+ ensure that bool functions return only TRUE or FALSE, and TRUE/FALSE
+	  are assigned to bool values (patch by H.J.Lu).
+	> patches by Alexander V. Lukyanov:
+	+ several fixes to getch:
+	  1.  Separate cooked and raw keys in fifo
+	  2.  Fix the case of ungetch'ed KEY_MOUSE
+	  3.  wrap the code for hiding EINTR with ifdef HIDE_EINTR
+	  4.  correctly handle input errors (i.e., EINTR) without loss of raw
+	      keys
+	  5.  recognize ESC KEY_LEFT and similar
+	  6.  correctly handle the case of receiption of KEY_MOUSE from gpm
+	+ correct off-by-one indexing error in _nc_mouse_parse(), that caused
+	  single mouse events (press/release) to be ignored in favor of
+	  composed events (click).  Improves on a fix from integrating gpm
+	  support in 961229.
+	+ add another call to check_pending, before scrolling, for
+	  line-breakout optimization
+	+ improve hashmap.c by
+	  1.  fixed loop condition in grow_hunks()
+	  2.  not marking lines with offset 0
+	  3.  fixed condition of 'too far' criteria, thus one-line hunks are
+	  ignored and two lines interchanged won't pass.
+	+ rewrote/simplified _nc_scroll_optimize() by separating into two
+	  passes, forward/backward, looking for chunks moving only in the given
+	  direction.
+	+ move logic that emits sgr0 when initializing the screen to
+	  _nc_screen_init(), now invoked from newterm.
+	+ move cursor-movement cleanup from endwin() into _nc_mvcur_wrap()
+	  function and screen cleanup (i.e., color) into _nc_screen_wrap()
+	  function.
+	+ add new functions _nc_screen_init(), _nc_screen_resume() and
+	  _nc_screen_wrap().
+	+ rename _nc_mvcur_scrolln() to _nc_scrolln().
+	+ add a copy of acs_map[] to the SCREEN structure, where it can be
+	  stored/retrieved via set_term().
+	+ move variables _nc_idcok, _nc_idlok, _nc_windows into the SCREEN
+	  structure.
 
 970816
 	+ implement experimental _nc_perform_scroll().

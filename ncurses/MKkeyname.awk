@@ -1,10 +1,10 @@
-# $Id: MKkeyname.awk,v 1.6 1997/04/05 23:38:17 tom Exp $
+# $Id: MKkeyname.awk,v 1.7 1997/08/23 17:48:50 tom Exp $
 BEGIN {
 	print ""
 	print "#include <ncurses_cfg.h>"
 	print "#include <stdlib.h>"
-	print "#include <term.h>"
 	print "#include <curses.h>"
+	print "#include <term.h>"
 	print ""
 	print "struct kn {"
 	print "\tconst char *name;"

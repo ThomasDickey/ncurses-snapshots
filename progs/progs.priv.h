@@ -18,7 +18,7 @@
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
  ******************************************************************************/
 /*
- * $Id: progs.priv.h,v 1.11 1997/06/14 13:04:17 tom Exp $
+ * $Id: progs.priv.h,v 1.12 1997/08/23 17:50:52 tom Exp $
  *
  *	progs.priv.h
  *
@@ -103,6 +103,7 @@ extern char *optarg;
 extern int optind;
 #endif /* HAVE_GETOPT_H */
 
+#include <curses.h>
 #include <term.h>
 #include <tic.h>
 #include <nc_alloc.h>

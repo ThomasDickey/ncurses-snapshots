@@ -36,7 +36,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.22 1997/06/28 23:39:50 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.23 1997/08/20 16:22:38 hjl Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -696,7 +696,8 @@ static long stream_pos(void)
 static bool end_of_stream(void)
 /* are we at end of input? */
 {
-    return (yyin ? feof(yyin) : (bufptr && *bufptr == '\0'));
+    return ((yyin ? feof(yyin) : (bufptr && *bufptr == '\0'))
+	    ? TRUE : FALSE);
 }
 
 /* comp_scan.c ends here */

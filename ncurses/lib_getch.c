@@ -28,24 +28,32 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.25 1997/07/27 00:32:49 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.26 1997/08/22 18:22:28 Alexander.V.Lukyanov Exp $")
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail
+/* peek points to next uninterpreted character */
 #define peek	SP->_fifopeek
 
 #define h_inc() { head == FIFO_SIZE-1 ? head = 0 : head++; if (head == tail) head = -1, tail = 0;}
 #define h_dec() { head == 0 ?  head = FIFO_SIZE-1 : head--; if (head == tail) tail = -1;}
 #define t_inc() { tail == FIFO_SIZE-1 ? tail = 0 : tail++; if (tail == head) tail = -1;}
+#define t_dec() { tail == 0 ?  tail = FIFO_SIZE-1 : tail--; if (head == tail) fifo_clear();}
 #define p_inc() { peek == FIFO_SIZE-1 ? peek = 0 : peek++;}
 
 int ESCDELAY = 1000;	/* max interval betw. chars in funkeys, in millisecs */
 
-static int fifo_peek(void)
+static inline int fifo_peek(void)
 {
-	T(("peeking at %d", peek+1));
-	return SP->_fifo[++peek];
+	int ch = SP->_fifo[peek];
+	T(("peeking at %d", peek));
+	
+	p_inc();
+	return ch;
 }
+
+#define cooked_key_in_fifo()	(head!=-1 && peek!=head)
+#define raw_key_in_fifo()	(head!=-1 && peek!=tail)
 
 #ifdef TRACE
 static inline void fifo_dump(void)
@@ -63,7 +71,14 @@ int ch;
 	ch = SP->_fifo[head];
 	T(("pulling %d from %d", ch, head));
 
-	h_inc();
+	if (peek == head)
+	{
+	    h_inc();
+	    peek = head;
+	}
+	else
+	    h_inc();
+	    
 #ifdef TRACE
 	if (_nc_tracing & TRACE_IEVENT) fifo_dump();
 #endif
@@ -77,6 +92,7 @@ int ungetch(int ch)
 	if (head == -1) {
 		head = 0;
 		t_inc()
+		peek = tail; /* no raw keys */
 	} else
 		h_dec();
 
@@ -88,15 +104,20 @@ int ungetch(int ch)
 	return OK;
 }
 
+#undef HIDE_EINTR
+
 static inline int fifo_push(void)
 {
 int n;
 unsigned int ch;
 
 	if (tail == -1) return ERR;
-	/* FALLTHRU */
+
+#ifdef HIDE_EINTR
 again:
 	errno = 0;
+#endif
+
 #if USE_GPM_SUPPORT	
 	if ((_nc_mouse_fd() >= 0) 
 	 && (_nc_timed_wait(3, -1, (int *)0) & 2))
@@ -112,6 +133,7 @@ again:
 		ch = c2;
 	}
 
+#ifdef HIDE_EINTR
 	/*
 	 * Under System V curses with non-restarting signals, getch() returns
 	 * with value ERR when a handled signal keeps it from completing.  
@@ -123,6 +145,7 @@ again:
 	 */
 	if (n <= 0 && errno == EINTR)
 		goto again;
+#endif
 
 	if ((n == -1) || (n == 0))
 	{
@@ -133,7 +156,8 @@ again:
 
 	SP->_fifo[tail] = ch;
 	SP->_fifohold = 0;
-	if (head == -1) head = tail;
+	if (head == -1)
+	    head = peek = tail;
 	t_inc();
 	T(("pushed %#x at %d", ch, tail));
 #ifdef TRACE
@@ -237,7 +261,9 @@ int	ch;
 		/* else go on to read data available */
 	}
 
-	if (win->_use_keypad) {
+	if (cooked_key_in_fifo())
+		ch = fifo_pull();
+	else if (win->_use_keypad) {
 		/*
 		 * This is tricky.  We only want to get special-key
 		 * events one at a time.  But we want to accumulate
@@ -327,6 +353,9 @@ int	ch;
 **      sequence is received by the time the alarm goes off, pass through
 **      the sequence gotten so far.
 **
+**	This function must be called when there is no cooked keys in queue.
+**	(that is head==-1 || peek==head)
+**
 */
 
 static int
@@ -340,43 +369,60 @@ int timeleft = ESCDELAY;
 
 	ptr = SP->_keytry;
 
-	if (head == -1)  {
-		if ((ch = fifo_push()) == ERR)
-		    return ERR;
-		peek = 0;
-		while (ptr != NULL) {
-			TR(TRACE_IEVENT, ("ch: %s", _trace_key((unsigned char)ch)));
-			while ((ptr != NULL) && (ptr->ch != (unsigned char)ch))
-				ptr = ptr->sibling;
+	for(;;)
+	{
+		if (!raw_key_in_fifo())
+		{
+		    if(fifo_push() == ERR)
+		    {
+			peek = head;	/* the keys stay uninterpreted */
+			return ERR;
+		    }
+		}
+		ch = fifo_peek();
+		if (ch > KEY_MIN)
+		{
+		    peek = head;
+		    /* assume the key is the last in fifo */
+		    t_dec(); /* remove the key */
+		    return ch;
+		}
+
+		TR(TRACE_IEVENT, ("ch: %s", _trace_key((unsigned char)ch)));
+		while ((ptr != NULL) && (ptr->ch != (unsigned char)ch))
+			ptr = ptr->sibling;
 #ifdef TRACE
-			if (ptr == NULL)
-				{TR(TRACE_IEVENT, ("ptr is null"));}
-			else
-				TR(TRACE_IEVENT, ("ptr=%p, ch=%d, value=%d",
-						ptr, ptr->ch, ptr->value));
+		if (ptr == NULL)
+			{TR(TRACE_IEVENT, ("ptr is null"));}
+		else
+			TR(TRACE_IEVENT, ("ptr=%p, ch=%d, value=%d",
+					ptr, ptr->ch, ptr->value));
 #endif /* TRACE */
 
-			if (ptr != NULL)
-				if (ptr->value != 0) {	/* sequence terminated */
-					TR(TRACE_IEVENT, ("end of sequence"));
-					fifo_clear();
-					return(ptr->value);
-				} else {		/* go back for another character */
-					ptr = ptr->child;
-					TR(TRACE_IEVENT, ("going back for more"));
-				} else
-					break;
+		if (ptr == NULL)
+			break;
 
-				TR(TRACE_IEVENT, ("waiting for rest of sequence"));
-				if (!_nc_timed_wait(3, timeleft, &timeleft)) {
-					TR(TRACE_IEVENT, ("ran out of time"));
-					return(fifo_pull());
-				} else {
-					TR(TRACE_IEVENT, ("got more!"));
-					fifo_push();
-					ch = fifo_peek();
-				}
+		if (ptr->value != 0) {	/* sequence terminated */
+			TR(TRACE_IEVENT, ("end of sequence"));
+			if (peek == tail)
+			    fifo_clear();
+			else
+			    head = peek;
+			return(ptr->value);
+		}
+
+		ptr = ptr->child;
+
+		if (!raw_key_in_fifo())
+		{
+			TR(TRACE_IEVENT, ("waiting for rest of sequence"));
+			if (!_nc_timed_wait(3, timeleft, &timeleft)) {
+				TR(TRACE_IEVENT, ("ran out of time"));
+				break;
+			}
 		}
 	}
-	return(fifo_pull());
+	ch = fifo_pull();
+	peek = head;
+	return ch;
 }

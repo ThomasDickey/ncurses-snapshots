@@ -30,7 +30,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.22 1997/05/24 22:18:50 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.23 1997/08/20 16:22:38 hjl Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -260,7 +260,7 @@ static const char **make_namelist(char *src)
 static bool matches(const char **needle, const char *haystack)
 /* does entry in needle list match |-separated field in haystack? */
 {
-	int code = FALSE;
+	bool code = FALSE;
 	size_t n;
 
 	if (needle != 0)

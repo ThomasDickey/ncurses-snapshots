@@ -26,7 +26,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include "parametrized.h"	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.19 1997/08/02 22:20:44 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.20 1997/08/20 16:22:38 hjl Exp $")
 
 #define INDENT			8
 
@@ -313,11 +313,14 @@ static bool version_filter(int type, int idx)
 	switch (type)
 	{
 	case BOOLEAN:
-	    return (idx <= 20);	/* below and including xon_xoff */
+	    /* below and including xon_xoff */
+	    return ((idx <= 20) ? TRUE : FALSE);
 	case NUMBER:
-	    return (idx <= 7);	/* below and including width_status_line */
+	    /* below and including width_status_line */
+	    return ((idx <= 7) ? TRUE : FALSE);
 	case STRING:
-	    return (idx <= 144);	/* below and including prtr_non */
+	    /* below and including prtr_non */
+	    return ((idx <= 144) ? TRUE : FALSE);
 	}
 	break;
 
@@ -325,9 +328,11 @@ static bool version_filter(int type, int idx)
 	switch (type)
 	{
 	case BOOLEAN:
-	    return (idx <= 20);	/* below and including xon_xoff */
+	    /* below and including xon_xoff */
+	    return ((idx <= 20) ? TRUE : FALSE);
 	case NUMBER:
-	    return (idx <= 10);	/* below and including label_width */
+	    /* below and including label_width */
+	    return ((idx <= 10) ? TRUE : FALSE);
 	case STRING:
 	    if (idx <= 144)	/* below and including prtr_non */
 		return(TRUE);
@@ -344,9 +349,11 @@ static bool version_filter(int type, int idx)
 	switch (type)
 	{
 	case BOOLEAN:
-	    return (idx <= 20);	/* below and including xon_xoff */
+	    /* below and including xon_xoff */
+	    return ((idx <= 20) ? TRUE : FALSE);
 	case NUMBER:
-	    return (idx <= 7);	/* below and including width_status_line */
+	    /* below and including width_status_line */
+	    return ((idx <= 7) ? TRUE : FALSE);
 	case STRING:
 	    if (idx <= 144)	/* below and including prtr_non */
 		return(TRUE);

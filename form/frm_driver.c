@@ -65,7 +65,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.23 1997/07/05 16:49:22 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.24 1997/08/20 16:22:38 hjl Exp $")
 
 /*
 Some options that may effect compatibility in behavior to SVr4 forms,
@@ -805,7 +805,7 @@ static bool Check_Char(FIELDTYPE * typ, int ch, TypeArgument *argp)
 	    return typ->ccheck(ch,(void *)argp);
 	}
     }
-  return isprint((unsigned char)ch);
+  return (isprint((unsigned char)ch) ? TRUE : FALSE);
 }
 
 /*---------------------------------------------------------------------------
