@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.685 2002/05/11 22:14:24 tom Exp $
+-- $Id: NEWS,v 1.686 2002/05/18 21:26:10 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020518
+	+ fix lib_pad.c for case of drawing a double-width character which
+	  falls off the left margin of the pad (patch by Kriang Lerdsuwanakij
+	  <lerdsuwa@users.sourceforge.net>)
+	+ modify configure script to work around broken gcc 3.1 "--version"
+	  option, which adds unnecessary trash to the requested information.
+	+ adjust ifdef's in case SIGWINCH is not defined, e.g., with DJGPP
+	  (reported by Ben Decker <deckerben@freenet.de>).
 
 20020511
 	+ implement vid_puts(), vid_attr(), term_attrs() based on the narrow-
