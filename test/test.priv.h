@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.20 2000/11/04 22:56:50 tom Exp $ */
+/* $Id: test.priv.h,v 1.21 2001/06/16 18:00:01 tom Exp $ */
 
 #if HAVE_CONFIG_H
 #include <ncurses_cfg.h>
@@ -94,8 +94,8 @@ extern int optind;
 #if defined(NCURSES_VERSION) && HAVE_NC_ALLOC_H
 #include <nc_alloc.h>
 #else
-#define typeMalloc(type,n) (type *) malloc(n * sizeof(type))
-#define typeRealloc(type,n,p) (type *) realloc(p, n * sizeof(type))
+#define typeMalloc(type,n) (type *) malloc((n) * sizeof(type))
+#define typeRealloc(type,n,p) (type *) realloc(p, (n) * sizeof(type))
 #endif
 
 #ifndef ExitProgram

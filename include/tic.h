@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2000,2001 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
  ****************************************************************************/
 
 /*
- * $Id: tic.h,v 1.38 2001/03/11 15:12:08 tom Exp $
+ * $Id: tic.h,v 1.39 2001/06/16 11:21:41 tom Exp $
  *	tic.h - Global variables and structures for the terminfo
  *			compiler.
  */
@@ -241,6 +241,7 @@ extern NCURSES_EXPORT(const struct name_table_entry * const *) _nc_get_hash_tabl
 
 /* access.c */
 extern NCURSES_EXPORT(char *) _nc_basename (char *);
+extern NCURSES_EXPORT(char *) _nc_rootname (char *);
 
 /* comp_hash.c: name lookup */
 extern NCURSES_EXPORT(struct name_table_entry const *) _nc_find_entry

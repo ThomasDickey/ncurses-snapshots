@@ -52,7 +52,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.49 2001/06/02 22:50:45 skimo Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.50 2001/06/16 17:52:18 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype) (TERMTYPE *) = sanity_check;
@@ -486,6 +486,8 @@ sanity_check(TERMTYPE * tp)
     PAIRED(enter_xon_mode, exit_xon_mode);
     PAIRED(enter_am_mode, exit_am_mode);
     ANDMISSING(label_off, label_on);
+#ifdef remove_clock
     PAIRED(display_clock, remove_clock);
+#endif
     ANDMISSING(set_color_pair, initialize_pair);
 }

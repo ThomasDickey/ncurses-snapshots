@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -103,7 +103,7 @@ char *ttyname(int fd);
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tset.c,v 0.49 2001/02/24 23:29:33 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.50 2001/06/16 11:21:04 tom Exp $")
 
 extern char **environ;
 
@@ -1065,7 +1065,7 @@ main(int argc, char **argv)
     ospeed = mode.sg_ospeed;
 #endif
 
-    p = _nc_basename(*argv);
+    p = _nc_rootname(*argv);
     if (!strcmp(p, PROG_RESET)) {
 	isreset = TRUE;
 	reset_mode();

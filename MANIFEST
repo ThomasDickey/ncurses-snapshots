@@ -467,13 +467,16 @@
 ./form/modules
 ./include/Caps
 ./include/Caps.aix4
+./include/Caps.uwin
 ./include/MKhashsize.sh
+./include/MKkey_defs.sh
 ./include/MKncurses_def.sh
 ./include/MKparametrized.sh
 ./include/MKterm.h.awk.in
 ./include/Makefile.in
 ./include/capdefaults.c
 ./include/curses.h.in
+./include/curses.tail
 ./include/edit_cfg.sh
 ./include/headers
 ./include/nc_alloc.h
@@ -742,6 +745,7 @@
 ./ncurses/base/lib_wattron.c
 ./ncurses/base/lib_winch.c
 ./ncurses/base/lib_window.c
+./ncurses/base/lib_wunctrl.c
 ./ncurses/base/memmove.c
 ./ncurses/base/nc_panel.c
 ./ncurses/base/resizeterm.c
@@ -757,6 +761,7 @@
 ./ncurses/modules
 ./ncurses/tinfo/MKcaptab.awk
 ./ncurses/tinfo/MKfallback.sh
+./ncurses/tinfo/MKkeys_list.sh
 ./ncurses/tinfo/MKnames.awk
 ./ncurses/tinfo/README
 ./ncurses/tinfo/access.c
@@ -774,7 +779,6 @@
 ./ncurses/tinfo/getenv_num.c
 ./ncurses/tinfo/home_terminfo.c
 ./ncurses/tinfo/init_keytry.c
-./ncurses/tinfo/keys.list
 ./ncurses/tinfo/lib_acs.c
 ./ncurses/tinfo/lib_baudrate.c
 ./ncurses/tinfo/lib_cur_term.c

@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright (c) 1998-2000 Free Software Foundation, Inc.                   *
+dnl Copyright (c) 1998-2000,2001 Free Software Foundation, Inc.              *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
 dnl copy of this software and associated documentation files (the            *
@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.251 2001/06/09 20:49:46 tom Exp $
+dnl $Id: aclocal.m4,v 1.252 2001/06/16 11:22:28 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -1886,6 +1886,7 @@ cygwin*)
     ;;
 esac
 AC_SUBST(PROG_EXT)
+test -n "$PROG_EXT" && AC_DEFINE_UNQUOTED(PROG_EXT,"$PROG_EXT")
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Force $INSTALL to be an absolute-path.  Otherwise, edit_man.sh and the

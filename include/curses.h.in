@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.107 2001/06/10 00:30:46 tom Exp $ */
+/* $Id: curses.h.in,v 1.110 2001/06/16 16:01:09 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -203,10 +203,12 @@ extern NCURSES_EXPORT_VAR(chtype) acs_map[];
 #define ACS_SSSS	ACS_PLUS
 
 #if	!defined(ERR) || ((ERR) != -1)
+#undef	ERR
 #define ERR     (-1)
 #endif
 
 #if	!defined(OK) || ((OK) != 0)
+#undef	OK
 #define OK      (0)
 #endif
 
@@ -1156,237 +1158,17 @@ extern NCURSES_EXPORT(bool) mouse_trafo (int*, int*, bool);              /* gene
  * Pseudo-character tokens outside ASCII range.  The curses wgetch() function
  * will return any given one of these only if the corresponding k- capability
  * is defined in your terminal's terminfo entry.
+ *
+ * Some keys (KEY_A1, etc) are arranged like this:
+ *	a1     up    a3
+ *	left   b2    right
+ *	c1     down  c3
+ *
+ * A few key codes do not depend upon the terminfo entry.
  */
 #define KEY_CODE_YES	0400		/* A wchar_t contains a key code */
 #define KEY_MIN		0401		/* Minimum curses key */
-#define KEY_BREAK       0401            /* Break key (unreliable) */
-#define KEY_DOWN        0402            /* Down-arrow */
-#define KEY_UP          0403		/* Up-arrow */
-#define KEY_LEFT        0404		/* Left-arrow */
-#define KEY_RIGHT       0405            /* Right-arrow */
-#define KEY_HOME        0406            /* Home key (upward+left arrow) */
-#define KEY_BACKSPACE   0407            /* Backspace (unreliable) */
-#define KEY_F0          0410            /* Function keys.  Space for 64 */
-#define KEY_F(n)        (KEY_F0+(n))    /* Value of function key n */
-#define KEY_DL          0510            /* Delete line */
-#define KEY_IL          0511            /* Insert line */
-#define KEY_DC          0512            /* Delete character */
-#define KEY_IC          0513            /* Insert char or enter insert mode */
-#define KEY_EIC         0514            /* Exit insert char mode */
-#define KEY_CLEAR       0515            /* Clear screen */
-#define KEY_EOS         0516            /* Clear to end of screen */
-#define KEY_EOL         0517            /* Clear to end of line */
-#define KEY_SF          0520            /* Scroll 1 line forward */
-#define KEY_SR          0521            /* Scroll 1 line backward (reverse) */
-#define KEY_NPAGE       0522            /* Next page */
-#define KEY_PPAGE       0523            /* Previous page */
-#define KEY_STAB        0524            /* Set tab */
-#define KEY_CTAB        0525            /* Clear tab */
-#define KEY_CATAB       0526            /* Clear all tabs */
-#define KEY_ENTER       0527            /* Enter or send (unreliable) */
-#define KEY_SRESET      0530            /* Soft (partial) reset (unreliable) */
-#define KEY_RESET       0531            /* Reset or hard reset (unreliable) */
-#define KEY_PRINT       0532            /* Print */
-#define KEY_LL          0533            /* Home down or bottom (lower left) */
-
-/* The keypad is arranged like this: */
-/* a1    up    a3   */
-/* left   b2  right  */
-/* c1   down   c3   */
-
-#define KEY_A1		0534		/* Upper left of keypad */
-#define KEY_A3		0535		/* Upper right of keypad */
-#define KEY_B2		0536		/* Center of keypad */
-#define KEY_C1		0537		/* Lower left of keypad */
-#define KEY_C3		0540		/* Lower right of keypad */
-#define KEY_BTAB	0541		/* Back tab */
-#define KEY_BEG		0542		/* Beg (beginning) */
-#define KEY_CANCEL	0543		/* Cancel */
-#define KEY_CLOSE	0544		/* Close */
-#define KEY_COMMAND	0545		/* Cmd (command) */
-#define KEY_COPY	0546		/* Copy */
-#define KEY_CREATE	0547		/* Create */
-#define KEY_END		0550		/* End */
-#define KEY_EXIT	0551		/* Exit */
-#define KEY_FIND	0552		/* Find */
-#define KEY_HELP	0553		/* Help */
-#define KEY_MARK	0554		/* Mark */
-#define KEY_MESSAGE	0555		/* Message */
-#define KEY_MOVE	0556		/* Move */
-#define KEY_NEXT	0557		/* Next */
-#define KEY_OPEN	0560		/* Open */
-#define KEY_OPTIONS	0561		/* Options */
-#define KEY_PREVIOUS	0562		/* Prev (previous) */
-#define KEY_REDO	0563		/* Redo */
-#define KEY_REFERENCE	0564		/* Ref (reference) */
-#define KEY_REFRESH	0565		/* Refresh */
-#define KEY_REPLACE	0566		/* Replace */
-#define KEY_RESTART	0567		/* Restart */
-#define KEY_RESUME	0570		/* Resume */
-#define KEY_SAVE	0571		/* Save */
-#define KEY_SBEG	0572		/* Shifted Beg (beginning) */
-#define KEY_SCANCEL	0573		/* Shifted Cancel */
-#define KEY_SCOMMAND	0574		/* Shifted Command */
-#define KEY_SCOPY	0575		/* Shifted Copy */
-#define KEY_SCREATE	0576		/* Shifted Create */
-#define KEY_SDC		0577		/* Shifted Delete char */
-#define KEY_SDL		0600		/* Shifted Delete line */
-#define KEY_SELECT	0601		/* Select */
-#define KEY_SEND	0602		/* Shifted End */
-#define KEY_SEOL	0603		/* Shifted Clear line */
-#define KEY_SEXIT	0604		/* Shifted Dxit */
-#define KEY_SFIND	0605		/* Shifted Find */
-#define KEY_SHELP	0606		/* Shifted Help */
-#define KEY_SHOME	0607		/* Shifted Home */
-#define KEY_SIC		0610		/* Shifted Input */
-#define KEY_SLEFT	0611		/* Shifted Left arrow */
-#define KEY_SMESSAGE	0612		/* Shifted Message */
-#define KEY_SMOVE	0613		/* Shifted Move */
-#define KEY_SNEXT	0614		/* Shifted Next */
-#define KEY_SOPTIONS	0615		/* Shifted Options */
-#define KEY_SPREVIOUS	0616		/* Shifted Prev */
-#define KEY_SPRINT	0617		/* Shifted Print */
-#define KEY_SREDO	0620		/* Shifted Redo */
-#define KEY_SREPLACE	0621		/* Shifted Replace */
-#define KEY_SRIGHT	0622		/* Shifted Right arrow */
-#define KEY_SRSUME	0623		/* Shifted Resume */
-#define KEY_SSAVE	0624		/* Shifted Save */
-#define KEY_SSUSPEND	0625		/* Shifted Suspend */
-#define KEY_SUNDO	0626		/* Shifted Undo */
-#define KEY_SUSPEND	0627		/* Suspend */
-#define KEY_UNDO	0630		/* Undo */
-#define KEY_MOUSE	0631		/* Mouse event has occurred */
+#define KEY_BREAK	0401		/* Break key (unreliable) */
+#define KEY_SRESET	0530		/* Soft (partial) reset (unreliable) */
+#define KEY_RESET	0531		/* Reset or hard reset (unreliable) */
 #define KEY_RESIZE	0632		/* Terminal resize event */
-#define KEY_MAX		0777		/* Maximum key value */
-
-/* mouse interface */
-#define NCURSES_MOUSE_VERSION	1
-
-/* event masks */
-#define	BUTTON1_RELEASED	000000000001L
-#define	BUTTON1_PRESSED		000000000002L
-#define	BUTTON1_CLICKED		000000000004L
-#define	BUTTON1_DOUBLE_CLICKED	000000000010L
-#define	BUTTON1_TRIPLE_CLICKED	000000000020L
-#define BUTTON1_RESERVED_EVENT	000000000040L
-#define	BUTTON2_RELEASED	000000000100L
-#define	BUTTON2_PRESSED		000000000200L
-#define	BUTTON2_CLICKED		000000000400L
-#define	BUTTON2_DOUBLE_CLICKED	000000001000L
-#define	BUTTON2_TRIPLE_CLICKED	000000002000L
-#define BUTTON2_RESERVED_EVENT	000000004000L
-#define	BUTTON3_RELEASED	000000010000L
-#define	BUTTON3_PRESSED		000000020000L
-#define	BUTTON3_CLICKED		000000040000L
-#define	BUTTON3_DOUBLE_CLICKED	000000100000L
-#define	BUTTON3_TRIPLE_CLICKED	000000200000L
-#define BUTTON3_RESERVED_EVENT	000000400000L
-#define	BUTTON4_RELEASED	000001000000L
-#define	BUTTON4_PRESSED		000002000000L
-#define	BUTTON4_CLICKED		000004000000L
-#define	BUTTON4_DOUBLE_CLICKED	000010000000L
-#define	BUTTON4_TRIPLE_CLICKED	000020000000L
-#define BUTTON4_RESERVED_EVENT	000040000000L
-#define BUTTON_CTRL		000100000000L
-#define BUTTON_SHIFT		000200000000L
-#define BUTTON_ALT		000400000000L
-#define	ALL_MOUSE_EVENTS	000777777777L
-#define	REPORT_MOUSE_POSITION	001000000000L
-
-/* macros to extract single event-bits from masks */
-#define	BUTTON_RELEASE(e, x)		((e) & (001 << (6 * ((x) - 1))))
-#define	BUTTON_PRESS(e, x)		((e) & (002 << (6 * ((x) - 1))))
-#define	BUTTON_CLICK(e, x)		((e) & (004 << (6 * ((x) - 1))))
-#define	BUTTON_DOUBLE_CLICK(e, x)	((e) & (010 << (6 * ((x) - 1))))
-#define	BUTTON_TRIPLE_CLICK(e, x)	((e) & (020 << (6 * ((x) - 1))))
-#define	BUTTON_RESERVED_EVENT(e, x)	((e) & (040 << (6 * ((x) - 1))))
-
-typedef unsigned long mmask_t;
-
-typedef struct
-{
-    short id;		/* ID to distinguish multiple devices */
-    int x, y, z;	/* event coordinates (character-cell) */
-    mmask_t bstate;	/* button state bits */
-}
-MEVENT;
-
-extern NCURSES_EXPORT(int) getmouse (MEVENT *);
-extern NCURSES_EXPORT(int) ungetmouse (MEVENT *);
-extern NCURSES_EXPORT(mmask_t) mousemask (mmask_t, mmask_t *);
-extern NCURSES_EXPORT(bool) wenclose (const WINDOW *, int, int);
-extern NCURSES_EXPORT(int) mouseinterval (int);
-extern NCURSES_EXPORT(bool) wmouse_trafo (const WINDOW* win,int* y, int* x, bool to_screen);
-
-#define mouse_trafo(y,x,to_screen) wmouse_trafo(stdscr,y,x,to_screen)
-
-/* other non-XSI functions */
-
-extern NCURSES_EXPORT(int) mcprint (char *, int);	/* direct data to printer */
-extern NCURSES_EXPORT(int) has_key (int);		/* do we have given key? */
-
-/* Debugging : use with libncurses_g.a */
-
-extern NCURSES_EXPORT(void) _tracef (const char *, ...) GCC_PRINTFLIKE(1,2);
-extern NCURSES_EXPORT(void) _tracedump (const char *, WINDOW *);
-extern NCURSES_EXPORT(char *) _traceattr (attr_t);
-extern NCURSES_EXPORT(char *) _traceattr2 (int, chtype);
-extern NCURSES_EXPORT(char *) _nc_tracebits (void);
-extern NCURSES_EXPORT(char *) _tracechar (const unsigned char);
-extern NCURSES_EXPORT(char *) _tracechtype (chtype);
-extern NCURSES_EXPORT(char *) _tracechtype2 (int, chtype);
-#ifdef _XOPEN_SOURCE_EXTENDED
-#define _tracech_t		_tracecchar_t
-extern NCURSES_EXPORT(char *) _tracecchar_t (const cchar_t *);
-#define _tracech_t2		_tracecchar_t2
-extern NCURSES_EXPORT(char *) _tracecchar_t2 (int, const cchar_t *);
-#else
-#define _tracech_t		_tracechtype
-#define _tracech_t2		_tracechtype2
-#endif
-extern NCURSES_EXPORT(char *) _tracemouse (const MEVENT *);
-extern NCURSES_EXPORT(void) trace (const unsigned int);
-
-/* trace masks */
-#define TRACE_DISABLE	0x0000	/* turn off tracing */
-#define TRACE_TIMES	0x0001	/* trace user and system times of updates */
-#define TRACE_TPUTS	0x0002	/* trace tputs calls */
-#define TRACE_UPDATE	0x0004	/* trace update actions, old & new screens */
-#define TRACE_MOVE	0x0008	/* trace cursor moves and scrolls */
-#define TRACE_CHARPUT	0x0010	/* trace all character outputs */
-#define TRACE_ORDINARY	0x001F	/* trace all update actions */
-#define TRACE_CALLS	0x0020	/* trace all curses calls */
-#define TRACE_VIRTPUT	0x0040	/* trace virtual character puts */
-#define TRACE_IEVENT	0x0080	/* trace low-level input processing */
-#define TRACE_BITS	0x0100	/* trace state of TTY control bits */
-#define TRACE_ICALLS	0x0200	/* trace internal/nested calls */
-#define TRACE_CCALLS	0x0400	/* trace per-character calls */
-#define TRACE_DATABASE	0x0800	/* trace read/write of terminfo/termcap data */
-#define TRACE_ATTRS	0x1000	/* trace attribute updates */
-#define TRACE_MAXIMUM	0xffff	/* maximum trace level */
-
-#if defined(TRACE) || defined(NCURSES_TEST)
-extern NCURSES_EXPORT_VAR(int) _nc_optimize_enable;		/* enable optimizations */
-#ifdef _XOPEN_SOURCE_EXTENDED
-extern NCURSES_EXPORT(const char *) _nc_viswbuf(const wchar_t *);
-#endif
-extern NCURSES_EXPORT(const char *) _nc_visbuf (const char *);
-#define OPTIMIZE_MVCUR		0x01	/* cursor movement optimization */
-#define OPTIMIZE_HASHMAP	0x02	/* diff hashing to detect scrolls */
-#define OPTIMIZE_SCROLL		0x04	/* scroll optimization */
-#define OPTIMIZE_ALL		0xff	/* enable all optimizations (dflt) */
-#endif
-
-#ifdef __cplusplus
-
-/* these names conflict with STL */
-#undef box
-#undef clear
-#undef erase
-#undef move
-#undef refresh
-
-}
-#endif
-
-#endif /* __NCURSES_H */

@@ -43,7 +43,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: toe.c,v 1.25 2001/05/26 18:40:34 tom Exp $")
+MODULE_ID("$Id: toe.c,v 1.26 2001/06/16 11:00:41 tom Exp $")
 
 #define isDotname(name) (!strcmp(name, ".") || !strcmp(name, ".."))
 
@@ -101,7 +101,7 @@ main(int argc, char *argv[])
     int i, c;
     int code;
 
-    _nc_progname = _nc_basename(argv[0]);
+    _nc_progname = _nc_rootname(argv[0]);
 
     while ((c = getopt(argc, argv, "huv:UV")) != EOF)
 	switch (c) {
