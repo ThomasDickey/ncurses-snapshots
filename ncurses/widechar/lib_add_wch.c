@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_add_wch.c,v 1.3 2004/04/03 20:19:31 tom Exp $")
+MODULE_ID("$Id: lib_add_wch.c,v 1.4 2004/09/19 00:33:51 tom Exp $")
 
 NCURSES_EXPORT(int)
 wadd_wch(WINDOW *win, const cchar_t * wch)
@@ -55,11 +55,11 @@ wadd_wch(WINDOW *win, const cchar_t * wch)
 	    if ((PUTC_n = wcrtomb(PUTC_buf, PUTC_ch, &PUT_st)) <= 0) {
 		code = ERR;
 		if (is8bits(PUTC_ch))
-		    code = waddch(win, UChar(PUTC_ch));
+		    code = waddch(win, UChar(PUTC_ch) | wch->attr);
 		break;
 	    }
 	    for (n = 0; n < PUTC_n; n++) {
-		if ((code = waddch(win, UChar(PUTC_buf[n]))) == ERR) {
+		if ((code = waddch(win, UChar(PUTC_buf[n]) | wch->attr)) == ERR) {
 		    break;
 		}
 	    }
@@ -90,11 +90,11 @@ wecho_wchar(WINDOW *win, const cchar_t * wch)
 	    if ((PUTC_n = wcrtomb(PUTC_buf, PUTC_ch, &PUT_st)) <= 0) {
 		code = ERR;
 		if (is8bits(PUTC_ch))
-		    code = waddch(win, UChar(PUTC_ch));
+		    code = waddch(win, UChar(PUTC_ch) | wch->attr);
 		break;
 	    }
 	    for (n = 0; n < PUTC_n; n++) {
-		if ((code = waddch(win, UChar(PUTC_buf[n]))) == ERR) {
+		if ((code = waddch(win, UChar(PUTC_buf[n]) | wch->attr)) == ERR) {
 		    break;
 		}
 	    }

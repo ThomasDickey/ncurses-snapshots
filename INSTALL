@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.77 2004/07/11 13:57:48 tom Exp $
+-- $Id: INSTALL,v 1.78 2004/09/18 17:12:51 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -450,9 +450,9 @@ SUMMARY OF CONFIGURE OPTIONS:
 	Turn on GCC compiler warnings.  There should be only a few.
 
     --enable-widec
-	Compile with experimental wide-character code.  This makes a different
-	version of the libraries (e.g., libncursesw.so), which stores
-	characters as wide-characters,
+	Compile with wide-character code.  This makes a different version of
+	the libraries (e.g., libncursesw.so), which stores characters as
+	wide-characters,
 
 	NOTE: applications compiled with this configuration are not compatible
 	with those built for 8-bit characters.  You cannot simply make a
