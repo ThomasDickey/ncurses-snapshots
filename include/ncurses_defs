@@ -1,4 +1,4 @@
-# $Id: ncurses_defs,v 1.7 2001/04/07 22:53:10 tom Exp $
+# $Id: ncurses_defs,v 1.8 2001/06/10 00:45:48 tom Exp $
 ##############################################################################
 # Copyright (c) 2000 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -42,6 +42,7 @@ ETIP_NEEDS_MATH_H
 GCC_NORETURN	/* nothing */
 GCC_UNUSED	/* nothing */
 HAVE_BIG_CORE
+HAVE_BOTWC
 HAVE_BSD_CGETENT
 HAVE_BUILTIN_H
 HAVE_DIRENT_H
@@ -123,6 +124,7 @@ NCURSES_EXPANDED
 NCURSES_EXT_FUNCS
 NCURSES_NOMACROS
 NCURSES_NO_PADDING
+NCURSES_PATHSEP	':'
 NDEBUG
 NEED_PTEM_H
 NO_LEAKS
@@ -149,6 +151,7 @@ USE_SCROLL_HINTS
 USE_SIGWINCH
 USE_STDIO_VSCAN
 USE_STRSTREAM_VSCAN
+USE_STRSTREAM_VSCAN_CAST
 USE_SYMLINKS
 USE_WIDEC_SUPPORT
 USE_XMC_SUPPORT

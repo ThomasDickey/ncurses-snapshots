@@ -30,13 +30,13 @@
 #ifndef NCURSES_CURSESW_H_incl
 #define NCURSES_CURSESW_H_incl 1
 
-// $Id: cursesw.h,v 1.25 2001/04/07 22:44:07 tom Exp $
+// $Id: cursesw.h,v 1.27 2001/06/10 00:53:39 tom Exp $
 
 #include <etip.h>
 #include <stdio.h>
 #include <stdarg.h>
 
-#if HAVE_STRSTREAM_H && USE_STRSTREAM_VSCAN
+#if HAVE_STRSTREAM_H && (USE_STRSTREAM_VSCAN||USE_STRSTREAM_VSCAN_CAST)
 #include <strstream.h>
 #endif
 
@@ -930,7 +930,7 @@ public:
 
   int            printw(const char* fmt, ...)
     // Do a formatted print to the window.
-#if __GNUG__ >= 2
+#if (__GNUG__ >= 2) && !defined(printf)
     __attribute__ ((format (printf, 2, 3)));
 #else
   ;
@@ -938,7 +938,7 @@ public:
 
   int            printw(int y, int x, const char * fmt, ...)
     // Move the cursor and then do a formatted print to the window.
-#if __GNUG__ >= 2
+#if (__GNUG__ >= 2) && !defined(printf)
     __attribute__ ((format (printf, 4, 5)));
 #else
   ;

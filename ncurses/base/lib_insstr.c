@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insstr.c,v 1.18 2001/06/03 01:09:48 skimo Exp $")
+MODULE_ID("$Id: lib_insstr.c,v 1.19 2001/06/09 23:43:02 skimo Exp $")
 
 NCURSES_EXPORT(int)
 winsnstr(WINDOW *win, const char *s, int n)
@@ -59,7 +59,8 @@ winsnstr(WINDOW *win, const char *s, int n)
 	ox = win->_curx;
 	for (cp = str; *cp && (n <= 0 || (cp - str) < n); cp++) {
 	    if (*cp == '\n' || *cp == '\r' || *cp == '\t' || *cp == '\b') {
-		NCURSES_CH_T wch = NewChar(*cp);
+		NCURSES_CH_T wch;
+		SetChar2(wch, *cp);
 		_nc_waddch_nosync(win, wch);
 	    } else if (is7bits(*cp) && iscntrl(*cp)) {
 		winsch(win, ' ' + (chtype) (*cp));

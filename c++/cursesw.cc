@@ -25,7 +25,7 @@
 #include "internal.h"
 #include "cursesw.h"
 
-MODULE_ID("$Id: cursesw.cc,v 1.21 2001/04/07 22:11:39 tom Exp $")
+MODULE_ID("$Id: cursesw.cc,v 1.22 2001/06/09 20:51:59 tom Exp $")
 
 #define COLORS_NEED_INITIALIZATION  -1
 #define COLORS_NOT_INITIALIZED       0
@@ -55,7 +55,11 @@ NCursesWindow::scanw(const char* fmt, ...)
 #if USE_STDIO_VSCAN
 	if (::vscanf(fmt, args) != -1)
 	    result = OK;
-#elif USE_STRSTREAM_VSCAN	/* pre-gcc 3.0 */
+#elif USE_STRSTREAM_VSCAN	/* powerpc, os390 */
+	strstreambuf ss(buf, sizeof(buf));
+	if (ss.vscan(fmt, args) != -1)
+	    result = OK;
+#elif USE_STRSTREAM_VSCAN_CAST	/* pre-gcc 3.0 */
 	strstreambuf ss(buf, sizeof(buf));
 	if (ss.vscan(fmt, (_IO_va_list)args) != -1)
 	    result = OK;
@@ -81,7 +85,11 @@ NCursesWindow::scanw(int y, int x, const char* fmt, ...)
 #if USE_STDIO_VSCAN
 	    if (::vscanf(fmt, args) != -1)
 		result = OK;
-#elif USE_STRSTREAM_VSCAN	/* pre-gcc 3.0 */
+#elif USE_STRSTREAM_VSCAN	/* powerpc, os390 */
+	    strstreambuf ss(buf, sizeof(buf));
+	    if (ss.vscan(fmt, args) != -1)
+		result = OK;
+#elif USE_STRSTREAM_VSCAN_CAST	/* pre-gcc 3.0 */
 	    strstreambuf ss(buf, sizeof(buf));
 	    if (ss.vscan(fmt, (_IO_va_list)args) != -1)
 		result = OK;

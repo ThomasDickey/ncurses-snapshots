@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.238 2001/06/03 02:19:57 skimo Exp $
+dnl $Id: configure.in,v 1.240 2001/06/10 00:37:46 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20000819)
-AC_REVISION($Revision: 1.238 $)
+AC_REVISION($Revision: 1.240 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -734,6 +734,7 @@ NCURSES_CH_T=chtype
 NCURSES_getbkgd_gen=generated
 NCURSES_getbkgd_def="#define getbkgd(win)                    ((win)->_bkgd)"
 NCURSES_bkgd_field="chtype  _bkgd;"
+NCURSES_libutf8_h=""
 AC_MSG_CHECKING(if you want experimental wide-character code)
 AC_ARG_ENABLE(widec,
 	[  --enable-widec          compile with experimental wide-char/UTF-8 code],
@@ -748,15 +749,29 @@ if test "$with_widec" = yes ; then
 	NCURSES_getbkgd_gen=implemented
 	NCURSES_getbkgd_def=""
 	NCURSES_bkgd_field=""
+	AC_CHECK_FUNC(putwc)
+if test "$ac_cv_func_putwc" != yes ; then
+	AC_MSG_CHECKING(for putwc in libutf8)
+	cf_save_LIBS="$LIBS"
+	LIBS="-lutf8 $LIBS"
+AC_TRY_LINK([
+#include <libutf8.h>],[putwc(0,0);],
+	[NCURSES_libutf8_h="#include <libutf8.h>"
+	AC_MSG_RESULT(yes)],
+	[LIBS="$cf_save_LIBS"
+	AC_MSG_RESULT(no)])
+fi
+	AC_CHECK_FUNC(botwc)
 fi
 AC_SUBST(NCURSES_CH_T)
 AC_SUBST(NCURSES_getbkgd_gen)
 AC_SUBST(NCURSES_getbkgd_def)
 AC_SUBST(NCURSES_bkgd_field)
+AC_SUBST(NCURSES_libutf8_h)
 
 AC_MSG_CHECKING(for terminal capabilities file)
 AC_ARG_WITH(caps,
-	[   --with-caps=alt        compile with experimental alternate Caps file],
+	[ --with-caps=alt         compile with experimental alternate Caps file],
 	[TERMINFO_CAPS=Caps.$withval],
 	[TERMINFO_CAPS=Caps])
 test -f ${srcdir}/include/${TERMINFO_CAPS} || TERMINFO_CAPS=Caps

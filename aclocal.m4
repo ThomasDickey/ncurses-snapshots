@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.250 2001/05/20 00:19:36 tom Exp $
+dnl $Id: aclocal.m4,v 1.251 2001/06/09 20:49:46 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -425,11 +425,12 @@ AC_LANG_CPLUSPLUS
 AC_CHECK_HEADERS(strstream.h)
 
 AC_CACHE_CHECK(if $CXX supports vscan function,cf_cv_cpp_vscan_func,[
-	for cf_vscan_func in strstream stdio
+	for cf_vscan_func in strstream strstream_cast stdio
 	do
 	case $cf_vscan_func in #(vi
 	stdio)		cf_vscan_defs=USE_STDIO_VSCAN ;; #(vi
 	strstream)	cf_vscan_defs=USE_STRSTREAM_VSCAN ;;
+	strstream_cast)	cf_vscan_defs=USE_STRSTREAM_VSCAN_CAST ;;
 	esac
 	AC_TRY_LINK([
 #include <stdio.h>
@@ -452,6 +453,10 @@ int scanw(const char* fmt, ...)
     if (::vscanf(fmt, args) != -1)
 	result = 0;
 #elif defined(USE_STRSTREAM_VSCAN)
+    strstreambuf ss(buf, sizeof(buf));
+    if (ss.vscan(fmt, args) != -1)
+	result = 0;
+#elif defined(USE_STRSTREAM_VSCAN_CAST)
     strstreambuf ss(buf, sizeof(buf));
     if (ss.vscan(fmt, (_IO_va_list)args) != -1)
 	result = 0;
@@ -482,6 +487,10 @@ stdio) #(vi
 strstream)
 	AC_DEFINE(CPP_HAS_VSCAN_FUNC)
 	AC_DEFINE(USE_STRSTREAM_VSCAN)
+	;;
+strstream_cast)
+	AC_DEFINE(CPP_HAS_VSCAN_FUNC)
+	AC_DEFINE(USE_STRSTREAM_VSCAN_CAST)
 	;;
 esac
 ])dnl

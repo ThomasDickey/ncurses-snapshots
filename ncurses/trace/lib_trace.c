@@ -40,7 +40,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.41 2001/06/03 02:25:49 skimo Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.42 2001/06/10 00:51:04 tom Exp $")
 
 NCURSES_EXPORT_VAR(unsigned)
 _nc_tracing = 0;		/* always define this */
@@ -143,11 +143,13 @@ _nc_visbuf(const char *buf)
     return _nc_visbuf2(0, buf);
 }
 
+#if USE_WIDEC_SUPPORT
 NCURSES_EXPORT(const char *)
 _nc_viswbuf(const wchar_t * buf)
 {
     return "";
 }
+#endif
 
 #ifdef TRACE
 NCURSES_EXPORT(void)

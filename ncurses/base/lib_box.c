@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_box.c,v 1.14 2001/06/03 02:33:59 skimo Exp $")
+MODULE_ID("$Id: lib_box.c,v 1.15 2001/06/09 23:47:15 skimo Exp $")
 
 #if USE_WIDEC_SUPPORT
 NCURSES_EXPORT(int)
@@ -115,7 +115,7 @@ wborder_set(WINDOW *win,
 }
 
 #define WIDEVAR(v) \
-    NCURSES_CH_T    w ## v = NewChar(v)
+    SetChar2(w ## v,v)
 #define WIDEPASS(v) \
     (v ? CHREF(w ## v) : (ARG_CH_T) 0)
 
@@ -124,6 +124,7 @@ wborder(WINDOW *win,
 	chtype ls, chtype rs, chtype ts, chtype bs,
 	chtype tl, chtype tr, chtype bl, chtype br)
 {
+    NCURSES_CH_T wls, wrs, wts, wbs, wtl, wtr, wbl, wbr;
     WIDEVAR(ls);
     WIDEVAR(rs);
     WIDEVAR(ts);
