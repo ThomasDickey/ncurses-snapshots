@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.71 1997/08/16 21:47:00 tom Exp $
+ * $Id: curses.priv.h,v 1.73 1997/08/23 15:21:25 Alexander.V.Lukyanov Exp $
  *
  *	curses.priv.h
  *
@@ -175,6 +175,10 @@ color_t;
 #define MAXLINES      66
 #define FIFO_SIZE     MAXLINES
 
+#define ACS_LEN       128
+
+#define WINDOWLIST struct _win_list
+
 struct screen {
 	int             _ifd;           /* input file ptr for screen        */
 	FILE            *_ofp;          /* output file ptr for screen       */
@@ -262,6 +266,26 @@ struct screen {
 #if !USE_XMC_SUPPORT
 	unsigned long   _xmc_suppress;  /* attributes to suppress if xmc     */
 #endif
+	unsigned long   _acs_map[ACS_LEN];
+
+	/*
+	 * These data correspond to the state of the idcok() and idlok()
+	 * functions.  A caveat is in order here:  the XSI and SVr4
+	 * documentation specify that these functions apply to the window which
+	 * is given as an argument.  However, ncurses implements this logic
+	 * only for the newscr/curscr update process, _not_ per-window.
+	 */
+	int             _nc_sp_idlok;
+	int             _nc_sp_idcok;
+#define _nc_idlok SP->_nc_sp_idlok
+#define _nc_idcok SP->_nc_sp_idcok
+
+	/*
+	 * Linked-list of all windows, to support '_nc_resizeall()' and
+	 * '_nc_freeall()'
+	 */
+	WINDOWLIST      *_nc_sp_windows;
+#define _nc_windows SP->_nc_sp_windows
 };
 
 /* Ncurses' public interface follows the internal types */
@@ -271,7 +295,6 @@ struct screen {
 #include <nomacros.h>
 #endif
 
-#define WINDOWLIST struct _win_list
 	WINDOWLIST {
 	WINDOWLIST *next;
 	WINDOW	*win;
@@ -493,7 +516,12 @@ extern void init_acs(void);	/* no prefix, this name is traditional */
 extern void _nc_mvcur_init(void);
 extern void _nc_mvcur_resume(void);
 extern void _nc_mvcur_wrap(void);
-extern int _nc_mvcur_scrolln(int, int, int, int);
+
+extern int _nc_scrolln(int, int, int, int);
+
+extern void _nc_screen_init(void);
+extern void _nc_screen_resume(void);
+extern void _nc_screen_wrap(void);
 
 /* lib_mouse.c */
 extern void _nc_mouse_init(SCREEN *);
@@ -552,6 +580,7 @@ extern SCREEN *_nc_screen(void);
 extern int _nc_alloc_screen(void);
 extern void _nc_set_screen(SCREEN *);
 #else
+/* current screen is private data; avoid possible linking conflicts too */
 extern SCREEN *SP;
 #define _nc_alloc_screen() ((SP = typeCalloc(SCREEN, 1)) != 0)
 #define _nc_set_screen(sp) SP = sp
@@ -580,9 +609,5 @@ extern int _nc_slk_initialize(WINDOW *, int);
 #define SLK_LINES  (SLK_STDFMT ? 1 : (_nc_slk_format - 2))
 
 extern int _nc_ripoffline(int line, int (*init)(WINDOW *,int));
-
-extern bool _nc_idlok, _nc_idcok;
-
-extern WINDOWLIST *_nc_windows;
 
 #endif /* CURSES_PRIV_H */

@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.22 1997/08/16 17:11:03 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.24 1997/08/23 16:06:31 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -111,6 +111,7 @@ SCREEN	*oldSP;
 	stdscr      = SP->_stdscr;
 	COLORS      = SP->_color_count;
 	COLOR_PAIRS = SP->_pair_count;
+	memcpy(acs_map, SP->_acs_map, sizeof(chtype)*ACS_LEN);
 
 	T((T_RETURN("%p"), oldSP));
 	return(oldSP);
@@ -207,17 +208,12 @@ size_t	i;
 	}
 #endif
 	init_acs();
+	memcpy(SP->_acs_map, acs_map, sizeof(chtype)*ACS_LEN);
 
-	/*
-	 * SVr4 curses emits an sgr0 before clearing the screen for the first
-	 * time, but after initializing the alternate character-set.  (We also
-	 * reset the scrolling margins a little later, but that should be
-	 * independent of this).
-	 */
-	if (exit_attribute_mode) {
-		TPUTS_TRACE("exit_attribute_mode");
-		putp(exit_attribute_mode);
-	}
+	_nc_idcok = TRUE;
+	_nc_idlok = FALSE;
+	
+	_nc_windows = 0; /* no windows yet */
 
 	T(("creating newscr"));
 	if ((newscr = newwin(slines, scolumns, 0, 0)) == 0)

@@ -22,7 +22,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: name_match.c,v 1.1 1997/06/01 00:18:48 tom Exp $")
+MODULE_ID("$Id: name_match.c,v 1.3 1997/08/23 18:12:50 hjl Exp $")
 
 /*
  *	_nc_first_name(char *names)
@@ -46,7 +46,7 @@ char *_nc_first_name(const char *const sp)
 }
 
 /*
- *	bool _nc_name_match(namelist, name, delim)
+ *	int _nc_name_match(namelist, name, delim)
  *
  *	Is the given name matched in namelist?
  */

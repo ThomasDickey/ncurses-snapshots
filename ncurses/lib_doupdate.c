@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.75 1997/08/16 23:34:58 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.78 1997/08/23 19:26:33 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -174,6 +174,16 @@ static inline void PutAttrChar(chtype ch)
 static bool check_pending(void)
 /* check for pending input */
 {
+	bool have_pending = FALSE;
+
+	/*
+	 * Only carry out this check when the flag is zero, otherwise we'll
+	 * have the refreshing slow down drastically (or stop) if there's an
+	 * unread character available.
+	 */
+	if(SP->_fifohold != 0)
+		return FALSE;
+
 	if (SP->_checkfd >= 0) {
 #if USE_FUNC_POLL
 		struct pollfd fds[1];
@@ -181,8 +191,7 @@ static bool check_pending(void)
 		fds[0].events = POLLIN;
 		if (poll(fds, 1, 0) > 0)
 		{
-			fflush(SP->_ofp);
-			return TRUE;
+			have_pending = TRUE;
 		}
 #elif HAVE_SELECT
 		fd_set fdset;
@@ -195,10 +204,13 @@ static bool check_pending(void)
 		FD_SET(SP->_checkfd, &fdset);
 		if (select(SP->_checkfd+1, &fdset, NULL, NULL, &ktimeout) > 0)
 		{
-			fflush(SP->_ofp);
-			return TRUE;
+			have_pending = TRUE;
 		}
 #endif
+	}
+	if (have_pending) {
+		SP->_fifohold = 5;
+		fflush(SP->_ofp);
 	}
 	return FALSE;
 }
@@ -475,8 +487,9 @@ struct tms before, after;
 		resizeterm(LINES, COLS);
 
 		_nc_mvcur_resume();
+		_nc_screen_resume();
 		_nc_mouse_resume(SP);
-		newscr->_clear = TRUE;
+
 		SP->_endwin = FALSE;
 	}
 
@@ -650,6 +663,9 @@ struct tms before, after;
 	} else {
 		int changedlines = CHECK_INTERVAL;
 
+		if(check_pending())
+		    goto cleanup;
+
 		nonempty = min(screen_lines, newscr->_maxy+1);
 #if USE_HASHMAP		/* still 5% slower 960928 */
 #if defined(TRACE) || defined(NCURSES_TEST)
@@ -662,7 +678,7 @@ struct tms before, after;
 #if defined(TRACE) || defined(NCURSES_TEST)
 		if (_nc_optimize_enable & OPTIMIZE_SCROLL)
 #endif /*TRACE */
-#if USE_SCROLL_HINTS
+#if USE_SCROLL_HINTS || USE_HASHMAP
 			_nc_scroll_optimize();
 #else
 			_nc_perform_scroll();
@@ -678,12 +694,8 @@ struct tms before, after;
 			 */
 			if (changedlines == CHECK_INTERVAL)
 			{
-			    if(SP->_fifohold == 0
-			     && check_pending())
-			    {
-				SP->_fifohold = 5;
+			    if (check_pending())
 				goto cleanup;
-			    }
 			    changedlines = 0;
 			}
 
@@ -1258,7 +1270,7 @@ void _nc_outstr(const char *str)
  *
  ****************************************************************************/
 
-int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
+int _nc_scrolln(int n, int top, int bot, int maxy)
 /* scroll region from top to bot by n lines */
 {
     chtype blank=ClrBlank(stdscr);
@@ -1625,4 +1637,40 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
     _nc_scroll_window(curscr, n, top, bot, blank);
 
     return(OK);
+}
+
+
+void _nc_screen_resume()
+{
+    /* make sure terminal is in a sane known state */
+    SP->_current_attr = A_NORMAL;
+    newscr->_clear = TRUE;
+
+    if (SP->_coloron == TRUE && orig_pair)
+	putp(orig_pair);
+    if (exit_attribute_mode)
+	putp(exit_attribute_mode);
+    else
+    {
+	/* turn off attributes */
+	if (exit_alt_charset_mode)
+	    putp(exit_alt_charset_mode);
+	if (exit_standout_mode)
+	    putp(exit_standout_mode);
+	if (exit_underline_mode)
+	    putp(exit_underline_mode);
+    }
+    if (exit_insert_mode)
+	putp(exit_insert_mode);
+}
+
+void _nc_screen_init()
+{
+    _nc_screen_resume();
+}
+
+/* wrap up screen handling */
+void _nc_screen_wrap()
+{
+    UpdateAttrs(A_NORMAL);
 }

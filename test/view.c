@@ -22,7 +22,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.20 1997/04/26 18:16:38 tom Exp $
+ * $Id: view.c,v 1.21 1997/08/23 20:57:43 tom Exp $
  */
 
 #include <test.priv.h>
@@ -250,7 +250,6 @@ static RETSIGTYPE adjust(int sig)
 
 		if (ioctl(fileno(stdout), TIOCGWINSZ, &size) == 0) {
 			resizeterm(size.ws_row, size.ws_col);
-			beep();
 			wrefresh(curscr);	/* Linux needs this */
 			show_all();
 		}

@@ -21,7 +21,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: softscroll.c,v 1.3 1997/08/17 01:09:33 tom Exp $")
+MODULE_ID("$Id: softscroll.c,v 1.4 1997/08/23 15:59:42 tom Exp $")
 
 /*
  * Compute indices for the given WINDOW, preparing it for scrolling.
@@ -216,7 +216,7 @@ _nc_perform_scroll(void)
 			}
 
 			TR(TRACE_UPDATE | TRACE_MOVE, ("scroll [%d, %d] by %d", first, last, moved));
-			if (_nc_mvcur_scrolln(moved, first, last, LINES - 1) == ERR)
+			if (_nc_scrolln(moved, first, last, LINES - 1) == ERR)
 			{
 				TR(TRACE_UPDATE | TRACE_MOVE, ("unable to scroll"));
 				break;

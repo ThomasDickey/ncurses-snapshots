@@ -24,9 +24,9 @@
 #include <curses.priv.h>
 #include <term.h>	/* ena_acs, acs_chars */
 
-MODULE_ID("$Id: lib_acs.c,v 1.10 1997/08/02 22:12:35 tom Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.11 1997/08/15 21:44:16 Alexander.V.Lukyanov Exp $")
 
-chtype acs_map[128];
+chtype acs_map[ACS_LEN];
 
 void init_acs(void)
 {

@@ -25,15 +25,13 @@
 **
 **	The routines for moving the physical cursor and scrolling:
 **
-**		void _nc_mvcur_init(void), mvcur_wrap(void)
+**		void _nc_mvcur_init(void)
 **
 **		void _nc_mvcur_resume(void)
 **
 **		int mvcur(int old_y, int old_x, int new_y, int new_x)
 **
 **		void _nc_mvcur_wrap(void)
-**
-**		int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 **
 ** Comparisons with older movement optimizers:
 **    SVr3 curses mvcur() can't use cursor_to_ll or auto_left_margin.
@@ -143,7 +141,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.42 1997/08/16 16:10:30 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.44 1997/08/23 15:59:31 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -163,8 +161,6 @@ static float diff;
 
 #define OPT_SIZE 512
 
-static void save_curs(void);
-static void restore_curs(void);
 static int cost_of(const char *const cap, int affcnt);
 static int normalized_cost(const char *const cap, int affcnt);
 
@@ -251,11 +247,8 @@ static void reset_scroll_region(void)
 {
     if (change_scroll_region)
     {
-	/* change_scroll_region may trash the cursor location */
-	save_curs();
 	TPUTS_TRACE("change_scroll_region");
 	putp(tparm(change_scroll_region, 0, screen_lines - 1));
-	restore_curs();
     }
 }
 
@@ -279,6 +272,15 @@ void _nc_mvcur_resume(void)
      * a vt100 emulation through xterm.
      */
     reset_scroll_region();
+    SP->_cursrow = SP->_curscol = -1;
+    
+    /* restore cursor shape */
+    if (SP->_cursor != -1)
+    {
+	int cursor = SP->_cursor;
+	SP->_cursor = -1;
+	curs_set (cursor);
+    }
 }
 
 void _nc_mvcur_init(void)
@@ -377,12 +379,27 @@ void _nc_mvcur_init(void)
 void _nc_mvcur_wrap(void)
 /* wrap up cursor-addressing mode */
 {
-    reset_scroll_region();
+    /* leave cursor at screen bottom */
+    mvcur(-1, -1, screen_lines - 1, 0);
+
+    /* set cursor to normal mode */
+    if (SP->_cursor != -1)
+	curs_set(1);
+
     if (exit_ca_mode)
     {
 	TPUTS_TRACE("exit_ca_mode");
 	putp(exit_ca_mode);
     }
+    /*
+     * Reset terminal's tab counter.  There's a long-time bug that
+     * if you exit a "curses" program such as vi or more, tab
+     * forward, and then backspace, the cursor doesn't go to the
+     * right place.  The problem is that the kernel counts the
+     * escape sequences that reset things as column positions.
+     * Utter a \r to reset this invisibly.
+     */
+    _nc_outch('\r');
 }
 
 /****************************************************************************
@@ -865,40 +882,6 @@ int mvcur(int yold, int xold, int ynew, int xnew)
     return(onscreen_mvcur(yold, xold, ynew, xnew, TRUE));
 }
 
-
-/****************************************************************************
- *
- * Cursor save_restore
- *
- ****************************************************************************/
-
-/* assumption: sc/rc is faster than cursor addressing */
-
-static int	oy, ox;		/* ugh, mvcur_scrolln() needs to see this */
-
-static void save_curs(void)
-{
-    if (save_cursor && restore_cursor)
-    {
-	TPUTS_TRACE("save_cursor");
-	putp(save_cursor);
-    }
-
-    oy = CURRENT_ROW;
-    ox = CURRENT_COLUMN;
-}
-
-static void restore_curs(void)
-{
-    if (save_cursor && restore_cursor)
-    {
-	TPUTS_TRACE("restore_cursor");
-	putp(restore_cursor);
-    }
-    else
-	onscreen_mvcur(-1, -1, oy, ox, FALSE);
-}
-
 #if defined(MAIN) || defined(NCURSES_TEST)
 /****************************************************************************
  *
@@ -1019,7 +1002,7 @@ int main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 	    putchar('"');
 
 	    gettimeofday(&before, NULL);
-	    _nc_mvcur_scrolln(fy, fx, ty, tx);
+	    _nc_scrolln(fy, fx, ty, tx);
 	    gettimeofday(&after, NULL);
 
 	    printf("\" (%ld msec)\n",

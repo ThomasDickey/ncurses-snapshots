@@ -29,7 +29,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.18 1997/05/24 22:32:32 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.19 1997/08/20 16:22:38 hjl Exp $")
 
 /*
  * Only 8 ANSI colors are defined; the ISO 6429 control sequences work only
@@ -262,19 +262,19 @@ int init_color(short color, short r, short g, short b)
 bool can_change_color(void)
 {
 	T((T_CALLED("can_change_color()")));
-	returnCode(can_change != 0);
+	returnCode ((can_change != 0) ? TRUE : FALSE);
 }
 
 bool has_colors(void)
 {
 	T((T_CALLED("has_colors()")));
-	returnCode((orig_pair != NULL || orig_colors != NULL)
-		&& (max_colors != -1) && (max_pairs != -1)
-		&&
-		(((set_foreground != NULL) && (set_background != NULL))
-		|| ((set_a_foreground != NULL) && (set_a_background != NULL))
-		|| set_color_pair)
-		);
+	returnCode (((orig_pair != NULL || orig_colors != NULL)
+		     && (max_colors != -1) && (max_pairs != -1)
+		     && (((set_foreground != NULL)
+			  && (set_background != NULL))
+			 || ((set_a_foreground != NULL)
+			     && (set_a_background != NULL))
+			 || set_color_pair)) ? TRUE : FALSE);
 }
 
 int color_content(short color, short *r, short *g, short *b)

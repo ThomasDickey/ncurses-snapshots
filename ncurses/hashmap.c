@@ -35,11 +35,8 @@ vertical-motion optimizer portion of the update logic (see hardscroll.c).
 
    Line pairs are recognized by applying a modified Heckel's algorithm,
 sped up by hashing.  If a line hash is unique in both screens, those
-lines must be a pair.  If the hashes of the two lines immediately following
-lines known to be a pair are the same, the following lines are also a pair.
-We apply these rules repeatedly until no more pairs are found.  The
-modifications stem from the fact that there may already be oldindex info
-associated with the virtual screen, which has to be respected.
+lines must be a pair. Then if the lines just before or after the pair
+are the same or similar, they are a pair too.
 
    We don't worry about false pairs produced by hash collisions, on the
 assumption that such cases are rare and will only make the latter stages
@@ -59,7 +56,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hashmap.c,v 1.19 1997/08/16 20:43:28 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.21 1997/08/21 13:52:03 Alexander.V.Lukyanov Exp $")
 
 #ifdef HASHDEBUG
 #define LINES	24
@@ -146,7 +143,7 @@ static inline bool cost_effective(const int from, const int to, const bool blank
 	     + update_cost(OLDTEXT(new_from),NEWTEXT(from)))
 	 >= ((new_from==from ? update_cost_from_blank(NEWTEXT(from))
 			     : update_cost(OLDTEXT(new_from),NEWTEXT(from)))
-	     + update_cost(OLDTEXT(from),NEWTEXT(to))));
+	     + update_cost(OLDTEXT(from),NEWTEXT(to)))) ? TRUE : FALSE;
 }
 
 
@@ -169,7 +166,7 @@ static void grow_hunks(void)
     int back_limit, forward_limit;	    /* limits for cells to fill */
     int back_ref_limit, forward_ref_limit;  /* limits for refrences */
     int i;
-    int new_hunk;
+    int next_hunk;
 
     /*
      * This is tricky part.  We have unique pairs to use as anchors.
@@ -181,18 +178,19 @@ static void grow_hunks(void)
     i = 0;
     while (i < LINES && OLDNUM(i) == _NEWINDEX)
 	i++;
-    for ( ; i < LINES; i=new_hunk)
+    for ( ; i < LINES; i=next_hunk)
     {
 	start = i;
 	shift = OLDNUM(i) - i;
 	
 	/* get forward limit */
-	for (i = start+1; i < LINES && OLDNUM(i) - i == shift; i++)
-	    ;
+	i = start+1;
+	while (i < LINES && OLDNUM(i) != _NEWINDEX && OLDNUM(i) - i == shift)
+	    i++;
 	end = i;
 	while (i < LINES && OLDNUM(i) == _NEWINDEX)
 	    i++;
-	new_hunk = i;
+	next_hunk = i;
 	forward_limit = i;
 	if (i >= LINES || OLDNUM(i) >= i)
 	    forward_ref_limit = i;
@@ -321,13 +319,14 @@ void _nc_hash_map(void)
 
     /*
      * Mark line pairs corresponding to unique hash pairs.
-     * Note: we only do this where the new line doesn't
-     * already have a valid oldindex -- this way we preserve the
-     * information left in place by the software scrolling functions.
+     * 
+     * We don't mark lines with offset 0, because it can make fail
+     * extending hunks by cost_effective. Otherwise, it does not
+     * have any side effects.
      */
     for (sp = hashtab; sp->hashval; sp++)
 	if (sp->oldcount == 1 && sp->newcount == 1
-	    && OLDNUM(sp->newindex) == _NEWINDEX)
+	    && sp->oldindex != sp->newindex)
 	{
 	    TR(TRACE_UPDATE | TRACE_MOVE,
 	       ("new line %d is hash-identical to old line %d (unique)",
@@ -337,7 +336,12 @@ void _nc_hash_map(void)
 
     grow_hunks();
 
-    /* eliminate impossible shifts */
+    /*
+     * Eliminate bad or impossible shifts -- this includes removing
+     * those hunks which could not grow because of conflicts, as well
+     * those which are to be moved too far, they are likely to destroy
+     * more than carry.
+     */
     for (i = 0; i < LINES; )
     {
 	while (i < LINES && OLDNUM(i) == _NEWINDEX)
@@ -350,7 +354,7 @@ void _nc_hash_map(void)
 	while (i < LINES && OLDNUM(i) != _NEWINDEX && OLDNUM(i) - i == shift)
 	    i++;
 	size = i - start;
-	if (size < abs(shift))
+	if (size <= abs(shift))
 	{
 	    while (start < i)
 	    {
@@ -360,6 +364,7 @@ void _nc_hash_map(void)
 	}
     }
     
+    /* After clearing invalid hunks, try grow the rest. */
     grow_hunks();
 
 #if NO_LEAKS
