@@ -1,4 +1,4 @@
-# $Id: dist.mk,v 1.403 2004/02/14 17:10:06 tom Exp $
+# $Id: dist.mk,v 1.404 2004/02/21 17:07:23 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -10,7 +10,7 @@ SHELL = /bin/sh
 # These define the major/minor/patch versions of ncurses.
 NCURSES_MAJOR = 5
 NCURSES_MINOR = 4
-NCURSES_PATCH = 20040214
+NCURSES_PATCH = 20040221
 
 # We don't append the patch to the version, since this only applies to releases
 VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)

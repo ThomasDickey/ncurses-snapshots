@@ -39,18 +39,18 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_get_wch.c,v 1.6 2004/01/18 01:18:17 tom Exp $")
+MODULE_ID("$Id: lib_get_wch.c,v 1.7 2004/02/21 22:22:22 tom Exp $")
 
 #if HAVE_MBTOWC && HAVE_MBLEN
 #define reset_mbytes(state) mblen(NULL, 0), mbtowc(NULL, NULL, 0)
 #define count_mbytes(buffer,length,state) mblen(buffer,length)
 #define check_mbytes(wch,buffer,length,state) \
-	(int) mbtowc(&wch, buffer, count)
+	(int) mbtowc(&wch, buffer, length)
 #elif HAVE_MBRTOWC && HAVE_MBRLEN
 #define reset_mbytes(state) memset(&state, 0, sizeof(state))
 #define count_mbytes(buffer,length,state) mbrlen(buffer,length,&state)
 #define check_mbytes(wch,buffer,length,state) \
-	(int) mbrtowc(&wch, buffer, count, &state)
+	(int) mbrtowc(&wch, buffer, length, &state)
 #else
 make an error
 #endif

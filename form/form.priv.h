@@ -30,10 +30,23 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: form.priv.h,v 0.11 2003/11/08 20:38:51 tom Exp $ */
+/* $Id: form.priv.h,v 0.12 2004/02/21 22:17:46 tom Exp $ */
+
+#ifndef FORM_PRIV_H
+#define FORM_PRIV_H 1
 
 #include "mf_common.h"
 #include "form.h"
+
+#if USE_WIDEC_SUPPORT
+#include <wchar.h>
+#include <wctype.h>
+
+#ifndef MB_LEN_MAX
+#define MB_LEN_MAX 8 /* should be >= MB_CUR_MAX, but that may be a function */
+#endif
+
+#endif
 
 /* form  status values */
 #define _OVLMODE         (0x04) /* Form is in overlay mode                */
@@ -128,3 +141,9 @@ extern NCURSES_EXPORT(FIELD *) _nc_First_Active_Field (FORM*);
 extern NCURSES_EXPORT(bool) _nc_Internal_Validation (FORM*);
 extern NCURSES_EXPORT(int) _nc_Set_Current_Field (FORM*,FIELD*);
 extern NCURSES_EXPORT(int) _nc_Position_Form_Cursor (FORM*);
+
+#if USE_WIDEC_SUPPORT
+extern NCURSES_EXPORT(wchar_t *) _nc_Widen_String(char *, int *);
+#endif
+
+#endif /* FORM_PRIV_H */
