@@ -195,7 +195,6 @@ Who's Who and What's What
    
    To join the ncurses mailing list, please write email to
    bug-ncurses-request@gnu.org containing the line:
-
              subscribe <name>@<host.domain>
 
    This list is open to anyone interested in helping with the development
@@ -217,7 +216,7 @@ Other Related Resources
 
    The distribution includes and uses a version of the terminfo-format
    terminal description file maintained by Eric Raymond.
-   [13]http://www.ccil.org/~esr/ncurses.html.
+   [13]http://earthspace.net/~esr/terminfo.
    
    You can find lots of information on terminal-related topics not
    covered in the terminfo file at [14]Richard Shuford's archive.
@@ -236,5 +235,5 @@ References
   10. mailto:florian@gnu.org
   11. mailto:bug-ncurses@gnu.org
   12. ftp://ftp.clark.net/pub/dickey/ncurses
-  13. http://www.ccil.org/~esr/ncurses.html
+  13. http://earthspace.net/~esr/terminfo
   14. http://www.cs.utk.edu/~shuford/terminal_index.html

@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <!--
-  $Id: announce.html.in,v 1.23 1998/02/15 22:13:39 florian Exp $
+  $Id: announce.html.in,v 1.24 1998/02/28 23:16:48 tom Exp $
 -->
 <HTML>
 <HEAD>
@@ -224,7 +224,7 @@ on them, please join the ncurses list.
 
 The distribution includes and uses a version of the terminfo-format
 terminal description file maintained by Eric Raymond.
-<A HREF="http://www.ccil.org/~esr/ncurses.html">http://www.ccil.org/~esr/ncurses.html</A>.<P>
+<A HREF="http://earthspace.net/~esr/terminfo">http://earthspace.net/~esr/terminfo</A>.<P>
 
 You can find lots of information on terminal-related topics
 not covered in the terminfo file at
