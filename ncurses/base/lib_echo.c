@@ -42,9 +42,8 @@
  */
 
 #include <curses.priv.h>
-#include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_echo.c,v 1.2 1998/02/11 12:14:00 tom Exp $")
+MODULE_ID("$Id: lib_echo.c,v 1.3 1998/10/12 13:15:33 Alexander.V.Lukyanov Exp $")
 
 int echo(void)
 {

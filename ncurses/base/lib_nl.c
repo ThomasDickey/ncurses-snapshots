@@ -42,9 +42,8 @@
  */
 
 #include <curses.priv.h>
-#include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_nl.c,v 1.2 1998/02/11 12:14:01 tom Exp $")
+MODULE_ID("$Id: lib_nl.c,v 1.3 1998/10/14 15:14:08 Alexander.V.Lukyanov Exp $")
 
 #ifdef __EMX__
 #include <io.h>

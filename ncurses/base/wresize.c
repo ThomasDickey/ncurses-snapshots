@@ -31,9 +31,8 @@
  ****************************************************************************/
 
 #include <curses.priv.h>
-#include <term.h>
 
-MODULE_ID("$Id: wresize.c,v 1.10 1998/08/15 22:59:39 tom Exp $")
+MODULE_ID("$Id: wresize.c,v 1.11 1998/10/12 12:24:40 Alexander.V.Lukyanov Exp $")
 
 /*
  * Reallocate a curses WINDOW struct to either shrink or grow to the specified

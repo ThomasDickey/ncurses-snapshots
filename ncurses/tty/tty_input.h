@@ -26,105 +26,36 @@
  * authorization.                                                           *
  ****************************************************************************/
 
-/****************************************************************************
- *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
- *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- ****************************************************************************/
-
-
 /*
- *	lib_kernel.c
- *
- *	Misc. low-level routines:
- *		erasechar()
- *		killchar()
- *		flushinp()
- *
- * The baudrate() and delay_output() functions could logically live here,
- * but are in other modules to reduce the static-link size of programs
- * that use only these facilities.
+ * $Id: tty_input.h,v 1.1 1998/12/19 22:42:57 tom Exp $
  */
 
-#include <curses.priv.h>
-#include <term.h>	/* cur_term */
+#ifndef TTY_INPUT_H
+#define TTY_INPUT_H 1
 
-MODULE_ID("$Id: lib_kernel.c,v 1.19 1998/12/20 00:18:45 tom Exp $")
+extern bool _nc_tty_mouse_mask(mmask_t);
+extern bool _nc_tty_pending(void);
+extern int  _nc_tty_next_event(int);
+extern void _nc_tty_flags_changed(void);
+extern void _nc_tty_flush(void);
+extern void _nc_tty_input_resume(void);
+extern void _nc_tty_input_suspend(void);
 
-/*
- *	erasechar()
- *
- *	Return erase character as given in cur_term->Ottyb.
- *
- */
+struct tty_input_data {
+	int             _ifd;           /* input file ptr for screen        */
+	int             _keypad_xmit;   /* current terminal state           */
+	int             _meta_on;       /* current terminal state           */
 
-char
-erasechar(void)
-{
-	T((T_CALLED("erasechar()")));
+	/*
+	 * These are the data that support the mouse interface.
+	 */
+	bool            (*_mouse_event) (SCREEN *);
+	bool            (*_mouse_inline)(SCREEN *);
+	bool            (*_mouse_parse) (int);
+	void            (*_mouse_resume)(SCREEN *);
+	void            (*_mouse_wrap)  (SCREEN *);
+	int             _mouse_fd;      /* file-descriptor, if any */
+	int             mousetype;
+};
 
-	if (cur_term != 0) {
-#ifdef TERMIOS
-		returnCode(cur_term->Ottyb.c_cc[VERASE]);
-#else
-		returnCode(cur_term->Ottyb.sg_erase);
-#endif
-	}
-	returnCode(ERR);
-}
-
-
-
-/*
- *	killchar()
- *
- *	Return kill character as given in cur_term->Ottyb.
- *
- */
-
-char
-killchar(void)
-{
-	T((T_CALLED("killchar()")));
-
-	if (cur_term != 0) {
-#ifdef TERMIOS
-		returnCode(cur_term->Ottyb.c_cc[VKILL]);
-#else
-		returnCode(cur_term->Ottyb.sg_kill);
-#endif
-	}
-	returnCode(ERR);
-}
-
-
-
-/*
- *	flushinp()
- *
- *	Flush any input on cur_term->Filedes
- *
- */
-
-int flushinp(void)
-{
-	T((T_CALLED("flushinp()")));
-
-	if (cur_term != 0) {
-#ifdef TERMIOS
-		tcflush(cur_term->Filedes, TCIFLUSH);
-#else
-		errno = 0;
-		do {
-		    ioctl(cur_term->Filedes, TIOCFLUSH, 0);
-		} while
-		    (errno == EINTR);
-#endif
-		if (SP) {
-			SP->_fifohead = -1;
-			SP->_fifotail = 0;
-			SP->_fifopeek = 0;
-		}
-		returnCode(OK);
-	}
-	returnCode(ERR);
-}
+#endif /* TTY_INPUT_H */

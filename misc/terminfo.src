@@ -1,7 +1,7 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
 #	Version 10.2.1
-#	$Date: 1998/10/10 20:42:41 $
+#	$Date: 1998/12/20 03:20:38 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -634,7 +634,27 @@ linux-koi8|linux with koi8 alternate character set,
 # Another entry for KOI8-r with Qing Long's acsc.
 # (which one better complies with the standard?)
 linux-koi8r|linux with koi8-r alternate character set, 
+	kbs=^H, kcub1=^H, kcud1=^J, 
 	use=linux, use=klone+koi8acs, 
+
+# From:  Matthew Vernon <mcv21@pick.sel.cam.ac.uk>
+mach|Mach Console, 
+	am, km, 
+	cols#80, it#8, lines#25, 
+	bel=^G, blink=\E[5m, bold=\E[1m, clear=\Ec, cr=^M, 
+	cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=^J, 
+	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
+	cuu=\E[%p1%dA, cuu1=\E[A, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, 
+	el=\E[K, home=\E[H, ht=^I, il=\E[%p1%dL, il1=\E[L, ind=^J, 
+	kbs=^H, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
+	kdch1=\E[9, kend=\E[Y, kf1=\EOP, kf10=\EOY, kf2=\EOQ, 
+	kf3=\EOR, kf4=\EOS, kf5=\EOT, kf6=\EOU, kf7=\EOV, kf8=\EOW, 
+	kf9=\EOX, khome=\E[H, kich1=\E[@, kll=\E[F, knp=\E[U, 
+	kpp=\E[V, nel=^M^J, rev=\E[7m, rmso=\E[0m, sgr0=\E[0m, 
+	smso=\E[7m, 
+mach-bold|Mach Console with bold instead of underline, 
+	rmul=\E[0m, smul=\E[1m, 
+	use=mach, 
 
 # SCO console and SOS-Syscons console for 386bsd
 # (scoansi: had unknown capabilities
@@ -2079,10 +2099,10 @@ xterm-xf86-v33|xterm terminal emulator (XFree86 3.3 Window System),
 	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, 
 	use=xterm-xf86-v32, 
 
-# This beta version will probably be released in XFree86 4.0.
+# This version was released in XFree86 3.3.3 (November 1998).
 # Besides providing printer support, it exploits a new feature that allows
 # xterm to use terminfo-based descriptions with the titeInhibit resource.
-xterm-xf86-v40|xterm terminal emulator (XFree86 4.0 Window System), 
+xterm-xf86-v333|xterm terminal emulator (XFree86 3.3.3 Window System), 
 	mc5i, 
 	blink=\E[5m, ich1@, invis=\E[8m, 
 	is2=\E[!p\E[?3;4l\E[4l\E>, kdch1=\E[3~, kend=\E[4~, 
@@ -2092,6 +2112,11 @@ xterm-xf86-v40|xterm terminal emulator (XFree86 4.0 Window System),
 	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m%?%p9%t\016%e\017%;, 
 	smcup=\E[?1048h\E[?1047h, 
 	use=xterm-xf86-v33, 
+
+# This beta version will probably be released in XFree86 4.0.
+xterm-xf86-v40|xterm terminal emulator (XFree86 4.0 Window System), 
+	rmcup=\E[?1049l, smcup=\E[?1049h, 
+	use=xterm-xf86-v333, 
 
 xterm-xfree86|xterm-new|xterm terminal emulator (XFree86 4.0 Window System), 
 	use=xterm-xf86-v40, 
@@ -2147,18 +2172,17 @@ xterm-8bit|xterm terminal emulator 8-bit controls (X Window System),
 	kmous=\233M, knp=\2336~, kpp=\2335~, kslt=\2334~, 
 	mc0=\233i, mc4=\2334i, mc5=\2335i, meml=\El, memu=\Em, 
 	op=\23339;49m, rc=\E8, rev=\2337m, ri=\215, rmacs=^O, 
-	rmam=\233?7l, rmcup=\233?1047l\233?1048l, rmir=\2334l, 
+	rmam=\233?7l, rmcup=\233?1049l, rmir=\2334l, 
 	rmkx=\233?1l\E>, rmso=\23327m, rmul=\23324m, rs1=\Ec, 
 	rs2=\E7\E[62"p\E G\233r\233m\233?7h\233?1;3;4;6l\2334l\E8\E>, 
 	sc=\E7, setab=\2334%p1%dm, setaf=\2333%p1%dm, 
 	setb=\2334%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
 	setf=\2333%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
 	sgr=\2330%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m%?%p9%t\016%e\017%;, 
-	sgr0=\233m^O, smacs=^N, smam=\233?7h, 
-	smcup=\233?1048h\233?1047h, smir=\2334h, 
-	smkx=\233?1h\E=, smso=\2337m, smul=\2334m, tbc=\2333g, 
-	u6=\233[%i%d;%dR, u7=\E[6n, u8=\233[?1;2c, u9=\E[c, 
-	vpa=\233%i%p1%dd, 
+	sgr0=\233m^O, smacs=^N, smam=\233?7h, smcup=\233?1049h, 
+	smir=\2334h, smkx=\233?1h\E=, smso=\2337m, smul=\2334m, 
+	tbc=\2333g, u6=\233[%i%d;%dR, u7=\E[6n, u8=\233[?1;2c, 
+	u9=\E[c, vpa=\233%i%p1%dd, 
 
 xterm-24|vs100|xterms|xterm terminal emulator (X Window System), 
 	lines#24, use=xterm, 
@@ -2575,8 +2599,12 @@ screen3|older VT 100/ANSI X3.64 virtual terminal,
 #         answerback string: "ncsa-vt220-8"
 #         setup keys: all disabled
 #
-# Application mode is not used.  The function-key mapping refers to the Apple
-# Extended Keyboard (e.g., NCSA Telnet's F1 corresponds to a VT220 F6).
+# Application mode is not used.  The documented function-key mapping refers to
+# the Apple Extended Keyboard (e.g., NCSA Telnet's F1 corresponds to a VT220
+# F6).  We use the VT220-style codes, however, since the numeric keypad (VT100)
+# PF1-PF4 are available on some keyboards and many applications require these
+# as F1-F4.
+#
 # Other special mappings:
 #	Apple		VT220
 #	HELP 		Find
@@ -2607,10 +2635,11 @@ ncsa-m|ncsa-vt220|ncsa-vt220-8|NCSA Telnet 2.6 for Macintosh in vt220-8 mode,
 	il=\E[%p1%dL, il1=\E[L, ind=^J, 
 	is2=\E7\E[r\E[m\E[?7h\E[?1;4;6l\E[4l\E8\E>, kbs=^H, 
 	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
-	kdch1=\E[4~, kend=\E[5~, kf1=\E[17~, kf10=\E[28~, 
-	kf11=\E[29~, kf12=\E[31~, kf13=\E[32~, kf14=\E[33~, 
-	kf15=\E[34~, kf2=\E[18, kf3=\E[19~, kf4=\E[20~, kf5=\E[21~, 
-	kf6=\E23~, kf7=\E[24~, kf8=\E[25~, kf9=\E[26~, kfnd=\E[1~, 
+	kdch1=\E[4~, kend=\E[5~, kf1=\EOP, kf10=\E[21~, 
+	kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, 
+	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, 
+	kf19=\E[33~, kf2=\EOQ, kf20=\E[34~, kf3=\EOR, kf4=\EOS, 
+	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, kfnd=\E[1~, 
 	khlp=\E[1~, khome=\E[2~, kich1=\E[1~, kll=\E[5~, knp=\E[6~, 
 	kpp=\E[3~, mc4=\E[4i, mc5=\E[5i, rc=\E8, rev=\E[7m, 
 	rf=/usr/share/tabset/vt100, ri=\EM, rmacs=^O, 
@@ -17015,6 +17044,11 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* update xterm-xfree86 to current (patch 84), for is2/rs2 changes - TD
 #	* correct initialization string in xterm-r5, add misc other features
 #	  to correspond with xterm patch 84 - TD
+#
+# 1998/12/19
+#	* update xterm-xfree86 to current (patch 90), smcur/rmcur changes - TD
+#	* add Mathew Vernon's mach console entries
+#	* corrections for ncsa function-keys (report by Larry Virden)
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

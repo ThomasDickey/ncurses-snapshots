@@ -49,7 +49,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_raw.c,v 1.1 1998/11/08 00:26:05 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.2 1998/12/20 00:42:58 tom Exp $")
 
 #if defined(SVR4_TERMIO) && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
@@ -96,7 +96,7 @@ int raw(void)
 #else
 		cur_term->Nttyb.sg_flags |= RAW;
 #endif
-		returnCode(_nc_set_curterm(&cur_term->Nttyb));
+		returnCode(_nc_set_tty_mode(&cur_term->Nttyb));
 	}
 	returnCode(ERR);
 }
@@ -122,7 +122,7 @@ int cbreak(void)
 #else
 	cur_term->Nttyb.sg_flags |= CBREAK;
 #endif
-	returnCode(_nc_set_curterm( &cur_term->Nttyb));
+	returnCode(_nc_set_tty_mode( &cur_term->Nttyb));
 }
 
 void qiflush(void)
@@ -138,7 +138,7 @@ void qiflush(void)
 	BEFORE("qiflush");
 	cur_term->Nttyb.c_lflag &= ~(NOFLSH);
 	AFTER("qiflush");
-	(void)_nc_set_curterm( &cur_term->Nttyb);
+	(void)_nc_set_tty_mode( &cur_term->Nttyb);
 	returnVoid;
 #endif
 }
@@ -163,7 +163,7 @@ int noraw(void)
 #else
 	cur_term->Nttyb.sg_flags &= ~(RAW|CBREAK);
 #endif
-	returnCode(_nc_set_curterm( &cur_term->Nttyb));
+	returnCode(_nc_set_tty_mode( &cur_term->Nttyb));
 }
 
 
@@ -185,7 +185,7 @@ int nocbreak(void)
 #else
 	cur_term->Nttyb.sg_flags &= ~CBREAK;
 #endif
-	returnCode(_nc_set_curterm( &cur_term->Nttyb));
+	returnCode(_nc_set_tty_mode( &cur_term->Nttyb));
 }
 
 void noqiflush(void)
@@ -201,7 +201,7 @@ void noqiflush(void)
 	BEFORE("noqiflush");
 	cur_term->Nttyb.c_lflag |= NOFLSH;
 	AFTER("noqiflush");
-	(void)_nc_set_curterm( &cur_term->Nttyb);
+	(void)_nc_set_tty_mode( &cur_term->Nttyb);
 	returnVoid;
 #endif
 }
@@ -226,7 +226,7 @@ int intrflush(WINDOW *win GCC_UNUSED, bool flag)
 	else
 		cur_term->Nttyb.c_lflag |= (NOFLSH);
 	AFTER("intrflush");
-	returnCode(_nc_set_curterm( &cur_term->Nttyb));
+	returnCode(_nc_set_tty_mode( &cur_term->Nttyb));
 #else
 	returnCode(ERR);
 #endif

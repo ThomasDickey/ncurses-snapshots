@@ -47,7 +47,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.46 1998/10/11 00:30:55 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.47 1998/12/20 02:51:50 tom Exp $")
 
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -70,6 +70,7 @@ MODULE_ID("$Id: read_entry.c,v 1.46 1998/10/11 00:30:55 tom Exp $")
 #define LOW_MSB(p)	(BYTE(p,0) + 256*BYTE(p,1))
 
 static bool have_tic_directory = FALSE;
+static bool keep_tic_directory = FALSE;
 
 /*
  * Record the "official" location of the terminfo directory, according to
@@ -77,17 +78,30 @@ static bool have_tic_directory = FALSE;
  */
 const char *_nc_tic_dir(const char *path)
 {
-	static const char *result = TERMINFO;
+    static const char *result = TERMINFO;
 
+    if (!keep_tic_directory) {
 	if (path != 0) {
-		result = path;
-		have_tic_directory = TRUE;
+	    result = path;
+	    have_tic_directory = TRUE;
 	} else if (!have_tic_directory) {
-		char *envp;
-		if ((envp = getenv("TERMINFO")) != 0)
-			return _nc_tic_dir(envp);
+	    char *envp;
+	    if ((envp = getenv("TERMINFO")) != 0)
+		return _nc_tic_dir(envp);
 	}
-	return result;
+    }
+    return result;
+}
+
+/*
+ * Special fix to prevent the terminfo directory from being moved after tic
+ * has chdir'd to it.  If we let it be changed, then if $TERMINFO has a
+ * relative path, we'll lose track of the actual directory.
+ */
+void _nc_keep_tic_dir(const char *path)
+{
+    _nc_tic_dir(path);
+    keep_tic_directory = TRUE;
 }
 
 int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)

@@ -45,7 +45,7 @@
 #include <sys/termio.h>	/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.25 1998/09/19 21:39:25 tom Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.26 1998/12/19 23:10:09 tom Exp $")
 
 WINDOW *initscr(void)
 {
@@ -75,18 +75,4 @@ int value;
 		def_prog_mode();
 	}
 	returnWin(stdscr);
-}
-
-char *termname(void)
-{
-char	*term = getenv("TERM");
-static char	ret[MAX_ALIAS];
-
-	T(("termname() called"));
-
-	if (term != 0) {
-		(void) strncpy(ret, term, sizeof(ret) - 1);
-		term = ret;
-	}
-	return term;
 }

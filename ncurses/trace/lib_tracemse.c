@@ -37,13 +37,11 @@
  *	lib_tracemse.c - Tracing/Debugging routines (mouse events)
  */
 
-#ifndef TRACE
-#define TRACE			/* turn on internal defs for this module */
-#endif
-
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracemse.c,v 1.5 1998/02/11 12:13:53 tom Exp $")
+MODULE_ID("$Id: lib_tracemse.c,v 1.6 1998/11/16 14:28:17 Alexander.V.Lukyanov Exp $")
+
+#ifdef TRACE
 
 char *_tracemouse(MEVENT const *ep)
 {
@@ -90,5 +88,8 @@ char *_tracemouse(MEVENT const *ep)
 	return(buf);
 }
 
-
-
+#else /* !TRACE */
+/* don't make empty module */
+void _nc_lib_tracemouse(void);
+void _nc_lib_tracemouse(void) {}
+#endif

@@ -544,7 +544,6 @@
 ./ncurses/base/lib_delch.c
 ./ncurses/base/lib_delwin.c
 ./ncurses/base/lib_dft_fgbg.c
-./ncurses/base/lib_doupdate.c
 ./ncurses/base/lib_echo.c
 ./ncurses/base/lib_endwin.c
 ./ncurses/base/lib_erase.c
@@ -632,6 +631,7 @@
 ./ncurses/tinfo/lib_baudrate.c
 ./ncurses/tinfo/lib_cur_term.c
 ./ncurses/tinfo/lib_data.c
+./ncurses/tinfo/lib_has_cap.c
 ./ncurses/tinfo/lib_kernel.c
 ./ncurses/tinfo/lib_longname.c
 ./ncurses/tinfo/lib_napms.c
@@ -641,10 +641,11 @@
 ./ncurses/tinfo/lib_restart.c
 ./ncurses/tinfo/lib_setup.c
 ./ncurses/tinfo/lib_termcap.c
+./ncurses/tinfo/lib_termname.c
 ./ncurses/tinfo/lib_ti.c
 ./ncurses/tinfo/lib_tparm.c
 ./ncurses/tinfo/lib_tputs.c
-./ncurses/tinfo/lib_twait.c
+./ncurses/tinfo/lib_ttyflags.c
 ./ncurses/tinfo/make_keys.c
 ./ncurses/tinfo/name_match.c
 ./ncurses/tinfo/parse_entry.c
@@ -665,7 +666,11 @@
 ./ncurses/tty/hashmap.c
 ./ncurses/tty/lib_mvcur.c
 ./ncurses/tty/lib_tstp.c
+./ncurses/tty/lib_twait.c
 ./ncurses/tty/lib_vidattr.c
+./ncurses/tty/tty_display.h
+./ncurses/tty/tty_input.h
+./ncurses/tty/tty_update.c
 ./panel/Makefile.in
 ./panel/headers
 ./panel/llib-lpanel

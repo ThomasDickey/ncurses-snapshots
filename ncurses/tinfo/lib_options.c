@@ -44,22 +44,7 @@
 #include <term.h>	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
 
-MODULE_ID("$Id: lib_options.c,v 1.31 1998/04/11 23:40:51 tom Exp $")
-
-bool has_ic(void)
-{
-	T((T_CALLED("has_ic()")));
-	returnCode((insert_character || parm_ich
-	   ||  (enter_insert_mode && exit_insert_mode))
-	   &&  (delete_character || parm_dch));
-}
-
-bool has_il(void)
-{
-	T((T_CALLED("has_il()")));
-	returnCode((insert_line || parm_insert_line)
-		&& (delete_line || parm_delete_line));
-}
+MODULE_ID("$Id: lib_options.c,v 1.32 1998/12/19 23:09:50 tom Exp $")
 
 int idlok(WINDOW *win,  bool flag)
 {
