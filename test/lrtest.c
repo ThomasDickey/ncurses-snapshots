@@ -6,7 +6,7 @@
  * This can't be part of the ncurses test-program, because ncurses rips off the
  * bottom line to do labels.
  *
- * $Id: lrtest.c,v 0.11 1999/10/09 23:51:06 tom Exp $
+ * $Id: lrtest.c,v 0.13 1999/10/16 21:46:45 tom Exp $
  */
 
 #include <test.priv.h>
@@ -75,7 +75,10 @@ main(
     nodelay(stdscr, TRUE);
     curs_set(0);
 
+#ifdef KEY_RESIZE
+    keypad(stdscr, TRUE);
   restart:
+#endif
     move(LINES / 2 - 1, 4);
     if (!has_ic()) {
 	addstr("Your terminal lacks the capabilities needed to address the\n");

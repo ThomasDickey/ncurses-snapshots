@@ -1,5 +1,5 @@
 /*
- * $Id: firework.c,v 1.14 1999/10/09 22:51:40 tom Exp $
+ * $Id: firework.c,v 1.15 1999/10/16 21:33:39 tom Exp $
  */
 #include <test.priv.h>
 
@@ -26,13 +26,12 @@ static void
 showit(void)
 {
     int ch;
-    refresh();
     napms(120);
     if ((ch = getch()) != ERR) {
 #ifdef KEY_RESIZE
 	if (ch == KEY_RESIZE) {
 	    erase();
-	}
+	} else
 #endif
 	if (ch == 'q') {
 	    cleanup();
@@ -129,6 +128,7 @@ main(
     initscr();
     noecho();
     cbreak();
+    keypad(stdscr, TRUE);
     nodelay(stdscr, TRUE);
 
     if (has_colors()) {

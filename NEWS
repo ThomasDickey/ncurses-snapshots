@@ -1,10 +1,13 @@
--- $Id: NEWS,v 1.493 1999/10/10 00:34:52 tom Exp $
+-- $Id: NEWS,v 1.494 1999/10/16 21:40:26 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+991016	pre-release
+	+ corrected BeOS code for lib_twait.c, making nodelay() function work.
 
 991009	pre-release
 	+ correct ncurses' value for cursor-column in PutCharLR(), which was

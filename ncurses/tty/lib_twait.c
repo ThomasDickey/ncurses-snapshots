@@ -61,22 +61,32 @@
 # endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.33 1999/09/04 13:13:41 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.34 1999/10/16 21:25:10 tom Exp $")
 
-static int _nc_gettime(void)
+static long _nc_gettime(bool first)
 {
-	int res;
+	long res;
 
 #if HAVE_GETTIMEOFDAY
 # define PRECISE_GETTIME 1
-	struct timeval t;
-	gettimeofday(&t, (struct timezone *)0);
-	res = t.tv_sec*1000 + t.tv_usec/1000;
+	static struct timeval t0;
+	struct timeval t1;
+	gettimeofday(&t1, (struct timezone *)0);
+	if (first) {
+		t0 = t1;
+	}
+	res = (t1.tv_sec  - t0.tv_sec)  * 1000
+	    + (t1.tv_usec - t0.tv_usec) / 1000;
 #else
 # define PRECISE_GETTIME 0
-	res = time(0)*1000;
+	static time_t t0;
+	time_t t1 = time((time_t*)0);
+	if (first) {
+		t0 = t1;
+	}
+	res = (t1 - t0) * 1000;
 #endif
-	T(("time: %d msec", res));
+	T(("%s time: %ld msec", first ? "get" : "elapsed", res));
 	return res;
 }
 
@@ -107,14 +117,14 @@ struct pollfd fds[2];
 static fd_set set;
 #endif
 
-int starttime, returntime;
+long starttime, returntime;
 
 	T(("start twait: %d milliseconds, mode: %d", milliseconds, mode));
 
 #if PRECISE_GETTIME
 retry:
 #endif
-	starttime = _nc_gettime();
+	starttime = _nc_gettime(TRUE);
 
 	count = 0;
 
@@ -142,10 +152,14 @@ retry:
 	 * FIXME: the return values from the ioctl aren't very clear if we get
 	 * interrupted.
 	 */
+	result = 0;
 	if (mode & 1) {
 		bigtime_t d;
 		bigtime_t useconds = milliseconds * 1000;
 		int n, howmany;
+
+		if (useconds == 0) /* we're here to go _through_ the loop */
+			useconds = 1;
 
 		for (d = 0; d < useconds; d += 5000) {
 			n = 0;
@@ -154,12 +168,12 @@ retry:
 				result = 1;
 				break;
 			}
-			snooze(5000);
+			if (useconds > 1)
+				snooze(5000);
 			milliseconds -= 5;
 		}
-	} else {
+	} else if (milliseconds > 0) {
 		snooze(milliseconds * 1000);
-		result = 0;
 		milliseconds = 0;
 	}
 #elif HAVE_SELECT
@@ -189,10 +203,10 @@ retry:
 	}
 #endif
 
-	returntime = _nc_gettime();
+	returntime = _nc_gettime(FALSE);
 
 	if (milliseconds >= 0)
-		milliseconds -= returntime-starttime;
+		milliseconds -= (returntime - starttime);
 
 #if PRECISE_GETTIME
 	/*
