@@ -38,7 +38,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.44 2000/01/02 02:14:35 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.45 2000/01/08 22:19:05 Todd.Miller Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
@@ -767,12 +767,19 @@ dump_entry(TERMTYPE * tterm, bool limited, int numbers, int (*pred) (int
 	if ((len = fmt_entry(tterm, pred, TRUE, infodump, numbers)) > critlen) {
 	    /*
 	     * We pick on sgr because it's a nice long string capability that
-	     * is really just an optimization hack.
+	     * is really just an optimization hack.  Another good candidate is
+	     * acsc since it is both long and unused by BSD termcap.
 	     */
 	    char *oldsgr = set_attributes;
+	    char *oldacsc = acs_chars;
 	    set_attributes = ABSENT_STRING;
 	    PRINTF("# (sgr removed to fit entry within %d bytes)\n",
 		critlen);
+	    if ((len = fmt_entry(tterm, pred, TRUE, infodump, numbers)) > critlen) {
+		acs_chars = ABSENT_STRING;
+		PRINTF("# (acsc removed to fit entry within %d bytes)\n",
+		    critlen);
+	    }
 	    if ((len = fmt_entry(tterm, pred, TRUE, infodump, numbers)) > critlen) {
 		int oldversion = tversion;
 
@@ -793,6 +800,7 @@ dump_entry(TERMTYPE * tterm, bool limited, int numbers, int (*pred) (int
 		tversion = oldversion;
 	    }
 	    set_attributes = oldsgr;
+	    acs_chars = oldacsc;
 	}
     }
 

@@ -34,7 +34,7 @@ Options:
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.28 1999/11/13 23:39:03 tom Exp $
+  $Id: worm.c,v 1.29 2000/01/08 17:04:42 tom Exp $
 */
 
 #include <test.priv.h>
@@ -185,7 +185,6 @@ main(int argc, char *argv[])
     short **ref;
     int x, y;
     int n;
-    int ch;
     struct worm *w;
     const struct options *op;
     int h;
@@ -338,6 +337,8 @@ main(int argc, char *argv[])
 	    generation++;
 	}
 #else
+	int ch;
+
 	if ((ch = getch()) > 0) {
 #ifdef KEY_RESIZE
 	    if (ch == KEY_RESIZE) {
