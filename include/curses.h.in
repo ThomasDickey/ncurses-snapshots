@@ -289,8 +289,21 @@ extern char ttytype[];		/* needed for backward compatibility */
 #define __attribute__(p) /* nothing */
 #endif
 
+/*
+ * We cannot define these in config.h, since they require parameters to be
+ * passed (that's non-portable).
+ */
+#if	GCC_PRINTF
 #define GCC_PRINTFLIKE(fmt,var) __attribute__((format(printf,fmt,var)))
+#else
+#define GCC_PRINTFLIKE(fmt,var) /*nothing*/
+#endif
+
+#if	GCC_SCANF
 #define GCC_SCANFLIKE(fmt,var)  __attribute__((format(scanf,fmt,var)))
+#else
+#define GCC_SCANFLIKE(fmt,var)  /*nothing*/
+#endif
 
 /*
  * Function prototypes.  This is the complete XSI Curses list of required

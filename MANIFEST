@@ -142,6 +142,7 @@
 ./man/menu_opts.3x
 ./man/menu_pattern.3x
 ./man/menu_post.3x
+./man/menu_requestname.3x
 ./man/menu_spacing.3x
 ./man/menu_userptr.3x
 ./man/menu_win.3x

@@ -226,7 +226,7 @@ static void play_game(void)
 {
     int dead=0, i, j;
     char c;
-    int select[4], card;
+    int selection[4], card;
 
     while (dead<4)
     {
@@ -238,11 +238,11 @@ static void play_game(void)
 	    if (	((card % SUIT_LENGTH)==KING)
 		||
 		(card==NOCARD)	)
-		select[i]=NOCARD;
+		selection[i]=NOCARD;
 	    else
-		select[i]=find(card+1);
+		selection[i]=find(card+1);
 
-	    if (select[i]==NOCARD)
+	    if (selection[i]==NOCARD)
 		dead++;
 	};
 
@@ -252,10 +252,10 @@ static void play_game(void)
 
 	    for (i=0;i<4;i++)
 	    {
-		if (select[i] != NOCARD)
+		if (selection[i] != NOCARD)
 		{
-		    move(BASEROW + (select[i] / GRID_WIDTH)*2+3,
-			 (select[i] % GRID_WIDTH)*5);
+		    move(BASEROW + (selection[i] / GRID_WIDTH)*2+3,
+			 (selection[i] % GRID_WIDTH)*5);
 		    (void)printw("   %c ", *lp++ = 'a' + i);
 		}
 	    };
@@ -289,10 +289,10 @@ static void play_game(void)
 	    }
 
 	    for (j = 0; j < 4; j++)
-		if (select[j]!=NOCARD)
+		if (selection[j]!=NOCARD)
 		{
-		    move(BASEROW + (select[j] / GRID_WIDTH)*2+3,
-			 (select[j] % GRID_WIDTH)*5);
+		    move(BASEROW + (selection[j] / GRID_WIDTH)*2+3,
+			 (selection[j] % GRID_WIDTH)*5);
 		    (void)printw("     ");
 		}
 
@@ -303,12 +303,12 @@ static void play_game(void)
 	    else
 	    {
 		i = c-'a';
-		if (select[i] == NOCARD)
+		if (selection[i] == NOCARD)
 		    beep();
 		else
 		{
-		    movecard(select[i], freeptr[i]);
-		    freeptr[i]=select[i];
+		    movecard(selection[i], freeptr[i]);
+		    freeptr[i]=selection[i];
 		}
 	    }
 	}

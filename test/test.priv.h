@@ -1,4 +1,4 @@
-/* $Id: test.priv.h,v 1.4 1996/07/04 13:37:47 tom Exp $ */
+/* $Id: test.priv.h,v 1.5 1996/07/07 18:12:00 tom Exp $ */
 #if HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -27,4 +27,11 @@ extern int optind;
 #endif
 #ifndef GCC_UNUSED
 #define GCC_UNUSED /* nothing */
+#endif
+
+#ifndef EXIT_SUCCESS
+#define EXIT_SUCCESS 0
+#endif
+#ifndef EXIT_FAILURE
+#define EXIT_FAILURE 1
 #endif
