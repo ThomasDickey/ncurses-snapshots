@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.153 1998/12/20 01:23:19 Uchiyama.Yasushi Exp $
+dnl $Id: configure.in,v 1.154 1998/12/20 14:21:17 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.153 $)
+AC_REVISION($Revision: 1.154 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -84,7 +84,7 @@ AC_MSG_CHECKING(version of gcc)
 eval "$CC --version"
 fi
 if test $host != $build; then
-  AC_CHECK_PROGS(BUILD_CC, gcc cc)
+  AC_CHECK_PROGS(BUILD_CC, $CC gcc cc)
 fi
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
