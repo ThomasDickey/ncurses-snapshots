@@ -3,7 +3,7 @@
 # This version of terminfo.src is distributed with ncurses.
 #
 #	Version 10.2.1
-#	$Date: 1999/09/26 01:05:17 $
+#	$Date: 1999/10/02 23:12:57 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -674,6 +674,8 @@ linux-lat|linux with latin1 or latin2 alternate character set,
 # I renamed GS/GE/HM/EN/PU/PD/RT and added klone+sgr-dumb, based
 # on the <smacs>=\E[12m  -- esr)
 #
+# klone+sgr-dumb is an error since the acsc does not match -TD
+#
 # In this description based on SCO's keyboard(HW) manpage list of default function key
 # values:
 #	F13-F24 are shifted F1-F12
@@ -681,24 +683,28 @@ linux-lat|linux with latin1 or latin2 alternate character set,
 #	F37-F48 are shift+control F1-F12
 scoansi|SCO Extended ANSI standard crt, 
 	am, eo, xon, 
-	cols#80, it#8, lines#25, 
+	colors#8, cols#80, it#8, lines#25, pairs#64, 
+	acsc=0[5566778899\:\:;;<<==>>FFGGHHIIJJKKLLMMNNOOPPQQRRSSTTUUVVWWXX`ja0fxgqh2jYk?lZm@nEqDtCu4vAwBx3~y, 
 	blink=\E[5m, bold=\E[1m, cbt=\E[Z, clear=\E[H\E[2J, 
 	cub1=\E[D, cud1=\E[B, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
 	cuu1=\E[A, dch1=\E[P, dl1=\E[M, ed=\E[J, el=\E[K, home=\E[H, 
-	ht=^I, ich1=\E[@, il1=\E[L, ind=\E[S, kbs=^H, kcub1=\E[D, 
-	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kend=\E[F, kf1=\E[M, 
-	kf10=\E[V, kf12=\E[W, kf13=\E[Y, kf14=\E[Z, kf15=\E[a, 
-	kf16=\E[b, kf17=\E[c, kf18=\E[d, kf19=\E[e, kf2=\E[N, 
-	kf20=\E[f, kf21=\E[g, kf22=\E[h, kf23=\E[i, kf24=\E[j, 
-	kf25=\E[k, kf26=\E[l, kf27=\E[m, kf28=\E[n, kf29=\E[o, 
-	kf3=\E[O, kf30=\E[p, kf31=\E[q, kf32=\E[r, kf33=\E[s, 
-	kf34=\E[t, kf35=\E[u, kf36=\E[v, kf37=\E[w, kf38=\E[x, 
-	kf39=\E[y, kf4=\E[P, kf40=\E[z, kf41=\E[@, kf42=\E[[, 
-	kf43=\E[\\, kf44=\E[], kf45=\E[\014kf46=\E[_, kf47=\E[`, 
-	kf48=\E[{, kf5=\E[Q, kf6=\E[R, kf7=\E[S, kf8=\E[T, kf9=\E[U, 
-	khome=\E[H, kich1=\E[L, knp=\E[G, kpp=\E[I, krdo=\E[F, 
-	ri=\E[T, 
-	use=klone+sgr-dumb, 
+	ht=^I, ich1=\E[@, il1=\E[L, ind=\E[S, invis=\E[8m, kbeg=\E[E, 
+	kbs=^H, kcbt=\E[Z, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, 
+	kcuu1=\E[A, kend=\E[F, kf1=\E[M, kf10=\E[V, kf11=\E[W, 
+	kf12=\E[X, kf13=\E[Y, kf15=\E[a, kf16=\E[b, kf17=\E[c, 
+	kf18=\E[d, kf19=\E[e, kf2=\E[N, kf20=\E[f, kf21=\E[g, 
+	kf22=\E[h, kf23=\E[i, kf24=\E[j, kf25=\E[k, kf26=\E[l, 
+	kf27=\E[m, kf28=\E[n, kf29=\E[o, kf3=\E[O, kf30=\E[p, 
+	kf31=\E[q, kf32=\E[r, kf33=\E[s, kf34=\E[t, kf35=\E[u, 
+	kf36=\E[v, kf37=\E[w, kf38=\E[x, kf39=\E[y, kf4=\E[P, 
+	kf40=\E[z, kf41=\E[@, kf42=\E[[, kf43=\E[\\, kf44=\E[], 
+	kf45=\E[\^, kf46=\E[_, kf47=\E[`, kf48=\E[{, kf5=\E[Q, 
+	kf6=\E[R, kf7=\E[S, kf8=\E[T, kf9=\E[U, khome=\E[H, 
+	kich1=\E[L, knp=\E[G, kpp=\E[I, op=\E[37;40m, rev=\E[7m, 
+	ri=\E[T, rmacs=\E[10m, rmso=\E[m, rmul=\E[m, 
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
+	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;12%;m, 
+	sgr0=\E[0;10m, smacs=\E[12m, smso=\E[7m, smul=\E[4m, 
 
 # This actually describes the generic SVr4 display driver for Intel boxes.
 # The <dim=\E[2m> isn't documented and therefore may not be reliable.
@@ -17318,6 +17324,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  rcons-color, based on
 #	  ftp://ftp.netbsd.org/pub/NetBSD/NetBSD-current/src/share/termcap/termcap.src
 #	* add alias for iris-ansi-net
+#
+# 1999/10/2
+#	* corrected scoansi entry's acsc, some function keys, add color -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

@@ -1,10 +1,30 @@
--- $Id: NEWS,v 1.488 1999/09/26 00:54:54 tom Exp $
+-- $Id: NEWS,v 1.490 1999/10/03 01:10:52 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+991002	pre-release
+	+ minor fixes for _nc_msec_cost(), color_content(), pair_content(),
+	  _nc_freewin(), ClrBottom() and onscreen_mvcur() (analysis by Philippe
+	  Blain, comments by Alexander Lukyanov).
+	+ simplify definition of PANEL and eliminate internal functions
+	  _nc_calculate_obscure(), _nc_free_obscure() and _nc_override(),
+	  (patch by Juergen Pfeifer, based on analysis by Philippe Blain
+	  <bledp@voila.fr>)).
+	+ change renaming of dft_fgbg.3x to use_default_colors.3ncurses in
+	  man_db.renames, since Debian is not concerned with 14-character
+	  filename limitation (from Debian bug report by Josip Rodin
+	  <joy@cibalia.gkvk.hr>).
+	+ corrected scoansi terminfo entry by testing with scoterm and console.
+	+ revert change from 990614 to terminal_interface-curses-forms.ads.m4,
+	  since this does not work for gnat 3.10p
+	+ modify tclock example to be resizable (if ncurses' sigwinch handler
+	  is used), and in color.
+	+ use $(CC) rather than 'gcc' in MK_SHARED_LIB symbols, used for Linux
+	  shared library rules.
 
 990925	pre-release
 	+ add newer NetBSD console terminfo entries

@@ -73,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.112 1999/09/04 13:13:45 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.113 1999/10/03 00:50:24 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -914,13 +914,14 @@ chtype	blank  = newscr->_line[total-1].text[last-1]; /* lower right char */
 
 	if ((tstLine == 0) || (last > (int)lenLine)) {
 		tstLine = typeRealloc(chtype, last, tstLine);
+		if (tstLine != 0) {
+			lenLine = last;
+			for (col = 0; col < last; col++)
+				tstLine[col] = blank;
+		}
 	}
 
 	if (tstLine != 0) {
-		lenLine = last;
-		for (col = 0; col < last; col++)
-			tstLine[col] = blank;
-
 		for (row = total-1; row >= 0; row--) {
 			if (memcmp(tstLine, newscr->_line[row].text, length))
 				break;
