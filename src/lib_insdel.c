@@ -45,10 +45,10 @@ winsdelln(WINDOW *win, int n)
 		/* should we truncate to an appropriate number? */
 		return ERR;
 
-	scroll_window(win, -n, win->_cury, win->_maxy);
+	_nc_scroll_window(win, -n, win->_cury, win->_maxy);
 	touchline(win, win->_cury, win->_maxy - win->_cury + 1);
 
-	wchangesync(win);
+	_nc_synchook(win);
     	return OK;
 }
 

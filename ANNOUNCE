@@ -1,7 +1,13 @@
 
 ===============================================================================
-			ANNOUNCING NCURSES 1.9
+			ANNOUNCING NCURSES 1.9.1
 ===============================================================================
+
+New in 1.9.1:
+	* Integrated panels support.
+	* ncurses output can now be redirected.
+
+...............................................................................
 
 The ncurses library is a freeware emulation of System V Release 4.0 curses.
 It uses terminfo format, supports color and multiple highlights and forms
@@ -22,6 +28,10 @@ The ncurses distribution is available at:
 
 	ftp://ftp.netcom.com/pub/zm/zmbenhal/ncurses
 
+It is also carried on the GNU distribution site at
+
+	ftp://prep.ai.mit.edu/pub/gnu
+
 			FEATURES OF NCURSES
 
 * All 257 of the SVr4 calls have been implemented (and are documented).
@@ -29,6 +39,9 @@ The ncurses distribution is available at:
 * Full support for SVr4 curses features including keyboard mapping, color,
   forms-drawing with ACS characters, and automatic recognition of keypad
   and function keys.
+
+* Unlike SVr4 curses, ncurses can write to the rightmost-bottommost corner
+  of the screen if your terminal has an insert-character capability.
 
 * The API is 8-bit clean and base-level conformant with the X/OPEN curses
   specification, XSI Curses (that is, it implements all BASE level features,
@@ -46,6 +59,9 @@ The ncurses distribution is available at:
   use of hardware scrolling, line-insertion, and line-deletion
   for screen-line movements.  This algorithm is more powerful than
   the BSD curses quickch() routine.
+
+* An emulation of the System V Release 4 panels library, supporting 
+  a stack of windows with backing store, is included.
 
 * (PC-clone boxes only) Support for access to the IBM PC ROM characters
   through a new highlight, A_PCCHARSET.  Also, ncurses will now

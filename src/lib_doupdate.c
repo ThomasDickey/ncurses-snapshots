@@ -94,7 +94,6 @@ void position_check(int expected_y, int expected_x, char *legend)
 static inline void GoTo(int row, int col)
 {
 	chtype	oldattr = SP->_current_attr;
-	bool	must_restore;
 
 	TR(TRACE_MOVE, ("GoTo(%d, %d) from (%d, %d)",
 			row, col, SP->_cursrow, SP->_curscol));
@@ -108,21 +107,21 @@ static inline void GoTo(int row, int col)
 	 * character set -- these have a strong tendency to screw up the
 	 * CR & LF used for local character motions!
 	 */
-	must_restore = ((oldattr & A_ALTCHARSET)
+	if ((oldattr & A_ALTCHARSET)
 #ifdef A_PCCHARSET
-			|| (oldattr & A_PCCHARSET)
+	    || (oldattr & A_PCCHARSET)
 #endif /* A_PCCHARSET */
-			|| (oldattr && !move_standout_mode));
-
-	if (must_restore)
+	    || (oldattr && !move_standout_mode))
+	{
+       		TR(TRACE_CHARPUT, ("turning off (%lx) %s before move",
+		   oldattr, _traceattr(oldattr)));
 		vidattr(A_NORMAL);
+		curscr->_attrs = A_NORMAL;
+	}
 
 	mvcur(SP->_cursrow, SP->_curscol, row, col); 
 	SP->_cursrow = row; 
 	SP->_curscol = col; 
-
-	if (must_restore)
-		vidattr(oldattr);
 }
 
 static inline void PutAttrChar(chtype ch)
@@ -136,11 +135,10 @@ static inline void PutAttrChar(chtype ch)
 			   SP->_cursrow, SP->_curscol));
 	if (curscr->_attrs != (ch & (chtype)A_ATTRIBUTES)) {
 		curscr->_attrs = ch & (chtype)A_ATTRIBUTES;
-		vidputs(curscr->_attrs, _outch);
+		vidputs(curscr->_attrs, _nc_outch);
 	}
 	putc(ch & A_CHARTEXT, SP->_ofp);
-	if (char_padding)
-	{
+	if (char_padding) {
 		TPUTS_TRACE("char_padding");
 		putp("char_padding");
 	}
@@ -189,7 +187,26 @@ static inline void PutChar(chtype ch)
 	PutAttrChar(ch);
 	SP->_curscol++; 
 	if (SP->_curscol >= screen_columns) {
-		if (auto_right_margin) {	 
+		if (eat_newline_glitch) {
+ 			/*
+			 * xenl can manifest two different ways.  The vt100
+			 * way is that, when you'd expect the cursor to wrap,
+			 * it stays hung at the right margin (on top of the
+			 * character just emitted) and doesn't wrap until the
+			 * *next* graphic char is emitted.  The c100 way is
+			 * to ignore LF received just after an am wrap.
+			 *
+			 * An aggressive way to handle this would be to 
+			 * emit CR/LF after the char and then assume the wrap
+			 * is done, you're on the first position of the next
+			 * line, and the terminal out of its weird state.
+			 * Here it's safe to just tell the code that the
+			 * cursor is in hyperspace and let the next mvcur()
+			 * call straighten things out.
+			 */
+			SP->_curscol = -1;	   
+			SP->_cursrow = -1;
+		} else if (auto_right_margin) { 
 			SP->_curscol = 0;	   
 			SP->_cursrow++;
 		} else {
@@ -201,7 +218,7 @@ static inline void PutChar(chtype ch)
 #endif /* POSITION_DEBUG */
 }	
 
-int _outch(int ch)
+int _nc_outch(int ch)
 {
 	if (SP != NULL)
 		putc(ch, SP->_ofp);
@@ -227,7 +244,7 @@ int	i;
 	}
 #endif /* TRACE */
 
-	curses_signal_handler(FALSE);
+	_nc_signal_handler(FALSE);
 
 	if (SP->_endwin == TRUE) {
 		T(("coming back from shell mode"));
@@ -274,8 +291,9 @@ int	i;
 			ClrUpdate(newscr);
 			newscr->_clear = FALSE;
 		} else {
-		        scroll_optimize();
-
+#if 0
+		        _nc_scroll_optimize();
+#endif
 			T(("Transforming lines"));
 			for (i = 0; i < min(screen_lines, newscr->_maxy + 1); i++) {
 				if(newscr->_line[i].firstchar != _NOCHANGE)
@@ -296,16 +314,14 @@ int	i;
 	curscr->_curx = newscr->_curx;
 	curscr->_cury = newscr->_cury;
 
-	GoTo(curscr->_cury, curscr->_curx);
-	
-	/* perhaps we should turn attributes off here */
-
 	if (curscr->_attrs != A_NORMAL)
 		vidattr(curscr->_attrs = A_NORMAL);
 
+	GoTo(curscr->_cury, curscr->_curx);
+	
 	fflush(SP->_ofp);
 
-	curses_signal_handler(TRUE);
+	_nc_signal_handler(TRUE);
 
 	return OK;
 }
@@ -321,7 +337,6 @@ static void ClrUpdate(WINDOW *scr)
 {
 int	i = 0, j = 0;
 int	lastNonBlank;
-int	inspace;
 
 	T(("ClrUpdate(%p) called", scr));
 	if (back_color_erase) {
@@ -329,6 +344,12 @@ int	inspace;
 		vidattr(A_NORMAL);
 	}
 	ClearScreen();
+
+	if (scr != curscr) {
+		for (i = 0; i < screen_lines ; i++)
+			for (j = 0; j < screen_columns; j++)
+				curscr->_line[i].text[j] = ' '; /* shouldn't this include the bkgd? */
+	}
 
 	T(("updating screen from scratch"));
 	for (i = 0; i < min(screen_lines, scr->_maxy + 1); i++) {
@@ -348,15 +369,7 @@ int	inspace;
 			    LRCORNER = TRUE;
 			}
 
-		inspace = 0;
 		for (j = 0; j <= min(lastNonBlank, screen_columns); j++) {
-			if ((scr->_line[i].text[j]) == BLANK) {
-				inspace++;
-				continue;
-			} else if (inspace) {
-				GoTo(i, j);
-				inspace = 0;
-			}
 			PutChar(scr->_line[i].text[j]);
 		}
 	}
@@ -380,8 +393,9 @@ int	inspace;
 
 static void ClrToEOL(void)
 {
-	if (back_color_erase)
-	{
+int	j;
+
+	if (back_color_erase) {
 		TPUTS_TRACE("orig_pair");
 		putp(orig_pair);
 	}
@@ -389,12 +403,16 @@ static void ClrToEOL(void)
 	putp(clr_eol);
 	if (back_color_erase)
 		vidattr(SP->_current_attr);
+
+	for (j = SP->_curscol; j < screen_columns; j++)
+	    curscr->_line[SP->_cursrow].text[j] = ' ';
 }
 
 static void ClrToBOL(void)
 {
-	if (back_color_erase)
-	{
+int j;
+
+	if (back_color_erase) {
 		TPUTS_TRACE("orig_pair");
 		putp(orig_pair);
 	}
@@ -402,6 +420,9 @@ static void ClrToBOL(void)
 	putp(clr_bol);
 	if (back_color_erase)
 		vidattr(SP->_current_attr);
+
+	for (j = 0; j <= SP->_curscol; j++)
+	    curscr->_line[SP->_cursrow].text[j] = ' ';
 }
 
 /*
@@ -670,7 +691,7 @@ static void InsStr(chtype *line, int count)
 		putp(exit_insert_mode);
 	} else if (parm_ich) {
 		TPUTS_TRACE("parm_ich");
-		tputs(tparm(parm_ich, count), count, _outch);
+		tputs(tparm(parm_ich, count), count, _nc_outch);
 		while (count) {
 			PutChar(*line);
 			line++;
@@ -705,7 +726,7 @@ static void DelChar(int count)
 
 	if (parm_dch) {
 		TPUTS_TRACE("parm_dch");
-		tputs(tparm(parm_dch, count), count, _outch);
+		tputs(tparm(parm_dch, count), count, _nc_outch);
 	} else {
 		while (count--)
 		{
@@ -716,12 +737,12 @@ static void DelChar(int count)
 }
 
 /*
-**	outstr(char *str)
+**	_nc_outstr(char *str)
 **
 **	Emit a string without waiting for update.
 */
 
-void outstr(char *str)
+void _nc_outstr(char *str)
 {
     (void) fputs(str, stdout);
     (void) fflush(stdout);

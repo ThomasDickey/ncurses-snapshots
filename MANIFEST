@@ -20,7 +20,7 @@
 ./man/captoinfo.1m
 ./man/clear.1
 ./man/curs_addch.3x
-./man/curs_addchst.3x
+./man/curs_addchstr.3x
 ./man/curs_addstr.3x
 ./man/curs_attr.3x
 ./man/curs_beep.3x
@@ -29,7 +29,7 @@
 ./man/curs_clear.3x
 ./man/curs_color.3x
 ./man/curs_delch.3x
-./man/curs_delln.3x
+./man/curs_deleteln.3x
 ./man/curs_getch.3x
 ./man/curs_getstr.3x
 ./man/curs_getyx.3x
@@ -51,14 +51,15 @@
 ./man/curs_scr_dmp.3x
 ./man/curs_scroll.3x
 ./man/curs_slk.3x
-./man/curs_termatt.3x
+./man/curs_termattrs.3x
 ./man/curs_termcap.3x
-./man/curs_termin.3x
+./man/curs_terminfo.3x
 ./man/curs_touch.3x
 ./man/curs_util.3x
 ./man/curs_window.3x
 ./man/infocmp.1m
 ./man/ncurses.3x
+./man/panel.3x
 ./man/term.5
 ./man/terminfo.5
 ./man/tic.1m
@@ -151,6 +152,8 @@
 ./src/matrix
 ./src/object.h
 ./src/parametrized.sh
+./src/panel.c
+./src/panel.h
 ./src/parse_entry.c
 ./src/read_entry.c
 ./src/read_termcap.c

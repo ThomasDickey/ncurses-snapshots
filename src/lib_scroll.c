@@ -34,12 +34,12 @@
 #include <string.h>
 #include "curses.priv.h"
 
-void scroll_window(WINDOW *win, int n, int top, int bottom)
+void _nc_scroll_window(WINDOW *win, int n, int top, int bottom)
 {
 int	line, j;
-chtype	blank = wrenderchar(win, ' ', BLANK, TRUE);
+chtype	blank = _nc_render(win, ' ', BLANK, TRUE);
 
-	TR(TRACE_MOVE, ("scroll_window(%p, %d, %d, %d)", win, n, top,bottom)); 
+	TR(TRACE_MOVE, ("_nc_scroll_window(%p, %d, %d, %d)", win, n, top,bottom)); 
 
 	/*
 	 * This used to do a line-text pointer-shuffle instead of text copies.
@@ -54,15 +54,13 @@ chtype	blank = wrenderchar(win, ' ', BLANK, TRUE);
 
 	/* shift n lines downwards */
     	if (n < 0) {
-		for (line = bottom; line >= top-n; line--)
-		{
+		for (line = bottom; line >= top-n; line--) {
 		    	memcpy(win->_line[line].text,
 			       win->_line[line+n].text,
 			       sizeof(chtype) * win->_maxx);
-			win->_line[line].oldindex=win->_line[line+n].oldindex;
+			win->_line[line].oldindex = win->_line[line+n].oldindex;
 		}
-		for (line = top; line < top-n; line++)
-		{
+		for (line = top; line < top-n; line++) {
 			for (j = 0; j < win->_maxx; j ++)
 				win->_line[line].text[j] = blank;
 			win->_line[line].oldindex = NEWINDEX;
@@ -71,15 +69,13 @@ chtype	blank = wrenderchar(win, ' ', BLANK, TRUE);
 
 	/* shift n lines upwards */
     	if (n > 0) {
-		for (line = top; line <= bottom-n; line++)
-		{
+		for (line = top; line <= bottom-n; line++) {
 		    	memcpy(win->_line[line].text,
 			       win->_line[line+n].text,
 			       sizeof(chtype) * win->_maxx);
 			win->_line[line].oldindex = win->_line[line+n].oldindex;
 		}
-		for (line = bottom; line > bottom-n; line--)
-		{
+		for (line = bottom; line > bottom-n; line--) {
 			for (j = 0; j < win->_maxx; j ++)
 				win->_line[line].text[j] = blank;
 			win->_line[line].oldindex = NEWINDEX;
@@ -98,9 +94,9 @@ wscrl(WINDOW *win, int n)
 	if (n == 0)
 		return OK;
 
-	scroll_window(win, n, win->_regtop, win->_regbottom);
+	_nc_scroll_window(win, n, win->_regtop, win->_regbottom);
 	touchline(win, win->_regtop, win->_regbottom - win->_regtop + 1);
 
-	wchangesync(win);
+	_nc_synchook(win);
     	return OK;
 }

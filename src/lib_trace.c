@@ -150,7 +150,7 @@ char *tp = vbuf;
 		} else if (*buf == '\033') {
 	    		*tp++ = '\\'; *tp++ = 'e';
 	    		buf++;
-		} else if (iscntrl(*buf)) {
+		} else if (isascii(*buf) && iscntrl(*buf)) {
 	    		*tp++ = '\\'; *tp++ = '^'; *tp++ = '@' + *buf;
 	    		buf++;
 		} else {

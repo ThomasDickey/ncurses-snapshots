@@ -118,6 +118,12 @@ extern struct alias alias_table[];
 #define CANCELLED_NUMERIC	-2
 #define CANCELLED_STRING	(char *)-1
 
+/* termcap entries longer than this may break old binaries */
+#define MAX_TERMCAP_LENGTH	1023
+
+/* this is a documented limitation of terminfo */
+#define MAX_TERMINFO_LENGTH	4096
+
 /* comp_hash.c: name lookup */
 extern void make_hash_table(struct name_table_entry *,
 			    struct name_table_entry **);

@@ -259,22 +259,16 @@ int last, bottom;
 
     for (;;) {
 #ifdef TRACE
-		if (trace_start || trace_end)
-		{
-		    if (generation == trace_start)
-		    {
-			trace(TRACE_MAXIMUM);
+		if (trace_start || trace_end) {
+		    if (generation == trace_start) {
+			trace(TRACE_CALLS);
 			getch();
-		    }
-		    else if (generation == trace_end)
-		    {
+		    } else if (generation == trace_end) {
 			trace(0);
 			getch();
 		    }
 
-		    if (singlestep && 
-				generation > trace_start &&
-				generation < trace_end)
+		    if (singlestep && generation > trace_start && generation < trace_end)
 			getch();
 
 		    generation++;

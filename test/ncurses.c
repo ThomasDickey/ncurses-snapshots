@@ -23,6 +23,7 @@ library source.
 #include <string.h>
 #include <assert.h>
 #include <curses.h>
+#include <panel.h>
 
 #define P(s)		printw("%s\n", s)
 #ifndef CTRL
@@ -783,22 +784,358 @@ static void acs_and_scroll()
     endwin();
 }
 
+/****************************************************************************
+ *
+ * Panels tester
+ *
+ ****************************************************************************/
+
+static PANEL *p1;
+static PANEL *p2;
+static PANEL *p3;
+static PANEL *p4;
+static PANEL *p5;
+static WINDOW *w1;
+static WINDOW *w2;
+static WINDOW *w3;
+static WINDOW *w4;
+static WINDOW *w5;
+
+#define	nap(x)		usleep(1000*x)
+
+static long nap_msec = 1;
+
+char *mod[] = 
+{
+	"test ",
+	"TEST ",
+	"(**) ",
+	"*()* ",
+	"<--> ",
+	"LAST "
+};
+
+/*+-------------------------------------------------------------------------
+	wait_a_while(msec)
+--------------------------------------------------------------------------*/
+void
+wait_a_while(msec)
+long msec;
+{
+#ifdef NONAP
+	if(nap_msec == 1)
+		getchar();
+	else if(msec > 1000L)
+		sleep((int)msec/1000L);
+	else
+		sleep(1);
+#else
+	if(nap_msec == 1)
+		getchar();
+	else
+		nap(nap_msec);
+#endif
+}	/* end of wait_a_while */
+
+/*+-------------------------------------------------------------------------
+	saywhat(text)
+--------------------------------------------------------------------------*/
+void
+saywhat(text)
+char *text;
+{
+int y,x;
+
+	wmove(stdscr,LINES - 1,0);
+	wclrtoeol(stdscr);
+	waddstr(stdscr, text);
+}	/* end of saywhat */
+
+/*+-------------------------------------------------------------------------
+	mkpanel(rows,cols,tly,tlx) - alloc a win and panel and associate them
+--------------------------------------------------------------------------*/
+PANEL *
+mkpanel(rows,cols,tly,tlx)
+int rows;
+int cols;
+int tly;
+int tlx;
+{
+WINDOW *win = newwin(rows,cols,tly,tlx);
+PANEL *pan;
+
+	if(!win)
+		return((PANEL *)0);
+	if(pan = new_panel(win))
+		return(pan);
+	delwin(win);
+	return((PANEL *)0);
+}	/* end of mkpanel */
+
+/*+-------------------------------------------------------------------------
+	rmpanel(pan)
+--------------------------------------------------------------------------*/
+void
+rmpanel(pan)
+PANEL *pan;
+{
+WINDOW *win = pan->win;
+	del_panel(pan);
+	delwin(win);
+}	/* end of rmpanel */
+
+/*+-------------------------------------------------------------------------
+	pflush()
+--------------------------------------------------------------------------*/
+void
+pflush()
+{
+	update_panels();
+	doupdate();
+}	/* end of pflush */
+
+/*+-------------------------------------------------------------------------
+	fill_panel(win)
+--------------------------------------------------------------------------*/
+fill_panel(pan)
+PANEL *pan;
+{
+WINDOW *win = pan->win;
+char num = *(pan->user + 1);
+int y,x;
+
+	box(win, 0, 0);  
+	wmove(win,1,1);
+	wprintw(win,"-pan%c-",num);
+	for(y = 2; y < getmaxy(win) - 1; y++)
+	{
+		for(x = 1; x < getmaxx(win) - 1; x++)
+		{
+			wmove(win,y,x);
+			waddch(win,num);
+		}
+	}
+}	/* end of fill_panel */
+
+/*+-------------------------------------------------------------------------
+	main(argc,argv)
+--------------------------------------------------------------------------*/
+
+static void demo_panels()
+{
+int itmp;
+register y,x;
+long atol();
+
+#ifdef FOO
+	if((argc > 1) && atol(argv[1]))
+		nap_msec = atol(argv[1]);
+#endif /* FOO */
+
+	refresh();
+
+	for(y = 0; y < LINES - 1; y++)
+	{
+		for(x = 0; x < COLS; x++)
+			wprintw(stdscr,"%d",(y + x) % 10);
+	}
+	for(y = 0; y < 5; y++)
+	{
+		p1 = mkpanel(10,10,0,0);
+		w1 = panel_window(p1);
+		set_panel_userptr(p1,"p1");
+
+		p2 = mkpanel(14,14,5,5);
+		w2 = panel_window(p2);
+		set_panel_userptr(p2,"p2");
+
+		p3 = mkpanel(6,8,12,12);
+		w3 = panel_window(p3);
+		set_panel_userptr(p3,"p3");
+
+		p4 = mkpanel(10,10,10,30);
+		w4 = panel_window(p4);
+		set_panel_userptr(p4,"p4");
+
+		p5 = mkpanel(10,10,13,37);
+		w5 = panel_window(p5);
+		set_panel_userptr(p5,"p5");
+
+		fill_panel(p1);
+		fill_panel(p2);
+		fill_panel(p3);
+		fill_panel(p4);
+		fill_panel(p5);
+		hide_panel(p4);
+		hide_panel(p5);
+		pflush();
+		saywhat("press any key to continue");
+		wait_a_while(nap_msec);
+
+		saywhat("h3 s1 s2 s4 s5; press any key to continue");
+		move_panel(p1,0,0);
+		hide_panel(p3);
+		show_panel(p1);
+		show_panel(p2);
+		show_panel(p4);
+		show_panel(p5);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("s1; press any key to continue");
+		show_panel(p1);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("s2; press any key to continue");
+		show_panel(p2);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("m2; press any key to continue");
+		move_panel(p2,10,10);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("s3;");
+		show_panel(p3);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("m3; press any key to continue");
+		move_panel(p3,5,5);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("b3; press any key to continue");
+		bottom_panel(p3);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("s4; press any key to continue");
+		show_panel(p4);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("s5; press any key to continue");
+		show_panel(p5);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("t3; press any key to continue");
+		top_panel(p3);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("t1; press any key to continue");
+		top_panel(p1);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("t2; press any key to continue");
+		top_panel(p2);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("t3; press any key to continue");
+		top_panel(p3);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("t4; press any key to continue");
+		top_panel(p4);
+		pflush();
+		wait_a_while(nap_msec);
+
+		for(itmp = 0; itmp < 6; itmp++)
+		{
+			saywhat("m4; press any key to continue");
+			wmove(w4,3,1);
+			waddstr(w4,mod[itmp]);
+			move_panel(p4,4,itmp*10);
+			wmove(w5,4,1);
+			waddstr(w5,mod[itmp]);
+			pflush();
+			wait_a_while(nap_msec);
+			saywhat("m5; press any key to continue");
+			wmove(w4,4,1);
+			waddstr(w4,mod[itmp]);
+			move_panel(p5,7,(itmp*10) + 6);
+			wmove(w5,3,1);
+			waddstr(w5,mod[itmp]);
+			pflush();
+			wait_a_while(nap_msec);
+		}
+
+		saywhat("m4; press any key to continue");
+		move_panel(p4,4,itmp*10);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("t5; press any key to continue");
+		top_panel(p5);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("t2; press any key to continue");
+		top_panel(p2);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("t1; press any key to continue");
+		top_panel(p1);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("d2; press any key to continue");
+		rmpanel(p2);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("h3; press any key to continue");
+		hide_panel(p3);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("d1; press any key to continue");
+		rmpanel(p1);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("d4; press any key to continue");
+		rmpanel(p4);
+		pflush();
+		wait_a_while(nap_msec);
+
+		saywhat("d5; press any key to continue");
+		rmpanel(p5);
+		pflush();
+		wait_a_while(nap_msec);
+		if(nap_msec == 1)
+			break;
+		nap_msec = 100L;
+	}
+
+    erase();
+    endwin();
+}
+
+/****************************************************************************
+ *
+ * Pad tester
+ *
+ ****************************************************************************/
+
 #define GRIDSIZE	5
 
 static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 {
     static int porty, portx, basex = 0, basey = 0;
-    int pxmax, pymax, c;
-    WINDOW *vscroll = (WINDOW *)NULL, *hscroll = (WINDOW *)NULL;
+    int pxmax, pymax, lowend, highend, i, j, c;
 
     porty = iy; portx = ix;
 
     getmaxyx(pad, pymax, pxmax);
-
-    if (pymax > porty)
-	vscroll = newwin(porty - (pxmax > ix), 1,  0, portx - (pymax > iy));
-    if (pxmax > portx)
-	hscroll = newwin(1, portx - (pymax > iy),  porty - (pxmax > ix), 0);
 
     c = KEY_REFRESH;
     do {
@@ -812,24 +1149,14 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 	    if (portx >= pxmax || portx >= ix)
 		beep();
 	    else
-	    {
-		mvwin(vscroll, 0, ++portx - 1);
-		delwin(hscroll);
-		hscroll = newwin(1, portx - (pymax > porty),
-				 porty - (pxmax > portx), 0);
-	    }
+		++portx;
 	    break;
 
 	case KEY_IL:
 	    if (porty >= pymax || porty >= iy)
 		beep();
 	    else
-	    {
-		mvwin(hscroll, ++porty - 1, 0);
-		delwin(vscroll);
-		vscroll = newwin(porty - (pxmax > portx), 1,
-				 0, portx - (pymax > porty));
-	    }
+		++porty;
 	    break;
 
 	case KEY_DC:
@@ -837,10 +1164,9 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 		beep();
 	    else
 	    {
-		mvwin(vscroll, 0, --portx - 1);
-		delwin(hscroll);
-		hscroll = newwin(1, portx - (pymax > porty),
-				 porty - (pxmax > portx), 0);
+		--portx;
+		for (i = 0; i < porty; i++)
+		    mvaddch(i, portx, ' ');
 	    }
 	    break;
 
@@ -849,10 +1175,9 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 		beep();
 	    else
 	    {
-		mvwin(hscroll, --porty - 1, 0);
-		delwin(vscroll);
-		vscroll = newwin(porty - (pxmax > portx), 1,
-				 0, portx - (pymax > porty));
+		--porty;
+		for (j = 0; j < portx; j++)
+		    mvaddch(porty, j, ' ');
 	    }
 	    break;
 
@@ -885,47 +1210,44 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 	    break;
 	}
 
-	mvaddch(porty - 1, portx - 1, ACS_LRCORNER);
-	wnoutrefresh(stdscr);
-	prefresh(pad,
-		 basey, basex,
-		 0, 0,
-		 porty - (hscroll != (WINDOW *)NULL) - 1,
-		 portx - (vscroll != (WINDOW *)NULL) - 1); 
-	if (hscroll) {
-	int lowend, j, highend;
+	if (pxmax > portx) {
 
 	    lowend = basex * ((float)portx / (float)pxmax);
 	    highend = (basex + portx) * ((float)portx / (float)pxmax);
 
-	    touchwin(hscroll);
 	    for (j = 0; j < lowend; j++)
-		mvwaddch(hscroll, 0, j, ACS_HLINE);
-	    wattron(hscroll, A_REVERSE);
+		mvaddch(porty - 1, j, ACS_HLINE);
+	    attron(A_REVERSE);
 	    for (j = lowend; j <= highend; j++)
-		mvwaddch(hscroll, 0, j, ' ');
-	    wattroff(hscroll, A_REVERSE);
+		mvaddch(porty - 1, j, ' ');
+	    attroff(A_REVERSE);
 	    for (j = highend + 1; j < portx; j++)
-		mvwaddch(hscroll, 0, j, ACS_HLINE);
-	    wnoutrefresh(hscroll);
+		mvaddch(porty - 1, j, ACS_HLINE);
         }
-	if (vscroll) {
-	int lowend, i, highend;
+	if (pymax > porty) {
 
 	    lowend = basey * ((float)porty / (float)pymax);
 	    highend = (basey + porty) * ((float)porty / (float)pymax);
 
-	    touchwin(vscroll);
 	    for (i = 0; i < lowend; i++)
-		mvwaddch(vscroll, i, 0, ACS_VLINE);
-	    wattron(vscroll, A_REVERSE);
+		mvaddch(i, portx - 1, ACS_VLINE);
+	    attron(A_REVERSE);
 	    for (i = lowend; i <= highend; i++)
-		mvwaddch(vscroll, i, 0, ' ');
-	    wattroff(vscroll, A_REVERSE);
+		mvaddch(i, portx - 1, ' ');
+	    attroff(A_REVERSE);
 	    for (i = highend + 1; i < porty; i++)
-		mvwaddch(vscroll, i, 0, ACS_VLINE);
-	    wnoutrefresh(vscroll);
+		mvaddch(i, portx - 1, ACS_VLINE);
         }
+
+	mvaddch(porty - 1, portx - 1, ACS_LRCORNER);
+	wnoutrefresh(stdscr);
+
+	prefresh(pad,
+		 basey, basex,
+		 0, 0,
+		 porty - (pxmax > portx) - 1,
+		 portx - (pymax > porty) - 1); 
+
 	doupdate();
 
     } while
@@ -1133,6 +1455,10 @@ bool do_single_test(const char c)
 	acs_display();
 	return(TRUE);
 
+    case 'o':
+	demo_panels();
+	return(TRUE);
+
     case 'g':
 	acs_and_scroll();
 	return(TRUE);
@@ -1193,6 +1519,7 @@ int main(const int argc, const char *argv[])
 	(void) puts("e = exercise soft keys");
 	(void) puts("f = display ACS characters");
 	(void) puts("g = display windows and scrolling");
+	(void) puts("o = exercise panels library");
 	(void) puts("p = exercise pad features");
 	(void) puts("i = subwindow input test");
 	(void) puts("? = get help");

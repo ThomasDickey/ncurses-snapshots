@@ -68,6 +68,9 @@ void init_acs(void)
 	ACS_BLOCK    = ASCII('#');	/* should be solid square block */
 
 #ifdef __i386__
+	/*
+	 * Character map initialization for Intel boxes
+	 */
 #ifdef enter_pc_charset_mode
 	if (enter_pc_charset_mode)
 #endif /* enter_pc_charset_mode */

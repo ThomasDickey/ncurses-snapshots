@@ -95,7 +95,7 @@ print "" > output;
 print "# libraries to build" > output;
 print "# ncurses is the regular version" > output;
 print "# dcurses is the tracing version" > output;
-print "LIBS= libncurses.a libdcurses.a" > output;
+print "LIBS= libncurses.a libdcurses.a libpanel.a libpanelg.a" > output;
 print "" > output;
 print "# Ansi compiler, and relevant flags" > output;
 print "CC= " cc > output;

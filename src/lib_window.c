@@ -28,7 +28,7 @@
 #include <string.h>
 #include "curses.priv.h"
 
-void wchangesync(WINDOW *win)
+void _nc_synchook(WINDOW *win)
 /* hook to be called after each window change */
 {
 	if (win->_immed) wrefresh(win);

@@ -70,7 +70,11 @@ int errcode;
 		UP = cursor_up;
 	if (backspace_if_not_bs != NULL)
 		BC = backspace_if_not_bs;
-	ospeed = SP->_baudrate;
+#if defined(TERMIOS)
+	ospeed = cfgetospeed(&cur_term->Nttyb);
+#else
+	ospeed = cur_term->Nttyb.sg_ospeed;
+#endif
 
 #include "capdefaults.c"
 

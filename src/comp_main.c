@@ -125,7 +125,7 @@ ENTRY	*qp;
 	read_entry_source(stdin, !smart_defaults);
 
 	/* do use resolution */
-	if (!infodump && !capdump)
+	if (check_only || (!infodump && !capdump))
 	{
 	    if (!resolve_uses())
 	    {
@@ -136,9 +136,24 @@ ENTRY	*qp;
 			(void) fputs(qp->tterm.term_names, stderr);
 			(void) fputc('\n', stderr);
 		   }
-		exit(1);
+		if (!check_only)
+		    exit(1);
 	    }
 	}
+
+	/* length check */
+	if (check_only && (capdump || infodump))
+	    for_entry_list(qp)
+	    {
+		char	outbuf[MAX_TERMINFO_LENGTH * 2];
+		int	len = fmt_entry(&qp->tterm, NULL, outbuf, TRUE);
+
+		if (len > (infodump?MAX_TERMINFO_LENGTH:MAX_TERMCAP_LENGTH))
+		    	    (void) fprintf(stderr,
+			   "warning: resolved %s entry string table is %d bytes long\n",
+			   canonical_name(qp->tterm.term_names, (char *)NULL),
+			   len);
+	    }
 
 	/* write or dump all entries */
 	if (!check_only)

@@ -310,22 +310,6 @@ static void compare_predicate(int type, int index, char *name)
 
 }
 
-char *canonical_name(char *ptr, char *buf)
-/* extract the terminal type's primary name */
-{
-    static char	mycopy[NAMESIZE];
-    char	*bp;
-
-    if (buf == (char *)NULL)
-	buf = mycopy;
-
-    (void) strcpy(buf, ptr);
-    if ((bp = strchr(buf, '|')) != (char *)NULL)
-	*bp = '\0';
-
-    return(buf);
-}
-
 /***************************************************************************
  *
  * Main sequence

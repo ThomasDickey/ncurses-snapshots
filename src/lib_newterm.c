@@ -32,11 +32,12 @@
 #include "curses.priv.h"
 #include "term.h"	/* clear_screen, cup & friends, cur_term */
 
-static filter_mode = 0;
+/* This should move to TERMINAL */
+static filter_mode = FALSE;
 
 void filter(void)
 {
-    filter_mode = 1;
+    filter_mode = TRUE;
 }
 
 SCREEN * newterm(char *term, FILE *ofp, FILE *ifp)
@@ -48,12 +49,11 @@ int	errret;
 #endif
 
 	/* this loads the capability entry, then sets LINES and COLS */
-	if (setupterm(term, fileno(ofp), &errret) != 1)
+	if (setupterm(term, fileno(ifp), &errret) != 1)
 	    	return NULL;
 
 	/* implement filter mode */
-	if (filter_mode)
-	{
+	if (filter_mode) {
 	    LINES = 1;
 
 #ifdef clear_screen
@@ -75,7 +75,7 @@ int	errret;
 		ripoffline(-1, slk_initialize);
 
 	/* this actually allocates the screen structure */
-	if (setupscreen(LINES, COLS) == ERR)
+	if (_nc_setupscreen(LINES, COLS) == ERR)
 	    	return NULL;
 
 #ifdef num_labels
@@ -108,7 +108,7 @@ int	errret;
 	    else
 		slk_initialize(stdscr, COLS);
 #endif
-	curses_signal_handler(TRUE);
+	_nc_signal_handler(TRUE);
 
 	T(("newterm returns %p", SP));
 

@@ -53,7 +53,7 @@ install:
 	echo "install.libs install.man install.cmds install.data"
 	echo "or use install.all"
 
-install.all:	install.libs install.man install.cmds install.data
+install.all:	install.libs install.cmds install.data install.man
 
 BIN=$(INSTALL_DIR)/bin
 
@@ -64,7 +64,7 @@ install.libs: term.h $(LIBS) $(INCLUDE) $(LIB)
 	$(INSTALL) -c -m 0644 -o bin -g bin term.h $(INCLUDE)/term.h
 	$(INSTALL) -c -m 0644 -o bin -g bin curses.h $(INCLUDE)/curses.h
 	$(INSTALL) -c -m 0644 -o bin -g bin unctrl.h $(INCLUDE)/unctrl.h
-	$(INSTALL) -c -m 0644 -o bin -g bin termcap.h $(INCLUDE)/termcap.h
+	$(INSTALL) -c -m 0644 -o bin -g bin panel.h $(INCLUDE)/panel.h
 	@for lib in $(LIBS); do \
 		echo installing $${lib} as $(LIB)/$${lib}; \
 		$(INSTALL) -c -m 0644 -o bin -g bin $${lib} $(LIB)/$${lib}; \
@@ -82,7 +82,7 @@ install.cmds: $(CMDS) $(BIN)
 	$(INSTALL) -c -s -m 755 -o bin -g bin clear $(BIN)/clear
 	$(INSTALL) -c -s -m 755 -o bin -g bin tput $(BIN)/tput
 	@echo "linking captoinfo to tic"
-	@echo "ignore any error messages"
+	rm $(BIN)/infocmp
 	-@ln $(BIN)/tic $(BIN)/captoinfo 
 
 # Installation production for replacing the stock libraries on Linux systems
@@ -98,7 +98,7 @@ install.sys: # term.h $(LIBS) $(INCLUDE) $(LIB)
 
 install.data: $(TERMINFO) 
 	rm -fr $(TERMINFO)/[0-9A-Za-z]		# Avoid use loops due to old entries.
-	$(BIN)/tic ../misc/terminfo.src
+	$(BIN)/tic -v ../misc/terminfo.src
 
 lib:	term.h libncurses.a	
 libncurses.a:	${LIBOBJS}
@@ -110,6 +110,14 @@ libdcurses.a:	${DLIBOBJS}
 	ar rv libdcurses.a $?
 	ranlib libdcurses.a
 
+libpanel.a: panel.o
+	ar rv libpanel.a $?
+	ranlib libpanel.a
+
+libpanelg.a: panel.d
+	ar rv libpanelg.a $?
+	ranlib libpanelg.a
+ 
 tic: comp_main.o dump_entry.o write_entry.o libncurses.a
 	$(CC) $(CFLAGS) comp_main.o dump_entry.o write_entry.o libncurses.a -o tic
 
@@ -160,28 +168,28 @@ infocmp.o: infocmp.c term.h tic.h dump_entry.h
 	$(CC) $(CFLAGS) -DTERMINFO=\"$(TERMINFO)\" -o infocmp.o -c infocmp.c
 
 dump_entry.o: dump_entry.c term.h tic.h dump_entry.h termsort.c parametrized.h
-	$(CC) $(CFLAGS) -o dump_entry.o -c dump_entry.c
+	$(CC) -c $(CFLAGS) -o dump_entry.o dump_entry.c
 
 dump_entry.d: dump_entry.c term.h tic.h dump_entry.h termsort.c parametrized.h capdefaults.c
-	$(CC) $(CFLAGS) -o dump_entry.d -c dump_entry.c
+	$(CC) -c $(CFLAGS) -o dump_entry.d dump_entry.c
 
 read_entry.o: read_entry.c term.h tic.h object.h
-	$(CC) $(CFLAGS) -DTERMINFO=\"$(TERMINFO)\" -o read_entry.o -c read_entry.c
+	$(CC) -c $(CFLAGS) -DTERMINFO=\"$(TERMINFO)\" -o read_entry.o read_entry.c
 
 read_entry.d: read_entry.c term.h tic.h object.h
-	$(CC) $(CFLAGS) -DTERMINFO=\"$(TERMINFO)\" -o read_entry.d -c read_entry.c
+	$(CC) -c $(CFLAGS) -DTERMINFO=\"$(TERMINFO)\" -o read_entry.d read_entry.c
 
 parse_entry.o: parse_entry.c term.h tic.h term_entry.h parametrized.h
-	$(CC) $(CFLAGS) -o parse_entry.o -c parse_entry.c
+	$(CC) -c $(CFLAGS) -o parse_entry.o parse_entry.c
 
 parse_entry.d: parse_entry.c term.h tic.h term_entry.h parametrized.h
-	$(CC) $(CFLAGS) -o parse_entry.d -c parse_entry.c
+	$(CC) -c $(CFLAGS) -o parse_entry.d parse_entry.c
 
 write_entry.o: write_entry.c term.h tic.h object.h
-	$(CC) $(CFLAGS) -DTERMINFO=\"$(TERMINFO)\" -o write_entry.o -c write_entry.c
+	$(CC) -c $(CFLAGS) -DTERMINFO=\"$(TERMINFO)\" -o write_entry.o write_entry.c
 
 write_entry.d: write_entry.c term.h tic.h object.h
-	$(CC) $(CFLAGS) -DTERMINFO=\"$(TERMINFO)\" -o write_entry.d -c write_entry.c
+	$(CC) -c $(CFLAGS) -DTERMINFO=\"$(TERMINFO)\" -o write_entry.d write_entry.c
 
 lib_keyname.c: keys.list MKkeyname.awk
 	awk -f MKkeyname.awk keys.list > lib_keyname.c

@@ -1,4 +1,24 @@
+#
+# Master capability table.
+#
+# Column 1: terminfo variable name
+# Column 2: terminfo capability name
+# Column 3: capability type
+# Column 4: termcap capability name
+# Column 5: `Y' if capability was used in termcap, `-' otherwise
+# Column 6: capability description
+#
+# Note that many capabilities that the 4.4BSD termcap(5) page documents are
+# not actually used by the 4.4BSD curses library.  Column 5 is based on the
+# 4.4BSD documentation, except that string caps are marked `Y' only if they
+# are actually *used* by the 4.4BSD curses library or the GNU termcap library. 
+# This helps us avoid putting out termcap entries that are more than 1023
+# bytes long (and tank a lot of old termcap-using programs) because they're
+# full of unused string capabilities.
+
+#
 # These are the boolean capabilities
+#
 auto_left_margin        	"bw"	bool	"bw"	Y	cub1 wraps from column 0 to last column
 auto_right_margin       	"am"	bool	"am"	Y	terminal has automatic margins
 no_esc_ctlc             	"xsb"	bool	"xb"	Y	beehive (f1=escape, f2=ctrl C)
@@ -37,7 +57,9 @@ semi_auto_right_margin  	"sam"	bool	"YE"	-	printing in last column causes cr
 cpi_changes_res         	"cpix"	bool	"YF"	-	changing character pitch changes resolution
 lpi_changes_res         	"lpix"	bool	"YG"	-	changing line pitch changes resolution
 get_mouse               	"getm"	bool	"Gm"	-	Curses should get button events
+#
 # These are the numerical capabilities
+#
 columns                 	"cols"	num	"co"	Y	number of columns in aline
 init_tabs               	"it"	num	"it"	Y	tabs initially every # spaces
 lines                   	"lines"	num	"li"	Y	number of lines on screen or page
@@ -49,9 +71,9 @@ width_status_line       	"wsl"	num	"ws"	Y	columns in status line
 num_labels              	"nlab"	num	"Nl"	-	number of lables on screen
 label_height            	"lh"	num	"lh"	-	rows in each label
 label_width             	"lw"	num	"lw"	-	columns in each label
-max_attributes          	"ma"	num	"ma"	-	maximum combined attributes terminal can handle
+max_attributes          	"ma"	num	"ma"	Y	maximum combined attributes terminal can handle
 maximum_windows         	"wnum"	num	"MW"	-	maxumum number of defineable windows
-# These are newer capabilities, order is probably wrong
+# These are newer capabilities
 max_colors              	"colors"	num	"Co"	-	maximum numbers of colors on screen
 max_pairs               	"pairs"	num	"pa"	-	maximum number of color-pairs on the screen
 no_color_video          	"ncv"	num	"NC"	-	video attributes that can't be used with colors
@@ -72,7 +94,9 @@ wide_char_size          	"widcs"	num	"Yn"	-	character step size when in double w
 buttons                 	"btns"	num	"BT"	-	number of buttons on mouse
 bit_image_entwining     	"bitwin"	num	"Yo"	-	number of passed for each bit-image row
 bit_image_type          	"bitype"	num	"Yp"	-	type of bit-image device
+#
 # These are the string capabilities
+#
 back_tab                	"cbt"	str	"bt"	Y	back tab
 bell                    	"bel"	str	"bl"	Y	audible signal (bell)
 carriage_return         	"cr"	str	"cr"	Y	carriage return
@@ -188,17 +212,17 @@ parm_left_cursor        	"cub"	str	"LE"	Y	move #1 chars to the left
 parm_right_cursor       	"cuf"	str	"RI"	Y	move #1 chars to the right
 parm_rindex             	"rin"	str	"SR"	Y	scroll back #1 lines
 parm_up_cursor          	"cuu"	str	"UP"	Y	up #1 lines
-pkey_key                	"pfkey"	str	"pk"	Y	program function key #1 to type string #2
-pkey_local              	"pfloc"	str	"pl"	Y	program function key #1 to execute string #2
-pkey_xmit               	"pfx"	str	"px"	Y	program function key #1 to transmit string #2
+pkey_key                	"pfkey"	str	"pk"	-	program function key #1 to type string #2
+pkey_local              	"pfloc"	str	"pl"	-	program function key #1 to execute string #2
+pkey_xmit               	"pfx"	str	"px"	-	program function key #1 to transmit string #2
 print_screen            	"mc0"	str	"ps"	Y	print contents of screen
 prtr_off                	"mc4"	str	"pf"	Y	turn off printer
 prtr_on                 	"mc5"	str	"po"	Y	turn on printer
 repeat_char             	"rep"	str	"rp"	Y	repeat char #1 #2 times
-reset_1string           	"rs1"	str	"r1"	Y	reset string
-reset_2string           	"rs2"	str	"r2"	Y	reset string
-reset_3string           	"rs3"	str	"r3"	Y	reset string
-reset_file              	"rf"	str	"rf"	Y	name of reset file
+reset_1string           	"rs1"	str	"r1"	-	reset string
+reset_2string           	"rs2"	str	"r2"	-	reset string
+reset_3string           	"rs3"	str	"r3"	-	reset string
+reset_file              	"rf"	str	"rf"	-	name of reset file
 restore_cursor          	"rc"	str	"rc"	Y	restore cursor to last position of sc
 row_address             	"vpa"	str	"cv"	Y	vertical position #1 absolute
 save_cursor             	"sc"	str	"sc"	Y	save current cursor position
@@ -211,7 +235,7 @@ tab                     	"ht"	str	"ta"	Y	tab to next 8-space hardware tab stop
 to_status_line          	"tsl"	str	"ts"	Y	move to status line
 underline_char          	"uc"	str	"uc"	Y	underline char and move past it
 up_half_line            	"hu"	str	"hu"	Y	half a line up
-init_prog               	"iprog"	str	"iP"	Y	path name of program for initialization
+init_prog               	"iprog"	str	"iP"	-	path name of program for initialization
 key_a1                  	"ka1"	str	"K1"	Y	upper left of keypad
 key_a3                  	"ka3"	str	"K3"	Y	upper right of keypad
 key_b2                  	"kb2"	str	"K2"	Y	center of keypad
@@ -528,6 +552,11 @@ backspace_if_not_bs     	"OTbc"	str	"bc"	Y	(used)
 #
 gnu_has_meta_key		"OTMT"	bool	"MT"	-	(not used)
 # gnu_tab_width			"OTtw"	num	"tw"	-	(not used)
+#
+# GNU termcap *does* include the following extended capability,  Only the
+# now-obsolete Ann Arbor terminals used it.
+#
+# gnu_change_scroll_region	"OTcS"	str	"cS"	Y	(not used)
 #
 # The following comments describe capnames so ancient that I believe no
 # software uses them any longer.  Some of these have to go because they

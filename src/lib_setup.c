@@ -73,7 +73,7 @@ struct winsize size;
 #endif
 }
 
-void get_screensize(void)
+static void get_screensize(void)
 /* set LINES and COLS from the environment and/or terminfo entry */
 {
 char 		*rows, *cols;
@@ -223,9 +223,7 @@ int setupterm(char *termname, int Filedes, int *errret)
 struct term	*term_ptr;
 static void do_prototype(void);
 
-#ifdef TRACE
 	T(("setupterm(%s,%d,%p) called", termname, Filedes, errret));
-#endif
 
 	if (termname == NULL) {
     		termname = getenv("TERM");
@@ -251,19 +249,13 @@ static void do_prototype(void);
 	    		ret_error0(-1, "Not enough memory to create terminal structure.\n") ;
 
 		if (grab_entry(termname, &term_ptr->type) < 0)
-		    	ret_error(-1,
-				  "'%s': Unknown terminal type.\n",
-				  termname);
+		    	ret_error(-1, "'%s': Unknown terminal type.\n", termname);
 
 		cur_term = term_ptr;
 		if (generic_type)
-		    	ret_error(-1,
-				  "'%s': I need something more specific.\n",
-				  termname);
+		    	ret_error(-1, "'%s': I need something more specific.\n", termname);
 		if (hard_copy)
-		    	ret_error(-1,
-				  "'%s': I can't handle hardcopy terminals.\n",
-				  termname);
+		    	ret_error(-1, "'%s': I can't handle hardcopy terminals.\n", termname);
 
 		if (command_character  &&  getenv("CC"))
 		    	do_prototype();

@@ -26,7 +26,7 @@ NAME
    hardscroll.c -- hardware-scrolling optimization for ncurses
 
 SYNOPSIS
-   void scroll_optimize(void)
+   void _nc_scroll_optimize(void)
 
 DESCRIPTION
 			OVERVIEW
@@ -217,7 +217,7 @@ static bool all_discarded(int top, int bottom, int disp)
     return(TRUE);
 }
 
-void scroll_optimize(void)
+void _nc_scroll_optimize(void)
 /* scroll optimization to transform curscr to newscr */
 {
     bool no_hunk_moved;		/* no hunk moved on this pass? */
@@ -226,7 +226,7 @@ void scroll_optimize(void)
     int	pass = 0;
 #endif /* defined(TRACE) || defined(MAINDEBUG) */
 
-    T(("scroll_optimize() begins"));
+    T(("_nc_scroll_optimize() begins"));
 
     /* mark any line not carried over with NEWINDEX */
     for (n = 0; n < LINES; n++)
@@ -293,8 +293,8 @@ void scroll_optimize(void)
 
 		    TR(TRACE_UPDATE | TRACE_MOVE, ("scroll [%d, %d] by %d", ofirst, olast, -disp));
 #ifndef MAINDEBUG
-		    (void) scrolln(-disp, ofirst, olast, LINES - 1);
-		    scroll_window(curscr, -disp, ofirst, olast);
+		    (void) mvcur_scrolln(-disp, ofirst, olast, LINES - 1);
+		    _nc_scroll_window(curscr, -disp, ofirst, olast);
 #endif /* MAINDEBUG */		    
 
 		    for (m = ofirst; m <= olast; m++)
@@ -368,7 +368,7 @@ main()
 	(void) fputs("Initial input:\n", stderr);
 	linedump();
 
-	scroll_optimize();	
+	_nc_scroll_optimize();	
     }
 }
 

@@ -62,11 +62,10 @@ is used.  Otherwise, if the environment variables do not exist, the
 values for \fBlines\fR and \fBcolumns\fR specified in the
 \fBterminfo\fR database are used.
 
-The header files \fBcurses.h\fR and \fBnterm.h\fR should be included (in this
-order) to get the definitions for these strings, numbers, and flags (these
-correspond to the SVr4 headers \fBcurses.h\fR and \fBterm.h\fR).  Parameterized
-strings should be passed through \fBtparm\fR to instantiate them.  All
-\fBterminfo\fR strings [including the output of \fBtparm\fR] should be printed
+The header files \fBcurses.h\fR and \fBterm.h\fR should be included (in this
+order) to get the definitions for these strings, numbers, and flags.
+Parameterized strings should be passed through \fBtparm\fR to instantiate them.  
+All \fBterminfo\fR strings [including the output of \fBtparm\fR] should be printed
 with \fBtputs\fR or \fBputp\fR.  Call the \fBreset_shell_mode\fR to restore the
 tty modes before exiting [see \fBcurs_kernel\fR(3X)].  Programs which use
 cursor addressing should output \fBenter_ca_mode\fR upon startup and should
