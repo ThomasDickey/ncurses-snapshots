@@ -73,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.180 2002/12/21 23:52:57 Philippe.Blain Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.184 2002/12/29 01:33:13 Philippe.Blain Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -204,23 +204,18 @@ PutAttrChar(CARG_CH_T ch)
 
 #if USE_WIDEC_SUPPORT
     /*
-     * This is crude & ugly, but works most of the time.  It doesn't handle
-     * linux console's HLINE since the reverse lookup finds S3, which is not
-     * in the console font.  It would be better to change the data in acs_map
-     * so the loop isn't needed.
+     * This is crude & ugly, but works most of the time.  It checks if the
+     * acs_chars string specified that we have a mapping for this character,
+     * and uses the wide-character mapping when we expect the normal one to
+     * be broken (by mis-design ;-).
      */
     if (SP->_screen_acs_fix
+	&& SP->_acs_map != 0
 	&& attr & A_ALTCHARSET
-	&& ch->chars[0] < 256) {
-	chtype ch2 = ch->chars[0] | A_ALTCHARSET;
-	unsigned n;
-	for (n = 32; n < ACS_LEN; ++n) {
-	    if (ch2 == acs_map[n]) {
-		attr &= ~(A_ALTCHARSET);
-		ch = &_nc_wacs[n];
-		break;
-	    }
-	}
+	&& ch->chars[0] < ACS_LEN
+	&& SP->_acs_map[ch->chars[0]] & A_ALTCHARSET) {
+	attr &= ~(A_ALTCHARSET);
+	ch = &_nc_wacs[ch->chars[0]];
     }
 #endif
     if (tilde_glitch && (CharOfD(ch) == L('~'))) {
@@ -963,7 +958,7 @@ ClrBottom(int total)
     int col;
     int top = total;
     int last = min(screen_columns, newscr->_maxx + 1);
-    NCURSES_CH_T blank = ClrBlank(stdscr);
+    NCURSES_CH_T blank = newscr->_line[total-1].text[last-1];
     bool ok;
 
     if (clr_eos && can_clear_with(CHREF(blank))) {
@@ -1682,13 +1677,13 @@ _nc_scrolln(int n, int top, int bot, int maxy)
 		&& save_cursor && restore_cursor) {
 		cursor_saved = TRUE;
 		TPUTS_TRACE("save_cursor");
-		tputs(save_cursor, 0, _nc_outch);
+		putp(save_cursor);
 	    }
 	    TPUTS_TRACE("change_scroll_region");
-	    tputs(tparm(change_scroll_region, top, bot), 0, _nc_outch);
+	    tputs(tparm(change_scroll_region, top, bot), bot + 1 - top, _nc_outch);
 	    if (cursor_saved) {
 		TPUTS_TRACE("restore_cursor");
-		tputs(restore_cursor, 0, _nc_outch);
+		putp(restore_cursor);
 	    } else {
 		SP->_cursrow = SP->_curscol = -1;
 	    }
@@ -1696,7 +1691,7 @@ _nc_scrolln(int n, int top, int bot, int maxy)
 	    res = scroll_csr_forward(n, top, bot, top, bot, blank);
 
 	    TPUTS_TRACE("change_scroll_region");
-	    tputs(tparm(change_scroll_region, 0, maxy), 0, _nc_outch);
+	    tputs(tparm(change_scroll_region, 0, maxy), maxy, _nc_outch);
 	    SP->_cursrow = SP->_curscol = -1;
 	}
 
@@ -1710,7 +1705,7 @@ _nc_scrolln(int n, int top, int bot, int maxy)
 	    && (non_dest_scroll_region || (memory_below && bot == maxy))) {
 	    NCURSES_CH_T blank2 = NewChar(BLANK_TEXT);
 	    if (bot == maxy && clr_eos) {
-		GoTo(bot - n, 0);
+		GoTo(bot - n + 1, 0);
 		ClrToEOS(blank2);
 	    } else {
 		for (i = 0; i < n; i++) {
@@ -1728,13 +1723,13 @@ _nc_scrolln(int n, int top, int bot, int maxy)
 		&& save_cursor && restore_cursor) {
 		cursor_saved = TRUE;
 		TPUTS_TRACE("save_cursor");
-		tputs(save_cursor, 0, _nc_outch);
+		putp(save_cursor);
 	    }
 	    TPUTS_TRACE("change_scroll_region");
-	    tputs(tparm(change_scroll_region, top, bot), 0, _nc_outch);
+	    tputs(tparm(change_scroll_region, top, bot), bot + 1 - top, _nc_outch);
 	    if (cursor_saved) {
 		TPUTS_TRACE("restore_cursor");
-		tputs(restore_cursor, 0, _nc_outch);
+		putp(restore_cursor);
 	    } else {
 		SP->_cursrow = SP->_curscol = -1;
 	    }
@@ -1742,7 +1737,7 @@ _nc_scrolln(int n, int top, int bot, int maxy)
 	    res = scroll_csr_backward(-n, top, bot, top, bot, blank);
 
 	    TPUTS_TRACE("change_scroll_region");
-	    tputs(tparm(change_scroll_region, 0, maxy), 0, _nc_outch);
+	    tputs(tparm(change_scroll_region, 0, maxy), maxy, _nc_outch);
 	    SP->_cursrow = SP->_curscol = -1;
 	}
 

@@ -39,7 +39,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.43 2002/09/28 12:37:03 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.44 2002/12/28 16:15:20 tom Exp $")
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
@@ -146,7 +146,7 @@ _nc_altcharset_name(attr_t attr, chtype ch)
 {
     const char *result = 0;
 
-    if (attr & A_ALTCHARSET) {
+    if ((attr & A_ALTCHARSET) && (acs_chars != 0)) {
 	char *cp;
 	char *found = 0;
 	static const struct {
