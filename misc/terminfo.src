@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2000/09/16 22:52:17 $
+#	$Date: 2000/09/17 16:36:05 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -3187,6 +3187,8 @@ eterm|gnu emacs term.el terminal emulation,
 #      G0   (bool)  Terminal can deal with ISO 2022  font  selection sequences.
 #      AX   (bool)  Does  understand ANSI set default fg/bg color
 #                   (\E[39m / \E[49m).
+#      S0   (str)   Switch charset 'G0' to the specified charset.
+#      E0   (str)   Switch charset 'G0' back to standard charset.
 screen|VT 100/ANSI X3.64 virtual terminal, 
 	OTbs, OTpt, am, km, mir, msgr, xenl, G0, 
 	colors#8, cols#80, it#8, lines#24, pairs#64, 
@@ -3207,8 +3209,8 @@ screen|VT 100/ANSI X3.64 virtual terminal,
 	kpp=\E[5~, nel=\EE, rc=\E8, rev=\E[7m, ri=\EM, rmacs=^O, 
 	rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[23m, rmul=\E[24m, 
 	rs2=\Ec, sc=\E7, sgr0=\E[m, smacs=^N, smir=\E[4h, 
-	smkx=\E[?1h\E=, smso=\E[3m, smul=\E[4m, tbc=\E[3g, 
-	use=ecma+color, 
+	smkx=\E[?1h\E=, smso=\E[3m, smul=\E[4m, tbc=\E[3g, E0=\E(B, 
+	S0=\E(%p1%c, use=ecma+color, 
 
 screen-w|VT 100/ANSI X3.64 virtual terminal with 132 cols, 
 	cols#132, use=screen, 
@@ -18585,6 +18587,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add Matrix Orbital entries by Eric Z. Ayers).
 #	* add xterm-basic, xterm-sco entries, update related entries to XFree86
 #	  4.0.1c -TD
+#
+# 2000-09-17
+#	* add S0, E0 extensions to screen's entry -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

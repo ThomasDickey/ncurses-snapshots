@@ -42,7 +42,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.43 2000/09/16 21:24:24 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.44 2000/09/17 16:23:24 tom Exp $")
 
 /*
  *	char *
@@ -235,7 +235,7 @@ spop(void)
 static inline const char *
 parse_format(const char *s, char *format, int *len)
 {
-    char *base = format;
+    const char *base = s;
     bool done = FALSE;
     bool allowminus = FALSE;
     bool dot = FALSE;
@@ -256,9 +256,12 @@ parse_format(const char *s, char *format, int *len)
 	    done = TRUE;
 	    break;
 	case '.':
-	    if (!is_tgoto || (format != base)) {
+	    if (!is_tgoto || (s != base)) {
 		*format++ = *s++;
 		dot = TRUE;
+	    } else {
+		*format++ = 'c';
+		done = TRUE;
 	    }
 	    break;
 	case '#':
@@ -737,7 +740,7 @@ tgoto(const char *string, int x, int y)
 {
     char *result;
 
-    T((T_CALLED("tgoto(%s,%d,%d)"), string, x, y));
+    T((T_CALLED("tgoto(%s, %d, %d)"), string, x, y));
     is_tgoto = TRUE;
     result = tparm((NCURSES_CONST char *) string, y, x);
     is_tgoto = FALSE;
