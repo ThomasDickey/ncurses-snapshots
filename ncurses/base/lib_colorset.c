@@ -27,7 +27,7 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1998              *
+ *  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1998                  *
  ****************************************************************************/
 
 /*
@@ -40,7 +40,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_colorset.c,v 1.3 1998/04/11 23:30:59 tom Exp $")
+MODULE_ID("$Id: lib_colorset.c,v 1.5 1999/05/16 17:13:43 juergen Exp $")
 
 int wcolor_set(WINDOW *win, short color_pair_number, void *opts)
 {

@@ -19,7 +19,7 @@
 ** Boston, MA 02111-1307, USA.
 */
 
-/* $Id: tack.h,v 1.2 1999/05/09 18:10:30 tom Exp $ */
+/* $Id: tack.h,v 1.3 1999/05/17 01:08:14 tom Exp $ */
 
 #ifndef _TACK_H
 #define _TACK_H 1
@@ -272,7 +272,7 @@ extern void print_version(void);
 /* output.c */
 extern void tt_tputs(const char *, int);
 extern void tt_putp(const char *);
-extern void tt_putparm(const char *, int, int, int);
+extern void tt_putparm(NCURSES_CONST char *, int, int, int);
 extern int tc_putp(const char *);
 extern int tc_putch(int);
 extern void putchp(int);
