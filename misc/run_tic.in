@@ -1,6 +1,6 @@
 #!@SHELL@
 ##############################################################################
-# Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -29,7 +29,7 @@
 #
 # Author: Thomas E. Dickey 1996,2000
 #
-# $Id: run_tic.in,v 1.17 2004/07/11 15:11:14 tom Exp $
+# $Id: run_tic.in,v 1.18 2005/03/26 22:57:16 tom Exp $
 # This script is used to install terminfo.src using tic.  We use a script
 # because the path checking is too awkward to do in a makefile.
 #
@@ -73,15 +73,17 @@ else
 SHLIB=
 fi
 
-#
+
 # set another env var that doesn't get reset when `shlib' runs, so `shlib' uses
 # the PATH we just set.
-#
-NEWPATH=$PATH
-export NEWPATH
-PROG_BIN_DIR=${DESTDIR}$bindir
-export PROG_BIN_DIR
+SHLIB_PATH=$PATH
+export SHLIB_PATH
 
+# set a variable to simplify environment update in shlib
+SHLIB_HOST=@host_os@
+export SHLIB_HOST
+
+# don't use user's TERMINFO variable
 TERMINFO=${DESTDIR}$ticdir ; export TERMINFO
 umask 022
 

@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.153 2005/02/05 18:17:35 tom Exp $ */
+/* $Id: curses.h.in,v 1.154 2005/03/27 00:09:46 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -111,7 +111,13 @@
 #undef	NCURSES_CH_T
 #define NCURSES_CH_T @NCURSES_CH_T@
 
+#if @cf_cv_enable_lp64@ && defined(_LP64)
+typedef unsigned chtype;
+typedef unsigned mmask_t;
+#else
 typedef unsigned @cf_cv_typeof_chtype@ chtype;
+typedef unsigned long mmask_t;
+#endif
 
 #include <stdio.h>
 #include <unctrl.h>

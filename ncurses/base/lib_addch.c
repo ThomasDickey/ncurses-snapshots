@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.91 2005/03/20 16:44:50 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.93 2005/03/26 20:04:03 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -155,12 +155,14 @@ fill_cells(WINDOW *win, int count)
 {
     NCURSES_CH_T blank = NewChar2(BLANK_TEXT, BLANK_ATTR);
     int save_x = win->_curx;
+    int save_y = win->_cury;
 
     while (count-- > 0) {
 	if (waddch_literal(win, blank) == ERR)
 	    break;
     }
     win->_curx = save_x;
+    win->_cury = save_y;
 }
 #endif
 
@@ -293,10 +295,10 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 	     * not fit, fill in the remainder of the line with blanks.  and
 	     * move to the next line.
 	     */
-	    if (len > win->_maxx) {
+	    if (len > win->_maxx + 1) {
 		TR(TRACE_VIRTPUT, ("character will not fit"));
 		return ERR;
-	    } else if (x + len > win->_maxx) {
+	    } else if (x + len > win->_maxx + 1) {
 		int count = win->_maxx + 1 - x;
 		TR(TRACE_VIRTPUT, ("fill %d remaining cells", count));
 		fill_cells(win, count);
@@ -475,7 +477,7 @@ _nc_waddch_nosync(WINDOW *win, const NCURSES_CH_T c)
 }
 
 /*
- * The versions below call _nc_synhook().  We wanted to avoid this in the
+ * The versions below call _nc_synchook().  We wanted to avoid this in the
  * version exported for string puts; they'll call _nc_synchook once at end
  * of run.
  */
