@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -43,7 +43,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.49 2000/01/01 16:44:29 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.50 2000/02/13 00:59:39 tom Exp $")
 
 SCREEN *
 set_term(SCREEN * screenp)

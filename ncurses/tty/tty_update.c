@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -71,7 +71,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.124 2000/02/06 01:57:25 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.126 2000/02/13 01:54:02 Alexander.V.Lukyanov Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -949,31 +949,32 @@ chtype	blank  = newscr->_line[total-1].text[last-1]; /* lower right char */
 
 	if ((tstLine == 0) || (last > (int)lenLine)) {
 		tstLine = typeRealloc(chtype, last, tstLine);
-		if (tstLine != 0) {
-			lenLine = last;
-			for (col = 0; col < last; col++)
-				tstLine[col] = blank;
-		}
+		if (tstLine == 0)
+		    return total;
+		lenLine = last;
+		tstLine[0] = ~blank; /* force the fill below */
+	}
+	if (tstLine[0] != blank) {
+		for (col = 0; col < lenLine; col++)
+			tstLine[col] = blank;
 	}
 
-	if (tstLine != 0) {
-		for (row = total-1; row >= 0; row--) {
-			if (memcmp(tstLine, newscr->_line[row].text, length))
-				break;
-			if (memcmp(tstLine, curscr->_line[row].text, length))
-				top = row;
-		}
+	for (row = total-1; row >= 0; row--) {
+		if (memcmp(tstLine, newscr->_line[row].text, length))
+			break;
+		if (memcmp(tstLine, curscr->_line[row].text, length))
+			top = row;
+	}
 
-		/* don't use clr_eos for just one line if clr_eol available */
-		if (top < total-1 || (top < total && !clr_eol && !clr_bol)) {
-			GoTo(top,0);
-			ClrToEOS(blank);
-			total = top;
-			if (SP->oldhash && SP->newhash)
-			{
-				for (row = top; row < screen_lines; row++)
-					SP->oldhash[row] = SP->newhash[row];
-			}
+	/* don't use clr_eos for just one line if clr_eol available */
+	if (top < total-1 || (top < total && !clr_eol && !clr_bol)) {
+		GoTo(top,0);
+		ClrToEOS(blank);
+		total = top;
+		if (SP->oldhash && SP->newhash)
+		{
+			for (row = top; row < screen_lines; row++)
+				SP->oldhash[row] = SP->newhash[row];
 		}
 	}
 #if NO_LEAKS

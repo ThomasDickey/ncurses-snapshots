@@ -1,10 +1,22 @@
--- $Id: NEWS,v 1.530 2000/02/06 03:34:32 tom Exp $
+-- $Id: NEWS,v 1.531 2000/02/13 02:20:41 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000212
+	+ corrected form of recent copyright dates.
+	+ minor corrections to xterm-xf86-v333 terminfo entry -TD
+	> patches by Alexander Lukyanov:
+	+ reworded dft_fgbg.3x to avoid assuming that the terminal's default
+	  colors are white on black.
+	+ fix initialization of tstLine so that it is filled with current blank
+	  character in any case.  Previously it was possible to have it filled
+	  with old blank.  The wrong over-optimization was introduced in 991002
+	  patch.  (it is not very critical as the only bad effect is not using
+	  clr_eos for clearing if blank has changed).
 
 20000205
 	+ minor corrections/updates to several terminfo entries: rxvt-basic,

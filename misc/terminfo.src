@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2000/02/06 03:29:26 $
+#	$Date: 2000/02/13 00:52:31 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2295,13 +2295,13 @@ xterm-xf86-v33|xterm terminal emulator (XFree86 3.3 Window System),
 # This version was released in XFree86 3.3.3 (November 1998).
 # Besides providing printer support, it exploits a new feature that allows
 # xterm to use terminfo-based descriptions with the titeInhibit resource.
+# -- the distribution contained incorrect khome/kend values -TD
 xterm-xf86-v333|xterm terminal emulator (XFree86 3.3.3 Window System), 
 	mc5i, 
 	blink=\E[5m, ich1@, invis=\E[8m, 
-	is2=\E[!p\E[?3;4l\E[4l\E>, kdch1=\E[3~, kend=\E[4~, 
-	kfnd@, khome=\E[1~, kslt@, mc0=\E[i, mc4=\E[4i, mc5=\E[5i, 
-	rmcup=\E[?1047l\E[?1048l, rs1=\Ec, 
-	rs2=\E[!p\E[?3;4l\E[4l\E>, 
+	is2=\E[!p\E[?3;4l\E[4l\E>, kdch1=\E[3~, kfnd@, kslt@, 
+	mc0=\E[i, mc4=\E[4i, mc5=\E[5i, rmcup=\E[?1047l\E[?1048l, 
+	rs1=\Ec, rs2=\E[!p\E[?3;4l\E[4l\E>, 
 	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;%?%p7%t;8%;m%?%p9%t\016%e\017%;, 
 	smcup=\E[?1048h\E[?1047h, 
 	use=xterm-xf86-v33, 
@@ -17497,6 +17497,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  with kf10 -TD
 #	* updated xterm-xf86-v40, making kdch1 correspond to vt220 'Remove',
 #	  and adding kcbt -TD
+#
+# 2000/1/12
+#	* remove incorrect khome/kend from xterm-xf86-v333, which was based on
+#	  nonstandard resource settings -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

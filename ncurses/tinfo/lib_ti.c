@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -36,7 +36,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_ti.c,v 1.19 2000/01/15 20:47:37 tom Exp $")
+MODULE_ID("$Id: lib_ti.c,v 1.20 2000/02/13 01:01:26 tom Exp $")
 
 int
 tigetflag(NCURSES_CONST char *str)
