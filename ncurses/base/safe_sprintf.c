@@ -33,7 +33,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: safe_sprintf.c,v 1.15 2003/02/09 00:40:33 tom Exp $")
+MODULE_ID("$Id: safe_sprintf.c,v 1.18 2003/08/09 21:52:04 tom Exp $")
 
 #if USE_SAFE_SPRINTF
 
@@ -56,10 +56,13 @@ _nc_printf_length(const char *fmt, va_list ap)
     char *buffer;
     char *format;
     int len = 0;
+    size_t fmt_len;
+    char fmt_arg[BUFSIZ];
 
     if (fmt == 0 || *fmt == '\0')
-	return -1;
-    if ((format = typeMalloc(char, strlen(fmt) + 1)) == 0)
+	return 0;
+    fmt_len = strlen(fmt) + 1;
+    if ((format = typeMalloc(char, fmt_len)) == 0)
 	  return -1;
     if ((buffer = typeMalloc(char, length)) == 0) {
 	free(format);
@@ -106,7 +109,12 @@ _nc_printf_length(const char *fmt, va_list ap)
 		    } else if (state == Prec) {
 			prec = ival;
 		    }
-		    sprintf(&format[--f], "%d", ival);
+		    sprintf(fmt_arg, "%d", ival);
+		    fmt_len += strlen(fmt_arg);
+		    if ((format = realloc(format, fmt_len)) == 0) {
+			return -1;
+		    }
+		    strcpy(&format[--f], fmt_arg);
 		    f = strlen(format);
 		} else if (isalpha(UChar(*fmt))) {
 		    done = TRUE;
@@ -207,19 +215,22 @@ _nc_printf_string(const char *fmt, va_list ap)
 {
     static char *buf;
     static size_t used;
+    char *result = 0;
 
     if (fmt != 0) {
 #if USE_SAFE_SPRINTF
 	int len = _nc_printf_length(fmt, ap);
 
-	if (len > 0) {
-	    if ((int)used < len + 1) {
-		used = len + 1;
-		buf = typeRealloc(char, used, buf);
-	    }
-	    if (buf != 0) {
+	if ((int) used < len + 1) {
+	    used = 2 * (len + 1);
+	    buf = typeRealloc(char, used, buf);
+	}
+	if (buf != 0) {
+	    *buf = '\0';
+	    if (len >= 0) {
 		vsprintf(buf, fmt, ap);
 	    }
+	    result = buf;
 	}
 #else
 	static int rows, cols;
@@ -239,12 +250,13 @@ _nc_printf_string(const char *fmt, va_list ap)
 # else
 	    vsprintf(buf, fmt, ap);	/* ANSI */
 # endif
+	    result = buf;
 	}
 #endif
-    } else if (buf != 0) {
+    } else if (buf != 0) {	/* see _nc_freeall() */
 	free(buf);
 	buf = 0;
 	used = 0;
     }
-    return buf;
+    return result;
 }

@@ -43,13 +43,43 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: free_ttype.c,v 1.9 2003/02/15 19:36:45 tom Exp $")
+MODULE_ID("$Id: free_ttype.c,v 1.10 2003/08/09 21:22:03 tom Exp $")
 
 NCURSES_EXPORT(void)
 _nc_free_termtype(TERMTYPE * ptr)
 {
     T(("_nc_free_termtype(%s)", ptr->term_names));
 
+    if (ptr->str_table == 0
+	|| (ptr->term_names < ptr->str_table
+	    || ptr->term_names >= ptr->str_table + MAX_ENTRY_SIZE)) {
+	FreeIfNeeded(ptr->term_names);
+    }
+#if NO_LEAKS
+    else {
+	if (ptr->str_table != 0
+	    && (ptr->term_names < ptr->str_table + MAX_ENTRY_SIZE)) {
+	    int j;
+	    char *last = ptr->str_table;
+	    /*
+	     * We should have saved the entry-size someplace.  Too late,
+	     * but this is useful for the memory-leak checking, though more
+	     * work/time than should be in the normal library.
+	     */
+	    for (j = 0; j < NUM_STRINGS(ptr); j++) {
+		char *s = ptr->Strings[j];
+		if (VALID_STRING(s)) {
+		    char *t = s + strlen(s) + 1;
+		    if (t > last)
+			last = t;
+		}
+	    }
+	    if (last < ptr->term_names) {
+		FreeIfNeeded(ptr->term_names);
+	    }
+	}
+    }
+#endif
     FreeIfNeeded(ptr->str_table);
     FreeIfNeeded(ptr->Booleans);
     FreeIfNeeded(ptr->Numbers);

@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.761 2003/08/03 01:00:02 tom Exp $
+-- $Id: NEWS,v 1.762 2003/08/09 21:59:25 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030809
+	+ fix a small memory leak in _nc_free_termtype().
+	+ close trace-file if trace() is called with a zero parameter.
+	+ free memory allocated for soft-key strings, in delscreen().
+	+ fix an allocation size in safe_sprintf.c for the "*" format code.
+	+ correct safe_sprintf.c to not return a null pointer if the format
+	  happens to be an empty string.  This applies to the "configure
+	  --enable-safe-sprintf" option (Redhat #101486).
 
 20030802
 	+ modify casts used for ABSENT_BOOLEAN and CANCELLED_BOOLEAN (report by
