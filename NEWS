@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.728 2003/01/12 01:55:48 tom Exp $
+-- $Id: NEWS,v 1.729 2003/01/19 01:13:31 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030118
+	+ revert 20030105 change to can_clear_with(), does not work for the
+	  case where the update is made on cells which are blanks with
+	  attributes, e.g., reverse.
+	+ improve ifdef's to guard against redefinition of wchar_t and wint_t
+	  in curses.h (report by Urs Jansen).
 
 20030111
 	+ improve mvcur() by checking if it is safe to move when video
