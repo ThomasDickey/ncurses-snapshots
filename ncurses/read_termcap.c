@@ -61,7 +61,9 @@
 #include <fcntl.h>
 #endif
 
-MODULE_ID("$Id: read_termcap.c,v 1.27 1998/02/11 12:13:58 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.29 1998/03/21 18:08:53 tom Exp $")
+
+#ifndef PURE_TERMINFO
 
 #ifdef __EMX__
 #define is_pathname(s) ((((s) != 0) && ((s)[0] == '/')) \
@@ -1095,3 +1097,7 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 	_nc_free_entries(_nc_head);
 	return(found);
 }
+#else
+extern	void _nc_read_termcap(void);
+	void _nc_read_termcap(void) { }
+#endif	/* PURE_TERMINFO */

@@ -37,17 +37,14 @@
  *	lib_traceatr.c - Tracing/Debugging routines (attributes)
  */
 
-#ifndef TRACE
-#define TRACE			/* turn on internal defs for this module */
-#endif
-
 #include <curses.priv.h>
 #include <term.h>	/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.25 1998/02/11 12:14:00 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.28 1998/03/21 18:39:36 tom Exp $")
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
+#ifdef TRACE
 char *_traceattr2(int bufnum, attr_t newmode)
 {
 char	*buf = _nc_trace_buf(bufnum, BUFSIZ);
@@ -215,3 +212,7 @@ char *_tracechtype(chtype ch)
 {
 	return _tracechtype2(0, ch);
 }
+#else
+extern	void _nc_lib_traceatr(void);
+	void _nc_lib_traceatr(void) { }
+#endif /* TRACE */

@@ -39,7 +39,7 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <term.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.17 1998/02/11 12:13:54 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.18 1998/03/21 23:30:52 tom Exp $")
 
 /*
    some of the code in here was contributed by:
@@ -49,7 +49,7 @@ MODULE_ID("$Id: lib_termcap.c,v 1.17 1998/02/11 12:13:54 tom Exp $")
 char PC;
 char *UP;
 char *BC;
-short ospeed;
+speed_t ospeed;
 
 /***************************************************************************
  *

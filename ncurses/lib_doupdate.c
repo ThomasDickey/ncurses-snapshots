@@ -75,7 +75,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.98 1998/02/11 12:14:00 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.99 1998/03/21 22:51:19 Alexander.V.Lukyanov Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -761,10 +761,13 @@ struct tms before, after;
 	for (i = nonempty; i <= curscr->_maxy; i++)
 		MARK_NOCHANGE(curscr,i)
 
-	curscr->_curx = newscr->_curx;
-	curscr->_cury = newscr->_cury;
+	if (!newscr->_leaveok)
+	{
+		curscr->_curx = newscr->_curx;
+		curscr->_cury = newscr->_cury;
 
-	GoTo(curscr->_cury, curscr->_curx);
+		GoTo(curscr->_cury, curscr->_curx);
+	}
 
     cleanup:
 	/*

@@ -49,7 +49,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.30 1998/02/11 12:14:00 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.31 1998/03/15 17:16:25 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -374,6 +374,8 @@ start_token:
 	} /* end else (ch != EOF) */
 
 end_of_token:
+
+#ifdef TRACE
 	if (dot_flag == TRUE)
 	    DEBUG(8, ("Commented out "));
 
@@ -418,6 +420,7 @@ end_of_token:
 		    _nc_warning("Bad token type");
 	    }
 	}
+#endif
 
 	if (dot_flag == TRUE)		/* if commented out, use the next one */
 	    type = _nc_get_token();

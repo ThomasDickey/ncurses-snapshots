@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.46 1998/02/11 12:13:57 tom Exp $
+# $Id: Makefile.in,v 1.48 1998/03/21 20:21:07 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -99,7 +99,10 @@ LINK		= $(CC)
 LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@
 
 SHLIB_LIST	= @SHLIB_LIST@
+TINFO_LIST	= @TINFO_LIST@
+
 MK_SHARED_LIB	= @MK_SHARED_LIB@
+
 REL_VERSION	= @cf_cv_rel_version@
 ABI_VERSION	= @cf_cv_abi_version@
 

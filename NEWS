@@ -1,10 +1,34 @@
--- $Id: NEWS,v 1.321 1998/03/15 00:44:43 tom Exp $
+-- $Id: NEWS,v 1.324 1998/03/21 23:20:30 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980321
+	+ revise configure macro CF_SPEED_TYPE so that termcap.h has speed_t
+	  declared (from Adam J. Richter <adam@yggdrasil.com>)
+	+ remove spurious curs_set() call from leaveok() (J.T.Conklin).
+	+ corrected handling leaveok() in doupdate() (patch by Alexander V.
+	  Lukyanov).
+	+ improved version of wredrawln (patch by Alexander V. Lukyanov).
+	+ correct c++/Makefile.in so install target do not have embedded ../lib
+	  to confuse it (patch by Thomas Graf <graf@essi.fr>).
+	+ add warning to preinstall rule which checks if the installer would
+	  overwrite a curses.h or termcap.h that is not derived from ncurses.
+	  (The recommended configuration for developers who need both is to
+	  use --disable-overwrite).
+	+ modify preinstall rule in top-level Makefile to avoid implicit
+	  use of 'sh', to accommodate Ultrix 4.4 (reported by Joao Palhoto
+	  Matos <jmatos@math.ist.utl.pt>, patch by Thomas Esser
+	  <te@informatik.uni-hannover.de>)
+	+ refine ifdef's for TRACE so that libncurses has fewer dependencies
+	  on libtinfo when TRACE is disabled.
+	+ modify configure script so that if the --with-termlib option is used
+	  to generate a separate terminfo library, we chain it to the ncurses
+	  library with a "-l" option (reported by Darryl Miles and Ian T.
+	  Zimmerman).
 
 980314
 	+ correct limits and window in wredrawln function (reported/analysis by 

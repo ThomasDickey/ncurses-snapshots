@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.101 1998/02/11 12:13:57 tom Exp $
+ * $Id: curses.priv.h,v 1.102 1998/03/21 17:52:50 tom Exp $
  *
  *	curses.priv.h
  *
@@ -449,8 +449,6 @@ extern WINDOW * _nc_retrace_win(WINDOW *);
 extern attr_t _nc_retrace_attr_t(attr_t);
 extern char *_nc_retrace_ptr(char *);
 extern const char *_nc_tputs_trace;
-extern const char *_nc_visbuf(const char *);
-extern const char *_nc_visbuf2(int, const char *);
 extern int _nc_retrace_int(int);
 extern long _nc_outchars;
 extern void _nc_fifo_dump(void);
@@ -464,6 +462,9 @@ extern void _nc_fifo_dump(void);
 #define returnVoid       return
 #define returnWin(code)  return code
 #endif
+
+extern const char *_nc_visbuf(const char *);
+extern const char *_nc_visbuf2(int, const char *);
 
 #define _trace_key(ch) ((ch > KEY_MIN) ? keyname(ch) : _tracechar((unsigned char)ch))
 

@@ -40,13 +40,13 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_colorset.c,v 1.1 1998/03/11 19:26:28 juergen Exp $")
+MODULE_ID("$Id: lib_colorset.c,v 1.2 1998/03/21 23:30:36 tom Exp $")
 
 int wcolor_set(WINDOW *win, short color_pair_number, void *opts)
 {
 	T((T_CALLED("wcolor_set(%p,%d)"), win, color_pair_number));
 	if (win && !opts && (color_pair_number >= 0) && (color_pair_number < COLOR_PAIRS)) {
-		T(("... current %d", PAIR_NUMBER(win->_attrs)));
+		T(("... current %ld", PAIR_NUMBER(win->_attrs)));
 		toggle_attr_on(win->_attrs,COLOR_PAIR(color_pair_number));
 		returnCode(OK);
 	} else

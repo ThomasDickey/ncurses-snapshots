@@ -41,7 +41,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_leaveok.c,v 1.2 1998/02/11 12:14:01 tom Exp $")
+MODULE_ID("$Id: lib_leaveok.c,v 1.3 1998/03/21 22:54:20 jtc Exp $")
 
 int leaveok(WINDOW *win, bool flag)
 {
@@ -49,10 +49,6 @@ int leaveok(WINDOW *win, bool flag)
 
 	if (win) {
 	  win->_leaveok = flag;
-	  if (flag == TRUE)
-	    curs_set(0);
-	  else
-	    curs_set(1);
 	  returnCode(OK);
 	}
 	else

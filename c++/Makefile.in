@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.42 1998/02/19 16:54:54 florian Exp $
+# $Id: Makefile.in,v 1.44 1998/03/21 23:41:29 Thomas.Graf Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -56,7 +56,7 @@ CXXFLAGS	= @CXXFLAGS@
 CXXLIBS		= @CXXLIBS@
 
 INCDIR		= ../include
-CPPFLAGS	= -I../c++ -I$(INCDIR) -I$(srcdir) -DHAVE_CONFIG_H @CPPFLAGS@ 
+CPPFLAGS	= -I../c++ -I$(INCDIR) -I$(srcdir) -DHAVE_CONFIG_H @CPPFLAGS@
 
 CCFLAGS		= $(CPPFLAGS) $(CXXFLAGS)
 
@@ -73,7 +73,7 @@ ABI_VERSION	= @cf_cv_abi_version@
 LINK		= $(CXX)
 
 LIBROOT	= ncurses++
-LIBNAME	= ../lib/lib$(LIBROOT).a
+LIBNAME	= lib$(LIBROOT).a
 
 LDFLAGS		= @EXTRA_LDFLAGS@ -L../lib -L$(libdir) \
 	-l$(LIBROOT) \
@@ -90,7 +90,7 @@ LDFLAGS_DEFAULT	= $(LDFLAGS_@DFT_UPR_MODEL@)
 AUTO_SRC	= \
 		etip.h
 
-all:		$(AUTO_SRC) $(LIBNAME) demo
+all:		$(AUTO_SRC) ../lib/$(LIBNAME) demo
 
 sources :	$(AUTO_SRC)
 
@@ -106,7 +106,7 @@ LIB_OBJS = \
 	$(MODEL)/cursesapp.o \
 	$(MODEL)/cursesmain.o
 
-$(LIBNAME) : $(LIB_OBJS)
+../lib/$(LIBNAME) : $(LIB_OBJS)
 	$(AR) $(AR_OPTS) $@ $?
 	$(RANLIB) $@
 
@@ -116,7 +116,7 @@ $(MODEL)/demo.o : $(srcdir)/demo.cc \
 	$(cursesf_h) $(cursesm_h) $(cursesapp_h)
 
 demo:	$(OBJS_DEMO) \
-	$(LIBNAME)  \
+	../lib/$(LIBNAME)  \
 	@TEST_DEPS@
 	@ECHO_LINK@ $(LINK) -o $@ $(OBJS_DEMO) $(LDFLAGS_DEFAULT)
 
@@ -128,8 +128,8 @@ $(INSTALL_PREFIX)$(libdir) :
 	$(srcdir)/../mkinstalldirs $@
 
 install \
-install.libs:: $(LIBNAME) $(INSTALL_PREFIX)$(libdir)
-	$(INSTALL) $(LIBNAME) $(INSTALL_PREFIX)$(libdir)/$(LIBNAME)
+install.libs:: ../lib/$(LIBNAME) $(INSTALL_PREFIX)$(libdir)
+	$(INSTALL) ../lib/$(LIBNAME) $(INSTALL_PREFIX)$(libdir)/$(LIBNAME)
 
 uninstall \
 uninstall.libs::
@@ -139,7 +139,7 @@ mostlyclean ::
 	-rm -f core tags TAGS *~ *.ln *.atac trace
 
 clean :: mostlyclean
-	-rm -f demo $(AUTO_SRC) $(LIBNAME) $(LIB_OBJS) $(OBJS_DEMO)
+	-rm -f demo $(AUTO_SRC) ../lib/$(LIBNAME) $(LIB_OBJS) $(OBJS_DEMO)
 
 distclean :: clean
 	-rm -f Makefile

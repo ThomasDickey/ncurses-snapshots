@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.121 1998/02/11 12:13:40 tom Exp $
+dnl $Id: aclocal.m4,v 1.124 1998/03/21 23:18:57 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -525,7 +525,7 @@ do
 				;;
 			*) #(vi
 				cf_item=`echo $cf_libs_to_make |sed -e s/$LIB_NAME/$TINFO_NAME/g`
-				cf_libs_to_make="$cf_libs_to_make $cf_item"
+				cf_libs_to_make="$cf_item $cf_libs_to_make"
 				;;
 			esac
 		fi
@@ -1201,7 +1201,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 	linux*)
 		# tested with Linux 2.0.29 and gcc 2.7.2 (ELF)
 		CC_SHARED_OPTS='-fPIC'
- 		MK_SHARED_LIB='gcc -o $[@].$(REL_VERSION) -L../lib -L\$(libdir) -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)`,-stats,$(SHLIB_LIST)-lc'
+ 		MK_SHARED_LIB='gcc -o $[@].$(REL_VERSION) -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)`,-stats,-lc'
 		test $cf_cv_ld_rpath = yes && cf_ld_rpath_opt="-Wl,-rpath,"
 		if test $DFT_LWR_MODEL = "shared" ; then
  			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
@@ -1353,19 +1353,24 @@ dnl Check for datatype 'speed_t', which is normally declared via either
 dnl sys/types.h or termios.h
 AC_DEFUN([CF_SPEED_TYPE],
 [
-AC_MSG_CHECKING([for speed_t])
-AC_CACHE_VAL(cf_cv_type_speed_t,[
-	AC_TRY_COMPILE([
-#include <sys/types.h>
-#if HAVE_TERMIOS_H
-#include <termios.h>
-#endif],
-	[speed_t x = 0],
-	[cf_cv_type_speed_t=yes],
-	[cf_cv_type_speed_t=no])
-	])
-AC_MSG_RESULT($cf_cv_type_speed_t)
-test $cf_cv_type_speed_t != yes && AC_DEFINE(speed_t,unsigned)
+AC_MSG_CHECKING(for speed_t) 
+OSPEED_INCLUDES= 
+AC_TRY_COMPILE([#include <sys/types.h>],
+	[speed_t some_variable = 0],
+	[OSPEED_TYPE=speed_t],
+	[OSPEED_TYPE=short])
+AC_TRY_COMPILE([#include <termios.h>],
+	[speed_t some_variable = 0],
+	[OSPEED_TYPE=speed_t 
+	 OSPEED_INCLUDES="#include <termios.h>"],[]) 
+AC_SUBST(OSPEED_TYPE) 
+AC_SUBST(OSPEED_INCLUDES) 
+if test "$OSPEED_TYPE" = "short" ; then 
+	AC_MSG_RESULT(no) 
+	AC_DEFINE(speed_t,unsigned)
+else 
+	AC_MSG_RESULT(yes) 
+fi 
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl For each parameter, test if the source-directory exists, and if it contains

@@ -35,14 +35,11 @@
  *	lib_tracedmp.c - Tracing/Debugging routines
  */
 
-#ifndef TRACE
-#define TRACE			/* turn on internal defs for this module */
-#endif
-
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracedmp.c,v 1.11 1998/02/11 12:14:00 tom Exp $")
+MODULE_ID("$Id: lib_tracedmp.c,v 1.13 1998/03/21 18:39:44 tom Exp $")
 
+#ifdef TRACE
 void _tracedump(const char *name, WINDOW *win)
 {
     int	i, j, n, width;
@@ -125,3 +122,7 @@ void _tracedump(const char *name, WINDOW *win)
 	}
     }
 }
+#else
+extern	void _nc_lib_tracedmp(void);
+	void _nc_lib_tracedmp(void) { }
+#endif /* TRACE */
