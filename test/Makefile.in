@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.73 2003/08/24 00:05:14 tom Exp $
+# $Id: Makefile.in,v 1.74 2003/10/18 20:32:54 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -35,6 +35,8 @@
 .SUFFIXES:
 
 SHELL		= /bin/sh
+
+@SET_MAKE@
 
 x		= @PROG_EXT@
 
@@ -235,6 +237,7 @@ mostlyclean ::
 	-rm -f core tags TAGS *~ *.bak *.i *.ln *.atac trace
 
 clean :: mostlyclean
+	-sh -c "if test -n '$x' ; then $(MAKE) clean x=''; fi"
 	-rm -rf *.o screendump *.lis $(TESTS) .libs
 
 distclean :: clean

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.316 2003/10/04 22:49:27 tom Exp $
+dnl $Id: aclocal.m4,v 1.317 2003/10/18 23:21:04 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1838,7 +1838,7 @@ AC_ARG_WITH(manpage-tbl,
 AC_MSG_RESULT($MANPAGE_TBL)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MAN_PAGES version: 23 updated: 2002/12/21 22:46:07
+dnl CF_MAN_PAGES version: 24 updated: 2003/10/18 18:52:41
 dnl ------------
 dnl Try to determine if the man-pages on the system are compressed, and if
 dnl so, what format is used.  Use this information to construct a script that
@@ -2298,13 +2298,12 @@ make an error
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PROG_EXT version: 8 updated: 2002/12/21 19:25:52
+dnl CF_PROG_EXT version: 9 updated: 2003/10/18 16:36:22
 dnl -----------
 dnl Compute $PROG_EXT, used for non-Unix ports, such as OS/2 EMX.
 AC_DEFUN([CF_PROG_EXT],
 [
 AC_REQUIRE([CF_CHECK_CACHE])
-PROG_EXT=
 case $cf_cv_system_name in
 os2*)
     # We make sure -Zexe is not used -- it would interfere with @PROG_EXT@
@@ -2312,12 +2311,13 @@ os2*)
     CPPFLAGS="$CPPFLAGS -D__ST_MT_ERRNO__"
     CXXFLAGS="$CXXFLAGS -Zmt"
     LDFLAGS=`echo "$LDFLAGS -Zmt -Zcrtdll" | sed -e "s%-Zexe%%g"`
-    PROG_EXT=".exe"
-    ;;
-cygwin*)
-    PROG_EXT=".exe"
     ;;
 esac
+
+AC_EXEEXT
+AC_OBJEXT
+
+PROG_EXT="$EXEEXT"
 AC_SUBST(PROG_EXT)
 test -n "$PROG_EXT" && AC_DEFINE_UNQUOTED(PROG_EXT,"$PROG_EXT")
 ])dnl

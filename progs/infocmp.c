@@ -41,7 +41,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.70 2003/05/24 21:05:47 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.71 2003/10/18 18:01:54 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -1150,6 +1150,19 @@ optarg_to_number(void)
     return (int) value;
 }
 
+static char *
+terminal_env(void)
+{
+    char *terminal;
+
+    if ((terminal = getenv("TERM")) == 0) {
+	(void) fprintf(stderr,
+		       "infocmp: environment variable TERM not set\n");
+	exit(EXIT_FAILURE);
+    }
+    return terminal;
+}
+
 /***************************************************************************
  *
  * Main sequence
@@ -1159,7 +1172,7 @@ optarg_to_number(void)
 int
 main(int argc, char *argv[])
 {
-    char *terminal, *firstdir, *restdir;
+    char *firstdir, *restdir;
     /* Avoid "local data >32k" error with mwcc */
     /* Also avoid overflowing smaller stacks on systems like AmigaOS */
     path *tfile = (path *) malloc(sizeof(path) * MAXTERMS);
@@ -1169,12 +1182,6 @@ main(int argc, char *argv[])
     int initdump = 0;
     bool init_analyze = FALSE;
     bool suppress_untranslatable = FALSE;
-
-    if ((terminal = getenv("TERM")) == 0) {
-	(void) fprintf(stderr,
-		       "infocmp: environment variable TERM not set\n");
-	return EXIT_FAILURE;
-    }
 
     /* where is the terminfo database location going to default to? */
     restdir = firstdir = 0;
@@ -1342,11 +1349,11 @@ main(int argc, char *argv[])
 
     /* make sure we have at least one terminal name to work with */
     if (optind >= argc)
-	argv[argc++] = terminal;
+	argv[argc++] = terminal_env();
 
     /* if user is after a comparison, make sure we have two entries */
     if (compare != C_DEFAULT && optind >= argc - 1)
-	argv[argc++] = terminal;
+	argv[argc++] = terminal_env();
 
     /* exactly two terminal names with no options means do -d */
     if (argc - optind == 2 && compare == C_DEFAULT)

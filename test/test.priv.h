@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.45 2003/04/26 18:23:36 tom Exp $ */
+/* $Id: test.priv.h,v 1.46 2003/10/19 00:04:24 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -125,8 +125,16 @@
 
 #include <signal.h>	/* include before curses.h to work around glibc bug */
 
+#if defined(HAVE_NCURSESW_NCURSES_H)
+#include <ncursesw/curses.h>
+#include <ncursesw/term.h>
+#elif defined(HAVE_NCURSES_NCURSES_H)
+#include <ncurses/curses.h>
+#include <ncurses/term.h>
+#else
 #include <curses.h>
 #include <term.h>
+#endif
 
 #if NCURSES_NOMACROS
 #include <nomacros.h>

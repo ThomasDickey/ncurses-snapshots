@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.29 2003/08/23 23:24:08 tom Exp $
+# $Id: Makefile.in,v 1.30 2003/10/18 22:46:54 tom Exp $
 # Makefile for tack
 #
 # The variable 'srcdir' refers to the source-distribution, and can be set with
@@ -147,6 +147,7 @@ mostlyclean ::
 	-rm -f core tags TAGS *~ *.bak *.i *.atac trace
 
 clean :: mostlyclean
+	-sh -c "if test -n '$x' ; then $(MAKE) clean x=''; fi"
 	-rm -f $(PROGS)
 	-rm -rf .libs
 

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996, etc.
 dnl
-dnl $Id: configure.in,v 1.43 2003/05/17 21:56:58 tom Exp $
+dnl $Id: configure.in,v 1.45 2003/10/19 00:08:23 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -46,6 +46,7 @@ CF_INHERIT_SCRIPT(config.guess)
 CF_INHERIT_SCRIPT(config.sub)
 CF_CHECK_CACHE
 
+AC_PROG_MAKE_SET
 AC_PROG_CC
 AC_PROG_CPP
 
@@ -63,6 +64,9 @@ LDFLAGS_SHARED=""			AC_SUBST(LDFLAGS_SHARED)
 LD_MODEL=""				AC_SUBST(LD_MODEL)
 LD_SHARED_OPTS=""			AC_SUBST(LD_SHARED_OPTS)
 LIBTOOL=""				AC_SUBST(LIBTOOL)
+LIB_CLEAN=""				AC_SUBST(LIB_CLEAN)
+LIB_COMPILE=""				AC_SUBST(LIB_COMPILE)
+LIB_LINK=""				AC_SUBST(LIB_LINK)
 LIB_NAME=curses				AC_SUBST(LIB_NAME)
 LIB_PREFIX="-l"				AC_SUBST(LIB_PREFIX)
 LINK_TESTS=""				AC_SUBST(LINK_TESTS)
@@ -79,6 +83,7 @@ cf_cv_rel_version=""			AC_SUBST(cf_cv_rel_version)
 cf_cv_screen=curses
 cf_cv_libtype=
 
+CF_GNU_SOURCE
 CF_WITH_CURSES_DIR
 
 dnl SunOS 4.x
@@ -112,6 +117,8 @@ ncurses)
 ncursesw)
 	cf_cv_libtype=w
 	CF_UTF8_LIB
+	CF_PREDEFINE(_XOPEN_SOURCE,500)
+	CF_PREDEFINE(_XOPEN_SOURCE_EXTENDED)
 	CF_NCURSES_CPPFLAGS(ncursesw)
 	CF_NCURSES_LIBS(ncursesw)
 	LIB_NAME=ncursesw
