@@ -43,7 +43,7 @@
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.18 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.19 1997/12/14 02:22:49 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 
@@ -489,4 +489,15 @@ static void sanity_check(TERMTYPE *tp)
      ANDMISSING(set_color_pair,              initialize_pair)
 #undef PAIRED
 #undef ANDMISSING
+
+     /*
+      * Some non-curses applications (e.g., jove) get confused if we have both
+      * ich/ich1 and smir/rmir.  Let's be nice and warn about that, too, even
+      * though ncurses handles it.
+      */
+     if (_nc_tracing
+      && (PRESENT(enter_insert_mode) || PRESENT(exit_insert_mode))
+      && (PRESENT(insert_character)  || PRESENT(parm_ich))) {
+	_nc_warning("non-curses applications may be confused by ich/ich1 with smir/rmir");
+     }
 }

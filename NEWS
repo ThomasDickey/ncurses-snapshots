@@ -1,7 +1,16 @@
--- $Id: NEWS,v 1.284 1997/12/06 23:49:35 tom Exp $
+-- $Id: NEWS,v 1.285 1997/12/14 02:24:56 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+971213
+	+ additional fixes for man-pages section-references
+	+ add (for debugging) a check for ich/ich1 conflict with smir/rmir
+	  to tic, etc.
+	+ remove hpa/vpa from rxvt terminal description because they are not
+	  implemented correctly, added sgr0.
+	+ change ncurses 's' to use raw mode, so ^Q works (reported by Rudolf
+	  Leitgeb <leitgeb@leland.stanford.edu>)
 
 971206
 	+ modify protection when installing libraries to (normally) not

@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.107 1997/12/07 01:31:11 tom Exp $
+dnl $Id: aclocal.m4,v 1.108 1997/12/13 17:06:17 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -870,7 +870,7 @@ cat >>man/edit_man.sh <<CF_EOF
 		target="\$source"
 	fi
 	target="$cf_subdir\$section/\$target"
-	sed -e "s,@DATADIR@,\$datadir," < \$i | sed -f edit_man.sed >\$TMP
+	test \$verb = installing && sed -e "s,@DATADIR@,\$datadir," < \$i | sed -f edit_man.sed >\$TMP
 CF_EOF
 fi
 if test \$verb = installing ; then

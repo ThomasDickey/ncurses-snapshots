@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.103 1997/11/29 22:51:34 tom Exp $
+$Id: ncurses.c,v 1.104 1997/12/13 21:40:18 tom Exp $
 
 ***************************************************************************/
 
@@ -2646,6 +2646,7 @@ static void overlap_test(void)
     WINDOW *win1 = newwin(9, 20, 3, 3);
     WINDOW *win2 = newwin(9, 20, 9, 16);
 
+    raw();
     refresh();
     move(0, 0);
     printw("This test shows the behavior of wnoutrefresh() with respect to\n");
