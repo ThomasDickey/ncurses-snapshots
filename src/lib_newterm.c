@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-
+#include "system.h"
 
 /*
 **	lib_newterm.c
@@ -88,7 +87,7 @@ int	errret;
 	SP->_checkfd	= fileno(ifp);
 	typeahead(fileno(ifp));
 	SP->_ofp        = ofp;
-#ifdef TERMIOS
+#if defined(UNIX) && defined(TERMIOS)
 	SP->_use_meta   = ((cur_term->Ottyb.c_cflag & CSIZE) == CS8 &&
 			    !(cur_term->Ottyb.c_iflag & ISTRIP));
 #else

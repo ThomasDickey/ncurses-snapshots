@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-
+#include "system.h"
 
 #include "curses.priv.h"
 #include "term.h"	/* ena_acs, acs_chars */
@@ -37,6 +36,7 @@ void init_acs(void)
 {
 	T(("initializing ACS map"));
 
+#ifdef UNIX
 	/*
 	 * Initializations for a UNIX-like multi-terminal environment.  Use
 	 * ASCII chars and count on the terminfo description to do better.
@@ -66,6 +66,7 @@ void init_acs(void)
 	ACS_BOARD    = ASCII('#');	/* should be board of squares */
 	ACS_LANTERN  = ASCII('#');	/* should be lantern symbol */
 	ACS_BLOCK    = ASCII('#');	/* should be solid square block */
+#endif /* UNIX */
 
 #ifdef __i386__
 	/*

@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,6 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
 
 /*
  *	parse_entry.c -- compile one terminfo or termcap entry
@@ -37,7 +37,9 @@
 #include "term_entry.h"
 #include "parametrized.h"
 
-void set_termcap_defaults(TERMTYPE *);
+struct token	curr_token;
+
+static	void set_termcap_defaults(TERMTYPE *);
 
 /*
  *	int
@@ -245,6 +247,7 @@ static char *C_HT = "\t";
 #undef CUR
 #define CUR tp->
 
+static
 void set_termcap_defaults(TERMTYPE *tp)
 {
     char buf[MAX_LINE * 2 + 2];

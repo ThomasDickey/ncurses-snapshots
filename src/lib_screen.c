@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-
+#include "system.h"
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -72,7 +71,7 @@ WINDOW *getwin(FILE *filep)
 	for (n = 0; n < nwin->_maxy + 1; n++)
 	{
 		(void) fread(nwin->_line[n].text,
-			      sizeof(chtype), nwin->_maxx + 1, filep);
+			      sizeof(chtype), (size_t)(nwin->_maxx + 1), filep);
 		if (ferror(filep))
 		{
 			delwin(nwin);
@@ -95,7 +94,7 @@ int putwin(WINDOW *win, FILE *filep)
 	for (n = 0; n < win->_maxy + 1; n++)
 	{
 		(void) fwrite(win->_line[n].text,
-			      sizeof(chtype), win->_maxx + 1, filep);
+			      sizeof(chtype), (size_t)(win->_maxx + 1), filep);
 		if (ferror(filep))
 			return(ERR);
 	}

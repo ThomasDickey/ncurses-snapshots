@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,6 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
 
 /*
  * Terminal setup routines:
@@ -41,11 +41,13 @@
  *
  ****************************************************************************/
 
-#ifndef SUNIOCTL
+#if !defined(sun) || !defined(HAVE_TERMIOS_H)
 #include <sys/ioctl.h>
 #endif
 
 static int _use_env = TRUE;
+
+static void do_prototype(void);
 
 void use_env(bool f)
 {
@@ -56,20 +58,20 @@ int LINES, COLS;
 
 static int resize(int fd)
 {
-#ifndef BROKEN_TIOCGWINSZ
+#if defined(TIOCGWINSZ) && !defined(BROKEN_TIOCGWINSZ)
 struct winsize size;
 
 	if (ioctl(fd, TIOCGWINSZ, &size) < 0) {
 		perror("TIOCGWINSZ");
-		return 1;
+		return TRUE;
 	}
 	LINES = size.ws_row;
 	COLS = size.ws_col;
 	if (LINES == 0 || COLS == 0)
-		return 1;
-	return 0;
+		return TRUE;
+	return FALSE;
 #else
-	return 1;
+	return TRUE;
 #endif
 }
 
@@ -123,10 +125,20 @@ char 		*rows, *cols;
  *
  ****************************************************************************/
 
-#ifndef BSDTABS
-#define tabs TAB3
+#undef tabs
+
+#ifdef TAB3
+# define tabs TAB3
 #else
-#define tabs OXTABS
+# ifdef XTABS
+#  define tabs XTABS
+# else
+#  ifdef OXTABS
+#   define tabs OXTABS
+#  else
+#   define tabs 0
+#  endif
+# endif
 #endif
  
 int def_shell_mode()
@@ -221,7 +233,6 @@ char ttytype[NAMESIZE];
 int setupterm(char *termname, int Filedes, int *errret)
 {
 struct term	*term_ptr;
-static void do_prototype(void);
 
 	T(("setupterm(%s,%d,%p) called", termname, Filedes, errret));
 

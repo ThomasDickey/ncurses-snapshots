@@ -22,17 +22,24 @@ You will need the following in order to build and install ncurses under UNIX:
 
 INSTALLATION PROCEDURE:
 
-1.  Change directory to src/, run Configure.
-    
-    Tell it the OS you are using.  It will create your Makefile.
-    If your operating system is not supported, read the PORTABILITY section
-    in the file src/README for information on how to create a configuration
-    file for your system.
+1.  Decide where you want to put the object files of terminal descriptions. 
+    The default is /usr/share/terminfo.  If your system already has a terminfo
+    database, you can put it somewhere else.  Keep in mind that this directory
+    should probably be in your root filesystem so that programs which use
+    terminfo can be used even when the system is only up single-user.
 
-2.  Decide where you want to put the object files of terminal descriptions.
+    The --prefix option to configure changes the root directory for installing
+    ncurses; the default is in subdirectories of /usr:
 
-    This step may not be necessary if your operating system is
-    one of those supported by Configure.
+    bin - tic, infocmp, clear, tput
+    lib - lib?curses.a
+    share - compiled terminal descriptions
+    man - man pages
+    include - C header files
+
+    If you want to put the terminal descriptions in, for example,
+    /usr/lib/terminfo, you can either make that a symbolic link to
+    /usr/share/terminfo, or type 'make datadir=/usr/lib'.
 
     On my system (and I recommend it for you), the directory /usr/lib/terminfo
     is used.  If your system already has a terminfo database and you want to
@@ -41,45 +48,51 @@ INSTALLATION PROCEDURE:
     Remember, this is not where the C language source code to the library will
     go; this is where the actual binary terminal descriptions will go.
 
-    To use a non-default location, you'll need to do these steps (skip these
-    if you're being reasonable or lazy):
+    To use a non-default location, you'll need to do these steps (skip these if
+    you're being reasonable or lazy):
 
-	a. Keep in mind that this directory should probably be
-	   in your root filesystem so that programs which use terminfo
-	   can be used even when the system is only up single-user.
+	a.  Keep in mind that this directory should probably be in your root
+	    filesystem so that programs which use terminfo can be used even
+	    when the system is only up single-user.
 
-	b. Change the value of the entry for TERMINFO in src/matrix
-	   to the name of the directory you've chosen.
+	b.  Change the value of the entry for TERMINFO in src/Makefile (after
+	    running 'configure') to the name of the directory you've chosen.
 
-	c. Return to step 1 (running Configure).
+2.  Type 'configure' to configure ncurses for your operating system and create
+    the Makefiles.  You can optionally give configure options, such as
+    '--prefix=/usr/local'.  Use `configure --help' to list the available
+    options.
 
-2.  Read and (if necessary) edit src/Makefile to suit your local setup.
+    It will create your Makefile.  If your operating system is not supported,
+    read the PORTABILITY section in the file src/README for information on how
+    to create a configuration file for your system.
 
-    Note that any changes made to src/Makefile will disappear when you
-    re-run src/Configure. If you want these changes to be permanent make them
-    in src/matrix or src/Makefile.dist. You might want to pass these changes
-    to me if they are of general use.
+3.  Type 'make'.  Ignore any warnings, no error messages should be produced. 
+    This should compile the library, the terminfo compiler (tic), the infocmp,
+    clear and tput programs (see the man pages for explanation of what they
+    do), some test programs, and a modified copy of Warren Tucker's
+    implementation of PANELS.  Read the file test/README for details on the
+    test programs.
 
-4.  Type 'make'.
-
-    Ignore any warnings, no error-messages should be produced.
-    This should compile the library, the terminfo compiler (tic), and the
-    infocmp, clear and tput programs (see the man pages for explanation of
-    what they do).
-
-5.  There are several parts to installing ncurses once it has compiled:
-
-	'make install.cmds' installs tic, infocmp, captoinfo, clear and tput.
-	'make install.libs' installs the headers and libraries.
+4.  Type 'make install' to install the libraries, the programs, and the man
+    pages.  Alternately, you can type 'make install' in each directory you want
+    to install.  In the src directory, you can do a partial install using these
+    commands:
+ 
+	'make install.progs' installs tic, infocmp, clear and tput.
+  	'make install.libs' installs the headers and libraries.
 	'make install.man' installs the man pages.
-	'make install.data' installs the terminfo database. You can skip this
-		part if your system already has such a database.
-
-	CAVEAT EMPTOR: install.data or install.all will NUKE any existing
+  	'make install.data' installs the terminfo database. You can skip this
+  		part if your system already has such a database.
+  
+	CAVEAT EMPTOR: 'install.data' or 'install' will NUKE any existing
 	terminfo database. If you have any custom or unusual entries SAVE them
 	before you install ncurses.
 
-	'make install.all' will do all the above.
+	'make install' will do all the above.
+
+5.  The c++ directory has C++ classes that are built on top of ncurses and
+    panels.  You need to have installed panels to compile and run the demo.
 
 5a. If you're running under Linux, you must either (a) tell Linux that the
     console terminal type is `linux', or (b) make a link to or copy of the 

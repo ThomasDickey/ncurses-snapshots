@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,6 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
 
 /*
  * alloc_entry.c -- allocation functions for terminfo entries
@@ -32,6 +32,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include "tic.h"
 #include "term.h"
 #include "term_entry.h"

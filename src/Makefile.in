@@ -1,0 +1,456 @@
+# Makefile for ncurses source code.
+
+SHELL		= /bin/sh
+
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+prefix		= @prefix@
+exec_prefix	= @exec_prefix@
+bindir		= $(exec_prefix)/bin
+libdir		= $(exec_prefix)/lib
+includedir	= @includedir@
+
+# We'd put terminfo in /usr/share/terminfo, but that's not the convention...
+ticdir		= @datadir@
+
+OWNER		= -o bin -g bin
+INSTALL		= @INSTALL@ $(OWNER)
+INSTALL_PROGRAM	= @INSTALL_PROGRAM@
+INSTALL_DATA	= @INSTALL_DATA@
+
+CC		= @CC@
+CFLAGS		= @CFLAGS@
+
+CPPFLAGS	= -I. -I$(srcdir) -I$(srcdir)/../include \
+		  -DHAVE_CONFIG_H -DTERMINFO=\"$(ticdir)\"
+
+CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
+DFLAGS		= -g -DTRACE $(CCFLAGS)
+
+LINK		= $(CC)
+LDFLAGS		= @LDFLAGS@ @LIBS@
+
+RANLIB		= @RANLIB@
+
+LIBRARIES	= libncurses.a libdcurses.a libpanel.a libpanelg.a
+
+# Source lists, for convenience in constructing lint rules, etc.
+COMP_SRCS = \
+	alloc_entry.c \
+	captoinfo.c \
+	comp_captab.c \
+	comp_error.c \
+	comp_hash.c \
+	comp_main.c \
+	comp_parse.c \
+	comp_scan.c \
+	dump_entry.c \
+	names.c \
+	read_entry.c
+
+LIB_SRCS = \
+	hardscroll.c \
+	lib_addch.c \
+	lib_addstr.c \
+	lib_beep.c \
+	lib_bkgd.c \
+	lib_box.c \
+	lib_clear.c \
+	lib_clrbot.c \
+	lib_clreol.c \
+	lib_color.c \
+	lib_delch.c \
+	lib_delwin.c \
+	lib_doupdate.c \
+	lib_endwin.c \
+	lib_erase.c \
+	lib_getch.c \
+	lib_getstr.c \
+	lib_initscr.c \
+	lib_insch.c \
+	lib_insdel.c \
+	lib_insstr.c \
+	lib_kernel.c \
+	lib_keyname.c\
+	lib_longname.c \
+	lib_move.c \
+	lib_mvcur.c \
+	lib_mvwin.c \
+	lib_newterm.c \
+	lib_newwin.c \
+	lib_options.c \
+	lib_overlay.c \
+	lib_pad.c\
+	lib_printw.c \
+	lib_raw.c \
+	lib_refresh.c \
+	lib_scanw.c \
+	lib_scroll.c \
+	lib_scrreg.c \
+	lib_set_term.c \
+	lib_setup.c \
+	lib_slk.c \
+	lib_termcap.c \
+	lib_ti.c \
+	lib_touch.c \
+	lib_tparm.c \
+	lib_tputs.c \
+	lib_trace.c \
+	lib_tstp.c \
+	lib_twait.c \
+	lib_unctrl.c \
+	lib_vidattr.c \
+	lib_window.c
+
+PORT_SRCS = \
+	sigaction.c \
+	strerror.c \
+	vsscanf.c
+
+SRCS	= $(COMP_SRCS) $(LIB_SRCS) $(PORT_SRCS)
+
+# Normal, optimised object files
+N_COMP_OBJS = \
+	alloc_entry.o \
+	captoinfo.o \
+	comp_captab.o \
+	comp_error.o \
+	comp_hash.o \
+	comp_parse.o \
+	comp_scan.o \
+	names.o \
+	read_entry.o
+
+N_LIB_OBJS = \
+	hardscroll.o \
+	lib_acs.o \
+	lib_addch.o \
+	lib_addstr.o \
+	lib_beep.o \
+	lib_bkgd.o \
+	lib_box.o \
+	lib_clear.o \
+	lib_clrbot.o \
+	lib_clreol.o \
+	lib_color.o \
+	lib_delch.o \
+	lib_delwin.o \
+	lib_doupdate.o \
+	lib_endwin.o \
+	lib_erase.o \
+	lib_getch.o \
+	lib_getstr.o \
+	lib_initscr.o \
+	lib_insch.o \
+	lib_insdel.o \
+	lib_insstr.o \
+	lib_instr.o \
+	lib_kernel.o \
+	lib_keyname.o \
+	lib_longname.o \
+	lib_move.o \
+	lib_mvcur.o \
+	lib_mvwin.o \
+	lib_newterm.o \
+	lib_newwin.o \
+	lib_options.o \
+	lib_overlay.o \
+	lib_pad.o \
+	lib_printw.o \
+	lib_raw.o \
+	lib_refresh.o \
+	lib_scanw.o \
+	lib_screen.o \
+	lib_scroll.o \
+	lib_scrreg.o \
+	lib_set_term.o \
+	lib_setup.o \
+	lib_slk.o \
+	lib_termcap.o \
+	lib_ti.o \
+	lib_touch.o \
+	lib_tparm.o \
+	lib_tputs.o \
+	lib_trace.o \
+	lib_tstp.o \
+	lib_twait.o \
+	lib_unctrl.o \
+	lib_vidattr.o \
+	lib_window.o \
+	parse_entry.o \
+	read_termcap.o
+
+N_PORT_OBJS = \
+	sigaction.o \
+	strerror.o \
+	vsscanf.o
+
+NORM_OBJS = $(N_COMP_OBJS) $(N_LIB_OBJS) $(N_PORT_OBJS)
+
+# Debugging object files
+T_COMP_OBJS = \
+	alloc_entry.d \
+	captoinfo.d \
+	comp_captab.d \
+	comp_error.d \
+	comp_hash.d \
+	comp_parse.d \
+	comp_scan.d \
+	names.d \
+	read_entry.d
+
+T_LIB_OBJS = \
+	hardscroll.d \
+	lib_acs.d \
+	lib_addch.d \
+	lib_addstr.d \
+	lib_beep.d \
+	lib_bkgd.d \
+	lib_box.d \
+	lib_clear.d \
+	lib_clrbot.d \
+	lib_clreol.d \
+	lib_color.d \
+	lib_delch.d \
+	lib_delwin.d \
+	lib_doupdate.d \
+	lib_endwin.d \
+	lib_erase.d \
+	lib_getch.d \
+	lib_getstr.d \
+	lib_initscr.d \
+	lib_insch.d \
+	lib_insdel.d \
+	lib_insstr.d \
+	lib_instr.d \
+	lib_kernel.d \
+	lib_keyname.d \
+	lib_longname.d \
+	lib_move.d \
+	lib_mvcur.d \
+	lib_mvwin.d \
+	lib_newterm.d \
+	lib_newwin.d \
+	lib_options.d \
+	lib_overlay.d \
+	lib_pad.d \
+	lib_printw.d \
+	lib_raw.d \
+	lib_refresh.d \
+	lib_scanw.d \
+	lib_screen.d \
+	lib_scroll.d \
+	lib_scrreg.d \
+	lib_set_term.d \
+	lib_setup.d \
+	lib_slk.d \
+	lib_termcap.d \
+	lib_ti.d \
+	lib_touch.d \
+	lib_tparm.d \
+	lib_tputs.d \
+	lib_trace.d \
+	lib_tstp.d \
+	lib_twait.d \
+	lib_unctrl.d \
+	lib_vidattr.d \
+	lib_window.d \
+	parse_entry.d \
+	read_termcap.d
+
+T_PORT_OBJS = \
+	sigaction.d \
+	strerror.d \
+	vsscanf.d
+
+TEST_OBJS = $(T_COMP_OBJS) $(T_LIB_OBJS) $(T_PORT_OBJS)
+
+.SUFFIXES: .d
+
+.c.o:
+	@echo compiling $@
+	@$(CC) -c $(CCFLAGS) -o $*.o $(srcdir)/$*.c
+
+# This is to get around brain-damaged compilers that won't allow anything
+# besides *.o
+.c.d:
+	@echo compiling $@
+	@$(CC) -c $(DFLAGS) -o obj_d.o $(srcdir)/$*.c
+	@mv obj_d.o $*.d
+
+
+PROGS = tic infocmp clear tput
+
+TESTPROGS = mvcur tctest hardscroll
+
+AUTO_SRC = \
+	Caps.filtered \
+	comp_captab.c \
+	hashsize.h \
+	keys.tries \
+	lib_keyname.c \
+	names.c \
+	parametrized.h \
+	term.h \
+	termsort.c
+
+all:	$(AUTO_SRC) $(PROGS) $(LIBRARIES)
+
+libs:	$(LIBRARIES)
+
+install.all : install.libs install.progs install.data install.man
+
+install: install.libs install.progs install.data
+
+install.libs: term.h $(LIBRARIES) $(includedir) $(libdir)
+	$(INSTALL_DATA) term.h $(includedir)/term.h
+	$(INSTALL_DATA) $(srcdir)/curses.h $(includedir)/curses.h
+	$(INSTALL_DATA) $(srcdir)/unctrl.h $(includedir)/unctrl.h
+	$(INSTALL_DATA) $(srcdir)/panel.h $(includedir)/panel.h
+	$(INSTALL_DATA) $(srcdir)/termcap.h $(includedir)/termcap.h
+	@for lib in $(LIBRARIES); do \
+		echo installing $${lib} as $(libdir)/$${lib}; \
+		$(INSTALL_DATA) $${lib} $(libdir)/$${lib}; \
+		$(RANLIB) $(libdir)/$${lib}; \
+	done
+	@echo "Make sure you delete any old header files!"
+
+# This rule is provided only as a convenience here; normally "make install"
+# is invoked from the top directory.
+install.man:
+	(cd ../man; $(MAKE) @nc_cv_makeflags@ TERMINFO=$(ticdir) INSTALL="$(INSTALL)" MAN=$(MAN) )
+
+install.progs: $(PROGS) $(bindir)
+	$(INSTALL_PROGRAM) tic $(bindir)/tic
+	$(INSTALL_PROGRAM) infocmp $(bindir)/infocmp
+	$(INSTALL_PROGRAM) clear $(bindir)/clear
+	$(INSTALL_PROGRAM) tput $(bindir)/tput
+	@echo "linking captoinfo to tic"
+	-rm -f $(bindir)/captoinfo
+	-@ln $(bindir)/tic $(bindir)/captoinfo
+
+install.data: $(ticdir)
+	-rm -fr $(ticdir)/[0-9A-Za-z]		# Avoid use loops due to old entries.
+	$(bindir)/tic -v ../misc/terminfo.src
+
+$(bindir) \
+$(includedir) \
+$(libdir) \
+$(ticdir) :
+	$(srcdir)/../mkinstalldirs $@
+
+lib:	term.h libncurses.a	
+libncurses.a:	${NORM_OBJS}
+	ar rv $@ $?
+	$(RANLIB) $@
+
+dlib:	term.h libdcurses.a	
+libdcurses.a:	${TEST_OBJS}
+	ar rv $@ $?
+	$(RANLIB) $@
+
+libpanel.a: panel.o
+	ar rv $@ $?
+	$(RANLIB) $@
+
+libpanelg.a: panel.d
+	ar rv $@ $?
+	$(RANLIB) $@
+
+DEPS_TIC = comp_main.o dump_entry.o write_entry.o libncurses.a
+tic: $(DEPS_TIC)
+	$(LINK) $(CFLAGS) $(DEPS_TIC) $(LDFLAGS) -o $@
+
+DEPS_CLEAR = clear.o libncurses.a
+clear: $(DEPS_CLEAR)
+	$(LINK) $(CFLAGS) $(DEPS_CLEAR) $(LDFLAGS) -o $@
+
+DEPS_TPUT = tput.o libncurses.a
+tput: $(DEPS_TPUT)
+	$(LINK) $(CFLAGS) $(DEPS_TPUT) $(LDFLAGS) -o $@
+
+DEPS_INFOCMP = infocmp.o dump_entry.o libncurses.a
+infocmp: $(DEPS_INFOCMP)
+	$(LINK) $(CFLAGS) $(DEPS_INFOCMP) $(LDFLAGS) -o $@
+
+# Use -g for debugging but -O if you're profiling with intent to
+# determine COMPUTE_OVERHEAD.
+MVFLAGS = -O
+DEPS_MVCUR = lib_mvcur.c comp_captab.o comp_hash.o dump_entry.o libdcurses.a
+mvcur: $(DEPS_MVCUR)
+	$(LINK) $(CCFLAGS) -DTRACE -DMAIN $(MVFLAGS) $(DEPS_MVCUR) $(LDFLAGS) -o $@
+
+DEPS_TCTEST = captoinfo.c libdcurses.a
+tctest: $(DEPS_TCTEST)
+	$(LINK) $(CCFLAGS) -DTRACE -DMAIN -g $(DEPS_TCTEST) $(LDFLAGS) -o $@
+
+hardscroll: hardscroll.c
+	$(LINK) $(CCFLAGS) -g -DMAINDEBUG hardscroll.c $(LDFLAGS) -o $@
+
+keys.tries: keys.list
+	awk -f $(srcdir)/MKkeys.awk $(srcdir)/keys.list > keys.tries
+
+lib_options.o: keys.tries lib_options.c term.h
+
+# For binary compatibility with SVr4, use GETMEXCLUDE=bool.  For strict
+# conformance with the gratuitous and stupid change made in the XSI Curses
+# standard, use GETMEXCLUDE=str
+GETMEXCLUDE=bool
+
+Caps.filtered: Caps
+	grep -v '"getm"	*$(GETMEXCLUDE)' Caps >Caps.filtered
+
+term.h: Caps.filtered MKterm.h.awk
+	awk -f $(srcdir)/MKterm.h.awk $(srcdir)/Caps.filtered > term.h
+	sh $(srcdir)/edit_cfg.sh $(srcdir)/../include/config.h term.h
+
+hashsize.h: Caps.filtered MKhashsize.sh
+	sh $(srcdir)/MKhashsize.sh >hashsize.h
+
+comp_captab.c: hashsize.h Caps.filtered MKcaptab.awk
+	sh $(srcdir)/MKcaptab.awk > comp_captab.c
+
+comp_captab.o: comp_captab.c hashsize.h
+
+comp_hash.o: comp_hash.c hashsize.h
+
+comp_main.o: tic.h term.h version.h dump_entry.h
+
+comp_parse.o: tic.h object.h term.h dump_entry.h
+
+infocmp.o: infocmp.c term.h tic.h dump_entry.h
+
+dump_entry.o: dump_entry.c termsort.c term.h tic.h dump_entry.h
+
+lib_setup.o: lib_setup.c
+
+lib_setup.d: lib_setup.c
+
+lib_keyname.c: keys.list MKkeyname.awk
+	awk -f $(srcdir)/MKkeyname.awk $(srcdir)/keys.list > lib_keyname.c
+
+names.c: Caps.filtered MKnames.awk
+	awk -f $(srcdir)/MKnames.awk $(srcdir)/Caps.filtered
+	cat boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes> names.c
+	-rm -f boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes
+
+termsort.c: Caps.filtered termsort.sh
+	(cd $(srcdir); sh ./termsort.sh) >termsort.c
+
+parametrized.h: Caps.filtered termsort.sh
+	(cd $(srcdir); sh parametrized.sh) >parametrized.h
+
+TAGS:
+	etags *.[ch]
+
+clean:
+	-rm -f tags TAGS
+	-rm -f *.[od] $(AUTO_SRC) $(TESTPROGS)
+	-rm -f *.a $(PROGS)
+
+distclean: clean
+	-rm -f Makefile
+
+mostlyclean: clean
+
+realclean: distclean

@@ -1,5 +1,3 @@
-/* panel.c -- implementation of panels library */
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -21,6 +19,10 @@
 *        panels comes AS IS with no warranty, implied or expressed.        *
 *                                                                          *
 ***************************************************************************/
+
+#include "system.h"
+
+/* panel.c -- implementation of panels library */
 
 #ifdef TRACE         
 #define PANEL_DEBUG

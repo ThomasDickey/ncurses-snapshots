@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-
+#include "system.h"
 
 /*
  *	comp_scan.c --- Lexical scanner for terminfo compiler.
@@ -474,7 +473,7 @@ char	ch, last_ch = '\0';
 		if (ch == EOF)
 		    err_abort("Premature EOF");
 
-		if (! isprint(ch)) {
+		if (! (isascii(ch) && isprint(ch))) {
 		    warning("Illegal ^ character - %s", _tracechar(ch));
 		}
 		*(ptr++) = ch & 037;

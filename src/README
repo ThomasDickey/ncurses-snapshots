@@ -1,58 +1,37 @@
-This file is intended to help people interested in working
-on fixing ncurses, enhancing it, or porting it to other
-platforms.
+This file is intended to help people interested in working on fixing ncurses,
+enhancing it, or porting it to other platforms.
 
 PORTABILITY:
 
-To add support for a new operating system, you must add a line for that
-system to the `matrix' file.
+Here are some -D options you might need to compile with.
+The 'configure' script usually gets them right automatically.
+  
+-DHAVE_UNISTD_H		if <unistd.h> is present
 
-The field values are listed below.  Down the left side are the operating
-systems supported. If an option is not needed then it should have an entry of
-NONE.  Note the use of ':' to terminate each field.
+-DHAVE_SIGACTION	if the sigaction function is present
 
-NUMBER:		Number by which you select the OS via Configure
+-DHAVE_USLEEP		if the usleep function is present
 
-OS: 		label of the operating system (used as config file suffix)
+-DSTRICTPOSIX		if _POSIX_SOURCE turns off non-POSIX features.
 
-OSNAME:		name of the operating system
+-DSVR4_ACTION		if (e.g., svr4) you need _POSIX_SOURCE to have sigaction
 
-ISPOSIX:	-DNONPOSIX if <unistd.h> is missing
+-DHAVE_TERMIOS_H	if you have <termios.h>; otherwise it uses <sgtty.h>
 
-POSIX:		-DSTRICTPOSIX if _POSIX_SOURCE turns off non-POSIX features.
-		-DSVR4_ACTION if like svr4 you need _POSIX_SOURCE to have
-		sigaction(2).
+-DOPT_MVCUR		if you want mvcur() to cost its actions or you have a
+			terminal that doesn't have direct cursor addressing.
 
-TERMINAL:	-DNOTERMIOS if you don't have <termios.h> but have <sgtty.h>
+-D_HPUX_SOURCE		so that we get POSIX and XOPEN features.
 
-HEADERS:	-DBRAINDEAD if system headers don't declare external variables
+-DBROKEN_TIOCGETWINSZ	on SVR4 and HPUX
 
-TABS:		-DBSDTABS if you don't have TABS3 but have OXTABS
-
-SRCDIR:		the directory where the terminfo database lives
-
-CC:		ANSI C compiler
-
-FLAGS:		standard compiler flags
-
-EXTRA:		extra flags needed by individual systems
-	Sun:	-DSUNIOCTL <sys/ioctl.h> conflicts with <termios.h>
-	HP-UX:	-D_HPUX_SOURCE so that we get POSIX and XOPEN features.
-	SVR4:	-DBROKEN_TIOCGETWINSZ guess what?
-	AIX:	-DSYS_SELECT if you need <sys/select.h>
-	misc:   -DNOSTRERROR for those system without strerror()
-
-BASE:		The directory under which headers and libraries will
-		be installed.
-
-INSTALL:	The name of an install program similar to BSD's (ie. 
-		understands -m, -g, -o, etc.).  GNU install works.
-
-The awk script in script.src reads matrix and generates all the Config.*
-files. 
+-DHAVE_SYS_SELECT_H	if (e.g., AIX) you have <sys/select.h>
 
 There are several problems with strict POSIX systems so extra flags
-or #define's maybe needed.
+or #define's may be needed.
+
+	HP-UX:	-D_HPUX_SOURCE so that we get POSIX and XOPEN features.
+	SVR4:	-DBROKEN_TIOCGETWINSZ guess what?
 
 THINGS TO DO:
 
@@ -65,11 +44,12 @@ supporting internationalization.
 
 2. DOS port
 
-Only 16 of the 55 files in the library depend on the terminfo format.
-It should be possible to further kernelize the package, then rewrite 
-a small number of core files to produce a functionally-compatible
-port that would do updates to a memory-mapped screen area.  The first
-result of this would be a DOS port.
+Parts of the code have been conditioned on the macro UNIX; it is now
+possible to compile a version of the code that knows nothing about
+terminfo and instead refers to the file nonunix.c for core primitives.
+It ought to be possible to modify this file to support the curses API
+in DOS, Macintosh, and other single-user micro environments supporting
+ANSI C.
 
 3. X port
 

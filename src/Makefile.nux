@@ -1,0 +1,58 @@
+# Prototype makefile for memory-mapped ports.
+# This prototype assumes UNIX utilities and is only useful with nonunix.c 
+# You'll have to translate it into DOS-speak or whatever.
+#
+# To test-compile the memory-mapped port, first do
+#
+#	make clean lib_keyname.c lib_keyname.o term.h
+#
+# using the UNIX makefile, then `make' using this makefile.
+
+.SUFFIXES: .d
+
+.c.o:
+	$(CC) -c $(CFLAGS) -o $*.o $*.c
+
+# This is to get around brain-damaged compilers that won't allow anything
+# besides *.o
+.c.d:
+	$(CC) -c $(DFLAGS) -o obj_d.o $*.c
+	mv obj_d.o $*.d
+
+FLAGS= -I.
+CFLAGS= $(FLAGS) -O
+DFLAGS= $(FLAGS) -DTRACE -g
+
+LIBOBJS = lib_addch.o lib_addstr.o lib_beep.o lib_bkgd.o lib_box.o \
+	lib_clear.o lib_clrbot.o lib_clreol.o lib_delch.o lib_delwin.o \
+	lib_endwin.o lib_erase.o lib_getstr.o lib_inchstr.o lib_insch.o \
+	lib_insdel.o lib_insstr.o lib_keyname.o lib_move.o lib_mvwin.o \
+	lib_newwin.o lib_overlay.o lib_pad.o lib_printw.o lib_options.o \
+	lib_refresh.o lib_scanw.o lib_scroll.o lib_scrreg.o lib_set_term.o \
+	lib_touch.o lib_tparm.o lib_tputs.o lib_unctrl.o lib_window.o \
+	lib_screen.o lib_trace.o lib_color.o lib_slk.o lib_acs.o \
+	lib_initscr.o lib_newterm.o
+
+DLIBOBJS = lib_addch.d lib_addstr.d lib_beep.d lib_bkgd.d lib_box.d \
+	lib_clear.d lib_clrbot.d lib_clreol.d lib_delch.d lib_delwin.d \
+	lib_endwin.d lib_erase.d lib_getstr.d lib_inchstr.d lib_insch.d \
+	lib_insdel.d lib_insstr.d lib_keyname.d lib_move.d lib_mvwin.d \
+	lib_newwin.d lib_overlay.d lib_pad.d lib_printw.d lib_options.d \
+	lib_refresh.d lib_scanw.d lib_scroll.d lib_scrreg.d lib_set_term.d \
+	lib_touch.d lib_tparm.d lib_tputs.d lib_unctrl.d lib_window.d \
+	lib_screen.d lib_trace.d lib_color.d lib_slk.d lib_acs.d \
+	lib_initscr.d lib_newterm.d
+
+libncurses.a: ${LIBOBJS} nonunix.o
+	ar rv libncurses.a $? nonunix.o
+	ranlib libncurses.a
+
+libdcurses.a: ${DLIBOBJS} nonunix.d
+	ar rv libdcurses.a $? nonunix.d
+	ranlib libdcurses.a
+
+nonunix: libdcurses.a
+	$(CC) -I. -DTRACE -DMAIN -g nonunix.c libdcurses.a -o nonunix
+
+clean:
+	rm *.[oad] nonunix

@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-
+#include "system.h"
 
 /*
 **	lib_insstr.c
@@ -41,13 +40,13 @@ char	*cp;
 
 	for (cp = str; *cp && (n > 0 || (cp - str) >= n); cp++) {
 		if (*cp == '\n' || *cp == '\r' || *cp == '\t' || *cp == '\b')
-			addch(*cp);
+			addch((chtype)(*cp));
 		else if (isascii(*cp) && iscntrl(*cp)) {
-			winsch(win, ' ' + *cp);
+			winsch(win, ' ' + (chtype)(*cp));
 			winsch(win, '^');
 			win->_curx += 2;
 		} else {
-			winsch(win, *cp);
+			winsch(win, (chtype)(*cp));
 			win->_curx++;
 		}
 		if (win->_curx > win->_maxx)

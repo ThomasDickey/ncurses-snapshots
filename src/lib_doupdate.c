@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,6 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
 
 /*-----------------------------------------------------------------
  *
@@ -31,7 +31,8 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/time.h>
-#ifdef SYS_SELECT
+#if HAVE_SYS_SELECT_H
+#include <sys/types.h>
 #include <sys/select.h>
 #endif
 #include <string.h>
@@ -130,7 +131,7 @@ static inline void PutAttrChar(chtype ch)
 		ch = ('`' | (ch & A_ATTRIBUTES));
 
 	TR(TRACE_CHARPUT, ("PutAttrChar(%s, %s) at (%d, %d)",
-			  _tracechar(ch & A_CHARTEXT),
+			  _tracechar((ch & (chtype)A_CHARTEXT)),
 			  _traceattr((ch & (chtype)A_ATTRIBUTES)),
 			   SP->_cursrow, SP->_curscol));
 	if (curscr->_attrs != (ch & (chtype)A_ATTRIBUTES)) {
@@ -291,9 +292,8 @@ int	i;
 			ClrUpdate(newscr);
 			newscr->_clear = FALSE;
 		} else {
-#if 0
 		        _nc_scroll_optimize();
-#endif
+
 			T(("Transforming lines"));
 			for (i = 0; i < min(screen_lines, newscr->_maxy + 1); i++) {
 				if(newscr->_line[i].firstchar != _NOCHANGE)
@@ -410,8 +410,6 @@ int	j;
 
 static void ClrToBOL(void)
 {
-int j;
-
 	if (back_color_erase) {
 		TPUTS_TRACE("orig_pair");
 		putp(orig_pair);
@@ -420,9 +418,6 @@ int j;
 	putp(clr_bol);
 	if (back_color_erase)
 		vidattr(SP->_current_attr);
-
-	for (j = 0; j <= SP->_curscol; j++)
-	    curscr->_line[SP->_cursrow].text[j] = ' ';
 }
 
 /*
@@ -567,13 +562,12 @@ int	attrchanged = 0;
 		{
 			int oFirstChar, nFirstChar;
 
-			oFirstChar = 0;
-			while (oldLine[oFirstChar] == BLANK)
-				oFirstChar++;
-
-			nFirstChar = 0;
-			while (oldLine[nFirstChar] == BLANK)
-				nFirstChar++;
+			for (oFirstChar = 0; oFirstChar < screen_columns; oFirstChar++)
+				if (oldLine[oFirstChar] != BLANK)
+					break;
+			for (nFirstChar = 0; nFirstChar < screen_columns; nFirstChar++)
+				if (newLine[nFirstChar] != BLANK)
+					break;
 
 			if (nFirstChar > oFirstChar + strlen(clr_bol))
 			{
@@ -607,8 +601,13 @@ int	attrchanged = 0;
 				PutChar(newLine[k]);
 		} else {
 			while (newLine[nLastChar] == oldLine[oLastChar]) {
-				nLastChar--;
-				oLastChar--;
+				if (nLastChar != 0
+				 && oLastChar != 0) {
+					nLastChar--;
+					oLastChar--;
+				 } else {
+					break;
+				 }
 			}
 	
 			n = min(oLastChar, nLastChar);

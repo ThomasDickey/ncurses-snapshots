@@ -1,0 +1,91 @@
+# Makefile for ncurses tests.
+
+SHELL		= /bin/sh
+
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+prefix		= @prefix@
+exec_prefix	= @exec_prefix@
+libdir		= $(exec_prefix)/lib
+includedir	= @includedir@
+
+CC		= @CC@
+CFLAGS		= @CFLAGS@
+CPPFLAGS	= -I. -I$(srcdir)/../src -I$(srcdir)/../include -I$(includedir) -DHAVE_CONFIG_H
+
+CCFLAGS		= $(CFLAGS) $(CPPFLAGS)
+
+LINK		= $(CC)
+LDFLAGS		= -L../src -L$(libdir) -lpanel -lncurses @LDFLAGS@ @LIBS@
+# change to -lpanelg -ldcurses if you want to do any debugging
+
+TESTS = \
+	battle \
+	blue \
+	bs \
+	copy \
+	firework \
+	gdc \
+	hanoi \
+	knight \
+	ncurses \
+	newdemo \
+	over \
+	rain \
+	tclock \
+	testcurs \
+	view \
+	worm \
+	xmas 
+
+.c.o:
+	$(CC) -c $(CCFLAGS) $<
+
+all: $(TESTS) 
+
+battle: battle.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+blue: blue.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+bs: bs.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+copy: copy.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+firework: firework.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+gdc: gdc.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+hanoi: hanoi.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+knight: knight.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+ncurses: ncurses.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+newdemo: newdemo.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+over: over.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+rain: rain.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+tclock: tclock.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -lm -o $@
+testcurs: testcurs.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+view: view.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+worm: worm.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+xmas: xmas.c
+	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
+
+install:
+
+clean:
+	-rm -rf *.o trace screendump t $(TESTS)
+
+distclean: clean
+	-rm -f Makefile
+
+mostlyclean: clean
+
+realclean: distclean

@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,6 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
 
 /*
  * lib_pad.c
@@ -29,6 +29,11 @@
 
 #include <stdlib.h>
 #include <errno.h>
+
+#if !HAVE_EXTERN_ERRNO
+extern int errno;
+#endif
+
 #include "curses.priv.h"
 
 WINDOW *newpad(int l, int c)

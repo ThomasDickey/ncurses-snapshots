@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,6 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
 
 /*
 **	lib_tstp.c
@@ -28,15 +28,20 @@
 */
 
 #include "curses.priv.h"
-#ifndef NOACTION
+
+#if HAVE_SIGACTION
+#if !HAVE_TYPE_SIGACTION
 typedef struct sigaction sigaction_t;
+#endif
 #else
 #include "SigAction.h"
 #endif
+
 #ifdef SVR4_ACTION
 #define _POSIX_SOURCE
 #endif
 #include <signal.h>
+#include <stdlib.h>
 
 static void tstp(int dummy)
 {
@@ -57,7 +62,9 @@ static void tstp(int dummy)
 	 */
 	(void)sigemptyset(&mask);
 	(void)sigaddset(&mask, SIGALRM);
+#ifdef SIGWINCH
 	(void)sigaddset(&mask, SIGWINCH);
+#endif
 	(void)sigprocmask(SIG_BLOCK, &mask, &omask);
 	
 	/*

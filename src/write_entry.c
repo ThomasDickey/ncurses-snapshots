@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,18 +18,25 @@
 *                                                                          *
 ***************************************************************************/
 
-
+#include "system.h"
 
 /*
  *	write_entry.c -- write a terminfo structure onto the file system
  */
 
 #include <stdlib.h>
+
 #include <errno.h>
-#ifndef NONPOSIX
+#if !HAVE_EXTERN_ERRNO
+extern int errno;
+#endif
+
+#if HAVE_UNISTD_H
 #include <unistd.h>
 #else
-#include <libc.h>
+# if HAVE_LIBC_H
+# include <libc.h>
+# endif
 #endif
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -38,13 +44,12 @@
 #include <string.h>
 #include "tic.h"
 #include "term.h"
+#include "term_entry.h"
 #include "object.h"
-
-extern long	time(long *);
 
 static int write_object(FILE *, TERMTYPE *);
 
-static long	start_time;		/* time at start of writes */
+static time_t	start_time;		/* time at start of writes */
 static char	*destination = TERMINFO;
 
 /*
@@ -107,6 +112,10 @@ char		dir[2];
  *      for each name in all-but-last-name
  *	    link to first-name
  *
+ *	Using 'time()' to obtain a reference for file timestamps is unreliable,
+ *	e.g., with NFS, because the filesystem may have a different time
+ *	reference.  We check for pre-existence of links by latching the first
+ *	timestamp from a file that we create.
  */
 
 void write_entry(TERMTYPE *tp)
@@ -116,14 +125,14 @@ FILE		*fp;
 char		name_list[1024];
 char		*first_name, *other_names;
 char		*ptr;
-char		filename[50];
-char		linkname[50];
+char		filename[100];
+char		linkname[100];
 static int	call_count;
 
-	if (call_count++ == 0)
+	if (call_count++ == 0) {
 		check_writeable();
-
-	start_time = time(0);
+		start_time = 0;
+	}
 
 	strcpy(name_list, tp->term_names);
 	DEBUG(7, ("Name list = '%s'", name_list));
@@ -153,7 +162,7 @@ static int	call_count;
 	DEBUG(7, ("First name = '%s'", first_name));
 	DEBUG(7, ("Other names = '%s'", other_names));
 
-	if (strlen(first_name) > 100)
+	if (strlen(first_name) > sizeof(filename)-3)
 	    	warning("'%s': terminal name too long.", first_name);
 
 	sprintf(filename, "%c/%s", first_name[0], first_name);
@@ -170,6 +179,13 @@ static int	call_count;
 	}
 	fclose(fp);
 
+	if (start_time == 0) {
+	    	if (stat(filename, &statbuf) < 0
+		 || (start_time = statbuf.st_mtime) == 0) {
+	    		syserr_abort("Error in obtaining time from %s/%s",
+				destination, filename);
+		}
+	}
 	while (*other_names != '\0') {
 	    	ptr = other_names++;
 	    	while (*other_names != '|'  &&  *other_names != '\0')
@@ -178,7 +194,7 @@ static int	call_count;
 	    	if (*other_names != '\0')
 			*(other_names++) = '\0';
 
-	    	if (strlen(ptr) > 100) {
+	    	if (strlen(ptr) > sizeof(linkname)-3) {
 			warning("'%s': terminal name too long.", ptr);
 			continue;
 	    	}
@@ -256,7 +272,7 @@ short		offsets[STRCOUNT];
 	}
 
 	if (fwrite(&header, sizeof(header), 1, fp) != 1
-		||  fwrite(namelist, sizeof(char), namelen, fp) != namelen
+		||  fwrite(namelist, sizeof(char), (size_t)namelen, fp) != namelen
 		||  fwrite(tp->Booleans, sizeof(char), BOOLWRITE, fp) != BOOLWRITE)
 	    	return(ERR);
 	

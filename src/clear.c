@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,13 +18,19 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
 
 /*
  * clear.c --  clears the terminal's screen
  */
 
 #include <curses.h>
+#include <stdlib.h>
+
+#if HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+
 #include <term.h>
 
 static int putch(int c)

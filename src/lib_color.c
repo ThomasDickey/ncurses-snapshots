@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,6 +18,8 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
+
 /* lib_color.c 
  *  
  * Handles color emulation of SYS V curses
@@ -26,6 +27,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include "curses.priv.h"
 #include "term.h"
 
@@ -198,16 +200,24 @@ int init_color(short color, short r, short g, short b)
 
 bool can_change_color(void)
 {
+#ifdef UNIX
 	return can_change;
+#else
+	return FALSE;
+#endif /* NONUNIX */
 }
 
 int has_colors(void)
 {
+#ifdef UNIX
 	return ((orig_pair != NULL) && (max_colors != -1) && (max_pairs != -1)
 		&& 
 		(((set_foreground != NULL) && (set_background != NULL)) ||
 		((set_a_foreground != NULL) && (set_a_background != NULL)))
 		);
+#else
+	return TRUE;
+#endif /* NONUNIX */
 }
 
 int color_content(short color, short *r, short *g, short *b)

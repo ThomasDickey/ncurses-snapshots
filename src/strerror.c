@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,10 +18,16 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
 
-#ifdef NOSTRERROR
+#if !HAVE_STRERROR
 #include <stdio.h>
+
+#include <errno.h>
+#if !HAVE_EXTERN_ERRNO
 extern int errno;
+#endif
+
 extern char *sys_errlist[];
 extern int sys_nerr;
 

@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,6 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
 
 /*
 **	lib_endwin.c
@@ -49,8 +49,10 @@ endwin()
 
 	mvcur_wrap();	/* wrap up cursor addressing */
 
+#ifdef UNIX
 	if (curscr  &&  (curscr->_attrs != A_NORMAL)) 
 	    vidattr(curscr->_attrs = A_NORMAL);
+#endif /* UNIX */
 
 	return(reset_shell_mode());
 }

@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -19,6 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
+#include "system.h"
 
 /*
  * Termcap compatibility support
@@ -37,7 +37,11 @@
 
 #include <stdlib.h>
 #include <string.h>
+
+#if HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+
 #include "curses.priv.h"
 #include "term.h"
 #include "tic.h"

@@ -925,7 +925,6 @@ static void demo_panels()
 {
 int itmp;
 register y,x;
-long atol();
 
 #ifdef FOO
 	if((argc > 1) && atol(argv[1]))
@@ -1315,6 +1314,7 @@ static void demo_pad(void)
 
 static void Continue (WINDOW *win)
 {
+    noecho();
     wmove(win, 10, 1);
     mvwaddstr(win, 10, 1, " Press any key to continue");
     wrefresh(win);

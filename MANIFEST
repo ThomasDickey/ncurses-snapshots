@@ -75,6 +75,7 @@
 ./src/MKnames.awk
 ./src/MKterm.h.awk
 ./src/Makefile.dist
+./src/Makefile.nux
 ./src/README
 ./src/SigAction.h
 ./src/alloc_entry.c
@@ -150,6 +151,7 @@
 ./src/lib_vidattr.c
 ./src/lib_window.c
 ./src/matrix
+./src/nonunix.c
 ./src/object.h
 ./src/parametrized.sh
 ./src/panel.c
