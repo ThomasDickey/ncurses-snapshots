@@ -1,4 +1,4 @@
-# $Id: modules,v 1.79 2002/02/09 21:11:30 tom Exp $
+# $Id: modules,v 1.81 2002/02/16 23:07:40 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -121,7 +121,10 @@ vsscanf 	lib		$(base)
 
 # XSI extensions to the base library (wide-character)
 @ widechar
+lib_box_set	lib		$(wide)
 lib_cchar	lib		$(wide)
+lib_hline_set	lib		$(wide)
+lib_vline_set	lib		$(wide)
 lib_wacs	lib		$(wide)
 lib_wunctrl	lib		$(wide)
 

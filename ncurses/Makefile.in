@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.81 2002/01/20 01:49:17 tom Exp $
+# $Id: Makefile.in,v 1.82 2002/02/16 16:13:52 skimo Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000,2001,2002 Free Software Foundation, Inc.      #
 #                                                                            #
@@ -173,10 +173,10 @@ fallback.c : $(tinfo)/MKfallback.sh
 	sh $(tinfo)/MKfallback.sh @TERMINFO@ @TERMINFO_SRC@ $(FALLBACK_LIST) >$@
 
 lib_gen.c : $(base)/MKlib_gen.sh ../include/curses.h
-	sh $(base)/MKlib_gen.sh "$(CPP)" "$(AWK)" <../include/curses.h >$@
+	sh $(base)/MKlib_gen.sh "$(CPP) $(CPPFLAGS)" "$(AWK)" <../include/curses.h >$@
 
 ../include/nomacros.h : $(base)/MKlib_gen.sh ../include/curses.h
-	sh $(base)/MKlib_gen.sh "$(CPP)" "$(AWK)" <../include/curses.h | \
+	sh $(base)/MKlib_gen.sh "$(CPP) $(CPPFLAGS)" "$(AWK)" <../include/curses.h | \
 		fgrep undef >$@
 
 init_keytry.h: make_keys$x keys.list

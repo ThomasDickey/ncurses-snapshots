@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
+ * Copyright (c) 2002 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,87 +27,86 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
- *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ * Authors: Sven Verdoolaege and Thomas Dickey 2001,2002                    *
  ****************************************************************************/
 
 /*
-**	lib_box.c
+**	lib_box_set.c
 **
-**	The routine wborder().
+**	The routine wborder_set().
 **
 */
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_box.c,v 1.17 2002/02/16 23:41:01 tom Exp $")
+MODULE_ID("$Id: lib_box_set.c,v 1.1 2002/02/16 23:40:13 tom Exp $")
 
 NCURSES_EXPORT(int)
-wborder(WINDOW *win,
-	const chtype ls, const chtype rs,
-	const chtype ts, const chtype bs,
-	const chtype tl, const chtype tr,
-	const chtype bl, const chtype br)
+wborder_set(WINDOW *win,
+	    const ARG_CH_T ls, const ARG_CH_T rs,
+	    const ARG_CH_T ts, const ARG_CH_T bs,
+	    const ARG_CH_T tl, const ARG_CH_T tr,
+	    const ARG_CH_T bl, const ARG_CH_T br)
 {
     NCURSES_SIZE_T i;
     NCURSES_SIZE_T endx, endy;
-    chtype wls, wrs, wts, wbs, wtl, wtr, wbl, wbr;
+    NCURSES_CH_T wls, wrs, wts, wbs, wtl, wtr, wbl, wbr;
 
     T((T_CALLED("wborder(%p,%s,%s,%s,%s,%s,%s,%s,%s)"),
        win,
-       _tracechtype2(1, ls),
-       _tracechtype2(2, rs),
-       _tracechtype2(3, ts),
-       _tracechtype2(4, bs),
-       _tracechtype2(5, tl),
-       _tracechtype2(6, tr),
-       _tracechtype2(7, bl),
-       _tracechtype2(8, br)));
+       _tracech_t2(1, ls),
+       _tracech_t2(2, rs),
+       _tracech_t2(3, ts),
+       _tracech_t2(4, bs),
+       _tracech_t2(5, tl),
+       _tracech_t2(6, tr),
+       _tracech_t2(7, bl),
+       _tracech_t2(8, br)));
 
     if (!win)
 	returnCode(ERR);
 
-#define RENDER_WITH_DEFAULT(ch,def) w ## ch = (ch == 0) ? def : ch
+#define RENDER_WITH_DEFAULT(ch,def) w ##ch = (ch == 0) ? def : *ch
 
-    RENDER_WITH_DEFAULT(ls, ACS_VLINE);
-    RENDER_WITH_DEFAULT(rs, ACS_VLINE);
-    RENDER_WITH_DEFAULT(ts, ACS_HLINE);
-    RENDER_WITH_DEFAULT(bs, ACS_HLINE);
-    RENDER_WITH_DEFAULT(tl, ACS_ULCORNER);
-    RENDER_WITH_DEFAULT(tr, ACS_URCORNER);
-    RENDER_WITH_DEFAULT(bl, ACS_LLCORNER);
-    RENDER_WITH_DEFAULT(br, ACS_LRCORNER);
+    RENDER_WITH_DEFAULT(ls, WACS_VLINE);
+    RENDER_WITH_DEFAULT(rs, WACS_VLINE);
+    RENDER_WITH_DEFAULT(ts, WACS_HLINE);
+    RENDER_WITH_DEFAULT(bs, WACS_HLINE);
+    RENDER_WITH_DEFAULT(tl, WACS_ULCORNER);
+    RENDER_WITH_DEFAULT(tr, WACS_URCORNER);
+    RENDER_WITH_DEFAULT(bl, WACS_LLCORNER);
+    RENDER_WITH_DEFAULT(br, WACS_LRCORNER);
 
     T(("using %s, %s, %s, %s, %s, %s, %s, %s",
-       _tracechtype2(1, wls),
-       _tracechtype2(2, wrs),
-       _tracechtype2(3, wts),
-       _tracechtype2(4, wbs),
-       _tracechtype2(5, wtl),
-       _tracechtype2(6, wtr),
-       _tracechtype2(7, wbl),
-       _tracechtype2(8, wbr)));
+       _tracech_t2(1, CHREF(wls)),
+       _tracech_t2(2, CHREF(wrs)),
+       _tracech_t2(3, CHREF(wts)),
+       _tracech_t2(4, CHREF(wbs)),
+       _tracech_t2(5, CHREF(wtl)),
+       _tracech_t2(6, CHREF(wtr)),
+       _tracech_t2(7, CHREF(wbl)),
+       _tracech_t2(8, CHREF(wbr))));
 
     endx = win->_maxx;
     endy = win->_maxy;
 
     for (i = 0; i <= endx; i++) {
-	SetChar(win->_line[0].text[i], ChCharOf(wts), ChAttrOf(wts));
-	SetChar(win->_line[endy].text[i], ChCharOf(wbs), ChAttrOf(wbs));
+	win->_line[0].text[i] = wts;
+	win->_line[endy].text[i] = wbs;
     }
     win->_line[endy].firstchar = win->_line[0].firstchar = 0;
     win->_line[endy].lastchar = win->_line[0].lastchar = endx;
 
     for (i = 0; i <= endy; i++) {
-	SetChar(win->_line[i].text[0], ChCharOf(wls), ChAttrOf(wls));
-	SetChar(win->_line[i].text[endx], ChCharOf(wrs), ChAttrOf(wrs));
+	win->_line[i].text[0] = wls;
+	win->_line[i].text[endx] = wrs;
 	win->_line[i].firstchar = 0;
 	win->_line[i].lastchar = endx;
     }
-    SetChar(win->_line[0].text[0], ChCharOf(wtl), ChAttrOf(wtl));
-    SetChar(win->_line[0].text[endx], ChCharOf(wtr), ChAttrOf(wtr));
-    SetChar(win->_line[endy].text[0], ChCharOf(wbl), ChAttrOf(wbl));
-    SetChar(win->_line[endy].text[endx], ChCharOf(wbr), ChAttrOf(wbr));
+    win->_line[0].text[0] = wtl;
+    win->_line[0].text[endx] = wtr;
+    win->_line[endy].text[0] = wbl;
+    win->_line[endy].text[endx] = wbr;
 
     _nc_synchook(win);
     returnCode(OK);

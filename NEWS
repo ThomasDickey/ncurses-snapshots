@@ -1,10 +1,32 @@
--- $Id: NEWS,v 1.669 2002/02/10 01:20:10 tom Exp $
+-- $Id: NEWS,v 1.670 2002/02/17 00:05:07 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020216
+	+ implement whline_set(), wvline_set(), add manpage curs_border_set.
+	+ add subtest 'b' to 'F' and 'f' in ncurses.c to demonstrate use of
+	  box() and box_set() functions.
+	+ add subtest 'u' to 'F' in ncurses.c, to demonstrate use of addstr()
+	  given UTF-8 string equivalents of WACS_xxx symbols.
+	+ minor fixes to several manpages based on groff -ww output.
+	+ add descriptions of external variables of termcap interface to
+	  the manpage (report by Bruce Evans <bde@zeta.org.au>).
+	> patches by Bernhard Rosenkraenzer:
+	+ correct configure option --with-bool, which was executed as
+	  --with-ospeed.
+	+ add quotes for parameters of --with-bool and --with-ospeed configure
+	  options.
+	> patch by Sven Verdoolaege (report by Gerhard Haering
+	  <haering_linux@gmx.de>):
+	+ correct typos in definitions of several wide-character macros: 
+	  waddwstr, wgetbkgrnd, mvaddwstr, mvwadd_wchnstr, mvwadd_wchnstr,
+	  mvwaddwstr.
+	+ pass $(CPPFLAGS) to MKlib_gen.sh, thereby fixing a missing definition
+	  of _XOPEN_SOURCE_EXTENDED, e.g., on Solaris
 
 20020209
 	+ implement wide-acs characters for UTF-8 locales.  When in UTF-8

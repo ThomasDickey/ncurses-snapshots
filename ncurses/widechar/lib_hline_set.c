@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 2002 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,96 +27,53 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
+ *  Author: Thomas Dickey 2002                                              *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.26 2002/02/16 18:06:28 tom Exp $ */
 
-#if HAVE_CONFIG_H
-#include <ncurses_cfg.h>
-#else
-#define HAVE_CURSES_VERSION 0
-#define HAVE_RESIZETERM 0
-#define HAVE_USE_DEFAULT_COLORS 0
-#define HAVE_WRESIZE 0
-#endif
+/*
+**	lib_hline_set.c
+**
+**	The routine whline_set().
+**
+*/
 
-#ifndef HAVE_NC_ALLOC_H
-#define HAVE_NC_ALLOC_H 0
-#endif
+#include <curses.priv.h>
 
-#ifndef HAVE_LOCALE_H
-#define HAVE_LOCALE_H 0
-#endif
+MODULE_ID("$Id: lib_hline_set.c,v 1.1 2002/02/16 21:57:11 tom Exp $")
 
-#ifndef NCURSES_NOMACROS
-#define NCURSES_NOMACROS 0
-#endif
+NCURSES_EXPORT(int)
+whline_set(WINDOW *win, const cchar_t * ch, int n)
+{
+    int code = ERR;
+    NCURSES_SIZE_T start;
+    NCURSES_SIZE_T end;
 
-#ifndef NEED_PTEM_H
-#define NEED_PTEM_H 0
-#endif
+    T((T_CALLED("whline_set(%p,%s,%d)"), win, _tracecchar_t(ch), n));
 
-#include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
+    if (win) {
+	struct ldat *line = &(win->_line[win->_cury]);
+	NCURSES_CH_T wch;
 
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+	start = win->_curx;
+	end = start + n - 1;
+	if (end > win->_maxx)
+	    end = win->_maxx;
 
-#include <curses.h>
+	CHANGED_RANGE(line, start, end);
 
-#ifndef NCURSES_CH_T
-#define NCURSES_CH_T chtype
-#endif
+	if (ch == 0)
+	    wch = WACS_HLINE;
+	else
+	    wch = *ch;
+	wch = _nc_render(win, wch);
 
-#if NCURSES_NOMACROS
-#include <nomacros.h>
-#endif
+	while (end >= start) {
+	    line->text[end] = wch;
+	    end--;
+	}
 
-#if HAVE_GETOPT_H
-#include <getopt.h>
-#else
-/* 'getopt()' may be prototyped in <stdlib.h>, but declaring its variables
- * doesn't hurt.
- */
-extern char *optarg;
-extern int optind;
-#endif /* HAVE_GETOPT_H */
-
-#ifndef GCC_NORETURN
-#define GCC_NORETURN /* nothing */
-#endif
-#ifndef GCC_UNUSED
-#define GCC_UNUSED /* nothing */
-#endif
-
-#define UChar(c)    ((unsigned char)(c))
-
-#define SIZEOF(table)	(sizeof(table)/sizeof(table[0]))
-
-#if defined(NCURSES_VERSION) && HAVE_NC_ALLOC_H
-#include <nc_alloc.h>
-#else
-#define typeMalloc(type,n) (type *) malloc((n) * sizeof(type))
-#define typeRealloc(type,n,p) (type *) realloc(p, (n) * sizeof(type))
-#endif
-
-#ifndef ExitProgram
-#define ExitProgram(code) exit(code)
-#endif
-
-#ifndef EXIT_SUCCESS
-#define EXIT_SUCCESS 0
-#endif
-#ifndef EXIT_FAILURE
-#define EXIT_FAILURE 1
-#endif
-
-/* Use this to quiet gcc's -Wwrite-strings warnings, but accommodate SVr4
- * curses which doesn't have const parameters declared (so far) in the places
- * that XSI shows.
- */
-#ifndef NCURSES_CONST
-#define NCURSES_CONST /* nothing */
-#endif
+	_nc_synchook(win);
+	code = OK;
+    }
+    returnCode(code);
+}

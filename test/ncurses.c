@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.153 2002/02/10 01:34:39 tom Exp $
+$Id: ncurses.c,v 1.157 2002/02/17 00:21:42 tom Exp $
 
 ***************************************************************************/
 
@@ -1029,6 +1029,27 @@ show_upper_chars(int first)
     }
 }
 
+static void
+show_box_chars(void)
+{
+    erase();
+    attron(A_BOLD);
+    mvaddstr(0, 20, "Display of the ACS Line-Drawing Set");
+    attroff(A_BOLD);
+    refresh();
+    box(stdscr, 0, 0);
+    /* *INDENT-OFF* */
+    mvhline(LINES / 2, 0,        ACS_HLINE, COLS);
+    mvvline(0,         COLS / 2, ACS_VLINE, LINES);
+    mvaddch(0,         COLS / 2, ACS_TTEE);
+    mvaddch(LINES / 2, COLS / 2, ACS_PLUS);
+    mvaddch(LINES - 1, COLS / 2, ACS_BTEE);
+    mvaddch(LINES / 2, 0,        ACS_LTEE);
+    mvaddch(LINES / 2, COLS - 1, ACS_RTEE);
+    /* *INDENT-ON* */
+
+}
+
 static int
 show_1_acs(int n, const char *name, chtype code)
 {
@@ -1103,6 +1124,9 @@ acs_display(void)
 	case 'a':
 	    show_acs_chars();
 	    break;
+	case 'b':
+	    show_box_chars();
+	    break;
 	case '0':
 	case '1':
 	case '2':
@@ -1113,7 +1137,7 @@ acs_display(void)
 	mvprintw(LINES - 3, 0,
 		 "Note: ANSI terminals may not display C1 characters.");
 	mvprintw(LINES - 2, 0,
-		 "Select: a=ACS, 0=C1, 1,2,3=GR characters, q=quit");
+		 "Select: a=ACS, b=box, 0=C1, 1,2,3=GR characters, q=quit");
 	refresh();
     } while ((c = Getchar()) != 'x' && c != 'q');
 
@@ -1126,6 +1150,7 @@ acs_display(void)
 static void
 show_upper_widechars(int first)
 {
+    cchar_t temp;
     int code;
     int last = first + 31;
 
@@ -1141,7 +1166,9 @@ show_upper_widechars(int first)
 	char tmp[80];
 	sprintf(tmp, "%3d (0x%x)", code, code);
 	mvprintw(row, col, "%*s: ", COLS / 4, tmp);
-	echochar(code);
+	memset(&temp, 0, sizeof(temp));
+	temp.chars[0] = code;
+	echo_wchar(&temp);
     }
 }
 
@@ -1210,6 +1237,92 @@ show_wacs_chars(void)
 }
 
 static void
+show_wbox_chars(void)
+{
+    erase();
+    attron(A_BOLD);
+    mvaddstr(0, 20, "Display of the Wide-ACS Line-Drawing Set");
+    attroff(A_BOLD);
+    refresh();
+    box_set(stdscr, 0, 0);
+    /* *INDENT-OFF* */
+    mvhline_set(LINES / 2, 0,        &WACS_HLINE, COLS);
+    mvvline_set(0,         COLS / 2, &WACS_VLINE, LINES);
+    mvadd_wch(0,           COLS / 2, &WACS_TTEE);
+    mvadd_wch(LINES / 2,   COLS / 2, &WACS_PLUS);
+    mvadd_wch(LINES - 1,   COLS / 2, &WACS_BTEE);
+    mvadd_wch(LINES / 2,   0,        &WACS_LTEE);
+    mvadd_wch(LINES / 2,   COLS - 1, &WACS_RTEE);
+    /* *INDENT-ON* */
+
+}
+
+static int
+show_2_wacs(int n, const char *name, char *code)
+{
+    const int height = 16;
+    int row = 4 + (n % height);
+    int col = (n / height) * COLS / 2;
+    mvprintw(row, col, "%*s : ", COLS / 4, name);
+    addstr(code);
+    return n + 1;
+}
+
+static void
+show_utf8_chars(void)
+/* display the wide-ACS character set */
+{
+    int n;
+
+#define BOTH2(name) #name, &(name)
+
+    erase();
+    attron(A_BOLD);
+    mvaddstr(0, 20, "Display of the Wide-ACS Character Set");
+    attroff(A_BOLD);
+    refresh();
+    /* *INDENT-OFF* */
+    n = show_2_wacs(0, "WACS_ULCORNER",	"\342\224\214");
+    n = show_2_wacs(n, "WACS_URCORNER",	"\342\224\220");
+    n = show_2_wacs(n, "WACS_LLCORNER",	"\342\224\224");
+    n = show_2_wacs(n, "WACS_LRCORNER",	"\342\224\230");
+
+    n = show_2_wacs(n, "WACS_LTEE",	"\342\224\234");
+    n = show_2_wacs(n, "WACS_RTEE",	"\342\224\244");
+    n = show_2_wacs(n, "WACS_TTEE",	"\342\224\254");
+    n = show_2_wacs(n, "WACS_BTEE",	"\342\224\264");
+
+    n = show_2_wacs(n, "WACS_HLINE",	"\342\224\200");
+    n = show_2_wacs(n, "WACS_VLINE",	"\342\224\202");
+
+    n = show_2_wacs(n, "WACS_LARROW",	"\342\206\220");
+    n = show_2_wacs(n, "WACS_RARROW",	"\342\206\222");
+    n = show_2_wacs(n, "WACS_UARROW",	"\342\206\221");
+    n = show_2_wacs(n, "WACS_DARROW",	"\342\206\223");
+
+    n = show_2_wacs(n, "WACS_STERLING",	"\302\243");
+
+    n = show_2_wacs(n, "WACS_BLOCK",	"\342\226\256");
+    n = show_2_wacs(n, "WACS_BOARD",	"\342\226\222");
+    n = show_2_wacs(n, "WACS_LANTERN",	"\342\230\203");
+    n = show_2_wacs(n, "WACS_BULLET",	"\302\267");
+    n = show_2_wacs(n, "WACS_CKBOARD",	"\342\226\222");
+    n = show_2_wacs(n, "WACS_DEGREE",	"\302\260");
+    n = show_2_wacs(n, "WACS_DIAMOND",	"\342\227\206");
+    n = show_2_wacs(n, "WACS_GEQUAL",	"\342\211\245");
+    n = show_2_wacs(n, "WACS_NEQUAL",	"\342\211\240");
+    n = show_2_wacs(n, "WACS_LEQUAL",	"\342\211\244");
+    n = show_2_wacs(n, "WACS_PLMINUS",	"\302\261");
+    n = show_2_wacs(n, "WACS_PLUS",	"\342\224\274");
+    n = show_2_wacs(n, "WACS_PI",	"\317\200");
+    n = show_2_wacs(n, "WACS_S1",	"\342\216\272");
+    n = show_2_wacs(n, "WACS_S3",	"\342\216\273");
+    n = show_2_wacs(n, "WACS_S7",	"\342\216\274");
+    n = show_2_wacs(n, "WACS_S9",	"\342\216\275");
+    /* *INDENT-OFF* */
+}
+
+static void
 wide_acs_display(void)
 {
     int c = 'a';
@@ -1219,15 +1332,19 @@ wide_acs_display(void)
 	case 'a':
 	    show_wacs_chars();
 	    break;
-	case '0':
-	case '1':
-	case '2':
-	case '3':
-	    show_upper_widechars((c - '0') * 32 + 128);
+	case 'b':
+	    show_wbox_chars();
+	    break;
+	case 'u':
+	    show_utf8_chars();
+	    break;
+	default:
+	    if (isdigit(c))
+		show_upper_widechars((c - '0') * 32 + 128);
 	    break;
 	}
 	mvprintw(LINES - 2, 0,
-		 "Select: a=WACS, 0,1,2,3=GR characters, q=quit");
+		 "Select: a WACS, b box, u UTF-8, 0-9 non-ASCII characters, q=quit");
 	refresh();
     } while ((c = Getchar()) != 'x' && c != 'q');
 
@@ -3755,7 +3872,7 @@ main(int argc, char *argv[])
 	(void) puts("d = edit RGB color values");
 	(void) puts("e = exercise soft keys");
 	(void) puts("f = display ACS characters");
-#ifdef _XOPEN_SOURCE_EXTENDED
+#if defined(_XOPEN_SOURCE_EXTENDED) && defined(WACS_ULCORNER)
 	(void) puts("F = display Wide-ACS characters");
 #endif
 	(void) puts("g = display windows and scrolling");

@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.49 2002/01/19 22:49:17 tom Exp $
+.\" $Id: ncurses.3x,v 1.50 2002/02/16 22:45:21 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
@@ -228,7 +228,9 @@ beep/\fBcurs_beep\fR(3X)
 bkgd/\fBcurs_bkgd\fR(3X)
 bkgdset/\fBcurs_bkgd\fR(3X)
 border/\fBcurs_border\fR(3X)
+border_set/\fBcurs_border_set\fR(3X)
 box/\fBcurs_border\fR(3X)
+box_set/\fBcurs_border_set\fR(3X)
 can_change_color/\fBcurs_color\fR(3X)
 cbreak/\fBcurs_inopts\fR(3X)
 chgat/\fBcurs_attr\fR(3X)
@@ -280,6 +282,7 @@ has_ic/\fBcurs_termattrs\fR(3X)
 has_il/\fBcurs_termattrs\fR(3X)
 has_key/\fBcurs_getch\fR(3X)*
 hline/\fBcurs_border\fR(3X)
+hline_set/\fBcurs_border_set\fR(3X)
 idcok/\fBcurs_outopts\fR(3X)
 idlok/\fBcurs_outopts\fR(3X)
 immedok/\fBcurs_outopts\fR(3X)
@@ -327,6 +330,7 @@ mvgetch/\fBcurs_getch\fR(3X)
 mvgetnstr/\fBcurs_getstr\fR(3X)
 mvgetstr/\fBcurs_getstr\fR(3X)
 mvhline/\fBcurs_border\fR(3X)
+mvhline_set/\fBcurs_border_set\fR(3X)
 mvinch/\fBcurs_inch\fR(3X)
 mvinchnstr/\fBcurs_inchstr\fR(3X)
 mvinchstr/\fBcurs_inchstr\fR(3X)
@@ -338,6 +342,7 @@ mvinstr/\fBcurs_instr\fR(3X)
 mvprintw/\fBcurs_printw\fR(3X)
 mvscanw/\fBcurs_scanw\fR(3X)
 mvvline/\fBcurs_border\fR(3X)
+mvvline_set/\fBcurs_border_set\fR(3X)
 mvwadd_wch/\fBcurs_add_wch\fR(3X)
 mvwaddch/\fBcurs_addch\fR(3X)
 mvwaddchnstr/\fBcurs_addchstr\fR(3X)
@@ -350,6 +355,7 @@ mvwgetch/\fBcurs_getch\fR(3X)
 mvwgetnstr/\fBcurs_getstr\fR(3X)
 mvwgetstr/\fBcurs_getstr\fR(3X)
 mvwhline/\fBcurs_border\fR(3X)
+mvwhline_set/\fBcurs_border_set\fR(3X)
 mvwin/\fBcurs_window\fR(3X)
 mvwinch/\fBcurs_inch\fR(3X)
 mvwinchnstr/\fBcurs_inchstr\fR(3X)
@@ -362,6 +368,7 @@ mvwinstr/\fBcurs_instr\fR(3X)
 mvwprintw/\fBcurs_printw\fR(3X)
 mvwscanw/\fBcurs_scanw\fR(3X)
 mvwvline/\fBcurs_border\fR(3X)
+mvwvline_set/\fBcurs_border_set\fR(3X)
 napms/\fBcurs_kernel\fR(3X)
 newpad/\fBcurs_pad\fR(3X)
 newterm/\fBcurs_initscr\fR(3X)
@@ -459,6 +466,7 @@ use_extended_names/\fBcurs_extend\fR(3X)*
 vidattr/\fBcurs_terminfo\fR(3X)
 vidputs/\fBcurs_terminfo\fR(3X)
 vline/\fBcurs_border\fR(3X)
+vline_set/\fBcurs_border_set\fR(3X)
 vw_printw/\fBcurs_printw\fR(3X)
 vw_scanw/\fBcurs_scanw\fR(3X)
 vwprintw/\fBcurs_printw\fR(3X)
@@ -479,6 +487,7 @@ wattrset/\fBcurs_attr\fR(3X)
 wbkgd/\fBcurs_bkgd\fR(3X)
 wbkgdset/\fBcurs_bkgd\fR(3X)
 wborder/\fBcurs_border\fR(3X)
+wborder_set/\fBcurs_border_set\fR(3X)
 wchgat/\fBcurs_attr\fR(3X)
 wclear/\fBcurs_clear\fR(3X)
 wclrtobot/\fBcurs_clear\fR(3X)
@@ -495,6 +504,7 @@ wgetch/\fBcurs_getch\fR(3X)
 wgetnstr/\fBcurs_getstr\fR(3X)
 wgetstr/\fBcurs_getstr\fR(3X)
 whline/\fBcurs_border\fR(3X)
+whline_set/\fBcurs_border_set\fR(3X)
 winch/\fBcurs_inch\fR(3X)
 winchnstr/\fBcurs_inchstr\fR(3X)
 winchstr/\fBcurs_inchstr\fR(3X)
@@ -522,6 +532,7 @@ wsyncup/\fBcurs_window\fR(3X)
 wtimeout/\fBcurs_inopts\fR(3X)
 wtouchln/\fBcurs_touch\fR(3X)
 wvline/\fBcurs_border\fR(3X)
+wvline_set/\fBcurs_border_set\fR(3X)
 .TE
 .SH RETURN VALUE
 Routines that return an integer return \fBERR\fR upon failure and an
@@ -776,15 +787,12 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBaddwstr\fP,
 \fBbkgrnd\fP,
 \fBbkgrndset\fP,
-\fBborder_set\fP,
-\fBbox_set\fP,
 \fBerasewchar\fP,
 \fBget_wch\fP,
 \fBget_wstr\fP,
 \fBgetbkgrnd\fP,
 \fBgetn_wstr\fP,
 \fBgetwchtype\fP,
-\fBhline_set\fP,
 \fBin_wch\fP,
 \fBin_wchnstr\fP,
 \fBin_wchstr\fP,
@@ -804,7 +812,6 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBmvget_wch\fP,
 \fBmvget_wstr\fP,
 \fBmvgetn_wstr\fP,
-\fBmvhline_set\fP,
 \fBmvin_wch\fP,
 \fBmvinnwstr\fP,
 \fBmvins_nwstr\fP,
@@ -814,7 +821,6 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBmvinwchstr\fP,
 \fBmvinwchstr\fP,
 \fBmvinwstr\fP,
-\fBmvvline_set\fP,
 \fBmvwadd_wchnstr\fP,
 \fBmvwadd_wchstr\fP,
 \fBmvwaddnwstr\fP,
@@ -823,7 +829,6 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBmvwget_wch\fP,
 \fBmvwget_wstr\fP,
 \fBmvwgetn_wstr\fP,
-\fBmvwhline_set\fP,
 \fBmvwin_wch\fP,
 \fBmvwin_wchnstr\fP,
 \fBmvwin_wchstr\fP,
@@ -833,15 +838,12 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBmvwins_wstr\fP,
 \fBmvwinwchnstr\fP.
 \fBmvwinwstr\fP,
-\fBmvwvline_set\fP,
 \fBpecho_wchar\fP,
 \fBslk_wset\fP,
 \fBterm_attrs\fP,
 \fBunget_wch\fP,
-\fBvhline_set\fP,
 \fBvid_attr\fP,
 \fBvid_puts\fP,
-\fBvline_set\fP,
 \fBwadd_wchnstr\fP,
 \fBwadd_wchstr\fP,
 \fBwaddnwstr\fP,
@@ -850,12 +852,10 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBwbkgrnd\fP,
 \fBwbkgrndset\fP,
 \fBwbkgrndset\fP,
-\fBwborder_set\fP,
 \fBwget_wch\fP,
 \fBwget_wstr\fP,
 \fBwgetbkgrnd\fP,
 \fBwgetn_wstr\fP,
-\fBwhline_set\fP,
 \fBwin_wch\fP,
 \fBwin_wchnstr\fP,
 \fBwin_wchstr\fP,
@@ -867,7 +867,6 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBwinwchstr\fP,
 \fBwinwstr\fP,
 \fBwunctrl\fP,
-\fBwvline_set\fP,
 .PP
 A small number of local differences (that is, individual differences between
 the XSI Curses and \fBncurses\fR calls) are described in \fBPORTABILITY\fR
