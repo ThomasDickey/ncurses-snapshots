@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.206 2000/07/01 20:37:36 tom Exp $
+dnl $Id: aclocal.m4,v 1.207 2000/07/04 13:18:02 Peter.Wemm Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1732,16 +1732,16 @@ AC_DEFUN([CF_SHARED_OPTS],
 		fi
 		;;
 	openbsd2*)
-		CC_SHARED_OPTS='$CC_SHARED_OPTS -DPIC'
+		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
 		MK_SHARED_LIB='$(LD) -Bshareable -soname,`basename $[@].$(ABI_VERSION)` -o $[@]'
 		;;
 	openbsd*|freebsd*)
-		CC_SHARED_OPTS='$CC_SHARED_OPTS -DPIC'
+		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
 		MK_SHARED_LIB='$(LD) -Bshareable -o $[@]'
 		test $cf_cv_shlib_version = auto && cf_cv_shlib_version=rel
 		;;
 	netbsd*)
-		CC_SHARED_OPTS='$CC_SHARED_OPTS -DPIC'
+		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
 		test $cf_cv_ld_rpath = yes && cf_ld_rpath_opt="-Wl,-rpath,"
 		if test $DFT_LWR_MODEL = "shared" && test $cf_cv_ld_rpath = yes ; then
 			LOCAL_LDFLAGS='-Wl,-rpath,../lib'

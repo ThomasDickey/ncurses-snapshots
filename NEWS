@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.568 2000/07/02 01:16:51 tom Exp $
+-- $Id: NEWS,v 1.570 2000/07/04 21:50:00 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000704 5.1 release for upload to ftp.gnu.org
+	+ correct quoting of values for CC_SHARED_OPTS in aclocal.m4 for
+	  cases openbsd2*, openbsd*, freebsd* and netbsd* (patch by Peter
+	  Wemm) (err in 20000610).
+	+ minor updates to release notes, as well as adding/updating URLs for
+	  examples cited in announce.html
+	> several fixes from Philippe Blain <philippe.blain2@freesbee.fr>:
+	+ correct placement of ifdef for NCURSES_XNAMES in function
+	  _nc_free_termtype(), fixes a memory leak.
+	+ add a call to _nc_synchook() to the end of function whline() like
+	  that in wvline() (difference was in 1.9.4).
+	+ make ClearScreen() a little faster by moving two instances of
+	  UpdateAttr() out of for-loops.
+	+ simplify ClrBottom() by eliminating the tstLine data, using for-loops
+	  (cf: 960428).
 
 20000701 pre-release
 	+ change minor version to 1, i.e., ncurses 5.1

@@ -70,7 +70,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.139 2000/06/24 23:45:17 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.141 2000/07/04 21:01:40 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -922,53 +922,38 @@ ClrToEOS(chtype blank)
 static int
 ClrBottom(int total)
 {
-    static chtype *tstLine;
-    static size_t lenLine;
-
     int row;
-    size_t col;
+    int col;
     int top = total;
     int last = min(screen_columns, newscr->_maxx + 1);
-    size_t length = sizeof(chtype) * last;
-    chtype blank = newscr->_line[total - 1].text[last - 1];	/* lower right char */
+    chtype blank = ClrBlank(stdscr);
+    bool ok;
 
-    if (!clr_eos || !can_clear_with(blank))
-	return total;
+    if (clr_eos && can_clear_with(blank)) {
 
-    if ((tstLine == 0) || (last > (int) lenLine)) {
-	tstLine = typeRealloc(chtype, last, tstLine);
-	if (tstLine == 0)
-	    return total;
-	lenLine = last;
-	tstLine[0] = ~blank;	/* force the fill below */
-    }
-    if (tstLine[0] != blank) {
-	for (col = 0; col < lenLine; col++)
-	    tstLine[col] = blank;
-    }
+	for (row = total - 1; row >= 0; row--) {
+	    for (col = 0, ok = TRUE; ok && col < last; col++) {
+		ok = (newscr->_line[row].text[col] == blank);
+	    }
+	    if (!ok) break;
 
-    for (row = total - 1; row >= 0; row--) {
-	if (memcmp(tstLine, newscr->_line[row].text, length))
-	    break;
-	if (memcmp(tstLine, curscr->_line[row].text, length))
-	    top = row;
-    }
+	    for (col = 0; ok && col < last; col++) {
+		ok = (curscr->_line[row].text[col] == blank);
+	    }
+	    if (!ok) top = row;
+	}
 
-    /* don't use clr_eos for just one line if clr_eol available */
-    if (top < total - 1 || (top < total && !clr_eol && !clr_bol)) {
-	GoTo(top, 0);
-	ClrToEOS(blank);
-	total = top;
-	if (SP->oldhash && SP->newhash) {
-	    for (row = top; row < screen_lines; row++)
-		SP->oldhash[row] = SP->newhash[row];
+	/* don't use clr_eos for just one line if clr_eol available */
+	if (top < total - 1 || (top < total && !clr_eol && !clr_bol)) {
+	    GoTo(top, 0);
+	    ClrToEOS(blank);
+	    total = top;
+	    if (SP->oldhash && SP->newhash) {
+		for (row = top; row < screen_lines; row++)
+		    SP->oldhash[row] = SP->newhash[row];
+	    }
 	}
     }
-#if NO_LEAKS
-    if (tstLine != 0) {
-	FreeAndNull(tstLine);
-    }
-#endif
     return total;
 }
 
@@ -1302,18 +1287,18 @@ ClearScreen(chtype blank)
 	} else if (clr_eol) {
 	    SP->_cursrow = SP->_curscol = -1;
 
+	    UpdateAttrs(blank);
 	    for (i = 0; i < screen_lines; i++) {
 		GoTo(i, 0);
-		UpdateAttrs(blank);
 		TPUTS_TRACE("clr_eol");
 		putp(clr_eol);
 	    }
 	    GoTo(0, 0);
 	}
     } else {
+	UpdateAttrs(blank);
 	for (i = 0; i < screen_lines; i++) {
 	    GoTo(i, 0);
-	    UpdateAttrs(blank);
 	    for (j = 0; j < screen_columns; j++)
 		PutChar(blank);
 	}
