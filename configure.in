@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.317 2004/06/26 22:08:40 tom Exp $
+dnl $Id: configure.in,v 1.318 2004/07/11 13:53:16 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.317 $)
+AC_REVISION($Revision: 1.318 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -385,6 +385,19 @@ AC_ARG_WITH(fallbacks,
 AC_MSG_RESULT($with_fallback)
 FALLBACK_LIST=`echo "$with_fallback" | sed -e 's/,/ /g'`
 AC_SUBST(FALLBACK_LIST)
+
+AC_MSG_CHECKING(if you want modern xterm or antique)
+AC_ARG_WITH(xterm-new,
+	[  --without-xterm-new     specify if xterm terminfo should be old version],
+	[with_xterm_new=$withval],
+	[with_xterm_new=yes])
+case $with_xterm_new in
+no)	with_xterm_new=xterm-old;;
+*)	with_xterm_new=xterm-new;;
+esac
+AC_MSG_RESULT($with_xterm_new)
+WHICH_XTERM=$with_xterm_new
+AC_SUBST(WHICH_XTERM)
 
 MAKE_TERMINFO=
 if test "$use_database" = no ; then

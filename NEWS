@@ -1,10 +1,13 @@
--- $Id: NEWS,v 1.825 2004/07/10 22:37:11 tom Exp $
+-- $Id: NEWS,v 1.826 2004/07/11 15:05:59 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040711
+	+ add configure option --without-xterm-new
 
 20040710
 	+ add check in wget_wch() for printable bytes that are not part of a

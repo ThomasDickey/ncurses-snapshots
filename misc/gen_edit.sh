@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.23 2004/07/11 14:22:55 tom Exp $
+#!/bin/sh
 ##############################################################################
-# Copyright (c) 1998 Free Software Foundation, Inc.                          #
+# Copyright (c) 2004 Free Software Foundation, Inc.                          #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -27,70 +27,32 @@
 # authorization.                                                             #
 ##############################################################################
 #
-# Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
+# Author: Thomas E. Dickey
 #
-# Master Makefile for ncurses library.
+# $Id: gen_edit.sh,v 1.1 2004/07/11 15:01:29 tom Exp $
+# Generate a sed-script for converting the terminfo.src to the form which will
+# be installed.
+#
+# Assumes:
+#	The leaf directory names (lib, tabset, terminfo)
+#
 
-SHELL = /bin/sh
+: ${ticdir=@TERMINFO@}
+: ${xterm_new=@WHICH_XTERM@}
 
-DESTDIR=@DESTDIR@
-CF_MFLAGS = @cf_cv_makeflags@ DESTDIR="$(DESTDIR)"
+# If we're not installing into /usr/share/, we'll have to adjust the location
+# of the tabset files in terminfo.src (which are in a parallel directory).
+TABSET=`echo $ticdir | sed -e 's%/terminfo$%/tabset%'`
+if test "x$TABSET" != "x/usr/share/tabset" ; then
+cat <<EOF
+s%/usr/share/tabset%$TABSET%g
+EOF
+fi
 
-@SET_MAKE@
-
-NCURSES_MAJOR	= @NCURSES_MAJOR@
-NCURSES_MINOR	= @NCURSES_MINOR@
-NCURSES_PATCH	= @NCURSES_PATCH@
-
-prefix		= @prefix@
-exec_prefix	= @exec_prefix@
-
-bindir		= @bindir@
-ticdir		= @TERMINFO@
-includedir	= @includedir@
-libdir		= @libdir@
-mandir		= @mandir@
-
-INSTALL		= @INSTALL@
-INSTALL_DATA	= @INSTALL_DATA@
-
-DIRS_TO_MAKE	= @DIRS_TO_MAKE@
-
-all ::	$(DIRS_TO_MAKE)
-
-$(DIRS_TO_MAKE) :
-	mkdir $@
-
-preinstall :
-	@ echo ''
-	@ echo '** Configuration summary for NCURSES $(NCURSES_MAJOR).$(NCURSES_MINOR) $(NCURSES_PATCH):'
-	@ echo ''
-	@ echo '     extended funcs: '`test @NCURSES_EXT_FUNCS@ != 0 && echo yes || echo no`
-	@ echo '     xterm terminfo: '@WHICH_XTERM@
-	@ echo ''
-	@ echo '      bin directory: '$(bindir)
-	@ echo '      lib directory: '$(libdir)
-	@ echo '  include directory: '$(includedir)
-	@ echo '      man directory: '$(mandir)
-@MAKE_TERMINFO@	@ echo ' terminfo directory: '$(ticdir)
-	@ echo ''
-	@ test "$(includedir)" = "$(prefix)/include" || \
-		echo '** Include-directory is not in a standard location'
-	@ test ! -f $(includedir)/termcap.h || \
-		fgrep NCURSES_VERSION $(includedir)/termcap.h >/dev/null || \
-		echo '** Will overwrite non-ncurses termcap.h'
-	@ test ! -f $(includedir)/curses.h || \
-		fgrep NCURSES_VERSION $(includedir)/curses.h >/dev/null || \
-		echo '** Will overwrite non-ncurses curses.h'
-
-# Put the common rules here so that we can easily construct the list of
-# directories to visit.
-all \
-clean \
-distclean \
-mostlyclean \
-realclean \
-depend \
-sources \
-uninstall \
-install ::
+if test "$xterm_new" != "xterm-new" ; then
+cat <<EOF
+/^# This is xterm for ncurses/,/^$/{
+	s/use=xterm-new,/use=$WHICH_XTERM,/
+}
+EOF
+fi
