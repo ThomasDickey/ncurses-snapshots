@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.385 1998/11/01 01:03:46 tom Exp $
+-- $Id: NEWS,v 1.386 1998/11/08 01:33:41 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+981107
+	+ ifdef'd out lib_freeall.c when not configured.
+	+ rename _tracebits() to _nc_tracebits().
+	+ move terminfo-library sources into ncurses/tinfo, and trace-support
+	  functions into ncurses/trace as part of Alexander Lukyanov's proposed
+	  changes to ncurses library.
+	+ modify generated term.h to always specify its own definitions for
+	  HAVE_TERMIOS_H, etc., to guard against inclusion by programs with
+	  broken configure scripts.
 
 981031
 	+ modify terminfo parsing to accept octal and hexadecimal constants,

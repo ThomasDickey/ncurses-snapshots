@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.68 1998/09/05 22:03:59 tom Exp $ */
+/* $Id: curses.h.in,v 1.70 1998/11/08 00:22:56 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -62,9 +62,8 @@
 #define NCURSES_ATTR_T int
 #endif
 
-#ifndef NCURSES_CONST
+#undef  NCURSES_CONST
 #define NCURSES_CONST @NCURSES_CONST@
-#endif
 
 typedef unsigned @cf_cv_typeof_chtype@ chtype;
 
@@ -1300,7 +1299,7 @@ extern void _tracef(const char *, ...) GCC_PRINTFLIKE(1,2);
 extern void _tracedump(const char *, WINDOW *);
 extern char *_traceattr(attr_t);
 extern char *_traceattr2(int, chtype);
-extern char *_tracebits(void);
+extern char *_nc_tracebits(void);
 extern char *_tracechar(const unsigned char);
 extern char *_tracechtype(chtype);
 extern char *_tracechtype2(int, chtype);
