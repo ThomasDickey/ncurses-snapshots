@@ -49,7 +49,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_raw.c,v 1.25 1998/02/11 12:13:59 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.26 1998/04/11 23:00:07 tom Exp $")
 
 #if defined(SVR4_TERMIO) && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
@@ -288,7 +288,7 @@ int cbreak(void)
 	returnCode(_nc_set_curterm( &cur_term->Nttyb));
 }
 
-int qiflush(void)
+void qiflush(void)
 {
 	T((T_CALLED("qiflush()")));
 
@@ -301,9 +301,8 @@ int qiflush(void)
 	BEFORE("qiflush");
 	cur_term->Nttyb.c_lflag &= ~(NOFLSH);
 	AFTER("qiflush");
-	returnCode(_nc_set_curterm( &cur_term->Nttyb));
-#else
-	returnCode(ERR);
+	(void)_nc_set_curterm( &cur_term->Nttyb);
+	returnVoid;
 #endif
 }
 
@@ -352,7 +351,7 @@ int nocbreak(void)
 	returnCode(_nc_set_curterm( &cur_term->Nttyb));
 }
 
-int noqiflush(void)
+void noqiflush(void)
 {
 	T((T_CALLED("noqiflush()")));
 
@@ -365,9 +364,8 @@ int noqiflush(void)
 	BEFORE("noqiflush");
 	cur_term->Nttyb.c_lflag |= NOFLSH;
 	AFTER("noqiflush");
-	returnCode(_nc_set_curterm( &cur_term->Nttyb));
-#else
-	returnCode(ERR);
+	(void)_nc_set_curterm( &cur_term->Nttyb);
+	returnVoid;
 #endif
 }
 

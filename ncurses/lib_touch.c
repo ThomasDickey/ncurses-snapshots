@@ -43,9 +43,9 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_touch.c,v 1.5 1998/02/11 12:13:54 tom Exp $")
+MODULE_ID("$Id: lib_touch.c,v 1.6 1998/04/11 22:55:02 tom Exp $")
 
-int is_linetouched(WINDOW *win, int line)
+bool is_linetouched(WINDOW *win, int line)
 {
 	T((T_CALLED("is_linetouched(%p,%d)"), win, line));
 
@@ -56,7 +56,7 @@ int is_linetouched(WINDOW *win, int line)
 	returnCode(win->_line[line].firstchar != _NOCHANGE ? TRUE : FALSE);
 }
 
-int is_wintouched(WINDOW *win)
+bool is_wintouched(WINDOW *win)
 {
 int i;
 

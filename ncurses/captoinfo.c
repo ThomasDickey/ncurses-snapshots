@@ -94,7 +94,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.17 1998/02/11 12:13:54 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.18 1998/04/04 19:07:53 juergen Exp $")
 
 #define MAX_PUSHED	16	/* max # args we can push onto the stack */
 #define MAX_ENTRY	2048	/* maximum chars in a translated capability */
@@ -154,11 +154,12 @@ static void push(void)
 static void pop(void)
 /* pop the top of the stack into onstack */
 {
-    if (stackptr == 0)
+    if (stackptr == 0) {
 	if (onstack == 0)
 	    _nc_warning("I'm confused");
 	else
 	    onstack = 0;
+    }
     else
 	onstack = stack[--stackptr];
     param++;
@@ -374,13 +375,14 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 			*dp++ = '%'; *dp++ = '/';
 			break;
 		    case '=':
-			if (seenr)
+		        if (seenr) {
 			    if (param == 1)
 				onstack = 2;
 			    else if (param == 2)
 				onstack = 1;
 			    else
 				onstack = param;
+                        }
 			else
 			    onstack = param;
 			break;

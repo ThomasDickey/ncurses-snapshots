@@ -38,7 +38,7 @@
 #include <curses.priv.h>
 #include <term.h>	  /* num_labels, label_*, plab_norm */
 
-MODULE_ID("$Id: lib_slkrefr.c,v 1.4 1998/02/11 12:13:56 tom Exp $")
+MODULE_ID("$Id: lib_slkrefr.c,v 1.5 1998/04/04 19:08:36 juergen Exp $")
 
 /*
  * Write the soft labels to the soft-key window.
@@ -77,7 +77,7 @@ int i;
 	slk->dirty = FALSE;
 
 #ifdef num_labels
-	if (num_labels > 0)
+	if (num_labels > 0) {
 	    if (slk->hidden)
 	    {
 		TPUTS_TRACE("label_off");
@@ -88,6 +88,7 @@ int i;
 		TPUTS_TRACE("label_on");
 		putp(label_on);
 	    }
+	}
 #endif /* num_labels */
 }
 

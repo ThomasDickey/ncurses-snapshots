@@ -41,9 +41,9 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_isendwin.c,v 1.3 1998/02/11 12:13:53 tom Exp $")
+MODULE_ID("$Id: lib_isendwin.c,v 1.4 1998/04/11 22:52:32 tom Exp $")
 
-int isendwin(void)
+bool isendwin(void)
 {
 	if (SP == NULL)
 		return FALSE;

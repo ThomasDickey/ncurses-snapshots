@@ -37,9 +37,9 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_ti.c,v 1.9 1998/02/11 12:14:00 tom Exp $")
+MODULE_ID("$Id: lib_ti.c,v 1.10 1998/04/11 23:00:27 tom Exp $")
 
-int tigetflag(const char *str)
+int tigetflag(NCURSES_CONST char *str)
 {
 int i;
 
@@ -53,7 +53,7 @@ int i;
 	return ABSENT_BOOLEAN;
 }
 
-int tigetnum(const char *str)
+int tigetnum(NCURSES_CONST char *str)
 {
 int i;
 
@@ -67,7 +67,7 @@ int i;
 	return CANCELLED_NUMERIC;
 }
 
-char *tigetstr(const char *str)
+char *tigetstr(NCURSES_CONST char *str)
 {
 int i;
 

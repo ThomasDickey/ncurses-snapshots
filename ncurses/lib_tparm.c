@@ -41,7 +41,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.23 1998/03/28 19:54:43 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.24 1998/04/11 23:00:43 tom Exp $")
 
 /*
  *	char *
@@ -530,7 +530,7 @@ register const char *cp;
 	return(out_buff);
 }
 
-char *tparm(const char *string, ...)
+char *tparm(NCURSES_CONST char *string, ...)
 {
 va_list	ap;
 char *result;

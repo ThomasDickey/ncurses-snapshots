@@ -41,9 +41,9 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_wattroff.c,v 1.2 1998/02/11 12:13:56 tom Exp $")
+MODULE_ID("$Id: lib_wattroff.c,v 1.3 1998/04/11 22:55:40 tom Exp $")
 
-int wattr_off(WINDOW *win, const attr_t at)
+int wattr_off(WINDOW *win, const attr_t at, void *opts GCC_UNUSED)
 {
 	T((T_CALLED("wattr_off(%p,%s)"), win, _traceattr(at)));
 	if (win) {

@@ -45,7 +45,7 @@
 #include <term.h>	/* padding_baud_rate, xon_xoff */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.30 1998/02/11 12:14:00 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.31 1998/04/04 19:08:49 juergen Exp $")
 
 #define OUTPUT ((SP != 0) ? SP->_ofp : stdout)
 
@@ -117,10 +117,12 @@ char	addrbuf[17];
 			(void) strcpy(addrbuf, "_nc_outch");
 		else
 			(void) sprintf(addrbuf, "%p", outc);
-		if (_nc_tputs_trace)
+		if (_nc_tputs_trace) {
 			TR(TRACE_MAXIMUM, ("tputs(%s = %s, %d, %s) called", _nc_tputs_trace, _nc_visbuf(string), affcnt, addrbuf));
-		else
+		}
+		else {
 			TR(TRACE_MAXIMUM, ("tputs(%s, %d, %s) called", _nc_visbuf(string), affcnt, addrbuf));
+		}
 		_nc_tputs_trace = (char *)NULL;
 	}
 #endif /* TRACE */

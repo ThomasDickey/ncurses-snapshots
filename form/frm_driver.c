@@ -31,7 +31,7 @@
  ****************************************************************************/
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.31 1998/02/11 12:13:45 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.32 1998/04/11 23:04:28 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -844,7 +844,7 @@ static int Display_Or_Erase_Field(FIELD * field, bool bEraseFlag)
       if (field->opts & O_VISIBLE)
 	Set_Field_Window_Attributes(field,win);
       else
-	wattr_set(win,wattr_get(fwin));
+	wattrset(win,wattr_get(fwin));
       werase(win);
     }
 

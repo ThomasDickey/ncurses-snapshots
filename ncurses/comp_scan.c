@@ -49,7 +49,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.31 1998/03/15 17:16:25 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.32 1998/04/04 19:08:09 juergen Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -268,11 +268,12 @@ start_token:
 			 * description field for syntax-checking purposes.
 			 */
 			desc = strrchr(buffer, '|');
-			if (desc)
+			if (desc) {
 			    if (*desc == '\0')
 				_nc_warning("empty longname field");
 			    else if (strchr(desc, ' ') == (char *)NULL)
 				_nc_warning("older tic versions may treat the description field as an alias");
+			}
 			if (!desc)
 			    desc = buffer + strlen(buffer);
 

@@ -39,9 +39,9 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_printw.c,v 1.6 1998/02/11 12:13:55 tom Exp $")
+MODULE_ID("$Id: lib_printw.c,v 1.7 1998/04/11 22:53:44 tom Exp $")
 
-int printw(const char *fmt, ...)
+int printw(NCURSES_CONST char *fmt, ...)
 {
 	va_list argp;
 	int code;
@@ -55,7 +55,7 @@ int printw(const char *fmt, ...)
 	return code;
 }
 
-int wprintw(WINDOW *win, const char *fmt, ...)
+int wprintw(WINDOW *win, NCURSES_CONST char *fmt, ...)
 {
 	va_list argp;
 	int code;
@@ -69,7 +69,7 @@ int wprintw(WINDOW *win, const char *fmt, ...)
 	return code;
 }
 
-int mvprintw(int y, int x, const char *fmt, ...)
+int mvprintw(int y, int x, NCURSES_CONST char *fmt, ...)
 {
 	va_list argp;
 	int code = move(y, x);
@@ -82,7 +82,7 @@ int mvprintw(int y, int x, const char *fmt, ...)
 	return code;
 }
 
-int mvwprintw(WINDOW *win, int y, int x, const char *fmt, ...)
+int mvwprintw(WINDOW *win, int y, int x, NCURSES_CONST char *fmt, ...)
 {
 	va_list argp;
 	int code = wmove(win, y, x);
@@ -95,7 +95,7 @@ int mvwprintw(WINDOW *win, int y, int x, const char *fmt, ...)
 	return code;
 }
 
-int vwprintw(WINDOW *win, const char *fmt, va_list argp)
+int vwprintw(WINDOW *win, NCURSES_CONST char *fmt, va_list argp)
 {
 	char *buf = _nc_printf_string(fmt, argp);
 	int code = ERR;
