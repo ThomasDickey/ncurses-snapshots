@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_def.c,v 1.26 2004/05/30 01:05:38 tom Exp $")
+MODULE_ID("$Id: fld_def.c,v 1.29 2004/12/05 01:33:49 tom Exp $")
 
 /* this can't be readonly */
 static FIELD default_field =
@@ -88,27 +88,31 @@ _nc_Make_Argument(const FIELDTYPE *typ, va_list *ap, int *err)
   TypeArgument *res = (TypeArgument *)0;
   TypeArgument *p;
 
-  if (typ && (typ->status & _HAS_ARGS))
+  if (typ != 0 && (typ->status & _HAS_ARGS) != 0)
     {
-      assert(err && ap);
-      if (typ->status & _LINKED_TYPE)
+      assert(err != 0 && ap != (va_list *)0);
+      if ((typ->status & _LINKED_TYPE) != 0)
 	{
 	  p = (TypeArgument *)malloc(sizeof(TypeArgument));
 
-	  if (p)
+	  if (p != 0)
 	    {
 	      p->left = _nc_Make_Argument(typ->left, ap, err);
 	      p->right = _nc_Make_Argument(typ->right, ap, err);
 	      return p;
 	    }
 	  else
-	    *err += 1;
+	    {
+	      *err += 1;
+	    }
 	}
       else
 	{
-	  assert(typ->makearg);
+	  assert(typ->makearg != (void *)0);
 	  if (!(res = (TypeArgument *)typ->makearg(ap)))
-	    *err += 1;
+	    {
+	      *err += 1;
+	    }
 	}
     }
   return res;
@@ -132,14 +136,14 @@ _nc_Copy_Argument(const FIELDTYPE *typ, const TypeArgument *argp, int *err)
   TypeArgument *res = (TypeArgument *)0;
   TypeArgument *p;
 
-  if (typ && (typ->status & _HAS_ARGS))
+  if (typ != 0 && (typ->status & _HAS_ARGS) != 0)
     {
-      assert(err && argp);
-      if (typ->status & _LINKED_TYPE)
+      assert(err != 0 && argp != 0);
+      if ((typ->status & _LINKED_TYPE) != 0)
 	{
 	  p = (TypeArgument *)malloc(sizeof(TypeArgument));
 
-	  if (p)
+	  if (p != 0)
 	    {
 	      p->left = _nc_Copy_Argument(typ, argp->left, err);
 	      p->right = _nc_Copy_Argument(typ, argp->right, err);
@@ -149,13 +153,17 @@ _nc_Copy_Argument(const FIELDTYPE *typ, const TypeArgument *argp, int *err)
 	}
       else
 	{
-	  if (typ->copyarg)
+	  if (typ->copyarg != (void *)0)
 	    {
 	      if (!(res = (TypeArgument *)(typ->copyarg((const void *)argp))))
-		*err += 1;
+		{
+		  *err += 1;
+		}
 	    }
 	  else
-	    res = (TypeArgument *)argp;
+	    {
+	      res = (TypeArgument *)argp;
+	    }
 	}
     }
   return res;
@@ -174,20 +182,22 @@ _nc_Copy_Argument(const FIELDTYPE *typ, const TypeArgument *argp, int *err)
 NCURSES_EXPORT(void)
 _nc_Free_Argument(const FIELDTYPE *typ, TypeArgument *argp)
 {
-  if (!typ || !(typ->status & _HAS_ARGS))
-    return;
-
-  if (typ->status & _LINKED_TYPE)
+  if (typ != 0 && (typ->status & _HAS_ARGS) != 0)
     {
-      assert(argp);
-      _nc_Free_Argument(typ->left, argp->left);
-      _nc_Free_Argument(typ->right, argp->right);
-      free(argp);
-    }
-  else
-    {
-      if (typ->freearg)
-	typ->freearg((void *)argp);
+      if ((typ->status & _LINKED_TYPE) != 0)
+	{
+	  assert(argp != 0);
+	  _nc_Free_Argument(typ->left, argp->left);
+	  _nc_Free_Argument(typ->right, argp->right);
+	  free(argp);
+	}
+      else
+	{
+	  if (typ->freearg != (void *)0)
+	    {
+	      typ->freearg((void *)argp);
+	    }
+	}
     }
 }
 
@@ -205,12 +215,12 @@ _nc_Copy_Type(FIELD *dst, FIELD const *src)
 {
   int err = 0;
 
-  assert(dst && src);
+  assert(dst != 0 && src != 0);
 
   dst->type = src->type;
   dst->arg = (void *)_nc_Copy_Argument(src->type, (TypeArgument *)(src->arg), &err);
 
-  if (err)
+  if (err != 0)
     {
       _nc_Free_Argument(dst->type, (TypeArgument *)(dst->arg));
       dst->type = (FIELDTYPE *)0;
@@ -219,8 +229,10 @@ _nc_Copy_Type(FIELD *dst, FIELD const *src)
     }
   else
     {
-      if (dst->type)
-	dst->type->ref++;
+      if (dst->type != 0)
+	{
+	  dst->type->ref++;
+	}
       return TRUE;
     }
 }
@@ -236,9 +248,11 @@ _nc_Copy_Type(FIELD *dst, FIELD const *src)
 NCURSES_EXPORT(void)
 _nc_Free_Type(FIELD *field)
 {
-  assert(field);
-  if (field->type)
-    field->type->ref--;
+  assert(field != 0);
+  if (field->type != 0)
+    {
+      field->type->ref--;
+    }
   _nc_Free_Argument(field->type, (TypeArgument *)(field->arg));
 }
 
@@ -274,7 +288,7 @@ new_field(int rows, int cols, int frow, int fcol, int nrow, int nbuf)
       nrow >= 0 &&
       nbuf >= 0 &&
       ((err = E_SYSTEM_ERROR) != 0) &&	/* trick: this resets the default error */
-      (New_Field = (FIELD *)malloc(sizeof(FIELD))))
+      (New_Field = (FIELD *)malloc(sizeof(FIELD))) != 0)
     {
       *New_Field = default_field;
       New_Field->rows = rows;
@@ -288,7 +302,7 @@ new_field(int rows, int cols, int frow, int fcol, int nrow, int nbuf)
       New_Field->link = New_Field;
 
 #if USE_WIDEC_SUPPORT
-      New_Field->working = newpad(1, Buffer_Length(New_Field));
+      New_Field->working = newpad(1, Buffer_Length(New_Field) + 1);
       New_Field->expanded = (char **)calloc(1 + rows, sizeof(char *));
 #endif
 
@@ -340,15 +354,19 @@ NCURSES_EXPORT(int)
 free_field(FIELD *field)
 {
   if (!field)
-    RETURN(E_BAD_ARGUMENT);
-
-  if (field->form)
-    RETURN(E_CONNECTED);
-
-  if (field == field->link)
     {
-      if (field->buf)
-	free(field->buf);
+      RETURN(E_BAD_ARGUMENT);
+    }
+  else if (field->form != 0)
+    {
+      RETURN(E_CONNECTED);
+    }
+  else if (field == field->link)
+    {
+      if (field->buf != 0)
+	{
+	  free(field->buf);
+	}
     }
   else
     {
@@ -370,7 +388,7 @@ free_field(FIELD *field)
 	  FreeIfNeeded(field->expanded[n]);
 	}
       free(field->expanded);
-      delwin(field->working);
+      (void)delwin(field->working);
     }
 #endif
   free(field);

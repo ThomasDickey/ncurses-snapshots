@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2001,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -34,7 +34,7 @@
 /* panel.c -- implementation of panels library, some core routines */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: panel.c,v 1.20 2001/02/24 23:17:26 tom Exp $")
+MODULE_ID("$Id: panel.c,v 1.21 2004/12/04 16:35:11 tom Exp $")
 
 #ifdef TRACE
 #ifndef TRACE_TXT
@@ -135,6 +135,7 @@ _nc_Touchline
 #ifndef TRACE
 #  ifndef __GNUC__
      /* Some C compilers need something defined in a source file */
+     extern void _nc_dummy_panel(void);
      void _nc_dummy_panel(void) { }
 #  endif
 #endif

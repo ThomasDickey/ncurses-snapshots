@@ -42,7 +42,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.76 2004/09/25 22:41:23 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.77 2004/12/04 15:38:26 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -136,7 +136,7 @@ capcmp(PredIdx idx, const char *s, const char *t)
 }
 
 static int
-use_predicate(unsigned type, unsigned idx)
+use_predicate(unsigned type, PredIdx idx)
 /* predicate function to use for use decompilation */
 {
     ENTRY *ep;
@@ -1128,7 +1128,7 @@ dump_initializers(TERMTYPE *term)
 	    str = "CANCELLED_BOOLEAN";
 	    break;
 	}
-	(void) printf("\t/* %3d: %-8s */\t%s,\n",
+	(void) printf("\t/* %3u: %-8s */\t%s,\n",
 		      n, ExtBoolname(term, n, boolnames), str);
     }
     (void) printf("%s;\n", R_CURL);
@@ -1149,7 +1149,7 @@ dump_initializers(TERMTYPE *term)
 	    str = buf;
 	    break;
 	}
-	(void) printf("\t/* %3d: %-8s */\t%s,\n", n,
+	(void) printf("\t/* %3u: %-8s */\t%s,\n", n,
 		      ExtNumname(term, n, numnames), str);
     }
     (void) printf("%s;\n", R_CURL);
@@ -1169,7 +1169,7 @@ dump_initializers(TERMTYPE *term)
 	else {
 	    str = string_variable(ExtStrname(term, n, strnames));
 	}
-	(void) printf("\t/* %3d: %-8s */\t%s,\n", n,
+	(void) printf("\t/* %3u: %-8s */\t%s,\n", n,
 		      ExtStrname(term, n, strnames), str);
     }
     (void) printf("%s;\n", R_CURL);
@@ -1181,15 +1181,15 @@ dump_initializers(TERMTYPE *term)
 	(void) printf("static char * %s[] = %s\n",
 		      name_initializer("string_ext"), L_CURL);
 	for (n = BOOLCOUNT; n < NUM_BOOLEANS(term); ++n) {
-	    (void) printf("\t/* %3d: bool */\t\"%s\",\n",
+	    (void) printf("\t/* %3u: bool */\t\"%s\",\n",
 			  n, ExtBoolname(term, n, boolnames));
 	}
 	for (n = NUMCOUNT; n < NUM_NUMBERS(term); ++n) {
-	    (void) printf("\t/* %3d: num */\t\"%s\",\n",
+	    (void) printf("\t/* %3u: num */\t\"%s\",\n",
 			  n, ExtNumname(term, n, numnames));
 	}
 	for (n = STRCOUNT; n < NUM_STRINGS(term); ++n) {
-	    (void) printf("\t/* %3d: str */\t\"%s\",\n",
+	    (void) printf("\t/* %3u: str */\t\"%s\",\n",
 			  n, ExtStrname(term, n, strnames));
 	}
 	(void) printf("%s;\n", R_CURL);

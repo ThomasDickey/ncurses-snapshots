@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.57 2004/07/03 19:04:52 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.59 2004/12/05 01:14:46 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -102,10 +102,12 @@ Perhaps at some time we will make this configurable at runtime.
 #define myADDNSTR(w, s, n) wadd_wchnstr(w, s, n)
 #define myINSNSTR(w, s, n) wins_wchnstr(w, s, n)
 #define myINNSTR(w, s, n)  fix_wchnstr(w, s, n)
+#define myWCWIDTH(w, y, x) cell_width(w, y, x)
 #else
 #define myADDNSTR(w, s, n) waddnstr(w, s, n)
 #define myINSNSTR(w, s, n) winsnstr(w, s, n)
 #define myINNSTR(w, s, n)  winnstr(w, s, n)
+#define myWCWIDTH(w, y, x) 1
 #endif
 
 /*----------------------------------------------------------------------------
@@ -240,6 +242,34 @@ fix_wchnstr(WINDOW *w, cchar_t *s, int n)
   win_wchnstr(w, s, n);
   return n;
 }
+
+/*
+ * Returns the number of columns needed for the given cell in a window.
+ * FIXME: we may need a function to find the cell's beginning, for editing.
+ * The recursion is used to supply that information for now.
+ */
+static int
+cell_width(WINDOW *win, int y, int x)
+{
+  int result = 1;
+
+  if (LEGALYX(win, y, x))
+    {
+      cchar_t *data = &(win->_line[y].text[x]);
+
+      if (isWidecExt(CHDEREF(data)))
+	{
+	  /* recur, providing the number of columns to the next character */
+	  result = cell_width(win, y, x - 1) - 1;
+	}
+      else
+	{
+	  result = wcwidth(CharOf(CHDEREF(data)));
+	}
+    }
+  return result;
+}
+#else
 #endif
 
 /*---------------------------------------------------------------------------
@@ -566,7 +596,7 @@ Field_Grown(FIELD *field, int amount)
 	    }
 
 #if USE_WIDEC_SUPPORT
-	  if (wresize(field->working, 1, Buffer_Length(field)) == ERR)
+	  if (wresize(field->working, 1, Buffer_Length(field) + 1) == ERR)
 	    result = FALSE;
 #endif
 
@@ -1317,8 +1347,9 @@ static int
 IFN_Next_Character(FORM *form)
 {
   FIELD *field = form->current;
+  int step = myWCWIDTH(form->w, form->currow, form->curcol);
 
-  if ((++(form->curcol)) == field->dcols)
+  if ((form->curcol += step) == field->dcols)
     {
       if ((++(form->currow)) == field->drows)
 	{
@@ -1334,7 +1365,7 @@ IFN_Next_Character(FORM *form)
 	  if (Single_Line_Field(field) && Field_Grown(field, 1))
 	    return (E_OK);
 #endif
-	  form->curcol--;
+	  form->curcol -= step;
 	  return (E_REQUEST_DENIED);
 	}
       form->curcol = 0;
@@ -3726,7 +3757,18 @@ Data_Entry(FORM *form, int c)
 		result = E_SYSTEM_ERROR;
 	      else
 		{
+#if USE_WIDEC_SUPPORT
+		  /*
+		   * We have just added a byte to the form field.  It may have
+		   * been part of a multibyte character.  If it was, the
+		   * addch_used field is nonzero and we should not try to move
+		   * to a new column.
+		   */
+		  if (WINDOW_EXT(form->w, addch_used) == 0)
+		    IFN_Next_Character(form);
+#else
 		  IFN_Next_Character(form);
+#endif
 		  result = E_OK;
 		}
 	    }
@@ -4108,7 +4150,19 @@ field_buffer(const FIELD *field, int buffer)
       /* determine the number of bytes needed to store the expanded string */
       for (n = 0; n < size; ++n)
 	{
-	  need += getcchar(&data[n], (wchar_t *)0, 0, 0, 0);
+	  if (!isWidecExt(data[n]))
+	    {
+	      mbstate_t state;
+	      size_t next;
+
+	      init_mb(state);
+	      next = _nc_wcrtomb(0, data[n].chars[0], &state);
+	      if (!isEILSEQ(next))
+		{
+		  if (next != 0)
+		    need += next;
+		}
+	    }
 	}
 
       /* allocate a place to store the expanded string */
@@ -4121,7 +4175,7 @@ field_buffer(const FIELD *field, int buffer)
 	{
 	  wclear(field->working);
 	  mvwadd_wchnstr(field->working, 0, 0, data, size);
-	  mvwinnstr(field->working, 0, 0, result, size);
+	  mvwinnstr(field->working, 0, 0, result, need);
 	}
 #else
       result = Address_Of_Nth_Buffer(field, buffer);
@@ -4140,7 +4194,7 @@ field_buffer(const FIELD *field, int buffer)
 	(int) mbtowc(&wch, buffer, length)
 #elif HAVE_MBRTOWC && HAVE_MBRLEN
 #define NEED_STATE
-#define reset_mbytes(state) memset(&state, 0, sizeof(state))
+#define reset_mbytes(state) init_mb(state)
 #define count_mbytes(buffer,length,state) mbrlen(buffer,length,&state)
 #define trans_mbytes(wch,buffer,length,state) \
 	(int) mbrtowc(&wch, buffer, length, &state)

@@ -30,7 +30,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: form.h,v 0.19 2004/05/15 21:00:52 tom Exp $ */
+/* $Id: form.h,v 0.20 2004/12/04 22:22:10 tom Exp $ */
 
 #ifndef FORM_H
 #define FORM_H
@@ -171,20 +171,20 @@ typedef void (*Form_Hook)(FORM *);
 #define JUSTIFY_RIGHT		(3)
 
 /* field options */
-#define O_VISIBLE		(0x0001)
-#define O_ACTIVE		(0x0002)
-#define O_PUBLIC		(0x0004)
-#define O_EDIT			(0x0008)
-#define O_WRAP			(0x0010)
-#define O_BLANK			(0x0020)
-#define O_AUTOSKIP		(0x0040)
-#define O_NULLOK		(0x0080)
-#define O_PASSOK		(0x0100)
-#define O_STATIC		(0x0200)
+#define O_VISIBLE		(0x0001U)
+#define O_ACTIVE		(0x0002U)
+#define O_PUBLIC		(0x0004U)
+#define O_EDIT			(0x0008U)
+#define O_WRAP			(0x0010U)
+#define O_BLANK			(0x0020U)
+#define O_AUTOSKIP		(0x0040U)
+#define O_NULLOK		(0x0080U)
+#define O_PASSOK		(0x0100U)
+#define O_STATIC		(0x0200U)
 
 /* form options */
-#define O_NL_OVERLOAD		(0x0001)
-#define O_BS_OVERLOAD		(0x0002)
+#define O_NL_OVERLOAD		(0x0001U)
+#define O_BS_OVERLOAD		(0x0002U)
 
 /* form driver commands */
 #define REQ_NEXT_PAGE	 (KEY_MAX + 1)	/* move to next page		*/

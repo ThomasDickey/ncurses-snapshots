@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2004
 dnl
-dnl $Id: aclocal.m4,v 1.347 2004/11/27 21:03:59 tom Exp $
+dnl $Id: aclocal.m4,v 1.348 2004/12/04 15:31:42 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1023,7 +1023,7 @@ if test "$GCC" = yes ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GCC_WARNINGS version: 16 updated: 2004/07/23 14:40:34
+dnl CF_GCC_WARNINGS version: 18 updated: 2004/12/03 20:51:07
 dnl ---------------
 dnl Check if the compiler supports useful warning options.  There's a few that
 dnl we don't use, simply because they're too noisy:
@@ -1044,8 +1044,27 @@ dnl	If $with_ext_const is "yes", add a check for -Wwrite-strings
 dnl
 AC_DEFUN([CF_GCC_WARNINGS],
 [
+AC_REQUIRE([CF_INTEL_COMPILER])
 AC_REQUIRE([CF_GCC_VERSION])
-if test "$GCC" = yes
+if test "$INTEL_COMPILER" = yes
+then
+# The "-wdXXX" options suppress warnings:
+# remark #1419: external declaration in primary source file
+# remark #193: zero used for undefined preprocessing identifier
+# remark #593: variable "curs_sb_left_arrow" was set but never used
+# remark #810: conversion from "int" to "Dimension={unsigned short}" may lose significant bits
+# remark #869: parameter "tw" was never referenced
+# remark #981: operands are evaluated in unspecified order
+# warning #269: invalid format string conversion
+	EXTRA_CFLAGS="$EXTRA_CFLAGS -Wall \
+ -wd1419 \
+ -wd193 \
+ -wd279 \
+ -wd593 \
+ -wd810 \
+ -wd869 \
+ -wd981"
+elif test "$GCC" = yes
 then
 	cat > conftest.$ac_ext <<EOF
 #line __oline__ "configure"
@@ -1180,7 +1199,7 @@ case $cf_gnat_version in
 esac
 ])
 dnl ---------------------------------------------------------------------------
-dnl CF_GNU_SOURCE version: 3 updated: 2000/10/29 23:30:53
+dnl CF_GNU_SOURCE version: 4 updated: 2004/12/03 20:43:00
 dnl -------------
 dnl Check if we must define _GNU_SOURCE to get a reasonable value for
 dnl _XOPEN_SOURCE, upon which many POSIX definitions depend.  This is a defect
@@ -1190,6 +1209,9 @@ dnl
 dnl Well, yes we could work around it...
 AC_DEFUN([CF_GNU_SOURCE],
 [
+AC_REQUIRE([CF_INTEL_COMPILER])
+
+if test "$INTEL_COMPILER" = no ; then
 AC_CACHE_CHECK(if we must define _GNU_SOURCE,cf_cv_gnu_source,[
 AC_TRY_COMPILE([#include <sys/types.h>],[
 #ifndef _XOPEN_SOURCE
@@ -1208,6 +1230,7 @@ make an error
 	])
 ])
 test "$cf_cv_gnu_source" = yes && CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE"
+fi
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_GPP_LIBRARY version: 8 updated: 2003/02/02 01:41:46
@@ -1298,6 +1321,40 @@ elif test "$includedir" != "/usr/include"; then
 	fi
 fi
 AC_SUBST(CPPFLAGS)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_INTEL_COMPILER version: 1 updated: 2004/12/03 20:27:48
+dnl -----------------
+dnl Check if the given compiler is really the Intel compiler for Linux.
+dnl It tries to imitate gcc, but does not return an error when it finds a
+dnl mismatch between prototypes, e.g., as exercised by CF_MISSING_CHECK.
+dnl
+dnl This macro should be run "soon" after AC_PROG_CC, to ensure that it is
+dnl not mistaken for gcc.
+AC_DEFUN([CF_INTEL_COMPILER],[
+AC_REQUIRE([AC_PROG_CC])
+
+INTEL_COMPILER=no
+
+if test "$GCC" = yes ; then
+	case $host_os in
+	linux*|gnu*)
+		AC_MSG_CHECKING(if this is really Intel compiler)
+		cf_save_CFLAGS="$CFLAGS"
+		CFLAGS="$CFLAGS -no-gcc"
+		AC_TRY_COMPILE([],[
+#ifdef __INTEL_COMPILER
+#else
+make an error
+#endif
+],[INTEL_COMPILER=yes
+cf_save_CFLAGS="$cf_save_CFLAGS -we147 -no-gcc"
+],[])
+		CFLAGS="$cf_save_CFLAGS"
+		AC_MSG_RESULT($INTEL_COMPILER)
+		;;
+	esac
+fi
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_ISASCII version: 3 updated: 2000/08/12 23:18:52

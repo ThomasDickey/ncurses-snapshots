@@ -21,7 +21,7 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: fun.c,v 1.4 2004/09/25 21:51:39 tom Exp $")
+MODULE_ID("$Id: fun.c,v 1.5 2004/12/04 16:03:41 tom Exp $")
 
 /*
  * Test the function keys on the terminal.  The code for echo tests
@@ -58,10 +58,6 @@ struct test_list printer_test_list[] = {
 
 #define MAX_STRINGS STRCOUNT
 
-/* scan code externals */
-extern int scan_max;		/* length of longest scan code */
-extern char **scan_up, **scan_down, **scan_name;
-extern unsigned *scan_tested, *scan_length;
 
 /* local definitions */
 static const char *fk_name[MAX_STRINGS];

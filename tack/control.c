@@ -25,7 +25,7 @@
 #include <sys/time.h>
 #endif
 
-MODULE_ID("$Id: control.c,v 1.4 2004/09/25 19:32:05 tom Exp $")
+MODULE_ID("$Id: control.c,v 1.5 2004/12/04 16:12:38 tom Exp $")
 
 /* terminfo test program control subroutines */
 
@@ -40,11 +40,11 @@ int test_complete;		/* counts number of tests completed */
 
 char txt_longer_test_time[80];	/* +) use longer time */
 char txt_shorter_test_time[80];	/* -) use shorter time */
-int pad_test_duration = 1;	/* number of seconds for a pad test */
+static int pad_test_duration = 1;	/* number of seconds for a pad test */
 int auto_pad_mode;		/* run the time tests */
 int no_alarm_event;		/* TRUE if the alarm has not gone off yet */
-int usec_run_time;		/* length of last test in microseconds */
-MY_TIMER stop_watch[MAX_TIMERS]; /* Hold the start timers */
+unsigned long usec_run_time;	/* length of last test in microseconds */
+static MY_TIMER stop_watch[MAX_TIMERS]; /* Hold the start timers */
 
 char txt_longer_augment[80];	/* >) use bigger augment */
 char txt_shorter_augment[80];	/* <) use smaller augment */
@@ -67,15 +67,12 @@ int tx_delay[TT_MAX];		/* Number of milliseconds delay */
 int txp;			/* number of entries used */
 int tx_characters;		/* printing characters sent by test */
 int tx_cps;			/* characters per second */
-struct test_list *tx_source;	/* The test that generated this data */
-
-extern struct test_menu pad_menu;	/* Pad menu structure */
-extern struct test_list pad_test_list[];
+static struct test_list *tx_source;	/* The test that generated this data */
 
 #define RESULT_BLOCK		1024
 static int blocks;		/* number of result blocks available */
 static struct test_results *results;	/* pointer to next available */
-struct test_results *pads[STRCOUNT];	/* save pad results here */
+static struct test_results *pads[STRCOUNT];	/* save pad results here */
 
 /*
 **	event_start(number)
@@ -544,9 +541,9 @@ dump_test_stats(
 			put_crlf();
 		}
 	}
-	sprintf(tbuf, "%011u", usec_run_time);
-	sprintf(temp, "Test time: %d.%s, characters per second %d, characters %d",
-		usec_run_time / 1000000, &tbuf[5], tx_cps, tx_characters);
+	sprintf(tbuf, "%011lu", usec_run_time);
+	sprintf(temp, "Test time: %lu.%s, characters per second %d, characters %d",
+		usec_run_time / 1000000UL, &tbuf[5], tx_cps, tx_characters);
 	ptextln(temp);
 	for (i = 0; i < txp; i++) {
 		if ((j = get_string_cap_byvalue(tx_cap[i])) >= 0) {

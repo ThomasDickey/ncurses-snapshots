@@ -21,7 +21,7 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: pad.c,v 1.4 2004/09/25 19:38:22 tom Exp $")
+MODULE_ID("$Id: pad.c,v 1.5 2004/12/04 16:09:20 tom Exp $")
 
 /* test the pad counts on the terminal */
 
@@ -60,8 +60,6 @@ static void pad_ht(struct test_list *, int *, int *);
 static void pad_smso(struct test_list *, int *, int *);
 static void pad_smacs(struct test_list *, int *, int *);
 static void pad_crash(struct test_list *, int *, int *);
-
-extern struct test_menu change_pad_menu;
 
 /*
    Any command found in this list, executed from a "Done" prompt
@@ -168,10 +166,8 @@ struct test_list pad_test_list[] = {
 	{MENU_LAST, 0, 0, 0, 0, 0, 0}
 };
 
-extern int test_complete;	/* counts number of tests completed */
-
 /* globals */
-int hzcc;			/* horizontal character count */
+static int hzcc;		/* horizontal character count */
 char letter;			/* current character being displayed */
 int letter_number;		/* points into letters[] */
 int augment, repeats;		/* number of characters (or lines) effected */

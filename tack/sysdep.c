@@ -46,7 +46,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: sysdep.c,v 1.12 2004/09/25 19:42:36 tom Exp $")
+MODULE_ID("$Id: sysdep.c,v 1.13 2004/12/04 16:06:42 tom Exp $")
 
 #if DECL_ERRNO
 extern int errno;
@@ -60,7 +60,7 @@ extern int errno;
 
 /* globals */
 int tty_frame_size;		/* asynch frame size times 2 */
-unsigned long tty_baud_rate;	/* baud rate - bits per second */
+unsigned tty_baud_rate;		/* baud rate - bits per second */
 int not_a_tty;			/* TRUE if output is not a tty (i.e. pipe) */
 int nodelay_read;		/* TRUE if NDELAY is set */
 

@@ -7,7 +7,7 @@
  *  wrs(5/28/93) -- modified to be consistent (perform identically) with either
  *                  PDCurses or under Unix System V, R4
  *
- * $Id: testcurs.c,v 1.32 2002/10/19 22:11:24 tom Exp $
+ * $Id: testcurs.c,v 1.33 2004/12/04 16:40:44 tom Exp $
  */
 
 #include <test.priv.h>
@@ -33,7 +33,7 @@ struct commands {
 };
 typedef struct commands COMMAND;
 
-const COMMAND command[] =
+static const COMMAND command[] =
 {
     {"General Test", introTest},
     {"Pad Test", padTest},
@@ -58,7 +58,7 @@ strdup(char *s)
 }
 #endif /* not HAVE_STRDUP */
 
-int width, height;
+static int width, height;
 
 int
 main(
@@ -400,7 +400,8 @@ inputTest(WINDOW *win)
 
     repeat = 0;
     do {
-	static const char *fmt[] = {
+	static const char *fmt[] =
+	{
 	    "%d %10s",
 	    "%d %[a-zA-Z]s",
 	    "%d %[][a-zA-Z]s",

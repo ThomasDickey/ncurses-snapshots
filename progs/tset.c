@@ -103,7 +103,7 @@ char *ttyname(int fd);
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tset.c,v 0.56 2003/12/06 17:21:01 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.57 2004/12/04 15:39:11 tom Exp $")
 
 extern char **environ;
 
@@ -1021,9 +1021,9 @@ report(const char *name, int which, unsigned def)
 	(void) fprintf(stderr, "backspace.\n");
     else if (newer < 040) {
 	newer ^= 0100;
-	(void) fprintf(stderr, "control-%c (^%c).\n", newer, newer);
+	(void) fprintf(stderr, "control-%c (^%c).\n", UChar(newer), UChar(newer));
     } else
-	(void) fprintf(stderr, "%c.\n", newer);
+	(void) fprintf(stderr, "%c.\n", UChar(newer));
 }
 #endif
 

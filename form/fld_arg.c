@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_arg.c,v 1.8 2004/05/29 19:22:20 tom Exp $")
+MODULE_ID("$Id: fld_arg.c,v 1.9 2004/12/04 22:12:50 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -61,18 +61,20 @@ MODULE_ID("$Id: fld_arg.c,v 1.8 2004/05/29 19:22:20 tom Exp $")
 |                    E_BAD_ARGUMENT - invalid argument
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-set_fieldtype_arg(FIELDTYPE *typ, void *(*const make_arg)(va_list *),
+set_fieldtype_arg(FIELDTYPE *typ,
+		  void *(*const make_arg)(va_list *),
 		  void *(*const copy_arg)(const void *),
 		  void (*const free_arg) (void *))
 {
-  if (!typ || !make_arg)
-    RETURN(E_BAD_ARGUMENT);
-
-  typ->status |= _HAS_ARGS;
-  typ->makearg = make_arg;
-  typ->copyarg = copy_arg;
-  typ->freearg = free_arg;
-  RETURN(E_OK);
+  if (typ != 0 && make_arg != (void *)0)
+    {
+      typ->status |= _HAS_ARGS;
+      typ->makearg = make_arg;
+      typ->copyarg = copy_arg;
+      typ->freearg = free_arg;
+      RETURN(E_OK);
+    }
+  RETURN(E_BAD_ARGUMENT);
 }
 
 /*---------------------------------------------------------------------------
