@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.124 2000/02/13 01:05:13 tom Exp $
+$Id: ncurses.c,v 1.125 2000/04/15 22:18:56 tom Exp $
 
 ***************************************************************************/
 
@@ -2613,9 +2613,9 @@ static void erase_form(FORM *f)
 
 static int edit_secure(FIELD *me, int c)
 {
-    int rows, cols, frow, fcol, nbuf;
+    int rows, cols, frow, fcol, nrow, nbuf;
 
-    if (field_info(me, &rows, &cols, &frow, &fcol, (int *)0, &nbuf) == E_OK
+    if (field_info(me, &rows, &cols, &frow, &fcol, &nrow, &nbuf) == E_OK
      && nbuf > 0) {
 	char temp[80];
 	long len;
@@ -2807,6 +2807,7 @@ static void demo_forms(void)
 
     w = form_win(form);
     raw();
+    nonl();	/* lets us read ^M's */
     while (!finished)
     {
 	switch(form_driver(form, c = form_virtualize(form, w)))
@@ -2831,6 +2832,7 @@ static void demo_forms(void)
     for (c = 0; f[c] != 0; c++)
     	free_field(f[c]);
     noraw();
+    nl();
 }
 #endif	/* USE_LIBFORM */
 
