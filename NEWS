@@ -1,10 +1,22 @@
--- $Id: NEWS,v 1.660 2001/12/19 01:39:42 tom Exp $
+-- $Id: NEWS,v 1.661 2001/12/23 00:59:34 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20011222
+	+ modify include/edit_cfg.h to eliminate BROKEN_LINKER symbol from
+	  term.h
+	+ move prototype for _nc_vsscanf() into curses.h.in to omit
+	  HAVE_VSSCANF symbol from curses.h, which was dependent upon the
+	  ncurses_cfg.h file which is not installed.
+	+ use ACS_LEN rather than SIZEOF(acs_map) in trace code of lib_acs.c,
+	  to work with broken linker configuration, e.g., cygwin (report by
+	  Robert Joop <rj@rainbow.in-berlin.de>).
+	+ make napms() call _nc_timed_wait() rather than poll() or select(),
+	  to work around broken implementations of these on cygwin.
 
 20011218
 	+ drop configure macro CF_WIDEC_SHIFT, since that was rendered obsolete

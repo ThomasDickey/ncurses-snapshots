@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.256 2001/12/19 00:14:11 tom Exp $
+dnl $Id: configure.in,v 1.257 2001/12/23 00:32:08 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20000819)
-AC_REVISION($Revision: 1.256 $)
+AC_REVISION($Revision: 1.257 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -975,6 +975,14 @@ CF_STRUCT_SIGACTION
 CF_FUNC_TERMIOS
 CF_FUNC_VSSCANF
 CF_MKSTEMP
+
+# setup for prototype of fallback for vsscanf()
+if test "$cf_cv_func_vsscanf" = vsscanf ; then
+	HAVE_VSSCANF=1
+else
+	HAVE_VSSCANF=0
+fi
+AC_SUBST(HAVE_VSSCANF)
 
 dnl FIXME (may need this) AC_SYS_RESTARTABLE_SYSCALLS
 if test "$cross_compiling" = yes ; then

@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.118 2001/12/19 00:14:40 tom Exp $ */
+/* $Id: curses.h.in,v 1.119 2001/12/23 00:32:48 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -907,6 +907,14 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
  */
 #define vw_printw		vwprintw
 #define vw_scanw		vwscanw
+
+/*
+ * Export fallback function for use in C++ binding.
+ */
+#if !@HAVE_VSSCANF@
+#define vsscanf(a,b,c) _nc_vsscanf(a,b,c)
+NCURSES_EXPORT(int) vsscanf(const char *, const char *, va_list);
+#endif
 
 /*
  * Pseudo-character tokens outside ASCII range.  The curses wgetch() function

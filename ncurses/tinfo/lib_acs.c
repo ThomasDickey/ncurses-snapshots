@@ -34,7 +34,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* ena_acs, acs_chars */
 
-MODULE_ID("$Id: lib_acs.c,v 1.20 2001/12/08 21:45:45 tom Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.21 2001/12/23 00:15:10 tom Exp $")
 
 #if BROKEN_LINKER
 NCURSES_EXPORT_VAR(chtype *)
@@ -154,8 +154,8 @@ _nc_init_acs(void)
      */
     if (_nc_tracing & TRACE_CALLS) {
 	size_t n, m;
-	char show[SIZEOF(acs_map) + 1];
-	for (n = 1, m = 0; n < SIZEOF(acs_map); n++) {
+	char show[ACS_LEN + 1];
+	for (n = 1, m = 0; n < ACS_LEN; n++) {
 	    if (acs_map[n] != 0) {
 		show[m++] = (char) n;
 		show[m++] = ChCharOf(acs_map[n]);
