@@ -49,7 +49,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.76 2003/05/17 19:43:46 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.77 2003/05/24 21:10:28 tom Exp $")
 
 /****************************************************************************
  *
@@ -276,7 +276,7 @@ grab_entry(const char *const tn, TERMTYPE * const tp)
      * a string is cancelled, for merging entries).
      */
     if (status == 1) {
-	int n;
+	unsigned n;
 	for_each_boolean(n, tp) {
 	    if (!VALID_BOOLEAN(tp->Booleans[n]))
 		tp->Booleans[n] = FALSE;

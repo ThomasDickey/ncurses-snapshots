@@ -43,7 +43,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.66 2003/02/23 00:12:59 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.67 2003/05/24 20:18:50 tom Exp $")
 
 /*
  *	char *
@@ -428,7 +428,7 @@ _nc_tparm_analyze(const char *string, char *p_is_s[NUM_PARM], int *popcount)
 
 	    case L_BRACE:
 		cp++;
-		while (UChar(*cp) >= '0' && (UChar(*cp) - '0') <= NUM_PARM) {
+		while (isdigit(UChar(*cp))) {
 		    cp++;
 		}
 		break;
@@ -619,7 +619,7 @@ tparam_internal(const char *string, va_list ap)
 	    case L_BRACE:
 		number = 0;
 		cp++;
-		while (UChar(*cp) >= '0' && (UChar(*cp) - '0') <= NUM_PARM) {
+		while (isdigit(UChar(*cp))) {
 		    number = (number * 10) + (UChar(*cp) - '0');
 		    cp++;
 		}

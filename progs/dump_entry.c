@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -39,7 +39,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.65 2003/03/22 23:41:21 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.66 2003/05/24 22:43:59 tom Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
@@ -926,7 +926,6 @@ dump_entry(TERMTYPE * tterm,
 		    acs_chars = ABSENT_STRING;
 		    SHOW_WHY("# (acsc removed to fit entry within %d bytes)\n",
 			     critlen);
-		    SHOW_WHY("# acsc:%s\n", oldacsc);
 		    changed = TRUE;
 		}
 	    }

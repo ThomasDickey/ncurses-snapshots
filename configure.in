@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.289 2003/05/17 22:01:03 tom Exp $
+dnl $Id: configure.in,v 1.290 2003/05/24 19:13:50 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.289 $)
+AC_REVISION($Revision: 1.290 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -54,12 +54,7 @@ CF_CFG_DEFAULTS
 
 ###	Checks for programs.
 AC_PROG_CC
-GCC_VERSION=none
-if test "$GCC" = yes ; then
-	AC_MSG_CHECKING(version of $CC)
-	GCC_VERSION="`${CC} --version|head -1`"
-	AC_MSG_RESULT($GCC_VERSION)
-fi
+CF_GCC_VERSION
 
 # If we're cross-compiling, allow the user to override the tools and their
 # options.  The configure script is oriented toward identifying the host
@@ -139,19 +134,14 @@ else
 	fi
 fi
 
-GXX_VERSION=none
-if test "$GXX" = yes; then
-	AC_MSG_CHECKING(version of g++)
-	GXX_VERSION="`${CXX-g++} --version|head -1`"
-	AC_MSG_RESULT($GXX_VERSION)
-	case $GXX_VERSION in
-	1*|2.[[0-6]]*)
-		GXX=""; CXX=""; ac_cv_prog_gxx=no
-		cf_cxx_library=no
-		AC_MSG_WARN(templates do not work)
-		;;
-	esac
-fi
+CF_GXX_VERSION
+case $GXX_VERSION in
+1*|2.[[0-6]]*)
+	GXX=""; CXX=""; ac_cv_prog_gxx=no
+	cf_cxx_library=no
+	AC_MSG_WARN(templates do not work)
+	;;
+esac
 
 AC_MSG_CHECKING(if you want to build C++ binding and demo)
 AC_ARG_WITH(cxx-binding,

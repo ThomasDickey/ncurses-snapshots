@@ -42,10 +42,10 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.74 2003/02/02 02:33:48 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.75 2003/05/24 21:00:43 tom Exp $")
 
 #if !HAVE_TELL
-#define tell(fd) 0		/* lseek() is POSIX, but not tell() - odd... */
+#define tell(fd) lseek(fd, 0, SEEK_CUR)	/* lseek() is POSIX, but not tell() */
 #endif
 
 /*
@@ -160,7 +160,7 @@ read_termtype(int fd, TERMTYPE * ptr)
     char buf[MAX_ENTRY_SIZE + 1];
     unsigned want, have;
 
-    TR(TRACE_DATABASE, ("READ termtype header @%d", tell(fd)));
+    TR(TRACE_DATABASE, ("READ termtype header @%ld", (long) tell(fd)));
 
     memset(ptr, 0, sizeof(*ptr));
 
@@ -257,7 +257,7 @@ read_termtype(int fd, TERMTYPE * ptr)
      * Read extended entries, if any, after the normal end of terminfo data.
      */
     even_boundary(str_size);
-    TR(TRACE_DATABASE, ("READ extended_header @%d", tell(fd)));
+    TR(TRACE_DATABASE, ("READ extended_header @%ld", (long) tell(fd)));
     if (_nc_user_definable && read_shorts(fd, buf, 5)) {
 	int ext_bool_count = LOW_MSB(buf + 0);
 	int ext_num_count = LOW_MSB(buf + 2);
@@ -289,8 +289,8 @@ read_termtype(int fd, TERMTYPE * ptr)
 			    ext_bool_count, ext_num_count, ext_str_count,
 			    ext_str_size, ext_str_limit));
 
-	TR(TRACE_DATABASE, ("READ %d extended-booleans @%d",
-			    ext_bool_count, tell(fd)));
+	TR(TRACE_DATABASE, ("READ %d extended-booleans @%ld",
+			    ext_bool_count, (long) tell(fd)));
 	if ((ptr->ext_Booleans = ext_bool_count) != 0) {
 	    if (read(fd, ptr->Booleans + BOOLCOUNT, (unsigned)
 		     ext_bool_count) != ext_bool_count)
@@ -298,8 +298,8 @@ read_termtype(int fd, TERMTYPE * ptr)
 	}
 	even_boundary(ext_bool_count);
 
-	TR(TRACE_DATABASE, ("READ %d extended-numbers @%d",
-			    ext_num_count, tell(fd)));
+	TR(TRACE_DATABASE, ("READ %d extended-numbers @%ld",
+			    ext_num_count, (long) tell(fd)));
 	if ((ptr->ext_Numbers = ext_num_count) != 0) {
 	    if (!read_shorts(fd, buf, ext_num_count))
 		return (0);
@@ -307,13 +307,13 @@ read_termtype(int fd, TERMTYPE * ptr)
 	    convert_shorts(buf, ptr->Numbers + NUMCOUNT, ext_num_count);
 	}
 
-	TR(TRACE_DATABASE, ("READ extended-offsets @%d", tell(fd)));
+	TR(TRACE_DATABASE, ("READ extended-offsets @%ld", (long) tell(fd)));
 	if ((ext_str_count || need)
 	    && !read_shorts(fd, buf, ext_str_count + need))
 	    return (0);
 
-	TR(TRACE_DATABASE, ("READ %d bytes of extended-strings @%d",
-			    ext_str_limit, tell(fd)));
+	TR(TRACE_DATABASE, ("READ %d bytes of extended-strings @%ld",
+			    ext_str_limit, (long) tell(fd)));
 
 	if (ext_str_limit) {
 	    if ((ptr->ext_str_table = typeMalloc(char, ext_str_limit)) == 0)

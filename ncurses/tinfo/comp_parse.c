@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -52,7 +52,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.53 2002/09/07 20:01:28 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.54 2003/05/24 21:10:28 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype) (TERMTYPE *) = sanity_check;
@@ -163,7 +163,7 @@ _nc_entry_match(char *n1, char *n2)
  ****************************************************************************/
 
 NCURSES_EXPORT(void)
-_nc_read_entry_source(FILE * fp, char *buf,
+_nc_read_entry_source(FILE *fp, char *buf,
 		      int literal, bool silent,
 		      bool(*hook) (ENTRY *))
 /* slurp all entries in the given file into core */
@@ -216,7 +216,8 @@ _nc_resolve_uses(bool fullresolve)
 {
     ENTRY *qp, *rp, *lastread = 0;
     bool keepgoing;
-    int i, j, unresolved, total_unresolved, multiples;
+    int i, unresolved, total_unresolved, multiples;
+    unsigned j;
 
     DEBUG(2, ("RESOLUTION BEGINNING"));
 

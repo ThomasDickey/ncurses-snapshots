@@ -1,10 +1,27 @@
--- $Id: NEWS,v 1.748 2003/05/17 23:55:04 tom Exp $
+-- $Id: NEWS,v 1.749 2003/05/25 00:13:21 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030524
+	+ modify setcchar() to allow converting control characters to complex
+	  characters (report/test by Mitsuru Chinen <mchinen@yamato.ibm.com>).
+	+ add tkterm entry -TD
+	+ modify parse_entry.c to allow a terminfo entry with a leading
+	  2-character name (report by Don Libes).
+	+ corrected acsc in screen.teraterm, which requires a PC-style mapping.
+	+ fix trace statements in read_entry.c to use lseek() rather than
+	  tell().
+	+ fix signed/unsigned warnings from Sun's compiler (gcc should give
+	  these warnings, but it is unpredictable).
+	+ modify configure script to omit -Winline for gcc 3.3, since that
+	  feature is broken.
+	+ modify manlinks.sed to add a few functions that were overlooked since
+	  they return function pointers:  field_init, field_term, form_init,
+	  form_term, item_init, item_term, menu_init and menu_term.
 
 20030517
 	+ prevent recursion in wgetch() via wgetnstr() if the connection cannot

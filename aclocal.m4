@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.303 2003/05/17 22:21:13 tom Exp $
+dnl $Id: aclocal.m4,v 1.304 2003/05/24 19:14:30 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -814,7 +814,21 @@ rm -rf conftest*
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GCC_WARNINGS version: 12 updated: 2002/11/23 16:02:49
+dnl CF_GCC_VERSION version: 2 updated: 2003/05/24 15:01:41
+dnl --------------
+dnl Find version of gcc
+AC_DEFUN([CF_GCC_VERSION],[
+AC_REQUIRE([AC_PROG_CC])
+GCC_VERSION=none
+if test "$GCC" = yes ; then
+	AC_MSG_CHECKING(version of $CC)
+	GCC_VERSION="`${CC} --version|head -1 | sed -e 's/^[[^0-9.]]*//' -e 's/[[^0-9.]].*//'`"
+	test -z "$GCC_VERSION" && GCC_VERSION=unknown
+	AC_MSG_RESULT($GCC_VERSION)
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_GCC_WARNINGS version: 14 updated: 2003/05/24 15:03:15
 dnl ---------------
 dnl Check if the compiler supports useful warning options.  There's a few that
 dnl we don't use, simply because they're too noisy:
@@ -822,11 +836,13 @@ dnl
 dnl	-Wconversion (useful in older versions of gcc, but not in gcc 2.7.x)
 dnl	-Wredundant-decls (system headers make this too noisy)
 dnl	-Wtraditional (combines too many unrelated messages, only a few useful)
-dnl	-Wwrite-strings (too noisy, but should review occasionally)
+dnl	-Wwrite-strings (too noisy, but should review occasionally).  This
+dnl		is enabled for ncurses using "--enable-const".
 dnl	-pedantic
 dnl
 AC_DEFUN([CF_GCC_WARNINGS],
 [
+AC_REQUIRE([CF_GCC_VERSION])
 if ( test "$GCC" = yes || test "$GXX" = yes )
 then
 	cat > conftest.$ac_ext <<EOF
@@ -854,8 +870,19 @@ EOF
 		CFLAGS="$cf_save_CFLAGS $EXTRA_CFLAGS -$cf_opt"
 		if AC_TRY_EVAL(ac_compile); then
 			test -n "$verbose" && AC_MSG_RESULT(... -$cf_opt)
+			case $cf_opt in #(vi
+			Wcast-qual) #(vi
+				CPPFLAGS="$CPPFLAGS -DXTSTRINGDEFINES"
+				;;
+			Winline) #(vi
+				case $GCC_VERSION in
+				3.3*)
+					CF_VERBOSE(feature is broken in gcc $GCC_VERSION)
+					continue;;
+				esac
+				;;
+			esac
 			EXTRA_CFLAGS="$EXTRA_CFLAGS -$cf_opt"
-			test "$cf_opt" = Wcast-qual && EXTRA_CFLAGS="$EXTRA_CFLAGS -DXTSTRINGDEFINES"
 		fi
 	done
 	rm -f conftest*
@@ -989,6 +1016,19 @@ if test "$GXX" = yes; then
 	[cf_cxx_library=no])])
 	LIBS="$cf_save"
 	AC_MSG_RESULT($cf_cxx_library)
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_GXX_VERSION version: 2 updated: 2003/05/24 14:41:00
+dnl --------------
+dnl Check for version of g++
+AC_DEFUN([CF_GXX_VERSION],[
+AC_REQUIRE([AC_PROG_CPP])
+GXX_VERSION=none
+if test "$GXX" = yes; then
+	AC_MSG_CHECKING(version of g++)
+	GXX_VERSION="`${CXX-g++} --version|head -1`"
+	AC_MSG_RESULT($GXX_VERSION)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
