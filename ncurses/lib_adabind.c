@@ -30,7 +30,7 @@
 */
 #include "curses.priv.h"
 
-MODULE_ID("$Id: lib_adabind.c,v 1.5 1997/10/21 14:59:45 juergen Exp $")
+MODULE_ID("$Id: lib_adabind.c,v 1.6 1997/12/28 12:13:44 juergen Exp $")
 
 /*  In (n)curses are a few functionalities that can't be expressed as 
 //  functions, because for historic reasons they use as macro argument
@@ -48,7 +48,7 @@ int  _nc_ada_coord_transform (const WINDOW *win, int *Y, int *X, int dir);
 void _nc_ada_mouse_event (mmask_t m, int *b, int *s);
 int  _nc_ada_mouse_mask (int button, int state, mmask_t *mask);
 void _nc_ada_unregister_mouse (void);
-
+int  _nc_ada_vcheck (int major, int  minor);
 
 int _nc_ada_getmaxyx (const WINDOW *win, int *y, int *x)
 {
@@ -213,4 +213,23 @@ int _nc_ada_mouse_mask ( int button, int state, mmask_t *mask )
 
   *mask |= b;
   return OK;
+}
+
+/*
+ * Allow Ada to check whether or not we are the correct library version
+ * for the binding. It calls this routine with the version it requests
+ * and this routine returns a 1 if it is a correct version, a 2 if the
+ * major version is correct but the minor version of the library differs
+ * and a 0 if the versions don't match.
+ */
+int  _nc_ada_vcheck (int major, int  minor)
+{
+  if (major==NCURSES_VERSION_MAJOR) {
+    if (minor==NCURSES_VERSION_MINOR)
+      return 1;
+    else
+      return 2;
+  }
+  else
+    return 0;
 }

@@ -17,10 +17,10 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.114 1997/12/27 20:32:34 tom Exp $
+dnl $Id: configure.in,v 1.115 1998/01/03 17:01:52 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.114 $)
+AC_REVISION($Revision: 1.115 $)
 AC_INIT(ncurses/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -821,5 +821,5 @@ cf_cv_system_name="$cf_cv_system_name"
 cf_cxx_library="$cf_cxx_library"
 target="$target"
 
-],cat)dnl
+],sort)dnl
 ${MAKE-make} preinstall

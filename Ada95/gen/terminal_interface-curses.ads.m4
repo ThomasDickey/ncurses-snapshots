@@ -24,7 +24,7 @@ include(M4MACRO)----------------------------------------------------------------
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.11 $
+--  $Revision: 1.13 $
 ------------------------------------------------------------------------------
 include(`Base_Defs')
 with System;
@@ -33,6 +33,7 @@ with Interfaces.C;   --  We need this for some assertions.
 package Terminal_Interface.Curses is
    pragma Preelaborate (Curses);
 include(`Linker_Options')
+include(`Version_Info')
    type Window is private;
    Null_Window : constant Window;
 
@@ -127,7 +128,8 @@ include(`AC_Rep')
    ------------------
    --  Exceptions  --
    ------------------
-   Curses_Exception : exception;
+   Curses_Exception     : exception;
+   Wrong_Curses_Version : exception;
 
    --  Those exceptions are raised by the ETI (Extended Terminal Interface)
    --  subpackets for Menu and Forms handling.

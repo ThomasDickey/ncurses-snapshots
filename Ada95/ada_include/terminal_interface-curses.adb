@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.12 $
+--  $Revision: 1.13 $
 ------------------------------------------------------------------------------
 with System;
 
@@ -85,11 +85,18 @@ package body Terminal_Interface.Curses is
       function Initscr return Window;
       pragma Import (C, Initscr, "initscr");
 
+      function Check_Version (Major, Minor : C_Int) return C_Int;
+      pragma Import (C, Check_Version, "_nc_ada_vcheck");
+
       W : Window;
    begin
-      W := Initscr;
-      if W = Null_Window then
-         raise Curses_Exception;
+      if (Check_Version (NC_Major_Version, NC_Minor_Version) = 0) then
+         raise Wrong_Curses_Version;
+      else
+         W := Initscr;
+         if W = Null_Window then
+            raise Curses_Exception;
+         end if;
       end if;
    end Init_Screen;
 

@@ -204,9 +204,18 @@ extern void _nc_err_abort(const char *const,...) GCC_PRINTFLIKE(1,2) GCC_NORETUR
 extern void _nc_warning(const char *const,...) GCC_PRINTFLIKE(1,2);
 extern bool _nc_suppress_warnings;
 
+/* comp_expand.c: expand string into readable form */
+extern char *_nc_tic_expand(const char *, bool);
+
+/* comp_scan.c: decode string from readable form */
+extern char _nc_trans_string(char *);
+
 /* captoinfo.c: capability conversion */
 extern char *_nc_captoinfo(const char *, const char *, int const);
 extern char *_nc_infotocap(const char *, const char *, int const);
+
+/* lib_tputs.c */
+extern int _nc_nulls_sent;		/* Add one for every null sent */
 
 /* comp_main.c: compiler main */
 extern const char *_nc_progname;

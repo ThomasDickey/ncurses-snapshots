@@ -26,7 +26,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include "parametrized.h"	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.23 1997/11/08 18:34:12 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.24 1998/01/03 18:53:57 tom Exp $")
 
 #define INDENT			8
 
@@ -188,91 +188,6 @@ void dump_init(const char *version, int mode, int sort, int twidth, int traceval
 	(void) fprintf(stderr,
 		       "%s: width = %d, tversion = %d, outform = %d\n",
 		       _nc_progname, width, tversion, outform);
-}
-
-static int trailing_spaces(const char *src)
-{
-	while (*src == ' ')
-		src++;
-	return *src == 0;
-}
-
-/* this deals with differences over whether 0x7f and 0x80..0x9f are controls */
-#define CHAR_OF(s) (*(unsigned const char *)(s))
-#define REALCTL(s) (CHAR_OF(s) < 127 && iscntrl(CHAR_OF(s)))
-#define REALPRINT(s) (CHAR_OF(s) < 127 && isprint(CHAR_OF(s)))
-
-char *expand(char *srcp)
-{
-static char	buffer[BUFSIZ];
-int		bufp;
-const char	*ptr, *str = VALID_STRING(srcp) ? srcp : "";
-bool		islong = (strlen(str) > 3);
-
-    	bufp = 0;
-    	ptr = str;
-    	while (*str) {
-		if (*str == '%' && REALPRINT(str+1)) {
-	    		buffer[bufp++] = *str++;
-	    		buffer[bufp++] = *str;
-		}
-		else if (*str == '\033') {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = 'E';
-		}
-		else if (*str == '\\' && (outform==F_TERMINFO) && (str == srcp || str[-1] != '^')) {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = '\\';
-		}
-		else if (*str == ' ' && (outform==F_TERMINFO) && (str == srcp || trailing_spaces(str))) {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = 's';
-		}
-		else if ((*str == ',' || *str == ':' || *str == '^') && (outform==F_TERMINFO)) {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = *str;
-		}
-		else if (REALPRINT(str) && (*str != ',' && *str != ':' && !(*str == '!' && outform!=F_TERMINFO) && *str != '^'))
-		    	buffer[bufp++] = *str;
-#if 0		/* FIXME: this would be more readable */
-		else if (*str == '\b') {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = 'b';
-		}
-		else if (*str == '\f') {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = 'f';
-		}
-		else if (*str == '\t' && islong) {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = 't';
-		}
-#endif
-		else if (*str == '\r' && (islong || (strlen(srcp) > 2 && str[1] == '\0'))) {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = 'r';
-		}
-		else if (*str == '\n' && islong) {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = 'n';
-		}
-#define UnCtl(c) ((0xff & (c)) + '@')
-		else if (REALCTL(str) && *str != '\\' && (!islong || isdigit(str[1])))
-		{
-			(void) sprintf(&buffer[bufp], "^%c", UnCtl(*str));
-			bufp += 2;
-		}
-		else
-		{
-			(void) sprintf(&buffer[bufp], "\\%03o", 0xff & *str);
-			bufp += 4;
-		}
-
-		str++;
-    	}
-
-    	buffer[bufp] = '\0';
-    	return(buffer);
 }
 
 static TERMTYPE	*cur_type;
@@ -597,8 +512,8 @@ bool	outcount = 0;
 		sprintf(buffer, "%s@", str_names[i]);
 	    else if (outform == F_TERMCAP || outform == F_TCONVERR)
 	    {
-		char *srccap = expand(tterm->Strings[i]);
-		char *cv = _nc_infotocap(str_names[i], srccap,parametrized[i]);
+		char *srccap = _nc_tic_expand(tterm->Strings[i], FALSE);
+		char *cv = _nc_infotocap(str_names[i], srccap, parametrized[i]);
 
 		if (cv == (char *)NULL)
 		{
@@ -615,7 +530,7 @@ bool	outcount = 0;
 	    }
 	    else
 	    {
-		sprintf(buffer,"%s=%s",str_names[i],expand(tterm->Strings[i]));
+		sprintf(buffer, "%s=%s", str_names[i], _nc_tic_expand(tterm->Strings[i], outform==F_TERMINFO));
 		len += strlen(tterm->Strings[i]) + 1;
 	    }
 
@@ -669,7 +584,7 @@ bool	outcount = 0;
 	    if (box_ok)
 	    {
 		(void) strcpy(buffer, "box1=");
-		(void) strcat(buffer, expand(boxchars));
+		(void) strcat(buffer, _nc_tic_expand(boxchars, outform==F_TERMINFO));
 		WRAP_CONCAT;
 	    }
 	}

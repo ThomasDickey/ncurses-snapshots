@@ -43,7 +43,7 @@
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.19 1997/12/14 02:22:49 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.20 1998/01/03 23:31:41 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 
@@ -487,17 +487,30 @@ static void sanity_check(TERMTYPE *tp)
      ANDMISSING(label_off,                   label_on)
      PAIRED(display_clock,                   remove_clock)
      ANDMISSING(set_color_pair,              initialize_pair)
+
+     /* Some checks that we should make, but don't want to confuse people
+      * with.  Put those under the tic -v option so we can still get them.
+      */
+     if (_nc_tracing) {
+
+	/*
+	 * From XSI & O'Reilly, we gather that sc/rc are required if csr is
+	 * given, because the cursor position after the scrolling operation is
+	 * performed is undefined.
+	 */
+         ANDMISSING(change_scroll_region,        save_cursor)
+         ANDMISSING(change_scroll_region,        restore_cursor)
+
+         /*
+	  * Some non-curses applications (e.g., jove) get confused if we have
+	  * both ich/ich1 and smir/rmir.  Let's be nice and warn about that,
+	  * too, even though ncurses handles it.
+          */
+         if ((PRESENT(enter_insert_mode) || PRESENT(exit_insert_mode))
+          && (PRESENT(insert_character)  || PRESENT(parm_ich))) {
+	    _nc_warning("non-curses applications may be confused by ich/ich1 with smir/rmir");
+         }
+     }
 #undef PAIRED
 #undef ANDMISSING
-
-     /*
-      * Some non-curses applications (e.g., jove) get confused if we have both
-      * ich/ich1 and smir/rmir.  Let's be nice and warn about that, too, even
-      * though ncurses handles it.
-      */
-     if (_nc_tracing
-      && (PRESENT(enter_insert_mode) || PRESENT(exit_insert_mode))
-      && (PRESENT(insert_character)  || PRESENT(parm_ich))) {
-	_nc_warning("non-curses applications may be confused by ich/ich1 with smir/rmir");
-     }
 }

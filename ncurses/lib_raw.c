@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_raw.c,v 1.21 1997/11/01 19:05:35 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.22 1998/01/03 21:59:22 tom Exp $")
 
 #if defined(SVR4_TERMIO) && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
@@ -49,6 +49,11 @@ MODULE_ID("$Id: lib_raw.c,v 1.21 1997/11/01 19:05:35 tom Exp $")
 
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>	/* needed for ISC */
+#endif
+
+#ifdef __EMX__
+#include <io.h>
+#include <fcntl.h>
 #endif
 
 /* may be undefined if we're using termio.h */
@@ -231,6 +236,10 @@ int raw(void)
 	SP->_raw = TRUE;
 	SP->_cbreak = TRUE;
 
+#ifdef __EMX__
+	setmode(SP->_ifd, O_BINARY);
+#endif
+
 #ifdef TERMIOS
 	BEFORE("raw");
 	cur_term->Nttyb.c_lflag &= ~(ICANON|ISIG);
@@ -249,6 +258,10 @@ int cbreak(void)
 	T((T_CALLED("cbreak()")));
 
 	SP->_cbreak = TRUE;
+
+#ifdef __EMX__
+	setmode(SP->_ifd, O_BINARY);
+#endif
 
 #ifdef TERMIOS
 	BEFORE("cbreak");
@@ -279,6 +292,11 @@ int nl(void)
 	T((T_CALLED("nl()")));
 
 	SP->_nl = TRUE;
+
+#ifdef __EMX__
+	fflush(SP->_ofp);
+	_fsetmode(SP->_ofp, "t");
+#endif
 
 	returnCode(OK);
 }
@@ -311,6 +329,10 @@ int noraw(void)
 	SP->_raw = FALSE;
 	SP->_cbreak = FALSE;
 
+#ifdef __EMX__
+	setmode(SP->_ifd, O_TEXT);
+#endif
+
 #ifdef TERMIOS
 	BEFORE("noraw");
 	cur_term->Nttyb.c_lflag |= ISIG|ICANON;
@@ -327,7 +349,11 @@ int nocbreak(void)
 {
 	T((T_CALLED("nocbreak()")));
 
-	SP->_cbreak = 0;
+	SP->_cbreak = FALSE;
+
+#ifdef __EMX__
+	setmode(SP->_ifd, O_TEXT);
+#endif
 
 #ifdef TERMIOS
 	BEFORE("nocbreak");
@@ -353,6 +379,11 @@ int nonl(void)
 	T((T_CALLED("nonl()")));
 
 	SP->_nl = FALSE;
+
+#ifdef __EMX__
+	fflush(SP->_ofp);
+	_fsetmode(SP->_ofp, "b");
+#endif
 
 	returnCode(OK);
 }
