@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.690 2002/06/16 00:31:21 tom Exp $
+-- $Id: NEWS,v 1.691 2002/06/22 22:53:51 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020622
+	+ add charset to generated html.
+	+ add mvterm entry, adapted from a FreeBSD bug-report by Daniel Rudy
+	  <dcrudy@pacbell.net> -TD
+	+ add rxvt-16color, ibm+16color entries -TD
+	+ modify check in --disable-overwrite option so that it is used by
+	  default unless the --prefix/$prefix value is not /usr, in attempt to
+	  work around packagers, e.g., for Sun's freeware, who do not read the
+	  INSTALL notes.
 
 20020615
 	+ modify wgetch() to allow returning ungetch'd KEY_RESIZE as a function
