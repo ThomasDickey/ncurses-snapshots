@@ -55,9 +55,18 @@ AC_SUBST(DFT_DEP_SUFFIX)dnl	the corresponding library-suffix (".a")
 AC_SUBST(DFT_ARG_SUFFIX)dnl	the string to append to "-lncurses" ("")
 AC_SUBST(nc_list_models)dnl	the complete list of models ("normal debug")
 
+dnl Not all ports of gcc support the -g option
+CC_G_OPT='-g'
+test -n "$GCC" && test "$ac_cv_prog_gcc_g" != yes && CC_G_OPT=''
+AC_SUBST(CC_G_OPT)
+
+CXX_G_OPT='-g'
+test -n "$GXX" && test "$ac_cv_prog_gxx_g" != yes && CXX_G_OPT=''
+AC_SUBST(CXX_G_OPT)
+
 case $DFT_LWR_MODEL in
 normal)  LD_MODEL=''   ;;
-debug)   LD_MODEL='-g' ;;
+debug)   LD_MODEL=$CC_G_OPT ;;
 profile) LD_MODEL='-pg';;
 shared)  LD_MODEL=''   ;;
 esac

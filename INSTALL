@@ -124,6 +124,17 @@ INSTALLATION PROCEDURE:
     each section's core requirements drastically (the cut point was chosen
     so there are no `use' references that cross the cut going forward).  
 
+    The terminfo(5) manual page wants to be preprocessed with tbl(1) before
+    being formatted by nroff(1).  Modern man(1) implementations tend to do
+    this by default, but you may want to look at your version's man page
+    to be sure.
+
+    If the system already has a curses library that you need to keep using
+    for some bizarre binary-compatibility reason, you'll need to distinguish
+    between it and ncurses. If ncurses is installed outside the standard
+    directories (/usr/include and /usr/lib) then all your users will need
+    to use the -I option to compile programs and -L to link them.
+
     IF YOU DO NOT HAVE ROOT: Change directory to the `progs' subdirectory
     and run the `capconvert' script.  This script will deduce various things
     about your environment and use them to build you a private terminfo tree,
@@ -162,12 +173,6 @@ NOTES:
 	If you have SLS or anything based on it (slackware is OK) PLEASE
 	remove everything related to ncurses before re-installing it.
 
-	Since most systems already have a curses library, you'll need to
-	distinguish between it and ncurses. If ncurses is installed outside
-	the standard directories (/usr/include and /usr/lib) then you need
-	to use the -I option when you compile programs and -L when you link
-	them.
-
 	If you have BSD curses installed in your system and you accidentally
 	compile using its curses.h you'll end up with a large number of
 	undefined symbols at link time. _waddbytes is one of them.
@@ -175,9 +180,6 @@ NOTES:
 	The include files will normally be installed in /usr/include/ncurses. 
 	To arrange for your programs to see them by default, copy or link them
 	to /usr/include from there.
-
-	On many systems, the make production `install' will install ncurses
-	over the system curses libraries.  Don't do this casually!
 
 IF YOU ARE A SYSTEM INTEGRATOR:
 
@@ -200,15 +202,29 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 	can mean that several different terminfo entries from different 
 	operating systems all logically want to be called `console'.
 
-	Please pick a name unique to your console driver (such as `linux' for
-	the standard Linux driver or `ibmpc3' for the BSDI one) and set that up
-	in the /etc/inittab table.  Send the entry to the terminfo maintainer
-	(listed in the misc/terminfo file) to be included in the master, if
-	it's not already there.
+	Please pick a name unique to your console driver and set that up
+	in the /etc/inittab table or local equivalent.  Send the entry to the
+	terminfo maintainer (listed in the misc/terminfo file) to be included
+	in the terminfo master, if it's not already there.  See the
+	term(7) manual page included with this distribution for more on
+	conventions for choosing type names.
+
+	Here are our recommended primary console names for the most important
+	freeware UNIX distributions:
+
+		linux	-- Linux console driver
+		freebsd	-- FreeBSD
+		netbsd	-- NetBSD
+		bsdos	-- BSD/OS
+
+	If you are responsible for integrating ncurses for one of these
+	distribution, please either use the recommended name or get back
+	to us explaining why you don't want to, so we can work out nomenclature
+	that will make users' lives easier rather than harder.
 
 BUGS:
-	Send any feedback to me: zmbenhal@netcom.com or to the ncurses mailing
-	list at ncurses-list@netcom.com. To subscribe send mail to
+	Send any feedback to the ncurses mailing list at
+	ncurses-list@netcom.com. To subscribe send mail to
 	listserv@netcom.com with body that reads:
 	subscribe ncurses-list <you-email-address-here>
 

@@ -299,13 +299,16 @@ void _nc_mvcur_init(SCREEN *sp)
 	 * (the whole screen plus cup commands to change lines as
 	 * it's painted).  On a modern 66-line xterm this can
 	 * become excessive.  So we min it with the amount of data
-	 * we think we can get through one Ethernet packet
-	 * (maximum packet size - 100 for TCP/IP overhead), This
-	 * is the largest update we're likely to be able to send
-	 * atomically (it also protects against the rare case of
-	 * no cursor addressing).
+	 * we think we can get through two Ethernet packets
+	 * (maximum packet size - 100 for TCP/IP overhead).
+	 *
+	 * Why two ethernet packets?  It used to be one, on the theory
+	 * that said packets define the maximum size of atomic update.
+	 * But that's less than the 2000 chars on a 25 x 80 screen, and
+	 * we don't want local updates to flicker either.  Two packet
+	 * lengths will handle up to a 35 x 80 screen.
 	 */
-	unsigned int bufsiz = min(LINES * (COLS + SP->_cup_cost), 1400);
+	unsigned int bufsiz = min(LINES * (COLS + SP->_cup_cost), 2800);
 
 #if HAVE_SETVBUF
 	/*

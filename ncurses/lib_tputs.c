@@ -49,11 +49,17 @@ int tputs(const char *string, int affcnt, int (*outc)(int))
 float	number;
 
 #ifdef TRACE
+char	addrbuf[17];
+
+	if (outc == _nc_outch)
+		(void) strcpy(addrbuf, "_nc_outch");
+	else
+		(void) sprintf(addrbuf, "%p", outc);
 	if (_nc_tputs_trace)
-		TR(TRACE_MAXIMUM, ("tputs(%s = \"%s\", %d, %p) called", _nc_tputs_trace, _nc_visbuf(string), affcnt, outc));
+		TR(TRACE_MAXIMUM, ("tputs(%s = \"%s\", %d, %s) called", _nc_tputs_trace, _nc_visbuf(string), affcnt, addrbuf));
 	else
 
-		TR(TRACE_MAXIMUM, ("tputs(\"%s\", %d, %p) called", _nc_visbuf(string), affcnt, outc));
+		TR(TRACE_MAXIMUM, ("tputs(\"%s\", %d, %s) called", _nc_visbuf(string), affcnt, addrbuf));
 	_nc_tputs_trace = (char *)NULL;
 #endif /* TRACE */
 

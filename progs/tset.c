@@ -74,6 +74,7 @@
 #include <fcntl.h>
 
 #include <curses.h>	/* for bool typedef */
+#define __INTERNAL_CAPS_VISIBLE	/* we need to see has_hardware_tabs */
 #include <term.h>
 #include <dump_entry.h>
 
@@ -138,7 +139,7 @@ cat(char *file)
 		err("%s: %s", file, strerror(errno));
 
 	while ((nr = read(fd, buf, sizeof(buf))) > 0)
-		if ((nw = write(STDERR_FILENO, buf, nr)) == -1)
+		if ((nw = write(STDERR_FILENO, buf, (size_t)nr)) == -1)
 			err("write to stderr: %s", strerror(errno));
 	if (nr != 0)
 		err("%s: %s", file, strerror(errno));
@@ -513,6 +514,9 @@ found:	if ((p = getenv("TERMCAP")) != NULL && *p != '/') {
  *
  **************************************************************************/
 
+/* some BSD systems have these built in, some systems are missing
+ * one or more definitions. The safest solution is to override.
+ */
 #undef CEOF
 #undef CERASE
 #undef CINTR
@@ -752,11 +756,9 @@ set_conversions(void)
 		mode.c_lflag &= ~ECHO;
 #endif /* __OBSOLETE__ */
 #ifdef OXTABS
-#ifdef __INTERNAL_CAPS_VISIBLE
 	/* test used to be tgetflag("pt") */
 	if (has_hardware_tabs)			/* Print tabs. */
 		mode.c_oflag &= ~OXTABS;
-#endif
 #endif /* OXTABS */
 	mode.c_lflag |= (ECHOE | ECHOK);
 }

@@ -167,7 +167,7 @@ static bool Check_Numeric_Character(int c, const void * argp)
 	 ) ? TRUE : FALSE;
 }
 
-static FIELDTYPE typeNUMERIC = {
+static FIELDTYPE const typeNUMERIC = {
   _HAS_ARGS | _RESIDENT,
   1,
   (FIELDTYPE *)0,
@@ -181,6 +181,6 @@ static FIELDTYPE typeNUMERIC = {
   NULL
 };
 
-FIELDTYPE* TYPE_NUMERIC = &typeNUMERIC;
+FIELDTYPE const * TYPE_NUMERIC = &typeNUMERIC;
 
 /* fty_num.c ends here */

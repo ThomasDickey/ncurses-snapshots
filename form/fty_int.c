@@ -147,7 +147,7 @@ static bool Check_Integer_Character(int c, const void * argp)
   return ((isdigit(c) || (c=='-')) ? TRUE : FALSE);
 }
 
-static FIELDTYPE typeINTEGER = {
+static FIELDTYPE const typeINTEGER = {
   _HAS_ARGS | _RESIDENT,
   1,
   (FIELDTYPE *)0,
@@ -161,6 +161,6 @@ static FIELDTYPE typeINTEGER = {
   NULL
 };
 
-FIELDTYPE* TYPE_INTEGER = &typeINTEGER;
+FIELDTYPE const * TYPE_INTEGER = &typeINTEGER;
 
 /* fty_int.c ends here */

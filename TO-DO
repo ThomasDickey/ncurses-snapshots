@@ -2,12 +2,13 @@ SHORT-TERM TO-DO ITEMS:
 
 Bugs:
 
-* There is a known problem with the signal-handling code which may result
-  in abrupt termination of ncurses applications following resume from a ^Z
-  suspend (this problem was first seen in lynx).  You will not see this problem
-  if you are running Linux or one of the 4.4BSD derivatives like FreeBSD,
-  NetBSD, or BSDI.  You may see it under System Vs.  For details, see the
-  analysis in ncurses/lib_tstp.c.
+* Users of older System V UNIXes (but not Solaris, and probably not SVr4)
+  may trip over a known problem with the signal-handling code which causes
+  abrupt termination of ncurses applications following resume from a ^Z
+  suspend (this problem was first seen running lynx).  You will not see 
+  this problem if you are running Linux or one of the 4.4BSD derivatives
+  like FreeBSD, NetBSD, or BSDI.  For details, see the analysis in the
+  header comment of ncurses/lib_tstp.c.
 
 * We need a portable vsscanf() implementation.  Currently the library links
   a stub.
@@ -15,13 +16,26 @@ Bugs:
 * The narrative description of the form library in misc/ncurses-intro.html
   is incomplete.  ESR is working on this.
 
+* The support for reading /etc/termcap as a fallback is slow; vi typically
+  take 35 seconds to start up because of it.  This could be fixed by 
+  dropping in a hacked version of BSD getcap(3) as the entry reader for
+  that case, and probably will be in the next release.
+
 Tweaks:
+
+* ^F in vi (which scrolls forward by LINES-2 in the file) exposes a weakness
+  in the update logic.  Ideally, the vertical motion optimization in
+  hardscroll.c should, cost its actions and then force a ClrUpdate() if that
+  would be faster than the scroll.  Unfortunately, this would be a serious
+  pain to arrange.  A simple hack to catch the important cases would be to
+  set a threshold N (probably 2 or 3) such that if vertical motion introduces
+  LINES-N new lines, you nuke the screen.  Keith Bostic argues that this
+  is a win on strictly visual grounds even if the resulting update is
+  theoretically sub-optimal.  He's probably right.
 
 * Ian Jackson reported on the Debian list that the update code seems to be
   using many  delete-character sequences to avoid a few character overwrites.
   This probably reflects poor cost computation in doupdate().
-
-* A hook for resizing (Thomas Dickey is working on this).
 
 Untested features:
 

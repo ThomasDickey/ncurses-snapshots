@@ -250,8 +250,6 @@ union {
 #define LITTLE_ENDIAN(p, x)	(p)[0] = LO(x), (p)[1] = HI(x)
 #define min(a, b)		((a) > (b)  ?  (b)  :  (a))
 
-#define SHOWOFFSET
-
 static int write_object(FILE *fp, TERMTYPE *tp)
 {
 char		*namelist;
@@ -300,7 +298,7 @@ unsigned char	buf[MAX_ENTRY_SIZE];
 	/* write out the header */
 	if (fwrite(buf, 12, 1, fp) != 1
 		||  fwrite(namelist, sizeof(char), (size_t)namelen, fp) != namelen
-		||  fwrite(tp->Booleans, sizeof(char), boolmax, fp) != boolmax)
+		||  fwrite(tp->Booleans, sizeof(char), (size_t)boolmax, fp) != boolmax)
 	    	return(ERR);
 
 	/* the even-boundary padding byte */
@@ -319,7 +317,7 @@ unsigned char	buf[MAX_ENTRY_SIZE];
 		else
 			LITTLE_ENDIAN(buf + 2*i, tp->Numbers[i]);
 	}
-	if (fwrite(buf, 2, nummax, fp) != nummax)
+	if (fwrite(buf, 2, (size_t)nummax, fp) != nummax)
 		return(ERR);
  
 #ifdef SHOWOFFSET
@@ -332,7 +330,7 @@ unsigned char	buf[MAX_ENTRY_SIZE];
 			buf[2*i] = buf[2*i + 1] = 0377;
 		else
 			LITTLE_ENDIAN(buf + 2*i, offsets[i]);
-	if (fwrite(buf, 2, strmax, fp) != strmax)
+	if (fwrite(buf, 2, (size_t)strmax, fp) != strmax)
 		return(ERR);
 
 #ifdef SHOWOFFSET

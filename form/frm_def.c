@@ -21,6 +21,7 @@
 
 #include "form.priv.h"
 
+/* this can't be readonly */
 static FORM default_form = {
   0,                                    /* status     */
   0,                                    /* rows       */

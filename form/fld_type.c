@@ -21,7 +21,7 @@
 
 #include "form.priv.h"
 
-static FIELDTYPE default_fieldtype = {
+static FIELDTYPE const default_fieldtype = {
   0,                   /* status                                      */
   0L,                  /* reference count                             */
   (FIELDTYPE *)0,      /* pointer to left  operand                    */

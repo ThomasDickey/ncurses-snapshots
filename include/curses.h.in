@@ -456,10 +456,6 @@ extern int slk_attrset(attr_t);
 extern int slk_attron(attr_t);
 extern int slk_attroff(attr_t);
 
-/* non-XSI extensions */
-extern int resizeterm (int, int);
-extern int wresize (WINDOW *, int, int);
-
 #ifdef __cplusplus
 }
 #endif
@@ -793,7 +789,7 @@ extern int wresize (WINDOW *, int, int);
 #define KEY_SUNDO	0626		/* Shifted Undo */
 #define KEY_SUSPEND	0627		/* Suspend */
 #define KEY_UNDO	0630		/* Undo */
-#define	KEY_MOUSE	0631		/* Mouse event has occurred */
+#define KEY_MOUSE	0631		/* Mouse event has occurred */
 #define KEY_MAX		0777		/* Maximum key value */
 
 /* mouse interface */

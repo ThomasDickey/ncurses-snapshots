@@ -22,7 +22,9 @@
 #
 # This table is used to generate initializers for tables that drive tic,
 # infocmp, and the library compilation code used to support the termcap 
-# compatibility hack.
+# compatibility hack.  It is also used to generate the tabular portion of the
+# terminfo(5) man page; lines beginning with `#%' are passed through to become
+# the terminfo table.
 #
 # This file has three major sections; a standard-capabilities table, an
 # extension-capability table, and a section of aliases declarations.
@@ -138,8 +140,56 @@
 #
 # STANDARD CAPABILITIES
 #
-# These are the boolean capabilities
-#
+#%The following is a complete table of the capabilities included in a
+#%terminfo description block and available to terminfo-using code.  In each
+#%line of the table,
+#%
+#%The \fBvariable\fB is the name by which the programmer (at the terminfo level)
+#%accesses the capability.
+#%
+#%The \fBcapname\fR is the short name used in the text of the database,
+#%and is used by a person updating the database.
+#%Whenever possible, capnames are chosen to be the same as or similar to
+#%the ANSI X3.64-1979 standard.  Semantics are also intended to match
+#%those of the specification.
+#%
+#%The termcap code is the old
+#%.B termcap
+#%capability name (some capabilities are new, and have names which termcap
+#%did not originate).
+#%.P
+#%Capability names have no hard length limit, but an informal limit of 5
+#%characters has been adopted to keep them short and to allow the tabs in
+#%the source file
+#%.B Caps
+#%to line up nicely.
+#%
+#%Finally, the description field attempts to convey the semantics of the
+#%capability.  You may find some codes in the description field:
+#%.TP
+#%(P)
+#%indicates that padding may be specified
+#%.TP
+#%#[1-9]
+#%in the description field indicates that the string is passed through tparm with
+#%parms as given (#\fIi\fP).
+#%.TP
+#%(P*)
+#%indicates that padding may vary in proportion to the number of
+#%lines affected
+#%.TP
+#%(#\d\fIi\fP\u)
+#%indicates the \fIi\fP\uth\d parameter.
+#%
+#% These are the boolean capabilities:
+#%
+#%.TS H
+#%center;
+#%c c c c
+#%c c c c
+#%l l l l.
+#%\fBVariable	Cap-	Termcap	Description\fR
+#%\fBBooleans	name	Code\fR
 auto_left_margin	bw	bool	bw	YB-G-	cub1 wraps from column 0 to last column
 auto_right_margin	am	bool	am	YBCGE	terminal has automatic margins
 no_esc_ctlc     	xsb	bool	xb	YBCG-	beehive (f1=escape, f2=ctrl C)
@@ -164,7 +214,7 @@ xon_xoff        	xon	bool	xo	YB---	terminal uses xon/xoff handshaking
 needs_xon_xoff  	nxon	bool	nx	-----	padding won't work, xon/xoff required
 prtr_silent     	mc5i	bool	5i	-----	printer won't echo on screen
 hard_cursor     	chts	bool	HC	-----	cursor is hard to see
-non_rev_rmcup   	nrrmc	bool	NR	-----	smcup does not revrse rmcup
+non_rev_rmcup   	nrrmc	bool	NR	-----	smcup does not reverse rmcup
 no_pad_char     	npc	bool	NP	-----	pad character does not exist
 non_dest_scroll_region	ndscr	bool	ND	-----	scrolling region is non-destructive
 can_change      	ccc	bool	cc	-----	terminal can re-define existing colors
@@ -177,10 +227,30 @@ row_addr_glitch 	xvpa	bool	YD	-----	only positive motion for vpa/mvpa caps
 semi_auto_right_margin	sam	bool	YE	-----	printing in last column causes cr
 cpi_changes_res 	cpix	bool	YF	-----	changing character pitch changes resolution
 lpi_changes_res 	lpix	bool	YG	-----	changing line pitch changes resolution
+#%.TE
+#%
+#%This capability is described as a boolean in the XSI Curses standard, but is
+#%an (undocumented) string capability in SVr4.
+#%
+#%.TS H
+#%center;
+#%c c c c
+#%c c c c
+#%l l l l.
+#%\fBVariable	Cap-	Termcap	Description\fR
+#%\fBBooleans	name	Code\fR
 get_mouse       	getm	bool	Gm	-----	Curses should get button events
-#
-# These are the numeric capabilities
-#
+#%.TE
+#%
+#%These are the numeric capabilities:
+#%
+#%.TS H
+#%center;
+#%c c c c
+#%c c c c
+#%l l l l.
+#%\fBVariable	Cap-	Termcap	Description\fR
+#%\fBNumeric	name	Code\fR
 columns         	cols	num	co	YBCGE	number of columns in aline
 init_tabs       	it	num	it	YB-G-	tabs initially every # spaces
 lines           	lines	num	li	YBCGE	number of lines on screen or page
@@ -189,7 +259,7 @@ magic_cookie_glitch	xmc	num	sg	YBCGE	number of blank chars left by smso or rmso
 padding_baud_rate	pb	num	pb	YB-GE	lowest baud rate where padding needed
 virtual_terminal	vt	num	vt	YB---	virtual terminal number (CB/unix)
 width_status_line	wsl	num	ws	YB-G-	columns in status line
-num_labels      	nlab	num	Nl	-----	number of lables on screen
+num_labels      	nlab	num	Nl	-----	number of labels on screen
 label_height    	lh	num	lh	-----	rows in each label
 label_width     	lw	num	lw	-----	columns in each label
 max_attributes  	ma	num	ma	YBC--	maximum combined attributes terminal can handle
@@ -198,7 +268,19 @@ maximum_windows 	wnum	num	MW	-----	maxumum number of defineable windows
 max_colors      	colors	num	Co	-----	maximum numbers of colors on screen
 max_pairs       	pairs	num	pa	-----	maximum number of color-pairs on the screen
 no_color_video  	ncv	num	NC	-----	video attributes that can't be used with colors
-# These came in with SVr4's printer support
+#%.TE
+#%
+#%The following numeric capabilities are present in the SVr4.0 term structure,
+#%but are not yet documented in the man page.  They came in with SVr4's
+#%printer support.
+#%
+#%.TS H
+#%center;
+#%c c c c
+#%c c c c
+#%l l l l.
+#%\fBVariable	Cap-	Termcap	Description\fR
+#%\fBNumeric	name	Code\fR
 buffer_capacity 	bufsz	num	Ya	-----	numbers of bytes buffered before printing
 dot_vert_spacing	spinv	num	Yb	-----	spacing of pins vertically in pins per inch
 dot_horz_spacing	spinh	num	Yc	-----	spacing of dots horizontally in dots per inch
@@ -213,21 +295,29 @@ output_res_horz_inch	orhi	num	Yk	-----	horizontal resolution in units per inch
 output_res_vert_inch	orvi	num	Yl	-----	vertical resolution in units per inch
 print_rate      	cps	num	Ym	-----	print rate in chars per second
 wide_char_size  	widcs	num	Yn	-----	character step size when in double wide mode
-buttons	btns    	num	BT	-----	number of buttons on mouse
+buttons         	btns	num	BT	-----	number of buttons on mouse
 bit_image_entwining	bitwin	num	Yo	-----	number of passed for each bit-image row
 bit_image_type  	bitype	num	Yp	-----	type of bit-image device
-#
-# These are the string capabilities
-#
-back_tab        	cbt	str	bt	YBCGE	back tab
-bell            	bel	str	bl	YB-GE	audible signal (bell)
-carriage_return 	cr	str	cr	YBCGE	carriage return
-change_scroll_region	csr	str	cs	YBCGE	change region to line #1 to line #2
-clear_all_tabs  	tbc	str	ct	YB-G-	clear all tab stops
-clear_screen    	clear	str	cl	YBCGE	clear screen and home cursor
-clr_eol	el      	str	ce	YBCGE	clear to end of line
-clr_eos	ed      	str	cd	YBCGE	clear to end of screen
-column_address  	hpa	str	ch	-B-GE**	horizontal position #1, absolute
+#%.TE
+#%
+#%These are the string capabilities:
+#%
+#%.TS H
+#%center;
+#%c c c c
+#%c c c c
+#%l l l l.
+#%\fBVariable	Cap-	Termcap	Description\fR
+#%\fBString	name	Code\fR
+back_tab        	cbt	str	bt	YBCGE	back tab (P)
+bell            	bel	str	bl	YB-GE	audible signal (bell) (P)
+carriage_return 	cr	str	cr	YBCGE	carriage return (P*) (P*)
+change_scroll_region	csr	str	cs	YBCGE	change region to line #1 to line #2 (P) (P)
+clear_all_tabs  	tbc	str	ct	YB-G-	clear all tab stops (P)
+clear_screen    	clear	str	cl	YBCGE	clear screen and home cursor (P*)
+clr_eol         	el      str	ce	YBCGE	clear to end of line (P)
+clr_eos         	ed      str	cd	YBCGE	clear to end of screen (P*)
+column_address  	hpa	str	ch	-B-GE**	horizontal position #1, absolute (P)
 command_character	cmdch	str	CC	YB-G-	terminal settable cmd character in prototype !?
 cursor_address  	cup	str	cm	YBCGE	move to row #1 columns #2
 cursor_down     	cud1	str	do	YBCGE	down one line
@@ -240,11 +330,11 @@ cursor_right    	cuf1	str	nd	YBCGE	move right one space
 cursor_to_ll    	ll	str	ll	YBCGE	last line, first column (if no cup)
 cursor_up       	cuu1	str	up	YBCGE	up one line
 cursor_visible  	cvvis	str	vs	YBCGE	make cursor very visible
-delete_character	dch1	str	dc	YBCGE	delete character
-delete_line     	dl1	str	dl	YBCGE	delete line
+delete_character	dch1	str	dc	YBCGE	delete character (P*)
+delete_line     	dl1	str	dl	YBCGE	delete line (P*)
 dis_status_line 	dsl	str	ds	YB-G-	disable status line
 down_half_line  	hd	str	hd	YB-G-	half a line down
-enter_alt_charset_mode	smacs	str	as	YB-G-	start alternate character set
+enter_alt_charset_mode	smacs	str	as	YB-G-	start alternate character set (P)
 enter_blink_mode	blink	str	mb	YB-G-	turn on blinking
 enter_bold_mode 	bold	str	md	YB-G-	turn on bold (extra bright) mode
 enter_ca_mode   	smcup	str	ti	YBCGE	string to start programs using cup
@@ -256,23 +346,23 @@ enter_protected_mode	prot	str	mp	-B-G-*	turn on protected mode
 enter_reverse_mode	rev	str	mr	YB-G-	turn on reverse video mode
 enter_standout_mode	smso	str	so	YBCGE	begin standout mode
 enter_underline_mode	smul	str	us	YBCGE	begin underline mode
-erase_chars     	ech	str	ec	YB-G-	erase #1 characters
-exit_alt_charset_mode	rmacs	str	ae	YB-G-	end alternate character set
+erase_chars     	ech	str	ec	YB-G-	erase #1 characters (P)
+exit_alt_charset_mode	rmacs	str	ae	YB-G-	end alternate character set (P)
 exit_attribute_mode	sgr0	str	me	YB-GE	turn off all attributes
-exit_ca_mode	rmcup	str	te	YBCGE	strings to end programs using cup
+exit_ca_mode    	rmcup	str	te	YBCGE	strings to end programs using cup
 exit_delete_mode	rmdc	str	ed	YBCGE	end delete mode
 exit_insert_mode	rmir	str	ei	YBCGE	exit insert mode
 exit_standout_mode	rmso	str	se	YBCGE	exit standout mode
 exit_underline_mode	rmul	str	ue	YBCGE	exit underline mode
 flash_screen    	flash	str	vb	YBCGE	visible bell (may not move cursor)
-form_feed       	ff	str	ff	YB-G-	hardcopy terminal page eject
+form_feed       	ff	str	ff	YB-G-	hardcopy terminal page eject (P*)
 from_status_line	fsl	str	fs	YB-G-	return from status line
 init_1string    	is1	str	i1	YB-G-	initialization string
 init_2string    	is2	str	is	YB-G-	initialization string
 init_3string    	is3	str	i3	YB-G-	initialization string
 init_file       	if	str	if	YB-G-	name of initialization file
-insert_character	ich1	str	ic	YBCGE	insert character
-insert_line     	il1	str	al	YBCGE	insert line
+insert_character	ich1	str	ic	YBCGE	insert character (P)
+insert_line     	il1	str	al	YBCGE	insert line (P*)
 insert_padding  	ip	str	ip	YBCGE	insert padding after inserted character
 key_backspace   	kbs	str	kb	YB-G-	backspace key
 key_catab       	ktbc	str	ka	-B-G-*	clear-all-tabs key
@@ -321,36 +411,36 @@ lab_f7          	lf7	str	l7	-B-G-*	label on function key f7 if not f7
 lab_f8          	lf8	str	l8	-B-G-*	label on function key f8 if not f8
 lab_f9          	lf9	str	l9	-B-G-*	label on function key f9 if not f9
 meta_off          	rmm	str	mo	YB-G-*	turn off meta mode
-meta_on	smm          	str	mm	YB-G-*	turn on meta mode (8th-bit on)
-newline	nel          	str	nw	YB-G-*	newline (behave like cr followed by lf)
+meta_on         	smm    	str	mm	YB-G-*	turn on meta mode (8th-bit on)
+newline         	nel    	str	nw	YB-G-*	newline (behave like cr followed by lf)
 pad_char          	pad	str	pc	YBCGE	padding char (instead of null)
-parm_dch          	dch	str	DC	YB-GE	delete #1 chars
-parm_delete_line	dl	str	DL	YBCGE	delete #1 lines
-parm_down_cursor	cud	str	DO	YBCGE	down #1 lines
-parm_ich          	ich	str	IC	YB-GE	insert #1 chars
-parm_index          	indn	str	SF	YBCG-	scroll forward #1 lines
-parm_insert_line	il	str	AL	YBCGE	insert #1 lines
-parm_left_cursor	cub	str	LE	YBCGE	move #1 chars to the left
-parm_right_cursor	cuf	str	RI	YBCGE	move #1 chars to the right
-parm_rindex          	rin	str	SR	YBCG-	scroll back #1 lines
-parm_up_cursor  	cuu	str	UP	YBCGE	up #1 lines
+parm_dch          	dch	str	DC	YB-GE	delete #1 chars (P*)
+parm_delete_line	dl	str	DL	YBCGE	delete #1 lines (P*)
+parm_down_cursor	cud	str	DO	YBCGE	down #1 lines (P*)
+parm_ich          	ich	str	IC	YB-GE	insert #1 chars (P*)
+parm_index          	indn	str	SF	YBCG-	scroll forward #1 lines (P)
+parm_insert_line	il	str	AL	YBCGE	insert #1 lines (P*)
+parm_left_cursor	cub	str	LE	YBCGE	move #1 chars to the left (P)
+parm_right_cursor	cuf	str	RI	YBCGE	move #1 chars to the right (P*)
+parm_rindex          	rin	str	SR	YBCG-	scroll back #1 lines (P)
+parm_up_cursor  	cuu	str	UP	YBCGE	up #1 lines (P*)
 pkey_key        	pfkey	str	pk	-B---	program function key #1 to type string #2
 pkey_local          	pfloc	str	pl	-B---	program function key #1 to execute string #2
 pkey_xmit          	pfx	str	px	-B---	program function key #1 to transmit string #2
 print_screen          	mc0	str	ps	-B-G-*	print contents of screen
 prtr_off          	mc4	str	pf	-B-G-*	turn off printer
-prtr_on	mc5          	str	po	-B-G-*	turn on printer
-repeat_char          	rep	str	rp	YB-GE	repeat char #1 #2 times
+prtr_on         	mc5	str	po	-B-G-*	turn on printer
+repeat_char          	rep	str	rp	YB-GE	repeat char #1 #2 times (P*)
 reset_1string          	rs1	str	r1	-B---	reset string
 reset_2string          	rs2	str	r2	-B---	reset string
 reset_3string          	rs3	str	r3	-B---	reset string
 reset_file          	rf	str	rf	-B---	name of reset file
 restore_cursor        	rc	str	rc	YBCG-	restore cursor to last position of sc
-row_address          	vpa	str	cv	-B-GE**	vertical position #1 absolute
-save_cursor          	sc	str	sc	YBCG-	save current cursor position
-scroll_forward        	ind	str	sf	YBCGE	scroll text up
-scroll_reverse        	ri	str	sr	YBCGE	scroll text down
-set_attributes        	sgr	str	sa	YB-G	define video attributes #1-#9
+row_address          	vpa	str	cv	-B-GE**	vertical position #1 absolute (P)
+save_cursor          	sc	str	sc	YBCG-	save current cursor position (P)
+scroll_forward        	ind	str	sf	YBCGE	scroll text up (P)
+scroll_reverse        	ri	str	sr	YBCGE	scroll text down (P)
+set_attributes        	sgr	str	sa	YB-G	define video attributes #1-#9 (PG9)
 set_tab                 hts	str	st	YB-G-	set a tab in every row, current columns
 set_window      	wind	str	wi	-B-GE	current window is lines #1-#2 cols #3-#4
 tab              	ht	str	ta	YBCGE	tab to next 8-space hardware tab stop
@@ -583,6 +673,18 @@ subscript_characters	subcs	str	Zu	-----	List of subscriptable characters
 superscript_characters	supcs	str	Zv	-----	List of superscriptable characters
 these_cause_cr  	docr	str	Zw	-----	Printing any of these chars causes CR
 zero_motion     	zerom	str	Zx	-----	No motion for subsequent character
+#%.TE
+#%
+#%The following string capabilities are present in the SVr4.0 term structure,
+#%but are not documented in the man page.
+#%
+#%.TS H
+#%center;
+#%c c c c
+#%c c c c
+#%l l l l.
+#%\fBVariable	Cap-	Termcap	Description\fR
+#%\fBString	name	Code\fR
 char_set_names  	csnm	str	Zy	-----	List of character set names
 key_mouse       	kmous	str	Km	-----	Mouse event has occurred
 mouse_info      	minfo	str	Mi	-----	Mouse status information
@@ -618,23 +720,34 @@ exit_scancode_mode	rmsc	str	S5	-----	Exit PC scancode mode
 pc_term_options 	pctrm	str	S6	-----	PC terminal options
 scancode_escape 	scesc	str	S7	-----	Escape for scancode emulation
 alt_scancode_esc	scesa	str	S8	-----	Alternate escape for scancode emulation
-#
-# The XSI Curses standard added these.  They are probably in SV 4.2 curses as
-# well, but because XSI Curses lists them is strict alphabetical order we can't
-# know if this is the right binary order.  Our termcap names for them are
-# invented; according to the XSI Curses standard, they have no termcap names.
-# If your compiled terminfo entries use these, they may not be binary-
-# compatible with SVr4.2 entries; beware!
-#
+#%.TE
+#%
+#%The XSI Curses standard added these.  They are probably in some post-4.1 
+#%version of System V curses as well, but because XSI Curses lists them is
+#%strict alphabetical order we don't know if this is the right binary order.
+#%The \fBncurses\fR termcap names for them are invented; according to the
+#%XSI Curses standard, they have no termcap names.  If your compiled terminfo
+#%entries use these, they may not be binary-compatible with System V terminfo
+#%entries after SVr4.1; beware!
+#%
+#%.TS H
+#%center;
+#%c c c c
+#%c c c c
+#%l l l l.
+#%\fBVariable	Cap-	Termcap	Description\fR
+#%\fBString	name	Code\fR
 enter_horizontal_hl_mode	ehhlm	str	Xh	-----	Enter horizontal highlight mode
 enter_left_hl_mode	elhlm	str	Xl	-----	Enter left highlight mode
 enter_low_hl_mode	elohlm	str	Xo	-----	Enter low highlight mode
 enter_right_hl_mode	erhlm	str	Xr	-----	Enter right highlight mode
 enter_top_hl_mode	ethlm	str	Xt	-----	Enter top highlight mode
 enter_vertical_hl_mode	evhlm	str	Xv	-----	Enter vertical highlight mode
+#%.TE
 #
 # The magic token below tells the tic compiler-generator code that all the caps
-# past it should be ignored (not written out) when dumping terminfo objects.
+# past it should be ignored (not written out) when dumping terminfo objects. It
+# also tells the man page table generator not to pass through following lines
 # This means we can have obsolete capabilities and pseudo-capabilities that are
 # recognized for termcap or terminfo compilation, but not output.
 #
@@ -675,7 +788,7 @@ magic_cookie_glitch_ul	OTug	num	ug	YBCGE	number of blanks left by ul
 #
 backspaces_with_bs      OTbs	bool	bs	YBCGE	uses ^H to move left
 crt_no_scrolling    	OTns	bool	ns	YBCG-	crt cannot scroll
-no_correctly_working_cr   	OTnc	bool	nc	YBCG-	no way to go to start of line
+no_correctly_working_cr	OTnc	bool	nc	YBCG-	no way to go to start of line
 carriage_return_delay	OTdC	num	dC	YB-G-	pad needed for CR
 new_line_delay		OTdN	num	dN	YB-G-	pad needed for LF
 linefeed_if_not_lf      OTnl	str	nl	YBCGE	use to move down
@@ -994,17 +1107,18 @@ capalias	PS	pf	XENIX	prtr_on
 capalias	PU	kP	XENIX	key_ppage
 capalias	RT	@8	XENIX	kent
 capalias	UP	ku	XENIX	kcuu1
-capalias	G6	IGNORE	XENIX	double upper left
-capalias	G7	IGNORE	XENIX	double lower left
-capalias	G5	IGNORE	XENIX	double upper right
-capalias	G8	IGNORE	XENIX	double lower right
-capalias	Gr	IGNORE	XENIX	double tee pointing right
-capalias	Gr	IGNORE	XENIX	double tee pointing left
-capalias	Gu	IGNORE	XENIX	double tee pointing up
-capalias	Gd	IGNORE	XENIX	double tee pointing down
-capalias	Gh	IGNORE	XENIX	double horizontal line
-capalias	Gv	IGNORE	XENIX	double vertical line
-capalias	Gc	IGNORE	XENIX	double intersection
+capalias	G6	IGNORE	XENIX	double-ACS_ULCORNER
+capalias	G7	IGNORE	XENIX	double-ACS_LLCORNER
+capalias	G5	IGNORE	XENIX	double-ACS_URCORNER
+capalias	G8	IGNORE	XENIX	double-ACS_LRCORNER
+capalias	Gr	IGNORE	XENIX	double-ACS_LTEE
+capalias	Gr	IGNORE	XENIX	double-ACS_RTEE
+capalias	Gu	IGNORE	XENIX	double-ACS_BTEE
+capalias	Gd	IGNORE	XENIX	double ACS_TTEE
+capalias	Gh	IGNORE	XENIX	double-ACS_HLINE
+capalias	Gv	IGNORE	XENIX	double-ACS_VLINE
+capalias	Gc	IGNORE	XENIX	double-ACS_PLUS
+capalias	GG	IGNORE	XENIX	acs-glitch
 #
 # There are also the following:
 #

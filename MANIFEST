@@ -15,6 +15,7 @@
 ./c++/cursesw.cc
 ./c++/cursesw.h
 ./c++/demo.cc
+./c++/modules
 ./configure
 ./configure.in
 ./dist.mk
@@ -56,6 +57,7 @@
 ./include/unctrl.h.in
 ./install-sh
 ./man/Makefile.in
+./man/MKterminfo.sh
 ./man/captoinfo.1m
 ./man/clear.1
 ./man/curs_addch.3x
@@ -144,7 +146,9 @@
 ./man/ncurses.3x
 ./man/panel.3x
 ./man/term.5
-./man/terminfo.5
+./man/term.7
+./man/terminfo.head
+./man/terminfo.tail
 ./man/tic.1m
 ./man/tput.1
 ./man/tset.1

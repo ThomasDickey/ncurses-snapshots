@@ -15,7 +15,7 @@ cat <<EOF
  * A value of 1 in the table means do both pad and % translations.
  */
 
-static short parametrized[] = {
+static short const parametrized[] = {
 EOF
 
 # We detect whether % translations should be done by looking for #[0-9] in the

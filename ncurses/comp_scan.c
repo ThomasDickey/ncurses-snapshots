@@ -46,7 +46,7 @@
 
 #define iswhite(ch)	(ch == ' '  ||  ch == '\t')
 
-bool	_nc_syntax;		/* termcap or terminfo? */
+int	_nc_syntax;		/* termcap or terminfo? */
 int	_nc_curr_line;		/* current line # in input */
 long	_nc_curr_file_pos;	/* file offset of current line */
 long	_nc_comment_start;	/* start of comment range before name */
@@ -166,7 +166,7 @@ long		token_start;
 	    *(ptr++) = ch;
 
 	    if (first_column) {
-	    		char	*endptr;
+	    		char	*desc;
 
 			_nc_comment_start = token_start;
 			_nc_comment_end = _nc_curr_file_pos;
@@ -175,7 +175,7 @@ long		token_start;
 			while ((ch = next_char()) != '\n')
 			{
 			    if (ch == EOF)
-				_nc_err_abort("Premature EOF");
+				_nc_err_abort("premature EOF");
 			    else if (ch == ':')
 			    {
 				_nc_syntax = SYN_TERMCAP;
@@ -223,18 +223,50 @@ long		token_start;
 			}
 
 			/*
-			 * Whitespace in a name field other than the long name
-			 * can confuse rdist and some termcap tools.
+			 * This is the soonest we have the terminal name 
+			 * fetched.  Set up for following warning messages.
 			 */
-			endptr = strrchr(buffer, '|');
-			if (!endptr)
-			    endptr = buffer + strlen(buffer);
-			else if (endptr[1] == '\0')
-			    _nc_warning("empty longname field");
-			for (ptr = buffer; ptr < endptr; ptr++)
+			ptr = strchr(buffer, '|');
+			if (ptr == (char *)NULL)
+			    ptr = buffer + strlen(buffer);
+			ch = *ptr;
+			*ptr = '\0';
+			_nc_set_type(buffer);
+			*ptr = ch;
+
+			/*
+			 * Compute the boundary between the aliases and the
+			 * description field for syntax-checking purposes.
+			 */
+			desc = strrchr(buffer, '|');
+			if (desc)
+			    if (*desc == '\0')
+				_nc_warning("empty longname field");
+			    else if (strchr(desc, ' ') == (char *)NULL)
+			    {
+				_nc_warning("older tic versions may treat the description field as an alias");
+				desc = (char *)NULL;
+			    }
+			if (!desc)
+			    desc = buffer + strlen(buffer);
+
+			/*
+			 * Whitespace in a name field other than the long name
+			 * can confuse rdist and some termcap tools.  Slashes
+			 * are a no-no.  Other special characters can be
+			 * dangerous due to shell expansion.
+			 */
+			for (ptr = buffer; ptr < desc; ptr++)
 			    if (isspace(*ptr))
 			    {
-				_nc_warning("whitespace in shortname field");
+				_nc_warning("whitespace in name or alias field");
+				break;
+			    }
+			    else if (*ptr == '/')
+				_nc_err_abort("slashes aren't allowed in names or aliases");
+			    else if (strchr("$[]!*?", *ptr))
+			    {
+				_nc_warning("dubious character `%c' in name or alias field", *ptr);
 				break;
 			    }
 
@@ -390,7 +422,7 @@ chtype	ch, last_ch = '\0';
 		    _nc_warning("Illegal ^ character - %s",
 		    	_tracechar((unsigned char)ch));
 		}
-		*(ptr++) = ch & 037;
+		*(ptr++) = (char)(ch & 037);
 	    }
 	    else if (ch == '\\') {
 		ch = c = next_char();
@@ -405,7 +437,7 @@ chtype	ch, last_ch = '\0';
 			    _nc_err_abort("Premature EOF");
 			
 			if (ch < '0'  ||  ch > '7') {
-			    push_back(ch);
+			    push_back(c);
 			    break;
 			}
 
@@ -448,12 +480,12 @@ chtype	ch, last_ch = '\0';
 			default:
 			    _nc_warning("Illegal character %s in \\ sequence",
 				    _tracechar((unsigned char)ch));
-			    *(ptr++) = ch;
+			    *(ptr++) = (char)ch;
 		    } /* endswitch (ch) */
 		} /* endelse (ch < '0' ||  ch > '7') */
 	    } /* end else if (ch == '\\') */
 	    else {
-		*(ptr++) = ch;
+		*(ptr++) = (char)ch;
 	    }
 	    
 	    count ++;
