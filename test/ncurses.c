@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.150 2002/01/12 23:49:26 tom Exp $
+$Id: ncurses.c,v 1.153 2002/02/10 01:34:39 tom Exp $
 
 ***************************************************************************/
 
@@ -1055,37 +1055,42 @@ show_acs_chars(void)
     refresh();
 
     n = show_1_acs(0, BOTH(ACS_ULCORNER));
-    n = show_1_acs(n, BOTH(ACS_LLCORNER));
     n = show_1_acs(n, BOTH(ACS_URCORNER));
+    n = show_1_acs(n, BOTH(ACS_LLCORNER));
     n = show_1_acs(n, BOTH(ACS_LRCORNER));
-    n = show_1_acs(n, BOTH(ACS_RTEE));
+
     n = show_1_acs(n, BOTH(ACS_LTEE));
-    n = show_1_acs(n, BOTH(ACS_BTEE));
+    n = show_1_acs(n, BOTH(ACS_RTEE));
     n = show_1_acs(n, BOTH(ACS_TTEE));
+    n = show_1_acs(n, BOTH(ACS_BTEE));
+
     n = show_1_acs(n, BOTH(ACS_HLINE));
     n = show_1_acs(n, BOTH(ACS_VLINE));
-    n = show_1_acs(n, BOTH(ACS_PLUS));
-    n = show_1_acs(n, BOTH(ACS_S1));
-    n = show_1_acs(n, BOTH(ACS_S9));
-    n = show_1_acs(n, BOTH(ACS_DIAMOND));
-    n = show_1_acs(n, BOTH(ACS_CKBOARD));
-    n = show_1_acs(n, BOTH(ACS_DEGREE));
-    n = show_1_acs(n, BOTH(ACS_PLMINUS));
-    n = show_1_acs(n, BOTH(ACS_BULLET));
+
     n = show_1_acs(n, BOTH(ACS_LARROW));
     n = show_1_acs(n, BOTH(ACS_RARROW));
-    n = show_1_acs(n, BOTH(ACS_DARROW));
     n = show_1_acs(n, BOTH(ACS_UARROW));
+    n = show_1_acs(n, BOTH(ACS_DARROW));
+
+    n = show_1_acs(n, BOTH(ACS_STERLING));
+
+    n = show_1_acs(n, BOTH(ACS_BLOCK));
     n = show_1_acs(n, BOTH(ACS_BOARD));
     n = show_1_acs(n, BOTH(ACS_LANTERN));
-    n = show_1_acs(n, BOTH(ACS_BLOCK));
+    n = show_1_acs(n, BOTH(ACS_BULLET));
+    n = show_1_acs(n, BOTH(ACS_CKBOARD));
+    n = show_1_acs(n, BOTH(ACS_DEGREE));
+    n = show_1_acs(n, BOTH(ACS_DIAMOND));
+    n = show_1_acs(n, BOTH(ACS_GEQUAL));
+    n = show_1_acs(n, BOTH(ACS_NEQUAL));
+    n = show_1_acs(n, BOTH(ACS_LEQUAL));
+    n = show_1_acs(n, BOTH(ACS_PLMINUS));
+    n = show_1_acs(n, BOTH(ACS_PLUS));
+    n = show_1_acs(n, BOTH(ACS_PI));
+    n = show_1_acs(n, BOTH(ACS_S1));
     n = show_1_acs(n, BOTH(ACS_S3));
     n = show_1_acs(n, BOTH(ACS_S7));
-    n = show_1_acs(n, BOTH(ACS_LEQUAL));
-    n = show_1_acs(n, BOTH(ACS_GEQUAL));
-    n = show_1_acs(n, BOTH(ACS_PI));
-    n = show_1_acs(n, BOTH(ACS_NEQUAL));
-    n = show_1_acs(n, BOTH(ACS_STERLING));
+    n = show_1_acs(n, BOTH(ACS_S9));
 }
 
 static void
@@ -1116,6 +1121,122 @@ acs_display(void)
     erase();
     endwin();
 }
+
+#if defined(_XOPEN_SOURCE_EXTENDED) && defined(WACS_ULCORNER)
+static void
+show_upper_widechars(int first)
+{
+    int code;
+    int last = first + 31;
+
+    erase();
+    attron(A_BOLD);
+    mvprintw(0, 20, "Display of Character Codes %d to %d", first, last);
+    attroff(A_BOLD);
+    refresh();
+
+    for (code = first; code <= last; code++) {
+	int row = 4 + ((code - first) % 16);
+	int col = ((code - first) / 16) * COLS / 2;
+	char tmp[80];
+	sprintf(tmp, "%3d (0x%x)", code, code);
+	mvprintw(row, col, "%*s: ", COLS / 4, tmp);
+	echochar(code);
+    }
+}
+
+static int
+show_1_wacs(int n, const char *name, cchar_t * code)
+{
+    const int height = 16;
+    int row = 4 + (n % height);
+    int col = (n / height) * COLS / 2;
+    mvprintw(row, col, "%*s : ", COLS / 4, name);
+    add_wchnstr(code, 1);
+    return n + 1;
+}
+
+static void
+show_wacs_chars(void)
+/* display the wide-ACS character set */
+{
+    int n;
+
+#define BOTH2(name) #name, &(name)
+
+    erase();
+    attron(A_BOLD);
+    mvaddstr(0, 20, "Display of the Wide-ACS Character Set");
+    attroff(A_BOLD);
+    refresh();
+
+    n = show_1_wacs(0, BOTH2(WACS_ULCORNER));
+    n = show_1_wacs(n, BOTH2(WACS_URCORNER));
+    n = show_1_wacs(n, BOTH2(WACS_LLCORNER));
+    n = show_1_wacs(n, BOTH2(WACS_LRCORNER));
+
+    n = show_1_wacs(n, BOTH2(WACS_LTEE));
+    n = show_1_wacs(n, BOTH2(WACS_RTEE));
+    n = show_1_wacs(n, BOTH2(WACS_TTEE));
+    n = show_1_wacs(n, BOTH2(WACS_BTEE));
+
+    n = show_1_wacs(n, BOTH2(WACS_HLINE));
+    n = show_1_wacs(n, BOTH2(WACS_VLINE));
+
+    n = show_1_wacs(n, BOTH2(WACS_LARROW));
+    n = show_1_wacs(n, BOTH2(WACS_RARROW));
+    n = show_1_wacs(n, BOTH2(WACS_UARROW));
+    n = show_1_wacs(n, BOTH2(WACS_DARROW));
+
+    n = show_1_wacs(n, BOTH2(WACS_STERLING));
+
+    n = show_1_wacs(n, BOTH2(WACS_BLOCK));
+    n = show_1_wacs(n, BOTH2(WACS_BOARD));
+    n = show_1_wacs(n, BOTH2(WACS_LANTERN));
+    n = show_1_wacs(n, BOTH2(WACS_BULLET));
+    n = show_1_wacs(n, BOTH2(WACS_CKBOARD));
+    n = show_1_wacs(n, BOTH2(WACS_DEGREE));
+    n = show_1_wacs(n, BOTH2(WACS_DIAMOND));
+    n = show_1_wacs(n, BOTH2(WACS_GEQUAL));
+    n = show_1_wacs(n, BOTH2(WACS_NEQUAL));
+    n = show_1_wacs(n, BOTH2(WACS_LEQUAL));
+    n = show_1_wacs(n, BOTH2(WACS_PLMINUS));
+    n = show_1_wacs(n, BOTH2(WACS_PLUS));
+    n = show_1_wacs(n, BOTH2(WACS_PI));
+    n = show_1_wacs(n, BOTH2(WACS_S1));
+    n = show_1_wacs(n, BOTH2(WACS_S3));
+    n = show_1_wacs(n, BOTH2(WACS_S7));
+    n = show_1_wacs(n, BOTH2(WACS_S9));
+}
+
+static void
+wide_acs_display(void)
+{
+    int c = 'a';
+
+    do {
+	switch (c) {
+	case 'a':
+	    show_wacs_chars();
+	    break;
+	case '0':
+	case '1':
+	case '2':
+	case '3':
+	    show_upper_widechars((c - '0') * 32 + 128);
+	    break;
+	}
+	mvprintw(LINES - 2, 0,
+		 "Select: a=WACS, 0,1,2,3=GR characters, q=quit");
+	refresh();
+    } while ((c = Getchar()) != 'x' && c != 'q');
+
+    Pause();
+    erase();
+    endwin();
+}
+
+#endif
 
 /*
  * Graphic-rendition test (adapted from vttest)
@@ -3368,6 +3489,12 @@ do_single_test(const char c)
 	acs_display();
 	break;
 
+#if defined(_XOPEN_SOURCE_EXTENDED) && defined(WACS_ULCORNER)
+    case 'F':
+	wide_acs_display();
+	break;
+#endif
+
 #if USE_LIBPANEL
     case 'o':
 	demo_panels();
@@ -3628,6 +3755,9 @@ main(int argc, char *argv[])
 	(void) puts("d = edit RGB color values");
 	(void) puts("e = exercise soft keys");
 	(void) puts("f = display ACS characters");
+#ifdef _XOPEN_SOURCE_EXTENDED
+	(void) puts("F = display Wide-ACS characters");
+#endif
 	(void) puts("g = display windows and scrolling");
 	(void) puts("i = test of flushinp()");
 	(void) puts("k = display character attributes");

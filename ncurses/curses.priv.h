@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.213 2002/01/05 23:00:09 tom Exp $
+ * $Id: curses.priv.h,v 1.214 2002/02/09 22:39:43 tom Exp $
  *
  *	curses.priv.h
  *
@@ -831,6 +831,11 @@ extern NCURSES_EXPORT(int) _nc_has_mouse (void);
 
 /* lib_mvcur.c */
 #define INFINITY	1000000	/* cost: too high to use */
+
+/* lib_wacs.c */
+#if USE_WIDEC_SUPPORT
+extern NCURSES_EXPORT(void) _nc_init_wacs(void);
+#endif
 
 typedef struct {
     char *s_head;

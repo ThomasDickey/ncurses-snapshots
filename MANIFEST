@@ -836,6 +836,7 @@
 ./ncurses/tty/tty_input.h
 ./ncurses/tty/tty_update.c
 ./ncurses/widechar/lib_cchar.c
+./ncurses/widechar/lib_wacs.c
 ./ncurses/widechar/lib_wunctrl.c
 ./panel/Makefile.in
 ./panel/headers

@@ -1,7 +1,59 @@
 
 #ifdef _XOPEN_SOURCE_EXTENDED
 
-/* $Id: curses.wide,v 1.6 2002/01/19 19:50:18 tom Exp $ */
+/* $Id: curses.wide,v 1.7 2002/02/09 23:50:55 tom Exp $ */
+
+extern NCURSES_EXPORT_VAR(cchar_t *) _nc_wacs;
+
+#define WACS_BSSB	(_nc_wacs['l'])
+#define WACS_SSBB	(_nc_wacs['m'])
+#define WACS_BBSS	(_nc_wacs['k'])
+#define WACS_SBBS	(_nc_wacs['j'])
+#define WACS_SBSS	(_nc_wacs['u'])
+#define WACS_SSSB	(_nc_wacs['t'])
+#define WACS_SSBS	(_nc_wacs['v'])
+#define WACS_BSSS	(_nc_wacs['w'])
+#define WACS_BSBS	(_nc_wacs['q'])
+#define WACS_SBSB	(_nc_wacs['x'])
+#define WACS_SSSS	(_nc_wacs['n'])
+
+#define WACS_ULCORNER	WACS_BSSB
+#define WACS_LLCORNER	WACS_SSBB
+#define WACS_URCORNER	WACS_BBSS
+#define WACS_LRCORNER	WACS_SBBS
+#define WACS_RTEE	WACS_SBSS
+#define WACS_LTEE	WACS_SSSB
+#define WACS_BTEE	WACS_SSBS
+#define WACS_TTEE	WACS_BSSS
+#define WACS_HLINE	WACS_BSBS
+#define WACS_VLINE	WACS_SBSB
+#define WACS_PLUS	WACS_SSSS
+
+#define WACS_S1		(_nc_wacs['o']) /* scan line 1 */
+#define WACS_S9 	(_nc_wacs['s']) /* scan line 9 */
+#define WACS_DIAMOND	(_nc_wacs['`']) /* diamond */
+#define WACS_CKBOARD	(_nc_wacs['a']) /* checker board */
+#define WACS_DEGREE	(_nc_wacs['f']) /* degree symbol */
+#define WACS_PLMINUS	(_nc_wacs['g']) /* plus/minus */
+#define WACS_BULLET	(_nc_wacs['~']) /* bullet */
+
+	/* Teletype 5410v1 symbols */
+#define WACS_LARROW	(_nc_wacs[',']) /* arrow left */
+#define WACS_RARROW	(_nc_wacs['+']) /* arrow right */
+#define WACS_DARROW	(_nc_wacs['.']) /* arrow down */
+#define WACS_UARROW	(_nc_wacs['-']) /* arrow up */
+#define WACS_BOARD	(_nc_wacs['h']) /* board of squares */
+#define WACS_LANTERN	(_nc_wacs['i']) /* lantern symbol */
+#define WACS_BLOCK	(_nc_wacs['0']) /* solid square block */
+
+	/* ncurses extensions */
+#define WACS_S3		(_nc_wacs['p'])	/* scan line 3 */
+#define WACS_S7		(_nc_wacs['r'])	/* scan line 7 */
+#define WACS_LEQUAL	(_nc_wacs['y'])	/* less/equal */
+#define WACS_GEQUAL	(_nc_wacs['z'])	/* greater/equal */
+#define WACS_PI		(_nc_wacs['{'])	/* Pi */
+#define WACS_NEQUAL	(_nc_wacs['|'])	/* not equal */
+#define WACS_STERLING	(_nc_wacs['}'])	/* UK pound sign */
 
 /*
  * Function prototypes for wide-character operations.
