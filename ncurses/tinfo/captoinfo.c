@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -92,7 +92,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.43 2002/09/28 16:38:59 tom Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.44 2003/11/01 21:17:52 Todd.Miller Exp $")
 
 #define MAX_PUSHED	16	/* max # args we can push onto the stack */
 
@@ -649,11 +649,11 @@ _nc_infotocap(const char *cap GCC_UNUSED, const char *str, int const parametrize
 
     /* we may have to move some trailing mandatory padding up front */
     padding = str + strlen(str) - 1;
-    if (*padding == '>' && *--padding == '/') {
+    if (padding > str && *padding == '>' && *--padding == '/') {
 	--padding;
 	while (isdigit(UChar(*padding)) || *padding == '.' || *padding == '*')
 	    padding--;
-	if (*padding == '<' && *--padding == '$')
+	if (padding > str && *padding == '<' && *--padding == '$')
 	    trimmed = padding;
 	padding += 2;
 

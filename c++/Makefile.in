@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.70 2003/10/18 20:33:45 tom Exp $
+# $Id: Makefile.in,v 1.71 2003/11/01 22:53:12 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -27,7 +27,7 @@
 # authorization.                                                             #
 ##############################################################################
 #
-# Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
+# Author: Thomas E. Dickey
 #
 #  Simple makefile for c++ window class demo
 
@@ -38,7 +38,8 @@ SHELL		= /bin/sh
 
 CF_MFLAGS 	= @cf_cv_makeflags@
 @SET_MAKE@
-x		= @PROG_EXT@
+x		= @EXEEXT@
+o		= .@OBJEXT@
 
 MODEL		= ../@DFT_OBJ_SUBDIR@
 DESTDIR		= @DESTDIR@
@@ -133,27 +134,27 @@ depend :
 # pull in all of the ncurses libraries (panel, menu, form, ncurses) as direct
 # dependencies.
 LIB_OBJS = \
-	$(MODEL)/cursesf.o \
-	$(MODEL)/cursesm.o \
-	$(MODEL)/cursesw.o \
-	$(MODEL)/cursespad.o \
-	$(MODEL)/cursesp.o \
-	$(MODEL)/cursslk.o \
-	$(MODEL)/cursesapp.o \
-	$(MODEL)/cursesmain.o
+	$(MODEL)/cursesf$o \
+	$(MODEL)/cursesm$o \
+	$(MODEL)/cursesw$o \
+	$(MODEL)/cursespad$o \
+	$(MODEL)/cursesp$o \
+	$(MODEL)/cursslk$o \
+	$(MODEL)/cursesapp$o \
+	$(MODEL)/cursesmain$o
 
 ../lib/$(LIBNAME_NORMAL) : $(LIB_OBJS)
 	$(CXX_AR) $(CXX_AR_OPTS) $@ $?
 	$(RANLIB) $@
 
 ../lib/$(LIBNAME_LIBTOOL) : $(LIB_OBJS)
-	cd ../lib && $(LIBTOOL_LINK) $(CXX) -o $(LIBNAME) $(LIB_OBJS:.o=.lo) \
+	cd ../lib && $(LIBTOOL_LINK) $(CXX) -o $(LIBNAME) $(LIB_OBJS:$o=.lo) \
 		-rpath $(INSTALL_PREFIX)$(libdir) \
 		-version-info $(NCURSES_MAJOR):$(NCURSES_MINOR) $(SHLIB_LIST)
 
-OBJS_DEMO = $(MODEL)/demo.o
+OBJS_DEMO = $(MODEL)/demo$o
 
-$(MODEL)/demo.o : $(srcdir)/demo.cc \
+$(MODEL)/demo$o : $(srcdir)/demo.cc \
 	$(cursesf_h) $(cursesm_h) $(cursesapp_h)
 
 demo$x:	$(OBJS_DEMO) \
@@ -182,7 +183,7 @@ mostlyclean ::
 clean :: mostlyclean
 	-sh -c "if test -n '$x' ; then $(MAKE) clean x=''; fi"
 	-rm -rf $(MODEL)/SunWS_cache
-	-$(LIBTOOL_CLEAN) rm -f demo$x $(AUTO_SRC) ../lib/$(LIBNAME) $(LIB_OBJS) $(LIB_OBJS:.o=.lo) $(OBJS_DEMO)
+	-$(LIBTOOL_CLEAN) rm -f demo$x $(AUTO_SRC) ../lib/$(LIBNAME) $(LIB_OBJS) $(LIB_OBJS:$o=.lo) $(OBJS_DEMO)
 	-rm -rf .libs
 
 distclean :: clean

@@ -1,10 +1,25 @@
--- $Id: NEWS,v 1.772 2003/10/25 23:07:33 tom Exp $
+-- $Id: NEWS,v 1.773 2003/11/01 23:10:40 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20031101
+	+ fix a memory leak in error-return from setupterm() (report by
+	  Stanislav Ievlev <inger@altlinux.org>).
+	+ use EXEEXT and OBJEXT consistently in makefiles.
+	+ amend fixes for cross-compiling to use separate executable-suffix
+	  BUILD_EXEEXT (cf: 20031018).
+	+ modify MKkey_defs.sh to check for sort utility that does not
+	  recognize key options, e.g., busybox (report by Peter S Mazinger
+	  <ps.m@gmx.net>).
+	+ fix potential out-of-bounds indexing in _nc_infotocap() (found by
+	  David Krause using some of the new malloc debugging features
+	  under OpenBSD, patch by Ted Unangst).
+	+ modify CF_LIB_SUFFIX for Itanium releases of HP-UX, which use a
+	  ".so" suffix (patch by Jonathan Ward <Jonathan.Ward@hp.com>).
 
 20031025
 	+ update terminfo for xterm-xfree86 -TD

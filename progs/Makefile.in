@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.61 2003/10/18 20:33:22 tom Exp $
+# $Id: Makefile.in,v 1.62 2003/11/01 22:45:57 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -47,7 +47,9 @@ THIS		= Makefile
 
 CF_MFLAGS 	= @cf_cv_makeflags@
 @SET_MAKE@
-x		= @PROG_EXT@
+
+x		= @EXEEXT@
+o		= .@OBJEXT@
 
 MODEL		= ../@DFT_OBJ_SUBDIR@
 DESTDIR		= @DESTDIR@
@@ -189,41 +191,41 @@ $(DESTDIR)$(bindir) :
 #
 
 DEPS_TIC = \
-	$(MODEL)/tic.o \
-	$(MODEL)/dump_entry.o
+	$(MODEL)/tic$o \
+	$(MODEL)/dump_entry$o
 
 tic$x: $(DEPS_TIC) $(DEPS_CURSES) transform.h
 	@ECHO_LINK@ $(LINK) $(DEPS_TIC) $(LDFLAGS_DEFAULT) -o $@
 
 DEPS_TOE = \
-	$(MODEL)/toe.o \
-	$(MODEL)/dump_entry.o
+	$(MODEL)/toe$o \
+	$(MODEL)/dump_entry$o
 
 toe$x: $(DEPS_TOE) $(DEPS_CURSES)
 	@ECHO_LINK@ $(LINK) $(DEPS_TOE) $(LDFLAGS_DEFAULT) -o $@
 
 DEPS_CLEAR = \
-	$(MODEL)/clear.o
+	$(MODEL)/clear$o
 
 clear$x: $(DEPS_CLEAR) $(DEPS_CURSES)
 	@ECHO_LINK@ $(LINK) $(DEPS_CLEAR) $(LDFLAGS_DEFAULT) -o $@
 
 DEPS_TPUT = \
-	$(MODEL)/tput.o
+	$(MODEL)/tput$o
 
 tput$x: $(DEPS_TPUT) $(DEPS_CURSES) transform.h
 	@ECHO_LINK@ $(LINK) $(DEPS_TPUT) $(LDFLAGS_DEFAULT) -o $@
 
 DEPS_INFOCMP = \
-	$(MODEL)/infocmp.o \
-	$(MODEL)/dump_entry.o
+	$(MODEL)/infocmp$o \
+	$(MODEL)/dump_entry$o
 
 infocmp$x: $(DEPS_INFOCMP) $(DEPS_CURSES)
 	@ECHO_LINK@ $(LINK) $(DEPS_INFOCMP) $(LDFLAGS_DEFAULT) -o $@
 
 DEPS_TSET = \
-	$(MODEL)/tset.o \
-	$(MODEL)/dump_entry.o
+	$(MODEL)/tset$o \
+	$(MODEL)/dump_entry$o
 
 tset$x: $(DEPS_TSET) $(DEPS_CURSES) transform.h
 	@ECHO_LINK@ $(LINK) $(DEPS_TSET) $(LDFLAGS_DEFAULT) -o $@

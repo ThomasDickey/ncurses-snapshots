@@ -1,4 +1,4 @@
-# $Id: mk-2nd.awk,v 1.14 2003/08/30 20:59:40 tom Exp $
+# $Id: mk-2nd.awk,v 1.15 2003/11/01 22:42:50 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2000,2003 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -27,7 +27,7 @@
 # authorization.                                                             #
 ##############################################################################
 #
-# Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
+# Author: Thomas E. Dickey
 #
 # Generate compile-rules for the modules that we are using in libraries or
 # programs.  We are listing them explicitly because we have turned off the
@@ -87,7 +87,7 @@ BEGIN	{
 					compile="CC"
 					suffix=".c"
 				}
-				printf "../%s/%s.o :\t%s/%s%s", model, $1, $3, $1, suffix
+				printf "../%s/%s$o :\t%s/%s%s", model, $1, $3, $1, suffix
 				for (n = 4; n <= NF; n++) printf " \\\n\t\t\t%s", $n
 				print  ""
 				if ( echo == "yes" )
