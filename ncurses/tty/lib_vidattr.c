@@ -64,7 +64,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.21 1998/08/01 22:21:19 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.23 1999/06/12 21:20:41 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -102,7 +102,8 @@ bool used_ncv = FALSE;
 	T(("previous attribute was %s", _traceattr(previous_attr)));
 
 #if !USE_XMC_SUPPORT
-	if (magic_cookie_glitch > 0)
+	if ((SP != 0)
+	 && (magic_cookie_glitch > 0))
 		newmode &= ~(SP->_xmc_suppress);
 #endif
 
@@ -185,8 +186,14 @@ bool used_ncv = FALSE;
 		T(("turning %s off", _traceattr(turn_off)));
 
 		TurnOff(A_ALTCHARSET,  exit_alt_charset_mode);
-		TurnOff(A_UNDERLINE,   exit_underline_mode);
-		TurnOff(A_STANDOUT,    exit_standout_mode);
+
+		if (!SP || SP->_use_rmul) {
+			TurnOff(A_UNDERLINE,   exit_underline_mode);
+		}
+
+		if (!SP || SP->_use_rmso) {
+			TurnOff(A_STANDOUT,    exit_standout_mode);
+		}
 
 		if (turn_off && exit_attribute_mode) {
 			doPut(exit_attribute_mode);

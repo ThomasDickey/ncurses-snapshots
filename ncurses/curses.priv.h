@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.139 1999/03/16 01:45:35 tom Exp $
+ * $Id: curses.priv.h,v 1.140 1999/06/12 21:19:47 tom Exp $
  *
  *	curses.priv.h
  *
@@ -336,6 +336,10 @@ struct screen {
 	chtype          _xmc_suppress;  /* attributes to suppress if xmc     */
 	chtype          _xmc_triggers;  /* attributes to process if xmc      */
 	chtype          _acs_map[ACS_LEN];
+
+	/* used in lib_vidattr.c */
+	bool            _use_rmso;	/* true if we may use 'rmso'         */
+	bool            _use_rmul;	/* true if we may use 'rmul'         */
 
 	/*
 	 * These data correspond to the state of the idcok() and idlok()
