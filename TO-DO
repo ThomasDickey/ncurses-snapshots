@@ -1,13 +1,10 @@
--- $Id: TO-DO,v 1.43 2004/02/08 21:09:00 tom Exp $
+-- $Id: TO-DO,v 1.44 2004/03/07 02:04:20 tom Exp $
 
 SHORT-TERM TO-DO ITEMS:
 
 Known Problems:
 
 * The form/menu libraries do not use wide-character features.
-
-* Some users would like to build a single version of libtinfo which can be
-  used from either libncursesw or libncurses.
 
 * libtool does not work with GNAT.
 

@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.800 2004/02/29 01:10:57 tom Exp $
+-- $Id: NEWS,v 1.801 2004/03/07 01:20:16 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040306
+	+ modify ncurses.c 'r' test so editing commands, like inserted text,
+	  set the field background, and the state of insert/overlay editing
+	  mode is shown in that test.
+	+ change syntax of dummy targets in Ada95 makefiles to work with pmake.
+	+ correct logic in test/ncurses.c 'b' for noncolor terminals which
+	  did not recognize a quit-command (cf: 20030419).
 
 20040228
 	+ modify _nc_insert_ch() to allow for its input to be part of a

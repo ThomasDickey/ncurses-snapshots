@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -30,7 +30,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: form.priv.h,v 0.12 2004/02/21 22:17:46 tom Exp $ */
+/* $Id: form.priv.h,v 0.13 2004/03/07 01:45:39 tom Exp $ */
 
 #ifndef FORM_PRIV_H
 #define FORM_PRIV_H 1
@@ -98,6 +98,8 @@ typedef struct typearg {
   struct typearg *left;
   struct typearg *right;
 } TypeArgument;
+
+#define UChar(c)	((unsigned char)(c))
 
 /* This is a dummy request code (normally invalid) to be used internally
    with the form_driver() routine to position to the first active field
