@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_printw.c,v 1.14 2002/11/16 22:07:35 tom Exp $")
+MODULE_ID("$Id: lib_printw.c,v 1.15 2003/02/08 20:50:13 tom Exp $")
 
 NCURSES_EXPORT(int)
 printw(const char *fmt,...)
@@ -134,9 +134,6 @@ vwprintw(WINDOW *win, const char *fmt, va_list argp)
 
     if ((buf = _nc_printf_string(fmt, argp)) != 0) {
 	code = waddstr(win, buf);
-#if USE_SAFE_SPRINTF
-	free(buf);
-#endif
     }
     returnCode(code);
 }

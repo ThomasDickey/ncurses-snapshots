@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.104 2002/11/10 01:24:54 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.105 2003/02/09 00:25:39 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -79,7 +79,7 @@ failed(const char *msg)
 {
     perror(msg);
     cleanup();
-    exit(EXIT_FAILURE);
+    ExitProgram(EXIT_FAILURE);
 }
 
 static void
@@ -126,7 +126,7 @@ usage(void)
 	fputs(tbl[j], stderr);
 	putc('\n', stderr);
     }
-    exit(EXIT_FAILURE);
+    ExitProgram(EXIT_FAILURE);
 }
 
 #define L_BRACE '{'
@@ -317,12 +317,12 @@ open_input(const char *filename)
 
     if (fp == 0) {
 	fprintf(stderr, "%s: Can't open %s\n", _nc_progname, filename);
-	exit(EXIT_FAILURE);
+	ExitProgram(EXIT_FAILURE);
     }
     if (fstat(fileno(fp), &sb) < 0
 	|| (sb.st_mode & S_IFMT) != S_IFREG) {
 	fprintf(stderr, "%s: %s is not a file\n", _nc_progname, filename);
-	exit(EXIT_FAILURE);
+	ExitProgram(EXIT_FAILURE);
     }
     return fp;
 }
@@ -767,6 +767,41 @@ TERMINAL *cur_term;		/* tweak to avoid linking lib_cur_term.c */
 
 #undef CUR
 #define CUR tp->
+
+/*
+ * Check if the alternate character-set capabilities are consistent.
+ */
+static void
+check_acs(TERMTYPE * tp)
+{
+    if (VALID_STRING(acs_chars)) {
+	char *boxes = "lmkjtuvwqxn";
+	char mapped[256];
+	char missing[256];
+	char *p, *q;
+
+	memset(mapped, 0, sizeof(mapped));
+	for (p = acs_chars; *p != '\0'; p += 2) {
+	    if (p[1] == '\0') {
+		_nc_warning("acsc has odd number of characters");
+		break;
+	    }
+	    mapped[UChar(p[0])] = p[1];
+	}
+	if (mapped['I'] && !mapped['i']) {
+	    _nc_warning("acsc refers to 'I', which is probably an error");
+	}
+	for (p = boxes, q = missing; *p != '\0'; ++p) {
+	    if (!mapped[UChar(p[0])]) {
+		*q++ = p[0];
+	    }
+	    *q = '\0';
+	}
+	if (*missing != '\0' && strcmp(missing, boxes)) {
+	    _nc_warning("acsc is missing some line-drawing mapping: %s", missing);
+	}
+    }
+}
 
 /*
  * Check if the color capabilities are consistent
@@ -1239,6 +1274,7 @@ check_termtype(TERMTYPE * tp)
 	    check_params(tp, ExtStrname(tp, j, strnames), a);
     }
 
+    check_acs(tp);
     check_colors(tp);
     check_keypad(tp);
 

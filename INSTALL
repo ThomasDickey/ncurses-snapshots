@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.60 2003/02/02 02:10:45 tom Exp $
+-- $Id: INSTALL,v 1.62 2003/02/08 20:05:40 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -681,7 +681,7 @@ COMPATIBILITY WITH OLDER VERSIONS OF NCURSES:
     you may encounter when building a system with different versions of
     ncurses:
 
-    5.3 (pre-release)
+    5.3 (October 12, 2002)
 	Interface changes:
 
 	+ change type for bool used in headers to NCURSES_BOOL, which usually
@@ -903,31 +903,34 @@ COMPATIBILITY WITH OLDER VERSIONS OF NCURSES:
 IF YOU ARE A SYSTEM INTEGRATOR:
 ------------------------------
 
-    Beginning with 1.9.9, the ncurses distribution includes both a tset
-    utility and /usr/share/tabset directory.  If you are installing ncurses,
-    it is no longer either necessary or desirable to install tset-jv.
-
     Configuration and Installation:
 
-	Configure with --prefix=/usr to make the install productions put
-	libraries and headers in the correct locations (overwriting any
-	previous curses libraries and headers).  This will put the terminfo
-	hierarchy under /usr/share/terminfo; you may want to override this with
-	--datadir=/usr/share/misc; terminfo and tabset are installed under the
-	data directory.
+    	On platforms where ncurses is assumed to be installed in /usr/lib,
+	the configure script uses "/usr" as a default:
 
-	Please configure the ncurses library in a pure-terminfo mode; that
-	is, with the --disable-termcap option.   This will make the ncurses
-	library smaller and faster. The ncurses library includes a termcap
-	emulation that queries the terminfo database, so even applications
-	that use raw termcap to query terminal characteristics will win
-	(providing you recompile and relink them!).
+		Linux, FreeBSD, NetBSD, OpenBSD, Cygwin
 
-	If you must configure with termcap fallback enabled, you may also
-	wish to use the --enable-getcap option.  This option speeds up
-	termcap-based startups, at the expense of not allowing personal
-	termcap entries to reference the terminfo tree.  See the code in
-	ncurses/tinfo/read_termcap.c for details.
+	For other platforms, the default is "/usr/local".  See the discussion
+	of the "--disable-overwrite" option.
+
+	The location of the terminfo is set indirectly by the "--datadir"
+	configure option, e.g., /usr/share/terminfo, given a datadir of
+	/usr/share.  You may want to override this if you are installing
+	ncurses libraries in nonstandard locations, but wish to share the
+	terminfo database.
+
+	Normally the ncurses library is configured in a pure-terminfo mode;
+	that is, with the --disable-termcap option.  This makes the ncurses
+	library smaller and faster.  The ncurses library includes a termcap
+	emulation that queries the terminfo database, so even applications that
+	use raw termcap to query terminal characteristics will win (providing
+	you recompile and relink them!).
+
+	If you must configure with termcap fallback enabled, you may also wish
+	to use the --enable-getcap option.  This speeds up termcap-based
+	startups, at the expense of not allowing personal termcap entries to
+	reference the terminfo tree.  See comments in
+	ncurses/tinfo/read_termcap.c for further details.
 
 	Note that if you have $TERMCAP set, ncurses will use that value
 	to locate termcap data.  In particular, running from xterm will
@@ -947,11 +950,11 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 
     Naming the Console Terminal
 
-	In various Linuxes (and possibly elsewhere) there has been a practice
-	of designating the system console driver type as `console'.  Please
-	do not do this any more!  It complicates peoples' lives, because it
-	can mean that several different terminfo entries from different
-	operating systems all logically want to be called `console'.
+	In various systems there has been a practice of designating the system
+	console driver type as `console'.  Please do not do this!  It
+	complicates peoples' lives, because it can mean that several different
+	terminfo entries from different operating systems all logically want to
+	be called `console'.
 
 	Please pick a name unique to your console driver and set that up
 	in the /etc/inittab table or local equivalent.  Send the entry to the

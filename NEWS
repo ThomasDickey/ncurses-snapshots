@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.731 2003/02/02 02:44:22 tom Exp $
+-- $Id: NEWS,v 1.732 2003/02/09 00:25:15 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030208
+	+ add checking in tic for incomplete line-drawing character mapping.
+	+ update configure script to reflect fix for AC_PROG_GCC_TRADITIONAL,
+	  which is broken in autoconf 2.5x for Mac OS X 10.2.3 (report by
+	  Gerben Wierda <Sherlock@rna.nl>).
+	+ make return value from _nc_printf_string() consistent.  Before,
+	  depending on whether --enable-safe-sprintf was used, it might not be
+	  cached for reallocating.
 
 20030201
 	+ minor fixes for memory-leak checking in lib_tparm.c, hardscroll.c

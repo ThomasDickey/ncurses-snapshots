@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -103,7 +103,7 @@ char *ttyname(int fd);
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tset.c,v 0.54 2002/12/08 00:50:12 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.55 2003/02/09 00:30:09 tom Exp $")
 
 extern char **environ;
 
@@ -142,7 +142,7 @@ exit_error(void)
 	SET_TTY(STDERR_FILENO, &original);
     (void) fprintf(stderr, "\n");
     fflush(stderr);
-    exit(EXIT_FAILURE);
+    ExitProgram(EXIT_FAILURE);
     /* NOTREACHED */
 }
 
