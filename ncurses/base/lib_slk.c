@@ -41,7 +41,7 @@
 #include <ctype.h>
 #include <term.h>		/* num_labels, label_*, plab_norm */
 
-MODULE_ID("$Id: lib_slk.c,v 1.22 2002/08/31 16:11:21 tom Exp $")
+MODULE_ID("$Id: lib_slk.c,v 1.24 2002/09/28 17:46:40 tom Exp $")
 
 /*
  * We'd like to move these into the screen context structure, but cannot,
@@ -79,6 +79,7 @@ _nc_slk_initialize(WINDOW *stwin, int cols)
     int i, x;
     int res = OK;
     char *p;
+    unsigned max_length;
 
     T(("slk_initialize()"));
 
@@ -101,55 +102,59 @@ _nc_slk_initialize(WINDOW *stwin, int cols)
 			? MAX_SKEY(_nc_slk_format)
 			: SP->_slk->maxlab);
 
-    SP->_slk->ent = typeCalloc(slk_ent, SP->_slk->labcnt);
-    if (SP->_slk->ent == NULL)
+    if (SP->_slk->maxlen <= 0
+	|| SP->_slk->labcnt <= 0
+	|| (SP->_slk->ent = typeCalloc(slk_ent,
+				       (unsigned) SP->_slk->labcnt)) == NULL)
 	goto exception;
 
-    p = SP->_slk->buffer = (char *) calloc(2 * SP->_slk->labcnt, (1 + SP->_slk->maxlen));
+    max_length = SP->_slk->maxlen;
+    p = SP->_slk->buffer = (char *) calloc((unsigned) (2 * SP->_slk->labcnt),
+					   (1 + max_length));
     if (SP->_slk->buffer == NULL)
 	goto exception;
 
     for (i = 0; i < SP->_slk->labcnt; i++) {
 	SP->_slk->ent[i].text = p;
-	p += (1 + SP->_slk->maxlen);
+	p += (1 + max_length);
 	SP->_slk->ent[i].form_text = p;
-	p += (1 + SP->_slk->maxlen);
-	memset(SP->_slk->ent[i].form_text, ' ', (unsigned) (SP->_slk->maxlen));
+	p += (1 + max_length);
+	memset(SP->_slk->ent[i].form_text, ' ', max_length);
 	SP->_slk->ent[i].visible = (i < SP->_slk->maxlab);
     }
     if (_nc_slk_format >= 3) {	/* PC style */
-	int gap = (cols - 3 * (3 + 4 * SP->_slk->maxlen)) / 2;
+	int gap = (cols - 3 * (3 + 4 * max_length)) / 2;
 
 	if (gap < 1)
 	    gap = 1;
 
 	for (i = x = 0; i < SP->_slk->maxlab; i++) {
 	    SP->_slk->ent[i].x = x;
-	    x += SP->_slk->maxlen;
+	    x += max_length;
 	    x += (i == 3 || i == 7) ? gap : 1;
 	}
 	slk_paint_info(stwin);
     } else {
 	if (_nc_slk_format == 2) {	/* 4-4 */
-	    int gap = cols - (SP->_slk->maxlab * SP->_slk->maxlen) - 6;
+	    int gap = cols - (SP->_slk->maxlab * max_length) - 6;
 
 	    if (gap < 1)
 		gap = 1;
 	    for (i = x = 0; i < SP->_slk->maxlab; i++) {
 		SP->_slk->ent[i].x = x;
-		x += SP->_slk->maxlen;
+		x += max_length;
 		x += (i == 3) ? gap : 1;
 	    }
 	} else {
 	    if (_nc_slk_format == 1) {	/* 1 -> 3-2-3 */
-		int gap = (cols - (SP->_slk->maxlab * SP->_slk->maxlen) - 5)
+		int gap = (cols - (SP->_slk->maxlab * max_length) - 5)
 		/ 2;
 
 		if (gap < 1)
 		    gap = 1;
 		for (i = x = 0; i < SP->_slk->maxlab; i++) {
 		    SP->_slk->ent[i].x = x;
-		    x += SP->_slk->maxlen;
+		    x += max_length;
 		    x += (i == 2 || i == 4) ? gap : 1;
 		}
 	    } else

@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insstr.c,v 1.19 2001/06/09 23:43:02 skimo Exp $")
+MODULE_ID("$Id: lib_insstr.c,v 1.20 2002/09/28 16:22:34 tom Exp $")
 
 NCURSES_EXPORT(int)
 winsnstr(WINDOW *win, const char *s, int n)
@@ -52,7 +52,7 @@ winsnstr(WINDOW *win, const char *s, int n)
     const unsigned char *str = (const unsigned char *) s;
     const unsigned char *cp;
 
-    T((T_CALLED("winsnstr(%p,%s,%d)"), win, _nc_visbuf(s), n));
+    T((T_CALLED("winsnstr(%p,%s,%d)"), win, _nc_visbufn(s,n), n));
 
     if (win && str) {
 	oy = win->_cury;

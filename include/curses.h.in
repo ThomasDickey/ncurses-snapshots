@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey 1996-on                                        *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.133 2002/09/07 17:45:17 tom Exp $ */
+/* $Id: curses.h.in,v 1.134 2002/09/28 15:08:06 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -814,7 +814,7 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 #define A_VERTICAL	NCURSES_BITS(@cf_cv_1UL@,22)
 
 #define COLOR_PAIR(n)	NCURSES_BITS(n, 0)
-#define PAIR_NUMBER(a)	(((a) & A_COLOR) >> NCURSES_ATTR_SHIFT)
+#define PAIR_NUMBER(a)	((int)(((a) & A_COLOR) >> NCURSES_ATTR_SHIFT))
 
 /*
  * pseudo functions
@@ -857,8 +857,8 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 #define wstandend(win)      	(wattrset(win,A_NORMAL))
 #define wattr_set(win,a,p,opts) ((win)->_attrs = (((a) & ~A_COLOR) | COLOR_PAIR(p)), OK)
 
-#define wattron(win,at)		wattr_on(win, at, (void *)0)
-#define wattroff(win,at)	wattr_off(win, at, (void *)0)
+#define wattron(win,at)		wattr_on(win, (attr_t) at, (void *)0)
+#define wattroff(win,at)	wattr_off(win, (attr_t) at, (void *)0)
 #define wattrset(win,at)	((win)->_attrs = (at))
 
 #define scroll(win)		wscrl(win,1)

@@ -2,7 +2,7 @@
 #
 # MKlib_gen.sh -- generate sources from curses.h macro definitions
 #
-# ($Id: MKlib_gen.sh,v 1.19 2002/06/29 19:45:13 tom Exp $)
+# ($Id: MKlib_gen.sh,v 1.20 2002/09/28 15:02:11 tom Exp $)
 #
 ##############################################################################
 # Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.                #
@@ -203,6 +203,10 @@ $0 !~ /^P_/ {
 		returnType = "SP";
 	} else if ( $first == "WINDOW" ) {
 		returnType = "Win";
+	} else if ( $first == "attr_t" || $second == "attrset" || $second == "standout" || $second == "standend" || $second == "wattrset" || $second == "wstandout" || $second == "wstandend" ) {
+		returnType = "Attr";
+	} else if ( $first == "bool" || $first == "NCURSES_BOOL" ) {
+		returnType = "Bool";
 	} else if ( $second == "*" ) {
 		returnType = "Ptr";
 	} else {

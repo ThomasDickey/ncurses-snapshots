@@ -41,7 +41,7 @@
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.4 2002/08/31 22:25:37 Philippe.Blain Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.5 2002/09/28 17:41:19 tom Exp $")
 
 static char *
 _nc_vischar(char *tp, unsigned c)
@@ -74,8 +74,8 @@ _nc_vischar(char *tp, unsigned c)
     return tp;
 }
 
-NCURSES_EXPORT(const char *)
-_nc_visbuf2(int bufnum, const char *buf)
+static const char *
+_nc_visbuf2n(int bufnum, const char *buf, int len)
 {
     char *vbuf;
     char *tp;
@@ -86,17 +86,20 @@ _nc_visbuf2(int bufnum, const char *buf)
     if (buf == CANCELLED_STRING)
 	return ("(cancelled)");
 
+    if (len < 0)
+	len = strlen(buf);
+
 #ifdef TRACE
-    tp = vbuf = _nc_trace_buf(bufnum, (strlen(buf) * 4) + 5);
+    tp = vbuf = _nc_trace_buf(bufnum, (unsigned)(len * 4) + 5);
 #else
     {
 	static char *mybuf[2];
-	mybuf[bufnum] = typeRealloc(char, (strlen(buf) * 4) + 5, mybuf[bufnum]);
+	mybuf[bufnum] = typeRealloc(char, (unsigned)(len * 4) + 5, mybuf[bufnum]);
 	tp = vbuf = mybuf[bufnum];
     }
 #endif
     *tp++ = D_QUOTE;
-    while ((c = *buf++) != '\0') {
+    while ((--len >= 0) && (c = *buf++) != '\0') {
 	tp = _nc_vischar(tp, UChar(c));
     }
     *tp++ = D_QUOTE;
@@ -105,15 +108,27 @@ _nc_visbuf2(int bufnum, const char *buf)
 }
 
 NCURSES_EXPORT(const char *)
+_nc_visbuf2(int bufnum, const char *buf)
+{
+    return _nc_visbuf2n(bufnum, buf, -1);
+}
+
+NCURSES_EXPORT(const char *)
 _nc_visbuf(const char *buf)
 {
     return _nc_visbuf2(0, buf);
 }
 
+NCURSES_EXPORT(const char *)
+_nc_visbufn(const char *buf, int len)
+{
+    return _nc_visbuf2n(0, buf, len);
+}
+
 #if USE_WIDEC_SUPPORT
 #ifdef TRACE
-NCURSES_EXPORT(const char *)
-_nc_viswbuf2(int bufnum, const wchar_t * buf)
+static const char *
+_nc_viswbuf2n(int bufnum, const wchar_t * buf, int len)
 {
     char *vbuf;
     char *tp;
@@ -122,17 +137,20 @@ _nc_viswbuf2(int bufnum, const wchar_t * buf)
     if (buf == 0)
 	return ("(null)");
 
+    if (len < 0)
+	len = wcslen(buf);
+
 #ifdef TRACE
-    tp = vbuf = _nc_trace_buf(bufnum, (wcslen(buf) * 4) + 5);
+    tp = vbuf = _nc_trace_buf(bufnum, (unsigned) (len * 4) + 5);
 #else
     {
 	static char *mybuf[2];
-	mybuf[bufnum] = typeRealloc(char, (wcslen(buf) * 4) + 5, mybuf[bufnum]);
+	mybuf[bufnum] = typeRealloc(char, (unsigned) (len * 4) + 5, mybuf[bufnum]);
 	tp = vbuf = mybuf[bufnum];
     }
 #endif
     *tp++ = D_QUOTE;
-    while ((c = *buf++) != '\0') {
+    while ((--len >= 0) && (c = *buf++) != '\0') {
 	tp = _nc_vischar(tp, ChCharOf(c));
     }
     *tp++ = D_QUOTE;
@@ -141,9 +159,21 @@ _nc_viswbuf2(int bufnum, const wchar_t * buf)
 }
 
 NCURSES_EXPORT(const char *)
+_nc_viswbuf2(int bufnum, const wchar_t * buf)
+{
+    return _nc_viswbuf2n(bufnum, buf, -1);
+}
+
+NCURSES_EXPORT(const char *)
 _nc_viswbuf(const wchar_t * buf)
 {
     return _nc_viswbuf2(0, buf);
+}
+
+NCURSES_EXPORT(const char *)
+_nc_viswbufn(const wchar_t * buf, int len)
+{
+    return _nc_viswbuf2n(0, buf, len);
 }
 
 NCURSES_EXPORT(const char *)

@@ -1,5 +1,5 @@
 #! /bin/sh
-# $Id: MKkey_defs.sh,v 1.9 2002/08/31 22:56:32 tom Exp $
+# $Id: MKkey_defs.sh,v 1.10 2002/09/28 23:32:16 tom Exp $
 ##############################################################################
 # Copyright (c) 2001,2002 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -43,7 +43,19 @@ pass2=pass2_$$
 pass3=pass3_$$
 pass4=pass4_$$
 trap 'rm -f $data pass[1234]_$$' 0 1 2 5 15
-sed -e 's/[	]\+/	/g' < $DATA |sort -n +5 >$data
+
+# change repeated tabs (used for readability) to single tabs (needed to make
+# awk see the right field alignment of the corresponding columns):
+if sort -k 6 $DATA >$data 2>/dev/null
+then
+	# POSIX
+	sed -e 's/[	]\+/	/g' < $DATA |sort -n -k 6 >$data
+else
+	# SunOS (and SVr4, marked as obsolete but still recognized)
+	sed -e 's/[	]\+/	/g' < $DATA |sort -n +5 >$data
+fi
+
+# add keys that we generate automatically:
 cat >>$data <<EOF
 key_resize	kr1	str	R1	KEY_RESIZE	+	-----	Terminal resize event
 key_event	kv1	str	V1	KEY_EVENT	+	-----	We were interrupted by an event

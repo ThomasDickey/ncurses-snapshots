@@ -40,7 +40,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.48 2001/10/20 20:35:25 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.49 2002/09/28 12:48:35 tom Exp $")
 
 NCURSES_EXPORT_VAR(unsigned)
 _nc_tracing = 0;		/* always define this */
@@ -133,11 +133,27 @@ _tracef(const char *fmt,...)
     errno = save_err;
 }
 
+/* Trace 'bool' return-values */
+NCURSES_EXPORT(NCURSES_BOOL)
+_nc_retrace_bool(NCURSES_BOOL code)
+{
+    T((T_RETURN("%s"), code ? "TRUE" : "FALSE"));
+    return code;
+}
+
 /* Trace 'int' return-values */
 NCURSES_EXPORT(int)
 _nc_retrace_int(int code)
 {
     T((T_RETURN("%d"), code));
+    return code;
+}
+
+/* Trace 'unsigned' return-values */
+NCURSES_EXPORT(unsigned)
+_nc_retrace_unsigned(unsigned code)
+{
+    T((T_RETURN("%#x"), code));
     return code;
 }
 

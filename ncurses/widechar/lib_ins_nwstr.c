@@ -40,7 +40,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_ins_nwstr.c,v 1.2 2002/03/10 22:43:12 tom Exp $")
+MODULE_ID("$Id: lib_ins_nwstr.c,v 1.3 2002/09/28 16:31:33 tom Exp $")
 
 NCURSES_EXPORT(int)
 wins_nwstr(WINDOW *win, const wchar_t * wstr, int n)
@@ -50,7 +50,7 @@ wins_nwstr(WINDOW *win, const wchar_t * wstr, int n)
     NCURSES_SIZE_T ox;
     const wchar_t *cp;
 
-    T((T_CALLED("wins_nwstr(%p,%s,%d)"), win, _nc_viswbuf(wstr), n));
+    T((T_CALLED("wins_nwstr(%p,%s,%d)"), win, _nc_viswbufn(wstr,n), n));
 
     if (win != 0
 	&& wstr != 0

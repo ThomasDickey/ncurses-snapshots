@@ -1,6 +1,6 @@
 // * this is for making emacs happy: -*-Mode: C++;-*-
 /****************************************************************************
- * Copyright (c) 1999,2001 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -36,7 +36,7 @@
 #include "etip.h"
 #include "cursesw.h"
 
-MODULE_ID("$Id: cursespad.cc,v 1.5 2002/07/06 15:47:52 juergen Exp $")
+MODULE_ID("$Id: cursespad.cc,v 1.6 2002/09/22 19:32:55 tom Exp $")
 
 NCursesPad::NCursesPad(int lines, int cols)
   : NCursesWindow(),
@@ -54,7 +54,8 @@ NCursesPad::NCursesPad(int lines, int cols)
 }
 
 
-int NCursesPad::driver (int key) {
+int NCursesPad::driver (int key)
+{
   // Default implementation
   switch(key) {
   case KEY_UP:
@@ -80,7 +81,8 @@ int NCursesPad::driver (int key) {
 }
 
 
-void NCursesPad::operator()(void) {
+void NCursesPad::operator()(void)
+{
   NCursesWindow* W = Win();
 
   if ((NCursesWindow*)0 != W) {
@@ -165,7 +167,8 @@ void NCursesPad::operator()(void) {
 }
 
 
-int NCursesPad::refresh() {
+int NCursesPad::refresh()
+{
   int res = noutrefresh();
   if (res==OK && ((NCursesWindow*)0 != viewWin)) {
     res = (viewWin->refresh());
@@ -173,7 +176,8 @@ int NCursesPad::refresh() {
   return(res);
 }
 
-int NCursesPad::noutrefresh() {
+int NCursesPad::noutrefresh()
+{
   int res = OK;
   NCursesWindow* W = Win();
   if ((NCursesWindow*)0 != W) {
@@ -211,7 +215,8 @@ void NCursesPad::setSubWindow(NCursesWindow& sub)
   viewSub = &sub;
 }
 
-void NCursesFramedPad::OnOperation(int pad_req) {
+void NCursesFramedPad::OnOperation(int pad_req)
+{
   NCursesWindow* W = Win();
   NCursesWindow* Win = getWindow();
 

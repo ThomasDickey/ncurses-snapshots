@@ -72,7 +72,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.175 2002/09/01 17:53:46 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.177 2002/09/28 20:41:55 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -210,7 +210,7 @@ PutAttrChar(CARG_CH_T ch)
      * make it work for wide characters.
      */
     if (SP->_outch != 0) {
-	SP->_outch(ch);
+	SP->_outch((int) ch);
     } else
 #endif
     {
@@ -485,11 +485,10 @@ EmitRange(const NCURSES_CH_T * ntext, int num)
  * Returns: same as EmitRange
  */
 static int
-PutRange(
-	    const NCURSES_CH_T * otext,
-	    const NCURSES_CH_T * ntext,
-	    int row,
-	    int first, int last)
+PutRange(const NCURSES_CH_T * otext,
+	 const NCURSES_CH_T * ntext,
+	 int row,
+	 int first, int last)
 {
     int j, run;
 
@@ -1627,8 +1626,7 @@ scroll_idl(int n, int del, int ins, NCURSES_CH_T blank)
 }
 
 NCURSES_EXPORT(int)
-_nc_scrolln
-(int n, int top, int bot, int maxy)
+_nc_scrolln(int n, int top, int bot, int maxy)
 /* scroll region from top to bot by n lines */
 {
     NCURSES_CH_T blank = ClrBlank(stdscr);
@@ -1758,8 +1756,24 @@ _nc_screen_resume(void)
     SP->_current_attr = A_NORMAL;
     newscr->_clear = TRUE;
 
-    if (SP->_coloron == TRUE && orig_pair)
-	putp(orig_pair);
+    /* reset color pairs and definitions */
+    if (SP->_coloron || SP->_color_defs)
+	_nc_reset_colors();
+
+    /* restore user-defined colors, if any */
+    if (SP->_color_defs < 0) {
+	int n;
+	SP->_color_defs = -(SP->_color_defs);
+	for (n = 0; n < SP->_color_defs; ++n) {
+	    if (SP->_color_table[n].init) {
+		init_color(n,
+			   SP->_color_table[n].r,
+			   SP->_color_table[n].g,
+			   SP->_color_table[n].b);
+	    }
+	}
+    }
+
     if (exit_attribute_mode)
 	putp(exit_attribute_mode);
     else {
@@ -1803,6 +1817,9 @@ _nc_screen_wrap(void)
 	ClrToEOL(blank, TRUE);
     }
 #endif
+    if (SP->_color_defs) {
+	_nc_reset_colors();
+    }
 }
 
 #if USE_XMC_SUPPORT

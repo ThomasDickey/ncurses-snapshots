@@ -1,10 +1,35 @@
--- $Id: NEWS,v 1.710 2002/09/22 00:27:52 tom Exp $
+-- $Id: NEWS,v 1.712 2002/09/28 23:35:44 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020928 pre-release
+	+ modify MKkey_defs.sh to check for POSIX sort -k option, use that if
+	  it is found, to accommodate newer utility which dropped the
+	  compatibility support for +number options (reported by Andrey A
+	  Chernov).
+	+ modify linux terminfo entry to use color palette feature from
+	  linux-c-nc entry (comments by Tomasz Wasiak and Floyd Davidson).
+	+ restore original color definitions in endwin() if init_color() was
+	  used, and resume those colors on the next doupdate() or refresh()
+	  (report by Tomasz Wasiak <tjwasiak@komputom.com.pl>).
+	+ improve debug-traces by modifying MKlib_gen.sh to generate calls
+	  to returnBool() and returnAttr().
+	+ add/use _nc_visbufn() and _nc_viswbufn() to limit the debug trace
+	  of waddnstr() and similar functions to match the parameters as used.
+	+ add/use _nc_retrace_bool() and _nc_retrace_unsigned().
+	+ correct type used by _nc_retrace_chtype().
+	+ add debug traces to some functions in lib_mouse.c
+	+ modify lib_addch.c to handle non-spacing characters.
+	+ correct parameter of RemAttr() in lib_bkgd.c, which caused the c++
+	  demo's boxes to lose the A_ALTCHARSET flag (broken in 20020629).
+	+ correct width computed in _tracedump(), which did not account for
+	  the attributes (broken in 20010602).
+	+ modify test/tracemunch to replace addresses for windows other than
+	  curscr, newscr and stdscr with window0, window1, etc.
 
 20020921 pre-release
 	+ redid fix for edit_man.sed path.
