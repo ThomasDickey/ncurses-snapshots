@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_pattern.c,v 1.4 1999/05/16 17:27:28 juergen Exp $")
+MODULE_ID("$Id: m_pattern.c,v 1.5 2000/11/04 22:54:31 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -99,7 +99,7 @@ int set_menu_pattern(MENU *menu, const char *p)
   
   while(*p)
     {
-      if ( !isprint(*p) || 
+      if ( !isprint((unsigned char)(*p)) || 
 	  (_nc_Match_Next_Character_In_Item_Name(menu,*p,&matchitem) != E_OK) )
 	{
 	  Reset_Pattern(menu);

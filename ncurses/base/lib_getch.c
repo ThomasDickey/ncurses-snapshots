@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.51 2000/10/28 21:08:02 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.52 2000/11/05 00:22:27 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -101,7 +101,7 @@ fifo_push(void)
     {
 	unsigned char c2 = 0;
 	n = read(SP->_ifd, &c2, 1);
-	ch = c2 & 0xff;
+	ch = CharOf(c2);
     }
 
 #ifdef HIDE_EINTR

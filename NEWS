@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.603 2000/10/29 01:44:04 tom Exp $
+-- $Id: NEWS,v 1.604 2000/11/05 01:41:09 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,6 +6,20 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
+20001104
+	+ add configure option --with-ospeed to assist packagers in transition
+	  to 5.3 change to ospeed type.
+	+ add/use CharOf() macro to suppress sign-extension of char type on
+	  platforms where this is a problem in ctype macros, e.g., Solaris.
+	+ change trace output to binary format.
+	+ correct a missing quote adjustment in CF_PATH_SYNTAX autoconf
+	  macro, for OS/2 EMX configuration.
+	+ rearrange a few configure macros, moving preprocessor options to
+	  $CPPFLAGS (a now-obsolete version of autoconf did not consistently
+	  use $CPPFLAGS in both the compile and preprocessor checks).
+	+ add a check in relative_move() to guard against buffer overflow in
+	  the overwrite logic.
+	  
 20001028
 	+ add message to configure script showing g++ version.
 	+ resync config.guess, config.sub

@@ -35,7 +35,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_expand.c,v 1.12 2000/10/28 22:23:05 tom Exp $")
+MODULE_ID("$Id: comp_expand.c,v 1.14 2000/11/05 00:22:49 tom Exp $")
 
 static int
 trailing_spaces(const char *src)
@@ -68,7 +68,7 @@ _nc_tic_expand(const char *srcp, bool tic_format, int numbers)
     }
 
     bufp = 0;
-    while ((ch = (*str & 0xff)) != 0) {
+    while ((ch = CharOf(*str)) != 0) {
 	if (ch == '%' && REALPRINT(str + 1)) {
 	    buffer[bufp++] = *str++;
 	    /*
@@ -98,7 +98,7 @@ _nc_tic_expand(const char *srcp, bool tic_format, int numbers)
 		 */
 	    case 1:
 		if (str[0] == L_BRACE
-		    && isdigit(str[1])) {
+		    && isdigit(CharOf(str[1]))) {
 		    char *dst = 0;
 		    long value = strtol(str + 1, &dst, 0);
 		    if (dst != 0
@@ -167,7 +167,8 @@ _nc_tic_expand(const char *srcp, bool tic_format, int numbers)
 	    buffer[bufp++] = 'n';
 	}
 #define UnCtl(c) ((c) + '@')
-	else if (REALCTL(str) && ch != '\\' && (!islong || isdigit(str[1]))) {
+	else if (REALCTL(str) && ch != '\\'
+		 && (!islong || isdigit(CharOf(str[1])))) {
 	    (void) sprintf(&buffer[bufp], "^%c", UnCtl(ch));
 	    bufp += 2;
 	} else {

@@ -45,10 +45,10 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.51 2000/10/08 00:22:24 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.53 2000/11/05 01:12:41 tom Exp $")
 
 char PC = 0;			/* used by termcap library */
-short ospeed = 0;		/* used by termcap library */
+NCURSES_OSPEED ospeed = 0;	/* used by termcap library */
 
 int _nc_nulls_sent = 0;		/* used by 'tack' program */
 
@@ -262,25 +262,26 @@ tputs(const char *string, int affcnt, int (*outc) (int))
 		bool mandatory;
 
 		string++;
-		if ((!isdigit(*string) && *string != '.') || !strchr(string, '>')) {
+		if ((!isdigit(CharOf(*string)) && *string != '.')
+		    || !strchr(string, '>')) {
 		    (*outc) ('$');
 		    (*outc) ('<');
 		    continue;
 		}
 
 		number = 0;
-		while (isdigit(*string)) {
+		while (isdigit(CharOf(*string))) {
 		    number = number * 10 + (*string - '0');
 		    string++;
 		}
 		number *= 10;
 		if (*string == '.') {
 		    string++;
-		    if (isdigit(*string)) {
+		    if (isdigit(CharOf(*string))) {
 			number += (*string - '0');
 			string++;
 		    }
-		    while (isdigit(*string))
+		    while (isdigit(CharOf(*string)))
 			string++;
 		}
 
