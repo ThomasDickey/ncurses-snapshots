@@ -38,7 +38,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_new.c,v 1.8 1998/02/11 12:13:50 tom Exp $")
+MODULE_ID("$Id: m_item_new.c,v 1.9 1999/03/28 18:10:24 juergen Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -178,7 +178,8 @@ int set_menu_mark(MENU * menu, const char * mark)
 	  if (menu->mark)
 	    {
 	      strcpy(menu->mark, mark);
-	      menu->status |= _MARK_ALLOCATED;
+	      if (menu != &_nc_Default_Menu)
+		menu->status |= _MARK_ALLOCATED;
 	    }
 	  else
 	    {

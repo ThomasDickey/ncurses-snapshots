@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996,1997                   *
  ****************************************************************************/
-/* $Id: nc_alloc.h,v 1.6 1998/11/08 01:32:17 tom Exp $ */
+/* $Id: nc_alloc.h,v 1.7 1999/04/03 23:15:13 tom Exp $ */
 
 #ifndef NC_ALLOC_included
 #define NC_ALLOC_included 1
@@ -58,7 +58,6 @@ struct termtype;
 extern void _nc_free_and_exit(int) GCC_NORETURN;
 extern void _nc_free_tparm(void);
 extern void _nc_leaks_dump_entry(void);
-extern void _nc_free_termtype(struct termtype *, int);
 #define ExitProgram(code) _nc_free_and_exit(code)
 #endif
 

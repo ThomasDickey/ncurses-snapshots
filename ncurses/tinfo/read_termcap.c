@@ -60,7 +60,7 @@
 #include <fcntl.h>
 #endif
 
-MODULE_ID("$Id: read_termcap.c,v 1.41 1999/02/27 22:12:54 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.42 1999/04/03 22:59:11 tom Exp $")
 
 #ifndef PURE_TERMINFO
 
@@ -1037,7 +1037,9 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 		for (i = 0; i < filecount; i++) {
 
 			T(("Looking for %s in %s", tn, termpaths[i]));
-			if ((fp = fopen(termpaths[i], "r")) != (FILE *)0)
+			if ((fp = _nc_access(termpaths[i], R_OK)
+				? fopen(termpaths[i], "r")
+				: 0) != (FILE *)0)
 			{
 				_nc_set_source(termpaths[i]);
 

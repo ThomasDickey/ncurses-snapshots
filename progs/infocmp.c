@@ -42,7 +42,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.41 1999/03/07 00:52:02 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.42 1999/04/03 23:18:23 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -86,7 +86,7 @@ static void ExitProgram(int code) GCC_NORETURN;
 static void ExitProgram(int code)
 {
 	while (termcount-- > 0)
-		_nc_free_termtype(&term[termcount], FALSE);
+		_nc_free_termtype(&term[termcount]);
 	_nc_leaks_dump_entry();
 	_nc_free_and_exit(code);
 }
