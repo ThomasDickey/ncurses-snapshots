@@ -2,16 +2,14 @@ SHORT-TERM TO-DO ITEMS:
 
 Bugs:
 
-* Eric Raymond reports that under BSD/OS, lynx sometimes core-dumps or freezes
-  on receipt of arrow keys.  The bug seems to be timing-dependent, more likely
-  to happen if you type several arrows in rapid succession.  This bug was
-  *not* present in the 1.8.7 version of the library; it was introduced before
-  1.9.1.
+* There is a known problem with the signal-handling code which may result
+  in abrupt termination of ncurses applications following resume from a ^Z
+  suspend (this problem was first seen in lynx).  You will not see this problem
+  if you are running Linux or one of the 4.4BSD derivatives like FreeBSD,
+  NetBSD, or BSDI.  You may see it under System Vs.  For details, see the
+  analysis in ncurses/lib_tstp.c.
 
 Tweaks:
-
-* Speed tuning.  The _nc_render code and move_relative code appear to be eating
-  too many clocks.
 
 * Ian Jackson reported on the Debian list that the update code seems to be
   using many  delete-character sequences to avoid a few character overwrites.

@@ -19,43 +19,23 @@
 *                                                                          *
 ***************************************************************************/
 
+#ifndef _ETI_ERRNO_H_
+#define _ETI_ERRNO_H_
 
+#define	E_OK			(0)
+#define	E_SYSTEM_ERROR	 	(-1)
+#define	E_BAD_ARGUMENT	 	(-2)
+#define	E_POSTED	 	(-3)
+#define	E_CONNECTED	 	(-4)
+#define	E_BAD_STATE	 	(-5)
+#define	E_NO_ROOM	 	(-6)
+#define	E_NOT_POSTED		(-7)
+#define	E_UNKNOWN_COMMAND	(-8)
+#define	E_NO_MATCH		(-9)
+#define	E_NOT_SELECTABLE	(-10)
+#define	E_NOT_CONNECTED	        (-11)
+#define	E_REQUEST_DENIED	(-12)
+#define	E_INVALID_FIELD	        (-13)
+#define	E_CURRENT		(-14)
 
-/*
-**	lib_insstr.c
-**
-**	The routine winsnstr().
-**
-*/
-
-#include "curses.priv.h"
-#include <ctype.h>
-
-int winsnstr(WINDOW *win, const char *str, int n)
-{
-int oy = win->_cury;
-int ox = win->_curx;
-char	*cp;
-
-	T(("winsstr(%p,'%s',%d) called", win, str, n));
-
-	for (cp = (char *)str; *cp && (n > 0 || (cp - str) >= n); cp++) {
-		if (*cp == '\n' || *cp == '\r' || *cp == '\t' || *cp == '\b')
-			_nc_waddch_nosync(win, (chtype)(*cp), FALSE);
-		else if (is7bits(*cp) && iscntrl(*cp)) {
-			winsch(win, ' ' + (chtype)(*cp));
-			winsch(win, '^');
-			win->_curx += 2;
-		} else {
-			winsch(win, (chtype)(*cp));
-			win->_curx++;
-		}
-		if (win->_curx > win->_maxx)
-			win->_curx = win->_maxx;
-	}
-	
-	win->_curx = ox;
-	win->_cury = oy;
-	_nc_synchook(win);
-	return OK;
-}
+#endif

@@ -170,47 +170,9 @@ static int	carriage_return_length;
 static int	cursor_home_length;
 static int	cursor_to_ll_length;
 
-static inline int	onscreen_mvcur(int, int, int, int, bool);
-#ifndef NO_OPTIMIZE
-static inline int	relative_move(char *, int, int, int, int, bool);
-#endif /* !NO_OPTIMIZE */
-
 /****************************************************************************
  *
- * Cursor save_restore
- *
- ****************************************************************************/
-
-/* assumption: sc/rc is faster than cursor addressing */
-
-static int	oy, ox;		/* ugh, mvcur_scrolln() needs to see this */
-
-static void save_curs(void)
-{
-    if (save_cursor && restore_cursor)
-    {
-	TPUTS_TRACE("save_cursor");
-	putp(save_cursor);
-    }
-
-    oy = CURRENT_ROW;
-    ox = CURRENT_COLUMN;
-}
-
-static void restore_curs(void)
-{
-    if (save_cursor && restore_cursor)
-    {
-	TPUTS_TRACE("restore_cursor");
-	putp(restore_cursor);
-    }
-    else
-	onscreen_mvcur(-1, -1, oy, ox, FALSE);
-}
-
-/****************************************************************************
- *
- * Optimized cursor movement
+ * Initialization/wrapup (including cost pre-computation)
  *
  ****************************************************************************/
 
@@ -264,7 +226,7 @@ void _nc_mvcur_init(SCREEN *sp)
     else
     	SP->_char_padding = 9 * 1000 * 10 / 9600; /* use some default if baudrate == 0 */
 
-         /* non-parameterized local-motion strings */
+    /* non-parameterized local-motion strings */
     SP->_cr_cost = cost(carriage_return, 0);
     SP->_home_cost = cost(cursor_home, 0);
     SP->_ll_cost = cost(cursor_to_ll, 0);
@@ -317,6 +279,47 @@ void _nc_mvcur_init(SCREEN *sp)
     SP->_hpa_cost = cost(tparm(column_address, 23), 1);
     SP->_vpa_cost = cost(tparm(row_address, 23), 1);
 
+    /* optional optimization hack -- do before any output to ofp */
+#if defined(HAVE_SETVBUF) || defined(HAVE_SETBUFFER)
+    {
+	/* 
+	 * If the output file descriptor is connected to a tty
+	 * (the typical case) it will probably be line-buffered.
+	 * Keith Bostic pointed out that we don't want this; it
+	 * hoses people running over networks by forcing out a
+	 * bunch of small packets instead of one big one, so
+	 * screen updates on ptys look jerky.  Restore block
+	 * buffering to prevent this minor lossage.
+	 *
+	 * The buffer size is a compromise.  Ideally we'd like a
+	 * buffer that can hold the maximum possible update size
+	 * (the whole screen plus cup commands to change lines as
+	 * it's painted).  On a modern 66-line xterm this can
+	 * become excessive.  So we min it with the amount of data
+	 * we think we can get through one Ethernet packet
+	 * (maximum packet size - 100 for TCP/IP overhead), This
+	 * is the largest update we're likely to be able to send
+	 * atomically (it also protects against the rare case of
+	 * no cursor addressing).
+	 */
+	unsigned int bufsiz = min(LINES * (COLS + SP->_cup_cost), 1400);
+
+#if HAVE_SETVBUF
+	/*
+	 * If your code core-dumps here, you are probably running
+	 * some bastard offspring of an SVR3 on which the setvbuffer(3)
+	 * arguments are reversed.  Autoconf has a test macro for this
+	 * but I have too much else to do to figure out how it works.
+	 * Send us a patch if you care.
+	 */
+	(void) setvbuf(SP->_ofp, malloc(bufsiz), _IOFBF, bufsiz);
+#endif /* HAVE_SETVBUF */
+#if HAVE_SETBUFFER
+	(void) setbuffer(SP->_ofp, malloc(bufsiz), (int)bufsiz);
+#endif /* HAVE_SETBUFFER */
+    }
+#endif /* defined(HAVE_SETVBUF) || defined(HAVE_SETBUFFER) */
+
     /* initialize screen for cursor access */
     if (enter_ca_mode)
     {
@@ -343,6 +346,8 @@ void _nc_mvcur_init(SCREEN *sp)
 void _nc_mvcur_wrap(void)
 /* wrap up cursor-addressing mode */
 {
+    static void save_curs(void), restore_curs(void);
+
     /* change_scroll_region may trash the cursor location */
     save_curs();
     if (change_scroll_region)
@@ -362,6 +367,433 @@ void _nc_mvcur_wrap(void)
 	TPUTS_TRACE("exit_am_mode");
 	putp(exit_am_mode);
     }
+}
+
+/****************************************************************************
+ *
+ * Optimized cursor movement
+ *
+ ****************************************************************************/
+
+/*
+ * Perform repeated-append, returning cost
+ */
+static inline int
+repeated_append (int total, int num, int repeat, char *dst, char *src)
+{
+	register size_t src_len = strlen(src);
+	register size_t dst_len = 0;
+
+	if (dst)
+	    dst_len = strlen(dst);
+	if ((dst_len + repeat * src_len) < OPT_SIZE-1) {
+		total += (num * repeat);
+		if (dst) {
+		    dst += dst_len;
+		    while (repeat-- > 0) {
+			(void) strcpy(dst, src);
+			dst += src_len;
+		    }
+		}
+	} else {
+		total = INFINITY;
+	}
+	return total;
+}
+
+#ifndef NO_OPTIMIZE
+#define NEXTTAB(fr)	(fr + init_tabs - (fr % init_tabs))
+#define LASTTAB(fr)	(fr - init_tabs + (fr % init_tabs))
+
+/* Note: we'd like to inline this for speed, but GNU C barfs on the attempt. */
+
+static int
+relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bool ovw)
+/* move via local motions (cuu/cuu1/cud/cud1/cub1/cub/cuf1/cuf/vpa/hpa) */
+{
+    int		n, vcost = 0, hcost = 0;
+    bool	used_lf = FALSE;
+
+    if (move)
+	move[0] = '\0';
+
+    if (to_y != from_y)
+    {
+	vcost = INFINITY;
+
+	if (row_address)
+	{
+	    if (move)
+		(void) strcpy(move, tparm(row_address, to_y));
+	    vcost = SP->_vpa_cost;
+	}
+
+	if (to_y > from_y)
+	{
+	    n = (to_y - from_y);
+
+	    if (parm_down_cursor && SP->_cud_cost < vcost)
+	    {
+		if (move)
+		    (void) strcpy(move, tparm(parm_down_cursor, n));
+		vcost = SP->_cud_cost;
+	    }
+
+	    if (cursor_down && (n * SP->_cud1_cost < vcost))
+	    {
+		if (move)
+		    move[0] = '\0';
+		if (cursor_down[0] == '\n')
+		    used_lf = TRUE;
+		vcost = repeated_append(vcost, SP->_cud1_cost, n, move, cursor_down);
+	    }
+	}
+	else /* (to_y < from_y) */
+	{
+	    n = (from_y - to_y);
+
+	    if (parm_up_cursor && SP->_cup_cost < vcost)
+	    {
+		if (move)
+		    (void) strcpy(move, tparm(parm_up_cursor, n));
+		vcost = SP->_cup_cost;
+	    }
+
+	    if (cursor_up && (n * SP->_cuu1_cost < vcost))
+	    {
+		if (move)
+		    move[0] = '\0';
+		vcost = repeated_append(vcost, SP->_cuu1_cost, n, move, cursor_up);
+	    }
+	}
+
+	if (vcost == INFINITY)
+	    return(INFINITY);
+    }
+
+    /*
+     * It may be that we're using a cud1 capability of \n with the
+     * side-effect of taking the cursor to column 0.  Deal with this.
+     */
+    if (used_lf && NLMAPPING && !RAW)
+	from_x = 0;
+
+    if (move)
+	move += strlen(move);
+
+    if (to_x != from_x)
+    {
+	char	try[OPT_SIZE];
+
+	hcost = INFINITY;
+
+	if (column_address)
+	{
+	    if (move)
+		(void) strcpy(move, tparm(column_address, to_x));
+	    hcost = SP->_hpa_cost;
+	}
+
+	if (to_x > from_x)
+	{
+	    n = to_x - from_x;
+
+	    if (parm_right_cursor && SP->_cuf_cost < hcost)
+	    {
+		if (move)
+		    (void) strcpy(move, tparm(parm_right_cursor, n));
+		hcost = SP->_cuf_cost;
+	    }
+
+	    if (cursor_right)
+	    {
+		int	lhcost = 0;
+
+		try[0] = '\0';
+
+#ifdef TABS_OK
+		/* use hard tabs, if we have them, to do as much as possible */
+		if (init_tabs > 0 && tab)
+		{
+		    int	nxt, fr;
+
+		    for (fr = from_x; (nxt = NEXTTAB(fr)) <= to_x; fr = nxt)
+		    {
+			lhcost = repeated_append(lhcost, SP->_ht_cost, 1, try, tab);
+			if (lhcost == INFINITY)
+				break;
+		    }
+
+		    n = to_x - fr;
+		    from_x = fr;
+		}
+#endif /* TABS_OK */
+
+#if defined(REAL_ATTR) && defined(WANT_CHAR)
+		/*
+		 * If we have no attribute changes, overwrite is cheaper.
+		 * Note: must suppress this by passing in ovw = FALSE whenever
+		 * WANT_CHAR would return invalid data.  In particular, this 
+		 * is true between the time a hardware scroll has been done
+		 * and the time the structure WANT_CHAR would access has been
+		 * updated.
+		 */
+		if (ovw)
+		{
+		    int	i;
+
+		    for (i = 0; i < n; i++)
+			if ((WANT_CHAR(to_y, from_x + i) & A_ATTRIBUTES) != CURRENT_ATTR)
+			{
+			    ovw = FALSE;
+			    break;
+			}
+		}
+		if (ovw)
+		{
+		    char	*sp;
+		    int	i;
+
+		    sp = try + strlen(try);
+
+		    for (i = 0; i < n; i++)
+			*sp++ = WANT_CHAR(to_y, from_x + i);
+		    *sp = '\0';
+		    lhcost += n * SP->_char_padding;
+	        }
+		else
+#endif /* defined(REAL_ATTR) && defined(WANT_CHAR) */
+		{
+		    lhcost = repeated_append(lhcost, SP->_cuf1_cost, n, try, cursor_right);
+		}
+
+		if (lhcost < hcost)
+		{
+		    if (move)
+			(void) strcpy(move, try);
+		    hcost = lhcost;
+		}
+	    }
+	}
+	else /* (to_x < from_x) */
+	{
+	    n = from_x - to_x;
+
+	    if (parm_left_cursor && SP->_cub_cost < hcost)
+	    {
+		if (move)
+		    (void) strcpy(move, tparm(parm_left_cursor, n));
+		hcost = SP->_cub_cost;
+	    }
+
+	    if (cursor_left)
+	    {
+		int	lhcost = 0;
+
+		try[0] = '\0';
+
+#ifdef TABS_OK
+		if (init_tabs > 0 && back_tab)
+		{
+		    int	nxt, fr;
+
+		    for (fr = from_x; (nxt = LASTTAB(fr)) >= to_x; fr = nxt)
+		    {
+			lhcost = repeated_append(lhcost, SP->_cbt_cost, 1, try, back_tab);
+			if (lhcost == INFINITY)
+				break;
+		    }
+
+		    n = to_x - fr;
+		}
+#endif /* TABS_OK */
+
+		lhcost = repeated_append(lhcost, SP->_cub1_cost, n, try, cursor_left);
+
+		if (lhcost < hcost)
+		{
+		    if (move)
+			(void) strcpy(move, try);
+		    hcost = lhcost;
+		}
+	    }
+	}
+
+	if (hcost == INFINITY)
+	    return(INFINITY);
+    }
+
+    return(vcost + hcost);
+}
+#endif /* !NO_OPTIMIZE */
+
+/*
+ * With the machinery set up above, it's conceivable that
+ * onscreen_mvcur could be modified into a recursive function that does
+ * an alpha-beta search of motion space, as though it were a chess
+ * move tree, with the weight function being boolean and the search
+ * depth equated to length of string.  However, this would jack up the
+ * computation cost a lot, especially on terminals without a cup
+ * capability constraining the search tree depth.  So we settle for
+ * the simpler method below.
+ */
+
+static inline int
+onscreen_mvcur(int yold,int xold,int ynew,int xnew, bool ovw)
+/* onscreen move from (yold, xold) to (ynew, xnew) */
+{
+    char	use[OPT_SIZE], *sp;
+    int		tactic = 0, newcost, usecost = INFINITY;
+
+#ifdef MAIN
+    struct timeval before, after;
+
+    gettimeofday(&before, NULL);
+#endif /* MAIN */
+
+    /* tactic #0: use direct cursor addressing */
+    sp = tparm(address_cursor, ynew, xnew);
+    if (sp)
+    {
+	tactic = 0;
+	(void) strcpy(use, sp);
+	usecost = SP->_cup_cost;
+
+#ifdef TRACE
+	if (no_optimize)
+	    xold = yold = -1;
+#endif /* TRACE */
+
+	/*
+	 * We may be able to tell in advance that the full optimization
+	 * will probably not be worth its overhead.  Also, don't try to
+	 * use local movement if the current attribute is anything but
+	 * A_NORMAL...there are just too many ways this can screw up
+	 * (like, say, local-movement \n getting mapped to some obscure
+	 * character because A_ALTCHARSET is on).
+	 */
+	if (yold == -1 || xold == -1  || 
+	    REAL_ATTR != A_NORMAL || NOT_LOCAL(yold, xold, ynew, xnew))
+	{
+#ifdef MAIN
+	    if (!profiling)
+	    {
+		(void) fputs("nonlocal\n", stderr);
+		goto nonlocal;	/* always run the optimizer if profiling */
+	    }
+#else
+	    goto nonlocal;
+#endif /* MAIN */
+	}
+    }
+
+#ifndef NO_OPTIMIZE
+    /* tactic #1: use local movement */
+    if (yold != -1 && xold != -1
+		&& ((newcost=relative_move(NULL, yold, xold, ynew, xnew, ovw))!=INFINITY)
+		&& newcost < usecost)
+    {
+	tactic = 1;
+	usecost = newcost;
+    }
+
+    /* tactic #2: use carriage-return + local movement */
+    if (yold < screen_lines - 1 && xold < screen_columns - 1)
+    {
+	if (carriage_return
+		&& ((newcost=relative_move(NULL, yold,0,ynew,xnew, ovw)) != INFINITY)
+		&& SP->_cr_cost + newcost < usecost)
+	{
+	    tactic = 2;
+	    usecost = SP->_cr_cost + newcost;
+	}
+    }
+
+    /* tactic #3: use home-cursor + local movement */
+    if (cursor_home
+	&& ((newcost=relative_move(NULL, 0, 0, ynew, xnew, ovw)) != INFINITY)
+	&& SP->_home_cost + newcost < usecost)
+    {
+	tactic = 3;
+	usecost = SP->_home_cost + newcost;
+    }
+
+    /* tactic #4: use home-down + local movement */
+    if (cursor_to_ll
+    	&& ((newcost=relative_move(NULL, screen_lines-1, 0, ynew, xnew, ovw)) != INFINITY)
+	&& SP->_ll_cost + newcost < usecost)
+    {
+	tactic = 4;
+	usecost = SP->_ll_cost + newcost;
+    }
+
+    /*
+     * tactic #5: use left margin for wrap to right-hand side,
+     * unless strange wrap behavior indicated by xenl might hose us.
+     */
+    if (auto_margin && !eat_newline_glitch && yold > 0 && yold < screen_lines - 1 && cursor_left
+	&& ((newcost=relative_move(NULL, yold-1, screen_columns-1, ynew, xnew, ovw)) != INFINITY)
+	&& SP->_cr_cost + SP->_cub1_cost + newcost + newcost < usecost)
+    {
+	tactic = 5;
+	usecost = SP->_cr_cost + SP->_cub1_cost + newcost;
+    }
+
+    /*
+     * These cases are ordered by estimated relative frequency.
+     */
+    if (tactic)
+    {
+	if (tactic == 1)
+	    (void) relative_move(use, yold, xold, ynew, xnew, ovw);
+	else if (tactic == 2)
+	{
+	    (void) strcpy(use, carriage_return);
+	    (void) relative_move(use + carriage_return_length,
+				 yold,0,ynew,xnew, ovw);
+	}
+	else if (tactic == 3)
+	{
+	    (void) strcpy(use, cursor_home);
+	    (void) relative_move(use + cursor_home_length,
+				 0, 0, ynew, xnew, ovw);
+	}
+	else if (tactic == 4)
+	{
+	    (void) strcpy(use, cursor_to_ll);
+	    (void) relative_move(use + cursor_home_length,
+				 screen_lines-1, 0, ynew, xnew, ovw);
+	}
+	else /* if (tactic == 5) */
+	{
+	    use[0] = '\0';
+	    if (xold > 0)
+		(void) strcat(use, carriage_return);
+	    (void) strcat(use, cursor_left);
+	    (void) relative_move(use + strlen(use),
+				 yold-1, screen_columns-1, ynew, xnew, ovw);
+	}
+    }
+#endif /* !NO_OPTIMIZE */
+
+#ifdef MAIN
+    gettimeofday(&after, NULL);
+    diff = after.tv_usec - before.tv_usec
+	+ (after.tv_sec - before.tv_sec) * 1000000;
+    if (!profiling)
+	(void) fprintf(stderr, "onscreen: %d msec, %f 28.8Kbps char-equivalents\n",
+		       (int)diff, diff/288);
+#endif /* MAIN */
+
+ nonlocal:
+    if (usecost != INFINITY)
+    {
+	TPUTS_TRACE("mvcur");
+	tputs(use, 1, _nc_outch);
+	return(OK);
+    }
+    else
+	return(ERR);
 }
 
 int mvcur(int yold, int xold, int ynew, int xnew)
@@ -431,399 +863,38 @@ int mvcur(int yold, int xold, int ynew, int xnew)
     return(onscreen_mvcur(yold, xold, ynew, xnew, TRUE));
 }
 
-/*
- * Perform repeated-append, returning cost
- */
-static int repeated_append (int total, int num, int repeat, char *dst, char *src)
-{
-	register size_t src_len = strlen(src);
-	register size_t dst_len = 0;
+/****************************************************************************
+ *
+ * Cursor save_restore
+ *
+ ****************************************************************************/
 
-	if (dst)
-	    dst_len = strlen(dst);
-	if ((dst_len + repeat * src_len) < OPT_SIZE-1) {
-		total += (num * repeat);
-		if (dst) {
-		    dst += dst_len;
-		    while (repeat-- > 0) {
-			(void) strcpy(dst, src);
-			dst += src_len;
-		    }
-		}
-	} else {
-		total = INFINITY;
-	}
-	return total;
+/* assumption: sc/rc is faster than cursor addressing */
+
+static int	oy, ox;		/* ugh, mvcur_scrolln() needs to see this */
+
+static void save_curs(void)
+{
+    if (save_cursor && restore_cursor)
+    {
+	TPUTS_TRACE("save_cursor");
+	putp(save_cursor);
+    }
+
+    oy = CURRENT_ROW;
+    ox = CURRENT_COLUMN;
 }
 
-/*
- * With the machinery set up above, it's conceivable that
- * onscreen_mvcur could be modified into a recursive function that does
- * an alpha-beta search of motion space, as though it were a chess
- * move tree, with the weight function being boolean and the search
- * depth equated to length of string.  However, this would jack up the
- * computation cost a lot, especially on terminals without a cup
- * capability constraining the search tree depth.  So we settle for
- * the simpler method below.
- */
-
-static inline int onscreen_mvcur(int yold,int xold,int ynew,int xnew, bool ovw)
-/* onscreen move from (yold, xold) to (ynew, xnew) */
+static void restore_curs(void)
 {
-    char	use[OPT_SIZE], *sp;
-#ifndef NO_OPTIMIZE
-#endif /* !NO_OPTIMIZE */
-    int		newcost, usecost = INFINITY;
-
-#ifdef MAIN
-    struct timeval before, after;
-
-    gettimeofday(&before, NULL);
-#endif /* MAIN */
-
-    /* tactic #0: use direct cursor addressing */
-    sp = tparm(address_cursor, ynew, xnew);
-    if (sp)
+    if (save_cursor && restore_cursor)
     {
-	(void) strcpy(use, sp);
-	usecost = SP->_cup_cost;
-
-#ifdef TRACE
-	if (no_optimize)
-	    xold = yold = -1;
-#endif /* TRACE */
-
-	/*
-	 * We may be able to tell in advance that the full optimization
-	 * will probably not be worth its overhead.  Also, don't try to
-	 * use local movement if the current attribute is anything but
-	 * A_NORMAL...there are just too many ways this can screw up
-	 * (like, say, local-movement \n getting mapped to some obscure
-	 * character because A_ALTCHARSET is on).
-	 */
-	if (yold == -1 || xold == -1  || 
-	    REAL_ATTR != A_NORMAL || NOT_LOCAL(yold, xold, ynew, xnew))
-	{
-#ifdef MAIN
-	    if (!profiling)
-	    {
-		(void) fputs("nonlocal\n", stderr);
-		goto nonlocal;	/* always run the optimizer if profiling */
-	    }
-#else
-	    goto nonlocal;
-#endif /* MAIN */
-	}
-    }
-
-#ifndef NO_OPTIMIZE
-    /* tactic #1: use local movement */
-    if (yold != -1 && xold != -1
-		&& ((newcost=relative_move(NULL, yold, xold, ynew, xnew, ovw))!=INFINITY)
-		&& newcost < usecost)
-    {
-	(void) relative_move(use, yold, xold, ynew, xnew, ovw);
-	usecost = newcost;
-    }
-
-    /* tactic #2: use carriage-return + local movement */
-    if (yold < screen_lines - 1 && xold < screen_columns - 1)
-    {
-	if (carriage_return
-		&& ((newcost=relative_move(NULL, yold,0,ynew,xnew, ovw)) != INFINITY)
-		&& SP->_cr_cost + newcost < usecost)
-	{
-	    (void) strcpy(use, carriage_return);
-	    (void) relative_move(use + carriage_return_length,
-			  yold,0,ynew,xnew, ovw);
-	    usecost = SP->_cr_cost + newcost;
-	}
-    }
-
-    /* tactic #3: use home-cursor + local movement */
-    if (cursor_home
-	&& ((newcost=relative_move(NULL, 0, 0, ynew, xnew, ovw)) != INFINITY)
-	&& SP->_home_cost + newcost < usecost)
-    {
-	(void) strcpy(use, cursor_home);
-	(void) relative_move(use + cursor_home_length,
-			     0, 0, ynew, xnew, ovw);
-	usecost = SP->_home_cost + newcost;
-    }
-
-    /* tactic #4: use home-down + local movement */
-    if (cursor_to_ll
-    	&& ((newcost=relative_move(NULL, screen_lines-1, 0, ynew, xnew, ovw)) != INFINITY)
-	&& SP->_ll_cost + newcost < usecost)
-    {
-	(void) strcpy(use, cursor_to_ll);
-	(void) relative_move(use + cursor_home_length,
-		      screen_lines-1, 0, ynew, xnew, ovw);
-	usecost = SP->_ll_cost + newcost;
-    }
-
-    /*
-     * tactic #5: use left margin for wrap to right-hand side,
-     * unless strange wrap behavior indicated by xenl might hose us.
-     */
-    if (auto_margin && !eat_newline_glitch && yold > 0 && yold < screen_lines - 1 && cursor_left
-	&& ((newcost=relative_move(NULL, yold-1, screen_columns-1, ynew, xnew, ovw)) != INFINITY)
-	&& SP->_cr_cost + SP->_cub1_cost + newcost + newcost < usecost)
-    {
-	use[0] = '\0';
-	if (xold > 0)
-	    (void) strcat(use, carriage_return);
-	(void) strcat(use, cursor_left);
-	(void) relative_move(use + strlen(use),
-		      yold-1, screen_columns-1, ynew, xnew, ovw);
-	usecost = SP->_cr_cost + SP->_cub1_cost + newcost;
-    }
-#endif /* !NO_OPTIMIZE */
-
-#ifdef MAIN
-    gettimeofday(&after, NULL);
-    diff = after.tv_usec - before.tv_usec
-	+ (after.tv_sec - before.tv_sec) * 1000000;
-    if (!profiling)
-	(void) fprintf(stderr, "onscreen: %d msec, %f 28.8Kbps char-equivalents\n",
-		       (int)diff, diff/288);
-#endif /* MAIN */
-
- nonlocal:
-    if (usecost != INFINITY)
-    {
-	TPUTS_TRACE("mvcur");
-	tputs(use, 1, _nc_outch);
-	return(OK);
+	TPUTS_TRACE("restore_cursor");
+	putp(restore_cursor);
     }
     else
-	return(ERR);
+	onscreen_mvcur(-1, -1, oy, ox, FALSE);
 }
-
-#ifndef NO_OPTIMIZE
-#define NEXTTAB(fr)	(fr + init_tabs - (fr % init_tabs))
-#define LASTTAB(fr)	(fr - init_tabs + (fr % init_tabs))
-
-static inline int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bool ovw)
-/* move via local motions (cuu/cuu1/cud/cud1/cub1/cub/cuf1/cuf/vpa/hpa) */
-{
-    char	*ep;
-    int		n, vcost = 0, hcost = 0;
-    bool	used_lf = FALSE;
-
-    if (move)
-	move[0] = '\0';
-    ep = move;
-
-    if (to_y != from_y)
-    {
-	vcost = INFINITY;
-
-	if (row_address)
-	{
-	    if (move)
-		(void) strcpy(ep, tparm(row_address, to_y));
-	    vcost = SP->_vpa_cost;
-	}
-
-	if (to_y > from_y)
-	{
-	    n = (to_y - from_y);
-
-	    if (parm_down_cursor && SP->_cud_cost < vcost)
-	    {
-		if (move)
-		    (void) strcpy(ep, tparm(parm_down_cursor, n));
-		vcost = SP->_cud_cost;
-	    }
-
-	    if (cursor_down && (n * SP->_cud1_cost < vcost))
-	    {
-		if (move)
-		    ep[0] = '\0';
-		if (cursor_down[0] == '\n')
-		    used_lf = TRUE;
-		vcost = repeated_append(vcost, SP->_cud1_cost, n, ep, cursor_down);
-	    }
-	}
-	else /* (to_y < from_y) */
-	{
-	    n = (from_y - to_y);
-
-	    if (parm_up_cursor && SP->_cup_cost < vcost)
-	    {
-		if (move)
-		    (void) strcpy(ep, tparm(parm_up_cursor, n));
-		vcost = SP->_cup_cost;
-	    }
-
-	    if (cursor_up && (n * SP->_cuu1_cost < vcost))
-	    {
-		if (move)
-		    ep[0] = '\0';
-		vcost = repeated_append(vcost, SP->_cuu1_cost, n, ep, cursor_up);
-	    }
-	}
-
-	if (vcost == INFINITY)
-	    return(INFINITY);
-    }
-
-    /*
-     * It may be that we're using a cud1 capability of \n with the
-     * side-effect of taking the cursor to column 0.  Deal with this.
-     */
-    if (used_lf && NLMAPPING && !RAW)
-	from_x = 0;
-
-    if (move)
-	ep = move + strlen(move);
-
-    if (to_x != from_x)
-    {
-	char	try[OPT_SIZE];
-
-	hcost = INFINITY;
-
-	if (column_address)
-	{
-	    if (move)
-		(void) strcpy(ep, tparm(column_address, to_x));
-	    hcost = SP->_hpa_cost;
-	}
-
-	if (to_x > from_x)
-	{
-	    n = to_x - from_x;
-
-	    if (parm_right_cursor && SP->_cuf_cost < hcost)
-	    {
-		if (move)
-		    (void) strcpy(ep, tparm(parm_right_cursor, n));
-		hcost = SP->_cuf_cost;
-	    }
-
-	    if (cursor_right)
-	    {
-		int	lhcost = 0;
-
-		try[0] = '\0';
-
-#ifdef TABS_OK
-		/* use hard tabs, if we have them, to do as much as possible */
-		if (init_tabs > 0 && tab)
-		{
-		    int	nxt, fr;
-
-		    for (fr = from_x; (nxt = NEXTTAB(fr)) <= to_x; fr = nxt)
-		    {
-			lhcost = repeated_append(lhcost, SP->_ht_cost, 1, try, tab);
-			if (lhcost == INFINITY)
-				break;
-		    }
-
-		    n = to_x - fr;
-		    from_x = fr;
-		}
-#endif /* TABS_OK */
-
-#if defined(REAL_ATTR) && defined(WANT_CHAR)
-		/*
-		 * If we have no attribute changes, overwrite is cheaper.
-		 * Note: must suppress this by passing in ovw = FALSE whenever
-		 * WANT_CHAR would return invalid data.  In particular, this 
-		 * is true between the time a hardware scroll has been done
-		 * and the time the structure WANT_CHAR would access has been
-		 * updated.
-		 */
-		if (ovw)
-		{
-		    int	i;
-
-		    for (i = 0; i < n; i++)
-			if ((WANT_CHAR(to_y, from_x + i) & A_ATTRIBUTES) != CURRENT_ATTR)
-			{
-			    ovw = FALSE;
-			    break;
-			}
-		}
-		if (ovw)
-		{
-		    char	*sp;
-		    int	i;
-
-		    sp = try + strlen(try);
-
-		    for (i = 0; i < n; i++)
-			*sp++ = WANT_CHAR(to_y, from_x + i);
-		    *sp = '\0';
-		    lhcost += n * SP->_char_padding;
-	        }
-		else
-#endif /* defined(REAL_ATTR) && defined(WANT_CHAR) */
-		{
-		    lhcost = repeated_append(lhcost, SP->_cuf1_cost, n, try, cursor_right);
-		}
-
-		if (lhcost < hcost)
-		{
-		    if (move)
-			(void) strcpy(ep, try);
-		    hcost = lhcost;
-		}
-	    }
-	}
-	else /* (to_x < from_x) */
-	{
-	    n = from_x - to_x;
-
-	    if (parm_left_cursor && SP->_cub_cost < hcost)
-	    {
-		if (move)
-		    (void) strcpy(ep, tparm(parm_left_cursor, n));
-		hcost = SP->_cub_cost;
-	    }
-
-	    if (cursor_left)
-	    {
-		int	lhcost = 0;
-
-		try[0] = '\0';
-
-#ifdef TABS_OK
-		if (init_tabs > 0 && back_tab)
-		{
-		    int	nxt, fr;
-
-		    for (fr = from_x; (nxt = LASTTAB(fr)) >= to_x; fr = nxt)
-		    {
-			lhcost = repeated_append(lhcost, SP->_cbt_cost, 1, try, back_tab);
-			if (lhcost == INFINITY)
-				break;
-		    }
-
-		    n = to_x - fr;
-		}
-#endif /* TABS_OK */
-
-		lhcost = repeated_append(lhcost, SP->_cub1_cost, n, try, cursor_left);
-
-		if (lhcost < hcost)
-		{
-		    if (move)
-			(void) strcpy(ep, try);
-		    hcost = lhcost;
-		}
-	    }
-	}
-
-	if (hcost == INFINITY)
-	    return(INFINITY);
-    }
-
-    return(vcost + hcost);
-}
-#endif /* !NO_OPTIMIZE */
 
 /****************************************************************************
  *
@@ -1091,7 +1162,7 @@ static void load_term(void)
     (void) setupterm(tname, STDOUT_FILENO, NULL);
 }
 
-int roll(int n)
+static int roll(int n)
 {
     int i, j;
 
@@ -1256,10 +1327,10 @@ int main(int argc, char *argv[])
 	 */
 	else if (sscanf(buf, "t %d", &n) == 1)
 	{
-	    float cumtime = 0, perchar, totalest;
+	    float cumtime = 0, perchar;
 	    int speeds[] = {2400, 9600, 14400, 19200, 28800, 38400, 0};
 
-	    srand(getpid() + time((time_t *)0));
+	    srand((unsigned)(getpid() + time((time_t *)0)));
 	    profiling = TRUE;
 	    xmits = 0;
 	    for (i = 0; i < n; i++)

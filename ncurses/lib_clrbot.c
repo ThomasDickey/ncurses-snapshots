@@ -44,7 +44,7 @@ int	y, startx, minx;
 	    end = &win->_line[y].text[win->_maxx];
 
 	    for (ptr = &win->_line[y].text[startx]; ptr <= end; ptr++) {
-		int blank = _nc_render(win, *ptr, BLANK, TRUE);
+		int blank = _nc_render(win, *ptr, BLANK);
 
 			if (*ptr != blank) {
 			    maxx = ptr;

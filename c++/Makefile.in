@@ -32,6 +32,10 @@ DEPS_DEMO = cursesw.o cursesp.o demo.o
 demo: $(DEPS_DEMO)
 	$(LINK) -o $@ $(DEPS_DEMO) $(LDFLAGS) -lpanel@DFT_ARG_SUFFIX@ -lncurses@DFT_ARG_SUFFIX@ -lg++
 
+cursesp.o: $(srcdir)/cursesp.cc
+cursesw.o: $(srcdir)/cursesw.cc
+demo.o:    $(srcdir)/demo.cc
+
 install:
 
 clean:

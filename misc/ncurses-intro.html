@@ -161,7 +161,7 @@ In order to use the library, it is necessary to have certain types and
 variables defined.  Therefore, the programmer must have a line:
 
 <PRE>
-	  #include <curses.h>
+	  #include <TT>&lt;curses.h&gt;</TT>
 </PRE>
 
 at the top of the program source.  The screen package uses the Standard I/O
@@ -638,8 +638,8 @@ in <TT>ncurses</TT>. <P>
 To leave <TT>ncurses</TT> mode, call <TT>endwin()</TT> as you would if you
 were intending to terminate the program.  This will take the screen back to
 cooked mode; you can do your shell-out.  When you want to return to
-<TT>ncurses</TT> mode, simply call <TT>refresh()</TT>.  This will repaint
-the screen. <P>
+<TT>ncurses</TT> mode, simply call <TT>refresh()</TT> or <TT>doupdate()</TT>.
+This will repaint the screen. <P>
 
 There is a boolean function, <TT>isendwin()</TT>, which code can use to
 test whether <TT>ncurses</TT> screen mode is active.  It returns <TT>TRUE</TT>
@@ -726,7 +726,7 @@ with <CODE>ncurses</CODE>.
 Your panels-using modules must import the panels library declarations with
 
 <PRE>
-	  #include <panel.h>
+	  #include <TT>&lg;panel.h&tg;</TT>
 </PRE>
 
 and must be linked explicitly with the panels library using an
@@ -831,7 +831,7 @@ with <CODE>ncurses</CODE>.
 Your menu-using modules must import the menu library declarations with
 
 <PRE>
-	  #include <menu.h>
+	  #include <TT>&lg;menu.h&tg;</TT>
 </PRE>
 
 and must be linked explicitly with the menus library using an

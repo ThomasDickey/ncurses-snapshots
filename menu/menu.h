@@ -23,6 +23,7 @@
 #define ETI_MENU
 
 #include <curses.h>
+#include <eti.h>
 
 typedef int Menu_Options;
 typedef int Item_Options;

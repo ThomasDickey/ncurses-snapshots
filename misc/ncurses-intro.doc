@@ -4,6 +4,50 @@
      by Zeyd M. ben-Halim and Eric S. Raymond
      (version 1.9, 1 May 1995)
      
+                                   CONTENTS
+                                       
+     * Introduction
+     * An Overview of Curses
+          + Terminology
+          + Compiling Programs using Curses
+          + Updating the Screen
+          + Standard Windows and Function Naming Conventions
+          + Variables
+     * Using the Library
+          + Starting up
+          + Output
+          + Input
+          + Using Forms Characters
+          + Character Attributes and Color
+          + Finishing Up
+     * Function Descriptions
+          + Initialization and Wrapup
+          + Causing Output to the Terminal
+          + Low-Level Capability Access
+          + Debugging
+     * Hints, Tips, and Tricks
+          + Some Notes of Caution
+          + Temporarily Leaving ncurses Mode
+          + Using ncurses under xterm
+          + Handling Multiple Terminal Screens
+          + Testing for Terminal Capabilities
+          + Tuning for Speed
+          + Special Features of ncurses
+     * The panels Library
+          + Compiling With the panels Library
+          + Overview of panels
+          + Panels, Input, and the Standard Screen
+          + Hiding Panels
+          + Miscellaneous Other Facilities
+     * The Menu Library
+     * Compiling With the menu Library
+     * Overview of Menus
+     * Selecting items
+     * Menu Display
+     * Menu Windows
+     * Processing Menu Input
+     * Miscellaneous Other Features
+       
    
      _________________________________________________________________
    
@@ -66,7 +110,17 @@
    Eric S. Raymond <esr@snark.thyrsus.com> wrote many of the new features
    in versions after 1.8.1 and coauthored this introduction.
    
-                          AN OVERVIEW OF THE PACKAGE
+   This document also describes the extension library, similarly modeled
+   on the SVr4 panels facility. This library allows you to associate
+   backing store with each of a stack or deck of overlapping windows, and
+   provides operations for moving windows around in the stack that change
+   their visibility in the natural way (handling window overlaps).
+   
+   Finally, this document describes the menu extension library, also
+   cloned from System V, which provides easy construction and sequences
+   of menus.
+   
+                             AN OVERVIEW OF CURSES
                                        
 Terminology
 
@@ -89,7 +143,7 @@ Terminology
           The package's idea of what the terminal display currently looks
           like, i.e., what the user sees now. This is a special screen.
           
-Compiling Programs using the Package
+Compiling Programs using Curses
 
    In order to use the library, it is necessary to have certain types and
    variables defined. Therefore, the programmer must have a line:
@@ -205,8 +259,8 @@ Variables
           
    OK     error flag returned by routines when things go right.
           
-Using the Library
-
+                               USING THE LIBRARY
+                                       
    Now we describe how to actually use the screen package. In it, we
    assume all updating, reading, etc. is applied to stdscr. These
    instructions will work on any window, providing you change the
@@ -215,8 +269,8 @@ Using the Library
    Here is a sample program to motivate the discussion:
    
 
-#include <curses.h>
-#include <signal.h>
+#include
+#include
 
 static void finish(int sig);
 
@@ -552,13 +606,24 @@ Temporarily Leaving ncurses Mode
    To leave ncurses mode, call endwin() as you would if you were
    intending to terminate the program. This will take the screen back to
    cooked mode; you can do your shell-out. When you want to return to
-   ncurses mode, simply call refresh(). This will repaint the screen.
+   ncurses mode, simply call refresh() or doupdate(). This will repaint
+   the screen.
    
    There is a boolean function, isendwin(), which code can use to test
    whether ncurses screen mode is active. It returns TRUE in the interval
    between an endwin() call and the following refresh(), FALSE otherwise.
    
    
+   Here is some sample code for shellout:
+   
+
+    addstr("Shelling out...");
+    def_prog_mode();           /* save current tty modes */
+    endwin();                  /* restore original tty modes */
+    system("sh");              /* run shell */
+    addstr("returned.\n");     /* prepare return message */
+    refresh();                 /* restore save modes, repaint screen */
+
 Using ncurses Under xterm
 
    A resize operation in X sends SIGWINCH to the application running
@@ -597,12 +662,321 @@ Tuning for Speed
    Try to make attribute changes infrequent on your screens. Don't use
    the immedok() option!
    
-Special Features of NCURSES
+Special Features of ncurses
 
    When running on PC-clones, ncurses has enhanced support for the IBM
    high-half and ROM characters. A new highlight, A_PCCHARSET, enables
    display of the PC ROM graphics 0-31 that are normally interpreted as
    control characters.
+   
+                              THE PANELS LIBRARY
+                                       
+   The ncurses library by itself provides good support for screen
+   displays in which the windows are tiled (non-overlapping). In the more
+   general case that windows may overlap, you have to use a series of
+   wnoutrefresh() calls followd by a doupdate(), and be careful about the
+   order you do the window refreshes in. It has to be bottom-upwards,
+   otherwise parts of windows that should be obscured will show through.
+   
+   When your interface design is such that windows may dive deeper into
+   the visibility stack or pop to the top at runtime, the resulting
+   book-keeping can be tedious and difficult to get right. Hence the
+   panels library.
+   
+   The panel library first appeared in AT&T System V. The version
+   documented here is the freeware panel code distributed with ncurses.
+   
+Compiling With the panels Library
+
+   Your panels-using modules must import the panels library declarations
+   with
+   
+
+          #include &lg;panel.h&tg;
+
+   and must be linked explicitly with the panels library using an -lpanel
+   argument. Note that they must also link the ncurses library with
+   -lcurses. Most modern linkers are two-pass and will accept either
+   order, but it is still good practice to put -lpanel first and -lcurses
+   second.
+   
+Overview of panels
+
+   A panel object is a window that is implicitly treated as part of a
+   deck including all other panel objects. The deck has an implicit
+   bottom-to-top visibility order. The panels library includes an update
+   function (analogous to refresh()) that displays all panels in the deck
+   in the proper order to resolve overlaps. The standard window, stdscr,
+   is considered below all panels.
+   
+   Details on the panels functions are available in the man pages. We'll
+   just hit the highlights here.
+   
+   You create a panel from a window by calling new_panel() on a window
+   pointer. It then becomes the top of the deck. The panel's window is
+   available as the value of pnel_windo() called with the panel pointer
+   as argument.
+   
+   You can delete a panel (removing it from the deck) with del_panel.
+   This will not deallocate the associated window; you have to do that
+   yourself. You can replace a panel's window with a different window by
+   calling replace_window. The new window may be of different size; the
+   panel code will re-compute all overlaps. This operation doesn't change
+   the panel's position in the deck.
+   
+   To move a panel's window, use move_panel(). The mvwin() function on
+   the panel's window isn't sufficient because it doesn't update the
+   panels library's representation of where the windows are. This
+   operation leaves the panel's depth, contents, and size unchanged.
+   
+   Two functions (top_panel(), bottom_panel()) are provided for
+   rearranging the deck. The first pops its argument window to the top of
+   the deck; the second sends it to the bottom. Either operation leaves
+   the panel's screen location, contents, and size unchanged.
+   
+   The function update_panels() does all the wnoutrefresh() calls needed
+   to prepare for doupdate() (which you must call yourself, afterwards).
+   
+Panels, Input, and the Standard Screen
+
+   You shouldn't mix wnoutrefresh() or wrefresh() operations with panels
+   code; this will work only if the argument window is either in the top
+   panel or un-obscured by any other panels.
+   
+   The stsdcr window is a special case. It is considered below all
+   panels. Because changes to panels may obscure parts of stdscr, though,
+   you should call update_panels() before doupdate() even when you only
+   change stdscr.
+   
+   Note that wgetch automatically calls wrefresh. Therefore, before
+   requesting input from a panel window, you need to be sure that the
+   panel is totally unobscured.
+   
+   There is presently no way to display changes to one obscured panel
+   without repainting all panels.
+   
+Hiding Panels
+
+   It's possible to remove a panel from the deck temporarily; use
+   hide_panel for this. You can un-hide a panel with show_panel(). The
+   predicate function panel_hidden tests whether or not a panel is
+   hidden.
+   
+   The panel_update code ignores hidden panels. You cannot do top_panel()
+   or bottom_panel on a hiddlen panel(). Other panels operations are
+   applicable.
+   
+Miscellaneous Other Facilities
+
+   It's possible to navigate the deck using the functions panel_above()
+   and panel_below. Handed a panel pointer, they return the panel above
+   or below that panel. Handed NULL, they return the bottom-most or
+   top-most panel.
+   
+   Every panel has an associated user pointer, not used by the panel
+   code, to whicch you can attach application data. See the man page
+   documentation of set_panel_userptr() and panel_userptr for details.
+   
+                               THE MENU LIBRARY
+                                       
+   A menu is a screen display that assists the user to choose some subset
+   of a given set of items. The menu library is a curses extension that
+   supports easy programming of menu hierarchies with a uniform but
+   flexible interface. The menu library first appeared in AT&T System V.
+   The version documented here is the freeware menu code distributed with
+   ncurses.
+   
+Compiling With the menu Library
+
+   Your menu-using modules must import the menu library declarations with
+   
+
+          #include &lg;menu.h&tg;
+
+   and must be linked explicitly with the menus library using an -lmenu
+   argument. Note that they must also link the ncurses library with
+   -lcurses. Most modern linkers are two-pass and will accept either
+   order, but it is still good practice to put -lmenu first and -lcurses
+   second.
+   
+Overview of Menus
+
+   The menus created by this library consist of collections of items
+   including a name string part and a description string part. To make
+   menus, you create groups of these items and connect them with menu
+   frame objects.
+   
+   The menu can then by posted, that is written to an associated window.
+   Actually, each menu has two associated windows; a containing window in
+   which the programmer can scribble titles or borders, and a subwindow
+   in which the menu items proper are displayed. If this subwindow is too
+   small to display all the items, it will be a scrollable viewport on
+   the collection of items.
+   
+   A menu may also be unposted (that is, undisplayed), and finally freed
+   to make the storage associated with it and its items available for
+   re-use.
+   
+   The general flow of control of a menu program looks like this:
+    1. Initialize curses.
+    2. Create the menu items, using new_item().
+    3. Create the menu using new_menu().
+    4. Post the menu using menu_post().
+    5. Refresh the screen.
+    6. Process user requests via an input loop.
+    7. Unpost the menu using menu_unpost().
+    8. Free the menu, using free_menu().
+    9. Free the items using free_item().
+   10. Terminate curses.
+       
+Selecting items
+
+   Menus may be multi-valued or (the default) single-valued (see the
+   manual page mitem_opts(3x) to see how to change the default). Both
+   types always have a current item.
+   
+   From a single-valued menu you can read the selected value simply by
+   looking at the current item. From a multi-valued menu, you get the
+   selected set by looping through the items applying the item_value()
+   predicate function. Your menu-processing code can use the function
+   set_item_value() to flag the items in the select set.
+   
+   Menu items can be made un-selectable using set_item_opts() or
+   item_opts_off() with the O_SELECTABLE argument. This is the only
+   option so far defined for menus, but it is good practice to code as
+   though other option bits might be on.
+   
+Menu Display
+
+   The menu library calculates a minimum display size for your window,
+   based on the following variables:
+   
+     * The number and maximum length of the menu items
+     * Whether the O_ROWMAJOR option is enabled
+     * Whether display of descriptions is enabled
+     * Whatever menu format may have been set by the programmer
+     * The length of the menu mark string used for highlighting selected
+       items
+       
+   The function set_menu_format() allows you to set the maximum size of
+   the viewport or menu page that will be used to display menu items. You
+   can retrieve any format associated with a menu with menu_format(). The
+   default format is rows=16, columns=1.
+   
+   The actual menu page may be smaller than the format size. This depends
+   on the item number and size and whether O_ROWMAJOR is on. This option
+   (on by default) causes menu items to be displayed in a `raster-scan'
+   pattern, so that if more than one item will fit horizontally the first
+   couple of items are side-by-side in the top row. The alternative is
+   column-major display, which tries to put the first several items in
+   the first column.
+   
+   As mentioned above, a menu format not large enough to allow all items
+   to fit on-screen will result in a menu display that is vertically
+   scrollable.
+   
+   You can scroll it with requests to the menu driver, which will be
+   described in the section on menu input handling.
+   
+   Each menu has a mark string used to visually tag selected items; see
+   the menu_mark(3x) manual page for details. The mark string length also
+   influences the menu page size.
+   
+   The function scale_menu() returns the minimum display size that the
+   menu code computes from all these factors. There are other menu
+   display attributes including a select attribute, an attribute for
+   selectable items, an attribute for unselectable items, and a pad
+   character used to separate item name text from description text. These
+   have reasonable defaults which the library allows you to change (see
+   the menu_attribs(3x)manual page.
+   
+Menu Windows
+
+   Each menu has, as mentioned previously, a pair of associated windows.
+   Both these windows are painted when the menu is posted and erased when
+   the menu is unposted.
+   
+   The outer or frame window is not otherwise touched by the menu
+   routines. It exists so the programmer can associate a title, a border,
+   or perhaps help text with the menu and have it properly refreshed or
+   erased at post/unpost time.
+   
+   The inner window or subwindow is where the current menu page is
+   displayed.
+   
+   By default, both windows are stdscr. You can set them with the
+   functions in menu_win(3x).
+   
+   When you call menu_post(), you write the menu to its subwindow. When
+   you call menu_unpost(), you erase the subwindow, However, neither of
+   these actually modifies the screen. To do that, call wrefresh() or
+   some equivalent.
+   
+Processing Menu Input
+
+   The main loop of your menu-processing code should call menu_driver()
+   repeatedly. The first argument of this routine is a menu pointer; the
+   second is a menu command code. You should write an input-fetching
+   routine that maps input characters to menu command codes, and pass its
+   output to menu_driver(). The menu command codes are fully documented
+   in menu_driver(3x).
+   
+   The simplest group of command codes is REQ_NEXT_ITEM, REQ_PREV_ITEM,
+   REQ_FIRST_ITEM, REQ_LAST_ITEM, REQ_UP_ITEM, REQ_DOWN_ITEM,
+   REQ_LEFT_ITEM, REQ_RIGHT_ITEM. These change the currently selected
+   item. These requests may cause scrolling of the menu page if it only
+   partially displayed.
+   
+   There are explicit requests for scrolling which also change the
+   current item (because the select location does not change, but the
+   item there does). These are REQ_SCR_DLINE, REQ_SCR_ULINE,
+   REQ_SCR_DPAGE, and REQ_SCR_UPAGE.
+   
+   The REQ_TOGGLE_ITEM selects or deselects the current item. It is for
+   use in multi-valued menus; if you use it with O_ONEVALUE on, you'll
+   get an error return (E_REQUEST_DENIED).
+   
+   Each menu has an associated pattern buffer. The menu_driver() logic
+   tries to accumulate printable ASCII characters passed in in that
+   buffer; when it matches a prefix of an item name, that item (or the
+   next matching item) is selected. If apopending a character yields no
+   new match, that character is deleted from the pattern buffer, and
+   menu_driver() returns E_NO_MATCH.
+   
+   Some requests change the pattern buffer directly: REQ_CLEAR_PATTERN,
+   REQ_BACK_PATTERN, REQ_NEXT_MATCH, REQ_PREV_MATCH. The latter two are
+   useful when pattern buffer input matches more than one item in a
+   multi-valued menu.
+   
+   Each successful scroll or item navigation request clears the pattern
+   buffer. It is also possible to set the pattern buffer explicitly with
+   set_menu_pattern().
+   
+   Finally, menu driver requests above the constant MAX_COMMAND are
+   considered application-specific commands. The menu_driver() code
+   ignores them and returns E_UNKNOWN_COMMAND.
+   
+Miscellaneous Other Features
+
+   Various menu options can affect the processing and visual appearance
+   and input processing of menus. See menu_opts(3x) for details.
+   
+   It is possible to change the current item from application code; this
+   is useful if you want to write your own navigation requests. It is
+   also possible to explicitly set the top row of the menu display. See
+   mitem_current(3x). If your application needs to change the menu
+   subwindow cursor for any reason, pos_menu_cursor() will restore it to
+   the correct location for continuing menu driver processing.
+   
+   It is possible to set hooks to be called at menu initialization and
+   wrapup time, and whenever the selected item changes. See
+   menu_hook(3x).
+   
+   Each item, and each menu, has an associated user pointer on which you
+   can hang application data. See mitem_userptr(3x) and menu_userptr(3x).
+   
+   
+   
      _________________________________________________________________
    
     Eric S. Raymond <esr@snark.thyrsus.com>

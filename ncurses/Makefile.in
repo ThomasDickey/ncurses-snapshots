@@ -79,7 +79,6 @@ install.libs: $(LIBRARIES) $(libdir)
 		out=`echo $${lib} | sed -e s'@^.*/@@'`; \
 		echo installing $${lib} as $(libdir)/$${out}; \
 		$(INSTALL_DATA) $${lib} $(libdir)/$${out}; \
-		$(RANLIB) $(libdir)/$${out}; \
 	done
 
 $(libdir) \

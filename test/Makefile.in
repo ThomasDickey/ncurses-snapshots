@@ -39,33 +39,33 @@ TESTS = \
 
 all: $(TESTS) 
 
-blue: blue.c
+blue: $(srcdir)/blue.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
-bs: bs.c
+bs: $(srcdir)/bs.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
-firework: firework.c
+firework: $(srcdir)/firework.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
-gdc: gdc.c
+gdc: $(srcdir)/gdc.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
-hanoi: hanoi.c
+hanoi: $(srcdir)/hanoi.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
-knight: knight.c
+knight: $(srcdir)/knight.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
-ncurses: ncurses.c
+ncurses: $(srcdir)/ncurses.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
-newdemo: newdemo.c
+newdemo: $(srcdir)/newdemo.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
-rain: rain.c
+rain: $(srcdir)/rain.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
-tclock: tclock.c
+tclock: $(srcdir)/tclock.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -lm -o $@
-testcurs: testcurs.c
+testcurs: $(srcdir)/testcurs.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
-view: view.c
+view: $(srcdir)/view.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
-worm: worm.c
+worm: $(srcdir)/worm.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
-xmas: xmas.c
+xmas: $(srcdir)/xmas.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
 
 install:

@@ -58,6 +58,8 @@ int reset_prog_mode()
 #else
 	stty(cur_term->Filedes, &cur_term->Nttyb);
 #endif
+	if (stdscr->_use_keypad)
+		_nc_keypad(TRUE);
 
 	return OK; 
 }
@@ -74,7 +76,7 @@ int reset_shell_mode()
 #else
 	stty(cur_term->Filedes, &cur_term->Ottyb);
 #endif
-
+	_nc_keypad(FALSE);
 	return OK; 
 }
 

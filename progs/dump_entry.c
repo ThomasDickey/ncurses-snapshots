@@ -332,6 +332,7 @@ int	predval, len = 0;
 		    && enter_insert_mode == ABSENT_STRING)
 		{
 		    (void) strcpy(buffer, "im=");
+		    len++;
 		    goto catenate;
 		}
 
@@ -339,6 +340,7 @@ int	predval, len = 0;
 		    && exit_insert_mode == ABSENT_STRING)
 		{
 		    (void) strcpy(buffer, "ei=");
+		    len++;
 		    goto catenate;
 		}
 	    }
@@ -357,17 +359,23 @@ int	predval, len = 0;
 		{
 		    if (outform == F_TCONVERR)
 			sprintf(buffer, "%s=!!! %s WILL NOT CONVERT !!!", str_names[i], srccap);
-		    else if (!suppress_untranslatable)
+		    else if (suppress_untranslatable)
+			continue;
+		    else
 			sprintf(buffer, "..%s=%s", str_names[i], srccap);
 		}
 		else
 		    sprintf(buffer, "%s=%s", str_names[i], cv);
+		len += strlen(tterm->Strings[i]) + 1;
 	    }
 	    else
-		sprintf(buffer, "%s=%s", str_names[i], expand(tterm->Strings[i]));
+	    {
+		sprintf(buffer,"%s=%s",str_names[i],expand(tterm->Strings[i]));
+		len += strlen(tterm->Strings[i]) + 1;
+	    }
+
 	catenate:
 	    (void) strcat(buffer, separator);
-	    len += strlen(buffer) + 1;
 	    if (column > INDENT  &&  column + strlen(buffer) > width)
 	    {
 		(void) strcat(outbuf, trailer);
@@ -378,6 +386,7 @@ int	predval, len = 0;
 	}
     }
 
+    /* this is the raw length, not the printable-expanded length */
     return(len);
 }
 

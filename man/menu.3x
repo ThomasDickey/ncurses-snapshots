@@ -135,29 +135,13 @@ The menu driver could not process the request.
 \fBcurses\fR(3X) and 3X pages whose names begin "menu_" for detailed
 descriptions of the entry points.
 .SH NOTES
-The header file \fB<menu.h>\fR automatically includes the header file
-\fB<curses.h>\fR.
+The header file \fB<menu.h>\fR automatically includes the header files
+\fB<curses.h>\fR and \fB<eti.h>\fR.
 .SH PORTABILITY
 These routines emulate the System V menu library.  They were not supported on
 Version 7 or BSD versions.
-
-In this implementation there is no separate menu error code file \fB<eti.h>\fR
-to be included by \fBmenu.h\fR; the ETI error codes live in \fBcurses.h\fR
-instead.  When porting menu-using code from SVr4 to use this version of
-curses/menus, in the unlikely event that you have a file that includes
-\fB<eti.h>\fR directly (after \fB<curses.h>\fR) just wrap it in a condition
-like this:
-
-.nf
-#ifndef E_OK
-#include <eti.h>
-#endif
-.fi
-
-This condition will do the right thing under both SVr4 and new curses 
-environments.
 .SH AUTHORS
-Juergen Pfeifer.  Manual pages and adaptation for new curses by Eric
+Juergen Pfeifer.  Manual pages and adaptation for ncurses by Eric
 S. Raymond.
 .\"#
 .\"# The following sets edit modes for GNU EMACS

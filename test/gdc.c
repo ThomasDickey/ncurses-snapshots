@@ -60,6 +60,7 @@ int n = 0;
 	initscr();
 	cbreak();
 	noecho();
+	nodelay(stdscr, 1);
 	
 	hascolor = has_colors();
 
@@ -100,6 +101,8 @@ int n = 0;
 		attrset(COLOR_PAIR(2));
 	}
 	do {
+		char	buf[30];
+
 		mask = 0;
 		time(&now);
 		tm = localtime(&now);
@@ -141,9 +144,17 @@ int n = 0;
 				}
 			}
 		}
+
+		/* this depends on the detailed format of ctime(3) */
+		(void) strcpy(buf, ctime(&now));
+		(void) strcpy(buf + 10, buf + 19);
+		mvaddstr(16, 30, buf);
+
 		movto(6, 0);
 		refresh();
 		sleep(1);
+		while(wgetch(stdscr) != ERR)
+			continue;
 		if (sigtermed) {
 			standend();
 			clear();

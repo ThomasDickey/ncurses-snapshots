@@ -25,6 +25,7 @@
  */
 
 #include <config.h>
+
 #include "tic.h"
 
 #include <string.h>

@@ -6,22 +6,25 @@
 #	MODEL (e.g., "DEBUG", uppercase; toupper is not portable)
 BEGIN	{
 		print  ""
-		beginning = 1;
+		found = 0;
 	}
 	{
-		if ( $1 != "#" && $2 == "lib" )
+		if ( $1 != "#" && ( $2 == "lib" || $2 == "progs" ))
 		{
-			if ( beginning == 1 )
+			if ( found == 0 )
 			{
 				printf "%s_OBJS =", MODEL
-				beginning = 0
+				if ( $2 == "lib" )
+					found = 1
+				else
+					found = 2
 			}
 			printf " \\\n\t../%s/%s.o", model, $1
 		}
 	}
 END	{
 		print  ""
-		if ( beginning == 0 )
+		if ( found == 1 )
 		{
 			print  ""
 			if ( MODEL == "SHARED" )
@@ -39,6 +42,12 @@ END	{
 			print ""
 			print "clean ::"
 			printf "\trm -f ../lib/lib%s%s\n", name, suffix
+			printf "\trm -f $(%s_OBJS)\n", MODEL
+		}
+		else if ( found == 2 )
+		{
+			print ""
+			print "clean ::"
 			printf "\trm -f $(%s_OBJS)\n", MODEL
 		}
 	}

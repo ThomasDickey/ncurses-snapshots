@@ -87,10 +87,10 @@ int	i;
 	    return NULL;
 
 	if (num_lines == 0)
-	    num_lines = orig->_maxy - orig->_begy - begy;
+	    num_lines = orig->_maxy - begy;
 
 	if (num_columns == 0)
-	    num_columns = orig->_maxx - orig->_begx - begx;
+	    num_columns = orig->_maxx - begx;
 
 	if ((win = _nc_makenew(num_lines, num_columns, orig->_begy + begy, orig->_begx + begx)) == NULL)
 	    return NULL;

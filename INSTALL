@@ -27,13 +27,14 @@ You will need the following in order to build and install ncurses under UNIX:
 INSTALLATION PROCEDURE:
 
 1.  Decide where you want to put the object files of terminal descriptions. 
-    The default is /usr/share/terminfo.  If your system already has a terminfo
-    database, you can put it somewhere else.  Keep in mind that this directory
-    should probably be in your root filesystem so that programs which use
-    terminfo can be used even when the system is only up single-user.
+    The default is /usr/lib/terminfo.  If your system already has a
+    terminfo database, you can put it somewhere else.  Keep in mind that 
+    this directory should probably be in your root filesystem so that 
+    programs which use terminfo can be used even when the system is only up
+    single-user.
 
     The --prefix option to configure changes the root directory for installing
-    ncurses; the default is in subdirectories of /usr/local, unless the
+    ncurses; the default is in subdirectories of /usr/, unless the
     configure script finds the 'tic' program installed in a different place
     within your path (e.g., finding /usr/bin/tic makes the default prefix
     /usr/bin):
@@ -46,7 +47,10 @@ INSTALLATION PROCEDURE:
 
     If you want to put the terminal descriptions in, for example,
     /usr/share/lib/terminfo, you can either make that a symbolic link to
-    /usr/share/terminfo, or type 'configure --datadir=/usr/share/lib/terminfo'.
+    /usr/lib/terminfo, or type 'configure --datadir=/usr/share/lib/terminfo'.
+    This is particularly useful if your system already has a terminfo database.
+    This option allows you to place ncurses' terminfo in an alternate location.
+    You can use TERMINFO to point to the appropriate directory.
 
 2.  Type 'configure' to configure ncurses for your operating system and create
     the Makefiles.  You can optionally give configure options, such as
@@ -87,9 +91,8 @@ INSTALLATION PROCEDURE:
 3.  Type 'make'.  Ignore any warnings, no error messages should be produced. 
     This should compile the library, the terminfo compiler (tic), the infocmp,
     clear and tput programs (see the man pages for explanation of what they
-    do), some test programs, and a modified copy of Warren Tucker's
-    implementation of PANELS.  Read the file test/README for details on the
-    test programs.
+    do), some test programs, and the panels and menus libraries.
+    Read the file test/README for details on the test programs.
 
 4.  Type 'make install' to install the libraries, the programs, the terminfo
     database and the man pages.  Alternately, you can type 'make install' in
@@ -171,13 +174,18 @@ NOTES:
 
 IF YOU ARE A SYSTEM INTEGRATOR:
 
+	Configure with --prefix=/usr to make the install productions put
+	libraries and headers in the correct locations (overwriting any
+	previous curses libraries and headers).  This will put the terminfo 
+	hierarchy under /usr/lib/terminfo; you may want to override this with
+	--data-dir=/usr/share/misc/terminfo 
+
 	Please configure the ncurses library in a pure-terminfo mode; that
-	is, with --disable-termcap option.   This will make the curses library
-	smaller and faster.  Then, nuke your /etc/termcap file -- it's
-	obsolete, nothing that goes through ncurses or the new capability-
-	fetcher routines will use it.  (The one big non-curses legacy
-	application that used termcap was vi, and version 1.50 of new vi
-	switched over.)
+	is, with the --disable-termcap option.   This will make the curses 
+	library smaller and faster. The ncurses library include a termcap 
+	emulation that queries the terminfo database, so even applications 
+	that use raw termcap to query terminal characteristics will win 
+	(providing you relink them!).
 
 	In various Linuxes (and possibly elsewhere) there has been a practice
 	of designating the system console driver type as `console'.  Please
@@ -191,10 +199,9 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 	(listed in the misc/terminfo file) to be included in the master, if
 	it's not already there.
 
-	Thank you for your cooperation.  With your help, we can stamp out
-	/etc/termcap and `console' in your lifetime!
-
 BUGS:
 	Send any feedback to me: zmbenhal@netcom.com or to the ncurses mailing
-	list at ncurses-list@netcom.com 
+	list at ncurses-list@netcom.com. To subscribe send mail to
+	listserv@netcom.com with body that reads:
+	subscribe ncurses-list <you-email-address-here>
 

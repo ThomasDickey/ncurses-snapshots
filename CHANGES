@@ -431,13 +431,4 @@ traceon(); in your code and link with -ldcurses.
 * systematically gave non-API public functions and data an _nc_ prefix.
 * integrated Juergen Pfeifer's menu code into the distribution.
 * totally rewrote the knight test game's interface
-* split lib_traceatr.c, lib_tracechr.c, lib_tracedmp.c from lib_trace.c to
-  avoid spurious use in applications.
-* moved _nc_outch() from lib_doupdate to lib_tputs.c
-* split lib_isendwin.c from lib_endwin.c
-* made new module lib_data.c
-* include curses.h within tic.h to avoid duplicate definitions of OK/ERR, bool.
-* modified autoconf script to check for broken linker (e.g., NeXT) which cannot
-  pull in data-only modules; added macros to accommodate this case.
-* replaced 'isascii()' macro with 'is7bits()'.
-* check for null-SP in delay_output(), which could happen in 'clear'.
+

@@ -209,10 +209,14 @@ EOF
 #line __oline__ "configure"
 int	testfunc()
 {
+#if defined(NeXT)
+	exit(1);	/* I'm told this linker is broken */
+#else
 	extern int testdata[3];
 	return testdata[0] == 123
 	   &&  testdata[1] == 456
 	   &&  testdata[2] == 789;
+#endif
 }
 EOF
 	changequote([,])dnl

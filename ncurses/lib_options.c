@@ -147,12 +147,9 @@ int wtimeout(WINDOW *win, int delay)
 static void init_keytry(void);
 static void add_to_try(char *, short);
 
-int keypad(WINDOW *win, bool flag)
+/* Turn the keypad on/off */
+int _nc_keypad(bool flag)
 {
-	T(("keypad(%p,%d) called", win, flag));
-
-   	win->_use_keypad = flag;
-
 	if (flag  &&  keypad_xmit)
 	{
 	    TPUTS_TRACE("keypad_xmit");
@@ -169,6 +166,13 @@ int keypad(WINDOW *win, bool flag)
 	return OK; 
 }
 
+int keypad(WINDOW *win, bool flag)
+{
+	T(("keypad(%p,%d) called", win, flag));
+
+   	win->_use_keypad = flag;
+	return (_nc_keypad(flag));
+}
 
 
 int meta(WINDOW *win, bool flag)
