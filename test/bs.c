@@ -322,8 +322,8 @@ static void initgame(void)
     (void) move(PROMPTLINE + 2, 0);
     announceopts();
 
-    bzero(board, sizeof(char) * BWIDTH * BDEPTH * 2);
-    bzero(hits, sizeof(char) * BWIDTH * BDEPTH * 2);
+    memset(board, 0, sizeof(char) * BWIDTH * BDEPTH * 2);
+    memset(hits,  0, sizeof(char) * BWIDTH * BDEPTH * 2);
     for (i = 0; i < SHIPTYPES; i++)
     {
 	ss = cpuship + i;

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# termsort.sh -- generate indirection vectors for the various sort methods
+# parameterized.sh -- generate indirection vectors for the various sort methods
 #
 # The output of this script is C source for an array specifying whether
 # termcap strings should undergo parameter translation is also included.

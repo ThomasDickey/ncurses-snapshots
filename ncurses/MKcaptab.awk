@@ -1,4 +1,7 @@
 
+AWK=${1-awk}
+DATA=${2-../include/Caps.filtered}
+
 cat <<'EOF'
 /*
  *	comp_captab.c -- The names of the capabilities in a form ready for
@@ -14,7 +17,7 @@ struct name_table_entry	info_table[] =
 {
 EOF
 
-awk <Caps.filtered '
+$AWK <$DATA '
 BEGIN		{
 		    tablesize = 0;
 		}
@@ -42,7 +45,7 @@ struct alias alias_table[] =
 {
 EOF
 
-awk <Caps.filtered '
+$AWK <$DATA '
 $1 == "alias"	{
 		    printf "\t{%s, %s},\t /* %s */\n", $2, $3, $4
 		}
@@ -56,7 +59,7 @@ struct name_table_entry	cap_table[] =
 {
 EOF
 
-awk <Caps.filtered '
+$AWK <$DATA '
 BEGIN		{
 		    tablesize = 0;
 		    BoolCount = NumCount = StrCount = 0;

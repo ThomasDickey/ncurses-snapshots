@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.0)
-AC_INIT(src/comp_error.c)
+AC_INIT(ncurses/lib_initscr.c)
 AC_PREFIX_DEFAULT(/usr/local)
 AC_PREFIX_PROGRAM(tic)
 ###	Checks for programs.
@@ -40,6 +40,8 @@ DFT_LWR_MODEL=`echo $nc_list_models | $AWK '{print $1}'`
 NC_UPPERCASE($DFT_LWR_MODEL,DFT_UPR_MODEL)dnl
 NC_LIB_SUFFIX($DFT_LWR_MODEL,DFT_DEP_SUFFIX)dnl
 NC_LIB_TYPE($DFT_LWR_MODEL,DFT_ARG_SUFFIX)dnl
+NC_OBJ_SUBDIR($DFT_LWR_MODEL,DFT_OBJ_SUBDIR)dnl
+AC_SUBST(DFT_OBJ_SUBDIR)dnl	the default object-directory ("obj")
 AC_SUBST(DFT_LWR_MODEL)dnl	the default model ("normal")
 AC_SUBST(DFT_UPR_MODEL)dnl	the default model ("NORMAL")
 AC_SUBST(DFT_DEP_SUFFIX)dnl	the corresponding library-suffix (".a")
@@ -136,10 +138,13 @@ dnl -DGOOD_SELECT
 dnl We'll do our own -g libraries
 CFLAGS=`echo ${CFLAGS} | sed -e s/-g//`
 
-dnl Check for C++ compiler characteristics
-AC_LANG_CPLUSPLUS
-NC_BOOL_DECL
-NC_BOOL_SIZE
+dnl Check for C++ compiler characteristics (and ensure that it's there!)
+if test -n "$CXX"; then
+	AC_LANG_CPLUSPLUS
+	NC_CXX_LIBRARY
+	NC_BOOL_DECL
+	NC_BOOL_SIZE
+fi
 
 ### It's not possible to appease gcc 2.6.3's conversion-warnings if we're
 ### using a 'char' for bools.
@@ -154,11 +159,13 @@ fi
 ### Construct the list of include-directories to be generated
 NC_INCLUDE_DIRS
 
-### Construct the list of libraries to be generated
-NC_LIBS_TO_MAKE
+### Construct the list of subdirectories for which we'll customize makefiles
+### with the appropriate compile-rules.
+NC_SRC_MODULES(ncurses progs panel menus forms)
 
+################################################################################
 changequote({,})dnl
-AC_OUTPUT(include/config_h c++/Makefile man/Makefile src/Makefile test/Makefile Makefile,{
+AC_OUTPUT(include/config_h $SUB_MAKEFILES Makefile,{
 
 NC_LIB_RULES
 
@@ -200,20 +207,20 @@ rm include/config_h
 sed -e "
 s/#\\(define\\)[ 	][ 	]*\\(CXX_BUILTIN_BOOL\\).*/#\\1 \\2 $BUILTIN_BOOL/
 s/#\\(define\\)[ 	][ 	]*\\(CXX_TYPE_OF_BOOL\\).*/#\\1 \\2 $TYPE_OF_BOOL/
-" $ac_given_srcdir/src/curses.h >conftest.tmp
+" $ac_given_srcdir/include/curses.h >conftest.tmp
 if test `cd $ac_given_srcdir;pwd` != `pwd`; then
-	echo creating src/curses.h
-	rm -f src/curses.h~
-	if test -f src/curses.h; then mv src/curses.h src/curses.h~; fi
-	mv conftest.tmp src/curses.h
-elif cmp -s $ac_given_srcdir/src/curses.h conftest.tmp 2>/dev/null; then
-	echo src/curses.h is unchanged
+	echo creating include/curses.h
+	rm -f include/curses.h~
+	if test -f include/curses.h; then mv include/curses.h include/curses.h~; fi
+	mv conftest.tmp include/curses.h
+elif cmp -s $ac_given_srcdir/include/curses.h conftest.tmp 2>/dev/null; then
+	echo include/curses.h is unchanged
 	rm -f conftest.tmp
 else
-	echo updating src/curses.h
-	rm -f src/curses.h~
-	if test -f src/curses.h; then mv src/curses.h src/curses.h~; fi
-	mv conftest.tmp src/curses.h
+	echo updating include/curses.h
+	rm -f include/curses.h~
+	if test -f include/curses.h; then mv include/curses.h include/curses.h~; fi
+	mv conftest.tmp include/curses.h
 fi
 },{
 ### Special initialization commands, used to pass information from the
@@ -228,6 +235,8 @@ if test -z "\$SYS_NAME"; then SYS_NAME=unknown;fi
 AWK=$AWK
 NC_LIST_MODELS="$nc_list_models"
 WITH_ECHO="$with_echo"
+SRC_SUBDIRS="$SRC_SUBDIRS"
+nc_cxx_library="$nc_cxx_library"
 
 })
 changequote([,])dnl

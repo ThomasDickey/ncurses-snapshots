@@ -1,34 +1,44 @@
 # Generate list of objects for a given model library
 # Variables:
-#	model
-#	suffix
-#	MODEL (uppercase version of 'model'; toupper is not portable)
+#	name (library name, e.g., "ncurses", "panel", "forms", "menus")
+#	model (directory into which we compile, e.g., "obj")
+#	suffix (e.g., "_g.a", for debug libraries)
+#	MODEL (e.g., "DEBUG", uppercase; toupper is not portable)
 BEGIN	{
-	print  ""
-	printf "%s_OBJS =", MODEL
+		print  ""
+		beginning = 1;
 	}
 	{
-	if ( $2 == "ncurses" )
-		printf " \\\n\t%s/%s.o", model, $1
+		if ( $1 != "#" && $2 == "lib" )
+		{
+			if ( beginning == 1 )
+			{
+				printf "%s_OBJS =", MODEL
+				beginning = 0
+			}
+			printf " \\\n\t../%s/%s.o", model, $1
+		}
 	}
 END	{
-	print  ""
-	print  ""
-	if ( model == "shared" ) {
-		printf "libncurses%s : $(%s_OBJS)\n", suffix, MODEL
-		print  "\t@-rm -f $@"
-		printf "\t$(MK_SHARED_LIB) $(%s_OBJS)\n", MODEL
 		print  ""
-		printf "libpanel%s : %s/panel.o\n", suffix, model
-		print  "\t@-rm -f $@"
-		printf "\t$(MK_SHARED_LIB) $(%s_OBJS)\n", MODEL
-	} else	{
-		printf "libncurses%s : $(%s_OBJS)\n", suffix, MODEL
-		printf "\tar rv $@ $?\n"
-		printf "\t$(RANLIB) $@\n"
-		print  ""
-		printf "libpanel%s : %s/panel.o\n", suffix, model
-		printf "\tar rv $@ $?\n"
-		printf "\t$(RANLIB) $@\n"
+		if ( beginning == 0 )
+		{
+			print  ""
+			if ( MODEL == "SHARED" )
+			{
+				printf "../lib/lib%s%s : $(%s_OBJS)\n", name, suffix, MODEL
+				print  "\t@-rm -f $@"
+				printf "\t$(MK_SHARED_LIB) $(%s_OBJS)\n", MODEL
+			}
+			else
+			{
+				printf "../lib/lib%s%s : $(%s_OBJS)\n", name, suffix, MODEL
+				printf "\tar rv $@ $?\n"
+				printf "\t$(RANLIB) $@\n"
+			}
+			print ""
+			print "clean ::"
+			printf "\trm -f ../lib/lib%s%s\n", name, suffix
+			printf "\trm -f $(%s_OBJS)\n", MODEL
 		}
 	}
