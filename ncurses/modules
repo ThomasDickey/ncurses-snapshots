@@ -1,4 +1,4 @@
-# $Id: modules,v 1.27 1997/06/01 00:16:35 tom Exp $
+# $Id: modules,v 1.28 1997/06/15 18:22:13 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -89,7 +89,7 @@ lib_twait	lib		$(srcdir)
 lib_vidattr	lib		$(srcdir)	../include/term.h
 lib_window	lib		$(srcdir)
 names		lib		.
-name_match	lib		$(srcdir)	../include/term.h ../include/tic.h
+name_match	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 read_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 read_termcap	lib		$(srcdir)	../include/term.h
 tries		lib		$(srcdir)

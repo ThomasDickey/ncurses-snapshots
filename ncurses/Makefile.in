@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.29 1997/05/31 23:23:17 tom Exp $
+# $Id: Makefile.in,v 1.30 1997/06/15 18:50:38 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -124,8 +124,13 @@ $(INSTALL_PREFIX)$(libdir) :
 	sh $(srcdir)/MKlib_gen.sh "$(CPP)" "$(AWK)" <../include/curses.h | \
 		fgrep undef >$@
 
-keys.tries: $(srcdir)/keys.list
-	$(AWK) -f $(srcdir)/MKkeys.awk $(srcdir)/keys.list > keys.tries
+keys.tries: make_keys
+	make_keys $(srcdir)/keys.list > keys.tries
+
+make_keys : \
+		$(srcdir)/make_keys.c \
+		names.c
+	$(CC) -o $@ $(CCFLAGS) $(srcdir)/make_keys.c $(LDFLAGS)
 
 make_hash : \
 		$(srcdir)/comp_hash.c \
@@ -160,10 +165,11 @@ TAGS:
 	etags *.[ch]
 
 mostlyclean ::
-	-rm -f tags TAGS *~
+	-rm -f tags TAGS core *~
 
 clean :: mostlyclean
 	-rm -f $(AUTO_SRC)
+	-rm -f make_keys
 	-rm -f make_hash
 
 distclean :: clean

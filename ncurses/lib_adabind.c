@@ -1,34 +1,36 @@
-
-/***************************************************************************
-*                            COPYRIGHT NOTICE                              *
-****************************************************************************
-*                ncurses is copyright (C) 1992-1995                        *
-*                          Zeyd M. Ben-Halim                               *
-*                          zmbenhal@netcom.com                             *
-*                          Eric S. Raymond                                 *
-*                          esr@snark.thyrsus.com                           *
-*                                                                          *
-*        Permission is hereby granted to reproduce and distribute ncurses  *
-*        by any means and for any fee, whether alone or as part of a       *
-*        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, and is not    *
-*        removed from any of its header files. Mention of ncurses in any   *
-*        applications linked with it is highly appreciated.                *
-*                                                                          *
-*        ncurses comes AS IS with no warranty, implied or expressed.       *
-*                                                                          *
-***************************************************************************/
-
-/*
-**	lib_adabind.c
-**
-**	Some small wrappers to ease the implementation of an Ada95
-**      binding. Especially functionalities only available as macros
-**      in (n)curses are wrapped here by functions. 
-**      See the documentation and copyright notices in the ../Ada95
-**      subdirectory.
+/*----------------------------------------------------------------------------
+//                                                                          --
+//                           GNAT ncurses Binding                           --
+//                                                                          --
+//                              lib_adabind.c                               --
+//                                                                          --
+//                                 B O D Y                                  --
+//                                                                          --
+//                                                                          --
+//  The ncurses Ada95 binding is copyrighted 1996,1997 by                   --
+//  Juergen Pfeifer, Email: Juergen.Pfeifer@T-Online.de                     --
+//                                                                          --
+//  Permission is hereby granted to reproduce and distribute this           --
+//  binding by any means and for any fee, whether alone or as part          --
+//  of a larger distribution, in source or in binary form, PROVIDED         --
+//  this notice is included with any such distribution, and is not          --
+//  removed from any of its header files. Mention of ncurses and the        --
+//  author of this binding in any applications linked with it is            --
+//  highly appreciated.                                                     --
+//                                                                          --
+//  This binding comes AS IS with no warranty, implied or expressed.        --
+//----------------------------------------------------------------------------
+//	lib_adabind.c
+//
+//	Some small wrappers to ease the implementation of an Ada95
+//      binding. Especially functionalities only available as macros
+//      in (n)curses are wrapped here by functions. 
+//      See the documentation and copyright notices in the ../Ada95
+//      subdirectory.
 */
 #include "curses.priv.h"
+
+MODULE_ID("$Id: lib_adabind.c,v 1.2 1997/06/15 11:53:36 juergen Exp $")
 
 /*  In (n)curses are a few functionalities that can't be expressed as 
 //  functions, because for historic reasons they use as macro argument

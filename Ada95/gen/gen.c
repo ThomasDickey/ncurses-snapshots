@@ -22,7 +22,7 @@
 //  This binding comes AS IS with no warranty, implied or expressed.        --
 //----------------------------------------------------------------------------
     Version Control
-    $Revision: 1.8 $
+    $Revision: 1.9 $
   --------------------------------------------------------------------------*/
 /*
   This program generates various record structures and constants from the
@@ -781,7 +781,7 @@ static void gen_acs (void)
 static void prologue(const char *name)
 {
   time_t t = time(NULL);
-  printf("--  %s binding, generated at %s",name,ctime(&t));
+  printf("--  %s binding.\n",name);
   printf("--  This module is generated. Please don't change it manually!\n");
   printf("--  Run the generator instead.\n--  |");
 

@@ -168,11 +168,6 @@ have two choices to deal with this:
 </UL>
 Most likely you will follow a mixed approach. Some features are easy to simulate,
 others will be hard if not impossible.</LI>
-<LI>For menu items, the name and descriptions are internally copied by ncurses.
-So the binding doesn't care for the lifetime of the strings passed to the
-construction routine for items. This assumption is not true in most other implementations
-of the menu library. In this case you have to modify the binding routine
-<STRONG>New_Item</STRONG> to safestore the strings.</LI>
 </UL>
 I'm quite sure I forgot something.<P>
 </BODY>

@@ -24,7 +24,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* ena_acs, acs_chars */
 
-MODULE_ID("$Id: lib_acs.c,v 1.8 1997/04/24 11:04:07 tom Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.9 1997/06/15 11:16:16 tom Exp $")
 
 chtype acs_map[128];
 
@@ -105,7 +105,6 @@ void init_acs(void)
 			}
 	}
 #ifdef TRACE
-#define SIZEOF(v) (sizeof(v)/sizeof(v[0]))
 	/* Show the equivalent mapping, noting if it does not match the
 	 * given attribute, whether by re-ordering or duplication.
 	 */

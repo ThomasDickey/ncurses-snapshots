@@ -22,12 +22,12 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.7 $
+--  $Revision: 1.8 $
 ------------------------------------------------------------------------------
 with Terminal_Interface.Curses.Aux; use Terminal_Interface.Curses.Aux;
 
 with Interfaces.C; use Interfaces.C;
-with Interfaces.C.Strings;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 with Terminal_Interface.Curses;
 
 with Ada.Unchecked_Deallocation;
@@ -72,13 +72,6 @@ package body Terminal_Interface.Curses.Menus is
       Fill_String (Request_Name (C_Int (Key)), Name);
    end Request_Name;
 
-   --  !!! W A R N I N G !!!
-   --  If you want to port this binding to a non ncurses version of the
-   --  ETI, this must be rewritten. In ncurses the menu items and
-   --  descriptions may be automatic variables, because ncurses copies
-   --  the parameters into private allocated internal structures.
-   --  Other implementations don't do that usually, so depending on
-   --  scopes you may see unexpected results.
    function Create (Name        : String;
                     Description : String := "") return Item
    is
@@ -86,15 +79,23 @@ package body Terminal_Interface.Curses.Menus is
       function Newitem (Name, Desc : Char_Ptr) return Item;
       pragma Import (C, Newitem, "new_item");
 
-      Name_Str : char_array (0 .. Name'Length);
-      Desc_Str : char_array (0 .. Description'Length);
+      type Name_String is new char_array (0 .. Name'Length);
+      type Name_String_Ptr is access Name_String;
+      pragma Controlled (Name_String_Ptr);
+
+      type Desc_String is new char_array (0 .. Description'Length);
+      type Desc_String_Ptr is access Desc_String;
+      pragma Controlled (Desc_String_Ptr);
+
+      Name_Str : Name_String_Ptr := new Name_String;
+      Desc_Str : Desc_String_Ptr := new Desc_String;
       Name_Len, Desc_Len : size_t;
       Result : Item;
    begin
-      To_C (Name, Name_Str, Name_Len);
-      To_C (Description, Desc_Str, Desc_Len);
-      Result := Newitem (Name_Str (Name_Str'First)'Access,
-                         Desc_Str (Desc_Str'First)'Access);
+      To_C (Name, Name_Str.all, Name_Len);
+      To_C (Description, Desc_Str.all, Desc_Len);
+      Result := Newitem (Name_Str.all (Name_Str.all'First)'Access,
+                         Desc_Str.all (Desc_Str.all'First)'Access);
       if Result = Null_Item then
          raise Eti_System_Error;
       end if;
@@ -103,11 +104,26 @@ package body Terminal_Interface.Curses.Menus is
 
    procedure Delete (Itm : in out Item)
    is
+      function Descname (Itm  : Item) return chars_ptr;
+      pragma Import (C, Descname, "item_description");
+      function Itemname (Itm  : Item) return chars_ptr;
+      pragma Import (C, Itemname, "item_name");
+
       function Freeitem (Itm : Item) return C_Int;
       pragma Import (C, Freeitem, "free_item");
 
-      Res : constant Eti_Error := Freeitem (Itm);
+      Res : Eti_Error;
+      Ptr : chars_ptr;
    begin
+      Ptr := Descname (Itm);
+      if Ptr /= Null_Ptr then
+         Interfaces.C.Strings.Free (Ptr);
+      end if;
+      Ptr := Itemname (Itm);
+      if Ptr /= Null_Ptr then
+         Interfaces.C.Strings.Free (Ptr);
+      end if;
+      Res := Freeitem (Itm);
       if Res /= E_Ok then
          Eti_Exception (Res);
       end if;

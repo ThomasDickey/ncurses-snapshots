@@ -183,7 +183,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hardscroll.c,v 1.19 1997/05/17 21:46:10 tom Exp $")
+MODULE_ID("$Id: hardscroll.c,v 1.20 1997/06/16 00:21:21 tom Exp $")
 
 #if defined(TRACE) || defined(SCROLLDEBUG)
 void _nc_linedump(void);
@@ -224,7 +224,7 @@ void _nc_scroll_optimize(void)
 /* scroll optimization to transform curscr to newscr */
 {
     bool no_hunk_moved;		/* no hunk moved on this pass? */
-    int	n, new_lines;
+    int	n, m, new_lines;
 #if defined(TRACE) || defined(SCROLLDEBUG)
     int	pass = 0;
 #endif /* defined(TRACE) || defined(SCROLLDEBUG) */
@@ -311,14 +311,13 @@ void _nc_scroll_optimize(void)
 	    /* OK, time to try to move the hunk? */
 	    if (disp != 0)
 	    {
-		int m;
-		
 		/* moving small chunk far is a bad thing */
 		if (last-first+1 < (disp>0?disp:-disp))
 		{
 		    TR(TRACE_UPDATE | TRACE_MOVE, ("the hunk is to be moved too far - ignored"));
+		    continue;
 		}
-		else if (all_discarded(ofirst, olast, disp))
+		if (all_discarded(ofirst, olast, disp))
 		{
 		    if (disp > 0)
 			olast += disp;
@@ -330,19 +329,25 @@ void _nc_scroll_optimize(void)
 		    if (_nc_mvcur_scrolln(-disp, ofirst, olast, LINES - 1) == ERR)
 			break;
 #endif /* !defined(SCROLLDEBUG) && !defined(HASHDEBUG) */
-		}
-		else
-		{
-		    /* cannot do anything with this hunk -- go to the next */
-		    continue;
-		}
 
-		for (m = ofirst; m <= olast; m++)
-		    REAL(m) = _NEWINDEX;
-		for (m = first; m <= last; m++)
-		    OLDNUM(m) = _NEWINDEX;
+		    for (m = ofirst; m <= olast; m++)
+		    {
+			REAL(m) = _NEWINDEX;
+#if !defined(SCROLLDEBUG) && !defined(HASHDEBUG)
+			/*
+			 * This will tell the second stage of the optimizer
+			 * that every line in the hunk on the real screen has
+			 * been changed.
+			 */
+			curscr->_line[m].firstchar = 0;
+			curscr->_line[m].lastchar = curscr->_maxx;
+#endif /* !defined(SCROLLDEBUG) && !defined(HASHDEBUG) */
+		    }
+		    for (m = first; m <= last; m++)
+			OLDNUM(m) = _NEWINDEX;
 
-		no_hunk_moved = FALSE;
+		    no_hunk_moved = FALSE;
+		}
 
 	    } /* disp!=0 */
 	} /* for(first) */

@@ -32,7 +32,7 @@
 #include <term.h>	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
 
-MODULE_ID("$Id: lib_options.c,v 1.23 1997/05/29 10:22:23 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.24 1997/06/16 00:53:44 tom Exp $")
 
 int has_ic(void)
 {
@@ -261,17 +261,21 @@ int has_key(int keycode)
 **
 */
 
-#define add_to_try(str,code) _nc_add_to_try(&(SP->_keytry), str, code)
-
 static void init_keytry(void)
 {
-	SP->_keytry = 0;
-
 /* LINT_PREPRO
 #if 0*/
 #include <keys.tries>
 /* LINT_PREPRO
 #endif*/
+	size_t n;
+
+	SP->_keytry = 0;
+
+	for (n = 0; n < SIZEOF(table); n++)
+		_nc_add_to_try(&(SP->_keytry),
+			CUR Strings[table[n].offset],
+			table[n].code);
 }
 
 /* Turn the keypad on/off
