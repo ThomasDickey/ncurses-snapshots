@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.196 2003/05/17 23:19:40 tom Exp $
+$Id: ncurses.c,v 1.197 2003/07/06 00:06:06 tom Exp $
 
 ***************************************************************************/
 
@@ -259,7 +259,8 @@ wGet_wchar(WINDOW *win, wint_t * result)
 static void
 wGet_wstring(WINDOW *win, wchar_t * buffer, int limit)
 {
-    int y0, x0, x, ch;
+    int y0, x0, x;
+    wint_t ch;
     bool done = FALSE;
 
     echo();

@@ -1,6 +1,6 @@
-# $Id: ncurses_defs,v 1.17 2003/04/19 20:27:18 tom Exp $
+# $Id: ncurses_defs,v 1.18 2003/07/05 15:14:30 tom Exp $
 ##############################################################################
-# Copyright (c) 2000-2001,2002 Free Software Foundation, Inc.                #
+# Copyright (c) 2000-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -45,6 +45,7 @@ GCC_NORETURN	/* nothing */
 GCC_UNUSED	/* nothing */
 HAVE_BIG_CORE
 HAVE_BSD_CGETENT
+HAVE_BTOWC 
 HAVE_BUILTIN_H
 HAVE_DIRENT_H
 HAVE_ERRNO
@@ -72,6 +73,7 @@ HAVE_LIMITS_H
 HAVE_LINK
 HAVE_LOCALE_H
 HAVE_LONG_FILE_NAMES
+HAVE_MBTOWC
 HAVE_MEMCCPY
 HAVE_MENU_H
 HAVE_MKSTEMP
@@ -81,6 +83,7 @@ HAVE_PANEL_H
 HAVE_POLL
 HAVE_POLL_H
 HAVE_PURIFY
+HAVE_PUTWC 
 HAVE_REGEXPR_H_FUNCS
 HAVE_REGEXP_H_FUNCS
 HAVE_REGEX_H_FUNCS
@@ -122,6 +125,8 @@ HAVE_USE_DEFAULT_COLORS
 HAVE_VFSCANF
 HAVE_VSNPRINTF
 HAVE_VSSCANF
+HAVE_WCTOB 
+HAVE_WCTOMB
 HAVE_WORKING_POLL
 HAVE_WRESIZE
 HAVE__DOSCAN

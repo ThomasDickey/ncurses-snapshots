@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.75 2003/06/28 23:10:46 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.76 2003/07/05 18:34:42 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -408,7 +408,7 @@ wadd_wch(WINDOW *win, const cchar_t * wch)
 		break;
 	    }
 	    for (n = 0; n < PUTC_n; n++) {
-		if ((code = waddch(win, PUTC_buf[n])) == ERR) {
+		if ((code = waddch(win, UChar(PUTC_buf[n]))) == ERR) {
 		    break;
 		}
 	    }
@@ -441,7 +441,7 @@ wecho_wchar(WINDOW *win, const cchar_t * wch)
 		break;
 	    }
 	    for (n = 0; n < PUTC_n; n++) {
-		if ((code = wechochar(win, PUTC_buf[n])) == ERR) {
+		if ((code = wechochar(win, UChar(PUTC_buf[n]))) == ERR) {
 		    break;
 		}
 	    }

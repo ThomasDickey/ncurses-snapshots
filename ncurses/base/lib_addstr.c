@@ -44,7 +44,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.37 2003/06/28 22:14:33 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.38 2003/07/05 19:45:21 tom Exp $")
 
 NCURSES_EXPORT(int)
 waddnstr(WINDOW *win, const char *astr, int n)
@@ -192,7 +192,7 @@ waddnwstr(WINDOW *win, const wchar_t * str, int n)
 	TR(TRACE_VIRTPUT, ("str is not null, length = %d", n));
 	while ((n-- > 0) && (*str != L('\0'))) {
 	    NCURSES_CH_T ch;
-	    TR(TRACE_VIRTPUT, ("*str[0] = %#lx", *str));
+	    TR(TRACE_VIRTPUT, ("*str[0] = %#lx", (unsigned long) *str));
 	    SetChar(ch, *str++, A_NORMAL);
 	    if (wadd_wch(win, &ch) == ERR) {
 		code = ERR;

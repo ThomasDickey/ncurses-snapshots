@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2001,2003 Free Software Foundation, Inc.                   *
+ * Copyright (c) 2003 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,30 +27,51 @@
  ****************************************************************************/
 
 /*
-**	lib_wunctrl.c
-**
-**	The routine wunctrl().
-**
+**	Support functions for wide/narrow conversion.
 */
 
 #include <curses.priv.h>
 
-#if USE_WIDEC_SUPPORT
+MODULE_ID("$Id: charable.c,v 1.2 2003/07/05 18:04:08 tom Exp $")
 
-MODULE_ID("$Id: lib_wunctrl.c,v 1.7 2003/07/05 17:01:43 tom Exp $")
-
-NCURSES_EXPORT(wchar_t *)
-wunctrl(cchar_t * wc)
+NCURSES_EXPORT(bool) _nc_is_charable(wchar_t ch)
 {
-    static wchar_t str[5], *sp;
-
-    if (Charable(*wc)) {
-	const char *p;
-	for (p = unctrl(_nc_to_char(CharOf(*wc))), sp = str; *p;)
-	    *sp++ = _nc_to_widechar(*p++);
-	return str;
-    } else
-	return wc->chars;
+    bool result;
+#if HAVE_WCTOB
+    result = (wctob(ch) == ch);
+#else
+    result = (_nc_to_char(ch) >= 0);
+#endif
+    return result;
 }
 
+NCURSES_EXPORT(int) _nc_to_char(wint_t ch)
+{
+    int result;
+#if HAVE_WCTOB
+    result = wctob(ch);
+#elif HAVE_WCTOMB
+    char temp[MB_LEN_MAX];
+    result = wctomb(temp, ch);
+    if (strlen(temp) == 1)
+	result = UChar(temp[0]);
+    else
+	result = -1;
 #endif
+    return result;
+}
+
+NCURSES_EXPORT(wint_t) _nc_to_widechar(int ch)
+{
+    wint_t result;
+#if HAVE_BTOWC
+    result = btowc(ch);
+#elif HAVE_MBTOWC
+    char temp[2];
+    temp[0] = ch;
+    temp[1] = '\0';
+    if (mbtowc((wchar_t *) (&result), temp, 1) != 1)
+	result = WEOF;
+#endif
+    return result;
+}

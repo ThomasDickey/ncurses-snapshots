@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.248 2003/06/28 22:59:30 tom Exp $
+ * $Id: curses.priv.h,v 1.249 2003/07/05 16:50:00 tom Exp $
  *
  *	curses.priv.h
  *
@@ -636,7 +636,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define Charable(ch)	((SP != 0 && SP->_posix_locale)			\
 			 || (!isnac(ch) &&				\
 			     (ch).chars[1] == L'\0' &&			\
-                             (wctob(CharOf(ch)) == (char)CharOf(ch))))
+                             _nc_is_charable(CharOf(ch))))
 
 #define L(ch)		L ## ch
 #else /* }{ */
@@ -894,6 +894,13 @@ extern NCURSES_EXPORT(void) _nc_expanded (void);
 
 #if !HAVE_GETCWD
 #define getcwd(buf,len) getwd(buf)
+#endif
+
+/* charable.c */
+#if USE_WIDEC_SUPPORT
+extern NCURSES_EXPORT(bool) _nc_is_charable(wchar_t);
+extern NCURSES_EXPORT(int) _nc_to_char(wint_t);
+extern NCURSES_EXPORT(wint_t) _nc_to_widechar(int);
 #endif
 
 /* doupdate.c */

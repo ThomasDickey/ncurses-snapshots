@@ -42,10 +42,10 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.75 2003/05/24 21:00:43 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.76 2003/07/05 19:31:51 tom Exp $")
 
 #if !HAVE_TELL
-#define tell(fd) lseek(fd, 0, SEEK_CUR)	/* lseek() is POSIX, but not tell() */
+#define tell(fd) lseek(fd, 0, SEEK_CUR)		/* lseek() is POSIX, but not tell() */
 #endif
 
 /*
@@ -470,7 +470,7 @@ _nc_read_entry(const char *const tn, char *const filename, TERMTYPE * const tp)
     if (strlen(tn) == 0
 	|| strcmp(tn, ".") == 0
 	|| strcmp(tn, "..") == 0
-	|| _nc_basename((char *) tn) != tn) {
+	|| _nc_pathlast(tn) != 0) {
 	T(("illegal or missing entry name '%s'", tn));
 	return 0;
     }

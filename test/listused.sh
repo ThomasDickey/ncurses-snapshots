@@ -1,8 +1,9 @@
 #!/bin/sh
-# $Id: listused.sh,v 1.4 2003/04/05 19:32:17 tom Exp $
+# $Id: listused.sh,v 1.5 2003/07/05 19:02:41 tom Exp $
 # A very simple script to list entrypoints that are used by either a test
 # program, or within the libraries.  This relies on the output format of 'nm',
-# and assumes that the libraries are configured using
+# and assumes that the libraries are configured with TRACE defined, and using
+# these options:
 #	--disable-macros
 #	--enable-widec
 # Static libraries are used, to provide some filtering based on internal usage
