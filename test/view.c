@@ -22,7 +22,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.13 1996/12/14 23:24:41 tom Exp $
+ * $Id: view.c,v 1.14 1997/01/11 19:41:44 tom Exp $
  */
 
 #include <test.priv.h>
@@ -43,9 +43,15 @@
 # endif
 #endif
 
+/* This is needed to compile 'struct winsize' */
+#ifdef SYSTEM_LOOKS_LIKE_SCO
+#include <sys/stream.h>
+#include <sys/ptem.h>
+#endif
+ 
 #define MAXLINES        256        /* most lines we can handle */
 
-static void finish(int sig) __attribute__((noreturn));
+static void finish(int sig) GCC_NORETURN;
 static void show_all(void);
  
 #if defined(SIGWINCH) && defined(TIOCGWINSZ) && !HAVE_RESIZETERM

@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
@@ -21,10 +20,12 @@
 
 #ifndef _TERMCAP_H
 #define _TERMCAP_H	1
+
+#undef  NCURSES_VERSION
 #define NCURSES_VERSION "@VERSION@"
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif /* __cplusplus */
 
