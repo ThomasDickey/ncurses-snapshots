@@ -22,7 +22,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_page.c,v 1.1 1997/10/21 13:24:19 juergen Exp $")
+MODULE_ID("$Id: frm_page.c,v 1.2 1997/10/26 11:21:04 juergen Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -86,3 +86,5 @@ int form_page(const FORM * form)
 {
   return Normalize_Form(form)->curpage;
 }
+
+/* frm_page.c ends here */

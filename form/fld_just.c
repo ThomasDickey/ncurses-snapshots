@@ -22,7 +22,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_just.c,v 1.1 1997/10/21 13:24:19 juergen Exp $")
+MODULE_ID("$Id: fld_just.c,v 1.2 1997/10/26 11:20:59 juergen Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -67,3 +67,5 @@ int field_just(const FIELD * field)
 {
   return Normalize_Field( field )->just;
 }
+
+/* fld_just.c ends here */

@@ -1,7 +1,18 @@
--- $Id: NEWS,v 1.269 1997/10/26 00:14:47 tom Exp $
+-- $Id: NEWS,v 1.270 1997/10/26 23:06:21 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+971026
+	+ correct ifdef's for struct winsize vs struct ttysize in lib_setup.c
+	  to compile on SCO.
+	+ remove dangling backslash in panel/Makefile.in
+	+ modify MKkeyname.awk to work with SCO's nawk, which dumps core in the
+	  length() function.
+	+ correct length of allocation in _nc_add_to_try(), to allow for
+	  trailing null.
+	+ correct logic in _nc_remove_key(), which was discarding too many
+	  nodes (patch by Alexander V. Lukyanov)
 
 971025
 	+ add definition for $(REL_VERSION) to test/Makefile.in, so *BSD

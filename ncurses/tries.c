@@ -27,7 +27,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: tries.c,v 1.3 1997/09/11 17:24:44 tom Exp $")
+MODULE_ID("$Id: tries.c,v 1.5 1997/10/26 21:55:15 tom Exp $")
 
 #define SET_TRY(dst,src) if ((dst->ch = *src++) == 128) dst->ch = '\0'
 
@@ -125,7 +125,7 @@ char *_nc_expand_try(struct tries *tree, unsigned short code, size_t len)
 				break;
 			}
 			if (ptr->value == code) {
-				result = typeCalloc(char, len+1);
+				result = typeCalloc(char, len+2);
 				break;
 			}
 			ptr = ptr->sibling;
@@ -148,20 +148,25 @@ char *_nc_expand_try(struct tries *tree, unsigned short code, size_t len)
  */
 int _nc_remove_key(struct tries **tree, unsigned short code)
 {
-	struct tries *ptr = (*tree);
-
-	if (code != 0) {
-		while (ptr != 0) {
-			if (_nc_remove_key(&(ptr->child), code)) {
-				return TRUE;
-			}
-			if (ptr->value == code) {
-				*tree = 0;
-				free(ptr);
-				return TRUE;
-			}
-			ptr = ptr->sibling;
+	if (code == 0)
+		return FALSE;
+		
+	while (*tree != 0) {
+		if (_nc_remove_key(&(*tree)->child, code)) {
+			return TRUE;
 		}
+		if ((*tree)->value == code) {
+			if((*tree)->child) {
+				/* don't cut the whole sub-tree */
+				(*tree)->value = 0;
+			} else {
+				struct tries *to_free = *tree;
+				*tree = (*tree)->sibling;
+				free(to_free);
+			}
+			return TRUE;
+		}
+		tree = &(*tree)->sibling;
 	}
 	return FALSE;
 }

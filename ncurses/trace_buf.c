@@ -24,7 +24,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: trace_buf.c,v 1.1 1997/09/02 22:17:48 tom Exp $")
+MODULE_ID("$Id: trace_buf.c,v 1.2 1997/10/26 22:09:05 tom Exp $")
 
 char * _nc_trace_buf(int bufnum, size_t want)
 {
@@ -34,8 +34,17 @@ char * _nc_trace_buf(int bufnum, size_t want)
 	} *list;
 	static size_t have;
 
-	if (bufnum < 0)
-		bufnum = 0;
+#if NO_LEAKS
+	if (bufnum < 0) {
+		if (have) {
+			while (have--) {
+				free(list[have].text);
+			}
+			free(list);
+		}
+		return 0;
+	}
+#endif
 
 	if ((size_t)(bufnum+1) > have) {
 		size_t need = (bufnum + 1) * 2;

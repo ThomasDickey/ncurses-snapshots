@@ -134,7 +134,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hardscroll.c,v 1.27 1997/10/18 17:23:05 tom Exp $")
+MODULE_ID("$Id: hardscroll.c,v 1.28 1997/10/26 21:56:41 tom Exp $")
 
 #if defined(SCROLLDEBUG) || defined(HASHDEBUG)
 int oldnums[MAXLINES];
@@ -233,6 +233,10 @@ void _nc_linedump(void)
     for (n = 0; n < screen_lines; n++)
 	(void) sprintf(buf + strlen(buf), " %02d", OLDNUM(n));
     TR(TRACE_UPDATE | TRACE_MOVE, (buf));
+#if NO_LEAKS
+    free(buf);
+    have = 0;
+#endif
 }
 #endif /* defined(TRACE) || defined(SCROLLDEBUG) */
 

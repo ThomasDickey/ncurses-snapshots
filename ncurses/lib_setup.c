@@ -35,7 +35,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.32 1997/10/19 02:38:03 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.33 1997/10/26 23:03:55 tom Exp $")
 
 /****************************************************************************
  *
@@ -48,6 +48,32 @@ MODULE_ID("$Id: lib_setup.c,v 1.32 1997/10/19 02:38:03 tom Exp $")
 #  if HAVE_SYS_IOCTL_H
 #   include <sys/ioctl.h>
 #  endif
+# endif
+#endif
+
+#if NEED_PTEM_H
+ /* On SCO, they neglected to define struct winsize in termios.h -- it's only
+  * in termio.h and ptem.h (the former conflicts with other definitions).
+  */
+# include <sys/stream.h>
+# include <sys/ptem.h>
+#endif
+
+/*
+ * SCO defines TIOCGSIZE and the corresponding struct.  Other systems (SunOS,
+ * Solaris, IRIX) define TIOCGWINSZ and struct winsize.
+ */
+#ifdef TIOCGSIZE
+# define IOCTL_WINSIZE TIOCGSIZE
+# define STRUCT_WINSIZE struct ttysize
+# define WINSIZE_ROWS(n) (int)n.ts_lines
+# define WINSIZE_COLS(n) (int)n.ts_cols
+#else
+# ifdef TIOCGWINSZ
+#  define IOCTL_WINSIZE TIOCGWINSZ
+#  define STRUCT_WINSIZE struct winsize
+#  define WINSIZE_ROWS(n) (int)n.ws_row
+#  define WINSIZE_COLS(n) (int)n.ws_col
 # endif
 #endif
 
@@ -96,31 +122,18 @@ char	*rows, *cols;
 	    {
 		if (isatty(cur_term->Filedes))
 		{
-#ifdef TIOCGWINSZ
-		    struct winsize size;
-#else
-#ifdef TIOCGSIZE
-		    struct ttysize win;
-#endif
-#endif
+		    STRUCT_WINSIZE size;
 
 		    errno = 0;
 		    do {
-			if (ioctl(cur_term->Filedes, TIOCGWINSZ, &size) < 0
+			if (ioctl(cur_term->Filedes, IOCTL_WINSIZE, &size) < 0
 				&& errno != EINTR)
 			    goto failure;
 		    } while
 			(errno == EINTR);
 
-#ifdef TIOCGWINSZ
-		    *linep = (int)size.ws_row;
-		    *colp  = (int)size.ws_col;
-#else
-#ifdef TIOCGSIZE
-		    *linep = (int)size.ts_lines;
-		    *colp  = (int)size.ts_cols;
-#endif
-#endif
+		    *linep = WINSIZE_ROWS(size);
+		    *colp  = WINSIZE_COLS(size);
 		}
 		/* FALLTHRU */
 	    failure:;
