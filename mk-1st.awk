@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.35 1998/02/11 12:13:53 tom Exp $
+# $Id: mk-1st.awk,v 1.38 1998/03/21 20:20:33 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -142,7 +142,11 @@ END	{
 				}
 				printf "../lib/%s : $(%s_OBJS)\n", lib_name, OBJS
 				print  "\t-@rm -f $@"
-				printf "\t$(MK_SHARED_LIB) $(%s_OBJS)\n", OBJS
+				if ( subset == "termlib") {
+					printf "\t$(MK_SHARED_LIB) $(%s_OBJS) $(TINFO_LIST)\n", OBJS
+				} else {
+					printf "\t$(MK_SHARED_LIB) $(%s_OBJS) $(SHLIB_LIST)\n", OBJS
+				}
 				sharedlinks("../lib", 1)
 				print  ""
 				if ( end_name != lib_name ) {
@@ -238,7 +242,6 @@ END	{
 			printf "\trm -f $(%s_OBJS)\n", OBJS
 			print ""
 			print "clean ::"
-			printf "\trm -f $(%s_OBJS)\n", OBJS
 			removelinks();
 		}
 		else if ( found == 2 )

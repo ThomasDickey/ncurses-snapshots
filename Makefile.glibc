@@ -1,4 +1,4 @@
-# Copyright (C) 1997 Free Software Foundation, Inc.
+# Copyright (C) 1997,1998 Free Software Foundation, Inc.
 # This file is part of the GNU C Library.
 
 # The GNU C Library is free software; you can redistribute it and/or
@@ -110,6 +110,7 @@ libncurses-routines	= \
 			lib_clrbot \
 			lib_clreol \
 			lib_color \
+			lib_colorset \
 			lib_cur_term \
 			lib_data \
 			lib_delch \
@@ -162,11 +163,13 @@ libncurses-routines	= \
 			lib_set_term \
 			lib_setup \
 			lib_slk \
+			lib_slkatr_set \
 			lib_slkatrof \
 			lib_slkatron \
 			lib_slkatrset \
 			lib_slkattr \
 			lib_slkclear \
+			lib_slkcolor \
 			lib_slkinit \
 			lib_slklab \
 			lib_slkrefr \

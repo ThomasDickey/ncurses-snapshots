@@ -35,28 +35,28 @@
  *	lib_trace.c - Tracing/Debugging routines
  */
 
-#ifndef TRACE
-#define TRACE			/* turn on internal defs for this module */
-#endif
-
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.25 1998/02/11 12:13:55 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.26 1998/03/21 17:52:14 tom Exp $")
 
 #include <ctype.h>
 #if HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
 
-unsigned _nc_tracing = 0;
+unsigned _nc_tracing = 0;	/* always define this */
+
+#ifdef TRACE
 const char *_nc_tputs_trace = "";
 long _nc_outchars;
 int _nc_optimize_enable = OPTIMIZE_ALL;
 
 static FILE *	tracefp;	/* default to writing to stderr */
+#endif
 
-void trace(const unsigned int tracelevel)
+void trace(const unsigned int tracelevel GCC_UNUSED)
 {
+#ifdef TRACE
 static bool	been_here = FALSE;
 
    	_nc_tracing = tracelevel;
@@ -79,6 +79,7 @@ static bool	been_here = FALSE;
 		_tracef("TRACING NCURSES version %s (%d)",
 			NCURSES_VERSION, NCURSES_VERSION_PATCH);
 	}
+#endif
 }
 
 const char *_nc_visbuf2(int bufnum, const char *buf)
@@ -123,6 +124,7 @@ const char *_nc_visbuf(const char *buf)
 	return _nc_visbuf2(0, buf);
 }
 
+#ifdef TRACE
 void
 _tracef(const char *fmt, ...)
 {
@@ -191,3 +193,4 @@ WINDOW *_nc_retrace_win(WINDOW *code)
 	T((T_RETURN("%p"), code));
 	return code;
 }
+#endif /* TRACE */

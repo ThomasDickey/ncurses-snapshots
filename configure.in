@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.129 1998/03/14 23:57:35 Jesse.Thilo Exp $
+dnl $Id: configure.in,v 1.131 1998/03/21 20:38:28 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.129 $)
+AC_REVISION($Revision: 1.131 $)
 AC_INIT(ncurses/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -218,6 +218,7 @@ if test $with_dmalloc = yes ; then
 	AC_CHECK_LIB(dmalloc,dmalloc_debug)
 fi
 
+SHLIB_LIST=""
 AC_MSG_CHECKING(if you want to link with the gpm mouse library)
 AC_ARG_WITH(gpm,
 	[  --with-gpm              use Alessandro Rubini's GPM library],
@@ -226,14 +227,19 @@ AC_ARG_WITH(gpm,
 AC_MSG_RESULT($with_gpm)
 if test $with_gpm = yes ; then
 	AC_CHECK_LIB(gpm,Gpm_Open,[
-		EXTRA_LIBS="$EXTRA_LIBS -lgpm -lncurses"
-		SHLIB_LIST="$SHLIB_DEPS -lgpm "
+		EXTRA_LIBS="-lgpm -lncurses $EXTRA_LIBS"
+		SHLIB_LIST="-lgpm $SHLIB_LIST"
 		AC_DEFINE(HAVE_LIBGPM)
 		AC_CHECK_HEADERS(gpm.h)
 	],,-lcurses -ltermcap)
 fi
 
+SHLIB_LIST="-L../lib -L\$(libdir) $SHLIB_LIST"
+TINFO_LIST="$SHLIB_LIST"
+test $with_termlib = yes && SHLIB_LIST="$SHLIB_LIST -ltinfo"
+
 AC_SUBST(EXTRA_LIBS)
+AC_SUBST(TINFO_LIST)
 AC_SUBST(SHLIB_LIST)
 
 AC_MSG_CHECKING(for specified models)

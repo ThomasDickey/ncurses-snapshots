@@ -42,7 +42,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.19 1998/02/11 12:13:59 tom Exp $")
+MODULE_ID("$Id: lib_refresh.c,v 1.20 1998/03/21 22:51:19 Alexander.V.Lukyanov Exp $")
 
 int wrefresh(WINDOW *win)
 {
@@ -182,6 +182,8 @@ bool	wide;
 		newscr->_cury = win->_cury + win->_begy + win->_yoffset;
 		newscr->_curx = win->_curx + win->_begx;
 	}
+	newscr->_leaveok = win->_leaveok;
+	
 #ifdef TRACE
 	if (_nc_tracing & TRACE_UPDATE)
 	    _tracedump("newscr", newscr);

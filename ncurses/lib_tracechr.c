@@ -45,6 +45,7 @@
 
 #include <ctype.h>
 
+#ifdef TRACE
 char *_tracechar(const unsigned char ch)
 {
     static char crep[20];
@@ -62,3 +63,7 @@ char *_tracechar(const unsigned char ch)
 	(void) sprintf(crep, "0x%02x", (unsigned)ch);
     return(crep);
 }
+#else
+extern	void _nc_lib_tracechr(void);
+	void _nc_lib_tracechr(void) { }
+#endif

@@ -97,7 +97,12 @@ extern "C" {
 /* location of user's personal info directory */
 #define PRIVATE_INFO	"%s/.terminfo"	/* plug getenv("HOME") into %s */
 
+#ifdef TRACE
 #define DEBUG(n, a)	if (_nc_tracing & (1 << (n - 1))) _tracef a 
+#else
+#define DEBUG(n, a)	/*nothing*/
+#endif
+
 extern unsigned _nc_tracing;
 extern void _nc_tracef(char *, ...) GCC_PRINTFLIKE(1,2);
 extern const char *_nc_visbuf(const char *);

@@ -1,4 +1,4 @@
-# $Id: modules,v 1.43 1998/03/11 19:26:16 juergen Exp $
+# $Id: modules,v 1.44 1998/03/15 16:28:12 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -48,7 +48,6 @@ lib_clrbot	lib		$(srcdir)
 lib_clreol	lib		$(srcdir)
 lib_color	lib		$(srcdir)	../include/term.h
 lib_colorset	lib		$(srcdir)
-lib_data	lib		$(srcdir)
 lib_delch	lib		$(srcdir)
 lib_delwin	lib		$(srcdir)
 lib_doupdate	lib		$(srcdir)	../include/term.h
@@ -74,7 +73,6 @@ lib_mouse	lib		$(srcdir)	../include/term.h
 lib_move	lib		$(srcdir)
 lib_mvcur	lib		$(srcdir)	../include/term.h
 lib_mvwin	lib		$(srcdir)
-lib_napms	lib		$(srcdir)
 lib_newterm	lib		$(srcdir)	../include/term.h
 lib_newwin	lib		$(srcdir)
 lib_nl		lib		$(srcdir)
@@ -148,10 +146,13 @@ comp_parse	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 comp_scan	lib		$(srcdir)
 fallback	lib		.		../include/term.h $(INCDIR)/tic.h
 lib_cur_term	lib		$(srcdir)
+lib_data	lib		$(srcdir)
 lib_kernel	lib		$(srcdir)	../include/term.h
 lib_keyname	lib		.		../include/term.h
+lib_napms	lib		$(srcdir)
 lib_options	lib		$(srcdir)	../include/term.h keys.tries
 lib_raw 	lib		$(srcdir)	../include/term.h
+lib_setup	lib		$(srcdir)	../include/term.h
 lib_termcap	lib		$(srcdir)	../include/term.h
 lib_ti		lib		$(srcdir)	../include/term.h
 lib_tparm	lib		$(srcdir)	../include/term.h
@@ -164,7 +165,6 @@ names		lib		.
 parse_entry	lib		$(srcdir)	../include/term.h ../include/parametrized.h
 read_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 read_termcap	lib		$(srcdir)	../include/term.h
-lib_setup	lib		$(srcdir)	../include/term.h
 trace_buf	lib		$(srcdir)
 tries		lib		$(srcdir)
 unctrl		lib		.

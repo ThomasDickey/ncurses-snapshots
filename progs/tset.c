@@ -103,7 +103,7 @@ char *ttyname(int fd);
 #include <curses.h>	/* for bool typedef */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.31 1998/02/11 12:14:02 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.32 1998/03/21 23:38:27 tom Exp $")
 
 extern char **environ;
 
@@ -246,7 +246,7 @@ typedef struct map {
 	const char *porttype;	/* Port type, or "" for any. */
 	const char *type;	/* Terminal type to select. */
 	int conditional;	/* Baud rate conditionals bitmask. */
-	int speed;		/* Baud rate to compare against. */
+	speed_t speed;		/* Baud rate to compare against. */
 } MAP;
 
 static MAP *cur, *maplist;

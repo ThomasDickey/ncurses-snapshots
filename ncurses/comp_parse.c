@@ -55,7 +55,7 @@
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.21 1998/02/11 12:14:00 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.22 1998/03/21 17:58:01 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 
@@ -195,8 +195,10 @@ void _nc_read_entry_source(FILE *fp, char *buf,
 	DEBUG(1, ("head = %s", _nc_head->tterm.term_names));
 	DEBUG(1, ("tail = %s", _nc_tail->tterm.term_names));
     }
+#ifdef TRACE
     else if (!immediate)
 	DEBUG(1, ("no entries parsed"));
+#endif
 
     _nc_suppress_warnings = oldsuppress;
 }
