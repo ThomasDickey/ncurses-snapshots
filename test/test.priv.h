@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,12 +29,13 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.16 2000/04/15 17:52:08 tom Exp $ */
+/* $Id: test.priv.h,v 1.17 2000/07/15 21:36:55 tom Exp $ */
 #if HAVE_CONFIG_H
 #include <ncurses_cfg.h>
 #endif
 
 #include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 
 #if HAVE_UNISTD_H

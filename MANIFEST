@@ -471,8 +471,8 @@
 ./man/curs_trace.3x
 ./man/curs_util.3x
 ./man/curs_window.3x
+./man/default_colors.3x
 ./man/define_key.3x
-./man/dft_fgbg.3x
 ./man/form.3x
 ./man/form_cursor.3x
 ./man/form_data.3x
@@ -504,7 +504,7 @@
 ./man/man_db.renames
 ./man/manlinks.sed
 ./man/menu.3x
-./man/menu_attribs.3x
+./man/menu_attributes.3x
 ./man/menu_cursor.3x
 ./man/menu_driver.3x
 ./man/menu_format.3x

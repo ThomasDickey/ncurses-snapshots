@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.214 2000/07/07 15:11:34 tom Exp $
+dnl $Id: aclocal.m4,v 1.215 2000/07/15 23:04:27 china Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1354,6 +1354,7 @@ datadir="$datadir"
 MKDIRS="`cd $srcdir && pwd`/mkinstalldirs"
 INSTALL="$INSTALL"
 INSTALL_DATA="$INSTALL_DATA"
+transform="$program_transform_name"
 
 TMP=\${TMPDIR-/tmp}/man\$\$
 trap "rm -f \$TMP" 0 1 2 5 15
@@ -1387,8 +1388,29 @@ CF_EOF
 fi
 if test "$cf_manpage_renames" = no ; then
 cat >>man/edit_man.sh <<CF_EOF
-	target=$cf_subdir\${section}/\$source
-	sed -e "s,@DATADIR@,\$datadir," < \$i >\$TMP
+	# perform program transformations for section 1 man pages
+	if test \$section = 1 ; then
+		target=$cf_subdir\${section}/\`echo \$source|sed "\${transform}"\`
+	else
+		target=$cf_subdir\${section}/\$source
+	fi
+
+	# replace variables in man page
+	prog_infocmp=\`echo infocmp|sed "\${transform}"\`
+	prog_captoinfo=\`echo captoinfo|sed "\${transform}"\`
+	prog_clear=\`echo clear|sed "\${transform}"\`
+	prog_infotocap=\`echo infotocap|sed "\${transform}"\`
+	prog_tic=\`echo tic|sed "\${transform}"\`
+	prog_toe=\`echo toe|sed "\${transform}"\`
+	prog_tput=\`echo tput|sed "\${transform}"\`
+	sed -e "s,@DATADIR@,\$datadir," \\
+	-e "s,@INFOCMP@,\$prog_infocmp," \\
+	-e "s,@CAPTOINFO@,\$prog_captoinfo," \\
+	-e "s,@CLEAR@,\$prog_clear," \\
+	-e "s,@INFOTOCAP@,\$prog_infotocap," \\
+	-e "s,@TIC@,\$prog_tic," \\
+	-e "s,@TOE@,\$prog_toe," \\
+	-e "s,@TPUT@,\$prog_tput," < \$i >\$TMP
 CF_EOF
 else
 cat >>man/edit_man.sh <<CF_EOF
@@ -1447,6 +1469,10 @@ cat >>man/edit_man.sh <<CF_EOF
 				target=\`basename \$target\`
 				for cf_alias in \$aliases
 				do
+					if test \$section = 1 ; then
+						cf_alias=\`echo \$cf_alias|sed "\${transform}"\`
+					fi
+
 					if test -f \$cf_alias\${suffix} ; then
 						if ( cmp -s \$target \$cf_alias\${suffix} )
 						then
@@ -1470,6 +1496,10 @@ cat >>man/edit_man.sh <<CF_EOF
 			cd $cf_subdir\${section} && (
 				for cf_alias in \$aliases
 				do
+					if test \$section = 1 ; then
+						cf_alias=\`echo \$cf_alias|sed "\${transform}"\`
+					fi
+
 					echo .. \$verb alias \$cf_alias\${suffix}
 					rm -f \$cf_alias\${suffix}
 				done
