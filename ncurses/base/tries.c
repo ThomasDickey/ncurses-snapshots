@@ -39,7 +39,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: tries.c,v 1.18 2003/03/08 23:08:22 tom Exp $")
+MODULE_ID("$Id: tries.c,v 1.19 2003/05/17 23:11:24 tom Exp $")
 
 /*
  * Expand a keycode into the string that it corresponds to, returning null if
@@ -115,7 +115,7 @@ _nc_remove_key(struct tries **tree, unsigned short code)
  * true if the string was found/removed.
  */
 NCURSES_EXPORT(int)
-_nc_remove_string(struct tries **tree, char *string)
+_nc_remove_string(struct tries **tree, const char *string)
 {
     T((T_CALLED("_nc_remove_string(%p,%s)"), tree, _nc_visbuf(string)));
 

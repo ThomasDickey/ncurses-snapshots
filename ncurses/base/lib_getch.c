@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.70 2003/01/25 23:33:09 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.71 2003/05/17 23:49:28 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -254,7 +254,11 @@ _nc_wgetch(WINDOW *win,
      * stuff its contents in the FIFO queue, and pop off
      * the first character to return it.
      */
-    if (head == -1 && !SP->_raw && !SP->_cbreak && !SP->_called_wgetch) {
+    if (head == -1 &&
+	!SP->_notty &&
+	!SP->_raw &&
+	!SP->_cbreak &&
+	!SP->_called_wgetch) {
 	char buf[MAXCOLUMNS], *sp;
 	int rc;
 

@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.194 2003/04/26 18:23:36 tom Exp $
+$Id: ncurses.c,v 1.196 2003/05/17 23:19:40 tom Exp $
 
 ***************************************************************************/
 
@@ -783,6 +783,26 @@ resize_wide_boxes(int level, WINDOW *win)
 }
 #endif /* KEY_RESIZE */
 
+static char *
+wcstos(const wchar_t * src)
+{
+    int need;
+    mbstate_t state;
+    char *result = 0;
+    const wchar_t *tmp = src;
+
+    memset(&state, 0, sizeof(state));
+    if ((need = wcsrtombs(0, &tmp, 0, &state)) > 0) {
+	result = calloc(need + 1, 1);
+	tmp = src;
+	if (wcsrtombs(result, &tmp, need, &state) != (size_t) need) {
+	    free(result);
+	    result = 0;
+	}
+    }
+    return result;
+}
+
 static void
 wget_wch_test(int level, WINDOW *win, int delay)
 {
@@ -793,6 +813,7 @@ wget_wch_test(int level, WINDOW *win, int delay)
     bool flags[256];
     bool blocking = (delay < 0);
     int y, x, code;
+    char *temp;
 
     memset(flags, FALSE, sizeof(flags));
     flags['k'] = (win == stdscr);
@@ -830,7 +851,12 @@ wget_wch_test(int level, WINDOW *win, int delay)
 	    echo();
 	    wgetn_wstr(win, (wint_t *) buf, sizeof(buf) - 1);
 	    noecho();
-	    wprintw(win, "I saw %d characters:\n\t`%s'.", wcslen(buf), buf);
+	    if ((temp = wcstos(buf)) != 0) {
+		wprintw(win, "I saw %d characters:\n\t`%s'.", wcslen(buf), temp);
+		free(temp);
+	    } else {
+		wprintw(win, "I saw %d characters (cannot convert).", wcslen(buf));
+	    }
 	    wclrtoeol(win);
 	    wgetch_wrap(win, first_y);
 	} else if (c == 'k') {
@@ -1968,13 +1994,15 @@ show_wbox_chars(void)
 }
 
 static int
-show_2_wacs(int n, const char *name, char *code)
+show_2_wacs(int n, const char *name, const char *code)
 {
     const int height = 16;
     int row = 4 + (n % height);
     int col = (n / height) * COLS / 2;
+    char temp[80];
+
     mvprintw(row, col, "%*s : ", COLS / 4, name);
-    addstr(code);
+    addstr(strcpy(temp, code));
     return n + 1;
 }
 

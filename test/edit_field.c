@@ -1,5 +1,5 @@
 /*
- * $Id: edit_field.c,v 1.6 2003/05/03 23:11:18 tom Exp $
+ * $Id: edit_field.c,v 1.7 2003/05/17 23:16:13 tom Exp $
  *
  * A wrapper for form_driver() which keeps track of the user's editing changes
  * for each field, and makes the result available as a null-terminated string
@@ -20,7 +20,7 @@
 static struct {
     int code;
     int result;
-    char *help;
+    const char *help;
 } commands[] = {
 
     {

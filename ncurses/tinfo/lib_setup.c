@@ -49,7 +49,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.75 2003/04/05 21:27:26 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.76 2003/05/17 19:43:46 tom Exp $")
 
 /****************************************************************************
  *
@@ -320,13 +320,26 @@ do_prototype(void)
 /*
  * Check if we are running in a UTF-8 locale.
  */
-int
-_nc_unicode_locale(void)
+NCURSES_EXPORT(char *)
+_nc_get_locale(void)
 {
     char *env;
     if (((env = getenv("LC_ALL")) != 0 && *env != '\0')
 	|| ((env = getenv("LC_CTYPE")) != 0 && *env != '\0')
 	|| ((env = getenv("LANG")) != 0 && *env != '\0')) {
+	return env;
+    }
+    return 0;
+}
+
+/*
+ * Check if we are running in a UTF-8 locale.
+ */
+NCURSES_EXPORT(int)
+_nc_unicode_locale(void)
+{
+    char *env = _nc_get_locale();
+    if (env != 0) {
 	if (strstr(env, ".UTF-8") != 0)
 	    return 1;
     }
@@ -337,7 +350,7 @@ _nc_unicode_locale(void)
  * Check for known broken cases where a UTF-8 locale breaks the alternate
  * character set.
  */
-int
+NCURSES_EXPORT(int)
 _nc_locale_breaks_acs(void)
 {
     char *env = getenv("TERM");
