@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.449 1999/04/18 00:36:58 tom Exp $
+-- $Id: NEWS,v 1.450 1999/04/18 01:37:41 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -7,6 +7,12 @@ Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
 990417	pre-release
+	+ add 'tack' program (which is GPL'd), updating it to work with the
+	  modified TERMTYPE struct and making a fix to support setaf/setab
+	  capabilities.  Note that the tack program is not part of the
+	  ncurses libraries, but an application which can be distributed with
+	  ncurses.  The configure script will ignore the directory if it is
+	  omitted, however.
 	+ modify gpm mouse support so that buttons 2 and 3 are used for
 	  select/paste only when shift key is pressed, making them available
 	  for use by an application (patch by Klaus Weide).
