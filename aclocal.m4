@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.253 2001/07/01 00:06:03 tom Exp $
+dnl $Id: aclocal.m4,v 1.254 2001/07/14 21:07:12 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -450,7 +450,7 @@ int scanw(const char* fmt, ...)
     va_list args;
     va_start(args, fmt);
 #if defined(USE_STDIO_VSCAN)
-    if (::vscanf(fmt, args) != -1)
+    if (::vsscanf(buf, fmt, args) != -1)
 	result = 0;
 #elif defined(USE_STRSTREAM_VSCAN)
     strstreambuf ss(buf, sizeof(buf));
