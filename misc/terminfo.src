@@ -10,7 +10,7 @@
 #
 #------------------------------------------------------------------------------
 #	Version 10.2.1
-#	$Date: 2003/07/19 19:44:24 $
+#	$Date: 2003/09/27 22:11:33 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -3091,8 +3091,32 @@ gnome-rh72|GNOME Terminal,
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m%?%p9%t\016%e\017%;, 
 	smam=\E[?7h, tbc@, use=xterm-color, 
 
+# GNOME Terminal 2.0.1 (Redhat 8.0)
+#
+# Documentation now claims it implements vt220 (which is demonstrably false). 
+# However, it does implement ECH, which is a vt220 feature.  And there are
+# workable vt100 LNM, DECALN, DECSNM modes, making it possible to display
+# more of its bugs using vttest.
+#
+# However, note that bce and msgr are broken in this release.  Tabs (tbc and
+# hts) are broken as well.  Sometimes flash (as in xterm-xfree86) works.
+#
+# kf1 and kf10 are not tested since they're assigned (hardcoded?) to menu
+# operations.  Shift-tab generates a distinct sequence so it can be argued
+# that it implements kcbt.
+gnome-rh80|GNOME Terminal, 
+	bce@, msgr@, 
+	ech=\E[%p1%dX, flash=\E[?5h$<100/>\E[?5l, kbs=\177, 
+	kcbt=\E^I, op=\E[39;49m, use=gnome-rh72, 
+
+# GNOME Terminal 2.2.1 (Redhat 9.0)
+#
+# bce and msgr are repaired.
+gnome-rh90|GNOME Terminal, 
+	bce, msgr, use=gnome-rh80, 
+
 gnome|GNOME Terminal, 
-	use=gnome-rh72, 
+	use=gnome-rh90, 
 
 # This is kvt 0-18.7, shipped with Redhat 6.0 (though whether it supports bce
 # or not is debatable).
@@ -19778,6 +19802,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  which are both different from the "normal" rxvt's acsc.
 #	  (cygwin): cygwin-in-cmd.exe window.  Lots of fixes.
 #	  (cygwinDBG): ditto.
+# 2003-09-27
+#	* update gnome terminal entries -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

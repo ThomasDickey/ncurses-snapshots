@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -61,7 +61,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.47 2003/01/25 18:21:17 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.48 2003/09/27 21:41:56 tom Exp $")
 
 static long
 _nc_gettime(bool first)
@@ -380,7 +380,7 @@ _nc_timed_wait(int mode,
     }
 #endif
 
-#if PRECISE_GETTIME
+#if PRECISE_GETTIME && HAVE_NANOSLEEP
     /*
      * If the timeout hasn't expired, and we've gotten no data,
      * this is probably a system where 'select()' needs to be left
