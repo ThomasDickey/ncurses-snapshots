@@ -1594,15 +1594,6 @@ int	del_curterm(
 		TERMINAL *term)
 		{ return(*(int *)0); }
 
-/* ./lib_resize.c */
-
-#undef wresize
-int	wresize(
-		WINDOW	*win, 
-		int	new_lines, 
-		int	new_cols)
-		{ return(*(int *)0); }
-
 /* ./lib_scanw.c */
 
 #undef vwscanw
@@ -2402,3 +2393,20 @@ int	_nc_capcmp(
 		{ return(*(int *)0); }
 
 typedef struct {char *from; char *to;} assoc;
+
+/* ./resizeterm.c */
+
+#undef resizeterm
+int	resizeterm(
+		int	ToLines, 
+		int	ToCols)
+		{ return(*(int *)0); }
+
+/* ./wresize.c */
+
+#undef wresize
+int	wresize(
+		WINDOW	*win, 
+		int	ToLines, 
+		int	ToCols)
+		{ return(*(int *)0); }

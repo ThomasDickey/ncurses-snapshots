@@ -32,13 +32,14 @@
 #include <term.h>	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
 
-MODULE_ID("$Id: lib_options.c,v 1.14 1996/08/06 00:24:06 esr Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.15 1996/09/07 21:12:25 tom Exp $")
 
 int has_ic(void)
 {
 	T(("has_ic() called"));
-	return (insert_character || parm_ich)
-		&& (delete_character || parm_dch);
+	return (insert_character || parm_ich
+	   ||  (enter_insert_mode && exit_insert_mode))
+	   &&  (delete_character || parm_dch);
 }
 
 int has_il(void)

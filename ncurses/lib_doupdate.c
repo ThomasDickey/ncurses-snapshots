@@ -40,7 +40,7 @@
 #include <string.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.29 1996/08/06 00:24:06 esr Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.30 1996/09/07 21:20:27 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -720,8 +720,7 @@ static void TransformLine(int const lineno)
 
 	T(("TransformLine(%d) called",lineno));
 
-	if ( _nc_idcok && (insert_character  ||  (enter_insert_mode  &&  exit_insert_mode))
-		 &&  delete_character)
+	if ( _nc_idcok && has_ic())
 		IDcTransformLine(lineno);
 	else
 		NoIDcTransformLine(lineno);

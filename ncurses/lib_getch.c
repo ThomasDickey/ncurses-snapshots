@@ -30,7 +30,7 @@
 
 #include <string.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.13 1996/08/10 20:16:17 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.14 1996/09/07 21:09:17 tom Exp $")
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail
@@ -185,8 +185,12 @@ int	ch;
 	}
 
 	/* this should be eliminated */
-	if (! win->_scroll  &&  (SP->_echo) &&  (win->_flags & _FULLWIN)
-	   &&  win->_curx == win->_maxx &&  win->_cury == win->_maxy)
+	if (!has_ic()
+	 && !win->_scroll
+	 &&  (SP->_echo)
+	 &&  (win->_flags & _FULLWIN)
+	 &&  win->_curx == win->_maxx
+	 &&  win->_cury == win->_maxy)
 		return(ERR);
 
 	if ((is_wintouched(win) || (win->_flags & _HASMOVED)) && !(win->_flags & _ISPAD))

@@ -37,7 +37,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_restart.c,v 1.7 1996/09/01 01:35:47 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_restart.c,v 1.8 1996/09/07 22:13:56 tom Exp $")
 
 #undef tabs
 
@@ -67,15 +67,12 @@ int def_shell_mode(void)
 
 	T(("def_shell_mode() called"));
 
-#ifdef TERMIOS
-	if((tcgetattr(cur_term->Filedes, &cur_term->Ottyb)) == -1) {
+	if (GET_TTY(cur_term->Filedes, &cur_term->Ottyb) == -1)
 		return ERR;
-	}
+#ifdef TERMIOS
 	if (cur_term->Ottyb.c_oflag & tabs)
 		tab = back_tab = NULL;
-
 #else
-	gtty(cur_term->Filedes, &cur_term->Ottyb);
 	if (cur_term->Ottyb.sg_flags & XTABS)
 		tab = back_tab = NULL;
 #endif
@@ -89,14 +86,11 @@ int def_prog_mode(void)
 	if (cur_term == 0)
 		return ERR;
 
-#ifdef TERMIOS
-	if((tcgetattr(cur_term->Filedes, &cur_term->Nttyb)) == -1) {
+	if (GET_TTY(cur_term->Filedes, &cur_term->Nttyb) == -1)
 		return ERR;
-	}
+#ifdef TERMIOS
 	cur_term->Nttyb.c_oflag &= ~tabs;
 #else
-	gtty(cur_term->Filedes, &cur_term->Nttyb);
-
 	cur_term->Nttyb.sg_flags &= ~XTABS;
 #endif
 	return OK;

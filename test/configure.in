@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.4 1996/07/04 13:42:39 tom Exp $
+dnl $Id: configure.in,v 1.5 1996/09/07 15:02:15 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -74,6 +74,7 @@ unistd.h \
 AC_CHECK_FUNCS( \
 gettimeofday \
 napms \
+resizeterm \
 vsscanf \
 )
 

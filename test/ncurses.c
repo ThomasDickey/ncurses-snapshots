@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.49 1996/08/31 19:16:10 tom Exp $
+$Id: ncurses.c,v 1.52 1996/09/08 00:36:15 tom Exp $
 
 ***************************************************************************/
 /*LINTLIBRARY */
@@ -630,68 +630,124 @@ static void slk_test(void)
  *
  ****************************************************************************/
 
-static void acs_display(void)
+/* ISO 6429:  codes 0x80 to 0x9f may be control characters that cause the
+ * terminal to perform functions.  The remaining codes can be graphic.
+ */
+static void show_upper_chars(int first)
+{
+	bool C1 = (first == 128);
+	int code;
+	int last = first + 31;
+	int reply;
+
+	erase();
+	attron(A_BOLD);
+	mvprintw(0, 20, "Display of %s Character Codes %d to %d",
+		C1 ? "C1" : "GR", first, last);
+	attroff(A_BOLD);
+	refresh();
+
+	for (code = first; code <= last; code++) {
+		int row = 4 + ((code - first) % 16);
+		int col = ((code - first) / 16) * COLS / 2;
+		char tmp[80];
+		sprintf(tmp, "%3d (0x%x)", code, code);
+		mvprintw(row, col, "%*s: ", COLS/4, tmp);
+		if (C1)
+			nodelay(stdscr, TRUE);
+		echochar(code);
+		if (C1) {
+			/* (yes, this _is_ crude) */
+			while ((reply = Getchar()) != ERR) {
+				addch(reply);
+				napms(10);
+			}
+			nodelay(stdscr, TRUE);
+		}
+	}
+}
+
+static int show_1_acs(int n, char *name, chtype code)
+{
+	const int height = 16;
+	int row = 4 + (n % height);
+	int col = (n / height) * COLS / 2;
+	mvprintw(row, col, "%*s : ", COLS/4, name);
+	addch(code);
+	return n + 1;
+}
+
+static void show_acs_chars(void)
 /* display the ACS character set */
 {
-    int	i, j;
+	int n;
 
-    erase();
-    attron(A_BOLD);
-    mvaddstr(0, 20, "Display of the ACS Character Set");
-    attroff(A_BOLD);
-    refresh();
+#define BOTH(name) #name, name
 
-#define ACSY	1
-    mvaddstr(ACSY + 0, 0, "ACS_ULCORNER: "); addch(ACS_ULCORNER);
-    mvaddstr(ACSY + 1, 0, "ACS_LLCORNER: "); addch(ACS_LLCORNER);
-    mvaddstr(ACSY + 2, 0, "ACS_URCORNER: "); addch(ACS_URCORNER);
-    mvaddstr(ACSY + 3, 0, "ACS_LRCORNER: "); addch(ACS_LRCORNER);
-    mvaddstr(ACSY + 4, 0, "ACS_RTEE: "); addch(ACS_RTEE);
-    mvaddstr(ACSY + 5, 0, "ACS_LTEE: "); addch(ACS_LTEE);
-    mvaddstr(ACSY + 6, 0, "ACS_BTEE: "); addch(ACS_BTEE);
-    mvaddstr(ACSY + 7, 0, "ACS_TTEE: "); addch(ACS_TTEE);
-    mvaddstr(ACSY + 8, 0, "ACS_HLINE: "); addch(ACS_HLINE);
-    mvaddstr(ACSY + 9, 0, "ACS_VLINE: "); addch(ACS_VLINE);
-    mvaddstr(ACSY + 10,0, "ACS_PLUS: "); addch(ACS_PLUS);
-    mvaddstr(ACSY + 11,0, "ACS_S1: "); addch(ACS_S1);
-    mvaddstr(ACSY + 12,0, "ACS_S9: "); addch(ACS_S9);
-    mvaddstr(ACSY + 13,0, "ACS_DIAMOND: "); addch(ACS_DIAMOND);
-    mvaddstr(ACSY + 14,0, "ACS_CKBOARD: "); addch(ACS_CKBOARD);
-    mvaddstr(ACSY + 15,0, "ACS_DEGREE: "); addch(ACS_DEGREE);
+	erase();
+	attron(A_BOLD);
+	mvaddstr(0, 20, "Display of the ACS Character Set");
+	attroff(A_BOLD);
+	refresh();
 
-    mvaddstr(ACSY + 0, 40, "ACS_PLMINUS: "); addch(ACS_PLMINUS);
-    mvaddstr(ACSY + 1, 40, "ACS_BULLET: "); addch(ACS_BULLET);
-    mvaddstr(ACSY + 2, 40, "ACS_LARROW: "); addch(ACS_LARROW);
-    mvaddstr(ACSY + 3, 40, "ACS_RARROW: "); addch(ACS_RARROW);
-    mvaddstr(ACSY + 4, 40, "ACS_DARROW: "); addch(ACS_DARROW);
-    mvaddstr(ACSY + 5, 40, "ACS_UARROW: "); addch(ACS_UARROW);
-    mvaddstr(ACSY + 6, 40, "ACS_BOARD: "); addch(ACS_BOARD);
-    mvaddstr(ACSY + 7, 40, "ACS_LANTERN: "); addch(ACS_LANTERN);
-    mvaddstr(ACSY + 8, 40, "ACS_BLOCK: "); addch(ACS_BLOCK);
-    mvaddstr(ACSY + 9, 40, "ACS_S3: "); addch(ACS_S3);
-    mvaddstr(ACSY + 10,40, "ACS_S7: "); addch(ACS_S7);
-    mvaddstr(ACSY + 11,40, "ACS_LEQUAL: "); addch(ACS_LEQUAL);
-    mvaddstr(ACSY + 12,40, "ACS_GEQUAL: "); addch(ACS_GEQUAL);
-    mvaddstr(ACSY + 13,40, "ACS_PI: "); addch(ACS_PI);
-    mvaddstr(ACSY + 14,40, "ACS_NEQUAL: "); addch(ACS_NEQUAL);
-    mvaddstr(ACSY + 15,40, "ACS_STERLING: "); addch(ACS_STERLING);
+	n = show_1_acs(0, BOTH(ACS_ULCORNER));
+	n = show_1_acs(n, BOTH(ACS_LLCORNER));
+	n = show_1_acs(n, BOTH(ACS_URCORNER));
+	n = show_1_acs(n, BOTH(ACS_LRCORNER));
+	n = show_1_acs(n, BOTH(ACS_RTEE));
+	n = show_1_acs(n, BOTH(ACS_LTEE));
+	n = show_1_acs(n, BOTH(ACS_BTEE));
+	n = show_1_acs(n, BOTH(ACS_TTEE));
+	n = show_1_acs(n, BOTH(ACS_HLINE));
+	n = show_1_acs(n, BOTH(ACS_VLINE));
+	n = show_1_acs(n, BOTH(ACS_PLUS));
+	n = show_1_acs(n, BOTH(ACS_S1));
+	n = show_1_acs(n, BOTH(ACS_S9));
+	n = show_1_acs(n, BOTH(ACS_DIAMOND));
+	n = show_1_acs(n, BOTH(ACS_CKBOARD));
+	n = show_1_acs(n, BOTH(ACS_DEGREE));
+	n = show_1_acs(n, BOTH(ACS_PLMINUS));
+	n = show_1_acs(n, BOTH(ACS_BULLET));
+	n = show_1_acs(n, BOTH(ACS_LARROW));
+	n = show_1_acs(n, BOTH(ACS_RARROW));
+	n = show_1_acs(n, BOTH(ACS_DARROW));
+	n = show_1_acs(n, BOTH(ACS_UARROW));
+	n = show_1_acs(n, BOTH(ACS_BOARD));
+	n = show_1_acs(n, BOTH(ACS_LANTERN));
+	n = show_1_acs(n, BOTH(ACS_BLOCK));
+	n = show_1_acs(n, BOTH(ACS_S3));
+	n = show_1_acs(n, BOTH(ACS_S7));
+	n = show_1_acs(n, BOTH(ACS_LEQUAL));
+	n = show_1_acs(n, BOTH(ACS_GEQUAL));
+	n = show_1_acs(n, BOTH(ACS_PI));
+	n = show_1_acs(n, BOTH(ACS_NEQUAL));
+	n = show_1_acs(n, BOTH(ACS_STERLING));
+}
 
-#define HYBASE 	(ACSY + 17)
-    /* ISO 6429:  codes 0x80 to 0x9f may be control characters that cause the
-     * terminal to perform functions.  The remaining codes can be graphic.
-     */
-    mvprintw(HYBASE, 0, "High-half characters (0xa0 to 0xff) via echochar:\n");
-    for (i = 1; i < 4; i++)
-    {
-	move(HYBASE + i, 24);
-	for (j = 0; j < 32; j++)
-	    echochar((chtype)(128 + 32 * i + j));
-    }
+static void acs_display(void)
+{
+	int	c = 'a';
 
-    Pause();
+	do {
+		switch (c) {
+		case 'a':
+			show_acs_chars();
+			break;
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+			show_upper_chars((c - '0') * 32 + 128);
+			break;
+		}
+		mvprintw(LINES-3,0, "Note: ANSI terminals may not display C1 characters.");
+		mvprintw(LINES-2,0, "Select: a=ACS, 0=C1, 1,2,3=GR characters, q=quit");
+		refresh();
+	} while ((c = Getchar()) != 'x' && c != 'q');
 
-    erase();
-    endwin();
+	Pause();
+	erase();
+	endwin();
 }
 
 /*
@@ -2591,6 +2647,16 @@ usage(void)
     exit(EXIT_FAILURE);
 }
 
+static void
+set_terminal_modes(void)
+{
+    cbreak();
+    noecho();
+    scrollok(stdscr, TRUE);
+    idlok(stdscr, TRUE);
+    keypad(stdscr, TRUE);
+}
+
 /*+-------------------------------------------------------------------------
 	main(argc,argv)
 --------------------------------------------------------------------------*/
@@ -2637,11 +2703,8 @@ main(int argc, char *argv[])
 
     /* tests, in general, will want these modes */
     start_color();
-    cbreak();
-    noecho();
-    scrollok(stdscr, TRUE);
-    idlok(stdscr, TRUE);
-    keypad(stdscr, TRUE);
+    set_terminal_modes();
+    def_prog_mode();
 
     /*
      * Return to terminal mode, so we're guaranteed of being able to
@@ -2684,10 +2747,18 @@ main(int argc, char *argv[])
 	(void) fgets(buf, sizeof(buf), stdin);
 
 	if (do_single_test(buf[0])) {
+		/*
+		 * This may be overkill; it's intended to reset everything back
+		 * to the initial terminal modes so that tests don't get in
+		 * each other's way.
+		 */
+		flushinp();
+		set_terminal_modes();
+    		reset_prog_mode();
 		clear();
 		refresh();
 		endwin();
-	    continue;
+		continue;
 	}
     } while
 	(buf[0] != 'q');
