@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: trace_buf.c,v 1.3 1998/02/11 12:13:55 tom Exp $")
+MODULE_ID("$Id: trace_buf.c,v 1.5 1998/05/30 23:30:09 Todd.Miller Exp $")
 
 char * _nc_trace_buf(int bufnum, size_t want)
 {
@@ -61,6 +61,9 @@ char * _nc_trace_buf(int bufnum, size_t want)
 		size_t need = (bufnum + 1) * 2;
 		size_t used = sizeof(*list) * need;
 		list = (list == 0) ? malloc(used) : realloc(list, used);
+		if (list == 0) {
+			return(NULL);
+		}
 		while (need > have)
 			list[have++].text = 0;
 	}
@@ -74,6 +77,7 @@ char * _nc_trace_buf(int bufnum, size_t want)
 		list[bufnum].text = realloc(list[bufnum].text, want);
 		list[bufnum].size = want;
 	}
-	*(list[bufnum].text) = '\0';
+	if (list[bufnum].text != 0)
+		*(list[bufnum].text) = '\0';
 	return list[bufnum].text;
 }

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.47 1998/05/16 20:47:51 tom Exp $
+# $Id: Makefile.in,v 1.48 1998/05/31 00:08:53 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -72,7 +72,7 @@ LDFLAGS		= @LD_MODEL@ @TEST_ARGS@ @LIBS@ @EXTRA_LIBS@ @LOCAL_LDFLAGS@ @LDFLAGS@
 LDFLAGS_NORMAL	= $(LDFLAGS)
 LDFLAGS_DEBUG	= $(LDFLAGS) @CC_G_OPT@
 LDFLAGS_PROFILE	= $(LDFLAGS) -pg
-LDFLAGS_SHARED	= $(LDFLAGS) @CC_SHARED_OPTS@ # @LD_SHARED_OPTS@
+LDFLAGS_SHARED	= $(LDFLAGS) @LD_SHARED_OPTS@
 
 LDFLAGS_DEFAULT	= $(LDFLAGS_@DFT_UPR_MODEL@)
 
@@ -89,6 +89,8 @@ TESTS = \
 	gdc$x \
 	hanoi$x \
 	hashtest$x \
+	keynames$x \
+	keynames$x \
 	knight$x \
 	lrtest$x \
 	ncurses$x \
@@ -129,6 +131,9 @@ hanoi$x: $(MODEL)/hanoi.o $(LOCAL_LIBS)
 
 hashtest$x: $(MODEL)/hashtest.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/hashtest.o $(LDFLAGS_DEFAULT)
+
+keynames$x: $(MODEL)/keynames.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/keynames.o $(LDFLAGS_DEFAULT)
 
 knight$x: $(MODEL)/knight.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/knight.o $(LDFLAGS_DEFAULT)

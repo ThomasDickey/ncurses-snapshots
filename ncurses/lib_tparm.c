@@ -41,7 +41,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.25 1998/04/18 21:31:38 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.28 1998/05/30 23:31:32 Todd.Miller Exp $")
 
 /*
  *	char *
@@ -149,6 +149,8 @@ static void save_text(char *s)
 		else
 			out_buff = realloc(out_buff, out_size);
 	}
+	if (out_buff == 0)
+		_nc_err_abort("Out of memory");
 	(void)strcpy(out_buff + out_used, s);
 	out_used += want;
 }
@@ -266,7 +268,7 @@ register const char *cp;
 			save_number(", %d", param[i]);
 		_tracef(T_CALLED("%s(%s%s)"), tname, _nc_visbuf(string), out_buff);
 		out_used = 0;
- 	}
+	}
 #endif /* TRACE */
 
 	while (*string) {
@@ -521,8 +523,8 @@ register const char *cp;
 		string++;
 	} /* endwhile (*string) */
 
-	if (out_buff == 0)
-		out_buff = calloc(1,1);
+	if (out_buff == 0 && (out_buff = calloc(1,1)) == NULL)
+		return(NULL);
 	if (out_used == 0)
 		*out_buff = '\0';
 
@@ -556,7 +558,7 @@ char *result = 0;
 #endif /* TRACE */
 	if (tparam_internal(string, ap) != 0
 	 && (int)out_used < bufsiz)
-	 	result = strcpy(buffer, out_buff);
+		result = strcpy(buffer, out_buff);
 	va_end(ap);
 	return result;
 }

@@ -55,7 +55,7 @@
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.22 1998/03/21 17:58:01 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.23 1998/05/30 23:38:15 Todd.Miller Exp $")
 
 static void sanity_check(TERMTYPE *);
 
@@ -131,14 +131,16 @@ bool _nc_entry_match(char *n1, char *n2)
 
     if (strchr(n1, '|') == NULL)
     {
-	(void) strcpy(nc1, n1);
+	(void) strncpy(nc1, n1, sizeof(nc1) - 2);
+	nc1[sizeof(nc1) - 2] = '\0';
 	(void) strcat(nc1, "|");
 	n1 = nc1;
     }
 
     if (strchr(n2, '|') == NULL)
     {
-	(void) strcpy(nc2, n2);
+	(void) strncpy(nc2, n2, sizeof(nc2) - 2);
+	nc2[sizeof(nc2) - 2] = '\0';
 	(void) strcat(nc2, "|");
 	n2 = nc2;
     }
@@ -287,6 +289,8 @@ int _nc_resolve_uses(void)
 			      child, lookfor));
 
 		    rp = (ENTRY *)malloc(sizeof(ENTRY));
+		    if (rp == NULL)
+			_nc_err_abort("Out of memory");
 		    memcpy(&rp->tterm, &thisterm, sizeof(TERMTYPE));
 		    rp->nuses = 0;
 		    rp->next = lastread;

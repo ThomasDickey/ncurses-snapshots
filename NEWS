@@ -1,10 +1,22 @@
--- $Id: NEWS,v 1.337 1998/05/23 23:26:52 tom Exp $
+-- $Id: NEWS,v 1.339 1998/05/31 00:34:58 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980530
+	+ add makefile-rule for test/keynames
+	+ modify run_tic.sh and shlib to ensure that user's .profile does not
+	  override the $PATH used to run tic (patch by Tim Mooney).
+	+ restore LD_SHARED_OPTS to $(LD_SHARED_FLAGS) when linking programs,
+	  needed for HP-UX shared-library path (recommended by Tim Mooney).
+	+ remove special case of HP-UX -L options, use +b options to embed
+	  $(libdir) in the shared libraries (recommended by Tim Mooney).
+	+ add checks for some possible buffer overflows and unchecked
+	  malloc/realloc/calloc/strdup return values (patch by Todd C Miller
+	  <Todd.Miller@courtesan.com>)
 
 980523
 	+ correct maxx/maxy expression for num_columns/num_lines in derwin

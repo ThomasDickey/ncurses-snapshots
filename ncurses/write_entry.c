@@ -49,7 +49,7 @@
 #define S_ISDIR(mode) ((mode & S_IFMT) == S_IFDIR)
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.23 1998/05/17 00:10:56 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.24 1998/05/30 23:33:25 Todd.Miller Exp $")
 
 static int total_written;
 
@@ -82,10 +82,15 @@ struct	stat	statbuf;
 char	fullpath[PATH_MAX];
 const char *destination = _nc_tic_dir(0);
 
-	if (path == destination || *path == '/')
+	if (path == destination || *path == '/') {
+		if (strlen(path) + 1 > sizeof(fullpath))
+			return(-1);
 		(void)strcpy(fullpath, path);
-	else
+	} else {
+		if (strlen(destination) + strlen(path) + 2 > sizeof(fullpath))
+			return(-1);
 		(void)sprintf(fullpath, "%s/%s", destination, path);
+	}
 
 	if ((rc = stat(path, &statbuf)) < 0) {
 		rc = mkdir(path, 0777);
@@ -118,6 +123,8 @@ void  _nc_set_writedir(char *dir)
 	if ((home = getenv("HOME")) != (char *)NULL)
 	{
 	    char *temp = malloc(sizeof(PRIVATE_INFO) + strlen(home));
+	    if (temp == NULL)
+		_nc_err_abort("Out of memory");
 	    (void) sprintf(temp, PRIVATE_INFO, home);
 	    destination = temp;
 
@@ -300,7 +307,8 @@ static time_t	start_time;		/* time at start of writes */
 		{
 #if USE_SYMLINKS
 			strcpy(symlinkname, "../");
-			strcat(symlinkname, filename);
+			strncat(symlinkname, filename, sizeof(symlinkname) - 4);
+			symlinkname[sizeof(symlinkname) - 1] = '\0';
 #endif /* USE_SYMLINKS */
 #if HAVE_REMOVE
 			remove(linkname);
@@ -428,7 +436,7 @@ unsigned char	buf[MAX_ENTRY_SIZE];
 		    return(ERR);
 
 	total_written++;
-        return(OK);
+	return(OK);
 }
 
 /*

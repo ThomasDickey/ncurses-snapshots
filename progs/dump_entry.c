@@ -38,7 +38,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include "parametrized.h"	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.26 1998/03/28 19:30:43 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.27 1998/05/30 23:19:53 tom Exp $")
 
 #define INDENT			8
 
@@ -87,7 +87,7 @@ NCURSES_CONST char *nametrans(const char *name)
 {
     const struct name_table_entry 	*np;
 
-    if ((np = _nc_find_entry(name, _nc_info_hash_table)) != NULL)
+    if ((np = _nc_find_entry(name, _nc_info_hash_table)) != 0)
         switch(np->nte_type)
 	{
 	case BOOLEAN:
@@ -106,7 +106,7 @@ NCURSES_CONST char *nametrans(const char *name)
 	    break;
 	}
 
-    return((char *)NULL);
+    return(0);
 }
 
 void dump_init(const char *version, int mode, int sort, int twidth, int traceval, bool formatted)
@@ -117,7 +117,7 @@ void dump_init(const char *version, int mode, int sort, int twidth, int traceval
     tracelevel = traceval;
 
     /* versions */
-    if (version == (char *)NULL)
+    if (version == 0)
 	tversion = V_ALLCAPS;
     else if (!strcmp(version, "SVr1") || !strcmp(version, "SVR1")
 					|| !strcmp(version, "Ultrix"))
@@ -467,12 +467,12 @@ bool	outcount = 0;
 
     len = 12;			/* terminfo file-header */
 
-    if (pred == NULL) {
+    if (pred == 0) {
 	cur_type = tterm;
 	pred = dump_predicate;
     }
 
-    append_output(NULL);
+    append_output(0);
     append_output(tterm->term_names);
     append_output(separator);
     column = out_used;
@@ -589,7 +589,7 @@ bool	outcount = 0;
 		char *srccap = _nc_tic_expand(tterm->Strings[i], FALSE);
 		char *cv = _nc_infotocap(str_names[i], srccap, parametrized[i]);
 
-		if (cv == (char *)NULL)
+		if (cv == 0)
 		{
 		    if (outform == F_TCONVERR)
 			sprintf(buffer, "%s=!!! %s WILL NOT CONVERT !!!", str_names[i], srccap);
@@ -776,7 +776,7 @@ int dump_uses(const char *name, bool infodump)
 {
     char buffer[MAX_TERMINFO_LENGTH];
 
-    append_output(NULL);
+    append_output(0);
     (void)sprintf(buffer, "%s%s", infodump ? "use=" : "tc=", name);
     wrap_concat(buffer);
     (void) fputs(outbuf, stdout);
@@ -834,7 +834,7 @@ void compare_entry(void (*hook)(int t, int i, const char *name))
     }
 }
 
-#define NOTSET(s)	((s) == (char *)NULL)
+#define NOTSET(s)	((s) == 0)
 
 /*
  * This bit of legerdemain turns all the terminfo variable names into

@@ -44,13 +44,13 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.38 1998/05/10 00:54:28 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.39 1998/05/30 23:44:18 Todd.Miller Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
  * will probably be line-buffered.  Keith Bostic pointed out that we don't want
  * this; it hoses people running over networks by forcing out a bunch of small
- * packets instead of one big one, so screen updates on ptys look jerky. 
+ * packets instead of one big one, so screen updates on ptys look jerky.
  * Restore block buffering to prevent this minor lossage.
  *
  * The buffer size is a compromise.  Ideally we'd like a buffer that can hold
@@ -78,13 +78,14 @@ MODULE_ID("$Id: lib_set_term.c,v 1.38 1998/05/10 00:54:28 tom Exp $")
 void _nc_set_buffer(FILE *ofp, bool buffered)
 {
 	/* optional optimization hack -- do before any output to ofp */
-#if HAVE_SETVBUF || HAVE_SETBUFFER  
+#if HAVE_SETVBUF || HAVE_SETBUFFER
 	unsigned buf_len;
 	char *buf_ptr;
 
 	if (buffered) {
 		buf_len = min(LINES * (COLS + 6), 2800);
-		buf_ptr = malloc(buf_len);
+		if ((buf_ptr = malloc(buf_len)) == NULL)
+			return;
 	} else {
 		buf_len = 0;
 		buf_ptr = 0;
@@ -200,13 +201,13 @@ int _nc_setupscreen(short slines, short const scolumns, FILE *output)
 int	bottom_stolen = 0;
 size_t	i;
 
-        assert(SP==0); /* has been reset in newterm() ! */ 
+        assert(SP==0); /* has been reset in newterm() ! */
 	if (!_nc_alloc_screen())
 		return ERR;
 
 	SP->_next_screen = _nc_screen_chain;
 	_nc_screen_chain = SP;
-	
+
 	_nc_set_buffer(output, TRUE);
 	SP->_term        = cur_term;
 	SP->_lines       = slines;
@@ -276,7 +277,7 @@ size_t	i;
 
 	_nc_idcok = TRUE;
 	_nc_idlok = FALSE;
-	
+
 	_nc_windows = 0; /* no windows yet */
 
 	T(("creating newscr"));

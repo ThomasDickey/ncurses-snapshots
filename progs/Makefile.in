@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.36 1998/05/16 20:46:17 tom Exp $
+# $Id: Makefile.in,v 1.37 1998/05/31 00:07:33 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -91,7 +91,7 @@ LDFLAGS		= @EXTRA_LDFLAGS@ \
 LDFLAGS_NORMAL	= $(LDFLAGS)
 LDFLAGS_DEBUG	= $(LDFLAGS) @CC_G_OPT@
 LDFLAGS_PROFILE	= $(LDFLAGS) -pg
-LDFLAGS_SHARED	= $(LDFLAGS) @CC_SHARED_OPTS@ # @LD_SHARED_OPTS@
+LDFLAGS_SHARED	= $(LDFLAGS) @LD_SHARED_OPTS@
 
 LDFLAGS_DEFAULT	= $(LDFLAGS_@DFT_UPR_MODEL@)
 
