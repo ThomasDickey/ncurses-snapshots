@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.4 $
+--  $Revision: 1.5 $
 ------------------------------------------------------------------------------
 with Interfaces.C;
 with Terminal_Interface.Curses.Aux; use Terminal_Interface.Curses.Aux;
@@ -45,13 +45,19 @@ package body Terminal_Interface.Curses.Menus.Item_User_Data is
       end if;
    end Set_User_Data;
 
-   procedure Get_User_Data (Itm  : in  Item;
-                            Data : out User_Access)
+   function Get_User_Data (Itm  : in  Item) return User_Access
    is
       function Item_Userptr (Itm : Item) return User_Access;
       pragma Import (C, Item_Userptr, "item_userptr");
    begin
-      Data := Item_Userptr (Itm);
+      return Item_Userptr (Itm);
+   end Get_User_Data;
+
+   procedure Get_User_Data (Itm  : in  Item;
+                            Data : out User_Access)
+   is
+   begin
+      Data := Get_User_Data (Itm);
    end Get_User_Data;
 
 end Terminal_Interface.Curses.Menus.Item_User_Data;

@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.108 1997/12/13 17:06:17 tom Exp $
+dnl $Id: aclocal.m4,v 1.114 1997/12/21 00:35:37 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -462,6 +462,17 @@ do
 			cf_libs_to_make="$cf_libs_to_make ../lib/lib${cf_dir}${cf_suffix}"
 		done
 
+		if test $cf_dir = ncurses ; then
+			case "$LIB_SUBSETS" in
+			termlib+*) #(vi
+				;;
+			*) #(vi
+				cf_item=`echo $cf_libs_to_make |sed -e s/$LIB_NAME/$TINFO_NAME/g`
+				cf_libs_to_make="$cf_libs_to_make $cf_item"
+				;;
+			esac
+		fi
+
 		sed -e "s@\@LIBS_TO_MAKE\@@$cf_libs_to_make@" \
 			$cf_dir/Makefile >$cf_dir/Makefile.out
 		mv $cf_dir/Makefile.out $cf_dir/Makefile
@@ -485,16 +496,21 @@ do
 			else
 				cf_reldir="\$(srcdir)"
 			fi
+
 			if test -f $srcdir/$cf_dir/$cf_dir.priv.h; then
 				cf_depend="$cf_depend $cf_reldir/$cf_dir.priv.h"
 			elif test -f $srcdir/$cf_dir/curses.priv.h; then
 				cf_depend="$cf_depend $cf_reldir/curses.priv.h"
 			fi
+
+			for cf_subset in $LIB_SUBSETS
+			do
 			$AWK -f $srcdir/mk-1st.awk \
 				name=$cf_dir \
 				MODEL=$CF_ITEM \
 				model=$cf_subdir \
 				suffix=$cf_suffix \
+				subset=$cf_subset \
 				DoLinks=$cf_cv_do_symlinks \
 				rmSoLocs=$cf_cv_rm_so_locs \
 				ldconfig="$LDCONFIG" \
@@ -507,9 +523,11 @@ do
 				name=$cf_dir \
 				MODEL=$CF_ITEM \
 				model=$cf_subdir \
+				subset=$cf_subset \
 				srcdir=$srcdir \
 				echo=$WITH_ECHO \
 				$srcdir/$cf_dir/modules >>$cf_dir/Makefile
+			done
 		done
 	fi
 
@@ -632,7 +650,7 @@ CF_EOF
 		echo "		$j" >>$cf_dir/Makefile
 		for i in `cat $srcdir/$cf_dir/headers |fgrep -v "#"`
 		do
-			echo "	@ ../headers.sh \$(INSTALL_DATA) \$(INSTALL_PREFIX)\$(includedir) \$(srcdir) $i" >>$cf_dir/Makefile
+			echo "	@ (cd \$(INSTALL_PREFIX)\$(includedir) && rm -f $i) ; ../headers.sh \$(INSTALL_DATA) \$(INSTALL_PREFIX)\$(includedir) \$(srcdir) $i" >>$cf_dir/Makefile
 			test $i = curses.h && echo "	@ (cd \$(INSTALL_PREFIX)\$(includedir) && rm -f ncurses.h && \$(LN_S) curses.h ncurses.h)" >>$cf_dir/Makefile
 		done
 
@@ -645,8 +663,8 @@ CF_EOF
 		for i in `cat $srcdir/$cf_dir/headers |fgrep -v "#"`
 		do
 			i=`basename $i`
-			echo "	-@rm -f \$(INSTALL_PREFIX)\$(includedir)/$i" >>$cf_dir/Makefile
-			test $i = curses.h && echo "	-@rm -f \$(INSTALL_PREFIX)\$(includedir)/ncurses.h" >>$cf_dir/Makefile
+			echo "	-@ (cd \$(INSTALL_PREFIX)\$(includedir) && rm -f $i)" >>$cf_dir/Makefile
+			test $i = curses.h && echo "	-@ (cd \$(INSTALL_PREFIX)\$(includedir) && rm -f ncurses.h)" >>$cf_dir/Makefile
 		done
 	fi
 done
@@ -1277,8 +1295,14 @@ dnl SUB_MAKEFILES which are used in the makefile-generation scheme.
 AC_DEFUN([CF_SRC_MODULES],
 [
 AC_MSG_CHECKING(for src modules)
-TEST_DEPS="${LIB_PREFIX}${LIB_NAME}${DFT_DEP_SUFFIX}"
-TEST_ARGS="-l${LIB_NAME}${DFT_ARG_SUFFIX}"
+
+# dependencies and linker-arguments for test-programs
+TEST_DEPS="${LIB_PREFIX}${LIB_NAME}${DFT_DEP_SUFFIX} $TEST_DEPS"
+TEST_ARGS="-l${LIB_NAME}${DFT_ARG_SUFFIX} $TEST_ARGS"
+
+# dependencies and linker-arguments for utility-programs
+PROG_ARGS="$TEST_ARGS"
+
 cf_cv_src_modules=
 for cf_dir in $1
 do
@@ -1317,6 +1341,9 @@ AC_MSG_RESULT($cf_cv_src_modules)
 TEST_ARGS="-L${LIB_DIR} -L\$(libdir) $TEST_ARGS"
 AC_SUBST(TEST_DEPS)
 AC_SUBST(TEST_ARGS)
+
+PROG_ARGS="-L${LIB_DIR} -L\$(libdir) $PROG_ARGS"
+AC_SUBST(PROG_ARGS)
 
 SRC_SUBDIRS="man include"
 for cf_dir in $cf_cv_src_modules

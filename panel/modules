@@ -1,5 +1,5 @@
 ################################################################################
-# Copyright 1995 by Thomas E. Dickey <dickey@clark.net>                        #
+# Copyright 1995,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
 #                                                                              #
 # Permission to use, copy, modify, and distribute this software and its        #
@@ -17,6 +17,8 @@
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR    #
 # PERFORMANCE OF THIS SOFTWARE.                                                #
 ################################################################################
+
+@ base
 # Library objects
 panel		lib		$(srcdir)	$(PANEL_PRIV_H)
 p_above		lib		$(srcdir)	$(PANEL_PRIV_H)

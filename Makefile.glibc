@@ -38,12 +38,47 @@ subdir-dirs = $(extras) progs test
 vpath %.c $(subdir-dirs)
 vpath %.h $(subdir-dirs)
 
-libform-routines	= fld_def fld_stat fld_type fld_user \
-				frm_adabind frm_data frm_def \
-				frm_driver frm_hook frm_opts \
-				frm_req_name frm_user frm_win \
-				fty_alnum fty_alpha fty_enum fty_int \
-				fty_ipv4 fty_num fty_regex
+libform-routines	= \
+			fld_arg \
+			fld_attr \
+			fld_current \
+			fld_def \
+			fld_dup \
+			fld_ftchoice \
+			fld_ftlink \
+			fld_info \
+			fld_just \
+			fld_link \
+			fld_max \
+			fld_move \
+			fld_newftyp \
+			fld_opts \
+			fld_pad \
+			fld_page \
+			fld_stat \
+			fld_type \
+			fld_user \
+			frm_adabind \
+			frm_cursor \
+			frm_data \
+			frm_def \
+			frm_driver \
+			frm_hook \
+			frm_opts \
+			frm_page \
+			frm_post \
+			frm_req_name \
+			frm_scale \
+			frm_sub \
+			frm_user \
+			frm_win \
+			fty_alnum \
+			fty_alpha \
+			fty_enum \
+			fty_int \
+			fty_ipv4 \
+			fty_num \
+			fty_regex
 
 libncurses-routines	= \
 			alloc_entry \
@@ -108,6 +143,7 @@ libncurses-routines	= \
 			lib_print \
 			lib_printw \
 			lib_raw \
+			lib_redrawln \
 			lib_refresh \
 			lib_restart \
 			lib_scanw \
@@ -147,6 +183,7 @@ libncurses-routines	= \
 			lib_window \
 			name_match \
 			names \
+			nc_panel \
 			parse_entry \
 			read_entry \
 			read_termcap \
@@ -159,20 +196,43 @@ libncurses-routines	= \
 			wresize \
 			write_entry
 
-libmenu-routines	= m_adabind m_attribs m_cursor m_driver \
-				m_format m_global m_hook m_item_cur \
-				m_item_nam m_item_new m_item_opt \
-				m_item_use m_item_val m_item_vis \
-				m_items m_new m_opts m_post \
-				m_req_name m_spacing m_userptr m_win
+libmenu-routines	= \
+			m_adabind \
+			m_attribs \
+			m_cursor \
+			m_driver \
+			m_format \
+			m_global \
+			m_hook \
+			m_item_cur \
+			m_item_nam \
+			m_item_new \
+			m_item_opt \
+			m_item_top \
+			m_item_use \
+			m_item_val \
+			m_item_vis \
+			m_items \
+			m_new \
+			m_opts \
+			m_pad \
+			m_pattern \
+			m_post \
+			m_req_name \
+			m_scale \
+			m_spacing \
+			m_sub \
+			m_userptr \
+			m_win
 
-libpanel-routines	= panel \
+libpanel-routines	= \
+			panel \
 			p_above \
 			p_below \
 			p_bottom \
 			p_delete \
-			p_hidden \
 			p_hide \
+			p_hidden \
 			p_move \
 			p_new \
 			p_replace \
@@ -180,7 +240,7 @@ libpanel-routines	= panel \
 			p_top \
 			p_update \
 			p_user \
-			p_win \
+			p_win
 
 headers = curses.h eti.h form.h menu.h panel.h term.h termcap.h \
 	  unctrl.h

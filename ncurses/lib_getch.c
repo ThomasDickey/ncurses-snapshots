@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.37 1997/11/30 00:37:38 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.38 1997/12/20 22:22:57 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -239,6 +239,7 @@ int	ch;
 
 	if (ch == ERR)
 	{
+#if USE_SIZECHANGE
 	    if(SP->_sig_winch)
 	    {
 		_nc_update_screensize();
@@ -250,6 +251,7 @@ int	ch;
 		    returnCode(ch);
 		}
 	    }
+#endif
 	    T(("wgetch returning ERR"));
 	    returnCode(ERR);
 	}

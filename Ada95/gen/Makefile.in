@@ -19,7 +19,7 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.13 $
+#  $Revision: 1.15 $
 #
 .SUFFIXES:
 
@@ -129,6 +129,8 @@ GEN_SRC		= $(srcdir)/$(ABASE).ads.m4				\
 
 all:	$(ADA_OBJDIR) $(GEN_TARGETS)
 	@
+
+sources:
 
 $(ADA_OBJDIR) \
 $(ADA_INCLUDE) \
@@ -298,13 +300,17 @@ tags:
 TAGS:
 	etags *.[ch]
 
-clean ::
-	rm -f a.out core gen *.o $(GEN_FILES1) $(GEN_FILES2) $(GEN_FILES3) \
-	$(GEN_FILES4) $(GEN_TARGETS)
+mostlyclean ::
+	-rm -f a.out core gen *.o
+	-rm -f $(GEN_FILES1)
+	-rm -f $(GEN_FILES2)
+	-rm -f $(GEN_FILES3)
+	-rm -f $(GEN_FILES4)
 
-mostlyclean :: clean
+clean :: mostlyclean
+	-rm -f $(GEN_TARGETS)
 
-distclean :: mostlyclean
+distclean :: clean
 	rm -f Makefile
 
 realclean :: distclean

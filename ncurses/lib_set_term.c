@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.35 1997/11/08 21:23:37 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.36 1997/12/20 22:21:48 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -274,7 +274,9 @@ size_t	i;
 
 	SP->_newscr = newscr;
 	SP->_curscr = curscr;
+#if USE_SIZECHANGE
 	SP->_resize = resizeterm;
+#endif
 
 	newscr->_clear = TRUE;
 	curscr->_clear = FALSE;

@@ -30,7 +30,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.17 1997/11/29 19:54:29 tom Exp $")
+MODULE_ID("$Id: lib_refresh.c,v 1.18 1997/12/19 17:04:06 xtang Exp $")
 
 int wrefresh(WINDOW *win)
 {
@@ -59,8 +59,8 @@ int code;
 int wnoutrefresh(WINDOW *win)
 {
 short	i, j;
-short	begx = win->_begx;
-short	begy = win->_begy;
+short	begx;
+short	begy;
 short	m, n;
 bool	wide;
 
@@ -76,6 +76,10 @@ bool	wide;
 	if ((win == 0)
 	 || (win->_flags & _ISPAD))
 		returnCode(ERR);
+
+	/* put them here so "win == 0" won't break our code */
+	begx = win->_begx;
+	begy = win->_begy;
 
 	/*
 	 * If 'newscr' has a different background than the window that we're

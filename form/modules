@@ -1,4 +1,4 @@
-# $Id: modules,v 1.10 1997/10/25 17:25:39 tom Exp $
+# $Id: modules,v 1.11 1997/12/20 19:08:00 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -18,6 +18,8 @@
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR    #
 # PERFORMANCE OF THIS SOFTWARE.                                                #
 ################################################################################
+
+@ base
 # Library objects
 fld_arg		lib		$(srcdir)	$(FORM_PRIV_H)
 fld_attr	lib		$(srcdir)	$(FORM_PRIV_H)

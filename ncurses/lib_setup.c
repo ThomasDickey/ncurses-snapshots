@@ -35,7 +35,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.34 1997/11/01 19:05:48 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.35 1997/12/20 22:23:13 tom Exp $")
 
 /****************************************************************************
  *
@@ -175,6 +175,7 @@ char	*rows, *cols;
 
 }
 
+#if USE_SIZECHANGE
 void _nc_update_screensize(void)
 {
 	int my_lines, my_cols;
@@ -183,6 +184,7 @@ void _nc_update_screensize(void)
 	if (SP != 0 && SP->_resize != 0)
 		SP->_resize(my_lines, my_cols);
 }
+#endif
 
 /****************************************************************************
  *

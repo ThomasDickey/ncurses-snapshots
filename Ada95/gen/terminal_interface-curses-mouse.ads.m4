@@ -25,7 +25,7 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.9 $
+--  $Revision: 1.10 $
 ------------------------------------------------------------------------------
 include(`Mouse_Base_Defs')
 with System;
@@ -70,18 +70,22 @@ package Terminal_Interface.Curses.Mouse is
    --  Stores the event described by the button and the state in the mask.
    --  Before you call this the first time, you should init the mask
    --  with the Empty_Mask constant
+   pragma Inline (Register_Reportable_Event);
 
    --  ANCHOR(`mousemask()',`Start_Mouse')
    function Start_Mouse (Mask : Event_Mask := All_Events)
                          return Event_Mask;
    --  AKA
+   pragma Inline (Start_Mouse);
 
    procedure End_Mouse;
    --  Terminates the mouse
+   pragma Inline (End_Mouse);
 
    --  ANCHOR(`getmouse()',`Get_Mouse')
    function Get_Mouse return Mouse_Event;
    --  AKA
+   pragma Inline (Get_Mouse);
 
    procedure Get_Event (Event  : in  Mouse_Event;
                         Y      : out Line_Position;
@@ -90,20 +94,24 @@ package Terminal_Interface.Curses.Mouse is
                         State  : out Button_State);
    --  !!! Warning: X and Y are screen coordinates. Due to ripped of lines they
    --  may not be identical to window coordinates.
+   pragma Inline (Get_Event);
 
    --  ANCHOR(`ungetmouse()',`Unget_Mouse')
    procedure Unget_Mouse (Event : in Mouse_Event);
    --  AKA
+   pragma Inline (Unget_Mouse);
 
    --  ANCHOR(`wenclose()',`Enclosed_In_Window')
    function Enclosed_In_Window (Win    : Window := Standard_Window;
                                 Event  : Mouse_Event) return Boolean;
    --  AKA
    --  But : use event instead of screen coordinates.
+   pragma Inline (Enclosed_In_Window);
 
    --  ANCHOR(`mouseinterval()',`Mouse_Interval')
    function Mouse_Interval (Msec : Natural := 200) return Natural;
    --  AKA
+   pragma Inline (Mouse_Interval);
 
 private
    type Event_Mask is new Interfaces.C.int;

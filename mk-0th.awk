@@ -1,4 +1,4 @@
-# $Id: mk-0th.awk,v 1.4 1997/12/07 00:19:50 tom Exp $
+# $Id: mk-0th.awk,v 1.5 1997/12/20 18:05:41 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -29,7 +29,7 @@ BEGIN	{
 		print  ""
 		found = 0;
 	}
-	!/^#/ {
+	!/^[@#]/ && !/^$/ {
 		if ( found == 0 )
 		{
 			printf "C_SRC ="

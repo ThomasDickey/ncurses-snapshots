@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: edit_cfg.sh,v 1.7 1997/11/08 18:14:57 tom Exp $
+# $Id: edit_cfg.sh,v 1.8 1997/12/20 13:45:59 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -25,8 +25,9 @@
 #	$1 = ncurses_cfg.h
 #	$2 = term.h
 #
+BAK=save$$
 TMP=edit$$
-trap "rm -f $TMP" 0 1 2 5 15
+trap "rm -f $BAK $TMP" 0 1 2 5 15
 for name in \
 	HAVE_TCGETATTR \
 	HAVE_TERMIOS_H \
@@ -34,19 +35,21 @@ for name in \
 	NCURSES_CONST \
 	BROKEN_LINKER
 do
-	mv $2 $2.bak
+	mv $2 $BAK
 	if ( grep "[ 	]$name[ 	]" $1 2>&1 >$TMP )
 	then
-		sed -e 's@#define '$name'.*$@'"`cat $TMP`@" $2.bak >$2
+		sed -e 's@#define '$name'.*$@'"`cat $TMP`@" $BAK >$2
+	elif test "$name" = "NCURSES_CONST" ; then
+		sed -e 's/define '$name'.*$/define '$name' \/\*nothing\*\//' $BAK >$2
 	else
-		sed -e 's/define '$name'.*$/define '$name' 0/' $2.bak >$2
+		sed -e 's/define '$name'.*$/define '$name' 0/' $BAK >$2
 	fi
-	if (cmp -s $2 $2.bak)
+	if (cmp -s $2 $BAK)
 	then
 		echo '** same: '$name
-		mv $2.bak $2
+		mv $BAK $2
 	else
 		echo '** edit: '$name
-		rm -f $2.bak
+		rm -f $BAK
 	fi
 done

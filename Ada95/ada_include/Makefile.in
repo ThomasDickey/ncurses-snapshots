@@ -19,7 +19,7 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.10 $
+#  $Revision: 1.11 $
 #
 .SUFFIXES:
 
@@ -153,19 +153,22 @@ GENOBJS=$(ADA_OBJDIR)/$(ABASE)-menus-menu_user_data.o			\
 all :: $(LIBALIS) @cf_compile_generics@
 	@echo done
 
+sources :
+	@
+
 install ::
 uninstall ::
 
 generics: $(GENALIS)
 	@
 
-clean ::
+mostlyclean ::
 	rm -f *.o *.ali b_t*.* *.s $(PROGS) a.out core b_*_test.c *.xr[bs] *.a
 
-mostlyclean :: clean
+clean :: mostlyclean
 	rm -f $(LIBALIS) $(LIBOBJS)
 
-distclean :: mostlyclean
+distclean :: clean
 	rm -f Makefile
 
 realclean :: distclean

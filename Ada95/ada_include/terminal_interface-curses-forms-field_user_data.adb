@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.4 $
+--  $Revision: 1.5 $
 ------------------------------------------------------------------------------
 with Terminal_Interface.Curses.Aux; use  Terminal_Interface.Curses.Aux;
 
@@ -53,13 +53,19 @@ package body Terminal_Interface.Curses.Forms.Field_User_Data is
    --  |
    --  |
    --  |
-   procedure Get_User_Data (Fld  : in  Field;
-                            Data : out User_Access)
+   function Get_User_Data (Fld  : in  Field) return User_Access
    is
       function Field_Userptr (Fld : Field) return User_Access;
       pragma Import (C, Field_Userptr, "field_userptr");
    begin
-      Data := Field_Userptr (Fld);
+      return Field_Userptr (Fld);
+   end Get_User_Data;
+
+   procedure Get_User_Data (Fld  : in  Field;
+                            Data : out User_Access)
+   is
+   begin
+      Data := Get_User_Data (Fld);
    end Get_User_Data;
 
 end Terminal_Interface.Curses.Forms.Field_User_Data;

@@ -25,7 +25,7 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.5 $
+--  $Revision: 1.6 $
 ------------------------------------------------------------------------------
 
 generic
@@ -46,7 +46,11 @@ package Terminal_Interface.Curses.Forms.Form_User_Data is
    procedure Get_User_Data (Frm  : in  Form;
                             Data : out User_Access);
    --  AKA
+
+   --  ANCHOR(`form_userptr',`Get_User_Data')
+   function Get_User_Data (Frm  : in  Form) return User_Access;
+   --  AKA
+   --  Same as function
    pragma Inline (Get_User_Data);
 
 end Terminal_Interface.Curses.Forms.Form_User_Data;
-

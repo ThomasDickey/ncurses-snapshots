@@ -25,7 +25,7 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.9 $
+--  $Revision: 1.10 $
 ------------------------------------------------------------------------------
 include(`Menu_Base_Defs')
 with System;
@@ -138,6 +138,7 @@ include(`Item_Rep')
    function Create (Name        : String;
                     Description : String := "") return Item;
    --  AKA
+   --  Not inlined.
 
    --  ANCHOR(`new_item()',`New_Item')
    function New_Item (Name        : String;
@@ -156,16 +157,19 @@ include(`Item_Rep')
    procedure Set_Value (Itm   : in Item;
                         Value : in Boolean := True);
    --  AKA
+   pragma Inline (Set_Value);
 
    --  ANCHOR(`item_value()',`Value')
    function Value (Itm : Item) return Boolean;
    --  AKA
+   pragma Inline (Value);
 
    --  MANPAGE(`mitem_visible.3x')
 
    --  ANCHOR(`item_visible()',`Visible')
    function Visible (Itm : Item) return Boolean;
    --  AKA
+   pragma Inline (Visible);
 
    --  MANPAGE(`mitem_opts.3x')
 
@@ -173,6 +177,7 @@ include(`Item_Rep')
    procedure Set_Options (Itm     : in Item;
                           Options : in Item_Option_Set);
    --  AKA
+   --  An overloaded Set_Options is defined later. Pragma Inline appears there
 
    --  ANCHOR(`item_opts_on()',`Switch_Options')
    procedure Switch_Options (Itm     : in Item;
@@ -180,6 +185,8 @@ include(`Item_Rep')
                              On      : Boolean := True);
    --  AKA
    --  ALIAS(`item_opts_off()')
+   --  An overloaded Switch_Options is defined later.
+   --  Pragma Inline appears there
 
    --  ANCHOR(`item_opts()',`Get_Options')
    procedure Get_Options (Itm     : in  Item;
@@ -189,6 +196,7 @@ include(`Item_Rep')
    --  ANCHOR(`item_opts()',`Get_Options')
    function Get_Options (Itm : Item := Null_Item) return Item_Option_Set;
    --  AKA
+   --  An overloaded Get_Options is defined later. Pragma Inline appears there
 
    --  MANPAGE(`mitem_name.3x')
 
@@ -199,6 +207,7 @@ include(`Item_Rep')
    function  Name (Itm : Item) return String;
    --  AKA
    --  Implemented as function
+   pragma Inline (Name);
 
    --  ANCHOR(`item_description();',`Description')
    procedure Description (Itm         : in Item;
@@ -208,6 +217,7 @@ include(`Item_Rep')
    function  Description (Itm : Item) return String;
    --  AKA
    --  Implemented as function
+   pragma Inline (Description);
 
    --  MANPAGE(`mitem_current.3x')
 
@@ -215,19 +225,23 @@ include(`Item_Rep')
    procedure Set_Current (Men : in Menu;
                           Itm : in Item);
    --  AKA
+   pragma Inline (Set_Current);
 
    --  ANCHOR(`current_item()',`Current')
    function Current (Men : Menu) return Item;
    --  AKA
+   pragma Inline (Current);
 
    --  ANCHOR(`set_top_row()',`Set_Top_Row')
    procedure Set_Top_Row (Men  : in Menu;
                           Line : in Line_Position);
    --  AKA
+   pragma Inline (Set_Top_Row);
 
    --  ANCHOR(`top_row()',`Top_Row')
    function Top_Row (Men : Menu) return Line_Position;
    --  AKA
+   pragma Inline (Top_Row);
 
    --  ANCHOR(`item_index()',`Get_Index')
    function Get_Index (Itm : Item) return Positive;
@@ -235,6 +249,7 @@ include(`Item_Rep')
    --  Please note that in this binding we start the numbering of items
    --  with 1. So this is number is one more than you get from the low
    --  level call.
+   pragma Inline (Get_Index);
 
    --  MANPAGE(`menu_post.3x')
 
@@ -243,6 +258,7 @@ include(`Item_Rep')
                    Post : in Boolean := True);
    --  AKA
    --  ALIAS(`unpost_menu()')
+   pragma Inline (Post);
 
    --  MANPAGE(`menu_opts.3x')
 
@@ -250,6 +266,7 @@ include(`Item_Rep')
    procedure Set_Options (Men     : in Menu;
                           Options : in Menu_Option_Set);
    --  AKA
+   pragma Inline (Set_Options);
 
    --  ANCHOR(`menu_opts_on()',`Switch_Options')
    procedure Switch_Options (Men     : in Menu;
@@ -257,6 +274,7 @@ include(`Item_Rep')
                              On      : Boolean := True);
    --  AKA
    --  ALIAS(`menu_opts_off()')
+   pragma Inline (Switch_Options);
 
    --  ANCHOR(`menu_opts()',`Get_Options')
    procedure Get_Options (Men     : in  Menu;
@@ -266,6 +284,7 @@ include(`Item_Rep')
    --  ANCHOR(`menu_opts()',`Get_Options')
    function Get_Options (Men : Menu := Null_Menu) return Menu_Option_Set;
    --  AKA
+   pragma Inline (Get_Options);
 
    --  MANPAGE(`menu_win.3x')
 
@@ -273,31 +292,37 @@ include(`Item_Rep')
    procedure Set_Window (Men : in Menu;
                          Win : in Window);
    --  AKA
+   pragma Inline (Set_Window);
 
    --  ANCHOR(`menu_win()',`Get_Window')
    function Get_Window (Men : Menu) return Window;
    --  AKA
+   pragma Inline (Get_Window);
 
    --  ANCHOR(`set_menu_sub()',`Set_Sub_Window')
    procedure Set_Sub_Window (Men : in Menu;
                              Win : in Window);
    --  AKA
+   pragma Inline (Set_Sub_Window);
 
    --  ANCHOR(`menu_sub()',`Get_Sub_Window')
    function Get_Sub_Window (Men : Menu) return Window;
    --  AKA
+   pragma Inline (Get_Sub_Window);
 
    --  ANCHOR(`scale_menu()',`Scale')
    procedure Scale (Men     : in Menu;
                     Lines   : out Line_Count;
                     Columns : out Column_Count);
    --  AKA
+   pragma Inline (Scale);
 
    --  MANPAGE(`menu_cursor.3x')
 
    --  ANCHOR(`pos_menu_cursor()',`Position_Cursor')
    procedure Position_Cursor (Men : Menu);
    --  AKA
+   pragma Inline (Position_Cursor);
 
    --  MANPAGE(`menu_mark.3x')
 
@@ -305,6 +330,7 @@ include(`Item_Rep')
    procedure Set_Mark (Men  : in Menu;
                        Mark : in String);
    --  AKA
+   pragma Inline (Set_Mark);
 
    --  ANCHOR(`menu_mark()',`Mark')
    procedure Mark (Men  : in  Menu;
@@ -314,6 +340,7 @@ include(`Item_Rep')
    function  Mark (Men : Menu) return String;
    --  AKA
    --  Implemented as function
+   pragma Inline (Mark);
 
    --  MANPAGE(`menu_attribs.3x')
 
@@ -323,6 +350,7 @@ include(`Item_Rep')
       Fore  : in Character_Attribute_Set := Normal_Video;
       Color : in Color_Pair := Color_Pair'First);
    --  AKA
+   pragma Inline (Set_Foreground);
 
    --  ANCHOR(`menu_fore()',`Foreground')
    procedure Foreground (Men   : in  Menu;
@@ -334,6 +362,7 @@ include(`Item_Rep')
                          Fore  : out Character_Attribute_Set;
                          Color : out Color_Pair);
    --  AKA
+   pragma Inline (Foreground);
 
    --  ANCHOR(`set_menu_back()',`Set_Background')
    procedure Set_Background
@@ -341,6 +370,7 @@ include(`Item_Rep')
       Back  : in Character_Attribute_Set := Normal_Video;
       Color : in Color_Pair := Color_Pair'First);
    --  AKA
+   pragma Inline (Set_Background);
 
    --  ANCHOR(`menu_back()',`Background')
    procedure Background (Men  : in  Menu;
@@ -352,6 +382,7 @@ include(`Item_Rep')
                          Back  : out Character_Attribute_Set;
                          Color : out Color_Pair);
    --  AKA
+   pragma Inline (Background);
 
    --  ANCHOR(`set_menu_grey()',`Set_Grey')
    procedure Set_Grey
@@ -359,6 +390,7 @@ include(`Item_Rep')
       Grey  : in Character_Attribute_Set := Normal_Video;
       Color : in Color_Pair := Color_Pair'First);
    --  AKA
+   pragma Inline (Set_Grey);
 
    --  ANCHOR(`menu_grey()',`Grey')
    procedure Grey (Men  : in  Menu;
@@ -371,16 +403,19 @@ include(`Item_Rep')
       Grey  : out Character_Attribute_Set;
       Color : out Color_Pair);
    --  AKA
+   pragma Inline (Grey);
 
    --  ANCHOR(`set_menu_pad()',`Set_Pad_Character')
    procedure Set_Pad_Character (Men : in Menu;
                                 Pad : in Character := Space);
    --  AKA
+   pragma Inline (Set_Pad_Character);
 
    --  ANCHOR(`menu_pad()',`Pad_Character')
    procedure Pad_Character (Men : in  Menu;
                             Pad : out Character);
    --  AKA
+   pragma Inline (Pad_Character);
 
    --  MANPAGE(`menu_spacing.3x')
 
@@ -390,6 +425,7 @@ include(`Item_Rep')
                           Row   : in Line_Position   := 0;
                           Col   : in Column_Position := 0);
    --  AKA
+   pragma Inline (Set_Spacing);
 
    --  ANCHOR(`menu_spacing()',`Spacing')
    procedure Spacing (Men   : in Menu;
@@ -397,6 +433,7 @@ include(`Item_Rep')
                       Row   : out Line_Position;
                       Col   : out Column_Position);
    --  AKA
+   pragma Inline (Spacing);
 
    --  MANPAGE(`menu_pattern.3x')
 
@@ -405,11 +442,13 @@ include(`Item_Rep')
                          Text : String) return Boolean;
    --  AKA
    --  Return TRUE if the pattern matches, FALSE otherwise
+   pragma Inline (Set_Pattern);
 
    --  ANCHOR(`menu_pattern()',`Pattern')
    procedure Pattern (Men  : in  Menu;
                       Text : out String);
    --  AKA
+   pragma Inline (Pattern);
 
    --  MANPAGE(`menu_format.3x')
 
@@ -418,12 +457,14 @@ include(`Item_Rep')
                          Lines   : in Line_Count;
                          Columns : in Column_Count);
    --  AKA
+   pragma Inline (Set_Format);
 
    --  ANCHOR(`menu_format()',`Format')
    procedure Format (Men     : in  Menu;
                      Lines   : out Line_Count;
                      Columns : out Column_Count);
    --  AKA
+   pragma Inline (Format);
 
    --  MANPAGE(`menu_hook.3x')
 
@@ -434,37 +475,45 @@ include(`Item_Rep')
    procedure Set_Item_Init_Hook (Men  : in Menu;
                                  Proc : in Menu_Hook_Function);
    --  AKA
+   pragma Inline (Set_Item_Init_Hook);
 
    --  ANCHOR(`set_item_term()',`Set_Item_Term_Hook')
    procedure Set_Item_Term_Hook (Men  : in Menu;
                                  Proc : in Menu_Hook_Function);
    --  AKA
+   pragma Inline (Set_Item_Term_Hook);
 
    --  ANCHOR(`set_menu_init()',`Set_Menu_Init_Hook')
    procedure Set_Menu_Init_Hook (Men  : in Menu;
                                  Proc : in Menu_Hook_Function);
    --  AKA
+   pragma Inline (Set_Menu_Init_Hook);
 
    --  ANCHOR(`set_menu_term()',`Set_Menu_Term_Hook')
    procedure Set_Menu_Term_Hook (Men  : in Menu;
                                  Proc : in Menu_Hook_Function);
    --  AKA
+   pragma Inline (Set_Menu_Term_Hook);
 
    --  ANCHOR(`item_init()',`Get_Item_Init_Hook')
    function Get_Item_Init_Hook (Men : Menu) return Menu_Hook_Function;
    --  AKA
+   pragma Inline (Get_Item_Init_Hook);
 
    --  ANCHOR(`item_term()',`Get_Item_Term_Hook')
    function Get_Item_Term_Hook (Men : Menu) return Menu_Hook_Function;
    --  AKA
+   pragma Inline (Get_Item_Term_Hook);
 
    --  ANCHOR(`menu_init()',`Get_Menu_Init_Hook')
    function Get_Menu_Init_Hook (Men : Menu) return Menu_Hook_Function;
    --  AKA
+   pragma Inline (Get_Menu_Init_Hook);
 
    --  ANCHOR(`menu_term()',`Get_Menu_Term_Hook')
    function Get_Menu_Term_Hook (Men : Menu) return Menu_Hook_Function;
    --  AKA
+   pragma Inline (Get_Menu_Term_Hook);
 
    --  MANPAGE(`menu_items.3x')
 
@@ -472,24 +521,29 @@ include(`Item_Rep')
    procedure Redefine (Men   : in Menu;
                        Items : in Item_Array_Access);
    --  AKA
+   pragma Inline (Redefine);
 
    procedure Set_Items (Men   : in Menu;
                         Items : in Item_Array_Access) renames Redefine;
+   pragma Inline (Set_Items);
 
    --  ANCHOR(`menu_items()',`Items')
    function Items (Men   : Menu;
                    Index : Positive) return Item;
    --  AKA
+   pragma Inline (Items);
 
    --  ANCHOR(`item_count()',`Item_Count')
    function Item_Count (Men : Menu) return Natural;
    --  AKA
+   pragma Inline (Item_Count);
 
    --  MANPAGE(`menu_new.3x')
 
    --  ANCHOR(`new_menu()',`Create')
    function Create (Items : Item_Array_Access) return Menu;
    --  AKA
+   --  Not inlined
 
    function New_Menu (Items : Item_Array_Access) return Menu renames Create;
 
@@ -497,6 +551,7 @@ include(`Item_Rep')
    procedure Delete (Men : in out Menu);
    --  AKA
    --  Reset Men to Null_Menu
+   --  Not inlined
 
    --  MANPAGE(`menu_new.3x')
 
@@ -509,6 +564,7 @@ include(`Item_Rep')
    function Driver (Men : Menu;
                     Key : Key_Code) return Driver_Result;
    --  AKA
+   --  Driver is not inlined
 
 -------------------------------------------------------------------------------
 private

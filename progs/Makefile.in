@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.29 1997/11/15 21:14:16 tom Exp $
+# $Id: Makefile.in,v 1.31 1997/12/20 20:47:19 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -74,9 +74,7 @@ CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 LD		= @LD@
 LINK		= $(CC)
 LDFLAGS		= @EXTRA_LDFLAGS@ \
-		-L../lib \
-		-L$(libdir) \
-		-lncurses@DFT_ARG_SUFFIX@ @LDFLAGS@ @LD_MODEL@ @LIBS@ @EXTRA_LIBS@
+		@PROG_ARGS@ @LDFLAGS@ @LD_MODEL@ @LIBS@ @EXTRA_LIBS@
 
 LDFLAGS_NORMAL	= $(LDFLAGS)
 LDFLAGS_DEBUG	= $(LDFLAGS) @CC_G_OPT@
@@ -100,7 +98,9 @@ TESTPROGS = mvcur tctest hardscroll hashmap
 DEPS_CURSES = ../lib/libncurses@DFT_DEP_SUFFIX@
 
 ################################################################################
-all:	$(AUTO_SRC) $(PROGS) 
+all:		$(AUTO_SRC) $(PROGS) 
+
+sources:	$(AUTO_SRC)
 
 install: install.progs 
 uninstall: uninstall.progs 
@@ -233,15 +233,16 @@ tags:
 TAGS:
 	etags *.[ch]
 
-clean ::
-	-rm -f tags TAGS *~ *.ln *.atac
-	-rm -f $(AUTO_SRC) $(TESTPROGS)
+mostlyclean ::
+	-rm -f core tags TAGS *~ *.ln *.atac trace
+	-rm -f $(TESTPROGS)
+
+clean :: mostlyclean
+	-rm -f $(AUTO_SRC)
 	-rm -f $(PROGS)
 
 distclean :: clean
 	-rm -f Makefile
-
-mostlyclean :: clean
 
 realclean :: distclean
 

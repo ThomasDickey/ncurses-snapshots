@@ -1,7 +1,27 @@
--- $Id: NEWS,v 1.285 1997/12/14 02:24:56 tom Exp $
+-- $Id: NEWS,v 1.289 1997/12/20 22:08:44 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+971220
+	+ if there's no ioctl's to support sigwinch handler, disable it.
+	+ add configure option --disable-ext-funcs to remove the extended
+	  functions from the build.
+	+ add configure option --with-termlib to generate the terminfo
+	  functions as a separate library.
+	+ add 'sources' rule to facilitate cross-compiling.
+	+ review/fix order of mostlyclean/clean/distclean rules.
+	+ modify install-rule for headers to first remove old header, in
+	  case there was a symbolic link that confuses the install script.
+	+ corrected substitution for NCURSES_CONST in term.h (cf: 971108)
+	+ add null pointer checks in wnoutrefresh(), overlap() (patch by
+	  Xiaodan Tang <xtang@qnx.com>)
+	+ correct tputs(), which could dereference a null cur_term if invoked
+	  before terminal is initialized (patch by Christopher Seawood
+	  <cls@seawood.org>)
+	> patch by Juergen Pfeifer:
+	+ makes better use of "pragma Inline" in the Ada95 binding
+	+ resynchronizes the generated html manpages
 
 971213
 	+ additional fixes for man-pages section-references

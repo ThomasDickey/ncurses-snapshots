@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.21 1997/12/06 23:14:17 tom Exp $
+# $Id: Makefile.in,v 1.23 1997/12/20 20:24:19 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -83,9 +83,14 @@ LINT		= @LINT@
 LINT_OPTS	= @LINT_OPTS@
 LINT_LIBS	= -lform -lncurses @LIBS@
 
+AUTO_SRC	= \
+		../include/form.h  
+
 ################################################################################
 all \
-install ::	../include/form.h $(LIBRARIES)
+install ::	$(AUTO_SRC) $(LIBRARIES)
+
+sources :	$(AUTO_SRC)
 
 $(INSTALL_PREFIX)$(libdir) :
 	$(srcdir)/../mkinstalldirs $@
@@ -109,13 +114,14 @@ tags:
 TAGS:
 	etags *.[ch]
 
-clean ::
-	-rm -f tags TAGS *~ *.ln *.atac ../include/form.h
+mostlyclean ::
+	-rm -f core tags TAGS *~ *.ln *.atac trace
+
+clean :: mostlyclean
+	-rm -f $(AUTO_SRC)
 
 distclean :: clean
 	-rm -f Makefile
-
-mostlyclean :: clean
 
 realclean :: distclean
 
