@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.9 1996/06/01 19:51:23 tom Exp $
+# $Id: Makefile.in,v 1.10 1996/06/15 23:54:09 tom Exp $
 # Makefile for menu source code.
 #
 # This makes the following:
@@ -16,6 +16,7 @@ SHELL		= /bin/sh
 THIS		= Makefile
 
 MODEL		= @DFT_LWR_MODEL@
+INSTALL_PREFIX	= @INSTALL_PREFIX@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
@@ -64,7 +65,7 @@ LINT_LIBS	= -lmenu -lncurses @LIBS@
 ################################################################################
 all ::	../include/menu.h ../include/eti.h ../include/mf_common.h $(LIBRARIES)
 
-$(libdir) :
+$(INSTALL_PREFIX)$(libdir) :
 	$(srcdir)/../mkinstalldirs $@
 
 # make copies to simplify include-paths while still keeping menu's include

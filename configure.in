@@ -1,17 +1,33 @@
-dnl $Id: configure.in,v 1.20 1996/06/01 23:49:40 tom Exp $
+dnl $Id: configure.in,v 1.21 1996/06/15 22:41:10 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.9)
-AC_REVISION($Revision: 1.20 $)
+AC_REVISION($Revision: 1.21 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
 NC_SYSTYPE
 
 ###	Default install-location
-AC_PREFIX_DEFAULT(/usr/local)
+dnl We don't use AC_PREFIX_DEFAULT, because it gets evaluated too soon, and
+dnl we don't use AC_PREFIX_PROGRAM, because we cannot distinguish ncurses's
+dnl programs from a vendor's.
+AC_MSG_CHECKING(for prefix)
+if test "x$prefix" = "xNONE" ; then
+	case "$nc_cv_systype" in
+	Linux)	prefix=/usr
+		;;
+	*)	prefix=$ac_default_prefix
+		;;
+	esac
+fi
+AC_MSG_RESULT($prefix)
 
 ###	Checks for programs.
 AC_PROG_CC
+if test -n "$GCC" ; then
+AC_MSG_CHECKING(version of gcc)
+eval "$CC --version"
+fi
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
 AC_ISC_POSIX
@@ -29,6 +45,19 @@ AC_SUBST(LINT_OPTS)
 
 NC_MAKEFLAGS
 NC_MAN_PAGES
+
+dnl Special option for use by system-builders: the install-prefix is used to
+dnl adjust the location into which the actual install is done, so that an
+dnl archive can be built without modifying the host system's configuration.
+AC_ARG_WITH(install-prefix,
+	[  --with-install-prefix   prefixes actual install-location],
+	[case "$withval" in #(vi
+	yes|no) #(vi
+		;;
+	*)	INSTALL_PREFIX="$withval"
+		;;
+	esac])
+AC_SUBST(INSTALL_PREFIX)
 
 ### Options to allow the user to specify the set of libraries which are used.
 ### Use "--without-normal --with-shared" to allow the default model to be
@@ -320,11 +349,11 @@ if test -n "$with_warnings"; then
 		case "`$CC --version`" in
 		2.6.3)
 			if test "$nc_cv_sizeof_bool" != "char"; then
-				CFLAGS="$CFLAGS -Wconversion"
+				nc_warn_CFLAGS="$nc_warn_CFLAGS -Wconversion"
 			fi
 			;;
 		2.5*)
-			CFLAGS="$CFLAGS -Wconversion"
+			nc_warn_CFLAGS="$nc_warn_CFLAGS -Wconversion"
 			;;
 		esac
 	fi
@@ -337,6 +366,9 @@ NC_INCLUDE_DIRS
 ### with the appropriate compile-rules.
 NC_SRC_MODULES(ncurses progs panel menu form)
 NC_DIRS_TO_MAKE
+
+### Now that we're done running tests, add the compiler-warnings, if any
+CFLAGS="$CFLAGS $nc_warn_CFLAGS"
 
 ################################################################################
 changequote({,})dnl

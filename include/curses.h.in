@@ -363,8 +363,8 @@ extern int erase_wchar(wchar_t *);			/* missing */
 extern void filter(void);				/* implemented */
 extern int flash(void);					/* implemented */
 extern int flushinp(void);				/* implemented */
+extern chtype getbkgd(WINDOW *);			/* generated */
 #ifdef _XOPEN_SOURCE_EXTENDED
-extern chtype getbkgd(WINDOW *);			/* missing */
 extern int getbkgrnd(cchar_t *);			/* missing */
 extern int getcchar(const cchar_t *, wchar_t*, attr_t*, short*, void*);	/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
@@ -677,7 +677,6 @@ extern int wattr_off(WINDOW *, const attr_t);		/* implemented */
 extern int wattr_set(WINDOW *, attr_t);			/* implemented */
 extern int wbkgd(WINDOW *,const chtype);		/* implemented */
 extern void wbkgdset(WINDOW *,chtype);			/* generated */
-extern chtype wgetbkgd(WINDOW *);			/* generated */
 #ifdef _XOPEN_SOURCE_EXTENDED
 extern int wbkgrndset(WINDOW *,const cchar_t *);	/* missing */
 extern int wbkgrnd(WINDOW *,const cchar_t *);		/* missing */
@@ -809,7 +808,10 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define getsyx(y,x)		getyx(stdscr, y, x)
 #define setsyx(y,x)		(stdscr->_cury = y, stdscr->_curx = x)
 
-#define wbkgdset(win,ch)	((win)->_bkgd = (ch))
+#define	wbkgdset(win, ch) \
+	(((win)->_attrs = (((win)->_attrs & ~((win)->_bkgd & A_ATTRIBUTES)) | \
+	    (ch & A_ATTRIBUTES))), \
+	    ((win)->_bkgd = (ch & A_CHARTEXT) ? ch : (ch | ' ')))
 
 /* It seems older SYSV curses versions define these */
 #define getattrs(win)		((win)->_attrs)
@@ -949,6 +951,7 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define box_set(w,v,h)			wborder_set(w,v,v,h,h,0,0,0,9)
 #define chgat(n,a,c,o)			wchgat(stdscr,n,a,c,o)
 #define echo_wchar(c)			wecho_wchar(stdscr,c)
+#define getbkgd(win)			((win)->_bkgd)
 #define get_wch(c)			wget_wch(stdscr,c)
 #define get_wstr(t)			wgetn_wstr(stdscr,t,-1)
 #define getn_wstr(t,n)			wgetn_wstr(stdscr,t,n)
@@ -1002,7 +1005,6 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define waddwstr(win,wstr,n)		waddnwstr(win,wstr,-1)
 #define wattr_get(win)			((win)->_attrs)
 #define wget_wstr(w,t)			wgetn_wstr(w,t,-1)
-#define wgetbkgd(win)			((win)->_bkgd)
 #define win_wchstr(w,c)			win_wchnstr(w,c,-1)
 #define wins_wstr(w,t)			wins_nwstr(w,t,-1)
 #define winwstr(w,c)			winnwstr(w,c,-1)

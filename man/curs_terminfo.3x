@@ -1,3 +1,4 @@
+.\" $Id: curs_terminfo.3x,v 1.6 1996/06/15 22:45:50 tom Exp $
 .TH curs_terminfo 3X ""
 .ds n 5
 .SH NAME
@@ -198,6 +199,9 @@ semantics.
 
 In System V Release 4, the third argument of \fBtputs\fR has the type
 \fBint (*putc)(char)\fR.
+
+The XSI Curses standard prototypes \fBtparm\fR with a fixed number of parameters,
+rather than a variable argument list.
 .SH SEE ALSO
 \fBcurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_kernel\fR(3X), \fBcurs_termcap\fR(3X),
 \fBputc\fR(3S), \fBterminfo\fR(\*n)

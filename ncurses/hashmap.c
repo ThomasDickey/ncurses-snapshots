@@ -84,9 +84,11 @@ static chtype oldtext[LINES][TEXTWIDTH], newtext[LINES][TEXTWIDTH];
 #endif /* _NEWINDEX */
 #endif /* HASHDEBUG */
 
-static long hash(chtype *text)
+#ifndef HEAVYHASH
+
+static unsigned long hash(chtype *text)
 {
-    long res = 0;
+    unsigned long res = 0;
     int i;
 
     for (i = 0; i < TEXTWIDTH; i++)
@@ -94,13 +96,59 @@ static long hash(chtype *text)
     return(res);
 }
 
+#else
+
+/* Chris Torek's hash function (from his DB package). */
+unsigned long hash4(const void *key, size_t len)
+{
+    long h, loop;
+    unsigned char *k;
+
+#define HASH4a   h = (h << 5) - h + *k++;
+#define HASH4b   h = (h << 5) + h + *k++;
+#define HASH4 HASH4b
+    h = 0;
+    k = (unsigned char *)key;
+    if (len > 0) {
+	loop = (len + 8 - 1) >> 3;
+	switch (len & (8 - 1)) {
+	case 0:
+	    do {	/* All fall throughs */
+		HASH4;
+	    case 7:
+		HASH4;
+	    case 6:
+		HASH4;
+	    case 5:
+		HASH4;
+	    case 4:
+		HASH4;
+	    case 3:
+		HASH4;
+	    case 2:
+		HASH4;
+	    case 1:
+		HASH4;
+	    } while (--loop);
+	}
+    }
+    return ((unsigned long)h);
+}
+
+unsigned long hash(chtype *text)
+{
+    return(hash4(text, strlen(text)));
+}
+
+#endif /* HEAVYHASH */
+
 void _nc_hash_map(void)
 {
     typedef struct
     {
-	long	hashval;
-	int	oldcount, newcount;
-	int	oldindex, newindex;
+	unsigned long	hashval;
+	int		oldcount, newcount;
+	int		oldindex, newindex;
     }
     sym;
     sym hashtab[MAXLINES*2], *sp;
@@ -114,7 +162,7 @@ void _nc_hash_map(void)
     memset(hashtab, '\0', sizeof(sym) * MAXLINES);
     for (i = 0; i < LINES; i++)
     {
-	long hashval = hash(OLDTEXT(i));
+	unsigned long hashval = hash(OLDTEXT(i));
 
 	for (sp = hashtab; sp->hashval; sp++)
 	    if (sp->hashval == hashval)
@@ -126,7 +174,7 @@ void _nc_hash_map(void)
     }
     for (i = 0; i < LINES; i++)
     {
-	long hashval = hash(NEWTEXT(i));
+	unsigned long hashval = hash(NEWTEXT(i));
 
 	for (sp = hashtab; sp->hashval; sp++)
 	    if (sp->hashval == hashval)

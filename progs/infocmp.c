@@ -963,7 +963,7 @@ int main(int argc, char *argv[])
 			      term->term_names);
 		for (n = 0; n < BOOLCOUNT; n++)
 		{
-		    switch(term->Booleans[n])
+		    switch((int)(term->Booleans[n]))
 		    {
 		    case TRUE:
 			str = "TRUE";

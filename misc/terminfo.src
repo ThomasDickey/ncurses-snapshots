@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 9.13.4
+#	Version 9.13.5
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -30,7 +30,11 @@
 # This file assumes a US-ASCII character set. If you need to fix this, start
 # by global-replacing \E(B and \E)B with the appropriate ISO 6429 enablers
 # for your character set.  \E(A and \E)A enables the British character set
-# with the pound sign at position 2/3.
+# with the pound sign at position 2/3.  
+#
+# In a Japanese-processing environment using EUC/Japanese or Shift-JIS,
+# C1 characters are considered the first-byte set of the Japanese encodings,
+# so \E)0 should be avoided in <enacs> and initialization strings.
 #
 # FILE FORMAT:
 #
@@ -1696,10 +1700,12 @@ xterm-bold|xterm terminal emulator (X11R6 Window System) standout w/bold,
 xterms|vs100s|xterm terminal emulator (small screen 24x80), 
 	cols#80, lines#24, use=xterm, 
 # (kterm: this had extension capabilities ":KJ:TY=ascii:" -- esr)
+# (kterm should not invoke DEC Graphics as the alternate character set
+#  -- Kenji Rikitake)
 kterm|kterm kanji terminal emulator (X window system), 
 	eslok, hs, 
-	csr=\E[%i%p1%d;%p2%dr, dsl=\E[?H, fsl=\E[?F, rc=\E8, 
-	sc=\E7, tsl=\E[?E\E[?%i%dT, 
+	csr=\E[%i%p1%d;%p2%dr, dsl=\E[?H, enacs=\E(B, fsl=\E[?F, 
+	rc=\E8, sc=\E7, tsl=\E[?E\E[?%i%dT, 
 	use=xterm, 
 
 # See the note on ICH/ICH1 VERSUS RMIR/SMIR near the end of file
@@ -5299,10 +5305,12 @@ vt320-k3|MS-Kermit 3.00's vt320 emulation,
 	smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
 	tsl=\E[1$}\r\E[K, vpa=\E[%i%p1%dd, 
 # From: Joseph Gil <yogi@cs.ubc.ca> 13 Dec 1991
+# ACS capabilities from Philippe De Muyter  <phdm@info.ucl.ac.be> 30 May 1996
 # (I removed a bogus boolean :mo: and added <msgr>, <smam>, <rmam> -- esr)
 vt320-k311|dec vt320 series as defined by kermit 3.11, 
 	am, eslok, hs, mir, msgr, xenl, xon, 
 	cols#80, it#8, lines#24, vt#3, 
+	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
 	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
 	clear=\E[;H\E[2J, cnorm=\E[?25h, cr=^M, 
 	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
@@ -5317,11 +5325,11 @@ vt320-k311|dec vt320 series as defined by kermit 3.11,
 	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, kf6=\E[17~, 
 	kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, lf1=pf1, lf2=pf2, 
 	lf3=pf3, lf4=pf4, nel=^M\ED, rc=\E8, rev=\E[7m, 
-	rf=/usr/share/tabset/vt100, ri=\EM, rmam=\E[?7l, 
-	rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m, 
-	rs1=\E[?3l, sc=\E7, sgr0=\E[m, smam=\E[?7h, smir=\E[4h, 
-	smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
-	tsl=\E[2$~\E[1$}\E[1;%dH, 
+	rf=/usr/share/tabset/vt100, ri=\EM, rmacs=^O, 
+	rmam=\E[?7l, rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[27m, 
+	rmul=\E[24m, rs1=\E[?3l, sc=\E7, sgr0=\E[m, smacs=^N, 
+	smam=\E[?7h, smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m, 
+	smul=\E[4m, tbc=\E[3g, tsl=\E[2$~\E[1$}\E[1;%dH, 
 
 ######## NON-ANSI TERMINAL EMULATIONS
 #
@@ -12117,9 +12125,11 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  some aliases to <= 14 chars for portability.
 #	* Added x68k console
 #	* Added OTbs to several VT-series entries.
-#
 # 9.13.4 (Wed May 22 10:54:09 EDT 1996):
 #	* screen entry update for 3.7.1 from Michael Alan Dorfman.
+# 9.13.5 (Wed Jun  5 11:22:41 EDT 1996):
+#	* kterm correction due to Kenji Rikitake.
+#	* ACS correction in vt320-kll due to Phillippe De Muyter.
 #
 
 ######## REORDER

@@ -154,7 +154,7 @@ bool    is_pad = (flags & _ISPAD);
 
 	win->_flags      = flags;
 	win->_attrs      = A_NORMAL;
-	win->_bkgd	 = A_NORMAL;
+	win->_bkgd	 = BLANK;
 
 	win->_clear      = is_pad ? FALSE : (num_lines == screen_lines  &&  num_columns == screen_columns);
 	win->_idlok      = FALSE;

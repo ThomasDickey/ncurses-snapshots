@@ -1,3 +1,4 @@
+# $Id: mk-1st.awk,v 1.11 1996/06/15 23:53:14 tom Exp $
 # Generate list of objects for a given model library
 # Variables:
 #	name (library name, e.g., "ncurses", "panel", "forms", "menus")
@@ -82,10 +83,10 @@ END	{
 				print  ""
 				print  "install \\"
 				print  "install.libs \\"
-				printf "install.%s :: $(libdir) ../lib/%s\n", name, end_name
-				printf "\t@echo installing ../lib/%s as $(libdir)/%s \n", lib_name, end_name
-				printf "\t$(INSTALL) ../lib/%s $(libdir)/%s \n", lib_name, end_name
-				sharedlinks("$(libdir)")
+				printf "install.%s :: $(INSTALL_PREFIX)$(libdir) ../lib/%s\n", name, end_name
+				printf "\t@echo installing ../lib/%s as $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, end_name
+				printf "\t$(INSTALL) ../lib/%s $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, end_name
+				sharedlinks("$(INSTALL_PREFIX)$(libdir)")
 				if ( rmSoLocs == "yes" ) {
 					print  ""
 					print  "clean ::"
@@ -101,16 +102,16 @@ END	{
 				print  ""
 				print  "install \\"
 				print  "install.libs \\"
-				printf "install.%s :: $(libdir) ../lib/%s\n", name, lib_name
-				printf "\t@echo installing ../lib/%s as $(libdir)/%s \n", lib_name, lib_name
-				printf "\t$(INSTALL_DATA) ../lib/%s $(libdir)/%s \n", lib_name, lib_name
+				printf "install.%s :: $(INSTALL_PREFIX)$(libdir) ../lib/%s\n", name, lib_name
+				printf "\t@echo installing ../lib/%s as $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, lib_name
+				printf "\t$(INSTALL_DATA) ../lib/%s $(INSTALL_PREFIX)$(libdir)/%s \n", lib_name, lib_name
 				if ( overwrite == "yes" && lib_name == "libncurses.a" )
 				{
 					printf "\t@echo linking libcurses.a to libncurses.a \n"
-					printf "\trm -f $(libdir)/libcurses.a \n"
-					printf "\t$(LN_S) $(libdir)/libncurses.a $(libdir)/libcurses.a \n"
+					printf "\trm -f $(INSTALL_PREFIX)$(libdir)/libcurses.a \n"
+					printf "\t$(LN_S) $(INSTALL_PREFIX)$(libdir)/libncurses.a $(INSTALL_PREFIX)$(libdir)/libcurses.a \n"
 				}
-				printf "\t$(RANLIB) $(libdir)/%s\n", lib_name
+				printf "\t$(RANLIB) $(INSTALL_PREFIX)$(libdir)/%s\n", lib_name
 			}
 			print ""
 			print "clean ::"

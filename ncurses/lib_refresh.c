@@ -146,7 +146,6 @@ bool	wide;
 
 	if (win->_clear) {
 	   	win->_clear = FALSE;
-	   	newscr->_clear = TRUE;
 	}
 
 	if (! win->_leaveok) {

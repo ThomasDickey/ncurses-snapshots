@@ -1,3 +1,4 @@
+dnl $Id: configure.in,v 1.2 1996/06/15 18:23:47 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -56,13 +57,29 @@ AC_CHECK_LIB(form,form_driver,,,-lcurses)
 AC_CHECK_LIB(menu,menu_driver,,,-lcurses)
 AC_CHECK_LIB(panel,new_panel,,,-lcurses)
 
+AC_STDC_HEADERS
+AC_HEADER_TIME
 AC_CHECK_HEADERS( \
 form.h \
 menu.h \
 panel.h \
 sys/ioctl.h \
+sys/select.h \
+sys/time.h \
 termios.h \
+unistd.h \
 )
+
+AC_CHECK_FUNCS( \
+gettimeofday \
+)
+
+AC_CHECKING([for SCO by checking on /usr/bin/scosh])
+AC_PROGRAM_CHECK(COULD_BE_SCO, [scosh], maybe, maybenot)
+if test "$COULD_BE_SCO" = "maybe"
+then
+	AC_DEFINE(SYSTEM_LOOKS_LIKE_SCO)
+fi
 
 dnl Things that we don't need (or must override) if we're not building ncurses
 ECHO_LINK='@ echo linking $@ ... ;'

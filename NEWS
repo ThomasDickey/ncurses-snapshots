@@ -3,6 +3,35 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+960615	- snapshot
+	+ display version of gcc if configure script identifies it.
+	+ modify configure script to use /usr as Linux's default prefix.
+	+ modify run_tic.sh to use shlib script, fixes some problems installing
+	  with a shared-library configuration.
+	+ adjusted configure script so that it doesn't run tests with the
+	  warnings turned on, which makes config.log hard to read.
+	+ added 'lint' rule to top-level Makefile.
+	+ added configure option '--with-install-prefix' for use by system
+	  builders to install into staging locations (from request by
+	  charles@comm.polymtl.ca)
+	+ corrected autoconfigure for Debian man program; it's not installed
+	  as "man_db". 
+	+ set noecho in 'worm'; it was ifdef'd for debug only
+	+ updated test/configure.in for timing-display in ncurses 'p' test
+	+ corrected misspelled 'getbkgd()'.
+	+ corrected wbkgdset to work like observed syvr4 (sets A_CHARTEXT part
+	  to blank if no character given, copies attributes to window's
+	  attributes).
+	+ modified lib_doupdate.c to use lower-level SP's current_attr state
+	  instead of curscr's state, since it is redundant.
+	+ correction to IDcTransformLine logic which controls where InsStr is
+	  invoked (refined by lav@yars.free.net).
+	> patches 303 by eric
+	+ conditionally include Chris Torek's hash function.
+	+ better fix for nvi refresh-bug (Rick Marshall)
+	+ fix for bug in handling of interrupted keystroke waits,
+	  (Werner Fleck).
+
 960601	- snapshot
 	+ auto-configure man-page compression-format and renames for Debian.
 	+ corrected several typos in curses.h.in (i.e., the mvXXXX macros).
@@ -35,7 +64,8 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 960518	- snapshot
 	+ revised ncurses.c panner test, let pad abut all 4 sides of screen.
 	+ refined case in lib_doupdate.c for ClrToEOL().
-	+ corrected prior change for PutRange (lav@video.yars.free.net)
+	+ corrected prior change for PutRange (Alexander V.  Lukyanov: 
+	  lav@yars.free.net).
 	+ autoconf mods (Tim Mooney: mooney@dogbert.cc.ndsu.NoDak.edu).
 	+ locale fix for forms (Philippe De Muyter: phdemuyt@ulb.ac.be)
 	+ renamed "--with-datadir" option to "--with-ticdir" to avoid

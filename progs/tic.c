@@ -156,8 +156,8 @@ static void put_translate(int c)
 
 	suffix[0] = '\0';
 	if ((up = strchr(namebuf, '#')) != 0
-		|| (up = strchr(namebuf, '=')) 
-		|| ((up = strchr(namebuf, '@')) != 0 && up[1] == '>'))
+	 || (up = strchr(namebuf, '=')) != 0
+	 || ((up = strchr(namebuf, '@')) != 0 && up[1] == '>'))
 	{
 	    (void) strcpy(suffix, up);
 	    *up = '\0';

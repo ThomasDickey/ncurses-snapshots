@@ -200,6 +200,7 @@
 ./misc/ncurses-intro.doc
 ./misc/ncurses-intro.html
 ./misc/run_tic.sh
+./misc/shlib
 ./misc/tabset/std
 ./misc/tabset/stdcrt
 ./misc/tabset/vt100
@@ -323,7 +324,6 @@
 ./progs/toe.c
 ./progs/tput.c
 ./progs/tset.c
-./shlib
 ./test/Makefile.in
 ./test/README
 ./test/blue.c

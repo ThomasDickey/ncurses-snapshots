@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.16 1996/06/02 00:22:39 tom Exp $
+# $Id: Makefile.in,v 1.17 1996/06/15 20:41:00 tom Exp $
 # Makefile for ncurses manual pages.
 #
 # NOTE: When you add or rename a man page, make sure you update both
@@ -6,6 +6,7 @@
 
 SHELL		= /bin/sh
 
+INSTALL_PREFIX	= @INSTALL_PREFIX@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
@@ -19,11 +20,11 @@ INSTALL_DATA	= @INSTALL_DATA@
 
 all:
 
-$(mandir) :
+$(INSTALL_PREFIX)$(mandir) :
 	$(srcdir)/../mkinstalldirs $@
 
-install install.man : terminfo.5 $(mandir)
-	sh edit_man.sh terminfo.5 $(srcdir)/*.[0-9]*
+install install.man : terminfo.5 $(INSTALL_PREFIX)$(mandir)
+	sh edit_man.sh $(INSTALL_PREFIX)$(mandir) terminfo.5 $(srcdir)/*.[0-9]*
 
 # We compose terminfo.5 from the real sources...
 CAPLIST=$(srcdir)/../include/Caps

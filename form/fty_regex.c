@@ -71,8 +71,8 @@ static void *Make_RegularExpression_Type(va_list * ap)
   preg = (RegExp_Arg*)malloc(sizeof(RegExp_Arg));
   if (preg)
     {
-      if ((preg->pRegExp = (regex_t*)malloc(sizeof(regex_t))) &&
-	  !regcomp(preg->pRegExp,rx,
+      if ((preg->pRegExp = (regex_t*)malloc(sizeof(regex_t))) != 0
+       && !regcomp(preg->pRegExp,rx,
 		   (REG_EXTENDED | REG_NOSUB | REG_NEWLINE) ))
 	{
 	  preg->refCount = 1;

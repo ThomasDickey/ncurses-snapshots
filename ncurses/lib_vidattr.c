@@ -51,7 +51,7 @@
 
 int vidputs(attr_t newmode, int  (*outc)(int))
 {
-static attr_t previous_attr;
+static attr_t previous_attr = A_NORMAL;
 attr_t turn_on, turn_off;
 
 	T(("vidputs(%lx) called %s", newmode, _traceattr(newmode)));
@@ -62,11 +62,12 @@ attr_t turn_on, turn_off;
 
 	T(("previous attribute was %s", _traceattr(previous_attr)));
 
-	turn_off = (~newmode & previous_attr) & (chtype)(~A_COLOR);
-	turn_on  = (newmode & ~previous_attr) & (chtype)(~A_COLOR);
-
 	if (newmode == previous_attr)
 		return OK;
+
+	turn_off = (~newmode & previous_attr) & ALL_BUT_COLOR;
+	turn_on  = (newmode & ~previous_attr) & ALL_BUT_COLOR;
+
 	if (newmode == A_NORMAL) {
 		if((previous_attr & A_ALTCHARSET) && exit_alt_charset_mode) {
 			TPUTS_TRACE("exit_alt_charset_mode");
