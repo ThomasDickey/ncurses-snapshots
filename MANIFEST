@@ -435,6 +435,7 @@
 ./man/form_userptr.3x
 ./man/form_win.3x
 ./man/infocmp.1m
+./man/infotocap.1m
 ./man/keybound.3x
 ./man/keyok.3x
 ./man/make_sed.sh

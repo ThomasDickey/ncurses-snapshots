@@ -1,4 +1,4 @@
-# $Id: man_db.renames,v 0.15 1999/10/02 23:28:13 tom Exp $
+# $Id: man_db.renames,v 0.16 1999/12/11 18:43:05 tom Exp $
 # Manual-page renamings for the man_db program
 #
 captoinfo.1m			captoinfo.1
@@ -70,6 +70,7 @@ form_requestname.3x		requestname.3form
 form_userptr.3x			userptr.3form
 form_win.3x			win.3form
 infocmp.1m			infocmp.1
+infotocap.1m			infotocap.1
 keybound.3x			keybound.3ncurses
 keyok.3x			keyok.3ncurses
 menu.3x				menu.3menu

@@ -1,10 +1,25 @@
--- $Id: NEWS,v 1.513 1999/12/05 03:15:42 tom Exp $
+-- $Id: NEWS,v 1.515 1999/12/12 02:31:46 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+19991211
+	+ treat as untranslatable to termcap those terminfo strings which
+	  contain non-decimal formatting, e.g., hexadecimal or octal.
+	+ correct commented-out capabilities that cannot be translated to
+	  termcap, which did not check if a colon must be escaped.
+	+ correct termcap translation for "%>" and "%+", which did not check
+	  if a colon must be escaped, for instance.
+	+ use save_string/save_char for _nc_captoinfo() to eliminate fixed
+	  buffer (originally for _nc_infotocap() in 960301 -TD).
+	+ correct expression used for terminfo equivalent of termcap %B,
+	  adjust regent100 entry which uses this.
+	+ some cleanup and commenting of ad hoc cases in _nc_infotocap().
+	+ eliminate a fixed-buffer in tic, used for translating comments.
+	+ add manpage for infotocap
 
 19991204
 	+ add kvt and gnome terminfo entries -TD
