@@ -1,10 +1,23 @@
--- $Id: NEWS,v 1.803 2004/03/21 00:55:19 tom Exp $
+-- $Id: NEWS,v 1.804 2004/03/28 00:27:13 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040327
+	+ modify _nc_get_locale() to use setlocale() to query the program's
+	  current locale rather than using getenv().  This fixes a case in tin
+	  which relies on legacy treatment of 8-bit characters when the locale
+	  is not initialized (reported by Urs Jansen).
+	+ add sgr string to screen's and rxvt's terminfo entries -TD.
+	+ add a check in tic for terminfo entries having an sgr0 but no sgr
+	  string.  This confuses Tru64 and HPUX curses when combined with
+	  color, e.g., making them leave line-drawing characters in odd places.
+	+ correct casts used in ABSENT_BOOLEAN, CANCELLED_BOOLEAN, matches the
+	  original definitions used in Debian package to fix PowerPC bug before
+	  20030802 (Debian #237629).
 
 20040320
 	+ modify PutAttrChar() and PUTC() macro to improve use of

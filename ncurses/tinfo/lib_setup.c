@@ -47,9 +47,13 @@
 #define _POSIX_SOURCE
 #endif
 
+#if HAVE_LOCALE_H
+#include <locale.h>
+#endif
+
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.81 2004/02/28 21:29:33 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.82 2004/03/28 00:23:25 tom Exp $")
 
 /****************************************************************************
  *
@@ -322,18 +326,26 @@ do_prototype(void)
 }
 
 /*
- * Check if we are running in a UTF-8 locale.
+ * Find the locale which is in effect.
  */
 NCURSES_EXPORT(char *)
 _nc_get_locale(void)
 {
     char *env;
+#if HAVE_LOCALE_H
+    /*
+     * This is preferable to using getenv() since it ensures that we are using
+     * the locale which was actually initialized by the application.
+     */
+    env = setlocale(LC_CTYPE, 0);
+#else
     if (((env = getenv("LC_ALL")) != 0 && *env != '\0')
 	|| ((env = getenv("LC_CTYPE")) != 0 && *env != '\0')
 	|| ((env = getenv("LANG")) != 0 && *env != '\0')) {
-	T(("_nc_get_locale %s", env));
-	return env;
+	;
     }
+#endif
+    T(("_nc_get_locale %s", _nc_visbuf(env)));
     return 0;
 }
 
