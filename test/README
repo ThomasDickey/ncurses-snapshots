@@ -2,8 +2,6 @@ The programs in this directory are designed to test your newest toy :-)
 Check the sources for any further details.
 
 bs.c - the game of battleship
-battle.c - older version of battleship with different interface
-copy.c - test overlay
 gdc.c - Great Digital Clock, gives an example of usng color
 hanoi.c - the game of hanoi, also an example of using color
 knight.c - the game of Knight's Tour

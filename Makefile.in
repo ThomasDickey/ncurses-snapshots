@@ -1,7 +1,7 @@
 # Master Makefile for ncurses library.
 
 SHELL = /bin/sh
-VERSION = 1.9.2b
+VERSION = 1.9.2c
 
 @SET_MAKE@
 
@@ -21,7 +21,4 @@ install.data ::
 
 distclean ::
 	rm -f config.cache config.log config.status Makefile include/config.h
-
-dist ::
-	(cd ..;  tar cvf ncurses-$(VERSION).tar `sed <ncurses-$(VERSION)/MANIFEST 's/^./ncurses-$(VERSION)/'`;  gzip ncurses-$(VERSION).tar)
 

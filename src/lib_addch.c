@@ -67,6 +67,17 @@ int wattroff(WINDOW *win, const attr_t at)
 	return OK;
 }
 
+int wchgat(WINDOW *win, int n, attr_t attr, short color, void *const opts)
+{
+    int	i;
+
+    for (i = win->_curx; i <= win->_maxx && (n == -1 || (n-- > 0)); i++)
+	win->_line[win->_cury].text[i]
+	    = (win->_line[win->_cury].text[i] & A_CHARTEXT) | attr;
+
+    return OK;
+}
+
 inline chtype _nc_render(WINDOW *win, chtype oldch, chtype newch, bool erase)
 /* compute a rendition of the given char correct for the current context */
 {

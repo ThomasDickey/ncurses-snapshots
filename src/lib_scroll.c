@@ -57,11 +57,11 @@ chtype	blank = _nc_render(win, ' ', BLANK, TRUE);
 		for (line = bottom; line >= top-n; line--) {
 		    	memcpy(win->_line[line].text,
 			       win->_line[line+n].text,
-			       sizeof(chtype) * win->_maxx);
+			       sizeof(chtype) * (win->_maxx+1));
 			win->_line[line].oldindex = win->_line[line+n].oldindex;
 		}
 		for (line = top; line < top-n; line++) {
-			for (j = 0; j < win->_maxx; j ++)
+			for (j = 0; j <= win->_maxx; j ++)
 				win->_line[line].text[j] = blank;
 			win->_line[line].oldindex = NEWINDEX;
 		}
@@ -72,11 +72,11 @@ chtype	blank = _nc_render(win, ' ', BLANK, TRUE);
 		for (line = top; line <= bottom-n; line++) {
 		    	memcpy(win->_line[line].text,
 			       win->_line[line+n].text,
-			       sizeof(chtype) * win->_maxx);
+			       sizeof(chtype) * (win->_maxx+1));
 			win->_line[line].oldindex = win->_line[line+n].oldindex;
 		}
 		for (line = bottom; line > bottom-n; line--) {
-			for (j = 0; j < win->_maxx; j ++)
+			for (j = 0; j <= win->_maxx; j ++)
 				win->_line[line].text[j] = blank;
 			win->_line[line].oldindex = NEWINDEX;
 		}

@@ -48,7 +48,7 @@ Before a \fBncurses\fR program is run, the tab stops of the terminal
 should be set and its initialization strings, if defined, must be
 output.  This can be done by executing the \fBtput init\fR command
 after the shell environment variable \fBTERM\fR has been exported.
-\fBtset(1)\fR is usually resposible for doing this.
+\fBtset(1)\fR is usually responsible for doing this.
 [See \fBterminfo\fR(\*n) for further details.]
 
 The \fBncurses\fR library permits manipulation of data structures,
@@ -60,7 +60,7 @@ screen, is supplied.  Others may be created with \fBnewwin\fR.
 Note that ncurses does not handle overlapping windows, that's done by
 the \fBpanels(3x)\fR library. This means that you can either use
 \fBstdscr\fR or divide the screen into tiled windows and not using
-\fBstdscr\fR at all. Mixing the two will result in unpredicatable, and
+\fBstdscr\fR at all. Mixing the two will result in unpredictable, and
 undesired, effects.
 
 Windows are referred to by variables declared as \fBWINDOW *\fR.
@@ -454,10 +454,10 @@ file is searched for among the colon-separated paths in the environment
 variable \fBTERMPATHS\fR if that is defined, and in ~/.termcap and the file
 value of \fBTERMCAP_FILE\fR otherwise.
 
-Versions of \fBncurses\fR compiled on PC clones support display of the PC 
-ROM characters (including ROM characters 0-31 which stock SVr4 curses cannot
-display) and default to an ACS set that includes forms-drawing characters. See
-the EXTENSIONS sections of \fBcurs_addch\fR(3x) and \fBcurs_attr\fR(3x).
+Versions of \fBncurses\fR compiled on PC clones support display of the PC ROM
+characters (including ROM characters 0-31, which stock SVr4 curses cannot
+display). See the EXTENSIONS sections of \fBcurs_addch\fR(3x) and
+\fBcurs_attr\fR(3x).
 .SH PORTABILITY
 The \fBncurses\fR library is intended to be BASE-level conformant with the XSI
 Curses standard.  Certain portions of the EXTENDED XSI Curses functionality
@@ -482,10 +482,6 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBmvadd_wchstr\fB,
 \fBmvwadd_wchnstr\fB,
 \fBmvwadd_wchstr\fB,
-\fBchgat\fR,
-\fBmvchgat\fR,
-\fBmvwchgat\fR,
-\fBwchgat\fR,
 \fBbkgrndset\fB,
 \fBbkgrnd\fB,
 \fBgetbkgrnd\fB,

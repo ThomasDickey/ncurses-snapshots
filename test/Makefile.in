@@ -20,17 +20,14 @@ LDFLAGS		= -L../src -L$(libdir) -lpanel -lncurses @LDFLAGS@ @LIBS@
 # change to -lpanelg -ldcurses if you want to do any debugging
 
 TESTS = \
-	battle \
 	blue \
 	bs \
-	copy \
 	firework \
 	gdc \
 	hanoi \
 	knight \
 	ncurses \
 	newdemo \
-	over \
 	rain \
 	tclock \
 	testcurs \
@@ -43,13 +40,9 @@ TESTS = \
 
 all: $(TESTS) 
 
-battle: battle.c
-	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
 blue: blue.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
 bs: bs.c
-	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
-copy: copy.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
 firework: firework.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
@@ -62,8 +55,6 @@ knight: knight.c
 ncurses: ncurses.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
 newdemo: newdemo.c
-	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
-over: over.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@
 rain: rain.c
 	$(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LDFLAGS) -o $@

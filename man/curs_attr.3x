@@ -41,7 +41,9 @@
 \fBint wattr_on(WINDOW *, attr_t attrs);\fR
 .br
 \fBint wattr_set(WINDOW *, attr_t attrs);\fR
-.bint r
+.br
+\fBint chgat(int n, attr_t attr, short color, void *const opts)\fR
+.br
 .SH DESCRIPTION
 These routines manipulate the current attributes of the named window.  The
 current attributes of a window apply to all characters that are written into
@@ -62,8 +64,15 @@ attributes.
 The routine \fBwattr_get\fR returns the current attribute for the given
 window; \fBattr_get\fR returns the current attribute for \fBstdscr\fR.
 The remaining \fBattr_\fR* functions operate exactly like the corresponding
-\fBattr\fR* functions, exceptthat they take arguments of type \fBattr_t\fR
+\fBattr\fR* functions, except that they take arguments of type \fBattr_t\fR
 rather than \fBint\fR. 
+
+The routine \fBchgat\fR changes the attributes of a given number of characters
+starting at the current cursor location of \fBstdscr\fR.  It does not update 
+the cursor and does not perform wrapping.  A character count of -1 or greater
+than the remaining window width means to change attributes all the way to the
+end of the current line.  The \fBwchgat\fR function generalizes this to any
+window; the \fBmvwchgat\fR function does a cursor move before acting.
 .SS Attributes
 The following video attributes, defined in \fB<curses.h>\fR, can be passed to
 the routines \fBattron\fR, \fBattroff\fR, and \fBattrset\fR, or OR-ed with the
@@ -107,7 +116,8 @@ See the EXTENSIONS sections of \fBcurs_addch\fR(3x) for details.
 .SH PORTABILITY
 All these functions are supported in the XSI Curses standard, Issue 4.  The
 standard defined the dedicated type for highlights, \fBattr_t\fR, which is not
-defined in SVr4 curses. 
+defined in SVr4 curses. The functions taking \fBattr_t\fR arguments are
+not supported under SVr4.
 
 The XSI Curses standard states that whether the traditional functions
 \fBattron\fR/\fBattroff\fR/\fBattrset\fR can manipulate attributes other than
