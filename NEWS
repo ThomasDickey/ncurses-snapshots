@@ -1,10 +1,14 @@
--- $Id: NEWS,v 1.432 1999/03/07 02:04:21 tom Exp $
+-- $Id: NEWS,v 1.433 1999/03/08 02:34:49 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990307	pre-release
+	+ back-out change to wgetch because it causes a problem with ^Z
+	  handling in lynx (reported by Kim DeVaughn).
 
 990306	pre-release
 	+ add -G option to tic and infocmp, to reverse the -g option.

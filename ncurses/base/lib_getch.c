@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.42 1999/03/03 23:44:22 juergen Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.43 1999/03/08 02:35:10 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -229,7 +229,7 @@ int	ch;
 	if (wgetch_should_refresh(win))
 		wrefresh(win);
 
-	if (!win->_notimeout && (win->_delay >= 0 || SP->_cbreak > 0))
+	if (!win->_notimeout && (win->_delay >= 0 || SP->_cbreak > 1))
 	{
 	        int delay;
 
