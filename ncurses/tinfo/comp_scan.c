@@ -50,7 +50,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.42 2000/04/01 19:08:36 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.43 2000/04/30 00:17:40 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -65,6 +65,9 @@ long _nc_curr_file_pos = 0;	/* file offset of current line */
 long _nc_comment_start = 0;	/* start of comment range before name */
 long _nc_comment_end = 0;	/* end of comment range before name */
 long _nc_start_line = 0;	/* start line of current entry */
+
+struct token _nc_curr_token =
+{0, 0, 0};
 
 /*****************************************************************************
  *

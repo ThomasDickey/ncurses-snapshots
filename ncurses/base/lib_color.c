@@ -41,7 +41,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.49 2000/03/26 03:12:12 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.50 2000/04/29 21:20:03 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -312,7 +312,7 @@ init_pair(short pair, short f, short b)
 	}
     }
     SP->_color_pairs[pair] = result;
-    if ((int)(SP->_current_attr & A_COLOR) == COLOR_PAIR(pair))
+    if ((int) (SP->_current_attr & A_COLOR) == COLOR_PAIR(pair))
 	SP->_current_attr |= A_COLOR;	/* force attribute update */
 
     if (initialize_pair) {
@@ -419,8 +419,8 @@ pair_content(short pair, short *f, short *b)
 void
 _nc_do_color(int old_pair, int pair, bool reverse, int (*outc) (int))
 {
-    short fg = C_MASK, bg = C_MASK;
-    short old_fg, old_bg;
+    NCURSES_COLOR_T fg = C_MASK, bg = C_MASK;
+    NCURSES_COLOR_T old_fg, old_bg;
 
     if (pair != 0) {
 	if (set_color_pair) {
@@ -464,7 +464,7 @@ _nc_do_color(int old_pair, int pair, bool reverse, int (*outc) (int))
 #endif
 
     if (reverse) {
-	short xx = fg;
+	NCURSES_COLOR_T xx = fg;
 	fg = bg;
 	bg = xx;
     }

@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2000/04/22 23:33:41 $
+#	$Date: 2000/04/22 22:58:12 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -11550,11 +11550,10 @@ ibm8514-c|IBM 8514 color display with standout and underline,
 
 #
 # AIX entries.  IBM ships these with AIX 3.2.5. 
-# -- added rc, sc based on manpage -TD
 aixterm|IBM Aixterm Terminal Emulator, 
 	eslok, hs, 
 	acsc=jjkkllmmnnqqttuuvvwwxx, bold=\E[1m, dsl=\E[?E, 
-	fsl=\E[?F, rc=\E8, ri@, s0ds=\E(B, s1ds=\E(0, sc=\E7, 
+	fsl=\E[?F, ri@, s0ds=\E(B, s1ds=\E(0, 
 	sgr=\E[%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;m%?%p9%t\E(0%e\E(B%;, 
 	sgr0=\E[0;10m\E(B, tsl=\E[?%p1%dT, use=ibm6154, 
 aixterm-m|IBM AIXterm Monochrome Terminal Emulator, 
@@ -18293,7 +18292,6 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add mgterm, from NetBSD -TD
 #	* add alias sun-cgsix for sun-ss5 as per NetBSD
 #	* change cons25w to use rs2 for reset rather than rs1 -TD
-#	* add rc/sc to aixterm based on manpage -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

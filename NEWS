@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.551 2000/04/22 23:37:39 tom Exp $
+-- $Id: NEWS,v 1.553 2000/04/30 00:23:37 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000429
+	+ move _nc_curr_token from parse_entry.c to comp_scan.c, to work around
+	  problem linking tack on MacOS X DP3.
+	+ include <sys/time.h> in lib_napms.c to compile on MacOS X DP3
+	  (reported by Gerben Wierda <wierda@holmes.nl>).
+	+ modify lib_vidattr.c to check for ncv fixes when pair-0 is not
+	  default colors.
+	+ add -d option to ncurses.c, to turn on default-colors for testing.
+	+ add a check to _nc_makenew() to ensure that newwin() and newpad()
+	  calls do not silently fail by passing too-large limits.
+	+ add symbol NCURSES_SIZE_T to use rather than explicit 'short' for
+	  internal window and pad sizes.  Note that since this is visible in
+	  the WINDOW struct, it would be an ABI change to make this an 'int'
+	  (prompted by a question by Bastian Trompetter
+	  <btrompetter@firemail.de>, who attempted to create a 96000-line pad).
 
 20000422
 	+ add mgterm terminfo entry from NetBSD, minor adjustments to sun-ss5,
