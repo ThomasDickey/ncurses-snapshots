@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -37,7 +37,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracemse.c,v 1.8 2000/12/10 03:02:45 tom Exp $")
+MODULE_ID("$Id: lib_tracemse.c,v 1.9 2001/10/20 22:43:16 tom Exp $")
 
 #ifdef TRACE
 
@@ -88,11 +88,5 @@ _tracemouse(MEVENT const *ep)
 }
 
 #else /* !TRACE */
-/* don't make empty module */
-NCURSES_EXPORT(void)
-_nc_lib_tracemouse(void);
-NCURSES_EXPORT(void)
-_nc_lib_tracemouse(void)
-{
-}
+empty_module(_nc_lib_tracemouse)
 #endif

@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.650 2001/10/14 00:48:21 tom Exp $
+-- $Id: NEWS,v 1.651 2001/10/20 22:39:19 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20011020
+	+ rewrote limit-checks in wscrl() and associated _nc_scroll_window(),
+	  to ensure that if the parameter of wscrl() is larger than the size of
+	  the scrolling region, then the scrolling region will be cleared
+	  (report by Ben Kohlen <bckohlen@yahoo.com>).
+	+ add trace/varargs.c, using this to trace parameters in lib_printw.c
+	+ implement _tracecchar_t2() and _tracecchar_t().
+	+ split-out trace/visbuf.c
+	+ correct typo in lib_printw.c changes from 20010922 (report by Mike
+	  Castle).
 
 20011013
 	+ modify run_tic.sh to check if the build is a cross-compile.  In that

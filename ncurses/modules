@@ -1,4 +1,4 @@
-# $Id: modules,v 1.76 2001/06/18 18:22:39 skimo Exp $
+# $Id: modules,v 1.77 2001/10/20 19:02:28 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -114,6 +114,7 @@ lib_wunctrl	lib		$(base)
 nc_panel	lib		$(base)
 safe_sprintf	lib		$(base)
 tty_update	lib		$(serial)	../include/term.h
+varargs		lib		$(trace)
 
 # Modules for porting
 memmove		lib		$(base)
@@ -188,4 +189,5 @@ strings		lib		$(tinfo)
 trace_buf	lib		$(trace)
 trace_tries	lib		$(trace)
 unctrl		lib		.
+visbuf		lib		$(trace)	$(INCDIR)/tic.h
 write_entry	lib		$(tinfo)	../include/term.h $(INCDIR)/term_entry.h $(INCDIR)/tic.h
