@@ -1,4 +1,4 @@
-# $Id: ncurses_defs,v 1.24 2004/06/26 22:08:37 tom Exp $
+# $Id: ncurses_defs,v 1.25 2004/10/09 18:18:46 tom Exp $
 ##############################################################################
 # Copyright (c) 2000-2003,2004 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -59,6 +59,7 @@ HAVE_GETNSTR
 HAVE_GETOPT_H
 HAVE_GETTIMEOFDAY
 HAVE_GETTTYNAM
+HAVE_GPM_H
 HAVE_GPP_BUILTIN_H
 HAVE_GXX_BUILTIN_H
 HAVE_HAS_KEY

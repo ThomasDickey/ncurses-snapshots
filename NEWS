@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.839 2004/10/03 00:47:31 tom Exp $
+-- $Id: NEWS,v 1.840 2004/10/09 19:23:26 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20041009
+	+ amend 20021221 workaround for broken acs to reset the sgr, rmacs
+	  and smacs strings as well.  Also modify the check for screen's
+	  limitations in that area to allow the multi-character shift-in
+	  and shift-out which seem to work.
+	+ change GPM initialization, using dl library to load it dynamically
+	  at runtime (Debian #110586).
 
 20041002
 	+ correct logic for color pair in setcchar() and getcchar() (patch by

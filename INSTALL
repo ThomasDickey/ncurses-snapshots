@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.78 2004/09/18 17:12:51 tom Exp $
+-- $Id: INSTALL,v 1.79 2004/10/09 16:56:33 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -1214,13 +1214,9 @@ USING NCURSES WITH GPM:
 		cc -o foo foo.o -lncurses -lgpm -lncurses
 
 	but the linker may not cooperate, producing mysterious errors.
-	A patched version of gpm is available:
+	See the FAQ:
 
-		dickey.his.com:/ncurses/gpm-1.10-970125.tar.gz
-
-	This patch is incorporated in gpm 1.12; however some integrators
-	are slow to update this library.  Current distributions of gpm can
-	be configured properly using the --without-curses option.
+	http://invisible-island.net/ncurses/ncurses.faq.html#using_gpm_lib
 
 BUILDING NCURSES WITH A CROSS-COMPILER
 	Ncurses can be built with a cross-compiler.  Some parts must be built

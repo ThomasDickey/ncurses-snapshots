@@ -53,7 +53,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.85 2004/08/14 20:13:37 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.86 2004/10/09 19:16:33 tom Exp $")
 
 /****************************************************************************
  *
@@ -385,6 +385,9 @@ _nc_unicode_locale(void)
     return result;
 }
 
+#define CONTROL_N(s) ((s) != 0 && strstr(s, "\016") != 0)
+#define CONTROL_O(s) ((s) != 0 && strstr(s, "\017") != 0)
+
 /*
  * Check for known broken cases where a UTF-8 locale breaks the alternate
  * character set.
@@ -400,7 +403,11 @@ _nc_locale_breaks_acs(void)
 	    && ((env = getenv("TERMCAP")) != 0
 		&& strstr(env, "screen") != 0)
 	    && strstr(env, "hhII00") != 0) {
-	    return 1;
+	    if (CONTROL_N(enter_alt_charset_mode) ||
+		CONTROL_O(enter_alt_charset_mode) ||
+		CONTROL_N(set_attributes) ||
+		CONTROL_O(set_attributes))
+		return 1;
 	}
     }
     return 0;
