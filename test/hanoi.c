@@ -14,7 +14,7 @@
  *
  *	Date: 05.Nov.90
  *
- * $Id: hanoi.c,v 1.16 1999/10/23 15:01:01 tom Exp $
+ * $Id: hanoi.c,v 1.17 1999/11/13 23:39:12 tom Exp $
  */
 
 #include <test.priv.h>
@@ -105,7 +105,7 @@ unsigned char AutoFlag = 0;
 		int i;
 		int bg = COLOR_BLACK;
 		start_color();
-#ifdef NCURSES_VERSION
+#ifdef HAVE_USE_DEFAULT_COLORS
 		if (use_default_colors() == OK)
 			bg = -1;
 #endif

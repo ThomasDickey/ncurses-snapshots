@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: configure.in,v 1.27 1999/10/23 20:01:42 tom Exp $
+dnl $Id: configure.in,v 1.28 1999/11/13 23:40:00 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -134,7 +134,9 @@ gettimeofday \
 napms \
 resizeterm \
 strdup \
+use_default_colors \
 vsscanf \
+wresize \
 )
 
 dnl ---------------------------------------------------------------------------

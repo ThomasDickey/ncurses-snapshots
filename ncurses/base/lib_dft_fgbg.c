@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1998,1999 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,26 +27,32 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey <dickey@clark.net> 1997                        *
+ *  Author: Thomas E. Dickey <dickey@clark.net> 1997,1999                   *
  ****************************************************************************/
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_dft_fgbg.c,v 1.3 1998/02/11 12:13:54 tom Exp $")
+MODULE_ID("$Id: lib_dft_fgbg.c,v 1.7 1999/11/14 01:22:11 tom Exp $")
 
 /*
  * Modify the behavior of color-pair 0 so that the library doesn't assume that
- * it is black on white.  This is an extension to XSI curses.
- *
- * Invoke this function after 'start_color()'.
+ * it is white on black.  This is an extension to XSI curses.
  */
 int
 use_default_colors(void)
 {
 	T((T_CALLED("use_default_colors()")));
+	returnCode(assume_default_colors(C_MASK, C_MASK));
+}
 
-	if (!SP->_coloron)
-		returnCode(ERR);
+/*
+ * Modify the behavior of color-pair 0 so that the library assumes that it
+ * is something specific, possibly not white on black.
+ */
+int
+assume_default_colors(int fg, int bg)
+{
+	T((T_CALLED("assume_default_colors(%d,%d)"), fg, bg));
 
 	if (!orig_pair && !orig_colors)
 		returnCode(ERR);
@@ -54,7 +60,10 @@ use_default_colors(void)
 	if (initialize_pair)	/* don't know how to handle this */
 		returnCode(ERR);
 
-	SP->_default_color = TRUE;
-	SP->_color_pairs[0] = PAIR_OF(C_MASK, C_MASK);
+	SP->_default_color = (fg != COLOR_WHITE) || (bg != COLOR_BLACK);
+	SP->_default_fg = fg;
+	SP->_default_bg = bg;
+	if (SP->_color_pairs != 0)
+		SP->_color_pairs[0] = PAIR_OF(fg, bg);
 	returnCode(OK);
 }
