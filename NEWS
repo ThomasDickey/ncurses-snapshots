@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.817 2004/05/30 00:25:13 tom Exp $
+j- $Id: NEWS,v 1.818 2004/06/05 22:04:49 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040605
+	+ add setlocale() calls to a few test programs which may require it:
+	  demo_forms.c, filter.c, ins_wide.c, inserts.c
+	+ correct a few misspelled function names in ncurses-intro.html (report
+	  by Tony Li).
+	+ correct internal name of key_defined() manpage, which conflicted with
+	  define_key().
 
 20040529
 	+ correct size of internal pad used for holding wide-character

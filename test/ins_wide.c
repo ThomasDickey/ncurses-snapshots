@@ -1,5 +1,5 @@
 /*
- * $Id: ins_wide.c,v 1.3 2003/08/09 22:07:23 tom Exp $
+ * $Id: ins_wide.c,v 1.4 2004/06/05 21:35:32 tom Exp $
  *
  * Demonstrate the wins_wstr() and wins_wch functions.
  * Thomas Dickey - 2002/11/23
@@ -86,6 +86,8 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
     wchar_t buffer[BUFSIZ];
     WINDOW *work;
     WINDOW *show;
+
+    setlocale(LC_ALL, "");
 
     putenv("TABSIZE=8");
     initscr();
