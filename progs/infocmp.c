@@ -42,7 +42,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.74 2004/07/05 12:56:11 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.75 2004/08/28 22:57:38 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -475,11 +475,23 @@ static const assoc std_caps[] =
     {"\033)A", "ISO UK G1"},	/* enable UK chars for G1 */
     {"\033)B", "ISO US G1"},	/* enable US chars for G1 */
 
-    /* these are DEC private modes widely supported by emulators */
+    /* these are DEC private controls widely supported by emulators */
     {"\033=", "DECPAM"},	/* application keypad mode */
     {"\033>", "DECPNM"},	/* normal keypad mode */
     {"\033<", "DECANSI"},	/* enter ANSI mode */
+    {"\033[!p", "DECSTR"},	/* soft reset */
+    {"\033 F", "S7C1T"},	/* 7-bit controls */
 
+    {(char *) 0, (char *) 0}
+};
+
+static const assoc std_modes[] =
+/* ECMA \E[ ... [hl] modes recognized by many emulators */
+{
+    {"2", "AM"},		/* keyboard action mode */
+    {"4", "IRM"},		/* insert/replace mode */
+    {"12", "SRM"},		/* send/receive mode */
+    {"20", "LNM"},		/* linefeed mode */
     {(char *) 0, (char *) 0}
 };
 
@@ -533,6 +545,17 @@ static const assoc ecma_highlights[] =
     {(char *) 0, (char *) 0}
 };
 
+static int
+skip_csi(const char *cap)
+{
+    int result = 0;
+    if (cap[0] == '\033' && cap[1] == '[')
+	result = 2;
+    else if (UChar(cap[0]) == 0233)
+	result = 1;
+    return result;
+}
+
 static void
 analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 {
@@ -540,6 +563,7 @@ analyze_string(const char *name, const char *cap, TERMTYPE *tp)
     char buf2[MAX_TERMINFO_LENGTH];
     const char *sp, *ep;
     const assoc *ap;
+    int tp_lines = tp->Numbers[2];
 
     if (cap == ABSENT_STRING || cap == CANCELLED_STRING)
 	return;
@@ -548,6 +572,7 @@ analyze_string(const char *name, const char *cap, TERMTYPE *tp)
     buf[0] = '\0';
     for (sp = cap; *sp; sp++) {
 	int i;
+	int csi;
 	size_t len = 0;
 	const char *expansion = 0;
 
@@ -587,26 +612,68 @@ analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 	}
 
 	/* now check the standard capabilities */
-	if (!expansion)
+	if (!expansion) {
+	    csi = skip_csi(sp);
 	    for (ap = std_caps; ap->from; ap++) {
-		len = strlen(ap->from);
+		size_t adj = csi ? 2 : 0;
 
-		if (strncmp(ap->from, sp, len) == 0) {
+		len = strlen(ap->from);
+		if (len > adj
+		    && strncmp(ap->from + adj, sp + csi, len - adj) == 0) {
 		    expansion = ap->to;
+		    len -= adj;
+		    len += csi;
 		    break;
 		}
 	    }
+	}
+
+	/* now check for standard-mode sequences */
+	if (!expansion
+	    && (csi = skip_csi(sp)) != 0
+	    && (len = strspn(sp + csi, "0123456789;"))
+	    && ((sp[csi + len] == 'h') || (sp[csi + len] == 'l'))) {
+	    char buf3[MAX_TERMINFO_LENGTH];
+
+	    (void) strcpy(buf2, (sp[csi + len] == 'h') ? "ECMA+" : "ECMA-");
+	    (void) strncpy(buf3, sp + csi, len);
+	    len += csi + 1;
+	    buf3[len] = '\0';
+
+	    ep = strtok(buf3, ";");
+	    do {
+		bool found = FALSE;
+
+		for (ap = std_modes; ap->from; ap++) {
+		    size_t tlen = strlen(ap->from);
+
+		    if (strncmp(ap->from, ep, tlen) == 0) {
+			(void) strcat(buf2, ap->to);
+			found = TRUE;
+			break;
+		    }
+		}
+
+		if (!found)
+		    (void) strcat(buf2, ep);
+		(void) strcat(buf2, ";");
+	    } while
+		((ep = strtok((char *) 0, ";")));
+	    buf2[strlen(buf2) - 1] = '\0';
+	    expansion = buf2;
+	}
 
 	/* now check for private-mode sequences */
 	if (!expansion
-	    && sp[0] == '\033' && sp[1] == '[' && sp[2] == '?'
-	    && (len = strspn(sp + 3, "0123456789;"))
-	    && ((sp[3 + len] == 'h') || (sp[3 + len] == 'l'))) {
+	    && (csi = skip_csi(sp)) != 0
+	    && sp[csi] == '?'
+	    && (len = strspn(sp + csi + 1, "0123456789;"))
+	    && ((sp[csi + 1 + len] == 'h') || (sp[csi + 1 + len] == 'l'))) {
 	    char buf3[MAX_TERMINFO_LENGTH];
 
-	    (void) strcpy(buf2, (sp[3 + len] == 'h') ? "DEC+" : "DEC-");
-	    (void) strncpy(buf3, sp + 3, len);
-	    len += 4;
+	    (void) strcpy(buf2, (sp[csi + 1 + len] == 'h') ? "DEC+" : "DEC-");
+	    (void) strncpy(buf3, sp + csi + 1, len);
+	    len += csi + 2;
 	    buf3[len] = '\0';
 
 	    ep = strtok(buf3, ";");
@@ -634,14 +701,14 @@ analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 
 	/* now check for ECMA highlight sequences */
 	if (!expansion
-	    && sp[0] == '\033' && sp[1] == '['
-	    && (len = strspn(sp + 2, "0123456789;"))
-	    && sp[2 + len] == 'm') {
+	    && (csi = skip_csi(sp)) != 0
+	    && (len = strspn(sp + csi, "0123456789;")) != 0
+	    && sp[csi + len] == 'm') {
 	    char buf3[MAX_TERMINFO_LENGTH];
 
 	    (void) strcpy(buf2, "SGR:");
-	    (void) strncpy(buf3, sp + 2, len);
-	    len += 3;
+	    (void) strncpy(buf3, sp + csi, len);
+	    len += csi + 1;
 	    buf3[len] = '\0';
 
 	    ep = strtok(buf3, ";");
@@ -667,20 +734,46 @@ analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 	    buf2[strlen(buf2) - 1] = '\0';
 	    expansion = buf2;
 	}
+
+	if (!expansion
+	    && (csi = skip_csi(sp)) != 0
+	    && sp[csi] == 'm') {
+	    len = csi + 1;
+	    (void) strcpy(buf2, "SGR:");
+	    strcat(buf2, ecma_highlights[0].to);
+	    expansion = buf2;
+	}
+
 	/* now check for scroll region reset */
-	if (!expansion) {
-	    (void) sprintf(buf2, "\033[1;%dr", tp->Numbers[2]);
-	    len = strlen(buf2);
-	    if (strncmp(buf2, sp, len) == 0)
+	if (!expansion
+	    && (csi = skip_csi(sp)) != 0) {
+	    if (sp[csi] == 'r') {
 		expansion = "RSR";
+		len = 1;
+	    } else {
+		(void) sprintf(buf2, "1;%dr", tp_lines);
+		len = strlen(buf2);
+		if (strncmp(buf2, sp + csi, len) == 0)
+		    expansion = "RSR";
+	    }
+	    len += csi;
 	}
 
 	/* now check for home-down */
-	if (!expansion) {
-	    (void) sprintf(buf2, "\033[%d;1H", tp->Numbers[2]);
+	if (!expansion
+	    && (csi = skip_csi(sp)) != 0) {
+	    (void) sprintf(buf2, "%d;1H", tp_lines);
 	    len = strlen(buf2);
-	    if (strncmp(buf2, sp, len) == 0)
+	    if (strncmp(buf2, sp + csi, len) == 0) {
 		expansion = "LL";
+	    } else {
+		(void) sprintf(buf2, "%dH", tp_lines);
+		len = strlen(buf2);
+		if (strncmp(buf2, sp + csi, len) == 0) {
+		    expansion = "LL";
+		}
+	    }
+	    len += csi;
 	}
 
 	/* now look at the expansion we got, if any */

@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.255 $
-#	$Date: 2004/08/22 00:49:56 $
+#	$Revision: 1.256 $
+#	$Date: 2004/08/28 21:58:59 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a "newer" version which differs in some cosmetic details (but actually
@@ -2247,7 +2247,7 @@ vt320|vt300|dec vt320 7 bit terminal,
 	ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K, fsl=\E[0$}, 
 	home=\E[H, ht=^I, hts=\EH, ich=\E[%p1%d@, il=\E[%p1%dL, 
 	il1=\E[L, ind=\ED, 
-	is2=\E>\E[?3l\E[?4l\E[5?l\E[?7h\E[?8h\E[1;24r\E[24;1H, 
+	is2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h\E[1;24r\E[24;1H, 
 	kbs=\177, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
 	kdch1=\E[3~, kel=\E[4~, kf10=\E[21~, kf11=\E[23~, 
 	kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, kf15=\E[28~, 
@@ -2259,7 +2259,7 @@ vt320|vt300|dec vt320 7 bit terminal,
 	rf=/usr/share/tabset/vt300, ri=\EM, rmacs=\E(B, 
 	rmam=\E[?7l, rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[m, 
 	rmul=\E[m, 
-	rs2=\E>\E[?3l\E[?4l\E[5?l\E[?7h\E[?8h\E[1;24r\E[24;1H, 
+	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h\E[1;24r\E[24;1H, 
 	sc=\E7, 
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p4%t;5%;%?%p1%p3%|%t;7%;m%?%p9%t\E(0%e\E(B%;$<2>, 
 	sgr0=\E[m, smacs=\E(0, smam=\E[?7h, smir=\E[4h, 
@@ -2267,19 +2267,19 @@ vt320|vt300|dec vt320 7 bit terminal,
 	tsl=\E[1$}\E[H\E[K, use=vt220+keypad, 
 vt320-nam|vt300-nam|dec vt320 7 bit terminal with no am to make SAS happy, 
 	am@, 
-	is2=\E>\E[?3l\E[?4l\E[5?l\E[?7l\E[?8h\E[1;24r\E[24;1H, 
-	rs2=\E>\E[?3l\E[?4l\E[5?l\E[?7l\E[?8h\E[1;24r\E[24;1H, 
+	is2=\E>\E[?3l\E[?4l\E[?5l\E[?7l\E[?8h\E[1;24r\E[24;1H, 
+	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7l\E[?8h\E[1;24r\E[24;1H, 
 	use=vt320, 
 # We have to init 132-col mode, not 80-col mode.
 vt320-w|vt300-w|dec vt320 wide 7 bit terminal, 
 	cols#132, wsl#132, 
-	is2=\E>\E[?3h\E[?4l\E[5?l\E[?7h\E[?8h\E[1;24r\E[24;1H, 
-	rs2=\E>\E[?3h\E[?4l\E[5?l\E[?7h\E[?8h\E[1;24r\E[24;1H, 
+	is2=\E>\E[?3h\E[?4l\E[?5l\E[?7h\E[?8h\E[1;24r\E[24;1H, 
+	rs2=\E>\E[?3h\E[?4l\E[?5l\E[?7h\E[?8h\E[1;24r\E[24;1H, 
 	use=vt320, 
 vt320-w-nam|vt300-w-nam|dec vt320 wide 7 bit terminal with no am, 
 	am@, 
-	is2=\E>\E[?3h\E[?4l\E[5?l\E[?7l\E[?8h\E[1;24r\E[24;1H, 
-	rs2=\E>\E[?3h\E[?4l\E[5?l\E[?7l\E[?8h\E[1;24r\E[24;1H, 
+	is2=\E>\E[?3h\E[?4l\E[?5l\E[?7l\E[?8h\E[1;24r\E[24;1H, 
+	rs2=\E>\E[?3h\E[?4l\E[?5l\E[?7l\E[?8h\E[1;24r\E[24;1H, 
 	use=vt320-w, 
 
 # VT330 and VT340 -- These are ReGIS and SIXEL graphics terminals
@@ -16573,9 +16573,16 @@ amiga-h|Hans Verkuil's Amiga ANSI,
 	smso=\2337m, smul=\2334m, 
 
 # From: Henning 'Faroul' Peters <Faroul@beyond.kn-bremen.de>, 25 Sep 1999
+#
+# Pavel Fedin added
+#	Home    Shift+Left
+#	End     Shift+Right
+#	PgUp    Shift+Up
+#	PgDn    Shift+Down
 amiga-8bit|Amiga ANSI using 8-bit controls, 
 	acsc=, dl=\233%p1%dM, dl1=\233M, il=\233%p1%dL, il1=\233L, 
-	ind=\204, indn@, ri=\215, rin@, use=amiga-h, 
+	ind=\204, indn@, kend=\233 @, khome=\233 A, knp=\233S, 
+	kpp=\233T, ri=\215, rin@, use=amiga-h, 
 
 # From: Ruediger Kuhlmann <terminfo@ruediger-kuhlmann.de>, 18 Jul 2000
 # requires use of appropriate preferences settings.
@@ -16604,6 +16611,14 @@ amiga-vnc|Amiga using VNC console (black on light gray),
 	setaf=\E[%?%p1%{8}%>%t%'2'%p1%+%d%e3%p1%d%;m, 
 	sgr0=\E[0m\017\E[30;85;>15m, smcup=\E[?7h, smkx=\E[?1h, 
 	smso=\E[1m, smul=\E[4m, 
+
+# MorphOS on Genesi Pegasos
+# By Pavel Fedin <sonic_amiga@rambler.ru>
+morphos, 
+	acsc=, dl=\233%p1%dM, dl1=\233M, il=\233%p1%dL, il1=\233L, 
+	ind=\204, indn@, kend=\23345~, kf11=\23320~, kf12=\23321~, 
+	khome=\23344~, kich1=\23340~, knp=\23342~, kpp=\23341~, 
+	ri=\215, rin@, use=amiga-h, 
 
 # Commodore B-128 microcomputer from Doug Tyrol <det@HEL-ACE.ARPA>
 # 	I'm trying to write a termcap for a commodore b-128, and I'm
@@ -20902,6 +20917,11 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  are reset in rs2 string:  hurd, putty, gnome, konsole-base, mlterm,
 #	  Eterm, screen.  (The xterm entries are left alone - old ones for
 #	  compatibility, and the new ones do not require this change) -TD
+#
+# 2004-08-28
+#	* add morphos entry -Pavel Fedin
+#	* modify amiga-8bit to add khome/kend/knp/kpp -Pavel Fedin
+#	* corrected \E[5?l to \E[?5l in vt320 entries -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
