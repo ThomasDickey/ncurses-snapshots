@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.64 2002/10/19 20:59:41 tom Exp $
+# $Id: Makefile.in,v 1.67 2002/11/24 00:05:53 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.           #
 #                                                                            #
@@ -89,6 +89,7 @@ TESTS = \
 	blue$x \
 	bs$x \
 	cardfile$x \
+	define_key$x \
 	ditto$x \
 	dots$x \
 	filter$x \
@@ -98,7 +99,9 @@ TESTS = \
 	hanoi$x \
 	hashtest$x \
 	inserts$x \
+	ins_wide$x \
 	keynames$x \
+	keyok$x \
 	knight$x \
 	lrtest$x \
 	ncurses$x \

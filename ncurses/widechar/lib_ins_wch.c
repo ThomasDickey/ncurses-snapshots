@@ -38,17 +38,18 @@
 */
 
 #include <curses.priv.h>
+#include <ctype.h>
 
-MODULE_ID("$Id: lib_ins_wch.c,v 1.1 2002/03/10 22:25:06 tom Exp $")
+MODULE_ID("$Id: lib_ins_wch.c,v 1.2 2002/11/23 23:06:32 tom Exp $")
 
-NCURSES_EXPORT(int)
-wins_wch(WINDOW *win, const cchar_t * wch)
+/*
+ * Insert the given character, updating the current location to simplify
+ * inserting a string.
+ */
+static void
+_nc_insert_wch(WINDOW *win, const cchar_t * wch)
 {
-    int code = ERR;
-
-    T((T_CALLED("wins_wch(%p, %s)"), win, _tracecchar_t(wch)));
-
-    if (win) {
+    if (win->_curx <= win->_maxx) {
 	struct ldat *line = &(win->_line[win->_cury]);
 	NCURSES_CH_T *end = &(line->text[win->_curx]);
 	NCURSES_CH_T *temp1 = &(line->text[win->_maxx]);
@@ -59,6 +60,71 @@ wins_wch(WINDOW *win, const cchar_t * wch)
 	    *temp1-- = *temp2--;
 
 	*temp1 = _nc_render(win, *wch);
+
+	win->_curx++;
+    }
+}
+
+NCURSES_EXPORT(int)
+wins_wch(WINDOW *win, const cchar_t * wch)
+{
+    NCURSES_SIZE_T oy;
+    NCURSES_SIZE_T ox;
+    int code = ERR;
+
+    T((T_CALLED("wins_wch(%p, %s)"), win, _tracecchar_t(wch)));
+
+    if (win != 0) {
+	oy = win->_cury;
+	ox = win->_curx;
+
+	_nc_insert_wch(win, wch);
+
+	win->_curx = ox;
+	win->_cury = oy;
+	_nc_synchook(win);
+	code = OK;
+    }
+    returnCode(code);
+}
+
+NCURSES_EXPORT(int)
+wins_nwstr(WINDOW *win, const wchar_t * wstr, int n)
+{
+    int code = ERR;
+    NCURSES_SIZE_T oy;
+    NCURSES_SIZE_T ox;
+    const wchar_t *cp;
+
+    T((T_CALLED("wins_nwstr(%p,%s,%d)"), win, _nc_viswbufn(wstr, n), n));
+
+    if (win != 0
+	&& wstr != 0) {
+	if (n < 1)
+	    n = wcslen(wstr);
+	if (n > 0) {
+	    oy = win->_cury;
+	    ox = win->_curx;
+	    for (cp = wstr; *cp && ((cp - wstr) < n); cp++) {
+		if (wcwidth(*cp) > 1) {
+		    cchar_t tmp_cchar;
+		    wchar_t tmp_wchar = *cp;
+		    memset(&tmp_cchar, 0, sizeof(tmp_cchar));
+		    (void) setcchar(&tmp_cchar,
+				    &tmp_wchar,
+				    WA_NORMAL,
+				    0,
+				    (void *) 0);
+		    _nc_insert_wch(win, &tmp_cchar);
+		} else {
+		    _nc_insert_ch(win, *cp);	/* tabs, other ASCII stuff */
+		}
+	    }
+
+	    win->_curx = ox;
+	    win->_cury = oy;
+	    _nc_synchook(win);
+	}
 	code = OK;
     }
     returnCode(code);

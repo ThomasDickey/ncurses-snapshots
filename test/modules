@@ -1,7 +1,7 @@
 # Test-Program modules
-# $Id: modules,v 1.14 2002/10/19 20:59:13 tom Exp $
+# $Id: modules,v 1.17 2002/11/24 00:05:44 tom Exp $
 ##############################################################################
-# Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -35,6 +35,7 @@
 blue		progs		$(srcdir)	../include/term.h
 bs		progs		$(srcdir)
 cardfile	progs		$(srcdir)	../include/panel.h ../include/menu.h ../include/form.h
+define_key	progs		$(srcdir)
 ditto		progs		$(srcdir)
 dots		progs		$(srcdir)	../include/term.h
 filter		progs		$(srcdir)
@@ -43,14 +44,16 @@ firstlast	progs		$(srcdir)
 gdc		progs		$(srcdir)
 hanoi		progs		$(srcdir)
 hashtest	progs		$(srcdir)
-keynames	progs		$(srcdir)
+ins_wide	progs		$(srcdir)
 inserts		progs		$(srcdir)
+keynames	progs		$(srcdir)
+keyok		progs		$(srcdir)
 knight		progs		$(srcdir)
 lrtest		progs		$(srcdir)
 ncurses		progs		$(srcdir)	../include/panel.h ../include/menu.h ../include/form.h
 newdemo		progs		$(srcdir)
-rain		progs		$(srcdir)	../include/term.h
 railroad	progs		$(srcdir)	../include/termcap.h
+rain		progs		$(srcdir)	../include/term.h
 tclock		progs		$(srcdir)
 testaddch	progs		$(srcdir)
 testcurs	progs		$(srcdir)

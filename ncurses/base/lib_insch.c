@@ -43,13 +43,13 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insch.c,v 1.17 2002/11/17 00:01:07 Philippe.Blain Exp $")
+MODULE_ID("$Id: lib_insch.c,v 1.18 2002/11/23 21:41:05 tom Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
  * inserting a string.
  */
-static void
+void
 _nc_insert_ch(WINDOW *win, chtype ch)
 {
     NCURSES_CH_T wch;

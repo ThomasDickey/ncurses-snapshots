@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.229 2002/10/26 22:14:37 tom Exp $
+ * $Id: curses.priv.h,v 1.230 2002/11/23 21:41:51 tom Exp $
  *
  *	curses.priv.h
  *
@@ -872,6 +872,9 @@ extern NCURSES_EXPORT(bool) _nc_reset_colors(void);
 
 /* lib_getch.c */
 extern NCURSES_EXPORT(int) _nc_wgetch(WINDOW *, unsigned long *, int EVENTLIST_2nd(_nc_eventlist *));
+
+/* lib_insch.c */
+extern NCURSES_EXPORT(void) _nc_insert_ch(WINDOW *, chtype);
 
 /* lib_mvcur.c */
 #define INFINITY	1000000	/* cost: too high to use */
