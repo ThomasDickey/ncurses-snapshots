@@ -30,11 +30,14 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: form.priv.h,v 0.13 2004/03/07 01:45:39 tom Exp $ */
+/* $Id: form.priv.h,v 0.16 2004/05/08 21:45:56 tom Exp $ */
 
 #ifndef FORM_PRIV_H
 #define FORM_PRIV_H 1
 
+#define FIELD_CELL char		/* FIXME: this should be NCURSES_CH_T */
+
+#include "curses.priv.h"
 #include "mf_common.h"
 #include "form.h"
 
@@ -56,7 +59,7 @@
 /* field status values */
 #define _CHANGED         (0x01) /* Field has been changed                 */
 #define _NEWTOP          (0x02) /* Vertical scrolling occurred            */
-#define _NEWPAGE	 (0x04) /* field begins new page of form          */
+#define _NEWPAGE         (0x04) /* field begins new page of form          */
 #define _MAY_GROW        (0x08) /* dynamic field may still grow           */
 
 /* fieldtype status values */
@@ -94,12 +97,12 @@
 #define Field_Is_Selectable(f)     (((f)->opts & O_SELECTABLE)==O_SELECTABLE)
 #define Field_Is_Not_Selectable(f) (((f)->opts & O_SELECTABLE)!=O_SELECTABLE)
 
-typedef struct typearg {
-  struct typearg *left;
-  struct typearg *right;
-} TypeArgument;
-
-#define UChar(c)	((unsigned char)(c))
+typedef struct typearg
+  {
+    struct typearg *left;
+    struct typearg *right;
+  }
+TypeArgument;
 
 /* This is a dummy request code (normally invalid) to be used internally
    with the form_driver() routine to position to the first active field
@@ -123,9 +126,10 @@ typedef struct typearg {
 			O_PASSOK  |\
 			O_STATIC   )
 
-
 #define C_BLANK ' '
 #define is_blank(c) ((c)==C_BLANK)
+
+#define C_ZEROS '\0'
 
 extern NCURSES_EXPORT_VAR(const FIELDTYPE *) _nc_Default_FieldType;
 

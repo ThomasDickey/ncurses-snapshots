@@ -37,9 +37,9 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_post.c,v 1.22 2004/05/02 00:20:34 tom Exp $")
+MODULE_ID("$Id: m_post.c,v 1.23 2004/05/08 17:05:58 tom Exp $")
 
-#ifdef USE_WIDEC_SUPPORT
+#if USE_WIDEC_SUPPORT
 static int
 text_columns(const TEXT * item)
 {

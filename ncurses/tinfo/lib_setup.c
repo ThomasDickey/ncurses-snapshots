@@ -53,7 +53,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.83 2004/03/28 23:48:56 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.84 2004/05/08 16:51:35 tom Exp $")
 
 /****************************************************************************
  *
@@ -77,7 +77,7 @@ MODULE_ID("$Id: lib_setup.c,v 1.83 2004/03/28 23:48:56 tom Exp $")
 # include <sys/ptem.h>
 #endif
 
-#ifdef HAVE_LANGINFO_CODESET
+#if HAVE_LANGINFO_CODESET
 #include <langinfo.h>
 #endif
 
@@ -356,7 +356,7 @@ NCURSES_EXPORT(int)
 _nc_unicode_locale(void)
 {
     int result = 0;
-#ifdef HAVE_LANGINFO_CODESET
+#if HAVE_LANGINFO_CODESET
     char *env = nl_langinfo(CODESET);
     result = !strcmp(env, "UTF-8");
     T(("_nc_unicode_locale(%s) ->%d", env, result));

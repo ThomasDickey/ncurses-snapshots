@@ -57,7 +57,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.64 2004/04/24 18:34:13 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.65 2004/05/08 16:50:58 tom Exp $")
 
 #if !PURE_TERMINFO
 
@@ -1047,7 +1047,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE * const tp)
      * Probably /etc/termcap is a symlink to /usr/share/misc/termcap.
      * Avoid reading the same file twice.
      */
-#ifdef HAVE_LINK
+#if HAVE_LINK
     for (j = 0; j < filecount; j++) {
 	bool omit = FALSE;
 	if (stat(termpaths[j], &test_stat[j]) != 0

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,30 +32,30 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_dup.c,v 1.7 2003/10/25 15:17:08 tom Exp $")
+MODULE_ID("$Id: fld_dup.c,v 1.8 2004/05/08 20:53:24 tom Exp $")
 
 /*---------------------------------------------------------------------------
-|   Facility      :  libnform  
+|   Facility      :  libnform
 |   Function      :  FIELD *dup_field(FIELD *field, int frow, int fcol)
-|   
+|
 |   Description   :  Duplicates the field at the specified position. All
 |                    field attributes and the buffers are copied.
 |                    If an error occurs, errno is set to
-|                    
+|
 |                    E_BAD_ARGUMENT - invalid argument
 |                    E_SYSTEM_ERROR - system error
 |
 |   Return Values :  Pointer to the new field or NULL if failure
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(FIELD *)
-dup_field (FIELD * field, int frow, int fcol)
+dup_field(FIELD *field, int frow, int fcol)
 {
   FIELD *New_Field = (FIELD *)0;
   int err = E_BAD_ARGUMENT;
 
-  if (field && (frow>=0) && (fcol>=0) && 
-      ((err=E_SYSTEM_ERROR) != 0) && /* trick : this resets the default error */
-      (New_Field=(FIELD *)malloc(sizeof(FIELD))) )
+  if (field && (frow >= 0) && (fcol >= 0) &&
+      ((err = E_SYSTEM_ERROR) != 0) &&	/* trick : this resets the default error */
+      (New_Field = (FIELD *)malloc(sizeof(FIELD))))
     {
       *New_Field         = *_nc_Default_Field;
       New_Field->frow    = frow;
@@ -75,20 +75,21 @@ dup_field (FIELD * field, int frow, int fcol)
       New_Field->opts    = field->opts;
       New_Field->usrptr  = field->usrptr;
 
-      if (_nc_Copy_Type(New_Field,field))
+      if (_nc_Copy_Type(New_Field, field))
 	{
-	  size_t len;
+	  size_t i, len;
 
 	  len = Total_Buffer_Size(New_Field);
-	  if ( (New_Field->buf=(char *)malloc(len)) )
+	  if ((New_Field->buf = (FIELD_CELL *) malloc(len)))
 	    {
-	      memcpy(New_Field->buf,field->buf,len);
+	      for (i = 0; i < len; ++i)
+		New_Field->buf[i] = field->buf[i];
 	      return New_Field;
 	    }
 	}
     }
 
-  if (New_Field) 
+  if (New_Field)
     free_field(New_Field);
 
   SET_ERROR(err);
