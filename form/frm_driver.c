@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.64 2005/02/05 22:38:40 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.65 2005/02/13 00:09:24 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -244,9 +244,29 @@ fix_wchnstr(WINDOW *w, cchar_t *s, int n)
 }
 
 /*
+ * Returns the column of the base of the given cell.
+ */
+static int
+cell_base(WINDOW *win, int y, int x)
+{
+  int result = x;
+
+  while (LEGALYX(win, y, x))
+    {
+      cchar_t *data = &(win->_line[y].text[x]);
+
+      if (isWidecBase(CHDEREF(data)))
+	{
+	  result = x;
+	  break;
+	}
+      --x;
+    }
+  return result;
+}
+
+/*
  * Returns the number of columns needed for the given cell in a window.
- * FIXME: we may need a function to find the cell's beginning, for editing.
- * The recursion is used to supply that information for now.
  */
 static int
 cell_width(WINDOW *win, int y, int x)
@@ -260,7 +280,7 @@ cell_width(WINDOW *win, int y, int x)
       if (isWidecExt(CHDEREF(data)))
 	{
 	  /* recur, providing the number of columns to the next character */
-	  result = cell_width(win, y, x - 1) - 1;
+	  result = cell_width(win, y, x - 1);
 	}
       else
 	{
@@ -269,7 +289,29 @@ cell_width(WINDOW *win, int y, int x)
     }
   return result;
 }
+
+/*
+ * There is no wide-character function such as wdel_wch(), so we must find
+ * all of the cells that comprise a multi-column character and delete them
+ * one-by-one.
+ */
+static void
+delete_char(FORM *form)
+{
+  int cells = cell_width(form->w, form->currow, form->curcol);
+
+  form->curcol = cell_base(form->w, form->currow, form->curcol);
+  wmove(form->w, form->currow, form->curcol);
+  while (cells-- > 0)
+    {
+      wdelch(form->w);
+    }
+}
+#define DeleteChar(form) delete_char(form)
 #else
+#define DeleteChar(form) \
+	  wmove((form)->w, (form)->currow, (form)->curcol), \
+	  wdelch((form)->w)
 #endif
 
 /*---------------------------------------------------------------------------
@@ -1390,13 +1432,16 @@ IFN_Next_Character(FORM *form)
 static int
 IFN_Previous_Character(FORM *form)
 {
+  int amount = myWCWIDTH(form->w, form->currow, form->curcol - 1);
+  int oldcol = form->curcol;
+
   T((T_CALLED("IFN_Previous_Character(%p)"), form));
-  if ((--(form->curcol)) < 0)
+  if ((form->curcol -= amount) < 0)
     {
       if ((--(form->currow)) < 0)
 	{
 	  form->currow++;
-	  form->curcol++;
+	  form->curcol = oldcol;
 	  returnCode(E_REQUEST_DENIED);
 	}
       form->curcol = form->current->dcols - 1;
@@ -1660,10 +1705,13 @@ IFN_End_Of_Line(FORM *form)
 static int
 IFN_Left_Character(FORM *form)
 {
+  int amount = myWCWIDTH(form->w, form->currow, form->curcol - 1);
+  int oldcol = form->curcol;
+
   T((T_CALLED("IFN_Left_Character(%p)"), form));
-  if ((--(form->curcol)) < 0)
+  if ((form->curcol -= amount) < 0)
     {
-      form->curcol++;
+      form->curcol = oldcol;
       returnCode(E_REQUEST_DENIED);
     }
   returnCode(E_OK);
@@ -1682,8 +1730,11 @@ IFN_Left_Character(FORM *form)
 static int
 IFN_Right_Character(FORM *form)
 {
+  int amount = myWCWIDTH(form->w, form->currow, form->curcol);
+  int oldcol = form->curcol;
+
   T((T_CALLED("IFN_Right_Character(%p)"), form));
-  if ((++(form->curcol)) == form->current->dcols)
+  if ((form->curcol += amount) >= form->current->dcols)
     {
 #if GROW_IF_NAVIGATE
       FIELD *field = form->current;
@@ -1691,7 +1742,7 @@ IFN_Right_Character(FORM *form)
       if (Single_Line_Field(field) && Field_Grown(field, 1))
 	returnCode(E_OK);
 #endif
-      --(form->curcol);
+      form->curcol = oldcol;
       returnCode(E_REQUEST_DENIED);
     }
   returnCode(E_OK);
@@ -2301,8 +2352,7 @@ Wrapping_Not_Necessary_Or_Wrapping_Ok(FORM *form)
 	return E_OK;
       if (result != E_OK)
 	{
-	  wmove(form->w, form->currow, form->curcol);
-	  wdelch(form->w);
+	  DeleteChar(form);
 	  Window_To_Buffer(form->w, field);
 	  result = E_REQUEST_DENIED;
 	}
@@ -2546,8 +2596,7 @@ static int
 FE_Delete_Character(FORM *form)
 {
   T((T_CALLED("FE_Delete_Character(%p)"), form));
-  wmove(form->w, form->currow, form->curcol);
-  wdelch(form->w);
+  DeleteChar(form);
   returnCode(E_OK);
 }
 
@@ -2597,8 +2646,7 @@ FE_Delete_Previous(FORM *form)
     }
   else
     {
-      wmove(form->w, form->currow, form->curcol);
-      wdelch(form->w);
+      DeleteChar(form);
     }
   returnCode(E_OK);
 }

@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.868 2005/02/05 22:39:38 tom Exp $
+-- $Id: NEWS,v 1.870 2005/02/13 00:13:13 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050212
+	+ improve editing of wide-characters in form library:  left/right
+	  cursor movement, and single-character deletions work properly.
+	+ disable GPM mouse support when $TERM happens to be prefixed with
+	  "xterm".  Gpm_Open() would otherwise assert that it can deal with
+	  mouse events in this case.
+	+ modify GPM mouse support so it closes the server connection when
+	  the caller disables the mouse (report by Stanislav Ievlev).
 
 20050205
 	+ add traces for callback functions in form library.
