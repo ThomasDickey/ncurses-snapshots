@@ -1,4 +1,4 @@
-# $Id: man_db.renames,v 0.17 1999/12/18 21:48:31 tom Exp $
+# $Id: man_db.renames,v 0.18 2000/03/19 00:10:15 tom Exp $
 # Manual-page renamings for the man_db program
 #
 captoinfo.1m			captoinfo.1
@@ -107,6 +107,7 @@ system.3s			system.3
 term.5				term.5
 term.7				term.7
 terminfo.5			terminfo.5
+terminfo.\\\*n			terminfo.5
 tic.1m				tic.1
 toe.1m				toe.1
 tput.1				tput.1

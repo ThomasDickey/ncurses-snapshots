@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.191 2000/03/05 18:17:52 juergen Exp $
+dnl $Id: aclocal.m4,v 1.192 2000/03/19 00:05:42 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1431,12 +1431,12 @@ AC_CACHE_CHECK(if -lm needed for math functions,
 	[double x = rand(); printf("result = %g\n", ]ifelse($2,,sin(x),$2)[)],
 	[cf_cv_need_libm=no],
 	[cf_cv_need_libm=yes])])
-ifelse($1,,[
 if test "$cf_cv_need_libm" = yes
 then
+ifelse($1,,[
 	LIBS="$LIBS -lm"
-fi
 ],[$1=-lm])
+fi
 ])
 dnl ---------------------------------------------------------------------------
 dnl Compute the object-directory name from the given model name

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.38 2000/01/08 23:18:06 tom Exp $
+# $Id: Makefile.in,v 1.39 2000/03/19 01:01:58 Bruno.Haible Exp $
 ##############################################################################
 # Copyright (c) 1998-2000 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -108,7 +108,7 @@ PROGS = tic$x toe$x infocmp$x clear$x tput$x tset$x
 TESTPROGS = mvcur$x tctest$x hardscroll$x hashmap$x
 
 # Default library, for linking applications
-DEPS_CURSES = @LIB_PREFIX@ncurses@DFT_DEP_SUFFIX@
+DEPS_CURSES = ../lib/@LIB_PREFIX@ncurses@DFT_DEP_SUFFIX@
 
 ################################################################################
 all:		$(AUTO_SRC) $(PROGS) 

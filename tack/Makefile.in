@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.15 2000/03/04 20:23:15 tom Exp $
+# $Id: Makefile.in,v 1.16 2000/03/19 01:01:58 Bruno.Haible Exp $
 # Makefile for tack
 #
 # The variable 'srcdir' refers to the source-distribution, and can be set with
@@ -72,7 +72,7 @@ LINT_LIBS	= -lncurses @LIBS@
 PROGS = tack$x
 
 # Default library, for linking applications
-DEPS_CURSES = @LIB_PREFIX@ncurses@DFT_DEP_SUFFIX@
+DEPS_CURSES = ../lib/@LIB_PREFIX@ncurses@DFT_DEP_SUFFIX@
 
 ################################################################################
 all:	$(PROGS)
