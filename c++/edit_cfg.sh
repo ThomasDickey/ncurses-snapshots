@@ -1,7 +1,7 @@
 #!/bin/sh
-# $Id: edit_cfg.sh,v 1.10 2001/04/07 22:45:11 tom Exp $
+# $Id: edit_cfg.sh,v 1.11 2001/06/10 00:53:00 tom Exp $
 ##############################################################################
-# Copyright (c) 1998,2000 Free Software Foundation, Inc.                     #
+# Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -48,7 +48,8 @@ for name in \
 	HAVE_TYPEINFO \
 	HAVE_VALUES_H \
 	USE_STDIO_VSCAN \
-	USE_STRSTREAM_VSCAN
+	USE_STRSTREAM_VSCAN \
+	USE_STRSTREAM_VSCAN_CAST
 do
 	mv $2 $2.bak
 	if ( grep "[ 	]$name[ 	]1" $1 2>&1 >/dev/null)

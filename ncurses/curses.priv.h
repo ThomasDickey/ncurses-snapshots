@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.191 2001/06/03 03:07:29 tom Exp $
+ * $Id: curses.priv.h,v 1.195 2001/06/10 00:07:24 skimo Exp $
  *
  *	curses.priv.h
  *
@@ -235,6 +235,7 @@ color_t;
 
 #if USE_WIDEC_SUPPORT
 #define _XOPEN_SOURCE_EXTENDED
+#include <wchar.h>	/* we want mbstate_t */
 #else
 #define _bkgrnd	    _bkgd
 #define wgetbkgrnd(win, wch)	*wch = win->_bkgd
@@ -516,18 +517,30 @@ typedef	struct {
 #define NewChar2(c,a)	{ a, { c } }
 #define CharEq(a,b)	(!memcmp(&a, &b, sizeof(a)))
 #define SetChar(ch,c,a)	do { 							    \
-			    NCURSES_CH_T *cp = &ch;				    \
-			    memset(cp,0,sizeof(ch)); cp->chars[0] = c; cp->attr = a; \
+			    NCURSES_CH_T *_cp = &ch;				    \
+			    memset(_cp,0,sizeof(ch)); _cp->chars[0] = c; _cp->attr = a; \
 			} while (0)
 #define CHREF(wch)	(&wch)
 #define CHDEREF(wch)	(*wch)
 #define ARG_CH_T	NCURSES_CH_T *
 #define CARG_CH_T	const NCURSES_CH_T *
-#define PUTC_DATA	wchar_t data = 0; int PUTC_i = 0
+#define PUTC_DATA	char PUTC_buf[MB_LEN_MAX]; int PUTC_i, PUTC_n; \
+			mbstate_t PUT_st; wchar_t PUTC_ch
 #define PUTC(ch,b)	do { if(!isnac(ch))					    \
-			    for (PUTC_i = 0; PUTC_i < CCHARW_MAX && (ch).chars[PUTC_i];\
-				 ++PUTC_i) {					    \
-				data = CharOf(ch); putwc(data,b); } 		    \
+			    memset (&PUT_st, '\0', sizeof (PUT_st));		    \
+			    PUTC_i = 0;						    \
+			    do {						    \
+				PUTC_ch = PUTC_i < CCHARW_MAX ?			    \
+					    (ch).chars[PUTC_i] : L'\0';		    \
+				PUTC_n = wcrtomb(PUTC_buf,			    \
+						 (ch).chars[PUTC_i], &PUT_st);	    \
+				if (PUTC_ch == L'\0')				    \
+				    --PUTC_n;					    \
+				if (PUTC_n <= 0)				    \
+				    break;					    \
+				fwrite(PUTC_buf, PUTC_n, 1, b);			    \
+				++PUTC_i;					    \
+			    } while (PUTC_ch != L'\0');				    \
 			} while (0)
 
 #define BLANK		{ WA_NORMAL, ' ' }
@@ -567,6 +580,7 @@ typedef	struct {
 
 #define AttrOfD(ch)	AttrOf(CHDEREF(ch))
 #define CharOfD(ch)	CharOf(CHDEREF(ch))
+#define SetChar2(wch,ch)    SetChar(wch,ChCharOf(ch),ChAttrOf(ch))
 
 #define BLANK_ATTR	A_NORMAL
 #define BLANK_TEXT	L(' ')

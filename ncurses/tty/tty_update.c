@@ -70,7 +70,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.165 2001/06/03 03:10:10 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.166 2001/06/10 00:25:47 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -203,9 +203,15 @@ PutAttrChar(CARG_CH_T ch)
 		       _tracech_t(ch),
 		       SP->_cursrow, SP->_curscol));
     UpdateAttrs(AttrOfD(ch));
+#if !USE_WIDEC_SUPPORT
+    /* FIXME - we do this special case for signal handling, should see how to
+     * make it work for wide characters.
+     */
     if (SP->_outch != 0) {
-	SP->_outch(data);
-    } else {
+	SP->_outch(ch);
+    } else
+#endif
+    {
 	PUTC(CHDEREF(ch), SP->_ofp);	/* macro's fastest... */
 #ifdef TRACE
 	_nc_outchars++;

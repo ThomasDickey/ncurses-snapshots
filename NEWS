@@ -1,10 +1,29 @@
--- $Id: NEWS,v 1.629 2001/06/03 02:36:15 tom Exp $
+-- $Id: NEWS,v 1.631 2001/06/10 00:08:33 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010609
+	+ add a configure check, if --enable-widec is specified, for putwc(),
+	  which may be in libutf8.
+	+ remove some unnecessary text from curs_extend.3x and
+	  default_colors.3x which caused man-db to make incorrect symbolic
+	  links (Debian bug report #99550).
+	+ add configure check if cast for _IO_va_list is needed to compile
+	  C++ vscan code (Debian bug report #97945).
+	> several patches from Sven Verdoolaege:
+	+ correct code that used non-standard auto-initialization of a struct,
+	  which gcc allows (report by Larry Virden).
+	+ use putwc() in PUTC() macro.
+	+ make addstr() work for the special case where the codeset is 
+	  non-stateful (eg. UTF-8), as well as stateful codesets.
+
+20010603
+	+ correct loop expression in NEXT_CHAR macro for lib_addstr.c changes
+	  from 20010602 (report by Mike Castle).
 
 20010602
 	+ modify mvcur() to avoid emitting newline characters when nonl() mode

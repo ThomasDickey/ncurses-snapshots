@@ -33,7 +33,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_bkgd.c,v 1.24 2001/06/03 03:08:52 tom Exp $")
+MODULE_ID("$Id: lib_bkgd.c,v 1.25 2001/06/09 23:47:38 skimo Exp $")
 
 #if USE_WIDEC_SUPPORT
 NCURSES_EXPORT(void)
@@ -62,7 +62,8 @@ wbkgrndset(WINDOW *win, const ARG_CH_T ch)
 NCURSES_EXPORT(void)
 wbkgdset(WINDOW *win, chtype ch)
 {
-    NCURSES_CH_T wch = NewChar(ch);
+    NCURSES_CH_T wch;
+    SetChar2(wch, ch);
     wbkgrndset(win, CHREF(wch));
 }
 
@@ -108,7 +109,8 @@ wbkgrnd(WINDOW *win, const ARG_CH_T ch)
 NCURSES_EXPORT(int)
 wbkgd(WINDOW *win, const chtype ch)
 {
-    NCURSES_CH_T wch = NewChar(ch);
+    NCURSES_CH_T wch;
+    SetChar2(wch, ch);
     return wbkgrnd(win, CHREF(wch));
 }
 
@@ -122,6 +124,6 @@ getbkgd(WINDOW *win)
     wgetbkgrnd(win, &wch);
     ch = wctob(CharOf(wch));
 
-    return ((ch == EOF) ? ' ' : (chtype)ch) | AttrOf(wch);
+    return ((ch == EOF) ? ' ' : (chtype) ch) | AttrOf(wch);
 }
 #endif

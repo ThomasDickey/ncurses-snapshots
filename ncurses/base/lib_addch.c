@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.58 2001/06/03 03:14:51 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.59 2001/06/09 23:47:38 skimo Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -242,7 +242,8 @@ waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
 	break;
     default:
 	while (*s) {
-	    NCURSES_CH_T sch = NewChar2(*s++, AttrOf(ch));
+	    NCURSES_CH_T sch;
+	    SetChar(sch, *s++, AttrOf(ch));
 	    if (waddch_literal(win, sch) == ERR)
 		return ERR;
 	}
@@ -293,7 +294,8 @@ NCURSES_EXPORT(int)
 waddch(WINDOW *win, const chtype ch)
 {
     int code = ERR;
-    NCURSES_CH_T wch = NewChar(ch);
+    NCURSES_CH_T wch;
+    SetChar2(wch, ch);
 
     TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_CALLED("waddch(%p, %s)"), win,
 				      _tracechtype(ch)));
@@ -311,7 +313,8 @@ NCURSES_EXPORT(int)
 wechochar(WINDOW *win, const chtype ch)
 {
     int code = ERR;
-    NCURSES_CH_T wch = NewChar(ch);
+    NCURSES_CH_T wch;
+    SetChar2(wch, ch);
 
     TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_CALLED("wechochar(%p, %s)"), win,
 				      _tracechtype(ch)));

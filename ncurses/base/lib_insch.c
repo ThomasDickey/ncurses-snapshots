@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_insch.c,v 1.14 2001/06/03 01:09:19 skimo Exp $")
+MODULE_ID("$Id: lib_insch.c,v 1.15 2001/06/09 23:47:38 skimo Exp $")
 
 NCURSES_EXPORT(int)
 winsch(WINDOW *win, chtype c)
@@ -54,7 +54,8 @@ winsch(WINDOW *win, chtype c)
 	NCURSES_CH_T *end = &(line->text[win->_curx]);
 	NCURSES_CH_T *temp1 = &(line->text[win->_maxx]);
 	NCURSES_CH_T *temp2 = temp1 - 1;
-	NCURSES_CH_T wch = NewChar(c);
+	NCURSES_CH_T wch;
+	SetChar2(wch, c);
 
 	CHANGED_TO_EOL(line, win->_curx, win->_maxx);
 	while (temp1 > end)
