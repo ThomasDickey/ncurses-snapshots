@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.215 2004/07/10 23:06:07 tom Exp $
+$Id: ncurses.c,v 1.220 2004/08/07 23:35:09 tom Exp $
 
 ***************************************************************************/
 
@@ -114,6 +114,7 @@ extern int _nc_tracing;
 
 #undef max_colors
 static int max_colors;		/* the actual number of colors we'll use */
+static int min_colors;		/* the minimum color code */
 
 #undef max_pairs
 static int max_pairs;		/* ...and the number of color pairs */
@@ -303,6 +304,7 @@ wGet_wstring(WINDOW *win, wchar_t * buffer, int limit)
 		ch = (wint_t) - 1;
 		break;
 	    }
+	    break;
 	case OK:
 	    break;
 	default:
@@ -991,11 +993,13 @@ adjust_attr_string(int adjust)
 }
 
 static int
-show_attr(int row, int skip, chtype attr, const char *name)
+show_attr(int row, int skip, bool arrow, chtype attr, const char *name)
 {
     int ncv = tigetnum("ncv");
     chtype test = attr & ~A_ALTCHARSET;
 
+    if (arrow)
+	mvprintw(row, 5, "-->");
     mvprintw(row, 8, "%s mode:", name);
     mvprintw(row, 24, "|");
     if (skip)
@@ -1031,93 +1035,169 @@ show_attr(int row, int skip, chtype attr, const char *name)
     if (test != A_NORMAL) {
 	if (!(termattrs() & test)) {
 	    printw(" (N/A)");
-	} else if (ncv > 0 && (getbkgd(stdscr) & A_COLOR)) {
-	    static const chtype table[] =
-	    {
-		A_STANDOUT,
-		A_UNDERLINE,
-		A_REVERSE,
-		A_BLINK,
-		A_DIM,
-		A_BOLD,
-		A_INVIS,
-		A_PROTECT,
-		A_ALTCHARSET
-	    };
-	    unsigned n;
-	    bool found = FALSE;
-	    for (n = 0; n < SIZEOF(table); n++) {
-		if ((table[n] & attr) != 0
-		    && ((1 << n) & ncv) != 0) {
-		    found = TRUE;
-		    break;
+	} else {
+	    if (ncv > 0 && (getbkgd(stdscr) & A_COLOR)) {
+		static const chtype table[] =
+		{
+		    A_STANDOUT,
+		    A_UNDERLINE,
+		    A_REVERSE,
+		    A_BLINK,
+		    A_DIM,
+		    A_BOLD,
+		    A_INVIS,
+		    A_PROTECT,
+		    A_ALTCHARSET
+		};
+		unsigned n;
+		bool found = FALSE;
+		for (n = 0; n < SIZEOF(table); n++) {
+		    if ((table[n] & attr) != 0
+			&& ((1 << n) & ncv) != 0) {
+			found = TRUE;
+			break;
+		    }
 		}
+		if (found)
+		    printw(" (NCV)");
 	    }
-	    if (found)
-		printw(" (NCV)");
+	    if ((termattrs() & test) != test)
+		printw(" (Part)");
 	}
     }
     return row + 2;
 }
+/* *INDENT-OFF* */
+static const struct {
+    attr_t			attr;
+    NCURSES_CONST char *	name;
+} attrs_to_test[] = {
+    { A_STANDOUT,	"STANDOUT" },
+    { A_REVERSE,	"REVERSE" },
+    { A_BOLD,		"BOLD" },
+    { A_UNDERLINE,	"UNDERLINE" },
+    { A_DIM,		"DIM" },
+    { A_BLINK,		"BLINK" },
+    { A_PROTECT,	"PROTECT" },
+    { A_INVIS,		"INVISIBLE" },
+    { A_NORMAL,		"NORMAL" },
+};
+/* *INDENT-ON* */
 
 static bool
-attr_getc(int *skip, int *fg, int *bg, int *ac)
+attr_getc(int *skip, int *fg, int *bg, int *ac, unsigned *kc)
 {
-    int ch = Getchar();
+    bool result = TRUE;
+    bool error = FALSE;
+    WINDOW *helpwin;
 
-    if (isdigit(ch)) {
-	*skip = (ch - '0');
-    } else if (ch == CTRL('L')) {
-	touchwin(stdscr);
-	touchwin(curscr);
-	wrefresh(curscr);
-    } else {
-	switch (ch) {
-	case 'a':
-	    *ac = 0;
-	    break;
-	case 'A':
-	    *ac = A_ALTCHARSET;
-	    break;
-	case '<':
-	    adjust_attr_string(-1);
-	    break;
-	case '>':
-	    adjust_attr_string(1);
-	    break;
-	default:
-	    if (has_colors()) {
-		switch (ch) {
-		case 'f':
-		    *fg = (*fg + 1);
-		    break;
-		case 'F':
-		    *fg = (*fg - 1);
-		    break;
-		case 'b':
-		    *bg = (*bg + 1);
-		    break;
-		case 'B':
-		    *bg = (*bg - 1);
-		    break;
-		default:
-		    return FALSE;
+    do {
+	int ch = Getchar();
+
+	error = FALSE;
+	if (isdigit(ch)) {
+	    *skip = (ch - '0');
+	} else {
+	    switch (ch) {
+	    case CTRL('L'):
+		touchwin(stdscr);
+		touchwin(curscr);
+		wrefresh(curscr);
+		break;
+	    case '?':
+		if ((helpwin = newwin(LINES - 1, COLS - 2, 0, 0)) != 0) {
+		    int col = 1;
+		    int row = 1;
+		    box(helpwin, 0, 0);
+		    mvwprintw(helpwin, row++, col,
+			      "q or ESC to exit.");
+		    mvwprintw(helpwin, row++, col,
+			      "^L repaints.");
+		    ++row;
+		    mvwprintw(helpwin, row++, col,
+			      "Modify the test strings:");
+		    mvwprintw(helpwin, row++, col,
+			      "  A digit sets gaps on each side of displayed attributes");
+		    mvwprintw(helpwin, row++, col,
+			      "  </> shifts the text left/right. ");
+		    ++row;
+		    mvwprintw(helpwin, row++, col,
+			      "Toggles:");
+		    if (has_colors())
+			mvwprintw(helpwin, row++, col,
+				  "  f/F/b/F toggle foreground/background color");
+		    mvwprintw(helpwin, row++, col,
+			      "  a/A     toggle ACS (alternate character set) mapping");
+		    mvwprintw(helpwin, row++, col,
+			      "  v/V     toggle video attribute to combine with each line");
+		    wGetchar(helpwin);
+		    delwin(helpwin);
 		}
-		if (*fg >= max_colors)
-		    *fg = 0;
-		if (*fg < 0)
-		    *fg = max_colors - 1;
-		if (*bg >= max_colors)
-		    *bg = 0;
-		if (*bg < 0)
-		    *bg = max_colors - 1;
-	    } else {
-		return FALSE;
+		break;
+	    case 'a':
+		*ac = 0;
+		break;
+	    case 'A':
+		*ac = A_ALTCHARSET;
+		break;
+	    case 'v':
+		if (*kc == 0)
+		    *kc = SIZEOF(attrs_to_test) - 1;
+		else
+		    *kc -= 1;
+		break;
+	    case 'V':
+		*kc += 1;
+		if (*kc >= SIZEOF(attrs_to_test))
+		    *kc = 0;
+		break;
+	    case '<':
+		adjust_attr_string(-1);
+		break;
+	    case '>':
+		adjust_attr_string(1);
+		break;
+	    case 'q':
+	    case ESCAPE:
+		result = FALSE;
+		break;
+	    default:
+		if (has_colors()) {
+		    switch (ch) {
+		    case 'f':
+			*fg = (*fg + 1);
+			break;
+		    case 'F':
+			*fg = (*fg - 1);
+			break;
+		    case 'b':
+			*bg = (*bg + 1);
+			break;
+		    case 'B':
+			*bg = (*bg - 1);
+			break;
+		    default:
+			beep();
+			error = TRUE;
+			break;
+		    }
+		    if (*fg >= max_colors)
+			*fg = min_colors;
+		    if (*fg < min_colors)
+			*fg = max_colors - 1;
+		    if (*bg >= max_colors)
+			*bg = min_colors;
+		    if (*bg < min_colors)
+			*bg = max_colors - 1;
+		} else {
+		    beep();
+		    error = TRUE;
+		}
+		break;
 	    }
-	    break;
 	}
-    }
-    return TRUE;
+    } while (error);
+    return result;
 }
 
 static void
@@ -1129,23 +1209,25 @@ attr_test(void)
     int fg = COLOR_BLACK;	/* color pair 0 is special */
     int bg = COLOR_BLACK;
     int ac = 0;
-    bool *pairs = (bool *) calloc(max_pairs, sizeof(bool));
-    pairs[0] = TRUE;
+    unsigned j, k;
 
     if (skip < 0)
 	skip = 0;
 
     n = skip;			/* make it easy */
+    k = SIZEOF(attrs_to_test) - 1;
 
     do {
 	int row = 2;
 	int normal = A_NORMAL | BLANK;
 
 	if (has_colors()) {
-	    int pair = (fg * max_colors) + bg;
-	    if (!pairs[pair]) {
-		init_pair(pair, fg, bg);
-		pairs[pair] = TRUE;
+	    int pair = (fg != COLOR_BLACK || bg != COLOR_BLACK);
+	    if (pair != 0) {
+		pair = 1;
+		if (init_pair(pair, fg, bg) == ERR) {
+		    beep();
+		}
 	    }
 	    normal |= COLOR_PAIR(pair);
 	}
@@ -1156,33 +1238,25 @@ attr_test(void)
 	box(stdscr, 0, 0);
 	mvaddstr(0, 20, "Character attribute test display");
 
-	row = show_attr(row, n, ac | A_STANDOUT, "STANDOUT");
-	row = show_attr(row, n, ac | A_REVERSE, "REVERSE");
-	row = show_attr(row, n, ac | A_BOLD, "BOLD");
-	row = show_attr(row, n, ac | A_UNDERLINE, "UNDERLINE");
-	row = show_attr(row, n, ac | A_DIM, "DIM");
-	row = show_attr(row, n, ac | A_BLINK, "BLINK");
-	row = show_attr(row, n, ac | A_PROTECT, "PROTECT");
-	row = show_attr(row, n, ac | A_INVIS, "INVISIBLE");
-	row = show_attr(row, n, ac | A_NORMAL, "NORMAL");
+	for (j = 0; j < SIZEOF(attrs_to_test); ++j) {
+	    row = show_attr(row, n, j == k,
+			    ac |
+			    attrs_to_test[j].attr |
+			    attrs_to_test[k].attr,
+			    attrs_to_test[j].name);
+	}
 
 	mvprintw(row, 8,
 		 "This terminal does %shave the magic-cookie glitch",
 		 tigetnum("xmc") > -1 ? "" : "not ");
-	mvprintw(row + 1, 8,
-		 "Enter a digit to set gaps on each side of displayed attributes");
-	mvprintw(row + 2, 8,
-		 "^L repaints, </> shifts, ");
+	mvprintw(row + 1, 8, "Enter '?' for help.");
 	if (has_colors())
-	    printw("f/F/b/F toggle color (now %d/%d), a/A ACS (%d)",
-		   fg, bg, ac != 0);
-	else
-	    printw("a/A ACS (%d)", ac != 0);
+	    printw("  Foreground/background color (%d/%d),", fg, bg);
+	printw("  ACS (%d)", ac != 0);
 
 	refresh();
-    } while (attr_getc(&n, &fg, &bg, &ac));
+    } while (attr_getc(&n, &fg, &bg, &ac, &k));
 
-    free((char *) pairs);
     bkgdset(A_NORMAL | BLANK);
     erase();
     endwin();
@@ -4882,8 +4956,10 @@ main(int argc, char *argv[])
 #ifdef NCURSES_VERSION_PATCH
 	max_colors = COLORS > 16 ? 16 : COLORS;
 #if HAVE_USE_DEFAULT_COLORS
-	if (default_colors)
+	if (default_colors) {
 	    use_default_colors();
+	    min_colors = -1;
+	}
 #if NCURSES_VERSION_PATCH >= 20000708
 	else if (assumed_colors)
 	    assume_default_colors(default_fg, default_bg);

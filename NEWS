@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.829 2004/07/31 22:53:13 tom Exp $
+-- $Id: NEWS,v 1.830 2004/08/07 23:18:19 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040807
+	+ modify test/ncurses.c 'b' test, adding v/V toggles to cycle through
+	  combinations of video attributes so that for instance bold and
+	  underline can be tested.  This made the legend too crowded, added
+	  a help window as well.
+	+ modify test/ncurses.c 'b' test to cycle through default colors if
+	  the -d option is set.
+	+ update putty terminfo entry (Robert de Bath).
 
 20040731
 	+ modify test/cardfile.c to allow it to read more data than can be

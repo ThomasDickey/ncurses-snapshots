@@ -6,7 +6,7 @@
  * modified 10-18-89 for curses (jrl)
  * 10-18-89 added signal handling
  *
- * $Id: gdc.c,v 1.23 2002/08/10 19:20:14 tom Exp $
+ * $Id: gdc.c,v 1.24 2004/08/07 16:07:52 tom Exp $
  */
 
 #include <time.h>
@@ -249,7 +249,7 @@ main(int argc, char *argv[])
 		     * than 9600bd) to squeeze that into a half-second, and use
 		     * half of 170 msec to ensure that the program doesn't eat
 		     * a lot of time when asking what time it is, at the top of
-		     * this loop -TD
+		     * this loop -T.Dickey
 		     */
 		    if (scrol)
 			napms(85);

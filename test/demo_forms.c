@@ -1,5 +1,5 @@
 /*
- * $Id: demo_forms.c,v 1.7 2004/06/05 21:57:30 tom Exp $
+ * $Id: demo_forms.c,v 1.8 2004/08/07 18:31:00 tom Exp $
  *
  * Demonstrate a variety of functions from the form library.
  * Thomas Dickey - 2003/4/26
@@ -290,7 +290,7 @@ usage(void)
 	," -o value  specify number of offscreen rows in new_field()"
     };
     unsigned int j;
-    for (j = 0; j < sizeof(tbl) / sizeof(tbl[0]); ++j)
+    for (j = 0; j < SIZEOF(tbl); ++j)
 	fprintf(stderr, "%s\n", tbl[j]);
     exit(EXIT_FAILURE);
 }
