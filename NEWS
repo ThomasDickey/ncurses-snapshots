@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.849 2004/12/12 00:16:32 tom Exp $
+-- $Id: NEWS,v 1.851 2004/12/19 00:49:27 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,7 +6,13 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
+20041218
+	+ revise test/ncurses.c 'c' color test to improve use for xterm-88color
+	  and xterm-256color, added 'C' test using the wide-character color_set
+	  and attr_set functions.
+
 20041211
+	+ modify configure script to work with Intel compiler.
 	+ fix an limit-check in wadd_wchnstr() which caused labels in the
 	  forms-demo to be one character short.
 	+ fix typo in curs_addchstr.3x (Jared Yanovich).
