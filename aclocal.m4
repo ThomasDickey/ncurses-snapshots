@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.245 2001/03/19 01:23:03 tom Exp $
+dnl $Id: aclocal.m4,v 1.247 2001/04/07 22:52:38 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -387,8 +387,9 @@ dnl is a late feature for the standard and is not in some recent compilers
 dnl (1999/9/11).
 AC_DEFUN([CF_CPP_PARAM_INIT],
 [
-if test "$CXX" = yes ; then
+if test -n "$CXX"; then
 AC_CACHE_CHECK(if $CXX accepts parameter initialization,cf_cv_cpp_param_init,[
+	AC_LANG_SAVE
 	AC_LANG_CPLUSPLUS
 	AC_TRY_RUN([
 class TEST {
@@ -408,9 +409,81 @@ void main() { }
 	[cf_cv_cpp_param_init=yes],
 	[cf_cv_cpp_param_init=no],
 	[cf_cv_cpp_param_init=unknown])
+	AC_LANG_RESTORE
 ])
 fi
 test "$cf_cv_cpp_param_init" = yes && AC_DEFINE(CPP_HAS_PARAM_INIT)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Check if the g++ compiler supports vscan function (not a standard feature).
+AC_DEFUN([CF_CPP_VSCAN_FUNC],
+[
+if test -n "$CXX"; then
+
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
+AC_CHECK_HEADERS(strstream.h)
+
+AC_CACHE_CHECK(if $CXX supports vscan function,cf_cv_cpp_vscan_func,[
+	for cf_vscan_func in strstream stdio
+	do
+	case $cf_vscan_func in #(vi
+	stdio)		cf_vscan_defs=USE_STDIO_VSCAN ;; #(vi
+	strstream)	cf_vscan_defs=USE_STRSTREAM_VSCAN ;;
+	esac
+	AC_TRY_LINK([
+#include <stdio.h>
+#include <stdarg.h>
+#define $cf_vscan_defs 1
+#if defined(USE_STDIO_VSCAN)
+#elif defined(HAVE_STRSTREAM_H) && defined(USE_STRSTREAM_VSCAN)
+#include <strstream.h>
+#endif
+
+int scanw(const char* fmt, ...)
+{
+    int result = -1;
+#if defined(__GNUG__)
+    char buf[BUFSIZ];
+
+    va_list args;
+    va_start(args, fmt);
+#if defined(USE_STDIO_VSCAN)
+    if (::vscanf(fmt, args) != -1)
+	result = 0;
+#elif defined(USE_STRSTREAM_VSCAN)
+    strstreambuf ss(buf, sizeof(buf));
+    if (ss.vscan(fmt, (_IO_va_list)args) != -1)
+	result = 0;
+#else
+#error case $cf_vscan_func failed
+#endif
+    va_end(args);
+#else
+#error sorry, we only know about the GNU compiler case
+#endif
+    return result;
+}
+],[int tmp, foo = scanw("%d", &tmp)],
+	[cf_cv_cpp_vscan_func=$cf_vscan_func; break],
+	[cf_cv_cpp_vscan_func=no])
+	test "$cf_cv_cpp_vscan_func" != no && break
+	done
+])
+
+AC_LANG_RESTORE
+fi
+
+case $cf_cv_cpp_vscan_func in #(vi
+stdio) #(vi
+	AC_DEFINE(CPP_HAS_VSCAN_FUNC)
+	AC_DEFINE(USE_STDIO_VSCAN)
+	;;
+strstream)
+	AC_DEFINE(CPP_HAS_VSCAN_FUNC)
+	AC_DEFINE(USE_STRSTREAM_VSCAN)
+	;;
+esac
 ])dnl
 dnl ---------------------------------------------------------------------------
 AC_DEFUN([CF_DIRS_TO_MAKE],
