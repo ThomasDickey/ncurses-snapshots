@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.877 2005/03/19 23:23:04 tom Exp $
+-- $Id: NEWS,v 1.879 2005/03/20 18:30:37 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050320
+	+ add -c and -w options to tset to allow user to suppress ncurses'
+	  resizing of the terminal emulator window in the special case where it
+	  is not able to detect the true size (report by Win Delvaux, Debian
+	  #300419).
+	+ modify waddch_nosync() to account for locale zn_CH.GBK, which uses
+	  codes 128-159 as part of multibyte characters (report by WANG
+	  WenRui, Debian #300512).
 
 20050319
 	+ modify ncurses.c 'd' test to make it work with 88-color

@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.89 2005/02/26 18:17:01 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.91 2005/03/20 16:44:50 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -377,13 +377,19 @@ waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
      * claims the code is printable, treat it that way.
      */
     if ((AttrOf(ch) & A_ALTCHARSET)
-	|| ((s = unctrl(t))[1] == 0 ||
-	    (
-		isprint(t)
+	|| (
 #if USE_WIDEC_SUPPORT
-		|| WINDOW_EXT(win, addch_used)
+	       (SP != 0 && SP->_legacy_coding) &&
 #endif
-	    )))
+	       (s = unctrl(t))[1] == 0
+	)
+	|| (
+	       isprint(t)
+#if USE_WIDEC_SUPPORT
+	       || WINDOW_EXT(win, addch_used)
+	       || !_nc_is_charable(CharOf(ch))
+#endif
+	))
 	return waddch_literal(win, ch);
 
     /*
