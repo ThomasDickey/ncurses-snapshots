@@ -68,8 +68,8 @@ char        **lptr;
         }
 
         buf[strlen(buf) - 1] = '\0';
-        *lptr = (char *)malloc(COLS + 1);
-        (void) strncpy(*lptr, buf, COLS);
+        *lptr = (char *)malloc((size_t)(COLS + 1));
+        (void) strncpy(*lptr, buf, (size_t)COLS);
     }
     (void) fclose(fp);
 

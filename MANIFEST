@@ -6,6 +6,7 @@
 ./README
 ./aclocal.m4
 ./announce.html
+./announce.html.in
 ./c++/Makefile.in
 ./c++/README-first
 ./c++/cursesp.cc
@@ -15,6 +16,7 @@
 ./c++/demo.cc
 ./configure
 ./configure.in
+./dist.mk
 ./include/config_h.in
 ./install-sh
 ./man/Makefile.in
@@ -65,8 +67,11 @@
 ./man/terminfo.5
 ./man/tic.1m
 ./man/tput.1
+./misc/ncurses-intro.doc
 ./misc/ncurses-intro.html
 ./misc/terminfo.src
+./mk-1st.awk
+./mk-2nd.awk
 ./mkinstalldirs
 ./ncurses.lsm
 ./src/Caps
@@ -151,6 +156,7 @@
 ./src/lib_unctrl.c
 ./src/lib_vidattr.c
 ./src/lib_window.c
+./src/modules
 ./src/object.h
 ./src/panel.c
 ./src/panel.h
@@ -171,11 +177,9 @@
 ./src/write_entry.c
 ./test/Makefile.in
 ./test/README
-./test/battle.c
 ./test/blue.c
 ./test/bs.6
 ./test/bs.c
-./test/copy.c
 ./test/firework.c
 ./test/gdc.6
 ./test/gdc.c
@@ -183,7 +187,6 @@
 ./test/knight.c
 ./test/ncurses.c
 ./test/newdemo.c
-./test/over.c
 ./test/rain.c
 ./test/tclock.c
 ./test/testcurs.c

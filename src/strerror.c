@@ -19,6 +19,9 @@
 *                                                                          *
 ***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #if !HAVE_STRERROR
 #include <stdio.h>
@@ -28,8 +31,10 @@
 extern int errno;
 #endif
 
+#if !HAVE_EXTERN_SYS_ERRLIST
 extern char *sys_errlist[];
 extern int sys_nerr;
+#endif
 
 char *strerror(int err)
 {

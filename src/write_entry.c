@@ -25,7 +25,7 @@
  *	write_entry.c -- write a terminfo structure onto the file system
  */
 
-#include "config.h"
+#include <config.h>
 
 #include <stdlib.h>
 

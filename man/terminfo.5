@@ -1,5 +1,7 @@
-.\" Note: this must be run through tbl before nroff
-.TH TERMINFO 5
+'\" t
+.\" Note: this must be run through tbl before nroff.
+.\" The magic cookie on the first line triggers this under some man programs.
+.TH TERMINFO 5 "" "" "File Formats"
 .ds n 5
 .ds d @TERMINFO@
 .SH NAME
@@ -637,19 +639,19 @@ of what a \fBterminfo\fR entry for a modern terminal typically looks like.
 .ft CW
 \s-2ansi-mono|ANSI X3.64-1979 terminal with ANSI.SYS compatible attributes,
 	mc5i,
-	cub=\E[%p1%dD, cud=\E[%p1%dB, cuf=\E[%p1%dC,
-	cuu=\E[%p1%dA, dch=\E[%p1%dP, dl=\E[%p1%dM, ech=\E[%p1%dX, el1=\E[1K, 
-	hpa=\E[%p1%dG, ht=\E[I, ich=\E[%p1%d@, il=\E[%p1%dL, indn=\E[%p1%dS,
-	kbs=\b, kcbt=\E[Z, kich1=\E[L,
-	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
-	kf1=\E[M, kf2=\E[N, kf3=\E[O, kf4=\E[P, kf5=\E[Q, 
-	kf6=\E[R, kf7=\E[S, kf8=\E[T, kf9=\E[U, kf10=\E[V,
-	kf11=\E[W, kf12=\E[X,
-	mc5=\E[5i, mc4=\E[4i,
-	nel=\r\E[S, rep=%p1%c\E[%p2%{1}%-%db, rin=\E[%p1%dT,
-	s0ds=\E(B, s1ds=\E)B, s2ds=\E*B, s3ds=\E+B, 
-	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p8%t;11%;%?%p9%t;12%;m, 
-	sgr0=\E[0;10m, tbc=\E[2g, vpa=\E[%p1%dd, use=pcansi,\s+2
+	cub=\\E[%p1%dD, cud=\\E[%p1%dB, cuf=\\E[%p1%dC,
+	cuu=\\E[%p1%dA, dch=\\E[%p1%dP, dl=\\E[%p1%dM, ech=\\E[%p1%dX, el1=\\E[1K, 
+	hpa=\\E[%p1%dG, ht=\\E[I, ich=\\E[%p1%d@, il=\\E[%p1%dL, indn=\\E[%p1%dS,
+	kbs=\\b, kcbt=\\E[Z, kich1=\\E[L,
+	kcub1=\\E[D, kcud1=\\E[B, kcuf1=\\E[C, kcuu1=\\E[A, 
+	kf1=\\E[M, kf2=\\E[N, kf3=\\E[O, kf4=\\E[P, kf5=\\E[Q, 
+	kf6=\\E[R, kf7=\\E[S, kf8=\\E[T, kf9=\\E[U, kf10=\\E[V,
+	kf11=\\E[W, kf12=\\E[X,
+	mc5=\\E[5i, mc4=\\E[4i,
+	nel=\\r\\E[S, rep=%p1%c\\E[%p2%{1}%-%db, rin=\\E[%p1%dT,
+	s0ds=\\E(B, s1ds=\\E)B, s2ds=\\E*B, s3ds=\\E+B, 
+	sgr=\\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p8%t;11%;%?%p9%t;12%;m, 
+	sgr0=\\E[0;10m, tbc=\\E[2g, vpa=\\E[%p1%dd, use=pcansi,\\s+2
 .in +2
 .fi
 .ft R
@@ -1108,9 +1110,19 @@ Now give as \fBich1\fR any sequence needed to be sent just before sending
 the character to be inserted.  Most terminals with a true insert mode
 will not give \fBich1\fR; terminals which send a sequence to open a screen
 position should give it here.
-(If your terminal has both, insert mode is usually preferable to \fBich1\fP.
-Do not give both unless the terminal actually requires both
-to be used in combination.)
+.PP
+If your terminal has both, insert mode is usually preferable to \fBich1\fR.
+Technically, you should not give both unless the terminal actually requires
+both to be used in combination.  Accordingly, some non-curses applications get
+confused if both are present; the symptom is doubled characters in an update
+using insert.  This requirement is now rare; most \fBich\fR sequences do not
+require previous smir, and most smir insert modes do not require \fBich1\fR
+before each character.  Therefore, the new \fBcurses\fR actually assumes this
+is the case and uses either \fBrmir\fR/\fBsmir\fR or \fBich\fR/\fBich1\fR as
+appropriate (but not both).  If you have to write an entry to be used under
+new curses for a terminal old enough to need both, include the
+\fBrmir\fR/\fBsmir\fR sequences in \fBich1\fR.
+.PP
 If post insert padding is needed, give this as a number of milliseconds
 in \fBip\fR (a string option).  Any other sequence which may need to be
 sent after an insert of a single character may also be given in \fBip\fR.
@@ -1809,6 +1821,10 @@ The \fBncurses\fR library ignores \fBmsgr\fR in \fBALTCHARSET\fR and
 \fBA_PCCHARSET\fR modes.  This raises the possibility that an XPG4 
 implementation making the opposite interpretation may need terminfo
 entries made for ncurses to have \fBmsgr\fR turned off.
+.PP
+The (\fBncurses\fR) library handles insert-character and
+insert-character modes in a slightly non-standard way in order to get better
+update efficiency.  See the \fBInsert/Delete Character\fR subsection above.
 .PP
 The following obsolete nonstandard capabilities are automatically translated
 into terminfo capabilities:

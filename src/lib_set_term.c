@@ -54,9 +54,6 @@ void delscreen(SCREEN *sp)
 	free(sp);
 }
 
-WINDOW *stdscr, *curscr, *newscr;
-SCREEN *SP;
-
 struct ripoff_t
 {
 	int	line;

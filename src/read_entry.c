@@ -26,7 +26,8 @@
  *
  */
 
-#include "config.h"
+#include <config.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #if HAVE_UNISTD_H

@@ -64,6 +64,8 @@ chtype	blank = _nc_render(win, ' ', BLANK, TRUE);
 			for (j = 0; j <= win->_maxx; j ++)
 				win->_line[line].text[j] = blank;
 			win->_line[line].oldindex = NEWINDEX;
+			win->_line[line].firstchar = 0;
+			win->_line[line].lastchar = win->_maxx;
 		}
     	}
 
@@ -79,6 +81,8 @@ chtype	blank = _nc_render(win, ' ', BLANK, TRUE);
 			for (j = 0; j <= win->_maxx; j ++)
 				win->_line[line].text[j] = blank;
 			win->_line[line].oldindex = NEWINDEX;
+			win->_line[line].firstchar = 0;
+			win->_line[line].lastchar = win->_maxx;
 		}
 	}
 }

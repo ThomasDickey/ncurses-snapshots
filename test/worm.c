@@ -44,7 +44,7 @@ extern no_optimize;
 #endif /* TRACE */
 
 short *ref[128];
-static char flavor[]={
+static chtype flavor[]={
     'O', '*', '#', '$', '%', '0'
 };
 static short xinc[]={
@@ -56,8 +56,11 @@ static struct worm {
     int orientation, head;
     short *xpos, *ypos;
 } worm[40];
+
 static char *field;
-static int length=16, number=3, trail=' ';
+static int length=16, number=3;
+static chtype trail=' ';
+
 #ifdef TRACE
 int generation, trace_start, trace_end, singlestep;
 #endif /* TRACE */
@@ -147,12 +150,11 @@ static struct options {
     { 0, { 0, 0, 0 } }
 };
 
-void onsig();
-float ranf();
+void onsig(int sig);
+float ranf(void);
 
-main(argc,argv)
-int argc;
-char *argv[];
+int
+main(int argc, char *argv[])
 {
 int x, y;
 int n;
@@ -249,7 +251,7 @@ int last, bottom;
 		p=field;
 		for (y=bottom;--y>=0;) {
 		    for (x=COLS;--x>=0;) {
-				addch(*p++);
+				addch((chtype)(*p++));
 				if (!*p) p=field;
 		    }
             addch('\n');
@@ -315,14 +317,14 @@ int last, bottom;
 }
 
 void
-onsig()
+onsig(int sig)
 {
 	endwin();
-	exit(0);
+	exit(sig);
 }
 
 float
-ranf()
+ranf(void)
 {
 float rv;
 long r = rand();

@@ -49,8 +49,22 @@ static int freeptr[4];		/* free card space pointers */
 
 static int deal_number=0;
 
-static char *ranks[SUIT_LENGTH] =
-	{" A"," 2"," 3"," 4"," 5"," 6"," 7"," 8"," 9","10"," J"," Q"," K"};
+static chtype ranks[SUIT_LENGTH][2] =
+{
+    {' ', 'A'},
+    {' ', '2'},
+    {' ', '3'},
+    {' ', '4'},
+    {' ', '5'},
+    {' ', '6'},
+    {' ', '7'},
+    {' ', '8'},
+    {' ', '9'},
+    {'1', '0'},
+    {' ', 'J'},
+    {' ', 'Q'},
+    {' ', 'K'}
+};
 
 static chtype letters[] =
 {
@@ -72,15 +86,14 @@ static chtype glyphs[] =
 
 static chtype *suits = letters;	/* this may change to glyphs below */
 
-static void die(onsig)
-int onsig;
+static void die(int onsig)
 {
     signal(onsig, SIG_IGN);
     endwin();
     exit(0);
 }
 
-static void init_vars()
+static void init_vars(void)
 {
     int i;
 
@@ -91,8 +104,7 @@ static void init_vars()
 	freeptr[i]=i * GRID_WIDTH;
 }
 
-static void shuffle(size)
-int size;
+static void shuffle(int size)
 {
     int i,j,numswaps,swapnum,temp;
 
@@ -108,7 +120,7 @@ int size;
     }
 }
 
-static void deal_cards()
+static void deal_cards(void)
 {
     int ptr, card=0, value, csuit, crank, suit, aces[4];
 
@@ -136,8 +148,7 @@ static void deal_cards()
 	}
 }
 
-static void printcard(value)
-int value;
+static void printcard(int value)
 {
     (void) addch(' ');
     if (value == NOCARD)
@@ -151,8 +162,7 @@ int value;
     (void) addch(' ');
 }
 
-static void display_cards(deal)
-int deal;
+static void display_cards(int deal)
 {
     int row, card;
 
@@ -184,8 +194,7 @@ P("deals. A good score is 1-3 deals, 4-7 is average, 8 or more is poor.     ");
     refresh();
 }
 
-static int find(card)
-int card;
+static int find(int card)
 {
     int i;
 
@@ -197,8 +206,7 @@ int card;
     return(NOCARD);
 }
 
-static void movecard(src, dst)
-int src, dst;
+static void movecard(int src, int dst)
 {
     grid[dst]=grid[src];
     grid[src]=NOCARD;
@@ -212,7 +220,7 @@ int src, dst;
     refresh();
 }
 
-static void play_game()
+static void play_game(void)
 {
     int dead=0, i, j;
     char c;
@@ -271,7 +279,7 @@ static void play_game()
 		do {
 		    move(PROMPTROW,0);
 		    (void) addstr(buf);
-		    move(PROMPTROW, strlen(buf));
+		    move(PROMPTROW, (int)strlen(buf));
 		    clrtoeol();
 		    (void) addch(' ');
 		} while
@@ -311,7 +319,7 @@ static void play_game()
     (void) getch();
 }
 
-static int collect_discards()
+static int collect_discards(void)
 {
     int row, col, cardno=0, finish, gridno;
 
@@ -335,8 +343,7 @@ static int collect_discards()
     return cardno;
 }
 
-static void game_finished(deal)
-int deal;
+static void game_finished(int deal)
 {
     clear();
     (void)printw("You finished the game in %d deals. This is ",deal);
@@ -375,9 +382,9 @@ int main(int argc, char *argv[])
     cbreak();
 
     if (argc == 2)
-	srand(atoi(argv[1]));
+	srand((unsigned)atoi(argv[1]));
     else
-	srand((int)time((long *)0));
+	srand((unsigned)time((long *)0));
 
     init_vars();
 

@@ -56,13 +56,19 @@ void use_env(bool f)
 
 int LINES, COLS;
 
+/*
+ * The given file-descriptor is for the output terminal.  If output is
+ * redirected to a file, we won't be able to get a screen size (but we
+ * shouldn't complain).
+ *
+ * Returns true if we cannot obtain the screen size.
+ */
 static int resize(int fd)
 {
 #if defined(TIOCGWINSZ) && !defined(BROKEN_TIOCGWINSZ)
 struct winsize size;
 
 	if (ioctl(fd, TIOCGWINSZ, &size) < 0) {
-		perror("TIOCGWINSZ");
 		return TRUE;
 	}
 	LINES = size.ws_row;
@@ -112,7 +118,10 @@ char 		*rows, *cols;
 			if (lines > 0 && columns > 0) {
 				LINES = lines;
 				COLS  = columns; 
-			} 
+			} else {	/* (the ultimate fallback :-) */
+				LINES = 24;
+				COLS  = 80;
+			}
 		}
 	}
 

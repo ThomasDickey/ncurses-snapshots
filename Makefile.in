@@ -1,7 +1,7 @@
 # Master Makefile for ncurses library.
 
 SHELL = /bin/sh
-VERSION = 1.9.2c
+VERSION = 1.9.2d
 
 @SET_MAKE@
 

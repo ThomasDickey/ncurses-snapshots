@@ -30,7 +30,7 @@ library source.
 #define CTRL(x)		((x) & 0x1f)
 #endif
 
-static void Pause()
+static void Pause(void)
 {
 	move(LINES - 1, 0);
 	addstr("Press any key to continue... ");
@@ -53,12 +53,12 @@ static void getch_test(void)
 /* test the keypad feature */
 {
 char buf[BUFSIZ];
-unsigned int c;
+int c;
 int incount = 0, firsttime = 0;
 bool blocking = TRUE;
 int y, x;
   
-      refresh();
+     refresh();
   
      (void) printw("Delay in 10ths of a second (<CR> for blocking input)? ");
      echo();
@@ -71,7 +71,7 @@ int y, x;
  	blocking = FALSE;
      }
  
-      c = '?';
+     c = '?';
      for (;;)
      {
 	if (firsttime++)
@@ -84,10 +84,11 @@ int y, x;
 	    }
 	    else if (c > 0x80)
 	    {
-		if (isprint(c & ~0x80))
-		    (void) printw("M-%c", c);
+		int c2 = (c & 0x7f);
+		if (isprint(c2))
+		    (void) printw("M-%c", c2);
 		else
-		    (void) printw("M-%s", unctrl(c));
+		    (void) printw("M-%s", unctrl(c2));
 		addstr(" (high-half character)\n");
 	    }
 	    else
@@ -211,7 +212,7 @@ static void color_test(void)
     for (i = 1; i < COLOR_PAIRS; i++)
     {
 	init_pair(i, i % COLORS, i / COLORS);
-	attron(COLOR_PAIR(i));
+	attron((attr_t)COLOR_PAIR(i));
 	mvaddstr(3 + (i / COLORS), (i % COLORS + 1) * 8, "Hello");
 	attrset(A_NORMAL);
     }
@@ -226,7 +227,7 @@ static void color_test(void)
     for (i = 1; i < COLOR_PAIRS; i++)
     {
 	init_pair(i, i % COLORS, i / COLORS);
-	attron(COLOR_PAIR(i) | A_BOLD);
+	attron((attr_t)(COLOR_PAIR(i) | A_BOLD));
 	mvaddstr(6 + COLORS + (i / COLORS), (i % COLORS + 1) * 8, "Hello");
 	attrset(A_NORMAL);
     }
@@ -439,8 +440,8 @@ static void slk_test(void)
 
 	case 's':
 	    move(20, 0);
-	    while ((c = getch()) != 'Q')
-		addch(c);
+	    while ((c = getch()) != 'Q' && (c != ERR))
+		addch((chtype)c);
 	    break;
 
 	case 'd':
@@ -490,7 +491,7 @@ static void slk_test(void)
  *
  ****************************************************************************/
 
-static void acs_display()
+static void acs_display(void)
 /* display the ACS character set */
 {
     int	i, j;
@@ -535,7 +536,7 @@ static void acs_display()
     {
 	move(HYBASE + i + 3, 24);
 	for (j = 0; j < 32; j++)
-	    echochar(128 + 32 * i + j);
+	    echochar((chtype)(128 + 32 * i + j));
     }
 
     Pause();
@@ -569,9 +570,8 @@ static void report(void)
     move(y, x);
 }
 
-static pair *selectcell(uli, ulj, lri, lrj)
+static pair *selectcell(int uli, int ulj, int lri, int lrj)
 /* arrows keys move cursor, return location at current on non-arrow key */
-int	uli, ulj, lri, lrj;	/* co-ordinates of corners */
 {
     static pair	res;			/* result cell */
     int		si = lri - uli + 1;	/* depth of the select area */
@@ -650,7 +650,7 @@ static void transient(char *msg)
     refresh();
 }
 
-static void acs_and_scroll()
+static void acs_and_scroll(void)
 /* Demonstrate windows */
 {
     int	c;
@@ -771,13 +771,14 @@ static void acs_and_scroll()
 	    /* FALLTHROUGH */
 
 	default:
-	    waddch(current->wind, c);
+	    waddch(current->wind, (chtype)c);
 	    break;
 	}
 	report();
 	wrefresh(current->wind);
     } while
-	((c = wgetch(current->wind)) != '\004');
+	((c = wgetch(current->wind)) != '\004'
+	 && (c != ERR));
 
  breakout:
     erase();
@@ -803,7 +804,7 @@ static WINDOW *w5;
 
 #define	nap(x)		usleep(1000*x)
 
-static long nap_msec = 1;
+static unsigned long nap_msec = 1;
 
 char *mod[] = 
 {
@@ -818,9 +819,8 @@ char *mod[] =
 /*+-------------------------------------------------------------------------
 	wait_a_while(msec)
 --------------------------------------------------------------------------*/
-void
-wait_a_while(msec)
-long msec;
+static void
+wait_a_while(unsigned long msec)
 {
 #ifdef NONAP
 	if(nap_msec == 1)
@@ -840,9 +840,8 @@ long msec;
 /*+-------------------------------------------------------------------------
 	saywhat(text)
 --------------------------------------------------------------------------*/
-void
-saywhat(text)
-char *text;
+static void
+saywhat(char *text)
 {
 	wmove(stdscr,LINES - 1,0);
 	wclrtoeol(stdscr);
@@ -852,12 +851,8 @@ char *text;
 /*+-------------------------------------------------------------------------
 	mkpanel(rows,cols,tly,tlx) - alloc a win and panel and associate them
 --------------------------------------------------------------------------*/
-PANEL *
-mkpanel(rows,cols,tly,tlx)
-int rows;
-int cols;
-int tly;
-int tlx;
+static PANEL *
+mkpanel(int rows, int cols, int tly, int tlx)
 {
 WINDOW *win = newwin(rows,cols,tly,tlx);
 PANEL *pan;
@@ -873,9 +868,8 @@ PANEL *pan;
 /*+-------------------------------------------------------------------------
 	rmpanel(pan)
 --------------------------------------------------------------------------*/
-void
-rmpanel(pan)
-PANEL *pan;
+static void
+rmpanel(PANEL *pan)
 {
 WINDOW *win = pan->win;
 	del_panel(pan);
@@ -885,8 +879,8 @@ WINDOW *win = pan->win;
 /*+-------------------------------------------------------------------------
 	pflush()
 --------------------------------------------------------------------------*/
-void
-pflush()
+static void
+pflush(void)
 {
 	update_panels();
 	doupdate();
@@ -895,11 +889,11 @@ pflush()
 /*+-------------------------------------------------------------------------
 	fill_panel(win)
 --------------------------------------------------------------------------*/
-void fill_panel(pan)
-PANEL *pan;
+static void
+fill_panel(PANEL *pan)
 {
 WINDOW *win = pan->win;
-char num = *(pan->user + 1);
+chtype num = *(pan->user + 1);
 int y,x;
 
 	box(win, 0, 0);  
@@ -919,7 +913,7 @@ int y,x;
 	main(argc,argv)
 --------------------------------------------------------------------------*/
 
-static void demo_panels()
+static void demo_panels(void)
 {
 int itmp;
 register y,x;
@@ -1251,6 +1245,7 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 	((c = pgetc(pad)) != KEY_EXIT);
 }
 
+static
 int padgetch(WINDOW *win)
 {
     int	c;
@@ -1273,7 +1268,8 @@ int padgetch(WINDOW *win)
 static void demo_pad(void)
 /* Demonstrate pads. */
 {
-    int i, j, gridcount = 0;
+    int i, j;
+    unsigned gridcount = 0;
     WINDOW *panpad = newpad(200, 200);
 
     for (i = 0; i < 200; i++)
@@ -1284,7 +1280,7 @@ static void demo_pad(void)
 		if (i == 0 || j == 0)
 		    waddch(panpad, '+');
 		else
-		    waddch(panpad, 'A' + (gridcount++ % 26));
+		    waddch(panpad, (chtype)('A' + (gridcount++ % 26)));
 	    }
     	    else if (i % GRIDSIZE == 0)
 		waddch(panpad, '-');
@@ -1416,7 +1412,8 @@ static void input_test(WINDOW *win)
  *
  ****************************************************************************/
 
-bool do_single_test(const char c)
+static bool
+do_single_test(const char c)
 /* perform a single specified test */
 {
     switch (c)

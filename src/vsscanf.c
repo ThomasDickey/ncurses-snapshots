@@ -2,6 +2,10 @@
  * This function is needed to support vwscanw
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #if !HAVE_VSSCANF
 #include <stdarg.h>
 

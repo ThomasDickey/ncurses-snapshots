@@ -406,6 +406,10 @@ traceon(); in your code and link with -ldcurses.
 *) include <errno.h> in write_entry.c (most "braindead" includes declare errno
    in that file).
 
-### ncurses 1.9 -> 1.9.2
+### ncurses 1.9.1 -> 1.9.2
 
 *) use 'autoconf' to implement 'configure' script.
+
+### ncurses 1.9.2c -> 1.9.2d
+
+*) 

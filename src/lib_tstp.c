@@ -66,7 +66,7 @@ static void tstp(int dummy)
 	(void)sigaddset(&mask, SIGWINCH);
 #endif
 	(void)sigprocmask(SIG_BLOCK, &mask, &omask);
-	
+
 	/*
 	 * End window mode, which also resets the terminal state to the
 	 * original (pre-curses) modes.
@@ -109,38 +109,79 @@ static void tstp(int dummy)
 
 static void cleanup(int sig)
 {
-	if (sig == SIGSEGV)
-		fprintf(stderr, "Got a segmentation violation signal, cleaning up and exiting\n");
-	endwin();
+	/*
+	 * Actually, doing any sort of I/O from within an signal handler is
+	 * "unsafe".  But we'll _try_ to clean up the screen and terminal
+	 * settings on the way out.
+	 */
+	if (sig == SIGINT
+	 || sig == SIGQUIT) {
+		sigaction_t act;
+		sigemptyset(&act.sa_mask);
+		act.sa_flags = 0;
+		act.sa_handler = SIG_IGN;
+		if (sigaction(sig, &act, (sigaction_t *)0) == 0) {
+			endwin();
+		}
+	}
 	exit(1);
 }
 
+/*
+ * If the given signal is still in its default state, set it to the given
+ * handler.
+ */
+static int CatchIfDefault(int sig, sigaction_t *act)
+{
+	sigaction_t old_act;
+
+	if (sigaction(sig, (sigaction_t *)0, &old_act) == 0
+	 && old_act.sa_handler == SIG_DFL) {
+		(void)sigaction(sig, act, (sigaction_t *)0);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+/*
+ * This is invoked once at the beginning (e.g., from 'initscr()'), to
+ * initialize the signal catchers, and thereafter when spawning a shell (and
+ * returning) to disable/enable the SIGTSTP (i.e., ^Z) catcher.
+ *
+ * If the application has already set one of the signals, we'll not modify it
+ * (during initialization).
+ *
+ * The XSI document implies that we shouldn't keep the SIGTSTP handler if
+ * the caller later changes its mind, but that doesn't seem correct.
+ */
 void _nc_signal_handler(bool enable)
 {
 static sigaction_t act, oact;
+static int ignore;
 
-	if (!enable)
+	if (!ignore)
 	{
-		act.sa_handler = SIG_IGN;
-		sigaction(SIGTSTP, &act, &oact);
-	}
-	else if (act.sa_handler)
-	{
-		sigaction(SIGTSTP, &oact, NULL);
-	}
-	else	/*initialize */
-	{
-		sigemptyset(&act.sa_mask);
-		act.sa_flags = 0;
+		if (!enable)
+		{
+			act.sa_handler = SIG_IGN;
+			sigaction(SIGTSTP, &act, &oact);
+		}
+		else if (act.sa_handler)
+		{
+			sigaction(SIGTSTP, &oact, NULL);
+		}
+		else	/*initialize */
+		{
+			sigemptyset(&act.sa_mask);
+			act.sa_flags = 0;
 
-		act.sa_handler = cleanup;
-		sigaction(SIGINT, &act, NULL);
-		sigaction(SIGTERM, &act, NULL);
-#if 0
-		sigaction(SIGSEGV, &act, NULL);
-#endif
+			act.sa_handler = cleanup;
+			CatchIfDefault(SIGINT,  &act);
+			CatchIfDefault(SIGTERM, &act);
 
-		act.sa_handler = tstp;
-		sigaction(SIGTSTP, &act, NULL);
+			act.sa_handler = tstp;
+			if (!CatchIfDefault(SIGTSTP, &act))
+				ignore = TRUE;
+		}
 	}
 }

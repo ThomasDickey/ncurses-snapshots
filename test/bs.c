@@ -30,25 +30,6 @@
 #define strchr	index
 #endif /* !A_UNDERLINE */
 
-#ifdef isxdigit		/* aha, must be an AT&T system... */
-
-#if !defined(__386BSD__) && !defined(__bsdi__)
-#define srand(n)	srand48(n)
-#define rand()		lrand48()
-extern long lrand48();
-extern void srand48();
-#endif
-
-#define bzero(s, n)	(void)memset((char *)(s), '\0', n)
-
-/*
- * Try this if ungetch() fails to resolve.
- *
- * #define ungetch ungetc
- */
-#endif /* isxdigit */
-
-
 static int getcoord(int);
 
 /*
@@ -173,9 +154,8 @@ static int salvo, blitz, closepack;
 
 #define	PR	(void)addstr
 
-static void uninitgame(sig)
+static void uninitgame(int sig)
 /* end the game, either normally or due to signal */
-int	sig;
 {
     clear();
     (void)refresh();
@@ -185,7 +165,7 @@ int	sig;
     exit(sig);
 }
 
-static void announceopts()
+static void announceopts(void)
 /* announce which game options are enabled */
 {
     if (salvo || blitz || closepack)
@@ -209,12 +189,12 @@ static void announceopts()
 	"Playing standard game (noblitz, nosalvo, noclosepack)");
 }
 
-static void intro()
+static void intro(void)
 {
-    extern char *getlogin();
+    extern char *getlogin(void);
     char *tmpname;
 
-    srand(time(0L)+getpid());	/* Kick the random number generator */
+    srand((unsigned)(time(0L)+getpid()));	/* Kick the random number generator */
 
     (void) signal(SIGINT,uninitgame);
     (void) signal(SIGINT,uninitgame);
@@ -274,10 +254,8 @@ static void intro()
 }		    
 
 /* VARARGS1 */
-static void prompt(n, f, s)
+static void prompt(int n, char *f, char *s)
 /* print a message at the prompt line */
-int n;
-char *f, *s;
 {
     (void) move(PROMPTLINE + n, 0);
     (void) clrtoeol();
@@ -285,8 +263,7 @@ char *f, *s;
     (void) refresh();
 }
 
-static void error(s)
-char *s;
+static void error(char *s)
 {
     (void) move(PROMPTLINE + 2, 0);
     (void) clrtoeol();
@@ -297,10 +274,7 @@ char *s;
     }
 }
 
-static void placeship(b, ss, vis)
-int b;
-ship_t *ss;
-int vis;
+static void placeship(int b, ship_t *ss, int vis)
 {
     int l;
 
@@ -319,16 +293,13 @@ int vis;
     ss->hits = 0;
 }
 
-static int rnd(n)
-int n;
+static int rnd(int n)
 {
     return(((rand() & 0x7FFF) % n));
 }
 
-static void randomplace(b, ss)
+static void randomplace(int b, ship_t *ss)
 /* generate a valid random ship placement into px,py */
-int b;
-ship_t *ss;
 {
     register int bwidth = BWIDTH - ss->length;
     register int bdepth = BDEPTH - ss->length;
@@ -341,7 +312,7 @@ ship_t *ss;
 	(!checkplace(b, ss, FALSE));
 }
 
-static void initgame()
+static void initgame(void)
 {
     int i, j, unplaced;
     ship_t *ss;
@@ -366,7 +337,7 @@ static void initgame()
     (void) mvaddstr(PYBASE - 1, PXBASE - 3,numbers);
     for(i=0; i < BDEPTH; ++i)
     {
-	(void) mvaddch(PYBASE + i, PXBASE - 3, i + 'A');
+	(void) mvaddch(PYBASE + i, PXBASE - 3, (chtype)(i + 'A'));
 #ifdef A_COLOR
 	if (has_colors())
 	    attron(COLOR_PAIR(COLOR_BLUE));
@@ -378,14 +349,14 @@ static void initgame()
 	attrset(0);
 #endif /* A_COLOR */
 	(void) addch(' ');
-	(void) addch(i + 'A');
+	(void) addch((chtype)(i + 'A'));
     }
     (void) mvaddstr(PYBASE + BDEPTH, PXBASE - 3,numbers);
     (void) mvaddstr(CYBASE - 2, CXBASE + 7,"Hit/Miss Board");
     (void) mvaddstr(CYBASE - 1, CXBASE - 3, numbers);
     for(i=0; i < BDEPTH; ++i)
     {
-	(void) mvaddch(CYBASE + i, CXBASE - 3, i + 'A');
+	(void) mvaddch(CYBASE + i, CXBASE - 3, (chtype)(i + 'A'));
 #ifdef A_COLOR
 	if (has_colors())
 	    attron(COLOR_PAIR(COLOR_BLUE));
@@ -397,7 +368,7 @@ static void initgame()
 	attrset(0);
 #endif /* A_COLOR */
 	(void) addch(' ');
-	(void) addch(i + 'A');
+	(void) addch((chtype)(i + 'A'));
     }
 
     (void) mvaddstr(CYBASE + BDEPTH,CXBASE - 3,numbers);
@@ -480,7 +451,7 @@ static void initgame()
 	}	    
 	else if (c == 'R')
 	{
-	    prompt(1, "Placing the rest of your fleet at random...");
+	    prompt(1, "Placing the rest of your fleet at random...", "");
 	    for (ss = plyship; ss < plyship + SHIPTYPES; ss++)
 		if (!ss->placed)
 		{
@@ -531,12 +502,11 @@ static void initgame()
     (void) mvprintw(HYBASE+5,  HXBASE,
 		    "                                                       ");
 
-    (void) prompt(0, "Press any key to start...");
+    (void) prompt(0, "Press any key to start...", "");
     (void) getch();
 }
 
-static int getcoord(atcpu)
-int atcpu;
+static int getcoord(int atcpu)
 {
     int ny, nx, c;
 
@@ -626,10 +596,8 @@ int atcpu;
     }
 }
 
-static int collidecheck(b, y, x)
+static int collidecheck(int b, int y, int x)
 /* is this location on the selected zboard adjacent to a ship? */
-int b;
-int y, x;
 {
     int	collide;
 
@@ -655,10 +623,7 @@ int y, x;
     return(collide);
 }
 
-static bool checkplace(b, ss, vis)
-int b;
-ship_t *ss;
-int vis;
+static bool checkplace(int b, ship_t *ss, int vis)
 {
     int l, xend, yend;
 
@@ -706,7 +671,7 @@ int vis;
     return(TRUE);
 }
 
-static int awinna()
+static int awinna(void)
 {
     int i, j;
     ship_t *ss;
@@ -723,9 +688,8 @@ static int awinna()
     return(-1);
 }
 
-static ship_t *hitship(x, y)
+static ship_t *hitship(int x, int y)
 /* register a hit on the targeted ship */
-int x, y;
 {
     ship_t *sb, *ss;
     char sym;
@@ -752,16 +716,16 @@ int x, y;
 
 			for (i = -1; i <= ss->length; ++i)
 			{
-			    int x, y;
+			    int x1, y1;
 			    
-			    x = bx + i * xincr[ss->dir];
-			    y = by + i * yincr[ss->dir];
-			    if (ONBOARD(x, y))
+			    x1 = bx + i * xincr[ss->dir];
+			    y1 = by + i * yincr[ss->dir];
+			    if (ONBOARD(x1, y1))
 			    {
-				hits[turn][x][y] = MARK_MISS;
+				hits[turn][x1][y1] = MARK_MISS;
 				if (turn % 2 == PLAYER)
 				{
-				    cgoto(y, x);
+				    cgoto(y1, x1);
 #ifdef A_COLOR
 				    if (has_colors())
 					attron(COLOR_PAIR(COLOR_GREEN));
@@ -777,14 +741,14 @@ int x, y;
 
 		for (i = 0; i < ss->length; ++i)
 		{
-		    int x = ss->x + i * xincr[ss->dir];
-		    int y = ss->y + i * yincr[ss->dir];
+		    int x1 = ss->x + i * xincr[ss->dir];
+		    int y1 = ss->y + i * yincr[ss->dir];
 
-		    hits[turn][x][y] = ss->symbol;
+		    hits[turn][x1][y1] = ss->symbol;
 		    if (turn % 2 == PLAYER)
 		    {
-			cgoto(y, x);
-			(void) addch(ss->symbol);
+			cgoto(y1, x1);
+			(void) addch((chtype)(ss->symbol));
 		    }
 		}
 
@@ -796,19 +760,19 @@ int x, y;
     return((ship_t *)NULL);
 }
 
-static int plyturn()
+static int plyturn(void)
 {
     ship_t *ss;
     bool hit;
     char *m = NULL;
 
-    prompt(1, "Where do you want to shoot? ");
+    prompt(1, "Where do you want to shoot? ", "");
     for (;;)
     {
 	(void) getcoord(COMPUTER);
 	if (hits[PLAYER][curx][cury])
 	{
-	    prompt(1, "You shelled this spot already! Try again.");
+	    prompt(1, "You shelled this spot already! Try again.", "");
 	    beep();
 	}
 	else
@@ -857,8 +821,7 @@ static int plyturn()
     return(hit);
 }
 
-static int sgetc(s)
-char *s;
+static int sgetc(char *s)
 {
     char *s1;
     int ch;
@@ -883,9 +846,8 @@ char *s;
 }
 
 
-static void randomfire(px, py)
+static void randomfire(int *px, int *py)
 /* random-fire routine -- implements simple diagonal-striping strategy */
-int	*px, *py;
 {
     static int turncount = 0;
     static int srchstep = BEGINSTEP;
@@ -943,9 +905,8 @@ int	*px, *py;
 #define S_HIT	1
 #define S_SUNK	-1
 
-static bool cpufire(x, y)
+static bool cpufire(int x, int y)
 /* fire away at given location */
-int	x, y;
 {
     bool hit, sunk;
     ship_t *ss = NULL;
@@ -978,7 +939,7 @@ int	x, y;
  * unstructuredness below. The five labels are states which need to be held
  * between computer turns.
  */
-static bool cputurn()
+static bool cputurn(void)
 {
 #define POSSIBLE(x, y)	(ONBOARD(x, y) && !hits[COMPUTER][x][y])
 #define RANDOM_FIRE	0
@@ -1102,7 +1063,8 @@ static bool cputurn()
     return(hit);
 }
 
-int playagain()
+static
+int playagain(void)
 {
     int j;
     ship_t *ss;
@@ -1131,9 +1093,7 @@ int playagain()
     return(sgetc("YN") == 'Y');
 }
 
-static void do_options(c,op)
-int c;
-char *op[];
+static void do_options(int c, char *op[])
 {
     register int i;
 
@@ -1186,8 +1146,7 @@ char *op[];
     }
 }
 
-static int scount(who)
-int who;
+static int scount(int who)
 {
     register int i, shots;
     register ship_t *sp;
@@ -1207,9 +1166,7 @@ int who;
     return(shots);
 }
 
-int main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, char *argv[])
 {
     do_options(argc, argv);
 

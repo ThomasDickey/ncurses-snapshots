@@ -39,8 +39,8 @@ void set(int, int);
 void standt(int);
 void movto(int, int);
 
-void sighndl(signo)
-int signo;
+static
+void sighndl(int signo)
 {
 	signal(signo, sighndl);
 	sigtermed=signo;

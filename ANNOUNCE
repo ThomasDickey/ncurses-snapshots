@@ -1,12 +1,12 @@
 
-                         ANNOUNCING NCURSES @VERSION@
+                           ANNOUNCING NCURSES 1.9.2D
                                        
-New in @VERSION@:
+New in 1.9.2d:
 
      * Integrated panels support.
      * ncurses output can now be redirected.
        
-Overview of ncurses @VERSION@
+Overview of ncurses 1.9.2d
 
    The ncurses library is a freeware emulation of System V Release 4.0
    curses. It uses terminfo format, supports color and multiple

@@ -27,22 +27,24 @@
 #if !HAVE_SIGACTION
 #include <signal.h>
 
-void
+int
 sigaction (int sig, sigaction_t * sigact, sigaction_t * osigact)
 {
-  sigvec(sig, sigact, osigact);
+  return sigvec(sig, sigact, osigact);
 }
 
-void
+int
 sigemptyset (int * mask)
 {
   *mask = 0;
+  return 0;
 }
 
-void
+int
 sigprocmask (int mode, int * mask, int * omask)
 {
   *omask = sigsetmask (0);
+  return 0;
 }
 
 int
@@ -51,15 +53,17 @@ sigsuspend (int * mask)
   return sigpause (*mask);
 }
 
-void
+int
 sigdelset (int * mask, int sig)
 {
   *mask &= ~sigmask (sig);
+  return 0;
 }
 
-void
+int
 sigaddset (int * mask, int sig)
 {
   *mask |= sigmask (sig);
+  return 0;
 }
 #endif
