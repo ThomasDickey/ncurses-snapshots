@@ -671,15 +671,16 @@ Function Descriptions
           
   LOW-LEVEL CAPABILITY ACCESS
   
-   setupterm(term, filenum, errret) This routine is called to initialize
-          a terminal's description, without setting up the curses screen
-          structures or changing the tty-driver mode bits. term is the
-          character string representing the name of the terminal being
-          used. filenum is the UNIX file descriptor of the terminal to be
-          used for output. errret is a pointer to an integer, in which a
-          success or failure indication is returned. The values returned
-          can be 1 (all is well), 0 (no such terminal), or -1 (some
-          problem locating the terminfo database).
+   setupterm(term, filenum, errret)
+          This routine is called to initialize a terminal's description,
+          without setting up the curses screen structures or changing the
+          tty-driver mode bits. term is the character string representing
+          the name of the terminal being used. filenum is the UNIX file
+          descriptor of the terminal to be used for output. errret is a
+          pointer to an integer, in which a success or failure indication
+          is returned. The values returned can be 1 (all is well), 0 (no
+          such terminal), or -1 (some problem locating the terminfo
+          database).
           
           The value of term can be given as NULL, which will cause the
           value of TERM in the environment to be used. The errret pointer
@@ -701,7 +702,7 @@ Function Descriptions
           
   DEBUGGING
   
-   NOTE: These functions are not part of the standard curses SPI!
+   NOTE: These functions are not part of the standard curses API!
    
    trace()
           This function can be used to explicitly set a trace level. If
@@ -1107,7 +1108,7 @@ Overview of Menus
 Selecting items
 
    Menus may be multi-valued or (the default) single-valued (see the
-   manual page mitem_opts(3x) to see how to change the default). Both
+   manual page menu_opts(3x) to see how to change the default). Both
    types always have a current item.
    
    From a single-valued menu you can read the selected value simply by
@@ -2379,7 +2380,6 @@ Form Options
    or queried with these functions:
    
 
-
 int set_form_opts(FORM *form,             /* form to alter */
                   int attr);              /* attribute to set */
 
@@ -2391,9 +2391,8 @@ int form_opts_off(FORM *form,             /* form to alter */
 
 int form_opts(FORM *form);                /* form to query */
 
-
-By default, all options are on.  Here are the available option bits:
-
+   By default, all options are on. Here are the available option bits:
+   
    O_NL_OVERLOAD
           Enable overloading of REQ_NEW_LINE as described in Editing
           Requests. The value of this option is ignored on dynamic fields

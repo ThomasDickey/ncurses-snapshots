@@ -1,4 +1,4 @@
-dnl $Id: configure.in,v 1.2 1996/06/15 18:23:47 tom Exp $
+dnl $Id: configure.in,v 1.4 1996/07/04 13:42:39 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -61,6 +61,7 @@ AC_STDC_HEADERS
 AC_HEADER_TIME
 AC_CHECK_HEADERS( \
 form.h \
+getopt.h \
 menu.h \
 panel.h \
 sys/ioctl.h \
@@ -72,6 +73,8 @@ unistd.h \
 
 AC_CHECK_FUNCS( \
 gettimeofday \
+napms \
+vsscanf \
 )
 
 AC_CHECKING([for SCO by checking on /usr/bin/scosh])

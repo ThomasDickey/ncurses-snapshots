@@ -30,7 +30,7 @@
  *
  *	Use this code by calling _nc_read_entry_source() on as many source
  *	files as you like (either terminfo or termcap syntax).  If you
- *	want use-resolution, call _nc_resolve_uses().  To free the list 
+ *	want use-resolution, call _nc_resolve_uses().  To free the list
  *	storage, do _nc_free_entries().
  *
  */
@@ -43,6 +43,8 @@
 #include "tic.h"
 #include "term.h"
 #include "term_entry.h"
+
+static void sanity_check(TERMTYPE *);
 
 /****************************************************************************
  *
@@ -133,7 +135,7 @@ bool _nc_entry_match(char *n1, char *n2)
 	     && memcmp(pstart, qstart, (size_t)(pend-pstart)) == 0)
 		return(TRUE);
 
-    	return(FALSE);
+	return(FALSE);
 }
 
 /****************************************************************************
@@ -306,7 +308,7 @@ int _nc_resolve_uses(void)
     DEBUG(2, ("NAME RESOLUTION COMPLETED OK"));
 
     /*
-     * OK, at this point all (char *) references have been successfully 
+     * OK, at this point all (char *) references have been successfully
      * replaced by (ENTRY *) pointers.  Time to do the actual merges.
      */
     do {
@@ -332,14 +334,14 @@ int _nc_resolve_uses(void)
 		    }
 
 		/*
-		 * First, make sure there's no garbage in the merge block.  
+		 * First, make sure there's no garbage in the merge block.
 		 * as a side effect, copy into the merged entry the name
 		 * field and string table pointer.
 		 */
 		memcpy(&merged, &qp->tterm, sizeof(TERMTYPE));
 
 		/*
-		 * Now merge in each use entry in the proper 
+		 * Now merge in each use entry in the proper
 		 * (reverse) order.
 		 */
 		for (; qp->nuses; qp->nuses--)
@@ -390,11 +392,65 @@ int _nc_resolve_uses(void)
     /*
      * We'd like to free entries read in off disk at this point, but can't.
      * The merge_entry() code doesn't copy the strings in the use entries,
-     * it just aliases them.  If this ever changes, do a 
+     * it just aliases them.  If this ever changes, do a
      * free_entries(lastread) here.
      */
 
     DEBUG(2, ("RESOLUTION FINISHED"));
 
+    _nc_curr_col = -1;
+    for_entry_list(qp)
+    {
+	_nc_curr_line = qp->startline;
+	_nc_set_type(_nc_first_name(qp->tterm.term_names));
+	sanity_check(&qp->tterm);
+    }
+
+    DEBUG(2, ("SANITY CHECK FINISHED"));
+
     return(TRUE);
+}
+
+/*
+ * This bit of legerdemain turns all the terminfo variable names into
+ * references to locations in the arrays Booleans, Numbers, and Strings ---
+ * precisely what's needed.
+ */
+
+#undef CUR
+#define CUR tp->
+
+/*
+ * Note that WANTED and PRESENT are not simple inverses!  If a capability
+ * has been explicitly cancelled, it's not considered WANTED.
+ */
+#define WANTED(s)	((s) == (char *)0)
+#define PRESENT(s)	(((s) != (char *)0) && ((s) != CANCELLED_STRING))
+
+#define ANDMISSING(p,q) \
+		if (PRESENT(p) && !PRESENT(q)) \
+			_nc_warning(#p " but no " #q)
+
+#define PAIRED(p,q) \
+		if (PRESENT(q) && !PRESENT(p)) \
+			_nc_warning(#q " but no " #p); \
+		if (PRESENT(p) && !PRESENT(q)) \
+			_nc_warning(#p " but no " #q)
+
+static void sanity_check(TERMTYPE *tp)
+{
+    if (!PRESENT(exit_attribute_mode))
+    {
+	PAIRED(enter_alt_charset_mode,  exit_alt_charset_mode);
+	PAIRED(enter_standout_mode,     exit_standout_mode);
+	PAIRED(enter_underline_mode,    exit_underline_mode);
+	ANDMISSING(exit_ca_mode,        enter_ca_mode);
+	PAIRED(from_status_line,        to_status_line);
+	PAIRED(prtr_on,                 prtr_off);
+	PAIRED(enter_xon_mode,          exit_xon_mode);
+	PAIRED(label_off,               label_on);
+	PAIRED(display_clock,           remove_clock);
+    }
+
+#undef PAIRED
 }

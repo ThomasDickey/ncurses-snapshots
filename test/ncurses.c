@@ -14,6 +14,8 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
+$Id: ncurses.c,v 1.41 1996/07/06 21:23:18 esr Exp $
+
 ***************************************************************************/
 /*LINTLIBRARY */
 
@@ -46,10 +48,18 @@ library source.
 #endif
 
 #ifdef NCURSES_VERSION
+
 #ifdef TRACE
+static int save_trace = TRACE_ORDINARY|TRACE_CALLS;
 extern int _nc_tracing;
 #endif
+
+#ifndef HAVE_NAPMS
+#define HAVE_NAPMS 1
+#endif
+
 #else
+
 #define mmask_t chtype		/* not specified in XSI */
 #define attr_t chtype		/* not specified in XSI */
 #define ACS_S3          (acs_map['p'])  /* scan line 3 */
@@ -59,6 +69,7 @@ extern int _nc_tracing;
 #define ACS_PI          (acs_map['{'])  /* Pi */
 #define ACS_NEQUAL      (acs_map['|'])  /* not equal */
 #define ACS_STERLING    (acs_map['}'])  /* UK pound sign */
+
 #endif
 
 #define P(string)	printw("%s\n", string)
@@ -93,13 +104,12 @@ static int wGetchar(WINDOW *win)
 	int c;
 #ifdef TRACE
 	while ((c = wgetch(win)) == CTRL('T')) {
-		static int save;
 		if (_nc_tracing) {
-			save = _nc_tracing;
+			save_trace = _nc_tracing;
 			_tracef("TOGGLE-TRACING OFF");
 			_nc_tracing = 0;
 		} else {
-			_nc_tracing = save;
+			_nc_tracing = save_trace;
 		}
 		trace(_nc_tracing);
 		if (_nc_tracing)
@@ -153,8 +163,8 @@ int y, x;
 
      if (isdigit(buf[0]))
      {
- 	timeout(atoi(buf) * 100);
- 	blocking = FALSE;
+	timeout(atoi(buf) * 100);
+	blocking = FALSE;
      }
 
      c = '?';
@@ -197,7 +207,7 @@ int y, x;
 	    }
 	    getyx(stdscr, y, x);
 	    if (y >= LINES-1)
-	    	move(0,0);
+		move(0,0);
 	    clrtoeol();
 	}
 
@@ -341,7 +351,7 @@ static void color_test(void)
 
     (void) mvprintw(COLORS + 4, 0,
 	   "%dx%d matrix of foreground/background colors, bright *on*\n",
-    	   COLORS, COLORS);
+	   COLORS, COLORS);
     for (i = 0; i < COLORS; i++)
 	mvaddstr(5 + COLORS, (i+1) * 8, colors[i]);
     for (i = 0; i < COLORS; i++)
@@ -382,7 +392,7 @@ static void color_edit(void)
 	    mvprintw(2 + i, 0, "%c %-8s:",
 		     (i == current ? '>' : ' '),
 		     (i < (int) SIZEOF(colors)
-		     	? colors[i] : ""));
+			? colors[i] : ""));
 	    attrset(COLOR_PAIR(i));
 	    addstr("        ");
 	    attrset(A_NORMAL);
@@ -524,6 +534,7 @@ static void slk_test(void)
 
     c = CTRL('l');
     do {
+	move(0, 0); 
 	switch(c)
 	{
 	case CTRL('l'):
@@ -591,6 +602,7 @@ static void slk_test(void)
 	    noecho();
 	    slk_set((c - '0'), buf, fmt);
 	    slk_refresh();
+	    move(20, 0); clrtoeol(); 
 	    break;
 
 	case 'x':
@@ -652,7 +664,7 @@ static void acs_display(void)
     mvaddstr(ACSY + 6, 40, "ACS_BOARD: "); addch(ACS_BOARD);
     mvaddstr(ACSY + 7, 40, "ACS_LANTERN: "); addch(ACS_LANTERN);
     mvaddstr(ACSY + 8, 40, "ACS_BLOCK: "); addch(ACS_BLOCK);
-    mvaddstr(ACSY + 9,40,  "ACS_S3: "); addch(ACS_S3);
+    mvaddstr(ACSY + 9, 40, "ACS_S3: "); addch(ACS_S3);
     mvaddstr(ACSY + 10,40, "ACS_S7: "); addch(ACS_S7);
     mvaddstr(ACSY + 11,40, "ACS_LEQUAL: "); addch(ACS_LEQUAL);
     mvaddstr(ACSY + 12,40, "ACS_GEQUAL: "); addch(ACS_GEQUAL);
@@ -671,6 +683,85 @@ static void acs_display(void)
 
     Pause();
 
+    erase();
+    endwin();
+}
+
+/*
+ * Graphic-rendition test (adapted from vttest)
+ */
+static void
+test_sgr_attributes(void)
+{
+    int pass;
+
+    for (pass = 0; pass < 2; pass++) {
+	int normal = ((pass == 0 ? A_NORMAL : A_REVERSE));
+
+	/* Use non-default colors if possible to exercise bce a little */
+	if (has_colors()) {
+	    init_pair(1, COLOR_WHITE, COLOR_BLUE);
+	    normal |= COLOR_PAIR(1);
+	}
+	bkgdset(normal);
+	erase();
+	mvprintw( 1,20, "Graphic rendition test pattern:");
+
+	mvprintw( 4, 1, "vanilla");
+
+#define set_sgr(mask) bkgdset((normal^(mask)));
+	set_sgr(A_BOLD);
+	mvprintw( 4,40, "bold");
+
+	set_sgr(A_UNDERLINE);
+	mvprintw( 6, 6, "underline");
+
+	set_sgr(A_BOLD|A_UNDERLINE);
+	mvprintw( 6,45, "bold underline");
+
+	set_sgr(A_BLINK);
+	mvprintw( 8, 1, "blink");
+
+	set_sgr(A_BLINK|A_BOLD);
+	mvprintw( 8,40, "bold blink");
+
+	set_sgr(A_UNDERLINE|A_BLINK);
+	mvprintw(10, 6, "underline blink");
+
+	set_sgr(A_BOLD|A_UNDERLINE|A_BLINK);
+	mvprintw(10,45, "bold underline blink");
+
+	set_sgr(A_REVERSE);
+	mvprintw(12, 1, "negative");
+
+	set_sgr(A_BOLD|A_REVERSE);
+	mvprintw(12,40, "bold negative");
+
+	set_sgr(A_UNDERLINE|A_REVERSE);
+	mvprintw(14, 6, "underline negative");
+
+	set_sgr(A_BOLD|A_UNDERLINE|A_REVERSE);
+	mvprintw(14,45, "bold underline negative");
+
+	set_sgr(A_BLINK|A_REVERSE);
+	mvprintw(16, 1, "blink negative");
+
+	set_sgr(A_BOLD|A_BLINK|A_REVERSE);
+	mvprintw(16,40, "bold blink negative");
+
+	set_sgr(A_UNDERLINE|A_BLINK|A_REVERSE);
+	mvprintw(18, 6, "underline blink negative");
+
+	set_sgr(A_BOLD|A_UNDERLINE|A_BLINK|A_REVERSE);
+	mvprintw(18,45, "bold underline blink negative");
+
+	bkgdset(normal);
+	mvprintw(LINES-2,1, "%s background. ", pass == 0 ? "Dark" : "Light");
+	clrtoeol();
+	Pause();
+    }
+
+    bkgdset(A_NORMAL);
     erase();
     endwin();
 }
@@ -707,7 +798,7 @@ static void transient(struct frame *curp, char *msg)
 
     move(LINES-1, 0);
     printw("All other characters are echoed, window should %sscroll.",
-    	((curp != 0) && curp->flag) ? "" : "not " );
+	((curp != 0) && curp->flag) ? "" : "not " );
     clrtoeol();
     refresh();
 }
@@ -904,7 +995,7 @@ static void acs_and_scroll(void)
 	    }
 	    transient(current, (char *)0);
 	    break;
-	
+
 	case CTRL('W'):		/* save and delete window */
 	    if (current == current->next)
 		break;
@@ -961,7 +1052,7 @@ static void acs_and_scroll(void)
 
 		tmp = selectcell(ul.y, ul.x, LINES-BOTLINES-2, COLS-2);
 		if (tmp == (pair *)NULL)
-	    	    break;
+		    break;
 
 		getmaxyx(current->wind, lr.y, lr.x);
 		lr.y += (ul.y - 1);
@@ -1039,6 +1130,7 @@ static void acs_and_scroll(void)
 	 && (c != ERR));
 
  breakout:
+    scrollok(stdscr, TRUE);	/* reset to driver's default */
     erase();
     endwin();
 }
@@ -1079,18 +1171,18 @@ char *mod[] =
 static void
 wait_a_while(unsigned long msec GCC_UNUSED)
 {
-#ifdef NONAP
+#if HAVE_NAPMS
+	if(nap_msec == 1)
+		getchar();
+	else
+		napms(nap_msec);
+#else
 	if(nap_msec == 1)
 		getchar();
 	else if(msec > 1000L)
 		sleep((int)msec/1000L);
 	else
 		sleep(1);
-#else
-	if(nap_msec == 1)
-		getchar();
-	else
-		napms(nap_msec);
 #endif
 }	/* end of wait_a_while */
 
@@ -1128,7 +1220,7 @@ PANEL *pan;
 static void
 rmpanel(PANEL *pan)
 {
-WINDOW *win = pan->win;
+WINDOW *win = panel_window(pan);
 	del_panel(pan);
 	delwin(win);
 }	/* end of rmpanel */
@@ -1149,13 +1241,13 @@ pflush(void)
 static void
 fill_panel(PANEL *pan)
 {
-WINDOW *win = pan->win;
-chtype num = *(pan->user + 1);
+WINDOW *win = panel_window(pan);
+int num = panel_userptr(pan)[1];
 int y,x;
 
 	box(win, 0, 0);
 	wmove(win,1,1);
-	wprintw(win,"-pan%c-",num);
+	wprintw(win,"-pan%c-", num);
 	for(y = 2; y < getmaxy(win) - 1; y++)
 	{
 		for(x = 1; x < getmaxx(win) - 1; x++)
@@ -1166,19 +1258,10 @@ int y,x;
 	}
 }	/* end of fill_panel */
 
-/*+-------------------------------------------------------------------------
-	main(argc,argv)
---------------------------------------------------------------------------*/
-
 static void demo_panels(void)
 {
 int itmp;
 register y,x;
-
-#ifdef FOO
-	if((argc > 1) && atol(argv[1]))
-		nap_msec = atol(argv[1]);
-#endif /* FOO */
 
 	refresh();
 
@@ -1376,18 +1459,22 @@ register y,x;
 
 #define GRIDSIZE	3
 
+static bool show_panner_legend = TRUE;
+
 static int panner_legend(int line)
 {
 	static const char *const legend[] = {
-		"Use arrow keys (or U,D,L,R) to pan, q to quit (t,s flags)",
+		"Use arrow keys (or U,D,L,R) to pan, q to quit (?,t,s flags)",
 		"Use +,- (or j,k) to grow/shrink the panner vertically.",
 		"Use <,> (or h,l) to grow/shrink the panner horizontally."
 	};
 	int n = (SIZEOF(legend) - (LINES - line));
 	if (line < LINES && (n >= 0)) {
-		mvprintw(line, 0, legend[n]);
+		move(line, 0);
+		if (show_panner_legend)
+			printw("%s", legend[n]);
 		clrtoeol();
-		return TRUE;
+		return show_panner_legend;
 	}
 	return FALSE;
 }
@@ -1422,11 +1509,18 @@ static void panner(WINDOW *pad,
     int pxmax, pymax, lowend, highend, c;
 
     getmaxyx(pad, pymax, pxmax);
+    scrollok(stdscr, FALSE);	/* we don't want stdscr to scroll! */
 
     c = KEY_REFRESH;
     do {
 	switch(c)
 	{
+	case '?':
+	    show_panner_legend = !show_panner_legend;
+	    panner_legend(LINES - 3);
+	    panner_legend(LINES - 2);
+	    panner_legend(LINES - 1);
+	    break;
 #if HAVE_GETTIMEOFDAY
 	case 't':
 	    timing = !timing;
@@ -1555,6 +1649,10 @@ static void panner(WINDOW *pad,
 	    else
 		beep();
 	    break;
+
+	default:
+	    beep();
+	    break;
 	}
 
 	mvaddch(top_y - 1, top_x - 1, ACS_ULCORNER);
@@ -1616,7 +1714,7 @@ static void panner(WINDOW *pad,
 		double elapsed;
 		gettimeofday(&after, NULL);
 		elapsed = (after.tv_sec  + after.tv_usec  / 1.0e6)
-	 		- (before.tv_sec + before.tv_usec / 1.0e6);
+			- (before.tv_sec + before.tv_usec / 1.0e6);
 		move(LINES-1, COLS-20);
 		printw("Secs: %2.03f", elapsed);
 		refresh();
@@ -1625,6 +1723,8 @@ static void panner(WINDOW *pad,
 
     } while
 	((c = pgetc(pad)) != KEY_EXIT);
+
+    scrollok(stdscr, TRUE);	/* reset to driver's default */
 }
 
 static
@@ -1664,9 +1764,9 @@ static void demo_pad(void)
 		else
 		    waddch(panpad, (chtype)('A' + (gridcount++ % 26)));
 	    }
-    	    else if (i % GRIDSIZE == 0)
+	    else if (i % GRIDSIZE == 0)
 		waddch(panpad, '-');
-    	    else if (j % GRIDSIZE == 0)
+	    else if (j % GRIDSIZE == 0)
 		waddch(panpad, '|');
 	    else
 		waddch(panpad, ' ');
@@ -1707,15 +1807,14 @@ static void Continue (WINDOW *win)
 static void input_test(WINDOW *win)
 /* Input test, adapted from John Burnell's PDCurses tester */
 {
+#if HAVE_VSSCANF
+    char buffer [80];
+    int num;
+#endif /* HAVE_VSSCANF */
     int w, h, bx, by, sw, sh, i;
 
     WINDOW *subWin;
     wclear (win);
-
-#ifdef FOO
-    char buffer [80];
-    int num;
-#endif /* FOO */
 
     w  = win->_maxx;
     h  = win->_maxy;
@@ -1738,9 +1837,7 @@ static void input_test(WINDOW *win)
     wattrset(subWin, A_BOLD);
 #endif
     box(subWin, ACS_VLINE, ACS_HLINE);
-#ifdef FOO
     mvwaddstr(subWin, 2, 1, "This is a subwindow");
-#endif /* FOO */
     wrefresh(win);
 
     nocbreak();
@@ -1782,7 +1879,7 @@ static void input_test(WINDOW *win)
 	    "What you typed should now have been deleted; if not, wdelch() failed.");
     Continue(win);
 
-#ifdef FOO
+#if HAVE_VSSCANF
     /*
      * This test won't be portable until vsscanf() is
      */
@@ -1790,7 +1887,7 @@ static void input_test(WINDOW *win)
     echo();
     mvwscanw(win, 7, 6, "%d %s", &num,buffer);
     mvwprintw(win, 8, 6, "String: %s Number: %d", buffer,num);
-#endif /* FOO */
+#endif /* HAVE_VSSCANF */
 
     Continue(win);
 }
@@ -1826,27 +1923,10 @@ static char *animals[] =
     (char *)NULL
 };
 
-static char *levels[] =
-{
-    "TRACE_DISABLE",
-    "TRACE_TPUTS",
-    "TRACE_UPDATE",
-    "TRACE_MOVE",
-    "TRACE_CHARPUT",
-    "TRACE_ORDINARY",
-    "TRACE_CALLS",
-    "TRACE_VIRTPUT",
-    "TRACE_IEVENT",
-    "TRACE_BITS",
-    "TRACE_MAXIMUM",
-    (char *)NULL
-};
-
-static ITEM *items[SIZEOF(levels)];
-
 static void menu_test(void)
 {
     MENU	*m;
+    ITEM	*items[SIZEOF(animals)];
     ITEM	**ip = items;
     char	**ap;
     int		mrows, mcols;
@@ -1891,6 +1971,22 @@ static void menu_test(void)
 }
 
 #ifdef TRACE
+static char *levels[] =
+{
+    "TRACE_DISABLE",
+    "TRACE_TPUTS",
+    "TRACE_UPDATE",
+    "TRACE_MOVE",
+    "TRACE_CHARPUT",
+    "TRACE_ORDINARY",
+    "TRACE_CALLS",
+    "TRACE_VIRTPUT",
+    "TRACE_IEVENT",
+    "TRACE_BITS",
+    "TRACE_MAXIMUM",
+    (char *)NULL
+};
+
 static int masks[] =	/* must parallel the array above */
 {
     TRACE_DISABLE,
@@ -1908,27 +2004,75 @@ static int masks[] =	/* must parallel the array above */
 
 static char *tracetrace(int tlevel)
 {
-    static char	buf[BUFSIZ];
+    static char	*buf;
     char	**sp;
 
+    if (buf == 0) {
+	size_t need = 12;
+	int n;
+	for (n = 0; levels[n] != 0; n++)
+	    need += strlen(levels[n]) + 2;
+	buf = malloc(need);
+    }
     sprintf(buf, "0x%02x = {", tlevel);
-    for (sp = levels + 1; *sp; sp++)
-	if ((tlevel & masks[sp - levels]) == masks[sp - levels])
-	{
-	    strcat(buf, *sp);
-	    strcat(buf, ", ");
-	}
-    if (tlevel == 0)
-	strcat(buf, "TRACE_DISABLE, ");
+    if (tlevel == 0) {
+	sprintf(buf, "%s, ", levels[0]);
+    } else {
+	for (sp = levels + 1; *sp; sp++)
+	    if ((tlevel & masks[sp - levels]) == masks[sp - levels])
+	    {
+		strcat(buf, *sp);
+		strcat(buf, ", ");
+	    }
+    }
     if (buf[strlen(buf) - 2] == ',')
 	buf[strlen(buf) - 2] = '\0';
     return(strcat(buf,"}"));
+}
+
+/* fake a dynamically reconfigurable menu using the 0th entry to deselect
+ * the others
+ */
+static int run_trace_menu(MENU *m)
+{
+    ITEM **items;
+    ITEM *i, **p;
+
+    for (;;) {
+	bool changed = FALSE;
+	switch (menu_driver(m, menu_virtualize(wGetchar(menu_win(m))))) {
+	case E_UNKNOWN_COMMAND:
+	    return FALSE;
+	default:
+	    items = menu_items(m);
+	    i = current_item(m);
+	    if (i == items[0]) {
+		if (item_value(i)) {
+		    for (p = items+1; *p != 0; p++)
+			if (item_value(*p)) {
+			    set_item_value(*p, FALSE);
+			    changed = TRUE;
+			}
+		}
+	    } else {
+		for (p = items+1; *p != 0; p++)
+		    if (item_value(*p)) {
+			set_item_value(items[0], FALSE);
+			changed = TRUE;
+			break;
+		    }
+	    }
+	    if (!changed)
+		return TRUE;
+	}
+    }
 }
 
 static void trace_set(void)
 /* interactively set the trace level */
 {
     MENU	*m;
+    ITEM	*items[SIZEOF(levels)];
     ITEM	**ip = items;
     char	**ap;
     int		mrows, mcols, newtrace;
@@ -1961,10 +2105,12 @@ static void trace_set(void)
     post_menu(m);
 
     for (ip = menu_items(m); *ip; ip++)
-	if ((masks[item_index(*ip)] & _nc_tracing) == masks[item_index(*ip)])
+	if (masks[item_index(*ip)] == 0)
+	    set_item_value(*ip, _nc_tracing == 0);
+	else if ((masks[item_index(*ip)] & _nc_tracing) == masks[item_index(*ip)])
 	    set_item_value(*ip, TRUE);
 
-    while (menu_driver(m, menu_virtualize(wGetchar(menuwin))) != E_UNKNOWN_COMMAND)
+    while (run_trace_menu(m))
 	continue;
 
     newtrace = 0;
@@ -2264,7 +2410,7 @@ static void overlap_test(void)
     move(0, 0);
     printw("This test shows the behavior of wnoutrefresh() with respect to\n");
     printw("the shared region of two overlapping windows.  The cross pattern\n");
-    printw("in each wind does not overlap the other.\n");
+    printw("in each window does not overlap the other.\n");
 
 
     move(18, 0);
@@ -2335,18 +2481,18 @@ do_single_test(const char c)
     {
     case 'a':
 	getch_test();
-	return(TRUE);
+	break;
 
     case 'b':
 	attr_test();
-	return(TRUE);
+	break;
 
     case 'c':
 	if (!has_colors())
 	    Cannot("does not support color.");
 	else
 	    color_test();
-	return(TRUE);
+	break;
 
     case 'd':
 	if (!has_colors())
@@ -2355,56 +2501,60 @@ do_single_test(const char c)
 	    Cannot("has hardwired color values.");
 	else
 	    color_edit();
-	return(TRUE);
+	break;
 
     case 'e':
 	slk_test();
-	return(TRUE);
+	break;
 
     case 'f':
 	acs_display();
-	return(TRUE);
+	break;
 
 #if HAVE_PANEL_H
     case 'o':
 	demo_panels();
-	return(TRUE);
+	break;
 #endif
 
     case 'g':
 	acs_and_scroll();
-	return(TRUE);
+	break;
 
     case 'i':
 	input_test(stdscr);
-	return(TRUE);
+	break;
+
+    case 'k':
+	test_sgr_attributes();
+	break;
 
 #if HAVE_MENU_H
     case 'm':
 	menu_test();
-	return(TRUE);
+	break;
 #endif
 
 #if HAVE_PANEL_H
     case 'p':
 	demo_pad();
-	return(TRUE);
+	break;
 #endif
 
 #if HAVE_FORM_H
     case 'r':
 	demo_forms();
-	return(TRUE);
+	break;
 #endif
 
     case 's':
         overlap_test();
-	return(TRUE);
+	break;
 
 #if defined(HAVE_MENU_H) && defined(TRACE)
     case 't':
         trace_set();
-	return(TRUE);
+	break;
 #endif
 
     case '?':
@@ -2412,22 +2562,67 @@ do_single_test(const char c)
 	(void) puts("You may select a test from the main menu by typing the");
 	(void) puts("key letter of the choice (the letter to left of the =)");
 	(void) puts("at the > prompt.  The commands `x' or `q' will exit.");
-	return(TRUE);
+	break;
+
+    default:
+	return FALSE;
     }
 
-    return(FALSE);
+    return TRUE;
 }
 
-int main(
-	int argc GCC_UNUSED,
-	char *argv[] GCC_UNUSED)
+static void
+usage(void)
+{
+    static const char *const tbl[] = {
+	 "Usage: ncurses [options]"
+	,""
+	,"Options:"
+	,"  -s msec  specify nominal time for panel-demo (default: 1, to hold)"
+#ifdef TRACE
+	,"  -t mask  specify default trace-level (may toggle with ^T)"
+#endif
+    };
+    size_t n;
+    for (n = 0; n < sizeof(tbl)/sizeof(tbl[0]); n++)
+	fprintf(stderr, "%s\n", tbl[n]);
+    exit(EXIT_FAILURE);
+}
+
+/*+-------------------------------------------------------------------------
+	main(argc,argv)
+--------------------------------------------------------------------------*/
+
+int
+main(int argc, char *argv[])
 {
     char	buf[BUFSIZ];
+    int		c;
 
+    while ((c = getopt(argc, argv, "s:t:")) != EOF) {
+	switch (c) {
+	case 's':
+	    nap_msec = atol(optarg);
+	    break;
+#ifdef TRACE
+	case 't':
+	    save_trace = atoi(optarg);
+	    break;
+#endif
+	default:
+	    usage();
+	}
+    }
+
+    /*
+     * If there's no menus (unlikely for ncurses!), then we'll have to set
+     * tracing on initially, just in case the user wants to test something that
+     * doesn't involve wGetchar.
+     */
 #ifdef TRACE
     /* enable debugging */
 #ifndef HAVE_MENU_H
-    trace(TRACE_ORDINARY|TRACE_CALLS);
+    trace(save_trace);
 #endif /* HAVE_MENU_H */
 #endif /* TRACE */
 
@@ -2462,12 +2657,14 @@ int main(
 	(void) puts("f = display ACS characters");
 	(void) puts("g = display windows and scrolling");
 	(void) puts("i = subwindow input test");
+	(void) puts("k = display character attributes");
 #if HAVE_MENU_H
 	(void) puts("m = menu code test");
 #endif
 #if HAVE_PANEL_H
 	(void) puts("o = exercise panels library");
 	(void) puts("p = exercise pad features");
+	(void) puts("q = quit");
 #endif
 #if HAVE_FORM_H
 	(void) puts("r = exercise forms code");
@@ -2480,7 +2677,7 @@ int main(
 
 	(void) fputs("> ", stdout);
 	(void) fflush(stdout);		/* necessary under SVr4 curses */
-	(void) fgets(buf, BUFSIZ, stdin);
+	(void) fgets(buf, sizeof(buf), stdin);
 
 	if (do_single_test(buf[0])) {
 		clear();
@@ -2489,7 +2686,7 @@ int main(
 	    continue;
 	}
     } while
-	(buf[0] != 'q' && buf[0] != 'x');
+	(buf[0] != 'q');
 
     exit(0);
 }

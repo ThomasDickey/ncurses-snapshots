@@ -1,5 +1,5 @@
 
-                           ANNOUNCING NCURSES 1.9.9
+                           ANNOUNCING NCURSES 1.9.9G
                                        
    The ncurses (new curses) library is a freeware emulation of System V
    Release 4.0 curses. It uses terminfo format, supports pads and color
@@ -101,6 +101,11 @@
        personal terminfo entries without giving up access to the system
        terminfo directory.
        
+     * You may specify a path of directories to search for compiled
+       descriptions with the environment variable TERMINFO_DIRS (this
+       generalizes the feature provided by TERMINFO under stock System
+       V.)
+       
      * In terminfo source files, use capabilities may refer not just to
        other entries in the same source file (as in System V) but also to
        compiled entries in either the system terminfo directory or the
@@ -177,7 +182,7 @@ Who's Who and What's What
    write to listserv@netcom.com with a message containing the line:
    
 
-             subscribe ncurses-list &lt;name&gt;@&lt;host.domain&gt;
+             subscribe ncurses-list <name>@<host.domain>
 
    This list is open to anyone interested in helping with the development
    and testing of this package.

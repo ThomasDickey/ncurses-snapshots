@@ -263,6 +263,18 @@ struct term	*term_ptr;
 		ttytype[NAMESIZE - 1] = '\0';
 
 		/*
+		 * Check for mismatched graphic-rendition capabilities.  Most
+		 * svr4 terminfo tree contain entries that have rmul or rmso
+		 * equated to sgr0 (Solaris curses copes with those entries).
+		 */
+		if (exit_attribute_mode) {
+#define SGR0_FIX(mode) if (mode != 0 && !strcmp(mode, exit_attribute_mode)) \
+				mode = 0
+			SGR0_FIX(exit_underline_mode);
+			SGR0_FIX(exit_standout_mode);
+		}
+
+		/*
 		 * Allow output redirection.  This is what SVr3 does.
 		 * If stdout is directed to a file, screen updates go
 		 * to standard error.

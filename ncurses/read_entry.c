@@ -91,7 +91,7 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
     if ((fd = open(filename, 0)) < 0)
     {
 	if (errno == ENOENT)
-	{  
+	{
 	    char	*slash;
 
 	    (void) strcpy(buf, filename);
@@ -143,8 +143,8 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 	    ptr->Booleans[i] = 0;
 
     /*
-     * If booleans end on an odd byte, skip it.  The machine they 
-     * originally wrote terminfo on must have been a 16-bit 
+     * If booleans end on an odd byte, skip it.  The machine they
+     * originally wrote terminfo on must have been a 16-bit
      * word-oriented machine that would trap out if you tried a
      * word access off a 2-byte boundary.
      */
@@ -153,7 +153,7 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 
     /* grab the numbers */
     (void) read(fd, buf, min(NUMCOUNT*2, (unsigned)num_count*2));
-    for (i = 0; i < min(num_count, NUMCOUNT); i++) 
+    for (i = 0; i < min(num_count, NUMCOUNT); i++)
     {
 	if (IS_NEG1(buf + 2*i))
 	    ptr->Numbers[i] = -1;
@@ -255,7 +255,7 @@ char		ttn[MAX_ALIAS + 3];
 	{
 		char *home = RoomFor(strlen(envp) + strlen(PRIVATE_INFO) + 1);
 
-		(void) sprintf(home, "%s/%s", envp, PRIVATE_INFO);
+		(void) sprintf(home, PRIVATE_INFO, envp);
 		if (_nc_read_tic_entry(filename, home, ttn, tp) == 1)
 			return(1);
 	}
@@ -315,14 +315,14 @@ register char *cp;
 
 	if (namelst == NULL)
 		return(FALSE);
-    	(void) strcpy(namecopy, namelst);
-    	if ((cp = strtok(namecopy, delim)) != NULL)
-    		do {
+	(void) strcpy(namecopy, namelst);
+	if ((cp = strtok(namecopy, delim)) != NULL)
+		do {
 			/* avoid strcmp() function-call cost if possible */
 			if (cp[0] == name[0] && strcmp(cp, name) == 0)
 			    return(TRUE);
-    		} while
+		} while
 		    ((cp = strtok((char *)NULL, delim)) != NULL);
 
-    	return(FALSE);
+	return(FALSE);
 }

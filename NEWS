@@ -3,6 +3,24 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+960706	- snapshot
+	+ make lib_vidattr.c more readable using macros.
+	+ filter out rmul, rmso that conflict with sgr0 when reading terminal
+	  descriptions.
+	+ added sanity-checking of various paired string attributes (Eric).
+	+ work around autoconf bug, force $INSTALL to absolute path.
+	  (reported by Zeyd).
+	+ modify man-page install for BSDI to install preformatted .0 files
+	  (reported by David MacKenzie).
+	+ add/use gcc __attribute__ for printf and scanf in curses.h
+	+ added SGR attributes test-case to ncurses
+	+ revised ncurses 't' logic to show trace-disable effect in the menu.
+	+ use getopt in ncurses program to process -s and -t options.
+	+ make ncurses 'p' legend toggle with '?'
+	+ disable scrollok during the ncurses 'p' test; if it is enabled the
+	  stdscr will scroll when putting the box-corners in the lower-right
+	  of the screen.
+
 960629	- snapshot
 	+ check return code of _nc_mvcur_scrolln() in _nc_scroll_optimize() for
 	  terminals with no scrolling-support (reported by Nikolay Shadrin

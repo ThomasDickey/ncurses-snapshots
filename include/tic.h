@@ -68,7 +68,7 @@
 
 #define DEBUG(n, a)	if (_nc_tracing & (1 << (n - 1))) _tracef a 
 extern unsigned _nc_tracing;
-extern void _nc_tracef(char *, ...);
+extern void _nc_tracef(char *, ...) GCC_PRINTFLIKE(1,2);
 extern char *_nc_visbuf(const char *);
 
 /*
@@ -178,9 +178,9 @@ extern long _nc_start_line;
 extern void _nc_set_source(const char *const name);
 extern void _nc_get_type(char *name);
 extern void _nc_set_type(const char *const name);
-extern void _nc_syserr_abort(const char *const,...) GCC_NORETURN;
-extern void _nc_err_abort(const char *const,...) GCC_NORETURN;
-extern void _nc_warning(const char *const,...);
+extern void _nc_syserr_abort(const char *const,...) GCC_PRINTFLIKE(1,2) GCC_NORETURN;
+extern void _nc_err_abort(const char *const,...) GCC_PRINTFLIKE(1,2) GCC_NORETURN;
+extern void _nc_warning(const char *const,...) GCC_PRINTFLIKE(1,2);
 extern bool _nc_suppress_warnings;
 
 /* captoinfo.c: capability conversion */

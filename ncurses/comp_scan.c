@@ -473,9 +473,9 @@ chtype	ch, last_ch = '\0';
 			if (c == EOF)
 			    _nc_err_abort("Premature EOF");
 			
-			if (ch < '0'  ||  ch > '7') {
-			    if (isdigit(ch)) {
-				_nc_warning("Non-octal digit `%c' in \\ sequence", ch);
+			if (c < '0'  ||  c > '7') {
+			    if (isdigit(c)) {
+				_nc_warning("Non-octal digit `%c' in \\ sequence", c);
 				/* allow the digit; it'll do less harm */
 			    } else {
 				push_back(c);
@@ -483,7 +483,7 @@ chtype	ch, last_ch = '\0';
 			    }
 			}
 
-			number = number * 8 + ch - '0';
+			number = number * 8 + c - '0';
 		    }
 
 		    if (number == 0)

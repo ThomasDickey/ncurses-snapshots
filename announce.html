@@ -5,9 +5,9 @@
 <link rev=made href=mailto:esr@snark.thyrsus.com>
 </HEAD>
 <BODY>
-<TITLE>Announcing ncurses 1.9.9</TITLE>
+<TITLE>Announcing ncurses 1.9.9g</TITLE>
 
-<H1>Announcing ncurses 1.9.9</H1>
+<H1>Announcing ncurses 1.9.9g</H1>
 
 The ncurses (new curses) library is a freeware emulation of System V
 Release 4.0 curses.  It uses terminfo format, supports pads and color
@@ -106,6 +106,10 @@ if it exists and the user has no write access to the system directory.
 This feature makes it easier for users to have personal terminfo entries
 without giving up access to the system terminfo directory. <P>
 
+<LI> You may specify a path of directories to search for compiled 
+descriptions with the environment variable TERMINFO_DIRS (this
+generalizes the feature provided by TERMINFO under stock System V.) <P>
+
 <LI> In terminfo source files, use capabilities may refer not just to
 other entries in the same source file (as in System V) but also to
 compiled entries in either the system terminfo directory or the user's
@@ -177,9 +181,9 @@ be directed to Zeyd. <P>
 
 There is an ncurses mailing list.  It is a majordomo list; to join, write
 to <TT>listserv@netcom.com</TT> with a message containing the line:
-<LISTING>
+<PRE>
              subscribe ncurses-list &lt;name&gt;@&lt;host.domain&gt;
-</LISTING>
+</PRE>
 
 This list is open to anyone interested in helping with the development and
 testing of this package. <P>
