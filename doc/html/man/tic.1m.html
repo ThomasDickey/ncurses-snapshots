@@ -14,7 +14,7 @@
 </PRE>
 <H2>DESCRIPTION</H2><PRE>
        The command <B>tic</B> translates a  <B>terminfo</B>  file  from  source
-       format  into compiled format.  The compiled format is nec­
+       format  into compiled format.  The compiled format is nec-
        essary for use with the library routines in <B><A HREF="ncurses.3x.html">ncurses(3x)</A></B>.
 
        The results are normally placed  in  the  system  terminfo
@@ -32,25 +32,25 @@
 
        Libraries that read terminfo entries are expected to check
        for a TERMINFO directory first, look at <I>$HOME/.terminfo</I> if
-       TERMINFO  is  not  set, and finally look in <I>@DATADIR@/ter­</I>
+       TERMINFO  is  not  set, and finally look in <I>@DATADIR@/ter-</I>
        <I>minfo</I>.
 
        <B>-a</B>     tells  <B>tic</B>  to  retain  commented-out  capabilities
-              rather than discarding them.  Capabilities are com­
+              rather than discarding them.  Capabilities are com-
               mented by prefixing them with a period.  This  sets
               the  <B>-x</B> option, because it treats the commented-out
               entries as user-defined names.
 
        <B>-c</B>     tells <B>tic</B> to only check <I>file</I> for errors,  including
               syntax  problems and bad use links.  If you specify
-              <B>-C</B> (<B>-I</B>) with this option, the code will print warn­
+              <B>-C</B> (<B>-I</B>) with this option, the code will print warn-
               ings about entries which, after use resolution, are
               more than 1023 (4096) bytes long.  Due to  a  fixed
               buffer  length  in  older  termcap libraries (and a
               documented limit in terminfo),  these  entries  may
               cause core dumps.
 
-       <B>-v</B><I>n</I>    specifies that (verbose) output be written to stan­
+       <B>-v</B><I>n</I>    specifies that (verbose) output be written to stan-
               dard  error   trace   information   showing   <B>tic</B>'s
               progress.   The optional integer <I>n</I> is a number from
               1 to 10, inclusive, indicating the desired level of
@@ -80,10 +80,10 @@
               the long C variable names listed in &lt;<B>term.h</B>&gt;
 
        <B>-N</B>     Disable smart defaults.  Normally, when translating
-              from termcap to terminfo, the compiler makes a num­
+              from termcap to terminfo, the compiler makes a num-
               ber of assumptions about  the  defaults  of  string
-              capabilities  <B>reset1_string</B>,  <B>carriage_return</B>, <B>cur­</B>
-              <B>sor_left</B>, <B>cursor_down</B>,  <B>scroll_forward</B>,  <B>tab</B>,  <B>new­</B>
+              capabilities  <B>reset1_string</B>,  <B>carriage_return</B>, <B>cur-</B>
+              <B>sor_left</B>, <B>cursor_down</B>,  <B>scroll_forward</B>,  <B>tab</B>,  <B>new-</B>
               <B>line</B>,  <B>key_backspace</B>,  <B>key_left</B>, and <B>key_down</B>, then
               attempts to use obsolete  termcap  capabilities  to
               deduce correct values.  It also normally suppresses
@@ -95,7 +95,7 @@
               Restrict output to a given subset.  This option  is
               for  use  with  archaic  versions  of terminfo like
               those on SVr1, Ultrix, or HP/UX that don't  support
-              the  full set of SVR4/XSI Curses terminfo; and out­
+              the  full set of SVR4/XSI Curses terminfo; and out-
               right broken ports like AIX 3.x that have their own
               extensions  incompatible  with SVr4/XSI.  Available
               subsets  are  "SVr1",  "Ultrix",  "HP",  "BSD"  and
@@ -117,13 +117,13 @@
               alias of a terminal matches one of the names in the
               list,  the  entry  will be written or translated as
               normal.  Otherwise no output will be generated  for
-              it.  The option value is interpreted as a file con­
+              it.  The option value is interpreted as a file con-
               taining the list if  it  contains  a  '/'.   (Note:
               depending  on how tic was compiled, this option may
               require -I or -C.)
 
        <B>-f</B>     Display  complex  terminfo  strings  which  contain
-              if/then/else/endif  expressions  indented for read­
+              if/then/else/endif  expressions  indented for read-
               ability.
 
        <B>-g</B>     Display constant character literals in quoted  form
@@ -140,7 +140,7 @@
               extended table entry for that.
 
        <I>file</I>   contains one or more <B>terminfo</B> terminal descriptions
-              in source format [see <B><A HREF="terminfo.5.html">terminfo(5)</A></B>].  Each  descrip­
+              in source format [see <B><A HREF="terminfo.5.html">terminfo(5)</A></B>].  Each  descrip-
               tion  in  the  file describes the capabilities of a
               particular terminal.
 
@@ -162,7 +162,7 @@
               table
 
        If n is not given, it is taken to be one.
-       umented in <B><A HREF="terminfo.5.html">terminfo(5)</A></B>.  The exception is the <B>use</B> capabil­
+       umented in <B><A HREF="terminfo.5.html">terminfo(5)</A></B>.  The exception is the <B>use</B> capabil-
        ity.
 
        When  a  <B>use</B>=<I>entry</I>-<I>name</I>  field is discovered in a terminal
@@ -170,7 +170,7 @@
        from  <B>@DATADIR@/terminfo</B>  to complete the entry.  (Entries
        created from <I>file</I> will be used first.  If the  environment
        variable  <B>TERMINFO</B>  is  set,  that  directory  is searched
-       instead of <B>@DATADIR@/terminfo</B>.)  <B>tic</B> duplicates the  capa­
+       instead of <B>@DATADIR@/terminfo</B>.)  <B>tic</B> duplicates the  capa-
        bilities  in  <I>entry</I>-<I>name</I>  for  the current entry, with the
        exception  of  those  capabilities  that  explicitly   are
        defined in the current entry.
@@ -210,7 +210,7 @@
 
        The  SVr4  manual  pages  are  not clear on the resolution
        rules for <B>use</B> capabilities.  This  implementation  of  <B>tic</B>
-       will find <B>use</B> targets anywhere in the source file, or any­
+       will find <B>use</B> targets anywhere in the source file, or any-
        where in the file tree rooted at <B>TERMINFO</B> (if <B>TERMINFO</B>  is
        defined),  or  in the user's <I>$HOME/.terminfo</I> directory (if
        it exists), or (finally) anywhere  in  the  system's  file
@@ -222,7 +222,7 @@
        does not report bad use links.
 
        System  V does not compile entries to or read entries from
-       your <I>$HOME/.terminfo</I> directory unless TERMINFO is  explic­
+       your <I>$HOME/.terminfo</I> directory unless TERMINFO is  explic-
        itly set to it.
 
 

@@ -25,21 +25,21 @@
        is waiting, the value <B>ERR</B> is returned.  In delay mode, the
        program  waits until the system passes text through to the
        program.  Depending on the  setting  of  <B>cbreak</B>,  this  is
-       after one character (cbreak mode), or after the first new­
+       after one character (cbreak mode), or after the first new-
        line (nocbreak mode).  In  half-delay  mode,  the  program
        waits  until a character is typed or the specified timeout
        has been reached.
 
        If <B>noecho</B> has been set, then the character  will  also  be
-       echoed into the designated window according to the follow­
-       ing rules: If the character is the current  erase  charac­
+       echoed into the designated window according to the follow-
+       ing rules: If the character is the current  erase  charac-
        ter,  left  arrow,  or  backspace, the cursor is moved one
        space to the left and that screen position is erased as if
        <B>delch</B>  had  been  called.   If  the character value is any
        other <B>KEY_</B> define, the user is alerted with a  <B>beep</B>  call.
        Otherwise the character is simply output to the screen.
 
-       If the window is not a pad, and it has been moved or modi­
+       If the window is not a pad, and it has been moved or modi-
        fied since the last call to  <B>wrefresh</B>,  <B>wrefresh</B>  will  be
        called before another character is read.
 
@@ -174,7 +174,7 @@
                          | <B>C1</B>  | <B>down</B> |  <B>C3</B>   |
                          +-----+------+-------+
        The <B>has_key</B> routine takes a key value from the above list,
-       and returns TRUE or FALSE according as the current  termi­
+       and returns TRUE or FALSE according as the current  termi-
        nal type recognizes a key with that value.
 
 
@@ -188,9 +188,9 @@
 
 </PRE>
 <H2>NOTES</H2><PRE>
-       Use of the escape key by a programmer for a single charac­
+       Use of the escape key by a programmer for a single charac-
        ter function is discouraged, as it will cause a  delay  of
-       up to one second while the keypad code looks for a follow­
+       up to one second while the keypad code looks for a follow-
        ing function-key sequence.
 
        When using <B>getch</B>, <B>wgetch</B>, <B>mvgetch</B>, or  <B>mvwgetch</B>,  nocbreak
@@ -213,20 +213,20 @@
 
 </PRE>
 <H2>PORTABILITY</H2><PRE>
-       The  *get* functions are described in the XSI Curses stan­
+       The  *get* functions are described in the XSI Curses stan-
        dard, Issue 4.  They  read  single-byte  characters  only.
        The  standard  specifies  that they return <B>ERR</B> on failure,
        but specifies no error conditions.
 
        The echo behavior of these functions on input of  <B>KEY_</B>  or
-       backspace  characters  was not specified in the SVr4 docu­
+       backspace  characters  was not specified in the SVr4 docu-
 
-       The  behavior of <B>getch</B> and friends in the presence of han­
+       The  behavior of <B>getch</B> and friends in the presence of han-
        dled signals is unspecified in the  SVr4  and  XSI  Curses
        documentation.   Under  historical curses implementations,
        it varied depending  on  whether  the  operating  system's
        implementation  of  handled  signal  receipt  interrupts a
-       <B><A HREF="read.2.html">read(2)</A></B> call in progress or not, and also (in some  imple­
+       <B><A HREF="read.2.html">read(2)</A></B> call in progress or not, and also (in some  imple-
        mentations)  depending on whether an input timeout or non-
        blocking mode hsd been set.
 
@@ -234,7 +234,7 @@
        for  either  of  two  cases:  (a)  signal receipt does not
        interrupt <B>getch</B>; (b) signal receipt interrupts  <B>getch</B>  and
        causes  it  to  return ERR with <B>errno</B> set to <B>EINTR</B>.  Under
-       the <B>ncurses</B> implementation, handled signals  never  inter­
+       the <B>ncurses</B> implementation, handled signals  never  inter-
        rupt <B>getch</B>.
 
        The  <B>has_key</B>  function is unique to <B>ncurses</B>.  We recommend

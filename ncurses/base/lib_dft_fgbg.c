@@ -33,7 +33,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_dft_fgbg.c,v 1.10 2000/03/26 03:08:53 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_dft_fgbg.c,v 1.11 2000/05/07 01:26:06 tom Exp $")
 
 /*
  * Modify the behavior of color-pair 0 so that the library doesn't assume that
@@ -62,7 +62,7 @@ assume_default_colors(int fg, int bg)
 	returnCode(ERR);
 
     SP->_default_color = (fg != COLOR_WHITE) || (bg != COLOR_BLACK);
-    SP->_has_sgr_39_49 = tigetflag("AX");
+    SP->_has_sgr_39_49 = (tigetflag("AX") == TRUE);
     SP->_default_fg = (fg >= 0) ? (fg & C_MASK) : C_MASK;
     SP->_default_bg = (bg >= 0) ? (bg & C_MASK) : C_MASK;
     if (SP->_color_pairs != 0)

@@ -20,7 +20,7 @@
 
        If no <I>file</I> is given, then the environment variable <B>TERMCAP</B>
        is used for the filename or entry.  If <B>TERMCAP</B> is  a  full
-       pathname to a file, only the terminal whose name is speci­
+       pathname to a file, only the terminal whose name is speci-
        fied in the environment variable <B>TERM</B>  is  extracted  from
        that  file.   If  the  environment variable <B>TERMCAP</B> is not
        set, then the file <B>@DATADIR@/terminfo</B> is read.
@@ -28,10 +28,10 @@
        <B>-v</B>   print out tracing information on  standard  error  as
             the program runs.
 
-       <B>-V</B>   print  out the version of the program in use on stan­
+       <B>-V</B>   print  out the version of the program in use on stan-
             dard error and exit.
 
-       <B>-1</B>   cause the fields to print out one to a line.   Other­
+       <B>-1</B>   cause the fields to print out one to a line.   Other-
             wise, the fields will be printed several to a line to
             a maximum width of 60 characters.
 
@@ -48,7 +48,7 @@
 <H2>TRANSLATIONS FROM NONSTANDARD CAPABILITIES</H2><PRE>
        Some  obsolete nonstandard capabilities will automatically
        be translated into  standard  (SVr4/XSI  Curses)  terminfo
-       capabilities  by  <B>captoinfo</B>.   Whenever one of these auto­
+       capabilities  by  <B>captoinfo</B>.   Whenever one of these auto-
        matic translations is done,  the  program  will  issue  an
        notification to stderr, inviting the user to check that it
        has not mistakenly translated  a  completely  unknown  and
@@ -85,7 +85,7 @@
        FC       Sf     Tek     set_foreground
        HS       mh     Iris    enter_dim_mode
 
-       XENIX  termcap  also used to have a set of extension capa­
+       XENIX  termcap  also used to have a set of extension capa-
        bilities for forms drawing, designed to take advantage  of
        the IBM PC high-half graphics.  They were as follows:
 
@@ -115,10 +115,10 @@
        Gc    intersection
        GG    acs magic cookie count
        will automatically be composed into an <B>acsc</B>  string.   The
-       double-line capabilities and <B>GG</B> are discarded with a warn­
+       double-line capabilities and <B>GG</B> are discarded with a warn-
        ing message.
 
-       IBM's AIX has a terminfo facility descended from SVr1 ter­
+       IBM's AIX has a terminfo facility descended from SVr1 ter-
        minfo but incompatible with the SVr4 format. The following
        AIX extensions are automatically translated:
 
@@ -131,10 +131,10 @@
        font2   s2ds
        font3   s3ds
 
-       Additionally, the AIX <B>box1</B> capability  will  be  automati­
+       Additionally, the AIX <B>box1</B> capability  will  be  automati-
        cally translated to an <B>acsc</B> string.
 
-       Hewlett-Packard's  terminfo  library supports two nonstan­
+       Hewlett-Packard's  terminfo  library supports two nonstan-
        dard terminfo capabilities <B>meml</B>  (memory  lock)  and  <B>memu</B>
        (memory  unlock).   These will be discarded with a warning
        message.

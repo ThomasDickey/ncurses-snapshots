@@ -44,13 +44,13 @@
        The  function <B>free_fieldtype</B> frees the space allocated for
        a given validation type.
 
-       The function <B>set_fieldtype</B> associates  three  storage-man­
+       The function <B>set_fieldtype</B> associates  three  storage-man-
        agement functions with a field type.  The <I>mak</I><B>_</B><I>arg</I> function
        is automatically applied to the list of arguments you give
        <B>set_field_type</B>  when  attaching validation to a field; its
        job is to bundle these into  an  allocated  argument-block
        object which can later be passed to validation predicated.
-       The other two hook arguments should copy  and  free  argu­
+       The other two hook arguments should copy  and  free  argu-
        ment-block  structures.   They  will be used by the forms-
        driver code. You must supply  the  <I>mak</I><B>_</B><I>arg</I>  function,  the
        other  two  are optional, you may supply NULL for them. In
@@ -59,8 +59,8 @@
        value.
 
        form an ordered set, and provide the forms user with a way
-       to  move  through the set.  The <B>set_fieldtype_choice</B> func­
-       tion allows forms programmers to define successor and pre­
+       to  move  through the set.  The <B>set_fieldtype_choice</B> func-
+       tion allows forms programmers to define successor and pre-
        decessor  functions  for  the field type.  These functions
        take the field pointer and an argument-block structure  as
        arguments.
@@ -79,7 +79,7 @@
             System error occurred (see <B>errno</B>).
 
        <B>E_BAD_ARGUMENT</B>
-            Routine detected an incorrect or  out-of-range  argu­
+            Routine detected an incorrect or  out-of-range  argu-
             ment.
 
        <B>E_CONNECTED</B>

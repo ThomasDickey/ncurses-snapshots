@@ -34,7 +34,7 @@
 <H2>DESCRIPTION</H2><PRE>
        These low-level routines must be called by  programs  that
        have to deal directly with the <B>terminfo</B> database to handle
-       certain terminal capabilities, such as  programming  func­
+       certain terminal capabilities, such as  programming  func-
        tion  keys.   For all other functionality, <B>curses</B> routines
        are more suitable and their use is recommended.
 
@@ -45,7 +45,7 @@
        <B>columns</B>  are  initialized  by  <B>setupterm</B>  as  follows:  If
        <B>use_env(FALSE)</B>  has  been  called,  values  for  <B>lines</B> and
        <B>columns</B> specified in <B>terminfo</B> are used.  Otherwise, if the
-       environment  variables <B>LINES</B> and <B>COLUMNS</B> exist, their val­
+       environment  variables <B>LINES</B> and <B>COLUMNS</B> exist, their val-
        ues are used.  If these environment variables do not exist
        and the program is running in a window, the current window
        size is used.  Otherwise, if the environment variables  do
@@ -66,9 +66,9 @@
        is   called  and  should  output  <B>enter_ca_mode</B>  and  call
        <B>reset_prog_mode</B> after returning from the shell.
 
-       The <B>setupterm</B> routine reads in the <B>terminfo</B> database, ini­
+       The <B>setupterm</B> routine reads in the <B>terminfo</B> database, ini-
        tializing the <B>terminfo</B> structures, but does not set up the
-       output virtualization structures used by <B>curses</B>.  The ter­
+       output virtualization structures used by <B>curses</B>.  The ter-
        minal  type is the character string <I>term</I>; if <I>term</I> is null,
        the environment variable <B>TERM</B> is used.  All output  is  to
        file  descriptor  <B>fildes</B>  which is initialized for output.
@@ -92,7 +92,7 @@
 
              <B>setupterm((char</B> <B>*)0,</B> <B>1,</B> <B>(int</B> <B>*)0);</B>,
 
-       which uses all the defaults and sends the output  to  <B>std­</B>
+       which uses all the defaults and sends the output  to  <B>std-</B>
        <B>out</B>.
 
        The  <B>setterm</B>  routine is being replaced by <B>setupterm</B>.  The
@@ -118,12 +118,12 @@
        <B>initscr</B>,  except  that it is called after restoring memory
        to a previous state (for example, when  reloading  a  game
        saved  as a core image dump).  It assumes that the windows
-       and the input and output options are the same as when mem­
+       and the input and output options are the same as when mem-
        ory  was saved, but the terminal type and baud rate may be
        different.  Accordingly, it saves various tty state  bits,
        does a setupterm, and then restores the bits.
 
-       The <B>tparm</B> routine instantiates the string <I>str</I> with parame­
+       The <B>tparm</B> routine instantiates the string <I>str</I> with parame-
        ters <I>pi</I>.  A pointer is returned to the result of <I>str</I>  with
        the parameters applied.
 
@@ -151,7 +151,7 @@
        refresh).
 
        The <B>tigetflag</B>, <B>tigetnum</B> and <B>tigetstr</B> routines  return  the
-       value of the capability corresponding to the <B>terminfo</B> <I>cap­</I>
+       value of the capability corresponding to the <B>terminfo</B> <I>cap-</I>
        <I>name</I> passed to them, such as <B>xenl</B>.
 
        The <B>tigetflag</B> routine returns the value <B>-1</B> if  <I>capname</I>  is
@@ -164,7 +164,7 @@
 
        or absent from the terminal description.
 
-       The <I>capname</I> for each capability is given in the table col­
+       The <I>capname</I> for each capability is given in the table col-
        umn  entitled  <I>capname</I> code in the capabilities section of
        <B><A HREF="terminfo.5.html">terminfo(5)</A></B>.
 
@@ -175,7 +175,7 @@
        <B>char</B> <B>*strnames</B>, <B>*strcodes</B>, <B>*strfnames</B>
 
        These null-terminated arrays  contain  the  <I>capnames</I>,  the
-       <B>termcap</B>  codes, and the full C names, for each of the <B>ter­</B>
+       <B>termcap</B>  codes, and the full C names, for each of the <B>ter-</B>
        <B>minfo</B> variables.
 
 
@@ -192,7 +192,7 @@
 </PRE>
 <H2>NOTES</H2><PRE>
        The <B>setupterm</B> routine should be used in place of  <B>setterm</B>.
-       It  may be useful when you want to test for terminal capa­
+       It  may be useful when you want to test for terminal capa-
        bilities without committing to the allocation  of  storage
        involved in <B>initscr</B>.
 
@@ -212,11 +212,11 @@
        In System V Release 4, the third argument of <B>tputs</B> has the
        type <B>int</B> <B>(*putc)(char)</B>.
 
-       The XSI Curses standard prototypes <B>tparm</B> with a fixed num­
+       The XSI Curses standard prototypes <B>tparm</B> with a fixed num-
        ber of parameters, rather than a variable argument list.
 
        XSI  notes  that after calling <B>mvcur</B>, the curses state may
-       not match the actual terminal state, and that an  applica­
+       not match the actual terminal state, and that an  applica-
        tion  should  touch and refresh the window before resuming
        normal curses calls.  Both ncurses and System V Release  4
        curses  implement <B>mvcur</B> using the SCREEN data allocated in
@@ -225,7 +225,7 @@
 
 </PRE>
 <H2>SEE ALSO</H2><PRE>
-       <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></B>, <B><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></B>,  <B>curs_term­</B>
+       <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></B>, <B><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></B>,  <B>curs_term-</B>
        <B><A HREF="cap.3x.html">cap(3x)</A></B>, <B><A HREF="putc.3S.html">putc(3S)</A></B>, <B><A HREF="terminfo.5.html">terminfo(5)</A></B>
 
 

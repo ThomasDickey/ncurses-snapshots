@@ -35,7 +35,7 @@
        line, the -m option mappings are then applied  (see  below
        for  more information).  Then, if the terminal type begins
        with a question mark (``?''), the  user  is  prompted  for
-       confirmation of the terminal type.  An empty response con­
+       confirmation of the terminal type.  An empty response con-
        firms the type, or, another type can be entered to specify
        a  new  type.  Once the terminal type has been determined,
        the terminfo entry for the terminal is retrieved.   If  no
@@ -44,14 +44,14 @@
 
        Once the terminfo entry is  retrieved,  the  window  size,
        backspace,  interrupt and line kill characters (among many
-       other things) are set and the terminal and tab initializa­
+       other things) are set and the terminal and tab initializa-
        tion  strings  are  sent  to  the  standard  error output.
        Finally, if the erase, interrupt and line kill  characters
        have  changed,  or  are  not  set to their default values,
        their values are displayed to the standard error output.
 
        When invoked as <B>reset</B>, <B>tset</B> sets cooked  and  echo  modes,
-       turns  off cbreak and raw modes, turns on newline transla­
+       turns  off cbreak and raw modes, turns on newline transla-
        tion and resets any  unset  special  characters  to  their
        default  values  before  doing the terminal initialization
        described above.  This is  useful  after  a  program  dies
@@ -64,7 +64,7 @@
 
        The options are as follows:
 
-       -q   The  terminal  type is displayed to the standard out­
+       -q   The  terminal  type is displayed to the standard out-
             put, and the terminal is not initialized in any  way.
             The option `-' by itself is equivalent but archaic.
 
@@ -91,7 +91,7 @@
             details.
 
        The arguments for the -e, -i, and -k options may either be
-       entered  as  actual characters or by using the `hat' nota­
+       entered  as  actual characters or by using the `hat' nota-
        tion, i.e. control-h may be specified as ``^H'' or ``^h''.
 
 
@@ -126,7 +126,7 @@
        that kind of terminal''.
 
        The argument to the -m option consists of an optional port
-       type, an optional operator, an optional baud rate specifi­
+       type, an optional operator, an optional baud rate specifi-
        cation, an optional colon (``:'') character and a terminal
        type.  The port type is a string (delimited by either  the
        operator or the colon character).  The operator may be any
@@ -141,13 +141,13 @@
        the -m mappings are applied to the terminal type.  If  the
        port  type  and  baud rate match the mapping, the terminal
        type specified in the mapping replaces the  current  type.
-       If  more than one mapping is specified, the first applica­
+       If  more than one mapping is specified, the first applica-
        ble mapping is used.
 
        For   example,    consider    the    following    mapping:
        <B>dialup&gt;9600:vt100</B>.  The port type is dialup , the operator
-       is &gt;, the baud rate specification is 9600, and the  termi­
-       nal type is vt100.  The result of this mapping is to spec­
+       is &gt;, the baud rate specification is 9600, and the  termi-
+       nal type is vt100.  The result of this mapping is to spec-
        ify that if the terminal type is <B>dialup</B>, and the baud rate
        is  greater  than 9600 baud, a terminal type of <B>vt100</B> will
        be used.
@@ -164,21 +164,21 @@
 
        No whitespace characters are permitted in  the  -m  option
        argument.   Also,  to avoid problems with meta-characters,
-       insert a backslash character (``\'') before  any  exclama­
+       insert a backslash character (``\'') before  any  exclama-
        tion marks (``!'').
 
 
 </PRE>
 <H2>HISTORY</H2><PRE>
-       The  <B>tset</B> command appeared in BSD 3.0.  The <B>ncurses</B> imple­
+       The  <B>tset</B> command appeared in BSD 3.0.  The <B>ncurses</B> imple-
        mentation was lightly adapted from the 4.4BSD sources  for
-       a terminfo environment by Eric S. Raymond &lt;esr@snark.thyr­
+       a terminfo environment by Eric S. Raymond &lt;esr@snark.thyr-
        sus.com&gt;.
 
 
 </PRE>
 <H2>COMPATIBILITY</H2><PRE>
-       The <B>tset</B> utility has been provided  for  backward-compati­
+       The <B>tset</B> utility has been provided  for  backward-compati-
        bility  with  BSD  environments (under most modern UNIXes,
        <B>/etc/inittab</B> and <B><A HREF="getty.1.html">getty(1)</A></B> can set <B>TERM</B>  appropriately  for
        each  dial-up  line;  this  obviates  what was <B>tset</B>'s most
@@ -193,7 +193,7 @@
        noisily rather than silently induce lossage).
 
        There was an undocumented  4.4BSD  feature  that  invoking
-       tset via a link named `TSET` (or via any other name begin­
+       tset via a link named `TSET` (or via any other name begin-
        ning with an upper-case letter) set the  terminal  to  use
        upper-case only.  This feature has been omitted.
 
@@ -208,7 +208,7 @@
        therefore omitted from the usage summary above.
 
        It  is  still  permissible  to  specify the -e, -i, and -k
-       options without arguments, although it is strongly  recom­
+       options without arguments, although it is strongly  recom-
        mended  that such usage be fixed to explicitly specify the
        character.
 
@@ -220,7 +220,7 @@
 
 </PRE>
 <H2>ENVIRONMENT</H2><PRE>
-       The <B>tset</B> command uses the <B>SHELL</B> and <B>TERM</B> environment vari­
+       The <B>tset</B> command uses the <B>SHELL</B> and <B>TERM</B> environment vari-
        ables.
        /etc/ttys
             system port name to terminal  type  mapping  database
@@ -232,7 +232,7 @@
 
 </PRE>
 <H2>SEE ALSO</H2><PRE>
-       <B><A HREF="csh.1.html">csh(1)</A></B>, <B><A HREF="sh.1.html">sh(1)</A></B>, <B><A HREF="stty.1.html">stty(1)</A></B>, <B><A HREF="tty.4.html">tty(4)</A></B>, <B><A HREF="termcap.5.html">termcap(5)</A></B>, <B><A HREF="ttys.5.html">ttys(5)</A></B>, envi­
+       <B><A HREF="csh.1.html">csh(1)</A></B>, <B><A HREF="sh.1.html">sh(1)</A></B>, <B><A HREF="stty.1.html">stty(1)</A></B>, <B><A HREF="tty.4.html">tty(4)</A></B>, <B><A HREF="termcap.5.html">termcap(5)</A></B>, <B><A HREF="ttys.5.html">ttys(5)</A></B>, envi-
        <B><A HREF="ron.7.html">ron(7)</A></B>
 
 

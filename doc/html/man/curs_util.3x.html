@@ -3,7 +3,7 @@
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
        <B>unctrl</B>,   <B>keyname</B>,   <B>filter</B>,   <B>use_env</B>,   <B>putwin</B>,  <B>getwin</B>,
-       <B>delay_output</B>, <B>flushinp</B> - miscellaneous <B>curses</B> utility rou­
+       <B>delay_output</B>, <B>flushinp</B> - miscellaneous <B>curses</B> utility rou-
        tines
 
 
@@ -28,7 +28,7 @@
        characters  are  displayed  in  the <B>^</B><I>X</I> notation.  Printing
        characters are displayed as is.
 
-       The <B>keyname</B> routine returns a character string correspond­
+       The <B>keyname</B> routine returns a character string correspond-
        ing to the key <I>c</I>.
 
        The <B>filter</B> routine, if used, must be called before <B>initscr</B>
@@ -38,9 +38,9 @@
        string is set to the value of <B>cr</B>.
 
        The  <B>use_env</B> routine, if used, is called before <B>initscr</B> or
-       <B>newterm</B> are called.  When called with <B>FALSE</B>  as  an  argu­
+       <B>newterm</B> are called.  When called with <B>FALSE</B>  as  an  argu-
        ment,  the  values  of  <B>lines</B> and <B>columns</B> specified in the
-       <I>terminfo</I> database will be used, even if environment  vari­
+       <I>terminfo</I> database will be used, even if environment  vari-
        ables  <B>LINES</B>  and <B>COLUMNS</B> (used by default) are set, or if
        <B>curses</B> is running in  a  window  (in  which  case  default
        behavior  would  be  to  use  the window size if <B>LINES</B> and
@@ -75,7 +75,7 @@
 
 </PRE>
 <H2>PORTABILITY</H2><PRE>
-       The  XSI  Curses  standard,  Issue 4 describes these func­
+       The  XSI  Curses  standard,  Issue 4 describes these func-
        tions.
 
        The SVr4 documentation describes the action of <B>filter</B> only
@@ -86,7 +86,7 @@
 
 </PRE>
 <H2>NOTES</H2><PRE>
-       Note  that  <B>unctrl</B>  is  a macro, which is defined in &lt;<B>unc­</B>
+       Note  that  <B>unctrl</B>  is  a macro, which is defined in &lt;<B>unc-</B>
        <B>trl.h</B>&gt;.
 
 

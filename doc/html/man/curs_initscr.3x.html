@@ -27,7 +27,7 @@
        <B>ripoffline</B>, <B>use_env</B>.  For multiple-terminal  applications,
        <B>newterm</B> may be called before <B>initscr</B>.
 
-       The initscr code determines the terminal type and initial­
+       The initscr code determines the terminal type and initial-
        izes all <B>curses</B> data structures.  <B>initscr</B> also causes  the
        first  call  to  <B>refresh</B>  to  clear the screen.  If errors
        occur, <B>initscr</B> writes  an  appropriate  error  message  to
@@ -37,7 +37,7 @@
        A program that outputs to more than  one  terminal  should
        use  the  <B>newterm</B>  routine  for  each  terminal instead of
        <B>initscr</B>.  A program that needs to inspect capabilities, so
-       it can continue to run in a line-oriented mode if the ter­
+       it can continue to run in a line-oriented mode if the ter-
        minal cannot support a screen-oriented program, would also
        use  <B>newterm</B>.   The  routine <B>newterm</B> should be called once
        for each terminal.  It returns a variable of type <B>SCREEN</B> <B>*</B>
@@ -62,15 +62,15 @@
        otherwise.
 
        The  <B>set_term</B>  routine is used to switch between different
-       terminals.  The screen reference <B>new</B> becomes the new  cur­
+       terminals.  The screen reference <B>new</B> becomes the new  cur-
        rent  terminal.   The previous terminal is returned by the
        routine.  This  is  the  only  routine  which  manipulates
-       <B>SCREEN</B>  pointers;  all other routines affect only the cur­
+       <B>SCREEN</B>  pointers;  all other routines affect only the cur-
        rent terminal.
 
        The <B>delscreen</B> routine frees storage  associated  with  the
        <B>SCREEN</B>  data  structure.   The  <B>endwin</B> routine does not do
-       this, so <B>delscreen</B> should be called after <B>endwin</B> if a par­
+       this, so <B>delscreen</B> should be called after <B>endwin</B> if a par-
        ticular <B>SCREEN</B> is no longer needed.
 
 

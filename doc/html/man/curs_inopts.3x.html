@@ -2,7 +2,7 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
-       <B>cbreak</B>, <B>nocbreak</B>, <B>echo</B>, <B>noecho</B>, <B>halfdelay</B>, <B>intrflush</B>, <B>key­</B>
+       <B>cbreak</B>, <B>nocbreak</B>, <B>echo</B>, <B>noecho</B>, <B>halfdelay</B>, <B>intrflush</B>, <B>key-</B>
        <B>pad</B>, <B>meta</B>,  <B>nodelay</B>,  <B>notimeout</B>,  <B>raw</B>,  <B>noraw</B>,  <B>noqiflush</B>,
        <B>qiflush</B>,  <B>timeout</B>,  <B>wtimeout</B>,  <B>typeahead</B>  -  <B>curses</B>  input
        options
@@ -35,8 +35,8 @@
 <H2>DESCRIPTION</H2><PRE>
        Normally, the tty driver buffers typed characters until  a
        newline  or  carriage return is typed.  The <B>cbreak</B> routine
-       disables line buffering and erase/kill  character-process­
-       ing  (interrupt  and  flow  control  characters  are unaf­
+       disables line buffering and erase/kill  character-process-
+       ing  (interrupt  and  flow  control  characters  are unaf-
        fected), making characters typed by the  user  immediately
        available  to  the  program.  The <B>nocbreak</B> routine returns
        the terminal to normal (cooked) mode.
@@ -44,13 +44,13 @@
        Initially the terminal may or may not be in  <B>cbreak</B>  mode,
        as the mode is inherited; therefore, a program should call
        <B>cbreak</B> or <B>nocbreak</B> explicitly.  Most interactive  programs
-       using  <B>curses</B> set the <B>cbreak</B> mode.  Note that <B>cbreak</B> over­
+       using  <B>curses</B> set the <B>cbreak</B> mode.  Note that <B>cbreak</B> over-
        rides <B>raw</B>.  [See <B><A HREF="curs_getch.3x.html">curs_getch(3x)</A></B> for a  discussion  of  how
        these routines interact with <B>echo</B> and <B>noecho</B>.]
 
        The  <B>echo</B>  and  <B>noecho</B> routines control whether characters
        typed by the user are echoed by <B>getch</B> as they  are  typed.
-       Echoing  by  the  tty  driver is always disabled, but ini­
+       Echoing  by  the  tty  driver is always disabled, but ini-
        tially <B>getch</B> is in echo  mode,  so  characters  typed  are
        echoed.  Authors of most interactive programs prefer to do
        their own echoing in a controlled area of the  screen,  or
@@ -71,18 +71,18 @@
        interrupt,  but  causing  <B>curses</B> to have the wrong idea of
        what is on the  screen.   Disabling  (<I>bf</I>  is  <B>FALSE</B>),  the
        option  prevents the flush.  The default for the option is
-       inherited from the tty driver settings.  The window  argu­
+       inherited from the tty driver settings.  The window  argu-
        ment is ignored.
 
-       The  <B>keypad</B> option enables the keypad of the user's termi­
-       nal.  If enabled (<I>bf</I> is <B>TRUE</B>), the user can press a  func­
-       tion  key (such as an arrow key) and <B>wgetch</B> returns a sin­
+       The  <B>keypad</B> option enables the keypad of the user's termi-
+       nal.  If enabled (<I>bf</I> is <B>TRUE</B>), the user can press a  func-
+       tion  key (such as an arrow key) and <B>wgetch</B> returns a sin-
        gle value representing the function key, as  in  <B>KEY_LEFT</B>.
        If  disabled (<I>bf</I> is <B>FALSE</B>), <B>curses</B> does not treat function
        keys specially and the program has to interpret the escape
        sequences  itself.   If  the keypad in the terminal can be
        turned on  (made  to  transmit)  and  off  (made  to  work
-       locally),  turning on this option causes the terminal key­
+       locally),  turning on this option causes the terminal key-
        pad to be turned on when <B>wgetch</B> is  called.   The  default
        value for keypad is false.
 
@@ -91,8 +91,8 @@
        driver  [see  <B><A HREF="termio.7.html">termio(7)</A></B>].  To force 8 bits to be returned,
        invoke <B>meta</B>(<I>win</I>, <B>TRUE</B>); this is equivalent,  under  POSIX,
        to  setting the CS8 flag on the terminal.  To force 7 bits
-       to be returned, invoke <B>meta</B>(<I>win</I>, <B>FALSE</B>); this  is  equiva­
-       lent,  under  POSIX, to setting the CS8 flag on the termi­
+       to be returned, invoke <B>meta</B>(<I>win</I>, <B>FALSE</B>); this  is  equiva-
+       lent,  under  POSIX, to setting the CS8 flag on the termi-
        nal.  The window argument, <I>win</I>, is always ignored.  If the
        terminfo capabilities <B>smm</B> (meta_on) and <B>rmm</B> (meta_off) are
        defined for the terminal, <B>smm</B> is sent to the terminal when
@@ -104,7 +104,7 @@
        is <B>FALSE</B>), <B>getch</B> waits until a key is pressed.
 
        While interpreting an input escape sequence, <B>wgetch</B> sets a
-       timer  while  waiting  for the next character.  If <B>notime­</B>
+       timer  while  waiting  for the next character.  If <B>notime-</B>
        <B>out(</B><I>win</I>, <B>TRUE</B>) is called,  then  <B>wgetch</B>  does  not  set  a
        timer.   The  purpose  of  the timeout is to differentiate
        between sequences received from a function key  and  those
@@ -131,7 +131,7 @@
        input).   If <I>delay</I> is zero, then non-blocking read is used
        (<I>i</I>.<I>e</I>., read returns <B>ERR</B> if no input is waiting).  If <I>delay</I>
        is  positive, then read blocks for <I>delay</I> milliseconds, and
-       returns <B>ERR</B> if there is still no input.  Hence, these rou­
+       returns <B>ERR</B> if there is still no input.  Hence, these rou-
        tines  provide the same functionality as <B>nodelay</B>, plus the
        additional capability of being  able  to  block  for  only
        <I>delay</I> milliseconds (where <I>delay</I> is positive).
@@ -151,7 +151,7 @@
 
 </PRE>
 <H2>RETURN VALUE</H2><PRE>
-       All  routines that return an integer return <B>ERR</B> upon fail­
+       All  routines that return an integer return <B>ERR</B> upon fail-
        ure and OK (SVr4 specifies only "an  integer  value  other
        than  <B>ERR</B>")  upon  successful completion, unless otherwise
        noted in the preceding routine descriptions.
@@ -162,17 +162,17 @@
        These functions are described in the XSI Curses  standard,
        Issue 4.
 
-       The  ncurses  library obeys the XPG4 standard and the his­
+       The  ncurses  library obeys the XPG4 standard and the his-
        torical practice of the AT&amp;T  curses  implementations,  in
        that  the  echo bit is cleared when curses initializes the
        terminal state.  BSD curses differed from  this  slightly;
-       ity,  set echo or noecho explicitly just after initializa­
+       ity,  set echo or noecho explicitly just after initializa-
        tion, even if your program remains in cooked mode.
 
 
 </PRE>
 <H2>NOTES</H2><PRE>
-       Note that <B>echo</B>, <B>noecho</B>, <B>halfdelay</B>, <B>intrflush</B>, <B>meta</B>,  <B>node­</B>
+       Note that <B>echo</B>, <B>noecho</B>, <B>halfdelay</B>, <B>intrflush</B>, <B>meta</B>,  <B>node-</B>
        <B>lay</B>,  <B>notimeout</B>, <B>noqiflush</B>, <B>qiflush</B>, <B>timeout</B>, and <B>wtimeout</B>
        may be macros.
 

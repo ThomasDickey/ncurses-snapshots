@@ -1,4 +1,4 @@
-# $Id: dist.mk,v 1.197 2000/04/29 12:28:11 tom Exp $
+# $Id: dist.mk,v 1.199 2000/05/07 01:53:43 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -10,7 +10,7 @@ SHELL = /bin/sh
 # These define the major/minor/patch versions of ncurses.
 NCURSES_MAJOR = 5
 NCURSES_MINOR = 0
-NCURSES_PATCH = 20000429
+NCURSES_PATCH = 20000506
 
 # We don't append the patch to the version, since this only applies to releases
 VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)
@@ -62,7 +62,7 @@ manhtml: MANIFEST
 	   g=$${m}.html ;\
 	   if [ -f doc/html/$$g ]; then chmod +w doc/html/$$g; fi;\
 	   echo "Converting $$m to HTML" ;\
-	   man $$f | $(MAN2HTML) | \
+	   man $$f | tr '\255' '-' | $(MAN2HTML) | \
 	   sed -f subst.sed |\
 	   sed -e 's/"curses.3x.html"/"ncurses.3x.html"/g' \
 	   > doc/html/man/$$g ;\

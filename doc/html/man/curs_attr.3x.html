@@ -48,7 +48,7 @@
 <H2>DESCRIPTION</H2><PRE>
        These  routines  manipulate  the current attributes of the
        named window.  The current attributes of a window apply to
-       all  characters that are written into the window with <B>wad­</B>
+       all  characters that are written into the window with <B>wad-</B>
        <B>dch</B>, <B>waddstr</B> and <B>wprintw</B>.  Attributes are  a  property  of
        the  character,  and  move  with the character through any
        scrolling and insert/delete line/character operations.  To
@@ -69,7 +69,7 @@
        for future use, applications must supply a null pointer.
 
        The  routine  <B>wattr_get</B>  returns the current attribute and
-       color pair for the given window; <B>attr_get</B> returns the cur­
+       color pair for the given window; <B>attr_get</B> returns the cur-
        rent  attribute  and color pair for <B>stdscr</B>.  The remaining
        <B>attr_</B>* functions operate exactly  like  the  corresponding
        <B>attr</B>*  functions,  except that they take arguments of type
@@ -77,10 +77,10 @@
 
        The routine <B>chgat</B> changes the attributes of a given number
        of  characters  starting at the current cursor location of
-       <B>stdscr</B>.  It does not update the cursor and does  not  per­
+       <B>stdscr</B>.  It does not update the cursor and does  not  per-
        form  wrapping.   A  character count of -1 or greater than
        the remaining window width means to change attributes  all
-       the  way to the end of the current line.  The <B>wchgat</B> func­
+       the  way to the end of the current line.  The <B>wchgat</B> func-
        tion generalizes this to any window; the <B>mvwchgat</B> function
        does a cursor move before acting.  In these functions, the
        color argument is a color-pair  index  (as  in  the  first
@@ -125,13 +125,13 @@
 
 </PRE>
 <H2>PORTABILITY</H2><PRE>
-       All  these functions are supported in the XSI Curses stan­
+       All  these functions are supported in the XSI Curses stan-
        dard, Issue 4.  The standard defined  the  dedicated  type
        for  highlights,  <B>attr_t</B>,  which  is  not  defined in SVr4
-       curses. The functions taking <B>attr_t</B> arguments are not sup­
+       curses. The functions taking <B>attr_t</B> arguments are not sup-
        ported under SVr4.
 
-       The  XSI  Curses  standard  states that whether the tradi­
+       The  XSI  Curses  standard  states that whether the tradi-
        tional  functions  <B>attron</B>/<B>attroff</B>/<B>attrset</B>  can  manipulate
        attributes  other  than <B>A_BLINK</B>, <B>A_BOLD</B>, <B>A_DIM</B>, <B>A_REVERSE</B>,
        <B>A_STANDOUT</B>, or <B>A_UNDERLINE</B> is "unspecified".   Under  this
@@ -153,12 +153,12 @@
         <B>WA_BOLD</B>         Extra bright or bold
         <B>WA_ALTCHARSET</B>   Alternate character set
 
-       The XSI curses standard specifies that each pair of corre­
+       The XSI curses standard specifies that each pair of corre-
        sponding  <B>A_</B>  and <B>WA_</B>-using functions operates on the same
        current-highlight information.
 
-       The XSI standard extended conformance level adds new high­
-       lights <B>A_HORIZONTAL</B>, <B>A_LEFT</B>, <B>A_LOW</B>, <B>A_RIGHT</B>, <B>A_TOP</B>, <B>A_VER­</B>
+       The XSI standard extended conformance level adds new high-
+       lights <B>A_HORIZONTAL</B>, <B>A_LEFT</B>, <B>A_LOW</B>, <B>A_RIGHT</B>, <B>A_TOP</B>, <B>A_VER-</B>
        <B>TICAL</B> (and corresponding <B>WA_</B> macros for each)  which  this
        curses does not yet support.
 

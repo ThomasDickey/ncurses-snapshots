@@ -32,7 +32,7 @@
        The slk* functions manipulate the set of soft function-key
        labels  that exist on many terminals.  For those terminals
        that do not have soft labels, <B>curses</B> takes over the bottom
-       line  of <B>stdscr</B>, reducing the size of <B>stdscr</B> and the vari­
+       line  of <B>stdscr</B>, reducing the size of <B>stdscr</B> and the vari-
        able <B>LINES</B>.  <B>curses</B> standardizes on eight labels of up  to
        eight  characters  each.  In addition to this, the ncurses
        implementation supports  a  mode  where  it  simulates  12
@@ -57,7 +57,7 @@
        on  the  label,  up  to  eight  (resp. five) characters in
        length.  A null string or a null pointer sets up  a  blank
        label.  <I>fmt</I>  is  either <B>0</B>, <B>1</B>, or <B>2</B>, indicating whether the
-       label is  to be left-justified, centered, or  right-justi­
+       label is  to be left-justified, centered, or  right-justi-
        the <B>wrefresh</B> and <B>wnoutrefresh</B> routines.
 
        The <B>slk_label</B> routine returns the current label for  label
@@ -72,7 +72,7 @@
        The <B>slk_touch</B> routine forces all the  soft  labels  to  be
        output the next time a <B>slk_noutrefresh</B> is performed.
 
-       The <B>slk_attron</B>, <B>slk_attrset</B>, <B>slk_attroff</B> and <B>slk_attr</B> rou­
+       The <B>slk_attron</B>, <B>slk_attrset</B>, <B>slk_attroff</B> and <B>slk_attr</B> rou-
        tines correspond to <B>attron</B>, <B>attrset</B>, <B>attroff</B> and <B>attr_get</B>.
        They  have  an effect only if soft labels are simulated on
        the bottom line of the screen.  The default highlight  for
@@ -87,8 +87,8 @@
 
 </PRE>
 <H2>RETURN VALUE</H2><PRE>
-       These routines return <B>ERR</B> upon failure and OK (SVr4 speci­
-       fies only "an integer value other than <B>ERR</B>") upon success­
+       These routines return <B>ERR</B> upon failure and OK (SVr4 speci-
+       fies only "an integer value other than <B>ERR</B>") upon success-
        ful completion. <B>slk_attr</B> returns the  attribute  used  for
        the soft keys.
 
@@ -97,13 +97,13 @@
 
 </PRE>
 <H2>NOTES</H2><PRE>
-       Most applications would use <B>slk_noutrefresh</B> because a <B>wre­</B>
+       Most applications would use <B>slk_noutrefresh</B> because a <B>wre-</B>
        <B>fresh</B> is likely to follow soon.
 
 
 </PRE>
 <H2>PORTABILITY</H2><PRE>
-       The XSI Curses standard, Issue 4,  describes  these  func­
+       The XSI Curses standard, Issue 4,  describes  these  func-
        tions.   It  changes  the  argument type of the attribute-
        manipulation    functions     <B>slk_attron</B>,     <B>slk_attroff</B>,
        <B>slk_attrset</B>  to  be <B>attr_t</B>, and adds <B>const</B> qualifiers. The
