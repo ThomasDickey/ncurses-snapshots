@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_getch.3x,v 1.22 2003/05/10 20:33:49 jmc Exp @
+  * @Id: curs_getch.3x,v 1.24 2003/12/27 18:46:06 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -120,7 +120,7 @@
 
             <EM>Name</EM>            <EM>Key</EM> <EM>name</EM>
 
-            KEY_BREAK       Break key
+                   KEY_BREAK       Break key
             KEY_DOWN        The four arrow keys ...
             KEY_UP
             KEY_LEFT
@@ -226,7 +226,9 @@
                          +-----+------+-------+
        The <STRONG>has_key</STRONG> routine takes a key value from the above list,
        and returns TRUE or FALSE according to whether the current
-       terminal type recognizes a key with that value.
+       terminal type recognizes a key with that value.  Note that
+       a few values do  not  correspond  to  a  real  key,  e.g.,
+       KEY_RESIZE and KEY_MOUSE.
 
 
 
@@ -248,8 +250,8 @@
        trol keys, e.g., KEY_ENTER versus control/M, KEY_BACKSPACE
        versus control/H.  Some curses implementations may  differ
        according  to  whether  they treat these control keys spe-
-       cially (and ignore the  terminfo),  or  use  the  terminfo
-       definitions.  <STRONG>Ncurses</STRONG> uses the terminfo definition.  If it
+       cially (and ignore the terminfo), or use the terminfo def-
+       initions.   <STRONG>Ncurses</STRONG>  uses  the terminfo definition.  If it
        says  that  KEY_ENTER  is  control/M,  <STRONG>getch</STRONG>  will  return
        KEY_ENTER when you press control/M.
 
@@ -290,7 +292,7 @@
        implementation of  handled  signal  receipt  interrupts  a
        <STRONG><A HREF="read.2.html">read(2)</A></STRONG>  call in progress or not, and also (in some imple-
        mentations) depending on whether an input timeout or  non-
-       blocking mode hsd been set.
+       blocking mode has been set.
 
        Programmers concerned about portability should be prepared
        for either of two  cases:  (a)  signal  receipt  does  not

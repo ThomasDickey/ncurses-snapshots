@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -42,7 +42,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.78 2003/12/27 19:18:55 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.79 2004/01/11 01:57:05 tom Exp $")
 
 #if !HAVE_TELL
 #define tell(fd) lseek(fd, 0, SEEK_CUR)		/* lseek() is POSIX, but not tell() */
@@ -474,7 +474,7 @@ _nc_read_entry(const char *const tn, char *const filename, TERMTYPE * const tp)
     }
 
     /* truncate the terminal name to prevent buffer overflow */
-    (void) sprintf(ttn, "%c/%.*s", *tn, sizeof(ttn) - 3, tn);
+    (void) sprintf(ttn, "%c/%.*s", *tn, (int) sizeof(ttn) - 3, tn);
 
     /* This is System V behavior, in conjunction with our requirements for
      * writing terminfo entries.

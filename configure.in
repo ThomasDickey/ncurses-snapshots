@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+dnl Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
 dnl copy of this software and associated documentation files (the            *
@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.305 2004/01/03 21:15:29 tom Exp $
+dnl $Id: configure.in,v 1.307 2004/01/10 21:17:27 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.305 $)
+AC_REVISION($Revision: 1.307 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1192,15 +1192,18 @@ fi
 fi
 
 ### Construct the library-subsets, if any, from this set of keywords:
-### none, base, ext_funcs, termlib.
+### none, base, ext_funcs, ext_tinfo, termlib, widechar (see CF_LIB_RULES).
 AC_MSG_CHECKING(for library subsets)
 if test "$with_termlib" = yes ; then
-	LIB_SUBSETS="termlib "
+	LIB_SUBSETS="termlib"
+	test "$with_ext_funcs" = yes && LIB_SUBSETS="${LIB_SUBSETS}+ext_tinfo"
+	LIB_SUBSETS="${LIB_SUBSETS} "
 else
 	LIB_SUBSETS="termlib+"
+	test "$with_ext_funcs" = yes && LIB_SUBSETS="${LIB_SUBSETS}ext_tinfo+"
 fi
 LIB_SUBSETS="${LIB_SUBSETS}base"
-test "$with_widec" = yes && LIB_SUBSETS="${LIB_SUBSETS}+widechar"
+test "$with_widec"     = yes && LIB_SUBSETS="${LIB_SUBSETS}+widechar"
 test "$with_ext_funcs" = yes && LIB_SUBSETS="${LIB_SUBSETS}+ext_funcs"
 AC_MSG_RESULT($LIB_SUBSETS)
 
@@ -1290,6 +1293,8 @@ CF_SRC_MODULES($modules_to_build)
 CF_DIRS_TO_MAKE
 
 AC_DEFINE_UNQUOTED(NCURSES_PATHSEP,'$PATHSEP')
+
+AC_DEFINE_UNQUOTED(NCURSES_VERSION_STRING, "${NCURSES_MAJOR}.${NCURSES_MINOR}.${NCURSES_PATCH}")
 
 ### Now that we're done running tests, add the compiler-warnings, if any
 CF_ADD_CFLAGS($EXTRA_CFLAGS)
