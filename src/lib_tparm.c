@@ -25,7 +25,6 @@
 
 #include <string.h>
 #include "curses.priv.h"
-#include "terminfo.h"
 
 /*
  *	char *
@@ -70,6 +69,7 @@
  *	               arithmetic (%m is mod): push(pop() op pop())
  *	     %& %| %^  bit operations: push(pop() op pop())
  *	     %= %> %<  logical operations: push(pop() op pop())
+ *	     %A %O     logical and & or operations for conditionals
  *	     %! %~     unary operations push(op pop())
  *	     %i        add 1 to first two parms (for ANSI terminals)
  *	
@@ -296,6 +296,14 @@ int	i;
 				npush(x % y);
 				break;
 
+		    case 'A':
+				npush(npop() && npop());
+				break;
+
+		    case 'O':
+				npush(npop() || npop());
+				break;
+	
 		    case '&':
 				npush(npop() & npop());
 				break;

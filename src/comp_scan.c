@@ -1,11 +1,31 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
  *	comp_scan.c --- Lexical scanner for terminfo compiler.
  *
+ *	reset_input()
+ *	get_token()
+ *	panic_mode()
+ *	int syntax;
  */
 
 #include <stdarg.h>
@@ -14,14 +34,26 @@
 #include <ctype.h>
 #include "tic.h"
 
+extern _tracechar(unsigned char c);	/* avoid including curses.h */
+
+/*
+ * Maximum length of string capability we'll accept before raising an error.
+ * Yes, there is a real capability in /etc/termcap this long, an "is".
+ */
+#define MAXCAPLEN	600
+
 #define iswhite(ch)	(ch == ' '  ||  ch == '\t')
 
-int syntax;			/* termcap or terminfo? */
+int	syntax;			/* termcap or terminfo? */
+int	curr_line;		/* current line # in input */
+long	curr_file_pos;		/* file offset of current line */
+long	comment_start;		/* start of comment range before name */
+long	comment_end;		/* end of comment range before name */
 
 static int first_column;	/* See 'next_char()' below */
 static char separator = ',';	/* capability separator */
-
-extern void panic_mode(char);
+static FILE *yyin;		/* scanner's input file descriptor */
+static int pushtype;		/* type of pushback token */
 
 static void reset_to(char);
 static char next_char(void);
@@ -69,7 +101,25 @@ int		ch;
 static char	buffer[1024];
 char		*ptr;
 int		dot_flag = FALSE;
+long		token_start;
 
+	if (pushtype != NO_PUSHBACK)
+	{
+	    int retval = pushtype;
+
+	    DEBUG(3, ("pushed-back token: `%s', class %d",
+		      curr_token.tk_name, pushtype));
+
+	    pushtype = NO_PUSHBACK;
+
+	    /* currtok wasn't altered by push_token() */
+	    return(retval);
+	}
+
+	if (feof(yyin))
+	    return(EOF);
+
+	token_start = ftell(yyin);
 	while ((ch = next_char()) == '\n'  ||  iswhite(ch))
 	    continue;
 
@@ -81,19 +131,21 @@ int		dot_flag = FALSE;
 	if (ch == EOF)
 	    type = EOF;
 	else {
-	    if (ch == '.') {
-			dot_flag = TRUE;
-
-			while ((ch = next_char()) == ' '  ||  ch == '\t')
-			    ;
-	    }
-
 	    /* if this is a termcap entry, skip a leading separator */
 	    if (separator == ':' && ch == ':')
 		ch = next_char();
 
-	    if (! isalnum(ch)) {
-		 	warning("Illegal character - '%c'", ch);
+	    if (ch == '.') {
+			dot_flag = TRUE;
+			DEBUG(8, ("dot-flag set"));
+
+			while ((ch = next_char())=='.' || iswhite(ch))
+			    continue;
+	    }
+
+	    /* have to make some punctuation chars legal for terminfo */
+	    if (!isalnum(ch) && !strchr("@%&*!#", ch)) {
+		 	warning("Illegal character - %s", _tracechar(ch));
 		 	panic_mode(separator);
 	    }
 
@@ -101,6 +153,9 @@ int		dot_flag = FALSE;
 	    *(ptr++) = ch;
 
 	    if (first_column) {
+			comment_start = token_start;
+			comment_end = curr_file_pos;
+
 	    		/*
 			 * This is hairy.  We're parsing the first line of the
 			 * entry, trying to figure out if it uses termcap or
@@ -123,7 +178,10 @@ int		dot_flag = FALSE;
 			while ((ch = next_char()) != '\n' && ch != EOF)
 			    *(ptr++) = ch;
 			--ptr;
-		
+
+			if (isspace(*ptr))
+			    ptr--;
+
 			if (ch == EOF)
 			    err_abort("Premature EOF");
 			else if (ptr[0] == '\\' || ptr[0] == '$')
@@ -139,88 +197,75 @@ int		dot_flag = FALSE;
 			}
 			else if (ptr[0] == ',')
 			{
-			    syntax = SYN_TERMCAP;
+			    syntax = SYN_TERMINFO;
 			    separator = ',';
 			}
 			else
 			    err_abort("Can't determine the entry format");
 			ptr[0] = '\0';
 
-			if (!dodump || buffer[2] != '|')
-			    ptr = buffer;
-			else
-			{
-			    ptr = buffer + 3;
-			    buffer[2] = '\0';
-			    (void) fprintf(stderr,
-				   "%s: obsolete 2 character name '%s' removed.\n",
-				   progname, buffer);
-			}
-			curr_token.tk_name = ptr;
-			type = NAMES;
+			ptr = buffer;
 
+			curr_token.tk_name = buffer;
+			type = NAMES;
 	    } else {
 			ch = next_char();
-			while (isalnum(ch)) {
+			/* we must allow ';' to catch k; */
+			while (isalnum(ch) || ch == ';') {
 			    	*(ptr++) = ch;
 			    	ch = next_char();
 			}
 
 			*ptr++ = '\0';
 			switch (ch) {
-		    case ',':
-		    case ':':
-			if (ch != separator)
-			    err_abort("Separator inconsistent with syntax");
-			curr_token.tk_name = buffer;
-			type = BOOLEAN;
-			break;
+			case ',':
+			case ':':
+				if (ch != separator)
+					err_abort("Separator inconsistent with syntax");
+				curr_token.tk_name = buffer;
+				type = BOOLEAN;
+				break;
+			case '@':
+				if (next_char() != separator)
+					warning("Missing separator");
+				curr_token.tk_name = buffer;
+				type = CANCEL;
+				break;
 
-		    case '@':
-			if (next_char() != separator)
-			    warning("Missing separator");
-			curr_token.tk_name = buffer;
-			type = CANCEL;
-			break;
-
-		    case '#':
-			number = 0;
-			while (isdigit(ch = next_char()))
-			    number = number * 10 + ch - '0';
-			if (ch != separator)
-			    warning("Missing separator");
-			curr_token.tk_name = buffer;
-			curr_token.tk_valnumber = number;
-			type = NUMBER;
-			break;
+		    	case '#':
+				number = 0;
+				while (isdigit(ch = next_char()))
+					number = number * 10 + ch - '0';
+				if (ch != separator)
+					warning("Missing separator");
+				curr_token.tk_name = buffer;
+				curr_token.tk_valnumber = number;
+				type = NUMBER;
+				break;
 		    
-		    case '=':
-			ch = trans_string(ptr);
-			if (ch != separator)
-			    warning("Missing separator");
-			curr_token.tk_name = buffer;
-			if (separator == ',')	/* terminfo syntax */
-			    curr_token.tk_valstring = ptr;
-			else
-			    curr_token.tk_valstring = captoinfo(buffer, ptr);
-			type = STRING;
-			break;
+			case '=':
+				ch = trans_string(ptr);
+				if (ch != separator)
+					warning("Missing separator");
+				curr_token.tk_name = buffer;
+				curr_token.tk_valstring = ptr;
+				type = STRING;
+				break;
 
-		    default:
-			/* just to get rid of the compiler warning */
-			type = UNDEF;
-			warning("Illegal character - '%x'", ch);
-		}
-	    } /* end else (first_column == FALSE) */
+			default:
+				/* just to get rid of the compiler warning */
+				type = UNDEF;
+				warning("Illegal character - %s",
+					_tracechar(ch));
+			}
+		} /* end else (first_column == FALSE) */
 	} /* end else (ch != EOF) */
 
 	if (dot_flag == TRUE)
-	    DEBUG0(8, "Commented out ");
+	    DEBUG(8, ("Commented out "));
 
-	if (debug_level >= 8)
+	if (_tracing & 0x80)
 	{
-	    extern char	*expand(char *str);
-
 	    fprintf(stderr, "Token: ");
 	    switch (type)
 	    {
@@ -236,7 +281,7 @@ int		dot_flag = FALSE;
 		
 		case STRING:
 		    fprintf(stderr, "String;  name='%s', value='%s'\n",
-				curr_token.tk_name, expand(curr_token.tk_valstring));
+				curr_token.tk_name, visbuf(curr_token.tk_valstring));
 		    break;
 		
 		case CANCEL:
@@ -262,9 +307,32 @@ int		dot_flag = FALSE;
 	if (dot_flag == TRUE)		/* if commented out, use the next one */
 	    type = get_token();
 
+	DEBUG(3, ("token: `%s', class %d", curr_token.tk_name, type));
+
 	return(type);
 }
 
+
+/*
+ *	push_token()
+ *
+ *	Push a token of given type so that it will be reread by the next
+ *	get_token() call.
+ */
+
+void push_token(int class)
+{
+    /*
+     * This implementation is kind of bogus, it will fail if we ever do
+     * more than one pushback at a time between get_token() calls.  It
+     * relies on the fact that curr_tok is static storage that nothing 
+     * but get_token() touches.
+     */
+    pushtype = class;
+
+    DEBUG(3, ("pushing token: `%s', class %d",
+	      curr_token.tk_name, pushtype));
+}
 
 /*
  * 	char *next_char()
@@ -278,27 +346,27 @@ int		dot_flag = FALSE;
  *	The global variable curr_line is incremented for each new line.
  *	The global variable curr_file_pos is set to the file offset of the
  *	beginning of each line.
- * */
+ */
+#define LEXBUFSIZ	1024
 
 static int	curr_column = -1;
-static char	line[1024];
+static char	line[LEXBUFSIZ];
 
-char
-next_char()
+static char
+next_char(void)
 {
-	char	*rtn_value;
-	long	ftell(FILE *);
+	char		*rtn_value;
+	long		ftell(FILE *);
 
-	if (curr_column < 0  ||  curr_column > 1023  ||
-	    line[curr_column] == '\0')
+	if (curr_column < 0 || curr_column >= LEXBUFSIZ || line[curr_column] == '\0')
 	{
-	    do
-	    {
-		curr_file_pos = ftell(stdin);
+	    do {
+		curr_file_pos = ftell(yyin);
 
-		if ((rtn_value = fgets(line, 1024, stdin)) != NULL)
+		if ((rtn_value = fgets(line, LEXBUFSIZ, yyin)) != NULL)
 		    curr_line++;
-	    } while (rtn_value != NULL  &&  line[0] == '#');
+	    } while
+		(rtn_value != NULL && line[0] == '#');
 
 	    if (rtn_value == NULL)
 		return (EOF);
@@ -317,12 +385,13 @@ next_char()
 }
 
 static void reset_to(char ch)
-/* roll back the buffer pointer to just after the firsr instance of ch */
+/* roll back the buffer pointer to just after the first instance of ch */
 {
     char	*backto = strchr(line, ch);
 
     if (backto)
 	curr_column = (backto - line + 1);
+
 }
 
 static
@@ -338,13 +407,17 @@ void backspace(void)
 /*
  *	reset_input()
  *
- *	Resets the input-reading routines.  Used after a seek has been done.
- *
+ *	Resets the input-reading routines.  Used on initialization,
+ *	or after a seek has been done.
  */
 
-void reset_input()
+void reset_input(FILE *fp)
 {
 	curr_column = -1;
+	pushtype = NO_PUSHBACK;
+	yyin = fp;
+	curr_file_pos = 0L;
+	curr_line = 0;
 }
 
 
@@ -367,23 +440,23 @@ void reset_input()
  *
  */
 
-char
+static char
 trans_string(ptr)
 char	*ptr;
 {
 int	count = 0;
 int	number;
 int	i;
-char	ch;
+char	ch, last_ch = '\0';
 
 	while ((ch = next_char()) != separator  &&  ch != EOF) {
-	    if (ch == '^') {
+	    if (ch == '^' && last_ch != '%') {
 		ch = next_char();
 		if (ch == EOF)
 		    err_abort("Premature EOF");
 
 		if (! isprint(ch)) {
-		    warning("Illegal ^ character - '%c'", ch);
+		    warning("Illegal ^ character - %s", _tracechar(ch));
 		}
 		*(ptr++) = ch & 037;
 	    }
@@ -441,7 +514,8 @@ char	ch;
 			    continue;
 
 			default:
-			    warning("Illegal character 0x%02x in \\ sequence", ch);
+			    warning("Illegal character %s in \\ sequence",
+				    _tracechar(ch));
 			    *(ptr++) = ch;
 		    } /* endswitch (ch) */
 		} /* endelse (ch < '0' ||  ch > '7') */
@@ -452,7 +526,9 @@ char	ch;
 	    
 	    count ++;
 
-	    if (count > 500)
+	    last_ch = ch;
+
+	    if (count > MAXCAPLEN)
 		warning("Very long string found.  Missing separator?");
 	} /* end while */
 

@@ -6,7 +6,7 @@
 \fBnoqiflush\fR, \fBqiflush\fR, \fBtimeout\fR, \fBwtimeout\fR,
 \fBtypeahead\fR - \fBncurses\fR input options
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
 \fBint cbreak(void);\fR
 .br
@@ -26,8 +26,6 @@
 .br
 \fBint nodelay(WINDOW *win, bool bf);\fR
 .br
-\fBint notimeout(WINDOW *win, bool bf);\fR
-.br
 \fBint raw(void);\fR
 .br
 \fBint noraw(void);\fR
@@ -35,6 +33,8 @@
 \fBvoid noqiflush(void);\fR
 .br
 \fBvoid qiflush(void);\fR
+.br
+\fBint notimeout(WINDOW *win, bool bf);\fR
 .br
 \fBvoid timeout(int delay);\fR
 .br
@@ -94,13 +94,15 @@ called.  The default value for keypad is false.
 Initially, whether the terminal returns 7 or 8 significant bits on
 input depends on the control mode of the tty driver [see termio(7)].
 To force 8 bits to be returned, invoke \fBmeta\fR(\fIwin\fR,
-\fBTRUE\fR).  To force 7 bits to be returned, invoke
-\fBmeta\fR(\fIwin\fR, \fBFALSE\fR).  The window argument, \fIwin\fR,
-is always ignored.  If the terminfo capabilities \fBsmm\fR (meta_on)
-and \fBrmm\fR (meta_off) are defined for the terminal, \fBsmm\fR is
-sent to the terminal when \fBmeta\fR(\fIwin\fR, \fBTRUE\fR) is called
-and \fBrmm\fR is sent when \fBmeta\fR(\fIwin\fR, \fBFALSE\fR) is
-called.
+\fBTRUE\fR); this is equivalent, under POSIX, to setting the CS8 flag
+on the terminal.  To force 7 bits to be returned, invoke
+\fBmeta\fR(\fIwin\fR, \fBFALSE\fR); this is equivalent, under POSIX,
+to setting the CS8 flag on the terminal.  The window argument,
+\fIwin\fR, is always ignored.  If the terminfo capabilities \fBsmm\fR
+(meta_on) and \fBrmm\fR (meta_off) are defined for the terminal,
+\fBsmm\fR is sent to the terminal when \fBmeta\fR(\fIwin\fR,
+\fBTRUE\fR) is called and \fBrmm\fR is sent when \fBmeta\fR(\fIwin\fR,
+\fBFALSE\fR) is called.
 
 The \fBnodelay\fR option causes \fBgetch\fR to be a non-blocking call.
 If no input is ready, \fBgetch\fR returns \fBERR\fR.  If disabled
@@ -112,20 +114,21 @@ while waiting for the next character.  If \fBnotimeout(\fR\fIwin\fR,
 purpose of the timeout is to differentiate between sequences received
 from a function key and those typed by a user.
 
-With the \fBraw\fR and \fBnoraw\fR routines, the terminal is placed
-into or out of raw mode.  Raw mode is similar to \fBcbreak\fR mode, in
-that characters typed are immediately passed through to the user
-program.  The differences are that in raw mode, the interrupt, quit,
-suspend, and flow control characters are all passed through
-uninterpreted, instead of generating a signal.  The behavior of the
-BREAK key depends on other bits in the tty driver that are not set by
+The \fBraw\fR and \fBnoraw\fR routines place the terminal into or out of raw
+mode.  Raw mode is similar to \fBcbreak\fR mode, in that characters typed are
+immediately passed through to the user program.  The differences are that in
+raw mode, the interrupt, quit, suspend, and flow control characters are all
+passed through uninterpreted, instead of generating a signal.  The behavior of
+the BREAK key depends on other bits in the tty driver that are not set by
 \fBncurses\fR.
 
 When the \fBnoqiflush\fR routine is used, normal flush of input and
 output queues associated with the \fBINTR\fR, \fBQUIT\fR and
 \fBSUSP\fR characters will not be done [see termio(7)].  When
 \fBqiflush\fR is called, the queues will be flushed when these control
-characters are read.
+characters are read.  You may want to call \fBnoqiflush()\fR in a signal
+handler if you want output to continue as though the interrupt
+had not occurred, after the handler exits.
 
 The \fBtimeout\fR and \fBwtimeout\fR routines set blocking or
 non-blocking read for a given window.  If \fIdelay\fR is negative,
@@ -149,17 +152,15 @@ The \fBtypeahead\fR routine specifies that the file descriptor
 \fIfd\fR is to be used to check for typeahead instead.  If \fIfd\fR is
 -1, then no typeahead checking is done.
 .SH RETURN VALUE
-All routines that return an integer return \fBERR\fR upon failure and an
-integer value other than \fBERR\fR upon successful completion, unless otherwise
-noted in the preceding routine descriptions.
+All routines that return an integer return \fBERR\fR upon failure and OK (SVr4
+specifies only "an integer value other than \fBERR\fR") upon successful
+completion, unless otherwise noted in the preceding routine descriptions.
+.SH PORTABILITY
+These functions are described in the XSI Curses draft.
 .SH NOTES
 Note that \fBecho\fR, \fBnoecho\fR, \fBhalfdelay\fR, \fBintrflush\fR,
 \fBmeta\fR, \fBnodelay\fR, \fBnotimeout\fR, \fBnoqiflush\fR,
 \fBqiflush\fR, \fBtimeout\fR, and \fBwtimeout\fR may be macros.
-.SH BUGS
-The entry points \fBintrflush\fR, \fBqiflush\fR, \fBnoqiflush\fR, and
-\fBtypeahead\fR are not yet implemented in ncurses 1.8.6.  The ncurses
-code does not do typeahead checking during input as SVr4 curses does.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_getch\fR(3X), \fBcurs_initscr\fR(3X), \fBtermio\fR(7)
 .\"#

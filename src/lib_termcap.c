@@ -17,7 +17,8 @@
 *                                                                          *
 ***************************************************************************/
 
-
+#include <stdlib.h>
+#include <string.h>
 #include "curses.priv.h"
 #include "terminfo.h"
 
@@ -26,10 +27,10 @@
    Magnus Bengtsson, d6mbeng@dtek.chalmers.se
 */
 
-char PC = '\0';		/* pad character */
-char *UP = NULL;	/* up one line capability */
-char *BC = NULL;	/* backspace if not ^h */
-speed_t ospeed = 0;	/* output speed */
+char PC;
+char *UP;
+char *BC;
+speed_t ospeed;
 
 /***************************************************************************
  *
@@ -42,7 +43,7 @@ speed_t ospeed = 0;	/* output speed */
  * does a bit more than tgetent() in termcap does), and returns its return
  * value (1 if successful, 0 if no terminal with the given name could be
  * found, or -1 if no terminal descriptions have been installed on the
- * system). bufp is ignored.
+ * system).  The bufp argument is ignored.
  *
  ***************************************************************************/
 
@@ -51,14 +52,25 @@ int tgetent(char *bp, char *name)
 int errcode;
 
 	setupterm(name, 1, &errcode);
-	if (errcode == 1) {
-		if (pad_char != NULL)
-			PC = pad_char[0];
-		if (cursor_up != NULL)
-			UP = cursor_up;
-		if (backspace_if_not_bs != NULL)
-			BC = backspace_if_not_bs;
-	}
+
+	if (errcode != 1)
+		return(errcode);
+
+        if (cursor_left)
+	    if (!(backspaces_with_bs = !strcmp(cursor_left, "\b")))
+		backspace_if_not_bs = cursor_left;
+
+	/* we're required to export these */
+	if (pad_char != NULL)
+		PC = pad_char[0];
+	if (cursor_up != NULL)
+		UP = cursor_up;
+	if (backspace_if_not_bs != NULL)
+		BC = backspace_if_not_bs;
+	ospeed = SP->_baudrate;
+
+#include "capdefaults.c"
+
 	return errcode;
 }
 
@@ -71,7 +83,7 @@ int errcode;
  *
  ***************************************************************************/
 
-int tgetflag(char id[2])
+int tgetflag(char *id)
 {
 int i;
 
@@ -90,7 +102,7 @@ int i;
  *
  ***************************************************************************/
 
-int tgetnum(char id[2])
+int tgetnum(char *id)
 {
 int i;
 
@@ -109,7 +121,7 @@ int i;
  *
  ***************************************************************************/
 
-char *tgetstr(char id[2], char **area)
+char *tgetstr(char *id, char **area)
 {
 int i;
 

@@ -1,7 +1,23 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
 **	lib_erase.c
@@ -11,9 +27,6 @@
 */
 
 #include "curses.priv.h"
-#include "terminfo.h"
-
-#define BLANK ' '
 
 int  werase(WINDOW	*win)
 {
@@ -23,9 +36,9 @@ int	minx;
 
 	T(("werase(%x) called", win));
 
-	for (y = win->_regtop; y <= win->_regbottom; y++) {
+	for (y = 0; y <= win->_maxy; y++) {
 	    	minx = _NOCHANGE;
-	    	start = win->_line[y];
+	    	start = win->_line[y].text;
 	    	end = &start[win->_maxx];
 	
 	    	maxx = start;
@@ -37,14 +50,15 @@ int	minx;
 	    	}
 
 	    	if (minx != _NOCHANGE) {
-			if (win->_firstchar[y] > minx ||
-		    	    win->_firstchar[y] == _NOCHANGE)
-		    		win->_firstchar[y] = minx;
+			if (win->_line[y].firstchar > minx ||
+		    	    win->_line[y].firstchar == _NOCHANGE)
+		    		win->_line[y].firstchar = minx;
 
-			if (win->_lastchar[y] < maxx - win->_line[y])
-		    	win->_lastchar[y] = maxx - win->_line[y];
+			if (win->_line[y].lastchar < maxx - win->_line[y].text)
+		    	win->_line[y].lastchar = maxx - win->_line[y].text;
 	    	}
 	}
 	win->_curx = win->_cury = 0;
+	wchangesync(win);
 	return OK;
 }

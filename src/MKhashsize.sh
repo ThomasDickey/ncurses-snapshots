@@ -6,7 +6,7 @@ echo "/*"
 echo " * hashsize.h -- hash and token table constants"
 echo " */"
 
-TABSIZE=`grep '},$' comp_captab.c | wc -l`
+TABSIZE=`grep -v '^[ #]' Caps | wc -l`
 
 echo ""
 echo "#define CAPTABSIZE	${TABSIZE}"

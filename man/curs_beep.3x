@@ -2,7 +2,7 @@
 .SH NAME
 \fBcurs_beep\fR:  \fBbeep\fR, \fBflash\fR - \fBncurses\fR bell and screen flash routines
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
 \fBint beep(void);\fR
 .br
@@ -16,9 +16,14 @@ flashes the screen, and if that is not possible, sounds the alert.  If neither
 alert is possible, nothing happens.  Nearly all terminals have an audible alert
 (bell or beep), but only some can flash the screen.
 .SH RETURN VALUE
-These routines always return \fBOK\fR.
-.SH CAPABILITIES
-\fBbell\fR, \fBflash_screen\fR.
+These routines return \fBOK\fR if they succeed in beeping or flashing, 
+\FBERR\fR otherwise.
+.SH EXTENSIONS
+SVr4's beep and flash routines always returned \fBOK\fR, so it was not
+possible to tell when the beep or flash failed.
+.SH PORTABILITY
+These functions are defined in the XSI Curses draft.  Like SVr4, it specifies
+that they always return \fBOK\fR.
 .SH SEE ALSO
 \fBncurses\fR(3X)
 .\"#

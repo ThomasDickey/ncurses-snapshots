@@ -3,7 +3,7 @@
 \fBcurs_inch\fR: \fBinch\fR, \fBwinch\fR, \fBmvinch\fR, \fBmvwinch\fR
 - get a character and attributes from a \fBncurses\fR window
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
 \fBchtype inch(void);\fR
 .br
@@ -17,7 +17,7 @@
 These routines return the character, of type \fBchtype\fR, at the current
 position in the named window.  If any attributes are set for that position,
 their values are OR-ed into the value returned.  Constants defined in
-\fB<ncurses.h>\fR can be used with the \fB&\fR (logical AND) operator to
+\fB<curses.h>\fR can be used with the \fB&\fR (logical AND) operator to
 extract the character or attributes alone.
 
 .SS Attributes
@@ -30,6 +30,8 @@ The following bit-masks may be AND-ed with characters returned by \fBwinch\fR.
 .fi
 .SH NOTES
 Note that all of these routines may be macros.
+.SH PORTABILITY
+These functions are described in the XSI Curses draft.
 .SH SEE ALSO
 \fBncurses\fR(3X).
 .\"#

@@ -5,7 +5,7 @@
 \fBcolor_content\fR, \fBpair_content\fR - \fBncurses\fR color
 manipulation routines
 .SH SYNOPSIS
-\fB# include <ncurses.h>\fR
+\fB# include <curses.h>\fR
 .br
 \fBint start_color(void);\fR
 .br
@@ -30,7 +30,7 @@ A color-pair consists of a foreground color (for characters) and a background
 color (for the blank field on which the characters are displayed).  A
 programmer initializes a color-pair with the routine \fBinit_pair\fR.  After it
 has been initialized, \fBCOLOR_PAIR\fR(\fIn\fR), a macro defined in
-\fB<ncurses.h>\fR, can be used as a new video attribute.
+\fB<curses.h>\fR, can be used as a new video attribute.
 
 If a terminal is capable of redefining colors, the programmer can use the
 routine \fBinit_color\fR to change the definition of a color.  The routines
@@ -97,7 +97,7 @@ background color numbers.  The value of the first argument must be between 1
 and \fBCOLOR_PAIRS-1\fR.  The values that are stored at the addresses pointed
 to by the second and third arguments are between 0 and \fBCOLORS\fR.
 .SS Colors
-In \fB<ncurses.h>\fR the following macros are defined.  These are the default
+In \fB<curses.h>\fR the following macros are defined.  These are the default
 colors.  \fBncurses\fR also assumes that \fBCOLOR_BLACK\fR is the default
 background color for all terminals.
 
@@ -112,8 +112,12 @@ background color for all terminals.
       \fBCOLOR_WHITE\fR
 .fi
 .SH RETURN VALUE
-All routines that return an integer return \fBERR\fR upon failure and \fBOK\fR
-upon successful completion.
+The routines \fBcan_change_color()\fR and \fBhas_colors()\fR return \fBTRUE\fR
+or \fBFALSE\fR.
+
+All other routines return the integer \fBERR\fR upon failure and an \fBOK\fR
+(SVr4 specifies only "an integer value other than \fBERR\fR") upon successful
+completion.
 .SH NOTES
 Several caveats apply on 386 and 486 machines with VGA-compatible graphics:
 
@@ -126,9 +130,9 @@ Paradise and compatibles) do the wrong thing when you try to set a bright
 "yellow" background (you get a blinking yellow foreground instead).
 
 Color RGB values are not settable.
-.SH CAPABILITIES
-\fBsetf\fR, \fBsetb\fR, \fBsetaf\fR, \fBsetab\fR.  The ncurses library uses
-the second pair by preference, falling back to the first.
+.SH PORTABILITY
+The \fBncurses\fR implementation satisfies XSI Curses's minumum maximums
+for \fBCOLORS\fR and \fBCOLOR_PAIRS\fR.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_initscr\fR(3X), \fBcurs_attr\fR(3X)
 .\"#
@@ -136,3 +140,4 @@ the second pair by preference, falling back to the first.
 .\"# Local Variables:
 .\"# mode:nroff
 .\"# fill-column:79
+.\"# End:

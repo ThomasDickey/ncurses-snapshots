@@ -4,7 +4,7 @@
 \fBwtouchln\fR, \fBis_linetouched\fR, \fBis_wintouched\fR -
 \fBncurses\fR refresh control routines
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 .br
 \fBint touchwin(WINDOW *win);\fR
 .br
@@ -45,6 +45,8 @@ valid for the given window.
 All routines return the integer \fBERR\fR upon failure and an integer value
 other than \fBERR\fR upon successful completion, unless otherwise noted in the
 preceding routine descriptions.
+.SH PORTABILITY
+The XSI Curses draft describes these functions.
 .SH NOTES
 Note that all routines except \fBwtouchln\fR may be macros.
 .SH SEE ALSO

@@ -343,6 +343,20 @@ traceon(); in your code and link with -ldcurses.
 *) modified delwin() to correctly handle deleting subwindows.
 *) fixed Makefile.dist to stop installing an empty curses.h
 *) fixed a couple of out-of-date notes in man pages.
-*)
 
-
+### ncurses 1.8.7 -> 1.8.8
+*) untic no longer exists, infocmp replaces it.
+*) tic can understand termcap now, especially if it is called captoinfo.
+*) The Linux Standard Console terminfo entry is called linux insead of console.
+   You HAVE to modify /etc/termcap, /etc/profile, /etc/ttytype, etc.
+   accordingly. It also uses the kernel's new method of changing charsets.
+*) initscr() will EXIT upon error (as the docs say) This wil mostly happen if
+   you try to run on an undefined terminal.
+*) I can get things running on AIX but tic can't compile terminfo. I have to
+   compile entries on another machine. Volunteers to hunt this bug are welcome.
+*) wbkgd() and wbkgdset() can be used to set a windows background to color.
+   wclear()/werase() DO NOT use the current attribute to clear the screen.
+   This is the way SVR4 curses works. PDCurses is broken in this respect.
+*) cleaned up the test/ directory.    
+*) test/worm will segfault after quite a while.
+*) many spelling corrections courtesy of Thomas E. Dickey 

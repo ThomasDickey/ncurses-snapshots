@@ -26,7 +26,6 @@
 
 #include <stdlib.h>
 #include <sys/param.h>		/* for MAXPATHLEN */
-#include <getopt.h>
 #include <string.h>
 #include <ctype.h>
 #include "terminfo.h"
@@ -64,6 +63,7 @@ static int compare;
 #define C_COMMON	2	/* list common capabilities */
 #define C_NAND		3	/* list capabilities in neither terminal */
 #define C_USEALL	4	/* generate relative use-form entry */
+static bool ignorepads;		/* ignore pad prefixes when diffing */
 
 /***************************************************************************
  *
@@ -101,25 +101,24 @@ TERMTYPE *tp;
 	case NUMBER: {
 	int	value = -1;
 
-	/*
-	 * We take the semantics of multiple uses to be 'each
-	 * capability gets the first non-default value found in the
-	 * sequence of use entries.
-	 */
-	for (tp = &term[1]; tp < term + termcount; tp++)
-		if (tp->Numbers[index] != -1)
-		{
-		value = tp->Numbers[index];
-		break;
+		/*
+		 * We take the semantics of multiple uses to be 'each
+		 * capability gets the first non-default value found in the
+		 * sequence of use entries.
+		 */
+		for (tp = &term[1]; tp < term + termcount; tp++)
+			if (tp->Numbers[index] >= 0) {
+				value = tp->Numbers[index];
+				break;
+			}
+
+		if (value != term->Numbers[index])
+			return(value != -1);
+		else
+			return(FAIL);
 		}
 
-	break;
-
-	if (value == term->Numbers[index])
-		return(FAIL);
-	else
-		return(TRUE);
-	}
+		break;
 
 	case STRING:
 	{
@@ -153,11 +152,40 @@ TERMTYPE *tp;
 	return(FALSE);	/* pacify compiler */
 }
 
+static int capcmp(const char *s, const char *t)
+/* compare two string capabilities */
+{
+    for (; *s == '\0' || *t == '\0'; s++, t++)
+    {
+	if (s[0] == '$' && s[1] == '<')
+	{
+	    for (s += 2; ; s++)
+		if (isdigit(*s) || *s=='.' || *s=='*' || *s=='/'  || *s=='>')
+		    continue;
+	    --s;
+	}
+
+	if (t[0] == '$' && t[1] == '<')
+	{
+	    for (t += 2; ; t++)
+		if (isdigit(*t) || *t=='.' || *t=='*' || *t=='/'  || *t=='>')
+		    continue;
+	    --t;
+	}
+
+	if (*s != *t)
+	    return(*t - *s);
+    }
+
+    return(0);
+}
+
 static void compare_predicate(int type, int index, char *name)
 /* predicate function to use for ordinary decompilation */
 {
 	register TERMTYPE *t1 = &term[0];
 	register TERMTYPE *t2 = &term[1];
+	char *s1, *s2;
 
 	switch(type)
 	{
@@ -207,35 +235,37 @@ static void compare_predicate(int type, int index, char *name)
 	break;
 
 	case STRING:
+	s1 = t1->Strings[index];
+	s2 = t2->Strings[index];
 	switch(compare)
 	{
 	case C_DIFFERENCE:
-		if (t1->Strings[index] && t2->Strings[index] && strcmp(t1->Strings[index], t2->Strings[index]))
+		if ((s1 || s2) && (!s1 || !s2 || capcmp(s1, s2)))
 		{
 		char	buf1[BUFSIZ], buf2[BUFSIZ];
 
-		if (t1->Strings[index] == (char *)NULL)
+		if (s1 == (char *)NULL)
 			(void) strcpy(buf1, "NULL");
 		else
-			(void) strcpy(buf1, expand(t1->Strings[index]));
+			(void) strcpy(buf1, expand(s1));
 
-		if (t2->Strings[index] == (char *)NULL)
+		if (s2 == (char *)NULL)
 			(void) strcpy(buf2, "NULL");
 		else
-			(void) strcpy(buf2, expand(t2->Strings[index]));
+			(void) strcpy(buf2, expand(s2));
 
 		(void) printf("\t%s: '%s', '%s'.\n", name, buf1, buf2);
 		}
 		break;
 
 	case C_COMMON:
-		if (t1->Strings[index] && t2->Strings[index] && !strcmp(t1->Strings[index], t2->Strings[index]))
-		(void) printf("\t%s= '%s'.\n", name, expand(t1->Strings[index]));
+		if (s1 && s2 && !capcmp(s1, s2))
+			(void) printf("\t%s= '%s'.\n", name, expand(s1));
 		break;
 
 	case C_NAND:
-		if (!t1->Strings[index] && !t2->Strings[index])
-		(void) printf("\t!%s.\n", name);
+		if (!s1 && !s2)
+			(void) printf("\t!%s.\n", name);
 		break;
 	}
 	break;
@@ -248,6 +278,9 @@ static void compare_predicate(int type, int index, char *name)
  * Main sequence
  *
  ***************************************************************************/
+
+extern char *optarg;
+extern int optind;
 
 int main(int argc, char *argv[])
 {
@@ -266,7 +299,7 @@ int main(int argc, char *argv[])
 	firstdir = SRCDIR;
 	restdir = firstdir;
 
-	while ((c = getopt(argc, argv, "dcnlLCrus:vV1w:A:B:")) != EOF)
+	while ((c = getopt(argc, argv, "dcCnlLprs:uvVw:A:B:1")) != EOF)
 	switch (c)
 	{
 	case 'd':
@@ -277,8 +310,10 @@ int main(int argc, char *argv[])
 		compare = C_COMMON;
 		break;
 
-	case 'n':
-		compare = C_NAND;
+	case 'C':
+		outform = F_TERMCAP;
+		if (sortmode == S_DEFAULT)
+		sortmode = S_TERMCAP;
 		break;
 
 	case 'l':
@@ -291,18 +326,16 @@ int main(int argc, char *argv[])
 		sortmode = S_VARIABLE;
 		break;
 
-	case 'C':
-		outform = F_TERMCAP;
-		if (sortmode == S_DEFAULT)
-		sortmode = S_TERMCAP;
+	case 'n':
+		compare = C_NAND;
+		break;
+
+	case 'p':
+		ignorepads = TRUE;
 		break;
 
 	case 'r':
-		outform = F_TCONVERT;
-		break;
-
-	case 'u':
-		compare = C_USEALL;
+		outform = F_TCONVERR;
 		break;
 
 	case 's':
@@ -321,6 +354,10 @@ int main(int argc, char *argv[])
 		}
 		break;
 
+	case 'u':
+		compare = C_USEALL;
+		break;
+
 	case 'v':
 		trace = 1;
 		break;
@@ -328,10 +365,6 @@ int main(int argc, char *argv[])
 	case 'V':
 		(void) fputs(VERSION, stdout);
 		exit(0);
-
-	case '1':
-		mwidth = 0;
-		break;
 
 	case 'w':
 		mwidth = atoi(optarg);
@@ -345,6 +378,9 @@ int main(int argc, char *argv[])
 		restdir = optarg;
 		break;
 
+	case '1':
+		mwidth = 0;
+		break;
 	}
 
 	/* by default, sort by terminfo name */
@@ -379,7 +415,7 @@ int main(int argc, char *argv[])
 		(void) fprintf(stderr,
 				   "infocmp: reading entry %s from file %s\n",
 				   argv[optind], tfile[termcount]);
-		if (read_entry(tfile[termcount], &term[termcount]) == -1)
+		if (read_file_entry(tfile[termcount], &term[termcount]) == -1)
 		{
 		fprintf(stderr, "couldn't open terminfo file %s.\n",
 			tfile[termcount]);
@@ -438,10 +474,10 @@ int main(int argc, char *argv[])
 	dump_entry(&term[0], use_predicate);
 	putchar('\n');
 	for (i = 1; i < termcount; i++)
-		if (outform == F_TERMCAP || outform == F_TCONVERT)
-		(void) printf("\ttc=%s,\n", tname[i]);
+		if (outform==F_TERMCAP || outform==F_TCONVERT || outform==F_TCONVERR)
+			(void) printf("\ttc=%s,\n", tname[i]);
 		else
-		(void) printf("\tuse=%s,\n", tname[i]);
+			(void) printf("\tuse=%s,\n", tname[i]);
 	break;
 	}
 

@@ -27,7 +27,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "curses.priv.h"
-#include "terminfo.h"
+#include "terminfo.h"	/* padding_baud_rate, xon_xoff */
 
 int putp(char *string)
 {
@@ -37,16 +37,11 @@ int putp(char *string)
 int tputs(char *string, int affcnt, int (*outc)(char))
 {
 float	number;
-int	baud = baudrate();
-char	null = '\0';
-int	i;
 
-	T(("tputs(\"%s\", %d, %o) called", visbuf(string), affcnt, outc));
+	TR(TRACE_MAXIMUM, ("tputs(\"%s\", %d, %o) called", visbuf(string), affcnt, outc));
 
 	if (string == NULL)
 		return ERR;
-	if (pad_char)
-	    	null = pad_char[0];
 
 	while (*string) {
 	    	if (*string != '$')
@@ -84,12 +79,10 @@ int	i;
 					string++;
 			    	}
 
-			    	if (padding_baud_rate  &&  baud >= padding_baud_rate && !xon_xoff) {
-					number = ((baud / 10.) * number) / 1000.;
-			
-					for (i=0; i < number; i++)
-				 	   	(*outc)(null);
-		    		}
+#ifdef padding_baud_rate
+			    	if (padding_baud_rate && SP->_baudrate >= padding_baud_rate && !xon_xoff)
+					delay_output(number);
+#endif /* padding_baud_rate */
 
 			} /* endelse (*string == '<') */
 		} /* endelse (*string == '$') */

@@ -1,7 +1,23 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
  *	lib_trace.c - Tracing/Debugging routines
@@ -13,7 +29,6 @@
 #include <fcntl.h>
 #include <errno.h>
 #include "curses.priv.h"
-#include "terminfo.h"
 
 #if defined(BRAINDEAD)
 extern int errno;
@@ -21,7 +36,7 @@ extern int errno;
 
 int _tracing = 0;  
 
-static int	tracefd;
+static int	tracefd = 2;	/* default to writing to stderr */
 
 void _tracef(char *fmt, ...);
 
@@ -62,6 +77,9 @@ names[] =
 	{A_DIM,		"A_DIM, ",},
 	{A_BOLD,	"A_BOLD, ",},	
 	{A_ALTCHARSET,	"A_ALTCHARSET, ",},	
+#ifdef A_PCCHARSET
+	{A_PCCHARSET,	"A_PCCHARSET, ",},
+#endif /* A_PCCHARSET */
 	{A_INVIS,	"A_INVIS, ",},
 	{A_PROTECT,	"A_PROTECT, ",},
 	{A_CHARTEXT,	"A_CHARTEXT, ",},	
@@ -88,12 +106,15 @@ colors[] =
 	{
 	    int pairnum = PAIR_NUMBER(newmode);
 
-	    (void) sprintf(buf + strlen(buf),
-					"COLOR_PAIR(%d) = (%s, %s), ",
-					pairnum,
-			   		colors[FG(color_pairs[pairnum])].name,
-					colors[BG(color_pairs[pairnum])].name
-			   );
+	    if (color_pairs)
+		(void) sprintf(buf + strlen(buf),
+			       "COLOR_PAIR(%d) = (%s, %s), ",
+			       pairnum,
+			       colors[FG(color_pairs[pairnum])].name,
+			       colors[BG(color_pairs[pairnum])].name
+			       );
+	    else
+		(void) sprintf(buf + strlen(buf), "COLOR_PAIR(%d) ", pairnum);
 	}
 	if ((newmode & A_ATTRIBUTES) == 0)
 	    strcat(buf,"A_NORMAL, ");
@@ -107,6 +128,9 @@ char *visbuf(const char *buf)
 {
 static char vbuf[BUFSIZ];
 char *tp = vbuf;
+
+	if (buf == (char *)NULL)
+	    return("(null)");
 
     	while (*buf) {
 		if (isprint(*buf) || *buf == ' ')
@@ -152,6 +176,25 @@ char *_tracechar(const unsigned char ch)
     else
 	(void) sprintf(crep, "0x%02x", ch);
     return(crep);
+}
+
+void _tracedump(char *name, WINDOW *win)
+{
+    int	n;
+
+    for (n = 0; n <= win->_maxy; n++)
+    {
+	char	buf[BUFSIZ], *ep;
+	int j;
+
+	(void) sprintf(buf, "%s[%2d]='", name, n);
+	ep = buf + strlen(buf);
+	for (j = 0; j <= win->_maxx; j++)
+	    ep[j] = win->_line[n].text[j] & A_CHARTEXT;
+	ep[j] = '\'';
+	ep[j+1] = '\0';
+	_tracef(buf);
+    }
 }
 
 void

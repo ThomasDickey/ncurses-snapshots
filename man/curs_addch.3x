@@ -4,7 +4,7 @@
 \fBechochar\fR, \fBwechochar\fR - add a character (with attributes) to a
 \fBncurses\fR window, then advance the cursor
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
 \fBaddch(chtype ch);\fR
 .br
@@ -52,7 +52,8 @@ these routines instead of their equivalents.
 The following variables may be used to add line drawing characters to the
 screen with routines of the \fBaddch\fR family.  The default character listed
 below is used if the \fBacsc\fR capability doesn't define a terminal-specific
-replacement for it.  The names are taken from the the VT100 nomenclature.
+replacement for it (but see the EXTENSIONS section below).  The names are
+taken from the the VT100 nomenclature.
 
 .TS
 l l l
@@ -87,20 +88,35 @@ ACS_BLOCK	#	solid square block
 .TE
 
 .SH RETURN VALUE
-All routines return the integer \fBERR\fR upon failure and an integer value
-other than \fBERR\fR upon successful completion, unless otherwise noted in the
-preceding routine descriptions.
-.SH BUGS
+All routines return the integer \fBERR\fR upon failure and \fBOK\fR on success
+(the SVr4 manuals specify only "an integer value other than \fBERR\fR") upon
+successful completion, unless otherwise noted in the preceding routine
+descriptions.
 .SH NOTES
 Note that \fBaddch\fR, \fBmvaddch\fR, \fBmvwaddch\fR, and
 \fBechochar\fR may be macros.
+.SH EXTENSIONS
+The following extended \fBncurses\fR features are available only on PC-clone
+consoles and compatible terminals (and are not part of XSI curses).
 
-On 386 and 486 consoles, giving \fBwechochar\fR an argument with its high
-bit set will produce the corresponding high-half ASCIIZ graphic (SVr4 curses
-also has this feature but does not document it).  A control-character argument,
-however, will not typically produce the corresponding graphic; 
-characters such as CR, NL, FF and TAB are typically interpreted by the console
-driver itself, and ESC will be interpreted as the leader of a control sequence.
+First, ncurses will automatically set up a better set of
+ACS defaults including the IBM high-half forms-drawing characters.  SVr4 does
+not do this.  These defaults may be overridden by an acsc capability.
+
+There is a new attribute PC_CHARSET which forces literal display of PC ROM
+characters.  Your console driver may still capture or translate a few (such as
+ESC) but this feature should give you access to the card-suit characters, up
+and down-arrow, and most others in the range 0-32.
+
+Giving \fBwechochar\fR an argument with its high bit set will produce the
+corresponding high-half ASCIIZ graphic (SVr4 curses also has this feature but
+does not document it).  A control-character argument, however, will not
+typically produce the corresponding graphic; characters such as CR, NL, FF and
+TAB are typically interpreted by the console driver itself, and ESC will be
+interpreted as the leader of a control sequence.
+.SH PORTABILITY
+All these functions are described in the XSI Curses draft.
+The defaults specified for forms-drawing characters apply in the POSIX locale.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_attr\fR(3X), \fBcurs_clear\fR(3X),
 \fBcurs_inch\fR(3X), \fBcurs_outopts\fR(3X), \fBcurs_refresh\fR(3X),

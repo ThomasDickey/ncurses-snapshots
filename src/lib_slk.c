@@ -1,54 +1,49 @@
-
 /*
  *	lib_slk.c
  *	Soft key routines.
- *
- *	Copyright (C) Gerhard Fuernkranz 1993
- *	Permisson is granted to redistribute this
- *	code under the terms of the GNU Copyleft.
  */
 
-#include "terminfo.h"
 #include "curses.priv.h"
 #include <string.h>
 #include <stdlib.h>
 
-int _slk_format;		/* format specified in slk_init() */
+#define MAX_SKEY	8	/* count of soft keys */
+#define MAX_SKEY_LEN	8	/* max length of soft key text */
 
-#define MAXCOLUMNS    135
-#define MAXLINES      66
-#define UNINITIALISED ((struct try * ) -1)
 /*
- * Retrieve label text.
+ * We'd like to move these into the screen context structure, but cannot,
+ * because slk_init() is called before initscr()/newterm().
+ */
+static int _slk_format;			/* format specified in slk_init() */
+static chtype _slk_attr = A_STANDOUT;	/* soft label attribute */
+
+/*
+ * Fetch the label text.
  */
 
 char *
 slk_label(int n)
 {
-SLK *slk = SP->_slk;
-
 	T(("slk_label(%d)", n));
 
-	if (slk == NULL || n < 1 || n > 8)
+	if (SP->_slk == NULL || n < 1 || n > MAX_SKEY)
 		return NULL;
-	return slk->ent[n-1].text;
+	return(SP->_slk->ent[n-1].text);
 }
 
 /*
- * Write the soft lables to the slk window.
+ * Write the soft labels to the soft-key window.
  */
 
 static void
 slk_intern_refresh(SLK *slk)
 {
 int i;
-	T(("slk_intern_refresh(%x)", slk));
-
-	for (i = 0; i < 8; i++) {
+	for (i = 0; i < MAX_SKEY; i++) {
 		if (slk->dirty || slk->ent[i].dirty) {
 			if (slk->ent[i].visible) {
 				wmove(slk->win,0,slk->ent[i].x);
-				wattrset(slk->win,A_REVERSE);
+				wattrset(slk->win,_slk_attr);
 				waddstr(slk->win,slk->ent[i].form_text);
 				wattrset(slk->win,A_NORMAL);
 			}
@@ -59,41 +54,37 @@ int i;
 }
 
 /*
- * Refresh the soft label window.
+ * Refresh the soft labels.
  */
 
 int
 slk_noutrefresh(void)
 {
-SLK *slk = SP->_slk;
-
 	T(("slk_noutrefresh()"));
 	
-	if (slk == NULL)
-		return ERR;
-	if (slk->hidden)
-		return OK;
-	slk_intern_refresh(slk);
-	return wnoutrefresh(slk->win);
+	if (SP->_slk == NULL)
+		return(ERR);
+	if (SP->_slk->hidden)
+		return(OK);
+	slk_intern_refresh(SP->_slk);
+	return(wnoutrefresh(SP->_slk->win));
 }
 
 /*
- * Refresh the soft label window.
+ * Refresh the soft labels.
  */
 
 int
 slk_refresh(void)
 {
-SLK *slk = SP->_slk;
-
 	T(("slk_refresh()"));
 	
-	if (slk == NULL)
-		return ERR;
-	if (slk->hidden)
-		return OK;
-	slk_intern_refresh(slk);
-	return wrefresh(slk->win);
+	if (SP->_slk == NULL)
+		return(ERR);
+	if (SP->_slk->hidden)
+		return(OK);
+	slk_intern_refresh(SP->_slk);
+	return(wrefresh(SP->_slk->win));
 }
 
 /*
@@ -103,14 +94,12 @@ SLK *slk = SP->_slk;
 int
 slk_restore(void)
 {
-SLK *slk = SP->_slk;
-
 	T(("slk_restore()"));
 	
-	if (slk == NULL)
-		return ERR;
-	slk->hidden = FALSE;
-	slk->dirty = TRUE;
+	if (SP->_slk == NULL)
+		return(ERR);
+	SP->_slk->hidden = FALSE;
+	SP->_slk->dirty = TRUE;
 	return slk_refresh();
 }
 
@@ -119,51 +108,58 @@ SLK *slk = SP->_slk;
  */
 
 int
-slk_set(int i, char *str, int format)
+slk_set(int i, char *const astr, int format)
 {
 SLK *slk = SP->_slk;
 int len;
+char *str = astr;
+
 	T(("slk_set(%d, \"%s\", %d)", i, str, format));
 
-	if (slk == NULL || i < 1 || i > 8 || format < 0 || format > 2)
-		return ERR;
+	if (slk == NULL || i < 1 || i > MAX_SKEY || format < 0 || format > 2)
+		return(ERR);
 	if (str == NULL)
 		str = "";
-	i--;
-	strncpy(slk->ent[i].text,str,8);
-	memset(slk->ent[i].form_text,' ',8);
-	slk->ent[i].text[8] = 0;
-	slk->ent[i].form_text[8] = 0;
+	--i;
+	(void) strncpy(slk->ent[i].text, str, MAX_SKEY);
+	memset(slk->ent[i].form_text,' ', MAX_SKEY);
+	slk->ent[i].text[MAX_SKEY_LEN] = 0;
+	slk->ent[i].form_text[MAX_SKEY_LEN] = 0;
 	len = strlen(slk->ent[i].text);
 	switch(format) {
-	case 0: /* left */
-		memcpy(slk->ent[i].form_text,slk->ent[i].text,len);
+	case 0: /* left-justified */
+		memcpy(slk->ent[i].form_text,
+		       slk->ent[i].text,
+		       len);
 		break;
-	case 1: /* center */
-		memcpy(slk->ent[i].form_text+(8-len)/2,slk->ent[i].text,len);
+	case 1: /* centered */
+		memcpy(slk->ent[i].form_text+(MAX_SKEY_LEN-len)/2,
+		       slk->ent[i].text,
+		       len);
 		break;
-	case 2: /* right */
-		memcpy(slk->ent[i].form_text+8-len,slk->ent[i].text,len);
+	case 2: /* right-justified */
+		memcpy(slk->ent[i].form_text+MAX_SKEY_LEN-len,
+		       slk->ent[i].text,
+		       len);
 		break;
 	}
 	slk->ent[i].dirty = TRUE;
-	return OK;
+	return(OK);
 }
 
 /*
- * Pretend, that soft keys have been changed.
+ * Force the code to believe that the soft keys have been changed.
  */
 
 int
 slk_touch(void)
 {
-SLK *slk = SP->_slk;
 	T(("slk_touch()"));
 	
-	if (slk == NULL)
-		return ERR;
-	slk->dirty = TRUE;
-	return OK;
+	if (SP->_slk == NULL)
+		return(ERR);
+	SP->_slk->dirty = TRUE;
+	return(OK);
 }
 
 /*
@@ -173,15 +169,13 @@ SLK *slk = SP->_slk;
 int
 slk_clear(void)
 {
-SLK *slk = SP->_slk;
-
 	T(("slk_clear()"));
 	
-	if (slk == NULL)
-		return ERR;
-	slk->hidden = TRUE;
-	werase(slk->win);
-	return wrefresh(slk->win);
+	if (SP->_slk == NULL)
+		return(ERR);
+	SP->_slk->hidden = TRUE;
+	werase(SP->_slk->win);
+	return wrefresh(SP->_slk->win);
 }
 
 /*
@@ -198,54 +192,78 @@ int i, maxlab, x;
 	T(("slk_initialize()"));
 
 	if ((SP->_slk = slk = (SLK*) calloc(1,sizeof(SLK))) == NULL)
-		return OK;
+		return(OK);
 	maxlab = (cols+1)/9;
-	for (i = 0; i < 8; i++) {
-		memset(slk->ent[i].form_text,' ',8);
+	for (i = 0; i < MAX_SKEY; i++) {
+		memset(slk->ent[i].form_text,' ',MAX_SKEY_LEN);
 		slk->ent[i].visible = i < maxlab;
 	}
-	if (_slk_format == 1) {		/* 4-4 */
-		int gap = cols - 64 - 6;
-	if (gap < 1)
-		gap = 1;
-	for (i = x = 0; i < 8; i++) {
-		slk->ent[i].x = x;
-		x += 8;
+	if (_slk_format == 1) {	/* 4-4 */
+		int gap = cols - (MAX_SKEY * MAX_SKEY_LEN) - 6;
+
+		if (gap < 1)
+			gap = 1;
+		for (i = x = 0; i < MAX_SKEY; i++) {
+			slk->ent[i].x = x;
+		x += MAX_SKEY_LEN;
 		x += (i == 3) ? gap : 1;
+		}
 	}
-	}
-	else {				/* 0 -> 3-2-3 */
-		int gap = (cols - 64 - 5) / 2;
-	if (gap < 1)
-		gap = 1;
-	for (i = x = 0; i < 8; i++) {
-		slk->ent[i].x = x;
-		x += 8;
-		x += (i == 2 || i == 4) ? gap : 1;
-	}
+	else {			/* 0 -> 3-2-3 */
+		int gap = (cols - (MAX_SKEY * MAX_SKEY_LEN) - 5) / 2;
+
+		if (gap < 1)
+			gap = 1;
+		for (i = x = 0; i < MAX_SKEY; i++) {
+			slk->ent[i].x = x;
+			x += MAX_SKEY_LEN;
+			x += (i == 2 || i == 4) ? gap : 1;
+		}
 	}
 	slk->dirty = TRUE;
 	if ((slk->win = stwin) == NULL)
 	{
 		free(slk);
-		return ERR;
+		return(ERR);
 	}
 
-	return OK;
+	return(OK);
 }
 
 /*
- * Initialize soft labels.
- * Called by the user.
+ * Initialize soft labels.  Called by the user before initscr().
  */
 
 int
 slk_init(int format)
 {
 	if (format < 0 || format > 1)
-		return ERR;
+		return(ERR);
 	_slk_format = format;
 	ripoffline(-1, slk_initialize);
-	return OK;
+	return(OK);
+}
+
+/* Functions to manipulate the soft-label attribute */
+
+int 
+slk_attrset(attr_t attr)
+{
+    _slk_attr = attr;
+    return(OK);
+}
+
+int 
+slk_attron(attr_t attr)
+{
+    _slk_attr |= attr;
+    return(OK);
+}
+
+int 
+slk_attroff(attr_t attr)
+{
+    _slk_attr &=~ attr;
+    return(OK);
 }
 

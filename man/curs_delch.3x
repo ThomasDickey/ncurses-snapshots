@@ -3,7 +3,7 @@
 \fBcurs_delch\fR:  \fBdelch\fR, \fBwdelch\fR, \fBmvdelch\fR, \fBmvwdelch\fR -
 delete character under the cursor in a \fBncurses\fR window
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
 \fBint delch(void);\fR
 .br
@@ -20,10 +20,14 @@ last character on the line is filled with a blank.  The cursor position does
 not change (after moving to \fIy\fR, \fIx\fR, if specified).  (This does not
 imply use of the hardware delete character feature.)
 .SH RETURN VALUE
-All routines return the integer \fBERR\fR upon failure and an integer value
-other than \fBERR\fR upon successful completion.
+All routines return the integer \fBERR\fR upon failure and an \fBOK\fR (SVr4
+specifies only "an integer value other than \fBERR\fR") upon successful
+completion.
 .SH NOTES
 Note that \fBdelch\fR, \fBmvdelch\fR, and \fBmvwdelch\fR may be macros.
+.SH PORTABILITY
+These functions are described in the XSI Curses draft.  The draft specifies
+that they return \fBERR\fR on failure, but specifies no error conditions.
 .SH SEE ALSO
 \fBncurses\fR(3X)
 .\"#

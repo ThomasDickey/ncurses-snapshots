@@ -1,7 +1,23 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
 **	lib_box.c
@@ -47,28 +63,29 @@ int endx, endy;
 	endy = win->_maxy;
 
 	for (i = 0; i <= endx; i++) {
-		win->_line[0][i] = ts; 
-		win->_line[endy][i] = bs; 
+		win->_line[0].text[i] = ts; 
+		win->_line[endy].text[i] = bs; 
 	}
-	win->_firstchar[endy] = win->_firstchar[0] = 0;
-	win->_lastchar[endy] = win->_lastchar[0] = endx;
+	win->_line[endy].firstchar = win->_line[0].firstchar = 0;
+	win->_line[endy].lastchar = win->_line[0].lastchar = endx;
 
 	for (i = 0; i <= endy; i++) {
-		win->_line[i][0] =  ls;
-		win->_line[i][endx] =  rs;
-		win->_firstchar[i] = 0;
-		win->_lastchar[i] = endx;
+		win->_line[i].text[0] =  ls;
+		win->_line[i].text[endx] =  rs;
+		win->_line[i].firstchar = 0;
+		win->_line[i].lastchar = endx;
 	}
-	win->_line[0][0] = tl;
-	win->_line[0][endx] = tr;
-	win->_line[endy][0] = bl;
-	win->_line[endy][endx] = br;
+	win->_line[0].text[0] = tl;
+	win->_line[0].text[endx] = tr;
+	win->_line[endy].text[0] = bl;
+	win->_line[endy].text[endx] = br;
 
 #if 0
 	if (! win->_scroll  &&  (win->_flags & _SCROLLWIN))
 	    fp[0] = fp[endx] = lp[0] = lp[endx] = ' ';
 #endif
 
+	wchangesync(win);
 	return OK;
 }
 
@@ -86,15 +103,15 @@ int end;
 	if (end > win->_maxx) 
 		end = win->_maxx;
 
-	if (win->_firstchar[line] == _NOCHANGE || win->_firstchar[line] > start) 
-		win->_firstchar[line] = start;
-	if (win->_lastchar[line] == _NOCHANGE || win->_lastchar[line] < start) 
-		win->_lastchar[line] = end;
+	if (win->_line[line].firstchar == _NOCHANGE || win->_line[line].firstchar > start) 
+		win->_line[line].firstchar = start;
+	if (win->_line[line].lastchar == _NOCHANGE || win->_line[line].lastchar < start) 
+		win->_line[line].lastchar = end;
 
 	if (ch == 0)
 		ch = ACS_HLINE;
 	while ( end >= start) {
-		win->_line[line][end] = ch | win->_attrs;
+		win->_line[line].text[end] = ch | win->_attrs;
 		end--;
 	}
 
@@ -118,14 +135,15 @@ int end;
 		ch = ACS_VLINE;
 
 	while(end >= row) {
-		win->_line[end][col] = ch | win->_attrs;
-		if (win->_firstchar[end] == _NOCHANGE || win->_firstchar[end] > col) 
-			win->_firstchar[end] = col;
-		if (win->_lastchar[end] == _NOCHANGE || win->_lastchar[end] < col) 
-			win->_lastchar[end] = col;
+		win->_line[end].text[col] = ch | win->_attrs;
+		if (win->_line[end].firstchar == _NOCHANGE || win->_line[end].firstchar > col) 
+			win->_line[end].firstchar = col;
+		if (win->_line[end].lastchar == _NOCHANGE || win->_line[end].lastchar < col) 
+			win->_line[end].lastchar = col;
 		end--;
 	}
 
+	wchangesync(win);
 	return OK;
 }
 	

@@ -1,0 +1,90 @@
+# This file handles all the OS-specific definitions
+# It also deals with defaults
+# You only need to change things in this file
+
+#===========================================================================
+# This Configuration file is for:
+# Put Operating System/Compiler here
+#===========================================================================
+
+# Handling non-POSIX systems requires defining NONPOSIX
+# The most common clue to this is a missing <unistd.h>
+# This currently applies to NeXTSTEP 3.0
+# ISPOSIX = -DNONPOSIX
+ISPOSIX = 
+
+# Define whether a system has sigaction or not. Older BSD-based
+# don't, and use sigvec instead.
+# SIGNALS = -DNOACTION
+SIGNALS = 
+
+# Define whether the system uses termios or sgtty terminal handling
+# Only NeXTSTEP 3.0 uses sgtty
+# TERMINAL = -DNOTERMIOS
+TERMINAL = 
+
+# Most commercial systems don't bother to declare external variables in their headers
+# If your system is one of those, use -DBRAINDEAD
+# This includes SunOS, Ultrix, HPux, apollo
+# but not Linux, 386bsd, bsd386/BSDI, SYSVR4.2.
+# HEADERS = -DBRAINDEAD
+HEADERS = 
+
+# BSD systems (386bsd, BSDI, and probably others) don't have TAB3
+# or XTABS. Some systems have TAB3 but not XTABS.
+# HPux doesn't need this flag.
+# Apollos don't need it, even in bsd environment(!)
+# use -DBSDTABS if your system doesn't have TAB3 in termios.h
+# TABS = -DBSDTABS
+TABS = 
+
+# If your OS integrator didn't install a terminfo database,
+# use -DTERMCAP_FILE=/etc/termcap to compile runtime support
+# for reading and translating capabilities from the termcap
+# database.  This is a kluge; it will bulk up and slow down
+# every program that uses ncurses, and translated termcap
+# entries cannot use full terminfo capabilities.  Don't use
+# it unless you absolutely have to; instead, get your system
+# people to run tic(1) from root on the existing termcap file
+# to translate it into a terminfo database.
+#COMPAT = '-DTERMCAP_FILE="/etc/termcap"'
+
+# Now gather up all the configuration flags
+CONFIG = $(ISPOSIX) $(SIGNALS) $(TERMINAL) $(HEADERS) $(TABS) $(OPT) $(COMPAT)
+
+# SRCDIR is the directory where terminfo entries, the tic and
+# untic programs, live. Should be somewhere on the root file
+# system to enable its use in single-user mode
+SRCDIR= /usr/lib/terminfo
+
+# libraries to build
+# ncurses is the regular version
+# dcurses is the tracing version
+LIBS= libncurses.a libdcurses.a
+
+# Ansi compiler, and relevant flags
+CC= cc
+FLAGS= -I. 
+CFLAGS= $(FLAGS) $(CONFIG) -O
+DFLAGS= $(FLAGS) -DTRACE $(CONFIG) -g
+
+# Base directory; a separate entity to allow user installation
+INSTALL_DIR = /usr
+
+# Where the header files will go 
+INCLUDE= $(INSTALL_DIR)/include/ncurses
+
+# Where the libraries will go
+# gcc knows to look in here, if you change it or you compiler doesn't
+# look in /usr/local/lib don't forget to add -L$(LIB) to your LDFLAGS
+# when linking things with ncurses
+LIB= $(INSTALL_DIR)/lib
+
+# Where man pages will go
+MAN= $(INSTALL_DIR)/man
+
+# The program to use to install things: 
+# It should be an 'install' that understands -cmgos options 
+# FSF has one. 
+INSTALL = install
+

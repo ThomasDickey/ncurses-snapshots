@@ -1,7 +1,23 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
  *	raw.c
@@ -15,6 +31,9 @@
  *		noecho()
  *		nonl()
  *		nocbreak()
+ *		qiflush()
+ *		noqiflush()
+ *		intrflush()
  *
  */
 
@@ -27,7 +46,6 @@ int raw()
 
 	SP->_raw = TRUE;
 	SP->_cbreak = TRUE;
-	SP->_nlmapping = TRUE;
 
 #ifdef TERMIOS
 	cur_term->Nttyb.c_lflag &= ~(ICANON|ISIG);
@@ -50,7 +68,7 @@ int cbreak()
 {
 	T(("cbreak() called"));
 
-	SP->_cbreak = 1;
+	SP->_cbreak = TRUE;
 
 #ifdef TERMIOS
 	cur_term->Nttyb.c_lflag &= ~ICANON; 
@@ -93,7 +111,6 @@ int nl()
 	T(("nl() called"));
 
 	SP->_nl = TRUE;
-	SP->_nlmapping = ! SP->_raw;
 
 #ifdef TERMIOS
 	cur_term->Nttyb.c_iflag |= IXON|ICRNL|IXOFF;
@@ -110,13 +127,33 @@ int nl()
 }
 
 
+int qiflush()
+{
+	T(("qiflush() called"));
+
+	/*
+	 * Note: this implementation may be wrong.  See the comment under
+	 * intrflush().
+	 */
+
+#ifdef TERMIOS
+	cur_term->Nttyb.c_lflag &= ~(NOFLSH);
+	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
+		return ERR;
+	else
+		return OK;
+#else
+	return ERR;
+#endif
+}
+
+
 int noraw()
 {
 	T(("noraw() called"));
 
 	SP->_raw = FALSE;
 	SP->_cbreak = FALSE;
-	SP->_nlmapping = SP->_nl;
 
 #ifdef TERMIOS
 	cur_term->Nttyb.c_lflag |= ISIG|ICANON;
@@ -178,7 +215,7 @@ int nonl()
 {
 	T(("nonl() called"));
 
-	SP->_nl = SP->_nlmapping = FALSE;
+	SP->_nl = FALSE;
 	
 #ifdef TERMIOS
 	cur_term->Nttyb.c_iflag &= ~ICRNL;
@@ -193,3 +230,51 @@ int nonl()
 	return OK;
 #endif
 }
+
+int noqiflush()
+{
+	T(("noqiflush() called"));
+
+	/*
+	 * Note: this implementation may be wrong.  See the comment under
+	 * intrflush().
+	 */
+
+#ifdef TERMIOS
+	cur_term->Nttyb.c_lflag |= NOFLSH;
+	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
+		return ERR;
+	else
+		return OK;
+#else
+	return ERR;
+#endif
+}
+
+int intrflush(WINDOW *win, bool flag)
+{
+	T(("intrflush() called"));
+
+	/*
+	 * This call does the same thing as the qiflush()/noqiflush()
+	 * pair.  We know for certain that SVr3 intrflush() tweaks the
+	 * NOFLSH bit; on the other hand, the match (in the SVr4 man
+	 * pages) between the language describing NOFLSH in termio(7)
+	 * and the language describing qiflush()/noqiflush() in
+	 * curs_inopts(3x) is too exact to be coincidence.
+	 */
+
+#ifdef TERMIOS
+	if (flag)
+		cur_term->Nttyb.c_lflag &= ~(NOFLSH);
+	else
+		cur_term->Nttyb.c_lflag |= (NOFLSH);
+	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
+		return ERR;
+	else
+		return OK;
+#else
+	return ERR;
+#endif
+}
+

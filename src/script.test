@@ -1,23 +1,23 @@
 BEGIN	{FS=":";}
 
-		{output = "../test/Config." $1;	
-		os = $2;
-		isposix = $3;
-		signals = $4;
-		terminal = $5;
-		headers = $6;
-		tabs = $7;
-		opt = $8;
-		srcdir = $9;
-		cc = $10;
-		flags = $11;
-		extra = $12;
-		base = $13;
-		install = $14;
+		{output = "../test/Config." $3;	
+		os = $3;
+		osname = $4;
+		isposix = $5;
+		signals = $6;
+		terminal = $7;
+		headers = $8;
+		tabs = $9;
+		srcdir = $10;
+		cc = $11;
+		flags = $12;
+		extra = $13;
+		base = $14;
+		install = $15;
 
 print "#===========================================================================" > output;
 print "# This Configuration file is for:" > output;
-print "# "  os > output;
+print "# "  osname > output;
 print "#===========================================================================" > output;
 print "" > output;
 print "# Handling non-POSIX systems requires defining NONPOSIX" > output;
@@ -32,8 +32,8 @@ print "" > output;
 print "# Ansi compiler, and relevant flags" > output;
 print "CC= " cc > output;
 print "FLAGS= -I$(INCLUDE) " flags > output;
-print "CFLAGS= $(FLAGS) $(CONFIG)" > output;
-print "DFLAGS= $(FLAGS) -DTRACE $(CONFIG)" > output;
+print "CFLAGS= $(FLAGS) $(CONFIG) -O" > output;
+print "DFLAGS= $(FLAGS) -DTRACE $(CONFIG) -g" > output;
 print "" > output;
 print "INSTALL_DIR=" base >output
 print ""

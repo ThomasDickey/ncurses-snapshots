@@ -1,7 +1,23 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
 **	lib_newterm.c
@@ -12,137 +28,48 @@
 
 #include <stdlib.h>
 #include "curses.priv.h"
-#include "terminfo.h"
-#ifdef SVR4_ACTION
-#define _POSIX_SOURCE
-#endif
-#include <signal.h>
-
-static void cleanup(int sig)
-{
-
-	if (sig == SIGSEGV)
-		fprintf(stderr, "Got a segmentation violation signal, cleaning up and exiting\n");
-	endwin();
-	exit(1);
-}
-
-WINDOW *stdscr, *curscr, *newscr;
-SCREEN *SP;
-
-struct ripoff_t
-{
-	int	line;
-	int	(*hook)(WINDOW *, int);
-}
-rippedoff[5], *rsp = rippedoff;
+#include "terminfo.h"	/* enter_ca_mode */
 
 SCREEN * newterm(char *term, FILE *ofp, FILE *ifp)
 {
-sigaction_t act;
 int	errret;
-int	stolen, topstolen;
 
 #ifdef TRACE
 	_init_trace();
 	T(("newterm(\"%s\",%x,%x) called", term, ofp, ifp));
 #endif
 
+	/* this loads the capability entry, then sets LINES and COLS */
 	if (setupterm(term, fileno(ofp), &errret) != 1)
 	    	return NULL;
 
-	if ((SP = (SCREEN *) malloc(sizeof *SP)) == NULL)
+	/* this actually allocates the screen structure */
+	if (setupscreen(LINES, COLS) == ERR)
 	    	return NULL;
 
-	if (ofp == stdout && ifp == stdin) {
-	    	SP->_ofp       = stdout;
-	    	SP->_ifp       = stdin;
-	} else {
-	    	SP->_ofp       = ofp;
-	    	SP->_ifp       = ofp;
-	}
-	SP->_term      	= cur_term;
-	SP->_cursrow   	= -1;
-	SP->_curscol   	= -1;
-	SP->_keytry    	= UNINITIALISED;
-	SP->_nl        	= TRUE;
-	SP->_raw       	= FALSE;
-	SP->_cbreak    	= FALSE;
-	SP->_echo      	= TRUE;
-	SP->_nlmapping 	= TRUE;
-	SP->_fifohead	= -1;
-	SP->_fifotail 	= 0;
-	SP->_fifopeek	= 0;
-	SP->_endwin	= FALSE;
+	SP->_ifd        = fileno(ifp);
 	SP->_checkfd	= fileno(ifp);
 	typeahead(fileno(ifp));
+	SP->_ofp        = ofp;
+#ifdef TERMIOS
+	SP->_use_meta   = ((cur_term->Ottyb.c_cflag & CSIZE) == CS8 &&
+			    !(cur_term->Ottyb.c_iflag & ISTRIP));
+#else
+	SP->_use_meta   = FALSE;
+#endif
+	SP->_endwin	= FALSE;
 
+#ifdef enter_ca_mode
 	if (enter_ca_mode)
 	    	putp(enter_ca_mode);
+#endif /* enter_ca_mode */
 
-	init_acs(); 
+	baudrate();	/* sets a field in the SP structure */
 
-	T(("creating newscr"));
-	if ((newscr = newwin(lines, columns, 0, 0)) == (WINDOW *)NULL)
-	    	return(NULL);
-
-	T(("creating curscr"));
-	if ((curscr = newwin(lines, columns, 0, 0)) == (WINDOW *)NULL)
-	    	return(NULL);
-
-	SP->_newscr = newscr;
-	SP->_curscr = curscr;
-
-	newscr->_clear = TRUE;
-	curscr->_clear = FALSE;
-
-	stolen = topstolen = 0;
-	for (rsp = rippedoff; rsp->line; rsp++) {
-		if (rsp->hook)
-			if (rsp->line < 0)
-				rsp->hook(newwin(1,COLS, LINES-1,0), COLS);
-			else
-				rsp->hook(newwin(1,COLS, topstolen++,0), COLS);
-		--LINES;
-		stolen++;
-	}
-
-	act.sa_handler = tstp;
-	sigemptyset(&act.sa_mask);
-	act.sa_flags = 0;
-	sigaction(SIGTSTP, &act, NULL);
-	act.sa_handler = cleanup;
-	sigemptyset(&act.sa_mask);
-	act.sa_flags = 0;
-	sigaction(SIGINT, &act, NULL);
-#if 0
-	sigaction(SIGSEGV, &act, NULL);
-#endif
-    	if ((stdscr = newwin(lines - stolen, columns, topstolen, 0)) == NULL)
-		return(NULL);
-	SP->_stdscr = stdscr;
-
-	def_shell_mode();
-	def_prog_mode();
+	curses_signal_handler(TRUE);
 
 	T(("newterm returns %x", SP));
 
 	return(SP);
-}
-
-int
-ripoffline(int line, int (*init)(WINDOW *, int))
-{
-    if (line == 0)
-	return(OK);
-
-    if (rsp >= rippedoff + sizeof(rippedoff)/sizeof(rippedoff[0]))
-	return(ERR);
-
-    rsp->line = line;
-    rsp->hook = init;
-    rsp++;
-
-    return(OK);
 }
 

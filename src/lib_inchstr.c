@@ -1,7 +1,23 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
 **	lib_inchstr.c
@@ -12,18 +28,15 @@
 
 #include "curses.priv.h"
 
-int  winchnstr(WINDOW *win, chtype *chstr, int i)
+int winchnstr(WINDOW *win, chtype *str, int n)
 {
-chtype	*point, *end;
+	int	i;
 
-	T(("winschnstr(%x,'%x',%d) called", win, chstr, i));
+	T(("winchnstr(%x,'%x',%d) called", win, str, n));
 
-	point = &win->_line[win->_cury][win->_curx];
-	end = &win->_line[win->_cury][win->_maxx];
-	if (point + i - 1 < end)
-		end = point + i - 1;
+	for (i = 0; (n < 0 || (i < n)) && (win->_curx + i <= win->_maxx); i++)
+	    str[i] = win->_line[win->_cury].text[win->_curx + i];
+	str[i] = (chtype)0;
 
-	chstr = (chtype *)malloc((end - point + 1)*sizeof(chtype));
-	chstr[end - point] = '\0';
-	return OK;
+	return(i);
 }

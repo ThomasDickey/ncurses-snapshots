@@ -1,19 +1,19 @@
 BEGIN	{FS=":";}
 
-		{output = "Config." $1;	
-		os = $2;
-		isposix = $3;
-		signals = $4;
-		terminal = $5;
-		headers = $6;
-		tabs = $7;
-		opt = $8;
-		srcdir = $9;
-		cc = $10;
-		flags = $11;
-		extra = $12;
-		base = $13;
-		install = $14;
+		{output = "Config." $3;	
+		os = $3;
+		osname = $4;
+		isposix = $5;
+		signals = $6;
+		terminal = $7;
+		headers = $8;
+		tabs = $9;
+		srcdir = $10;
+		cc = $11;
+		flags = $12;
+		extra = $13;
+		base = $14;
+		install = $15;
 
 print "# This file handles all the OS-specific definitions" > output;
 print "# It also deals with defaults" > output;
@@ -21,7 +21,7 @@ print "# You only need to change things in this file" > output;
 print "" > output;
 print "#===========================================================================" > output;
 print "# This Configuration file is for:" > output;
-print "# "  os > output;
+print "# "  osname > output;
 print "#===========================================================================" > output;
 print "" > output;
 print "# Handling non-POSIX systems requires defining NONPOSIX" > output;
@@ -70,20 +70,22 @@ if (tabs == "NONE")
 else
 	print "TABS = " tabs > output;
 print "" > output;
-print "# The mvcur optimization is still buggy. If your terminals have" > output;
-print "# direct cursor addressing capabilites don't use it. Otherwise" > output;
-print "# use -DOPT_MVCUR" > output;
-print "# OPT = -DOPT_MVCUR" > output;
-if (opt == "NONE")
-	print "OPT = " > output;
-else
-	print "OPT = " opt > output;
+print "# If your OS integrator didn't install a terminfo database," > output;
+print "# use -DTERMCAP_FILE=/etc/termcap to compile runtime support" > output;
+print "# for reading and translating capabilities from the termcap" > output;
+print "# database.  This is a kluge; it will bulk up and slow down" > output;
+print "# every program that uses ncurses, and translated termcap" > output;
+print "# entries cannot use full terminfo capabilities.  Don't use" > output;
+print "# it unless you absolutely have to; instead, get your system" > output;
+print "# people to run tic(1) from root on the existing termcap file" > output;
+print "# to translate it into a terminfo database." > output;
+print "#COMPAT = '-DTERMCAP_FILE=\"/etc/termcap\"'" > output;
 print "" > output;
 print "# Now gather up all the configuration flags" > output;
 if (extra == "NONE")
-	print "CONFIG = $(ISPOSIX) $(SIGNALS) $(TERMINAL) $(HEADERS) $(TABS) $(OPT) " > output;
+	print "CONFIG = $(ISPOSIX) $(SIGNALS) $(TERMINAL) $(HEADERS) $(TABS) $(OPT) $(COMPAT)" > output;
 else
-	print "CONFIG = $(ISPOSIX) $(SIGNALS) $(TERMINAL) $(HEADERS) $(TABS) $(OPT) " extra> output;
+	print "CONFIG = $(ISPOSIX) $(SIGNALS) $(TERMINAL) $(HEADERS) $(TABS) $(OPT) $(COMPAT) " extra >output;
 print "" > output;
 print "# SRCDIR is the directory where terminfo entries, the tic and" > output;
 print "# untic programs, live. Should be somewhere on the root file" > output;
@@ -98,8 +100,8 @@ print "" > output;
 print "# Ansi compiler, and relevant flags" > output;
 print "CC= " cc > output;
 print "FLAGS= " flags > output;
-print "CFLAGS= $(FLAGS) $(CONFIG)" > output;
-print "DFLAGS= $(FLAGS) -DTRACE $(CONFIG)" > output;
+print "CFLAGS= $(FLAGS) $(CONFIG) -O" > output;
+print "DFLAGS= $(FLAGS) -DTRACE $(CONFIG) -g" > output;
 print "" > output;
 print "# Base directory; a separate entity to allow user installation" > output;
 print "INSTALL_DIR = " base > output;

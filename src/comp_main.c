@@ -23,33 +23,36 @@
  */
 
 #include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#ifndef NONPOSIX
+#include <unistd.h>
+#else
+#include <libc.h>
+#endif
 #include "tic.h"
 #include "version.h"
 #include "terminfo.h"
 #include "dump_entry.h"
+#include "term_entry.h"
 
-char	*source_file = "terminfo";
-char	*destination = SRCDIR;
-char	*usage_string = "tic [-v[n]] source-file\n";
-char	check_only = 0;
-int	width = 60;
-int	dodump = 0;		/* running as captoinfo? */
 char	*progname;
 
-static void check_writeable(void);
+static int	width = 60;
+static int	infodump = 0;		/* running as captoinfo? */
+static int	capdump = 0;		/* running as infotocap? */
+static char	*source_file = "terminfo";
+static char	*usage_string = "tic [-v[n]] source-file\n";
+static char	check_only = 0;
 
 int main (int argc, char *argv[])
 {
-int	i;
-int	argflag = FALSE;
+int	i, debug_level = 0;
+int	argflag = FALSE, smart_defaults = TRUE;
 char    *termcap;
+ENTRY	*qp;
 
 	progname = argv[0];
-	dodump = (strcmp(progname, "captoinfo") == 0);
-
-	debug_level = 0;
+	infodump = (strcmp(progname, "captoinfo") == 0);
+	capdump = (strcmp(progname, "infotocap") == 0);
 
 	for (i = 1; i < argc; i++) {
 	    	if (argv[i][0] == '-') {
@@ -58,10 +61,17 @@ char    *termcap;
 				check_only = 1;
 				break;
 		    	case 'v':
-				debug_level = argv[i][2]  ?  atoi(&argv[i][2])  :  1;
+				debug_level = argv[i][2] ? atoi(&argv[i][2]):1;
+				_tracing = (1 << debug_level) - 1;
 				break;
 		    	case 'I':
-				dodump = 1;
+				infodump = 1;
+				break;
+		    	case 'C':
+				capdump = 1;
+				break;
+			case 'N':
+				smart_defaults = FALSE;
 				break;
 		    	case '1':
 		    		width = 0;
@@ -70,24 +80,24 @@ char    *termcap;
 				width = argv[i][2]  ?  atoi(&argv[i][2])  :  1;
 				break;
 		    	case 'V':
-				fputs(NCURSES_VERSION, stdout);
+				(void) fputs(NCURSES_VERSION, stdout);
 				exit(0);
 		    	default:
-				fprintf(stderr, "%s: Unknown option. Usage is:\n\t%s\n",
-				        argv[0], usage_string);
-				exit(1);
+				err_abort("Unknown option. Usage is:\n\t%s",
+				        usage_string);
 			}
 	    	} else if (argflag) {
-			fprintf(stderr, "%s: Too many file names.  Usage is:\n\t%s\n",
-				argv[0], usage_string);
-			exit(1);
+			err_abort("Too many file names.  Usage is:\n\t%s\n",
+				usage_string);
 		} else {
 			argflag = TRUE;
 			source_file = argv[i];
 	    	}
 	}
 
-	if (argflag == FALSE && dodump == 1) {
+	/* captoinfo's no-argument case */
+	if (argflag == FALSE && infodump == 1) {
+		termcap = "/etc/termcap";
 		if ((termcap = getenv("TERMCAP")) != NULL) {
 			if (access(termcap, F_OK) == 0) {
 				/* file exists */
@@ -97,72 +107,77 @@ char    *termcap;
 	}
 
 	if (freopen(source_file, "r", stdin) == NULL) {
-	    	fprintf(stderr, "%s: Can't open %s\n", progname, source_file);
-	    	exit(1);
+	    	err_abort("Can't open %s", source_file);
 	}
 
-	make_hash_table();
-	if (dodump)
-		dump_init(F_TERMINFO, S_TERMINFO, width, debug_level);
-	else
-		check_writeable();
-	compile();
+	make_hash_table(info_table, info_hash_table);
+	make_hash_table(cap_table, cap_hash_table);
+	if (infodump)
+		dump_init(smart_defaults ? F_TERMINFO : F_LITERAL,
+			  S_TERMINFO, width, debug_level);
+	else if (capdump)
+		dump_init(F_TCONVERT, S_TERMCAP, width, debug_level);
+
+	/* parse entries out of the source file */
+	set_source(source_file);
+	read_entry_source(stdin, !smart_defaults);
+
+	/* do use resolution */
+	if (!infodump && !capdump)
+	{
+	    if (!resolve_uses())
+	    {
+		(void) fprintf(stderr, "There are unresolved use entries:\n");
+		for_entry_list(qp)
+		    if (qp->nuses)
+		    {
+			(void) fputs(qp->tterm.term_names, stderr);
+			(void) fputc('\n', stderr);
+		   }
+		exit(1);
+	    }
+	}
+
+	/* write or dump all entries */
+	if (!check_only)
+	    if (!infodump && !capdump)
+	    {
+		set_type((char *)NULL);
+		for_entry_list(qp)
+		    write_entry(&qp->tterm);
+	    }
+	    else
+	    {
+		bool	trailing_comment = FALSE;
+		int	c, oldc = '\0';
+
+		for_entry_list(qp)
+		{
+		    int	i = qp->cend - qp->cstart;
+
+		    (void) fseek(stdin, qp->cstart, SEEK_SET); 
+		    while (i-- )
+			(void) putchar(getchar());
+
+		    dump_entry(&qp->tterm, NULL);
+		    for (i = 0; i < qp->nuses; i++)
+			if (infodump)
+			    (void) printf("use=%s,", qp->uses[i]);
+			else
+			    (void) printf("tc=%s:", qp->uses[i]);
+		    (void) putchar('\n');
+		}
+		(void) fseek(stdin, tail->cend, SEEK_SET);
+		while ((c = getchar()) != EOF)
+		{
+		    if (oldc == '\n' && c == '#')
+			trailing_comment = TRUE;
+		    if (trailing_comment)
+			putchar(c);
+		    oldc = c;
+		}
+	    }
 
 	return(0);
 }
-
-
-/*
- *	check_writeable(progname)
- *
- *	Miscellaneous initialisations
- *
- *	Check for access rights to destination directories
- *	Create any directories which don't exist.
- *
- */
-
-static void check_writeable(void)
-{
-struct stat	statbuf;
-char		*dirnames = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-char		dir[2];
-
-	if (getenv("TERMINFO") != NULL)
-	    destination = getenv("TERMINFO");
-
-	if (access(destination, 7) < 0) {
-	    fprintf(stderr, "%s: %s non-existant or permission denied\n",
-			    progname, destination);
-	    exit(1);
-	}
-
-	if (chdir(destination) < 0) {
-	    fprintf(stderr, "%s: %s is not a directory\n",
-			    progname, destination);
-	    exit(1);
-	}
-	
-	dir[1] = '\0';
-	for (dir[0] = *dirnames; *dirnames != '\0'; dir[0] = *(++dirnames)) {
-	    	if (stat(dir, &statbuf) < 0) {
-			mkdir(dir, 0755);
-	    	} else if (access(dir, 7) < 0) {
-			fprintf(stderr, "%s: %s/%s: Permission denied\n",
-				        progname, destination, dir);
-			exit(1);
-	    	}
-#ifdef _POSIX_SOURCE
-	    	else if (!(S_ISDIR(statbuf.st_mode)))
-#else
-	    	else if ((statbuf.st_mode & S_IFMT) != S_IFDIR)
-#endif	    
-	    	{
-			fprintf(stderr, "%s: %s/%s: Not a directory\n",
-						    progname, destination, dir);
-			exit(1);
-	    	}
-	}
-}
-
 

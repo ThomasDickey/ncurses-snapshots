@@ -2,7 +2,7 @@
 .SH NAME
 \fBcurs_move\fR:  \fBmove\fR, \fBwmove\fR - move \fBncurses\fR window cursor
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
 \fBint move(int y, int x);\fR
 .br
@@ -14,10 +14,16 @@ column \fIx\fR.  This routine does not move the physical cursor of the terminal
 until \fBrefresh\fR is called.  The position specified is relative to the upper
 left-hand corner of the window, which is (0,0).
 .SH RETURN VALUE
-These routines return the integer \fBERR\fR upon failure and an integer value
-other than \fBERR\fR upon successful completion.
+These routines return \fBERR\fR upon failure and OK (SVr4
+specifies only "an integer value other than \fBERR\fR") upon successful
+completion.
 .SH NOTES
 Note that \fBmove\fR may be a macro.
+.SH PORTABILITY
+These functions are described in the XSI Curses draft.  The draft specifies
+that if (y,x) is within a multi-column character, the cursor is moved to the
+first column of that character; however, \fBncurses\fR does not yet support
+XSI multi-byte characters.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_refresh\fR(3X)
 .\"#

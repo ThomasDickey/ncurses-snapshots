@@ -20,27 +20,39 @@
 /*
 **	lib_initscr.c
 **
-**	The routine initscr().
+**	The routines initscr(), and termname().
 **
 */
 
 #include <stdlib.h>
+#include <string.h>
 #include "curses.priv.h"
 
 WINDOW *initscr()
 {
-#ifdef TRACE
-	_init_trace();
-
-	T(("initscr() called"));
-#endif
-
   	if (newterm(getenv("TERM"), stdout, stdin) == NULL) {
-  		fprintf("Error opening terminal: %s.\n", getenv("TERM"));
+  		fprintf(stderr, "Error opening terminal: %s.\n", getenv("TERM"));
   		exit(1);
 	} else {
 		def_shell_mode();
 		def_prog_mode();
 		return(stdscr);
+	}
+}
+
+char *
+termname(void)
+{
+	char	*term = getenv("TERM");
+	static char	ret[15];
+
+	T(("termname() called"));
+
+	if (term == (char *)NULL)
+		return(char *)NULL;
+	else
+	{
+		(void) strncpy(ret, term, sizeof(ret) - 1);
+		return(ret);
 	}
 }

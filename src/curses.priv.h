@@ -26,20 +26,28 @@ typedef struct sigaction sigaction_t;
 
 #include "curses.h"
 
+#ifndef NOTERMIOS
+#include <termios.h>
+#ifndef TERMIOS
+#define TERMIOS 1
+#endif
+#else
+#include <sgtty.h>
+#include <sys/ioctl.h>
+#endif
+
 #define min(a,b)	((a) > (b)  ?  (b)  :  (a))
 #define max(a,b)	((a) < (b)  ?  (b)  :  (a))
 
 #define FG(n)	((n) & 0x0f)
 #define BG(n)	(((n) & 0xf0) >> 4)
 
-#define BLANK        ' '
+#define BLANK        (' '|A_NORMAL)
 
 #define CHANGED     -1
 
-extern WINDOW	*newscr;
-
 #ifdef TRACE
-#define T(a)	if (_tracing & TRACE_ORDINARY) _tracef a 
+#define T(a)	if (_tracing & TRACE_CALLS) _tracef a 
 #define TR(n, a)	if (_tracing & (n)) _tracef a 
 extern int _tracing;
 extern char *visbuf(const char *);
@@ -48,11 +56,18 @@ extern char *visbuf(const char *);
 #define TR(n, a)
 #endif
 
+extern int setupscreen(int, int);
+extern void get_screensize(void);
+extern void curses_signal_handler(bool);
 extern int _outch(char);
 extern void init_acs(void);
-extern void tstp(int);
 extern WINDOW *makenew(int, int, int, int);
 extern int timed_wait(int fd, int wait, int *timeleft);
+extern int scrolln(int, int, int, int);
+extern void scroll_optimize(void);
+extern void scroll_window(WINDOW *, int, int, int);
+extern void wchangesync(WINDOW *win);
+extern void outstr(char *str);
 
 struct try {
         struct try      *child;     /* ptr to child.  NULL if none          */
@@ -81,35 +96,44 @@ typedef struct {
 #define FIFO_SIZE	32
 
 struct screen {
-   	FILE		*_ifp;	    	/* input file ptr for this terminal     */
-   	FILE		*_ofp;	    	/* output file ptr for this terminal    */
-   	int		_checkfd;
-	struct term	*_term;	    	/* used by terminfo stuff               */
-	WINDOW		*_curscr;   	/* windows specific to a given terminal */
-	WINDOW		*_newscr;
-	WINDOW		*_stdscr;
-	struct try  	*_keytry;   	/* "Try" for use with keypad mode       */
-	unsigned int	_fifo[FIFO_SIZE]; 	/* Buffer for pushed back characters    */
-	signed char	_fifohead, 
-			_fifotail,
-			_fifopeek;
-	bool		_endwin;
-	chtype		_current_attr;
-	bool		_coloron;
-	int		_cursor;	/* visibility of the cursor		*/
-	int         	_cursrow;   	/* Row and column of physical cursor    */
-	int         	_curscol;
-	bool		_nl;	    	/* True if NL -> CR/NL is on	    	*/
-	bool		_raw;	    	/* True if in raw mode                  */
-	int		_cbreak;    	/* 1 if in cbreak mode                  */
-                       		    	/* > 1 if in halfdelay mode		*/
-	bool		_echo;	    	/* True if echo on                      */
-	bool		_nlmapping; 	/* True if terminal is really doing     */
-				    	/* NL mapping (fn of raw and nl)    	*/
- 	SLK		*_slk;	    	/* ptr to soft key struct / NULL    	*/
-	int		_costs[9];  	/* costs of cursor movements for mvcur  */
-	int		_costinit;  	/* flag wether costs[] is initialized   */
+       	int		_ifd;	    	/* input file ptr for screen        */
+   	FILE		*_ofp;	    	/* output file ptr for screen       */
+   	int		_checkfd;	/* filedesc for typeahead check     */ 
+	struct term	*_term;	    	/* terminal type information        */
+	short		_lines;		/* screen lines			    */
+	short		_columns;	/* screen columns		    */
+	WINDOW		*_curscr;   	/* current screen                   */
+	WINDOW		*_newscr;	/* virtual screen to be updated to  */
+	WINDOW		*_stdscr;	/* screen's full-window context     */
+	struct try  	*_keytry;   	/* "Try" for use with keypad mode   */
+	unsigned int	_fifo[FIFO_SIZE]; 	/* input pushback buffer    */
+	signed char	_fifohead, 	/* head of fifo queue               */
+			_fifotail, 	/* tail of fifo queue               */
+			_fifopeek;	/* where to peek for next char      */
+	bool		_endwin;	/* are we out of window mode?       */
+	chtype		_current_attr;	/* terminal attribute current set   */
+	bool		_coloron;	/* is color enabled?                */
+	int		_cursor;	/* visibility of the cursor         */
+	int         	_cursrow;   	/* physical cursor row              */
+	int         	_curscol;   	/* physical cursor column           */
+	bool		_nl;	    	/* True if NL -> CR/NL is on        */
+	bool		_raw;	    	/* True if in raw mode              */
+	int		_cbreak;    	/* 1 if in cbreak mode              */
+                       		    	/* > 1 if in halfdelay mode         */
+	bool		_echo;	    	/* True if echo on                  */
+	bool		_use_meta;      /* use the meta key?		    */
+ 	SLK		*_slk;	    	/* ptr to soft key struct / NULL    */
+	int		_baudrate;	/* used to compute padding	    */
 };
+
+/*
+ * We don't want to use the lines or columns capabilities internally,
+ * because if the application is running multiple screens under
+ * X windows, it's quite possible they could all have type xterm
+ * but have different sizes!  So...
+ */
+#define screen_lines	SP->_lines
+#define screen_columns	SP->_columns
 
 extern struct screen	*SP;
 

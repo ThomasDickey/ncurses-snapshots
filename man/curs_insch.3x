@@ -3,7 +3,7 @@
 \fBcurs_insch\fR: \fBinsch\fR, \fBwinsch\fR, \fBmvinsch\fR, \fBmvwinsch\fR -
 insert a character before cursor in a \fBncurses\fR window
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
 \fBint insch(chtype ch);\fR
 .br
@@ -19,13 +19,16 @@ cursor.  All characters to the right of the cursor are moved one space to the
 right, with the possibility of the rightmost character on the line being lost.
 The insertion operation does not change the cursor position.
 .SH RETURN VALUE
-All routines return the integer \fBERR\fR upon failure and an integer value
-other than \fBERR\fR upon successful completion.
+All routines that return an integer return \fBERR\fR upon failure and OK (SVr4
+specifies only "an integer value other than \fBERR\fR") upon successful
+completion, unless otherwise noted in the preceding routine descriptions.
 .SH NOTES
 These routines do not necessarily imply use of a hardware insert character
 feature.
 
 Note that \fBinsch\fR, \fBmvinsch\fR, and \fBmvwinsch\fR may be macros.
+.SH PORTABILITY
+These functions are described in the XSI Curses draft.
 .SH SEE ALSO
 \fBncurses\fR(3X).
 .\"#

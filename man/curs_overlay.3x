@@ -3,11 +3,11 @@
 \fBcurs_overlay\fR: \fBoverlay\fR, \fBoverwrite\fR, \fBcopywin\fR - overlay and
 manipulate overlapped \fBncurses\fR windows
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
-\fBint overlay(WINDOW *srcwin, WINDOW *dstwin);\fR
+\fBint overlay(WINDOW *const srcwin, WINDOW *dstwin);\fR
 .br
-\fBint overwrite(WINDOW *srcwin, WINDOW *dstwin);\fR
+\fBint overwrite(WINDOW *const srcwin, WINDOW *dstwin);\fR
 .br
 \fBint copywin(WINDOW *srcwin, WINDOW *dstwin, int sminrow,
       int smincol, int dminrow, int dmincol, int dmaxrow,
@@ -27,10 +27,15 @@ coordinates of the source window, (\fIsminrow\fR, \fIsmincol\fR).  If the
 argument \fIoverlay\fR is \fBtrue\fR, then copying is non-destructive, as in
 \fBoverlay\fR.
 .SH RETURN VALUE
-Routines that return an integer return \fBERR\fR upon failure and an integer
-value other than \fBERR\fR upon successful completion.
+Routines that return an integer return \fBERR\fR upon failure, and \fBOK\fR
+(SVr4 only specifies "an integer value other than \fBERR\fR") upon successful
+completion.
 .SH NOTES
 Note that \fBoverlay\fR and \fBoverwrite\fR may be macros.
+.SH PORTABILITY
+The XSI Curses draft describes these functions (adding the const qualifiers).
+It further specifies their behavior in the presence of characters with
+multi-byte renditions (not yet supported in ncurses).
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_pad\fR(3X), \fBcurs_refresh\fR(3X)
 .\"#

@@ -4,7 +4,7 @@
 \fBmvwgetch\fR, \fBungetch\fR - get (or push back) characters from
 \fBncurses\fR terminal keyboard
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
 \fBint getch(void);\fR
 .br
@@ -32,7 +32,7 @@ is read.
 
 If \fBkeypad\fR is \fBTRUE\fR, and a function key is pressed, the token for
 that function key is returned instead of the raw characters.  Possible function
-keys are defined in \fB<ncurses.h>\fR as macros with values outside the range
+keys are defined in \fB<curses.h>\fR as macros with values outside the range
 of 8-bit characters whose names begin with \fBKEY_.\fR Thus, a variable
 intended to hold the return value of a function key must be of short size or
 larger.
@@ -49,7 +49,7 @@ returned by the next call to \fBwgetch\fR.  Note that there is, in effect,
 just one input queue for all windows.
 
 .SS Function Keys
-The following function keys, defined in \fB<ncurses.h>\fR, might be returned by
+The following function keys, defined in \fB<curses.h>\fR, might be returned by
 \fBgetch\fR if \fBkeypad\fR has been enabled.  Note that not all of these are
 necessarily supported on any particular terminal.
 .nf
@@ -153,8 +153,9 @@ KEY_UNDO             Undo key
 .fi
 
 .SH RETURN VALUE
-All routines return the integer \fBERR\fR upon failure and an integer
-value other than \fBERR\fR upon successful completion.
+All routines return the integer \fBERR\fR upon failure and an \fBOK\fR (SVr4
+specifies only "an integer value other than \fBERR\fR") upon successful
+completion.
 .SH NOTES
 Use of the escape key by a programmer for a single character function is
 discouraged, as it will cause a delay of up to one second while the
@@ -175,8 +176,10 @@ consoles typically support little more than \fBKEY_UP\fR, \fBKEY_DOWN\fR,
 \fBKEY_LEFT\fR, \fBKEY_RIGHT\fR, \fBKEY_HOME\fR, \fBKEY_END\fR,
 \fBKEY_NPAGE\fR, \fBKEY_PPAGE\fR, and function keys 1 through 12.  The Ins key
 is usually mapped to \fBKEY_IC\fR.
-.SH CAPABILITIES
-All of the key_* capabilities; also \fBkeypad_local\fR and \fBkeypad_xmit\fR.
+.SH PORTABILITY
+These functions are described in the XSI Curses draft.  They read single-byte
+characters only.  The draft specifies that they return \fBERR\fR on failure,
+but specifies no error conditions.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_inopts\fR(3X), \fBcurs_move\fR(3X),
 \fBcurs_refresh\fR(3X).

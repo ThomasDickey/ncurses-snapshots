@@ -1,7 +1,22 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992, 1993, 1994                 *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
  *	comp_hash.c --- Routines to deal with the hashtable of capability
@@ -25,24 +40,24 @@ static  int hash_function(char *);
  *
  */
 
-void make_hash_table()
+void make_hash_table(struct name_table_entry *table,
+		     struct name_table_entry **hash_table)
 {
 int	i;
 int	hashvalue;
 int	collisions = 0;
 
 	for (i = 0; i < CAPTABSIZE; i++) {
-	    hashvalue = hash_function(cap_table[i].nte_name);       
+	    hashvalue = hash_function(table[i].nte_name);       
 
-	    if (cap_hash_table[hashvalue] != (struct name_table_entry *) 0)
+	    if (hash_table[hashvalue] != (struct name_table_entry *) 0)
 		collisions++;
 
-	    cap_table[i].nte_link = cap_hash_table[hashvalue];
-	    cap_hash_table[hashvalue] = &cap_table[i];
+	    table[i].nte_link = hash_table[hashvalue];
+	    hash_table[hashvalue] = &table[i];
 	}
 
-	DEBUG(3, "Hash table complete\n%d collisions ", collisions);
-	DEBUG(3, "out of %d entries\n", CAPTABSIZE);
+	DEBUG(4, ("Hash table complete: %d collisions out of %d entries", collisions, CAPTABSIZE));
 }
 
 
@@ -63,13 +78,13 @@ char	*string;
 {
 long	sum = 0;
 
-	DEBUG(9, "hashing %s\n", string);
+	DEBUG(9, ("hashing %s", string));
 	while (*string) {
 	    sum += *string + (*(string + 1) << 8);
 	    string++;
 	}
 
-	DEBUG(9, "sum is %ld\n", sum);
+	DEBUG(9, ("sum is %ld", sum));
 	return (sum % HASHTABSIZE);
 }
 
@@ -84,17 +99,42 @@ long	sum = 0;
  */
 
 struct name_table_entry *
-find_entry(char *string)
+find_entry(char *string, struct name_table_entry **hash_table)
 {
 int	hashvalue;
 struct name_table_entry	*ptr;
 
 	hashvalue = hash_function(string);
 
-	ptr = cap_hash_table[hashvalue];
+	ptr = hash_table[hashvalue];
 
 	while (ptr != (struct name_table_entry *) 0  && strcmp(ptr->nte_name, string) != 0)
 	    	ptr = ptr->nte_link;
 
 	return (ptr);
 }
+
+/*
+ *	struct name_table_entry *
+ *	find_type_entry(string, type, table)
+ *
+ *	Finds the first entry for the given name with the given type in the
+ *	given table if present (as distinct from find_entry, which finds the
+ *	the last entry regardless of type).  You can use this if you detect
+ *	a name clash.  It's slower, though.  Returns a pointer to the entry
+ *	in the table or 0 if not found.
+ */
+
+struct name_table_entry *
+find_type_entry(char *string, int type, struct name_table_entry *table)
+{
+struct name_table_entry	*ptr;
+
+	for (ptr = table; ptr < table + CAPTABSIZE; ptr++) {
+	    if (ptr->nte_type == type && strcmp(string, ptr->nte_name) == 0)
+		return(ptr);
+	}
+
+	return ((struct name_table_entry *)NULL);
+}
+

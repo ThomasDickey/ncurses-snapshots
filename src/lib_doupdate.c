@@ -1,7 +1,22 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992, 1993, 1994                 *
+*                          by Zeyd M. Ben-Halim                            *
+*                          zmbenhal@netcom.com                             *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, not removed   *
+*        from header files, and is reproduced in any documentation         *
+*        accompanying it or the applications linked with it.               *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*-----------------------------------------------------------------
  *
@@ -19,10 +34,13 @@
 #include <string.h>
 #include "curses.priv.h"
 #include "terminfo.h"
-#ifdef SVR4_ACTION
-#define _POSIX_SOURCE
-#endif
-#include <signal.h>
+
+/*
+ * Enable checking to see if doupdate and friends are tracking the true
+ * cursor position correctly.  NOTE: this is a debugging hack which will
+ * work ONLY on ANSI-compatible terminals!
+ */
+/* #define POSITION_DEBUG */
 
 static void ClrUpdate( WINDOW *scr );
 static void TransformLine( int lineno );
@@ -32,11 +50,47 @@ static void ClearScreen( void );
 static void InsStr( chtype *line, int count );
 static void DelChar( int count );
 
+#ifdef POSITION_DEBUG
+/****************************************************************************
+ *
+ * Debugging code.  Only works on ANSI-standard terminals.
+ *
+ ****************************************************************************/
+
+void position_check(int expected_y, int expected_x, char *legend)
+/* check to see if the real cursor position matches the virtual */
+{
+    static char  buf[9];
+    int y, x;
+
+    memset(buf, '\0', sizeof(buf));
+    (void) write(1, "\033[6n", 4);	/* only works on ANSI-compatibles */
+    (void) read(0, (void *)buf, 8);
+    _tracef("probe returned %s", visbuf(buf));
+
+    /* try to interpret as a position report */
+    if (sscanf(buf, "\033[%d;%dR", &y, &x) != 2)
+	_tracef("position probe failed in %s", legend);
+    else if (y - 1 != expected_y || x - 1 != expected_x)
+	_tracef("position seen (%d, %d) doesn't match expected one (%d, %d) in %s",
+		y-1, x-1, expected_y, expected_x, legend);
+    else
+	_tracef("position matches OK in %s", legend);
+}
+#endif /* POSITION_DEBUG */
+
+/****************************************************************************
+ *
+ * Optimized update code
+ *
+ ****************************************************************************/
+
 static inline void PutAttrChar(chtype ch)
 {
-	TR(TRACE_CHARPUT, ("PutAttrChar(%s, %s)",
+	TR(TRACE_CHARPUT, ("PutAttrChar(%s, %s) at (%d, %d)",
 			  _tracechar(ch & A_CHARTEXT),
-			  _traceattr((ch & (chtype)A_ATTRIBUTES))));
+			  _traceattr((ch & (chtype)A_ATTRIBUTES)),
+			   SP->_cursrow, SP->_curscol));
 	if (curscr->_attrs != (ch & (chtype)A_ATTRIBUTES)) {
 		curscr->_attrs = ch & (chtype)A_ATTRIBUTES;
 		vidputs(curscr->_attrs, _outch);
@@ -49,42 +103,53 @@ static int LRCORNER = FALSE;
 static inline void PutChar(chtype ch)
 {
 	if (LRCORNER == TRUE) {
-		if (SP->_curscol == columns-2) {
-			PutAttrChar(newscr->_line[lines-1][columns-2]);
+		if (SP->_curscol == screen_columns-2) {
+			PutAttrChar(newscr->_line[screen_lines-1].text[screen_columns-2]);
 			SP->_curscol++;
+#ifdef POSITION_DEBUG
+			position_check(SP->_cursrow,SP->_curscol,"PutChar");
+#endif /* POSITION_DEBUG */
 			return;
-		} else if (SP->_curscol == columns-1) {
-		int i = lines;
-		int j = columns -1;
+		} else if (SP->_curscol == screen_columns-1) {
+		int i = screen_lines;
+		int j = screen_columns -1;
 			if (cursor_left)
 				putp(cursor_left);
 			else
 				mvcur(-1, -1, i-1, j);
 			if (enter_insert_mode && exit_insert_mode) {
 				putp(enter_insert_mode);
-				PutAttrChar(newscr->_line[i-1][j]);
+				PutAttrChar(newscr->_line[i-1].text[j]);
 				putp(exit_insert_mode);
 			} else if (insert_character) {
 				putp(insert_character);
-				PutAttrChar(newscr->_line[i-1][j]);
+				PutAttrChar(newscr->_line[i-1].text[j]);
 			}
 			return;
 		}
 	}
 	PutAttrChar(ch);
 	SP->_curscol++; 
-	if (SP->_curscol >= columns) {
+	if (SP->_curscol >= screen_columns) {
 		if (auto_right_margin) {	 
 			SP->_curscol = 0;	   
-			SP->_cursrow++;		
+			SP->_cursrow++;
 		} else {
 		 	SP->_curscol--;
 		}
 	}
+#ifdef POSITION_DEBUG
+	position_check(SP->_cursrow, SP->_curscol, "PutChar");
+#endif /* POSITION_DEBUG */
 }	
 
 static inline void GoTo(int row, int col)
 {
+	TR(TRACE_MOVE, ("Goto(%d, %d) from (%d, %d)",
+			row, col, SP->_cursrow, SP->_curscol));
+#ifdef POSITION_DEBUG
+	position_check(SP->_cursrow, SP->_curscol, "GoTo");
+#endif /* POSITION_DEBUG */
 	mvcur(SP->_cursrow, SP->_curscol, row, col); 
 	SP->_cursrow = row; 
 	SP->_curscol = col; 
@@ -102,21 +167,27 @@ int _outch(char ch)
 int doupdate(void)
 {
 int	i;
-sigaction_t act, oact;
 	
 	T(("doupdate() called"));
 
-	act.sa_handler = SIG_IGN;
-	sigemptyset(&act.sa_mask);
-	act.sa_flags = 0;
-	sigaction(SIGTSTP, &act, &oact);
+#ifdef TRACE
+	if (_tracing & TRACE_UPDATE)
+	{
+	    if (curscr->_clear)
+		_tracef("curscr is clear");
+	    else
+		_tracedump("curscr", curscr);
+	    _tracedump("newscr", newscr);
+	}
+#endif /* TRACE */
+
+	curses_signal_handler(FALSE);
 
 	if (SP->_endwin == TRUE) {
 		T(("coming back from shell mode"));
 		reset_prog_mode();
-		/* is this necessary? */
-		if (enter_alt_charset_mode)
-			init_acs();  
+		if (enter_ca_mode)
+			putp(enter_ca_mode);
 		newscr->_clear = TRUE;
 		SP->_endwin = FALSE;
 	}
@@ -144,17 +215,23 @@ sigaction_t act, oact;
 			ClrUpdate(newscr);
 			newscr->_clear = FALSE;
 		} else {
+		        scroll_optimize();
+
 			T(("Transforming lines"));
-			for (i = 0; i < lines ; i++) {
-				if(newscr->_firstchar[i] != _NOCHANGE)
+			for (i = 0; i < min(screen_lines, newscr->_maxy + 1); i++) {
+				if(newscr->_line[i].firstchar != _NOCHANGE)
 					TransformLine(i);
 			}
 		}
 	}
 	T(("marking screen as updated"));
-	for (i = 0; i < lines; i++) {
-		newscr->_firstchar[i] = _NOCHANGE;
-		newscr->_lastchar[i] = _NOCHANGE;
+	for (i = 0; i <= newscr->_maxy; i++) {
+		newscr->_line[i].firstchar = _NOCHANGE;
+		newscr->_line[i].lastchar = _NOCHANGE;
+		newscr->_line[i].oldindex = i;
+	}
+	for (i = 0; i <= curscr->_maxy; i++) {
+		curscr->_line[i].oldindex = i;
 	}
 
 	curscr->_curx = newscr->_curx;
@@ -164,21 +241,14 @@ sigaction_t act, oact;
 	
 	/* perhaps we should turn attributes off here */
 
-	if (!(curscr->_attrs & A_NORMAL))
+	if (curscr->_attrs != A_NORMAL)
 		vidattr(curscr->_attrs = A_NORMAL);
 
 	fflush(SP->_ofp);
 
-	sigaction(SIGTSTP, &oact, NULL);
+	curses_signal_handler(TRUE);
 
 	return OK;
-}
-
-static int move_right_cost = -1;
-
-static int countc(char c)
-{
-	return(move_right_cost++);
 }
 
 /*
@@ -188,13 +258,12 @@ static int countc(char c)
 **
 */
 
-#define BLANK ' '|A_NORMAL
-
 static void ClrUpdate(WINDOW *scr)
 {
 int	i = 0, j = 0;
 int	lastNonBlank;
-	
+int	inspace;
+
 	T(("ClrUpdate(%x) called", scr));
 	if (back_color_erase) {
 		T(("back_color_erase, turning attributes off"));
@@ -202,63 +271,45 @@ int	lastNonBlank;
 	}
 	ClearScreen();
 
-	if ((move_right_cost == -1) && parm_right_cursor) {
-		move_right_cost = 0;
-		tputs(tparm(parm_right_cursor, 10), 1, countc);
-	}
-
 	T(("updating screen from scratch"));
-	for (i = 0; i < lines; i++) {
+	for (i = 0; i < min(screen_lines, scr->_maxy + 1); i++) {
+		GoTo(i, 0);
 		LRCORNER = FALSE;
-		lastNonBlank = columns - 1;
+		lastNonBlank = scr->_maxx;
 		
-		while (scr->_line[i][lastNonBlank] == BLANK && lastNonBlank > 0)
+		while (scr->_line[i].text[lastNonBlank] == BLANK && lastNonBlank > 0)
 			lastNonBlank--;
 
 		/* check if we are at the lr corner */
-		if (i == lines-1)
+		if (i == screen_lines-1)
 			if ((auto_right_margin) && !(eat_newline_glitch) &&
-			    (lastNonBlank == columns-1) && !(scr->_scroll)) 
+			    (lastNonBlank == screen_columns-1) && !(scr->_scroll)) 
 			{
 				T(("Lower-right corner needs special handling"));
 			    LRCORNER = TRUE;
 			}
 
-		for (j = 0; j <= lastNonBlank; j++) {
-			if (parm_right_cursor) {
-				static int inspace = 0;
-
-				T(("trying to use parm_right_cursor"));
-				if ((scr->_line[i][j]) == BLANK) {
-					inspace++;
-					continue;
-				} else if(inspace) {
-					if (inspace < move_right_cost) {
-						for (; inspace > 0; inspace--)
-							PutChar(scr->_line[i][j-1]);
-					} else {
-						putp(tparm(parm_right_cursor, inspace));
-					}
-					inspace = 0;
-				}
+		inspace = 0;
+		memset(SP->_curscr->_line[i].text,
+		       BLANK,
+		       sizeof(chtype) * lastNonBlank);
+		for (j = 0; j <= min(lastNonBlank, screen_columns); j++) {
+			if ((scr->_line[i].text[j]) == BLANK) {
+				inspace++;
+				continue;
+			} else if (inspace) {
+				mvcur(i, j - inspace, i, j);
+				inspace = 0;
 			}
-			PutChar(scr->_line[i][j]);
-		}
-		/* move cursor to the next line */
-		if ((!auto_right_margin) || (lastNonBlank < columns - 1) ||
-		    (auto_right_margin && eat_newline_glitch && lastNonBlank == columns-1))
-		{
-			SP->_curscol = (lastNonBlank < 0) ? 0 : lastNonBlank;
-			SP->_cursrow++;
-			GoTo(i+1, 0);
+			PutChar(scr->_line[i].text[j]);
 		}
 	}
 
 
 	if (scr != curscr) {
-		for (i = 0; i < lines ; i++)
-			for (j = 0; j < columns; j++)
-				curscr->_line[i][j] = scr->_line[i][j];
+		for (i = 0; i < screen_lines ; i++)
+			for (j = 0; j < screen_columns; j++)
+				curscr->_line[i].text[j] = scr->_line[i].text[j];
 	}
 }
 
@@ -299,15 +350,15 @@ static void TransformLine(int lineno)
 static void NoIDcTransformLine(int lineno)
 {
 int	firstChar, lastChar;
-chtype	*newLine = newscr->_line[lineno];
-chtype	*oldLine = curscr->_line[lineno];
+chtype	*newLine = newscr->_line[lineno].text;
+chtype	*oldLine = curscr->_line[lineno].text;
 int	k;
 int	attrchanged = 0;
 	
 	T(("NoIDcTransformLine(%d) called", lineno));
 
 	firstChar = 0;
-	while (firstChar < columns - 1 &&  newLine[firstChar] == oldLine[firstChar]) {
+	while (firstChar < screen_columns - 1 &&  newLine[firstChar] == oldLine[firstChar]) {
 		if(ceol_standout_glitch) {
 			if((newLine[firstChar] & (chtype)A_ATTRIBUTES) != (oldLine[firstChar] & (chtype)A_ATTRIBUTES))
 			attrchanged = 1;
@@ -316,26 +367,26 @@ int	attrchanged = 0;
 	}
 
 	T(("first char at %d is %x", firstChar, newLine[firstChar]));
-	if (firstChar > columns)
+	if (firstChar > screen_columns)
 		return;
 
 	if(ceol_standout_glitch && attrchanged) {
 		firstChar = 0;
-		lastChar = columns - 1;
+		lastChar = screen_columns - 1;
 		GoTo(lineno, firstChar);
 		if(clr_eol)
 			putp(clr_eol);		
 	} else {
-		lastChar = columns - 1;
+		lastChar = screen_columns - 1;
 		while (lastChar > firstChar  &&  newLine[lastChar] == oldLine[lastChar])
 			lastChar--;
 		GoTo(lineno, firstChar);
 	}			
 
 	/* check if we are at the lr corner */
-	if (lineno == lines-1)
+	if (lineno == screen_lines-1)
 		if ((auto_right_margin) && !(eat_newline_glitch) &&
-		    (lastChar == columns-1) && !(curscr->_scroll)) 
+		    (lastChar == screen_columns-1) && !(curscr->_scroll)) 
 		{
 			T(("Lower-right corner needs special handling"));
 		    LRCORNER = TRUE;
@@ -369,8 +420,8 @@ int	attrchanged = 0;
 static void IDcTransformLine(int lineno)
 {
 int	firstChar, oLastChar, nLastChar;
-chtype	*newLine = newscr->_line[lineno];
-chtype	*oldLine = curscr->_line[lineno];
+chtype	*newLine = newscr->_line[lineno].text;
+chtype	*oldLine = curscr->_line[lineno].text;
 int	k, n;
 int	attrchanged = 0;
 	
@@ -378,7 +429,7 @@ int	attrchanged = 0;
 
 	if(ceol_standout_glitch && clr_eol) {
 		firstChar = 0;
-		while(firstChar < columns) {
+		while(firstChar < screen_columns) {
 			if((newLine[firstChar] & (chtype)A_ATTRIBUTES) != (oldLine[firstChar] & (chtype)A_ATTRIBUTES))
 				attrchanged = 1;
 			firstChar++;			
@@ -390,21 +441,21 @@ int	attrchanged = 0;
 	if (attrchanged) {
 		GoTo(lineno, firstChar);
 		putp(clr_eol);		
-		for( k = 0 ; k <= (columns-1) ; k++ )
+		for( k = 0 ; k <= (screen_columns-1) ; k++ )
 			PutChar(newLine[k]);
 	} else {
-		while (firstChar < columns  &&
+		while (firstChar < screen_columns  &&
 				newLine[firstChar] == oldLine[firstChar])
 			firstChar++;
 		
-		if (firstChar >= columns)
+		if (firstChar >= screen_columns)
 			return;
 
-		oLastChar = columns - 1;
+		oLastChar = screen_columns - 1;
 		while (oLastChar > firstChar  &&  oldLine[oLastChar] == BLANK)
 			oLastChar--;
 	
-		nLastChar = columns - 1;
+		nLastChar = screen_columns - 1;
 		while (nLastChar > firstChar  &&  newLine[nLastChar] == BLANK)
 			nLastChar--;
 
@@ -440,7 +491,7 @@ int	attrchanged = 0;
 				DelChar(oLastChar - nLastChar);
 		}
 	}
-	for (k = firstChar; k < columns; k++)
+	for (k = firstChar; k < screen_columns; k++)
 		oldLine[k] = newLine[k];
 }
 
@@ -459,6 +510,9 @@ static void ClearScreen()
 	if (clear_screen) {
 		putp(clear_screen);
 		SP->_cursrow = SP->_curscol = 0;
+#ifdef POSITION_DEBUG
+		position_check(SP->_cursrow, SP->_curscol, "ClearScreen");
+#endif /* POSITION_DEBUG */
 	} else if (clr_eos) {
 		SP->_cursrow = SP->_curscol = -1;
 		GoTo(0,0);
@@ -467,7 +521,7 @@ static void ClearScreen()
 	} else if (clr_eol) {
 		SP->_cursrow = SP->_curscol = -1;
 
-		while (SP->_cursrow < lines) {
+		while (SP->_cursrow < screen_lines) {
 			GoTo(SP->_cursrow, 0);
 			putp(clr_eol);
 		}
@@ -497,7 +551,7 @@ static void InsStr(chtype *line, int count)
 		}
 		putp(exit_insert_mode);
 	} else if (parm_ich) {
-		putp(tparm(parm_ich, count));
+		tputs(tparm(parm_ich, count), count, _outch);
 		while (count) {
 			PutChar(*line);
 			line++;
@@ -525,10 +579,21 @@ static void DelChar(int count)
 	T(("DelChar(%d) called", count));
 
 	if (parm_dch) {
-		putp(tparm(parm_dch, count));
+		tputs(tparm(parm_dch, count), count, _outch);
 	} else {
 		while (count--)
 			putp(delete_character);
 	}
 }
 
+/*
+**	outstr(char *str)
+**
+**	Emit a string without waiting for update.
+*/
+
+void outstr(char *str)
+{
+    (void) fputs(str, stdout);
+    (void) fflush(stdout);
+}

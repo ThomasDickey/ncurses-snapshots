@@ -3,7 +3,7 @@
 \fBcurs_getyx\fR: \fBgetyx\fR, \fBgetparyx\fR, \fBgetbegyx\fR,
 \fBgetmaxyx\fR - get \fBncurses\fR cursor and window coordinates
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
 \fBvoid getyx(WINDOW *win, int y, int x);\fR
 .br
@@ -31,6 +31,8 @@ statements).
 .SH NOTES
 All of these interfaces are macros and that "\fB&\fR" is not
 necessary before the variables \fIy\fR and \fIx\fR.
+.SH PORTABILITY
+These functions are described in the XSI Curses draft.
 .SH SEE ALSO
 \fBncurses\fR(3X)
 .\"#

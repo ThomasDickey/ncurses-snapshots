@@ -14,6 +14,10 @@ in a different location, and the environment variable \fBTERMINFO\fR
 overrides the default).  The compiled format is necessary for use with
 the library routines in \fBncurses\fR(3X).
 .TP
+\fB-c\fR
+specifies to check only \fIfile\fR for errors.  Errors in \fBuse=\fR links
+are not detected.
+.TP
 \fB-v\fR\fIn\fR
 specifies that (verbose) output be written to standard error trace
 information showing \fBtic\fR's progress.  The optional integer
@@ -22,9 +26,30 @@ level of detail of information.  If \fIn\fR is omitted, the default
 level is 1.  If \fIn\fR is specified and greater than 1, the level of
 detail is increased.
 .TP
-\fB-c\fR
-specifies to check only \fIfile\fR for errors.  Errors in \fBuse=\fR links
-are not detected.
+\fB-I\fR
+Force source translation to terminfo format.
+.TP
+\fB-C\fR
+Force source translation to termcap format.  Note: this differs from the -C
+option of \fIinfocmp\fR(1m) in that it does not merely translate capability
+names, but also translates terminfo strings to termcap format.  Capabilities
+that are not translatable are left in the entry under their terminfo names
+but commented out with two preceding dots.
+.TP
+\fB-p\fR
+Ignore pad prefixes when comparing strings.
+.TP
+\fB-N\fR
+Disable smart defaults.  
+Normally, when translating from termcap to terminfo, the compiler makes 
+a number of assumptions about the defaults of string capabilities
+\freset1_string\fR, \fBcarriage_return\fR, \fBcursor_left\fR, 
+\fBcursor_down\fR, \fBscroll_forward\fR, \fBtab\fR, \fBnewline\fR,
+\fBkey_backspace\fR, \fBkey_left\fR, and \fBkey_down\fR, then attempts
+to use obsolete termcap capabilities to deduce correct values.  It also
+normally suppresses output of obsolete termcap capabilities such as \fBbs\fR.
+This option forces a more literal translation that also preserves the
+obsolete capabilities.
 .TP
 \fIfile\fR
 contains one or more \fBterminfo\fR terminal descriptions in source
@@ -80,10 +105,18 @@ results are placed there instead of \fB\*d\fR.
 Total compiled entries cannot exceed 4096 bytes.  The name field cannot
 exceed 128 bytes.  Terminal names exceeding 14 characters will be
 truncated to 14 characters and a warning message will be printed.
-
+.SH EXTENSIONS
 Unlike the stock SVr4 \fBtic\fR command, this implementation can actually
 compile termcap sources.  In fact, entries in terminfo and termcap syntax can
 be mixed in a single source file.
+
+The SVr4 manual page are not clear on the resolution rules for \fBuse\fR
+capabilities. This implementation of \fBtic\fR will find use targets
+anywhere in the source file, or anywhere in the system's file tree of
+compiled entries, or anywhere in the file tree routed at \fBTERMINFO\fR
+(if \fBTERMINFO\fR is defined).
+
+The -I, -C, and -p options are not supported under SVr4.
 .SH FILES
 .TP 5
 \fB\*d/?/*\fR

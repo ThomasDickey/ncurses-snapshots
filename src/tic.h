@@ -10,41 +10,29 @@
  */
 
 #include <stdio.h>
-#ifndef NONPOSIX
-#include <unistd.h>
-#else
-#include <libc.h>
-#endif
 
 #ifndef TRUE
+typedef char	bool;
 #define TRUE	1
 #define FALSE	0
 #endif
 
-#define SINGLE			/* only one terminal (actually none) */
+#ifndef OK
+#define OK	0
+#define ERR	-1
+#endif
 
-char	*destination;		/* destination directory for object files */
+#define DEBUG(n, a)	if (_tracing & (1 << (n - 1))) _tracef a 
+extern int _tracing;
+extern void _tracef(char *, ...);
+extern char *visbuf(const char *);
 
-char	curr_line;		/* current line # in input */
-long	curr_file_pos;		/* file offset of current line */
-
-int	debug_level;		/* level of debugging output */
-
-#define DEBUG(level, fmt, a1) \
-		if (debug_level >= level)\
-		    fprintf(stderr, fmt, a1);
-
-#define DEBUG0(level, str) \
-		if (debug_level >= level)\
-		    fprintf(stderr, str);
-
-	/*
-	 *	These are the types of tokens returned by the scanner.
-	 *	The first three are also used in the hash table of capability
-	 *	names.  The scanner returns one of these values after loading
-	 *	the specifics into the global structure curr_token.
-	 *
-	 */
+/*
+ * These are the types of tokens returned by the scanner.  The first
+ * three are also used in the hash table of capability names.  The scanner
+ * returns one of these values after loading the specifics into the global
+ * structure curr_token.
+ */
 
 #define BOOLEAN 0		/* Boolean capability */
 #define NUMBER 1		/* Numeric capability */
@@ -52,6 +40,8 @@ int	debug_level;		/* level of debugging output */
 #define CANCEL 3		/* Capability to be cancelled in following tc's */
 #define NAMES  4		/* The names for a terminal type */
 #define UNDEF  5		/* Undefined */
+
+#define NO_PUSHBACK	-1	/* used in pushtype to indicate no pushback */
 
 	/*
 	 *	The global structure in which the specific parts of a
@@ -83,34 +73,54 @@ struct name_table_entry
 	short	nte_index;	/* index of associated variable in its array */
 };
 
+extern struct name_table_entry	info_table[];
+extern struct name_table_entry	*info_hash_table[];
 extern struct name_table_entry	cap_table[];
 extern struct name_table_entry	*cap_hash_table[];
 
 #define NOTFOUND	((struct name_table_entry *) 0)
-	/*
-	 *	Function types
-	 *
-	 */
 
-struct name_table_entry	*find_entry(char *); /* look up entry in hash table */
+/* out-of-band values for representing absent capabilities */
+#define ABSENT_BOOLEAN		-1
+#define ABSENT_NUMERIC		-1
+#define ABSENT_STRING		(char *)0
 
+/* out-of-band values for representing cancels */
+#define CANCELLED_BOOLEAN	-2
+#define CANCELLED_NUMERIC	-2
+#define CANCELLED_STRING	(char *)-1
+
+/* comp_hash.c: name lookup */
+extern void make_hash_table(struct name_table_entry *,
+			    struct name_table_entry **);
+struct name_table_entry	*find_entry(char *,
+				    struct name_table_entry **);
+struct name_table_entry *find_type_entry(char *,
+					 int,
+					 struct name_table_entry *);
+
+/* comp_scan.c: lexical analysis */
+extern int  get_token(void);
+extern void push_token(int);
+extern void reset_input(FILE *);
+extern void panic_mode(char);
+extern int curr_line;
+extern long curr_file_pos;
+extern long comment_start, comment_end;
+extern int syntax;
+#define SYN_TERMINFO	0
+#define SYN_TERMCAP	1
+
+/* comp_error.c: warning & abort messages */
 extern void set_source(const char *name);
+extern void set_type(const char *name);
 extern void syserr_abort(const char *,...);
 extern void err_abort(const char *,...);
 extern void warning(const char *,...);
-extern void panic_mode(char);
-extern int  get_token(void);
-extern void reset_input(void);
-extern void make_hash_table(void);
-extern void compile(void);
 
-extern void make_hash_table(void);
+/* captoinfo.c: capability conversion */
+extern char *captoinfo(char *, char *, int);
+extern char *infotocap(char *, char *, int);
 
-extern char *captoinfo(char *name, char *valstr);
-extern int dodump;
-
-#define SYN_TERMINFO	0
-#define SYN_TERMCAP	1
-extern int syntax;
-
+/* comp_main.c: compiler main */
 extern char	*progname;

@@ -5,7 +5,7 @@
 \fBmvwaddchnstr\fR - add string of characters (and attributes) to a
 \fBncurses\fR window
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 
 \fBint addchstr(chtype *chstr);\fR
 .br
@@ -29,17 +29,22 @@ argument copy at most \fIn\fR elements, but no more than will fit on the line.
 If \fBn\fR=\fB-1\fR then the whole string is copied, to the maximum number of
 characters that will fit on the line.
 
-The window cursor is \fINOT\fR advanced, and these routines work faster than
-\fBwaddnstr\fR.  On the other hand, care must be taken when using them because
-they don't perform any kind of checking (such as for the newline character),
-they don't advance the current cursor position, and they truncate the string if
-it crosses the right margin, rather then wrapping it around to the new line.
+The window cursor is \fInot\fR advanced, and these routines work faster than
+\fBwaddnstr\fR.  On the other hand, they don't perform any kind of checking
+(such as for the newline, backspace, or carriage return characters), they don't
+advance the current cursor position, they don't expand other control characters
+to ^-escapes, and they truncate the string if it crosses the right margin,
+rather then wrapping it around to the new line.
+
 .SH RETURN VALUES
-All these routines return the integer \fBERR\fR upon failure and an integer
-value other than \fBERR\fR upon successful completion, unless
-otherwise noted in the preceding routine descriptions.
+All routines return the integer \fBERR\fR upon failure and \fBOK\fR on success
+(the SVr4 manuals specify only "an integer value other than \fBERR\fR") upon
+successful completion, unless otherwise noted in the preceding routine
+descriptions.
 .SH NOTES
 Note that all routines except \fBwaddchnstr\fR may be macros.
+.SH PORTABILITY
+All these entry points are described in the XSI Curses draft.
 .SH SEE ALSO
 \fBncurses\fR(3X).
 .\"#

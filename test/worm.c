@@ -14,6 +14,22 @@
 			  Caltech High Energy Physics
 				 October, 1980
 
+		Hacks to turn this into a test frame for cursor movement:
+			Eric S. Raymond <esr@snark.thyrsus.com>
+				January, 1995
+
+Options:
+	-f			fill screen with copies of 'WORM' at start.
+	-l <n>			set worm length
+	-n <n>			set number of worms
+	-t			make worms leave droppings
+	-T <start> <end>	set trace interval
+	-N			suppress cursor-movement optimization
+
+  This program makes a good torture-test for the ncurses cursor-optimization
+  code.  You can use -T to set the worm move interval over which movement
+  traces will be dumped.  The program stops and waits for one character of
+  input at the beginning and end of the interval.
 */
 
 #include <curses.h>
@@ -37,6 +53,9 @@ static struct worm {
 } worm[40];
 static char *field;
 static int length=16, number=3, trail=' ';
+#ifdef TRACE
+int generation, trace_start, trace_end;
+#endif /* TRACE */
 static struct options {
     int nopts;
     int opts[3];
@@ -163,6 +182,15 @@ int last, bottom;
 		case 't':
 		    trail='.';
 		    break;
+#ifdef TRACE
+		case 'T':
+		    trace_start = atoi(argv[++x]);
+		    trace_end   = atoi(argv[++x]);
+		    break;
+		case 'N':
+		    no_optimize = TRUE;		/* declared by ncurses */
+		    break;
+#endif /* TRACE */
 		default:
 		usage:
 		    fprintf(stderr, "usage: %s [-field] [-length #] [-number #] [-trail]\n",*argv);
@@ -173,6 +201,11 @@ int last, bottom;
 
     signal(SIGINT, onsig);
     initscr();
+#ifdef TRACE
+    noecho();
+    cbreak();
+#endif /* TRACE */
+    nonl();
     bottom = LINES-1;
     last = COLS-1;
 
@@ -212,6 +245,23 @@ int last, bottom;
     refresh();
 
     for (;;) {
+#ifdef TRACE
+		if (trace_start || trace_end)
+		{
+		    if (generation == trace_start)
+		    {
+			trace(TRACE_MOVE);
+			getch();
+		    }
+		    else if (generation == trace_end)
+		    {
+			trace(0);
+			getch();
+		    }
+		    generation++;
+		}
+#endif /* TRACE */
+
 		for (n=0,w= &worm[0];n<number;n++,w++) {
 		    if ((x=w->xpos[h=w->head])<0) {
 				cursor(x=w->xpos[h]=0,y=w->ypos[h]=bottom);
@@ -241,11 +291,9 @@ int last, bottom;
 		    default:
 				w->orientation=op->opts[(int)(ranf()*(float)op->nopts)];
 		    }
-		    fprintf(stderr, "y = %d\n", y);
 		    cursor(x+=xinc[w->orientation], y+=yinc[w->orientation]);
 		    if (y < 0 ) y = 0;
 		    if (!Wrap||x!=last||y!=bottom) addch(flavor[n%6]);
-		    fprintf(stderr, "y = %d, x = %d\n", y, x);
 		    ref[w->ypos[h]=y][w->xpos[h]=x]++;
 		}
 		refresh();

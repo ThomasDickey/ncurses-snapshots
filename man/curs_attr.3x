@@ -4,19 +4,19 @@
 \fBattrset\fR, \fBwattrset\fR, \fBstandend\fR, \fBwstandend\fR, \fBstandout\fR,
 \fBwstandout\fR - \fBncurses\fR character and window attribute control routines
 .SH SYNOPSIS
-\fB#include <ncurses.h>\fR
+\fB#include <curses.h>\fR
 .br
-\fBint attroff(int attrs);\fR
+\fBint attroff(attr_t attrs);\fR
 .br
-\fBint wattroff(WINDOW *win, int attrs);\fR
+\fBint wattroff(WINDOW *win, attr_t attrs);\fR
 .br
-\fBint attron(int attrs);\fR
+\fBint attron(attr_t attrs);\fR
 .br
-\fBint wattron(WINDOW *win, int attrs);\fR
+\fBint wattron(WINDOW *win, attr_t attrs);\fR
 .br
-\fBint attrset(int attrs);\fR
+\fBint attrset(attr_t attrs);\fR
 .br
-\fBint wattrset(WINDOW *win, int attrs);\fR
+\fBint wattrset(WINDOW *win, attr_t attrs);\fR
 .br
 \fBint standend(void);\fR
 .br
@@ -25,6 +25,10 @@
 \fBint standout(void);\fR
 .br
 \fBint wstandout(WINDOW *win);\fR
+.br
+\fBint wgetattr(WINDOW *win, attr_t *attrs);\fR
+.br
+\fBint getattr(attr_t *attrs);\fR
 .br
 .SH DESCRIPTION
 These routines manipulate the current attributes of the named window.  The
@@ -42,8 +46,11 @@ named attributes without affecting any others.  The routine \fBstandout\fR is
 the same as \fBattron(A_STANDOUT)\fR.  The routine \fBstandend\fR is the same
 as \fBattrset(A_NORMAL)\fR or \fBattrset(0)\fR, that is, it turns off all
 attributes.
+
+The routine \fBwgettattr\fR returns the current attribute for the given
+window; \fBgettattr\fR returns the current attribute for \fBstdscr\fR.
 .SS Attributes
-The following video attributes, defined in \fB<ncurses.h>\fR, can be passed to
+The following video attributes, defined in \fB<curses.h>\fR, can be passed to
 the routines \fBattron\fR, \fBattroff\fR, and \fBattrset\fR, or OR-ed with the
 characters passed to \fBaddch\fR.
 
@@ -56,6 +63,7 @@ characters passed to \fBaddch\fR.
 \fBA_DIM\fR          Half bright
 \fBA_BOLD\fR         Extra bright or bold
 \fBA_ALTCHARSET\fR   Alternate character set
+\fBA_PCCHARSET\fR    Enable PC ROM graphics 0-31 (PC clones only)
 \fBA_CHARTEXT\fR     Bit-mask to extract a character
 \fBCOLOR_PAIR(\fR\fIn\fR\fB)\fR  Color-pair number \fIn\fR
 .fi
@@ -70,12 +78,22 @@ The following macro is the reverse of \fBCOLOR_PAIR(\fR\fIn\fR\fB)\fR:
 The return values of these routines are not meaningful (many are implemented
 as macro-expanded assignments and simply return their argument).  The SVr4
 manual page claims (falsely) that these routines always return \fB1\fR.
-.SH BUGS
-As of 1.8.2, ncurses attributes still have a tendency to stick on in some
-circumstances where SVr4 curses attributes would turn off.
 .SH NOTES
 Note that \fBattroff\fR, \fBwattroff\fR, \fBattron\fR, \fBwattron\fR,
 \fBattrset\fR, \fBwattrset\fR, \fBstandend\fR and \fBstandout\fR may be macros.
+.SH EXTENSIONS
+The \fBA_PCCHARSET\fR highlight is available only on PC clones (and is not 
+part of the XSI standard).  For
+portability, wrap any code that uses it in #ifdef A_PCCHARSET/#endif.
+See the EXTENSIONS sections of \fBcurs_addch\fR(3x) for details.
+.SH PORTABILITY
+All these functions are supported in the XSI Curses draft.  The draft defined
+the dedicated type for highlights, \fBattr_t\fR, which is not defined in SVr4
+curses.  It specifies that all these functions return \fBOK\fR, which is not
+yet guaranteed.  It added the two new entry points, \fBgetattr\fR and
+\fBwgetattr\fR.  The XSI draft does not support \fBA_PCCHARSET\fR, and adds new
+highlights \fBA_HORIZONTAL\fR, \fBA_LEFT\fR, \fBA_LOW\fR, \fBA_RIGHT\fR,
+\fBA_TOP\fR, \fBA_VERTICAL\fR which ncurses does not yet support.
 .SH SEE ALSO
 \fBncurses\fR(3X), \fBcurs_addch\fR(3X), \fBcurs_addstr\fR(3X),
 \fBcurs_printw\fR(3X)

@@ -1,7 +1,9 @@
+
+
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*                ncurses is copyright (C) 1992, 1993, 1994                 *
+*                ncurses is copyright (C) 1992-1995                        *
 *                          by Zeyd M. Ben-Halim                            *
 *                          zmbenhal@netcom.com                             *
 *                                                                          *
@@ -16,4 +18,26 @@
 *                                                                          *
 ***************************************************************************/
 
+
+/*
+**	lib_instr.c
+**
+**	The routine winnstr().
+**
+*/
+
+#include "curses.priv.h"
+
+int winnstr(WINDOW *win, char *str, int n)
+{
+	int	i;
+
+	T(("winnstr(%x,'%x',%d) called", win, str, n));
+
+	for (i = 0; (n < 0 || (i < n)) && (win->_curx + i <= win->_maxx); i++)
+	    str[i] = win->_line[win->_cury].text[win->_curx + i] & A_CHARTEXT;
+	str[i] = '\0';
+
+	return(i);
+}
 
