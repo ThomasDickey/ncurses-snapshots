@@ -1,10 +1,36 @@
--- $Id: NEWS,v 1.411 1999/01/24 03:48:01 tom Exp $
+-- $Id: NEWS,v 1.413 1999/01/31 03:06:44 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990130
+	+ cache last result from _nc_baudrate, for performance (suggested by
+	  Alexander Lukyanov).
+	+ modify ClrUpdate() function to workaround a problem in nvi, which
+	  uses redrawwin in SIGTSTP handling.  Jeffrey Honig reported that
+	  ncurses repainted the screen with nulls before resuming normal
+	  operation (patch by Alexander Lukyanov).
+	+ generalize is_xterm() function a little by letting xterm/rxvt/kterm
+	  be any substring rather than the prefix.
+	+ modify lib_data.c to initialize SP.  Some linkers, e.g., IBM's, will
+	  not link a module if the only symbols exported from the module are
+	  uninitialized ones (patch by Ilya Zakharevich, who says that he has
+	  seen messages claiming this behaviour conforms to the standard.)
+	+ move call on _nc_signal_handler past _nc_initscr, to avoid a small
+	  window where Nttyb hasn't yet been filled (reported by Klaus Weide).
+	+ modify lib_tstp.c to block SIGTTOU when handling SIGTSTP, fixes a
+	  problem where ncurses applications which were run via a shell script
+	  would hang when given a ^Z.  Also, check if the terminal's process
+	  group is consistent, i.e., a shell has not taken ownership of it,
+	  before deciding to save the current terminal settings in the SIGTSTP
+	  handler (patch by Klaus Weide).
+	+ correct spelling of ACS_ names in curs_border.3x (reported by Bob van
+	  der Poel <bvdpoel@kootenay.com>).
+	+ correct a couple of typos in the macros supporting the configure
+	  --with-shlib-version option.
 
 990123
 	+ modify fty_regex.c to compile on HAVE_REGEXPR_H_FUNCS machine (patch

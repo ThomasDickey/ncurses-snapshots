@@ -48,7 +48,7 @@
 
 #include <term.h>	/* clear_screen, cup & friends, cur_term */
 
-MODULE_ID("$Id: lib_newterm.c,v 1.37 1999/01/02 22:56:08 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.38 1999/01/31 01:23:25 tom Exp $")
 
 #ifndef ONLCR		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -194,13 +194,13 @@ int t = _nc_getenv_num("NCURSES_TRACE");
 	/* compute movement costs so we can do better move optimization */
 	_nc_mvcur_init();
 
-	_nc_signal_handler(TRUE);
-
 	/* initialize terminal to a sane state */
 	_nc_screen_init();
 
 	/* Initialize the terminal line settings. */
 	_nc_initscr();
+
+	_nc_signal_handler(TRUE);
 
 	T((T_RETURN("%p"), SP));
 	return(SP);
