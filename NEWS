@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.779 2003/12/14 00:35:55 tom Exp $
+-- $Id: NEWS,v 1.780 2003/12/20 16:58:01 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20031220
+	+ add configure option --with-manpage-format=catonly to address
+	  behavior of BSDI, allow install of man+cat files on NetBSD, whose
+	  behavior has diverged by requiring both to be present.
+	+ remove leading blanks from comment-lines in manlinks.sed script to
+	  work with Tru64 4.0d.
+	+ add screen.linux terminfo entry (discussion on mutt-users mailing
+	  list).
 
 20031213
 	+ add a check for tic to flag missing backslashes for termcap

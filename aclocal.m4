@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.321 2003/12/13 23:03:45 tom Exp $
+dnl $Id: aclocal.m4,v 1.323 2003/12/21 01:40:41 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1709,10 +1709,20 @@ fi
 AC_SUBST(MAKE_LOWER_TAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MANPAGE_FORMAT version: 6 updated: 2002/01/19 22:51:32
+dnl CF_MANPAGE_FORMAT version: 7 updated: 2003/12/20 19:30:34
 dnl -----------------
 dnl Option to allow user to override automatic configuration of manpage format.
-dnl There are several special cases.
+dnl There are several special cases:
+dnl
+dnl	gzip - man checks for, can display gzip'd files
+dnl	compress - man checks for, can display compressed files
+dnl	BSDI - files in the cat-directories are suffixed ".0"
+dnl	formatted - installer should format (put files in cat-directory)
+dnl	catonly - installer should only format, e.g., for a turnkey system.
+dnl
+dnl There are other configurations which this macro does not test, e.g., HPUX's
+dnl compressed manpages (but uncompressed manpages are fine, and HPUX's naming
+dnl convention would not match our use).
 AC_DEFUN([CF_MANPAGE_FORMAT],
 [
 AC_REQUIRE([CF_PATHSEP])
@@ -1720,47 +1730,92 @@ AC_MSG_CHECKING(format of man-pages)
 
 AC_ARG_WITH(manpage-format,
 	[  --with-manpage-format   specify manpage-format: gzip/compress/BSDI/normal and
-                          optionally formatted, e.g., gzip,formatted],
+                          optionally formatted/catonly, e.g., gzip,formatted],
 	[MANPAGE_FORMAT=$withval],
 	[MANPAGE_FORMAT=unknown])
 
-case ".$MANPAGE_FORMAT" in
-.gzip|.compress|.BSDI|.normal|.formatted) # (vi
-  ;;
-.unknown|.) # (vi
+test -z "$MANPAGE_FORMAT" && MANPAGE_FORMAT=unknown
+MANPAGE_FORMAT=`echo "$MANPAGE_FORMAT" | sed -e 's/,/ /g'`
+
+cf_unknown=
+
+case $MANPAGE_FORMAT in
+unknown)
   if test -z "$MANPATH" ; then
     MANPATH="/usr/man:/usr/share/man"
   fi
+
   # look for the 'date' man-page (it's most likely to be installed!)
+  MANPAGE_FORMAT=
+  cf_preform=no
+  cf_catonly=yes
+  cf_example=date
+
   IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}${PATHSEP}"
-  MANPAGE_FORMAT=unknown
   for cf_dir in $MANPATH; do
     test -z "$cf_dir" && cf_dir=/usr/man
-    for cf_name in $cf_dir/*/date.[[01]]* $cf_dir/*/date
+    for cf_name in $cf_dir/man*/$cf_example.[[01]]* $cf_dir/cat*/$cf_example.[[01]]* $cf_dir/man*/$cf_example $cf_dir/cat*/$cf_example
     do
-       cf_test=`echo $cf_name | sed -e 's/*//'`
-       if test "x$cf_test" = "x$cf_name" ; then
-	  case "$cf_name" in
-	  *.gz) MANPAGE_FORMAT=gzip;;
-	  *.Z)  MANPAGE_FORMAT=compress;;
-	  *.0)	MANPAGE_FORMAT=BSDI,formatted;;
-	  *)    MANPAGE_FORMAT=normal;;
-	  esac
-	  break
-       fi
+      cf_test=`echo $cf_name | sed -e 's/*//'`
+      if test "x$cf_test" = "x$cf_name" ; then
+
+	case "$cf_name" in
+	*.gz) MANPAGE_FORMAT="$MANPAGE_FORMAT gzip";;
+	*.Z)  MANPAGE_FORMAT="$MANPAGE_FORMAT compress";;
+	*.0)	MANPAGE_FORMAT="$MANPAGE_FORMAT BSDI";;
+	*)    MANPAGE_FORMAT="$MANPAGE_FORMAT normal";;
+	esac
+
+	case "$cf_name" in
+	$cf_dir/man*)
+	  cf_catonly=no
+	  ;;
+	$cf_dir/cat*)
+	  cf_preform=yes
+	  ;;
+	esac
+	break
+      fi
+
+      # if we found a match in either man* or cat*, stop looking
+      if test -n "$MANPAGE_FORMAT" ; then
+	cf_found=no
+	test "$cf_preform" = yes && MANPAGE_FORMAT="$MANPAGE_FORMAT formatted"
+	test "$cf_catonly" = yes && MANPAGE_FORMAT="$MANPAGE_FORMAT catonly"
+	case "$cf_name" in
+	$cf_dir/cat*)
+	  cf_found=yes
+	  ;;
+	esac
+	test $cf_found=yes && break
+      fi
     done
-    if test "$MANPAGE_FORMAT" != "unknown" ; then
+    # only check the first directory in $MANPATH where we find manpages
+    if test -n "$MANPAGE_FORMAT" ; then
        break
     fi
   done
+  # if we did not find the example, just assume it is normal
+  test -z "$MANPAGE_FORMAT" && MANPAGE_FORMAT=normal
   IFS="$ac_save_ifs"
   ;;
-.*) # (vi
-  AC_MSG_WARN(Unexpected manpage-format)
+*)
+  for cf_option in $MANPAGE_FORMAT; do
+     case $cf_option in #(vi
+     gzip|compress|BSDI|normal|formatted|catonly)
+       ;;
+     *)
+       cf_unknown="$cf_unknown $cf_option"
+       ;;
+     esac
+  done
   ;;
 esac
 
 AC_MSG_RESULT($MANPAGE_FORMAT)
+if test -n "$cf_unknown" ; then
+  AC_MSG_WARN(Unexpected manpage-format $cf_unknown)
+fi
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_MANPAGE_RENAMES version: 6 updated: 2002/01/19 22:51:32
@@ -1869,7 +1924,7 @@ AC_ARG_WITH(manpage-tbl,
 AC_MSG_RESULT($MANPAGE_TBL)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MAN_PAGES version: 25 updated: 2003/12/13 18:01:58
+dnl CF_MAN_PAGES version: 27 updated: 2003/12/20 20:39:45
 dnl ------------
 dnl Try to determine if the man-pages on the system are compressed, and if
 dnl so, what format is used.  Use this information to construct a script that
@@ -1889,20 +1944,40 @@ CF_MANPAGE_TBL
   fi
 
   case "$MANPAGE_FORMAT" in # (vi
-  *formatted*) # (vi
-    cf_subdir='$mandir/cat'
+  *catonly*) # (vi
     cf_format=yes
+    cf_inboth=no
+    ;;
+  *formatted*) # (vi
+    cf_format=yes
+    cf_inboth=yes
     ;;
   *)
-    cf_subdir='$mandir/man'
     cf_format=no
+    cf_inboth=no
     ;;
   esac
 
 test ! -d man && mkdir man
-cat >man/edit_man.sh <<CF_EOF
+
+cf_so_strip=
+cf_compress=
+case "$MANPAGE_FORMAT" in #(vi
+*compress*) #(vi
+	cf_so_strip="Z"
+	cf_compress=compress
+  ;;
+*gzip*) #(vi
+	cf_so_strip="gz"
+	cf_compress=gzip
+  ;;
+esac
+
+cf_edit_man=man/edit_man.sh
+
+cat >$cf_edit_man <<CF_EOF
 #! /bin/sh
-# this script is generated by the configure-script
+# this script is generated by the configure-script CF_MAN_PAGES macro.
 prefix="$cf_prefix"
 datadir="$datadir"
 NCURSES_OSPEED="$NCURSES_OSPEED"
@@ -1915,23 +1990,41 @@ transform="$program_transform_name"
 TMP=\${TMPDIR-/tmp}/man\$\$
 trap "rm -f \$TMP" 0 1 2 5 15
 
+form=\[$]1
+shift || exit 1
+
 verb=\[$]1
-shift
+shift || exit 1
 
 mandir=\[$]1
-shift
+shift || exit 1
 
 srcdir=\[$]1
-shift
+shift || exit 1
 
+if test "\$form" = normal ; then
+	if test "$cf_format" = yes ; then
+	if test "$cf_inboth" = no ; then
+		sh \[$]0 format \$verb \$mandir \$srcdir \[$]*
+		exit $?
+	fi
+	fi
+	cf_subdir=\$mandir/man
+	cf_tables=$MANPAGE_TBL
+else
+	cf_subdir=\$mandir/cat
+	cf_tables=yes
+fi
+
+# process the list of source-files
 for i in \[$]* ; do
 case \$i in #(vi
 *.orig|*.rej) ;; #(vi
 *.[[0-9]]*)
 	section=\`expr "\$i" : '.*\\.\\([[0-9]]\\)[[xm]]*'\`;
 	if test \$verb = installing ; then
-	if test ! -d $cf_subdir\${section} ; then
-		\$MKDIRS $cf_subdir\$section
+	if test ! -d \$cf_subdir\${section} ; then
+		\$MKDIRS \$cf_subdir\$section
 	fi
 	fi
 	aliases=
@@ -1943,29 +2036,30 @@ case \$i in #(vi
 		continue
 	fi
 CF_EOF
+
 if test "$MANPAGE_ALIASES" != no ; then
-cat >>man/edit_man.sh <<CF_EOF
+cat >>$cf_edit_man <<CF_EOF
 	aliases=\`sed -f \$srcdir/manlinks.sed \$inalias | sort -u\`
 CF_EOF
 fi
 
 if test "$MANPAGE_RENAMES" = no ; then
-cat >>man/edit_man.sh <<CF_EOF
+cat >>$cf_edit_man <<CF_EOF
 	# perform program transformations for section 1 man pages
 	if test \$section = 1 ; then
-		target=$cf_subdir\${section}/\`echo \$source|sed "\${transform}"\`
+		target=\$cf_subdir\${section}/\`echo \$source|sed "\${transform}"\`
 	else
-		target=$cf_subdir\${section}/\$source
+		target=\$cf_subdir\${section}/\$source
 	fi
 CF_EOF
 else
-cat >>man/edit_man.sh <<CF_EOF
+cat >>$cf_edit_man <<CF_EOF
 	target=\`grep "^\$source" $MANPAGE_RENAMES | $AWK '{print \[$]2}'\`
 	if test -z "\$target" ; then
 		echo '? missing rename for '\$source
 		target="\$source"
 	fi
-	target="$cf_subdir\${section}/\${target}"
+	target="\$cf_subdir\${section}/\${target}"
 CF_EOF
 fi
 
@@ -1973,94 +2067,88 @@ fi
 	ifelse($1,,,[
 	for cf_name in $1
 	do
-cat >>man/edit_man.sh <<CF_EOF
+cat >>$cf_edit_man <<CF_EOF
 	prog_$cf_name=\`echo $cf_name|sed "\${transform}"\`
 CF_EOF
 	done
 	])
-cat >>man/edit_man.sh <<CF_EOF
+cat >>$cf_edit_man <<CF_EOF
 	sed	-e "s,@DATADIR@,\$datadir," \\
 		-e "s,@TERMINFO@,\$TERMINFO," \\
 		-e "s,@NCURSES_OSPEED@,\$NCURSES_OSPEED," \\
 CF_EOF
+
 	ifelse($1,,,[
 	for cf_name in $1
 	do
 		cf_NAME=`echo "$cf_name" | sed y%abcdefghijklmnopqrstuvwxyz./-%ABCDEFGHIJKLMNOPQRSTUVWXYZ___%`
-cat >>man/edit_man.sh <<CF_EOF
+cat >>$cf_edit_man <<CF_EOF
 		-e "s,@$cf_NAME@,\$prog_$cf_name," \\
 CF_EOF
 	done
 	])
+
 if test -f $MANPAGE_RENAMES ; then
-cat >>man/edit_man.sh <<CF_EOF
+cat >>$cf_edit_man <<CF_EOF
 		< \$i | sed -f $srcdir/edit_man.sed >\$TMP
 CF_EOF
 else
-cat >>man/edit_man.sh <<CF_EOF
+cat >>$cf_edit_man <<CF_EOF
 		< \$i >\$TMP
 CF_EOF
 fi
-if test $MANPAGE_TBL = yes ; then
-cat >>man/edit_man.sh <<CF_EOF
+
+cat >>$cf_edit_man <<CF_EOF
+if test \$cf_tables = yes ; then
 	tbl \$TMP >\$TMP.out
 	mv \$TMP.out \$TMP
-CF_EOF
 fi
+CF_EOF
+
 if test $with_curses_h != yes ; then
-cat >>man/edit_man.sh <<CF_EOF
+cat >>$cf_edit_man <<CF_EOF
 	sed -e "/\#[    ]*include/s,curses.h,ncurses.h," < \$TMP >\$TMP.out
 	mv \$TMP.out \$TMP
 CF_EOF
 fi
-if test $cf_format = yes ; then
-cat >>man/edit_man.sh <<CF_EOF
-	nroff -man \$TMP >\$TMP.out
-	mv \$TMP.out \$TMP
+
+cat >>$cf_edit_man <<CF_EOF
+	if test \$form = format ; then
+		nroff -man \$TMP >\$TMP.out
+		mv \$TMP.out \$TMP
+	fi
+CF_EOF
+
+if test -n "$cf_compress" ; then
+cat >>$cf_edit_man <<CF_EOF
+	if test \$verb = installing ; then
+	if ( $cf_compress -f \$TMP )
+	then
+		mv \$TMP.$cf_so_strip \$TMP
+	fi
+	fi
+	target="\$target.$cf_so_strip"
 CF_EOF
 fi
-cf_so_strip=
+
 case "$MANPAGE_FORMAT" in #(vi
-*compress*) #(vi
-	cf_so_strip="Z"
-	cf_compress=compress
-cat >>man/edit_man.sh <<CF_EOF
-	if test \$verb = installing ; then
-	if ( compress -f \$TMP )
-	then
-		mv \$TMP.$cf_so_strip \$TMP
-	fi
-	fi
-	target="\$target.$cf_so_strip"
-CF_EOF
-  ;;
-*gzip*) #(vi
-	cf_so_strip="gz"
-	cf_compress=gzip
-cat >>man/edit_man.sh <<CF_EOF
-	if test \$verb = installing ; then
-	if ( gzip -f \$TMP )
-	then
-		mv \$TMP.$cf_so_strip \$TMP
-	fi
-	fi
-	target="\$target.$cf_so_strip"
-CF_EOF
-  ;;
 *BSDI*)
-cat >>man/edit_man.sh <<CF_EOF
-	# BSDI installs only .0 suffixes in the cat directories
-	target="\`echo \$target|sed -e 's/\.[[1-9]]\+.\?/.0/'\`"
+cat >>$cf_edit_man <<CF_EOF
+	if test \$form = format ; then
+		# BSDI installs only .0 suffixes in the cat directories
+		target="\`echo \$target|sed -e 's/\.[[1-9]]\+[[a-z]]*/.0/'\`"
+	fi
 CF_EOF
   ;;
 esac
-cat >>man/edit_man.sh <<CF_EOF
+
+cat >>$cf_edit_man <<CF_EOF
 	suffix=\`basename \$target | sed -e 's%^[[^.]]*%%'\`
 	if test \$verb = installing ; then
 		echo \$verb \$target
 		\$INSTALL_DATA \$TMP \$target
 		test -n "\$aliases" && (
-			cd $cf_subdir\${section} && (
+			cd \$cf_subdir\${section} && (
 				source=\`echo \$target |sed -e 's%^.*/\([[^/]][[^/]]*/[[^/]][[^/]]*$\)%\1%'\`
 				test -n "$cf_so_strip" && source=\`echo \$source |sed -e 's%\.$cf_so_strip\$%%'\`
 				target=\`basename \$target\`
@@ -2082,10 +2170,16 @@ cat >>man/edit_man.sh <<CF_EOF
 						$LN_S \$target \$cf_alias\${suffix}
 					elif test "\$target" != "\$cf_alias\${suffix}" ; then
 						echo ".so \$source" >\$TMP
+CF_EOF
+if test -n "$cf_compress" ; then
+cat >>$cf_edit_man <<CF_EOF
 						if test -n "$cf_so_strip" ; then
 							$cf_compress -f \$TMP
 							mv \$TMP.$cf_so_strip \$TMP
 						fi
+CF_EOF
+fi
+cat >>$cf_edit_man <<CF_EOF
 						echo .. \$verb alias \$cf_alias\${suffix}
 						rm -f \$cf_alias\${suffix}
 						\$INSTALL_DATA \$TMP \$cf_alias\${suffix}
@@ -2097,7 +2191,7 @@ cat >>man/edit_man.sh <<CF_EOF
 		echo \$verb \$target
 		rm -f \$target
 		test -n "\$aliases" && (
-			cd $cf_subdir\${section} && (
+			cd \$cf_subdir\${section} && (
 				for cf_alias in \$aliases
 				do
 					if test \$section = 1 ; then
@@ -2116,9 +2210,16 @@ cat >>man/edit_man.sh <<CF_EOF
 	;;
 esac
 done
+
+if test $cf_inboth = yes ; then
+if test \$form != format ; then
+	sh \[$]0 format \$verb \$mandir \$srcdir \[$]*
+fi
+fi
+
 exit 0
 CF_EOF
-chmod 755 man/edit_man.sh
+chmod 755 $cf_edit_man
 
 ])dnl
 dnl ---------------------------------------------------------------------------

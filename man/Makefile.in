@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.34 2003/10/25 20:41:08 tom Exp $
+# $Id: Makefile.in,v 1.35 2003/12/20 18:41:10 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -56,10 +56,10 @@ $(DESTDIR)$(mandir) :
 EDITARGS = $(DESTDIR)$(mandir) $(srcdir) terminfo.5 $(srcdir)/*.[0-9]*
 
 install install.man : terminfo.5 $(DESTDIR)$(mandir)
-	sh ./edit_man.sh installing $(EDITARGS)
+	sh ./edit_man.sh normal installing $(EDITARGS)
 
 uninstall uninstall.man :
-	-sh ./edit_man.sh removing $(EDITARGS)
+	-sh ./edit_man.sh normal removing $(EDITARGS)
 
 # We compose terminfo.5 from the real sources...
 CAPLIST=$(srcdir)/../include/@TERMINFO_CAPS@
