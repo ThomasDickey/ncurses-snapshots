@@ -49,7 +49,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.53 1999/06/12 23:12:12 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.54 1999/07/04 01:37:32 tom Exp $")
 
 /****************************************************************************
  *
@@ -334,6 +334,24 @@ int status;
 	else if (status == 0)
 	{
 		ret_error(0, "'%s': unknown terminal type.\n", tname);
+	}
+
+	/*
+	 * Improve on SVr4 curses.  If an application mixes curses and termcap
+	 * calls, it may call both initscr and tgetent.  This is not really a
+	 * good thing to do, but can happen if someone tries using ncurses with
+	 * the readline library.  The problem we are fixing is that when
+	 * tgetent calls setupterm, the resulting Ottyb struct in cur_term is
+	 * zeroed.  A subsequent call to endwin uses the zeroed terminal
+	 * settings rather than the ones saved in initscr.  So we check if
+	 * cur_term appears to contain terminal settings for the same output
+	 * file as our current call - and copy those terminal settings.  (SVr4
+	 * curses does not do this, however applications that are working
+	 * around the problem will still work properly with this feature).
+	 */
+	if (cur_term != 0) {
+		if (cur_term->Filedes == Filedes)
+			term_ptr->Ottyb = cur_term->Ottyb;
 	}
 
 	set_curterm(term_ptr);
