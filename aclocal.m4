@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.258 2001/10/27 18:23:58 tom Exp $
+dnl $Id: aclocal.m4,v 1.259 2001/11/15 00:36:50 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -1399,6 +1399,7 @@ AC_CACHE_VAL(cf_cv_makeflags,[
 	for cf_option in '-$(MAKEFLAGS)' '$(MFLAGS)'
 	do
 		cat >cf_makeflags.tmp <<CF_EOF
+SHELL = /bin/sh
 all :
 	@ echo '.$cf_option'
 CF_EOF
@@ -1867,11 +1868,13 @@ ifelse($1,,,[$1=$PATHSEP])
 dnl ---------------------------------------------------------------------------
 dnl Check the argument to see that it looks like a pathname.  Rewrite it if it
 dnl begins with one of the prefix/exec_prefix variables, and then again if the
-dnl result begins with 'NONE'.  This is necessary to workaround autoconf's
+dnl result begins with 'NONE'.  This is necessary to work around autoconf's
 dnl delayed evaluation of those symbols.
 AC_DEFUN([CF_PATH_SYNTAX],[
 case ".[$]$1" in #(vi
-./*) #(vi
+.\[$]\(*\)*|.\'*\'*) #(vi
+  ;;
+..|./*|.\\*) #(vi
   ;;
 .[[a-zA-Z]]:[[\\/]]*) #(vi OS/2 EMX
   ;;
@@ -1887,7 +1890,7 @@ case ".[$]$1" in #(vi
   $1=`echo [$]$1 | sed -e s@NONE@$ac_default_prefix@`
   ;;
 *)
-  AC_ERROR(expected a pathname, not "[$]$1")
+  AC_ERROR([expected a pathname, not \"[$]$1\"])
   ;;
 esac
 ])dnl
@@ -2699,13 +2702,14 @@ dnl $2 = help-text
 dnl $3 = environment variable to set
 dnl $4 = default value, shown in the help-message, must be a constant
 dnl $5 = default value, if it's an expression & cannot be in the help-message
+dnl $6 = flag to tell if we want to define or substitute
 dnl
 AC_DEFUN([CF_WITH_PATHLIST],[
 AC_REQUIRE([CF_PATHSEP])
 AC_ARG_WITH($1,[$2 ](default: ifelse($4,,empty,$4)),,
 ifelse($4,,[withval="${$3}"],[withval="${$3-ifelse($5,,$4,$5)}"]))dnl
 
-IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}${PATHSEP}"
+IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${PATHSEP}"
 cf_dst_path=
 for cf_src_path in $withval
 do
@@ -2715,6 +2719,18 @@ do
 done
 IFS="$ac_save_ifs"
 
-eval $3="$cf_dst_path"
+ifelse($6,define,[
+# Strip single quotes from the value, e.g., when it was supplied as a literal
+# for $4 or $5.
+case $cf_dst_path in #(vi
+\'*)
+  cf_dst_path=`echo $cf_dst_path |sed -e s/\'// -e s/\'\$//`
+  ;;
+esac
+cf_dst_path=`echo "$cf_dst_path" | sed -e 's/\\\\/\\\\\\\\/g'`
+])
+
+eval '$3="$cf_dst_path"'
 AC_SUBST($3)dnl
+
 ])dnl

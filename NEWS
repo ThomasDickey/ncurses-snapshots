@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.654 2001/11/10 23:45:30 tom Exp $
+-- $Id: NEWS,v 1.655 2001/11/18 02:09:42 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20011117
+	+ updated/expanded Apple_Terminal and Darwin PowerPC terminfo entries
+	  (Benjamin C W Sittler).
+	+ add putty terminfo entry -TD
+	+ if configuring for wide-curses, define _XOPEN_SOURCE_EXTENDED, since
+	  this may not otherwise be defined to make test/view.c compile.
 
 20011110
 	+ review/correct several missing/generated items in curses.wide, sorted

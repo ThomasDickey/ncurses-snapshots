@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.208 2001/11/02 01:01:03 tom Exp $
+ * $Id: curses.priv.h,v 1.209 2001/11/15 00:54:12 tom Exp $
  *
  *	curses.priv.h
  *
@@ -234,11 +234,7 @@ color_t;
 
 #define WINDOWLIST struct _win_list
 
-#if USE_WIDEC_SUPPORT
-#ifndef _XOPEN_SOURCE_EXTENDED
-#define _XOPEN_SOURCE_EXTENDED
-#endif
-#else
+#if !USE_WIDEC_SUPPORT
 #undef _XOPEN_SOURCE_EXTENDED
 #define _bkgrnd	    _bkgd
 #define wgetbkgrnd(win, wch)	*wch = win->_bkgd
