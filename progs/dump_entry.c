@@ -39,7 +39,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.63 2002/08/17 21:45:13 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.64 2002/09/01 17:54:43 tom Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
@@ -789,7 +789,7 @@ static bool
 kill_string(TERMTYPE * tterm, char *cap)
 {
     int n;
-    for (n = 0; n < tterm->num_Strings; ++n) {
+    for (n = 0; n < NUM_STRINGS(tterm); ++n) {
 	if (cap == tterm->Strings[n]) {
 	    tterm->Strings[n] = ABSENT_STRING;
 	    return TRUE;
@@ -802,7 +802,7 @@ static char *
 find_string(TERMTYPE * tterm, char *name)
 {
     int n;
-    for (n = 0; n < tterm->num_Strings; ++n) {
+    for (n = 0; n < NUM_STRINGS(tterm); ++n) {
 	if (version_filter(STRING, n)
 	    && !strcmp(name, strnames[n])) {
 	    char *cap = tterm->Strings[n];

@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.220 2002/08/24 23:12:30 tom Exp $
+ * $Id: curses.priv.h,v 1.222 2002/09/01 17:51:07 tom Exp $
  *
  *	curses.priv.h
  *
@@ -142,12 +142,15 @@ extern int errno;
  */
 #if !NCURSES_EXT_FUNCS
 #undef HAVE_SIZECHANGE
+#define HAVE_SIZECHANGE 0
 #endif
 
 #if HAVE_SIZECHANGE && defined(SIGWINCH)
 #define USE_SIZECHANGE 1
 #else
+#define USE_SIZECHANGE 0
 #undef USE_SIGWINCH
+#define USE_SIGWINCH 0
 #endif
 
 /*
@@ -220,6 +223,8 @@ struct tries {
 #define S_QUOTE '\''
 #define D_QUOTE '"'
 
+#define VT_ACSC "``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~"
+
 /*
  * Structure for palette tables
  */
@@ -289,6 +294,12 @@ typedef struct {
 	int oldindex, newindex;
 } HASHMAP;
 
+typedef	struct {
+	int	line;           /* lines to take, < 0 => from bottom*/
+	int	(*hook)(WINDOW *, int); /* callback for user        */
+	WINDOW *w;              /* maybe we need this for cleanup   */
+} ripoff_t;
+
 struct screen {
 	int             _ifd;           /* input file ptr for screen        */
 	FILE            *_ofp;          /* output file ptr for screen       */
@@ -298,8 +309,11 @@ struct screen {
 	struct term     *_term;         /* terminal type information        */
 	short           _lines;         /* screen lines                     */
 	short           _columns;       /* screen columns                   */
+
 	short           _lines_avail;   /* lines available for stdscr       */
 	short           _topstolen;     /* lines stolen from top            */
+	ripoff_t	_rippedoff[5];	/* list of lines stolen		    */
+	int		_rip_count;	/* ...and total lines stolen	    */
 
 	WINDOW          *_curscr;       /* current screen                   */
 	WINDOW          *_newscr;       /* virtual screen to be updated to  */
@@ -468,12 +482,6 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #endif
 	WINDOW	win;
 };
-
-typedef	struct {
-	int	line;           /* lines to take, < 0 => from bottom*/
-	int	(*hook)(WINDOW *, int); /* callback for user        */
-	WINDOW *w;              /* maybe we need this for cleanup   */
-} ripoff_t;
 
 /* The terminfo source is assumed to be 7-bit ASCII */
 #define is7bits(c)	((unsigned)(c) < 128)
@@ -703,6 +711,7 @@ extern NCURSES_EXPORT(const char *) _nc_viscbuf (const cchar_t *, int);
 extern	NCURSES_EXPORT(void) name (void); \
 	NCURSES_EXPORT(void) name (void) { }
 
+#
 /* used in _nc_visbuf() whether or not we're tracing */
 extern NCURSES_EXPORT(const char *) _nc_visbuf2 (int, const char *);
 
@@ -710,7 +719,6 @@ extern NCURSES_EXPORT(const char *) _nc_visbuf2 (int, const char *);
 #define IGNORE_COLOR_OFF FALSE
 #define NONBLANK_ATTR (A_BOLD|A_DIM|A_BLINK)
 #define XMC_CHANGES(c) ((c) & SP->_xmc_suppress)
-
 
 #define toggle_attr_on(S,at) {\
    if (PAIR_NUMBER(at) > 0)\
@@ -768,6 +776,19 @@ extern NCURSES_EXPORT(const char *) _nc_visbuf2 (int, const char *);
 				vidattr((a));
 #endif
 
+/*
+ * Macros to make additional parameter to implement wgetch_events()
+ */
+#ifdef NCURSES_WGETCH_EVENTS
+#define EVENTLIST_0th(param) param
+#define EVENTLIST_1st(param) param
+#define EVENTLIST_2nd(param) , param
+#else
+#define EVENTLIST_0th(param) void
+#define EVENTLIST_1st(param) /* nothing */
+#define EVENTLIST_2nd(param) /* nothing */
+#endif
+
 #if NCURSES_EXPANDED && NCURSES_EXT_FUNCS
 
 #undef  toggle_attr_on
@@ -820,7 +841,7 @@ extern NCURSES_EXPORT(int) _nc_wchstrlen(const cchar_t *);
 #endif
 
 /* lib_getch.c */
-extern NCURSES_EXPORT(int) _nc_wgetch(WINDOW *, unsigned long *, int);
+extern NCURSES_EXPORT(int) _nc_wgetch(WINDOW *, unsigned long *, int EVENTLIST_2nd(_nc_eventlist *));
 
 /* lib_mvcur.c */
 #define INFINITY	1000000	/* cost: too high to use */
@@ -896,7 +917,7 @@ extern NCURSES_EXPORT(int) _nc_keypad (bool);
 extern NCURSES_EXPORT(int) _nc_ospeed (int);
 extern NCURSES_EXPORT(int) _nc_outch (int);
 extern NCURSES_EXPORT(int) _nc_setupscreen (short, short const, FILE *);
-extern NCURSES_EXPORT(int) _nc_timed_wait (int, int, int *);
+extern NCURSES_EXPORT(int) _nc_timed_wait(int, int, int * EVENTLIST_2nd(_nc_eventlist *));
 extern NCURSES_EXPORT(int) _nc_waddch_nosync (WINDOW *, const NCURSES_CH_T);
 extern NCURSES_EXPORT(void) _nc_do_color (int, int, bool, int (*)(int));
 extern NCURSES_EXPORT(void) _nc_flush (void);
@@ -922,6 +943,13 @@ extern NCURSES_EXPORT(void) _nc_update_screensize (void);
 extern NCURSES_EXPORT(void) _nc_resize_margins (WINDOW *);
 #else
 #define _nc_resize_margins(wp) /* nothing */
+#endif
+
+#ifdef NCURSES_WGETCH_EVENTS
+extern NCURSES_EXPORT(int) _nc_eventlist_timeout(_nc_eventlist *);
+#else
+#define wgetch_events(win, evl) wgetch(win)
+#define wgetnstr_events(win, str, maxlen, evl) wgetnstr(win, str, maxlen)
 #endif
 
 /*

@@ -47,7 +47,7 @@
 #include <term.h>		/* clear_screen, cup & friends, cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_newterm.c,v 1.53 2002/07/20 22:17:11 Philippe.Blain Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.54 2002/08/31 21:46:41 Philippe.Blain Exp $")
 
 #ifndef ONLCR			/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -165,7 +165,6 @@ newterm(NCURSES_CONST char *name, FILE * ofp, FILE * ifp)
 	_nc_slk_initialize(stdscr, COLS);
 
     SP->_ifd = fileno(ifp);
-    SP->_checkfd = fileno(ifp);
     typeahead(fileno(ifp));
 #ifdef TERMIOS
     SP->_use_meta = ((cur_term->Ottyb.c_cflag & CSIZE) == CS8 &&

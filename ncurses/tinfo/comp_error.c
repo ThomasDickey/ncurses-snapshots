@@ -40,7 +40,7 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: comp_error.c,v 1.23 2001/09/23 00:58:30 tom Exp $")
+MODULE_ID("$Id: comp_error.c,v 1.24 2002/08/31 22:08:26 Philippe.Blain Exp $")
 
 NCURSES_EXPORT_VAR(bool) _nc_suppress_warnings = FALSE;
 NCURSES_EXPORT_VAR(int) _nc_curr_line = 0; /* current line # in input */
@@ -59,7 +59,7 @@ NCURSES_EXPORT(void)
 _nc_set_type(const char *const name)
 {
     if (termtype == 0)
-	termtype = _nc_doalloc(termtype, MAX_NAME_SIZE + 1);
+	termtype = typeRealloc(char, MAX_NAME_SIZE + 1, termtype);
     termtype[0] = '\0';
     if (name)
 	strncat(termtype, name, MAX_NAME_SIZE);

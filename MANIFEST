@@ -477,6 +477,7 @@
 ./form/fty_regex.c
 ./form/headers
 ./form/llib-lform
+./form/llib-lformw
 ./form/modules
 ./include/Caps
 ./include/Caps.aix4
@@ -637,6 +638,7 @@
 ./menu/eti.h
 ./menu/headers
 ./menu/llib-lmenu
+./menu/llib-lmenuw
 ./menu/m_attribs.c
 ./menu/m_cursor.c
 ./menu/m_driver.c
@@ -697,6 +699,7 @@
 ./mkinstalldirs
 ./ncurses/Makefile.in
 ./ncurses/README
+./ncurses/README.IZ
 ./ncurses/SigAction.h
 ./ncurses/base/MKkeyname.awk
 ./ncurses/base/MKlib_gen.sh
@@ -877,6 +880,7 @@
 ./panel/Makefile.in
 ./panel/headers
 ./panel/llib-lpanel
+./panel/llib-lpanelw
 ./panel/modules
 ./panel/p_above.c
 ./panel/p_below.c

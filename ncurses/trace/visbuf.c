@@ -41,7 +41,7 @@
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.3 2001/11/10 23:47:51 tom Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.4 2002/08/31 22:25:37 Philippe.Blain Exp $")
 
 static char *
 _nc_vischar(char *tp, unsigned c)
@@ -91,7 +91,7 @@ _nc_visbuf2(int bufnum, const char *buf)
 #else
     {
 	static char *mybuf[2];
-	mybuf[bufnum] = _nc_doalloc(mybuf[bufnum], (strlen(buf) * 4) + 5);
+	mybuf[bufnum] = typeRealloc(char, (strlen(buf) * 4) + 5, mybuf[bufnum]);
 	tp = vbuf = mybuf[bufnum];
     }
 #endif
@@ -127,7 +127,7 @@ _nc_viswbuf2(int bufnum, const wchar_t * buf)
 #else
     {
 	static char *mybuf[2];
-	mybuf[bufnum] = _nc_doalloc(mybuf[bufnum], (wcslen(buf) * 4) + 5);
+	mybuf[bufnum] = typeRealloc(char, (wcslen(buf) * 4) + 5, mybuf[bufnum]);
 	tp = vbuf = mybuf[bufnum];
     }
 #endif

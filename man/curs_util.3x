@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.8 2002/02/23 22:55:47 tom Exp $
+.\" $Id: curs_util.3x,v 1.9 2002/09/01 19:44:37 tom Exp $
 .TH curs_util 3X ""
 .SH NAME
 \fBdelay_output\fR,
@@ -73,12 +73,11 @@ a wide-character.
 The \fBkeyname\fR routine returns a character string corresponding to the key \fIc\fR.
 Control characters are displayed in the \fB^\fR\fIX\fR notation.
 Values above 128 are either meta characters, shown in the \fBM-\fR\fIX\fR notation,
-or the names of function keys, or
-"UNKNOWN STRING".
+or the names of function keys, or null.
 The corresponding \fBkey_name\fR returns a character string corresponding
 to the wide-character value \fIw\fR.
 The two functions do not return the same set of strings;
-the latter returns "UNKNOWN STRING" where the former would display a meta character.
+the latter returns null where the former would display a meta character.
 
 The \fBfilter\fR routine, if used, must be called before \fBinitscr\fR or
 \fBnewterm\fR are called.  The effect is that, during those calls, \fBLINES\fR

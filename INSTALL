@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.54 2002/06/29 22:29:42 tom Exp $
+-- $Id: INSTALL,v 1.56 2002/09/01 22:42:11 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -47,7 +47,7 @@ REQUIREMENTS:
 
 You will need the following in order to build and install ncurses under UNIX:
 
-	* ANSI C compiler  (gcc is recommended)
+	* ANSI C compiler  (gcc, for instance)
 	* sh               (bash will do)
 	* awk              (mawk or gawk will do)
 	* sed
@@ -106,6 +106,16 @@ INSTALLATION PROCEDURE:
 
 	libncurses.la (libtool)
 
+    If you configure using the --enable-widec option, a "w" is appended to the
+    library names (e.g., libncursesw.a), and the resulting libraries support
+    wide-characters, e.g., via a UTF-8 locale.  The corresponding header files
+    are compatible with the non-wide-character configuration; wide-character
+    features are provided by ifdef's in the header files.  The wide-character
+    library interfaces are not binary-compatible with the non-wide-character
+    version.  Building and running the wide-character code relies on a fairly
+    recent implementation of libiconv.  We have built this configuration on
+    Linux using libiconv, sometimes requiring libutf8.
+
     If you do not specify any models, the normal and debug libraries will be
     configured.  Typing `configure' with no arguments is equivalent to:
 
@@ -158,6 +168,9 @@ INSTALLATION PROCEDURE:
     databases are SVr4-compatible, but most seem to be.  Exceptions include
     DEC's Digital Unix (formerly known as OSF/1).
 
+    It is possible to configure ncurses to use other terminfo database formats.
+    A few are provided as examples in the include-directory (see --with-caps).
+
     The ncurses program is designed specifically to test the ncurses library.
     You can use it to verify that the screen highlights work correctly, that
     cursor addressing and window scrolling works OK, etc.
@@ -189,14 +202,14 @@ INSTALLATION PROCEDURE:
     with tbl(1) by specifying the configure option --with-manpage-tbl.
 
     If the system already has a curses library that you need to keep using
-    for some bizarre binary-compatibility reason, you'll need to distinguish
-    between it and ncurses. If ncurses is installed outside the standard
-    directories (/usr/include and /usr/lib) then all your users will need
-    to use the -I option to compile programs and -L to link them.
+    you'll need to distinguish between it and ncurses.  See the discussion of
+    --disable-overwrite.  If ncurses is installed outside the standard
+    directories (/usr/include and /usr/lib) then all your users will need to
+    use the -I option to compile programs and -L to link them.
 
-    If you have BSD curses installed in your system and you accidentally
+    If you have another curses installed in your system and you accidentally
     compile using its curses.h you'll end up with a large number of
-    undefined symbols at link time. _waddbytes is one of them.
+    undefined symbols at link time.
 
     IF YOU DO NOT HAVE ROOT: Change directory to the `progs' subdirectory
     and run the `capconvert' script.  This script will deduce various things
@@ -220,26 +233,6 @@ INSTALLATION PROCEDURE:
     the configure script to not attempt to determine the type of 'bool'
     which may be supported by C++.  IF YOU USE THIS OPTION, BE ADVISED THAT
     YOU MAY NOT BE ABLE TO COMPILE (OR RUN) NCURSES APPLICATIONS WITH C++.
-
-7.  If you're running an older Linux, you must either (a) tell Linux that the
-    console terminal type is `linux' or (b) make a link to or copy of the
-    linux entry in the appropriate place under your terminfo directory, named
-    `console'.  All 1.3 and many 1.2 distributions (including Yggdrasil and
-    Red Hat) already have the console type set to `linux'.
-
-    The way to change the wired-in console type depends on the configuration
-    of your system. This may involve editing /etc/inittab, /etc/ttytype,
-    /etc/profile and other such files.
-
-    Warning: this is not for the fainthearted, if you mess up your console
-    getty entries you can make your system unusable!  However, if you are
-    a distribution maker, this is the right thing to do (see the note for
-    integrators near the end of this file).
-
-    The easier way is to link or copy l/linux to c/console under your terminfo
-    directory.  Note: this will go away next time you do `make install.data'
-    and you'll have to redo it. There is no need to have entries for all
-    possible screen sizes, ncurses will figure out the size automatically.
 
 
 SUMMARY OF CONFIGURE OPTIONS:
@@ -446,8 +439,7 @@ SUMMARY OF CONFIGURE OPTIONS:
     --enable-widec
 	Compile with experimental wide-character code.  This makes a different
 	version of the libraries (e.g., libncursesw.so), which stores
-	characters in 16-bits.  We provide a simple UTF-8 driver and test
-	program to use this feature with terminals that can display UTF-8.
+	characters as wide-characters,
 
 	NOTE: applications compiled with this configuration are not compatible
 	with those built for 8-bit characters.  You cannot simply make a
@@ -680,6 +672,35 @@ COMPATIBILITY WITH OLDER VERSIONS OF NCURSES:
     Here are some of the major interface changes, and related problems which
     you may encounter when building a system with different versions of
     ncurses:
+
+    5.3 (pre-release)
+	Interface changes:
+
+	+ change type for bool used in headers to NCURSES_BOOL, which usually
+	  is the same as the compiler's definition for 'bool'.
+
+	+ add all but two functions for X/Open curses wide-character support.
+	  These are only available if the library is configured using the
+	  --enable-widec option.  Missing functions are
+		pecho_wchar()
+		slk_wset()
+
+	+ add environment variable $NCURSES_ASSUMED_COLORS to modify the
+	  assume_default_colors() extension.
+
+	Added extensions:
+		is_term_resized()
+		resize_term()
+	Added internal functions:
+		_nc_altcharset_name()	debug
+		_nc_rootname()
+		_nc_trace_ttymode()	debug
+		_nc_varargs()		debug
+		_nc_wgetch()
+	Removed internal functions:
+		_nc_background()
+	Modified internal functions:
+		_nc_freeall()		debug
 
     5.2 (October 21, 2000)
 	Interface changes:

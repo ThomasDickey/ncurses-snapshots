@@ -1,4 +1,4 @@
-# $Id: MKkeyname.awk,v 1.23 2002/08/03 20:26:00 tom Exp $
+# $Id: MKkeyname.awk,v 1.24 2002/09/01 19:43:34 tom Exp $
 ##############################################################################
 # Copyright (c) 1999-2001,2002 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -54,7 +54,7 @@ END {
 	print "\tfor (i = 0; _nc_key_names[i].name != 0; i++)"
 	print "\t\tif (_nc_key_names[i].code == c)"
 	print "\t\t\treturn (NCURSES_CONST char *)_nc_key_names[i].name;"
-	print "\tif (c < 0 || c >= 256) return \"UNKNOWN KEY\";"
+	print "\tif (c < 0 || c >= 256) return 0;"
 	print ""
 	print "\tif (table == 0)"
 	print "\t\ttable = typeCalloc(char *, 256);"
@@ -83,7 +83,7 @@ END {
 	print "NCURSES_EXPORT(NCURSES_CONST char *) key_name (wchar_t c)"
 	print "{"
 	print "\tNCURSES_CONST char *result = keyname((int)c);"
-	print "\tif (!strncmp(result, \"M-\", 2)) result = \"UNKNOWN KEY\";"
+	print "\tif (!strncmp(result, \"M-\", 2)) result = 0;"
 	print "\treturn result;"
 	print "}"
 	print "#endif"

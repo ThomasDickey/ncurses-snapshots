@@ -1,4 +1,4 @@
--- $Id: TO-DO,v 1.40 2002/07/13 16:22:11 tom Exp $
+-- $Id: TO-DO,v 1.41 2002/08/31 21:32:43 tom Exp $
 
 SHORT-TERM TO-DO ITEMS:
 
@@ -30,6 +30,9 @@ Known Problems:
 
 * The window classes defined in the c++ subdirectory need documentation.
   Some C++ programmer could earn a lot of good karma by doing this...
+
+* The resizeterm() function does not handle ripped-off lines such as that
+  done for the slk_XXX functions.
 
 Portability (or lack thereof):
 
@@ -79,6 +82,8 @@ Untested features:
   for them (num_labels > 0, label_height, label_width, label_format, label_off,
   label_on, plab_norm, lab_f*) has not been tested.  The label_format and
   lab_f* capabilities aren't presently used.
+
+* The wide-character input functions need testing.
 
 LONGER-TERM TO-DO ITEMS:
 

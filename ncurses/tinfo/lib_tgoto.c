@@ -35,7 +35,7 @@
 #include <ctype.h>
 #include <termcap.h>
 
-MODULE_ID("$Id: lib_tgoto.c,v 1.9 2002/08/17 23:41:11 tom Exp $")
+MODULE_ID("$Id: lib_tgoto.c,v 1.10 2002/08/31 22:14:47 Philippe.Blain Exp $")
 
 #if !PURE_TERMINFO
 static bool
@@ -88,7 +88,7 @@ tgoto_internal(const char *string, int x, int y)
     while (*string != 0) {
 	if ((used + need) > length) {
 	    length += (used + need);
-	    if ((result = _nc_doalloc(result, length)) == 0) {
+	    if ((result = typeRealloc(char, length, result)) == 0) {
 		length = 0;
 		break;
 	    }

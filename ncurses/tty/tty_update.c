@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001,2002 Free Software Foundation, Inc.    *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -72,7 +72,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.174 2002/04/21 21:04:16 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.175 2002/09/01 17:53:46 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -1473,7 +1473,7 @@ _nc_outstr(const char *str)
 static int
 scroll_csr_forward(int n, int top, int bot, int miny, int maxy, NCURSES_CH_T blank)
 {
-    int i, j;
+    int i;
 
     if (n == 1 && scroll_forward && top == miny && bot == maxy) {
 	GoTo(bot, 0);
@@ -1514,6 +1514,7 @@ scroll_csr_forward(int n, int top, int bot, int miny, int maxy, NCURSES_CH_T bla
 
 #if NCURSES_EXT_FUNCS
     if (FILL_BCE()) {
+	int j;
 	for (i = 0; i < n; i++) {
 	    GoTo(bot - i, 0);
 	    for (j = 0; j < screen_columns; j++)
@@ -1530,7 +1531,7 @@ static int
 scroll_csr_backward(int n, int top, int bot, int miny, int maxy,
 		    NCURSES_CH_T blank)
 {
-    int i, j;
+    int i;
 
     if (n == 1 && scroll_reverse && top == miny && bot == maxy) {
 	GoTo(top, 0);
@@ -1571,6 +1572,7 @@ scroll_csr_backward(int n, int top, int bot, int miny, int maxy,
 
 #if NCURSES_EXT_FUNCS
     if (FILL_BCE()) {
+	int j;
 	for (i = 0; i < n; i++) {
 	    GoTo(top + i, 0);
 	    for (j = 0; j < screen_columns; j++)

@@ -47,7 +47,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.56 2002/05/25 12:23:51 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.57 2002/08/31 17:02:02 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -869,8 +869,7 @@ postprocess_termcap(TERMTYPE * tp, bool has_base)
     } else if (acs_chars == 0
 	       && enter_alt_charset_mode != 0
 	       && exit_alt_charset_mode != 0) {
-	acs_chars =
-	    _nc_save_str("``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~");
+	acs_chars = _nc_save_str(VT_ACSC);
     }
 }
 

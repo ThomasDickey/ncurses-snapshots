@@ -43,7 +43,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.68 2002/08/10 19:53:06 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.70 2002/08/31 19:44:52 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN * screenp)
@@ -153,7 +153,7 @@ delscreen(SCREEN * sp)
 
 static ripoff_t rippedoff[5];
 static ripoff_t *rsp = rippedoff;
-#define N_RIPS SIZEOF(rippedoff)
+#define N_RIPS SIZEOF(SP->_rippedoff)
 
 static bool
 no_mouse_event(SCREEN * sp GCC_UNUSED)
@@ -204,16 +204,16 @@ extract_fgbg(char *src, int *result)
 #endif
 
 NCURSES_EXPORT(int)
-_nc_setupscreen
-(short slines, short const scolumns, FILE * output)
+_nc_setupscreen(short slines, short const scolumns, FILE * output)
 /* OS-independent screen initializations */
 {
     int bottom_stolen = 0;
     size_t i;
 
+    T((T_CALLED("_nc_setupscreen(%d, %d, %p)"), slines, scolumns, output));
     assert(SP == 0);		/* has been reset in newterm() ! */
     if (!_nc_alloc_screen())
-	return ERR;
+	returnCode(ERR);
 
     SP->_next_screen = _nc_screen_chain;
     _nc_screen_chain = SP;
@@ -356,7 +356,7 @@ _nc_setupscreen
 					      A_STANDOUT |
 					      A_UNDERLINE
 	    );
-	SP->_xmc_suppress = SP->_xmc_triggers & (chtype) ~ (A_BOLD);
+	SP->_xmc_suppress = SP->_xmc_triggers & (chtype) ~(A_BOLD);
 
 	T(("magic cookie attributes %s", _traceattr(SP->_xmc_suppress)));
 #if USE_XMC_SUPPORT
@@ -372,10 +372,12 @@ _nc_setupscreen
 	acs_chars = 0;
 #endif
     }
+
+    /* initialize normal acs before wide, since we use mapping in the latter */
+    _nc_init_acs();
 #if USE_WIDEC_SUPPORT
     _nc_init_wacs();
 #endif
-    _nc_init_acs();
     memcpy(SP->_acs_map, acs_map, sizeof(chtype) * ACS_LEN);
 
     _nc_idcok = TRUE;
@@ -388,11 +390,11 @@ _nc_setupscreen
 
     T(("creating newscr"));
     if ((newscr = newwin(slines, scolumns, 0, 0)) == 0)
-	return ERR;
+	returnCode(ERR);
 
     T(("creating curscr"));
     if ((curscr = newwin(slines, scolumns, 0, 0)) == 0)
-	return ERR;
+	returnCode(ERR);
 
     SP->_newscr = newscr;
     SP->_curscr = curscr;
@@ -407,41 +409,40 @@ _nc_setupscreen
     def_prog_mode();
 
     for (i = 0, rsp = rippedoff; rsp->line && (i < N_RIPS); rsp++, i++) {
+	T(("ripping off line %d at %s", i, rsp->line < 0 ? "bottom" : "top"));
+	SP->_rippedoff[i] = rippedoff[i];
 	if (rsp->hook) {
-	    WINDOW *w;
 	    int count = (rsp->line < 0) ? -rsp->line : rsp->line;
 
-	    if (rsp->line < 0) {
-		w = newwin(count, scolumns, SP->_lines_avail - count, 0);
-		if (w) {
-		    rsp->w = w;
-		    rsp->hook(w, scolumns);
-		    bottom_stolen += count;
-		} else
-		    return ERR;
-	    } else {
-		w = newwin(count, scolumns, 0, 0);
-		if (w) {
-		    rsp->w = w;
-		    rsp->hook(w, scolumns);
-		    SP->_topstolen += count;
-		} else
-		    return ERR;
-	    }
+	    SP->_rippedoff[i].w = newwin(count,
+					 scolumns,
+					 ((rsp->line < 0)
+					  ? SP->_lines_avail - count
+					  : 0),
+					 0);
+	    if (SP->_rippedoff[i].w != 0)
+		SP->_rippedoff[i].hook(SP->_rippedoff[i].w, scolumns);
+	    else
+		returnCode(ERR);
+	    if (rsp->line < 0)
+		bottom_stolen += count;
+	    else
+		SP->_topstolen += count;
 	    SP->_lines_avail -= count;
 	}
 	rsp->line = 0;
     }
+    SP->_rip_count = i;
     /* reset the stack */
     rsp = rippedoff;
 
     T(("creating stdscr"));
     assert((SP->_lines_avail + SP->_topstolen + bottom_stolen) == slines);
     if ((stdscr = newwin(LINES = SP->_lines_avail, scolumns, 0, 0)) == 0)
-	return ERR;
+	returnCode(ERR);
     SP->_stdscr = stdscr;
 
-    return OK;
+    returnCode(OK);
 }
 
 /* The internal implementation interprets line as the number of
@@ -450,18 +451,20 @@ _nc_setupscreen
 NCURSES_EXPORT(int)
 _nc_ripoffline(int line, int (*init) (WINDOW *, int))
 {
-    if (line == 0)
-	return (OK);
+    T((T_CALLED("_nc_ripoffline(%d, %p)"), line, init));
 
-    if (rsp >= rippedoff + N_RIPS)
-	return (ERR);
+    if (line != 0) {
 
-    rsp->line = line;
-    rsp->hook = init;
-    rsp->w = 0;
-    rsp++;
+	if (rsp >= rippedoff + N_RIPS)
+	    returnCode(ERR);
 
-    return (OK);
+	rsp->line = line;
+	rsp->hook = init;
+	rsp->w = 0;
+	rsp++;
+    }
+
+    returnCode(OK);
 }
 
 NCURSES_EXPORT(int)

@@ -50,7 +50,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.59 2001/09/23 00:56:29 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.60 2002/08/31 22:08:37 Philippe.Blain Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -221,7 +221,7 @@ _nc_get_token(bool silent)
 	}
 
 	if (buffer == 0)
-	    buffer = _nc_doalloc(buffer, MAX_ENTRY_SIZE);
+	    buffer = typeMalloc(char, MAX_ENTRY_SIZE);
 
 	ptr = buffer;
 	*(ptr++) = ch;
@@ -639,7 +639,7 @@ _nc_push_token(int tokclass)
      */
     pushtype = tokclass;
     if (pushname == 0)
-	pushname = _nc_doalloc(pushname, MAX_NAME_SIZE + 1);
+	pushname = typeMalloc(char, MAX_NAME_SIZE + 1);
     _nc_get_type(pushname);
 
     DEBUG(3, ("pushing token: `%s', class %d",
@@ -759,7 +759,7 @@ next_char(void)
 	    do {
 		if (used + (LEXBUFSIZ / 4) >= allocated) {
 		    allocated += (allocated + LEXBUFSIZ);
-		    result = _nc_doalloc(result, allocated);
+		    result = typeRealloc(char, allocated, result);
 		    if (result == 0)
 			return (EOF);
 		}

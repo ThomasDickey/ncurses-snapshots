@@ -34,7 +34,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_screen.c,v 1.24 2002/08/24 20:38:27 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.25 2002/08/31 21:43:21 Philippe.Blain Exp $")
 
 NCURSES_EXPORT(WINDOW *)
 getwin(FILE * filep)
@@ -83,7 +83,7 @@ getwin(FILE * filep)
     for (n = 0; n <= nwin->_maxy; n++) {
 	clearerr(filep);
 	(void) fread(nwin->_line[n].text,
-		     sizeof(chtype), (size_t) (nwin->_maxx + 1), filep);
+		     sizeof(NCURSES_CH_T), (size_t) (nwin->_maxx + 1), filep);
 	if (ferror(filep)) {
 	    delwin(nwin);
 	    returnWin(0);
@@ -102,7 +102,7 @@ putwin(WINDOW *win, FILE * filep)
 
     T((T_CALLED("putwin(%p,%p)"), win, filep));
 
-    if (win) {
+    if (win && !(win->_flags & _ISPAD)) {
 	clearerr(filep);
 	if (fwrite(win, sizeof(WINDOW), 1, filep) != 1
 	    || ferror(filep))
@@ -110,7 +110,6 @@ putwin(WINDOW *win, FILE * filep)
 
 	for (n = 0; n <= win->_maxy; n++) {
 	    size_t len = (win->_maxx + 1);
-	    clearerr(filep);
 	    if (fwrite(win->_line[n].text, sizeof(chtype), len, filep) != len
 		|| ferror(filep))
 		  returnCode(code);

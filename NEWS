@@ -1,10 +1,38 @@
--- $Id: NEWS,v 1.703 2002/08/24 22:10:38 tom Exp $
+-- $Id: NEWS,v 1.706 2002/09/01 19:46:02 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020901 pre-release
+	+ change minor version to 3, i.e., ncurses 5.3
+	+ update config.guess, config.sub
+	+ retest build with each configure option; minor ifdef fixes.
+	+ make keyname() return a null pointer rather than "UNKNOWN STRING" to
+	  match XSI.
+	+ modify handling of wide line-drawing character functions to use the
+	  normal line-drawing characters when not in UTF-8 locale.
+	+ add check/fix to comp_parse.c to suppress warning about missing acsc
+	  string.  This happens in configurations where raw termcap information
+	  is processed; tic already does this and other checks.
+	+ modify tic's check for ich/ich1 versus rmir/smir to only warn about
+	  ich1, to match xterm patch #70 notes.
+	+ moved information for ripped-off lines into SCREEN struct to allow
+	  use in resizeterm().
+	+ add experimental wgetch_events(), ifdef'd with NCURSES_WGETCH_EVENTS
+	  (adapted from patch by Ilya Zakharevich - see ncurses/README.IZ).
+	+ amend check in kgetch() from 20020824 to look only for function-keys,
+	  otherwise escape sequences are not resolved properly.
+	> Philippe Blain:
+	+ removed redundant assignment to SP->_checkfd from newterm().
+	+ check return-value of setupterm() in restartterm().
+	+ use sizeof(NCURSES_CH_T) in a few places that used sizeof(chtype).
+	+ prevent dupwin() from duplicating a pad.
+	+ prevent putwin() from writing a pad.
+	+ use typeRealloc() or typeMalloc() in preference to direct calls on
+	  _nc_doalloc().
 
 20020824
 	+ add a check in kgetch() for cooked characters in the fifo to avoid

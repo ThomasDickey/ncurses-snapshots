@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: ncurses.3x,v 1.61 2002/05/11 21:15:32 tom Exp @
+  * @Id: ncurses.3x,v 1.63 2002/08/10 21:56:07 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -755,75 +755,86 @@
             123  or  321.   If  it is not specified, <STRONG>ncurses</STRONG> uses
             132.
 
+       NCURSES_ASSUMED_COLORS
+            Override  the   compiled-in   assumption   that   the
+            terminal's  default  colors  are  white-on-black (see
+            <STRONG><A HREF="assume_default_colors.3x.html">assume_default_colors(3x)</A></STRONG>).    You   may   set    the
+            foreground  and  background  color  values  with this
+            environment variable by  proving  a  2-element  list:
+            foreground,background.   For example, to tell ncurses
+            to not assume anything about the colors, set this  to
+            "-1,-1".  To make it green-on-black, set it to "2,0".
+            Any  positive  value  from  zero  to   the   terminfo
+            <STRONG>max_colors</STRONG> value is allowed.
+
        NCURSES_NO_PADDING
-            Most of the terminal  descriptions  in  the  terminfo
-            database  are  written for real "hardware" terminals.
-            Many people use terminal emulators  which  run  in  a
-            windowing    environment    and    use   curses-based
-            applications.  Terminal emulators can  duplicate  all
-            of  the important aspects of a hardware terminal, but
-            they do not have the  same  limitations.   The  chief
+            Most  of  the  terminal  descriptions in the terminfo
+            database are written for real  "hardware"  terminals.
+            Many  people  use  terminal  emulators which run in a
+            windowing   environment    and    use    curses-based
+            applications.   Terminal  emulators can duplicate all
+            of the important aspects of a hardware terminal,  but
+            they  do  not  have  the same limitations.  The chief
             limitation of a hardware terminal from the standpoint
-            of your application is the  management  of  dataflow,
-            i.e.,   timing.    Unless   a  hardware  terminal  is
-            interfaced into a terminal concentrator  (which  does
-            flow  control),  it (or your application) must manage
+            of  your  application  is the management of dataflow,
+            i.e.,  timing.   Unless  a   hardware   terminal   is
+            interfaced  into  a terminal concentrator (which does
+            flow control), it (or your application)  must  manage
             dataflow, preventing overruns.  The cheapest solution
-            (no  hardware cost) is for your program to do this by
+            (no hardware cost) is for your program to do this  by
             pausing  after  operations  that  the  terminal  does
             slowly, such as clearing the display.
 
-            As  a  result,  many terminal descriptions (including
-            the vt100) have delay times embedded.  You  may  wish
-            to  use  these  descriptions, but not want to pay the
+            As a result, many  terminal  descriptions  (including
+            the  vt100)  have delay times embedded.  You may wish
+            to use these descriptions, but not want  to  pay  the
             performance penalty.
 
-            Set the NCURSES_NO_PADDING symbol to disable all  but
-            mandatory  padding.   Mandatory  padding is used as a
+            Set  the NCURSES_NO_PADDING symbol to disable all but
+            mandatory padding.  Mandatory padding is  used  as  a
             part of special control sequences such as <EM>flash</EM>.
 
        NCURSES_NO_SETBUF
-            Normally  <STRONG>ncurses</STRONG>  enables  buffered  output   during
-            terminal  initialization.   This  is done (as in SVr4
-            curses)  for  performance   reasons.    For   testing
-            purposes,  both  of <STRONG>ncurses</STRONG> and certain applications,
-            this  feature  is   made   optional.    Setting   the
+            Normally   <STRONG>ncurses</STRONG>  enables  buffered  output  during
+            terminal initialization.  This is done  (as  in  SVr4
+            curses)   for   performance   reasons.   For  testing
+            purposes, both of <STRONG>ncurses</STRONG> and  certain  applications,
+            this   feature   is   made   optional.   Setting  the
             NCURSES_NO_SETBUF variable disables output buffering,
-            leaving the output  in  the  original  (usually  line
+            leaving  the  output  in  the  original (usually line
             buffered) mode.
 
        NCURSES_TRACE
-            During  initialization, the <STRONG>ncurses</STRONG> debugging library
-            checks the NCURSES_TRACE symbol.  If it  is  defined,
+            During initialization, the <STRONG>ncurses</STRONG> debugging  library
+            checks  the  NCURSES_TRACE symbol.  If it is defined,
             to a numeric value, <STRONG>ncurses</STRONG> calls the <STRONG>trace</STRONG> function,
             using that value as the argument.
 
-            The argument values, which are defined  in  <STRONG>curses.h</STRONG>,
-            provide  several  types of information.  When running
-            with traces enabled, your application will write  the
+            The  argument  values, which are defined in <STRONG>curses.h</STRONG>,
+            provide several types of information.   When  running
+            with  traces enabled, your application will write the
             file <STRONG>trace</STRONG> to the current directory.
 
-       TERM Denotes  your  terminal  type.  Each terminal type is
+       TERM Denotes your terminal type.  Each  terminal  type  is
             distinct, though many are similar.
 
-
        TERMCAP
-            If the  <STRONG>ncurses</STRONG>  library  has  been  configured  with
-            <EM>termcap</EM>  support, <STRONG>ncurses</STRONG> will check for a terminal's
+            If  the  <STRONG>ncurses</STRONG>  library  has  been  configured with
+            <EM>termcap</EM> support, <STRONG>ncurses</STRONG> will check for a  terminal's
             description in termcap form if it is not available in
             the terminfo database.
 
-            The   TERMCAP   symbol  contains  either  a  terminal
-            description (with newlines stripped out), or  a  file
-            name  telling  where  the  information denoted by the
-            TERM symbol  exists.   In  either  case,  setting  it
-            directs  <STRONG>ncurses</STRONG>  to  ignore the usual place for this
+            The  TERMCAP  symbol  contains  either   a   terminal
+            description  (with  newlines stripped out), or a file
+            name telling where the  information  denoted  by  the
+            TERM  symbol  exists.   In  either  case,  setting it
+            directs <STRONG>ncurses</STRONG> to ignore the usual  place  for  this
             information, e.g., /etc/termcap.
 
        TERMINFO
             Overrides the directory in which <STRONG>ncurses</STRONG> searches for
             your terminal description.  This is the simplest, but
-            not the only way to change the list  of  directories.
+            not  the  only way to change the list of directories.
             The complete list of directories in order follows:
 
             -  the last directory to which <STRONG>ncurses</STRONG> wrote, if any,
@@ -840,154 +851,144 @@
                /usr/share/terminfo
 
        TERMINFO_DIRS
-            Specifies  a  list  of  directories  to  search   for
-            terminal  descriptions.   The  list  is  separated by
-            colons (i.e., ":") on Unix, semicolons on  OS/2  EMX.
-            All  of  the  terminal  descriptions  are in terminfo
-            form, which makes a subdirectory named for the  first
+            Specifies   a  list  of  directories  to  search  for
+            terminal descriptions.   The  list  is  separated  by
+            colons  (i.e.,  ":") on Unix, semicolons on OS/2 EMX.
+            All of the  terminal  descriptions  are  in  terminfo
+            form,  which makes a subdirectory named for the first
             letter of the terminal names therein.
 
        TERMPATH
-            If  TERMCAP  does  not  hold a file name then <STRONG>ncurses</STRONG>
-            checks the  TERMPATH  symbol.   This  is  a  list  of
-            filenames  separated  by spaces or colons (i.e., ":")
-            on Unix, semicolons on OS/2  EMX.   If  the  TERMPATH
+            If TERMCAP does not hold a  file  name  then  <STRONG>ncurses</STRONG>
+            checks  the  TERMPATH  symbol.   This  is  a  list of
+            filenames separated by spaces or colons  (i.e.,  ":")
+            on  Unix,  semicolons  on  OS/2 EMX.  If the TERMPATH
             symbol  is  not  set,  <STRONG>ncurses</STRONG>  looks  in  the  files
             /etc/termcap,       /usr/share/misc/termcap       and
             $HOME/.termcap, in that order.
 
-       The  library  may be configured to disregard the following
-       variables when the current user is the  superuser  (root),
-       or  if  the application uses setuid or setgid permissions:
+       The library may be configured to disregard  the  following
+       variables  when  the current user is the superuser (root),
+       or if the application uses setuid or  setgid  permissions:
        $TERMINFO, $TERMINFO_DIRS, $TERMPATH, as well as $HOME.
 
 
 </PRE>
 <H2>FILES</H2><PRE>
        /usr/share/tabset
-            directory containing  initialization  files  for  the
-            terminal   capability   database  /usr/share/terminfo
+            directory  containing  initialization  files  for the
+            terminal  capability   database   /usr/share/terminfo
             terminal capability database
 
 
 </PRE>
 <H2>SEE ALSO</H2><PRE>
-       <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG> and related pages whose  names  begin  "curs_"
+       <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>  and  related  pages whose names begin "curs_"
        for detailed routine descriptions.
 
 
 </PRE>
 <H2>EXTENSIONS</H2><PRE>
        The  <STRONG>ncurses</STRONG>  library  can  be  compiled  with  an  option
-       (<STRONG>-DUSE_GETCAP</STRONG>)  that   falls   back   to   the   old-style
+       (<STRONG>-DUSE_GETCAP</STRONG>)   that   falls   back   to   the  old-style
        /etc/termcap file if the terminal setup code cannot find a
        terminfo entry corresponding to <STRONG>TERM</STRONG>.  Use of this feature
-       is  not  recommended, as it essentially includes an entire
-       termcap  compiler  in  the  <STRONG>ncurses</STRONG>   startup   code,   at
+       is not recommended, as it essentially includes  an  entire
+       termcap   compiler   in   the  <STRONG>ncurses</STRONG>  startup  code,  at
        significant cost in core and startup cycles.
 
-       The  <STRONG>ncurses</STRONG>  library  includes  facilities  for capturing
-       mouse events on certain terminals (including  xterm).  See
+       The <STRONG>ncurses</STRONG>  library  includes  facilities  for  capturing
+       mouse  events  on certain terminals (including xterm). See
        the <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG> manual page for details.
 
-       The  <STRONG>ncurses</STRONG> library includes facilities for responding to
-       window resizing events, e.g., when running  in  an  xterm.
-       See  the  <STRONG><A HREF="resizeterm.3x.html">resizeterm(3x)</A></STRONG>  and <STRONG><A HREF="wresize.3x.html">wresize(3x)</A></STRONG> manual pages for
-       details.  In addition, the library may be configured  with
+       The <STRONG>ncurses</STRONG> library includes facilities for responding  to
+       window  resizing  events,  e.g., when running in an xterm.
+       See the <STRONG><A HREF="resizeterm.3x.html">resizeterm(3x)</A></STRONG> and <STRONG><A HREF="wresize.3x.html">wresize(3x)</A></STRONG>  manual  pages  for
+       details.   In addition, the library may be configured with
        a SIGWINCH handler.
 
-       The  <STRONG>ncurses</STRONG> library extends the fixed set of function key
-       capabilities of  terminals  by  allowing  the  application
-       designer  to  define  additional key sequences at runtime.
-       See the <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>  and  <STRONG><A HREF="keyok.3x.html">keyok(3x)</A></STRONG>  manual  pages  for
+       The <STRONG>ncurses</STRONG> library extends the fixed set of function  key
+       capabilities  of  terminals  by  allowing  the application
+       designer to define additional key  sequences  at  runtime.
+       See  the  <STRONG><A HREF="define_key.3x.html">define_key(3x)</A></STRONG>  and  <STRONG><A HREF="keyok.3x.html">keyok(3x)</A></STRONG>  manual pages for
        details.
 
        The  <STRONG>ncurses</STRONG>  library  can  exploit  the  capabilities  of
-       terminals which implement the ISO-6429 SGR 39 and  SGR  49
+       terminals  which  implement the ISO-6429 SGR 39 and SGR 49
        controls, which allow an application to reset the terminal
-       to its original foreground and  background  colors.   From
-       the  users'  perspective,  the application is able to draw
-       colored  text  on  a  background  whose   color   is   set
-       independently,   providing   better   control  over  color
-       contrasts.  See the  <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>  manual  page  for
+       to  its  original  foreground and background colors.  From
+       the users' perspective, the application is  able  to  draw
+       colored   text   on   a  background  whose  color  is  set
+       independently,  providing  better   control   over   color
+       contrasts.   See  the  <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG>  manual page for
        details.
 
-       The  <STRONG>ncurses</STRONG>  library  includes  a  function for directing
-       application output to a printer attached to  the  terminal
+       The <STRONG>ncurses</STRONG> library  includes  a  function  for  directing
+       application  output  to a printer attached to the terminal
        device.  See the <STRONG><A HREF="curs_print.3x.html">curs_print(3x)</A></STRONG> manual page for details.
 
 
 </PRE>
 <H2>PORTABILITY</H2><PRE>
-       The   <STRONG>ncurses</STRONG>   library   is  intended  to  be  BASE-level
+       The  <STRONG>ncurses</STRONG>  library  is  intended   to   be   BASE-level
        conformant with the XSI Curses standard.  Certain portions
-       of  the EXTENDED XSI Curses functionality (including color
+       of the EXTENDED XSI Curses functionality (including  color
        support) are supported.  The following EXTENDED XSI Curses
-       calls  in  support  of wide (multibyte) characters are not
+       calls in support of wide (multibyte)  characters  are  not
        yet implemented: <STRONG>pecho_wchar</STRONG>, <STRONG>slk_wset</STRONG>.
 
-       A small number of local differences (that  is,  individual
-       differences  between the XSI Curses and <STRONG>ncurses</STRONG> calls) are
-       described in  <STRONG>PORTABILITY</STRONG>  sections  of  the  library  man
+       A  small  number of local differences (that is, individual
+       differences between the XSI Curses and <STRONG>ncurses</STRONG> calls)  are
+       described  in  <STRONG>PORTABILITY</STRONG>  sections  of  the  library man
        pages.
 
        The routine <STRONG>has_key</STRONG> is not part of XPG4, nor is it present
-       in SVr4.  See the <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG> manual page for  details.
+       in  SVr4.  See the <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG> manual page for details.
 
-       The  routine  <STRONG>slk_attr</STRONG>  is  not  part  of  XPG4, nor is it
-       present in SVr4.  See the  <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>  manual  page  for
+       The routine <STRONG>slk_attr</STRONG> is  not  part  of  XPG4,  nor  is  it
+       present  in  SVr4.   See  the <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG> manual page for
        details.
 
-       The     routines    <STRONG>getmouse</STRONG>,    <STRONG>mousemask</STRONG>,    <STRONG>ungetmouse</STRONG>,
-       <STRONG>mouseinterval</STRONG>, and <STRONG>wenclose</STRONG> relating to mouse  interfacing
-       are  not  part of XPG4, nor are they present in SVr4.  See
+       The    routines    <STRONG>getmouse</STRONG>,    <STRONG>mousemask</STRONG>,     <STRONG>ungetmouse</STRONG>,
+       <STRONG>mouseinterval</STRONG>,  and <STRONG>wenclose</STRONG> relating to mouse interfacing
+       are not part of XPG4, nor are they present in  SVr4.   See
        the <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG> manual page for details.
 
        The routine <STRONG>mcprint</STRONG> was not present in any previous curses
-       implementation.   See  the  <STRONG><A HREF="curs_print.3x.html">curs_print(3x)</A></STRONG> manual page for
+       implementation.  See the <STRONG><A HREF="curs_print.3x.html">curs_print(3x)</A></STRONG>  manual  page  for
        details.
 
        The routine <STRONG>wresize</STRONG> is not part of XPG4, nor is it present
        in SVr4.  See the <STRONG><A HREF="wresize.3x.html">wresize(3x)</A></STRONG> manual page for details.
 
        In  historic  curses  versions,  delays  embedded  in  the
-       capabilities  <STRONG>cr</STRONG>,  <STRONG>ind</STRONG>,  <STRONG>cub1</STRONG>,  <STRONG>ff</STRONG>   and   <STRONG>tab</STRONG>   activated
-       corresponding  delay bits in the UNIX tty driver.  In this
-       implementation, all padding is done by  NUL  sends.   This
-       method   is  slightly  more  expensive,  but  narrows  the
-       interface to the UNIX kernel significantly  and  increases
+       capabilities   <STRONG>cr</STRONG>,   <STRONG>ind</STRONG>,   <STRONG>cub1</STRONG>,  <STRONG>ff</STRONG>  and  <STRONG>tab</STRONG>  activated
+       corresponding delay bits in the UNIX tty driver.  In  this
+       implementation,  all  padding  is done by NUL sends.  This
+       method  is  slightly  more  expensive,  but  narrows   the
+       interface  to  the UNIX kernel significantly and increases
        the package's portability correspondingly.
-
-       In  the  XSI  standard  and  SVr4 manual pages, many entry
-       points have prototype arguments of the for <STRONG>char</STRONG> <STRONG>*const</STRONG> (or
-       <STRONG>cchar_t</STRONG>  <STRONG>*const</STRONG>,  or  <STRONG>wchar_t</STRONG>  <STRONG>*const</STRONG>,  or  <STRONG>void</STRONG>  <STRONG>*const</STRONG>).
-       Depending on one's interpretation of the ANSI  C  standard
-       (see  section  3.5.4.1), these declarations are either (a)
-       meaningless,  or  (b)  meaningless   and   illegal.    The
-       declaration  <STRONG>const</STRONG>  <STRONG>char</STRONG>  <STRONG>*x</STRONG>  is  a  modifiable pointer to
-       unmodifiable data, but <STRONG>char</STRONG> <STRONG>*const</STRONG> <STRONG>x</STRONG>' is  an  unmodifiable
-       pointer to modifiable data.  Given that C passes arguments
-       by value, <STRONG>&lt;type&gt;</STRONG> <STRONG>*const</STRONG>  as  a  formal  type  is  at  best
-       dubious.    Some   compilers   choke  on  the  prototypes.
-       Therefore, in this implementation, they have been  changed
-       to <STRONG>const</STRONG> <STRONG>&lt;type&gt;</STRONG> <STRONG>*</STRONG> globally.
 
 
 </PRE>
 <H2>NOTES</H2><PRE>
-       The  header  file  <STRONG>&lt;curses.h&gt;</STRONG>  automatically  includes the
+       The header  file  <STRONG>&lt;curses.h&gt;</STRONG>  automatically  includes  the
        header files <STRONG>&lt;stdio.h&gt;</STRONG> and <STRONG>&lt;unctrl.h&gt;</STRONG>.
 
-       If standard output from a <STRONG>ncurses</STRONG> program  is  re-directed
-       to  something  which  is not a tty, screen updates will be
-       directed to standard  error.   This  was  an  undocumented
+       If  standard  output from a <STRONG>ncurses</STRONG> program is re-directed
+       to something which is not a tty, screen  updates  will  be
+       directed  to  standard  error.   This  was an undocumented
        feature of AT&amp;T System V Release 3 curses.
 
 
 </PRE>
 <H2>AUTHORS</H2><PRE>
-       Zeyd  M.  Ben-Halim,  Eric  S.  Raymond, Thomas E. Dickey.
+       Zeyd M. Ben-Halim, Eric  S.  Raymond,  Thomas  E.  Dickey.
        Based on pcurses by Pavel Curtis.
+
+
+
+
 
 
 

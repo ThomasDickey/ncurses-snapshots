@@ -48,8 +48,6 @@ void	_nc_linedump(void)
 
 /* ./tty/hashmap.c */
 
-#include <term.h>
-
 #undef _nc_hash_map
 void	_nc_hash_map(void)
 		{ /* void */ }
@@ -111,14 +109,14 @@ int	wecho_wchar(
 #undef waddnstr
 int	waddnstr(
 		WINDOW	*win, 
-		const char *const astr, 
+		const char *astr, 
 		int	n)
 		{ return(*(int *)0); }
 
 #undef waddchnstr
 int	waddchnstr(
 		WINDOW	*win, 
-		const chtype *const astr, 
+		const chtype *astr, 
 		int	n)
 		{ return(*(int *)0); }
 
@@ -170,7 +168,7 @@ int	wbkgrnd(
 #undef wbkgd
 int	wbkgd(
 		WINDOW	*win, 
-		const chtype ch)
+		chtype	ch)
 		{ return(*(int *)0); }
 
 /* ./base/lib_box.c */
@@ -956,13 +954,6 @@ int	touchwin(
 #undef untouchwin
 int	untouchwin(
 		WINDOW	*z)
-		{ return(*(int *)0); }
-
-#undef vid_attr
-int	vid_attr(
-		attr_t	a1, 
-		short	a2, 
-		void	*z)
 		{ return(*(int *)0); }
 
 #undef vline
@@ -1981,8 +1972,6 @@ int	mvwscanw(
 
 /* ./base/lib_screen.c */
 
-#include <time.h>
-
 #undef getwin
 WINDOW	*getwin(
 		FILE	*filep)
@@ -2275,7 +2264,6 @@ char	*_tracemouse(
 
 /* ./tty/lib_tstp.c */
 
-#include <signal.h>
 #include <SigAction.h>
 
 #undef _nc_signal_handler
@@ -2512,6 +2500,18 @@ int	wget_wch(
 		wint_t *result)
 		{ return(*(int *)0); }
 
+/* ./widechar/lib_erasewchar.c */
+
+#undef erasewchar
+int	erasewchar(
+		wchar_t *wch)
+		{ return(*(int *)0); }
+
+#undef killwchar
+int	killwchar(
+		wchar_t *wch)
+		{ return(*(int *)0); }
+
 /* ./widechar/lib_get_wstr.c */
 
 #undef wgetn_wstr
@@ -2585,6 +2585,28 @@ int	winwstr(
 int	unget_wch(
 		const wchar_t wch)
 		{ return(*(int *)0); }
+
+/* ./widechar/lib_vid_attr.c */
+
+#undef vid_puts
+int	vid_puts(
+		attr_t	newmode, 
+		short	pair, 
+		void	*opts, 
+		int	(*outc)(
+		int	p1))
+		{ return(*(int *)0); }
+
+#undef vid_attr
+int	vid_attr(
+		attr_t	newmode, 
+		short	pair, 
+		void	*opts)
+		{ return(*(int *)0); }
+
+#undef term_attrs
+attr_t	term_attrs(void)
+		{ return(*(attr_t *)0); }
 
 /* ./widechar/lib_vline_set.c */
 
@@ -3191,6 +3213,8 @@ char	*longname(void)
 
 /* ./tinfo/lib_napms.c */
 
+#include <time.h>
+
 #undef napms
 int	napms(
 		int	ms)
@@ -3398,7 +3422,7 @@ char	*tigetstr(
 
 typedef struct {
     union {
-	unsigned int num;
+	int num;
 	char *str;
     } data;
     NCURSES_BOOL  num_type;
@@ -3495,6 +3519,11 @@ typedef struct {
     unsigned int val;
     const char *name;
 } BITNAMES;
+
+#undef _nc_trace_ttymode
+char	*_nc_trace_ttymode(
+		struct termios *tty)
+		{ return(*(char **)0); }
 
 #undef _nc_tracebits
 char	*_nc_tracebits(void)
