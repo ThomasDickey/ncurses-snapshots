@@ -76,7 +76,7 @@ int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
     FILE	*fp;
     ENTRY	*ep;
 #define MAXPATHS	32
-    char	*tc, *termpaths[MAXPATHS], pathbuf[BUFSIZ];
+    char	*tc, *termpaths[MAXPATHS], pathbuf[2048];
     int    	filecount = 0;
     bool	use_buffer = FALSE;
 
@@ -90,7 +90,8 @@ int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
 	else if (_nc_name_match(tc, tn, "|:"))    /* treat as a capability file */
 	{
  	    use_buffer = TRUE;
-	    (void) strcat(tc, "\n");
+	    (void) strcpy(pathbuf, tc);
+	    (void) strcat(pathbuf, "\n");
 	}
 	else if ((tc = getenv("TERMPATH")) != (char *)NULL)
 	{
@@ -145,7 +146,7 @@ int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
 	 * We don't suppress warning messages here.  The presumption is
 	 * that since it's just a single entry, they won't be a pain.
 	 */
-	_nc_read_entry_source((FILE *)NULL, tc, FALSE, FALSE);
+	_nc_read_entry_source((FILE *)NULL, pathbuf, FALSE, FALSE);
     }
     else
     {

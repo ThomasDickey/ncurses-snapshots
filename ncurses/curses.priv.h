@@ -91,6 +91,15 @@ extern void _nc_mvcur_init(SCREEN *sp);
 extern void _nc_mvcur_wrap(void);
 extern int _nc_mvcur_scrolln(int, int, int, int);
 
+/* lib_mouse.c */
+extern void _nc_mouse_init(SCREEN *);
+extern bool _nc_mouse_event(SCREEN *);
+extern bool _nc_mouse_inline(SCREEN *);
+extern bool _nc_mouse_parse(int);
+extern void _nc_mouse_wrap(SCREEN *);
+extern void _nc_mouse_resume(SCREEN *);
+extern int _nc_max_click_interval;
+
 /* elsewhere ... */
 extern int _nc_keypad(bool flag);
 extern WINDOW *_nc_makenew(int, int, int, int);

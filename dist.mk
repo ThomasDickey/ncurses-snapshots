@@ -19,15 +19,15 @@ dist: ANNOUNCE INTRO
 	(cd ..;  tar cvf ncurses-$(VERSION).tar `sed <ncurses-$(VERSION)/MANIFEST 's/^./ncurses-$(VERSION)/'`;  gzip ncurses-$(VERSION).tar)
 
 stamp:
-	(cd include;\
+	(cd include; \
 	 for N in MKterm.h.awk termcap.h curses.h unctrl.h; do \
 	 rm -f $$N; sed 's,@VERSION@,$(VERSION),' <$$N.in >$$N; done)
 
-
 # Don't mess with announce.html.in unless you have lynx available!
-ANNOUNCE: announce.html.in
-	sed 's,@VERSION@,$(VERSION),' <announce.html.in >announce.html
-	lynx -dump announce.html > ANNOUNCE
+ANNOUNCE: announce.html
+	lynx -dump $^ >ANNOUNCE
+announce.html: announce.html.in
+	sed 's,@VERSION@,$(VERSION),' <$^ >announce.html
 
 INTRO: misc/ncurses-intro.html
 	lynx -dump $^ > misc/ncurses-intro.doc
@@ -41,3 +41,4 @@ EXCEPTIONS = "announce.html\\|ANNOUNCE\\|src/curses.h\\|misc/ncurses-intro.doc"
 writelock:
 	for x in `grep -v $(EXCEPTIONS) MANIFEST`; do if [ ! -f `dirname $$x`/RCS/`basename $$x`,v ]; then chmod a-w $${x}; fi; done
 
+# Makefile ends here

@@ -28,6 +28,7 @@ lib_isendwin	lib		$(srcdir)
 lib_kernel	lib		$(srcdir)	../include/term.h
 lib_keyname	lib		.		../include/term.h
 lib_longname	lib		$(srcdir)
+lib_mouse	lib		$(srcdir)	../include/term.h
 lib_move	lib		$(srcdir)
 lib_mvcur	lib		$(srcdir)	../include/term.h
 lib_mvwin	lib		$(srcdir)

@@ -36,6 +36,8 @@ endwin(void)
 
 	SP->_endwin = TRUE;
 
+	_nc_mouse_wrap(SP);
+
 	mvcur(-1, -1, screen_lines - 1, 0);
 
 	curs_set(1);	/* set cursor to normal mode */

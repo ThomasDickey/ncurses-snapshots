@@ -435,13 +435,13 @@ void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int idx))
 		      critlen);
 	if ((len = fmt_entry(tterm, pred, outbuf, TRUE, infodump)) > critlen)
 	{
-	    char *oldac = acs_chars; 
-	    char *oldae = exit_alt_charset_mode; 
-	    char *oldas = enter_alt_charset_mode; 
-	    acs_chars = ABSENT_STRING; 
-	    exit_alt_charset_mode = ABSENT_STRING; 
-	    enter_alt_charset_mode = ABSENT_STRING; 
-	    (void) printf("# (ac/ae/as removed to fit entry within %d bytes)\n",
+	    /*
+	     * We pick on sgr because it's a nice long string capability that
+	     * is really just an optimization hack.
+	     */
+	    char *oldsgr = set_attributes;
+	    set_attributes = ABSENT_STRING; 
+	    (void) printf("# (sgr removed to fit entry within %d bytes)\n",
 			  critlen);
 	    if ((len=fmt_entry(tterm, pred, outbuf, TRUE, infodump)) > critlen)
 	    {
@@ -453,9 +453,7 @@ void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int idx))
 			      "# WARNING: this entry, %d bytes long, may core-dump %s libraries!\n",
 			      len, legend);
 	    }
-	    acs_chars = oldac;
-	    exit_alt_charset_mode = oldae;
-	    enter_alt_charset_mode = oldas;
+	    set_attributes = oldsgr;
 	}
     }
 

@@ -4,4 +4,5 @@ comp_main	progs		$(srcdir)	../include/term.h $(INCDIR)/tic.h $(srcdir)/dump_entr
 dump_entry	progs		$(srcdir)	../include/term.h $(INCDIR)/tic.h $(srcdir)/dump_entry.h ../include/parametrized.h termsort.c
 infocmp		progs		$(srcdir)	../include/term.h $(INCDIR)/tic.h $(srcdir)/dump_entry.h
 tput		progs		$(srcdir)	../include/term.h
+tset		progs		$(srcdir)	../include/term.h
 write_entry	progs		$(srcdir)	../include/term.h $(INCDIR)/object.h 

@@ -156,7 +156,9 @@ is defined in \fB<term.h>\fR.  All other arguments are integers.
 
 .SS Routine Name Index
 The following table lists each \fBcurses\fR routine and the name of
-the manual page on which it is described.
+the manual page on which it is described.  Routines flagged with `*'
+are ncurses-specific, not described by XPG4 or present in SVr4
+(at present all these toutines are related to the mouse interface).
 
 .nf 
 \fBcurses\fR Routine Name    Manual Page Name
@@ -206,6 +208,7 @@ flushinp               curs_util(3X)
 getbegyx               curs_getyx(3X)
 getch                  curs_getch(3X)
 getmaxyx               curs_getyx(3X)
+getmouse               curs_mouse(3X)*
 getparyx               curs_getyx(3X)
 getstr                 curs_getstr(3X)
 getsyx                 curs_kernel(3X)
@@ -242,6 +245,8 @@ killchar               curs_termattrs(3X)
 leaveok                curs_outopts(3X)
 longname               curs_termattrs(3X)
 meta                   curs_inopts(3X)
+mouseinterval          curs_mouse(3X)*
+mousemask              curs_mouse(3X)*
 move                   curs_move(3X)
 mvaddch                curs_addch(3X)
 mvaddchnstr            curs_addchstr(3X)
@@ -363,6 +368,7 @@ tputs                  curs_terminfo(3X)
 typeahead              curs_inopts(3X)
 unctrl                 curs_util(3X)
 ungetch                curs_getch(3X)
+ungetmouse             curs_mouse(3X)*
 untouchwin             curs_touch(3X)
 use_env                curs_util(3X)
 vidattr                curs_terminfo(3X)
@@ -388,6 +394,7 @@ wcursyncup             curs_window(3X)
 wdelch                 curs_delch(3X)
 wdeleteln              curs_deleteln(3X)
 wechochar              curs_addch(3X)
+wenclose               curs_mouse(3X)*
 werase                 curs_clear(3X)
 wgetch                 curs_getch(3X)
 wgetnstr               curs_getstr(3X)
@@ -560,6 +567,11 @@ in a remarkable fit of braindamage, changed the undocumented SVr4 capability
 \fBgetm\fR from a string to a boolean, changing the binary offsets of all
 capabilities after it in the SVr4 order and making it impossible for any
 SVr4-compatible implementation to be fully conformant.
+.PP
+The routines \fBgetmouse\fR, \fBmousemask\fR, \fBungetmouse\fR,
+\fBmouseinterval\fR, and \fBwenclose\fR relating to mouse interfacing are not
+part of XPG4, nor are they present in SVr4.  See the \fBcurs_mouse\fR(3X)
+manual page for details.
 .SH NOTES
 The header file \fB<curses.h>\fR automatically includes the header files
 \fB<stdio.h>\fR and \fB<unctrl.h>\fR.

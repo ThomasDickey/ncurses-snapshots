@@ -67,10 +67,11 @@ The utilities are as follows:
 	infocmp         -- terminfo binary to source decompiler/comparator
 	clear           -- emits clear-screen for current terminal
 	tput            -- shell-script access to terminal capabilities.
+	tset            -- terminal-initialization utility
 
-The first two are used for manipulating terminfo descriptions; the last two
-are for use in shell scripts.  The source code for all of these lives in the
-`progs' directory.
+The first two are used for manipulating terminfo descriptions; the next two
+are for use in shell scripts.  The last is provided for 4.4BSD compatibility.
+The source code for all of these lives in the `progs' directory.
 
 Detailed documentation for all libraries and utilities can be found in
 the `man' directory.  An HTML introduction to ncurses, panels, and
@@ -102,11 +103,12 @@ Zeyd M. Ben-Halim:
 	Port of original to Linux and many enhancements.
 
 Eric S. Raymond:
-	the man pages, infocmp(1), tput(1), clear(1), captoinfo(1),
+	the man pages, infocmp(1), tput(1), clear(1), captoinfo(1), tset(1),
 	most of tic(1), src/lib_twait.c, trace levels, the HTML intro,
 	wgetnstr() and many other entry points, the A_PCCHARSET code, 
 	the cursor-movement optimization, the scroll-pack optimizer
-        for vertical motions, and the ncurses test program.
+        for vertical motions, the mouse interface and xterm mouse support,
+	and the ncurses test program.
 
 CONTRIBUTORS:
 

@@ -120,6 +120,10 @@ void _nc_read_entry_source(FILE *fp, char *buf, int literal, bool silent)
 /* slurp all entries in the given file into core */
 {
     ENTRY	thisentry;
+    bool	oldsuppress = _nc_suppress_warnings;
+
+    if (silent)
+	_nc_suppress_warnings = TRUE;	/* shut the lexer up, too */
 
     for (_nc_reset_input(fp, buf); _nc_parse_entry(&thisentry, literal, silent) != ERR; )
     {
@@ -138,6 +142,8 @@ void _nc_read_entry_source(FILE *fp, char *buf, int literal, bool silent)
     }
     else
 	DEBUG(1, ("no entries parsed"));
+
+    _nc_suppress_warnings = oldsuppress;
 }
 
 bool _nc_entry_match(char *n1, char *n2)

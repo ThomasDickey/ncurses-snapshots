@@ -26,7 +26,13 @@ Untested features:
 
 LONGER-TERM TO-DO ITEMS:
 
-1. Extended COSE conformance
+1. Extended mouse support via gpm integration
+
+We have mouse support under xterm now, implemented and documented.  The
+next step is to add code to lib_getch.c that can detect Alessandro Rubini's
+GPM server and use it to implement the same interface.
+
+2. Extended COSE conformance
 
 There is an XPG4 standard recently released which describes a superset
 of the SVr4 API.  The library is BASE conformant with this standard.
@@ -96,7 +102,7 @@ need better multi-locale support guarantees from the OS to finish this.
 If you are working on internationalization support, please contact us so
 we can cooperate.
 
-2. DOS port
+3. DOS port
 
 Only 16 of the 55 files in the library depend on the terminfo format.
 It should be possible to further kernelize the package, then rewrite 
@@ -104,13 +110,13 @@ a small number of core files to produce a functionally-compatible
 port that would do updates to a memory-mapped screen area.  The first
 result of this would be a DOS port.
 
-3. X port
+4. X port
 
 It would be nice if ncurses could recognize when it was running under X and
 maintain its own window.  With this feature, all ncurses programs would
 automatically become X programs.
 
-4. Unused capabilities
+5. Unused capabilities
 
 The currently unused capabilities fall naturally into several groups:
 

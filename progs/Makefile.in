@@ -55,7 +55,7 @@ LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@ @LOCAL_LDFLAGS@
 AUTO_SRC = \
 	termsort.c
 
-PROGS = tic infocmp clear tput
+PROGS = tic infocmp clear tput tset
 
 TESTPROGS = mvcur tctest hardscroll
 
@@ -75,9 +75,13 @@ install.progs: $(PROGS) $(bindir)
 	$(INSTALL_PROGRAM) infocmp $(bindir)/infocmp
 	$(INSTALL_PROGRAM) clear $(bindir)/clear
 	$(INSTALL_PROGRAM) tput $(bindir)/tput
+	$(INSTALL_PROGRAM) tset $(bindir)/tset
 	@echo "linking captoinfo to tic"
 	-@rm -f $(bindir)/captoinfo
 	-@ln $(bindir)/tic $(bindir)/captoinfo
+	@echo "linking reset to tset"
+	-@rm -f $(bindir)/reset
+	-@ln $(bindir)/tset $(bindir)/reset
 
 $(bindir) :
 	$(srcdir)/../mkinstalldirs $@
@@ -112,6 +116,13 @@ DEPS_INFOCMP = \
 	$(LIB_CURSES)
 infocmp: $(DEPS_INFOCMP)
 	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(DEPS_INFOCMP) $(LDFLAGS) -o $@
+
+DEPS_TSET = \
+	$(MODEL)/tset.o \
+	$(MODEL)/dump_entry.o \
+	$(LIB_CURSES)
+tset: $(DEPS_TSET)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(DEPS_TSET) $(LDFLAGS) -o $@
 
 termsort.c: ../include/Caps.filtered $(srcdir)/termsort.sh
 	sh -c "$(srcdir)/termsort.sh $(AWK) ../include/Caps.filtered" >$@

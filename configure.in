@@ -134,7 +134,7 @@ NC_LINK_DATAONLY
 NC_SPEED_TYPE
 
 ###	Checks for library functions.
-AC_CHECK_FUNCS(sigaction usleep strerror setvbuf setbuffer vsscanf)
+AC_CHECK_FUNCS(sigaction usleep strerror setvbuf setbuffer vsscanf getttynam)
 
 if test $ac_cv_func_sigaction = yes; then
 AC_MSG_CHECKING(whether sigaction needs _POSIX_SOURCE)

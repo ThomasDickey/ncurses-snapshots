@@ -111,6 +111,9 @@ int	errret;
 #endif
 	_nc_signal_handler(TRUE);
 
+	/* open a connection to the screen's associated mouse, if any */
+	_nc_mouse_init(SP);
+
 	T(("newterm returns %p", SP));
 
 	return(SP);

@@ -147,3 +147,4 @@ key_sundo KEY_SUNDO
 key_suspend KEY_SUSPEND
 key_undo KEY_UNDO
 key_up KEY_UP
+key_mouse KEY_MOUSE

@@ -32,6 +32,8 @@
 
 #define NAMESIZE 64
 
+bool _nc_suppress_warnings;
+
 static const char *sourcename;
 static char termtype[NAMESIZE];
 
@@ -51,6 +53,9 @@ void _nc_set_type(const char *name)
 void _nc_warning(const char *fmt, ...)
 {
 va_list argp;
+
+	if (_nc_suppress_warnings)
+	    return;
 
 	va_start(argp,fmt);
 	fprintf (stderr, "\"%s\", line %d: ", sourcename, _nc_curr_line);
