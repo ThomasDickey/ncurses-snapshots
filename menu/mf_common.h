@@ -30,7 +30,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: mf_common.h,v 0.20 2004/12/05 01:19:41 tom Exp $ */
+/* $Id: mf_common.h,v 0.21 2004/12/11 22:40:40 tom Exp $ */
 
 /* Common internal header for menu and form library */
 
@@ -72,7 +72,12 @@ extern int errno;
 
 #define SET_ERROR(code) (errno=(code))
 #define GET_ERROR()     (errno)
+
+#ifdef TRACE
+#define RETURN(code)    returnCode( SET_ERROR(code) )
+#else
 #define RETURN(code)    return( SET_ERROR(code) )
+#endif
 
 /* The few common values in the status fields for menus and forms */
 #define _POSTED         (0x01U)  /* menu or form is posted                  */

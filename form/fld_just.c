@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_just.c,v 1.9 2004/05/29 20:46:58 tom Exp $")
+MODULE_ID("$Id: fld_just.c,v 1.11 2004/12/11 22:55:48 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -48,6 +48,8 @@ NCURSES_EXPORT(int)
 set_field_just(FIELD *field, int just)
 {
   int res = E_BAD_ARGUMENT;
+
+  T((T_CALLED("set_field_just(%p,%d)"), field, just));
 
   if ((just == NO_JUSTIFICATION) ||
       (just == JUSTIFY_LEFT) ||
@@ -77,7 +79,8 @@ set_field_just(FIELD *field, int just)
 NCURSES_EXPORT(int)
 field_just(const FIELD *field)
 {
-  return Normalize_Field(field)->just;
+  T((T_CALLED("field_just(%p)"), field));
+  returnCode(Normalize_Field(field)->just);
 }
 
 /* fld_just.c ends here */

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_scale.c,v 1.8 2004/05/29 19:21:08 tom Exp $")
+MODULE_ID("$Id: frm_scale.c,v 1.9 2004/12/11 22:12:34 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -47,6 +47,8 @@ MODULE_ID("$Id: frm_scale.c,v 1.8 2004/05/29 19:21:08 tom Exp $")
 NCURSES_EXPORT(int)
 scale_form(const FORM *form, int *rows, int *cols)
 {
+  T((T_CALLED("scale_form(%p,%p,%p)"), form, rows, cols));
+
   if (!form)
     RETURN(E_BAD_ARGUMENT);
 

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_pad.c,v 1.8 2004/04/03 23:03:13 tom Exp $")
+MODULE_ID("$Id: fld_pad.c,v 1.9 2004/12/11 21:56:49 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -49,6 +49,8 @@ NCURSES_EXPORT(int)
 set_field_pad(FIELD *field, int ch)
 {
   int res = E_BAD_ARGUMENT;
+
+  T((T_CALLED("set_field_pad(%p,%d)"), field, ch));
 
   Normalize_Field(field);
   if (isprint(UChar(ch)))
@@ -75,7 +77,9 @@ set_field_pad(FIELD *field, int ch)
 NCURSES_EXPORT(int)
 field_pad(const FIELD *field)
 {
-  return Normalize_Field(field)->pad;
+  T((T_CALLED("field_pad(%p)"), field));
+
+  returnCode(Normalize_Field(field)->pad);
 }
 
 /* fld_pad.c ends here */

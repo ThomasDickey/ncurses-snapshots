@@ -30,7 +30,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: menu.priv.h,v 1.17 2004/04/03 23:08:32 tom Exp $ */
+/* $Id: menu.priv.h,v 1.18 2004/12/11 22:42:52 tom Exp $ */
 
 /***************************************************************************
 * Module menu.priv.h                                                       *
@@ -40,9 +40,7 @@
 #ifndef MENU_PRIV_H_incl
 #define MENU_PRIV_H_incl 1
 
-#include <ncurses_cfg.h>
-#include <curses.h>
-
+#include "curses.priv.h"
 #include "mf_common.h"
 #include "menu.h"
 

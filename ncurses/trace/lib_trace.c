@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 /*
@@ -40,7 +41,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.53 2003/11/23 00:39:30 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.54 2004/12/11 23:52:43 tom Exp $")
 
 NCURSES_EXPORT_VAR(unsigned) _nc_tracing = 0;	/* always define this */
 
@@ -174,6 +175,14 @@ _nc_retrace_unsigned(unsigned code)
 /* Trace 'char*' return-values */
 NCURSES_EXPORT(char *)
 _nc_retrace_ptr(char *code)
+{
+    T((T_RETURN("%s"), _nc_visbuf(code)));
+    return code;
+}
+
+/* Trace 'const char*' return-values */
+NCURSES_EXPORT(const char *)
+_nc_retrace_cptr(const char *code)
 {
     T((T_RETURN("%s"), _nc_visbuf(code)));
     return code;

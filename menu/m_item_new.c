@@ -38,7 +38,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_new.c,v 1.18 2004/05/08 17:05:58 tom Exp $")
+MODULE_ID("$Id: m_item_new.c,v 1.19 2004/12/11 23:29:33 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -156,6 +156,8 @@ new_item(const char *name, const char *description)
 NCURSES_EXPORT(int)
 free_item(ITEM * item)
 {
+  T((T_CALLED("free_item(%p)"), item));
+
   if (!item)
     RETURN(E_BAD_ARGUMENT);
 
@@ -188,6 +190,8 @@ NCURSES_EXPORT(int)
 set_menu_mark(MENU * menu, const char *mark)
 {
   int l;
+
+  T((T_CALLED("set_menu_mark(%p,%s)"), menu, _nc_visbuf(mark)));
 
   if (mark && (*mark != '\0') && Is_Printable_String(mark))
     l = strlen(mark);

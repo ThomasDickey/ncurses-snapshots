@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_win.c,v 1.12 2004/05/29 19:20:43 tom Exp $")
+MODULE_ID("$Id: frm_win.c,v 1.13 2004/12/11 22:15:27 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -46,6 +46,8 @@ MODULE_ID("$Id: frm_win.c,v 1.12 2004/05/29 19:20:43 tom Exp $")
 NCURSES_EXPORT(int)
 set_form_win(FORM *form, WINDOW *win)
 {
+  T((T_CALLED("set_form_win(%p,%p)"), form, win));
+
   if (form && (form->status & _POSTED))
     RETURN(E_POSTED);
 
@@ -64,9 +66,12 @@ set_form_win(FORM *form, WINDOW *win)
 NCURSES_EXPORT(WINDOW *)
 form_win(const FORM *form)
 {
-  const FORM *f = Normalize_Form(form);
+  const FORM *f;
 
-  return (f->win ? f->win : stdscr);
+  T((T_CALLED("form_win(%p)"), form));
+
+  f = Normalize_Form(form);
+  returnWin(f->win ? f->win : stdscr);
 }
 
 /* frm_win.c ends here */

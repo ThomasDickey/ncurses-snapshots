@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_move.c,v 1.8 2004/05/29 20:46:38 tom Exp $")
+MODULE_ID("$Id: fld_move.c,v 1.9 2004/12/11 21:52:44 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -48,6 +48,8 @@ MODULE_ID("$Id: fld_move.c,v 1.8 2004/05/29 20:46:38 tom Exp $")
 NCURSES_EXPORT(int)
 move_field(FIELD *field, int frow, int fcol)
 {
+  T((T_CALLED("move_field(%p,%d,%d)"), field, frow, fcol));
+
   if (!field || (frow < 0) || (fcol < 0))
     RETURN(E_BAD_ARGUMENT);
 

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_ftchoice.c,v 1.8 2004/05/29 19:20:30 tom Exp $")
+MODULE_ID("$Id: fld_ftchoice.c,v 1.9 2004/12/11 21:44:57 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -51,6 +51,8 @@ set_fieldtype_choice(FIELDTYPE *typ,
 		     bool (*const next_choice) (FIELD *, const void *),
 		     bool (*const prev_choice) (FIELD *, const void *))
 {
+  T((T_CALLED("set_fieldtype_choice(%p,%p,%p)"), typ, next_choice, prev_choice));
+
   if (!typ || !next_choice || !prev_choice)
     RETURN(E_BAD_ARGUMENT);
 

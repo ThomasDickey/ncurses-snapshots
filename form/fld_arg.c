@@ -32,16 +32,16 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_arg.c,v 1.9 2004/12/04 22:12:50 tom Exp $")
+MODULE_ID("$Id: fld_arg.c,v 1.10 2004/12/11 21:35:46 tom Exp $")
 
 /*---------------------------------------------------------------------------
-|   Facility      :  libnform  
+|   Facility      :  libnform
 |   Function      :  int set_fieldtype_arg(
 |                            FIELDTYPE *typ,
 |                            void * (* const make_arg)(va_list *),
 |                            void * (* const copy_arg)(const void *),
 |                            void   (* const free_arg)(void *) )
-|   
+|
 |   Description   :  Connects to the type additional arguments necessary
 |                    for a set_field_type call. The various function pointer
 |                    arguments are:
@@ -66,6 +66,9 @@ set_fieldtype_arg(FIELDTYPE *typ,
 		  void *(*const copy_arg)(const void *),
 		  void (*const free_arg) (void *))
 {
+  T((T_CALLED("set_fieldtype_arg(%p,%p,%p,%p)"),
+     typ, make_arg, copy_arg, free_arg));
+
   if (typ != 0 && make_arg != (void *)0)
     {
       typ->status |= _HAS_ARGS;
@@ -78,9 +81,9 @@ set_fieldtype_arg(FIELDTYPE *typ,
 }
 
 /*---------------------------------------------------------------------------
-|   Facility      :  libnform  
+|   Facility      :  libnform
 |   Function      :  void *field_arg(const FIELD *field)
-|   
+|
 |   Description   :  Retrieve pointer to the fields argument structure.
 |
 |   Return Values :  Pointer to structure or NULL if none is defined.

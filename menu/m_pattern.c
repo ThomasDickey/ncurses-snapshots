@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_pattern.c,v 1.11 2004/04/03 23:09:47 tom Exp $")
+MODULE_ID("$Id: m_pattern.c,v 1.12 2004/12/11 23:29:33 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -74,6 +74,8 @@ set_menu_pattern(MENU * menu, const char *p)
 {
   ITEM *matchitem;
   int matchpos;
+
+  T((T_CALLED("set_menu_pattern(%p,%s)"), menu, _nc_visbuf(p)));
 
   if (!menu || !p)
     RETURN(E_BAD_ARGUMENT);

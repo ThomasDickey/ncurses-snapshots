@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_def.c,v 1.14 2004/05/29 19:22:01 tom Exp $")
+MODULE_ID("$Id: frm_def.c,v 1.16 2004/12/11 22:26:58 tom Exp $")
 
 /* this can't be readonly */
 static FORM default_form =
@@ -159,6 +159,8 @@ Connect_Fields(FORM *form, FIELD **fields)
   int page_nr;
   int maximum_row_in_field, maximum_col_in_field;
   _PAGE *pg;
+
+  T((T_CALLED("Connect_Fields(%p,%p)"), form, fields));
 
   assert(form);
 
@@ -312,6 +314,8 @@ new_form(FIELD **fields)
 NCURSES_EXPORT(int)
 free_form(FORM *form)
 {
+  T((T_CALLED("free_form(%p)"), form));
+
   if (!form)
     RETURN(E_BAD_ARGUMENT);
 
@@ -341,6 +345,8 @@ set_form_fields(FORM *form, FIELD **fields)
 {
   FIELD **old;
   int res;
+
+  T((T_CALLED("set_form_fields(%p,%p)"), form, fields));
 
   if (!form)
     RETURN(E_BAD_ARGUMENT);
@@ -382,7 +388,9 @@ form_fields(const FORM *form)
 NCURSES_EXPORT(int)
 field_count(const FORM *form)
 {
-  return (Normalize_Form(form)->maxfield);
+  T((T_CALLED("field_count(%p)"), form));
+
+  returnCode(Normalize_Form(form)->maxfield);
 }
 
 /* frm_def.c ends here */

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_page.c,v 1.9 2004/05/29 19:21:22 tom Exp $")
+MODULE_ID("$Id: frm_page.c,v 1.10 2004/12/11 22:08:21 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -50,6 +50,8 @@ NCURSES_EXPORT(int)
 set_form_page(FORM *form, int page)
 {
   int err = E_OK;
+
+  T((T_CALLED("set_form_page(%p,%d)"), form, page));
 
   if (!form || (page < 0) || (page >= form->maxpage))
     RETURN(E_BAD_ARGUMENT);
@@ -96,7 +98,9 @@ set_form_page(FORM *form, int page)
 NCURSES_EXPORT(int)
 form_page(const FORM *form)
 {
-  return Normalize_Form(form)->curpage;
+  T((T_CALLED("form_page(%p)"), form));
+
+  returnCode(Normalize_Form(form)->curpage);
 }
 
 /* frm_page.c ends here */

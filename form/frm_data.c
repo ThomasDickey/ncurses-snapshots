@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_data.c,v 1.12 2004/05/30 00:47:19 tom Exp $")
+MODULE_ID("$Id: frm_data.c,v 1.13 2004/12/11 22:29:28 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -49,6 +49,8 @@ data_behind(const FORM *form)
 {
   bool result = FALSE;
 
+  T((T_CALLED("data_behind(%p)"), form));
+
   if (form && (form->status & _POSTED) && form->current)
     {
       FIELD *field;
@@ -63,7 +65,7 @@ data_behind(const FORM *form)
 	  result = (form->begincol == 0) ? FALSE : TRUE;
 	}
     }
-  return (result);
+  returnBool(result);
 }
 
 /*---------------------------------------------------------------------------
@@ -134,6 +136,8 @@ data_ahead(const FORM *form)
 {
   bool result = FALSE;
 
+  T((T_CALLED("data_ahead(%p)"), form));
+
   if (form && (form->status & _POSTED) && form->current)
     {
       FIELD *field;
@@ -183,7 +187,7 @@ data_ahead(const FORM *form)
       if (cursor_moved)
 	wmove(form->w, form->currow, form->curcol);
     }
-  return (result);
+  returnBool(result);
 }
 
 /* frm_data.c ends here */

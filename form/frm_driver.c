@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.59 2004/12/05 01:14:46 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.62 2004/12/11 22:54:15 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -716,6 +716,8 @@ _nc_Refresh_Current_Field(FORM *form)
   WINDOW *formwin;
   FIELD *field;
 
+  T((T_CALLED("_nc_Refresh_Current_Field(%p)"), form));
+
   if (!form)
     RETURN(E_BAD_ARGUMENT);
 
@@ -823,7 +825,7 @@ _nc_Refresh_Current_Field(FORM *form)
 	}
     }
   untouchwin(form->w);
-  return _nc_Position_Form_Cursor(form);
+  returnCode(_nc_Position_Form_Cursor(form));
 }
 
 /*---------------------------------------------------------------------------
@@ -3911,6 +3913,8 @@ form_driver(FORM *form, int c)
   const Binding_Info *BI = (Binding_Info *) 0;
   int res = E_UNKNOWN_COMMAND;
 
+  T((T_CALLED("form_driver(%p,%d)"), form, c));
+
   if (!form)
     RETURN(E_BAD_ARGUMENT);
 
@@ -3922,7 +3926,7 @@ form_driver(FORM *form, int c)
   if (c == FIRST_ACTIVE_MAGIC)
     {
       form->current = _nc_First_Active_Field(form);
-      return E_OK;
+      RETURN(E_OK);
     }
 
   assert(form->current &&
@@ -4028,6 +4032,8 @@ set_field_buffer(FIELD *field, int buffer, const char *value)
 #if USE_WIDEC_SUPPORT
   FIELD_CELL *widevalue = 0;
 #endif
+
+  T((T_CALLED("set_field_buffer(%p,%d,%s)"), field, buffer, _nc_visbuf(value)));
 
   if (!field || !value || ((buffer < 0) || (buffer > field->nbuf)))
     RETURN(E_BAD_ARGUMENT);
@@ -4139,6 +4145,8 @@ field_buffer(const FIELD *field, int buffer)
 {
   char *result = 0;
 
+  T((T_CALLED("field_buffer(%p,%d)"), field, buffer));
+
   if (field && (buffer >= 0) && (buffer <= field->nbuf))
     {
 #if USE_WIDEC_SUPPORT
@@ -4181,7 +4189,7 @@ field_buffer(const FIELD *field, int buffer)
       result = Address_Of_Nth_Buffer(field, buffer);
 #endif
     }
-  return result;
+  returnPtr(result);
 }
 
 #if USE_WIDEC_SUPPORT

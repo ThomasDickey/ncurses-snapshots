@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_max.c,v 1.8 2004/05/29 20:46:46 tom Exp $")
+MODULE_ID("$Id: fld_max.c,v 1.9 2004/12/11 21:51:54 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -47,6 +47,8 @@ MODULE_ID("$Id: fld_max.c,v 1.8 2004/05/29 20:46:46 tom Exp $")
 NCURSES_EXPORT(int)
 set_max_field(FIELD *field, int maxgrow)
 {
+  T((T_CALLED("set_max_field(%p,%d)"), field, maxgrow));
+
   if (!field || (maxgrow < 0))
     RETURN(E_BAD_ARGUMENT);
   else
