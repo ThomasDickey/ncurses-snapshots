@@ -1,10 +1,14 @@
--- $Id: NEWS,v 1.325 1998/03/29 00:08:10 tom Exp $
+-- $Id: NEWS,v 1.326 1998/04/04 13:50:22 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980404
+	+ split SHLIB_LIST into SHLIB_DIRS/SHLIB_LIST to keep -L options
+	  before -l to accommodate Solaris' linker (reported by Larry Virden).
 
 980328
 	+ modify lib_color.c to eliminate dependency on orig_colors and

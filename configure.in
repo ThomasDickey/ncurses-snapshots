@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.131 1998/03/21 20:38:28 tom Exp $
+dnl $Id: configure.in,v 1.132 1998/04/04 00:50:38 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.131 $)
+AC_REVISION($Revision: 1.132 $)
 AC_INIT(ncurses/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -234,7 +234,6 @@ if test $with_gpm = yes ; then
 	],,-lcurses -ltermcap)
 fi
 
-SHLIB_LIST="-L../lib -L\$(libdir) $SHLIB_LIST"
 TINFO_LIST="$SHLIB_LIST"
 test $with_termlib = yes && SHLIB_LIST="$SHLIB_LIST -ltinfo"
 
