@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_overlay.c,v 1.9 1997/09/20 15:02:34 juergen Exp $")
+MODULE_ID("$Id: lib_overlay.c,v 1.10 1997/12/03 15:47:41 Alexander.V.Lukyanov Exp $")
 
 static int overlap(const WINDOW *const s, WINDOW *const d, int const flag)
 {
@@ -89,6 +89,8 @@ int copywin(const WINDOW *src, WINDOW *dst,
 {
 int sx, sy, dx, dy;
 bool touched;
+chtype bk = AttrOf(dst->_bkgd);
+chtype mask = ~(chtype)((bk&A_COLOR) ? A_COLOR : 0);
 
 	T((T_CALLED("copywin(%p, %p, %d, %d, %d, %d, %d, %d, %d)"),
 		src, dst, sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol, over));
@@ -120,7 +122,8 @@ bool touched;
 		   if ((TextOf(src->_line[sy].text[sx]) != ' ') &&
                        (dst->_line[dy].text[dx]!=src->_line[sy].text[sx]))
 		   {
-			dst->_line[dy].text[dx] = src->_line[sy].text[sx];
+			dst->_line[dy].text[dx] =
+					(src->_line[sy].text[sx] & mask) | bk;
 			touched = TRUE;
 		   }
 	        }

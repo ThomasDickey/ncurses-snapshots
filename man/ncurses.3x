@@ -1,4 +1,4 @@
-.\" $Id: ncurses.3x,v 1.19 1997/01/05 00:42:39 tom Exp $
+.\" $Id: ncurses.3x,v 1.20 1997/12/06 22:06:00 tom Exp $
 .TH ncurses 3X ""
 .ds n 5
 .ds d @DATADIR@/terminfo
@@ -62,7 +62,7 @@ default window called \fBstdscr\fR, which is the size of the terminal
 screen, is supplied.  Others may be created with \fBnewwin\fR.
 
 Note that \fBcurses\fR does not handle overlapping windows, that's done by
-the \fBpanels(3x)\fR library. This means that you can either use
+the \fBpanels(3X)\fR library. This means that you can either use
 \fBstdscr\fR or divide the screen into tiled windows and not using
 \fBstdscr\fR at all. Mixing the two will result in unpredictable, and
 undesired, effects.
@@ -322,7 +322,7 @@ refresh/curs_refresh(3X)
 reset_prog_mode/curs_kernel(3X)
 reset_shell_mode/curs_kernel(3X)
 resetty/curs_kernel(3X)
-resizeterm/resizeterm(3x)*
+resizeterm/resizeterm(3X)*
 restartterm/curs_terminfo(3X)
 ripoffline/curs_kernel(3X)
 savetty/curs_kernel(3X)
@@ -424,7 +424,7 @@ wnoutrefresh/curs_refresh(3X)
 wprintw/curs_printw(3X)
 wredrawln/curs_refresh(3X)
 wrefresh/curs_refresh(3X)
-wresize/wresize(3x)*
+wresize/wresize(3X)*
 wscanw/curs_scanw(3X)
 wscrl/curs_scroll(3X)
 wsetscrreg/curs_outopts(3X)
@@ -474,8 +474,8 @@ value of \fBTERMCAP_FILE\fR otherwise.
 
 Versions of \fBcurses\fR compiled on PC clones support display of the PC ROM
 characters (including ROM characters 0-31, which stock SVr4 curses cannot
-display). See the EXTENSIONS sections of \fBcurs_addch\fR(3x) and
-\fBcurs_attr\fR(3x).
+display). See the EXTENSIONS sections of \fBcurs_addch\fR(3X) and
+\fBcurs_attr\fR(3X).
 
 The \fBcurses\fR library includes facilities for capturing mouse events on
 certain terminals (including xterm). See the \fBcurs_mouse\fR(3X)

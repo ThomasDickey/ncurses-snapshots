@@ -1,6 +1,6 @@
-# $Id: mk-0th.awk,v 1.3 1996/12/01 00:27:23 tom Exp $
+# $Id: mk-0th.awk,v 1.4 1997/12/07 00:19:50 tom Exp $
 ################################################################################
-# Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
+# Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
 #                                                                              #
 # Permission to use, copy, modify, and distribute this software and its        #
@@ -30,19 +30,19 @@ BEGIN	{
 		found = 0;
 	}
 	!/^#/ {
-		if ( $2 == "lib" )
+		if ( found == 0 )
 		{
-			if ( found == 0 )
-			{
-				printf "C_SRC ="
+			printf "C_SRC ="
+			if ( $2 == "lib" )
 				found = 1
-			}
-			printf " \\\n\t%s/%s.c", $3, $1
+			else
+				found = 2
 		}
+		printf " \\\n\t%s/%s.c", $3, $1
 	}
 END	{
 		print  ""
-		if ( found != 0 )
+		if ( found == 1 )
 		{
 			print  ""
 			printf "# Producing llib-l%s is time-consuming, so there's no direct-dependency for\n", name
@@ -64,6 +64,7 @@ END	{
 		}
 		else
 		{
+			print  ""
 			print  "lintlib :"
 			print  "\t@echo no action needed"
 		}

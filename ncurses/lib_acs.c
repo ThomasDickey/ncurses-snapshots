@@ -24,7 +24,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* ena_acs, acs_chars */
 
-MODULE_ID("$Id: lib_acs.c,v 1.11 1997/08/15 21:44:16 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.12 1997/12/02 20:17:46 Alexander.V.Lukyanov Exp $")
 
 chtype acs_map[ACS_LEN];
 
@@ -79,7 +79,7 @@ void init_acs(void)
 #endif /* ena_acs */
 
 #ifdef acs_chars
-#define ALTCHAR(c)	(TextOf(c) | A_ALTCHARSET)
+#define ALTCHAR(c)	((chtype)(((unsigned char)(c)) | A_ALTCHARSET))
 
 	if (acs_chars != NULL) {
 	    size_t i = 0;

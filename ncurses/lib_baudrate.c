@@ -28,7 +28,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term, pad_char */
 
-MODULE_ID("$Id: lib_baudrate.c,v 1.9 1997/10/25 23:34:13 tom Exp $")
+MODULE_ID("$Id: lib_baudrate.c,v 1.10 1997/12/06 23:38:48 tom Exp $")
 
 /*
  *	int
@@ -103,7 +103,7 @@ char *debug_rate;
 	 * that take into account costs that depend on baudrate.
 	 */
 #ifdef TRACE
-	if (!isatty(fileno(SP->_ofp))
+	if (SP && !isatty(fileno(SP->_ofp))
 	 && (debug_rate = getenv("BAUDRATE")) != 0) {
 		if (sscanf(debug_rate, "%d", &ret) != 1)
 			ret = 9600;
