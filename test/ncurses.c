@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.135 2000/09/02 19:23:53 tom Exp $
+$Id: ncurses.c,v 1.138 2000/09/17 01:24:00 tom Exp $
 
 ***************************************************************************/
 
@@ -347,21 +347,43 @@ getch_test(void)
 }
 
 static int
-show_attr(int row, int skip, chtype attr, const char *name, bool once)
+show_attr(int row, int skip, chtype attr, const char *name)
 {
+    static const char *string = "abcde fghij klmno pqrst uvwxy z";
     int ncv = tigetnum("ncv");
 
     mvprintw(row, 8, "%s mode:", name);
     mvprintw(row, 24, "|");
     if (skip)
 	printw("%*s", skip, " ");
-    if (once)
-	attron(attr);
-    else
-	attrset(attr);
-    addstr("abcde fghij klmno pqrst uvwxy z");
-    if (once)
-	attroff(attr);
+    attrset(attr);
+    /*
+     * If we're to write a string in the alternate character set, it is not
+     * sufficient to just set A_ALTCHARSET.  We have to perform the mapping
+     * that corresponds.  This is not needed for vt100-compatible devices
+     * because the acs_map[] is 1:1, but for PC-style devices such as Linux
+     * console, the acs_map[] is scattered about the range.
+     *
+     * The addch/addstr functions do not themselves do this mapping, since it
+     * is possible to turn off the A_ALTCHARSET flag for the characters which
+     * are added, and it would be an unexpected result to have the mapped
+     * characters visible on the screen.
+     *
+     * This example works because the indices into acs_map[] are mostly from
+     * the lowercase characters.
+     */
+    if (attr & A_ALTCHARSET) {
+	const char *s = string;
+	while (*s) {
+	    int ch = *s++;
+	    if ((ch = acs_map[ch]) == 0)
+		ch = ' ';
+	    addch(ch);
+	}
+    } else {
+	addstr(string);
+    }
+    attroff(attr);
     if (skip)
 	printw("%*s", skip, " ");
     printw("|");
@@ -398,7 +420,7 @@ show_attr(int row, int skip, chtype attr, const char *name, bool once)
 }
 
 static bool
-attr_getc(int *skip, int *fg, int *bg)
+attr_getc(int *skip, int *fg, int *bg, int *ac)
 {
     int ch = Getchar();
 
@@ -411,6 +433,12 @@ attr_getc(int *skip, int *fg, int *bg)
 	return TRUE;
     } else if (has_colors()) {
 	switch (ch) {
+	case 'a':
+	    *ac = 0;
+	    break;
+	case 'A':
+	    *ac = A_ALTCHARSET;
+	    break;
 	case 'f':
 	    *fg = (*fg + 1);
 	    break;
@@ -435,6 +463,18 @@ attr_getc(int *skip, int *fg, int *bg)
 	if (*bg < 0)
 	    *bg = COLORS - 1;
 	return TRUE;
+    } else {
+	switch (ch) {
+	case 'a':
+	    *ac = 0;
+	    break;
+	case 'A':
+	    *ac = A_ALTCHARSET;
+	    break;
+	default:
+	    return FALSE;
+	}
+	return TRUE;
     }
     return FALSE;
 }
@@ -447,6 +487,7 @@ attr_test(void)
     int skip = tigetnum("xmc");
     int fg = COLOR_BLACK;	/* color pair 0 is special */
     int bg = COLOR_BLACK;
+    int ac = 0;
     bool *pairs = (bool *) calloc(COLOR_PAIRS, sizeof(bool));
     pairs[0] = TRUE;
 
@@ -472,15 +513,15 @@ attr_test(void)
 
 	mvaddstr(0, 20, "Character attribute test display");
 
-	row = show_attr(row, n, A_STANDOUT, "STANDOUT", TRUE);
-	row = show_attr(row, n, A_REVERSE, "REVERSE", TRUE);
-	row = show_attr(row, n, A_BOLD, "BOLD", TRUE);
-	row = show_attr(row, n, A_UNDERLINE, "UNDERLINE", TRUE);
-	row = show_attr(row, n, A_DIM, "DIM", TRUE);
-	row = show_attr(row, n, A_BLINK, "BLINK", TRUE);
-	row = show_attr(row, n, A_PROTECT, "PROTECT", TRUE);
-	row = show_attr(row, n, A_INVIS, "INVISIBLE", TRUE);
-	row = show_attr(row, n, A_NORMAL, "NORMAL", FALSE);
+	row = show_attr(row, n, ac | A_STANDOUT, "STANDOUT");
+	row = show_attr(row, n, ac | A_REVERSE, "REVERSE");
+	row = show_attr(row, n, ac | A_BOLD, "BOLD");
+	row = show_attr(row, n, ac | A_UNDERLINE, "UNDERLINE");
+	row = show_attr(row, n, ac | A_DIM, "DIM");
+	row = show_attr(row, n, ac | A_BLINK, "BLINK");
+	row = show_attr(row, n, ac | A_PROTECT, "PROTECT");
+	row = show_attr(row, n, ac | A_INVIS, "INVISIBLE");
+	row = show_attr(row, n, ac | A_NORMAL, "NORMAL");
 
 	mvprintw(row, 8,
 		 "This terminal does %shave the magic-cookie glitch",
@@ -490,10 +531,13 @@ attr_test(void)
 	mvprintw(row + 2, 8,
 		 "^L = repaint");
 	if (has_colors())
-	    printw(".  f/F/b/F toggle colors (now %d/%d)", fg, bg);
+	    printw(".  f/F/b/F toggle colors (now %d/%d), a/A altcharset (%d)",
+		   fg, bg, ac != 0);
+	else
+	    printw(".  a/A altcharset (%d)", ac != 0);
 
 	refresh();
-    } while (attr_getc(&n, &fg, &bg));
+    } while (attr_getc(&n, &fg, &bg, &ac));
 
     free((char *) pairs);
     bkgdset(A_NORMAL | BLANK);

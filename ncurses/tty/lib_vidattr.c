@@ -64,7 +64,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.30 2000/09/10 01:11:53 Don.Lewis Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.32 2000/09/17 00:15:23 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -120,36 +120,29 @@ vidputs(attr_t newmode, int (*outc) (int))
      * attributes, use the colors in preference.
      */
     if (((newmode & A_COLOR) != 0
-	    || fix_pair0)
+	 || fix_pair0)
 	&& (no_color_video > 0)) {
-	/* *INDENT-OFF* */
-	static const struct {
-	    attr_t video;
-	    unsigned bit;
-	} table[] = {
-	    { A_STANDOUT,       1 },
-	    { A_UNDERLINE,      2 },
-	    { A_REVERSE,        4 },
-	    { A_BLINK,          8 },
-	    { A_DIM,            16 },
-	    { A_BOLD,           32 },
-	    { A_INVIS,          64 },
-	    { A_PROTECT,        128 },
-	    { A_ALTCHARSET,     256 },
-	};
-	/* *INDENT-ON* */
+	/*
+	 * If we had chosen the A_xxx definitions to correspond to the
+	 * no_color_video mask, we could simply shift it up and mask off the
+	 * attributes.  But we did not (actually copied Solaris' definitions).
+	 * However, this is still simpler/faster than a lookup table.
+	 *
+	 * The 63 corresponds to A_STANDOUT, A_UNDERLINE, A_REVERSE, A_BLINK,
+	 * A_DIM, A_BOLD which are 1:1 with no_color_video.  The bits that
+	 * correspond to A_INVIS, A_PROTECT (192) must be shifted up 1 and
+	 * A_ALTCHARSET (256) down 2 to line up.  We use the NCURSES_BITS
+	 * macro so this will work properly for the wide-character layout.
+	 */
+	attr_t mask = NCURSES_BITS((no_color_video & 63)
+				   | ((no_color_video & 192) << 1)
+				   | ((no_color_video & 256) >> 2), 8);
 
-	size_t n;
-	for (n = 0; n < SIZEOF(table); n++) {
-	    if ((table[n].bit & no_color_video)
-		&& (table[n].video & newmode)) {
-		used_ncv = TRUE;
-		if (table[n].video == A_REVERSE)
-		    reverse = TRUE;
-		else
-		    newmode &= ~table[n].video;
-	    }
+	if (mask & A_REVERSE) {
+	    reverse = TRUE;
+	    mask &= ~A_REVERSE;
 	}
+	newmode &= ~mask;
     }
 
     if (newmode == previous_attr)
@@ -190,15 +183,15 @@ vidputs(attr_t newmode, int (*outc) (int))
 	if (turn_on || turn_off) {
 	    TPUTS_TRACE("set_attributes");
 	    tputs(tparm(set_attributes,
-		    (newmode & A_STANDOUT) != 0,
-		    (newmode & A_UNDERLINE) != 0,
-		    (newmode & A_REVERSE) != 0,
-		    (newmode & A_BLINK) != 0,
-		    (newmode & A_DIM) != 0,
-		    (newmode & A_BOLD) != 0,
-		    (newmode & A_INVIS) != 0,
-		    (newmode & A_PROTECT) != 0,
-		    (newmode & A_ALTCHARSET) != 0), 1, outc);
+			(newmode & A_STANDOUT) != 0,
+			(newmode & A_UNDERLINE) != 0,
+			(newmode & A_REVERSE) != 0,
+			(newmode & A_BLINK) != 0,
+			(newmode & A_DIM) != 0,
+			(newmode & A_BOLD) != 0,
+			(newmode & A_INVIS) != 0,
+			(newmode & A_PROTECT) != 0,
+			(newmode & A_ALTCHARSET) != 0), 1, outc);
 	    previous_attr &= ~A_COLOR;
 	}
 	SetColorsIf((pair != 0) || fix_pair0, previous_attr);
