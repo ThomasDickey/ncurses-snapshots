@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.93 1997/11/15 22:48:57 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.94 1997/12/20 22:23:19 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -480,6 +480,7 @@ struct tms before, after;
 	if (SP->_fifohold)
 		SP->_fifohold--;
 
+#if USE_SIZECHANGE
 	if (SP->_endwin || SP->_sig_winch)
 	{
 		/*
@@ -492,6 +493,7 @@ struct tms before, after;
 		 */
 		_nc_update_screensize();
 	}
+#endif
 
 	if (SP->_endwin) {
 

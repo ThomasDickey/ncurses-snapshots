@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.93 1997/11/01 23:01:54 tom Exp $
+ * $Id: curses.priv.h,v 1.95 1997/12/20 22:37:37 tom Exp $
  *
  *	curses.priv.h
  *
@@ -99,6 +99,20 @@ extern int errno;
 #endif
 
 #define DEFAULT_MAXCLICK 166
+
+/*
+ * If we don't have signals to support it, don't add a sigwinch handler.
+ * In any case, resizing is an extended feature.  Use it if we've got it.
+ */
+#ifndef NCURSES_EXT_FUNCS
+#undef HAVE_SIZECHANGE
+#endif
+
+#if HAVE_SIZECHANGE
+#define USE_SIZECHANGE 1
+#else
+#undef USE_SIGWINCH
+#endif
 
 /*
  * As currently coded, hashmap relies on the scroll-hints logic.
@@ -298,7 +312,9 @@ struct screen {
 	/*
 	 * This supports automatic resizing
 	 */
+#if USE_SIZECHANGE
 	int		(*_resize)(int,int);
+#endif
 
         /*
 	 * These are data that support the proper handling of the panel stack on an
@@ -602,7 +618,10 @@ extern void _nc_scroll_window(WINDOW *, int const, short const, short const, cht
 extern void _nc_set_buffer(FILE *ofp, bool buffered);
 extern void _nc_signal_handler(bool);
 extern void _nc_synchook(WINDOW *win);
+
+#if USE_SIZECHANGE
 extern void _nc_update_screensize(void);
+#endif
 
 /*
  * On systems with a broken linker, define 'SP' as a function to force the

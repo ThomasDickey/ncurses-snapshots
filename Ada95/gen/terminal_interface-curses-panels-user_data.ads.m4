@@ -25,7 +25,7 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.4 $
+--  $Revision: 1.5 $
 ------------------------------------------------------------------------------
 
 generic
@@ -40,12 +40,17 @@ package Terminal_Interface.Curses.Panels.User_Data is
    procedure Set_User_Data (Pan  : in Panel;
                             Data : in User_Access);
    --  AKA
-   pragma Convention (C, Set_User_Data);
+   pragma Inline (Set_User_Data);
 
    --  ANCHOR(`panel_userptr',`Get_User_Data')
    procedure Get_User_Data (Pan  : in  Panel;
                             Data : out User_Access);
    --  AKA
-   pragma Convention (C, Get_User_Data);
+
+   --  ANCHOR(`panel_userptr',`Get_User_Data')
+   function Get_User_Data (Pan  : in  Panel) return User_Access;
+   --  AKA
+   --  Same as function
+   pragma Inline (Get_User_Data);
 
 end Terminal_Interface.Curses.Panels.User_Data;

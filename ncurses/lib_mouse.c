@@ -61,7 +61,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 0.31 1997/10/11 22:40:49 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 0.32 1997/12/20 22:30:42 tom Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -313,7 +313,9 @@ static void mouse_activate(bool on)
     _nc_mouse_init();
     if (mousetype == M_XTERM)
     {
+#ifdef NCURSES_EXT_FUNCS
 	keyok(KEY_MOUSE, on);
+#endif
 	if (on)
 	{
 	    TPUTS_TRACE("xterm mouse initialization");

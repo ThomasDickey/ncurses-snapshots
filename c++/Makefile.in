@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.35 1997/11/15 21:14:33 tom Exp $
+# $Id: Makefile.in,v 1.38 1997/12/20 21:12:53 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -64,11 +64,7 @@ LIBNAME	= ../lib/lib$(LIBROOT).a
 
 LDFLAGS		= @EXTRA_LDFLAGS@ -L../lib -L$(libdir) \
 	-l$(LIBROOT) \
-	-lform@DFT_ARG_SUFFIX@  \
-	-lmenu@DFT_ARG_SUFFIX@  \
-	-lpanel@DFT_ARG_SUFFIX@ \
-	-lncurses@DFT_ARG_SUFFIX@ \
-	@LDFLAGS@ \
+	@TEST_ARGS@ @LDFLAGS@ \
 	@LD_MODEL@ @LIBS@ @EXTRA_LIBS@ @LOCAL_LDFLAGS@ $(CXXLIBS)
 
 LDFLAGS_NORMAL	= $(LDFLAGS)
@@ -78,7 +74,12 @@ LDFLAGS_SHARED	= $(LDFLAGS) @CC_SHARED_OPTS@ @LD_SHARED_OPTS@
 
 LDFLAGS_DEFAULT	= $(LDFLAGS_@DFT_UPR_MODEL@)
 
-all: etip.h $(LIBNAME) demo
+AUTO_SRC	= \
+		etip.h
+
+all:		$(AUTO_SRC) $(LIBNAME) demo
+
+sources :	$(AUTO_SRC)
 
 # Build a conventional library for installing, since a shared library would
 # pull in all of the ncurses libraries (panel, menu, form, ncurses) as direct
@@ -102,10 +103,7 @@ $(MODEL)/demo.o : $(srcdir)/demo.cc \
 
 demo:	$(OBJS_DEMO) \
 	$(LIBNAME)  \
-	../lib/libform@DFT_DEP_SUFFIX@  \
-	../lib/libmenu@DFT_DEP_SUFFIX@  \
-	../lib/libpanel@DFT_DEP_SUFFIX@ \
-	../lib/libncurses@DFT_DEP_SUFFIX@
+	@TEST_DEPS@
 	@ECHO_LINK@ $(LINK) -o $@ $(OBJS_DEMO) $(LDFLAGS_DEFAULT)
 
 etip.h:	$(srcdir)/etip.h.in $(srcdir)/edit_cfg.sh
@@ -123,13 +121,14 @@ uninstall \
 uninstall.libs::
 	-rm -f $(INSTALL_PREFIX)$(libdir)/$(LIBNAME)
 
-clean ::
-	-rm -f core demo etip.h $(LIBNAME) $(LIB_OBJS) $(OBJS_DEMO)
+mostlyclean ::
+	-rm -f core tags TAGS *~ *.ln *.atac trace
+
+clean :: mostlyclean
+	-rm -f demo $(AUTO_SRC) $(LIBNAME) $(LIB_OBJS) $(OBJS_DEMO)
 
 distclean :: clean
 	-rm -f Makefile
-
-mostlyclean :: clean
 
 realclean :: distclean
 

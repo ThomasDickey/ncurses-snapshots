@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.2 $
+--  $Revision: 1.3 $
 ------------------------------------------------------------------------------
 package Terminal_Interface.Curses.Forms.Field_Types.IPV4_Address is
    pragma Preelaborate (IPV4_Address);
@@ -31,5 +31,6 @@ package Terminal_Interface.Curses.Forms.Field_Types.IPV4_Address is
 
    procedure Set_Field_Type (Fld : in Field;
                              Typ : in Internet_V4_Address_Field);
+   pragma Inline (Set_Field_Type);
 
 end Terminal_Interface.Curses.Forms.Field_Types.IPV4_Address;

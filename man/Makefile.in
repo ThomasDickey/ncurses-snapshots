@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.23 1997/10/04 17:07:45 tom Exp $
+# $Id: Makefile.in,v 1.24 1997/12/20 14:46:11 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -37,7 +37,8 @@ ticdir		= $(datadir)/terminfo
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
 
-all:	terminfo.5
+all \
+sources:	terminfo.5
 
 $(INSTALL_PREFIX)$(mandir) :
 	$(srcdir)/../mkinstalldirs $@
@@ -53,7 +54,10 @@ CAPLIST=$(srcdir)/../include/Caps
 terminfo.5: $(srcdir)/terminfo.head $(CAPLIST) $(srcdir)/terminfo.tail Makefile $(srcdir)/MKterminfo.sh
 	sh $(srcdir)/MKterminfo.sh $(srcdir)/terminfo.head $(CAPLIST) $(srcdir)/terminfo.tail >terminfo.5
 
-clean mostlyclean:
+mostlyclean :
+	-rm -f core tags TAGS *~ *.ln *.atac trace
+
+clean:	mostlyclean
 	rm -f terminfo.5
 
 distclean realclean: clean

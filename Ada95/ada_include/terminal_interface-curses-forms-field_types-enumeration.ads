@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.2 $
+--  $Revision: 1.3 $
 ------------------------------------------------------------------------------
 with Interfaces.C.Strings;
 
@@ -68,6 +68,7 @@ package Terminal_Interface.Curses.Forms.Field_Types.Enumeration is
 
    procedure Set_Field_Type (Fld : in Field;
                              Typ : in Enumeration_Field);
+   pragma Inline (Set_Field_Type);
 
 private
    type CPA_Access is access Interfaces.C.Strings.chars_ptr_array;

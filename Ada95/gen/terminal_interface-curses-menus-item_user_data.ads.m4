@@ -25,7 +25,7 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.4 $
+--  $Revision: 1.5 $
 ------------------------------------------------------------------------------
 
 generic
@@ -50,6 +50,12 @@ package Terminal_Interface.Curses.Menus.Item_User_Data is
    procedure Get_User_Data (Itm  : in  Item;
                             Data : out User_Access);
    --  AKA
+
+   --  ANCHOR(`item_userptr',`Get_User_Data')
+   function Get_User_Data (Itm  : in  Item) return User_Access;
+   --  AKA
+   --  Same as function
    pragma Inline (Get_User_Data);
 
 end Terminal_Interface.Curses.Menus.Item_User_Data;
+

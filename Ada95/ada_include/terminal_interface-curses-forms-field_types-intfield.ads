@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.2 $
+--  $Revision: 1.3 $
 ------------------------------------------------------------------------------
 package Terminal_Interface.Curses.Forms.Field_Types.IntField is
    pragma Preelaborate (IntField);
@@ -36,5 +36,6 @@ package Terminal_Interface.Curses.Forms.Field_Types.IntField is
 
    procedure Set_Field_Type (Fld : in Field;
                              Typ : in Integer_Field);
+   pragma Inline (Set_Field_Type);
 
 end Terminal_Interface.Curses.Forms.Field_Types.IntField;

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.43 1997/12/06 23:14:17 tom Exp $
+# $Id: Makefile.in,v 1.44 1997/12/20 14:46:11 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -123,7 +123,9 @@ TEST_PROGS = \
 	lib_mvcur
 
 ################################################################################
-all ::	../lib $(AUTO_SRC) $(LIBRARIES)
+all ::		$(AUTO_SRC) ../lib $(LIBRARIES)
+
+sources:	$(AUTO_SRC)
 
 $(INSTALL_PREFIX)$(libdir) :
 	$(srcdir)/../mkinstalldirs $@
@@ -181,13 +183,13 @@ TAGS:
 	etags *.[ch]
 
 mostlyclean ::
-	-rm -f tags TAGS core *.ln *.atac *~
+	-rm -f core tags TAGS *~ *.ln *.atac trace
+	-rm -f $(TEST_PROGS)
 
 clean :: mostlyclean
 	-rm -f $(AUTO_SRC)
 	-rm -f make_keys
 	-rm -f make_hash
-	-rm -f $(TEST_PROGS)
 
 distclean :: clean
 	-rm -f Makefile

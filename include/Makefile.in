@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.19 1997/09/06 23:26:45 tom Exp $
+# $Id: Makefile.in,v 1.20 1997/12/20 14:46:11 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -60,6 +60,7 @@ AUTO_SRC = \
 
 ################################################################################
 all \
+sources \
 install ::	$(AUTO_SRC)
 
 term.h: $(srcdir)/Caps MKterm.h.awk
@@ -79,7 +80,7 @@ TAGS:
 	etags *.[ch]
 
 mostlyclean ::
-	-rm -f tags TAGS *~
+	-rm -f core tags TAGS *~ *.ln *.atac trace
 
 clean :: mostlyclean
 	-rm -f $(AUTO_SRC)

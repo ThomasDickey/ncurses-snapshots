@@ -35,7 +35,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_restart.c,v 1.14 1997/11/01 19:05:41 tom Exp $")
+MODULE_ID("$Id: lib_restart.c,v 1.15 1997/12/20 22:23:05 tom Exp $")
 
 #undef tabs
 
@@ -121,7 +121,9 @@ int savenl = SP->_nl;
 
 	reset_prog_mode();
 
+#if USE_SIZECHANGE
 	_nc_update_screensize();
+#endif
 
 	returnCode(OK);
 }

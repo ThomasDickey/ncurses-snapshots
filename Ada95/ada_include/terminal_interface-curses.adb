@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.11 $
+--  $Revision: 1.12 $
 ------------------------------------------------------------------------------
 with System;
 
@@ -30,19 +30,21 @@ with Terminal_Interface.Curses.Aux; use Terminal_Interface.Curses.Aux;
 with Interfaces.C;                  use Interfaces.C;
 with Interfaces.C.Strings;          use Interfaces.C.Strings;
 with Ada.Characters.Handling;       use Ada.Characters.Handling;
+with Ada.Strings.Fixed;
 with Unchecked_Conversion;
 
 package body Terminal_Interface.Curses is
 
    use type System.Bit_Order;
 
+   package ASF renames Ada.Strings.Fixed;
+
    type chtype_array is array (size_t range <>)
       of aliased Attributed_Character;
    pragma Convention (C, chtype_array);
 
 ------------------------------------------------------------------------------
-   procedure Key_Name (Key  : in  Real_Key_Code;
-                       Name : out String)
+   function Key_Name (Key : in Real_Key_Code) return String
    is
       function Keyname (K : C_Int) return chars_ptr;
       pragma Import (C, Keyname, "keyname");
@@ -52,20 +54,31 @@ package body Terminal_Interface.Curses is
       if Key <= Character'Pos (Character'Last) then
          Ch := Character'Val (Key);
          if Is_Control (Ch) then
-            Un_Control (Attributed_Character'(Ch    => Ch,
-                                              Color => Color_Pair'First,
-                                              Attr  => Normal_Video),
-                        Name);
+            return Un_Control (Attributed_Character'(Ch    => Ch,
+                                                     Color => Color_Pair'First,
+                                                     Attr  => Normal_Video));
          elsif Is_Graphic (Ch) then
-            Fill_String (Null_Ptr, Name);
-            Name (Name'First) := Ch;
+            declare
+               S : String (1 .. 1);
+            begin
+               S (1) := Ch;
+               return S;
+            end;
          else
-            Fill_String (Null_Ptr, Name);
+            return "";
          end if;
       else
-         Fill_String (Keyname (C_Int (Key)), Name);
+         return Fill_String (Keyname (C_Int (Key)));
       end if;
    end Key_Name;
+
+   procedure Key_Name (Key  : in  Real_Key_Code;
+                       Name : out String)
+   is
+   begin
+      ASF.Move (Key_Name (Key), Name);
+   end Key_Name;
+
 ------------------------------------------------------------------------------
    procedure Init_Screen
    is
@@ -1797,6 +1810,14 @@ package body Terminal_Interface.Curses is
       Fill_String (Slk_Label (C_Int (Label)), Text);
    end Get_Soft_Label_Key;
 
+   function Get_Soft_Label_Key (Label : in Label_Number) return String
+   is
+      function Slk_Label (Label : C_Int) return chars_ptr;
+      pragma Import (C, Slk_Label, "slk_label");
+   begin
+      return Fill_String (Slk_Label (C_Int (Label)));
+   end Get_Soft_Label_Key;
+
    procedure Clear_Soft_Label_Keys
    is
       function Slk_Clear return C_Int;
@@ -1925,6 +1946,14 @@ package body Terminal_Interface.Curses is
       Fill_String (Unctrl (Chtype_To_CInt (Ch)), Str);
    end Un_Control;
 
+   function Un_Control (Ch : in Attributed_Character) return String
+   is
+      function Unctrl (Ch : C_Int) return chars_ptr;
+      pragma Import (C, Unctrl, "unctrl");
+   begin
+      return Fill_String (Unctrl (Chtype_To_CInt (Ch)));
+   end Un_Control;
+
    procedure Delay_Output (Msecs : in Natural)
    is
       function Delayoutput (Msecs : C_Int) return C_Int;
@@ -2011,12 +2040,28 @@ package body Terminal_Interface.Curses is
       Fill_String (Longname, Name);
    end Long_Name;
 
+   function Long_Name return String
+   is
+      function Longname return chars_ptr;
+      pragma Import (C, Longname, "longname");
+   begin
+      return Fill_String (Longname);
+   end Long_Name;
+
    procedure Terminal_Name (Name : out String)
    is
       function Termname return chars_ptr;
       pragma Import (C, Termname, "termname");
    begin
       Fill_String (Termname, Name);
+   end Terminal_Name;
+
+   function Terminal_Name return String
+   is
+      function Termname return chars_ptr;
+      pragma Import (C, Termname, "termname");
+   begin
+      return Fill_String (Termname);
    end Terminal_Name;
 ------------------------------------------------------------------------------
    procedure Init_Pair (Pair : in Redefinable_Color_Pair;

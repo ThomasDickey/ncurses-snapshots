@@ -25,7 +25,7 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.4 $
+--  $Revision: 1.5 $
 ------------------------------------------------------------------------------
 with System;
 
@@ -51,22 +51,27 @@ include(`Panel_Linker_Options')
    --  ANCHOR(`new_panel()',`Create')
    function Create (Win : Window) return Panel;
    --  AKA
+   pragma Inline (Create);
 
    --  ANCHOR(`new_panel()',`New_Panel')
    function New_Panel (Win : Window) return Panel renames Create;
    --  AKA
+   pragma Inline (New_Panel);
 
    --  ANCHOR(`bottom_panel()',`Bottom')
    procedure Bottom (Pan : in Panel);
    --  AKA
+   pragma Inline (Bottom);
 
    --  ANCHOR(`top_panel()',`Top')
    procedure Top (Pan : in Panel);
    --  AKA
+   pragma Inline (Top);
 
    --  ANCHOR(`show_panel()',`Show')
    procedure Show (Pan : in Panel);
    --  AKA
+   pragma Inline (Show);
 
    --  ANCHOR(`update_panels()',`Update_Panels')
    procedure Update_Panels;
@@ -76,28 +81,34 @@ include(`Panel_Linker_Options')
    --  ANCHOR(`hide_panel()',`Hide')
    procedure Hide (Pan : in Panel);
    --  AKA
+   pragma Inline (Hide);
 
    --  ANCHOR(`panel_window()',`Get_Window')
    function Get_Window (Pan : Panel) return Window;
    --  AKA
+   pragma Inline (Get_Window);
 
    --  ANCHOR(`panel_window()',`Panel_Window')
    function Panel_Window (Pan : Panel) return Window renames Get_Window;
+   pragma Inline (Panel_Window);
 
    --  ANCHOR(`replace_panel()',`Replace')
    procedure Replace (Pan : in Panel;
                       Win : in Window);
    --  AKA
+   pragma Inline (Replace);
 
    --  ANCHOR(`move_panel()',`Move')
    procedure Move (Pan    : in Panel;
                    Line   : in Line_Position;
                    Column : in Column_Position);
    --  AKA
+   pragma Inline (Move);
 
    --  ANCHOR(`panel_hidden()',`Is_Hidden')
    function Is_Hidden (Pan : Panel) return Boolean;
    --  AKA
+   pragma Inline (Is_Hidden);
 
    --  ANCHOR(`panel_above()',`Above')
    function Above (Pan : Panel) return Panel;
@@ -112,6 +123,7 @@ include(`Panel_Linker_Options')
    --  ANCHOR(`del_panel()',`Delete')
    procedure Delete (Pan : in out Panel);
    --  AKA
+   pragma Inline (Delete);
 
    private
       type Panel is new System.Address;

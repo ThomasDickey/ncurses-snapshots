@@ -1,5 +1,5 @@
 # Test-Program modules
-# $Id: modules,v 1.4 1997/08/30 20:49:35 tom Exp $
+# $Id: modules,v 1.5 1997/12/20 19:42:55 tom Exp $
 ################################################################################
 # Copyright 1997 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -19,6 +19,8 @@
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR    #
 # PERFORMANCE OF THIS SOFTWARE.                                                #
 ################################################################################
+
+@ base
 blue		progs		$(srcdir)	../include/term.h
 bs		progs		$(srcdir)
 firework	progs		$(srcdir)	../include/term.h

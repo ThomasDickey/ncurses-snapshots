@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.4 $
+--  $Revision: 1.5 $
 ------------------------------------------------------------------------------
 --  |
 --  |=====================================================================
@@ -54,13 +54,19 @@ package body Terminal_Interface.Curses.Forms.Form_User_Data is
    --  |
    --  |
    --  |
-   procedure Get_User_Data (Frm  : in  Form;
-                            Data : out User_Access)
+   function Get_User_Data (Frm  : in  Form) return User_Access
    is
       function Form_Userptr (Frm : Form) return User_Access;
       pragma Import (C, Form_Userptr, "form_userptr");
    begin
-      Data := Form_Userptr (Frm);
+      return Form_Userptr (Frm);
+   end Get_User_Data;
+
+   procedure Get_User_Data (Frm  : in  Form;
+                            Data : out User_Access)
+   is
+   begin
+      Data := Get_User_Data (Frm);
    end Get_User_Data;
 
 end Terminal_Interface.Curses.Forms.Form_User_Data;

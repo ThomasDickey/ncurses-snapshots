@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 10.1.16
+#	Version 10.1.17
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -670,7 +670,74 @@ pc6300plus|AT&T 6300 plus,
 	nel=^M^J, rev=\E[7m, rmso=\E[m, rmul=\E[m, sgr0=\E[m, 
 	smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
 
+# From: Benjamin C. W. Sittler <bsittler@nmt.edu>
 #
+# I have a UNIX PC which I use as a terminal attached to my Linux PC.
+# Unfortunately, the UNIX PC terminfo entry that comes with ncurses
+# is broken. All the special key sequences are broken, making it unusable
+# with Emacs. The problem stems from the following:
+# 
+# The UNIX PC has a plethora of keys (103 of them, and there's no numeric
+# keypad!), loadable fonts, and strange highlighting modes ("dithered"
+# half-intensity, "smeared" bold, and real strike-out, for example.) It also
+# uses resizable terminal windows, but the bundled terminal program always
+# uses an 80x24 window (and doesn't support seem to support a 132-column
+# mode.) 
+# 
+# HISTORY: The UNIX PC was one of the first machines with a GUI, and used a
+# library which was a superset of SVr3.5 curses (called tam, for "terminal
+# access method".) tam includes support for real, overlapping windows,
+# onscreen function key labels, and bitmap graphics. But since the primary
+# user interface on the UNIX PC was a GUI program (ua, for "user
+# assistant",) and remote administration was considered important for the
+# machine, tam also supported VT100-compatible terminals attached to the
+# serial port or used across the StarLan network. To simulate the extra keys
+# not present on a VT100, users could press ESC and a two-letter sequence,
+# such as u d (Undo) or U D (Shift-Undo.) These two-letter sequences,
+# however, were not the same as those sent by the actual Undo key. The
+# actual Undo key sends ESC 0 s unshifted, and ESC 0 S shifted, for example.
+# (If you're interested in adding some of the tam calls to ncurses, btw, I
+# have the full documentation and several programs which use tam. It also
+# used an extended terminfo format to describe key sequences, special
+# highlighting modes, etc.) 
+# 
+# KEYS: This means that ncurses would quite painful on the UNIX PC, since
+# there are two sequences for every key-modifier combination (local keyboard
+# sequence and remote "VT100" sequence.) But I doubt many people are trying
+# to use ncurses on the UNIX PC, since ncurses doesn't properly handle the
+# GUI. Unfortunately, the terminfo entry (and the termcap, too, I presume) 
+# seem to have been built from the manual describing the VT100 sequences. 
+# This means it doesn't work for a real live UNIX PC. 
+# 
+# FONTS: The UNIX PC also has a strange interpretation of "alternate
+# character set". Rather than the VT100 graphics you might expect, it allows
+# up to 8 custom fonts to be loaded at any given time. This means that
+# programs expecting VT100 graphics will usually be disappointed. For this
+# reason I have disabled the smacs/rmacs sequences, but they could easily be
+# re-enabled. Here are the relevant control sequences (from the ESCAPE(7) 
+# manpage), should you wish to do so: 
+# 
+# SGR10 - Select font 0 - ESC [ 10 m or SO
+# SGR11 - Select font 1 - ESC [ 11 m or SI
+# SGR12 - Select font 2 - ESC [ 12 m
+# ... (etc.)
+# SGR17 - Select font 7 - ESC [ 17 m
+# 
+# Graphics for line drawing are not reliably found at *any* character
+# location because the UNIX PC has dynamically reloadable fonts. I use font
+# 0 for regular text and font 1 for italics, but this is by no means
+# universal. So ASCII line drawing is in order if smacs/rmacs are enabled.
+# 
+# MISC: The cursor visible/cursor invisible sequences were swapped in the
+# distributed terminfo.
+# 
+# To ameliorate these problems (and fix a few highlighting bugs) I rewrote
+# the UNIX PC terminfo entry. The modified version works great with Lynx,
+# Emacs, and XEmacs running on my Linux PC and displaying on the UNIX PC
+# attached by serial cable. In Emacs, even the Undo key works, and many
+# applications can now use the F1-F8 keys. 
+# 
+# esr's notes:
 #	Terminfo entry for the AT&T Unix PC 7300
 #	from escape(7) in Unix PC 7300 Manual.
 #	Somewhat similar to a vt100-am (but different enough
@@ -721,32 +788,31 @@ pc6300plus|AT&T 6300 plus,
 # they're confirmed by the man page for the System V display---esr)
 #
 att7300|unixpc|pc7300|3b1|s4|AT&T UNIX PC Model 7300, 
-	am, xenl, xon, 
+	am, xon, 
 	cols#80, it#8, lines#24, 
-	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
-	bel=^G, bold=\E[7m, cbt=\E^I, civis=\E[=C, clear=\E[2J\E[H, 
-	cnorm=\E[=1C, cr=^M, cub=\E[%p1%dD, cud=\E[%p1%dB, 
-	cud1=\E[B, cuf=\E[%p1%dC, cuf1=\E[C, 
-	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
-	dch1=\E[P, dim=\E[2m, dl=\E[%p1%dM, dl1=\E[M, ed=\E[0J, 
-	el=\E[0K, home=\E[H, ich1=\E[@, il=\E[%p1%dL, il1=\E[L, 
-	ind=^J, invis=\E[9m, is1=^O, kBEG=\EBG, kCAN=\ECN, kCPY=\ECP, 
-	kCRT=\ECR, kDC=\EDC, kDL=\EDL, kEND=\EEN, kEOL=\ECI, 
-	kFND=\EFI, kHLP=\EHL, kHOM=\EHM, kIC=\ENJ, kLFT=\EBW, 
-	kMOV=\EMV, kNXT=\ENX, kOPT=\EOT, kPRV=\EPV, kRDO=\ERO, 
-	kRIT=\EFW, kRPL=\ERP, kSAV=\ESV, kUND=\EUD, kbeg=\Ebg, 
-	kbs=^H, kcan=\Ecn, kcbt=\E^I, kclo=\Ecl, kclr=\Ece, 
-	kcmd=\Ecm, kcpy=\Ecp, kcrt=\Ecr, kcub1=\E[D, kcud1=\E[B, 
-	kcuf1=\E[C, kcuu1=\E[A, kdch1=\Edc, ked=\Ece, kel=\Eci, 
-	kend=\Een, kext=\Eex, kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, 
-	kf5=\E5, kf6=\E6, kf7=\E7, kf8=\E8, kfnd=\Efi, khlp=\Ehl, 
-	khome=\Ehm, kich1=\Eim, kind=\Erd, kmov=\Emv, kmrk=\Emk, 
-	knp=\Epg, knxt=\Enx, kopn=\Eop, kopt=\Eot, kpp=\EPG, 
-	kprt=\Epr, kprv=\Epv, krdo=\Ero, kref=\Ere, krfr=\Erf, 
-	kri=\Eru, krpl=\Erp, krst=\Ers, ksav=\Esv, kslt=\Esl, 
-	kund=\Eud, nel=\EE, rev=\E[7m, ri=\EM, rmacs=\E[10m, 
-	rmso=\E[m, rmul=\E[m, sgr0=\E[0;10m, smacs=\E[11m, 
-	smso=\E[7m, smul=\E[4m, 
+	bel=^G, blink=\E[9m, bold=\E[1m, cbt=\E^I, civis=\E[=1C, 
+	clear=\E[2J\E[H, cnorm=\E[=0C, cr=^M, cub=\E[%p1%dD, 
+	cub1=^H, cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC, 
+	cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, 
+	cuu1=\E[A, dch1=\E[P, dim=\E[2m, dl=\E[%p1%dM, dl1=\E[M, 
+	ed=\E[0J, el=\E[0K, home=\E[H, ich1=\E[@, il=\E[%p1%dL, 
+	il1=\E[L, ind=^J, invis=\E[9m, is1=\017\E[=1w, kBEG=\ENB, 
+	kCAN=\EOW, kCPY=\END, kCRT=\EON, kDC=\ENF, kDL=\ENE, 
+	kEND=\ENN, kEOL=\EOA, kFND=\EOX, kHLP=\EOM, kHOM=\ENM, 
+	kIC=\ENJ, kLFT=\ENK, kMOV=\ENC, kNXT=\ENH, kOPT=\EOR, 
+	kPRV=\ENG, kRDO=\EOT, kRIT=\ENL, kRPL=\EOY, kSAV=\EOO, 
+	kUND=\EOS, kbeg=\ENb, kbs=^H, kcan=\EOw, kcbt=\E[Z, 
+	kclo=\EOV, kclr=\E[J, kcmd=\EOu, kcpy=\ENd, kcrt=\EOn, 
+	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\ENf, 
+	ked=\E[J, kel=\EOa, kend=\E0, kext=\EOk, kf1=\EOc, kf2=\EOd, 
+	kf3=\EOe, kf4=\EOf, kf5=\EOg, kf6=\EOh, kf7=\EOi, kf8=\EOj, 
+	kfnd=\EOx, khlp=\EOm, khome=\E[H, kich1=\ENj, kind=\E[B, 
+	kmov=\ENc, kmrk=\ENi, knp=\E[U, knxt=\ENh, kopn=\EOv, 
+	kopt=\EOr, kpp=\E[V, kprt=\EOz, kprv=\ENg, krdo=\EOt, 
+	kref=\EOb, krfr=\ENa, kri=\E[A, krpl=\EOy, krst=\EOB, 
+	ksav=\EOo, kslt=\ENI, kund=\EOs, nel=\EE, rev=\E[7m, ri=\EM, 
+	rmso=\E[m, rmul=\E[m, sgr0=\E[0;10m, smso=\E[7m, 
+	smul=\E[4m, 
 
 # From: davis@unidata.ucar.edu
 # (iris-ansi: added rmam/smam based on init string -- esr)
@@ -14616,6 +14682,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* remove hpa/vpa from rxvt, which implements them incorrectly.
 #	* add sgr0 for rxvt.
 #	* remove bogus smacs/rmacs from EMX descriptions.
+# 10.1.17 (Sat Dec 20 17:54:10 EST 1997)
+#	* revised entry for att7300
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

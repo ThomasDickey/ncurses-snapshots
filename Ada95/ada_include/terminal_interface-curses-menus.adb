@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.10 $
+--  $Revision: 1.11 $
 ------------------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
 with Terminal_Interface.Curses.Aux; use Terminal_Interface.Curses.Aux;
@@ -56,7 +56,7 @@ package body Terminal_Interface.Curses.Menus is
 
 ------------------------------------------------------------------------------
    procedure Request_Name (Key  : in Menu_Request_Code;
-                                Name : out String)
+                           Name : out String)
    is
       function Request_Name (Key : C_Int) return chars_ptr;
       pragma Import (C, Request_Name, "menu_request_name");
@@ -746,7 +746,7 @@ package body Terminal_Interface.Curses.Menus is
    end Set_Pattern;
 
    procedure Pattern (Men  : in  Menu;
-                           Text : out String)
+                      Text : out String)
    is
       function Get_Pattern (Men : Menu) return chars_ptr;
       pragma Import (C, Get_Pattern, "menu_pattern");

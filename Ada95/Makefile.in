@@ -19,7 +19,7 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.7 $
+#  $Revision: 1.8 $
 #
 SHELL		= /bin/sh
 THIS		= Makefile
@@ -27,6 +27,7 @@ THIS		= Makefile
 SUBDIRS         = @ADA_SUBDIRS@
 
 all \
+sources \
 install \
 uninstall ::
 	for d in $(SUBDIRS); do \

@@ -573,6 +573,7 @@
 ./ncurses/lib_print.c
 ./ncurses/lib_printw.c
 ./ncurses/lib_raw.c
+./ncurses/lib_redrawln.c
 ./ncurses/lib_refresh.c
 ./ncurses/lib_restart.c
 ./ncurses/lib_scanw.c

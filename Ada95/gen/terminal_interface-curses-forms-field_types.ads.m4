@@ -25,7 +25,7 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.3 $
+--  $Revision: 1.4 $
 ------------------------------------------------------------------------------
 with Terminal_Interface.Curses.Aux;
 
@@ -65,6 +65,7 @@ package Terminal_Interface.Curses.Forms.Field_Types is
    --  In Ada95 we can combine these. If you try to retrieve the field type
    --  that is not defined as extension of the abstract tagged type above,
    --  you will raise a Form_Exception.
+   --  This is not inlined
 
    --  +----------------------------------------------------------------------
    --  | Private Part.
