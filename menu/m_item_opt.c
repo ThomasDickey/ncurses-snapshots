@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_opt.c,v 1.13 2003/10/25 14:54:48 tom Exp $")
+MODULE_ID("$Id: m_item_opt.c,v 1.14 2003/11/08 20:50:19 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -95,7 +95,7 @@ NCURSES_EXPORT(int)
 item_opts_off (ITEM *item, Item_Options  opts)
 { 
   ITEM *citem = item; /* use a copy because set_item_opts must detect
-                         NULL item itself to adjust its behaviour */
+                         NULL item itself to adjust its behavior */
 
   if (opts & ~ALL_ITEM_OPTS)
     RETURN(E_BAD_ARGUMENT);
@@ -120,7 +120,7 @@ NCURSES_EXPORT(int)
 item_opts_on (ITEM *item, Item_Options opts)
 {
   ITEM *citem = item; /* use a copy because set_item_opts must detect
-                         NULL item itself to adjust its behaviour */
+                         NULL item itself to adjust its behavior */
   
   opts &= ALL_ITEM_OPTS;
   if (opts & ~ALL_ITEM_OPTS)

@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_spacing.c,v 1.14 2003/10/25 15:23:42 tom Exp $")
+MODULE_ID("$Id: m_spacing.c,v 1.15 2003/11/08 20:49:06 tom Exp $")
 
 #define MAX_SPC_DESC ((TABSIZE) ? (TABSIZE) : 8)
 #define MAX_SPC_COLS ((TABSIZE) ? (TABSIZE) : 8)
@@ -47,7 +47,7 @@ MODULE_ID("$Id: m_spacing.c,v 1.14 2003/10/25 15:23:42 tom Exp $")
 |   Facility      :  libnmenu
 |   Function      :  int set_menu_spacing(MENU *menu,int desc, int r, int c);
 |
-|   Description   :  Set the spacing between entried
+|   Description   :  Set the spacing between entries
 |
 |   Return Values :  E_OK                 - on success
 +--------------------------------------------------------------------------*/

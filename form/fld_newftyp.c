@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_newftyp.c,v 1.8 2003/10/25 15:17:08 tom Exp $")
+MODULE_ID("$Id: fld_newftyp.c,v 1.9 2003/11/08 20:45:36 tom Exp $")
 
 static FIELDTYPE const default_fieldtype = {
   0,                   /* status                                      */
@@ -63,7 +63,7 @@ NCURSES_EXPORT_VAR(const FIELDTYPE*) _nc_Default_FieldType = &default_fieldtype;
 |                       E_BAD_ARGUMENT  - invalid arguments
 |                       E_SYSTEM_ERROR  - system error (no memory)
 |
-|   Return Values :  Fieldtype pointer or NULL if error occured
+|   Return Values :  Fieldtype pointer or NULL if error occurred
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(FIELDTYPE *)
 new_fieldtype (

@@ -32,14 +32,14 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_data.c,v 1.9 2003/10/25 15:17:08 tom Exp $")
+MODULE_ID("$Id: frm_data.c,v 1.10 2003/11/08 20:38:14 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
 |   Function      :  bool data_behind(const FORM *form)
 |   
 |   Description   :  Check for off-screen data behind. This is nearly trivial
-|                    becose the begin of a field is fixed.
+|                    because the beginning of a field is fixed.
 |
 |   Return Values :  TRUE   - there are off-screen data behind
 |                    FALSE  - there are no off-screen data behind

@@ -57,11 +57,11 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.60 2003/07/05 19:31:16 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.61 2003/11/08 20:22:45 tom Exp $")
 
 #if !PURE_TERMINFO
 
-#ifdef __EMX__
+#if defined(__EMX__) || defined(__DJGPP__)
 #define is_pathname(s) ((((s) != 0) && ((s)[0] == '/')) \
 		  || (((s)[0] != 0) && ((s)[1] == ':')))
 #else

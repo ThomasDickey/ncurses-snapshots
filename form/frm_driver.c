@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.43 2003/10/25 15:17:08 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.44 2003/11/08 20:35:13 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -150,7 +150,7 @@ static int FE_Delete_Previous(FORM *);
 #define Address_Of_Current_Position_In_Buffer(form) \
   Address_Of_Current_Position_In_Nth_Buffer(form,0)
 
-/* Logic to decide wether or not a field is actually a field with
+/* Logic to decide whether or not a field is actually a field with
    vertical or horizontal scrolling */
 #define Is_Scroll_Field(field)          \
    (((field)->drows > (field)->rows) || \
@@ -316,7 +316,7 @@ INLINE static void Adjust_Cursor_Position(FORM * form, const char * pos)
 |                                      const FIELD  * field,
 |                                      WINDOW * win)
 |   
-|   Description   :  Copy the buffer to the window. If its a multiline
+|   Description   :  Copy the buffer to the window. If it is a multi-line
 |                    field, the buffer is split to the lines of the
 |                    window without any editing.
 |
@@ -642,7 +642,7 @@ _nc_Refresh_Current_Field (FORM * form)
 		      0);
 	    }
 	  else
-	    { /* A multiline, i.e. vertical scrolling field */
+	    { /* A multi-line, i.e. vertical scrolling field */
 	      int row_after_bottom,first_modified_row,first_unmodified_row;
 
 	      if (field->drows > field->rows)
@@ -1217,7 +1217,7 @@ _nc_Set_Current_Field
 |   Facility      :  libnform  
 |   Function      :  static int IFN_Next_Character(FORM * form)
 |   
-|   Description   :  Move to the next character in the field. In a multiline
+|   Description   :  Move to the next character in the field. In a multi-line
 |                    field this wraps at the end of the line.
 |
 |   Return Values :  E_OK                - success
@@ -1255,7 +1255,7 @@ static int IFN_Next_Character(FORM * form)
 |   Function      :  static int IFN_Previous_Character(FORM * form)
 |   
 |   Description   :  Move to the previous character in the field. In a 
-|                    multiline field this wraps and the beginning of the 
+|                    multi-line field this wraps and the beginning of the 
 |                    line.
 |
 |   Return Values :  E_OK                - success
@@ -1342,7 +1342,7 @@ static int IFN_Next_Word(FORM * form)
   Synchronize_Buffer(form);
 
   /* Go to the first whitespace after the current position (including
-     current position). This is then the startpoint to look for the
+     current position). This is then the starting point to look for the
     next non-blank data */
   s = Get_First_Whitespace_Character(bp,Buffer_Length(field) -
 				     (int)(bp - field->buf));
@@ -1436,7 +1436,7 @@ static int IFN_Beginning_Of_Field(FORM * form)
 |   
 |   Description   :  Place the cursor after the last non-pad character in
 |                    the field. If the field occupies the last position in
-|                    the buffer, the cursos is positioned on the last 
+|                    the buffer, the cursor is positioned on the last 
 |                    character.
 |
 |   Return Values :  E_OK              - success
@@ -1656,7 +1656,7 @@ static int VSC_Generic(FORM *form, int lines)
 |   
 |   Description   :  Performs the generic vertical scrolling routines. 
 |                    This has to check for a multi-line field and to set
-|                    the _NEWTOP flag if scrolling really occured.
+|                    the _NEWTOP flag if scrolling really occurred.
 |
 |   Return Values :  Propagated error code from low-level driver calls
 +--------------------------------------------------------------------------*/
@@ -2056,7 +2056,7 @@ static int Insert_String(FORM *form, int row, char *txt, int len)
 |                    the wrapping.
 |
 |   Return Values :  E_OK              - no wrapping required or wrapping
-|                                        was successfull
+|                                        was successful
 |                    E_REQUEST_DENIED  -
 |                    E_SYSTEM_ERROR    - some system error
 +--------------------------------------------------------------------------*/
@@ -2130,7 +2130,7 @@ static int Wrapping_Not_Necessary_Or_Wrapping_Ok(FORM * form)
 |   
 |   Description   :  Generic routine for field editing requests. The driver
 |                    routines are only called for editable fields, the
-|                    _WINDOW_MODIFIED flag is set if editing occured.
+|                    _WINDOW_MODIFIED flag is set if editing occurred.
 |                    This is somewhat special due to the overload semantics
 |                    of the NEW_LINE and DEL_PREV requests.
 |
@@ -2910,20 +2910,20 @@ INLINE static FIELD *Sorted_Previous_Field(FIELD * field)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
-|   Function      :  static FIELD *Left_Neighbour_Field(FIELD * field)
+|   Function      :  static FIELD *Left_Neighbor_Field(FIELD * field)
 |   
-|   Description   :  Get the left neighbour of the field on the same line
+|   Description   :  Get the left neighbor of the field on the same line
 |                    and the same page. Cycles through the line.
 |
-|   Return Values :  Pointer to left neighbour field.
+|   Return Values :  Pointer to left neighbor field.
 +--------------------------------------------------------------------------*/
-INLINE static FIELD *Left_Neighbour_Field(FIELD * field)
+INLINE static FIELD *Left_Neighbor_Field(FIELD * field)
 {
   FIELD *field_on_page = field;
 
-  /* For a field that has really a left neighbour, the while clause
+  /* For a field that has really a left neighbor, the while clause
      immediately fails and the loop is left, positioned at the right
-     neighbour. Otherwise we cycle backwards through the sorted fieldlist
+     neighbor. Otherwise we cycle backwards through the sorted field list
      until we enter the same line (from the right end).
   */
   do
@@ -2936,18 +2936,18 @@ INLINE static FIELD *Left_Neighbour_Field(FIELD * field)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
-|   Function      :  static FIELD *Right_Neighbour_Field(FIELD * field)
+|   Function      :  static FIELD *Right_Neighbor_Field(FIELD * field)
 |   
-|   Description   :  Get the right neighbour of the field on the same line
+|   Description   :  Get the right neighbor of the field on the same line
 |                    and the same page.
 |
-|   Return Values :  Pointer to right neighbour field.
+|   Return Values :  Pointer to right neighbor field.
 +--------------------------------------------------------------------------*/
-INLINE static FIELD *Right_Neighbour_Field(FIELD * field)
+INLINE static FIELD *Right_Neighbor_Field(FIELD * field)
 {
   FIELD *field_on_page = field;
 
-  /* See the comments on Left_Neighbour_Field to understand how it works */
+  /* See the comments on Left_Neighbor_Field to understand how it works */
   do
     {
       field_on_page = Sorted_Next_Field(field_on_page);
@@ -2958,18 +2958,18 @@ INLINE static FIELD *Right_Neighbour_Field(FIELD * field)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
-|   Function      :  static FIELD *Upper_Neighbour_Field(FIELD * field)
+|   Function      :  static FIELD *Upper_Neighbor_Field(FIELD * field)
 |   
 |   Description   :  Because of the row-major nature of sorting the fields,
-|                    its more difficult to define whats the upper neighbour
+|                    it is more difficult to define whats the upper neighbor
 |                    field really means. We define that it must be on a
 |                    'previous' line (cyclic order!) and is the rightmost
 |                    field laying on the left side of the given field. If
 |                    this set is empty, we take the first field on the line.
 |
-|   Return Values :  Pointer to the upper neighbour field.
+|   Return Values :  Pointer to the upper neighbor field.
 +--------------------------------------------------------------------------*/
-static FIELD *Upper_Neighbour_Field(FIELD * field)
+static FIELD *Upper_Neighbor_Field(FIELD * field)
 {
   FIELD *field_on_page = field;
   int frow = field->frow;
@@ -3005,18 +3005,18 @@ static FIELD *Upper_Neighbour_Field(FIELD * field)
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
-|   Function      :  static FIELD *Down_Neighbour_Field(FIELD * field)
+|   Function      :  static FIELD *Down_Neighbor_Field(FIELD * field)
 |   
 |   Description   :  Because of the row-major nature of sorting the fields,
-|                    its more difficult to define whats the down neighbour
+|                    its more difficult to define whats the down neighbor
 |                    field really means. We define that it must be on a
 |                    'next' line (cyclic order!) and is the leftmost
 |                    field laying on the right side of the given field. If
 |                    this set is empty, we take the last field on the line.
 |
-|   Return Values :  Pointer to the upper neighbour field.
+|   Return Values :  Pointer to the upper neighbor field.
 +--------------------------------------------------------------------------*/
-static FIELD *Down_Neighbour_Field(FIELD * field)
+static FIELD *Down_Neighbor_Field(FIELD * field)
 {
   FIELD *field_on_page = field;
   int frow = field->frow;
@@ -3223,7 +3223,7 @@ static int FN_Sorted_Last_Field(FORM * form)
 static int FN_Left_Field(FORM * form)
 {
   return _nc_Set_Current_Field(form,
-			       Left_Neighbour_Field(form->current));
+			       Left_Neighbor_Field(form->current));
 }
 
 /*---------------------------------------------------------------------------
@@ -3239,16 +3239,16 @@ static int FN_Left_Field(FORM * form)
 static int FN_Right_Field(FORM * form)
 {
   return _nc_Set_Current_Field(form,
-			       Right_Neighbour_Field(form->current));
+			       Right_Neighbor_Field(form->current));
 }
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
 |   Function      :  static int FN_Up_Field(FORM * form)
 |   
-|   Description   :  Get the upper neighbour of the current field. This
+|   Description   :  Get the upper neighbor of the current field. This
 |                    cycles through the page. See the comments of the
-|                    Upper_Neighbour_Field function to understand how
+|                    Upper_Neighbor_Field function to understand how
 |                    'upper' is defined. 
 |
 |   Return Values :  E_OK            - success
@@ -3257,16 +3257,16 @@ static int FN_Right_Field(FORM * form)
 static int FN_Up_Field(FORM * form)
 {
   return _nc_Set_Current_Field(form,
-			       Upper_Neighbour_Field(form->current));
+			       Upper_Neighbor_Field(form->current));
 }
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
 |   Function      :  static int FN_Down_Field(FORM * form)
 |   
-|   Description   :  Get the down neighbour of the current field. This
+|   Description   :  Get the down neighbor of the current field. This
 |                    cycles through the page. See the comments of the
-|                    Down_Neighbour_Field function to understand how
+|                    Down_Neighbor_Field function to understand how
 |                    'down' is defined. 
 |
 |   Return Values :  E_OK            - success
@@ -3275,7 +3275,7 @@ static int FN_Up_Field(FORM * form)
 static int FN_Down_Field(FORM * form)
 {
   return _nc_Set_Current_Field(form,
-			       Down_Neighbour_Field(form->current));
+			       Down_Neighbor_Field(form->current));
 }
 /*----------------------------------------------------------------------------
   END of Field Navigation routines 
@@ -3291,7 +3291,7 @@ static int FN_Down_Field(FORM * form)
 |                                          int page,
 |                                          FIELD * field)
 |   
-|   Description   :  Make the given page nr. the current page and make
+|   Description   :  Make the given page number the current page and make
 |                    the given field the current field on the page. If
 |                    for the field NULL is given, make the first field on
 |                    the page the current field. The routine acts only
@@ -3792,7 +3792,7 @@ set_field_buffer
 			   (int)(1 + (vlen-len)/((field->rows+field->nrow)*field->cols))))
 	    RETURN(E_SYSTEM_ERROR);
 
-	  /* in this case we also have to check, wether or not the remaining
+	  /* in this case we also have to check, whether or not the remaining
 	     characters in value are also printable for buffer 0. */
 	  if (buffer==0)
 	    {
