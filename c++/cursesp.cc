@@ -8,9 +8,12 @@
 
 #include "internal.h"
 
-MODULE_ID("$Id: cursesp.cc,v 1.7 1997/05/25 09:21:34 juergen Exp $")
+MODULE_ID("$Id: cursesp.cc,v 1.8 1997/07/13 20:33:05 juergen Exp $")
 
-#pragma  implementation
+#ifdef __GNUG__
+#  pragma  implementation
+#endif
+
 #include "cursesp.h"
 
 NCursesPanel::NCursesPanel(int lines,

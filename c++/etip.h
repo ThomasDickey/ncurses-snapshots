@@ -135,11 +135,20 @@ public:
 
 };
 
+#if !(defined(__GNUG__)||defined(__SUNPRO_CC))
+#  include <iostream.h>
+   extern "C" void exit(int);
+#endif
+
 inline void THROW(const NCursesException *e) {
 #if defined(__GNUG__)
   (*lib_error_handler)(e?e->classname():"",e?e->message:"");
-#else  // #elif defined(__SUNPRO_CC)
+#elif defined(__SUNPRO_CC)
   genericerror(1, ((e != 0) ? (char *)(e->message) : ""));
+#else
+  if (e)
+    cerr << e->message << endl;
+  exit(0);
 #endif     
 }
 

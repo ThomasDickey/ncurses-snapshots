@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.67 1997/07/06 19:02:39 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.69 1997/07/19 15:33:27 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -649,7 +649,7 @@ struct tms before, after;
 		int changedlines = 0;
 
 		nonempty = min(screen_lines, newscr->_maxy+1);
-#if 0		/* still 5% slower 960928 */
+#if USE_HASHMAP		/* still 5% slower 960928 */
 #if defined(TRACE) || defined(NCURSES_TEST)
 		if (_nc_optimize_enable & OPTIMIZE_HASHMAP)
 #endif /*TRACE */
@@ -1232,6 +1232,7 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 {
     chtype blank=ClrBlank(stdscr);
     int i;
+    bool cursor_saved=FALSE;
 
     TR(TRACE_MOVE, ("mvcur_scrolln(%d, %d, %d, %d)", n, top, bot, maxy));
 
@@ -1257,7 +1258,7 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
      * unchanged bottom section of the screen up and down, which is
      * visually nasty.
      */
-    if (n > 0)
+    if (n > 0) /* scroll up (forward) */
     {
 	/*
 	 * Explicitly clear if stuff pushed off top of region might
@@ -1271,15 +1272,83 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 	    }
 	}
 
-	if (change_scroll_region && (scroll_forward || parm_index))
+	if (n == 1 && scroll_forward && top == 0 && bot == maxy)
 	{
+	    GoTo(bot, 0);
+	    UpdateAttrs(blank);
+	    TPUTS_TRACE("scroll_forward");
+	    tputs(scroll_forward, 0, _nc_outch);
+	}
+	else if (n == 1 && delete_line && bot == maxy)
+	{
+	    GoTo(top, 0);
+	    UpdateAttrs(blank);
+	    TPUTS_TRACE("delete_line");
+	    tputs(delete_line, 0, _nc_outch);
+	}
+	else if (parm_index && top == 0 && bot == maxy)
+	{
+	    GoTo(bot, 0);
+	    UpdateAttrs(blank);
+	    TPUTS_TRACE("parm_index");
+	    tputs(tparm(parm_index, n, 0), n, _nc_outch);
+	}
+	else if (parm_delete_line && bot == maxy)
+	{
+	    GoTo(top, 0);
+	    UpdateAttrs(blank);
+	    TPUTS_TRACE("parm_delete_line");
+	    tputs(tparm(parm_delete_line, n, 0), n, _nc_outch);
+	}
+	else if (scroll_forward && top == 0 && bot == maxy)
+	{
+	    GoTo(bot, 0);
+	    UpdateAttrs(blank);
+	    for (i = 0; i < n; i++)
+	    {
+		TPUTS_TRACE("scroll_forward");
+		tputs(scroll_forward, 0, _nc_outch);
+	    }
+	}
+	else if (delete_line && bot == maxy)
+	{
+	    GoTo(top, 0);
+	    UpdateAttrs(blank);
+	    for (i = 0; i < n; i++)
+	    {
+		TPUTS_TRACE("delete_line");
+		tputs(delete_line, 0, _nc_outch);
+	    }
+	}
+	else if (change_scroll_region && (scroll_forward || parm_index))
+	{
+	    if ((SP->_cursrow == bot || SP->_cursrow == bot-1)
+	        && save_cursor && restore_cursor)
+	    {
+		cursor_saved=TRUE;
+	    	TPUTS_TRACE("save_cursor");
+		tputs(save_cursor, 0, _nc_outch);
+	    }
 	    TPUTS_TRACE("change_scroll_region");
 	    tputs(tparm(change_scroll_region, top, bot), 0, _nc_outch);
-	    SP->_cursrow = SP->_curscol = -1;
+	    if (cursor_saved)
+	    {
+	    	TPUTS_TRACE("restore_cursor");
+		tputs(restore_cursor, 0, _nc_outch);
+	    }
+	    else
+	    {
+		SP->_cursrow = SP->_curscol = -1;
+	    }
 
 	    GoTo(bot, 0);
 	    UpdateAttrs(blank);
-	    if (parm_index != NULL)
+	    if (n == 1 && scroll_forward)
+	    {
+		TPUTS_TRACE("scroll_forward");
+		tputs(scroll_forward, 0, _nc_outch);
+	    }
+	    else if (parm_index)
 	    {
 		TPUTS_TRACE("parm_index");
 		tputs(tparm(parm_index, n, 0), n, _nc_outch);
@@ -1296,30 +1365,18 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 	    tputs(tparm(change_scroll_region, 0, maxy), 0, _nc_outch);
 	    SP->_cursrow = SP->_curscol = -1;
 	}
-	else if (parm_index && top == 0 && bot == maxy)
-	{
-	    GoTo(bot, 0);
-	    UpdateAttrs(blank);
-	    TPUTS_TRACE("parm_index");
-	    tputs(tparm(parm_index, n, 0), n, _nc_outch);
-	}
-	else if (scroll_forward && top == 0 && bot == maxy)
-	{
-	    GoTo(bot, 0);
-	    UpdateAttrs(blank);
-	    for (i = 0; i < n; i++)
-	    {
-		TPUTS_TRACE("scroll_forward");
-		tputs(scroll_forward, 0, _nc_outch);
-	    }
-	}
 	else if (_nc_idlok
 	 && (parm_delete_line || delete_line)
 	 && (parm_insert_line || insert_line))
 	{
 	    GoTo(top, 0);
 	    UpdateAttrs(blank);
-	    if (parm_delete_line)
+	    if (n == 1 && delete_line)
+	    {
+		TPUTS_TRACE("delete_line");
+		tputs(delete_line, 0, _nc_outch);
+	    }
+	    else if (parm_delete_line)
 	    {
 		TPUTS_TRACE("parm_delete_line");
 		tputs(tparm(parm_delete_line, n, 0), n, _nc_outch);
@@ -1328,7 +1385,7 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 	    {
 		for (i = 0; i < n; i++)
 		{
-		    TPUTS_TRACE("parm_index");
+		    TPUTS_TRACE("delete_line");
 		    tputs(delete_line, 0, _nc_outch);
 		}
 	    }
@@ -1337,7 +1394,12 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 
 	    /* Push down the bottom region. */
 	    UpdateAttrs(blank);
-	    if (parm_insert_line)
+	    if (n == 1 && insert_line)
+	    {
+		TPUTS_TRACE("insert_line");
+		tputs(insert_line, 0, _nc_outch);
+	    }
+	    else if (parm_insert_line)
 	    {
 		TPUTS_TRACE("parm_insert_line");
 		tputs(tparm(parm_insert_line, n, 0), n, _nc_outch);
@@ -1354,7 +1416,7 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 	else
 	    return(ERR);
     }
-    else /* (n < 0) */
+    else /* (n < 0) - scroll down (backward) */
     {
 	/*
 	 * Do explicit clear to end of region if it's possible that the
@@ -1377,15 +1439,83 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 	    }
 	}
 
-	if (change_scroll_region && (scroll_reverse || parm_rindex))
+	if (n == -1 && scroll_reverse && top == 0 && bot == maxy)
 	{
+	    GoTo(top, 0);
+	    UpdateAttrs(blank);
+	    TPUTS_TRACE("scroll_reverse");
+	    tputs(scroll_reverse, 0, _nc_outch);
+	}
+	else if (n == -1 && insert_line && bot == maxy)
+	{
+	    GoTo(top, 0);
+	    UpdateAttrs(blank);
+	    TPUTS_TRACE("insert_line");
+	    tputs(insert_line, 0, _nc_outch);
+	}
+	else if (parm_rindex && top == 0 && bot == maxy)
+	{
+	    GoTo(top, 0);
+	    UpdateAttrs(blank);
+	    TPUTS_TRACE("parm_rindex");
+	    tputs(tparm(parm_rindex, -n, 0), -n, _nc_outch);
+	}
+	else if (parm_insert_line && bot == maxy)
+	{
+	    GoTo(top, 0);
+	    UpdateAttrs(blank);
+	    TPUTS_TRACE("parm_insert_line");
+	    tputs(tparm(parm_insert_line, -n, 0), -n, _nc_outch);
+	}
+	else if (scroll_reverse && top == 0 && bot == maxy)
+	{
+	    GoTo(top, 0);
+	    UpdateAttrs(blank);
+	    for (i = n; i < 0; i++)
+	    {
+		TPUTS_TRACE("scroll_reverse");
+		tputs(scroll_reverse, 0, _nc_outch);
+	    }
+	}
+	else if (insert_line && bot == maxy)
+	{
+	    GoTo(top, 0);
+	    UpdateAttrs(blank);
+	    for (i = n; i < 0; i++)
+	    {
+		TPUTS_TRACE("insert_line");
+		tputs(insert_line, 0, _nc_outch);
+	    }
+	}
+	else if (change_scroll_region && (scroll_reverse || parm_rindex))
+	{
+	    if (top != 0 && (SP->_cursrow == top || SP->_cursrow == top-1)
+	        && save_cursor && restore_cursor)
+	    {
+		cursor_saved=TRUE;
+	    	TPUTS_TRACE("save_cursor");
+		tputs(save_cursor, 0, _nc_outch);
+	    }
 	    TPUTS_TRACE("change_scroll_region");
 	    tputs(tparm(change_scroll_region, top, bot), 0, _nc_outch);
-	    SP->_cursrow = SP->_curscol = -1;
+	    if (cursor_saved)
+	    {
+	    	TPUTS_TRACE("restore_cursor");
+		tputs(restore_cursor, 0, _nc_outch);
+	    }
+	    else
+	    {
+		SP->_cursrow = SP->_curscol = -1;
+	    }
 
 	    GoTo(top, 0);
 	    UpdateAttrs(blank);
-	    if (parm_rindex)
+	    if (n == -1 && scroll_reverse)
+	    {
+		TPUTS_TRACE("scroll_reverse");
+		tputs(scroll_reverse, 0, _nc_outch);
+	    }
+	    else if (parm_rindex)
 	    {
 		TPUTS_TRACE("parm_rindex");
 		tputs(tparm(parm_rindex, -n, 0), -n, _nc_outch);
@@ -1402,30 +1532,18 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 	    tputs(tparm(change_scroll_region, 0, maxy), 0, _nc_outch);
 	    SP->_cursrow = SP->_curscol = -1;
 	}
-	else if (parm_rindex && top == 0 && bot == maxy)
-	{
-	    GoTo(bot + n + 1, 0);
-	    UpdateAttrs(blank);
-	    TPUTS_TRACE("parm_rindex");
-	    tputs(tparm(parm_rindex, -n, 0), -n, _nc_outch);
-	}
-	else if (scroll_reverse && top == 0 && bot == maxy)
-	{
-	    GoTo(0, 0);
-	    UpdateAttrs(blank);
-	    for (i = n; i < 0; i++)
-	    {
-		TPUTS_TRACE("scroll_reverse");
-		tputs(scroll_reverse, 0, _nc_outch);
-	    }
-	}
 	else if (_nc_idlok
 	 && (parm_delete_line || delete_line)
 	 && (parm_insert_line || insert_line))
 	{
 	    GoTo(bot + n + 1, 0);
 	    UpdateAttrs(blank);
-	    if (parm_delete_line)
+	    if (n == -1 && delete_line)
+	    {
+		TPUTS_TRACE("delete_line");
+		tputs(delete_line, 0, _nc_outch);
+	    }
+	    else if (parm_delete_line)
 	    {
 		TPUTS_TRACE("parm_delete_line");
 		tputs(tparm(parm_delete_line, -n, 0), -n, _nc_outch);
@@ -1443,7 +1561,12 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 
 	    /* Scroll the block down. */
 	    UpdateAttrs(blank);
-	    if (parm_insert_line)
+	    if (n == -1 && insert_line)
+	    {
+		TPUTS_TRACE("insert_line");
+		tputs(insert_line, 0, _nc_outch);
+	    }
+	    else if (parm_insert_line)
 	    {
 		TPUTS_TRACE("parm_insert_line");
 		tputs(tparm(parm_insert_line, -n, 0), -n, _nc_outch);

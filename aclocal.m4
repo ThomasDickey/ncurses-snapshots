@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.69 1997/06/21 18:41:38 tom Exp $
+dnl $Id: aclocal.m4,v 1.71 1997/07/20 01:04:10 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1210,6 +1210,58 @@ AC_MSG_RESULT($nc_cv_use_tiocgwinsz)
 test $nc_cv_use_tiocgwinsz != yes && AC_DEFINE(BROKEN_TIOCGWINSZ)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Determine the type we should use for chtype (and attr_t, which is treated
+dnl as the same thing).  We want around 32 bits, so on most machines want a
+dnl long, but on newer 64-bit machines, probably want an int.  If we're using
+dnl wide characters, we have to have a type compatible with that, as well.
+AC_DEFUN([NC_TYPEOF_CHTYPE],
+[
+AC_MSG_CHECKING([for type of chtype])
+AC_CACHE_VAL(nc_cv_typeof_chtype,[
+		AC_TRY_RUN([
+#if USE_WIDEC_SUPPORT
+#include <stddef.h>	/* we want wchar_t */
+#define WANT_BITS 39
+#else
+#define WANT_BITS 31
+#endif
+#include <stdio.h>
+int main()
+{
+	FILE *fp = fopen("nc_test.out", "w");
+	if (fp != 0) {
+#if USE_WIDEC_SUPPORT
+		if (sizeof(unsigned long) > sizeof(wchar_t))
+			fputs("int", fp);
+#endif
+		if (sizeof(unsigned long) > sizeof(unsigned int)) {
+			int n;
+			unsigned int x;
+			for (n = 0; n < WANT_BITS; n++) {
+				unsigned int y = (x >> n);
+				if (y != 1 || x == 0) {
+					x = 0;
+					break;
+				}
+			}
+			fputs((x != 0) ? "int" : "long",  fp);
+		} else
+			fputs("long", fp);
+		fclose(fp);
+	}
+	exit(0);
+}
+		],
+		[nc_cv_typeof_chtype=`cat nc_test.out`],
+		[nc_cv_typeof_chtype=long],
+		[nc_cv_typeof_chtype=long])
+		rm -f nc_test.out
+	])
+AC_MSG_RESULT($nc_cv_typeof_chtype)
+AC_SUBST(nc_cv_typeof_chtype)
+AC_DEFINE_UNQUOTED(TYPEOF_CHTYPE,$nc_cv_typeof_chtype)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl
 AC_DEFUN([NC_TYPE_SIGACTION],
 [
@@ -1254,4 +1306,61 @@ AC_SUBST(nc_cv_rel_version)
 AC_SUBST(nc_cv_abi_version)
 AC_SUBST(nc_cv_builtin_bool)
 AC_SUBST(nc_cv_type_of_bool)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Compute the shift-mask that we'll use for wide-character indices.  We use
+dnl all but the index portion of chtype for storing attributes.
+AC_DEFUN([NC_WIDEC_SHIFT],
+[
+AC_REQUIRE([NC_TYPEOF_CHTYPE])
+AC_MSG_CHECKING([for number of bits in chtype])
+AC_CACHE_VAL(nc_cv_shift_limit,[
+	if test ".$with_widec" = ".yes" ; then
+		AC_TRY_RUN([
+#include <stdio.h>
+int main()
+{
+	FILE *fp = fopen("nc_test.out", "w");
+	if (fp != 0) {
+		int n;
+		unsigned TYPEOF_CHTYPE x = 1L;
+		for (n = 0; ; n++) {
+			unsigned long y = (x >> n);
+			if (y != 1 || x == 0)
+				break;
+			x <<= 1;
+		}
+		fprintf(fp, "%d", n);
+		fclose(fp);
+	}
+	exit(0);
+}
+		],
+		[nc_cv_shift_limit=`cat nc_test.out`],
+		[nc_cv_shift_limit=32],
+		[nc_cv_shift_limit=32])
+		rm -f nc_test.out
+	else
+		nc_cv_shift_limit=32
+	fi
+	])
+AC_MSG_RESULT($nc_cv_shift_limit)
+AC_SUBST(nc_cv_shift_limit)
+
+AC_MSG_CHECKING([for width of character-index])
+AC_CACHE_VAL(nc_cv_widec_shift,[
+if test ".$with_widec" = ".yes" ; then
+	nc_attrs_width=39
+	if ( expr $nc_cv_shift_limit \> $nc_attrs_width >/dev/null )
+	then
+		nc_cv_widec_shift=`expr 16 + $nc_cv_shift_limit - $nc_attrs_width`
+	else
+		nc_cv_widec_shift=16
+	fi
+else
+	nc_cv_widec_shift=8
+fi
+])
+AC_MSG_RESULT($nc_cv_widec_shift)
+AC_SUBST(nc_cv_widec_shift)
 ])dnl

@@ -3,10 +3,8 @@
  *
  *   written by Anatoly Ivasyuk (anatoly@nick.csh.rit.edu)
  *
- * $Id: demo.cc,v 1.7 1997/05/05 20:53:41 tom Exp $
+ * $Id: demo.cc,v 1.8 1997/07/13 20:33:31 juergen Exp $
  */
-
-#include <stdlib.h>
 
 #include "cursesm.h"
 
@@ -236,5 +234,6 @@ main()
   delete I;
   delete u;
 
+  endwin();
   exit(0);
 }

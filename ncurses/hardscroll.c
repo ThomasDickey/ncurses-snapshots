@@ -183,7 +183,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hardscroll.c,v 1.20 1997/06/16 00:21:21 tom Exp $")
+MODULE_ID("$Id: hardscroll.c,v 1.21 1997/07/14 18:19:20 Alexander.V.Lukyanov Exp $")
 
 #if defined(TRACE) || defined(SCROLLDEBUG)
 void _nc_linedump(void);
@@ -327,7 +327,10 @@ void _nc_scroll_optimize(void)
 		    TR(TRACE_UPDATE | TRACE_MOVE, ("scroll [%d, %d] by %d", ofirst, olast, -disp));
 #if !defined(SCROLLDEBUG) && !defined(HASHDEBUG)
 		    if (_nc_mvcur_scrolln(-disp, ofirst, olast, LINES - 1) == ERR)
-			break;
+		    {
+			TR(TRACE_UPDATE | TRACE_MOVE, ("unable to scroll"));
+			continue;
+		    }
 #endif /* !defined(SCROLLDEBUG) && !defined(HASHDEBUG) */
 
 		    for (m = ofirst; m <= olast; m++)

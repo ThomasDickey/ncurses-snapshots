@@ -18,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.47 1997/06/14 20:18:02 tom Exp $ */
+/* $Id: curses.h.in,v 1.49 1997/07/19 22:21:52 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -53,9 +53,7 @@
 #define NCURSES_CONST /* nothing */
 #endif
 
-#ifndef _UNCTRL_H
-typedef unsigned long  chtype;
-#endif
+typedef unsigned @nc_cv_typeof_chtype@ chtype;
 
 #include <stdio.h>
 #include <unctrl.h>
@@ -834,27 +832,45 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 
 /* attributes */
-#define A_ATTRIBUTES	0xffffff00
-#define A_NORMAL	0x00000000
-#define A_STANDOUT	0x00010000
-#define A_UNDERLINE	0x00020000
-#define A_REVERSE	0x00040000
-#define A_BLINK		0x00080000
-#define A_DIM		0x00100000
-#define A_BOLD		0x00200000
-#define A_ALTCHARSET	0x00400000
-#define A_INVIS		0x00800000
-#define A_PROTECT	0x01000000
-#define A_HORIZONTAL	0x02000000	/* XSI Curses attr -- not yet used */
-#define A_LEFT		0x04000000	/* XSI Curses attr -- not yet used */
-#define A_LOW		0x08000000	/* XSI Curses attr -- not yet used */
-#define A_RIGHT		0x10000000	/* XSI Curses attr -- not yet used */
-#define A_TOP		0x20000000	/* XSI Curses attr -- not yet used */
-#define A_VERTICAL	0x40000000	/* XSI Curses attr -- not yet used */
-#define A_CHARTEXT	0x000000ff
-#define A_COLOR		0x0000ff00
-#define COLOR_PAIR(n)	((n) << 8)
-#define PAIR_NUMBER(a)	(((a) & A_COLOR) >> 8)
+
+#define NCURSES_BITS(mask,shift) ((mask) << (shift + @nc_cv_widec_shift@))
+
+#define A_NORMAL	0L
+#define A_ATTRIBUTES	NCURSES_BITS(~0L,0)
+#define A_CHARTEXT	(NCURSES_BITS(1L,0)-1)
+#define A_COLOR		NCURSES_BITS(0xffL,0)
+#define A_STANDOUT	NCURSES_BITS(1L,8)
+#define A_UNDERLINE	NCURSES_BITS(1L,9)
+#define A_REVERSE	NCURSES_BITS(1L,10)
+#define A_BLINK		NCURSES_BITS(1L,11)
+#define A_DIM		NCURSES_BITS(1L,12)
+#define A_BOLD		NCURSES_BITS(1L,13)
+#define A_ALTCHARSET	NCURSES_BITS(1L,14)
+#define A_INVIS		NCURSES_BITS(1L,15)
+
+/* Tradeoff on 32-bit machines ('protect' vs widec).  The others (e.g., left
+ * highlight are not implemented in any terminal descriptions, anyway.
+ */
+#if ((16 + @nc_cv_widec_shift@) < @nc_cv_shift_limit@)
+#define A_PROTECT	NCURSES_BITS(1L,16)
+#define A_HORIZONTAL	NCURSES_BITS(1L,17)
+#define A_LEFT		NCURSES_BITS(1L,18)
+#define A_LOW		NCURSES_BITS(1L,19)
+#define A_RIGHT		NCURSES_BITS(1L,20)
+#define A_TOP		NCURSES_BITS(1L,21)
+#define A_VERTICAL	NCURSES_BITS(1L,22)
+#else
+#define A_PROTECT	0L
+#define A_HORIZONTAL	0L
+#define A_LEFT		0L
+#define A_LOW		0L
+#define A_RIGHT		0L
+#define A_TOP		0L
+#define A_VERTICAL	0L
+#endif
+
+#define COLOR_PAIR(n)	NCURSES_BITS(n, 0)
+#define PAIR_NUMBER(a)	(((a) & A_COLOR) >> @nc_cv_widec_shift@)
 
 /*
  * pseudo functions

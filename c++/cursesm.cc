@@ -21,14 +21,37 @@
 | WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                               |
 +----------------------------------------------------------------------------*/
 
-#include "cursesm.h"
 #include "internal.h"
-#pragma implementation
 
-MODULE_ID("$Id: cursesm.cc,v 1.5 1997/05/25 09:22:22 juergen Exp $")
+#ifdef __GNUG__
+#  pragma implementation
+#endif
+
+MODULE_ID("$Id: cursesm.cc,v 1.6 1997/07/13 20:33:05 juergen Exp $")
+  
+#include "cursesm.h"
 
 const int CMD_QUIT   = MAX_COMMAND + 1;
 const int CMD_ACTION = MAX_COMMAND + 2;
+
+NCursesMenuItem::~NCursesMenuItem() {
+}
+
+bool 
+NCursesMenuItem::action() {
+  return FALSE;
+};
+
+NCursesMenuCallbackItem::~NCursesMenuCallbackItem() {
+}
+
+bool 
+NCursesMenuCallbackItem::action() {
+  if (p_fct)
+    return p_fct (*this);
+  else
+    return FALSE;
+}
 
 unsigned long NCursesMenu::total_count = 0;
 
@@ -284,3 +307,40 @@ NCursesMenu::operator()(void) {
   refresh();
   return *(my_items[::item_index (::current_item (menu))]);
 }
+
+void
+NCursesMenu::On_Menu_Init() {
+}
+
+void
+NCursesMenu::On_Menu_Termination() {
+}
+
+void
+NCursesMenu::On_Item_Init(NCursesMenuItem& item) {
+}
+
+void
+NCursesMenu::On_Item_Termination(NCursesMenuItem& item) {
+}
+
+void
+NCursesMenu::On_Request_Denied(int c) const {
+  beep();
+}
+
+void
+NCursesMenu::On_Not_Selectable(int c) const {
+  beep();
+}
+
+void
+NCursesMenu::On_No_Match(int c) const {
+  beep();
+}
+
+void
+NCursesMenu::On_Unknown_Command(int c) const {
+  beep();
+}
+

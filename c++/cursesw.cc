@@ -24,9 +24,11 @@
 
 #include "internal.h"
 
-MODULE_ID("$Id: cursesw.cc,v 1.5 1997/05/05 20:04:59 tom Exp $")
+MODULE_ID("$Id: cursesw.cc,v 1.6 1997/07/13 20:33:05 juergen Exp $")
 
-#pragma implementation
+#ifdef __GNUG__
+#  pragma implementation
+#endif
 
 #include "cursesw.h"
 
