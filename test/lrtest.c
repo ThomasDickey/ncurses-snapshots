@@ -7,11 +7,10 @@
  * This can't be part of the ncurses test-program, because ncurses rips off the
  * bottom line to do labels.
  *
- * $Id: lrtest.c,v 0.16 2001/09/15 21:19:21 tom Exp $
+ * $Id: lrtest.c,v 0.17 2002/04/06 20:45:22 tom Exp $
  */
 
 #include <test.priv.h>
-#include <term.h>
 
 typedef struct {
     int y, x, mode, dir, inc;

@@ -29,14 +29,14 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: cardfile.c,v 1.10 2002/03/23 22:17:24 tom Exp $
+ * $Id: cardfile.c,v 1.11 2002/04/06 23:12:50 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text forms the content.
  */
 
 #include <test.priv.h>
 
-#if HAVE_FORM_H && HAVE_PANEL_H
+#if HAVE_FORM_H && HAVE_PANEL_H && HAVE_LIBFORM && HAVE_LIBPANEL
 
 #include <form.h>
 #include <panel.h>
@@ -379,6 +379,11 @@ cardfile(char *fname)
 	    case MAX_FORM_COMMAND + 4:
 		write_data(fname);
 		break;
+#ifdef KEY_RESIZE
+	    case KEY_RESIZE:
+		flash();
+		break;
+#endif
 	    default:
 		beep();
 		break;

@@ -29,13 +29,11 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 2000
  *
- * $Id: railroad.c,v 1.9 2002/03/23 22:13:18 tom Exp $
+ * $Id: railroad.c,v 1.10 2002/04/06 20:45:22 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
 #include <test.priv.h>
-
-#include <term.h>
 
 #include <ctype.h>
 

@@ -7,7 +7,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.34 2002/03/24 00:44:26 tom Exp $
+ * $Id: bs.c,v 1.35 2002/04/06 23:10:12 tom Exp $
  */
 
 #include <ctype.h>
@@ -15,8 +15,6 @@
 #include <time.h>
 
 #include <test.priv.h>
-
-#include <term.h>
 
 #ifndef SIGIOT
 #define SIGIOT SIGABRT
@@ -158,7 +156,7 @@ static RETSIGTYPE uninitgame(int sig GCC_UNUSED)
 {
     clear();
     (void) refresh();
-    (void) resetterm();
+    (void) reset_shell_mode();
     (void) echo();
     (void) endwin();
     ExitProgram(sig ? EXIT_FAILURE : EXIT_SUCCESS);
@@ -207,10 +205,8 @@ intro(void)
 	(void) strcpy(name, dftname);
 
     (void) initscr();
-#ifdef KEY_MIN
     keypad(stdscr, TRUE);
-#endif /* KEY_MIN */
-    (void) saveterm();
+    (void) def_prog_mode();
     (void) nonl();
     (void) cbreak();
     (void) noecho();
@@ -539,65 +535,49 @@ getcoord(int atcpu)
 	switch (c = getch()) {
 	case 'k':
 	case '8':
-#ifdef KEY_MIN
 	case KEY_UP:
-#endif /* KEY_MIN */
 	    ny = cury + BDEPTH - 1;
 	    nx = curx;
 	    break;
 	case 'j':
 	case '2':
-#ifdef KEY_MIN
 	case KEY_DOWN:
-#endif /* KEY_MIN */
 	    ny = cury + 1;
 	    nx = curx;
 	    break;
 	case 'h':
 	case '4':
-#ifdef KEY_MIN
 	case KEY_LEFT:
-#endif /* KEY_MIN */
 	    ny = cury;
 	    nx = curx + BWIDTH - 1;
 	    break;
 	case 'l':
 	case '6':
-#ifdef KEY_MIN
 	case KEY_RIGHT:
-#endif /* KEY_MIN */
 	    ny = cury;
 	    nx = curx + 1;
 	    break;
 	case 'y':
 	case '7':
-#ifdef KEY_MIN
 	case KEY_A1:
-#endif /* KEY_MIN */
 	    ny = cury + BDEPTH - 1;
 	    nx = curx + BWIDTH - 1;
 	    break;
 	case 'b':
 	case '1':
-#ifdef KEY_MIN
 	case KEY_C1:
-#endif /* KEY_MIN */
 	    ny = cury + 1;
 	    nx = curx + BWIDTH - 1;
 	    break;
 	case 'u':
 	case '9':
-#ifdef KEY_MIN
 	case KEY_A3:
-#endif /* KEY_MIN */
 	    ny = cury + BDEPTH - 1;
 	    nx = curx + 1;
 	    break;
 	case 'n':
 	case '3':
-#ifdef KEY_MIN
 	case KEY_C3:
-#endif /* KEY_MIN */
 	    ny = cury + 1;
 	    nx = curx + 1;
 	    break;
