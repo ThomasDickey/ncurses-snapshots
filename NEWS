@@ -1,6 +1,15 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970125
+	+ correct order of #ifdef for TABS_OK.
+	+ instrumented toe.c to test memory-leaks.
+	+ correct memory-deallocation in toe.c (patch by Jesse Thilo).
+	+ include <sys/types.h> in configuration test for regex.h (patch by
+	  Andreas Schwab)
+	+ make infocmp recognize -I option, for SVr4 compatibility (reported by
+	  Andreas Schwab <schwab@issan.informatik.uni-dortmund.de>)
+
 970118
 	+ add extension 'use_default_colors()', modified test applications that
 	  use default background (firework, gdc, hanoi, knight, worm) to

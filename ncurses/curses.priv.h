@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.47 1997/01/19 00:36:03 tom Exp $
+ * $Id: curses.priv.h,v 1.48 1997/01/26 01:20:10 tom Exp $
  *
  *	curses.priv.h
  *
@@ -89,6 +89,15 @@ extern int errno;
 #else
 #define USE_GPM_SUPPORT 0
 #endif
+
+/*
+ * ht/cbt expansion flakes out randomly under Linux 1.1.47, but only when
+ * we're throwing control codes at the screen at high volume.  To see this,
+ * re-enable TABS_OK and run worm for a while.  Other systems probably don't
+ * want to define this either due to uncertainties about tab delays and
+ * expansion in raw mode.
+ */
+#undef TABS_OK	/* OK to use tab/backtab for local motions? */
 
 /*
  * The internal types (e.g., struct screen) must precede <curses.h>, otherwise
@@ -290,15 +299,6 @@ typedef	struct {
 #define typeCalloc(type,elts) (type *)calloc(elts,sizeof(type))
 #define FreeIfNeeded(p)  if(p != 0) free(p)
 #define FreeAndNull(p)   free(p); p = 0
-
-/*
- * ht/cbt expansion flakes out randomly under Linux 1.1.47, but only when
- * we're throwing control codes at the screen at high volume.  To see this,
- * re-enable TABS_OK and run worm for a while.  Other systems probably don't
- * want to define this either due to uncertainties about tab delays and
- * expansion in raw mode.
- */
-#undef TABS_OK	/* OK to use tab/backtab for local motions? */
 
 #ifdef TRACE
 #define T(a)	if (_nc_tracing & TRACE_CALLS) _tracef a

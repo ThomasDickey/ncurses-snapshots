@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.22 1997/01/18 21:37:09 tom Exp $
+-- $Id: INSTALL,v 1.23 1997/01/26 01:55:16 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -24,6 +24,9 @@ on RECENT XTERM VERSIONS below.
 
 If you are trying to build GNU Emacs using ncurses for terminal support,
 read the USING NCURSES WITH EMACS section below.
+
+If you are trying to build applications using gpm with ncurse,
+read the USING NCURSES WITH GPM section below.
 
 If you are trying to build Elvis using ncurses for terminal support,
 read the USING NCURSES WITH ELVIS section below.
@@ -392,6 +395,22 @@ USING NCURSES WITH EMACS:
 
 	We have submitted such a change for the 19.30 release, so it may
 	already be applied in your sources -- check for the #define TERMINFO.
+
+USING NCURSES WITH GPM:
+	Ncurses 4.1 can be configured to use GPM (General Purpose Mouse) which
+	is used on Linux console.  Be aware that GPM is commonly installed as a
+	shared library which contains a wrapper for the curses wgetch()
+	function (libcurses.o).  Some integrators have simplified linking
+	applications by combining all of libcurses.so (the BSD curses) into
+	the libgpm.so file, producing symbol conflicts with ncurses.  You may
+	be able to work around this problem by linking as follows:
+
+		cc -o foo foo.o -lncurses -lgpm -lncurses
+
+	but the linker may not cooperate, producing mysterious errors.
+	A patched version of gpm is available:
+
+		ftp.clark.net:/pub/dickey/ncurses/gpm-1.10-970125.tgz
 
 USING NCURSES WITH ELVIS:
 	To use ncurses as the screen-painting library for Elvis, apply the
