@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.505 1999/10/31 02:03:44 tom Exp $
+-- $Id: NEWS,v 1.506 1999/11/07 00:03:32 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+19991106
+	+ install tack's manpage (reported by Robert Weiner
+	  <robert@progplus.com>)
+	+ correct worm.c's handling of KEY_RESIZE (patch by Frank Heckenbach).
+	+ modify curses.h.in, undef'ing some symbols to avoid conflict with C++
+	  STL (reported by Matt Gerassimoff <mgeras@ticon.net>)
 
 19991030
 	+ modify linux terminfo entry to indicate that dim does not mix with
