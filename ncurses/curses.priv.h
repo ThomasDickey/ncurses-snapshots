@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.277 2005/01/29 21:35:40 tom Exp $
+ * $Id: curses.priv.h,v 1.278 2005/02/19 17:15:00 tom Exp $
  *
  *	curses.priv.h
  *
@@ -823,11 +823,12 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define TRACE_RETURN(value,type) return _nc_retrace_##type(value)
 
 #define returnAttr(code) 	TRACE_RETURN(code,attr_t)
-#define returnChar(code) 	TRACE_RETURN(code,chtype)
-#define returnBool(code) 	TRACE_RETURN(code,bool)
 #define returnBits(code) 	TRACE_RETURN(code,unsigned)
-#define returnCode(code) 	TRACE_RETURN(code,int)
+#define returnBool(code) 	TRACE_RETURN(code,bool)
 #define returnCPtr(code) 	TRACE_RETURN(code,cptr)
+#define returnCVoidPtr(code)	TRACE_RETURN(code,cvoid_ptr)
+#define returnChar(code) 	TRACE_RETURN(code,chtype)
+#define returnCode(code) 	TRACE_RETURN(code,int)
 #define returnPtr(code)  	TRACE_RETURN(code,ptr)
 #define returnSP(code)   	TRACE_RETURN(code,sp)
 #define returnVoid       	T((T_RETURN(""))); return
@@ -835,6 +836,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define returnWin(code)  	TRACE_RETURN(code,win)
 
 extern NCURSES_EXPORT(NCURSES_BOOL)     _nc_retrace_bool (NCURSES_BOOL);
+extern NCURSES_EXPORT(NCURSES_CONST void *) _nc_retrace_cvoid_ptr (NCURSES_CONST void *);
 extern NCURSES_EXPORT(SCREEN *)         _nc_retrace_sp (SCREEN *);
 extern NCURSES_EXPORT(WINDOW *)         _nc_retrace_win (WINDOW *);
 extern NCURSES_EXPORT(attr_t)           _nc_retrace_attr_t (attr_t);
@@ -846,8 +848,8 @@ extern NCURSES_EXPORT(const char *)     _nc_altcharset_name(attr_t, chtype);
 extern NCURSES_EXPORT(const char *)     _nc_retrace_cptr (const char *);
 extern NCURSES_EXPORT(int)              _nc_retrace_int (int);
 extern NCURSES_EXPORT(unsigned)         _nc_retrace_unsigned (unsigned);
-extern NCURSES_EXPORT(void)             _nc_fifo_dump (void);
 extern NCURSES_EXPORT(void *)           _nc_retrace_void_ptr (void *);
+extern NCURSES_EXPORT(void)             _nc_fifo_dump (void);
 extern NCURSES_EXPORT_VAR(const char *) _nc_tputs_trace;
 extern NCURSES_EXPORT_VAR(long)         _nc_outchars;
 extern NCURSES_EXPORT_VAR(unsigned)     _nc_tracing;
@@ -870,9 +872,10 @@ extern NCURSES_EXPORT(const char *) _nc_viscbuf (const cchar_t *, int);
 #define returnAttr(code)	return code
 #define returnBits(code)	return code
 #define returnBool(code)	return code
+#define returnCPtr(code)	return code
+#define returnCVoidPtr(code)	return code
 #define returnChar(code)	return code
 #define returnCode(code)	return code
-#define returnCPtr(code)	return code
 #define returnPtr(code)		return code
 #define returnSP(code)		return code
 #define returnVoid		return
