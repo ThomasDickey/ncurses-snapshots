@@ -677,11 +677,12 @@
 ./misc/emx.src
 ./misc/form.def
 ./misc/form.ref
-./misc/indent.pro
+./misc/jpf-indent
 ./misc/makedef.cmd
 ./misc/makellib
 ./misc/menu.def
 ./misc/menu.ref
+./misc/ncu-indent
 ./misc/ncurses.def
 ./misc/ncurses.ref
 ./misc/panel.def
@@ -974,6 +975,7 @@
 ./test/inserts.c
 ./test/keynames.c
 ./test/knight.c
+./test/linux-color.dat
 ./test/listused.sh
 ./test/lrtest.c
 ./test/modules
@@ -991,3 +993,4 @@
 ./test/view.c
 ./test/worm.c
 ./test/xmas.c
+./test/xterm-16color.dat

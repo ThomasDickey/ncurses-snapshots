@@ -1,5 +1,6 @@
-.\" $Id: terminfo.tail,v 1.39 2004/03/27 22:28:17 tom Exp $
+.\" $Id: terminfo.tail,v 1.40 2004/05/23 01:13:40 tom Exp $
 .\" Beginning of terminfo.tail file
+.\" See "terminfo.head" for copyright.
 .ps +1
 .PP
 .SS A Sample Entry
@@ -271,10 +272,10 @@ Thus the model 33 teletype is described as
 .DT
 .nf
 .ft CW
-.in -7
-	\s-133\||\|tty33\||\|tty\||\|model 33 teletype,
+.\".in -2
+\s-133\||\|tty33\||\|tty\||\|model 33 teletype,
 	bel=^G, cols#72, cr=^M, cud1=^J, hc, ind=^J, os,\s+1
-.in +7
+.\".in +2
 .ft R
 .PP
 while the Lear Siegler \s-1ADM\-3\s0 is described as
@@ -282,11 +283,11 @@ while the Lear Siegler \s-1ADM\-3\s0 is described as
 .DT
 .nf
 .ft CW
-.in -7
-	\s-1adm3\||\|3\||\|lsi adm3,
+.\".in -2
+\s-1adm3\||\|3\||\|lsi adm3,
 	am, bel=^G, clear=^Z, cols#80, cr=^M, cub1=^H, cud1=^J,
 	ind=^J, lines#24,\s+1
-.in +7
+.\".in +2
 .ft R
 .fi
 .PP
@@ -380,12 +381,24 @@ unary operations push(op pop())
 add 1 to first two parameters (for ANSI terminals)
 .TP
 %? \fIexpr\fP %t \fIthenpart\fP %e \fIelsepart\fP %;
-if-then-else, %e \fIelsepart\fP is optional.
-else-if's are possible a la Algol 68:
-.br
+This forms an if-then-else.
+The %e \fIelsepart\fP is optional.
+Usually the %? \fIexpr\fP part pushes a value onto the stack,
+and %t pops it from the stack, testing if it is nonzero (true).
+If it is zero (false), control passes to the %e (else) part.
+.IP
+It is possible to form else-if's a la Algol 68:
+.RS
 %? c\d1\u %t b\d1\u %e c\d2\u %t b\d2\u %e c\d3\u %t b\d3\u %e c\d4\u %t b\d4\u %e %;
-.br
-c\di\u are conditions, b\di\u are bodies.
+.RE
+.IP
+where c\di\u are conditions, b\di\u are bodies.
+.IP
+Use the \fB\-f\fP option of \fBtic\fP or \fBinfocmp\fP to see
+the structure of if-the-else's.
+Some strings, e.g., \fBsgr\fP can be very complicated when written
+on one line.
+The \fB\-f\fP option splits the string into lines with the parts indented.
 .PP
 Binary operations are in postfix form with the operands in the usual order.
 That is, to get x-5 one would use "%gx%{5}%-".
@@ -1637,7 +1650,11 @@ Supports both the SVr4 set and the AIX extensions.
 \*d/?/*
 files containing terminal descriptions
 .SH SEE ALSO
-\fBtic\fR(1M), \fBcurses\fR(3X), \fBprintf\fR(3S), \fBterm\fR(\*n).
+\fBtic\fR(1M),
+\fBinfocmp\fR(1M),
+\fBcurses\fR(3X),
+\fBprintf\fR(3S),
+\fBterm\fR(\*n).
 .SH AUTHORS
 Zeyd M. Ben-Halim, Eric S. Raymond, Thomas E. Dickey.
 Based on pcurses by Pavel Curtis.

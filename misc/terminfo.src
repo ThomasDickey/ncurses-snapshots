@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.228 $
-#	$Date: 2004/03/27 23:29:17 $
+#	$Revision: 1.229 $
+#	$Date: 2004/05/22 23:55:21 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a newer version which differs in some cosmetic details; we have decided
@@ -2907,7 +2907,7 @@ xterm-16color|xterm with 16 colors like aixterm,
 # These variants of XFree86 3.9.16 xterm are built as a configure option.
 xterm-256color|xterm with 256 colors, 
 	ccc, 
-	colors#256, ncv#32, pairs#256, 
+	colors#256, pairs#256, 
 	initc=\E]4;%p1%d;rgb\:%p2%{255}%*%{1000}%/%2.2X/%p3%{255}%*%{1000}%/%2.2X/%p4%{255}%*%{1000}%/%2.2X\E\\, 
 	setab=\E[48;5;%p1%dm, setaf=\E[38;5;%p1%dm, 
 	setb=\E[48;5;%p1%dm, setf=\E[38;5;%p1%dm, 
@@ -20485,6 +20485,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  screen, to make the entries more portable -TD
 #	* remove cvvis from rxvt entry, since it is the same as cnorm -TD
 #	* similar fixups for cvvis/cnorm various entries -TD
+#
+# 2004-05-22
+#	* remove 'ncv' from xterm-256color (patch 188) -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
