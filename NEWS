@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.605 2000/11/12 01:36:52 tom Exp $
+-- $Id: NEWS,v 1.606 2000/11/18 23:31:19 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20001118
+	+ modify default for --disable-overwrite configure option to disable
+	  if the --prefix or $prefix value is not /usr.
+	+ add cygwin to systems for which ncurses is installed by default into
+	  /usr rather than /usr/local.
 
 20001111
 	+ minor optimization in comp_error.c and lib_termname.c, using
