@@ -1,10 +1,15 @@
--- $Id: NEWS,v 1.633 2001/06/18 18:46:07 tom Exp $
+-- $Id: NEWS,v 1.634 2001/06/23 23:26:37 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010623
+	+ correct an overlooked CharOf/UChar instance (reports by Eugene Lee
+	  <eugene@anime.net>, Sven Verdoolaege).
+	+ correct unneeded ifdef for wunctrl() (reported by Sven Verdoolaege)
 
 20010618
 	+ change overlooked several CharOf/UChar instances.
@@ -292,7 +297,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  termcap.h, which matches X/Open.
 	> patch by Juergen Pfeifer:
 	+ a revised version of the Ada enhancements sent in by "H.
-	  Nanosecond", aka Eugene V.  Melaragno <aldomel@ix.netcom.com>.  This
+	  Nanosecond", aka Eugene V Melaragno <aldomel@ix.netcom.com>.  This
 	  patch includes
 	  - small fixes to the existing ncurses binding
 	  - addition of some more low-level functions to the binding, including

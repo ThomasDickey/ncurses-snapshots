@@ -34,9 +34,9 @@
 #include <tic.h>
 #include <nc_alloc.h>
 
-MODULE_ID("$Id: access.c,v 1.8 2001/06/16 11:25:51 tom Exp $")
+MODULE_ID("$Id: access.c,v 1.9 2001/06/23 22:11:49 tom Exp $")
 
-#define LOWERCASE(c) ((isalpha(CharOf(c)) && isupper(CharOf(c))) ? tolower(CharOf(c)) : (c))
+#define LOWERCASE(c) ((isalpha(UChar(c)) && isupper(UChar(c))) ? tolower(UChar(c)) : (c))
 
 NCURSES_EXPORT(char *)
 _nc_rootname(char *path)

@@ -1,6 +1,6 @@
-# $Id: ncurses_defs,v 1.8 2001/06/10 00:45:48 tom Exp $
+# $Id: ncurses_defs,v 1.9 2001/06/23 23:30:22 tom Exp $
 ##############################################################################
-# Copyright (c) 2000 Free Software Foundation, Inc.                          #
+# Copyright (c) 2000,2001 Free Software Foundation, Inc.                     #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -42,7 +42,6 @@ ETIP_NEEDS_MATH_H
 GCC_NORETURN	/* nothing */
 GCC_UNUSED	/* nothing */
 HAVE_BIG_CORE
-HAVE_BOTWC
 HAVE_BSD_CGETENT
 HAVE_BUILTIN_H
 HAVE_DIRENT_H

@@ -35,9 +35,9 @@
 
 #include <curses.priv.h>
 
-#if USE_WIDEC_SUPPORT && HAVE_BOTWC
+#if USE_WIDEC_SUPPORT
 
-MODULE_ID("$Id: lib_wunctrl.c,v 1.3 2001/06/18 18:39:30 skimo Exp $")
+MODULE_ID("$Id: lib_wunctrl.c,v 1.5 2001/06/23 23:34:36 tom Exp $")
 
 NCURSES_EXPORT(wchar_t *)
 wunctrl(cchar_t * wc)
@@ -50,7 +50,7 @@ wunctrl(cchar_t * wc)
 	    *sp++ = btowc(*p++);
 	return str;
     } else
-	return wc.chars;
+	return wc->chars;
 }
 
 #endif
