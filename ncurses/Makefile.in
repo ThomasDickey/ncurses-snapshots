@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.73 2001/05/19 23:24:05 tom Exp $
+# $Id: Makefile.in,v 1.74 2001/05/26 17:36:29 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.           #
 #                                                                            #
@@ -188,13 +188,13 @@ make_hash$x : \
 		make_hash$x \
 		../include/hashsize.h \
 		$(tinfo)/MKcaptab.awk
-	sh $(tinfo)/MKcaptab.awk $(AWK) $(srcdir)/../include/Caps > $@
+	sh $(tinfo)/MKcaptab.awk $(AWK) $(srcdir)/../include/@TERMINFO_CAPS@ > $@
 
 ./lib_keyname.c: $(tinfo)/keys.list $(base)/MKkeyname.awk
 	$(AWK) -f $(base)/MKkeyname.awk $(tinfo)/keys.list > $@
 
 ./names.c ./codes.c: $(tinfo)/MKnames.awk
-	$(AWK) -f $(tinfo)/MKnames.awk $(srcdir)/../include/Caps
+	$(AWK) -f $(tinfo)/MKnames.awk $(srcdir)/../include/@TERMINFO_CAPS@
 	cat namehdr boolnames boolfnames numnames numfnames strnames strfnames nameftr >./names.c
 	cat namehdr boolcodes numcodes strcodes codeftr >./codes.c
 	-rm -f namehdr nameftr codeftr boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes

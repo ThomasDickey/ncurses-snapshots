@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.627 2001/05/19 23:43:04 tom Exp $
+-- $Id: NEWS,v 1.628 2001/05/26 23:59:17 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,6 +6,17 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
+20010526
+	+ add experimental --with-caps=XXX option to customize to similar
+	  terminfo database formats such as AIX 4.x
+	+ add Caps.aix4 as an example.
+	+ modify Caps to add columns for the the KEY_xxx symbols.
+	+ modify configure --with-widec to suppress overwrite of libcurses.so
+	  and curses.h
+	+ add checks to toe.c to avoid being confused by files and directories
+	  where we would expect the reverse, e.g., source-files in the
+	  top-level terminfo levels as is the case for AIX.
+	  
 20010519
 	+ add top-level 'depend' rule for the C sources, assuming that the
 	  makedepend program is available.  As a side-effect, this makes

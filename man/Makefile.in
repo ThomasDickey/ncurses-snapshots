@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.30 2001/05/19 23:26:12 tom Exp $
+# $Id: Makefile.in,v 1.31 2001/05/26 17:36:36 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -62,7 +62,7 @@ uninstall uninstall.man :
 	-sh ./edit_man.sh removing $(EDITARGS)
 
 # We compose terminfo.5 from the real sources...
-CAPLIST=$(srcdir)/../include/Caps
+CAPLIST=$(srcdir)/../include/@TERMINFO_CAPS@
 terminfo.5: $(srcdir)/terminfo.head $(CAPLIST) $(srcdir)/terminfo.tail Makefile $(srcdir)/MKterminfo.sh
 	sh $(srcdir)/MKterminfo.sh $(srcdir)/terminfo.head $(CAPLIST) $(srcdir)/terminfo.tail >terminfo.5
 

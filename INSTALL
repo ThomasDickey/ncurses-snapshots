@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.47 2000/11/05 01:57:24 tom Exp $
+-- $Id: INSTALL,v 1.48 2001/05/26 17:33:07 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -463,6 +463,13 @@ SUMMARY OF CONFIGURE OPTIONS:
 
     --with-ada-objects=DIR
 	Tell where to install the Ada objects (default:  PREFIX/lib/ada/adalib)
+
+    --with-caps=XXX
+	Specify an alternate terminfo capabilities file, which makes the
+	configure script look for "include/Caps.XXX".  A few systems, e.g.,
+	AIX 4.x use the same overall file-format as ncurses for terminfo
+	data, but use different alignments within the tables to support
+	legacy applications.
 
     --with-database=XXX
 	Specify the terminfo source file to install.  Usually you will wish

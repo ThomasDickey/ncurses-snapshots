@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.53 2001/05/19 23:24:10 tom Exp $
+# $Id: Makefile.in,v 1.54 2001/05/26 17:36:23 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.           #
 #                                                                            #
@@ -222,7 +222,7 @@ tset$x: $(DEPS_TSET) $(DEPS_CURSES) transform.h
 	@ECHO_LINK@ $(LINK) $(DEPS_TSET) $(LDFLAGS_DEFAULT) -o $@
 
 termsort.c: $(srcdir)/MKtermsort.sh
-	sh -c "$(srcdir)/MKtermsort.sh $(AWK) $(srcdir)/../include/Caps" >$@
+	sh -c "$(srcdir)/MKtermsort.sh $(AWK) $(srcdir)/../include/@TERMINFO_CAPS@" >$@
 
 #
 # Utility productions start here
