@@ -1,5 +1,40 @@
+<!-- 
+  ****************************************************************************
+  * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+  *                                                                          *
+  * Permission is hereby granted, free of charge, to any person obtaining a  *
+  * copy of this software and associated documentation files (the            *
+  * "Software"), to deal in the Software without restriction, including      *
+  * without limitation the rights to use, copy, modify, merge, publish,      *
+  * distribute, distribute with modifications, sublicense, and/or sell       *
+  * copies of the Software, and to permit persons to whom the Software is    *
+  * furnished to do so, subject to the following conditions:                 *
+  *                                                                          *
+  * The above copyright notice and this permission notice shall be included  *
+  * in all copies or substantial portions of the Software.                   *
+  *                                                                          *
+  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS  *
+  * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF               *
+  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.   *
+  * IN NO EVENT SHALL THE ABOVE COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,   *
+  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR    *
+  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR    *
+  * THE USE OR OTHER DEALINGS IN THE SOFTWARE.                               *
+  *                                                                          *
+  * Except as contained in this notice, the name(s) of the above copyright   *
+  * holders shall not be used in advertising or otherwise to promote the     *
+  * sale, use or other dealings in this Software without prior written       *
+  * authorization.                                                           *
+  ****************************************************************************
+  * @Id: term.5,v 1.10 2000/08/13 01:56:45 tom Exp @
+-->
 <HTML>
+<HEAD>
+<TITLE>TERM 5</TITLE><link rev=made href="mailto:bug-ncurses@gnu.org">
+</HEAD>
 <BODY>
+<H1>TERM 5</H1>
+<HR>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
 
@@ -10,17 +45,17 @@
 
 </PRE>
 <H2>SYNOPSIS</H2><PRE>
-       <B>term</B>
+       <STRONG>term</STRONG>
 
 
 </PRE>
 <H2>DESCRIPTION</H2><PRE>
        Compiled terminfo descriptions are placed under the direc-
-       tory <B>/usr/share/terminfo</B>.  In  order  to  avoid  a  linear
+       tory <STRONG>/usr/share/terminfo</STRONG>.  In  order  to  avoid  a  linear
        search of a huge UNIX system directory, a two-level scheme
-       is used: <B>/c/name</B> where <I>name</I> is the name of  the  terminal,
-       and  <I>c</I>  is the first character of <I>name</I>.  Thus, <I>act4</I> can be
-       found in the  file  <B>/usr/share/terminfo/a/act4</B>.   Synonyms
+       is used: <STRONG>/c/name</STRONG> where <EM>name</EM> is the name of  the  terminal,
+       and  <EM>c</EM>  is the first character of <EM>name</EM>.  Thus, <EM>act4</EM> can be
+       found in the  file  <STRONG>/usr/share/terminfo/a/act4</STRONG>.   Synonyms
        for the same terminal are implemented by multiple links to
        the same compiled file.
 
@@ -29,8 +64,8 @@
        assumptions about byte  ordering  or  sign  extension  are
        made.
 
-       The  compiled  file  is  created with the <I>tic</I> program, and
-       read by the routine <I>setupterm</I>.  The file is  divided  into
+       The  compiled  file  is  created with the <EM>tic</EM> program, and
+       read by the routine <EM>setupterm</EM>.  The file is  divided  into
        six parts: the header, terminal names, boolean flags, num-
        bers, strings, and string table.
 
@@ -92,13 +127,13 @@
        the values of string capabilities referenced in the string
        section.  Each string is null terminated.
 
-       Note that it is possible for <I>setupterm</I> to expect a differ-
+       Note that it is possible for <EM>setupterm</EM> to expect a differ-
        ent  set  of capabilities than are actually present in the
        file.  Either the database may  have  been  updated  since
-       <I>setupterm</I> has been recompiled (resulting in extra unrecog-
+       <EM>setupterm</EM> has been recompiled (resulting in extra unrecog-
        nized entries in the file) or the program  may  have  been
        recompiled  more  recently  than  the database was updated
-       (resulting in missing  entries).   The  routine  <I>setupterm</I>
+       (resulting in missing  entries).   The  routine  <EM>setupterm</EM>
        must  be prepared for both possibilities - this is why the
        numbers and sizes are included.   Also,  new  capabilities
        must  always  be added at the end of the lists of boolean,
@@ -112,7 +147,7 @@
        OSF/1)  which  diverged from System V terminfo after SVr1,
        and have added extension capabilities to the string  table
        that  (in the binary format) collide with System V and XSI
-       Curses extensions.  See <B><A HREF="terminfo.5.html">terminfo(5)</A></B> for  detailed  discus-
+       Curses extensions.  See <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG> for  detailed  discus-
        sion of terminfo source compatibility issues.
 
        As  an  example, here is a hex dump of the description for
@@ -162,7 +197,7 @@
 
 </PRE>
 <H2>SEE ALSO</H2><PRE>
-       <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="terminfo.5.html">terminfo(5)</A></B>.
+       <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="terminfo.5.html">terminfo(5)</A></STRONG>.
 
 
 

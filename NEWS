@@ -1,10 +1,25 @@
--- $Id: NEWS,v 1.637 2001/07/15 01:21:58 tom Exp $
+-- $Id: NEWS,v 1.638 2001/07/22 00:22:24 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010721
+	+ add some limit/pointer checks to -S option of tputs.
+	+ updated/expanded Apple_Terminal and Darwin PowerPC terminfo entries
+	  (Benjamin C W Sittler).
+	+ add a note in curs_termcap.3x regarding a defect in the XSI
+	  description of tgetent (based on a discussion with Urs Jansen
+	  regarding the HPUX 11.x implementation, whose termcap interface is
+	  not compatible with existing termcap programs).
+	+ modify manhtml rule in dist.mk to preserve copyright notice on the
+	  generated files, as well as to address HTML style issues reported by
+	  tidy and weblint.  Regenerated/updated corresponding html files.
+	+ comment out use of Protected_Character and related rarely used
+	  attributes in ncurses Ada95 test/demo to compile with wide-character
+	  configuration.
 
 20010714
 	+ implement a simple example in C++ demo to test scanw().
