@@ -48,7 +48,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.43 2005/01/16 00:32:18 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.44 2005/04/03 13:56:10 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -239,7 +239,7 @@ _nc_merge_entry(TERMTYPE *const to, TERMTYPE *const from)
     _nc_align_termtype(to, from);
 #endif
     for_each_boolean(i, from) {
-	if (to->Booleans[i] != CANCELLED_BOOLEAN) {
+	if (to->Booleans[i] != (char) CANCELLED_BOOLEAN) {
 	    int mergebool = from->Booleans[i];
 
 	    if (mergebool == CANCELLED_BOOLEAN)

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.75 2005/01/29 19:28:54 tom Exp $
+# $Id: Makefile.in,v 1.76 2005/04/02 18:47:38 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -68,7 +68,7 @@ RANLIB		= @LIB_PREP@
 
 CXX		= @CXX@
 CPP		= @CXXCPP@
-CXXFLAGS	= @CXXFLAGS@
+CXXFLAGS	= @CXXFLAGS@ @EXTRA_CXXFLAGS@
 CXXLIBS		= @CXXLIBS@
 
 INCDIR		= ../include

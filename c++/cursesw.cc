@@ -26,7 +26,7 @@
 #include "internal.h"
 #include "cursesw.h"
 
-MODULE_ID("$Id: cursesw.cc,v 1.26 2003/10/25 15:02:46 tom Exp $")
+MODULE_ID("$Id: cursesw.cc,v 1.29 2005/04/02 20:28:50 tom Exp $")
 
 #define COLORS_NEED_INITIALIZATION  -1
 #define COLORS_NOT_INITIALIZED       0
@@ -150,7 +150,8 @@ NCursesWindow::err_handler(const char *msg) const THROWS(NCursesException)
 }
 
 void
-NCursesWindow::initialize() {
+NCursesWindow::initialize()
+{
   if (!b_initialized) {
     ::initscr();
     b_initialized = TRUE;
@@ -163,21 +164,24 @@ NCursesWindow::initialize() {
   }
 }
 
-NCursesWindow::NCursesWindow() {
+NCursesWindow::NCursesWindow()
+  : w(), alloced(), par(), subwins(), sib()
+{
   initialize();
 
-  w = (WINDOW *)0;
+  w = static_cast<WINDOW *>(0);
   init();
   alloced = FALSE;
   subwins = par = sib = 0;
   count++;
 }
 
-NCursesWindow::NCursesWindow(int lines, int cols, int begin_y, int begin_x)
+NCursesWindow::NCursesWindow(int nlines, int ncols, int begin_y, int begin_x)
+  : w(), alloced(), par(), subwins(), sib()
 {
     initialize();
 
-    w = ::newwin(lines, cols, begin_y, begin_x);
+    w = ::newwin(nlines, ncols, begin_y, begin_x);
     if (w == 0) {
 	err_handler("Cannot construct window");
     }
@@ -189,6 +193,7 @@ NCursesWindow::NCursesWindow(int lines, int cols, int begin_y, int begin_x)
 }
 
 NCursesWindow::NCursesWindow(WINDOW* &window)
+  : w(), alloced(), par(), subwins(), sib()
 {
     initialize();
 
@@ -201,6 +206,7 @@ NCursesWindow::NCursesWindow(WINDOW* &window)
 
 NCursesWindow::NCursesWindow(NCursesWindow& win, int l, int c,
 			     int begin_y, int begin_x, char absrel)
+  : w(), alloced(), par(), subwins(), sib()
 {
     initialize();
     if (absrel == 'a') { // absolute origin
@@ -227,6 +233,7 @@ NCursesWindow::NCursesWindow(NCursesWindow& win, int l, int c,
 
 NCursesWindow::NCursesWindow(NCursesWindow& win,
 				bool do_box NCURSES_PARAM_INIT(TRUE))
+  : w(), alloced(), par(), subwins(), sib()
 {
   initialize();
   w = :: derwin(win.w,win.height()-2,win.width()-2,1,1);
@@ -247,7 +254,8 @@ NCursesWindow::NCursesWindow(NCursesWindow& win,
   }
 }
 
-NCursesWindow NCursesWindow::Clone() {
+NCursesWindow NCursesWindow::Clone()
+{
   WINDOW *d = ::dupwin(w);
   NCursesWindow W(d);
   W.subwins = subwins;
@@ -264,29 +272,32 @@ static RIPOFFINIT* prip = R_INIT;
 
 extern "C" int _nc_ripoffline(int,int (*init)(WINDOW*,int));
 
-NCursesWindow::NCursesWindow(WINDOW *win, int cols) {
+NCursesWindow::NCursesWindow(WINDOW *win, int ncols)
+  : w(), alloced(), par(), subwins(), sib()
+{
   initialize();
   w = win;
-  assert((w->_maxx+1)==cols);
+  assert((w->_maxx+1)==ncols);
   alloced = FALSE;
   subwins = par = sib = 0;
 }
 
-int NCursesWindow::ripoff_init(WINDOW *w, int cols)
+int _nc_xx_ripoff_init(WINDOW *w, int ncols)
 {
   int res = ERR;
 
   RIPOFFINIT init = *prip++;
   if (init) {
-    NCursesWindow* W = new NCursesWindow(w,cols);
+    NCursesWindow* W = new NCursesWindow(w,ncols);
     res = init(*W);
   }
   return res;
 }
 
 int NCursesWindow::ripoffline(int ripoff_lines,
-			      int (*init)(NCursesWindow& win)) {
-  int code = ::_nc_ripoffline(ripoff_lines,ripoff_init);
+			      int (*init)(NCursesWindow& win))
+{
+  int code = ::_nc_ripoffline(ripoff_lines,_nc_xx_ripoff_init);
   if (code==OK && init && ripoff_lines) {
     R_INIT[r_init_idx++] = init;
   }
@@ -294,7 +305,8 @@ int NCursesWindow::ripoffline(int ripoff_lines,
 }
 
 bool
-NCursesWindow::isDescendant(NCursesWindow& win) {
+NCursesWindow::isDescendant(NCursesWindow& win)
+{
   for (NCursesWindow* p = subwins; p != NULL; p = p->sib) {
     if (p==&win)
       return TRUE;
@@ -386,7 +398,7 @@ NCursesWindow::getcolor(int getback) const
     short fore, back;
 
     if (colorInitialized==COLORS_ARE_REALLY_THERE) {
-      if (::pair_content((short)PAIR_NUMBER(w->_attrs), &fore, &back))
+      if (::pair_content(static_cast<short>(PAIR_NUMBER(w->_attrs)), &fore, &back))
 	err_handler("Can't get color pair");
     }
     else {
@@ -427,7 +439,7 @@ int
 NCursesWindow::setpalette(short fore, short back)
 {
   if (colorInitialized==COLORS_ARE_REALLY_THERE)
-    return setpalette(fore, back, (short)PAIR_NUMBER(w->_attrs));
+    return setpalette(fore, back, static_cast<short>(PAIR_NUMBER(w->_attrs)));
   else
     return OK;
 }
@@ -449,7 +461,8 @@ NCursesWindow::setcolor(short pair)
 #if HAVE_HAS_KEY
 extern "C" int _nc_has_mouse(void);
 
-bool NCursesWindow::has_mouse() const {
+bool NCursesWindow::has_mouse() const
+{
   return ((::has_key(KEY_MOUSE) || ::_nc_has_mouse())
 	  ? TRUE : FALSE);
 }

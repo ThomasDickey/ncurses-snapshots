@@ -1,10 +1,23 @@
--- $Id: NEWS,v 1.882 2005/03/27 17:38:55 tom Exp $
+-- $Id: NEWS,v 1.884 2005/04/03 14:01:35 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050403
+	+ modify start_color() to return ERR if it cannot allocate memory.
+	+ address g++ compiler warnings in C++ binding by adding explicit
+	  member initialization, assignment operators and copy constructors.
+	  Most of the changes simply preserve the existing semantics of the
+	  binding, which can leak memory, etc., but by making these features
+	  visible, it provides a framework for improving the binding.
+	+ improve C++ binding using static_cast, etc.
+	+ modify configure script --enable-warnings to add options to g++ to
+	  correspond to the gcc --enable-warnings.
+	+ modify C++ binding to use some C internal functions to make it
+	  compile properly on Solaris (and other platforms).
 
 20050327
 	+ amend change from 20050320 to limit it to configurations with a

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: aclocal.m4,v 1.352 2005/02/05 11:58:22 tom Exp $
+dnl $Id: aclocal.m4,v 1.353 2005/04/02 18:49:56 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1288,6 +1288,93 @@ if test "$GXX" = yes; then
 	GXX_VERSION="`${CXX-g++} --version|sed -e '2,$d'`"
 	AC_MSG_RESULT($GXX_VERSION)
 fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_GXX_WARNINGS version: 2 updated: 2005/04/02 13:49:56
+dnl ---------------
+dnl Check if the compiler supports useful warning options.
+dnl
+dnl Most of gcc's options apply to g++, except:
+dnl	-Wbad-function-cast
+dnl	-Wmissing-declarations
+dnl	-Wnested-externs
+dnl
+dnl Omit a few (for now):
+dnl	-Winline
+dnl
+dnl Parameter:
+dnl	$1 is an optional list of g++ warning flags that a particular
+dnl		application might want to use, e.g., "no-unused" for
+dnl		-Wno-unused
+dnl Special:
+dnl	If $with_ext_const is "yes", add a check for -Wwrite-strings
+dnl
+AC_DEFUN([CF_GXX_WARNINGS],
+[
+AC_REQUIRE([CF_INTEL_COMPILER])
+AC_REQUIRE([CF_GXX_VERSION])
+
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
+
+if test "$INTEL_COMPILER" = yes
+then
+# The "-wdXXX" options suppress warnings:
+# remark #1419: external declaration in primary source file
+# remark #193: zero used for undefined preprocessing identifier
+# remark #593: variable "curs_sb_left_arrow" was set but never used
+# remark #810: conversion from "int" to "Dimension={unsigned short}" may lose significant bits
+# remark #869: parameter "tw" was never referenced
+# remark #981: operands are evaluated in unspecified order
+# warning #269: invalid format string conversion
+	EXTRA_CXXFLAGS="$EXTRA_CXXFLAGS -Wall \
+ -wd1419 \
+ -wd193 \
+ -wd279 \
+ -wd593 \
+ -wd810 \
+ -wd869 \
+ -wd981"
+elif test "$GXX" = yes
+then
+	cat > conftest.$ac_ext <<EOF
+#line __oline__ "configure"
+int main(int argc, char *argv[[]]) { return (argv[[argc-1]] == 0) ; }
+EOF
+	AC_CHECKING([for $CXX warning options])
+	cf_save_CXXFLAGS="$CXXFLAGS"
+	EXTRA_CXXFLAGS="-W -Wall"
+	cf_warn_CONST=""
+	test "$with_ext_const" = yes && cf_warn_CONST="Wwrite-strings"
+	for cf_opt in \
+		Wabi \
+		fabi-version=0 \
+		Woverloaded-virtual \
+		Wsign-promo \
+		Wsynth \
+		Wold-style-cast \
+		Weffc++ \
+		Wcast-align \
+		Wcast-qual \
+		Wmissing-prototypes \
+		Wpointer-arith \
+		Wshadow \
+		Wstrict-prototypes \
+		Wundef $cf_warn_CONST $1
+	do
+		CXXFLAGS="$cf_save_CXXFLAGS $EXTRA_CXXFLAGS -Werror -$cf_opt"
+		if AC_TRY_EVAL(ac_compile); then
+			test -n "$verbose" && AC_MSG_RESULT(... -$cf_opt)
+			EXTRA_CXXFLAGS="$EXTRA_CXXFLAGS -$cf_opt"
+		else
+			test -n "$verbose" && AC_MSG_RESULT(... no -$cf_opt)
+		fi
+	done
+	rm -f conftest*
+	CXXFLAGS="$cf_save_CXXFLAGS"
+fi
+AC_LANG_RESTORE
+AC_SUBST(EXTRA_CXXFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_HELP_MESSAGE version: 3 updated: 1998/01/14 10:56:23
@@ -4065,7 +4152,7 @@ test "$cf_with_sysmouse" = yes && AC_DEFINE(USE_SYSMOUSE)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 16 updated: 2005/02/04 06:56:22
+dnl CF_XOPEN_SOURCE version: 17 updated: 2005/02/06 12:07:45
 dnl ---------------
 dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions,
 dnl or adapt to the vendor's definitions to get equivalent functionality.
@@ -4079,6 +4166,9 @@ cf_XOPEN_SOURCE=ifelse($1,,500,$1)
 cf_POSIX_C_SOURCE=ifelse($2,,199506L,$2)
 
 case $host_os in #(vi
+aix[[45]]*) #(vi
+	CPPFLAGS="$CPPFLAGS -D_ALL_SOURCE"
+	;;
 freebsd*) #(vi
 	# 5.x headers associate
 	#	_XOPEN_SOURCE=600 with _POSIX_C_SOURCE=200112L

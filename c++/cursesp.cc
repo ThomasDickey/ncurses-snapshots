@@ -1,6 +1,6 @@
 // * this is for making emacs happy: -*-Mode: C++;-*-
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -35,11 +35,12 @@
 #include "cursesp.h"
 #include <string.h>
 
-MODULE_ID("$Id: cursesp.cc,v 1.21 2003/10/25 15:04:46 tom Exp $")
+MODULE_ID("$Id: cursesp.cc,v 1.23 2005/04/02 20:24:39 tom Exp $")
 
-NCursesPanel* NCursesPanel::dummy = (NCursesPanel*)0;
+NCursesPanel* NCursesPanel::dummy = static_cast<NCursesPanel*>(0);
 
-void NCursesPanel::init() {
+void NCursesPanel::init()
+{
   p = ::new_panel(w);
   if (!p)
     OnError(ERR);
@@ -48,11 +49,12 @@ void NCursesPanel::init() {
   hook->m_user  = NULL;
   hook->m_back  = this;
   hook->m_owner = p;
-  ::set_panel_userptr(p, (void *)hook);
+  ::set_panel_userptr(p, reinterpret_cast<void *>(hook));
 }
 
-NCursesPanel::~NCursesPanel() {
-  UserHook* hook = (UserHook*)::panel_userptr(p);
+NCursesPanel::~NCursesPanel()
+{
+  UserHook* hook = reinterpret_cast<UserHook*>(::panel_userptr(p));
   assert(hook != 0 && hook->m_back==this && hook->m_owner==p);
   delete hook;
   ::del_panel(p);
@@ -60,7 +62,8 @@ NCursesPanel::~NCursesPanel() {
 }
 
 void
-NCursesPanel::redraw() {
+NCursesPanel::redraw()
+{
   PANEL *pan;
 
   pan = ::panel_above(NULL);
@@ -73,26 +76,30 @@ NCursesPanel::redraw() {
 }
 
 int
-NCursesPanel::refresh() {
+NCursesPanel::refresh()
+{
   ::update_panels();
   return ::doupdate();
 }
 
 int
-NCursesPanel::noutrefresh() {
+NCursesPanel::noutrefresh()
+{
   ::update_panels();
   return OK;
 }
 
 void
-NCursesPanel::boldframe(const char *title, const char* btitle) {
+NCursesPanel::boldframe(const char *title, const char* btitle)
+{
   standout();
   frame(title, btitle);
   standend();
 }
 
 void
-NCursesPanel::frame(const char *title,const char *btitle) {
+NCursesPanel::frame(const char *title,const char *btitle)
+{
   int err = OK;
   if (!title && !btitle) {
     err = box();
@@ -106,7 +113,8 @@ NCursesPanel::frame(const char *title,const char *btitle) {
 }
 
 void
-NCursesPanel::label(const char *tLabel, const char *bLabel) {
+NCursesPanel::label(const char *tLabel, const char *bLabel)
+{
   if (tLabel)
     centertext(0,tLabel);
   if (bLabel)
@@ -114,16 +122,18 @@ NCursesPanel::label(const char *tLabel, const char *bLabel) {
 }
 
 void
-NCursesPanel::centertext(int row,const char *label) {
-  if (label) {
-    int x = (maxx() - ::strlen(label)) / 2;
+NCursesPanel::centertext(int row,const char *labelText)
+{
+  if (labelText) {
+    int x = (maxx() - ::strlen(labelText)) / 2;
     if (x<0)
       x=0;
-    OnError(addstr(row, x, label, width()));
+    OnError(addstr(row, x, labelText, width()));
   }
 }
 
 int
-NCursesPanel::getKey(void) {
+NCursesPanel::getKey(void)
+{
   return getch();
 }

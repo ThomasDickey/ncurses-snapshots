@@ -42,7 +42,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.72 2005/01/29 14:30:54 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.73 2005/04/03 14:02:47 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -256,9 +256,11 @@ start_color(void)
 		    FreeAndNull(SP->_color_pairs);
 		}
 	    }
+	} else {
+	    result = OK;
 	}
     }
-    returnCode(OK);
+    returnCode(result);
 }
 
 /* This function was originally written by Daniel Weaver <danw@znyx.com> */
