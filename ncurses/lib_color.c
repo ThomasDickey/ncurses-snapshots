@@ -41,13 +41,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.25 1998/03/28 23:51:22 tom Exp $")
-
-/*
- * Only 8 ANSI colors are defined; the ISO 6429 control sequences work only
- * for 8 values (0-7).
- */
-#define MAX_ANSI_COLOR 8
+MODULE_ID("$Id: lib_color.c,v 1.26 1998/04/25 19:02:41 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -107,7 +101,7 @@ static int toggled_colors(int c)
 
 static void set_background_color(int bg, int  (*outc)(int))
 {
-	if (set_a_background && bg <= MAX_ANSI_COLOR)
+	if (set_a_background)
 	{
 	    TPUTS_TRACE("set_a_background");
 	    tputs(tparm(set_a_background, bg), 1, outc);
@@ -121,7 +115,7 @@ static void set_background_color(int bg, int  (*outc)(int))
 
 static void set_foreground_color(int fg, int  (*outc)(int))
 {
-	if (set_a_foreground && fg <= MAX_ANSI_COLOR)
+	if (set_a_foreground)
 	{
 	    TPUTS_TRACE("set_a_foreground");
 	    tputs(tparm(set_a_foreground, fg), 1, outc);

@@ -1,7 +1,7 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
 #	Version 10.2.1
-#	$Date: 1998/03/10 23:28:04 $
+#	$Date: 1998/04/25 19:44:29 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -682,7 +682,7 @@ att6386|at386|386at|AT&T WGS 6386 console,
 	knp=\E[U, kpp=\E[V, krmir=\E0, nel=\r\E[S, rc=\E8, rev=\E[7m, 
 	ri=\E[T, rin=\E[%p1%dT, rmacs=\E[10m, rmso=\E[m, rmul=\E[m, 
 	sc=\E7, 
-	sgr=\E[10m\E[0%?%p1%p3%|%t;7%;%?%p2%t;4%;%?%p4%t;5%;%?%p5%t;2%;?%p6%t;1%;%?%p9%t;12%e;10%;%?%p7%t;9%;m, 
+	sgr=\E[10m\E[0%?%p1%p3%|%t;7%;%?%p2%t;4%;%?%p4%t;5%;%?%p5%t;2%;%?%p6%t;1%;%?%p9%t;12%e;10%;%?%p7%t;9%;m, 
 	sgr0=\E[0;10m, smacs=\E[12m, smso=\E[7m, smul=\E[4m, 
 	tbc=\E[2g, vpa=\E[%i%p1%dd, 
 	use=klone+color, 
@@ -2038,19 +2038,20 @@ xterm-xf86-v33|xterm terminal emulator (XFree86 3.3 Window System),
 # xterm to use terminfo-based descriptions with the titeInhibit resource.
 xterm-xf86-v40|xterm terminal emulator (XFree86 4.0 Window System), 
 	mc5i, 
-	mc0=\E[i, mc4=\E[4i, mc5=\E[5i, rmcup=\E[?1047l\E[?1048l, 
-	rs1=\Ec, smcup=\E[?1048h\E[?1047h, 
-	use=xterm-xf86-v33, 
+	ich1@, mc0=\E[i, mc4=\E[4i, mc5=\E[5i, 
+	rmcup=\E[?1047l\E[?1048l, rs1=\Ec, 
+	smcup=\E[?1048h\E[?1047h, use=xterm-xf86-v33, 
 
 # From: David J. MacKenzie <djm@va.pubnix.com>, 14 Nov 1997
 xterm-xi|xterm on XI Graphics Accelerated X under BSD/OS 3.1, 
 	rmso=\E[m, rmul=\E[m, 
 	use=xterm-xf86-v33, 
 
-# This is one of the variants from XFree86 3.3 (T.Dickey)
+# This is one of the variants from XFree86 3.3, updated for 4.0 (T.Dickey)
 xterm-16color|xterm with 16 colors like aixterm, 
 	colors#16, ncv#32, pairs#256, 
-	setab@, setaf@, 
+	setab=\E[%?%p1%{8}%<%t%p1%{40}%+%e%p1%{92}%+%;%dm, 
+	setaf=\E[%?%p1%{8}%<%t%p1%{30}%+%e%p1%{82}%+%;%dm, 
 	setb=%p1%{8}%/%{6}%*%{4}%+\E[%d%p1%{8}%m%Pa%?%ga%{1}%=%t4%e%ga%{3}%=%t6%e%ga%{4}%=%t1%e%ga%{6}%=%t3%e%ga%d%;m, 
 	setf=%p1%{8}%/%{6}%*%{3}%+\E[%d%p1%{8}%m%Pa%?%ga%{1}%=%t4%e%ga%{3}%=%t6%e%ga%{4}%=%t1%e%ga%{6}%=%t3%e%ga%d%;m, 
 	use=xterm-xf86-v40, 
@@ -2077,8 +2078,8 @@ xterm-8bit|xterm terminal emulator 8-bit controls (X Window System),
 	dl=\233%p1%dM, dl1=\233M, ech=\233%p1%dX, ed=\233J, 
 	el=\233K, el1=\2331K, enacs=\E(B\E)0, 
 	flash=\233?5h\233?5l, home=\233H, hpa=\233%i%p1%dG, 
-	ht=^I, hts=\210, ich=\233%p1%d@, ich1=\233@, il=\233%p1%dL, 
-	il1=\233L, ind=^J, 
+	ht=^I, hts=\210, ich=\233%p1%d@, il=\233%p1%dL, il1=\233L, 
+	ind=^J, 
 	is2=\E7\E G\233r\233m\233?7h\233?1;3;4;6l\2334l\E8\E>, 
 	ka1=\217w, ka3=\217u, kb2=\217y, kbeg=\217E, kbs=^H, 
 	kc1=\217q, kc3=\217s, kcub1=\217D, kcud1=\217B, 
@@ -2092,16 +2093,17 @@ xterm-8bit|xterm terminal emulator 8-bit controls (X Window System),
 	kmous=\233M, knp=\2336~, kpp=\2335~, kslt=\2334~, 
 	mc0=\233i, mc4=\2334i, mc5=\2335i, meml=\El, memu=\Em, 
 	op=\23339;49m, rc=\E8, rev=\2337m, ri=\215, rmacs=^O, 
-	rmam=\233?7l, rmcup=\2332J\233?47l\E8, rmir=\2334l, 
+	rmam=\233?7l, rmcup=\233?1047l\233?1048l, rmir=\2334l, 
 	rmkx=\233?1l\E>, rmso=\23327m, rmul=\23324m, rs1=\Ec, 
 	rs2=\E7\E[62"p\E G\233r\233m\233?7h\233?1;3;4;6l\2334l\E8\E>, 
 	sc=\E7, setab=\2334%p1%dm, setaf=\2333%p1%dm, 
 	setb=\2334%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
 	setf=\2333%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
 	sgr=\2330%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
-	sgr0=\233m^O, smacs=^N, smam=\233?7h, smcup=\E7\233?47h, 
-	smir=\2334h, smkx=\233?1h\E=, smso=\2337m, smul=\2334m, 
-	tbc=\2333g, vpa=\233%i%p1%dd, 
+	sgr0=\233m^O, smacs=^N, smam=\233?7h, 
+	smcup=\233?1048h\233?1047h, smir=\2334h, 
+	smkx=\233?1h\E=, smso=\2337m, smul=\2334m, tbc=\2333g, 
+	vpa=\233%i%p1%dd, 
 
 # This is xterm for ncurses. It mainly adds mappings for more high-half
 # characters.  Note that these will only work for fixed-width fonts.

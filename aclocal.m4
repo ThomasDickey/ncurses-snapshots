@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.128 1998/04/18 21:23:56 tom Exp $
+dnl $Id: aclocal.m4,v 1.130 1998/04/25 19:56:59 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1303,7 +1303,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		# tested with OSF/1 V3.2 and gcc 2.6.3 (but the c++ demo didn't
 		# link with shared libs).
 		CC_SHARED_OPTS=''
- 		MK_SHARED_LIB='$(LD) -o $[@].$(REL_VERSION) -set_version $(ABI_VERSION):$(REL_VERSION) -expect_unresolved "*" -shared -soname `basename $[@].$(ABI_VERSION)`'
+ 		MK_SHARED_LIB='$(LD) -o $[@] -set_version $(REL_VERSION):$(ABI_VERSION) -expect_unresolved "*" -shared -soname `basename $[@]`' 
 		test $cf_cv_ld_rpath = yes && cf_ld_rpath_opt="-rpath"
 		case $host_os in
 		osf4*)
@@ -1314,7 +1314,7 @@ AC_DEFUN([CF_SHARED_OPTS],
  			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
  			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'
 		fi
-		cf_cv_do_symlinks=yes
+		cf_cv_do_symlinks=no 
 		cf_cv_rm_so_locs=yes
 		;;
 	sunos4*)
@@ -1514,7 +1514,7 @@ TEST_ARGS="-L${LIB_DIR} -L\$(libdir) $TEST_ARGS"
 AC_SUBST(TEST_DEPS)
 AC_SUBST(TEST_ARGS)
 
-PROG_ARGS="-L${LIB_DIR} -L\$(libdir) $PROG_ARGS"
+PROG_ARGS="-L\$(libdir) -L${LIB_DIR} $PROG_ARGS"
 AC_SUBST(PROG_ARGS)
 
 SRC_SUBDIRS="man include"
