@@ -50,7 +50,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.55 2001/03/03 21:20:41 Todd.C.Miller Exp $");
+MODULE_ID("$Id: comp_scan.c,v 1.56 2001/04/21 18:53:34 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
