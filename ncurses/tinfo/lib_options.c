@@ -42,7 +42,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_options.c,v 1.44 2001/08/04 17:18:51 tom Exp $")
+MODULE_ID("$Id: lib_options.c,v 1.45 2001/12/16 01:08:13 tom Exp $")
 
 NCURSES_EXPORT(int)
 idlok(WINDOW *win, bool flag)
@@ -125,7 +125,7 @@ keypad(WINDOW *win, bool flag)
 
     if (win) {
 	win->_use_keypad = flag;
-	returnCode(_nc_keypad(flag));
+	returnCode(OK);
     } else
 	returnCode(ERR);
 }
@@ -252,5 +252,6 @@ _nc_keypad(bool flag)
 	_nc_init_keytry();
 	SP->_tried = TRUE;
     }
+    SP->_keypad_on = flag;
     return (OK);
 }

@@ -1,10 +1,28 @@
--- $Id: NEWS,v 1.658 2001/12/08 22:15:23 tom Exp $
+-- $Id: NEWS,v 1.659 2001/12/16 01:37:06 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20011215
+	+ rewrote ncurses 'a' test to exercise wgetch() and keypad() functions
+	  better, e.g., by adding a 'w' command to create new windows which
+	  may have different keypad() settings.
+	+ corrected logic of keypad() by adding internal screen state to track
+	  whether the terminal's keypad-mode has been set.  Use this in
+	  wgetch() to update the keypad-mode according to whether the
+	  associated window's keypad-mode has been set with keypad().  This
+	  corrects a related problem restoring terminal state after handling
+	  SIGTSTP (reported by Mike Castle).
+	+ regenerate configure using patch for autoconf 2.52
+		autoconf-2.52-patch.gz
+	  at
+		ftp://invisible-island.net/autoconf/
+	+ update config.guess, config.sub from
+	+ minor changes to quoting in configure script to allow it to work
+	  with autoconf 2.52
 
 20011208
 	+ modify final checks in lib_setup.c for line and col values, making

@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.209 2001/11/15 00:54:12 tom Exp $
+ * $Id: curses.priv.h,v 1.211 2001/12/16 01:03:12 tom Exp $
  *
  *	curses.priv.h
  *
@@ -300,7 +300,8 @@ struct screen {
 
 	struct tries    *_keytry;       /* "Try" for use with keypad mode   */
 	struct tries    *_key_ok;       /* Disabled keys via keyok(,FALSE)  */
-	int             _tried;         /* keypad mode was initialized      */
+	bool            _tried;         /* keypad mode was initialized      */
+	bool            _keypad_on;     /* keypad mode is currently on      */
 
 	unsigned int    _fifo[FIFO_SIZE];       /* input push-back buffer   */
 	short           _fifohead,      /* head of fifo queue               */
@@ -643,7 +644,6 @@ typedef	struct {
 #define T(a)		TR(TRACE_CALLS, a)
 #define TPUTS_TRACE(s)	_nc_tputs_trace = s;
 #define TRACE_RETURN(value,type) return _nc_retrace_##type(value)
-#define _trace_key(ch) ((ch > KEY_MIN) ? keyname(ch) : _tracechar((unsigned char)ch))
 #define returnAttr(code) TRACE_RETURN(code,attr_t)
 #define returnChar(code) TRACE_RETURN(code,chtype)
 #define returnCode(code) TRACE_RETURN(code,int)
