@@ -32,12 +32,11 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
 #include <tic.h>
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.10 1996/07/31 00:08:08 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.11 1996/12/21 14:24:06 tom Exp $")
 
 #define MAX_STRTAB	4096	/* documented maximum entry size */
 

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.18 1996/06/15 23:54:30 tom Exp $
+# $Id: Makefile.in,v 1.19 1996/12/21 15:33:01 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -116,7 +116,7 @@ keys.tries: $(srcdir)/keys.list
 	$(AWK) -f $(srcdir)/MKkeys.awk $(srcdir)/keys.list > keys.tries
 
 make_hash : $(srcdir)/comp_hash.c
-	$(CC) -o $@ $(CCFLAGS) -DMAIN_PROGRAM $(srcdir)/comp_hash.c
+	$(CC) -o $@ $(CCFLAGS) -DMAIN_PROGRAM $(srcdir)/comp_hash.c $(LDFLAGS)
 
 comp_captab.c: \
 		make_hash \

@@ -28,7 +28,6 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
 #include <tic.h>
 #include <hashsize.h>
 
@@ -38,7 +37,7 @@
 #define DEBUG(level, params) /*nothing*/
 #endif
 
-MODULE_ID("$Id: comp_hash.c,v 1.10 1996/07/21 00:33:53 tom Exp $")
+MODULE_ID("$Id: comp_hash.c,v 1.11 1996/12/21 14:24:06 tom Exp $")
 
 static  int hash_function(const char *);
 

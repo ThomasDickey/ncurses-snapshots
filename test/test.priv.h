@@ -17,7 +17,7 @@
  * CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
  ******************************************************************************/
-/* $Id: test.priv.h,v 1.6 1996/07/07 18:12:00 tom Exp $ */
+/* $Id: test.priv.h,v 1.9 1996/12/21 22:36:09 tom Exp $ */
 #if HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -46,6 +46,14 @@ extern int optind;
 #endif
 #ifndef GCC_UNUSED
 #define GCC_UNUSED /* nothing */
+#endif
+
+#if defined(NCURSES_VERSION) && defined(HAVE_NC_ALLOC_H)
+#include <nc_alloc.h>
+#endif
+
+#ifndef ExitProgram
+#define ExitProgram(code) return code
 #endif
 
 #ifndef EXIT_SUCCESS

@@ -28,8 +28,6 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
-
 #if USE_FUNC_POLL
 #include <stropts.h>
 #include <poll.h>
@@ -46,7 +44,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.14 1996/12/01 05:10:08 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.15 1996/12/21 14:24:06 tom Exp $")
 
 /*
  * We want to define GOOD_SELECT if the last argument of select(2) is

@@ -33,11 +33,10 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.18 1996/10/27 01:25:50 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.19 1996/12/21 14:24:06 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.

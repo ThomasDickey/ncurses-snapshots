@@ -23,9 +23,8 @@
 #include <curses.priv.h>
 
 #include <term.h>
-#include <string.h>
 
-MODULE_ID("$Id: lib_print.c,v 1.7 1996/07/30 22:49:24 tom Exp $")
+MODULE_ID("$Id: lib_print.c,v 1.8 1996/12/21 14:24:06 tom Exp $")
 
 int mcprint(char *data, int len)
 /* ship binary character data to the printer via mc4/mc5/mc5p */

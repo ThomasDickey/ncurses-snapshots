@@ -17,10 +17,10 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.41 1996/12/15 00:31:30 tom Exp $
+dnl $Id: configure.in,v 1.44 1996/12/21 22:37:49 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.9)
-AC_REVISION($Revision: 1.41 $)
+AC_REVISION($Revision: 1.44 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
@@ -103,6 +103,14 @@ AC_ARG_WITH(debug,
 AC_ARG_WITH(profile,
 	[  --with-profile          generate profile-libraries],
 	[test "$withval" = "yes" && nc_list_models="$nc_list_models profile"])
+
+### Checks for special libraries.  These are awkward to do by hand.
+AC_ARG_WITH(dbmalloc,
+	[  --with-dbmalloc         use Conor Cahill's dbmalloc library],
+	[AC_CHECK_LIB(dbmalloc,debug_malloc)])
+AC_ARG_WITH(dmalloc,
+	[  --with-dmalloc          use Gray Watson's dmalloc library],
+	[AC_CHECK_LIB(dmalloc,dmalloc_debug)])
 
 AC_MSG_CHECKING(for specified models)
 test -z "$nc_list_models" && nc_list_models=normal
@@ -219,7 +227,7 @@ else
 fi
 AC_SUBST(ECHO_LINK)
 
-###	use option --with-warnings to turn on all gcc warnings
+###	use option --enable-warnings to turn on all gcc warnings
 AC_ARG_ENABLE(warnings,
 	[  --enable-warnings       turn on GCC compiler warnings],
 	[with_warnings=$enableval])
@@ -229,7 +237,7 @@ if test -n "$with_warnings"; then
 fi
 NC_GCC_ATTRIBUTES
 
-###	use option --with-assertions to turn on generation of assertion code
+###	use option --enable-assertions to turn on generation of assertion code
 AC_ARG_ENABLE(assertions,
 	[  --enable-assertions     turn on generation of assertion code],
 	[with_assertions=$enableval])
@@ -242,6 +250,12 @@ then
 		ADAFLAGS="$ADAFLAGS -gnata"
 	fi
 fi
+
+###	use option --disable-leaks to suppress "permanent" leaks, for testing
+AC_ARG_ENABLE(leaks,
+	[  --disable-leaks         suppress permanent memory-leaks],
+	[test $enableval = no && AC_DEFINE(NO_LEAKS)])
+AC_DEFINE(HAVE_NC_ALLOC_H)
 
 ###	Checks for libraries.
 AC_CHECK_FUNC(gettimeofday,

@@ -29,13 +29,11 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-#include <string.h>
-
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>	/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.14 1996/12/07 20:56:42 tom Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.15 1996/12/21 14:24:06 tom Exp $")
 
 #ifdef __QNX__		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0

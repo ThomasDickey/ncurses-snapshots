@@ -30,7 +30,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.13 1996/12/08 00:52:52 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.14 1996/12/19 18:31:29 tom Exp $")
 
 void _nc_freewin(WINDOW *win)
 {
@@ -52,6 +52,11 @@ int	i;
 				}
 				free(win->_line);
 				free(win);
+
+				if (win == curscr) curscr = 0;
+				if (win == stdscr) stdscr = 0;
+				if (win == newscr) newscr = 0;
+
 				T(("...deleted win=%p", win));
 				break;
 			}

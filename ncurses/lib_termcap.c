@@ -21,14 +21,13 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
 #include <termcap.h>
 #include <tic.h>
 
 #define __INTERNAL_CAPS_VISIBLE
 #include <term.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.12 1996/08/24 19:25:16 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.13 1996/12/21 14:24:06 tom Exp $")
 
 /*
    some of the code in here was contributed by:

@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.13 1996/12/01 00:27:07 tom Exp $
+# $Id: mk-1st.awk,v 1.14 1996/12/21 12:48:00 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -129,8 +129,8 @@ END	{
 				if ( overwrite == "yes" && lib_name == "libncurses.a" )
 				{
 					printf "\t@echo linking libcurses.a to libncurses.a \n"
-					printf "\trm -f $(INSTALL_PREFIX)$(libdir)/libcurses.a \n"
-					printf "\t$(LN_S) $(INSTALL_PREFIX)$(libdir)/libncurses.a $(INSTALL_PREFIX)$(libdir)/libcurses.a \n"
+					printf "\t-rm -f $(INSTALL_PREFIX)$(libdir)/libcurses.a \n"
+					printf "\t(cd $(INSTALL_PREFIX)$(libdir) $(LN_S) libncurses.a libcurses.a)\n"
 				}
 				printf "\t$(RANLIB) $(INSTALL_PREFIX)$(libdir)/%s\n", lib_name
 			}

@@ -28,9 +28,8 @@
 */
 
 #include <curses.priv.h>
-#include <string.h>
 
-MODULE_ID("$Id: lib_longname.c,v 1.4 1996/07/31 00:25:23 tom Exp $")
+MODULE_ID("$Id: lib_longname.c,v 1.5 1996/12/21 14:24:06 tom Exp $")
 
 char *
 longname(void)

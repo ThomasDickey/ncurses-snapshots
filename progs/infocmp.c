@@ -27,15 +27,12 @@
 
 #include <progs.priv.h>
 
-#include <string.h>
 #include <ctype.h>
 
-#include <term.h>
-#include <tic.h>
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.21 1996/12/15 01:59:21 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.24 1996/12/21 21:53:58 florian Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -73,6 +70,18 @@ static int compare;
 #define C_NAND		3	/* list capabilities in neither terminal */
 #define C_USEALL	4	/* generate relative use-form entry */
 static bool ignorepads;		/* ignore pad prefixes when diffing */
+
+#ifdef NO_LEAKS
+#undef ExitProgram
+static void ExitProgram(int code) GCC_NORETURN;
+static void ExitProgram(int code)
+{
+	while (termcount-- > 0)
+		_nc_free_termtype(&term[termcount], FALSE);
+	_nc_leaks_dump_entry();
+	_nc_free_and_exit(code);
+}
+#endif
 
 static char *canonical_name(char *ptr, char *buf)
 /* extract the terminal type's primary name */
@@ -877,7 +886,7 @@ int main(int argc, char *argv[])
 		case 'V':
 			(void) fputs(NCURSES_VERSION, stdout);
 			putchar('\n');
-			return EXIT_SUCCESS;
+			ExitProgram(EXIT_SUCCESS);
 
 		case 'w':
 			mwidth = atoi(optarg);
@@ -965,14 +974,7 @@ int main(int argc, char *argv[])
 			directory = TERMINFO;	/* for error message */
 		    }
 
-		    if (status == -1)
-		    {
-			(void) fprintf(stderr,
-				       "infocmp: couldn't open terminfo directory %s.\n",
-				       directory);
-			return(1);
-		    }
-		    else if (status == 0)
+		    if (status <= 0)
 		    {
 			(void) fprintf(stderr,
 				       "infocmp: couldn't open terminfo file %s.\n",
@@ -1077,7 +1079,7 @@ int main(int argc, char *argv[])
 			n == STRCOUNT-1 ? ""     : ",");
 		}
 		(void) printf("\t%s /* size = %d */\n", R_CURL, size);
-		return EXIT_SUCCESS;
+		ExitProgram(EXIT_SUCCESS);
 	    }
 
 	    /* analyze the init strings */
@@ -1094,7 +1096,7 @@ int main(int argc, char *argv[])
 		analyze_string("smcup", enter_ca_mode, &term[0]);
 		analyze_string("rmcup", exit_ca_mode, &term[0]);
 #undef CUR
-		return EXIT_SUCCESS;
+		ExitProgram(EXIT_SUCCESS);
 	    }
 
 	    /*
@@ -1160,7 +1162,7 @@ int main(int argc, char *argv[])
 	else
 	    file_comparison(argc-optind, argv+optind);
 
-	return EXIT_SUCCESS;
+	ExitProgram(EXIT_SUCCESS);
 }
 
 /* infocmp.c ends here */

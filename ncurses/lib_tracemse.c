@@ -31,9 +31,7 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
-
-MODULE_ID("$Id: lib_tracemse.c,v 1.3 1996/07/30 22:29:50 tom Exp $")
+MODULE_ID("$Id: lib_tracemse.c,v 1.4 1996/12/21 14:24:06 tom Exp $")
 
 char *_tracemouse(MEVENT const *ep)
 {

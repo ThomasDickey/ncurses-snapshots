@@ -30,15 +30,9 @@
 #include <progs.priv.h>
 
 #include <ctype.h>
-
 #include <curses.h>
-#include <tic.h>
-#include <string.h>
-#include <ctype.h>
 
-#include <term.h>
-
-MODULE_ID("$Id: tput.c,v 1.7 1996/09/07 15:22:16 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.8 1996/12/21 17:34:36 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)

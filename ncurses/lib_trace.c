@@ -19,8 +19,6 @@
 *                                                                          *
 ***************************************************************************/
 
-
-
 /*
  *	lib_trace.c - Tracing/Debugging routines
  */
@@ -31,13 +29,14 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
+MODULE_ID("$Id: lib_trace.c,v 1.12 1996/12/21 15:11:11 tom Exp $")
+
 #include <ctype.h>
 #if HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
 
-unsigned _nc_tracing = 0;  
+unsigned _nc_tracing = 0;
 char *_nc_tputs_trace;
 long _nc_outchars;
 int _nc_optimize_enable = OPTIMIZE_ALL;
@@ -49,13 +48,13 @@ void trace(const unsigned int tracelevel)
 static bool	been_here = FALSE;
 
 	if (! been_here && tracelevel) {
-	   	been_here = TRUE;
+		been_here = TRUE;
 
-	   	if ((tracefd = creat("trace", 0644)) < 0) {
+		if ((tracefd = creat("trace", 0644)) < 0) {
 			perror("curses: Can't open 'trace' file: ");
 			exit(EXIT_FAILURE);
-	   	}
-	   	_tracef("TRACING NCURSES version %s", NCURSES_VERSION);
+		}
+		_tracef("TRACING NCURSES version %s", NCURSES_VERSION);
 	}
 
    	_nc_tracing = tracelevel;
@@ -72,26 +71,26 @@ char *tp = vbuf;
 
     	while (*buf) {
 		if (is7bits(*buf) && (isgraph(*buf) || *buf == ' '))
-	    		*tp++ = *buf++;
+			*tp++ = *buf++;
 		else if (*buf == '\n') {
-	    		*tp++ = '\\'; *tp++ = 'n';
-	    		buf++;
+			*tp++ = '\\'; *tp++ = 'n';
+			buf++;
 		}
 		else if (*buf == '\r') {
-	    		*tp++ = '\\'; *tp++ = 'r';
-	    		buf++;
+			*tp++ = '\\'; *tp++ = 'r';
+			buf++;
 		} else if (*buf == '\b') {
-	    		*tp++ = '\\'; *tp++ = 'b';
-	    		buf++;
+			*tp++ = '\\'; *tp++ = 'b';
+			buf++;
 		} else if (*buf == '\033') {
-	    		*tp++ = '\\'; *tp++ = 'e';
-	    		buf++;
+			*tp++ = '\\'; *tp++ = 'e';
+			buf++;
 		} else if (is7bits(*buf) && iscntrl(*buf)) {
-	    		*tp++ = '\\'; *tp++ = '^'; *tp++ = '@' + *buf;
-	    		buf++;
+			*tp++ = '\\'; *tp++ = '^'; *tp++ = '@' + *buf;
+			buf++;
 		} else {
-	    		sprintf(tp, "\\0x%02x", *buf++);
-	    		tp += strlen(tp);
+			sprintf(tp, "\\0x%02x", *buf++);
+			tp += strlen(tp);
 		}
     }
     *tp++ = '\0';
@@ -111,4 +110,3 @@ char buffer[BUFSIZ];
 		write(tracefd, "\n", 1);
 	}
 }
-

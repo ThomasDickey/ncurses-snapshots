@@ -30,7 +30,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.12 1996/10/20 00:53:11 tom Exp $")
+MODULE_ID("$Id: lib_refresh.c,v 1.13 1996/12/15 23:52:19 tom Exp $")
 
 int wredrawln(WINDOW *win, int beg, int num)
 {
@@ -73,6 +73,10 @@ short	m, n;
 bool	wide;
 
 	T(("wnoutrefresh(%p) called", win));
+#ifdef TRACE
+	if (_nc_tracing & TRACE_UPDATE)
+	    _tracedump("...win", win);
+#endif /* TRACE */
 
 	/*
 	 * This function will break badly if we try to refresh a pad.
@@ -89,6 +93,7 @@ bool	wide;
 		touchwin(win);
 		newscr->_bkgd = win->_bkgd;
 	}
+	newscr->_attrs = win->_attrs;
 
 	/* merge in change information from all subwindows of this window */
 	wsyncdown(win);
@@ -167,5 +172,9 @@ bool	wide;
 		newscr->_cury = win->_cury + win->_begy + win->_yoffset;
 		newscr->_curx = win->_curx + win->_begx;
 	}
+#ifdef TRACE
+	if (_nc_tracing & TRACE_UPDATE)
+	    _tracedump("newscr", newscr);
+#endif /* TRACE */
 	return(OK);
 }

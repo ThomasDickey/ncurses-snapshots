@@ -263,6 +263,7 @@
 ./include/curses.h.in
 ./include/edit_cfg.sh
 ./include/headers
+./include/nc_alloc.h
 ./include/term_entry.h
 ./include/termcap.h.in
 ./include/tic.h
@@ -522,6 +523,7 @@
 ./panel/modules
 ./panel/panel.c
 ./panel/panel.h
+./panel/panel.priv.h
 ./progs/MKtermsort.sh
 ./progs/Makefile.in
 ./progs/capconvert

@@ -28,14 +28,11 @@
 #include <progs.priv.h>
 
 #include <ctype.h>
-#include <string.h>
 
-#include <term.h>
-#include <tic.h>
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.19 1996/12/14 23:17:10 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.20 1996/12/21 17:34:36 tom Exp $")
 
 char	*_nc_progname = "tic";
 

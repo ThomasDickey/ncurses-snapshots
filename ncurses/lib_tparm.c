@@ -27,10 +27,9 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.10 1996/11/16 23:21:24 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.12 1996/12/21 18:09:22 tom Exp $")
 
 /*
  *	char *
@@ -113,6 +112,17 @@ static char *tname;
 static char  *out_buff;
 static size_t out_size;
 static size_t out_used;
+
+#ifdef NO_LEAKS
+void _nc_free_tparm(void)
+{
+	if (out_buff != 0) {
+		FreeAndNull(out_buff);
+		out_size = 0;
+		out_used = 0;
+	}
+}
+#endif
 
 static void save_text(char *s)
 {

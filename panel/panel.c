@@ -22,30 +22,9 @@
 ***************************************************************************/
 
 /* panel.c -- implementation of panels library */
+#include "panel.priv.h"
 
-#if HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include <stdlib.h>
-#include <assert.h>
-
-#include "panel.h"
-
-
-#if ( CC_HAS_INLINE_FUNCS && !defined(TRACE) )
-#  define INLINE inline
-#else
-#  define INLINE
-#endif
-
-
-typedef struct panelcons
-{
-	struct panelcons *above;
-	struct panel *pan;
-} PANELCONS;
-
+MODULE_ID("$Id: panel.c,v 1.6 1996/12/04 17:04:55 juergen Exp $")
 
 static PANEL *__bottom_panel = (PANEL *)0;
 static PANEL *__top_panel = (PANEL *)0;
@@ -57,12 +36,6 @@ static PANEL __stdscr_pseudo_panel = { (WINDOW *)0,
 
 /* Prototypes */
 static void __panel_link_bottom(PANEL *pan);
-
-#ifdef TRACE
-#  define dBug(x) _tracef x
-#else
-#  define dBug(x)
-#endif
 
 /*+-------------------------------------------------------------------------
 	dPanel(text,pan)
@@ -183,7 +156,7 @@ PANELCONS *nobs;					/* "next" one */
 
 	while(tobs) {
 		nobs = tobs->above;
-		free((char *)tobs);
+		free((void *)tobs);
 		tobs = nobs;
 	}
 	pan->obscure = (PANELCONS *)0;
@@ -379,6 +352,7 @@ register PANEL *next;
 		return;
 #endif
 
+	assert(pan != &__stdscr_pseudo_panel);
 	__override(pan,0);
 	__free_obscure(pan);
 
@@ -503,7 +477,7 @@ del_panel(register PANEL *pan)
 		dBug(("--> del_panel %s",(char *)(pan->user)));
 		if(__panel_is_linked(pan))
 			(void)hide_panel(pan);
-		free((char *)pan);
+		free((void *)pan);
 		return(OK);
 	}
 	return(ERR);

@@ -32,7 +32,69 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.12 1996/10/05 22:59:47 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.13 1996/12/21 19:01:11 tom Exp $")
+
+/*
+ * If the output file descriptor is connected to a tty (the typical case) it
+ * will probably be line-buffered.  Keith Bostic pointed out that we don't want
+ * this; it hoses people running over networks by forcing out a bunch of small
+ * packets instead of one big one, so screen updates on ptys look jerky. 
+ * Restore block buffering to prevent this minor lossage.
+ *
+ * The buffer size is a compromise.  Ideally we'd like a buffer that can hold
+ * the maximum possible update size (the whole screen plus cup commands to
+ * change lines as it's painted).  On a 66-line xterm this can become
+ * excessive.  So we min it with the amount of data we think we can get through
+ * two Ethernet packets (maximum packet size - 100 for TCP/IP overhead).
+ *
+ * Why two ethernet packets?  It used to be one, on the theory that said
+ * packets define the maximum size of atomic update.  But that's less than the
+ * 2000 chars on a 25 x 80 screen, and we don't want local updates to flicker
+ * either.  Two packet lengths will handle up to a 35 x 80 screen.
+ *
+ * The magic '6' is the estimated length of the end-of-line cup sequence to go
+ * to the next line.  It's generous.  We used to mess with the buffering in
+ * init_mvcur() after cost computation, but that lost the sequences emitted by
+ * init_acs() in setupscreen().
+ *
+ * "The setvbuf function may be used only after the stream pointed to by stream
+ * has been associated with an open file and before any other operation is
+ * performed on the stream." (ISO 7.9.5.6.)
+ *
+ * Grrrr...
+ */
+void _nc_set_buffer(FILE *ofp, bool buffered)
+{
+	/* optional optimization hack -- do before any output to ofp */
+#if HAVE_SETVBUF || HAVE_SETBUFFER  
+	unsigned buf_len;
+	char *buf_ptr;
+
+	if (buffered) {
+		buf_len = min(LINES * (COLS + 6), 2800);
+		buf_ptr = malloc(buf_len);
+	} else {
+		buf_len = 0;
+		buf_ptr = 0;
+	}
+
+#if HAVE_SETVBUF
+#ifdef SETVBUF_REVERSED	/* pre-svr3? */
+	(void) setvbuf(ofp, buf_ptr, buf_len, buf_len ? _IOFBF : _IONBF);
+#else
+	(void) setvbuf(ofp, buf_ptr, buf_len ? _IOFBF : _IONBF, buf_len);
+#endif
+#elif HAVE_SETBUFFER
+	(void) setbuffer(ofp, buf_ptr, (int)buf_len);
+#endif
+
+	if (!buffered) {
+		FreeIfNeeded(SP->_setbuf);
+	}
+	SP->_setbuf = buf_ptr;
+
+#endif /* HAVE_SETVBUF || HAVE_SETBUFFER */
+}
 
 SCREEN * set_term(SCREEN *screen)
 {
@@ -103,6 +165,7 @@ int	bottom_stolen = 0, i;
 	if (!_nc_alloc_screen())
 		return ERR;
 
+	_nc_set_buffer(output, TRUE);
 	SP->_term        = cur_term;
 	SP->_lines       = slines;
 	SP->_lines_avail = slines;
@@ -118,7 +181,7 @@ int	bottom_stolen = 0, i;
 	SP->_fifotail    = 0;
 	SP->_fifopeek    = 0;
 	SP->_endwin      = TRUE;
-	SP->_ofp         = output;      /* (may be overridden later) */
+	SP->_ofp         = output;
 	SP->_coloron     = 0;
 	SP->_curscr      = 0;
 	SP->_newscr      = 0;

@@ -30,15 +30,13 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
-
 #ifdef SVR4_TERMIO
 #define _POSIX_SOURCE
 #endif
 
 #include <term.h>	/* clear_screen, cup & friends, cur_term */
 
-MODULE_ID("$Id: lib_newterm.c,v 1.19 1996/11/16 21:31:23 tom Exp $")
+MODULE_ID("$Id: lib_newterm.c,v 1.21 1996/12/21 18:27:19 tom Exp $")
 
 /* This should moved to TERMINAL */
 static filter_mode = FALSE;
@@ -79,58 +77,6 @@ char *t = getenv("NCURSES_TRACE");
 		SGR0_FIX(exit_underline_mode);
 		SGR0_FIX(exit_standout_mode);
 	}
-
-	/* optional optimization hack -- do before any output to ofp */
-#if HAVE_SETVBUF || HAVE_SETBUFFER
-	{
-	  /*
-	   * If the output file descriptor is connected to a tty
-	   * (the typical case) it will probably be line-buffered.
-	   * Keith Bostic pointed out that we don't want this; it
-	   * hoses people running over networks by forcing out a
-	   * bunch of small packets instead of one big one, so
-	   * screen updates on ptys look jerky.  Restore block
-	   * buffering to prevent this minor lossage.
-	   *
-	   * The buffer size is a compromise.  Ideally we'd like a
-	   * buffer that can hold the maximum possible update size
-	   * (the whole screen plus cup commands to change lines as
-	   * it's painted).  On a modern 66-line xterm this can
-	   * become excessive.  So we min it with the amount of data
-	   * we think we can get through two Ethernet packets
-	   * (maximum packet size - 100 for TCP/IP overhead).
-	   *
-	   * Why two ethernet packets?  It used to be one, on the theory
-	   * that said packets define the maximum size of atomic update.
-	   * But that's less than the 2000 chars on a 25 x 80 screen, and
-	   * we don't want local updates to flicker either.  Two packet
-	   * lengths will handle up to a 35 x 80 screen.
-	   *
-	   * The magic '6' is the estimated length of the end-of-line
-	   * cup sequence to go to the next line.  It's generous.  We
-	   * used to mess with the buffering in init_mvcur() after cost
-	   * computation, but that lost the sequences emitted by init_acs()
-	   * in setupscreen().
-	   *
-	   * "The setvbuf function may be used only after the stream pointed
-	   * to by stream as been associated with an open file and before any
-	   * other operation is performed on the stream." (ISO 7.9.5.6.)
-	   *
-	   * Grrrr...
-	   */
-	  unsigned int bufsiz = min(LINES * (COLS + 6), 2800);
-
-#if HAVE_SETVBUF
-#ifdef SETVBUF_REVERSED	/* pre-svr3? */
-	  (void) setvbuf(ofp, malloc(bufsiz), bufsiz, _IOFBF);
-#else
-	  (void) setvbuf(ofp, malloc(bufsiz), _IOFBF, bufsiz);
-#endif
-#elif HAVE_SETBUFFER
-	  (void) setbuffer(ofp, malloc(bufsiz), (int)bufsiz);
-#endif
-	}
-#endif /* HAVE_SETVBUF || HAVE_SETBUFFER */
 
 	/* implement filter mode */
 	if (filter_mode) {
@@ -196,14 +142,6 @@ char *t = getenv("NCURSES_TRACE");
 	/* compute movement costs so we can do better move optimization */
 	_nc_mvcur_init();
 
-#if 0
-	/* initialize soft labels */
-	if (_nc_slk_format)
-	    if (num_labels <= 0)
-		_nc_ripoffline(-SLK_LINES, _nc_slk_initialize);
-	    else
-		_nc_slk_initialize(stdscr, COLS);
-#endif
 	_nc_signal_handler(TRUE);
 
 	/* open a connection to the screen's associated mouse, if any */

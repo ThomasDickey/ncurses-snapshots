@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.7 1996/11/17 00:25:44 tom Exp $
+dnl $Id: configure.in,v 1.8 1996/12/21 22:38:53 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -36,6 +36,9 @@ AC_SUBST(CPPFLAGS)
 
 LIB_NAME=curses
 AC_SUBST(LIB_NAME)
+
+TEST_ARGS=""
+AC_SUBST(TEST_ARGS)
 
 dnl SunOS 4.x
 AC_ARG_WITH(5lib,
@@ -64,7 +67,7 @@ AC_ARG_WITH(ncurses,
 			fi
 		fi
 	 done
-	])
+	],[test -d /usr/ccs/lib && LIBS="-L/usr/ccs/lib $LIBS"])
 
 dnl If we've not specified a library, assume we're using sysvr4 libraries
 dnl installed conventionally (e.g., SunOS 5.x - solaris).
@@ -84,6 +87,7 @@ AC_CHECK_HEADERS( \
 form.h \
 getopt.h \
 menu.h \
+nc_alloc.h \
 panel.h \
 sys/ioctl.h \
 sys/select.h \

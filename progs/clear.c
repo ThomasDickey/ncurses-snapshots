@@ -27,7 +27,8 @@
 #include <progs.priv.h>
 
 #include <curses.h>
-#include <term.h>
+
+MODULE_ID("$Id: clear.c,v 1.6 1996/12/21 17:35:11 tom Exp $")
 
 static int putch(int c)
 {
@@ -38,10 +39,9 @@ int main(
 	int argc GCC_UNUSED,
 	char *argv[] GCC_UNUSED)
 {
-	setupterm((char *) 0, STDOUT_FILENO, (int *) 0); 
+	setupterm((char *) 0, STDOUT_FILENO, (int *) 0);
 	if (clear_screen == (char *) 0)
 		return EXIT_FAILURE;
 	tputs(clear_screen, lines > 0 ? lines : 1, putch);
 	return EXIT_SUCCESS;
 }
-

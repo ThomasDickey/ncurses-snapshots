@@ -28,10 +28,9 @@
 */
 
 #include <curses.priv.h>
-#include <string.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_getstr.c,v 1.9 1996/09/08 02:17:41 tom Exp $")
+MODULE_ID("$Id: lib_getstr.c,v 1.10 1996/12/21 14:24:06 tom Exp $")
 
 /*
  * This wipes out the last character, no matter whether it was a tab, control

@@ -19,18 +19,15 @@
 *                                                                          *
 ***************************************************************************/
 
+#define __INTERNAL_CAPS_VISIBLE
 #include <progs.priv.h>
 
-#include <string.h>
 #include <ctype.h>
-#include "tic.h"
-#define __INTERNAL_CAPS_VISIBLE
-#include "term.h"
 #include "dump_entry.h"
 #include "termsort.c"		/* this C file is generated */
 #include "parametrized.h"	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.13 1996/10/27 01:25:50 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.14 1996/12/21 17:36:11 tom Exp $")
 
 #define INDENT			8
 
@@ -60,6 +57,16 @@ static char *separator, *trailer;
 #define V_BSD		4	/* BSD */
 
 #define OBSOLETE(n) (n[0] == 'O' && n[1] == 'T')
+
+#ifdef NO_LEAKS
+void _nc_leaks_dump_entry(void)
+{
+	if (outbuf != 0) {
+		free(outbuf);
+		outbuf = 0;
+	}
+}
+#endif
 
 char *nametrans(const char *name)
 /* translate a capability name from termcap to terminfo */

@@ -32,9 +32,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* acs_chars */
 
-#include <string.h>
-
-MODULE_ID("$Id: lib_traceatr.c,v 1.8 1996/07/31 00:19:49 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.9 1996/12/21 14:24:06 tom Exp $")
 
 char *_traceattr(attr_t newmode)
 {

@@ -28,7 +28,6 @@
 #include <curses.priv.h>
 
 #include <sys/stat.h>
-#include <string.h>
 
 #include <tic.h>
 #include <term.h>
@@ -38,7 +37,7 @@
 #define S_ISDIR(mode) ((mode & S_IFMT) == S_IFDIR)
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.13 1996/07/30 22:54:22 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.14 1996/12/21 14:24:06 tom Exp $")
 
 static int total_written;
 

@@ -54,10 +54,9 @@
 #endif
 #endif
 
-#include <string.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.45 1996/12/07 23:23:43 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.47 1996/12/21 18:01:01 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -933,6 +932,9 @@ size_t	length = sizeof(chtype) * last;
 			total++;
 		}
 	}
+#ifdef NO_LEAKS
+	FreeAndNull(tstLine);
+#endif
 	return total;
 }
 

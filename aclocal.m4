@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.38 1996/12/14 22:00:53 tom Exp $
+dnl $Id: aclocal.m4,v 1.39 1996/12/21 21:42:07 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -31,8 +31,14 @@ if test "$srcdir" != "."; then
 fi
 if test -z "$GCC"; then
 	ACPPFLAGS="$ACPPFLAGS -I\$(includedir)"
-elif test "$includedir" = "/usr/include"; then
-	ACPPFLAGS="$ACPPFLAGS -I\$(includedir)"
+elif test "$includedir" != "/usr/include"; then
+	if test "$includedir" = '${prefix}/include' ; then
+		if test $prefix != /usr ; then
+			ACPPFLAGS="$ACPPFLAGS -I\$(includedir)"
+		fi
+	else
+		ACPPFLAGS="$ACPPFLAGS -I\$(includedir)"
+	fi
 fi
 AC_SUBST(ACPPFLAGS)
 ])dnl
@@ -329,8 +335,14 @@ if test "$srcdir" != "."; then
 fi
 if test -z "$GCC"; then
 	CPPFLAGS="$CPPFLAGS -I\$(includedir)"
-elif test "$includedir" = "/usr/include"; then
-	CPPFLAGS="$CPPFLAGS -I\$(includedir)"
+elif test "$includedir" != "/usr/include"; then
+	if test "$includedir" = '${prefix}/include' ; then
+		if test $prefix != /usr ; then
+			CPPFLAGS="$CPPFLAGS -I\$(includedir)"
+		fi
+	else
+		CPPFLAGS="$CPPFLAGS -I\$(includedir)"
+	fi
 fi
 AC_SUBST(CPPFLAGS)
 ])dnl

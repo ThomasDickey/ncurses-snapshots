@@ -29,12 +29,11 @@
  */
 
 #include <curses.priv.h>
-#include <string.h>
 #include <ctype.h>
 #include <term.h>	/* padding_baud_rate, xon_xoff */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.15 1996/09/20 09:35:58 esr Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.16 1996/12/21 14:24:06 tom Exp $")
 
 int delay_output(int ms)
 {

@@ -21,16 +21,7 @@
 
 /* ./panel.c */
 
-#include <config.h>
-#include <stdlib.h>
-#include <assert.h>
-#include "panel.h"
-
-typedef struct panelcons
-{
-	struct panelcons *above;
-	struct panel *pan;
-} PANELCONS;
+#include "panel.priv.h"
 
 #undef panel_window
 WINDOW	*panel_window(

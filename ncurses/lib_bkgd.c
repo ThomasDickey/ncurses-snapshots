@@ -21,24 +21,28 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_bkgd.c,v 1.3 1996/07/21 00:00:37 tom Exp $")
+MODULE_ID("$Id: lib_bkgd.c,v 1.4 1996/12/15 23:41:32 tom Exp $")
 
 int wbkgd(WINDOW *win, const chtype ch)
 {
 int x, y;
 chtype old_bkgd = getbkgd(win);
+chtype new_bkgd = ch;
 
-	T(("wbkgd(%p, %lx) called", win, ch));
-	wbkgdset(win, ch);
+	T(("wbkgd(%p, %lx) called", win, new_bkgd));
+	if (TextOf(new_bkgd) == 0)
+		new_bkgd |= BLANK;
+	wbkgdset(win, new_bkgd);
+	wattrset(win, AttrOf(new_bkgd));
 
 	for (y = 0; y <= win->_maxy; y++) {
 		for (x = 0; x <= win->_maxx; x++) {
 			if (win->_line[y].text[x] == old_bkgd)
-				win->_line[y].text[x] = ch;
+				win->_line[y].text[x] = new_bkgd;
 			else
 				win->_line[y].text[x] =
 					TextOf(win->_line[y].text[x])
-					| AttrOf(ch);
+					| AttrOf(new_bkgd);
 		}
 	}
 	touchwin(win);

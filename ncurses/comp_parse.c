@@ -37,14 +37,13 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
 #include <ctype.h>
 
 #include <tic.h>
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.17 1996/10/05 20:44:54 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.18 1996/12/21 14:24:06 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 

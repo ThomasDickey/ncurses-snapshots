@@ -17,9 +17,49 @@
  * CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
  ******************************************************************************/
-#include <curses.priv.h>
 
-MODULE_ID("$Id: lib_freeall.c,v 1.1 1996/12/07 21:37:57 tom Exp $")
+#define HAVE_NC_FREEALL
+
+#include <curses.priv.h>
+#include <term.h>
+
+#if defined(HAVE_LIBDBMALLOC)
+extern int malloc_errfd;	/* FIXME */
+#endif
+
+MODULE_ID("$Id: lib_freeall.c,v 1.5 1996/12/21 22:21:26 tom Exp $")
+
+static void free_slk(SLK *p)
+{
+	if (p != 0) {
+		FreeIfNeeded(p->ent);
+		FreeIfNeeded(p->buffer);
+		free(p);
+	}
+}
+
+void _nc_free_termtype(struct termtype *p, int base)
+{
+	if (p != 0) {
+		FreeIfNeeded(p->term_names);
+		FreeIfNeeded(p->str_table);
+		if (base)
+			free(p);
+	}
+}
+
+static void free_tries(struct try *p)
+{
+	struct try *q;
+
+	while (p != 0) {
+		q = p->sibling;
+		if (p->child != 0)
+			free_tries(p->child);
+		free(p);
+		p = q;
+	}
+}
 
 /*
  * Free all ncurses data.  This is used for testing only (there's no practical
@@ -27,6 +67,55 @@ MODULE_ID("$Id: lib_freeall.c,v 1.1 1996/12/07 21:37:57 tom Exp $")
  */
 void _nc_freeall(void)
 {
-	while (_nc_windows != 0)
-		delwin(_nc_windows->win);
+	WINDOWLIST *p, *q;
+
+#ifdef NO_LEAKS
+	_nc_free_tparm();
+#endif
+	while (_nc_windows != 0) {
+		/* Delete only windows that're not a parent */
+		for (p = _nc_windows; p != 0; p = p->next) {
+			bool found = FALSE;
+
+			for (q = _nc_windows; q != 0; q = q->next) {
+				if ((p != q)
+				 && (q->win->_flags & _SUBWIN)
+				 && (p->win == q->win->_parent)) {
+					found = TRUE;
+					break;
+				}
+			}
+
+			if (!found) {
+				delwin(p->win);
+				break;
+			}
+		}
+	}
+
+	if (SP != 0) {
+		free_tries (SP->_keytry);
+	    	free_slk(SP->_slk);
+		FreeIfNeeded(SP->_color_pairs);
+		FreeIfNeeded(SP->_color_table);
+		_nc_set_buffer(SP->_ofp, FALSE);
+		FreeAndNull(SP);
+	}
+
+	if (cur_term != 0) {
+		_nc_free_termtype(&(cur_term->type), TRUE);
+	}
+
+#if defined(HAVE_LIBDBMALLOC)
+	malloc_dump(malloc_errfd);
+#elif defined(HAVE_LIBDMALLOC)
+#elif defined(HAVE_PURIFY)
+	purify_all_inuse();
+#endif
+}
+
+void _nc_free_and_exit(int code)
+{
+	_nc_freeall();
+	exit(code);
 }
