@@ -58,7 +58,7 @@ INSTALLATION PROCEDURE:
     In $(prefix)/bin:          tic, infocmp, captoinfo, tset, 
     				reset, clear, tput, toe
     In $(prefix)/lib:          libncurses*.* libcurses.a
-    In $(prefix)/lib/terminfo: compiled terminal descriptions
+    In $(prefix)/share/terminfo: compiled terminal descriptions
     In $(prefix)/include:      C header files
     Under $(prefix)/man:       the manual pages
 
@@ -196,9 +196,9 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 
 	Configure with --prefix=/usr to make the install productions put
 	libraries and headers in the correct locations (overwriting any
-	previous curses libraries and headers).  This will put the terminfo 
-	hierarchy under /usr/lib/terminfo; you may want to override this with
-	--data-dir=/usr/share/misc/terminfo 
+	previous curses libraries and headers).  This will put the terminfo
+	hierarchy under /usr/share/terminfo; you may want to override this with
+	--data-dir=/usr/share/misc/terminfo
 
 	Please configure the ncurses library in a pure-terminfo mode; that
 	is, with the --disable-termcap option.   This will make the ncurses 

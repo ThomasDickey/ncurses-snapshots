@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.9 1996/06/01 19:51:24 tom Exp $
+# $Id: Makefile.in,v 1.10 1996/06/15 23:54:42 tom Exp $
 # Makefile for panels source code.
 #
 # This makes the following:
@@ -16,6 +16,7 @@ SHELL		= /bin/sh
 THIS		= Makefile
 
 MODEL		= @DFT_LWR_MODEL@
+INSTALL_PREFIX	= @INSTALL_PREFIX
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
@@ -64,9 +65,7 @@ LINT_LIBS	= -lpanel -lncurses @LIBS@
 ################################################################################
 all ::	../include/panel.h $(LIBRARIES)
 
-install :: install.libs $(libdir)
-
-$(libdir) :
+$(INSTALL_PREFIX)$(libdir) :
 	$(srcdir)/../mkinstalldirs $@
 
 # make a copy to simplify include-paths while still keeping panel's include

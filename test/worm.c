@@ -210,10 +210,8 @@ int last, bottom;
 
     signal(SIGINT, onsig);
     initscr();
-#ifdef TRACE
     noecho();
     cbreak();
-#endif /* TRACE */
     nonl();
     bottom = LINES-1;
     last = COLS-1;

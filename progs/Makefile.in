@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.13 1996/06/01 19:51:24 tom Exp $
+# $Id: Makefile.in,v 1.14 1996/06/15 20:40:53 tom Exp $
 # Makefile for ncurses source code.
 #
 # This makes the ncurses utility programs.
@@ -19,6 +19,7 @@ NC_MFLAGS 	= @nc_cv_makeflags@
 @SET_MAKE@
 
 MODEL		= ../@DFT_OBJ_SUBDIR@
+INSTALL_PREFIX	= @INSTALL_PREFIX@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
@@ -74,21 +75,21 @@ install: install.progs
 # this line simplifies the configure-script
 install.libs:
 
-install.progs: $(PROGS) $(bindir)
-	$(INSTALL_PROGRAM) tic $(bindir)/tic
-	$(INSTALL_PROGRAM) toe $(bindir)/toe
-	$(INSTALL_PROGRAM) infocmp $(bindir)/infocmp
-	$(INSTALL_PROGRAM) clear $(bindir)/clear
-	$(INSTALL_PROGRAM) tput $(bindir)/tput
-	$(INSTALL_PROGRAM) tset $(bindir)/tset
+install.progs: $(PROGS) $(INSTALL_PREFIX)$(bindir)
+	$(INSTALL_PROGRAM) tic     $(INSTALL_PREFIX)$(bindir)/tic
+	$(INSTALL_PROGRAM) toe     $(INSTALL_PREFIX)$(bindir)/toe
+	$(INSTALL_PROGRAM) infocmp $(INSTALL_PREFIX)$(bindir)/infocmp
+	$(INSTALL_PROGRAM) clear   $(INSTALL_PREFIX)$(bindir)/clear
+	$(INSTALL_PROGRAM) tput    $(INSTALL_PREFIX)$(bindir)/tput
+	$(INSTALL_PROGRAM) tset    $(INSTALL_PREFIX)$(bindir)/tset
 	@echo "linking captoinfo to tic"
-	-@rm -f $(bindir)/captoinfo
-	-@ln $(bindir)/tic $(bindir)/captoinfo
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/captoinfo
+	-@ln $(INSTALL_PREFIX)$(bindir)/tic $(INSTALL_PREFIX)$(bindir)/captoinfo
 	@echo "linking reset to tset"
-	-@rm -f $(bindir)/reset
-	-@ln $(bindir)/tset $(bindir)/reset
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/reset
+	-@ln $(INSTALL_PREFIX)$(bindir)/tset $(INSTALL_PREFIX)$(bindir)/reset
 
-$(bindir) :
+$(INSTALL_PREFIX)$(bindir) :
 	$(srcdir)/../mkinstalldirs $@
 
 #

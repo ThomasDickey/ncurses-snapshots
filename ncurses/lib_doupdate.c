@@ -71,10 +71,8 @@ static void ClearScreen( void );
 static int InsStr( chtype *line, int count );
 static void DelChar( int count );
 
-#define UpdateAttrs(c)	if (curscr->_attrs != AttrOf(c)) { \
-				curscr->_attrs = AttrOf(c); \
-				vidputs(curscr->_attrs, _nc_outch); \
-			}
+#define UpdateAttrs(c)	if (SP->_current_attr != AttrOf(c)) \
+				vidattr(AttrOf(c));
 
 #ifdef POSITION_DEBUG
 /****************************************************************************
@@ -136,7 +134,6 @@ static inline void GoTo(int const row, int const col)
        		TR(TRACE_CHARPUT, ("turning off (%lx) %s before move",
 		   oldattr, _traceattr(oldattr)));
 		vidattr(A_NORMAL);
-		curscr->_attrs = A_NORMAL;
 	}
 
 	mvcur(SP->_cursrow, SP->_curscol, row, col);
@@ -426,7 +423,7 @@ int	i;
 			int changedlines;
 			int total = min(screen_lines, newscr->_maxy+1);
 
-#if UNUSED	/* 960526 - curses still runs slower with this code */
+#if 0			/* 960615 - still slower */
 			_nc_hash_map();
 #endif
 		        _nc_scroll_optimize();
@@ -477,10 +474,15 @@ int	i;
 	GoTo(curscr->_cury, curscr->_curx);
 
     cleanup:
-	if (curscr->_attrs != A_NORMAL)
-		vidattr(curscr->_attrs = A_NORMAL);
+	/*
+	 * Keep the physical screen in normal mode in case we get other
+	 * processes writing to the screen.
+	 */
+	UpdateAttrs(A_NORMAL);
 
 	fflush(SP->_ofp);
+	curscr->_attrs = newscr->_attrs;
+/*	curscr->_bkgd  = newscr->_bkgd; */
 
 	_nc_signal_handler(TRUE);
 
@@ -520,7 +522,7 @@ chtype	blank = BLANK;
 static inline chtype ClrSetup (WINDOW *win)
 {
 	if (back_color_erase)
-		vidattr(win->_attrs = (BCE_BKGD(win) & BCE_ATTRS));
+		vidattr(BCE_BKGD(win) & BCE_ATTRS);
 	return ClrBlank(win);
 }
 
@@ -856,7 +858,7 @@ bool	attrchanged = FALSE;
 
 		if((nLastChar == firstChar)
 		 && clr_eol
-		 && ((curscr->_attrs | BLANK) == blank)) {
+		 && ((SP->_current_attr | BLANK) == blank)) {
 			GoTo(lineno, firstChar);
 			ClrToEOL();
 			if(newLine[firstChar] != blank )
@@ -875,8 +877,8 @@ bool	attrchanged = FALSE;
 		} else {
 			/* find the last characters that really differ */
 			while (newLine[nLastChar] == oldLine[oLastChar]) {
-				if (nLastChar != 0
-				 && oLastChar != 0) {
+				if (nLastChar > firstChar
+				 && oLastChar > firstChar) {
 					nLastChar--;
 					oLastChar--;
 				 } else {
@@ -886,7 +888,6 @@ bool	attrchanged = FALSE;
 
 			n = min(oLastChar, nLastChar);
 			GoTo(lineno, firstChar);
-
 			PutRange(oldLine, newLine, lineno, firstChar, n);
 
 			if (oLastChar < nLastChar)

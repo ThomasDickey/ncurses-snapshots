@@ -434,7 +434,7 @@ static bool Field_Grown(FIELD * field, int amount)
       char *oldbuf  = field->buf;
       char *newbuf;
 
-      if ( (form = field->form) )
+      if ( (form = field->form) != 0 )
 	{
 	  bool need_visual_update = (form->status & _POSTED) &&
 	                            (form->current==field);
@@ -872,8 +872,8 @@ static int Synchronize_Field(FIELD * field)
   if (!field)
     return(E_BAD_ARGUMENT);
 
-  if ((form=field->form) &&
-      Field_Really_Appears(field))
+  if ((form = field->form) != 0
+   && Field_Really_Appears(field))
     {
       if (field == form->current)
 	{ 
@@ -951,8 +951,8 @@ static int Synchronize_Attributes(FIELD * field)
   if (!field)
     return(E_BAD_ARGUMENT);
 
-  if ((form=field->form) &&
-      Field_Really_Appears(field))
+  if ((form = field->form) != 0
+   && Field_Really_Appears(field))
     {    
       if (form->current==field)
 	{

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.10 1996/06/01 19:51:23 tom Exp $
+# $Id: Makefile.in,v 1.11 1996/06/15 21:18:54 tom Exp $
 # Makefile for ncurses miscellany directory
 #
 # This makes/installs the terminfo database
@@ -18,10 +18,12 @@ THIS		= Makefile
 NC_MFLAGS 	= @nc_cv_makeflags@
 @SET_MAKE@
 
+INSTALL_PREFIX	= @INSTALL_PREFIX@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 bindir		= @bindir@
+libdir		= @libdir@
 datadir		= @datadir@
 
 tabsetdir	= $(datadir)/tabset
@@ -35,15 +37,18 @@ all:
 
 install: install.data
 
-install.data: $(ticdir) $(tabsetdir)
-	sh $(srcdir)/run_tic.sh $(bindir) $(srcdir) $(ticdir)
+install.data:	$(INSTALL_PREFIX)$(libdir) \
+		$(INSTALL_PREFIX)$(ticdir) \
+		$(INSTALL_PREFIX)$(tabsetdir)
+	sh $(srcdir)/run_tic.sh $(bindir) $(srcdir) $(ticdir) $(INSTALL_PREFIX)
 	@cd $(srcdir)/tabset; \
 		for i in *; do \
 		echo installing $$i; \
-		$(INSTALL_DATA) $$i $(tabsetdir); done
+		$(INSTALL_DATA) $$i $(INSTALL_PREFIX)$(tabsetdir); done
 
-$(tabsetdir) :
-$(ticdir) :
+$(INSTALL_PREFIX)$(libdir) \
+$(INSTALL_PREFIX)$(tabsetdir) \
+$(INSTALL_PREFIX)$(ticdir) :
 	$(srcdir)/../mkinstalldirs $@
 
 tags:

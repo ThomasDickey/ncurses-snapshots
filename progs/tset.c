@@ -579,7 +579,7 @@ found:	if ((p = getenv("TERMCAP")) != NULL && *p != '/') {
 #define CSTOP	CTRL('S')
 #define CSUSP	CTRL('Z')
 
-#define	CHK(val, dft)	(val <= 0 ? dft : val)
+#define	CHK(val, dft)	((int)val <= 0 ? dft : val)
 
 static bool	set_tabs (void);
 
@@ -850,17 +850,18 @@ set_init(void)
 	settle = set_tabs();
 
 	if (isreset) {
-		if ((p = reset_1string)) {
+		if ((p = reset_1string) != 0) {
 			tputs(p, 0, outc);
 			settle = TRUE;
 		}
-		if ((p = reset_2string)) {
+		if ((p = reset_2string) != 0) {
 			tputs(p, 0, outc);
 			settle = TRUE;
 		}
 		/* What about rf, rs3, as per terminfo man page? */
 		/* also might be nice to send rmacs, rmul, rmm */
-		if ((p = reset_file) || (p = init_file)) {
+		if ((p = reset_file) != 0
+		 || (p = init_file) != 0) {
 			cat(p);
 			settle = TRUE;
 		}
@@ -930,7 +931,9 @@ report(char *name, int which, u_int def)
 
 	(void)fprintf(stderr, "%s %s ", name, old == new ? "is" : "set to");
 
-	if ((p = key_backspace) && new == (u_int)p[0] && p[1] == '\0')
+	if ((p = key_backspace) != 0
+	 && new == (u_int)p[0]
+	 && p[1] == '\0')
 		(void)fprintf(stderr, "backspace.\n");
 	else if (new == 0177)
 		(void)fprintf(stderr, "delete.\n");
@@ -1137,7 +1140,8 @@ main(int argc, char **argv)
 		 * Figure out what shell we're using.  A hack, we look for an
 		 * environmental variable SHELL ending in "csh".
 		 */
-		if ((p = getenv("SHELL")) && !strcmp(p + strlen(p) - 3, "csh"))
+		if ((p = getenv("SHELL")) != 0
+		 && !strcmp(p + strlen(p) - 3, "csh"))
 			p = "set noglob;\nsetenv TERM %s;\nunset noglob;\n";
 		else
 			p = "TERM=%s;\n";

@@ -49,8 +49,8 @@ endwin(void)
 
  	_nc_mvcur_wrap();	/* wrap up cursor addressing */
 
-	if (curscr  &&  (curscr->_attrs != A_NORMAL)) 
-	    vidattr(curscr->_attrs = A_NORMAL);
+	if (SP  &&  (SP->_current_attr != A_NORMAL)) 
+	    vidattr(A_NORMAL);
 
 	return(reset_shell_mode());
 }

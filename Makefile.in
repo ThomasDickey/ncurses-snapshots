@@ -1,8 +1,10 @@
+# $Id: Makefile.in,v 1.8 1996/06/15 23:55:18 tom Exp $
 # Master Makefile for ncurses library.
 
 SHELL = /bin/sh
 
-NC_MFLAGS = @nc_cv_makeflags@
+INSTALL_PREFIX=@INSTALL_PREFIX@
+NC_MFLAGS = @nc_cv_makeflags@ INSTALL_PREFIX="$(INSTALL_PREFIX)"
 
 @SET_MAKE@
 

@@ -718,7 +718,7 @@ flicker at each update). <P>
 
 <DL>
 <DT> <TT>setupterm(term, filenum, errret)</TT>
-This routine is called to initialize a terminal's description, without setting
+<DD> This routine is called to initialize a terminal's description, without setting
 up the curses screen structures or changing the tty-driver mode bits.
 <TT>term</TT> is the character string representing the name of the terminal
 being used.  <TT>filenum</TT> is the UNIX file descriptor of the terminal to
@@ -2437,7 +2437,6 @@ Like fields, forms may have control option bits.  They can be changed
 or queried with these functions: <P>
 
 <PRE>
-<PRE>
 int set_form_opts(FORM *form,             /* form to alter */
                   int attr);              /* attribute to set */ 
 
@@ -2451,7 +2450,7 @@ int form_opts(FORM *form);                /* form to query */
 </PRE>
 
 By default, all options are on.  Here are the available option bits:
-</PRE>
+
 <DL>
 <DT> O_NL_OVERLOAD
 <DD> Enable overloading of <TT>REQ_NEW_LINE</TT> as described in <A

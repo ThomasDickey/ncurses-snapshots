@@ -41,8 +41,8 @@ Known Problems:
         (With System V curses it exits when the time limit is up even if
         interrupted by a signal).
  
-  These things are basically due to the difference between System V and
-  BSD-style signals.
+  We think at least the first problem is now fixed.  The second may still
+  be an issue. 
 
 * Mark McKenzie also says:
 

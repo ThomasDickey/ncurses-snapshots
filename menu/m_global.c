@@ -180,7 +180,7 @@ bool _nc_Connect_Items(MENU *menu, ITEM **items)
   else
     return(FALSE);
   
-  if (ItemCount > 0)
+  if (ItemCount != 0)
     {
       menu->items  = items;
       menu->nitems = ItemCount;

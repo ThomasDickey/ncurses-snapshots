@@ -94,6 +94,10 @@ struct timeval starttime, returntime;
 
 	 result = select(fd+1, &set, NULL, NULL, &ntimeout);
 
+	 /* treat failure due to interrupt like return with nothing waiting */
+	 if (result == -1)
+		result = 0;
+
 #if !defined(GOOD_SELECT) && HAVE_GETTIMEOFDAY
 	 gettimeofday(&returntime, NULL);
 	 ntimeout.tv_sec -= (returntime.tv_sec - starttime.tv_sec);

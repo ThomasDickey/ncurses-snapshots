@@ -1,4 +1,5 @@
 #!/bin/sh
+# $Id: shlib,v 1.1 1996/06/15 22:16:55 tom Exp $
 # Use this script as a wrapper when running executables linked to shared
 # libraries on systems that use the $LD_LIBRARY_PATH variable and don't embed
 # the soname's path within the linked executable (such as IRIX), e.g,

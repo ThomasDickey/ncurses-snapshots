@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.16 1996/06/01 19:51:23 tom Exp $
+# $Id: Makefile.in,v 1.17 1996/06/15 23:54:30 tom Exp $
 # Makefile for ncurses source code.
 #
 # This makes the following:
@@ -22,6 +22,7 @@ NC_MFLAGS 	= @nc_cv_makeflags@
 @SET_MAKE@
 
 MODEL		= @DFT_LWR_MODEL@
+INSTALL_PREFIX	= @INSTALL_PREFIX@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
@@ -81,11 +82,10 @@ AUTO_SRC = \
 ################################################################################
 all ::	../lib $(AUTO_SRC) $(LIBRARIES)
 
-../lib : ; mkdir $@
-
-$(libdir) \
-$(ticdir) :
+$(INSTALL_PREFIX)$(libdir) :
 	$(srcdir)/../mkinstalldirs $@
+
+../lib : ; mkdir $@
 
 fallback.c : $(srcdir)/MKfallback.sh
 	sh $(srcdir)/MKfallback.sh >$@

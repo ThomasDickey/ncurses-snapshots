@@ -169,7 +169,7 @@ void _nc_Draw_Menu(const MENU * menu)
 
   assert(item && menu->win);
 
-  s_bkgd = wgetbkgd(menu->win);
+  s_bkgd = getbkgd(menu->win);
   wbkgdset(menu->win,menu->back);
   werase(menu->win);
   wbkgdset(menu->win,s_bkgd);
