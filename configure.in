@@ -17,10 +17,10 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.115 1998/01/03 17:01:52 tom Exp $
+dnl $Id: configure.in,v 1.117 1998/01/17 22:33:43 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.115 $)
+AC_REVISION($Revision: 1.117 $)
 AC_INIT(ncurses/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -580,9 +580,9 @@ unistd.h \
 values.h \
 )
 
-# check for HPUX's ANSI compiler
 case $cf_cv_system_name in
 hpux*)
+    # check for HPUX's ANSI compiler
     if test -z "$GCC"; then
 	AC_MSG_CHECKING([for HP/UX ANSI compiler])
 	cf_save_CFLAGS="$CFLAGS"
@@ -595,6 +595,9 @@ hpux*)
 		CFLAGS="$cf_save_CFLAGS"
 	fi
     fi
+    ;;
+os2*)
+    CFLAGS="$CFLAGS -Zmt -D__ST_MT_ERRNO__"
     ;;
 esac
 
@@ -628,6 +631,7 @@ getttynam \
 link \
 memccpy \
 poll \
+remove \
 select \
 setbuf \
 setbuffer \

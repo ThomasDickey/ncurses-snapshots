@@ -92,7 +92,7 @@
 /******************************************************************************/
 
 /*
- * $Id: xmas.c,v 1.11 1997/10/18 20:08:39 tom Exp $
+ * $Id: xmas.c,v 1.12 1998/01/18 01:13:47 tom Exp $
  */
 #include <test.priv.h>
 
@@ -135,9 +135,16 @@ static void
 set_color(WINDOW *win, chtype color)
 {
 	if (has_colors()) {
-		init_pair(1, color, my_bg);
+		static bool *pairs;
+		int n = (color + 1);
+		if (pairs == 0)
+			pairs = (bool *)calloc(COLORS+1, sizeof(bool));
+		if (!pairs[n]) {
+			init_pair(n, color, my_bg);
+			pairs[n] = TRUE;
+		}
 		wattroff(win, A_COLOR);
-		wattron(win, COLOR_PAIR(1));
+		wattron(win, COLOR_PAIR(n));
 	}
 }
 

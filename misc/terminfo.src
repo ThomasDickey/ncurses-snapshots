@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 10.1.18
+#	Version 10.1.19
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -1985,13 +1985,13 @@ xterm-xf86-v33|xterm terminal emulator (X Window System),
 	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, 
 	use=xterm-xf86-v32, 
 
-# This beta version will probably be released in XFree86 4.0 (T.Dickey).
+# This beta version will probably be released in XFree86 4.0 in 1998.
 # Besides providing printer support, it exploits a new feature that allows
 # xterm to use terminfo-based descriptions with the titeInhibit resource.
-xterm-xf86-v39t|xterm terminal emulator (X Window System), 
+xterm-xf86-v40|xterm terminal emulator (X Window System), 
 	mc5i, 
 	mc0=\E[i, mc4=\E[4i, mc5=\E[5i, rmcup=\E[?1047l\E[?1048l, 
-	smcup=\E[?1048h\E[?1047h, 
+	rs1=\Ec, smcup=\E[?1048h\E[?1047h, 
 	use=xterm-xf86-v33, 
 
 # This is one of the variants from XFree86 3.3 (T.Dickey)
@@ -2000,7 +2000,8 @@ xterm-16color|xterm with 16 colors like aixterm,
 	setab@, setaf@, 
 	setb=%p1%{8}%/%{6}%*%{4}%+\E[%d%p1%{8}%m%Pa%?%ga%{1}%=%t4%e%ga%{3}%=%t6%e%ga%{4}%=%t1%e%ga%{6}%=%t3%e%ga%d%;m, 
 	setf=%p1%{8}%/%{6}%*%{3}%+\E[%d%p1%{8}%m%Pa%?%ga%{1}%=%t4%e%ga%{3}%=%t6%e%ga%{4}%=%t1%e%ga%{6}%=%t3%e%ga%d%;m, 
-	use=xterm-xf86-v33, 
+	use=xterm-xf86-v40, 
+
 # This is another variant, for XFree86 4.0 xterm (T.Dickey)
 # This is an 8-bit version of xterm, which emulates DEC vt220 with ANSI color.
 # To use it, your decTerminalID resource must be set to 200 or above.
@@ -2039,7 +2040,7 @@ xterm-8bit|xterm terminal emulator, 8-bit controls (X Window System),
 	mc5=\2335i, meml=\El, memu=\Em, op=\23339;49m, rc=\E8, 
 	rev=\2337m, ri=\215, rmacs=^O, rmam=\233?7l, 
 	rmcup=\2332J\233?47l\E8, rmir=\2334l, rmkx=\233?1l\E>, 
-	rmso=\23327m, rmul=\23324m, rs1=^O, 
+	rmso=\23327m, rmul=\23324m, rs1=\Ec, 
 	rs2=\E7\E[62"p\E G\233r\233m\233?7h\233?1;3;4;6l\2334l\E8\E>, 
 	sc=\E7, setab=\2334%p1%dm, setaf=\2333%p1%dm, 
 	setb=\2334%?%p1%{1}%=%t4%e%p1%{3}%=%t6%e%p1%{4}%=%t1%e%p1%{6}%=%t3%e%p1%d%;m, 
@@ -2125,6 +2126,7 @@ color_xterm|cx|cx100|color_xterm color terminal emulator for X,
 	smul=\E[4m, 
 
 # From: Thomas Dickey <dickey@clark.net> 04 Oct 1997
+# Updated: Özgür Kesim <kesim@math.fu-berlin.de> 02 Nov 1997
 # Notes:
 # rxvt 2.21b uses
 #	smacs=\E(B\E)U^N, rmacs=\E(B\E)0^O,
@@ -2172,13 +2174,9 @@ rxvt-basic|rxvt terminal base (X Window System),
 	smcup=\E7\E[?47h, smir=\E[4h, smkx=\E=, smso=\E[7m, 
 	smul=\E[4m, tbc=\E[3g, 
 rxvt|rxvt terminal emulator (X Window System), 
-	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
-	sgr0=\E[m\017, 
-	use=rxvt-basic, 
-rxvt-color|color-rxvt|color rxvt terminal emulator (X Window System), 
 	colors#8, pairs#64, 
 	op=\E[39;49m, setab=\E[%p1%{40}%+%dm, 
-	setaf=\E[%p1%{30}%+%dm, use=rxvt, 
+	setaf=\E[%p1%{30}%+%dm, sgr0=\E[m\017, use=rxvt-basic, 
 
 # From: David J. MacKenzie <djm@va.pubnix.com> 20 Apr 1995
 # Here's a termcap entry I've been using for xterm_color, which comes
@@ -2429,23 +2427,23 @@ oldsun|Sun Microsystems Workstation console,
 	rmso=\E[m, sgr0=\E[m, smso=\E[7m, 
 # From: Alexander Lukyanov <lav@video.yars.free.net>, 14 Nov 1995
 # <lines> capability later corrected by J.T. Conklin <jtc@cygnus.com>
+# SGR 1, 4 aren't supported - removed bold/underline (T.Dickey 17 Jan 1998)
 sun-il|Sun Microsystems console with working insert-line, 
 	am, km, msgr, 
 	cols#80, lines#34, 
-	bel=^G, bold=\E[1m, clear=^L, cr=^M, cub1=^H, cud1=^J, 
-	cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, 
-	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, 
-	el=\E[K, ht=^I, ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, 
-	il1=\E[L, ind=^J, kb2=\E[218z, kbs=^H, kcub1=\E[D, 
-	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\177, 
-	kend=\E[220z, kf1=\E[224z, kf10=\E[233z, kf11=\E[234z, 
-	kf12=\E[235z, kf2=\E[225z, kf3=\E[226z, kf4=\E[227z, 
-	kf5=\E[228z, kf6=\E[229z, kf7=\E[230z, kf8=\E[231z, 
-	kf9=\E[232z, khome=\E[214z, knp=\E[222z, kopt=\E[194z, 
-	kpp=\E[216z, kres=\E[193z, kund=\E[195z, rev=\E[7m, 
-	rmso=\E[m, rmul=\E[m, rs2=\E[s, 
+	bel=^G, bold@, clear=^L, cr=^M, cub1=^H, cud1=^J, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, dch=\E[%p1%dP, 
+	dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, ht=^I, 
+	ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, il1=\E[L, ind=^J, 
+	kb2=\E[218z, kbs=^H, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, 
+	kcuu1=\E[A, kdch1=\177, kend=\E[220z, kf1=\E[224z, 
+	kf10=\E[233z, kf11=\E[234z, kf12=\E[235z, kf2=\E[225z, 
+	kf3=\E[226z, kf4=\E[227z, kf5=\E[228z, kf6=\E[229z, 
+	kf7=\E[230z, kf8=\E[231z, kf9=\E[232z, khome=\E[214z, 
+	knp=\E[222z, kopt=\E[194z, kpp=\E[216z, kres=\E[193z, 
+	kund=\E[195z, rev=\E[7m, rmso=\E[m, rmul@, rs2=\E[s, 
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;m, 
-	sgr0=\E[m, smso=\E[7m, smul=\E[4m, u8=\E[1t, u9=\E[11t, 
+	sgr0=\E[m, smso=\E[7m, smul@, u8=\E[1t, u9=\E[11t, 
 # On a SparcStation 5, <il1>/<il> flake out on the last line.
 # Unfortunately, without them the terminal has no way to scroll.
 sun-ss5|Sun SparcStation 5 console, 
@@ -14681,6 +14679,12 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* revised entry for att7300
 # 10.1.18 (Sat Jan  3 17:58:49 EST 1998)
 #	* use \0 rather than \200.
+#	* rename rxvt-color to rxvt to match rxvt 2.4.5 distribution.
+# 10.1.19 (Sat Jan 17 14:24:57 EST 1998)
+#	* change xterm (xterm-xf86-v40), xterm-8bit rs1 to use hard reset.
+#	* rename xterm-xf86-v39t to xterm-xf86-v40
+#	* remove bold/underline from sun console entries since they're not
+#	  implemented.
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

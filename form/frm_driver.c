@@ -21,7 +21,7 @@
 +-----------------------------------------------------------------------------*/
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.28 1997/10/21 13:24:19 juergen Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.30 1998/01/17 23:21:14 juergen Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -164,10 +164,8 @@ static int FE_Delete_Previous(FORM *);
 
 /* Macro to set the attributes for a fields window */
 #define Set_Field_Window_Attributes(field,win) \
-{\
-   wbkgdset((win),(chtype)((field)->pad | (field)->back)); \
-   wattrset((win),(field)->fore); \
-}
+(  wbkgdset((win),(chtype)((field)->pad | (field)->back)), \
+   wattrset((win),(field)->fore) )
 
 /* Logic to decide whether or not a field really appears on the form */
 #define Field_Really_Appears(field)         \
@@ -820,18 +818,23 @@ static bool Check_Char(FIELDTYPE * typ, int ch, TypeArgument *argp)
 static int Display_Or_Erase_Field(FIELD * field, bool bEraseFlag)
 {
   WINDOW *win;
+  WINDOW *fwin;
 
   if (!field)
     return E_SYSTEM_ERROR;
 
-  win =  derwin(Get_Form_Window(field->form),
+  fwin = Get_Form_Window(field->form);
+  win  = derwin(fwin,
 		field->rows,field->cols,field->frow,field->fcol);
 
   if (!win) 
     return E_SYSTEM_ERROR;
   else
     {
-      Set_Field_Window_Attributes(field,win);
+      if (field->opts & O_VISIBLE)
+	Set_Field_Window_Attributes(field,win);
+      else
+	wattr_set(win,wattr_get(fwin));
       werase(win);
     }
 

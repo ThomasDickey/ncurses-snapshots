@@ -1,7 +1,37 @@
--- $Id: NEWS,v 1.297 1998/01/10 20:52:01 tom Exp $
+-- $Id: NEWS,v 1.299 1998/01/18 01:42:49 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+980117
+	+ correct initialization of color-pair (from 970524) in xmas.c,
+	  which was using only one color-pair for all colors.
+	+ add multithread options for objects build on EMX, for compatibility
+	  with XFree86.
+	+ split up an expression in MKlib_gen.sh to work around a problem on
+	  OS/2 EMX, with 'ash' (Juan Jose Garcia Ripoll).
+	+ change terminfo entries xterm (xterm-xf86-v40), xterm-8bit rs1 to
+	  use hard reset.
+	+ rename terminfo entry xterm-xf86-v39t to xterm-xf86-v40
+	+ remove bold/underline from sun console entries since they're not
+	  implemented.
+	+ correct _tracef calls in _tracedump(), which did not separate
+	  format from parameters.
+	+ correct getopt string for tic "-o" option, and add it to man-page
+	  synopsis (reported by Darren Hiebert <darren@hmi.com>).
+	+ correct typo in panel/Makefile.in, reversed if-statement in
+	  scrolling optimization (Alexander V. Lukyanov).
+	+ test for 'remove()', use 'unlink() if not found (patch by Philippe
+	  De Muyter <phdm@macqel.be>).
+	> patches by Juergen Pfeifer:
+	+ Improve a feature of the forms driver.  For invisible fields
+	  (O_VISIBLE off) only the contents but not the attributes are cleared. 
+	  We now clear both.  (Reported by Javier Kohan
+	  <jkohan@adan.fceia.unr.edu.ar>)
+	+ The man page form_field_opts.3x makes now clear, that invisible
+	  fields are also always inactive.
+	+ adjust ifdef's to compile the C++ binding with the just released
+	  gcc-2.8.0 c++ and the corresponding new C++ libraries.
 
 980110
 	+ correct "?" command in ncurses.c; it was performing non-screen writes

@@ -21,7 +21,7 @@
 | WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                               |
 +----------------------------------------------------------------------------*/
 
-// $Id: etip.h.in,v 1.1 1997/10/04 19:22:56 tom Exp $
+// $Id: etip.h.in,v 1.2 1998/01/17 18:58:02 juergen Exp $
 
 #ifndef _ETIP_H
 #define _ETIP_H
@@ -40,8 +40,10 @@
 #endif
 
 #ifdef __GNUG__
-#  if HAVE_TYPEINFO
-#    include <typeinfo>
+#  if ((__GNUG__ <= 2) && (__GNUC_MINOR__ < 8))
+#    if HAVE_TYPEINFO
+#      include <typeinfo>
+#    endif
 #  endif
 #endif
 
