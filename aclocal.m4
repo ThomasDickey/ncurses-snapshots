@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2004
 dnl
-dnl $Id: aclocal.m4,v 1.344 2004/10/09 16:45:50 tom Exp $
+dnl $Id: aclocal.m4,v 1.347 2004/11/27 21:03:59 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -349,7 +349,7 @@ if test "$cf_cv_type_of_bool" = unknown ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_BUILD_CC version: 3 updated: 2004/02/17 20:55:59
+dnl CF_BUILD_CC version: 4 updated: 2004/11/27 16:03:59
 dnl -----------
 dnl If we're cross-compiling, allow the user to override the tools and their
 dnl options.  The configure script is oriented toward identifying the host
@@ -393,6 +393,12 @@ if test "$cross_compiling" = yes ; then
 	# this assumes we're on Unix.
 	BUILD_EXEEXT=
 	BUILD_OBJEXT=o
+
+	if ( test "$BUILD_CC" = "$CC" || test "$BUILD_CC" = '$(CC)' ) ; then
+		AC_MSG_ERROR([Cross-build requires two compilers.
+Use --with-build-cc to specify the native compiler.])
+	fi
+
 else
 	: ${BUILD_CC:='$(CC)'}
 	: ${BUILD_CPP:='$(CPP)'}
@@ -2608,6 +2614,14 @@ if test "$cf_cv_func_mkstemp" = yes ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_MSG_LOG version: 3 updated: 1997/09/07 14:05:52
+dnl ----------
+dnl Write a debug message to config.log, along with the line number in the
+dnl configure script.
+AC_DEFUN([CF_MSG_LOG],[
+echo "(line __oline__) testing $* ..." 1>&AC_FD_CC
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl CF_NUMBER_SYNTAX version: 1 updated: 2003/09/20 18:12:49
 dnl ----------------
 dnl Check if the given variable is a number.  If not, report an error.
@@ -2689,6 +2703,56 @@ case ".[$]$1" in #(vi
   ifelse($2,,[AC_ERROR([expected a pathname, not \"[$]$1\"])],$2)
   ;;
 esac
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_POSIX_C_SOURCE version: 1 updated: 2004/10/17 10:43:13
+dnl -----------------
+dnl Define _POSIX_C_SOURCE to the given level, and _POSIX_SOURCE if needed.
+dnl
+dnl	POSIX.1-1990				_POSIX_SOURCE
+dnl	POSIX.1-1990 and			_POSIX_SOURCE and
+dnl		POSIX.2-1992 C-Language			_POSIX_C_SOURCE=2
+dnl		Bindings Option
+dnl	POSIX.1b-1993				_POSIX_C_SOURCE=199309L
+dnl	POSIX.1c-1996				_POSIX_C_SOURCE=199506L
+dnl	X/Open 2000				_POSIX_C_SOURCE=200112L
+dnl
+dnl Parameters:
+dnl	$1 is the nominal value for _POSIX_C_SOURCE
+AC_DEFUN([CF_POSIX_C_SOURCE],
+[
+cf_POSIX_C_SOURCE=ifelse($1,,199506L,$1)
+AC_CACHE_CHECK(if we should define _POSIX_C_SOURCE,cf_cv_posix_c_source,[
+	CF_MSG_LOG(if the symbol is already defined go no further)
+	AC_TRY_COMPILE([#include <sys/types.h>],[
+#ifndef _POSIX_C_SOURCE
+make an error
+#endif],
+	[cf_cv_posix_c_source=no],
+	[case .$cf_POSIX_C_SOURCE in
+	 .[[12]]??*)
+		cf_cv_posix_c_source="-D_POSIX_C_SOURCE=$cf_POSIX_C_SOURCE"
+		;;
+	 .2)
+		cf_cv_posix_c_source="-D_POSIX_C_SOURCE=$cf_POSIX_C_SOURCE -D_POSIX_SOURCE"
+		;;
+	 .*)
+		cf_cv_posix_c_source="-D_POSIX_SOURCE"
+		;;
+	 esac
+	 CF_MSG_LOG(ifdef from value $cf_POSIX_C_SOURCE)
+	 cf_save="$CPPFLAGS"
+	 CPPFLAGS="$CPPFLAGS $cf_cv_posix_c_source"
+	 CF_MSG_LOG(if the second compile does not leave our definition intact error)
+	 AC_TRY_COMPILE([#include <sys/types.h>],[
+#ifndef _POSIX_C_SOURCE
+make an error
+#endif],,
+	[cf_cv_posix_c_source=no])
+	CPPFLAGS="$cf_save"
+	])
+])
+test "$cf_cv_posix_c_source" != no && CPPFLAGS="$CPPFLAGS $cf_cv_posix_c_source"
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_PREDEFINE version: 1 updated: 2003/07/26 17:53:56
@@ -3936,28 +4000,32 @@ test "$cf_with_sysmouse" = yes && AC_DEFINE(USE_SYSMOUSE)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 13 updated: 2004/08/22 12:16:05
+dnl CF_XOPEN_SOURCE version: 15 updated: 2004/11/23 15:41:32
 dnl ---------------
 dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions,
 dnl or adapt to the vendor's definitions to get equivalent functionality.
+dnl
+dnl Parameters:
+dnl	$1 is the nominal value for _XOPEN_SOURCE
+dnl	$2 is the nominal value for _POSIX_C_SOURCE
 AC_DEFUN([CF_XOPEN_SOURCE],[
 
 cf_XOPEN_SOURCE=ifelse($1,,500,$1)
-cf_POSIX_C_SOURCE=ifelse($2,,199506,$2)
+cf_POSIX_C_SOURCE=ifelse($2,,199506L,$2)
 
 case $host_os in #(vi
 freebsd*) #(vi
 	# 5.x headers associate
-	#	_XOPEN_SOURCE=600 with _POSIX_C_SOURCE=200112
-	#	_XOPEN_SOURCE=500 with _POSIX_C_SOURCE=199506
-	cf_POSIX_C_SOURCE=200112
+	#	_XOPEN_SOURCE=600 with _POSIX_C_SOURCE=200112L
+	#	_XOPEN_SOURCE=500 with _POSIX_C_SOURCE=199506L
+	cf_POSIX_C_SOURCE=200112L
 	cf_XOPEN_SOURCE=600
 	CPPFLAGS="$CPPFLAGS -D_BSD_TYPES -D__BSD_VISIBLE -D_POSIX_C_SOURCE=$cf_POSIX_C_SOURCE -D_XOPEN_SOURCE=$cf_XOPEN_SOURCE"
 	;;
 hpux*) #(vi
 	CPPFLAGS="$CPPFLAGS -D_HPUX_SOURCE"
 	;;
-irix6.*) #(vi
+irix[[56]].*) #(vi
 	CPPFLAGS="$CPPFLAGS -D_SGI_SOURCE"
 	;;
 linux*|gnu*) #(vi
@@ -3995,31 +4063,12 @@ make an error
 make an error
 #endif],
 	[cf_cv_xopen_source=no],
-	[cf_cv_xopen_source=yes])
+	[cf_cv_xopen_source=$cf_XOPEN_SOURCE])
 	CPPFLAGS="$cf_save"
 	])
 ])
-test "$cf_cv_xopen_source" = yes && CPPFLAGS="$CPPFLAGS -D_XOPEN_SOURCE=$cf_XOPEN_SOURCE"
-
-	# FreeBSD 5.x headers demand this...
-	AC_CACHE_CHECK(if we should define _POSIX_C_SOURCE,cf_cv_xopen_source,[
-	AC_TRY_COMPILE([#include <sys/types.h>],[
-#ifndef _POSIX_C_SOURCE
-make an error
-#endif],
-	[cf_cv_xopen_source=no],
-	[cf_save="$CPPFLAGS"
-	 CPPFLAGS="$CPPFLAGS -D_POSIX_C_SOURCE=$cf_POSIX_C_SOURCE"
-	 AC_TRY_COMPILE([#include <sys/types.h>],[
-#ifdef _POSIX_C_SOURCE
-make an error
-#endif],
-	[cf_cv_xopen_source=no],
-	[cf_cv_xopen_source=yes])
-	CPPFLAGS="$cf_save"
-	])
-])
-test "$cf_cv_xopen_source" = yes && CPPFLAGS="$CPPFLAGS -D_POSIX_C_SOURCE=$cf_POSIX_C_SOURCE"
+test "$cf_cv_xopen_source" != no && CPPFLAGS="$CPPFLAGS -D_XOPEN_SOURCE=$cf_cv_xopen_source"
+	CF_POSIX_C_SOURCE($cf_POSIX_C_SOURCE)
 	;;
 esac
 ])

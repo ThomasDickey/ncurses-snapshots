@@ -44,7 +44,7 @@
 
 #include <term_entry.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.46 2004/09/25 19:21:27 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.47 2004/11/28 01:06:38 tom Exp $")
 
 #define CSI       233
 #define ESC       033		/* ^[ */
@@ -156,7 +156,7 @@ tgetent(char *bufp GCC_UNUSED, const char *name)
     START_TRACE();
     T((T_CALLED("tgetent()")));
 
-    setupterm((NCURSES_CONST char *) name, STDOUT_FILENO, &errcode);
+    _nc_setupterm((NCURSES_CONST char *) name, STDOUT_FILENO, &errcode, TRUE);
 
     PC = 0;
     UP = 0;

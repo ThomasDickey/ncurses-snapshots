@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.264 2004/11/20 19:58:18 tom Exp $
+ * $Id: curses.priv.h,v 1.265 2004/11/28 00:58:26 tom Exp $
  *
  *	curses.priv.h
  *
@@ -980,6 +980,7 @@ extern NCURSES_EXPORT(int) _nc_has_mouse (void);
 extern NCURSES_EXPORT(char *) _nc_get_locale(void);
 extern NCURSES_EXPORT(int) _nc_unicode_locale(void);
 extern NCURSES_EXPORT(int) _nc_locale_breaks_acs(void);
+extern NCURSES_EXPORT(int) _nc_setupterm(NCURSES_CONST char *, int , int *, bool);
 
 /* lib_wacs.c */
 #if USE_WIDEC_SUPPORT
