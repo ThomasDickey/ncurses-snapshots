@@ -163,6 +163,7 @@ static float diff;
 
 #define OPT_SIZE 512
 
+/* FIXME: these should be cached in SP */
 static char	*address_cursor;
 static int	carriage_return_length;
 static int	cursor_home_length;
@@ -177,16 +178,14 @@ static void restore_curs(void);
  *
  ****************************************************************************/
 
-#define INFINITY	1000000	/* too high to use */
-
-static int cost(char *cap, int affcnt)
+static int CostOf(const char *const cap, int affcnt)
 /* compute the cost of a given operation */
 {
-    if (cap == (char *)NULL)
+    if (cap == 0)
 	return(INFINITY);
     else
     {
-	char	*cp;
+	const	char	*cp;
 	float	cum_cost = 0;	
 
 	for (cp = cap; *cp; cp++)
@@ -216,7 +215,16 @@ static int cost(char *cap, int affcnt)
     }
 }
 
-void _nc_mvcur_init(SCREEN *sp)
+static int NormalizedCost(const char *const cap, int affcnt)
+/* compute the effective character-count for an operation (round up) */
+{
+	int cost = CostOf(cap, affcnt);
+	if (cost != INFINITY)
+		cost = (cost + SP->_char_padding - 1) / SP->_char_padding;
+	return cost;
+}
+
+void _nc_mvcur_init(void)
 /* initialize the cost structure */
 {
     /*
@@ -226,19 +234,21 @@ void _nc_mvcur_init(SCREEN *sp)
     	SP->_char_padding = (9 * 1000 * 10) / BAUDRATE;
     else
     	SP->_char_padding = 9 * 1000 * 10 / 9600; /* use some default if baudrate == 0 */
+    if (SP->_char_padding <= 0)
+	SP->_char_padding = 1;	/* must be nonzero */
 
     /* non-parameterized local-motion strings */
-    SP->_cr_cost = cost(carriage_return, 0);
-    SP->_home_cost = cost(cursor_home, 0);
-    SP->_ll_cost = cost(cursor_to_ll, 0);
+    SP->_cr_cost   = CostOf(carriage_return, 0);
+    SP->_home_cost = CostOf(cursor_home, 0);
+    SP->_ll_cost   = CostOf(cursor_to_ll, 0);
 #ifdef TABS_OK
-    SP->_ht_cost = cost(tab, 0);
-    SP->_cbt_cost = cost(back_tab, 0);
+    SP->_ht_cost   = CostOf(tab, 0);
+    SP->_cbt_cost  = CostOf(back_tab, 0);
 #endif /* TABS_OK */
-    SP->_cub1_cost = cost(cursor_left, 0);
-    SP->_cuf1_cost = cost(cursor_right, 0);
-    SP->_cud1_cost = cost(cursor_down, 0);
-    SP->_cuu1_cost = cost(cursor_up, 0);
+    SP->_cub1_cost = CostOf(cursor_left, 0);
+    SP->_cuf1_cost = CostOf(cursor_right, 0);
+    SP->_cud1_cost = CostOf(cursor_down, 0);
+    SP->_cuu1_cost = CostOf(cursor_up, 0);
 
     /*
      * Assumption: if the terminal has memory_relative addressing, the
@@ -272,13 +282,24 @@ void _nc_mvcur_init(SCREEN *sp)
      * All these averages depend on the assumption that all parameter values
      * are equally probable.
      */
-    SP->_cup_cost = cost(tparm(address_cursor, 23, 23), 1);
-    SP->_cub_cost = cost(tparm(parm_left_cursor, 23), 1);
-    SP->_cuf_cost = cost(tparm(parm_right_cursor, 23), 1);
-    SP->_cud_cost = cost(tparm(parm_down_cursor, 23), 1);
-    SP->_cuu_cost = cost(tparm(parm_up_cursor, 23), 1);
-    SP->_hpa_cost = cost(tparm(column_address, 23), 1);
-    SP->_vpa_cost = cost(tparm(row_address, 23), 1);
+    SP->_cup_cost  = CostOf(tparm(address_cursor, 23, 23), 1);
+    SP->_cub_cost  = CostOf(tparm(parm_left_cursor, 23), 1);
+    SP->_cuf_cost  = CostOf(tparm(parm_right_cursor, 23), 1);
+    SP->_cud_cost  = CostOf(tparm(parm_down_cursor, 23), 1);
+    SP->_cuu_cost  = CostOf(tparm(parm_up_cursor, 23), 1);
+    SP->_hpa_cost  = CostOf(tparm(column_address, 23), 1);
+    SP->_vpa_cost  = CostOf(tparm(row_address, 23), 1);
+
+    /* non-parameterized screen-update strings */
+    SP->_ed_cost   = NormalizedCost(clr_eos, 1);
+    SP->_el_cost   = NormalizedCost(clr_eol, 1);
+    SP->_el1_cost  = NormalizedCost(clr_bol, 1);
+    SP->_dch1_cost = NormalizedCost(delete_character, 1);
+    SP->_ich1_cost = NormalizedCost(insert_character, 1);
+
+    /* parameterized screen-update strings */
+    SP->_dch_cost  = NormalizedCost(tparm(parm_dch, 23), 1);
+    SP->_ich_cost  = NormalizedCost(tparm(parm_ich, 23), 1);
 
     /* initialize screen for cursor access */
     if (enter_ca_mode)
@@ -322,7 +343,7 @@ void _nc_mvcur_wrap(void)
  * Perform repeated-append, returning cost
  */
 static inline int
-repeated_append (int total, int num, int repeat, char *dst, char *src)
+repeated_append (int total, int num, int repeat, char *dst, const char *src)
 {
 	register size_t src_len = strlen(src);
 	register size_t dst_len = 0;
@@ -1124,7 +1145,7 @@ int main(int argc, char *argv[])
     _nc_setupscreen(lines, columns, stdout);
     baudrate();
 
-    _nc_mvcur_init(SP);
+    _nc_mvcur_init();
 #if HAVE_SETVBUF || HAVE_SETBUFFER
     /*
      * Undo the effects of our optimization hack, otherwise our interactive

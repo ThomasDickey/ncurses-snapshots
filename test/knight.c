@@ -88,6 +88,7 @@ static void init (void)
     boardwin = newwin(BDEPTH * 2 + 1, BWIDTH * 4 + 1, BOARDY, BOARDX);
     helpwin = newwin(0, 0, INSTRY, INSTRX);
     msgwin = newwin(1, INSTRX-1, NOTIFYY, 0);
+    scrollok(msgwin, TRUE);
     keypad(boardwin, TRUE);
 
     if (has_colors())

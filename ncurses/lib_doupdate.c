@@ -63,13 +63,27 @@
 static inline chtype ClrBlank ( WINDOW *win );
 static inline chtype ClrSetup ( WINDOW *scr );
 static int ClrBottom(int total);
-static void ClrUpdate( WINDOW *scr );
-static void TransformLine( int const lineno );
-static void NoIDcTransformLine( int const lineno );
-static void IDcTransformLine( int const lineno );
-static void ClearScreen( void );
 static int InsStr( chtype *line, int count );
+static void ClearScreen( void );
+static void ClrUpdate( WINDOW *scr );
 static void DelChar( int count );
+static void IDcTransformLine( int const lineno );
+static void NoIDcTransformLine( int const lineno );
+static void TransformLine( int const lineno );
+
+#define DelCharCost(count) \
+		((parm_dch != 0) \
+		? SP->_dch_cost \
+		: ((delete_character != 0) \
+			? (SP->_dch1_cost * count) \
+			: INFINITY))
+
+#define InsCharCost(count) \
+		((parm_ich != 0) \
+		? SP->_ich_cost \
+		: ((insert_character != 0) \
+			? (SP->_ich1_cost * count) \
+			: INFINITY))
 
 #define UpdateAttrs(c)	if (SP->_current_attr != AttrOf(c)) \
 				vidattr(AttrOf(c));
@@ -274,7 +288,7 @@ static inline void EmitRange(const chtype *ntext, int num)
 
 #ifdef __UNFINISHED__
     if (erase_chars || repeat_chars)
-    { 
+    {
 	bool wrap_possible = (SP->_curscol + num >= screen_columns);
 	chtype lastchar;
 
@@ -291,7 +305,7 @@ static inline void EmitRange(const chtype *ntext, int num)
 		runcount++;
 
 	    /* more */
-	    
+
 	}
 
 	if (wrap_possible)
@@ -299,7 +313,7 @@ static inline void EmitRange(const chtype *ntext, int num)
 
 	return;
     }
-#endif 
+#endif
 
     /* code actually used */
     for (i = 0; i < num; i++)
@@ -399,7 +413,7 @@ int	i;
 		SP->_endwin = FALSE;
 	}
 
-	/* 
+	/*
 	 * FIXME: Full support for magic-cookie terminals could go in here.
 	 * The theory: we scan the virtual screen looking for attribute
 	 * changes.  Where we find one, check to make sure it's realizable
@@ -599,7 +613,14 @@ bool	needclear = FALSE;
 	if (needclear)
 	{
 	    TPUTS_TRACE("clr_eol");
-	    putp(clr_eol);
+	    if (SP->_el_cost > (screen_columns - SP->_curscol))
+	    {
+		int count = (screen_columns - SP->_curscol);
+		while (count-- > 0)
+			putc(' ', SP->_ofp);
+	    }
+	    else
+		putp(clr_eol);
 	}
 }
 
@@ -833,7 +854,7 @@ bool	attrchanged = FALSE;
 				if (newLine[nFirstChar] != blank)
 					break;
 
-			if (nFirstChar > oFirstChar + (int)strlen(clr_bol))
+			if (nFirstChar > oFirstChar + SP->_el1_cost)
 			{
 			    GoTo(lineno, nFirstChar - 1);
 			    ClrToBOL();
@@ -857,17 +878,15 @@ bool	attrchanged = FALSE;
 			nLastChar--;
 
 		if((nLastChar == firstChar)
-		 && clr_eol
+		 && (SP->_el_cost < (screen_columns - nLastChar))
 		 && ((SP->_current_attr | BLANK) == blank)) {
 			GoTo(lineno, firstChar);
 			ClrToEOL();
 			if(newLine[firstChar] != blank )
 				PutChar(newLine[firstChar]);
 		} else if( newLine[nLastChar] != oldLine[oLastChar] ) {
-#define COST_CLREOL 3	/* FIXME */
 			GoTo(lineno, firstChar);
-			if (clr_eol != 0
-			 && (oLastChar - nLastChar) > COST_CLREOL) {
+			if ((oLastChar - nLastChar) > SP->_el_cost) {
 				PutRange(oldLine, newLine, lineno, firstChar, nLastChar);
 				ClrToEOL();
 			} else {
@@ -875,10 +894,13 @@ bool	attrchanged = FALSE;
 				PutRange(oldLine, newLine, lineno, firstChar, n);
 			}
 		} else {
+			int nLastNonblank = nLastChar;
+			int oLastNonblank = oLastChar;
+
 			/* find the last characters that really differ */
 			while (newLine[nLastChar] == oldLine[oLastChar]) {
-				if (nLastChar > firstChar
-				 && oLastChar > firstChar) {
+				if (nLastChar != 0
+				 && oLastChar != 0) {
 					nLastChar--;
 					oLastChar--;
 				 } else {
@@ -887,22 +909,40 @@ bool	attrchanged = FALSE;
 			}
 
 			n = min(oLastChar, nLastChar);
-			GoTo(lineno, firstChar);
-			PutRange(oldLine, newLine, lineno, firstChar, n);
+			if (n >= firstChar) {
+				GoTo(lineno, firstChar);
+				PutRange(oldLine, newLine, lineno, firstChar, n);
+			} else {
+				GoTo(lineno, n+1);
+			}
 
-			if (oLastChar < nLastChar)
-				InsStr(&newLine[n+1], nLastChar - oLastChar);
-
-			else if (oLastChar > nLastChar ) {
-				/*
-				 * The delete-char sequence will effectively
-				 * shift in blanks from the right margin of the
-				 * screen.  Ensure that they are the right
-				 * color by setting the video attributes from
-				 * the last character on the row.
-				 */
-				UpdateAttrs(newLine[screen_columns-1]);
-				DelChar(oLastChar - nLastChar);
+			if (oLastChar < nLastChar) {
+				int m = max(nLastNonblank, oLastNonblank);
+				if (InsCharCost(nLastChar - oLastChar)
+				 > (m - n)) {
+					PutRange(oldLine, newLine, lineno, n+1, m);
+				} else {
+					InsStr(&newLine[n+1], nLastChar - oLastChar);
+				}
+			} else if (oLastChar > nLastChar ) {
+				if (DelCharCost(oLastChar - nLastChar)
+				 > SP->_el_cost
+				 + nLastNonblank - (n+1)) {
+					PutRange(oldLine, newLine, lineno,
+						n+1, nLastNonblank);
+					ClrToEOL();
+				} else {
+					/*
+					 * The delete-char sequence will
+					 * effectively shift in blanks from the
+					 * right margin of the screen.  Ensure
+					 * that they are the right color by
+					 * setting the video attributes from
+					 * the last character on the row.
+					 */
+					UpdateAttrs(newLine[screen_columns-1]);
+					DelChar(oLastChar - nLastChar);
+				}
 			}
 		}
 	}

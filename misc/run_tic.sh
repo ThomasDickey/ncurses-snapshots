@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: run_tic.sh,v 1.4 1996/06/23 00:54:27 tom Exp $
+# $Id: run_tic.sh,v 1.5 1996/06/26 10:23:10 tom Exp $
 # This script is used to install terminfo.src using tic.  We use a script
 # because the path checking is too awkward to do in a makefile.
 #
@@ -72,7 +72,7 @@ TABSET=`echo $ticdir | sed -e 's/\/terminfo$/\/tabset/'`
 SRC=$srcdir/terminfo.src
 if test "x$TABSET" != "x/usr/share/tabset" ; then
 	echo '** adjusting tabset paths'
-	TMP=/usr/tmp/$$
+	TMP=${TMPDIR-/tmp}/$$
 	sed -e s:/usr/share/tabset:$TABSET:g $SRC >$TMP
 	trap "rm -f $TMP" 0 1 2 5 15
 	SRC=$TMP

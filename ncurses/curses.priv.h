@@ -155,6 +155,14 @@ struct screen {
 	int             _cuu_cost;      /* cost of (parm_cursor_up)         */
 	int             _hpa_cost;      /* cost of (column_address)         */
 	int             _vpa_cost;      /* cost of (row_address)            */
+	/* used in lib_doupdate.c */
+	int             _ed_cost;       /* cost of (clr_eos)                */
+	int             _el_cost;       /* cost of (clr_eol)                */
+	int             _el1_cost;      /* cost of (clr_bol)                */
+	int             _dch1_cost;     /* cost of (delete_character)       */
+	int             _ich1_cost;     /* cost of (insert_character)       */
+	int             _dch_cost;      /* cost of (parm_dch)               */
+	int             _ich_cost;      /* cost of (parm_ich)               */
 };
 
 /* Ncurses' public interface follows the internal types */
@@ -265,7 +273,9 @@ extern char *_nc_visbuf(const char *);
 extern void init_acs(void);	/* no prefix, this name is traditional */
 
 /* lib_mvcur.c */
-extern void _nc_mvcur_init(SCREEN *sp);
+#define INFINITY	1000000	/* cost: too high to use */
+
+extern void _nc_mvcur_init(void);
 extern void _nc_mvcur_wrap(void);
 extern int _nc_mvcur_scrolln(int, int, int, int);
 
