@@ -1,7 +1,7 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
 #	Version 10.2.1
-#	$Date: 1999/01/10 00:35:17 $
+#	$Date: 1999/01/11 02:14:48 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -1999,6 +1999,65 @@ z340-nam|zstem vt340 terminal emulator 132col 42line (no automatic margins),
 	is2=\E>\E[?3h\E[?4l\E[?5l\E[?7l\E[?8h\E[1;42r\E[42;1H, 
 	rs2=\E>\E[?3h\E[?4l\E[?5l\E[?7l\E[?8h\E[1;42r\E[42;1H, 
 	use=z340, 
+
+# This entry is for Tera Term Pro version 2.3, for MS-Windows 95/NT written by
+# T. Teranishi dated Mar 10, 1998.  It is a free software terminal emulator
+# (communication program) which supports:
+#
+#	- Serial port connections.
+#	- TCP/IP (telnet) connections.
+#	- VT100 emulation, and selected VT200/300 emulation.
+#	- TEK4010 emulation.
+#	- File transfer protocols (Kermit, XMODEM, ZMODEM, B-PLUS and
+#	  Quick-VAN).
+#	- Scripts using the "Tera Term Language".
+#	- Japanese and Russian character sets.
+#
+# The program does not come with terminfo or termcap entries.  However, the
+# emulation (testing with vttest and ncurses) is reasonably close to vt100 (no
+# vt52 or doublesize character support; blinking is done with color).  Besides
+# the HPA, VPA extensions it also implements CPL and CNL.
+#
+# All of the function keys can be remapped.  This description shows the default
+# mapping, as installed.  Both vt100 PF1-PF4 keys and quasi-vt220 F1-F4 keys
+# are supported.  F13-F20 are obtained by shifting F3-F10.  The editing keypad
+# is laid out like vt220, rather than the face codes on the PC keyboard, i.e,
+#	kfnd	Insert
+#	kslt	Delete
+#	kich1	Home
+#	kdch1	PageUp
+#	kpp	End
+#	knp	PageDown
+#
+# ANSI colors are implemented, but cannot be combined with video attributes
+# except for reverse.
+#
+# No fonts are supplied with the program, so the acsc string is chosen to
+# correspond with the default Microsoft terminal font.
+#
+# Tera Term recognizes some xterm sequences, including those for setting and
+# retrieving the window title, and for setting the window size (i.e., using
+# "resize -s"), though it does not pass SIGWINCH to the application if the
+# user resizes the window with the mouse.
+teraterm|Tera Term Pro, 
+	km, xon@, 
+	ncv#43, vt@, 
+	acsc=+\020\,\021-\030.^Y0\333`\004a\261f\370g\361h\260i\316j\331k\277l\332m\300n\305o~p\304q\304r\304s_t\303u\264v\301w\302x\263y\363z\362{\343|\330}\234~\376, 
+	blink=\E[5m, bold=\E[1m, civis=\E[?25l, clear=\E[H\E[J, 
+	cnorm=\E[?25h, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
+	cuu1=\E[A, dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, 
+	dl1=\E[M, ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K, 
+	hpa=\E[%i%p1%dG, il=\E[%p1%dL, il1=\E[L, kdch1=\E[3~, 
+	kf1=\E[11~, kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, 
+	kf13=\E[25~, kf14=\E[26~, kf15=\E[28~, kf16=\E[29~, 
+	kf17=\E[31~, kf18=\E[32~, kf19=\E[33~, kf2=\E[12~, 
+	kf20=\E[34~, kf3=\E[13~, kf4=\E[14~, kf5=\E[15~, 
+	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, kfnd=\E[1~, 
+	kich1=\E[2~, knp=\E[6~, kpp=\E[5~, kslt=\E[4~, 
+	op=\E[30m\E[47m, rev=\E[7m, ri=\EM, rmso=\E[m, rmul=\E[m, 
+	sgr0=\E[m, smso=\E[7m, smul=\E[4m, u6=\E[%i%d;%dR, 
+	u7=\E[6n, u8=\E[?1;2c, u9=\E[c, vpa=\E[%i%p1%dd, 
+	use=klone+color, use=vt100, 
 
 #### X terminal emulators
 #
@@ -17088,6 +17147,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add kbt to iris-ansi, document other shift/control functionkeys - TD
 #	* correct iris-ansi and iris-ansi-ap with respect to normal vs keypad
 #	  application modes, change kent to use the correct keypad code - TD
+#
+# 1999/1/10
+#	* add entry for Tera Term - TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

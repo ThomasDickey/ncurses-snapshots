@@ -1,10 +1,13 @@
--- $Id: NEWS,v 1.406 1999/01/10 03:46:03 tom Exp $
+-- $Id: NEWS,v 1.407 1999/01/11 02:16:36 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990110
+	+ add Tera Term terminfo entry - TD
 
 990109
 	+ reviewed/corrected macros in curses.h as per XSI document.
