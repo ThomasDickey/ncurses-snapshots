@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.160 1999/06/19 21:46:48 Philippe.De.Muyter Exp $
+dnl $Id: aclocal.m4,v 1.162 1999/08/22 00:13:21 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -82,7 +82,7 @@ do
 	AC_TRY_COMPILE(
 [
 #ifndef CC_HAS_PROTOS
-#if !defined(__STDC__) || __STDC__ != 1
+#if !defined(__STDC__) || (__STDC__ != 1)
 choke me
 #endif
 #endif
@@ -131,7 +131,10 @@ AC_DEFUN([CF_BOOL_DECL],
 [
 AC_MSG_CHECKING([for builtin ifelse(AC_LANG,[C],$CC,$CXX) bool type])
 AC_CACHE_VAL(ifelse($1,,cf_cv_builtin_bool,[$1]),[
-	AC_TRY_COMPILE([],[bool x = false],
+	AC_TRY_COMPILE([
+#include <stdio.h>
+#include <sys/types.h>
+],[bool x = false],
 		[ifelse($1,,cf_cv_builtin_bool,[$1])=1],
 		[ifelse($1,,cf_cv_builtin_bool,[$1])=0])
 	])
@@ -159,7 +162,7 @@ main()
 	FILE *fp = fopen("cf_test.out", "w");
 	if (fp != 0) {
 		bool x = true;
-		if ((-x) >= 0)
+		if ((bool)(-x) >= 0)
 			fputs("unsigned ", fp);
 		if (sizeof(x) == sizeof(int))       fputs("int",  fp);
 		else if (sizeof(x) == sizeof(char)) fputs("char", fp);
@@ -283,11 +286,17 @@ if test ".$system_name" != ".$cf_cv_system_name" ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl Check for data that is usually declared in <stdio.h> or <errno.h>
+dnl Check for data that is usually declared in <stdio.h> or <errno.h>, e.g.,
+dnl the 'errno' variable.  Define a DECL_xxx symbol if we must declare it
+dnl ourselves.
+dnl
+dnl (I would use AC_CACHE_CHECK here, but it will not work when called in a
+dnl loop from CF_SYS_ERRLIST).
+dnl
 dnl $1 = the name to check
 AC_DEFUN([CF_CHECK_ERRNO],
 [
-AC_MSG_CHECKING([declaration of $1])
+AC_MSG_CHECKING(if external $1 is declared)
 AC_CACHE_VAL(cf_cv_dcl_$1,[
     AC_TRY_COMPILE([
 #if HAVE_STDLIB_H
@@ -298,33 +307,47 @@ AC_CACHE_VAL(cf_cv_dcl_$1,[
 #include <errno.h> ],
     [long x = (long) $1],
     [eval 'cf_cv_dcl_'$1'=yes'],
-    [eval 'cf_cv_dcl_'$1'=no]')])
+    [eval 'cf_cv_dcl_'$1'=no]')
+])
+
 eval 'cf_result=$cf_cv_dcl_'$1
 AC_MSG_RESULT($cf_result)
 
-# It's possible (for near-UNIX clones) that the data doesn't exist
-AC_CACHE_VAL(cf_cv_have_$1,[
-if test $cf_result = no ; then
+if test "$cf_result" = no ; then
     eval 'cf_result=DECL_'$1
     CF_UPPER(cf_result,$cf_result)
     AC_DEFINE_UNQUOTED($cf_result)
-    AC_MSG_CHECKING([existence of $1])
-        AC_TRY_LINK([
-#undef $1
-extern long $1;
-],
-            [$1 = 2],
-            [eval 'cf_cv_have_'$1'=yes'],
-            [eval 'cf_cv_have_'$1'=no'])
-        eval 'cf_result=$cf_cv_have_'$1
-        AC_MSG_RESULT($cf_result)
-else
-    eval 'cf_cv_have_'$1'=yes'
 fi
-])
-eval 'cf_result=HAVE_'$1
-CF_UPPER(cf_result,$cf_result)
-eval 'test $cf_cv_have_'$1' = yes && AC_DEFINE_UNQUOTED($cf_result)'
+
+# It's possible (for near-UNIX clones) that the data doesn't exist
+CF_CHECK_EXTERN_DATA($1,int)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Check for existence of external data in the current set of libraries.  If
+dnl we can modify it, it's real enough.
+dnl $1 = the name to check
+dnl $2 = its type
+AC_DEFUN([CF_CHECK_EXTERN_DATA],
+[
+AC_MSG_CHECKING(if external $1 exists)
+AC_CACHE_VAL(cf_cv_have_$1,[
+    AC_TRY_LINK([
+#undef $1
+extern $2 $1;
+],
+    [$1 = 2],
+    [eval 'cf_cv_have_'$1'=yes'],
+    [eval 'cf_cv_have_'$1'=no'])])
+
+eval 'cf_result=$cf_cv_have_'$1
+AC_MSG_RESULT($cf_result)
+
+if test "$cf_result" = yes ; then
+    eval 'cf_result=HAVE_'$1
+    CF_UPPER(cf_result,$cf_result)
+    AC_DEFINE_UNQUOTED($cf_result)
+fi
+
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl If we're trying to use g++, test if libg++ is installed (a rather common
@@ -520,7 +543,7 @@ then
 	changequote(,)dnl
 	cat > conftest.$ac_ext <<EOF
 #line __oline__ "configure"
-int main(int argc, char *argv[]) { return argv[argc-1] == 0; }
+int main(int argc, char *argv[]) { return (argv[argc-1] == 0) ; }
 EOF
 	changequote([,])dnl
 	AC_CHECKING([for gcc warning options])
@@ -991,26 +1014,89 @@ AC_MSG_RESULT($cf_cv_link_dataonly)
 test $cf_cv_link_dataonly = no && AC_DEFINE(BROKEN_LINKER)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Most Unix systems have both link and symlink, a few don't have symlink.
+dnl A few non-Unix systems implement symlink, but not link.
+dnl A few non-systems implement neither (or have nonfunctional versions).
+AC_DEFUN([CF_LINK_FUNCS],
+[
+AC_CHECK_FUNCS( \
+	remove \
+	unlink )
+
+if test "$ac_cv_prog_cc_cross" = yes ; then
+	AC_CHECK_FUNCS( \
+		link \
+		symlink )
+else
+	AC_CACHE_CHECK(if link/symlink functions work,cf_cv_link_funcs,[
+		cf_cv_link_funcs=
+		for cf_func in link symlink ; do
+			AC_TRY_RUN([
+#include <sys/types.h>
+#include <sys/stat.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+int main()
+{
+	int fail = 0;
+	char *src = "config.log";
+	char *dst = "conftest.chk";
+	struct stat src_sb;
+	struct stat dst_sb;
+
+	stat(src, &src_sb);
+	fail = ($cf_func("config.log", "conftest.chk") < 0)
+	    || (stat(dst, &dst_sb) < 0)
+	    || (dst_sb.st_mtime != src_sb.st_mtime);
+#ifdef HAVE_UNLINK
+	unlink(dst);
+#else
+	remove(dst);
+#endif
+	exit (fail);
+}
+			],[
+			cf_cv_link_funcs="$cf_cv_link_funcs $cf_func"
+			eval 'ac_cv_func_'$cf_func'=yes'],[
+			eval 'ac_cv_func_'$cf_func'=no'],[
+			eval 'ac_cv_func_'$cf_func'=error'])
+		done
+		test -z "$cf_cv_link_funcs" && cf_cv_link_funcs=no
+	])
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Some 'make' programs support $(MAKEFLAGS), some $(MFLAGS), to pass 'make'
 dnl options to lower-levels.  It's very useful for "make -n" -- if we have it.
-dnl (GNU 'make' does both :-)
+dnl (GNU 'make' does both, something POSIX 'make', which happens to make the
+dnl $(MAKEFLAGS) variable incompatible because it adds the assignments :-)
 AC_DEFUN([CF_MAKEFLAGS],
 [
 AC_MSG_CHECKING([for makeflags variable])
 AC_CACHE_VAL(cf_cv_makeflags,[
 	cf_cv_makeflags=''
-	for cf_option in '$(MFLAGS)' '-$(MAKEFLAGS)'
+	for cf_option in '-$(MAKEFLAGS)' '$(MFLAGS)' 
 	do
 		cat >cf_makeflags.tmp <<CF_EOF
 all :
-	echo '.$cf_option'
+	@ echo '.$cf_option'
 CF_EOF
-		set cf_result=`${MAKE-make} -f cf_makeflags.tmp 2>/dev/null`
-		if test "$cf_result" != "."
-		then
-			cf_cv_makeflags=$cf_option
+		cf_result=`${MAKE-make} -k -f cf_makeflags.tmp 2>/dev/null`
+		case "$cf_result" in
+		.*k)
+			cf_result=`${MAKE-make} -k -f cf_makeflags.tmp CC=cc 2>/dev/null`
+			case "$cf_result" in
+			.*CC=*)	cf_cv_makeflags=
+				;;
+			*)	cf_cv_makeflags=$cf_option
+				;;
+			esac
 			break
-		fi
+			;;
+		*)	echo no match "$cf_result"
+			;;
+		esac
 	done
 	rm -f cf_makeflags.tmp])
 AC_MSG_RESULT($cf_cv_makeflags)

@@ -3,7 +3,7 @@
 # This version of terminfo.src is distributed with ncurses.
 #
 #	Version 10.2.1
-#	$Date: 1999/08/15 01:42:52 $
+#	$Date: 1999/08/22 00:05:28 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -531,9 +531,8 @@ nansi.sysk|nansisysk|PC-DOS Public Domain NANSI.SYS with keypad redefined for vi
 # BeOS entry for Terminal program Seems to be almost ANSI
 beterm|BeOS Terminal, 
 	am, eo, mir, msgr, xenl, xon, 
-	colors#8, cols#80, it#8, lines#25, pairs#64, 
-	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
-	clear=\E[H\E[J, cnorm=\E[?25h, cr=^M, 
+	colors#8, cols#80, it#8, lines#25, ncv#5, pairs#64, 
+	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[H\E[J, cr=^M, 
 	csr=\E[%i%p1%d;%p2%dr, cub1=^H, cud1=^J, cuf1=\E[C, 
 	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, dch=\E[%p1%dP, 
 	dch1=\E[P, dim=\E[2m, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, 
@@ -549,8 +548,8 @@ beterm|BeOS Terminal,
 	rmso=\E[m, rmul=\E[24m, rs1=\Ec, sc=\E7, setab=\E[4%p1%dm, 
 	setaf=\E[3%p1%dm, setb=\E[%p1%{40}%+%cm, 
 	setf=\E[%p1%{30}%+%cm, sgr0=\E[0;10m, smir=\E[4h, 
-	smso=\E[7m, smul=\E[4m, tbc=\E[3g, u6=\E[%i%p1%d;%p2%dR, 
-	u7=\E[6n, u8=\E[?6c, u9=\E[c, vpa=\E[%i%p1%dd, 
+	smso=\E[7m, smul=\E[4m, u6=\E[%i%p1%d;%p2%dR, u7=\E[6n, 
+	u8=\E[?6c, u9=\E[c, vpa=\E[%i%p1%dd, 
 
 #### Linux consoles
 #
@@ -17242,6 +17241,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 1999/8/14
 #	* add ms-vt100 -TD
+#
+# 1999/8/21
+#	* corrections to beterm entry -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

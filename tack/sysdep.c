@@ -39,7 +39,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: sysdep.c,v 1.4 1999/06/26 22:20:38 tom Exp $")
+MODULE_ID("$Id: sysdep.c,v 1.5 1999/08/21 21:42:25 tom Exp $")
 
 #if DECL_ERRNO
 extern int errno;
@@ -208,18 +208,26 @@ tty_init(void)
 #endif
 	catchsig();
 	switch (old_modes.c_cflag & CSIZE) {
+#if defined(CS5) && (CS5 != 0)
 	case CS5:
 		tty_frame_size = 10;
 		break;
+#endif
+#if defined(CS6) && (CS6 != 0)
 	case CS6:
 		tty_frame_size = 12;
 		break;
+#endif
+#if defined(CS7) && (CS7 != 0)
 	case CS7:
 		tty_frame_size = 14;
 		break;
+#endif
+#if defined(CS8) && (CS8 != 0)
 	case CS8:
 		tty_frame_size = 16;
 		break;
+#endif
 	}
 	tty_frame_size += 2 +
 		((old_modes.c_cflag & PARENB) ? 2 : 0) +
@@ -262,7 +270,7 @@ initial_stty_query(int q)
 	return (-1);
 }
 
-#if HAVE_SELECT
+#if HAVE_SELECT && defined(FD_ZERO)
 static int
 char_ready(void)
 {

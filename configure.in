@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.168 1999/06/26 21:59:51 tom Exp $
+dnl $Id: configure.in,v 1.169 1999/08/21 20:33:10 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.168 $)
+AC_REVISION($Revision: 1.169 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -439,14 +439,7 @@ fi
 
 ###   Use option --enable-symlinks to make tic use symlinks, not hard links
 ###   to reduce storage requirements for the terminfo database.
-###
-###   Most Unix systems have both link and symlink, a few don't have symlink.
-###   A few non-Unix systems implement symlink, but not link.
-###   A few non-systems implement neither.
-
-AC_CHECK_FUNCS( \
-	link \
-	symlink )
+CF_LINK_FUNCS
 
 with_links=no
 with_symlinks=no
