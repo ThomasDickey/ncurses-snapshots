@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.207 2000/07/04 13:18:02 Peter.Wemm Exp $
+dnl $Id: aclocal.m4,v 1.214 2000/07/07 15:11:34 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -784,11 +784,19 @@ do
 		for cf_item in $CF_LIST_MODELS
 		do
 			CF_LIB_SUFFIX($cf_item,cf_suffix)
+			if test $cf_item = shared ; then
+			if test $cf_cv_do_symlinks = yes ; then
+				case "$cf_cv_shlib_version" in #(vi
+				rel) cf_suffix="$cf_suffix"'.$(REL_VERSION)' ;; #(vi
+				abi) cf_suffix="$cf_suffix"'.$(ABI_VERSION)' ;;
+				esac
+			fi
+			fi
 			cf_libs_to_make="$cf_libs_to_make ../lib/${cf_prefix}${cf_dir}${cf_suffix}"
 		done
 
 		if test $cf_dir = ncurses ; then
-			case "$LIB_SUBSETS" in
+			case "$LIB_SUBSETS" in #(vi
 			termlib+*) #(vi
 				;;
 			*) #(vi
@@ -838,6 +846,7 @@ do
 				prefix=$cf_prefix \
 				suffix=$cf_suffix \
 				subset=$cf_subset \
+				ShlibVer=$cf_cv_shlib_version \
 				DoLinks=$cf_cv_do_symlinks \
 				rmSoLocs=$cf_cv_rm_so_locs \
 				ldconfig="$LDCONFIG" \
@@ -1026,15 +1035,6 @@ AC_DEFUN([CF_LIB_SUFFIX],
 	profile) $2='_p.a' ;;
 	shared)
 		case $cf_cv_system_name in
-		openbsd*|freebsd*)
-			$2='.so.$(REL_VERSION)' ;;
-		netbsd*)
-			if test -f /usr/libexec/ld.elf_so; then
-				$2='.so'
-			else
-				$2='.so.$(REL_VERSION)'
-			fi
-			;;
 		hpux*)	$2='.sl'  ;;
 		*)	$2='.so'  ;;
 		esac
@@ -1725,11 +1725,7 @@ AC_DEFUN([CF_SHARED_OPTS],
  			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'
 		fi
 		test $cf_cv_shlib_version = auto && cf_cv_shlib_version=rel
-		if test $cf_cv_shlib_version = no ; then
-			MK_SHARED_LIB='$(CC) -shared -Wl,-stats,-lc -o $[@]'
-		else
-			MK_SHARED_LIB='$(CC) -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)`,-stats,-lc -o $[@]'
-		fi
+		MK_SHARED_LIB='$(CC) -shared -Wl,-soname,`basename $[@] .$(REL_VERSION)`.$(ABI_VERSION),-stats,-lc -o $[@]'
 		;;
 	openbsd2*)
 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
@@ -1747,8 +1743,12 @@ AC_DEFUN([CF_SHARED_OPTS],
 			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
 			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'
 			EXTRA_LDFLAGS="-Wl,-rpath,\$(libdir) $EXTRA_LDFLAGS"
-			MK_SHARED_LIB='$(CC) -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)` -o $[@]'
-			test $cf_cv_shlib_version = auto && cf_cv_shlib_version=rel
+			MK_SHARED_LIB='$(CC) -shared -Wl,-soname,`basename $[@] .$(REL_VERSION)`.$(ABI_VERSION) -o $[@]'
+			if test $cf_cv_shlib_version = auto; then
+			if test ! -f /usr/libexec/ld.elf_so; then
+				cf_cv_shlib_version=rel
+			fi
+			fi
 		else
 			MK_SHARED_LIB='$(LD) -Bshareable -o $[@]'
 		fi
@@ -1776,7 +1776,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		if test $ac_cv_prog_gcc != yes; then
 			CC_SHARED_OPTS='-belf -KPIC'
 		fi
-		MK_SHARED_LIB='$(LD) -dy -G -h `basename [$]@.$(ABI_VERSION)` -o [$]@'
+		MK_SHARED_LIB='$(LD) -dy -G -h `basename $[@] .$(REL_VERSION)`.$(ABI_VERSION) -o [$]@'
 		if test $cf_cv_ld_rpath = yes ; then
 			# only way is to set LD_RUN_PATH but no switch for it
 			RUN_PATH=$libdir
@@ -1798,7 +1798,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		if test $ac_cv_prog_gcc != yes; then
 			CC_SHARED_OPTS='-KPIC'
 		fi
-		MK_SHARED_LIB='$(LD) -dy -G -h `basename $[@].$(ABI_VERSION)` -o $[@]'
+		MK_SHARED_LIB='$(LD) -dy -G -h `basename $[@] .$(REL_VERSION)`.$(ABI_VERSION) -o $[@]'
 		if test $cf_cv_ld_rpath = yes ; then
 			cf_ld_rpath_opt="-R"
 			EXTRA_LDFLAGS="-R ../lib:\$(libdir) $EXTRA_LDFLAGS"
@@ -1823,15 +1823,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 	rel|abi)
 		case "$MK_SHARED_LIB" in #(vi
 		*'-o $[@]')
-			if test "$cf_cv_do_symlinks" = reverse ; then
-				AC_ERROR(cannot use --with-shlib-version with this platform)
-			fi
-			if test "$cf_cv_shlib_version" = rel ; then
-				MK_SHARED_LIB="$MK_SHARED_LIB"'.$(REL_VERSION)'
-			else
-				MK_SHARED_LIB="$MK_SHARED_LIB"'.$(ABI_VERSION)'
-			fi
-			cf_cv_do_symlinks=yes
+			test "$cf_cv_do_symlinks" = no && cf_cv_do_symlinks=yes
 			;;
 		*)
 			AC_MSG_WARN(ignored --with-shlib-version)

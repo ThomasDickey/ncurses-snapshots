@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.129 2000/06/17 20:02:22 tom Exp $
+$Id: ncurses.c,v 1.130 2000/07/07 11:05:16 tom Exp $
 
 ***************************************************************************/
 
@@ -3277,6 +3277,7 @@ usage(void)
 	,""
 	,"Options:"
 #ifdef NCURSES_VERSION
+	,"  -a f,b   set default-colors (assumed white-on-black)"
 	,"  -d       use default-colors if terminal supports them"
 #endif
 	,"  -e fmt   specify format for soft-keys test (e)"
@@ -3344,6 +3345,9 @@ main(int argc, char *argv[])
     int command, c;
     int my_e_param = 1;
 #ifdef NCURSES_VERSION
+    int default_fg = COLOR_WHITE;
+    int default_bg = COLOR_BLACK;
+    bool assumed_colors = FALSE;
     bool default_colors = FALSE;
 #endif
 
@@ -3351,9 +3355,13 @@ main(int argc, char *argv[])
     setlocale(LC_CTYPE, "");
 #endif
 
-    while ((c = getopt(argc, argv, "de:fhs:t:")) != EOF) {
+    while ((c = getopt(argc, argv, "a:de:fhs:t:")) != EOF) {
 	switch (c) {
 #ifdef NCURSES_VERSION
+	case 'a':
+	    assumed_colors = TRUE;
+	    sscanf(optarg, "%d,%d", &default_fg, &default_bg);
+	    break;
 	case 'd':
 	    default_colors = TRUE;
 	    break;
@@ -3422,6 +3430,8 @@ main(int argc, char *argv[])
 #ifdef NCURSES_VERSION
 	if (default_colors)
 	    use_default_colors();
+	else if (assumed_colors)
+	    assume_default_colors(default_fg, default_bg);
 #endif
     }
     set_terminal_modes();

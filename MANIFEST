@@ -294,6 +294,7 @@
 ./doc/html/man/curs_termcap.3x.html
 ./doc/html/man/curs_terminfo.3x.html
 ./doc/html/man/curs_touch.3x.html
+./doc/html/man/curs_trace.3x.html
 ./doc/html/man/curs_util.3x.html
 ./doc/html/man/curs_window.3x.html
 ./doc/html/man/define_key.3x.html
@@ -467,6 +468,7 @@
 ./man/curs_termcap.3x
 ./man/curs_terminfo.3x
 ./man/curs_touch.3x
+./man/curs_trace.3x
 ./man/curs_util.3x
 ./man/curs_window.3x
 ./man/define_key.3x

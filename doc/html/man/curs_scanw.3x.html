@@ -5,8 +5,8 @@
 
 </PRE>
 <H2>NAME</H2><PRE>
-       <B>scanw</B>,  <B>wscanw</B>,  <B>mvscanw</B>, <B>mvwscanw</B>, <B>vwscanw</B> - convert for-
-       matted input from a <B>curses</B> widow
+       <B>scanw</B>, <B>wscanw</B>, <B>mvscanw</B>, <B>mvwscanw</B>, <B>vwscanw</B>, <B>vw_scanw</B> - con-
+       vert formatted input from a <B>curses</B> widow
 
 
 </PRE>
@@ -18,6 +18,7 @@
        <B>int</B> <B>mvscanw(int</B> <B>y,</B> <B>int</B> <B>x,</B> <B>char</B> <B>*fmt</B> [<B>,</B> <B>arg</B>] <B>...);</B>
        <B>int</B> <B>mvwscanw(WINDOW</B> <B>*win,</B> <B>int</B> <B>y,</B> <B>int</B> <B>x,</B>
              <B>char</B> <B>*fmt</B> [<B>,</B> <B>arg]</B> <B>...);</B>
+       <B>int</B> <B>vw_scanw(WINDOW</B> <B>*win,</B> <B>char</B> <B>*fmt,</B> <B>va_list</B> <B>varglist);</B>
        <B>int</B> <B>vwscanw(WINDOW</B> <B>*win,</B> <B>char</B> <B>*fmt,</B> <B>va_list</B> <B>varglist);</B>
 
 
@@ -56,7 +57,6 @@
 </PRE>
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="curs_getstr.3x.html">curs_getstr(3x)</A></B>, <B><A HREF="curs_printw.3x.html">curs_printw(3x)</A></B>, <B><A HREF="scanf.3S.html">scanf(3S)</A></B>
-
 
 
 

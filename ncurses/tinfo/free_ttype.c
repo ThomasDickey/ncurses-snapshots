@@ -44,7 +44,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: free_ttype.c,v 1.4 2000/07/04 16:07:18 Philippe.Blain Exp $")
+MODULE_ID("$Id: free_ttype.c,v 1.5 2000/07/08 00:43:58 tom Exp $")
 
 void _nc_free_termtype(TERMTYPE *ptr)
 {
@@ -62,7 +62,6 @@ void _nc_free_termtype(TERMTYPE *ptr)
 
 #if NCURSES_XNAMES
 bool _nc_user_definable = TRUE;
-bool _nc_disable_period = FALSE;	/* used by tic -a option */
 
 int use_extended_names(bool flag)
 {

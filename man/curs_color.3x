@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.12 2000/07/04 22:35:05 tom Exp $
+.\" $Id: curs_color.3x,v 1.15 2000/07/08 11:59:51 tom Exp $
 .TH curs_color 3X ""
 .SH NAME
 \fBstart_color\fR,
@@ -35,7 +35,8 @@
 \fBhas_colors\fR,
 \fBcan_change_color\fR,
 \fBcolor_content\fR,
-\fBpair_content\fR - \fBcurses\fR color manipulation routines
+\fBpair_content\fR,
+\fBCOLOR_PAIR\fR - \fBcurses\fR color manipulation routines
 .SH SYNOPSIS
 \fB# include <curses.h>\fR
 .br
@@ -86,12 +87,26 @@ just turned on.
 
 The \fBinit_pair\fR routine changes the definition of a color-pair.  It takes
 three arguments: the number of the color-pair to be changed, the foreground
-color number, and the background color number.  The value of the first argument
-must be between \fB1\fR and \fBCOLOR_PAIRS-1\fR.  The value of the second and
+color number, and the background color number.
+For portable applications:
+.TP 5
+-
+The value of the first argument
+must be between \fB1\fR and \fBCOLOR_PAIRS-1\fR.
+.TP 5
+-
+The value of the second and
 third arguments must be between 0 and \fBCOLORS\fR (the 0 color pair is wired
-to white on black and cannot be changed).  If the color-pair was previously
+to white on black and cannot be changed).
+.PP
+If the color-pair was previously
 initialized, the screen is refreshed and all occurrences of that color-pair is
 changed to the new definition.
+
+As an extension, ncurses allows you to set color pair 0 via
+the \fBassume_default_colors\fR routine, or to specify the use of
+default colors (color number \fB-1\fR) if you first invoke the
+\fBuse_default_colors\fR routine.
 
 The \fBinit_color\fR routine changes the definition of a color.  It takes four
 arguments: the number of the color to be changed followed by three RGB values
