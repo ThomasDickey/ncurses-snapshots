@@ -47,7 +47,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.58 2003/05/24 22:51:38 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.59 2003/10/25 22:45:44 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -195,12 +195,17 @@ _nc_extend_names(ENTRY * entryp, char *name, int token_type)
  *	push back token
  */
 
+#define BAD_TC_USAGE if (!bad_tc_usage) \
+ 	{ bad_tc_usage = TRUE; \
+	 _nc_warning("Legacy termcap allows only a trailing tc= clause"); }
+
 NCURSES_EXPORT(int)
 _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 {
     int token_type;
     struct name_table_entry const *entry_ptr;
     char *ptr, *base;
+    bool bad_tc_usage = FALSE;
 
     token_type = _nc_get_token(silent);
 
@@ -261,11 +266,15 @@ _nc_parse_entry(struct entry *entryp, int literal, bool silent)
     for (token_type = _nc_get_token(silent);
 	 token_type != EOF && token_type != NAMES;
 	 token_type = _nc_get_token(silent)) {
-	if (strcmp(_nc_curr_token.tk_name, "use") == 0
-	    || strcmp(_nc_curr_token.tk_name, "tc") == 0) {
+	bool is_use = (strcmp(_nc_curr_token.tk_name, "use") == 0);
+	bool is_tc = !is_use && (strcmp(_nc_curr_token.tk_name, "tc") == 0);
+	if (is_use || is_tc) {
 	    entryp->uses[entryp->nuses].name = _nc_save_str(_nc_curr_token.tk_valstring);
 	    entryp->uses[entryp->nuses].line = _nc_curr_line;
 	    entryp->nuses++;
+	    if (entryp->nuses > 1 && is_tc) {
+		BAD_TC_USAGE
+	    }
 	} else {
 	    /* normal token lookup */
 	    entry_ptr = _nc_find_entry(_nc_curr_token.tk_name,
@@ -283,6 +292,9 @@ _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 		const struct alias *ap;
 
 		if (_nc_syntax == SYN_TERMCAP) {
+		    if (entryp->nuses != 0) {
+			BAD_TC_USAGE
+		    }
 		    for (ap = _nc_capalias_table; ap->from; ap++)
 			if (strcmp(ap->from, _nc_curr_token.tk_name) == 0) {
 			    if (ap->to == (char *) 0) {

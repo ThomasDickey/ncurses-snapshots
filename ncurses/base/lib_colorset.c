@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -28,7 +28,6 @@
 
 /****************************************************************************
  *  Author: Juergen Pfeifer, 1998                                           *
- *  Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en              *
  ****************************************************************************/
 
 /*
@@ -41,7 +40,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_colorset.c,v 1.8 2002/07/13 11:35:08 juergen Exp $")
+MODULE_ID("$Id: lib_colorset.c,v 1.9 2003/10/25 15:27:03 tom Exp $")
 
 NCURSES_EXPORT(int)
 wcolor_set

@@ -52,7 +52,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.55 2003/08/02 23:53:42 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.57 2003/10/25 22:25:36 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype) (TERMTYPE *) = sanity_check;
@@ -217,7 +217,6 @@ _nc_resolve_uses(bool fullresolve)
     ENTRY *qp, *rp, *lastread = 0;
     bool keepgoing;
     int i, unresolved, total_unresolved, multiples;
-    unsigned j;
 
     DEBUG(2, ("RESOLUTION BEGINNING"));
 
@@ -390,26 +389,6 @@ _nc_resolve_uses(bool fullresolve)
 	    (keepgoing);
 
 	DEBUG(2, ("MERGES COMPLETED OK"));
-
-	/*
-	 * The exit condition of the loop above is such that all entries
-	 * must now be resolved.  Now handle cancellations.  In a resolved
-	 * entry there should be no cancellation markers.
-	 */
-	for_entry_list(qp) {
-	    for_each_boolean(j, &(qp->tterm)) {
-		if (qp->tterm.Booleans[j] == CANCELLED_BOOLEAN)
-		    qp->tterm.Booleans[j] = ABSENT_BOOLEAN;
-	    }
-	    for_each_number(j, &(qp->tterm)) {
-		if (qp->tterm.Numbers[j] == CANCELLED_NUMERIC)
-		    qp->tterm.Numbers[j] = ABSENT_NUMERIC;
-	    }
-	    for_each_string(j, &(qp->tterm)) {
-		if (qp->tterm.Strings[j] == CANCELLED_STRING)
-		    qp->tterm.Strings[j] = ABSENT_STRING;
-	    }
-	}
     }
 
     /*

@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.107 2003/07/19 20:48:24 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.108 2003/10/25 22:14:19 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -828,6 +828,17 @@ check_colors(TERMTYPE * tp)
 	&& VALID_STRING(set_a_background)
 	&& !strcmp(set_background, set_a_background))
 	_nc_warning("expected setb/setab to be different");
+
+    /* see: has_colors() */
+    if (VALID_NUMERIC(max_colors) && VALID_NUMERIC(max_pairs)
+	&& (((set_foreground != NULL)
+	     && (set_background != NULL))
+	    || ((set_a_foreground != NULL)
+		&& (set_a_background != NULL))
+	    || set_color_pair)) {
+	if (!VALID_STRING(orig_pair) && !VALID_STRING(orig_colors))
+	    _nc_warning("expected either op/oc string for resetting colors");
+    }
 }
 
 static int

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: make_sed.sh,v 1.6 2003/01/11 22:23:11 tom Exp $
+# $Id: make_sed.sh,v 1.7 2003/10/25 20:33:16 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2003 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -28,7 +28,7 @@
 # authorization.                                                             #
 ##############################################################################
 #
-# Author: Thomas E. Dickey <dickey@clark.net> 1997
+# Author: Thomas E. Dickey 1997
 #
 # Construct a sed-script to perform renaming within man-pages.  Originally
 # written in much simpler form, this one accounts for the common cases of

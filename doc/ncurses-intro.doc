@@ -177,9 +177,8 @@ Scope of This Document
    Eric S. Raymond <esr@snark.thyrsus.com> wrote many of the new features
    in  versions  after  1.8.1 and wrote most of this introduction. Jürgen
    Pfeifer  wrote  all  of  the  menu and forms code as well as the Ada95
-   binding.  Ongoing work is being done by Thomas Dickey (maintainer) and
-   Jürgen     Pfeifer.     Contact    the    current    maintainers    at
-   bug-ncurses@gnu.org.
+   binding.  Ongoing  work  is  being done by Thomas Dickey (maintainer).
+   Contact the current maintainers at bug-ncurses@gnu.org.
 
    This  document  also describes the panels extension library, similarly
    modeled  on  the  SVr4  panels  facility.  This  library allows you to

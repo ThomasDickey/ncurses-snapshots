@@ -1,5 +1,5 @@
 #! /bin/sh
-# $Id: MKkeys_list.sh,v 1.3 2003/01/11 22:24:53 tom Exp $
+# $Id: MKkeys_list.sh,v 1.4 2003/10/25 16:19:54 tom Exp $
 ##############################################################################
 # Copyright (c) 2001,2003 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -30,7 +30,7 @@
 #
 # MKkey_defs.sh -- generate list of function-keys for terminfo database
 #
-# Author: Thomas E. Dickey <dickey@herndon4.his.com> 2001
+# Author: Thomas E. Dickey 2001
 #
 # Extract function-key names from the Caps file
 #

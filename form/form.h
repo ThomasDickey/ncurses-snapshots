@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -28,10 +28,9 @@
 
 /****************************************************************************
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
- *   Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en             *
  ****************************************************************************/
 
-/* $Id: form.h,v 0.15 2003/05/03 21:59:32 tom Exp $ */
+/* $Id: form.h,v 0.16 2003/10/25 15:17:08 tom Exp $ */
 
 #ifndef FORM_H
 #define FORM_H

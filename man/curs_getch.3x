@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.22 2003/05/10 20:33:49 jmc Exp $
+.\" $Id: curs_getch.3x,v 1.23 2003/10/25 20:10:18 tom Exp $
 .TH curs_getch 3X ""
 .SH NAME
 \fBgetch\fR,
@@ -222,6 +222,8 @@ c c c .
 The \fBhas_key\fR routine takes a key value from the above list, and
 returns TRUE or FALSE according to whether
 the current terminal type recognizes a key with that value.
+Note that a few values do not correspond to a real key,
+e.g., KEY_RESIZE and KEY_MOUSE.
 
 .SH RETURN VALUE
 All routines return the integer \fBERR\fR upon failure and an integer value
@@ -278,7 +280,7 @@ Under historical curses
 implementations, it varied depending on whether the operating system's
 implementation of handled signal receipt interrupts a \fBread\fR(2) call in
 progress or not, and also (in some implementations) depending on whether an
-input timeout or non-blocking mode hsd been set.
+input timeout or non-blocking mode has been set.
 
 Programmers concerned about portability should be prepared for either of two
 cases: (a) signal receipt does not interrupt \fBgetch\fR; (b) signal receipt
