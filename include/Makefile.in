@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.23 2000/05/28 01:33:52 tom Exp $
+# $Id: Makefile.in,v 1.24 2000/08/19 19:15:31 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -42,7 +42,7 @@
 SHELL		= /bin/sh
 THIS		= Makefile
 
-INSTALL_PREFIX	= @INSTALL_PREFIX@
+DESTDIR		= @DESTDIR@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@

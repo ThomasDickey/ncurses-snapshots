@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.21 2000/08/13 00:10:55 tom Exp $
+# $Id: Makefile.in,v 1.22 2000/08/19 19:16:06 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -48,7 +48,7 @@ THIS		= Makefile
 CF_MFLAGS 	= @cf_cv_makeflags@
 @SET_MAKE@
 
-INSTALL_PREFIX	= @INSTALL_PREFIX@
+DESTDIR		= @DESTDIR@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
@@ -69,25 +69,25 @@ sources:
 
 install: install.data
 
-install.data:	$(INSTALL_PREFIX)$(libdir) \
-		$(INSTALL_PREFIX)$(ticdir) \
-		$(INSTALL_PREFIX)$(tabsetdir)
-	sh $(srcdir)/run_tic.sh $(bindir) $(srcdir) $(ticdir) $(INSTALL_PREFIX)
+install.data:	$(DESTDIR)$(libdir) \
+		$(DESTDIR)$(ticdir) \
+		$(DESTDIR)$(tabsetdir)
+	sh $(srcdir)/run_tic.sh $(bindir) $(srcdir) $(ticdir) $(DESTDIR)
 	@cd $(srcdir)/tabset && \
 		sh -c 'for i in `echo * | fgrep -v CVS | fgrep -v RCS`; do \
 		echo installing $$i; \
-		$(INSTALL_DATA) $$i $(INSTALL_PREFIX)$(tabsetdir); done'
+		$(INSTALL_DATA) $$i $(DESTDIR)$(tabsetdir); done'
 
-$(INSTALL_PREFIX)$(libdir) \
-$(INSTALL_PREFIX)$(tabsetdir) \
-$(INSTALL_PREFIX)$(ticdir) :
+$(DESTDIR)$(libdir) \
+$(DESTDIR)$(tabsetdir) \
+$(DESTDIR)$(ticdir) :
 	$(srcdir)/../mkinstalldirs $@
 
 uninstall: uninstall.data
 
 uninstall.data:
-	-cd $(INSTALL_PREFIX)$(ticdir) && rm -rf *
-	-cd $(INSTALL_PREFIX)$(tabsetdir) && rm -rf *
+	-cd $(DESTDIR)$(ticdir) && rm -rf *
+	-cd $(DESTDIR)$(tabsetdir) && rm -rf *
 
 tags:
 

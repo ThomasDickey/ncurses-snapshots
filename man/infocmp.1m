@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: infocmp.1m,v 1.26 2000/08/13 01:55:59 tom Exp $
+.\" $Id: infocmp.1m,v 1.27 2000/08/19 18:51:05 tom Exp $
 .TH infocmp 1M ""
 .ds n 5
 .ds d @TERMINFO@
@@ -245,7 +245,7 @@ This is mainly useful for testing and analysis, since the compiled
 descriptions are limited (e.g., 1023 for termcap, 4096 for terminfo).
 .TP 5
 \fB-V\fR
-prints out the version of the program in use on standard error and exits.
+reports the version of ncurses which was used in this program, and exits.
 .TP 5
 \fB-e\fR
 Dump the capabilities of the given terminal as a C initializer for a
@@ -347,6 +347,7 @@ The
 \fB-G\fR,
 \fB-R\fR,
 \fB-T\fR,
+\fB-V\fR,
 \fB-a\fR,
 \fB-e\fR,
 \fB-f\fR,

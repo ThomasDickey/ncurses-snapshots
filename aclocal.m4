@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.220 2000/08/13 02:11:32 tom Exp $
+dnl $Id: aclocal.m4,v 1.221 2000/08/19 19:07:36 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1012,12 +1012,12 @@ for cf_dir in $SRC_SUBDIRS
 do
 	if test -f $srcdir/$cf_dir/headers; then
 	cat >>$cf_dir/Makefile <<CF_EOF
-\$(INSTALL_PREFIX)\$(includedir) :
+\$(DESTDIR)\$(includedir) :
 	\$(srcdir)/../mkinstalldirs \[$]@
 
 install \\
 install.libs \\
-install.includes :: \$(INSTALL_PREFIX)\$(includedir) \\
+install.includes :: \$(DESTDIR)\$(includedir) \\
 CF_EOF
 		j=""
 		for i in `cat $srcdir/$cf_dir/headers |fgrep -v "#"`
@@ -1028,8 +1028,8 @@ CF_EOF
 		echo "		$j" >>$cf_dir/Makefile
 		for i in `cat $srcdir/$cf_dir/headers |fgrep -v "#"`
 		do
-			echo "	@ (cd \$(INSTALL_PREFIX)\$(includedir) && rm -f `basename $i`) ; ../headers.sh \$(INSTALL_DATA) \$(INSTALL_PREFIX)\$(includedir) \$(srcdir) $i" >>$cf_dir/Makefile
-			test $i = curses.h && echo "	@ (cd \$(INSTALL_PREFIX)\$(includedir) && rm -f ncurses.h && \$(LN_S) curses.h ncurses.h)" >>$cf_dir/Makefile
+			echo "	@ (cd \$(DESTDIR)\$(includedir) && rm -f `basename $i`) ; ../headers.sh \$(INSTALL_DATA) \$(DESTDIR)\$(includedir) \$(srcdir) $i" >>$cf_dir/Makefile
+			test $i = curses.h && echo "	@ (cd \$(DESTDIR)\$(includedir) && rm -f ncurses.h && \$(LN_S) curses.h ncurses.h)" >>$cf_dir/Makefile
 		done
 
 	cat >>$cf_dir/Makefile <<CF_EOF
@@ -1041,8 +1041,8 @@ CF_EOF
 		for i in `cat $srcdir/$cf_dir/headers |fgrep -v "#"`
 		do
 			i=`basename $i`
-			echo "	-@ (cd \$(INSTALL_PREFIX)\$(includedir) && rm -f $i)" >>$cf_dir/Makefile
-			test $i = curses.h && echo "	-@ (cd \$(INSTALL_PREFIX)\$(includedir) && rm -f ncurses.h)" >>$cf_dir/Makefile
+			echo "	-@ (cd \$(DESTDIR)\$(includedir) && rm -f $i)" >>$cf_dir/Makefile
+			test $i = curses.h && echo "	-@ (cd \$(DESTDIR)\$(includedir) && rm -f ncurses.h)" >>$cf_dir/Makefile
 		done
 	fi
 done

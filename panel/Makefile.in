@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.32 2000/08/13 00:09:19 tom Exp $
+# $Id: Makefile.in,v 1.33 2000/08/19 19:16:30 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2000 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -46,7 +46,7 @@ SHELL		= /bin/sh
 THIS		= Makefile
 
 MODEL		= @DFT_LWR_MODEL@
-INSTALL_PREFIX	= @INSTALL_PREFIX@
+DESTDIR		= @DESTDIR@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
@@ -109,7 +109,7 @@ install ::	$(AUTO_SRC) $(LIBRARIES)
 
 sources:	$(AUTO_SRC)
 
-$(INSTALL_PREFIX)$(libdir) :
+$(DESTDIR)$(libdir) :
 	$(srcdir)/../mkinstalldirs $@
 
 # make a copy to simplify include-paths while still keeping panel's include

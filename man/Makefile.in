@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.27 2000/08/13 00:11:25 tom Exp $
+# $Id: Makefile.in,v 1.28 2000/08/19 19:15:44 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -36,7 +36,7 @@
 
 SHELL		= /bin/sh
 
-INSTALL_PREFIX	= @INSTALL_PREFIX@
+DESTDIR		= @DESTDIR@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
@@ -49,12 +49,12 @@ INSTALL_DATA	= @INSTALL_DATA@
 all \
 sources:	terminfo.5
 
-$(INSTALL_PREFIX)$(mandir) :
+$(DESTDIR)$(mandir) :
 	$(srcdir)/../mkinstalldirs $@
 
-EDITARGS = $(INSTALL_PREFIX)$(mandir) $(srcdir) terminfo.5 $(srcdir)/*.[0-9]*
+EDITARGS = $(DESTDIR)$(mandir) $(srcdir) terminfo.5 $(srcdir)/*.[0-9]*
 
-install install.man : terminfo.5 $(INSTALL_PREFIX)$(mandir)
+install install.man : terminfo.5 $(DESTDIR)$(mandir)
 	sh ./edit_man.sh installing $(EDITARGS)
 
 uninstall uninstall.man :

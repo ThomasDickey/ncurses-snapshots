@@ -41,8 +41,9 @@
 
 #include <dump_entry.h>
 #include <term_entry.h>
+#include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.69 2000/04/08 23:53:49 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.73 2000/08/19 20:46:07 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -54,7 +55,7 @@ static const char *to_remove;
 static void (*save_check_termtype) (TERMTYPE *);
 static void check_termtype(TERMTYPE * tt);
 
-static const char usage_string[] = "[-h] [-v[n]] [-e names] [-CILNRTcfrswx1] source-file\n";
+static const char usage_string[] = "[-V] [-v[n]] [-e names] [-CILNRTcfrswx1] source-file\n";
 
 static void
 cleanup(void)
@@ -91,6 +92,7 @@ usage(void)
 	"  -N         disable smart defaults for source translation",
 	"  -R         restrict translation to given terminfo/termcap version",
 	"  -T         remove size-restrictions on compiled description",
+	"  -V         print version",
 #if NCURSES_XNAMES
 	"  -a         retain commented-out capabilities (sets -x also)",
 #endif
@@ -430,12 +432,12 @@ main(int argc, char *argv[])
     else
 	_nc_progname++;
 
-    if ((infodump = (strcmp(_nc_progname, "captoinfo") == 0)) != FALSE) {
-	outform = F_TERMINFO;
+    if ((infodump = (strcmp(_nc_progname, PROG_CAPTOINFO) == 0)) != FALSE) {
+	outform  = F_TERMINFO;
 	sortmode = S_TERMINFO;
     }
-    if ((capdump = (strcmp(_nc_progname, "infotocap") == 0)) != FALSE) {
-	outform = F_TERMCAP;
+    if ((capdump = (strcmp(_nc_progname, PROG_INFOTOCAP) == 0)) != FALSE) {
+	outform  = F_TERMCAP;
 	sortmode = S_TERMCAP;
     }
 #if NCURSES_XNAMES
@@ -491,7 +493,7 @@ main(int argc, char *argv[])
 	    limited = FALSE;
 	    break;
 	case 'V':
-	    puts(NCURSES_VERSION);
+	    puts(curses_version());
 	    return EXIT_SUCCESS;
 	case 'c':
 	    check_only = TRUE;
