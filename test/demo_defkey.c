@@ -1,5 +1,5 @@
 /*
- * $Id: demo_defkey.c,v 1.10 2003/05/11 01:12:46 tom Exp $
+ * $Id: demo_defkey.c,v 1.11 2003/05/17 23:33:28 tom Exp $
  *
  * Demonstrate the define_key() function.
  * Thomas Dickey - 2002/11/23
@@ -93,10 +93,10 @@ visible(const char *string)
 }
 
 static void
-really_define_key(WINDOW *win, char *new_string, int code)
+really_define_key(WINDOW *win, const char *new_string, int code)
 {
     int rc;
-    char *code_name = keyname(code);
+    const char *code_name = keyname(code);
     char *old_string;
     char *vis_string = 0;
     char temp[80];
@@ -148,12 +148,12 @@ really_define_key(WINDOW *win, char *new_string, int code)
 }
 
 static void
-duplicate(WINDOW *win, char *name, int code)
+duplicate(WINDOW *win, NCURSES_CONST char *name, int code)
 {
     char *value = tigetstr(name);
 
     if (value != 0) {
-	char *prefix = 0;
+	const char *prefix = 0;
 	char temp[BUFSIZ];
 
 	if (!strncmp(value, "\033[", 2)) {
@@ -230,7 +230,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
     really_define_key(win, "\033O", 1023);
 
     while ((ch = wgetch(win)) != ERR) {
-	char *name = keyname(ch);
+	const char *name = keyname(ch);
 	wprintw(win, "Keycode %d, name %s\n",
 		ch,
 		name != 0 ? name : "<null>");

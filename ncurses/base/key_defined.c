@@ -32,10 +32,10 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: key_defined.c,v 1.2 2003/03/08 22:43:05 tom Exp $")
+MODULE_ID("$Id: key_defined.c,v 1.3 2003/05/17 23:12:27 tom Exp $")
 
 static int
-find_definition(struct tries *tree, char *str)
+find_definition(struct tries *tree, const char *str)
 {
     struct tries *ptr;
     int result = 0;
@@ -63,7 +63,7 @@ find_definition(struct tries *tree, char *str)
  * return 0.  If the string is only a prefix to other strings, return -1.
  */
 NCURSES_EXPORT(int)
-key_defined(char *str)
+key_defined(const char *str)
 {
     int code = ERR;
 

@@ -40,7 +40,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_get_wstr.c,v 1.5 2003/03/29 23:16:41 tom Exp $")
+MODULE_ID("$Id: lib_get_wstr.c,v 1.6 2003/05/17 21:33:03 tom Exp $")
 
 /*
  * This wipes out the last character, no matter whether it was a tab, control
@@ -109,6 +109,25 @@ wgetn_wstr(WINDOW *win, wint_t * str, int maxlen)
 	wrefresh(win);
 
     while ((code = wget_wch(win, &ch)) != ERR) {
+	/*
+	 * Map special characters into key-codes.
+	 */
+	if (ch == '\r')
+	    ch = '\n';
+	if (ch == '\n') {
+	    code = KEY_CODE_YES;
+	    ch = KEY_ENTER;
+	}
+	if (ch < KEY_MIN) {
+	    if (ch == erasec) {
+		ch = KEY_BACKSPACE;
+		code = KEY_CODE_YES;
+	    }
+	    if (ch == killc) {
+		ch = KEY_EOL;
+		code = KEY_CODE_YES;
+	    }
+	}
 	if (code == KEY_CODE_YES) {
 	    /*
 	     * Some terminals (the Wyse-50 is the most common) generate a \n
@@ -116,21 +135,18 @@ wgetn_wstr(WINDOW *win, wint_t * str, int maxlen)
 	     * choice whether to set kcud=\n for wget_wch(); terminating
 	     * *getn_wstr() with \n should work either way.
 	     */
-	    if (ch == '\n'
-		|| ch == '\r'
-		|| ch == KEY_DOWN
-		|| ch == KEY_ENTER) {
+	    if (ch == KEY_DOWN || ch == KEY_ENTER) {
 		if (oldecho == TRUE
 		    && win->_cury == win->_maxy
 		    && win->_scroll)
 		    wechochar(win, (chtype) '\n');
 		break;
 	    }
-	    if (ch == erasec || ch == KEY_LEFT || ch == KEY_BACKSPACE) {
+	    if (ch == KEY_LEFT || ch == KEY_BACKSPACE) {
 		if (tmpstr > oldstr) {
 		    tmpstr = WipeOut(win, y, x, oldstr, tmpstr, oldecho);
 		}
-	    } else if (ch == killc) {
+	    } else if (ch == KEY_EOL) {
 		while (tmpstr > oldstr) {
 		    tmpstr = WipeOut(win, y, x, oldstr, tmpstr, oldecho);
 		}
@@ -140,15 +156,8 @@ wgetn_wstr(WINDOW *win, wint_t * str, int maxlen)
 	} else if (maxlen >= 0 && tmpstr - oldstr >= maxlen) {
 	    beep();
 	} else {
-	    if (ch == '\n'
-		|| ch == '\r') {
-		if (oldecho == TRUE
-		    && win->_cury == win->_maxy
-		    && win->_scroll)
-		    wechochar(win, (chtype) '\n');
-		break;
-	    }
 	    *tmpstr++ = ch;
+	    *tmpstr = 0;
 	    if (oldecho == TRUE) {
 		int oldy = win->_cury;
 		cchar_t tmp;

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.302 2003/04/12 16:22:48 tom Exp $
+dnl $Id: aclocal.m4,v 1.303 2003/05/17 22:21:13 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -814,7 +814,7 @@ rm -rf conftest*
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GCC_WARNINGS version:  updated: 2002/11/23 16:02:49
+dnl CF_GCC_WARNINGS version: 12 updated: 2002/11/23 16:02:49
 dnl ---------------
 dnl Check if the compiler supports useful warning options.  There's a few that
 dnl we don't use, simply because they're too noisy:
@@ -3056,7 +3056,7 @@ if test $with_dmalloc = yes ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_LIBTOOL version: 3 updated: 2002/12/08 01:17:33
+dnl CF_WITH_LIBTOOL version: 5 updated: 2003/04/18 22:19:54
 dnl ---------------
 dnl Provide a configure option to incorporate libtool.  Define several useful
 dnl symbols for the makefile rules.
@@ -3102,6 +3102,8 @@ if test "$with_libtool" = "yes"; then
 else
 	LIBTOOL=""
 fi
+
+test -z "$LIBTOOL" && ECHO_LT=
 
 AC_SUBST(LIBTOOL)
 AC_SUBST(LIB_CREATE)

@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.3 2003/04/26 16:29:40 tom Exp $
+dnl $Id: aclocal.m4,v 1.4 2003/05/17 22:22:52 tom Exp $
 dnl ---------------------------------------------------------------------------
 dnl ---------------------------------------------------------------------------
 dnl CF_ADD_INCDIR version: 4 updated: 2002/12/21 14:25:52
@@ -71,7 +71,7 @@ if test ".$system_name" != ".$cf_cv_system_name" ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CURSES_ACS_MAP version: 2 updated: 2003/03/01 23:36:42
+dnl CF_CURSES_ACS_MAP version: 3 updated: 2003/05/17 22:19:02
 dnl -----------------
 dnl Check for likely values of acs_map[]:
 AC_DEFUN([CF_CURSES_ACS_MAP],
@@ -81,7 +81,7 @@ cf_cv_curses_acs_map=unknown
 for name in acs_map _acs_map __acs_map _nc_acs_map
 do
 AC_TRY_LINK([
-#include <curses.h>
+#include <${cf_cv_ncurses_header-curses.h}>
 ],[
 $name['k'] = ACS_PLUS
 ],[cf_cv_curses_acs_map=$name; break])
@@ -256,7 +256,7 @@ fi
 
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CURSES_WACS_MAP version: 2 updated: 2003/03/01 23:36:42
+dnl CF_CURSES_WACS_MAP version: 3 updated: 2003/05/17 22:19:02
 dnl ------------------
 dnl Check for likely values of wacs_map[]:
 AC_DEFUN([CF_CURSES_WACS_MAP],
@@ -269,7 +269,7 @@ AC_CACHE_CHECK(for wide alternate character set array, cf_cv_curses_wacs_map,[
 #ifndef _XOPEN_SOURCE_EXTENDED
 #define _XOPEN_SOURCE_EXTENDED
 #endif
-#include <curses.h>],
+#include <${cf_cv_ncurses_header-curses.h}>],
 	[$name['k'] = *WACS_PLUS],
 	[cf_cv_curses_wacs_map=$name
 	 break])
@@ -331,7 +331,7 @@ fi
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_FUNC_CURSES_VERSION version: 2 updated: 2003/03/01 23:36:42
+dnl CF_FUNC_CURSES_VERSION version: 3 updated: 2003/05/17 22:19:02
 dnl ----------------------
 dnl Solaris has a data item 'curses_version', which confuses AC_CHECK_FUNCS.
 dnl It's a character string "SVR4", not documented.
@@ -339,7 +339,7 @@ AC_DEFUN([CF_FUNC_CURSES_VERSION],
 [
 AC_CACHE_CHECK(for function curses_version, cf_cv_func_curses_version,[
 AC_TRY_RUN([
-#include <curses.h>
+#include <${cf_cv_ncurses_header-curses.h}>
 int main()
 {
 	char temp[1024];

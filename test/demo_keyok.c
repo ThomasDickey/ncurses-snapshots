@@ -1,5 +1,5 @@
 /*
- * $Id: demo_keyok.c,v 1.2 2002/12/14 23:28:23 tom Exp $
+ * $Id: demo_keyok.c,v 1.3 2003/05/17 23:18:34 tom Exp $
  *
  * Demonstrate the keyok() function.
  * Thomas Dickey - 2002/11/23
@@ -29,7 +29,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
     wmove(win, 0, 0);
 
     while ((ch = wgetch(win)) != ERR) {
-	char *name = keyname(ch);
+	const char *name = keyname(ch);
 	wprintw(win, "Keycode %d, name %s\n",
 		ch,
 		name != 0 ? name : "<null>");

@@ -1,10 +1,30 @@
--- $Id: NEWS,v 1.747 2003/05/11 00:45:18 tom Exp $
+-- $Id: NEWS,v 1.748 2003/05/17 23:55:04 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030517
+	+ prevent recursion in wgetch() via wgetnstr() if the connection cannot
+	  be switched between cooked/raw modes because it is not a TTY (report
+	  by Wolfgang Gutjahr <gutw@knapp.com>).
+	+ change parameter of define_key() and key_defined() to const (prompted
+	  by Debian #192860).
+	+ add a check in test/configure for ncurses extensions, since there
+	  are some older versions, etc., which would not compile with the
+	  current test programs.
+	+ corrected demo in test/ncurses.c of wgetn_wstr(), which did not
+	  convert wchar_t string to multibyte form before printing it.
+	+ corrections to lib_get_wstr.c:
+	  + null-terminate buffer passed to setcchar(), which occasionally
+	    failed.
+	  + map special characters such as erase- and kill-characters into
+	    key-codes so those will work as expected even if they are not
+	    mentioned in the terminfo.
+	+ modify PUTC() and Charable() macros to make wide-character line
+	  drawing work for POSIX locale on Linux console (cf: 20021221).
 
 20030510
 	+ make typography for program options in manpages consistent (report

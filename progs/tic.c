@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.105 2003/02/09 00:25:39 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.106 2003/05/17 23:21:16 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -775,10 +775,11 @@ static void
 check_acs(TERMTYPE * tp)
 {
     if (VALID_STRING(acs_chars)) {
-	char *boxes = "lmkjtuvwqxn";
+	const char *boxes = "lmkjtuvwqxn";
 	char mapped[256];
 	char missing[256];
-	char *p, *q;
+	const char *p;
+	char *q;
 
 	memset(mapped, 0, sizeof(mapped));
 	for (p = acs_chars; *p != '\0'; p += 2) {

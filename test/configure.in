@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996, etc.
 dnl
-dnl $Id: configure.in,v 1.42 2003/04/26 23:37:25 tom Exp $
+dnl $Id: configure.in,v 1.43 2003/05/17 21:56:58 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -159,6 +159,23 @@ vsscanf \
 wchgat \
 wresize \
 )
+
+AC_TRY_LINK([
+#include <${cf_cv_ncurses_header-curses.h}>],
+[
+	(void) assume_default_colors (0, 0);
+	(void) curses_version ();
+	(void) define_key (0, 0);
+	(void) is_term_resized (0, 0);
+	(void) key_defined (0);
+	(void) keybound (0, 0);
+	(void) keyok (0, 0);
+	(void) resize_term (0, 0);
+	(void) resizeterm (0, 0);
+	(void) use_default_colors ();
+	(void) use_extended_names (0);
+	(void) wresize (0, 0, 0);
+	],[AC_DEFINE(NCURSES_EXT_FUNCS)])
 
 CF_SYS_TIME_SELECT
 CF_FUNC_CURSES_VERSION

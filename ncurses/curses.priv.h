@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.241 2003/04/12 19:55:57 tom Exp $
+ * $Id: curses.priv.h,v 1.244 2003/05/17 23:47:01 tom Exp $
  *
  *	curses.priv.h
  *
@@ -261,10 +261,10 @@ color_t;
 
 struct ldat
 {
-	NCURSES_CH_T	*text;	    	/* text of the line */
-	NCURSES_SIZE_T	firstchar;  	/* first changed character in the line */
-	NCURSES_SIZE_T	lastchar;   	/* last changed character in the line */
-	NCURSES_SIZE_T	oldindex;   	/* index of the line at last update */
+	NCURSES_CH_T	*text;		/* text of the line */
+	NCURSES_SIZE_T	firstchar;	/* first changed character in the line */
+	NCURSES_SIZE_T	lastchar;	/* last changed character in the line */
+	NCURSES_SIZE_T	oldindex;	/* index of the line at last update */
 };
 
 typedef enum {
@@ -352,6 +352,7 @@ struct screen {
 	int             _cursor;        /* visibility of the cursor         */
 	int             _cursrow;       /* physical cursor row              */
 	int             _curscol;       /* physical cursor column           */
+	bool		_notty;		/* true if we cannot switch non-tty */
 	int             _nl;            /* True if NL -> CR/NL is on        */
 	int             _raw;           /* True if in raw mode              */
 	int             _cbreak;        /* 1 if in cbreak mode              */
@@ -447,7 +448,7 @@ struct screen {
 	void            (*_mouse_resume)(SCREEN *);
 	void            (*_mouse_wrap)  (SCREEN *);
 	int             _mouse_fd;      /* file-descriptor, if any */
-	char            *_mouse_xtermcap; /* string to enable/disable mouse */
+	NCURSES_CONST char *_mouse_xtermcap; /* string to enable/disable mouse */
 #if USE_SYSMOUSE
 	MEVENT		_sysmouse_fifo[FIFO_SIZE];
 	int		_sysmouse_head;
@@ -488,7 +489,10 @@ struct screen {
 	/* recent versions of 'screen' have partially-working support for
 	 * UTF-8, but do not permit ACS at the same time (see tty_update.c).
 	 */
+#if USE_WIDEC_SUPPORT
+	bool		_posix_locale;
 	bool		_screen_acs_fix;
+#endif
 
 	bool            _cleanup;	/* cleanup after int/quit signal */
 	int             (*_outch)(int);	/* output handler if not putc */
@@ -593,6 +597,9 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define PUTC_DATA	char PUTC_buf[MB_LEN_MAX]; int PUTC_i, PUTC_n; \
 			mbstate_t PUT_st; wchar_t PUTC_ch
 #define PUTC(ch,b)	do { if(!isnac(ch)) { 					    \
+			if (Charable(ch)) {					    \
+			    fputc(CharOf(ch), b);				    \
+			} else {						    \
 			    memset (&PUT_st, '\0', sizeof (PUT_st));		    \
 			    PUTC_i = 0;						    \
 			    do {						    \
@@ -607,7 +614,7 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 				fwrite(PUTC_buf, (unsigned) PUTC_n, 1, b);	    \
 				++PUTC_i;					    \
 			    } while (PUTC_ch != L'\0');				    \
-			} } while (0)
+			} } } while (0)
 
 #define BLANK		{ WA_NORMAL, ' ' }
 #define ISBLANK(ch)	((ch).chars[0] == L' ' && (ch).chars[1] == L'\0')
@@ -615,9 +622,10 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define WA_NAC		1
 #define isnac(ch)	(AttrOf(ch) & WA_NAC)
 #define if_WIDEC(code)  code
-#define Charable(ch)	(!isnac(ch) &&  			   	\
-			 (ch).chars[1] == L'\0' &&			\
-                         (wctob(CharOf(ch)) == (char)CharOf(ch)))
+#define Charable(ch)	((SP != 0 && SP->_posix_locale)			\
+			 || (!isnac(ch) &&				\
+			     (ch).chars[1] == L'\0' &&			\
+                             (wctob(CharOf(ch)) == (char)CharOf(ch))))
 
 #define L(ch)		L ## ch
 #else /* }{ */
@@ -925,6 +933,7 @@ extern NCURSES_EXPORT(int) _nc_has_mouse (void);
 #define INFINITY	1000000	/* cost: too high to use */
 
 /* lib_setup.c */
+extern NCURSES_EXPORT(char *) _nc_get_locale(void);
 extern NCURSES_EXPORT(int) _nc_unicode_locale(void);
 extern NCURSES_EXPORT(int) _nc_locale_breaks_acs(void);
 
@@ -968,7 +977,7 @@ extern NCURSES_EXPORT(char *) _nc_printf_string (const char *, va_list);
 extern NCURSES_EXPORT(void) _nc_add_to_try (struct tries **, const char *, unsigned short);
 extern NCURSES_EXPORT(char *) _nc_expand_try (struct tries *, unsigned short, int *, size_t);
 extern NCURSES_EXPORT(int) _nc_remove_key (struct tries **, unsigned short);
-extern NCURSES_EXPORT(int) _nc_remove_string (struct tries **, char *);
+extern NCURSES_EXPORT(int) _nc_remove_string (struct tries **, const char *);
 
 /* elsewhere ... */
 extern NCURSES_EXPORT(NCURSES_CH_T) _nc_render (WINDOW *, NCURSES_CH_T);
