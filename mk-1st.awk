@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.58 2002/12/14 23:56:19 Maciej.W.Rozycki Exp $
+# $Id: mk-1st.awk,v 1.59 2003/07/19 18:44:32 Charles.Wilson Exp $
 ##############################################################################
 # Copyright (c) 1998,2000,2002 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -162,8 +162,8 @@ END	{
 			if ( MODEL == "SHARED" )
 			{
 				if (ShlibVerInfix == "cygdll") {
-					abi_name = sprintf("%s%s$(ABI_VERSION)%s", prefix, name, suffix);
-					rel_name = sprintf("%s%s$(REL_VERSION)%s", prefix, name, suffix);
+					abi_name = sprintf("%s%s$(ABI_VERSION)%s", "cyg", name, suffix);
+					rel_name = sprintf("%s%s$(REL_VERSION)%s", "cyg", name, suffix);
 					imp_name = sprintf("%s%s%s.a", prefix, name, suffix);
 				} else if (ShlibVerInfix == "yes") {
 					abi_name = sprintf("%s%s.$(ABI_VERSION)%s", prefix, name, suffix);
@@ -233,9 +233,15 @@ END	{
 
 				if ( overwrite == "yes" && name == "ncurses" )
 				{
-					ovr_name = sprintf("libcurses%s", suffix)
-					printf "\t@echo linking %s to %s\n", end_name, ovr_name
-					printf "\tcd $(DESTDIR)$(libdir) && (rm -f %s; $(LN_S) %s %s; )\n", ovr_name, end_name, ovr_name
+					if ( ShlibVer == "cygdll" ) {
+						ovr_name = sprintf("libcurses%s.a", suffix)
+						printf "\t@echo linking %s to %s\n", imp_name, ovr_name
+						printf "\tcd $(DESTDIR)$(libdir) && (rm -f %s; $(LN_S) %s %s; )\n", ovr_name, imp_name, ovr_name
+					} else {
+						ovr_name = sprintf("libcurses%s", suffix)
+						printf "\t@echo linking %s to %s\n", end_name, ovr_name
+						printf "\tcd $(DESTDIR)$(libdir) && (rm -f %s; $(LN_S) %s %s; )\n", ovr_name, end_name, ovr_name
+					}
 				}
 				if ( ldconfig != "" ) {
 					printf "\t- test -z \"$(DESTDIR)\" && %s\n", ldconfig
@@ -257,7 +263,11 @@ END	{
 					removelinks("$(DESTDIR)$(libdir)")
 					if ( overwrite == "yes" && name == "ncurses" )
 					{
-						ovr_name = sprintf("libcurses%s", suffix)
+						if ( ShlibVer == "cygdll" ) {
+							ovr_name = sprintf("libcurses%s.a", suffix)
+						} else {
+							ovr_name = sprintf("libcurses%s", suffix)
+						}
 						printf "\t-@rm -f $(DESTDIR)$(libdir)/%s\n", ovr_name
 					}
 				}

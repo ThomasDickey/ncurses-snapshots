@@ -10,7 +10,7 @@
 #
 #------------------------------------------------------------------------------
 #	Version 10.2.1
-#	$Date: 2003/05/24 22:38:09 $
+#	$Date: 2003/07/19 19:44:24 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -3054,7 +3054,9 @@ color_xterm|cx|cx100|color_xterm color terminal emulator for X,
 #
 # Redhat Linux 6.x distributes XFree86 xterm as "nxterm", which uses bce
 # colors; note that this is not compatible with the 5.2 version.
-nxterm|xterm-color|generic color xterm, 
+# csw (2002-05-15): make xterm-color primary instead of nxterm, to 
+#   match XFree86's xterm.terminfo usage and prevent circular links
+xterm-color|nxterm|generic color xterm, 
 	ncv@, 
 	op=\E[m, use=xterm-r6, use=klone+color, 
 
@@ -3213,7 +3215,19 @@ rxvt-basic|rxvt terminal base (X Window System),
 	smul=\E[4m, tbc=\E[3g, use=vt220+keypad, 
 rxvt|rxvt terminal emulator (X Window System), 
 	ncv@, 
-	sgr0=\E[m\017, use=rxvt-basic, use=ecma+color, 
+	cvvis=\E[?25h, hpa=\E[%i%p1%dG, kf0=\E[21~, 
+	sgr0=\E[m\017, vpa=\E[%i%p1%dd, use=rxvt-basic, 
+	use=ecma+color, 
+rxvt-color|rxvt terminal emulator (X Window System), 
+	use=rxvt, 
+rxvt-xpm|rxvt terminal emulator (X Window System), 
+	use=rxvt, 
+rxvt-cygwin|rxvt terminal emulator (X Window System) on cygwin, 
+	acsc=0\333+\257\,\256-\^`\004a\261f\370g\361h\260j\331k\277l\332m\300n\305o~p\304q\304r\304s_t\303u\264v\301w\302x\263y\363z\362{\343|\330}\234~\376, 
+	use=rxvt, 
+rxvt-cygwin-native|rxvt terminal emulator (native MS Window System port) on cygwin, 
+	acsc=0\333+\257\,\256-\^`\004a\261f\370g\361h\260j\331k\277l\332m\300n\305o~p\304q\304r\304s_t\303u\264v\301w\302x\263y\363z\362{\343|\330~\376, 
+	use=rxvt-cygwin, 
 
 # This variant is supposed to work with rxvt 2.7.7 when compiled with
 # NO_BRIGHTCOLOR defined.  rxvt needs more work...
@@ -4244,16 +4258,97 @@ cygwinB19|ansi emulation for cygwin32,
 # I've indicated which of these were and which I used.
 # Cheers, earnie_boyd@yahoo.com
 # several changes based on running with tack and comparing with older entry -TD
+# more changes from csw:
+#   add    cbt   [backtab]
+#   remove eo    [erase overstrike with blank]
+#   change clear was \E[H\E[J  now \E[2J  (faster?)
+#   remove cols
+#   remove lines
+#   remove ncv#3 [colors collide with highlights, bitmask] not applicable
+#                to MSDOS box?
+#   add    cub   [cursor back param] 
+#   add    cuf   [cursor forward param]
+#   add    cuu   [cursor up param]
+#   add    cud   [cursor down param]
+#   add    hs    [has status line]
+#   add    fsl   [return from status line]
+#   add    tsl   [go to status line]
+#   add    smacs [Start alt charset] (not sure if this works)
+#   add    rmacs [End alt charset]   (ditto)
+#   add    smcup [enter_ca_mode] (save console; thanks Corinna)
+#   add    rmcup [exit_ca_mode]  (restore console; thanks Corinna)
+#   add    kb2   [center of keypad]
+#   add    u8    [user string 8] \E[?6c
+#   add    el    [clear to end of line] \E[K
+# Notes:
+#   cnorm [make cursor normal] not implemented
+#   flash [flash] not implemented
+#   blink [blink] not implemented very usefully in cygwin? \E[5m
+#   dim   [dim] not implemented very usefully in cygwin? \E[2m
+#   cub1  [cursor back 1] typically \E[D, but ^H is faster?
+#   kNXT  [shifted next key] not implemented
+#   kPRV  [shifted prev key] not implemented
+#   khome [home key] really is \E[1~ NOT \E[H
+#   tbc   [clear tab stops] not implemented
+#   xenl  [newline ignnored after 80 cols] messes up last line? Ehud Karni
+#   smpch [Start PC charset] is \E[11m, same as smacs
+#   rmpch [End PC charset] is \E[10m, same as rmacs
+#   mir   [move in insert mode] fails in tack?
+#   bce   [back color erase] causes problems with change background color?
+#   cvvis [make cursor very visible] causes a stackdump when testing with
+#         testcurs using the output option? \E[?25h\E[?8c
+#   civis [make cursor invisible] causes everything to stackdump? \E[?25l\E[?1c
+#   ech   [erase characters param] broken \E[%p1%dX
+#   kcbt  [back-tab key] not implemented in cygwin?  \E[Z
 cygwin|ansi emulation for Cygwin, 
-	am, eo, in, msgr, xon, 
-	colors#8, cols#80, it#8, lines#25, ncv#3, pairs#64, 
+	am, hs, in, msgr, xon, 
+	colors#8, it#8, pairs#64, 
 	acsc=+\020\,\021-\030.^Y0\333`\004a\261f\370g\361h\260j\331k\277l\332m\300n\305o~p\304q\304r\304s_t\303u\264v\301w\302x\263y\363z\362{\343|\330}\234~\376, 
-	bel=^G, bold=\E[1m, clear=\E[H\E[J, cr=^M, cub1=^H, 
-	cud1=\E[B, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, 
-	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, 
-	el=\E[K, el1=\E[1K, home=\E[H, hpa=\E[%i%p1%dG, ht=^I, 
-	hts=\EH, ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, il1=\E[L, 
-	ind=^J, invis=\E[8m, kbs=^H, kcub1=\E[D, kcud1=\E[B, 
+	bel=^G, bold=\E[1m, cbt=\E[Z, clear=\E[H\E[J, cr=^M, 
+	cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=\E[B, 
+	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
+	cuu=\E[%p1%dA, cuu1=\E[A, dch=\E[%p1%dP, dch1=\E[P, 
+	dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, el1=\E[1K, fsl=^G, 
+	home=\E[H, hpa=\E[%i%p1%dG, ht=^I, ich=\E[%p1%d@, 
+	ich1=\E[@, il=\E[%p1%dL, il1=\E[L, ind=^J, invis=\E[8m, 
+	kb2=\E[G, kbs=^H, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, 
+	kcuu1=\E[A, kdch1=\E[3~, kend=\E[4~, kf1=\E[[A, 
+	kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, 
+	kf14=\E[26~, kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, 
+	kf18=\E[32~, kf19=\E[33~, kf2=\E[[B, kf20=\E[34~, 
+	kf3=\E[[C, kf4=\E[[D, kf5=\E[[E, kf6=\E[17~, kf7=\E[18~, 
+	kf8=\E[19~, kf9=\E[20~, khome=\E[1~, kich1=\E[2~, 
+	knp=\E[6~, kpp=\E[5~, kspd=^Z, nel=^M^J, op=\E[39;49m, 
+	rc=\E8, rev=\E[7m, ri=\EM, rmacs=\E[10m, 
+	rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, rmpch=\E[10m, 
+	rmso=\E[27m, rmul=\E[24m, rs1=\Ec\E]R, sc=\E7, 
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
+	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m, 
+	sgr0=\E[0;10m, smacs=\E11m, smcup=\E7\E[?47h, smir=\E[4h, 
+	smpch=\E[11m, smso=\E[7m, smul=\E[4m, tsl=\E];, 
+	u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?6c, u9=\E[c, 
+	vpa=\E[%i%p1%dd, 
+
+# I've supplied this so that you can help test new values and add other
+# features.  Cheers, earnie_boyd@yahoo.com.
+#
+# Some features are from pcansi.  The op value is from linux.  Function-keys
+# are from linux.  These have been tested not to cause problems.  xenl was in
+# this list, but DOES cause problems so it has been removed
+cygwinDBG|Debug Version for Cygwin, 
+	am, eo, mir, msgr, xon, 
+	colors#8, cols#80, it#8, lines#24, ncv#3, pairs#64, 
+	acsc=+\020\,\021-\030.^Y0\333`\004a\261f\370g\361h\260j\331k\277l\332m\300n\305o~p\304q\304r\304s_t\303u\264v\301w\302x\263y\363z\362{\343|\330}\234~\376, 
+	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, clear=\E[H\E[J, 
+	cnorm=\E[?25h, cr=^M, cub=\E[%p1%dD, cub1=\E[D, 
+	cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	dch=\E[%p1%dP, dch1=\E[P, dim=\E[2m, dl=\E[%p1%dM, 
+	dl1=\E[M, ed=\E[J, el=\E[K, el1=\E[1K, 
+	flash=\E[?5h\E[?5l$<200/>, home=\E[H, hpa=\E[%i%p1%dG, 
+	ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, 
+	il1=\E[L, ind=^J, invis=\E[8m, kNXT=\E[6$, kPRV=\E[5$, 
+	kb2=\E[G, kbs=^H, kcbt=\E[Z, kcub1=\E[D, kcud1=\E[B, 
 	kcuf1=\E[C, kcuu1=\E[A, kdch1=\E[3~, kend=\E[4~, kf1=\E[[A, 
 	kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, 
 	kf14=\E[26~, kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, 
@@ -4261,13 +4356,13 @@ cygwin|ansi emulation for Cygwin,
 	kf3=\E[[C, kf4=\E[[D, kf5=\E[[E, kf6=\E[17~, kf7=\E[18~, 
 	kf8=\E[19~, kf9=\E[20~, khome=\E[1~, kich1=\E[2~, 
 	knp=\E[6~, kpp=\E[5~, kspd=^Z, nel=^M^J, op=\E[39;49m, 
-	rc=\E8, rev=\E[7m, ri=\EM, rmir=\E[4l, rmpch=\E[10m, 
-	rmso=\E[27m, rmul=\E[24m, rs1=\Ec\E]R, sc=\E7, 
+	rc=\E8, rev=\E[7m, ri=\EM, rmacs=\E[10m, rmir=\E[4l, 
+	rmso=\E[m, rmul=\E[m, rs1=\Ec\E]R, sc=\E7, 
 	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
-	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m, 
-	sgr0=\E[0;10m, smir=\E[4h, smpch=\E[11m, smso=\E[7m, 
-	smul=\E[4m, u6=\E[%i%d;%dR, u7=\E[6n, u9=\E[c, 
-	vpa=\E[%i%p1%dd, 
+	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;12%;m, 
+	sgr0=\E[0;10m, smacs=\E[11m, smir=\E[4h, smso=\E[7m, 
+	smul=\E[4m, tbc=\E[2g, u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?6c, 
+	u9=\E[c, vpa=\E[%i%p1%dd, 
 
 # This entry fits the Windows NT console when the _POSIX_TERM environment
 # variable is set to 'on'.  While the Windows NT POSIX console is seldom used,
@@ -19668,6 +19763,21 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2003-05-24
 #	* corrected acs for screen.teraterm -TD
 #	* add tkterm entry -TD
+#
+# 2003-07-15
+#	* cygwin changes from Charles Wilson:
+#	  misc/terminfo.src (nxterm|xterm-color): make xterm-color
+#	  primary instead of nxterm, to match XFree86's xterm.terminfo
+#	  usage and to prevent circular links.
+#	  (rxvt): add additional codes from rxvt.org.
+#	  (rxvt-color): new alias
+#	  (rxvt-xpm): new alias
+#	  (rxvt-cygwin): like rxvt, but with special acsc codes.
+#	  (rxvt-cygwin-native): ditto.  rxvt may be run under XWindows, or
+#	  with a "native" MSWin GUI.  Each takes different acsc codes,
+#	  which are both different from the "normal" rxvt's acsc.
+#	  (cygwin): cygwin-in-cmd.exe window.  Lots of fixes.
+#	  (cygwinDBG): ditto.
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
