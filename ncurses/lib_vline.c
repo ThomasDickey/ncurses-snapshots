@@ -20,38 +20,50 @@
 ***************************************************************************/
 
 
+
 /*
- *	beep.c
- *
- *	The routine beep().
- *
- */
+**	lib_vline.c
+**
+**	The routine wvline().
+**
+*/
 
 #include <curses.priv.h>
-#include <term.h>	/* beep, flash */
 
-MODULE_ID("$Id: lib_beep.c,v 1.4 1997/10/08 09:38:17 jtc Exp $")
+MODULE_ID("$Id: lib_vline.c,v 1.1 1997/10/08 05:59:50 jtc Exp $")
 
-/*
- *	beep()
- *
- *	Sound the current terminal's audible bell if it has one.   If not,
- *	flash the screen if possible.
- *
- */
-
-int beep(void)
+int wvline(WINDOW *win, chtype ch, int n)
 {
-	T((T_CALLED("beep()")));
+int   code = ERR;
+short row, col;
+short end;
 
-	/* FIXME: should make sure that we are not in altchar mode */
-	if (bell) {
-		TPUTS_TRACE("bell");
-		return(putp(bell));
-	} else if (flash_screen) {
-		TPUTS_TRACE("flash_screen");
-		return(putp(flash_screen));
+	T((T_CALLED("wvline(%p,%s,%d)"), win, _tracechtype(ch), n));
+
+	if (win) {
+		row = win->_cury;
+		col = win->_curx;
+		end = row + n - 1;
+		if (end > win->_maxy)
+			end = win->_maxy;
+
+		if (ch == 0)
+			ch = ACS_VLINE;
+		ch = _nc_render(win, ch);
+
+		while(end >= row) {
+			win->_line[end].text[col] = ch;
+			if (win->_line[end].firstchar == _NOCHANGE
+			 || win->_line[end].firstchar > col)
+				win->_line[end].firstchar = col;
+			if (win->_line[end].lastchar == _NOCHANGE
+			 || win->_line[end].lastchar < col)
+				win->_line[end].lastchar = col;
+			end--;
+		}
+
+		_nc_synchook(win);
+		code = OK;
 	}
-	else
-		returnCode(ERR);
+	returnCode(code);
 }

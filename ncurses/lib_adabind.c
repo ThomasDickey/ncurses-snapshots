@@ -30,7 +30,7 @@
 */
 #include "curses.priv.h"
 
-MODULE_ID("$Id: lib_adabind.c,v 1.3 1997/10/02 22:06:45 juergen Exp $")
+MODULE_ID("$Id: lib_adabind.c,v 1.4 1997/10/11 22:18:17 tom Exp $")
 
 /*  In (n)curses are a few functionalities that can't be expressed as 
 //  functions, because for historic reasons they use as macro argument
@@ -217,6 +217,7 @@ int _nc_ada_mouse_mask ( int button, int state, mmask_t *mask )
 
 void _nc_ada_unregister_mouse (void)
 {
-  _nc_mouse_wrap(SP);
+  if (SP != 0)
+    SP->_mouse_wrap(SP);
 }
 

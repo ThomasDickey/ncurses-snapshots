@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.89 1997/10/04 17:07:46 tom Exp $
+dnl $Id: aclocal.m4,v 1.92 1997/10/11 21:05:19 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -594,6 +594,7 @@ uninstall.includes ::
 CF_EOF
 		for i in `cat $srcdir/$cf_dir/headers |fgrep -v "#"`
 		do
+			i=`basename $i`
 			echo "	-@rm -f \$(INSTALL_PREFIX)\$(includedir)/$i" >>$cf_dir/Makefile
 			test $i = curses.h && echo "	-@rm -f \$(INSTALL_PREFIX)\$(includedir)/ncurses.h" >>$cf_dir/Makefile
 		done
@@ -1479,4 +1480,38 @@ fi
 ])
 AC_MSG_RESULT($cf_cv_widec_shift)
 AC_SUBST(cf_cv_widec_shift)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Wrapper for AC_ARG_WITH to ensure that user supplies a pathname, not just
+dnl defaulting to yes/no.
+dnl
+dnl $1 = option name
+dnl $2 = help-text
+dnl $3 = environment variable to set
+dnl $4 = default value, shown in the help-message, must be a constant
+dnl $5 = default value, if it's an expression & cannot be in the help-message
+dnl
+AC_DEFUN([CF_WITH_PATH],
+[AC_ARG_WITH($1,[$2 ](default: ifelse($4,,empty,$4)),,
+ifelse($4,,[withval="${$3}"],[withval="${$3-ifelse($5,,$4,$5)}"]))dnl
+case ".$withval" in #(vi
+./*) #(vi
+  ;;
+.\[$]*prefix) #(vi
+  eval withval="$withval"
+  case ".$withval" in #(vi
+  .NONE/*)
+    withval=`echo $withval | sed -e s@NONE@$ac_default_prefix@`
+    ;;
+  esac
+  ;; #(vi
+.NONE/*)
+  withval=`echo $withval | sed -e s@NONE@$ac_default_prefix@`
+  ;;
+*)
+  AC_ERROR(expected a pathname for $1)
+  ;;
+esac
+eval $3="$withval"
+AC_SUBST($3)dnl
 ])dnl

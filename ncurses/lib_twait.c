@@ -46,7 +46,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.22 1997/09/07 01:25:05 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.23 1997/10/11 21:32:54 tom Exp $")
 
 /*
  * We want to define GOOD_SELECT if the last argument of select(2) is
@@ -163,7 +163,7 @@ long delta;
 			count++;
 		}
 		if ((mode & 2)
-		 && (fd = _nc_mouse_fd()) >= 0) {
+		 && (fd = SP->_mouse_fd) >= 0) {
 			fds[count].fd     = fd;
 			fds[count].events = POLLIN;
 			count++;
@@ -181,7 +181,7 @@ long delta;
 			count = SP->_ifd + 1;
 		}
 		if ((mode & 2)
-		 && (fd = _nc_mouse_fd()) >= 0) {
+		 && (fd = SP->_mouse_fd) >= 0) {
 			FD_SET(fd, &set);
 			count = max(fd, count) + 1;
 		}
@@ -259,7 +259,7 @@ long delta;
 			}
 #elif HAVE_SELECT
 			if ((mode & 2)
-			 && (fd = _nc_mouse_fd()) >= 0
+			 && (fd = SP->_mouse_fd) >= 0
 			 && FD_ISSET(fd, &set))
 				result |= 2;
 			if ((mode & 1)

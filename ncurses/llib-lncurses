@@ -73,18 +73,6 @@ void	init_acs(void)
 
 #include <ctype.h>
 
-#undef wattr_on
-int	wattr_on(
-		WINDOW	*win, 
-		const attr_t at)
-		{ return(*(int *)0); }
-
-#undef wattr_off
-int	wattr_off(
-		WINDOW	*win, 
-		const attr_t at)
-		{ return(*(int *)0); }
-
 #undef wchgat
 int	wchgat(
 		WINDOW	*win, 
@@ -156,10 +144,6 @@ int	baudrate(void)
 int	beep(void)
 		{ return(*(int *)0); }
 
-#undef flash
-int	flash(void)
-		{ return(*(int *)0); }
-
 /* ./lib_bkgd.c */
 
 #undef wbkgdset
@@ -187,20 +171,6 @@ int	wborder(
 		chtype	tr, 
 		chtype	bl, 
 		chtype	br)
-		{ return(*(int *)0); }
-
-#undef whline
-int	whline(
-		WINDOW	*win, 
-		chtype	ch, 
-		int	n)
-		{ return(*(int *)0); }
-
-#undef wvline
-int	wvline(
-		WINDOW	*win, 
-		chtype	ch, 
-		int	n)
 		{ return(*(int *)0); }
 
 /* ./lib_clear.c */
@@ -376,6 +346,12 @@ int	endwin(void)
 #undef werase
 int	werase(
 		WINDOW	*win)
+		{ return(*(int *)0); }
+
+/* ./lib_flash.c */
+
+#undef flash
+int	flash(void)
 		{ return(*(int *)0); }
 
 /* ./lib_gen.c */
@@ -1089,6 +1065,15 @@ int	wgetnstr(
 		int	maxlen)
 		{ return(*(int *)0); }
 
+/* ./lib_hline.c */
+
+#undef whline
+int	whline(
+		WINDOW	*win, 
+		chtype	ch, 
+		int	n)
+		{ return(*(int *)0); }
+
 /* ./lib_inchstr.c */
 
 #undef winchnstr
@@ -1210,43 +1195,6 @@ char	*longname(void)
 
 /* ./lib_mouse.c */
 
-#undef _nc_max_click_interval
-int	_nc_max_click_interval;
-
-#undef _nc_mouse_init
-void	_nc_mouse_init(
-		SCREEN	*sp)
-		{ /* void */ }
-
-#undef _nc_mouse_fd
-int	_nc_mouse_fd(void)
-		{ return(*(int *)0); }
-
-#undef _nc_mouse_event
-bool	_nc_mouse_event(
-		SCREEN	*sp)
-		{ return(*(bool *)0); }
-
-#undef _nc_mouse_inline
-bool	_nc_mouse_inline(
-		SCREEN	*sp)
-		{ return(*(bool *)0); }
-
-#undef _nc_mouse_parse
-bool	_nc_mouse_parse(
-		int	runcount)
-		{ return(*(bool *)0); }
-
-#undef _nc_mouse_wrap
-void	_nc_mouse_wrap(
-		SCREEN	*sp)
-		{ /* void */ }
-
-#undef _nc_mouse_resume
-void	_nc_mouse_resume(
-		SCREEN	*sp)
-		{ /* void */ }
-
 #undef getmouse
 int	getmouse(
 		MEVENT	*aevent)
@@ -1265,7 +1213,7 @@ mmask_t	mousemask(
 
 #undef wenclose
 bool	wenclose(
-		WINDOW	*win, 
+		const WINDOW *win, 
 		int	y, 
 		int	x)
 		{ return(*(bool *)0); }
@@ -1289,6 +1237,12 @@ int	wmove(
 		{ return(*(int *)0); }
 
 /* ./lib_mvcur.c */
+
+#undef _nc_msec_cost
+int	_nc_msec_cost(
+		const char *const cap, 
+		int	affcnt)
+		{ return(*(int *)0); }
 
 #undef _nc_mvcur_resume
 void	_nc_mvcur_resume(void)
@@ -2022,10 +1976,6 @@ typedef union {
 	char	       *str;
 } stack_frame;
 
-#undef _nc_free_tparm
-void	_nc_free_tparm(void)
-		{ /* void */ }
-
 #undef tparm
 char	*tparm(
 		const char *string, 
@@ -2033,6 +1983,9 @@ char	*tparm(
 		{ return(*(char **)0); }
 
 /* ./lib_tputs.c */
+
+#undef _nc_nulls_sent
+int	_nc_nulls_sent;
 
 #undef delay_output
 int	delay_output(
@@ -2189,6 +2142,31 @@ int	vidattr(
 #undef termattrs
 chtype	termattrs(void)
 		{ return(*(chtype *)0); }
+
+/* ./lib_vline.c */
+
+#undef wvline
+int	wvline(
+		WINDOW	*win, 
+		chtype	ch, 
+		int	n)
+		{ return(*(int *)0); }
+
+/* ./lib_wattroff.c */
+
+#undef wattr_off
+int	wattr_off(
+		WINDOW	*win, 
+		const attr_t at)
+		{ return(*(int *)0); }
+
+/* ./lib_wattron.c */
+
+#undef wattr_on
+int	wattr_on(
+		WINDOW	*win, 
+		const attr_t at)
+		{ return(*(int *)0); }
 
 /* ./lib_window.c */
 
@@ -2525,6 +2503,11 @@ long	_nc_start_line;
 int	_nc_get_token(void)
 		{ return(*(int *)0); }
 
+#undef _nc_trans_string
+char	_nc_trans_string(
+		char	*ptr)
+		{ return(*(char *)0); }
+
 #undef _nc_push_token
 void	_nc_push_token(
 		int	class)
@@ -2615,40 +2598,40 @@ int	keyok(
 
 #undef _nc_ada_getmaxyx
 int	_nc_ada_getmaxyx(
-		WINDOW	*win, 
+		const WINDOW *win, 
 		int	*y, 
 		int	*x)
 		{ return(*(int *)0); }
 
 #undef _nc_ada_getbegyx
 int	_nc_ada_getbegyx(
-		WINDOW	*win, 
+		const WINDOW *win, 
 		int	*y, 
 		int	*x)
 		{ return(*(int *)0); }
 
 #undef _nc_ada_getyx
 int	_nc_ada_getyx(
-		WINDOW	*win, 
+		const WINDOW *win, 
 		int	*y, 
 		int	*x)
 		{ return(*(int *)0); }
 
 #undef _nc_ada_getparyx
 int	_nc_ada_getparyx(
-		WINDOW	*win, 
+		const WINDOW *win, 
 		int	*y, 
 		int	*x)
 		{ return(*(int *)0); }
 
 #undef _nc_ada_isscroll
 int	_nc_ada_isscroll(
-		WINDOW	*win)
+		const WINDOW *win)
 		{ return(*(int *)0); }
 
 #undef _nc_ada_coord_transform
 int	_nc_ada_coord_transform(
-		WINDOW	*win, 
+		const WINDOW *win, 
 		int	*Y, 
 		int	*X, 
 		int	dir)

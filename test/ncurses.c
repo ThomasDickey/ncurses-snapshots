@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.99 1997/09/27 19:39:42 tom Exp $
+$Id: ncurses.c,v 1.100 1997/10/11 23:38:15 tom Exp $
 
 ***************************************************************************/
 
@@ -2074,7 +2074,14 @@ static void flushinp_test(WINDOW *win)
     mvwaddstr(subWin, 2, 1, "This is a subwindow");
     wrefresh(win);
 
-    nocbreak();
+    /*
+     * This used to set 'nocbreak()'.  However, Alexander Lukyanov says that
+     * it only happened to "work" on SVr4 because that implementation does not
+     * emulate nocbreak+noecho mode, whereas ncurses does.  To get the desired
+     * test behavior, we're using 'cbreak()', which will allow a single
+     * character to return without needing a newline. - T.Dickey 1997/10/11.
+     */
+    cbreak();
     mvwaddstr(win, 0, 1, "This is a test of the flushinp() call.");
 
     mvwaddstr(win, 2, 1, "Type random keys for 5 seconds.");

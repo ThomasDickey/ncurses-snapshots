@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: edit_cfg.sh,v 1.1 1997/10/04 19:21:17 tom Exp $
+# $Id: edit_cfg.sh,v 1.3 1997/10/11 12:06:12 tom Exp $
 ################################################################################
 # Copyright 1997 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -31,11 +31,11 @@ for name in \
 	HAVE_VALUES_H
 do
 	mv $2 $2.bak
-	if ( grep "[ 	]$name[ 	]" $1 2>&1 >/dev/null )
+	if ( grep "[ 	]$name[ 	]1" $1 2>&1 >/dev/null)
 	then
-		sed -e 's/define '$name'.*$/define '$name' 1/' $2.bak >$2
+		sed -e 's/define '$name'.*$/  define '$name' 1/' $2.bak >$2
 	else
-		sed -e 's/define '$name'.*$/define '$name' 0/' $2.bak >$2
+		sed -e 's/define '$name'.*$/  define '$name' 0/' $2.bak >$2
 	fi
 	if (cmp -s $2 $2.bak)
 	then

@@ -2,7 +2,7 @@
 #ifndef _CURSESW_H
 #define _CURSESW_H
 
-// $Id: cursesw.h,v 1.11 1997/09/26 11:51:32 juergen Exp $
+// $Id: cursesw.h,v 1.12 1997/10/11 18:49:39 tom Exp $
 
 #include <etip.h>
 #include <stdio.h>
@@ -1086,7 +1086,7 @@ public:
   int            redrawln(int from, int n) { return ::wredrawln(w,from,n); }
   // Redraw n lines starting from the requested line
 
-  int            redrawwin() { ::wredrawln(w,0,height()); }
+  int            redrawwin() { return ::wredrawln(w,0,height()); }
   // Redraw the whole window
 
   int            doupdate()  { return ::doupdate(); }

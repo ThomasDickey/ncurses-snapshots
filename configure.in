@@ -17,10 +17,10 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.95 1997/10/04 19:03:58 tom Exp $
+dnl $Id: configure.in,v 1.98 1997/10/11 19:35:57 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12)
-AC_REVISION($Revision: 1.95 $)
+AC_REVISION($Revision: 1.98 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 CF_SUBST_NCURSES_VERSION
@@ -413,7 +413,7 @@ test "$with_rcs_ids" = yes && AC_DEFINE(USE_RCS_IDS)
 CF_HELP_MESSAGE(Experimental Code:)
 AC_MSG_CHECKING(if you want all experimental code)
 AC_ARG_WITH(develop,
-	[  --with-devel            enable all experimental options for testing],
+	[  --with-develop          enable all experimental options for testing],
 	[with_develop=$withval],
 	[with_develop=no])
 AC_MSG_RESULT($with_develop)
@@ -711,6 +711,8 @@ else
 fi
 AC_SUBST(CXXLIBS)
 
+CF_HELP_MESSAGE(Ada95 Binding Options:)
+
 dnl Check for availability of GNU Ada Translator (GNAT).
 dnl At the moment we support no other Ada95 compiler.
 cf_ada_make=gnatmake
@@ -729,11 +731,27 @@ if test	"$ac_cv_prog_gnat_correct" = yes; then
    ADAFLAGS="-O3 $ADAFLAGS"
    cf_ada_compiler=gcc
    cf_ada_package=terminal_interface
+
    AC_SUBST(cf_ada_make)
    AC_SUBST(cf_ada_compiler)
    AC_SUBST(cf_ada_package)
    AC_SUBST(ADAFLAGS)
    AC_SUBST(cf_compile_generics)
+
+   CF_WITH_PATH(ada-include,
+       [  --with-ada-include=DIR  Ada includes are in DIR],
+       ADA_INCLUDE,
+       EPREFIX/ada_include,
+       [$]exec_prefix/ada_include)
+   AC_SUBST(ADA_INCLUDE)
+
+   CF_WITH_PATH(ada-objects,
+       [  --with-ada-objects=DIR  Ada objects are in DIR],
+       ADA_OBJECTS,
+       EPREFIX/ada_objects,
+       [$]exec_prefix/ada_objects)
+   AC_SUBST(ADA_OBJECTS)
+
 fi
 
 ### It's not possible to appease gcc 2.6.3's conversion-warnings if we're

@@ -4841,7 +4841,7 @@ wy120|wyse120|wy150|wyse150|Wyse 120/150,
 	sgr=%?%p8%t\E)%e\E(%;%?%p9%t\EcE%e\EcD%;\EG%'0'%?%p2%t%{8}%|%;%?%p1%p3%|%p6%|%t%{4}%|%;%?%p4%t%{2}%|%;%?%p1%p5%|%t%{64}%|%;%?%p7%t%{1}%|%;%c, 
 	sgr0=\E(\EH\003\EG0\EcD, smacs=\EcE, smam=\Ed/, 
 	smcup=\Ew0, smir=\Eq, smln=\EA10, smso=\EGt, 
-	smxon=\Ec21\ntbc=\E0, tsl=\EF, use=adm+sgr, 
+	smxon=\Ec21, tbc=\E0, tsl=\EF, use=adm+sgr, 
 #
 wy120-w|wyse120-w|wy150-w|wyse150-w|wyse 120/150 132-column, 
 	cols#132, lw#7, nlab#16, wsl#97, 
@@ -14103,6 +14103,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* modify acsc entries for linux, linux-koi8
 #	* new rxvt entry, from corrected copy of distribution in rxvt 2.21b
 #	* add color, mouse support to kterm.
+# 10.1.11 (Sat Oct 11 14:57:10 EDT 1997)
+#	* correct wy120 smxon/tbc capabilities which were stuck together.
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

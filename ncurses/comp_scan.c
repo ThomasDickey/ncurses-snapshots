@@ -36,7 +36,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.24 1997/09/02 23:29:55 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.25 1997/10/11 16:31:07 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -66,7 +66,6 @@ static char pushname[MAX_NAME_SIZE+1];
 static int  next_char(void);
 static long stream_pos(void);
 static bool end_of_stream(void);
-static char trans_string(char *);
 static void push_back(char c);
 
 /* Assume we may be looking at a termcap-style continuation */
@@ -341,7 +340,7 @@ start_token:
 				break;
 
 			case '=':
-				ch = trans_string(ptr);
+				ch = _nc_trans_string(ptr);
 				if (ch != separator)
 					_nc_warning("Missing separator");
 				_nc_curr_token.tk_name = buffer;
@@ -434,8 +433,8 @@ end_of_token:
  *
  */
 
-static char
-trans_string(char *ptr)
+char
+_nc_trans_string(char *ptr)
 {
 int	count = 0;
 int	number;

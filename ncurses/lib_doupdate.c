@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.88 1997/10/02 12:06:26 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.90 1997/10/11 22:11:16 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -501,7 +501,7 @@ struct tms before, after;
 
 		_nc_mvcur_resume();
 		_nc_screen_resume();
-		_nc_mouse_resume(SP);
+		SP->_mouse_resume(SP);
 
 		SP->_endwin = FALSE;
 	}
@@ -697,8 +697,7 @@ struct tms before, after;
 			_nc_perform_scroll();
 #endif
 
-		if (clr_eos)
-			nonempty = ClrBottom(nonempty);
+		nonempty = ClrBottom(nonempty);
 
 		T(("Transforming lines, nonempty %d", nonempty));
 		for (i = 0; i < nonempty; i++) {
@@ -817,8 +816,7 @@ static void ClrUpdate(WINDOW *win)
 
 	T(("updating screen from scratch"));
 
-	if (clr_eos)
-		nonempty = ClrBottom(nonempty);
+	nonempty = ClrBottom(nonempty);
 
 	for (i = 0; i < nonempty; i++)
 		TransformLine(i);
@@ -904,7 +902,7 @@ int	last   = min(screen_columns, newscr->_maxx+1);
 size_t	length = sizeof(chtype) * last;
 chtype	blank  = newscr->_line[total-1].text[last-1]; /* lower right char */
 
-	if(!can_clear_with(blank))
+	if(!clr_eos || !can_clear_with(blank))
 		return total;
 
 	if (tstLine == 0)
@@ -924,7 +922,8 @@ chtype	blank  = newscr->_line[total-1].text[last-1]; /* lower right char */
 				top = row;
 		}
 
-		if (top < total) {
+		/* don't use clr_eos for just one line if clr_eol available */
+		if (top < total-1 || (top < total && !clr_eol && !clr_bol)) {
 			GoTo(top,0);
 			ClrToEOS(blank);
 			total = top;

@@ -24,16 +24,13 @@
 /*
 **	lib_box.c
 **
-**	line drawing routines:
-**	wborder()
-**	whline()
-**	wvline()
+**	The routine wborder().
 **
 */
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_box.c,v 1.8 1997/09/20 15:02:34 juergen Exp $")
+MODULE_ID("$Id: lib_box.c,v 1.9 1997/10/08 09:38:17 jtc Exp $")
 
 int wborder(WINDOW *win, chtype ls, chtype rs, chtype ts,
 	chtype bs, chtype tl, chtype tr, chtype bl, chtype br)
@@ -99,72 +96,3 @@ short endx, endy;
 	_nc_synchook(win);
 	returnCode(OK);
 }
-
-int whline(WINDOW *win, chtype ch, int n)
-{
-int   code = ERR;
-short line;
-short start;
-short end;
-
-	T((T_CALLED("whline(%p,%s,%d)"), win, _tracechtype(ch), n));
-
-	if (win) {
-	  line = win->_cury;
-	  start = win->_curx;
-	  end = start + n - 1;
-	  if (end > win->_maxx)
-	    end = win->_maxx;
-	  
-	  if (win->_line[line].firstchar == _NOCHANGE || win->_line[line].firstchar > start)
-	    win->_line[line].firstchar = start;
-	  if (win->_line[line].lastchar == _NOCHANGE || win->_line[line].lastchar < start)
-	    win->_line[line].lastchar = end;
-	  
-	  if (ch == 0)
-	    ch = ACS_HLINE;
-	  ch = _nc_render(win, ch);
-	  
-	  while ( end >= start) {
-	    win->_line[line].text[end] = ch;
-	    end--;
-	  }
-	  code = OK;
-	}
-	returnCode(code);
-}
-
-int wvline(WINDOW *win, chtype ch, int n)
-{
-int   code = ERR;
-short row, col;
-short end;
-
-	T((T_CALLED("wvline(%p,%s,%d)"), win, _tracechtype(ch), n));
-
-	if (win) {
-	  row = win->_cury;
-	  col = win->_curx;
-	  end = row + n - 1;
-	  if (end > win->_maxy)
-	    end = win->_maxy;
-	  
-	  if (ch == 0)
-	    ch = ACS_VLINE;
-	  ch = _nc_render(win, ch);
-	  
-	  while(end >= row) {
-	    win->_line[end].text[col] = ch;
-	    if (win->_line[end].firstchar == _NOCHANGE || win->_line[end].firstchar > col)
-	      win->_line[end].firstchar = col;
-	    if (win->_line[end].lastchar == _NOCHANGE || win->_line[end].lastchar < col)
-	      win->_line[end].lastchar = col;
-	    end--;
-	  }
-	  
-	  _nc_synchook(win);
-	  code = OK;
-	}
-	returnCode(code);
-}
-
