@@ -68,7 +68,50 @@ error checking style of C.</LI>
 is not really in ncurses at this point in time.</LI>
 </UL>
 <P>
-      
+
+<H2>Directory organization and the build process</H2>
+The toplevel directory of the Ada95 binding contains only the README,
+TODO and the Makefile. All the rest are subdirectories containing
+various parts of the binding. All of this is configured during the
+configure process of the ncurses package, as long as the configure
+script detects the right version of GNAT. It must be 3.05 or above.<P>
+The subdirectories are<BR><BR>
+<TABLE ALIGN=CENTER BORDER>
+<TR ALIGN=LEFT>
+<TH>Directory</TH><TH>Content</TH></TR>
+<TR><TD>gen</TD><TD>Generation templates and Generator</TD></TR>
+<TR><TD>html</TD><TD>Documentation in HTML format</TD></TR>
+<TR><TD>ada_include</TD><TD>Binding specification and body files</TD></TR>
+<TR><TD>ada_objects</TD><TD>Binding object files (after compilation)</TD></TR>
+<TR><TD>objects</TD><TD>Temporary object files created during compilation</TD></TR>
+<TR><TD>samples</TD><TD>Sample programs for the binding.</TD></TR>
+</TABLE><P>
+The top level Makefile first visits the <STRONG>gen</STRONG> directory and makes the
+targets there. The main purpose of this directory is to create and run a helper program
+named <STRONG>gen</STRONG>. gen is compiled with the current headers and libraries
+of this ncurses package. It is used to generate various constants and data structures
+into several Ada95 package specifications. Several ncurses datatypes are int's used
+as bitmaps. To model this as Ada95 records, one has to provide a representation clause
+that guarantees the correct mapping, because this depends on the endianess of the
+machines architecture.<BR>
+The gen program is called with two single letters as argument and generates then
+output depending on the arguments on the standard output channel. This output is
+then included into the various template files by the <STRONG>m4</STRONG> macroprocessor.
+The templates all have the name pattern terminal_*.m4. If you cut the .m4 extension you
+have the names of the files that are generated.<BR>
+For more details which letter combinations are allowed as arguments, about there meanings
+and how the output is merged into the templates please consult the sourcefile gen.c and the
+Makefile in the gen directory.<BR>
+<STRONG>You should never edit the generated sources. Use the templates and run the
+generator again.</STRONG><BR><P>
+After the generation of the specifications, the ada_include directory is entered. This
+now contains the complete library source for the Ada95 binding to ncurses. The make in
+this directory now creates the associated object files and linker information files in
+the ada_objects directory.<BR>
+Finally the samples directory is entered. There is currently only one sample program.
+The executables name is <STRONG>tour</STRONG>. The purpose of the sample is simply to
+give a coding sample for the binding and not so much to provide a demo of all ncurses
+features.<BR> 
 <H2>Limitations</H2>
 <UL>
 <LI>I provide no SCREEN datatype and functions to set a new screen.
