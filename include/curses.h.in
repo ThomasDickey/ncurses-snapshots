@@ -371,7 +371,7 @@ extern int getcchar(const cchar_t *, wchar_t*, attr_t*, short*, void*);	/* missi
 extern int getch(void);					/* generated */
 extern int getnstr(char *, int);			/* generated */
 #ifdef _XOPEN_SOURCE_EXTENDED
-extern int getn_wstr(wint_t *, int n);			/* missing */
+extern int getn_wstr(wint_t *, int);			/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern int getstr(char *);				/* generated */
 #ifdef _XOPEN_SOURCE_EXTENDED
@@ -455,7 +455,7 @@ extern int mvderwin(WINDOW *, int, int);		/* implemented */
 extern int mvgetch(int, int);				/* generated */
 extern int mvgetnstr(int, int, char *, int);		/* generated */
 #ifdef _XOPEN_SOURCE_EXTENDED
-extern int mvgetn_wstr(int, int, wint_t *, int n);	/* missing */
+extern int mvgetn_wstr(int, int, wint_t *, int);	/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern int mvgetstr(int, int, char *);			/* generated */
 #ifdef _XOPEN_SOURCE_EXTENDED
@@ -511,7 +511,7 @@ extern int mvwdelch(WINDOW *, int, int);		/* generated */
 extern int mvwgetch(WINDOW *, int, int);		/* generated */
 extern int mvwgetnstr(WINDOW *, int, int, char *, int);	/* generated */
 #ifdef _XOPEN_SOURCE_EXTENDED
-extern int mvwgetn_wstr(WINDOW *, int, int, wint_t *, int n);/* missing */
+extern int mvwgetn_wstr(WINDOW *, int, int, wint_t *, int);/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 extern int mvwgetstr(WINDOW *, int, int, char *);	/* generated */
 #ifdef _XOPEN_SOURCE_EXTENDED
@@ -583,7 +583,7 @@ extern int refresh(void);				/* generated */
 extern int resetty(void);				/* implemented */
 extern int reset_prog_mode(void);			/* implemented */
 extern int reset_shell_mode(void);			/* implemented */
-extern int ripoffline(int line, int (*init)(WINDOW *, int));/* implemented */
+extern int ripoffline(int, int (*init)(WINDOW *, int));	/* implemented */
 extern int savetty(void);				/* implemented */
 extern int scanw(const char *,...);			/* implemented */
 extern int scr_dump(const char *);			/* implemented */
@@ -626,7 +626,7 @@ extern int standend(void);				/* generated */
 extern int start_color(void);				/* implemented */
 extern WINDOW *subpad(WINDOW *, int, int, int, int);	/* implemented */
 extern WINDOW *subwin(WINDOW *,int,int,int,int);	/* implemented */
-extern int syncok(WINDOW *win, bool);			/* implemented */
+extern int syncok(WINDOW *, bool);			/* implemented */
 extern attr_t termattrs(void);				/* implemented */
 extern char *termname(void);				/* implemented */
 extern int tigetflag(const char *);			/* implemented */
@@ -782,8 +782,8 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define A_VERTICAL	0x40000000	/* XSI Curses attr -- not yet used */
 #define A_CHARTEXT	0x000000ff
 #define A_COLOR		0x0000ff00
-#define COLOR_PAIR(n)	(n << 8) 
-#define PAIR_NUMBER(a)	((a & A_COLOR) >> 8)
+#define COLOR_PAIR(n)	((n) << 8) 
+#define PAIR_NUMBER(a)	(((a) & A_COLOR) >> 8)
 
 /*
  * pseudo functions
@@ -930,7 +930,7 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 
 /*
  * XSI curses macros for XPG4 conformance.
- * The underling functions needed to make these work are:
+ * The underlying functions needed to make these work are:
  * waddnwstr(), waddchnwstr(), wadd_wch(), wborder_set(), wchgat(),
  * wecho_wchar(), wgetn_wstr(), wget_wch(), whline_set(), vhline_set(),
  * winnwstr(), wins_nwstr(), wins_wch(), win_wch(), win_wchnstr().
@@ -1169,21 +1169,21 @@ typedef struct
 }
 MEVENT;
 
-int getmouse(MEVENT *event);
-int ungetmouse(MEVENT *event);
-mmask_t mousemask(mmask_t newmask, mmask_t *oldmask);
-bool wenclose(WINDOW *win, int y, int x);
-int mouseinterval(int);
+extern int getmouse(MEVENT *);
+extern int ungetmouse(MEVENT *);
+extern mmask_t mousemask(mmask_t, mmask_t *);
+extern bool wenclose(WINDOW *, int, int);
+extern int mouseinterval(int);
 
 /* Debugging : use with libncurses_g.a */
 
 extern void _tracef(const char *, ...) __attribute__((format(printf,1,2)));
 extern void _tracedump(char *, WINDOW *);
-extern char *_traceattr(attr_t mode);
+extern char *_traceattr(attr_t);
 extern char *_tracebits(void);
 extern char *_tracechar(const unsigned char);
 extern char *_tracemouse(const MEVENT *);
-extern void trace(const unsigned int tracelevel);
+extern void trace(const unsigned int);
 
 /* trace masks */
 #define TRACE_DISABLE	0x00	/* turn off tracing */
@@ -1194,12 +1194,17 @@ extern void trace(const unsigned int tracelevel);
 #define TRACE_ORDINARY	0x0F	/* trace all update actions */
 #define TRACE_CALLS	0x10	/* trace all curses calls */
 #define TRACE_VIRTPUT	0x20	/* trace virtual character puts */
-#define TRACE_FIFO	0x40	/* also fifo actions by getch() */
+#define TRACE_IEVENT	0x40	/* trace low-level input processing */
 #define TRACE_BITS	0x80	/* trace state of TTY control bits */
 #define TRACE_MAXIMUM	0xff	/* maximum trace level */
 
 #ifdef TRACE
 extern bool no_optimize;	/* suppress optimization */
 #endif /* TRACE */
+
+/* other non-XSI functions */
+
+extern int mcprint(char *, int);	/* direct data to printer */
+extern int has_key(int);		/* do we have given key? */
 
 #endif /* __NCURSES_H */

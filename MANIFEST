@@ -40,6 +40,7 @@
 ./form/fty_int.c
 ./form/fty_num.c
 ./form/fty_regex.c
+./form/headers
 ./form/modules
 ./include/Caps
 ./include/MKcurses.sh
@@ -51,6 +52,7 @@
 ./include/config_h.in
 ./include/curses.h.in
 ./include/edit_cfg.sh
+./include/headers
 ./include/term_entry.h
 ./include/termcap.h.in
 ./include/tic.h
@@ -87,6 +89,7 @@
 ./man/curs_outopts.3x
 ./man/curs_overlay.3x
 ./man/curs_pad.3x
+./man/curs_print.3x
 ./man/curs_printw.3x
 ./man/curs_refresh.3x
 ./man/curs_resize.3x
@@ -158,6 +161,7 @@
 ./menu/Makefile.in
 ./menu/READ.ME
 ./menu/eti.h
+./menu/headers
 ./menu/m_attribs.c
 ./menu/m_cursor.c
 ./menu/m_driver.c
@@ -216,6 +220,7 @@
 ./ncurses/lib_acs.c
 ./ncurses/lib_addch.c
 ./ncurses/lib_addstr.c
+./ncurses/lib_baudrate.c
 ./ncurses/lib_beep.c
 ./ncurses/lib_bkgd.c
 ./ncurses/lib_box.c
@@ -240,6 +245,7 @@
 ./ncurses/lib_isendwin.c
 ./ncurses/lib_kernel.c
 ./ncurses/lib_longname.c
+./ncurses/lib_print.c
 ./ncurses/lib_mouse.c
 ./ncurses/lib_move.c
 ./ncurses/lib_mvcur.c
@@ -253,6 +259,7 @@
 ./ncurses/lib_raw.c
 ./ncurses/lib_refresh.c
 ./ncurses/lib_resize.c
+./ncurses/lib_restart.c
 ./ncurses/lib_scanw.c
 ./ncurses/lib_screen.c
 ./ncurses/lib_scroll.c
@@ -283,6 +290,7 @@
 ./ncurses/vsscanf.c
 ./ncurses/write_entry.c
 ./panel/Makefile.in
+./panel/headers
 ./panel/modules
 ./panel/panel.c
 ./panel/panel.h
@@ -317,6 +325,7 @@
 ./test/newdemo.c
 ./test/rain.c
 ./test/tclock.c
+./test/test.priv.h
 ./test/testcurs.c
 ./test/tracemunch
 ./test/view.c

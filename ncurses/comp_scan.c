@@ -449,7 +449,7 @@ int	number;
 int	i, c;
 chtype	ch, last_ch = '\0';
 
-	while ((ch = c = next_char()) != separator && c != EOF) {
+	while ((ch = c = next_char()) != (chtype)separator && c != EOF) {
 	    if ((_nc_syntax == SYN_TERMCAP) && c == '\n')
 	    	break;
 	    if (ch == '^' && last_ch != '%') {

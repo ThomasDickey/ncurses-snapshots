@@ -362,3 +362,26 @@ int typeahead(int fd)
 	return OK;
 }
 
+/*
+**      has_key()
+**
+**      Return TRUE if the current terminal has the given key
+**
+*/
+
+
+static int has_key_internal(int keycode, struct try *tp)
+{
+    if (!tp)
+	return(FALSE);
+    else if (tp->value == keycode)
+	return(TRUE);
+    else 
+	return(has_key_internal(keycode, tp->child)
+	       || has_key_internal(keycode, tp->sibling));
+}
+
+int has_key(int keycode)
+{
+    return(has_key_internal(keycode, SP->_keytry));
+}

@@ -44,11 +44,22 @@ Known Problems:
   These things are basically due to the difference between Systen V and
   BSD-style signals.
 
-* On bce terminals (including the Linux console, the Xfree86 3.1.2D xterm,
-  and rxvt), ncurses does more work than it needs to when erasing colored
-  backgrounds (it blank-fills after issuing clr_eol/clr_eos).
+* Mark McKenzie also says:
+
+        With SVR4 Curses you can use overwrite to make copy from one pad to
+        another.  It seems ncurses' overwrite does nothing when passed the same
+        parameters.
+
+        You have to call copywin yourself to copy pads with ncurses.  I didn't
+        follow overwrite along to see what parameters were eventually being
+        passed to copywin.
+
+  We're working on this.
 
 Portability (or lack thereof):
+
+* There have been reports of mouse clicks getting lost in the lib_mouse.c code
+  under SunOS and IRIX (no evidence this on Linux, however).
 
 * Users of older System V UNIXes (but not Solaris, and probably not SVr4)
   may trip over a known problem with the signal-handling code which causes
@@ -84,26 +95,6 @@ Untested features:
   for them (num_labels > 0, label_height, label_width, label_format, label_off,
   label_on, plab_norm, lab_f*) has not been tested.  The label_format and
   lab_f* capabilities aren't presently used.
-
-REQUESTED FEATURES:
-
-Larry Schwimmer <rosebud@cyclone.Stanford.EDU> writes:
->       On a somewhat related topic, I have a request if this has not
-> already been implemented.  I install software for the campus, but
-> would like local sysadmins which access the campus software tree to be
-> able to have local control over public software packages.  I would
-> also like binaries built with ncurses to not have dependencies to the
-> campus software tree where possible.  What this would entail is
-> providing a multipart path for TERMINFO.  For example, the path
->
-> /usr/local/lib/terminfo:/usr/pubsw/lib/terminfo:usr/share/lib/terminfo
->
-> could correspond to "first look in the local terminfo database, then
-> look in the campus database, then look in the vendor database".
->
-> It would also be nice if tic had a command line flag to specify the output
-> directory.  I know TERMINFO is honored, but command line (-d dir?
-> -o dir?) would also be nice and intuitive.
 
 LONGER-TERM TO-DO ITEMS:
 

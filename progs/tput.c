@@ -62,7 +62,7 @@ va_list argp;
 static void usage(void)
 {
 	fprintf(stderr, "usage: %s [-S] [-T term] capname\n", prg_name);
-	exit(2);
+	exit(EXIT_FAILURE);
 }
 
 static int tput(int argc, char *argv[])

@@ -730,6 +730,13 @@ static void file_comparison(int argc, char *argv[])
     }
 }
 
+static void usage(void)
+{
+	fprintf(stderr,
+"usage: infocmp [-dcnILCuvV1T] [-s d| i| l| c] [-w width] [-A directory] [-B directory] [termname...]\n");
+	exit(EXIT_FAILURE);
+}
+
 /***************************************************************************
  *
  * Main sequence
@@ -740,10 +747,11 @@ int main(int argc, char *argv[])
 {
 	char *terminal, *firstdir, *restdir;
 	path tfile[MAXTERMS];
-	int c, i;
+	int c, i, len;
 	bool filecompare = FALSE;
 	bool initdump = FALSE;
 	bool init_analyze = FALSE;
+	bool limited = TRUE;
 
 	if ((terminal = getenv("TERM")) == NULL)
 	{
@@ -755,7 +763,7 @@ int main(int argc, char *argv[])
 	/* where is the terminfo database location going to default to? */
 	restdir = firstdir = getenv("TERMINFO");
 
-	while ((c = getopt(argc, argv, "decCFinlLprR:s:uv:Vw:A:B:1")) != EOF)
+	while ((c = getopt(argc, argv, "decCFinlLprR:s:uv:Vw:A:B:1T")) != EOF)
 		switch (c)
 		{
 		case 'd':
@@ -857,6 +865,11 @@ int main(int argc, char *argv[])
 		case '1':
 			mwidth = 0;
 			break;
+		case 'T':
+			limited = FALSE;
+			break;
+		default:
+			usage();
 		}
 
 	/* by default, sort by terminfo name */
@@ -946,7 +959,7 @@ int main(int argc, char *argv[])
 		char	*str = 0;
 		int	size;
 
-		(void) printf("    \"%s\",\n    (char *)0,\n/* BOOLEANS */\n",
+		(void) printf("  {\n    \"%s\",\n    (char *)0,\n    /* BOOLEANS */\n",
 			      term->term_names);
 		for (n = 0; n < BOOLCOUNT; n++)
 		{
@@ -968,17 +981,17 @@ int main(int argc, char *argv[])
 			str = "CANCELLED_BOOLEAN";
 			break;
 		    }
-		    (void) printf("/* %s */	%s,\n",
+		    (void) printf("    /* %s */	%s,\n",
 				  boolnames[n], str);
 		}
-		(void) printf("/* NUMERICS */\n");
+		(void) printf("    /* NUMERICS */\n");
 		for (n = 0; n < NUMCOUNT; n++)
-		    (void) printf("/* %s */	%d,\n",
+		    (void) printf("    /* %s */	%d,\n",
 				  numnames[n], term->Numbers[n]);
 		size = sizeof(TERMTYPE)
 		    + (BOOLCOUNT * sizeof(term->Booleans[0]))
 		    + (NUMCOUNT * sizeof(term->Numbers[0]));
-		(void) printf("/* STRINGS */\n");
+		(void) printf("    /* STRINGS */\n");
 		for (n = 0; n < STRCOUNT; n++)
 		{
 		    char	buf[BUFSIZ], *sp, *tp;
@@ -1004,9 +1017,9 @@ int main(int argc, char *argv[])
 			size += (strlen(term->Strings[n]) + 1);
 			str = buf;
 		    }
-		    (void) printf("/* %s */	%s,\n", strnames[n], str);
+		    (void) printf("    /* %s */	%s,\n", strnames[n], str);
 	        }
-		(void) printf("} /* size = %d */\n", size);
+		(void) printf("  }, /* size = %d */\n", size);
 		return EXIT_SUCCESS;
 	    }
 
@@ -1037,8 +1050,10 @@ int main(int argc, char *argv[])
 				   tname[0]);
 		(void) printf("#\tReconstructed via infocmp from file: %s\n",
 			      tfile[0]);
-		(void) dump_entry(&term[0], NULL);
+		len = dump_entry(&term[0], limited, NULL);
 		putchar('\n');
+		if (itrace)
+		    (void)fprintf(stderr,"infocmp: length %d\n", len);
 		break;
 
 	    case C_DIFFERENCE:
@@ -1067,10 +1082,12 @@ int main(int argc, char *argv[])
 	    case C_USEALL:
 		if (itrace)
 		    (void) fprintf(stderr, "infocmp: dumping use entry\n");
-		dump_entry(&term[0], use_predicate);
+		len = dump_entry(&term[0], limited, use_predicate);
 		for (i = 1; i < termcount; i++)
-		    dump_uses(tname[i], !(outform==F_TERMCAP || outform==F_TCONVERR));
+		    len += dump_uses(tname[i], !(outform==F_TERMCAP || outform==F_TCONVERR));
 		putchar('\n');
+		if (itrace)
+		    (void)fprintf(stderr,"infocmp: length %d\n", len);
 		break;
 	    }
 	}

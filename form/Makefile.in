@@ -56,12 +56,6 @@ LIBRARIES	= @LIBS_TO_MAKE@
 ################################################################################
 all ::	../include/form.h $(LIBRARIES)
 
-install :: install.libs
-
-install.libs:: $(includedir) $(libdir)
-	$(INSTALL_DATA) $(srcdir)/form.h $(includedir)/form.h
-
-$(includedir) \
 $(libdir) :
 	$(srcdir)/../mkinstalldirs $@
 

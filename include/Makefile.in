@@ -29,7 +29,6 @@ AUTO_SRC = \
 	MKterm.h.awk \
 	curses.h \
 	termcap.h \
-	Caps.filtered \
 	hashsize.h \
 	parametrized.h \
 	unctrl.h \
@@ -37,18 +36,6 @@ AUTO_SRC = \
 
 ################################################################################
 all ::	$(AUTO_SRC)
-
-install \
-install.libs \
-install.includes : term.h $(includedir)
-	$(INSTALL_DATA) term.h $(includedir)/term.h
-	$(INSTALL_DATA) curses.h $(includedir)/curses.h
-	$(INSTALL_DATA) unctrl.h $(includedir)/unctrl.h
-	$(INSTALL_DATA) termcap.h $(includedir)/termcap.h
-	@echo "Make sure you delete any old header files!"
-
-$(includedir) :
-	$(srcdir)/../mkinstalldirs $@
 
 # These productions arrange for the files with embedded version numbers to be
 # rebuilt whenever the source tree is re-configured (which will make Makefile
@@ -69,23 +56,15 @@ unctrl.h: $(srcdir)/unctrl.h.in Makefile
 	-@rm -f $@
 	sed <$(srcdir)/$@.in >$@ -e "/@VERSION@/s//$(VERSION)/"
 
-# For binary compatibility with SVr4, use GETMEXCLUDE=bool.  For strict
-# conformance with the gratuitous and stupid change made in the XSI Curses
-# standard, use GETMEXCLUDE=str
-GETMEXCLUDE=bool
-
-Caps.filtered: ${srcdir}/Caps
-	grep -v 'getm	*$(GETMEXCLUDE)' ${srcdir}/Caps >$@
-
-term.h: Caps.filtered MKterm.h.awk
-	$(AWK) -f MKterm.h.awk Caps.filtered > $@
+term.h: $(srcdir)/Caps MKterm.h.awk
+	$(AWK) -f MKterm.h.awk $(srcdir)/Caps > $@
 	sh $(srcdir)/edit_cfg.sh ../include/config.h $@
 
-hashsize.h: Caps.filtered $(srcdir)/MKhashsize.sh
-	sh $(srcdir)/MKhashsize.sh >$@
+hashsize.h: $(srcdir)/Caps $(srcdir)/MKhashsize.sh
+	sh $(srcdir)/MKhashsize.sh $(srcdir)/Caps >$@
 
-parametrized.h: Caps.filtered $(srcdir)/MKparametrized.sh
-	sh $(srcdir)/MKparametrized.sh >$@
+parametrized.h: $(srcdir)/Caps $(srcdir)/MKparametrized.sh
+	sh $(srcdir)/MKparametrized.sh $(srcdir)/Caps >$@
 
 tags:
 	ctags *.[ch]

@@ -59,13 +59,6 @@ LIBRARIES	= @LIBS_TO_MAKE@
 ################################################################################
 all ::	../include/menu.h ../include/eti.h ../include/mf_common.h $(LIBRARIES)
 
-install :: install.libs
-
-install.libs:: $(includedir) $(libdir)
-	$(INSTALL_DATA) $(srcdir)/menu.h $(includedir)/menu.h
-	$(INSTALL_DATA) $(srcdir)/eti.h $(includedir)/eti.h
-
-$(includedir) \
 $(libdir) :
 	$(srcdir)/../mkinstalldirs $@
 

@@ -19,57 +19,65 @@
 *                                                                          *
 ***************************************************************************/
 
-/*
-**	lib_initscr.c
-**
-**	The routines initscr(), and termname().
-**
-*/
 
 #include "curses.priv.h"
 #include <stdlib.h>
-#include <string.h>
+#include "term.h"
+#include <errno.h>
 
-WINDOW *initscr(void)
+int mcprint(char *data, int len)
+/* ship binary character data to the printer via mc4/mc5/mc5p */
 {
-char	*name = getenv("TERM");
+    char	*mybuf, *switchon;
+    int		onsize,	offsize, res;
 
-	if (name == 0)
-		name = "unknown";
-  	if (newterm(name, stdout, stdin) == NULL) {
-  		fprintf(stderr, "Error opening terminal: %s.\n", name);
-  		exit(EXIT_FAILURE);
-	}
+    errno = 0;
+    if (!prtr_non && (!prtr_on || !prtr_off))
+    {
+	errno = ENODEV;
+	return(ERR);
+    }
 
-	/* allow user to set maximum escape delay from the environment */
-	if ((name = getenv("ESCDELAY")))
-	    ESCDELAY = atoi(getenv("ESCDELAY"));
+    if (prtr_non)
+    {
+	switchon = tparm(prtr_non, len);
+	onsize = strlen(switchon);
+	offsize = 0;
+    }
+    else
+    {
+	switchon = prtr_on;
+	onsize = strlen(prtr_on);
+	offsize = strlen(prtr_off);
+    }
 
-	def_shell_mode();
+    if ((mybuf = malloc(onsize + len + offsize + 1)) == (char *)NULL)
+    {
+	errno = ENOMEM;
+	return(ERR);
+    }
 
-	/* follow the XPG4 requirement to turn echo off at this point */
-	noecho();
+    (void) strcpy(mybuf, switchon);
+    memcpy(mybuf + onsize, data, len);
+    if (offsize)
+      (void) strcpy(mybuf + onsize + len, prtr_off);
 
-#ifdef _XOPEN_SOURCE_EXTENDED
-	/* for extended XPG4 conformance requires cbreak() at this point */
-	cbreak();
-#endif /* _XOPEN_SOURCE_EXTENDED */
+    /*
+     * We're relying on the atomicity of UNIX writes here.  The
+     * danger is that output from a refresh() might get interspersed
+     * with the printer data after the write call returns but before the
+     * data has actually been shipped to the terminal.  If the write(2)
+     * operation is truly atomic we're protected from this.
+     */
+    res = write(cur_term->Filedes, mybuf, onsize + len + offsize);
 
-	def_prog_mode();
-	return(stdscr);
-}
+    /*
+     * By giving up our scheduler slot here we increase the odds that the
+     * kernel will ship the contiguous clist items from the last write
+     * immediately.
+     */
+    (void) sleep(0);
 
-char *termname(void)
-{
-char	*term = getenv("TERM");
-static char	ret[15];
-
-	T(("termname() called"));
-
-	if (term == (char *)NULL)
-		return(char *)NULL;
-	else {
-		(void) strncpy(ret, term, sizeof(ret) - 1);
-		return(ret);
-	}
+    free(mybuf);
+    return(res);
 }

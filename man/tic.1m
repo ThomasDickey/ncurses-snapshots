@@ -4,7 +4,7 @@
 .SH NAME
 \fBtic\fR - the \fIterminfo\fR entry-description compiler
 .SH SYNOPSIS
-\fBtic\fR [\fB-v\fR[\fIn\fR]] [\fB-cpICNru\fR] \fIfile\fR
+\fBtic\fR [\fB-v\fR[\fIn\fR]] [\fB-w\fR[\fIn\fR]] [\fB-1hcpICNRrTu\fR] [\fB-e\fR \fInames\fR] \fIfile\fR
 .br
 .SH DESCRIPTION
 The command \fBtic\fR translates a \fBterminfo\fR file from source
@@ -25,6 +25,9 @@ Libraries that read terminfo entries are expected to check for a TERMINFO
 directory first, look at \fI$HOME/.terminfo\fR if TERMINFO is not set, and
 finally look in \fI\*d\fR.
 .TP
+\fB-h\fR
+Print help message and exit.
+.TP
 \fB-c\fR
 specifies to only check \fIfile\fR for errors, including syntax problems and
 bad use links.  If you specify \fB-C\fR (\fB-I\fR) with this option, the code
@@ -40,6 +43,21 @@ information showing \fBtic\fR's progress.  The optional integer
 level of detail of information.  If \fIn\fR is omitted, the default
 level is 1.  If \fIn\fR is specified and greater than 1, the level of
 detail is increased.
+.TP
+\fB-o\fR\fIdir\fR
+Write compiled entries to given directory.  Overrides the TERMINFO environment
+variable.
+.TP
+\fB-w\fR\fIn\fR
+specifies the width of the output.
+.TP
+\fB-1\fR
+restricts the output to a single column
+.TP
+\fB-T\fR
+eliminates size-restrictions on the generated text.
+This is mainly useful for testing and analysis, since the compiled
+descriptions are limited (e.g., 1023 for termcap, 4096 for terminfo).
 .TP
 \fB-I\fR
 Force source translation to terminfo format.
@@ -68,7 +86,7 @@ Restrict output to a given subset.  This option is for use with archaic
 versions of terminfo like those on SVr1, Ultrix, or HP/UX that don't support
 the full set of SVR4/XSI Curses terminfo; and outright broken ports like AIX
 that have their own extensions incompatible with SVr4/XSI.  Available subsets
-are "SVr1", "Ultrix", "HP", and AIX"; see \fBterminfo\fR(\*n) for details.
+are "SVr1", "Ultrix", "HP", "BSD" and AIX"; see \fBterminfo\fR(\*n) for details.
 .TP
 \fI-r\fR
 Force entry resolution (so there are no remaining tc capabilities) even
@@ -76,6 +94,13 @@ when doing translation to termcap format.  This may be needed if you are
 preparing a termcap file for a termcap library (such as GNU termcap up
 to version 1.3 or BSD termcap up to 4.3BSD) that doesn't handle multiple
 tc capabilities per entry.
+.TP
+\fI-e\fR
+Limit writes and translations to the following comma-separated list of
+terminals. If any name or alias of a terminal matches one of the names in
+the list, the entry will be written or translated as normal.  Otherwise
+no output will be generated for it.  (Note: depending on how tic was compiled,
+this option may require -I or -C.)
 .TP
 \fIfile\fR
 contains one or more \fBterminfo\fR terminal descriptions in source
@@ -143,9 +168,10 @@ compile termcap sources.  In fact, entries in terminfo and termcap syntax can
 be mixed in a single source file.  See \fBterminfo\fR(\*n) for the list of
 termcap names taken to be equivalent to terminfo names.
 
-The SVr4 manual page are not clear on the resolution rules for \fBuse\fR
-capabilities. This implementation of \fBtic\fR will find use targets anywhere
-in the source file, or anywhere in the file tree routed at \fBTERMINFO\fR (if
+The SVr4 manual pages are not clear on the resolution rules for \fBuse\fR
+capabilities.
+This implementation of \fBtic\fR will find \fBuse\fR targets anywhere
+in the source file, or anywhere in the file tree rooted at \fBTERMINFO\fR (if
 \fBTERMINFO\fR is defined), or in the user's \fI$HOME/.terminfo\fR directory
 (if it exists), or (finally) anywhere in the system's file tree of
 compiled entries.
@@ -153,7 +179,7 @@ compiled entries.
 The error messages from this \fBtic\fR have the same format as GNU C
 error messages, and can be parsed by GNU Emacs's compile facility.
 
-The -I, -C, -N, -R, and -r options are not supported under SVr4.
+The -o, -I, -C, -N, -R, -h, -e, -T and -r options are not supported under SVr4.
 The SVr4 -c mode does not report bad use links.
 
 System V does not compile entries to or read entries from your

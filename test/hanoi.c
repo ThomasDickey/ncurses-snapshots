@@ -16,9 +16,8 @@
  *
  */
 
-#include <curses.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include "test.priv.h"
+
 #include <string.h>
 
 #define NPEGS			3	/* This is not configurable !! */

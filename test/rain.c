@@ -1,6 +1,6 @@
-#include <curses.h>
+#include "test.priv.h"
+
 #include <signal.h>
-#include <stdlib.h>
 
 /* rain 11/3/1980 EPS/CITHEP */
 
@@ -10,7 +10,9 @@ float ranf(void);
 void onsig(int sig);
 
 int
-main(int argc, char *argv[])
+main(
+	int argc __attribute__((unused)),
+	char *argv[] __attribute__((unused)))
 {
 int x, y, j;
 static int xpos[5], ypos[5];

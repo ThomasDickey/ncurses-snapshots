@@ -69,7 +69,7 @@ int ch;
 
 	h_inc();
 #ifdef TRACE
-	if (_nc_tracing & TRACE_FIFO) fifo_dump();
+	if (_nc_tracing & TRACE_IEVENT) fifo_dump();
 #endif
 	return ch;
 }
@@ -87,7 +87,7 @@ int ungetch(int ch)
 	SP->_fifo[head] = ch;
 	T(("ungetch ok"));
 #ifdef TRACE
-	if (_nc_tracing & TRACE_FIFO) fifo_dump();
+	if (_nc_tracing & TRACE_IEVENT) fifo_dump();
 #endif
 	return OK;
 }
@@ -115,7 +115,7 @@ again:
 	t_inc();
 	T(("pushed %#x at %d", ch, tail));
 #ifdef TRACE
-	if (_nc_tracing & TRACE_FIFO) fifo_dump();
+	if (_nc_tracing & TRACE_IEVENT) fifo_dump();
 #endif
 	return ch;
 }
@@ -307,7 +307,7 @@ struct try  *ptr;
 int ch = 0;
 int timeleft = ESCDELAY;
 
-    	TR(TRACE_FIFO, ("kgetch(%p) called", win));
+    	TR(TRACE_IEVENT, ("kgetch(%p) called", win));
 
     	ptr = SP->_keytry;
 
@@ -316,34 +316,34 @@ int timeleft = ESCDELAY;
 		    return ERR;
 		peek = 0;
     		while (ptr != NULL) {
-			TR(TRACE_FIFO, ("ch: %s", _tracechar((unsigned char)ch)));
+			TR(TRACE_IEVENT, ("ch: %s", _tracechar((unsigned char)ch)));
 			while ((ptr != NULL) && (ptr->ch != (unsigned char)ch))
 				ptr = ptr->sibling;
 #ifdef TRACE
 			if (ptr == NULL)
-				{TR(TRACE_FIFO, ("ptr is null"));}
+				{TR(TRACE_IEVENT, ("ptr is null"));}
 			else
-				TR(TRACE_FIFO, ("ptr=%p, ch=%d, value=%d",
+				TR(TRACE_IEVENT, ("ptr=%p, ch=%d, value=%d",
 						ptr, ptr->ch, ptr->value));
 #endif /* TRACE */
 
 			if (ptr != NULL)
 	    			if (ptr->value != 0) {	/* sequence terminated */
-	    				TR(TRACE_FIFO, ("end of sequence"));
+	    				TR(TRACE_IEVENT, ("end of sequence"));
 	    				fifo_clear();
 					return(ptr->value);
 	    			} else {		/* go back for another character */
 					ptr = ptr->child;
-					TR(TRACE_FIFO, ("going back for more"));
+					TR(TRACE_IEVENT, ("going back for more"));
 	    			} else
 					break;
 
-	    			TR(TRACE_FIFO, ("waiting for rest of sequence"));
+	    			TR(TRACE_IEVENT, ("waiting for rest of sequence"));
    				if (_nc_timed_wait(SP->_ifd, timeleft, &timeleft) < 1) {
-					TR(TRACE_FIFO, ("ran out of time"));
+					TR(TRACE_IEVENT, ("ran out of time"));
 					return(fifo_pull());
    				} else {
-   					TR(TRACE_FIFO, ("got more!"));
+   					TR(TRACE_IEVENT, ("got more!"));
    					fifo_push();
    					ch = fifo_peek();
    				}

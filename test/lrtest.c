@@ -6,11 +6,15 @@
  * This can't be part of ncurses, because ncurses rips off the bottom line
  * to do labels.
  */
-#include <curses.h>
+
+#include "test.priv.h"
+
 #include <term.h>
 
 int
-main(int argc, char *argv[])
+main(
+	int argc __attribute__((unused)),
+	char *argv[] __attribute__((unused)))
 {
     initscr();
 

@@ -100,18 +100,23 @@ in the example above.
 .PP
 .SS Fetching Compiled Descriptions
 .PP
-To easily test a new terminal description you can set the environment variable
-TERMINFO to a pathname of a directory containing the
-compiled description you are working
-on and programs will look there rather than in
-.IR \*d .
+If the environment variable TERMINFO is set, it is interpreted as the pathname
+of a directory containing the compiled description you are working on.  Only
+that directory is searched.
 .PP
 If TERMINFO is not set, the \fBncurses\fR version of the terminfo reader code
 will instead look in the directory $HOME/.terminfo for a compiled description.
-(This extension is not supported under stock System V terminfo/curses.)
+If it fails to find one there, and the environment variable TERMINFO_DIRS is
+set, it will interpret the contents of that variable as a list of colon-
+separated directories to be searched (an empty entry is interpreted as a
+command to search \fI\*d\fR).  If no description is found in any of the
+TERMINFO_DIRS directories, the fetch fails.
 .PP
-If these local lookups fail, the last place tried will be the system terminfo
-directory, \fI\*d\fR.
+If neither TERMINFO nor TERMINFO_DIRS is set, the last place tried will be the
+system terminfo directory, \fI\*d\fR.
+.PP
+(Neither the $HOME/.terminfo lookups nor TERMINFO_DIRS extensions are
+supported under stock System V terminfo/curses.)
 .PP
 .SS Preparing Descriptions
 .PP

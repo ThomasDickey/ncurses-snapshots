@@ -133,7 +133,7 @@ the compilation time, is specifying extra \fBuse=\fR fields that are
 superfluous.  \fBinfocmp\fR will flag any other \fItermname use=\fR fields that
 were not needed.
 
-.SS Other Options [-s d|i|l|c] [-v] [-V] [-1] [-w \fIwidth\fR]
+.SS Other Options [-s d|i|l|c] [-v] [-V] [-1] [-T] [-w \fIwidth\fR]
 The \fB-s\fR option sorts the fields within each type according to the argument
 below:
 
@@ -179,6 +179,11 @@ prints out the version of the program in use on standard error and exits.
 causes the fields to be printed out one to a line.  Otherwise,
 the fields will be printed several to a line to a maximum width
 of 60 characters.
+.TP 5
+\fB-T\fR
+eliminates size-restrictions on the generated text.
+This is mainly useful for testing and analysis, since the compiled
+descriptions are limited (e.g., 1023 for termcap, 4096 for terminfo).
 .TP 5
 \fB-w\fR
 changes the output to \fIwidth\fR characters.
@@ -256,7 +261,7 @@ DEC[+-]ARM  	auto-repeat mode
 It also recognizes a SGR action corresponding to ANSI/ISO 6429/ECMA Set
 Graphics Rendition, with the values NORMAL, BOLD, UNDERLINE, BLINK, and
 REVERSE.  All but NORMAL may be prefixed with `+' (turn on) or `-' (turn off).
-An SGR0 designmates an empty highlight sequence (equivalent to {SGR:NORMAL}).
+An SGR0 designates an empty highlight sequence (equivalent to {SGR:NORMAL}).
 .SH FILES
 .TP 20
 \*d
@@ -266,8 +271,8 @@ The \fB-F\fR option is not supported in SVr4 curses.  (It is primarily intended
 to help infocmp's author, while wearing his terminfo/termcap maintainer hat,
 merge termcap/terminfo files from various sources into the master.)
 
-The \fB-R\fR, \fB-p\fR, \fB-e\fR and \fB-i\fR options are not supported
-in SVr4 curses.
+The \fB-R\fR, \fB-p\fR, \fB-e\fR, \fB-T\fR and \fB-i\fR options are not
+supported in SVr4 curses.
 
 The \fB-r\fR option's notion of `termcap' capabilities is System V Release 4's.
 Actual BSD curses versions will have a more restricted set.  To see only the

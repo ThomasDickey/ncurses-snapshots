@@ -298,13 +298,13 @@ void _nc_mvcur_wrap(void)
 /* wrap up cursor-addressing mode */
 {
     /* change_scroll_region may trash the cursor location */
-    save_curs();
     if (change_scroll_region)
     {
+	save_curs();
 	TPUTS_TRACE("change_scroll_region");
 	putp(tparm(change_scroll_region, 0, screen_lines - 1));
+	restore_curs();
     }
-    restore_curs();
 
     if (exit_ca_mode)
     {

@@ -416,7 +416,7 @@ int menu_driver(MENU * menu, int   c)
 	    {
 	      if (menu->curitem->opt & O_SELECTABLE)
 		{
-		  menu->curitem->value = TRUE;
+		  menu->curitem->value = !menu->curitem->value;
 		  Move_And_Post_Item(menu,menu->curitem);
 		  _nc_Show_Menu(menu);
 		}

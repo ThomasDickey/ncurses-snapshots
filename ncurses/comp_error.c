@@ -25,7 +25,8 @@
  *
  */
 
-#include "config.h"
+#include <curses.priv.h>
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
@@ -86,7 +87,7 @@ va_list argp;
 	vfprintf (stderr, fmt, argp);
 	fprintf (stderr, "\n");
 	va_end(argp);
-	exit(1);
+	exit(EXIT_FAILURE);
 }
 
 

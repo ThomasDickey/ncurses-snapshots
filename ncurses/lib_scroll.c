@@ -38,6 +38,7 @@ void _nc_scroll_window(WINDOW *win, int const n, short const top, short const bo
 {
 int	line, j;
 chtype	blank = _nc_render(win, ' ', BLANK);
+size_t	to_copy = (size_t)(sizeof(chtype) * (win->_maxx + 1));
 
 	TR(TRACE_MOVE, ("_nc_scroll_window(%p, %d, %d, %d)", win, n, top,bottom)); 
 
@@ -57,7 +58,7 @@ chtype	blank = _nc_render(win, ' ', BLANK);
 		for (line = bottom; line >= top-n; line--) {
 		    	memcpy(win->_line[line].text,
 			       win->_line[line+n].text,
-			       (size_t)(sizeof(chtype) * (win->_maxx+1)));
+			       to_copy);
 			win->_line[line].oldindex = win->_line[line+n].oldindex;
 		}
 		for (line = top; line < top-n; line++) {
@@ -74,7 +75,7 @@ chtype	blank = _nc_render(win, ' ', BLANK);
 		for (line = top; line <= bottom-n; line++) {
 		    	memcpy(win->_line[line].text,
 			       win->_line[line+n].text,
-			       (size_t)(sizeof(chtype) * (win->_maxx+1)));
+			       to_copy);
 			win->_line[line].oldindex = win->_line[line+n].oldindex;
 		}
 		for (line = bottom; line > bottom-n; line--) {

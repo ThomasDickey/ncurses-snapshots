@@ -34,12 +34,14 @@ static int putch(int c)
 	return putchar(c);
 }
 
-int main(int argc, char *argv[])
+int main(
+	int argc __attribute__((unused)),
+	char *argv[] __attribute__((unused)))
 {
 	setupterm((char *) 0, STDOUT_FILENO, (int *) 0); 
 	if (clear_screen == (char *) 0)
-		exit(1);
+		exit(EXIT_FAILURE);
 	tputs(clear_screen, lines > 0 ? lines : 1, putch);
-	return 0;
+	return EXIT_SUCCESS;
 }
 

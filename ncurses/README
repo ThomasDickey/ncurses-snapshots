@@ -10,6 +10,8 @@ The 'configure' script gets most other definitions right automatically.
 
 -DSVR4_ACTION		if (e.g., svr4) you need _POSIX_SOURCE to have sigaction
 
+-DSVR4_TERMIO		if (e.g., svr4) you need _POSIX_SOURCE to have termio
+
 -DOPT_MVCUR		if you want mvcur() to cost its actions or you have a
 			terminal that doesn't have direct cursor addressing.
 

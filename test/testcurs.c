@@ -7,10 +7,7 @@
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <curses.h>
+#include "test.priv.h"
 
 static void display_menu (int,int);
 static int  initTest (WINDOW **);
@@ -30,18 +27,20 @@ typedef struct commands COMMAND;
 #define MAX_OPTIONS 6
 COMMAND command[MAX_OPTIONS] =
 {
- {"Intro Test",introTest},
- {"Pad Test",padTest},
- {"Resize Test",resizeTest},
- {"Scroll Test",scrollTest},
- {"Input Test",inputTest},
- {"Output Test",outputTest}
+ {"Intro Test",  introTest},
+ {"Pad Test",    padTest},
+ {"Resize Test", resizeTest},
+ {"Scroll Test", scrollTest},
+ {"Input Test",  inputTest},
+ {"Output Test", outputTest}
 };
 
 int     width, height;
 
 int
-main(int argc, char **argv)
+main(
+	int argc __attribute__((unused)),
+	char *argv[] __attribute__((unused)))
 {
 WINDOW  *win;
 int key,old_option=(-1),new_option=0;
@@ -401,7 +400,7 @@ outputTest (WINDOW *win)
 }
 
 static void
-resizeTest(WINDOW *dummy)
+resizeTest(WINDOW *dummy __attribute__((unused)))
 {
     WINDOW *win1;
 
@@ -445,7 +444,7 @@ resizeTest(WINDOW *dummy)
 }
 
 static void
-padTest(WINDOW *dummy)
+padTest(WINDOW *dummy __attribute__((unused)))
 {
 WINDOW *pad;
 

@@ -21,13 +21,10 @@
 
 
 /*
- * Terminal setup routines:
+ * Terminal setup routines common to termcap and terminfo:
  *
- *		setup_sizes(void)
  *		use_env(bool)
  *		setupterm(char *, int, int *)
- *		TERMINAL *set_curterm(TERMINAL *)
- *		int del_curterm(TERMINAL *)
  */
 
 #include "curses.priv.h"
@@ -36,6 +33,10 @@
 #include <errno.h>
 #if !HAVE_EXTERN_ERRNO
 extern int errno;
+#endif
+
+#ifdef SVR4_TERMIO
+#define _POSIX_SOURCE
 #endif
 
 #include "term.h"	/* lines, columns, cur_term */
@@ -61,7 +62,7 @@ void use_env(bool f)
 
 int LINES, COLS, TABSIZE;
 
-static void get_screensize(void)
+void _nc_get_screensize(void)
 /* set LINES and COLS from the environment and/or terminfo entry */
 {
 char 		*rows, *cols;
@@ -148,69 +149,6 @@ char 		*rows, *cols;
 
 /****************************************************************************
  *
- * Mode sets
- *
- ****************************************************************************/
-
-#undef tabs
-
-#ifdef TAB3
-# define tabs TAB3
-#else
-# ifdef XTABS
-#  define tabs XTABS
-# else
-#  ifdef OXTABS
-#   define tabs OXTABS
-#  else
-#   define tabs 0
-#  endif
-# endif
-#endif
- 
-int def_shell_mode(void)
-{
-    /*
-     *	Turn off the XTABS bit in the tty structure if it was on
-     *	If XTABS was on, remove the tab and backtab capabilities.
-     */
-
-	T(("def_shell_mode() called"));
-
-#ifdef TERMIOS
- 	if((tcgetattr(cur_term->Filedes, &cur_term->Ottyb)) == -1) {
-		return ERR;
- 	}
- 	if (cur_term->Ottyb.c_oflag & tabs)
-		tab = back_tab = NULL;
-	
-#else
-	gtty(cur_term->Filedes, &cur_term->Ottyb);
-	if (cur_term->Ottyb.sg_flags & XTABS)
-	    	tab = back_tab = NULL;
-#endif
-	return OK;
-}
-
-int def_prog_mode(void)
-{
-	T(("def_prog_mode() called"));
-
-#ifdef TERMIOS
- 	if((tcgetattr(cur_term->Filedes, &cur_term->Nttyb)) == -1) {
-		return ERR;
- 	}
- 	cur_term->Nttyb.c_oflag &= ~tabs;
-#else
-	gtty(cur_term->Filedes, &cur_term->Nttyb);
-	
-	cur_term->Nttyb.sg_flags &= ~XTABS;
-#endif
-	return OK;
-}
-
-/****************************************************************************
- *
  * Terminal setup
  *
  ****************************************************************************/
@@ -220,7 +158,7 @@ int def_prog_mode(void)
 					    return(ERR);\
 					} else {\
 					    fprintf(stderr, fmt, arg);\
-					    exit(1);\
+					    exit(EXIT_FAILURE);\
 					}
 
 #define ret_error0(code, msg)		if (errret) {\
@@ -228,7 +166,7 @@ int def_prog_mode(void)
 					    return(ERR);\
 					} else {\
 					    fprintf(stderr, msg);\
-					    exit(1);\
+					    exit(EXIT_FAILURE);\
 					}
 
 static int grab_entry(const char *const tn, TERMTYPE *const tp)
@@ -333,7 +271,7 @@ struct term	*term_ptr;
 		    Filedes = STDERR_FILENO;
 		cur_term->Filedes = Filedes;
 
-		get_screensize();
+		_nc_get_screensize();
 	}
 
 	if (errret)
@@ -341,63 +279,6 @@ struct term	*term_ptr;
 	return(OK);
 
 }
-
-int restartterm(const char *term, int filenum, int *errret)
-{
-int saveecho = SP->_echo;
-int savecbreak = SP->_cbreak;
-int saveraw = SP->_raw;
-int savenl = SP->_nl;
-
-	setupterm(term, filenum, errret);
-
-	if (saveecho)
-		echo();
-	else
-		noecho();
-
-	if (savecbreak) {
-		cbreak();
-		noraw();
-	} else if (saveraw) {
-		nocbreak();
-		raw();
-	} else {
-		nocbreak();
-		noraw();
-	}
-	if (savenl)
-		nl();
-	else
-		nonl();
-
-	reset_prog_mode();
-
-	get_screensize();
-
-	return(OK);
-}
-
-TERMINAL *set_curterm(TERMINAL *term)
-{
-	TERMINAL	*oldterm = cur_term;
-
-	cur_term = term;
-	return oldterm;
-}
-
-int del_curterm(TERMINAL *term)
-{
-
-	if (term != NULL) {
-		if (term->type.str_table != NULL)
-			free(term->type.str_table);
-		free(term);
-		return OK;
-	}
-	return ERR;
-}
-
 
 /*
 **	do_prototype()

@@ -1,10 +1,8 @@
-#include <stdio.h>
+#include "test.priv.h"
+
 #include <float.h>
 #include <math.h>
 #include <time.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <curses.h>
 
 /*
   tclock - analog/digital clock for curses.
@@ -103,7 +101,9 @@ dline(int from_x, int from_y, int x2, int y2, char ch)
 }
 
 int
-main(int argc, char **argv)
+main(
+	int argc __attribute__((unused)),
+	char *argv[] __attribute__((unused)))
 {
 	int i,cx,cy;
 	double mradius, hradius, mangle, hangle;

@@ -46,6 +46,10 @@
 #define ONLCR 0
 #endif
 
+#ifdef SVR4_TERMIO
+#define _POSIX_SOURCE
+#endif
+
 #if HAVE_SYS_TERMIO_H
 #include <sys/termio.h>	/* needed for ISC */
 #endif
@@ -93,6 +97,7 @@ char *_tracebits(void)
 static char	buf[BUFSIZ];
 static const	struct {unsigned int val; char *name;}
 
+#ifdef TERMIOS
 iflags[] =
     {
 	{BRKINT,	"BRKINT"},
@@ -199,11 +204,61 @@ lflags[] =
 	(void) strcat(buf,"} ");
     }
 
+#else
+    /* reference: ttcompat(4M) on SunOS 4.1 */
+#ifndef EVENP
+#define EVENP 0
+#endif
+#ifndef LCASE
+#define LCASE 0
+#endif
+#ifndef LLITOUT
+#define LLITOUT 0
+#endif
+#ifndef ODDP
+#define ODDP 0
+#endif
+#ifndef TANDEM
+#define TANDEM 0
+#endif
+
+cflags[] =
+    {
+	{CBREAK,	"CBREAK"},
+	{CRMOD,		"CRMOD"},
+	{ECHO,		"ECHO"},
+	{EVENP,		"EVENP"},
+	{LCASE,		"LCASE"},
+	{LLITOUT,	"LLITOUT"},
+	{ODDP,		"ODDP"},
+	{RAW,		"RAW"},
+	{TANDEM,	"TANDEM"},
+	{XTABS,		"XTABS"},
+	{0,		NULL}
+#define ALLCTRL	(CBREAK|CRMOD|ECHO|EVENP|LCASE|LLITOUT|ODDP|RAW|TANDEM|XTABS)
+    },
+    *sp;
+
+    if (cur_term->Nttyb.sg_flags & ALLCTRL)
+    {
+	(void) strcat(buf, "cflags: {");
+	for (sp = cflags; sp->val; sp++)
+	    if ((cur_term->Nttyb.sg_flags & sp->val) == sp->val)
+	    {
+		(void) strcat(buf, sp->name);
+		(void) strcat(buf, ", ");
+	    }
+	if (buf[strlen(buf) - 2] == ',')
+	    buf[strlen(buf) - 2] = '\0';
+	(void) strcat(buf,"} ");
+    }
+
+#endif
     return(buf);
 }
 
-#define BEFORE(s)	if (_nc_tracing&TRACE_BITS) _tracef("%s before bits: %s", s, _tracebits())
-#define AFTER(s)	if (_nc_tracing&TRACE_BITS) _tracef("%s after bits: %s", s, _tracebits())
+#define BEFORE(N)	if (_nc_tracing&TRACE_BITS) _tracef("%s before bits: %s", N, _tracebits())
+#define AFTER(N)	if (_nc_tracing&TRACE_BITS) _tracef("%s after bits: %s", N, _tracebits())
 #else
 #define BEFORE(s)
 #define AFTER(s)
@@ -473,4 +528,3 @@ int intrflush(WINDOW *win, bool flag)
 	return ERR;
 #endif
 }
-

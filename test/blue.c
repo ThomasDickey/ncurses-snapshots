@@ -14,9 +14,9 @@
  * machines, SVr4 curses is just as good.
  */
 
-#include <stdlib.h>
+#include "test.priv.h"
+
 #include <string.h>
-#include <unistd.h>
 #include <signal.h>
 #include <time.h>
 
@@ -24,7 +24,6 @@
 #include <sys/termios.h>
 #endif
 
-#include <curses.h>
 #include <term.h>
 
 #define NOCARD		(-1)
@@ -45,6 +44,8 @@
 
 #define BASEROW		1
 #define PROMPTROW	11
+
+static void die(int onsig) __attribute__((noreturn));
 
 static int deck_size = PACK_SIZE;	/* initial deck */
 static int deck[PACK_SIZE];

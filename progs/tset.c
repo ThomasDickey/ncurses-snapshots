@@ -153,7 +153,7 @@ err(const char *fmt, ...)
 	(void)vfprintf(stderr, fmt, ap);
 	va_end(ap);
 	(void)fprintf(stderr, "\n");
-	exit(1);
+	exit(EXIT_FAILURE);
 	/* NOTREACHED */
 }
 
@@ -162,7 +162,7 @@ failed(const char *msg)
 {
 	char	temp[BUFSIZ];
 	perror(strcat(strcpy(temp, "tset: "), msg));
-	exit(1);
+	exit(EXIT_FAILURE);
 	/* NOTREACHED */
 }
 
@@ -199,7 +199,7 @@ askuser(char *dflt)
 	/* We can get recalled; if so, don't continue uselessly. */
 	if (feof(stdin) || ferror(stdin)) {
 		(void)fprintf(stderr, "\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	for (;;) {
 		if (dflt)
@@ -211,7 +211,7 @@ askuser(char *dflt)
 		if (fgets(answer, sizeof(answer), stdin) == NULL) {
 			if (dflt == NULL) {
 				(void)fprintf(stderr, "\n");
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 			return (dflt);
 		}
@@ -536,8 +536,8 @@ found:	if ((p = getenv("TERMCAP")) != NULL && *p != '/') {
 			ttype = askuser(NULL);
 
 	/* Find the terminfo entry.  If it doesn't exist, ask the user. */
-	while ((rval = setupterm(ttype, STDOUT_FILENO, &errret)) != 1) {
-		if (rval == 0) {
+	while ((rval = setupterm(ttype, STDOUT_FILENO, &errret)) != OK) {
+		if (errret == 0) {
 			(void)fprintf(stderr, "tset: unknown terminal type %s\n",
 			    ttype);
 			ttype = NULL;
@@ -933,7 +933,7 @@ report(char *name, int which, u_int def)
 
 	(void)fprintf(stderr, "%s %s ", name, old == new ? "is" : "set to");
 
-	if ((p = key_backspace) && new == p[0] && p[1] == '\0')
+	if ((p = key_backspace) && new == (u_int)p[0] && p[1] == '\0')
 		(void)fprintf(stderr, "backspace.\n");
 	else if (new == 0177)
 		(void)fprintf(stderr, "delete.\n");
@@ -985,7 +985,7 @@ usage(const char* pname)
 {
 	(void)fprintf(stderr,
 "usage: %s [-IQrs] [-] [-e ch] [-i ch] [-k ch] [-m mapping] [terminal]\n", pname);
-	exit(1);
+	exit(EXIT_FAILURE);
 }
 
 int
@@ -1147,7 +1147,7 @@ main(int argc, char **argv)
 		(void) printf(p, ttype);
 	}
 
-	exit(0);
+	exit(EXIT_SUCCESS);
 }
 
 /* tset.c ends here */

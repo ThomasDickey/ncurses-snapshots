@@ -39,4 +39,7 @@ int vsscanf(const char *str, const char *format, va_list ap)
 	return -1;	/* not implemented */
 }
 #endif
+#else
+extern void _nc_vsscanf(void);	/* quiet's gcc warning */
+void _nc_vsscanf(void) { } /* nonempty for strict ANSI compilers */
 #endif /* !HAVE_VSSCANF */

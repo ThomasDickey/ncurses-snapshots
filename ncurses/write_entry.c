@@ -52,6 +52,66 @@ static int write_object(FILE *, TERMTYPE *);
 static char	*destination = TERMINFO;
 
 /*
+ *	make_directory(char *path)
+ *
+ *	Make a directory if it doesn't exist.
+ */
+static int make_directory(char *path)
+{
+int	rc;
+struct	stat	statbuf;
+char	fullpath[PATH_MAX];
+
+	if (path == destination || *path == '/')
+		(void)strcpy(fullpath, path);
+	else
+		(void)sprintf(fullpath, "%s/%s", destination, path);
+
+	if ((rc = stat(path, &statbuf)) < 0) {
+		rc = mkdir(path, 0777);
+	} else {
+		if (access(path, R_OK|W_OK|X_OK) < 0) {
+			_nc_err_abort("%s: permission denied", fullpath);
+		} else if (!(S_ISDIR(statbuf.st_mode))) {
+			_nc_err_abort("%s: not a directory", fullpath);
+		}
+	}
+	return rc;
+}
+
+void  _nc_set_writedir(char *dir)
+/* set the write directory for compiled entries */
+{
+    if (dir != 0)
+	destination = dir;
+    else if (getenv("TERMINFO") != NULL)
+	destination = getenv("TERMINFO");
+
+    if (make_directory(destination) < 0)
+    {
+	char	*home;
+
+	/* ncurses extension...fall back on user's private directory */
+	if ((home = getenv("HOME")) != (char *)NULL)
+	{
+	    destination = malloc(sizeof(PRIVATE_INFO) + strlen(home));
+	    (void) sprintf(destination, PRIVATE_INFO, home);
+
+	    if (make_directory(destination) < 0)
+		_nc_err_abort("%s: permission denied (errno %d)",
+			destination, errno);
+	}
+    }
+
+    /*
+     * Note: because of this code, this logic should be exercised
+     * *once only* per run.
+     */
+    if (chdir(destination) < 0)
+	_nc_err_abort("%s: not a directory", destination);
+}
+
+/*
  *	check_writeable(char code)
  *
  *	Miscellaneous initialisations
@@ -65,9 +125,7 @@ static void check_writeable(int code)
 {
 static const char dirnames[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 static bool verified[sizeof(dirnames)];
-static bool initialized;
 
-struct stat	statbuf;
 char		dir[2];
 char		*s;
 
@@ -77,48 +135,9 @@ char		*s;
 	if (verified[s-dirnames])
 	    return;
 
-	if (!initialized) {
-	    initialized = TRUE;
-
-	    if (getenv("TERMINFO") != NULL)
-		destination = getenv("TERMINFO");
-
-	    if (access(destination, W_OK) < 0) {
-		char	*home;
-
-		/* ncurses extension...fall back on user's private directory */
-		if ((home = getenv("HOME")) != (char *)NULL)
-		{
-		    char *homedir = malloc(sizeof(PRIVATE_INFO) + strlen(home));
-		    (void) sprintf(homedir, PRIVATE_INFO, home);
-
-		    if (access(homedir, X_OK) < 0)
-			mkdir(homedir, 0777);
-		    destination = homedir;
-		}
-	    }
-
-	    if (access(destination, X_OK) < 0)
-		_nc_err_abort("%s: non-existant or permission denied (errno %d)",
-			destination, errno);
-
-	    /*
-	     * Note: because of this code, this logic should be exercised
-	     * *once only* per run.
-	     */
-	    if (chdir(destination) < 0)
-		_nc_err_abort("%s: not a directory", destination);
-	}
-
 	dir[0] = code;
 	dir[1] = '\0';
-	if (stat(dir, &statbuf) < 0) {
-	    mkdir(dir, 0777);
-	} else if (access(dir, R_OK|W_OK|X_OK) < 0) {
-	    _nc_err_abort("%s/%s: permission denied", destination, dir);
-	} else if (!(S_ISDIR(statbuf.st_mode))) {
-	    _nc_err_abort("%s/%s: not a directory", destination, dir);
-	}
+	(void) make_directory(dir);
 
 	verified[s-dirnames] = TRUE;
 }
@@ -281,9 +300,10 @@ static time_t	start_time;		/* time at start of writes */
 static int write_object(FILE *fp, TERMTYPE *tp)
 {
 char		*namelist;
-short		namelen, boolmax, nummax, strmax;
+size_t		namelen, boolmax, nummax, strmax;
 char		zero = '\0';
-short		i, nextfree;
+size_t		i;
+short		nextfree;
 short		offsets[STRCOUNT];
 unsigned char	buf[MAX_ENTRY_SIZE];
 

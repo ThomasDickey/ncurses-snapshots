@@ -59,12 +59,8 @@ LIBRARIES	= @LIBS_TO_MAKE@
 ################################################################################
 all ::	../include/panel.h $(LIBRARIES)
 
-install :: install.libs
+install :: install.libs $(libdir)
 
-install.libs:: $(includedir) $(libdir)
-	$(INSTALL_DATA) $(srcdir)/panel.h $(includedir)/panel.h
-
-$(includedir) \
 $(libdir) :
 	$(srcdir)/../mkinstalldirs $@
 

@@ -72,10 +72,10 @@ int main (int argc, char *argv[])
 	case 'V':
 	    (void) fputs(NCURSES_VERSION, stdout);
 	    putchar('\n');
-	    exit(0);
+	    exit(EXIT_SUCCESS);
 	default:
-	    (void) fprintf (stderr, "usage: toe [-uUvV] [file...]\n");
-	    exit(1);
+	    (void) fprintf (stderr, "usage: toe [-huUvV] [file...]\n");
+	    exit(EXIT_FAILURE);
 	}
 
     if (direct_dependencies || invert_dependencies)
@@ -83,7 +83,7 @@ int main (int argc, char *argv[])
 	if (freopen(argv[optind], "r", stdin) == NULL)
 	{
 	    fprintf(stderr, "%s: can't open %s\n", _nc_progname, argv[optind]);
-	    exit(1);
+	    exit(EXIT_FAILURE);
 	}
 
 	/* parse entries out of the source file */
@@ -109,7 +109,7 @@ int main (int argc, char *argv[])
 		putchar('\n');
 	    }
 
-	exit(0);
+	exit(EXIT_SUCCESS);
     }
 
     /* maybe we want a reverse-dependency listing? */
@@ -140,7 +140,7 @@ int main (int argc, char *argv[])
 		putchar('\n');
 	}
 
-	exit(0);
+	exit(EXIT_SUCCESS);
     }
 
     /*
@@ -173,7 +173,7 @@ int main (int argc, char *argv[])
 	typelist(j, eargv, header, deschook);
     }
 
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
 
 static void deschook(const char *cn, TERMTYPE *tp)
@@ -206,7 +206,7 @@ static void typelist(int eargc, char *eargv[],
 	    (void) fprintf(stderr,
 			   "%s: can't open terminfo directory %s\n",
 			   _nc_progname, eargv[i]);
-	    exit(1);
+	    exit(EXIT_FAILURE);
 	}
 	else if (verbosity)
 	    (void) printf("#\n#%s:\n#\n", eargv[i]);
@@ -276,5 +276,5 @@ static void typelist(int eargc, char *eargv[],
 	closedir(termdir);
     }
 
-    exit(0);
+    exit(EXIT_SUCCESS);
 }

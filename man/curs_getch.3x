@@ -16,6 +16,8 @@
 .br
 \fBint ungetch(int ch);\fR
 .br
+\fBint has_key(int ch);\fR
+.br
 .SH DESCRIPTION
 The \fBgetch\fR, \fBwgetch\fR, \fBmvgetch\fR and \fBmvwgetch\fR, routines read
 a character from the window.  In no-delay mode, if no input is waiting, the
@@ -160,6 +162,10 @@ KEY_SUSPEND          Suspend key
 KEY_UNDO             Undo key
 .fi
 
+The \fBhas_key\fR routine takes a key value from the above list, and
+returns TRUE or FALSE according as the current terminal type recognizes
+a key with that value.
+
 .SH RETURN VALUE
 All routines return the integer \fBERR\fR upon failure and an integer value 
 other than \fBERR\fR" (\fBOK\fR in the case of ungetch()) upon successful
@@ -185,13 +191,16 @@ consoles typically support little more than \fBKEY_UP\fR, \fBKEY_DOWN\fR,
 \fBKEY_NPAGE\fR, \fBKEY_PPAGE\fR, and function keys 1 through 12.  The Ins key
 is usually mapped to \fBKEY_IC\fR.
 .SH PORTABILITY
-These functions are described in the XSI Curses standard, Issue 4.  They read
-single-byte characters only.  The standard specifies that they return \fBERR\fR
-on failure, but specifies no error conditions.
+The *get* functions are described in the XSI Curses standard, Issue 4.  They
+read single-byte characters only.  The standard specifies that they return
+\fBERR\fR on failure, but specifies no error conditions.
 
 The echo behavior of these functions on input of \fBKEY_\fR or backspace
 characters was not specified.  This description is adopted from the XSI
 Curses standard.
+
+The \fBhas_key\fR function is unique to \fBncurses\fR.  We recommend that
+any code using it be conditionalized on the NCURSES feature macro.
 .SH SEE ALSO
 \fBcurses\fR(3X), \fBcurs_inopts\fR(3X), \fBcurs_move\fR(3X),
 \fBcurs_refresh\fR(3X).

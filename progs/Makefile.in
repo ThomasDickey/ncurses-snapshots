@@ -130,8 +130,8 @@ DEPS_TSET = \
 tset: $(DEPS_TSET)
 	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(DEPS_TSET) $(LDFLAGS) -o $@
 
-termsort.c: ../include/Caps.filtered $(srcdir)/MKtermsort.sh
-	sh -c "$(srcdir)/MKtermsort.sh $(AWK) ../include/Caps.filtered" >$@
+termsort.c: $(srcdir)/MKtermsort.sh
+	sh -c "$(srcdir)/MKtermsort.sh $(AWK) $(srcdir)/../include/Caps" >$@
 
 #
 # Test programs (not normally built by make all) start here.
@@ -186,8 +186,7 @@ realclean: distclean
 # These rules are used to allow "make -n" to work on a clean directory-tree
 ../include/hashsize.h \
 ../include/parametrized.h \
-../include/term.h \
-../include/Caps.filtered :
+../include/term.h :
 	cd ../include; $(MAKE) $(NC_MFLAGS)
 $(LIB_CURSES) :
 	cd ../ncurses; $(MAKE) $(NC_MFLAGS)

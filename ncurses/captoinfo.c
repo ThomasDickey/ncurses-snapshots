@@ -34,6 +34,23 @@
  *	Convert value s for termcap string capability named n into terminfo
  *	format.  
  *
+ *	This code recognizes all the standard 4.4BSD %-escapes:
+ * 
+ *	%%       output `%'
+ *	%d       output value as in printf %d
+ *	%2       output value as in printf %2d
+ *	%3       output value as in printf %3d
+ *	%.       output value as in printf %c
+ *	%+x      add x to value, then do %.
+ *	%>xy     if value > x then add y, no output
+ *	%r       reverse order of two parameters, no output
+ *	%i       increment by one, no output
+ *	%n       exclusive-or all parameters with 0140 (Datamedia 2500)
+ *	%B       BCD (16*(value/10)) + (value%10), no output
+ *	%D       Reverse coding (value - 2*(value%16)), no output (Delta Data).
+ *
+ *	Also, %02 and %03 are accepted as synonyms for %2 and %3. 
+ *
  *	Besides all the standard termcap escapes, this translator understands
  *	the following extended escapes:
  *
@@ -394,13 +411,19 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 		*dp++ = '%'; *dp++ = 'c';
 		pop();
 		break;
+	    case '0':	/* not clear any of the historical termcaps did this */
+	        if (*s == '3')
+		    goto see03;
+		else if (*s != '2')
+		    goto invalid;
+		/* FALL THROUGH */
 	    case '2':
 		getparm(param, 1);
 		*dp++ = '%'; /* *dp++ = '0'; */
 		*dp++ = '2'; *dp++ = 'd';
 		pop();
 		break;
-	    case '3':
+	    case '3': see03:
 		getparm(param, 1);
 		*dp++ = '%'; /* *dp++ = '0'; */
 		*dp++ = '3'; *dp++ = 'd';
@@ -421,7 +444,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 		*dp++ = '%';
 		*dp++ = '\\';
 		break;
-	    default:
+	    default: invalid:
 		*dp++ = '%';
 		s--;
 		_nc_warning("'%s' unknown %% code %s",
@@ -519,7 +542,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 
 char *_nc_infotocap(
 /* convert a terminfo string to termcap format */
-register char *const cap,	/* relevant termcap capability index */
+register char *const cap __attribute__((unused)), /* relevant termcap capability index */
 register char *str,		/* string value of the capability */
 int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 {

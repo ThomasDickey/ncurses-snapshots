@@ -9,19 +9,13 @@
  */
 /* #define _POSIX_SOURCE -- incompatible with solaris termios.h */
 
+#include "test.priv.h"
+
 #include <signal.h>
 #include <ctype.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 #include <assert.h>
 #include <time.h>
-
-#if HAVE_TERMIOS_H
-#include <sys/termios.h>	/* required before solaris curses.h */
-#endif
-
-#include <curses.h>
 
 #ifndef SIGIOT
 #define SIGIOT SIGABRT
@@ -122,13 +116,13 @@ static int cury = (BDEPTH / 2);
 
 typedef struct
 {
-    char *name;		/* name of the ship type */
-    unsigned hits;	/* how many times has this ship been hit? */
-    char symbol;	/* symbol for game purposes */
-    char length;	/* length of ship */
-    char x, y;		/* coordinates of ship start point */
-    unsigned char dir;	/* direction of `bow' */
-    bool placed;	/* has it been placed on the board? */
+    char *name;			/* name of the ship type */
+    unsigned hits;		/* how many times has this ship been hit? */
+    char symbol;		/* symbol for game purposes */
+    unsigned char length;	/* length of ship */
+    char x, y;			/* coordinates of ship start point */
+    unsigned char dir;		/* direction of `bow' */
+    bool placed;		/* has it been placed on the board? */
 }
 ship_t;
 
@@ -162,7 +156,9 @@ static int salvo, blitz, closepack;
 
 #define	PR	(void)addstr
 
-static void uninitgame(int sig)
+static void uninitgame(int sig)  __attribute__((noreturn));
+
+static void uninitgame(int sig __attribute__((unused)))
 /* end the game, either normally or due to signal */
 {
     clear();
@@ -845,7 +841,7 @@ static int plyturn(void)
 	    m = " Glub, glub -- my %s is headed for the bottom!";
 	    break;
 	case 4:
-	    m = " You'll pick up survivors from my my %s, I hope...!";
+	    m = " You'll pick up survivors from my %s, I hope...!";
 	    break;
 	}
 	(void)printw(m, ss->name);
