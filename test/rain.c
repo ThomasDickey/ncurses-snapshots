@@ -1,9 +1,7 @@
 /*
- * $Id: rain.c,v 1.18 2002/03/23 21:46:45 tom Exp $
+ * $Id: rain.c,v 1.19 2002/04/06 20:45:22 tom Exp $
  */
 #include <test.priv.h>
-
-#include <term.h>		/* for tparm() */
 
 /* rain 11/3/1980 EPS/CITHEP */
 

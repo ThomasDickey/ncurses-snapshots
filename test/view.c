@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.50 2002/03/23 22:17:24 tom Exp $
+ * $Id: view.c,v 1.51 2002/04/06 21:41:47 tom Exp $
  */
 
 #include <ctype.h>
@@ -71,7 +71,7 @@ static int shift = 0;
 static bool try_color = FALSE;
 
 static char *fname;
-static NCURSES_CH_T **lines;
+static NCURSES_CH_T **my_lines;
 static NCURSES_CH_T **lptr;
 
 static void
@@ -235,7 +235,7 @@ main(int argc, char *argv[])
     if (optind + 1 != argc)
 	usage();
 
-    if ((lines = typeMalloc(NCURSES_CH_T *, MAXLINES + 2)) == 0)
+    if ((my_lines = typeMalloc(NCURSES_CH_T *, MAXLINES + 2)) == 0)
 	usage();
 
     fname = argv[optind];
@@ -249,7 +249,7 @@ main(int argc, char *argv[])
 #endif
 
     /* slurp the file */
-    for (lptr = &lines[0]; (lptr - lines) < MAXLINES; lptr++) {
+    for (lptr = &my_lines[0]; (lptr - my_lines) < MAXLINES; lptr++) {
 	char temp[BUFSIZ], *s, *d;
 	int col;
 
@@ -282,7 +282,7 @@ main(int argc, char *argv[])
 	*lptr = ch_dup(temp);
     }
     (void) fclose(fp);
-    length = lptr - lines;
+    length = lptr - my_lines;
 
     (void) initscr();		/* initialize the curses library */
     keypad(stdscr, TRUE);	/* enable keyboard mapping */
@@ -302,7 +302,7 @@ main(int argc, char *argv[])
 	}
     }
 
-    lptr = lines;
+    lptr = my_lines;
     while (!done) {
 	int n, c;
 
@@ -344,7 +344,7 @@ main(int argc, char *argv[])
 	case 'n':
 	    olptr = lptr;
 	    for (i = 0; i < n; i++)
-		if ((lptr - lines) < (length - LINES + 1))
+		if ((lptr - my_lines) < (length - LINES + 1))
 		    lptr++;
 		else
 		    break;
@@ -355,7 +355,7 @@ main(int argc, char *argv[])
 	case 'p':
 	    olptr = lptr;
 	    for (i = 0; i < n; i++)
-		if (lptr > lines)
+		if (lptr > my_lines)
 		    lptr--;
 		else
 		    break;
@@ -364,15 +364,15 @@ main(int argc, char *argv[])
 
 	case 'h':
 	case KEY_HOME:
-	    lptr = lines;
+	    lptr = my_lines;
 	    break;
 
 	case 'e':
 	case KEY_END:
 	    if (length > LINES)
-		lptr = lines + length - LINES + 1;
+		lptr = my_lines + length - LINES + 1;
 	    else
-		lptr = lines;
+		lptr = my_lines;
 	    break;
 
 	case 'r':
@@ -493,7 +493,7 @@ show_all(const char *tag)
     scrollok(stdscr, FALSE);	/* prevent screen from moving */
     for (i = 1; i < LINES; i++) {
 	move(i, 0);
-	printw("%3ld:", (long) (lptr + i - lines));
+	printw("%3ld:", (long) (lptr + i - my_lines));
 	clrtoeol();
 	if ((s = lptr[i - 1]) != 0) {
 	    int len = ch_len(s);

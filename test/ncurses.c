@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.166 2002/03/24 01:33:09 tom Exp $
+$Id: ncurses.c,v 1.169 2002/04/06 23:46:56 tom Exp $
 
 ***************************************************************************/
 
@@ -63,7 +63,7 @@ $Id: ncurses.c,v 1.166 2002/03/24 01:33:09 tom Exp $
 #endif
 #endif
 
-#if HAVE_PANEL_H
+#if HAVE_PANEL_H && HAVE_LIBPANEL
 #define USE_LIBPANEL 1
 #include <panel.h>
 #else
@@ -95,6 +95,7 @@ extern int _nc_tracing;
 
 #define mmask_t chtype		/* not specified in XSI */
 
+#ifdef CURSES_ACS_ARRAY
 #define ACS_S3          (CURSES_ACS_ARRAY['p'])		/* scan line 3 */
 #define ACS_S7          (CURSES_ACS_ARRAY['r'])		/* scan line 7 */
 #define ACS_LEQUAL      (CURSES_ACS_ARRAY['y'])		/* less/equal */
@@ -102,7 +103,17 @@ extern int _nc_tracing;
 #define ACS_PI          (CURSES_ACS_ARRAY['{'])		/* Pi */
 #define ACS_NEQUAL      (CURSES_ACS_ARRAY['|'])		/* not equal */
 #define ACS_STERLING    (CURSES_ACS_ARRAY['}'])		/* UK pound sign */
+#else
+#define ACS_S3          (A_ALTCHARSET + 'p')		/* scan line 3 */
+#define ACS_S7          (A_ALTCHARSET + 'r')		/* scan line 7 */
+#define ACS_LEQUAL      (A_ALTCHARSET + 'y')		/* less/equal */
+#define ACS_GEQUAL      (A_ALTCHARSET + 'z')		/* greater/equal */
+#define ACS_PI          (A_ALTCHARSET + '{')		/* Pi */
+#define ACS_NEQUAL      (A_ALTCHARSET + '|')		/* not equal */
+#define ACS_STERLING    (A_ALTCHARSET + '}')		/* UK pound sign */
+#endif
 
+#ifdef CURSES_WACS_ARRAY
 #define WACS_S3         (&(CURSES_WACS_ARRAY['p']))	/* scan line 3 */
 #define WACS_S7         (&(CURSES_WACS_ARRAY['r']))	/* scan line 7 */
 #define WACS_LEQUAL     (&(CURSES_WACS_ARRAY['y']))	/* less/equal */
@@ -110,19 +121,24 @@ extern int _nc_tracing;
 #define WACS_PI         (&(CURSES_WACS_ARRAY['{']))	/* Pi */
 #define WACS_NEQUAL     (&(CURSES_WACS_ARRAY['|']))	/* not equal */
 #define WACS_STERLING   (&(CURSES_WACS_ARRAY['}']))	/* UK pound sign */
+#endif
 
 #endif
 
 #define P(string)	printw("%s\n", string)
-#ifndef CTRL
-#define CTRL(x)		((x) & 0x1f)
+#ifdef CTRL
+#undef CTRL
 #endif
+#define CTRL(x)		((x) & 0x1f)
 
 #define QUIT		CTRL('Q')
 #define ESCAPE		CTRL('[')
 #define BLANK		' '	/* this is the background character */
 
+#undef max_colors
 static int max_colors;		/* the actual number of colors we'll use */
+
+#undef max_pairs
 static int max_pairs;		/* ...and the number of color pairs */
 
 /* The behavior of mvhline, mvvline for negative/zero length is unspecified,
@@ -169,7 +185,7 @@ wGetchar(WINDOW *win)
 }
 #define Getchar() wGetchar(stdscr)
 
-#if defined(_XOPEN_SOURCE_EXTENDED) && defined(WACS_ULCORNER)
+#if USE_WIDEC_SUPPORT
 static int
 wGet_wchar(WINDOW *win, wint_t * result)
 {
@@ -516,7 +532,7 @@ getch_test(void)
     finish_getch_test();
 }
 
-#if defined(_XOPEN_SOURCE_EXTENDED) && defined(WACS_ULCORNER)
+#if USE_WIDEC_SUPPORT
 static void
 wget_wch_test(WINDOW *win, int delay)
 {
@@ -683,8 +699,10 @@ show_attr(int row, int skip, chtype attr, const char *name)
 	const char *s = string;
 	while (*s) {
 	    int ch = *s++;
+#ifdef CURSES_ACS_ARRAY
 	    if ((ch = CURSES_ACS_ARRAY[ch]) == 0)
 		ch = ' ';
+#endif
 	    addch(ch);
 	}
     } else {
@@ -698,7 +716,7 @@ show_attr(int row, int skip, chtype attr, const char *name)
 	if (!(termattrs() & attr)) {
 	    printw(" (N/A)");
 	} else if (ncv > 0 && (getbkgd(stdscr) & A_COLOR)) {
-	    static const attr_t table[] =
+	    static const chtype table[] =
 	    {
 		A_STANDOUT,
 		A_UNDERLINE,
@@ -854,7 +872,7 @@ attr_test(void)
  *
  ****************************************************************************/
 
-static NCURSES_CONST char *color_names[] =
+static NCURSES_CONST char *the_color_names[] =
 {
     "black",
     "red",
@@ -880,7 +898,7 @@ show_color_name(int y, int x, int color)
     if (max_colors > 8)
 	mvprintw(y, x, "%02d   ", color);
     else
-	mvaddstr(y, x, color_names[color]);
+	mvaddstr(y, x, the_color_names[color]);
 }
 
 static void
@@ -975,8 +993,8 @@ color_edit(void)
 	for (i = 0; i < max_colors; i++) {
 	    mvprintw(2 + i, 0, "%c %-8s:",
 		     (i == current ? '>' : ' '),
-		     (i < (int) SIZEOF(color_names)
-		      ? color_names[i] : ""));
+		     (i < (int) SIZEOF(the_color_names)
+		      ? the_color_names[i] : ""));
 	    attrset(COLOR_PAIR(i));
 	    addstr("        ");
 	    attrset(A_NORMAL);
@@ -1317,8 +1335,6 @@ show_acs_chars(void)
     n = show_1_acs(n, BOTH(ACS_UARROW));
     n = show_1_acs(n, BOTH(ACS_DARROW));
 
-    n = show_1_acs(n, BOTH(ACS_STERLING));
-
     n = show_1_acs(n, BOTH(ACS_BLOCK));
     n = show_1_acs(n, BOTH(ACS_BOARD));
     n = show_1_acs(n, BOTH(ACS_LANTERN));
@@ -1326,11 +1342,14 @@ show_acs_chars(void)
     n = show_1_acs(n, BOTH(ACS_CKBOARD));
     n = show_1_acs(n, BOTH(ACS_DEGREE));
     n = show_1_acs(n, BOTH(ACS_DIAMOND));
+    n = show_1_acs(n, BOTH(ACS_PLMINUS));
+    n = show_1_acs(n, BOTH(ACS_PLUS));
+
     n = show_1_acs(n, BOTH(ACS_GEQUAL));
     n = show_1_acs(n, BOTH(ACS_NEQUAL));
     n = show_1_acs(n, BOTH(ACS_LEQUAL));
-    n = show_1_acs(n, BOTH(ACS_PLMINUS));
-    n = show_1_acs(n, BOTH(ACS_PLUS));
+
+    n = show_1_acs(n, BOTH(ACS_STERLING));
     n = show_1_acs(n, BOTH(ACS_PI));
     n = show_1_acs(n, BOTH(ACS_S1));
     n = show_1_acs(n, BOTH(ACS_S3));
@@ -1370,7 +1389,7 @@ acs_display(void)
     endwin();
 }
 
-#if defined(_XOPEN_SOURCE_EXTENDED) && defined(WACS_ULCORNER)
+#if USE_WIDEC_SUPPORT
 static void
 show_upper_widechars(int first)
 {
@@ -1397,7 +1416,7 @@ show_upper_widechars(int first)
 }
 
 static int
-show_1_wacs(int n, const char *name, cchar_t * code)
+show_1_wacs(int n, const char *name, const cchar_t * code)
 {
     const int height = 16;
     int row = 4 + (n % height);
@@ -1440,8 +1459,6 @@ show_wacs_chars(void)
     n = show_1_wacs(n, BOTH2(WACS_UARROW));
     n = show_1_wacs(n, BOTH2(WACS_DARROW));
 
-    n = show_1_wacs(n, BOTH2(WACS_STERLING));
-
     n = show_1_wacs(n, BOTH2(WACS_BLOCK));
     n = show_1_wacs(n, BOTH2(WACS_BOARD));
     n = show_1_wacs(n, BOTH2(WACS_LANTERN));
@@ -1449,16 +1466,21 @@ show_wacs_chars(void)
     n = show_1_wacs(n, BOTH2(WACS_CKBOARD));
     n = show_1_wacs(n, BOTH2(WACS_DEGREE));
     n = show_1_wacs(n, BOTH2(WACS_DIAMOND));
+    n = show_1_wacs(n, BOTH2(WACS_PLMINUS));
+    n = show_1_wacs(n, BOTH2(WACS_PLUS));
+
+#ifdef CURSES_WACS_ARRAY
     n = show_1_wacs(n, BOTH2(WACS_GEQUAL));
     n = show_1_wacs(n, BOTH2(WACS_NEQUAL));
     n = show_1_wacs(n, BOTH2(WACS_LEQUAL));
-    n = show_1_wacs(n, BOTH2(WACS_PLMINUS));
-    n = show_1_wacs(n, BOTH2(WACS_PLUS));
+
+    n = show_1_wacs(n, BOTH2(WACS_STERLING));
     n = show_1_wacs(n, BOTH2(WACS_PI));
     n = show_1_wacs(n, BOTH2(WACS_S1));
     n = show_1_wacs(n, BOTH2(WACS_S3));
     n = show_1_wacs(n, BOTH2(WACS_S7));
     n = show_1_wacs(n, BOTH2(WACS_S9));
+#endif
 }
 
 static void
@@ -1679,21 +1701,30 @@ FRAME
     WINDOW *wind;
 };
 
+#ifdef NCURSES_VERSION
+#define keypad_active(win) (win)->_use_keypad
+#define scroll_active(win) (win)->_scroll
+#else
+#define keypad_active(win) FALSE
+#define scroll_active(win) FALSE
+#endif
+
 /* We need to know if these flags are actually set, so don't look in FRAME.
- * These names are known to work with SVr4 curses as well as ncurses.
+ * These names are known to work with SVr4 curses as well as ncurses.  The
+ * _use_keypad name does not work with Solaris 8.
  */
 static bool
 HaveKeypad(FRAME * curp)
 {
     WINDOW *win = (curp ? curp->wind : stdscr);
-    return win->_use_keypad;
+    return keypad_active(win);
 }
 
 static bool
 HaveScroll(FRAME * curp)
 {
     WINDOW *win = (curp ? curp->wind : stdscr);
-    return win->_scroll;
+    return scroll_active(win);
 }
 
 static void
@@ -2169,7 +2200,7 @@ acs_and_scroll(void)
 	wrefresh(usescr);
     } while
 	((c = wGetchar(usescr)) != QUIT
-	 && !((c == ESCAPE) && (usescr->_use_keypad))
+	 && !((c == ESCAPE) && (keypad_active(usescr)))
 	 && (c != ERR));
 
   breakout:
@@ -3801,7 +3832,7 @@ do_single_test(const char c)
 	getch_test();
 	break;
 
-#if defined(_XOPEN_SOURCE_EXTENDED) && defined(WACS_ULCORNER)
+#if USE_WIDEC_SUPPORT
     case 'A':
 	get_wch_test();
 	break;
@@ -3835,7 +3866,7 @@ do_single_test(const char c)
 	acs_display();
 	break;
 
-#if defined(_XOPEN_SOURCE_EXTENDED) && defined(WACS_ULCORNER)
+#if USE_WIDEC_SUPPORT
     case 'F':
 	wide_acs_display();
 	break;
@@ -3943,23 +3974,23 @@ announce_sig(int sig)
 #endif
 
 static int
-rip_footer(WINDOW *win, int columns)
+rip_footer(WINDOW *win, int cols)
 {
     wbkgd(win, A_REVERSE);
     werase(win);
     wmove(win, 0, 0);
-    wprintw(win, "footer: %d columns", columns);
+    wprintw(win, "footer: %d columns", cols);
     wnoutrefresh(win);
     return OK;
 }
 
 static int
-rip_header(WINDOW *win, int columns)
+rip_header(WINDOW *win, int cols)
 {
     wbkgd(win, A_REVERSE);
     werase(win);
     wmove(win, 0, 0);
-    wprintw(win, "header: %d columns", columns);
+    wprintw(win, "header: %d columns", cols);
     wnoutrefresh(win);
     return OK;
 }
@@ -4096,7 +4127,7 @@ main(int argc, char *argv[])
     do {
 	(void) puts("This is the ncurses main menu");
 	(void) puts("a = keyboard and mouse input test");
-#if defined(_XOPEN_SOURCE_EXTENDED) && defined(WACS_ULCORNER)
+#if USE_WIDEC_SUPPORT
 	(void) puts("A = wide-character keyboard and mouse input test");
 #endif
 	(void) puts("b = character attribute test");
@@ -4104,7 +4135,7 @@ main(int argc, char *argv[])
 	(void) puts("d = edit RGB color values");
 	(void) puts("e = exercise soft keys");
 	(void) puts("f = display ACS characters");
-#if defined(_XOPEN_SOURCE_EXTENDED) && defined(WACS_ULCORNER)
+#if USE_WIDEC_SUPPORT
 	(void) puts("F = display Wide-ACS characters");
 #endif
 	(void) puts("g = display windows and scrolling");

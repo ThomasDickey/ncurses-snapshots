@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.32 2002/03/24 01:25:46 tom Exp $ */
+/* $Id: test.priv.h,v 1.34 2002/04/06 23:32:15 tom Exp $ */
 
 #if HAVE_CONFIG_H
 #include <ncurses_cfg.h>
@@ -54,6 +54,10 @@
 
 #ifndef HAVE_LIBMENU
 #define HAVE_LIBMENU 0
+#endif
+
+#ifndef HAVE_LIBPANEL
+#define HAVE_LIBPANEL 0
 #endif
 
 #ifndef HAVE_LOCALE_H
@@ -99,6 +103,7 @@
 #include <signal.h>	/* include before curses.h to work around glibc bug */
 
 #include <curses.h>
+#include <term.h>
 
 #if NCURSES_NOMACROS
 #include <nomacros.h>
@@ -121,16 +126,12 @@ extern int optind;
 #define GCC_UNUSED /* nothing */
 #endif
 
-#ifndef CURSES_ACS_ARRAY
-#define CURSES_ACS_ARRAY acs_map
-#endif
-
 #ifndef HAVE_GETNSTR
 #define getnstr(s,n) getstr(s)
 #endif
 
 #ifndef USE_WIDEC_SUPPORT
-#ifdef _XOPEN_SOURCE_EXTENDED
+#if defined(_XOPEN_SOURCE_EXTENDED) && defined(WACS_ULCORNER)
 #define USE_WIDEC_SUPPORT 1
 #else
 #define USE_WIDEC_SUPPORT 0
@@ -154,6 +155,31 @@ extern int optind;
 #ifndef CCHARW_MAX
 #define CCHARW_MAX 5
 #endif
+
+#ifndef KEY_MIN
+#define KEY_MIN 256	/* not defined in Solaris 8 */
+#endif
+
+#ifndef getcurx
+#define getcurx(win)            ((win)?(win)->_curx:ERR)
+#define getcury(win)            ((win)?(win)->_cury:ERR)
+#endif
+
+#ifndef getbegx
+#define getbegx(win)            ((win)?(win)->_begx:ERR)
+#define getbegy(win)            ((win)?(win)->_begy:ERR)
+#endif
+
+#ifndef getmaxx
+#define getmaxx(win)            ((win)?((win)->_maxx + 1):ERR)
+#define getmaxy(win)            ((win)?((win)->_maxy + 1):ERR)
+#endif
+
+/* ncurses implements tparm() with varargs, X/Open with a fixed-parameter list
+ * (which is incompatible with legacy usage, doesn't solve any problems).
+ */
+#define tparm3(a,b,c) tparm(a,b,c,0,0,0,0,0,0,0)
+#define tparm2(a,b)   tparm(a,b,0,0,0,0,0,0,0,0)
 
 #define UChar(c)    ((unsigned char)(c))
 
