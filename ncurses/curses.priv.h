@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.232 2002/12/21 16:37:33 tom Exp $
+ * $Id: curses.priv.h,v 1.234 2002/12/28 20:11:24 tom Exp $
  *
  *	curses.priv.h
  *
@@ -326,6 +326,7 @@ struct screen {
 	bool            _tried;         /* keypad mode was initialized      */
 	bool            _keypad_on;     /* keypad mode is currently on      */
 
+	bool		_called_wgetch;	/* check for recursion in wgetch()  */
 	int    	        _fifo[FIFO_SIZE];       /* input push-back buffer   */
 	short           _fifohead,      /* head of fifo queue               */
 	                _fifotail,      /* tail of fifo queue               */
@@ -405,7 +406,7 @@ struct screen {
 #endif
 	chtype          _xmc_suppress;  /* attributes to suppress if xmc     */
 	chtype          _xmc_triggers;  /* attributes to process if xmc      */
-	chtype          _acs_map[ACS_LEN];
+	chtype          _acs_map[ACS_LEN]; /* the real alternate-charset map */
 
 	/* used in lib_vidattr.c */
 	bool            _use_rmso;	/* true if we may use 'rmso'         */
@@ -463,7 +464,7 @@ struct screen {
 	int		hashtab_len;
 
 	/* recent versions of 'screen' have partially-working support for
-	 * UTF-8, but do not permit ACS at the same time (see lib_wacs.c).
+	 * UTF-8, but do not permit ACS at the same time (see tty_update.c).
 	 */
 	bool		_screen_acs_fix;
 

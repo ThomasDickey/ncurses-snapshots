@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.724 2002/12/22 00:47:56 tom Exp $
+-- $Id: NEWS,v 1.725 2002/12/29 01:39:54 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20021228
+	+ change some overlooked tputs() calls in scrolling code to use putp()
+	  (report by Philippe Blain).
+	+ modify lib_getch.c to avoid recursion via wgetnstr() when the input
+	  is not a tty and consequently mode-changes do not work (report by
+	  <R.Chamberlin@querix.com>).
+	+ rewrote lib_acs.c to allow PutAttrChar() to decide how to render
+	  alternate-characters, i.e., to work with Linux console and UTF-8
+	  locale.
+	+ correct line/column reference in adjust_window(), needed to make
+	  special windows such as curscr track properly when resizing (report
+	  by Lucas Gonze <lgonze@panix.com>).
+	> Philippe Blain:
+	+ correct the value used for blank in ClrBottom() (broken in 20000708).
+	+ correct an off-by-one in GoTo() parameter in _nc_scrolln().
 
 20021221
 	+ change several tputs() calls in scrolling code to use putp(), to

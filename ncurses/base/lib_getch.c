@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.68 2002/10/26 20:55:07 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.69 2002/12/28 20:11:57 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -214,13 +214,15 @@ _nc_wgetch(WINDOW *win,
      * stuff its contents in the FIFO queue, and pop off
      * the first character to return it.
      */
-    if (head == -1 && !SP->_raw && !SP->_cbreak) {
+    if (head == -1 && !SP->_raw && !SP->_cbreak && !SP->_called_wgetch) {
 	char buf[MAXCOLUMNS], *sp;
 	int rc;
 
 	TR(TRACE_IEVENT, ("filling queue in cooked mode"));
 
+	SP->_called_wgetch = TRUE;
 	rc = wgetnstr(win, buf, MAXCOLUMNS);
+	SP->_called_wgetch = FALSE;
 
 	/* ungetch in reverse order */
 #ifdef NCURSES_WGETCH_EVENTS
