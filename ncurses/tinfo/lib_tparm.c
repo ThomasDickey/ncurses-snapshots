@@ -42,7 +42,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.51 2000/12/10 02:55:08 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.52 2001/03/11 15:12:48 tom Exp $")
 
 /*
  *	char *
@@ -114,8 +114,11 @@ typedef struct {
     bool num_type;
 } stack_frame;
 
+NCURSES_EXPORT_VAR(int) _nc_tparm_err = 0;
+
 static stack_frame stack[STACKSIZE];
 static int stack_ptr;
+static const char *tparam_base = "";
 
 #ifdef TRACE
 static const char *tname;
@@ -195,6 +198,9 @@ npush(int x)
 	stack[stack_ptr].num_type = TRUE;
 	stack[stack_ptr].data.num = x;
 	stack_ptr++;
+    } else {
+	DEBUG(2, ("npush: stack overflow: %s", _nc_visbuf(tparam_base)));
+	_nc_tparm_err++;
     }
 }
 
@@ -206,6 +212,9 @@ npop(void)
 	stack_ptr--;
 	if (stack[stack_ptr].num_type)
 	    result = stack[stack_ptr].data.num;
+    } else {
+	DEBUG(2, ("npop: stack underflow: %s", _nc_visbuf(tparam_base)));
+	_nc_tparm_err++;
     }
     return result;
 }
@@ -217,6 +226,9 @@ spush(char *x)
 	stack[stack_ptr].num_type = FALSE;
 	stack[stack_ptr].data.str = x;
 	stack_ptr++;
+    } else {
+	DEBUG(2, ("spush: stack overflow: %s", _nc_visbuf(tparam_base)));
+	_nc_tparm_err++;
     }
 }
 
@@ -229,6 +241,9 @@ spop(void)
 	stack_ptr--;
 	if (!stack[stack_ptr].num_type && stack[stack_ptr].data.str != 0)
 	    result = stack[stack_ptr].data.str;
+    } else {
+	DEBUG(2, ("spop: stack underflow: %s", _nc_visbuf(tparam_base)));
+	_nc_tparm_err++;
     }
     return result;
 }
@@ -501,7 +516,7 @@ tparam_internal(const char *string, va_list ap)
 	if (*string != '%') {
 	    save_char(*string);
 	} else {
-	    string++;
+	    tparam_base = string++;
 	    string = parse_format(string, format, &len);
 	    switch (*string) {
 	    default:
@@ -731,6 +746,7 @@ tparm
     va_list ap;
     char *result;
 
+    _nc_tparm_err = 0;
     va_start(ap, string);
 #ifdef TRACE
     tname = "tparm";

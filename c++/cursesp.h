@@ -31,10 +31,10 @@
  *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1997                 *
  ****************************************************************************/
 
-#ifndef _CURSESP_H
-#define _CURSESP_H
+#ifndef NCURSES_CURSESP_H_incl
+#define NCURSES_CURSESP_H_incl 1
 
-// $Id: cursesp.h,v 1.13 2000/12/10 03:10:39 tom Exp $
+// $Id: cursesp.h,v 1.14 2001/03/24 21:41:35 tom Exp $
 
 #include <cursesw.h>
 
@@ -215,4 +215,4 @@ public:
   // Associate the user panel with the user data pointed to by p_UserData.
 };
 
-#endif // _CURSESP_H
+#endif // NCURSES_CURSESP_H_incl

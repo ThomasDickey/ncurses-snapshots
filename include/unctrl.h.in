@@ -39,10 +39,10 @@
  * as ^?. Printable characters are displayed as is.
  */
 
-/* $Id: unctrl.h.in,v 1.9 2000/12/10 02:02:15 tom Exp $ */
+/* $Id: unctrl.h.in,v 1.10 2001/03/24 21:53:25 tom Exp $ */
 
-#ifndef _UNCTRL_H
-#define _UNCTRL_H	1
+#ifndef NCURSES_UNCTRL_H_incl
+#define NCURSES_UNCTRL_H_incl	1
 
 #undef  NCURSES_VERSION
 #define NCURSES_VERSION "@NCURSES_MAJOR@.@NCURSES_MINOR@"
@@ -60,4 +60,4 @@ NCURSES_EXPORT(NCURSES_CONST char *) unctrl (chtype);
 }
 #endif
 
-#endif /* _UNCTRL_H */
+#endif /* NCURSES_UNCTRL_H_incl */

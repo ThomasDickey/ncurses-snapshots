@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 2000
  *
- * $Id: railroad.c,v 1.4 2000/10/15 00:21:33 tom Exp $
+ * $Id: railroad.c,v 1.5 2001/03/24 22:01:42 tom Exp $
  *
  * A simple demo of the termcap interface.
  */
@@ -233,8 +233,9 @@ main(int argc, char *argv[])
     if (argc > 1) {
 	railroad(argv + 1);
     } else {
+	static char world[] = "Hello World";
 	static char *hello[] =
-	{"Hello World", 0};
+	{world, 0};
 	railroad(hello);
     }
     return EXIT_SUCCESS;

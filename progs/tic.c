@@ -44,7 +44,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.85 2001/02/03 23:31:45 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.87 2001/03/24 22:00:43 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -52,6 +52,7 @@ static FILE *log_fp;
 static FILE *tmp_fp;
 static bool showsummary = FALSE;
 static const char *to_remove;
+static int tparm_errs;
 
 static void (*save_check_termtype) (TERMTYPE *);
 static void check_termtype(TERMTYPE * tt);
@@ -761,7 +762,7 @@ TERMINAL *cur_term;		/* tweak to avoid linking lib_cur_term.c */
  * Returns the expected number of parameters for the given capability.
  */
 static int
-expected_params(char *name)
+expected_params(const char *name)
 {
     /* *INDENT-OFF* */
     static const struct {
@@ -853,7 +854,7 @@ expected_params(char *name)
  * markers.
  */
 static void
-check_params(TERMTYPE * tp, char *name, char *value)
+check_params(TERMTYPE * tp, const char *name, char *value)
 {
     int expected = expected_params(name);
     int actual = 0;
@@ -933,6 +934,7 @@ check_sgr(TERMTYPE * tp, char *zero, int num, char *cap, const char *name)
 		       num == 7,
 		       num == 8,
 		       num == 9);
+    tparm_errs += _nc_tparm_err;
     if (test != 0) {
 	if (PRESENT(cap)) {
 	    if (!similar_sgr(test, cap)) {
@@ -1033,6 +1035,7 @@ check_termtype(TERMTYPE * tp)
     ANDMISSING(change_scroll_region, save_cursor);
     ANDMISSING(change_scroll_region, restore_cursor);
 
+    tparm_errs = 0;
     if (PRESENT(set_attributes)) {
 	char *zero = tparm(set_attributes, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
@@ -1047,6 +1050,8 @@ check_termtype(TERMTYPE * tp)
 	CHECK_SGR(8, enter_protected_mode);
 	CHECK_SGR(9, enter_alt_charset_mode);
 	free(zero);
+	if (tparm_errs)
+	    _nc_warning("stack error in sgr string");
     }
 
     /*

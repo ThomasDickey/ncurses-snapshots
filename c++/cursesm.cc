@@ -31,11 +31,11 @@
  *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1997                 *
  ****************************************************************************/
 
+#include "internal.h"
 #include "cursesm.h"
 #include "cursesapp.h"
-#include "internal.h"
 
-MODULE_ID("$Id: cursesm.cc,v 1.14 2001/03/10 23:19:34 tom Exp $")
+MODULE_ID("$Id: cursesm.cc,v 1.15 2001/03/24 20:03:56 tom Exp $")
 
 NCursesMenuItem::~NCursesMenuItem() {
   if (item)

@@ -22,10 +22,10 @@
   modified by Juergen Pfeifer (juergen.pfeifer@gmx.net)
 */
 
-#include "cursesw.h"
 #include "internal.h"
+#include "cursesw.h"
 
-MODULE_ID("$Id: cursesw.cc,v 1.19 2001/03/10 21:37:06 tom Exp $")
+MODULE_ID("$Id: cursesw.cc,v 1.20 2001/03/24 20:04:11 tom Exp $")
 
 #define COLORS_NEED_INITIALIZATION  -1
 #define COLORS_NOT_INITIALIZED       0

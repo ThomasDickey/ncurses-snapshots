@@ -31,12 +31,12 @@
  *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1997                 *
  ****************************************************************************/
 
+#include "internal.h"
 #include "cursslk.h"
 #include "cursesapp.h"
-#include "internal.h"
 #include <string.h>
 
-MODULE_ID("$Id: cursslk.cc,v 1.8 2001/03/10 23:50:40 tom Exp $")
+MODULE_ID("$Id: cursslk.cc,v 1.9 2001/03/24 20:04:15 tom Exp $")
 
 void Soft_Label_Key_Set::Soft_Label_Key::operator=(char *text)  {
   delete[] label;

@@ -31,11 +31,11 @@
  *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1997                 *
  ****************************************************************************/
 
+#include "internal.h"
 #include "cursesf.h"
 #include "cursesapp.h"
-#include "internal.h"
 
-MODULE_ID("$Id: cursesf.cc,v 1.12 2001/03/10 23:18:52 tom Exp $")
+MODULE_ID("$Id: cursesf.cc,v 1.13 2001/03/24 20:03:51 tom Exp $")
 
 NCursesFormField::~NCursesFormField () {
   if (field)

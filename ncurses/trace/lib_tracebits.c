@@ -34,7 +34,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* cur_term */
 
-MODULE_ID("$Id: lib_tracebits.c,v 1.9 2000/12/10 03:02:45 tom Exp $")
+MODULE_ID("$Id: lib_tracebits.c,v 1.10 2001/03/24 21:58:23 tom Exp $")
 
 #if SVR4_TERMIO && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
@@ -155,7 +155,7 @@ _nc_tracebits(void)
 #if defined(CS5) && defined(CS8)
     {
 	static struct {
-	    char *name;
+	    const char *name;
 	    int value;
 	} csizes[] = {
 	    {
@@ -175,7 +175,7 @@ _nc_tracebits(void)
 		"CS8 ", CS8
 	    },
 	};
-	char *result = "CSIZE? ";
+	const char *result = "CSIZE? ";
 	int value = (cur_term->Nttyb.c_cflag & CSIZE);
 	unsigned n;
 

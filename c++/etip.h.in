@@ -31,10 +31,10 @@
  *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1997                 *
  ****************************************************************************/
 
-// $Id: etip.h.in,v 1.15 2001/03/10 23:42:46 tom Exp $
+// $Id: etip.h.in,v 1.16 2001/03/24 21:42:06 tom Exp $
 
-#ifndef _ETIP_H
-#define _ETIP_H
+#ifndef NCURSES_ETIP_H_incl
+#define NCURSES_ETIP_H_incl 1
 
 // These are substituted at configure/build time
 #ifndef HAVE_BUILTIN_H
@@ -276,4 +276,4 @@ inline void THROW(const NCursesException *e) {
 
 #define THROWS(s)
 
-#endif // _ETIP_H
+#endif // NCURSES_ETIP_H_incl

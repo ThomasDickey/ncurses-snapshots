@@ -31,11 +31,11 @@
  *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1993,1997            *
  ****************************************************************************/
 
-#include "cursesp.h"
 #include "internal.h"
+#include "cursesp.h"
 #include <string.h>
 
-MODULE_ID("$Id: cursesp.cc,v 1.17 2001/03/10 23:49:57 tom Exp $")
+MODULE_ID("$Id: cursesp.cc,v 1.18 2001/03/24 20:04:04 tom Exp $")
 
 NCursesPanel* NCursesPanel::dummy = (NCursesPanel*)0;
 
