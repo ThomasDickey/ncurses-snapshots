@@ -38,7 +38,7 @@
 #include <sys/select.h>
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.7 1996/07/31 00:22:49 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.8 1996/09/18 18:47:05 esr Exp $")
 
 /*
  * We want to define GOOD_SELECT if the last argument of select(2) is
@@ -89,23 +89,27 @@ struct timeval starttime, returntime;
 
 	 T(("start twait: sec = %ld, usec = %ld", ntimeout.tv_sec, ntimeout.tv_usec));
 
-	 result = select(fd+1, &set, NULL, NULL, &ntimeout);
-
-	 /* treat failure due to interrupt like return with nothing waiting */
-	 if (result == -1)
-		result = 0;
+	 /*
+	  * the do loop makes it look like we have restarting signals,
+	  * even if we don't.
+	  */
+	 do {
+	     errno = 0;
+	     result = select(fd+1, &set, NULL, NULL, &ntimeout);
 
 #if !defined(GOOD_SELECT) && HAVE_GETTIMEOFDAY
-	 gettimeofday(&returntime, NULL);
-	 ntimeout.tv_sec -= (returntime.tv_sec - starttime.tv_sec);
-	 ntimeout.tv_usec -= (returntime.tv_usec - starttime.tv_usec);
-	 if (ntimeout.tv_usec < 0 && ntimeout.tv_sec > 0) {
-		ntimeout.tv_sec--;
-		ntimeout.tv_usec += 1000000;
-	 }
-	 if (ntimeout.tv_sec < 0)
-		ntimeout.tv_sec = ntimeout.tv_usec = 0;
+	     gettimeofday(&returntime, NULL);
+	     ntimeout.tv_sec -= (returntime.tv_sec - starttime.tv_sec);
+	     ntimeout.tv_usec -= (returntime.tv_usec - starttime.tv_usec);
+	     if (ntimeout.tv_usec < 0 && ntimeout.tv_sec > 0) {
+		 ntimeout.tv_sec--;
+		 ntimeout.tv_usec += 1000000;
+	     }
+	     if (ntimeout.tv_sec < 0)
+		 ntimeout.tv_sec = ntimeout.tv_usec = 0;
 #endif
+	 } while
+	     (result == -1 && errno == EINTR);
 
 	 /* return approximate time left on the ntimeout, in milliseconds */
 	 if (timeleft)

@@ -336,6 +336,7 @@
 ./test/gdc.6
 ./test/gdc.c
 ./test/hanoi.c
+./test/hashtest.c
 ./test/knight.c
 ./test/lrtest.c
 ./test/ncurses.c

@@ -35,7 +35,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.17 1996/09/13 09:44:57 esr Exp $")
+MODULE_ID("$Id: tic.c,v 1.18 1996/09/26 09:39:11 esr Exp $")
 
 char	*_nc_progname = "tic";
 
@@ -96,7 +96,7 @@ static bool immedhook(ENTRY *ep)
      *
      * Name collisions will still be detected, just not as cleanly.  The
      * write_entry() code complains before overwriting an entry that
-     * postdates the time of tic's first call to write_entry(),  Thus
+     * postdates the time of tic's first call to write_entry().  Thus
      * it will complain about overwriting entries newly made during the
      * tic run, but not about overwriting ones that predate it.
      *

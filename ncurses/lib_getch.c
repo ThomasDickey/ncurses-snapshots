@@ -30,7 +30,7 @@
 
 #include <string.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.14 1996/09/07 21:09:17 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.15 1996/09/18 18:47:05 esr Exp $")
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail
@@ -98,9 +98,21 @@ unsigned char ch;
 	if (tail == -1) return ERR;
 	/* FALLTHRU */
 again:
+	errno = 0;
 	n = read(SP->_ifd, &ch, 1);
-	if (n == -1 && errno == EINTR)
+
+	/*
+	 * Under System V curses with non-restarting signals, getch() returns
+	 * with value ERR when a handled signal keeps it from completing.  
+	 * If signals restart system calls, OTOH, the signal is invisible
+	 * except to its handler.
+	 * 
+	 * We don't want this difference to show.  This piece of code
+	 * tries to make it look like we always have restarting signals.
+	 */
+	if (n <= 0 && errno == EINTR)
 		goto again;
+
 	if ((n == -1) || (n == 0))
 	{
 	    T(("read(%d,&ch,1)=%d", SP->_ifd, n));

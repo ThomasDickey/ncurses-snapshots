@@ -1,4 +1,4 @@
-.\" $Id: terminfo.tail,v 1.10 1996/08/04 02:09:50 tom Exp $
+.\" $Id: terminfo.tail,v 1.12 1996/09/21 23:23:19 tom Exp $
 .\" Beginning of terminfo.tail file
 .ps +1
 .PP
@@ -69,9 +69,12 @@ map to an \s-1ESCAPE\s0 character,
 \fB^x\fR maps to a control-x for any appropriate x, and the sequences
 \fB\en \el \er \et \eb \ef \es\fR give
 a newline, line-feed, return, tab, backspace, form-feed, and space.
-Other escapes include \e^ for ^, \e\e for \e, \e, for comma, \e: for :,
-and \e0 for null.
-(\e0 will produce \e200, which does not terminate a string but behaves
+Other escapes include \fB\e^\fR for \fB^\fR,
+\fB\e\e\fR for \fB\e\fR,
+\fB\e\fR, for comma,
+\fB\e:\fR for \fB:\fR,
+and \fB\e0\fR for null.
+(\fB\e0\fR will produce \e200, which does not terminate a string but behaves
 as a null character on most terminals.)
 Finally, characters may be given as three octal digits after a \fB\e\fR.
 .PP
@@ -106,7 +109,8 @@ of a directory containing the compiled description you are working on.  Only
 that directory is searched.
 .PP
 If TERMINFO is not set, the \fBncurses\fR version of the terminfo reader code
-will instead look in the directory $HOME/.terminfo for a compiled description.
+will instead look in the directory \fB$HOME/.terminfo\fR
+for a compiled description.
 If it fails to find one there, and the environment variable TERMINFO_DIRS is
 set, it will interpret the contents of that variable as a list of colon-
 separated directories to be searched (an empty entry is interpreted as a
@@ -116,7 +120,7 @@ TERMINFO_DIRS directories, the fetch fails.
 If neither TERMINFO nor TERMINFO_DIRS is set, the last place tried will be the
 system terminfo directory, \fI\*d\fR.
 .PP
-(Neither the $HOME/.terminfo lookups nor TERMINFO_DIRS extensions are
+(Neither the \fB$HOME/.terminfo\fR lookups nor TERMINFO_DIRS extensions are
 supported under stock System V terminfo/curses.)
 .PP
 .SS Preparing Descriptions
@@ -922,10 +926,10 @@ supported by the VT100, with some characters from the AT&T 4410v1 added.
 This alternate character set may be specified by the \fBacsc\fR capability.
 .PP
 .TS H
-center;
-c c c c
-c c c c
-l l l l.
+center expand;
+c l l c
+c l l c
+lw25 lw6 lw2 lw20.
 .\".TH
 \fBGlyph	ACS	Ascii	VT100
 Name	Name	Default	Name\fR
@@ -1003,7 +1007,7 @@ space.
 .PP
 .TS H
 center;
-c c c c
+l c c c
 l l n l.
 \fBColor	#define 	Value	RGB\fR
 black	\fBCOLOR_BLACK\fR	0	0, 0, 0
@@ -1040,10 +1044,9 @@ attributes understood by \fBcurses\fR is as follows:
 .PP
 .TS
 center;
-c c c
-c c c
-l l l.
-Attribute	Bit	Decimal
+l c c
+lw25 lw2 lw10.
+\fBAttribute	Bit	Decimal\fR
 A_STANDOUT	0	1
 A_UNDERLINE	1	2
 A_REVERSE	2	4
@@ -1243,7 +1246,7 @@ The man pages for 4.3BSD and older versions of tgetent() instruct the user to
 allocate a 1K buffer for the termcap entry.  The entry gets null-terminated by
 the termcap library, so that makes the maximum safe length for a termcap entry
 1k-1 (1023) bytes.  Depending on what the application and the termcap library
-being used do, and where in the termcap file the terminal type that tgetent()
+being used does, and where in the termcap file the terminal type that tgetent()
 is searching for is, several bad things can happen.
 .PP
 Some termcap libraries print a warning message or exit if they find an

@@ -37,7 +37,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.23 1996/08/27 19:48:30 Philippe.De.Muyter Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.24 1996/09/25 23:26:19 tom Exp $")
 
 TERMINAL *cur_term;
 
@@ -276,7 +276,7 @@ char		ttn[MAX_ALIAS + 3];
 	if ((envp = getenv("TERMINFO_DIRS")) != 0)
 	{
 	    /* strtok modifies its argument, so we must copy */
-	    char *cp = strtok(envp = strcpy(RoomFor(strlen(envp)), envp), ":");
+	    char *cp = strtok(strcpy(RoomFor(strlen(envp)), envp), ":");
 
 	    do {
 		if (cp[0] == '\0')

@@ -19,7 +19,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.33 1996/09/07 15:04:44 tom Exp $ */
+/* $Id: curses.h.in,v 1.34 1996/09/20 09:35:58 esr Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -1221,6 +1221,11 @@ extern mmask_t mousemask(mmask_t, mmask_t *);
 extern bool wenclose(WINDOW *, int, int);
 extern int mouseinterval(int);
 
+/* other non-XSI functions */
+
+extern int mcprint(char *, int);	/* direct data to printer */
+extern int has_key(int);		/* do we have given key? */
+
 /* Debugging : use with libncurses_g.a */
 
 extern void _tracef(const char *, ...) GCC_PRINTFLIKE(1,2);
@@ -1233,25 +1238,25 @@ extern char *_tracemouse(const MEVENT *);
 extern void trace(const unsigned int);
 
 /* trace masks */
-#define TRACE_DISABLE	0x00	/* turn off tracing */
-#define TRACE_TPUTS	0x01	/* trace tputs calls */
-#define TRACE_UPDATE	0x02	/* trace update actions, old & new screens */
-#define TRACE_MOVE	0x04	/* trace cursor moves and scrolls */
-#define TRACE_CHARPUT	0x08	/* trace all character outputs */
-#define TRACE_ORDINARY	0x0F	/* trace all update actions */
-#define TRACE_CALLS	0x10	/* trace all curses calls */
-#define TRACE_VIRTPUT	0x20	/* trace virtual character puts */
-#define TRACE_IEVENT	0x40	/* trace low-level input processing */
-#define TRACE_BITS	0x80	/* trace state of TTY control bits */
-#define TRACE_MAXIMUM	0xff	/* maximum trace level */
+#define TRACE_DISABLE	0x0000	/* turn off tracing */
+#define TRACE_TIMES	0x0001	/* trace user and system times of updates */
+#define TRACE_TPUTS	0x0002	/* trace tputs calls */
+#define TRACE_UPDATE	0x0004	/* trace update actions, old & new screens */
+#define TRACE_MOVE	0x0008	/* trace cursor moves and scrolls */
+#define TRACE_CHARPUT	0x0010	/* trace all character outputs */
+#define TRACE_ORDINARY	0x001F	/* trace all update actions */
+#define TRACE_CALLS	0x0020	/* trace all curses calls */
+#define TRACE_VIRTPUT	0x0040	/* trace virtual character puts */
+#define TRACE_IEVENT	0x0080	/* trace low-level input processing */
+#define TRACE_BITS	0x0100	/* trace state of TTY control bits */
+#define TRACE_MAXIMUM	0xffff	/* maximum trace level */
 
 #ifdef TRACE
-extern bool no_optimize;	/* suppress optimization */
+extern int _nc_optimize_enable;		/* enable optimizations */
+#define OPTIMIZE_MVCUR		0x01	/* cursor movement optimization */
+#define OPTIMIZE_HASHMAP	0x02	/* diff hashing to detect scrolls */
+#define OPTIMIZE_SCROLL		0x04	/* scroll optimization */
+#define OPTIMIZE_ALL		0xff	/* enable all optimizations (dflt) */
 #endif /* TRACE */
-
-/* other non-XSI functions */
-
-extern int mcprint(char *, int);	/* direct data to printer */
-extern int has_key(int);		/* do we have given key? */
 
 #endif /* __NCURSES_H */

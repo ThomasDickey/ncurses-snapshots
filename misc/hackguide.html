@@ -483,6 +483,18 @@ tool is the routine <TT>mvcur()</TT> in <TT>lib_mvcur.c</TT>.  This routine
 does cursor-movement optimization, attempting to get from given screen 
 location A to given location B in the fewest output characters posible. <P>
 
+If you want to work on screen optimizations, you should use the fact
+that (in the trace-enabled version of the library) enabling the
+<TT>TRACE_TIMES</TT> trace level causes a report to be emitted after
+each screen update giving the elapsed time and a count of characters
+emitted during the update.  You can use this to tell when an update
+optimization improves efficiency. <P>
+
+In the trace-enabled version of the library, it is also possible to disable
+and re-enable various optimizations at runtime by tweaking the variable
+<TT>_nc_optimize_enable</TT>.  See the file <TT>include/curses.h.in</TT>
+for mask values, near the end. <P>
+
 <H1><A HNAME="fmnote">The Forms and Menu Libraries</A></H1>
 
 The forms and menu libraries should work reliably in any environment you

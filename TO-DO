@@ -5,22 +5,15 @@ Known Problems:
 * The endwin/initscr paradigm previously described to "solve" xterm resizing
   has been dropped, since XSI says that's a no-no.  The portable solution
   would be to use endwin/refresh, and detect the xterm resizing during the
-  first refresh (or doupdate).  Doing this will correcting the allocation
-  of SP (a long-known bug ;-), and taking into account the ripped-off-lines,
-  and reallocating where necessary the subwindows of stdscr.
+  first refresh (or doupdate).  Doing this will result in correcting the 
+  allocation of SP (a long-known bug ;-), and taking into account the
+  ripped-off-lines, and reallocating where necessary the subwindows of stdscr.
 
 * The code departs from perfect 8-bit cleanness in one respect; you cannot
   specify a character \200 as part of a capability string, because the terminfo
   library interprets \200 as a request to embed NUL (\000) at that point (the
   actual code that does this is in ncurses/lib_options.c:add_keytry().
   This is a legacy terminfo property we can't mess with.
-
-* There is no actual support for terminals with the xmc (magic-cookie) glitch.
-  (They'll work fine, unless you try to draw highlights on them and don't
-  leave the required A_NORMAL spaces on either side in the screen layout.)
-  System V Release 4 never handled these properly either, though it claimed to.
-  There is a comment in ncurses_lib_doupdate.c:doupdate() describing how this
-  could be done right, if anyone wants to try.
 
 * Recognition of xterm mouse reports is implemented by setting the kmous 
   capability to the mouse-report prefix.  As a result, the kmous sequence is
@@ -31,34 +24,6 @@ Known Problems:
 
 * The window classes defined in the c++ subdirectory need documentation.
   Some C++ programmer could earn a lot of good karma by doing this...
-
-* Mark McKenzie <mmckenzi@undergrad.math.uwaterloo.ca> writes:
- 
-        I have noticed a difference in the way the ncurses1.9.8a and System V
-        curses implementations of getch handles signals.
-
-        1) When in delay mode, getch does not return if a signal is received.
-        (With System V curses it does).
-
-        2) When in timeout mode, getch will delay until a character is received
-        if it is interrupted by a signal [and then returns ERR].
-        (With System V curses it exits when the time limit is up even if
-        interrupted by a signal).
- 
-  We think at least the first problem is now fixed.  The second may still
-  be an issue. 
-
-* Mark McKenzie also says:
-
-        With SVR4 Curses you can use overwrite to make copy from one pad to
-        another.  It seems ncurses' overwrite does nothing when passed the same
-        parameters.
-
-        You have to call copywin yourself to copy pads with ncurses.  I didn't
-        follow overwrite along to see what parameters were eventually being
-        passed to copywin.
-
-  We're working on this.
 
 Portability (or lack thereof):
 
@@ -89,6 +54,8 @@ Portability (or lack thereof):
 * Under Ultrix, configure craps out (Ultrix sh is lame).  Run it under ksh.
 
 Untested features:
+
+* The rep optimization in lib_doupdate.c is not yet thoroughly tested.
 
 * The code for the HP color model using set_color_pair is untested.
 

@@ -1178,6 +1178,10 @@ int	wmove(
 
 /* ./lib_mvcur.c */
 
+#undef _nc_mvcur_resume
+void	_nc_mvcur_resume(void)
+		{ /* void */ }
+
 #undef _nc_mvcur_init
 void	_nc_mvcur_init(void)
 		{ /* void */ }
@@ -1956,6 +1960,10 @@ int	tputs(
 unsigned _nc_tracing;
 #undef _nc_tputs_trace
 char	*_nc_tputs_trace;
+#undef _nc_outchars
+long	_nc_outchars;
+#undef _nc_optimize_enable
+int	_nc_optimize_enable;
 
 #undef trace
 void	trace(

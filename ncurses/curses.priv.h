@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.31 1996/09/13 09:44:57 esr Exp $
+ * $Id: curses.priv.h,v 1.33 1996/09/20 09:35:58 esr Exp $
  *
  *	curses.priv.h
  *
@@ -183,6 +183,8 @@ struct screen {
 	int             _ich1_cost;     /* cost of (insert_character)       */
 	int             _dch_cost;      /* cost of (parm_dch)               */
 	int             _ich_cost;      /* cost of (parm_ich)               */
+	int		_ech_cost;	/* cost of (erase_chars)	    */
+	int		_rep_cost;	/* cost of (repeat_char)	    */
 	/* used in lib_mvcur.c */
 	char *          _address_cursor;
 	int             _carriage_return_length;
@@ -268,6 +270,7 @@ typedef	struct {
 extern unsigned _nc_tracing;
 extern char *_nc_tputs_trace;
 extern char *_nc_visbuf(const char *);
+extern long _nc_outchars;
 #else
 #define T(a)
 #define TR(n, a)
@@ -306,6 +309,7 @@ extern void init_acs(void);	/* no prefix, this name is traditional */
 #define INFINITY	1000000	/* cost: too high to use */
 
 extern void _nc_mvcur_init(void);
+extern void _nc_mvcur_resume(void);
 extern void _nc_mvcur_wrap(void);
 extern int _nc_mvcur_scrolln(int, int, int, int);
 

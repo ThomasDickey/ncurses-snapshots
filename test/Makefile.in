@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.14 1996/06/01 19:51:24 tom Exp $
+# $Id: Makefile.in,v 1.16 1996/09/22 00:10:38 tom Exp $
 # Makefile for ncurses tests.
 
 SHELL		= /bin/sh
@@ -11,14 +11,14 @@ includedir	= @includedir@
 
 CC		= @CC@
 
-CFLAGS		= @CFLAGS@	# $(CFLAGS_DEBUG)
+CFLAGS		= @CFLAGS@
 
 CFLAGS_NORMAL	=
 CFLAGS_DEBUG	= @CC_G_OPT@ -DTRACE
 CFLAGS_PROFILE	= -pg
 CFLAGS_SHARED	= @CC_SHARED_OPTS@
 
-CPPFLAGS	= @CPPFLAGS@ -DHAVE_CONFIG_H 
+CPPFLAGS	= @CPPFLAGS@ -DHAVE_CONFIG_H -I$(srcdir)
 
 CCFLAGS		= $(CFLAGS) $(CPPFLAGS) $(CFLAGS_@DFT_UPR_MODEL@)
 
@@ -37,6 +37,7 @@ TESTS = \
 	firework \
 	gdc \
 	hanoi \
+	hashtest \
 	knight \
 	lrtest \
 	ncurses \
@@ -62,6 +63,8 @@ firework: $(srcdir)/firework.c $(LOCAL_LIBS)
 gdc: $(srcdir)/gdc.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
 hanoi: $(srcdir)/hanoi.c $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
+hashtest: $(srcdir)/hashtest.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
 knight: $(srcdir)/knight.c $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@

@@ -29,9 +29,9 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_overlay.c,v 1.5 1996/07/31 00:25:44 tom Exp $")
+MODULE_ID("$Id: lib_overlay.c,v 1.6 1996/09/18 18:47:05 esr Exp $")
 
-static void overlap(const WINDOW *const s, WINDOW *const d, int const flag)
+static int overlap(const WINDOW *const s, WINDOW *const d, int const flag)
 {
 int sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol;
 
@@ -45,7 +45,9 @@ int sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol;
 	dmaxrow = min(s->_maxy+s->_begy, d->_maxy+d->_begy) - d->_begy;
 	dmaxcol = min(s->_maxx+s->_begx, d->_maxx+d->_begx) - d->_begx;
 
-	copywin(s, d, sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol, flag);
+	return(copywin(s, d, 
+		       sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol,
+		       flag));
 }
 
 /*
@@ -60,8 +62,7 @@ int sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol;
 
 int overlay(const WINDOW *win1, WINDOW *win2)
 {
-	overlap(win1, win2, TRUE);
-	return OK;
+	return(overlap(win1, win2, TRUE));
 }
 
 /*
@@ -76,8 +77,7 @@ int overlay(const WINDOW *win1, WINDOW *win2)
 
 int overwrite(const WINDOW *win1, WINDOW *win2)
 {
-	overlap(win1, win2, FALSE);
-	return OK;
+	return(overlap(win1, win2, FALSE));
 }
 
 int copywin(const WINDOW *src, WINDOW *dst,

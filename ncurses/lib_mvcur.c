@@ -27,6 +27,8 @@
 **
 **		void _nc_mvcur_init(void), mvcur_wrap(void)
 **
+**		void _nc_mvcur_resume(void)
+**
 **		int mvcur(int old_y, int old_x, int new_y, int new_x)
 **
 **		void _nc_mvcur_wrap(void)
@@ -128,6 +130,8 @@
  *	int		_cuu_cost;	// cost of (parm_cursor_up)
  *	int		_hpa_cost;	// cost of (column_address)
  *	int		_vpa_cost;	// cost of (row_address)
+ *	int		_ech_cost;	// cost of (erase_chars)
+ *	int		_rep_cost;	// cost of (repeat_char)
  *
  * The TABS_OK switch controls whether it is reliable to use tab/backtabs
  * for local motions.  On many systems, it's not, due to uncertainties about
@@ -140,7 +144,7 @@
 #include <string.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.21 1996/09/13 09:44:57 esr Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.26 1996/09/28 23:04:54 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -150,10 +154,6 @@ MODULE_ID("$Id: lib_mvcur.c,v 1.21 1996/09/13 09:44:57 esr Exp $")
 #define REAL_ATTR	SP->_current_attr	/* phys current attribute */
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
 #define BAUDRATE	SP->_baudrate		/* bits per second */
-
-#ifdef TRACE
-bool no_optimize;	/* suppress optimization */
-#endif /* TRACE */
 
 #ifdef MAIN
 #include <sys/time.h>
@@ -219,6 +219,41 @@ static int NormalizedCost(const char *const cap, int affcnt)
 	return cost;
 }
 
+static void reset_scroll_region(void)
+/* Set the scroll-region to a known state (the default) */
+{
+    if (change_scroll_region)
+    {
+	/* change_scroll_region may trash the cursor location */
+	save_curs();    
+	TPUTS_TRACE("change_scroll_region");
+	putp(tparm(change_scroll_region, 0, screen_lines - 1));
+	restore_curs();
+    }
+}
+
+void _nc_mvcur_resume(void)
+/* what to do at initialization time and after each shellout */
+{
+    /* initialize screen for cursor access */
+    if (enter_ca_mode)
+    {
+	TPUTS_TRACE("enter_ca_mode");
+	putp(enter_ca_mode);
+    }
+
+    /*
+     * Doing this here rather than in _nc_mvcur_wrap() ensures that
+     * ncurses programs will see a reset scroll region even if a
+     * program that messed with it died ungracefully.
+     *
+     * This also undoes the effects of terminal init strings that assume
+     * they know the screen size.  This is useful when you're running
+     * a vt100 emulation through xterm. 
+     */
+    reset_scroll_region();
+}
+
 void _nc_mvcur_init(void)
 /* initialize the cost structure */
 {
@@ -268,7 +303,7 @@ void _nc_mvcur_init(void)
      *     digits of parameters.  On a 25x80 screen the average is 3.6197.
      *     On larger screens the value gets much closer to 4.
      *
-     * (3) The average case of cub/cuf/hpa has 2 digits of parameters
+     * (3) The average case of cub/cuf/hpa/ech/rep has 2 digits of parameters
      *     (strictly, (((10 * 1) + (70 * 2)) / 80) = 1.8750).
      *
      * (4) The average case of cud/cuu/vpa has 2 digits of parameters
@@ -295,37 +330,26 @@ void _nc_mvcur_init(void)
     /* parameterized screen-update strings */
     SP->_dch_cost  = NormalizedCost(tparm(parm_dch, 23), 1);
     SP->_ich_cost  = NormalizedCost(tparm(parm_ich, 23), 1);
-
-    /* initialize screen for cursor access */
-    if (enter_ca_mode)
-    {
-	TPUTS_TRACE("enter_ca_mode");
-	putp(enter_ca_mode);
-    }
-
-    /*
-     * Doing this here rather than in _nc_mvcur_wrap() ensures that
-     * ncurses programs will see a reset scroll region even if a
-     * program that messed with it diead ungracefully.
-     */
-    if (change_scroll_region)
-    {
-	/* change_scroll_region may trash the cursor location */
-	save_curs();
-	TPUTS_TRACE("change_scroll_region");
-	putp(tparm(change_scroll_region, 0, screen_lines - 1));
-	restore_curs();
-    }
+    SP->_ech_cost  = NormalizedCost(tparm(erase_chars, 23), 1);
+    SP->_rep_cost  = NormalizedCost(tparm(repeat_char, ' ', 23), 1);
 
     /* pre-compute some capability lengths */
     SP->_carriage_return_length = STRLEN(carriage_return);
     SP->_cursor_home_length     = STRLEN(cursor_home);
     SP->_cursor_to_ll_length    = STRLEN(cursor_to_ll);
+
+    /*
+     * A different, possibly better way to arrange this would be to set
+     * SP->_endwin = TRUE at window initialization time and let this be
+     * called by doupdate's return-from-shellout code.
+     */
+    _nc_mvcur_resume();
 }
 
 void _nc_mvcur_wrap(void)
 /* wrap up cursor-addressing mode */
 {
+    reset_scroll_region();
     if (exit_ca_mode)
     {
 	TPUTS_TRACE("exit_ca_mode");
@@ -611,8 +635,8 @@ onscreen_mvcur(int yold,int xold,int ynew,int xnew, bool ovw)
 	(void) strcpy(use, sp);
 	usecost = SP->_cup_cost;
 
-#ifdef TRACE
-	if (no_optimize)
+#ifdef TRACE_BROKEN /* don't do this - it makes the code untestable */
+	if (_nc_optimize_enable & OPTIMIZE_MVCUR)
 	    xold = yold = -1;
 #endif /* TRACE */
 
@@ -774,20 +798,19 @@ int mvcur(int yold, int xold, int ynew, int xnew)
 
 	l = (xold + 1) / screen_columns;
 	yold += l;
-	xold %= screen_columns;
-	if (!auto_right_margin)
-	{
-	    while (l > 0) {
+	if (yold >= screen_lines)
+		l -= (yold - screen_lines - 1);
+
+	while (l > 0) {
 		if (newline)
 		{
-		    TPUTS_TRACE("newline");
-		    tputs(newline, 0, _nc_outch);
+			TPUTS_TRACE("newline");
+			tputs(newline, 0, _nc_outch);
 		}
 		else
-		    putchar('\n');
+			putchar('\n');
 		l--;
-	    }
-	    xold = 0;
+		xold = 0;
 	}
     }
 
@@ -799,6 +822,7 @@ int mvcur(int yold, int xold, int ynew, int xnew)
     /* destination location is on screen now */
     return(onscreen_mvcur(yold, xold, ynew, xnew, TRUE));
 }
+
 
 /****************************************************************************
  *
@@ -1232,15 +1256,15 @@ int main(int argc, char *argv[])
 	}
 	else if (buf[0] == 'o')
 	{
-	     if (no_optimize)
+	     if (_nc_optime_enable & OPTIMIZE_MVCUR)
 	     {
-		 no_optimize = FALSE;
-		 (void) puts("Optimization is now on.");
+		 _nc_optimize_enable &=~ OPTIMIZE_MVCUR;
+		 (void) puts("Optimization is now off.");
 	     }
 	     else
 	     {
-		 no_optimize = TRUE;
-		 (void) puts("Optimization is now off.");
+		 _nc_optimize_enable |= OPTIMIZE_MVCUR;
+		 (void) puts("Optimization is now on.");
 	     }
 	}
 	/*

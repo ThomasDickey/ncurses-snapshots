@@ -18,6 +18,9 @@ below.
 If you are converting from BSD curses and do not have root access, be sure
 to read the BSD CONVERSION NOTES section below.
 
+If you are using a version of XFree86 xterm older than 3.1.2F, see the section
+on RECENT XTERM VERSIONS below.
+
 If you are trying to build GNU Emacs using ncurses for terminal support,
 read the USING NCURSES WITH EMACS section below.
 
@@ -95,11 +98,11 @@ INSTALLATION PROCEDURE:
     and SunOS with gcc, but more work needs to be done to make shared libraries
     work on other systems.
 
-    If you have the capability to make a publicly accessible terminfo database,
-    use the --disable-termcap switch.  This removes the automatic fallback to
-    the termcap file normally compiled in, making the ncurses library 
-    significantly smaller because the initialization code doesn't have to 
-    carry around the entire termcap-to-terminfo compiler.
+    You can make curses and terminfo fall back to an existing file of termcap
+    definitions by configuring with --enable-termcap.  If you do this, the
+    library will search /etc/termcap before the terminfo database, and will
+    also interpret the contents of the TERM environment variable.  See the
+    section BSD CONVERSION NOTES below.
 
 3.  Type `make'.  Ignore any warnings, no error messages should be produced. 
     This should compile the ncurses library, the terminfo compiler tic(1), 
@@ -252,6 +255,17 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 	to us explaining why you don't want to, so we can work out nomenclature
 	that will make users' lives easier rather than harder.
 
+RECENT XTERM VERSIONS
+	The terminfo database file included with this distribution assumes
+	you are running an Xfree86 xterm version 3.1.2E or more recent.
+
+	If you are running XFree version 3.1.2D or earlier, or a stock X11R6
+	xterm, you will need to modify the termtypes.src file to make xterm
+	an alias of xterm-x11r6 (rather than xterm-color), and then re-install.
+	Otherwise, your	xterm screen displays may be incorrect (because
+	ncurses will be assuming the presence of hpa/vpa capabilities that
+	don't actually work correctly.)
+
 CONFIGURING FALLBACK ENTRIES
 	In order to support operation of ncurses programs before the terminfo
 	tree is accessible (that is, in single-user mode or at OS installation
@@ -297,6 +311,9 @@ BSD CONVERSION NOTES:
 	(If you are distributing ncurses as a support-library component of
 	an application you probably want to put the remainder of this section
 	in the package README file.)
+
+        The following note applies only if you have configured ncurses with
+	--enable-termcap.
 
 ------------------------------- CUT HERE --------------------------------
 

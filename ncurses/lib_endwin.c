@@ -30,7 +30,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_endwin.c,v 1.8 1996/07/31 00:17:23 tom Exp $")
+MODULE_ID("$Id: lib_endwin.c,v 1.9 1996/09/26 09:39:11 esr Exp $")
 
 int
 endwin(void)
@@ -53,6 +53,16 @@ endwin(void)
 
 	if (SP  &&  (SP->_current_attr != A_NORMAL))
 	    vidattr(A_NORMAL);
+
+	/*
+	 * Reset terminal's tab counter.  There's a long-time bug that
+	 * if you exit a "curses" program such as vi or more, tab
+	 * forward, and then backspace, the cursor doesn't go to the
+	 * right place.  The problem is that the kernel counts the
+	 * escape sequences that reset things as column positions.
+	 * Utter a \r to reset this invisibly.
+	 */
+	_nc_outch('\r');
 
 	return(reset_shell_mode());
 }
