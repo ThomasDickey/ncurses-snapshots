@@ -23,7 +23,9 @@
 #include <curses.priv.h>
 
 #include <string.h>
-#include "term.h"
+#include <term.h>
+
+MODULE_ID("$Id: lib_ti.c,v 1.4 1996/07/30 22:49:24 tom Exp $")
 
 int tigetflag(const char *str)
 {

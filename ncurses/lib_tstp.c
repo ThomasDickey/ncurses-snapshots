@@ -37,13 +37,15 @@ typedef struct sigaction sigaction_t;
 #endif
 #else	/* !HAVE_SIGACTION */
 #if HAVE_SIGVEC
-#include "SigAction.h"
+#include <SigAction.h>
 #endif
 #endif
 
 #ifdef SVR4_ACTION
 #define _POSIX_SOURCE
 #endif
+
+MODULE_ID("$Id: lib_tstp.c,v 1.7 1996/07/31 00:04:35 tom Exp $")
 
 /*
  * Note: This code is fragile!  Its problem is that different OSs
@@ -124,7 +126,7 @@ static void tstp(int dummy GCC_UNUSED)
 	(void)sigaddset(&mask, SIGTSTP);
 	(void)sigprocmask(SIG_UNBLOCK, &mask, NULL);
 
-	/* Now we want to resend SIGSTP to this process and suspend it */ 
+	/* Now we want to resend SIGSTP to this process and suspend it */
 	act.sa_handler = SIG_DFL;
 	sigemptyset(&act.sa_mask);
 	act.sa_flags = 0;
@@ -147,7 +149,7 @@ static void tstp(int dummy GCC_UNUSED)
 	def_shell_mode();
 
 	/*
-	 * This relies on the fact that doupdate() will restore the 
+	 * This relies on the fact that doupdate() will restore the
 	 * program-mode tty state, and issue enter_ca_mode if need be.
 	 */
 	doupdate();

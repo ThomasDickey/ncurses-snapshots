@@ -2,7 +2,7 @@
 #
 # MKlib_gen.sh -- generate sources from curses.h macro definitions
 #
-# (@Id: MKlib_gen.sh,v 1.1 1995/11/13 22:31:45 esr Exp @)
+# ($Id: MKlib_gen.sh,v 1.4 1996/07/30 22:54:45 tom Exp $)
 #
 # The XSI Curses standard requires all curses entry points to exist as
 # functions, even though many definitions would normally be shadowed
@@ -32,7 +32,7 @@ TMP=gen$$.c
 trap "rm -f $TMP" 0 1 2 5 15
 
 (cat <<EOF
-#include "curses.h"
+#include <curses.h>
 
 DECLARATIONS
 
@@ -103,7 +103,7 @@ BEGIN		{
 	print " * pull most of the rest of the library into your link image."
 	print " * Cope with it."
 	print " */"
-	print "#include \"curses.h\""
+	print "#include <curses.h>"
 	print ""
 		}
 /^DECLARATIONS/	{start = 1; next;}

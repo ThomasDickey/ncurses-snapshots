@@ -38,8 +38,10 @@
  * that use only these facilities.
  */
 
-#include "curses.priv.h"
-#include "term.h"	/* cur_term */
+#include <curses.priv.h>
+#include <term.h>	/* cur_term */
+
+MODULE_ID("$Id: lib_kernel.c,v 1.11 1996/07/31 00:39:42 tom Exp $")
 
 int napms(int ms)
 {
@@ -61,7 +63,7 @@ int reset_prog_mode(void)
 	if (SP && stdscr && stdscr->_use_keypad)
 		_nc_keypad(TRUE);
 
-	return OK; 
+	return OK;
 }
 
 
@@ -80,7 +82,7 @@ int reset_shell_mode(void)
 #else
 	stty(cur_term->Filedes, &cur_term->Ottyb);
 #endif
-	return OK; 
+	return OK;
 }
 
 /*
@@ -96,9 +98,9 @@ erasechar(void)
 	T(("erasechar() called"));
 
 #ifdef TERMIOS
-    	return(cur_term->Ottyb.c_cc[VERASE]);
+	return(cur_term->Ottyb.c_cc[VERASE]);
 #else
-    	return(cur_term->Ottyb.sg_erase);
+	return(cur_term->Ottyb.sg_erase);
 #endif
 
 }
@@ -118,9 +120,9 @@ killchar(void)
 	T(("killchar() called"));
 
 #ifdef TERMIOS
-    	return(cur_term->Ottyb.c_cc[VKILL]);
+	return(cur_term->Ottyb.c_cc[VKILL]);
 #else
-    	return(cur_term->Ottyb.sg_kill);
+	return(cur_term->Ottyb.sg_kill);
 #endif
 }
 
@@ -145,11 +147,11 @@ int flushinp(void)
 	    ioctl(cur_term->Filedes, TIOCFLUSH, 0);
 	} while
 	    (errno == EINTR);
-#endif    
-    	if (SP) {
-	  	SP->_fifohead = -1;
-	  	SP->_fifotail = 0;
-	  	SP->_fifopeek = 0;
+#endif
+	if (SP) {
+		SP->_fifohead = -1;
+		SP->_fifotail = 0;
+		SP->_fifopeek = 0;
 	}
 	return OK;
 

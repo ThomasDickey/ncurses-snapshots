@@ -28,19 +28,21 @@
  *
  */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 #include <string.h>
 #include <ctype.h>
-#include "term.h"	/* padding_baud_rate, xon_xoff */
+#include <term.h>	/* padding_baud_rate, xon_xoff */
+
+MODULE_ID("$Id: lib_tputs.c,v 1.13 1996/07/31 00:19:43 tom Exp $")
 
 int delay_output(int ms)
 {
 	T(("delay_output(%d) called", ms));
 
-    	if (SP == 0 || SP->_baudrate <= 0)
+	if (SP == 0 || SP->_baudrate <= 0)
 		return(ERR);
 #ifdef no_pad_char
-    	else if (no_pad_char)
+	else if (no_pad_char)
 		_nc_timed_wait(0, ms, (int *)NULL);
 #endif /* no_pad_char */
 	else {
@@ -49,15 +51,15 @@ int delay_output(int ms)
 
 #ifdef pad_char
 		if (pad_char)
-	    		null = pad_char[0];
+			null = pad_char[0];
 #endif /* pad_char */
 
 		for (nullcount = ms * 1000 / SP->_baudrate; nullcount > 0; nullcount--)
-		    	putc(null, SP->_ofp);
+			putc(null, SP->_ofp);
 		(void) fflush(SP->_ofp);
-    	}
+	}
 
-    	return OK;
+	return OK;
 }
 
 int _nc_outch(int ch)
@@ -131,39 +133,39 @@ char	addrbuf[17];
 #endif /* BSD_TPUTS */
 
 	while (*string) {
-	    	if (*string != '$')
+		if (*string != '$')
 			(*outc)(*string);
-	    	else {
+		else {
 			string++;
 			if (*string != '<') {
-			    	(*outc)('$');
+				(*outc)('$');
 				if (*string)
 				    (*outc)(*string);
 			} else {
 				bool mandatory;
 
-			    	number = 0;
-			    	string++;
+				number = 0;
+				string++;
 
-			    	if ((!isdigit(*string) && *string != '.') || !strchr(string, '>')) {
+				if ((!isdigit(*string) && *string != '.') || !strchr(string, '>')) {
 					(*outc)('$');
 					(*outc)('<');
 					continue;
-			    	}
-			    	while (isdigit(*string)) {
+				}
+				while (isdigit(*string)) {
 					number = number * 10 + *string - '0';
 					string++;
-			    	}
+				}
 
-			    	if (*string == '.') {
+				if (*string == '.') {
 					string++;
 					if (isdigit(*string)) {
-					    	number += (float) (*string - '0') / 10.;
-					    	string++;
+						number += (float) (*string - '0') / 10.;
+						string++;
 					}
 					while (isdigit(*string))
 						string++;
-			    	}
+				}
 
 				mandatory = !xon_xoff;
 				while (*string == '*' || *string == '/')
@@ -176,10 +178,10 @@ char	addrbuf[17];
 						mandatory = TRUE;
 						string++;
 					}
-			    	}
+				}
 
 #ifdef padding_baud_rate
-			    	if (mandatory && number > 0 && padding_baud_rate && (!SP || SP->_baudrate >= padding_baud_rate))
+				if (mandatory && number > 0 && padding_baud_rate && (!SP || SP->_baudrate >= padding_baud_rate))
 					delay_output(number);
 #endif /* padding_baud_rate */
 				number = 0;

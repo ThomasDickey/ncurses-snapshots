@@ -24,7 +24,7 @@
 /*
 **	lib_newterm.c
 **
-** 	The newterm() function.
+**	The newterm() function.
 **
 */
 
@@ -34,7 +34,9 @@
 #define _POSIX_SOURCE
 #endif
 
-#include "term.h"	/* clear_screen, cup & friends, cur_term */
+#include <term.h>	/* clear_screen, cup & friends, cur_term */
+
+MODULE_ID("$Id: lib_newterm.c,v 1.18 1996/07/31 01:19:42 tom Exp $")
 
 /* This should moved to TERMINAL */
 static filter_mode = FALSE;
@@ -58,10 +60,10 @@ char *t = getenv("NCURSES_TRACE");
 
 	/* this loads the capability entry, then sets LINES and COLS */
 	if (setupterm(term, fileno(ofp), &errret) == ERR)
-	    	return NULL;
+		return NULL;
 
 	/*
-	 * Check for mismatched graphic-rendition capabilities.  Most svr4
+	 * Check for mismatched graphic-rendition capabilities.  Most SVr4
 	 * terminfo tree contain entries that have rmul or rmso equated to sgr0
 	 * (Solaris curses copes with those entries).  We do this only for
 	 * curses, since many termcap applications assume that smso/rmso and
@@ -130,25 +132,25 @@ char *t = getenv("NCURSES_TRACE");
 
 	/* implement filter mode */
 	if (filter_mode) {
-	    LINES = 1;
+		LINES = 1;
 
 #ifdef init_tabs
-	if (init_tabs != -1)
-		TABSIZE = init_tabs;
-	else
+		if (init_tabs != -1)
+			TABSIZE = init_tabs;
+		else
 #endif /* init_tabs */
-		TABSIZE = 8;
+			TABSIZE = 8;
 
-	T(("TABSIZE = %d", TABSIZE));
+		T(("TABSIZE = %d", TABSIZE));
 
 #ifdef clear_screen
-	    clear_screen = (char *)NULL;
-	    cursor_down = parm_down_cursor = (char *)NULL;
-	    cursor_address = (char *)NULL;
-	    cursor_up = parm_up_cursor = (char *)NULL;
-	    row_address = (char *)NULL;
-
-	    cursor_home = carriage_return;
+		clear_screen = (char *)NULL;
+		cursor_down = parm_down_cursor = (char *)NULL;
+		cursor_address = (char *)NULL;
+		cursor_up = parm_up_cursor = (char *)NULL;
+		row_address = (char *)NULL;
+		
+		cursor_home = carriage_return;
 #endif /* clear_screen */
 	}
 
@@ -164,9 +166,11 @@ char *t = getenv("NCURSES_TRACE");
 		if (ERR==_nc_ripoffline(-SLK_LINES, _nc_slk_initialize))
 		  return NULL;
 	      }
-	/* this actually allocates the screen structure */
+	/* this actually allocates the screen structure, and saves the
+	 * original terminal settings.
+	 */
 	if (_nc_setupscreen(LINES, COLS, ofp) == ERR)
-	    	return NULL;
+		return NULL;
 
 #ifdef num_labels
 	/* if the terminal type has real soft labels, set those up */
@@ -203,8 +207,10 @@ char *t = getenv("NCURSES_TRACE");
 	/* open a connection to the screen's associated mouse, if any */
 	_nc_mouse_init(SP);
 
+	/* Initialize the terminal line settings. */
+	_nc_initscr();
+
 	T(("newterm returns %p", SP));
 
 	return(SP);
 }
-

@@ -32,10 +32,10 @@
  *	char *captoinfo(n, s, parametrized)
  *
  *	Convert value s for termcap string capability named n into terminfo
- *	format.  
+ *	format.
  *
  *	This code recognizes all the standard 4.4BSD %-escapes:
- * 
+ *
  *	%%       output `%'
  *	%d       output value as in printf %d
  *	%2       output value as in printf %2d
@@ -49,16 +49,16 @@
  *	%B       BCD (16*(value/10)) + (value%10), no output
  *	%D       Reverse coding (value - 2*(value%16)), no output (Delta Data).
  *
- *	Also, %02 and %03 are accepted as synonyms for %2 and %3. 
+ *	Also, %02 and %03 are accepted as synonyms for %2 and %3.
  *
  *	Besides all the standard termcap escapes, this translator understands
  *	the following extended escapes:
  *
  *	used by GNU Emacs termcap libraries
- *		%a[+*-/=][cp]x	GNU arithmetic. 
- *		%m	  	xor the first two parameters by 0177
- *		%b	  	backup to previous parameter
- *		%f	  	skip this parameter
+ *		%a[+*-/=][cp]x	GNU arithmetic.
+ *		%m		xor the first two parameters by 0177
+ *		%b		backup to previous parameter
+ *		%f		skip this parameter
  *
  *	used by the University of Waterloo (MFCF) termcap libraries
  *		%-x	 subtract parameter FROM char x and output it as a char
@@ -72,7 +72,7 @@
  *	the Waterloo %s conflicts with the way terminfo uses %s in strings for
  *	function programming.
  *
- * 	Note the two definitions of %a: the GNU definition is translated if the
+ *	Note the two definitions of %a: the GNU definition is translated if the
  *	characters after the 'a' are valid for it, otherwise the UW definition
  *	is translated.
  */
@@ -81,8 +81,9 @@
 
 #include <string.h>
 #include <ctype.h>
-#include <unctrl.h>
-#include "tic.h"
+#include <tic.h>
+
+MODULE_ID("$Id: captoinfo.c,v 1.13 1996/07/31 00:07:42 tom Exp $")
 
 #define MAX_PUSHED	16	/* max # args we can push onto the stack */
 #define MAX_ENTRY	2048	/* maximum chars in a translated capability */
@@ -142,7 +143,7 @@ static void push(void)
 static void pop(void)
 /* pop the top of the stack into onstack */
 {
-    if (stackptr == 0) 
+    if (stackptr == 0)
 	if (onstack == 0)
 	    _nc_warning("I'm confused");
 	else
@@ -234,7 +235,7 @@ static void getparm(int parm, int n)
 		push();
 
 	onstack = parm;
-	
+
 	while(n--) {		/* %p0 */
 		*dp++ = '%'; *dp++ = 'p'; *dp++ = '0' + parm;
 	}
@@ -243,7 +244,7 @@ static void getparm(int parm, int n)
 		*dp++ = '%'; *dp++ = '{'; *dp++ = '9'; *dp++ = '6'; *dp++ = '}';
 		*dp++ = '%'; *dp++ = '^';
 	}
-	
+
 	if (seenm && parm < 3) {	/* %{127}%^ */
 		*dp++ = '%'; *dp++ = '{'; *dp++ = '1'; *dp++ = '2'; *dp++ = '7';
 		*dp++ = '}'; *dp++ = '%'; *dp++ = '^';
@@ -271,7 +272,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
     /* skip the initial padding (if we haven't been told not to) */
     capstart = (char *)NULL;
     if (s == 0)
-    	s = "";
+	s = "";
     if (parametrized >= 0 && isdigit(*s))
 	for (capstart = s; ; s++)
 	    if (!(isdigit(*s) || *s == '*' || *s == '.'))
@@ -303,7 +304,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 		}
 		break;
 	    case 'i': *dp++ = '%'; *dp++ = 'i'; break;
-	    case '6': 
+	    case '6':
 	    case 'B':
 		getparm(param, 2);
 		/* %{6}%*%+ */
@@ -322,7 +323,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 	    case '>':
 		getparm(param, 2);
 		/* %?%{x}%>%t%{y}%+%; */
-		*dp++ = '%'; *dp++ = '?'; 
+		*dp++ = '%'; *dp++ = '?';
 		s += cvtchar(s);
 		*dp++ = '%'; *dp++ = '>';
 		*dp++ = '%'; *dp++ = 't';
@@ -580,7 +581,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 	    while (isdigit(*str) || *str == '.' || *str == '*' || *str == '/' || *str == '>')
 		str++;
 	    --str;
-	}	
+	}
 	else if (*str != '%' || (parametrized < 1))
 	    bufptr = save_char(bufptr, *str);
 	else if (sscanf(str, "%%?%%{%d}%%>%%t%%{%d}%%+%%;", &c1,&c2) == 2)
@@ -735,7 +736,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 
 	    } /* endswitch (*str) */
 	} /* endelse (*str == '%') */
-	
+
 	if (*str == '\0')
 	    break;
 

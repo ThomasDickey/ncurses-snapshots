@@ -33,7 +33,7 @@
 **
 **		int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 **
-** Comparisons with older movement optimizers:  
+** Comparisons with older movement optimizers:
 **    SVr3 curses mvcur() can't use cursor_to_ll or auto_left_margin.
 **    4.4BSD curses can't use cuu/cud/cuf/cub/hpa/vpa/tab/cbt for local
 ** motions.  It doesn't use tactics based on auto_left_margin.  Weirdly
@@ -54,7 +54,7 @@
 ** cuf, cub, cuu1, cud1, cuf1, cub1.  It may be that one or more are wrong.
 **
 ** Note: you should expect this code to look like a resource hog in a profile.
-** That's because it does a lot of I/O, through the tputs() calls.  The I/O 
+** That's because it does a lot of I/O, through the tputs() calls.  The I/O
 ** cost swamps the computation overhead (and as machines get faster, this
 ** will become even more true).  Comments in the test exerciser at the end
 ** go into detail about tuning and how you can gauge the optimizer's
@@ -136,7 +136,11 @@
  */
 
 #include <curses.priv.h>
-#include "term.h"
+#include <term.h>
+#include <string.h>
+#include <ctype.h>
+
+MODULE_ID("$Id: lib_mvcur.c,v 1.17 1996/07/31 00:08:34 tom Exp $")
 
 #define NLMAPPING	SP->_nl			/* nl() on? */
 #define RAWFLAG		SP->_raw		/* raw() on? */
@@ -146,9 +150,6 @@
 #define REAL_ATTR	SP->_current_attr	/* phys current attribute */
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
 #define BAUDRATE	SP->_baudrate		/* bits per second */
-
-#include <string.h>
-#include <ctype.h>
 
 #ifdef TRACE
 bool no_optimize;	/* suppress optimization */
@@ -186,7 +187,7 @@ static int CostOf(const char *const cap, int affcnt)
     else
     {
 	const	char	*cp;
-	float	cum_cost = 0;	
+	float	cum_cost = 0;
 
 	for (cp = cap; *cp; cp++)
 	{
@@ -231,9 +232,9 @@ void _nc_mvcur_init(void)
      * 9 = 7 bits + 1 parity + 1 stop.
      */
     if (BAUDRATE > 0)
-    	SP->_char_padding = (9 * 1000 * 10) / BAUDRATE;
+	SP->_char_padding = (9 * 1000 * 10) / BAUDRATE;
     else
-    	SP->_char_padding = 9 * 1000 * 10 / 9600; /* use some default if baudrate == 0 */
+	SP->_char_padding = 9 * 1000 * 10 / 9600; /* use some default if baudrate == 0 */
     if (SP->_char_padding <= 0)
 	SP->_char_padding = 1;	/* must be nonzero */
 
@@ -497,7 +498,7 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 		/*
 		 * If we have no attribute changes, overwrite is cheaper.
 		 * Note: must suppress this by passing in ovw = FALSE whenever
-		 * WANT_CHAR would return invalid data.  In particular, this 
+		 * WANT_CHAR would return invalid data.  In particular, this
 		 * is true between the time a hardware scroll has been done
 		 * and the time the structure WANT_CHAR would access has been
 		 * updated.
@@ -636,7 +637,7 @@ onscreen_mvcur(int yold,int xold,int ynew,int xnew, bool ovw)
 	 * (like, say, local-movement \n getting mapped to some obscure
 	 * character because A_ALTCHARSET is on).
 	 */
-	if (yold == -1 || xold == -1  || 
+	if (yold == -1 || xold == -1  ||
 	    REAL_ATTR != A_NORMAL || NOT_LOCAL(yold, xold, ynew, xnew))
 	{
 #ifdef MAIN
@@ -684,7 +685,7 @@ onscreen_mvcur(int yold,int xold,int ynew,int xnew, bool ovw)
 
     /* tactic #4: use home-down + local movement */
     if (cursor_to_ll
-    	&& ((newcost=relative_move(NULL, screen_lines-1, 0, ynew, xnew, ovw)) != INFINITY)
+	&& ((newcost=relative_move(NULL, screen_lines-1, 0, ynew, xnew, ovw)) != INFINITY)
 	&& SP->_ll_cost + newcost < usecost)
     {
 	tactic = 4;
@@ -1002,7 +1003,7 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
     else /* (n < 0) */
     {
 	/*
-	 * Explicitly clear if stuff pushed off top of region might 
+	 * Explicitly clear if stuff pushed off top of region might
 	 * be saved by the terminal.
 	 */
 	if (non_dest_scroll_region || (memory_above && top == 0))
@@ -1093,8 +1094,8 @@ int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
  *
  ****************************************************************************/
 
-#include "tic.h"
-#include "dump_entry.h"
+#include <tic.h>
+#include <dump_entry.h>
 
 char *_nc_progname = "mvcur";
 
@@ -1283,7 +1284,7 @@ int main(int argc, char *argv[])
 		 (void) puts("Optimization is now off.");
 	     }
 	}
-	/* 
+	/*
 	 * You can use the `t' test to profile and tune the movement
 	 * optimizer.  Use iteration values in three digits or more.
 	 * At above 5000 iterations the profile timing averages are stable
@@ -1312,7 +1313,7 @@ int main(int argc, char *argv[])
 	    xmits = 0;
 	    for (i = 0; i < n; i++)
 	    {
-		/* 
+		/*
 		 * This does a move test between two random locations,
 		 * Random moves probably short-change the optimizer,
 		 * which will work better on the short moves probably
@@ -1341,13 +1342,13 @@ int main(int argc, char *argv[])
 	     */
 	    perchar = cumtime / n;
 
-	    (void) printf("%d moves (%ld chars) in %d msec, %f msec each:\n", 
+	    (void) printf("%d moves (%ld chars) in %d msec, %f msec each:\n",
 			  n, xmits, (int)cumtime, perchar);
 
 	    for (i = 0; speeds[i]; i++)
 	    {
 		/*
-		 * Total estimated time for the moves, computation and 
+		 * Total estimated time for the moves, computation and
 		 * transmission both. Transmission time is an estimate
 		 * assuming 9 bits/char, 8 bits + 1 stop bit.
 		 */

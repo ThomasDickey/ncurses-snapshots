@@ -27,8 +27,10 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 #include <string.h>
+
+MODULE_ID("$Id: lib_longname.c,v 1.4 1996/07/31 00:25:23 tom Exp $")
 
 char *
 longname(void)
@@ -38,7 +40,7 @@ char	*ptr;
 	T(("longname() called"));
 
 	for (ptr = ttytype + strlen(ttytype); ptr > ttytype; ptr--)
-	   	if (*ptr == '|')
+		if (*ptr == '|')
 			return(ptr + 1);
 
     return(ttytype);

@@ -27,7 +27,9 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
+
+MODULE_ID("$Id: lib_inchstr.c,v 1.3 1996/07/30 22:29:50 tom Exp $")
 
 int winchnstr(WINDOW *win, chtype *str, int n)
 {

@@ -20,13 +20,13 @@
 ***************************************************************************/
 
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 
-#include <stdio.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <time.h>
-#include "term.h"	/* exit_ca_mode, non_rev_rmcup */
+#include <term.h>	/* exit_ca_mode, non_rev_rmcup */
+
+MODULE_ID("$Id: lib_screen.c,v 1.5 1996/07/30 22:49:24 tom Exp $")
 
 static time_t	dumptime;
 

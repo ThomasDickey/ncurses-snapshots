@@ -22,12 +22,14 @@
 #include <curses.priv.h>
 
 #include <string.h>
-#include "termcap.h"
+#include <termcap.h>
 
 #define __INTERNAL_CAPS_VISIBLE
-#include "term.h"
+#include <term.h>
 
-/* 
+MODULE_ID("$Id: lib_termcap.c,v 1.10 1996/07/31 00:14:56 tom Exp $")
+
+/*
    some of the code in here was contributed by:
    Magnus Bengtsson, d6mbeng@dtek.chalmers.se
 */
@@ -135,7 +137,7 @@ int errcode;
 
 /* LINT_PREPRO
 #if 0*/
-#include "capdefaults.c"
+#include <capdefaults.c>
 /* LINT_PREPRO
 #endif*/
 
@@ -157,7 +159,7 @@ int i;
 
 	T(("tgetflag: %s", id));
 	for (i = 0; i < BOOLCOUNT; i++)
-		if (!strcmp(id, boolcodes[i])) 
+		if (!strcmp(id, boolcodes[i]))
 			return cur_term->type.Booleans[i];
 	return ERR;
 }
@@ -177,7 +179,7 @@ int i;
 
 	T(("tgetnum: %s", id));
 	for (i = 0; i < NUMCOUNT; i++)
-		if (!strcmp(id, numcodes[i])) 
+		if (!strcmp(id, numcodes[i]))
 			return cur_term->type.Numbers[i];
 	return ERR;
 }
@@ -187,7 +189,7 @@ int i;
  * tgetstr(str, area)
  *
  * Look up string termcap capability str and return a pointer to its value,
- * or NULL if not given. 
+ * or NULL if not given.
  *
  ***************************************************************************/
 

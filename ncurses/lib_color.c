@@ -19,8 +19,8 @@
 *                                                                          *
 ***************************************************************************/
 
-/* lib_color.c 
- *  
+/* lib_color.c
+ *
  * Handles color emulation of SYS V curses
  *
  */
@@ -28,7 +28,9 @@
 #include <curses.priv.h>
 
 #include <string.h>
-#include "term.h"
+#include <term.h>
+
+MODULE_ID("$Id: lib_color.c,v 1.8 1996/07/31 01:00:00 esr Exp $")
 
 int COLOR_PAIRS;
 int COLORS;
@@ -164,7 +166,7 @@ int init_pair(short pair, short f, short b)
 	if ((f  < 0) || (f >= COLORS) || (b < 0) || (b >= COLORS))
 		return ERR;
 
-	/* 
+	/*
 	 * FIXME: when a pair's content is changed, replace its colors
 	 * (if pair was initialized before a screen update is performed
 	 * replacing original pair colors with the new ones)
@@ -188,7 +190,7 @@ int init_pair(short pair, short f, short b)
 			    pair,
 			    tp[f].red, tp[f].green, tp[f].blue,
 			    tp[b].red, tp[b].green, tp[b].blue));
-	    }		
+	    }
 	}
 
 	return OK;
@@ -206,12 +208,12 @@ int init_color(short color, short r, short g, short b)
 #ifdef hue_lightness_saturation
 	if (hue_lightness_saturation == TRUE)
 		if (r < 0 || r > 360 || g < 0 || g > 100 || b < 0 || b > 100)
-			return ERR;	
+			return ERR;
 	if (hue_lightness_saturation == FALSE)
 #endif /* hue_lightness_saturation */
 		if (r < 0 || r > 1000 || g < 0 ||  g > 1000 || b < 0 || b > 1000)
 			return ERR;
-				
+
 #ifdef hue_lightness_saturation
 	if (hue_lightness_saturation)
 	    rgb2hls(r, g, b,
@@ -241,11 +243,11 @@ bool can_change_color(void)
 	return (can_change != 0);
 }
 
-int has_colors(void)
+bool has_colors(void)
 {
-	return ((orig_pair != NULL || orig_colors != NULL) 
+	return ((orig_pair != NULL || orig_colors != NULL)
 		&& (max_colors != -1) && (max_pairs != -1)
-		&& 
+		&&
 		(((set_foreground != NULL) && (set_background != NULL))
 		|| ((set_a_foreground != NULL) && (set_a_background != NULL))
 		|| set_color_pair)
@@ -279,7 +281,7 @@ void _nc_do_color(int pair, int  (*outc)(int))
 {
     short fg, bg;
 
-    if (pair == 0) 
+    if (pair == 0)
     {
 	if (orig_pair)
 	{

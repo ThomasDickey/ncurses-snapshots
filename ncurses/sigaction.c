@@ -19,14 +19,16 @@
 *                                                                          *
 ***************************************************************************/
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 
 /* This file provides sigaction() emulation using sigvec() */
 /* Use only if this is non POSIX system */
 
 #if !HAVE_SIGACTION
 #include <signal.h>
-#include "SigAction.h"
+#include <SigAction.h>
+
+MODULE_ID("$Id: sigaction.c,v 1.6 1996/07/31 00:15:36 tom Exp $")
 
 int
 sigaction (int sig, sigaction_t * sigact, sigaction_t * osigact)
@@ -45,7 +47,7 @@ int
 sigprocmask (int mode, sigset_t * mask, sigset_t * omask)
    {
    sigset_t current = sigsetmask(0);
-   
+
    if (omask) *omask = current;
 
    if (mode==SIG_BLOCK)

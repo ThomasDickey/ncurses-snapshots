@@ -28,21 +28,21 @@
  *	from the input stream.
  */
 
-#include <config.h>
+#include <curses.priv.h>
 
-#include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-#include <stdlib.h>
-#include "tic.h"
+#include <tic.h>
 #define __INTERNAL_CAPS_VISIBLE
-#include "term.h"
-#include "term_entry.h"
+#include <term.h>
+#include <term_entry.h>
+
+MODULE_ID("$Id: parse_entry.c,v 1.15 1996/07/31 00:05:36 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] = { 0 };
 #else
-#include "parametrized.h"
+#include <parametrized.h>
 #endif
 
 struct token	_nc_curr_token;
@@ -82,7 +82,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 	return(EOF);
     if (token_type != NAMES)
 	_nc_err_abort("Entry does not start with terminal names in column one");
-	
+
     _nc_init_entry(&entryp->tterm);
 
     entryp->cstart = _nc_comment_start;
@@ -208,7 +208,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 		 * information can resolve name clashes.  Normal lookup
 		 * finds the last instance in the capability table of a
 		 * given name, regardless of type.  find_type_entry looks
-		 * for a first matching instance with given type.  So as 
+		 * for a first matching instance with given type.  So as
 		 * long as all ambiguous names occur in pairs of distinct
 		 * type, this will do the job.
 		 */
@@ -271,11 +271,11 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 		    break;
 		}
 		break;
-		
+
 	    case BOOLEAN:
 		entryp->tterm.Booleans[entry_ptr->nte_index] = TRUE;
 		break;
-		    
+
 	    case NUMBER:
 		entryp->tterm.Numbers[entry_ptr->nte_index] =
 		    _nc_curr_token.tk_valnumber;
@@ -334,7 +334,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 
 	    postprocess_termcap(&entryp->tterm, has_base_entry);
         }
-	else 
+	else
 	    postprocess_terminfo(&entryp->tterm);
 
     _nc_wrap_entry(entryp);
@@ -382,7 +382,7 @@ int _nc_capcmp(const char *s, const char *t)
 /*
  * The ko capability, if present, consists of a comma-separated capability
  * list.  For each capability, we may assume there is a keycap that sends the
- * string which is the value of that capability.  
+ * string which is the value of that capability.
  */
 typedef struct {char *from; char *to;} assoc;
 static assoc const ko_xlate[] =
@@ -476,7 +476,7 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
 	}
 	/* vi doesn't use "do", but it does seems to use nl (or '\n') instead */
 	if (WANTED(cursor_down)) {
-	    if (PRESENT(linefeed_if_not_lf)) 
+	    if (PRESENT(linefeed_if_not_lf))
 		cursor_down = linefeed_if_not_lf;
 	    else if (linefeed_is_newline != 1) {
 		if (new_line_delay > 0) {
@@ -487,7 +487,7 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
 	    }
 	}
 	if (WANTED(scroll_forward) && crt_no_scrolling != 1) {
-	    if (PRESENT(linefeed_if_not_lf)) 
+	    if (PRESENT(linefeed_if_not_lf))
 		cursor_down = linefeed_if_not_lf;
 	    else if (linefeed_is_newline != 1) {
 		if (new_line_delay > 0) {
@@ -637,7 +637,7 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
 		continue;
 	    }
 
-	    /* 
+	    /*
 	     * The magic moment -- copy the mapped key string over,
 	     * stripping out padding.
 	     */
@@ -656,7 +656,7 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
 		    *dp++ = *cp;
 	    }
 	    *dp++ = '\0';
-		    
+
 	    tp->Strings[to_ptr->nte_index] = _nc_save_str(buf2);
 	} while
 	    ((cp = strtok((char *)NULL, ",")) != 0);
@@ -686,7 +686,7 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
 
     /*
      * Translate XENIX forms characters.
-     */ 
+     */
     if (PRESENT(acs_ulcorner) ||
 	PRESENT(acs_llcorner) ||
 	PRESENT(acs_urcorner) ||
@@ -722,37 +722,37 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
 	    *bp++ = *acs_lrcorner;
 	}
 	if (acs_ltee && acs_ltee[1] == '\0')
-   	{
+	{
 	    *bp++ = 't';
 	    *bp++ = *acs_ltee;
 	}
 	if (acs_rtee && acs_rtee[1] == '\0')
-   	{
+	{
 	    *bp++ = 'u';
 	    *bp++ = *acs_rtee;
 	}
 	if (acs_btee && acs_btee[1] == '\0')
-   	{
+	{
 	    *bp++ = 'v';
 	    *bp++ = *acs_btee;
 	}
 	if (acs_ttee && acs_ttee[1] == '\0')
-   	{
+	{
 	    *bp++ = 'w';
 	    *bp++ = *acs_ttee;
 	}
 	if (acs_hline && acs_hline[1] == '\0')
-  	{
+	{
 	    *bp++ = 'q';
 	    *bp++ = *acs_hline;
 	}
 	if (acs_vline && acs_vline[1] == '\0')
-  	{
+	{
 	    *bp++ = 'x';
 	    *bp++ = *acs_vline;
 	}
 	if (acs_plus)
-   	{
+	{
 	    *bp++ = 'n';
 	    strcpy(bp, acs_plus);
 	    bp = buf2 + strlen(buf2);
@@ -771,7 +771,7 @@ static
 void postprocess_terminfo(TERMTYPE *tp)
 {
     /*
-     * TERMINFO-TO-TERMINFO MAPPINGS FOR SOURCE TRANSLATION 
+     * TERMINFO-TO-TERMINFO MAPPINGS FOR SOURCE TRANSLATION
      * ----------------------------------------------------------------------
      */
 
@@ -788,7 +788,7 @@ void postprocess_terminfo(TERMTYPE *tp)
 	    *bp++ = box_chars_1[0];
 	}
 	if (box_chars_1[1])	/* ACS_HLINE */
-  	{
+	{
 	    *bp++ = 'q';
 	    *bp++ = box_chars_1[1];
 	}
@@ -798,7 +798,7 @@ void postprocess_terminfo(TERMTYPE *tp)
 	    *bp++ = box_chars_1[2];
 	}
 	if (box_chars_1[3])	/* ACS_VLINE */
-  	{
+	{
 	    *bp++ = 'x';
 	    *bp++ = box_chars_1[3];
 	}
@@ -813,27 +813,27 @@ void postprocess_terminfo(TERMTYPE *tp)
 	    *bp++ = box_chars_1[5];
 	}
 	if (box_chars_1[6])	/* ACS_TTEE */
-   	{
+	{
 	    *bp++ = 'w';
 	    *bp++ = box_chars_1[6];
 	}
 	if (box_chars_1[7])	/* ACS_RTEE */
-   	{
+	{
 	    *bp++ = 'u';
 	    *bp++ = box_chars_1[7];
 	}
 	if (box_chars_1[8])	/* ACS_BTEE */
-   	{
+	{
 	    *bp++ = 'v';
 	    *bp++ = box_chars_1[8];
 	}
 	if (box_chars_1[9])	/* ACS_LTEE */
-   	{
+	{
 	    *bp++ = 't';
 	    *bp++ = box_chars_1[9];
 	}
 	if (box_chars_1[10])	/* ACS_PLUS */
-   	{
+	{
 	    *bp++ = 'n';
 	    *bp++ = box_chars_1[10];
 	}
@@ -852,7 +852,7 @@ void postprocess_terminfo(TERMTYPE *tp)
 }
 
 /*
- * Do a linear search through the terminfo tables to find a given full-name. 
+ * Do a linear search through the terminfo tables to find a given full-name.
  * We don't expect to do this often, so there's no hashing function.
  *
  * In effect, this scans through the 3 lists of full-names, and looks them
@@ -886,7 +886,7 @@ struct name_table_entry	const * lookup_fullname(const char *find)
 	    if (!strcmp(names[count], find)) {
 		struct name_table_entry	const *entry_ptr = _nc_get_table(FALSE);
 		while (entry_ptr->nte_type  != state
- 		    || entry_ptr->nte_index != count)
+		    || entry_ptr->nte_index != count)
 			entry_ptr++;
 		return entry_ptr;
 	    }

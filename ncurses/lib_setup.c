@@ -35,7 +35,9 @@
 #define _POSIX_SOURCE
 #endif
 
-#include "term.h"	/* lines, columns, cur_term */
+#include <term.h>	/* lines, columns, cur_term */
+
+MODULE_ID("$Id: lib_setup.c,v 1.17 1996/07/31 00:04:14 tom Exp $")
 
 /****************************************************************************
  *
@@ -61,7 +63,7 @@ int LINES, COLS, TABSIZE;
 void _nc_get_screensize(void)
 /* set LINES and COLS from the environment and/or terminfo entry */
 {
-char 		*rows, *cols;
+char		*rows, *cols;
 
 	/* figure out the size of the screen */
 	T(("screen size: terminfo lines = %d columns = %d", lines, columns));
@@ -113,7 +115,7 @@ char 		*rows, *cols;
 		if (lines > 0 && columns > 0)
 		{
 		    LINES = (int)lines;
-		    COLS  = (int)columns;		
+		    COLS  = (int)columns;
 		}
 
 	    /* the ultimate fallback, assume fixed 24x80 size */
@@ -203,8 +205,8 @@ struct term	*term_ptr;
 	T(("setupterm(%s,%d,%p) called", tname, Filedes, errret));
 
 	if (tname == NULL) {
-    		tname = getenv("TERM");
-    		if (tname == NULL)
+		tname = getenv("TERM");
+		if (tname == NULL)
 			ret_error0(-1, "TERM environment variable not set.\n");
 	}
 
@@ -219,10 +221,10 @@ struct term	*term_ptr;
 			del_curterm(cur_term);
 		}
 
-       		term_ptr = (struct term *) calloc(1, sizeof(struct term));
+		term_ptr = (struct term *) calloc(1, sizeof(struct term));
 
 		if (term_ptr == NULL)
-	    		ret_error0(-1, "Not enough memory to create terminal structure.\n") ;
+			ret_error0(-1, "Not enough memory to create terminal structure.\n") ;
 		status = grab_entry(tname, &term_ptr->type);
 
 		/* try fallback list if entry on disk */
@@ -243,18 +245,18 @@ struct term	*term_ptr;
 		}
 		else if (status == 0)
 		{
-		    	ret_error(0, "'%s': unknown terminal type.\n", tname);
+			ret_error(0, "'%s': unknown terminal type.\n", tname);
 		}
 
 		cur_term = term_ptr;
 		if (generic_type)
-		    	ret_error(0, "'%s': I need something more specific.\n", tname);
+			ret_error(0, "'%s': I need something more specific.\n", tname);
 		if (hard_copy)
-		    	ret_error(1, "'%s': I can't handle hardcopy terminals.\n", tname);
+			ret_error(1, "'%s': I can't handle hardcopy terminals.\n", tname);
 
 		if (command_character  &&  getenv("CC"))
-		    	do_prototype();
-	
+			do_prototype();
+
 		strncpy(ttytype, cur_term->type.term_names, NAMESIZE - 1);
 		ttytype[NAMESIZE - 1] = '\0';
 
@@ -297,11 +299,11 @@ char    *tmp;
 	proto = *command_character;
 
 	for (i=0; i < STRCOUNT; i++) {
-    		j = 0;
-    		while (cur_term->type.Strings[i][j]) {
+		j = 0;
+		while (cur_term->type.Strings[i][j]) {
 			if (cur_term->type.Strings[i][j] == proto)
-	    			cur_term->type.Strings[i][j] = CC;
+				cur_term->type.Strings[i][j] = CC;
 			j++;
-    		}
+		}
 	}
 }

@@ -26,8 +26,10 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 #include <string.h>
+
+MODULE_ID("$Id: lib_addstr.c,v 1.6 1996/07/30 22:29:50 tom Exp $")
 
 int
 waddnstr(WINDOW *win, const char *const astr, int n)

@@ -28,8 +28,10 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 #include <ctype.h>
+
+MODULE_ID("$Id: lib_insstr.c,v 1.7 1996/07/31 00:23:26 tom Exp $")
 
 int winsnstr(WINDOW *win, const char *str, int n)
 {
@@ -53,7 +55,7 @@ char	*cp;
 		if (win->_curx > win->_maxx)
 			win->_curx = win->_maxx;
 	}
-	
+
 	win->_curx = ox;
 	win->_cury = oy;
 	_nc_synchook(win);

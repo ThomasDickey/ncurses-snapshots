@@ -29,7 +29,9 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
+
+MODULE_ID("$Id: lib_touch.c,v 1.2 1996/07/30 22:29:50 tom Exp $")
 
 int is_linetouched(WINDOW *win, int line)
 {

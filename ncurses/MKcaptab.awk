@@ -1,4 +1,5 @@
-
+#!/bin/sh
+# $Id: MKcaptab.awk,v 1.8 1996/07/31 00:16:21 tom Exp $
 AWK=${1-awk}
 DATA=${2-../include/Caps}
 
@@ -9,10 +10,10 @@ cat <<'EOF'
  *
  */
 
-#include "config.h"
-#include "tic.h"
-#include "term.h"
-#include "hashsize.h"
+#include <config.h>
+#include <tic.h>
+#include <term.h>
+#include <hashsize.h>
 
 EOF
 
@@ -57,7 +58,7 @@ $1 == "infoalias"	{
 cat <<'EOF'
 	{(char *)NULL, (char *)NULL, (char *)NULL}
 };
-  
+
 const struct name_table_entry *_nc_get_table(bool termcap)
 {
 	return termcap ? _nc_cap_table: _nc_info_table ;

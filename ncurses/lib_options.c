@@ -29,8 +29,10 @@
 
 #include <curses.priv.h>
 
-#include "term.h"	/* keypad_xmit, keypad_local, meta_on, meta_off */
+#include <term.h>	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
+
+MODULE_ID("$Id: lib_options.c,v 1.13 1996/08/04 00:46:31 tom Exp $")
 
 int has_ic(void)
 {
@@ -50,18 +52,16 @@ int idlok(WINDOW *win,  bool flag)
 {
 	T(("idlok(%p,%d) called", win, flag));
 
-   	win->_idlok = flag && (has_il() || change_scroll_region);
-	return OK; 
+	win->_idlok = flag && (has_il() || change_scroll_region);
+	return OK;
 }
 
 
-int idcok(WINDOW *win, bool flag)
+void idcok(WINDOW *win, bool flag)
 {
 	T(("idcok(%p,%d) called", win, flag));
 
 	win->_idcok = flag && has_ic();
-
-	return OK; 
 }
 
 
@@ -69,32 +69,31 @@ int clearok(WINDOW *win, bool flag)
 {
 	T(("clearok(%p,%d) called", win, flag));
 
-   	if (win == curscr)
+	if (win == curscr)
 	    newscr->_clear = flag;
 	else
 	    win->_clear = flag;
-	return OK; 
+	return OK;
 }
 
 
-int immedok(WINDOW *win, bool flag)
+void immedok(WINDOW *win, bool flag)
 {
 	T(("immedok(%p,%d) called", win, flag));
 
-   	win->_immed = flag;
-	return OK; 
+	win->_immed = flag;
 }
 
 int leaveok(WINDOW *win, bool flag)
 {
 	T(("leaveok(%p,%d) called", win, flag));
 
-   	win->_leaveok = flag;
-   	if (flag == TRUE)
-   		curs_set(0);
-   	else
-   		curs_set(1);
-	return OK; 
+	win->_leaveok = flag;
+	if (flag == TRUE)
+		curs_set(0);
+	else
+		curs_set(1);
+	return OK;
 }
 
 
@@ -102,8 +101,8 @@ int scrollok(WINDOW *win, bool flag)
 {
 	T(("scrollok(%p,%d) called", win, flag));
 
-   	win->_scroll = flag;
-	return OK; 
+	win->_scroll = flag;
+	return OK;
 }
 
 int halfdelay(int t)
@@ -122,7 +121,7 @@ int nodelay(WINDOW *win, bool flag)
 {
 	T(("nodelay(%p,%d) called", win, flag));
 
-   	if (flag == TRUE)
+	if (flag == TRUE)
 		win->_delay = 0;
 	else win->_delay = -1;
 	return OK;
@@ -168,17 +167,17 @@ int _nc_keypad(bool flag)
 	    putp(keypad_local);
 	    (void) fflush(SP->_ofp);
 	}
-	    
+
 	if (SP->_keytry == UNINITIALISED)
 	    init_keytry();
-	return OK; 
+	return OK;
 }
 
 int keypad(WINDOW *win, bool flag)
 {
 	T(("keypad(%p,%d) called", win, flag));
 
-   	win->_use_keypad = flag;
+	win->_use_keypad = flag;
 	return (_nc_keypad(flag));
 }
 
@@ -199,7 +198,7 @@ int meta(WINDOW *win, bool flag)
 	    TPUTS_TRACE("meta_off");
 	    putp(meta_off);
 	}
-	return OK; 
+	return OK;
 }
 
 /* curs_set() moved here to narrow the kernel interface */
@@ -238,7 +237,7 @@ int cursor = SP->_cursor;
 	}
 	SP->_cursor = vis;
 	(void) fflush(SP->_ofp);
-	return cursor;	
+	return cursor;
 }
 
 /*
@@ -257,7 +256,7 @@ static void init_keytry(void)
 
 /* LINT_PREPRO
 #if 0*/
-#include "keys.tries"
+#include <keys.tries>
 /* LINT_PREPRO
 #endif*/
 
@@ -271,90 +270,90 @@ static bool     out_of_memory = FALSE;
 struct try      *ptr, *savedptr;
 
 	if (! str  ||  out_of_memory)
-	    	return;
-	
+		return;
+
 	if (newtry != NULL)    {
-    	ptr = savedptr = newtry;
-	    
-       	for (;;) {
-	       	while (ptr->ch != (unsigned char) *str
+	ptr = savedptr = newtry;
+
+	for (;;) {
+		while (ptr->ch != (unsigned char) *str
 		       &&  ptr->sibling != NULL)
-	       		ptr = ptr->sibling;
-	    
-	       	if (ptr->ch == (unsigned char) *str) {
-	    		if (*(++str)) {
-	           		if (ptr->child != NULL)
-	           			ptr = ptr->child;
-               		else
-	           			break;
-	    		} else {
-	        		ptr->value = code;
-					return;
-	   			}
+			ptr = ptr->sibling;
+
+		if (ptr->ch == (unsigned char) *str) {
+			if (*(++str)) {
+				if (ptr->child != NULL)
+					ptr = ptr->child;
+			else
+					break;
 			} else {
-	    		if ((ptr->sibling = (struct try *) malloc(sizeof *ptr)) == NULL) {
-	        		out_of_memory = TRUE;
+				ptr->value = code;
 					return;
-	    		}
-		    
-	    		savedptr = ptr = ptr->sibling;
-	    		ptr->child = ptr->sibling = NULL;
+				}
+			} else {
+			if ((ptr->sibling = (struct try *) malloc(sizeof *ptr)) == NULL) {
+				out_of_memory = TRUE;
+					return;
+			}
+
+			savedptr = ptr = ptr->sibling;
+			ptr->child = ptr->sibling = NULL;
 			if (*str == '\200')
 				ptr->ch = '\0';
 			else
-				ptr->ch = (unsigned char) *str; 
-	    		str++;
-	    		ptr->value = (short) NULL;
-	    
-           		break;
-	       	}
-	   	} /* end for (;;) */  
+				ptr->ch = (unsigned char) *str;
+			str++;
+			ptr->value = (short) NULL;
+
+			break;
+		}
+		} /* end for (;;) */
 	} else {   /* newtry == NULL :: First sequence to be added */
-	    	savedptr = ptr = newtry = (struct try *) malloc(sizeof *ptr);
-	    
-	    	if (ptr == NULL) {
-	        	out_of_memory = TRUE;
+		savedptr = ptr = newtry = (struct try *) malloc(sizeof *ptr);
+
+		if (ptr == NULL) {
+			out_of_memory = TRUE;
 				return;
-	    	}
-	    
-	    	ptr->child = ptr->sibling = NULL;
+		}
+
+		ptr->child = ptr->sibling = NULL;
 		if (*str == '\200')
 			ptr->ch = '\0';
 		else
-			ptr->ch = (unsigned char) *str; 
-	    	str++;
-	    	ptr->value = (short) NULL;
+			ptr->ch = (unsigned char) *str;
+		str++;
+		ptr->value = (short) NULL;
 	}
-	
+
 	    /* at this point, we are adding to the try.  ptr->child == NULL */
-	    
+
 	while (*str) {
-	   	ptr->child = (struct try *) malloc(sizeof *ptr);
-	    
-	   	ptr = ptr->child;
-	   
-	   	if (ptr == NULL) {
-	       	out_of_memory = TRUE;
-		
+		ptr->child = (struct try *) malloc(sizeof *ptr);
+
+		ptr = ptr->child;
+
+		if (ptr == NULL) {
+		out_of_memory = TRUE;
+
 			ptr = savedptr;
 			while (ptr != NULL) {
-		    	savedptr = ptr->child;
-		    	free(ptr);
-		    	ptr = savedptr;
+			savedptr = ptr->child;
+			free(ptr);
+			ptr = savedptr;
 			}
-		
+
 			return;
 		}
-	    
-	   	ptr->child = ptr->sibling = NULL;
+
+		ptr->child = ptr->sibling = NULL;
 		if (*str == '\200')
 			ptr->ch = '\0';
 		else
-			ptr->ch = (unsigned char) *str; 
-	    	str++;
-	   	ptr->value = (short) NULL;
+			ptr->ch = (unsigned char) *str;
+		str++;
+		ptr->value = (short) NULL;
 	}
-	
+
 	ptr->value = code;
 	return;
 }
@@ -381,7 +380,7 @@ static int has_key_internal(int keycode, struct try *tp)
 	return(FALSE);
     else if (tp->value == keycode)
 	return(TRUE);
-    else 
+    else
 	return(has_key_internal(keycode, tp->child)
 	       || has_key_internal(keycode, tp->sibling));
 }

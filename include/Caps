@@ -133,7 +133,7 @@
 # It would be nice to keep f11 and f12 for Emacs use, but a couple of termcap
 # translations go back over critical if we do this.  As 4.4BSD curses fades
 # into history and GNU termcap's application base shrinks towards being GNU 
-# Emacs only, we'll probably elide out some BCG-only capabilities in order
+# Emacs only, we'll probably elide out some BSD-only capabilities in order
 # to buy space for non-essentials Emacs is still using.  Capabilities high
 # on that hit list: rc, sc, uc.
 #

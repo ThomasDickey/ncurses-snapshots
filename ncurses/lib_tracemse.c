@@ -29,9 +29,11 @@
 #define TRACE			/* turn on internal defs for this module */
 #endif
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 
 #include <string.h>
+
+MODULE_ID("$Id: lib_tracemse.c,v 1.3 1996/07/30 22:29:50 tom Exp $")
 
 char *_tracemouse(MEVENT const *ep)
 {

@@ -28,7 +28,9 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
+
+MODULE_ID("$Id: lib_mvwin.c,v 1.2 1996/07/30 22:29:50 tom Exp $")
 
 int mvwin(WINDOW *win, int by, int bx)
 {

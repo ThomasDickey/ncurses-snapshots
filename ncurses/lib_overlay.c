@@ -27,14 +27,16 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
+
+MODULE_ID("$Id: lib_overlay.c,v 1.5 1996/07/31 00:25:44 tom Exp $")
 
 static void overlap(const WINDOW *const s, WINDOW *const d, int const flag)
-{ 
+{
 int sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol;
 
 	T(("overlap : sby %d, sbx %d, smy %d, smx %d, dby %d, dbx %d, dmy %d, dmx %d",
-		s->_begy, s->_begx, s->_maxy, s->_maxx, 
+		s->_begy, s->_begx, s->_maxy, s->_maxx,
 		d->_begy, d->_begx, d->_maxy, d->_maxx));
 	sminrow = max(s->_begy, d->_begy) - s->_begy;
 	smincol = max(s->_begx, d->_begx) - s->_begx;
@@ -78,17 +80,17 @@ int overwrite(const WINDOW *win1, WINDOW *win2)
 	return OK;
 }
 
-int copywin(const WINDOW *src, WINDOW *dst, 
+int copywin(const WINDOW *src, WINDOW *dst,
 	int sminrow, int smincol,
-	int dminrow, int dmincol, int dmaxrow, int dmaxcol, 
+	int dminrow, int dmincol, int dmaxrow, int dmaxcol,
 	int over)
 {
 int sx, sy, dx, dy;
 int touched;
 
 	T(("copywin(%p, %p, %d, %d, %d, %d, %d, %d, %d)",
-	    	src, dst, sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol, over));
-	
+		src, dst, sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol, over));
+
 	/* make sure rectangle exists in source */
 	if ((sminrow + dmaxrow - dminrow) > (src->_maxy + 1) ||
 	    (smincol + dmaxcol - dmincol) > (src->_maxx + 1)) {

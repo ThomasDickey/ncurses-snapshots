@@ -31,12 +31,13 @@
  *	long _nc_comment_end;
  */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 
-#include <stdarg.h>
 #include <string.h>
 #include <ctype.h>
-#include "tic.h"
+#include <tic.h>
+
+MODULE_ID("$Id: comp_scan.c,v 1.16 1996/07/31 00:07:01 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -149,7 +150,7 @@ start_token:
 	    continue;
 
 	ch = eat_escaped_newline(ch);
-	
+
 	if (ch == EOF)
 	    type = EOF;
 	else {
@@ -173,7 +174,7 @@ start_token:
 	    /* have to make some punctuation chars legal for terminfo */
 	    if (!isalnum(ch) && !strchr(terminfo_punct, (char)ch)) {
 		 _nc_warning("Illegal character (expected alphanumeric or %s) - %s",
-		 	terminfo_punct, _tracechar((chtype)ch));
+			terminfo_punct, _tracechar((chtype)ch));
 		 _nc_panic_mode(separator);
 		 goto start_token;
 	    }
@@ -182,7 +183,7 @@ start_token:
 	    *(ptr++) = ch;
 
 	    if (first_column) {
-	    		char	*desc;
+			char	*desc;
 
 			_nc_comment_start = token_start;
 			_nc_comment_end = _nc_curr_file_pos;
@@ -206,7 +207,7 @@ start_token:
 				/*
 				 * Fall-through here is not an accident.
 				 * The idea is that if we see a comma, we
-				 * figure this is terminfo unless we 
+				 * figure this is terminfo unless we
 				 * subsequently run into a colon -- but
 				 * we don't stop looking for that colon until
 				 * hitting a newline.  This allows commas to
@@ -224,9 +225,9 @@ start_token:
 			if (_nc_syntax == ERR)
 			{
 			    /*
-			     * Grrr...what we ought to do here is barf, 
+			     * Grrr...what we ought to do here is barf,
 			     * complaining that the entry is malformed.
-			     * But because a couple of name fields in the 
+			     * But because a couple of name fields in the
 			     * 8.2 termcap file end with |\, we just have
 			     * to assume it's termcap syntax.
 			     */
@@ -242,7 +243,7 @@ start_token:
 			}
 
 			/*
-			 * This is the soonest we have the terminal name 
+			 * This is the soonest we have the terminal name
 			 * fetched.  Set up for following warning messages.
 			 */
 			ptr = strchr(buffer, '|');
@@ -306,7 +307,7 @@ start_token:
 							break;
 					}
 				}
-			    	*(ptr++) = ch;
+				*(ptr++) = ch;
 			}
 
 			*ptr++ = '\0';
@@ -326,7 +327,7 @@ start_token:
 				type = CANCEL;
 				break;
 
-		    	case '#':
+			case '#':
 				number = 0;
 				found  = FALSE;
 				while (isdigit(ch = next_char())) {
@@ -341,7 +342,7 @@ start_token:
 				_nc_curr_token.tk_valnumber = number;
 				type = NUMBER;
 				break;
-		    
+
 			case '=':
 				ch = trans_string(ptr);
 				if (ch != separator)
@@ -376,24 +377,24 @@ end_of_token:
 		    fprintf(stderr, "Boolean; name='%s'\n",
 			    _nc_curr_token.tk_name);
 		    break;
-		
+
 		case NUMBER:
 		    fprintf(stderr, "Number;  name='%s', value=%d\n",
 			    _nc_curr_token.tk_name,
 			    _nc_curr_token.tk_valnumber);
 		    break;
-		
+
 		case STRING:
 		    fprintf(stderr, "String;  name='%s', value='%s'\n",
 			    _nc_curr_token.tk_name,
 			    _nc_visbuf(_nc_curr_token.tk_valstring));
 		    break;
-		
+
 		case CANCEL:
 		    fprintf(stderr, "Cancel; name='%s'\n",
 			    _nc_curr_token.tk_name);
 		    break;
-		
+
 		case NAMES:
 
 		    fprintf(stderr, "Names; value='%s'\n",
@@ -446,7 +447,7 @@ chtype	ch, last_ch = '\0';
 
 	while ((ch = c = next_char()) != (chtype)separator && c != EOF) {
 	    if ((_nc_syntax == SYN_TERMCAP) && c == '\n')
-	    	break;
+		break;
 	    if (ch == '^' && last_ch != '%') {
 		ch = c = next_char();
 		if (c == EOF)
@@ -454,7 +455,7 @@ chtype	ch, last_ch = '\0';
 
 		if (! (is7bits(ch) && isprint(ch))) {
 		    _nc_warning("Illegal ^ character - %s",
-		    	_tracechar((unsigned char)ch));
+			_tracechar((unsigned char)ch));
 		}
 		if (ch == '?')
 		    *(ptr++) = '\177';
@@ -465,14 +466,14 @@ chtype	ch, last_ch = '\0';
 		ch = c = next_char();
 		if (c == EOF)
 		    _nc_err_abort("Premature EOF");
-		
+
 		if (ch >= '0'  &&  ch <= '7') {
 		    number = ch - '0';
 		    for (i=0; i < 2; i++) {
 			ch = c = next_char();
 			if (c == EOF)
 			    _nc_err_abort("Premature EOF");
-			
+
 			if (c < '0'  ||  c > '7') {
 			    if (isdigit(c)) {
 				_nc_warning("Non-octal digit `%c' in \\ sequence", c);
@@ -493,23 +494,23 @@ chtype	ch, last_ch = '\0';
 		    switch (c) {
 			case 'E':
 			case 'e':	*(ptr++) = '\033';	break;
-			
+
 			case 'l':
 			case 'n':	*(ptr++) = '\n';	break;
-			
+
 			case 'r':	*(ptr++) = '\r';	break;
-			
+
 			case 'b':	*(ptr++) = '\010';	break;
 
 			case 's':	*(ptr++) = ' ';		break;
-			
+
 			case 'f':	*(ptr++) = '\014';	break;
-			
+
 			case 't':	*(ptr++) = '\t';	break;
-			
+
 			case '\\':	*(ptr++) = '\\';	break;
-			
-			case '^': 	*(ptr++) = '^';		break;
+
+			case '^':	*(ptr++) = '^'; 	break;
 
 			case ',':	*(ptr++) = '\\';
 					*(ptr++) = ',';		break;
@@ -529,7 +530,7 @@ chtype	ch, last_ch = '\0';
 	    else {
 		*(ptr++) = (char)ch;
 	    }
-	    
+
 	    count ++;
 
 	    last_ch = ch;
@@ -555,7 +556,7 @@ void _nc_push_token(int class)
     /*
      * This implementation is kind of bogus, it will fail if we ever do
      * more than one pushback at a time between get_token() calls.  It
-     * relies on the fact that curr_tok is static storage that nothing 
+     * relies on the fact that curr_tok is static storage that nothing
      * but get_token() touches.
      */
     pushtype = class;
@@ -613,13 +614,13 @@ void _nc_reset_input(FILE *fp, char *buf)
 }
 
 /*
- * 	int next_char()
+ *	int next_char()
  *
  *	Returns the next character in the input stream.  Comments and leading
  *	white space are stripped.
  *
  *	The global state variable 'firstcolumn' is set TRUE if the character
- * 	returned is from the first column of the input line.
+ *	returned is from the first column of the input line.
  *
  *	The global variable _nc_curr_line is incremented for each new line.
  *	The global variable _nc_curr_file_pos is set to the file offset of the

@@ -3,6 +3,22 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+960803	- snapshot
+	+ corrected tparm to handle capability strings without explicit pop
+	  (reported by William P Setzer)
+	+ add fallback def for GCC_NORETURN, GCC_UNUSED for termcap users
+	  (reported by Tim Mooney).
+	> patch 310 by eric:
+	+ documentation and prototyping errors for has_color, immedok and idcok
+	  (reported by William P Setzer <wsetzer@pams.ncsu.edu>)
+	+ updated qnx terminfo entry (by Michael Hunter)
+
+960730
+	+ eliminate quoted includes in ncurses subdirectory, ensure config.h
+	  is included first.
+	+ newterm initializes terminal settings the same as initscr (reported
+	  by Tim Mooney).
+
 960727	- snapshot
 	+ call cbreak() in initscr(), as per XSI & SVr4.
 	+ turn off hardware echo in initscr() as per XSI & SVr4

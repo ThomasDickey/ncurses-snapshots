@@ -26,7 +26,9 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
+
+MODULE_ID("$Id: lib_data.c,v 1.4 1996/07/30 22:29:50 tom Exp $")
 
 WINDOW *stdscr, *curscr, *newscr;
 

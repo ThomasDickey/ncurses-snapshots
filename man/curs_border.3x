@@ -1,3 +1,4 @@
+.\" $Id: curs_border.3x,v 1.8 1996/08/04 00:29:11 tom Exp $
 .TH curs_border 3X ""
 .SH NAME
 \fBborder\fR, \fBwborder\fR, \fBbox\fR,
@@ -22,6 +23,14 @@
 \fBint vline(chtype ch, int n);\fR
 .br
 \fBint wvline(WINDOW *win, chtype ch, int n);\fR
+.br
+\fBmvhline(int y, int x, chtype ch, int n);\fR
+.br
+\fBmvwhline(WINDOW *, int y, int x, chtype ch, int n);\fR
+.br
+\fBint mvvline(int y, int x, chtype ch, int n);\fR
+.br
+\fBint mvwvline(WINDOW *, int y, int x, chtype ch, int n);\fR
 .br
 .SH DESCRIPTION
 The \fBborder\fR, \fBwborder\fR and \fBbox\fR routines draw a box around the

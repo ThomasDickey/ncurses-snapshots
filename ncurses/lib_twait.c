@@ -26,33 +26,30 @@
 **
 */
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 
-#include <sys/types.h>		/* some systems can't live without this */
 #include <string.h>
 
 #if HAVE_SYS_TIME_H && ! SYSTEM_LOOKS_LIKE_SCO
 #include <sys/time.h>
 #endif
 
-#if HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-
 #if HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
 
+MODULE_ID("$Id: lib_twait.c,v 1.7 1996/07/31 00:22:49 tom Exp $")
+
 /*
- * We want to define GOOD_SELECT if the last argument of select(2) is 
+ * We want to define GOOD_SELECT if the last argument of select(2) is
  * modified to indicate time left.  The code will deal gracefully with
  * the other case, this is just an optimization to reduce the number
  * of system calls per input event.
  *
- * In general, expect System-V-like UNIXes to have this behavior and BSD-like 
+ * In general, expect System-V-like UNIXes to have this behavior and BSD-like
  * ones to not have it.  Check your manual page.  If it doesn't explicitly
  * say the last argument is modified, assume it's not.
- * 
+ *
  * (We'd really like configure to autodetect this, but writing a proper test
  * turns out to be hard.)
  */
@@ -115,8 +112,8 @@ struct timeval starttime, returntime;
 		*timeleft = (ntimeout.tv_sec * 1000) + (ntimeout.tv_usec / 1000);
 
 	 T(("end twait: returned %d, sec = %ld, usec = %ld (%d msec)",
-		 result, ntimeout.tv_sec, ntimeout.tv_usec, 
-	 	timeleft ? *timeleft : -1));
+		 result, ntimeout.tv_sec, ntimeout.tv_usec,
+		timeleft ? *timeleft : -1));
 
 	 return(result);
 }

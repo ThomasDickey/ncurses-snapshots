@@ -40,11 +40,11 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "tic.h"
-#include "term.h"
-#include "term_entry.h"
+#include <tic.h>
+#include <term.h>
+#include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.12 1996/07/28 00:11:46 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.14 1996/07/31 01:00:00 esr Exp $")
 
 static void sanity_check(TERMTYPE *);
 
@@ -486,6 +486,7 @@ static void sanity_check(TERMTYPE *tp)
      PAIRED(enter_am_mode,                   exit_am_mode)
      ANDMISSING(label_off,                   label_on)
      PAIRED(display_clock,                   remove_clock)
+     ANDMISSING(set_color_pair,              initialize_pair)
 #undef PAIRED
 #undef ANDMISSING
 }

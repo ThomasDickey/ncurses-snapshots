@@ -28,8 +28,9 @@
 #include <curses.priv.h>
 
 #include <string.h>
-#include <stdarg.h>
-#include "tic.h"
+#include <tic.h>
+
+MODULE_ID("$Id: comp_error.c,v 1.10 1996/07/30 22:56:14 tom Exp $")
 
 bool _nc_suppress_warnings;
 

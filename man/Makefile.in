@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.18 1996/07/07 20:22:17 tom Exp $
+# $Id: Makefile.in,v 1.19 1996/08/04 01:16:40 tom Exp $
 # Makefile for ncurses manual pages.
 #
 # NOTE: When you add or rename a man page, make sure you update both
@@ -18,7 +18,7 @@ ticdir		= $(datadir)/terminfo
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
 
-all:
+all:	terminfo.5
 
 $(INSTALL_PREFIX)$(mandir) :
 	$(srcdir)/../mkinstalldirs $@
