@@ -1,10 +1,28 @@
--- $Id: NEWS,v 1.306 1998/02/01 01:10:11 tom Exp $
+-- $Id: NEWS,v 1.309 1998/02/08 01:30:49 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980207
+	+ minor fixes for autoconf macros CF_ERRNO, CF_HELP_MESSAGE and
+	  CF_SIZECHANGE
+	+ modify Makefile.glibc so that $(objpfx) is defined (H.J.Lu).
+	+ ifdef-out true-return from _nc_mouse_inline() which depends on
+	  merge of QNX patch (pending 4.2 release).
+	> patch by J.T.Conklin, to split off seldom-used modules in ncurses
+	  (reduces size by up to 2.6kb):
+	+ move functionality of _nc_usleep into napms, add configuration case
+	  for nanosleep().
+	+ moved wchgat() from lib_addch.c to lib_chgat.c
+	+ moved clearok(), immedok(), leaveok(), and scrollok() from
+	  lib_options.c to lib_clearok.c, lib_immedok.c, lib_leaveok.c and
+	  lib_scrollok.c.
+	+ moved napms() from lib_kernel.c to lib_napms.c
+	+ moved echo() and noecho() from lib_raw.c to lib_echo.c
+	+ moved nl() and nonl() from lib_raw.c to lib_nl.c
 
 980131
 	+ corrected conversion in tclock.c (cf: 971018).

@@ -537,7 +537,9 @@
 ./ncurses/lib_beep.c
 ./ncurses/lib_bkgd.c
 ./ncurses/lib_box.c
+./ncurses/lib_chgat.c
 ./ncurses/lib_clear.c
+./ncurses/lib_clearok.c
 ./ncurses/lib_clrbot.c
 ./ncurses/lib_clreol.c
 ./ncurses/lib_color.c
@@ -547,6 +549,7 @@
 ./ncurses/lib_delwin.c
 ./ncurses/lib_dft_fgbg.c
 ./ncurses/lib_doupdate.c
+./ncurses/lib_echo.c
 ./ncurses/lib_endwin.c
 ./ncurses/lib_erase.c
 ./ncurses/lib_flash.c
@@ -554,6 +557,7 @@
 ./ncurses/lib_getch.c
 ./ncurses/lib_getstr.c
 ./ncurses/lib_hline.c
+./ncurses/lib_immedok.c
 ./ncurses/lib_inchstr.c
 ./ncurses/lib_initscr.c
 ./ncurses/lib_insch.c
@@ -562,13 +566,16 @@
 ./ncurses/lib_instr.c
 ./ncurses/lib_isendwin.c
 ./ncurses/lib_kernel.c
+./ncurses/lib_leaveok.c
 ./ncurses/lib_longname.c
 ./ncurses/lib_mouse.c
 ./ncurses/lib_move.c
 ./ncurses/lib_mvcur.c
 ./ncurses/lib_mvwin.c
+./ncurses/lib_napms.c
 ./ncurses/lib_newterm.c
 ./ncurses/lib_newwin.c
+./ncurses/lib_nl.c
 ./ncurses/lib_options.c
 ./ncurses/lib_overlay.c
 ./ncurses/lib_pad.c
@@ -581,6 +588,7 @@
 ./ncurses/lib_scanw.c
 ./ncurses/lib_screen.c
 ./ncurses/lib_scroll.c
+./ncurses/lib_scrollok.c
 ./ncurses/lib_scrreg.c
 ./ncurses/lib_set_term.c
 ./ncurses/lib_setup.c

@@ -18,7 +18,7 @@
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
  ******************************************************************************/
 /*
- * $Id: progs.priv.h,v 1.15 1998/01/24 20:53:02 tom Exp $
+ * $Id: progs.priv.h,v 1.16 1998/02/07 22:53:09 tom Exp $
  *
  *	progs.priv.h
  *
@@ -138,6 +138,7 @@ extern int optind;
  * isprint test in infocmp.
  */
 #ifndef HAVE_ISASCII
+# undef isascii
 # if ('z'-'a' == 25) && ('z' < 127) && ('Z'-'A' == 25) && ('Z' < 127) && ('9' < 127)
 #  define isascii(c) (((c) & 0xff) <= 127)
 # else

@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.99 1998/01/31 21:20:05 tom Exp $
+ * $Id: curses.priv.h,v 1.100 1998/02/07 22:48:54 J.T.Conklin Exp $
  *
  *	curses.priv.h
  *
@@ -647,11 +647,6 @@ extern void _nc_set_screen(SCREEN *);
 extern SCREEN *SP;
 #define _nc_alloc_screen() ((SP = typeCalloc(SCREEN, 1)) != 0)
 #define _nc_set_screen(sp) SP = sp
-#endif
-
-#if !HAVE_USLEEP
-extern int _nc_usleep(unsigned int);
-#define usleep(msecs) _nc_usleep(msecs)
 #endif
 
 /*

@@ -51,7 +51,7 @@
 #define select check_select
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.28 1998/01/31 20:51:58 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.29 1998/02/07 23:02:05 tom Exp $")
 
 /*
  * We want to define GOOD_SELECT if the last argument of select(2) is
@@ -76,33 +76,6 @@ static void _nc_gettime(struct timeval *tp)
 }
 #endif
 #endif
-
-#if !HAVE_USLEEP
-int _nc_usleep(unsigned int usec)
-{
-int code;
-struct timeval tval;
-
-#if defined(TRACE) && HAVE_GETTIMEOFDAY
-	_nc_gettime(&tval);
-#endif
-#if USE_FUNC_POLL
-	{
-	struct pollfd fds[1];
-	code = poll(fds, 0, usec / 1000);
-	}
-#elif HAVE_SELECT
-	tval.tv_sec = usec / 1000000;
-	tval.tv_usec = usec % 1000000;
-	code = select(0, NULL, NULL, NULL, &tval);
-#endif
-
-#if defined(TRACE) && HAVE_GETTIMEOFDAY
-	_nc_gettime(&tval);
-#endif
-	return code;
-}
-#endif /* !HAVE_USLEEP */
 
 /*
  * Wait a specified number of milliseconds, returning nonzero if the timer

@@ -22,33 +22,14 @@
 /*
 **	lib_addch.c
 **
-**	The routines waddch(), wchgat().
+**	The routine waddch().
 **
 */
 
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.37 1997/12/02 20:17:46 Alexander.V.Lukyanov Exp $")
-
-int wchgat(WINDOW *win, int n, attr_t attr, short color, const void *opts GCC_UNUSED)
-{
-    int	i;
-
-    T((T_CALLED("wchgat(%p,%d,%s,%d)"), win, n, _traceattr(attr), color));
-
-    if (win) {
-      toggle_attr_on(attr,COLOR_PAIR(color));
-
-      for (i = win->_curx; i <= win->_maxx && (n == -1 || (n-- > 0)); i++)
-	win->_line[win->_cury].text[i]
-	  = TextOf(win->_line[win->_cury].text[i]) | attr;
-
-      returnCode(OK);
-    }
-    else
-      returnCode(ERR);
-}
+MODULE_ID("$Id: lib_addch.c,v 1.38 1998/02/07 22:09:32 J.T.Conklin Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is

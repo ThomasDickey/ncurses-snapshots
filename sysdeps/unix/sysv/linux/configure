@@ -189,6 +189,7 @@ for nc_file in .. $NC_CONFIG_HEADERS; do if test "x$nc_file" != x..; then
 #define GCC_SCANF 1
 #define GCC_UNUSED __attribute__((unused))
 #define GOOD_SELECT 1
+#define HAVE_ISASCII 1
 #define HAVE_BUILTIN_H 1
 #define HAVE_DIRENT_H 1
 #define HAVE_FCNTL_H 1

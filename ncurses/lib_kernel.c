@@ -24,7 +24,6 @@
  *	lib_kernel.c
  *
  *	Misc. low-level routines:
- *		napms()
  *		reset_prog_mode()
  *		reset_shell_mode()
  *		erasechar()
@@ -41,15 +40,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_kernel.c,v 1.15 1998/01/10 20:22:58 tom Exp $")
-
-int napms(int ms)
-{
-	T((T_CALLED("napms(%d)"), ms));
-
-	usleep(1000*(unsigned)ms);
-	returnCode(OK);
-}
+MODULE_ID("$Id: lib_kernel.c,v 1.16 1998/02/07 22:09:32 J.T.Conklin Exp $")
 
 int reset_prog_mode(void)
 {

@@ -104,7 +104,9 @@ libncurses-routines	= \
 			lib_beep \
 			lib_bkgd \
 			lib_box \
+			lib_chgat \
 			lib_clear \
+			lib_clearok \
 			lib_clrbot \
 			lib_clreol \
 			lib_color \
@@ -114,6 +116,7 @@ libncurses-routines	= \
 			lib_delwin \
 			lib_dft_fgbg \
 			lib_doupdate \
+			lib_echo \
 			lib_endwin \
 			lib_erase \
 			lib_flash \
@@ -122,6 +125,7 @@ libncurses-routines	= \
 			lib_getch \
 			lib_getstr \
 			lib_hline \
+			lib_immedok \
 			lib_inchstr \
 			lib_initscr \
 			lib_insch \
@@ -131,13 +135,16 @@ libncurses-routines	= \
 			lib_isendwin \
 			lib_kernel \
 			lib_keyname \
+			lib_leaveok \
 			lib_longname \
 			lib_mouse \
 			lib_move \
 			lib_mvcur \
 			lib_mvwin \
+			lib_napms \
 			lib_newterm \
 			lib_newwin \
+			lib_nl \
 			lib_options \
 			lib_overlay \
 			lib_pad \
@@ -150,6 +157,7 @@ libncurses-routines	= \
 			lib_scanw \
 			lib_screen \
 			lib_scroll \
+			lib_scrollok \
 			lib_scrreg \
 			lib_set_term \
 			lib_setup \
@@ -248,8 +256,6 @@ headers = curses.h eti.h form.h menu.h panel.h term.h termcap.h \
 others = clear infocmp tic toe tput tset
 install-bin = $(others)
 
-include ../Rules
-
 clear-objs = clear.o
 infocmp-objs = infocmp.o dump_entry.o
 tic-objs = tic.o dump_entry.o
@@ -268,6 +274,8 @@ mvcur-objs = mvcur.o dump_entry.o
 tctest-objs = tctest.o
 thardscroll-objs = thardscroll.o
 thashmap-objs = thashmap.o hhardscroll.o
+
+include ../Rules
 
 ifndef tabsetdir
 tabsetdir		= $(datadir)/tabset
@@ -292,7 +300,11 @@ inst_mandir		= $(install_root)/$(mandir)
 endif
 
 CPPFLAGS += -DTERMINFO='"$(terminfodir)"' -Iinclude -Iform -Incurses \
-	-Imenu -Ipanel -Iprogs -Itest -I$(objpfx)
+	-Imenu -Ipanel -Iprogs -Itest
+
+ifneq ($(strip $(objpfx)),)
+CPPFLAGS += -I$(objpfx)
+endif
 
 LDLIBS-tclock = math/libm
 
