@@ -26,7 +26,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include "parametrized.h"	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.20 1997/08/20 16:22:38 hjl Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.21 1997/10/04 21:59:57 tom Exp $")
 
 #define INDENT			8
 
@@ -204,8 +204,7 @@ char *expand(char *srcp)
 {
 static char	buffer[BUFSIZ];
 int		bufp;
-const char	*ptr, *str = (srcp == ABSENT_STRING
-			   || srcp == CANCELLED_STRING) ? "" : srcp;
+const char	*ptr, *str = VALID_STRING(srcp) ? srcp : "";
 bool		islong = (strlen(str) > 3);
 
     	bufp = 0;
@@ -297,6 +296,7 @@ static int dump_predicate(int type, int idx)
 }
 
 static void set_obsolete_termcaps(TERMTYPE *tp);
+static void repair_acsc(TERMTYPE *tp);
 
 /* is this the index of a function key string? */
 #define FNKEY(i)	(((i)<= 65 && (i)>= 75) || ((i)<= 216 && (i)>= 268))
@@ -547,6 +547,7 @@ bool	outcount = 0;
     if (len & 1)
     	len++;
 
+    repair_acsc(tterm);
     for (j=0; j < STRCOUNT; j++) {
 	if (sortmode == S_NOSORT)
 	    i = j;
@@ -590,8 +591,7 @@ bool	outcount = 0;
 	    if (tterm->Strings[i] != ABSENT_STRING
 	     && i + 1 > num_strings)
 		num_strings = i + 1;
-	    if (tterm->Strings[i] == ABSENT_STRING
-	     || tterm->Strings[i] == CANCELLED_STRING)
+	    if (!VALID_STRING(tterm->Strings[i]))
 		sprintf(buffer, "%s@", str_names[i]);
 	    else if (outform == F_TERMCAP || outform == F_TCONVERR)
 	    {
@@ -851,4 +851,52 @@ void compare_entry(void (*hook)(int t, int i, const char *name))
 static void set_obsolete_termcaps(TERMTYPE *tp)
 {
 #include "capdefaults.c"
+}
+
+/*
+ * Convert an alternate-character-set string to canonical form: sorted and
+ * unique.
+ */
+static void repair_acsc(TERMTYPE *tp)
+{
+	if (VALID_STRING(acs_chars)) {
+	    size_t n, m;
+	    char mapped[256];
+	    char extra = 0;
+	    unsigned source;
+	    unsigned target;
+	    bool fix_needed = FALSE;
+
+	    for (n = 0, source = 0; acs_chars[n] != 0; n++) {
+		target = acs_chars[n];
+		if (source >= target) {
+		    fix_needed = TRUE;
+		    break;
+		}
+		source = target;
+		if (acs_chars[n+1])
+		    n++;
+	    }
+	    if (fix_needed) {
+		memset(mapped, 0, sizeof(mapped));
+		for (n = 0; acs_chars[n] != 0; n++) {
+		    source = acs_chars[n];
+		    if ((target = (unsigned char)acs_chars[n+1]) != 0) {
+		        mapped[source] = target;
+			n++;
+		    } else {
+			extra = source;
+		    }
+		}
+		for (n = m = 0; n < sizeof(mapped); n++) {
+		    if (mapped[n]) {
+			acs_chars[m++] = n;
+			acs_chars[m++] = mapped[n];
+		    }
+		}
+		if (extra)
+		    acs_chars[m++] = extra;	/* garbage in, garbage out */
+		acs_chars[m] = 0;
+	    }
+	}
 }

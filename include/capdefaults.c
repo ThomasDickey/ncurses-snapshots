@@ -19,7 +19,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: capdefaults.c,v 1.5 1997/06/27 09:55:40 tom Exp $ */
+/* $Id: capdefaults.c,v 1.6 1997/10/04 21:00:16 tom Exp $ */
 
 	/*
 	 * Compute obsolete capabilities.  The reason this is an include file
@@ -34,7 +34,6 @@
 		char *sp;
 		int capval;
 
-#define VALID_STRING(s)	((s) && s != CANCELLED_STRING)
 #define EXTRACT_DELAY(str)	(sp = strchr(str, '*'), sp ? atoi(sp+1) : 0)
 
 		/* current (4.4BSD) capabilities marked obsolete */

@@ -21,12 +21,23 @@
 | WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                               |
 +----------------------------------------------------------------------------*/
 
-// $Id: etip.h,v 1.8 1997/09/13 10:59:03 juergen Exp $
+// $Id: etip.h.in,v 1.1 1997/10/04 19:22:56 tom Exp $
 
 #ifndef _ETIP_H
 #define _ETIP_H
 
-#include <ncurses_cfg.h>
+// These are substituted at configure/build time
+#ifndef HAVE_BUILTIN_H
+#define HAVE_BUILTIN_H 0
+#endif
+
+#ifndef HAVE_TYPEINFO
+#define HAVE_TYPEINFO 0
+#endif
+
+#ifndef HAVE_VALUES_H
+#define HAVE_VALUES_H 0
+#endif
 
 #ifdef __GNUG__
 #  if HAVE_TYPEINFO

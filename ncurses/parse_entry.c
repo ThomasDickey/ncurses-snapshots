@@ -36,7 +36,7 @@
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.18 1997/02/02 01:50:15 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.19 1997/10/04 22:59:25 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] = { 0 };
@@ -700,6 +700,12 @@ void postprocess_termcap(TERMTYPE *tp, bool has_base)
     {
 	char	buf2[MAX_TERMCAP_LENGTH], *bp = buf2;
 
+	if (acs_chars)
+	{
+	    (void)strcpy(bp, acs_chars);
+	    bp += strlen(bp);
+	}
+
 	if (acs_ulcorner && acs_ulcorner[1] == '\0')
 	{
 	    *bp++ = 'l';
@@ -780,6 +786,12 @@ void postprocess_terminfo(TERMTYPE *tp)
     if (PRESENT(box_chars_1))
     {
 	char	buf2[MAX_TERMCAP_LENGTH], *bp = buf2;
+
+	if (acs_chars)
+	{
+	    (void)strcpy(bp, acs_chars);
+	    bp += strlen(bp);
+	}
 
 	if (box_chars_1[0])	/* ACS_ULCORNER */
 	{

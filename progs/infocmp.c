@@ -30,12 +30,10 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.30 1997/06/21 23:36:49 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.31 1997/10/04 20:56:39 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
-
-#define VALID_STRING(s) ((s) != CANCELLED_STRING && (s) != ABSENT_STRING)
 
 #define MAXTERMS	32	/* max # terminal arguments we can handle */
 

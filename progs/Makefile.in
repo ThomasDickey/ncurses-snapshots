@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.25 1997/09/27 20:09:35 tom Exp $
+# $Id: Makefile.in,v 1.26 1997/10/04 17:07:45 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -100,11 +100,11 @@ DEPS_CURSES = ../lib/libncurses@DFT_DEP_SUFFIX@
 all:	$(AUTO_SRC) $(PROGS) 
 
 install: install.progs 
-deinstall: deinstall.progs 
+uninstall: uninstall.progs 
 
 # this line simplifies the configure-script
 install.libs:
-deinstall.libs:
+uninstall.libs:
 
 install.progs: $(PROGS) $(INSTALL_PREFIX)$(bindir)
 	$(INSTALL_PROGRAM) tic     $(INSTALL_PREFIX)$(bindir)/tic
@@ -123,7 +123,7 @@ install.progs: $(PROGS) $(INSTALL_PREFIX)$(bindir)
 	-@rm -f $(INSTALL_PREFIX)$(bindir)/reset
 	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) tset reset)
 
-deinstall.progs:
+uninstall.progs:
 	-@rm -f $(INSTALL_PREFIX)$(bindir)/tic
 	-@rm -f $(INSTALL_PREFIX)$(bindir)/toe
 	-@rm -f $(INSTALL_PREFIX)$(bindir)/infocmp

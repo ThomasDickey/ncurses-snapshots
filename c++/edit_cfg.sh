@@ -1,6 +1,7 @@
-# $Id: Makefile.in,v 1.13 1997/10/04 17:07:46 tom Exp $
+#!/bin/sh
+# $Id: edit_cfg.sh,v 1.1 1997/10/04 19:21:17 tom Exp $
 ################################################################################
-# Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
+# Copyright 1997 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
 #                                                                              #
 # Permission to use, copy, modify, and distribute this software and its        #
@@ -18,54 +19,30 @@
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR    #
 # PERFORMANCE OF THIS SOFTWARE.                                                #
 ################################################################################
-# Master Makefile for ncurses library.
-
-SHELL = /bin/sh
-
-INSTALL_PREFIX=@INSTALL_PREFIX@
-CF_MFLAGS = @cf_cv_makeflags@ INSTALL_PREFIX="$(INSTALL_PREFIX)"
-
-@SET_MAKE@
-
-NCURSES_MAJOR	= @NCURSES_MAJOR@
-NCURSES_MINOR	= @NCURSES_MINOR@
-NCURSES_PATCH	= @NCURSES_PATCH@
-
-prefix		= @prefix@
-exec_prefix	= @exec_prefix@
-
-bindir		= @bindir@
-datadir		= @datadir@
-includedir	= @includedir@
-libdir		= @libdir@
-mandir		= @mandir@
-
-DIRS_TO_MAKE = @DIRS_TO_MAKE@
-
-all ::	$(DIRS_TO_MAKE)
-
-$(DIRS_TO_MAKE) :
-	mkdir $@
-
-preinstall :
-	@ echo ''
-	@ echo '** Configuration summary for NCURSES $(NCURSES_MAJOR).$(NCURSES_MINOR) $(NCURSES_PATCH):'
-	@ echo ''
-	@ echo '      bin directory: '$(bindir)
-	@ echo '      lib directory: '$(libdir)
-	@ echo '  include directory: '$(includedir)
-	@ echo '      man directory: '$(mandir)
-	@ echo ' terminfo directory: '$(datadir)/terminfo
-	@ echo ''
-	@ if test "$(includedir)" != "$(prefix)/include" ; then \
-		echo '** Include-directory is not in a standard location'; fi
-
-# Put the common rules here so that we can easily construct the list of
-# directories to visit.
-all \
-clean \
-distclean \
-mostlyclean \
-realclean \
-uninstall \
-install ::
+# Edit the default value of the etip.h file based on the autoconf-generated
+# values:
+#
+#	$1 = ncurses_cfg.h
+#	$2 = etip.h
+#
+for name in \
+	HAVE_BUILTIN_H \
+	HAVE_TYPEINFO \
+	HAVE_VALUES_H
+do
+	mv $2 $2.bak
+	if ( grep "[ 	]$name[ 	]" $1 2>&1 >/dev/null )
+	then
+		sed -e 's/define '$name'.*$/define '$name' 1/' $2.bak >$2
+	else
+		sed -e 's/define '$name'.*$/define '$name' 0/' $2.bak >$2
+	fi
+	if (cmp -s $2 $2.bak)
+	then
+		echo '** same: '$name
+		mv $2.bak $2
+	else
+		echo '** edit: '$name
+		rm -f $2.bak
+	fi
+done

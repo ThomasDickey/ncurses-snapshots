@@ -18,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.54 1997/09/20 15:02:06 juergen Exp $ */
+/* $Id: curses.h.in,v 1.56 1997/10/04 21:54:03 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -153,7 +153,7 @@ extern	chtype acs_map[];
 #define ACS_DARROW	(acs_map['.'])	/* arrow pointing down */
 #define ACS_UARROW	(acs_map['-'])	/* arrow pointing up */
 #define ACS_BOARD	(acs_map['h'])	/* board of squares */
-#define ACS_LANTERN	(acs_map['I'])	/* lantern symbol */
+#define ACS_LANTERN	(acs_map['i'])	/* lantern symbol */
 #define ACS_BLOCK	(acs_map['0'])	/* solid square block */
 /*
  * These aren't documented, but a lot of System Vs have them anyway
@@ -1263,7 +1263,7 @@ MEVENT;
 extern int getmouse(MEVENT *);
 extern int ungetmouse(MEVENT *);
 extern mmask_t mousemask(mmask_t, mmask_t *);
-extern bool wenclose(WINDOW *, int, int);
+extern bool wenclose(const WINDOW *, int, int);
 extern int mouseinterval(int);
 
 /* other non-XSI functions */

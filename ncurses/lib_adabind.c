@@ -30,7 +30,7 @@
 */
 #include "curses.priv.h"
 
-MODULE_ID("$Id: lib_adabind.c,v 1.2 1997/06/15 11:53:36 juergen Exp $")
+MODULE_ID("$Id: lib_adabind.c,v 1.3 1997/10/02 22:06:45 juergen Exp $")
 
 /*  In (n)curses are a few functionalities that can't be expressed as 
 //  functions, because for historic reasons they use as macro argument
@@ -39,18 +39,18 @@ MODULE_ID("$Id: lib_adabind.c,v 1.2 1997/06/15 11:53:36 juergen Exp $")
 */
 
 /* Prototypes for the functions in this module */
-int  _nc_ada_getmaxyx (WINDOW *win, int *y, int *x);
-int  _nc_ada_getbegyx (WINDOW *win, int *y, int *x);
-int  _nc_ada_getyx (WINDOW *win, int *y, int *x);
-int  _nc_ada_getparyx (WINDOW *win, int *y, int *x);
-int  _nc_ada_isscroll (WINDOW *win);
-int  _nc_ada_coord_transform (WINDOW *win, int *Y, int *X, int dir);
+int  _nc_ada_getmaxyx (const WINDOW *win, int *y, int *x);
+int  _nc_ada_getbegyx (const WINDOW *win, int *y, int *x);
+int  _nc_ada_getyx    (const WINDOW *win, int *y, int *x);
+int  _nc_ada_getparyx (const WINDOW *win, int *y, int *x);
+int  _nc_ada_isscroll (const WINDOW *win);
+int  _nc_ada_coord_transform (const WINDOW *win, int *Y, int *X, int dir);
 void _nc_ada_mouse_event (mmask_t m, int *b, int *s);
 int  _nc_ada_mouse_mask (int button, int state, mmask_t *mask);
 void _nc_ada_unregister_mouse (void);
 
 
-int _nc_ada_getmaxyx (WINDOW *win, int *y, int *x)
+int _nc_ada_getmaxyx (const WINDOW *win, int *y, int *x)
 {
   if (win && y && x)
     {
@@ -61,7 +61,7 @@ int _nc_ada_getmaxyx (WINDOW *win, int *y, int *x)
     return ERR;
 }
 
-int _nc_ada_getbegyx (WINDOW *win, int *y, int *x)
+int _nc_ada_getbegyx (const WINDOW *win, int *y, int *x)
 {
   if (win && y && x)
     {
@@ -72,7 +72,7 @@ int _nc_ada_getbegyx (WINDOW *win, int *y, int *x)
     return ERR;
 }
 
-int _nc_ada_getyx (WINDOW *win, int *y, int *x)
+int _nc_ada_getyx (const WINDOW *win, int *y, int *x)
 {
   if (win && y && x)
     {
@@ -83,7 +83,7 @@ int _nc_ada_getyx (WINDOW *win, int *y, int *x)
     return ERR;
 }
 
-int _nc_ada_getparyx (WINDOW *win, int *y, int *x)
+int _nc_ada_getparyx (const WINDOW *win, int *y, int *x)
 {
   if (win && y && x)
     {
@@ -94,12 +94,12 @@ int _nc_ada_getparyx (WINDOW *win, int *y, int *x)
     return ERR;
 }
 
-int _nc_ada_isscroll (WINDOW *win)
+int _nc_ada_isscroll (const WINDOW *win)
 {
   return win ? (win->_scroll ? TRUE : FALSE) : ERR;
 }
 
-int _nc_ada_coord_transform( WINDOW *win, int *Y, int *X, int dir)
+int _nc_ada_coord_transform (const WINDOW *win, int *Y, int *X, int dir)
 {
   if (win && Y && X)
     {

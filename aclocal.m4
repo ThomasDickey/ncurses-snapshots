@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.88 1997/09/27 21:42:25 tom Exp $
+dnl $Id: aclocal.m4,v 1.89 1997/10/04 17:07:46 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -473,7 +473,7 @@ do
 		if test -f $srcdir/$cf_dir/headers; then
 cat >> Makefile <<CF_EOF
 install.includes \\
-deinstall.includes \\
+uninstall.includes \\
 CF_EOF
 		fi
 if test "$cf_dir" != "c++" ; then
@@ -482,18 +482,18 @@ fi
 cat >> Makefile <<CF_EOF
 lintlib \\
 install.libs \\
-deinstall.libs \\
+uninstall.libs \\
 install.$cf_dir \\
-deinstall.$cf_dir ::
+uninstall.$cf_dir ::
 	cd $cf_dir && \$(MAKE) \$(CF_MFLAGS) \[$]@
 CF_EOF
 	elif test -f $srcdir/$cf_dir/headers; then
 cat >> Makefile <<CF_EOF
 
 install.libs \\
-deinstall.libs \\
+uninstall.libs \\
 install.includes \\
-deinstall.includes ::
+uninstall.includes ::
 	cd $cf_dir && \$(MAKE) \$(CF_MFLAGS) \[$]@
 CF_EOF
 fi
@@ -588,9 +588,9 @@ CF_EOF
 
 	cat >>$cf_dir/Makefile <<CF_EOF
 
-deinstall \\
-deinstall.libs \\
-deinstall.includes ::
+uninstall \\
+uninstall.libs \\
+uninstall.includes ::
 CF_EOF
 		for i in `cat $srcdir/$cf_dir/headers |fgrep -v "#"`
 		do

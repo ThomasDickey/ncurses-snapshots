@@ -61,7 +61,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 0.28 1997/09/27 19:42:13 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 0.30 1997/10/05 01:15:19 tom Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -101,6 +101,15 @@ static void _trace_slot(const char *tag)
 }
 #endif
 
+/* FIXME: The list of names should be configurable */
+static int is_xterm(const char *name)
+{
+    return (!strncmp(name, "xterm", 5) 
+      ||    !strncmp(name, "rxvt",  4)
+      ||    !strncmp(name, "kterm", 5)
+      ||    !strncmp(name, "color_xterm", 11));
+}
+
 void _nc_mouse_init(SCREEN *sp GCC_UNUSED)
 /* initialize the mouse -- called at screen-setup time */
 {
@@ -112,7 +121,8 @@ void _nc_mouse_init(SCREEN *sp GCC_UNUSED)
 	events[i].id = INVALID_EVENT;
 
     /* we know how to recognize mouse events under xterm */
-    if (!strncmp(cur_term->type.term_names, "xterm", 5) && key_mouse)
+    if (key_mouse != 0
+     && is_xterm(cur_term->type.term_names))
 	mousetype = M_XTERM;
 
 #if USE_GPM_SUPPORT
@@ -649,7 +659,7 @@ mmask_t mousemask(mmask_t newmask, mmask_t *oldmask)
     return(0);
 }
 
-bool wenclose(WINDOW *win, int y, int x)
+bool wenclose(const WINDOW *win, int y, int x)
 /* check to see if given window encloses given screen location */
 {
     if (win)

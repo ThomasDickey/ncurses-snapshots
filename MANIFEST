@@ -263,7 +263,8 @@
 ./c++/cursslk.cc
 ./c++/cursslk.h
 ./c++/demo.cc
-./c++/etip.h
+./c++/edit_cfg.sh
+./c++/etip.h.in
 ./c++/internal.h
 ./c++/modules
 ./configure
