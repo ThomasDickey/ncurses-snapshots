@@ -614,12 +614,11 @@ Source-Form Translation
    should not need to be modified for single-terminal ports.
    
    lib_addch.c lib_addstr.c lib_bkgd.c lib_box.c lib_clear.c lib_clrbot.c
-   lib_clreol.c lib_delch.c lib_delwin.c lib_endwin.c lib_erase.c
-   lib_inchstr.c lib_insch.c lib_insdel.c lib_insstr.c lib_keyname.c
-   lib_move.c lib_mvwin.c lib_newwin.c lib_overlay.c lib_pad.c
-   lib_printw.c lib_refresh.c lib_scanw.c lib_scroll.c lib_scrreg.c
-   lib_set_term.c lib_touch.c lib_tparm.c lib_tputs.c lib_unctrl.c
-   lib_window.c panel.c
+   lib_clreol.c lib_delch.c lib_delwin.c lib_erase.c lib_inchstr.c
+   lib_insch.c lib_insdel.c lib_insstr.c lib_keyname.c lib_move.c
+   lib_mvwin.c lib_newwin.c lib_overlay.c lib_pad.c lib_printw.c
+   lib_refresh.c lib_scanw.c lib_scroll.c lib_scrreg.c lib_set_term.c
+   lib_touch.c lib_tparm.c lib_tputs.c lib_unctrl.c lib_window.c panel.c
    
    This module is pure curses, but calls outstr():
    
@@ -628,7 +627,8 @@ Source-Form Translation
    These modules are pure curses, except that they use tputs() and
    putp():
    
-   lib_beep.c lib_color.c lib_options.c lib_slk.c lib_vidattr.c
+   lib_beep.c lib_endwin.c lib_color.c lib_options.c lib_slk.c
+   lib_vidattr.c
    
    This modules assist in POSIX emulation on non-POSIX systems:
    

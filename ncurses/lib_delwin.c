@@ -39,7 +39,7 @@ int	i;
 	    return(ERR);
 
 	if (! (win->_flags & _SUBWIN)) {
-	    for (i = 0; i < win->_maxy  &&  win->_line[i].text; i++)
+	    for (i = 0; i <= win->_maxy  &&  win->_line[i].text; i++)
 			free(win->_line[i].text);
 	}
 

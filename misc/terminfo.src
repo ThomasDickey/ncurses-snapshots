@@ -1621,9 +1621,10 @@ xterm-nic|xterm with ich/ich1 suppressed for non-curses programs,
 	ich@, ich1@, use=xterm,
 
 # Should work with the color xterm on the X11R6 contrib tape.
-# From: Eric S. Raymond <esr@snark.thyrsus.com> May 4 1995
+# Assumes the xterm attribute default is black on white.
+# From: Eric S. Raymond <esr@snark.thyrsus.com> March 4 1996
 xterm-color|xterm with color support, 
-	use=xterm,use=klone+color,
+	op=\E[30;47m, use=xterm,use=klone+color,
 
 # From: Thomas Dickey <dickey@clark.net> 13 Dec 1995
 rxvt|rxvt terminal emulator, 
@@ -1705,7 +1706,7 @@ emu|emu native mode,
 	cud=\Ep%p1%d;, cud1=\EB, cuf=\Eq%p1%d;, cuf1=\ED, 
 	cup=\EE%p1%d;%p2%d;, cuu=\Ep-%p1%d;, cuu1=\EA, 
 	cvvis=\Ea, dch=\EI%p1%d;, dch1=\EI1;, dl=\ER%p1%d;, 
-	dl1=\ER1;, ech=\Ej%p1%d;\ned=\EN, el=\EK, el1=\EL, 
+	dl1=\ER1;, ech=\Ej%p1%d;, ed=\EN, el=\EK, el1=\EL, 
 	enacs=\200, home=\EE0;0;, ht=^I, hts=\Eh, 
 	il=\EQ%p1%d;, il1=\EQ1;, ind=\EG, 
 	is2=\ES\Er0;\Es0;, kbs=^H, kcub1=\EC, kcud1=\EB, 
@@ -1745,6 +1746,21 @@ vremote|virtual remote terminal,
 pty|4bsd pseudo teletype, 
 	cup=\EG%p1%{32}%+%c%p2%{32}%+%c, rmso=\Eb$, 
 	rmul=\Eb!, smso=\Ea$, smul=\Ea!, use=cbunix,
+
+# The codes supported by the term.el terminal emulation in GNU Emacs 19.30 
+eterm|gnu emacs term.el terminal emulation, 
+	am, mir, xenl, 
+	cols#80, lines#24, 
+	bel=^G, bold=\E[1m, clear=\E[H\E[J, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
+	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, 
+	ed=\\E[J, el=\E[K, el1=\E[1K, home=\E[H, ht=^I, 
+	ich=\E[%p1%d@, il=\E[%p1%dL, il1=\E[L, ind=^J, 
+	rev=\E[7m, rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, 
+	rmso=\E[m, rmul=\E[m, sgr0=\E[m, smcup=\E7\E[?47h, 
+	smir=\E[4h, smso=\E[7m, smul=\E[4m, 
 
 # Entries for use by the FSF's `screen' program.  The screen and
 # screen-w came with version 3.6.2.  The screen2 and screen3 entries
@@ -2086,7 +2102,7 @@ altos4|alt4|altos-4|altos IV,
 altos7|alt7|altos VII, 
 	am, mir, 
 	cols#80, lines#24, xmc#0, 
-	acsc=l2m1k3j5t4u9v=w0q\072x6n8\nblink=\EG2, 
+	acsc=l2m1k3j5t4u9v=w0q\072x6n8, blink=\EG2, 
 	bold=\EGt, clear=\E+^^, cr=^M, cub1=^H, cud1=^J, 
 	cuf1=^L, cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, 
 	dch1=\EW, dim=\EGp, dl=\ER, ed=\EY, el=\ET, 
@@ -2297,11 +2313,11 @@ hp2626-s|2626-s|hp 2626 using only 23 lines,
 	eslok, hs, 
 	lines#23, 
 	fsl=\E&d@\E&w7f2p1I\E&w4f1I, 
-	is1=\E&q3t0{0H \E&w0f115n1I \E&w0f1n2I\n\E&w2f1i0d0u22l0S \E&w2f2i0d23u23l0S \E&w7f2p1I \r, 
+	is1=\E&q3t0{0H \E&w0f115n1I \E&w0f1n2I \E&w2f1i0d0u22l0S \E&w2f2i0d23u23l0S \E&w7f2p1I \r, 
 	tsl=\E&w7f2p2I\E&w4f2I\r\EK\E&a%p1%dC, use=hp2626,
 # Force terminal back to 24 lines after being 23.
 hp2626-ns|2626-ns|hp 2626 using all 24 lines, 
-	is1=\E&q3t0{0H \E&w0f118n1I \E&w0f1n2I\n\E&w2f1i0d0u23l0S \E&w3f2I \E&w7f2p1I \r, use=hp2626,
+	is1=\E&q3t0{0H \E&w0f118n1I \E&w0f1n2I \E&w2f1i0d0u23l0S \E&w3f2I \E&w7f2p1I \r, use=hp2626,
 # Various entries useful for small windows on 2626.
 hp2626-12|2626-12|hewlett-packard 2626 12 lines, 
 	lines#12, use=hp2626,
@@ -2631,7 +2647,7 @@ hp700-wy|HP700/41 emulating wyse30,
 	cbt=\EI, clear=^Z, cr=^M, cub1=^H, cud1=^V, 
 	cuf1=^L, cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, 
 	dch1=\EW, dl1=\ER, ed=\EY, el=\ET$<10/>, home=^^, 
-	ht=\011\nhts=\E1, if=/usr/share/tabset/stdcrt, 
+	ht=^I, hts=\E1, if=/usr/share/tabset/stdcrt, 
 	il1=\EE$<0.7*/>, is1=\E~"\EC\Er\E(\EG0\003\E`9\E`1, 
 	kbs=\177, kcbt=\EI, kclr=^Z, kcub1=^H, kcud1=^V, 
 	kcuf1=^L, kcuu1=^K, ked=\EY, kel=\ET, khome=^^, 
@@ -3618,7 +3634,7 @@ tvi925|925|televideo 925,
 	cvvis=\E.2, dch1=\EW, dl1=\ER, dsl=\Eh, ed=\EY, 
 	el=\ET, flash=\Eb$<200>\Ed, fsl=^M\Eg, home=^^, 
 	ht=^I, hts=\E1, ich1=\EQ, il1=\EE, ind=^J, 
-	is2=\El\E"\nkclr=\032, kbs=^H, kcub1=^H, kcud1=^V, 
+	is2=\El\E", kbs=^H, kclr=^Z, kcub1=^H, kcud1=^V, 
 	kcuf1=^L, kcuu1=^K, kdch1=\EW, kdl1=\ER, ked=\EY, 
 	kel=\ET, kf0=^AI\r, kf1=^A@\r, kf2=^AA\r, 
 	kf3=^AB\r, kf4=^AC\r, kf5=^AD\r, kf6=^AE\r, 
@@ -9323,7 +9339,27 @@ atari|atari st,
 uniterm|uniterm49|UniTerm VT220 emulator with 49 lines, 
 	lines#49, 
 	is2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h\E[1;49r\E[49;1H, use=vt220,
-
+# MiNT VT52 emulation. 80 columns, 25 rows.
+# MiNT is Now TOS, the operating system which comes with all Ataris now
+# (mainly Atari Falcon). This termcap is for the VT52 emulation you get
+# under tcsh/zsh/bash/sh/ksh/ash/csh when you run MiNT in `console' mode
+# From: Per Persson <pp@pfawww.pp.se>, 27 Feb 1996
+st52|st52|Atari ST with VT52 emulation, 
+	am, km, 
+	cols#80, lines#25, 
+	bel=^G, civis=\Ef, clear=\EH\EJ, cnorm=\Ee, cr=^M, 
+	cub1=\ED, cud1=\EB, cuf1=\EC, 
+	cup=\EY%p1%{32}%+%c%p2%{32}%+%c, cuu1=\EA, dl1=\EM, 
+	ed=\EJ, el=\EK, home=\EH, ht=^I, il1=\EL, ind=^J, 
+	ka1=\E#7, ka3=\E#5, kb2=\E#9, kbs=^H, kc1=\E#1, 
+	kc3=\E#3, kclr=\E#7, kcub1=\E#K, kcud1=\E#P, 
+	kcuf1=\E#M, kcuu1=\E#H, kf0=\E#D, kf1=\E#;, 
+	kf2=\E#<, kf3=\E#=, kf4=\E#>, kf5=\E#?, kf6=\E#@, 
+	kf7=\E#A, kf8=\E#B, kf9=\E#C, khome=\E#G, 
+	kil1=\E#R, kind=\E#2, kri=\E#8, lf0=f10, nel=^M^J, 
+	rc=\Ek, ri=\EI, rmso=\Eq, rs1=\Ez_\Eb@\EcA, sc=\Ej, 
+	smcup=\Ee, smso=\Ep, 
+ 
 #### Commodore Business Machines
 #
 # Formerly located in West Chester, PA; went spectacularly bust in 1994
@@ -12107,9 +12143,11 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 9.12.7 (Fri Feb  9 13:27:35 EST 1996):
 #	* Added visa50.
 #
-# 9.13.0 (Wed Feb 14 22:59:12 EST 1996):
+# 9.13.0 (Sun Mar 10 00:13:08 EST 1996):
 #	* Another sweep through the Shuford archive looking for new info.
 #	* Added dg100 alias to dg6053 based on a comp.terminals posting.
+# 	* Added st52 from Per Persson.
+#	* Added eterm from the GNU Emacs 19.30 distribution.
 #	* Freeze for 1.9.9.
 #
 
