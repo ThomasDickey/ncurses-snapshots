@@ -1,10 +1,25 @@
--- $Id: NEWS,v 1.480 1999/09/05 01:33:21 tom Exp $
+-- $Id: NEWS,v 1.482 1999/09/12 01:59:55 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990911	pre-release
+	+ improved configure checks for builtin.h
+	+ minor changes to C++ binding (remove static initializations, and make
+	  configure-test for parameter initializations) for features not
+	  allowed by vendor's C++ compilers (reported by Martin Mokrejs, this
+	  applies to SGI, though I found SCO has the same characteristics).
+	+ corrected quoting of ETIP_xxx definitions which support old versions
+	  of g++, e.g., those using -lg++
+	+ remove 'L' code from safe_sprintf.c, since 'long double' is not
+	  widely portable.  safe_sprintf.c is experimental, however, and
+	  exists mainly as a fallback for systems without snprintf (reported
+	  by Martin Mokrejs <mmokrejs@natur.cuni.cz>, for IRIX 6.2)
+	+ modify definition of _nc_tinfo_fkeys in broken-linker configuration
+	  so that it is not unnecessarily made extern (Jeffrey C Honig).
 
 990904	pre-release
 	+ move definition for builtin.h in configure tests to specific check
@@ -253,13 +268,13 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ change inequality in hashmap.c which checks the distance traveled by
 	  a chunk so that ^D command in nvi (scrolls 1/2 screen) will use
 	  scrolling logic (patch by Alexander Lukyanov, reported by Jeffrey
-	  Honig).
+	  C Honig).
 
 990314	pre-release
 	+ modify lib_color.c to handle a special case where the curscr
 	  attributes have been made obsolete (patch by Alexander Lukyanov).
 	+ update BSD/OS console terminfo entries to use klone+sgr and
-	  klone+color (patch by Jeffrey Honig).
+	  klone+color (patch by Jeffrey C Honig).
 	+ update glibc addon configure script for extended capabilities.
 	+ correct a couple of warnings in the --enable-const configuration.
 	+ make comp_hash build properly with _nc_strdup(), on NeXT (reported by
@@ -372,7 +387,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ cache last result from _nc_baudrate, for performance (suggested by
 	  Alexander Lukyanov).
 	+ modify ClrUpdate() function to workaround a problem in nvi, which
-	  uses redrawwin in SIGTSTP handling.  Jeffrey Honig reported that
+	  uses redrawwin in SIGTSTP handling.  Jeffrey C Honig reported that
 	  ncurses repainted the screen with nulls before resuming normal
 	  operation (patch by Alexander Lukyanov).
 	+ generalize is_xterm() function a little by letting xterm/rxvt/kterm
