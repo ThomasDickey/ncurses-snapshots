@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.65 2003/08/30 22:44:10 tom Exp $
+-- $Id: INSTALL,v 1.66 2003/09/20 22:11:48 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -608,6 +608,12 @@ SUMMARY OF CONFIGURE OPTIONS:
 
     --with-rcs-ids
 	Compile-in RCS identifiers.  Most of the C files have an identifier.
+
+    --with-rel-version=NUM
+	Override the release version, which may be used in shared library
+	filenames.  This consists of a major and minor version number separated
+	by ".".  Normally the major version number is the same as the ABI
+	version; some ports have special requirements for compatibility.
 
     --with-shared
 	Generate shared-libraries.  The names given depend on the system for

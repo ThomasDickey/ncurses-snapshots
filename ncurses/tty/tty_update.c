@@ -73,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.199 2003/08/23 21:25:08 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.202 2003/09/20 23:57:09 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -521,27 +521,32 @@ PutRange(const NCURSES_CH_T * otext,
 	 int row,
 	 int first, int last)
 {
-    int j, run;
+    int i, j, same;
 
     TR(TRACE_CHARPUT, ("PutRange(%p, %p, %d, %d, %d)",
 		       otext, ntext, row, first, last));
 
     if (otext != ntext
 	&& (last - first + 1) > SP->_inline_cost) {
-	for (j = first, run = 0; j <= last; j++) {
-	    if (!run && isnac(otext[j]))
+	for (j = first, same = 0; j <= last; j++) {
+	    if (!same && isnac(otext[j]))
 		continue;
 	    if (CharEq(otext[j], ntext[j])) {
-		run++;
+		same++;
 	    } else {
-		if (run > SP->_inline_cost) {
-		    int before_run = (j - run);
-		    EmitRange(ntext + first, before_run - first);
+		if (same > SP->_inline_cost) {
+		    EmitRange(ntext + first, j - same - first);
 		    GoTo(row, first = j);
 		}
-		run = 0;
+		same = 0;
 	    }
 	}
+	i = EmitRange(ntext + first, j - same - first);
+	/*
+	 * Always return 1 for the next GoTo() after a PutRange() if we found
+	 * identical characters at end of interval
+	 */
+	return (same == 0 ? i : 1);
     }
     return EmitRange(ntext + first, last - first + 1);
 }
@@ -1090,8 +1095,10 @@ TransformLine(int const lineno)
     if (ceol_standout_glitch && clr_eol) {
 	firstChar = 0;
 	while (firstChar < screen_columns) {
-	    if (AttrOf(newLine[firstChar]) != AttrOf(oldLine[firstChar]))
+	    if (AttrOf(newLine[firstChar]) != AttrOf(oldLine[firstChar])) {
 		attrchanged = TRUE;
+		break;
+	    }
 	    firstChar++;
 	}
     }
@@ -1154,17 +1161,9 @@ TransformLine(int const lineno)
     } else {
 	NCURSES_CH_T blank;
 
-	/* find the first differing character */
-	while (firstChar < screen_columns &&
-	       CharEq(newLine[firstChar], oldLine[firstChar]))
-	    firstChar++;
-
-	/* if there wasn't one, we're done */
-	if (firstChar >= screen_columns)
-	    return;
-
 	/* it may be cheap to clear leading whitespace with clr_bol */
-	if (clr_bol && (blank = newLine[0], can_clear_with(CHREF(blank)))) {
+	blank = newLine[0];
+	if (clr_bol && can_clear_with(CHREF(blank))) {
 	    int oFirstChar, nFirstChar;
 
 	    for (oFirstChar = 0; oFirstChar < screen_columns; oFirstChar++)
@@ -1174,26 +1173,43 @@ TransformLine(int const lineno)
 		if (!CharEq(newLine[nFirstChar], blank))
 		    break;
 
-	    if (nFirstChar > oFirstChar + SP->_el1_cost) {
-		if (nFirstChar >= screen_columns && SP->_el_cost <= SP->_el1_cost) {
-		    GoTo(lineno, 0);
-		    UpdateAttrs(AttrOf(blank));
-		    TPUTS_TRACE("clr_eol");
-		    putp(clr_eol);
-		} else {
-		    GoTo(lineno, nFirstChar - 1);
-		    UpdateAttrs(AttrOf(blank));
-		    TPUTS_TRACE("clr_bol");
-		    putp(clr_bol);
+	    if (nFirstChar == oFirstChar) {
+		firstChar = nFirstChar;
+		/* find the first differing character */
+		while (firstChar < screen_columns
+		       && CharEq(newLine[firstChar], oldLine[firstChar]))
+		    firstChar++;
+	    } else if (oFirstChar > nFirstChar) {
+		firstChar = nFirstChar;
+	    } else {		/* oFirstChar < nFirstChar */
+		firstChar = oFirstChar;
+		if (SP->_el1_cost < nFirstChar - oFirstChar) {
+		    if (nFirstChar >= screen_columns
+			&& SP->_el_cost <= SP->_el1_cost) {
+			GoTo(lineno, 0);
+			UpdateAttrs(AttrOf(blank));
+			TPUTS_TRACE("clr_eol");
+			putp(clr_eol);
+		    } else {
+			GoTo(lineno, nFirstChar - 1);
+			UpdateAttrs(AttrOf(blank));
+			TPUTS_TRACE("clr_bol");
+			putp(clr_bol);
+		    }
+
+		    while (firstChar < nFirstChar)
+			oldLine[firstChar++] = blank;
 		}
-
-		while (firstChar < nFirstChar)
-		    oldLine[firstChar++] = blank;
-
-		if (firstChar >= screen_columns)
-		    return;
 	    }
+	} else {
+	    /* find the first differing character */
+	    while (firstChar < screen_columns
+		   && CharEq(newLine[firstChar], oldLine[firstChar]))
+		firstChar++;
 	}
+	/* if there wasn't one, we're done */
+	if (firstChar >= screen_columns)
+	    return;
 
 	blank = newLine[screen_columns - 1];
 
