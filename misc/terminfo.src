@@ -1,9 +1,11 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
 # This version of terminfo.src is distributed with ncurses.
+# Report bugs to
+#	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 1999/12/12 00:46:42 $
+#	$Date: 2000/01/02 00:29:16 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -653,10 +655,15 @@ mach|Mach Console,
 	kdch1=\E[9, kend=\E[Y, kf1=\EOP, kf10=\EOY, kf2=\EOQ, 
 	kf3=\EOR, kf4=\EOS, kf5=\EOT, kf6=\EOU, kf7=\EOV, kf8=\EOW, 
 	kf9=\EOX, khome=\E[H, kich1=\E[@, kll=\E[F, knp=\E[U, 
-	kpp=\E[V, nel=^M^J, rev=\E[7m, rmso=\E[0m, sgr0=\E[0m, 
-	smso=\E[7m, 
+	kpp=\E[V, rev=\E[7m, rmso=\E[0m, rmul=\E[24m, sgr0=\E[0m, 
+	smso=\E[7m, smul=\E[4m, 
 mach-bold|Mach Console with bold instead of underline, 
 	rmul=\E[0m, smul=\E[1m, 
+	use=mach, 
+mach-color|Mach Console with ANSI color, 
+	colors#8, pairs#64, 
+	dim=\E[2m, invis=\E[8m, op=\E[37;40m, rmso=\E[27m, 
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
 	use=mach, 
 
 # Entry for the latin1 and latin2 fonts
@@ -2394,6 +2401,37 @@ xterm-8bit|xterm terminal emulator 8-bit controls (X Window System),
 	tbc=\2333g, u6=\233[%i%d;%dR, u7=\E[6n, u8=\233[?1;2c, 
 	u9=\E[c, vpa=\233%i%p1%dd, 
 
+xterm-hp|XFree86 xterm with hpterm function keys, 
+	kclr=\EJ, kcub1=\ED, kcud1=\EB, kcuf1=\EC, kcuu1=\EA, 
+	kdch1=\EP, kend=\EF, kf1=\Ep, kf2=\Eq, kf3=\Er, kf4=\Es, 
+	kf5=\Et, kf6=\Eu, kf7=\Ev, kf8=\Ew, khome=\Eh, kich1=\EQ, 
+	knp=\ES, kpp=\ET, 
+	use=xterm-xfree86, 
+
+xterm-vt220|XFree86 xterm emulating vt220, 
+	ka1=\EOw, ka3=\EOy, kbeg=\EOu, kbs=^H, kc1=\EOq, kc3=\EOs, 
+	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
+	kdch1=\E[3~, kend=\E[4~, kent=\EOM, kf1=\EOP, kf10=\E[21~, 
+	kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, 
+	kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, 
+	kf19=\E[33~, kf2=\EOQ, kf20=\E[34~, kf3=\EOR, kf4=\EOS, 
+	kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
+	khome=\E[1~, kich1=\E[2~, kmous=\E[M, knp=\E[6~, kpp=\E[5~, 
+	use=xterm-xfree86, 
+
+xterm-vt52|XFree86 xterm emulating dec vt52, 
+	cols#80, it#8, lines#24, 
+	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+	bel=^G, clear=\EH\EJ, cr=^M, cub1=\ED, cud1=\EB, cuf1=\EC, 
+	cup=\EY%p1%' '%+%c%p2%' '%+%c, cuu1=\EA, ed=\EJ, el=\EK, 
+	home=\EH, ht=^I, ind=^J, kbs=^H, kcub1=\ED, kcud1=\EB, 
+	kcuf1=\EC, kcuu1=\EA, nel=^M^J, ri=\EI, rmacs=\EG, smacs=\EF, 
+
+xterm-noapp|xterm with cursor keys in normal mode, 
+	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, rmcup@, 
+	rmkx=\E>, smcup@, smkx=\E=, 
+	use=xterm, 
+
 xterm-24|vs100|xterms|xterm terminal emulator (X Window System), 
 	lines#24, use=xterm-r6, 
 
@@ -2748,9 +2786,14 @@ eterm|gnu emacs term.el terminal emulation,
 # screen-w entries came with version 3.7.1.  The screen2 and screen3 entries
 # come from University of Wisconsin and may be older.
 # (screen: added <cnorm> on ANSI model -- esr)
-
+#
+# 'screen' defines extensions to termcap.  Some are used in its terminal
+# description:
+#      G0   (bool)  Terminal can deal with ISO 2022  font  selection sequences.
+#      AX   (bool)  Does  understand ANSI set default fg/bg color
+#                   (\E[39m / \E[49m).
 screen|VT 100/ANSI X3.64 virtual terminal, 
-	am, km, mir, msgr, xenl, 
+	OTbs, OTpt, am, km, mir, msgr, xenl, AX, G0, 
 	colors#8, cols#80, it#8, lines#24, pairs#64, 
 	acsc=++\,\,--..00``aaffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
 	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, civis=\E[?25l, 
@@ -3073,9 +3116,8 @@ nextshell|NeXT Shell application,
 news-unk|SONY NEWS vt100 emulator common entry, 
 	OTbs, OTpt, am, xenl, 
 	cols#80, 
-	OTnl=^J, OTrs=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h\E[r, 
-	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[H\E[2J, cr=^M, 
-	csr=\E[%i%p1%d;%p2%dr, cub1=^H, cud1=^J, cuf1=\E[C, 
+	OTnl=^J, bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[H\E[2J, 
+	cr=^M, csr=\E[%i%p1%d;%p2%dr, cub1=^H, cud1=^J, cuf1=\E[C, 
 	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, dl=\E[%p1%dM, dl1=\E[M, 
 	ed=\E[J, el=\E[K, home=\E[H, ht=^I, 
 	if=/usr/lib/tabset/vt100, il=\E[%p1%dL, il1=\E[L, 
@@ -3083,8 +3125,9 @@ news-unk|SONY NEWS vt100 emulator common entry,
 	kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kf0=\EOY, kf1=\EOP, 
 	kf2=\EOQ, kf3=\EOR, kf4=\EOS, kf5=\EOT, kf6=\EOU, kf7=\EOV, 
 	kf8=\EOW, kf9=\EOX, rc=\E8, rev=\E[7m, ri=\EM, 
-	rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, sc=\E7, sgr0=\E[m, 
-	smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
+	rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, 
+	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h\E[r, sc=\E7, 
+	sgr0=\E[m, smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
 #
 # (news-29: this had :TY=ascii: --esr)
 news-29, 
@@ -3122,15 +3165,15 @@ news-42-sjis,
 news-old-unk|SONY NEWS vt100 emulator common entry, 
 	OTbs, OTpt, am, xenl, 
 	cols#80, vt#3, 
-	OTnl=^J, OTrs=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, 
-	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[;H\E[2J, cr=^M, 
-	csr=\E[%i%p1%d;%p2%dr, cub1=^H, cud1=^J, cuf1=\E[C, 
+	OTnl=^J, bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[;H\E[2J, 
+	cr=^M, csr=\E[%i%p1%d;%p2%dr, cub1=^H, cud1=^J, cuf1=\E[C, 
 	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, ed=\E[J, el=\E[K, 
 	home=\E[H, ht=^I, if=/usr/lib/tabset/vt100, kbs=^H, 
 	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kf1=\EOP, 
 	kf2=\EOQ, kf3=\EOR, kf4=\EOS, rc=\E8, rev=\E[7m, ri=\EM, 
-	rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, sc=\E7, sgr0=\E[m, 
-	smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
+	rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, 
+	rs2=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, sc=\E7, 
+	sgr0=\E[m, smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, 
 #
 # (nwp512: this had :DE=^H:, which I think means <OTbs> --esr)
 nwp512|news|nwp514|news40|vt100-bm|sony vt100 emulator 40 lines, 
@@ -3183,7 +3226,6 @@ news29|news28-a|sony vt100 emulator 29 lines,
 nwp511|nwp-511|nwp-511 vt100, 
 	OTbs, OTpt, am, xenl, 
 	cols#80, lines#24, 
-	OTrs=\E7\E[r\E8\E[?5l\E[?1l\E>\E[?7h\E[?8h, 
 	clear=\E[;H\E[2J$<20/>, cuf1=\E[C, 
 	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A$<2/>, dl1=\E[M, 
 	ed=\E[J$<30/>, el=\E[K$<3/>, 
@@ -3192,6 +3234,7 @@ nwp511|nwp-511|nwp-511 vt100,
 	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kf1=\EOP, kf2=\EOQ, 
 	kf3=\EOR, kf4=\EOS, kf5=\EOT, kf6=\E#W, khome=\E[H, 
 	ri=\EM$<5/>, rmso=\E[m$<2/>, rmul=\E[m$<2/>, 
+	rs2=\E7\E[r\E8\E[?5l\E[?1l\E>\E[?7h\E[?8h, 
 	smso=\E[7m$<2/>, smul=\E[4m$<2/>, 
 # (news517: this had :TY=sjis:. --esr)
 nwp517|nwp-517|nwp-517 vt200 80 cols 30 rows, 
@@ -3205,12 +3248,10 @@ nwp517|nwp-517|nwp-517 vt200 80 cols 30 rows,
 nwp517-w|nwp-517-w|nwp-517 vt200 132 cols 50 rows, 
 	eslok, hs, 
 	cols#132, lines#50, 
-	OTi2=\E[2$~\n, 
-	OTrs=\E>\E[?3h\E[?4l\E[?5l\E[?7h\E[?8h, dsl=\E[1$~, 
-	fsl=\E[0$}, 
+	OTi2=\E[2$~\n, dsl=\E[1$~, fsl=\E[0$}, 
 	is2=\E7\E[r\E8\E>\E[?3h\E[?4l\E[?5l\E[?7h\E[?8h, 
-	tsl=\E[1$}\E[;%df, 
-	use=vt200, 
+	rs2=\E>\E[?3h\E[?4l\E[?5l\E[?7h\E[?8h, 
+	tsl=\E[1$}\E[;%df, use=vt200, 
 
 #### Common Desktop Environment
 #
@@ -4153,10 +4194,10 @@ adm3|lsi adm3,
 adm3a|lsi adm3a, 
 	OTbs, am, 
 	cols#80, lines#24, 
-	OTma=^K^P, OTnl=^J, OTrs=^N, bel=^G, clear=\032$<1/>, cr=^M, 
-	cub1=^H, cud1=^J, cuf1=^L, 
-	cup=\E=%p1%{32}%+%c%p2%{32}%+%c, cuu1=^K, home=^^, 
-	ind=^J, kcub1=^H, kcud1=^J, kcuf1=^L, kcuu1=^K, rs1=^N, 
+	OTma=^K^P, OTnl=^J, bel=^G, clear=\032$<1/>, cr=^M, cub1=^H, 
+	cud1=^J, cuf1=^L, cup=\E=%p1%{32}%+%c%p2%{32}%+%c, 
+	cuu1=^K, home=^^, ind=^J, kcub1=^H, kcud1=^J, kcuf1=^L, 
+	kcuu1=^K, rs2=^N, 
 adm3a+|adm3a plus, 
 	kbs=^H, use=adm3a, 
 # (adm5: removed obsolete ":ma=^Hh^Jj^Kk^Ll^^H:" & duplicate ":do=^J:" -- esr)
@@ -13018,7 +13059,6 @@ tek4025-ex|tek4027-ex|tek 4025/4027 w/!,
 tek4025a|Tektronix 4025A, 
 	OTbs, OTpt, am, bw, da, db, xon, 
 	cols#80, it#8, lines#34, 
-	OTrs=!com 29\035del 0\035rss t\035buf\035buf n\035cle\035dis\035dup\035ech r\035eol\035era g\035for n\035pad 203\035pad 209\035sno n\035sto 9 17 25 33 41 49 57 65 73\035wor 0;, 
 	bel=^G, cbt=\035bac;, clear=\035era;\n\035rup;, cmdch=^], 
 	cr=^M, cub=\035lef %p1%d;, cub1=^H, cud=\035dow %p1%d;, 
 	cud1=^J, cuf=\035rig %p1%d;, cuf1=\035rig;, 
@@ -13026,6 +13066,7 @@ tek4025a|Tektronix 4025A,
 	dch1=\035dch;, dl=\035dli %p1%d;, dl1=\035dli;, 
 	el=\035dch 80;, hpa=\r\035rig %p1%d;, ht=^I, 
 	il1=\013\035ili;, ind=^J, indn=\035dow %p1%d;, 
+	rs2=!com 29\035del 0\035rss t\035buf\035buf n\035cle\035dis\035dup\035ech r\035eol\035era g\035for n\035pad 203\035pad 209\035sno n\035sto 9 17 25 33 41 49 57 65 73\035wor 0;, 
 	tbc=\035sto;, 
 # From: cbosg!teklabs!davem Wed Sep 16 21:11:41 1981
 # Here's the command file that I use to get rogue to work on the 4025.
@@ -13109,7 +13150,6 @@ tek4105-30|4015 emulating 30 line vt100,
 tek4105a|Tektronix 4105, 
 	OTbs, OTpt, msgr, xon, 
 	OTkn#8, cols#80, it#8, lines#30, vt#3, 
-	OTrs=\030\E%!0\EKC\E\014\EKR0\EKF0\ENM0\ELBH=\ETF8000010F40\ELI100\ELLA>\ELM0\EKE0\ENF1\EKS0\END0\E%!1\Ec\E[?3;5l\E[?7;8h\E[r\E[m\E>, 
 	acsc=, bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, 
 	civis=\E%!0\ETD00\E%!1, clear=\E[H\E[J, 
 	cnorm=\E%!0\ETD10\E%!1, cr=^M, csr=\E[%i%p1%d;%p2%dr, 
@@ -13124,8 +13164,9 @@ tek4105a|Tektronix 4105,
 	kf6=\EOR, kf7=\EOS, lf0=F1, lf1=F2, lf2=F3, lf3=F4, lf4=F5, 
 	lf5=F6, lf6=F8, ll=\E[30;H, nel=\EE, rc=\E8, rev=\E[7m, ri=\EM, 
 	rin=\E[%p1%dT, rmacs=^O, rmcup=\E%!0\ELBH=\E%!1, 
-	rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, sc=\E7, 
-	sgr0=\E[m, smacs=^N, smcup=\E[?6l, smir=\E[4h, 
+	rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, 
+	rs2=\030\E%!0\EKC\E\014\EKR0\EKF0\ENM0\ELBH=\ETF8000010F40\ELI100\ELLA>\ELM0\EKE0\ENF1\EKS0\END0\E%!1\Ec\E[?3;5l\E[?7;8h\E[r\E[m\E>, 
+	sc=\E7, sgr0=\E[m, smacs=^N, smcup=\E[?6l, smir=\E[4h, 
 	smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
 
 #
@@ -17444,6 +17485,12 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 1999/12/11
 #	* correct cup string for regent100 -TD
+#
+# 2000/1/1
+#	* update mach, add mach-color based on Debian diffs for ncurses 5.0 -TD
+#	* add entries for xterm-hp, xterm-vt220, xterm-vt52 and xterm-noapp -TD
+#	* change OTrs capabilities to rs2 -TD
+#	* add obsolete and extended capabilities to 'screen' -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

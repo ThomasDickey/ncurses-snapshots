@@ -520,6 +520,7 @@
 ./misc/form.ref
 ./misc/hackguide.doc
 ./misc/hackguide.html
+./misc/indent.pro
 ./misc/makedef.cmd
 ./misc/makellib
 ./misc/menu.def

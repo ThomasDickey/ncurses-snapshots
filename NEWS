@@ -1,10 +1,36 @@
--- $Id: NEWS,v 1.516 1999/12/19 01:54:25 tom Exp $
+-- $Id: NEWS,v 1.518 2000/01/02 02:24:39 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000101
+	+ update mach, add mach-color terminfo entries based on Debian diffs
+	  for ncurses 5.0 -TD
+	+ add entries for xterm-hp, xterm-vt220, xterm-vt52 and xterm-noapp
+	  terminfo entries -TD
+	+ change OTrs capabilities to rs2 in terminfo.src -TD
+	+ add obsolete and extended capabilities to 'screen' terminfo -TD
+	+ corrected conversion from terminfo rs2 to termcap rs (cf: 980704)
+	+ make conversion to termcap ug (underline glitch) more consistently
+	  applied.
+	+ fix out-of-scope use of 'personal[]' buffer in 'toe' (this error
+	  was in the original pre-1.9.7 version, when $HOME/.terminfo was
+	  introduced).
+	+ modify 'toe' to ignore terminfo directories to which it has no
+	  permissions.
+	+ modify read_termtype(), fixing 'toe', which could dump core when it
+	  found an incomplete entry such as "dumb" because it did not
+	  initialize its buffer for _nc_read_file_entry().
+	+ use -fPIC rather than -fpic for shared libraries on Linux, not
+	  needed for i386 but some ports (from Debian diffs for 5.0).
+	+ use explicit VALID_NUMERIC() checks in a few places that had been
+	  overlooked, and add a check to ensure that init_tabs is nonzero,
+	  to avoid divide-by-zero (reported by Todd C Miller).
+	+ minor fix for CF_ANSI_CC_CHECK configure macro, for HPUX 10.x (from
+	  tin).
 
 19991218
 	+ reorder tests during mouse initialization to allow for gpm to run in
@@ -15,7 +41,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  stty lnext on systems such as FreeBSD (report by Bruce Evans
 	  <bde@zeta.org.au>, via Jason Evans <jasone@canonware.com>).
 	+ fix a potential (but unlikely) buffer overflow in failed() function
-	  of tset.c (reported by Todd Miller).
+	  of tset.c (reported by Todd C Miller).
 	+ add manual-page for ncurses extensions, documented curses_version(),
 	  use_extended_names().
 
@@ -464,7 +490,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ split up an expression in configure script check for ldconfig to
 	  workaround limitation of BSD/OS sh (reported by Jeff Haas
 	  <jmh@mail.msen.com>).
-	+ correct a typo in man/form_hook.3x (Todd Miller).
+	+ correct a typo in man/form_hook.3x (Todd C Miller).
 
 990318	pre-release
 	+ parenthesize and undef 'index' symbol in c++ binding and demo, to
@@ -630,7 +656,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  bsdos-bold to bsdos-pc (patch by Jeffrey C Honig).
 	+ modify tput to accept termcap names as an alternative to terminfo
 	  names (patch by Jeffrey C Honig).
-	+ correct a typo in term.7 (Todd Miller).
+	+ correct a typo in term.7 (Todd C Miller).
 	+ add configure --with-shlib-version option to allow installing shared
 	  libraries named according to release or ABI versions.  This
 	  parameterizes some existing logic in the configure script, and is
@@ -852,7 +878,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  rid of a hardcoded list of candidate directories in the configure
 	  script.
 	+ add some error-checking to _nc_read_file_entry() to ensure that
-	  strings are properly terminated (Todd Miller).
+	  strings are properly terminated (Todd C Miller).
 	+ rename manpage file curs_scr_dmp.3x to curs_scr_dump.3x, to
 	  correspond with contents (reported by Neil Zanella
 	  <nzanella@cs.mun.ca>).
