@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 2000 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,48 +27,113 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey <dickey@clark.net> 1998,2000                   *
+ *  Author: Thomas E. Dickey                                                *
  ****************************************************************************/
 
+/*
+**	lib_mvcur.c
+**/
+
 #include <curses.priv.h>
-#include <tic.h>
 
-MODULE_ID("$Id: access.c,v 1.3 2000/10/03 02:19:31 tom Exp $")
+MODULE_ID("$Id")
 
+/****************************************************************************
+ * Useful string functions (especially for mvcur)
+ ****************************************************************************/
+
+#if !HAVE_STRSTR
 char *
-_nc_basename(char *path)
+_nc_strstr(const char *haystack, const char *needle)
 {
-    char *result = strrchr(path, '/');
-#ifdef __EMX__
-    if (result == 0)
-	result = strrchr(path, '\\');
-#endif
-    if (result == 0)
-	result = path;
-    else
-	result++;
+    size_t len1 = strlen(haystack);
+    size_t len2 = strlen(needle);
+    char *result = 0;
+
+    while ((len1 != 0) && (len1-- >= len2)) {
+	if (!strncmp(haystack, needle, len2)) {
+	    result = haystack;
+	    break;
+	}
+	haystack++;
+    }
     return result;
 }
+#endif
 
-int
-_nc_access(const char *path, int mode)
+/*
+ * Initialize the descriptor so we can append to it.
+ */
+string_desc *
+_nc_str_init(string_desc * dst, char *src, size_t len)
 {
-    if (access(path, mode) < 0) {
-	if ((mode & W_OK) != 0
-	    && errno == ENOENT
-	    && strlen(path) < PATH_MAX) {
-	    char head[PATH_MAX];
-	    char *leaf = _nc_basename(strcpy(head, path));
-
-	    if (leaf == 0)
-		leaf = head;
-	    *leaf = '\0';
-	    if (head == leaf)
-		(void) strcpy(head, ".");
-
-	    return access(head, R_OK | W_OK | X_OK);
-	}
-	return -1;
+    if (dst != 0) {
+	dst->s_head = src;
+	dst->s_tail = src;
+	dst->s_size = len - 1;
+	if (src != 0)
+	    *src = 0;
     }
-    return 0;
+    return dst;
+}
+
+/*
+ * Initialize the descriptor for only tracking the amount of memory used.
+ */
+string_desc *
+_nc_str_null(string_desc * dst, size_t len)
+{
+    return _nc_str_init(dst, 0, len);
+}
+
+/*
+ * Copy a descriptor
+ */
+string_desc *
+_nc_str_copy(string_desc * dst, string_desc * src)
+{
+    *dst = *src;
+    return dst;
+}
+
+/*
+ * Replaces strcat into a fixed buffer, returning false on failure.
+ */
+bool
+_nc_safe_strcat(string_desc * dst, const char *src)
+{
+    if (src != 0) {
+	size_t len = strlen(src);
+
+	if (len < dst->s_size) {
+	    if (dst->s_tail != 0) {
+		strcpy(dst->s_tail, src);
+		dst->s_tail += len;
+	    }
+	    dst->s_size -= len;
+	    return TRUE;
+	}
+    }
+    return FALSE;
+}
+
+/*
+ * Replaces strcpy into a fixed buffer, returning false on failure.
+ */
+bool
+_nc_safe_strcpy(string_desc * dst, const char *src)
+{
+    if (src != 0) {
+	size_t len = strlen(src);
+
+	if (len < dst->s_size) {
+	    if (dst->s_head != 0) {
+		strcpy(dst->s_head, src);
+		dst->s_tail = dst->s_head + len;
+	    }
+	    dst->s_size -= len;
+	    return TRUE;
+	}
+    }
+    return FALSE;
 }
