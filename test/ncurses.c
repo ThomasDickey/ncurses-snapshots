@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.239 2005/01/29 22:23:16 tom Exp $
+$Id: ncurses.c,v 1.241 2005/02/05 23:46:47 tom Exp $
 
 ***************************************************************************/
 
@@ -413,35 +413,57 @@ mouse_decode(MEVENT const *ep)
 		   ep->id, ep->x, ep->y, ep->z, ep->bstate);
 
 #define SHOW(m, s) if ((ep->bstate & m)==m) {strcat(buf,s); strcat(buf, ", ");}
+
     SHOW(BUTTON1_RELEASED, "release-1");
     SHOW(BUTTON1_PRESSED, "press-1");
     SHOW(BUTTON1_CLICKED, "click-1");
     SHOW(BUTTON1_DOUBLE_CLICKED, "doubleclick-1");
     SHOW(BUTTON1_TRIPLE_CLICKED, "tripleclick-1");
+#if NCURSES_MOUSE_VERSION == 1
     SHOW(BUTTON1_RESERVED_EVENT, "reserved-1");
+#endif
+
     SHOW(BUTTON2_RELEASED, "release-2");
     SHOW(BUTTON2_PRESSED, "press-2");
     SHOW(BUTTON2_CLICKED, "click-2");
     SHOW(BUTTON2_DOUBLE_CLICKED, "doubleclick-2");
     SHOW(BUTTON2_TRIPLE_CLICKED, "tripleclick-2");
+#if NCURSES_MOUSE_VERSION == 1
     SHOW(BUTTON2_RESERVED_EVENT, "reserved-2");
+#endif
+
     SHOW(BUTTON3_RELEASED, "release-3");
     SHOW(BUTTON3_PRESSED, "press-3");
     SHOW(BUTTON3_CLICKED, "click-3");
     SHOW(BUTTON3_DOUBLE_CLICKED, "doubleclick-3");
     SHOW(BUTTON3_TRIPLE_CLICKED, "tripleclick-3");
+#if NCURSES_MOUSE_VERSION == 1
     SHOW(BUTTON3_RESERVED_EVENT, "reserved-3");
+#endif
+
     SHOW(BUTTON4_RELEASED, "release-4");
     SHOW(BUTTON4_PRESSED, "press-4");
     SHOW(BUTTON4_CLICKED, "click-4");
     SHOW(BUTTON4_DOUBLE_CLICKED, "doubleclick-4");
     SHOW(BUTTON4_TRIPLE_CLICKED, "tripleclick-4");
+#if NCURSES_MOUSE_VERSION == 1
     SHOW(BUTTON4_RESERVED_EVENT, "reserved-4");
+#endif
+
+#if NCURSES_MOUSE_VERSION == 2
+    SHOW(BUTTON5_RELEASED, "release-5");
+    SHOW(BUTTON5_PRESSED, "press-5");
+    SHOW(BUTTON5_CLICKED, "click-5");
+    SHOW(BUTTON5_DOUBLE_CLICKED, "doubleclick-5");
+    SHOW(BUTTON5_TRIPLE_CLICKED, "tripleclick-5");
+#endif
+
     SHOW(BUTTON_CTRL, "ctrl");
     SHOW(BUTTON_SHIFT, "shift");
     SHOW(BUTTON_ALT, "alt");
     SHOW(ALL_MOUSE_EVENTS, "all-events");
     SHOW(REPORT_MOUSE_POSITION, "position");
+
 #undef SHOW
 
     if (buf[strlen(buf) - 1] == ' ')

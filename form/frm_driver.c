@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.63 2005/01/16 01:07:48 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.64 2005/02/05 22:38:40 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -1351,6 +1351,7 @@ IFN_Next_Character(FORM *form)
   FIELD *field = form->current;
   int step = myWCWIDTH(form->w, form->currow, form->curcol);
 
+  T((T_CALLED("IFN_Next_Character(%p)"), form));
   if ((form->curcol += step) == field->dcols)
     {
       if ((++(form->currow)) == field->drows)
@@ -1359,20 +1360,20 @@ IFN_Next_Character(FORM *form)
 	  if (!Single_Line_Field(field) && Field_Grown(field, 1))
 	    {
 	      form->curcol = 0;
-	      return (E_OK);
+	      returnCode(E_OK);
 	    }
 #endif
 	  form->currow--;
 #if GROW_IF_NAVIGATE
 	  if (Single_Line_Field(field) && Field_Grown(field, 1))
-	    return (E_OK);
+	    returnCode(E_OK);
 #endif
 	  form->curcol -= step;
-	  return (E_REQUEST_DENIED);
+	  returnCode(E_REQUEST_DENIED);
 	}
       form->curcol = 0;
     }
-  return (E_OK);
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -1389,17 +1390,18 @@ IFN_Next_Character(FORM *form)
 static int
 IFN_Previous_Character(FORM *form)
 {
+  T((T_CALLED("IFN_Previous_Character(%p)"), form));
   if ((--(form->curcol)) < 0)
     {
       if ((--(form->currow)) < 0)
 	{
 	  form->currow++;
 	  form->curcol++;
-	  return (E_REQUEST_DENIED);
+	  returnCode(E_REQUEST_DENIED);
 	}
       form->curcol = form->current->dcols - 1;
     }
-  return (E_OK);
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -1416,17 +1418,18 @@ IFN_Next_Line(FORM *form)
 {
   FIELD *field = form->current;
 
+  T((T_CALLED("IFN_Next_Line(%p)"), form));
   if ((++(form->currow)) == field->drows)
     {
 #if GROW_IF_NAVIGATE
       if (!Single_Line_Field(field) && Field_Grown(field, 1))
-	return (E_OK);
+	returnCode(E_OK);
 #endif
       form->currow--;
-      return (E_REQUEST_DENIED);
+      returnCode(E_REQUEST_DENIED);
     }
   form->curcol = 0;
-  return (E_OK);
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -1441,13 +1444,14 @@ IFN_Next_Line(FORM *form)
 static int
 IFN_Previous_Line(FORM *form)
 {
+  T((T_CALLED("IFN_Previous_Line(%p)"), form));
   if ((--(form->currow)) < 0)
     {
       form->currow++;
-      return (E_REQUEST_DENIED);
+      returnCode(E_REQUEST_DENIED);
     }
   form->curcol = 0;
-  return (E_OK);
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -1467,6 +1471,8 @@ IFN_Next_Word(FORM *form)
   FIELD_CELL *s;
   FIELD_CELL *t;
 
+  T((T_CALLED("IFN_Next_Word(%p)"), form));
+
   /* We really need access to the data, so we have to synchronize */
   Synchronize_Buffer(form);
 
@@ -1481,12 +1487,12 @@ IFN_Next_Word(FORM *form)
 			(int)(s - field->buf));
 #if !FRIENDLY_PREV_NEXT_WORD
   if (s == t)
-    return (E_REQUEST_DENIED);
+    returnCode(E_REQUEST_DENIED);
   else
 #endif
     {
       Adjust_Cursor_Position(form, t);
-      return (E_OK);
+      returnCode(E_OK);
     }
 }
 
@@ -1508,6 +1514,8 @@ IFN_Previous_Word(FORM *form)
   FIELD_CELL *t;
   bool again = FALSE;
 
+  T((T_CALLED("IFN_Previous_Word(%p)"), form));
+
   /* We really need access to the data, so we have to synchronize */
   Synchronize_Buffer(form);
 
@@ -1526,7 +1534,7 @@ IFN_Previous_Word(FORM *form)
   t = After_Last_Whitespace_Character(field->buf, (int)(s - field->buf));
 #if !FRIENDLY_PREV_NEXT_WORD
   if (s == t)
-    return (E_REQUEST_DENIED);
+    returnCode(E_REQUEST_DENIED);
 #endif
   if (again)
     {
@@ -1535,11 +1543,11 @@ IFN_Previous_Word(FORM *form)
       t = After_Last_Whitespace_Character(field->buf, (int)(s - field->buf));
 #if !FRIENDLY_PREV_NEXT_WORD
       if (s == t)
-	return (E_REQUEST_DENIED);
+	returnCode(E_REQUEST_DENIED);
 #endif
     }
   Adjust_Cursor_Position(form, t);
-  return (E_OK);
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -1556,10 +1564,11 @@ IFN_Beginning_Of_Field(FORM *form)
 {
   FIELD *field = form->current;
 
+  T((T_CALLED("IFN_Beginning_Of_Field(%p)"), form));
   Synchronize_Buffer(form);
   Adjust_Cursor_Position(form,
 			 Get_Start_Of_Data(field->buf, Buffer_Length(field)));
-  return (E_OK);
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -1579,12 +1588,13 @@ IFN_End_Of_Field(FORM *form)
   FIELD *field = form->current;
   FIELD_CELL *pos;
 
+  T((T_CALLED("IFN_End_Of_Field(%p)"), form));
   Synchronize_Buffer(form);
   pos = After_End_Of_Data(field->buf, Buffer_Length(field));
   if (pos == (field->buf + Buffer_Length(field)))
     pos--;
   Adjust_Cursor_Position(form, pos);
-  return (E_OK);
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -1601,11 +1611,12 @@ IFN_Beginning_Of_Line(FORM *form)
 {
   FIELD *field = form->current;
 
+  T((T_CALLED("IFN_Beginning_Of_Line(%p)"), form));
   Synchronize_Buffer(form);
   Adjust_Cursor_Position(form,
 			 Get_Start_Of_Data(Address_Of_Current_Row_In_Buffer(form),
 					   field->dcols));
-  return (E_OK);
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -1626,13 +1637,14 @@ IFN_End_Of_Line(FORM *form)
   FIELD_CELL *pos;
   FIELD_CELL *bp;
 
+  T((T_CALLED("IFN_End_Of_Line(%p)"), form));
   Synchronize_Buffer(form);
   bp = Address_Of_Current_Row_In_Buffer(form);
   pos = After_End_Of_Data(bp, field->dcols);
   if (pos == (bp + field->dcols))
     pos--;
   Adjust_Cursor_Position(form, pos);
-  return (E_OK);
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -1648,12 +1660,13 @@ IFN_End_Of_Line(FORM *form)
 static int
 IFN_Left_Character(FORM *form)
 {
+  T((T_CALLED("IFN_Left_Character(%p)"), form));
   if ((--(form->curcol)) < 0)
     {
       form->curcol++;
-      return (E_REQUEST_DENIED);
+      returnCode(E_REQUEST_DENIED);
     }
-  return (E_OK);
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -1669,18 +1682,19 @@ IFN_Left_Character(FORM *form)
 static int
 IFN_Right_Character(FORM *form)
 {
+  T((T_CALLED("IFN_Right_Character(%p)"), form));
   if ((++(form->curcol)) == form->current->dcols)
     {
 #if GROW_IF_NAVIGATE
       FIELD *field = form->current;
 
       if (Single_Line_Field(field) && Field_Grown(field, 1))
-	return (E_OK);
+	returnCode(E_OK);
 #endif
       --(form->curcol);
-      return (E_REQUEST_DENIED);
+      returnCode(E_REQUEST_DENIED);
     }
-  return (E_OK);
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -1696,12 +1710,13 @@ IFN_Right_Character(FORM *form)
 static int
 IFN_Up_Character(FORM *form)
 {
+  T((T_CALLED("IFN_Up_Character(%p)"), form));
   if ((--(form->currow)) < 0)
     {
       form->currow++;
-      return (E_REQUEST_DENIED);
+      returnCode(E_REQUEST_DENIED);
     }
-  return (E_OK);
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -1719,16 +1734,17 @@ IFN_Down_Character(FORM *form)
 {
   FIELD *field = form->current;
 
+  T((T_CALLED("IFN_Down_Character(%p)"), form));
   if ((++(form->currow)) == field->drows)
     {
 #if GROW_IF_NAVIGATE
       if (!Single_Line_Field(field) && Field_Grown(field, 1))
-	return (E_OK);
+	returnCode(E_OK);
 #endif
       --(form->currow);
-      return (E_REQUEST_DENIED);
+      returnCode(E_REQUEST_DENIED);
     }
-  return (E_OK);
+  returnCode(E_OK);
 }
 /*----------------------------------------------------------------------------
   END of Intra-Field Navigation routines
@@ -1827,7 +1843,8 @@ Vertical_Scrolling(int (*const fct) (FORM *), FORM *form)
 static int
 VSC_Scroll_Line_Forward(FORM *form)
 {
-  return VSC_Generic(form, 1);
+  T((T_CALLED("VSC_Scroll_Line_Forward(%p)"), form));
+  returnCode(VSC_Generic(form, 1));
 }
 
 /*---------------------------------------------------------------------------
@@ -1842,7 +1859,8 @@ VSC_Scroll_Line_Forward(FORM *form)
 static int
 VSC_Scroll_Line_Backward(FORM *form)
 {
-  return VSC_Generic(form, -1);
+  T((T_CALLED("VSC_Scroll_Line_Backward(%p)"), form));
+  returnCode(VSC_Generic(form, -1));
 }
 
 /*---------------------------------------------------------------------------
@@ -1857,7 +1875,8 @@ VSC_Scroll_Line_Backward(FORM *form)
 static int
 VSC_Scroll_Page_Forward(FORM *form)
 {
-  return VSC_Generic(form, form->current->rows);
+  T((T_CALLED("VSC_Scroll_Page_Forward(%p)"), form));
+  returnCode(VSC_Generic(form, form->current->rows));
 }
 
 /*---------------------------------------------------------------------------
@@ -1872,7 +1891,8 @@ VSC_Scroll_Page_Forward(FORM *form)
 static int
 VSC_Scroll_Half_Page_Forward(FORM *form)
 {
-  return VSC_Generic(form, (form->current->rows + 1) / 2);
+  T((T_CALLED("VSC_Scroll_Half_Page_Forward(%p)"), form));
+  returnCode(VSC_Generic(form, (form->current->rows + 1) / 2));
 }
 
 /*---------------------------------------------------------------------------
@@ -1887,7 +1907,8 @@ VSC_Scroll_Half_Page_Forward(FORM *form)
 static int
 VSC_Scroll_Page_Backward(FORM *form)
 {
-  return VSC_Generic(form, -(form->current->rows));
+  T((T_CALLED("VSC_Scroll_Page_Backward(%p)"), form));
+  returnCode(VSC_Generic(form, -(form->current->rows)));
 }
 
 /*---------------------------------------------------------------------------
@@ -1902,7 +1923,8 @@ VSC_Scroll_Page_Backward(FORM *form)
 static int
 VSC_Scroll_Half_Page_Backward(FORM *form)
 {
-  return VSC_Generic(form, -((form->current->rows + 1) / 2));
+  T((T_CALLED("VSC_Scroll_Half_Page_Backward(%p)"), form));
+  returnCode(VSC_Generic(form, -((form->current->rows + 1) / 2)));
 }
 /*----------------------------------------------------------------------------
   End of Vertical scrolling routines
@@ -1995,7 +2017,8 @@ Horizontal_Scrolling(int (*const fct) (FORM *), FORM *form)
 static int
 HSC_Scroll_Char_Forward(FORM *form)
 {
-  return HSC_Generic(form, 1);
+  T((T_CALLED("HSC_Scroll_Char_Forward(%p)"), form));
+  returnCode(HSC_Generic(form, 1));
 }
 
 /*---------------------------------------------------------------------------
@@ -2010,7 +2033,8 @@ HSC_Scroll_Char_Forward(FORM *form)
 static int
 HSC_Scroll_Char_Backward(FORM *form)
 {
-  return HSC_Generic(form, -1);
+  T((T_CALLED("HSC_Scroll_Char_Backward(%p)"), form));
+  returnCode(HSC_Generic(form, -1));
 }
 
 /*---------------------------------------------------------------------------
@@ -2025,7 +2049,8 @@ HSC_Scroll_Char_Backward(FORM *form)
 static int
 HSC_Horizontal_Line_Forward(FORM *form)
 {
-  return HSC_Generic(form, form->current->cols);
+  T((T_CALLED("HSC_Horizontal_Line_Forward(%p)"), form));
+  returnCode(HSC_Generic(form, form->current->cols));
 }
 
 /*---------------------------------------------------------------------------
@@ -2040,7 +2065,8 @@ HSC_Horizontal_Line_Forward(FORM *form)
 static int
 HSC_Horizontal_Half_Line_Forward(FORM *form)
 {
-  return HSC_Generic(form, (form->current->cols + 1) / 2);
+  T((T_CALLED("HSC_Horizontal_Half_Line_Forward(%p)"), form));
+  returnCode(HSC_Generic(form, (form->current->cols + 1) / 2));
 }
 
 /*---------------------------------------------------------------------------
@@ -2055,7 +2081,8 @@ HSC_Horizontal_Half_Line_Forward(FORM *form)
 static int
 HSC_Horizontal_Line_Backward(FORM *form)
 {
-  return HSC_Generic(form, -(form->current->cols));
+  T((T_CALLED("HSC_Horizontal_Line_Backward(%p)"), form));
+  returnCode(HSC_Generic(form, -(form->current->cols)));
 }
 
 /*---------------------------------------------------------------------------
@@ -2070,7 +2097,8 @@ HSC_Horizontal_Line_Backward(FORM *form)
 static int
 HSC_Horizontal_Half_Line_Backward(FORM *form)
 {
-  return HSC_Generic(form, -((form->current->cols + 1) / 2));
+  T((T_CALLED("HSC_Horizontal_Half_Line_Backward(%p)"), form));
+  returnCode(HSC_Generic(form, -((form->current->cols + 1) / 2)));
 }
 
 /*----------------------------------------------------------------------------
@@ -2366,13 +2394,14 @@ FE_New_Line(FORM *form)
   FIELD_CELL *bp, *t;
   bool Last_Row = ((field->drows - 1) == form->currow);
 
+  T((T_CALLED("FE_New_Line(%p)"), form));
   if (form->status & _OVLMODE)
     {
       if (Last_Row &&
 	  (!(Growable(field) && !Single_Line_Field(field))))
 	{
 	  if (!(form->opts & O_NL_OVERLOAD))
-	    return (E_REQUEST_DENIED);
+	    returnCode(E_REQUEST_DENIED);
 	  wmove(form->w, form->currow, form->curcol);
 	  wclrtoeol(form->w);
 	  /* we have to set this here, although it is also
@@ -2380,7 +2409,7 @@ FE_New_Line(FORM *form)
 	     that FN_Next_Field may fail, but the form is
 	     definitively changed */
 	  form->status |= _WINDOW_MODIFIED;
-	  return Inter_Field_Navigation(FN_Next_Field, form);
+	  returnCode(Inter_Field_Navigation(FN_Next_Field, form));
 	}
       else
 	{
@@ -2389,14 +2418,14 @@ FE_New_Line(FORM *form)
 	      /* N.B.: due to the logic in the 'if', LastRow==TRUE
 	         means here that the field is growable and not
 	         a single-line field */
-	      return (E_SYSTEM_ERROR);
+	      returnCode(E_SYSTEM_ERROR);
 	    }
 	  wmove(form->w, form->currow, form->curcol);
 	  wclrtoeol(form->w);
 	  form->currow++;
 	  form->curcol = 0;
 	  form->status |= _WINDOW_MODIFIED;
-	  return (E_OK);
+	  returnCode(E_OK);
 	}
     }
   else
@@ -2406,17 +2435,17 @@ FE_New_Line(FORM *form)
 	  !(Growable(field) && !Single_Line_Field(field)))
 	{
 	  if (!(form->opts & O_NL_OVERLOAD))
-	    return (E_REQUEST_DENIED);
-	  return Inter_Field_Navigation(FN_Next_Field, form);
+	    returnCode(E_REQUEST_DENIED);
+	  returnCode(Inter_Field_Navigation(FN_Next_Field, form));
 	}
       else
 	{
 	  bool May_Do_It = !Last_Row && Is_There_Room_For_A_Line(form);
 
 	  if (!(May_Do_It || Growable(field)))
-	    return (E_REQUEST_DENIED);
+	    returnCode(E_REQUEST_DENIED);
 	  if (!May_Do_It && !Field_Grown(field, 1))
-	    return (E_SYSTEM_ERROR);
+	    returnCode(E_SYSTEM_ERROR);
 
 	  bp = Address_Of_Current_Position_In_Buffer(form);
 	  t = After_End_Of_Data(bp, field->dcols - form->curcol);
@@ -2428,7 +2457,7 @@ FE_New_Line(FORM *form)
 	  winsertln(form->w);
 	  myADDNSTR(form->w, bp, (int)(t - bp));
 	  form->status |= _WINDOW_MODIFIED;
-	  return E_OK;
+	  returnCode(E_OK);
 	}
     }
 }
@@ -2448,6 +2477,7 @@ FE_Insert_Character(FORM *form)
   FIELD *field = form->current;
   int result = E_REQUEST_DENIED;
 
+  T((T_CALLED("FE_Insert_Character(%p)"), form));
   if (Check_Char(field->type, (int)C_BLANK, (TypeArgument *)(field->arg)))
     {
       bool There_Is_Room = Is_There_Room_For_A_Char_In_Line(form);
@@ -2464,7 +2494,7 @@ FE_Insert_Character(FORM *form)
 	    }
 	}
     }
-  return result;
+  returnCode(result);
 }
 
 /*---------------------------------------------------------------------------
@@ -2482,6 +2512,7 @@ FE_Insert_Line(FORM *form)
   FIELD *field = form->current;
   int result = E_REQUEST_DENIED;
 
+  T((T_CALLED("FE_Insert_Line(%p)"), form));
   if (Check_Char(field->type, (int)C_BLANK, (TypeArgument *)(field->arg)))
     {
       bool Maybe_Done = (form->currow != (field->drows - 1)) &&
@@ -2500,7 +2531,7 @@ FE_Insert_Line(FORM *form)
 	    }
 	}
     }
-  return result;
+  returnCode(result);
 }
 
 /*---------------------------------------------------------------------------
@@ -2514,9 +2545,10 @@ FE_Insert_Line(FORM *form)
 static int
 FE_Delete_Character(FORM *form)
 {
+  T((T_CALLED("FE_Delete_Character(%p)"), form));
   wmove(form->w, form->currow, form->curcol);
   wdelch(form->w);
-  return E_OK;
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -2537,8 +2569,9 @@ FE_Delete_Previous(FORM *form)
 {
   FIELD *field = form->current;
 
+  T((T_CALLED("FE_Delete_Previous(%p)"), form));
   if (First_Position_In_Current_Field(form))
-    return E_REQUEST_DENIED;
+    returnCode(E_REQUEST_DENIED);
 
   if ((--(form->curcol)) < 0)
     {
@@ -2546,7 +2579,7 @@ FE_Delete_Previous(FORM *form)
 
       form->curcol++;
       if (form->status & _OVLMODE)
-	return E_REQUEST_DENIED;
+	returnCode(E_REQUEST_DENIED);
 
       prev_line = Address_Of_Row_In_Buffer(field, (form->currow - 1));
       this_line = Address_Of_Row_In_Buffer(field, (form->currow));
@@ -2555,7 +2588,7 @@ FE_Delete_Previous(FORM *form)
       this_end = After_End_Of_Data(this_line, field->dcols);
       if ((int)(this_end - this_line) >
 	  (field->cols - (int)(prev_end - prev_line)))
-	return E_REQUEST_DENIED;
+	returnCode(E_REQUEST_DENIED);
       wmove(form->w, form->currow, form->curcol);
       wdeleteln(form->w);
       Adjust_Cursor_Position(form, prev_end);
@@ -2567,7 +2600,7 @@ FE_Delete_Previous(FORM *form)
       wmove(form->w, form->currow, form->curcol);
       wdelch(form->w);
     }
-  return E_OK;
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -2581,9 +2614,10 @@ FE_Delete_Previous(FORM *form)
 static int
 FE_Delete_Line(FORM *form)
 {
+  T((T_CALLED("FE_Delete_Line(%p)"), form));
   form->curcol = 0;
   wdeleteln(form->w);
-  return E_OK;
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -2604,9 +2638,10 @@ FE_Delete_Word(FORM *form)
   FIELD_CELL *cp = bp + form->curcol;
   FIELD_CELL *s;
 
+  T((T_CALLED("FE_Delete_Word(%p)"), form));
   Synchronize_Buffer(form);
   if (ISBLANK(*cp))
-    return E_REQUEST_DENIED;	/* not in word */
+    returnCode(E_REQUEST_DENIED);	/* not in word */
 
   /* move cursor to begin of word and erase to end of screen-line */
   Adjust_Cursor_Position(form,
@@ -2623,7 +2658,7 @@ FE_Delete_Word(FORM *form)
       /* copy remaining line to window */
       myADDNSTR(form->w, s, (int)(s - After_End_Of_Data(s, (int)(ep - s))));
     }
-  return E_OK;
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -2637,9 +2672,10 @@ FE_Delete_Word(FORM *form)
 static int
 FE_Clear_To_End_Of_Line(FORM *form)
 {
+  T((T_CALLED("FE_Clear_To_End_Of_Line(%p)"), form));
   wmove(form->w, form->currow, form->curcol);
   wclrtoeol(form->w);
-  return E_OK;
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -2653,9 +2689,10 @@ FE_Clear_To_End_Of_Line(FORM *form)
 static int
 FE_Clear_To_End_Of_Field(FORM *form)
 {
+  T((T_CALLED("FE_Clear_To_End_Of_Field(%p)"), form));
   wmove(form->w, form->currow, form->curcol);
   wclrtobot(form->w);
-  return E_OK;
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -2669,9 +2706,10 @@ FE_Clear_To_End_Of_Field(FORM *form)
 static int
 FE_Clear_Field(FORM *form)
 {
+  T((T_CALLED("FE_Clear_Field(%p)"), form));
   form->currow = form->curcol = 0;
   werase(form->w);
-  return E_OK;
+  returnCode(E_OK);
 }
 /*----------------------------------------------------------------------------
   END of Field Editing routines
@@ -2692,8 +2730,9 @@ FE_Clear_Field(FORM *form)
 static int
 EM_Overlay_Mode(FORM *form)
 {
+  T((T_CALLED("EM_Overlay_Mode(%p)"), form));
   form->status |= _OVLMODE;
-  return E_OK;
+  returnCode(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -2707,8 +2746,9 @@ EM_Overlay_Mode(FORM *form)
 static int
 EM_Insert_Mode(FORM *form)
 {
+  T((T_CALLED("EM_Insert_Mode(%p)"), form));
   form->status &= ~_OVLMODE;
-  return E_OK;
+  returnCode(E_OK);
 }
 
 /*----------------------------------------------------------------------------
@@ -2806,9 +2846,11 @@ CR_Next_Choice(FORM *form)
 {
   FIELD *field = form->current;
 
+  T((T_CALLED("CR_Next_Choice(%p)"), form));
   Synchronize_Buffer(form);
-  return ((Next_Choice(field->type, field, (TypeArgument *)(field->arg))) ?
-	  E_OK : E_REQUEST_DENIED);
+  returnCode((Next_Choice(field->type, field, (TypeArgument *)(field->arg)))
+	     ? E_OK
+	     : E_REQUEST_DENIED);
 }
 
 /*---------------------------------------------------------------------------
@@ -2825,9 +2867,11 @@ CR_Previous_Choice(FORM *form)
 {
   FIELD *field = form->current;
 
+  T((T_CALLED("CR_Previous_Choice(%p)"), form));
   Synchronize_Buffer(form);
-  return ((Previous_Choice(field->type, field, (TypeArgument *)(field->arg))) ?
-	  E_OK : E_REQUEST_DENIED);
+  returnCode((Previous_Choice(field->type, field, (TypeArgument *)(field->arg)))
+	     ? E_OK
+	     : E_REQUEST_DENIED);
 }
 /*----------------------------------------------------------------------------
   End of Routines for Choice Requests
@@ -2933,10 +2977,11 @@ _nc_Internal_Validation(FORM *form)
 static int
 FV_Validation(FORM *form)
 {
+  T((T_CALLED("FV_Validation(%p)"), form));
   if (_nc_Internal_Validation(form))
-    return E_OK;
+    returnCode(E_OK);
   else
-    return E_INVALID_FIELD;
+    returnCode(E_INVALID_FIELD);
 }
 /*----------------------------------------------------------------------------
   End of routines for Field Validation.
@@ -3310,8 +3355,9 @@ Inter_Field_Navigation(int (*const fct) (FORM *), FORM *form)
 static int
 FN_Next_Field(FORM *form)
 {
-  return _nc_Set_Current_Field(form,
-			       Next_Field_On_Page(form->current));
+  T((T_CALLED("FN_Next_Field(%p)"), form));
+  returnCode(_nc_Set_Current_Field(form,
+				   Next_Field_On_Page(form->current)));
 }
 
 /*---------------------------------------------------------------------------
@@ -3327,8 +3373,9 @@ FN_Next_Field(FORM *form)
 static int
 FN_Previous_Field(FORM *form)
 {
-  return _nc_Set_Current_Field(form,
-			       Previous_Field_On_Page(form->current));
+  T((T_CALLED("FN_Previous_Field(%p)"), form));
+  returnCode(_nc_Set_Current_Field(form,
+				   Previous_Field_On_Page(form->current)));
 }
 
 /*---------------------------------------------------------------------------
@@ -3343,8 +3390,9 @@ FN_Previous_Field(FORM *form)
 static int
 FN_First_Field(FORM *form)
 {
-  return _nc_Set_Current_Field(form,
-			       Next_Field_On_Page(form->field[form->page[form->curpage].pmax]));
+  T((T_CALLED("FN_First_Field(%p)"), form));
+  returnCode(_nc_Set_Current_Field(form,
+				   Next_Field_On_Page(form->field[form->page[form->curpage].pmax])));
 }
 
 /*---------------------------------------------------------------------------
@@ -3359,9 +3407,10 @@ FN_First_Field(FORM *form)
 static int
 FN_Last_Field(FORM *form)
 {
-  return
-    _nc_Set_Current_Field(form,
-			  Previous_Field_On_Page(form->field[form->page[form->curpage].pmin]));
+  T((T_CALLED("FN_Last_Field(%p)"), form));
+  returnCode(
+	      _nc_Set_Current_Field(form,
+				    Previous_Field_On_Page(form->field[form->page[form->curpage].pmin])));
 }
 
 /*---------------------------------------------------------------------------
@@ -3377,8 +3426,9 @@ FN_Last_Field(FORM *form)
 static int
 FN_Sorted_Next_Field(FORM *form)
 {
-  return _nc_Set_Current_Field(form,
-			       Sorted_Next_Field(form->current));
+  T((T_CALLED("FN_Sorted_Next_Field(%p)"), form));
+  returnCode(_nc_Set_Current_Field(form,
+				   Sorted_Next_Field(form->current)));
 }
 
 /*---------------------------------------------------------------------------
@@ -3394,8 +3444,9 @@ FN_Sorted_Next_Field(FORM *form)
 static int
 FN_Sorted_Previous_Field(FORM *form)
 {
-  return _nc_Set_Current_Field(form,
-			       Sorted_Previous_Field(form->current));
+  T((T_CALLED("FN_Sorted_Previous_Field(%p)"), form));
+  returnCode(_nc_Set_Current_Field(form,
+				   Sorted_Previous_Field(form->current)));
 }
 
 /*---------------------------------------------------------------------------
@@ -3411,8 +3462,9 @@ FN_Sorted_Previous_Field(FORM *form)
 static int
 FN_Sorted_First_Field(FORM *form)
 {
-  return _nc_Set_Current_Field(form,
-			       Sorted_Next_Field(form->field[form->page[form->curpage].smax]));
+  T((T_CALLED("FN_Sorted_First_Field(%p)"), form));
+  returnCode(_nc_Set_Current_Field(form,
+				   Sorted_Next_Field(form->field[form->page[form->curpage].smax])));
 }
 
 /*---------------------------------------------------------------------------
@@ -3428,8 +3480,9 @@ FN_Sorted_First_Field(FORM *form)
 static int
 FN_Sorted_Last_Field(FORM *form)
 {
-  return _nc_Set_Current_Field(form,
-			       Sorted_Previous_Field(form->field[form->page[form->curpage].smin]));
+  T((T_CALLED("FN_Sorted_Last_Field(%p)"), form));
+  returnCode(_nc_Set_Current_Field(form,
+				   Sorted_Previous_Field(form->field[form->page[form->curpage].smin])));
 }
 
 /*---------------------------------------------------------------------------
@@ -3445,8 +3498,9 @@ FN_Sorted_Last_Field(FORM *form)
 static int
 FN_Left_Field(FORM *form)
 {
-  return _nc_Set_Current_Field(form,
-			       Left_Neighbor_Field(form->current));
+  T((T_CALLED("FN_Left_Field(%p)"), form));
+  returnCode(_nc_Set_Current_Field(form,
+				   Left_Neighbor_Field(form->current)));
 }
 
 /*---------------------------------------------------------------------------
@@ -3462,8 +3516,9 @@ FN_Left_Field(FORM *form)
 static int
 FN_Right_Field(FORM *form)
 {
-  return _nc_Set_Current_Field(form,
-			       Right_Neighbor_Field(form->current));
+  T((T_CALLED("FN_Right_Field(%p)"), form));
+  returnCode(_nc_Set_Current_Field(form,
+				   Right_Neighbor_Field(form->current)));
 }
 
 /*---------------------------------------------------------------------------
@@ -3481,8 +3536,9 @@ FN_Right_Field(FORM *form)
 static int
 FN_Up_Field(FORM *form)
 {
-  return _nc_Set_Current_Field(form,
-			       Upper_Neighbor_Field(form->current));
+  T((T_CALLED("FN_Up_Field(%p)"), form));
+  returnCode(_nc_Set_Current_Field(form,
+				   Upper_Neighbor_Field(form->current)));
 }
 
 /*---------------------------------------------------------------------------
@@ -3500,8 +3556,9 @@ FN_Up_Field(FORM *form)
 static int
 FN_Down_Field(FORM *form)
 {
-  return _nc_Set_Current_Field(form,
-			       Down_Neighbor_Field(form->current));
+  T((T_CALLED("FN_Down_Field(%p)"), form));
+  returnCode(_nc_Set_Current_Field(form,
+				   Down_Neighbor_Field(form->current)));
 }
 /*----------------------------------------------------------------------------
   END of Field Navigation routines
@@ -3641,7 +3698,8 @@ Page_Navigation(int (*const fct) (FORM *), FORM *form)
 static int
 PN_Next_Page(FORM *form)
 {
-  return _nc_Set_Form_Page(form, Next_Page_Number(form), (FIELD *)0);
+  T((T_CALLED("PN_Next_Page(%p)"), form));
+  returnCode(_nc_Set_Form_Page(form, Next_Page_Number(form), (FIELD *)0));
 }
 
 /*---------------------------------------------------------------------------
@@ -3656,7 +3714,8 @@ PN_Next_Page(FORM *form)
 static int
 PN_Previous_Page(FORM *form)
 {
-  return _nc_Set_Form_Page(form, Previous_Page_Number(form), (FIELD *)0);
+  T((T_CALLED("PN_Previous_Page(%p)"), form));
+  returnCode(_nc_Set_Form_Page(form, Previous_Page_Number(form), (FIELD *)0));
 }
 
 /*---------------------------------------------------------------------------
@@ -3671,7 +3730,8 @@ PN_Previous_Page(FORM *form)
 static int
 PN_First_Page(FORM *form)
 {
-  return _nc_Set_Form_Page(form, 0, (FIELD *)0);
+  T((T_CALLED("PN_First_Page(%p)"), form));
+  returnCode(_nc_Set_Form_Page(form, 0, (FIELD *)0));
 }
 
 /*---------------------------------------------------------------------------
@@ -3686,7 +3746,8 @@ PN_First_Page(FORM *form)
 static int
 PN_Last_Page(FORM *form)
 {
-  return _nc_Set_Form_Page(form, form->maxpage - 1, (FIELD *)0);
+  T((T_CALLED("PN_Last_Page(%p)"), form));
+  returnCode(_nc_Set_Form_Page(form, form->maxpage - 1, (FIELD *)0));
 }
 
 /*----------------------------------------------------------------------------

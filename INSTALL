@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.80 2005/01/29 21:30:58 tom Exp $
+-- $Id: INSTALL,v 1.81 2005/02/05 19:28:55 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -395,6 +395,11 @@ SUMMARY OF CONFIGURE OPTIONS:
 	NOTE:  using this option will make libraries which are not binary-
 	compatible with libncursesw 5.4.  None of the interfaces change, but
 	applications which have an array of cchar_t's must be recompiled.
+
+    --enable-ext-mouse
+	Modify the encoding of mouse state to make room for a 5th mouse button.
+	That allows one to use ncurses with a wheel mouse with xterm or
+	similar X terminal emulators.
 
     --enable-getcap
 	Use the 4.4BSD getcap code if available, or a bundled version of it to

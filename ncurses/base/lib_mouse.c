@@ -76,7 +76,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.70 2005/01/16 01:03:21 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.71 2005/02/05 19:13:51 tom Exp $")
 
 #include <term.h>
 #include <tic.h>
@@ -114,16 +114,28 @@ make an error
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
-#define	MASK_RELEASE(x)		((001 << (6 * ((x) - 1))))
-#define	MASK_PRESS(x)		((002 << (6 * ((x) - 1))))
-#define	MASK_CLICK(x)		((004 << (6 * ((x) - 1))))
-#define	MASK_DOUBLE_CLICK(x)	((010 << (6 * ((x) - 1))))
-#define	MASK_TRIPLE_CLICK(x)	((020 << (6 * ((x) - 1))))
-#define	MASK_RESERVED_EVENT(x)	((040 << (6 * ((x) - 1))))
+#define	MASK_RELEASE(x)		NCURSES_MOUSE_MASK(x, 001)
+#define	MASK_PRESS(x)		NCURSES_MOUSE_MASK(x, 002)
+#define	MASK_CLICK(x)		NCURSES_MOUSE_MASK(x, 004)
+#define	MASK_DOUBLE_CLICK(x)	NCURSES_MOUSE_MASK(x, 010)
+#define	MASK_TRIPLE_CLICK(x)	NCURSES_MOUSE_MASK(x, 020)
+#define	MASK_RESERVED_EVENT(x)	NCURSES_MOUSE_MASK(x, 040)
 
-#define BUTTON_CLICKED  (BUTTON1_CLICKED  | BUTTON2_CLICKED  | BUTTON3_CLICKED)
-#define BUTTON_PRESSED  (BUTTON1_PRESSED  | BUTTON2_PRESSED  | BUTTON3_PRESSED)
-#define BUTTON_RELEASED (BUTTON1_RELEASED | BUTTON2_RELEASED | BUTTON3_RELEASED)
+#if NCURSES_MOUSE_VERSION == 1
+#define BUTTON_CLICKED        (BUTTON1_CLICKED        | BUTTON2_CLICKED        | BUTTON3_CLICKED        | BUTTON4_CLICKED)
+#define BUTTON_PRESSED        (BUTTON1_PRESSED        | BUTTON2_PRESSED        | BUTTON3_PRESSED        | BUTTON4_PRESSED)
+#define BUTTON_RELEASED       (BUTTON1_RELEASED       | BUTTON2_RELEASED       | BUTTON3_RELEASED       | BUTTON4_RELEASED)
+#define BUTTON_DOUBLE_CLICKED (BUTTON1_DOUBLE_CLICKED | BUTTON2_DOUBLE_CLICKED | BUTTON3_DOUBLE_CLICKED | BUTTON4_DOUBLE_CLICKED)
+#define BUTTON_TRIPLE_CLICKED (BUTTON1_TRIPLE_CLICKED | BUTTON2_TRIPLE_CLICKED | BUTTON3_TRIPLE_CLICKED | BUTTON4_TRIPLE_CLICKED)
+#define MAX_BUTTONS  4
+#else
+#define BUTTON_CLICKED        (BUTTON1_CLICKED        | BUTTON2_CLICKED        | BUTTON3_CLICKED        | BUTTON4_CLICKED        | BUTTON5_CLICKED)
+#define BUTTON_PRESSED        (BUTTON1_PRESSED        | BUTTON2_PRESSED        | BUTTON3_PRESSED        | BUTTON4_PRESSED        | BUTTON5_PRESSED)
+#define BUTTON_RELEASED       (BUTTON1_RELEASED       | BUTTON2_RELEASED       | BUTTON3_RELEASED       | BUTTON4_RELEASED       | BUTTON5_RELEASED)
+#define BUTTON_DOUBLE_CLICKED (BUTTON1_DOUBLE_CLICKED | BUTTON2_DOUBLE_CLICKED | BUTTON3_DOUBLE_CLICKED | BUTTON4_DOUBLE_CLICKED | BUTTON5_DOUBLE_CLICKED)
+#define BUTTON_TRIPLE_CLICKED (BUTTON1_TRIPLE_CLICKED | BUTTON2_TRIPLE_CLICKED | BUTTON3_TRIPLE_CLICKED | BUTTON4_TRIPLE_CLICKED | BUTTON5_TRIPLE_CLICKED)
+#define MAX_BUTTONS  5
+#endif
 
 #define INVALID_EVENT	-1
 #define NORMAL_EVENT	0
@@ -644,6 +656,7 @@ static bool
 _nc_mouse_inline(SCREEN *sp)
 /* mouse report received in the keyboard stream -- parse its info */
 {
+    int b;
     bool result = FALSE;
 
     TR(MY_TRACE, ("_nc_mouse_inline() called"));
@@ -681,8 +694,10 @@ _nc_mouse_inline(SCREEN *sp)
 	 * (End quote)  By the time we get here, we've eaten the
 	 * key prefix.  FYI, the loop below is necessary because
 	 * mouse click info isn't guaranteed to present as a
-	 * single clist item.  It always does under Linux but often
-	 * fails to under Solaris.
+	 * single clist item.
+	 *
+	 * Wheel mice may return buttons 4 and 5 when the wheel is turned.
+	 * We encode those as button presses.
 	 */
 	for (grabbed = 0; grabbed < 3; grabbed += res) {
 
@@ -721,11 +736,19 @@ _nc_mouse_inline(SCREEN *sp)
 
 	switch (kbuf[0] & 0x3) {
 	case 0x0:
-	    PRESS_POSITION(1);
+	    if (kbuf[0] & 64)
+		eventp->bstate = MASK_PRESS(4);
+	    else
+		PRESS_POSITION(1);
 	    break;
 
 	case 0x1:
-	    PRESS_POSITION(2);
+#if NCURSES_MOUSE_VERSION == 2
+	    if (kbuf[0] & 64)
+		eventp->bstate = MASK_PRESS(5);
+	    else
+#endif
+		PRESS_POSITION(2);
 	    break;
 
 	case 0x2:
@@ -742,12 +765,10 @@ _nc_mouse_inline(SCREEN *sp)
 	     */
 	    if (prev & (BUTTON_PRESSED | BUTTON_RELEASED)) {
 		eventp->bstate = BUTTON_RELEASED;
-		if (!(prev & BUTTON1_PRESSED))
-		    eventp->bstate &= ~BUTTON1_RELEASED;
-		if (!(prev & BUTTON2_PRESSED))
-		    eventp->bstate &= ~BUTTON2_RELEASED;
-		if (!(prev & BUTTON3_PRESSED))
-		    eventp->bstate &= ~BUTTON3_RELEASED;
+		for (b = 1; b <= MAX_BUTTONS; ++b) {
+		    if (!(prev & MASK_PRESS(b)))
+			eventp->bstate &= ~MASK_RELEASE(b);
+		}
 	    } else {
 		/*
 		 * XFree86 xterm will return a stream of release-events to
@@ -870,6 +891,7 @@ _nc_mouse_parse(int runcount)
 {
     MEVENT *ep, *runp, *next, *prev = PREV(eventp);
     int n;
+    int b;
     bool merge;
 
     TR(MY_TRACE, ("_nc_mouse_parse(%d) called", runcount));
@@ -925,32 +947,27 @@ _nc_mouse_parse(int runcount)
     do {
 	merge = FALSE;
 	for (ep = runp; (next = NEXT(ep)) != eventp; ep = next) {
+
+#define MASK_CHANGED(x) (!(ep->bstate & MASK_PRESS(x)) \
+		      == !(next->bstate & MASK_RELEASE(x)))
+
 	    if (ep->x == next->x && ep->y == next->y
 		&& (ep->bstate & BUTTON_PRESSED)
-		&& (!(ep->bstate & BUTTON1_PRESSED)
-		    == !(next->bstate & BUTTON1_RELEASED))
-		&& (!(ep->bstate & BUTTON2_PRESSED)
-		    == !(next->bstate & BUTTON2_RELEASED))
-		&& (!(ep->bstate & BUTTON3_PRESSED)
-		    == !(next->bstate & BUTTON3_RELEASED))
+		&& MASK_CHANGED(1)
+		&& MASK_CHANGED(2)
+		&& MASK_CHANGED(3)
+		&& MASK_CHANGED(4)
+#if NCURSES_MOUSE_VERSION == 2
+		&& MASK_CHANGED(5)
+#endif
 		) {
-		if ((eventmask & BUTTON1_CLICKED)
-		    && (ep->bstate & BUTTON1_PRESSED)) {
-		    ep->bstate &= ~BUTTON1_PRESSED;
-		    ep->bstate |= BUTTON1_CLICKED;
-		    merge = TRUE;
-		}
-		if ((eventmask & BUTTON2_CLICKED)
-		    && (ep->bstate & BUTTON2_PRESSED)) {
-		    ep->bstate &= ~BUTTON2_PRESSED;
-		    ep->bstate |= BUTTON2_CLICKED;
-		    merge = TRUE;
-		}
-		if ((eventmask & BUTTON3_CLICKED)
-		    && (ep->bstate & BUTTON3_PRESSED)) {
-		    ep->bstate &= ~BUTTON3_PRESSED;
-		    ep->bstate |= BUTTON3_CLICKED;
-		    merge = TRUE;
+		for (b = 1; b <= MAX_BUTTONS; ++b) {
+		    if ((eventmask & MASK_CLICK(b))
+			&& (ep->bstate & MASK_PRESS(b))) {
+			ep->bstate &= ~MASK_PRESS(b);
+			ep->bstate |= MASK_CLICK(b);
+			merge = TRUE;
+		    }
 		}
 		if (merge)
 		    next->id = INVALID_EVENT;
@@ -1000,51 +1017,28 @@ _nc_mouse_parse(int runcount)
 		/* merge click events forward */
 		if ((ep->bstate & BUTTON_CLICKED)
 		    && (follower->bstate & BUTTON_CLICKED)) {
-		    if ((eventmask & BUTTON1_DOUBLE_CLICKED)
-			&& (follower->bstate & BUTTON1_CLICKED)) {
-			follower->bstate &= ~BUTTON1_CLICKED;
-			follower->bstate |= BUTTON1_DOUBLE_CLICKED;
-			merge = TRUE;
-		    }
-		    if ((eventmask & BUTTON2_DOUBLE_CLICKED)
-			&& (follower->bstate & BUTTON2_CLICKED)) {
-			follower->bstate &= ~BUTTON2_CLICKED;
-			follower->bstate |= BUTTON2_DOUBLE_CLICKED;
-			merge = TRUE;
-		    }
-		    if ((eventmask & BUTTON3_DOUBLE_CLICKED)
-			&& (follower->bstate & BUTTON3_CLICKED)) {
-			follower->bstate &= ~BUTTON3_CLICKED;
-			follower->bstate |= BUTTON3_DOUBLE_CLICKED;
-			merge = TRUE;
+		    for (b = 1; b <= MAX_BUTTONS; ++b) {
+			if ((eventmask & MASK_DOUBLE_CLICK(b))
+			    && (follower->bstate & MASK_CLICK(b))) {
+			    follower->bstate &= ~MASK_CLICK(b);
+			    follower->bstate |= MASK_DOUBLE_CLICK(b);
+			    merge = TRUE;
+			}
 		    }
 		    if (merge)
 			ep->id = INVALID_EVENT;
 		}
 
 		/* merge double-click events forward */
-		if ((ep->bstate &
-		     (BUTTON1_DOUBLE_CLICKED
-		      | BUTTON2_DOUBLE_CLICKED
-		      | BUTTON3_DOUBLE_CLICKED))
+		if ((ep->bstate & BUTTON_DOUBLE_CLICKED)
 		    && (follower->bstate & BUTTON_CLICKED)) {
-		    if ((eventmask & BUTTON1_TRIPLE_CLICKED)
-			&& (follower->bstate & BUTTON1_CLICKED)) {
-			follower->bstate &= ~BUTTON1_CLICKED;
-			follower->bstate |= BUTTON1_TRIPLE_CLICKED;
-			merge = TRUE;
-		    }
-		    if ((eventmask & BUTTON2_TRIPLE_CLICKED)
-			&& (follower->bstate & BUTTON2_CLICKED)) {
-			follower->bstate &= ~BUTTON2_CLICKED;
-			follower->bstate |= BUTTON2_TRIPLE_CLICKED;
-			merge = TRUE;
-		    }
-		    if ((eventmask & BUTTON3_TRIPLE_CLICKED)
-			&& (follower->bstate & BUTTON3_CLICKED)) {
-			follower->bstate &= ~BUTTON3_CLICKED;
-			follower->bstate |= BUTTON3_TRIPLE_CLICKED;
-			merge = TRUE;
+		    for (b = 1; b <= MAX_BUTTONS; ++b) {
+			if ((eventmask & MASK_TRIPLE_CLICK(b))
+			    && (follower->bstate & MASK_CLICK(b))) {
+			    follower->bstate &= ~MASK_CLICK(b);
+			    follower->bstate |= MASK_TRIPLE_CLICK(b);
+			    merge = TRUE;
+			}
 		    }
 		    if (merge)
 			ep->id = INVALID_EVENT;
@@ -1212,9 +1206,8 @@ mousemask(mmask_t newmask, mmask_t * oldmask)
 	     | BUTTON_PRESSED
 	     | BUTTON_RELEASED
 	     | BUTTON_CLICKED
-	     | BUTTON1_DOUBLE_CLICKED | BUTTON1_TRIPLE_CLICKED
-	     | BUTTON2_DOUBLE_CLICKED | BUTTON2_TRIPLE_CLICKED
-	     | BUTTON3_DOUBLE_CLICKED | BUTTON3_TRIPLE_CLICKED);
+	     | BUTTON_DOUBLE_CLICKED
+	     | BUTTON_TRIPLE_CLICKED);
 
 	mouse_activate(eventmask != 0);
 

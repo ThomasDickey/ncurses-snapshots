@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.152 2005/01/29 21:34:05 tom Exp $ */
+/* $Id: curses.h.in,v 1.153 2005/02/05 18:17:35 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -55,6 +55,14 @@
 #undef  NCURSES_VERSION
 #define NCURSES_VERSION "@NCURSES_MAJOR@.@NCURSES_MINOR@"
 
+/*
+ * Identify the mouse encoding version.
+ */
+#define NCURSES_MOUSE_VERSION @NCURSES_MOUSE_VERSION@
+
+/*
+ * Definitions to facilitate DLL's.
+ */
 #include <ncurses_dll.h>
 
 /*
