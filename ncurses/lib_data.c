@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_data.c,v 1.7 1996/12/07 21:19:35 tom Exp $")
+MODULE_ID("$Id: lib_data.c,v 1.8 1997/01/18 23:02:54 tom Exp $")
 
 WINDOW *stdscr, *curscr, *newscr;
 
@@ -67,7 +67,7 @@ SCREEN *_nc_screen(void)
 
 int _nc_alloc_screen(void)
 {
-	return ((my_screen = (SCREEN *) calloc(sizeof(*SP), 1)) != NULL);
+	return ((my_screen = typeCalloc(SCREEN, 1)) != 0);
 }
 
 void _nc_set_screen(SCREEN *sp)

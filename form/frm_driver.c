@@ -68,7 +68,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.18 1996/11/19 15:23:53 juergen Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.19 1997/01/18 14:29:33 juergen Exp $")
 
 /*
 Some options that may effect compatibility in behavior to SVr4 forms,
@@ -497,7 +497,7 @@ static bool Field_Grown(FIELD * field, int amount)
 	      if (new_buflen > old_buflen)
 		memset(new_bp + old_buflen,C_BLANK,
 		       (size_t)(new_buflen - old_buflen));
-	      *(new_bp + new_buflen + 1) = '\0';
+	      *(new_bp + new_buflen) = '\0';
 	    }
 
 	  if (need_visual_update)

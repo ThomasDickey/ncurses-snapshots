@@ -32,7 +32,9 @@
 #include <curses.priv.h>
 #include <term.h>	/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.10 1996/12/30 00:46:39 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.11 1997/01/19 01:45:06 tom Exp $")
+
+#define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
 char *_traceattr(attr_t newmode)
 {
@@ -78,8 +80,8 @@ colors[] =
 		(void) sprintf(buf + strlen(buf),
 			       "COLOR_PAIR(%d) = (%s, %s), ",
 			       pairnum,
-			       colors[fg].name,
-			       colors[bg].name
+			       COLOR_OF(fg),
+			       COLOR_OF(bg)
 			       );
 	    else
 		(void) sprintf(buf + strlen(buf), "COLOR_PAIR(%d) ", pairnum);

@@ -14,7 +14,7 @@
  *
  *	Date: 05.Nov.90
  *
- * $Id: hanoi.c,v 1.10 1996/12/14 23:23:00 tom Exp $
+ * $Id: hanoi.c,v 1.11 1997/01/19 00:57:31 tom Exp $
  */
 
 #include <test.priv.h>
@@ -103,9 +103,14 @@ unsigned char AutoFlag = 0;
 	initscr();
 	if (has_colors()) {
 		int i;
+		int bg = COLOR_BLACK;
 		start_color();
+#ifdef NCURSES_VERSION
+		if (use_default_colors() == OK)
+			bg = -1;
+#endif
 		for (i = 0; i < 9; i++)
-			init_pair(i+1, COLOR_BLACK, TileColour[i]);
+			init_pair(i+1, bg, TileColour[i]);
 	}
 	cbreak();
 	if (LINES < 24) {

@@ -37,7 +37,7 @@
 #define DEBUG(level, params) /*nothing*/
 #endif
 
-MODULE_ID("$Id: comp_hash.c,v 1.12 1996/12/30 01:37:26 tom Exp $")
+MODULE_ID("$Id: comp_hash.c,v 1.13 1997/01/18 23:01:07 tom Exp $")
 
 static  int hash_function(const char *);
 
@@ -181,7 +181,6 @@ static char *strdup (char *s)
 #endif /* not HAVE_STRDUP */
 
 #define MAX_COLUMNS BUFSIZ	/* this _has_ to be worst-case */
-#define typeCalloc(type,elts) (type *)calloc(elts,sizeof(type))
 
 static char **parse_columns(char *buffer)
 {

@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.77 1997/01/11 22:12:28 jbuhler Exp $
+$Id: ncurses.c,v 1.78 1997/01/18 19:34:35 tom Exp $
 
 ***************************************************************************/
 
@@ -350,7 +350,7 @@ static void attr_test(void)
  *
  ****************************************************************************/
 
-static const char *colors[] =
+static CONST char *colors[] =
 {
     "black",
     "red",
@@ -882,7 +882,7 @@ struct frame
 	WINDOW		*wind;
 };
 
-static void transient(struct frame *curp, const char *msg)
+static void transient(struct frame *curp, CONST char *msg)
 {
     if (msg)
     {
@@ -1281,7 +1281,7 @@ static WINDOW *w5;
 
 static unsigned long nap_msec = 1;
 
-static const char *mod[] =
+static CONST char *mod[] =
 {
 	"test ",
 	"TEST ",
@@ -1316,7 +1316,7 @@ wait_a_while(unsigned long msec GCC_UNUSED)
 	saywhat(text)
 --------------------------------------------------------------------------*/
 static void
-saywhat(const char *text)
+saywhat(CONST char *text)
 {
 	wmove(stdscr,LINES - 1,0);
 	wclrtoeol(stdscr);
@@ -1868,7 +1868,7 @@ int padgetch(WINDOW *win)
 {
     int	c;
 
-    for (;;)
+    while(1)
     switch(c = wGetchar(win))
     {
     case '!': ShellOut(FALSE); return KEY_REFRESH;
@@ -2280,7 +2280,7 @@ static void trace_set(void)
  *
  ****************************************************************************/
 #if USE_LIBFORM
-static FIELD *make_label(int frow, int fcol, const char *label)
+static FIELD *make_label(int frow, int fcol, CONST char *label)
 {
     FIELD	*f = new_field(1, strlen(label), frow, fcol, 0, 0);
 
@@ -2760,7 +2760,7 @@ static RETSIGTYPE announce_sig(int sig)
 {
     (void) fprintf(stderr, "Handled signal %d\r\n", sig);
 }
-#endif */
+#endif
 
 static int rip_footer(WINDOW *win, int columns)
 {
@@ -2844,7 +2844,7 @@ main(int argc, char *argv[])
 #ifdef SIGUSR1
     /* set up null signal catcher so we can see what interrupts to getch do */
     signal(SIGUSR1, announce_sig);
-#endif */
+#endif
 
     /* we must initialize the curses data structure only once */
     initscr();

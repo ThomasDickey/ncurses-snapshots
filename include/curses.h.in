@@ -18,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.38 1997/01/11 19:55:44 tom Exp $ */
+/* $Id: curses.h.in,v 1.39 1997/01/18 23:07:40 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -282,6 +282,7 @@ extern int ESCDELAY;	/* ESC expire time in milliseconds */
 /* non-XSI extensions (dickey@clark.net) */
 extern int resizeterm (int, int);
 extern int wresize (WINDOW *, int, int);
+extern int use_default_colors (void);
 
 extern char ttytype[];		/* needed for backward compatibility */
 

@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_pad.c,v 1.13 1996/10/05 20:37:50 tom Exp $")
+MODULE_ID("$Id: lib_pad.c,v 1.14 1997/01/18 23:05:18 tom Exp $")
 
 WINDOW *newpad(int l, int c)
 {
@@ -47,7 +47,7 @@ int i;
 
 	for (i = 0; i < l; i++) {
 	    win->_line[i].oldindex = _NEWINDEX;
-	    if ((win->_line[i].text = (chtype *) calloc((size_t)c, sizeof(chtype))) == NULL) {
+	    if ((win->_line[i].text = typeCalloc(chtype, ((size_t)c))) == 0) {
 		_nc_freewin(win);
 		return 0;
 	    }

@@ -6,7 +6,7 @@
  * modified 10-18-89 for curses (jrl)
  * 10-18-89 added signal handling
  *
- * $Id: gdc.c,v 1.7 1996/12/14 23:22:18 tom Exp $
+ * $Id: gdc.c,v 1.8 1997/01/19 00:59:28 tom Exp $
  */
 
 #include <test.priv.h>
@@ -65,10 +65,15 @@ int n = 0;
 	hascolor = has_colors();
 
 	if(hascolor) {
+		int bg = COLOR_BLACK;
 		start_color();
+#ifdef NCURSES_VERSION
+		if (use_default_colors() == OK)
+			bg = -1;
+#endif
 		init_pair(1, COLOR_BLACK, COLOR_RED);
-		init_pair(2, COLOR_RED, COLOR_BLACK);
-		init_pair(3, COLOR_WHITE, COLOR_BLACK);
+		init_pair(2, COLOR_RED,   bg);
+		init_pair(3, COLOR_WHITE, bg);
 		attrset(COLOR_PAIR(2));
 	}
 

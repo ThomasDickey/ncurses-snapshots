@@ -2,7 +2,7 @@
  *  newdemo.c	-	A demo program using PDCurses. The program illustrate
  *  	 		the use of colours for text output.
  *
- * $Id: newdemo.c,v 1.12 1996/12/30 02:11:44 tom Exp $
+ * $Id: newdemo.c,v 1.13 1997/01/18 19:28:56 tom Exp $
  */
 
 #include <test.priv.h>
@@ -42,7 +42,7 @@ const char *AusMap[16] =
  */
 #define NMESSAGES   6
 
-const char *messages[] =
+CONST char *messages[] =
 {
     "Hello from the Land Down Under",
     "The Land of crocs. and a big Red Rock",

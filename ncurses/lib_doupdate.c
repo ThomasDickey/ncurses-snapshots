@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.50 1997/01/06 14:49:09 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.51 1997/01/19 02:18:12 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -170,26 +170,6 @@ static inline void GoTo(int const row, int const col)
 	SP->_cursrow = row;
 	SP->_curscol = col;
 }
-
-#ifdef TRACE
-/*
- * This is used only to validate the places where we suspect there may be a
- * bug in the optimizer.
- */
-static void ForceGoTo(int row, int col)
-{
-	if (SP->_cursrow != row
-	 || SP->_curscol != col) {
-		T(("have (%d,%d), want (%d,%d)",
-			SP->_cursrow, SP->_curscol,
-			row, col));
-		GoTo(row, col);
-		beep();
-	}
-}
-#else
-#define ForceGoTo(row,col) /* nothing */
-#endif
 
 static inline void PutAttrChar(chtype ch)
 {
@@ -353,7 +333,7 @@ static inline int EmitRange(const chtype *ntext, int num)
 
     if (erase_chars || repeat_char)
     {
-	while (num)
+	while (num > 0)
 	{
 	    int	runcount;
 	    chtype ntext0;
@@ -1104,15 +1084,17 @@ bool	attrchanged = FALSE;
 			/* find the last differing character */
 			nLastChar = screen_columns - 1;
 			
-			/* we don't check ranges since there must be
-			 * different characters */
-			while (newLine[nLastChar] == oldLine[nLastChar])
+			while (nLastChar > firstChar
+			 && newLine[nLastChar] == oldLine[nLastChar])
 				nLastChar--;
-			GoTo(lineno, firstChar);
-			PutRange(oldLine, newLine, lineno, firstChar, nLastChar);
-			memcpy( oldLine + firstChar,
-				newLine + firstChar,
-				(nLastChar - firstChar + 1) * sizeof(chtype));
+
+			if (nLastChar > firstChar) {
+				GoTo(lineno, firstChar);
+				PutRange(oldLine, newLine, lineno, firstChar, nLastChar);
+				memcpy( oldLine + firstChar,
+					newLine + firstChar,
+					(nLastChar - firstChar + 1) * sizeof(chtype));
+			}
 			return;
 		}
 

@@ -30,7 +30,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.14 1996/12/19 18:31:29 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.15 1997/01/18 23:04:42 tom Exp $")
 
 void _nc_freewin(WINDOW *win)
 {
@@ -87,7 +87,7 @@ int	i;
 		return NULL;
 
 	for (i = 0; i < num_lines; i++) {
-	    if ((win->_line[i].text = (chtype *) calloc((unsigned)num_columns, sizeof(chtype))) == NULL) {
+	    if ((win->_line[i].text = typeCalloc(chtype, (unsigned)num_columns)) == 0) {
 		_nc_freewin(win);
 		return NULL;
 	    }
@@ -166,13 +166,13 @@ bool    is_pad = (flags & _ISPAD);
 	if (num_lines <= 0 || num_columns <= 0)
 		return NULL;
 
-	if ((wp = (WINDOWLIST *) calloc(1, sizeof(WINDOWLIST))) == 0)
+	if ((wp = typeCalloc(WINDOWLIST, 1)) == 0)
 		return 0;
 
-	if ((win = (WINDOW *) calloc(1, sizeof(WINDOW))) == NULL)
+	if ((win = typeCalloc(WINDOW, 1)) == 0)
 		return NULL;
 
-	if ((win->_line = (struct ldat *) calloc((unsigned)num_lines, sizeof (struct ldat))) == NULL) {
+	if ((win->_line = typeCalloc(struct ldat, ((unsigned)num_lines))) == 0) {
 		free(win);
 		return NULL;
 	}

@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.9 1997/01/11 19:05:23 tom Exp $
+dnl $Id: configure.in,v 1.10 1997/01/18 19:34:03 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -34,7 +34,7 @@ AC_PROG_CC
 CC_G_OPT="-g"			AC_SUBST(CC_G_OPT)
 CC_SHARED_OPTS=unknown		AC_SUBST(CC_SHARED_OPTS)
 CPPFLAGS="$CPPFLAGS -I."	AC_SUBST(CPPFLAGS)
-DFT_UPR_MODEL="normal"		AC_SUBST(DFT_UPR_MODEL)
+DFT_UPR_MODEL="NORMAL"		AC_SUBST(DFT_UPR_MODEL)
 EXTRA_LIBS=""			AC_SUBST(EXTRA_LIBS)
 LIB_NAME=curses			AC_SUBST(LIB_NAME)
 LINT=lint			AC_SUBST(LINT)

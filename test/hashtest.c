@@ -3,7 +3,7 @@
  *
  * Generate timing statistics for vertical-motion optimization.
  *
- * $Id: hashtest.c,v 1.7 1996/11/17 00:18:06 tom Exp $
+ * $Id: hashtest.c,v 1.8 1997/01/18 19:09:30 tom Exp $
  */
 
 #define NCURSES_TRACE
@@ -80,6 +80,7 @@ static void run_test(bool optimized)
 	int	lo = continuous ? LO_CHAR : 'a' - LINES;
 	int	hi = continuous ? HI_CHAR : 'a' + LINES;
 
+#ifdef NCURSES_VERSION
 	if (optimized) {
 		Trace(("With hash mapping"));
 		_nc_optimize_enable |= OPTIMIZE_HASHMAP;
@@ -87,6 +88,7 @@ static void run_test(bool optimized)
 		Trace(("Without hash mapping"));
 		_nc_optimize_enable &= ~OPTIMIZE_HASHMAP;
 	}
+#endif
 
 	if (reverse_loops)
 		for (ch = hi; ch >= lo; ch--)

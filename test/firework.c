@@ -1,5 +1,5 @@
 /*
- * $Id: firework.c,v 1.8 1996/12/14 23:48:16 tom Exp $
+ * $Id: firework.c,v 1.9 1997/01/19 01:08:45 tom Exp $
  */
 #include <test.priv.h>
 
@@ -11,10 +11,12 @@
 
 static char *normal, *hidden;
 
-static int get_colour(void);
+static int get_colour(chtype *);
 static void explode(int row, int col);
 static void showit(void);
 static void onsig(int sig);
+
+static int my_bg = COLOR_BLACK;
 
 int main(
 	int argc GCC_UNUSED,
@@ -24,15 +26,21 @@ int j;
 int start,end,row,diff,flag = 0,direction;
 unsigned seed;
 
-       for (j=SIGHUP;j<=SIGTERM;j++)
-	   if (signal(j,SIG_IGN)!=SIG_IGN) signal(j,onsig);
+	for (j=SIGHUP;j<=SIGTERM;j++)
+		if (signal(j,SIG_IGN)!=SIG_IGN)
+			signal(j,onsig);
 
-       initscr();
-       if (has_colors())
-          start_color();
-       if ((normal = tigetstr("cnorm")) != 0
-        && (hidden = tigetstr("civis")) != 0)
-    	   putp(tparm(hidden));
+	initscr();
+	if (has_colors()) {
+		start_color();
+#ifdef NCURSES_VERSION
+		if (use_default_colors() == OK)
+			my_bg = -1;
+#endif
+	}
+	if ((normal = tigetstr("cnorm")) != 0
+	&& (hidden = tigetstr("civis")) != 0)
+		putp(tparm(hidden));
 
        seed = time((time_t *)0);
        srand(seed);
@@ -79,19 +87,20 @@ onsig(int n GCC_UNUSED)
 static
 void explode(int row, int col)
 {
+       chtype bold;
        erase();
        mvprintw(row,col,"-");
        showit();
 
-       init_pair(1,get_colour(),COLOR_BLACK);
-       attrset(COLOR_PAIR(1));
+       init_pair(1,get_colour(&bold),my_bg);
+       attrset(COLOR_PAIR(1) | bold);
        mvprintw(row-1,col-1," - ");
        mvprintw(row,col-1,"-+-");
        mvprintw(row+1,col-1," - ");
        showit();
 
-       init_pair(1,get_colour(),COLOR_BLACK);
-       attrset(COLOR_PAIR(1));
+       init_pair(1,get_colour(&bold),my_bg);
+       attrset(COLOR_PAIR(1) | bold);
        mvprintw(row-2,col-2," --- ");
        mvprintw(row-1,col-2,"-+++-");
        mvprintw(row,  col-2,"-+#+-");
@@ -99,8 +108,8 @@ void explode(int row, int col)
        mvprintw(row+2,col-2," --- ");
        showit();
 
-       init_pair(1,get_colour(),COLOR_BLACK);
-       attrset(COLOR_PAIR(1));
+       init_pair(1,get_colour(&bold),my_bg);
+       attrset(COLOR_PAIR(1) | bold);
        mvprintw(row-2,col-2," +++ ");
        mvprintw(row-1,col-2,"++#++");
        mvprintw(row,  col-2,"+# #+");
@@ -108,8 +117,8 @@ void explode(int row, int col)
        mvprintw(row+2,col-2," +++ ");
        showit();
 
-       init_pair(1,get_colour(),COLOR_BLACK);
-       attrset(COLOR_PAIR(1));
+       init_pair(1,get_colour(&bold),my_bg);
+       attrset(COLOR_PAIR(1) | bold);
        mvprintw(row-2,col-2,"  #  ");
        mvprintw(row-1,col-2,"## ##");
        mvprintw(row,  col-2,"#   #");
@@ -117,8 +126,8 @@ void explode(int row, int col)
        mvprintw(row+2,col-2,"  #  ");
        showit();
 
-       init_pair(1,get_colour(),COLOR_BLACK);
-       attrset(COLOR_PAIR(1));
+       init_pair(1,get_colour(&bold),my_bg);
+       attrset(COLOR_PAIR(1) | bold);
        mvprintw(row-2,col-2," # # ");
        mvprintw(row-1,col-2,"#   #");
        mvprintw(row,  col-2,"     ");
@@ -128,15 +137,17 @@ void explode(int row, int col)
 }
 
 static
-int get_colour(void)
+int get_colour(chtype *bold)
 {
- int attr;
-       attr = (rand() % 16)+1;
-       if (attr == 1 || attr == 9)
-          attr = COLOR_RED;
-       if (attr > 8)
-          attr |= A_BOLD;
-       return(attr);
+	int attr;
+	attr = (rand() % 16) + 1;
+
+	*bold = A_NORMAL;
+	if (attr > 8) {
+		*bold = A_BOLD;
+		attr &= 7;
+	}
+	return(attr);
 }
 
 static void
