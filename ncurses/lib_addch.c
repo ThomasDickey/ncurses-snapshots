@@ -214,7 +214,6 @@ int		newx;
 		break;
 	}
 
- finish:
 	win->_curx = x;
 	win->_cury = y;
 

@@ -581,7 +581,7 @@ int	attrchanged = 0;
 				if (newLine[nFirstChar] != BLANK)
 					break;
 
-			if (nFirstChar > oFirstChar + strlen(clr_bol))
+			if (nFirstChar > oFirstChar + (int)strlen(clr_bol))
 			{
 			    GoTo(lineno, nFirstChar - 1);
 			    ClrToBOL();

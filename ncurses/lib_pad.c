@@ -105,34 +105,43 @@ int pnoutrefresh(WINDOW *win, int pminrow, int pmincol,
 {
 int	i, j;
 int	m, n;
+int	pmaxrow;
+int	pmaxcol;
 
 	T(("pnoutrefresh(%p, %d, %d, %d, %d, %d, %d) called", 
 		win, pminrow, pmincol, sminrow, smincol, smaxrow, smaxcol));
 
+	if (win == 0)
+		return ERR;
+
 	if (!(win->_flags & _ISPAD))
 		return ERR;
 
+	/* negative values are interpreted as zero */
 	if (pminrow < 0) pminrow = 0;
 	if (pmincol < 0) pmincol = 0;
 	if (sminrow < 0) sminrow = 0;
 	if (smincol < 0) smincol = 0;
 
-	if (smaxrow >= screen_lines || smaxcol >= screen_columns)
+	if (smaxrow >= screen_lines
+	 || smaxcol >= screen_columns
+	 || sminrow > smaxrow
+	 || smincol > smaxcol)
 		return ERR;
 
-	T((" pminrow + smaxrow - sminrow %d, win->_maxy %d", pminrow + smaxrow - sminrow ,  win->_maxy));
-	T((" pmincol + smaxcol - smincol %d, win->_maxx %d", pmincol + smaxcol - smincol ,  win->_maxx));
-	if ((pminrow + smaxrow - sminrow > win->_maxy) ||
-	    (pmincol + smaxcol - smincol > win->_maxx) ||
-	    (smaxrow < 0) ||
-	    (smaxcol < 0))
+	pmaxrow = pminrow + smaxrow - sminrow;
+	pmaxcol = pmincol + smaxcol - smincol;
+
+	T((" pminrow + smaxrow - sminrow %d, win->_maxy %d", pmaxrow, win->_maxy));
+	T((" pmincol + smaxcol - smincol %d, win->_maxx %d", pmaxcol, win->_maxx));
+	if ((pmaxrow > win->_maxy)
+	 || (pmaxcol > win->_maxx))
 		return ERR;
 
 	T(("pad being refreshed"));
 
-	for (i = pminrow, m = sminrow; i <= pminrow + smaxrow-sminrow; i++, m++) {
-		for (j = pmincol, n = smincol; j <= pmincol + smaxcol-smincol;
-		     j++, n++) {
+	for (i = pminrow, m = sminrow; i <= pmaxrow; i++, m++) {
+		for (j = pmincol, n = smincol; j <= pmaxcol; j++, n++) {
 		    if (win->_line[i].text[j] != newscr->_line[m].text[n]) {
 			newscr->_line[m].text[n] = win->_line[i].text[j];
 
@@ -147,7 +156,6 @@ int	m, n;
 		win->_line[i].firstchar = win->_line[i].lastchar = _NOCHANGE;
 	}
 
-
 	win->_begx = smincol;
 	win->_begy = sminrow;
 
@@ -156,26 +164,18 @@ int	m, n;
 	    newscr->_clear = TRUE;
 	}
 
-#if 0
 	/*
-	 * This code causes problems if the pad is larger than the
-	 * terminal screen -- doupdate may try taking the newscr
-	 * cursor to a non-existent location.
+	 * Use the pad's current position, if it will be visible.
+	 * If not, don't do anything; it's not an error.
 	 */
-	if (! win->_leave) {
-	    newscr->_cury = win->_cury + win->_begy;
-	    newscr->_curx = win->_curx + win->_begx;
+	if (win->_leave == FALSE
+	 && win->_cury  >= pminrow
+	 && win->_curx  >= pmincol
+	 && win->_cury  <= pmaxrow
+	 && win->_curx  <= pmaxcol) {
+		newscr->_cury = win->_cury - pminrow + win->_begy;
+		newscr->_curx = win->_curx - pmincol + win->_begx;
 	}
-#else
-	/* this seems to fix the problem for us.
-		michaelw@desaster.student.uni-tuebingen.de
-	*/
-
-	if (! win->_leave) {
-	  newscr->_cury = win->_cury - pminrow + win->_begy;
-	  newscr->_curx = win->_curx - pmincol + win->_begx;
-	}
-#endif /* 0 */
 	return OK;
 }
 

@@ -47,7 +47,7 @@ INSTALLATION PROCEDURE:
 
     If you want to put the terminal descriptions in, for example,
     /usr/share/lib/terminfo, you can either make that a symbolic link to
-    /usr/lib/terminfo, or type 'configure --datadir=/usr/share/lib/terminfo'.
+    /usr/lib/terminfo, or type 'configure --with-datadir=/usr/share/lib/terminfo'.
     This is particularly useful if your system already has a terminfo database.
     This option allows you to place ncurses' terminfo in an alternate location.
     You can use TERMINFO to point to the appropriate directory.

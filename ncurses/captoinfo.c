@@ -161,7 +161,7 @@ static int cvtchar(register char *sp)
 	if (c > 99)
 	    *dp++ = c / 100 + '0';
 	if (c > 9)
-	    *dp++ = (c / 10) % 10 + '0';
+	    *dp++ = ((int)(c / 10)) % 10 + '0';
 	*dp++ = c % 10 + '0';
 	*dp++ = '}';
     }

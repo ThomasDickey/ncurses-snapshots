@@ -96,7 +96,7 @@ extern int _nc_keypad(bool flag);
 extern WINDOW *_nc_makenew(int, int, int, int);
 extern int _nc_outch(int);
 extern chtype _nc_render(WINDOW *, chtype, chtype);
-extern int _nc_waddch_nosync(WINDOW *, chtype, bool);
+extern int _nc_waddch_nosync(WINDOW *, const chtype, const bool);
 extern void _nc_scroll_optimize(void);
 extern void _nc_scroll_window(WINDOW *, int, int, int);
 extern int _nc_setupscreen(int, int);

@@ -42,7 +42,7 @@ int code = ERR;
 		TR(TRACE_VIRTPUT, ("str is not null"));
 		code = OK;
 		if (n < 0)
-			n = strlen(str);
+			n = strlen(astr);
 
 		while((n-- > 0) && (*str != '\0')) {
 			TR(TRACE_VIRTPUT, ("*str = %x", *str));

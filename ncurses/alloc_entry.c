@@ -69,7 +69,7 @@ size_t	len = strlen(string) + 1;
 	{
 		strcpy(&stringbuf[next_free], string);
 		DEBUG(7, ("Saved string '%s' ", _nc_visbuf(string)));
-		DEBUG(7, ("at location %d", next_free));
+		DEBUG(7, ("at location %d", (int) next_free));
 		next_free += len;
 	}
 	return(stringbuf + old_next_free);

@@ -14,7 +14,7 @@ AC_CACHE_VAL(nc_cv_builtin_bool,[
 	])
 AC_MSG_RESULT($nc_cv_builtin_bool)
 test $nc_cv_builtin_bool = yes && AC_DEFINE(CXX_BUILTIN_BOOL)
-])
+])dnl
 dnl ---------------------------------------------------------------------------
 dnl Test for the size of 'bool' in the configured C++ compiler.
 AC_DEFUN([NC_BOOL_SIZE],
@@ -45,12 +45,12 @@ main()
 	rm -f nc_test.out
 AC_MSG_RESULT($nc_cv_sizeof_bool)
 test $nc_cv_sizeof_bool != unknown && AC_DEFINE_UNQUOTED(CXX_TYPE_OF_BOOL,$nc_cv_sizeof_bool)
-])
+])dnl
 dnl ---------------------------------------------------------------------------
 dnl If we're trying to use g++, test if libg++ is installed (a rather common
 dnl problem :-).  If we have the compiler but no library, we'll be able to
 dnl configure, but won't be able to build the c++ demo program.
-AC_DEFUN(NC_CXX_LIBRARY,
+AC_DEFUN([NC_CXX_LIBRARY],
 [
 nc_cxx_library=unknown
 if test $ac_cv_prog_gxx = yes; then
@@ -68,9 +68,9 @@ if test $ac_cv_prog_gxx = yes; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-AC_DEFUN(NC_DIRS_TO_MAKE,
+AC_DEFUN([NC_DIRS_TO_MAKE],
 [
-DIRS_TO_MAKE="bin lib"
+DIRS_TO_MAKE="lib"
 for nc_item in $nc_list_models
 do
 	NC_OBJ_SUBDIR($nc_item,nc_subdir)
@@ -96,7 +96,7 @@ AC_CACHE_VAL(nc_cv_extern_errno,[
 	])
 AC_MSG_RESULT($nc_cv_extern_errno)
 test $nc_cv_extern_errno = yes && AC_DEFINE(HAVE_EXTERN_ERRNO)
-])
+])dnl
 dnl ---------------------------------------------------------------------------
 dnl Construct the list of include-options according to whether we're building
 dnl in the source directory or using '--srcdir=DIR' option.
@@ -114,15 +114,21 @@ dnl Append definitions and rules for the given models to the subdirectory
 dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
 dnl subdirectory is a library-source directory, modify the LIBRARIES list in
 dnl the corresponding makefile to list the models that we'll generate.
+dnl
+dnl For shared libraries, make a list of symbolic links to construct when
+dnl generating each library.  The convention used for Linux is the simplest
+dnl one:
+dnl	lib<name>.so	->
+dnl	lib<name>.so.<major>	->
+dnl	lib<name>.so.<maj>.<minor>
 AC_DEFUN([NC_LIB_RULES],
 [
-nc_systype="`(uname -s || hostname) 2>/dev/null | sed 1q`"
-if test -z "$nc_systype"; then nc_systype=unknown;fi
-REL_VERSION=`grep VERSION dist.mk | sed -e 's/[[^0-9]]*//'`
-ABI_VERSION=`grep SHARED_ABI dist.mk | sed -e 's/[[^0-9]]*//'`
+AC_REQUIRE([NC_SYSTYPE])
+AC_REQUIRE([NC_VERSION])
 for nc_dir in $SRC_SUBDIRS
 do
 	if test -f $srcdir/$nc_dir/modules; then
+
 		nc_libs_to_make=
 		for nc_item in $NC_LIST_MODELS
 		do
@@ -130,7 +136,8 @@ do
 			nc_libs_to_make="$nc_libs_to_make ../lib/lib${nc_dir}${nc_suffix}"
 		done
 
-		sed -e "s@\@LIBS_TO_MAKE\@@$nc_libs_to_make@" $nc_dir/Makefile >$nc_dir/Makefile.out
+		sed -e "s@\@LIBS_TO_MAKE\@@$nc_libs_to_make@" \
+			$nc_dir/Makefile >$nc_dir/Makefile.out
 		mv $nc_dir/Makefile.out $nc_dir/Makefile
 
 		for nc_item in $NC_LIST_MODELS
@@ -139,20 +146,28 @@ do
 			NC_UPPERCASE($nc_item,NC_ITEM)
 			NC_LIB_SUFFIX($nc_item,nc_suffix)
 			NC_OBJ_SUBDIR($nc_item,nc_subdir)
-			$AWK -f $srcdir/mk-1st.awk name=$nc_dir MODEL=$NC_ITEM model=$nc_subdir suffix=$nc_suffix $srcdir/$nc_dir/modules >>$nc_dir/Makefile
-			$AWK -f $srcdir/mk-2nd.awk name=$nc_dir MODEL=$NC_ITEM model=$nc_subdir srcdir=$srcdir echo=$WITH_ECHO $srcdir/$nc_dir/modules >>$nc_dir/Makefile
-			if test $nc_systype = "Linux" -a $nc_dir != "lib" -a $nc_dir != "progs"; then
-				echo "install.libs:: ../lib/lib${nc_dir}.so.$REL_VERSION ../lib/lib${nc_dir}.so.$ABI_VERSION \$(libdir)" >> $nc_dir/Makefile
-				echo "	-rm -f \$(libdir)/lib${nc_dir}.so.$REL_VERSION" >> $nc_dir/Makefile
-				echo "	\$(INSTALL_DATA) ../lib/lib${nc_dir}.so.$REL_VERSION \$(libdir)" >> $nc_dir/Makefile
-				echo "	(cd \$(libdir); ln -sf lib${nc_dir}.so.$REL_VERSION lib${nc_dir}.so.$ABI_VERSION; ln -sf lib${nc_dir}.so.$REL_VERSION lib${nc_dir}.so.$ABI_VERSION)" >> $nc_dir/Makefile
-			fi
+			$AWK -f $srcdir/mk-1st.awk \
+				name=$nc_dir \
+				MODEL=$NC_ITEM \
+				model=$nc_subdir \
+				suffix=$nc_suffix \
+				SYSTYPE=$nc_cv_systype \
+				REL_VERSION=$nc_cv_rel_version \
+				ABI_VERSION=$nc_cv_abi_version \
+				$srcdir/$nc_dir/modules >>$nc_dir/Makefile
+			$AWK -f $srcdir/mk-2nd.awk \
+				name=$nc_dir \
+				MODEL=$NC_ITEM \
+				model=$nc_subdir \
+				srcdir=$srcdir \
+				echo=$WITH_ECHO \
+				$srcdir/$nc_dir/modules >>$nc_dir/Makefile
 		done
 	fi
 	echo '	cd '$nc_dir'; $(MAKE) $(NC_MFLAGS) [$]@' >>Makefile
 done
 
-for nc_dir in $SRC_SUBDIRS
+for nc_dir in include $SRC_SUBDIRS
 do
 	if test -f $srcdir/$nc_dir/modules; then
 cat >> Makefile <<NC_EOF
@@ -175,6 +190,8 @@ dnl ---------------------------------------------------------------------------
 dnl Compute the library-suffix from the given model name
 AC_DEFUN([NC_LIB_SUFFIX],
 [
+	AC_REQUIRE([NC_SYSTYPE])
+	AC_REQUIRE([NC_VERSION])
 	case $1 in
 	normal)  $2='.a'   ;;
 	debug)   $2='_g.a' ;;
@@ -279,8 +296,7 @@ NC_EOF
 	])
 AC_MSG_RESULT($nc_cv_makeflags)
 AC_SUBST(nc_cv_makeflags)
-]
-)
+])dnl
 dnl ---------------------------------------------------------------------------
 dnl Compute the object-directory name from the given model name
 AC_DEFUN([NC_OBJ_SUBDIR],
@@ -295,18 +311,27 @@ AC_DEFUN([NC_OBJ_SUBDIR],
 dnl ---------------------------------------------------------------------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
 dnl library.
+dnl
+dnl Note: $(LOCAL_LDFLAGS) is used to link executables that will run within the 
+dnl build-tree, i.e., by making use of the libraries that are compiled in ../lib
+dnl We avoid compiling-in a ../lib path for the shared library since that can
+dnl lead to unexpected results at runtime.
 AC_DEFUN([NC_SHARED_OPTS],
 [
-	nc_systype="`(uname -s || hostname) 2>/dev/null | sed 1q`"
-	if test -z "$nc_systype"; then nc_systype=unknown;fi
-	case $nc_systype in
+	AC_REQUIRE([NC_SYSTYPE])
+	AC_REQUIRE([NC_VERSION])
+ 	LOCAL_LDFLAGS=
+	case $nc_cv_systype in
 	Linux)
 		CC_SHARED_OPTS='-fPIC'
- 		REL_VERSION=`grep VERSION dist.mk | sed -e 's/[[^0-9]]*//'`
- 		ABI_VERSION=`grep SHARED_ABI dist.mk | sed -e 's/[[^0-9]]*//'`
- 		MK_SHARED_LIB="gcc -o \$[@].$REL_VERSION -shared -Wl,-soname,\`basename \$[@].$ABI_VERSION\`,-stats"
- 		MK_SHARED_LIB_LINK="ln -s \$[@].$REL_VERSION \$[@]; ln -s \$[@].$REL_VERSION \$[@].$ABI_VERSION"
- 		LD_RPATH='-Wl,-rpath,../lib'
+ 		MK_SHARED_LIB="gcc -o \$[@].$nc_cv_rel_version -shared -Wl,-soname,\`basename \$[@].$nc_cv_abi_version\`,-stats"
+		if test $DFT_LWR_MODEL = "shared" ; then
+ 			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
+		fi
+		;;
+	UNIX_SV)
+		CC_SHARED_OPTS='-KPIC'
+		MK_SHARED_LIB='ld -d y -G -o $[@]'
 		;;
 	IRIX)
 		if test "${CC}" = "gcc"; then
@@ -315,12 +340,10 @@ AC_DEFUN([NC_SHARED_OPTS],
 			CC_SHARED_OPTS='-KPIC'
 		fi
 		MK_SHARED_LIB='ld -shared -rdata_shared -soname `basename $[@]` -o $[@]'
-		MK_SHARED_LIB_LINK='true'
 		;;
 	NetBSD)
 		CC_SHARED_OPTS='-fpic -DPIC'
 		MK_SHARED_LIB='ld -Bshareable -o $[@]'
-		MK_SHARED_LIB_LINK='true'
 		;;
 	SunOS)
 		if test $ac_cv_prog_gcc = yes; then
@@ -328,19 +351,35 @@ AC_DEFUN([NC_SHARED_OPTS],
 		else
 			CC_SHARED_OPTS='-pic'
 		fi
-		MK_SHARED_LIB='ld -assert pure-text -o $[@]'
-		MK_SHARED_LIB_LINK='true'
+		MK_SHARED_LIB="ld -assert pure-text -o \$[@].$nc_cv_rel_version"
 		;;
 	*)
 		CC_SHARED_OPTS='unknown'
 		MK_SHARED_LIB='echo unknown'
-		MK_SHARED_LIB_LINK='echo unknown'
 		;;
 	esac
 	AC_SUBST(CC_SHARED_OPTS)
 	AC_SUBST(MK_SHARED_LIB)
-	AC_SUBST(MK_SHARED_LIB_LINK)
-	AC_SUBST(LD_RPATH)
+	AC_SUBST(LOCAL_LDFLAGS)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Check for datatype 'speed_t', which is normally declared via either
+dnl sys/types.h or termios.h
+AC_DEFUN([NC_SPEED_TYPE],
+[
+AC_MSG_CHECKING([for speed_t])
+AC_CACHE_VAL(nc_cv_type_speed_t,[
+	AC_TRY_COMPILE([
+#include <sys/types.h>
+#if HAVE_TERMIOS_H
+#include <termios.h>
+#endif],
+	[speed_t x = 0],
+	[nc_cv_type_speed_t=yes],
+	[nc_cv_type_speed_t=no])
+	])
+AC_MSG_RESULT($nc_cv_type_speed_t)
+test $nc_cv_type_speed_t != yes && AC_DEFINE(speed_t,unsigned)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl For each parameter, test if the source-directory exists, and if it contains
@@ -349,7 +388,7 @@ dnl use in NC_LIB_RULES.
 dnl
 dnl This uses the configured value to make the lists SRC_SUBDIRS and
 dnl SUB_MAKEFILES which are used in the makefile-generation scheme.
-AC_DEFUN(NC_SRC_MODULES,
+AC_DEFUN([NC_SRC_MODULES],
 [
 AC_MSG_CHECKING(for src modules)
 AC_CACHE_VAL(nc_cv_src_modules,[
@@ -401,6 +440,17 @@ AC_MSG_RESULT($nc_cv_dcl_sys_errlist)
 test $nc_cv_dcl_sys_errlist = yes && AC_DEFINE(HAVE_EXTERN_SYS_ERRLIST)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Derive the system-type (our main clue to the method of building shared
+dnl libraries).
+AC_DEFUN([NC_SYSTYPE],
+[
+AC_CACHE_VAL(nc_cv_systype,[
+nc_cv_systype="`(uname -s || hostname) 2>/dev/null | sed 1q`"
+if test -z "$nc_cv_systype"; then nc_cv_systype=unknown;fi
+])
+AC_MSG_RESULT(System type is $nc_cv_systype)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl On some systems ioctl(fd, TIOCGWINSZ, &size) will always return {0,0} until
 dnl ioctl(fd, TIOCSWINSZ, &size) is called to explicitly set the size of the
 dnl screen.
@@ -438,7 +488,7 @@ int main()
 	])
 AC_MSG_RESULT($nc_cv_use_tiocgwinsz)
 test $nc_cv_use_tiocgwinsz != yes && AC_DEFINE(BROKEN_TIOCGETWINSZ)
-])
+])dnl
 dnl ---------------------------------------------------------------------------
 dnl
 AC_DEFUN([NC_TYPE_SIGACTION],
@@ -461,4 +511,20 @@ AC_DEFUN([NC_UPPERCASE],
 changequote(,)dnl
 $2=`echo $1 |tr '[a-z]' '[A-Z]'`
 changequote([,])dnl
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Get the version-number for use in shared-library naming, etc.
+AC_DEFUN([NC_VERSION],
+[
+AC_CACHE_VAL(nc_cv_rel_version,[
+changequote(,)dnl
+nc_cv_rel_version=`egrep 'VERSION[ 	]*=' $srcdir/dist.mk | sed -e 's/^[^0-9]*//'`
+changequote([,])dnl
+])
+AC_CACHE_VAL(nc_cv_abi_version,[
+changequote(,)dnl
+nc_cv_abi_version=`egrep 'SHARED_ABI[ 	]*=' $srcdir/dist.mk | sed -e 's/^[^0-9]*//'`
+changequote([,])dnl
+])
+AC_MSG_RESULT(Configuring NCURSES $nc_cv_rel_version ABI $nc_cv_abi_version (`date`))
 ])dnl
