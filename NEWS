@@ -1,6 +1,27 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970405
+	+ add configure option --enable-const, to support the use of 'const'
+	  where XSI should have, but did not, specify.  This defines
+	  NCURSES_CONST, which is an empty token otherwise, for strict
+	  compatibility.
+	+ make processing of configure options more verbose by echoing the
+	  --enable/--with values.
+	+ add configure option --enable-big-core
+	+ set initial state of software echo off as per XSI.
+	+ check for C++ builtin.h header
+	+ correct computation of absolute-path for $INSTALL that dropped "-c"
+	  parameter from the expression.
+	+ rename config.h to ncurses_cfg.h to avoid naming-conflict when ncurses
+	  is integrated into larger systems (from diffs by H.J.Lu for libc).
+	+ correct inequality in lib_doupdate.c that caused a single-char to not
+	  be updated when the char on the right-margin was not blank, idcok()
+	  was true (patch by Alexander V.  Lukyanov 970124, also reported by
+	  Kriang Lerdsuwanakij <lerdsuwa@scf-fs.usc.edu> 970329).
+	+ modify 'clean' rule in include/Makefile so that files created by
+	  configure script are removed in 'distclean' rule instead.
+
 970328
 	+ correct array limit in tparam_internal(), add case to interpret "%x"
 	  (patch by Andreas Schwab)

@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.52 1997/03/22 01:28:45 tom Exp $
+dnl $Id: aclocal.m4,v 1.53 1997/04/06 00:11:43 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -394,7 +394,7 @@ do
 
 			# These dependencies really are for development, not
 			# builds, but they are useful in porting, too.
-			nc_depend="../include/config.h"
+			nc_depend="../include/ncurses_cfg.h"
 			if test "$srcdir" = "."; then
 				nc_reldir="."
 			else
@@ -466,7 +466,7 @@ install.man ::
 	cd man; \$(MAKE) \$(NC_MFLAGS) \[$]@
 
 distclean ::
-	rm -f config.cache config.log config.status Makefile include/config.h
+	rm -f config.cache config.log config.status Makefile include/ncurses_cfg.h
 	rm -f headers.sh headers.sed
 	rm -rf \$(DIRS_TO_MAKE)
 NC_EOF
@@ -835,7 +835,7 @@ changequote({{,}})dnl
   nc_dir=`echo $INSTALL|sed -e 's%/[^/]*$%%'`
   test -z "$nc_dir" && nc_dir=.
 changequote([,])dnl
-  INSTALL=`cd $nc_dir;pwd`/`basename $INSTALL`
+  INSTALL=`cd $nc_dir;pwd`/`echo $INSTALL | sed -e 's:^.*/::'`
   ;;
 esac
 ])dnl
@@ -1009,7 +1009,7 @@ do
 		else
 			nc_cv_src_modules="$nc_cv_src_modules $nc_dir"
 		fi
-		# Make the config.h file record the library interface files as
+		# Make the ncurses_cfg.h file record the library interface files as
 		# well.  These are header files that are the same name as their
 		# directory.  Ncurses is the only library that does not follow
 		# that pattern.

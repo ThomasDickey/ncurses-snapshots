@@ -26,7 +26,7 @@
 /* Common internal header for menu and form library */
 
 #if HAVE_CONFIG_H
-#  include <config.h>
+#  include <ncurses_cfg.h>
 #endif
 
 #include <stdlib.h>

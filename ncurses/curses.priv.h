@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.57 1997/03/15 22:33:22 tom Exp $
+ * $Id: curses.priv.h,v 1.58 1997/04/05 23:38:19 tom Exp $
  *
  *	curses.priv.h
  *
@@ -33,7 +33,7 @@
 #ifndef CURSES_PRIV_H
 #define CURSES_PRIV_H 1
 
-#include <config.h>
+#include <ncurses_cfg.h>
 
 #ifdef USE_RCS_IDS
 #define MODULE_ID(id) static const char Ident[] = id;

@@ -17,9 +17,9 @@
  * CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
  ******************************************************************************/
-/* $Id: test.priv.h,v 1.12 1997/03/09 00:34:53 tom Exp $ */
+/* $Id: test.priv.h,v 1.13 1997/04/06 01:44:04 tom Exp $ */
 #if HAVE_CONFIG_H
-#include <config.h>
+#include <ncurses_cfg.h>
 #endif
 
 #include <stdlib.h>
@@ -71,9 +71,6 @@ extern int optind;
  * curses which doesn't have const parameters declared (so far) in the places
  * that XSI shows.
  */
-#undef CONST
-#ifdef NCURSES_VERSION
-#define CONST const
-#else
-#define CONST /*nothing*/
+#ifndef NCURSES_CONST
+#define NCURSES_CONST /* nothing */
 #endif

@@ -4,7 +4,7 @@
 
 #pragma interface
 
-#include <config.h>
+#include <ncurses_cfg.h>
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -14,7 +14,9 @@
 #include <string.h>
 extern "C" { unsigned sleep(int); }
 #else
+#if HAVE_BUILTIN_H
 #include <builtin.h>
+#endif
 #endif
 
 #if HAVE_VALUES_H

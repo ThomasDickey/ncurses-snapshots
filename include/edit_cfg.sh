@@ -1,6 +1,7 @@
 #!/bin/sh
+# $Id: edit_cfg.sh,v 1.6 1997/04/06 01:54:44 tom Exp $
 ################################################################################
-# Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
+# Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
 #                                                                              #
 # Permission to use, copy, modify, and distribute this software and its        #
@@ -21,7 +22,7 @@
 # Edit the default value of the term.h file based on the autoconf-generated
 # values:
 #
-#	$1 = config.h
+#	$1 = ncurses_cfg.h
 #	$2 = term.h
 #
 for name in \

@@ -5,7 +5,7 @@
  * This program was written by John Burnell (johnb@kea.am.dsir.govt.nz)
  * esr changed the usleep calls to napms calls, 7 Nov 1995
  *
- * $Id: testcurs.c,v 1.13 1997/01/18 19:30:05 tom Exp $
+ * $Id: testcurs.c,v 1.14 1997/04/06 01:44:16 tom Exp $
  */
 
 #include <test.priv.h>
@@ -23,7 +23,7 @@ static void scrollTest (WINDOW *);
 
 struct commands
 {
- CONST char *text;
+ NCURSES_CONST char *text;
  void (*function)(WINDOW *);
 };
 typedef struct commands COMMAND;

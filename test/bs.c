@@ -7,7 +7,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.16 1997/01/18 19:24:14 tom Exp $
+ * $Id: bs.c,v 1.17 1997/04/06 01:42:57 tom Exp $
  */
 
 #include <test.priv.h>
@@ -261,7 +261,7 @@ static void intro(void)
 }		    
 
 /* VARARGS1 */
-static void prompt(int n, CONST char *f, const char *s)
+static void prompt(int n, NCURSES_CONST char *f, const char *s)
 /* print a message at the prompt line */
 {
     (void) move(PROMPTLINE + n, 0);
@@ -270,7 +270,7 @@ static void prompt(int n, CONST char *f, const char *s)
     (void) refresh();
 }
 
-static void error(CONST char *s)
+static void error(NCURSES_CONST char *s)
 {
     (void) move(PROMPTLINE + 2, 0);
     (void) clrtoeol();
@@ -794,7 +794,7 @@ static int plyturn(void)
 {
     ship_t *ss;
     bool hit;
-    CONST char *m = NULL;
+    NCURSES_CONST char *m = NULL;
 
     prompt(1, "Where do you want to shoot? ", "");
     for (;;)
