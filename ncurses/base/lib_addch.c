@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.77 2003/08/17 00:09:05 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.78 2004/01/03 21:21:20 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -386,71 +386,3 @@ wechochar(WINDOW *win, const chtype ch)
     TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_RETURN("%d"), code));
     return (code);
 }
-
-#if USE_WIDEC_SUPPORT
-NCURSES_EXPORT(int)
-wadd_wch(WINDOW *win, const cchar_t * wch)
-{
-    PUTC_DATA;
-    int n;
-    int code = ERR;
-
-    TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_CALLED("wadd_wch(%p, %s)"), win,
-				      _tracech_t(wch)));
-
-    if (win != 0) {
-	PUTC_INIT;
-	while (PUTC_i < CCHARW_MAX) {
-	    if ((PUTC_ch = wch->chars[PUTC_i++]) == L'\0')
-		break;
-	    if ((PUTC_n = wcrtomb(PUTC_buf, PUTC_ch, &PUT_st)) <= 0) {
-		code = ERR;
-		break;
-	    }
-	    for (n = 0; n < PUTC_n; n++) {
-		if ((code = waddch(win, UChar(PUTC_buf[n]))) == ERR) {
-		    break;
-		}
-	    }
-	    if (code == ERR)
-		break;
-	}
-    }
-
-    TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_RETURN("%d"), code));
-    return (code);
-}
-
-NCURSES_EXPORT(int)
-wecho_wchar(WINDOW *win, const cchar_t * wch)
-{
-    PUTC_DATA;
-    int n;
-    int code = ERR;
-
-    TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_CALLED("wecho_wchar(%p, %s)"), win,
-				      _tracech_t(wch)));
-
-    if (win != 0) {
-	PUTC_INIT;
-	while (PUTC_i < CCHARW_MAX) {
-	    if ((PUTC_ch = wch->chars[PUTC_i++]) == L'\0')
-		break;
-	    if ((PUTC_n = wcrtomb(PUTC_buf, PUTC_ch, &PUT_st)) <= 0) {
-		code = ERR;
-		break;
-	    }
-	    for (n = 0; n < PUTC_n; n++) {
-		if ((code = wechochar(win, UChar(PUTC_buf[n]))) == ERR) {
-		    break;
-		}
-	    }
-	    if (code == ERR)
-		break;
-	}
-    }
-
-    TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_RETURN("%d"), code));
-    return (code);
-}
-#endif /* USE_WIDEC_SUPPORT */

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.325 2003/12/28 01:53:35 tom Exp $
+dnl $Id: aclocal.m4,v 1.326 2004/01/04 00:32:17 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -2443,7 +2443,7 @@ make an error
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_PROG_EXT version: 9 updated: 2003/10/18 16:36:22
+dnl CF_PROG_EXT version: 10 updated: 2004/01/03 19:28:18
 dnl -----------
 dnl Compute $PROG_EXT, used for non-Unix ports, such as OS/2 EMX.
 AC_DEFUN([CF_PROG_EXT],
@@ -2451,11 +2451,12 @@ AC_DEFUN([CF_PROG_EXT],
 AC_REQUIRE([CF_CHECK_CACHE])
 case $cf_cv_system_name in
 os2*)
-    # We make sure -Zexe is not used -- it would interfere with @PROG_EXT@
     CFLAGS="$CFLAGS -Zmt"
     CPPFLAGS="$CPPFLAGS -D__ST_MT_ERRNO__"
     CXXFLAGS="$CXXFLAGS -Zmt"
-    LDFLAGS=`echo "$LDFLAGS -Zmt -Zcrtdll" | sed -e "s%-Zexe%%g"`
+    # autoconf's macro sets -Zexe and suffix both, which conflict:w
+    LDFLAGS="$LDFLAGS -Zmt -Zcrtdll"
+    ac_cv_exeext=.exe
     ;;
 esac
 
@@ -3571,7 +3572,7 @@ test "$cf_with_sysmouse" = yes && AC_DEFINE(USE_SYSMOUSE)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 6 updated: 2003/12/27 20:48:07
+dnl CF_XOPEN_SOURCE version: 7 updated: 2003/12/29 21:33:30
 dnl ---------------
 dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions.
 AC_DEFUN([CF_XOPEN_SOURCE],[
@@ -3584,6 +3585,9 @@ hpux*) #(vi
 	;;
 linux*) #(vi
 	CF_GNU_SOURCE
+	;;
+openbsd*) #(vi
+	# setting _XOPEN_SOURCE breaks xterm on OpenBSD 2.8, is not needed for ncurses
 	;;
 osf[[45]]*) #(vi
 	CPPFLAGS="$CPPFLAGS -D_OSF_SOURCE"

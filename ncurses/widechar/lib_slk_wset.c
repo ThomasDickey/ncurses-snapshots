@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2003 Free Software Foundation, Inc.                        *
+ * Copyright (c) 2003,2004 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -35,9 +35,12 @@
  *      Set soft label text.
  */
 #include <curses.priv.h>
-#include <wctype.h>
 
-MODULE_ID("$Id: lib_slk_wset.c,v 1.4 2003/06/07 22:17:43 tom Exp $")
+#ifdef HAVE_WCTYPE_H
+#include <wctype.h>
+#endif
+
+MODULE_ID("$Id: lib_slk_wset.c,v 1.6 2004/01/03 21:14:03 tom Exp $")
 
 NCURSES_EXPORT(int)
 slk_wset(int i, const wchar_t * astr, int format)

@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.781 2003/12/28 01:56:18 tom Exp $
+-- $Id: NEWS,v 1.783 2004/01/04 00:31:56 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,8 +6,15 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
+20040103
+	+ adjust -D's to build ncursesw on OpenBSD.
+	+ modify CF_PROG_EXT to make OS/2 build with EXEEXT.
+	+ add pecho_wchar().
+	+ remove <wctype.h> include from lib_slk_wset.c which is not needed (or
+	  available) on older platforms.
+
 20031227
-	+ add -D's to build ncursew on FreeBSD 5.1 (older FreeBSD's untested).
+	+ add -D's to build ncursew on FreeBSD 5.1.
 	+ modify shared library configuration for FreeBSD 4.x/5.x to add the
 	  soname information (request by Marc Glisse).
 	+ modify _nc_read_tic_entry() to not use MAX_ALIAS, but PATH_MAX only

@@ -863,6 +863,7 @@
 ./ncurses/tty/tty_input.h
 ./ncurses/tty/tty_update.c
 ./ncurses/widechar/charable.c
+./ncurses/widechar/lib_add_wch.c
 ./ncurses/widechar/lib_box_set.c
 ./ncurses/widechar/lib_cchar.c
 ./ncurses/widechar/lib_erasewchar.c
@@ -873,6 +874,7 @@
 ./ncurses/widechar/lib_in_wchnstr.c
 ./ncurses/widechar/lib_ins_wch.c
 ./ncurses/widechar/lib_inwstr.c
+./ncurses/widechar/lib_pecho_wchar.c
 ./ncurses/widechar/lib_slk_wset.c
 ./ncurses/widechar/lib_unget_wch.c
 ./ncurses/widechar/lib_vid_attr.c
