@@ -121,6 +121,8 @@ static void cleanup(int sig)
 		act.sa_flags = 0;
 		act.sa_handler = SIG_IGN;
 		if (sigaction(sig, &act, (sigaction_t *)0) == 0) {
+			if (stdscr->_use_keypad)
+				keypad(stdscr, FALSE);
 			endwin();
 		}
 	}

@@ -24,6 +24,7 @@
  *	lib_kernel.c
  *
  *	Misc. low-level routines:
+ *		napms()
  *		reset_prog_mode()
  *		reset_shell_mode()
  *		baudrate()

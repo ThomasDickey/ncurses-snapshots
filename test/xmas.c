@@ -179,7 +179,7 @@ int loopy;
 
 	w_holiday = newwin(1,26,3,27);
 
-	w_del_msg = newwin(1,12,23,60);
+	w_del_msg = newwin(1,19,23,60);
 
 	mvwaddstr(w_del_msg,0,0,"Hit any key to quit");
 
@@ -390,6 +390,7 @@ int loopy;
 	do {
 	  clear();
 	  werase(treescrn);
+	  touchwin(w_del_msg);
 	  touchwin(treescrn);
 	  werase(treescrn2);
 	  touchwin(treescrn2);
