@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,7 +41,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.68 2002/10/06 01:13:04 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.69 2003/02/09 00:26:47 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -739,7 +739,7 @@ file_comparison(int argc, char *argv[])
 		    (void) fputc('\n', stderr);
 		}
 	    }
-	    exit(EXIT_FAILURE);
+	    ExitProgram(EXIT_FAILURE);
 	}
 
 	heads[filecount] = _nc_head;
@@ -936,7 +936,7 @@ usage(void)
 	else
 	    fprintf(stderr, "%s\n", tbl[n]);
     }
-    exit(EXIT_FAILURE);
+    ExitProgram(EXIT_FAILURE);
 }
 
 static char *
@@ -1145,7 +1145,7 @@ optarg_to_number(void)
 
     if (temp == 0 || temp == optarg || *temp != 0) {
 	fprintf(stderr, "Expected a number, not \"%s\"\n", optarg);
-	exit(EXIT_FAILURE);
+	ExitProgram(EXIT_FAILURE);
     }
     return (int) value;
 }

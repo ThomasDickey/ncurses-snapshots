@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -45,7 +45,7 @@
 #endif
 #include <transform.h>
 
-MODULE_ID("$Id: tput.c,v 1.31 2002/07/20 19:09:47 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.32 2003/02/09 00:27:38 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -70,14 +70,14 @@ quit(int status, const char *fmt,...)
     vfprintf(stderr, fmt, argp);
     fprintf(stderr, "\n");
     va_end(argp);
-    exit(status);
+    ExitProgram(status);
 }
 
 static void
 usage(void)
 {
     fprintf(stderr, "usage: %s [-V] [-S] [-T term] capname\n", prg_name);
-    exit(EXIT_FAILURE);
+    ExitProgram(EXIT_FAILURE);
 }
 
 static void

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2001,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -33,7 +33,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: safe_sprintf.c,v 1.14 2001/07/08 00:58:34 tom Exp $")
+MODULE_ID("$Id: safe_sprintf.c,v 1.15 2003/02/09 00:40:33 tom Exp $")
 
 #if USE_SAFE_SPRINTF
 
@@ -203,42 +203,48 @@ _nc_printf_length(const char *fmt, va_list ap)
  * Wrapper for vsprintf that allocates a buffer big enough to hold the result.
  */
 NCURSES_EXPORT(char *)
-_nc_printf_string
-(const char *fmt, va_list ap)
+_nc_printf_string(const char *fmt, va_list ap)
 {
-#if USE_SAFE_SPRINTF
-    char *buf = 0;
-    int len = _nc_printf_length(fmt, ap);
-
-    if (len > 0) {
-	if ((buf = typeMalloc(char, len + 1)) == 0)
-	      return (0);
-	vsprintf(buf, fmt, ap);
-    }
-#else
-    static int rows, cols;
     static char *buf;
-    static size_t len;
+    static size_t used;
 
-    if (screen_lines > rows || screen_columns > cols) {
-	if (screen_lines > rows)
-	    rows = screen_lines;
-	if (screen_columns > cols)
-	    cols = screen_columns;
-	len = (rows * (cols + 1)) + 1;
-	buf = typeRealloc(char, len, buf);
-	if (buf == 0) {
-	    return (0);
+    if (fmt != 0) {
+#if USE_SAFE_SPRINTF
+	int len = _nc_printf_length(fmt, ap);
+
+	if (len > 0) {
+	    if ((int)used < len + 1) {
+		used = len + 1;
+		buf = typeRealloc(char, used, buf);
+	    }
+	    if (buf != 0) {
+		vsprintf(buf, fmt, ap);
+	    }
 	}
-    }
+#else
+	static int rows, cols;
 
-    if (buf != 0) {
+	if (screen_lines > rows || screen_columns > cols) {
+	    if (screen_lines > rows)
+		rows = screen_lines;
+	    if (screen_columns > cols)
+		cols = screen_columns;
+	    used = (rows * (cols + 1)) + 1;
+	    buf = typeRealloc(char, used, buf);
+	}
+
+	if (buf != 0) {
 # if HAVE_VSNPRINTF
-	vsnprintf(buf, len, fmt, ap);	/* GNU extension */
+	    vsnprintf(buf, used, fmt, ap);	/* GNU extension */
 # else
-	vsprintf(buf, fmt, ap);	/* ANSI */
+	    vsprintf(buf, fmt, ap);	/* ANSI */
 # endif
-    }
+	}
 #endif
+    } else if (buf != 0) {
+	free(buf);
+	buf = 0;
+	used = 0;
+    }
     return buf;
 }

@@ -39,7 +39,7 @@
 extern int malloc_errfd;	/* FIXME */
 #endif
 
-MODULE_ID("$Id: lib_freeall.c,v 1.21 2003/02/02 02:46:10 tom Exp $")
+MODULE_ID("$Id: lib_freeall.c,v 1.22 2003/02/08 20:52:29 tom Exp $")
 
 /*
  * Free all ncurses data.  This is used for testing only (there's no practical
@@ -86,9 +86,12 @@ _nc_freeall(void)
 
     if ((s = _nc_home_terminfo()) != 0)
 	free(s);
+
+    (void) _nc_printf_string(0, 0);
 #ifdef TRACE
     (void) _nc_trace_buf(-1, 0);
 #endif
+
 #if HAVE_LIBDBMALLOC
     malloc_dump(malloc_errfd);
 #elif HAVE_LIBDMALLOC
