@@ -40,11 +40,13 @@
 **	comments, none of the original code remains - T.Dickey).
 */
 
+#include <curses.priv.h>
+
 #ifdef __BEOS__
+#undef false
+#undef true
 #include <OS.h>
 #endif
-
-#include <curses.priv.h>
 
 #if USE_FUNC_POLL
 # if HAVE_SYS_TIME_H
@@ -59,7 +61,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.43 2001/10/14 00:30:50 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.44 2002/04/21 21:06:29 tom Exp $")
 
 static long
 _nc_gettime(bool first)

@@ -41,11 +41,13 @@
  *
  *-----------------------------------------------------------------*/
 
+#include <curses.priv.h>
+
 #ifdef __BEOS__
+#undef false
+#undef true
 #include <OS.h>
 #endif
-
-#include <curses.priv.h>
 
 #if defined(TRACE) && HAVE_SYS_TIMES_H && HAVE_TIMES
 #define USE_TRACE_TIMES 1
@@ -70,7 +72,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.173 2002/01/12 22:22:27 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.174 2002/04/21 21:04:16 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a

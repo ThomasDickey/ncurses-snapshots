@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.169 2002/04/06 23:46:56 tom Exp $
+$Id: ncurses.c,v 1.170 2002/04/21 21:08:07 tom Exp $
 
 ***************************************************************************/
 
@@ -406,7 +406,7 @@ wgetch_test(WINDOW *win, int delay)
 	    echo();
 	    wgetnstr(win, buf, sizeof(buf) - 1);
 	    noecho();
-	    wprintw(win, "I saw %d characters:\n\t`%s'.", strlen(buf), buf);
+	    wprintw(win, "I saw %d characters:\n\t`%s'.", (int) strlen(buf), buf);
 	    wclrtoeol(win);
 	    wgetch_wrap(win, first_y);
 	} else if (c == 'k') {
