@@ -40,13 +40,10 @@
 #define S_TERMCAP	4	/* sort by termcap names */
 
 extern char *canonical_name(char *, char *);
-extern void dump_init(int mode, int sort, int width, int trace);
-extern int fmt_entry(TERMTYPE *cur_term,
-		      int (*pred)(int type, int index),
-		      char *outbuf,
-		      bool nodotted);
-extern void dump_entry(TERMTYPE *cur_term, int (*pred)(int type, int index));
-extern void compare_entry(void (*hook)(int type, int index, char *name));
-extern char *expand(unsigned char *str);
+extern void dump_init(int, int, int, int);
+extern int fmt_entry(TERMTYPE *, int (*)(int, int), char *, bool);
+extern void dump_entry(TERMTYPE *, int (*)(int, int));
+extern void compare_entry(void (*)(int, int, char *));
+extern char *expand(unsigned char *);
 
 #define FAIL	-1

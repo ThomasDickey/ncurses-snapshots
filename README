@@ -3,13 +3,14 @@
 See the file ANNOUNCE for a summary of ncurses features and ports.
 See the file INSTALL for instructions on how to build and install ncurses.
 See the file CHANGES for a release history and bug-fix notes.
+See the file TO-DO for things that still need doing, including known bugs.
 
 ROADMAP AND PACKAGE OVERVIEW:
 
 You should be reading this file in a directory called: ncurses-d.d.d, where
 d.d.d is the current version number (see the Makefile.in file in this
 directory for that).  There should be several subdirectories, including 'c++',
-'man', 'misc', 'ncurses', 'panel', 'progs', and 'test'.
+'man', 'menu', 'misc', 'ncurses', 'panel', 'progs', and 'test'.
 
 A full build/install of this package typically installs several libraries, a
 handful of utilities, and a database hierarchy under /usr/share.  Here is an
@@ -25,9 +26,13 @@ The libraries are:
 	libpanel.a         (normal)
 	libpanel_g.a       (debug and trace code enabled)
 
-The ncurses libraries implement the curses API.  The panel libraries
-implement a clone of the SVr4 panels API.  The source code for these
-lives in the `ncurses' and `panels' directories.
+	libmenu.a          (normal)
+	libmenu_g.a        (debug enabled)
+
+The ncurses libraries implement the curses API.  The panel and menu
+libraries implement clones of the SVr4 panel and menu APIs.  The
+source code for these lives in the `ncurses', `panels', and `menus'
+directories.
 
 In the `c++' directory, you'll find code that defines an interface to the
 curses and panels library packaged as a C++ class, and a demo program in C++
@@ -63,12 +68,12 @@ The utilities are as follows:
 	tput            -- shell-script access to terminal capabilities.
 
 The first two are used for manipulating terminfo descriptions; the last two
-are for use inshell scripts.  The source code for all of these lives in the
+are for use in shell scripts.  The source code for all of these lives in the
 `progs' directory.
 
-Detailed documentation for all libraries and utilities can be found in the
-`man' directory.  An HTML introduction to ncurses programming lives in the
-`misc' directory.
+Detailed documentation for all libraries and utilities can be found in
+the `man' directory.  An HTML introduction to ncurses, panels, and
+menus programming lives in the `misc' directory.
 
 The `test' directory contains programs that can be used to verify the 
 functions of the ncurses libraries.  See test/README for descriptions of
@@ -112,6 +117,9 @@ Ross Ridge
 
 Warren Tucker and Gerhard Fuernkranz,
 	for writing and sending the PANELS library.
+
+Juergen Pfeifer
+	the menu code
 
 Hellmuth Michaelis,
 	for many patches and testing the optimization code.

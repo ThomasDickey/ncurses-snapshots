@@ -45,7 +45,7 @@ int napms(int ms)
 {
 	T(("naps(%d) called", ms));
 
-	usleep(1000*ms);
+	usleep(1000*(unsigned)ms);
 	return OK;
 }
 
@@ -86,7 +86,7 @@ int delay_output(float ms)
 		return(ERR);
 #ifdef no_pad_char
     	else if (no_pad_char)
-		_nc_timed_wait(0, ms, (int *)NULL);
+		_nc_timed_wait(0, (int)ms, (int *)NULL);
 #endif /* no_pad_char */
 	else {
 		register int	nullcount;

@@ -51,7 +51,7 @@ int	i, j;
 		return NULL;
 
 	for (i = 0; i < num_lines; i++) {
-	    if ((win->_line[i].text = (chtype *) calloc(num_columns, sizeof(chtype))) == NULL) {
+	    if ((win->_line[i].text = (chtype *) calloc((unsigned)num_columns, sizeof(chtype))) == NULL) {
 			for (j = 0; j < i; j++)
 			    free(win->_line[j].text);
 
@@ -134,7 +134,7 @@ WINDOW	*win;
 	if ((win = (WINDOW *) calloc(sizeof(WINDOW), 1)) == NULL)
 		return NULL;            
 
-	if ((win->_line = (struct ldat *) calloc(num_lines, sizeof (struct ldat))) == NULL) {
+	if ((win->_line = (struct ldat *) calloc((unsigned)num_lines, sizeof (struct ldat))) == NULL) {
 		free(win);
 		return NULL;               
 	}

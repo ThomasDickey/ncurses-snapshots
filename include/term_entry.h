@@ -45,22 +45,22 @@ extern ENTRY	*_nc_head, *_nc_tail;
 #define MAX_LINE	132
 
 /* alloc_entry.c: elementary allocation code */
-extern void init_entry(TERMTYPE *tp);
-extern char *save_str(char *string);
-extern void merge_entry(TERMTYPE *to, TERMTYPE *from);
-extern void wrap_entry(ENTRY *ep);
+extern void _nc_init_entry(TERMTYPE *tp);
+extern char *_nc_save_str(char *string);
+extern void _nc_merge_entry(TERMTYPE *to, TERMTYPE *from);
+extern void _nc_wrap_entry(ENTRY *ep);
 
 /* parse_entry.c: entry-parsing code */
-extern int parse_entry(ENTRY *, int);
+extern int _nc_parse_entry(ENTRY *, int, bool);
 
 /* write_entry.c: writing an entry to the file system */
-extern void write_entry(TERMTYPE *tp);
+extern void _nc_write_entry(TERMTYPE *tp);
 
 /* comp_parse.c: entry list handling */
-extern void read_entry_source(FILE *fp, char *, int);
-extern bool entry_match(char *, char *);
-extern int resolve_uses(void);
-extern void free_entries(void);
+extern void _nc_read_entry_source(FILE *fp, char *, int, bool);
+extern bool _nc_entry_match(char *, char *);
+extern int _nc_resolve_uses(void);
+extern void _nc_free_entries(void);
 
 #endif /* _TERM_ENTRY_H */
 

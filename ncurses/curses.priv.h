@@ -71,12 +71,12 @@
 #undef TABS_OK	/* OK to use tab/backtab for local motions? */
 
 #ifdef TRACE
-#define T(a)	if (_tracing & TRACE_CALLS) _tracef a 
-#define TR(n, a)	if (_tracing & (n)) _tracef a 
-#define TPUTS_TRACE(s)	_tputs_trace = s;
-extern int _tracing;
-extern char *_tputs_trace;
-extern char *visbuf(const char *);
+#define T(a)	if (_nc_tracing & TRACE_CALLS) _tracef a 
+#define TR(n, a)	if (_nc_tracing & (n)) _tracef a 
+#define TPUTS_TRACE(s)	_nc_tputs_trace = s;
+extern int _nc_tracing;
+extern char *_nc_tputs_trace;
+extern char *_nc_visbuf(const char *);
 #else	
 #define T(a)
 #define TR(n, a)
@@ -87,14 +87,14 @@ extern char *visbuf(const char *);
 extern void init_acs(void);	/* no prefix, this name is traditional */
 
 /* lib_mvcur.c */
-extern void mvcur_init(SCREEN *sp);
-extern void mvcur_wrap(void);
-extern int mvcur_scrolln(int, int, int, int);
+extern void _nc_mvcur_init(SCREEN *sp);
+extern void _nc_mvcur_wrap(void);
+extern int _nc_mvcur_scrolln(int, int, int, int);
 
 /* elsewhere ... */
 extern WINDOW *_nc_makenew(int, int, int, int);
 extern int _nc_outch(int);
-extern inline chtype _nc_render(WINDOW *, chtype, chtype, bool);
+extern chtype _nc_render(WINDOW *, chtype, chtype, bool);
 extern void _nc_scroll_optimize(void);
 extern void _nc_scroll_window(WINDOW *, int, int, int);
 extern int _nc_setupscreen(int, int);

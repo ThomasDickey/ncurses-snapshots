@@ -171,8 +171,8 @@ const char *str = astr;
 	if (str == NULL)
 		str = "";
 	--i;
-	(void) strncpy(slk->ent[i].text, str, maxlen);
-	memset(slk->ent[i].form_text,' ', maxlen);
+	(void) strncpy(slk->ent[i].text, str, (unsigned)maxlen);
+	memset(slk->ent[i].form_text,' ', (unsigned)maxlen);
 	slk->ent[i].text[maxlen] = 0;
 	slk->ent[i].form_text[maxlen] = 0;
 	len = strlen(slk->ent[i].text);
@@ -254,7 +254,7 @@ int i, x;
 #endif /* num_labels */
 
 	for (i = 0; i < MAX_SKEY; i++) {
-		memset(slk->ent[i].form_text,' ',maxlen);
+		memset(slk->ent[i].form_text, ' ', (unsigned)maxlen);
 		slk->ent[i].visible = i < maxlab;
 	}
 	if (_slk_format == 1) {	/* 4-4 */

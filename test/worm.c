@@ -18,6 +18,8 @@
 			Eric S. Raymond <esr@snark.thyrsus.com>
 				January, 1995
 
+		July 1995 (esr): worms is now in living color! :-)
+
 Options:
 	-f			fill screen with copies of 'WORM' at start.
 	-l <n>			set worm length
@@ -39,14 +41,11 @@ Options:
 
 #define cursor(col,row) move(row,col)
 
-#ifdef TRACE
-extern no_optimize;
-#endif /* TRACE */
-
 short *ref[128];
 static chtype flavor[]={
-    'O', '*', '#', '$', '%', '0'
+    'O' , '*', '#', '$', '%', '0', '@',
 };
+#define MAXWORMS	sizeof(flavor)
 static short xinc[]={
      1,  1,  1,  0, -1, -1, -1,  0
 }, yinc[]={
@@ -219,6 +218,29 @@ int last, bottom;
     bottom = LINES-1;
     last = COLS-1;
 
+#ifdef A_COLOR
+    if (has_colors())
+    {
+	start_color();
+ 
+	init_pair(COLOR_GREEN, COLOR_GREEN, COLOR_BLACK);
+	init_pair(COLOR_RED, COLOR_RED, COLOR_BLACK);
+	init_pair(COLOR_CYAN, COLOR_CYAN, COLOR_BLACK);
+	init_pair(COLOR_WHITE, COLOR_WHITE, COLOR_BLACK);
+	init_pair(COLOR_MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
+	init_pair(COLOR_BLUE, COLOR_BLUE, COLOR_BLACK);
+	init_pair(COLOR_YELLOW, COLOR_YELLOW, COLOR_BLACK);
+
+	flavor[0] |= COLOR_PAIR(COLOR_GREEN) | A_BOLD;
+	flavor[1] |= COLOR_PAIR(COLOR_RED) | A_BOLD;
+	flavor[2] |= COLOR_PAIR(COLOR_CYAN) | A_BOLD;
+	flavor[3] |= COLOR_PAIR(COLOR_WHITE) | A_BOLD;
+	flavor[4] |= COLOR_PAIR(COLOR_MAGENTA) | A_BOLD;
+	flavor[5] |= COLOR_PAIR(COLOR_BLUE) | A_BOLD;
+	flavor[6] |= COLOR_PAIR(COLOR_YELLOW) | A_BOLD;
+    }
+#endif /* A_COLOR */
+
     ip=(short *)malloc(LINES*COLS*sizeof (short));
 
     for (n=0;n<LINES;) {
@@ -280,7 +302,7 @@ int last, bottom;
 		for (n=0,w= &worm[0];n<number;n++,w++) {
 		    if ((x=w->xpos[h=w->head])<0) {
 				cursor(x=w->xpos[h]=0,y=w->ypos[h]=bottom);
-				addch(flavor[n%6]);
+				addch(flavor[n % MAXWORMS]);
 				ref[y][x]++;
 		    }
 		    else y=w->ypos[h];
@@ -309,7 +331,7 @@ int last, bottom;
 		    cursor(x+=xinc[w->orientation], y+=yinc[w->orientation]);
 
 		    if (y < 0 ) y = 0;
-		    addch(flavor[n%6]);
+		    addch(flavor[n % MAXWORMS]);
 		    ref[w->ypos[h]=y][w->xpos[h]=x]++;
 		}
 		refresh();

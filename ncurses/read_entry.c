@@ -51,7 +51,7 @@
 
 /*
  *	int
- *	read_file_entry(filename, ptr)
+ *	_nc_read_file_entry(filename, ptr)
  *
  *	Read the compiled terminfo entry in the given file into the
  *	structure pointed to by ptr, allocating space for the string
@@ -63,7 +63,7 @@
 
 TERMINAL *cur_term;
 
-int read_file_entry(char *filename, TERMTYPE *ptr)
+int _nc_read_file_entry(char *filename, TERMTYPE *ptr)
 {
 int		fd;
 int		numread;
@@ -87,7 +87,7 @@ char namebuf[128];
 
 	read(fd, &header, sizeof(header));
 
-	if (must_swap()) {
+	if (_nc_must_swap()) {
 	    	header.magic = swap(header.magic);
 	    	header.name_size = swap(header.name_size);
 	    	header.bool_count = swap(header.bool_count);
@@ -102,14 +102,14 @@ char namebuf[128];
 	    	return(-1);
 	}
 
-	read(fd, namebuf, min(127, header.name_size));
+	read(fd, namebuf, min(127, (unsigned)header.name_size));
 	namebuf[127] = '\0';
 	ptr->term_names = calloc(sizeof(char), strlen(namebuf) + 1);
 	(void) strcpy(ptr->term_names, namebuf);
 	if (header.name_size > 127)
 	    	lseek(fd, (off_t) (header.name_size - 127), 1);
 
-	read(fd, ptr->Booleans, min(BOOLCOUNT, header.bool_count));
+	read(fd, ptr->Booleans, min(BOOLCOUNT, (unsigned)header.bool_count));
 	if (header.bool_count > BOOLCOUNT)
 	    	lseek(fd, (off_t) (header.bool_count - BOOLCOUNT), 1);
 	else
@@ -119,8 +119,8 @@ char namebuf[128];
 	if ((header.name_size + header.bool_count) % 2 != 0)
 	    	read(fd, &ch, 1);
 
-	if (!must_swap()) {
-	    	read(fd, ptr->Numbers, min(NUMCOUNT * 2, header.num_count * 2));
+	if (!_nc_must_swap()) {
+	    	read(fd, ptr->Numbers, min(NUMCOUNT * 2, (unsigned)header.num_count * 2));
 	} else {
 	   	for (i=0; i < min(header.num_count, NUMCOUNT); i++) {
 			read(fd, bytebuf, 2);
@@ -137,7 +137,7 @@ char namebuf[128];
 	   	for (i=header.num_count; i < NUMCOUNT; i++)
 			ptr->Numbers[i] = -1;
 
-   	ptr->str_table = malloc(header.str_size);
+   	ptr->str_table = malloc((unsigned)header.str_size);
    	if (ptr->str_table == NULL) {
 		close(fd);
 		return (-1);
@@ -147,13 +147,13 @@ char namebuf[128];
 	cur_string = 0;
 
 	while (num_strings > 0) {
-	    	numread = read(fd, offset_buf, 2*min(num_strings, OFFSET_BUFSIZE));
+	    	numread = read(fd, offset_buf, (unsigned)(2*min(num_strings, OFFSET_BUFSIZE)));
 	    	if (numread <= 0) {
 			close(fd);
 			return(-1);
 	    	}
 
-	    	if (must_swap()) {
+	    	if (_nc_must_swap()) {
 			for (i = 0; i < numread / 2; i++) {
 		    		ptr->Strings[i + cur_string] =
 				(offset_buf[i].byte[0] == 0377
@@ -179,7 +179,7 @@ char namebuf[128];
 	    	for (i=header.str_count; i < STRCOUNT; i++)
 			ptr->Strings[i] = 0;
 
-	numread = read(fd, ptr->str_table, header.str_size);
+	numread = read(fd, ptr->str_table, (unsigned)header.str_size);
 	close(fd);
 	if (numread != header.str_size)
 	    	return(-1);
@@ -188,13 +188,13 @@ char namebuf[128];
 }
 
 /*
- *	read_entry(char *tn, TERMTYPE *tp)
+ *	_nc_read_entry(char *tn, TERMTYPE *tp)
  *
  *	Find and read the compiled entry for a given terminal type,
  *	if it exists.
  */
 
-int read_entry(const char *tn, TERMTYPE *tp)
+int _nc_read_entry(const char *tn, TERMTYPE *tp)
 {
 char		filename[1024];
 char		*directory = TERMINFO;
@@ -205,12 +205,12 @@ char		*terminfo;
 
 	/* try a local directory */
 	(void) sprintf(filename, "%s/%c/%s", directory, tn[0], tn);
-	if (read_file_entry(filename, tp) == OK)
+	if (_nc_read_file_entry(filename, tp) == OK)
 		return(OK);
 
 	/* try the system directory */
 	(void) sprintf(filename, "%s/%c/%s", TERMINFO, tn[0], tn);
-	if (read_file_entry(filename, tp) == OK)
+	if (_nc_read_file_entry(filename, tp) == OK)
 		return(OK);
 
 	return(ERR);
@@ -218,14 +218,14 @@ char		*terminfo;
 
 /*
  *	int
- *	must_swap(void)
+ *	_nc_must_swap(void)
  *
  *	Test whether this machine will need byte-swapping
  *
  */
 
 int
-must_swap(void)
+_nc_must_swap(void)
 {
 union {
     short num;
@@ -237,12 +237,12 @@ union {
 }
 
 /*
- *	bool name_match(namelist, name, delim)
+ *	bool _nc_name_match(namelist, name, delim)
  *
  *	Is the given name matched in namelist?
  */
 
-int name_match(char *namelst, const char *name, const char *delim)
+int _nc_name_match(char *namelst, const char *name, const char *delim)
 {
 char *cp, namecopy[2048];
 

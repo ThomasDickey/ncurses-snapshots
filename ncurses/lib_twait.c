@@ -55,7 +55,7 @@ struct timeval tval;
 int _nc_timed_wait(int fd, int wait, int *timeleft)
 {
 int result;
-struct timeval timeout;
+struct timeval ntimeout;
 static fd_set set;
 #ifndef GOOD_SELECT
 struct timeval starttime, returntime;
@@ -67,31 +67,31 @@ struct timeval starttime, returntime;
 	 FD_SET(fd, &set);
 
 	 /* the units of wait are milliseconds */
-	 timeout.tv_sec = wait / 1000;
-	 timeout.tv_usec = (wait % 1000) * 1000;
+	 ntimeout.tv_sec = wait / 1000;
+	 ntimeout.tv_usec = (wait % 1000) * 1000;
 
-	 T(("start twait: sec = %ld, usec = %ld", timeout.tv_sec, timeout.tv_usec));
+	 T(("start twait: sec = %ld, usec = %ld", ntimeout.tv_sec, ntimeout.tv_usec));
 
-	 result = select(fd+1, &set, NULL, NULL, &timeout);
+	 result = select(fd+1, &set, NULL, NULL, &ntimeout);
 
 #ifndef GOOD_SELECT
 	 gettimeofday(&returntime, NULL);
-	 timeout.tv_sec -= (returntime.tv_sec - starttime.tv_sec);
-	 timeout.tv_usec -= (returntime.tv_usec - starttime.tv_usec);
-	 if (timeout.tv_usec < 0 && timeout.tv_sec > 0) {
-		timeout.tv_sec--;
-		timeout.tv_usec += 1000000;
+	 ntimeout.tv_sec -= (returntime.tv_sec - starttime.tv_sec);
+	 ntimeout.tv_usec -= (returntime.tv_usec - starttime.tv_usec);
+	 if (ntimeout.tv_usec < 0 && ntimeout.tv_sec > 0) {
+		ntimeout.tv_sec--;
+		ntimeout.tv_usec += 1000000;
 	 }
-	 if (timeout.tv_sec < 0)
-		timeout.tv_sec = timeout.tv_usec = 0;
+	 if (ntimeout.tv_sec < 0)
+		ntimeout.tv_sec = ntimeout.tv_usec = 0;
 #endif
 
-	 /* return approximate time left on the timeout, in milliseconds */
+	 /* return approximate time left on the ntimeout, in milliseconds */
 	 if (timeleft)
-		*timeleft = (timeout.tv_sec * 1000) + (timeout.tv_usec / 1000);
+		*timeleft = (ntimeout.tv_sec * 1000) + (ntimeout.tv_usec / 1000);
 
 	 T(("end twait: returned %d, sec = %ld, usec = %ld (%d msec)",
-		 result, timeout.tv_sec, timeout.tv_usec, 
+		 result, ntimeout.tv_sec, ntimeout.tv_usec, 
 	 	timeleft ? *timeleft : -1));
 
 	 return(result);

@@ -241,7 +241,7 @@ void _nc_scroll_optimize(void)
 
 #ifdef TRACE
     TR(TRACE_UPDATE | TRACE_MOVE, ("After real line marking:"));
-    if (_tracing & (TRACE_UPDATE | TRACE_MOVE))
+    if (_nc_tracing & (TRACE_UPDATE | TRACE_MOVE))
 	linedump();
 #endif /* TRACE */
 
@@ -294,7 +294,7 @@ void _nc_scroll_optimize(void)
 
 		    TR(TRACE_UPDATE | TRACE_MOVE, ("scroll [%d, %d] by %d", ofirst, olast, -disp));
 #ifndef MAINDEBUG
-		    (void) mvcur_scrolln(-disp, ofirst, olast, LINES - 1);
+		    (void) _nc_mvcur_scrolln(-disp, ofirst, olast, LINES - 1);
 		    _nc_scroll_window(curscr, -disp, ofirst, olast);
 #endif /* MAINDEBUG */		    
 

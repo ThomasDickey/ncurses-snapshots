@@ -47,7 +47,7 @@ endwin()
 
 	curs_set(1);	/* set cursor to normal mode */
 
-	mvcur_wrap();	/* wrap up cursor addressing */
+	_nc_mvcur_wrap();	/* wrap up cursor addressing */
 
 	if (curscr  &&  (curscr->_attrs != A_NORMAL)) 
 	    vidattr(curscr->_attrs = A_NORMAL);

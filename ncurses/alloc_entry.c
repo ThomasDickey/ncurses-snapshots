@@ -23,16 +23,17 @@
 /*
  * alloc_entry.c -- allocation functions for terminfo entries
  *
- *	init_entry()
- *	save_str()
- *	merge_entry();
- *	wrap_entry();
- *	free_entry();
+ *	_nc_init_entry()
+ *	_nc_save_str()
+ *	_nc_merge_entry();
+ *	_nc_wrap_entry();
+ *	_nc_free_entry();
  *
  */
 
 #include <stdlib.h>
 #include <string.h>
+#include <curses.h>	/* solely for the _tracef() prototype */
 #include "tic.h"
 #include "term.h"
 #include "term_entry.h"
@@ -42,7 +43,7 @@
 static char	stringbuf[MAX_STRTAB];	/* buffer for string capabilities */
 static size_t	next_free;		/* next free character in stringbuf */
 
-void init_entry(TERMTYPE *tp)
+void _nc_init_entry(TERMTYPE *tp)
 /* initialize a terminal type data block */
 {
 int	i;
@@ -59,7 +60,7 @@ int	i;
 	next_free = 0;
 }
 
-char *save_str(char *string)
+char *_nc_save_str(char *string)
 /* save a copy of string in the string buffer */
 {
 size_t	old_next_free = next_free;
@@ -68,14 +69,14 @@ size_t	len = strlen(string) + 1;
 	if (next_free + len < MAX_STRTAB)
 	{
 		strcpy(&stringbuf[next_free], string);
-		DEBUG(7, ("Saved string '%s' ", visbuf(string)));
+		DEBUG(7, ("Saved string '%s' ", _nc_visbuf(string)));
 		DEBUG(7, ("at location %d", next_free));
 		next_free += len;
 	}
 	return(stringbuf + old_next_free);
 }
 
-void wrap_entry(ENTRY *ep)
+void _nc_wrap_entry(ENTRY *ep)
 /* copy the string parts to allocated storage, preserving pointers to it */
 {
 int	offsets[STRCOUNT], useoffsets[MAX_USES];
@@ -97,7 +98,7 @@ int	i, n;
 			useoffsets[i] = ep->uses[i] - stringbuf;
 
 	if ((ep->tterm.str_table = (char *)malloc(next_free)) == (char *)NULL)
-		err_abort("Out of memory");
+		_nc_err_abort("Out of memory");
 	(void) memcpy(ep->tterm.str_table, stringbuf, next_free);
 
 	ep->tterm.term_names = ep->tterm.str_table + n;
@@ -116,7 +117,7 @@ int	i, n;
 			ep->uses[i] = ep->tterm.str_table + useoffsets[i];
 }
 
-void merge_entry(TERMTYPE *to, TERMTYPE *from)
+void _nc_merge_entry(TERMTYPE *to, TERMTYPE *from)
 /* merge capabilities from `from' entry to un-occupied slots in `to' entry */
 {
 int	i;
@@ -128,7 +129,7 @@ int	i;
 	 */
 
     	for (i=0; i < BOOLCOUNT; i++) {
-		if (to->Booleans[i] == FALSE && from->Booleans[i] == TRUE)
+		if (to->Booleans[i] == (char)FALSE && from->Booleans[i] == (char)TRUE)
 		    to->Booleans[i] = TRUE;
     	}
 

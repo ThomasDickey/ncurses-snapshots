@@ -44,8 +44,8 @@
 
 #undef TRUE
 #undef FALSE
-#define CXX_BUILTIN_BOOL 1
-#define CXX_TYPE_OF_BOOL char
+#define CXX_BUILTIN_BOOL 0
+#define CXX_TYPE_OF_BOOL unsigned
 
 #if defined(__cplusplus) && CXX_BUILTIN_BOOL
 #define TRUE    ((CXX_TYPE_OF_BOOL)true)
@@ -267,7 +267,7 @@ extern char ttytype[];		/* needed for backward compatibility */
 extern void _tracef(char *, ...) __attribute__((format(printf,1,2)));
 extern void _tracedump(char *, WINDOW *);
 extern char *_traceattr(attr_t mode);
-extern char *_tracechar(const unsigned char mode);
+extern char *_tracechar(const unsigned char);
 extern void trace(const unsigned int tracelevel);
 
 /* trace masks */
@@ -773,5 +773,26 @@ extern int slk_attroff(attr_t);
 #define KEY_SUSPEND	0627		/* Suspend */
 #define KEY_UNDO	0630		/* Undo */
 #define KEY_MAX		0777		/* Maximum key value */
+
+/*
+ * SVr4 ETI error values.  The curses library itself does not use these, 
+ * but its forms and menus extension libraries do.  We park them here
+ * in order to avoid having a separate eti.h or etierrno.h file.
+ */
+#define	E_OK			(0)
+#define	E_SYSTEM_ERROR	 	(-1)
+#define	E_BAD_ARGUMENT	 	(-2)
+#define	E_POSTED	 	(-3)
+#define	E_CONNECTED	 	(-4)
+#define	E_BAD_STATE	 	(-5)
+#define	E_NO_ROOM	 	(-6)
+#define	E_NOT_POSTED		(-7)
+#define	E_UNKNOWN_COMMAND	(-8)
+#define	E_NO_MATCH		(-9)
+#define	E_NOT_SELECTABLE	(-10)
+#define	E_NOT_CONNECTED	        (-11)
+#define	E_REQUEST_DENIED	(-12)
+#define	E_INVALID_FIELD	        (-13)
+#define	E_CURRENT		(-14)
 
 #endif /* __NCURSES_H */

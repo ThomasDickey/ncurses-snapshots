@@ -169,13 +169,13 @@ register char	*cp;
 	}
 
 #ifdef TRACE
-	if (_tracing & TRACE_CALLS) {
+	if (_nc_tracing & TRACE_CALLS) {
 		*(cp = buffer) = '\0';
 		for (i = 0; i < number; i++) {
 			(void)sprintf(cp, ", %d", param[i]);
 			cp += strlen(cp);
 		}
-		_tracef("tparm(\"%s\"%s) called", visbuf(string), buffer);
+		_tracef("tparm(\"%s\"%s) called", _nc_visbuf(string), buffer);
  	}
 #endif /* TRACE */
 

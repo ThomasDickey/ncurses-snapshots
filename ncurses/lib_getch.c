@@ -67,7 +67,7 @@ int ch;
 
 	h_inc();
 #ifdef TRACE
-	if (_tracing & TRACE_FIFO) fifo_dump();
+	if (_nc_tracing & TRACE_FIFO) fifo_dump();
 #endif
 	return ch;
 }
@@ -85,7 +85,7 @@ int ungetch(int ch)
 	SP->_fifo[head] = ch;
 	T(("ungetch ok"));
 #ifdef TRACE
-	if (_tracing & TRACE_FIFO) fifo_dump();
+	if (_nc_tracing & TRACE_FIFO) fifo_dump();
 #endif
 	return OK;
 }
@@ -106,7 +106,7 @@ again:
 	t_inc();
 	T(("pushed %#x at %d", ch, tail));
 #ifdef TRACE
-	if (_tracing & TRACE_FIFO) fifo_dump();
+	if (_nc_tracing & TRACE_FIFO) fifo_dump();
 #endif
 	return ch;
 }
@@ -248,7 +248,7 @@ int timeleft = 1000;
 		ch = fifo_push();
 		peek = 0;
     		while (ptr != NULL) {
-			TR(TRACE_FIFO, ("ch: %s", _tracechar(ch)));
+			TR(TRACE_FIFO, ("ch: %s", _tracechar((unsigned char)ch)));
 			while ((ptr != NULL) && (ptr->ch != (unsigned char)ch))
 				ptr = ptr->sibling;
 #ifdef TRACE

@@ -31,18 +31,19 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <curses.h>	/* solely for the _tracef() prototype */
 #include "tic.h"
 #include "term.h"
 #include "term_entry.h"
 #include "parametrized.h"
 
-struct token	curr_token;
+struct token	_nc_curr_token;
 
 static	void set_termcap_defaults(TERMTYPE *);
 
 /*
  *	int
- *	parse_entry(entry, literal)
+ *	parse_entry(entry, literal, silent)
  *
  *	Compile one entry.  Doesn't try to resolve use or tc capabilities.
  *
@@ -59,55 +60,55 @@ static	void set_termcap_defaults(TERMTYPE *);
  *	push back token
  */
 
-int parse_entry(struct entry *entryp, int literal)
+int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 {
     int			token_type;
     struct name_table_entry	*entry_ptr;
     char			*ptr, *bp, buf[MAX_TERMCAP_LENGTH];
 
-    token_type = get_token();
+    token_type = _nc_get_token();
 
     if (token_type == EOF)
 	return(EOF);
     if (token_type != NAMES)
-	err_abort("Entry does not start with terminal names in column one");
+	_nc_err_abort("Entry does not start with terminal names in column one");
 	
-    init_entry(&entryp->tterm);
+    _nc_init_entry(&entryp->tterm);
 
-    entryp->cstart = comment_start;
-    entryp->cend = comment_end;
+    entryp->cstart = _nc_comment_start;
+    entryp->cend = _nc_comment_end;
     DEBUG(2, ("Comment range is %ld to %ld", entryp->cstart, entryp->cend));
 
     /* junk the 2-character termcap name, if present */
-    ptr = curr_token.tk_name;
+    ptr = _nc_curr_token.tk_name;
     if (ptr[2] == '|')
     {
-	ptr = curr_token.tk_name + 3;
-	curr_token.tk_name[2] = '\0';
+	ptr = _nc_curr_token.tk_name + 3;
+	_nc_curr_token.tk_name[2] = '\0';
     }
 
-    entryp->tterm.str_table = entryp->tterm.term_names = save_str(ptr);
+    entryp->tterm.str_table = entryp->tterm.term_names = _nc_save_str(ptr);
 
     (void) strcpy(buf, ptr);
     if ((bp = strchr(buf, '|')) != (char *)NULL)
 	*bp = '\0';
-    set_type(buf);
+    _nc_set_type(buf);
 
     DEBUG(1, ("Starting '%s'", buf));
 
     entryp->nuses = 0;
 
-    for (token_type = get_token();
+    for (token_type = _nc_get_token();
 	 token_type != EOF  &&  token_type != NAMES;
-	 token_type = get_token())
+	 token_type = _nc_get_token())
     {
-	if (strcmp(curr_token.tk_name, "use") == 0
-	    || strcmp(curr_token.tk_name, "tc") == 0) {
-	    entryp->uses[entryp->nuses++] = save_str(curr_token.tk_valstring);
+	if (strcmp(_nc_curr_token.tk_name, "use") == 0
+	    || strcmp(_nc_curr_token.tk_name, "tc") == 0) {
+	    entryp->uses[entryp->nuses++] = _nc_save_str(_nc_curr_token.tk_valstring);
 	} else {
 	    /* normal token lookup */
-	    entry_ptr = find_entry(curr_token.tk_name,
-	    				syntax ? cap_hash_table : info_hash_table);
+	    entry_ptr = _nc_find_entry(_nc_curr_token.tk_name,
+				       _nc_syntax ? _nc_cap_hash_table : _nc_info_hash_table);
 
 	    /*
 	     * Our kluge to handle aliasing.  The reason it's done
@@ -117,24 +118,25 @@ int parse_entry(struct entry *entryp, int literal)
 	     * making this case fast, aliased caps aren't common now
 	     * and will get rarer.
 	     */
-	    if (syntax && entry_ptr == NOTFOUND)
+	    if (_nc_syntax && entry_ptr == NOTFOUND)
 	    {
 		struct alias	*ap;
 
-		for (ap = alias_table; ap->from; ap++)
-		    if (strcmp(ap->from, curr_token.tk_name) == 0)
+		for (ap = _nc_alias_table; ap->from; ap++)
+		    if (strcmp(ap->from, _nc_curr_token.tk_name) == 0)
 		    {
-			entry_ptr = find_entry(ap->to, cap_hash_table);
-			if (entry_ptr)
-			    warning("%s aliased to %s", ap->from, ap->to);
+			entry_ptr = _nc_find_entry(ap->to, _nc_cap_hash_table);
+			if (entry_ptr && !silent)
+			    _nc_warning("%s aliased to %s", ap->from, ap->to);
 			break;
 		    }
 	    }
 
 	    /* can't find this cap name, not even as an alias */
 	    if (entry_ptr == NOTFOUND) {
-		warning("Unknown Capability - '%s'",
-			curr_token.tk_name);
+		if (!silent)
+		    _nc_warning("Unknown Capability - '%s'",
+				_nc_curr_token.tk_name);
 		continue;
 	    }
 
@@ -152,20 +154,21 @@ int parse_entry(struct entry *entryp, int literal)
 		 */
 
 		/* tell max_attributes from arrow_key_map */
-		if (token_type == NUMBER && !strcmp("ma", curr_token.tk_name))
-		    entry_ptr = find_type_entry("ma", NUMBER,
-					syntax ? cap_table : info_table);
+		if (token_type == NUMBER && !strcmp("ma", _nc_curr_token.tk_name))
+		    entry_ptr = _nc_find_type_entry("ma", NUMBER,
+					_nc_syntax ? _nc_cap_table : _nc_info_table);
 
 		/* map terminfo's string MT to MT */
-		else if (token_type==STRING &&!strcmp("MT",curr_token.tk_name))
-		    entry_ptr = find_type_entry("MT", STRING,
-					syntax ? cap_table : info_table);
+		else if (token_type==STRING &&!strcmp("MT",_nc_curr_token.tk_name))
+		    entry_ptr = _nc_find_type_entry("MT", STRING,
+					_nc_syntax ? _nc_cap_table : _nc_info_table);
 
 		/* we couldn't recover; skip this token */
 		else
 		{
-		    warning("Wrong type used for capability '%s'",
-			    curr_token.tk_name);
+		    if (!silent)
+			_nc_warning("Wrong type used for capability '%s'",
+				    _nc_curr_token.tk_name);
 		    continue;
 		}
 	    }
@@ -194,37 +197,38 @@ int parse_entry(struct entry *entryp, int literal)
 		    
 	    case NUMBER:
 		entryp->tterm.Numbers[entry_ptr->nte_index] =
-		    curr_token.tk_valnumber;
+		    _nc_curr_token.tk_valnumber;
 		break;
 
 	    case STRING:
-		ptr = curr_token.tk_valstring;
-		if (syntax==SYN_TERMCAP)
-		    ptr = captoinfo(curr_token.tk_name,
+		ptr = _nc_curr_token.tk_valstring;
+		if (_nc_syntax==SYN_TERMCAP)
+		    ptr = _nc_captoinfo(_nc_curr_token.tk_name,
 				    ptr,
 				    parametrized[entry_ptr->nte_index]);
-		entryp->tterm.Strings[entry_ptr->nte_index] = save_str(ptr);
+		entryp->tterm.Strings[entry_ptr->nte_index] = _nc_save_str(ptr);
 		break;
 
 	    default:
-		warning("Unknown token type");
-		panic_mode((syntax==SYN_TERMCAP) ? ':' : ',');
+		if (!silent)
+		    _nc_warning("Unknown token type");
+		_nc_panic_mode((_nc_syntax==SYN_TERMCAP) ? ':' : ',');
 		continue;
 	    }
 	} /* end else cur_token.name != "use" */
 
     } /* endwhile (not EOF and not NAMES) */
 
-    push_token(token_type);
+    _nc_push_token(token_type);
 
     /*
      * If this is a termcap entry, try to deduce as much as possible
      * from obsolete termcap capabilities.
      */
-    if (syntax == SYN_TERMCAP && !literal && !entryp->nuses)
+    if (_nc_syntax == SYN_TERMCAP && !literal && !entryp->nuses)
 	set_termcap_defaults(&entryp->tterm);
 
-    wrap_entry(entryp);
+    _nc_wrap_entry(entryp);
 
     return(OK);
 }
@@ -258,24 +262,24 @@ void set_termcap_defaults(TERMTYPE *tp)
     char buf[MAX_LINE * 2 + 2];
 
     if (NOTSET(init_3string) && termcap_init2)
-	init_3string = save_str(termcap_init2);
+	init_3string = _nc_save_str(termcap_init2);
 
     if (NOTSET(reset_1string) && termcap_reset)
-	reset_1string = save_str(termcap_reset);
+	reset_1string = _nc_save_str(termcap_reset);
 
     if (NOTSET(carriage_return)) {
 	if (carriage_return_delay > 0) {
 	    sprintf(buf, "%s$<%d>", C_CR, carriage_return_delay);
-	    carriage_return = save_str(buf);
+	    carriage_return = _nc_save_str(buf);
 	} else
-	    carriage_return = save_str(C_CR);
+	    carriage_return = _nc_save_str(C_CR);
     }
     if (NOTSET(cursor_left)) {
 	if (backspace_delay > 0) {
 	    sprintf(buf, "%s$<%d>", C_BS, backspace_delay);
-	    cursor_left = save_str(buf);
+	    cursor_left = _nc_save_str(buf);
 	} else if (backspaces_with_bs == 1)
-	    cursor_left = save_str(C_BS);
+	    cursor_left = _nc_save_str(C_BS);
 	else if (!NOTSET(backspace_if_not_bs))
 	    cursor_left = backspace_if_not_bs;
     }
@@ -286,9 +290,9 @@ void set_termcap_defaults(TERMTYPE *tp)
 	else if (linefeed_is_newline != 1) {
 	    if (new_line_delay > 0) {
 		sprintf(buf, "%s$<%d>", C_LF, new_line_delay);
-		cursor_down = save_str(buf);
+		cursor_down = _nc_save_str(buf);
 	    } else
-		cursor_down = save_str(C_LF);
+		cursor_down = _nc_save_str(C_LF);
 	}
     }
     if (NOTSET(scroll_forward) && crt_without_scrolling != 1) {
@@ -297,30 +301,30 @@ void set_termcap_defaults(TERMTYPE *tp)
 	else if (linefeed_is_newline != 1) {
 	    if (new_line_delay > 0) {
 		sprintf(buf, "%s$<%d>", C_LF, new_line_delay);
-		scroll_forward = save_str(buf);
+		scroll_forward = _nc_save_str(buf);
 	    } else
-		scroll_forward = save_str(C_LF);
+		scroll_forward = _nc_save_str(C_LF);
 	}
     }
     if (NOTSET(newline)) {
 	if (linefeed_is_newline == 1) {
 	    if (new_line_delay > 0) {
 		sprintf(buf, "%s$<%d>", C_LF, new_line_delay);
-		newline = save_str(buf);
+		newline = _nc_save_str(buf);
 	    } else
-		newline = save_str(C_LF);
+		newline = _nc_save_str(C_LF);
 	} else if (!NOTSET(carriage_return) && !NOTSET(scroll_forward)) {
 	    strncpy(buf, carriage_return, MAX_LINE-2);
 	    buf[MAX_LINE-1] = '\0';
 	    strncat(buf, scroll_forward, MAX_LINE-strlen(buf)-1);
 	    buf[MAX_LINE] = '\0';
-	    newline = save_str(buf);
+	    newline = _nc_save_str(buf);
 	} else if (!NOTSET(carriage_return) && !NOTSET(cursor_down)) {
 	    strncpy(buf, carriage_return, MAX_LINE-2);
 	    buf[MAX_LINE-1] = '\0';
 	    strncat(buf, cursor_down, MAX_LINE-strlen(buf)-1);
 	    buf[MAX_LINE] = '\0';
-	    newline = save_str(buf);
+	    newline = _nc_save_str(buf);
 	}
     }
 
@@ -339,9 +343,9 @@ void set_termcap_defaults(TERMTYPE *tp)
     if (NOTSET(tab)) {
 	if (horizontal_tab_delay > 0) {
 	    sprintf(buf, "%s$<%d>", C_HT, horizontal_tab_delay);
-	    tab = save_str(buf);
+	    tab = _nc_save_str(buf);
 	} else
-	    tab = save_str(C_HT);
+	    tab = _nc_save_str(C_HT);
     }
 
     if (init_tabs == -1 && has_hardware_tabs == 1)
@@ -350,10 +354,10 @@ void set_termcap_defaults(TERMTYPE *tp)
     if (!hard_copy)
     {
 	if (NOTSET(key_backspace))
-	    key_backspace = save_str(C_BS);
+	    key_backspace = _nc_save_str(C_BS);
 	if (NOTSET(key_left))
-	    key_left = save_str(C_BS);
+	    key_left = _nc_save_str(C_BS);
 	if (NOTSET(key_down))
-	    key_down = save_str(C_LF);
+	    key_down = _nc_save_str(C_LF);
     }
 }

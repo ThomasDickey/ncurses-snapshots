@@ -25,13 +25,13 @@
 **
 **	The routines for moving the physical cursor and scrolling:
 **
-**		void mvcur_init(void), mvcur_wrap(void)
+**		void _nc_mvcur_init(void), mvcur_wrap(void)
 **
 **		int mvcur(int old_y, int old_x, int new_y, int new_x)
 **
-**		void mvcur_wrap(void)
+**		void _nc_mvcur_wrap(void)
 **
-**		int mvcur_scrolln(int n, int top, int bot, int maxy)
+**		int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 **
 ** Comparisons with older movement optimizers:  
 **    SVr3 curses mvcur() can't use cursor_to_ll or auto_left_margin.
@@ -53,6 +53,12 @@
 ** in decreasing order of suspiciousness): it, tab, cbt, hpa, vpa, cuu, cud,
 ** cuf, cub, cuu1, cud1, cuf1, cub1.  It may be that one or more are wrong.
 **
+** Note: you should expect this code to look like a resource hog in a profile.
+** That's because it does a lot of I/O, through the tputs() calls.  The I/O 
+** cost swamps the computation overhead (and as machines get faster, this
+** will become even more true).  Comments in the test exerciser at the end
+** go into detail about tuning and how you can gauge the optimizer's
+** effectiveness.
 **/
 
 /****************************************************************************
@@ -69,12 +75,12 @@
  * looking for non-cup motions.  Profile the optimizer using the `t'
  * command of the exerciser (see below), and round to the nearest integer.
  *
- * Yes, I thought about computing expected overhead dynamically, say
+ * Yes, I (esr) thought about computing expected overhead dynamically, say
  * by derivation from a running average of optimizer times.  But the
  * whole point of this optimization is to *decrease* the frequency of
  * system calls. :-)
  */
-#define COMPUTE_OVERHEAD	6	/* I use a 50MHz box @ 9.6Kbps */
+#define COMPUTE_OVERHEAD	1	/* I use a 90MHz Pentium @ 9.6Kbps */
 
 /*
  * LONG_DIST is the distance we consider to be just as costly to move over as a
@@ -160,10 +166,13 @@ static float diff;
 
 static char	*address_cursor;
 static int	auto_margin;
+static int	carriage_return_length;
+static int	cursor_home_length;
+static int	cursor_to_ll_length;
 
-static int	onscreen_mvcur(int, int, int, int, bool);
+static inline int	onscreen_mvcur(int, int, int, int, bool);
 #ifndef NO_OPTIMIZE
-static int	relative_move(char *, int, int, int, int, bool);
+static inline int	relative_move(char *, int, int, int, int, bool);
 #endif /* !NO_OPTIMIZE */
 
 /****************************************************************************
@@ -244,7 +253,7 @@ static int cost(char *cap, int affcnt)
     }
 }
 
-void mvcur_init(SCREEN *sp)
+void _nc_mvcur_init(SCREEN *sp)
 /* initialize the cost structure */
 {
     /*
@@ -324,9 +333,14 @@ void mvcur_init(SCREEN *sp)
     }
     else
 	auto_margin = auto_left_margin;
+
+    /* pre-compute some capability lengths */
+    carriage_return_length = carriage_return ? strlen(carriage_return) : 0;
+    cursor_home_length     = cursor_home     ? strlen(cursor_home)     : 0;
+    cursor_to_ll_length    = cursor_to_ll    ? strlen(cursor_to_ll)    : 0;
 }
 
-void mvcur_wrap(void)
+void _nc_mvcur_wrap(void)
 /* wrap up cursor-addressing mode */
 {
     /* change_scroll_region may trash the cursor location */
@@ -422,15 +436,19 @@ int mvcur(int yold, int xold, int ynew, int xnew)
  */
 static int repeated_append (int total, int num, int repeat, char *dst, char *src)
 {
-	size_t src_len = strlen(src);
-	size_t dst_len = strlen(dst);
+	register size_t src_len = strlen(src);
+	register size_t dst_len = 0;
 
+	if (dst)
+	    dst_len = strlen(dst);
 	if ((dst_len + repeat * src_len) < OPT_SIZE-1) {
 		total += (num * repeat);
-		dst += dst_len;
-		while (repeat-- > 0) {
+		if (dst) {
+		    dst += dst_len;
+		    while (repeat-- > 0) {
 			(void) strcpy(dst, src);
 			dst += src_len;
+		    }
 		}
 	} else {
 		total = INFINITY;
@@ -449,12 +467,11 @@ static int repeated_append (int total, int num, int repeat, char *dst, char *src
  * the simpler method below.
  */
 
-static int onscreen_mvcur(int yold, int xold, int ynew, int xnew, bool ovw)
+static inline int onscreen_mvcur(int yold,int xold,int ynew,int xnew, bool ovw)
 /* onscreen move from (yold, xold) to (ynew, xnew) */
 {
     char	use[OPT_SIZE], *sp;
 #ifndef NO_OPTIMIZE
-    char	move[OPT_SIZE];
 #endif /* !NO_OPTIMIZE */
     int		newcost, usecost = INFINITY;
 
@@ -502,10 +519,10 @@ static int onscreen_mvcur(int yold, int xold, int ynew, int xnew, bool ovw)
 #ifndef NO_OPTIMIZE
     /* tactic #1: use local movement */
     if (yold != -1 && xold != -1
-		&& ((newcost=relative_move(move, yold, xold, ynew, xnew, ovw))!=INFINITY)
+		&& ((newcost=relative_move(NULL, yold, xold, ynew, xnew, ovw))!=INFINITY)
 		&& newcost < usecost)
     {
-	(void) strcpy(use, move);
+	(void) relative_move(use, yold, xold, ynew, xnew, ovw);
 	usecost = newcost;
     }
 
@@ -513,32 +530,35 @@ static int onscreen_mvcur(int yold, int xold, int ynew, int xnew, bool ovw)
     if (yold < screen_lines - 1 && xold < screen_columns - 1)
     {
 	if (carriage_return
-		&& ((newcost=relative_move(move, yold,0,ynew,xnew, ovw)) != INFINITY)
+		&& ((newcost=relative_move(NULL, yold,0,ynew,xnew, ovw)) != INFINITY)
 		&& SP->_cr_cost + newcost < usecost)
 	{
 	    (void) strcpy(use, carriage_return);
-	    (void) strcat(use, move);
+	    (void) relative_move(use + carriage_return_length,
+			  yold,0,ynew,xnew, ovw);
 	    usecost = SP->_cr_cost + newcost;
 	}
     }
 
     /* tactic #3: use home-cursor + local movement */
     if (cursor_home
-	&& ((newcost=relative_move(move, 0, 0, ynew, xnew, ovw)) != INFINITY)
+	&& ((newcost=relative_move(NULL, 0, 0, ynew, xnew, ovw)) != INFINITY)
 	&& SP->_home_cost + newcost < usecost)
     {
 	(void) strcpy(use, cursor_home);
-	(void) strcat(use, move);
+	(void) relative_move(use + cursor_home_length,
+			     0, 0, ynew, xnew, ovw);
 	usecost = SP->_home_cost + newcost;
     }
 
     /* tactic #4: use home-down + local movement */
     if (cursor_to_ll
-    	&& ((newcost=relative_move(move, screen_lines-1, 0, ynew, xnew, ovw)) != INFINITY)
+    	&& ((newcost=relative_move(NULL, screen_lines-1, 0, ynew, xnew, ovw)) != INFINITY)
 	&& SP->_ll_cost + newcost < usecost)
     {
 	(void) strcpy(use, cursor_to_ll);
-	(void) strcat(use, move);
+	(void) relative_move(use + cursor_home_length,
+		      screen_lines-1, 0, ynew, xnew, ovw);
 	usecost = SP->_ll_cost + newcost;
     }
 
@@ -547,14 +567,15 @@ static int onscreen_mvcur(int yold, int xold, int ynew, int xnew, bool ovw)
      * unless strange wrap behavior indicated by xenl might hose us.
      */
     if (auto_margin && !eat_newline_glitch && yold > 0 && yold < screen_lines - 1 && cursor_left
-	&& ((newcost=relative_move(move, yold-1, screen_columns-1, ynew, xnew, ovw)) != INFINITY)
+	&& ((newcost=relative_move(NULL, yold-1, screen_columns-1, ynew, xnew, ovw)) != INFINITY)
 	&& SP->_cr_cost + SP->_cub1_cost + newcost + newcost < usecost)
     {
 	use[0] = '\0';
 	if (xold > 0)
 	    (void) strcat(use, carriage_return);
 	(void) strcat(use, cursor_left);
-	(void) strcat(use, move);
+	(void) relative_move(use + strlen(use),
+		      yold-1, screen_columns-1, ynew, xnew, ovw);
 	usecost = SP->_cr_cost + SP->_cub1_cost + newcost;
     }
 #endif /* !NO_OPTIMIZE */
@@ -583,13 +604,15 @@ static int onscreen_mvcur(int yold, int xold, int ynew, int xnew, bool ovw)
 #define NEXTTAB(fr)	(fr + init_tabs - (fr % init_tabs))
 #define LASTTAB(fr)	(fr - init_tabs + (fr % init_tabs))
 
-static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bool ovw)
+static inline int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bool ovw)
 /* move via local motions (cuu/cuu1/cud/cud1/cub1/cub/cuf1/cuf/vpa/hpa) */
 {
-    char	*ep, *sp;
+    char	*ep;
     int		n, vcost = 0, hcost = 0;
+    bool	used_lf = FALSE;
 
-    move[0] = '\0';
+    if (move)
+	move[0] = '\0';
     ep = move;
 
     if (to_y != from_y)
@@ -598,7 +621,8 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 
 	if (row_address)
 	{
-	    (void) strcpy(ep, tparm(row_address, to_y));
+	    if (move)
+		(void) strcpy(ep, tparm(row_address, to_y));
 	    vcost = SP->_vpa_cost;
 	}
 
@@ -606,19 +630,19 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 	{
 	    n = (to_y - from_y);
 
-	    if (parm_down_cursor)
+	    if (parm_down_cursor && SP->_cud_cost < vcost)
 	    {
-		sp = tparm(parm_down_cursor, n);
-		if (SP->_cud_cost < vcost)
-		{
-		    (void) strcpy(ep, sp);
-		    vcost = SP->_cud_cost;
-		}
+		if (move)
+		    (void) strcpy(ep, tparm(parm_down_cursor, n));
+		vcost = SP->_cud_cost;
 	    }
 
 	    if (cursor_down && (n * SP->_cud1_cost < vcost))
 	    {
-		ep[0] = '\0';
+		if (move)
+		    ep[0] = '\0';
+		if (cursor_down[0] == '\n')
+		    used_lf = TRUE;
 		vcost = repeated_append(vcost, SP->_cud1_cost, n, ep, cursor_down);
 	    }
 	}
@@ -626,19 +650,17 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 	{
 	    n = (from_y - to_y);
 
-	    if (parm_up_cursor)
+	    if (parm_up_cursor && SP->_cup_cost < vcost)
 	    {
-		sp = tparm(parm_up_cursor, n);
-		if (SP->_cup_cost < vcost)
-		{
-		    (void) strcpy(ep, sp);
-		    vcost = SP->_cup_cost;
-		}
+		if (move)
+		    (void) strcpy(ep, tparm(parm_up_cursor, n));
+		vcost = SP->_cup_cost;
 	    }
 
 	    if (cursor_up && (n * SP->_cuu1_cost < vcost))
 	    {
-		ep[0] = '\0';
+		if (move)
+		    ep[0] = '\0';
 		vcost = repeated_append(vcost, SP->_cuu1_cost, n, ep, cursor_up);
 	    }
 	}
@@ -648,36 +670,41 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
     }
 
     /*
-     * It may be that we're using a cud1 capability of \n with the side-effect
-     * of taking the cursor to column 0.  Deal with this.
+     * It may be that we're using a cud1 capability of \n with the
+     * side-effect of taking the cursor to column 0.  Deal with this.
      */
-    if (ep[0] == '\n' && NLMAPPING && !RAW)
+    if (used_lf && NLMAPPING && !RAW)
 	from_x = 0;
 
-    ep = move + strlen(move);
+    if (move)
+	ep = move + strlen(move);
 
-    if (to_x != from_x) {
+    if (to_x != from_x)
+    {
 	char	try[OPT_SIZE];
 
 	hcost = INFINITY;
 
-	if (column_address) {
-	    (void) strcpy(ep, tparm(column_address, to_x));
+	if (column_address)
+	{
+	    if (move)
+		(void) strcpy(ep, tparm(column_address, to_x));
 	    hcost = SP->_hpa_cost;
 	}
 
-	if (to_x > from_x) {
+	if (to_x > from_x)
+	{
 	    n = to_x - from_x;
 
-	    if (parm_right_cursor) {
-	        sp = tparm(parm_right_cursor, n);
-		if (SP->_cuf_cost < hcost) {
-		    (void) strcpy(ep, sp);
-		    hcost = SP->_cuf_cost;
-		}
+	    if (parm_right_cursor && SP->_cuf_cost < hcost)
+	    {
+		if (move)
+		    (void) strcpy(ep, tparm(parm_right_cursor, n));
+		hcost = SP->_cuf_cost;
 	    }
 
-	    if (cursor_right) {
+	    if (cursor_right)
+	    {
 		int	lhcost = 0;
 
 		try[0] = '\0';
@@ -722,14 +749,14 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 		}
 		if (ovw)
 		{
-		    char	*sp2;
+		    char	*sp;
 		    int	i;
 
-		    sp2 = try + strlen(try);
+		    sp = try + strlen(try);
 
 		    for (i = 0; i < n; i++)
-			*sp2++ = WANT_CHAR(to_y, from_x + i);
-		    *sp2 = '\0';
+			*sp++ = WANT_CHAR(to_y, from_x + i);
+		    *sp = '\0';
 		    lhcost += n * SP->_char_padding;
 	        }
 		else
@@ -740,7 +767,8 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 
 		if (lhcost < hcost)
 		{
-		    (void) strcpy(ep, try);
+		    if (move)
+			(void) strcpy(ep, try);
 		    hcost = lhcost;
 		}
 	    }
@@ -749,14 +777,11 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 	{
 	    n = from_x - to_x;
 
-	    if (parm_left_cursor)
+	    if (parm_left_cursor && SP->_cub_cost < hcost)
 	    {
-		sp = tparm(parm_left_cursor, n);
-		if (SP->_cub_cost < hcost)
-		{
-		    (void) strcpy(ep, sp);
-		    hcost = SP->_cub_cost;
-		}
+		if (move)
+		    (void) strcpy(ep, tparm(parm_left_cursor, n));
+		hcost = SP->_cub_cost;
 	    }
 
 	    if (cursor_left)
@@ -785,7 +810,8 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 
 		if (lhcost < hcost)
 		{
-		    (void) strcpy(ep, try);
+		    if (move)
+			(void) strcpy(ep, try);
 		    hcost = lhcost;
 		}
 	    }
@@ -805,7 +831,7 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
  *
  ****************************************************************************/
 
-int mvcur_scrolln(int n, int top, int bot, int maxy)
+int _nc_mvcur_scrolln(int n, int top, int bot, int maxy)
 /* scroll region from top to bot by n lines */
 {
     int i;
@@ -816,7 +842,7 @@ int mvcur_scrolln(int n, int top, int bot, int maxy)
 
     /*
      * This code was adapted from Keith Bostic's hardware scrolling
-     * support for 4.4BSD curses.  I translated it to use terminfo
+     * support for 4.4BSD curses.  I (esr) translated it to use terminfo
      * capabilities, narrowed the call interface slightly, and cleaned
      * up some convoluted tests.  I also added support for the memory_above
      * memory_below, and non_dest_scroll_region capabilities.
@@ -1025,6 +1051,12 @@ int mvcur_scrolln(int n, int top, int bot, int maxy)
 }
 
 #ifdef MAIN
+/****************************************************************************
+ *
+ * Movement optimizer test code
+ *
+ ****************************************************************************/
+
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -1033,13 +1065,17 @@ int mvcur_scrolln(int n, int top, int bot, int maxy)
 #include "tic.h"
 #include "dump_entry.h"
 
-char *progname = "mvcur";
+char *_nc_progname = "mvcur";
+
+static unsigned long xmits;
 
 int tputs(const char *string, int affcnt, int (*outc)(int))
 /* stub tputs() that dumps sequences in a visible form */
 {
-    if (!profiling)
-	(void) fputs(visbuf(string), stdout);
+    if (profiling)
+	xmits += strlen(string);
+    else
+	(void) fputs(_nc_visbuf(string), stdout);
     return(OK);
 }
 
@@ -1070,13 +1106,13 @@ int main(int argc, char *argv[])
     (void) strcpy(tname, getenv("TERM"));
     load_term();
     _nc_setupscreen(lines, columns);
-    make_hash_table(info_table, info_hash_table);
+    _nc_make_hash_table(_nc_info_table, _nc_info_hash_table);
 
     (void) puts("The mvcur tester.  Type ? for help");
 
     fputs("smcup:", stdout);
     baudrate();
-    mvcur_init(SP);
+    _nc_mvcur_init(SP);
     putchar('\n');
 
     for (;;)
@@ -1100,6 +1136,7 @@ int main(int argc, char *argv[])
 (void) puts("d[elete] <cap>   -- delete named capability");
 (void) puts("i[nspect]        -- display terminal capabilities");
 (void) puts("c[ost]           -- dump cursor-optimization cost table");
+(void) puts("o[optimize]      -- toggle movement optimization");
 (void) puts("t[orture] <num>  -- torture-test with <num> random moves");
 (void) puts("q[uit]           -- quit the program");
 	}
@@ -1123,7 +1160,7 @@ int main(int argc, char *argv[])
 	    putchar('"');
 
 	    gettimeofday(&before, NULL);
-	    mvcur_scrolln(fy, fx, ty, tx);
+	    _nc_mvcur_scrolln(fy, fx, ty, tx);
 	    gettimeofday(&after, NULL);
 
 	    printf("\" (%ld msec)\n",
@@ -1150,8 +1187,8 @@ int main(int argc, char *argv[])
 	}
 	else if (sscanf(buf, "d %s", capname) == 1)
 	{
-	    struct name_table_entry	*np = find_entry(capname,
-							 info_hash_table);
+	    struct name_table_entry	*np = _nc_find_entry(capname,
+							 _nc_info_hash_table);
 
 	    if (np == NULL)
 		(void) printf("No such capability as \"%s\"\n", capname);
@@ -1185,28 +1222,99 @@ int main(int argc, char *argv[])
 	     dump_entry(&cur_term->type, NULL);
 	     putchar('\n');
 	}
+	else if (buf[0] == 'o')
+	{
+	     if (no_optimize)
+	     {
+		 no_optimize = FALSE;
+		 (void) puts("Optimization is now on.");
+	     }
+	     else
+	     {
+		 no_optimize = TRUE;
+		 (void) puts("Optimization is now off.");
+	     }
+	}
+	/* 
+	 * You can use the `t' test to profile and tune the movement
+	 * optimizer.  Use iteration values in three digits or more.
+	 * At above 5000 iterations the profile timing averages are stable
+	 * to within a millisecond or three.
+	 *
+	 * The `overhead' field of the report will help you pick a
+	 * COMPUTE_OVERHEAD figure appropriate for your processor and
+	 * expected line speed.  The `total estimated time' is
+	 * computation time plus a character-transmission time
+	 * estimate computed from the number of transmits and the baud
+	 * rate.
+	 *
+	 * Use this together with the `o' command to get a read on the
+	 * optimizer's effectiveness.  Compare the total estimated times
+	 * for `t' runs of the same length in both optimized and un-optimized
+	 * modes.  As long as the optimized times are less, the optimizer
+	 * is winning.
+	 */
 	else if (sscanf(buf, "t %d", &n) == 1)
 	{
-	    float cumtime = 0, perchar;
+	    float cumtime = 0, perchar, totalest;
 	    int speeds[] = {2400, 9600, 14400, 19200, 28800, 38400, 0};
 
 	    srand(getpid() + time((time_t *)0));
 	    profiling = TRUE;
+	    xmits = 0;
 	    for (i = 0; i < n; i++)
 	    {
+		/* 
+		 * This does a move test between two random locations,
+		 * Random moves probably short-change the optimizer,
+		 * which will work better on the short moves probably
+		 * typical of doupdate()'s usage pattern.  Still,
+		 * until we have better data...
+		 */
+#ifdef FIND_COREDUMP
+		int from_y = roll(lines);
+		int to_y = roll(lines);
+		int from_x = roll(columns);
+		int to_x = roll(columns);
+
+		printf("(%d,%d) -> (%d,%d)\n", from_y, from_x, to_y, to_x);
+		mvcur(from_y, from_x, to_y, to_x);
+#else
 		mvcur(roll(lines), roll(columns), roll(lines), roll(columns));
+#endif /* FIND_COREDUMP */
 		if (diff)
 		    cumtime += diff;
 	    }
 	    profiling = FALSE;
 
+	    /*
+	     * Average milliseconds per character optimization time.
+	     * This is the key figure to watch when tuning the optimizer.
+	     */
 	    perchar = cumtime / n;
-	    (void) printf("%d moves in %d msec, %f msec each:\n", 
-			  n, (int)cumtime, perchar);
+
+	    (void) printf("%d moves (%ld chars) in %d msec, %f msec each:\n", 
+			  n, xmits, (int)cumtime, perchar);
 
 	    for (i = 0; speeds[i]; i++)
-		(void) printf("\t%3.2f char-xmits @ %d bps.\n",
-			      speeds[i] * perchar / 1e6, speeds[i]);
+	    {
+		/*
+		 * Total estimated time for the moves, computation and 
+		 * transmission both. Transmission time is an estimate
+		 * assuming 9 bits/char, 8 bits + 1 stop bit.
+		 */
+		float totalest = cumtime + xmits * 9 * 1e6 / speeds[i];
+
+		/*
+		 * Per-character optimization overhead in character transmits
+		 * at the current speed.  Round this to the nearest integer
+		 * to figure COMPUTE_OVERHEAD for the speed.
+		 */
+		float overhead = speeds[i] * perchar / 1e6;
+
+		(void) printf("%6d bps: %3.2f char-xmits overhead; total estimated time %15.2f\n",
+			      speeds[i], overhead, totalest);
+	    }
 	}
 	else if (buf[0] == 'c')
 	{
@@ -1237,7 +1345,7 @@ int main(int argc, char *argv[])
     }
 
     (void) fputs("rmcup:", stdout);
-    mvcur_wrap();
+    _nc_mvcur_wrap();
     putchar('\n');
 
     return(0);

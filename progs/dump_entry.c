@@ -88,13 +88,13 @@ void dump_init(int mode, int sort, int twidth, int trace)
     case S_NOSORT:
 	if (trace)
 	    (void) fprintf(stderr,
-			   "%s: sorting by term structure order\n", progname);
+			   "%s: sorting by term structure order\n", _nc_progname);
 	break;
 
     case S_TERMINFO:
 	if (trace)
 	    (void) fprintf(stderr,
-			   "%s: sorting by terminfo name order\n", progname);
+			   "%s: sorting by terminfo name order\n", _nc_progname);
 	bool_indirect = bool_terminfo_sort;
 	num_indirect = num_terminfo_sort;
 	str_indirect = str_terminfo_sort;
@@ -103,7 +103,7 @@ void dump_init(int mode, int sort, int twidth, int trace)
     case S_VARIABLE:
 	if (trace)
 	    (void) fprintf(stderr,
-			   "%s: sorting by C variable order\n", progname);
+			   "%s: sorting by C variable order\n", _nc_progname);
 	bool_indirect = bool_variable_sort;
 	num_indirect = num_variable_sort;
 	str_indirect = str_variable_sort;
@@ -112,7 +112,7 @@ void dump_init(int mode, int sort, int twidth, int trace)
     case S_TERMCAP:
 	if (trace)
 	    (void) fprintf(stderr,
-			   "%s: sorting by termcap name order\n", progname);
+			   "%s: sorting by termcap name order\n", _nc_progname);
 	bool_indirect = bool_termcap_sort;
 	num_indirect = num_termcap_sort;
 	str_indirect = str_termcap_sort;
@@ -122,7 +122,7 @@ void dump_init(int mode, int sort, int twidth, int trace)
     if (trace)
 	(void) fprintf(stderr,
 		       "%s: width = %d, outform = %d\n",
-		       progname, width, outform);
+		       _nc_progname, width, outform);
 }
 
 /* this deals with differences over whether 0x7f and 0x80..0x9f are controls */
@@ -197,20 +197,20 @@ char *canonical_name(char *ptr, char *buf)
 
 static TERMTYPE	*cur_type;
 
-static int dump_predicate(int type, int index)
+static int dump_predicate(int type, int idx)
 /* predicate function to use for ordinary decompilation */
 {
     	switch(type) {
     	case BOOLEAN:
-		return (cur_type->Booleans[index] == FALSE)
-		    ? FAIL : cur_type->Booleans[index];
+		return (cur_type->Booleans[idx] == FALSE)
+		    ? FAIL : cur_type->Booleans[idx];
 
     	case NUMBER:
-		return (cur_type->Numbers[index] == ABSENT_NUMERIC)
-		    ? FAIL : cur_type->Numbers[index];
+		return (cur_type->Numbers[idx] == ABSENT_NUMERIC)
+		    ? FAIL : cur_type->Numbers[idx];
 
     	case STRING:
-		return (cur_type->Strings[index] != ABSENT_STRING)
+		return (cur_type->Strings[idx] != ABSENT_STRING)
 		    ? TRUE : FAIL;
     	}
 
@@ -220,7 +220,7 @@ static int dump_predicate(int type, int index)
 static void set_obsolete_termcaps(TERMTYPE *tp);
 
 int fmt_entry(TERMTYPE *tterm,
-			   int (*pred)(int type, int index),
+			   int (*pred)(int type, int idx),
 			   char *outbuf, bool suppress_untranslatable)
 {
 int	i, j;
@@ -351,7 +351,7 @@ int	predval, len = 0;
 	    else if ((outform == F_TCONVERT || outform == F_TCONVERR))
 	    {
 		char *srccap = expand(tterm->Strings[i]);
-		char *cv = infotocap(str_names[i], srccap, parametrized[i]);
+		char *cv = _nc_infotocap(str_names[i], srccap,parametrized[i]);
 
 		if (cv == (char *)NULL)
 		{
@@ -381,7 +381,7 @@ int	predval, len = 0;
     return(len);
 }
 
-void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int index))
+void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int idx))
 /* dump a single entry */
 {
     int	len, critlen;

@@ -235,17 +235,18 @@ int def_prog_mode()
 
 static int grab_entry(const char *tn, TERMTYPE *tp)
 {
-	if (read_entry(tn, tp) == OK)
+	if (_nc_read_entry(tn, tp) == OK)
 	    return(OK);
 
-#ifdef TERMCAP_FILE
+#ifndef PURE_TERMINFO
 	/*
 	 * Try falling back on the termcap file.  Note: allowing this call
 	 * links the entire terminfo/termcap compiler into the startup code.
+	 * It's preferable to build a real terminfo database and use that.
 	 */
-	if (read_termcap_entry(tn, tp) == OK)
+	if (_nc_read_termcap_entry(tn, tp) == OK)
 		return(OK);
-#endif /* TERMCAP_FILE */
+#endif /* PURE_TERMINFO */
 
 	return(ERR);
 }
@@ -260,21 +261,21 @@ char ttytype[NAMESIZE];
  *
  */
 
-int setupterm(const char *termname, int Filedes, int *errret)
+int setupterm(const char *tname, int Filedes, int *errret)
 {
 struct term	*term_ptr;
 
-	T(("setupterm(%s,%d,%p) called", termname, Filedes, errret));
+	T(("setupterm(%s,%d,%p) called", tname, Filedes, errret));
 
-	if (termname == NULL) {
-    		termname = getenv("TERM");
-    		if (termname == NULL)
+	if (tname == NULL) {
+    		tname = getenv("TERM");
+    		if (tname == NULL)
 			ret_error0(-1, "TERM environment variable not set.\n");
 	}
 
-	T(("your terminal name is %s", termname));
+	T(("your terminal name is %s", tname));
 
-	if (name_match(ttytype, termname, "|") == FALSE || isendwin()) {
+	if (_nc_name_match(ttytype, tname, "|") == FALSE || isendwin()) {
 	
 		if (isendwin()) {
 			T(("deleting cur_term"));
@@ -287,20 +288,28 @@ struct term	*term_ptr;
 		if (term_ptr == NULL)
 	    		ret_error0(-1, "Not enough memory to create terminal structure.\n") ;
 
-		if (grab_entry(termname, &term_ptr->type) < 0)
-		    	ret_error(-1, "'%s': Unknown terminal type.\n", termname);
+		if (grab_entry(tname, &term_ptr->type) < 0)
+		    	ret_error(-1, "'%s': Unknown terminal type.\n", tname);
 
 		cur_term = term_ptr;
 		if (generic_type)
-		    	ret_error(-1, "'%s': I need something more specific.\n", termname);
+		    	ret_error(-1, "'%s': I need something more specific.\n", tname);
 		if (hard_copy)
-		    	ret_error(-1, "'%s': I can't handle hardcopy terminals.\n", termname);
+		    	ret_error(-1, "'%s': I can't handle hardcopy terminals.\n", tname);
 
 		if (command_character  &&  getenv("CC"))
 		    	do_prototype();
 	
 		strncpy(ttytype, cur_term->type.term_names, NAMESIZE - 1);
 		ttytype[NAMESIZE - 1] = '\0';
+
+		/*
+		 * Allow output redirection.  This is what SVr3 does.
+		 * If stdout is directed to a file, screen updates go
+		 * to standard error.
+		 */
+		if (Filedes == STDOUT_FILENO && !isatty(Filedes))
+		    Filedes = STDERR_FILENO;
 		cur_term->Filedes = Filedes;
 
 		get_screensize();

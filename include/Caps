@@ -384,16 +384,16 @@ pulse                   	"pulse"	str	"PU"	-	select pulse dialling
 flash_hook              	"hook"	str	"fh"	-	flash switch hook
 fixed_pause             	"pause"	str	"PA"	-	pause for 2-3 seconds
 wait_tone               	"wait"	str	"WA"	-	wait for dial-tone
-user0                   	"u0"	str	"u0"	-	User string # 0
-user1                   	"u1"	str	"u1"	-	User string # 1
-user2                   	"u2"	str	"u2"	-	User string # 2
-user3                   	"u3"	str	"u3"	-	User string # 3
-user4                   	"u4"	str	"u4"	-	User string # 4
-user5                   	"u5"	str	"u5"	-	User string # 5
-user6                   	"u6"	str	"u6"	-	User string # 6
-user7                   	"u7"	str	"u7"	-	User string # 7
-user8                   	"u8"	str	"u8"	-	User string # 8
-user9                   	"u9"	str	"u9"	-	User string # 9
+user0                   	"u0"	str	"u0"	-	User string #0
+user1                   	"u1"	str	"u1"	-	User string #1
+user2                   	"u2"	str	"u2"	-	User string #2
+user3                   	"u3"	str	"u3"	-	User string #3
+user4                   	"u4"	str	"u4"	-	User string #4
+user5                   	"u5"	str	"u5"	-	User string #5
+user6                   	"u6"	str	"u6"	-	User string #6
+user7                   	"u7"	str	"u7"	-	User string #7
+user8                   	"u8"	str	"u8"	-	User string #8
+user9                   	"u9"	str	"u9"	-	User string #9
 #
 # SVr4 added these capabilities to support color
 #

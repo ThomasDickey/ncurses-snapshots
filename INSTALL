@@ -5,10 +5,11 @@
     * READ ALL OF THIS FILE BEFORE YOU TRY TO INSTALL NCURSES. *
     ************************************************************
 
-You should be reading the file INSTALL in a directory called ncurses-d.d.d,
-where d.d.d is the current version number.  There should be several
-subdirectories, including 'c++', 'man', 'misc', 'ncurses', 'panel', 'progs',
-and 'test'.  See the README file for a roadmap to the package.
+You should be reading the file INSTALL in a directory called
+ncurses-d.d.d, where d.d.d is the current version number.  There
+should be several subdirectories, including 'c++', 'man', 'menu',
+'misc', 'ncurses', 'panel', 'progs', and 'test'.  See the README file
+for a roadmap to the package.
 
 If you are a Linux or FreeBSD or NetBSD distribution integrator or packager,
 please read and act on the note addressed to you below.
@@ -76,6 +77,12 @@ INSTALLATION PROCEDURE:
     of host system and compiler.  We've been testing shared libraries on linux
     and sunos with gcc, but more work needs to be done to make shared libraries
     work on other systems.
+
+    If you have the capability to make a publicly accessible terminfo database,
+    use the --disable-termcap switch.  This removes the automatic fallback to
+    the termcap file normally compiled in, making the curses library 
+    significantly smaller because the initialization code doesn't have to 
+    carry around the entire termcap-to-terminfo compiler.
 
 3.  Type 'make'.  Ignore any warnings, no error messages should be produced. 
     This should compile the library, the terminfo compiler (tic), the infocmp,
@@ -164,6 +171,14 @@ NOTES:
 
 IF YOU ARE A SYSTEM INTEGRATOR:
 
+	Please configure the ncurses library in a pure-terminfo mode; that
+	is, with --disable-termcap option.   This will make the curses library
+	smaller and faster.  Then, nuke your /etc/termcap file -- it's
+	obsolete, nothing that goes through ncurses or the new capability-
+	fetcher routines will use it.  (The one big non-curses legacy
+	application that used termcap was vi, and version 1.50 of new vi
+	switched over.)
+
 	In various Linuxes (and possibly elsewhere) there has been a practice
 	of designating the system console driver type as `console'.  Please
 	do not do this any more!  It complicates peoples' lives, because it
@@ -177,7 +192,7 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 	it's not already there.
 
 	Thank you for your cooperation.  With your help, we can stamp out
-	`console' in your lifetime!
+	/etc/termcap and `console' in your lifetime!
 
 BUGS:
 	Send any feedback to me: zmbenhal@netcom.com or to the ncurses mailing

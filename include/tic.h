@@ -38,14 +38,14 @@
 #endif
 
 #ifndef OK
-#define OK	0
-#define ERR	-1
+#define OK	(0)
+#define ERR	(-1)
 #endif
 
-#define DEBUG(n, a)	if (_tracing & (1 << (n - 1))) _tracef a 
-extern int _tracing;
-extern void _tracef(char *, ...);
-extern char *visbuf(const char *);
+#define DEBUG(n, a)	if (_nc_tracing & (1 << (n - 1))) _tracef a 
+extern int _nc_tracing;
+extern void _nc_tracef(char *, ...);
+extern char *_nc_visbuf(const char *);
 
 /*
  * These are the types of tokens returned by the scanner.  The first
@@ -76,7 +76,7 @@ struct token
 	char	*tk_valstring;	/* value of capability (if a string) */
 };
 
-extern	struct token	curr_token;
+extern	struct token	_nc_curr_token;
 
 	/*
 	 *	The file comp_captab.c contains an array of these structures,
@@ -100,11 +100,11 @@ struct alias
 };
 
 
-extern struct name_table_entry	info_table[];
-extern struct name_table_entry	*info_hash_table[];
-extern struct name_table_entry	cap_table[];
-extern struct name_table_entry	*cap_hash_table[];
-extern struct alias alias_table[];
+extern struct name_table_entry	_nc_info_table[];
+extern struct name_table_entry	*_nc_info_hash_table[];
+extern struct name_table_entry	_nc_cap_table[];
+extern struct name_table_entry	*_nc_cap_hash_table[];
+extern struct alias _nc_alias_table[];
 
 #define NOTFOUND	((struct name_table_entry *) 0)
 
@@ -125,36 +125,36 @@ extern struct alias alias_table[];
 #define MAX_TERMINFO_LENGTH	4096
 
 /* comp_hash.c: name lookup */
-extern void make_hash_table(struct name_table_entry *,
+extern void _nc_make_hash_table(struct name_table_entry *,
 			    struct name_table_entry **);
-struct name_table_entry	*find_entry(char *,
+struct name_table_entry	*_nc_find_entry(char *,
 				    struct name_table_entry **);
-struct name_table_entry *find_type_entry(char *,
+struct name_table_entry *_nc_find_type_entry(char *,
 					 int,
 					 struct name_table_entry *);
 
 /* comp_scan.c: lexical analysis */
-extern int  get_token(void);
-extern void push_token(int);
-extern void reset_input(FILE *, char *);
-extern void panic_mode(char);
-extern int curr_line;
-extern long curr_file_pos;
-extern long comment_start, comment_end;
-extern int syntax;
+extern int  _nc_get_token(void);
+extern void _nc_push_token(int);
+extern void _nc_reset_input(FILE *, char *);
+extern void _nc_panic_mode(char);
+extern int _nc_curr_line;
+extern long _nc_curr_file_pos;
+extern long _nc_comment_start, _nc_comment_end;
+extern int _nc_syntax;
 #define SYN_TERMINFO	0
 #define SYN_TERMCAP	1
 
 /* comp_error.c: warning & abort messages */
-extern void set_source(const char *name);
-extern void set_type(const char *name);
-extern void syserr_abort(const char *,...);
-extern void err_abort(const char *,...);
-extern void warning(const char *,...);
+extern void _nc_set_source(const char *name);
+extern void _nc_set_type(const char *name);
+extern void _nc_syserr_abort(const char *,...);
+extern void _nc_err_abort(const char *,...);
+extern void _nc_warning(const char *,...);
 
 /* captoinfo.c: capability conversion */
-extern char *captoinfo(char *, char *, int);
-extern char *infotocap(char *, char *, int);
+extern char *_nc_captoinfo(char *, char *, int);
+extern char *_nc_infotocap(char *, char *, int);
 
 /* comp_main.c: compiler main */
-extern char	*progname;
+extern char	*_nc_progname;

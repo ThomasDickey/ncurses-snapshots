@@ -24,14 +24,14 @@
 /*
  *	comp_parse.c -- parser driver loop and use handling.
  *
- *	read_entry_source(FILE *, literal)
- *	resolve_uses(void)
- *	free_entries(void)
+ *	_nc_read_entry_source(FILE *, literal, bool)
+ *	_nc_resolve_uses(void)
+ *	_nc_free_entries(void)
  *
- *	Use this code by calling read_entry_source() on as many source
+ *	Use this code by calling _nc_read_entry_source() on as many source
  *	files as you like (either terminfo or termcap syntax).  If you
- *	want use-resolution, call resolve_uses().  To free the list storage,
- *	do free_entries().
+ *	want use-resolution, call _nc_resolve_uses().  To free the list 
+ *	storage, do _nc_free_entries().
  *
  */
 
@@ -39,6 +39,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <curses.h>	/* solely for the _tracef() prototype */
 #include "tic.h"
 #include "term.h"
 #include "term_entry.h"
@@ -92,7 +93,7 @@ static void enqueue(ENTRY *ep)
 	ENTRY	*newp = (ENTRY *)malloc(sizeof(ENTRY));
 
 	if (newp == NULL)
-	    err_abort("Out of memory");
+	    _nc_err_abort("Out of memory");
 
 	(void) memcpy(newp, ep, sizeof(ENTRY));
 
@@ -110,18 +111,18 @@ static void check_name(char *name)
 {
     if (!isalnum(name[0])) {
 	fprintf(stderr, "compile: Line %d: Illegal terminal name - '%s'\n",
-		curr_line, name);
+		_nc_curr_line, name);
 	fprintf(stderr,	"Terminal names must start with letter or digit\n");
 	exit(1);
     }
 }
 
-void read_entry_source(FILE *fp, char *buf, int literal)
+void _nc_read_entry_source(FILE *fp, char *buf, int literal, bool silent)
 /* slurp all entries in the given file into core */
 {
     ENTRY	thisentry;
 
-    for (reset_input(fp, buf); parse_entry(&thisentry, literal) != ERR; )
+    for (_nc_reset_input(fp, buf); _nc_parse_entry(&thisentry, literal, silent) != ERR; )
     {
 	check_name(thisentry.tterm.term_names);
 	enqueue(&thisentry);
@@ -140,7 +141,7 @@ void read_entry_source(FILE *fp, char *buf, int literal)
 	DEBUG(1, ("no entries parsed"));
 }
 
-bool entry_match(char *n1, char *n2)
+bool _nc_entry_match(char *n1, char *n2)
 /* do any of the aliases in a pair of terminal names match? */
 {
     char	*pstart, *qstart, *pend, *qend;
@@ -169,7 +170,7 @@ bool entry_match(char *n1, char *n2)
     	return(FALSE);
 }
 
-int resolve_uses(void)
+int _nc_resolve_uses(void)
 /* try to resolve all use capabilities */
 {
     ENTRY	*qp, *rp;
@@ -189,13 +190,13 @@ int resolve_uses(void)
 		/* first, try to resolve from in-core records */
 		for_entry_list(rp)
 		    if (rp != qp
-			&& name_match(rp->tterm.term_names, lookfor, "|")
+			&& _nc_name_match(rp->tterm.term_names, lookfor, "|")
 			&& rp->nuses == 0)
 		    {
 			keepgoing = TRUE;
 			DEBUG(1, ("%s: resolving use=%s (in core)",
 				  first_name(&qp->tterm), lookfor));
-			merge_entry(&qp->tterm, &rp->tterm);
+			_nc_merge_entry(&qp->tterm, &rp->tterm);
 			qp->nuses--;
 		    }
 
@@ -204,10 +205,10 @@ int resolve_uses(void)
 		{
 		    TERMTYPE	thisterm;
 
-		    if (read_entry(lookfor, &thisterm) == OK)
+		    if (_nc_read_entry(lookfor, &thisterm) == OK)
 		    {
 			keepgoing = TRUE;
-			merge_entry(&qp->tterm, &thisterm);
+			_nc_merge_entry(&qp->tterm, &thisterm);
 			DEBUG(1, ("%s: resolving use=%s (compiled)",
 				  first_name(&qp->tterm), lookfor));
 			qp->nuses--;
@@ -249,7 +250,7 @@ int resolve_uses(void)
 	int matchcount = 0;
 
 	for_entry_list(rp)
-	    if (entry_match(qp->tterm.term_names, rp->tterm.term_names))
+	    if (_nc_entry_match(qp->tterm.term_names, rp->tterm.term_names))
 	    {
 		if (matchcount == 2)
 		{
@@ -266,7 +267,7 @@ int resolve_uses(void)
     return(unresolved == 0 && multiples == 0);
 }
 
-void free_entries(void)
+void _nc_free_entries(void)
 /* free the allocated storage consumed by list entries */
 {
     ENTRY	*ep, *next;

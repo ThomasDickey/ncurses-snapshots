@@ -21,19 +21,18 @@
 /*
  *	comp_scan.c --- Lexical scanner for terminfo compiler.
  *
- *	reset_input()
- *	get_token()
- *	panic_mode()
- *	int syntax;
+ *	_nc_reset_input()
+ *	_nc_get_token()
+ *	_nc_panic_mode()
+ *	int _nc_syntax;
  */
 
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <curses.h>	/* solely for the _tracef() prototype */
 #include "tic.h"
-
-extern _tracechar(unsigned char c);	/* avoid including curses.h */
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -43,11 +42,11 @@ extern _tracechar(unsigned char c);	/* avoid including curses.h */
 
 #define iswhite(ch)	(ch == ' '  ||  ch == '\t')
 
-int	syntax;			/* termcap or terminfo? */
-int	curr_line;		/* current line # in input */
-long	curr_file_pos;		/* file offset of current line */
-long	comment_start;		/* start of comment range before name */
-long	comment_end;		/* end of comment range before name */
+int	_nc_syntax;		/* termcap or terminfo? */
+int	_nc_curr_line;		/* current line # in input */
+long	_nc_curr_file_pos;	/* file offset of current line */
+long	_nc_comment_start;	/* start of comment range before name */
+long	_nc_comment_end;	/* end of comment range before name */
 
 static int first_column;	/* See 'next_char()' below */
 static char separator = ',';	/* capability separator */
@@ -93,8 +92,7 @@ static char trans_string(char *);
  *
  */
 
-int
-get_token()
+int _nc_get_token(void)
 {
 long		number;
 int		type;
@@ -109,11 +107,11 @@ long		token_start;
 	    int retval = pushtype;
 
 	    DEBUG(3, ("pushed-back token: `%s', class %d",
-		      curr_token.tk_name, pushtype));
+		      _nc_curr_token.tk_name, pushtype));
 
 	    pushtype = NO_PUSHBACK;
 
-	    /* currtok wasn't altered by push_token() */
+	    /* currtok wasn't altered by _nc_push_token() */
 	    return(retval);
 	}
 
@@ -150,9 +148,9 @@ long		token_start;
 	    }
 
 	    /* have to make some punctuation chars legal for terminfo */
-	    if (!isalnum(ch) && !strchr("@%&*!#", ch)) {
-		 	warning("Illegal character - %s", _tracechar(ch));
-		 	panic_mode(separator);
+	    if (!isalnum(ch) && !strchr("@%&*!#", (char)ch)) {
+		 	_nc_warning("Illegal character - %s", _tracechar(ch));
+		 	_nc_panic_mode(separator);
 	    }
 
 	    ptr = buffer;
@@ -161,8 +159,8 @@ long		token_start;
 	    if (first_column) {
 	    		char	*endptr;
 
-			comment_start = token_start;
-			comment_end = curr_file_pos;
+			_nc_comment_start = token_start;
+			_nc_comment_end = _nc_curr_file_pos;
 
 	    		/*
 			 * This is hairy.  We're parsing the first line of the
@@ -191,25 +189,25 @@ long		token_start;
 			    ptr--;
 
 			if (ch == EOF)
-			    err_abort("Premature EOF");
+			    _nc_err_abort("Premature EOF");
 			else if (ptr[0] == '\\' || ptr[0] == '$')
 			{
-			    syntax = SYN_TERMCAP;
+			    _nc_syntax = SYN_TERMCAP;
 			    reset_to(separator = ':');
 			    --ptr;
 			}
 			else if (ptr[0] == ':')
 			{
-			    syntax = SYN_TERMCAP;
+			    _nc_syntax = SYN_TERMCAP;
 			    reset_to(separator = ':');
 			}
 			else if (ptr[0] == ',')
 			{
-			    syntax = SYN_TERMINFO;
+			    _nc_syntax = SYN_TERMINFO;
 			    separator = ',';
 			}
 			else
-			    err_abort("Can't determine the entry format");
+			    _nc_err_abort("Can't determine the entry format");
 			ptr[0] = '\0';
 
 			/*
@@ -220,17 +218,17 @@ long		token_start;
 			if (!endptr)
 			    endptr = buffer + strlen(buffer);
 			else if (endptr[1] == '\0')
-			    warning("empty longname field");
+			    _nc_warning("empty longname field");
 			for (ptr = buffer; ptr < endptr; ptr++)
 			    if (isspace(*ptr))
 			    {
-				warning("whitespace in shortname field");
+				_nc_warning("whitespace in shortname field");
 				break;
 			    }
 
 			ptr = buffer;
 
-			curr_token.tk_name = buffer;
+			_nc_curr_token.tk_name = buffer;
 			type = NAMES;
 	    } else {
 			ch = next_char();
@@ -245,14 +243,14 @@ long		token_start;
 			case ',':
 			case ':':
 				if (ch != separator)
-					err_abort("Separator inconsistent with syntax");
-				curr_token.tk_name = buffer;
+					_nc_err_abort("Separator inconsistent with syntax");
+				_nc_curr_token.tk_name = buffer;
 				type = BOOLEAN;
 				break;
 			case '@':
 				if (next_char() != separator)
-					warning("Missing separator");
-				curr_token.tk_name = buffer;
+					_nc_warning("Missing separator");
+				_nc_curr_token.tk_name = buffer;
 				type = CANCEL;
 				break;
 
@@ -261,18 +259,18 @@ long		token_start;
 				while (isdigit(ch = next_char()))
 					number = number * 10 + ch - '0';
 				if (ch != separator)
-					warning("Missing separator");
-				curr_token.tk_name = buffer;
-				curr_token.tk_valnumber = number;
+					_nc_warning("Missing separator");
+				_nc_curr_token.tk_name = buffer;
+				_nc_curr_token.tk_valnumber = number;
 				type = NUMBER;
 				break;
 		    
 			case '=':
 				ch = trans_string(ptr);
 				if (ch != separator)
-					warning("Missing separator");
-				curr_token.tk_name = buffer;
-				curr_token.tk_valstring = ptr;
+					_nc_warning("Missing separator");
+				_nc_curr_token.tk_name = buffer;
+				_nc_curr_token.tk_valstring = ptr;
 				type = STRING;
 				break;
 
@@ -282,7 +280,7 @@ long		token_start;
 			default:
 				/* just to get rid of the compiler warning */
 				type = UNDEF;
-				warning("Illegal character - %s",
+				_nc_warning("Illegal character - %s",
 					_tracechar(ch));
 			}
 		} /* end else (first_column == FALSE) */
@@ -292,35 +290,37 @@ end_of_token:
 	if (dot_flag == TRUE)
 	    DEBUG(8, ("Commented out "));
 
-	if (_tracing & 0x80)
+	if (_nc_tracing & 0x80)
 	{
 	    fprintf(stderr, "Token: ");
 	    switch (type)
 	    {
 		case BOOLEAN:
 		    fprintf(stderr, "Boolean; name='%s'\n",
-                                                          curr_token.tk_name);
+			    _nc_curr_token.tk_name);
 		    break;
 		
 		case NUMBER:
 		    fprintf(stderr, "Number;  name='%s', value=%d\n",
-				curr_token.tk_name, curr_token.tk_valnumber);
+			    _nc_curr_token.tk_name,
+			    _nc_curr_token.tk_valnumber);
 		    break;
 		
 		case STRING:
 		    fprintf(stderr, "String;  name='%s', value='%s'\n",
-				curr_token.tk_name, visbuf(curr_token.tk_valstring));
+			    _nc_curr_token.tk_name,
+			    _nc_visbuf(_nc_curr_token.tk_valstring));
 		    break;
 		
 		case CANCEL:
 		    fprintf(stderr, "Cancel; name='%s'\n",
-                                                          curr_token.tk_name);
+			    _nc_curr_token.tk_name);
 		    break;
 		
 		case NAMES:
 
 		    fprintf(stderr, "Names; value='%s'\n",
-                                                          curr_token.tk_name);
+			    _nc_curr_token.tk_name);
 		    break;
 
 		case EOF:
@@ -328,27 +328,27 @@ end_of_token:
 		    break;
 
 		default:
-		    warning("Bad token type");
+		    _nc_warning("Bad token type");
 	    }
 	}
 
 	if (dot_flag == TRUE)		/* if commented out, use the next one */
-	    type = get_token();
+	    type = _nc_get_token();
 
-	DEBUG(3, ("token: `%s', class %d", curr_token.tk_name, type));
+	DEBUG(3, ("token: `%s', class %d", _nc_curr_token.tk_name, type));
 
 	return(type);
 }
 
 
 /*
- *	push_token()
+ *	_nc_push_token()
  *
  *	Push a token of given type so that it will be reread by the next
  *	get_token() call.
  */
 
-void push_token(int class)
+void _nc_push_token(int class)
 {
     /*
      * This implementation is kind of bogus, it will fail if we ever do
@@ -359,7 +359,7 @@ void push_token(int class)
     pushtype = class;
 
     DEBUG(3, ("pushing token: `%s', class %d",
-	      curr_token.tk_name, pushtype));
+	      _nc_curr_token.tk_name, pushtype));
 }
 
 /*
@@ -371,8 +371,8 @@ void push_token(int class)
  *	The global state variable 'firstcolumn' is set TRUE if the character
  * 	returned is from the first column of the input line.
  *
- *	The global variable curr_line is incremented for each new line.
- *	The global variable curr_file_pos is set to the file offset of the
+ *	The global variable _nc_curr_line is incremented for each new line.
+ *	The global variable _nc_curr_file_pos is set to the file offset of the
  *	beginning of each line.
  */
 #define LEXBUFSIZ	1024
@@ -388,21 +388,22 @@ next_char(void)
 	if (curr_column < 0 || curr_column >= LEXBUFSIZ || line[curr_column] == '\0')
 	{
 	    do {
-		curr_file_pos = bufptr ? (bufptr - bufstart) : ftell(yyin);
+		_nc_curr_file_pos = bufptr ? (bufptr - bufstart) : ftell(yyin);
 
 		if (bufptr)
 		{
 		    if ((rtn_value = strchr(bufptr, '\n')) != NULL)
 		    {
-			memcpy(line, bufptr, rtn_value + 1 - bufptr);
+			memcpy(line, bufptr,
+			       (unsigned)(rtn_value + 1 - bufptr));
 			bufptr = rtn_value + 1;
-			curr_line++;
+			_nc_curr_line++;
 		    }
 		}
 		else
 		{
 		    if ((rtn_value = fgets(line, LEXBUFSIZ, yyin)) != NULL)
-			curr_line++;
+			_nc_curr_line++;
 		}
 	    } while
 		(rtn_value != NULL && line[0] == '#');
@@ -439,25 +440,25 @@ void backspace(void)
 	curr_column--;
 
 	if (curr_column < 0)
-	    syserr_abort("Backspaced off beginning of line");
+	    _nc_syserr_abort("Backspaced off beginning of line");
 }
 
 
 /*
- *	reset_input()
+ *	_nc_reset_input()
  *
  *	Resets the input-reading routines.  Used on initialization,
  *	or after a seek has been done.
  */
 
-void reset_input(FILE *fp, char *buf)
+void _nc_reset_input(FILE *fp, char *buf)
 {
 	curr_column = -1;
 	pushtype = NO_PUSHBACK;
 	yyin = fp;
 	bufptr = bufstart = buf;
-	curr_file_pos = 0L;
-	curr_line = 0;
+	_nc_curr_file_pos = 0L;
+	_nc_curr_line = 0;
 }
 
 
@@ -487,30 +488,31 @@ char	*ptr;
 int	count = 0;
 int	number;
 int	i;
-char	ch, last_ch = '\0';
+chtype	ch, last_ch = '\0';
 
 	while ((ch = next_char()) != separator  &&  ch != EOF) {
 	    if (ch == '^' && last_ch != '%') {
 		ch = next_char();
 		if (ch == EOF)
-		    err_abort("Premature EOF");
+		    _nc_err_abort("Premature EOF");
 
 		if (! (isascii(ch) && isprint(ch))) {
-		    warning("Illegal ^ character - %s", _tracechar(ch));
+		    _nc_warning("Illegal ^ character - %s",
+		    	_tracechar((unsigned char)ch));
 		}
 		*(ptr++) = ch & 037;
 	    }
 	    else if (ch == '\\') {
 		ch = next_char();
 		if (ch == EOF)
-		    err_abort("Premature EOF");
+		    _nc_err_abort("Premature EOF");
 		
 		if (ch >= '0'  &&  ch <= '7') {
 		    number = ch - '0';
 		    for (i=0; i < 2; i++) {
 			ch = next_char();
 			if (ch == EOF)
-			    err_abort("Premature EOF");
+			    _nc_err_abort("Premature EOF");
 			
 			if (ch < '0'  ||  ch > '7') {
 			    backspace();
@@ -554,8 +556,8 @@ char	ch, last_ch = '\0';
 			    continue;
 
 			default:
-			    warning("Illegal character %s in \\ sequence",
-				    _tracechar(ch));
+			    _nc_warning("Illegal character %s in \\ sequence",
+				    _tracechar((unsigned char)ch));
 			    *(ptr++) = ch;
 		    } /* endswitch (ch) */
 		} /* endelse (ch < '0' ||  ch > '7') */
@@ -569,7 +571,7 @@ char	ch, last_ch = '\0';
 	    last_ch = ch;
 
 	    if (count > MAXCAPLEN)
-		warning("Very long string found.  Missing separator?");
+		_nc_warning("Very long string found.  Missing separator?");
 	} /* end while */
 
 	*ptr = '\0';
@@ -580,7 +582,7 @@ char	ch, last_ch = '\0';
 /*
  * Panic mode error recovery - skip everything until a "ch" is found.
  */
-void panic_mode(char ch)
+void _nc_panic_mode(char ch)
 {
 	int c;
 

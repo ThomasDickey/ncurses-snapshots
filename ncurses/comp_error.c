@@ -35,12 +35,12 @@
 static const char *sourcename;
 static char termtype[NAMESIZE];
 
-void set_source(const char *name)
+void _nc_set_source(const char *name)
 {
 	sourcename = name;
 }
 
-void set_type(const char *name)
+void _nc_set_type(const char *name)
 {
 	if (name)
 		strncpy( termtype, name, NAMESIZE );
@@ -48,12 +48,12 @@ void set_type(const char *name)
 		termtype[0] = '\0';
 }
 
-void warning(const char *fmt, ...)
+void _nc_warning(const char *fmt, ...)
 {
 va_list argp;
 
 	va_start(argp,fmt);
-	fprintf (stderr, "\"%s\", line %d: ", sourcename, curr_line);
+	fprintf (stderr, "\"%s\", line %d: ", sourcename, _nc_curr_line);
 	if (termtype[0])
 		fprintf (stderr, "terminal '%s', ", termtype);
 	vfprintf (stderr, fmt, argp);
@@ -62,12 +62,12 @@ va_list argp;
 }
 
 
-void err_abort(const char *fmt, ...)
+void _nc_err_abort(const char *fmt, ...)
 {
 va_list argp;
 
 	va_start(argp,fmt);
-	fprintf (stderr, "\"%s\", line %d: ", sourcename, curr_line);
+	fprintf (stderr, "\"%s\", line %d: ", sourcename, _nc_curr_line);
 	if (termtype[0])
 		fprintf (stderr, "terminal '%s', ", termtype);
 	vfprintf (stderr, fmt, argp);
@@ -77,12 +77,12 @@ va_list argp;
 }
 
 
-void syserr_abort(const char *fmt, ...)
+void _nc_syserr_abort(const char *fmt, ...)
 {
 va_list argp;
 
 	va_start(argp,fmt);
-	fprintf (stderr, "\"%s\", line %d: ", sourcename, curr_line);
+	fprintf (stderr, "\"%s\", line %d: ", sourcename, _nc_curr_line);
 	if (termtype[0])
 		fprintf (stderr, "terminal '%s', ", termtype);
 	vfprintf (stderr, fmt, argp);

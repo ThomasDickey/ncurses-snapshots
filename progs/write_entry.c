@@ -45,6 +45,7 @@ extern int errno;
 #include <sys/stat.h>
 #include <stdio.h>
 #include <string.h>
+#include <curses.h>	/* solely for the _tracef() prototype */
 #include "tic.h"
 #include "term.h"
 #include "term_entry.h"
@@ -75,7 +76,7 @@ char		dir[2];
 	    destination = getenv("TERMINFO");
 
 	if (access(destination, W_OK) < 0) {
-	    err_abort("`%s' non-existant or permission denied (errno %d)", destination, errno);
+	    _nc_err_abort("`%s' non-existant or permission denied (errno %d)", destination, errno);
 	}
 
 	/*
@@ -83,7 +84,7 @@ char		dir[2];
 	 * *once only* per run.
 	 */
 	if (chdir(destination) < 0) {
-	    err_abort("%s is not a directory", destination);
+	    _nc_err_abort("%s is not a directory", destination);
 	}
 	
 	dir[1] = '\0';
@@ -91,19 +92,19 @@ char		dir[2];
 	    	if (stat(dir, &statbuf) < 0) {
 			mkdir(dir, 0755);
 	    	} else if (access(dir, 7) < 0) {
-			err_abort("%s/%s: Permission denied",destination, dir);
+			_nc_err_abort("%s/%s: Permission denied",destination, dir);
 	    	}
 #ifdef _POSIX_SOURCE
 	    	else if (!(S_ISDIR(statbuf.st_mode)))
 #else
 	    	else if ((statbuf.st_mode & S_IFMT) != S_IFDIR)
 #endif	    
-			err_abort("%s/%s: Not a directory\n", destination,dir);
+			_nc_err_abort("%s/%s: Not a directory\n", destination,dir);
 	}
 }
 
 /*
- *	write_entry()
+ *	_nc_write_entry()
  *
  *	Save the compiled version of a description in the filesystem.
  *
@@ -121,7 +122,7 @@ char		dir[2];
  *	timestamp from a file that we create.
  */
 
-void write_entry(TERMTYPE *tp)
+void _nc_write_entry(TERMTYPE *tp)
 {
 struct stat	statbuf;
 FILE		*fp;
@@ -137,7 +138,7 @@ static int	call_count;
 		start_time = 0;
 	}
 
-	strcpy(name_list, tp->term_names);
+	(void) strcpy(name_list, tp->term_names);
 	DEBUG(7, ("Name list = '%s'", name_list));
 
 	first_name = name_list;
@@ -166,26 +167,26 @@ static int	call_count;
 	DEBUG(7, ("Other names = '%s'", other_names));
 
 	if (strlen(first_name) > sizeof(filename)-3)
-	    	warning("'%s': terminal name too long.", first_name);
+	    	_nc_warning("'%s': terminal name too long.", first_name);
 
 	sprintf(filename, "%c/%s", first_name[0], first_name);
 
 	fp = fopen(filename, "w");
 	if (fp == NULL) {
 	    	perror(filename);
-	    	syserr_abort("Can't open %s/%s", destination, filename);
+	    	_nc_syserr_abort("Can't open %s/%s", destination, filename);
 	}
 	DEBUG(1, ("Created %s", filename));
 
 	if (write_object(fp, tp) == ERR) {
-	    	syserr_abort("Error in writing %s/%s", destination, filename);
+	    	_nc_syserr_abort("Error in writing %s/%s", destination, filename);
 	}
 	fclose(fp);
 
 	if (start_time == 0) {
 	    	if (stat(filename, &statbuf) < 0
 		 || (start_time = statbuf.st_mtime) == 0) {
-	    		syserr_abort("Error in obtaining time from %s/%s",
+	    		_nc_syserr_abort("Error in obtaining time from %s/%s",
 				destination, filename);
 		}
 	}
@@ -198,14 +199,14 @@ static int	call_count;
 			*(other_names++) = '\0';
 
 	    	if (strlen(ptr) > sizeof(linkname)-3) {
-			warning("'%s': terminal name too long.", ptr);
+			_nc_warning("'%s': terminal name too long.", ptr);
 			continue;
 	    	}
 
 	    	sprintf(linkname, "%c/%s", ptr[0], ptr);
 
 	    	if (strcmp(filename, linkname) == 0) {
-			warning("Terminal name '%s' synonym for itself", first_name);
+			_nc_warning("Terminal name '%s' synonym for itself", first_name);
 	    	}
 	    	else if (stat(linkname, &statbuf) >= 0  &&
 						statbuf.st_mtime < start_time)
@@ -218,7 +219,7 @@ static int	call_count;
 	    	{
 			unlink(linkname);
 			if (link(filename, linkname) < 0)
-			    syserr_abort("Can't link %s to %s", filename, linkname);
+			    _nc_syserr_abort("Can't link %s to %s", filename, linkname);
 			DEBUG(1, ("Linked %s", linkname));
 	    	}
 	}
@@ -258,7 +259,7 @@ short		offsets[STRCOUNT];
 		nextfree += strlen(tp->Strings[i]) + 1;
 	    }
 
-	if (must_swap()) {
+	if (_nc_must_swap()) {
 	    	header.magic = swap(MAGIC);
 	    	header.name_size = swap(namelen);
 	    	header.bool_count = swap(BOOLWRITE);
@@ -282,7 +283,7 @@ short		offsets[STRCOUNT];
 	if ((namelen+BOOLWRITE) % 2 != 0  &&  fwrite(&zero, sizeof(char), 1, fp) != 1)
 	    	return(ERR);
 
-	if (must_swap()) {
+	if (_nc_must_swap()) {
 	    	for (i = 0; i < NUMWRITE; i++)
 			tp->Numbers[i] = swap(tp->Numbers[i]);
 	    	for (i = 0; i < STRWRITE; i++)

@@ -47,9 +47,7 @@ void sighndl(int signo)
 }
 
 int
-main(argc, argv)
-int argc;
-char **argv;
+main(int argc, char *argv[])
 {
 long t, a;
 int i, j, s, k;

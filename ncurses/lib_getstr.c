@@ -76,7 +76,7 @@ int ch;
 		    			_nc_backspace(win);
 			}
 		} else if (ch >= KEY_MIN
-			   || maxlen >= 0 && str - oldstr >= maxlen) {
+			   || (maxlen >= 0 && str - oldstr >= maxlen)) {
 		    beep();
 		} else {
 			if (oldecho == TRUE) {
@@ -118,7 +118,7 @@ int ch;
 	}
 	*str = '\0';
 
-	T(("wgetnstr returns \"%s\"", visbuf(oldstr)));
+	T(("wgetnstr returns \"%s\"", _nc_visbuf(oldstr)));
 
 	return(OK);
 }

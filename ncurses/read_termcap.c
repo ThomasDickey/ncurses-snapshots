@@ -23,14 +23,14 @@
 /*
  * Termcap compatibility support
  *
- * If your OS integrator didn't install a terminfo database, use
- * -DTERMCAP_FILE on lib_setup to link in this code giving runtime
- * support for reading and translating capabilities from the termcap
- * database.  This is a kluge; it will bulk up and slow down every
- * program that uses ncurses, and translated termcap entries cannot
- * use full terminfo capabilities.  Don't use it unless you absolutely
- * have to; instead, get your system people to run tic(1) from root on
- * the existing termcap file to translate it into a terminfo database.
+ * If your OS integrator didn't install a terminfo database, you can
+ * call _nc_read_termcap_entry() to support reading and translating
+ * capabilities from the system termcap file.  This is a kluge; it
+ * will bulk up and slow down every program that uses ncurses, and
+ * translated termcap entries cannot use full terminfo capabilities.
+ * Don't use it unless you absolutely have to; instead, get your
+ * system people to run tic(1) from root on the terminfo master
+ * included with ncurses to translate it into a terminfo database.
  */
 
 #include "curses.priv.h"
@@ -47,7 +47,7 @@
 
 #define TERMTMP	"/tmp/tcXXXXXX"
 
-int read_termcap_entry(const char *tn, TERMTYPE *tp)
+int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
 {
     /*
      * Here is what the BSD termcap(3) page prescribes:
@@ -77,7 +77,7 @@ int read_termcap_entry(const char *tn, TERMTYPE *tp)
     ENTRY	*ep;
 #define MAXPATHS	32
     char	*tc, *termpaths[MAXPATHS], pathbuf[BUFSIZ];
-    int    	i, filecount = 0;
+    int    	filecount = 0;
     bool	use_buffer = FALSE;
 
     if ((tc = getenv("TERMCAP")) != (char *)NULL)
@@ -87,7 +87,7 @@ int read_termcap_entry(const char *tn, TERMTYPE *tp)
 	    termpaths[0] = tc;
 	    termpaths[filecount = 1] = (char *)NULL;
 	}
-	else if (name_match(tc, tn, "|:"))    /* treat as a capability file */
+	else if (_nc_name_match(tc, tn, "|:"))    /* treat as a capability file */
 	{
  	    use_buffer = TRUE;
 	    (void) strcat(tc, "\n");
@@ -133,14 +133,19 @@ int read_termcap_entry(const char *tn, TERMTYPE *tp)
     }
 
     /* get the data from all designated files or the buffer */
-    make_hash_table(info_table, info_hash_table);
-    make_hash_table(cap_table, cap_hash_table);
+    _nc_make_hash_table(_nc_info_table, _nc_info_hash_table);
+    _nc_make_hash_table(_nc_cap_table, _nc_cap_hash_table);
 
     /* parse the sources */
     if (use_buffer)
     {
-	set_source("TERMCAP");
-	read_entry_source((FILE *)NULL, tc, FALSE);
+	_nc_set_source("TERMCAP");
+
+	/*
+	 * We don't suppress warning messages here.  The presumption is
+	 * that since it's just a single entry, they won't be a pain.
+	 */
+	_nc_read_entry_source((FILE *)NULL, tc, FALSE, FALSE);
     }
     else
     {
@@ -151,8 +156,15 @@ int read_termcap_entry(const char *tn, TERMTYPE *tp)
 	    T(("Looking for %s in %s", tn, termpaths[i]));
 	    if ((fp = fopen(termpaths[i], "r")) != (FILE *)NULL)
 	    {
-		set_source(termpaths[i]);
-		read_entry_source(fp, (char*)NULL, FALSE);
+		_nc_set_source(termpaths[i]);
+
+		/*
+		 * Suppress warning messages.  Otherwise you get 400
+		 * lines of crap from archaic termcap files as ncurses
+		 * complains about all the obsolete capabilities.
+		 */
+		_nc_read_entry_source(fp, (char*)NULL, FALSE, TRUE);
+
 		(void) fclose(fp);
 	    }
 	}
@@ -162,11 +174,11 @@ int read_termcap_entry(const char *tn, TERMTYPE *tp)
 	return(ERR);
 
     /* resolve all use references */
-    resolve_uses();
+    _nc_resolve_uses();
 
     /* find a terminal matching tn, if we can */
     for_entry_list(ep)
-	if (name_match(ep->tterm.term_names, tn, "|:"))
+	if (_nc_name_match(ep->tterm.term_names, tn, "|:"))
 	{
 	    memcpy(tp, &ep->tterm, sizeof(TERMTYPE));
 	    ep->tterm.str_table = (char *)NULL;
@@ -179,7 +191,7 @@ int read_termcap_entry(const char *tn, TERMTYPE *tp)
      * type (which we disconnected from the list by NULLing out
      * ep->tterm.str_table above).
      */
-    free_entries();
+    _nc_free_entries();
 
     return(ERR);
 }
