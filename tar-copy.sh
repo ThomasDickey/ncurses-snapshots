@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: tar-copy.sh,v 1.4 2003/05/11 00:23:28 tom Exp $
+# $Id: tar-copy.sh,v 1.5 2003/10/25 14:40:07 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2003 Free Software Foundation, Inc.                     #
 #                                                                            #
@@ -70,7 +70,6 @@ else
 		LIST=`tar tf $TMP 2>&1`
 		$DOIT rm -rf $LIST 2>/dev/null
 		$DOIT tar xvf $TMP
-		trap 0 1 2 5 15
 	else
 		echo "Cannot create tar of $1 files"
 		exit 1

@@ -1,10 +1,25 @@
--- $Id: NEWS,v 1.771 2003/10/19 00:06:14 tom Exp $
+-- $Id: NEWS,v 1.772 2003/10/25 23:07:33 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20031025
+	+ update terminfo for xterm-xfree86 -TD
+	+ add check for multiple "tc=" clauses in a termcap to tic.
+	+ check for missing op/oc in tic.
+	+ correct _nc_resolve_uses() and _nc_merge_entry() to allow infocmp and
+	  tic to show cancelled capabilities.  These functions were ignoring
+	  the state of the target entry, which should be untouched if cancelled.
+	+ correct comment in tack/output.c (Debian #215806).
+	+ add some null-pointer checks to lib_options.c (report by Michael
+	  Bienia).
+	+ regenerated html documentation.
+	+ correction to tar-copy.sh, remove a trap command that resulted in
+	  leaving temporary files (cf: 20030510).
+	+ remove contact/maintainer addresses for Juergen Pfeifer (his request).
 
 20031018
 	+ updated test/configure to reflect changes for libtool (cf: 20030830).

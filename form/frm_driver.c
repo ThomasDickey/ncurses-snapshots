@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -28,11 +28,11 @@
 
 /****************************************************************************
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
- *   Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en             *
  ****************************************************************************/
+
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.42 2003/05/03 23:05:21 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.43 2003/10/25 15:17:08 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority

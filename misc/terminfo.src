@@ -4,13 +4,15 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
+#	$Revision: 1.221 $
+#	$Date: 2003/10/25 23:13:07 $
+#
 # The original header is preserved below for reference.  It is noted that there
 # is a newer version which differs in some cosmetic details; we have decided
 # to not change the header unless there is also a change in content.
 #
 #------------------------------------------------------------------------------
 #	Version 10.2.1
-#	$Date: 2003/10/04 23:16:06 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2616,7 +2618,7 @@ ms-vt100|MS telnet imitating dec vt100,
 # a) This version has no function keys or numeric keypad.  Unlike the older
 #    version, the numeric keypad is entirely ignored.
 # b) The program sets $TERM to "ansi", which of course is inaccurate.
-ms-vt100-color|windows 2000 ansi (sic), 
+ms-vt100-color|vtnt|windows 2000 ansi (sic), 
 	bce, 
 	dch=\E[%p1%dP, ich=\E[%p1%d@, use=ecma+color, 
 	use=ms-vt100, 
@@ -2793,7 +2795,8 @@ xterm-xf86-v40|xterm terminal emulator (XFree86 4.0 Window System),
 	sgr=\E[0%?%p6%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
 	smcup=\E[?1049h, use=xterm-xf86-v333, 
 
-xterm-xfree86|xterm-new|xterm terminal emulator (XFree86 4.0 Window System), 
+# This version was released in XFree86 4.3.
+xterm-xf86-v43|xterm terminal emulator (XFree86 4.3 Window System), 
 	npc, 
 	kDC=\E[3;2~, kEND=\E[1;2F, kHOM=\E[1;2H, kIC=\E[2;2~, 
 	kLFT=\E[1;2D, kNXT=\E[6;2~, kPRV=\E[5;2~, kRIT=\E[1;2C, 
@@ -2813,6 +2816,11 @@ xterm-xfree86|xterm-new|xterm terminal emulator (XFree86 4.0 Window System),
 	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, khome=\EOH, 
 	kich1=\E[2~, kmous=\E[M, knp=\E[6~, kpp=\E[5~, 
 	use=xterm-basic, 
+
+# This version is current (XFree86 xterm patch #180).
+xterm-xfree86|xterm-new|xterm terminal emulator (XFree86 4.4 Window System), 
+	cnorm=\E[?12l\E[?25h, cvvis=\E[?12;25h, indn=\E[%p1%dS, 
+	rin=\E[%p1%dT, use=xterm-xf86-v43, 
 #
 # This chunk is used for building the VT220/Sun/PC keyboard variants.
 xterm-basic|xterm terminal emulator - common (XFree86), 
@@ -19968,10 +19976,16 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  which are both different from the "normal" rxvt's acsc.
 #	  (cygwin): cygwin-in-cmd.exe window.  Lots of fixes.
 #	  (cygwinDBG): ditto.
+#
 # 2003-09-27
 #	* update gnome terminal entries -TD
+#
 # 2003-10-04
 #	* add entries for djgpp 2.03 and 2.04 -TD
+#
+# 2003-10-25
+#	* add alias for vtnt -TD
+#	* update xterm-xfree86 for XFree86 4.4 -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

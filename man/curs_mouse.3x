@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_mouse.3x,v 1.22 2003/05/10 20:33:49 jmc Exp $
+.\" $Id: curs_mouse.3x,v 1.23 2003/10/25 20:38:37 tom Exp $
 .TH curs_mouse 3X ""
 .SH NAME
 \fBgetmouse\fR, \fBungetmouse\fR,
@@ -36,7 +36,7 @@
 \fBmouseinterval\fR - mouse interface through curses
 .SH SYNOPSIS
 .nf
-\fB#include <curses.h>\fR
+\fB#include <curses.h>
 
 \fBtypedef unsigned long mmask_t;
 
@@ -203,9 +203,17 @@ The order of the \fBMEVENT\fR structure members is not guaranteed.
 Additional fields may be added to the structure in the future.
 
 Under \fBncurses\fR(3X), these calls are implemented using either
-xterm's built-in mouse-tracking API or Alessandro Rubini's gpm server.
-If you are using something other than xterm and there is no gpm daemon
-running on your machine, mouse events will not be visible to
+xterm's built-in mouse-tracking API or
+platform-specific drivers including
+.RS
+Alessandro Rubini's gpm server.
+.br
+FreeBSD sysmouse
+.br
+OS/2 EMX
+.RE
+If you are using an unsupported configuration,
+mouse events will not be visible to
 \fBncurses\fR(3X) (and the \fBwmousemask\fR function will always
 return \fB0\fR).
 

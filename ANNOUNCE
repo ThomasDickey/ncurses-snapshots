@@ -329,10 +329,10 @@
 Who's Who and What's What
 
    The original developers of ncurses are [17]Zeyd Ben-Halim and [18]Eric
-   S.  Raymond.  Ongoing  work  is  being  done  by [19]Thomas Dickey and
-   [20]Jürgen  Pfeifer.  [21]Thomas Dickey acts as the maintainer for the
-   Free  Software  Foundation,  which  holds  the  copyright  on ncurses.
-   Contact the current maintainers at [22]bug-ncurses@gnu.org.
+   S.   Raymond.  Ongoing  work  is  being  done  by  [19]Thomas  Dickey.
+   [20]Thomas  Dickey  acts  as  the  maintainer  for  the  Free Software
+   Foundation,  which holds the copyright on ncurses. Contact the current
+   maintainers at [21]bug-ncurses@gnu.org.
 
    To   join   the   ncurses   mailing   list,   please  write  email  to
    bug-ncurses-request@gnu.org containing the line:
@@ -342,7 +342,7 @@ Who's Who and What's What
    and testing of this package.
 
    Beta  versions  of ncurses and patches to the current release are made
-   available at [23]ftp://invisible-island.net/ncurses/ .
+   available at [22]ftp://invisible-island.net/ncurses/ .
 
 Future Plans
 
@@ -357,10 +357,10 @@ Other Related Resources
 
    The  distribution  includes  and uses a version of the terminfo-format
    terminal    description    file    maintained    by    Eric   Raymond.
-   [24]http://www.tuxedo.org/~esr/terminfo/ .
+   [23]http://www.tuxedo.org/~esr/terminfo/ .
 
    You  can  find  lots  of  information  on  terminal-related topics not
-   covered in the terminfo file at [25]Richard Shuford's archive .
+   covered in the terminfo file at [24]Richard Shuford's archive .
 
 References
 
@@ -382,10 +382,9 @@ References
   16. http://invisible-island.net/vile/
   17. mailto:zmbenhal@netcom.com
   18. http://www.tuxedo.org/~esr/
-  19. mailto:dickey@herndon4.his.com
-  20. http://www.familiepfeifer.de/Contact.aspx?Lang=en
-  21. mailto:dickey@herndon4.his.com
-  22. mailto:bug-ncurses@gnu.org
-  23. ftp://invisible-island.net/ncurses/
-  24. http://www.tuxedo.org/~esr/terminfo/
-  25. http://www.cs.utk.edu/~shuford/terminal_index.html
+  19. mailto:dickey@invisible-island.net
+  20. mailto:dickey@invisible-island.net
+  21. mailto:bug-ncurses@gnu.org
+  22. ftp://invisible-island.net/ncurses/
+  23. http://www.tuxedo.org/~esr/terminfo/
+  24. http://www.cs.utk.edu/~shuford/terminal_index.html

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -28,8 +28,9 @@
 
 /****************************************************************************
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
- *   Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en             *
  ****************************************************************************/
+
+/* $Id: form.priv.h,v 0.10 2003/10/25 15:17:08 tom Exp $ */
 
 #include "mf_common.h"
 #include "form.h"

@@ -29,13 +29,12 @@
 
 /****************************************************************************
  *   Author: Juergen Pfeifer, 1997                                          *
- *   Contact: http://www.familiepfeifer.de/Contact.aspx?Lang=en             *
  ****************************************************************************/
 
 #include "internal.h"
 #include "cursesapp.h"
 
-MODULE_ID("$Id: cursesmain.cc,v 1.10 2003/06/07 23:39:54 tom Exp $")
+MODULE_ID("$Id: cursesmain.cc,v 1.11 2003/10/25 14:53:13 tom Exp $")
 
 #if HAVE_LOCALE_H
 #include <locale.h>

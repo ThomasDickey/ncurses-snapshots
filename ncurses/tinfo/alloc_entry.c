@@ -47,7 +47,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.38 2003/05/24 21:10:28 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.39 2003/10/25 21:54:04 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -219,21 +219,25 @@ _nc_merge_entry(TERMTYPE * const to, TERMTYPE * const from)
     _nc_align_termtype(to, from);
 #endif
     for_each_boolean(i, from) {
-	int mergebool = from->Booleans[i];
+	if (to->Booleans[i] != CANCELLED_BOOLEAN) {
+	    int mergebool = from->Booleans[i];
 
-	if (mergebool == CANCELLED_BOOLEAN)
-	    to->Booleans[i] = FALSE;
-	else if (mergebool == TRUE)
-	    to->Booleans[i] = mergebool;
+	    if (mergebool == CANCELLED_BOOLEAN)
+		to->Booleans[i] = FALSE;
+	    else if (mergebool == TRUE)
+		to->Booleans[i] = mergebool;
+	}
     }
 
     for_each_number(i, from) {
-	int mergenum = from->Numbers[i];
+	if (to->Numbers[i] != CANCELLED_NUMERIC) {
+	    int mergenum = from->Numbers[i];
 
-	if (mergenum == CANCELLED_NUMERIC)
-	    to->Numbers[i] = ABSENT_NUMERIC;
-	else if (mergenum != ABSENT_NUMERIC)
-	    to->Numbers[i] = mergenum;
+	    if (mergenum == CANCELLED_NUMERIC)
+		to->Numbers[i] = ABSENT_NUMERIC;
+	    else if (mergenum != ABSENT_NUMERIC)
+		to->Numbers[i] = mergenum;
+	}
     }
 
     /*
@@ -242,11 +246,13 @@ _nc_merge_entry(TERMTYPE * const to, TERMTYPE * const from)
      * we ever want to deallocate entries.
      */
     for_each_string(i, from) {
-	char *mergestring = from->Strings[i];
+	if (to->Strings[i] != CANCELLED_STRING) {
+	    char *mergestring = from->Strings[i];
 
-	if (mergestring == CANCELLED_STRING)
-	    to->Strings[i] = ABSENT_STRING;
-	else if (mergestring != ABSENT_STRING)
-	    to->Strings[i] = mergestring;
+	    if (mergestring == CANCELLED_STRING)
+		to->Strings[i] = ABSENT_STRING;
+	    else if (mergestring != ABSENT_STRING)
+		to->Strings[i] = mergestring;
+	}
     }
 }

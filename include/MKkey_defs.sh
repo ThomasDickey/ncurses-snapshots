@@ -1,5 +1,5 @@
 #! /bin/sh
-# $Id: MKkey_defs.sh,v 1.11 2003/01/11 22:20:40 tom Exp $
+# $Id: MKkey_defs.sh,v 1.12 2003/10/25 16:19:42 tom Exp $
 ##############################################################################
 # Copyright (c) 2001-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -30,7 +30,7 @@
 #
 # MKkey_defs.sh -- generate function-key definitions for curses.h
 #
-# Author: Thomas E. Dickey <dickey@herndon4.his.com> 2001
+# Author: Thomas E. Dickey 2001
 #
 # Extract function-key definitions from the Caps file
 #

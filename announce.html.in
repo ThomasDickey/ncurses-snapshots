@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
 <!--
-  $Id: announce.html.in,v 1.48 2002/10/19 21:46:46 tom Exp $
+  $Id: announce.html.in,v 1.50 2003/10/25 16:17:42 tom Exp $
 -->
 <HTML>
 <HEAD>
@@ -385,10 +385,8 @@ The original developers of ncurses are <A
 HREF="mailto:zmbenhal@netcom.com">Zeyd Ben-Halim</A> and
 <A HREF="http://www.tuxedo.org/~esr/">Eric S. Raymond</A>.
 Ongoing work is being done by
-<A HREF="mailto:dickey@herndon4.his.com">Thomas Dickey</A>
-and
-<A HREF="http://www.familiepfeifer.de/Contact.aspx?Lang=en">J&uuml;rgen Pfeifer</A>.
-<A HREF="mailto:dickey@herndon4.his.com">Thomas Dickey</A>
+<A HREF="mailto:dickey@invisible-island.net">Thomas Dickey</A>.
+<A HREF="mailto:dickey@invisible-island.net">Thomas Dickey</A>
 acts as the maintainer for the Free Software Foundation, which holds the
 copyright on ncurses.
 Contact the current maintainers at
