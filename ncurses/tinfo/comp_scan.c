@@ -47,9 +47,10 @@
 #include <curses.priv.h>
 
 #include <ctype.h>
+#include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.38 2000/02/13 01:01:26 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.39 2000/03/19 02:10:00 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -171,7 +172,11 @@ _nc_get_token(void)
 	if (separator == ':' && ch == ':')
 	    ch = next_char();
 
-	if (ch == '.') {
+	if (ch == '.'
+#ifdef NCURSES_EXT_FUNCS
+	 && !_nc_disable_period
+#endif
+	) {
 	    dot_flag = TRUE;
 	    DEBUG(8, ("dot-flag set"));
 
@@ -185,7 +190,11 @@ _nc_get_token(void)
 	}
 
 	/* have to make some punctuation chars legal for terminfo */
-	if (!isalnum(ch) && !strchr(terminfo_punct, (char) ch)) {
+	if (!isalnum(ch)
+#ifdef NCURSES_EXT_FUNCS
+	 && !(ch == '.' && _nc_disable_period)
+#endif
+	 && !strchr(terminfo_punct, (char) ch)) {
 	    _nc_warning("Illegal character (expected alphanumeric or %s) - %s",
 		terminfo_punct, _tracechar((chtype) ch));
 	    _nc_panic_mode(separator);

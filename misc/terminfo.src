@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2000/03/05 03:43:47 $
+#	$Date: 2000/03/19 02:52:18 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -279,15 +279,65 @@ lpr|printer|line printer,
 	cols#132, lines#66, 
 	bel=^G, cr=^M, cub1=^H, cud1=^J, ff=^L, ind=^J, 
 glasstty|classic glass tty interpreting ASCII control characters, 
-	am, 
+	OTbs, am, 
 	cols#80, 
-	bel=^G, clear=^L, cr=^M, cub1=^H, cud1=^J, ht=^I, kbs=^H, 
-	kcub1=^H, kcud1=^J, nel=^M^J, 
+	bel=^G, clear=^L, cr=^M, cub1=^H, cud1=^J, ht=^I, kcub1=^H, 
+	kcud1=^J, nel=^M^J, .kbs=^H, 
+
+vanilla, 
+	OTbs, 
+	bel=^G, cr=^M, cud1=^J, ind=^J, 
 
 #### ANSI.SYS/ISO 6429/ECMA-48 Capabilities
 #
 # See the end-of-file comment for more on these.
 #
+
+# ANSI capabilities are broken up into pieces, so that a terminal
+# implementing some ANSI subset can use many of them.
+ansi+local1, 
+	cub1=\E[D, cud1=\E[B, cuf1=\E[C, cuu1=\E[A, 
+ansi+local, 
+	cub=\E[%p1%dD, cud=\E[%p1%dB, cuf=\E[%p1%dC, 
+	cuu=\E[%p1%dA, 
+	use=ansi+local1, 
+ansi+tabs, 
+	cbt=\E[Z, ht=^I, hts=\EH, tbc=\E[2g, 
+ansi+inittabs, 
+	it#8, use=ansi+tabs, 
+ansi+erase, 
+	clear=\E[H\E[J, ed=\E[J, el=\E[K, 
+ansi+rca, 
+	hpa=\E[%p1%{1}%+%dG, vpa=\E[%p1%{1}%+%dd, 
+ansi+cup, 
+	cup=\E[%i%p1%d;%p2%dH, home=\E[H, 
+ansi+rep, 
+	rep=%p1%c\E[%p2%{1}%-%db, 
+ansi+idl1, 
+	dl1=\E[M, il1=\E[L, 
+ansi+idl, 
+	dl=\E[%p1%dM, il=\E[%p1%dL, use=ansi+idl1, 
+ansi+idc, 
+	dch1=\E[P, ich=\E[%p1%d@, ich1=\E[@, rmir=\E6, smir=\E6, 
+ansi+arrows, 
+	kbs=^H, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
+	khome=\E[H, 
+ansi+sgr|ansi graphic renditions, 
+	blink=\E[5m, invis=\E[8m, rev=\E[7m, sgr0=\E[0m, 
+ansi+sgrso|ansi standout only, 
+	rmso=\E[m, smso=\E[7m, 
+ansi+sgrul|ansi underline only, 
+	rmul=\E[m, smul=\E[4m, 
+ansi+sgrbold|ansi graphic renditions; assuming terminal has bold; not dim, 
+	bold=\E[1m, 
+	sgr=\E[%?%p1%t7;%;%?%p2%t4;%;%?%p3%t7;%;%?%p4%t5;%;%?%p6%t1;%;m, use=ansi+sgr, use=ansi+sgrso, use=ansi+sgrul, 
+ansi+sgrdim|ansi graphic renditions; assuming terminal has dim; not bold, 
+	dim=\E[2m, 
+	sgr=\E[%?%p1%t7;%;%?%p2%t4;%;%?%p3%t7;%;%?%p4%t5;%;%?%p5%t2;%;m, use=ansi+sgr, use=ansi+sgrso, use=ansi+sgrul, 
+ansi+pp|ansi printer port, 
+	mc0=\E[0i, mc4=\E[4i, mc5=\E[5i, 
+ansi+csr|ansi scroll-region plus cursor save & restore, 
+	csr=\E[%i%p1%d;%p2%dr, rc=\E8, sc=\E7, 
 
 # The IBM PC alternate character set.  Plug this into any Intel console entry.
 # We use \E[11m for rmacs rather than \E[12m so the <acsc> string can use the
@@ -370,12 +420,26 @@ ibcs2|Intel Binary Compatibility Standard prescriptions,
 # if you're in doubt about what `ANSI' matches yours, try them in that
 # order and back off from the first that breaks.
 
+# ansi-mr is for ANSI terminals with ONLY relative cursor addressing
+# and more than one page of memory.  It uses local motions instead of
+# direct cursor addressing, and makes almost no assumptions. It does
+# assume auto margins, no padding and/or xon/xoff, and a 24x80 screen.
+ansi-mr|mem rel cup ansi, 
+	am, xon, 
+	cols#80, lines#24, use=vanilla, use=ansi+erase, 
+	use=ansi+local1, 
+
+# ansi-mini is a bare minimum ANSI terminal. This should work on anything, but 
+# beware of screen size problems and memory relative cursor addressing.
 ansi-mini|any ansi terminal with pessimistic assumptions, 
-	OTbs, am, 
-	cols#80, it#8, lines#24, 
-	clear=\E[H\E[2J$<50>, cub1=\E[D, cud1=\E[B, cuf1=\E[C, 
-	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, el=\E[K, home=\E[H, 
-	ht=^I, 
+	am, xon, 
+	cols#80, lines#24, use=vanilla, use=ansi+cup, 
+	use=ansi+erase, 
+
+# ansi-mtabs adds relative addressing and minimal tab support 
+ansi-mtabs|any ansi terminal with pessimistic assumptions, 
+	it#8, 
+	ht=^I, use=ansi+local1, use=ansi-mini, 
 
 # ANSI X3.64 from emory!mlhhh (Hugh Hansard) via BRL
 #
@@ -474,6 +538,20 @@ ansi|ansi/pc-term compatible with color,
 	u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?%[;0123456789]c, 
 	u9=\E[c, 
 	use=ecma+color, use=klone+sgr, use=ansi-m, 
+
+# ansi-generic is a vanilla ANSI terminal. This is assumed to implement 
+# all the normal ANSI stuff with no extensions. It assumes 
+# insert/delete line/char is there, so it won't work with 
+# vt100 clones. It assumes video attributes for bold, blink, 
+# underline, and reverse, which won't matter much if the terminal 
+# can't do some of those. Padding is assumed to be zero, which 
+# shouldn't hurt since xon/xoff is assumed.
+ansi-generic|generic ansi standard terminal, 
+	am, xon, 
+	cols#80, lines#24, use=vanilla, use=ansi+csr, use=ansi+cup, 
+	use=ansi+rca, use=ansi+erase, use=ansi+tabs, 
+	use=ansi+local, use=ansi+idc, use=ansi+idl, use=ansi+rep, 
+	use=ansi+sgrbold, use=ansi+arrows, 
 
 #### DOS ANSI.SYS variants
 #
@@ -666,7 +744,6 @@ linux-koi8|linux with koi8 alternate character set,
 # Another entry for KOI8-r with Qing Long's acsc.
 # (which one better complies with the standard?)
 linux-koi8r|linux with koi8-r alternate character set, 
-	kbs=^H, kcub1=^H, kcud1=^J, 
 	use=linux, use=klone+koi8acs, 
 
 # Entry for the latin1 and latin2 fonts
@@ -1439,6 +1516,8 @@ bsdos-sparc|Sun SPARC BSD/OS Console,
 # BSD/OS on the PowerPC 
 bsdos-ppc|PowerPC BSD/OS Console, 
 	use=bsdos-pc, 
+
+#### DEC VT52
 # (<acsc>/<rmacs>/<smacs> capabilities aren't in DEC's official entry -- esr)
 vt52|dec vt52, 
 	OTbs, 
@@ -1715,8 +1794,9 @@ vt132|DEC vt132,
 # PF1--PF4 are used as F1--F4.
 #
 vt220-old|vt200-old|DEC VT220 in vt100 emulation mode, 
-	am, mir, xenl, xon, 
+	OTbs, OTpt, am, mir, xenl, xon, 
 	cols#80, lines#24, vt#3, 
+	OTnl=^J, 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
 	bel=^G, blink=\E[5m$<2>, bold=\E[1m$<2>, civis=\E[?25l, 
 	clear=\E[H\E[2J$<50>, cnorm=\E[?25h, cr=^M, 
@@ -1739,7 +1819,7 @@ vt220-old|vt200-old|DEC VT220 in vt100 emulation mode,
 
 # A much better description of the VT200/220; used to be vt220-8
 vt220|vt200|dec vt220, 
-	am, mc5i, mir, msgr, xenl, xon, 
+	OTbs, am, mc5i, mir, msgr, xenl, xon, 
 	cols#80, it#8, lines#24, vt#3, 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
 	bel=^G, blink=\E[5m, bold=\E[1m, clear=\E[H\E[J, cr=^M, 
@@ -1767,7 +1847,7 @@ vt220-w|vt200-w|DEC vt220 in wide mode,
 	cols#132, 
 	rs3=\E[?3h, use=vt220, 
 vt220-8bit|vt220-8|vt200-8bit|vt200-8|dec vt220/200 in 8-bit mode, 
-	am, mc5i, mir, msgr, xenl, xon, 
+	OTbs, am, mc5i, mir, msgr, xenl, xon, 
 	cols#80, it#8, lines#24, vt#3, 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
 	bel=^G, blink=\2335m, bold=\2331m, clear=\233H\233J, cr=^M, 
@@ -2660,8 +2740,8 @@ kvt|KDE terminal,
 # rxvt is normally configured to look for "xterm" or "xterm-color" as $TERM.
 # Since rxvt is not really compatible with xterm, it should be configured as
 # "rxvt" (monochrome) and "rxvt-color". 
-rxvt-basic|rxvt terminal base (X Window System), 
-	am, bce, eo, km, mir, msgr, xenl, xon, 
+rxvtbasic|rxvt terminal base (X Window System), 
+	OTbs, am, bce, eo, km, mir, msgr, xenl, xon, 
 	cols#80, it#8, lines#24, 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
 	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
@@ -2701,7 +2781,7 @@ rxvt|rxvt terminal emulator (X Window System),
 # variant of xterm which is apparently no longer supported, but are interesting
 # because they illustrate SVr4 curses mouse controls - T.Dickey
 xtermm|xterm terminal emulator (monocrome), 
-	am, km, mir, msgr, xenl, 
+	OTbs, am, km, mir, msgr, xenl, 
 	btns#3, cols#80, it#8, lines#24, 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
 	bel=^G, blink=@, bold=\E[1m, clear=\E[H\E[2J, cr=^M, 
@@ -3315,6 +3395,7 @@ nwp513-a|nwp518-a|nwe501-a|nwp251-a|newscbm-a|news31-a|newscbm33|news33|old sony
 #
 # (nwp513-o: had :DE=^H:, I think that's <OTbs>; also the alias vt100-bm --esr)
 nwp513-o|nwp518-o|nwe501-o|nwp251-o|newscbm-o|news31-o|old sony vt100 emulator 33 lines, 
+	OTbs, 
 	lines#31, 
 	is2=\E7\E[r\E8\EE\EE\EE\EM\EM\EM\E[?7h\E[?1l\E[?3l\E7\E[1;31r\E8, use=news-old-unk, 
 #
@@ -18268,6 +18349,10 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add several terminal types from esr's "11.0", as well as comments.
 #	  bg300*, dku7102-old, dku7202, hft, lft, pcmw, pmcons, tws*, vip*,
 #	  vt220-8bit, vt220-old, wy85-8bit
+#
+# 2000/3/18
+#	* add several terminal types from esr's "11.0.1" (ansi-*).
+#	* update OTxx capabilities for changes on 2000/3/4.
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

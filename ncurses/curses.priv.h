@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.153 2000/02/19 23:31:39 tom Exp $
+ * $Id: curses.priv.h,v 1.155 2000/03/18 22:35:28 tom Exp $
  *
  *	curses.priv.h
  *
@@ -619,7 +619,7 @@ extern const char *_nc_visbuf2(int, const char *);
 				vidattr(AttrOf(c))
 #endif
 
-#ifdef NCURSES_EXPANDED
+#if defined(NCURSES_EXPANDED) && defined(NCURSES_EXT_FUNCS)
 
 #undef  toggle_attr_on
 #define toggle_attr_on(S,at) _nc_toggle_attr_on(&(S), at)
@@ -697,7 +697,7 @@ extern int _nc_has_mouse(void);
 extern char * _nc_printf_string(const char *fmt, va_list ap);
 
 /* tries.c */
-extern void _nc_add_to_try(struct tries **tree, char *str, unsigned short code);
+extern void _nc_add_to_try(struct tries **tree, const char *str, unsigned short code);
 extern char *_nc_expand_try(struct tries *tree, unsigned short code, int *count, size_t len);
 extern int _nc_remove_key(struct tries **tree, unsigned short code);
 extern int _nc_remove_string(struct tries **tree, char *string);

@@ -70,7 +70,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.131 2000/02/26 23:22:11 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.132 2000/03/18 21:56:49 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -358,10 +358,12 @@ can_clear_with(chtype ch)
     if (!back_color_erase && SP->_coloron) {
 	if (ch & A_COLOR)
 	    return FALSE;
+#ifdef NCURSES_EXT_FUNCS
 	if (!SP->_default_color)
 	    return FALSE;
 	if (SP->_default_fg != C_MASK || SP->_default_bg != C_MASK)
 	    return FALSE;
+#endif
     }
     return ((ch & ~(NONBLANK_ATTR | A_COLOR)) == BLANK);
 }

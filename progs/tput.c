@@ -43,7 +43,7 @@
 #include <termsort.c>
 #endif
 
-MODULE_ID("$Id: tput.c,v 1.15 2000/03/12 00:01:04 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.16 2000/03/19 01:08:08 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -73,7 +73,7 @@ usage(void)
 static int
 tput(int argc, char *argv[])
 {
-    char *name;
+    NCURSES_CONST char *name;
     char *s;
     int i, j, c;
     int reset, status;
