@@ -17,11 +17,11 @@
 .\" CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 .\" CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 .\"*****************************************************************************
-.\" $Id: dft_fgbg.3x,v 1.2 1997/12/06 22:06:00 tom Exp $
+.\" $Id: dft_fgbg.3x,v 1.4 1997/12/14 01:42:01 tom Exp $
 .TH use_default_colors 3X ""
 .
 .SH NAME
-\fBuse_default_colors\fP \- use terminal's default colors
+\fBdft_fgbg\fR \- use terminal's default colors
 .
 .SH SYNOPSIS
 \fB#include <curses.h>\fP
@@ -50,7 +50,7 @@ If the \fIinitialize_pair\fP capability is found, this causes an
 error as well.
 .
 .SH NOTES
-Associated with this extension, the \fBinit_pair\fP(3X) function accepts
+Associated with this extension, the \fBinit_pair\fR(3X) function accepts
 negative arguments to specify default foreground or background
 colors.
 .
@@ -60,7 +60,7 @@ Version 7, BSD or System V implementations.  It is recommended that
 any code depending on them be conditioned using NCURSES_VERSION.
 .
 .SH SEE ALSO
-\fBcurs_color\fP(3X),
+\fBcurs_color\fR(3X),
 \fBded\fP(1).
 .
 .SH AUTHOR

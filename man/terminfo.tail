@@ -1,4 +1,4 @@
-.\" $Id: terminfo.tail,v 1.14 1997/12/06 22:14:28 tom Exp $
+.\" $Id: terminfo.tail,v 1.15 1997/12/14 01:50:06 tom Exp $
 .\" Beginning of terminfo.tail file
 .ps +1
 .PP
@@ -1375,7 +1375,7 @@ Supports both the SVr4 set and the AIX extensions.
 \*d/?/*
 files containing terminal descriptions
 .SH "SEE ALSO"
-tic(1M), curses(3X), printf(3S), term(\*n).
+\fBtic\fR(1M), \fBcurses\fR(3X), \fBprintf\fR(3S), \fBterm\fR(\*n).
 .SH AUTHORS
 Zeyd M. Ben-Halim, Eric S. Raymond.  Descends from the original pcurses
 by Pavel Curtis.
