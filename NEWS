@@ -1,10 +1,22 @@
--- $Id: NEWS,v 1.490 1999/10/03 01:10:52 tom Exp $
+-- $Id: NEWS,v 1.493 1999/10/10 00:34:52 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+991009	pre-release
+	+ correct ncurses' value for cursor-column in PutCharLR(), which was
+	  off-by-one in one case (patch by Ilya Zakharevich).
+	+ fix some minor errors in position_check() debugging code, found while
+	  using this to validate the PutCharLR() patch.
+	+ modify firework, lrtest, worm examples to be resizable, and to
+	  recognize 'q' for quit, 's' for single-step and ' ' for resume.
+	+ restore reverted change to  terminal_interface-curses-forms.ads.m4,
+	  add a note on building with gnat 3.10p to Ada95/TODO.
+	+ add a copy of the standalone configure script for the test-directory
+	  to simplify testing on SCO and Solaris.
 
 991002	pre-release
 	+ minor fixes for _nc_msec_cost(), color_content(), pair_content(),
