@@ -228,7 +228,7 @@ int main(int argc, char **argv)
 	int  n;
 	char buffer[BUFSIZ];
 
-	static char * const typenames[] = { "BOOLEAN", "NUMBER", "STRING" };
+	static const char * typenames[] = { "BOOLEAN", "NUMBER", "STRING" };
 
 	int BoolCount = 0;
 	int NumCount  = 0;

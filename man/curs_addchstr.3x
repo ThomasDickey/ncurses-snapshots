@@ -7,21 +7,21 @@
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 
-\fBint addchstr(chtype *chstr);\fR
+\fBint addchstr(const chtype *chstr);\fR
 .br
-\fBint addchnstr(chtype *chstr, int n);\fR
+\fBint addchnstr(const chtype *chstr, int n);\fR
 .br
-\fBint waddchstr(WINDOW *win, chtype *chstr);\fR
+\fBint waddchstr(WINDOW *win, const chtype *chstr);\fR
 .br
-\fBint waddchnstr(WINDOW *win, chtype *chstr, int n);\fR
+\fBint waddchnstr(WINDOW *win, const chtype *chstr, int n);\fR
 .br
-\fBint mvaddchstr(int y, int x, chtype *chstr);\fR
+\fBint mvaddchstr(int y, int x, const chtype *chstr);\fR
 .br
-\fBint mvaddchnstr(int y, int x, chtype *chstr, int n);\fR
+\fBint mvaddchnstr(int y, int x, const chtype *chstr, int n);\fR
 .br
-\fBint mvwaddchstr(WINDOW *win, int y, int x, chtype *chstr);\fR
+\fBint mvwaddchstr(WINDOW *win, int y, int x, const chtype *chstr);\fR
 .br
-\fBint mvwaddchnstr(WINDOW *win, int y, int x, chtype *chstr, int n);\fR
+\fBint mvwaddchnstr(WINDOW *win, int y, int x, const chtype *chstr, int n);\fR
 .SH DESCRIPTION
 These routines copy \fIchstr\fR into the window image structure at and after
 the current cursor position.  The four routines with \fIn\fR as the last

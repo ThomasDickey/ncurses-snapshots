@@ -139,7 +139,7 @@
 #include "term.h"
 
 #define NLMAPPING	SP->_nl			/* nl() on? */
-#define RAW		SP->_raw		/* raw() on? */
+#define RAWFLAG		SP->_raw		/* raw() on? */
 #define CURRENT_ATTR	SP->_current_attr	/* current phys attribute */
 #define CURRENT_ROW	SP->_cursrow		/* phys cursor row */
 #define CURRENT_COLUMN	SP->_curscol		/* phys cursor column */
@@ -283,7 +283,7 @@ void _nc_mvcur_init(SCREEN *sp)
     SP->_vpa_cost = cost(tparm(row_address, 23), 1);
 
     /* optional optimization hack -- do before any output to ofp */
-#if defined(HAVE_SETVBUF) || defined(HAVE_SETBUFFER)
+#if HAVE_SETVBUF || HAVE_SETBUFFER
     {
 	/* 
 	 * If the output file descriptor is connected to a tty
@@ -319,13 +319,11 @@ void _nc_mvcur_init(SCREEN *sp)
 	 * Send us a patch if you care.
 	 */
 	(void) setvbuf(SP->_ofp, malloc(bufsiz), _IOFBF, bufsiz);
-#else
-#if HAVE_SETBUFFER
+#elif HAVE_SETBUFFER
 	(void) setbuffer(SP->_ofp, malloc(bufsiz), (int)bufsiz);
-#endif /* HAVE_SETBUFFER */
-#endif /* HAVE_SETVBUF */
+#endif
     }
-#endif /* defined(HAVE_SETVBUF) || defined(HAVE_SETBUFFER) */
+#endif /* HAVE_SETVBUF || HAVE_SETBUFFER */
 
     /* initialize screen for cursor access */
     if (enter_ca_mode)
@@ -413,14 +411,14 @@ repeated_append (int total, int num, int repeat, char *dst, char *src)
 /* Note: we'd like to inline this for speed, but GNU C barfs on the attempt. */
 
 static int
-relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bool ovw)
+relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 /* move via local motions (cuu/cuu1/cud/cud1/cub1/cub/cuf1/cuf/vpa/hpa) */
 {
     int		n, vcost = 0, hcost = 0;
     bool	used_lf = FALSE;
 
-    if (move)
-	move[0] = '\0';
+    if (result)
+	result[0] = '\0';
 
     if (to_y != from_y)
     {
@@ -428,8 +426,8 @@ relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bool ovw)
 
 	if (row_address)
 	{
-	    if (move)
-		(void) strcpy(move, tparm(row_address, to_y));
+	    if (result)
+		(void) strcpy(result, tparm(row_address, to_y));
 	    vcost = SP->_vpa_cost;
 	}
 
@@ -439,18 +437,18 @@ relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bool ovw)
 
 	    if (parm_down_cursor && SP->_cud_cost < vcost)
 	    {
-		if (move)
-		    (void) strcpy(move, tparm(parm_down_cursor, n));
+		if (result)
+		    (void) strcpy(result, tparm(parm_down_cursor, n));
 		vcost = SP->_cud_cost;
 	    }
 
 	    if (cursor_down && (n * SP->_cud1_cost < vcost))
 	    {
-		if (move)
-		    move[0] = '\0';
+		if (result)
+		    result[0] = '\0';
 		if (cursor_down[0] == '\n')
 		    used_lf = TRUE;
-		vcost = repeated_append(vcost, SP->_cud1_cost, n, move, cursor_down);
+		vcost = repeated_append(vcost, SP->_cud1_cost, n, result, cursor_down);
 	    }
 	}
 	else /* (to_y < from_y) */
@@ -459,16 +457,16 @@ relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bool ovw)
 
 	    if (parm_up_cursor && SP->_cup_cost < vcost)
 	    {
-		if (move)
-		    (void) strcpy(move, tparm(parm_up_cursor, n));
+		if (result)
+		    (void) strcpy(result, tparm(parm_up_cursor, n));
 		vcost = SP->_cup_cost;
 	    }
 
 	    if (cursor_up && (n * SP->_cuu1_cost < vcost))
 	    {
-		if (move)
-		    move[0] = '\0';
-		vcost = repeated_append(vcost, SP->_cuu1_cost, n, move, cursor_up);
+		if (result)
+		    result[0] = '\0';
+		vcost = repeated_append(vcost, SP->_cuu1_cost, n, result, cursor_up);
 	    }
 	}
 
@@ -480,11 +478,11 @@ relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bool ovw)
      * It may be that we're using a cud1 capability of \n with the
      * side-effect of taking the cursor to column 0.  Deal with this.
      */
-    if (used_lf && NLMAPPING && !RAW)
+    if (used_lf && NLMAPPING && !RAWFLAG)
 	from_x = 0;
 
-    if (move)
-	move += strlen(move);
+    if (result)
+	result += strlen(result);
 
     if (to_x != from_x)
     {
@@ -494,8 +492,8 @@ relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bool ovw)
 
 	if (column_address)
 	{
-	    if (move)
-		(void) strcpy(move, tparm(column_address, to_x));
+	    if (result)
+		(void) strcpy(result, tparm(column_address, to_x));
 	    hcost = SP->_hpa_cost;
 	}
 
@@ -505,8 +503,8 @@ relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bool ovw)
 
 	    if (parm_right_cursor && SP->_cuf_cost < hcost)
 	    {
-		if (move)
-		    (void) strcpy(move, tparm(parm_right_cursor, n));
+		if (result)
+		    (void) strcpy(result, tparm(parm_right_cursor, n));
 		hcost = SP->_cuf_cost;
 	    }
 
@@ -574,8 +572,8 @@ relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bool ovw)
 
 		if (lhcost < hcost)
 		{
-		    if (move)
-			(void) strcpy(move, try);
+		    if (result)
+			(void) strcpy(result, try);
 		    hcost = lhcost;
 		}
 	    }
@@ -586,8 +584,8 @@ relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bool ovw)
 
 	    if (parm_left_cursor && SP->_cub_cost < hcost)
 	    {
-		if (move)
-		    (void) strcpy(move, tparm(parm_left_cursor, n));
+		if (result)
+		    (void) strcpy(result, tparm(parm_left_cursor, n));
 		hcost = SP->_cub_cost;
 	    }
 
@@ -617,8 +615,8 @@ relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bool ovw)
 
 		if (lhcost < hcost)
 		{
-		    if (move)
-			(void) strcpy(move, try);
+		    if (result)
+			(void) strcpy(result, try);
 		    hcost = lhcost;
 		}
 	    }
@@ -1191,19 +1189,17 @@ int main(int argc, char *argv[])
     baudrate();
 
     _nc_mvcur_init(SP);
-#if defined(HAVE_SETVBUF) || defined(HAVE_SETBUFFER)
+#if HAVE_SETVBUF || HAVE_SETBUFFER
     /*
      * Undo the effects of our optimization hack, otherwise our interactive
      * prompts don't flush properly.
      */
 #if HAVE_SETVBUF
     (void) setvbuf(SP->_ofp, malloc(BUFSIZ), _IOLBF, BUFSIZ);
-#else
-#if HAVE_SETBUFFER
+#elif HAVE_SETBUFFER
     (void) setbuffer(SP->_ofp, malloc(BUFSIZ), BUFSIZ);
-#endif /* HAVE_SETBUFFER */
-#endif /* HAVE_SETVBUF */
-#endif /* defined(HAVE_SETVBUF) || defined(HAVE_SETBUFFER) */
+#endif
+#endif /* HAVE_SETVBUF || HAVE_SETBUFFER */
 
     (void) puts("The mvcur tester.  Type ? for help");
 

@@ -7,6 +7,10 @@
 #include "cursesw.h"
 #include "cursesp.h"
 
+#ifdef HAVE_LIBC_H
+#include "libc.h"
+#endif
+
 main()
 {
     int key = 0;

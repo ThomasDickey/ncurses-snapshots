@@ -1,6 +1,4 @@
-#  Simple makefile for NCursesPanel demo
-#
-#  NOTE:  This demo requires the panels library. 
+#  Simple makefile for c++ window class demo
 
 # turn off _all_ suffix rules; we'll generate our own
 .SUFFIXES:
@@ -15,8 +13,8 @@ exec_prefix	= @exec_prefix@
 libdir		= $(exec_prefix)/lib
 includedir	= @includedir@
 
-CC		= @CXX@
-CFLAGS		= @CXXFLAGS@
+CXX		= @CXX@
+CXXFLAGS	= @CXXFLAGS@
 
 INCDIR		= ../include
 CPPFLAGS	= @INCLUDES@ -I$(INCDIR) -DHAVE_CONFIG_H
@@ -30,15 +28,17 @@ CFLAGS_SHARED	= $(CCFLAGS) @CC_SHARED_OPTS@
 
 CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
-LINK		= $(CC)
+LINK		= $(CXX)
 LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@ @LOCAL_LDFLAGS@
 
 all: demo
 
-DEPS_DEMO = \
+OBJS_DEMO = \
 	$(MODEL)/cursesw.o \
 	$(MODEL)/cursesp.o \
-	$(MODEL)/demo.o \
+	$(MODEL)/demo.o
+DEPS_DEMO = \
+	$(OBJS_DEMO) \
 	../lib/libpanel@DFT_DEP_SUFFIX@ \
 	../lib/libncurses@DFT_DEP_SUFFIX@
 demo: $(DEPS_DEMO)
@@ -48,7 +48,7 @@ install:
 install.libs:
 
 clean ::
-	-rm -f demo
+	-rm -f demo $(OBJS_DEMO)
 
 distclean: clean
 	-rm -f Makefile

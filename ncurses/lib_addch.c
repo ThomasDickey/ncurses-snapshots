@@ -29,14 +29,19 @@
 #include "curses.priv.h"
 #include <ctype.h>
 #include "unctrl.h"
+#include "term.h"	/* init_tabs */
+
+#ifdef init_tabs
+#define TABSIZE	init_tabs
+#else
+#define TABSIZE	8
+#endif /* TABSIZE */
 
 #define ALL_BUT_COLOR ((chtype)~(A_COLOR))
 
-int TABSIZE = 8; /* default size of a TAB */
-
 int wattr_on(WINDOW *win, const attr_t at)
 {
-	T(("wattron(%p,%s) current = %s", win, _traceattr(at), _traceattr(win->_attrs)));
+	T(("wattr_on(%p,%s) current = %s", win, _traceattr(at), _traceattr(win->_attrs)));
 	if (PAIR_NUMBER(at) > 0x00) {
 		win->_attrs = (win->_attrs & ALL_BUT_COLOR) | at ;
 		T(("new attribute is %s", _traceattr(win->_attrs)));
@@ -51,7 +56,7 @@ int wattr_off(WINDOW *win, const attr_t at)
 {
 #define IGNORE_COLOR_OFF FALSE
 
-	T(("wattroff(%p,%s) current = %s", win, _traceattr(at), _traceattr(win->_attrs)));
+	T(("wattr_off(%p,%s) current = %s", win, _traceattr(at), _traceattr(win->_attrs)));
 	if (IGNORE_COLOR_OFF == TRUE) {
 		if (PAIR_NUMBER(at) == 0xff) /* turn off color */
 			win->_attrs &= ~at;
@@ -67,7 +72,7 @@ int wattr_off(WINDOW *win, const attr_t at)
 	return OK;
 }
 
-int wchgat(WINDOW *win, int n, attr_t attr, short color, void *const opts)
+int wchgat(WINDOW *win, int n, attr_t attr, short color, const void *opts)
 {
     int	i;
 

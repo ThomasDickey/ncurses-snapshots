@@ -91,6 +91,8 @@ static bool immedhook(ENTRY *ep)
 
 int main (int argc, char *argv[])
 {
+static	const	char	*usage_string = "tic [-v[n]] source-file\n";
+
 int	i, debug_level = 0;
 int	argflag = FALSE, smart_defaults = TRUE;
 char    *termcap;
@@ -101,7 +103,6 @@ bool	infodump = FALSE;	/* running as captoinfo? */
 bool	capdump = FALSE;	/* running as infotocap? */
 char	*tversion = (char *)NULL;
 char	*source_file = "terminfo";
-char	*const usage_string = "tic [-v[n]] source-file\n";
 bool	check_only = FALSE;
 
 	if ((_nc_progname = strrchr(argv[0], '/')) == NULL)

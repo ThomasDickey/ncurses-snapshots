@@ -66,7 +66,7 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 {
     int			token_type;
     struct name_table_entry	const *entry_ptr;
-    char			*ptr, namecpy[MAX_NAME_SIZE];
+    char			*ptr, namecpy[MAX_NAME_SIZE+1];
 
     token_type = _nc_get_token();
 
@@ -102,7 +102,8 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
     _nc_set_type(_nc_first_name(entryp->tterm.term_names));
 
     /* check for overly-long names and aliases */
-    (void) strcpy(namecpy, entryp->tterm.term_names);
+    (void) strncpy(namecpy, entryp->tterm.term_names, MAX_NAME_SIZE);
+    namecpy[MAX_NAME_SIZE] = '\0';
     if ((ptr = strrchr(namecpy, '|')) != (char *)NULL)
 	*ptr = '\0';
     ptr = strtok(namecpy, "|");
@@ -355,10 +356,10 @@ static assoc const ko_xlate[] =
  * It was lifted from Ross Ridge's mytinfo package.
  */
 
-static char *const C_CR = "\r";
-static char *const C_LF = "\n";
-static char *const C_BS = "\b";
-static char *const C_HT = "\t";
+static const char *C_CR = "\r";
+static const char *C_LF = "\n";
+static const char *C_BS = "\b";
+static const char *C_HT = "\t";
 
 /*
  * Note that WANTED and PRESENT are not simple inverses!  If a capability

@@ -366,6 +366,11 @@ AC_DEFUN([NC_SHARED_OPTS],
 		CC_SHARED_OPTS='-fpic -DPIC'
 		MK_SHARED_LIB='ld -Bshareable -o $[@]'
 		;;
+	FreeBSD)
+		CC_SHARED_OPTS='-fpic -DPIC'
+		MK_SHARED_LIB="ld -Bshareable -o \$[@].\$(REL_VERSION)"
+		nc_cv_do_symlinks=yes
+		;;
 	OSF1)
 		# tested with OSF/1 V3.2 and 'cc'
 		# tested with OSF/1 V3.2 and gcc 2.6.3 (but the c++ demo didn't

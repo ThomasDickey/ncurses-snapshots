@@ -21,134 +21,198 @@ extern "C" {
    Undefine it here, because NCursesWindow uses lines as a method.  */
 #undef lines
 
-// "Convert" macros to inlines, if needed.
+/* "Convert" macros to inlines. We'll define it as another symbol to avoid
+ * conflict with library symbols.
+ */
+#undef UNDEF
+#define UNDEF(name) CUR_ ##name
+
 #ifdef addch
-inline int (addch)(chtype ch)  { return addch(ch); }
+inline int UNDEF(addch)(chtype ch)  { return addch(ch); }
 #undef addch
+#define addch UNDEF(addch)
 #endif
+
 #ifdef addstr
 /* The (char*) cast is to hack around missing const's */
-inline int (addstr)(const char * str)  { return addstr((char*)str); }
+inline int UNDEF(addstr)(const char * str)  { return addstr((char*)str); }
 #undef addstr
+#define addstr UNDEF(addstr)
 #endif
+
 #ifdef attron
-inline int (attron)(chtype at) { return attron(at); }
+inline int UNDEF(attron)(chtype at) { return attron(at); }
 #undef attron
+#define attron UNDEF(attron)
 #endif
+
 #ifdef attroff
-inline int (attroff)(chtype at) { return attroff(at); }
+inline int UNDEF(attroff)(chtype at) { return attroff(at); }
 #undef attroff
+#define attroff UNDEF(attroff)
 #endif
+
 #ifdef attrset
-inline chtype (attrset)(chtype at) { return attrset(at); }
+inline chtype UNDEF(attrset)(chtype at) { return attrset(at); }
 #undef attrset
+#define attrset UNDEF(attrset)
 #endif
+
 #ifdef border
-inline int (border)(chtype ls, chtype rs, chtype ts, chtype bs, chtype tl, chtype tr, chtype bl, chtype br)
+inline int UNDEF(border)(chtype ls, chtype rs, chtype ts, chtype bs, chtype tl, chtype tr, chtype bl, chtype br)
 { return border(ls,rs,ts,bs,tl,tr,bl,br); }
 #undef border
+#define border UNDEF(border)
 #endif
+
 #ifdef box
-inline int (box)(WINDOW *win, int v, int h) { return box(win, v, h); }
+inline int UNDEF(box)(WINDOW *win, int v, int h) { return box(win, v, h); }
 #undef box
+#define box UNDEF(box)
 #endif
+
 #ifdef clear
-inline int (clear)()  { return clear(); }
+inline int UNDEF(clear)()  { return clear(); }
 #undef clear
+#define clear UNDEF(clear)
 #endif
+
 #ifdef clearok
-inline int (clearok)(WINDOW* win, int bf)  { return clearok(win, bf); }
+inline int UNDEF(clearok)(WINDOW* win, int bf)  { return clearok(win, bf); }
 #undef clearok
+#define clearok UNDEF(clearok)
 #else
 extern "C" int clearok(WINDOW*, bool);
 #endif
+
 #ifdef clrtobot
-inline int (clrtobot)()  { return clrtobot(); }
+inline int UNDEF(clrtobot)()  { return clrtobot(); }
 #undef clrtobot
+#define clrtobot UNDEF(clrtobot)
 #endif
+
 #ifdef clrtoeol
-inline int (clrtoeol)()  { return clrtoeol(); }
+inline int UNDEF(clrtoeol)()  { return clrtoeol(); }
 #undef clrtoeol
+#define clrtoeol UNDEF(clrtoeol)
 #endif
+
 #ifdef delch
-inline int (delch)()  { return delch(); }
+inline int UNDEF(delch)()  { return delch(); }
 #undef delch
+#define delch UNDEF(delch)
 #endif
+
 #ifdef deleteln
-inline int (deleteln)()  { return deleteln(); }
+inline int UNDEF(deleteln)()  { return deleteln(); }
 #undef deleteln
+#define deleteln UNDEF(deleteln)
 #endif
+
 #ifdef erase
-inline int (erase)()  { return erase(); }
+inline int UNDEF(erase)()  { return erase(); }
 #undef erase
+#define erase UNDEF(erase)
 #endif
+
 #ifdef flushok
-inline int (flushok)(WINDOW* _win, int _bf)  { return flushok(_win, _bf); }
+inline int UNDEF(flushok)(WINDOW* _win, int _bf)  { return flushok(_win, _bf); }
 #undef flushok
+#define flushok UNDEF(flushok)
 #else
 #define _no_flushok
 #endif
+
 #ifdef getch
-inline int (getch)()  { return getch(); }
+inline int UNDEF(getch)()  { return getch(); }
 #undef getch
+#define getch UNDEF(getch)
 #endif
+
 #ifdef getstr
-inline int (getstr)(char *_str)  { return getstr(_str); }
+inline int UNDEF(getstr)(char *_str)  { return getstr(_str); }
 #undef getstr
+#define getstr UNDEF(getstr)
 #endif
+
 #ifdef getyx
-inline void (getyx)(WINDOW* win, int& y, int& x) { getyx(win, y, x); }
+inline void UNDEF(getyx)(WINDOW* win, int& y, int& x) { getyx(win, y, x); }
 #undef getyx
+#define getyx UNDEF(getyx)
 #endif
+
 #ifdef getbegyx
-inline void (getbegyx)(WINDOW* win, int& y, int& x) { getbegyx(win, y, x); }
+inline void UNDEF(getbegyx)(WINDOW* win, int& y, int& x) { getbegyx(win, y, x); }
 #undef getbegyx
+#define getbegyx UNDEF(getbegyx)
 #endif
+
 #ifdef getmaxyx
-inline void (getmaxyx)(WINDOW* win, int& y, int& x) { getmaxyx(win, y, x); }
+inline void UNDEF(getmaxyx)(WINDOW* win, int& y, int& x) { getmaxyx(win, y, x); }
 #undef getmaxyx
+#define getmaxyx UNDEF(getmaxyx)
 #endif
+
 #ifdef hline
-inline int (hline)(chtype ch, int n) { return hline(ch, n); }
+inline int UNDEF(hline)(chtype ch, int n) { return hline(ch, n); }
 #undef hline
+#define hline UNDEF(hline)
 #endif
+
 #ifdef inch
-inline int (inch)()  { return inch(); }
+inline int UNDEF(inch)()  { return inch(); }
 #undef inch
+#define inch UNDEF(inch)
 #endif
+
 #ifdef insch
-inline int (insch)(char c)  { return insch(c); }
+inline int UNDEF(insch)(char c)  { return insch(c); }
 #undef insch
+#define insch UNDEF(insch)
 #endif
+
 #ifdef insertln
-inline int (insertln)()  { return insertln(); }
+inline int UNDEF(insertln)()  { return insertln(); }
 #undef insertln
+#define insertln UNDEF(insertln)
 #endif
+
 #ifdef leaveok
-inline int (leaveok)(WINDOW* win, int bf)  { return leaveok(win, bf); }
+inline int UNDEF(leaveok)(WINDOW* win, int bf)  { return leaveok(win, bf); }
 #undef leaveok
+#define leaveok UNDEF(leaveok)
 #else
 extern "C" int leaveok(WINDOW* win, bool bf);
 #endif
+
 #ifdef move
-inline int (move)(int x, int y)  { return move(x, y); }
+inline int UNDEF(move)(int x, int y)  { return move(x, y); }
 #undef move
+#define move UNDEF(move)
 #endif
+
 #ifdef refresh
-inline int (refresh)()  { return refresh(); }
+inline int UNDEF(refresh)()  { return refresh(); }
 #undef refresh
+#define refresh UNDEF(refresh)
 #endif
+
 #ifdef scrl
-inline int (scrl)(int l) { return scrl(l); }
+inline int UNDEF(scrl)(int l) { return scrl(l); }
 #undef scrl
+#define scrl UNDEF(scrl)
 #endif
+
 #ifdef scroll
-inline int (scroll)(WINDOW *win) { return scroll(win); }
+inline int UNDEF(scroll)(WINDOW *win) { return scroll(win); }
 #undef scroll
+#define scroll UNDEF(scroll)
 #endif
+
 #ifdef scrollok
-inline int (scrollok)(WINDOW* win, int bf)  { return scrollok(win, bf); }
+inline int UNDEF(scrollok)(WINDOW* win, int bf)  { return scrollok(win, bf); }
 #undef scrollok
+#define scrollok UNDEF(scrollok)
 #else
 #if	defined(__NCURSES_H)
 extern "C" int scrollok(WINDOW*, bool);
@@ -156,182 +220,259 @@ extern "C" int scrollok(WINDOW*, bool);
 extern "C" int scrollok(WINDOW*, char);
 #endif
 #endif
+
 #ifdef setscrreg
-inline int (setscrreg)(int t, int b) { return setscrreg(t, b); }
+inline int UNDEF(setscrreg)(int t, int b) { return setscrreg(t, b); }
 #undef setscrreg
+#define setscrreg UNDEF(setscrreg)
 #endif
+
 #ifdef standend
-inline chtype (standend)()  { return standend(); }
+inline int UNDEF(standend)()  { return standend(); }
 #undef standend
+#define standend UNDEF(standend)
 #endif
+
 #ifdef standout
-inline chtype (standout)()  { return standout(); }
+inline int UNDEF(standout)()  { return standout(); }
 #undef standout
+#define standout UNDEF(standout)
 #endif
+
 #ifdef subpad
-inline WINDOW *(subpad)(WINDOW *p, int l, int c, int y, int x) 
+inline WINDOW *UNDEF(subpad)(WINDOW *p, int l, int c, int y, int x) 
 { return derwin(p,l,c,y,x); }
 #undef subpad
+#define subpad UNDEF(subpad)
 #endif
+
 #ifdef timeout
-inline int (timeout)(int delay) { return timeout(delay); }
+inline int UNDEF(timeout)(int delay) { return timeout(delay); }
 #undef timeout
+#define timeout UNDEF(timeout)
 #endif
+
 #ifdef touchline
-inline int (touchline)(WINDOW *win, int s, int c)
+inline int UNDEF(touchline)(WINDOW *win, int s, int c)
 { return touchline(win,s,c); }
 #undef touchline
+#define touchline UNDEF(touchline)
 #endif
+
 #ifdef touchwin
-inline int (touchwin)(WINDOW *win) { return touchwin(win); }
+inline int UNDEF(touchwin)(WINDOW *win) { return touchwin(win); }
 #undef touchwin
+#define touchwin UNDEF(touchwin)
 #endif
+
 #ifdef untouchwin
-inline int (untouchwin)(WINDOW *win) { return untouchwin(win); }
+inline int UNDEF(untouchwin)(WINDOW *win) { return untouchwin(win); }
 #undef untouchwin
+#define untouchwin UNDEF(untouchwin)
 #endif
+
 #ifdef vline
-inline int (vline)(chtype ch, int n) { return vline(ch, n); }
+inline int UNDEF(vline)(chtype ch, int n) { return vline(ch, n); }
 #undef vline
+#define vline UNDEF(vline)
 #endif
+
 #ifdef waddstr
-inline int (waddstr)(WINDOW *win, char *str) { return waddstr(win, str); }
+inline int UNDEF(waddstr)(WINDOW *win, char *str) { return waddstr(win, str); }
 #undef waddstr
+#define waddstr UNDEF(waddstr)
 #endif
+
 #ifdef waddchstr
-inline int (waddchstr)(WINDOW *win, chtype *at) { return waddchstr(win, at); }
+inline int UNDEF(waddchstr)(WINDOW *win, chtype *at) { return waddchstr(win, at); }
 #undef waddchstr
+#define waddchstr UNDEF(waddchstr)
 #endif
+
 #ifdef wstandend
-inline int (wstandend)(WINDOW *win)  { return wstandend(win); }
+inline int UNDEF(wstandend)(WINDOW *win)  { return wstandend(win); }
 #undef wstandend
+#define wstandend UNDEF(wstandend)
 #endif
+
 #ifdef wstandout
-inline int (wstandout)(WINDOW *win)  { return wstandout(win); }
+inline int UNDEF(wstandout)(WINDOW *win)  { return wstandout(win); }
 #undef wstandout
+#define wstandout UNDEF(wstandout)
 #endif
+
 #ifdef wattroff
-inline int (wattroff)(WINDOW *win, int att) { return wattroff(win, att); }
+inline int UNDEF(wattroff)(WINDOW *win, int att) { return wattroff(win, att); }
 #undef wattroff
+#define wattroff UNDEF(wattroff)
 #endif
+
 #ifdef wattrset
-inline int (wattrset)(WINDOW *win, int att) { return wattrset(win, att); }
+inline int UNDEF(wattrset)(WINDOW *win, int att) { return wattrset(win, att); }
 #undef wattrset
+#define wattrset UNDEF(wattrset)
 #endif
+
 #ifdef winch
-inline int (winch)(WINDOW* win) { return winch(win); }
+inline chtype UNDEF(winch)(WINDOW* win) { return winch(win); }
 #undef winch
+#define winch UNDEF(winch)
 #endif
 
 #ifdef mvwaddch
-inline int (mvwaddch)(WINDOW *win, int y, int x, chtype ch)
+inline int UNDEF(mvwaddch)(WINDOW *win, int y, int x, chtype ch)
 { return mvwaddch(win, y, x, ch); }
 #undef mvwaddch
+#define mvwaddch UNDEF(mvwaddch)
 #endif
+
 #ifdef mvwaddchnstr
-inline int (mvwaddchnstr)(WINDOW *win, int y, int x, chtype *str, int n)
+inline int UNDEF(mvwaddchnstr)(WINDOW *win, int y, int x, chtype *str, int n)
 { return mvwaddchnstr(win, y, x, str, n); }
 #undef mvwaddchnstr
+#define mvwaddchnstr UNDEF(mvwaddchnstr)
 #endif
+
 #ifdef mvwaddchstr
-inline int (mvwaddchstr)(WINDOW *win, int y, int x, chtype *str)
+inline int UNDEF(mvwaddchstr)(WINDOW *win, int y, int x, chtype *str)
 { return mvwaddchstr(win, y, x, str); }
 #undef mvwaddchstr
+#define mvwaddchstr UNDEF(mvwaddchstr)
 #endif
+
 #ifdef mvwaddnstr
-inline int (mvwaddnstr)(WINDOW *win, int y, int x, const char *str, int n)
+inline int UNDEF(mvwaddnstr)(WINDOW *win, int y, int x, const char *str, int n)
 { return mvwaddnstr(win, y, x, (char*)str, n); }
 #undef mvwaddnstr
+#define mvwaddnstr UNDEF(mvwaddnstr)
 #endif
+
 #ifdef mvwaddstr
-inline int (mvwaddstr)(WINDOW *win, int y, int x, const char * str)
+inline int UNDEF(mvwaddstr)(WINDOW *win, int y, int x, const char * str)
 { return mvwaddstr(win, y, x, (char*)str); }
 #undef mvwaddstr
+#define mvwaddstr UNDEF(mvwaddstr)
 #endif
+
 #ifdef mvwdelch
-inline int (mvwdelch)(WINDOW *win, int y, int x)
+inline int UNDEF(mvwdelch)(WINDOW *win, int y, int x)
 { return mvwdelch(win, y, x); }
 #undef mvwdelch
+#define mvwdelch UNDEF(mvwdelch)
 #endif
+
 #ifdef mvwgetch
-inline int (mvwgetch)(WINDOW *win, int y, int x) { return mvwgetch(win, y, x);}
+inline int UNDEF(mvwgetch)(WINDOW *win, int y, int x) { return mvwgetch(win, y, x);}
 #undef mvwgetch
+#define mvwgetch UNDEF(mvwgetch)
 #endif
+
 #ifdef mvwgetstr
-inline int (mvwgetstr)(WINDOW *win, int y, int x, char *str)
+inline int UNDEF(mvwgetstr)(WINDOW *win, int y, int x, char *str)
 {return mvwgetstr(win,y,x, str);}
 #undef mvwgetstr
+#define mvwgetstr UNDEF(mvwgetstr)
 #endif
+
 #ifdef mvwinch
-inline int (mvwinch)(WINDOW *win, int y, int x) { return mvwinch(win, y, x);}
+inline int UNDEF(mvwinch)(WINDOW *win, int y, int x) { return mvwinch(win, y, x);}
 #undef mvwinch
+#define mvwinch UNDEF(mvwinch)
 #endif
+
 #ifdef mvwinsch
-inline int (mvwinsch)(WINDOW *win, int y, int x, char c)
+inline int UNDEF(mvwinsch)(WINDOW *win, int y, int x, char c)
 { return mvwinsch(win, y, x, c); }
 #undef mvwinsch
+#define mvwinsch UNDEF(mvwinsch)
 #endif
 
 #ifdef mvaddch
-inline int (mvaddch)(int y, int x, chtype ch)
+inline int UNDEF(mvaddch)(int y, int x, chtype ch)
 { return mvaddch(y, x, ch); }
 #undef mvaddch
+#define mvaddch UNDEF(mvaddch)
 #endif
+
 #ifdef mvaddnstr
-inline int (mvaddnstr)(int y, int x, const char *str, int n)
+inline int UNDEF(mvaddnstr)(int y, int x, const char *str, int n)
 { return mvaddnstr(y, x, (char*)str, n); }
 #undef mvaddnstr
+#define mvaddnstr UNDEF(mvaddnstr)
 #endif
+
 #ifdef mvaddstr
-inline int (mvaddstr)(int y, int x, const char * str)
+inline int UNDEF(mvaddstr)(int y, int x, const char * str)
 { return mvaddstr(y, x, (char*)str); }
 #undef mvaddstr
+#define mvaddstr UNDEF(mvaddstr)
 #endif
+
 #ifdef mvdelch
-inline int (mvdelch)(int y, int x) { return mvdelch(y, x);}
+inline int UNDEF(mvdelch)(int y, int x) { return mvdelch(y, x);}
 #undef mvdelch
+#define mvdelch UNDEF(mvdelch)
 #endif
+
 #ifdef mvgetch
-inline int (mvgetch)(int y, int x) { return mvgetch(y, x);}
+inline int UNDEF(mvgetch)(int y, int x) { return mvgetch(y, x);}
 #undef mvgetch
+#define mvgetch UNDEF(mvgetch)
 #endif
+
 #ifdef mvgetstr
-inline int (mvgetstr)(int y, int x, char *str) {return mvgetstr(y, x, str);}
+inline int UNDEF(mvgetstr)(int y, int x, char *str) {return mvgetstr(y, x, str);}
 #undef mvgetstr
+#define mvgetstr UNDEF(mvgetstr)
 #endif
+
 #ifdef mvinch
-inline int (mvinch)(int y, int x) { return mvinch(y, x);}
+inline int UNDEF(mvinch)(int y, int x) { return mvinch(y, x);}
 #undef mvinch
+#define mvinch UNDEF(mvinch)
 #endif
+
 #ifdef mvinsch
-inline int (mvinsch)(int y, int x, char c)
+inline int UNDEF(mvinsch)(int y, int x, char c)
 { return mvinsch(y, x, c); }
 #undef mvinsch
+#define mvinsch UNDEF(mvinsch)
 #endif
 
 #ifdef napms
-inline void (napms)(unsigned long x) { napms(x); }
+inline void UNDEF(napms)(unsigned long x) { napms(x); }
 #undef napms
+#define napms UNDEF(napms)
 #endif
+
 #ifdef fixterm
-inline int (fixterm)(void) { return fixterm(); }
+inline int UNDEF(fixterm)(void) { return fixterm(); }
 #undef fixterm
+#define fixterm UNDEF(fixterm)
 #endif
+
 #ifdef resetterm
-inline int (resetterm)(void) { return resetterm(); }
+inline int UNDEF(resetterm)(void) { return resetterm(); }
 #undef resetterm
+#define resetterm UNDEF(resetterm)
 #endif
+
 #ifdef saveterm
-inline int (saveterm)(void) { return saveterm(); }
+inline int UNDEF(saveterm)(void) { return saveterm(); }
 #undef saveterm
+#define saveterm UNDEF(saveterm)
 #endif
+
 #ifdef crmode
-inline int (crmode)(void) { return crmode(); }
+inline int UNDEF(crmode)(void) { return crmode(); }
 #undef crmode
+#define crmode UNDEF(crmode)
 #endif
+
 #ifdef nocrmode
-inline int (nocrmode)(void) { return nocrmode(); }
+inline int UNDEF(nocrmode)(void) { return nocrmode(); }
 #undef nocrmode
+#define nocrmode UNDEF(nocrmode)
 #endif
 
 /*

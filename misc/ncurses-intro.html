@@ -54,7 +54,9 @@ by Eric S. Raymond and Zeyd M. Ben-Halim<BR>
 <LI> <A HREF="#testing">Testing for Terminal Capabilities</A>
 <LI> <A HREF="#tuning">Tuning for Speed</A>
 <LI> <A HREF="#special">Special Features of <TT>ncurses</TT></A>
+<LI> <A HREF="#backbug">Background Erase -- Compatibility with Old Versions</A>
 </UL>
+<LI> <A HREF="#xsifuncs">XSI Curses Conformance</A>
 </UL>
 <LI> <A HREF="#panels">The Panels Library</A>
 <UL>
@@ -133,6 +135,14 @@ This document is an introduction to programming with <TT>curses</TT>. It is
 not an exhaustive reference for the curses Application Programming Interface
 (API); that role is filled by the <TT>curses</TT> manual pages.  Rather, it
 is intended to help C programmers ease into using the package. <P>
+
+This document is aimed at C applications programmers not yet specifically
+familiar with ncurses.  If you are already an experienced <TT>curses</TT>
+programmer, you should nevertheless read the sections on
+<A HREF="#mouse">Mouse Interfacing</A>, <A HREF="#debugging">Debugging</A>,
+and <A HREF="#hints">Hints, Tips, and Tricks</A>.  These will bring you up
+to speed on the special features and quirks of the <TT>ncurses</TT>
+implementation.  If you are not so experienced, keep reading. <P>
 
 The <TT>curses</TT> package is a subroutine library for
 terminal-independent screen-painting and input-event handling which
@@ -868,6 +878,36 @@ When running on PC-clones, <TT>ncurses</TT> has enhanced support for
 the IBM high-half and ROM characters.  The <TT>A_ALTCHARSET</TT> highlight,
 enables display of both high-half ACS graphics and the PC ROM graphics
 0-31 that are normally interpreted as control characters.
+
+<H3><A NAME="backbug">Background Erase -- Compatibility with Old Versions</A></H1>
+
+If you have been using a very old versions of <TT>ncurses</TT> (1.8.7 or 
+older) you may be surprised by the behavior of the erase functions.  In older
+versions, erased areas of a window were filled with a blank modified by the
+window's current attribute (as set by <B>wattrset()</B>, <B>wattron()</B>,
+<B>wattroff()</B> and friends). <P>
+
+In newer versions, this is not so.  Instead, the attribute of erased blanks
+is normal unless and until it is modified by the functions <TT>bkgdset()</TT>
+or <TT>wbkgdset()</TT>. <P>
+
+This change in behavior conforms <TT>ncurses</TT> to System V Release 4 and
+the XSI Curses standard. <P>
+
+<H2><A NAME="xsifuncs">XSI Curses Conformance</A></H2>
+
+The <TT>ncurses</TT> library is intended to be base-level conformant with the
+XSI Curses standard from X/Open.  May extended-level features (in fact, almost 
+all features not directly concerned with wide characters and
+internationalization) are also supported. <P>
+
+One effect of XSI conformance is the change in behavior described under
+<A HREF="#backbug">"Background Erase -- Compatibility with Old Versions"</A>. <P>
+
+Also, <TT>ncurses</TT> meets the XSI requirement that every macro
+entry point have a corresponding function which may be linked (and
+will be prototype-checked) if the macro definition is disabled with
+<TT>#undef</TT>. <P>
 
 <H1><A NAME="panels">The Panels Library</A></H1>
 

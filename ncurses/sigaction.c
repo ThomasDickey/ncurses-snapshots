@@ -26,6 +26,7 @@
 
 #if !HAVE_SIGACTION
 #include <signal.h>
+#include "SigAction.h"
 
 int
 sigaction (int sig, sigaction_t * sigact, sigaction_t * osigact)
@@ -34,34 +35,45 @@ sigaction (int sig, sigaction_t * sigact, sigaction_t * osigact)
 }
 
 int
-sigemptyset (int * mask)
+sigemptyset (sigset_t * mask)
 {
   *mask = 0;
   return 0;
 }
 
 int
-sigprocmask (int mode, int * mask, int * omask)
-{
-  *omask = sigsetmask (0);
-  return 0;
-}
+sigprocmask (int mode, sigset_t * mask, sigset_t * omask)
+   {
+   sigset_t current = sigsetmask(0);
+   
+   if (omask) *omask = current;
+
+   if (mode==SIG_BLOCK)
+      current |= *mask;
+   else if (mode==SIG_UNBLOCK)
+      current &= ~*mask;
+   else if (mode==SIG_SETMASK)
+      current = *mask;
+
+   sigsetmask(current);
+   return 0;
+   }
 
 int
-sigsuspend (int * mask)
+sigsuspend (sigset_t * mask)
 {
   return sigpause (*mask);
 }
 
 int
-sigdelset (int * mask, int sig)
+sigdelset (sigset_t * mask, int sig)
 {
   *mask &= ~sigmask (sig);
   return 0;
 }
 
 int
-sigaddset (int * mask, int sig)
+sigaddset (sigset_t * mask, int sig)
 {
   *mask |= sigmask (sig);
   return 0;

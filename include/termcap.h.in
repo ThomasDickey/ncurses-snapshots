@@ -33,7 +33,7 @@ extern "C"
 extern char PC;
 extern char *UP;
 extern char *BC;
-extern int ospeed;
+extern short ospeed;
 
 extern int tgetent(char *, const char *);
 extern int tgetflag(const char *);

@@ -253,7 +253,6 @@ static time_t	start_time;		/* time at start of writes */
 #define HI(x)			((x) / 256)
 #define LO(x)			((x) % 256)
 #define LITTLE_ENDIAN(p, x)	(p)[0] = LO(x), (p)[1] = HI(x)
-#define min(a, b)		((a) > (b)  ?  (b)  :  (a))
 
 static int write_object(FILE *fp, TERMTYPE *tp)
 {

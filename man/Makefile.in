@@ -39,7 +39,7 @@ install.man_db : terminfo.5
 	$(srcdir)/../mkinstalldirs $(mandir)
 	@cd $(srcdir); for i in *.[0-9]*; do \
 		section=`expr "$$i" : '.*\\.\\([0-9]\\)[xm]*'`; \
-		if [ ! -d $(mandir)/man$${section} ]; then $(srcdir)/../mkinstalldirs $(mandir)/man$$section]; fi; \
+		if [ ! -d $(mandir)/man$${section} ]; then $(srcdir)/../mkinstalldirs $(mandir)/man$${section}; fi; \
 		sed -e 's,@TERMINFO@,$(datadir),' < $$i >/tmp/man.tmp; \
 		target=`grep "$$i" man_db.renames | awk '{print $$2}'`; \
 		echo "installing man page $$target from $$i"; \

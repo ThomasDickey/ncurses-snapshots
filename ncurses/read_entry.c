@@ -56,7 +56,7 @@ TERMINAL *cur_term;
  */
 
 #undef  BYTE
-#define BYTE(p,n)	(unsigned char)(p)[n]
+#define BYTE(p,n)	(unsigned char)((p)[n])
 
 #define IS_NEG1(p)	((BYTE(p,0) == 0377) && (BYTE(p,1) == 0377))
 #define IS_NEG2(p)	((BYTE(p,0) == 0376) && (BYTE(p,1) == 0377))

@@ -193,6 +193,7 @@
 ./ncurses/MKfallback.sh
 ./ncurses/MKkeyname.awk
 ./ncurses/MKkeys.awk
+./ncurses/MKlib_gen.sh
 ./ncurses/MKnames.awk
 ./ncurses/Makefile.in
 ./ncurses/README
@@ -303,6 +304,7 @@
 ./test/gdc.c
 ./test/hanoi.c
 ./test/knight.c
+./test/lrtest.c
 ./test/ncurses.c
 ./test/newdemo.c
 ./test/rain.c

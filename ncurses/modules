@@ -64,6 +64,7 @@ lib_window	lib		$(srcdir)
 names		lib		.
 read_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 fallback	lib		.		../include/term.h $(INCDIR)/tic.h
+lib_gen		lib		.		../include/curses.h
 read_termcap	lib		$(srcdir)	../include/term.h 
 write_entry	progs		$(srcdir)	../include/term.h $(INCDIR)/tic.h 
 

@@ -4,7 +4,7 @@
 .SH NAME
 \fBinfocmp\fR - compare or print out \fIterminfo\fR descriptions
 .SH SYNOPSIS
-\fBinfocmp\fR [\fB-dcnpILCuvV1\fR] [\fB-s d\fR| \fBi\fR| \fBl\fR| \fBc\fR]
+\fBinfocmp\fR [\fB-dcnpILCuV1\fR] [\fB-v\fR \fIn\fR] [\fB-s d\fR| \fBi\fR| \fBl\fR| \fBc\fR]
 .br
       [\fB-w\fR \fIwidth\fR] [\fB-A\fR \fIdirectory\fR] [\fB-B\fR \fIdirectory\fR] [\fItermname\fR...]
 .SH DESCRIPTION
@@ -167,8 +167,9 @@ with exactly one match it includes a difference report.
 \fB-p\fR
 Ignore padding specifications when comparing strings.
 .TP 5
-\fB-v\fR
+\fB-v\fR \fIn\fR
 prints out tracing information on standard error as the program runs.
+Higher values of n induce greater verbosity.
 .TP 5
 \fB-V\fR
 prints out the version of the program in use on standard error and exits.
@@ -185,8 +186,10 @@ changes the output to \fIwidth\fR characters.
 Restrict output to a given subset.  This option is for use with archaic
 versions of terminfo like those on SVr1, Ultrix, or HP/UX that don't support
 the full set of SVR4/XSI Curses terminfo; and outright broken ports like AIX
-that have their own extensions incompatible with SVr4/XSI.  Available subsets
-are "SVr1", "Ultrix", "HP", and AIX"; see \fBterminfo\fR(\*n) for details.
+that have their own extensions incompatible with SVr4/XSI.  Available terminfo
+subsets are "SVr1", "Ultrix", "HP", and "AIX"; see \fBterminfo\fR(\*n) for
+details.  You can also choose the subset "BSD" which selects only capabilities
+with termcap equivalents recognized by 4.4BSD.
 .TP 5
 \fB-e\fR
 Dump the capabilities of the given terminal as a C initializer for a
@@ -249,6 +252,10 @@ DEC[+-]OM   	origin mode
 DEC[+-]AWM  	wraparound mode
 DEC[+-]ARM  	auto-repeat mode
 .TE
+It also recognizes a SGR action corresponding to ANSI/ISO 6429/ECMA Set
+Graphics Rendition, with the values NORMAL, BOLD, UNDERLINE, BLINK, and
+REVERSE.  All but NORMAL may be prefixed with `+' (turn on) or `-' (turn off).
+An SGR0 designmates an empty highlight sequence (equivalent to {SGR:NORMAL}).
 .SH FILES
 .TP 20
 \*d
@@ -261,8 +268,9 @@ merge termcap/terminfo files from various sources into the master.)
 The \fB-R\fR, \fB-p\fR, \fB-e\fR and \fB-i\fR options are not supported
 in SVr4 curses.
 
-The \fB-r\fR option's notion of `termcap' capabilities is BSD 4.4's.  Older
-versions may have a more restricted set.
+The \fB-r\fR option's notion of `termcap' capabilities is System V Release 4's.
+Actual BSD curses versions will have a more restricted set.  To see only the
+4.4BSD set, use -r -RBSD.
 .SH BUGS
 The -F option of \fBinfocmp\fR(1m) should be a \fBtoe\fR(1m) mode.
 .SH SEE ALSO

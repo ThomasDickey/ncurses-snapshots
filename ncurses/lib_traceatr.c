@@ -36,7 +36,7 @@
 char *_traceattr(attr_t newmode)
 {
 static char	buf[BUFSIZ];
-struct {unsigned int val; char *name;}
+static const	struct {unsigned int val; char *name;}
 names[] =
     {
 	{A_STANDOUT,	"A_STANDOUT, ",},

@@ -1948,7 +1948,7 @@ static int Insert_String(FORM *form, int row, char *txt, int len)
   char *split;
   int result = E_REQUEST_DENIED;
   const char *Space = " ";
-  
+
   if (freelen >= requiredlen)
     {
       wmove(form->w,row,0);
@@ -3969,7 +3969,13 @@ int set_field_buffer(FIELD * field, int buffer, const char * value)
     }
 
   p   = Address_Of_Nth_Buffer(field,buffer);
-  s   = memccpy(p,value,0,len);
+
+#if HAVE_MEMCCPY
+  s = memccpy(p,value,0,len);
+#else
+  for(s=value;*s && (s<value+len);s++) p[s-value]=*s;
+  if (s<value+len) p[s-value]=*s++; else s=0;
+#endif
 
   if (s) 
     {

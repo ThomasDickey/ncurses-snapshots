@@ -38,6 +38,7 @@ AWK		= @AWK@
 LN_S		= @LN_S@
 
 CC		= @CC@
+CPP		= @CPP@
 CFLAGS		= @CFLAGS@
 
 INCDIR		= $(srcdir)/../include
@@ -69,6 +70,7 @@ AUTO_SRC = \
 	fallback.c \
 	keys.tries \
 	lib_keyname.c \
+	lib_gen.c \
 	names.c
 
 ################################################################################
@@ -84,6 +86,9 @@ $(ticdir) :
 
 fallback.c : MKfallback.sh
 	sh $(srcdir)/MKfallback.sh >$@
+
+lib_gen.c : MKlib_gen.sh ../include/curses.h
+	sh $(srcdir)/MKlib_gen.sh "$(CPP)" "$(AWK)" <../include/curses.h >$@
 
 keys.tries: $(srcdir)/keys.list
 	$(AWK) -f $(srcdir)/MKkeys.awk $(srcdir)/keys.list > keys.tries

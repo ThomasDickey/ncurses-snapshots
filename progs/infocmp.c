@@ -311,11 +311,11 @@ static const assoc std_caps[] =
 {
     /* these are specified by X.364 and iBCS2 */
     {"\033c",	"RIS"},		/* full reset */
-
     {"\0337",	"SC"},		/* save cursor */
     {"\0338",	"RC"},		/* restore cursor */
     {"\033[r",	"RSR"},		/* not an X.364 mnemonic */
- 
+    {"\033[m",	"SGR0"},	/* not an X.364 mnemonic */
+
     /* this group is specified by ISO 2022 */
     {"\033(0",	"ISO DEC G0"},	/* enable DEC graphics for G0 */
     {"\033(A",	"ISO UK G0"},	/* enable UK chars for G0 */
@@ -323,27 +323,42 @@ static const assoc std_caps[] =
     {"\033)0",	"ISO DEC G1"},	/* enable DEC graphics for G1 */
     {"\033)A",	"ISO UK G1"},	/* enable UK chars for G1 */
     {"\033)B",	"ISO US G1"},	/* enable US chars for G1 */
-  
+
     /* these are DEC private modes widely supported by emulators */
     {"\033=",	"DECPAM"},	/* application keypad mode */
     {"\033>",	"DECPNM"},	/* normal keypad mode */
     {"\033<",	"DECANSI"},	/* enter ANSI mode */
- 
-    (char *)NULL
+
+    { (char *)0, (char *)0}
 };
-  
+
 static const assoc private_modes[] =
 /* DEC \E[ ... [hl] modes recognized by many emulators */
 {
-    {"1",	"CKM"},	/* application cursor keys */
-    {"2",	"ANM"},	/* set VT52 mode */
+    {"1",	"CKM"},		/* application cursor keys */
+    {"2",	"ANM"},		/* set VT52 mode */
     {"3",	"COLM"},	/* 132-column mode */
     {"4",	"SCLM"},	/* smooth scroll */
     {"5",	"SCNM"},	/* reverse video mode */
-    {"6",	"OM"},	/* origin mode */
-    {"7",	"AWM"},	/* wraparound mode */
-    {"8",	"ARM"},	/* auto-repeat mode */
-    (char *)NULL
+    {"6",	"OM"},		/* origin mode */
+    {"7",	"AWM"},		/* wraparound mode */
+    {"8",	"ARM"},		/* auto-repeat mode */
+    {(char *)0, (char *)0}
+};
+
+static const assoc ecma_highlights[] =
+/* recognize ECMA attribute sequences */
+{
+    {"0",	"NORMAL"},	/* normal */
+    {"1",	"+BOLD"},	/* bold on */
+    {"21",	"-BOLD"},	/* bold on */
+    {"4",	"+UNDERLINE"},	/* underline on */
+    {"24",	"-UNDERLINE"},	/* underline on */
+    {"5",	"+BLINK"},	/* blink on */
+    {"25",	"-BLINK"},	/* blink on */
+    {"7",	"+REVERSE"},	/* reverse on */
+    {"27",	"-REVERSE"},	/* reverse on */
+    {(char *)0, (char *)0}
 };
 
 static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
@@ -434,7 +449,7 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 		   {
 		       int tlen = strlen(ap->from);
 
-		       if (strncmp(ap->from, ep, len) == 0)
+		       if (strncmp(ap->from, ep, tlen) == 0)
 		       {
 			   (void) strcat(buf2, ap->to);
 			   found = TRUE;
@@ -446,7 +461,46 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 		       (void) strcat(buf2, ep);
 		   (void) strcat(buf2, ";");
 	       } while
-		   (ep = strtok((char *)NULL, ";"));
+		   ((ep = strtok((char *)NULL, ";")));
+	    buf2[strlen(buf2) - 1] = '\0';
+	    expansion = buf2;
+	}
+
+	/* now check for ECMA highlight sequences */
+	if (!expansion
+		    && sp[0] == '\033' && sp[1] == '['
+		    && (len = strspn(sp + 2, "0123456789;"))
+		    && sp[2 + len] == 'm')
+	{
+	    char	buf3[MAX_TERMINFO_LENGTH];
+
+	    (void) strcpy(buf2, "SGR:");
+	    (void) strncpy(buf3, sp + 2, len);
+	    len += 3;
+	    buf3[len] = '\0';
+
+	    ep = strtok(buf3, ";");
+	    do {
+		   bool	found = FALSE;
+
+		   for (ap = ecma_highlights; ap->from; ap++)
+		   {
+		       int tlen = strlen(ap->from);
+
+		       if (strncmp(ap->from, ep, tlen) == 0)
+		       {
+			   (void) strcat(buf2, ap->to);
+			   found = TRUE;
+			   break;
+		       }
+		   }
+
+		   if (!found)
+		       (void) strcat(buf2, ep);
+		   (void) strcat(buf2, ";");
+	       } while
+		   ((ep = strtok((char *)NULL, ";")));
+
 	    buf2[strlen(buf2) - 1] = '\0';
 	    expansion = buf2;
 	}
@@ -495,39 +549,43 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 
 static void file_comparison(int argc, char *argv[])
 {
+#define MAXCOMPARE	2
     /* someday we may allow comparisons on more files */
     int	filecount = 0;
-    ENTRY	*heads[2];
-    ENTRY	*tails[2];
+    ENTRY	*heads[MAXCOMPARE];
+    ENTRY	*tails[MAXCOMPARE];
     ENTRY	*qp, *rp;
-    int		i, saveoptind;
+    int		i, n;
 
     dump_init((char *)NULL, F_LITERAL, S_TERMINFO, 0, itrace);
 
-    for (saveoptind = optind; optind < argc; optind++)
+    for (n = 0; n < argc && n < MAXCOMPARE; n++)
     {
-	if (freopen(argv[optind], "r", stdin) == NULL)
-	    _nc_err_abort("Can't open %s", argv[optind]);
+	if (freopen(argv[n], "r", stdin) == NULL)
+	    _nc_err_abort("Can't open %s", argv[n]);
 
 	_nc_head = _nc_tail = (ENTRY *)NULL;
 
 	/* parse entries out of the source file */
-	_nc_set_source(argv[optind]);
+	_nc_set_source(argv[n]);
 	_nc_read_entry_source(stdin, NULL, TRUE, FALSE, NULLHOOK);
+
+	if (itrace)
+	    (void) fprintf(stderr, "Resolving file %d...\n",n-0);
 
 	/* do use resolution */
 	if (!_nc_resolve_uses())
 	{
 	    (void) fprintf(stderr,
 			   "There are unresolved use entries in %s:\n",
-			   argv[optind]);
+			   argv[n]);
 	    for_entry_list(qp)
 		if (qp->nuses)
 		{
 		    (void) fputs(qp->tterm.term_names, stderr);
 		    (void) fputc('\n', stderr);
 		}
-	    exit(1);
+	    exit(EXIT_FAILURE);
 	}
 
 	heads[filecount] = _nc_head;
@@ -575,9 +633,9 @@ static void file_comparison(int argc, char *argv[])
 	    (void) fprintf(stderr,
 			   "%s in file 1 (%s) has %d matches in file 2 (%s):\n",
 			   _nc_first_name(qp->tterm.term_names),
-			   argv[saveoptind],
+			   argv[0],
 			   qp->nuses,
-			   argv[saveoptind+1]);
+			   argv[1]);
 	    for (i = 0; i < qp->nuses; i++)
 		(void) fprintf(stderr,
 			       "\t%s\n",
@@ -589,22 +647,22 @@ static void file_comparison(int argc, char *argv[])
 	    (void) fprintf(stderr,
 			   "%s in file 2 (%s) has %d matches in file 1 (%s):\n",
 			   _nc_first_name(rp->tterm.term_names),
-			   argv[saveoptind+1],
+			   argv[1],
 			   rp->nuses,
-			   argv[saveoptind]);
+			   argv[0]);
 	    for (i = 0; i < rp->nuses; i++)
 		(void) fprintf(stderr,
 			       "\t%s\n",
 			       _nc_first_name(((ENTRY *)rp->uses[i])->tterm.term_names));
 	}
 
-    (void) printf("In file 1 (%s) only:\n", argv[saveoptind]);
+    (void) printf("In file 1 (%s) only:\n", argv[0]);
     for (qp = heads[0]; qp; qp = qp->next)
 	if (qp->nuses == 0)
 	    (void) printf("\t%s\n",
 			  _nc_first_name(qp->tterm.term_names));
 
-    (void) printf("In file 2 (%s) only:\n", argv[saveoptind+1]);
+    (void) printf("In file 2 (%s) only:\n", argv[1]);
     for (rp = heads[1]; rp; rp = rp->next)
 	if (rp->nuses == 0)
 	    (void) printf("\t%s\n",
@@ -682,7 +740,7 @@ int main(int argc, char *argv[])
 {
 	char *terminal, *firstdir, *restdir;
 	path tfile[MAXTERMS];
-	int saveoptind, c, i;
+	int c, i;
 	bool filecompare = FALSE;
 	bool initdump = FALSE;
 	bool init_analyze = FALSE;
@@ -691,13 +749,13 @@ int main(int argc, char *argv[])
 	{
 		(void) fprintf(stderr,
 			"infocmp: environment variable TERM not set\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	/* where is the terminfo database location going to default to? */
 	restdir = firstdir = getenv("TERMINFO");
 
-	while ((c = getopt(argc, argv, "decCFinlLprR:s:uvVw:A:B:1")) != EOF)
+	while ((c = getopt(argc, argv, "decCFinlLprR:s:uv:Vw:A:B:1")) != EOF)
 		switch (c)
 		{
 		case 'd':
@@ -765,7 +823,7 @@ int main(int argc, char *argv[])
 			{
 				(void) fprintf(stderr,
 					       "infocmp: unknown sort mode\n");
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 			break;
 
@@ -774,12 +832,13 @@ int main(int argc, char *argv[])
 			break;
 
 		case 'v':
-			itrace = 1;
+			itrace = atoi(optarg);
+			_nc_tracing = (1 << itrace) - 1;
 			break;
 
 		case 'V':
 			(void) fputs(NCURSES_VERSION, stdout);
-			exit(0);
+			exit(EXIT_SUCCESS);
 
 		case 'w':
 			mwidth = atoi(optarg);
@@ -821,12 +880,12 @@ int main(int argc, char *argv[])
 	{
 	    /* grab the entries */
 	    termcount = 0;
-	    for (saveoptind = optind; optind < argc; optind++)
+	    for (; optind < argc; optind++)
 		if (termcount >= MAXTERMS)
 		{
 		    (void) fprintf(stderr,
 			   "infocmp: too many terminal type arguments\n");
-		    exit(1);
+		    exit(EXIT_FAILURE);
 		}
 		else
 		{
@@ -873,7 +932,7 @@ int main(int argc, char *argv[])
 			(void) fprintf(stderr,
 				       "infocmp: couldn't open terminfo file %s.\n",
 				       tfile[termcount]);
-			exit(1);
+			exit(EXIT_FAILURE);
 		    }
 		    termcount++;
 		}
@@ -881,14 +940,15 @@ int main(int argc, char *argv[])
 	    /* dump as C initializer for the terminal type */
 	    if (initdump)
 	    {
-		char	*str;
+		int	n;
+		char	*str = 0;
 		int	size;
 
 		(void) printf("    \"%s\",\n    (char *)0,\n/* BOOLEANS */\n",
 			      term->term_names);
-		for (i = 0; i < BOOLCOUNT; i++)
+		for (n = 0; n < BOOLCOUNT; n++)
 		{
-		    switch(term->Booleans[i])
+		    switch(term->Booleans[n])
 		    {
 		    case TRUE:
 			str = "TRUE";
@@ -905,34 +965,31 @@ int main(int argc, char *argv[])
 		    case CANCELLED_BOOLEAN:
 			str = "CANCELLED_BOOLEAN";
 			break;
-		    default:
-			str = "?ERROR";
-			break;
 		    }
 		    (void) printf("/* %s */	%s,\n",
-				  boolnames[i], str);
+				  boolnames[n], str);
 		}
 		(void) printf("/* NUMERICS */\n");
-		for (i = 0; i < NUMCOUNT; i++)
+		for (n = 0; n < NUMCOUNT; n++)
 		    (void) printf("/* %s */	%d,\n",
-				  numnames[i], term->Numbers[i]);
+				  numnames[n], term->Numbers[n]);
 		size = sizeof(TERMTYPE)
 		    + (BOOLCOUNT * sizeof(term->Booleans[0]))
 		    + (NUMCOUNT * sizeof(term->Numbers[0]));
 		(void) printf("/* STRINGS */\n");
-		for (i = 0; i < STRCOUNT; i++)
+		for (n = 0; n < STRCOUNT; n++)
 		{
 		    char	buf[BUFSIZ], *sp, *tp;
 
-		    if (term->Strings[i] == ABSENT_STRING)
+		    if (term->Strings[n] == ABSENT_STRING)
 			str = "ABSENT_STRING";
-		    else if (term->Strings[i] == CANCELLED_STRING)
+		    else if (term->Strings[n] == CANCELLED_STRING)
 			str = "CANCELLED_STRING";
 		    else
 		    {
 			tp = buf;
 			*tp++ = '"';
-			for (sp = term->Strings[i]; *sp; sp++)
+			for (sp = term->Strings[n]; *sp; sp++)
 			    if (isascii(*sp) && isprint(*sp) && *sp !='\\' && *sp != '"')
 				*tp++ = *sp;
 			    else
@@ -942,13 +999,13 @@ int main(int argc, char *argv[])
 			    }
 			*tp++ = '"';
 			*tp = '\0';
-			size += (strlen(term->Strings[i]) + 1);
+			size += (strlen(term->Strings[n]) + 1);
 			str = buf;
 		    }
-		    (void) printf("/* %s */	%s,\n", strnames[i], str);
+		    (void) printf("/* %s */	%s,\n", strnames[n], str);
 	        }
 		(void) printf("} /* size = %d */\n", size);
-		exit(0);
+		return EXIT_SUCCESS;
 	    }
 
 	    /* analyze the init strings */
@@ -963,7 +1020,7 @@ int main(int argc, char *argv[])
 		analyze_string("rs2", reset_2string, &term[0]);
 		analyze_string("rs3", reset_3string, &term[0]);
 #undef CUR
-		exit(0);
+		return EXIT_SUCCESS;
 	    }
 
 	    /*
@@ -1028,9 +1085,9 @@ int main(int argc, char *argv[])
 	    (void) fprintf(stderr,
 		"File comparison needs exactly two file arguments.\n");	    
 	else
-	    file_comparison(argc, argv);
+	    file_comparison(argc-optind, argv+optind);
 
-	exit(0);
+	exit(EXIT_SUCCESS);
 }
 
 /* infocmp.c ends here */

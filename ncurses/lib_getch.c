@@ -101,6 +101,16 @@ again:
 	if (n == -1 && errno == EINTR)
 		goto again;
 	T(("read %d characters", n));
+
+	/* 
+	 * It's more important to be able to handle NULs in the input stream
+	 * than to be able to distinguish them from meta-NULs.  PC BIOS scan
+	 * codes sometimes contain the former.  This hack means we can use
+	 * \200 in a function-key capability as a stand-in for NUL.
+	 */
+	if (n == 1 && ch == '\0')
+	    ch = '\200';
+
 	SP->_fifo[tail] = ch;
 	if (head == -1) head = tail;
 	t_inc();

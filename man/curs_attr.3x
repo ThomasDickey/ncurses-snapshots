@@ -26,32 +26,32 @@
 .br
 \fBint wstandout(WINDOW *win);\fR
 .br
-\fBint attr_get(void);\fR
-.br
-\fBint attr_off(attr_t attrs);\fR
-.br
-\fBint attr_on(attr_t attrs);\fR
-.br
-\fBint attr_set(attr_t attrs);\fR
+\fBattr_t attr_get(void);\fR
 .br
 \fBattr_t wattr_get(WINDOW *);\fR
 .br
+\fBint attr_off(attr_t attrs);\fR
+.br
 \fBint wattr_off(WINDOW *, attr_t attrs);\fR
+.br
+\fBint attr_on(attr_t attrs);\fR
 .br
 \fBint wattr_on(WINDOW *, attr_t attrs);\fR
 .br
+\fBint attr_set(attr_t attrs);\fR
+.br
 \fBint wattr_set(WINDOW *, attr_t attrs);\fR
 .br
-\fBint chgat(int n, attr_t attr, short color, void *const opts)\fR
-.br
-\fBint mvchgat(int y, int x, int n, attr_t attr,
-      short color, void *const opts)\fR
+\fBint chgat(int n, attr_t attr, short color, const void *opts)\fR
 .br
 \fBint wchgat(WINDOW *, int n, attr_t attr,
-      short color, void *const opts)\fR
+      short color, const void *opts)\fR
+.br
+\fBint mvchgat(int y, int x, int n, attr_t attr,
+      short color, const void *opts)\fR
 .br
 \fBint mvwchgat(WINDOW *, int y, int x, int n, attr_t attr,
-      short color, void *const opts)\fR
+      short color, const void *opts)\fR
 .br
 .SH DESCRIPTION
 These routines manipulate the current attributes of the named window.  The

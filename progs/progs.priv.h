@@ -73,3 +73,24 @@
 extern char *optarg;
 extern int optind;
 #endif /* HAVE_GETOPT_H */
+
+/* usually in <unistd.h> */
+#ifndef STDOUT_FILENO
+#define STDOUT_FILENO 1
+#endif
+
+#ifndef STDERR_FILENO
+#define STDERR_FILENO 2
+#endif
+
+#ifndef EXIT_SUCCESS
+#define EXIT_SUCCESS 0
+#endif
+
+#ifndef EXIT_FAILURE
+#define EXIT_FAILURE 1
+#endif
+
+#ifndef F_OK
+#define	F_OK	0		/* Test for existence.  */
+#endif
