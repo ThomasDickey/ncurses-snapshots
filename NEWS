@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.879 2005/03/20 18:30:37 tom Exp $
+-- $Id: NEWS,v 1.880 2005/03/26 23:11:19 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050326
+	+ add ifdef's for _LP64 in curses.h to avoid using wasteful 64-bits for
+	  chtype and mmask_t, but add configure option --disable-lp64 in case
+	  anyone used that configuration.
+	+ update misc/shlib script to account for Mac OS X (report by Michail
+	  Vidiassov).
+	+ correct comparison for wrapping multibyte characters in
+	  waddch_literal() (report by TAKAHASHI Tamotsu).
 
 20050320
 	+ add -c and -w options to tset to allow user to suppress ncurses'
