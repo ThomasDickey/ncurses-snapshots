@@ -53,6 +53,33 @@ static char *separator, *trailer;
 
 #define OBSOLETE(n) (n[0] == 'O' && n[1] == 'T')
 
+char *nametrans(const char *name)
+/* translate a capability name from termcap to terminfo */
+{
+    const struct name_table_entry 	*np;
+
+    if ((np = _nc_find_entry(name, _nc_info_hash_table)) != NULL)
+        switch(np->nte_type)
+	{
+	case BOOLEAN:
+	    if (bool_from_termcap[np->nte_index])
+		return(boolcodes[np->nte_index]);
+	    break;
+
+	case NUMBER:
+	    if (num_from_termcap[np->nte_index])
+		return(numcodes[np->nte_index]);
+	    break;
+
+	case STRING:
+	    if (str_from_termcap[np->nte_index])
+		return(strcodes[np->nte_index]);
+	    break;
+	}
+
+    return((char *)NULL);
+}
+
 void dump_init(char *version, int mode, int sort, int twidth, int traceval)
 /* set up for entry display */
 {
@@ -316,7 +343,7 @@ bool	outcount = 0;
 
 #define WRAP_CONCAT	\
 	    (void) strcat(buffer, separator); \
-	    if (column > INDENT &&  column + strlen(buffer) > width) { \
+	    if (column > INDENT &&  column + (int) strlen(buffer) > width) { \
 		(void) strcat(outbuf, trailer); \
 		column = INDENT; \
 	    } \
@@ -486,10 +513,11 @@ bool	outcount = 0;
 	{
 	    bool	box_ok = TRUE;
 	    const char	*acstrans = "lqkxjmwuvtn";
-	    char	*cp, *tp, *sp, boxchars[11];
+	    const char	*cp;
+	    char	*tp, *sp, boxchars[11];
 
 	    tp = boxchars;
-	    for (cp = (char *)acstrans; *cp; cp++)
+	    for (cp = acstrans; *cp; cp++)
 	    {
 		sp = strchr(acs_chars, *cp);
 		if (sp)

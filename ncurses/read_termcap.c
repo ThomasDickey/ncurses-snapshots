@@ -49,6 +49,7 @@
 #if HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
+#include <errno.h>
 
 #ifdef USE_GETCAP
 /*
@@ -759,7 +760,7 @@ _nc_nfcmp(char *nf, char *rec)
 #include "tic.h"
 #include "term_entry.h"
 
-int _nc_read_termcap_entry(const char *tn, TERMTYPE *tp)
+int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 {
     ENTRY	*ep;
 #ifndef USE_GETCAP

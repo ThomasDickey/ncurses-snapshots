@@ -32,7 +32,7 @@
 int  wclrtoeol(WINDOW *win)
 {
 chtype	*maxx, *ptr, *end;
-int	y, x, minx;
+short	y, x, minx;
 
 	T(("wclrtoeol(%p) called", win));
 

@@ -16,7 +16,6 @@ THIS		= Makefile
 
 MODEL		= @DFT_LWR_MODEL@
 srcdir		= @srcdir@
-VPATH		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 libdir		= $(exec_prefix)/lib
@@ -31,7 +30,7 @@ LN_S		= @LN_S@
 CC		= @CC@
 CFLAGS		= @CFLAGS@
 
-CPPFLAGS	= @INCLUDES@ \
+CPPFLAGS	= @CPPFLAGS@ \
 		  -DHAVE_CONFIG_H 
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)

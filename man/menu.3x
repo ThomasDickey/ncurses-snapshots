@@ -138,6 +138,10 @@ descriptions of the entry points.
 .SH NOTES
 The header file \fB<menu.h>\fR automatically includes the header files
 \fB<curses.h>\fR and \fB<eti.h>\fR.
+
+In your library list, libmenu.a should be before libncurses.a; that is,
+you want to say `-lmenu -lncurses', not the other way around (which would
+give you a link error using GNU \fBld\fR(1) and many other linkers).
 .SH PORTABILITY
 These routines emulate the System V menu library.  They were not supported on
 Version 7 or BSD versions.

@@ -124,7 +124,9 @@ int initTest (WINDOW **win)
 #ifdef PDCDEBUG
 	PDC_debug("initTest called\n");
 #endif
+#ifdef NCURSES_VERSION
 	trace(TRACE_MAXIMUM);
+#endif
     initscr();
 #ifdef PDCDEBUG
 	PDC_debug("after initscr()\n");

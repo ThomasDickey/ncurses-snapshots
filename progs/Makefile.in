@@ -19,7 +19,6 @@ NC_MFLAGS 	= @nc_cv_makeflags@
 
 MODEL		= ../@DFT_OBJ_SUBDIR@
 srcdir		= @srcdir@
-VPATH		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 bindir		= $(exec_prefix)/bin
@@ -37,7 +36,7 @@ CC		= @CC@
 CFLAGS		= @CFLAGS@
 
 INCDIR		= $(srcdir)/../include
-CPPFLAGS	= -I../progs -I$(srcdir) @INCLUDES@ \
+CPPFLAGS	= -I../progs -I$(srcdir) @CPPFLAGS@ \
 		  -DHAVE_CONFIG_H -DTERMINFO=\"$(ticdir)\"
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
@@ -50,7 +49,7 @@ CFLAGS_SHARED	= $(CCFLAGS) @CC_SHARED_OPTS@
 CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
 LINK		= $(CC)
-LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@ @LOCAL_LDFLAGS@
+LDFLAGS		= @LDFLAGS@ @LD_MODEL@ @LIBS@ 
 
 AUTO_SRC = \
 	termsort.c

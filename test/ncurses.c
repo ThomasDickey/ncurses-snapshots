@@ -16,16 +16,49 @@ library source.
 
 ***************************************************************************/
 /*LINTLIBRARY */
+
+#if HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <assert.h>
+
+#if HAVE_GETTIMEOFDAY
+#if HAVE_SYS_TIME_H && ! SYSTEM_LOOKS_LIKE_SCO
+#include <sys/time.h>
+#endif
+#endif
+
 #include <curses.h>
+
+#if HAVE_PANEL_H
 #include <panel.h>
+#endif
+
+#if HAVE_MENU_H
 #include <menu.h>
+#endif
+
+#if HAVE_FORM_H
 #include <form.h>
+#endif
+
+#ifndef NCURSES_VERSION
+#define mmask_t chtype		/* not specified in XSI */
+#define attr_t chtype		/* not specified in XSI */
+#define ACS_S3          (acs_map['p'])  /* scan line 3 */
+#define ACS_S7          (acs_map['r'])  /* scan line 7 */
+#define ACS_LEQUAL      (acs_map['y'])  /* less/equal */
+#define ACS_GEQUAL      (acs_map['z'])  /* greater/equal */
+#define ACS_PI          (acs_map['{'])  /* Pi */
+#define ACS_NEQUAL      (acs_map['|'])  /* not equal */
+#define ACS_STERLING    (acs_map['}'])  /* UK pound sign */
+#endif
 
 #define P(string)	printw("%s\n", string)
 #ifndef CTRL
@@ -62,7 +95,9 @@ int y, x;
 
      refresh();
 
+#ifdef NCURSES_VERSION
      mousemask(ALL_MOUSE_EVENTS, (mmask_t *)NULL);
+#endif
   
      (void) printw("Delay in 10ths of a second (<CR> for blocking input)? ");
      echo();
@@ -81,6 +116,7 @@ int y, x;
 	if (firsttime++)
 	{
 	    printw("Key pressed: %04o ", c);
+#ifdef NCURSES_VERSION
 	    if (c == KEY_MOUSE)
 	    {
 		MEVENT	event;
@@ -123,7 +159,9 @@ int y, x;
 
 		addch('\n');
 	    }
-	    else if (c >= KEY_MIN)
+	    else
+#endif	/* NCURSES_VERSION */
+	     if (c >= KEY_MIN)
 	    {
 		(void) addstr(keyname(c));
 		addch('\n');
@@ -181,7 +219,9 @@ int y, x;
 		(void) printw("%05d: input timed out\n", incount++);
     }
 
+#ifdef NCURSES_VERSION
     mousemask(0, (mmask_t *)NULL);  
+#endif
     timeout(-1);
     erase();
     endwin();
@@ -654,9 +694,12 @@ static pair *selectcell(int uli, int ulj, int lri, int lrj)
     int		sj = lrj - ulj + 1;	/* width of the select area */
     int		i = 0, j = 0;		/* offsets into the select area */
 
+    res.y = uli;
+    res.x = ulj;
     for (;;)
     {
 	move(LINES - 1, COLS - 17);
+	clrtoeol();
 	printw("Y = %2d X = %2d", uli + i, ulj + j);
 	move(uli + i, ulj + j);
 
@@ -674,6 +717,19 @@ static pair *selectcell(int uli, int ulj, int lri, int lrj)
     }
 }
 
+static void outerbox(pair ul, pair lr, bool onoff)
+/* draw or erase a box *outside* the given pair of corners */
+{
+    mvaddch(ul.y-1, lr.x-1, onoff ? ACS_ULCORNER : ' ');
+    mvaddch(ul.y-1, lr.x+1, onoff ? ACS_URCORNER : ' ');
+    mvaddch(lr.y+1, lr.x+1, onoff ? ACS_LRCORNER : ' ');
+    mvaddch(lr.y+1, ul.x-1, onoff ? ACS_LLCORNER : ' ');
+    move(ul.y-1, ul.x);   hline(onoff ? ACS_HLINE : ' ', lr.x - ul.x + 1);
+    move(ul.y,   ul.x-1); vline(onoff ? ACS_VLINE : ' ', lr.y - ul.y + 1);
+    move(lr.y+1, ul.x);   hline(onoff ? ACS_HLINE : ' ', lr.x - ul.x + 1);
+    move(ul.y,   lr.x+1); vline(onoff ? ACS_VLINE : ' ', lr.y - ul.y + 1);
+}
+
 static WINDOW *getwindow(void)
 /* Ask user for a window definition */
 {
@@ -683,7 +739,7 @@ static WINDOW *getwindow(void)
     move(0, 0); clrtoeol();
     addstr("Use arrows to move cursor, anything else to mark corner 1");
     refresh();
-    if ((tmp = selectcell(2,    1,    LINES-BOTLINES-2, COLS-2)) == (pair *)NULL)
+    if ((tmp = selectcell(2, 1, LINES-BOTLINES-2, COLS-2)) == (pair *)NULL)
 	return((WINDOW *)NULL);
     memcpy(&ul, tmp, sizeof(pair));
     mvaddch(ul.y-1, ul.x-1, ACS_ULCORNER);
@@ -696,13 +752,7 @@ static WINDOW *getwindow(void)
 
     rwindow = subwin(stdscr, lr.y - ul.y + 1, lr.x - ul.x + 1, ul.y, ul.x);
 
-    mvaddch(ul.y-1, lr.x+1, ACS_URCORNER);
-    mvaddch(lr.y+1, lr.x+1, ACS_LRCORNER);
-    mvaddch(lr.y+1, ul.x-1, ACS_LLCORNER);
-    move(ul.y-1, ul.x);   hline(ACS_HLINE, lr.x - ul.x + 1);
-    move(ul.y,   ul.x-1); vline(ACS_VLINE, lr.y - ul.y + 1);
-    move(lr.y+1, ul.x);   hline(ACS_HLINE, lr.x - ul.x + 1);
-    move(ul.y,   lr.x+1); vline(ACS_VLINE, lr.y - ul.y + 1);
+    outerbox(ul, lr, TRUE);
     refresh();
 
     scrollok(rwindow, TRUE);
@@ -729,7 +779,7 @@ static void transient(char *msg)
 static void acs_and_scroll(void)
 /* Demonstrate windows */
 {
-    int	c;
+    int	c, i;
     FILE *fp;
     struct frame
     {
@@ -742,11 +792,11 @@ static void acs_and_scroll(void)
 
     refresh();
     mvaddstr(LINES - 4, 0,
-	     "F1 = make new window, F2 = next window, F3 = previous window, ");
+     "F1 = make new window, F2 = next window, F3 = previous window, ");
     mvaddstr(LINES - 3, 0,
-	     "F4 = scroll current window forward, F5 = scroll current window backward");
+     "F4 = scroll current window forward, F5 = scroll current window backward");
     mvaddstr(LINES - 2, 0,
-	     "F6 = save window to file, F7 = restore window, Ctrl-D = exit");
+     "F6 = save window to file, F7 = restore window, F8 = resize, Ctrl-D = exit");
     transient((char *)NULL);
 
     c = KEY_F(1);
@@ -836,6 +886,58 @@ static void acs_and_scroll(void)
 	    }
 	    break;
 
+	case KEY_F(8):		/* resize window */
+	    if (current)
+	    {
+		pair *tmp, ul, lr;
+
+		move(0, 0); clrtoeol();
+		addstr("Use arrows to move cursor, anything else to mark new corner");
+		refresh();
+
+		getbegyx(current->wind, ul.y, ul.x);
+
+		tmp = selectcell(ul.y, ul.x, LINES-BOTLINES-2, COLS-2);
+		if (tmp == (pair *)NULL)
+	    	    break;
+
+		getmaxyx(current->wind, lr.y, lr.x);
+		lr.y += (ul.y - 1);
+		lr.x += (ul.x - 1);
+		outerbox(ul, lr, FALSE);
+		wnoutrefresh(stdscr);
+
+		/* strictly cosmetic hack for the test */
+		if (current->wind->_maxy > tmp->y - ul.y)
+		{
+		  getyx(current->wind, lr.y, lr.x);
+		  wmove(current->wind, tmp->y - ul.y + 1, 0);
+		  wclrtobot(current->wind);
+		  wmove(current->wind, lr.y, lr.x);
+		}
+		if (current->wind->_maxx > tmp->x - ul.x)
+		  for (i = 0; i < current->wind->_maxy; i++)
+		  {
+		    wmove(current->wind, i, tmp->x - ul.x + 1);
+		    wclrtoeol(current->wind);
+		  }
+		wnoutrefresh(current->wind);
+
+		memcpy(&lr, tmp, sizeof(pair));
+		(void) wresize(current->wind, lr.y-ul.y+1, lr.x-ul.x+1);
+
+		getbegyx(current->wind, ul.y, ul.x);
+		getmaxyx(current->wind, lr.y, lr.x);
+		lr.y += (ul.y - 1);
+		lr.x += (ul.x - 1);
+		outerbox(ul, lr, TRUE);
+		wnoutrefresh(stdscr);
+
+		wnoutrefresh(current->wind);
+		doupdate();
+	    }
+	    break;
+
 	case KEY_F(10):	/* undocumented --- use this to test area clears */
 	    selectcell(0, 0, LINES - 1, COLS - 1);
 	    clrtobot();
@@ -867,6 +969,7 @@ static void acs_and_scroll(void)
  *
  ****************************************************************************/
 
+#if HAVE_PANEL_H
 static PANEL *p1;
 static PANEL *p2;
 static PANEL *p3;
@@ -1191,12 +1294,16 @@ register y,x;
  *
  ****************************************************************************/
 
-#define GRIDSIZE	5
+#define GRIDSIZE	3
 
 static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 {
+#if HAVE_GETTIMEOFDAY
+    struct timeval before, after;
+#endif
     static int porty, portx, basex = 0, basey = 0;
     int pxmax, pymax, lowend, highend, i, j, c;
+    int top_x = 0, top_y = 0;
 
     porty = iy; portx = ix;
 
@@ -1210,39 +1317,99 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 	    /* do nothing */
 	    break;
 
-	case KEY_IC:
-	    if (portx >= pxmax || portx >= ix)
-		beep();
-	    else
-		++portx;
-	    break;
-
-	case KEY_IL:
-	    if (porty >= pymax || porty >= iy)
-		beep();
-	    else
-		++porty;
-	    break;
-
-	case KEY_DC:
-	    if (portx <= 0)
+	    /* Move the top-left corner of the pad, keeping the bottom-right
+	     * corner fixed.
+	     */
+	case 'h':	/* increase-columns */
+	    if (top_x <= 0)
 		beep();
 	    else
 	    {
-		--portx;
-		for (i = 0; i < porty; i++)
-		    mvaddch(i, portx, ' ');
+		if (top_x-- > 0)
+		    for (i = top_y; i < porty; i++)
+			mvaddch(i, top_x, ' ');
 	    }
 	    break;
 
-	case KEY_DL:
-	    if (porty <= 0)
+	case 'j':	/* decrease-lines */
+	    if (top_y >= porty)
 		beep();
 	    else
 	    {
+		if (top_y > 0)
+		    for (j = top_x - (top_x > 0); j < portx; j++)
+			mvaddch(top_y-1, j, ' ');
+		top_y++;
+	    }
+	    break;
+
+	case 'k':	/* increase-lines */
+	    if (top_y <= 0)
+		beep();
+	    else
+	    {
+		top_y--;
+		for (j = top_x; j < portx; j++)
+		    mvaddch(top_y, j, ' ');
+	    }
+	    break;
+
+	case 'l':	/* decrease-columns */
+	    if (top_x >= portx)
+		beep();
+	    else
+	    {
+		if (top_x > 0)
+		    for (i = top_y - (top_y > 0); i <= porty; i++)
+			mvaddch(i, top_x-1, ' ');
+		top_x++;
+	    }
+	    break;
+
+	    /* Move the bottom-right corner of the pad, keeping the top-left
+	     * corner fixed.
+	     */
+	case KEY_IC:	/* increase-columns */
+	    if (portx >= pxmax || portx >= ix)
+		beep();
+	    else
+	    {
+		for (i = top_y; i < porty; i++)
+		    mvaddch(i, portx-1, ' ');
+		++portx;
+	    }
+	    break;
+
+	case KEY_IL:	/* increase-lines */
+	    if (porty >= pymax || porty >= iy)
+		beep();
+	    else
+	    {
+		for (j = top_x; j < portx; j++)
+		    mvaddch(porty-1, j, ' ');
+		++porty;
+	    }
+	    break;
+
+	case KEY_DC:	/* decrease-columns */
+	    if (portx <= top_x)
+		beep();
+	    else
+	    {
+		for (i = top_y - (top_y > 0); i < porty; i++)
+		    mvaddch(i, portx-1, ' ');
+		--portx;
+	    }
+	    break;
+
+	case KEY_DL:	/* decrease-lines */
+	    if (porty <= top_y)
+		beep();
+	    else
+	    {
+		for (j = top_x; j < portx; j++)
+		    mvaddch(porty-1, j, ' ');
 		--porty;
-		for (j = 0; j < portx; j++)
-		    mvaddch(porty, j, ' ');
 	    }
 	    break;
 
@@ -1275,12 +1442,27 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 	    break;
 	}
 
+	if (top_x > 0) {
+	    for (i = top_y; i < porty; i++)
+		mvaddch(i, top_x - 1, ACS_VLINE);
+	}
+
+	if (top_y > 0) {
+	    for (j = top_x; j < portx; j++)
+		mvaddch(top_y - 1, j, ACS_HLINE);
+	}
+
+	if (top_x > 0 && top_y > 0)
+		mvaddch(top_y - 1, top_x - 1, ACS_ULCORNER);
+
 	if (pxmax > portx - 1) {
+	    int length  = (portx - top_x - 1);
+	    float ratio = ((float) length) / ((float) pxmax);
 
-	    lowend = basex * ((float)(portx - 1) / (float)pxmax);
-	    highend = (basex + portx - 1) * ((float)(portx - 1) / (float)pxmax);
+	    lowend  = top_x + (basex * ratio);
+	    highend = top_x + ((basex + length) * ratio);
 
-	    for (j = 0; j < lowend; j++)
+	    for (j = top_x; j < lowend; j++)
 		mvaddch(porty - 1, j, ACS_HLINE);
 	    attron(A_REVERSE);
 	    for (j = lowend; j <= highend; j++)
@@ -1290,11 +1472,13 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 		mvaddch(porty - 1, j, ACS_HLINE);
         }
 	if (pymax > porty - 1) {
+	    int length  = (porty - top_y - 1);
+	    float ratio = ((float) length) / ((float) pymax);
 
-	    lowend = basey * ((float)(porty - 1) / (float)pymax);
-	    highend = (basey + porty - 1) * ((float)(porty - 1) / (float)pymax);
+	    lowend  = top_y + (basey * ratio);
+	    highend = top_y + ((basey + length) * ratio);
 
-	    for (i = 0; i < lowend; i++)
+	    for (i = top_y; i < lowend; i++)
 		mvaddch(i, portx - 1, ACS_VLINE);
 	    attron(A_REVERSE);
 	    for (i = lowend; i <= highend; i++)
@@ -1304,16 +1488,37 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 		mvaddch(i, portx - 1, ACS_VLINE);
         }
 
+	if (top_y > 0)
+	    mvaddch(top_y - 1, portx - 1, ACS_URCORNER);
+
+	if (top_x > 0)
+	    mvaddch(porty - 1, top_x - 1, ACS_LLCORNER);
+
 	mvaddch(porty - 1, portx - 1, ACS_LRCORNER);
+
+#if HAVE_GETTIMEOFDAY
+	gettimeofday(&before, NULL);
+#endif
 	wnoutrefresh(stdscr);
 
 	prefresh(pad,
 		 basey, basex,
-		 0, 0,
+		 top_y, top_x,
 		 porty - (pxmax > portx) - 1,
 		 portx - (pymax > porty) - 1); 
 
 	doupdate();
+#if HAVE_GETTIMEOFDAY
+	{
+		double elapsed;
+		gettimeofday(&after, NULL);
+		elapsed = (after.tv_sec  + after.tv_usec  / 1.0e6)
+	 		- (before.tv_sec + before.tv_usec / 1.0e6);
+		move(LINES-1, COLS-15);
+		printw("Secs: %8.03f", elapsed);
+		refresh();
+	}
+#endif
 
     } while
 	((c = pgetc(pad)) != KEY_EXIT);
@@ -1326,10 +1531,10 @@ int padgetch(WINDOW *win)
 
     switch(c = wgetch(win))
     {
-    case 'u': return(KEY_UP);
-    case 'd': return(KEY_DOWN);
-    case 'r': return(KEY_RIGHT);
-    case 'l': return(KEY_LEFT);
+    case 'U': return(KEY_UP);
+    case 'D': return(KEY_DOWN);
+    case 'R': return(KEY_RIGHT);
+    case 'L': return(KEY_LEFT);
     case '+': return(KEY_IL);
     case '-': return(KEY_DL);
     case '>': return(KEY_IC);
@@ -1363,9 +1568,9 @@ static void demo_pad(void)
 	    else
 		waddch(panpad, ' ');
     }
-    mvprintw(LINES - 3, 0, "Use arrow keys to pan over the test pattern");
-    mvprintw(LINES - 2, 0, "Use +,- to grow/shrink the panner vertically.");
-    mvprintw(LINES - 1, 0, "Use <,> to grow/shrink the panner horizontally.");
+    mvprintw(LINES - 3, 0, "Use arrow keys (or U,D,L,R) to pan over the test pattern - 'q' to quit");
+    mvprintw(LINES - 2, 0, "Use +,- (or j,k) to grow/shrink the panner vertically.");
+    mvprintw(LINES - 1, 0, "Use <,> (or h,l) to grow/shrink the panner horizontally.");
 
     keypad(panpad, TRUE);
     panner(panpad, LINES - 4, COLS, padgetch);
@@ -1373,6 +1578,7 @@ static void demo_pad(void)
     endwin();
     erase();
 }
+#endif /* HAVE_PANEL_H */
 
 /****************************************************************************
  *
@@ -1486,6 +1692,8 @@ static void input_test(WINDOW *win)
  *
  ****************************************************************************/
 
+#if HAVE_MENU_H
+
 #define MENU_Y	4
 #define MENU_X	4
 
@@ -1550,13 +1758,14 @@ static void menu_test(void)
 	free_item(*ip);
     free_menu(m);
 }
+#endif /* HAVE_MENU_H */
 
 /****************************************************************************
  *
  * Forms test
  *
  ****************************************************************************/
-
+#if HAVE_FORM_H
 static FIELD *make_label(int frow, int fcol, char *label)
 {
     FIELD	*f = new_field(1, strlen(label), frow, fcol, 0, 0);
@@ -1777,6 +1986,110 @@ static void demo_forms(void)
 
     free_form(form);
 }
+#endif	/* HAVE_FORM_H */
+
+/****************************************************************************
+ *
+ * Overlap test
+ *
+ ****************************************************************************/
+
+static void fillwin(WINDOW *win, char ch)
+{
+    int y, x;
+
+    for (y = 0; y <= win->_maxy; y++)
+    {
+	wmove(win, y, 0);
+	for (x = 0; x <= win->_maxx; x++)
+	    waddch(win, ch);
+    }
+}
+
+static void crosswin(WINDOW *win, char ch)
+{
+    int y, x;
+
+    for (y = 0; y <= win->_maxy; y++)
+    {
+	for (x = 0; x <= win->_maxx; x++)
+	    if (((x > win->_maxx / 3) && (x <= 2 * win->_maxx / 3))
+			|| (((y > win->_maxy / 3) && (y <= 2 * win->_maxy / 3))))
+	    {
+		wmove(win, y, x);
+		waddch(win, ch);
+	    }
+    }
+}
+
+static void overlap_test(void)
+/* test effects of overlapping windows */
+{
+    int	ch;
+
+    WINDOW *win1 = newwin(9, 20, 3, 3);
+    WINDOW *win2 = newwin(9, 20, 9, 16);
+
+    refresh();
+    move(0, 0);
+    printw("This test shows the behavior of wnoutrefresh() with respect to\n");
+    printw("the shared region of two overlapping windows.  The cross pattern\n");
+    printw("in each wind does not overlap the other.\n");
+
+
+    move(18, 0);
+    printw("F1 = refresh window A, then window B, then doupdaute.\n");
+    printw("F2 = refresh window B, then window A, then doupdaute.\n");
+    printw("F3 = fill window A with letter A.  F4 = fill window B with letter B.\n");
+    printw("F5 = cross pattern in window A.    F6 = cross pattern in window B.\n");
+    printw("F7 = clear window A.               F8 = clear window B.\n");
+    printw("F9 = terminate test.");
+
+    while ((ch = getch()) != CTRL('D') && ch != KEY_F(9))
+	switch (ch)
+	{
+	case KEY_F(1):		/* refresh window A first, then B */
+	    wnoutrefresh(win1);
+	    wnoutrefresh(win2);
+	    doupdate();
+	    break;
+
+	case KEY_F(2):		/* refresh window B first, then A */
+	    wnoutrefresh(win2);
+	    wnoutrefresh(win1);
+	    doupdate();
+	    break;
+
+	case KEY_F(3):		/* fill window A so it's visible */
+	    fillwin(win1, 'A');
+	    break;
+
+	case KEY_F(4):		/* fill window B so it's visible */
+	    fillwin(win2, 'B');
+	    break;
+
+	case KEY_F(5):		/* cross test pattern in window A */
+	    crosswin(win1, 'A');
+	    break;
+
+	case KEY_F(6):		/* cross test pattern in window A */
+	    crosswin(win2, 'B');
+	    break;
+
+	case KEY_F(7):		/* clear window A */
+	    wclear(win1);
+	    wmove(win1, 0, 0);
+	    break;
+
+	case KEY_F(8):		/* clear window B */
+	    wclear(win2);
+	    wmove(win2, 0, 0);
+	    break;
+	}
+
+    erase();
+    endwin();
+}
 
 /****************************************************************************
  *
@@ -1822,28 +2135,40 @@ do_single_test(const char c)
 	acs_display();
 	return(TRUE);
 
+#if HAVE_PANEL_H
     case 'o':
 	demo_panels();
 	return(TRUE);
+#endif
 
     case 'g':
 	acs_and_scroll();
 	return(TRUE);
 
+    case 'i':
+	input_test(stdscr);
+	return(TRUE);
+
+#if HAVE_MENU_H
     case 'm':
 	menu_test();
 	return(TRUE);
+#endif
 
+#if HAVE_PANEL_H
     case 'p':
 	demo_pad();
 	return(TRUE);
+#endif
 
+#if HAVE_FORM_H
     case 'r':
 	demo_forms();
 	return(TRUE);
+#endif
 
-    case 'i':
-	input_test(stdscr);
+    case 's':
+        overlap_test();
 	return(TRUE);
 
     case '?':
@@ -1861,9 +2186,11 @@ int main(const int argc, const char *argv[])
 {
     char	buf[BUFSIZ];
 
+#ifdef TRACE
     /* enable debugging */
-    trace(TRACE_ORDINARY);
-
+    trace(TRACE_CALLS);
+#endif
+ 
     /* tell it we're going to play with soft keys */
     slk_init(1);
 
@@ -1894,11 +2221,18 @@ int main(const int argc, const char *argv[])
 	(void) puts("e = exercise soft keys");
 	(void) puts("f = display ACS characters");
 	(void) puts("g = display windows and scrolling");
+	(void) puts("i = subwindow input test");
+#if HAVE_MENU_H
 	(void) puts("m = menu code test");
+#endif
+#if HAVE_PANEL_H
 	(void) puts("o = exercise panels library");
 	(void) puts("p = exercise pad features");
+#endif
+#if HAVE_FORM_H
 	(void) puts("r = exercise forms code");
-	(void) puts("i = subwindow input test");
+#endif
+	(void) puts("s = overlapping-refresh test");
 	(void) puts("? = repeat this command summary");
 
 	(void) fputs("> ", stdout);

@@ -165,7 +165,6 @@ static float diff;
 #define OPT_SIZE 512
 
 static char	*address_cursor;
-static int	auto_margin;
 static int	carriage_return_length;
 static int	cursor_home_length;
 static int	cursor_to_ll_length;
@@ -282,65 +281,12 @@ void _nc_mvcur_init(SCREEN *sp)
     SP->_hpa_cost = cost(tparm(column_address, 23), 1);
     SP->_vpa_cost = cost(tparm(row_address, 23), 1);
 
-    /* optional optimization hack -- do before any output to ofp */
-#if HAVE_SETVBUF || HAVE_SETBUFFER
-    {
-	/* 
-	 * If the output file descriptor is connected to a tty
-	 * (the typical case) it will probably be line-buffered.
-	 * Keith Bostic pointed out that we don't want this; it
-	 * hoses people running over networks by forcing out a
-	 * bunch of small packets instead of one big one, so
-	 * screen updates on ptys look jerky.  Restore block
-	 * buffering to prevent this minor lossage.
-	 *
-	 * The buffer size is a compromise.  Ideally we'd like a
-	 * buffer that can hold the maximum possible update size
-	 * (the whole screen plus cup commands to change lines as
-	 * it's painted).  On a modern 66-line xterm this can
-	 * become excessive.  So we min it with the amount of data
-	 * we think we can get through two Ethernet packets
-	 * (maximum packet size - 100 for TCP/IP overhead).
-	 *
-	 * Why two ethernet packets?  It used to be one, on the theory
-	 * that said packets define the maximum size of atomic update.
-	 * But that's less than the 2000 chars on a 25 x 80 screen, and
-	 * we don't want local updates to flicker either.  Two packet
-	 * lengths will handle up to a 35 x 80 screen.
-	 */
-	unsigned int bufsiz = min(LINES * (COLS + SP->_cup_cost), 2800);
-
-#if HAVE_SETVBUF
-	/*
-	 * If your code core-dumps here, you are probably running
-	 * some bastard offspring of an SVR3 on which the setvbuffer(3)
-	 * arguments are reversed.  Autoconf has a test macro for this
-	 * but I have too much else to do to figure out how it works.
-	 * Send us a patch if you care.
-	 */
-	(void) setvbuf(SP->_ofp, malloc(bufsiz), _IOFBF, bufsiz);
-#elif HAVE_SETBUFFER
-	(void) setbuffer(SP->_ofp, malloc(bufsiz), (int)bufsiz);
-#endif
-    }
-#endif /* HAVE_SETVBUF || HAVE_SETBUFFER */
-
     /* initialize screen for cursor access */
     if (enter_ca_mode)
     {
 	TPUTS_TRACE("enter_ca_mode");
 	putp(enter_ca_mode);
     }
-
-    /* automargin gives us more local-motion possibilities */
-    if (!auto_left_margin && enter_am_mode && exit_am_mode)
-    {
-	TPUTS_TRACE("enter_am_mode");
-	putp(enter_am_mode);
-	auto_margin = TRUE;
-    }
-    else
-	auto_margin = auto_left_margin;
 
     /* pre-compute some capability lengths */
     carriage_return_length = carriage_return ? strlen(carriage_return) : 0;
@@ -364,11 +310,6 @@ void _nc_mvcur_wrap(void)
     {
 	TPUTS_TRACE("exit_ca_mode");
 	putp(exit_ca_mode);
-    }
-    if (!auto_left_margin && enter_am_mode && exit_am_mode)
-    {
-	TPUTS_TRACE("exit_am_mode");
-	putp(exit_am_mode);
     }
 }
 
@@ -734,7 +675,8 @@ onscreen_mvcur(int yold,int xold,int ynew,int xnew, bool ovw)
      * tactic #5: use left margin for wrap to right-hand side,
      * unless strange wrap behavior indicated by xenl might hose us.
      */
-    if (auto_margin && !eat_newline_glitch && yold > 0 && yold < screen_lines - 1 && cursor_left
+    if (auto_left_margin && !eat_newline_glitch
+	&& yold > 0 && yold < screen_lines - 1 && cursor_left
 	&& ((newcost=relative_move(NULL, yold-1, screen_columns-1, ynew, xnew, ovw)) != INFINITY)
 	&& SP->_cr_cost + SP->_cub1_cost + newcost + newcost < usecost)
     {

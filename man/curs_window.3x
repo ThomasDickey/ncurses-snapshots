@@ -1,6 +1,6 @@
 .TH curs_window 3X ""
 .SH NAME
-\fBcurs_window\fR: \fBnewwin\fR, \fBdelwin\fR, \fBmvwin\fR,
+\fBnewwin\fR, \fBdelwin\fR, \fBmvwin\fR,
 \fBsubwin\fR, \fBderwin\fR, \fBmvderwin\fR, \fBdupwin\fR,
 \fBwsyncup\fR, \fBsyncok\fR, \fBwcursyncup\fR, \fBwsyncdown\fR -
 create \fBcurses\fR windows
@@ -74,13 +74,14 @@ screen.
 
 Calling \fBdupwin\fR creates an exact duplicate of the window \fIwin\fR.
 
-Calling \fBwsyncup\fR touches all ancestors of \fIwin\fR.  If \fBsyncok\fR is
-called with second argument \fBTRUE\fR then \fBwsyncup\fR is called
-automatically whenever there is a change in the window.
+Calling \fBwsyncup\fR touches all locations in ancestors of \fIwin\fR that are
+changed in \fIwin\fR.  If \fBsyncok\fR is called with second argument
+\fBTRUE\fR then \fBwsyncup\fR is called automatically whenever there is a
+change in the window.
 
-The \fBwsyncdown\fR routine touches \fIwin\fR if any of its ancestor windows
-have been touched.  This routine is called by \fBwrefresh\fR, so it should
-almost never be necessary to call it manually.
+The \fBwsyncdown\fR routine touches each location in \fIwin\fR that has been
+touched in any of its ancestor windows.  This routine is called by
+\fBwrefresh\fR, so it should almost never be necessary to call it manually.
 
 The routine \fBwcursyncup\fR updates the current cursor position of all the
 ancestors of the window to reflect the current cursor position of the

@@ -31,7 +31,7 @@
 #include <string.h>
 
 char *
-longname()
+longname(void)
 {
 char	*ptr;
 

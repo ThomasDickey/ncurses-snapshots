@@ -496,7 +496,7 @@ mmask_t mousemask(mmask_t newmask, mmask_t *oldmask)
 	     | BUTTON3_PRESSED | BUTTON3_RELEASED | BUTTON3_CLICKED
 	     | BUTTON3_DOUBLE_CLICKED | BUTTON3_TRIPLE_CLICKED);
 
-	mouse_activate(eventmask);
+	mouse_activate(eventmask != 0);
 
 	return(eventmask);
     }

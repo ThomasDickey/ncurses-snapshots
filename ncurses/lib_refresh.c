@@ -51,10 +51,10 @@ int wrefresh(WINDOW *win)
 
 int wnoutrefresh(WINDOW *win)
 {
-int	i, j;
-int	begx = win->_begx;
-int	begy = win->_begy;
-int	m, n;
+short	i, j;
+short	begx = win->_begx;
+short	begy = win->_begy;
+short	m, n;
 bool	wide;
 
 	T(("wnoutrefresh(%p) called", win));

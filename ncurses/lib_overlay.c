@@ -29,7 +29,7 @@
 
 #include "curses.priv.h"
 
-static void overlap(const WINDOW *s, WINDOW *d, int flag)
+static void overlap(const WINDOW *const s, WINDOW *const d, int const flag)
 { 
 int sminrow, smincol, dminrow, dmincol, dmaxrow, dmaxcol;
 

@@ -19,6 +19,11 @@
 #include <unistd.h>
 #include <signal.h>
 #include <time.h>
+
+#if HAVE_TERMIOS_H
+#include <sys/termios.h>
+#endif
+
 #include <curses.h>
 #include <term.h>
 

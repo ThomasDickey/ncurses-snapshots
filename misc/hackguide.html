@@ -2,6 +2,11 @@
 <HEAD>
 <TITLE>A Hacker's Guide to Ncurses Internals</TITLE>
 <link rev="made" href="mailto:esr@snark.thyrsus.com">
+<!--
+This document is self-contained, *except* that there is one relative link to 
+the ncurses-intro.html document, expected to be in the same directory with
+this one.
+-->
 </HEAD>
 <BODY>
 
@@ -16,7 +21,10 @@
 <LI> <A HREF="#whysvr4">Why System V Curses?</A>
 <LI> <A HREF="#extensions">How to Design Extensions</A>
 </UL>
-<LI> <A HREF="#portability">Portability and Configuration</A>
+<LI> <A HREF="#portability">Portability and Configuration</A><UL>
+<LI> 
+<LI> <A HREF="#fooup">If autoconf Fails</A>
+</UL>
 <LI> <A HREF="#documentation">Documentation Conventions</A>
 <P>
 <LI> <A HREF="#bugtrack">How to Report Bugs</A>
@@ -40,6 +48,8 @@
 <LI> <A HREF="#utils">Other Utilities</A>
 <P>
 <LI> <A HREF="#style">Style Tips for Developers</A>
+<P>
+<LI> <A HREF="#port">Porting Hints</A>
 </UL>
 
 <H1><A NAME="abstract">Abstract</A></H1>
@@ -129,6 +139,28 @@ The right way to leverage an OS-specific feature is to modify the autoconf
 specification files (configure.in and aclocal.m4) to set up a new feature
 macro, which you then use to condition your code. <P>
 
+<H2><A NAME="fooup">If autoconf Fails</A></H2>
+
+The 'configure' script usually gets your system environment right
+automatically.  Here are some -D options you might need to compile
+with if it fails: <P>
+<DL>
+<DT>-DHAVE_UNISTD_H
+<DD>if <unistd.h> is present
+<DT>-DHAVE_SIGACTION
+<DD>if the sigaction function is present 
+<DT>-DHAVE_USLEEP
+<DD>if the usleep function is present
+<DT>-DSVR4_ACTION
+<DD>if (e.g., svr4) you need _POSIX_SOURCE to have sigaction
+<DT>-DHAVE_TERMIOS_H
+<DD>if you have <termios.h>; otherwise it uses <sgtty.h>
+<DT>-DBROKEN_TIOCGETWINSZ
+<DD>on SVR4 and HPUX, the get window size ioctl is broken.
+<DT>-DHAVE_SYS_SELECT_H
+<DD>if (e.g., AIX) you have <sys/select.h>
+</DL>
+
 <H1><A NAME="documentation">Documentation Conventions</A></H1>
 
 There are three kinds of documentation associated with this package.  Each
@@ -208,6 +240,8 @@ are either triggered or masked by these.  <P>
 
 Recompile your program with the debugging versions of the libraries.
 Insert a <TT>trace()</TT> call with the argument set to <TT>TRACE_UPDATE</TT>.
+(See <A HREF="ncurses-intro.html#debugging">"Writing Programs with
+NCURSES"</A> for details on trace levels.)
 Reproduce your bug, then look at the trace file to see what the library
 was actually doing. <P>
 
@@ -446,6 +480,11 @@ will recognize. <P>
 The configuration code prefers the POSIX regex facility, modeled on
 System V's, but will settle for BSD regexps if the former isn't available. <P>
 
+Historical note: the panels code was written primarily to assist in
+porting u386mon 2.0 (comp.sources.misc v14i001-4) to systems lacking
+panels support; u386mon 2.10 and beyond use it.  This version has been
+slightly cleaned up for <TT>ncurses</TT>. <P>
+
 <H1><A NAME="tic">A Tour of the Terminfo Compiler</A></H1>
 
 The <B>ncurses</B> implementation of <B>tic</B> is rather complex
@@ -574,6 +613,10 @@ followed by a <TT>tputs()</TT> of a selected capability. <P>
 See the TO-DO file in the top-level directory of the source distribution
 for additions that would be particularly useful. <P>
 
+The prefix <TT>_nc_</TT> should be used on library public functions that are
+not part of the curses API in order to prevent pollution of the
+application namespace.
+
 If you have to add to or modify the function prototypes in curses.h.in,
 read ncurses/MKlib_gen.sh first so you can avoid breaking XSI conformance.
 
@@ -594,6 +637,187 @@ preferable to ad-hoc code -- that's why the fifth field (flags) is
 there. <P>
 
 Have fun! <P>
+
+<H1><A NAME="port">Porting Hints</A></H1>
+
+The following notes are intended to be a first step towards DOS and Macintosh
+ports of the ncurses libraries. <P>
+
+The following library modules are `pure curses'; they operate only on
+the curses internal structures, do all output through other curses
+calls (not including <TT>tputs()</TT> and <TT>putp()</TT>) and do not
+call any other UNIX routines such as signal(2) or the stdio library.
+Thus, they should not need to be modified for single-terminal
+ports. <P>
+
+<TT>
+lib_addch.c
+lib_addstr.c
+lib_bkgd.c
+lib_box.c
+lib_clear.c
+lib_clrbot.c
+lib_clreol.c
+lib_delch.c
+lib_delwin.c
+lib_endwin.c
+lib_erase.c
+lib_inchstr.c
+lib_insch.c
+lib_insdel.c
+lib_insstr.c
+lib_keyname.c
+lib_move.c
+lib_mvwin.c
+lib_newwin.c
+lib_overlay.c
+lib_pad.c
+lib_printw.c
+lib_refresh.c
+lib_scanw.c
+lib_scroll.c
+lib_scrreg.c
+lib_set_term.c
+lib_touch.c
+lib_tparm.c
+lib_tputs.c
+lib_unctrl.c
+lib_window.c
+panel.c 
+</TT>
+<P>
+
+This module is pure curses, but calls outstr(): <P>
+
+<TT>
+lib_getstr.c
+</TT>
+<P>
+
+These modules are pure curses, except that they use <TT>tputs()</TT>
+and <TT>putp()</TT>: <P>
+
+<TT>
+lib_beep.c
+lib_color.c
+lib_options.c
+lib_slk.c
+lib_vidattr.c
+</TT>
+<P>
+
+This modules assist in POSIX emulation on non-POSIX systems: <P>
+<DL>
+<DT> sigaction.c
+<DD> signal calls
+<DT> strerror.c
+<DD> uses sys_errlist[]; for non-POSIX systems only
+</DL>
+
+The following source files will not be needed for a
+single-terminal-type port. <P>
+
+<TT>
+captoinfo.c
+clear.c
+comp_captab.c
+comp_error.c
+comp_hash.c
+comp_main.c
+comp_parse.c
+comp_scan.c
+alloc_entry.c
+dump_entry.c
+parse_entry.c
+read_entry.c
+write_entry.c
+infocmp.c
+tput.c
+</TT>
+<P>
+
+The following modules will use open()/read()/write()/close()/lseek() on files,
+but no other OS calls. <P>
+
+<DL>
+<DT> lib_screen.c
+<DD> used to read/write screen dumps
+<DT> lib_trace.c
+<DD> used to write trace data to the logfile
+</DL>
+
+Modules that would have to be modified for a port start here: <P>
+
+The following modules are `pure curses' but contain assumptions inappropriate
+for a memory-mapped port. <P>
+
+<PRE>
+lib_longname.c	-- assumes there may be multiple terminals
+	longname()		-- return long name of terminal
+lib_acs.c	-- assumes acs_map as a double indirection
+	init_acs()		-- initialize acs map
+lib_mvcur.c	-- assumes cursor moves have variable cost
+	mvcur_init()		-- initialize
+	mvcur()			-- do physical cursor move
+	mvcur_wrap()		-- wrap
+	scrolln()		-- do physical scrolling
+lib_termcap.c	-- assumes there may be multiple terminals
+	tgetent()		-- load entry
+	tgetflag()		-- get boolean capability
+	tgetnum()		-- get numeric capability
+	tgetstr()		-- get string capability
+lib_ti.c	-- assumes there may be multiple terminals
+	tigetent()		-- load entry
+	tigetflag()		-- get boolean capability
+	tigetnum()		-- get numeric capability
+	tigetstr()		-- get string capability
+
+The following modules use UNIX-specific calls:
+
+lib_doupdate.c	-- input checking
+	doupdate()		-- repaint real screen to match virtual
+	_nc_outch()		-- put out a single character
+lib_getch.c	-- read()
+	wgetch()		-- get single character
+	wungetch()		-- push back single character
+lib_initscr.c	-- getenv()
+	initscr()		-- initialize curses functions
+lib_newterm.c
+	newterm()		-- set up new terminal screen
+lib_kernel.c	-- various tty-manipulation and system calls
+	reset_prog_mode()	-- reset ccurses-raw mode
+	reset_shell_mode()	-- reset cooked mode
+	baudrate()		-- return the baudrate
+	erasechar()		-- return the erase char
+	killchar()		-- return the kill character
+	flushinp()		-- flush pending input
+	savetty()		-- save tty state
+	resetty()		-- reset tty to state at last savetty() 
+lib_raw.c	-- various tty-manipulation calls
+	raw()
+	echo()
+	nl()
+	qiflush()
+	cbreak()
+	noraw()
+	noecho()
+	nonl()
+	noqiflush()
+	nocbreak()
+lib_setup.c	-- various tty-manipulation calls
+	use_env()
+	def_shell_mode()
+	def_prog_mode()
+	set_curterm()
+	del_curterm()
+lib_tstp.c	-- signal-manipulation calls
+	_nc_signal_handler()	-- enable/disable window-mode signal catching
+lib_twait.c	-- gettimeofday(), select().
+	usleep()		-- microsecond sleep
+	_nc_timed_wait()	-- timed wait for input
+</PRE>
+
+The package kernel could be made smaller. <P>
 
 <HR>
 <ADDRESS>Eric S. Raymond &lt;esr@snark.thyrsus.com&gt;</ADDRESS> </BODY>

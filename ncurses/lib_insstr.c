@@ -33,8 +33,8 @@
 
 int winsnstr(WINDOW *win, const char *str, int n)
 {
-int oy = win->_cury;
-int ox = win->_curx;
+short	oy = win->_cury;
+short	ox = win->_curx;
 char	*cp;
 
 	T(("winsstr(%p,'%s',%d) called", win, str, n));

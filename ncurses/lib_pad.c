@@ -53,6 +53,7 @@ int i, j;
 	win->_flags |= _ISPAD;
 
 	for (i = 0; i < l; i++) {
+	    win->_line[i].oldindex = _NEWINDEX;
 	    if ((win->_line[i].text = (chtype *) calloc((size_t)c, sizeof(chtype))) == NULL) {
 			for (j = 0; j < i; j++)
 			    free(win->_line[j].text);
@@ -93,20 +94,22 @@ int prefresh(WINDOW *win, int pminrow, int pmincol,
 	int sminrow, int smincol, int smaxrow, int smaxcol)
 {
 	T(("prefresh() called"));
-	if (pnoutrefresh(win, pminrow, pmincol, sminrow, smincol, smaxrow, smaxcol) != ERR)
-		return (doupdate());
-	else
-		return ERR;	
-
+	if (pnoutrefresh(win, pminrow, pmincol, sminrow, smincol, smaxrow, smaxcol) != ERR
+	 && doupdate() != ERR) {
+		return OK;
+	}
+	return ERR;
 }
 
 int pnoutrefresh(WINDOW *win, int pminrow, int pmincol,
 	int sminrow, int smincol, int smaxrow, int smaxcol)
 {
-int	i, j;
-int	m, n;
-int	pmaxrow;
-int	pmaxcol;
+short	i, j;
+short	m, n;
+short	pmaxrow;
+short	pmaxcol;
+short	displaced;
+bool	wide;
 
 	T(("pnoutrefresh(%p, %d, %d, %d, %d, %d, %d) called", 
 		win, pminrow, pmincol, sminrow, smincol, smaxrow, smaxcol));
@@ -140,22 +143,70 @@ int	pmaxcol;
 
 	T(("pad being refreshed"));
 
-	for (i = pminrow, m = sminrow; i <= pmaxrow; i++, m++) {
-		for (j = pmincol, n = smincol; j <= pmaxcol; j++, n++) {
-		    if (win->_line[i].text[j] != newscr->_line[m].text[n]) {
-			newscr->_line[m].text[n] = win->_line[i].text[j];
+	if (win->_pad._pad_y >= 0) {
+		displaced = pminrow - win->_pad._pad_y
+			  -(sminrow - win->_pad._pad_top);
+		T(("pad being shifted by %d line(s)", displaced));
+	} else
+		displaced = 0;
 
-			if (newscr->_line[m].firstchar == _NOCHANGE)
-			    newscr->_line[m].firstchar = newscr->_line[m].lastchar = n;
-			else if (n < newscr->_line[m].firstchar)
-			    newscr->_line[m].firstchar = n;
-			else if (n > newscr->_line[m].lastchar)
-			    newscr->_line[m].lastchar = n;
-		    }
+	/*
+	 * For pure efficiency, we'd want to transfer scrolling information
+	 * from the pad to newscr whenever the window is wide enough that
+	 * its update will dominate the cost of the update for the horizontal
+	 * band of newscr that it occupies.  Unfortunately, this threshold
+	 * tends to be complex to estimate, and in any case scrolling the
+	 * whole band and rewriting the parts outside win's image would look
+	 * really ugly.  So.  What we do is consider the pad "wide" if it
+	 * either (a) occupies the whole width of newscr, or (b) occupies
+	 * all but at most one column on either vertical edge of the screen
+	 * (this caters to fussy people who put boxes around full-screen
+	 * windows).  Note that changing this formula will not break any code,
+	 * merely change the costs of various update cases.
+	 */
+	wide = (sminrow <= 1 && win->_maxx >= (newscr->_maxx - 1));
+
+	for (i = pminrow, m = sminrow; i <= pmaxrow; i++, m++) {
+		register struct ldat	*nline = &newscr->_line[m];
+		register struct ldat	*oline = &win->_line[i];
+
+		for (j = pmincol, n = smincol; j <= pmaxcol; j++, n++) {
+	    		if (oline->text[j] != nline->text[n]) {
+				nline->text[n] = oline->text[j];
+
+				if (nline->firstchar == _NOCHANGE)
+		   			nline->firstchar = nline->lastchar = n;
+				else if (n < nline->firstchar)
+		   			nline->firstchar = n;
+				else if (n > nline->lastchar)
+		   			nline->lastchar = n;
+			}
 		}
-		win->_line[i].firstchar = win->_line[i].lastchar = _NOCHANGE;
+
+  		if (wide) {
+ 		    int nind = m + displaced;
+ 		    if (oline->oldindex < 0
+ 		     || nind < sminrow
+ 		     || nind > smaxrow)
+ 		    	nind = _NEWINDEX;
+  
+ 		    nline->oldindex = nind;
+  		}
+		oline->firstchar = oline->lastchar = _NOCHANGE;
+		oline->oldindex = i;
 	}
 
+ 	/*
+ 	 * Clean up debris from scrolling or resizing the pad, so we do not
+ 	 * accidentally pick up the index value during the next call to this
+ 	 * procedure.  The only rows that should have an index value are those
+ 	 * that are displayed during this cycle.
+ 	 */
+ 	for (i = pminrow-1; (i >= 0) && (win->_line[i].oldindex >= 0); i--)
+ 		win->_line[i].oldindex = _NEWINDEX;
+ 	for (i = pmaxrow+1; (i <= win->_maxy) && (win->_line[i].oldindex >= 0); i++)
+ 		win->_line[i].oldindex = _NEWINDEX;
+ 
 	win->_begx = smincol;
 	win->_begy = sminrow;
 
@@ -176,20 +227,29 @@ int	pmaxcol;
 		newscr->_cury = win->_cury - pminrow + win->_begy;
 		newscr->_curx = win->_curx - pmincol + win->_begx;
 	}
+	win->_flags &= ~_HASMOVED;
+
+	/*
+	 * Update our cache of the line-numbers that we displayed from the pad. 
+	 * We will use this on subsequent calls to this function to derive
+	 * values to stuff into 'oldindex[]' -- for scrolling optimization.
+	 */
+	win->_pad._pad_y      = pminrow;
+	win->_pad._pad_x      = pmincol;
+	win->_pad._pad_top    = sminrow;
+	win->_pad._pad_left   = smincol;
+	win->_pad._pad_bottom = smaxrow;
+	win->_pad._pad_right  = smaxcol;
+
 	return OK;
 }
 
 int pechochar(WINDOW *pad, chtype ch)
 {
-int x, y;
-
 	T(("echochar(%p, %lx)", pad, ch));
 
 	if (pad->_flags & _ISPAD)
 		return ERR;
-
-	x = pad->_begx + pad->_curx;
-	y = pad->_begy + pad->_cury;
 
 	waddch(curscr, ch);
 	doupdate();

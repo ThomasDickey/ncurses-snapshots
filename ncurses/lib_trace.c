@@ -47,7 +47,7 @@ extern int errno;
 extern char *strerror(int);
 #endif
 
-int _nc_tracing = 0;  
+unsigned _nc_tracing = 0;  
 char *_nc_tputs_trace;
 
 static int	tracefd = 2;	/* default to writing to stderr */
@@ -109,7 +109,7 @@ char *tp = vbuf;
 }
 
 void
-_tracef(char *fmt, ...)
+_tracef(const char *fmt, ...)
 {
 va_list ap;
 char buffer[BUFSIZ];

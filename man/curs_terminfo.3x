@@ -1,7 +1,7 @@
 .TH curs_terminfo 3X ""
 .ds n 5
 .SH NAME
-\fBcurs_terminfo\fR: \fBsetupterm\fR, \fBsetterm\fR,
+\fBsetupterm\fR, \fBsetterm\fR,
 \fBset_curterm\fR, \fBdel_curterm\fR, \fBrestartterm\fR, \fBtparm\fR,
 \fBtputs\fR, \fBputp\fR, \fBvidputs\fR, \fBvidattr\fR, \fBmvcur\fR,
 \fBtigetflag\fR, \fBtigetnum\fR, \fBtigetstr\fR - \fBcurses\fR
@@ -21,9 +21,9 @@ interfaces to terminfo database
 .br
 \fBint restartterm(const char *term, int fildes, int *errret);\fR
 .br
-\fBchar *tparm(const char *str, long int p1, long int p2, long int p3,
-      long int p4, long int p5, long int p6, long int p7,\fR
-      long int p8, long int p9);\fR
+\fBchar *tparm(const char *str, ...);\fR
+.br
+\fBchar *tparam(const char *str, char *buffer, int size, ...);\fR
 .br
 \fBint tputs(const char *str, int affcnt, int (*putc)(int));\fR
 .br
@@ -39,7 +39,7 @@ interfaces to terminfo database
 .br
 \fBint tigetnum(const char *capname);\fR
 .br
-\fBint tigetstr(const char *capname);\fR
+\fBchar *tigetstr(const char *capname);\fR
 .br
 .SH DESCRIPTION
 These low-level routines must be called by programs that have to deal
@@ -123,6 +123,10 @@ it saves various tty state bits, does a setupterm, and then restores the bits.
 The \fBtparm\fR routine instantiates the string \fIstr\fR with
 parameters \fIpi\fR.  A pointer is returned to the result of \fIstr\fR
 with the parameters applied.
+
+The \fBtparam\fR routine is included for compatibility with the GNU termcap
+implementation.  It works like \fBtparm\fR but you specify a buffer and buffer
+size to be filled with the expanded string.
 
 The \fBtputs\fR routine applies padding information to the string
 \fIstr\fR and outputs it.  The \fIstr\fR must be a terminfo string

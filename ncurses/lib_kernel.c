@@ -47,13 +47,13 @@ extern int errno;
 
 int napms(int ms)
 {
-	T(("naps(%d) called", ms));
+	T(("napms(%d) called", ms));
 
 	usleep(1000*(unsigned)ms);
 	return OK;
 }
 
-int reset_prog_mode()
+int reset_prog_mode(void)
 {
 	T(("reset_prog_mode() called"));
 
@@ -62,25 +62,28 @@ int reset_prog_mode()
 #else
 	stty(cur_term->Filedes, &cur_term->Nttyb);
 #endif
-	if (stdscr->_use_keypad)
+	if (SP && stdscr && stdscr->_use_keypad)
 		_nc_keypad(TRUE);
 
 	return OK; 
 }
 
 
-int reset_shell_mode()
+int reset_shell_mode(void)
 {
 	T(("reset_shell_mode() called"));
 
-	fflush(SP->_ofp);
+	if (SP)
+	{
+		fflush(SP->_ofp);
+		_nc_keypad(FALSE);
+	}
 
 #ifdef TERMIOS
 	tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Ottyb);
 #else
 	stty(cur_term->Filedes, &cur_term->Ottyb);
 #endif
-	_nc_keypad(FALSE);
 	return OK; 
 }
 
@@ -119,7 +122,7 @@ int delay_output(float ms)
  */
 
 char
-erasechar()
+erasechar(void)
 {
 	T(("erasechar() called"));
 
@@ -141,7 +144,7 @@ erasechar()
  */
 
 char
-killchar()
+killchar(void)
 {
 	T(("killchar() called"));
 
@@ -161,7 +164,7 @@ killchar()
  *
  */
 
-int flushinp()
+int flushinp(void)
 {
 	T(("flushinp() called"));
 
@@ -218,11 +221,21 @@ static struct speed const speeds[] = {
 #undef MAX_BAUD
 #define MAX_BAUD	B19200
 	{B19200, 19200},
+#else 
+#ifdef EXTA
+#define MAX_BAUD	EXTA
+	{EXTA, 19200},
+#endif
 #endif
 #ifdef B38400
 #undef MAX_BAUD
 #define MAX_BAUD	B38400
 	{B38400, 38400},
+#else 
+#ifdef EXTB
+#define MAX_BAUD	EXTB
+	{EXTB, 38400},
+#endif
 #endif
 #ifdef B57600
 #undef MAX_BAUD
@@ -237,7 +250,7 @@ static struct speed const speeds[] = {
 };
 
 int
-baudrate()
+baudrate(void)
 {
 int i, ret;
 
@@ -268,7 +281,7 @@ int i, ret;
 
 static TTY   buf;
 
-int savetty()
+int savetty(void)
 {
 	T(("savetty() called"));
 
@@ -280,7 +293,7 @@ int savetty()
 	return OK;
 }
 
-int resetty()
+int resetty(void)
 {
 	T(("resetty() called"));
 

@@ -38,8 +38,8 @@ int wsetscrreg(WINDOW *win, int top, int bottom)
 		bottom >= 0  &&  bottom <= win->_maxy &&
 		bottom > top)
 	{
-	    	win->_regtop = top;
-	    	win->_regbottom = bottom;
+	    	win->_regtop    = (short)top;
+	    	win->_regbottom = (short)bottom;
 
 	    	return(OK);
 	} else

@@ -1,5 +1,5 @@
 
-                           ANNOUNCING NCURSES 1.9.8
+                           ANNOUNCING NCURSES 1.9.9
                                        
    The ncurses (new curses) library is a freeware emulation of System V
    Release 4.0 curses. It uses terminfo format, supports pads and color
@@ -47,8 +47,8 @@
        implementation are bit-for-bit-compatible with the entry format
        SVr4 curses uses.
        
-     * The utilities have option allow you to filter terminfo entries for
-       use with less capable _curses_/_terminfo_ versions such as the
+     * The utilities have options to allow you to filter terminfo entries
+       for use with less capable _curses_/_terminfo_ versions such as the
        HP/UX and AIX ports.
        
    The ncurses package also has many useful extensions over SVr4:
@@ -70,6 +70,8 @@
        
      * Support for mouse event reporting under xterm.
        
+     * The function wresize() allows you to resize windows, preserving
+       their data.
      * Better cursor-movement optimization. The package now features a
        cursor-local-movement computation more efficient than either BSD's
        or System V's.
@@ -175,7 +177,7 @@ Who's Who and What's What
    write to listserv@netcom.com with a message containing the line:
    
 
-             subscribe ncurses-list <name>@<host.domain>
+             subscribe ncurses-list &lt;name&gt;@&lt;host.domain&gt;
 
    This list is open to anyone interested in helping with the development
    and testing of this package.
@@ -193,10 +195,11 @@ Future Plans
    
 The terminfo/termcap Database
 
-   The distribution includes and uses a copy of the master terminfo file
-   maintained by Eric Raymond. This database (which is the official
-   descendant of the 4.4BSD termcap file) changes faster than this code
-   does, so you probably want to pick up a new copy occasionally.
+   The distribution includes and uses a copy of the terminfo-format
+   terminal description file maintained by Eric Raymond. This database
+   (which is the official descendant of the 4.4BSD termcap file) changes
+   faster than this code does, so you probably want to pick up a new copy
+   occasionally.
    
    You can download either the termcap or terminfo versions of the
    terminal-type database from Eric's ncurses resource page,

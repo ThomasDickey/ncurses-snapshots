@@ -849,10 +849,16 @@ set_init(void)
 	settle = set_tabs();
 
 	if (isreset) {
-		if ((p = reset_1string) || (p = reset_2string)) {
+		if ((p = reset_1string)) {
 			tputs(p, 0, outc);
 			settle = TRUE;
 		}
+		if ((p = reset_2string)) {
+			tputs(p, 0, outc);
+			settle = TRUE;
+		}
+		/* What about rf, rs3, as per terminfo man page? */
+		/* also might be nice to send rmacs, rmul, rmm */
 		if ((p = reset_file) || (p = init_file)) {
 			cat(p);
 			settle = TRUE;

@@ -34,7 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void _nc_scroll_window(WINDOW *win, int n, int top, int bottom)
+void _nc_scroll_window(WINDOW *win, int const n, short const top, short const bottom)
 {
 int	line, j;
 chtype	blank = _nc_render(win, ' ', BLANK);
@@ -57,7 +57,7 @@ chtype	blank = _nc_render(win, ' ', BLANK);
 		for (line = bottom; line >= top-n; line--) {
 		    	memcpy(win->_line[line].text,
 			       win->_line[line+n].text,
-			       sizeof(chtype) * (win->_maxx+1));
+			       (size_t)(sizeof(chtype) * (win->_maxx+1)));
 			win->_line[line].oldindex = win->_line[line+n].oldindex;
 		}
 		for (line = top; line < top-n; line++) {
@@ -74,7 +74,7 @@ chtype	blank = _nc_render(win, ' ', BLANK);
 		for (line = top; line <= bottom-n; line++) {
 		    	memcpy(win->_line[line].text,
 			       win->_line[line+n].text,
-			       sizeof(chtype) * (win->_maxx+1));
+			       (size_t)(sizeof(chtype) * (win->_maxx+1)));
 			win->_line[line].oldindex = win->_line[line+n].oldindex;
 		}
 		for (line = bottom; line > bottom-n; line--) {
@@ -103,7 +103,7 @@ wscrl(WINDOW *win, int n)
 	    return ERR;
 
 	_nc_scroll_window(win, n, win->_regtop, win->_regbottom);
-	touchline(win, win->_regtop, win->_regbottom - win->_regtop + 1);
+	touchline(win, win->_regtop, (int)(win->_regbottom - win->_regtop + 1));
 
 	_nc_synchook(win);
     	return OK;

@@ -202,7 +202,8 @@ chtype	turn_on  = (newmode & ~previous_attr) & (chtype)(~A_COLOR);
 		}
 	}
 
-	if (SP->_coloron) {
+	/* if there is no crrent screen, assume we *can* do color */
+	if (!SP || SP->_coloron) {
 	int pair = PAIR_NUMBER(newmode);
 	int current_pair = PAIR_NUMBER(previous_attr);
 

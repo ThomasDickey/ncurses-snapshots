@@ -209,7 +209,7 @@ static int oldnums[LINES], reallines[LINES];
 #endif /* _NEWINDEX */
 #endif /* MAINDEBUG */
 
-static bool all_discarded(int top, int bottom, int disp)
+static bool all_discarded(int const top, int const bottom, int const disp)
 /* has the given range of real lines been marked discarded? */
 {
     int		n;
@@ -236,9 +236,10 @@ void _nc_scroll_optimize(void)
     for (n = 0; n < LINES; n++)
 	REAL(n) += (MAXLINES + 1);
     for (n = 0; n < LINES; n++)
-	if (OLDNUM(n) != _NEWINDEX)
+	if (OLDNUM(n) != _NEWINDEX
+	 && REAL(OLDNUM(n)) >= MAXLINES)
 	    REAL(OLDNUM(n)) -= (MAXLINES + 1);
-    for (n = new_lines = 0; n < LINES; n++)    
+    for (n = new_lines = 0; n < LINES; n++)
 	if (REAL(n) > MAXLINES)
 	{
 	    REAL(n) = _NEWINDEX;

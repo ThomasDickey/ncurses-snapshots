@@ -201,12 +201,12 @@ int _nc_parse_entry(struct entry *entryp, int literal, bool silent)
 		/* tell max_attributes from arrow_key_map */
 		if (token_type == NUMBER && !strcmp("ma", _nc_curr_token.tk_name))
 		    entry_ptr = _nc_find_type_entry("ma", NUMBER,
-					_nc_get_table(_nc_syntax));
+					_nc_get_table(_nc_syntax != 0));
 
 		/* map terminfo's string MT to MT */
 		else if (token_type==STRING &&!strcmp("MT",_nc_curr_token.tk_name))
 		    entry_ptr = _nc_find_type_entry("MT", STRING,
-					_nc_get_table(_nc_syntax));
+					_nc_get_table(_nc_syntax != 0));
 
 		/* we couldn't recover; skip this token */
 		else

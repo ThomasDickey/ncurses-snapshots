@@ -31,7 +31,7 @@
 
 /*
  *	char *
- *	tparm(string, parms)
+ *	tparm(string, ...)
  *
  *	Substitute the given parameters into the given string by the following
  *	rules (taken from terminfo(5)):
@@ -59,6 +59,10 @@
  *	     %02d      print pop() like %02d in printf()
  *	     %3d       print pop() like %3d in printf()
  *	     %03d      print pop() like %03d in printf()
+ *	     %2x       print pop() like %2x in printf()
+ *	     %02x      print pop() like %02x in printf()
+ *	     %3x       print pop() like %3x in printf()
+ *	     %03x      print pop() like %03x in printf()
  *	     %c        print pop() like %c in printf()
  *	     %s        print pop() like %s in printf()
  *	
@@ -96,10 +100,9 @@ typedef union {
 
 static  stack_frame	stack[STACKSIZE];
 static	int	stack_ptr;
-static	char	buffer[256];
-static	int	param[9];
-static	char	*bufptr;
-static	int	variable[26];
+#ifdef TRACE
+static char *tname;
+#endif /* TRACE */
 
 static inline void npush(int x)
 {
@@ -119,9 +122,14 @@ static inline char *spop(void)
 	return   (stack_ptr > 0  ?  stack[--stack_ptr].str  :  0);
 }
 
-char *tparm(const char *string, ...)
+static inline char *tparam_internal(const char *string,
+				    char *buffer, int bufsiz,
+				    va_list ap)
 {
-va_list	ap;
+int	param[9];
+int	popcount;
+char	*bufptr;
+int	variable[26];
 char	len;
 int	number;
 int	level;
@@ -137,30 +145,34 @@ register char	*cp;
 	 * Use this value to limit the number of arguments copied from the
 	 * variable-length argument list.
 	 */
-	for (cp = (char *)string, number = 0; *cp != '\0'; cp++) {
+	for (cp = (char *)string, popcount = number = 0; *cp != '\0'; cp++) {
 		if (cp[0] == '%' && cp[1] != '\0') {
 			switch (cp[1]) {
 			case '%':
 				cp++;
 				break;
 			case 'i':
-				if (number < 2)
-					number = 2;
+				if (popcount < 2)
+					popcount = 2;
 				break;
 			case 'p':
 				cp++;
 				if (cp[1] >= '1' && cp[1] <= '9') {
 					int c = cp[1] - '0';
-					if (c > number)
-						number = c;
+					if (c > popcount)
+						popcount = c;
 				}
+				break;
+			case '0': case '1': case '2': case '3': case '4':
+			case '5': case '6': case '7': case '8': case '9':
+			case 'd': case 'c': case 's':
+				++number;
 				break;
 			}
 		}
 	}
 
-	va_start(ap, string);
-	for (i = 0; i < number; i++) {
+	for (i = 0; i < max(popcount, number); i++) {
 		/*
 		 * FIXME: potential loss here if sizeof(int) != sizeof(char *).
 		 * A few caps (such as plab_norm) have string-valued parms.
@@ -168,19 +180,32 @@ register char	*cp;
 		param[i] = va_arg(ap, int);
 	}
 
+	/*
+	 * This is a termcap compatibility hack.  If there are no explicit pop
+	 * operations in the string, load the stack in such a way that 
+	 * successive pops will grab successive parameters.  That will make
+	 * the expansion of (for example) \E[%d;%dH work correctly in termcap
+	 * style, which means tparam() will expand termcap strings OK.
+	 */
+	if (popcount == 0)
+		for (i = popcount = number; i > 0; i++)
+			npush(param[i - 1]);
+
 #ifdef TRACE
 	if (_nc_tracing & TRACE_CALLS) {
 		*(cp = buffer) = '\0';
-		for (i = 0; i < number; i++) {
+		for (i = 0; i < popcount; i++) {
 			(void)sprintf(cp, ", %d", param[i]);
 			cp += strlen(cp);
 		}
-		_tracef("tparm(\"%s\"%s) called", _nc_visbuf(string), buffer);
+		_tracef("%s(\"%s\"%s) called", tname, _nc_visbuf(string), buffer);
  	}
 #endif /* TRACE */
 
 	stack_ptr = 0;
 	bufptr = buffer;
+
+	/* FIXME: bufsiz should be used to do an overrun check */
 
 	while (*string) {
 	    if (*string != '%')
@@ -202,13 +227,25 @@ register char	*cp;
 		    case '0':
 				string++;
 				len = *string;
-				if ((len == '2'  ||  len == '3')  &&  *++string == 'd') {
-				    if (len == '2')
-							sprintf(bufptr, "%02d", npop());
-						else
-							sprintf(bufptr, "%03d", npop());
+				if (len == '2'  ||  len == '3')
+				{
+				    ++string;
+				    if (*string == 'd') {
+				        if (len == '2')
+					    sprintf(bufptr, "%02d", npop());
+					else
+					    sprintf(bufptr, "%03d", npop());
 			    
-				    bufptr += strlen(bufptr);
+					bufptr += strlen(bufptr);
+				    }
+				    else if (*string == 'x') {
+				        if (len == '2')
+					    sprintf(bufptr, "%02x", npop());
+					else
+					    sprintf(bufptr, "%03x", npop());
+			    
+					bufptr += strlen(bufptr);
+				    }
 				}
 				break;
 
@@ -218,12 +255,20 @@ register char	*cp;
 				    sprintf(bufptr, "%2d", npop());
 				    bufptr += strlen(bufptr);
 				}
+				else if (*string == 'x') {
+				    sprintf(bufptr, "%2x", npop());
+				    bufptr += strlen(bufptr);
+				}
 				break;
 
 		    case '3':
 				string++;
 				if (*string == 'd') {
 				    sprintf(bufptr, "%3d", npop());
+				    bufptr += strlen(bufptr);
+				}
+				else if (*string == 'x') {
+				    sprintf(bufptr, "%3x", npop());
 				    bufptr += strlen(bufptr);
 				}
 				break;
@@ -416,5 +461,28 @@ register char	*cp;
 
 	*bufptr = '\0';
 	return(buffer);
+}
+
+char *tparm(const char *string, ...)
+{
+va_list	ap;
+static char	buffer[256];
+
+	va_start(ap, string);
+#ifdef TRACE
+	tname = "tparm";
+#endif /* TRACE */
+	return(tparam_internal(string, buffer, sizeof(buffer) - 1, ap));
+}
+
+char *tparam(const char *string, char *buffer, int bufsiz, ...)
+{
+va_list	ap;
+
+	va_start(ap, bufsiz);
+#ifdef TRACE
+	tname = "tparam";
+#endif /* TRACE */
+	return(tparam_internal(string, buffer, bufsiz, ap));
 }
 

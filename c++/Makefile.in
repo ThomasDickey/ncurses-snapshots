@@ -7,7 +7,6 @@ SHELL		= /bin/sh
 
 MODEL		= ../@DFT_OBJ_SUBDIR@
 srcdir		= @srcdir@
-VPATH		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 libdir		= $(exec_prefix)/lib
@@ -17,7 +16,7 @@ CXX		= @CXX@
 CXXFLAGS	= @CXXFLAGS@
 
 INCDIR		= ../include
-CPPFLAGS	= @INCLUDES@ -I$(INCDIR) -DHAVE_CONFIG_H
+CPPFLAGS	= @CPPFLAGS@ -I$(INCDIR) -DHAVE_CONFIG_H
 
 CCFLAGS		= $(CPPFLAGS) $(CXXFLAGS)
 

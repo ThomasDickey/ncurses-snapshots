@@ -157,8 +157,7 @@ is defined in \fB<term.h>\fR.  All other arguments are integers.
 .SS Routine Name Index
 The following table lists each \fBcurses\fR routine and the name of
 the manual page on which it is described.  Routines flagged with `*'
-are ncurses-specific, not described by XPG4 or present in SVr4
-(at present all these toutines are related to the mouse interface).
+are ncurses-specific, not described by XPG4 or present in SVr4.
 
 .nf 
 \fBcurses\fR Routine Name    Manual Page Name
@@ -415,6 +414,7 @@ wnoutrefresh           curs_refresh(3X)
 wprintw                curs_printw(3X)
 wredrawln              curs_refresh(3X)
 wrefresh               curs_refresh(3X)
+wresize                curs_resize(3x)*
 wscanw                 curs_scanw(3X)
 wscrl                  curs_scroll(3X)
 wsetscrreg             curs_outopts(3X)
@@ -572,6 +572,9 @@ The routines \fBgetmouse\fR, \fBmousemask\fR, \fBungetmouse\fR,
 \fBmouseinterval\fR, and \fBwenclose\fR relating to mouse interfacing are not
 part of XPG4, nor are they present in SVr4.  See the \fBcurs_mouse\fR(3X)
 manual page for details.
+.PP
+The routine \fBwresize\fR is not part of XPG4, nor is it present in SVr4.  See
+the \fBcurs_resize\fR(3X) manual page for details.
 .PP
 In historic curses versions, delays embedded in the capabilities \fBcr\fR,
 \fBind\fR, \fBcub1\fR, \fBff\fR and \fBtab\fR activated corresponding delay

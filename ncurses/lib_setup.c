@@ -71,8 +71,8 @@ char 		*rows, *cols;
 
 	if (!_use_env)
 	{
-	    LINES = lines;
-	    COLS = columns;
+	    LINES = (int)lines;
+	    COLS  = (int)columns;
 	}
 	else	/* usually want to query LINES and COLUMNS from environment */
 	{
@@ -103,9 +103,10 @@ char 		*rows, *cols;
 		    } while
 			(errno == EINTR);
 
-		    LINES = size.ws_row;
-		    COLS = size.ws_col;
+		    LINES = (int)size.ws_row;
+		    COLS  = (int)size.ws_col;
 		}
+		/* FALLTHRU */
 	    failure:;
 	    }
 #endif /* defined(TIOCGWINSZ) && !defined(BROKEN_TIOCGWINSZ) */
@@ -114,8 +115,8 @@ char 		*rows, *cols;
 	    if (LINES <= 0 || COLS <= 0)
 		if (lines > 0 && columns > 0)
 		{
-		    LINES = lines;
-		    COLS  = columns;		
+		    LINES = (int)lines;
+		    COLS  = (int)columns;		
 		}
 
 	    /* the ultimate fallback, assume fixed 24x80 size */
@@ -129,15 +130,15 @@ char 		*rows, *cols;
 	     * Put the derived values back in the screen-size caps, so
 	     * tigetnum() and tgetnum() will do the right thing.
 	     */
-	    lines = LINES;
-	    columns = COLS;
+	    lines   = (short)LINES;
+	    columns = (short)COLS;
 	}
 
 	T(("screen size is %dx%d", LINES, COLS));
 
 #ifdef init_tabs
 	if (init_tabs != -1)
-		TABSIZE = init_tabs;
+		TABSIZE = (int)init_tabs;
 	else
 #endif /* init_tabs */
 		TABSIZE = 8;
@@ -167,7 +168,7 @@ char 		*rows, *cols;
 # endif
 #endif
  
-int def_shell_mode()
+int def_shell_mode(void)
 {
     /*
      *	Turn off the XTABS bit in the tty structure if it was on
@@ -196,7 +197,7 @@ int def_shell_mode()
 	return OK;
 }
 
-int def_prog_mode()
+int def_prog_mode(void)
 {
 	T(("def_prog_mode() called"));
 
@@ -240,7 +241,7 @@ int def_prog_mode()
 					    exit(1);\
 					}
 
-static int grab_entry(const char *tn, TERMTYPE *tp)
+static int grab_entry(const char *const tn, TERMTYPE *const tp)
 /* return 1 if entry found, 0 if not found, -1 if database not accessible */
 {
 	char	filename[PATH_MAX];
@@ -294,7 +295,7 @@ struct term	*term_ptr;
 			del_curterm(cur_term);
 		}
 
-       		term_ptr = (struct term *) malloc(sizeof(struct term));
+       		term_ptr = (struct term *) calloc(1, sizeof(struct term));
 
 		if (term_ptr == NULL)
 	    		ret_error0(-1, "Not enough memory to create terminal structure.\n") ;

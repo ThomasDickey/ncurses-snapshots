@@ -202,9 +202,9 @@ static void getparm(int parm, int n)
 
 char *_nc_captoinfo(
 /* convert a termcap string to terminfo format */
-register char *cap,	/* relevant terminfo capability index */
-register char *s,	/* string value of the capability */
-int parametrized)	/* do % translations if 1, pad translations if >=0 */
+register char *const cap,	/* relevant terminfo capability index */
+register char *s,		/* string value of the capability */
+int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 {
     static char line[MAX_ENTRY];
     char *capstart;
@@ -486,9 +486,9 @@ static	char	*bufptr;
 
 char *_nc_infotocap(
 /* convert a terminfo string to termcap format */
-register char *cap,	/* relevant termcap capability index */
-register char *str,	/* string value of the capability */
-int parametrized)	/* do % translations if 1, pad translations if >=0 */
+register char *const cap,	/* relevant termcap capability index */
+register char *str,		/* string value of the capability */
+int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 {
     int	seenone = 0, seentwo = 0, saw_m = 0, saw_n = 0;
     char *padding, ch1 = 0, ch2 = 0;

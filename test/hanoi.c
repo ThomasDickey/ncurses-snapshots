@@ -96,9 +96,12 @@ unsigned char AutoFlag = 0;
 		Usage();
 		exit(1);
 	}
+#ifdef NCURSES_VERSION
 	trace(TRACE_MAXIMUM);
+#endif
 	initscr();
 	if (!has_colors()) {
+		endwin();
 		puts("terminal doesn't support color.");
 		exit(1);
 	}
@@ -110,8 +113,8 @@ unsigned char AutoFlag = 0;
 	}
 	cbreak();
 	if (LINES < 24) {
-		fprintf(stderr, "Min screen length 24 lines\n");
 		endwin();
+		fprintf(stderr, "Min screen length 24 lines\n");
 		exit(1);
 	}
 	if(AutoFlag)

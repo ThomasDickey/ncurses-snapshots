@@ -18,7 +18,6 @@ NC_MFLAGS 	= @nc_cv_makeflags@
 @SET_MAKE@
 
 srcdir		= @srcdir@
-VPATH		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 bindir		= $(exec_prefix)/bin
@@ -34,7 +33,8 @@ install: install.data
 install.data: $(ticdir)
 	rm -fr $(ticdir)/[0-9A-Za-z]
 	@echo "Building terminfo database, please wait..."
-	TERMINFO=$(ticdir) $(bindir)/tic $(srcdir)/terminfo.src
+	umask 022; TERMINFO=$(ticdir) $(bindir)/tic $(srcdir)/terminfo.src
+	cp -r $(srcdir)/tabset $(prefix)/share
 
 $(ticdir) :
 	$(srcdir)/../mkinstalldirs $@
@@ -44,10 +44,10 @@ tags:
 TAGS:
 
 clean ::
-	-rm -f tags TAGS do.tic tsplit* *~
+	-rm -f tags TAGS *~
 
 distclean: clean
-	-rm -f Makefile dotic.sh
+	-rm -f Makefile 
 
 mostlyclean: clean
 

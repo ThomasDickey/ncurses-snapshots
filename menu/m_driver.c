@@ -136,7 +136,7 @@ static int Match_Next_Character_In_Item_Name(MENU *menu, int ch, ITEM **item)
 	if (++idx >= menu->nitems) 
 	  idx = 0;
       }
-    if (Is_Sub_String((unsigned)(menu->opt & O_IGNORECASE),
+    if (Is_Sub_String((menu->opt & O_IGNORECASE) != 0,
 		      menu->pattern,
 		      menu->items[idx]->name.str)
 	)

@@ -36,8 +36,8 @@
 int wborder(WINDOW *win, chtype ls, chtype rs, chtype ts,
 	chtype bs, chtype tl, chtype tr, chtype bl, chtype br)
 {
-int i;
-int endx, endy;
+short i;
+short endx, endy;
 
     T(("wborder() called"));
 
@@ -88,9 +88,9 @@ int endx, endy;
 
 int whline(WINDOW *win, chtype ch, int n)
 {
-int line;
-int start;
-int end;
+short line;
+short start;
+short end;
 
 	T(("whline(%p,%lx,%d) called", win, ch, n));
 
@@ -117,8 +117,8 @@ int end;
 
 int wvline(WINDOW *win, chtype ch, int n)
 {
-int row, col;
-int end;
+short row, col;
+short end;
 
 	T(("wvline(%p,%lx,%d) called", win, ch, n));
 

@@ -1,7 +1,7 @@
 .TH curs_termcap 3X ""
 .ds n 5
 .SH NAME
-\fBcurs_termcap\fR: \fBtgetent\fR, \fBtgetflag\fR, \fBtgetnum\fR,
+\fBtgetent\fR, \fBtgetflag\fR, \fBtgetnum\fR,
 \fBtgetstr\fR, \fBtgoto\fR, \fBtputs\fR - direct \fBcurses\fR
 interface to the terminfo capability database
 .SH SYNOPSIS
@@ -19,7 +19,7 @@ interface to the terminfo capability database
 .br
 \fBchar *tgoto(const char *cap, int col, int row);\fR
 .br
-\fBint tputs(const char *str, int affcnt, int (*putc)(void));\fR
+\fBint tputs(const char *str, int affcnt, int (*putc)(int));\fR
 .br
 .SH DESCRIPTION
 These routines are included as a conversion aid for programs that use
@@ -43,7 +43,9 @@ The \fBtgetstr\fR routine returns the string entry for \fIid\fR.  Use
 The \fBtgoto\fR routine instantiates the parameters into the given capability.
 The output from this routine is to be passed to \fBtputs\fR.
 
-The \fBtputs\fR routine is described on the curs_\fBterminfo\fR(\*n) manual page.
+The \fBtputs\fR routine is described on the curs_\fBterminfo\fR(\*n) manual
+page.  It can retrieve capabilities by either termcap or terminfo name.
+
 .SH RETURN VALUE
 Except where explicitly noted,
 routines that return an integer return \fBERR\fR upon failure and \fBOK\fR

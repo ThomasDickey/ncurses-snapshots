@@ -147,18 +147,26 @@ int wtimeout(WINDOW *win, int delay)
 static void init_keytry(void);
 static void add_to_try(char *, short);
 
-/* Turn the keypad on/off */
+/* Turn the keypad on/off
+ *
+ * Note:  we flush the output because changing this mode causes some terminals
+ * to emit different escape sequences for cursor and keypad keys.  If we don't
+ * flush, then the next wgetch may get the escape sequence that corresponds to
+ * the terminal state _before_ switching modes.
+ */
 int _nc_keypad(bool flag)
 {
 	if (flag  &&  keypad_xmit)
 	{
 	    TPUTS_TRACE("keypad_xmit");
 	    putp(keypad_xmit);
+	    (void) fflush(SP->_ofp);
 	}
 	else if (! flag  &&  keypad_local)
 	{
 	    TPUTS_TRACE("keypad_local");
 	    putp(keypad_local);
+	    (void) fflush(SP->_ofp);
 	}
 	    
 	if (SP->_keytry == UNINITIALISED)
@@ -286,7 +294,11 @@ struct try      *ptr, *savedptr;
 		    
 	    		savedptr = ptr = ptr->sibling;
 	    		ptr->child = ptr->sibling = NULL;
-	    		ptr->ch = *str++;
+			if (*str == '\200')
+				ptr->ch = '\0';
+			else
+				ptr->ch = (unsigned char) *str; 
+	    		str++;
 	    		ptr->value = (short) NULL;
 	    
            		break;
@@ -301,7 +313,11 @@ struct try      *ptr, *savedptr;
 	    	}
 	    
 	    	ptr->child = ptr->sibling = NULL;
-	    	ptr->ch = *(str++);
+		if (*str == '\200')
+			ptr->ch = '\0';
+		else
+			ptr->ch = (unsigned char) *str; 
+	    	str++;
 	    	ptr->value = (short) NULL;
 	}
 	
@@ -326,7 +342,11 @@ struct try      *ptr, *savedptr;
 		}
 	    
 	   	ptr->child = ptr->sibling = NULL;
-	   	ptr->ch = *(str++);
+		if (*str == '\200')
+			ptr->ch = '\0';
+		else
+			ptr->ch = (unsigned char) *str; 
+	    	str++;
 	   	ptr->value = (short) NULL;
 	}
 	

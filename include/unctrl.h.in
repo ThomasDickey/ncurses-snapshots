@@ -35,6 +35,10 @@
 #define _UNCTRL_H	1
 #define NCURSES_VERSION "@VERSION@"
 
-extern char *unctrl(unsigned char);
+#ifndef __NCURSES_H
+typedef unsigned long  chtype;
+#endif
+
+extern char *unctrl(chtype);
 
 #endif /* _UNCTRL_H */

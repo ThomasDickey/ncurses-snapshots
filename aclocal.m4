@@ -106,12 +106,12 @@ dnl Construct the list of include-options according to whether we're building
 dnl in the source directory or using '--srcdir=DIR' option.
 AC_DEFUN([NC_INCLUDE_DIRS],
 [
-INCLUDES="-I. -I../include"
+CPPFLAGS="$CPPFLAGS -I. -I../include"
 if test "$srcdir" != "."; then
-	INCLUDES="$INCLUDES -I\$(srcdir)/../include"
+	CPPFLAGS="$CPPFLAGS -I\$(srcdir)/../include"
 fi
-INCLUDES="$INCLUDES -I\$(includedir)"
-AC_SUBST(INCLUDES)
+CPPFLAGS="$CPPFLAGS -I\$(includedir)"
+AC_SUBST(CPPFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Append definitions and rules for the given models to the subdirectory
@@ -211,7 +211,11 @@ AC_DEFUN([NC_LIB_SUFFIX],
 	normal)  $2='.a'   ;;
 	debug)   $2='_g.a' ;;
 	profile) $2='_p.a' ;;
-	shared)  $2='.so'  ;;
+	shared)
+		case $nc_cv_systype in
+		HP_UX)	$2='.sl'  ;;
+		*)	$2='.so'  ;;
+		esac
 	esac
 ])dnl
 dnl ---------------------------------------------------------------------------
@@ -347,7 +351,7 @@ AC_DEFUN([NC_SHARED_OPTS],
 
 	case $nc_cv_systype in
 	HP_UX)
-		# (untested: gcc 2.5.8 doesn't do PIC, and I don't have c89)
+		# (tested with gcc 2.7.2 -- I don't have c89)
 		if test "${CC}" = "gcc"; then
 			CC_SHARED_OPTS='-fPIC'
 		else
@@ -401,7 +405,7 @@ AC_DEFUN([NC_SHARED_OPTS],
 		if test $ac_cv_prog_gcc = yes; then
 			CC_SHARED_OPTS='-fpic'
 		else
-			CC_SHARED_OPTS='-pic'
+			CC_SHARED_OPTS='-KPIC'
 		fi
 		case `uname -r` in
 		4.*)
@@ -456,7 +460,7 @@ dnl SUB_MAKEFILES which are used in the makefile-generation scheme.
 AC_DEFUN([NC_SRC_MODULES],
 [
 AC_MSG_CHECKING(for src modules)
-AC_CACHE_VAL(nc_cv_src_modules,[
+TEST_DEPS="${LIB_PREFIX}${LIB_NAME}${DFT_DEP_SUFFIX}"
 nc_cv_src_modules=
 for nc_dir in $1
 do
@@ -466,10 +470,19 @@ do
 		else
 			nc_cv_src_modules="$nc_cv_src_modules $nc_dir"
 		fi
+		# Make the config.h file record the library interface files as
+		# well.  These are header files that are the same name as their
+		# directory.  Ncurses is the only library that does not follow
+		# that pattern.
+		if test -f $srcdir/${nc_dir}/${nc_dir}.h; then
+			NC_UPPERCASE($nc_dir,nc_have_include)
+			AC_DEFINE_UNQUOTED(HAVE_${nc_have_include}_H)
+			TEST_DEPS="${LIB_PREFIX}${nc_dir}${DFT_DEP_SUFFIX} $TEST_DEPS"
+		fi
 	fi
 done
-])
 AC_MSG_RESULT($nc_cv_src_modules)
+AC_SUBST(TEST_DEPS)
 
 SRC_SUBDIRS="include man"
 for nc_dir in $nc_cv_src_modules
@@ -593,16 +606,11 @@ dnl ---------------------------------------------------------------------------
 dnl Get the version-number for use in shared-library naming, etc.
 AC_DEFUN([NC_VERSION],
 [
-AC_CACHE_VAL(nc_cv_rel_version,[
 changequote(,)dnl
 nc_cv_rel_version=`egrep 'VERSION[ 	]*=' $srcdir/dist.mk | sed -e 's/^[^0-9]*//'`
-changequote([,])dnl
-])
-AC_CACHE_VAL(nc_cv_abi_version,[
-changequote(,)dnl
 nc_cv_abi_version=`egrep 'SHARED_ABI[ 	]*=' $srcdir/dist.mk | sed -e 's/^[^0-9]*//'`
 changequote([,])dnl
-])
+dnl Show the computed version, for logging
 AC_MSG_RESULT(Configuring NCURSES $nc_cv_rel_version ABI $nc_cv_abi_version (`date`))
 dnl We need these values in the generated makefiles
 AC_SUBST(nc_cv_rel_version)

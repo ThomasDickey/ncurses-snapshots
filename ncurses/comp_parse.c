@@ -359,6 +359,7 @@ int _nc_resolve_uses(void)
 		 * We know every entry is resolvable because name resolution
 		 * didn't bomb.  So go back for another pass.
 		 */
+		/* FALLTHRU */
 	    incomplete:
 		keepgoing = TRUE;
 	    }

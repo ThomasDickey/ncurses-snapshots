@@ -26,6 +26,10 @@
 #define CURSES_H 1
 #define NCURSES_VERSION "@VERSION@"
 
+#ifndef _UNCTRL_H
+typedef unsigned long  chtype;
+#endif
+
 #include <stdio.h>   
 #include <unctrl.h>
 #include <stdarg.h>
@@ -55,8 +59,6 @@ typedef CXX_TYPE_OF_BOOL bool;
 #define TRUE    ((bool)1)
 #define FALSE   ((bool)0)
 #endif
-
-typedef unsigned long  chtype;
 
 /*
  * XSI attributes.  In the ncurses implementation, they are identical to the
@@ -139,6 +141,23 @@ extern 	chtype acs_map[];
 #define ACS_NEQUAL	(acs_map['|'])	/* not equal */
 #define ACS_STERLING	(acs_map['}'])	/* UK pound sign */
 
+/*
+ * Line drawing ACS names are of the form ACS_trbl, where t is the top, r
+ * is the right, b is the bottom, and l is the left.  t, r, b, and l might
+ * be B (blank), S (single), D (double), or T (thick).  The subset defined
+ * here only uses B and S.
+ */ 
+#define ACS_BSSB	ACS_ULCORNER
+#define ACS_SSBB	ACS_LLCORNER
+#define ACS_BBSS	ACS_URCORNER
+#define ACS_SBBS	ACS_LRCORNER
+#define ACS_SBSS	ACS_RTEE
+#define ACS_SSSB	ACS_LTEE
+#define ACS_SSBS	ACS_BTEE
+#define ACS_BSSS	ACS_TTEE
+#define ACS_BSBS	ACS_HLINE
+#define ACS_SBSB	ACS_VLINE
+#define ACS_SSSS	ACS_PLUS
 
 #if	!defined(ERR) || ((ERR) != -1)
 #define ERR     (-1)
@@ -234,11 +253,24 @@ struct _win_st {
 	int	_parx;		/* x coordinate of this window in parent */
 	int	_pary;		/* y coordinate of this window in parent */
 	WINDOW	*_parent;	/* pointer to parent if a sub-window */
+
+	/* these are used only if this is a pad */
+	struct pdat
+	{
+	    short _pad_y,      _pad_x;
+	    short _pad_top,    _pad_left;
+	    short _pad_bottom, _pad_right;
+	} _pad;
 };
 
 extern WINDOW   *stdscr, *curscr, *newscr;
 
 extern int	LINES, COLS, TABSIZE;
+
+/*
+ * This global was an undocumented feature under AIX curses.
+ */
+extern int ESCDELAY;	/* ESC expire time in milliseconds */
 
 #ifdef __cplusplus
 extern "C" {
@@ -257,7 +289,7 @@ extern char ttytype[];		/* needed for backward compatibility */
 
 /* Debugging : use with libncurses_g.a */
 
-extern void _tracef(char *, ...) __attribute__((format(printf,1,2)));
+extern void _tracef(const char *, ...) __attribute__((format(printf,1,2)));
 extern void _tracedump(char *, WINDOW *);
 extern char *_traceattr(attr_t mode);
 extern char *_tracechar(const unsigned char);
@@ -355,7 +387,7 @@ extern void filter(void);				/* implemented */
 extern int flash(void);					/* implemented */
 extern int flushinp(void);				/* implemented */
 #ifdef XPG4_EXTENDED
-extern int getbkgd(WINDOW *);				/* missing */
+extern chtype getbkgd(WINDOW *);			/* missing */
 extern int getbkgrnd(cchar_t *);			/* missing */
 extern int getcchar(const cchar_t *, wchar_t*, attr_t*, short*, void*);	/* missing */
 #endif /* XPG4_EXTENDED */
@@ -383,7 +415,7 @@ extern int hline_set(const cchar_t *, int);		/* missing */
 extern int idcok(WINDOW *, bool);			/* implemented */
 extern int idlok(WINDOW *, bool);			/* implemented */
 extern int immedok(WINDOW *, bool);			/* implemented */
-extern int inch(void);					/* generated */
+extern chtype inch(void);				/* generated */
 extern int inchnstr(chtype *, int);			/* generated */
 extern int inchstr(chtype *);				/* generated */
 extern WINDOW *initscr(void);				/* implemented */
@@ -459,7 +491,7 @@ extern int mvhline(int, int, chtype, int);		/* generated */
 #ifdef XPG4_EXTENDED
 extern int mvhline_set(int, int, const cchar_t *, int);	/* missing */
 #endif /* XPG4_EXTENDED */
-extern int mvinch(int, int);				/* generated */
+extern chtype mvinch(int, int);				/* generated */
 extern int mvinchnstr(int, int, chtype *, int);		/* generated */
 extern int mvinchstr(int, int, chtype *);		/* generated */
 extern int mvinnstr(int, int, char *, int);		/* generated */
@@ -516,7 +548,7 @@ extern int mvwhline(WINDOW *, int, int, chtype, int);	/* generated */
 extern int mvwhline_set(WINDOW *, int, int, const cchar_t *, int);/* missing */
 #endif /* XPG4_EXTENDED */
 extern int mvwin(WINDOW *,int,int);			/* implemented */
-extern int mvwinch(WINDOW *, int, int);			/* generated */
+extern chtype mvwinch(WINDOW *, int, int);			/* generated */
 extern int mvwinchnstr(WINDOW *, int, int, chtype *, int);	/* generated */
 extern int mvwinchstr(WINDOW *, int, int, chtype *);		/* generated */
 extern int mvwinnstr(WINDOW *, int, int, char *, int);		/* generated */
@@ -569,6 +601,8 @@ extern int putp(const char *);				/* implemented */
 extern int putwin(WINDOW *, FILE *);			/* implemented */
 extern int qiflush(void);				/* implemented */
 extern int raw(void);					/* implemented */
+extern int redrawwin(WINDOW *);				/* generated */
+extern int refresh(void);				/* generated */
 extern int resetty(void);				/* implemented */
 extern int reset_prog_mode(void);			/* implemented */
 extern int reset_shell_mode(void);			/* implemented */
@@ -613,9 +647,9 @@ extern int slk_wset(int, wchar_t *, int);		/* missing */
 extern int standout(void);				/* generated */
 extern int standend(void);				/* generated */
 extern int start_color(void);				/* implemented */
-extern WINDOW *subpad(WINDOW *orig, int l, int c, int begy, int begx);	/* implemented */
+extern WINDOW *subpad(WINDOW *, int, int, int, int);	/* implemented */
 extern WINDOW *subwin(WINDOW *,int,int,int,int);	/* implemented */
-extern int syncok(WINDOW *win, bool bf);		/* implemented */
+extern int syncok(WINDOW *win, bool);			/* implemented */
 extern attr_t termattrs(void);				/* implemented */
 extern char *termname(void);				/* implemented */
 extern int tigetflag(const char *);			/* implemented */
@@ -646,9 +680,9 @@ extern int vw_printw(WINDOW *,const char *,va_list);	/* implemented */
 extern int vwscanw(WINDOW *,const char *,va_list);	/* implemented */
 extern int vw_scanw(WINDOW *,const char *,va_list);	/* implemented */
 extern int waddch(WINDOW *, const chtype);		/* implemented */
-extern int waddchnstr(WINDOW *,const chtype *,int);	/* implemented */
+extern int waddchnstr(WINDOW *,const chtype *const,int); /* implemented */
 extern int waddchstr(WINDOW *,const chtype *);		/* generated */
-extern int waddnstr(WINDOW *,const char *,int);		/* implemented */
+extern int waddnstr(WINDOW *,const char *const,int);	/* implemented */
 extern int waddstr(WINDOW *,const char *);		/* generated */
 #ifdef XPG4_EXTENDED
 extern int waddwstr(WINDOW *,const wchar_t *);		/* missing */
@@ -680,7 +714,7 @@ extern int wclrtoeol(WINDOW *);				/* implemented */
 extern void wcursyncup(WINDOW *);			/* implemented */
 extern int wdelch(WINDOW *);				/* implemented */
 extern int wdeleteln(WINDOW *);				/* generated */
-extern int wechochar(WINDOW *, chtype);			/* implemented */
+extern int wechochar(WINDOW *, const chtype);		/* implemented */
 #ifdef XPG4_EXTENDED
 extern int wecho_wchar(WINDOW *, const cchar_t *);	/* missing */
 #endif /* XPG4_EXTENDED */
@@ -729,6 +763,7 @@ extern int wnoutrefresh(WINDOW *);			/* implemented */
 extern int wprintw(WINDOW *,const char *,...);		/* implemented */
 extern int wredrawln(WINDOW *,int,int);			/* implemented */
 extern int wrefresh(WINDOW *);				/* implemented */
+extern int wresize(WINDOW *, int, int);			/* implemented */
 extern int wscanw(WINDOW *,const char *,...);		/* implemented */
 extern int wscrl(WINDOW *,int);				/* implemented */
 extern int wsetscrreg(WINDOW *,int,int);		/* implemented */
@@ -889,6 +924,8 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define mvwinch(win,y,x)        	(wmove(win,y,x) == ERR ? ERR : winch(win))
 #define mvwdelch(win,y,x)       	(wmove(win,y,x) == ERR ? ERR : wdelch(win))
 #define mvwinsch(win,y,x,c)     	(wmove(win,y,x) == ERR ? ERR : winsch(win,c))
+#define mvwhline(win,y,x,c,n)     	(wmove(win,y,x) == ERR ? ERR : whline(win,c,n))
+#define mvwvline(win,y,x,c,n)     	(wmove(win,y,x) == ERR ? ERR : wvline(win,c,n))
 #define mvaddch(y,x,ch)         	mvwaddch(stdscr,y,x,ch)
 #define mvaddchnstr(y,x,str,n)		mvwaddchnstr(stdscr,y,x,str,n)
 #define mvaddchstr(y,x,str)		mvwaddchstr(stdscr,y,x,str)
@@ -899,6 +936,8 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define mvinch(y,x)             	mvwinch(stdscr,y,x)
 #define mvdelch(y,x)            	mvwdelch(stdscr,y,x)
 #define mvinsch(y,x,c)          	mvwinsch(stdscr,y,x,c)
+#define mvhline(y,x,c,n)		mvwhline(stdscr,y,x,c,n)
+#define mvvline(y,x,c,n)		mvwvline(stdscr,y,x,c,n)
 #define mvwinsstr(w, y, x, s)		(wmove(w,y,x) == ERR ? ERR : winsstr(w,s))
 #define mvwinsnstr(w, y, x, s, n)	(wmove(w,y,x) == ERR ? ERR : winsnstr(w,s,n))
 #define mvinsstr(y,x,s)			mvwinsstr(stdscr,y,x,s)

@@ -36,7 +36,9 @@
                o Testing for Terminal Capabilities
                o Tuning for Speed
                o Special Features of ncurses
-               o Background Erase -- Compatibility with Old Versions
+          + Compatibility with Older Versions
+               o Refresh of Overlapping Windows
+               o Background Erase
           + XSI Curses Conformance
      * The Panels Library
           + Compiling With the Panels Library
@@ -107,9 +109,10 @@
    This document is aimed at C applications programmers not yet
    specifically familiar with ncurses. If you are already an experienced
    curses programmer, you should nevertheless read the sections on Mouse
-   Interfacing, Debugging, and Hints, Tips, and Tricks. These will bring
-   you up to speed on the special features and quirks of the ncurses
-   implementation. If you are not so experienced, keep reading.
+   Interfacing, Debugging, Compatibility with Older Versions, and Hints,
+   Tips, and Tricks. These will bring you up to speed on the special
+   features and quirks of the ncurses implementation. If you are not so
+   experienced, keep reading.
    
    The curses package is a subroutine library for terminal-independent
    screen-painting and input-event handling which presents a high level
@@ -557,13 +560,13 @@ static void finish(int sig)
    field, which could be used to distinguish between multiple pointing
    devices.
    
-   The class of visible events may be changed at any time via getmouse().
-   Events that can be reported include presses, releases, single-,
-   double- and triple-clicks (you can set the maximum button-down time
-   for clicks). If you don't make clicks visible, they will be reported
-   as press-release pairs. In some environments, the event mask may
-   include bits reporting the state of shift, alt, and ctrl keys on the
-   keyboard during the event.
+   The class of visible events may be changed at any time via
+   mousemask(). Events that can be reported include presses, releases,
+   single-, double- and triple-clicks (you can set the maximum
+   button-down time for clicks). If you don't make clicks visible, they
+   will be reported as press-release pairs. In some environments, the
+   event mask may include bits reporting the state of shift, alt, and
+   ctrl keys on the keyboard during the event.
    
    A function to check whether a mouse event fell within a given window
    is also supplied. You can use this to see whether a given window
@@ -662,7 +665,8 @@ Function Descriptions
           doupdate(), causing several bursts of output to the screen. By
           calling wnoutrefresh() for each window, it is then possible to
           call doupdate() once, resulting in only one burst of output,
-          with probably fewer total characters transmitted.
+          with fewer total characters transmitted (this also avoids a
+          visually annoying flicker at each update).
           
   LOW-LEVEL CAPABILITY ACCESS
   
@@ -696,8 +700,19 @@ Function Descriptions
           
   DEBUGGING
   
+   NOTE: These functions are not part of the standard curses SPI!
+   
+   trace()
+          This function can be used to explicitly set a trace level. If
+          the trace level is nonzero, execution of your program will
+          generate a file called `trace' in the current working directory
+          containing a report on the library's actions. Higher trace
+          levels enable more detailed (and verbose) reporting -- see
+          comments attached to TRACE_ defines in the curses.h file for
+          details. (It is also possible to set a trace level by assigning
+          a trace level value to the environment variable NCURSES_TRACE).
+          
    _tracef()
-          NOTE: THIS FUNCTION IS NOT PART OF THE STANDARD CURSES API!
           This function can be used to output your own debugging
           information. It is only available only if you link with
           -lncurses_g. It can be used the same way as printf(), only it
@@ -831,7 +846,68 @@ Hints, Tips, and Tricks
    display of both high-half ACS graphics and the PC ROM graphics 0-31
    that are normally interpreted as control characters.
    
-  BACKGROUND ERASE -- COMPATIBILITY WITH OLD VERSIONS
+   The wresize() function allows you to resize a window in place.
+   
+Compatibility with Older Versions
+
+   Despite our best efforts, there are some differences between ncurses
+   and the (undocumented!) behavior of older curses implementations.
+   These arise from ambiguities or omissions in the documentation of the
+   API.
+   
+  REFRESH OF OVERLAPPING WINDOWS
+  
+   If you define two windows A and B that overlap, and then alternately
+   scribble on and refresh them, the changes made to the overlapping
+   region under historic curses versions were often not documented
+   precisely.
+   
+   To understand why this is a problem, remember that screen updates are
+   calculated between two representations of the _entire_ display. The
+   documentation says that when you refresh a window, it is first copied
+   to to the virtual screen, and then changes are calculated to update
+   the physical screen (and applied to the terminal). But "copied to" is
+   not very specific, and subtle differences in how copying works can
+   produce different behaviors in the case where two overlapping windows
+   are each being refreshed at unpredictable intervals.
+   
+   What happens to the overlapping region depends on what wnoutrefresh()
+   does with its argument -- what portions of the argument window it
+   copies to the virtual screen. Some implementations do "change copy",
+   copying down only locations in the window that have changed (or been
+   marked changed with wtouchln() and friends). Some implementations do
+   "entire copy", copying _all_ window locations to the virtual screen
+   whether or not they have changed.
+   
+   The ncurses library itself has not always been consistent on this
+   score. Due to a bug, versions 1.8.7 to 1.9.8a did entire copy.
+   Versions 1.8.6 and older, and versions 1.9.9 and newer, do change
+   copy.
+   
+   For most commercial curses implementations, it is not documented and
+   not known for sure (at least not to the ncurses maintainers) whether
+   they do change copy or entire copy. We know that System V release 3
+   curses has logic in it that looks like an attempt to do change copy,
+   but the surrounding logic and data representations are sufficiently
+   complex, and our knowledge sufficiently indirect, that it's hard to
+   know whether this is reliable. It is not clear what the SVr4
+   documentation and XSI standard intend. The XSI Curses standard barely
+   mentions wnoutrefresh(); the SVr4 documents seem to be describing
+   entire-copy, but it is possible with some effort and straining to read
+   them the other way.
+   
+   It might therefore be unwise to rely on either behavior in programs
+   that might have to be linked with other curses implementations.
+   Instead, you can do an explicit touchwin() before the wnoutrefresh()
+   call to guarantee an entire-contents copy anywhere.
+   
+   The really clean way to handle this is to use the panels library. If,
+   when you want a screen update, you do update_panels(), it will do all
+   the necessary wnoutrfresh() calls for whatever panel stacking order
+   you have defined. Then you can do one doupdate() and there will be a
+   _single_ burst of physical I/O that will do all your updates.
+   
+  BACKGROUND ERASE
   
    If you have been using a very old versions of ncurses (1.8.7 or older)
    you may be surprised by the behavior of the erase functions. In older
@@ -927,6 +1003,12 @@ Overview of Panels
    
    The function update_panels() does all the wnoutrefresh() calls needed
    to prepare for doupdate() (which you must call yourself, afterwards).
+   
+   Typically, you will want to call update_panels() and doupdate() just
+   before accepting command input, once in each cycle of interaction with
+   the user. If you call update_panels() after each and every panel
+   write, youll generate a lot of unnecessary refresh activity and screen
+   flicker.
    
 Panels, Input, and the Standard Screen
 

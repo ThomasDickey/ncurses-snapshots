@@ -172,7 +172,6 @@ main(int argc, char **argv)
 	    dline(cx,cy,cx+mdx,cy-mdy,' ');
 	    
 	  }
-	endwin();
-	
+
 	return 0;
 }

@@ -92,7 +92,7 @@ int start_color(void)
 		COLOR_PAIRS = max_pairs;
 	else
 		return ERR;
-	color_pairs = calloc(sizeof(char), (unsigned int)max_pairs);
+	color_pairs = calloc((unsigned int)max_pairs, sizeof(char));
 	if (max_colors != -1)
 		COLORS = max_colors;
 	else
@@ -122,7 +122,7 @@ int start_color(void)
 static void rgb2hls(short r, short g, short b, short *h, short *l, short *s)
 /* convert RGB to HLS system */
 {
-    int min, max, t;
+    short min, max, t;
 
     if ((min = g < r ? g : r) > b) min = b;
     if ((max = g > r ? g : r) < b) max = b;
@@ -238,7 +238,7 @@ int init_color(short color, short r, short g, short b)
 
 bool can_change_color(void)
 {
-	return can_change;
+	return (can_change != 0);
 }
 
 int has_colors(void)
