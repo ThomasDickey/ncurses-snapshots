@@ -40,7 +40,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.34 2000/04/01 20:25:47 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.36 2000/11/05 01:38:28 tom Exp $")
 
 unsigned _nc_tracing = 0;	/* always define this */
 
@@ -61,7 +61,7 @@ trace(const unsigned int tracelevel GCC_UNUSED)
 	been_here = TRUE;
 
 	if (_nc_access(my_name, W_OK) < 0
-	    || (tracefp = fopen(my_name, "w")) == 0) {
+	    || (tracefp = fopen(my_name, "wb")) == 0) {
 	    perror("curses: Can't open 'trace' file: ");
 	    exit(EXIT_FAILURE);
 	}
@@ -74,8 +74,7 @@ trace(const unsigned int tracelevel GCC_UNUSED)
 #elif HAVE_SETBUF		/* POSIX */
 	(void) setbuffer(tracefp, (char *) 0);
 #endif
-	_tracef("TRACING NCURSES version %s (%d)",
-	    NCURSES_VERSION, NCURSES_VERSION_PATCH);
+	_tracef("TRACING NCURSES version %s", curses_version());
     }
 }
 #endif
@@ -97,9 +96,9 @@ _nc_visbuf2(int bufnum, const char *buf)
     tp = vbuf = _nc_trace_buf(bufnum, (strlen(buf) * 4) + 5);
 #else
     {
-    static char *mybuf[2];
-    mybuf[bufnum] = _nc_doalloc(mybuf[bufnum], (strlen(buf) * 4) + 5);
-    tp = vbuf = mybuf[bufnum];
+	static char *mybuf[2];
+	mybuf[bufnum] = _nc_doalloc(mybuf[bufnum], (strlen(buf) * 4) + 5);
+	tp = vbuf = mybuf[bufnum];
     }
 #endif
     *tp++ = '"';
@@ -126,7 +125,7 @@ _nc_visbuf2(int bufnum, const char *buf)
 	    *tp++ = '^';
 	    *tp++ = '@' + c;
 	} else {
-	    sprintf(tp, "\\%03o", c & 0xff);
+	    sprintf(tp, "\\%03o", CharOf(c));
 	    tp += strlen(tp);
 	}
     }

@@ -42,7 +42,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.48 2000/10/14 17:45:00 Sergei.Ivanov Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.49 2000/11/04 22:50:16 tom Exp $")
 
 /*
  *	char *
@@ -286,7 +286,7 @@ parse_format(const char *s, char *format, int *len)
 	    }
 	    break;
 	default:
-	    if (isdigit(*s)) {
+	    if (isdigit(CharOf(*s))) {
 		value = (value * 10) + (*s - '0');
 		if (value > 10000)
 		    err = TRUE;

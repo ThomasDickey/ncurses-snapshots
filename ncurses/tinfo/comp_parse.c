@@ -52,7 +52,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.43 2000/10/28 22:27:59 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.44 2000/11/04 22:50:16 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 void (*_nc_check_termtype) (TERMTYPE *) = sanity_check;
@@ -179,7 +179,7 @@ _nc_read_entry_source(FILE * fp, char *buf,
 	memset(&thisentry, 0, sizeof(thisentry));
 	if (_nc_parse_entry(&thisentry, literal, silent) == ERR)
 	    break;
-	if (!isalnum(thisentry.tterm.term_names[0]))
+	if (!isalnum(CharOf(thisentry.tterm.term_names[0])))
 	    _nc_err_abort("terminal names must start with letter or digit");
 
 	/*

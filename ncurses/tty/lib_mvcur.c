@@ -152,7 +152,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.72 2000/10/08 00:58:25 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.75 2000/11/05 01:13:42 tom Exp $")
 
 #define CURRENT_ROW	SP->_cursrow	/* phys cursor row */
 #define CURRENT_COLUMN	SP->_curscol	/* phys cursor column */
@@ -222,11 +222,11 @@ _nc_msec_cost(const char *const cap, int affcnt)
 		float number = 0.0;
 
 		for (cp += 2; *cp != '>'; cp++) {
-		    if (isdigit(*cp))
+		    if (isdigit(CharOf(*cp)))
 			number = number * 10 + (*cp - '0');
 		    else if (*cp == '*')
 			number *= affcnt;
-		    else if (*cp == '.' && (*++cp != '>') && isdigit(*cp))
+		    else if (*cp == '.' && (*++cp != '>') && isdigit(CharOf(*cp)))
 			number += (*cp - '0') / 10.0;
 		}
 
@@ -569,6 +569,8 @@ relative_move(string_desc * target, int from_y, int from_x, int to_y, int
 #endif /* USE_HARD_TABS */
 
 #if defined(REAL_ATTR) && defined(WANT_CHAR)
+		if (n <= 0 || n >= (int) check.s_size)
+		    ovw = FALSE;
 #if BSD_TPUTS
 		/*
 		 * If we're allowing BSD-style padding in tputs, don't generate
@@ -924,7 +926,7 @@ _nc_outch(int ch)
 }
 
 char PC = 0;			/* used by termcap library */
-short ospeed = 0;		/* used by termcap library */
+NCURSES_OSPEED ospeed = 0;	/* used by termcap library */
 int _nc_nulls_sent = 0;		/* used by 'tack' program */
 
 int

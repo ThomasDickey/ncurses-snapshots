@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.238 2000/10/20 22:57:49 tom Exp $
+dnl $Id: aclocal.m4,v 1.240 2000/11/05 01:36:31 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -57,6 +57,22 @@ fi
 AC_SUBST(ACPPFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Copy non-preprocessor flags to $CFLAGS, preprocessor flags to $CPPFLAGS
+AC_DEFUN([CF_ADD_CFLAGS],
+[
+for cf_add_cflags in $1
+do
+	case $cf_add_cflags in #(vi
+	-I*|-D*|-U*|-E|-P|-C) #(vi
+		CPPFLAGS="$CPPFLAGS $cf_add_cflags"
+		;;
+	*)
+		CFLAGS="$CFLAGS $cf_add_cflags"
+		;;
+	esac
+done
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl This is adapted from the macros 'fp_PROG_CC_STDC' and 'fp_C_PROTOTYPES'
 dnl in the sharutils 4.2 distribution.
 AC_DEFUN([CF_ANSI_CC_CHECK],
@@ -65,6 +81,7 @@ AC_MSG_CHECKING(for ${CC-cc} option to accept ANSI C)
 AC_CACHE_VAL(cf_cv_ansi_cc,[
 cf_cv_ansi_cc=no
 cf_save_CFLAGS="$CFLAGS"
+cf_save_CPPFLAGS="$CPPFLAGS"
 # Don't try gcc -ansi; that turns off useful extensions and
 # breaks some systems' header files.
 # AIX			-qlanglvl=ansi
@@ -80,7 +97,7 @@ for cf_arg in "-DCC_HAS_PROTOS" \
 	"-Aa -D_HPUX_SOURCE" \
 	-Xc
 do
-	CFLAGS="$cf_save_CFLAGS $cf_arg"
+	CF_ADD_CFLAGS($cf_arg)
 	AC_TRY_COMPILE(
 [
 #ifndef CC_HAS_PROTOS
@@ -95,6 +112,7 @@ choke me
 	[cf_cv_ansi_cc="$cf_arg"; break])
 done
 CFLAGS="$cf_save_CFLAGS"
+CPPFLAGS="$cf_save_CPPFLAGS"
 ])
 AC_MSG_RESULT($cf_cv_ansi_cc)
 
@@ -785,6 +803,7 @@ dnl $1 = variable to set
 AC_DEFUN([CF_LIB_PREFIX],
 [
 	case $cf_cv_system_name in
+	OS/2*)	LIB_PREFIX=''     ;;
 	os2)	LIB_PREFIX=''     ;;
 	*)	LIB_PREFIX='lib'  ;;
 	esac
@@ -1318,7 +1337,9 @@ dnl ---------------------------------------------------------------------------
 dnl Option to allow user to override automatic configuration of manpage format.
 dnl There are several special cases.
 AC_DEFUN([CF_MANPAGE_FORMAT],
-[ AC_MSG_CHECKING(format of man-pages)
+[
+AC_REQUIRE([CF_PATHSEP])
+AC_MSG_CHECKING(format of man-pages)
 
 AC_ARG_WITH(manpage-format,
 	[  --with-manpage-format   specify manpage-format: gzip/compress/BSDI/normal and
@@ -1334,7 +1355,7 @@ case ".$cf_manpage_form" in
     MANPATH="/usr/man:/usr/share/man"
   fi
   # look for the 'date' man-page (it's most likely to be installed!)
-  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}${PATHSEP}"
   cf_manpage_form=unknown
   for cf_dir in $MANPATH; do
     test -z "$cf_dir" && cf_dir=/usr/man
@@ -1721,6 +1742,17 @@ AC_DEFUN([CF_OBJ_SUBDIR],
 	esac
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Provide a value for the $PATH and similar separator
+AC_DEFUN([CF_PATHSEP],
+[
+	case $cf_cv_system_name in
+	os2)	PATHSEP=';'  ;;
+	*)	PATHSEP=':'  ;;
+	esac
+ifelse($1,,,[$1=$PATHSEP])
+	AC_SUBST(PATHSEP)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Check the argument to see that it looks like a pathname.  Rewrite it if it
 dnl begins with one of the prefix/exec_prefix variables, and then again if the
 dnl result begins with 'NONE'.  This is necessary to workaround autoconf's
@@ -1729,7 +1761,9 @@ AC_DEFUN([CF_PATH_SYNTAX],[
 case ".[$]$1" in #(vi
 ./*) #(vi
   ;;
+changequote(,)dnl
 .[a-zA-Z]:[\\/]*) #(vi OS/2 EMX
+changequote([,])dnl
   ;;
 .\[$]{*prefix}*) #(vi
   eval $1="[$]$1"
@@ -1743,7 +1777,7 @@ case ".[$]$1" in #(vi
   $1=`echo [$]$1 | sed -e s@NONE@$ac_default_prefix@`
   ;;
 *)
-  AC_ERROR(expected a pathname)
+  AC_ERROR(expected a pathname, not "[$]$1")
   ;;
 esac
 ])dnl
@@ -1756,8 +1790,9 @@ PROG_EXT=
 case $cf_cv_system_name in
 os2*)
     # We make sure -Zexe is not used -- it would interfere with @PROG_EXT@
-    CFLAGS="$CFLAGS -Zmt -D__ST_MT_ERRNO__"
-    CXXFLAGS="$CXXFLAGS -Zmt -D__ST_MT_ERRNO__"
+    CFLAGS="$CFLAGS -Zmt"
+    CPPFLAGS="$CPPFLAGS -D__ST_MT_ERRNO__"
+    CXXFLAGS="$CXXFLAGS -Zmt"
     LDFLAGS=`echo "$LDFLAGS -Zmt -Zcrtdll" | sed "s/-Zexe//g"`
     PROG_EXT=".exe"
     ;;
@@ -2062,13 +2097,13 @@ AC_DEFUN([CF_SIZECHANGE],
 AC_REQUIRE([CF_STRUCT_TERMIOS])
 AC_CACHE_CHECK(declaration of size-change, cf_cv_sizechange,[
     cf_cv_sizechange=unknown
-    cf_save_CFLAGS="$CFLAGS"
+    cf_save_CPPFLAGS="$CPPFLAGS"
 
 for cf_opts in "" "NEED_PTEM_H"
 do
 
-    CFLAGS="$cf_save_CFLAGS"
-    test -n "$cf_opts" && CFLAGS="$CFLAGS -D$cf_opts"
+    CPPFLAGS="$cf_save_CPPFLAGS"
+    test -n "$cf_opts" && CPPFLAGS="$CPPFLAGS -D$cf_opts"
     AC_TRY_COMPILE([#include <sys/types.h>
 #ifdef HAVE_TERMIOS_H
 #include <termios.h>
@@ -2105,7 +2140,7 @@ do
 	[cf_cv_sizechange=yes],
 	[cf_cv_sizechange=no])
 
-	CFLAGS="$cf_save_CFLAGS"
+	CPPFLAGS="$cf_save_CPPFLAGS"
 	if test "$cf_cv_sizechange" = yes ; then
 		echo "size-change succeeded ($cf_opts)" >&AC_FD_CC
 		test -n "$cf_opts" && cf_cv_sizechange="$cf_opts"
@@ -2288,7 +2323,7 @@ if test "$ISC" = yes ; then
 	AC_CHECK_HEADERS( sys/termio.h )
 fi
 if test "$ac_cv_header_termios_h" = yes ; then
-	case "$CFLAGS" in
+	case "$CFLAGS $CPPFLAGS" in
 	*-D_POSIX_SOURCE*)
 		termios_bad=dunno ;;
 	*)	termios_bad=maybe ;;
@@ -2555,10 +2590,11 @@ dnl $4 = default value, shown in the help-message, must be a constant
 dnl $5 = default value, if it's an expression & cannot be in the help-message
 dnl
 AC_DEFUN([CF_WITH_PATHLIST],[
+AC_REQUIRE([CF_PATHSEP])
 AC_ARG_WITH($1,[$2 ](default: ifelse($4,,empty,$4)),,
 ifelse($4,,[withval="${$3}"],[withval="${$3-ifelse($5,,$4,$5)}"]))dnl
 
-IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}:"
+IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}${PATHSEP}"
 cf_dst_path=
 for cf_src_path in $withval
 do

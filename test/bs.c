@@ -7,7 +7,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.24 1999/08/21 23:14:38 tom Exp $
+ * $Id: bs.c,v 1.25 2000/11/04 23:13:02 tom Exp $
  */
 
 #include <test.priv.h>
@@ -57,7 +57,7 @@ static int getcoord(int);
 /* display symbols */
 #define SHOWHIT		'*'
 #define SHOWSPLASH	' '
-#define IS_SHIP(c)	(isupper(c) ? TRUE : FALSE)
+#define IS_SHIP(c)	(isupper(CharOf(c)) ? TRUE : FALSE)
 
 /* how to position us on player board */
 #define PYBASE	3

@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.221 2000/10/28 23:07:28 tom Exp $
+dnl $Id: configure.in,v 1.222 2000/11/05 01:17:57 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20000819)
-AC_REVISION($Revision: 1.221 $)
+AC_REVISION($Revision: 1.222 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -557,6 +557,15 @@ AC_ARG_ENABLE(broken_linker,
 	[with_broken_linker=$BROKEN_LINKER])
 AC_MSG_RESULT($with_broken_linker)
 test "$with_broken_linker" = yes && AC_DEFINE(BROKEN_LINKER)
+
+###   use option --with-ospeed to override ospeed's type
+AC_MSG_CHECKING(for type of ospeed)
+AC_ARG_WITH(ospeed,
+	[  --with-ospeed=TYPE      override type of ospeed variable],
+	[NCURSES_OSPEED=$enableval],
+	[NCURSES_OSPEED=short])
+AC_MSG_RESULT($NCURSES_OSPEED)
+AC_SUBST(NCURSES_OSPEED)
 
 ###   use option --enable-bsdpad to have tputs process BSD-style prefix padding
 AC_MSG_CHECKING(if tputs should process BSD-style prefix padding)

@@ -45,7 +45,7 @@
 #endif
 #include <transform.h>
 
-MODULE_ID("$Id: tput.c,v 1.24 2000/10/05 00:05:04 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.25 2000/11/04 22:50:16 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -376,7 +376,7 @@ main(int argc, char **argv)
 
 	/* crack the argument list into a dope vector */
 	for (cp = buf; *cp; cp++) {
-	    if (isspace(*cp))
+	    if (isspace(CharOf(*cp)))
 		*cp = '\0';
 	    else if (cp == buf || cp[-1] == 0)
 		argvec[argnum++] = cp;

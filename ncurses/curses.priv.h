@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.169 2000/10/28 20:19:08 tom Exp $
+ * $Id: curses.priv.h,v 1.170 2000/11/04 22:44:16 tom Exp $
  *
  *	curses.priv.h
  *
@@ -484,6 +484,7 @@ typedef	struct {
 #define O_BINARY 0
 #endif
 
+#define CharOf(c)    ((unsigned char)(c))
 #define TextOf(c)    ((c) & (chtype)A_CHARTEXT)
 #define AttrOf(c)    ((c) & (chtype)A_ATTRIBUTES)
 

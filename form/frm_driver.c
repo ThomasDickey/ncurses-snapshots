@@ -31,7 +31,7 @@
  ****************************************************************************/
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.35 1999/05/16 17:20:52 juergen Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.36 2000/11/04 22:55:01 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -3778,7 +3778,7 @@ int set_field_buffer(FIELD * field, int buffer, const char * value)
 	      unsigned int i;
 	  
 	      for(i=len; i<vlen; i++)
-		if (!isprint(value[i]))
+		if (!isprint((unsigned char)value[i]))
 		  RETURN(E_BAD_ARGUMENT);
 	    }
 	  len = vlen;

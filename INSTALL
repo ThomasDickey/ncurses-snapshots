@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.46 2000/10/14 17:57:02 Johnny.C.Lam Exp $
+-- $Id: INSTALL,v 1.47 2000/11/05 01:57:24 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -532,6 +532,19 @@ SUMMARY OF CONFIGURE OPTIONS:
 	by running them through tbl to generate tables understandable by
 	nroff.
 
+    --with-ospeed=TYPE
+	Override type of ospeed variable, which is part of the termcap
+	compatibility interface.  In termcap, this is a 'short', which works
+	for a wide range of baudrates because ospeed is not the actual speed
+	but the encoded value, e.g., B9600 would be a small number such as 13. 
+	However the encoding scheme originally allowed for values "only" up to
+	38400bd.  A newer set of definitions past 38400bd is not encoded as
+	compactly, and is not guaranteed to fit into a short (see the function
+	cfgetospeed(), which returns a speed_t for this reason).  In practice,
+	applications that required knowledge of the ospeed variable, i.e.,
+	those using termcap, do not use the higher speeds.  Your application
+	(or system, in general) may or may not.
+
     --with-normal
 	Generate normal (i.e., static) libraries (default).
 
@@ -615,6 +628,12 @@ COMPATIBILITY WITH OLDER VERSIONS OF NCURSES:
     Here are some of the major interface changes, and related problems which
     you may encounter when building a system with different versions of
     ncurses:
+
+    5.2 (October 21, 2000)
+	Interface changes:
+
+	+ revert termcap ospeed variable to 'short' (see discussion of the
+	  --with-ospeed configure option).
 
     5.1 (July 8, 2000)
 	Interface changes:

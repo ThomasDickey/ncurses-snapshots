@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.31 2000/09/02 18:14:52 tom Exp $
+ * $Id: view.c,v 1.32 2000/11/04 23:32:03 tom Exp $
  */
 
 #include <test.priv.h>
@@ -122,7 +122,7 @@ ch_dup(char *src)
 
     for (j = k = 0; j < len; j++) {
 	if (utf8_mode) {
-	    unsigned c = src[j] & 0xff;
+	    unsigned c = CharOf(src[j]);
 	    /* Combine UTF-8 into Unicode */
 	    if (c < 0x80) {
 		/* We received an ASCII character */
@@ -259,11 +259,11 @@ main(int argc, char *argv[])
 		col = (col | 7) + 1;
 		while ((d - temp) != col)
 		    *d++ = ' ';
-	    } else if (isprint(*d) || utf8_mode) {
+	    } else if (isprint(CharOf(*d)) || utf8_mode) {
 		col++;
 		d++;
 	    } else {
-		sprintf(d, "\\%03o", *s & 0xff);
+		sprintf(d, "\\%03o", CharOf(*s));
 		d += strlen(d);
 		col = (d - temp);
 	    }
