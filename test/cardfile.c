@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: cardfile.c,v 1.23 2003/04/26 16:43:56 tom Exp $
+ * $Id: cardfile.c,v 1.24 2004/07/10 20:50:35 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text is content.
  */
@@ -43,6 +43,8 @@
 
 #define VISIBLE_CARDS 10
 #define OFFSET_CARD 2
+#define pair_1 1
+#define pair_2 2
 
 enum {
     MY_CTRL_x = MAX_FORM_COMMAND
@@ -61,6 +63,7 @@ typedef struct _card {
 } CARD;
 
 static CARD *all_cards;
+static bool try_color = FALSE;
 static char default_name[] = "cardfile.dat";
 
 #if !HAVE_STRDUP
@@ -372,6 +375,7 @@ cardfile(char *fname)
     for (p = all_cards; p != 0; p = p->link) {
 
 	win = newwin(panel_high, panel_wide, y, x);
+	wbkgd(win, COLOR_PAIR(pair_2));
 	keypad(win, TRUE);
 	p->panel = new_panel(win);
 	box(win, 0, 0);
@@ -499,6 +503,22 @@ cardfile(char *fname)
 #endif
 }
 
+static void
+usage(void)
+{
+    static const char *msg[] =
+    {
+	"Usage: view [options] file"
+	,""
+	,"Options:"
+	," -c       use color if terminal supports it"
+    };
+    size_t n;
+    for (n = 0; n < SIZEOF(msg); n++)
+	fprintf(stderr, "%s\n", msg[n]);
+    ExitProgram(EXIT_FAILURE);
+}
+
 /*******************************************************************************/
 
 int
@@ -508,11 +528,32 @@ main(int argc, char *argv[])
 
     setlocale(LC_ALL, "");
 
+    while ((n = getopt(argc, argv, "c")) != EOF) {
+	switch (n) {
+	case 'c':
+	    try_color = TRUE;
+	    break;
+	default:
+	    usage();
+	}
+    }
+
     initscr();
     cbreak();
     noecho();
 
-    if (argc > 1) {
+    if (try_color) {
+	if (has_colors()) {
+	    start_color();
+	    init_pair(pair_1, COLOR_WHITE, COLOR_BLUE);
+	    init_pair(pair_2, COLOR_WHITE, COLOR_CYAN);
+	    bkgd(COLOR_PAIR(pair_1));
+	} else {
+	    try_color = FALSE;
+	}
+    }
+
+    if (optind + 1 == argc) {
 	for (n = 1; n < argc; n++)
 	    read_data(argv[n]);
 	if (count_cards() == 0)

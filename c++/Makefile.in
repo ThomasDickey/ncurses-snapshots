@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.72 2004/01/16 22:44:56 tom Exp $
+# $Id: Makefile.in,v 1.73 2004/07/10 10:55:16 tom Exp $
 ##############################################################################
-# Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -67,7 +67,7 @@ CXX_AR_OPTS	= @CXX_AR_OPTS@
 RANLIB		= @LIB_PREP@
 
 CXX		= @CXX@
-CPP		= @CPP@
+CPP		= @CXXCPP@
 CXXFLAGS	= @CXXFLAGS@
 CXXLIBS		= @CXXLIBS@
 

@@ -36,12 +36,12 @@
  *	comp_parse.c -- parser driver loop and use handling.
  *
  *	_nc_read_entry_source(FILE *, literal, bool, bool (*hook)())
- *	_nc_resolve_uses(void)
+ *	_nc_resolve_uses2(void)
  *	_nc_free_entries(void)
  *
  *	Use this code by calling _nc_read_entry_source() on as many source
  *	files as you like (either terminfo or termcap syntax).  If you
- *	want use-resolution, call _nc_resolve_uses().  To free the list
+ *	want use-resolution, call _nc_resolve_uses2().  To free the list
  *	storage, do _nc_free_entries().
  *
  */
@@ -53,8 +53,12 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.58 2004/04/17 22:17:04 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.59 2004/07/05 12:01:24 tom Exp $")
 
+static void sanity_check2(TERMTYPE *, bool);
+NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype2) (TERMTYPE *, bool) = sanity_check2;
+
+/* obsolete: 20040705 */
 static void sanity_check(TERMTYPE *);
 NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype) (TERMTYPE *) = sanity_check;
 
@@ -210,7 +214,7 @@ _nc_read_entry_source(FILE *fp, char *buf,
 }
 
 NCURSES_EXPORT(int)
-_nc_resolve_uses(bool fullresolve)
+_nc_resolve_uses2(bool fullresolve, bool literal)
 /* try to resolve all use capabilities */
 {
     ENTRY *qp, *rp, *lastread = 0;
@@ -405,12 +409,19 @@ _nc_resolve_uses(bool fullresolve)
 	    for_entry_list(qp) {
 		_nc_curr_line = qp->startline;
 		_nc_set_type(_nc_first_name(qp->tterm.term_names));
-		_nc_check_termtype(&qp->tterm);
+		_nc_check_termtype2(&qp->tterm, literal);
 	    }
 	    DEBUG(2, ("SANITY CHECK FINISHED"));
 	}
 
     return (TRUE);
+}
+
+/* obsolete: 20040705 */
+NCURSES_EXPORT(int)
+_nc_resolve_uses(bool fullresolve)
+{
+    return _nc_resolve_uses2(fullresolve, FALSE);
 }
 
 /*
@@ -423,7 +434,7 @@ _nc_resolve_uses(bool fullresolve)
 #define CUR tp->
 
 static void
-sanity_check(TERMTYPE * tp)
+sanity_check2(TERMTYPE *tp, bool literal)
 {
     if (!PRESENT(exit_attribute_mode)) {
 #ifdef __UNUSED__		/* this casts too wide a net */
@@ -447,15 +458,17 @@ sanity_check(TERMTYPE * tp)
     /* we do this check/fix in postprocess_termcap(), but some packagers
      * prefer to bypass it...
      */
-    if (acs_chars == 0
-	&& enter_alt_charset_mode != 0
-	&& exit_alt_charset_mode != 0)
-	acs_chars = strdup(VT_ACSC);
+    if (!literal) {
+	if (acs_chars == 0
+	    && enter_alt_charset_mode != 0
+	    && exit_alt_charset_mode != 0)
+	    acs_chars = strdup(VT_ACSC);
+	ANDMISSING(enter_alt_charset_mode, acs_chars);
+	ANDMISSING(exit_alt_charset_mode, acs_chars);
+    }
 
     /* listed in structure-member order of first argument */
     PAIRED(enter_alt_charset_mode, exit_alt_charset_mode);
-    ANDMISSING(enter_alt_charset_mode, acs_chars);
-    ANDMISSING(exit_alt_charset_mode, acs_chars);
     ANDMISSING(enter_blink_mode, exit_attribute_mode);
     ANDMISSING(enter_bold_mode, exit_attribute_mode);
     PAIRED(exit_ca_mode, enter_ca_mode);
@@ -477,4 +490,11 @@ sanity_check(TERMTYPE * tp)
     PAIRED(display_clock, remove_clock);
 #endif
     ANDMISSING(set_color_pair, initialize_pair);
+}
+
+/* obsolete: 20040705 */
+static void
+sanity_check(TERMTYPE *tp)
+{
+    sanity_check2(tp, FALSE);
 }

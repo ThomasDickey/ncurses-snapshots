@@ -57,7 +57,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.65 2004/05/08 16:50:58 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.66 2004/07/05 12:55:23 tom Exp $")
 
 #if !PURE_TERMINFO
 
@@ -932,7 +932,7 @@ add_tc(char *termpaths[], char *path, int count)
 #endif /* !USE_GETCAP */
 
 NCURSES_EXPORT(int)
-_nc_read_termcap_entry(const char *const tn, TERMTYPE * const tp)
+_nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 {
     int found = FALSE;
     ENTRY *ep;
@@ -1112,7 +1112,7 @@ _nc_read_termcap_entry(const char *const tn, TERMTYPE * const tp)
 	return (ERR);
 
     /* resolve all use references */
-    _nc_resolve_uses(TRUE);
+    _nc_resolve_uses2(TRUE, FALSE);
 
     /* find a terminal matching tn, if we can */
 #if USE_GETCAP_CACHE

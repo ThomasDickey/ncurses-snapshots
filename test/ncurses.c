@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.214 2004/07/03 20:00:17 tom Exp $
+$Id: ncurses.c,v 1.215 2004/07/10 23:06:07 tom Exp $
 
 ***************************************************************************/
 
@@ -125,6 +125,8 @@ typedef struct {
 } RGB_DATA;
 
 static RGB_DATA *all_colors;
+
+static void main_menu(bool);
 
 /* The behavior of mvhline, mvvline for negative/zero length is unspecified,
  * though we can rely on negative x/y values to stop the macro.
@@ -1433,10 +1435,17 @@ color_edit(void)
 	    P("To increment or decrement a value, use the same procedure, but finish");
 	    P("with a `+' or `-'.");
 	    P("");
+	    P("Press 'm' to invoke the top-level menu with the current color settings.");
 	    P("To quit, do `x' or 'q'");
 
 	    Pause();
 	    erase();
+	    break;
+
+	case 'm':
+	    endwin();
+	    main_menu(FALSE);
+	    refresh();
 	    break;
 
 	case 'x':
@@ -4674,6 +4683,105 @@ rip_header(WINDOW *win, int cols)
     return OK;
 }
 
+static void
+main_menu(bool top)
+{
+    int command;
+
+    do {
+	(void) puts("This is the ncurses main menu");
+	(void) puts("a = keyboard and mouse input test");
+#if USE_WIDEC_SUPPORT
+	(void) puts("A = wide-character keyboard and mouse input test");
+#endif
+	(void) puts("b = character attribute test");
+	(void) puts("c = color test pattern");
+	if (top)
+	    (void) puts("d = edit RGB color values");
+	(void) puts("e = exercise soft keys");
+#if USE_WIDEC_SUPPORT
+	(void) puts("E = exercise soft keys using wide-characters");
+#endif
+	(void) puts("f = display ACS characters");
+#if USE_WIDEC_SUPPORT
+	(void) puts("F = display Wide-ACS characters");
+#endif
+	(void) puts("g = display windows and scrolling");
+	(void) puts("i = test of flushinp()");
+	(void) puts("k = display character attributes");
+#if USE_LIBMENU
+	(void) puts("m = menu code test");
+#endif
+#if USE_LIBPANEL
+	(void) puts("o = exercise panels library");
+	(void) puts("p = exercise pad features");
+	(void) puts("q = quit");
+#endif
+#if USE_LIBFORM
+	(void) puts("r = exercise forms code");
+#endif
+	(void) puts("s = overlapping-refresh test");
+#if USE_LIBMENU && defined(TRACE)
+	(void) puts("t = set trace level");
+#endif
+	(void) puts("? = repeat this command summary");
+
+	(void) fputs("> ", stdout);
+	(void) fflush(stdout);	/* necessary under SVr4 curses */
+
+	/*
+	 * This used to be an 'fgets()' call.  However (on Linux, at least)
+	 * mixing stream I/O and 'read()' (used in the library) causes the
+	 * input stream to be flushed when switching between the two.
+	 */
+	command = 0;
+	for (;;) {
+	    char ch;
+	    if (read(fileno(stdin), &ch, 1) <= 0) {
+		if (command == 0)
+		    command = 'q';
+		break;
+	    } else if (command == 0 && !isspace(UChar(ch))) {
+		command = ch;
+	    } else if (ch == '\n' || ch == '\r') {
+		if ((command == 'd') && !top) {
+		    (void) fputs("Do not nest test-d\n", stdout);
+		    command = 0;
+		}
+		if (command != 0)
+		    break;
+		(void) fputs("> ", stdout);
+		(void) fflush(stdout);
+	    }
+	}
+
+	if (do_single_test(command)) {
+	    /*
+	     * This may be overkill; it's intended to reset everything back
+	     * to the initial terminal modes so that tests don't get in
+	     * each other's way.
+	     */
+	    flushinp();
+	    set_terminal_modes();
+	    reset_prog_mode();
+	    clear();
+	    refresh();
+	    endwin();
+	    if (command == '?') {
+		(void) puts("This is the ncurses capability tester.");
+		(void)
+		    puts("You may select a test from the main menu by typing the");
+		(void)
+		    puts("key letter of the choice (the letter to left of the =)");
+		(void)
+		    puts("at the > prompt.  The commands `x' or `q' will exit.");
+	    }
+	    continue;
+	}
+    } while
+	(command != 'q');
+}
+
 /*+-------------------------------------------------------------------------
 	main(argc,argv)
 --------------------------------------------------------------------------*/
@@ -4684,7 +4792,7 @@ rip_header(WINDOW *win, int cols)
 int
 main(int argc, char *argv[])
 {
-    int command, c;
+    int c;
     int my_e_param = 1;
 #ifdef NCURSES_VERSION
     int default_fg = COLOR_WHITE;
@@ -4842,93 +4950,7 @@ main(int argc, char *argv[])
     (void) puts("Welcome to ncurses.  Press ? for help.");
 #endif
 
-    do {
-	(void) puts("This is the ncurses main menu");
-	(void) puts("a = keyboard and mouse input test");
-#if USE_WIDEC_SUPPORT
-	(void) puts("A = wide-character keyboard and mouse input test");
-#endif
-	(void) puts("b = character attribute test");
-	(void) puts("c = color test pattern");
-	(void) puts("d = edit RGB color values");
-	(void) puts("e = exercise soft keys");
-#if USE_WIDEC_SUPPORT
-	(void) puts("E = exercise soft keys using wide-characters");
-#endif
-	(void) puts("f = display ACS characters");
-#if USE_WIDEC_SUPPORT
-	(void) puts("F = display Wide-ACS characters");
-#endif
-	(void) puts("g = display windows and scrolling");
-	(void) puts("i = test of flushinp()");
-	(void) puts("k = display character attributes");
-#if USE_LIBMENU
-	(void) puts("m = menu code test");
-#endif
-#if USE_LIBPANEL
-	(void) puts("o = exercise panels library");
-	(void) puts("p = exercise pad features");
-	(void) puts("q = quit");
-#endif
-#if USE_LIBFORM
-	(void) puts("r = exercise forms code");
-#endif
-	(void) puts("s = overlapping-refresh test");
-#if USE_LIBMENU && defined(TRACE)
-	(void) puts("t = set trace level");
-#endif
-	(void) puts("? = repeat this command summary");
-
-	(void) fputs("> ", stdout);
-	(void) fflush(stdout);	/* necessary under SVr4 curses */
-
-	/*
-	 * This used to be an 'fgets()' call.  However (on Linux, at least)
-	 * mixing stream I/O and 'read()' (used in the library) causes the
-	 * input stream to be flushed when switching between the two.
-	 */
-	command = 0;
-	for (;;) {
-	    char ch;
-	    if (read(fileno(stdin), &ch, 1) <= 0) {
-		if (command == 0)
-		    command = 'q';
-		break;
-	    } else if (command == 0 && !isspace(UChar(ch))) {
-		command = ch;
-	    } else if (ch == '\n' || ch == '\r') {
-		if (command != 0)
-		    break;
-		(void) fputs("> ", stdout);
-		(void) fflush(stdout);
-	    }
-	}
-
-	if (do_single_test(command)) {
-	    /*
-	     * This may be overkill; it's intended to reset everything back
-	     * to the initial terminal modes so that tests don't get in
-	     * each other's way.
-	     */
-	    flushinp();
-	    set_terminal_modes();
-	    reset_prog_mode();
-	    clear();
-	    refresh();
-	    endwin();
-	    if (command == '?') {
-		(void) puts("This is the ncurses capability tester.");
-		(void)
-		    puts("You may select a test from the main menu by typing the");
-		(void)
-		    puts("key letter of the choice (the letter to left of the =)");
-		(void)
-		    puts("at the > prompt.  The commands `x' or `q' will exit.");
-	    }
-	    continue;
-	}
-    } while
-	(command != 'q');
+    main_menu(TRUE);
 
     ExitProgram(EXIT_SUCCESS);
 }

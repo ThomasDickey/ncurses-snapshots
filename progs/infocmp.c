@@ -42,7 +42,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.73 2004/07/03 19:32:22 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.74 2004/07/05 12:56:11 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -67,6 +67,7 @@ static int termcount;		/* count of terminal entries */
 
 static bool limited = TRUE;	/* "-r" option is not set */
 static bool quiet = FALSE;
+static bool literal = FALSE;
 static const char *bool_sep = ":";
 static const char *s_absent = "NULL";
 static const char *s_cancel = "NULL";
@@ -723,13 +724,13 @@ file_comparison(int argc, char *argv[])
 
 	/* parse entries out of the source file */
 	_nc_set_source(argv[n]);
-	_nc_read_entry_source(stdin, NULL, TRUE, FALSE, NULLHOOK);
+	_nc_read_entry_source(stdin, NULL, TRUE, literal, NULLHOOK);
 
 	if (itrace)
 	    (void) fprintf(stderr, "Resolving file %d...\n", n - 0);
 
 	/* maybe do use resolution */
-	if (!_nc_resolve_uses(!limited)) {
+	if (!_nc_resolve_uses2(!limited, literal)) {
 	    (void) fprintf(stderr,
 			   "There are unresolved use entries in %s:\n",
 			   argv[n]);
@@ -898,6 +899,7 @@ usage(void)
 	,"  -L    use long names"
 	,"  -R subset (see manpage)"
 	,"  -T    eliminate size limits (test)"
+	,"  -U    eliminate post-processing of entries"
 	,"  -V    print version"
 #if NCURSES_XNAMES
 	,"  -a    with -F, list commented-out caps"
@@ -1195,7 +1197,7 @@ main(int argc, char *argv[])
 
     while ((c = getopt(argc,
 		       argv,
-		       "1A:aB:CcdEeFfGgIiLlnpqR:rs:TtuVv:w:x")) != EOF)
+		       "1A:aB:CcdEeFfGgIiLlnpqR:rs:TtUuVv:w:x")) != EOF)
 	switch (c) {
 	case '1':
 	    mwidth = 0;
@@ -1325,6 +1327,10 @@ main(int argc, char *argv[])
 	    suppress_untranslatable = TRUE;
 	    break;
 #endif
+
+	case 'U':
+	    literal = TRUE;
+	    break;
 
 	case 'u':
 	    compare = C_USEALL;

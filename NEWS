@@ -1,10 +1,30 @@
--- $Id: NEWS,v 1.822 2004/07/04 00:36:27 tom Exp $
+-- $Id: NEWS,v 1.825 2004/07/10 22:37:11 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040710
+	+ add check in wget_wch() for printable bytes that are not part of a
+	  multibyte character.
+	+ modify wadd_wchnstr() to render text using window's background
+	  attributes.
+	+ improve tic's check to compare sgr and sgr0.
+	+ fix c++ directory's .cc.i rule.
+	+ modify logic in tgetent() which adjusts the termcap "me" string
+	  to work with ISO-2022 string used in xterm-new (cf: 20010908).
+	+ modify tic's check for conflicting function keys to omit that if
+	  converting termcap to termcap format.
+	+ add -U option to tic and infocmp.
+	+ add rmam/smam to linux terminfo entry (Trevor Van Bremen)
+	> terminfo updates -TD
+	+ minor fixes for emu
+	+ add emu-220
+	+ change wyse acsc strings to use 'i' map rather than 'I'
+	+ fixes for avatar0
+	+ fixes for vp3a+
 
 20040703
 	+ use tic -x to install terminfo database -TD

@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.70 2004/01/11 01:45:54 tom Exp $
+.\" $Id: ncurses.3x,v 1.71 2004/07/05 13:08:19 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
@@ -828,7 +828,7 @@ terminal capability database
 \fBterminfo\fR(\*n) and related pages whose names begin "curs_" for detailed routine
 descriptions.
 .SH EXTENSIONS
-The \fBncurses\fR library can be compiled with an option (\fB\-DUSE_GETCAP\fR)
+The \fBncurses\fR library can be compiled with an option (\fB-DUSE_GETCAP\fR)
 that falls back to the old-style /etc/termcap file if the terminal setup code
 cannot find a terminfo entry corresponding to \fBTERM\fR.  Use of this feature
 is not recommended, as it essentially includes an entire termcap compiler in

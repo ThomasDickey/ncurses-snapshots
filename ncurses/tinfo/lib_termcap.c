@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-on                 *
  *                                                                          *
  * some of the code in here was contributed by:                             *
  * Magnus Bengtsson, d6mbeng@dtek.chalmers.se (Nov'93)                      *
@@ -43,7 +44,7 @@
 
 #include <term_entry.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.44 2003/05/24 21:10:28 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.45 2004/07/07 23:53:17 tom Exp $")
 
 #define CSI       233
 #define ESC       033		/* ^[ */
@@ -90,9 +91,15 @@ skip_zero(char *s)
 static bool
 similar_sgr(char *a, char *b)
 {
+    bool result = FALSE;
     int csi_a = is_csi(a);
     int csi_b = is_csi(b);
+    int len_a;
+    int len_b;
 
+    TR(TRACE_DATABASE, ("similar_sgr:\n\t%s\n\t%s",
+			_nc_visbuf2(1, a),
+			_nc_visbuf2(2, b)));
     if (csi_a != 0 && csi_b != 0 && csi_a == csi_b) {
 	a += csi_a;
 	b += csi_b;
@@ -101,7 +108,29 @@ similar_sgr(char *a, char *b)
 	    b = skip_zero(b);
 	}
     }
-    return strcmp(a, b) == 0;
+    len_a = strlen(a);
+    len_b = strlen(b);
+    if (len_a && len_b) {
+	if (len_a > len_b)
+	    result = (strncmp(a, b, len_b) == 0);
+	else
+	    result = (strncmp(a, b, len_a) == 0);
+    }
+    TR(TRACE_DATABASE, ("...similar_sgr: %d\n\t%s\n\t%s", result,
+			_nc_visbuf2(1, a),
+			_nc_visbuf2(2, b)));
+    return result;
+}
+
+static int
+chop_out(char *string, int i, int j)
+{
+    TR(TRACE_DATABASE, ("chop_out %d..%d from %s", i, j, _nc_visbuf(string)));
+    while (string[j] != '\0') {
+	string[i++] = string[j++];
+    }
+    string[i] = '\0';
+    return i;
 }
 
 /***************************************************************************
@@ -124,6 +153,7 @@ tgetent(char *bufp GCC_UNUSED, const char *name)
 {
     int errcode;
 
+    START_TRACE();
     T((T_CALLED("tgetent()")));
 
     setupterm((NCURSES_CONST char *) name, STDOUT_FILENO, &errcode);
@@ -157,56 +187,85 @@ tgetent(char *bufp GCC_UNUSED, const char *name)
 	 */
 	if (exit_attribute_mode != 0
 	    && set_attributes != 0) {
+	    bool found = FALSE;
 	    char *on = set_attribute_9(1);
 	    char *off = set_attribute_9(0);
 	    char *tmp;
 	    size_t i, j, k;
 
+	    TR(TRACE_DATABASE, ("checking if we can trim sgr0 based on sgr"));
+	    TR(TRACE_DATABASE, ("sgr0       %s", _nc_visbuf(exit_attribute_mode)));
+	    TR(TRACE_DATABASE, ("sgr(9:off) %s", _nc_visbuf(off)));
+	    TR(TRACE_DATABASE, ("sgr(9:on)  %s", _nc_visbuf(on)));
 	    if (similar_sgr(off, exit_attribute_mode)
 		&& !similar_sgr(off, on)) {
 		TR(TRACE_DATABASE, ("adjusting sgr0 : %s", _nc_visbuf(off)));
 		FreeIfNeeded(fix_me);
 		fix_me = off;
-		for (i = 0; off[i] != '\0'; ++i) {
-		    if (on[i] != off[i]) {
-			j = strlen(off);
-			k = strlen(on);
-			while (j != 0
-			       && k != 0
-			       && off[j - 1] == on[k - 1]) {
-			    --j, --k;
+		/*
+		 * If rmacs is a substring of sgr(0), remove that chunk.
+		 */
+		if (exit_alt_charset_mode != 0) {
+		    j = strlen(off);
+		    k = strlen(exit_alt_charset_mode);
+		    if (j > k) {
+			for (i = 0; i <= (j - k); ++i) {
+			    if (!memcmp(exit_alt_charset_mode, off + i, k)) {
+				found = TRUE;
+				chop_out(off, i, i + k);
+				break;
+			    }
 			}
-			while (off[j] != '\0') {
-			    off[i++] = off[j++];
-			}
-			off[i] = '\0';
-			break;
 		    }
 		}
-		/* SGR 10 would reset to normal font */
-		if ((i = is_csi(off)) != 0
-		    && off[strlen(off) - 1] == 'm') {
-		    tmp = skip_zero(off + i);
-		    if (tmp[0] == '1'
-			&& skip_zero(tmp + 1) != tmp + 1) {
-			i = tmp - off;
-			if (off[i - 1] == ';')
-			    i--;
-			j = skip_zero(tmp + 1) - off;
-			while (off[j] != '\0') {
-			    off[i++] = off[j++];
+		/*
+		 * SGR 10 would reset to normal font.
+		 */
+		if (!found) {
+		    if ((i = is_csi(off)) != 0
+			&& off[strlen(off) - 1] == 'm') {
+			TR(TRACE_DATABASE, ("looking for SGR 10 in %s",
+					    _nc_visbuf(off)));
+			tmp = skip_zero(off + i);
+			if (tmp[0] == '1'
+			    && skip_zero(tmp + 1) != tmp + 1) {
+			    i = tmp - off;
+			    if (off[i - 1] == ';')
+				i--;
+			    j = skip_zero(tmp + 1) - off;
+			    i = chop_out(off, i, j);
+			    found = TRUE;
 			}
-			off[i] = '\0';
 		    }
 		}
-		TR(TRACE_DATABASE, ("...adjusted me : %s", _nc_visbuf(fix_me)));
+		if (!found
+		    && (tmp = strstr(exit_attribute_mode, off)) != 0) {
+		    i = tmp - exit_attribute_mode;
+		    j = strlen(off);
+		    tmp = strdup(exit_attribute_mode);
+		    chop_out(tmp, i, j);
+		    free(off);
+		    fix_me = tmp;
+		}
+		TR(TRACE_DATABASE, ("...adjusted sgr0 : %s", _nc_visbuf(fix_me)));
 		if (!strcmp(fix_me, exit_attribute_mode)) {
 		    TR(TRACE_DATABASE, ("...same result, discard"));
 		    free(fix_me);
 		    fix_me = 0;
 		}
+	    } else {
+		/*
+		 * Either the sgr does not reference alternate character set,
+		 * or it is incorrect.  That's too hard to decide right now.
+		 */
+		free(off);
 	    }
 	    free(on);
+	} else {
+	    /*
+	     * Possibly some applications are confused if sgr0 contains rmacs,
+	     * but that would be a different bug report -TD
+	     */
 	}
 
 	(void) baudrate();	/* sets ospeed as a side-effect */
