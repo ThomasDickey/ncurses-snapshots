@@ -39,7 +39,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_tracedmp.c,v 1.22 2001/11/03 15:45:35 tom Exp $")
+MODULE_ID("$Id: lib_tracedmp.c,v 1.23 2002/08/10 19:42:12 tom Exp $")
 
 #ifdef TRACE
 NCURSES_EXPORT(void)
@@ -135,6 +135,7 @@ _tracedump(const char *name, WINDOW *win)
     }
 #if NO_LEAKS
     free(buf);
+    buf = 0;
     used = 0;
 #endif
 }

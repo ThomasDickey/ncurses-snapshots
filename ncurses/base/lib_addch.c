@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.64 2002/05/11 18:16:43 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.65 2002/08/10 22:27:49 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -63,7 +63,7 @@ render_char(WINDOW *win, NCURSES_CH_T ch)
 	SetAttr(ch, a | (AttrOf(win->_nc_bkgd) & COLOR_MASK(a)));
     } else {
 	/* color in attrs has precedence over bkgrnd */
-	a |= (AttrOf(win->_nc_bkgd) & A_ATTRIBUTES) & COLOR_MASK(a);
+	a |= AttrOf(win->_nc_bkgd) & COLOR_MASK(a);
 	/* color in ch has precedence */
 	AddAttr(ch, (a & COLOR_MASK(AttrOf(ch))));
     }

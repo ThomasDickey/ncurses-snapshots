@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: cardfile.c,v 1.16 2002/07/27 23:34:07 tom Exp $
+ * $Id: cardfile.c,v 1.18 2002/08/10 22:21:14 tom Exp $
  *
  * File format: text beginning in column 1 is a title; other text forms the content.
  */
@@ -131,6 +131,8 @@ add_content(CARD * card, const char *content)
 	    card->content = (char *) realloc(card->content, total + 1);
 	    strcpy(card->content + offset++, " ");
 	} else {
+	    if (card->content != 0)
+		free(card->content);
 	    card->content = (char *) malloc(total + 1);
 	}
 	strcpy(card->content + offset, content);
@@ -454,10 +456,6 @@ cardfile(char *fname)
 		    y -= OFFSET_CARD;
 		    x += OFFSET_CARD;
 		}
-		break;
-	    case ERR:
-		if (last_ch != KEY_RESIZE)
-		    finished = TRUE;
 		break;
 #endif
 	    default:

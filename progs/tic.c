@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.97 2002/07/06 23:19:50 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.99 2002/08/11 00:16:31 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -89,11 +89,12 @@ usage(void)
     {
 	"Options:",
 	"  -1         format translation output one capability per line",
+	"  -A         suppress commented-out capabilities",
 	"  -C         translate entries to termcap source form",
 	"  -I         translate entries to terminfo source form",
 	"  -L         translate entries to full terminfo source form",
 	"  -N         disable smart defaults for source translation",
-	"  -R         restrict translation to given terminfo/termcap version",
+	"  -R<name>   restrict translation to given terminfo/termcap version",
 	"  -T         remove size-restrictions on compiled description",
 	"  -V         print version",
 #if NCURSES_XNAMES
@@ -107,6 +108,7 @@ usage(void)
 	"  -o<dir>    set output directory for compiled entry writes",
 	"  -r         force resolution of all use entries in source translation",
 	"  -s         print summary statistics",
+	"  -u         retain all \"tc=\" clauses when translating to termcap",
 	"  -v[n]      set verbosity level",
 	"  -w[n]      set format width for translation output",
 #if NCURSES_XNAMES
@@ -424,7 +426,7 @@ main(int argc, char *argv[])
     int v_opt = -1, debug_level;
     int smart_defaults = TRUE;
     char *termcap;
-    ENTRY *qp;
+    ENTRY *qp, *rp;
 
     int this_opt, last_opt = '?';
 
@@ -433,6 +435,7 @@ main(int argc, char *argv[])
 
     int width = 60;
     bool formatted = FALSE;	/* reformat complex strings? */
+    bool keep_tc_clauses = FALSE;	/* true to retain "tc=" clauses */
     int numbers = 0;		/* format "%'char'" to/from "%{number}" */
     bool infodump = FALSE;	/* running as captoinfo? */
     bool capdump = FALSE;	/* running as infotocap? */
@@ -443,6 +446,7 @@ main(int argc, char *argv[])
     const char **namelst = 0;
     char *outdir = (char *) NULL;
     bool check_only = FALSE;
+    bool suppress_untranslatable = FALSE;
 
     log_fp = stderr;
 
@@ -466,7 +470,7 @@ main(int argc, char *argv[])
      * be optional.
      */
     while ((this_opt = getopt(argc, argv,
-			      "0123456789CILNR:TVace:fGgo:rsvwx")) != EOF) {
+			      "0123456789ACILNR:TVace:fGgo:rsuvwx")) != EOF) {
 	if (isdigit(this_opt)) {
 	    switch (last_opt) {
 	    case 'v':
@@ -535,6 +539,9 @@ main(int argc, char *argv[])
 	case 's':
 	    showsummary = TRUE;
 	    break;
+	case 'u':
+	    keep_tc_clauses = TRUE;
+	    break;
 	case 'v':
 	    v_opt = 0;
 	    break;
@@ -542,6 +549,10 @@ main(int argc, char *argv[])
 	    width = 0;
 	    break;
 #if NCURSES_XNAMES
+	case 'A':
+	    _nc_disable_period = FALSE;
+	    suppress_untranslatable = TRUE;
+	    break;
 	case 'a':
 	    _nc_disable_period = TRUE;
 	    /* FALLTHRU */
@@ -660,7 +671,7 @@ main(int argc, char *argv[])
     if (check_only && (capdump || infodump)) {
 	for_entry_list(qp) {
 	    if (matches(namelst, qp->tterm.term_names)) {
-		int len = fmt_entry(&qp->tterm, NULL, TRUE, infodump, numbers);
+		int len = fmt_entry(&qp->tterm, NULL, FALSE, TRUE, infodump, numbers);
 
 		if (len > (infodump ? MAX_TERMINFO_LENGTH : MAX_TERMCAP_LENGTH))
 		    (void) fprintf(stderr,
@@ -699,9 +710,39 @@ main(int argc, char *argv[])
 			    put_translate(fgetc(tmp_fp));
 		    }
 
-		    len = dump_entry(&qp->tterm, limited, numbers, NULL);
-		    for (j = 0; j < qp->nuses; j++)
-			len += dump_uses(qp->uses[j].name, !capdump);
+		    len = dump_entry(&qp->tterm,
+				     suppress_untranslatable,
+				     limited,
+				     0,
+				     numbers,
+				     NULL);
+		    for (j = 0; j < qp->nuses; j++) {
+			bool found = FALSE;
+
+			if (capdump
+			    && !keep_tc_clauses
+			    && (j != (qp->nuses - 1))) {
+			    const char *needle[2];
+
+			    needle[0] = qp->uses[j].name;
+			    needle[1] = 0;
+			    for_entry_list(rp) {
+				if (matches(needle, rp->tterm.term_names)) {
+				    len += dump_entry(&rp->tterm,
+						      suppress_untranslatable,
+						      limited,
+						      len,
+						      numbers,
+						      NULL);
+				    found = TRUE;
+				    break;
+				}
+			    }
+			}
+			if (!found) {
+			    len += dump_uses(qp->uses[j].name, !capdump);
+			}
+		    }
 		    (void) putchar('\n');
 		    if (debug_level != 0 && !limited)
 			printf("# length=%d\n", len);

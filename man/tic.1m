@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+.\" Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.29 2000/08/19 18:51:05 tom Exp $
+.\" $Id: tic.1m,v 1.31 2002/08/11 00:30:58 tom Exp $
 .TH tic 1M ""
 .ds n 5
 .ds d @TERMINFO@
@@ -73,6 +73,11 @@ exists, the entry is placed there.
 Libraries that read terminfo entries are expected to check for a TERMINFO
 directory first, look at \fI$HOME/.terminfo\fR if TERMINFO is not set, and
 finally look in \fI\*d\fR.
+.TP
+\fB-A\fR
+tells \fBtic\fP to discard commented-out capabilities.
+Normally when translating from terminfo to termcap,
+untranslatable capabilities are commented-out.
 .TP
 \fB-a\fR
 tells \fBtic\fP to retain commented-out capabilities rather than discarding
@@ -180,6 +185,11 @@ rather than their decimal equivalents.
 Summarize the compile by showing the directory into which entries
 are written, and the number of entries which are compiled.
 .TP
+\fB-u\fR
+When translating to termcap, retain all of the \fBtc=\fR clauses.
+Normally all but the last are expanded inline, since the most commonly
+used termcap libraries allow that only at the end of an entry.
+.TP
 \fB-x\fR
 Treat unknown capabilities as user-defined.
 That is, if you supply a capability name which \fBtic\fP does not recognize,
@@ -265,6 +275,7 @@ The error messages from this \fBtic\fR have the same format as GNU C
 error messages, and can be parsed by GNU Emacs's compile facility.
 
 The
+\fB-A\fR,
 \fB-C\fR,
 \fB-G\fR,
 \fB-I\fR,
@@ -278,7 +289,8 @@ The
 \fB-g\fR,
 \fB-o\fR,
 \fB-r\fR,
-\fB-s\fR and
+\fB-s\fR,
+\fB-u\fR and
 \fB-x\fR
 options
 are not supported under SVr4.

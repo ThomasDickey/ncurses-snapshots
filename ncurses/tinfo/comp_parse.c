@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -52,7 +52,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.50 2001/06/16 17:52:18 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.51 2002/08/11 00:59:06 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype) (TERMTYPE *) = sanity_check;
@@ -320,8 +320,8 @@ _nc_resolve_uses(bool fullresolve)
     DEBUG(2, ("NAME RESOLUTION COMPLETED OK"));
 
     /*
-     * OK, at this point all (char *) references in `name' mwmbers
-     * have been successfully converred to (ENTRY *) pointers in
+     * OK, at this point all (char *) references in `name' members
+     * have been successfully converted to (ENTRY *) pointers in
      * `link' members.  Time to do the actual merges.
      */
     if (fullresolve) {

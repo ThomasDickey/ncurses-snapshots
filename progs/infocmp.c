@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,7 +41,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.63 2001/09/22 19:57:40 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.65 2002/08/11 00:33:37 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -1427,7 +1427,7 @@ main(int argc, char *argv[])
 			       tname[0]);
 	    (void) printf("#\tReconstructed via infocmp from file: %s\n",
 			  tfile[0]);
-	    len = dump_entry(&entries[0].tterm, limited, numbers, NULL);
+	    len = dump_entry(&entries[0].tterm, FALSE, limited, 0, numbers, NULL);
 	    putchar('\n');
 	    if (itrace)
 		(void) fprintf(stderr, "infocmp: length %d\n", len);
@@ -1459,10 +1459,10 @@ main(int argc, char *argv[])
 	case C_USEALL:
 	    if (itrace)
 		(void) fprintf(stderr, "infocmp: dumping use entry\n");
-	    len = dump_entry(&entries[0].tterm, limited, numbers, use_predicate);
+	    len = dump_entry(&entries[0].tterm, FALSE, limited, 0, numbers, use_predicate);
 	    for (i = 1; i < termcount; i++)
-		len += dump_uses(tname[i], !(outform == F_TERMCAP || outform
-					     == F_TCONVERR));
+		len += dump_uses(tname[i], !(outform == F_TERMCAP
+					     || outform == F_TCONVERR));
 	    putchar('\n');
 	    if (itrace)
 		(void) fprintf(stderr, "infocmp: length %d\n", len);
