@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.252 2003/08/23 21:38:49 tom Exp $
+ * $Id: curses.priv.h,v 1.253 2003/09/13 23:16:30 tom Exp $
  *
  *	curses.priv.h
  *
@@ -1060,9 +1060,7 @@ extern NCURSES_EXPORT_VAR(int *) _nc_oldnums;
 
 #define USE_SETBUF_0 0
 
-#define NC_BUFFERED(flag) \
-	if ((SP->_buffered != 0) != flag) \
-		_nc_set_buffer(SP->_ofp, flag)
+#define NC_BUFFERED(flag) _nc_set_buffer(SP->_ofp, flag)
 
 #define NC_OUTPUT ((SP != 0) ? SP->_ofp : stdout)
 

@@ -1,10 +1,24 @@
--- $Id: NEWS,v 1.766 2003/09/06 22:40:56 tom Exp $
+-- $Id: NEWS,v 1.767 2003/09/13 23:18:03 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030913
+	> Philippe Blain:
+	+ in ncurses/tty/lib_mvcur.c,
+	  move the label 'nonlocal' just before the second gettimeofday() to
+	  be able to compute the diff time when 'goto nonlocal' used.
+	  Rename 'msec' to 'microsec' in the debug-message.
+	+ in ncurses/tty/lib_mvcur.c,
+	  Use _nc_outch() in carriage return/newline movement instead of
+	  putchar() which goes to stdout.  Move test for xold>0 out of loop.
+	+ in ncurses/tinfo/setbuf.c,
+	  Set the flag SP->_buffered at the end of operations when all has been
+	  successful (typeMalloc can fail).
+	+ simplify NC_BUFFERED macro by moving check inside _nc_setbuf().
 
 20030906
 	+ modify configure script to avoid using "head -1", which does not
@@ -114,7 +128,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 20030628
 	+ rewrite wadd_wch() and wecho_wchar() to call waddch() and wechochar()
 	  respectively, to avoid calling waddch_noecho() with wide-character
-	  data, since that function assumes its input is 8-bit data. 
+	  data, since that function assumes its input is 8-bit data.
 	  Similarly, modify waddnwstr() to call wadd_wch().
 	+ remove logic from waddnstr() which transformed multibyte character
 	  strings into wide-characters.  Rewrite of waddch_literal() from
@@ -215,7 +229,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 20030503
 	+ fix form_driver() cases for REQ_CLR_EOF, REQ_CLR_EOL, REQ_DEL_CHAR,
 	  REQ_DEL_PREV and REQ_NEW_LINE, which did not ensure the cursor was at
-	  the editing position before making modifications. 
+	  the editing position before making modifications.
 	+ add test/demo_forms and associated test/edit_field.c demos.
 	+ modify test/configure.in to use test/modules for the list of objects
 	  to compile rather than using the list of programs.
@@ -456,7 +470,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  point (tested with libtool 1.3.3 and 1.4.3).
 	+ reorder configure script's updating of $CPPFLAGS and $CFLAGS to
 	  prevent -I options in the user's environment from introducing
-	  conflicts with the build -I options (may be related to reports by 
+	  conflicts with the build -I options (may be related to reports by
 	  Patrick Ash and George Goffe).
 	+ rename test/define_key.c to test/demo_defkey.c, test/keyok.c to
 	  test/demo_keyok.c to allow building these with libtool.
@@ -717,7 +731,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 
 20020727
 	+ finish no-leak checking in cardfile.c, using this for testing changes
-	  to resizeterm(). 
+	  to resizeterm().
 	+ simplify _nc_freeall() using delscreen().
 
 20020720
@@ -880,7 +894,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  can be linked.
 
 20020413
-	+ add manpages: curs_get_wstr.3x, curs_in_wchstr.3x    
+	+ add manpages: curs_get_wstr.3x, curs_in_wchstr.3x
 	+ implement wgetn_wstr().
 	+ implement win_wchnstr().
 	+ remove redefinition of unget_wch() in lib_gen.c (reported by
@@ -942,7 +956,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  options.
 	> patch by Sven Verdoolaege (report by Gerhard Haering
 	  <haering_linux@gmx.de>):
-	+ correct typos in definitions of several wide-character macros: 
+	+ correct typos in definitions of several wide-character macros:
 	  waddwstr, wgetbkgrnd, mvaddwstr, mvwadd_wchnstr, mvwadd_wchnstr,
 	  mvwaddwstr.
 	+ pass $(CPPFLAGS) to MKlib_gen.sh, thereby fixing a missing definition
@@ -1104,7 +1118,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  in the C++ runtime.
 	+ modify the build to name dynamic libraries according to the
 	  convention used on OS X and Darwin.  Rather than something like
-	  libncurses.dylib.5.2, Darwin would name it libncurses.  5.dylib. 
+	  libncurses.dylib.5.2, Darwin would name it libncurses.  5.dylib.
 	  There are a few additional minor fixes, such as setting the library
 	  version and compatibility version numbers (patch by Jason Evans
 	  <jevans@apple.com>).
@@ -1189,7 +1203,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 20011001
 	+ simpler fix for signal_name(), to replace the one overlooked in
 	  20010929 (reported by Larry Virden).
-	  
+
 20010929
 	+ add -i option to view.c, to test ncurses' check for non-default
 	  signal handler for SIGINT, etc.
