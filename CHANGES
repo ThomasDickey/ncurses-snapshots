@@ -1,5 +1,5 @@
-This a log of changes that ncurses has gone through since I
-started working with Pavel Curtis' original work of 1982:
+This is a log of changes that ncurses has gone through since I
+started working with Pavel Curtis' original work of 1992:
 
 #### ncurses -> ncurses 0.1 #### Jul 31, 1992 ####
 replacing sgtty stuff by termios stuff.
@@ -50,7 +50,7 @@ re-included the contents of important.patch into source.
 
 #### ncurses0.5 -> ncurses0.6 #### March 1, 1993 ####
 removed _numchngd from struct _win_st and made appropriate changes.
-rewritten kgetch() to remove problems with interaction between alram and 
+rewritten kgetch() to remove problems with interaction between alarm and 
 	read(). It caused SIGSEGV every now and then.
 fixed a bug that miscounted the numbers of columns when updating.
 	(in lib_doupdate.c(ClrUpdate() -- iterate to columns not columns-1)
@@ -145,7 +145,7 @@ replaced by a hopefully more helpful message.
 *) Added configuration files for SunOS, Linux, HP/UX, Ultrix,
 386bsd/BSDI (if you have others send'em to me)
 *) Cleaner Makefile.
-*) The documentation in manual.doc is now more uptodate.
+*) The documentation in manual.doc is now more up to date.
 *) update optimization and support for hp terminals, and 386bsd
 console driver(s).
 *) mvcur optimization for terminals without cursor addressing
@@ -360,3 +360,25 @@ traceon(); in your code and link with -ldcurses.
 *) cleaned up the test/ directory.    
 *) test/worm will segfault after quite a while.
 *) many spelling corrections courtesy of Thomas E. Dickey 
+
+### ncurses 1.8.8 -> 1.8.9
+*) compile (mostly) clean with gcc 2.5.8 -Wall -Wstrict-prototypes
+   -Wmissing-prototypes -Wconversion and using __attribute__ to flush out
+   non-portable use of "%x" for pointers, or for chtype data (which is declared
+   as a long).
+*) corrected (as per SysVR4 include-files) prototypes for tputs, tgetent,
+   tgetflag, tgetnum, tgetstr.
+*) moved tgoto to lib_tparm.c
+*) include <termcap.h> where required to declare prototypes.
+*) added trace mask TRACE_DETAILS, use this in lib_getch.c to allow finer
+   resolution of traces.
+*) added/corrected error/limits checking in waddnstr, delwin, mvwin, makenew,
+   pnoutrefresh, wnoutrefresh, initscr
+*) corrected logic of waddchnstr, which was not passing character attributes.
+*) modified doupdate to ensure that typahead was turned on before attempting
+   select-call (otherwise, some implementations hang).
+*) use calloc rather than malloc for allocating structs (Purify warns about
+   many places where ncurses references uninitialized variables otherwise).
+*) fixes in ncurses test-program to make it friendlier when reporting that
+   the terminal doesn't support color, and also to handle wrap-around in the
+   character-test.

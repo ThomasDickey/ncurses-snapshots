@@ -63,7 +63,9 @@ int ch;
 	T(("pulling %d from %d", ch, head));
 
 	h_inc();
-	fifo_dump();
+#ifdef TRACE
+	if (_tracing & TRACE_DETAILS) fifo_dump();
+#endif
 	return ch;
 }
 
@@ -79,7 +81,9 @@ int ungetch(int ch)
 	
 	SP->_fifo[head] = ch;
 	T(("ungetch ok"));
-	fifo_dump();
+#ifdef TRACE
+	if (_tracing & TRACE_DETAILS) fifo_dump();
+#endif
 	return OK;
 }
 
@@ -97,8 +101,10 @@ again:
 	SP->_fifo[tail] = ch;
 	if (head == -1) head = tail;
 	t_inc();
-	T(("pushed %d at %d", ch, tail));
-	fifo_dump();
+	T(("pushed %#x at %d", ch, tail));
+#ifdef TRACE
+	if (_tracing & TRACE_DETAILS) fifo_dump();
+#endif
 	return ch;
 }
 
@@ -118,7 +124,7 @@ wgetch(WINDOW *win)
 bool	setHere = FALSE;	/* cbreak mode was set here */
 int	ch; 
 
-	T(("wgetch(%x) called", win));
+	T(("wgetch(%p) called", win));
 
 	/* this should be eliminated */
 	if (! win->_scroll  &&  (SP->_echo) &&  (win->_flags & _FULLWIN)
@@ -198,7 +204,7 @@ struct try  *ptr;
 int ch = 0;
 int timeleft = 1000;
 
-    	T(("kgetch(%x) called", win));
+    	T(("kgetch(%p) called", win));
 
     	ptr = SP->_keytry;
 

@@ -48,7 +48,7 @@ struct timeval starttime, returntime;
 	 timeout.tv_sec = wait / 1000;
 	 timeout.tv_usec = (wait % 1000) * 1000;
 
-	 T(("start twait: sec = %d, usec = %d", timeout.tv_sec, timeout.tv_usec));
+	 T(("start twait: sec = %ld, usec = %ld", timeout.tv_sec, timeout.tv_usec));
 
 	 result = select(fd+1, &set, NULL, NULL, &timeout);
 
@@ -68,7 +68,7 @@ struct timeval starttime, returntime;
 	 if (timeleft)
 		*timeleft = (timeout.tv_sec * 1000) + (timeout.tv_usec / 1000);
 
-	 T(("end twait: returned %d, sec = %d, usec = %d (%d msec)",
+	 T(("end twait: returned %d, sec = %ld, usec = %ld (%d msec)",
 		 result, timeout.tv_sec, timeout.tv_usec, *timeleft));
 
 	 return(result);

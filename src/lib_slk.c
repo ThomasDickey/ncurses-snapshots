@@ -191,7 +191,7 @@ int i, maxlab, x;
 
 	T(("slk_initialize()"));
 
-	if ((SP->_slk = slk = (SLK*) calloc(1,sizeof(SLK))) == NULL)
+	if ((SP->_slk = slk = TypeAllocN(SLK, 1)) == NULL)
 		return(OK);
 	maxlab = (cols+1)/9;
 	for (i = 0; i < MAX_SKEY; i++) {

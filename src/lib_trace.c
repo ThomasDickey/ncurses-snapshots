@@ -64,7 +64,7 @@ void trace(const unsigned int tracelevel)
 }
 
 
-char *_traceattr(int newmode)
+char *_traceattr(chtype newmode)
 {
 static char	buf[BUFSIZ];
 struct {unsigned int val; char *name;}

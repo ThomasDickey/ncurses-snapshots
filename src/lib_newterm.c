@@ -36,7 +36,7 @@ int	errret;
 
 #ifdef TRACE
 	_init_trace();
-	T(("newterm(\"%s\",%x,%x) called", term, ofp, ifp));
+	T(("newterm(\"%s\",%p,%p) called", term, ofp, ifp));
 #endif
 
 	/* this loads the capability entry, then sets LINES and COLS */
@@ -68,7 +68,7 @@ int	errret;
 
 	curses_signal_handler(TRUE);
 
-	T(("newterm returns %x", SP));
+	T(("newterm returns %p", SP));
 
 	return(SP);
 }

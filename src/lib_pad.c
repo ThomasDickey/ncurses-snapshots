@@ -46,7 +46,7 @@ int i, j;
 	win->_flags |= _ISPAD;
 
 	for (i = 0; i < l; i++) {
-	    if ((win->_line[i].text = (chtype *) calloc(c, sizeof(chtype))) == NULL) {
+	    if ((win->_line[i].text = TypeAllocN(chtype, c)) == NULL) {
 			for (j = 0; j < i; j++)
 			    free(win->_line[j].text);
 
@@ -61,7 +61,7 @@ int i, j;
 		    *ptr++ = ' ';
 	}
 
-	T(("newpad: returned window is %x", win));
+	T(("newpad: returned window is %p", win));
 
 	return(win);
 }
@@ -77,7 +77,7 @@ WINDOW	*win;
 
 	win->_flags |= _ISPAD;
 
-	T(("subpad: returned window is %x", win));
+	T(("subpad: returned window is %p", win));
 
 	return(win);
 }
@@ -99,7 +99,7 @@ int pnoutrefresh(WINDOW *win, int pminrow, int pmincol,
 int	i, j;
 int	m, n;
 
-	T(("pnoutrefresh(%x, %d, %d, %d, %d, %d, %d) called", 
+	T(("pnoutrefresh(%p, %d, %d, %d, %d, %d, %d) called", 
 		win, pminrow, pmincol, sminrow, smincol, smaxrow, smaxcol));
 
 	if (!(win->_flags & _ISPAD))
@@ -115,8 +115,10 @@ int	m, n;
 
 	T((" pminrow + smaxrow - sminrow %d, win->_maxy %d", pminrow + smaxrow - sminrow ,  win->_maxy));
 	T((" pmincol + smaxcol - smincol %d, win->_maxx %d", pmincol + smaxcol - smincol ,  win->_maxx));
-	if ((pminrow + smaxrow - sminrow >= win->_maxy) ||
-	    (pmincol + smaxcol - smincol >= win->_maxx))
+	if ((pminrow + smaxrow - sminrow > win->_maxy) ||
+	    (pmincol + smaxcol - smincol > win->_maxx) ||
+	    (smaxrow < 0) ||
+	    (smaxcol < 0))
 		return ERR;
 
 	T(("pad being refreshed"));
@@ -158,7 +160,7 @@ int pechochar(WINDOW *pad, chtype ch)
 {
 int x, y;
 
-	T(("echochar(%x, %x)", pad, ch));
+	T(("echochar(%p, %lx)", pad, ch));
 
 	if (pad->_flags & _ISPAD)
 		return ERR;

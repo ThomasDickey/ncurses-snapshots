@@ -49,7 +49,7 @@ int	i, j;
 		return NULL;
 
 	for (i = 0; i < num_lines; i++) {
-	    if ((win->_line[i].text = (chtype *) calloc(num_columns, sizeof(chtype))) == NULL) {
+	    if ((win->_line[i].text = TypeAllocN(chtype, num_columns)) == NULL) {
 			for (j = 0; j < i; j++)
 			    free(win->_line[j].text);
 
@@ -63,7 +63,7 @@ int	i, j;
 		    *ptr++ = ' ';
 	}
 
-	T(("newwin: returned window is %x", win));
+	T(("newwin: returned window is %p", win));
 
 	return(win);
 }
@@ -73,7 +73,7 @@ WINDOW * derwin(WINDOW *orig, int num_lines, int num_columns, int begy, int begx
 WINDOW	*win;
 int	i;
 
-	T(("derwin(%x, %d,%d,%d,%d) called", orig, num_lines, num_columns, begy, begx));
+	T(("derwin(%p, %d,%d,%d,%d) called", orig, num_lines, num_columns, begy, begx));
 
 	/*
 	** make sure window fits inside the original one
@@ -104,7 +104,7 @@ int	i;
 	win->_flags = _SUBWIN;
 	win->_parent = orig;
 
-	T(("derwin: returned window is %x", win));
+	T(("derwin: returned window is %p", win));
 
 	return(win);
 }
@@ -112,7 +112,7 @@ int	i;
 
 WINDOW *subwin(WINDOW *w, int l, int c, int y, int x)
 {
-	T(("subwin(%x, %d, %d, %d, %d) called", w, l, c, y, x));
+	T(("subwin(%p, %d, %d, %d, %d) called", w, l, c, y, x));
 	T(("parent has begy = %d, begx = %d", w->_begy, w->_begx));
 
 	return derwin(w, l, c, y - w->_begy, x - w->_begx); 
@@ -126,10 +126,14 @@ WINDOW	*win;
 
 	T(("makenew(%d,%d,%d,%d)", num_lines, num_columns, begy, begx));
 
-	if ((win = (WINDOW *) malloc(sizeof(WINDOW))) == NULL)
+	if (num_lines <= 0
+	 || num_columns <= 0)
+	 	return NULL;
+
+	if ((win = TypeAllocN(WINDOW, 1)) == NULL)
 		return NULL;            
 
-	if ((win->_line = (struct ldat *) calloc(num_lines, sizeof (struct ldat))) == NULL) {
+	if ((win->_line = TypeAllocN(struct ldat, num_lines)) == NULL) {
 		free(win);
 		return NULL;               
 	}

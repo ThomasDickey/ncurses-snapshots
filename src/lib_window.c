@@ -124,7 +124,7 @@ WINDOW *dupwin(WINDOW *win)
 WINDOW *nwin;
 int linesize, i;
 
-	T(("dupwin(%x) called", win));
+	T(("dupwin(%p) called", win));
 
 	if ((nwin = newwin(win->_maxy + 1, win->_maxx + 1, win->_begy, win->_begx)) == NULL)
 		return NULL;

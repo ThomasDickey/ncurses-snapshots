@@ -57,7 +57,7 @@ int endx, endy;
 	bl |= win->_attrs;
 	br |= win->_attrs;
 
-	T(("using %x, %x, %x, %x, %x, %x, %x, %x", ls, rs, ts, bs, tl, tr, bl, br));
+	T(("using %lx, %lx, %lx, %lx, %lx, %lx, %lx, %lx", ls, rs, ts, bs, tl, tr, bl, br));
 
 	endx = win->_maxx;
 	endy = win->_maxy;
@@ -95,7 +95,7 @@ int line;
 int start;
 int end;
 
-	T(("whline(%x,%x,%d) called", win, ch, n));
+	T(("whline(%p,%lx,%d) called", win, ch, n));
 
 	line = win->_cury;
 	start = win->_curx;
@@ -123,7 +123,7 @@ int wvline(WINDOW *win, chtype ch, int n)
 int row, col;
 int end;
 
-	T(("wvline(%x,%x,%d) called", win, ch, n));
+	T(("wvline(%p,%lx,%d) called", win, ch, n));
 
 	row = win->_cury;
 	col = win->_curx;

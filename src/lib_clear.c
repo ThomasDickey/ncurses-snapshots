@@ -30,7 +30,7 @@
 
 int wclear(WINDOW *win)
 {
-	T(("wclear(%x) called", win));
+	T(("wclear(%p) called", win));
 
 	werase(win);
 

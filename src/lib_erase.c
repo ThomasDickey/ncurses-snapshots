@@ -34,7 +34,7 @@ int	y;
 chtype	*sp, *end, *start, *maxx = NULL;
 int	minx;
 
-	T(("werase(%x) called", win));
+	T(("werase(%p) called", win));
 
 	for (y = 0; y <= win->_maxy; y++) {
 	    	minx = _NOCHANGE;

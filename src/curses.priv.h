@@ -46,6 +46,8 @@ typedef struct sigaction sigaction_t;
 
 #define CHANGED     -1
 
+#define TypeAllocN(type,n)  (type *)calloc((size_t)n, sizeof(type))
+
 #ifdef TRACE
 #define T(a)	if (_tracing & TRACE_CALLS) _tracef a 
 #define TR(n, a)	if (_tracing & (n)) _tracef a 

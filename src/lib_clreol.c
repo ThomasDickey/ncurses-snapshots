@@ -33,7 +33,7 @@ int  wclrtoeol(WINDOW *win)
 chtype	*maxx, *ptr, *end;
 int	y, x, minx;
 
-	T(("wclrtoeol(%x) called", win));
+	T(("wclrtoeol(%p) called", win));
 
 	y = win->_cury;
 	x = win->_curx;

@@ -33,7 +33,10 @@ int delwin(WINDOW *win)
 {
 int	i;
 
-	T(("delwin(%x) called", win));
+	T(("delwin(%p) called", win));
+
+	if (win == NULL)
+	    return(ERR);
 
 	if (! (win->_flags & _SUBWIN)) {
 	    for (i = 0; i < win->_maxy  &&  win->_line[i].text; i++)

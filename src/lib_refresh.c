@@ -30,7 +30,7 @@
 
 int wredrawln(WINDOW *win, int beg, int num)
 {
-	T(("wredrawln(%x,%d,%d) called", win, beg, num));
+	T(("wredrawln(%p,%d,%d) called", win, beg, num));
 	touchline(win, beg, num);
 	wrefresh(win);
 	return OK;
@@ -38,7 +38,7 @@ int wredrawln(WINDOW *win, int beg, int num)
 
 int wrefresh(WINDOW *win)
 {
-	T(("wrefresh(%x) called", win));
+	T(("wrefresh(%p) called", win));
 
 	if (win == curscr)
 	    	curscr->_clear = TRUE;
@@ -55,7 +55,7 @@ int	begy = win->_begy;
 int	m, n;
 bool	wide;
 
-	T(("wnoutrefresh(%x) called", win));
+	T(("wnoutrefresh(%p) called", win));
 
 	/*
 	 * If 'newscr' has a different background than the window that we're trying
@@ -86,7 +86,7 @@ bool	wide;
 	wide = (begx <= 1 && win->_maxx >= (newscr->_maxx - 1));
 
 	win->_flags &= ~_HASMOVED;
-	for (i = 0, m = begy; i <= win->_maxy; i++, m++) {
+	for (i = 0, m = begy; i <= win->_maxy && m <= newscr->_maxy; i++, m++) {
 		if (win->_line[i].firstchar != _NOCHANGE) {
 			j = win->_line[i].firstchar;
 			n = j + begx;

@@ -29,6 +29,19 @@ library source.
 #define CTRL(x)		((x) & 0x1f)
 #endif
 
+static void Pause()
+{
+	move(LINES - 1, 0);
+	addstr("Press any key to continue... ");
+	(void) getch();
+}
+
+static void Cannot(char *what)
+{
+	printw("\nThis %s terminal %s\n\n", getenv("TERM"), what);
+	Pause();
+}
+
 /****************************************************************************
  *
  * Character input test
@@ -42,6 +55,7 @@ char buf[BUFSIZ];
 unsigned int c;
 int incount = 0, firsttime = 0;
 bool blocking = TRUE;
+int y, x;
   
       refresh();
   
@@ -82,6 +96,10 @@ bool blocking = TRUE;
 		else
 		    (void) printw("%s (ASCII control character)\n", unctrl(c));
 	    }
+	    getyx(stdscr, y, x);
+	    if (y >= LINES-1)
+	    	move(0,0);
+	    clrtoeol();	
 	}
 	if (c == 'x' || c == 'q')
 	    break;
@@ -150,9 +168,7 @@ static void attr_test(void)
 
     refresh();
 
-    move(LINES - 1, 0);
-    addstr("Press any key to continue... ");
-    (void) getch();
+    Pause();
 
     erase();
     endwin();
@@ -214,9 +230,7 @@ static void color_test(void)
 	attrset(A_NORMAL);
     }
 
-    move(LINES - 1, 0);
-    addstr("Press any key to continue... ");
-    (void) getch();
+    Pause();
 
     erase();
     endwin();
@@ -352,9 +366,7 @@ static void color_edit(void)
     P("");
     P("To quit, do `x' or 'q'");
 
-	    move(LINES - 1, 0);
-	    addstr("Press any key to continue... ");
-	    (void) getch();
+	    Pause();
 	    erase();
 	    break;
 
@@ -523,9 +535,7 @@ static void acs_display()
 	    echochar(128 + 32 * i + j);
     }
 
-    move(LINES - 1, 0);
-    addstr("Press any key to continue... ");
-    (void) getch();
+    Pause();
 
     erase();
     endwin();
@@ -1091,19 +1101,16 @@ bool do_single_test(const char c)
 
     case 'c':
 	if (!has_colors())
-	    (void) printf("This %s terminal does not support color.\n",
-			  getenv("TERM"));
+	    Cannot("does not support color.");
 	else
 	    color_test();
 	return(TRUE);
 
     case 'd':
 	if (!has_colors())
-	    (void) printf("This %s terminal does not support color.\n",
-			  getenv("TERM"));
+	    Cannot("does not support color.");
 	else if (!can_change_color())
-	    (void) printf("This %s terminal has hardwired color values.\n",
-			  getenv("TERM"));
+	    Cannot("has hardwired color values.");
 	else
 	    color_edit();
 	return(TRUE);

@@ -3,6 +3,7 @@
  */
 
 #include <curses.h>
+#include <termcap.h>
 #include <terminfo.h>
 
 static int putch(char c)

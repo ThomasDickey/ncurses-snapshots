@@ -55,7 +55,7 @@ char	killc;
 char	*oldstr;
 int ch;
   
-	T(("wgetnstr(%x,%x, %d) called", win, str, maxlen));
+	T(("wgetnstr(%p,%p, %d) called", win, str, maxlen));
 
 	oldnl = SP->_nl;
 	oldecho = SP->_echo;

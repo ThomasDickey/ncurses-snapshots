@@ -32,7 +32,7 @@
 
 int idlok(WINDOW *win,  bool flag)
 {
-	T(("idlok(%x,%d) called", win, flag));
+	T(("idlok(%p,%d) called", win, flag));
 
    	win->_idlok = flag && (has_il() || change_scroll_region);
 	return OK; 
@@ -41,7 +41,7 @@ int idlok(WINDOW *win,  bool flag)
 
 int idcok(WINDOW *win, bool flag)
 {
-	T(("idcok(%x,%d) called", win, flag));
+	T(("idcok(%p,%d) called", win, flag));
 
 	win->_idcok = flag && has_ic();
 
@@ -51,7 +51,7 @@ int idcok(WINDOW *win, bool flag)
 
 int clearok(WINDOW *win, bool flag)
 {
-	T(("clearok(%x,%d) called", win, flag));
+	T(("clearok(%p,%d) called", win, flag));
 
    	if (win == curscr)
 	    newscr->_clear = flag;
@@ -63,7 +63,7 @@ int clearok(WINDOW *win, bool flag)
 
 int immedok(WINDOW *win, bool flag)
 {
-	T(("immedok(%x,%d) called", win, flag));
+	T(("immedok(%p,%d) called", win, flag));
 
    	win->_immed = flag;
 	return OK; 
@@ -71,7 +71,7 @@ int immedok(WINDOW *win, bool flag)
 
 int leaveok(WINDOW *win, bool flag)
 {
-	T(("leaveok(%x,%d) called", win, flag));
+	T(("leaveok(%p,%d) called", win, flag));
 
    	win->_leave = flag;
    	if (flag == TRUE)
@@ -84,7 +84,7 @@ int leaveok(WINDOW *win, bool flag)
 
 int scrollok(WINDOW *win, bool flag)
 {
-	T(("scrollok(%x,%d) called", win, flag));
+	T(("scrollok(%p,%d) called", win, flag));
 
    	win->_scroll = flag;
 	return OK; 
@@ -104,7 +104,7 @@ int halfdelay(int t)
 
 int nodelay(WINDOW *win, bool flag)
 {
-	T(("nodelay(%x,%d) called", win, flag));
+	T(("nodelay(%p,%d) called", win, flag));
 
    	if (flag == TRUE)
 		win->_delay = 0;
@@ -114,7 +114,7 @@ int nodelay(WINDOW *win, bool flag)
 
 int notimeout(WINDOW *win, bool f)
 {
-	T(("notimout(%x,%d) called", win, f));
+	T(("notimout(%p,%d) called", win, f));
 
 	win->_notimeout = f;
 	return OK;
@@ -122,7 +122,7 @@ int notimeout(WINDOW *win, bool f)
 
 int wtimeout(WINDOW *win, int delay)
 {
-	T(("wtimeout(%x,%d) called", win, delay));
+	T(("wtimeout(%p,%d) called", win, delay));
 
 	win->_delay = delay;
 	return OK;
@@ -133,7 +133,7 @@ static void add_to_try(char *, short);
 
 int keypad(WINDOW *win, bool flag)
 {
-	T(("keypad(%x,%d) called", win, flag));
+	T(("keypad(%p,%d) called", win, flag));
 
    	win->_use_keypad = flag;
 
@@ -151,7 +151,7 @@ int keypad(WINDOW *win, bool flag)
 
 int meta(WINDOW *win, bool flag)
 {
-	T(("meta(%x,%d) called", win, flag));
+	T(("meta(%p,%d) called", win, flag));
 
 	SP->_use_meta = flag;
 
@@ -209,7 +209,7 @@ struct try      *ptr, *savedptr;
 					return;
 	   			}
 			} else {
-	    		if ((ptr->sibling = (struct try *) malloc(sizeof *ptr)) == NULL) {
+	    		if ((ptr->sibling = TypeAllocN(struct try, 1)) == NULL) {
 	        		out_of_memory = TRUE;
 					return;
 	    		}
@@ -223,7 +223,7 @@ struct try      *ptr, *savedptr;
 	       	}
 	   	} /* end for (;;) */  
 	} else {   /* newtry == NULL :: First sequence to be added */
-	    	savedptr = ptr = newtry = (struct try *) malloc(sizeof *ptr);
+	    	savedptr = ptr = newtry = TypeAllocN(struct try, 1);
 	    
 	    	if (ptr == NULL) {
 	        	out_of_memory = TRUE;
@@ -238,7 +238,7 @@ struct try      *ptr, *savedptr;
 	    /* at this point, we are adding to the try.  ptr->child == NULL */
 	    
 	while (*str) {
-	   	ptr->child = (struct try *) malloc(sizeof *ptr);
+	   	ptr->child = TypeAllocN(struct try, 1);
 	    
 	   	ptr = ptr->child;
 	   

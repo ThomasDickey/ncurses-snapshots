@@ -32,31 +32,27 @@ int
 waddnstr(WINDOW *win, char *const astr, int n)
 {
 char *str = astr;
+int code = ERR;
 
-	T(("waddnstr(%x,\"%s\",%d) called", win, visbuf(str), n));
+	T(("waddnstr(%p,\"%s\",%d) called", win, visbuf(str), n));
 
-	if (str == NULL)
-		return ERR;
+	if (str != NULL) {
 
-	TR(TRACE_VIRTPUT, ("str is not null"));
-	if (n < 0) {
-		while (*str != '\0') {
-		    	if (waddch(win, (chtype)(unsigned char)*str++) == ERR)
-				return(ERR);
+		TR(TRACE_VIRTPUT, ("str is not null"));
+		code = OK;
+		if (n < 0)
+			n = strlen(str);
+
+		while((n-- > 0) && (*str != '\0')) {
+			TR(TRACE_VIRTPUT, ("*str = %x", *str));
+			if (waddch(win, (chtype)(unsigned char)*str++) == ERR) {
+				code = ERR;
+				break;
+			}
 		}
-		TR(TRACE_VIRTPUT, ("waddnstr() done."));
-		return OK;
 	}
-
-	while(n-- > 0) {
-		TR(TRACE_VIRTPUT, ("*str = %x", *str));
-		if (*str == '\0')
-			break;
-		if (waddch(win, (chtype)(unsigned char)*str++) == ERR)
-			return ERR;
-	}
-	TR(TRACE_VIRTPUT, ("waddnstr() done."));
-	return OK;
+	TR(TRACE_VIRTPUT, ("waddnstr returns %d", code));
+	return code;
 }
 
 int
@@ -64,18 +60,18 @@ waddchnstr(WINDOW *win, chtype *const astr, int n)
 {
 chtype *str = astr;
 
-	T(("waddchnstr(%x,%x,%d) called", win, str, n));
+	T(("waddchnstr(%p,%p,%d) called", win, str, n));
 
 	if (n < 0) {
 		while (*str) {
-		    if (waddch(win, (chtype)(unsigned char)*str++) == ERR)
+		    if (waddch(win, *str++) == ERR)
 			return(ERR);
 		}
 		return OK;
 	}
 
 	while(n-- > 0) {
-		if (waddch(win, (chtype)(unsigned char)*str++) == ERR)
+		if (waddch(win, *str++) == ERR)
 			return ERR;
 	}
 	return OK;
