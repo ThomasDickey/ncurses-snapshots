@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.220 2004/08/07 23:35:09 tom Exp $
+$Id: ncurses.c,v 1.225 2004/09/11 23:47:40 tom Exp $
 
 ***************************************************************************/
 
@@ -966,7 +966,7 @@ get_wch_test(void)
 #define MAX_ATTRSTRING 31
 #define LEN_ATTRSTRING 26
 
-static char attr_test_string[] = "abcde fghij klmno pqrst uvwxy z";
+static char attr_test_string[MAX_ATTRSTRING + 1];
 
 static void
 adjust_attr_string(int adjust)
@@ -976,7 +976,7 @@ adjust_attr_string(int adjust)
 
     if (first >= ' ' && last <= '~') {	/* 32..126 */
 	int j, k;
-	for (j = 0, k = first; k <= last; ++j, ++k) {
+	for (j = 0, k = first; j < MAX_ATTRSTRING && k <= last; ++j, ++k) {
 	    attr_test_string[j] = k;
 	    if (((k + 1 - first) % 5) == 0) {
 		++j;
@@ -990,6 +990,13 @@ adjust_attr_string(int adjust)
     } else {
 	beep();
     }
+}
+
+static void
+init_attr_string(void)
+{
+    attr_test_string[0] = 'a';
+    adjust_attr_string(0);
 }
 
 static int
@@ -1216,6 +1223,7 @@ attr_test(void)
 
     n = skip;			/* make it easy */
     k = SIZEOF(attrs_to_test) - 1;
+    init_attr_string();
 
     do {
 	int row = 2;
@@ -1261,6 +1269,328 @@ attr_test(void)
     erase();
     endwin();
 }
+
+#if USE_WIDEC_SUPPORT
+static wchar_t wide_attr_test_string[MAX_ATTRSTRING + 1];
+
+static void
+wide_adjust_attr_string(int adjust)
+{
+    int first = ((int) UChar(wide_attr_test_string[0])) + adjust;
+    int last = first + LEN_ATTRSTRING;
+
+    if (first >= ' ' && last <= '~') {	/* 32..126 */
+	int j, k;
+	for (j = 0, k = first; j < MAX_ATTRSTRING && k <= last; ++j, ++k) {
+	    wide_attr_test_string[j] = k;
+	    if (((k + 1 - first) % 5) == 0) {
+		++j;
+		if (j < MAX_ATTRSTRING)
+		    wide_attr_test_string[j] = ' ';
+	    }
+	}
+	while (j < MAX_ATTRSTRING)
+	    wide_attr_test_string[j++] = ' ';
+	wide_attr_test_string[j] = '\0';
+    } else {
+	beep();
+    }
+}
+
+static void
+wide_init_attr_string(void)
+{
+    wide_attr_test_string[0] = 'a';
+    wide_adjust_attr_string(0);
+}
+
+static void
+set_wide_background(short pair)
+{
+    cchar_t normal;
+
+    static wchar_t blank[] = L" ";
+
+    setcchar(&normal, blank, A_NORMAL, COLOR_PAIR(pair), 0);
+    bkgrnd(&normal);
+    bkgrndset(&normal);
+}
+
+static attr_t
+get_wide_background(void)
+{
+    attr_t result = A_NORMAL;
+    attr_t attr;
+    cchar_t ch;
+    short pair;
+    wchar_t wch;
+
+    if (getbkgrnd(&ch) != ERR) {
+	if (getcchar(&ch, &wch, &attr, &pair, 0) != ERR) {
+	    result = attr;
+	}
+    }
+    return result;
+}
+
+static int
+wide_show_attr(int row, int skip, bool arrow, chtype attr, short pair, const char *name)
+{
+    int ncv = tigetnum("ncv");
+    chtype test = attr & ~WA_ALTCHARSET;
+
+    if (arrow)
+	mvprintw(row, 5, "-->");
+    mvprintw(row, 8, "%s mode:", name);
+    mvprintw(row, 24, "|");
+    if (skip)
+	printw("%*s", skip, " ");
+    attr_set(attr, pair, 0);
+
+    /*
+     * If we're to write a string in the alternate character set, it is not
+     * sufficient to just set WA_ALTCHARSET.  We have to perform the mapping
+     * that corresponds.  This is not needed for vt100-compatible devices
+     * because the acs_map[] is 1:1, but for PC-style devices such as Linux
+     * console, the acs_map[] is scattered about the range.
+     *
+     * The add_wch/addwstr functions do not themselves do this mapping, since it
+     * is possible to turn off the WA_ALTCHARSET flag for the characters which
+     * are added, and it would be an unexpected result to have the mapped
+     * characters visible on the screen.
+     */
+    if (attr & WA_ALTCHARSET) {
+	const wchar_t *s;
+	cchar_t ch;
+
+	for (s = wide_attr_test_string; *s != L'\0'; ++s) {
+	    wchar_t fill[2];
+	    fill[0] = *s;
+	    fill[1] = L'\0';
+	    setcchar(&ch, fill, WA_NORMAL, 0, 0);
+	    add_wch(&ch);
+	}
+    } else {
+	addwstr(wide_attr_test_string);
+    }
+    attr_off(attr, 0);
+    if (skip)
+	printw("%*s", skip, " ");
+    printw("|");
+    if (test != A_NORMAL) {
+	if (!(term_attrs() & test)) {
+	    printw(" (N/A)");
+	} else {
+	    if (ncv > 0 && (get_wide_background() & A_COLOR)) {
+		static const attr_t table[] =
+		{
+		    WA_STANDOUT,
+		    WA_UNDERLINE,
+		    WA_REVERSE,
+		    WA_BLINK,
+		    WA_DIM,
+		    WA_BOLD,
+		    WA_INVIS,
+		    WA_PROTECT,
+		    WA_ALTCHARSET
+		};
+		unsigned n;
+		bool found = FALSE;
+		for (n = 0; n < SIZEOF(table); n++) {
+		    if ((table[n] & attr) != 0
+			&& ((1 << n) & ncv) != 0) {
+			found = TRUE;
+			break;
+		    }
+		}
+		if (found)
+		    printw(" (NCV)");
+	    }
+	    if ((term_attrs() & test) != test)
+		printw(" (Part)");
+	}
+    }
+    return row + 2;
+}
+
+static bool
+wide_attr_getc(int *skip, int *fg, int *bg, int *ac, unsigned *kc)
+{
+    bool result = TRUE;
+    bool error = FALSE;
+    WINDOW *helpwin;
+
+    do {
+	int ch = Getchar();
+
+	error = FALSE;
+	if (isdigit(ch)) {
+	    *skip = (ch - '0');
+	} else {
+	    switch (ch) {
+	    case CTRL('L'):
+		touchwin(stdscr);
+		touchwin(curscr);
+		wrefresh(curscr);
+		break;
+	    case '?':
+		if ((helpwin = newwin(LINES - 1, COLS - 2, 0, 0)) != 0) {
+		    int col = 1;
+		    int row = 1;
+		    box_set(helpwin, 0, 0);
+		    mvwprintw(helpwin, row++, col,
+			      "q or ESC to exit.");
+		    mvwprintw(helpwin, row++, col,
+			      "^L repaints.");
+		    ++row;
+		    mvwprintw(helpwin, row++, col,
+			      "Modify the test strings:");
+		    mvwprintw(helpwin, row++, col,
+			      "  A digit sets gaps on each side of displayed attributes");
+		    mvwprintw(helpwin, row++, col,
+			      "  </> shifts the text left/right. ");
+		    ++row;
+		    mvwprintw(helpwin, row++, col,
+			      "Toggles:");
+		    if (has_colors())
+			mvwprintw(helpwin, row++, col,
+				  "  f/F/b/F toggle foreground/background color");
+		    mvwprintw(helpwin, row++, col,
+			      "  a/A     toggle ACS (alternate character set) mapping");
+		    mvwprintw(helpwin, row++, col,
+			      "  v/V     toggle video attribute to combine with each line");
+		    wGetchar(helpwin);
+		    delwin(helpwin);
+		}
+		break;
+	    case 'a':
+		*ac = 0;
+		break;
+	    case 'A':
+		*ac = A_ALTCHARSET;
+		break;
+	    case 'v':
+		if (*kc == 0)
+		    *kc = SIZEOF(attrs_to_test) - 1;
+		else
+		    *kc -= 1;
+		break;
+	    case 'V':
+		*kc += 1;
+		if (*kc >= SIZEOF(attrs_to_test))
+		    *kc = 0;
+		break;
+	    case '<':
+		wide_adjust_attr_string(-1);
+		break;
+	    case '>':
+		wide_adjust_attr_string(1);
+		break;
+	    case 'q':
+	    case ESCAPE:
+		result = FALSE;
+		break;
+	    default:
+		if (has_colors()) {
+		    switch (ch) {
+		    case 'f':
+			*fg = (*fg + 1);
+			break;
+		    case 'F':
+			*fg = (*fg - 1);
+			break;
+		    case 'b':
+			*bg = (*bg + 1);
+			break;
+		    case 'B':
+			*bg = (*bg - 1);
+			break;
+		    default:
+			beep();
+			error = TRUE;
+			break;
+		    }
+		    if (*fg >= max_colors)
+			*fg = min_colors;
+		    if (*fg < min_colors)
+			*fg = max_colors - 1;
+		    if (*bg >= max_colors)
+			*bg = min_colors;
+		    if (*bg < min_colors)
+			*bg = max_colors - 1;
+		} else {
+		    beep();
+		    error = TRUE;
+		}
+		break;
+	    }
+	}
+    } while (error);
+    return result;
+}
+
+static void
+wide_attr_test(void)
+/* test text attributes using wide-character calls */
+{
+    int n;
+    int skip = tigetnum("xmc");
+    int fg = COLOR_BLACK;	/* color pair 0 is special */
+    int bg = COLOR_BLACK;
+    int ac = 0;
+    unsigned j, k;
+
+    if (skip < 0)
+	skip = 0;
+
+    n = skip;			/* make it easy */
+    k = SIZEOF(attrs_to_test) - 1;
+    wide_init_attr_string();
+
+    do {
+	int row = 2;
+	int pair = 0;
+
+	if (has_colors()) {
+	    pair = (fg != COLOR_BLACK || bg != COLOR_BLACK);
+	    if (pair != 0) {
+		pair = 1;
+		if (init_pair(pair, fg, bg) == ERR) {
+		    beep();
+		}
+	    }
+	}
+	set_wide_background(pair);
+	erase();
+
+	box_set(stdscr, 0, 0);
+	mvaddstr(0, 20, "Character attribute test display");
+
+	for (j = 0; j < SIZEOF(attrs_to_test); ++j) {
+	    row = wide_show_attr(row, n, j == k,
+				 ac |
+				 attrs_to_test[j].attr |
+				 attrs_to_test[k].attr,
+				 pair,
+				 attrs_to_test[j].name);
+	}
+
+	mvprintw(row, 8,
+		 "This terminal does %shave the magic-cookie glitch",
+		 tigetnum("xmc") > -1 ? "" : "not ");
+	mvprintw(row + 1, 8, "Enter '?' for help.");
+	if (has_colors())
+	    printw("  Foreground/background color (%d/%d),", fg, bg);
+	printw("  ACS (%d)", ac != 0);
+
+	refresh();
+    } while (wide_attr_getc(&n, &fg, &bg, &ac, &k));
+
+    set_wide_background(0);
+    erase();
+    endwin();
+}
+#endif
 
 /****************************************************************************
  *
@@ -4596,6 +4926,12 @@ do_single_test(const char c)
 	attr_test();
 	break;
 
+#if USE_WIDEC_SUPPORT
+    case 'B':
+	wide_attr_test();
+	break;
+#endif
+
     case 'c':
 	if (!has_colors())
 	    Cannot("does not support color.");
@@ -4769,6 +5105,9 @@ main_menu(bool top)
 	(void) puts("A = wide-character keyboard and mouse input test");
 #endif
 	(void) puts("b = character attribute test");
+#if USE_WIDEC_SUPPORT
+	(void) puts("B = wide-character attribute test");
+#endif
 	(void) puts("c = color test pattern");
 	if (top)
 	    (void) puts("d = edit RGB color values");
