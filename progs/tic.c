@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.96 2002/06/01 20:42:53 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.97 2002/07/06 23:19:50 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -864,9 +864,11 @@ check_params(TERMTYPE * tp, const char *name, char *value)
     bool params[10];
     char *s = value;
 
+#ifdef set_top_margin_parm
     if (!strcmp(name, "smgbp")
 	&& set_top_margin_parm == 0)
 	expected = 2;
+#endif
 
     for (n = 0; n < 10; n++)
 	params[n] = FALSE;

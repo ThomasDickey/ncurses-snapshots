@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey 1996-on                                        *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.129 2002/06/01 17:22:56 tom Exp $ */
+/* $Id: curses.h.in,v 1.130 2002/07/06 20:00:22 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -228,21 +228,11 @@ extern NCURSES_EXPORT_VAR(chtype) acs_map[];
 #define ACS_SBSB	ACS_VLINE
 #define ACS_SSSS	ACS_PLUS
 
-#if	defined(ERR) && ((ERR) != -1)
 #undef	ERR
-#endif
-
-#if	!defined(ERR)
 #define ERR     (-1)
-#endif
 
-#if	defined(OK) && ((OK) != 0)
 #undef	OK
-#endif
-
-#if	!defined(OK)
 #define OK      (0)
-#endif
 
 /* values for the _flags member */
 #define _SUBWIN         0x01	/* is this a sub-window? */

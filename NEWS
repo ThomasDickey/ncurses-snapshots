@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.693 2002/06/30 00:38:24 tom Exp $
+-- $Id: NEWS,v 1.695 2002/07/07 00:24:55 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020706
+	+ add Caps.hpux11, as an example.
+	+ modify version_filter(), used to implement -R option for tic and
+	  infocmp, to use computed array offsets based on the Caps.* file which
+	  is actually configured, rather than constants which correspond to
+	  the Caps file.
+	+ reorganized lib_raw.c to avoid updating SP and cur_term state if the
+	  functions fail (reported by Philippe Blain).
+	+ add -Wundef to gcc warnings, adjust a few ifdef's to accommodate gcc.
 
 20020629
 	+ correct parameters to setcchar() in ncurses.c (cf: 20020406).

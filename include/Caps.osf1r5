@@ -28,7 +28,7 @@
 #
 # Author: Thomas Dickey
 #
-# $Id: Caps.osf1r5,v 1.2 2002/04/20 15:43:58 tom Exp $
+# $Id: Caps.osf1r5,v 1.3 2002/07/07 00:02:52 tom Exp $
 #
 # This is an adaptation of ncurses' termcap/terminfo capability table, which
 # is designed to align with OSF/1 version 5 (Tru64) terminfo.
@@ -227,7 +227,7 @@ move_standout_mode		msgr	bool	ms	-	-	YBCGE	safe to move while in standout mode
 over_strike			os	bool	os	-	-	YBCG-	terminal can overstrike
 status_line_esc_ok		eslok	bool	es	-	-	YB-G-	escape can be used on the status line
 dest_tabs_magic_smso		xt	bool	xt	-	-	YBCGE	tabs destructive, magic so char (t1061)
-tilde_glitch			hz	bool	hz	-	-	YB-GE	can't print ~'s (hazeltine)
+tilde_glitch			hz	bool	hz	-	-	YB-GE	cannot print ~'s (hazeltine)
 transparent_underline		ul	bool	ul	-	-	YBCGE	underline character overstrikes
 xon_xoff			xon	bool	xo	-	-	YB---	terminal uses xon/xoff handshaking
 back_color_erase		bce	bool	ut	-	-	-----	screen erased with background color
