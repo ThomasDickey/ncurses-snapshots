@@ -141,10 +141,9 @@
 
 #include <curses.priv.h>
 #include <term.h>
-#include <string.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.30 1996/12/14 21:26:53 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.31 1996/12/21 14:24:06 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 

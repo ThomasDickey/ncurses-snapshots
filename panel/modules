@@ -18,4 +18,4 @@
 # PERFORMANCE OF THIS SOFTWARE.                                                #
 ################################################################################
 # Library objects
-panel		lib		$(srcdir)	$(srcdir)/panel.h
+panel		lib		$(srcdir)	$(srcdir)/panel.priv.h

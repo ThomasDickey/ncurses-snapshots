@@ -66,7 +66,6 @@
 #include <errno.h>
 #include <stdio.h>
 #include <ctype.h>
-#include <string.h>
 #include <termcap.h>
 #include <fcntl.h>
 
@@ -75,6 +74,11 @@
 #endif
 #ifdef NeXT
 char *ttyname(int fd);
+#endif
+
+/* this is just to stifle a missing-prototype warning */
+#ifdef linux
+# include <sys/ioctl.h>
 #endif
 
 #if SYSTEM_LOOKS_LIKE_SCO
@@ -86,10 +90,9 @@ char *ttyname(int fd);
 
 #include <curses.h>	/* for bool typedef */
 #define __INTERNAL_CAPS_VISIBLE	/* we need to see has_hardware_tabs */
-#include <term.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.16 1996/12/14 23:19:19 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.18 1996/12/21 21:57:48 florian Exp $")
 
 extern char **environ;
 

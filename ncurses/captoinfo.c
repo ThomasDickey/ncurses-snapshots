@@ -79,11 +79,10 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.14 1996/09/13 09:44:57 esr Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.15 1996/12/21 14:24:06 tom Exp $")
 
 #define MAX_PUSHED	16	/* max # args we can push onto the stack */
 #define MAX_ENTRY	2048	/* maximum chars in a translated capability */

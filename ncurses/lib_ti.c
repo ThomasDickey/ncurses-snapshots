@@ -22,11 +22,10 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_ti.c,v 1.6 1996/08/20 22:31:19 tom Exp $")
+MODULE_ID("$Id: lib_ti.c,v 1.7 1996/12/21 14:24:06 tom Exp $")
 
 int tigetflag(const char *str)
 {

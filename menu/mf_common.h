@@ -50,6 +50,8 @@ extern int errno;
 #  endif
 #endif
 
+#include <nc_alloc.h>
+
 #define MODULE_ID(id) /* nothing */
 
 /* Maximum regular 8-bit character code */

@@ -40,7 +40,6 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
 #include <term.h>
 #include <tic.h>
 #include <term_entry.h>
@@ -49,7 +48,7 @@
 #include <fcntl.h>
 #endif
 
-MODULE_ID("$Id: read_termcap.c,v 1.20 1996/12/15 00:07:07 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.21 1996/12/21 14:24:06 tom Exp $")
 
 #define TC_SUCCESS     0
 #define TC_UNRESOLVED -1

@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.38 1996/12/07 21:38:24 tom Exp $
+ * $Id: curses.priv.h,v 1.42 1996/12/21 19:02:11 tom Exp $
  *
  *	curses.priv.h
  *
@@ -38,6 +38,7 @@
 #include <config.h>
 
 #include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 
 #if HAVE_UNISTD_H
@@ -72,6 +73,8 @@
 #if !HAVE_EXTERN_ERRNO
 extern int errno;
 #endif
+
+#include <nc_alloc.h>
 
 #if defined(HAVE_POLL) && defined(HAVE_SYS_STROPTS_H) && defined(HAVE_POLL_H)
 #define USE_FUNC_POLL 1
@@ -132,6 +135,7 @@ color_t;
 struct screen {
 	int             _ifd;           /* input file ptr for screen        */
 	FILE            *_ofp;          /* output file ptr for screen       */
+	char            *_setbuf;       /* buffered I/O for output          */
 	int             _checkfd;       /* filedesc for typeahead check     */
 	struct term     *_term;         /* terminal type information        */
 	short           _lines;         /* screen lines                     */
@@ -189,18 +193,18 @@ struct screen {
 	int             _ich1_cost;     /* cost of (insert_character)       */
 	int             _dch_cost;      /* cost of (parm_dch)               */
 	int             _ich_cost;      /* cost of (parm_ich)               */
-	int		_ech_cost;	/* cost of (erase_chars)	    */
-	int		_rep_cost;	/* cost of (repeat_char)	    */
+	int             _ech_cost;      /* cost of (erase_chars)            */
+	int             _rep_cost;      /* cost of (repeat_char)            */
 	/* used in lib_mvcur.c */
 	char *          _address_cursor;
 	int             _carriage_return_length;
 	int             _cursor_home_length;
 	int             _cursor_to_ll_length;
 	/* used in lib_color.c */
-	color_t		*_color_table;	/* screen's color palette	     */
-	int		_color_count;	/* count of colors in palette	     */
-	unsigned char	*_color_pairs;	/* screen's color pair list	     */
-	int		_pair_count;	/* count of color pairs		     */
+	color_t         *_color_table;  /* screen's color palette            */
+	int             _color_count;   /* count of colors in palette        */
+	unsigned char   *_color_pairs;  /* screen's color pair list          */
+	int             _pair_count;    /* count of color pairs              */
 };
 
 /* Ncurses' public interface follows the internal types */
@@ -267,6 +271,7 @@ typedef	struct {
 #define CHANGED     -1
 
 #define FreeIfNeeded(p)  if(p != 0) free(p)
+#define FreeAndNull(p)   free(p); p = 0
 
 /*
  * ht/cbt expansion flakes out randomly under Linux 1.1.47, but only when
@@ -357,12 +362,14 @@ extern int _nc_waddch_nosync(WINDOW *, const chtype);
 extern void _nc_backspace(WINDOW *win);
 extern void _nc_do_color(int, int (*)(int));
 extern void _nc_freeall(void);
+extern void _nc_free_and_exit(int);
 extern void _nc_freewin(WINDOW *win);
 extern void _nc_get_screensize(void);
 extern void _nc_hash_map(void);
 extern void _nc_outstr(char *str);
 extern void _nc_scroll_optimize(void);
 extern void _nc_scroll_window(WINDOW *, int const, short const, short const);
+extern void _nc_set_buffer(FILE *ofp, bool buffered);
 extern void _nc_signal_handler(bool);
 extern void _nc_synchook(WINDOW *win);
 

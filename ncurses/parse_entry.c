@@ -31,13 +31,12 @@
 #include <curses.priv.h>
 
 #include <ctype.h>
-#include <string.h>
 #include <tic.h>
 #define __INTERNAL_CAPS_VISIBLE
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.15 1996/07/31 00:05:36 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.16 1996/12/21 14:24:06 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] = { 0 };

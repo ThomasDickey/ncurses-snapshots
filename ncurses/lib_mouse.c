@@ -52,10 +52,9 @@
  */
 
 #include <curses.priv.h>
-#include <string.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 0.16 1996/11/28 00:09:00 juergen Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 0.17 1996/12/21 14:24:06 tom Exp $")
 
 #define INVALID_EVENT	-1
 

@@ -59,7 +59,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-#include <string.h>
+MODULE_ID("$Id: hashmap.c,v 1.10 1996/12/21 15:08:16 tom Exp $")
 
 #ifdef HASHDEBUG
 #define LINES	24
@@ -192,7 +192,7 @@ void _nc_hash_map(void)
      * information left in place by the software scrolling functions.
      */
     for (sp = hashtab; sp->hashval; sp++)
-	if (sp->oldcount == 1 && sp->newcount == 1 
+	if (sp->oldcount == 1 && sp->newcount == 1
 	    && OLDNUM(sp->newindex) == _NEWINDEX)
 	{
 	    TR(TRACE_UPDATE | TRACE_MOVE,
@@ -288,7 +288,7 @@ main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 	    for (n = 0; n < LINES; n++)
 		if (line[n+1] == '\n')
 		    break;
-	        else
+		else
 		    newtext[n][0] = line[n+1];
 	    break;
 
@@ -298,7 +298,7 @@ main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 	    for (n = 0; n < LINES; n++)
 		if (line[n+1] == '\n')
 		    break;
-	        else
+		else
 		    oldtext[n][0] = line[n+1];
 	    break;
 

@@ -20,7 +20,7 @@
 ***************************************************************************/
 
 /*
- * $Id: progs.priv.h,v 1.5 1996/08/17 22:43:26 tom Exp $
+ * $Id: progs.priv.h,v 1.7 1996/12/21 17:33:45 tom Exp $
  *
  *	progs.priv.h
  *
@@ -33,6 +33,7 @@
 #include <config.h>
 
 #include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 
 #if HAVE_UNISTD_H
@@ -95,6 +96,10 @@ extern int errno;
 extern char *optarg;
 extern int optind;
 #endif /* HAVE_GETOPT_H */
+
+#include <term.h>
+#include <tic.h>
+#include <nc_alloc.h>
 
 /* usually in <unistd.h> */
 #ifndef STDOUT_FILENO

@@ -29,15 +29,13 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
-
 #ifdef SVR4_TERMIO
 #define _POSIX_SOURCE
 #endif
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.18 1996/09/01 01:35:05 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.20 1996/12/21 20:33:16 Alexander.V.Lukyanov Exp $")
 
 /****************************************************************************
  *
@@ -201,6 +199,7 @@ char ttytype[NAMESIZE];
 int setupterm(const char *tname, int Filedes, int *errret)
 {
 struct term	*term_ptr;
+int status;
 
 	T(("setupterm(%s,%d,%p) called", tname, Filedes, errret));
 
@@ -212,65 +211,55 @@ struct term	*term_ptr;
 
 	T(("your terminal name is %s", tname));
 
-	if (_nc_name_match(ttytype, tname, "|") == FALSE || isendwin()) {
-		int status;
+	term_ptr = (TERMINAL *) calloc(1, sizeof(TERMINAL));
 
-		if (isendwin()) {
-			T(("deleting cur_term"));
-			T(("must be resizing"));
-			del_curterm(cur_term);
-		}
+	if (term_ptr == NULL)
+		ret_error0(-1, "Not enough memory to create terminal structure.\n") ;
+	status = grab_entry(tname, &term_ptr->type);
 
-		term_ptr = (TERMINAL *) calloc(1, sizeof(TERMINAL));
+	/* try fallback list if entry on disk */
+	if (status != 1)
+	{
+	    const TERMTYPE	*fallback = _nc_fallback(tname);
 
-		if (term_ptr == NULL)
-			ret_error0(-1, "Not enough memory to create terminal structure.\n") ;
-		status = grab_entry(tname, &term_ptr->type);
-
-		/* try fallback list if entry on disk */
-		if (status != 1)
-		{
-		    const TERMTYPE	*fallback = _nc_fallback(tname);
-
-		    if (fallback)
-		    {
-			memcpy(&term_ptr->type, fallback, sizeof(TERMTYPE));
-			status = 1;
-		    }
-		}
-
-		if (status == -1)
-		{
-			ret_error0(-1, "terminals database is inaccessible\n");
-		}
-		else if (status == 0)
-		{
-			ret_error(0, "'%s': unknown terminal type.\n", tname);
-		}
-
-		cur_term = term_ptr;
-		if (generic_type)
-			ret_error(0, "'%s': I need something more specific.\n", tname);
-		if (hard_copy)
-			ret_error(1, "'%s': I can't handle hardcopy terminals.\n", tname);
-
-		if (command_character  &&  getenv("CC"))
-			do_prototype();
-
-		strncpy(ttytype, cur_term->type.term_names, NAMESIZE - 1);
-		ttytype[NAMESIZE - 1] = '\0';
-
-		/*
-		 * Allow output redirection.  This is what SVr3 does.
-		 * If stdout is directed to a file, screen updates go
-		 * to standard error.
-		 */
-		if (Filedes == STDOUT_FILENO && !isatty(Filedes))
-		    Filedes = STDERR_FILENO;
-		cur_term->Filedes = Filedes;
-
-		_nc_get_screensize();
+	    if (fallback)
+	    {
+		memcpy(&term_ptr->type, fallback, sizeof(TERMTYPE));
+		status = 1;
+	    }
 	}
+
+	if (status == -1)
+	{
+		ret_error0(-1, "terminals database is inaccessible\n");
+	}
+	else if (status == 0)
+	{
+		ret_error(0, "'%s': unknown terminal type.\n", tname);
+	}
+
+	cur_term = term_ptr;
+	if (generic_type)
+		ret_error(0, "'%s': I need something more specific.\n", tname);
+	if (hard_copy)
+		ret_error(1, "'%s': I can't handle hardcopy terminals.\n", tname);
+
+	if (command_character  &&  getenv("CC"))
+		do_prototype();
+
+	strncpy(ttytype, cur_term->type.term_names, NAMESIZE - 1);
+	ttytype[NAMESIZE - 1] = '\0';
+
+	/*
+	 * Allow output redirection.  This is what SVr3 does.
+	 * If stdout is directed to a file, screen updates go
+	 * to standard error.
+	 */
+	if (Filedes == STDOUT_FILENO && !isatty(Filedes))
+	    Filedes = STDERR_FILENO;
+	cur_term->Filedes = Filedes;
+
+	_nc_get_screensize();
 
 	if (errret)
 		*errret = 1;

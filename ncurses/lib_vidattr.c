@@ -46,10 +46,9 @@
  */
 
 #include <curses.priv.h>
-#include <string.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.9 1996/12/09 17:28:51 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.10 1996/12/21 14:24:06 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 

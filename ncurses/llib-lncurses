@@ -31,8 +31,6 @@ const TERMTYPE *_nc_fallback(
 
 /* ./hashmap.c */
 
-#include <string.h>
-
 #undef _nc_hash_map
 void	_nc_hash_map(void)
 		{ /* void */ }
@@ -1748,6 +1746,12 @@ int	wsetscrreg(
 
 /* ./lib_set_term.c */
 
+#undef _nc_set_buffer
+void	_nc_set_buffer(
+		FILE	*ofp, 
+		bool	buffered)
+		{ /* void */ }
+
 #undef set_term
 SCREEN	*set_term(
 		SCREEN	*screen)
@@ -2452,8 +2456,19 @@ typedef struct {char *from; char *to;} assoc;
 
 /* ./lib_freeall.c */
 
+#undef _nc_free_termtype
+void	_nc_free_termtype(
+		struct termtype *p, 
+		int	base)
+		{ /* void */ }
+
 #undef _nc_freeall
 void	_nc_freeall(void)
+		{ /* void */ }
+
+#undef _nc_free_and_exit
+void	_nc_free_and_exit(
+		int	code)
 		{ /* void */ }
 
 /* ./resizeterm.c */

@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.74 1996/12/15 03:26:31 tom Exp $
+$Id: ncurses.c,v 1.75 1996/12/21 16:04:03 tom Exp $
 
 ***************************************************************************/
 
@@ -2931,7 +2931,7 @@ main(int argc, char *argv[])
     } while
 	(command != 'q');
 
-    return EXIT_SUCCESS;
+    ExitProgram(EXIT_SUCCESS);
 }
 
 /* ncurses.c ends here */

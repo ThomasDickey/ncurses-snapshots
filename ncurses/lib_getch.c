@@ -28,9 +28,7 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
-
-MODULE_ID("$Id: lib_getch.c,v 1.18 1996/11/28 00:09:00 juergen Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.19 1996/12/21 14:24:06 tom Exp $")
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail

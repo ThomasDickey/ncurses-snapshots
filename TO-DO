@@ -2,17 +2,9 @@ SHORT-TERM TO-DO ITEMS:
 
 Known Problems:
 
-* The endwin/initscr paradigm previously described to "solve" xterm resizing
-  has been dropped, since XSI says that's a no-no.  The portable solution
-  would be to use endwin/refresh, and detect the xterm resizing during the
-  first refresh (or doupdate).  Doing this will result in correcting the 
-  allocation of SP (a long-known bug ;-), and taking into account the
-  ripped-off-lines, and reallocating where necessary the subwindows of stdscr.
-
-* The version numbering scheme for shared libraries does not follow the
-  latest Linux scheme implemented in ld.so.1.8.5; this version no longer
-  accepts that a shared library file that is not a symbolic link can have a
-  name different from its soname.
+* The stacking order of windows on the screen does not match that implemented
+  in SVr4 (e.g., Solaris curses).  XSI doesn't specify a stacking order, so
+  full compatibility for this behavior must be achieved by testing/analysis.
 
 * The code departs from perfect 8-bit cleanness in one respect; you cannot
   specify a character \200 as part of a capability string, because the terminfo

@@ -3,6 +3,37 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+961221	- snapshot
+	+ remove logic in read_entry.c that attempts to refine errno by using
+	  'access()' for the directory (from patch by Florian La Roche).
+	+ correct configure test/substitution that inhibits generating
+	  include-path to /usr/include if gcc is used (reported by Florian La
+	  Roche).
+	+ modify setupterm() to allocate new TERMINAL for each call, just as
+	  solaris' curses does (Alexander Lukyanov 960829).
+	+ corrected memory leaks in read_entry.c
+	+ add configure options --with-dbmalloc, --with-dmalloc, and
+	  --disable-leaks, tested by instrumenting infocmp, ncurses programs.
+	+ move #include's for stdlib.h and string.h to *.priv.h to accommodate
+	  use of dbmalloc.
+	+ modify use of $(LN_S) to follow recommendation in autoconf 2.12,
+	  i.e., set current directory before linking.
+	+ split-out panel.priv.h, improve dependencies for forms, menus
+	  (Juergen Pfeifer 961204).
+	+ modify _nc_freewin() to reset globals curscr/newscr/stdscr when
+	  freeing the corresponding WINDOW (Purify).
+	+ modify delwin() to return ERR if the window to be deleted has
+	  subwindows, needed as a side-effect of resizeterm() (Purify).  Tested
+	  and found that SVr4 curses behaves this way.
+	+ implement logic for _nc_freeall(), bringing stub up to date.
+
+961215
+	+ modify wbkgd() so that it doesn't set nulls in the rendered text,
+	  even if its argument doesn't specify a character (fixes test case by
+	  Juergen Pfeifer for bug-report).
+	+ set window-attributes in wbkgd(), to simplify comparison against
+	  Solaris curses, which does this.
+
 961214	- snapshot
 	+ replace most constants in ncurses 'o' test by expressions, making it
 	  work with wider range of screen sizes.
@@ -42,7 +73,7 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 961207	- snapshot
 	+ integrate resizeterm() into doupdate(), so that if screen size
 	  changes between endwin/refresh, ncurses will resize windows to fit
-	  (this needs additonal testing with pads and softkeys).
+	  (this needs additional testing with pads and softkeys).
 	+ add, for memory-leak testing, _nc_freeall() entrypoint to free all
 	  data used in ncurses library.
 	+ initialize _nc_idcok, _nc_idlok statically to resolve discrepancy

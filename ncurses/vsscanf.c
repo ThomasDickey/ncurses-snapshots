@@ -5,9 +5,8 @@
 #include <curses.priv.h>
 
 #if !HAVE_VSSCANF
-#include <string.h>
 
-MODULE_ID("$Id: vsscanf.c,v 1.9 1996/07/31 00:05:48 tom Exp $")
+MODULE_ID("$Id: vsscanf.c,v 1.10 1996/12/21 14:24:06 tom Exp $")
 
 #if defined(_IOREAD) && defined(_NFILE)
 /*VARARGS2*/

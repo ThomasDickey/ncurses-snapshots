@@ -31,9 +31,8 @@
 */
 
 #include <curses.priv.h>
-#include <string.h>
 
-MODULE_ID("$Id: lib_scroll.c,v 1.9 1996/07/21 00:15:54 tom Exp $")
+MODULE_ID("$Id: lib_scroll.c,v 1.10 1996/12/21 14:24:06 tom Exp $")
 
 void _nc_scroll_window(WINDOW *win, int const n, short const top, short const bottom)
 {

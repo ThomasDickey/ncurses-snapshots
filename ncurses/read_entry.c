@@ -32,12 +32,11 @@
 #include <fcntl.h>
 #endif
 #include <sys/stat.h>
-#include <string.h>
 
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.25 1996/10/05 20:44:27 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.28 1996/12/21 21:52:57 florian Exp $")
 
 TERMINAL *cur_term;
 
@@ -79,28 +78,14 @@ char *_nc_tic_dir(char *path)
 }
 
 int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
-/* return 1 if read, 0 if not found or garbled, -1 if database inaccessible */
+/* return 1 if read, 0 if not found or garbled */
 {
     int		name_size, bool_count, num_count, str_count, str_size;
     int		i, fd, numread;
     char	buf[MAX_ENTRY_SIZE];
 
     if ((fd = open(filename, O_RDONLY)) < 0)
-    {
-	if (errno == ENOENT)
-	{
-	    char	*slash;
-
-	    (void) strcpy(buf, filename);
-	    if ((slash = strrchr(buf, '/')) != 0) {
-		*slash = '\0';
-	    	if (access(buf, R_OK))
-		    return(-1);
-	    }
-	}
-
 	return(0);
-    }
 
     /* grab the header */
     (void) read(fd, buf, 12);
@@ -222,15 +207,7 @@ static int _nc_read_tic_entry(char *const filename,
 	if (strlen(dir) > MAX_TPATH)
 		return 0;
 	(void) sprintf(filename, "%s/%s", dir, ttn);
-	return (_nc_read_file_entry(filename, tp) > 0);
-}
-
-static char *RoomFor(const size_t len)
-{
-	static char *result;
-	FreeIfNeeded(result);
-	result = malloc(len + 1);
-	return result;
+	return _nc_read_file_entry(filename, tp);
 }
 
 /*
@@ -264,27 +241,36 @@ char		ttn[MAX_ALIAS + 3];
 	/* this is an ncurses extension */
 	if ((envp = getenv("HOME")) != 0)
 	{
-		char *home = RoomFor(strlen(envp) + strlen(PRIVATE_INFO) + 1);
+		char *home = malloc(strlen(envp) + strlen(PRIVATE_INFO) + 2);
 
 		(void) sprintf(home, PRIVATE_INFO, envp);
-		if (_nc_read_tic_entry(filename, home, ttn, tp) == 1)
+		if (_nc_read_tic_entry(filename, home, ttn, tp) == 1) {
+			free(home);
 			return(1);
+		}
+		free(home);
 	}
 
 	/* this is an ncurses extension */
 	if ((envp = getenv("TERMINFO_DIRS")) != 0)
 	{
 	    /* strtok modifies its argument, so we must copy */
-	    char *cp = strtok(strcpy(RoomFor(strlen(envp)), envp), ":");
+	    char *list = strcpy(malloc(strlen(envp)+1), envp);
+	    char *cp = strtok(list, ":");
+	    int code = 0;
 
 	    do {
 		if (cp[0] == '\0')
 		    cp = TERMINFO;
-		if (_nc_read_tic_entry(filename, cp, ttn, tp) == 1)
-			return(1);
+		if (_nc_read_tic_entry(filename, cp, ttn, tp) == 1) {
+			code = 1;
+			break;
+		}
 	    } while
 		((cp = strtok((char *)0, ":")) != 0);
-	    return(0);
+
+	    free(list);
+	    return(code);
 	}
 
 	/* try the system directory */

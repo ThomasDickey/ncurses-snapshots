@@ -26,11 +26,10 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
 #include <ctype.h>
 #include <term.h>	/* num_labels, label_*, plab_norm */
 
-MODULE_ID("$Id: lib_slk.c,v 1.9 1996/10/26 16:31:20 Juergen.Pfeifer Exp $")
+MODULE_ID("$Id: lib_slk.c,v 1.10 1996/12/21 14:24:06 tom Exp $")
 
 #define MAX_SKEY_OLD	   8	/* count of soft keys */
 #define MAX_SKEY_LEN_OLD   8	/* max length of soft key text */

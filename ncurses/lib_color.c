@@ -27,10 +27,9 @@
 
 #include <curses.priv.h>
 
-#include <string.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.11 1996/09/23 00:39:33 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.12 1996/12/21 14:24:06 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
