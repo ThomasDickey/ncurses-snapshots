@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_enum.c,v 1.13 2000/09/10 00:55:26 juergen Exp $")
+MODULE_ID("$Id: fty_enum.c,v 1.14 2000/10/18 09:28:19 juergen Exp $")
 
 typedef struct {
   char **kwds;
@@ -47,7 +47,7 @@ static void *Make_Enum_Type(va_list * ap)
       argp->checkunique = cunique ? TRUE : FALSE;
 
       kp = argp->kwds;
-      while( (kp && *kp++) ) cnt++;
+      while( kp && (*kp++) ) cnt++;
       argp->count = cnt;
     }
   return (void *)argp;

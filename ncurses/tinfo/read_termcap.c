@@ -55,7 +55,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.50 2000/10/10 00:56:46 Todd.Miller Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.51 2000/10/21 00:34:11 Philip.Guenther Exp $")
 
 #if !PURE_TERMINFO
 
@@ -770,7 +770,7 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
 
     register char *p;
     register char *cp;
-    char *dummy;
+    char *dummy = NULL;
     char **fname;
     char *home;
     int i;
