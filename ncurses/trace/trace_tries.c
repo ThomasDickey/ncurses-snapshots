@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: trace_tries.c,v 1.3 1999/02/19 04:05:26 tom Exp $")
+MODULE_ID("$Id: trace_tries.c,v 1.5 1999/02/28 23:42:28 tom Exp $")
 
 #ifdef TRACE
 static char *buffer;
@@ -44,7 +44,7 @@ static unsigned len;
 static void recur_tries(struct tries *tree, unsigned level)
 {
 	if (level > len)
-		buffer = realloc(buffer, len = (level + 1) * 4);
+		buffer = (char *)realloc(buffer, len = (level + 1) * 4);
 
 	while (tree != 0) {
 		if ((buffer[level] = tree->ch) == 0)
@@ -61,7 +61,7 @@ static void recur_tries(struct tries *tree, unsigned level)
 
 void _nc_trace_tries(struct tries *tree)
 {
-	buffer = malloc(len = 80);
+	buffer = typeMalloc(char, len = 80);
 	_tracef("BEGIN tries %p", tree);
 	recur_tries(tree, 0);
 	_tracef(". . . tries %p", tree);

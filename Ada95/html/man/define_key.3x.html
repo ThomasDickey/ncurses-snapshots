@@ -20,7 +20,9 @@
        terminfo database.
 
        If  the  given string is null, any existing definition for
-       the keycode is removed.
+       the keycode is removed.  Similarly, if the  given  keycode
+       is  negative  or  zero,  any existing string for the given
+       definition is removed.
 
 
 </PRE>
@@ -45,8 +47,6 @@
 </PRE>
 <H2>AUTHOR</H2><PRE>
        Thomas Dickey.
-
-
 
 
 

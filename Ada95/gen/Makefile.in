@@ -29,7 +29,7 @@
 #  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996
 #
 #  Version Control
-#  $Revision: 1.25 $
+#  $Revision: 1.26 $
 #
 .SUFFIXES:
 
@@ -163,7 +163,7 @@ install \
 install.libs :: $(ADA_OBJECTS)
 	@echo installing package $(ALIB) in $(INSTALL_PREFIX)$(ADA_OBJECTS)
 	@chmod a-wx $(ADA_SRCDIR)/*.ali
-	@$(top_srcdir)/tar-copy.sh '$(ALIB)[-.]*.{ali,a}' $(ADA_SRCDIR) $(INSTALL_PREFIX)$(ADA_OBJECTS)
+	@$(top_srcdir)/tar-copy.sh '$(ALIB)[-.]*.ali' $(ADA_SRCDIR) $(INSTALL_PREFIX)$(ADA_OBJECTS)
 	@chmod u+x $(ADA_SRCDIR)/*.ali
 
 uninstall \

@@ -35,7 +35,7 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996
 --  Version Control:
---  $Revision: 1.21 $
+--  $Revision: 1.22 $
 --  Binding Version 00.93
 ------------------------------------------------------------------------------
 with System;
@@ -59,25 +59,18 @@ package body Terminal_Interface.Curses is
       of aliased Attributed_Character;
    pragma Convention (C, chtype_array);
 
-   function W_Get_Int (Win    : in Window;
-                       Offset : in Natural) return C_Int;
-
-   function W_Get_Short (Win    : in Window;
-                         Offset : in Natural) return C_Int;
-
-   function W_Get_Bool (Win    : in Window;
-                        Offset : in Natural) return C_Int;
-
 ------------------------------------------------------------------------------
+   generic
+      type Element is (<>);
+   function W_Get_Element (Win    : in Window;
+                           Offset : in Natural) return Element;
 
-   function W_Get_Int (Win    : in Window;
-                       Offset : in Natural) return C_Int is
-
-
-      type Int_Array is array (Natural range <>) of aliased C_Int;
-      package I_Array is new
-        Interfaces.C.Pointers (Natural, C_Int, Int_Array, 0);
-      use I_Array;
+   function W_Get_Element (Win    : in Window;
+                           Offset : in Natural) return Element is
+      type E_Array is array (Natural range <>) of aliased Element;
+      package C_E_Array is new
+        Interfaces.C.Pointers (Natural, Element, E_Array, Element'Val (0));
+      use C_E_Array;
 
       function To_Pointer is new
         Ada.Unchecked_Conversion (Window, Pointer);
@@ -90,50 +83,12 @@ package body Terminal_Interface.Curses is
          P := P + ptrdiff_t (Offset);
          return P.all;
       end if;
-   end W_Get_Int;
+   end W_Get_Element;
 
+   function W_Get_Int   is new W_Get_Element (C_Int);
+   function W_Get_Short is new W_Get_Element (C_Short);
+   function W_Get_Byte  is new W_Get_Element (Interfaces.C.unsigned_char);
 
-   function W_Get_Short (Win    : in Window;
-                         Offset : in Natural) return C_Int is
-
-      type Short_Array is array (Natural range <>) of aliased C_Short;
-      package S_Array is new
-        Interfaces.C.Pointers (Natural, C_Short, Short_Array, 0);
-      use S_Array;
-
-      function To_Pointer is new
-        Ada.Unchecked_Conversion (Window, Pointer);
-
-      P : Pointer := To_Pointer (Win);
-   begin
-      if Win = Null_Window then
-         raise Curses_Exception;
-      else
-         P := P + ptrdiff_t (Offset);
-         return C_Int (P.all);
-      end if;
-   end W_Get_Short;
-
-   function W_Get_Bool (Win    : in Window;
-                        Offset : in Natural) return C_Int is
-
-      type Bool_Array is array (Natural range <>) of aliased char;
-      package S_Array is new
-        Interfaces.C.Pointers (Natural, char, Bool_Array, char'Val (0));
-      use S_Array;
-
-      function To_Pointer is new
-        Ada.Unchecked_Conversion (Window, Pointer);
-
-      P : Pointer := To_Pointer (Win);
-   begin
-      if Win = Null_Window then
-         raise Curses_Exception;
-      else
-         P := P + ptrdiff_t (Offset);
-         return C_Int (char'Pos (P.all));
-      end if;
-   end W_Get_Bool;
 ------------------------------------------------------------------------------
    function Key_Name (Key : in Real_Key_Code) return String
    is
@@ -1085,9 +1040,9 @@ package body Terminal_Interface.Curses is
       Res : C_Int;
    begin
       case Sizeof_bool is
-         when 1 => Res := W_Get_Bool  (Win, Offset_scroll);
-         when 2 => Res := W_Get_Short (Win, Offset_scroll);
-         when 4 => Res := W_Get_Int   (Win, Offset_scroll);
+         when 1 => Res := C_Int (W_Get_Byte  (Win, Offset_scroll));
+         when 2 => Res := C_Int (W_Get_Short (Win, Offset_scroll));
+         when 4 => Res := C_Int (W_Get_Int   (Win, Offset_scroll));
          when others => raise Curses_Exception;
       end case;
 
@@ -1406,8 +1361,8 @@ package body Terminal_Interface.Curses is
    is
       --  Please note: in ncurses they are one off.
       --  This might be different in other implementations of curses
-      Y : C_Int := W_Get_Short (Win, Offset_maxy) + C_Int (Offset_XY);
-      X : C_Int := W_Get_Short (Win, Offset_maxx) + C_Int (Offset_XY);
+      Y : C_Int := C_Int (W_Get_Short (Win, Offset_maxy)) + C_Int (Offset_XY);
+      X : C_Int := C_Int (W_Get_Short (Win, Offset_maxx)) + C_Int (Offset_XY);
    begin
       Number_Of_Lines   := Line_Count (Y);
       Number_Of_Columns := Column_Count (X);
@@ -1418,8 +1373,8 @@ package body Terminal_Interface.Curses is
       Top_Left_Line   : out Line_Position;
       Top_Left_Column : out Column_Position)
    is
-      Y : C_Int := W_Get_Short (Win, Offset_begy);
-      X : C_Int := W_Get_Short (Win, Offset_begx);
+      Y : C_Short := W_Get_Short (Win, Offset_begy);
+      X : C_Short := W_Get_Short (Win, Offset_begx);
    begin
       Top_Left_Line   := Line_Position (Y);
       Top_Left_Column := Column_Position (X);
@@ -1430,8 +1385,8 @@ package body Terminal_Interface.Curses is
       Line   : out Line_Position;
       Column : out Column_Position)
    is
-      Y : C_Int := W_Get_Short (Win, Offset_cury);
-      X : C_Int := W_Get_Short (Win, Offset_curx);
+      Y : C_Short := W_Get_Short (Win, Offset_cury);
+      X : C_Short := W_Get_Short (Win, Offset_curx);
    begin
       Line   := Line_Position (Y);
       Column := Column_Position (X);

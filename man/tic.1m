@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1998 Free Software Foundation, Inc.                        *
+.\" Copyright (c) 1998,1999 Free Software Foundation, Inc.                   *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tic.1m,v 1.23 1998/12/26 01:47:41 tom Exp $
+.\" $Id: tic.1m,v 1.24 1999/02/23 02:18:15 tom Exp $
 .TH tic 1M ""
 .ds n 5
 .ds d @DATADIR@/terminfo
@@ -45,6 +45,7 @@ c\
 f\
 r\
 s\
+x\
 \fR]
 [\fB-e\fR \fInames\fR]
 [\fB-o\fR \fIdir\fR]
@@ -164,6 +165,9 @@ rather than their decimal equivalents.
 Summarize the compile by showing the directory into which entries
 are written, and the number of entries which are compiled.
 .TP
+\fB-x\fR
+Treat unknown capabilities as user-defined.
+.TP
 \fIfile\fR
 contains one or more \fBterminfo\fR terminal descriptions in source
 format [see \fBterminfo\fR(\*n)].  Each description in the file
@@ -252,8 +256,9 @@ The
 \fB-f\fR,
 \fB-g\fR,
 \fB-T\fR,
-\fB-r\fR and
-\fB-s\fR
+\fB-r\fR,
+\fB-s\fR and
+\fB-x\fR
 options
 are not supported under SVr4.
 The SVr4 -c mode does not report bad use links.

@@ -86,6 +86,8 @@
             baudrate reference for the delay_output and tputs functions.
           + change name-comparisons in lib_termcap to compare no more
             than 2 characters.
+          + add configure option --enable-tcap-names, which essentially
+            allows users to define new capabilities as in termcap.
      * add mouse support to ncurses menus.
      * add mouse and dll support for OS/2 EMX
      * modify terminfo parsing to accept octal and hexadecimal constants

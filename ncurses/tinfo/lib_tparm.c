@@ -43,7 +43,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.37 1999/01/02 22:38:25 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.38 1999/02/27 20:08:22 tom Exp $")
 
 /*
  *	char *
@@ -134,7 +134,7 @@ void _nc_free_tparm(void)
 static void really_get_space(size_t need)
 {
 	out_size = need * 2;
-	out_buff = (char *)_nc_doalloc(out_buff, out_size);
+	out_buff = typeRealloc(char, out_size, out_buff);
 	if (out_buff == 0)
 		_nc_err_abort("Out of memory");
 }
@@ -312,7 +312,7 @@ static	int static_vars[NUM_VARS];
 	}
 	if ((size_t)(cp - string) > len_fmt) {
 		len_fmt = (cp - string) + len_fmt + 2;
-		if ((format = _nc_doalloc(format, len_fmt)) == 0)
+		if ((format = typeRealloc(char, len_fmt, format)) == 0)
 			return 0;
 	}
 
@@ -562,7 +562,7 @@ static	int static_vars[NUM_VARS];
 		string++;
 	} /* endwhile (*string) */
 
-	if (out_buff == 0 && (out_buff = calloc(1,1)) == NULL)
+	if (out_buff == 0 && (out_buff = typeCalloc(char,1)) == NULL)
 		return(NULL);
 	out_buff[out_used] = '\0';
 

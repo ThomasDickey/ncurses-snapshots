@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1998,1999 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -42,7 +42,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.45 1999/02/19 10:40:00 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.48 1999/03/01 00:26:51 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -54,7 +54,7 @@ static	const char *to_remove;
 static	void	(*save_check_termtype)(TERMTYPE *);
 static	void	check_termtype(TERMTYPE *tt);
 
-static	const	char usage_string[] = "[-h] [-v[n]] [-e names] [-CILNRTcfrsw1] source-file\n";
+static	const	char usage_string[] = "[-h] [-v[n]] [-e names] [-CILNRTcfrswx1] source-file\n";
 
 static void cleanup(void)
 {
@@ -91,6 +91,9 @@ static void usage(void)
 	"  -s         print summary statistics",
 	"  -v[n]      set verbosity level",
 	"  -w[n]      set format width for translation output",
+#if NCURSES_XNAMES
+	"  -x         treat unknown capabilities as user-defined",
+#endif
 	"",
 	"Parameters:",
 	"  <file>     file to translate or compile"
@@ -202,9 +205,8 @@ static bool immedhook(ENTRY *ep GCC_UNUSED)
 	free(ep->tterm.str_table);
 	return(TRUE);
     }
-    else
 #endif /* HAVE_BIG_CORE */
-	return(FALSE);
+    return(FALSE);
 }
 
 static void put_translate(int c)
@@ -401,13 +403,16 @@ bool	check_only = FALSE;
 
 	infodump = (strcmp(_nc_progname, "captoinfo") == 0);
 	capdump = (strcmp(_nc_progname, "infotocap") == 0);
+#if NCURSES_XNAMES
+	use_extended_names(FALSE);
+#endif
 
 	/*
 	 * Processing arguments is a little complicated, since someone made a
 	 * design decision to allow the numeric values for -w, -v options to
 	 * be optional.
 	 */
-	while ((this_opt = getopt(argc, argv, "0123456789CILNR:TVce:fgo:rsvw")) != EOF) {
+	while ((this_opt = getopt(argc, argv, "0123456789CILNR:TVce:fgo:rsvwx")) != EOF) {
 		if (isdigit(this_opt)) {
 			switch (last_opt) {
 			case 'v':
@@ -479,6 +484,11 @@ bool	check_only = FALSE;
 		case 'w':
 			width = 0;
 			break;
+#if NCURSES_XNAMES
+		case 'x':
+			use_extended_names(TRUE);
+			break;
+#endif
 		default:
 			usage();
 		}

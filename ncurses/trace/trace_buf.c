@@ -35,7 +35,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: trace_buf.c,v 1.6 1998/08/15 23:37:25 tom Exp $")
+MODULE_ID("$Id: trace_buf.c,v 1.7 1999/02/27 19:50:58 tom Exp $")
 
 typedef struct {
 	char *text;
@@ -61,8 +61,7 @@ char * _nc_trace_buf(int bufnum, size_t want)
 
 	if ((size_t)(bufnum+1) > have) {
 		size_t need = (bufnum + 1) * 2;
-		size_t used = sizeof(*list) * need;
-		if ((list = (LIST *)_nc_doalloc(list, used)) == 0)
+		if ((list = typeRealloc(LIST, need, list)) == 0)
 			return(0);
 		while (need > have)
 			list[have++].text = 0;
@@ -71,7 +70,7 @@ char * _nc_trace_buf(int bufnum, size_t want)
 	if (list[bufnum].text == 0
 	 || want > list[bufnum].size)
 	{
-		if ((list[bufnum].text = (char *)_nc_doalloc(list[bufnum].text, want)) != 0)
+		if ((list[bufnum].text = typeRealloc(char, want, list[bufnum].text)) != 0)
 			list[bufnum].size = want;
 	}
 

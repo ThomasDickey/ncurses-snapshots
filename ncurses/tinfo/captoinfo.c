@@ -94,7 +94,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.21 1998/05/30 23:32:15 Todd.Miller Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.23 1999/02/28 23:42:20 tom Exp $")
 
 #define MAX_PUSHED	16	/* max # args we can push onto the stack */
 #define MAX_ENTRY	2048	/* maximum chars in a translated capability */
@@ -115,7 +115,7 @@ static char *init_string(void)
 /* initialize 'my_string', 'my_length' */
 {
 	if (my_string == 0)
-		my_string = malloc(my_length = 256);
+		my_string = typeMalloc(char, my_length = 256);
 	if (my_string == 0)
 	    _nc_err_abort("Out of memory");
 
@@ -128,7 +128,7 @@ static char *save_string(char *d, const char *const s)
 	size_t have = (d - my_string);
 	size_t need = have + strlen(s) + 2;
 	if (need > my_length) {
-		my_string = realloc(my_string, my_length = (need + need));
+		my_string = (char *)realloc(my_string, my_length = (need + need));
 		if (my_string == 0)
 		    _nc_err_abort("Out of memory");
 		d = my_string + have;

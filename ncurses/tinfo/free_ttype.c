@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1999 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,34 +27,46 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
- *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *  Author: Thomas E. Dickey <dickey@clark.net> 1999                        *
  ****************************************************************************/
 
 
 /*
- * Dump control definitions and variables
+ * free_ttype.c -- allocation functions for TERMTYPE
+ *
+ *	_nc_free_termtype()
+ *	use_extended_names()
+ *
  */
 
-/* capability output formats */
-#define F_TERMINFO	0	/* use terminfo names */
-#define F_VARIABLE	1	/* use C variable names */
-#define F_TERMCAP	2	/* termcap names with capability conversion */
-#define F_TCONVERR	3	/* as T_TERMCAP, no skip of untranslatables */
-#define F_LITERAL	4	/* like F_TERMINFO, but no smart defaults */
+#include <curses.priv.h>
 
-/* capability sort modes */
-#define S_DEFAULT	0	/* sort by terminfo name (implicit) */
-#define S_NOSORT	1	/* don't sort */
-#define S_TERMINFO	2	/* sort by terminfo names (explicit) */
-#define S_VARIABLE	3	/* sort by C variable names */
-#define S_TERMCAP	4	/* sort by termcap names */
+#include <tic.h>
+#include <term_entry.h>
 
-extern NCURSES_CONST char *nametrans(const char *);
-extern void dump_init(const char *, int, int, int, int, bool);
-extern int fmt_entry(TERMTYPE *, int (*)(int, int), bool, bool, bool);
-extern int dump_entry(TERMTYPE *, bool, bool, int (*)(int, int));
-extern int dump_uses(const char *, bool);
-extern void compare_entry(void (*)(int, int, const char *), TERMTYPE *);
+MODULE_ID("$Id: free_ttype.c,v 1.2 1999/03/01 00:30:35 tom Exp $")
 
-#define FAIL	-1
+void _nc_free_termtype(TERMTYPE *ptr)
+{
+	FreeIfNeeded(ptr->str_table);
+	FreeIfNeeded(ptr->term_names);
+#if NCURSES_XNAMES
+	FreeIfNeeded(ptr->ext_str_table);
+	FreeIfNeeded(ptr->Booleans);
+	FreeIfNeeded(ptr->Numbers);
+	FreeIfNeeded(ptr->Strings);
+	FreeIfNeeded(ptr->ext_Names);
+#endif
+	memset(ptr, 0, sizeof(TERMTYPE));
+}
+
+#if NCURSES_XNAMES
+bool _nc_user_definable = TRUE;
+
+int use_extended_names(bool flag)
+{
+	int oldflag = _nc_user_definable;
+	_nc_user_definable = flag;
+	return oldflag;
+}
+#endif
