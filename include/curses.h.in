@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.71 1998/11/14 22:06:58 tom Exp $ */
+/* $Id: curses.h.in,v 1.72 1998/12/02 14:32:44 juergen Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -837,6 +837,8 @@ extern int wvline(WINDOW *,chtype,int);			/* implemented */
 extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #endif /* _XOPEN_SOURCE_EXTENDED */
 
+extern bool mouse_trafo(int*, int*, bool);              /* generated */
+
 /* attributes */
 
 #define NCURSES_BITS(mask,shift) ((mask) << ((shift) + @cf_cv_widec_shift@))
@@ -1286,6 +1288,9 @@ extern int ungetmouse(MEVENT *);
 extern mmask_t mousemask(mmask_t, mmask_t *);
 extern bool wenclose(const WINDOW *, int, int);
 extern int mouseinterval(int);
+extern bool wmouse_trafo(const WINDOW* win,int* y, int* x, bool to_screen);
+
+#define mouse_trafo(y,x,to_screen) wmouse_trafo(stdscr,y,x,to_screen)
 
 /* other non-XSI functions */
 

@@ -153,7 +153,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.54 1998/10/03 23:41:21 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.55 1998/12/05 02:04:48 tom Exp $")
 
 #define STRLEN(s)       (s != 0) ? strlen(s) : 0
 
@@ -574,6 +574,20 @@ relative_move(char *result, int from_y,int from_x,int to_y,int to_x, bool ovw)
 #endif /* USE_HARD_TABS */
 
 #if defined(REAL_ATTR) && defined(WANT_CHAR)
+#ifdef BSD_TPUTS
+		/*
+		 * If we're allowing BSD-style padding in tputs, don't generate
+		 * a string with a leading digit.  Otherwise, that will be
+		 * interpreted as a padding value rather than sent to the
+		 * screen.
+		 */
+		if (ovw
+		 && n > 0
+		 && vcost == 0
+		 && str[0] == '\0'
+		 && isdigit(TextOf(WANT_CHAR(to_y, from_x))))
+			ovw = FALSE;
+#endif
 		/*
 		 * If we have no attribute changes, overwrite is cheaper.
 		 * Note: must suppress this by passing in ovw = FALSE whenever

@@ -35,7 +35,7 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1996
 --  Version Control
---  $Revision: 1.7 $
+--  $Revision: 1.8 $
 --  Binding Version 00.93
 ------------------------------------------------------------------------------
 with Terminal_Interface.Curses; use Terminal_Interface.Curses;
@@ -210,7 +210,7 @@ package body Sample.Curses_Demo.Mouse is
       Delete (Frame);
 
       Set_Cursor_Visibility (V);
-      End_Mouse;
+      End_Mouse (Mask);
 
       Pop_Environment;
       Update_Panels; Update_Screen;

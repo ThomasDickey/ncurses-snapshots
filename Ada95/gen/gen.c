@@ -32,7 +32,7 @@
 
 /*
     Version Control
-    $Revision: 1.20 $
+    $Revision: 1.21 $
   --------------------------------------------------------------------------*/
 /*
   This program generates various record structures and constants from the
@@ -56,7 +56,7 @@ static int little_endian = 0;
 
 typedef struct {
   const char *name;
-  unsigned int attr;
+  unsigned long attr;
 } name_attribute_pair;
 
 static int find_pos (char *s, unsigned len, int *low, int *high)
@@ -108,9 +108,9 @@ gen_reps
  int bias)
 {
   int i,n,l,cnt = 0,low,high;
-  int width = strlen(RES_NAME);
-  unsigned int a;
-  unsigned int mask = 0;
+  int width = strlen(RES_NAME) + 3;
+  unsigned long a;
+  unsigned long mask = 0;
   char buf[32];
 
   assert (nap!=NULL);
@@ -156,15 +156,23 @@ gen_reps
   i = 1; n = cnt;
   while (n < 8*len)
     {
-      mask = ~mask;
-      assert(mask);
-      if (little_endian)
-	l = n;
-      else
-	l = n - (i - 1);
-      sprintf(buf,"%s%02d",RES_NAME,i);
-      printf("         %-*s at 0 range %2d .. %2d;\n",
-	     width,buf,l,l);
+      unsigned long bit;
+      for (bit = 1; bit != 0; bit <<= 1)
+	{
+	  a = bit;
+	  l = find_pos( (char *)&a,sizeof(a),&low,&high );
+	  if (l>=0
+	   && (low-bias) >= 0
+	   && (low-bias) < 8*len
+	   && !(mask & bit))
+	    {
+	      mask |= bit;
+	      sprintf(buf,"%s%02d",RES_NAME,i);
+	      printf("         %-*s at 0 range %2d .. %2d;\n",
+		     width, buf, low-bias, high-bias);
+	      break;
+	    }
+	}
       i++; n++;
     }
   printf("      end record;\n");

@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.391 1998/11/29 04:05:38 tom Exp $
+-- $Id: NEWS,v 1.393 1998/12/06 04:37:30 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,21 +6,45 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
+981205
+	+ modify gen_reps() function in gen.c to work properly on SunOS
+	  (sparc), which is a left-to-right architecture.
+	+ modify relative_move and tputs to avoid an interaction with the
+	  BSD-style padding.  The relative_move function could produce a string
+	  to replace on the screen which began with a numeric character, which
+	  was then interpreted by tputs as padding.  Now relative_move will not
+	  generate a string with a leading digit in that case (overwrite).
+	  Also, tputs will only interpret padding if the string begins with a
+	  digit; as coded it permitted a string to begin with a decimal point
+	  or asterisk (reported by Larry Virden).
+	> patches by Juergen Pfeifer:
+	+ fix a typo in m_driver.c mouse handling and improves the error
+	  handling. 
+	+ fix broken mouse handling in the Ada95 binding
+	+ make the Ada95 sample application menus work with the new menu mouse
+	  support
+	+ improve the mouse handling introduced by Ilya; it now handles menus
+	  with spacing. 
+	+ repair a minor bug in the menu_driver code discovered during this
+	  rework. 
+	+ add new function wmouse_trafo() to hide implementation details of
+	  _yoffset member of WINDOW struct needed for mouse coordinate
+	  transformation.
+
 981128
 	+ modify Ada95/gen/gen.c to avoid using return-value of sprintf, since
 	  some older implementations (e.g., SunOS 4.x) return the buffer
 	  address rather than its length.
 	> patch by Rick Ohnemus:
-	+ modify demo.cc to get it to compile with newer versions of egcs. 
+	+ modify demo.cc to get it to compile with newer versions of egcs.
 	+ trim a space that appears at the end of the table preprocessor lines
 	  ('\" t).  This space prevents some versions of man from displaying
 	  the pages - changed to remove all trailing whitespace (TD)
-	+ Finally, 'make clean' does not remove panel objects. (I think I sent this 
-	  before and it got lost.) 
+	+ finally, 'make clean' does not remove panel objects.
 	> patches by Ilya Zakharevich:
 	+ allow remapping of OS/2 mouse buttons using environment variable
 	  MOUSE_BUTTONS_123 with the default value 132.
-	+ add mouse support to ncurses menus. 
+	+ add mouse support to ncurses menus.
 
 981121
 	+ modify misc/makedef.cmd to report old-style .def file symbols, and to

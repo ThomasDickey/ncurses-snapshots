@@ -35,15 +35,15 @@
 //
 //	Some small wrappers to ease the implementation of an Ada95
 //      binding. Especially functionalities only available as macros
-//      in (n)curses are wrapped here by functions. 
+//      in (n)curses are wrapped here by functions.
 //      See the documentation and copyright notices in the ../Ada95
 //      subdirectory.
 */
 #include "curses.priv.h"
 
-MODULE_ID("$Id: lib_adabind.c,v 1.7 1998/02/11 12:13:59 tom Exp $")
+MODULE_ID("$Id: lib_adabind.c,v 1.10 1998/12/06 04:30:32 juergen Exp $")
 
-/*  In (n)curses are a few functionalities that can't be expressed as 
+/*  In (n)curses are a few functionalities that can't be expressed as
 //  functions, because for historic reasons they use as macro argument
 //  variable names that are "out" parameters. For those macros we provide
 //  small wrappers.
@@ -108,34 +108,6 @@ int _nc_ada_getparyx (const WINDOW *win, int *y, int *x)
 int _nc_ada_isscroll (const WINDOW *win)
 {
   return win ? (win->_scroll ? TRUE : FALSE) : ERR;
-}
-
-int _nc_ada_coord_transform (const WINDOW *win, int *Y, int *X, int dir)
-{
-  if (win && Y && X)
-    {
-      int y = *Y; int x = *X;
-      if (dir)
-	{ /* to screen coordinates */
-	  y += win->_yoffset;
-	  y += win->_begy;
-	  x += win->_begx;
-	  if (!wenclose(win,y,x))
-	    return FALSE;
-	}
-      else
-	{ /* from screen coordinates */
-	  if (!wenclose(win,y,x))
-	    return FALSE;
-	  y -= win->_yoffset;
-	  y -= win->_begy;
-	  x -= win->_begx;
-	}
-      *X = x;
-      *Y = y;
-      return TRUE;
-    }
-  return FALSE;
 }
 
 #define BUTTON1_EVENTS (BUTTON1_RELEASED        |\
@@ -216,7 +188,7 @@ void _nc_ada_mouse_event( mmask_t m, int *b, int *s )
 
 int _nc_ada_mouse_mask ( int button, int state, mmask_t *mask )
 {
-  mmask_t b = (button<4) ? ((1<<button) << (6 * state)) :
+  mmask_t b = (button<4) ? ((1<<6*button) << state) :
     (BUTTON_CTRL << (button-4));
 
   if (button>=4 && state!=1)

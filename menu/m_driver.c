@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_driver.c,v 1.11 1998/11/29 03:03:28 tom Exp $")
+MODULE_ID("$Id: m_driver.c,v 1.13 1998/12/06 04:30:32 juergen Exp $")
 
 /* Macros */
 
@@ -207,7 +207,6 @@ int menu_driver(MENU * menu, int   c)
      item = item->dir
 
   int result = E_OK;
-  bool need_redo;
   ITEM *item;
   int my_top_row, rdiff;
 
@@ -221,8 +220,6 @@ int menu_driver(MENU * menu, int   c)
 
   item = menu->curitem;
 
-  do {
-    need_redo = FALSE;
     my_top_row = menu->toprow;
     assert(item);
 
@@ -259,7 +256,7 @@ int menu_driver(MENU * menu, int   c)
 
 	  case REQ_SCR_ULINE:
 	    /*=================*/
-	    if (my_top_row == 0)
+	  if (my_top_row == 0 || !(item->up))
 	      result = E_REQUEST_DENIED;
 	    else
 	      {
@@ -270,44 +267,43 @@ int menu_driver(MENU * menu, int   c)
 
 	  case REQ_SCR_DLINE:
 	    /*=================*/
-	    my_top_row++;
-	    if ((menu->rows - menu->arows)>0 || !(item->down))
+	  if ((my_top_row + menu->arows >= menu->rows) || !(item->down))
 	      {
 		/* only if the menu has less items than rows, we can deny the
 		   request. Otherwise the epilogue of this routine adjusts the
 		   top row if necessary */
-		my_top_row--;
 		result = E_REQUEST_DENIED;
 	      }
-	    else
+	  else {
+	    my_top_row++;
 	      item = item->down;
+	  }
 	    break;
 
 	  case REQ_SCR_DPAGE:
 	    /*=================*/
-	    rdiff = menu->rows - menu->arows - my_top_row;
+	  rdiff = menu->rows - (menu->arows + my_top_row);
 	    if (rdiff > menu->arows)
 	      rdiff = menu->arows;
-	    if (rdiff==0)
+	  if (rdiff<=0)
 	      result = E_REQUEST_DENIED;
 	    else
 	      {
 		my_top_row += rdiff;
-		while(rdiff-- > 0)
+	      while(rdiff-- > 0 && item!=(ITEM*)0)
 		  item = item->down;
 	      }
 	    break;
 
 	  case REQ_SCR_UPAGE:
 	    /*=================*/
-	    rdiff = (menu->arows < my_top_row) ?
-	      menu->arows : my_top_row;
-	    if (rdiff==0)
+	  rdiff = (menu->arows < my_top_row) ? menu->arows : my_top_row;
+	  if (rdiff<=0)
 	      result = E_REQUEST_DENIED;
 	    else
 	      {
 		my_top_row -= rdiff;
-		while(rdiff--)
+	      while(rdiff-- && item!=(ITEM*)0)
 		  item = item->up;
 	      }
 	    break;
@@ -433,91 +429,100 @@ int menu_driver(MENU * menu, int   c)
 	if ( !(c & ~((int)MAX_REGULAR_CHARACTER)) && isprint(c) )
 	  result = _nc_Match_Next_Character_In_Item_Name( menu, c, &item );
 #ifdef NCURSES_MOUSE_VERSION
-	else if (c == KEY_MOUSE)
+      else if (KEY_MOUSE == c)
 	  {
 	   MEVENT	event;
+	  WINDOW* uwin = Get_Menu_UserWin(menu);
 
 	    getmouse(&event);
-	    if ((event.bstate & (BUTTON1_CLICKED | BUTTON1_DOUBLE_CLICKED
-						 | BUTTON1_TRIPLE_CLICKED))
-	    && (event.x >= menu->userwin->_begx)
-	    && (event.x <= (menu->userwin->_begx + menu->userwin->_maxx)))
-	      {
-	       int delta = event.y
-			 - menu->usersub->_begy
-			 - menu->usersub->_yoffset - item->y;
-/*		fprintf(stderr, "y=%d begy=%d offset=%d yitem=%d\n", */
-/*			(int)event.y, (int)menu->usersub->_begy,  */
-/*			(int)menu->usersub->_yoffset, (int)item->y); */
+	  if ((event.bstate & (BUTTON1_CLICKED         |
+			       BUTTON1_DOUBLE_CLICKED  |
+			       BUTTON1_TRIPLE_CLICKED   ))
+	      && wenclose(uwin,event.y, event.x))
+	    { /* we react only if the click was in the userwin, that means
+	       * inside the menu display area or at the decoration window.
+	       */
+	      WINDOW* sub = Get_Menu_Window(menu);
+	      int ry = event.y, rx = event.x; /* screen coordinates */
 
-		if (delta > 0 && (item->index + delta) >= menu->nitems)
-		  {
-		    if (event.y <= (menu->userwin->_begy +
-				    menu->userwin->_yoffset + menu->userwin->_maxy))
-		      {
-			/* At the decorative border: scroll forward */
-			if (event.bstate & BUTTON1_TRIPLE_CLICKED)
-			  c = REQ_LAST_ITEM;
+	      result = E_NOT_SELECTABLE;
+	      if (mouse_trafo(&ry,&rx,FALSE))
+		{ /* rx, ry are now "curses" coordinates */
+		  if (ry < sub->_begy)
+		    { /* we clicked above the display region; this is 
+		       * interpreted as "scroll up" request
+		       */
+		      if (event.bstate & BUTTON1_CLICKED)
+			result = menu_driver(menu,REQ_SCR_ULINE);
 			else if (event.bstate & BUTTON1_DOUBLE_CLICKED)
-			  c = REQ_SCR_DPAGE;
-			else
-			  c = REQ_SCR_DLINE;
-		      }
-		    else if (event.bstate & (BUTTON1_DOUBLE_CLICKED
-					   | BUTTON1_TRIPLE_CLICKED))
-		      c = REQ_LAST_ITEM;
-		    else
-		      c = REQ_SCR_DPAGE;
-		    need_redo = TRUE;
+			result = menu_driver(menu,REQ_SCR_UPAGE);
+		      else if (event.bstate & BUTTON1_TRIPLE_CLICKED)
+			result = menu_driver(menu,REQ_FIRST_ITEM);
+		      RETURN(result);
+		    }
+		  else if (ry >= sub->_begy + sub->_maxy)
+		    { /* we clicked below the display region; this is 
+		       * interpreted as "scroll down" request
+		       */
+		      if (event.bstate & BUTTON1_CLICKED)
+			result = menu_driver(menu,REQ_SCR_DLINE);
+		      else if (event.bstate & BUTTON1_DOUBLE_CLICKED)
+			result = menu_driver(menu,REQ_SCR_DPAGE);
+		      else if (event.bstate & BUTTON1_TRIPLE_CLICKED)
+			result = menu_driver(menu,REQ_LAST_ITEM);
+		      RETURN(result);
 		  }
-		else if (delta < 0 && (item->index + delta) < 0)
+		  else if (wenclose(sub,event.y,event.x))
+		    { /* Inside the area we try to find the hit item */
+		      int i,x,y,err;
+		      ry = event.y; rx = event.x;
+		      if (wmouse_trafo(sub,&ry,&rx,FALSE))
 		  {
-		    if (event.y >= (menu->userwin->_begy +
-				  menu->userwin->_yoffset))
+			  for(i=0;i<menu->nitems;i++)
 		      {
-			/* At the decorative border: scroll back */
-			if (event.bstate & BUTTON1_TRIPLE_CLICKED)
-			  c = REQ_FIRST_ITEM;
-			else if (event.bstate & BUTTON1_DOUBLE_CLICKED)
-			  c = REQ_SCR_UPAGE;
-			else
-			  c = REQ_SCR_ULINE;
+			      err = _nc_menu_cursor_pos(menu,menu->items[i],
+							&y, &x);
+			      if (E_OK==err)
+				{
+				  if ((ry==y)       &&
+				      (rx>=x)       &&
+				      (rx < x + menu->itemlen))
+				    {
+				      item = menu->items[i];
+				      result = E_OK;
+				      break;
+				    }
+				}
+			    }
+			  if (E_OK==result)
+			    { /* We found an item, now we can handle the click.
+			       * A single click just positions the menu cursor
+			       * to the clicked item. A double click toggles
+			       * the item.
+			       */
+			      if (event.bstate & BUTTON1_DOUBLE_CLICKED)
+				{
+				  _nc_New_TopRow_and_CurrentItem(menu,
+								 my_top_row,
+								 item);
+				  menu_driver(menu,REQ_TOGGLE_ITEM);
+				  result = E_UNKNOWN_COMMAND;
+				}
 		      }
-		    else if (event.bstate & (BUTTON1_DOUBLE_CLICKED
-					   | BUTTON1_TRIPLE_CLICKED))
-		      c = REQ_FIRST_ITEM;
-		    else
-		      c = REQ_SCR_UPAGE;
-		    need_redo = TRUE;
 		  }
-		else if (event.bstate & (BUTTON_CTRL))
-		  {
-		    item = menu->items[item->index + delta];
-		    c = REQ_TOGGLE_ITEM;
-		    need_redo = TRUE;
 		  }
-		else if (event.bstate & (BUTTON_ALT | BUTTON_SHIFT))
-		  result = E_BAD_ARGUMENT;
-		else
-		  item = menu->items[item->index + delta];
-/* 	        fprintf(stderr, "new yitem=%d\n", (int)item->y); */
-		if (event.bstate & (BUTTON1_DOUBLE_CLICKED
-				  | BUTTON1_TRIPLE_CLICKED))
-		  {
-		    if (event.bstate & (BUTTON_ALT | BUTTON_SHIFT | BUTTON_CTRL))
-		      result = E_BAD_ARGUMENT;
-		    else			/* How else to exit eventloop? */
-		      result = E_UNKNOWN_COMMAND;
 		  }
 	      }
 	    else
-	      result = E_BAD_ARGUMENT;
+	    result = E_NOT_SELECTABLE;
 	  }
 #endif /* NCURSES_MOUSE_VERSION */
 	else
 	  result = E_UNKNOWN_COMMAND;
       }
 
+  if (E_OK==result)
+    {
     /* Adjust the top row if it turns out that the current item unfortunately
        doesn't appear in the menu window */
     if ( item->y < my_top_row )
@@ -527,7 +532,7 @@ int menu_driver(MENU * menu, int   c)
 
     _nc_New_TopRow_and_CurrentItem( menu, my_top_row, item );
 
-  } while (need_redo);
+    }
 
   RETURN(result);
 }
