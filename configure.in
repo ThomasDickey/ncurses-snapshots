@@ -28,11 +28,11 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.151 1998/11/01 01:14:52 tom Exp $ 
+dnl $Id: configure.in,v 1.152 1998/11/14 23:15:31 tom Exp $ 
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.151 $) 
-AC_INIT(ncurses/lib_initscr.c)
+AC_REVISION($Revision: 1.152 $) 
+AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
 CF_SUBST_NCURSES_VERSION

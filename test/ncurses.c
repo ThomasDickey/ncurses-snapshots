@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.110 1998/09/26 22:20:36 tom Exp $
+$Id: ncurses.c,v 1.112 1998/11/15 00:47:32 tom Exp $
 
 ***************************************************************************/
 
@@ -185,6 +185,53 @@ static void ShellOut(bool message)
 	refresh();
 }
 
+#ifdef NCURSES_MOUSE_VERSION
+static const char *mouse_decode(MEVENT const *ep)
+{
+	static char buf[80];
+
+	(void) sprintf(buf, "id %2d  at (%2d, %2d, %2d) state %4lx = {",
+		       ep->id, ep->x, ep->y, ep->z, ep->bstate);
+
+#define SHOW(m, s) if ((ep->bstate & m)==m) {strcat(buf,s); strcat(buf, ", ");}
+	SHOW(BUTTON1_RELEASED,		"release-1")
+	SHOW(BUTTON1_PRESSED,		"press-1")
+	SHOW(BUTTON1_CLICKED,		"click-1")
+	SHOW(BUTTON1_DOUBLE_CLICKED,	"doubleclick-1")
+	SHOW(BUTTON1_TRIPLE_CLICKED,	"tripleclick-1")
+	SHOW(BUTTON1_RESERVED_EVENT,	"reserved-1")
+	SHOW(BUTTON2_RELEASED,		"release-2")
+	SHOW(BUTTON2_PRESSED,		"press-2")
+	SHOW(BUTTON2_CLICKED,		"click-2")
+	SHOW(BUTTON2_DOUBLE_CLICKED,	"doubleclick-2")
+	SHOW(BUTTON2_TRIPLE_CLICKED,	"tripleclick-2")
+	SHOW(BUTTON2_RESERVED_EVENT,	"reserved-2")
+	SHOW(BUTTON3_RELEASED,		"release-3")
+	SHOW(BUTTON3_PRESSED,		"press-3")
+	SHOW(BUTTON3_CLICKED,		"click-3")
+	SHOW(BUTTON3_DOUBLE_CLICKED,	"doubleclick-3")
+	SHOW(BUTTON3_TRIPLE_CLICKED,	"tripleclick-3")
+	SHOW(BUTTON3_RESERVED_EVENT,	"reserved-3")
+	SHOW(BUTTON4_RELEASED,		"release-4")
+	SHOW(BUTTON4_PRESSED,		"press-4")
+	SHOW(BUTTON4_CLICKED,		"click-4")
+	SHOW(BUTTON4_DOUBLE_CLICKED,	"doubleclick-4")
+	SHOW(BUTTON4_TRIPLE_CLICKED,	"tripleclick-4")
+	SHOW(BUTTON4_RESERVED_EVENT,	"reserved-4")
+	SHOW(BUTTON_CTRL,		"ctrl")
+	SHOW(BUTTON_SHIFT,		"shift")
+	SHOW(BUTTON_ALT,		"alt")
+	SHOW(ALL_MOUSE_EVENTS,		"all-events")
+	SHOW(REPORT_MOUSE_POSITION,	"position")
+#undef SHOW
+
+	if (buf[strlen(buf)-1] == ' ')
+		buf[strlen(buf)-2] = '\0';
+	(void) strcat(buf, "}");
+	return(buf);
+}
+#endif /* NCURSES_MOUSE_VERSION */
+
 /****************************************************************************
  *
  * Character input test
@@ -231,7 +278,7 @@ int y, x;
 		MEVENT	event;
 
 		getmouse(&event);
-		printw("KEY_MOUSE, %s\n", _tracemouse(&event));
+		printw("KEY_MOUSE, %s\n", mouse_decode(&event));
 	    }
 	    else
 #endif	/* NCURSES_MOUSE_VERSION */

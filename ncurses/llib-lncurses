@@ -31,7 +31,7 @@
  ****************************************************************************/
 /* LINTLIBRARY */
 
-/* ./hardscroll.c */
+/* ./tty/hardscroll.c */
 
 #include <curses.priv.h>
 
@@ -42,7 +42,7 @@ int	*_nc_oldnums;
 void	_nc_scroll_optimize(void)
 		{ /* void */ }
 
-/* ./hashmap.c */
+/* ./tty/hashmap.c */
 
 #include <term.h>
 
@@ -70,7 +70,7 @@ void	_nc_scroll_oldhash(
 		int	bot)
 		{ /* void */ }
 
-/* ./lib_addch.c */
+/* ./base/lib_addch.c */
 
 #include <ctype.h>
 
@@ -103,7 +103,7 @@ int	wechochar(
 		const chtype ch)
 		{ return(*(int *)0); }
 
-/* ./lib_addstr.c */
+/* ./base/lib_addstr.c */
 
 #undef waddnstr
 int	waddnstr(
@@ -119,13 +119,13 @@ int	waddchnstr(
 		int	n)
 		{ return(*(int *)0); }
 
-/* ./lib_beep.c */
+/* ./base/lib_beep.c */
 
 #undef beep
 int	beep(void)
 		{ return(*(int *)0); }
 
-/* ./lib_bkgd.c */
+/* ./base/lib_bkgd.c */
 
 #undef wbkgdset
 void	wbkgdset(
@@ -139,7 +139,7 @@ int	wbkgd(
 		const chtype ch)
 		{ return(*(int *)0); }
 
-/* ./lib_box.c */
+/* ./base/lib_box.c */
 
 #undef wborder
 int	wborder(
@@ -154,7 +154,7 @@ int	wborder(
 		chtype	br)
 		{ return(*(int *)0); }
 
-/* ./lib_chgat.c */
+/* ./base/lib_chgat.c */
 
 #undef wchgat
 int	wchgat(
@@ -165,14 +165,14 @@ int	wchgat(
 		const void *opts)
 		{ return(*(int *)0); }
 
-/* ./lib_clear.c */
+/* ./base/lib_clear.c */
 
 #undef wclear
 int	wclear(
 		WINDOW	*win)
 		{ return(*(int *)0); }
 
-/* ./lib_clearok.c */
+/* ./base/lib_clearok.c */
 
 #undef clearok
 int	clearok(
@@ -180,21 +180,21 @@ int	clearok(
 		bool	flag)
 		{ return(*(int *)0); }
 
-/* ./lib_clrbot.c */
+/* ./base/lib_clrbot.c */
 
 #undef wclrtobot
 int	wclrtobot(
 		WINDOW	*win)
 		{ return(*(int *)0); }
 
-/* ./lib_clreol.c */
+/* ./base/lib_clreol.c */
 
 #undef wclrtoeol
 int	wclrtoeol(
 		WINDOW	*win)
 		{ return(*(int *)0); }
 
-/* ./lib_color.c */
+/* ./base/lib_color.c */
 
 #undef COLOR_PAIRS
 int	COLOR_PAIRS;
@@ -251,7 +251,7 @@ void	_nc_do_color(
 		int	p1))
 		{ /* void */ }
 
-/* ./lib_colorset.c */
+/* ./base/lib_colorset.c */
 
 #undef wcolor_set
 int	wcolor_set(
@@ -260,21 +260,21 @@ int	wcolor_set(
 		void	*opts)
 		{ return(*(int *)0); }
 
-/* ./lib_delch.c */
+/* ./base/lib_delch.c */
 
 #undef wdelch
 int	wdelch(
 		WINDOW	*win)
 		{ return(*(int *)0); }
 
-/* ./lib_delwin.c */
+/* ./base/lib_delwin.c */
 
 #undef delwin
 int	delwin(
 		WINDOW	*win)
 		{ return(*(int *)0); }
 
-/* ./lib_doupdate.c */
+/* ./base/lib_doupdate.c */
 
 #include <sys/time.h>
 
@@ -312,7 +312,7 @@ void	_nc_do_xmc_glitch(
 		attr_t	previous)
 		{ /* void */ }
 
-/* ./lib_echo.c */
+/* ./base/lib_echo.c */
 
 #undef echo
 int	echo(void)
@@ -322,20 +322,20 @@ int	echo(void)
 int	noecho(void)
 		{ return(*(int *)0); }
 
-/* ./lib_endwin.c */
+/* ./base/lib_endwin.c */
 
 #undef endwin
 int	endwin(void)
 		{ return(*(int *)0); }
 
-/* ./lib_erase.c */
+/* ./base/lib_erase.c */
 
 #undef werase
 int	werase(
 		WINDOW	*win)
 		{ return(*(int *)0); }
 
-/* ./lib_flash.c */
+/* ./base/lib_flash.c */
 
 #undef flash
 int	flash(void)
@@ -1008,11 +1008,6 @@ int	wgetstr(
 		char	*z)
 		{ return(*(int *)0); }
 
-#undef winch
-chtype	winch(
-		WINDOW	*z)
-		{ return(*(chtype *)0); }
-
 #undef winchstr
 int	winchstr(
 		WINDOW	*a1, 
@@ -1046,7 +1041,7 @@ int	wstandend(
 		WINDOW	*z)
 		{ return(*(int *)0); }
 
-/* ./lib_getch.c */
+/* ./base/lib_getch.c */
 
 #include <fifo_defs.h>
 
@@ -1058,7 +1053,7 @@ int	wgetch(
 		WINDOW	*win)
 		{ return(*(int *)0); }
 
-/* ./lib_getstr.c */
+/* ./base/lib_getstr.c */
 
 #undef wgetnstr
 int	wgetnstr(
@@ -1067,7 +1062,7 @@ int	wgetnstr(
 		int	maxlen)
 		{ return(*(int *)0); }
 
-/* ./lib_hline.c */
+/* ./base/lib_hline.c */
 
 #undef whline
 int	whline(
@@ -1076,7 +1071,7 @@ int	whline(
 		int	n)
 		{ return(*(int *)0); }
 
-/* ./lib_immedok.c */
+/* ./base/lib_immedok.c */
 
 #undef immedok
 void	immedok(
@@ -1084,7 +1079,7 @@ void	immedok(
 		bool	flag)
 		{ /* void */ }
 
-/* ./lib_inchstr.c */
+/* ./base/lib_inchstr.c */
 
 #undef winchnstr
 int	winchnstr(
@@ -1093,7 +1088,7 @@ int	winchnstr(
 		int	n)
 		{ return(*(int *)0); }
 
-/* ./lib_initscr.c */
+/* ./base/lib_initscr.c */
 
 #include <tic.h>
 
@@ -1105,7 +1100,7 @@ WINDOW	*initscr(void)
 char	*termname(void)
 		{ return(*(char **)0); }
 
-/* ./lib_insch.c */
+/* ./base/lib_insch.c */
 
 #undef winsch
 int	winsch(
@@ -1113,7 +1108,7 @@ int	winsch(
 		chtype	c)
 		{ return(*(int *)0); }
 
-/* ./lib_insdel.c */
+/* ./base/lib_insdel.c */
 
 #undef winsdelln
 int	winsdelln(
@@ -1121,7 +1116,7 @@ int	winsdelln(
 		int	n)
 		{ return(*(int *)0); }
 
-/* ./lib_insstr.c */
+/* ./base/lib_insstr.c */
 
 #undef winsnstr
 int	winsnstr(
@@ -1130,7 +1125,7 @@ int	winsnstr(
 		int	n)
 		{ return(*(int *)0); }
 
-/* ./lib_instr.c */
+/* ./base/lib_instr.c */
 
 #undef winnstr
 int	winnstr(
@@ -1139,13 +1134,13 @@ int	winnstr(
 		int	n)
 		{ return(*(int *)0); }
 
-/* ./lib_isendwin.c */
+/* ./base/lib_isendwin.c */
 
 #undef isendwin
 bool	isendwin(void)
 		{ return(*(bool *)0); }
 
-/* ./lib_leaveok.c */
+/* ./base/lib_leaveok.c */
 
 #undef leaveok
 int	leaveok(
@@ -1153,7 +1148,7 @@ int	leaveok(
 		bool	flag)
 		{ return(*(int *)0); }
 
-/* ./lib_mouse.c */
+/* ./base/lib_mouse.c */
 
 #undef getmouse
 int	getmouse(
@@ -1187,7 +1182,7 @@ int	mouseinterval(
 int	_nc_has_mouse(void)
 		{ return(*(int *)0); }
 
-/* ./lib_move.c */
+/* ./base/lib_move.c */
 
 #undef wmove
 int	wmove(
@@ -1196,7 +1191,7 @@ int	wmove(
 		int	x)
 		{ return(*(int *)0); }
 
-/* ./lib_mvcur.c */
+/* ./tty/lib_mvcur.c */
 
 #undef _nc_msec_cost
 int	_nc_msec_cost(
@@ -1224,7 +1219,7 @@ int	mvcur(
 		int	xnew)
 		{ return(*(int *)0); }
 
-/* ./lib_mvwin.c */
+/* ./base/lib_mvwin.c */
 
 #undef mvwin
 int	mvwin(
@@ -1233,7 +1228,7 @@ int	mvwin(
 		int	bx)
 		{ return(*(int *)0); }
 
-/* ./lib_newterm.c */
+/* ./base/lib_newterm.c */
 
 #undef filter
 void	filter(void)
@@ -1246,7 +1241,7 @@ SCREEN	*newterm(
 		FILE	*ifp)
 		{ return(*(SCREEN **)0); }
 
-/* ./lib_newwin.c */
+/* ./base/lib_newwin.c */
 
 #undef _nc_freewin
 void	_nc_freewin(
@@ -1288,7 +1283,7 @@ WINDOW	*_nc_makenew(
 		int	flags)
 		{ return(*(WINDOW **)0); }
 
-/* ./lib_nl.c */
+/* ./base/lib_nl.c */
 
 #undef nl
 int	nl(void)
@@ -1298,7 +1293,7 @@ int	nl(void)
 int	nonl(void)
 		{ return(*(int *)0); }
 
-/* ./lib_overlay.c */
+/* ./base/lib_overlay.c */
 
 #undef overlay
 int	overlay(
@@ -1325,7 +1320,7 @@ int	copywin(
 		int	over)
 		{ return(*(int *)0); }
 
-/* ./lib_pad.c */
+/* ./base/lib_pad.c */
 
 #undef newpad
 WINDOW	*newpad(
@@ -1370,7 +1365,7 @@ int	pechochar(
 		const chtype ch)
 		{ return(*(int *)0); }
 
-/* ./lib_printw.c */
+/* ./base/lib_printw.c */
 
 #undef printw
 int	printw(
@@ -1409,7 +1404,7 @@ int	vwprintw(
 		va_list	argp)
 		{ return(*(int *)0); }
 
-/* ./lib_redrawln.c */
+/* ./base/lib_redrawln.c */
 
 #undef wredrawln
 int	wredrawln(
@@ -1418,7 +1413,7 @@ int	wredrawln(
 		int	num)
 		{ return(*(int *)0); }
 
-/* ./lib_refresh.c */
+/* ./base/lib_refresh.c */
 
 #undef wrefresh
 int	wrefresh(
@@ -1430,7 +1425,7 @@ int	wnoutrefresh(
 		WINDOW	*win)
 		{ return(*(int *)0); }
 
-/* ./lib_scanw.c */
+/* ./base/lib_scanw.c */
 
 #undef vwscanw
 int	vwscanw(
@@ -1469,7 +1464,7 @@ int	mvwscanw(
 		...)
 		{ return(*(int *)0); }
 
-/* ./lib_screen.c */
+/* ./base/lib_screen.c */
 
 #include <sys/stat.h>
 #include <time.h>
@@ -1505,7 +1500,7 @@ int	scr_set(
 		const char *file)
 		{ return(*(int *)0); }
 
-/* ./lib_scroll.c */
+/* ./base/lib_scroll.c */
 
 #undef _nc_scroll_window
 void	_nc_scroll_window(
@@ -1522,7 +1517,7 @@ int	wscrl(
 		int	n)
 		{ return(*(int *)0); }
 
-/* ./lib_scrollok.c */
+/* ./base/lib_scrollok.c */
 
 #undef scrollok
 int	scrollok(
@@ -1530,7 +1525,7 @@ int	scrollok(
 		bool	flag)
 		{ return(*(int *)0); }
 
-/* ./lib_scrreg.c */
+/* ./base/lib_scrreg.c */
 
 #undef wsetscrreg
 int	wsetscrreg(
@@ -1539,7 +1534,7 @@ int	wsetscrreg(
 		int	bottom)
 		{ return(*(int *)0); }
 
-/* ./lib_set_term.c */
+/* ./base/lib_set_term.c */
 
 #undef set_term
 SCREEN	*set_term(
@@ -1574,7 +1569,7 @@ int	ripoffline(
 		int	p2))
 		{ return(*(int *)0); }
 
-/* ./lib_slk.c */
+/* ./base/lib_slk.c */
 
 #undef _nc_slk_format
 int	_nc_slk_format;
@@ -1589,61 +1584,61 @@ int	_nc_slk_initialize(
 int	slk_restore(void)
 		{ return(*(int *)0); }
 
-/* ./lib_slkatrof.c */
+/* ./base/lib_slkatrof.c */
 
 #undef slk_attroff
 int	slk_attroff(
 		const chtype attr)
 		{ return(*(int *)0); }
 
-/* ./lib_slkatron.c */
+/* ./base/lib_slkatron.c */
 
 #undef slk_attron
 int	slk_attron(
 		const chtype attr)
 		{ return(*(int *)0); }
 
-/* ./lib_slkatrset.c */
+/* ./base/lib_slkatrset.c */
 
 #undef slk_attrset
 int	slk_attrset(
 		const chtype attr)
 		{ return(*(int *)0); }
 
-/* ./lib_slkattr.c */
+/* ./base/lib_slkattr.c */
 
 #undef slk_attr
 attr_t	slk_attr(void)
 		{ return(*(attr_t *)0); }
 
-/* ./lib_slkclear.c */
+/* ./base/lib_slkclear.c */
 
 #undef slk_clear
 int	slk_clear(void)
 		{ return(*(int *)0); }
 
-/* ./lib_slkcolor.c */
+/* ./base/lib_slkcolor.c */
 
 #undef slk_color
 int	slk_color(
 		short	color_pair_number)
 		{ return(*(int *)0); }
 
-/* ./lib_slkinit.c */
+/* ./base/lib_slkinit.c */
 
 #undef slk_init
 int	slk_init(
 		int	format)
 		{ return(*(int *)0); }
 
-/* ./lib_slklab.c */
+/* ./base/lib_slklab.c */
 
 #undef slk_label
 char	*slk_label(
 		int	n)
 		{ return(*(char **)0); }
 
-/* ./lib_slkrefr.c */
+/* ./base/lib_slkrefr.c */
 
 #undef slk_noutrefresh
 int	slk_noutrefresh(void)
@@ -1653,7 +1648,7 @@ int	slk_noutrefresh(void)
 int	slk_refresh(void)
 		{ return(*(int *)0); }
 
-/* ./lib_slkset.c */
+/* ./base/lib_slkset.c */
 
 #undef slk_set
 int	slk_set(
@@ -1662,13 +1657,13 @@ int	slk_set(
 		int	format)
 		{ return(*(int *)0); }
 
-/* ./lib_slktouch.c */
+/* ./base/lib_slktouch.c */
 
 #undef slk_touch
 int	slk_touch(void)
 		{ return(*(int *)0); }
 
-/* ./lib_slkatr_set.c */
+/* ./base/lib_slkatr_set.c */
 
 #undef slk_attr_set
 int	slk_attr_set(
@@ -1677,7 +1672,7 @@ int	slk_attr_set(
 		void	*opts)
 		{ return(*(int *)0); }
 
-/* ./lib_touch.c */
+/* ./base/lib_touch.c */
 
 #undef is_linetouched
 bool	is_linetouched(
@@ -1717,7 +1712,7 @@ char	*_tracemouse(
 		MEVENT const *ep)
 		{ return(*(char **)0); }
 
-/* ./lib_tstp.c */
+/* ./tty/lib_tstp.c */
 
 #include <signal.h>
 #include <SigAction.h>
@@ -1727,14 +1722,14 @@ void	_nc_signal_handler(
 		bool	enable)
 		{ /* void */ }
 
-/* ./lib_ungetch.c */
+/* ./base/lib_ungetch.c */
 
 #undef ungetch
 int	ungetch(
 		int	ch)
 		{ return(*(int *)0); }
 
-/* ./lib_vidattr.c */
+/* ./tty/lib_vidattr.c */
 
 #undef vidputs
 int	vidputs(
@@ -1752,7 +1747,7 @@ int	vidattr(
 chtype	termattrs(void)
 		{ return(*(chtype *)0); }
 
-/* ./lib_vline.c */
+/* ./base/lib_vline.c */
 
 #undef wvline
 int	wvline(
@@ -1761,7 +1756,7 @@ int	wvline(
 		int	n)
 		{ return(*(int *)0); }
 
-/* ./lib_wattroff.c */
+/* ./base/lib_wattroff.c */
 
 #undef wattr_off
 int	wattr_off(
@@ -1770,7 +1765,7 @@ int	wattr_off(
 		void	*opts)
 		{ return(*(int *)0); }
 
-/* ./lib_wattron.c */
+/* ./base/lib_wattron.c */
 
 #undef wattr_on
 int	wattr_on(
@@ -1779,7 +1774,14 @@ int	wattr_on(
 		void	*opts)
 		{ return(*(int *)0); }
 
-/* ./lib_window.c */
+/* ./base/lib_winch.c */
+
+#undef winch
+chtype	winch(
+		WINDOW	*win)
+		{ return(*(chtype *)0); }
+
+/* ./base/lib_window.c */
 
 #undef _nc_synchook
 void	_nc_synchook(
@@ -1819,13 +1821,13 @@ WINDOW	*dupwin(
 		WINDOW	*win)
 		{ return(*(WINDOW **)0); }
 
-/* ./nc_panel.c */
+/* ./base/nc_panel.c */
 
 #undef _nc_panelhook
 struct panelhook *_nc_panelhook(void)
 		{ return(*(struct panelhook **)0); }
 
-/* ./safe_sprintf.c */
+/* ./base/safe_sprintf.c */
 
 #undef _nc_printf_string
 char	*_nc_printf_string(
@@ -1833,25 +1835,25 @@ char	*_nc_printf_string(
 		va_list	ap)
 		{ return(*(char **)0); }
 
-/* ./memmove.c */
+/* ./base/memmove.c */
 
 #undef _nc_memmove
 void	_nc_memmove(void)
 		{ /* void */ }
 
-/* ./sigaction.c */
+/* ./base/sigaction.c */
 
 #undef _nc_sigaction
 void	_nc_sigaction(void)
 		{ /* void */ }
 
-/* ./vsscanf.c */
+/* ./base/vsscanf.c */
 
 #undef _nc_vsscanf
 void	_nc_vsscanf(void)
 		{ /* void */ }
 
-/* ./define_key.c */
+/* ./base/define_key.c */
 
 #undef define_key
 int	define_key(
@@ -1893,7 +1895,7 @@ void	_nc_UpdateAttrs(
 		chtype	c)
 		{ /* void */ }
 
-/* ./keyok.c */
+/* ./base/keyok.c */
 
 #undef keyok
 int	keyok(
@@ -1901,7 +1903,7 @@ int	keyok(
 		bool	flag)
 		{ return(*(int *)0); }
 
-/* ./lib_adabind.c */
+/* ./base/lib_adabind.c */
 
 #undef _nc_ada_getmaxyx
 int	_nc_ada_getmaxyx(
@@ -1964,13 +1966,13 @@ int	_nc_ada_vcheck(
 		int	minor)
 		{ return(*(int *)0); }
 
-/* ./lib_dft_fgbg.c */
+/* ./base/lib_dft_fgbg.c */
 
 #undef use_default_colors
 int	use_default_colors(void)
 		{ return(*(int *)0); }
 
-/* ./lib_freeall.c */
+/* ./base/lib_freeall.c */
 
 #undef _nc_free_termtype
 void	_nc_free_termtype(
@@ -1995,7 +1997,7 @@ int	mcprint(
 		int	len)
 		{ return(*(int *)0); }
 
-/* ./resizeterm.c */
+/* ./base/resizeterm.c */
 
 #undef resizeterm
 int	resizeterm(
@@ -2003,7 +2005,7 @@ int	resizeterm(
 		int	ToCols)
 		{ return(*(int *)0); }
 
-/* ./tries.c */
+/* ./base/tries.c */
 
 #undef _nc_expand_try
 char	*_nc_expand_try(
@@ -2018,7 +2020,7 @@ int	_nc_remove_key(
 		unsigned short code)
 		{ return(*(int *)0); }
 
-/* ./wresize.c */
+/* ./base/wresize.c */
 
 #undef wresize
 int	wresize(
