@@ -91,7 +91,7 @@ char *ttyname(int fd);
 #include <curses.h>	/* for bool typedef */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.24 1997/05/24 22:19:02 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.25 1997/07/06 19:46:28 tom Exp $")
 
 extern char **environ;
 
@@ -875,7 +875,7 @@ set_init(void)
 	if (settle) {
 		(void)putc('\r', stderr);
 		(void)fflush(stderr);
-		(void)sleep(1);			/* Settle the terminal. */
+		(void)napms(1000);	/* Settle the terminal. */
 	}
 }
 

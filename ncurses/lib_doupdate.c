@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.66 1997/07/05 22:04:04 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.67 1997/07/06 19:02:39 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -768,10 +768,14 @@ static void ClrUpdate(WINDOW *win)
 
 	ClearScreen(blank);
 
-	if (win != curscr) {
-		for (i = 0; i < screen_lines ; i++)
-			for (j = 0; j < screen_columns; j++)
-				curscr->_line[i].text[j] = blank;
+	for (i = 0; i < screen_lines ; i++) {
+		if (win == curscr)
+			memcpy( newscr->_line[i].text,
+				curscr->_line[i].text,
+				screen_columns * sizeof(chtype));
+		for (j = 0; j < screen_columns; j++) {
+			curscr->_line[i].text[j] = blank;
+		}
 	}
 
 	T(("updating screen from scratch"));
