@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.732 2003/02/09 00:25:15 tom Exp $
+-- $Id: NEWS,v 1.733 2003/02/16 00:02:17 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030215
+	+ add configure check for wchar_t and wint_t types, rather than rely
+	  on preprocessor definitions.  Also work around for gcc fixinclude
+	  bug which creates a shadow copy of curses.h if it sees these symbols
+	  apparently typedef'd.
+	+ if database is disabled, do not generate run_tic.sh
+	+ minor fixes for memory-leak checking when termcap is read.
 
 20030208
 	+ add checking in tic for incomplete line-drawing character mapping.

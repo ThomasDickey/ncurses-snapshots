@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey 1996-on                                        *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.136 2003/01/18 23:33:20 tom Exp $ */
+/* $Id: curses.h.in,v 1.137 2003/02/16 00:05:34 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -286,21 +286,19 @@ typedef	chtype	attr_t;		/* ...must be at least as wide as chtype */
 #undef mblen
 #endif
 #include <libutf8.h>
-#define _WCHAR_T
-#define _WINT_T
 #endif
 
 #if @NCURSES_MBSTATE_T@
 #include <wchar.h>		/* ...to get mbstate_t, etc. */
 #endif
 
-#if !defined(_WCHAR_T) && !defined(wchar_t)
-typedef unsigned long wchar_t;
-#endif /* _WCHAR_T */
+#if @NCURSES_WCHAR_T@
+typedef unsigned short wchar_t@NCURSES_OK_WCHAR_T@;
+#endif
 
-#if !defined(_WINT_T) && !defined(wint_t)
-typedef long int wint_t;
-#endif /* _WINT_T */
+#if @NCURSES_WINT_T@
+typedef unsigned int wint_t@NCURSES_OK_WCHAR_T@;
+#endif
 
 #define CCHARW_MAX	5
 typedef struct
