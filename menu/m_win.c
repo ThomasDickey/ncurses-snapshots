@@ -30,7 +30,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_win.c,v 1.3 1996/11/19 15:12:58 juergen Exp $")
+MODULE_ID("$Id: m_win.c,v 1.4 1997/04/16 22:29:33 juergen Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -66,7 +66,8 @@ int set_menu_win(MENU *menu, WINDOW *win)
 +--------------------------------------------------------------------------*/
 WINDOW *menu_win(const MENU *menu)
 {
-  return Normalize_Menu(menu)->userwin;
+  const MENU* m = Normalize_Menu(menu);
+  return (m->userwin ? m->userwin : stdscr);
 }
 
 /*---------------------------------------------------------------------------
@@ -103,7 +104,8 @@ int set_menu_sub(MENU *menu, WINDOW *win)
 +--------------------------------------------------------------------------*/
 WINDOW *menu_sub(const MENU * menu)
 {
-  return Normalize_Menu(menu)->usersub;
+  const MENU* m = Normalize_Menu(menu);
+  return Get_Menu_Window(m);
 }
 
 /*---------------------------------------------------------------------------

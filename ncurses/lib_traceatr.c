@@ -32,13 +32,16 @@
 #include <curses.priv.h>
 #include <term.h>	/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.12 1997/04/12 22:04:53 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.16 1997/04/20 03:04:16 tom Exp $")
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
-static char * trace_buf(int bufnum)
+char * _nc_trace_buf(int bufnum, size_t want)
 {
-	static char **list;
+	static struct {
+		char *text;
+		size_t size;
+	} *list;
 	static size_t have;
 
 	if (bufnum < 0)
@@ -49,18 +52,25 @@ static char * trace_buf(int bufnum)
 		size_t used = sizeof(*list) * need;
 		list = (list != 0) ? malloc(used) : realloc(list, used);
 		while (need > have)
-			list[--need] = 0;
+			list[--need].text = 0;
 	}
 
-	if (list[bufnum] == 0)
-		list[bufnum] = malloc(BUFSIZ);
-	*(list[bufnum]) = '\0';
-	return list[bufnum];
+	if (list[bufnum].text == 0)
+	{
+		list[bufnum].text = malloc(want);
+		list[bufnum].size = want;
+		*(list[bufnum].text) = '\0';
+	}
+	else if (want > list[bufnum].size) {
+		list[bufnum].text = realloc(list[bufnum].text, want);
+		list[bufnum].size = want;
+	}
+	return list[bufnum].text;
 }
 
 char *_traceattr2(int bufnum, attr_t newmode)
 {
-char	*buf = trace_buf(bufnum);
+char	*buf = _nc_trace_buf(bufnum, BUFSIZ);
 char	*tmp = buf;
 static const	struct {unsigned int val; const char *name;}
 names[] =
@@ -117,8 +127,11 @@ size_t n;
 			}
 		}
 	}
-	if (AttrOf(newmode) == A_NORMAL)
+	if (AttrOf(newmode) == A_NORMAL) {
+		if (buf[1] != '\0')
+			strcat(tmp, "|");
 		strcat(tmp, "A_NORMAL");
+	}
 
 	return (strcat(buf,"}"));
 }
@@ -130,9 +143,10 @@ char *_traceattr(attr_t newmode)
 
 char *_tracechtype2(int bufnum, chtype ch)
 {
-char	*buf = trace_buf(bufnum);
+char	*buf = _nc_trace_buf(bufnum, BUFSIZ);
 bool	found = FALSE;
 
+    strcpy(buf, "{");
     if (ch & A_ALTCHARSET)
     {
 	char	*cp;
@@ -177,9 +191,9 @@ bool	found = FALSE;
 
 	for (cp = acs_chars; *cp; cp++)
 	{
-	    if ((chtype)cp[1] == (ch & A_CHARTEXT))
+	    if (TextOf(cp[1]) == TextOf(ch))
 	    {
-		ch = cp[0];
+		ch = TextOf(cp[0]);
 		found = TRUE;
 		break;
 	    }
@@ -190,7 +204,7 @@ bool	found = FALSE;
 	    for (sp = names; sp->val; sp++)
 		if (sp->val == ch)
 		{
-		    (void) strcpy(buf, sp->name);
+		    (void) strcat(buf, sp->name);
 		    ch &= ~A_ALTCHARSET;
 		    break;
 		}
@@ -198,11 +212,12 @@ bool	found = FALSE;
     }
 
     if (!found)
-	(void) strcpy(buf, _tracechar(TextOf(ch)));
+	(void) strcat(buf, _tracechar(TextOf(ch)));
 
     if (AttrOf(ch) != A_NORMAL)
 	(void) sprintf(buf + strlen(buf), " | %s", _traceattr(AttrOf(ch)));
 
+    strcat(buf, "}");
     return(buf);
 }
 

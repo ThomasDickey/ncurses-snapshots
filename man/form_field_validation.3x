@@ -33,15 +33,23 @@ on the stack.
 .TP 5
 TYPE_INTEGER
 Integer data, parsable to an integer by \fBatoi(3)\fR.  Requires a third
-\fBint\fR precision argument that sets zero-padding, a fourth \fBint\fR argument 
-constraining minimum value, and a fifth \fBint\fR constraining maximum value.
+\fBint\fR argument controlling the precision, a fourth \fBlong\fR argument 
+constraining minimum value, and a fifth \fBlong\fR constraining maximum value.
+If the maximum value is less or equal the minimum value, the range is simply
+ignored. On return the field buffer is formatted according to the \fBprintf\fR
+format specification ".*ld", where the '*' is replaced by the precision argument.
+For details of the precision handling see \fBprintf's\fR man-page.
 .TP 5
 TYPE_NUMERIC
 Numeric data (may have a decimal-point part). Requires a third
-\fBint\fR precision argument that sets zero-padding, a fourth \fBdouble\fR
+\fBint\fR argument controlling the precision, a fourth \fBdouble\fR
 argument constraining minimum value, and a fifth \fBdouble\fR constraining 
 maximum value. If your system supports locale's, the decimal point character
 to be used must be the one specified by your locale.
+If the maximum value is less or equal the minimum value, the range is simply
+ignored. On return the field buffer is formatted according to the \fBprintf\fR
+format specification ".*f", where the '*' is replaced by the precision argument.
+For details of the precision handling see \fBprintf's\fR man-page.
 .TP 5
 TYPE_REGEXP
 Regular expression data.  Requires a regular expression \fB(char *)\fR third argument;

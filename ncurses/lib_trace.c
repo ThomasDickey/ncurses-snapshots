@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.20 1997/03/15 22:23:39 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.21 1997/04/20 02:08:56 tom Exp $")
 
 #include <ctype.h>
 #if HAVE_FCNTL_H
@@ -69,23 +69,17 @@ static bool	been_here = FALSE;
    	_nc_tracing = tracelevel;
 }
 
-const char *_nc_visbuf(const char *buf)
+const char *_nc_visbuf2(int bufnum, const char *buf)
 /* visibilize a given string */
 {
-static size_t have;
-static char *vbuf;
-size_t need;
-char *tp = vbuf;
+char *vbuf;
+char *tp;
 int c;
 
 	if (buf == 0)
 	    return("(null)");
 
-	if ((need = ((strlen(buf) * 4) + 5)) > have) {
-		free(vbuf);
-		tp = vbuf = malloc(have = need);
-	}
-
+	tp = vbuf = _nc_trace_buf(bufnum, (strlen(buf) * 4) + 5);
 	*tp++ = '"';
     	while ((c = *buf++) != '\0') {
 		if (c == '"') {
@@ -110,6 +104,11 @@ int c;
 	*tp++ = '"';
 	*tp++ = '\0';
 	return(vbuf);
+}
+
+const char *_nc_visbuf(const char *buf)
+{
+	return _nc_visbuf2(0, buf);
 }
 
 void
