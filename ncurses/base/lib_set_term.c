@@ -43,7 +43,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.78 2003/08/09 20:41:12 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.79 2003/09/13 23:21:25 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN * screenp)
@@ -213,7 +213,7 @@ _nc_setupscreen(short slines, short const scolumns, FILE *output)
 /* OS-independent screen initializations */
 {
     int bottom_stolen = 0;
-    size_t i;
+    int i;
 
     T((T_CALLED("_nc_setupscreen(%d, %d, %p)"), slines, scolumns, output));
     assert(SP == 0);		/* has been reset in newterm() ! */
@@ -420,7 +420,7 @@ _nc_setupscreen(short slines, short const scolumns, FILE *output)
     def_shell_mode();
     def_prog_mode();
 
-    for (i = 0, rsp = rippedoff; rsp->line && (i < N_RIPS); rsp++, i++) {
+    for (i = 0, rsp = rippedoff; rsp->line && (i < (int)N_RIPS); rsp++, i++) {
 	T(("ripping off line %d at %s", i, rsp->line < 0 ? "bottom" : "top"));
 	SP->_rippedoff[i] = rippedoff[i];
 	if (rsp->hook) {
