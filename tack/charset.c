@@ -21,7 +21,7 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: charset.c,v 1.1 1998/01/10 00:33:03 tom Exp $")
+MODULE_ID("$Id: charset.c,v 1.2 1999/05/09 18:30:49 tom Exp $")
 
 /*
 	Menu definitions for alternate character set and SGR tests.
@@ -456,9 +456,7 @@ test_acs(
 	if (attr) {
 		set_attr(attr);
 	}
-	if (ena_acs) {
-		tc_putp(ena_acs);
-	}
+	_nc_init_acs();	/* puts 'ena_acs' and incidentally links acs_map[] */
 	for (i = 0; glyph[i].name[0]; i++) {
 		if (valid_glyph[glyph[i].c]) {
 			put_mode(enter_alt_charset_mode);

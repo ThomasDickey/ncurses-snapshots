@@ -27,7 +27,7 @@
 #include <tack.h>
 
 #include <signal.h>
-#include <termios.h>
+#include <term.h>
 #include <errno.h>
 
 #if HAVE_SELECT
@@ -39,7 +39,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: sysdep.c,v 1.1 1998/01/10 00:31:49 tom Exp $")
+MODULE_ID("$Id: sysdep.c,v 1.2 1999/05/09 17:05:03 tom Exp $")
 
 #if DECL_ERRNO
 extern int errno;

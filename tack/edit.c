@@ -23,7 +23,7 @@
 #include <time.h>
 #include <tic.h>
 
-MODULE_ID("$Id: edit.c,v 1.1 1999/04/18 01:11:59 tom Exp $")
+MODULE_ID("$Id: edit.c,v 1.2 1999/05/09 18:11:09 tom Exp $")
 
 /*
  * Terminfo edit features
@@ -669,7 +669,7 @@ show_report(
 	int *ch)
 {
 	int i, j, nc, flag;
-	const char *s;
+	char *s;
 	char *nx[BOOLCOUNT + NUMCOUNT + STRCOUNT];
 
 	flag = t->flags & 255;

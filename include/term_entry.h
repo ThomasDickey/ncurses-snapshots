@@ -124,6 +124,9 @@ extern void _nc_copy_termtype(TERMTYPE *, TERMTYPE *);
 /* free_ttype.c: elementary allocation code */
 extern void _nc_free_termtype(TERMTYPE *);
 
+/* lib_acs.c */
+extern void _nc_init_acs(void);	/* corresponds to traditional 'init_acs()' */
+
 /* parse_entry.c: entry-parsing code */
 #if NCURSES_XNAMES
 extern bool _nc_user_definable;
