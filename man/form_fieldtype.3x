@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright (c) 1998-2001,2003 Free Software Foundation, Inc.              *
+.\" Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_fieldtype.3x,v 1.10 2003/01/05 21:05:54 tom Exp $
+.\" $Id: form_fieldtype.3x,v 1.11 2003/03/01 21:52:41 tom Exp $
 .TH form_fieldtype 3X ""
 .SH NAME
 \fBform_fieldtype\fR - define validation-field types
@@ -82,6 +82,10 @@ the other two are optional, you may supply NULL for them.
 In this case it is assumed
 that \fImake_arg\fR does not allocate memory but simply loads the
 argument into a single scalar value.
+
+The function \fBlink_fieldtype\fR creates
+a new field type from the two given types.
+They are connected by an logical 'OR'.
 
 The form driver requests \fBREQ_NEXT_CHOICE\fR and \fBREQ_PREV_CHOICE\fR assume
 that the possible values of a field form an ordered set, and provide the forms

@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1996                        *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.37 2002/12/14 23:28:06 tom Exp $ */
+/* $Id: test.priv.h,v 1.39 2003/03/02 00:29:18 tom Exp $ */
 
 #if HAVE_CONFIG_H
 #include <ncurses_cfg.h>
@@ -40,6 +40,25 @@
 #define HAVE_WRESIZE 0
 #endif
 
+/*
+ * Fix ifdef's that look for the form/menu/panel libraries, if we are building
+ * with wide-character ncurses.
+ */
+#ifdef  HAVE_LIBFORMW
+#define HAVE_LIBFORM 1
+#endif
+
+#ifdef  HAVE_LIBMENUW
+#define HAVE_LIBMENU 1
+#endif
+
+#ifdef  HAVE_LIBPANELW
+#define HAVE_LIBPANEL 1
+#endif
+
+/*
+ * Fallback definitions to accommodate broken compilers
+ */
 #ifndef HAVE_CURSES_VERSION
 #define HAVE_CURSES_VERSION 0
 #endif
@@ -157,12 +176,11 @@ extern int optind;
 #endif
 #endif
 
-#ifndef NCURSES_CH_T
+#undef NCURSES_CH_T
 #if !USE_WIDEC_SUPPORT
 #define NCURSES_CH_T chtype
 #else
 #define NCURSES_CH_T cchar_t
-#endif
 #endif
 
 #ifndef CCHARW_MAX

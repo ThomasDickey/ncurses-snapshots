@@ -936,6 +936,7 @@
 ./tar-copy.sh
 ./test/Makefile.in
 ./test/README
+./test/aclocal.m4
 ./test/blue.c
 ./test/bs.6
 ./test/bs.c
