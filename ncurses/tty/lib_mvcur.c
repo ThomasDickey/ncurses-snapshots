@@ -154,7 +154,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.90 2003/02/23 00:55:01 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.91 2003/07/19 22:01:24 tom Exp $")
 
 #define CURRENT_ROW	SP->_cursrow	/* phys cursor row */
 #define CURRENT_COLUMN	SP->_curscol	/* phys cursor column */
@@ -375,6 +375,13 @@ _nc_mvcur_init(void)
     SP->_el1_cost = NormalizedCost(clr_bol, 1);
     SP->_dch1_cost = NormalizedCost(delete_character, 1);
     SP->_ich1_cost = NormalizedCost(insert_character, 1);
+
+    /*
+     * If this is a bce-terminal, we want to bias the choice so we use clr_eol
+     * rather than spaces at the end of a line.
+     */
+    if (back_color_erase)
+	SP->_el_cost = 0;
 
     /* parameterized screen-update strings */
     SP->_dch_cost = NormalizedCost(tparm(parm_dch, 23), 1);

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.308 2003/07/12 19:48:07 tom Exp $
+dnl $Id: aclocal.m4,v 1.310 2003/07/19 21:50:04 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1116,7 +1116,7 @@ ifelse($1,,,[$1=$LIB_PREFIX])
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_RULES version: 28 updated: 2002/12/21 22:46:07
+dnl CF_LIB_RULES version: 29 updated: 2003/07/19 16:05:52
 dnl ------------
 dnl Append definitions and rules for the given models to the subdirectory
 dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
@@ -1161,8 +1161,10 @@ do
 				esac
 			fi
 			# cygwin needs import library, and has unique naming convention
+			# use autodetected ${cf_prefix} for import lib and static lib, but
+			# use 'cyg' prefix for shared lib.
 			if test $cf_cv_shlib_version = cygdll ; then
-				SHARED_LIB="../lib/${cf_prefix}${cf_dir}\$(ABI_VERSION).dll"
+				SHARED_LIB="../lib/cyg${cf_dir}\$(ABI_VERSION).dll"
 				IMPORT_LIB="../lib/${cf_prefix}${cf_dir}.dll.a"
 				LIBS_TO_MAKE="$LIBS_TO_MAKE \$(SHARED_LIB) \$(IMPORT_LIB)"
 				continue

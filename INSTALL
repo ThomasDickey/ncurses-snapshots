@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.62 2003/02/08 20:05:40 tom Exp $
+-- $Id: INSTALL,v 1.63 2003/07/19 21:42:11 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -454,6 +454,11 @@ SUMMARY OF CONFIGURE OPTIONS:
 
     --enable-xmc-glitch
 	Compile-in support experimental xmc (magic cookie) code.
+
+    --with-abi-version=NUM
+	Override the ABI version, which is used in shared library filenames.
+	Normally this is the same as the release version; some ports have
+	special requirements for compatibility.
 
     --with-ada-compiler=CMD
 	Specify the Ada95 compiler command (default "gnatmake")

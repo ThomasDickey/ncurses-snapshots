@@ -1,10 +1,14 @@
-/* $Id: ncurses_dll.h,v 1.3 2003/05/31 18:03:54 tom Exp $ */
+/* $Id: ncurses_dll.h,v 1.4 2003/07/19 18:44:32 Charles.Wilson Exp $ */
 
 #ifndef NCURSES_DLL_H_incl
 #define NCURSES_DLL_H_incl 1
 
-#undef NCURSES_DLL	/* cygwin dll not implemented */
-#define NCURSES_STATIC	/* cygwin dll not implemented */
+/* no longer needed on cygwin or mingw, thanks to auto-import       */
+/* but this structure may be useful at some point for an MSVC build */
+/* so, for now unconditionally define the important flags           */
+/* "the right way" for proper static and dll+auto-import behavior   */
+#undef NCURSES_DLL
+#define NCURSES_STATIC
 
 #if defined(__CYGWIN__)
 #  if defined(NCURSES_DLL)

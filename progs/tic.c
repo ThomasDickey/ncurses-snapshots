@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.106 2003/05/17 23:21:16 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.107 2003/07/19 20:48:24 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -58,7 +58,7 @@ static int tparm_errs;
 static void (*save_check_termtype) (TERMTYPE *);
 static void check_termtype(TERMTYPE * tt);
 
-static const char usage_string[] = "[-V] [-v[n]] [-e names] [-CILNRTcfrswx1] source-file\n";
+static const char usage_string[] = "[-V] [-v[n]] [-e names] [-o dir] [-R name] [-CILNTcfrswx1] source-file\n";
 
 static void
 cleanup(void)

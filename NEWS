@@ -1,10 +1,39 @@
--- $Id: NEWS,v 1.756 2003/07/12 22:58:37 tom Exp $
+-- $Id: NEWS,v 1.757 2003/07/19 21:54:13 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030719
+	+ use clr_eol in preference to blanks for bce terminals, so select and
+	  paste will have fewer trailing blanks, e.g., when using xterm
+	  (request by Vincent Lefevre).
+	+ correct prototype for wunctrl() in manpage.
+	+ add configure --with-abi-version option (discussion with Charles
+	  Wilson).
+ 	> cygwin changes from Charles Wilson:
+	  + aclocal.m4: on cygwin, use autodetected prefix for import
+	    and static lib, but use "cyg" for DLL.
+	  + include/ncurses_dll.h: correct the comments to reflect current
+	    status of cygwin/mingw port.  Fix compiler warning.
+	  + misc/run_tic.in: ensure that tic.exe can find the uninstalled
+	    DLL, by adding the lib-directory to the PATH variable.
+ 	  + misc/terminfo.src (nxterm|xterm-color): make xterm-color
+ 	    primary instead of nxterm, to match XFree86's xterm.terminfo
+ 	    usage and to prevent circular links.
+ 	    (rxvt): add additional codes from rxvt.org.
+ 	    (rxvt-color): new alias
+ 	    (rxvt-xpm): new alias
+ 	    (rxvt-cygwin): like rxvt, but with special acsc codes.
+ 	    (rxvt-cygwin-native): ditto.  rxvt may be run under XWindows, or
+ 	    with a "native" MSWin GUI.  Each takes different acsc codes,
+ 	    which are both different from the "normal" rxvt's acsc.
+ 	    (cygwin): cygwin-in-cmd.exe window.  Lots of fixes.
+ 	    (cygwinDBG): ditto.
+	  + mk-1st.awk: use "cyg" for the DLL prefix, but "lib" for import
+	    and static libs.
 
 20030712
 	+ update config.guess, config.sub

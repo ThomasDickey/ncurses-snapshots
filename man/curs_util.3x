@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+.\" Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_util.3x,v 1.10 2002/12/21 22:21:37 tom Exp $
+.\" $Id: curs_util.3x,v 1.11 2003/07/19 19:59:56 tom Exp $
 .TH curs_util 3X ""
 .SH NAME
 \fBdelay_output\fR,
@@ -44,7 +44,7 @@
 
 \fBchar *unctrl(chtype c);\fR
 .br
-\fBchar *wunctrl(wchar_t w);\fR
+\fBchar *wunctrl(cchar_t *c);\fR
 .br
 \fBchar *keyname(int c);\fR
 .br
