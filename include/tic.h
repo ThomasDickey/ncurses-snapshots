@@ -139,6 +139,27 @@ struct token
 extern	struct token	_nc_curr_token;
 
 	/*
+	 * List of keynames with their corresponding code.
+	 */
+struct kn {
+	const char *name;
+	int code;
+};
+
+extern const struct kn _nc_key_names[];
+
+	/*
+	 * Offsets to string capabilities, with the corresponding functionkey
+	 * codes.
+	 */
+struct tinfo_fkeys {
+	unsigned offset;
+	chtype code;
+	};
+
+extern struct tinfo_fkeys _nc_tinfo_fkeys[];
+
+	/*
 	 * The file comp_captab.c contains an array of these structures, one
 	 * per possible capability.  These are indexed by a hash table array of
 	 * pointers to the same structures for use by the parser.

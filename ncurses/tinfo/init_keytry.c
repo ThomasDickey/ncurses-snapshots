@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1999 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,40 +26,42 @@
  * authorization.                                                           *
  ****************************************************************************/
 
-/****************************************************************************
- *   Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1995,1997        *
- ****************************************************************************/
+#include <curses.priv.h>
 
-/***************************************************************************
-* Module m_adabind.c                                                       *
-* Helper routines to ease the implementation of an Ada95 binding to        *
-* ncurses. For details and copyright of the binding see the ../Ada95       *
-* subdirectory.                                                            *
-***************************************************************************/
-#include "menu.priv.h"
+#include <term.h>	/* keypad_xmit, keypad_local, meta_on, meta_off */
+			/* cursor_visible,cursor_normal,cursor_invisible */
+#include <tic.h>	/* struct tinfo_fkeys */
 
-MODULE_ID("$Id: m_adabind.c,v 1.6 1998/02/11 12:13:50 tom Exp $")
+MODULE_ID("$Id: init_keytry.c,v 1.1 1999/02/18 22:39:11 tom Exp $")
 
-/* Prototypes for the functions in this module */
-void  _nc_ada_normalize_menu_opts (int *opt);
-void  _nc_ada_normalize_item_opts (int *opt);
-ITEM* _nc_get_item(const MENU*, int);
+/*
+**      _nc_init_keytry()
+**
+**      Construct the try for the current terminal's keypad keys.
+**
+*/
 
-void _nc_ada_normalize_menu_opts (int *opt)
+/* LINT_PREPRO
+#if 0*/
+#include <init_keytry.h>
+/* LINT_PREPRO
+#endif*/
+
+void _nc_init_keytry(void)
 {
-  *opt = ALL_MENU_OPTS & (*opt);
-}
+	size_t n;
 
-void _nc_ada_normalize_item_opts (int *opt)
-{
-  *opt = ALL_ITEM_OPTS & (*opt);
-}
+	/* The SP->_keytry value is initialized in newterm(), where the SP
+	 * structure is created, because we can not tell where keypad() or
+	 * mouse_activate() (which will call keyok()) are first called.
+	 */
 
-ITEM* _nc_get_item(const MENU* menu, int idx) {
-  if (menu && menu->items && idx>=0 && (idx<menu->nitems))
-    {
-      return menu->items[idx];
-    }
-  else
-    return (ITEM*)0;
+	for (n = 0; _nc_tinfo_fkeys[n].code; n++)
+		if (_nc_tinfo_fkeys[n].offset < STRCOUNT)
+		_nc_add_to_try(&(SP->_keytry),
+			CUR Strings[_nc_tinfo_fkeys[n].offset],
+			_nc_tinfo_fkeys[n].code);
+#ifdef TRACE
+	_nc_trace_tries(SP->_keytry);
+#endif
 }

@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
 <!--
-  $Id: announce.html.in,v 1.27 1999/01/03 19:44:39 tom Exp $
+  $Id: announce.html.in,v 1.28 1999/02/20 12:35:23 tom Exp $
 -->
 <HTML>
 <HEAD>
@@ -35,6 +35,149 @@ the GNU distribution site
 <A HREF="ftp://ftp.gnu.org/pub/gnu">ftp://ftp.gnu.org/pub/gnu</A>.
 It is also available at
 <A HREF="ftp://ftp.clark.net/pub/dickey/ncurses">ftp://ftp.clark.net/pub/dickey/ncurses</A>.
+
+<H1>Release Notes</H1>
+
+We decided to release ncurses as a new whole number release (5.0) because it
+incorporates several interface changes, including some that would invalidate
+existing shared libraries.  These are the highlights from the change-log
+since ncurses 4.2 release.
+<p>
+Interface changes:
+<ul>
+	<li>The principal source of changes to the interface comes from the
+	  release of X/Open Curses in 1997.  Earlier versions of ncurses (4.0
+	  and before) were based on a draft version of the specification.  The
+	  release version adds parameters to some functions to support the
+	  evolving internationalization of curses.  These summarize the impact:
+<ul>
+	  <li>modified several prototypes to correspond with 1997 version of
+	    X/Open Curses (affects ABI since developers have used attr_get).
+
+	  <li>corrected prototypes for slk_* functions, using chtype rather than
+	    attr_t.
+
+	  <li>the slk_attr_{set,off,on} functions need an additional void*
+	    parameter according to XSI.
+
+	  <li>correct macros for wattr_set, wattr_get, separate wattrset macro from
+	    these to preserve behavior that allows attributes to be combined with
+	    color pair numbers.
+
+	  <li>reviewed/updated curses.h, term.h against X/Open Curses Issue 4
+	    Version 2.  This includes making some parameters NCURSES_CONST
+	    rather than const, e.g., in termcap.h.
+
+	  <li>reviewed/corrected macros in curses.h as per XSI document.
+
+	  <li>add set_a_attributes and set_pglen_inch to terminfo structure, as per
+	    XSI and Solaris 2.5.
+</ul>
+	<li>The newest version of the X/Open Curses is implemented on Solaris
+	  and other vendor's systems.  It adds new features to the terminfo
+	  descriptions:
+<ul>
+	  <li>implement tparm %l format.
+
+	  <li>implement tparm printf-style width and precision for %s, %d, %x, %o
+	    as per XSI.
+</ul>
+	<li>We made additional changes to reduce impact by future interface
+	  changes:
+<ul>
+	  <li>change key_names[] array to static since it is not part of the curses
+	    interface.
+
+	  <li>move macro winch to a function, to hide details of struct ldat
+</ul>
+	<li>modify configure script to embed ABI in shared libraries for HP-UX
+	  10.x (detailed request by Tim Mooney).
+
+	<li>modify configuration of shared libraries on Digital Unix so that
+	  versioning is embedded in the library, rather than implied by
+	  links (patch by Tim Mooney).
+</ul>
+New features:
+<ul>
+	<li>enable sigwinch handler by default.
+
+	<li>turn on hashmap scrolling code by default
+
+	<li>improved support for termcap applications
+<ul>
+	  <li>modify tput to accept termcap names as an alternative to terminfo
+	    names.
+
+	  <li>provide support for termcap PC variable by copying it from terminfo
+	    data and using it as the padding character in tputs.
+
+	  <li>provide support for termcap ospeed variable by copying it from the
+	    internal cur_term member, and using ospeed as the baudrate
+	    reference for the delay_output and tputs functions.
+
+	  <li>change name-comparisons in lib_termcap to compare no more than 2
+	    characters.
+</ul>
+	<li>add mouse support to ncurses menus.
+
+	<li>add mouse and dll support for OS/2 EMX
+
+	<li>modify terminfo parsing to accept octal and hexadecimal constants
+
+	<li>add configure option --enable-no-padding, to allow environment
+	  variable $NCURSES_NO_PADDING to eliminate non-mandatory padding,
+	  thereby making terminal emulators (e.g., for vt100) a little more
+	  efficient.
+
+	<li>modify lib_color.c to eliminate dependency on orig_colors and
+	  orig_pair, since SVr4 curses does not require these either, but
+	  uses them when they are available.
+
+	<li>add -f option to infocmp and tic, which formats the terminfo
+	  if/then/else/endif so that they are readable (with newlines and
+	  tabs).
+
+	<li>modify tic to compile into %'char' form in preference to %{number},
+	  since that is a little more efficient.
+</ul>
+Major bug fixes:
+<ul>
+	<li>modify lib_tstp.c to block SIGTTOU when handling SIGTSTP, fixes a
+	  problem where ncurses applications which were run via a shell script
+	  would hang when given a ^Z.  Also, check if the terminal's process
+	  group is consistent, i.e., a shell has not taken ownership of it,
+	  before deciding to save the current terminal settings in the SIGTSTP
+	  handler.
+
+	<li>suppress sc/rc capabilities from terminal description if they appear
+	  in smcup/rmcup.  This affects only scrolling optimization, to fix a
+	  problem reported by several people with xterm's alternate screen,
+	  though the problem is more general.
+
+	<li>modify relative_move and tputs to avoid an interaction with the
+	  BSD-style padding.  The relative_move function could produce a string
+	  to replace on the screen which began with a numeric character, which
+	  was then interpreted by tputs as padding.
+
+	<li>modify setupterm so that cancelled strings are treated the same as
+	  absent strings, cancelled and absent booleans false (does not affect
+	  tic, infocmp).
+
+	<li>modify lib_vidattr.c to allow for terminal types (e.g., xterm-color)
+	  which may reset all attributes in the 'op' capability, so that colors
+	  are set before turning on bold and other attributes, but still after
+	  turning attributes off.
+
+	<li>use 'access()' to check if ncurses library should be permitted to
+	  open or modify files with fopen/open/link/unlink/remove calls, in
+	  case the calling application is running in setuid mode.
+
+	<li>correction to doupdate, for case where terminal does not support
+	  insert/delete character.  The logic did not check that there was a
+	  difference in alignment of changes to old/new screens before
+	  repainting the whole non-blank portion of the line.  Modified to fall
+	  through into logic that reduces by the portion which does not differ.
+</ul>
 
 <H1>Features of Ncurses</H1>
 
@@ -144,7 +287,7 @@ according to gcc -Wall.  The library has been checked for malloc leaks and
 arena corruption by the Purify memory-allocation tester.<P>
 
 The ncurses code has been tested with a wide variety of applications
-including:<P>
+including (versions starting with those noted):<P>
 <DL>
 <DT> ded
 <DD> directory-editor

@@ -23,7 +23,7 @@ rm -f ncurses/MKterm.h.awk \
 	ncurses/expanded.c \
 	ncurses/fallback.c \
 	ncurses/hashsize.h \
-	ncurses/keys.tries \
+	ncurses/init_keytry.h \
 	ncurses/lib_gen.c \
 	ncurses/lib_keyname.c \
 	ncurses/names.c \
@@ -264,6 +264,9 @@ CEOF
 #define USE_DATABASE 1
 #define USE_HASHMAP 1
 #define USE_SCROLL_HINTS 1
+#define USE_LINKS 1
+#define NCURSES_NO_PADDING 1
+#define USE_SIGWINCH 1
 CEOF
   cat >> conftest.edit <<CEOF
 /@DEFS@/r conftest.frag
@@ -377,8 +380,7 @@ echo creating ncurses/nomacros.h
 sh ${nc_given_srcdir}/ncurses/base/MKlib_gen.sh "${NC_CPP}" "${NC_AWK}" < ncurses/curses.h | fgrep undef > ncurses/nomacros.h
 
 echo creating ncurses/expanded.c
-sh ${nc_given_srcdir}/ncurses/tty/MKexpanded.sh "${NC_CPP}"
-mv expanded.c ncurses/expanded.c
+sh ${nc_given_srcdir}/ncurses/tty/MKexpanded.sh "${NC_CPP}" >ncurses/expanded.c
 
 echo creating ncurses/comp_captab.c
 ${NC_CC} -o make_hash -DMAIN_PROGRAM ${nc_given_srcdir}/ncurses/tinfo/comp_hash.c
@@ -394,9 +396,9 @@ cat namehdr boolnames boolfnames numnames numfnames strnames strfnames nameftr >
 cat namehdr boolcodes numcodes strcodes codeftr > ncurses/codes.c
 rm -f namehdr nameftr codeftr boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes
 
-echo creating ncurses/keys.tries
+echo creating ncurses/init_keytry.h
 ${NC_CC} -o make_key ${nc_given_srcdir}/ncurses/tinfo/make_keys.c
-./make_key ${nc_given_srcdir}/ncurses/keys.list > ncurses/keys.tries
+./make_key ${nc_given_srcdir}/ncurses/keys.list > ncurses/init_keytry.h
 rm -f make_key
 
 echo creating ncurses/unctrl.c

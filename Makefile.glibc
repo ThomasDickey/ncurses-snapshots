@@ -58,7 +58,6 @@ libform-routines	= \
 			fld_stat \
 			fld_type \
 			fld_user \
-			frm_adabind \
 			frm_cursor \
 			frm_data \
 			frm_def \
@@ -82,8 +81,8 @@ libform-routines	= \
 
 libncurses-routines	= \
 			base/define_key \
+			base/keybound \
 			base/keyok \
-			base/lib_adabind \
 			base/lib_addch \
 			base/lib_addstr \
 			base/lib_beep \
@@ -181,6 +180,7 @@ libncurses-routines	= \
 			tinfo/doalloc \
 			tinfo/getenv_num \
 			tinfo/home_terminfo \
+			tinfo/init_keytry \
 			tinfo/lib_acs \
 			tinfo/lib_baudrate \
 			tinfo/lib_cur_term \
@@ -212,6 +212,7 @@ libncurses-routines	= \
 			trace/lib_tracedmp \
 			trace/lib_tracemse \
 			trace/trace_buf \
+			trace/trace_tries \
 			tty/hardscroll \
 			tty/hashmap \
 			tty/lib_mvcur \
@@ -222,7 +223,6 @@ libncurses-routines	= \
 			unctrl
 
 libmenu-routines	= \
-			m_adabind \
 			m_attribs \
 			m_cursor \
 			m_driver \

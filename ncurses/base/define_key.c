@@ -32,7 +32,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: define_key.c,v 1.2 1998/02/11 12:13:54 tom Exp $")
+MODULE_ID("$Id: define_key.c,v 1.3 1999/02/19 11:53:02 tom Exp $")
 
 int
 define_key(char *str, int keycode)
@@ -42,13 +42,16 @@ define_key(char *str, int keycode)
 	T((T_CALLED("define_key(%s,%d)"), _nc_visbuf(str), keycode));
 	if (keycode > 0) {
 		if (has_key(keycode)) {
-			if (_nc_remove_key(&(SP->_keytry), keycode))
+			while (_nc_remove_key(&(SP->_keytry), keycode))
 				code = OK;
 		}
 		if (str != 0) {
 			(void) _nc_add_to_try(&(SP->_keytry), str, keycode);
 			code = OK;
 		}
+	} else {
+		while (_nc_remove_string(&(SP->_keytry), str))
+			code = OK;
 	}
 	returnCode(code);
 }

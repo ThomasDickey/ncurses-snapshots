@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1999 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,55 +27,48 @@
  ****************************************************************************/
 
 /****************************************************************************
- *   Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1995,1997        *
+ *  Author: Thomas E. Dickey <dickey@clark.net> 1999                        *
  ****************************************************************************/
+/*
+ *	trace_tries.c - Tracing/Debugging buffers (keycode tries-trees)
+ */
 
-/***************************************************************************
-* Module frm_adabind.c                                                     *
-* Helper routines to ease the implementation of an Ada95 binding to        *
-* ncurses. For details and copyright of the binding see the ../Ada95       *
-* subdirectory.                                                            *
-***************************************************************************/
-#include "form.priv.h"
+#include <curses.priv.h>
 
-MODULE_ID("$Id: frm_adabind.c,v 1.5 1998/02/11 12:13:43 tom Exp $")
+MODULE_ID("$Id: trace_tries.c,v 1.3 1999/02/19 04:05:26 tom Exp $")
 
-/* Prototypes for the functions in this module */
-void   _nc_ada_normalize_field_opts (int *opt);
-void   _nc_ada_normalize_form_opts (int *opt);
-void*  _nc_ada_getvarg(va_list *);
-FIELD* _nc_get_field(const FORM*, int);
+#ifdef TRACE
+static char *buffer;
+static unsigned len;
 
-
-void _nc_ada_normalize_field_opts (int *opt)
+static void recur_tries(struct tries *tree, unsigned level)
 {
-  *opt = ALL_FIELD_OPTS & (*opt);
+	if (level > len)
+		buffer = realloc(buffer, len = (level + 1) * 4);
+
+	while (tree != 0) {
+		if ((buffer[level] = tree->ch) == 0)
+			buffer[level] = 128;
+		buffer[level+1] = 0;
+		if (tree->value != 0) {
+			_tracef("%5d: %s (%s)", tree->value, _nc_visbuf(buffer), keyname(tree->value));
+		}
+		if (tree->child)
+			recur_tries(tree->child, level+1);
+		tree = tree->sibling;
+	}
 }
 
-void _nc_ada_normalize_form_opts (int *opt)
+void _nc_trace_tries(struct tries *tree)
 {
-  *opt = ALL_FORM_OPTS & (*opt);
+	buffer = malloc(len = 80);
+	_tracef("BEGIN tries %p", tree);
+	recur_tries(tree, 0);
+	_tracef(". . . tries %p", tree);
+	free(buffer);
 }
-
-
-/*  This tiny stub helps us to get a void pointer from an argument list.
-//  The mechanism for libform to handle arguments to field types uses
-//  unfortunately functions with variable argument lists. In the Ada95
-//  binding we replace this by a mechanism that only uses one argument
-//  that is a pointer to a record describing all the specifics of an
-//  user defined field type. So we need only this simple generic
-//  procedure to get the pointer from the arglist.
-*/
-void *_nc_ada_getvarg(va_list *ap)
+#else
+void _nc_trace_tries(struct tries *tree GCC_UNUSED)
 {
-  return va_arg(*ap,void*);
 }
-
-FIELD* _nc_get_field(const FORM* frm, int idx) {
-  if (frm && frm->field && idx>=0 && (idx<frm->maxfield))
-    {
-      return frm->field[idx];
-    }
-  else
-    return (FIELD*)0;
-}
+#endif

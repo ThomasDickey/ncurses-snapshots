@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.155 1999/01/29 19:21:29 tom Exp $
+dnl $Id: aclocal.m4,v 1.156 1999/02/17 01:08:11 juergen Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -593,8 +593,10 @@ esac
 case $cf_cv_gnat_version in
   3.1*|[4-9].*)
       cf_compile_generics=generics
+      cf_generic_objects="\$(GENOBJS)"	
       ;;
   *)  cf_compile_generics=
+      cf_generic_objects=
       ;;
 esac
 changequote([, ])dnl
@@ -1716,7 +1718,7 @@ test $cf_cxx_library != no && SRC_SUBDIRS="$SRC_SUBDIRS c++"
 ADA_SUBDIRS=
 if test "$cf_cv_prog_gnat_correct" = yes && test -d $srcdir/Ada95; then
    SRC_SUBDIRS="$SRC_SUBDIRS Ada95"
-   ADA_SUBDIRS="gen ada_include samples"
+   ADA_SUBDIRS="gen src samples"
 fi
 
 SUB_MAKEFILES=
