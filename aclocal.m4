@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.323 2003/12/21 01:40:41 tom Exp $
+dnl $Id: aclocal.m4,v 1.325 2003/12/28 01:53:35 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -2539,7 +2539,7 @@ case $cf_cv_regex in
 esac
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SHARED_OPTS version: 29 updated: 2003/07/12 15:15:19
+dnl CF_SHARED_OPTS version: 30 updated: 2003/12/27 20:48:07
 dnl --------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
 dnl library.
@@ -2666,6 +2666,23 @@ AC_DEFUN([CF_SHARED_OPTS],
 	openbsd2*)
 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
 		MK_SHARED_LIB='$(LD) -Bshareable -soname,`basename $[@].$(ABI_VERSION)` -o $[@]'
+		;;
+	freebsd[[45]]*)
+		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
+		MK_SHARED_LIB='$(LD) -Bshareable -soname=`basename $[@]` -o $[@]'
+		test "$cf_cv_shlib_version" = auto && cf_cv_shlib_version=rel
+
+# This doesn't work - I keep getting spurious references to needing
+# libncurses.so.5.3 when ldd says it's resolved.  LOCAL_LDFLAGS2 seems to be
+# no longer used anyway.  And the rpath logic isn't relative - so I have to
+# add the local and install lib-directories:
+#
+#		if test "$DFT_LWR_MODEL" = "shared" && test "$cf_cv_ld_rpath" = yes ; then
+#			LOCAL_LDFLAGS="-rpath `pwd`/lib"
+#			LOCAL_LDFLAGS2="-rpath \$(libdir) $LOCAL_LDFLAGS"
+#			cf_ld_rpath_opt="-rpath "
+#			EXTRA_LDFLAGS="$LOCAL_LDFLAGS $EXTRA_LDFLAGS"
+#		fi
 		;;
 	openbsd*|freebsd*)
 		CC_SHARED_OPTS="$CC_SHARED_OPTS -DPIC"
@@ -3554,11 +3571,14 @@ test "$cf_with_sysmouse" = yes && AC_DEFINE(USE_SYSMOUSE)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 4 updated: 2003/12/06 20:51:58
+dnl CF_XOPEN_SOURCE version: 6 updated: 2003/12/27 20:48:07
 dnl ---------------
 dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions.
 AC_DEFUN([CF_XOPEN_SOURCE],[
 case $host_os in #(vi
+freebsd*) #(vi
+	CPPFLAGS="$CPPFLAGS -D_BSD_TYPES -D__BSD_VISIBLE -D_POSIX_C_SOURCE=200112 -D_XOPEN_SOURCE=600"
+	;;
 hpux*) #(vi
 	CPPFLAGS="$CPPFLAGS -D_HPUX_SOURCE"
 	;;

@@ -40,7 +40,7 @@
 #include <term_entry.h>		/* TTY, cur_term */
 #include <termcap.h>		/* ospeed */
 
-MODULE_ID("$Id: lib_cur_term.c,v 1.12 2003/02/23 01:00:56 tom Exp $")
+MODULE_ID("$Id: lib_cur_term.c,v 1.13 2003/12/27 18:21:30 tom Exp $")
 
 NCURSES_EXPORT_VAR(TERMINAL *) cur_term = 0;
 
@@ -66,6 +66,7 @@ del_curterm(TERMINAL * termp)
 
     if (termp != 0) {
 	_nc_free_termtype(&(termp->type));
+	FreeIfNeeded(termp->_termname);
 	free(termp);
 	if (termp == cur_term)
 	    cur_term = 0;

@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.780 2003/12/20 16:58:01 tom Exp $
+-- $Id: NEWS,v 1.781 2003/12/28 01:56:18 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20031227
+	+ add -D's to build ncursew on FreeBSD 5.1 (older FreeBSD's untested).
+	+ modify shared library configuration for FreeBSD 4.x/5.x to add the
+	  soname information (request by Marc Glisse).
+	+ modify _nc_read_tic_entry() to not use MAX_ALIAS, but PATH_MAX only
+	  for limiting the length of a filename in the terminfo database.
+	+ modify termname() to return the terminal name used by setupterm()
+	  rather than $TERM, without truncating to 14 characters as documented
+	  by X/Open (report by Stanislav Ievlev, cf:  970719).
+	+ re-add definition for _BSD_TYPES, lost in merge (cf: 20031206).
 
 20031220
 	+ add configure option --with-manpage-format=catonly to address

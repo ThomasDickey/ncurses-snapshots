@@ -49,7 +49,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.78 2003/11/01 23:03:03 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.79 2003/12/27 18:24:26 tom Exp $")
 
 /****************************************************************************
  *
@@ -421,6 +421,8 @@ setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
      */
     if (cur_term != 0
 	&& cur_term->Filedes == Filedes
+	&& cur_term->_termname != 0
+	&& !strcmp(cur_term->_termname, tname)
 	&& _nc_name_match(cur_term->type.term_names, tname, "|")) {
 	T(("reusing existing terminal information and mode-settings"));
     } else {
@@ -449,8 +451,7 @@ setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
 	}
 
 	if (status <= 0) {
-	    _nc_free_termtype(&term_ptr->type);
-	    free(term_ptr);
+	    del_curterm(term_ptr);
 	    if (status == -1) {
 		ret_error0(-1, "terminals database is inaccessible\n");
 	    } else if (status == 0) {
@@ -467,6 +468,7 @@ setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
 	ttytype[NAMESIZE - 1] = '\0';
 
 	cur_term->Filedes = Filedes;
+	cur_term->_termname = strdup(tname);
 
 	/*
 	 * If an application calls setupterm() rather than initscr() or
