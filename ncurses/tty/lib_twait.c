@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -59,7 +59,7 @@
 # endif
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.42 2001/07/31 17:46:00 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.43 2001/10/14 00:30:50 tom Exp $")
 
 static long
 _nc_gettime(bool first)
@@ -103,8 +103,7 @@ _nc_gettime(bool first)
  * descriptors.
  */
 NCURSES_EXPORT(int)
-_nc_timed_wait
-(int mode, int milliseconds, int *timeleft)
+_nc_timed_wait(int mode, int milliseconds, int *timeleft)
 {
     int fd;
     int count;
@@ -120,6 +119,8 @@ _nc_timed_wait
 
     long starttime, returntime;
 
+    if (milliseconds < 0)
+	milliseconds = 0;
     TR(TRACE_IEVENT, ("start twait: %d milliseconds, mode: %d",
 		      milliseconds, mode));
 

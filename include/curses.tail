@@ -1,4 +1,4 @@
-/* $Id: curses.tail,v 1.1 2001/06/16 11:47:06 tom Exp $ */
+/* $Id: curses.tail,v 1.2 2001/10/13 23:34:37 tom Exp $ */
 
 /* mouse interface */
 #define NCURSES_MOUSE_VERSION	1
@@ -58,6 +58,7 @@ extern NCURSES_EXPORT(mmask_t) mousemask (mmask_t, mmask_t *);
 extern NCURSES_EXPORT(bool) wenclose (const WINDOW *, int, int);
 extern NCURSES_EXPORT(int) mouseinterval (int);
 extern NCURSES_EXPORT(bool) wmouse_trafo (const WINDOW* win,int* y, int* x, bool to_screen);
+extern NCURSES_EXPORT(bool) mouse_trafo (int*, int*, bool);              /* generated */
 
 #define mouse_trafo(y,x,to_screen) wmouse_trafo(stdscr,y,x,to_screen)
 

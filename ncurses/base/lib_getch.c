@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.55 2001/06/02 21:16:23 skimo Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.56 2001/10/14 00:24:44 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -234,6 +234,8 @@ wgetch(WINDOW *win)
 		if (SP->_mouse_inline(SP))
 		    break;
 	    }
+	    if (SP->_maxclick < 0)
+		break;
 	} while
 	    (ch == KEY_MOUSE
 	     && (_nc_timed_wait(3, SP->_maxclick, (int *) 0)
