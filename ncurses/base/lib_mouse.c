@@ -84,7 +84,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.39 1998/11/22 03:41:02 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.40 1998/11/29 01:42:46 Ilya.Zakharevich Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -142,6 +142,8 @@ static void _trace_slot(const char *tag)
 static int mouse_wfd;
 static int mouse_thread;
 static int mouse_activated;
+static char mouse_buttons[] = { 0, 1, 3, 2};
+
 
 #  define M_FD(sp) sp->_mouse_fd
 
@@ -191,11 +193,14 @@ mouse_server(unsigned long ignored GCC_UNUSED)
 		 *	3 = middle.
 		 */
 		if ((mouev.fs ^ oldstate) & MOUSE_BN1_DOWN)
-		    write_event(mouev.fs  & MOUSE_BN1_DOWN, 1, mouev.col, mouev.row);
+		    write_event(mouev.fs  & MOUSE_BN1_DOWN,
+				mouse_buttons[1], mouev.col, mouev.row);
 		if ((mouev.fs ^ oldstate) & MOUSE_BN2_DOWN)
-		    write_event(mouev.fs  & MOUSE_BN2_DOWN, 2, mouev.col, mouev.row);
+		    write_event(mouev.fs  & MOUSE_BN2_DOWN,
+				mouse_buttons[3], mouev.col, mouev.row);
 		if ((mouev.fs ^ oldstate) & MOUSE_BN3_DOWN)
-		    write_event(mouev.fs  & MOUSE_BN3_DOWN, 3, mouev.col, mouev.row);
+		    write_event(mouev.fs  & MOUSE_BN3_DOWN,
+				mouse_buttons[2], mouev.col, mouev.row);
 
 	      finish:
 		oldstate = mouev.fs;
@@ -270,6 +275,16 @@ static void _nc_mouse_init(void)
 	} else {
 	    int rc;
 
+	    if (!mouse_buttons[0]) {
+		char *s = getenv("MOUSE_BUTTONS_123");
+
+		mouse_buttons[0] = 1;
+		if (s && strlen(s) >= 3) {
+		    mouse_buttons[1] = s[0] - '0';
+		    mouse_buttons[2] = s[1] - '0';
+		    mouse_buttons[3] = s[2] - '0';
+		}
+	    }
 	    mouse_wfd = handles[1];
 	    M_FD(SP) = handles[0];
 	    /* Needed? */

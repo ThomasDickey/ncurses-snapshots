@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.390 1998/11/22 03:38:52 tom Exp $
+-- $Id: NEWS,v 1.391 1998/11/29 04:05:38 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+981128
+	+ modify Ada95/gen/gen.c to avoid using return-value of sprintf, since
+	  some older implementations (e.g., SunOS 4.x) return the buffer
+	  address rather than its length.
+	> patch by Rick Ohnemus:
+	+ modify demo.cc to get it to compile with newer versions of egcs. 
+	+ trim a space that appears at the end of the table preprocessor lines
+	  ('\" t).  This space prevents some versions of man from displaying
+	  the pages - changed to remove all trailing whitespace (TD)
+	+ Finally, 'make clean' does not remove panel objects. (I think I sent this 
+	  before and it got lost.) 
+	> patches by Ilya Zakharevich:
+	+ allow remapping of OS/2 mouse buttons using environment variable
+	  MOUSE_BUTTONS_123 with the default value 132.
+	+ add mouse support to ncurses menus. 
 
 981121
 	+ modify misc/makedef.cmd to report old-style .def file symbols, and to
@@ -17,7 +33,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ updates for config.guess, config.sub from Lynx
 	> patches by Ilya Zakharevich:
 	+ minor fixes for mouse handling mode:
-	  a) Do not initialized mouse if the request is to have no mouse;
+	  a) Do not initialize mouse if the request is to have no mouse;
 	  b) Allow switching of OS/2 VIO mouse on and off.
 	+ modify Makefile.os2 to support alternative means of generating
 	  configure script, by translating Unix script with Perl.

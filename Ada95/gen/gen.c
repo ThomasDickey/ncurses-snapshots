@@ -32,7 +32,7 @@
 
 /*
     Version Control
-    $Revision: 1.19 $
+    $Revision: 1.20 $
   --------------------------------------------------------------------------*/
 /*
   This program generates various record structures and constants from the
@@ -61,7 +61,7 @@ typedef struct {
 
 static int find_pos (char *s, unsigned len, int *low, int *high)
 {
-  unsigned int i,j; 
+  unsigned int i,j;
   int l = 0;
 
   *high = -1;
@@ -100,8 +100,8 @@ static int find_pos (char *s, unsigned len, int *low, int *high)
  * We are only dealing with record types which are of 32 or 16
  * bit size, i.e. they fit into an (u)int or a (u)short.
  */
-static void 
-gen_reps 
+static void
+gen_reps
 (const name_attribute_pair *nap, /* array of name_attribute_pair records */
  const char *name,               /* name of the represented record type  */
  int len,                        /* size of the record in bytes          */
@@ -129,7 +129,7 @@ gen_reps
   for (i=0; nap[i].name != (char *)0; i++)
     {
       printf("         %-*s : Boolean;\n",width,nap[i].name);
-    }  
+    }
   i = 1; n = cnt;
   while (n < 8*len)
     {
@@ -152,7 +152,7 @@ gen_reps
       if (l>=0)
 	printf("         %-*s at 0 range %2d .. %2d;\n",width,nap[i].name,
 	       low-bias,high-bias);
-    }  
+    }
   i = 1; n = cnt;
   while (n < 8*len)
     {
@@ -181,7 +181,7 @@ static void chtype_rep (const char *name, attr_t mask)
   int low, high;
   int l = find_pos ((char *)&t, sizeof(t), &low, &high);
   if (l>=0)
-    printf("         %-5s at 0 range %2d .. %2d;\n",name,low,high); 
+    printf("         %-5s at 0 range %2d .. %2d;\n",name,low,high);
 }
 
 static void gen_chtype_rep(const char *name)
@@ -201,7 +201,7 @@ static void mrep_rep (const char *name, void *rec)
   int low, high;
   int l = find_pos((char *)rec, sizeof(MEVENT), &low, &high);
   if (l>=0)
-    printf("         %-7s at 0 range %3d .. %3d;\n",name,low,high); 
+    printf("         %-7s at 0 range %3d .. %3d;\n",name,low,high);
 }
 
 
@@ -335,7 +335,7 @@ static void gen_item_opt_rep(const char *name)
     {"Selectable", O_SELECTABLE},
 #endif
     {(char *)0   , 0}
-  };  
+  };
   gen_reps (nap, name, sizeof(int),0);
 }
 
@@ -411,7 +411,7 @@ static void keydef(const char *name, const char *old_name, int value, int mode)
 	printf("   %-16s : Special_Key_Code renames %s;\n",old_name,name);
     }
 }
-  
+
 /*
  * Generate constants for the key codes. When called with mode==0, a
  * complete list with nice constant names in proper casing style will
@@ -708,10 +708,10 @@ static void gen_keydefs (int mode)
 #endif
 #ifdef KEY_MOUSE
   keydef("Key_Mouse","KEY_MOUSE",KEY_MOUSE,mode);
-#endif  
+#endif
 #ifdef KEY_RESIZE
   keydef("Key_Resize","KEY_RESIZE",KEY_RESIZE,mode);
-#endif  
+#endif
 }
 
 /*
@@ -971,7 +971,7 @@ static void gen_version_info (void)
     "   NC_Minor_Version : constant := %d; --  Minor version of the library\n";
   static const char* v3 =
     "   NC_Version : constant String := %c%d.%d%c;  --  Version of library\n";
-  
+
   printf(v1, NCURSES_VERSION_MAJOR);
   printf(v2, NCURSES_VERSION_MINOR);
   printf(v3, '"',NCURSES_VERSION_MAJOR,NCURSES_VERSION_MINOR,'"');
@@ -980,13 +980,12 @@ static void gen_version_info (void)
 static int
 eti_gen(char*buf, int code, const char* name, int* etimin, int* etimax)
 {
-  int ret = sprintf(buf,"   E_%-16s : constant Eti_Error := %d;\n",name,code);
-
+  sprintf(buf,"   E_%-16s : constant Eti_Error := %d;\n",name,code);
   if (code < *etimin)
     *etimin = code;
   if (code > *etimax)
     *etimax = code;
-  return  (ret);
+  return strlen(buf);
 }
 
 /*
@@ -1109,7 +1108,7 @@ int main(int argc, char *argv[])
 	{
 	  const char* fmt  = "   type    C_Chtype   is new %s;\n";
 	  const char* afmt = "   type    C_AttrType is new %s;\n";
-	  
+
 	  if (sizeof(chtype)==sizeof(int)) {
 	    if (sizeof(int)==sizeof(long))
 	      printf(fmt,"C_ULong");
@@ -1121,7 +1120,7 @@ int main(int argc, char *argv[])
 	  }
 	  else
 	    printf("Error\n");
-	  
+
 	  if (sizeof(attr_t)==sizeof(int)) {
 	    if (sizeof(int)==sizeof(long))
 	      printf(afmt,"C_ULong");

@@ -6,7 +6,7 @@
  *   Demo code for NCursesMenu and NCursesForm written by
  *   Juergen Pfeifer <Juergen.Pfeifer@T-Online.de>
  *
- * $Id: demo.cc,v 1.13 1998/02/19 16:54:54 florian Exp $
+ * $Id: demo.cc,v 1.14 1998/11/29 01:03:27 Rick.Ohnemus Exp $
  */
 
 #include "cursesapp.h"
@@ -22,7 +22,7 @@ extern "C" unsigned int sleep(unsigned int);
 //
 // -------------------------------------------------------------------------
 //
-class SillyDemo 
+class SillyDemo
 {
   public:
   void run(int sleeptime) {
@@ -128,8 +128,8 @@ class UserData
 private:
   int u;
 public:
-  UserData(int x) : u(x) {} 
-  int sleeptime() const { return u; }  
+  UserData(int x) : u(x) {}
+  int sleeptime() const { return u; }
 };
 //
 // -------------------------------------------------------------------------
@@ -146,7 +146,7 @@ public:
 
   bool action() {
     SillyDemo a;
-    a.run(UserData()->sleeptime());
+    a.run(NCursesUserItem<T>::UserData()->sleeptime());
     return FALSE;
   }
 };
@@ -203,10 +203,10 @@ private:
   Enumeration_Field *eft;
 
   static char *weekdays[];
-  
+
 public:
   TestForm() : NCursesForm(13,51,(lines()-15)/2,(cols()-53)/2) {
-    
+
     F     = new NCursesFormField*[10];
     mft   = new MyFieldType('X');
     ift   = new Integer_Field(0,1,10);
@@ -222,10 +222,10 @@ public:
     F[7]  = new NCursesFormField(1,12,3,35);
     F[8]  = new NCursesFormField(4,46,6,1,2);
     F[9]  = new NCursesFormField();
-  
+
     InitForm(F,TRUE,TRUE);
     boldframe();
-    
+
     F[5]->set_fieldtype(*eft);
     F[6]->set_fieldtype(*ift);
 
@@ -291,7 +291,7 @@ private:
   UserData *u;
 
 public:
-  MyMenu () 
+  MyMenu ()
     : NCursesMenu (8, 8, (lines()-10)/2, (cols()-10)/2)
   {
     u = new UserData(1);
@@ -305,7 +305,7 @@ public:
     I[6] = new NCursesMenuItem(); // Terminating empty item
 
     InitMenu(I,TRUE,TRUE);
-    
+
     P = new NCursesPanel(1,6,LINES-1,1);
     boldframe("Demo","Silly");
     P->show();
@@ -387,7 +387,7 @@ void TestApplication::title() {
 
   titleWindow->bkgd(screen_titles());
   titleWindow->addstr(0,(titleWindow->cols()-len)/2,title);
-  titleWindow->noutrefresh();  
+  titleWindow->noutrefresh();
 }
 
 
