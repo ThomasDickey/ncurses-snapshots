@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.12 1999/11/07 00:09:28 tom Exp $
+# $Id: Makefile.in,v 1.14 2000/01/08 23:16:26 tom Exp $
 # Makefile for tack
 #
 # The variable 'srcdir' refers to the source-distribution, and can be set with
@@ -38,6 +38,7 @@ AWK		= @AWK@
 LN_S		= @LN_S@
 
 CC		= @CC@
+CPP		= @CPP@
 CFLAGS		= @CFLAGS@
 
 INCDIR		= $(srcdir)/../include
@@ -88,8 +89,8 @@ uninstall.libs:
 install.tack: $(PROGS) \
 	$(INSTALL_PREFIX)$(bindir) \
 	$(INSTALL_PREFIX)$(mandir)
-	$(INSTALL_PROGRAM) tack$x    $(INSTALL_PREFIX)$(bindir)/tack$x
-	$(INSTALL_DATA)    tack.1    $(INSTALL_PREFIX)$(mandir)/tack.1
+	$(INSTALL_PROGRAM) tack$x $(INSTALL_PREFIX)$(bindir)/tack$x
+	$(INSTALL_DATA) $(srcdir)/tack.1 $(INSTALL_PREFIX)$(mandir)/tack.1
 
 uninstall.tack:
 	-@rm -f $(INSTALL_PREFIX)$(bindir)/tack$x

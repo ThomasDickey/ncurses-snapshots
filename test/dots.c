@@ -29,7 +29,7 @@
 /*
  * Author: Thomas E. Dickey <dickey@clark.net> 1999
  *
- * $Id: dots.c,v 1.2 1999/10/23 13:24:32 tom Exp $
+ * $Id: dots.c,v 1.3 2000/01/09 01:02:42 tom Exp $
  *
  * A simple demo of the terminfo interface.
  */
@@ -125,7 +125,7 @@ main(
 
 	tputs(tparm(cursor_address, y, x), 1, outc);
 	if (max_colors > 0) {
-	    z = ranf() * max_colors;
+	    z = (int)(ranf() * max_colors);
 	    if (ranf() > 0.01) {
 		tputs(tparm(set_a_foreground, z), 1, outc);
 	    } else {

@@ -1,10 +1,22 @@
--- $Id: NEWS,v 1.518 2000/01/02 02:24:39 tom Exp $
+-- $Id: NEWS,v 1.521 2000/01/09 01:12:37 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000108
+	+ add prototype for erase() to curses.h.in, needed to make test
+	  programs build with c++/g++.
+	+ add .c.i and .c.h suffix rules to generated makefiles, for debugging.
+	+ correct install rule for tack.1; it assumed that file was in the
+	  current directory (reported by Mike Castle <dalgoda@ix.netcom.com>).
+	+ modify terminfo/termcap translation to suppress acsc before trying
+	  sgr if the entry would be too large (patch by Todd C Miller).
+	+ document a special case of incompatiblity between ncurses 4.2 and
+	  5.0, add a section for this in INSTALL.
+	+ add TRACE_DATABASE flag for trace().
 
 20000101
 	+ update mach, add mach-color terminfo entries based on Debian diffs

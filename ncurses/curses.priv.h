@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.148 1999/12/04 18:09:40 tom Exp $
+ * $Id: curses.priv.h,v 1.149 2000/01/08 17:17:39 tom Exp $
  *
  *	curses.priv.h
  *
@@ -456,6 +456,14 @@ typedef	struct {
 #endif
 #ifndef F_OK
 #define	F_OK	0		/* Test for existence.  */
+#endif
+
+#if HAVE_FCNTL_H
+#include <fcntl.h>		/* may define O_BINARY	*/
+#endif
+
+#ifndef O_BINARY
+#define O_BINARY 0
 #endif
 
 #define TextOf(c)    ((c) & (chtype)A_CHARTEXT)
