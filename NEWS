@@ -1,10 +1,24 @@
--- $Id: NEWS,v 1.378 1998/10/03 19:11:15 tom Exp $
+-- $Id: NEWS,v 1.380 1998/10/11 00:19:35 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+981010
+	+ modify --with-terminfo-dirs option so that the default value is the
+	  ${datadir} value, unless $TERMINFO_DIRS is already set.  This gets
+	  rid of a hardcoded list of candidate directories in the configure
+	  script.
+	+ add some error-checking to _nc_read_file_entry() to ensure that
+	  strings are properly terminated (Todd Miller).
+	+ rename manpage file curs_scr_dmp.3x to curs_scr_dump.3x, to
+	  correspond with contents (reported by Neil Zanella
+	  <nzanella@cs.mun.ca>).
+	+ remove redundant configure check for C++ which did not work when $CXX
+	  was specified with a full pathname (reported by Andreas Jaeger).
+	+ corrected bcopy/memmove check; the macro was not standalone.
 
 981003
 	+ remove unnecessary portion of OS/2 EMX mouse change from

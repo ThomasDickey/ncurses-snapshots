@@ -47,7 +47,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.44 1998/09/19 21:22:47 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.46 1998/10/11 00:30:55 tom Exp $")
 
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -128,6 +128,8 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 	    return(0);
 	}
     }
+    else
+	str_count = 0;
 
     /* grab the name */
     read(fd, buf, min(MAX_NAME_SIZE, (unsigned)name_size));
@@ -199,6 +201,8 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 		ptr->Strings[i] = ABSENT_STRING;
 	    else if (IS_NEG2(buf + 2*i))
 		ptr->Strings[i] = CANCELLED_STRING;
+	    else if (LOW_MSB(buf + 2*i) > str_size)
+		ptr->Strings[i] = ABSENT_STRING;
 	    else
 		ptr->Strings[i] = (LOW_MSB(buf+2*i) + ptr->str_table);
 	}
@@ -218,6 +222,20 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
 	{
 	    close(fd);
 	    return(0);
+	}
+    }
+
+    /* make sure all strings are NUL terminated */
+    for (i = str_count; i < STRCOUNT; i++) {
+	char *p;
+
+	if (VALID_STRING(ptr->Strings[i])) {
+	    for (p = ptr->Strings[i]; p <= ptr->str_table + str_size; p++)
+		if (*p == '\0')
+		    break;
+	    /* if there is no NUL, ignore the string */
+	    if (p > ptr->str_table + str_size)
+		ptr->Strings[i] = ABSENT_STRING;
 	}
     }
 

@@ -100,7 +100,7 @@
 ./Ada95/html/curs_printw.3x.html
 ./Ada95/html/curs_refresh.3x.html
 ./Ada95/html/curs_scanw.3x.html
-./Ada95/html/curs_scr_dmp.3x.html
+./Ada95/html/curs_scr_dump.3x.html
 ./Ada95/html/curs_scroll.3x.html
 ./Ada95/html/curs_slk.3x.html
 ./Ada95/html/curs_termattrs.3x.html
@@ -377,7 +377,7 @@
 ./man/curs_printw.3x
 ./man/curs_refresh.3x
 ./man/curs_scanw.3x
-./man/curs_scr_dmp.3x
+./man/curs_scr_dump.3x
 ./man/curs_scroll.3x
 ./man/curs_slk.3x
 ./man/curs_termattrs.3x

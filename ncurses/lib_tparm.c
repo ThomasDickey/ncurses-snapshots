@@ -43,7 +43,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.35 1998/09/26 20:37:35 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.36 1998/10/11 00:28:53 tom Exp $")
 
 /*
  *	char *
@@ -149,10 +149,10 @@ static inline void get_space(size_t need)
 static inline void save_text(const char *fmt, char *s, int len)
 {
 	size_t s_len = strlen(s);
-	if (len < s_len)
-		len = s_len;
+	if (len > (int)s_len)
+		s_len = len;
 
-	get_space(len + 1);
+	get_space(s_len + 1);
 
 	(void)sprintf(out_buff+out_used, fmt, s);
 	out_used += strlen(out_buff+out_used);
