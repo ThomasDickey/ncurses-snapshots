@@ -1,6 +1,6 @@
-# $Id: mk-1st.awk,v 1.61 2003/11/01 22:42:43 tom Exp $
+# $Id: mk-1st.awk,v 1.62 2004/01/10 20:48:43 tom Exp $
 ##############################################################################
-# Copyright (c) 1998,2002,2003 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -115,7 +115,7 @@ BEGIN	{
 				}
 				using = 1
 			}
-			if ( subset == "termlib") {
+			if ( subset == "termlib" || subset == "termlib+ext_tinfo" ) {
 				name  = "tinfo"
 				OBJS  = MODEL "_T"
 			} else {
@@ -193,7 +193,7 @@ END	{
 					printf "../lib/%s : $(%s_OBJS)\n", end_name, OBJS
 					print "\t-@rm -f $@";
 				}
-				if ( subset == "termlib") {
+				if ( subset == "termlib" || subset == "termlib+ext_tinfo" ) {
 					printf "\t$(MK_SHARED_LIB) $(%s_OBJS) $(TINFO_LIST) $(LDFLAGS)\n", OBJS
 				} else {
 					printf "\t$(MK_SHARED_LIB) $(%s_OBJS) $(SHLIB_LIST) $(LDFLAGS)\n", OBJS

@@ -2,7 +2,7 @@
 <!-- 
   * t
   ****************************************************************************
-  * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+  * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
   * copy of this software and associated documentation files (the            *
@@ -28,7 +28,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: ncurses.3x,v 1.66 2003/05/11 00:32:53 tom Exp @
+  * @Id: ncurses.3x,v 1.70 2004/01/11 01:45:54 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -193,7 +193,6 @@
        clearing and redrawing a screen containing  garbage.   The
        <STRONG>curscr</STRONG> can be used in only a few routines.
 
-
    <STRONG>Routine</STRONG> <STRONG>and</STRONG> <STRONG>Argument</STRONG> <STRONG>Names</STRONG>
        Many  <STRONG>curses</STRONG> routines have two or more versions.  The rou-
        tines prefixed with <STRONG>w</STRONG> require a window argument.  The rou-
@@ -222,7 +221,6 @@
        <STRONG>&lt;curses.h&gt;</STRONG>.   The  type  <STRONG>TERMINAL</STRONG>  is defined in <STRONG>&lt;term.h&gt;</STRONG>.
        All other arguments are integers.
 
-
    <STRONG>Routine</STRONG> <STRONG>Name</STRONG> <STRONG>Index</STRONG>
        The following table lists each <STRONG>curses</STRONG> routine and the name
        of  the  manual  page  on which it is described.  Routines
@@ -244,9 +242,9 @@
               _tracemouse             <STRONG><A HREF="curs_trace.3x.html">curs_trace(3x)</A></STRONG>*
               add_wch                 <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
               add_wchnstr             <STRONG><A HREF="curs_add_wchstr.3x.html">curs_add_wchstr(3x)</A></STRONG>
-
               add_wchstr              <STRONG><A HREF="curs_add_wchstr.3x.html">curs_add_wchstr(3x)</A></STRONG>
               addch                   <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
+
               addchnstr               <STRONG><A HREF="curs_addchstr.3x.html">curs_addchstr(3x)</A></STRONG>
               addchstr                <STRONG><A HREF="curs_addchstr.3x.html">curs_addchstr(3x)</A></STRONG>
               addnstr                 <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
@@ -310,9 +308,9 @@
               getbegyx                <STRONG><A HREF="curs_getyx.3x.html">curs_getyx(3x)</A></STRONG>
               getbkgd                 <STRONG><A HREF="curs_bkgd.3x.html">curs_bkgd(3x)</A></STRONG>
               getbkgrnd               <STRONG><A HREF="curs_bkgrnd.3x.html">curs_bkgrnd(3x)</A></STRONG>
-
               getcchar                <STRONG><A HREF="curs_getcchar.3x.html">curs_getcchar(3x)</A></STRONG>
               getch                   <STRONG><A HREF="curs_getch.3x.html">curs_getch(3x)</A></STRONG>
+
               getmaxyx                <STRONG><A HREF="curs_getyx.3x.html">curs_getyx(3x)</A></STRONG>
               getmouse                <STRONG><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></STRONG>*
               getn_wstr               <STRONG><A HREF="curs_get_wstr.3x.html">curs_get_wstr(3x)</A></STRONG>
@@ -376,9 +374,9 @@
               mvadd_wch               <STRONG><A HREF="curs_add_wch.3x.html">curs_add_wch(3x)</A></STRONG>
               mvadd_wchnstr           <STRONG><A HREF="curs_add_wchstr.3x.html">curs_add_wchstr(3x)</A></STRONG>
               mvadd_wchstr            <STRONG><A HREF="curs_add_wchstr.3x.html">curs_add_wchstr(3x)</A></STRONG>
-
               mvaddch                 <STRONG><A HREF="curs_addch.3x.html">curs_addch(3x)</A></STRONG>
               mvaddchnstr             <STRONG><A HREF="curs_addchstr.3x.html">curs_addchstr(3x)</A></STRONG>
+
               mvaddchstr              <STRONG><A HREF="curs_addchstr.3x.html">curs_addchstr(3x)</A></STRONG>
               mvaddnstr               <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
               mvaddnwstr              <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
@@ -442,9 +440,9 @@
               mvwin_wchstr            <STRONG><A HREF="curs_in_wchstr.3x.html">curs_in_wchstr(3x)</A></STRONG>
               mvwinch                 <STRONG><A HREF="curs_inch.3x.html">curs_inch(3x)</A></STRONG>
               mvwinchnstr             <STRONG><A HREF="curs_inchstr.3x.html">curs_inchstr(3x)</A></STRONG>
-
               mvwinchstr              <STRONG><A HREF="curs_inchstr.3x.html">curs_inchstr(3x)</A></STRONG>
               mvwinnstr               <STRONG><A HREF="curs_instr.3x.html">curs_instr(3x)</A></STRONG>
+
               mvwinnwstr              <STRONG><A HREF="curs_inwstr.3x.html">curs_inwstr(3x)</A></STRONG>
               mvwins_nwstr            <STRONG><A HREF="curs_ins_wstr.3x.html">curs_ins_wstr(3x)</A></STRONG>
               mvwins_wch              <STRONG><A HREF="curs_ins_wch.3x.html">curs_ins_wch(3x)</A></STRONG>
@@ -508,9 +506,9 @@
               slk_attr                <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>*
               slk_attr_off            <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
               slk_attr_on             <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
-
               slk_attr_set            <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
               slk_attroff             <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
+
               slk_attron              <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
               slk_attrset             <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
               slk_clear               <STRONG><A HREF="curs_slk.3x.html">curs_slk(3x)</A></STRONG>
@@ -574,9 +572,9 @@
               waddnstr                <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
               waddnwstr               <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
               waddstr                 <STRONG><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></STRONG>
-
               waddwstr                <STRONG><A HREF="curs_addwstr.3x.html">curs_addwstr(3x)</A></STRONG>
               wattr_get               <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
+
               wattr_off               <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
               wattr_on                <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
               wattr_set               <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
@@ -640,9 +638,9 @@
               wsetscrreg              <STRONG><A HREF="curs_outopts.3x.html">curs_outopts(3x)</A></STRONG>
               wstandend               <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
               wstandout               <STRONG><A HREF="curs_attr.3x.html">curs_attr(3x)</A></STRONG>
-
               wsyncdown               <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
               wsyncup                 <STRONG><A HREF="curs_window.3x.html">curs_window(3x)</A></STRONG>
+
               wtimeout                <STRONG><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></STRONG>
               wtouchln                <STRONG><A HREF="curs_touch.3x.html">curs_touch(3x)</A></STRONG>
               wunctrl                 <STRONG><A HREF="curs_util.3x.html">curs_util(3x)</A></STRONG>
@@ -778,14 +776,14 @@
             important aspects of a hardware terminal, but they do
             not  have the same limitations.  The chief limitation
             of a hardware terminal from the  standpoint  of  your
-            application is the management of dataflow, i.e., tim-
-            ing.  Unless a hardware terminal is interfaced into a
-            terminal  concentrator  (which does flow control), it
-            (or your application) must manage dataflow,  prevent-
-            ing  overruns.   The  cheapest  solution (no hardware
-            cost) is for your program to do this by pausing after
-            operations  that  the  terminal  does slowly, such as
-            clearing the display.
+            application  is  the  management  of  dataflow, i.e.,
+            timing.  Unless a  hardware  terminal  is  interfaced
+            into  a  terminal  concentrator (which does flow con-
+            trol), it (or your application) must manage dataflow,
+            preventing overruns.  The cheapest solution (no hard-
+            ware cost) is for your program to do this by  pausing
+            after  operations that the terminal does slowly, such
+            as clearing the display.
 
             As a result, many  terminal  descriptions  (including
             the  vt100)  have delay times embedded.  You may wish
@@ -916,11 +914,11 @@
        ual pages for details.
 
        The <STRONG>ncurses</STRONG> library can exploit the capabilities of termi-
-       nals  which  implement the ISO-6429 SGR 39 and SGR 49 con-
-       trols, which allow an application to reset the terminal to
-       its  original  foreground and background colors.  From the
-       users' perspective, the application is able to  draw  col-
-       ored  text  on  a  background  whose color is set indepen-
+       nals  which  implement  the  ISO-6429  SGR  39  and SGR 49
+       controls, which allow an application to reset the terminal
+       to  its  original  foreground and background colors.  From
+       the users' perspective, the application is  able  to  draw
+       colored  text  on a background whose color is set indepen-
        dently, providing better  control  over  color  contrasts.
        See the <STRONG><A HREF="default_colors.3x.html">default_colors(3x)</A></STRONG> manual page for details.
 
@@ -932,11 +930,9 @@
 </PRE>
 <H2>PORTABILITY</H2><PRE>
        The  <STRONG>ncurses</STRONG>  library is intended to be BASE-level confor-
-       mant with the XSI Curses standard.   Certain  portions  of
-       the  EXTENDED  XSI  Curses  functionality (including color
-       support) are supported.  The following EXTENDED XSI Curses
-       calls  in  support  of wide (multibyte) characters are not
-       yet implemented: <STRONG>pecho_wchar</STRONG>, <STRONG>slk_wset</STRONG>.
+       mant with the  XSI  Curses  standard.   The  EXTENDED  XSI
+       Curses  functionality  (including  color  support) is sup-
+       ported.
 
        A small number of local differences (that  is,  individual
        differences  between the XSI Curses and <STRONG>ncurses</STRONG> calls) are

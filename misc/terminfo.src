@@ -4,8 +4,8 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
-#	$Revision: 1.223 $
-#	$Date: 2003/12/21 01:57:42 $
+#	$Revision: 1.224 $
+#	$Date: 2004/01/10 21:58:00 $
 #
 # The original header is preserved below for reference.  It is noted that there
 # is a newer version which differs in some cosmetic details; we have decided
@@ -5892,9 +5892,7 @@ qvt203-25-w|QVT 203 PLUS with 25 by 132 columns,
 #	Fax: (408)-954-0623
 #
 #
-# There are some tvi terminals that require incredible amounts of padding and
-# some that don't.  I'm assuming tvi912 and tvi920 are the old slow ones, and
-# tvi912b, tvi912c, tvi920b, tvi920c are the new ones that don't need padding.
+# These require incredible amounts of padding.
 #
 # All of these terminals (912 to 970 and the tvipt) are discontinued.  Newer
 # Televideo terminals are ANSI and PC-ANSI compatible.
@@ -6045,22 +6043,132 @@ tvi912|tvi914|tvi920|old televideo 912/914/920,
 	kf4=^AC\r, kf5=^AD\r, kf6=^AE\r, kf7=^AF\r, kf8=^AG\r, 
 	kf9=^AH\r, khome=^^, rmso=\Ek, rmul=\Em, smso=\Ej, smul=\El, 
 	tbc=\E3, 
-# the 912 has a <funct> key that's like shift: <funct>8 xmits "^A8\r".
-# The 920 has this plus real function keys that xmit different things.
-# Terminfo makes you use the funct key on the 912 but the real keys on the 920.
-tvi912c|tvi912b|new televideo 912, 
-	dl1=\ER$<5*>, il1=\EE$<5*>, use=tvi912, 
-# set to page 1 when entering curses application (\E-17 )
-# reset to page 0 when exiting curses application (\E-07 )
-tvi912-2p|tvi920-2p|tvi-2p|televideo w/2 pages, 
-	rmcup=\E-07\s, smcup=\E-17\s, use=tvi912, 
 # We got some new tvi912c terminals that act really weird on the regular 
 # termcap, so one of our gurus worked this up. Seems that cursor 
 # addressing is broken.
 tvi912cc|tvi912 at cowell college, 
 	cup@, use=tvi912c, 
 
-# Here are the switch settings for the tvi920c:
+# tvi{912,920}[bc] - TeleVideo TVI-912B/TVI-920B and TVI-912C/TVI-920C
+# From: Benjamin C. W. Sittler
+#
+# Someone has put a scanned copy of the manual online at:
+#     http://vt100.net/televideo/912b-om/
+#
+# These terminals were produced ca. 1979, and had a 12" monochrome
+# screen, supported 75-9600 baud (no handshaking), monochrome, 7-bit
+# ASCII, and were generally similar to adm3a but with attributes
+# (including some with magic cookies), fancy half-duplex mode, and
+# different bugs.
+#
+# Some operations reqire truly incredible amounts of padding. The
+# insert_line (<il1>) and delete_line (<dl1>) operations in particular
+# are so slow as to be nearly unusable.
+#
+# There may or may not have been a separate, earlier series of 912/920
+# terminals (without the "B" and "C" suffix); I have never seen one,
+# and the manual only describes the "B" and "C" series. The 912 and 920
+# are quite distinct from the 914 and 924, which were much nicer non-
+# magic-cookie terminals similar to the 950.
+#
+# This is a new description for the following TeleVideo terminals,
+# distinguished chiefly by their keyboards:
+#
+#   TVI-912B - very odd layout, no function keys (84 keys)
+#   TVI-920B - typewriter layout, no function keys (103 keys)
+#   TVI-912C - very odd layout, function keys F1-F11 (82 keys)
+#   TVI-920C - typewriter layout, function keys F1-F11 (101 keys)
+#
+# To choose a setting for the TERM variable, start with the model:
+#
+#    Model  || base name
+# ----------||-----------
+#  TVI-912B || tvi912b
+#  TVI-912C || tvi912c
+#  TVI-920B || tvi920b
+#  TVI-920C || tvi920c
+#
+# Then add a suffix from the following table describing installed options
+# and how you'd like to use the terminal:
+#
+#   Use Video | Second | Visual |  Magic  |  Page || feature
+#  Attributes |  Page  |  Bell  | Cookies | Print || suffix
+# ------------|--------|--------|---------|-------||---------
+#      No     |   No   |  N/A   |   N/A   |   No  || -unk
+#      No     |   No   |  N/A   |   N/A   |  Yes  || -p
+#      No     |  Yes   |   No   |   N/A   |   No  || -2p-unk
+#      No     |  Yes   |   No   |   N/A   |  Yes  || -2p-p
+#      No     |  Yes   |  Yes   |   N/A   |   No  || -vb-unk
+#      No     |  Yes   |  Yes   |   N/A   |  Yes  || -vb-p
+#     Yes     |   No   |  N/A   |    No   |  N/A  ||
+#     Yes     |   No   |  N/A   |   Yes   |  N/A  || -mc
+#     Yes     |  Yes   |   No   |    No   |  N/A  || -2p
+#     Yes     |  Yes   |   No   |   Yes   |  N/A  || -2p-mc
+#     Yes     |  Yes   |  Yes   |    No   |  N/A  || -vb
+#     Yes     |  Yes   |  Yes   |   Yes   |  N/A  || -vb-mc
+#
+# So e.g. a model 920 C with second page memory option, visual bell
+# and no magic cookies would be tvi920c-vb; a model 912 B without the
+# second page memory option and using magic cookies would be
+# tvi912b-mc
+#
+# PADDING
+#
+# At 9600 baud, the terminal is prone to overflow its input buffer
+# during complex operations (insert/delete
+# character/line/screen/page), and it does not signal this over the
+# RS232 cable. The typical symptom of an overrun is that the terminal
+# starts beeping, and output becomes garbled.
+#
+# The padding delays in this terminfo were derived using tack(1)
+# running on a Linux box connected to a TVI-920C with a later-model
+# (A49C1-style) ROM running at 9600 baud, so your mileage may
+# vary. The numbers below seem to give the terminal enough time so
+# that it doesn't overflow its input buffer and start losing
+# characters.
+#
+# KEYS
+#
+# If you want to use the FUNCT key on a tvi912[bc], use the
+# corresponding tvi920[bc] terminfo with FUNCT + ... equivalents from
+# the following table (these also work on the 920 series):
+#
+# Unshifted Function Keys:
+#
+#  Key | capname|| Equivalent
+# -----|--------||------------
+#   F1 |  <kf1> || FUNCT + @
+#   F2 |  <kf2> || FUNCT + A
+#   F3 |  <kf3> || FUNCT + B
+#   F4 |  <kf4> || FUNCT + C
+#   F5 |  <kf5> || FUNCT + D
+#   F6 |  <kf6> || FUNCT + E
+#   F7 |  <kf7> || FUNCT + F
+#   F8 |  <kf8> || FUNCT + G
+#   F9 |  <kf9> || FUNCT + H
+#  F10 | <kf10> || FUNCT + I
+#  F11 | <kf11> || FUNCT + J
+#
+# Shifted Function Keys:
+#
+#  SHIFT + Key | capname|| Equivalent
+# -------------|--------||------------
+#   SHIFT + F1 | <kf12> || FUNCT + `
+#   SHIFT + F2 | <kf13> || FUNCT + a
+#   SHIFT + F3 | <kf14> || FUNCT + b
+#   SHIFT + F4 | <kf15> || FUNCT + c
+#   SHIFT + F5 | <kf16> || FUNCT + d
+#   SHIFT + F6 | <kf17> || FUNCT + e
+#   SHIFT + F7 | <kf18> || FUNCT + f
+#   SHIFT + F8 | <kf19> || FUNCT + g
+#   SHIFT + F9 | <kf20> || FUNCT + h
+#  SHIFT + F10 | <kf21> || FUNCT + i
+#  SHIFT + F11 | <kf22> || FUNCT + j
+#
+# PORTS AND SWITCH SETTINGS
+#
+# Here are the switch settings for the TVI-912B/TVI-920B and
+# TVI-912C/TVI-920C:
 #
 # S1 (Line), and S3 (Printer) baud rates -- put one, and only one, switch down:
 # 2: 9600	3: 4800		4: 2400		5: 1200
@@ -6112,10 +6220,223 @@ tvi912cc|tvi912 at cowell college,
 # S4/W34:	Selects Page Print Mode as initial condition.  If not 
 # 		installed, Extension Mode is selected.
 #
-tvi920b|tvi920c|new televideo 920, 
-	dl1=\ER$<5*>, il1=\EE$<5*>, kf0=^AI\r, kf1=^A@\r, 
-	kf2=^AA\r, kf3=^AB\r, kf4=^AC\r, kf5=^AD\r, kf6=^AE\r, 
-	kf7=^AF\r, kf8=^AG\r, kf9=^AH\r, use=tvi912, 
+# NON-STANDARD CAPABILITIES
+#
+# Sending <u9> or <u7> returns a cursor position report in the format
+# YX\r, where Y and X are as in <cup>. This format is described in
+# <u8> and <u6>, but it's not clear how one should write an
+# appropriate scanf string, since we need to subtract %' ' from the
+# character after reading it. The <u9> capability is used by tack(1)
+# to synchronize during padding tests, and seems to work for that
+# purpose.
+#
+# This description also includes the obsolete termcap capabilities
+# has_hardware_tabs (<OTpt>) and backspaces_with_bs (<OTbs>).
+#
+# FEATURES NOT YET DESCRIBED IN THIS TERMINFO
+#
+# The FUNCT modifier actually works with every normal key by sending
+# ^AX\r, where X is the sequence normally sent by that key. This is a
+# sort of meta key not currently describable in terminfo.
+#
+# There are quite a few other keys (especially on the 920 models,) but
+# they are for the most part only useful in block mode.
+#
+# These terminals have lots of forms manipulation features, mainly
+# useful in block mode, including "clear X to nulls" (vs. "clear X to
+# spaces"; nulls are sentinels for "send X" operations); "send X"
+# operations for uploading all or part of the screen; and block-mode
+# editing keys (they don't send escape sequences, but manipulate video
+# memory directly). Block mode is used for local editing, and protect
+# mode (in conjunction with the "write protect" attribute,
+# a.k.a. half-intensity outside of protect mode) is used to control
+# which parts of the screen are edited/sent/printed (by <mc0>).
+#
+# There are at least two major families of ROM, "early" and
+# A49B1/A49C1; the major difference seems to be that the latter ROMs
+# support a few extra escape sequences for manipulating the off-screen
+# memory page, and for sending whole pages back to the host (mainly
+# useful in block mode.) The descriptions in this file don't use any
+# of those sequences: set cursor position including page (\E-PYX,
+# where P is \s for page 0 and ! for page 1 [actually only the LSB of
+# P is taken into account, so e.g. 0 and 1 work too,] and Y and X are
+# as in <cup>); read cursor position (\E/), which is analogous to <u9>
+# and returns PYX\r, where P is \s for page 0 or ! for page 1, and YX
+# are as in <cup>, and some "send page" features mainly useful for
+# forms manipulation.
+#
+# The keyboard enable (\E") and disable (\E#) sequences are unused,
+# except that a terminal reset (<is2>) enables the keyboard.
+#
+# Auto-flip mode (\Ev) is likely faster than the scrolling mode (\Ew)
+# enabled in <is2>, but auto-flip is very jarring so we don't use it.
+#
+# BUGS
+#
+# At least up to the A49B1 and A49C1 ROMs, there are no \Eb and \Ed
+# sequences (I infer that in some TeleVideo terminal they may invert
+# and uninvert the display) so the <flash> sequence given here is a
+# cheesy page-flip instead.
+#
+# The back_tab (<cbt>) sequence (\EI) doesn't work according to
+# tack(1), so it is not included in the descriptions below.
+#
+# It's not clear whether auto_left_margin (<bw>) flag should be set
+# for these terminals; tack says yes, so it is set here, but this
+# differs from other descriptions I've seen.
+#
+# Extension print mode (<mc5>) echoes all characters to the printer
+# port [in addition to displaying them] except for the page print mode
+# sequence (<mc4>); this is a slight violation of the terminfo
+# definition for <mc5> but I don't expect it to cause problems.  We
+# reset to page print mode in <rs1> since it may have been enabled
+# accidentally.
+#
+# The descriptions with plus signs (+) are building blocks.
+
+tvi912b-unk|tvi912c-unk|TeleVideo TVI-912B or TVI-912C (no attributes), 
+	OTbs, OTpt, am, bw, 
+	cols#80, it#8, lines#24, 
+	bel=^G, clear=\032$<50>, cr=^M, cub1=^H, cud1=^J, cuf1=^L, 
+	cup=\E=%p1%' '%+%c%p2%' '%+%c, cuu1=^K, dch1=\EW$<30>, 
+	dl1=\ER$<1*>$<100>, ed=\Ey$<2*>$<10>, el=\ET$<15>, 
+	home=^^, ht=^I, hts=\E1, ich1=\EQ$<30>, 
+	if=/usr/share/tabset/stdcrt, il1=\EE$<1*>$<100>, 
+	ind=\n$<10>, is2=\Ew\EA\E'\E"\E(, kcub1=^H, kcud1=^J, 
+	kcuf1=^L, kcuu1=^K, kdch1=\177, kent=^M, khome=^^, mc4=\EA, 
+	mc5=\E@, rs1=\Ek\010\Em\010\Eq\032, tbc=\E3, u6=%c%c\r, 
+	u7=\E?, u8=%c%c\r, u9=\E?, 
+
+# This isn't included in the basic capabilities because it is
+# typically unusable in combination with the full range of video
+# attributes, since the magic cookie attributes turn into ASCII
+# control characters, and the half-intensity ("protected") attribute
+# converts all affected characters to spaces.
+
+tvi912b+printer|TeleVideo TVI-912B/TVI-920B and TVI-912C/TVI-920C page print support, 
+	mc0=\EP, 
+
+# This uses half-intensity mode (<dim>) for standout (<smso>), and
+# exposes no other attributes (half-intensity is the only attribute
+# that does not generate a magic cookie.)
+
+tvi912b+dim|TeleVideo TVI-912B/TVI-920B and TVI-912C/TVI-920C half-intensity attribute support, 
+	msgr, 
+	dim=\E), rmso=\E(, sgr=\E%?%p1%p5%|%t)%e(%;, sgr0=\E(, 
+	smso=\E), 
+
+# Full magic-cookie attribute support, with half-intensity reverse
+# video for standout. Note that we add a space in the <dim> sequence
+# to give a consistent magic-cookie count. Also note that <sgr> uses
+# backspacing (in the TVI-supported order) to apply all requested
+# attributes with only a single magic cookie.
+
+tvi912b+mc|TeleVideo TVI-912B/TVI-920B and TVI-912C/TVI-920C full magic-cookie attribute support, 
+	xmc#1, 
+	blink=\E\^, dim=\E)\s, invis=\E_, rev=\Ej, rmso=\E(\Ek, 
+	rmul=\Em, 
+	sgr=\E%?%p1%p5%|%t)%e(%; \010\E%?%p1%p3%|%tj%ek%;\010\E%?%p2%tl%em%;\010\E%?%p7%t_%e%?%p4%t\^%eq%;%;, 
+	sgr0=\E(\Ek\010\Em\010\Eq, smso=\E)\Ej, smul=\El, 
+
+# This uses the second page memory option to save & restore screen
+# contents. If your terminal is missing the option, this description
+# should still work, but that has not been tested.
+
+tvi912b+2p|TeleVideo TVI-912B/TVI-920B and TVI-912C/TVI-920C second page memory option support, 
+	flash=\EK$<100>\EK, rmcup=\032$<50>\EK\E=7\s, 
+	smcup=\EK\032$<50>\E(\Ek\010\Em\010\Eq\032$<50>, 
+
+# This simulates flashing by briefly toggling to the other page
+# (kludge!)
+
+tvi912b+vb|TeleVideo TVI-912B/TVI-920B and TVI-912C/TVI-920C second page memory option "visible bell" support, 
+	bel=\EK$<100>\EK, use=tvi912b+2p, 
+
+# Function keys (<kf12> .. <kf22> are shifted <kf1> .. <kf11>)
+
+tvi920b+fn|TeleVideo TVI-920B and TVI-920C function key support, 
+	kf1=^A@\r, kf10=^AI\r, kf11=^AJ\r, kf12=^A`\r, kf13=^Aa\r, 
+	kf14=^Ab\r, kf15=^Ac\r, kf16=^Ad\r, kf17=^Ae\r, kf18=^Af\r, 
+	kf19=^Ag\r, kf2=^AA\r, kf20=^Ah\r, kf21=^Ai\r, kf22=^Aj\r, 
+	kf3=^AB\r, kf4=^AC\r, kf5=^AD\r, kf6=^AE\r, kf7=^AF\r, 
+	kf8=^AG\r, kf9=^AH\r, 
+
+# Combinations of the basic building blocks
+
+tvi912b-2p-unk|tvi912c-2p-unk|tvi912b-unk-2p|tvi912c-unk-2p|TeleVideo TVI-912B or TVI-912C (second page memory option; no attributes), 
+	use=tvi912b+2p, use=tvi912b-unk, 
+
+tvi912b-vb-unk|tvi912c-vb-unk|tvi912b-unk-vb|tvi912c-unk-vb|TeleVideo TVI-912B or TVI-912C (second page memory option "visible bell"; no attributes), 
+	use=tvi912b+vb, use=tvi912b-unk, 
+
+tvi912b-p|tvi912c-p|TeleVideo TVI-912B or TVI-912C (no attributes; page print), 
+	use=tvi912b+printer, use=tvi912b-unk, 
+
+tvi912b-2p-p|tvi912c-2p-p|tvi912b-p-2p|tvi912c-p-2p|TeleVideo TVI-912B or TVI-912C (second page memory option; no attributes; page print), 
+	use=tvi912b+2p, use=tvi912b+printer, use=tvi912b-unk, 
+
+tvi912b-vb-p|tvi912c-vb-p|tvi912b-p-vb|tvi912c-p-vb|TeleVideo TVI-912B or TVI-912C (second page memory option "visible bell"; no attributes; page print), 
+	use=tvi912b+vb, use=tvi912b+printer, use=tvi912b-unk, 
+
+tvi912b-2p|tvi912c-2p|TeleVideo TVI-912B or TVI-912C (second page memory option; half-intensity attribute), 
+	use=tvi912b+2p, use=tvi912b+dim, use=tvi912b-unk, 
+
+tvi912b-2p-mc|tvi912c-2p-mc|tvi912b-mc-2p|tvi912c-mc-2p|TeleVideo TVI-912B or TVI-912C (second page memory option; magic cookies), 
+	use=tvi912b+2p, use=tvi912b+mc, use=tvi912b-unk, 
+
+tvi912b-vb|tvi912c-vb|TeleVideo TVI-912B or TVI-912C (second page memory option "visible bell"; half-intensity attribute), 
+	use=tvi912b+vb, use=tvi912b+dim, use=tvi912b-unk, 
+
+tvi912b-vb-mc|tvi912c-vb-mc|tvi912b-mc-vb|tvi912c-mc-vb|TeleVideo TVI-912B or TVI-912C (second page memory option "visible bell"; magic cookies), 
+	use=tvi912b+vb, use=tvi912b+mc, use=tvi912b-unk, 
+
+tvi912b|tvi912c|TeleVideo TVI-912B or TVI-912C (half-intensity attribute), 
+	use=tvi912b+dim, use=tvi912b-unk, 
+
+tvi912b-mc|tvi912c-mc|TeleVideo TVI-912B or TVI-912C (magic cookies), 
+	use=tvi912b+mc, use=tvi912b-unk, 
+
+tvi920b-unk|tvi920c-unk|TeleVideo TVI-920B or TVI-920C (no attributes), 
+	use=tvi920b+fn, use=tvi912b-unk, 
+
+tvi920b-2p-unk|tvi920c-2p-unk|tvi920b-unk-2p|tvi920c-unk-2p|TeleVideo TVI-920B or TVI-920C (second page memory option; no attributes), 
+	use=tvi920b+fn, use=tvi912b+2p, use=tvi912b-unk, 
+
+tvi920b-vb-unk|tvi920c-vb-unk|tvi920b-unk-vb|tvi920c-unk-vb|TeleVideo TVI-920B or TVI-920C (second page memory option "visible bell"; no attributes), 
+	use=tvi920b+fn, use=tvi912b+vb, use=tvi912b-unk, 
+
+tvi920b-p|tvi920c-p|TeleVideo TVI-920B or TVI-920C (no attributes; page print), 
+	use=tvi920b+fn, use=tvi912b+printer, use=tvi912b-unk, 
+
+tvi920b-2p-p|tvi920c-2p-p|tvi920b-p-2p|tvi920c-p-2p|TeleVideo TVI-920B or TVI-920C (second page memory option; no attributes; page print), 
+	use=tvi920b+fn, use=tvi912b+2p, use=tvi912b+printer, 
+	use=tvi912b-unk, 
+
+tvi920b-vb-p|tvi920c-vb-p|tvi920b-p-vb|tvi920c-p-vb|TeleVideo TVI-920B or TVI-920C (second page memory option "visible bell"; no attributes; page print), 
+	use=tvi920b+fn, use=tvi912b+vb, use=tvi912b+printer, 
+	use=tvi912b-unk, 
+
+tvi920b-2p|tvi920c-2p|TeleVideo TVI-920B or TVI-920C (second page memory option; half-intensity attribute), 
+	use=tvi920b+fn, use=tvi912b+2p, use=tvi912b+dim, 
+	use=tvi912b-unk, 
+
+tvi920b-2p-mc|tvi920c-2p-mc|tvi920b-mc-2p|tvi920c-mc-2p|TeleVideo TVI-920B or TVI-920C (second page memory option; magic cookies), 
+	use=tvi920b+fn, use=tvi912b+2p, use=tvi912b+mc, 
+	use=tvi912b-unk, 
+
+tvi920b-vb|tvi920c-vb|TeleVideo TVI-920B or TVI-920C (second page memory option "visible bell"; half-intensity attribute), 
+	use=tvi920b+fn, use=tvi912b+vb, use=tvi912b+dim, 
+	use=tvi912b-unk, 
+
+tvi920b-vb-mc|tvi920c-vb-mc|tvi920b-mc-vb|tvi920c-mc-vb|TeleVideo TVI-920B or TVI-920C (second page memory option "visible bell"; magic cookies), 
+	use=tvi920b+fn, use=tvi912b+vb, use=tvi912b+mc, 
+	use=tvi912b-unk, 
+
+tvi920b|tvi920c|TeleVideo TVI-920B or TVI-920C (half-intensity attribute), 
+	use=tvi920b+fn, use=tvi912b+dim, use=tvi912b-unk, 
+
+tvi920b-mc|tvi920c-mc|TeleVideo TVI-920B or TVI-920C (magic cookies), 
+	use=tvi920b+fn, use=tvi912b+mc, use=tvi912b-unk, 
 
 # Televideo 921 and variants
 # From: Tim Theisen <tim@cs.wisc.edu> 22 Sept 1995
@@ -20004,6 +20325,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2003-12-20
 #	* add screen.linux -TD
+#
+# 2004-01-10
+#	* revised/improved entries for tvi912b, tvi920b (Benjamin Sittler)
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

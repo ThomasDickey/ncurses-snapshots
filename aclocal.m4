@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+dnl Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
 dnl copy of this software and associated documentation files (the            *
@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.326 2004/01/04 00:32:17 tom Exp $
+dnl $Id: aclocal.m4,v 1.328 2004/01/10 21:06:26 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1116,7 +1116,7 @@ ifelse($1,,,[$1=$LIB_PREFIX])
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_RULES version: 29 updated: 2003/07/19 16:05:52
+dnl CF_LIB_RULES version: 30 updated: 2004/01/10 15:50:50
 dnl ------------
 dnl Append definitions and rules for the given models to the subdirectory
 dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
@@ -1175,16 +1175,13 @@ do
 
 		if test $cf_dir = ncurses ; then
 			cf_subsets="$LIB_SUBSETS"
-			case "$LIB_SUBSETS" in #(vi
-			termlib+*) #(vi
-				;;
-			*) #(vi
+			cf_termlib=`echo "$cf_subsets" |sed -e 's/ .*$//'`
+			if test "$cf_termlib" != "$cf_subsets" ; then
 				cf_item=`echo $LIBS_TO_MAKE |sed -e s%$LIB_NAME%$TINFO_NAME%g`
 				LIBS_TO_MAKE="$cf_item $LIBS_TO_MAKE"
-				;;
-			esac
+			fi
 		else
-			cf_subsets=`echo "$LIB_SUBSETS" | sed -e 's/^termlib //'`
+			cf_subsets=`echo "$LIB_SUBSETS" | sed -e 's/^termlib.* //'`
 		fi
 
 		sed -e "s%@LIBS_TO_MAKE@%$LIBS_TO_MAKE%" \
@@ -2885,7 +2882,7 @@ if test "$cf_cv_sizechange" != no ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SRC_MODULES version: 14 updated: 2002/01/19 22:51:32
+dnl CF_SRC_MODULES version: 15 updated: 2004/01/10 16:05:16
 dnl --------------
 dnl For each parameter, test if the source-directory exists, and if it contains
 dnl a 'modules' file.  If so, add to the list $cf_cv_src_modules which we'll
@@ -2906,7 +2903,7 @@ else
 fi
 
 # dependencies and linker-arguments for utility-programs
-PROG_ARGS="$TEST_ARGS"
+test "$with_termlib" != yes && PROG_ARGS="$TEST_ARGS"
 
 cf_cv_src_modules=
 for cf_dir in $1

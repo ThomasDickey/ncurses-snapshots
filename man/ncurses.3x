@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.68 2004/01/03 22:38:42 tom Exp $
+.\" $Id: ncurses.3x,v 1.70 2004/01/11 01:45:54 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
@@ -646,18 +646,18 @@ obtain the width of the window in which they are executing.
 If neither the $COLUMNS value nor the terminal's screen size is available,
 \fBncurses\fR uses the size which may be specified in the terminfo database
 (i.e., the \fBcols\fR capability).
-.PP
+.IP
 It is important that your application use a correct size for the screen.
 However, this is not always possible because your application may be
 running on a host which does not honor NAWS (Negotiations About Window
 Size), or because you are temporarily running as another user.
-.PP
+.IP
 Either COLUMNS or LINES symbols may be specified independently.
 This is mainly useful to circumvent legacy misfeatures of terminal descriptions,
 e.g., xterm which commonly specifies a 65 line screen.
 For best results, \fBlines\fR and \fBcols\fR should not be specified in
 a terminal description for terminals which are run as emulations.
-.PP
+.IP
 Use the \fBuse_env\fR function to disable this feature.
 .TP 5
 ESCDELAY
@@ -665,13 +665,13 @@ Specifies the total time, in milliseconds, for which ncurses will
 await a character sequence, e.g., a function key.
 The default value, 1000 milliseconds, is enough for most uses.
 However, it is made a variable to accommodate unusual applications.
-.PP
+.IP
 The most common instance where you may wish to change this value
 is to work with slow hosts, e.g., running on a network.
 If the host cannot read characters rapidly enough, it will have the same
 effect as if the terminal did not send characters rapidly enough.
 The library will still see a timeout.
-.PP
+.IP
 Note that xterm mouse events are built up from character sequences
 received from the xterm.
 If your application makes heavy use of multiple-clicking, you may
@@ -681,7 +681,7 @@ to the composed multi-click event as well as the individual clicks.
 HOME
 Tells \fBncurses\fR where your home directory is.
 That is where it may read and write auxiliary terminal descriptions:
-.PP
+.IP
 $HOME/.termcap
 .br
 $HOME/.terminfo
@@ -733,11 +733,11 @@ it (or your application) must manage dataflow, preventing overruns.
 The cheapest solution (no hardware cost)
 is for your program to do this by pausing after
 operations that the terminal does slowly, such as clearing the display.
-.PP
+.IP
 As a result, many terminal descriptions (including the vt100)
 have delay times embedded.  You may wish to use these descriptions,
 but not want to pay the performance penalty.
-.PP
+.IP
 Set the NCURSES_NO_PADDING symbol to disable all but mandatory
 padding.  Mandatory padding is used as a part of special control
 sequences such as \fIflash\fR.
@@ -755,7 +755,7 @@ During initialization, the \fBncurses\fR debugging library
 checks the NCURSES_TRACE symbol.
 If it is defined, to a numeric value, \fBncurses\fR calls the \fBtrace\fR
 function, using that value as the argument.
-.PP
+.IP
 The argument values, which are defined in \fBcurses.h\fR, provide several
 types of information.
 When running with traces enabled, your application will write the
@@ -769,7 +769,7 @@ TERMCAP
 If the \fBncurses\fR library has been configured with \fItermcap\fR
 support, \fBncurses\fR will check for a terminal's description in
 termcap form if it is not available in the terminfo database.
-.PP
+.IP
 The TERMCAP symbol contains either a terminal description (with
 newlines stripped out),
 or a file name telling where the information denoted by the TERM symbol exists.

@@ -1,10 +1,25 @@
--- $Id: NEWS,v 1.783 2004/01/04 00:31:56 tom Exp $
+-- $Id: NEWS,v 1.785 2004/01/11 01:26:57 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040110 pre-release
+	+ change minor version to 4, i.e., ncurses 5.4
+	+ revised/improved terminfo entries for tvi912b, tvi920b (Benjamin C W
+	  Sittler).
+	+ simplified ncurses/base/version.c by defining the result from the
+	  configure script rather than using sprintf (suggested by Stanislav
+	  Ievlev).
+	+ remove obsolete casts from c++/cursesw.h (reported by Stanislav
+	  Ievlev).
+	+ modify configure script so that when configuring for termlib, programs
+	  such as tic are not linked with the upper-level ncurses library
+	  (suggested by Stanislav Ievlev).
+	+ move version.c from ncurses/base to ncurses/tinfo to allow linking
+	  of tic, etc., using libtinfo (suggested by Stanislav Ievlev).
 
 20040103
 	+ adjust -D's to build ncursesw on OpenBSD.
