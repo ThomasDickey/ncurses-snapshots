@@ -7,7 +7,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.19 1997/08/23 18:03:46 tom Exp $
+ * $Id: bs.c,v 1.20 1997/11/01 19:35:14 tom Exp $
  */
 
 #include <test.priv.h>
@@ -160,7 +160,7 @@ static int salvo, blitz, closepack;
 
 static RETSIGTYPE uninitgame(int sig)  GCC_NORETURN;
 
-static void uninitgame(int sig GCC_UNUSED)
+static RETSIGTYPE uninitgame(int sig GCC_UNUSED)
 /* end the game, either normally or due to signal */
 {
     clear();

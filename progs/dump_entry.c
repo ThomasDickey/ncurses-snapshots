@@ -26,7 +26,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include "parametrized.h"	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.21 1997/10/04 21:59:57 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.22 1997/11/02 00:08:32 tom Exp $")
 
 #define INDENT			8
 
@@ -643,7 +643,7 @@ bool	outcount = 0;
     }
     else if (tversion == V_AIX)
     {
-	if (acs_chars)
+	if (VALID_STRING(acs_chars))
 	{
 	    bool	box_ok = TRUE;
 	    const char	*acstrans = "lqkxjmwuvtn";

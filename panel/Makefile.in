@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.21 1997/10/26 12:24:51 tom Exp $
+# $Id: Makefile.in,v 1.22 1997/11/01 20:39:20 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -108,7 +108,7 @@ TAGS:
 	etags *.[ch]
 
 clean ::
-	-rm -f tags TAGS *~ ../include/panel.h
+	-rm -f tags TAGS *~ *.ln *.atac ../include/panel.h
 
 distclean :: clean
 	-rm -f Makefile

@@ -32,7 +32,7 @@
 #include <signal.h>
 #include <SigAction.h>
 
-#ifdef SVR4_ACTION
+#if defined(SVR4_ACTION) && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
 #endif
 
@@ -40,7 +40,7 @@
 #undef USE_SIGWINCH	/* FIXME: configure should resolve this */
 #endif
 
-MODULE_ID("$Id: lib_tstp.c,v 1.12 1997/10/18 21:14:58 tom Exp $")
+MODULE_ID("$Id: lib_tstp.c,v 1.13 1997/11/01 19:05:13 tom Exp $")
 
 /*
  * Note: This code is fragile!  Its problem is that different OSs

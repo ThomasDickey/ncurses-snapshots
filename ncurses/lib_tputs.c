@@ -33,7 +33,7 @@
 #include <term.h>	/* padding_baud_rate, xon_xoff */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.21 1997/10/26 00:13:12 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.25 1997/11/02 00:05:07 tom Exp $")
 
 #define OUTPUT ((SP != 0) ? SP->_ofp : stdout)
 
@@ -45,8 +45,10 @@ int delay_output(int ms)
 {
 	T((T_CALLED("delay_output(%d)"), ms));
 
-	if (cur_term == 0 || cur_term->_baudrate <= 0)
-		returnCode(ERR);
+	if (cur_term == 0 || cur_term->_baudrate <= 0) {
+		(void) fflush(OUTPUT);
+		_nc_timed_wait(0, ms, (int *)0);
+	}
 #ifdef no_pad_char
 	else if (no_pad_char)
 		napms(ms);
@@ -61,7 +63,7 @@ int delay_output(int ms)
 #endif /* pad_char */
 
 		nullcount = ms * 1000 / cur_term->_baudrate;
-		for (_nc_nulls_sent = nullcount; nullcount > 0; nullcount--)
+		for (_nc_nulls_sent += nullcount; nullcount > 0; nullcount--)
 			my_outch(null);
 		if (my_outch == _nc_outch)
 			(void) fflush(OUTPUT);
@@ -87,6 +89,7 @@ int putp(const char *string)
 
 int tputs(const char *string, int affcnt, int (*outc)(int))
 {
+bool	always_delay = (string == bell) || (string == flash_screen);
 float	number;
 #ifdef BSD_TPUTS
 float	trailpad;
@@ -177,7 +180,7 @@ char	addrbuf[17];
 						string++;
 				}
 
-				mandatory = !xon_xoff;
+				mandatory = always_delay || !xon_xoff;
 				while (*string == '*' || *string == '/')
 				{
 					if (*string == '*') {
@@ -192,9 +195,7 @@ char	addrbuf[17];
 
 #ifdef padding_baud_rate
 				if (mandatory
-				 && number > 0
-				 && padding_baud_rate
-				 && (!cur_term || cur_term->_baudrate >= padding_baud_rate))
+				 && number > 0)
 					delay_output(number);
 #endif /* padding_baud_rate */
 				number = 0;

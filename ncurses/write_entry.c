@@ -37,7 +37,7 @@
 #define S_ISDIR(mode) ((mode & S_IFMT) == S_IFDIR)
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.16 1997/05/10 17:33:12 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.17 1997/11/01 21:58:19 tom Exp $")
 
 static int total_written;
 
@@ -64,9 +64,9 @@ const char *destination = _nc_tic_dir(0);
 		rc = mkdir(path, 0777);
 	} else {
 		if (access(path, R_OK|W_OK|X_OK) < 0) {
-			_nc_err_abort("%s: permission denied", fullpath);
+			rc = -1;	/* permission denied */
 		} else if (!(S_ISDIR(statbuf.st_mode))) {
-			_nc_err_abort("%s: not a directory", fullpath);
+			rc = -1;	/* not a directory */
 		}
 	}
 	return rc;
@@ -115,6 +115,8 @@ void  _nc_set_writedir(char *dir)
  *
  *	Check for access rights to destination directories
  *	Create any directories which don't exist.
+ *	Note: there's no reason to return the result of make_directory(), since
+ *	this function is called only in instances where that has to succeed.
  *
  */
 
@@ -134,7 +136,9 @@ char		*s;
 
 	dir[0] = code;
 	dir[1] = '\0';
-	(void) make_directory(dir);
+	if (make_directory(dir) < 0) {
+		_nc_err_abort("%s/%s: permission denied", _nc_tic_dir(0), dir);
+	}
 
 	verified[s-dirnames] = TRUE;
 }

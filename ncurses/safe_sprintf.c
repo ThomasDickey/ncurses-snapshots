@@ -22,9 +22,9 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: safe_sprintf.c,v 1.3 1997/10/18 17:54:35 tom Exp $")
+MODULE_ID("$Id: safe_sprintf.c,v 1.4 1997/11/01 23:01:09 tom Exp $")
 
-#ifdef USE_SAFE_SPRINTF
+#if USE_SAFE_SPRINTF
 
 typedef enum { Flags, Width, Prec, Type, Format } PRINTF;
 

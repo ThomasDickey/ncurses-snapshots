@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.95 1997/10/25 22:46:10 tom Exp $
+dnl $Id: aclocal.m4,v 1.96 1997/11/01 21:13:15 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -976,10 +976,12 @@ AC_TRY_LINK([#include <sys/types.h>
 		char *p = compile("", "", "", 0);
 		int x = step("", "");
 	],[cf_cv_regex="regexp.h"],[
+		cf_save_LIBS="$LIBS"
+		LIBS="-lgen $LIBS"
 		AC_TRY_LINK([#include <regexpr.h>],[
 			char *p = compile("", "", "");
 			int x = step("", "");
-		],[cf_cv_regex="regexpr.h"])])])
+		],[cf_cv_regex="regexpr.h"],[LIBS="$cf_save_LIBS"])])])
 ])
 AC_MSG_RESULT($cf_cv_regex)
 case $cf_cv_regex in
@@ -1131,7 +1133,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		else
 			CC_SHARED_OPTS='-KPIC'
 		fi
-		MK_SHARED_LIB='$(LD) -d y -G -h `basename $[@].$(ABI_VERSION)` -o $[@].$(REL_VERSION)'
+		MK_SHARED_LIB='$(LD) -dy -G -h `basename $[@].$(ABI_VERSION)` -o $[@].$(REL_VERSION)'
 		cf_cv_do_symlinks=yes
 		;;
 	unix_sv*)
