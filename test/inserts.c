@@ -1,5 +1,5 @@
 /*
- * $Id: inserts.c,v 1.4 2002/11/03 00:49:38 tom Exp $
+ * $Id: inserts.c,v 1.5 2003/08/09 22:07:06 tom Exp $
  *
  * Demonstrate the winsstr() and winsch functions.
  * Thomas Dickey - 2002/10/19
@@ -158,5 +158,5 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	}
     }
     endwin();
-    return EXIT_SUCCESS;
+    ExitProgram(EXIT_SUCCESS);
 }

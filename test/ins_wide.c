@@ -1,5 +1,5 @@
 /*
- * $Id: ins_wide.c,v 1.2 2002/11/23 23:17:48 tom Exp $
+ * $Id: ins_wide.c,v 1.3 2003/08/09 22:07:23 tom Exp $
  *
  * Demonstrate the wins_wstr() and wins_wch functions.
  * Thomas Dickey - 2002/11/23
@@ -206,7 +206,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	}
     }
     endwin();
-    return EXIT_SUCCESS;
+    ExitProgram(EXIT_SUCCESS);
 }
 #else
 int

@@ -43,7 +43,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.77 2003/05/17 19:43:46 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.78 2003/08/09 20:41:12 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN * screenp)
@@ -83,6 +83,7 @@ NCURSES_EXPORT(void)
 delscreen(SCREEN * sp)
 {
     SCREEN **scan = &_nc_screen_chain;
+    int i;
 
     T((T_CALLED("delscreen(%p)"), sp));
 
@@ -99,7 +100,13 @@ delscreen(SCREEN * sp)
     (void) _nc_freewin(sp->_stdscr);
 
     if (sp->_slk != 0) {
-	FreeIfNeeded(sp->_slk->ent);
+	if (sp->_slk->ent != 0) {
+	    for (i = 0; i < sp->_slk->labcnt; ++i) {
+		FreeIfNeeded(sp->_slk->ent[i].ent_text);
+		FreeIfNeeded(sp->_slk->ent[i].form_text);
+	    }
+	    free(sp->_slk->ent);
+	}
 	free(sp->_slk);
 	sp->_slk = 0;
     }
