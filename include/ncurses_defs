@@ -1,4 +1,4 @@
-# $Id: ncurses_defs,v 1.18 2003/07/05 15:14:30 tom Exp $
+# $Id: ncurses_defs,v 1.19 2003/12/07 01:07:45 tom Exp $
 ##############################################################################
 # Copyright (c) 2000-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -45,6 +45,7 @@ GCC_NORETURN	/* nothing */
 GCC_UNUSED	/* nothing */
 HAVE_BIG_CORE
 HAVE_BSD_CGETENT
+HAVE_BSD_SIGNAL_H
 HAVE_BTOWC 
 HAVE_BUILTIN_H
 HAVE_DIRENT_H
@@ -63,6 +64,7 @@ HAVE_GXX_BUILTIN_H
 HAVE_HAS_KEY
 HAVE_ISASCII
 HAVE_ISSETUGID
+HAVE_LIBC_H
 HAVE_LIBDBMALLOC
 HAVE_LIBDMALLOC
 HAVE_LIBFORM

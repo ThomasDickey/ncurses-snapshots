@@ -1,5 +1,5 @@
 # Test-Program modules
-# $Id: modules,v 1.19 2003/04/26 16:31:10 tom Exp $
+# $Id: modules,v 1.20 2003/12/07 00:01:23 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -32,9 +32,11 @@
 #
 
 @ base
+background	progs		$(srcdir)
 blue		progs		$(srcdir)	../include/term.h
 bs		progs		$(srcdir)
 cardfile	progs		$(srcdir)	../include/panel.h ../include/form.h
+color_set	progs		$(srcdir)
 demo_defkey	progs		$(srcdir)
 demo_keyok	progs		$(srcdir)
 demo_forms	progs		$(srcdir)	../include/form.h

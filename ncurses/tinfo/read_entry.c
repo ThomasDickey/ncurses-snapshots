@@ -42,7 +42,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.76 2003/07/05 19:31:51 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.77 2003/12/06 21:30:12 tom Exp $")
 
 #if !HAVE_TELL
 #define tell(fd) lseek(fd, 0, SEEK_CUR)		/* lseek() is POSIX, but not tell() */
@@ -170,7 +170,6 @@ read_termtype(int fd, TERMTYPE * ptr)
 	return (0);
     }
 
-    _nc_free_termtype(ptr);
     name_size = LOW_MSB(buf + 2);
     bool_count = LOW_MSB(buf + 4);
     num_count = LOW_MSB(buf + 6);

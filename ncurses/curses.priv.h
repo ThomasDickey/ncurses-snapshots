@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.253 2003/09/13 23:16:30 tom Exp $
+ * $Id: curses.priv.h,v 1.254 2003/12/07 00:21:14 tom Exp $
  *
  *	curses.priv.h
  *
@@ -1022,7 +1022,6 @@ extern NCURSES_EXPORT(void) _nc_hash_map (void);
 extern NCURSES_EXPORT(void) _nc_init_keytry (void);
 extern NCURSES_EXPORT(void) _nc_keep_tic_dir (const char *);
 extern NCURSES_EXPORT(void) _nc_make_oldhash (int i);
-extern NCURSES_EXPORT(void) _nc_outstr (const char *str);
 extern NCURSES_EXPORT(void) _nc_scroll_oldhash (int n, int top, int bot);
 extern NCURSES_EXPORT(void) _nc_scroll_optimize (void);
 extern NCURSES_EXPORT(void) _nc_scroll_window (WINDOW *, int const, short const, short const, NCURSES_CH_T);

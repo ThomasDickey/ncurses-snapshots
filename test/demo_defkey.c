@@ -1,5 +1,5 @@
 /*
- * $Id: demo_defkey.c,v 1.11 2003/05/17 23:33:28 tom Exp $
+ * $Id: demo_defkey.c,v 1.12 2003/12/06 17:25:02 tom Exp $
  *
  * Demonstrate the define_key() function.
  * Thomas Dickey - 2002/11/23
@@ -84,10 +84,10 @@ visible(const char *string)
 		    need += strlen(temp);
 	    }
 	    if (!pass)
-		result = calloc(need, 1);
+		result = (char *) calloc(need, 1);
 	}
     } else {
-	result = calloc(1, 1);
+	result = (char *) calloc(1, 1);
     }
     return result;
 }

@@ -1,10 +1,31 @@
--- $Id: NEWS,v 1.777 2003/11/30 01:32:11 tom Exp $
+-- $Id: NEWS,v 1.778 2003/12/07 01:03:30 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20031206
+	+ folded ncurses/base/sigaction.c into includes of ncurses/SigAction.h,
+	  since that header is used only within ncurses/tty/lib_tstp.c, for
+	  non-POSIX systems (discussion with Stanislav Ievlev).
+	+ remove obsolete _nc_outstr() function (report by Stanislav Ievlev
+	  <inger@altlinux.org>).
+	+ add test/background.c and test/color_set.c
+	+ modify color_set() function to work with color pair 0 (report by
+	  George Andreou <gbandreo@tem.uoc.gr>).
+	+ add configure option --with-trace, since defining TRACE seems too
+	  awkward for some cases.
+	+ remove a call to _nc_free_termtype() from read_termtype(), since the
+	  corresponding buffer contents were already zeroed by a memset (cf:
+	  20000101).
+	+ improve configure check for _XOPEN_SOURCE and related definitions,
+	  adding special cases for Solaris' __EXTENSIONS__ and FreeBSD's
+	  __BSD_TYPES (reports by Marc Glisse <marc.glisse@normalesup.org>).
+	+ small fixes to compile on Solaris and IRIX64 using cc.
+	+ correct typo in check for pre-POSIX sort options in MKkey_defs.sh
+	  (cf: 20031101).
 
 20031129
 	+ modify _nc_gettime() to avoid a problem with arithmetic on unsigned

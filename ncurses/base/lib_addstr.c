@@ -44,7 +44,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.38 2003/07/05 19:45:21 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.39 2003/12/06 18:04:33 tom Exp $")
 
 NCURSES_EXPORT(int)
 waddnstr(WINDOW *win, const char *astr, int n)
@@ -129,7 +129,7 @@ _nc_wchstrlen(const cchar_t * s)
 }
 
 NCURSES_EXPORT(int)
-wadd_wchnstr(WINDOW *win, const cchar_t * const astr, int n)
+wadd_wchnstr(WINDOW *win, const cchar_t * astr, int n)
 {
     NCURSES_SIZE_T y = win->_cury;
     NCURSES_SIZE_T x = win->_curx;

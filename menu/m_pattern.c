@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_pattern.c,v 1.8 2003/10/25 15:23:42 tom Exp $")
+MODULE_ID("$Id: m_pattern.c,v 1.9 2003/12/06 17:22:10 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -53,7 +53,7 @@ MODULE_ID("$Id: m_pattern.c,v 1.8 2003/10/25 15:23:42 tom Exp $")
 NCURSES_EXPORT(char *)
 menu_pattern (const MENU * menu)
 {
-  return (menu ? (menu->pattern ? menu->pattern : "") : (char *)0);
+  return (char *)(menu ? (menu->pattern ? menu->pattern : "") : 0);
 }
 
 /*---------------------------------------------------------------------------
