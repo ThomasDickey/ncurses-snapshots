@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.34 1997/10/21 10:20:31 juergen Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.35 1997/11/08 21:23:37 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -240,7 +240,7 @@ size_t	i;
 				A_STANDOUT |
 				A_UNDERLINE
 				);
-		SP->_xmc_suppress = SP->_xmc_triggers & ~(A_BOLD);
+		SP->_xmc_suppress = SP->_xmc_triggers & (chtype)~(A_BOLD);
 
 		T(("magic cookie attributes %s", _traceattr(SP->_xmc_suppress)));
 #if USE_XMC_SUPPORT

@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.96 1997/11/01 21:13:15 tom Exp $
+dnl $Id: aclocal.m4,v 1.98 1997/11/09 00:11:38 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -153,6 +153,27 @@ do
 done
 AC_MSG_RESULT($includedir)
 fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Check if the terminal-capability database functions are available.  If not,
+dnl ncurses has a much-reduced version.
+AC_DEFUN([CF_CGETENT],[
+AC_MSG_CHECKING(for terminal-capability database functions)
+AC_CACHE_VAL(cf_cv_cgetent,[
+AC_TRY_LINK([
+#include <stdlib.h>],[
+	char temp[128];
+	char *buf = temp;
+	char *db_array = temp;
+	cgetent(&buf, /* int *, */ &db_array, "vt100");
+	cgetcap(buf, "tc", '=');
+	cgetmatch(buf, "tc");
+	],
+	[cf_cv_cgetent=yes],
+	[cf_cv_cgetent=no])
+])
+AC_MSG_RESULT($cf_cv_cgetent)
+test $cf_cv_cgetent = yes && AC_DEFINE(HAVE_BSD_CGETENT)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Check if we're accidentally using a cache from a different machine.
@@ -1086,7 +1107,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		# tested with Linux 2.0.29 and gcc 2.7.2 (ELF)
 		CC_SHARED_OPTS='-fPIC'
  		MK_SHARED_LIB='gcc -o $[@].$(REL_VERSION) -L../lib -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)`,-stats,$(SHLIB_LIST)-lc'
-		test $cf_cv_ld_rpath = yes && MK_SHARED_LIB="$MK_SHARED_LIB -Wl,-rpath,\$(libdir)"
+		test $cf_cv_ld_rpath = yes && cf_ld_rpath_opt="-Wl,-rpath,"
 		if test $DFT_LWR_MODEL = "shared" ; then
  			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
  			LOCAL_LDFLAGS2='-Wl,-rpath,../../lib'
@@ -1103,7 +1124,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		# link with shared libs).
 		CC_SHARED_OPTS=''
  		MK_SHARED_LIB='$(LD) -o $[@].$(REL_VERSION) -set_version $(ABI_VERSION):$(REL_VERSION) -expect_unresolved "*" -shared -soname `basename $[@].$(ABI_VERSION)`'
-		test $cf_cv_ld_rpath = yes && MK_SHARED_LIB="$MK_SHARED_LIB -rpath \$(libdir)"
+		test $cf_cv_ld_rpath = yes && cf_ld_rpath_opt="-rpath"
 		case $host_os in
 		osf4*)
  			MK_SHARED_LIB="${MK_SHARED_LIB} -msym"
@@ -1134,6 +1155,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 			CC_SHARED_OPTS='-KPIC'
 		fi
 		MK_SHARED_LIB='$(LD) -dy -G -h `basename $[@].$(ABI_VERSION)` -o $[@].$(REL_VERSION)'
+		test $cf_cv_ld_rpath = yes && cf_ld_rpath_opt="-R"
 		cf_cv_do_symlinks=yes
 		;;
 	unix_sv*)
@@ -1146,6 +1168,18 @@ AC_DEFUN([CF_SHARED_OPTS],
 		MK_SHARED_LIB='echo unknown'
 		;;
 	esac
+
+	if test -n "$cf_ld_rpath_opt" ; then
+		AC_MSG_CHECKING(if we need a space after rpath option)
+		cf_save_LIBS="$LIBS"
+		LIBS="$LIBS ${cf_ld_rpath_opt}/usr/lib"
+		AC_TRY_LINK(, , cf_rpath_space=no, cf_rpath_space=yes)
+		LIBS="$cf_save_LIBS"
+		AC_MSG_RESULT($cf_rpath_space)
+		test $cf_rpath_space = yes && cf_ld_rpath_opt="$cf_ld_rpath_opt "
+		MK_SHARED_LIB="$MK_SHARED_LIB $cf_ld_rpath_opt\$(libdir)"
+	fi
+
 	AC_SUBST(CC_SHARED_OPTS)
 	AC_SUBST(LD_SHARED_OPTS)
 	AC_SUBST(MK_SHARED_LIB)
@@ -1300,6 +1334,57 @@ dnl ---------------------------------------------------------------------------
 dnl	Remove "-g" option from the compiler options
 AC_DEFUN([CF_STRIP_G_OPT],
 [$1=`echo ${$1} | sed -e 's/-g //' -e 's/-g$//'`])dnl
+dnl ---------------------------------------------------------------------------
+dnl Check if we need _POSIX_SOURCE defined to use struct sigaction.  We'll only
+dnl do this if we've found the sigaction function.
+dnl
+dnl If needed, define SVR4_ACTION.
+AC_DEFUN([CF_STRUCT_SIGACTION],[
+if test $ac_cv_func_sigaction = yes; then
+AC_MSG_CHECKING(whether sigaction needs _POSIX_SOURCE)
+AC_TRY_COMPILE([
+#include <sys/types.h>
+#include <signal.h>],
+	[struct sigaction act],
+	[sigact_bad=no],
+	[
+AC_TRY_COMPILE([
+#define _POSIX_SOURCE
+#include <sys/types.h>
+#include <signal.h>],
+	[struct sigaction act],
+	[sigact_bad=yes
+	 AC_DEFINE(SVR4_ACTION)],
+	 [sigact_bad=unknown])])
+AC_MSG_RESULT($sigact_bad)
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Some machines require _POSIX_SOURCE to completely define struct termios.
+dnl If so, define SVR4_TERMIO
+AC_DEFUN([CF_STRUCT_TERMIOS],[
+if test $ac_cv_header_termios_h = yes ; then
+	case "$CFLAGS" in
+	*-D_POSIX_SOURCE*)
+		termios_bad=dunno ;;
+	*)	termios_bad=maybe ;;
+	esac
+	if test $termios_bad = maybe ; then
+	AC_MSG_CHECKING(whether termios.h needs _POSIX_SOURCE)
+	AC_TRY_COMPILE([#include <termios.h>],
+		[struct termios foo; int x = foo.c_iflag],
+		termios_bad=no, [
+		AC_TRY_COMPILE([
+#define _POSIX_SOURCE
+#include <termios.h>],
+			[struct termios foo; int x = foo.c_iflag],
+			termios_bad=unknown,
+			termios_bad=yes AC_DEFINE(SVR4_TERMIO))
+			])
+	AC_MSG_RESULT($termios_bad)
+	fi
+fi
+])dnl
 dnl ---------------------------------------------------------------------------
 dnl	Shorthand macro for substituting things that the user may override
 dnl	with an environment variable.

@@ -38,7 +38,7 @@
 #define S_VARIABLE	3	/* sort by C variable names */
 #define S_TERMCAP	4	/* sort by termcap names */
 
-extern char *nametrans(const char *);
+extern NCURSES_CONST char *nametrans(const char *);
 extern void dump_init(const char *, int, int, int, int);
 extern int fmt_entry(TERMTYPE *, int (*)(int, int), bool, bool);
 extern int dump_entry(TERMTYPE *, bool, int (*)(int, int));

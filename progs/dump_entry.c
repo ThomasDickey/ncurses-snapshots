@@ -26,7 +26,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include "parametrized.h"	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.22 1997/11/02 00:08:32 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.23 1997/11/08 18:34:12 tom Exp $")
 
 #define INDENT			8
 
@@ -44,7 +44,9 @@ static size_t out_size;		/* ...and its allocated length */
 
 /* indirection pointers for implementing sort and display modes */
 static const int *bool_indirect, *num_indirect, *str_indirect;
-static char * const *bool_names, * const *num_names, * const *str_names;
+static NCURSES_CONST char * const *bool_names;
+static NCURSES_CONST char * const *num_names;
+static NCURSES_CONST char * const *str_names;
 
 static const char *separator, *trailer;
 
@@ -67,7 +69,7 @@ void _nc_leaks_dump_entry(void)
 }
 #endif
 
-char *nametrans(const char *name)
+NCURSES_CONST char *nametrans(const char *name)
 /* translate a capability name from termcap to terminfo */
 {
     const struct name_table_entry 	*np;

@@ -26,10 +26,10 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_user.c,v 1.1 1997/10/12 13:16:22 juergen Exp $")
+MODULE_ID("$Id: p_user.c,v 1.2 1997/11/08 18:30:08 tom Exp $")
 
 int
-set_panel_userptr(PANEL *pan, void *uptr)
+set_panel_userptr(PANEL *pan, NCURSES_CONST void *uptr)
 {
   if(!pan)
     return(ERR);
@@ -37,9 +37,9 @@ set_panel_userptr(PANEL *pan, void *uptr)
   return(OK);
 }
 
-void*
+NCURSES_CONST void*
 panel_userptr(const PANEL *pan)
 {
-  return(pan ? pan->user : (void *)0);
+  return(pan ? pan->user : (NCURSES_CONST void *)0);
 }
 

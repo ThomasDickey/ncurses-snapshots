@@ -30,7 +30,7 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.23 1997/08/20 16:22:38 hjl Exp $")
+MODULE_ID("$Id: tic.c,v 1.24 1997/11/08 18:35:08 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -150,7 +150,8 @@ static void put_translate(int c)
 	*sp++ = c;
     else		/* ah! candidate name! */
     {
-	char	*up, *tp;
+	char	*up;
+	NCURSES_CONST char *tp;
 
 	*sp++ = '\0';
 	in_name = FALSE;
@@ -164,7 +165,7 @@ static void put_translate(int c)
 	    *up = '\0';
 	}
 
-	if ((tp = nametrans(namebuf)) != (char *)NULL)
+	if ((tp = nametrans(namebuf)) != 0)
 	{
 	    (void) putchar(':');
 	    (void) fputs(tp, stdout);

@@ -1,7 +1,29 @@
--- $Id: NEWS,v 1.271 1997/11/02 00:04:04 tom Exp $
+-- $Id: NEWS,v 1.274 1997/11/09 01:17:13 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+971108
+	+ cleanup logic for deciding when tputs() should call delay_output(),
+	  based on comments from Daniel Weaver.
+	+ modified tputs() to avoid use of float.
+	+ correct use of trailpad in tputs(), which used the wrong variable
+	  in call to delay_output().
+	+ correct inverted expression for null-count in delay_output()
+	  (analysis by Daniel Weaver).
+	+ apply --enable-rpath option to Solaris (requested by Larry Virden).
+	+ correct substitution of EXTRA_CFLAGS for gcc 2.6.3
+	+ correct check for error-return by _nc_tgetent(), which returns 0
+	  for success.
+	+ add configure test for BSD 4.4 cgetent() function, modify
+	  read_termcap.c to use the host's version of that if found, using the
+	  terminal database on FreeBSD (reported by Peter Wemm).
+	+ add u8, u9 strings to sun-il description for Daniel Weaver.
+	+ use NCURSES_CONST in panel's user-pointer.
+	+ modify edit_cfg.sh and MKterm.h.awk.in to substitute NCURSES_CONST
+	  so that will work on NeXT.
+	+ use _nc_set_screen() rather than assignments to SP to fix port to
+	  NeXT (reported by Francisco A. Tomei Torres).
 
 971101
 	+ force mandatory padding in bell and flash_screen, as specified in XSI.
