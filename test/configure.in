@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996, etc.
 dnl
-dnl $Id: configure.in,v 1.45 2003/10/19 00:08:23 tom Exp $
+dnl $Id: configure.in,v 1.46 2003/12/06 23:47:16 tom Exp $
 dnl This is a simple configuration-script for the ncurses test programs that
 dnl allows the test-directory to be separately configured against a reference
 dnl system (i.e., sysvr4 curses)
@@ -154,6 +154,7 @@ unistd.h \
 )
 
 AC_CHECK_FUNCS( \
+color_set \
 getnstr \
 gettimeofday \
 napms \

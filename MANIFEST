@@ -942,11 +942,13 @@
 ./test/Makefile.in
 ./test/README
 ./test/aclocal.m4
+./test/background.c
 ./test/blue.c
 ./test/bs.6
 ./test/bs.c
 ./test/cardfile.c
 ./test/cardfile.dat
+./test/color_set.c
 ./test/configure
 ./test/configure.in
 ./test/demo_defkey.c

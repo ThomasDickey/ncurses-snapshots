@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.44 2003/11/08 20:35:13 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.45 2003/12/06 17:22:42 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -3809,7 +3809,7 @@ set_field_buffer
   p   = Address_Of_Nth_Buffer(field,buffer);
 
 #if HAVE_MEMCCPY
-  s = memccpy(p,value,0,len);
+  s = (char *) memccpy(p, value, 0, len);
 #else
   for(s=(char *)value; *s && (s < (value+len)); s++)
     p[s-value] = *s;

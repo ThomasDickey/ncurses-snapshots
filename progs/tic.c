@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.108 2003/10/25 22:14:19 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.109 2003/12/06 17:36:57 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -300,7 +300,7 @@ stripped(char *src)
     while (isspace(UChar(*src)))
 	src++;
     if (*src != '\0') {
-	char *dst = strcpy(malloc(strlen(src) + 1), src);
+	char *dst = strcpy((char *) malloc(strlen(src) + 1), src);
 	size_t len = strlen(dst);
 	while (--len != 0 && isspace(UChar(dst[len])))
 	    dst[len] = '\0';
@@ -789,7 +789,7 @@ check_acs(TERMTYPE * tp)
 	    }
 	    mapped[UChar(p[0])] = p[1];
 	}
-	if (mapped['I'] && !mapped['i']) {
+	if (mapped[UChar('I')] && !mapped[UChar('i')]) {
 	    _nc_warning("acsc refers to 'I', which is probably an error");
 	}
 	for (p = boxes, q = missing; *p != '\0'; ++p) {

@@ -40,11 +40,10 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_colorset.c,v 1.9 2003/10/25 15:27:03 tom Exp $")
+MODULE_ID("$Id: lib_colorset.c,v 1.10 2003/12/07 00:15:27 tom Exp $")
 
 NCURSES_EXPORT(int)
-wcolor_set
-(WINDOW *win, short color_pair_number, void *opts)
+wcolor_set(WINDOW *win, short color_pair_number, void *opts)
 {
     T((T_CALLED("wcolor_set(%p,%d)"), win, color_pair_number));
     if (win
@@ -52,7 +51,8 @@ wcolor_set
 	&& (color_pair_number >= 0)
 	&& (color_pair_number < COLOR_PAIRS)) {
 	TR(TRACE_ATTRS, ("... current %ld", (long) PAIR_NUMBER(win->_attrs)));
-	toggle_attr_on(win->_attrs, COLOR_PAIR(color_pair_number));
+	win->_attrs &= ALL_BUT_COLOR;
+	win->_attrs |= COLOR_PAIR(color_pair_number);
 	returnCode(OK);
     } else
 	returnCode(ERR);

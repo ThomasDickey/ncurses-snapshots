@@ -1,6 +1,6 @@
-# $Id: modules,v 1.96 2003/07/05 16:01:45 tom Exp $
+# $Id: modules,v 1.97 2003/12/07 00:56:08 tom Exp $
 ##############################################################################
-# Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -100,7 +100,7 @@ lib_touch	lib		$(base)
 lib_traceatr	lib		$(trace)	../include/term.h
 lib_tracedmp	lib		$(trace)
 lib_tracemse	lib		$(trace)
-lib_tstp	lib		$(serial)
+lib_tstp	lib		$(serial)	SigAction.h
 lib_ungetch	lib		$(base)
 lib_vidattr	lib		$(serial)	../include/term.h
 lib_vline	lib		$(base)
@@ -116,7 +116,6 @@ varargs		lib		$(trace)
 
 # Modules for porting
 memmove		lib		$(base)
-sigaction	lib		$(base)
 vsscanf 	lib		$(base)
 
 # actually an extension, but with its own configure option (--disable-leaks)

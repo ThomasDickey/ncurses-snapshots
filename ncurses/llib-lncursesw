@@ -2405,11 +2405,6 @@ char	*_nc_printf_string(
 int	doupdate(void)
 		{ return(*(int *)0); }
 
-#undef _nc_outstr
-void	_nc_outstr(
-		const char *str)
-		{ /* void */ }
-
 #undef _nc_scrolln
 int	_nc_scrolln(
 		int	n,
@@ -2451,12 +2446,6 @@ char	*_nc_varargs(
 
 #undef _nc_memmove
 void	_nc_memmove(void)
-		{ /* void */ }
-
-/* ./base/sigaction.c */
-
-#undef _nc_sigaction
-void	_nc_sigaction(void)
 		{ /* void */ }
 
 /* ./base/vsscanf.c */

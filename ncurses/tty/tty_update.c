@@ -36,9 +36,9 @@
  *
  *	lib_doupdate.c
  *
- *	The routine doupdate() and its dependents.  Also _nc_outstr(),
- *	so all physical output is concentrated here (except _nc_outch()
- *	in lib_tputs.c).
+ * 	The routine doupdate() and its dependents.
+ * 	All physical output is concentrated here (except _nc_outch()
+  *	in lib_tputs.c).
  *
  *-----------------------------------------------------------------*/
 
@@ -73,7 +73,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.202 2003/09/20 23:57:09 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.203 2003/12/07 00:22:03 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -1467,19 +1467,6 @@ DelChar(int count)
 	    putp(delete_character);
 	}
     }
-}
-
-/*
-**	_nc_outstr(char *str)
-**
-**	Emit a string without waiting for update.
-*/
-
-NCURSES_EXPORT(void)
-_nc_outstr(const char *str)
-{
-    (void) putp(str);
-    _nc_flush();
 }
 
 /*

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.75 2003/11/01 22:46:41 tom Exp $
+# $Id: Makefile.in,v 1.77 2003/12/07 01:36:16 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -92,9 +92,11 @@ LINT_OPTS	= @LINT_OPTS@
 LINT_LIBS	= -lform -lmenu -lpanel -lncurses @LIBS@
 
 TESTS = \
+	background$x \
 	blue$x \
 	bs$x \
 	cardfile$x \
+	color_set$x \
 	demo_defkey$x \
 	demo_forms$x \
 	demo_keyok$x \
@@ -129,6 +131,9 @@ all: $(TESTS)
 
 sources:
 
+background$x: $(MODEL)/background$o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/background$o $(LDFLAGS_DEFAULT)
+
 blue$x: $(MODEL)/blue$o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/blue$o $(LDFLAGS_DEFAULT)
 
@@ -137,6 +142,9 @@ bs$x: $(MODEL)/bs$o $(LOCAL_LIBS)
 
 cardfile$x: $(MODEL)/cardfile$o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/cardfile$o $(LDFLAGS_DEFAULT)
+
+color_set$x: $(MODEL)/color_set$o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/color_set$o $(LDFLAGS_DEFAULT)
 
 demo_defkey$x: $(MODEL)/demo_defkey$o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/demo_defkey$o $(LDFLAGS_DEFAULT)

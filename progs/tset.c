@@ -103,7 +103,7 @@ char *ttyname(int fd);
 #include <dump_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tset.c,v 0.55 2003/02/09 00:30:09 tom Exp $")
+MODULE_ID("$Id: tset.c,v 0.56 2003/12/06 17:21:01 tom Exp $")
 
 extern char **environ;
 
@@ -350,7 +350,7 @@ add_mapping(const char *port, char *arg)
     char *base = 0;
 
     copy = strdup(arg);
-    mapp = malloc(sizeof(MAP));
+    mapp = (MAP *) malloc(sizeof(MAP));
     if (copy == 0 || mapp == 0)
 	failed("malloc");
     mapp->next = 0;

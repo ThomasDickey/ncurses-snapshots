@@ -1,5 +1,5 @@
 #! /bin/sh
-# $Id: MKkey_defs.sh,v 1.13 2003/11/01 21:57:37 tom Exp $
+# $Id: MKkey_defs.sh,v 1.14 2003/12/06 17:10:09 tom Exp $
 ##############################################################################
 # Copyright (c) 2001-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -50,7 +50,7 @@ if sort -k 6 $DATA >$data 2>/dev/null
 then
 	# POSIX
 	sed -e 's/[	][	]*/	/g' < $DATA |sort -n -k 6 >$data
-elif sort -k 6 $DATA >$data 2>/dev/null
+elif sort -n +5 $DATA >$data 2>/dev/null
 then
 	# SunOS (and SVr4, marked as obsolete but still recognized)
 	sed -e 's/[	][	]*/	/g' < $DATA |sort -n +5 >$data

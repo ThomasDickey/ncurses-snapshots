@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.301 2003/11/15 20:58:07 tom Exp $
+dnl $Id: configure.in,v 1.304 2003/12/06 23:03:07 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.301 $)
+AC_REVISION($Revision: 1.304 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -769,7 +769,7 @@ NCURSES_WCHAR_T=0
 NCURSES_WINT_T=0
 
 # Check to define _XOPEN_SOURCE "automatically"
-CF_GNU_SOURCE
+CF_XOPEN_SOURCE
 
 # use these variables to work around a defect in gcc's fixincludes.
 NCURSES_OK_WCHAR_T=
@@ -883,6 +883,33 @@ AC_ARG_ENABLE(expanded,
 AC_ARG_ENABLE(macros,
 	[  --disable-macros        test: use functions rather than macros],
 	[test "$enableval" = no && AC_DEFINE(NCURSES_NOMACROS)])
+
+# Normally we only add trace() to the debug-library.  Allow this to be
+# extended to all models of the ncurses library:
+cf_all_traces=no
+case "$CFLAGS $CPPFLAGS" in
+*-DTRACE*)
+	cf_all_traces=yes
+	;;
+esac
+
+AC_MSG_CHECKING(whether to add trace feature to all models)
+AC_ARG_WITH(trace,
+[  --with-trace            test: add trace() function to all models of ncurses],
+[cf_with_trace=$withval],
+[cf_with_trace=$cf_all_traces])
+AC_MSG_RESULT($with_trace)
+
+if test "$cf_with_trace" = yes ; then
+	LIB_TRACING=all
+	ADA_TRACE=TRUE
+	CF_ADD_CFLAGS(-DTRACE)
+else
+	LIB_TRACING=DEBUG
+	ADA_TRACE=FALSE
+fi
+
+AC_SUBST(ADA_TRACE)
 
 ###	Checks for libraries.
 AC_CHECK_FUNC(gettimeofday,
@@ -1001,7 +1028,7 @@ if test -z "$cf_user_CFLAGS" ; then
 fi
 
 # Just in case, check if the C compiler has a bool type.
-CF_BOOL_DECL(cv_cv_cc_bool_type)
+CF_BOOL_DECL(cf_cv_cc_bool_type)
 
 # Check for C++ compiler characteristics (and ensure that it's there!)
 if test -n "$CXX" ; then
@@ -1086,7 +1113,7 @@ AC_SUBST(CXXLIBS)
 # specify the type of bool in a configure-script option and postpone
 # integration with the C++ compiler provided that the types are compatible.
 USE_CXX_BOOL=1
-if test $cv_cv_cc_bool_type = 1
+if test $cf_cv_cc_bool_type = 1
 then
 	# oops: C has a bool.  Unlikely, but C++ could differ.
 	USE_CXX_BOOL=0
@@ -1176,16 +1203,6 @@ LIB_SUBSETS="${LIB_SUBSETS}base"
 test "$with_widec" = yes && LIB_SUBSETS="${LIB_SUBSETS}+widechar"
 test "$with_ext_funcs" = yes && LIB_SUBSETS="${LIB_SUBSETS}+ext_funcs"
 AC_MSG_RESULT($LIB_SUBSETS)
-
-LIB_TRACING=DEBUG
-ADA_TRACE=FALSE
-case "$CFLAGS $CPPFLAGS" in
-*-DTRACE*)
-	LIB_TRACING=all
-	ADA_TRACE=TRUE
-	;;
-esac
-AC_SUBST(ADA_TRACE)
 
 ### Construct the list of include-directories to be generated
 CF_INCLUDE_DIRS

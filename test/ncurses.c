@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.198 2003/11/08 23:12:43 tom Exp $
+$Id: ncurses.c,v 1.200 2003/12/06 18:10:34 tom Exp $
 
 ***************************************************************************/
 
@@ -290,13 +290,13 @@ wGet_wstring(WINDOW *win, wchar_t * buffer, int limit)
 	    case KEY_RIGHT:
 		break;
 	    default:
-		ch = -1;
+		ch = (wint_t) - 1;
 		break;
 	    }
 	case OK:
 	    break;
 	default:
-	    ch = -1;
+	    ch = (wint_t) - 1;
 	    break;
 	}
 
@@ -511,10 +511,10 @@ remember_boxes(unsigned level, WINDOW *txt_win, WINDOW *box_win)
 
     if (winstack == 0) {
 	len_winstack = 20;
-	winstack = malloc(len_winstack * sizeof(WINSTACK));
+	winstack = (WINSTACK *) malloc(len_winstack * sizeof(WINSTACK));
     } else if (need >= len_winstack) {
 	len_winstack = need;
-	winstack = realloc(winstack, len_winstack * sizeof(WINSTACK));
+	winstack = (WINSTACK *) realloc(winstack, len_winstack * sizeof(WINSTACK));
     }
     winstack[level].text = txt_win;
     winstack[level].frame = box_win;
@@ -574,7 +574,7 @@ wgetch_test(int level, WINDOW *win, int delay)
     int y, x;
 
     memset(flags, FALSE, sizeof(flags));
-    flags['k'] = (win == stdscr);
+    flags[UChar('k')] = (win == stdscr);
 
     setup_getch(win, flags);
     wtimeout(win, delay);
@@ -601,7 +601,7 @@ wgetch_test(int level, WINDOW *win, int delay)
 	} else if (c == 'x' || c == 'q') {
 	    break;
 	} else if (c == 'e') {
-	    flags['e'] = !flags['e'];
+	    flags[UChar('e')] = !flags[UChar('e')];
 	    setup_getch(win, flags);
 	    wgetch_help(win, flags);
 	} else if (c == 'g') {
@@ -613,11 +613,11 @@ wgetch_test(int level, WINDOW *win, int delay)
 	    wclrtoeol(win);
 	    wgetch_wrap(win, first_y);
 	} else if (c == 'k') {
-	    flags['k'] = !flags['k'];
+	    flags[UChar('k')] = !flags[UChar('k')];
 	    setup_getch(win, flags);
 	    wgetch_help(win, flags);
 	} else if (c == 'm') {
-	    flags['m'] = !flags['m'];
+	    flags[UChar('m')] = !flags[UChar('m')];
 	    setup_getch(win, flags);
 	    wgetch_help(win, flags);
 	} else if (c == 's') {
@@ -794,7 +794,7 @@ wcstos(const wchar_t * src)
 
     memset(&state, 0, sizeof(state));
     if ((need = wcsrtombs(0, &tmp, 0, &state)) > 0) {
-	result = calloc(need + 1, 1);
+	result = (char *) calloc(need + 1, 1);
 	tmp = src;
 	if (wcsrtombs(result, &tmp, need, &state) != (size_t) need) {
 	    free(result);
@@ -817,7 +817,7 @@ wget_wch_test(int level, WINDOW *win, int delay)
     char *temp;
 
     memset(flags, FALSE, sizeof(flags));
-    flags['k'] = (win == stdscr);
+    flags[UChar('k')] = (win == stdscr);
 
     setup_getch(win, flags);
     wtimeout(win, delay);
@@ -844,7 +844,7 @@ wget_wch_test(int level, WINDOW *win, int delay)
 	} else if (c == 'x' || c == 'q') {
 	    break;
 	} else if (c == 'e') {
-	    flags['e'] = !flags['e'];
+	    flags[UChar('e')] = !flags[UChar('e')];
 	    setup_getch(win, flags);
 	    wgetch_help(win, flags);
 	} else if (c == 'g') {
@@ -861,11 +861,11 @@ wget_wch_test(int level, WINDOW *win, int delay)
 	    wclrtoeol(win);
 	    wgetch_wrap(win, first_y);
 	} else if (c == 'k') {
-	    flags['k'] = !flags['k'];
+	    flags[UChar('k')] = !flags[UChar('k')];
 	    setup_getch(win, flags);
 	    wgetch_help(win, flags);
 	} else if (c == 'm') {
-	    flags['m'] = !flags['m'];
+	    flags[UChar('m')] = !flags[UChar('m')];
 	    setup_getch(win, flags);
 	    wgetch_help(win, flags);
 	} else if (c == 's') {
@@ -1217,7 +1217,7 @@ color_test(void)
 {
     int i;
     int base, top, width;
-    NCURSES_CONST char *hello;
+    const char *hello;
 
     refresh();
     (void) printw("There are %d color pairs\n", COLOR_PAIRS);
@@ -2852,35 +2852,35 @@ demo_panels(void)
 		     COLS / 8 + 1,
 		     0,
 		     0);
-	set_panel_userptr(p1, "p1");
+	set_panel_userptr(p1, (NCURSES_CONST void *) "p1");
 
 	p2 = mkpanel(COLOR_GREEN,
 		     LINES / 2 + 1,
 		     COLS / 7,
 		     LINES / 4,
 		     COLS / 10);
-	set_panel_userptr(p2, "p2");
+	set_panel_userptr(p2, (NCURSES_CONST void *) "p2");
 
 	p3 = mkpanel(COLOR_YELLOW,
 		     LINES / 4,
 		     COLS / 10,
 		     LINES / 2,
 		     COLS / 9);
-	set_panel_userptr(p3, "p3");
+	set_panel_userptr(p3, (NCURSES_CONST void *) "p3");
 
 	p4 = mkpanel(COLOR_BLUE,
 		     LINES / 2 - 2,
 		     COLS / 8,
 		     LINES / 2 - 2,
 		     COLS / 3);
-	set_panel_userptr(p4, "p4");
+	set_panel_userptr(p4, (NCURSES_CONST void *) "p4");
 
 	p5 = mkpanel(COLOR_MAGENTA,
 		     LINES / 2 - 2,
 		     COLS / 8,
 		     LINES / 2,
 		     COLS / 2 - 2);
-	set_panel_userptr(p5, "p5");
+	set_panel_userptr(p5, (NCURSES_CONST void *) "p5");
 
 	fill_panel(p1);
 	fill_panel(p2);
