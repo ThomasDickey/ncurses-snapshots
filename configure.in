@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+dnl Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
 dnl copy of this software and associated documentation files (the            *
@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.226 2000/12/17 01:20:16 tom Exp $
+dnl $Id: configure.in,v 1.230 2001/01/28 01:30:19 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20000819)
-AC_REVISION($Revision: 1.226 $)
+AC_REVISION($Revision: 1.230 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -562,7 +562,7 @@ test "$with_broken_linker" = yes && AC_DEFINE(BROKEN_LINKER)
 AC_MSG_CHECKING(for type of ospeed)
 AC_ARG_WITH(ospeed,
 	[  --with-ospeed=TYPE      override type of ospeed variable],
-	[NCURSES_OSPEED=$enableval],
+	[NCURSES_OSPEED=$withval],
 	[NCURSES_OSPEED=short])
 AC_MSG_RESULT($NCURSES_OSPEED)
 AC_SUBST(NCURSES_OSPEED)
@@ -1070,11 +1070,11 @@ test "$with_ext_funcs" = yes && LIB_SUBSETS="${LIB_SUBSETS}+ext_funcs"
 AC_MSG_RESULT($LIB_SUBSETS)
 
 LIB_TRACING=DEBUG
-ADA_TRACE=no-trace
-case "$CFLAGS" in
+ADA_TRACE=FALSE
+case "$CFLAGS $CPPFLAGS" in
 *-DTRACE*)
 	LIB_TRACING=all
-	ADA_TRACE=yes-trace
+	ADA_TRACE=TRUE
 	;;
 esac
 AC_SUBST(ADA_TRACE)

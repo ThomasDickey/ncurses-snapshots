@@ -2716,7 +2716,7 @@ char	*tparm(
 #undef PC
 char	PC;
 #undef ospeed
-short	ospeed;
+NCURSES_OSPEED	ospeed;
 #undef _nc_nulls_sent
 int	_nc_nulls_sent;
 

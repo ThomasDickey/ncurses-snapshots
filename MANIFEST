@@ -106,7 +106,6 @@
 ./Ada95/samples/tour.adb
 ./Ada95/samples/tour.ads
 ./Ada95/src/Makefile.in
-./Ada95/src/no-trace.adb
 ./Ada95/src/terminal_interface-curses-aux.adb
 ./Ada95/src/terminal_interface-curses-forms-field_types-alpha.adb
 ./Ada95/src/terminal_interface-curses-forms-field_types-alpha.ads
@@ -162,9 +161,9 @@
 ./Ada95/src/terminal_interface-curses-text_io-modular_io.ads
 ./Ada95/src/terminal_interface-curses-text_io.adb
 ./Ada95/src/terminal_interface-curses-text_io.ads
+./Ada95/src/terminal_interface-curses-trace.adb_p
 ./Ada95/src/terminal_interface-curses.adb
 ./Ada95/src/terminal_interface.ads
-./Ada95/src/yes-trace.adb
 ./INSTALL
 ./MANIFEST
 ./Makefile.glibc

@@ -1,10 +1,27 @@
--- $Id: NEWS,v 1.613 2001/01/14 23:05:28 tom Exp $
+-- $Id: NEWS,v 1.614 2001/01/28 02:35:24 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010127
+	+ revert change to c++/demo.cc from 20001209, which changed definition
+	  of main() apparently to accommodate cygwin linker, but broke the demo
+	  program.
+	+ workaround for broken egcs 2.91.66 which calls member functions
+	  (i.e., lines() and colors() of NCursesWindow before calling its
+	  constructor.  Add calls to initialize() in a few constructors which
+	  did not do this already.
+	+ use the GNAT preprocessor to make the necessary switch between TRACE
+	  and NO_TRACE configurations (patch by Juergen Pfeifer).
+	> patches by Bernhard Rosenkraenzer:
+	+ modify kterm terminfo entry to use SCS sequence to support alternate
+	  character set (it does not work with SI/SO).
+	+ --with-ospeed=something didn't work.  configure.in checked for a
+	  $enableval where it should check for $withval.  Also,
+	  ncurses/llib-lncurses still had a hardcoded short.
 
 20010114
 	+ correction to my merge of Tom Riddle's patch that broke tic in some
@@ -22,7 +39,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  key_left, key_down when processing a non-base entry (report/patch by
 	  Tom Riddle).
 	+ modify _nc_wrap_entry(), adding option to reallocate the string
-	  table, needed in _nc_merge_entry() when merging termcap entries. 
+	  table, needed in _nc_merge_entry() when merging termcap entries.
 	  (adapted from report/patch by Tom Riddle <ftr@oracom.com>).
 	+ modify a few configure script macros to keep $CFLAGS used only for
 	  compiler options, preprocessor options in $CPPFLAGS.
