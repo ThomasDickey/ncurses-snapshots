@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,13 +40,13 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_pad.c,v 1.32 2000/12/10 02:43:27 tom Exp $")
+MODULE_ID("$Id: lib_pad.c,v 1.35 2001/06/03 00:39:24 skimo Exp $")
 
 NCURSES_EXPORT(WINDOW *)
 newpad(int l, int c)
 {
     WINDOW *win;
-    chtype *ptr;
+    NCURSES_CH_T *ptr;
     int i;
 
     T((T_CALLED("newpad(%d, %d)"), l, c));
@@ -59,12 +59,12 @@ newpad(int l, int c)
 
     for (i = 0; i < l; i++) {
 	if_USE_SCROLL_HINTS(win->_line[i].oldindex = _NEWINDEX);
-	if ((win->_line[i].text = typeCalloc(chtype, ((size_t) c))) == 0) {
+	if ((win->_line[i].text = typeCalloc(NCURSES_CH_T, ((size_t) c))) == 0) {
 	    (void) _nc_freewin(win);
 	    returnWin(0);
 	}
-	for (ptr = win->_line[i].text; ptr < win->_line[i].text + c;)
-	    *ptr++ = ' ';
+	for (ptr = win->_line[i].text; ptr < win->_line[i].text + c; ptr++)
+	    SetChar(*ptr, BLANK_TEXT, BLANK_ATTR);
     }
 
     returnWin(win);
@@ -195,7 +195,7 @@ pnoutrefresh
 	register struct ldat *oline = &win->_line[i];
 
 	for (j = pmincol, n = smincol; j <= pmaxcol; j++, n++) {
-	    if (oline->text[j] != nline->text[n]) {
+	    if (!CharEq(oline->text[j], nline->text[n])) {
 		nline->text[n] = oline->text[j];
 		CHANGED_CELL(nline, n);
 	    }

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -37,7 +37,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracedmp.c,v 1.16 2000/12/10 03:02:45 tom Exp $")
+MODULE_ID("$Id: lib_tracedmp.c,v 1.20 2001/06/03 00:06:18 skimo Exp $")
 
 #ifdef TRACE
 NCURSES_EXPORT(void)
@@ -49,7 +49,7 @@ _tracedump(const char *name, WINDOW *win)
     for (width = i = 0; i <= win->_maxy; i++) {
 	n = 0;
 	for (j = 0; j <= win->_maxx; j++)
-	    if (win->_line[i].text[j] != ' ')
+	    if (CharOf(win->_line[i].text[j]) != L(' '))
 		n = j;
 
 	if (n > width)
@@ -69,7 +69,7 @@ _tracedump(const char *name, WINDOW *win)
 		       win->_line[n].lastchar);
 	ep = buf + strlen(buf);
 	for (j = 0; j <= width; j++) {
-	    ep[j] = TextOf(win->_line[n].text[j]);
+	    ep[j] = CharOf(win->_line[n].text[j]);
 	    if (ep[j] == 0)
 		ep[j] = '.';
 	}
@@ -80,7 +80,7 @@ _tracedump(const char *name, WINDOW *win)
 	/* dump A_COLOR part, will screw up if there are more than 96 */
 	havecolors = FALSE;
 	for (j = 0; j <= width; j++)
-	    if (win->_line[n].text[j] & A_COLOR) {
+	    if (AttrOf(win->_line[n].text[j]) & A_COLOR) {
 		havecolors = TRUE;
 		break;
 	    }
@@ -89,7 +89,7 @@ _tracedump(const char *name, WINDOW *win)
 			   "colors", n, 8, " ");
 	    ep = buf + strlen(buf);
 	    for (j = 0; j <= width; j++)
-		ep[j] = CharOf(win->_line[n].text[j] >> 8) + ' ';
+		ep[j] = UChar(CharOf(win->_line[n].text[j]) >> 8) + ' ';
 	    ep[j] = '\'';
 	    ep[j + 1] = '\0';
 	    _tracef("%s", buf);
@@ -97,11 +97,11 @@ _tracedump(const char *name, WINDOW *win)
 
 	for (i = 0; i < 4; i++) {
 	    const char *hex = " 123456789ABCDEF";
-	    chtype mask = (0xf << ((i + 4) * 4));
+	    attr_t mask = (0xf << ((i + 4) * 4));
 
 	    haveattrs = FALSE;
 	    for (j = 0; j <= width; j++)
-		if (win->_line[n].text[j] & mask) {
+		if (AttrOf(win->_line[n].text[j]) & mask) {
 		    haveattrs = TRUE;
 		    break;
 		}
@@ -110,7 +110,10 @@ _tracedump(const char *name, WINDOW *win)
 			       1, "attrs", i, n, 8, " ");
 		ep = buf + strlen(buf);
 		for (j = 0; j <= width; j++)
-		    ep[j] = hex[(win->_line[n].text[j] & mask) >> ((i + 4) * 4)];
+		    ep[j] = hex[
+				   (AttrOf(win->_line[n].text[j]) & mask) >>
+				   ((i + 4) * 4)
+			];
 		ep[j] = '\'';
 		ep[j + 1] = '\0';
 		_tracef("%s", buf);

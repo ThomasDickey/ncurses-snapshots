@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,7 +41,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.55 2000/12/10 02:43:27 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.57 2001/06/03 00:20:16 skimo Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -302,10 +302,10 @@ init_pair
 	    struct ldat *ptr = &(curscr->_line[y]);
 	    bool changed = FALSE;
 	    for (x = 0; x <= curscr->_maxx; x++) {
-		if ((ptr->text[x] & A_COLOR) == z) {
+		if ((AttrOf(ptr->text[x]) & A_COLOR) == z) {
 		    /* Set the old cell to zero to ensure it will be
 		       updated on the next doupdate() */
-		    ptr->text[x] = 0;
+		    SetChar(ptr->text[x], 0, 0);
 		    CHANGED_CELL(ptr, x);
 		    changed = TRUE;
 		}

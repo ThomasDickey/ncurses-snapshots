@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.28 2000/12/10 02:43:27 tom Exp $")
+MODULE_ID("$Id: lib_refresh.c,v 1.30 2001/06/03 01:53:41 skimo Exp $")
 
 NCURSES_EXPORT(int)
 wrefresh(WINDOW *win)
@@ -96,7 +96,7 @@ wnoutrefresh(WINDOW *win)
     begx = win->_begx;
     begy = win->_begy;
 
-    newscr->_bkgd = win->_bkgd;
+    newscr->_bkgrnd = win->_bkgrnd;
     newscr->_attrs = win->_attrs;
 
     /* merge in change information from all subwindows of this window */
@@ -148,7 +148,7 @@ wnoutrefresh(WINDOW *win)
 		last = limit_x;
 
 	    for (j = oline->firstchar, n = j + begx; j <= last; j++, n++) {
-		if (oline->text[j] != nline->text[n]) {
+		if (!CharEq(oline->text[j], nline->text[n])) {
 		    nline->text[n] = oline->text[j];
 		    CHANGED_CELL(nline, n);
 		}

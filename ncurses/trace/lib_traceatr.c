@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -38,7 +38,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.32 2000/12/10 03:02:45 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.34 2001/06/03 00:59:05 skimo Exp $")
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
@@ -112,7 +112,7 @@ _traceattr2(int bufnum, attr_t newmode)
 	    }
 	}
     }
-    if (AttrOf(newmode) == A_NORMAL) {
+    if (ChAttrOf(newmode) == A_NORMAL) {
 	if (buf[1] != '\0')
 	    strcat(tmp, "|");
 	strcat(tmp, "A_NORMAL");
@@ -189,14 +189,14 @@ _tracechtype2(int bufnum, chtype ch)
 	    *sp;
 
 	for (cp = acs_chars; cp[0] && cp[1]; cp += 2) {
-	    if (TextOf(cp[1]) == TextOf(ch)) {
+	    if (ChCharOf(cp[1]) == ChCharOf(ch)) {
 		found = cp;
 		/* don't exit from loop - there may be redefinitions */
 	    }
 	}
 
 	if (found != 0) {
-	    ch = TextOf(*found);
+	    ch = ChCharOf(*found);
 	    for (sp = names; sp->val; sp++)
 		if (sp->val == ch) {
 		    (void) strcat(buf, sp->name);
@@ -207,11 +207,11 @@ _tracechtype2(int bufnum, chtype ch)
     }
 
     if (found == 0)
-	(void) strcat(buf, _tracechar(TextOf(ch)));
+	(void) strcat(buf, _tracechar(ChCharOf(ch)));
 
-    if (AttrOf(ch) != A_NORMAL)
+    if (ChAttrOf(ch) != A_NORMAL)
 	(void) sprintf(buf + strlen(buf), " | %s",
-		_traceattr2(bufnum + 20, AttrOf(ch)));
+		_traceattr2(bufnum + 20, ChAttrOf(ch)));
 
     strcat(buf, "}");
     return (buf);
@@ -230,6 +230,20 @@ _nc_retrace_chtype (attr_t code)
     T((T_RETURN("%s"), _tracechtype(code)));
     return code;
 }
+
+#if USE_WIDEC_SUPPORT
+NCURSES_EXPORT(char *)
+_tracecchar_t2 (int bufnum, const cchar_t *ch)
+{
+    return "";
+}
+
+NCURSES_EXPORT(char *)
+_tracecchar_t (const cchar_t *ch)
+{
+    return _tracecchar_t2(0, ch);
+}
+#endif
 
 #else
 extern NCURSES_EXPORT(void) _nc_lib_traceatr (void);

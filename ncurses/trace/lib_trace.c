@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.38 2000/12/10 03:02:45 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.41 2001/06/03 02:25:49 skimo Exp $")
 
 NCURSES_EXPORT_VAR(unsigned)
 _nc_tracing = 0;		/* always define this */
@@ -128,7 +128,7 @@ _nc_visbuf2(int bufnum, const char *buf)
 	    *tp++ = '^';
 	    *tp++ = '@' + c;
 	} else {
-	    sprintf(tp, "\\%03o", CharOf(c));
+	    sprintf(tp, "\\%03o", UChar(c));
 	    tp += strlen(tp);
 	}
     }
@@ -141,6 +141,12 @@ NCURSES_EXPORT(const char *)
 _nc_visbuf(const char *buf)
 {
     return _nc_visbuf2(0, buf);
+}
+
+NCURSES_EXPORT(const char *)
+_nc_viswbuf(const wchar_t * buf)
+{
+    return "";
 }
 
 #ifdef TRACE

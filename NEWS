@@ -1,10 +1,58 @@
--- $Id: NEWS,v 1.628 2001/05/26 23:59:17 tom Exp $
+-- $Id: NEWS,v 1.629 2001/06/03 02:36:15 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010602
+	+ modify mvcur() to avoid emitting newline characters when nonl() mode
+	  is set.  Normally this is not a problem since the actual terminal
+	  mode is set to suppress nl/crlf translations, however it is useful to
+	  allow the caller to manipulate the terminal mode to avoid staircasing
+	  effects after spawning a process which writes messages (for lynx
+	  2.8.4) -TD
+	> several patches from Sven Verdoolaege <skimo@kotnet.org>:
+	+ remove redundant type-conversion in fifo_push()
+	+ correct definition of addwstr() macro in curses.h.in
+	+ remove _nc_utf8_outch()
+	+ rename most existing uses of CharOf() to UChar(), e.g., where it is
+	  used to prevent sign-extension in ctype macros.
+	+ change some chtype's to attr_t's where the corresponding variables
+	  are used to manipulate attributes.
+	+ UpdateAttr() was applied to both attributes (attr_t) and characters
+	  (chtype).  Modify macro and calls to it to make these distinct.
+	+ add CharEq() macro, use in places where wide-character configuration
+	  implementation uses a struct for cchar_t.
+	+ moved struct ldat into curses.priv.h, to hide implementation details.
+	+ change CharOf() macro to use it for masking A_CHARTEXT data from
+	  chtype's.
+	+ add L() macro to curses.priv.h, for long-character literals.
+	+ replace several assignments from struct ldat entries to chtype or
+	  char values with combinations of CharOf() and AttrOf() macros.
+	+ add/use intermediate ChAttrOf() and ChCharOf() macros where we know
+	  we are using chtype data.
+	+ add/use lowlevel attribute manipulation macros AddAttr(), RemAttr()
+	  and SetAttr().
+	+ add/use SetChar() macro, to change a cchar_t based on a character and
+	  attributes.
+	+ convert most internal use of chtype to NCURSES_CH_T, to simplify use
+	  of cchar_t for wide-character configuration.  Similarly, use ARG_CH_T
+	  where a pointer would be more useful.
+	+ add stubs for tracing cchar_t values.
+	+ add/use macro ISBLANK()
+	+ add/use constructors for cchar_t's: NewChar(), NewChar2().
+	+ add/use macros CHREF(), CHDEREF(), AttrOfD(), CharOfD() to facilitate
+	  passing cchar_t's by address.
+	+ add/use PUTC_DATA, PUTC() macros.
+	+ for wide-character configuration, move the window background data to
+	  the end of the WINDOW struct so that whether _XOPEN_SOURCE_EXTENDED
+	  is defined or not, the offsets in the struct will not change.
+	+ modify addch() to work with wide-characters.
+	+ mark several wide-character functions as generated in curses.h.in
+	+ implement wunctrl(), wadd_wch(), wbkgrndset(), wbkgrnd(),
+	  wborder_set() and waddnwstr().
 
 20010526
 	+ add experimental --with-caps=XXX option to customize to similar

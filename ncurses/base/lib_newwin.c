@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.27 2000/12/10 02:43:27 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.30 2001/06/03 01:55:58 skimo Exp $")
 
 NCURSES_EXPORT(int)
 _nc_freewin(WINDOW *win)
@@ -86,7 +86,7 @@ newwin
 (int num_lines, int num_columns, int begy, int begx)
 {
     WINDOW *win;
-    chtype *ptr;
+    NCURSES_CH_T *ptr;
     int i;
 
     T((T_CALLED("newwin(%d,%d,%d,%d)"), num_lines, num_columns, begy, begx));
@@ -106,14 +106,15 @@ newwin
 	returnWin(0);
 
     for (i = 0; i < num_lines; i++) {
-	win->_line[i].text = typeCalloc(chtype, (unsigned) num_columns);
+	win->_line[i].text = typeCalloc(NCURSES_CH_T, (unsigned) num_columns);
 	if (win->_line[i].text == 0) {
 	    (void) _nc_freewin(win);
 	    returnWin(0);
 	}
-	for (ptr = win->_line[i].text; ptr < win->_line[i].text +
-	     num_columns;)
-	    *ptr++ = ' ';
+	for (ptr = win->_line[i].text;
+	     ptr < win->_line[i].text + num_columns;
+	     ptr++)
+	    SetChar(*ptr, BLANK_TEXT, BLANK_ATTR);
     }
 
     T(("newwin: returned window is %p", win));
@@ -157,7 +158,7 @@ derwin
     win->_pary = begy;
     win->_parx = begx;
     win->_attrs = orig->_attrs;
-    win->_bkgd = orig->_bkgd;
+    win->_bkgrnd = orig->_bkgrnd;
 
     for (i = 0; i < num_lines; i++)
 	win->_line[i].text = &orig->_line[begy++].text[begx];
@@ -221,7 +222,7 @@ _nc_makenew
 
     win->_flags = flags;
     win->_attrs = A_NORMAL;
-    win->_bkgd = BLANK;
+    SetChar(win->_bkgrnd, BLANK_TEXT, BLANK_ATTR);
 
     win->_clear = is_pad ? FALSE : (num_lines == screen_lines
 				    && num_columns == screen_columns);

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
+ * Copyright (c) 2001 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,29 +26,31 @@
  * authorization.                                                           *
  ****************************************************************************/
 
-/****************************************************************************
- *  Author: Thomas E. Dickey <dickey@clark.net> 1998                        *
- ****************************************************************************/
-
 /*
-**	lib_winch.c
+**	lib_wunctrl.c
 **
-**	The routine winch().
+**	The routines wunctrl().
 **
 */
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_winch.c,v 1.5 2001/06/02 23:42:08 skimo Exp $")
+#if USE_WIDEC_SUPPORT && HAVE_BOTWC
 
-NCURSES_EXPORT(chtype)
-winch(WINDOW *win)
+MODULE_ID("$Id: lib_wunctrl.c,v 1.2 2001/06/03 03:06:49 tom Exp $")
+
+NCURSES_EXPORT(wchar_t *)
+wunctrl(cchar_t * wc)
 {
-    T((T_CALLED("winch(%p)"), win));
-    if (win != 0) {
-	returnChar(CharOf(win->_line[win->_cury].text[win->_curx]) |
-		   AttrOf(win->_line[win->_cury].text[win->_curx]));
-    } else {
-	returnChar(0);
-    }
+    static wchar_t str[5], *sp;
+
+    if (Charable(*wc)) {
+	char *p;
+	for (p = unctrl(wctob(CharOf(*wc))), sp = str; *p;)
+	    *sp++ = botwc(*p++);
+	return str;
+    } else
+	return wc.chars;
 }
+
+#endif

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -34,7 +34,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* ena_acs, acs_chars */
 
-MODULE_ID("$Id: lib_acs.c,v 1.18 2000/12/10 02:55:07 tom Exp $")
+MODULE_ID("$Id: lib_acs.c,v 1.19 2001/06/02 23:59:18 skimo Exp $")
 
 NCURSES_EXPORT_VAR(chtype) acs_map[ACS_LEN] =
 {
@@ -147,7 +147,7 @@ _nc_init_acs(void)
 	for (n = 1, m = 0; n < SIZEOF(acs_map); n++) {
 	    if (acs_map[n] != 0) {
 		show[m++] = (char) n;
-		show[m++] = TextOf(acs_map[n]);
+		show[m++] = ChCharOf(acs_map[n]);
 	    }
 	}
 	show[m] = 0;
