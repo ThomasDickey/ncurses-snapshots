@@ -70,7 +70,7 @@ AUTHOR
 #include <curses.priv.h>
 #include <term.h> /* for back_color_erase */
 
-MODULE_ID("$Id: hashmap.c,v 1.32 1999/03/16 11:40:53 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.33 1999/03/18 02:09:45 Alexander.V.Lukyanov Exp $")
 
 #ifdef HASHDEBUG
 
@@ -394,7 +394,7 @@ void _nc_hash_map(void)
 	while (i < screen_lines && OLDNUM(i) != _NEWINDEX && OLDNUM(i) - i == shift)
 	    i++;
 	size = i - start;
-	if (size < 3 || size+size/8 < abs(shift))
+	if (size < 3 || size+min(size/8,2) < abs(shift))
 	{
 	    while (start < i)
 	    {

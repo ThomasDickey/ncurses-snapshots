@@ -31,7 +31,7 @@
  *   Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1997             *
  ****************************************************************************/
 
-// $Id: cursesm.h,v 1.9 1998/02/11 12:13:41 tom Exp $
+// $Id: cursesm.h,v 1.10 1999/03/18 02:36:24 tom Exp $
 
 #ifndef _CURSESM_H
 #define _CURSESM_H
@@ -81,7 +81,7 @@ public:
   }
   // Description of the item
   
-  inline int index (void) const {
+  inline int (index) (void) const {
     return ::item_index (item);
   }
   // Index of the item in an item array (or -1)
