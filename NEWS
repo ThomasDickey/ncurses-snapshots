@@ -1,10 +1,31 @@
--- $Id: NEWS,v 1.642 2001/08/26 01:14:47 tom Exp $
+-- $Id: NEWS,v 1.643 2001/09/02 00:42:20 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010901
+	+ specify DOCTYPE in html manpages.
+	+ add missing macros for several "generated" functions:  attr_get(),
+	  attr_off(), attr_on(), attr_set(), chgat(), mvchgat(), mvwchgat() and
+	  mouse_trafo().
+	+ modify view.c to agree with non-experimental status of ncurses'
+	  sigwinch handler:
+	  + change the sense of the -r option, making it default to ncurses'
+	    sigwinch handler.
+	  + add a note explaining what functions are unsafe in a signal handler.
+	  + add a -c option, to set color display, for testing.
+	+ unset $data variable in MKterminfo.sh script, to address potential
+	  infinite loop if shell malfunction (report by Samuel Mikes
+	  <smikes@cubane.com>, for bash 2.05.0 on a Linux 2.0.36 system).
+	+ change kbs in mach terminfo entries to ^?  (Marcus Brinkmann
+	  <Marcus.Brinkmann@ruhr-uni-bochum.de>).
+	+ correct logic for COLORFGBG environment variable: if rxvt is compiled
+	  with xpm support, the variable has three fields, making it slightly
+	  incompatible with itself.  In either case, the background color is
+	  the last field.
 
 20010825
 	+ move calls to def_shell_mode() and def_prog_mode() before loop with

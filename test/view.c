@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.39 2001/07/01 01:27:40 tom Exp $
+ * $Id: view.c,v 1.40 2001/09/02 00:16:26 tom Exp $
  */
 
 #include <string.h>
@@ -46,6 +46,8 @@
 # endif
 #endif
 
+#define my_pair 1
+
 /* This is needed to compile 'struct winsize' */
 #if NEED_PTEM_H
 #include <sys/stream.h>
@@ -66,8 +68,9 @@ static RETSIGTYPE adjust(int sig);
 static int interrupted;
 #endif
 
-static int waiting;
-static int shift;
+static bool waiting = FALSE;
+static int shift = 0;
+static bool try_color = FALSE;
 
 static char *fname;
 static NCURSES_CH_T **lines;
@@ -81,9 +84,10 @@ usage(void)
 	"Usage: view [options] file"
 	,""
 	,"Options:"
+	," -c       use color if terminal supports it"
 	," -n NUM   specify maximum number of lines (default 1000)"
 #if defined(KEY_RESIZE)
-	," -r       use experimental KEY_RESIZE rather than our own handler"
+	," -r       use old-style signwinch handler rather than KEY_RESIZE"
 #endif
 #ifdef TRACE
 	," -t       trace screen updates"
@@ -139,7 +143,7 @@ ch_dup(char *src)
     for (j = k = 0; j < len; j++) {
 #if USE_WIDEC_SUPPORT
 	rc = mbrtowc(&wch, src + j, len - j, &state);
-	if (rc == (size_t)-1 || rc == (size_t)-2)
+	if (rc == (size_t) -1 || rc == (size_t) -2)
 	    break;
 	j += rc - 1;
 	if ((width = wcwidth(wch)) < 0)
@@ -185,20 +189,23 @@ main(int argc, char *argv[])
     bool done = FALSE;
     bool got_number = FALSE;
 #if CAN_RESIZE
-    bool use_resize = TRUE;
+    bool nonposix_resize = FALSE;
 #endif
 
     setlocale(LC_ALL, "");
 
-    while ((i = getopt(argc, argv, "n:rtT:u")) != EOF) {
+    while ((i = getopt(argc, argv, "cn:rtT:u")) != EOF) {
 	switch (i) {
+	case 'c':
+	    try_color = TRUE;
+	    break;
 	case 'n':
 	    if ((MAXLINES = atoi(optarg)) < 1)
 		usage();
 	    break;
 #if CAN_RESIZE
 	case 'r':
-	    use_resize = FALSE;
+	    nonposix_resize = TRUE;
 	    break;
 #endif
 #ifdef TRACE
@@ -227,7 +234,7 @@ main(int argc, char *argv[])
 
     (void) signal(SIGINT, finish);	/* arrange interrupts to terminate */
 #if CAN_RESIZE
-    if (use_resize)
+    if (nonposix_resize)
 	(void) signal(SIGWINCH, adjust);	/* arrange interrupts to resize */
 #endif
 
@@ -274,6 +281,16 @@ main(int argc, char *argv[])
     (void) noecho();		/* don't echo input */
     nodelay(stdscr, TRUE);
     idlok(stdscr, TRUE);	/* allow use of insert/delete line */
+
+    if (try_color) {
+	if (has_colors()) {
+	    start_color();
+	    init_pair(my_pair, COLOR_WHITE, COLOR_BLUE);
+	    bkgd(COLOR_PAIR(my_pair));
+	} else {
+	    try_color = FALSE;
+	}
+    }
 
     lptr = lines;
     while (!done) {
@@ -404,8 +421,14 @@ finish(int sig)
 #if CAN_RESIZE
 /*
  * This uses functions that are "unsafe", but it seems to work on SunOS and
- * Linux.  The 'wrefresh(curscr)' is needed to force the refresh to start from
- * the top of the screen -- some xterms mangle the bitmap while resizing.
+ * Linux.  Usually:  the "unsafe" refers to the functions that POSIX lists
+ * which may be called from a signal handler.  Those do not include buffered
+ * I/O, which is used for instance in wrefresh().  To be really portable, you
+ * should use the KEY_RESIZE return (which relies on ncurses' sigwinch
+ * handler).
+ *
+ * The 'wrefresh(curscr)' is needed to force the refresh to start from the top
+ * of the screen -- some xterms mangle the bitmap while resizing.
  */
 static RETSIGTYPE
 adjust(int sig)
@@ -465,6 +488,8 @@ show_all(void)
 #else
 		addchstr(s + shift);
 #endif
+	    if (try_color)
+		wchgat(stdscr, -1, A_NORMAL, my_pair, NULL);
 	}
     }
     setscrreg(1, LINES - 1);

@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+.\" Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_color.3x,v 1.16 2000/07/15 22:57:03 tom Exp $
+.\" $Id: curs_color.3x,v 1.17 2001/09/01 21:04:33 tom Exp $
 .TH curs_color 3X ""
 .SH NAME
 \fBstart_color\fR,
@@ -100,8 +100,8 @@ third arguments must be between 0 and \fBCOLORS\fR (the 0 color pair is wired
 to white on black and cannot be changed).
 .PP
 If the color-pair was previously
-initialized, the screen is refreshed and all occurrences of that color-pair is
-changed to the new definition.
+initialized, the screen is refreshed and all occurrences of that color-pair
+are changed to the new definition.
 
 As an extension, ncurses allows you to set color pair 0 via
 the \fBassume_default_colors\fR routine, or to specify the use of

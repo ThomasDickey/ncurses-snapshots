@@ -43,7 +43,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.62 2001/08/26 01:11:44 John.David.Anglin Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.63 2001/09/01 21:42:14 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN * screenp)
@@ -268,8 +268,13 @@ _nc_setupscreen
      */
     if (getenv("COLORFGBG") != 0) {
 	char *p = getenv("COLORFGBG");
+	TR(TRACE_CHARPUT | TRACE_MOVE, ("decoding COLORFGBG %s", p));
 	p = extract_fgbg(p, &(SP->_default_fg));
 	p = extract_fgbg(p, &(SP->_default_bg));
+	if (*p)			/* assume rxvt was compiled with xpm support */
+	    p = extract_fgbg(p, &(SP->_default_bg));
+	TR(TRACE_CHARPUT | TRACE_MOVE, ("decoded fg=%d, bg=%d",
+					SP->_default_fg, SP->_default_bg));
     }
 #endif
 #endif /* NCURSES_EXT_FUNCS */

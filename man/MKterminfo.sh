@@ -27,7 +27,7 @@
 # authorization.                                                           *
 #***************************************************************************
 #
-# $Id: MKterminfo.sh,v 1.8 2001/05/26 23:55:07 tom Exp $
+# $Id: MKterminfo.sh,v 1.9 2001/09/01 23:06:18 tom Exp $
 #
 # MKterminfo.sh -- generate terminfo.5 from Caps tabular data
 #
@@ -81,6 +81,7 @@ rm -f $temp
 saved=no
 while true
 do
+	data=
 	read data
 	test -z "$data" && break
 	case "$data" in #(vi
