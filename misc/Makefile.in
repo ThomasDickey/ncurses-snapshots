@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.31 2001/05/19 23:26:51 tom Exp $
+# $Id: Makefile.in,v 1.32 2001/10/14 00:44:14 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -57,6 +57,9 @@ bindir		= @bindir@
 libdir		= @libdir@
 datadir		= @datadir@
 
+CC		= @CC@
+HOSTCC		= @BUILD_CC@
+
 tabsetdir	= $(datadir)/tabset
 ticdir		= @TERMINFO@
 source		= @TERMINFO_SRC@
@@ -85,6 +88,8 @@ install.data :	$(DESTDIR)$(libdir) \
 	datadir=${datadir} \
 	ticdir=${ticdir} \
 	source=${source} \
+	THIS_CC=$(CC) \
+	THAT_CC=$(HOSTCC) \
 	$(SHELL) ./run_tic.sh
 	@cd $(srcdir)/tabset && \
 		$(SHELL) -c 'for i in * ; do \

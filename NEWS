@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.649 2001/10/01 22:53:49 tom Exp $
+-- $Id: NEWS,v 1.650 2001/10/14 00:48:21 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20011013
+	+ modify run_tic.sh to check if the build is a cross-compile.  In that
+	  case, do not use the build's tic to install the terminfo database
+	  (report by Rafael Rodriguez Velilla <rrv@tid.es>).
+	+ modify mouse click resolution so that mouseinterval(-1) will disable
+	  it, e.g., to handle touchscreens via a slow connection (request by
+	  Byron Stanoszek <gandalf@winds.org>).
+	+ correct mouseinterval() default value shown in curs_mouse.3x
+	+ remove conflicting definition of mouse_trafo() (reported by Lars
+	  Hecking, using gcc 2.95.3).
 
 20011001
 	+ simpler fix for signal_name(), to replace the one overlooked in
