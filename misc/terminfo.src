@@ -3,7 +3,7 @@
 # This version of terminfo.src is distributed with ncurses.
 #
 #	Version 10.2.1
-#	$Date: 1999/10/24 00:28:48 $
+#	$Date: 1999/10/31 01:13:10 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -584,7 +584,7 @@ beterm|BeOS Terminal,
 # reported by Frank Heckenbach <frank@g-n-u.de>.
 linux|linux console, 
 	am, bce, eo, mir, msgr, xenl, xon, 
-	it#8, ncv#2, 
+	it#8, ncv#18, 
 	acsc=+\020\,\021-\030.^Y0\333`\004a\261f\370g\361h\260i\316j\331k\277l\332m\300n\305o~p\304q\304r\304s_t\303u\264v\301w\302x\263y\363z\362{\343|\330}\234~\376, 
 	bel=^G, civis=\E[?25l\E[?1c, clear=\E[H\E[J, 
 	cnorm=\E[?25h\E[?0c, cr=^M, csr=\E[%i%p1%d;%p2%dr, 
@@ -2651,7 +2651,7 @@ mgr|Bellcore MGR (non X) window system terminal emulation,
 	smul=\E4n, 
 mgr-sun|Mgr window with Sun keyboard, 
 	ka1=\E[214z, ka3=\E[216z, kb2=\E[218z, kc1=\E[220z, 
-	kc3=\E[222z, kcpy=\E197z, kend=\E[220z, kent=\E[250z, 
+	kc3=\E[222z, kcpy=\E[197z, kend=\E[220z, kent=\E[250z, 
 	kf1=\E[224z, kf10=\E[233z, kf11=\E[234z, kf12=\E[235z, 
 	kf2=\E[225z, kf3=\E[226z, kf4=\E[227z, kf5=\E[228z, 
 	kf6=\E[229z, kf7=\E[230z, kf8=\E[231z, kf9=\E[232z, 
@@ -2818,7 +2818,7 @@ ncsa-m|ncsa-vt220-8|NCSA Telnet 2.6 for Macintosh in vt220-8 mode,
 	kdch1=\E[4~, kend=\E[5~, kf1=\E[17~, kf10=\E[28~, 
 	kf11=\E[29~, kf12=\E[31~, kf13=\E[32~, kf14=\E[33~, 
 	kf15=\E[34~, kf2=\E[18, kf3=\E[19~, kf4=\E[20~, kf5=\E[21~, 
-	kf6=\E23~, kf7=\E[24~, kf8=\E[25~, kf9=\E[26~, khlp=\E[1~, 
+	kf6=\E[23~, kf7=\E[24~, kf8=\E[25~, kf9=\E[26~, khlp=\E[1~, 
 	khome=\E[2~, knp=\E[6~, kpp=\E[3~, mc4=\E[4i, mc5=\E[5i, 
 	rc=\E8, rev=\E[7m, rf=/usr/share/tabset/vt100, ri=\EM, 
 	rmacs=^O, rmam=\E[?7l, rmcup=\E[2J\E8, rmir=\E[4l, 
@@ -6812,7 +6812,7 @@ vt320-k3|MS-Kermit 3.00's vt320 emulation,
 	kpp=\E[5~, mc0=\E[0i, mc4=\E[4i, mc5=\E[5i, nel=^M^J, rc=\E8, 
 	rev=\E[7m, ri=\EM, rin=\E[%p1%dL, rmacs=\E(B, rmam=\E[?7l, 
 	rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[27m, rmul=\E[24m, 
-	rs1=\E(B\E)B\E>\E F\E[4;20l\E[12h\E[?1;5;6;38;42l\E[?7;25h\E4i\E?4i\E[m\E[r\E[2$~, 
+	rs1=\E(B\E)B\E>\E F\E[4;20l\E[12h\E[?1;5;6;38;42l\E[?7;25h\E[4i\E[?4i\E[m\E[r\E[2$~, 
 	sc=\E7, sgr0=\E[m, smacs=\E(0, smam=\E[?7h, smir=\E[4h, 
 	smkx=\E[?1h\E=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
 	tsl=\E[1$}\r\E[K, vpa=\E[%i%p1%dd, 
@@ -8143,13 +8143,13 @@ att505|pt505|att5430|gs5430|AT&T Personal Terminal 505 or 5430 GETSET terminal,
 	cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC, cuf1=\E[C, 
 	cup=\E[%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
 	cvvis=\E[>h, dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, 
-	dl1=\E[M, ed=\E[0J, el=\E[0K, el1=\E2K, home=\E[H, ht=^I, 
+	dl1=\E[M, ed=\E[0J, el=\E[0K, el1=\E[2K, home=\E[H, ht=^I, 
 	il=\E[%p1%dL, il1=\E[L, ind=^J, 
 	is1=\EPr\\E[0u\E[2J\E[0;0H\E[m\E[3l\E[<l\E[4l\E[>l\E[=l\E[?l, 
 	kbs=^H, kcmd=\E!, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, 
 	kcuu1=\E[A, kf0=\E[00s, kf1=\E[01s, kf18=\E[18s, 
 	kf19=\E[19s, kf2=\E[02s, kf20=\E[20s, kf21=\E[21s, 
-	kf22=\E[22s, kf23=\E[23s, kf24=\E24s, kf26=\E26s, 
+	kf22=\E[22s, kf23=\E[23s, kf24=\E[24s, kf26=\E[26s, 
 	kf3=\E[03s, kf4=\E[04s, kf5=\E[05s, kf6=\E[06s, 
 	krfr=\E[27s, mc4=\E[4i, mc5=\E[5i, rc=\E8, rev=\E[7m, 
 	rmacs=\E[10m, rmam=\E[11;1j, rmir=\E[4l, rmso=\E[m, 
@@ -9457,7 +9457,7 @@ avt-ns|concept avt no status line,
 	dl1=\E[M$<4>, ed=\E[J$<96>, el=\E[K$<6>, home=\E[H, 
 	hpa=\E[%p1%{1}%+%dG, ht=\011$<4>, hts=\EH, ich=\E[%p1%d@, 
 	ich1=\E[@, il=\E[%p1%dL$<4*>, il1=\E[L$<4>, ind=\n$<8>, 
-	invis=\E8m, ip=$<4>, is1=\E[=103l\E[=205l, 
+	invis=\E[8m, ip=$<4>, is1=\E[=103l\E[=205l, 
 	is2=\E[1*q\E[2!t\E[7!t\E[=4;101;119;122l\E[=107;118;207h\E)1\E[1Q\EW\E[!y\E[!z\E>\E[0\:0\:32!r\E[0*w\E[w\E2\r\n\E[2;27!t, 
 	kbs=^H, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
 	kdch1=\E^B\r, ked=\E^D\r, kf1=\EOP, kf2=\EOQ, kf3=\EOR, 
@@ -9465,11 +9465,11 @@ avt-ns|concept avt no status line,
 	mc0=\E[0i, mc4=\E[4i, mc5=\E[5i, 
 	pfloc=\E[%p1%d;0u#%p2%s#, pfx=\E[%p1%d;1u#%p2%s#, 
 	prot=\E[99m, rc=\E8, rep=%p1%c\E[%p2%{1}%-%db, rev=\E[7m, 
-	ri=\EM$<4>, rmacs=\016$<1>, rmcup=\E[w\E2\r\n, rmir=\E4l, 
+	ri=\EM$<4>, rmacs=\016$<1>, rmcup=\E[w\E2\r\n, rmir=\E[4l, 
 	rmkx=\E[!z\E[0;2u, rmso=\E[7!{, rmul=\E[4!{, sc=\E7, 
 	sgr=\E[%?%p1%t7;%;%?%p2%t4;%;%?%p3%t7;%;%?%p4%t5;%;%?%p6%t1;%;m, 
 	sgr0=\E[m, smacs=\017$<1>, smcup=\E[=4l\E[1;24w\E2\r, 
-	smir=\E1, smkx=\E[1!z\E[0;3u, smso=\E[7m, smul=\E[4m, 
+	smir=\E[4h, smkx=\E[1!z\E[0;3u, smso=\E[7m, smul=\E[4m, 
 	tbc=\E[2g, vpa=\E[%p1%{1}%+%dd, 
 avt-rv-ns|concept avt in reverse video mode/no status line, 
 	flash=\E[=205l$<200>\E[=205h, is1=\E[=103l\E[=205h, 
@@ -17342,6 +17342,12 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* reorder ncsa entries to make ncsa-vt220 use the alternate function
 #	  key mapping, leaving Potorti's entries more like he named them -TD
 #	* remove enter/exit am-mode from cygwin -TD
+#
+# 1999/10/30
+#	* correct typos in several entries (missing '[' from CSI):
+#	  mgr-sun, ncsa-m, vt320-k3, att505, avt-ns, as well as smir/rmir
+#	  strings for avt-ns -TD
+#	* add 'dim' to ncv mask for linux (report by Klaus Weide).
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

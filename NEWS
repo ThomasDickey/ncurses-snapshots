@@ -1,10 +1,32 @@
--- $Id: NEWS,v 1.504 1999/10/24 00:31:05 tom Exp $
+-- $Id: NEWS,v 1.505 1999/10/31 02:03:44 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+19991030
+	+ modify linux terminfo entry to indicate that dim does not mix with
+	  color (reported by Klaus Weide <kweide@enteract.com>).
+	+ correct several typos in terminfo entries related to missing '['
+	  in CSI's -TD
+	+ fix several compiler warnings in c++ binding (reported by Tim
+	  Mooney for alphaev56-dec-osf4.0f
+	+ rename parameter of _nc_free_entries() to accommodate lint.
+	+ correct lint rule for tack, used incorrect list of source files.
+	+ add case to config.guess, config.sub for Rhapsody.
+	+ improve configure tests for libg++ and libstdc++ by omitting the
+	  math library (which is missing on Rhapsody), and improved test for
+	  the math library itself (adapted from path by Nelson H. F. Beebe).
+	+ explicitly initialize to zero several data items which were
+	  implicitly initialized, e.g., cur_term.  If not explicitly
+	  initialized, their storage type is C (common), and causes problems
+	  linking on Rhapsody 5.5 using gcc 2.7.2.1 (reported by Nelson H. F. 
+	  Beebe).
+	+ modify Ada95 binding to not include the linker option for Ada
+	  bindings in the Ada headers, but in the Makefiles instead (patch by
+	  Juergen Pfeifer).
 
 19991023 5.0 release for upload to ftp.gnu.org
 	+ effective with release of 5.0, change NCURSES_VERSION_PATCH to

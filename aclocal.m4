@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.179 1999/10/23 21:49:25 tom Exp $
+dnl $Id: aclocal.m4,v 1.180 1999/10/30 23:30:12 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -655,14 +655,13 @@ esac
 if test $ac_cv_prog_gxx = yes; then
 	AC_MSG_CHECKING([for lib$cf_gpp_libname])
 	cf_save="$LIBS"
-	LIBS="$LIBS -l$cf_gpp_libname -lm"
+	LIBS="$LIBS -l$cf_gpp_libname"
 	AC_TRY_LINK([
 #include <$cf_gpp_libname/builtin.h>
 	],
-	[//float foo=abs(1.0);
-	 two_arg_error_handler_t foo2 = lib_error_handler],
+	[two_arg_error_handler_t foo2 = lib_error_handler],
 	[cf_cxx_library=yes
-	 CXXLIBS="$CXXLIBS -l$cf_gpp_libname -lm"
+	 CXXLIBS="$CXXLIBS -l$cf_gpp_libname"
 	 if test "$cf_gpp_libname" = cpp ; then
 	    AC_DEFINE(HAVE_GPP_BUILTIN_H)
 	 else
@@ -671,10 +670,9 @@ if test $ac_cv_prog_gxx = yes; then
 	[AC_TRY_LINK([
 #include <builtin.h>
 	],
-	[//float foo=abs(1.0);
-	 two_arg_error_handler_t foo2 = lib_error_handler],
+	[two_arg_error_handler_t foo2 = lib_error_handler],
 	[cf_cxx_library=yes
-	 CXXLIBS="$CXXLIBS -l$cf_gpp_libname -lm"
+	 CXXLIBS="$CXXLIBS -l$cf_gpp_libname"
 	 AC_DEFINE(HAVE_BUILTIN_H)],
 	[cf_cxx_library=no])])
 	LIBS="$cf_save"
@@ -1392,6 +1390,28 @@ chmod 755 man/edit_man.sh
 
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Checks for libraries.  At least one UNIX system, Apple Macintosh
+dnl Rhapsody 5.5, does not have -lm.  We cannot use the simpler
+dnl AC_CHECK_LIB(m,sin), because that fails for C++.
+AC_DEFUN([CF_MATH_LIB],
+[
+AC_CACHE_CHECK(if -lm needed for math functions,
+	cf_cv_need_libm,[
+	AC_TRY_LINK([
+	#include <stdio.h>
+	#include <math.h>
+	],
+	[double x; printf("sin(1.0) = %g\n", sin(1.0));],
+	[cf_cv_need_libm=no],
+	[cf_cv_need_libm=yes])])
+ifelse($1,,[
+if test "$cf_cv_need_libm" = yes
+then
+	LIBS="$LIBS -lm"
+fi
+],[$1=-lm])
+])
+dnl ---------------------------------------------------------------------------
 dnl Compute the object-directory name from the given model name
 AC_DEFUN([CF_OBJ_SUBDIR],
 [
@@ -1924,12 +1944,11 @@ os2*) #(vi
 esac
 AC_CACHE_CHECK(for library $cf_stdcpp_libname,cf_cv_libstdcpp,[
 	cf_save="$LIBS"
-	LIBS="$LIBS -l$cf_stdcpp_libname -lm"
+	LIBS="$LIBS -l$cf_stdcpp_libname"
 AC_TRY_LINK([
 #include <strstream.h>],[
 char buf[80];
 strstreambuf foo(buf, sizeof(buf))
-//destroy foo
 ],
 	[cf_cv_libstdcpp=yes],
 	[cf_cv_libstdcpp=no])

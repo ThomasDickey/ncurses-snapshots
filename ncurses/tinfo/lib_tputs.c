@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1998,1999 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -46,12 +46,12 @@
 #include <termcap.h>	/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.41 1999/10/22 23:31:24 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.42 1999/10/30 23:00:16 tom Exp $")
 
-char PC;		/* used by termcap library */
-speed_t ospeed;		/* used by termcap library */
+char PC = 0;		/* used by termcap library */
+speed_t ospeed = 0;	/* used by termcap library */
 
-int _nc_nulls_sent;	/* used by 'tack' program */
+int _nc_nulls_sent = 0;	/* used by 'tack' program */
 
 static int (*my_outch)(int c) = _nc_outch;
 
