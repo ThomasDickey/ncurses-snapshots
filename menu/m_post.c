@@ -37,39 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_post.c,v 1.25 2004/12/11 23:29:33 tom Exp $")
-
-#if USE_WIDEC_SUPPORT
-static int
-text_columns(const TEXT * item)
-{
-  int result = item->length;
-  int count = mbstowcs(0, item->str, 0);
-  wchar_t *temp = 0;
-
-  if (count > 0
-      && (temp = malloc(sizeof(*temp) * (2 + count))) != 0)
-    {
-      int n;
-
-      result = 0;
-      mbstowcs(temp, item->str, count);
-      for (n = 0; n < count; ++n)
-	{
-	  int test = wcwidth(temp[n]);
-
-	  if (test <= 0)
-	    test = 1;
-	  result += test;
-	}
-      free(temp);
-    }
-  return result;
-}
-#define TEXT_COLS(item) text_columns(&(item))
-#else
-#define TEXT_COLS(item) item.length
-#endif
+MODULE_ID("$Id: m_post.c,v 1.26 2004/12/25 23:57:04 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu
@@ -151,7 +119,7 @@ _nc_Post_Item(const MENU * menu, const ITEM * item)
     }
 
   waddnstr(menu->win, item->name.str, item->name.length);
-  name_len = TEXT_COLS(item->name);
+  name_len = _nc_Calculate_Text_Width(&(item->name));
   for (ch = ' ', i = menu->namelen - name_len; i > 0; i--)
     {
       waddch(menu->win, ch);
@@ -176,7 +144,7 @@ _nc_Post_Item(const MENU * menu, const ITEM * item)
 	}
       if (item->description.length)
 	waddnstr(menu->win, item->description.str, item->description.length);
-      desc_len = TEXT_COLS(item->description);
+      desc_len = _nc_Calculate_Text_Width(&(item->description));
       for (ch = ' ', i = menu->desclen - desc_len; i > 0; i--)
 	{
 	  waddch(menu->win, ch);

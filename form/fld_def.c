@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_def.c,v 1.30 2004/12/11 21:38:48 tom Exp $")
+MODULE_ID("$Id: fld_def.c,v 1.31 2004/12/25 22:24:10 tom Exp $")
 
 /* this can't be readonly */
 static FIELD default_field =
@@ -281,6 +281,7 @@ new_field(int rows, int cols, int frow, int fcol, int nrow, int nbuf)
   FIELD *New_Field = (FIELD *)0;
   int err = E_BAD_ARGUMENT;
 
+  T((T_CALLED("new_field(%d,%d,%d,%d,%d,%d)"), rows, cols, frow, fcol, nrow, nbuf));
   if (rows > 0 &&
       cols > 0 &&
       frow >= 0 &&
@@ -328,7 +329,7 @@ new_field(int rows, int cols, int frow, int fcol, int nrow, int nbuf)
 		    }
 		  buffer[j] = zeros;
 		}
-	      return New_Field;
+	      returnField(New_Field);
 	    }
 	}
     }
@@ -337,7 +338,7 @@ new_field(int rows, int cols, int frow, int fcol, int nrow, int nbuf)
     free_field(New_Field);
 
   SET_ERROR(err);
-  return (FIELD *)0;
+  returnField((FIELD *)0);
 }
 
 /*---------------------------------------------------------------------------

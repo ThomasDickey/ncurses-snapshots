@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 2004 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,46 +27,44 @@
  ****************************************************************************/
 
 /****************************************************************************
- *   Author:  Juergen Pfeifer, 1995,1997                                    *
+ *   Author:  Thomas E. Dickey                                              *
  ****************************************************************************/
-
-/***************************************************************************
-* Module m_item_nam                                                        *
-* Get menus item name and description                                      *
-***************************************************************************/
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_nam.c,v 1.14 2004/12/25 21:41:54 tom Exp $")
+MODULE_ID("$Id: m_trace.c,v 1.2 2004/12/25 22:44:30 tom Exp $")
 
-/*---------------------------------------------------------------------------
-|   Facility      :  libnmenu  
-|   Function      :  char *item_name(const ITEM *item)
-|   
-|   Description   :  Return name of menu item
-|
-|   Return Values :  See above; returns NULL if item is invalid
-+--------------------------------------------------------------------------*/
-NCURSES_EXPORT(const char *)
-item_name(const ITEM * item)
+NCURSES_EXPORT(ITEM *)
+_nc_retrace_item(ITEM * code)
 {
-  T((T_CALLED("item_name(%p)"), item));
-  returnCPtr((item) ? item->name.str : (char *)0);
+  T((T_RETURN("%p"), code));
+  return code;
 }
 
-/*---------------------------------------------------------------------------
-|   Facility      :  libnmenu  
-|   Function      :  char *item_description(const ITEM *item)
-|   
-|   Description   :  Returns description of item
-|
-|   Return Values :  See above; Returns NULL if item is invalid
-+--------------------------------------------------------------------------*/
-NCURSES_EXPORT(const char *)
-item_description(const ITEM * item)
+NCURSES_EXPORT(Item_Options)
+_nc_retrace_item_opts(Item_Options code)
 {
-  T((T_CALLED("item_description(%p)"), item));
-  returnCPtr((item) ? item->description.str : (char *)0);
+  T((T_RETURN("%d"), code));
+  return code;
 }
 
-/* m_item_nam.c ends here */
+NCURSES_EXPORT(MENU *)
+_nc_retrace_menu(MENU * code)
+{
+  T((T_RETURN("%p"), code));
+  return code;
+}
+
+NCURSES_EXPORT(Menu_Hook)
+_nc_retrace_menu_hook(Menu_Hook code)
+{
+  T((T_RETURN("%p"), code));
+  return code;
+}
+
+NCURSES_EXPORT(Menu_Options)
+_nc_retrace_menu_opts(Menu_Options code)
+{
+  T((T_RETURN("%d"), code));
+  return code;
+}

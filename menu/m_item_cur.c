@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_cur.c,v 1.16 2004/12/11 23:29:34 tom Exp $")
+MODULE_ID("$Id: m_item_cur.c,v 1.17 2004/12/25 21:57:38 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -91,7 +91,8 @@ set_current_item(MENU * menu, ITEM * item)
 NCURSES_EXPORT(ITEM *)
 current_item(const MENU * menu)
 {
-  return (menu && menu->items) ? menu->curitem : (ITEM *) 0;
+  T((T_CALLED("current_item(%p)"), menu));
+  returnItem((menu && menu->items) ? menu->curitem : (ITEM *) 0);
 }
 
 /*---------------------------------------------------------------------------
@@ -105,7 +106,8 @@ current_item(const MENU * menu)
 NCURSES_EXPORT(int)
 item_index(const ITEM * item)
 {
-  return (item && item->imenu) ? item->index : ERR;
+  T((T_CALLED("item_index(%p)"), item));
+  returnCode((item && item->imenu) ? item->index : ERR);
 }
 
 /* m_item_cur.c ends here */

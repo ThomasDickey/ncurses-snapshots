@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_hook.c,v 1.13 2004/12/11 22:04:21 tom Exp $")
+MODULE_ID("$Id: frm_hook.c,v 1.14 2004/12/25 22:37:27 tom Exp $")
 
 /* "Template" macro to generate function to set application specific hook */
 #define GEN_HOOK_SET_FUNCTION( typ, name ) \
@@ -47,7 +47,8 @@ NCURSES_IMPEXP int NCURSES_API set_ ## typ ## _ ## name (FORM *form, Form_Hook f
 #define GEN_HOOK_GET_FUNCTION( typ, name ) \
 NCURSES_IMPEXP Form_Hook NCURSES_API typ ## _ ## name ( const FORM *form )\
 {\
-   return ( Normalize_Form( form ) -> typ ## name );\
+   T((T_CALLED(#typ "_" #name "(%p)"), form));\
+   returnFormHook( Normalize_Form( form ) -> typ ## name );\
 }
 
 /*---------------------------------------------------------------------------

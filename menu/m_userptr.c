@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_userptr.c,v 1.15 2004/12/11 23:29:34 tom Exp $")
+MODULE_ID("$Id: m_userptr.c,v 1.16 2004/12/25 21:38:55 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -69,7 +69,8 @@ set_menu_userptr(MENU * menu, void *userptr)
 NCURSES_EXPORT(void *)
 menu_userptr(const MENU * menu)
 {
-  return (Normalize_Menu(menu)->userptr);
+  T((T_CALLED("menu_userptr(%p)"), menu));
+  returnVoidPtr(Normalize_Menu(menu)->userptr);
 }
 
 /* m_userptr.c ends here */

@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_win.c,v 1.14 2004/12/11 23:29:34 tom Exp $")
+MODULE_ID("$Id: m_win.c,v 1.15 2004/12/25 21:39:20 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -79,7 +79,8 @@ menu_win(const MENU * menu)
 {
   const MENU *m = Normalize_Menu(menu);
 
-  return (m->userwin ? m->userwin : stdscr);
+  T((T_CALLED("menu_win(%p)"), menu));
+  returnWin(m->userwin ? m->userwin : stdscr);
 }
 
 /* m_win.c ends here */

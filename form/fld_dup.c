@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_dup.c,v 1.9 2004/05/29 19:16:58 tom Exp $")
+MODULE_ID("$Id: fld_dup.c,v 1.10 2004/12/25 22:24:10 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
@@ -53,6 +53,7 @@ dup_field(FIELD *field, int frow, int fcol)
   FIELD *New_Field = (FIELD *)0;
   int err = E_BAD_ARGUMENT;
 
+  T((T_CALLED("dup_field(%p,%d,%d)"), field, frow, fcol));
   if (field && (frow >= 0) && (fcol >= 0) &&
       ((err = E_SYSTEM_ERROR) != 0) &&	/* trick : this resets the default error */
       (New_Field = (FIELD *)malloc(sizeof(FIELD))))
@@ -84,7 +85,7 @@ dup_field(FIELD *field, int frow, int fcol)
 	    {
 	      for (i = 0; i < len; ++i)
 		New_Field->buf[i] = field->buf[i];
-	      return New_Field;
+	      returnField(New_Field);
 	    }
 	}
     }
@@ -93,7 +94,7 @@ dup_field(FIELD *field, int frow, int fcol)
     free_field(New_Field);
 
   SET_ERROR(err);
-  return (FIELD *)0;
+  returnField((FIELD *)0);
 }
 
 /* fld_dup.c ends here */

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fld_current.c,v 1.10 2004/12/11 21:36:09 tom Exp $")
+MODULE_ID("$Id: fld_current.c,v 1.11 2004/12/25 22:40:13 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform
@@ -113,7 +113,8 @@ set_current_field(FORM *form, FIELD *field)
 NCURSES_EXPORT(FIELD *)
 current_field(const FORM *form)
 {
-  return Normalize_Form(form)->current;
+  T((T_CALLED("current_field(%p)"), form));
+  returnField(Normalize_Form(form)->current);
 }
 
 /*---------------------------------------------------------------------------
@@ -129,7 +130,8 @@ current_field(const FORM *form)
 NCURSES_EXPORT(int)
 field_index(const FIELD *field)
 {
-  return ((field != 0 && field->form != 0) ? (int)field->index : -1);
+  T((T_CALLED("field_index(%p)"), field));
+  returnCode((field != 0 && field->form != 0) ? (int)field->index : -1);
 }
 
 /* fld_current.c ends here */

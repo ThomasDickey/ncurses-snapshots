@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.851 2004/12/19 00:49:27 tom Exp $
+-- $Id: NEWS,v 1.852 2004/12/25 23:31:56 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20041225
+	+ add trace calls to remaining public functions in form and menu
+	  libraries.
+	+ fix check for numeric digits in test/ncurses.c 'b' and 'B' tests.
+	+ fix typo in test/ncurses.c 'c' test from 20041218.
 
 20041218
 	+ revise test/ncurses.c 'c' color test to improve use for xterm-88color

@@ -30,7 +30,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: form.priv.h,v 0.20 2004/12/04 22:50:01 tom Exp $ */
+/* $Id: form.priv.h,v 0.21 2004/12/25 22:52:17 tom Exp $ */
 
 #ifndef FORM_PRIV_H
 #define FORM_PRIV_H 1
@@ -163,5 +163,29 @@ extern NCURSES_EXPORT(int) _nc_Position_Form_Cursor (FORM*);
 #if USE_WIDEC_SUPPORT
 extern NCURSES_EXPORT(wchar_t *) _nc_Widen_String(char *, int *);
 #endif
+
+#ifdef TRACE
+
+#define returnField(code)	TRACE_RETURN(code,field)
+#define returnFieldPtr(code)	TRACE_RETURN(code,field_ptr)
+#define returnForm(code)	TRACE_RETURN(code,form)
+#define returnFieldType(code)	TRACE_RETURN(code,field_type)
+#define returnFormHook(code)	TRACE_RETURN(code,form_hook)
+
+extern NCURSES_EXPORT(FIELD **)	    _nc_retrace_field_ptr (FIELD **);
+extern NCURSES_EXPORT(FIELD *)	    _nc_retrace_field (FIELD *);
+extern NCURSES_EXPORT(FIELDTYPE *)  _nc_retrace_field_type (FIELDTYPE *);
+extern NCURSES_EXPORT(FORM *)  _nc_retrace_form (FORM *);
+extern NCURSES_EXPORT(Form_Hook)  _nc_retrace_form_hook (Form_Hook);
+
+#else /* !TRACE */
+
+#define returnFieldPtr(code)	return code
+#define returnFieldType(code)	return code
+#define returnField(code)	return code
+#define returnForm(code)	return code
+#define returnFormHook(code)	return code
+
+#endif /* TRACE/!TRACE */
 
 #endif /* FORM_PRIV_H */

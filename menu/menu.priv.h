@@ -30,7 +30,7 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: menu.priv.h,v 1.18 2004/12/11 22:42:52 tom Exp $ */
+/* $Id: menu.priv.h,v 1.21 2004/12/25 23:56:42 tom Exp $ */
 
 /***************************************************************************
 * Module menu.priv.h                                                       *
@@ -112,6 +112,7 @@ extern NCURSES_EXPORT_VAR(MENU) _nc_Default_Menu;
 extern NCURSES_EXPORT(void) _nc_Draw_Menu (const MENU *);
 extern NCURSES_EXPORT(void) _nc_Show_Menu (const MENU *);
 extern NCURSES_EXPORT(void) _nc_Calculate_Item_Length_and_Width (MENU *);
+extern NCURSES_EXPORT(int)  _nc_Calculate_Text_Width(const TEXT *);
 extern NCURSES_EXPORT(void) _nc_Post_Item (const MENU *, const ITEM *);
 extern NCURSES_EXPORT(bool) _nc_Connect_Items (MENU *, ITEM **);
 extern NCURSES_EXPORT(void) _nc_Disconnect_Items (MENU *);
@@ -120,5 +121,29 @@ extern NCURSES_EXPORT(void) _nc_Link_Items (MENU *);
 extern NCURSES_EXPORT(int)  _nc_Match_Next_Character_In_Item_Name (MENU*,int,ITEM**);
 extern NCURSES_EXPORT(int)  _nc_menu_cursor_pos (const MENU* menu, const ITEM* item,
 				int* pY, int* pX);
+
+#ifdef TRACE
+
+#define returnItem(code)	TRACE_RETURN(code,item)
+#define returnItemOpts(code)	TRACE_RETURN(code,item_opts)
+#define returnMenu(code)	TRACE_RETURN(code,menu)
+#define returnMenuHook(code)	TRACE_RETURN(code,menu_hook)
+#define returnMenuOpts(code)	TRACE_RETURN(code,menu_opts)
+
+extern NCURSES_EXPORT(ITEM *)	    _nc_retrace_item (ITEM *);
+extern NCURSES_EXPORT(Item_Options) _nc_retrace_item_opts (Item_Options);
+extern NCURSES_EXPORT(MENU *)	    _nc_retrace_menu (MENU *);
+extern NCURSES_EXPORT(Menu_Hook)    _nc_retrace_menu_hook (Menu_Hook);
+extern NCURSES_EXPORT(Menu_Options) _nc_retrace_menu_opts (Menu_Options);
+
+#else /* !TRACE */
+
+#define returnItem(code)	return code
+#define returnItemOpts(code)	return code
+#define returnMenu(code)	return code
+#define returnMenuHook(code)	return code
+#define returnMenuOpts(code)	return code
+
+#endif /* TRACE/!TRACE */
 
 #endif /* MENU_PRIV_H_incl */

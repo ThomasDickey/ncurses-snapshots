@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_cursor.c,v 1.18 2004/12/11 23:09:57 tom Exp $")
+MODULE_ID("$Id: m_cursor.c,v 1.19 2004/12/25 22:03:00 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu
@@ -50,8 +50,7 @@ MODULE_ID("$Id: m_cursor.c,v 1.18 2004/12/11 23:09:57 tom Exp $")
 |                    E_NOT_POSTED    - Menu is not posted
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-  _nc_menu_cursor_pos
-  (const MENU * menu, const ITEM * item, int *pY, int *pX)
+_nc_menu_cursor_pos(const MENU * menu, const ITEM * item, int *pY, int *pX)
 {
   if (!menu || !pX || !pY)
     return (E_BAD_ARGUMENT);
