@@ -1,0 +1,2 @@
+# Library objects
+panel		lib		$(srcdir)	$(srcdir)/panel.h
