@@ -1,8 +1,48 @@
--- $Id: NEWS,v 1.250 1997/09/14 01:17:04 tom Exp $
+-- $Id: NEWS,v 1.252 1997/09/20 23:54:43 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970920
+	+ several modifications to the configure script (requested by Ward
+	  Horner):
+	  + add configure options --without-progs, to suppress the build of the
+	    utility programs, e.g., for cross-compiling.
+	  + add $(HOSTCCFLAGS) and $(HOSTLDFLAGS) symbols to ncurses
+	    Makefile.in, to simplify setup for cross compiling.
+	  + add logic in configure script to recognize "--target=vxworks", and
+	    generate load/install actions for VxWorks objects.
+	+ move typedef for sigaction_t into SigAction.h to work around problem
+	  generating lint library.
+	+ modify fty_regex.c to reflect renaming of ifdef's for regular
+	  expressions.
+	+ simplify ifdef in lib_setup.c for TIOCGWINSZ since that symbol may
+	  reside in <sys/ioctl.h>.
+	+ merge testcurs.c with version from PDCurses 2.3, clarifying some of
+	  the more obscure tests, which rely upon color.
+	+ use macros getbegyx() and getmaxyx() in newdemo.c and testcurs.c
+	+ modify ncurses.c to use getbegyx() and getmaxyx() macros to cover up
+	  implementation difference wrt SVr4 curses, allow 's' test to work.
+	+ add missing endwin() to testscanw.c program (reported by Fausto
+	  Saporito <fausap@itb.it>).
+	+ fixes/updates for Makefile.glibc and related files under sysdeps
+	  (patch by H.J.Lu).
+	> patches by Juergen Pfeifer:
+	+ add checks for null pointers, especially WINDOW's throughout the
+	  ncurses library.
+	+ solve a problem with wrong calculation of panel overlapping (reported
+	  by Ward Horner):
+	  + make sure that a panel's window isn't a pad.
+	  + do more error checking in module lib_touch.c
+	+ missing files for Ada95 binding from the last patch
+	+ synch. of generated html pages (RCS-Id's were wrong in html files)
+	+ support for Key_Resize in Ada binding
+	+ changed documentation style in ./c++/cursesm.h
+	> patches by Alexander V. Lukyanov:
+	+ undo attempt to do recursive inlining for PutChar(), noting that it
+	  did not improve timing measurably, but inflated the size of
+	  lib_doupdate.o
+	
 970913
 	+ modify rain.c to use color.
 	+ correct scroll_csr_backward() to match scroll_csr_forward().

@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.12 1997/05/20 15:56:32 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.13 1997/09/20 15:02:34 juergen Exp $")
 
 int
 waddnstr(WINDOW *win, const char *const astr, int n)
@@ -37,24 +37,23 @@ unsigned const char *str = (unsigned const char *)astr;
 int code = ERR;
 
 	T((T_CALLED("waddnstr(%p,%s,%d)"), win, _nc_visbuf(astr), n));
-	T(("... current %s", _traceattr(win->_attrs)));
-
-	if (str != 0) {
-
-		TR(TRACE_VIRTPUT, ("str is not null"));
-		code = OK;
-		if (n < 0)
-			n = (int)strlen(astr);
-
-		while((n-- > 0) && (*str != '\0')) {
-			TR(TRACE_VIRTPUT, ("*str = %#x", *str));
-			if (_nc_waddch_nosync(win, (chtype)*str++) == ERR) {
-				code = ERR;
-				break;
-			}
-		}
+	  
+	if (win && (str != 0)) {	    
+	  T(("... current %s", _traceattr(win->_attrs)));
+	  TR(TRACE_VIRTPUT, ("str is not null"));
+	  code = OK;
+	  if (n < 0)
+	    n = (int)strlen(astr);
+	  
+	  while((n-- > 0) && (*str != '\0')) {
+	    TR(TRACE_VIRTPUT, ("*str = %#x", *str));
+	    if (_nc_waddch_nosync(win, (chtype)*str++) == ERR) {
+	      code = ERR;
+	      break;
+	    }
+	  }
+	  _nc_synchook(win);
 	}
-	_nc_synchook(win);
 	TR(TRACE_VIRTPUT, ("waddnstr returns %d", code));
 	returnCode(code);
 }
@@ -67,6 +66,9 @@ short x = win->_curx;
 int code = OK;
 
 	T((T_CALLED("waddchnstr(%p,%p,%d)"), win, astr, n));
+
+	if (!win)
+	  returnCode(ERR);
 
 	if (n < 0) {
 		const chtype *str;

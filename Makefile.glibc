@@ -52,6 +52,7 @@ libncurses-routines	= alloc_entry captoinfo comp_error comp_hash \
 				lib_addstr lib_baudrate \
 				lib_beep lib_bkgd lib_box lib_clear \
 				lib_clrbot lib_clreol lib_color \
+				lib_cur_term \
 				lib_data lib_delch lib_delwin \
 				lib_dft_fgbg lib_doupdate lib_endwin \
 				lib_erase lib_freeall lib_getch \
@@ -72,7 +73,8 @@ libncurses-routines	= alloc_entry captoinfo comp_error comp_hash \
 				lib_twait lib_vidattr lib_window \
 				name_match parse_entry read_entry \
 				read_termcap resizeterm safe_sprintf \
-				softscroll tries wresize write_entry \
+				softscroll trace_buf \
+				tries wresize write_entry \
 				codes comp_captab expanded fallback \
 				lib_gen lib_keyname names unctrl
 
@@ -101,8 +103,9 @@ extra-objs = $(tic-objs) $(toe-objs) $(infocmp-objs) $(clear-objs) \
 
 # mvcur won't compile
 test-srcs = tctest thardscroll thashmap \
-		blue bs firework gdc hanoi hashtest knight lrtest \
-		ncurses newdemo rain tclock testcurs view worm xmas
+		blue bs firework firstlast gdc hanoi hashtest knight \
+		lrtest ncurses newdemo rain tclock testaddch testcurs \
+		testscanw view worm xmas
 mvcur-objs = mvcur.o dump_entry.o
 tctest-objs = tctest.o
 thardscroll-objs = thardscroll.o

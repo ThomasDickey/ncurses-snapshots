@@ -29,7 +29,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.19 1997/08/20 16:22:38 hjl Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.20 1997/09/20 15:02:34 juergen Exp $")
 
 /*
  * Only 8 ANSI colors are defined; the ISO 6429 control sequences work only
@@ -128,7 +128,7 @@ static void rgb2hls(short r, short g, short b, short *h, short *l, short *s)
 /* convert RGB to HLS system */
 {
     short min, max, t;
-
+    
     if ((min = g < r ? g : r) > b) min = b;
     if ((max = g > r ? g : r) < b) max = b;
 
@@ -283,9 +283,9 @@ int color_content(short color, short *r, short *g, short *b)
     if (color < 0 || color > COLORS)
 	returnCode(ERR);
 
-    *r = SP->_color_table[color].red;
-    *g = SP->_color_table[color].green;
-    *b = SP->_color_table[color].blue;
+    if (r) *r = SP->_color_table[color].red;
+    if (g) *g = SP->_color_table[color].green;
+    if (b) *b = SP->_color_table[color].blue;
     returnCode(OK);
 }
 
@@ -295,8 +295,8 @@ int pair_content(short pair, short *f, short *b)
 
 	if ((pair < 0) || (pair > COLOR_PAIRS))
 		returnCode(ERR);
-	*f = ((SP->_color_pairs[pair] >> C_SHIFT) & C_MASK);
-	*b =  (SP->_color_pairs[pair] & C_MASK);
+	if (f) *f = ((SP->_color_pairs[pair] >> C_SHIFT) & C_MASK);
+	if (b) *b =  (SP->_color_pairs[pair] & C_MASK);
 
 	returnCode(OK);
 }

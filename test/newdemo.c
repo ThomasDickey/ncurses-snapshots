@@ -2,7 +2,7 @@
  *  newdemo.c	-	A demo program using PDCurses. The program illustrate
  *  	 		the use of colours for text output.
  *
- * $Id: newdemo.c,v 1.16 1997/06/01 00:37:42 tom Exp $
+ * $Id: newdemo.c,v 1.17 1997/09/20 15:11:26 tom Exp $
  */
 
 #include <test.priv.h>
@@ -216,10 +216,8 @@ SubWinTest(WINDOW *win)
 int     w, h, sw, sh, bx, by;
 WINDOW  *swin1, *swin2, *swin3;
 
-    w  = win->_maxx;
-    h  = win->_maxy;
-    bx = win->_begx;
-    by = win->_begy;
+    getmaxyx(win, h,  w);
+    getbegyx(win, by, bx);
     sw = w / 3;
     sh = h / 3;
     if((swin1 = subwin(win, sh, sw, by+3, bx+5)) == NULL)
@@ -265,8 +263,7 @@ int     x1, y1, xd1, yd1;
 int     x2, y2, xd2, yd2;
 int     x3, y3, xd3, yd3;
 
-    w    = win->_maxx;
-    h    = win->_maxy;
+    getmaxyx(win, h, w);
     x1   = 2 + rand() % (w - 4);
     y1   = 2 + rand() % (h - 4);
     x2   = 2 + rand() % (w - 4);

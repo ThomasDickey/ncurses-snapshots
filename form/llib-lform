@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                      *
+ * Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                 *
  * All Rights Reserved.                                                       *
  *                                                                            *
  * Permission to use, copy, modify, and distribute this software and its      *
@@ -8,14 +8,15 @@
  * copyright notice and this permission notice appear in supporting           *
  * documentation, and that the name of the above listed copyright holder(s)   *
  * not be used in advertising or publicity pertaining to distribution of the  *
- * software without specific, written prior permission. THE ABOVE LISTED      *
- * COPYRIGHT HOLDER(S) DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,  *
- * INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO     *
- * EVENT SHALL THE ABOVE LISTED COPYRIGHT HOLDER(S) BE LIABLE FOR ANY         *
- * SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER       *
- * RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
- * CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
- * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
+ * software without specific, written prior permission.                       *
+ *                                                                            *
+ * THE ABOVE LISTED COPYRIGHT HOLDER(S) DISCLAIM ALL WARRANTIES WITH REGARD   *
+ * TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND  *
+ * FITNESS, IN NO EVENT SHALL THE ABOVE LISTED COPYRIGHT HOLDER(S) BE LIABLE  *
+ * FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES          *
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN      *
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR *
+ * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                *
  ******************************************************************************/
 /* LINTLIBRARY */
 
@@ -27,7 +28,7 @@
 typedef struct
 {
   regex_t *pRegExp;
-  unsigned long refCount;
+  unsigned long *refCount;
 } RegExp_Arg;
 
 #undef TYPE_REGEXP
@@ -51,8 +52,8 @@ FIELDTYPE *TYPE_NUMERIC;
 
 typedef struct {
   int precision;
-  int low;
-  int high;
+  long low;
+  long high;
 } integerARG;
 
 #undef TYPE_INTEGER
@@ -133,13 +134,13 @@ WINDOW	*form_sub(
 #undef set_form_userptr
 int	set_form_userptr(
 		FORM	*form, 
-		const void *usrptr)
+		void	*usrptr)
 		{ return(*(int *)0); }
 
 #undef form_userptr
-const void *form_userptr(
+void	*form_userptr(
 		const FORM *form)
-		{ return(*(const void **)0); }
+		{ return(*(void **)0); }
 
 /* ./frm_opts.c */
 
@@ -229,13 +230,13 @@ int	form_request_by_name(
 #undef set_field_userptr
 int	set_field_userptr(
 		FIELD	*field, 
-		const void *usrptr)
+		void	*usrptr)
 		{ return(*(int *)0); }
 
 #undef field_userptr
-const void *field_userptr(
+void	*field_userptr(
 		const FIELD *field)
-		{ return(*(const void **)0); }
+		{ return(*(void **)0); }
 
 /* ./fld_type.c */
 
@@ -578,3 +579,9 @@ void	_nc_ada_normalize_form_opts(
 void	*_nc_ada_getvarg(
 		va_list	*ap)
 		{ return(*(void **)0); }
+
+#undef _nc_get_field
+FIELD	*_nc_get_field(
+		const FORM *frm, 
+		int	idx)
+		{ return(*(FIELD **)0); }

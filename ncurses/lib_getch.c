@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.32 1997/09/09 17:37:14 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.33 1997/09/20 15:02:34 juergen Exp $")
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail
@@ -186,6 +186,9 @@ wgetch(WINDOW *win)
 int	ch;
 
 	T((T_CALLED("wgetch(%p)"), win));
+
+	if (!win)
+	  returnCode(ERR);
 
 	if (cooked_key_in_fifo())
 	{

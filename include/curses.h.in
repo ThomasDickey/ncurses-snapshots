@@ -18,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.53 1997/09/07 22:13:03 juergen Exp $ */
+/* $Id: curses.h.in,v 1.54 1997/09/20 15:02:06 juergen Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -878,28 +878,28 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 #define nocrmode()		nocbreak()
 #define gettmode()
 
-#define getyx(win,y,x)   	(y = (win)->_cury, x = (win)->_curx)
-#define getbegyx(win,y,x)	(y = (win)->_begy, x = (win)->_begx)
-#define getmaxyx(win,y,x)	(y = (win)->_maxy + 1, x = (win)->_maxx + 1)
-#define getparyx(win,y,x)	(y = (win)->_pary, x = (win)->_parx)
+#define getyx(win,y,x)   	(y = (win)?(win)->_cury:ERR, x = (win)?(win)->_curx:ERR)
+#define getbegyx(win,y,x)	(y = (win)?(win)->_begy:ERR, x = (win)?(win)->_begx:ERR)
+#define getmaxyx(win,y,x)	(y = (win)?((win)->_maxy + 1):ERR, x = (win)?((win)->_maxx + 1):ERR)
+#define getparyx(win,y,x)	(y = (win)?(win)->_pary:ERR, x = (win)?(win)->_parx:ERR)
 #define getsyx(y,x)		getyx(stdscr, y, x)
 #define setsyx(y,x)		(stdscr->_cury = y, stdscr->_curx = x)
 
 /* It seems older SYSV curses versions define these */
-#define getattrs(win)		((win)->_attrs)
-#define getcurx(win)		((win)->_curx)
-#define getcury(win)		((win)->_cury)
-#define getbegx(win)		((win)->_begx)
-#define getbegy(win)		((win)->_begy)
-#define getmaxx(win)		((win)->_maxx + 1)
-#define getmaxy(win)		((win)->_maxy + 1)
-#define getparx(win)		((win)->_parx)
-#define getpary(win)		((win)->_pary)
+#define getattrs(win)		((win)?(win)->_attrs:A_NORMAL)
+#define getcurx(win)		((win)?(win)->_curx:ERR)
+#define getcury(win)		((win)?(win)->_cury:ERR)
+#define getbegx(win)		((win)?(win)->_begx:ERR)
+#define getbegy(win)		((win)?(win)->_begy:ERR)
+#define getmaxx(win)		((win)?((win)->_maxx + 1):ERR)
+#define getmaxy(win)		((win)?((win)->_maxy + 1):ERR)
+#define getparx(win)		((win)?(win)->_parx:ERR)
+#define getpary(win)		((win)?(win)->_pary:ERR)
 
-#define winch(win)       	((win)->_line[(win)->_cury].text[(win)->_curx])
+#define winch(win)       	((win)?(win)->_line[(win)->_cury].text[(win)->_curx]:0)
 #define wstandout(win)      	(wattr_set(win,A_STANDOUT))
 #define wstandend(win)      	(wattr_set(win,A_NORMAL))
-#define wattr_set(win,at)    	((win)->_attrs = (at))
+#define wattr_set(win,at)    	((win)?((win)->_attrs = (at)):0)
 
 #define wattron(win,at)		wattr_on(win, at)
 #define wattroff(win,at)	wattr_off(win, at)
@@ -907,9 +907,9 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 
 #define scroll(win)		wscrl(win,1)
 
-#define touchwin(win)		wtouchln((win), 0, (win)->_maxy + 1, 1)
+#define touchwin(win)		wtouchln((win), 0, getmaxy(win), 1)
 #define touchline(win, s, c)	wtouchln((win), s, c, 1)
-#define untouchwin(win)		wtouchln((win), 0, (win)->_maxy + 1, 0)
+#define untouchwin(win)		wtouchln((win), 0, getmaxy(win), 0)
 
 #define box(win, v, h)		wborder(win, v, v, h, h, 0, 0, 0, 0)
 #define border(ls, rs, ts, bs, tl, tr, bl, br)	wborder(stdscr, ls, rs, ts, bs, tl, tr, bl, br)

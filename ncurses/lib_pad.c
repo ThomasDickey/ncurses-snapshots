@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_pad.c,v 1.23 1997/09/08 05:49:32 juergen Exp $")
+MODULE_ID("$Id: lib_pad.c,v 1.24 1997/09/20 15:02:34 juergen Exp $")
 
 WINDOW *newpad(int l, int c)
 {
@@ -60,13 +60,14 @@ int i;
 
 WINDOW *subpad(WINDOW *orig, int l, int c, int begy, int begx)
 {
-WINDOW	*win;
+WINDOW	*win = (WINDOW *)0;
 
 	T((T_CALLED("subpad(%d, %d)"), l, c));
 
-	if (!(orig->_flags & _ISPAD) || ((win = derwin(orig, l, c, begy, begx)) == NULL))
+	if (orig) {
+	  if (!(orig->_flags & _ISPAD) || ((win = derwin(orig, l, c, begy, begx)) == NULL))
 	    returnWin(0);
-
+	}
 	returnWin(win);
 }
 
@@ -254,6 +255,9 @@ bool	wide;
 int pechochar(WINDOW *pad, const chtype ch)
 {
 	T((T_CALLED("pechochar(%p, %s)"), pad, _tracechtype(ch)));
+
+	if (pad == 0)
+	  returnCode(ERR);
 
 	if (!(pad->_flags & _ISPAD))
 		returnCode(wechochar(pad,ch));

@@ -30,18 +30,19 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_endwin.c,v 1.11 1997/08/18 13:32:29 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_endwin.c,v 1.12 1997/09/20 15:02:34 juergen Exp $")
 
 int
 endwin(void)
 {
 	T((T_CALLED("endwin()")));
 
-	SP->_endwin = TRUE;
-
-	_nc_mouse_wrap(SP);
-	_nc_screen_wrap();
-	_nc_mvcur_wrap();	/* wrap up cursor addressing */
+	if (SP) {
+	  SP->_endwin = TRUE;
+	  _nc_mouse_wrap(SP);
+	  _nc_screen_wrap();
+	  _nc_mvcur_wrap();	/* wrap up cursor addressing */
+	}
 
 	returnCode(reset_shell_mode());
 }

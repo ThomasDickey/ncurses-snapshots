@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.21 1997/08/09 17:32:14 tom Exp $
+# $Id: mk-1st.awk,v 1.22 1997/09/20 23:28:51 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -24,6 +24,8 @@
 #	model (directory into which we compile, e.g., "obj")
 #	suffix (e.g., "_g.a", for debug libraries)
 #	MODEL (e.g., "DEBUG", uppercase; toupper is not portable)
+#	depend (optional dependencies for all objects, e.g, ncurses_cfg.h)
+#	target (cross-compile target, if any)
 #	DoLinks ("yes" or "no", flag to add symbolic links)
 #	rmSoLocs ("yes" or "no", flag to add extra clean target)
 #	overwrite ("yes" or "no", flag to add link to libcurses.a
@@ -134,6 +136,10 @@ END	{
 				printf "../lib/%s : $(%s_OBJS)\n", lib_name, MODEL
 				printf "\t$(AR) $(AR_OPTS) $@ $?\n"
 				printf "\t$(RANLIB) $@\n"
+				if ( target == "vxworks" )
+				{
+					printf "\t$(LD) $(LD_OPTS) $? -o $(@:.a=.o)\n"
+				}
 				print  ""
 				print  "install \\"
 				print  "install.libs \\"
@@ -147,6 +153,11 @@ END	{
 					printf "\t(cd $(INSTALL_PREFIX)$(libdir) && $(LN_S) libncurses.a libcurses.a)\n"
 				}
 				printf "\t$(RANLIB) $(INSTALL_PREFIX)$(libdir)/%s\n", lib_name
+				if ( target == "vxworks" )
+				{
+					printf "\t@echo installing ../lib/lib%s.o as $(INSTALL_PREFIX)$(libdir)/lib%s.o\n", name, name
+					printf "\t$(INSTALL_DATA) ../lib/lib%s.o $(INSTALL_PREFIX)$(libdir)/lib%s.o\n", name, name
+				}
 			}
 			print ""
 			print "mostlyclean \\"

@@ -29,22 +29,28 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.34 1997/08/31 01:14:25 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.35 1997/09/20 15:02:34 juergen Exp $")
 
 int wattr_on(WINDOW *win, const attr_t at)
 {
 	T((T_CALLED("wattr_on(%p,%s)"), win, _traceattr(at)));
-	T(("... current %s", _traceattr(win->_attrs)));
-	toggle_attr_on(win->_attrs,at);
-	returnCode(OK);
+	if (win) {
+	  T(("... current %s", _traceattr(win->_attrs)));
+	  toggle_attr_on(win->_attrs,at);
+	  returnCode(OK);
+	} else
+	  returnCode(ERR);
 }
 
 int wattr_off(WINDOW *win, const attr_t at)
 {
 	T((T_CALLED("wattr_off(%p,%s)"), win, _traceattr(at)));
-	T(("... current %s", _traceattr(win->_attrs)));
-	toggle_attr_off(win->_attrs,at);
-	returnCode(OK);
+	if (win) {
+	  T(("... current %s", _traceattr(win->_attrs)));
+	  toggle_attr_off(win->_attrs,at);
+	  returnCode(OK);
+	} else
+	  returnCode(ERR);
 }
 
 int wchgat(WINDOW *win, int n, attr_t attr, short color, const void *opts GCC_UNUSED)
@@ -53,13 +59,17 @@ int wchgat(WINDOW *win, int n, attr_t attr, short color, const void *opts GCC_UN
 
     T((T_CALLED("wchgat(%p,%d,%s,%d)"), win, n, _traceattr(attr), color));
 
-    toggle_attr_on(attr,COLOR_PAIR(color));
+    if (win) {
+      toggle_attr_on(attr,COLOR_PAIR(color));
 
-    for (i = win->_curx; i <= win->_maxx && (n == -1 || (n-- > 0)); i++)
+      for (i = win->_curx; i <= win->_maxx && (n == -1 || (n-- > 0)); i++)
 	win->_line[win->_cury].text[i]
-		= TextOf(win->_line[win->_cury].text[i]) | attr;
+	  = TextOf(win->_line[win->_cury].text[i]) | attr;
 
-    returnCode(OK);
+      returnCode(OK);
+    }
+    else
+      returnCode(ERR);
 }
 
 /*
@@ -288,7 +298,7 @@ int waddch(WINDOW *win, const chtype ch)
 
 	TR(TRACE_VIRTPUT|TRACE_CCALLS, (T_CALLED("waddch(%p, %s)"), win, _tracechtype(ch)));
 
-	if (waddch_nosync(win, ch) != ERR)
+	if (win && (waddch_nosync(win, ch) != ERR))
 	{
 		_nc_synchook(win);
 		code = OK;
@@ -304,7 +314,7 @@ int wechochar(WINDOW *win, const chtype ch)
 
 	TR(TRACE_VIRTPUT|TRACE_CCALLS, (T_CALLED("wechochar(%p, %s)"), win, _tracechtype(ch)));
 
-	if (waddch_nosync(win, ch) != ERR)
+	if (win && (waddch_nosync(win, ch) != ERR))
 	{
 		bool	save_immed = win->_immed;
 		win->_immed = TRUE;

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                      *
+ * Copyright 1997 by Thomas E. Dickey <dickey@clark.net>                      *
  * All Rights Reserved.                                                       *
  *                                                                            *
  * Permission to use, copy, modify, and distribute this software and its      *
@@ -8,14 +8,15 @@
  * copyright notice and this permission notice appear in supporting           *
  * documentation, and that the name of the above listed copyright holder(s)   *
  * not be used in advertising or publicity pertaining to distribution of the  *
- * software without specific, written prior permission. THE ABOVE LISTED      *
- * COPYRIGHT HOLDER(S) DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,  *
- * INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO     *
- * EVENT SHALL THE ABOVE LISTED COPYRIGHT HOLDER(S) BE LIABLE FOR ANY         *
- * SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER       *
- * RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
- * CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
- * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
+ * software without specific, written prior permission.                       *
+ *                                                                            *
+ * THE ABOVE LISTED COPYRIGHT HOLDER(S) DISCLAIM ALL WARRANTIES WITH REGARD   *
+ * TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND  *
+ * FITNESS, IN NO EVENT SHALL THE ABOVE LISTED COPYRIGHT HOLDER(S) BE LIABLE  *
+ * FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES          *
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN      *
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR *
+ * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                *
  ******************************************************************************/
 /* LINTLIBRARY */
 
@@ -75,13 +76,13 @@ PANEL	*panel_below(
 #undef set_panel_userptr
 int	set_panel_userptr(
 		PANEL	*pan, 
-		const void *uptr)
+		void	*uptr)
 		{ return(*(int *)0); }
 
 #undef panel_userptr
-const void *panel_userptr(
+void	*panel_userptr(
 		const PANEL *pan)
-		{ return(*(const void **)0); }
+		{ return(*(void **)0); }
 
 #undef move_panel
 int	move_panel(

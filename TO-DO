@@ -1,4 +1,4 @@
--- $Id: TO-DO,v 1.36 1997/08/09 18:19:13 tom Exp $
+-- $Id: TO-DO,v 1.37 1997/09/18 19:55:52 tom Exp $
 
 SHORT-TERM TO-DO ITEMS:
 
@@ -24,10 +24,6 @@ Known Problems:
 * The stacking order of windows on the screen does not match that implemented
   in SVr4 (e.g., Solaris curses).  XSI doesn't specify a stacking order, so
   full compatibility for this behavior must be achieved by testing/analysis.
-
-* The ncurses 'o' test does not behave the same on SVr4 (Solaris) as with
-  ncurses (the latter pops windows up more).  The former also produces 20%
-  fewer characters in a 'script' output.  Further analysis is needed.
 
 * SVr4 uses slightly different rules for determining when softkeys are shown.
   For example, they are initially displayed (before the ncurses 'e' test

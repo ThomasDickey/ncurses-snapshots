@@ -30,14 +30,16 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.15 1997/08/09 17:21:49 tom Exp $")
+MODULE_ID("$Id: lib_refresh.c,v 1.16 1997/09/20 15:02:34 juergen Exp $")
 
 int wredrawln(WINDOW *win, int beg, int num)
 {
 	T((T_CALLED("wredrawln(%p,%d,%d)"), win, beg, num));
-	touchline(win, beg, num);
-	wrefresh(win);
-	returnCode(OK);
+	if (win) {
+	  touchline(win, beg, num);
+	  wrefresh(win);
+	  returnCode(OK);
+	} else returnCode(ERR);
 }
 
 int wrefresh(WINDOW *win)

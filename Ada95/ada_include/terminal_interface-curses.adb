@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.9 $
+--  $Revision: 1.10 $
 ------------------------------------------------------------------------------
 with System;
 
@@ -38,7 +38,6 @@ package body Terminal_Interface.Curses is
 
    type chtype_array is array (size_t range <>)
       of aliased Attributed_Character;
-   pragma Pack (chtype_array);
    pragma Convention (C, chtype_array);
 
 ------------------------------------------------------------------------------

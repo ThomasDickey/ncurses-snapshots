@@ -30,13 +30,13 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mvwin.c,v 1.4 1997/09/04 12:34:41 juergen Exp $")
+MODULE_ID("$Id: lib_mvwin.c,v 1.5 1997/09/20 15:02:34 juergen Exp $")
 
 int mvwin(WINDOW *win, int by, int bx)
 {
 	T((T_CALLED("mvwin(%p,%d,%d)"), win, by, bx));
 
-	if (win->_flags & _ISPAD)
+	if (!win || (win->_flags & _ISPAD))
 	    returnCode(ERR);
 
 	/* Copying subwindows is allowed, but it is expensive... */

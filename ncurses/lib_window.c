@@ -27,7 +27,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_window.c,v 1.9 1997/09/04 08:02:01 juergen Exp $")
+MODULE_ID("$Id: lib_window.c,v 1.10 1997/09/20 15:02:34 juergen Exp $")
 
 void _nc_synchook(WINDOW *win)
 /* hook to be called after each window change */
@@ -39,12 +39,12 @@ void _nc_synchook(WINDOW *win)
 int mvderwin(WINDOW *win, int y, int x)
 /* move a derived window */
 {
-   WINDOW *orig = win->_parent;
+   WINDOW *orig;
    int i;
 
    T((T_CALLED("mvderwin(%p,%d,%d)"), win, y, x));
 
-   if (orig)
+   if (win && (orig = win->_parent))
    {
       if (win->_parx==x && win->_pary==y)
 	returnCode(OK);
@@ -182,9 +182,10 @@ int i;
 
 	T((T_CALLED("dupwin(%p)"), win));
 
-	if ((nwin = newwin(win->_maxy + 1, win->_maxx + 1, win->_begy, win->_begx)) == NULL)
-		returnWin(0);
-
+	if ((win==NULL) ||
+	    ((nwin = newwin(win->_maxy + 1, win->_maxx + 1, win->_begy, win->_begx)) == NULL))
+	  returnWin(0);
+	
 	nwin->_curx        = win->_curx;
 	nwin->_cury        = win->_cury;
 	nwin->_maxy        = win->_maxy;

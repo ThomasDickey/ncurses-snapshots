@@ -29,15 +29,16 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_move.c,v 1.6 1997/02/02 00:00:47 tom Exp $")
+MODULE_ID("$Id: lib_move.c,v 1.7 1997/09/20 15:02:34 juergen Exp $")
 
 int
 wmove(WINDOW *win, int y, int x)
 {
 	T((T_CALLED("wmove(%p,%d,%d)"), win, y, x));
 
-	if (x >= 0  &&  x <= win->_maxx  &&
-		y >= 0  &&  y <= win->_maxy)
+	if (win && 
+	    x >= 0  &&  x <= win->_maxx  &&
+	    y >= 0  &&  y <= win->_maxy)
 	{
 		win->_curx = (short)x;
 		win->_cury = (short)y;

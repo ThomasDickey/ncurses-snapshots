@@ -32,7 +32,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_scroll.c,v 1.14 1997/09/06 23:45:38 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_scroll.c,v 1.15 1997/09/20 15:02:34 juergen Exp $")
 
 void _nc_scroll_window(WINDOW *win, int const n, short const top, short const bottom, chtype blank)
 {
@@ -89,7 +89,7 @@ wscrl(WINDOW *win, int n)
 {
 	T((T_CALLED("wscrl(%p,%d)"), win, n));
 
-	if (! win->_scroll)
+	if (!win || !win->_scroll)
 		returnCode(ERR);
 
 	if (n == 0)

@@ -19,13 +19,25 @@
 *                                                                          *
 ***************************************************************************/
 
-
-/* This file exists to handle non-POSIX systems which don't have <unistd.h>,
+/*
+ * $Id: SigAction.h,v 1.3 1997/09/20 19:39:27 tom Exp $
+ *
+ * This file exists to handle non-POSIX systems which don't have <unistd.h>,
  * and usually no sigaction() nor <termios.h>
  */
 
 #ifndef _SIGACTION_H
 #define _SIGACTION_H
+
+#if HAVE_SIGACTION
+
+#if !HAVE_TYPE_SIGACTION
+typedef struct sigaction sigaction_t;
+#endif
+
+#else	/* !HAVE_SIGACTION */
+
+#if HAVE_SIGVEC
 
 #if HAVE_LIBC_H
 #include <libc.h>
@@ -80,4 +92,6 @@ extern int sigsuspend (sigset_t *mask);
 extern int sigdelset (sigset_t *mask, int sig);
 extern int sigaddset (sigset_t *mask, int sig);
 
-#endif
+#endif /* HAVE_SIGVEC */
+#endif /* HAVE_SIGACTION */
+#endif /* !defined(_SIGACTION_H) */
