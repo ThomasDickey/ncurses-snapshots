@@ -38,7 +38,7 @@ include(M4MACRO)dnl
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.19 $
+--  $Revision: 1.20 $
 --  Binding Version 01.00
 ------------------------------------------------------------------------------
 include(`Mouse_Base_Defs')
@@ -52,6 +52,12 @@ package Terminal_Interface.Curses.Mouse is
    --  is still marked as experimental. So also this binding will change
    --  if the ncurses methods change.
    --
+   --  mouse_trafo, wmouse_trafo are implemented as Transform_Coordinates
+   --  in the parent package.
+   --
+   --  Not implemented:
+   --  REPORT_MOUSE_POSITION (i.e. as a parameter to Register_Reportable_Event
+   --  or Start_Mouse)
    type Event_Mask is private;
    No_Events  : constant Event_Mask;
    All_Events : constant Event_Mask;
@@ -107,6 +113,8 @@ package Terminal_Interface.Curses.Mouse is
    --  ANCHOR(`mousemask()',`Start_Mouse')
    --  There is one difference to mousmask(): we return the value of the
    --  old mask, that means the event mask value before this call.
+   --  Not Implemented: The library version
+   --  returns a Mouse_Mask that tells which events are reported.
    function Start_Mouse (Mask : Event_Mask := All_Events)
                          return Event_Mask;
    --  AKA
@@ -128,6 +136,8 @@ package Terminal_Interface.Curses.Mouse is
                         State  : out Button_State);
    --  !!! Warning: X and Y are screen coordinates. Due to ripped of lines they
    --  may not be identical to window coordinates.
+   --  Not Implemented: Get_Event only reports one event, the C library
+   --  version supports multiple events, e.g. {click-1, click-3}
    pragma Inline (Get_Event);
 
    --  ANCHOR(`ungetmouse()',`Unget_Mouse')

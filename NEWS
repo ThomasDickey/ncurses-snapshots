@@ -1,10 +1,23 @@
--- $Id: NEWS,v 1.607 2000/11/25 22:42:04 tom Exp $
+-- $Id: NEWS,v 1.608 2000/12/02 22:42:33 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20001202
+	+ correct prototypes for some functions in curs_termcap.3x, matching
+	  termcap.h, which matches X/Open.
+	> patch by Juergen Pfeifer:
+	+ a revised version of the Ada enhancements sent in by "H. 
+	  Nanosecond", aka Eugene V.  Melaragno <aldomel@ix.netcom.com>.  This
+	  patch includes
+	  - small fixes to the existing ncurses binding
+	  - addition of some more low-level functions to the binding, including
+	    termcap and terminfo functions
+	  - An Ada implementation of the "ncurses" test application originally
+	    written in C.
 
 20001125
 	+ modify logic in lib_setup.c to allow either lines or columns value
