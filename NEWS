@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.464 1999/07/04 02:29:47 tom Exp $
+-- $Id: NEWS,v 1.467 1999/07/10 22:30:27 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,13 +6,21 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
+990710	pre-release
+	+ modify the form demo in ncurses.c to illustrate how to manipulate the
+	  field appearance, e.g, for highlighting or translating the field
+	  contents.
+	+ correct logic in write_entry from split-out of home_terminfo in
+	  980919, which prevented update of $HOME/.terminfo (reported by Philip
+	  Spencer <pspencer@fields.utoronto.ca>).
+
 990703	pre-release
-	+ modify linux terminfo description to make use of kernel 2.2 mods that
-	  support cursor style, e.g., to implement cvvis (patch by Frank
-	  Heckenbach <frank@tim.gerwinski.de>)
+	+ modify linux terminfo description to make use of kernel 2.2.x mods
+	  that support cursor style, e.g., to implement cvvis (patch by Frank
+	  Heckenbach <frank@g-n-u.de>)
 	+ add special-case in setupterm to retain previously-saved terminal
 	  settings in cur_term, which happens when curses and termcap calls are
-	  mixed (from report by Bjorn n Helgaas <helgaas@dhc.net>).
+	  mixed (from report by Bjorn Helgaas <helgaas@dhc.net>).
 	+ suppress initialization of key-tries in _nc_keypad() if we are only
 	  disabling keypad mode, e.g., in endwin() called when keypad() was not.
 	+ modify the Ada95 makefile to ensure that always the Ada files from

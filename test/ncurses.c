@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.113 1998/11/29 03:59:03 tom Exp $
+$Id: ncurses.c,v 1.115 1999/07/11 01:02:00 tom Exp $
 
 ***************************************************************************/
 
@@ -2529,12 +2529,14 @@ static FIELD *make_label(int frow, int fcol, NCURSES_CONST char *label)
     return(f);
 }
 
-static FIELD *make_field(int frow, int fcol, int rows, int cols)
+static FIELD *make_field(int frow, int fcol, int rows, int cols, bool secure)
 {
-    FIELD	*f = new_field(rows, cols, frow, fcol, 0, 0);
+    FIELD	*f = new_field(rows, cols, frow, fcol, 0, secure ? 1 : 0);
 
-    if (f)
+    if (f) {
 	set_field_back(f, A_UNDERLINE);
+	set_field_userptr(f, (void *)0);
+    }
     return(f);
 }
 
@@ -2569,101 +2571,142 @@ static void erase_form(FORM *f)
     delwin(w);
 }
 
-static int form_virtualize(WINDOW *w)
+static int edit_secure(FIELD *me, int c)
 {
+    int rows, cols, frow, fcol, nbuf;
+
+    if (field_info(me, &rows, &cols, &frow, &fcol, (int *)0, &nbuf) == E_OK
+     && nbuf > 0) {
+	char temp[80];
+	long len;
+
+	strcpy(temp, field_buffer(me, 1));
+	len = (long)(char *) field_userptr(me);
+	if (c <= KEY_MAX) {
+	    if (isgraph(c)) {
+		temp[len++] = c;
+		temp[len] = 0;
+		set_field_buffer(me, 1, temp);
+		c = '*';
+	    } else {
+		c = 0;
+	    }
+	} else {
+	    switch (c) {
+	    case REQ_BEG_FIELD:
+	    case REQ_CLR_EOF:
+	    case REQ_CLR_EOL:
+	    case REQ_DEL_LINE:
+	    case REQ_DEL_WORD:
+	    case REQ_DOWN_CHAR:
+	    case REQ_END_FIELD:
+	    case REQ_INS_CHAR:
+	    case REQ_INS_LINE:
+	    case REQ_LEFT_CHAR:
+	    case REQ_NEW_LINE:
+	    case REQ_NEXT_WORD:
+	    case REQ_PREV_WORD:
+	    case REQ_RIGHT_CHAR:
+	    case REQ_UP_CHAR:
+		c = 0;		/* we don't want to do inline editing */
+		break;
+	    case REQ_CLR_FIELD:
+		if (len) {
+		    temp[0] = 0;
+		    set_field_buffer(me, 1, temp);
+		}
+		break;
+	    case REQ_DEL_CHAR:
+	    case REQ_DEL_PREV:
+		if (len) {
+		    temp[--len] = 0;
+		    set_field_buffer(me, 1, temp);
+		}
+	    	break;
+	    }
+	}
+	set_field_userptr(me, (void *)len);
+     }
+     return c;
+}
+
+static int form_virtualize(FORM *f, WINDOW *w)
+{
+    static const struct {
+	int code;
+	int result;
+    } lookup[] = {
+	{ CTRL('A'),     REQ_NEXT_CHOICE },
+	{ CTRL('B'),     REQ_PREV_WORD },
+	{ CTRL('C'),     REQ_CLR_EOL },
+	{ CTRL('D'),     REQ_DOWN_FIELD },
+	{ CTRL('E'),     REQ_END_FIELD },
+	{ CTRL('F'),     REQ_NEXT_PAGE },
+	{ CTRL('G'),     REQ_DEL_WORD },
+	{ CTRL('H'),     REQ_DEL_PREV },
+	{ CTRL('I'),     REQ_INS_CHAR },
+	{ CTRL('K'),     REQ_CLR_EOF },
+	{ CTRL('L'),     REQ_LEFT_FIELD },
+	{ CTRL('M'),     REQ_NEW_LINE },
+	{ CTRL('N'),     REQ_NEXT_FIELD },
+	{ CTRL('O'),     REQ_INS_LINE },
+	{ CTRL('P'),     REQ_PREV_FIELD },
+	{ CTRL('R'),     REQ_RIGHT_FIELD },
+	{ CTRL('S'),     REQ_BEG_FIELD },
+	{ CTRL('U'),     REQ_UP_FIELD },
+	{ CTRL('V'),     REQ_DEL_CHAR },
+	{ CTRL('W'),     REQ_NEXT_WORD },
+	{ CTRL('X'),     REQ_CLR_FIELD },
+	{ CTRL('Y'),     REQ_DEL_LINE },
+	{ CTRL('Z'),     REQ_PREV_CHOICE },
+	{ ESCAPE,        MAX_FORM_COMMAND + 1 },
+	{ KEY_BACKSPACE, REQ_DEL_PREV },
+	{ KEY_DOWN,      REQ_DOWN_CHAR },
+	{ KEY_END,       REQ_LAST_FIELD },
+	{ KEY_HOME,      REQ_FIRST_FIELD },
+	{ KEY_LEFT,      REQ_LEFT_CHAR },
+	{ KEY_LL,        REQ_LAST_FIELD },
+	{ KEY_NEXT,      REQ_NEXT_FIELD },
+	{ KEY_NPAGE,     REQ_NEXT_PAGE },
+	{ KEY_PPAGE,     REQ_PREV_PAGE },
+	{ KEY_PREVIOUS,  REQ_PREV_FIELD },
+	{ KEY_RIGHT,     REQ_RIGHT_CHAR },
+	{ KEY_UP,        REQ_UP_CHAR },
+	{ QUIT,          MAX_FORM_COMMAND + 1 }
+    };
+
     static int	mode = REQ_INS_MODE;
     int		c = wGetchar(w);
+    unsigned	n;
+    FIELD *me = current_field(f);
 
-    switch(c)
-    {
-    case QUIT:
-    case ESCAPE:
-	return(MAX_FORM_COMMAND + 1);
-
-    /* demo doesn't use these three, leave them in anyway as sample code */
-    case KEY_NPAGE:
-    case CTRL('F'):
-	return(REQ_NEXT_PAGE);
-    case KEY_PPAGE:
-	return(REQ_PREV_PAGE);
-
-    case KEY_NEXT:
-    case CTRL('N'):
-	return(REQ_NEXT_FIELD);
-    case KEY_PREVIOUS:
-    case CTRL('P'):
-	return(REQ_PREV_FIELD);
-
-    case KEY_HOME:
-	return(REQ_FIRST_FIELD);
-    case KEY_END:
-    case KEY_LL:
-	return(REQ_LAST_FIELD);
-
-    case CTRL('L'):
-	return(REQ_LEFT_FIELD);
-    case CTRL('R'):
-	return(REQ_RIGHT_FIELD);
-    case CTRL('U'):
-	return(REQ_UP_FIELD);
-    case CTRL('D'):
-	return(REQ_DOWN_FIELD);
-
-    case CTRL('W'):
-	return(REQ_NEXT_WORD);
-    case CTRL('B'):
-	return(REQ_PREV_WORD);
-    case CTRL('S'):
-	return(REQ_BEG_FIELD);
-    case CTRL('E'):
-	return(REQ_END_FIELD);
-
-    case KEY_LEFT:
-	return(REQ_LEFT_CHAR);
-    case KEY_RIGHT:
-	return(REQ_RIGHT_CHAR);
-    case KEY_UP:
-	return(REQ_UP_CHAR);
-    case KEY_DOWN:
-	return(REQ_DOWN_CHAR);
-
-    case CTRL('M'):
-	return(REQ_NEW_LINE);
-    case CTRL('I'):
-	return(REQ_INS_CHAR);
-    case CTRL('O'):
-	return(REQ_INS_LINE);
-    case CTRL('V'):
-	return(REQ_DEL_CHAR);
-
-    case CTRL('H'):
-    case KEY_BACKSPACE:
-	return(REQ_DEL_PREV);
-    case CTRL('Y'):
-	return(REQ_DEL_LINE);
-    case CTRL('G'):
-	return(REQ_DEL_WORD);
-
-    case CTRL('C'):
-	return(REQ_CLR_EOL);
-    case CTRL('K'):
-	return(REQ_CLR_EOF);
-    case CTRL('X'):
-	return(REQ_CLR_FIELD);
-    case CTRL('A'):
-	return(REQ_NEXT_CHOICE);
-    case CTRL('Z'):
-	return(REQ_PREV_CHOICE);
-
-    case CTRL(']'):
+    if (c == CTRL(']')) {
 	if (mode == REQ_INS_MODE)
-	    return(mode = REQ_OVL_MODE);
+	    mode = REQ_OVL_MODE;
 	else
-	    return(mode = REQ_INS_MODE);
-
-    default:
-	return(c);
+	    mode = REQ_INS_MODE;
+	c = mode;
+    } else {
+	for (n = 0; n < sizeof(lookup)/sizeof(lookup[0]); n++) {
+	    if (lookup[n].code == c) {
+		c = lookup[n].result;
+		break;
+	    }
+	}
     }
+
+    /*
+     * Force the field that the user is typing into to be in reverse video,
+     * while the other fields are shown underlined.
+     */
+    if (c <= KEY_MAX) {
+	c = edit_secure(me, c);
+	set_field_back(me, A_REVERSE);
+    } else if (c <= MAX_FORM_COMMAND) {
+	c = edit_secure(me, c);
+	set_field_back(me, A_UNDERLINE);
+    }
+    return c;
 }
 
 static int my_form_driver(FORM *form, int c)
@@ -2682,10 +2725,9 @@ static void demo_forms(void)
 {
     WINDOW	*w;
     FORM	*form;
-    FIELD	*f[10];
+    FIELD	*f[12], *secure;
     int		finished = 0, c;
-
-    mvaddstr(10, 57, "Forms Entry Test");
+    unsigned	n = 0;
 
     move(18, 0);
     addstr("Defined form-traversal keys:   ^Q/ESC- exit form\n");
@@ -2699,19 +2741,25 @@ static void demo_forms(void)
     addstr("^G   -- delete current word    ^C  -- clear to end of line\n");
     addstr("^K   -- clear to end of field  ^X  -- clear field\n");
     addstr("Arrow keys move within a field as you would expect.");
+
+    mvaddstr(4, 57, "Forms Entry Test");
+
     refresh();
 
     /* describe the form */
-    f[0] = make_label(0, 15, "Sample Form");
-    f[1] = make_label(2, 0, "Last Name");
-    f[2] = make_field(3, 0, 1, 18);
-    f[3] = make_label(2, 20, "First Name");
-    f[4] = make_field(3, 20, 1, 12);
-    f[5] = make_label(2, 34, "Middle Name");
-    f[6] = make_field(3, 34, 1, 12);
-    f[7] = make_label(5, 0, "Comments");
-    f[8] = make_field(6, 0, 4, 46);
-    f[9] = (FIELD *)0;
+    f[n++] = make_label(0, 15, "Sample Form");
+    f[n++] = make_label(2, 0, "Last Name");
+    f[n++] = make_field(3, 0, 1, 18, FALSE);
+    f[n++] = make_label(2, 20, "First Name");
+    f[n++] = make_field(3, 20, 1, 12, FALSE);
+    f[n++] = make_label(2, 34, "Middle Name");
+    f[n++] = make_field(3, 34, 1, 12, FALSE);
+    f[n++] = make_label(5, 0, "Comments");
+    f[n++] = make_field(6, 0, 4, 46, FALSE);
+    f[n++] = make_label(5, 20, "Password:");
+    secure =
+    f[n++] = make_field(5, 30, 1, 9, TRUE);
+    f[n++] = (FIELD *)0;
 
     form = new_form(f);
 
@@ -2721,9 +2769,12 @@ static void demo_forms(void)
     raw();
     while (!finished)
     {
-	switch(form_driver(form, c = form_virtualize(w)))
+	switch(form_driver(form, c = form_virtualize(form, w)))
 	{
 	case E_OK:
+	    mvaddstr(5, 57, field_buffer(secure, 1));
+	    clrtoeol();
+	    refresh();
 	    break;
 	case E_UNKNOWN_COMMAND:
 	    finished = my_form_driver(form, c);
