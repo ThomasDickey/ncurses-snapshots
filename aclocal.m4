@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.307 2003/07/05 22:46:21 tom Exp $
+dnl $Id: aclocal.m4,v 1.308 2003/07/12 19:48:07 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -263,7 +263,7 @@ if test "$cf_cv_type_of_bool" = unknown ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_CFG_DEFAULTS version: 5 updated: 2000/11/18 23:30:03
+dnl CF_CFG_DEFAULTS version: 6 updated: 2003/07/12 15:15:19
 dnl ---------------
 dnl Determine the default configuration into which we'll install ncurses.  This
 dnl can be overridden by the user's command-line options.  There's two items to
@@ -281,7 +281,7 @@ AC_MSG_CHECKING(for prefix)
 if test "x$prefix" = "xNONE" ; then
 	case "$cf_cv_system_name" in
 		# non-vendor systems don't have a conflict
-	openbsd*|netbsd*|freebsd*|linux*|cygwin*)
+	openbsd*|netbsd*|freebsd*|linux*|cygwin*|k*bsd*-gnu)
 		prefix=/usr
 		;;
 	*)	prefix=$ac_default_prefix
@@ -2309,7 +2309,7 @@ case $cf_cv_regex in
 esac
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SHARED_OPTS version: 28 updated: 2003/02/02 01:41:46
+dnl CF_SHARED_OPTS version: 29 updated: 2003/07/12 15:15:19
 dnl --------------
 dnl Attempt to determine the appropriate CC/LD options for creating a shared
 dnl library.
@@ -2421,7 +2421,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		MK_SHARED_LIB='$(LD) -shared -rdata_shared -soname `basename $[@]` -o $[@]'
 		cf_cv_rm_so_locs=yes
 		;;
-	linux*|gnu*)
+	linux*|gnu*|k*bsd*-gnu)
 		if test "$DFT_LWR_MODEL" = "shared" ; then
 			LOCAL_LDFLAGS="-Wl,-rpath,`pwd`/lib"
 			LOCAL_LDFLAGS2="$LOCAL_LDFLAGS"
