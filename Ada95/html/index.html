@@ -5,7 +5,8 @@
 <HEAD>
 <TITLE>Ada95 Binding for ncurses</Title>
 </HEAD>
-<BODY BACKGROUND="images/default.gif">
+<body bgcolor="#99ccbb" text="#000000" link="#4060b0" vlink="#000080" alink="#ff4040">
+<!BODY BACKGROUND="images/default.gif">
 <H1>Ada95 Binding for ncurses</H1>
 The ncurses Ada95 binding is &copy; 1996 by 
 <A HREF="mailto:Juergen.Pfeifer@T-Online.de">J&uuml;rgen Pfeifer</A>.
@@ -56,7 +57,7 @@ I tried to make records out of the flat chtype and similar structures,
 so you don't have to do bit operations to mark an attributed character
 as bold. Just make the boolean member <STRONG>bold</STRONG> of the record 
 true. The binding also hides the structures like WINDOW, PANEL, MENU, FORM
-etc. ! It's a pure functional API.</LI>
+etc. !</LI>
 <LI>I try to do as much error checking as possible and feasible
 in the binding. I will raise an Ada exception when something
 went wrong in the low-level curses. This has the effect that - at least
@@ -168,7 +169,7 @@ values.
 <A NAME="compiler">
 <H4>Using other Ada compilers</H4>
 This should basically not be a problem, but you have to replace a code
-sequence in package
+sequence in the package body of
 <A HREF="terminal_interface-curses-forms_s.html">Terminal_Interface.Curses.Forms</A>
 that uses a hashing package supplied with the GNAT runtime, which is not part
 of the Standard Ada runtimes. This should not be too hard. I intend to remove

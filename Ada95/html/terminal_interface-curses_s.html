@@ -2,7 +2,7 @@
 <HEAD>
 <TITLE></TITLE>
 </HEAD>
-<BODY>
+<BODY BGCOLOR="#99ccbb" TEXT="#000000" LINK="#4060b0" VLINK="#000080" ALINK="#ff4040">
 <B></B><P><HR><P>
 <PRE>
 
@@ -30,9 +30,9 @@
 <I>--  This binding comes AS IS with no warranty, implied or expressed.        --</I>
 <I>------------------------------------------------------------------------------</I>
 <I>--  Version Control:</I>
-<I>--  $Revision: 1.3 $</I>
+<I>--  $Revision: 1.4 $</I>
 <I>------------------------------------------------------------------------------</I>
-<I>--  curses binding, generated at Thu Oct 24 15:16:30 1996</I>
+<I>--  curses binding, generated at Sat Oct 26 17:44:10 1996</I>
 <I>--  This module is generated. Please don't change it manually!</I>
 <I>--  Run the generator instead.</I>
 <I>--  |</I>
@@ -361,7 +361,7 @@
 
    Default_Character : <B>constant</B> Attributed_Character
      := (Ch    => Character'First,
-         Color => 0,
+         Color => Color_Pair'First,
          Attr  => Normal_Video);
 
    type Attributed_String <B>is</B> <B>array</B> (Positive <B>range</B> &lt;&gt;) <B>of</B> Attributed_Character;
@@ -483,7 +483,7 @@
 
    <I>--  <A NAME="AFU_1">|</I>
    <B>function</B> Standard_Window <B>return</B> Window;
-   <I>--  AKA: initscr()</I>
+   <I>--  AKA: stdscr</I>
    <B>pragma</B> Inline (Standard_Window);
 
    <I>--  <A NAME="AFU_2">|</I>
@@ -755,7 +755,8 @@
    <I>--  <A NAME="AFU_32">|</I>
    <B>procedure</B> Set_Character_Attributes
      (Win   : <B>in</B> Window := Standard_Window;
-      Attrs : <B>in</B> Character_Attribute_Set := Normal_Video);
+      Attr  : <B>in</B> Character_Attribute_Set := Normal_Video;
+      Color : <B>in</B> Color_Pair := Color_Pair'First);
    <I>--  AKA: wattrset()</I>
 
    <I>--  <A NAME="AFU_33">|</I>
@@ -764,32 +765,37 @@
    <I>--  AKA: wattr_get()</I>
 
    <I>--  <A NAME="AFU_34">|</I>
-   <B>procedure</B> Change_Attributes
-     (Win   : <B>in</B> Window := Standard_Window;
-      Count : <B>in</B> Integer := -1;
-      Attrs : <B>in</B> Character_Attribute_Set;
-      Color : <B>in</B> Color_Pair);
-   <I>--  AKA: wchgat()</I>
+   <B>function</B> Get_Character_Attribute
+     (Win : <B>in</B> Window := Standard_Window) <B>return</B> Color_Pair;
+   <I>--  AKA: wattr_get()</I>
 
    <I>--  <A NAME="AFU_35">|</I>
    <B>procedure</B> Change_Attributes
+     (Win   : <B>in</B> Window := Standard_Window;
+      Count : <B>in</B> Integer := -1;
+      Attr  : <B>in</B> Character_Attribute_Set := Normal_Video;
+      Color : <B>in</B> Color_Pair := Color_Pair'First);
+   <I>--  AKA: wchgat()</I>
+
+   <I>--  <A NAME="AFU_36">|</I>
+   <B>procedure</B> Change_Attributes
      (Win    : <B>in</B> Window := Standard_Window;
-      Line   : <B>in</B> Line_Position;
-      Column : <B>in</B> Column_Position;
+      Line   : <B>in</B> Line_Position := Line_Position'First;
+      Column : <B>in</B> Column_Position := Column_Position'First;
       Count  : <B>in</B> Integer := -1;
-      Attrs  : <B>in</B> Character_Attribute_Set;
-      Color  : <B>in</B> Color_Pair);
+      Attr   : <B>in</B> Character_Attribute_Set := Normal_Video;
+      Color  : <B>in</B> Color_Pair := Color_Pair'First);
    <I>--  AKA: mvwchgat()</I>
 
    <I>--  |=====================================================================</I>
    <I>--  | Man page curs_beep.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_36">|</I>
+   <I>--  <A NAME="AFU_37">|</I>
    <B>procedure</B> Beep;
    <I>--  AKA: beep()</I>
 
-   <I>--  <A NAME="AFU_37">|</I>
+   <I>--  <A NAME="AFU_38">|</I>
    <B>procedure</B> Flash_Screen;
    <I>--  AKA: flash()</I>
 
@@ -799,51 +805,51 @@
 
    <I>--  | Not implemented : typeahead</I>
    <I>--</I>
-   <I>--  <A NAME="AFU_38">|</I>
+   <I>--  <A NAME="AFU_39">|</I>
    <B>procedure</B> Set_Cbreak_Mode (SwitchOn : <B>in</B> Boolean := True);
    <I>--  AKA: cbreak()</I>
    <I>--  AKA: nocbreak()</I>
 
-   <I>--  <A NAME="AFU_39">|</I>
+   <I>--  <A NAME="AFU_40">|</I>
    <B>procedure</B> Set_Raw_Mode (SwitchOn : <B>in</B> Boolean := True);
    <I>--  AKA: raw()</I>
    <I>--  AKA: noraw()</I>
 
-   <I>--  <A NAME="AFU_40">|</I>
+   <I>--  <A NAME="AFU_41">|</I>
    <B>procedure</B> Set_Echo_Mode (SwitchOn : <B>in</B> Boolean := True);
    <I>--  AKA: echo()</I>
    <I>--  AKA: noecho()</I>
 
-   <I>--  <A NAME="AFU_41">|</I>
+   <I>--  <A NAME="AFU_42">|</I>
    <B>procedure</B> Set_Meta_Mode (Win      : <B>in</B> Window := Standard_Window;
                             SwitchOn : <B>in</B> Boolean := True);
    <I>--  AKA: meta()</I>
 
-   <I>--  <A NAME="AFU_42">|</I>
+   <I>--  <A NAME="AFU_43">|</I>
    <B>procedure</B> Set_KeyPad_Mode (Win      : <B>in</B> Window := Standard_Window;
                               SwitchOn : <B>in</B> Boolean := True);
    <I>--  AKA: keypad()</I>
 
    type Half_Delay_Amount <B>is</B> <B>range</B> 1 .. 255;
 
-   <I>--  <A NAME="AFU_43">|</I>
+   <I>--  <A NAME="AFU_44">|</I>
    <B>procedure</B> Half_Delay (Amount : <B>in</B> Half_Delay_Amount);
    <I>--  AKA: halfdelay()</I>
 
-   <I>--  <A NAME="AFU_44">|</I>
+   <I>--  <A NAME="AFU_45">|</I>
    <B>procedure</B> Set_Flush_On_Interrupt_Mode
      (Win  : <B>in</B> Window := Standard_Window;
       Mode : <B>in</B> Boolean := True);
    <I>--  AKA: intrflush()</I>
 
-   <I>--  <A NAME="AFU_45">|</I>
+   <I>--  <A NAME="AFU_46">|</I>
    <B>procedure</B> Set_Queue_Interrupt_Mode
      (Win   : <B>in</B> Window := Standard_Window;
       Flush : <B>in</B> Boolean := True);
    <I>--  AKA: qiflush()</I>
    <I>--  AKA: noqiflush()</I>
 
-   <I>--  <A NAME="AFU_46">|</I>
+   <I>--  <A NAME="AFU_47">|</I>
    <B>procedure</B> Set_NoDelay_Mode
      (Win  : <B>in</B> Window := Standard_Window;
       Mode : <B>in</B> Boolean := False);
@@ -851,7 +857,7 @@
 
    type Timeout_Mode <B>is</B> (Blocking, Non_Blocking, Delayed);
 
-   <I>--  <A NAME="AFU_47">|</I>
+   <I>--  <A NAME="AFU_48">|</I>
    <B>procedure</B> Set_Timeout_Mode (Win    : <B>in</B> Window := Standard_Window;
                                Mode   : <B>in</B> Timeout_Mode;
                                Amount : <B>in</B> Natural); <I>--  in Miliseconds</I>
@@ -861,7 +867,7 @@
    <I>--  readability. For Blocking and Non_Blocking, the Amount is not</I>
    <I>--  evaluated.</I>
 
-   <I>--  <A NAME="AFU_48">|</I>
+   <I>--  <A NAME="AFU_49">|</I>
    <B>procedure</B> Set_Escape_Timer_Mode
      (Win       : <B>in</B> Window := Standard_Window;
       Timer_Off : <B>in</B> Boolean := False);
@@ -871,42 +877,42 @@
    <I>--  | Man page curs_outopts.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_49">|</I>
+   <I>--  <A NAME="AFU_50">|</I>
    <B>procedure</B> Set_NL_Mode (SwitchOn : <B>in</B> Boolean := True);
    <I>--  AKA: nl()</I>
    <I>--  AKA: nonl()</I>
 
-   <I>--  <A NAME="AFU_50">|</I>
+   <I>--  <A NAME="AFU_51">|</I>
    <B>procedure</B> Clear_On_Next_Update
      (Win      : <B>in</B> Window := Standard_Window;
       Do_Clear : <B>in</B> Boolean := True);
    <I>--  AKA: clearok()</I>
 
-   <I>--  <A NAME="AFU_51">|</I>
+   <I>--  <A NAME="AFU_52">|</I>
    <B>procedure</B> Use_Insert_Delete_Line
      (Win    : <B>in</B> Window := Standard_Window;
       Do_Idl : <B>in</B> Boolean := True);
    <I>--  AKA: idlok()</I>
 
-   <I>--  <A NAME="AFU_52">|</I>
+   <I>--  <A NAME="AFU_53">|</I>
    <B>procedure</B> Use_Insert_Delete_Character
      (Win    : <B>in</B> Window := Standard_Window;
       Do_Idc : <B>in</B> Boolean := True);
    <I>--  AKA: idcok()</I>
 
-   <I>--  <A NAME="AFU_53">|</I>
+   <I>--  <A NAME="AFU_54">|</I>
    <B>procedure</B> Leave_Cursor_After_Update
      (Win      : <B>in</B> Window := Standard_Window;
       Do_Leave : <B>in</B> Boolean := True);
    <I>--  AKA: leaveok()</I>
 
-   <I>--  <A NAME="AFU_54">|</I>
+   <I>--  <A NAME="AFU_55">|</I>
    <B>procedure</B> Immediate_Update_Mode
      (Win  : <B>in</B> Window := Standard_Window;
       Mode : <B>in</B> Boolean := False);
    <I>--  AKA: immedok()</I>
 
-   <I>--  <A NAME="AFU_55">|</I>
+   <I>--  <A NAME="AFU_56">|</I>
    <B>procedure</B> Allow_Scrolling
      (Win  : <B>in</B> Window := Standard_Window;
       Mode : <B>in</B> Boolean := False);
@@ -915,7 +921,7 @@
    <B>function</B> Scrolling_Allowed (Win : Window := Standard_Window) <B>return</B> Boolean;
    <I>--  There is no such function in the C interface.</I>
 
-   <I>--  <A NAME="AFU_56">|</I>
+   <I>--  <A NAME="AFU_57">|</I>
    <B>procedure</B> Set_Scroll_Region
      (Win         : <B>in</B> Window := Standard_Window;
       Top_Line    : <B>in</B> Line_Position;
@@ -926,24 +932,24 @@
    <I>--  | Man page curs_refresh.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_57">|</I>
+   <I>--  <A NAME="AFU_58">|</I>
    <B>procedure</B> Update_Screen;
    <I>--  AKA: doupdate()</I>
 
-   <I>--  <A NAME="AFU_58">|</I>
+   <I>--  <A NAME="AFU_59">|</I>
    <B>procedure</B> Refresh (Win : <B>in</B> Window := Standard_Window);
    <I>--  AKA: wrefresh()</I>
 
-   <I>--  <A NAME="AFU_59">|</I>
+   <I>--  <A NAME="AFU_60">|</I>
    <B>procedure</B> Refresh_Without_Update
      (Win : <B>in</B> Window := Standard_Window);
    <I>--  AKA: wnoutrefresh()</I>
 
-   <I>--  <A NAME="AFU_60">|</I>
+   <I>--  <A NAME="AFU_61">|</I>
    <B>procedure</B> Redraw (Win : <B>in</B> Window := Standard_Window);
    <I>--  AKA: redrawwin()</I>
 
-   <I>--  <A NAME="AFU_61">|</I>
+   <I>--  <A NAME="AFU_62">|</I>
    <B>procedure</B> Redraw (Win        : <B>in</B> Window := Standard_Window;
                      Begin_Line : <B>in</B> Line_Position;
                      Line_Count : <B>in</B> Positive);
@@ -953,21 +959,21 @@
    <I>--  | Man page curs_clear.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_62">|</I>
+   <I>--  <A NAME="AFU_63">|</I>
    <B>procedure</B> Erase (Win : <B>in</B> Window := Standard_Window);
    <I>--  AKA: werase()</I>
 
-   <I>--  <A NAME="AFU_63">|</I>
+   <I>--  <A NAME="AFU_64">|</I>
    <B>procedure</B> Clear
      (Win : <B>in</B> Window := Standard_Window);
    <I>--  AKA: wclear()</I>
 
-   <I>--  <A NAME="AFU_64">|</I>
+   <I>--  <A NAME="AFU_65">|</I>
    <B>procedure</B> Clear_To_End_Of_Screen
      (Win : <B>in</B> Window := Standard_Window);
    <I>--  AKA: wclrtobot()</I>
 
-   <I>--  <A NAME="AFU_65">|</I>
+   <I>--  <A NAME="AFU_66">|</I>
    <B>procedure</B> Clear_To_End_Of_Line
      (Win : <B>in</B> Window := Standard_Window);
    <I>--  AKA: wclrtoeol()</I>
@@ -976,19 +982,19 @@
    <I>--  | Man page curs_bkgd.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_66">|</I>
+   <I>--  <A NAME="AFU_67">|</I>
    <B>procedure</B> Set_Background
      (Win : <B>in</B> Window := Standard_Window;
       Ch  : <B>in</B> Attributed_Character);
    <I>--  AKA: wbkgdset()</I>
 
-   <I>--  <A NAME="AFU_67">|</I>
+   <I>--  <A NAME="AFU_68">|</I>
    <B>procedure</B> Change_Background
      (Win : <B>in</B> Window := Standard_Window;
       Ch  : <B>in</B> Attributed_Character);
    <I>--  AKA: wbkgd()</I>
 
-   <I>--  <A NAME="AFU_68">|</I>
+   <I>--  <A NAME="AFU_69">|</I>
    <B>function</B> Get_Background (Win : Window := Standard_Window)
      <B>return</B> Attributed_Character;
    <I>--  AKA: wbkgdget()</I>
@@ -997,33 +1003,33 @@
    <I>--  | Man page curs_touch.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_69">|</I>
+   <I>--  <A NAME="AFU_70">|</I>
    <B>procedure</B> Touch (Win : <B>in</B> Window := Standard_Window);
    <I>--  AKA: touchwin()</I>
 
-   <I>--  <A NAME="AFU_70">|</I>
+   <I>--  <A NAME="AFU_71">|</I>
    <B>procedure</B> Untouch (Win : <B>in</B> Window := Standard_Window);
    <I>--  AKA: untouchwin()</I>
 
-   <I>--  <A NAME="AFU_71">|</I>
+   <I>--  <A NAME="AFU_72">|</I>
    <B>procedure</B> Touch (Win   : <B>in</B> Window := Standard_Window;
                     Start : <B>in</B> Line_Position;
                     Count : <B>in</B> Positive);
    <I>--  AKA: touchline()</I>
 
-   <I>--  <A NAME="AFU_72">|</I>
+   <I>--  <A NAME="AFU_73">|</I>
    <B>procedure</B> Change_Lines_Status (Win   : <B>in</B> Window := Standard_Window;
                                   Start : <B>in</B> Line_Position;
                                   Count : <B>in</B> Positive;
                                   State : <B>in</B> Boolean);
    <I>--  AKA: wtouchln()</I>
 
-   <I>--  <A NAME="AFU_73">|</I>
+   <I>--  <A NAME="AFU_74">|</I>
    <B>function</B> Is_Touched (Win  : Window := Standard_Window;
                         Line : Line_Position) <B>return</B> Boolean;
    <I>--  AKA: is_linetouched()</I>
 
-   <I>--  <A NAME="AFU_74">|</I>
+   <I>--  <A NAME="AFU_75">|</I>
    <B>function</B> Is_Touched (Win : Window := Standard_Window) <B>return</B> Boolean;
    <I>--  AKA: is_wintouched()</I>
 
@@ -1031,7 +1037,7 @@
    <I>--  | Man page curs_overlay.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_75">|</I>
+   <I>--  <A NAME="AFU_76">|</I>
    <B>procedure</B> Copy
      (Source_Window            : <B>in</B> Window;
       Destination_Window       : <B>in</B> Window;
@@ -1044,12 +1050,12 @@
       Non_Destructive_Mode     : <B>in</B> Boolean := True);
    <I>--  AKA: copywin()</I>
 
-   <I>--  <A NAME="AFU_76">|</I>
+   <I>--  <A NAME="AFU_77">|</I>
    <B>procedure</B> Overwrite (Source_Window      : <B>in</B> Window;
                         Destination_Window : <B>in</B> Window);
    <I>--  AKA: overwrite()</I>
 
-   <I>--  <A NAME="AFU_77">|</I>
+   <I>--  <A NAME="AFU_78">|</I>
    <B>procedure</B> Overlay (Source_Window      : <B>in</B> Window;
                       Destination_Window : <B>in</B> Window);
    <I>--  AKA: overlay()</I>
@@ -1058,17 +1064,17 @@
    <I>--  | Man page curs_deleteln.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_78">|</I>
+   <I>--  <A NAME="AFU_79">|</I>
    <B>procedure</B> Insert_Delete_Lines
      (Win   : <B>in</B> Window  := Standard_Window;
       Lines : <B>in</B> Integer := 1); <I>--  default is to insert one line above</I>
    <I>--  AKA: winsdelln()</I>
 
-   <I>--  <A NAME="AFU_79">|</I>
+   <I>--  <A NAME="AFU_80">|</I>
    <B>procedure</B> Delete_Line (Win : <B>in</B> Window := Standard_Window);
    <I>--  AKA: wdeleteln()</I>
 
-   <I>--  <A NAME="AFU_80">|</I>
+   <I>--  <A NAME="AFU_81">|</I>
    <B>procedure</B> Insert_Line (Win : <B>in</B> Window := Standard_Window);
    <I>--  AKA: winsertln()</I>
 
@@ -1076,28 +1082,28 @@
    <I>--  | Man page curs_getyx.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_81">|</I>
+   <I>--  <A NAME="AFU_82">|</I>
    <B>procedure</B> Get_Size
      (Win               : <B>in</B> Window := Standard_Window;
       Number_Of_Lines   : <B>out</B> Line_Count;
       Number_Of_Columns : <B>out</B> Column_Count);
    <I>--  AKA: getmaxyx()</I>
 
-   <I>--  <A NAME="AFU_82">|</I>
+   <I>--  <A NAME="AFU_83">|</I>
    <B>procedure</B> Get_Window_Position
      (Win             : <B>in</B> Window := Standard_Window;
       Top_Left_Line   : <B>out</B> Line_Position;
       Top_Left_Column : <B>out</B> Column_Position);
    <I>--  AKA: getbegyx()</I>
 
-   <I>--  <A NAME="AFU_83">|</I>
+   <I>--  <A NAME="AFU_84">|</I>
    <B>procedure</B> Get_Cursor_Position
      (Win    : <B>in</B>  Window := Standard_Window;
       Line   : <B>out</B> Line_Position;
       Column : <B>out</B> Column_Position);
    <I>--  AKA: getyx()</I>
 
-   <I>--  <A NAME="AFU_84">|</I>
+   <I>--  <A NAME="AFU_85">|</I>
    <B>procedure</B> Get_Origin_Relative_To_Parent
      (Win                : <B>in</B>  Window;
       Top_Left_Line      : <B>out</B> Line_Position;
@@ -1111,12 +1117,12 @@
    <I>--  | Man page curs_pad.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_85">|</I>
+   <I>--  <A NAME="AFU_86">|</I>
    <B>function</B> New_Pad (Lines   : Line_Count;
                      Columns : Column_Count) <B>return</B> Window;
    <I>--  AKA: newpad()</I>
 
-   <I>--  <A NAME="AFU_86">|</I>
+   <I>--  <A NAME="AFU_87">|</I>
    <B>function</B> Sub_Pad
      (Pad                   : Window;
       Number_Of_Lines       : Line_Count;
@@ -1125,7 +1131,7 @@
       First_Column_Position : Column_Position) <B>return</B> Window;
    <I>--  AKA: subpad()</I>
 
-   <I>--  <A NAME="AFU_87">|</I>
+   <I>--  <A NAME="AFU_88">|</I>
    <B>procedure</B> Refresh
      (Pad                      : <B>in</B> Window;
       Source_Top_Row           : <B>in</B> Line_Position;
@@ -1136,7 +1142,7 @@
       Destination_Right_Column : <B>in</B> Column_Position);
    <I>--  AKA: prefresh()</I>
 
-   <I>--  <A NAME="AFU_88">|</I>
+   <I>--  <A NAME="AFU_89">|</I>
    <B>procedure</B> Refresh_Without_Update
      (Pad                      : <B>in</B> Window;
       Source_Top_Row           : <B>in</B> Line_Position;
@@ -1147,7 +1153,7 @@
       Destination_Right_Column : <B>in</B> Column_Position);
    <I>--  AKA: pnoutrefresh()</I>
 
-   <I>--  <A NAME="AFU_89">|</I>
+   <I>--  <A NAME="AFU_90">|</I>
    <B>procedure</B> Add_Character_To_Pad_And_Echo_It
      (Pad : <B>in</B> Window;
       Ch  : <B>in</B> Attributed_Character);
@@ -1161,7 +1167,7 @@
    <I>--  | Man page curs_scroll.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_90">|</I>
+   <I>--  <A NAME="AFU_91">|</I>
    <B>procedure</B> Scroll (Win    : <B>in</B> Window  := Standard_Window;
                      Amount : <B>in</B> Integer := 1);
    <I>--  AKA: wscrl()</I>
@@ -1170,11 +1176,11 @@
    <I>--  | Man page curs_delch.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_91">|</I>
+   <I>--  <A NAME="AFU_92">|</I>
    <B>procedure</B> Delete_Character (Win : <B>in</B> Window := Standard_Window);
    <I>--  AKA: wdelch()</I>
 
-   <I>--  <A NAME="AFU_92">|</I>
+   <I>--  <A NAME="AFU_93">|</I>
    <B>procedure</B> Delete_Character
      (Win    : <B>in</B> Window := Standard_Window;
       Line   : <B>in</B> Line_Position;
@@ -1185,12 +1191,12 @@
    <I>--  | Man page curs_inch.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_93">|</I>
+   <I>--  <A NAME="AFU_94">|</I>
    <B>function</B> Peek (Win : Window := Standard_Window)
      <B>return</B> Attributed_Character;
    <I>--  AKA: winch()</I>
 
-   <I>--  <A NAME="AFU_94">|</I>
+   <I>--  <A NAME="AFU_95">|</I>
    <B>function</B> Peek
      (Win    : Window := Standard_Window;
       Line   : Line_Position;
@@ -1201,12 +1207,12 @@
    <I>--  | Man page curs_winch.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_95">|</I>
+   <I>--  <A NAME="AFU_96">|</I>
    <B>procedure</B> Insert (Win : <B>in</B> Window := Standard_Window;
                      Ch  : <B>in</B> Attributed_Character);
    <I>--  AKA: winsch()</I>
 
-   <I>--  <A NAME="AFU_96">|</I>
+   <I>--  <A NAME="AFU_97">|</I>
    <B>procedure</B> Insert (Win    : <B>in</B> Window := Standard_Window;
                      Line   : <B>in</B> Line_Position;
                      Column : <B>in</B> Column_Position;
@@ -1217,14 +1223,14 @@
    <I>--  | Man page curs_winch.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_97">|</I>
+   <I>--  <A NAME="AFU_98">|</I>
    <B>procedure</B> Insert (Win : <B>in</B> Window := Standard_Window;
                      Str : <B>in</B> String;
                      Len : <B>in</B> Integer := -1);
    <I>--  AKA: winsnstr()</I>
    <I>--  AKA: winsstr()</I>
 
-   <I>--  <A NAME="AFU_98">|</I>
+   <I>--  <A NAME="AFU_99">|</I>
    <B>procedure</B> Insert (Win    : <B>in</B> Window := Standard_Window;
                      Line   : <B>in</B> Line_Position;
                      Column : <B>in</B> Column_Position;
@@ -1237,14 +1243,14 @@
    <I>--  | Man page curs_instr.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_99">|</I>
+   <I>--  <A NAME="AFU_100">|</I>
    <B>procedure</B> Peek (Win : <B>in</B>  Window := Standard_Window;
                    Str : <B>out</B> String;
                    Len : <B>in</B>  Integer := -1);
    <I>--  AKA: winnstr()</I>
    <I>--  AKA: winstr()</I>
 
-   <I>--  <A NAME="AFU_100">|</I>
+   <I>--  <A NAME="AFU_101">|</I>
    <B>procedure</B> Peek (Win    : <B>in</B>  Window := Standard_Window;
                    Line   : <B>in</B>  Line_Position;
                    Column : <B>in</B>  Column_Position;
@@ -1257,14 +1263,14 @@
    <I>--  | Man page curs_inchstr.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_101">|</I>
+   <I>--  <A NAME="AFU_102">|</I>
    <B>procedure</B> Peek (Win : <B>in</B>  Window := Standard_Window;
                    Str : <B>out</B> Attributed_String;
                    Len : <B>in</B>  Integer := -1);
    <I>--  AKA: winchnstr()</I>
    <I>--  AKA: winchstr()</I>
 
-   <I>--  <A NAME="AFU_102">|</I>
+   <I>--  <A NAME="AFU_103">|</I>
    <B>procedure</B> Peek (Win    : <B>in</B>  Window := Standard_Window;
                    Line   : <B>in</B>  Line_Position;
                    Column : <B>in</B>  Column_Position;
@@ -1277,7 +1283,7 @@
    <I>--  | Man page curs_getstr.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_103">|</I>
+   <I>--  <A NAME="AFU_104">|</I>
    <B>procedure</B> Get (Win : <B>in</B>  Window := Standard_Window;
                   Str : <B>out</B> String;
                   Len : <B>in</B>  Integer := -1);
@@ -1303,56 +1309,61 @@
    type Label_Number <B>is</B> <B>new</B> Positive <B>range</B> 1 .. 12;
    type Label_Justification <B>is</B> (Left, Centered, Right);
 
-   <I>--  <A NAME="AFU_104">|</I>
+   <I>--  <A NAME="AFU_105">|</I>
    <B>procedure</B> Init_Soft_Label_Keys
      (Format : <B>in</B> Soft_Label_Key_Format := Three_Two_Three);
    <I>--  AKA: slk_init()</I>
 
-   <I>--  <A NAME="AFU_105">|</I>
+   <I>--  <A NAME="AFU_106">|</I>
    <B>procedure</B> Set_Soft_Label_Key (Label : <B>in</B> Label_Number;
                                  Text  : <B>in</B> String;
                                  Fmt   : <B>in</B> Label_Justification := Left);
    <I>--  AKA: slk_set()</I>
 
-   <I>--  <A NAME="AFU_106">|</I>
+   <I>--  <A NAME="AFU_107">|</I>
    <B>procedure</B> Refresh_Soft_Label_Keys;
    <I>--  AKA: slk_refresh()</I>
 
-   <I>--  <A NAME="AFU_107">|</I>
+   <I>--  <A NAME="AFU_108">|</I>
    <B>procedure</B> Refresh_Soft_Label_Keys_Without_Update;
    <I>--  AKA: slk_noutrefresh()</I>
 
-   <I>--  <A NAME="AFU_108">|</I>
+   <I>--  <A NAME="AFU_109">|</I>
    <B>procedure</B> Get_Soft_Label_Key (Label : <B>in</B> Label_Number;
                                  Text  : <B>out</B> String);
    <I>--  AKA: slk_label()</I>
 
-   <I>--  <A NAME="AFU_109">|</I>
+   <I>--  <A NAME="AFU_110">|</I>
    <B>procedure</B> Clear_Soft_Label_Keys;
    <I>--  AKA: slk_clear()</I>
 
-   <I>--  <A NAME="AFU_110">|</I>
+   <I>--  <A NAME="AFU_111">|</I>
    <B>procedure</B> Restore_Soft_Label_Keys;
    <I>--  AKA: slk_restore()</I>
 
-   <I>--  <A NAME="AFU_111">|</I>
+   <I>--  <A NAME="AFU_112">|</I>
    <B>procedure</B> Touch_Soft_Label_Keys;
    <I>--  AKA: slk_touch()</I>
 
-   <I>--  <A NAME="AFU_112">|</I>
+   <I>--  <A NAME="AFU_113">|</I>
    <B>procedure</B> Switch_Soft_Label_Key_Attributes
      (Attr : <B>in</B> Character_Attribute_Set;
       On   : <B>in</B> Boolean := True);
    <I>--  AKA: slk_attron()</I>
    <I>--  AKA: slk_attroff()</I>
 
-   <I>--  <A NAME="AFU_113">|</I>
+   <I>--  <A NAME="AFU_114">|</I>
    <B>procedure</B> Set_Soft_Label_Key_Attributes
-     (Attr : <B>in</B> Character_Attribute_Set);
+     (Attr  : <B>in</B> Character_Attribute_Set := Normal_Video;
+      Color : <B>in</B> Color_Pair := Color_Pair'First);
    <I>--  AKA: slk_attrset()</I>
 
-   <I>--  <A NAME="AFU_114">|</I>
+   <I>--  <A NAME="AFU_115">|</I>
    <B>function</B> Get_Soft_Label_Key_Attributes <B>return</B> Character_Attribute_Set;
+   <I>--  AKA: slk_attr()</I>
+
+   <I>--  <A NAME="AFU_116">|</I>
+   <B>function</B> Get_Soft_Label_Key_Attributes <B>return</B> Color_Pair;
    <I>--  AKA: slk_attr()</I>
 
    <I>--  |=====================================================================</I>
@@ -1361,16 +1372,16 @@
 
    <I>--  | Not implemented : filter, use_env, putwin, getwin</I>
    <I>--</I>
-   <I>--  <A NAME="AFU_115">|</I>
+   <I>--  <A NAME="AFU_117">|</I>
    <B>procedure</B> Un_Control (Ch  : <B>in</B> Attributed_Character;
                          Str : <B>out</B> String);
    <I>--  AKA: unctrl()</I>
 
-   <I>--  <A NAME="AFU_116">|</I>
+   <I>--  <A NAME="AFU_118">|</I>
    <B>procedure</B> Delay_Output (Msecs : <B>in</B> Natural);
    <I>--  AKA: delay_output()</I>
 
-   <I>--  <A NAME="AFU_117">|</I>
+   <I>--  <A NAME="AFU_119">|</I>
    <B>procedure</B> Flush_Input;
    <I>--  AKA: flushinp()</I>
 
@@ -1378,35 +1389,35 @@
    <I>--  | Man page curs_termattrs.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_118">|</I>
+   <I>--  <A NAME="AFU_120">|</I>
    <B>function</B> Baudrate <B>return</B> Natural;
    <I>--  AKA: baudrate()</I>
 
-   <I>--  <A NAME="AFU_119">|</I>
+   <I>--  <A NAME="AFU_121">|</I>
    <B>function</B> Erase_Character <B>return</B> Character;
    <I>--  AKA: erasechar()</I>
 
-   <I>--  <A NAME="AFU_120">|</I>
+   <I>--  <A NAME="AFU_122">|</I>
    <B>function</B> Kill_Character <B>return</B> Character;
    <I>--  AKA: killchar()</I>
 
-   <I>--  <A NAME="AFU_121">|</I>
+   <I>--  <A NAME="AFU_123">|</I>
    <B>function</B> Has_Insert_Character <B>return</B> Boolean;
    <I>--  AKA: has_ic()</I>
 
-   <I>--  <A NAME="AFU_122">|</I>
+   <I>--  <A NAME="AFU_124">|</I>
    <B>function</B> Has_Insert_Line <B>return</B> Boolean;
    <I>--  AKA: has_il()</I>
 
-   <I>--  <A NAME="AFU_123">|</I>
+   <I>--  <A NAME="AFU_125">|</I>
    <B>function</B> Supported_Attributes <B>return</B> Character_Attribute_Set;
    <I>--  AKA: termattrs()</I>
 
-   <I>--  <A NAME="AFU_124">|</I>
+   <I>--  <A NAME="AFU_126">|</I>
    <B>procedure</B> Long_Name (Name : <B>out</B> String);
    <I>--  AKA: longname()</I>
 
-   <I>--  <A NAME="AFU_125">|</I>
+   <I>--  <A NAME="AFU_127">|</I>
    <B>procedure</B> Terminal_Name (Name : <B>out</B> String);
    <I>--  AKA: termname()</I>
 
@@ -1414,39 +1425,39 @@
    <I>--  | Man page curs_color.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_126">|</I>
+   <I>--  <A NAME="AFU_128">|</I>
    <B>procedure</B> Start_Color;
    <I>--  AKA: start_clolor()</I>
    <B>pragma</B> Import (C, Start_Color, "start_color");
 
-   <I>--  <A NAME="AFU_127">|</I>
+   <I>--  <A NAME="AFU_129">|</I>
    <B>procedure</B> Init_Pair (Pair : <B>in</B> Redefinable_Color_Pair;
                         Fore : <B>in</B> Color_Number;
                         Back : <B>in</B> Color_Number);
    <I>--  AKA: init_pair()</I>
 
-   <I>--  <A NAME="AFU_128">|</I>
+   <I>--  <A NAME="AFU_130">|</I>
    <B>procedure</B> Pair_Content (Pair : <B>in</B> Color_Pair;
                            Fore : <B>out</B> Color_Number;
                            Back : <B>out</B> Color_Number);
    <I>--  AKA: pair_content()</I>
 
-   <I>--  <A NAME="AFU_129">|</I>
+   <I>--  <A NAME="AFU_131">|</I>
    <B>function</B> Has_Colors <B>return</B> Boolean;
    <I>--  AKA: has_colors()</I>
 
-   <I>--  <A NAME="AFU_130">|</I>
+   <I>--  <A NAME="AFU_132">|</I>
    <B>procedure</B> Init_Color (Color : <B>in</B> Color_Number;
                          Red   : <B>in</B> RGB_Value;
                          Green : <B>in</B> RGB_Value;
                          Blue  : <B>in</B> RGB_Value);
    <I>--  AKA: init_color()</I>
 
-   <I>--  <A NAME="AFU_131">|</I>
+   <I>--  <A NAME="AFU_133">|</I>
    <B>function</B> Can_Change_Color <B>return</B> Boolean;
    <I>--  AKA: can_change_color()</I>
 
-   <I>--  <A NAME="AFU_132">|</I>
+   <I>--  <A NAME="AFU_134">|</I>
    <B>procedure</B> Color_Content (Color : <B>in</B>  Color_Number;
                             Red   : <B>out</B> RGB_Value;
                             Green : <B>out</B> RGB_Value;
@@ -1461,21 +1472,21 @@
    <I>--</I>
    type Curses_Mode <B>is</B> (Curses, Shell);
 
-   <I>--  <A NAME="AFU_133">|</I>
+   <I>--  <A NAME="AFU_135">|</I>
    <B>procedure</B> Save_Curses_Mode (Mode : <B>in</B> Curses_Mode);
    <I>--  AKA: def_prog_mode()</I>
    <I>--  AKA: def_shell_mode()</I>
 
-   <I>--  <A NAME="AFU_134">|</I>
+   <I>--  <A NAME="AFU_136">|</I>
    <B>procedure</B> Reset_Curses_Mode (Mode : <B>in</B> Curses_Mode);
    <I>--  AKA: reset_prog_mode()</I>
    <I>--  AKA: reset_shell_mode()</I>
 
-   <I>--  <A NAME="AFU_135">|</I>
+   <I>--  <A NAME="AFU_137">|</I>
    <B>procedure</B> Save_Terminal_State;
    <I>--  AKA: savetty()</I>
 
-   <I>--  <A NAME="AFU_136">|</I>
+   <I>--  <A NAME="AFU_138">|</I>
    <B>procedure</B> Reset_Terminal_State;
    <I>--  AKA: resetty();</I>
 
@@ -1487,7 +1498,7 @@
    <I>--        a good practice to return 0 if you think all went fine</I>
    <I>--        and -1 otherwise.</I>
 
-   <I>--  <A NAME="AFU_137">|</I>
+   <I>--  <A NAME="AFU_139">|</I>
    <B>procedure</B> Rip_Off_Lines (Lines : <B>in</B> Integer;
                             Proc  : <B>in</B> Stdscr_Init_Proc);
    <I>--  AKA: ripoffline()</I>
@@ -1498,11 +1509,11 @@
 
    type Cursor_Visibility <B>is</B> (Invisible, Normal, Very_Visible);
 
-   <I>--  <A NAME="AFU_138">|</I>
+   <I>--  <A NAME="AFU_140">|</I>
    <B>procedure</B> Set_Cursor_Visibility (Visibility : <B>in</B> <B>out</B> Cursor_Visibility);
    <I>--  AKA: curs_set()</I>
 
-   <I>--  <A NAME="AFU_139">|</I>
+   <I>--  <A NAME="AFU_141">|</I>
    <B>procedure</B> Nap_Milli_Seconds (Ms : <B>in</B> Natural);
    <I>--  AKA: napms()</I>
 

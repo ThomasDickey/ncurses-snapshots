@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.3 $
+--  $Revision: 1.4 $
 ------------------------------------------------------------------------------
 with System;
 
@@ -54,7 +54,7 @@ package body Terminal_Interface.Curses is
          Ch := Character'Val (Key);
          if Is_Control (Ch) then
             Un_Control (Attributed_Character'(Ch    => Ch,
-                                              Color => 0,
+                                              Color => Color_Pair'First,
                                               Attr  => Normal_Video),
                         Name);
          elsif Is_Graphic (Ch) then
@@ -136,7 +136,7 @@ package body Terminal_Interface.Curses is
    begin
       Add (Win,
            Attributed_Character'(Ch    => Ch,
-                                 Color => 0,
+                                 Color => Color_Pair'First,
                                  Attr  => Normal_Video));
    end Add;
 
@@ -170,7 +170,7 @@ package body Terminal_Interface.Curses is
            Line,
            Column,
            Attributed_Character'(Ch    => Ch,
-                                 Color => 0,
+                                 Color => Color_Pair'First,
                                  Attr  => Normal_Video));
    end Add;
 
@@ -195,7 +195,7 @@ package body Terminal_Interface.Curses is
       Add_With_Immediate_Echo
         (Win,
          Attributed_Character'(Ch    => Ch,
-                               Color => 0,
+                               Color => Color_Pair'First,
                                Attr  => Normal_Video));
    end Add_With_Immediate_Echo;
 ------------------------------------------------------------------------------
@@ -571,7 +571,7 @@ package body Terminal_Interface.Curses is
       --  switch on or off the attributes in the set.
       Err : C_Int;
       AC  : constant Attributed_Character := (Ch    => Character'First,
-                                              Color => 0,
+                                              Color => Color_Pair'First,
                                               Attr  => Attr);
    begin
       if On then
@@ -586,7 +586,8 @@ package body Terminal_Interface.Curses is
 
    procedure Set_Character_Attributes
      (Win   : in Window := Standard_Window;
-      Attrs : in Character_Attribute_Set := Normal_Video)
+      Attr  : in Character_Attribute_Set := Normal_Video;
+      Color : in Color_Pair := Color_Pair'First)
    is
       function Wattrset (Win    : Window;
                          C_Attr : C_Int) return C_Int;
@@ -595,8 +596,8 @@ package body Terminal_Interface.Curses is
       if Wattrset (Win,
                    Chtype_To_CInt (Attributed_Character'
                                    (Ch    => Character'First,
-                                    Color => 0,
-                                    Attr  => Attrs))) = Curses_Err then
+                                    Color => Color,
+                                    Attr  => Attr))) = Curses_Err then
          raise Curses_Exception;
       end if;
    end Set_Character_Attributes;
@@ -612,10 +613,22 @@ package body Terminal_Interface.Curses is
       return Ch.Attr;
    end Get_Character_Attribute;
 
-   procedure Change_Attributes (Win   : in Window := Standard_Window;
-                                Count : in Integer := -1;
-                                Attrs : in Character_Attribute_Set;
-                                Color : in Color_Pair)
+   function Get_Character_Attribute (Win : Window := Standard_Window)
+                                     return Color_Pair
+   is
+      function Wattrget (Win : Window) return C_Int;
+      pragma Import (C, Wattrget, "wattr_get");
+
+      Ch : Attributed_Character := CInt_To_Chtype (Wattrget (Win));
+   begin
+      return Ch.Color;
+   end Get_Character_Attribute;
+
+   procedure Change_Attributes
+     (Win   : in Window := Standard_Window;
+      Count : in Integer := -1;
+      Attr  : in Character_Attribute_Set := Normal_Video;
+      Color : in Color_Pair := Color_Pair'First)
    is
       function Wchgat (Win   : Window;
                        Cnt   : C_Int;
@@ -626,7 +639,7 @@ package body Terminal_Interface.Curses is
       pragma Import (C, Wchgat, "wchgat");
 
       Ch : constant Attributed_Character :=
-        (Ch => Character'First, Color => 0, Attr => Attrs);
+        (Ch => Character'First, Color => Color_Pair'First, Attr => Attr);
    begin
       if Wchgat (Win, C_Int (Count), Chtype_To_CInt (Ch),
                  C_Short (Color)) = Curses_Err then
@@ -636,15 +649,15 @@ package body Terminal_Interface.Curses is
 
    procedure Change_Attributes
      (Win    : in Window := Standard_Window;
-      Line   : in Line_Position;
-      Column : in Column_Position;
+      Line   : in Line_Position := Line_Position'First;
+      Column : in Column_Position := Column_Position'First;
       Count  : in Integer := -1;
-      Attrs  : in Character_Attribute_Set;
-      Color  : in Color_Pair)
+      Attr   : in Character_Attribute_Set := Normal_Video;
+      Color  : in Color_Pair := Color_Pair'First)
    is
    begin
       Move_Cursor (Win, Line, Column);
-      Change_Attributes (Win, Count, Attrs, Color);
+      Change_Attributes (Win, Count, Attr, Color);
    end Change_Attributes;
 ------------------------------------------------------------------------------
    procedure Beep
@@ -1450,7 +1463,7 @@ package body Terminal_Interface.Curses is
       Add_Character_To_Pad_And_Echo_It
         (Pad,
          Attributed_Character'(Ch    => Ch,
-                               Color => 0,
+                               Color => Color_Pair'First,
                                Attr  => Normal_Video));
    end Add_Character_To_Pad_And_Echo_It;
 ------------------------------------------------------------------------------
@@ -1662,7 +1675,9 @@ package body Terminal_Interface.Curses is
       end loop;
       if Cnt < Str'Length then
          Str ((Str'First + Cnt) .. Str'Last) :=
-           (others => (Ch => ' ', Color => 0, Attr => Normal_Video));
+           (others => (Ch => ' ',
+                       Color => Color_Pair'First,
+                       Attr => Normal_Video));
       end if;
    end Peek;
 
@@ -1823,7 +1838,7 @@ package body Terminal_Interface.Curses is
       Err : C_Int;
       Ch  : constant Attributed_Character := (Ch    => Character'First,
                                               Attr  => Attr,
-                                              Color => 0);
+                                              Color => Color_Pair'First);
    begin
       if On then
          Err := Slk_Attron  (Chtype_To_CInt (Ch));
@@ -1835,14 +1850,16 @@ package body Terminal_Interface.Curses is
       end if;
    end Switch_Soft_Label_Key_Attributes;
 
-   procedure Set_Soft_Label_Key_Attributes (Attr : in Character_Attribute_Set)
+   procedure Set_Soft_Label_Key_Attributes
+     (Attr  : in Character_Attribute_Set := Normal_Video;
+      Color : in Color_Pair := Color_Pair'First)
    is
       function Slk_Attrset (Ch : C_Int) return C_Int;
       pragma Import (C, Slk_Attrset, "slk_attrset");
 
       Ch : constant Attributed_Character := (Ch    => Character'First,
                                              Attr  => Attr,
-                                             Color => 0);
+                                             Color => Color);
    begin
       if Slk_Attrset (Chtype_To_CInt (Ch)) = Curses_Err then
          raise Curses_Exception;
@@ -1857,6 +1874,16 @@ package body Terminal_Interface.Curses is
       Attr : constant C_Int := Slk_Attr;
    begin
       return CInt_To_Chtype (Attr).Attr;
+   end Get_Soft_Label_Key_Attributes;
+
+   function Get_Soft_Label_Key_Attributes return Color_Pair
+   is
+      function Slk_Attr return C_Int;
+      pragma Import (C, Slk_Attr, "slk_attr");
+
+      Attr : constant C_Int := Slk_Attr;
+   begin
+      return CInt_To_Chtype (Attr).Color;
    end Get_Soft_Label_Key_Attributes;
 ------------------------------------------------------------------------------
    procedure Un_Control (Ch  : in Attributed_Character;

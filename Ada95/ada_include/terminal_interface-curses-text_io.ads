@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.3 $
+--  $Revision: 1.4 $
 ------------------------------------------------------------------------------
 with System;
 with System.Parameters;
@@ -40,9 +40,9 @@ package Terminal_Interface.Curses.Text_IO is
 
    type Type_Set is (Lower_Case, Upper_Case, Mixed_Case);
 
-   --  For most of the routines you will see a version without an Window
+   --  For most of the routines you will see a version without a Window
    --  type parameter. They will operate on a default window, which can
-   --  be set by the user. It is initially stdscr.
+   --  be set by the user. It is initially equal to Standard_Window.
 
    procedure Set_Window (Win : in Window);
    --  Set Win as the default window

@@ -25,7 +25,7 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.3 $
+--  $Revision: 1.4 $
 ------------------------------------------------------------------------------
 include(`Form_Base_Defs')
 with System;
@@ -322,8 +322,10 @@ include(`Form_Opt_Rep')
    --  MANPAGE(`form_field_attributes.3x')
 
    --  ANCHOR(`set_field_fore()',`Set_Foreground')
-   procedure Set_Foreground (Fld  : in Field;
-                             Fore : in Character_Attribute_Set);
+   procedure Set_Foreground
+     (Fld   : in Field;
+      Fore  : in Character_Attribute_Set := Normal_Video;
+      Color : in Color_Pair := Color_Pair'First);
    --  AKA
 
    --  ANCHOR(`field_fore()',`Foreground')
@@ -331,14 +333,28 @@ include(`Form_Opt_Rep')
                          Fore : out Character_Attribute_Set);
    --  AKA
 
+   --  ANCHOR(`field_fore()',`Foreground')
+   procedure Foreground (Fld   : in  Field;
+                         Fore  : out Character_Attribute_Set;
+                         Color : out Color_Pair);
+   --  AKA
+
    --  ANCHOR(`set_field_back()',`Set_Background')
-   procedure Set_Background (Fld  : in Field;
-                             Back : in Character_Attribute_Set);
+   procedure Set_Background
+     (Fld   : in Field;
+      Back  : in Character_Attribute_Set := Normal_Video;
+      Color : in Color_Pair := Color_Pair'First);
    --  AKA
 
    --  ANCHOR(`field_back()',`Background')
    procedure Background (Fld  : in  Field;
                          Back : out Character_Attribute_Set);
+   --  AKA
+
+   --  ANCHOR(`field_back()',`Background')
+   procedure Background (Fld   : in  Field;
+                         Back  : out Character_Attribute_Set;
+                         Color : out Color_Pair);
    --  AKA
 
    --  ANCHOR(`set_field_pad()',`Set_Pad_Character')

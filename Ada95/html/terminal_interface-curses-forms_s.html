@@ -2,7 +2,7 @@
 <HEAD>
 <TITLE></TITLE>
 </HEAD>
-<BODY>
+<BODY BGCOLOR="#99ccbb" TEXT="#000000" LINK="#4060b0" VLINK="#000080" ALINK="#ff4040">
 <PRE>
 
 <I>------------------------------------------------------------------------------</I>
@@ -29,9 +29,9 @@
 <I>--  This binding comes AS IS with no warranty, implied or expressed.        --</I>
 <I>------------------------------------------------------------------------------</I>
 <I>--  Version Control:</I>
-<I>--  $Revision: 1.3 $</I>
+<I>--  $Revision: 1.4 $</I>
 <I>------------------------------------------------------------------------------</I>
-<I>--  form binding, generated at Thu Oct 24 15:16:31 1996</I>
+<I>--  form binding, generated at Sat Oct 26 17:44:12 1996</I>
 <I>--  This module is generated. Please don't change it manually!</I>
 <I>--  Run the generator instead.</I>
 <I>--  |</I>
@@ -386,8 +386,10 @@
    <I>--  |=====================================================================</I>
 
    <I>--  <A NAME="AFU_17">|</I>
-   <B>procedure</B> Set_Foreground (Fld  : <B>in</B> Field;
-                             Fore : <B>in</B> Character_Attribute_Set);
+   <B>procedure</B> Set_Foreground
+     (Fld   : <B>in</B> Field;
+      Fore  : <B>in</B> Character_Attribute_Set := Normal_Video;
+      Color : <B>in</B> Color_Pair := Color_Pair'First);
    <I>--  AKA: set_field_fore()</I>
 
    <I>--  <A NAME="AFU_18">|</I>
@@ -396,21 +398,35 @@
    <I>--  AKA: field_fore()</I>
 
    <I>--  <A NAME="AFU_19">|</I>
-   <B>procedure</B> Set_Background (Fld  : <B>in</B> Field;
-                             Back : <B>in</B> Character_Attribute_Set);
-   <I>--  AKA: set_field_back()</I>
+   <B>procedure</B> Foreground (Fld   : <B>in</B>  Field;
+                         Fore  : <B>out</B> Character_Attribute_Set;
+                         Color : <B>out</B> Color_Pair);
+   <I>--  AKA: field_fore()</I>
 
    <I>--  <A NAME="AFU_20">|</I>
+   <B>procedure</B> Set_Background
+     (Fld   : <B>in</B> Field;
+      Back  : <B>in</B> Character_Attribute_Set := Normal_Video;
+      Color : <B>in</B> Color_Pair := Color_Pair'First);
+   <I>--  AKA: set_field_back()</I>
+
+   <I>--  <A NAME="AFU_21">|</I>
    <B>procedure</B> Background (Fld  : <B>in</B>  Field;
                          Back : <B>out</B> Character_Attribute_Set);
    <I>--  AKA: field_back()</I>
 
-   <I>--  <A NAME="AFU_21">|</I>
+   <I>--  <A NAME="AFU_22">|</I>
+   <B>procedure</B> Background (Fld   : <B>in</B>  Field;
+                         Back  : <B>out</B> Character_Attribute_Set;
+                         Color : <B>out</B> Color_Pair);
+   <I>--  AKA: field_back()</I>
+
+   <I>--  <A NAME="AFU_23">|</I>
    <B>procedure</B> Set_Pad_Character (Fld : <B>in</B> Field;
                                 Pad : <B>in</B> Character := Space);
    <I>--  AKA: set_field_pad()</I>
 
-   <I>--  <A NAME="AFU_22">|</I>
+   <I>--  <A NAME="AFU_24">|</I>
    <B>procedure</B> Pad_Character (Fld : <B>in</B>  Field;
                             Pad : <B>out</B> Character);
    <I>--  AKA: field_pad()</I>
@@ -419,7 +435,7 @@
    <I>--  | Man page form_field_info.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_23">|</I>
+   <I>--  <A NAME="AFU_25">|</I>
    <B>procedure</B> Info (Fld                : <B>in</B>  Field;
                    Lines              : <B>out</B> Line_Count;
                    Columns            : <B>out</B> Column_Count;
@@ -429,7 +445,7 @@
                    Additional_Buffers : <B>out</B> Buffer_Number);
    <I>--  AKA: field_info()</I>
 
-   <I>--  <A NAME="AFU_24">|</I>
+   <I>--  <A NAME="AFU_26">|</I>
    <B>procedure</B> Dynamic_Info (Fld     : <B>in</B> Field;
                            Lines   : <B>out</B> Line_Count;
                            Columns : <B>out</B> Column_Count;
@@ -440,25 +456,25 @@
    <I>--  | Man page form_win.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_25">|</I>
+   <I>--  <A NAME="AFU_27">|</I>
    <B>procedure</B> Set_Window (Frm : <B>in</B> Form;
                          Win : <B>in</B> Window);
    <I>--  AKA: set_form_win()</I>
 
-   <I>--  <A NAME="AFU_26">|</I>
+   <I>--  <A NAME="AFU_28">|</I>
    <B>function</B> Get_Window (Frm : Form) <B>return</B> Window;
    <I>--  AKA: form_win()</I>
 
-   <I>--  <A NAME="AFU_27">|</I>
+   <I>--  <A NAME="AFU_29">|</I>
    <B>procedure</B> Set_Sub_Window (Frm : <B>in</B> Form;
                              Win : <B>in</B> Window);
    <I>--  AKA: set_form_sub()</I>
 
-   <I>--  <A NAME="AFU_28">|</I>
+   <I>--  <A NAME="AFU_30">|</I>
    <B>function</B> Get_Sub_Window (Frm : Form) <B>return</B> Window;
    <I>--  AKA: form_sub()</I>
 
-   <I>--  <A NAME="AFU_29">|</I>
+   <I>--  <A NAME="AFU_31">|</I>
    <B>procedure</B> Scale (Frm     : <B>in</B> Form;
                     Lines   : <B>out</B> Line_Count;
                     Columns : <B>out</B> Column_Count);
@@ -471,42 +487,42 @@
    type Form_Hook_Function <B>is</B> <B>access</B> <B>procedure</B> (Frm : <B>in</B> Form);
    <B>pragma</B> Convention (C, Form_Hook_Function);
 
-   <I>--  <A NAME="AFU_30">|</I>
+   <I>--  <A NAME="AFU_32">|</I>
    <B>procedure</B> Set_Field_Init_Hook (Frm  : <B>in</B> Form;
                                   Proc : <B>in</B> Form_Hook_Function);
    <I>--  AKA: set_field_init()</I>
 
-   <I>--  <A NAME="AFU_31">|</I>
+   <I>--  <A NAME="AFU_33">|</I>
    <B>procedure</B> Set_Field_Term_Hook (Frm  : <B>in</B> Form;
                                   Proc : <B>in</B> Form_Hook_Function);
    <I>--  AKA: set_field_term()</I>
 
-   <I>--  <A NAME="AFU_32">|</I>
+   <I>--  <A NAME="AFU_34">|</I>
    <B>procedure</B> Set_Form_Init_Hook (Frm  : <B>in</B> Form;
                                  Proc : <B>in</B> Form_Hook_Function);
    <I>--  AKA: set_form_init()</I>
 
-   <I>--  <A NAME="AFU_33">|</I>
+   <I>--  <A NAME="AFU_35">|</I>
    <B>procedure</B> Set_Form_Term_Hook (Frm  : <B>in</B> Form;
                                  Proc : <B>in</B> Form_Hook_Function);
    <I>--  AKA: set_form_term()</I>
 
-   <I>--  <A NAME="AFU_34">|</I>
+   <I>--  <A NAME="AFU_36">|</I>
    <B>function</B> Get_Field_Init_Hook (Frm : Form) <B>return</B> Form_Hook_Function;
    <I>--  AKA: field_init()</I>
    <B>pragma</B> Import (C, Get_Field_Init_Hook, "field_init");
 
-   <I>--  <A NAME="AFU_35">|</I>
+   <I>--  <A NAME="AFU_37">|</I>
    <B>function</B> Get_Field_Term_Hook (Frm : Form) <B>return</B> Form_Hook_Function;
    <I>--  AKA: field_term()</I>
    <B>pragma</B> Import (C, Get_Field_Term_Hook, "field_term");
 
-   <I>--  <A NAME="AFU_36">|</I>
+   <I>--  <A NAME="AFU_38">|</I>
    <B>function</B> Get_Form_Init_Hook (Frm : Form) <B>return</B> Form_Hook_Function;
    <I>--  AKA: form_init()</I>
    <B>pragma</B> Import (C, Get_Form_Init_Hook, "form_init");
 
-   <I>--  <A NAME="AFU_37">|</I>
+   <I>--  <A NAME="AFU_39">|</I>
    <B>function</B> Get_Form_Term_Hook (Frm : Form) <B>return</B> Form_Hook_Function;
    <I>--  AKA: form_term()</I>
    <B>pragma</B> Import (C, Get_Form_Term_Hook, "form_term");
@@ -515,27 +531,27 @@
    <I>--  | Man page form_fields.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_38">|</I>
+   <I>--  <A NAME="AFU_40">|</I>
    <B>procedure</B> Redefine (Frm  : <B>in</B> Form;
                        Flds : <B>in</B> Field_Array);
    <I>--  AKA: set_form_fields()</I>
    <I>--  With a bit more comfort. You don´t need to terminate the Field_Array</I>
    <I>--  with a null entry. This is handled internally in the binding.</I>
 
-   <I>--  <A NAME="AFU_39">|</I>
+   <I>--  <A NAME="AFU_41">|</I>
    <B>procedure</B> Set_Fields (Frm  : <B>in</B> Form;
                          Flds : <B>in</B> Field_Array) <B>renames</B> Redefine;
    <I>--  AKA: set_form_fields()</I>
 
-   <I>--  <A NAME="AFU_40">|</I>
+   <I>--  <A NAME="AFU_42">|</I>
    <B>function</B> Fields (Frm : Form) <B>return</B> Field_Array_Access;
    <I>--  AKA: form_fields()</I>
 
-   <I>--  <A NAME="AFU_41">|</I>
+   <I>--  <A NAME="AFU_43">|</I>
    <B>function</B> Field_Count (Frm : Form) <B>return</B> Natural;
    <I>--  AKA: field_count()</I>
 
-   <I>--  <A NAME="AFU_42">|</I>
+   <I>--  <A NAME="AFU_44">|</I>
    <B>procedure</B> Move (Fld    : <B>in</B> Field;
                    Line   : <B>in</B> Line_Position;
                    Column : <B>in</B> Column_Position);
@@ -545,15 +561,15 @@
    <I>--  | Man page form_new.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_43">|</I>
+   <I>--  <A NAME="AFU_45">|</I>
    <B>function</B> Create (Fields : Field_Array) <B>return</B> Form;
    <I>--  AKA: new_form()</I>
 
-   <I>--  <A NAME="AFU_44">|</I>
+   <I>--  <A NAME="AFU_46">|</I>
    <B>function</B> New_Form (Fields : Field_Array) <B>return</B> Form <B>renames</B> Create;
    <I>--  AKA: new_form()</I>
 
-   <I>--  <A NAME="AFU_45">|</I>
+   <I>--  <A NAME="AFU_47">|</I>
    <B>procedure</B> Delete (Frm : <B>in</B> <B>out</B> Form);
    <I>--  AKA: free_form()</I>
    <I>--  Reset Frm to Null_Form</I>
@@ -562,24 +578,24 @@
    <I>--  | Man page form_opts.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_46">|</I>
+   <I>--  <A NAME="AFU_48">|</I>
    <B>procedure</B> Set_Options (Frm     : <B>in</B> Form;
                           Options : <B>in</B> Form_Option_Set);
    <I>--  AKA: set_form_opts()</I>
 
-   <I>--  <A NAME="AFU_47">|</I>
+   <I>--  <A NAME="AFU_49">|</I>
    <B>procedure</B> Switch_Options (Frm     : <B>in</B> Form;
                              Options : <B>in</B> Form_Option_Set;
                              On      : Boolean := True);
    <I>--  AKA: form_opts_on()</I>
    <I>--  AKA: form_opts_off()</I>
 
-   <I>--  <A NAME="AFU_48">|</I>
+   <I>--  <A NAME="AFU_50">|</I>
    <B>procedure</B> Get_Options (Frm     : <B>in</B>  Form;
                           Options : <B>out</B> Form_Option_Set);
    <I>--  AKA: form_opts()</I>
 
-   <I>--  <A NAME="AFU_49">|</I>
+   <I>--  <A NAME="AFU_51">|</I>
    <B>function</B> Get_Options (Frm : Form := Null_Form) <B>return</B> Form_Option_Set;
    <I>--  AKA: form_opts()</I>
 
@@ -587,7 +603,7 @@
    <I>--  | Man page form_post.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_50">|</I>
+   <I>--  <A NAME="AFU_52">|</I>
    <B>procedure</B> Post (Frm  : <B>in</B> Form;
                    Post : <B>in</B> Boolean := True);
    <I>--  AKA: post_form()</I>
@@ -597,7 +613,7 @@
    <I>--  | Man page form_cursor.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_51">|</I>
+   <I>--  <A NAME="AFU_53">|</I>
    <B>procedure</B> Position_Cursor (Frm : Form);
    <I>--  AKA: pos_form_cursor()</I>
 
@@ -605,11 +621,11 @@
    <I>--  | Man page form_data.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_52">|</I>
+   <I>--  <A NAME="AFU_54">|</I>
    <B>function</B> Data_Ahead (Frm : Form) <B>return</B> Boolean;
    <I>--  AKA: data_ahead()</I>
 
-   <I>--  <A NAME="AFU_53">|</I>
+   <I>--  <A NAME="AFU_55">|</I>
    <B>function</B> Data_Behind (Frm : Form) <B>return</B> Boolean;
    <I>--  AKA: data_behind()</I>
 
@@ -622,7 +638,7 @@
                           Unknown_Request,
                           Invalid_Field);
 
-   <I>--  <A NAME="AFU_54">|</I>
+   <I>--  <A NAME="AFU_56">|</I>
    <B>function</B> Driver (Frm : Form;
                     Key : Key_Code) <B>return</B> Driver_Result;
    <I>--  AKA: form_driver()</I>
@@ -633,25 +649,25 @@
 
    type Page_Number <B>is</B> <B>new</B> Natural;
 
-   <I>--  <A NAME="AFU_55">|</I>
+   <I>--  <A NAME="AFU_57">|</I>
    <B>procedure</B> Set_Current (Frm : <B>in</B> Form;
                           Fld : <B>in</B> Field);
    <I>--  AKA: set_current_field()</I>
 
-   <I>--  <A NAME="AFU_56">|</I>
+   <I>--  <A NAME="AFU_58">|</I>
    <B>function</B> Current (Frm : <B>in</B> Form) <B>return</B> Field;
    <I>--  AKA: current_field()</I>
 
-   <I>--  <A NAME="AFU_57">|</I>
+   <I>--  <A NAME="AFU_59">|</I>
    <B>procedure</B> Set_Page (Frm  : <B>in</B> Form;
                        Page : <B>in</B> Page_Number := Page_Number'First);
    <I>--  AKA: set_form_page()</I>
 
-   <I>--  <A NAME="AFU_58">|</I>
+   <I>--  <A NAME="AFU_60">|</I>
    <B>function</B> Page (Frm : Form) <B>return</B> Page_Number;
    <I>--  AKA: form_page()</I>
 
-   <I>--  <A NAME="AFU_59">|</I>
+   <I>--  <A NAME="AFU_61">|</I>
    <B>function</B> Get_Index (Fld : Field) <B>return</B> Positive;
    <I>--  AKA: field_index()</I>
    <I>--  Please note that in this binding we start the numbering of fields</I>
@@ -662,12 +678,12 @@
    <I>--  | Man page form_new_page.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_60">|</I>
+   <I>--  <A NAME="AFU_62">|</I>
    <B>procedure</B> Set_New_Page (Fld      : <B>in</B> Field;
                            New_Page : <B>in</B> Boolean := True);
    <I>--  AKA: set_new_page()</I>
 
-   <I>--  <A NAME="AFU_61">|</I>
+   <I>--  <A NAME="AFU_63">|</I>
    <B>function</B> Is_New_Page (Fld : Field) <B>return</B> Boolean;
    <I>--  AKA: new_page()</I>
 
@@ -685,7 +701,7 @@
    <I>--  May be you need this if you want to interface to lower level</I>
    <I>--  routines in the form library.</I>
 
-   <I>--  <A NAME="AFU_62">|</I>
+   <I>--  <A NAME="AFU_64">|</I>
    <B>procedure</B> Set_Type (Fld      : <B>in</B> Field;
                        Fld_Type : <B>in</B> Field_Type) <B>is</B> <B>abstract</B>;
    <I>--  AKA: set_field_type()</I>
@@ -797,7 +813,7 @@
    <I>--  | Man page form_field_validation.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_63">|</I>
+   <I>--  <A NAME="AFU_65">|</I>
    <B>function</B> Get_Type (Fld : <B>in</B> Field) <B>return</B> Field_Type_Access;
    <I>--  AKA: field_type()</I>
    <I>--  AKA: field_arg()</I>

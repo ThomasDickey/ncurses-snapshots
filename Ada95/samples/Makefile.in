@@ -19,7 +19,7 @@
 #  This binding comes AS IS with no warranty, implied or expressed.        --
 #----------------------------------------------------------------------------
 #  Version Control
-#  $Revision: 1.3 $
+#  $Revision: 1.4 $
 #
 srcdir=../ada_include
 objdir=../ada_objects
@@ -53,7 +53,7 @@ TOUR_OBJS    =	tour.o sample.o sample-curses_demo.o sample-explanation.o 	\
 all ::  demo1
 	@
 
-demo1:	explain.txt
+demo1:	explain.txt $(TOUR_OBJS)
 	$(ADAMAKE) $(ADAMAKEFLAGS) tour $(CARGS) $(LARGS)
 
 clean ::
