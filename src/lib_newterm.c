@@ -28,8 +28,8 @@
 **
 */
 
-#include <stdlib.h>
 #include "curses.priv.h"
+#include <stdlib.h>
 #include "term.h"	/* clear_screen, cup & friends, cur_term */
 
 /* This should move to TERMINAL */
@@ -49,7 +49,7 @@ int	errret;
 #endif
 
 	/* this loads the capability entry, then sets LINES and COLS */
-	if (setupterm((char *)term, fileno(ifp), &errret) != 1)
+	if (setupterm(term, fileno(ifp), &errret) != 1)
 	    	return NULL;
 
 	/* implement filter mode */

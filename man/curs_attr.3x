@@ -34,14 +34,14 @@
 .br
 \fBint attr_set(attr_t attrs);\fR
 .br
-\fBint wattr_get(WINDOW *, void);\fR
+\fBint wattr_get(WINDOW *);\fR
 .br
 \fBint wattr_off(WINDOW *, attr_t attrs);\fR
 .br
 \fBint wattr_on(WINDOW *, attr_t attrs);\fR
 .br
 \fBint wattr_set(WINDOW *, attr_t attrs);\fR
-.br
+.bint r
 .SH DESCRIPTION
 These routines manipulate the current attributes of the named window.  The
 current attributes of a window apply to all characters that are written into
@@ -92,9 +92,9 @@ The following macro is the reverse of \fBCOLOR_PAIR(\fR\fIn\fR\fB)\fR:
                    with the \fBCOLOR_PAIR(\fR\fIn\fR\fB)\fR attribute.
 .DE
 
-The return values of these routines are not meaningful (many are implemented
-as macro-expanded assignments and simply return their argument).  The SVr4
-manual page claims (falsely) that these routines always return \fB1\fR.
+The return values of many of these routines are not meaningful (they are 
+implemented as macro-expanded assignments and simply return their argument).  
+The SVr4 manual page claims (falsely) that these routines always return \fB1\fR.
 
 .SH NOTES
 Note that \fBattroff\fR, \fBwattroff\fR, \fBattron\fR, \fBwattron\fR,

@@ -40,6 +40,14 @@
 #include "curses.priv.h"
 #include "term.h"	/* cur_term, pad_char */
 
+int napms(int ms)
+{
+	T(("naps(%d) called", ms));
+
+	usleep(1000*ms);
+	return OK;
+}
+
 int reset_prog_mode()
 {
 	T(("reset_prog_mode() called"));

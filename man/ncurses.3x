@@ -19,9 +19,9 @@ pages. There are only few of these, and as ncurses matures they will become
 fewer still.
 
 A program using these routines must be linked with the \fB-lncurses\fR option,
-or (if they have been generated) with one of the debugging libraries
-\fB-ldcurses\fR or \fB-lpcurses\fR.  The dcurses library generates trace logs
-that describe curses actions; the pcurses library supports profiling.
+or (if it has been generated) with the debugging library \fB-ldcurses\fR. 
+The dcurses library generates trace logs (in a file called 'trace' in the
+current directory) that describe curses actions.
 
 The \fBncurses\fR package supports: overall screen, window and pad
 manipulation; output to windows and pads; reading terminal input; control over
@@ -48,6 +48,7 @@ Before a \fBncurses\fR program is run, the tab stops of the terminal
 should be set and its initialization strings, if defined, must be
 output.  This can be done by executing the \fBtput init\fR command
 after the shell environment variable \fBTERM\fR has been exported.
+\fBtset(1)\fR is usually resposible for doing this.
 [See \fBterminfo\fR(\*n) for further details.]
 
 The \fBncurses\fR library permits manipulation of data structures,
@@ -55,6 +56,12 @@ called \fIwindows\fR, which can be thought of as two-dimensional
 arrays of characters representing all or part of a CRT screen.  A
 default window called \fBstdscr\fR, which is the size of the terminal
 screen, is supplied.  Others may be created with \fBnewwin\fR.
+
+Note that ncurses does not handle overlapping windows, that's done by
+the \fBpanels(3x)\fR library. This means that you can either use
+\fBstdscr\fR or divide the screen into tiled windows and not using
+\fBstdscr\fR at all. Mixing the two will result in unpredicatable, and
+undesired, effects.
 
 Windows are referred to by variables declared as \fBWINDOW *\fR.
 These data structures are manipulated with routines described on 3X

@@ -25,8 +25,8 @@
 **
 */
 
-#include <string.h>
 #include "curses.priv.h"
+#include <string.h>
 
 void _nc_synchook(WINDOW *win)
 /* hook to be called after each window change */

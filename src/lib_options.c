@@ -27,10 +27,10 @@
 **
 */
 
+#include "curses.priv.h"
 #include <stdlib.h>
 #include "term.h"	/* keypad_xmit, keypad_local, meta_on, meta_off */
 			/* cursor_visible,cursor_normal,cursor_invisible */
-#include "curses.priv.h"
 
 int has_ic(void)
 {

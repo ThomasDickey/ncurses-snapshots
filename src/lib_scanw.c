@@ -28,8 +28,8 @@
 **
 */
 
-#include <stdio.h>
 #include "curses.priv.h"
+#include <stdio.h>
 
 #if !HAVE_VSSCANF
 extern int vsscanf(const char *str, const char *format, ...);

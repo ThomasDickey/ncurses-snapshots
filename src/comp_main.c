@@ -24,9 +24,10 @@
  *
  */
 
+#include "config.h"
+
 #include <string.h>
 #include <stdlib.h>
-#include "config.h"
 
 #if HAVE_UNISTD_H
 #include <unistd.h>

@@ -27,8 +27,8 @@
 **
 */
 
-#include "unctrl.h"
 #include "curses.priv.h"
+#include "unctrl.h"
 #include <string.h>
 
 int wgetnstr(WINDOW *win, char *str, int maxlen)

@@ -6,7 +6,7 @@
 #	$2 = term.h
 #
 # FIXME: for now, this only has to fix the value of HAVE_TERMIOS_H
-if ( egrep -w HAVE_TERMIOS_H $1 2>&1 >/dev/null )
+if ( grep -w HAVE_TERMIOS_H $1 2>&1 >/dev/null )
 then
 	echo >/dev/null
 else

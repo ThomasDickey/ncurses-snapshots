@@ -24,9 +24,10 @@
  * clear.c --  clears the terminal's screen
  */
 
+#include "config.h"
+
 #include <curses.h>
 #include <stdlib.h>
-#include "config.h"
 
 #if HAVE_UNISTD_H
 #include <unistd.h>

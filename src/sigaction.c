@@ -19,14 +19,13 @@
 *                                                                          *
 ***************************************************************************/
 
-#include "config.h"
+#include "curses.priv.h"
 
 /* This file provides sigaction() emulation using sigvec() */
 /* Use only if this is non POSIX system */
 
 #if !HAVE_SIGACTION
 #include <signal.h>
-#include "curses.priv.h"
 
 void
 sigaction (int sig, sigaction_t * sigact, sigaction_t * osigact)

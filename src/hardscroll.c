@@ -181,9 +181,10 @@ AUTHOR
 
 *****************************************************************************/
 
+#include "curses.priv.h"
+
 #include <stdlib.h>
 #include <string.h>
-#include "curses.priv.h"
 
 #if defined(TRACE) || defined(MAINDEBUG)
 static void linedump(void);

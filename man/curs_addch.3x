@@ -6,17 +6,17 @@
 .SH SYNOPSIS
 \fB#include <curses.h>\fR
 
-\fBaddch(chtype ch);\fR
+\fBint addch(chtype ch);\fR
 .br
-\fBwaddch(WINDOW *win, chtype ch);\fR
+\fBint waddch(WINDOW *win, chtype ch);\fR
 .br
-\fBmvaddch(int y, int x, chtype ch);\fR
+\fBint mvaddch(int y, int x, chtype ch);\fR
 .br
-\fBmvwaddch(WINDOW *win, int y, int x, chtype ch);\fR
+\fBint mvwaddch(WINDOW *win, int y, int x, chtype ch);\fR
 .br
-\fBechochar(chtype ch);\fR
+\fBint echochar(chtype ch);\fR
 .br
-\fBwechochar(WINDOW *win, chtype ch);\fR
+\fBint wechochar(WINDOW *win, chtype ch);\fR
 .br
 .SH DESCRIPTION
 The \fBaddch\fR, \fBwaddch\fR, \fBmvaddch\fR and \fBmvwaddch\fR routines put

@@ -92,6 +92,7 @@ unsigned char AutoFlag = 0;
 		Usage();
 		exit(1);
 	}
+	trace(TRACE_MAXIMUM);
 	initscr();
 	if (!has_colors()) {
 		puts("terminal doesn't support color.");

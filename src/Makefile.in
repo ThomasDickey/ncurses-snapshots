@@ -324,12 +324,16 @@ install.progs: $(PROGS) $(bindir)
 	$(INSTALL_PROGRAM) clear $(bindir)/clear
 	$(INSTALL_PROGRAM) tput $(bindir)/tput
 	@echo "linking captoinfo to tic"
-	-rm -f $(bindir)/captoinfo
+	-@rm -f $(bindir)/captoinfo
 	-@ln $(bindir)/tic $(bindir)/captoinfo
 
 install.data: $(ticdir)
-	-rm -fr $(ticdir)/[0-9A-Za-z]		# Avoid use loops due to old entries.
-	$(bindir)/tic -v ../misc/terminfo.src
+	echo "TERMINFO=$(ticdir)">do.tic
+	echo "exprot TERMINFO">>do.tic
+	echo "rm -fr $(ticdir)/[0-9A-Za-z]">>do.tic
+	echo "$(bindir)/tic -v ../misc/terminfo.src">>do.tic
+	(sh do.tic)
+	rm do.tic
 
 $(bindir) \
 $(includedir) \

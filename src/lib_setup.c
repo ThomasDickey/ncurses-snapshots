@@ -30,9 +30,9 @@
  *		int del_curterm(TERMINAL *)
  */
 
+#include "curses.priv.h"
 #include <stdlib.h>
 #include <string.h>
-#include "curses.priv.h"
 #include "term.h"	/* lines, columns, cur_term */
 
 /****************************************************************************
@@ -267,7 +267,7 @@ struct term	*term_ptr;
 		if (term_ptr == NULL)
 	    		ret_error0(-1, "Not enough memory to create terminal structure.\n") ;
 
-		if (grab_entry((char *)termname, &term_ptr->type) < 0)
+		if (grab_entry(termname, &term_ptr->type) < 0)
 		    	ret_error(-1, "'%s': Unknown terminal type.\n", termname);
 
 		cur_term = term_ptr;

@@ -28,6 +28,7 @@
  *
  *-----------------------------------------------------------------*/
  
+#include "curses.priv.h"
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/time.h>
@@ -36,7 +37,6 @@
 #include <sys/select.h>
 #endif
 #include <string.h>
-#include "curses.priv.h"
 #include "term.h"
 
 /*

@@ -28,8 +28,8 @@
 **
 */
 
-#include <stdlib.h>
 #include "curses.priv.h"
+#include <stdlib.h>
 
 WINDOW * newwin(int num_lines, int num_columns, int begy, int begx)
 {

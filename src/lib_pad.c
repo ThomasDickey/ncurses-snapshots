@@ -27,14 +27,14 @@
  * pechochar	-- add a char to a pad and refresh
  */
 
+#include "curses.priv.h"
+
 #include <stdlib.h>
 #include <errno.h>
 
 #if !HAVE_EXTERN_ERRNO
 extern int errno;
 #endif
-
-#include "curses.priv.h"
 
 WINDOW *newpad(int l, int c)
 {

@@ -26,9 +26,9 @@
 **
 */
 
+#include "curses.priv.h"
 #include <ctype.h>
 #include "unctrl.h"
-#include "curses.priv.h"
 
 #define ALL_BUT_COLOR ((chtype)~(A_COLOR))
 
