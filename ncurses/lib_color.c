@@ -41,7 +41,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.30 1998/06/28 00:10:19 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.31 1998/08/01 22:21:29 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -363,9 +363,6 @@ int pair_content(short pair, short *f, short *b)
 void _nc_do_color(int pair, bool reverse, int (*outc)(int))
 {
     short fg, bg;
-
-    if (reverse)
-    	pair = -pair;
 
     if (pair == 0)
     {

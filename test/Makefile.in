@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.48 1998/05/31 00:08:53 tom Exp $
+# $Id: Makefile.in,v 1.49 1998/08/01 20:39:03 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -83,6 +83,7 @@ LINT_LIBS	= -lform -lmenu -lpanel -lncurses @LIBS@
 TESTS = \
 	blue$x \
 	bs$x \
+	ditto$x \
 	filter$x \
 	firework$x \
 	firstlast$x \
@@ -113,6 +114,9 @@ blue$x: $(MODEL)/blue.o $(LOCAL_LIBS)
 
 bs$x: $(MODEL)/bs.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/bs.o $(LDFLAGS_DEFAULT)
+
+ditto$x: $(MODEL)/ditto.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/ditto.o $(LDFLAGS_DEFAULT)
 
 filter$x: $(MODEL)/filter.o $(LOCAL_LIBS)
 	@ECHO_LINK@ $(LINK) -o $@ $(MODEL)/filter.o $(LDFLAGS_DEFAULT)
