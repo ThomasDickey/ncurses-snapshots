@@ -19,7 +19,7 @@
 ** Boston, MA 02111-1307, USA.
 */
 
-/* $Id: tack.h,v 1.1 1999/04/18 01:08:57 tom Exp $ */
+/* $Id: tack.h,v 1.2 1999/05/09 18:10:30 tom Exp $ */
 
 #ifndef _TACK_H
 #define _TACK_H 1
@@ -267,6 +267,7 @@ extern struct test_list *augment_test;
 
 /* tack.c */
 extern void show_usage(char *);
+extern void print_version(void);
 
 /* output.c */
 extern void tt_tputs(const char *, int);

@@ -1,10 +1,14 @@
--- $Id: NEWS,v 1.450 1999/04/18 01:37:41 tom Exp $
+-- $Id: NEWS,v 1.451 1999/05/09 18:41:05 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990509	pre-release
+	+ minor fixes to make 'tack' build/link on NeXT (reported by Francisco
+	  A. Tomei Torres).
 
 990417	pre-release
 	+ add 'tack' program (which is GPL'd), updating it to work with the
