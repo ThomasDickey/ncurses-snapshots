@@ -61,7 +61,7 @@
 #include <fcntl.h>
 #endif
 
-MODULE_ID("$Id: read_termcap.c,v 1.29 1998/03/21 18:08:53 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.30 1998/05/30 23:49:12 Todd.Miller Exp $")
 
 #ifndef PURE_TERMINFO
 
@@ -572,7 +572,7 @@ _nc_getent(
 	 */
 	if (myfd)
 		(void)close(fd);
- 	*len = rp - record - 1;	/* don't count NUL */
+	*len = rp - record - 1; /* don't count NUL */
 	if (r_end > rp) {
 		if ((record = realloc(record, (size_t)(rp - record))) == 0) {
 			errno = ENOMEM;
@@ -802,19 +802,21 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
 	 */
 	if (!is_pathname(cp)) {	/* no TERMCAP or it holds an entry */
 		if ((termpath = getenv("TERMPATH")) != 0) {
-			strncpy(pathbuf, termpath, sizeof(pathbuf)-1);
+			strncpy(pathbuf, termpath, PBUFSIZ - 1);
 		} else {
-			if ((home = getenv("HOME")) != 0) { /* setup path */
+			if ((home = getenv("HOME")) != 0 &&
+			    strlen(home) < PBUFSIZ) { /* setup path */
 				p += strlen(home);	/* path, looking in */
 				strcpy(pathbuf, home);	/* $HOME first */
 				*p++ = '/';
 			}	/* if no $HOME look in current directory */
 #define	MY_PATH_DEF	".termcap /etc/termcap /usr/share/misc/termcap"
-			strncpy(p, MY_PATH_DEF, (size_t)(PBUFSIZ - (p - pathbuf)));
+			strncpy(p, MY_PATH_DEF, (size_t)(PBUFSIZ - (p - pathbuf) - 1));
 		}
 	}
 	else				/* user-defined name in TERMCAP */
-		strncpy(pathbuf, cp, PBUFSIZ);	/* still can be tokenized */
+		strncpy(pathbuf, cp, PBUFSIZ - 1); /* still can be tokenized */
+	pathbuf[PBUFSIZ - 1] = '\0';
 
 	*fname++ = pathbuf;	/* tokenize path into vector of names */
 	while (*++p) {
@@ -945,7 +947,7 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 	FILE	*fp;
 #define MAXPATHS	32
 	char	*tc, *termpaths[MAXPATHS];
-	int 	filecount = 0;
+	int	filecount = 0;
 	bool	use_buffer = FALSE;
 	char	tc_buf[1024];
 	char	pathbuf[PATH_MAX];
@@ -996,13 +998,12 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 		else if (access("/usr/share/misc/termcap", R_OK) == 0)
 			termpaths[filecount++] = "/usr/share/misc/termcap";
 
-		if ((h = getenv("HOME")) != (char *)NULL)
+		if ((h = getenv("HOME")) != NULL && strlen(h) + 9 < PATH_MAX)
 		{
-		/* user's .termcap, if any, should override it */
-		    (void) strncpy(envhome, h, PATH_MAX - 10);
-		envhome[PATH_MAX - 10] = '\0';
-		(void) sprintf(pathbuf, "%s/.termcap", envhome);
-		termpaths[filecount++] = pathbuf;
+		    /* user's .termcap, if any, should override it */
+		    (void) strcpy(envhome, h);
+		    (void) sprintf(pathbuf, "%s/.termcap", envhome);
+		    termpaths[filecount++] = pathbuf;
 		}
 
 		termpaths[filecount] = 0;

@@ -33,7 +33,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: safe_sprintf.c,v 1.5 1998/02/11 12:13:57 tom Exp $")
+MODULE_ID("$Id: safe_sprintf.c,v 1.7 1998/05/30 23:30:34 Todd.Miller Exp $")
 
 #if USE_SAFE_SPRINTF
 
@@ -211,7 +211,8 @@ _nc_printf_string(const char *fmt, va_list ap)
 	int len = _nc_printf_length(fmt, ap);
 
 	if (len > 0) {
-		buf = malloc(len+1);
+		if ((buf = malloc(len+1)) == NULL)
+			return(NULL);
 		vsprintf(buf, fmt, ap);
 	}
 #else
@@ -227,6 +228,8 @@ _nc_printf_string(const char *fmt, va_list ap)
 			buf = malloc(len);
 		else
 			buf = realloc(buf, len);
+		if (buf == NULL)
+			return(NULL);
 	}
 
 	if (buf != 0) {

@@ -35,7 +35,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_expand.c,v 1.4 1998/02/11 12:14:00 tom Exp $")
+MODULE_ID("$Id: comp_expand.c,v 1.7 1998/05/30 23:32:45 Todd.Miller Exp $")
 
 static int trailing_spaces(const char *src)
 {
@@ -65,57 +65,59 @@ int		ch;
 	} else if (need > length) {
 		buffer = realloc(buffer, length = need);
 	}
+	if (buffer == 0)
+		return(NULL);
 
-    	bufp = 0;
-    	ptr = str;
-    	while ((ch = (*str & 0xff)) != 0) {
+	bufp = 0;
+	ptr = str;
+	while ((ch = (*str & 0xff)) != 0) {
 		if (ch == '%' && REALPRINT(str+1)) {
-	    		buffer[bufp++] = *str++;
-	    		buffer[bufp++] = *str;
+			buffer[bufp++] = *str++;
+			buffer[bufp++] = *str;
 		}
 		else if (ch == 128) {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = '0';
+			buffer[bufp++] = '\\';
+			buffer[bufp++] = '0';
 		}
 		else if (ch == '\033') {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = 'E';
+			buffer[bufp++] = '\\';
+			buffer[bufp++] = 'E';
 		}
 		else if (ch == '\\' && tic_format && (str == srcp || str[-1] != '^')) {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = '\\';
+			buffer[bufp++] = '\\';
+			buffer[bufp++] = '\\';
 		}
 		else if (ch == ' ' && tic_format && (str == srcp || trailing_spaces(str))) {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = 's';
+			buffer[bufp++] = '\\';
+			buffer[bufp++] = 's';
 		}
 		else if ((ch == ',' || ch == ':' || ch == '^') && tic_format) {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = ch;
+			buffer[bufp++] = '\\';
+			buffer[bufp++] = ch;
 		}
 		else if (REALPRINT(str) && (ch != ',' && ch != ':' && !(ch == '!' && !tic_format) && ch != '^'))
-		    	buffer[bufp++] = ch;
+			buffer[bufp++] = ch;
 #if 0		/* FIXME: this would be more readable (in fact the whole 'islong' logic should be removed) */
 		else if (ch == '\b') {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = 'b';
+			buffer[bufp++] = '\\';
+			buffer[bufp++] = 'b';
 		}
 		else if (ch == '\f') {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = 'f';
+			buffer[bufp++] = '\\';
+			buffer[bufp++] = 'f';
 		}
 		else if (ch == '\t' && islong) {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = 't';
+			buffer[bufp++] = '\\';
+			buffer[bufp++] = 't';
 		}
 #endif
 		else if (ch == '\r' && (islong || (strlen(srcp) > 2 && str[1] == '\0'))) {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = 'r';
+			buffer[bufp++] = '\\';
+			buffer[bufp++] = 'r';
 		}
 		else if (ch == '\n' && islong) {
-	    		buffer[bufp++] = '\\';
-	    		buffer[bufp++] = 'n';
+			buffer[bufp++] = '\\';
+			buffer[bufp++] = 'n';
 		}
 #define UnCtl(c) ((c) + '@')
 		else if (REALCTL(str) && ch != '\\' && (!islong || isdigit(str[1])))
@@ -130,8 +132,8 @@ int		ch;
 		}
 
 		str++;
-    	}
+	}
 
-    	buffer[bufp] = '\0';
-    	return(buffer);
+	buffer[bufp] = '\0';
+	return(buffer);
 }

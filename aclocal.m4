@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.134 1998/05/16 22:32:10 tom Exp $
+dnl $Id: aclocal.m4,v 1.135 1998/05/31 00:25:01 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1268,7 +1268,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 			CC_SHARED_OPTS='+Z'
 			LD_SHARED_OPTS='+b $(libdir)'
 		fi
-		MK_SHARED_LIB='$(LD) -b +h `basename $[@]` -o $[@]'
+		MK_SHARED_LIB='$(LD) +b $(libdir) -b +h `basename $[@]` -o $[@]'
 		# HP-UX shared libraries must be executable, and should be
 		# readonly to exploit a quirk in the memory manager.
 		INSTALL_LIB="-m 555"
@@ -1283,7 +1283,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 			CC_SHARED_OPTS='+Z'
 			LD_SHARED_OPTS='+b $(libdir)'
 		fi
-		MK_SHARED_LIB='$(LD) -b -o $[@]'
+		MK_SHARED_LIB='$(LD) +b $(libdir) -b -o $[@]'
 		# HP-UX shared libraries must be executable, and should be
 		# readonly to exploit a quirk in the memory manager.
 		INSTALL_LIB="-m 555"
@@ -1547,14 +1547,7 @@ TEST_ARGS="-L${LIB_DIR} -L\$(libdir) $TEST_ARGS"
 AC_SUBST(TEST_DEPS)
 AC_SUBST(TEST_ARGS)
 
-case $cf_cv_system_name in #(vi
-hpux*) #(vi
-	PROG_ARGS="-L\$(libdir) -L${LIB_DIR} $PROG_ARGS"
-	;;
-*)
-	PROG_ARGS="-L${LIB_DIR} -L\$(libdir) $PROG_ARGS"
-	;;
-esac
+PROG_ARGS="-L${LIB_DIR} -L\$(libdir) $PROG_ARGS"
 AC_SUBST(PROG_ARGS)
 
 SRC_SUBDIRS="man include"

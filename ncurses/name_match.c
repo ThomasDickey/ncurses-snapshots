@@ -35,7 +35,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: name_match.c,v 1.4 1998/02/11 12:13:55 tom Exp $")
+MODULE_ID("$Id: name_match.c,v 1.6 1998/05/31 01:10:13 tom Exp $")
 
 /*
  *	_nc_first_name(char *names)
@@ -49,7 +49,8 @@ char *_nc_first_name(const char *const sp)
     static char	buf[MAX_NAME_SIZE];
     register char *cp;
 
-    (void) strcpy(buf, sp);
+    (void) strncpy(buf, sp, sizeof(buf) - 1);
+    buf[sizeof(buf) - 1] = '\0';
 
     cp = strchr(buf, '|');
     if (cp)
@@ -72,7 +73,8 @@ register char *cp;
 
 	if (namelst == 0)
 		return(FALSE);
-	(void) strcpy(namecopy, namelst);
+	(void) strncpy (namecopy, namelst, sizeof(namecopy) - 1);
+	namecopy[sizeof(namecopy) - 1] = '\0';
 	if ((cp = strtok(namecopy, delim)) != 0) {
 		do {
 			/* avoid strcmp() function-call cost if possible */

@@ -48,7 +48,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.36 1998/05/24 00:30:06 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.37 1998/05/30 23:43:06 Todd.Miller Exp $")
 
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -131,6 +131,12 @@ int _nc_read_file_entry(const char *const filename, TERMTYPE *ptr)
     read(fd, buf, min(MAX_NAME_SIZE, (unsigned)name_size));
     buf[MAX_NAME_SIZE] = '\0';
     ptr->term_names = calloc(strlen(buf) + 1, sizeof(char));
+    if (ptr->term_names == NULL) {
+	if (str_size)
+	    free(ptr->str_table);
+	    close(fd);
+	    return(0);
+    }
     (void) strcpy(ptr->term_names, buf);
     if (name_size > MAX_NAME_SIZE)
 	lseek(fd, (off_t) (name_size - MAX_NAME_SIZE), 1);
@@ -239,11 +245,13 @@ static int _nc_read_tic_entry(char *const filename,
  */
 static int _nc_read_terminfo_dirs(char *dirs, char *const filename, const char *const ttn, TERMTYPE *const tp)
 {
-	/* we'll modify the argument, so we must copy */
-	char *list = strcpy(malloc(strlen(dirs)+1), dirs);
-	char *a = list;
-	char *b = list;
+	char *list, *a, *b;
 	int code = 0;
+
+	/* we'll modify the argument, so we must copy */
+	if ((a = b = list = malloc(strlen(dirs) + 1)) == NULL)
+		return(0);
+	(void) strcpy(list, dirs);
 
 	for (;;) {
 		int c = *a;
@@ -299,6 +307,8 @@ char		ttn[MAX_ALIAS + 3];
 	{
 		char *home = malloc(strlen(envp) + strlen(PRIVATE_INFO) + 2);
 
+		if (home == 0)
+			return(0);
 		(void) sprintf(home, PRIVATE_INFO, envp);
 		if (_nc_read_tic_entry(filename, home, ttn, tp) == 1) {
 			free(home);

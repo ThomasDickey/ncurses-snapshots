@@ -75,7 +75,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.101 1998/05/10 19:24:00 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.102 1998/05/30 23:37:01 Todd.Miller Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -956,7 +956,8 @@ chtype	blank  = newscr->_line[total-1].text[last-1]; /* lower right char */
 		}
 	}
 #if NO_LEAKS
-	FreeAndNull(tstLine);
+	if (tstLine != 0)
+		FreeAndNull(tstLine);
 #endif
 	return total;
 }
@@ -1657,17 +1658,17 @@ int _nc_scrolln(int n, int top, int bot, int maxy)
 	if (res == ERR && change_scroll_region)
 	{
 	    if (top != 0 && (SP->_cursrow == top || SP->_cursrow == top-1)
-	        && save_cursor && restore_cursor)
+		&& save_cursor && restore_cursor)
 	    {
 		cursor_saved=TRUE;
-	    	TPUTS_TRACE("save_cursor");
+		TPUTS_TRACE("save_cursor");
 		tputs(save_cursor, 0, _nc_outch);
 	    }
 	    TPUTS_TRACE("change_scroll_region");
 	    tputs(tparm(change_scroll_region, top, bot), 0, _nc_outch);
 	    if (cursor_saved)
 	    {
-	    	TPUTS_TRACE("restore_cursor");
+		TPUTS_TRACE("restore_cursor");
 		tputs(restore_cursor, 0, _nc_outch);
 	    }
 	    else

@@ -1,5 +1,5 @@
 # Test-Program modules
-# $Id: modules,v 1.7 1998/05/09 19:28:32 tom Exp $
+# $Id: modules,v 1.8 1998/05/31 00:09:01 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -40,6 +40,7 @@ firstlast	progs		$(srcdir)
 gdc		progs		$(srcdir)
 hanoi		progs		$(srcdir)
 hashtest	progs		$(srcdir)
+keynames	progs		$(srcdir)
 knight		progs		$(srcdir)
 lrtest		progs		$(srcdir)
 ncurses		progs		$(srcdir)	../include/panel.h ../include/menu.h ../include/form.h

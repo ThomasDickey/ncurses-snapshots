@@ -49,7 +49,7 @@
 #define DEBUG(level, params) /*nothing*/
 #endif
 
-MODULE_ID("$Id: comp_hash.c,v 1.16 1998/02/11 12:13:53 tom Exp $")
+MODULE_ID("$Id: comp_hash.c,v 1.17 1998/05/30 23:55:42 Todd.Miller Exp $")
 
 static  int hash_function(const char *);
 
@@ -200,8 +200,8 @@ static char **parse_columns(char *buffer)
 
 	int col = 0;
 
-	if (list == 0)
-		list = typeCalloc(char *, MAX_COLUMNS);
+	if (list == 0 && (list = typeCalloc(char *, MAX_COLUMNS)) == 0)
+		return(0);
 
 	if (*buffer != '#') {
 		while (*buffer != '\0') {

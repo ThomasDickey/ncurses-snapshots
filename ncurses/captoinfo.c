@@ -94,7 +94,7 @@
 #include <ctype.h>
 #include <tic.h>
 
-MODULE_ID("$Id: captoinfo.c,v 1.18 1998/04/04 19:07:53 juergen Exp $")
+MODULE_ID("$Id: captoinfo.c,v 1.21 1998/05/30 23:32:15 Todd.Miller Exp $")
 
 #define MAX_PUSHED	16	/* max # args we can push onto the stack */
 #define MAX_ENTRY	2048	/* maximum chars in a translated capability */
@@ -129,6 +129,8 @@ static char *save_string(char *d, const char *const s)
 	size_t need = have + strlen(s) + 2;
 	if (need > my_length) {
 		my_string = realloc(my_string, my_length = (need + need));
+		if (my_string == 0)
+		    _nc_err_abort("Out of memory");
 		d = my_string + have;
 	}
 	(void) strcpy(d, s);
@@ -375,14 +377,14 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 			*dp++ = '%'; *dp++ = '/';
 			break;
 		    case '=':
-		        if (seenr) {
+			if (seenr) {
 			    if (param == 1)
 				onstack = 2;
 			    else if (param == 2)
 				onstack = 1;
 			    else
 				onstack = param;
-                        }
+			}
 			else
 			    onstack = param;
 			break;
@@ -425,7 +427,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 		pop();
 		break;
 	    case '0':	/* not clear any of the historical termcaps did this */
-	        if (*s == '3')
+		if (*s == '3')
 		    goto see03;
 		else if (*s != '2')
 		    goto invalid;
@@ -602,9 +604,7 @@ int const parametrized)		/* do % translations if 1, pad translations if >=0 */
 	else if (sscanf(str, "%%?%%{%d}%%>%%t%%{%d}%%+%%;", &c1,&c2) == 2)
 	{
 	    str = strchr(str, ';');
-	    (void) sprintf(temp, "%%>");
-	    (void) strcat(temp, unctrl(c1));
-	    (void) strcat(temp, unctrl(c2));
+	    (void) sprintf(temp, "%%>%s%s", unctrl(c1), unctrl(c2));
 	    bufptr = save_string(bufptr, temp);
 	}
 	else if (sscanf(str, "%%?%%{%d}%%>%%t%%'%c'%%+%%;", &c1,&ch2) == 2)

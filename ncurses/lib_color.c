@@ -41,7 +41,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.26 1998/04/25 19:02:41 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.27 1998/05/30 23:29:24 Todd.Miller Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -157,7 +157,8 @@ int start_color(void)
 		COLOR_PAIRS = SP->_pair_count = max_pairs;
 	else
 		returnCode(ERR);
-	SP->_color_pairs = typeCalloc(unsigned short, max_pairs);
+	if ((SP->_color_pairs = typeCalloc(unsigned short, max_pairs)) == 0)
+		returnCode(ERR);
 	SP->_color_pairs[0] = PAIR_OF(COLOR_WHITE, COLOR_BLACK);
 	if (max_colors != -1)
 		COLORS = SP->_color_count = max_colors;
@@ -165,7 +166,8 @@ int start_color(void)
 		returnCode(ERR);
 	SP->_coloron = 1;
 
-	SP->_color_table = malloc(sizeof(color_t) * COLORS);
+	if ((SP->_color_table = malloc(sizeof(color_t) * COLORS)) == 0)
+		returnCode(ERR);
 	if (hue_lightness_saturation)
 	    memcpy(SP->_color_table, hls_palette, sizeof(color_t) * COLORS);
 	else
@@ -181,7 +183,7 @@ static void rgb2hls(short r, short g, short b, short *h, short *l, short *s)
 /* convert RGB to HLS system */
 {
     short min, max, t;
-    
+
     if ((min = g < r ? g : r) > b) min = b;
     if ((max = g > r ? g : r) < b) max = b;
 
