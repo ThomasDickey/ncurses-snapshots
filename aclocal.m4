@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright (c) 1998-2000,2001,2002 Free Software Foundation, Inc.         *
+dnl Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
 dnl copy of this software and associated documentation files (the            *
@@ -26,9 +26,9 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl Author: Thomas E. Dickey 1996-2001,2002
+dnl Author: Thomas E. Dickey 1996-2003
 dnl
-dnl $Id: aclocal.m4,v 1.294 2002/12/21 22:47:43 tom Exp $
+dnl $Id: aclocal.m4,v 1.295 2003/01/25 23:18:30 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -761,8 +761,6 @@ EOF
 		if AC_TRY_EVAL(ac_compile); then
 			test -n "$verbose" && AC_MSG_RESULT(... $cf_attribute)
 			cat conftest.h >>confdefs.h
-#		else
-#			sed -e 's/__attr.*/\/*nothing*\//' conftest.h >>confdefs.h
 		fi
 	done
 else
@@ -2877,6 +2875,32 @@ AC_DEFUN([CF_VERBOSE],
 [test -n "$verbose" && echo "	$1" 1>&AC_FD_MSG
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Configure-option for dbmalloc
+AC_DEFUN([CF_WITH_DBMALLOC],[
+AC_MSG_CHECKING(if you want to link with dbmalloc for testing)
+AC_ARG_WITH(dbmalloc,
+	[  --with-dbmalloc         test: use Conor Cahill's dbmalloc library],
+	[with_dbmalloc=$withval],
+	[with_dbmalloc=no])
+AC_MSG_RESULT($with_dbmalloc)
+if test $with_dbmalloc = yes ; then
+	AC_CHECK_LIB(dbmalloc,debug_malloc)
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Configure-option for dmalloc
+AC_DEFUN([CF_WITH_DMALLOC],[
+AC_MSG_CHECKING(if you want to link with dmalloc for testing)
+AC_ARG_WITH(dmalloc,
+	[  --with-dmalloc          test: use Gray Watson's dmalloc library],
+	[with_dmalloc=$withval],
+	[with_dmalloc=no])
+AC_MSG_RESULT($with_dmalloc)
+if test $with_dmalloc = yes ; then
+	AC_CHECK_LIB(dmalloc,dmalloc_debug)
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Provide a configure option to incorporate libtool.  Define several useful
 dnl symbols for the makefile rules.
 AC_DEFUN([CF_WITH_LIBTOOL],
@@ -2986,4 +3010,32 @@ cf_dst_path=`echo "$cf_dst_path" | sed -e 's/\\\\/\\\\\\\\/g'`
 eval '$3="$cf_dst_path"'
 AC_SUBST($3)dnl
 
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl If we can compile with sysmouse, make it available unless it is not wanted.
+AC_DEFUN([CF_WITH_SYSMOUSE],[
+# not everyone has "test -c"
+if test -c /dev/sysmouse 2>/dev/null ; then
+AC_MSG_CHECKING(if you want to use sysmouse)
+AC_ARG_WITH(sysmouse,
+	[  --with-sysmouse         use sysmouse (FreeBSD console)],
+	[cf_with_sysmouse=$withval],
+	[cf_with_sysmouse=maybe])
+	if test "$cf_with_sysmouse" != no ; then
+	AC_TRY_COMPILE([
+#include <osreldate.h>
+#if (__FreeBSD_version >= 400017)
+#include <sys/consio.h>
+#include <sys/fbio.h>
+#else
+#include <machine/console.h>
+#endif
+],[
+	struct mouse_info the_mouse;
+	ioctl(0, CONS_MOUSECTL, &the_mouse);
+],[cf_with_sysmouse=yes],[cf_with_sysmouse=no])
+	fi
+fi
+AC_MSG_RESULT($cf_with_sysmouse)
+test "$cf_with_sysmouse" = yes && AC_DEFINE(USE_SYSMOUSE)
 ])dnl

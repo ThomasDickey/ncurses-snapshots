@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.235 2003/01/05 23:42:10 tom Exp $
+ * $Id: curses.priv.h,v 1.236 2003/01/25 23:08:41 tom Exp $
  *
  *	curses.priv.h
  *
@@ -130,7 +130,9 @@ extern int errno;
 
 /* EMX mouse support */
 #ifdef __EMX__
-#define USE_EMX_MOUSE
+#define USE_EMX_MOUSE 1
+#else
+#define USE_EMX_MOUSE 0
 #endif
 
 #define DEFAULT_MAXCLICK 166
@@ -264,6 +266,17 @@ struct ldat
 	NCURSES_SIZE_T	lastchar;   	/* last changed character in the line */
 	NCURSES_SIZE_T	oldindex;   	/* index of the line at last update */
 };
+
+typedef enum {
+	M_XTERM	= -1		/* use xterm's mouse tracking? */
+	,M_NONE = 0		/* no mouse device */
+#if USE_GPM_SUPPORT
+	,M_GPM			/* use GPM */
+#endif
+#if USE_SYSMOUSE
+	,M_SYSMOUSE		/* FreeBSD sysmouse on console */
+#endif
+} MouseType;
 
 /*
  * Structure for soft labels.
@@ -427,6 +440,7 @@ struct screen {
 	/*
 	 * These are the data that support the mouse interface.
 	 */
+	MouseType	_mouse_type;
 	int             _maxclick;
 	bool            (*_mouse_event) (SCREEN *);
 	bool            (*_mouse_inline)(SCREEN *);
@@ -435,6 +449,15 @@ struct screen {
 	void            (*_mouse_wrap)  (SCREEN *);
 	int             _mouse_fd;      /* file-descriptor, if any */
 	char            *_mouse_xtermcap; /* string to enable/disable mouse */
+#if USE_SYSMOUSE
+	MEVENT		_sysmouse_fifo[FIFO_SIZE];
+	int		_sysmouse_head;
+	int		_sysmouse_tail;
+	int		_sysmouse_char_width;	/* character width */
+	int		_sysmouse_char_height;	/* character height */
+	int		_sysmouse_old_buttons;
+	int		_sysmouse_new_buttons;
+#endif
 
 	/*
 	 * This supports automatic resizing

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey 1996-2003                                      *
  ****************************************************************************/
 
 /*
@@ -74,6 +75,9 @@
 #endif
 
 #include <curses.priv.h>
+
+MODULE_ID("$Id: lib_mouse.c,v 1.65 2003/01/26 00:24:25 tom Exp $")
+
 #include <term.h>
 #include <tic.h>
 
@@ -85,7 +89,17 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.63 2002/10/27 00:43:45 tom Exp $")
+#if USE_SYSMOUSE
+#undef buttons			/* symbol conflict in consio.h */
+#undef mouse_info		/* symbol conflict in consio.h */
+#include <osreldate.h>
+#if (__FreeBSD_version >= 400017)
+#include <sys/consio.h>
+#include <sys/fbio.h>
+#else
+#include <machine/console.h>
+#endif
+#endif /* use_SYSMOUSE */
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -101,13 +115,7 @@ MODULE_ID("$Id: lib_mouse.c,v 1.63 2002/10/27 00:43:45 tom Exp $")
 #define BUTTON_RELEASED (BUTTON1_RELEASED | BUTTON2_RELEASED | BUTTON3_RELEASED)
 
 #define INVALID_EVENT	-1
-
-static int mousetype;
-#define M_XTERM		-1	/* use xterm's mouse tracking? */
-#define M_NONE		0	/* no mouse device */
-#define M_GPM		1	/* use GPM */
-#define M_QNX		2	/* QNX mouse on console */
-#define M_QNX_TERM	3	/* QNX mouse on pterm/xterm (using qansi-m) */
+#define NORMAL_EVENT	0
 
 #if USE_GPM_SUPPORT
 #ifndef LINT
@@ -147,7 +155,7 @@ _trace_slot(const char *tag)
 }
 #endif
 
-#ifdef USE_EMX_MOUSE
+#if USE_EMX_MOUSE
 
 #  define TOP_ROW          0
 #  define LEFT_COL         0
@@ -241,6 +249,65 @@ server_state(const int state)
     mouse_activated = state;
 }
 
+#endif /* USE_EMX_MOUSE */
+
+#if USE_SYSMOUSE
+static void
+handle_sysmouse(int sig GCC_UNUSED)
+{
+    struct mouse_info the_mouse;
+    MEVENT *work;
+
+    the_mouse.operation = MOUSE_GETINFO;
+    if (SP != 0
+	&& SP->_mouse_fd >= 0
+	&& SP->_sysmouse_tail < FIFO_SIZE
+	&& ioctl(SP->_mouse_fd, CONS_MOUSECTL, &the_mouse) != -1) {
+
+	if (SP->_sysmouse_head > SP->_sysmouse_tail) {
+	    SP->_sysmouse_tail = 0;
+	    SP->_sysmouse_head = 0;
+	}
+	work = &(SP->_sysmouse_fifo[SP->_sysmouse_tail]);
+	memset(work, 0, sizeof(*work));
+	work->id = NORMAL_EVENT;	/* there's only one mouse... */
+
+	SP->_sysmouse_old_buttons = SP->_sysmouse_new_buttons;
+	SP->_sysmouse_new_buttons = the_mouse.u.data.buttons & 0x7;
+
+	if (SP->_sysmouse_new_buttons) {
+	    if (SP->_sysmouse_new_buttons & 1)
+		work->bstate |= BUTTON1_PRESSED;
+	    if (SP->_sysmouse_new_buttons & 2)
+		work->bstate |= BUTTON2_PRESSED;
+	    if (SP->_sysmouse_new_buttons & 4)
+		work->bstate |= BUTTON3_PRESSED;
+	} else {
+	    if (SP->_sysmouse_old_buttons & 1)
+		work->bstate |= BUTTON1_RELEASED;
+	    if (SP->_sysmouse_old_buttons & 2)
+		work->bstate |= BUTTON2_RELEASED;
+	    if (SP->_sysmouse_old_buttons & 4)
+		work->bstate |= BUTTON3_RELEASED;
+	}
+
+	/* for cosmetic bug in syscons.c on FreeBSD 3.[34] */
+	the_mouse.operation = MOUSE_HIDE;
+	ioctl(SP->_mouse_fd, CONS_MOUSECTL, &the_mouse);
+	the_mouse.operation = MOUSE_SHOW;
+	ioctl(SP->_mouse_fd, CONS_MOUSECTL, &the_mouse);
+
+	/*
+	 * We're only interested if the button is pressed or released.
+	 * FIXME: implement continuous event-tracking.
+	 */
+	if (SP->_sysmouse_new_buttons != SP->_sysmouse_old_buttons) {
+	    SP->_sysmouse_tail += 1;
+	}
+	work->x = the_mouse.u.data.x / SP->_sysmouse_char_width;
+	work->y = the_mouse.u.data.y / SP->_sysmouse_char_height;
+    }
+}
 #endif
 
 static int initialized;
@@ -248,17 +315,19 @@ static int initialized;
 static void
 init_xterm_mouse(void)
 {
-    mousetype = M_XTERM;
+    SP->_mouse_type = M_XTERM;
     SP->_mouse_xtermcap = tigetstr("XM");
     if (!VALID_STRING(SP->_mouse_xtermcap))
 	SP->_mouse_xtermcap = "\033[?1000%?%p1%{1}%=%th%el%;";
 }
 
+#if !USE_EMX_MOUSE
 static void
 enable_xterm_mouse(int enable)
 {
     putp(tparm(SP->_mouse_xtermcap, enable));
 }
+#endif /* !USE_EMX_MOUSE */
 
 static void
 initialize_mousetype(void)
@@ -273,14 +342,14 @@ initialize_mousetype(void)
     gpm_connect.minMod = 0;
     gpm_connect.maxMod = ~((1 << KG_SHIFT) | (1 << KG_SHIFTL) | (1 << KG_SHIFTR));
     if (Gpm_Open(&gpm_connect, 0) >= 0) {	/* returns the file-descriptor */
-	mousetype = M_GPM;
+	SP->_mouse_type = M_GPM;
 	SP->_mouse_fd = gpm_fd;
 	return;
     }
 #endif
 
     /* OS/2 VIO */
-#ifdef USE_EMX_MOUSE
+#if USE_EMX_MOUSE
     if (!mouse_thread
 	&& strstr(cur_term->type.term_names, "xterm") == 0
 	&& key_mouse) {
@@ -314,12 +383,77 @@ initialize_mousetype(void)
 		printf("mouse thread error %d=%#x", rc, rc);
 		return;
 	    } else {
-		mousetype = M_XTERM;
+		SP->_mouse_type = M_XTERM;
 		return;
 	    }
 	}
     }
 #endif
+
+#if USE_SYSMOUSE
+    {
+	struct mouse_info the_mouse;
+	char *the_device = 0;
+
+	if (isatty(SP->_ifd))
+	    the_device = ttyname(SP->_ifd);
+	if (the_device == 0)
+	    the_device = "/dev/tty";
+
+	SP->_mouse_fd = open(the_device, O_RDWR);
+
+	if (SP->_mouse_fd >= 0) {
+	    /*
+	     * sysmouse does not have a usable user interface for obtaining
+	     * mouse events.  The logical way to proceed (reading data on a
+	     * stream) only works if one opens the device as root.  Even in
+	     * that mode, careful examination shows we lose events
+	     * occasionally.  The interface provided for user programs is to
+	     * establish a signal handler.  really.
+	     *
+	     * Take over SIGUSR2 for this purpose since SIGUSR1 is more
+	     * likely to be used by an application.  getch() will have to
+	     * handle the misleading EINTR's.
+	     */
+	    signal(SIGUSR2, SIG_IGN);
+	    the_mouse.operation = MOUSE_MODE;
+	    the_mouse.u.mode.mode = 0;
+	    the_mouse.u.mode.signal = SIGUSR2;
+	    if (ioctl(SP->_mouse_fd, CONS_MOUSECTL, &the_mouse) != -1) {
+		signal(SIGUSR2, handle_sysmouse);
+		the_mouse.operation = MOUSE_SHOW;
+		ioctl(SP->_mouse_fd, CONS_MOUSECTL, &the_mouse);
+
+#if defined(FBIO_MODEINFO) || defined(CONS_MODEINFO)	/* FreeBSD > 2.x */
+		{
+#ifndef FBIO_GETMODE		/* FreeBSD 3.x */
+#define FBIO_GETMODE    CONS_GET
+#define FBIO_MODEINFO   CONS_MODEINFO
+#endif /* FBIO_GETMODE */
+		    video_info_t the_video;
+
+		    if (ioctl(SP->_mouse_fd,
+			      FBIO_GETMODE,
+			      &the_video.vi_mode) != -1
+			&& ioctl(SP->_mouse_fd,
+				 FBIO_MODEINFO,
+				 &the_video) != -1) {
+			SP->_sysmouse_char_width = the_video.vi_cwidth;
+			SP->_sysmouse_char_height = the_video.vi_cheight;
+		    }
+		}
+#endif /* defined(FBIO_MODEINFO) || defined(CONS_MODEINFO) */
+
+		if (SP->_sysmouse_char_width <= 0)
+		    SP->_sysmouse_char_width = 8;
+		if (SP->_sysmouse_char_height <= 0)
+		    SP->_sysmouse_char_height = 16;
+		SP->_mouse_type = M_SYSMOUSE;
+		return;
+	    }
+	}
+    }
+#endif /* USE_SYSMOUSE */
 
     /* we know how to recognize mouse events under "xterm" */
     if (key_mouse != 0) {
@@ -350,7 +484,7 @@ _nc_mouse_init(void)
 
 	initialize_mousetype();
 
-	T(("_nc_mouse_init() set mousetype to %d", mousetype));
+	T(("_nc_mouse_init() set mousetype to %d", SP->_mouse_type));
     }
 }
 
@@ -361,63 +495,100 @@ _nc_mouse_init(void)
 static bool
 _nc_mouse_event(SCREEN * sp GCC_UNUSED)
 {
-#if USE_GPM_SUPPORT
-    /* GPM: query server for event, return TRUE if we find one */
-    Gpm_Event ev;
+    bool result = FALSE;
 
-    if (Gpm_GetEvent(&ev) == 1) {
-	eventp->id = 0;		/* there's only one mouse... */
+    switch (SP->_mouse_type) {
+    case M_XTERM:
+	/* xterm: never have to query, mouse events are in the keyboard stream */
+#if USE_EMX_MOUSE
+	{
+	    char kbuf[3];
 
-	eventp->bstate = 0;
-	switch (ev.type & 0x0f) {
-	case (GPM_DOWN):
-	    if (ev.buttons & GPM_B_LEFT)
-		eventp->bstate |= BUTTON1_PRESSED;
-	    if (ev.buttons & GPM_B_MIDDLE)
-		eventp->bstate |= BUTTON2_PRESSED;
-	    if (ev.buttons & GPM_B_RIGHT)
-		eventp->bstate |= BUTTON3_PRESSED;
-	    break;
-	case (GPM_UP):
-	    if (ev.buttons & GPM_B_LEFT)
-		eventp->bstate |= BUTTON1_RELEASED;
-	    if (ev.buttons & GPM_B_MIDDLE)
-		eventp->bstate |= BUTTON2_RELEASED;
-	    if (ev.buttons & GPM_B_RIGHT)
-		eventp->bstate |= BUTTON3_RELEASED;
-	    break;
-	default:
-	    break;
+	    int i, res = read(M_FD(sp), &kbuf, 3);	/* Eat the prefix */
+	    if (res != 3)
+		printf("Got %d chars instead of 3 for prefix.\n", res);
+	    for (i = 0; i < res; i++) {
+		if (kbuf[i] != key_mouse[i])
+		    printf("Got char %d instead of %d for prefix.\n",
+			   (int) kbuf[i], (int) key_mouse[i]);
+	    }
+	    result = TRUE;
 	}
+#endif /* USE_EMX_MOUSE */
+	break;
 
-	eventp->x = ev.x - 1;
-	eventp->y = ev.y - 1;
-	eventp->z = 0;
+#if USE_GPM_SUPPORT
+    case M_GPM:
+	{
+	    /* query server for event, return TRUE if we find one */
+	    Gpm_Event ev;
 
-	/* bump the next-free pointer into the circular list */
-	eventp = NEXT(eventp);
-	return (TRUE);
-    }
+	    if (Gpm_GetEvent(&ev) == 1) {
+		/* there's only one mouse... */
+		eventp->id = NORMAL_EVENT;
+
+		eventp->bstate = 0;
+		switch (ev.type & 0x0f) {
+		case (GPM_DOWN):
+		    if (ev.buttons & GPM_B_LEFT)
+			eventp->bstate |= BUTTON1_PRESSED;
+		    if (ev.buttons & GPM_B_MIDDLE)
+			eventp->bstate |= BUTTON2_PRESSED;
+		    if (ev.buttons & GPM_B_RIGHT)
+			eventp->bstate |= BUTTON3_PRESSED;
+		    break;
+		case (GPM_UP):
+		    if (ev.buttons & GPM_B_LEFT)
+			eventp->bstate |= BUTTON1_RELEASED;
+		    if (ev.buttons & GPM_B_MIDDLE)
+			eventp->bstate |= BUTTON2_RELEASED;
+		    if (ev.buttons & GPM_B_RIGHT)
+			eventp->bstate |= BUTTON3_RELEASED;
+		    break;
+		default:
+		    break;
+		}
+
+		eventp->x = ev.x - 1;
+		eventp->y = ev.y - 1;
+		eventp->z = 0;
+
+		/* bump the next-free pointer into the circular list */
+		eventp = NEXT(eventp);
+		result = TRUE;
+	    }
+	}
+	break;
 #endif
 
-#ifdef USE_EMX_MOUSE
-    {
-	char kbuf[3];
+#if USE_SYSMOUSE
+    case M_SYSMOUSE:
+	if (SP->_sysmouse_head < SP->_sysmouse_tail) {
+	    *eventp = SP->_sysmouse_fifo[SP->_sysmouse_head];
 
-	int i, res = read(M_FD(sp), &kbuf, 3);	/* Eat the prefix */
-	if (res != 3)
-	    printf("Got %d chars instead of 3 for prefix.\n", res);
-	for (i = 0; i < res; i++) {
-	    if (kbuf[i] != key_mouse[i])
-		printf("Got char %d instead of %d for prefix.\n",
-		       (int) kbuf[i], (int) key_mouse[i]);
+	    /*
+	     * Point the fifo-head to the next possible location.  If there
+	     * are none, reset the indices.  This may be interrupted by the
+	     * signal handler, doing essentially the same reset.
+	     */
+	    SP->_sysmouse_head += 1;
+	    if (SP->_sysmouse_head == SP->_sysmouse_tail) {
+		SP->_sysmouse_tail = 0;
+		SP->_sysmouse_head = 0;
+	    }
+
+	    /* bump the next-free pointer into the circular list */
+	    eventp = NEXT(eventp);
+	    result = TRUE;
 	}
-	return TRUE;
-    }
-#endif /* USE_EMX_MOUSE */
+	break;
+#endif /* USE_SYSMOUSE */
 
-    /* xterm: never have to query, mouse events are in the keyboard stream */
-    return (FALSE);		/* no event waiting */
+    case M_NONE:
+	break;
+    }
+
+    return result;		/* true if we found an event */
 }
 
 static bool
@@ -428,7 +599,7 @@ _nc_mouse_inline(SCREEN * sp)
 
     TR(MY_TRACE, ("_nc_mouse_inline() called"));
 
-    if (mousetype == M_XTERM) {
+    if (SP->_mouse_type == M_XTERM) {
 	unsigned char kbuf[4];
 	mmask_t prev;
 	size_t grabbed;
@@ -467,7 +638,7 @@ _nc_mouse_inline(SCREEN * sp)
 	for (grabbed = 0; grabbed < 3; grabbed += res) {
 
 	    /* For VIO mouse we add extra bit 64 to disambiguate button-up. */
-#ifdef USE_EMX_MOUSE
+#if USE_EMX_MOUSE
 	    res = read(M_FD(sp) >= 0 ? M_FD(sp) : sp->_ifd, &kbuf, 3);
 #else
 	    res = read(sp->_ifd, kbuf + grabbed, 3 - grabbed);
@@ -480,13 +651,14 @@ _nc_mouse_inline(SCREEN * sp)
 	TR(TRACE_IEVENT,
 	   ("_nc_mouse_inline sees the following xterm data: '%s'", kbuf));
 
-	eventp->id = 0;		/* there's only one mouse... */
+	/* there's only one mouse... */
+	eventp->id = NORMAL_EVENT;
 
 	/* processing code goes here */
 	eventp->bstate = 0;
 	prev = PREV(eventp)->bstate;
 
-#ifdef USE_EMX_MOUSE
+#if USE_EMX_MOUSE
 #define PRESS_POSITION(n) \
 	eventp->bstate = MASK_PRESS(n); \
 	if (kbuf[0] & 0x40) \
@@ -576,13 +748,13 @@ mouse_activate(bool on)
 
     if (on) {
 
-	switch (mousetype) {
+	switch (SP->_mouse_type) {
 	case M_XTERM:
 #if NCURSES_EXT_FUNCS
 	    keyok(KEY_MOUSE, on);
 #endif
 	    TPUTS_TRACE("xterm mouse initialization");
-#ifdef USE_EMX_MOUSE
+#if USE_EMX_MOUSE
 	    server_state(1);
 #else
 	    enable_xterm_mouse(1);
@@ -593,6 +765,13 @@ mouse_activate(bool on)
 	    SP->_mouse_fd = gpm_fd;
 	    break;
 #endif
+#if USE_SYSMOUSE
+	case M_SYSMOUSE:
+	    signal(SIGUSR2, handle_sysmouse);
+	    break;
+#endif
+	case M_NONE:
+	    return;
 	}
 	/* Make runtime binding to cut down on object size of applications that
 	 * do not use the mouse (e.g., 'clear').
@@ -605,10 +784,10 @@ mouse_activate(bool on)
 
     } else {
 
-	switch (mousetype) {
+	switch (SP->_mouse_type) {
 	case M_XTERM:
 	    TPUTS_TRACE("xterm mouse deinitialization");
-#ifdef USE_EMX_MOUSE
+#if USE_EMX_MOUSE
 	    server_state(0);
 #else
 	    enable_xterm_mouse(0);
@@ -618,6 +797,13 @@ mouse_activate(bool on)
 	case M_GPM:
 	    break;
 #endif
+#if USE_SYSMOUSE
+	case M_SYSMOUSE:
+	    signal(SIGUSR2, SIG_IGN);
+	    break;
+#endif
+	case M_NONE:
+	    return;
 	}
     }
     _nc_flush();
@@ -665,7 +851,7 @@ _nc_mouse_parse(int runcount)
 	   ("_nc_mouse_parse: returning simple mouse event %s at slot %ld",
 	    _tracemouse(prev),
 	    (long) (prev - events)));
-	return (prev->id >= 0)
+	return (prev->id >= NORMAL_EVENT)
 	    ? ((prev->bstate & eventmask) ? TRUE : FALSE)
 	    : FALSE;
     }
@@ -862,7 +1048,7 @@ _nc_mouse_wrap(SCREEN * sp GCC_UNUSED)
 {
     TR(MY_TRACE, ("_nc_mouse_wrap() called"));
 
-    switch (mousetype) {
+    switch (SP->_mouse_type) {
     case M_XTERM:
 	if (eventmask)
 	    mouse_activate(FALSE);
@@ -872,6 +1058,13 @@ _nc_mouse_wrap(SCREEN * sp GCC_UNUSED)
     case M_GPM:
 	break;
 #endif
+#if USE_SYSMOUSE
+    case M_SYSMOUSE:
+	mouse_activate(FALSE);
+	break;
+#endif
+    case M_NONE:
+	break;
     }
 }
 
@@ -881,11 +1074,27 @@ _nc_mouse_resume(SCREEN * sp GCC_UNUSED)
 {
     TR(MY_TRACE, ("_nc_mouse_resume() called"));
 
-    /* xterm: re-enable reporting */
-    if (mousetype == M_XTERM && eventmask)
-	mouse_activate(TRUE);
+    switch (SP->_mouse_type) {
+    case M_XTERM:
+	/* xterm: re-enable reporting */
+	if (eventmask)
+	    mouse_activate(TRUE);
+	break;
 
-    /* GPM: reclaim our event set */
+#if USE_GPM_SUPPORT
+    case M_GPM:
+	/* GPM: reclaim our event set */
+	break;
+#endif
+
+#if USE_SYSMOUSE
+    case M_SYSMOUSE:
+	mouse_activate(TRUE);
+	break;
+#endif
+    case M_NONE:
+	break;
+    }
 }
 
 /**************************************************************************
@@ -900,7 +1109,7 @@ getmouse(MEVENT * aevent)
 {
     T((T_CALLED("getmouse(%p)"), aevent));
 
-    if (aevent && (mousetype != M_NONE)) {
+    if (aevent && (SP->_mouse_type != M_NONE)) {
 	/* compute the current-event pointer */
 	MEVENT *prev = PREV(eventp);
 
@@ -948,7 +1157,7 @@ mousemask(mmask_t newmask, mmask_t * oldmask)
 	returnBits(0);
 
     _nc_mouse_init();
-    if (mousetype != M_NONE) {
+    if (SP->_mouse_type != M_NONE) {
 	eventmask = newmask &
 	    (REPORT_MOUSE_POSITION | BUTTON_ALT | BUTTON_CTRL | BUTTON_SHIFT
 	     | BUTTON_PRESSED
@@ -1008,7 +1217,7 @@ mouseinterval(int maxclick)
 NCURSES_EXPORT(int)
 _nc_has_mouse(void)
 {
-    return (mousetype == M_NONE ? 0 : 1);
+    return (SP->_mouse_type == M_NONE ? 0 : 1);
 }
 
 NCURSES_EXPORT(bool)
@@ -1041,5 +1250,3 @@ wmouse_trafo(const WINDOW *win, int *pY, int *pX, bool to_screen)
     }
     returnBool(result);
 }
-
-/* lib_mouse.c ends here */

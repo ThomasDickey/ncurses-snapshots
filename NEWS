@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.729 2003/01/19 01:13:31 tom Exp $
+-- $Id: NEWS,v 1.730 2003/01/26 01:41:53 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030125
+	+ modified emx.src to correspond more closely to terminfo.src, added
+	  emx-base to the latter -TD
+	+ add configure option for FreeBSD sysmouse, --with-sysmouse, and
+	  implement support for that in lib_mouse.c, lib_getch.c
 
 20030118
 	+ revert 20030105 change to can_clear_with(), does not work for the
