@@ -43,7 +43,7 @@
 #include <term.h>		/* cur_term */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_set_term.c,v 1.65 2002/06/15 18:40:20 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.67 2002/07/28 00:48:09 tom Exp $")
 
 NCURSES_EXPORT(SCREEN *)
 set_term(SCREEN * screenp)
@@ -98,14 +98,26 @@ delscreen(SCREEN * sp)
     (void) _nc_freewin(sp->_curscr);
     (void) _nc_freewin(sp->_newscr);
     (void) _nc_freewin(sp->_stdscr);
+
+    if (sp->_slk != 0) {
+	FreeIfNeeded(sp->_slk->ent);
+	FreeIfNeeded(sp->_slk->buffer);
+	free(sp->_slk);
+	sp->_slk = 0;
+    }
+
     _nc_free_keytry(sp->_keytry);
+    sp->_keytry = 0;
+
     _nc_free_keytry(sp->_key_ok);
+    sp->_key_ok = 0;
 
     FreeIfNeeded(sp->_color_table);
     FreeIfNeeded(sp->_color_pairs);
 
     FreeIfNeeded(sp->oldhash);
     FreeIfNeeded(sp->newhash);
+    FreeIfNeeded(sp->hashtab);
 
     del_curterm(sp->_term);
 
