@@ -38,7 +38,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_slkset.c,v 1.8 2003/03/29 22:53:48 tom Exp $")
+MODULE_ID("$Id: lib_slkset.c,v 1.10 2003/04/12 21:32:16 tom Exp $")
 
 NCURSES_EXPORT(int)
 slk_set(int i, const char *astr, int format)
@@ -65,12 +65,12 @@ slk_set(int i, const char *astr, int format)
     --i;			/* Adjust numbering of labels */
 
     len = (size_t) (p - str);
-    if (len > (unsigned) slk->maxlen)
+    if (len > (size_t) slk->maxlen)
 	len = slk->maxlen;
     if (len == 0)
 	slk->ent[i].ent_text[0] = 0;
     else
-	(void) strncpy(slk->ent[i].ent_text, str, len);
+	strncpy(slk->ent[i].ent_text, str, len)[len] = 0;
     memset(slk->ent[i].form_text, ' ', (unsigned) slk->maxlen);
     slk->ent[i].ent_text[slk->maxlen] = 0;
 

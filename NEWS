@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.742 2003/04/05 21:26:54 tom Exp $
+-- $Id: NEWS,v 1.743 2003/04/12 22:10:02 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030412
+	+ add a test for slk_color(), in ncurses.c
+	+ fix some issues reported by valgrind in the slk_set() and slk_wset()
+	  code, from recent rewrite.
+	+ modify ncurses 'E' test to use show previous label via slk_label(),
+	  as in 'e' test.
+	+ modify wide-character versions of NewChar(), NewChar2() macros to
+	  ensure that the whole struct is initialized.
 
 20030405
 	+ modify setupterm() to check if the terminfo and terminal-modes have

@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.186 2003/04/05 23:37:35 tom Exp $
+$Id: ncurses.c,v 1.189 2003/04/12 22:07:22 tom Exp $
 
 ***************************************************************************/
 
@@ -203,7 +203,7 @@ wGetstring(WINDOW *win, char *buffer, int limit)
 	case CTRL('U'):
 	    *buffer = '\0';
 	    break;
-	case CTRL('H'):
+	case '\b':
 	case KEY_BACKSPACE:
 	case KEY_DC:
 	    if (x > 0) {
@@ -269,6 +269,97 @@ wGet_wchar(WINDOW *win, wint_t * result)
     return c;
 }
 #define Get_wchar(result) wGet_wchar(stdscr, result)
+
+/* replaces wgetn_wstr(), since we want to be able to edit values */
+static void
+wGet_wstring(WINDOW *win, wchar_t * buffer, int limit)
+{
+    int y0, x0, x, ch;
+    bool done = FALSE;
+
+    echo();
+    getyx(win, y0, x0);
+    wattrset(win, A_REVERSE);
+
+    x = wcslen(buffer);
+    while (!done) {
+	if (x > (int) wcslen(buffer))
+	    x = (int) wcslen(buffer);
+	wmove(win, y0, x0);
+	waddnwstr(win, buffer, limit);
+	if (x < limit)
+	    wprintw(win, "%*s", limit - x, " ");
+	wmove(win, y0, x0 + x);
+	switch (wGet_wchar(win, &ch)) {
+	case KEY_CODE_YES:
+	    switch (ch) {
+	    case KEY_ENTER:
+		ch = '\n';
+		break;
+	    case KEY_BACKSPACE:
+	    case KEY_DC:
+		ch = '\b';
+		break;
+	    case KEY_LEFT:
+	    case KEY_RIGHT:
+		break;
+	    default:
+		ch = -1;
+		break;
+	    }
+	case OK:
+	    break;
+	default:
+	    ch = -1;
+	    break;
+	}
+
+	switch (ch) {
+	case '\n':
+	    done = TRUE;
+	    break;
+	case CTRL('U'):
+	    *buffer = '\0';
+	    break;
+	case '\b':
+	    if (x > 0) {
+		int j;
+		for (j = --x; (buffer[j] = buffer[j + 1]) != '\0'; ++j) {
+		    ;
+		}
+	    } else {
+		beep();
+	    }
+	    break;
+	case KEY_LEFT:
+	    if (x > 0) {
+		--x;
+	    } else {
+		flash();
+	    }
+	    break;
+	case KEY_RIGHT:
+	    ++x;
+	    break;
+	default:
+	    if (!isprint(ch) || ch >= KEY_MIN) {
+		beep();
+	    } else if ((int) wcslen(buffer) < limit) {
+		int j;
+		for (j = wcslen(buffer) + 1; j > x; --j) {
+		    buffer[j] = buffer[j - 1];
+		}
+		buffer[x++] = ch;
+	    } else {
+		flash();
+	    }
+	}
+    }
+
+    wattroff(win, A_REVERSE);
+    wmove(win, y0, x0);
+    noecho();
+}
 
 #endif
 
@@ -708,7 +799,7 @@ resize_wide_boxes(int level, WINDOW *win)
 static void
 wget_wch_test(int level, WINDOW *win, int delay)
 {
-    char buf[BUFSIZ];
+    wchar_t buf[BUFSIZ];
     int first_y, first_x;
     wint_t c;
     int incount = 0;
@@ -750,9 +841,9 @@ wget_wch_test(int level, WINDOW *win, int delay)
 	} else if (c == 'g') {
 	    waddstr(win, "getstr test: ");
 	    echo();
-	    wgetnstr(win, buf, sizeof(buf) - 1);
+	    wgetn_wstr(win, (wint_t *) buf, sizeof(buf) - 1);
 	    noecho();
-	    wprintw(win, "I saw %d characters:\n\t`%s'.", strlen(buf), buf);
+	    wprintw(win, "I saw %d characters:\n\t`%s'.", wcslen(buf), buf);
 	    wclrtoeol(win);
 	    wgetch_wrap(win, first_y);
 	} else if (c == 'k') {
@@ -1305,6 +1396,41 @@ color_edit(void)
  *
  ****************************************************************************/
 
+#define SLK_HELP 17
+#define SLK_WORK (SLK_HELP + 3)
+
+static void
+slk_help(void)
+{
+    static const char *table[] =
+    {
+	"Available commands are:"
+	,""
+	,"^L         -- repaint this message and activate soft keys"
+	,"a/d        -- activate/disable soft keys"
+	,"c          -- set centered format for labels"
+	,"l          -- set left-justified format for labels"
+	,"r          -- set right-justified format for labels"
+	,"[12345678] -- set label; labels are numbered 1 through 8"
+	,"e          -- erase stdscr (should not erase labels)"
+	,"s          -- test scrolling of shortened screen"
+	,"F/B        -- cycle through foreground/background colors"
+	,"x, q       -- return to main menu"
+	,""
+	,"Note: if activating the soft keys causes your terminal to scroll up"
+	,"one line, your terminal auto-scrolls when anything is written to the"
+	,"last screen position.  The ncurses code does not yet handle this"
+	,"gracefully."
+    };
+    unsigned j;
+
+    move(2, 0);
+    for (j = 0; j < SIZEOF(table); ++j) {
+	P(table[j]);
+    }
+    refresh();
+}
+
 static void
 slk_test(void)
 /* exercise the soft keys */
@@ -1312,9 +1438,22 @@ slk_test(void)
     int c, fmt = 1;
     char buf[9];
     char *s;
+    short fg = COLOR_BLACK;
+    short bg = COLOR_WHITE;
+    bool new_color = FALSE;
 
     c = CTRL('l');
+    if (has_colors()) {
+	new_color = TRUE;
+    }
     do {
+	if (new_color) {
+	    init_pair(1, bg, fg);
+	    slk_color(1);
+	    new_color = FALSE;
+	    mvprintw(SLK_WORK, 0, "Colors %d/%d\n", fg, bg);
+	    refresh();
+	}
 	move(0, 0);
 	switch (c) {
 	case CTRL('l'):
@@ -1323,25 +1462,7 @@ slk_test(void)
 	    mvaddstr(0, 20, "Soft Key Exerciser");
 	    attroff(A_BOLD);
 
-	    move(2, 0);
-	    P("Available commands are:");
-	    P("");
-	    P("^L         -- repaint this message");
-	    P("a          -- activate or restore soft keys");
-	    P("d          -- disable soft keys");
-	    P("c          -- set centered format for labels");
-	    P("l          -- set left-justified format for labels");
-	    P("r          -- set right-justified format for labels");
-	    P("[12345678] -- set label; labels are numbered 1 through 8");
-	    P("e          -- erase stdscr (should not erase labels)");
-	    P("s          -- test scrolling of shortened screen");
-	    P("x, q       -- return to main menu");
-	    P("");
-	    P("Note: if activating the soft keys causes your terminal to");
-	    P("scroll up one line, your terminal auto-scrolls when anything");
-	    P("is written to the last screen position.  The ncurses code");
-	    P("does not yet handle this gracefully.");
-	    refresh();
+	    slk_help();
 	    /* fall through */
 
 	case 'a':
@@ -1353,7 +1474,7 @@ slk_test(void)
 	    break;
 
 	case 's':
-	    mvprintw(20, 0, "Press Q to stop the scrolling-test: ");
+	    mvprintw(SLK_WORK, 0, "Press Q to stop the scrolling-test: ");
 	    while ((c = Getchar()) != 'Q' && (c != ERR))
 		addch((chtype) c);
 	    break;
@@ -1382,7 +1503,7 @@ slk_test(void)
 	case '6':
 	case '7':
 	case '8':
-	    (void) mvaddstr(20, 0, "Please enter the label value: ");
+	    (void) mvaddstr(SLK_WORK, 0, "Please enter the label value: ");
 	    strcpy(buf, "");
 	    if ((s = slk_label(c - '0')) != 0) {
 		strncpy(buf, s, 8);
@@ -1390,13 +1511,26 @@ slk_test(void)
 	    wGetstring(stdscr, buf, 8);
 	    slk_set((c - '0'), buf, fmt);
 	    slk_refresh();
-	    move(20, 0);
-	    clrtoeol();
+	    move(SLK_WORK, 0);
+	    clrtobot();
 	    break;
 
 	case 'x':
 	case 'q':
 	    goto done;
+
+	case 'F':
+	    if (has_colors()) {
+		fg = (fg + 1) % max_colors;
+		new_color = TRUE;
+	    }
+	    break;
+	case 'B':
+	    if (has_colors()) {
+		bg = (bg + 1) % max_colors;
+		new_color = TRUE;
+	    }
+	    break;
 
 	default:
 	    beep();
@@ -1416,9 +1550,23 @@ wide_slk_test(void)
 {
     int c, fmt = 1;
     wchar_t buf[9];
+    char *s;
+    short fg = COLOR_BLACK;
+    short bg = COLOR_WHITE;
+    bool new_color = FALSE;
 
     c = CTRL('l');
+    if (has_colors()) {
+	new_color = TRUE;
+    }
     do {
+	if (new_color) {
+	    init_pair(1, bg, fg);
+	    slk_color(1);
+	    new_color = FALSE;
+	    mvprintw(SLK_WORK, 0, "Colors %d/%d\n", fg, bg);
+	    refresh();
+	}
 	move(0, 0);
 	switch (c) {
 	case CTRL('l'):
@@ -1427,25 +1575,7 @@ wide_slk_test(void)
 	    mvaddstr(0, 20, "Soft Key Exerciser");
 	    attr_off(WA_BOLD, NULL);
 
-	    move(2, 0);
-	    P("Available commands are:");
-	    P("");
-	    P("^L         -- repaint this message");
-	    P("a          -- activate or restore soft keys");
-	    P("d          -- disable soft keys");
-	    P("c          -- set centered format for labels");
-	    P("l          -- set left-justified format for labels");
-	    P("r          -- set right-justified format for labels");
-	    P("[12345678] -- set label; labels are numbered 1 through 8");
-	    P("e          -- erase stdscr (should not erase labels)");
-	    P("s          -- test scrolling of shortened screen");
-	    P("x, q       -- return to main menu");
-	    P("");
-	    P("Note: if activating the soft keys causes your terminal to");
-	    P("scroll up one line, your terminal auto-scrolls when anything");
-	    P("is written to the last screen position.  The ncurses code");
-	    P("does not yet handle this gracefully.");
-	    refresh();
+	    slk_help();
 	    /* fall through */
 
 	case 'a':
@@ -1457,7 +1587,7 @@ wide_slk_test(void)
 	    break;
 
 	case 's':
-	    mvprintw(20, 0, "Press Q to stop the scrolling-test: ");
+	    mvprintw(SLK_WORK, 0, "Press Q to stop the scrolling-test: ");
 	    while ((c = Getchar()) != 'Q' && (c != ERR))
 		addch((chtype) c);
 	    break;
@@ -1486,19 +1616,39 @@ wide_slk_test(void)
 	case '6':
 	case '7':
 	case '8':
-	    (void) mvaddstr(20, 0, "Please enter the label value: ");
-	    echo();
-	    wgetn_wstr(stdscr, buf, 8);
-	    noecho();
+	    (void) mvaddstr(SLK_WORK, 0, "Please enter the label value: ");
+	    *buf = 0;
+	    if ((s = slk_label(c - '0')) != 0) {
+		int j;
+		for (j = 0; j < 8; ++j) {
+		    if ((buf[j] = UChar(s[j])) == 0)
+			break;
+		}
+		buf[j] = 0;
+	    }
+	    wGet_wstring(stdscr, buf, 8);
 	    slk_wset((c - '0'), buf, fmt);
 	    slk_refresh();
-	    move(20, 0);
-	    clrtoeol();
+	    move(SLK_WORK, 0);
+	    clrtobot();
 	    break;
 
 	case 'x':
 	case 'q':
 	    goto done;
+
+	case 'F':
+	    if (has_colors()) {
+		fg = (fg + 1) % max_colors;
+		new_color = TRUE;
+	    }
+	    break;
+	case 'B':
+	    if (has_colors()) {
+		bg = (bg + 1) % max_colors;
+		new_color = TRUE;
+	    }
+	    break;
 
 	default:
 	    beep();
@@ -1853,7 +2003,8 @@ show_utf8_chars(void)
     n = show_2_wacs(n, "WACS_S3",	"\342\216\273");
     n = show_2_wacs(n, "WACS_S7",	"\342\216\274");
     n = show_2_wacs(n, "WACS_S9",	"\342\216\275");
-    /* *INDENT-OFF* */
+    /* *INDENT-ON* */
+
 }
 
 static void
@@ -3921,7 +4072,7 @@ my_form_driver(FORM * form, int c)
  * Allow a middle initial, optionally with a '.' to end it.
  */
 static bool
-mi_field_check(FIELD *fld, const void *data GCC_UNUSED)
+mi_field_check(FIELD * fld, const void *data GCC_UNUSED)
 {
     char *s = field_buffer(fld, 0);
     int state = 0;
@@ -3956,14 +4107,14 @@ mi_field_check(FIELD *fld, const void *data GCC_UNUSED)
 static bool
 mi_char_check(int ch, const void *data GCC_UNUSED)
 {
-  return ((isalpha(ch) || ch == '.') ? TRUE : FALSE);
+    return ((isalpha(ch) || ch == '.') ? TRUE : FALSE);
 }
 
 /*
  * Passwords should be at least 6 characters.
  */
 static bool
-pw_field_check(FIELD *fld, const void *data GCC_UNUSED)
+pw_field_check(FIELD * fld, const void *data GCC_UNUSED)
 {
     char *s = field_buffer(fld, 0);
     int n;
@@ -3980,7 +4131,7 @@ pw_field_check(FIELD *fld, const void *data GCC_UNUSED)
 static bool
 pw_char_check(int ch, const void *data GCC_UNUSED)
 {
-  return (isgraph(ch) ? TRUE : FALSE);
+    return (isgraph(ch) ? TRUE : FALSE);
 }
 
 static void
@@ -4016,15 +4167,15 @@ demo_forms(void)
 
     f[n++] = make_label(2, 0, "Last Name");
     f[n++] = make_field(3, 0, 1, 18, FALSE);
-    set_field_type(f[n-1], TYPE_ALPHA, 1);
+    set_field_type(f[n - 1], TYPE_ALPHA, 1);
 
     f[n++] = make_label(2, 20, "First Name");
     f[n++] = make_field(3, 20, 1, 12, FALSE);
-    set_field_type(f[n-1], TYPE_ALPHA, 1);
+    set_field_type(f[n - 1], TYPE_ALPHA, 1);
 
     f[n++] = make_label(2, 34, "Middle Name");
     f[n++] = make_field(3, 34, 1, 12, FALSE);
-    set_field_type(f[n-1], fty_middle);
+    set_field_type(f[n - 1], fty_middle);
 
     f[n++] = make_label(5, 0, "Comments");
     f[n++] = make_field(6, 0, 4, 46, FALSE);
@@ -4032,7 +4183,7 @@ demo_forms(void)
     f[n++] = make_label(5, 20, "Password:");
     secure =
 	f[n++] = make_field(5, 30, 1, 9, TRUE);
-    set_field_type(f[n-1], fty_passwd);
+    set_field_type(f[n - 1], fty_passwd);
     f[n++] = (FIELD *) 0;
 
     form = new_form(f);

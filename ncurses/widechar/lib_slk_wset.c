@@ -37,7 +37,7 @@
 #include <curses.priv.h>
 #include <wctype.h>
 
-MODULE_ID("$Id: lib_slk_wset.c,v 1.2 2003/03/29 23:08:16 tom Exp $")
+MODULE_ID("$Id: lib_slk_wset.c,v 1.3 2003/04/12 21:06:18 tom Exp $")
 
 NCURSES_EXPORT(int)
 slk_wset(int i, const wchar_t * astr, int format)
@@ -50,7 +50,7 @@ slk_wset(int i, const wchar_t * astr, int format)
     size_t arglen;
     const wchar_t *p;
 
-    T((T_CALLED("slk_wset(%d, \"%s\", %d)"), i, _nc_viswbuf(astr), format));
+    T((T_CALLED("slk_wset(%d, %s, %d)"), i, _nc_viswbuf(astr), format));
 
     if (astr == 0)
 	astr = empty;
@@ -70,9 +70,8 @@ slk_wset(int i, const wchar_t * astr, int format)
 	i <= slk->labcnt &&
 	format >= 0 &&
 	format <= 2) {
-	char *new_text = _nc_doalloc(0, MB_LEN_MAX * arglen);
+	char *new_text;
 	size_t n;
-	size_t need;
 	size_t used = 0;
 	int mycols;
 	mbstate_t state;
@@ -89,47 +88,55 @@ slk_wset(int i, const wchar_t * astr, int format)
 
 	/*
 	 * translate the wide-character string to multibyte form.
-	 *
-	 * FIXME: is that really a null-terminated string?  If not, this will
-	 * not work.
 	 */
 	memset(&state, 0, sizeof(state));
+
+	if ((new_text = _nc_doalloc(0, MB_LEN_MAX * arglen)) == 0)
+	    returnCode(ERR);
+
 	for (n = 0; n < arglen; ++n) {
 	    used += wcrtomb(new_text + used, astr[n], &state);
 	}
 	new_text[used] = '\0';
 
-	need = used + slk->maxlen + 1;
-	if ((slk->ent[i].ent_text = _nc_doalloc(slk->ent[i].ent_text, need))
-	    == 0)
-	    returnCode(ERR);
-	if ((slk->ent[i].form_text = _nc_doalloc(slk->ent[i].form_text,
-	    need)) == 0)
-	    returnCode(ERR);
+	if (used >= (size_t) (slk->maxlen + 1)) {
+	    if ((slk->ent[i].ent_text = _nc_doalloc(slk->ent[i].ent_text,
+						    used + 1)) == 0)
+		returnCode(ERR);
+	    if ((slk->ent[i].form_text = _nc_doalloc(slk->ent[i].form_text,
+						     used + 1)) == 0)
+		returnCode(ERR);
+	}
 
 	(void) strcpy(slk->ent[i].ent_text, new_text);
-	memset(slk->ent[i].form_text, ' ', (unsigned) slk->maxlen);
+	free(new_text);
+
+	sprintf(slk->ent[i].form_text, "%*s", (size_t) slk->maxlen, " ");
 
 	switch (format) {
 	default:
-	case 0:		/* left-justified */
+	case 0:		/* left-aligned */
 	    offset = 0;
 	    break;
 	case 1:		/* centered */
 	    offset = (slk->maxlen - mycols) / 2;
 	    break;
-	case 2:		/* right-justified */
+	case 2:		/* right-aligned */
 	    offset = slk->maxlen - mycols;
 	    break;
 	}
-	if (offset != 0)
-	    memset(slk->ent[i].form_text, ' ', offset);
+	if (offset < 0)
+	    offset = 0;
 	strcpy(slk->ent[i].form_text + offset,
 	       slk->ent[i].ent_text);
+	/*
+	 * Pad the display with blanks on the right, unless it is already
+	 * right-aligned.
+	 */
 	if (format != 2 && mycols < slk->maxlen) {
 	    sprintf(slk->ent[i].form_text + offset + used,
 		    "%*s",
-		    slk->maxlen - mycols,
+		    slk->maxlen - (mycols - offset),
 		    " ");
 	}
 	slk->ent[i].dirty = TRUE;

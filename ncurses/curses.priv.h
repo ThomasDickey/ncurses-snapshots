@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.240 2003/04/05 20:44:40 tom Exp $
+ * $Id: curses.priv.h,v 1.241 2003/04/12 19:55:57 tom Exp $
  *
  *	curses.priv.h
  *
@@ -573,13 +573,14 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define ChAttrOf(c)     ((c) & (chtype)A_ATTRIBUTES)
 
 #if USE_WIDEC_SUPPORT /* { */
+#define NulChar		0,0,0,0	/* FIXME: see CCHARW_MAX */
 #define CharOf(c)	((c).chars[0])
 #define AttrOf(c)	((c).attr)
 #define AddAttr(c,a)	(c).attr |= a
 #define RemAttr(c,a)	(c).attr &= ~(a)
 #define SetAttr(c,a)	(c).attr = a
-#define NewChar(ch)	{ ChAttrOf(ch), { ChCharOf(ch) } }
-#define NewChar2(c,a)	{ a, { c } }
+#define NewChar(ch)	{ ChAttrOf(ch), { ChCharOf(ch), NulChar } }
+#define NewChar2(c,a)	{ a, { c, NulChar } }
 #define CharEq(a,b)	(!memcmp(&a, &b, sizeof(a)))
 #define SetChar(ch,c,a)	do { 							    \
 			    NCURSES_CH_T *_cp = &ch;				    \
