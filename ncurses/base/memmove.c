@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: memmove.c,v 1.1 1998/09/26 21:08:23 tom Exp $")
+MODULE_ID("$Id: memmove.c,v 1.2 1999/02/27 19:55:57 tom Exp $")
 
 /****************************************************************************
  *  Author: Thomas E. Dickey <dickey@clark.net> 1998                        *
@@ -46,9 +46,7 @@ void * _nc_memmove(void * s1, const void * s2, size_t n)
 			register size_t	j;
 			if (length < n) {
 				length = (n * 3) / 2;
-				bfr = (bfr != 0)
-					? (char *)realloc(bfr, length)
-					: (char *)malloc(length);
+				bfr = typeRealloc(char,length,bfr);
 			}
 			for (j = 0; j < n; j++)
 				bfr[j] = SRC[j];

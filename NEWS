@@ -1,10 +1,31 @@
--- $Id: NEWS,v 1.420 1999/02/20 12:04:24 tom Exp $
+-- $Id: NEWS,v 1.430 1999/03/01 23:21:57 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990301	pre-release
+	+ remove 'bool' casts from definitions of TRUE/FALSE so that statements
+	  such as "#if TRUE" work.  This was originally done to allow for a C++
+	  compiler which would warn of implicit conversions between enum and
+	  int, but is not needed for g++ (reported by Kim DeVaughn).
+	+ add use_extended_names() function to allow applications to suppress
+	  read of the extended capabilities.
+	+ add configure option --enable-tcap-names to support logic which
+	  allows ncurses' tic to define new (i.e., extended) terminal
+	  capabilities.  This is activated by the tic -x switch.  The infocmp
+	  program automatically shows or compares extended capabilities.
+	+ use macros typeMalloc, typeCalloc and typeRealloc consistently
+	  throughout ncurses library.
+	+ add _nc_strdup() to doalloc.c.
+	+ modify define_key() to allow multiple strings to be bound to the
+	  same keycode.
+	+ correct logic error in _nc_remove_string, from 990220.
+	> patch by Juergen Pfeifer, for Ada95 binding:
+	+ regenerate some of the html documentation
+	+ minor cleanup in terminal_interface-curses.adb
 
 990220	pre-release
 	+ resolve ambiguity of kend/kll/kslt and khome/kfnd/kich1 strings in
@@ -25,20 +46,20 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  recognized.
 	+ rename init_acs to _nc_init_acs (request by Alexander Lukyanov).
 	> patch by Juergen Pfeifer, for Ada95 binding:
-	+ remove all the *_adabind.c from ncurses, menu and form projects. 
+	+ remove all the *_adabind.c from ncurses, menu and form projects.
 	  Those little helper routines have all been implemented in Ada and are
-	  no longer required. 
+	  no longer required.
 	+ The option handling routines in menu and form have been made more
 	  save.  They now make sure that the unused bits in options are always
-	  zero. 
-	+ modify configuration scripts to 
+	  zero.
+	+ modify configuration scripts to
 	  + use gnatmake as default compiler name.  This is a safer choice than
 	    gcc, because some GNAT implementations use other names for the
-	    compilerdriver to avoid conflicts. 
+	    compilerdriver to avoid conflicts.
 	  + use new default installation locations for the Ada files according
-	    to the proposed GNU Ada filesystem standard (for Linux). 
-	+ simplify the Makefiles for the Ada binding 
-	+ rename ada_include directory to src. 
+	    to the proposed GNU Ada filesystem standard (for Linux).
+	+ simplify the Makefiles for the Ada binding
+	+ rename ada_include directory to src.
 
 990213
 	+ enable sigwinch handler by default.
@@ -53,11 +74,11 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  though the problem is more general.
 	> patch by Juergen Pfeifer, for Ada95 binding:
 	+ removed all pragma Preelaborate() stuff, because the just released
-	  gnat-3.11p complains on some constructs. 
+	  gnat-3.11p complains on some constructs.
 	+ fixed some upper/lower case notations because gnat-3.11p found
-	  inconsistent use. 
+	  inconsistent use.
 	+ used a new method to generate the HTML documentation of the Ada95
-	  binding.  This invalidates nearly the whole ./Ada95/html subtree. 
+	  binding.  This invalidates nearly the whole ./Ada95/html subtree.
 	  Nearly all current files in this subtree are removed
 
 990130

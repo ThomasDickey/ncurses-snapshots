@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
 <!--
-  $Id: announce.html.in,v 1.28 1999/02/20 12:35:23 tom Exp $
+  $Id: announce.html.in,v 1.29 1999/02/23 02:19:48 tom Exp $
 -->
 <HTML>
 <HEAD>
@@ -117,6 +117,9 @@ New features:
 
 	  <li>change name-comparisons in lib_termcap to compare no more than 2
 	    characters.
+
+	  <li>add configure option --enable-tcap-names, which essentially
+	    allows users to define new capabilities as in termcap.
 </ul>
 	<li>add mouse support to ncurses menus.
 

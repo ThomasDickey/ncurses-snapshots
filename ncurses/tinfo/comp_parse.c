@@ -52,10 +52,9 @@
 #include <ctype.h>
 
 #include <tic.h>
-#include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.26 1999/02/19 10:38:13 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.34 1999/02/27 22:13:02 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
 void (*_nc_check_termtype)(TERMTYPE *) = sanity_check;
@@ -86,12 +85,10 @@ ENTRY *_nc_head, *_nc_tail;
 static void enqueue(ENTRY *ep)
 /* add an entry to the in-core list */
 {
-	ENTRY	*newp = (ENTRY *)malloc(sizeof(ENTRY));
+	ENTRY	*newp = _nc_copy_entry(ep);
 
 	if (newp == NULL)
 	    _nc_err_abort("Out of memory");
-
-	(void) memcpy(newp, ep, sizeof(ENTRY));
 
 	newp->last = _nc_tail;
 	_nc_tail = newp;
@@ -173,6 +170,7 @@ void _nc_read_entry_source(FILE *fp, char *buf,
     if (silent)
 	_nc_suppress_warnings = TRUE;	/* shut the lexer up, too */
 
+    memset(&thisentry, 0, sizeof(thisentry));
     for (_nc_reset_input(fp, buf); _nc_parse_entry(&thisentry, literal, silent) != ERR; )
     {
 	if (!isalnum(thisentry.tterm.term_names[0]))
@@ -284,15 +282,16 @@ int _nc_resolve_uses(void)
 		TERMTYPE	thisterm;
 		char		filename[PATH_MAX];
 
+		memset(&thisterm, 0, sizeof(thisterm));
 		if (_nc_read_entry(lookfor, filename, &thisterm) == 1)
 		{
 		    DEBUG(2, ("%s: resolving use=%s (compiled)",
 			      child, lookfor));
 
-		    rp = (ENTRY *)malloc(sizeof(ENTRY));
+		    rp = typeMalloc(ENTRY,1);
 		    if (rp == NULL)
 			_nc_err_abort("Out of memory");
-		    memcpy(&rp->tterm, &thisterm, sizeof(TERMTYPE));
+		    rp->tterm = thisterm;
 		    rp->nuses = 0;
 		    rp->next = lastread;
 		    lastread = rp;
@@ -333,6 +332,7 @@ int _nc_resolve_uses(void)
 	keepgoing = FALSE;
 
 	for_entry_list(qp)
+	{
 	    if (qp->nuses > 0)
 	    {
 		DEBUG(2, ("%s: attempting merge", _nc_first_name(qp->tterm.term_names)));
@@ -354,7 +354,7 @@ int _nc_resolve_uses(void)
 		 * as a side effect, copy into the merged entry the name
 		 * field and string table pointer.
 		 */
-		memcpy(&merged, &qp->tterm, sizeof(TERMTYPE));
+		_nc_copy_termtype(&merged, &(qp->tterm));
 
 		/*
 		 * Now merge in each use entry in the proper
@@ -372,7 +372,10 @@ int _nc_resolve_uses(void)
 		/*
 		 * Replace the original entry with the merged one.
 		 */
-		memcpy(&qp->tterm, &merged, sizeof(TERMTYPE));
+		FreeIfNeeded(qp->tterm.Booleans);
+		FreeIfNeeded(qp->tterm.Numbers);
+		FreeIfNeeded(qp->tterm.Strings);
+		qp->tterm = merged;
 
 		/*
 		 * We know every entry is resolvable because name resolution
@@ -382,6 +385,7 @@ int _nc_resolve_uses(void)
 	    incomplete:
 		keepgoing = TRUE;
 	    }
+	}
     } while
 	(keepgoing);
 
@@ -394,13 +398,13 @@ int _nc_resolve_uses(void)
      */
     for_entry_list(qp)
     {
-	for (j = 0; j < BOOLCOUNT; j++)
+	for_each_boolean(j, &(qp->tterm))
 	    if (qp->tterm.Booleans[j] == CANCELLED_BOOLEAN)
 		qp->tterm.Booleans[j] = FALSE;
-	for (j = 0; j < NUMCOUNT; j++)
+	for_each_number(j, &(qp->tterm))
 	    if (qp->tterm.Numbers[j] == CANCELLED_NUMERIC)
 		qp->tterm.Numbers[j] = ABSENT_NUMERIC;
-	for (j = 0; j < STRCOUNT; j++)
+	for_each_string(j, &(qp->tterm))
 	    if (qp->tterm.Strings[j] == CANCELLED_STRING)
 		qp->tterm.Strings[j] = ABSENT_STRING;
     }

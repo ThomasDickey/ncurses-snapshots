@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1999 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,34 +27,48 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
- *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *  Author: Thomas E. Dickey <dickey@clark.net> 1999                        *
  ****************************************************************************/
-
-
 /*
- * Dump control definitions and variables
+ *	trace_xnames.c - Tracing/Debugging buffers (TERMTYPE extended names)
  */
 
-/* capability output formats */
-#define F_TERMINFO	0	/* use terminfo names */
-#define F_VARIABLE	1	/* use C variable names */
-#define F_TERMCAP	2	/* termcap names with capability conversion */
-#define F_TCONVERR	3	/* as T_TERMCAP, no skip of untranslatables */
-#define F_LITERAL	4	/* like F_TERMINFO, but no smart defaults */
+#include <curses.priv.h>
+#include <term_entry.h>
 
-/* capability sort modes */
-#define S_DEFAULT	0	/* sort by terminfo name (implicit) */
-#define S_NOSORT	1	/* don't sort */
-#define S_TERMINFO	2	/* sort by terminfo names (explicit) */
-#define S_VARIABLE	3	/* sort by C variable names */
-#define S_TERMCAP	4	/* sort by termcap names */
+MODULE_ID("$Id: trace_xnames.c,v 1.3 1999/03/02 01:20:38 tom Exp $")
 
-extern NCURSES_CONST char *nametrans(const char *);
-extern void dump_init(const char *, int, int, int, int, bool);
-extern int fmt_entry(TERMTYPE *, int (*)(int, int), bool, bool, bool);
-extern int dump_entry(TERMTYPE *, bool, bool, int (*)(int, int));
-extern int dump_uses(const char *, bool);
-extern void compare_entry(void (*)(int, int, const char *), TERMTYPE *);
+void _nc_trace_xnames(TERMTYPE *tp GCC_UNUSED)
+{
+#ifdef TRACE
+#if NCURSES_XNAMES
+    int limit = tp->ext_Booleans + tp->ext_Numbers + tp->ext_Strings;
+    int n, m;
+    if (limit) {
+	int begin_num = tp->ext_Booleans;
+	int begin_str = tp->ext_Booleans + tp->ext_Numbers;
 
-#define FAIL	-1
+	_tracef("extended names (%s) %d = %d+%d+%d of %d+%d+%d",
+		tp->term_names,
+		limit,
+		tp->ext_Booleans, tp->ext_Numbers, tp->ext_Strings,
+		tp->num_Booleans, tp->num_Numbers, tp->num_Strings);
+	for (n = 0; n < limit; n++) {
+	    if ((m = n - begin_str) >= 0) {
+		_tracef("[%d] %s = %s", n,
+		    tp->ext_Names[n],
+		    _nc_visbuf(tp->Strings[tp->num_Strings + m - tp->ext_Strings]));
+	    } else if ((m = n - begin_num) >= 0) {
+		_tracef("[%d] %s = %d (num)", n,
+		    tp->ext_Names[n],
+		    tp->Numbers[tp->num_Numbers + m - tp->ext_Numbers]);
+	    } else {
+		_tracef("[%d] %s = %d (bool)", n,
+		    tp->ext_Names[n],
+		    tp->Booleans[tp->num_Booleans + n - tp->ext_Booleans]);
+	    }
+	}
+    }
+#endif
+#endif
+}

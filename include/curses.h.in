@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.79 1999/02/19 12:03:06 tom Exp $ */
+/* $Id: curses.h.in,v 1.81 1999/02/28 23:38:22 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -77,24 +77,16 @@ typedef unsigned @cf_cv_typeof_chtype@ chtype;
 /* XSI and SVr4 specify that curses implements 'bool'.  However, C++ may also
  * implement it.  If so, we must use the C++ compiler's type to avoid conflict
  * with other interfaces.
- *
- * To simplify use with/without the configuration script, we define the symbols
- * CXX_BUILTIN_BOOL and CXX_TYPE_OF_BOOL; they're edited by the configure
- * script.
  */
 
 #undef TRUE
-#undef FALSE
-#define CXX_BUILTIN_BOOL @cf_cv_builtin_bool@
-#define CXX_TYPE_OF_BOOL @cf_cv_type_of_bool@
+#define TRUE    1
 
-#if defined(__cplusplus) && CXX_BUILTIN_BOOL
-#define TRUE    ((CXX_TYPE_OF_BOOL)true)
-#define FALSE   ((CXX_TYPE_OF_BOOL)false)
-#else
-typedef CXX_TYPE_OF_BOOL bool;
-#define TRUE    ((bool)1)
-#define FALSE   ((bool)0)
+#undef FALSE
+#define FALSE   0
+
+#if !defined(__cplusplus) || !@cf_cv_builtin_bool@
+typedef @cf_cv_type_of_bool@ bool;
 #endif
 
 #ifdef __cplusplus
@@ -323,6 +315,7 @@ extern int define_key (char *, int);
 extern int keyok (int, bool);
 extern int resizeterm (int, int);
 extern int use_default_colors (void);
+extern int use_extended_names (bool);
 extern int wresize (WINDOW *, int, int);
 
 extern char ttytype[];		/* needed for backward compatibility */

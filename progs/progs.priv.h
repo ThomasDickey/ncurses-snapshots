@@ -30,7 +30,7 @@
  *  Author: Thomas E. Dickey <dickey@clark.net> 1997,1998                   *
  ****************************************************************************/
 /*
- * $Id: progs.priv.h,v 1.18 1998/07/25 17:38:51 tom Exp $
+ * $Id: progs.priv.h,v 1.19 1999/02/23 11:10:32 tom Exp $
  *
  *	progs.priv.h
  *
@@ -102,7 +102,7 @@ extern int optind;
 #endif /* HAVE_GETOPT_H */
 
 #include <curses.h>
-#include <term.h>
+#include <term_entry.h>
 #include <tic.h>
 #include <nc_alloc.h>
 

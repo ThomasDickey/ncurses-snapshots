@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.131 1999/02/19 11:38:48 tom Exp $
+ * $Id: curses.priv.h,v 1.136 1999/02/28 01:50:50 tom Exp $
  *
  *	curses.priv.h
  *
@@ -474,7 +474,9 @@ typedef	struct {
 	line->lastchar = end
 
 #define SIZEOF(v) (sizeof(v)/sizeof(v[0]))
-#define typeCalloc(type,elts) (type *)calloc(elts,sizeof(type))
+#define typeMalloc(type,elts) (type *)malloc((elts)*sizeof(type))
+#define typeCalloc(type,elts) (type *)calloc((elts),sizeof(type))
+#define typeRealloc(type,elts,ptr) (type *)_nc_doalloc(ptr, (elts)*sizeof(type))
 #define FreeIfNeeded(p)  if(p != 0) free(p)
 #define FreeAndNull(p)   free(p); p = 0
 
@@ -627,6 +629,10 @@ extern void _nc_expanded(void);
 
 /* doalloc.c */
 extern void *_nc_doalloc(void *, size_t);
+#if !HAVE_STRDUP
+#define strdup _nc_strdup
+extern char *_nc_strdup(char *);
+#endif
 
 /* doupdate.c */
 #if USE_XMC_SUPPORT

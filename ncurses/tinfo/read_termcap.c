@@ -53,7 +53,6 @@
 #include <curses.priv.h>
 
 #include <ctype.h>
-#include <term.h>
 #include <tic.h>
 #include <term_entry.h>
 
@@ -61,7 +60,7 @@
 #include <fcntl.h>
 #endif
 
-MODULE_ID("$Id: read_termcap.c,v 1.37 1998/09/19 21:42:14 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.41 1999/02/27 22:12:54 tom Exp $")
 
 #ifndef PURE_TERMINFO
 
@@ -157,7 +156,7 @@ _nc_cgetset(const char *ent)
 		return (0);
 	}
 	topreclen = strlen(ent);
-	if ((toprec = malloc (topreclen + 1)) == 0) {
+	if ((toprec = typeMalloc(char, topreclen + 1)) == 0) {
 		errno = ENOMEM;
 		return (-1);
 	}
@@ -260,7 +259,7 @@ _nc_cgetent(char **buf, int *oline, char **db_array, const char *name)
  *	  names interpolated, a name can't be found, or depth exceeds
  *	  MAX_RECURSION.
  */
-#define DOALLOC(size) (char *)_nc_doalloc(record, size)
+#define DOALLOC(size) typeRealloc(char, size, record)
 static int
 _nc_getent(
 	char **cap,         /* termcap-content */
@@ -888,9 +887,8 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
 	 * cgetent, then it is the actual filename).
 	 */
 	if (i >= 0) {
-		the_source = malloc(strlen(pathvec[i]) + 1);
-		if (the_source != 0)
-			*sourcename = strcpy(the_source, pathvec[i]);
+		if ((the_source = strdup(pathvec[i])) != 0)
+			*sourcename = the_source;
 	}
 
 	return(i);
@@ -1079,7 +1077,7 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 				 * we disconnected from the list by NULLing out
 				 * ep->tterm.str_table above).
 				 */
-				memcpy(tp, &ep->tterm, sizeof(TERMTYPE));
+				*tp = ep->tterm;
 				ep->tterm.str_table = (char *)0;
 
 				/*

@@ -70,7 +70,7 @@ AUTHOR
 #include <curses.priv.h>
 #include <term.h> /* for back_color_erase */
 
-MODULE_ID("$Id: hashmap.c,v 1.28 1998/09/20 02:35:15 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.29 1999/02/27 20:02:24 tom Exp $")
 
 #ifdef HASHDEBUG
 
@@ -282,7 +282,7 @@ void _nc_hash_map(void)
     {
 	if (hashtab)
 	    free (hashtab);
-	hashtab = malloc (sizeof(*hashtab)*(screen_lines+1)*2);
+	hashtab = typeMalloc(sym, (screen_lines+1)*2);
 	if (!hashtab)
 	{
 	    if (oldhash)

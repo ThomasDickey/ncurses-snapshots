@@ -41,6 +41,7 @@
 
 #include <curses.priv.h>
 #include <tic.h>	/* for MAX_NAME_SIZE */
+#include <term_entry.h>
 
 #if defined(SVR4_TERMIO) && !defined(_POSIX_SOURCE)
 #define _POSIX_SOURCE
@@ -48,7 +49,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.48 1999/01/02 23:11:56 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.51 1999/02/27 22:13:00 tom Exp $")
 
 /****************************************************************************
  *
@@ -261,11 +262,11 @@ static int grab_entry(const char *const tn, TERMTYPE *const tp)
 	 * a string is cancelled, for merging entries).
 	 */
 	if (status == 1) {
-		unsigned n;
-		for (n = 0; n < BOOLCOUNT; n++)
+		int n;
+		for_each_boolean(n,tp)
 			if (!VALID_BOOLEAN(tp->Booleans[n]))
 				tp->Booleans[n] = FALSE;
-		for (n = 0; n < STRCOUNT; n++)
+		for_each_string(n,tp)
 			if (tp->Strings[n] == CANCELLED_STRING)
 				tp->Strings[n] = ABSENT_STRING;
 	}
@@ -321,7 +322,7 @@ int status;
 
 	    if (fallback)
 	    {
-		memcpy(&term_ptr->type, fallback, sizeof(TERMTYPE));
+		term_ptr->type = *fallback;
 		status = 1;
 	    }
 	}
@@ -379,7 +380,7 @@ int status;
 static void
 do_prototype(void)
 {
-int	i, j;
+int	i;
 char	CC;
 char	proto;
 char    *tmp;
@@ -388,12 +389,10 @@ char    *tmp;
 	CC = *tmp;
 	proto = *command_character;
 
-	for (i=0; i < STRCOUNT; i++) {
-		j = 0;
-		while (cur_term->type.Strings[i][j]) {
-			if (cur_term->type.Strings[i][j] == proto)
-				cur_term->type.Strings[i][j] = CC;
-			j++;
-		}
+	for_each_string(i, &(cur_term->type)) {
+	    for (tmp = cur_term->type.Strings[i]; *tmp; tmp++) {
+		if (*tmp == proto)
+		    *tmp = CC;
+	    }
 	}
 }

@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.162 1999/02/17 01:08:03 juergen Exp $
+dnl $Id: configure.in,v 1.163 1999/02/23 02:07:46 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971222)
-AC_REVISION($Revision: 1.162 $)
+AC_REVISION($Revision: 1.163 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -573,6 +573,17 @@ AC_ARG_ENABLE(scroll-hints,
 	 test $with_hashmap = yes && with_scroll_hints=no])
 AC_MSG_RESULT($with_scroll_hints)
 test "$with_scroll_hints" = yes && AC_DEFINE(USE_SCROLL_HINTS)
+
+###   use option --enable-tcap-names to allow user to define new capabilities
+AC_MSG_CHECKING(if you want experimental definable names like termcap)
+AC_ARG_ENABLE(tcap-names,
+	[  --enable-tcap-names     compile with experimental definable-name code],
+	[with_tcap_names=$enableval],
+	[with_tcap_names=$with_develop])
+AC_MSG_RESULT($with_tcap_names)
+NCURSES_XNAMES=0
+test "$with_tcap_names" = yes && NCURSES_XNAMES=1
+AC_SUBST(NCURSES_XNAMES)
 
 ###   use option --enable-sigwinch to turn on use of SIGWINCH logic
 AC_MSG_CHECKING(if you want experimental SIGWINCH handler)

@@ -49,7 +49,7 @@
 #define DEBUG(level, params) /*nothing*/
 #endif
 
-MODULE_ID("$Id: comp_hash.c,v 1.18 1998/08/22 18:01:18 tom Exp $")
+MODULE_ID("$Id: comp_hash.c,v 1.19 1999/02/22 22:49:43 tom Exp $")
 
 static  int hash_function(const char *);
 
@@ -179,18 +179,6 @@ struct name_table_entry	const *ptr;
  * set of terminfo and termcap tables readonly (and also provide some runtime
  * performance enhancement).
  */
-
-#if !HAVE_STRDUP
-static char *strdup (char *s)
-{
-  char *p;
-
-  p = malloc(strlen(s)+1);
-  if (p)
-    strcpy(p,s);
-  return(p);
-}
-#endif /* not HAVE_STRDUP */
 
 #define MAX_COLUMNS BUFSIZ	/* this _has_ to be worst-case */
 
