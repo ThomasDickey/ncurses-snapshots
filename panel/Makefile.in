@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.27 1998/04/04 00:50:03 tom Exp $
+# $Id: Makefile.in,v 1.28 1998/11/29 01:03:31 Rick.Ohnemus Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -101,7 +101,7 @@ LINT_OPTS	= @LINT_OPTS@
 LINT_LIBS	= -lpanel -lncurses @LIBS@
 
 AUTO_SRC	= \
-		../include/panel.h 
+		../include/panel.h
 
 ################################################################################
 all install ::	$(AUTO_SRC) $(LIBRARIES)
@@ -130,7 +130,7 @@ TAGS:
 mostlyclean ::
 	-rm -f core tags TAGS *~ *.ln *.atac trace
 
-clean ::
+clean :: mostlyclean
 	-rm -f $(AUTO_SRC)
 
 distclean :: clean

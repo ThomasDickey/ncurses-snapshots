@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.112 1998/11/15 00:47:32 tom Exp $
+$Id: ncurses.c,v 1.113 1998/11/29 03:59:03 tom Exp $
 
 ***************************************************************************/
 
@@ -2267,14 +2267,25 @@ static int menu_virtualize(int c)
 {
     if (c == '\n' || c == KEY_EXIT)
 	return(MAX_COMMAND + 1);
+    else if (c == 'u')
+	return(REQ_SCR_ULINE);
+    else if (c == 'd')
+	return(REQ_SCR_DLINE);
+    else if (c == 'b' || c == KEY_NPAGE)
+	return(REQ_SCR_UPAGE);
+    else if (c == 'f' || c == KEY_PPAGE)
+	return(REQ_SCR_DPAGE);
     else if (c == 'n' || c == KEY_DOWN)
 	return(REQ_NEXT_ITEM);
     else if (c == 'p' || c == KEY_UP)
 	return(REQ_PREV_ITEM);
     else if (c == ' ')
 	return(REQ_TOGGLE_ITEM);
-    else
+    else {
+	if (c != KEY_MOUSE)
+	    beep();
 	return(c);
+    }
 }
 
 static const char *animals[] =
@@ -2289,13 +2300,17 @@ static void menu_test(void)
     ITEM	*items[SIZEOF(animals)];
     ITEM	**ip = items;
     const char	**ap;
-    int		mrows, mcols;
+    int		mrows, mcols, c;
     WINDOW	*menuwin;
 
+#ifdef NCURSES_MOUSE_VERSION
+    mousemask(ALL_MOUSE_EVENTS, (mmask_t *)0);
+#endif
     mvaddstr(0, 0, "This is the menu test:");
     mvaddstr(2, 0, "  Use up and down arrow to move the select bar.");
     mvaddstr(3, 0, "  'n' and 'p' act like arrows.");
-    mvaddstr(4, 0, "  Press return to exit.");
+    mvaddstr(4, 0, "  'b' and 'f' scroll up/down (page), 'u' and 'd' (line).");
+    mvaddstr(5, 0, "  Press return to exit.");
     refresh();
 
     for (ap = animals; *ap; ap++)
@@ -2304,6 +2319,7 @@ static void menu_test(void)
 
     m = new_menu(items);
 
+    set_menu_format(m, (SIZEOF(animals)+1)/2, 1);
     scale_menu(m, &mrows, &mcols);
 
     menuwin = newwin(mrows + 2, mcols +  2, MENU_Y, MENU_X);
@@ -2315,8 +2331,11 @@ static void menu_test(void)
 
     post_menu(m);
 
-    while (menu_driver(m, menu_virtualize(wGetchar(menuwin))) != E_UNKNOWN_COMMAND)
+    while ((c = menu_driver(m, menu_virtualize(wGetchar(menuwin)))) != E_UNKNOWN_COMMAND) {
+	if (c == E_REQUEST_DENIED)
+	    beep();
 	continue;
+    }
 
     (void) mvprintw(LINES - 2, 0,
 		     "You chose: %s\n", item_name(current_item(m)));
@@ -2329,6 +2348,9 @@ static void menu_test(void)
     free_menu(m);
     for (ip = items; *ip; ip++)
 	free_item(*ip);
+#ifdef NCURSES_MOUSE_VERSION
+    mousemask(0, (mmask_t *)0);
+#endif
 }
 
 #ifdef TRACE
