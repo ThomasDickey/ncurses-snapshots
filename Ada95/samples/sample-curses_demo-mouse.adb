@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control
---  $Revision: 1.1 $
+--  $Revision: 1.2 $
 ------------------------------------------------------------------------------
 with Terminal_Interface.Curses; use Terminal_Interface.Curses;
 with Terminal_Interface.Curses.Panels; use Terminal_Interface.Curses.Panels;
@@ -111,6 +111,16 @@ package body Sample.Curses_Demo.Mouse is
          Get_Window_Position (Note, Lins, Cols);
       end if;
       Frame := Create (Msg_L, Columns, Lins - Msg_L, 0);
+      if Has_Colors then
+         Set_Background (Win => Frame,
+                         Ch => (Color => Default_Colors,
+                                Attr  => Normal_Video,
+                                Ch    => ' '));
+         Set_Character_Attributes (Win   => Frame,
+                                   Attr  => Normal_Video,
+                                   Color => Default_Colors);
+         Erase (Frame);
+      end if;
       Msg   := Derived_Window (Frame, Msg_L - 2, Columns - 2, 1, 1);
       Pan   := Create (Frame);
 
@@ -138,8 +148,18 @@ package body Sample.Curses_Demo.Mouse is
               Integer (Half + Space + Width) + Middle_Column;
             W := Create (Height,
                          Width,
-                         0,
+                         1,
                          Column_Position (Position));
+            if Has_Colors then
+               Set_Background (Win => W,
+                               Ch => (Color => Menu_Back_Color,
+                                      Attr  => Normal_Video,
+                                      Ch    => ' '));
+               Set_Character_Attributes (Win   => W,
+                                         Attr  => Normal_Video,
+                                         Color => Menu_Fore_Color);
+               Erase (W);
+            end if;
             Ctl (I) := Create (W);
             Box (W);
             Move_Cursor (W, 1, Half);

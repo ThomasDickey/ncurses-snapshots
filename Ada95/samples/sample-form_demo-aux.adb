@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control
---  $Revision: 1.2 $
+--  $Revision: 1.3 $
 ------------------------------------------------------------------------------
 with Ada.Characters.Latin_1; use Ada.Characters.Latin_1;
 
@@ -71,6 +71,9 @@ package body Sample.Form_Demo.Aux is
                          Ch  => (Ch    => ' ',
                                  Color => Default_Colors,
                                  Attr  => Normal_Video));
+         Set_Character_Attributes (Win => W,
+                                   Color => Default_Colors,
+                                   Attr  => Normal_Video);
          Erase (W);
       end if;
       S := Derived_Window (W, L - 2, C - 2, 1, 1);
