@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.45 2001/09/23 00:16:47 tom Exp $
+ * $Id: view.c,v 1.46 2001/09/29 23:58:18 tom Exp $
  */
 
 #include <string.h>
@@ -85,6 +85,7 @@ usage(void)
 	,""
 	,"Options:"
 	," -c       use color if terminal supports it"
+	," -i       ignore INT, QUIT, TERM signals"
 	," -n NUM   specify maximum number of lines (default 1000)"
 #if defined(KEY_RESIZE)
 	," -r       use old-style signwinch handler rather than KEY_RESIZE"
@@ -195,10 +196,23 @@ main(int argc, char *argv[])
 
     setlocale(LC_ALL, "");
 
-    while ((i = getopt(argc, argv, "cn:rtT:u")) != EOF) {
+#ifndef NCURSES_VERSION
+    /*
+     * We know ncurses will catch SIGINT if we don't establish our own handler.
+     * Other versions of curses may/may not catch it.
+     */
+    (void) signal(SIGINT, finish);	/* arrange interrupts to terminate */
+#endif
+
+    while ((i = getopt(argc, argv, "cin:rtT:u")) != EOF) {
 	switch (i) {
 	case 'c':
 	    try_color = TRUE;
+	    break;
+	case 'i':
+	    signal(SIGINT, SIG_IGN);
+	    signal(SIGQUIT, SIG_IGN);
+	    signal(SIGTERM, SIG_IGN);
 	    break;
 	case 'n':
 	    if ((MAXLINES = atoi(optarg)) < 1)
@@ -232,8 +246,6 @@ main(int argc, char *argv[])
 	perror(fname);
 	ExitProgram(EXIT_FAILURE);
     }
-
-    (void) signal(SIGINT, finish);	/* arrange interrupts to terminate */
 #if CAN_RESIZE
     if (nonposix_resize)
 	(void) signal(SIGWINCH, adjust);	/* arrange interrupts to resize */
