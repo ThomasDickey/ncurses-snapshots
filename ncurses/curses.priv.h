@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.230 2002/11/23 21:41:51 tom Exp $
+ * $Id: curses.priv.h,v 1.232 2002/12/21 16:37:33 tom Exp $
  *
  *	curses.priv.h
  *
@@ -461,6 +461,11 @@ struct screen {
 	unsigned long	*oldhash, *newhash;
 	HASHMAP 	*hashtab;
 	int		hashtab_len;
+
+	/* recent versions of 'screen' have partially-working support for
+	 * UTF-8, but do not permit ACS at the same time (see lib_wacs.c).
+	 */
+	bool		_screen_acs_fix;
 
 	bool            _cleanup;	/* cleanup after int/quit signal */
 	int             (*_outch)(int);	/* output handler if not putc */
@@ -894,6 +899,10 @@ extern NCURSES_EXPORT(int) _nc_has_mouse (void);
 
 /* lib_mvcur.c */
 #define INFINITY	1000000	/* cost: too high to use */
+
+/* lib_setup.c */
+extern NCURSES_EXPORT(int) _nc_unicode_locale(void);
+extern NCURSES_EXPORT(int) _nc_locale_breaks_acs(void);
 
 /* lib_wacs.c */
 #if USE_WIDEC_SUPPORT

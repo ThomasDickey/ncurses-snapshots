@@ -154,7 +154,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.87 2002/10/26 20:39:42 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.88 2002/12/21 23:52:57 tom Exp $")
 
 #define CURRENT_ROW	SP->_cursrow	/* phys cursor row */
 #define CURRENT_COLUMN	SP->_curscol	/* phys cursor column */
@@ -873,14 +873,14 @@ mvcur(int yold, int xold, int ynew, int xnew)
 	    while (l > 0) {
 		if (newline) {
 		    TPUTS_TRACE("newline");
-		    tputs(newline, 0, _nc_outch);
+		    putp(newline);
 		} else
 		    putchar('\n');
 		l--;
 		if (xold > 0) {
 		    if (carriage_return) {
 			TPUTS_TRACE("carriage_return");
-			tputs(carriage_return, 0, _nc_outch);
+			putp(carriage_return);
 		    } else
 			putchar('\r');
 		    xold = 0;

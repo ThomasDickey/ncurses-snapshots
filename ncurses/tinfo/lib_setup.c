@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey 1996-2002                                      *
  ****************************************************************************/
 
 /*
@@ -48,7 +49,7 @@
 
 #include <term.h>		/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.70 2002/10/12 21:50:18 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.73 2002/12/21 16:44:59 tom Exp $")
 
 /****************************************************************************
  *
@@ -90,9 +91,12 @@ MODULE_ID("$Id: lib_setup.c,v 1.70 2002/10/12 21:50:18 tom Exp $")
 # endif
 #endif
 
-static int _use_env = TRUE;
+NCURSES_EXPORT_VAR(char) ttytype[NAMESIZE] = "";
+NCURSES_EXPORT_VAR(int) LINES = 0;
+NCURSES_EXPORT_VAR(int) COLS = 0;
+NCURSES_EXPORT_VAR(int) TABSIZE = 0;
 
-static void do_prototype(void);
+static int _use_env = TRUE;
 
 NCURSES_EXPORT(void)
 use_env(bool f)
@@ -101,10 +105,6 @@ use_env(bool f)
     _use_env = f;
     returnVoid;
 }
-
-NCURSES_EXPORT_VAR(int) LINES = 0;
-NCURSES_EXPORT_VAR(int) COLS = 0;
-NCURSES_EXPORT_VAR(int) TABSIZE = 0;
 
 static void
 _nc_get_screensize(int *linep, int *colp)
@@ -199,7 +199,6 @@ _nc_get_screensize(int *linep, int *colp)
     else
 	TABSIZE = 8;
     T(("TABSIZE = %d", TABSIZE));
-
 }
 
 #if USE_SIZECHANGE
@@ -289,7 +288,69 @@ grab_entry(const char *const tn, TERMTYPE * const tp)
 }
 #endif
 
-NCURSES_EXPORT_VAR(char) ttytype[NAMESIZE] = "";
+/*
+**	do_prototype()
+**
+**	Take the real command character out of the CC environment variable
+**	and substitute it in for the prototype given in 'command_character'.
+**
+*/
+static void
+do_prototype(void)
+{
+    int i;
+    char CC;
+    char proto;
+    char *tmp;
+
+    tmp = getenv("CC");
+    CC = *tmp;
+    proto = *command_character;
+
+    for_each_string(i, &(cur_term->type)) {
+	for (tmp = cur_term->type.Strings[i]; *tmp; tmp++) {
+	    if (*tmp == proto)
+		*tmp = CC;
+	}
+    }
+}
+
+/*
+ * Check if we are running in a UTF-8 locale.
+ */
+int
+_nc_unicode_locale(void)
+{
+    char *env;
+    if (((env = getenv("LC_ALL")) != 0 && *env != '\0')
+	|| ((env = getenv("LC_CTYPE")) != 0 && *env != '\0')
+	|| ((env = getenv("LANG")) != 0 && *env != '\0')) {
+	if (strstr(env, ".UTF-8") != 0)
+	    return 1;
+    }
+    return 0;
+}
+
+/*
+ * Check for known broken cases where a UTF-8 locale breaks the alternate
+ * character set.
+ */
+int
+_nc_locale_breaks_acs(void)
+{
+    char *env = getenv("TERM");
+    if (env != 0) {
+	if (strstr(env, "linux"))
+	    return 1;		/* always broken */
+	if (strstr(env, "screen") != 0
+	    && ((env = getenv("TERMCAP")) != 0
+		&& strstr(env, "screen") != 0)
+	    && strstr(env, "hhII00") != 0) {
+	    return 1;
+	}
+    }
+    return 0;
+}
 
 /*
  *	setupterm(termname, Filedes, errret)
@@ -406,32 +467,4 @@ setupterm(NCURSES_CONST char *tname, int Filedes, int *errret)
 	ret_error(1, "'%s': I can't handle hardcopy terminals.\n", tname);
     }
     returnCode(OK);
-}
-
-/*
-**	do_prototype()
-**
-**	Take the real command character out of the CC environment variable
-**	and substitute it in for the prototype given in 'command_character'.
-**
-*/
-
-static void
-do_prototype(void)
-{
-    int i;
-    char CC;
-    char proto;
-    char *tmp;
-
-    tmp = getenv("CC");
-    CC = *tmp;
-    proto = *command_character;
-
-    for_each_string(i, &(cur_term->type)) {
-	for (tmp = cur_term->type.Strings[i]; *tmp; tmp++) {
-	    if (*tmp == proto)
-		*tmp = CC;
-	}
-    }
 }
