@@ -1,10 +1,25 @@
--- $Id: NEWS,v 1.661 2001/12/23 00:59:34 tom Exp $
+-- $Id: NEWS,v 1.662 2001/12/30 00:08:27 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20011229
+	+ restore special case from 20010923 changes to omit SA_RESTART when
+	  setting up SIGWINCH handler, which is needed to allow wgetch() to be
+	  interrupted by that signal.
+	+ update configure macro CF_WITH_PATHLIST, to omit some double quotes
+	  not needed with autoconf 2.52
+	+ revert configure script to autoconf 2.13 patched with
+		autoconf-2.13-19990117.patch.gz (or later)
+	  from
+		ftp://invisible-island.net/autoconf/
+	  because autoconf 2.52 macro AC_PROG_AWK does not work on HPUX 11.0
+	  (report by David Ellement <ellement@sdd.hp.com>).  This also fixes a
+	  different problem configuring with Mac OS X (reported by Marc Smith
+	  <marc.a.smith@home.com>).
 
 20011222
 	+ modify include/edit_cfg.h to eliminate BROKEN_LINKER symbol from
@@ -828,6 +843,9 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  the expected number of parameters.
 	+ add error checking to infocmp's -v and -m options to ensure that
 	  the option value is indeed a number.
+	+ some cleanup of logic in _nc_signal_handler() to verify if SIGWINCH
+	  handler is setup.  Separated the old/new sigaction data for SIGTSTP
+	  from the other signals.
 
 20000917
 	+ add S0, E0 extensions to screen's terminfo entry, which is another

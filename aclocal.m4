@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000,2001
 dnl
-dnl $Id: aclocal.m4,v 1.267 2001/12/19 00:50:10 tom Exp $
+dnl $Id: aclocal.m4,v 1.268 2001/12/29 20:22:44 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
@@ -2787,7 +2787,7 @@ dnl
 AC_DEFUN([CF_WITH_PATHLIST],[
 AC_REQUIRE([CF_PATHSEP])
 AC_ARG_WITH($1,[$2 ](default: ifelse($4,,empty,$4)),,
-ifelse($4,,[withval="${$3}"],[withval="${$3-ifelse($5,,$4,$5)}"]))dnl
+ifelse($4,,[withval=${$3}],[withval=${$3-ifelse($5,,$4,$5)}]))dnl
 
 IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${PATHSEP}"
 cf_dst_path=
