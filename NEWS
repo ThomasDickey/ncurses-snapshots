@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.620 2001/03/24 22:34:34 tom Exp $
+-- $Id: NEWS,v 1.621 2001/03/31 23:48:51 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010331
+	+ add some examples of customizing screen's terminfo: 
+	  screen.xterm-xfree86, screen.xterm-r6, screen.teraterm -TD
+	+ modify screen's terminfo entry to match the khome/kend in screen
+	  3.09.08 (Debian bug report #92215).
+	+ correct a memory leak in forms library (report by Stefan Vogtner
+	  <stefan@vogtner.de>, patch by Juergen Pfeifer).
 
 20010324
 	+ change symbols used to guard against repeated includes to begin

@@ -31,7 +31,7 @@
  ****************************************************************************/
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.37 2000/12/10 02:09:38 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.38 2001/03/25 02:07:50 juergen Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -516,7 +516,8 @@ static bool Field_Grown(FIELD * field, int amount)
 		  return FALSE;
 		}
 	      assert(form!=(FORM *)0);
-	      delwin(form->w);
+	      if (form->w)
+		delwin(form->w);
 	      form->w = new_window;
 	      Set_Field_Window_Attributes(field,form->w);
 	      werase(form->w);
@@ -1162,6 +1163,7 @@ _nc_Set_Current_Field
 		}
 	    }
 	  delwin(form->w);
+	  form->w = (WINDOW *)0;
 	}
       
       field = newfield;
@@ -1176,7 +1178,11 @@ _nc_Set_Current_Field
 	return(E_SYSTEM_ERROR);
 
       form->current = field;
+
+      if (form->w)
+	delwin(form->w);
       form->w       = new_window;
+
       form->status &= ~_WINDOW_MODIFIED;
       Set_Field_Window_Attributes(field,form->w);
 

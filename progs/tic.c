@@ -44,7 +44,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.87 2001/03/24 22:00:43 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.88 2001/03/31 23:51:52 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -769,6 +769,7 @@ expected_params(const char *name)
 	const char *name;
 	int count;
     } table[] = {
+	{ "S0",			1 },	/* 'screen' extension */
 	{ "birep",		2 },
 	{ "chr",		1 },
 	{ "colornm",		1 },
