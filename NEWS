@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.595 2000/10/01 02:16:44 tom Exp $
+-- $Id: NEWS,v 1.596 2000/10/03 10:21:21 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20001003
+	+ rewrote limit checks in lib_mvcur.c using new functions
+	  _nc_safe_strcat(), etc.  Made other related changes to check lengths
+	  used for strcat/strcpy (based on report by Jouko Pynnonen
+	  <jouko@solutions.fi>).
 
 20000930
 	+ modify several descriptions, including those for setaf, setab, in

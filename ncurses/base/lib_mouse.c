@@ -84,7 +84,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: lib_mouse.c,v 1.53 2000/09/02 18:02:08 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.54 2000/10/03 08:26:34 tom Exp $")
 
 #define MY_TRACE TRACE_ICALLS|TRACE_IEVENT
 
@@ -154,7 +154,7 @@ write_event(int down, int button, int x, int y)
     char buf[6];
     unsigned long ignore;
 
-    strcpy(buf, key_mouse);
+    strncpy(buf, key_mouse, 3);	/* should be "\033[M" */
     buf[3] = ' ' + (button - 1) + (down ? 0 : 0x40);
     buf[4] = ' ' + x - LEFT_COL + 1;
     buf[5] = ' ' + y - TOP_ROW + 1;

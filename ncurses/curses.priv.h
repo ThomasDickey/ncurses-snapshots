@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.165 2000/09/02 18:37:30 tom Exp $
+ * $Id: curses.priv.h,v 1.166 2000/10/03 02:08:37 tom Exp $
  *
  *	curses.priv.h
  *
@@ -329,9 +329,7 @@ struct screen {
 	int             _ip_cost;       /* cost of (insert_padding)         */
 	/* used in lib_mvcur.c */
 	char *          _address_cursor;
-	int             _carriage_return_length;
-	int             _cursor_home_length;
-	int             _cursor_to_ll_length;
+	/* used in tty_update.c */
 	int             _scrolling;     /* 1 if terminal's smart enough to  */
 
 	/* used in lib_color.c */
@@ -671,6 +669,18 @@ extern int _nc_msec_cost(const char *const, int);  /* used by 'tack' program */
 
 /* lib_mvcur.c */
 #define INFINITY	1000000	/* cost: too high to use */
+
+typedef struct {
+    char *s_head;
+    char *s_tail;
+    size_t s_size;
+} string_desc;
+
+extern string_desc *_nc_str_init(string_desc * dst, char *src, size_t len);
+extern string_desc *_nc_str_null(string_desc * dst, size_t len);
+extern string_desc *_nc_str_copy(string_desc * dst, string_desc * src);
+extern bool _nc_safe_strcat(string_desc * dst, const char *src);
+extern bool _nc_safe_strcpy(string_desc * dst, const char *src);
 
 extern void _nc_mvcur_init(void);
 extern void _nc_mvcur_resume(void);

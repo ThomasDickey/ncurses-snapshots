@@ -47,7 +47,7 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <term_entry.h>
 
-MODULE_ID("$Id: parse_entry.c,v 1.45 2000/09/02 22:06:56 tom Exp $")
+MODULE_ID("$Id: parse_entry.c,v 1.48 2000/10/03 09:38:48 tom Exp $")
 
 #ifdef LINT
 static short const parametrized[] =
@@ -506,6 +506,26 @@ _nc_capcmp(const char *s, const char *t)
     }
 }
 
+static void
+append_acs0(string_desc *dst, int code, int src)
+{
+    if (src != 0) {
+	char temp[3];
+	temp[0] = code;
+	temp[1] = src;
+	temp[2] = 0;
+	_nc_safe_strcat(dst, temp);
+    }
+}
+
+static void
+append_acs(string_desc *dst, int code, char *src)
+{
+    if (src != 0 && strlen(src) == 1) {
+	append_acs0(dst, code, *src);
+    }
+}
+
 /*
  * The ko capability, if present, consists of a comma-separated capability
  * list.  For each capability, we may assume there is a keycap that sends the
@@ -570,6 +590,7 @@ static void
 postprocess_termcap(TERMTYPE * tp, bool has_base)
 {
     char buf[MAX_LINE * 2 + 2];
+    string_desc result;
 
     /*
      * TERMCAP DEFAULTS AND OBSOLETE-CAPABILITY TRANSLATIONS
@@ -634,17 +655,15 @@ postprocess_termcap(TERMTYPE * tp, bool has_base)
 		} else
 		    newline = _nc_save_str(C_LF);
 	    } else if (PRESENT(carriage_return) && PRESENT(scroll_forward)) {
-		strncpy(buf, carriage_return, MAX_LINE - 2);
-		buf[MAX_LINE - 1] = '\0';
-		strncat(buf, scroll_forward, MAX_LINE - strlen(buf) - 1);
-		buf[MAX_LINE] = '\0';
-		newline = _nc_save_str(buf);
+		_nc_str_init(&result, buf, sizeof(buf));
+		if (_nc_safe_strcat(&result, carriage_return)
+		 && _nc_safe_strcat(&result, scroll_forward))
+		    newline = _nc_save_str(buf);
 	    } else if (PRESENT(carriage_return) && PRESENT(cursor_down)) {
-		strncpy(buf, carriage_return, MAX_LINE - 2);
-		buf[MAX_LINE - 1] = '\0';
-		strncat(buf, cursor_down, MAX_LINE - strlen(buf) - 1);
-		buf[MAX_LINE] = '\0';
-		newline = _nc_save_str(buf);
+		_nc_str_init(&result, buf, sizeof(buf));
+		if (_nc_safe_strcat(&result, carriage_return)
+		 && _nc_safe_strcat(&result, cursor_down))
+		    newline = _nc_save_str(buf);
 	    }
 	}
     }
@@ -817,61 +836,24 @@ postprocess_termcap(TERMTYPE * tp, bool has_base)
 	PRESENT(acs_hline) ||
 	PRESENT(acs_vline) ||
 	PRESENT(acs_plus)) {
-	char buf2[MAX_TERMCAP_LENGTH], *bp = buf2;
+	char buf2[MAX_TERMCAP_LENGTH];
 
-	if (acs_chars) {
-	    (void) strcpy(bp, acs_chars);
-	    bp += strlen(bp);
-	}
+	_nc_str_init(&result, buf2, sizeof(buf2));
+	_nc_safe_strcat(&result, acs_chars);
 
-	if (acs_ulcorner && acs_ulcorner[1] == '\0') {
-	    *bp++ = 'l';
-	    *bp++ = *acs_ulcorner;
-	}
-	if (acs_llcorner && acs_llcorner[1] == '\0') {
-	    *bp++ = 'm';
-	    *bp++ = *acs_llcorner;
-	}
-	if (acs_urcorner && acs_urcorner[1] == '\0') {
-	    *bp++ = 'k';
-	    *bp++ = *acs_urcorner;
-	}
-	if (acs_lrcorner && acs_lrcorner[1] == '\0') {
-	    *bp++ = 'j';
-	    *bp++ = *acs_lrcorner;
-	}
-	if (acs_ltee && acs_ltee[1] == '\0') {
-	    *bp++ = 't';
-	    *bp++ = *acs_ltee;
-	}
-	if (acs_rtee && acs_rtee[1] == '\0') {
-	    *bp++ = 'u';
-	    *bp++ = *acs_rtee;
-	}
-	if (acs_btee && acs_btee[1] == '\0') {
-	    *bp++ = 'v';
-	    *bp++ = *acs_btee;
-	}
-	if (acs_ttee && acs_ttee[1] == '\0') {
-	    *bp++ = 'w';
-	    *bp++ = *acs_ttee;
-	}
-	if (acs_hline && acs_hline[1] == '\0') {
-	    *bp++ = 'q';
-	    *bp++ = *acs_hline;
-	}
-	if (acs_vline && acs_vline[1] == '\0') {
-	    *bp++ = 'x';
-	    *bp++ = *acs_vline;
-	}
-	if (acs_plus) {
-	    *bp++ = 'n';
-	    strcpy(bp, acs_plus);
-	    bp = buf2 + strlen(buf2);
-	}
+	append_acs (&result, 'j', acs_lrcorner);
+	append_acs (&result, 'k', acs_urcorner);
+	append_acs (&result, 'l', acs_ulcorner);
+	append_acs (&result, 'm', acs_llcorner);
+	append_acs (&result, 'n', acs_plus);
+	append_acs (&result, 'q', acs_hline);
+	append_acs (&result, 't', acs_ltee);
+	append_acs (&result, 'u', acs_rtee);
+	append_acs (&result, 'v', acs_btee);
+	append_acs (&result, 'w', acs_ttee);
+	append_acs (&result, 'x', acs_vline);
 
-	if (bp != buf2) {
-	    *bp++ = '\0';
+	if (buf2[0]) {
 	    acs_chars = _nc_save_str(buf2);
 	    _nc_warning("acsc string synthesized from XENIX capabilities");
 	}
@@ -883,8 +865,7 @@ postprocess_termcap(TERMTYPE * tp, bool has_base)
     }
 }
 
-static
-void
+static void
 postprocess_terminfo(TERMTYPE * tp)
 {
     /*
@@ -896,60 +877,25 @@ postprocess_terminfo(TERMTYPE * tp)
      * Translate AIX forms characters.
      */
     if (PRESENT(box_chars_1)) {
-	char buf2[MAX_TERMCAP_LENGTH], *bp = buf2;
+	char buf2[MAX_TERMCAP_LENGTH];
+	string_desc result;
 
-	if (acs_chars) {
-	    (void) strcpy(bp, acs_chars);
-	    bp += strlen(bp);
-	}
+	_nc_str_init(&result, buf2, sizeof(buf2));
+	_nc_safe_strcat(&result, acs_chars);
 
-	if (box_chars_1[0]) {	/* ACS_ULCORNER */
-	    *bp++ = 'l';
-	    *bp++ = box_chars_1[0];
-	}
-	if (box_chars_1[1]) {	/* ACS_HLINE */
-	    *bp++ = 'q';
-	    *bp++ = box_chars_1[1];
-	}
-	if (box_chars_1[2]) {	/* ACS_URCORNER */
-	    *bp++ = 'k';
-	    *bp++ = box_chars_1[2];
-	}
-	if (box_chars_1[3]) {	/* ACS_VLINE */
-	    *bp++ = 'x';
-	    *bp++ = box_chars_1[3];
-	}
-	if (box_chars_1[4]) {	/* ACS_LRCORNER */
-	    *bp++ = 'j';
-	    *bp++ = box_chars_1[4];
-	}
-	if (box_chars_1[5]) {	/* ACS_LLCORNER */
-	    *bp++ = 'm';
-	    *bp++ = box_chars_1[5];
-	}
-	if (box_chars_1[6]) {	/* ACS_TTEE */
-	    *bp++ = 'w';
-	    *bp++ = box_chars_1[6];
-	}
-	if (box_chars_1[7]) {	/* ACS_RTEE */
-	    *bp++ = 'u';
-	    *bp++ = box_chars_1[7];
-	}
-	if (box_chars_1[8]) {	/* ACS_BTEE */
-	    *bp++ = 'v';
-	    *bp++ = box_chars_1[8];
-	}
-	if (box_chars_1[9]) {	/* ACS_LTEE */
-	    *bp++ = 't';
-	    *bp++ = box_chars_1[9];
-	}
-	if (box_chars_1[10]) {	/* ACS_PLUS */
-	    *bp++ = 'n';
-	    *bp++ = box_chars_1[10];
-	}
+	append_acs0 (&result, 'l', box_chars_1[0]);	/* ACS_ULCORNER */
+	append_acs0 (&result, 'q', box_chars_1[1]);	/* ACS_HLINE */
+	append_acs0 (&result, 'k', box_chars_1[2]);	/* ACS_URCORNER */
+	append_acs0 (&result, 'x', box_chars_1[3]);	/* ACS_VLINE */
+	append_acs0 (&result, 'j', box_chars_1[4]);	/* ACS_LRCORNER */
+	append_acs0 (&result, 'm', box_chars_1[5]);	/* ACS_LLCORNER */
+	append_acs0 (&result, 'w', box_chars_1[6]);	/* ACS_TTEE */
+	append_acs0 (&result, 'u', box_chars_1[7]);	/* ACS_RTEE */
+	append_acs0 (&result, 'v', box_chars_1[8]);	/* ACS_BTEE */
+	append_acs0 (&result, 't', box_chars_1[9]);	/* ACS_LTEE */
+	append_acs0 (&result, 'n', box_chars_1[10]);	/* ACS_PLUS */
 
-	if (bp != buf2) {
-	    *bp++ = '\0';
+	if (buf2[0]) {
 	    acs_chars = _nc_save_str(buf2);
 	    _nc_warning("acsc string synthesized from AIX capabilities");
 	    box_chars_1 = ABSENT_STRING;
@@ -968,8 +914,7 @@ postprocess_terminfo(TERMTYPE * tp)
  * up in _nc_info_table, which is organized so that the nte_index fields are
  * sorted, but the nte_type fields are not necessarily grouped together.
  */
-static
-struct name_table_entry const *
+static struct name_table_entry const *
 lookup_fullname(const char *find)
 {
     int state = -1;
