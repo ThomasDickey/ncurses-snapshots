@@ -40,6 +40,7 @@
 
 #include <curses.priv.h>
 
+#include <ctype.h>
 #include <term.h>
 #include <tic.h>
 #include <term_entry.h>
@@ -48,7 +49,7 @@
 #include <fcntl.h>
 #endif
 
-MODULE_ID("$Id: read_termcap.c,v 1.23 1997/11/08 22:41:36 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.25 1997/11/29 19:07:44 tom Exp $")
 
 #define TC_SUCCESS     0
 #define TC_UNRESOLVED -1
@@ -674,8 +675,75 @@ _nc_nfcmp(const char *nf, char *rec)
 
 #define	PBUFSIZ		512	/* max length of filename path */
 #define	PVECSIZ		32	/* max number of names in path */
+#define TBUFSIZ (2048*2)
 
 static char *tbuf;
+
+/*
+ * On entry, srcp points to a non ':' character which is the beginning of the
+ * token, if any.  We'll try to return a string that doesn't end with a ':'.
+ */
+static char *
+get_tc_token(char **srcp, int *endp)
+{
+	int ch;
+	bool found = FALSE;
+	char *s, *base;
+	char *tok = 0;
+
+	*endp = TRUE;
+	for (s = base = *srcp; *s != '\0'; ) {
+		ch = *s++;
+		if (ch == '\\') {
+			if (*s == '\0') {
+				break;
+			} else if (*s++ == '\n') {
+				while (isspace(*s))
+					s++;
+			} else {
+				found = TRUE;
+			}
+		} else if (ch == ':') {
+			if (found) {
+				tok = base;
+				s[-1] = '\0';
+				*srcp = s;
+				*endp = FALSE;
+				break;
+			}
+			base = s;
+		} else if (isgraph(ch)) {
+			found = TRUE;
+		}
+	}
+
+	/* malformed entry may end without a ':' */
+	if (tok == 0 && found) {
+		tok = base;
+	}
+
+	return tok;
+}
+
+static char *
+copy_tc_token(char *dst, const char *src, size_t len)
+{
+	int ch;
+
+	while ((ch = *src++) != '\0') {
+		if (ch == '\\' && *src == '\n') {
+			while (isspace(*src))
+				src++;
+			continue;
+		}
+		if (--len == 0) {
+			dst = 0;
+			break;
+		}
+		*dst++ = ch;
+	}
+	return dst;
+}
 
 /*
  * Get an entry for terminal name in buffer bp from the termcap file.
@@ -752,8 +820,41 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
 
 	i = _nc_cgetent(&dummy, lineno, pathvec, name);
 
-	if (i >= 0)
-		strcpy(bp, dummy);
+	/* ncurses' termcap-parsing routines cannot handle multiple adjacent
+	 * empty fields, and mistakenly use the last valid cap entry instead of
+	 * the first (breaks tc= includes)
+	 */
+	if (i >= 0) {
+		char *pd, *ps, *tok;
+		int endflag = FALSE;
+		char *list[1023];
+		size_t n, count = 0;
+
+		pd = bp;
+		ps = dummy;
+		while (!endflag && (tok = get_tc_token(&ps, &endflag)) != 0) {
+			bool ignore = FALSE;
+
+			for (n = 1; n < count; n++) {
+				char *s = list[n];
+				if (s[0] == tok[0]
+				 && s[1] == tok[1]) {
+					ignore = TRUE;
+					break;
+				}
+			}
+			if (ignore != TRUE) {
+				list[count++] = tok;
+				pd = copy_tc_token(pd, tok, TBUFSIZ - (2+pd-bp));
+				if (pd == 0) {
+					i = -1;
+					break;
+				}
+				*pd++ = ':';
+				*pd = '\0';
+			}
+		}
+	}
 
 	FreeIfNeeded(dummy);
 	FreeIfNeeded(the_source);
@@ -782,7 +883,7 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 	char	cwd_buf[PATH_MAX];
 #endif
 #if USE_GETCAP
-	char	tc[2048 * 2];
+	char	tc[TBUFSIZ];
 	static char	*source;
 	static int lineno;
 

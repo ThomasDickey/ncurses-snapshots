@@ -25,13 +25,14 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.4 $
+--  $Revision: 1.5 $
 ------------------------------------------------------------------------------
 
 generic
    type User is limited private;
    type User_Access is access User;
 package Terminal_Interface.Curses.Forms.Form_User_Data is
+   pragma Preelaborate (Form_User_Data);
 
    --  MANPAGE(`form_userptr.3x')
 

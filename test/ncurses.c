@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.102 1997/11/15 22:49:16 tom Exp $
+$Id: ncurses.c,v 1.103 1997/11/29 22:51:34 tom Exp $
 
 ***************************************************************************/
 
@@ -541,7 +541,7 @@ static void color_edit(void)
     P("currently selected will be reverse-video highlighted.");
     P("");
     P("To change a field, enter the digits of the new value; they are echoed");
-    P("echoed.  Finish by typing `='; the change will take effect instantly.");
+    P("as entered.  Finish by typing `='.  The change will take effect instantly.");
     P("To increment or decrement a value, use the same procedure, but finish");
     P("with a `+' or `-'.");
     P("");

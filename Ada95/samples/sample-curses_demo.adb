@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control
---  $Revision: 1.4 $
+--  $Revision: 1.5 $
 ------------------------------------------------------------------------------
 with Terminal_Interface.Curses; use Terminal_Interface.Curses;
 with Terminal_Interface.Curses.Menus; use Terminal_Interface.Curses.Menus;
@@ -43,6 +43,12 @@ with Sample.Curses_Demo.Attributes;
 
 package body Sample.Curses_Demo is
 
+   type User_Data is new Integer;
+   type User_Data_Access is access all User_Data;
+   package PUD is new Panels.User_Data (User_Data, User_Data_Access);
+   --  We use above instantiation of the generic User_Data package to
+   --  demonstrate and test the use of the user data maechanism.
+
    procedure Demo
    is
       function My_Driver (M : Menu;
@@ -54,17 +60,21 @@ package body Sample.Curses_Demo is
         (New_Item ("Attributes Demo"),
          New_Item ("Mouse Demo"),
          Null_Item);
-      M : Menu := New_Menu (Itm);
+      M  : Menu := New_Menu (Itm);
+      U1 : User_Data_Access := new User_Data'(4711);
+      U2 : User_Data_Access;
 
       function My_Driver (M : Menu;
                           K : Key_Code;
                           Pan : Panel) return Boolean
       is
          Idx : constant Positive := Get_Index (Current (M));
+         Result : Boolean := False;
       begin
+         PUD.Set_User_Data (Pan, U1); --  set some user data, just for fun
          if K in User_Key_Code'Range then
             if K = QUIT then
-               return True;
+               Result := True;
             elsif K = SELECT_ITEM then
                if Idx in Itm'Range then
                   Hide (Pan);
@@ -83,7 +93,9 @@ package body Sample.Curses_Demo is
                end if;
             end if;
          end if;
-         return False;
+         PUD.Get_User_Data (Pan, U2); --  get the user data
+         pragma Assert (U1.all = U2.all and then U1 = U2);
+         return Result;
       end My_Driver;
 
    begin

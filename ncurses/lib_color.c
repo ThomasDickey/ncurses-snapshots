@@ -29,7 +29,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.20 1997/09/20 15:02:34 juergen Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.21 1997/11/30 00:19:33 tom Exp $")
 
 /*
  * Only 8 ANSI colors are defined; the ISO 6429 control sequences work only
@@ -45,17 +45,24 @@ MODULE_ID("$Id: lib_color.c,v 1.20 1997/09/20 15:02:34 juergen Exp $")
 int COLOR_PAIRS;
 int COLORS;
 
+/*
+ * Given a RGB range of 0..1000, we'll normally set the individual values
+ * to about 2/3 of the maximum, leaving full-range for bold/bright colors.
+ */
+#define RGB_ON  680
+#define RGB_OFF 0
+
 static const color_t cga_palette[] =
 {
-    /*  R	G	B */
-	{0,	0,	0},	/* COLOR_BLACK */
-	{1000,	0,	0},	/* COLOR_RED */
-	{0,	1000,	0},	/* COLOR_GREEN */
-	{1000,	1000,	0},	/* COLOR_YELLOW */
-	{0,	0,	1000},	/* COLOR_BLUE */
-	{1000,	0,	1000},	/* COLOR_MAGENTA */
-	{0,	1000,	1000},	/* COLOR_CYAN */
-	{1000,	1000,	1000},	/* COLOR_WHITE */
+    /*  R		G		B */
+	{RGB_OFF,	RGB_OFF,	RGB_OFF},	/* COLOR_BLACK */
+	{RGB_ON,	RGB_OFF,	RGB_OFF},	/* COLOR_RED */
+	{RGB_OFF,	RGB_ON,		RGB_OFF},	/* COLOR_GREEN */
+	{RGB_ON,	RGB_ON,		RGB_OFF},	/* COLOR_YELLOW */
+	{RGB_OFF,	RGB_OFF,	RGB_ON},	/* COLOR_BLUE */
+	{RGB_ON,	RGB_OFF,	RGB_ON},	/* COLOR_MAGENTA */
+	{RGB_OFF,	RGB_ON,		RGB_ON},	/* COLOR_CYAN */
+	{RGB_ON,	RGB_ON,		RGB_ON},	/* COLOR_WHITE */
 };
 static const color_t hls_palette[] =
 {
@@ -124,6 +131,7 @@ int start_color(void)
 }
 
 #ifdef hue_lightness_saturation
+/* This function was originally written by Daniel Weaver <danw@znyx.com> */
 static void rgb2hls(short r, short g, short b, short *h, short *l, short *s)
 /* convert RGB to HLS system */
 {
@@ -226,14 +234,8 @@ int init_color(short color, short r, short g, short b)
 
 	if (color < 0 || color >= COLORS)
 		returnCode(ERR);
-#ifdef hue_lightness_saturation
-	if (hue_lightness_saturation == TRUE)
-		if (r < 0 || r > 360 || g < 0 || g > 100 || b < 0 || b > 100)
-			returnCode(ERR);
-	if (hue_lightness_saturation == FALSE)
-#endif /* hue_lightness_saturation */
-		if (r < 0 || r > 1000 || g < 0 ||  g > 1000 || b < 0 || b > 1000)
-			returnCode(ERR);
+	if (r < 0 || r > 1000 || g < 0 ||  g > 1000 || b < 0 || b > 1000)
+		returnCode(ERR);
 
 #ifdef hue_lightness_saturation
 	if (hue_lightness_saturation)
