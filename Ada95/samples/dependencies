@@ -53,7 +53,8 @@ sample-function_key_setting.o : sample.ads sample-function_key_setting.ads \
  $(srcdir)/$(ABASE).ads \
  $(srcdir)/$(ABASE)-panels.ads
 sample-header_handler.o : sample.ads sample-header_handler.ads \
- sample-header_handler.adb $(srcdir)/$(ALIB).ads \
+ sample-header_handler.adb sample-manifest.ads \
+ $(srcdir)/$(ALIB).ads \
  $(srcdir)/$(ABASE).ads \
  $(srcdir)/$(ABASE)-text_io.ads \
  $(srcdir)/$(ABASE)-text_io-aux.ads \

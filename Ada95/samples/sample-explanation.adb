@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control
---  $Revision: 1.2 $
+--  $Revision: 1.3 $
 ------------------------------------------------------------------------------
 --  Poor mans help system. This scans a sequential file for key lines and
 --  then reads the lines up to the next key. Those lines are presented in
@@ -184,6 +184,16 @@ package body Sample.Explanation is
          Push_Environment ("HELP");
          Default_Labels;
          Frame := New_Window (Lines - 2, Columns, 0, 0);
+         if Has_Colors then
+            Set_Background (Win => Frame,
+                            Ch  => (Ch    => ' ',
+                                    Color => Help_Color,
+                                    Attr  => Normal_Video));
+            Set_Character_Attributes (Win   => Frame,
+                                      Attr  => Normal_Video,
+                                      Color => Help_Color);
+            Erase (Frame);
+         end if;
          Box (Frame);
          Set_Character_Attributes (Frame, (Reverse_Video => True,
                                            others        => False));
@@ -352,6 +362,16 @@ package body Sample.Explanation is
             N := N + 1;
          end loop;
          W := New_Window (N + 2, Columns, Lines - N - 2, 0);
+         if Has_Colors then
+            Set_Background (Win => W,
+                            Ch  => (Ch    => ' ',
+                                    Color => Notepad_Color,
+                                    Attr  => Normal_Video));
+            Set_Character_Attributes (Win   => W,
+                                      Attr  => Normal_Video,
+                                      Color => Notepad_Color);
+            Erase (W);
+         end if;
          Box (W);
          Window_Title (W, "Notepad");
          P := New_Panel (W);

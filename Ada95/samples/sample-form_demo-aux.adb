@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control
---  $Revision: 1.1 $
+--  $Revision: 1.2 $
 ------------------------------------------------------------------------------
 with Ada.Characters.Latin_1; use Ada.Characters.Latin_1;
 
@@ -47,7 +47,7 @@ package body Sample.Form_Demo.Aux is
 
       --  Calculate horizontal coordinate at the screen center
       X := (Columns - C) / 2;
-      Y := 0; -- start always at the top
+      Y := 1; -- start always in line 1
    end Geometry;
 
    function Create (F     : Form;
@@ -66,6 +66,13 @@ package body Sample.Form_Demo.Aux is
       W := New_Window (L, C, Lin, Col);
       Set_Meta_Mode (W);
       Set_KeyPad_Mode (W);
+      if Has_Colors then
+         Set_Background (Win => W,
+                         Ch  => (Ch    => ' ',
+                                 Color => Default_Colors,
+                                 Attr  => Normal_Video));
+         Erase (W);
+      end if;
       S := Derived_Window (W, L - 2, C - 2, 1, 1);
       Set_Meta_Mode (S);
       Set_KeyPad_Mode (S);
@@ -174,6 +181,9 @@ package body Sample.Form_Demo.Aux is
       Fld := New_Field (1, C, Top, Left);
       Set_Buffer (Fld, 0, Text);
       Switch_Options (Fld, (Active => True, others => False), False);
+      if Has_Colors then
+         Set_Background (Fld => Fld, Color => Default_Colors);
+      end if;
       return Fld;
    end Make;
 
@@ -185,7 +195,12 @@ package body Sample.Form_Demo.Aux is
    is
       Fld : Field := New_Field (Height, Width, Top, Left, Off_Screen);
    begin
-      Set_Background (Fld, (Reverse_Video => True, others => False));
+      if Has_Colors then
+         Set_Foreground (Fld => Fld, Color => Form_Fore_Color);
+         Set_Background (Fld => Fld, Color => Form_Back_Color);
+      else
+         Set_Background (Fld, (Reverse_Video => True, others => False));
+      end if;
       return Fld;
    end Make;
 

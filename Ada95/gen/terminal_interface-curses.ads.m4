@@ -24,7 +24,7 @@ include(M4MACRO)----------------------------------------------------------------
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.3 $
+--  $Revision: 1.4 $
 ------------------------------------------------------------------------------
 include(`Base_Defs')
 with System;
@@ -122,7 +122,7 @@ include(`Character_Attribute_Set_Rep')
 include(`AC_Rep')
    Default_Character : constant Attributed_Character
      := (Ch    => Character'First,
-         Color => 0,
+         Color => Color_Pair'First,
          Attr  => Normal_Video);
 
    type Attributed_String is array (Positive range <>) of Attributed_Character;
@@ -208,7 +208,7 @@ include(`ACS_Map')
    --  MANPAGE(`curs_initscr.3x')
    --  | Not implemented: newterm, set_term, delscreen
 
-   --  ANCHOR(`initscr()',`Standard_Window')
+   --  ANCHOR(`stdscr',`Standard_Window')
    function Standard_Window return Window;
    --  AKA
    pragma Inline (Standard_Window);
@@ -466,7 +466,8 @@ include(`ACS_Map')
    --  ANCHOR(`wattrset()',`Set_Character_Attributes')
    procedure Set_Character_Attributes
      (Win   : in Window := Standard_Window;
-      Attrs : in Character_Attribute_Set := Normal_Video);
+      Attr  : in Character_Attribute_Set := Normal_Video;
+      Color : in Color_Pair := Color_Pair'First);
    --  AKA
 
    --  ANCHOR(`wattr_get()',`Get_Character_Attribute')
@@ -474,22 +475,27 @@ include(`ACS_Map')
      (Win : in Window := Standard_Window) return Character_Attribute_Set;
    --  AKA
 
+   --  ANCHOR(`wattr_get()',`Get_Character_Attribute')
+   function Get_Character_Attribute
+     (Win : in Window := Standard_Window) return Color_Pair;
+   --  AKA
+
    --  ANCHOR(`wchgat()',`Change_Attributes')
    procedure Change_Attributes
      (Win   : in Window := Standard_Window;
       Count : in Integer := -1;
-      Attrs : in Character_Attribute_Set;
-      Color : in Color_Pair);
+      Attr  : in Character_Attribute_Set := Normal_Video;
+      Color : in Color_Pair := Color_Pair'First);
    --  AKA
 
    --  ANCHOR(`mvwchgat()',`Change_Attributes')
    procedure Change_Attributes
      (Win    : in Window := Standard_Window;
-      Line   : in Line_Position;
-      Column : in Column_Position;
+      Line   : in Line_Position := Line_Position'First;
+      Column : in Column_Position := Column_Position'First;
       Count  : in Integer := -1;
-      Attrs  : in Character_Attribute_Set;
-      Color  : in Color_Pair);
+      Attr   : in Character_Attribute_Set := Normal_Video;
+      Color  : in Color_Pair := Color_Pair'First);
    --  AKA
 
    --  MANPAGE(`curs_beep.3x')
@@ -1019,11 +1025,16 @@ include(`ACS_Map')
 
    --  ANCHOR(`slk_attrset()',`Set_Soft_Label_Key_Attributes')
    procedure Set_Soft_Label_Key_Attributes
-     (Attr : in Character_Attribute_Set);
+     (Attr  : in Character_Attribute_Set := Normal_Video;
+      Color : in Color_Pair := Color_Pair'First);
    --  AKA
 
    --  ANCHOR(`slk_attr()',`Get_Soft_Label_Key_Attributes')
    function Get_Soft_Label_Key_Attributes return Character_Attribute_Set;
+   --  AKA
+
+   --  ANCHOR(`slk_attr()',`Get_Soft_Label_Key_Attributes')
+   function Get_Soft_Label_Key_Attributes return Color_Pair;
    --  AKA
 
    --  MANPAGE(`curs_util.3x')

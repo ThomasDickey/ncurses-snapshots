@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control
---  $Revision: 1.1 $
+--  $Revision: 1.2 $
 ------------------------------------------------------------------------------
 with Ada.Characters.Latin_1; use Ada.Characters.Latin_1;
 
@@ -63,7 +63,7 @@ package body Sample.Menu_Demo.Aux is
 
       --  Calculate horizontal coordinate at the screen center
       X := (Columns - C) / 2;
-      Y := 0;  -- always start at the top
+      Y := 1;  -- always startin line 1
 
    end Geometry;
 
@@ -95,6 +95,16 @@ package body Sample.Menu_Demo.Aux is
       W := New_Window (L, C, Lin, Col);
       Set_Meta_Mode (W);
       Set_KeyPad_Mode (W);
+      if Has_Colors then
+         Set_Background (Win => W,
+                         Ch  => (Ch    => ' ',
+                                 Color => Menu_Back_Color,
+                                 Attr  => Normal_Video));
+         Set_Foreground (Men => M, Color => Menu_Fore_Color);
+         Set_Background (Men => M, Color => Menu_Back_Color);
+         Set_Grey (Men => M, Color => Menu_Grey_Color);
+         Erase (W);
+      end if;
       S := Derived_Window (W, L - Fy, C - Fx, Fy, Fx);
       Set_Meta_Mode (S);
       Set_KeyPad_Mode (S);

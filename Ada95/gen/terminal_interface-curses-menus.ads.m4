@@ -25,7 +25,7 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.3 $
+--  $Revision: 1.4 $
 ------------------------------------------------------------------------------
 include(`Menu_Base_Defs')
 with System;
@@ -297,33 +297,58 @@ include(`Item_Rep')
    --  MANPAGE(`menu_attribs.3x')
 
    --  ANCHOR(`set_menu_fore()',`Set_Foreground')
-   procedure Set_Foreground (Men  : in Menu;
-                             Fore : in Character_Attribute_Set);
+   procedure Set_Foreground
+     (Men   : in Menu;
+      Fore  : in Character_Attribute_Set := Normal_Video;
+      Color : in Color_Pair := Color_Pair'First);
    --  AKA
 
    --  ANCHOR(`menu_fore()',`Foreground')
-   procedure Foreground (Men  : in  Menu;
-                         Fore : out Character_Attribute_Set);
+   procedure Foreground (Men   : in  Menu;
+                         Fore  : out Character_Attribute_Set);
+   --  AKA
+
+   --  ANCHOR(`menu_fore()',`Foreground')
+   procedure Foreground (Men   : in  Menu;
+                         Fore  : out Character_Attribute_Set;
+                         Color : out Color_Pair);
    --  AKA
 
    --  ANCHOR(`set_menu_back()',`Set_Background')
-   procedure Set_Background (Men  : in Menu;
-                             Back : in Character_Attribute_Set);
+   procedure Set_Background
+     (Men   : in Menu;
+      Back  : in Character_Attribute_Set := Normal_Video;
+      Color : in Color_Pair := Color_Pair'First);
    --  AKA
 
    --  ANCHOR(`menu_back()',`Background')
    procedure Background (Men  : in  Menu;
                          Back : out Character_Attribute_Set);
    --  AKA
+   --  ANCHOR(`menu_back()',`Background')
+
+   procedure Background (Men   : in  Menu;
+                         Back  : out Character_Attribute_Set;
+                         Color : out Color_Pair);
+   --  AKA
 
    --  ANCHOR(`set_menu_grey()',`Set_Grey')
-   procedure Set_Grey (Men  : in Menu;
-                       Grey : in Character_Attribute_Set);
+   procedure Set_Grey
+     (Men   : in Menu;
+      Grey  : in Character_Attribute_Set := Normal_Video;
+      Color : in Color_Pair := Color_Pair'First);
    --  AKA
 
    --  ANCHOR(`menu_grey()',`Grey')
    procedure Grey (Men  : in  Menu;
                    Grey : out Character_Attribute_Set);
+   --  AKA
+
+   --  ANCHOR(`menu_grey()',`Grey')
+   procedure Grey
+     (Men   : in  Menu;
+      Grey  : out Character_Attribute_Set;
+      Color : out Color_Pair);
    --  AKA
 
    --  ANCHOR(`set_menu_pad()',`Set_Pad_Character')

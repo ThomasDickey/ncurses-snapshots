@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control
---  $Revision: 1.1 $
+--  $Revision: 1.2 $
 ------------------------------------------------------------------------------
 with Terminal_Interface.Curses; use Terminal_Interface.Curses;
 with Terminal_Interface.Curses.Panels;  use Terminal_Interface.Curses.Panels;
@@ -53,36 +53,36 @@ package body Sample.Curses_Demo.Attributes is
       Default_Labels;
       Notepad ("ATTRIB-PAD00");
 
-      Set_Character_Attributes (Attrs => (others => False));
+      Set_Character_Attributes (Attr => (others => False));
       Add (Line => 1, Column => Columns / 2 - 10,
            Str => "This is NORMAL");
 
-      Set_Character_Attributes (Attrs => (Stand_Out => True,
+      Set_Character_Attributes (Attr => (Stand_Out => True,
                                           others => False));
       Add (Line => 2, Column => Columns / 2 - 10,
            Str => "This is Stand_Out");
 
-      Set_Character_Attributes (Attrs => (Under_Line => True,
+      Set_Character_Attributes (Attr => (Under_Line => True,
                                           others => False));
       Add (Line => 3, Column => Columns / 2 - 10,
            Str => "This is Under_Line");
 
-      Set_Character_Attributes (Attrs => (Reverse_Video => True,
+      Set_Character_Attributes (Attr => (Reverse_Video => True,
                                           others => False));
       Add (Line => 4, Column => Columns / 2 - 10,
            Str => "This is Reverse_Video");
 
-      Set_Character_Attributes (Attrs => (Blink => True,
+      Set_Character_Attributes (Attr => (Blink => True,
                                           others => False));
       Add (Line => 5, Column => Columns / 2 - 10,
            Str => "This is Blink");
 
-      Set_Character_Attributes (Attrs => (Dim_Character => True,
+      Set_Character_Attributes (Attr => (Dim_Character => True,
                                           others => False));
       Add (Line => 6, Column => Columns / 2 - 10,
            Str => "This is Dim_Character");
 
-      Set_Character_Attributes (Attrs => (Bold_Character => True,
+      Set_Character_Attributes (Attr => (Bold_Character => True,
                                           others => False));
       Add (Line => 7, Column => Columns / 2 - 10,
            Str => "This is Bold_Character");

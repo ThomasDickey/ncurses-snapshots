@@ -77,7 +77,6 @@ window. You can just type in the Label-String of a function key, then this
 key will be simulated. This should help you to run the application even if
 you run it on a terminal with no or only a few function keys. With CTRL-A
 and CTRL-Z you may browse through the possible values in the command window.
-Rem.: The command window is an application of the forms package.
 #MENU00
 Here we give you a selection of various menu demonstrations.
 #MENU-PAD00

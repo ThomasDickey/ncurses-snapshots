@@ -2,7 +2,7 @@
 <HEAD>
 <TITLE></TITLE>
 </HEAD>
-<BODY>
+<BODY BGCOLOR="#99ccbb" TEXT="#000000" LINK="#4060b0" VLINK="#000080" ALINK="#ff4040">
 <PRE>
 <I>------------------------------------------------------------------------------</I>
 <I>--                                                                          --</I>
@@ -28,7 +28,7 @@
 <I>--  This binding comes AS IS with no warranty, implied or expressed.        --</I>
 <I>------------------------------------------------------------------------------</I>
 <I>--  Version Control:</I>
-<I>--  $Revision: 1.3 $</I>
+<I>--  $Revision: 1.4 $</I>
 <I>------------------------------------------------------------------------------</I>
 <B>with</B> System;
 <B>with</B> System.Parameters;
@@ -46,9 +46,9 @@
 
    type Type_Set <B>is</B> (Lower_Case, Upper_Case, Mixed_Case);
 
-   <I>--  For most of the routines you will see a version without an Window</I>
+   <I>--  For most of the routines you will see a version without a Window</I>
    <I>--  type parameter. They will operate on a default window, which can</I>
-   <I>--  be set by the user. It is initially stdscr.</I>
+   <I>--  be set by the user. It is initially equal to Standard_Window.</I>
 
    <B>procedure</B> Set_Window (Win : <B>in</B> Window);
    <I>--  Set Win as the default window</I>

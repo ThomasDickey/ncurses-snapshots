@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control
---  $Revision: 1.2 $
+--  $Revision: 1.3 $
 ------------------------------------------------------------------------------
 with Text_IO;
 
@@ -153,6 +153,32 @@ package body Sample is
       Initialize (PC_Style_With_Index);
       Init_Header_Handler;
       Init_Screen;
+
+      if Has_Colors then
+         Start_Color;
+
+         Init_Pair (Pair => Default_Colors,  Fore => Black,   Back => White);
+         Init_Pair (Pair => Menu_Back_Color, Fore => Black,   Back => Cyan);
+         Init_Pair (Pair => Menu_Fore_Color, Fore => Red,     Back => Cyan);
+         Init_Pair (Pair => Menu_Grey_Color, Fore => White,   Back => Cyan);
+         Init_Pair (Pair => Notepad_Color,   Fore => Black,   Back => Yellow);
+         Init_Pair (Pair => Help_Color,      Fore => Blue,    Back => Cyan);
+         Init_Pair (Pair => Form_Back_Color, Fore => Black,   Back => Cyan);
+         Init_Pair (Pair => Form_Fore_Color, Fore => Red,     Back => Cyan);
+         Init_Pair (Pair => Header_Color,    Fore => Black,   Back => Green);
+
+         Set_Background (Ch => (Color => Default_Colors,
+                                Attr  => Normal_Video,
+                                Ch    => ' '));
+         Set_Character_Attributes (Attr  => Normal_Video,
+                                   Color => Default_Colors);
+         Erase;
+
+         Set_Soft_Label_Key_Attributes (Color => Header_Color);
+         --  This propagates the attributes to the label window
+         Clear_Soft_Label_Keys; Restore_Soft_Label_Keys;
+      end if;
+
       Init_Keyboard_Handler;
 
       Set_Echo_Mode (FALSE);

@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.3 $
+--  $Revision: 1.4 $
 ------------------------------------------------------------------------------
 with Ada.Tags; use Ada.Tags;
 with Ada.Unchecked_Deallocation;
@@ -418,15 +418,17 @@ package body Terminal_Interface.Curses.Forms is
    --  |
    --  |
    --  |
-   procedure Set_Foreground (Fld  : in Field;
-                             Fore : in Character_Attribute_Set)
+   procedure Set_Foreground
+     (Fld   : in Field;
+      Fore  : in Character_Attribute_Set := Normal_Video;
+      Color : in Color_Pair := Color_Pair'First)
    is
       function Set_Field_Fore (Fld  : Field;
                                Attr : C_Int) return C_Int;
       pragma Import (C, Set_Field_Fore, "set_field_fore");
 
       Ch : constant Attributed_Character := (Ch    => Character'First,
-                                             Color => 0,
+                                             Color => Color,
                                              Attr  => Fore);
       Res : constant Eti_Error := Set_Field_Fore (Fld, Chtype_To_CInt (Ch));
    begin
@@ -445,18 +447,31 @@ package body Terminal_Interface.Curses.Forms is
    begin
       Fore := CInt_To_Chtype (Field_Fore (Fld)).Attr;
    end Foreground;
+
+   procedure Foreground (Fld   : in  Field;
+                         Fore  : out Character_Attribute_Set;
+                         Color : out Color_Pair)
+   is
+      function Field_Fore (Fld : Field) return C_Int;
+      pragma Import (C, Field_Fore, "field_fore");
+   begin
+      Fore  := CInt_To_Chtype (Field_Fore (Fld)).Attr;
+      Color := CInt_To_Chtype (Field_Fore (Fld)).Color;
+   end Foreground;
    --  |
    --  |
    --  |
-   procedure Set_Background (Fld  : in Field;
-                             Back : in Character_Attribute_Set)
+   procedure Set_Background
+     (Fld   : in Field;
+      Back  : in Character_Attribute_Set := Normal_Video;
+      Color : in Color_Pair := Color_Pair'First)
    is
       function Set_Field_Back (Fld  : Field;
                                Attr : C_Int) return C_Int;
       pragma Import (C, Set_Field_Back, "set_field_back");
 
       Ch : constant Attributed_Character := (Ch    => Character'First,
-                                             Color => 0,
+                                             Color => Color,
                                              Attr  => Back);
       Res : constant Eti_Error := Set_Field_Back (Fld, Chtype_To_CInt (Ch));
    begin
@@ -468,12 +483,23 @@ package body Terminal_Interface.Curses.Forms is
    --  |
    --  |
    procedure Background (Fld  : in  Field;
-                               Back : out Character_Attribute_Set)
+                         Back : out Character_Attribute_Set)
    is
       function Field_Back (Fld : Field) return C_Int;
       pragma Import (C, Field_Back, "field_back");
    begin
       Back := CInt_To_Chtype (Field_Back (Fld)).Attr;
+   end Background;
+
+   procedure Background (Fld   : in  Field;
+                         Back  : out Character_Attribute_Set;
+                         Color : out Color_Pair)
+   is
+      function Field_Back (Fld : Field) return C_Int;
+      pragma Import (C, Field_Back, "field_back");
+   begin
+      Back  := CInt_To_Chtype (Field_Back (Fld)).Attr;
+      Color := CInt_To_Chtype (Field_Back (Fld)).Color;
    end Background;
    --  |
    --  |

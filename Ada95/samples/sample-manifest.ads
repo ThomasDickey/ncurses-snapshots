@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control
---  $Revision: 1.1 $
+--  $Revision: 1.2 $
 ------------------------------------------------------------------------------
 with Terminal_Interface.Curses; use Terminal_Interface.Curses;
 
@@ -39,5 +39,15 @@ package Sample.Manifest is
    QUIT_CODE    : constant Special_Key_Code := Key_F3;
 
    Menu_Marker : constant String := "=> ";
+
+   Default_Colors  : constant Redefinable_Color_Pair := 1;
+   Menu_Fore_Color : constant Redefinable_Color_Pair := 2;
+   Menu_Back_Color : constant Redefinable_Color_Pair := 3;
+   Menu_Grey_Color : constant Redefinable_Color_Pair := 4;
+   Form_Fore_Color : constant Redefinable_Color_Pair := 5;
+   Form_Back_Color : constant Redefinable_Color_Pair := 6;
+   Notepad_Color   : constant Redefinable_Color_Pair := 7;
+   Help_Color      : constant Redefinable_Color_Pair := 8;
+   Header_Color    : constant Redefinable_Color_Pair := 9;
 
 end Sample.Manifest;

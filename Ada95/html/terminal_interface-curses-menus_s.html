@@ -2,7 +2,7 @@
 <HEAD>
 <TITLE></TITLE>
 </HEAD>
-<BODY>
+<BODY BGCOLOR="#99ccbb" TEXT="#000000" LINK="#4060b0" VLINK="#000080" ALINK="#ff4040">
 <PRE>
 
 <I>------------------------------------------------------------------------------</I>
@@ -29,9 +29,9 @@
 <I>--  This binding comes AS IS with no warranty, implied or expressed.        --</I>
 <I>------------------------------------------------------------------------------</I>
 <I>--  Version Control:</I>
-<I>--  $Revision: 1.3 $</I>
+<I>--  $Revision: 1.4 $</I>
 <I>------------------------------------------------------------------------------</I>
-<I>--  menu binding, generated at Thu Oct 24 15:16:30 1996</I>
+<I>--  menu binding, generated at Sat Oct 26 17:44:11 1996</I>
 <I>--  This module is generated. Please don't change it manually!</I>
 <I>--  Run the generator instead.</I>
 <I>--  |</I>
@@ -365,41 +365,66 @@
    <I>--  |=====================================================================</I>
 
    <I>--  <A NAME="AFU_31">|</I>
-   <B>procedure</B> Set_Foreground (Men  : <B>in</B> Menu;
-                             Fore : <B>in</B> Character_Attribute_Set);
+   <B>procedure</B> Set_Foreground
+     (Men   : <B>in</B> Menu;
+      Fore  : <B>in</B> Character_Attribute_Set := Normal_Video;
+      Color : <B>in</B> Color_Pair := Color_Pair'First);
    <I>--  AKA: set_menu_fore()</I>
 
    <I>--  <A NAME="AFU_32">|</I>
-   <B>procedure</B> Foreground (Men  : <B>in</B>  Menu;
-                         Fore : <B>out</B> Character_Attribute_Set);
+   <B>procedure</B> Foreground (Men   : <B>in</B>  Menu;
+                         Fore  : <B>out</B> Character_Attribute_Set);
    <I>--  AKA: menu_fore()</I>
 
    <I>--  <A NAME="AFU_33">|</I>
-   <B>procedure</B> Set_Background (Men  : <B>in</B> Menu;
-                             Back : <B>in</B> Character_Attribute_Set);
-   <I>--  AKA: set_menu_back()</I>
+   <B>procedure</B> Foreground (Men   : <B>in</B>  Menu;
+                         Fore  : <B>out</B> Character_Attribute_Set;
+                         Color : <B>out</B> Color_Pair);
+   <I>--  AKA: menu_fore()</I>
 
    <I>--  <A NAME="AFU_34">|</I>
+   <B>procedure</B> Set_Background
+     (Men   : <B>in</B> Menu;
+      Back  : <B>in</B> Character_Attribute_Set := Normal_Video;
+      Color : <B>in</B> Color_Pair := Color_Pair'First);
+   <I>--  AKA: set_menu_back()</I>
+
+   <I>--  <A NAME="AFU_35">|</I>
    <B>procedure</B> Background (Men  : <B>in</B>  Menu;
                          Back : <B>out</B> Character_Attribute_Set);
    <I>--  AKA: menu_back()</I>
+   <I>--  <A NAME="AFU_36">|</I>
 
-   <I>--  <A NAME="AFU_35">|</I>
-   <B>procedure</B> Set_Grey (Men  : <B>in</B> Menu;
-                       Grey : <B>in</B> Character_Attribute_Set);
+   <B>procedure</B> Background (Men   : <B>in</B>  Menu;
+                         Back  : <B>out</B> Character_Attribute_Set;
+                         Color : <B>out</B> Color_Pair);
+   <I>--  AKA: menu_back()</I>
+
+   <I>--  <A NAME="AFU_37">|</I>
+   <B>procedure</B> Set_Grey
+     (Men   : <B>in</B> Menu;
+      Grey  : <B>in</B> Character_Attribute_Set := Normal_Video;
+      Color : <B>in</B> Color_Pair := Color_Pair'First);
    <I>--  AKA: set_menu_grey()</I>
 
-   <I>--  <A NAME="AFU_36">|</I>
+   <I>--  <A NAME="AFU_38">|</I>
    <B>procedure</B> Grey (Men  : <B>in</B>  Menu;
                    Grey : <B>out</B> Character_Attribute_Set);
    <I>--  AKA: menu_grey()</I>
 
-   <I>--  <A NAME="AFU_37">|</I>
+   <I>--  <A NAME="AFU_39">|</I>
+   <B>procedure</B> Grey
+     (Men   : <B>in</B>  Menu;
+      Grey  : <B>out</B> Character_Attribute_Set;
+      Color : <B>out</B> Color_Pair);
+   <I>--  AKA: menu_grey()</I>
+
+   <I>--  <A NAME="AFU_40">|</I>
    <B>procedure</B> Set_Pad_Character (Men : <B>in</B> Menu;
                                 Pad : <B>in</B> Character := Space);
    <I>--  AKA: set_menu_pad()</I>
 
-   <I>--  <A NAME="AFU_38">|</I>
+   <I>--  <A NAME="AFU_41">|</I>
    <B>procedure</B> Pad_Character (Men : <B>in</B>  Menu;
                             Pad : <B>out</B> Character);
    <I>--  AKA: menu_pad()</I>
@@ -408,14 +433,14 @@
    <I>--  | Man page menu_spacing.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_39">|</I>
+   <I>--  <A NAME="AFU_42">|</I>
    <B>procedure</B> Set_Spacing (Men   : <B>in</B> Menu;
                           Descr : <B>in</B> Column_Position := 0;
                           Row   : <B>in</B> Line_Position   := 0;
                           Col   : <B>in</B> Column_Position := 0);
    <I>--  AKA: set_menu_spacing()</I>
 
-   <I>--  <A NAME="AFU_40">|</I>
+   <I>--  <A NAME="AFU_43">|</I>
    <B>procedure</B> Spacing (Men   : <B>in</B> Menu;
                       Descr : <B>out</B> Column_Position;
                       Row   : <B>out</B> Line_Position;
@@ -426,13 +451,13 @@
    <I>--  | Man page menu_pattern.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_41">|</I>
+   <I>--  <A NAME="AFU_44">|</I>
    <B>function</B> Set_Pattern (Men  : Menu;
                          Text : String) <B>return</B> Boolean;
    <I>--  AKA: set_menu_pattern()</I>
    <I>--  Return TRUE if the pattern matches, FALSE otherwise</I>
 
-   <I>--  <A NAME="AFU_42">|</I>
+   <I>--  <A NAME="AFU_45">|</I>
    <B>procedure</B> Pattern (Men  : <B>in</B>  Menu;
                       Text : <B>out</B> String);
    <I>--  AKA: menu_pattern()</I>
@@ -441,13 +466,13 @@
    <I>--  | Man page menu_format.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_43">|</I>
+   <I>--  <A NAME="AFU_46">|</I>
    <B>procedure</B> Set_Format (Men     : <B>in</B> Menu;
                          Lines   : <B>in</B> Line_Count;
                          Columns : <B>in</B> Column_Count);
    <I>--  AKA: set_menu_format()</I>
 
-   <I>--  <A NAME="AFU_44">|</I>
+   <I>--  <A NAME="AFU_47">|</I>
    <B>procedure</B> Format (Men     : <B>in</B>  Menu;
                      Lines   : <B>out</B> Line_Count;
                      Columns : <B>out</B> Column_Count);
@@ -460,39 +485,39 @@
    type Menu_Hook_Function <B>is</B> <B>access</B> <B>procedure</B> (Men : <B>in</B> Menu);
    <B>pragma</B> Convention (C, Menu_Hook_Function);
 
-   <I>--  <A NAME="AFU_45">|</I>
+   <I>--  <A NAME="AFU_48">|</I>
    <B>procedure</B> Set_Item_Init_Hook (Men  : <B>in</B> Menu;
                                  Proc : <B>in</B> Menu_Hook_Function);
    <I>--  AKA: set_item_init()</I>
 
-   <I>--  <A NAME="AFU_46">|</I>
+   <I>--  <A NAME="AFU_49">|</I>
    <B>procedure</B> Set_Item_Term_Hook (Men  : <B>in</B> Menu;
                                  Proc : <B>in</B> Menu_Hook_Function);
    <I>--  AKA: set_item_term()</I>
 
-   <I>--  <A NAME="AFU_47">|</I>
+   <I>--  <A NAME="AFU_50">|</I>
    <B>procedure</B> Set_Menu_Init_Hook (Men  : <B>in</B> Menu;
                                  Proc : <B>in</B> Menu_Hook_Function);
    <I>--  AKA: set_menu_init()</I>
 
-   <I>--  <A NAME="AFU_48">|</I>
+   <I>--  <A NAME="AFU_51">|</I>
    <B>procedure</B> Set_Menu_Term_Hook (Men  : <B>in</B> Menu;
                                  Proc : <B>in</B> Menu_Hook_Function);
    <I>--  AKA: set_menu_term()</I>
 
-   <I>--  <A NAME="AFU_49">|</I>
+   <I>--  <A NAME="AFU_52">|</I>
    <B>function</B> Get_Item_Init_Hook (Men : Menu) <B>return</B> Menu_Hook_Function;
    <I>--  AKA: item_init()</I>
 
-   <I>--  <A NAME="AFU_50">|</I>
+   <I>--  <A NAME="AFU_53">|</I>
    <B>function</B> Get_Item_Term_Hook (Men : Menu) <B>return</B> Menu_Hook_Function;
    <I>--  AKA: item_term()</I>
 
-   <I>--  <A NAME="AFU_51">|</I>
+   <I>--  <A NAME="AFU_54">|</I>
    <B>function</B> Get_Menu_Init_Hook (Men : Menu) <B>return</B> Menu_Hook_Function;
    <I>--  AKA: menu_init()</I>
 
-   <I>--  <A NAME="AFU_52">|</I>
+   <I>--  <A NAME="AFU_55">|</I>
    <B>function</B> Get_Menu_Term_Hook (Men : Menu) <B>return</B> Menu_Hook_Function;
    <I>--  AKA: menu_term()</I>
 
@@ -500,7 +525,7 @@
    <I>--  | Man page menu_items.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_53">|</I>
+   <I>--  <A NAME="AFU_56">|</I>
    <B>procedure</B> Redefine (Men   : <B>in</B> Menu;
                        Items : <B>in</B> Item_Array);
    <I>--  AKA: set_menu_items()</I>
@@ -510,11 +535,11 @@
    <B>procedure</B> Set_Items (Men   : <B>in</B> Menu;
                         Items : <B>in</B> Item_Array) <B>renames</B> Redefine;
 
-   <I>--  <A NAME="AFU_54">|</I>
+   <I>--  <A NAME="AFU_57">|</I>
    <B>function</B> Items (Men : Menu) <B>return</B> Item_Array_Access;
    <I>--  AKA: menu_items()</I>
 
-   <I>--  <A NAME="AFU_55">|</I>
+   <I>--  <A NAME="AFU_58">|</I>
    <B>function</B> Item_Count (Men : Menu) <B>return</B> Natural;
    <I>--  AKA: item_count()</I>
 
@@ -522,13 +547,13 @@
    <I>--  | Man page menu_new.3x</I>
    <I>--  |=====================================================================</I>
 
-   <I>--  <A NAME="AFU_56">|</I>
+   <I>--  <A NAME="AFU_59">|</I>
    <B>function</B> Create (Items : Item_Array) <B>return</B> Menu;
    <I>--  AKA: new_menu()</I>
 
    <B>function</B> New_Menu (Items : Item_Array) <B>return</B> Menu <B>renames</B> Create;
 
-   <I>--  <A NAME="AFU_57">|</I>
+   <I>--  <A NAME="AFU_60">|</I>
    <B>procedure</B> Delete (Men : <B>in</B> <B>out</B> Menu);
    <I>--  AKA: free_menu()</I>
    <I>--  Reset Men to Null_Menu</I>
@@ -542,7 +567,7 @@
                           Unknown_Request,
                           No_Match);
 
-   <I>--  <A NAME="AFU_58">|</I>
+   <I>--  <A NAME="AFU_61">|</I>
    <B>function</B> Driver (Men : Menu;
                     Key : Key_Code) <B>return</B> Driver_Result;
    <I>--  AKA: menu_driver()</I>

@@ -22,10 +22,11 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control
---  $Revision: 1.1 $
+--  $Revision: 1.2 $
 ------------------------------------------------------------------------------
 with Ada.Calendar; use Ada.Calendar;
 with Terminal_Interface.Curses.Text_IO.Integer_IO;
+with Sample.Manifest; use Sample.Manifest;
 
 --  This package handles the painting of the header line of the screen.
 --
@@ -140,6 +141,16 @@ package body Sample.Header_Handler is
    begin
       Header_Window := Win;
       if Win /= Null_Window then
+         if Has_Colors then
+            Set_Background (Win => Win,
+                            Ch  => (Ch    => ' ',
+                                    Color => Header_Color,
+                                    Attr  => Normal_Video));
+            Set_Character_Attributes (Win   => Win,
+                                      Attr  => Normal_Video,
+                                      Color => Header_Color);
+            Erase (Win);
+         end if;
          Leave_Cursor_After_Update (Win, True);
          Pos := Columns - Column_Position (Title'Length);
          Add (Win, 0, Pos / 2, Title);
