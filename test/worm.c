@@ -34,7 +34,7 @@ Options:
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.37 2002/06/29 23:32:18 tom Exp $
+  $Id: worm.c,v 1.38 2004/08/07 16:07:52 tom Exp $
 */
 
 #include <test.priv.h>
@@ -361,7 +361,7 @@ main(int argc, char *argv[])
 #endif
 	    /*
 	     * Make it simple to put this into single-step mode, or resume
-	     * normal operation -TD
+	     * normal operation -T.Dickey
 	     */
 	    if (ch == 'q') {
 		cleanup();

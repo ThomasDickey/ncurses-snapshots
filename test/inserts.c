@@ -1,5 +1,5 @@
 /*
- * $Id: inserts.c,v 1.9 2004/07/03 20:15:16 tom Exp $
+ * $Id: inserts.c,v 1.11 2004/08/07 20:10:04 tom Exp $
  *
  * Demonstrate the winsstr() and winsch functions.
  * Thomas Dickey - 2002/10/19
@@ -23,7 +23,7 @@ static int n_opt = -1;
 static void
 legend(WINDOW *win, int level, Options state, char *buffer, int length)
 {
-    char *showstate;
+    NCURSES_CONST char *showstate;
 
     switch (state) {
     default:
@@ -92,6 +92,8 @@ ColOf(char *buffer, int length, int margin)
 static void
 test_inserts(int level)
 {
+    static bool first = TRUE;
+
     int ch;
     int limit;
     int row = 1;
@@ -106,13 +108,17 @@ test_inserts(int level)
     Options option = ((m_opt ? oMove : oDefault)
 		      | ((w_opt || (level > 0)) ? oWindow : oDefault));
 
-    setlocale(LC_ALL, "");
+    if (first) {
+	static char cmd[80];
+	setlocale(LC_ALL, "");
 
-    putenv("TABSIZE=8");
-    initscr();
-    (void) cbreak();		/* take input chars one at a time, no wait for \n */
-    (void) noecho();		/* don't echo input */
-    keypad(stdscr, TRUE);
+	putenv(strcpy(cmd, "TABSIZE=8"));
+
+	initscr();
+	(void) cbreak();	/* take input chars one at a time, no wait for \n */
+	(void) noecho();	/* don't echo input */
+	keypad(stdscr, TRUE);
+    }
 
     limit = LINES - 5;
     if (level > 0) {
@@ -340,7 +346,7 @@ usage(void)
 	,"  -w      use window-parameter even when stdscr would be implied"
     };
     unsigned n;
-    for (n = 0; n < sizeof(tbl) / sizeof(tbl[0]); ++n)
+    for (n = 0; n < SIZEOF(tbl); ++n)
 	fprintf(stderr, "%s\n", tbl[n]);
     ExitProgram(EXIT_FAILURE);
 }
@@ -372,12 +378,6 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
     }
     if (optind < argc)
 	usage();
-
-    putenv("TABSIZE=8");
-    initscr();
-    (void) cbreak();		/* take input chars one at a time, no wait for \n */
-    (void) noecho();		/* don't echo input */
-    keypad(stdscr, TRUE);
 
     test_inserts(0);
     endwin();
