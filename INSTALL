@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.24 1997/02/09 01:26:27 tom Exp $
+-- $Id: INSTALL,v 1.25 1997/03/22 01:32:09 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -57,12 +57,11 @@ INSTALLATION PROCEDURE:
     with it.
 
     The --prefix option to configure changes the root directory for installing
-    ncurses.  The default is in subdirectories of /usr/local. Use --prefix=/usr
-    to replace your default curses distribution. This will be the case for
-    Linux and BSD/OS users.
+    ncurses.  The default is in subdirectories of /usr/local.  Use
+    --prefix=/usr to replace your default curses distribution.  This is the
+    default for Linux and BSD/OS users.
 
-    The package gets installed beneath the --prefix directory as
-    follows:
+    The package gets installed beneath the --prefix directory as follows:
 
     In $(prefix)/bin:          tic, infocmp, captoinfo, tset,
     				reset, clear, tput, toe
@@ -70,6 +69,10 @@ INSTALLATION PROCEDURE:
     In $(prefix)/share/terminfo: compiled terminal descriptions
     In $(prefix)/include:      C header files
     Under $(prefix)/man:       the manual pages
+
+    Note however that the configure script attempts to locate previous
+    installation of ncurses, and will set the default prefix according to where
+    it finds the ncurses headers.
 
 2.  Type `./configure' in the top-level directory of the distribution to
     configure ncurses for your operating system and create the Makefiles.
@@ -150,7 +153,7 @@ INSTALLATION PROCEDURE:
 
 	'make install.progs'    installs tic, infocmp, etc...
   	'make install.includes' installs the headers.
-  	'make install.libs'     installs the libraries.
+  	'make install.libs'     installs the libraries (and the headers).
   	'make install.data'     installs the terminfo data. (Note: `tic' must
 	                        be installed before the terminfo data can be
 			        compiled).

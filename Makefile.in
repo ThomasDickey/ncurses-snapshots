@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.9 1996/06/15 23:55:18 tom Exp $
+# $Id: Makefile.in,v 1.10 1997/03/22 00:57:42 tom Exp $
 ################################################################################
-# Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
+# Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
 #                                                                              #
 # Permission to use, copy, modify, and distribute this software and its        #
@@ -27,12 +27,38 @@ NC_MFLAGS = @nc_cv_makeflags@ INSTALL_PREFIX="$(INSTALL_PREFIX)"
 
 @SET_MAKE@
 
+NCURSES_MAJOR	= @NCURSES_MAJOR@
+NCURSES_MINOR	= @NCURSES_MINOR@
+NCURSES_PATCH	= @NCURSES_PATCH@
+
+prefix		= @prefix@
+exec_prefix	= @exec_prefix@
+
+bindir		= @bindir@
+datadir		= @datadir@
+includedir	= @includedir@
+libdir		= @libdir@
+mandir		= @mandir@
+
 DIRS_TO_MAKE = @DIRS_TO_MAKE@
 
 all ::	$(DIRS_TO_MAKE)
 
 $(DIRS_TO_MAKE) :
 	mkdir $@
+
+preinstall :
+	@ echo ''
+	@ echo '** Configuration summary for NCURSES $(NCURSES_MAJOR).$(NCURSES_MINOR) $(NCURSES_PATCH):'
+	@ echo ''
+	@ echo '      bin directory: '$(bindir)
+	@ echo '      lib directory: '$(libdir)
+	@ echo '  include directory: '$(includedir)
+	@ echo '      man directory: '$(mandir)
+	@ echo ' terminfo directory: '$(datadir)/terminfo
+	@ echo ''
+	@ if test "$(includedir)" != "$(prefix)/include" ; then \
+		echo '** Include-directory is not in a standard location'; fi
 
 # Put the common rules here so that we can easily construct the list of
 # directories to visit.
