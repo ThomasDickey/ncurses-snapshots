@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.453 1999/05/17 01:27:19 tom Exp $
+-- $Id: NEWS,v 1.454 1999/06/06 00:46:34 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990605	pre-release
+	+ include time.h in lib_napms.c if nanosleep is used (patch by
+	  R Lindsay Todd <toddr@rpi.edu>).
+	+ add an "#undef bool" to curses.h, in case someone tries to define it,
+	  e.g., perl.
+	+ add check to tparm to guard against divide by zero (reported by Aaron
+	  Campbell <aaron@ug.cs.dal.ca>).
 
 990516	pre-release
 	+ minor fix to build tack on CLIX (mismatched const).
