@@ -42,14 +42,30 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.36 1998/09/26 16:01:30 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.38 1998/10/18 00:27:14 tom Exp $")
 
 const char *_nc_progname = "tic";
 
 static	FILE	*log_fp;
+static	FILE	*tmp_fp;
 static	bool	showsummary = FALSE;
+static	const char *to_remove;
 
 static	const	char usage_string[] = "[-h] [-v[n]] [-e names] [-CILNRTcfrsw1] source-file\n";
+
+static void cleanup(void)
+{
+	fclose(tmp_fp);
+	if (to_remove != 0)
+		remove(to_remove);
+}
+
+static void failed(const char *msg)
+{
+	perror(msg);
+	cleanup();
+	exit(EXIT_FAILURE);
+}
 
 static void usage(void)
 {
@@ -273,12 +289,13 @@ static const char **make_namelist(char *src)
 	unsigned pass, n, nn;
 	char buffer[BUFSIZ];
 
-	if (strchr(src, '/') != 0) {	/* a filename */
+	if (src == 0) {
+		/* EMPTY */;
+	} else if (strchr(src, '/') != 0) {	/* a filename */
 		FILE *fp = fopen(src, "r");
-		if (fp == 0) {
-			perror(src);
-			exit(EXIT_FAILURE);
-		}
+		if (fp == 0)
+			failed(src);
+
 		for (pass = 1; pass <= 2; pass++) {
 			nn = 0;
 			while (fgets(buffer, sizeof(buffer), fp) != 0) {
@@ -347,6 +364,7 @@ static bool matches(const char **needle, const char *haystack)
 
 int main (int argc, char *argv[])
 {
+char	my_tmpname[PATH_MAX];
 int	v_opt = -1, debug_level;
 int	smart_defaults = TRUE;
 char    *termcap;
@@ -480,10 +498,20 @@ bool	check_only = FALSE;
 		if (infodump == TRUE) {
 			/* captoinfo's no-argument case */
 			source_file = "/etc/termcap";
-			if ((termcap = getenv("TERMCAP")) != NULL) {
+			if ((termcap = getenv("TERMCAP")) != 0
+			 && (namelst = make_namelist(getenv("TERM"))) != 0) {
 				if (access(termcap, F_OK) == 0) {
 					/* file exists */
 					source_file = termcap;
+				} else
+				if ((source_file = tmpnam(my_tmpname)) != 0
+				 && (tmp_fp = fopen(source_file, "w")) != 0) {
+					fprintf(tmp_fp, "%s\n", termcap);
+					fclose(tmp_fp);
+					tmp_fp = fopen(source_file, "r");
+					to_remove = source_file;
+				} else {
+					failed("tmpnam");
 				}
 			}
 		} else {
@@ -493,11 +521,13 @@ bool	check_only = FALSE;
 				_nc_progname,
 				_nc_progname,
 				usage_string);
+			cleanup();
 			return EXIT_FAILURE;
 		}
 	}
 
-	if (freopen(source_file, "r", stdin) == NULL) {
+	if (tmp_fp == 0
+	 && (tmp_fp = fopen(source_file, "r")) == 0) {
 		fprintf (stderr, "%s: Can't open %s\n", _nc_progname, source_file);
 		return EXIT_FAILURE;
 	}
@@ -519,14 +549,17 @@ bool	check_only = FALSE;
 	if (!(check_only || infodump || capdump))
 	    _nc_set_writedir(outdir);
 #endif /* HAVE_BIG_CORE */
-	_nc_read_entry_source(stdin, (char *)NULL,
+	_nc_read_entry_source(tmp_fp, (char *)NULL,
 			      !smart_defaults, FALSE,
 			      (check_only || infodump || capdump) ? NULLHOOK : immedhook);
 
 	/* do use resolution */
-	if (check_only || (!infodump && !capdump) || forceresolve)
-	    if (!_nc_resolve_uses() && !check_only)
+	if (check_only || (!infodump && !capdump) || forceresolve) {
+	    if (!_nc_resolve_uses() && !check_only) {
+		cleanup();
 		return EXIT_FAILURE;
+	    }
+	}
 
 #ifndef HAVE_BIG_CORE
 	/*
@@ -543,6 +576,7 @@ bool	check_only = FALSE;
 	{
 	    (void) fprintf(stderr,
 			   "Sorry, -e can't be used without -I or -C\n");
+	    cleanup();
 	    return EXIT_FAILURE;
 	}
 #endif /* HAVE_BIG_CORE */
@@ -589,12 +623,12 @@ bool	check_only = FALSE;
 			/* this is in case infotocap() generates warnings */
 			_nc_set_type(_nc_first_name(qp->tterm.term_names));
 
-			(void) fseek(stdin, qp->cstart, SEEK_SET);
+			(void) fseek(tmp_fp, qp->cstart, SEEK_SET);
 			while (j-- )
 			    if (infodump)
-				(void) putchar(getchar());
+				(void) putchar(fgetc(tmp_fp));
 			    else
-				put_translate(getchar());
+				put_translate(fgetc(tmp_fp));
 
 			len = dump_entry(&qp->tterm, limited, numbers, NULL);
 			for (j = 0; j < qp->nuses; j++)
@@ -609,8 +643,8 @@ bool	check_only = FALSE;
 		    bool in_comment = FALSE;
 		    bool trailing_comment = FALSE;
 
-		    (void) fseek(stdin, _nc_tail->cend, SEEK_SET);
-		    while ((c = getchar()) != EOF)
+		    (void) fseek(tmp_fp, _nc_tail->cend, SEEK_SET);
+		    while ((c = fgetc(tmp_fp)) != EOF)
 		    {
 			if (oldc == '\n') {
 			    if (c == '#') {
@@ -642,5 +676,6 @@ bool	check_only = FALSE;
 		else
 			fprintf(log_fp, "No entries written\n");
 	}
+	cleanup();
 	return(EXIT_SUCCESS);
 }

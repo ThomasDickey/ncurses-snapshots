@@ -42,7 +42,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.37 1998/09/26 13:57:53 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.38 1998/10/17 21:32:36 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -918,6 +918,7 @@ int main(int argc, char *argv[])
 
 		case 'r':
 			tversion = 0;
+			limited = FALSE;
 			break;
 
 		case 'R':
