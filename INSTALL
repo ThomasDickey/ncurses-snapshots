@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.70 2004/01/31 16:52:08 tom Exp $
+-- $Id: INSTALL,v 1.71 2004/02/07 21:06:05 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -714,7 +714,7 @@ COMPATIBILITY WITH OLDER VERSIONS OF NCURSES:
     you may encounter when building a system with different versions of
     ncurses:
 
-    5.4 (February 1, 2004)
+    5.4 (February 8, 2004)
 	Interface changes:
 
 	+ add the remaining functions for X/Open curses wide-character support. 

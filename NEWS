@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.795 2004/02/01 01:02:53 tom Exp $
+-- $Id: NEWS,v 1.796 2004/02/07 20:52:27 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040207 pre-release
+	+ minor fixes to _nc_tparm_analyze(), i.e., do not count %i as a param,
+	  and do not count %d if it follows a %p.
+	+ correct an inconsistency between handling of codes in the 128-255
+	  range, e.g., as illustrated by test/ncurses.c f/F tests.  In POSIX
+	  locale, the latter did not show printable results, while the former
+	  did.
+	+ modify MKlib_gen.sh to compensate for broken C preprocessor on Mac
+	  OS X, which alters "%%" to "% % " (report by Robert Simms, fix
+	  verified by Scott Corscadden).
 
 20040131 pre-release
 	+ modify SCREEN struct to align it between normal/wide curses flavors

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2001-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 2001-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey 1996-2003                                      *
+ *  Author: Thomas E. Dickey 1996-2004                                      *
  *     and: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
@@ -41,7 +41,7 @@
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.8 2003/06/28 23:20:37 tom Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.9 2004/02/03 01:16:37 tom Exp $")
 
 static char *
 _nc_vischar(char *tp, unsigned c)
@@ -71,6 +71,7 @@ _nc_vischar(char *tp, unsigned c)
 	sprintf(tp, "\\%03lo", ChCharOf(c));
 	tp += strlen(tp);
     }
+    *tp = 0;
     return tp;
 }
 

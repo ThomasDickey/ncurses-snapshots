@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -43,7 +43,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.67 2003/05/24 20:18:50 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.68 2004/02/07 20:52:51 tom Exp $")
 
 /*
  *	char *
@@ -391,7 +391,8 @@ _nc_tparm_analyze(const char *string, char *p_is_s[NUM_PARM], int *popcount)
 	    case 'x':		/* FALLTHRU */
 	    case 'X':		/* FALLTHRU */
 	    case 'c':		/* FALLTHRU */
-		number++;
+		if (lastpop <= 0)
+		    number++;
 		lastpop = -1;
 		break;
 
@@ -457,9 +458,7 @@ _nc_tparm_analyze(const char *string, char *p_is_s[NUM_PARM], int *popcount)
 		break;
 
 	    case 'i':
-		lastpop = -1;
-		if (*popcount < 2)
-		    *popcount = 2;
+		/* will add 1 to first (usually two) parameters */
 		break;
 	    }
 	}

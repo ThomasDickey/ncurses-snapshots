@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.79 2004/01/31 01:40:16 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.80 2004/02/07 18:20:46 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -164,6 +164,12 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 		attr_t attrs = AttrOf(ch);
 		SetChar(ch, result, attrs);
 		WINDOW_EXT(win, addch_used) = 0;
+		if (CharOf(ch) < 256) {
+		    const char *s = unctrl(CharOf(ch));
+		    if (s[1] != 0) {
+			return waddstr(win, s);
+		    }
+		}
 	    } else {
 		if (len == -1) {
 		    /*
@@ -262,7 +268,13 @@ waddch_nosync(WINDOW *win, const NCURSES_CH_T ch)
      * claims the code is printable, treat it that way.
      */
     if ((AttrOf(ch) & A_ALTCHARSET)
-	|| ((s = unctrl(t))[1] == 0 || isprint(t)))
+	|| ((s = unctrl(t))[1] == 0 ||
+		(
+		isprint(t)
+#if USE_WIDEC_SUPPORT
+		|| WINDOW_EXT(win, addch_used)
+#endif
+		)))
 	return waddch_literal(win, ch);
 
     /*
