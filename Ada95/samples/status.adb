@@ -1,10 +1,10 @@
 ------------------------------------------------------------------------------
 --                                                                          --
---                           GNAT ncurses Binding                           --
+--                       GNAT ncurses Binding Samples                       --
 --                                                                          --
---            Terminal_Interface.Curses.Forms.Field_Types.IntField          --
+--                                  Status                                  --
 --                                                                          --
---                                 S P E C                                  --
+--                                 B O D Y                                  --
 --                                                                          --
 --  Version 00.93                                                           --
 --                                                                          --
@@ -21,20 +21,22 @@
 --                                                                          --
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
---  Version Control:
---  $Revision: 1.2 $
+--  Version Control
+--  $Revision: 1.1 $
 ------------------------------------------------------------------------------
-package Terminal_Interface.Curses.Forms.Field_Types.IntField is
-   pragma Preelaborate (IntField);
+--  This package has been contributed by Laurent Pautet <pautet@gnat.com>   --
+--                                                                          --
+package body Status is
 
-   type Integer_Field is new Field_Type with
-      record
-         Precision   : Natural;
-         Lower_Limit : Integer;
-         Upper_Limit : Integer;
-      end record;
+   protected body Process is
+      procedure Stop is
+      begin
+         Done := True;
+      end Stop;
+      function Continue return Boolean is
+      begin
+         return not Done;
+      end Continue;
+   end Process;
 
-   procedure Set_Field_Type (Fld : in Field;
-                             Typ : in Integer_Field);
-
-end Terminal_Interface.Curses.Forms.Field_Types.IntField;
+end Status;

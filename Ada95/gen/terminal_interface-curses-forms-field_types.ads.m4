@@ -25,11 +25,12 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.1 $
+--  $Revision: 1.3 $
 ------------------------------------------------------------------------------
 with Terminal_Interface.Curses.Aux;
 
 package Terminal_Interface.Curses.Forms.Field_Types is
+   pragma Preelaborate (Field_Types);
 
    --  MANPAGE(`form_fieldtype.3x')
 
@@ -121,10 +122,15 @@ private
    --  | fieldtypes handled by this binding. Any other low-level fieldtype
    --  | will result in a Form_Exception is function Get_Type.
    --  |
-   C_Generic_Type   : C_Field_Type := Null_Field_Type;
-   C_Generic_Choice : C_Field_Type := Null_Field_Type;
-   C_Builtin_Router : C_Field_Type := Null_Field_Type;
-   C_Choice_Router  : C_Field_Type := Null_Field_Type;
+   M_Generic_Type   : C_Field_Type := null;
+   M_Generic_Choice : C_Field_Type := null;
+   M_Builtin_Router : C_Field_Type := null;
+   M_Choice_Router  : C_Field_Type := null;
+
+   --  Two wrapper functions to access those low-level fieldtypes defined
+   --  in this package.
+   function C_Builtin_Router return C_Field_Type;
+   function C_Choice_Router  return C_Field_Type;
 
    procedure Wrap_Builtin (Fld : Field;
                            Typ : Field_Type'Class;

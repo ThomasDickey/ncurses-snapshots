@@ -1,8 +1,22 @@
--- $Id: NEWS,v 1.278 1997/11/16 01:35:26 tom Exp $
+-- $Id: NEWS,v 1.280 1997/11/23 01:05:24 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+971122
+	> fixes/updates for terminfo.src:
+	+ add vt220-js, pilot, rbcomm, datapoint entries from esr's 27-jun-97
+	  version.
+	+ add hds200 description (Walter Skorski)
+	+ add EMX 0.9b descriptions
+	+ correct rmso/smso capabilities in wy30-mc and wy50-mc (Daniel Weaver)
+	+ rename xhpterm back to hpterm.
+	> patch by Juergen Pfeifer:
+	+ Improves the usage of elaboration pragmas for the Ada95 binding.
+	+ Adds a translation of the test/rain.c into Ada95 to the samples. 
+	  This has been contributed to the project by Laurent Pautet
+	  (pautet@gnat.com)
+	
 971115
 	+ increase MAX_NAME_SIZE to 512 to handle extremely long alias list
 	  in HP-UX terminfo.

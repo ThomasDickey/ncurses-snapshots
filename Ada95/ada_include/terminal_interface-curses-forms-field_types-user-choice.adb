@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.1 $
+--  $Revision: 1.2 $
 ------------------------------------------------------------------------------
 with Ada.Unchecked_Conversion;
 with Interfaces.C;
@@ -58,31 +58,38 @@ package body Terminal_Interface.Curses.Forms.Field_Types.User.Choice is
       return C_Int (Boolean'Pos (Result));
    end Generic_Prev;
 
-
-begin
-   C_Generic_Choice := New_Fieldtype (Generic_Field_Check'Access,
-                                      Generic_Char_Check'Access);
-   if C_Generic_Choice = Null_Field_Type then
-      Eti_Exception (E_System_Error);
-   end if;
-
-   declare
+   --  -----------------------------------------------------------------------
+   --
+   function C_Generic_Choice return C_Field_Type
+   is
       Res : Eti_Error;
+      T   : C_Field_Type;
    begin
-      Res := Set_Fieldtype_Arg (C_Generic_Choice,
-                                Make_Arg'Access,
-                                Copy_Arg'Access,
-                                Free_Arg'Access);
-      if Res /= E_Ok then
-         Eti_Exception (Res);
-      end if;
+      if M_Generic_Choice = Null_Field_Type then
+         T := New_Fieldtype (Generic_Field_Check'Access,
+                             Generic_Char_Check'Access);
+         if T = Null_Field_Type then
+            raise Form_Exception;
+         else
+            Res := Set_Fieldtype_Arg (T,
+                                      Make_Arg'Access,
+                                      Copy_Arg'Access,
+                                      Free_Arg'Access);
+            if Res /= E_Ok then
+               Eti_Exception (Res);
+            end if;
 
-      Res := Set_Fieldtype_Choice (C_Generic_Choice,
-                                   Generic_Next'Access,
-                                   Generic_Prev'Access);
-      if Res /= E_Ok then
-         Eti_Exception (Res);
+            Res := Set_Fieldtype_Choice (T,
+                                         Generic_Next'Access,
+                                         Generic_Prev'Access);
+            if Res /= E_Ok then
+               Eti_Exception (Res);
+            end if;
+         end if;
+         M_Generic_Choice := T;
       end if;
-   end;
+      pragma Assert (M_Generic_Choice /= Null_Field_Type);
+      return M_Generic_Choice;
+   end C_Generic_Choice;
 
 end Terminal_Interface.Curses.Forms.Field_Types.User.Choice;

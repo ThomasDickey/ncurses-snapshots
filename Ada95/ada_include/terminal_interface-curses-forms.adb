@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.10 $
+--  $Revision: 1.11 $
 ------------------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
 with Unchecked_Conversion;
@@ -1128,7 +1128,18 @@ package body Terminal_Interface.Curses.Forms is
       Release (FA);
    end Free;
 
-begin
-   Default_Field_Options := Get_Options (Null_Field);
-   Default_Form_Options  := Get_Options (Null_Form);
+   --  |=====================================================================
+
+   function Default_Field_Options return Field_Option_Set
+   is
+   begin
+      return Get_Options (Null_Field);
+   end Default_Field_Options;
+
+   function Default_Form_Options return Form_Option_Set
+   is
+   begin
+      return Get_Options (Null_Form);
+   end Default_Form_Options;
+
 end Terminal_Interface.Curses.Forms;

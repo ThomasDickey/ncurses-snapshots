@@ -22,7 +22,7 @@
 //  This binding comes AS IS with no warranty, implied or expressed.        --
 //----------------------------------------------------------------------------
     Version Control
-    $Revision: 1.11 $
+    $Revision: 1.12 $
   --------------------------------------------------------------------------*/
 /*
   This program generates various record structures and constants from the
@@ -82,9 +82,16 @@ static int find_pos (char *s, unsigned len, int *low, int *high)
   return (*high >= 0 && (*low <= *high)) ? *low : -1;
 }
 
-static void gen_reps ( const name_attribute_pair *nap,
-		       const char *name,
-		       int len)
+/*
+ * This helper routine generates a representation clause for a
+ * record type defined in the binding.
+ * We are only dealing with record types which are of 32 or 16
+ * bit size, i.e. they fit into an (u)int or a (u)short.
+ */
+static void gen_reps
+(const name_attribute_pair *nap, /* array of name_attribute_pair records */
+ const char *name,               /* name of the represented record type  */
+ int len)                        /* size of the record in bytes          */
 {
   int i,l,cnt = 0,low,high;
   int width = strlen(RES_NAME);
@@ -323,6 +330,9 @@ static void gen_form_opt_rep(const char *name)
   gen_reps (nap, name, sizeof(int));
 }
 
+/*
+ * Generate the representation clause for the Field_Option_Set record
+ */
 static void gen_field_opt_rep(const char *name)
 {
   static const name_attribute_pair nap[] = {
@@ -361,12 +371,17 @@ static void gen_field_opt_rep(const char *name)
   gen_reps (nap, name, sizeof(int));
 }
 
+/*
+ * Generate a single key code constant definition.
+ */
 static void keydef(const char *name, const char *old_name, int value, int mode)
 {
-  if (mode==0)
+  if (mode==0) /* Generate the new name */
     printf("   %-30s : constant Special_Key_Code := 8#%3o#;\n",name,value);
   else
-    {
+    { /* generate the old name, but only if it doesn't conflict with the old
+       * name (Ada95 isn't case sensitive!)
+       */
       const char *s = old_name; const char *t = name;
       while ( *s && *t && (toupper(*s++) == toupper(*t++)));
       if (*s || *t)
@@ -374,6 +389,13 @@ static void keydef(const char *name, const char *old_name, int value, int mode)
     }
 }
   
+/*
+ * Generate constants for the key codes. When called with mode==0, a
+ * complete list with nice constant names in proper casing style will
+ * be generated. Otherwise a list of old (i.e. C-style) names will be
+ * generated, given that the name wasn't already defined in the "nice"
+ * list.
+ */
 static void gen_keydefs (int mode)
 {
   char buf[16];
@@ -669,6 +691,11 @@ static void gen_keydefs (int mode)
 #endif  
 }
 
+/*
+ * Generate a constant with the given name. The second parameter
+ * is a reference to the ACS character in the acs_map[] array and
+ * will be translated into an index.
+ */
 static void acs_def (const char *name, chtype *a)
 {
   int c = a - &acs_map[0];
@@ -679,7 +706,9 @@ static void acs_def (const char *name, chtype *a)
     printf("Character'Val (%d);\n",c);
 }
 
-
+/*
+ * Generate the constants for the ACS characters
+ */
 static void gen_acs (void)
 {
 #ifdef ACS_ULCORNER
@@ -780,6 +809,11 @@ static void gen_acs (void)
 #endif
 }
 
+/*
+ * Output some comment lines indicating that the file is generated.
+ * The name parameter is the name of the facility to be used in
+ * the comment.
+ */
 static void prologue(const char *name)
 {
   printf("--  %s binding.\n",name);
@@ -789,6 +823,10 @@ static void prologue(const char *name)
   printf("define(`M4_BIT_ORDER',`%s_Order_First')",little_endian ? "Low":"High");
 }
 
+/*
+ * Write the prologue for the curses facility and make sure that
+ * KEY_MIN and KEY_MAX are defined for the rest of this source.
+ */
 static void basedefs (void)
 {
   prologue("curses");
@@ -799,31 +837,48 @@ static void basedefs (void)
 #ifndef KEY_MIN
 #  define KEY_MIN 0401
 #endif
-  if (KEY_MIN == 256)
-    abort();
+  if (KEY_MIN == 256) {
+    fprintf(stderr,"Unexpected value for KEY_MIN: %d\n",KEY_MIN);
+    exit(1);
+  }
   printf("define(`M4_SPECIAL_FIRST',`8#%o#')",KEY_MIN - 1);
 }
 
+/*
+ * Write out the comment lines for the menu facility
+ */
 static void menu_basedefs (void)
 {
   prologue("menu");
 }
 
+/*
+ * Write out the comment lines for the form facility
+ */
 static void form_basedefs (void)
 {
   prologue("form");
 }
 
+/*
+ * Write out the comment lines for the mouse facility
+ */
 static void mouse_basedefs(void)
 {
   prologue("mouse");
 }
 
+/*
+ * Write the definition of a single color
+ */
 static void color_def (const char *name, int value)
 {
   printf("   %-8s : constant Color_Number := %d;\n",name,value);
 }
 
+/*
+ * Generate all color definitions
+ */
 static void gen_color (void)
 {
 #ifdef COLOR_BLACK
@@ -852,27 +907,51 @@ static void gen_color (void)
 #endif
 }
 
+/*
+ * Generate the linker options for the base facility
+ */
 static void gen_linkopts (void)
 {
    printf("   pragma Linker_Options (\"-lncurses\");\n");
 }
 
+/*
+ * Generate the linker options for the menu facility
+ */
 static void gen_menu_linkopts (void)
 {
    printf("   pragma Linker_Options (\"-lmenu\");\n");
 }
 
+/*
+ * Generate the linker options for the form facility
+ */
 static void gen_form_linkopts (void)
 {
    printf("   pragma Linker_Options (\"-lform\");\n");
 }
 
+/*
+ * Generate the linker options for the panel facility
+ */
 static void gen_panel_linkopts (void)
 {
    printf("   pragma Linker_Options (\"-lpanel\");\n");
 }
 
 
+/*
+ * main() expects two arguments on the commandline, both single characters.
+ * The first character denotes the facility for which we generate output.
+ * Possible values are
+ *   B - Base
+ *   M - Menus
+ *   F - Forms
+ *   P - Pointer Device (Mouse)
+ *
+ * The second character then denotes the specific output that should be
+ * generated for the selected facility.
+ */
 int main(int argc, char *argv[])
 {
   int x = 0x12345678;
@@ -886,85 +965,85 @@ int main(int argc, char *argv[])
 
   switch(argv[1][0])
     {
-    case 'B':
+    case 'B': /* The Base facility */
       switch(argv[2][0])
 	{
-	case 'A':
+	case 'A': /* chtype translation into Ada95 record type */
 	  gen_attr_set("Character_Attribute_Set");
 	  break;
-	case 'K':
+	case 'K': /* translation of keycodes */
 	  gen_keydefs(0);
 	  break;
-	case 'B':
+	case 'B': /* write some initial comment lines */
 	  basedefs();
 	  break;
-	case 'C':
+	case 'C': /* generate color constants */
 	  gen_color();
 	  break;
-	case 'M':
+	case 'M': /* generate constants for the ACS characters */
 	  gen_acs();
 	  break;
-	case 'L':
+	case 'L': /* generate the Linker_Options pragma */
 	  gen_linkopts();
 	  break;
-	case 'O':
+	case 'O': /* generate definitions of the old key code names */
 	  gen_keydefs(1);
 	  break;
-	case 'R':
+	case 'R': /* generate representation clause for Attributed character */
 	  gen_chtype_rep("Attributed_Character");
 	  break;
 	default:
 	  break;
 	}
       break;
-    case 'M':
+    case 'M': /* The Menu facility */
       switch(argv[2][0])
 	{
-	case 'R':
+	case 'R': /* generate representation clause for Menu_Option_Set */
 	  gen_menu_opt_rep("Menu_Option_Set");
 	  break;
-	case 'B':
+	case 'B': /* write some initial comment lines */
 	  menu_basedefs();
 	  break;
-	case 'L':
+	case 'L': /* generate the Linker_Options pragma */
 	  gen_menu_linkopts();
 	  break;
-	case 'I':
+	case 'I': /* generate representation clause for Item_Option_Set */
 	  gen_item_opt_rep("Item_Option_Set");
 	  break;
 	default:
 	  break;
 	}
       break;
-    case 'F':
+    case 'F': /* The Form facility */
       switch(argv[2][0])
 	{
-	case 'R':
+	case 'R': /* generate representation clause for Form_Option_Set */
 	  gen_form_opt_rep("Form_Option_Set");
 	  break;
-	case 'B':
+	case 'B': /* write some initial comment lines */
 	  form_basedefs();
 	  break;
-	case 'L':
+	case 'L': /* generate the Linker_Options pragma */
 	  gen_form_linkopts();
 	  break;
-	case 'I':
+	case 'I': /* generate representation clause for Field_Option_Set */
 	  gen_field_opt_rep("Field_Option_Set");
 	  break;
 	default:
 	  break;
 	}
       break;
-    case 'P':
+    case 'P': /* The Pointer(=Mouse) facility */
       switch(argv[2][0])
 	{
-	case 'B':
+	case 'B': /* write some initial comment lines */
 	  mouse_basedefs();
 	  break;
-	case 'M':
+	case 'M': /* generate representation clause for Mouse_Event */
 	  gen_mrep_rep("Mouse_Event");
 	  break;
-	case 'L':
+	case 'L': /* generate the Linker_Options pragma */
 	  gen_panel_linkopts();
 	  break;
 	default:

@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 10.1.13
+#	Version 10.1.14
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -330,7 +330,7 @@ klone+koi8acs|alternate character set for ansi.sys displays with KOI8 charset,
 # They match a subset of ECMA-48.
 klone+color|color control for ansi.sys and ISO6429-compatible displays, 
 	colors#8, ncv#3, pairs#64, 
-	op=\E[37;40m, setb=\E[4%p1%dm, setf=\E[3%p1%dm, 
+	op=\E[37;40m, setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
 
 # This is better than klone+color, it doesn't assume white-on-black as the
 # default color pair,  but many `ANSI' terminals don't grok the <op> cap.
@@ -519,16 +519,6 @@ nansi.sysk|nansisysk|PC-DOS Public Domain NANSI.SYS with keypad redefined for vi
 	dch1=\E[1P, dl1=\E[1M, ich1=\E[1@, il1=\E[1L, 
 	is2=U4 PC-DOS Public Domain NANSI.SYS with keypad redefined for vi 9-29-86\n\E[;75;8p, 
 	use=ansi.sysk, 
-
-# From: Federico Bianchi <bianchi@magna.cisid.unipi.it>, 15 Jan 1997
-ansi-nt|psx_ansi|Windows NT POSIX console, 
-	am, bw, msgr, 
-	cols#80, it#8, lines#25, 
-	bel=^G, clear=\E[2J, cr=^M, cub1=^H, cud1=^J, cuf1=\E[C, 
-	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, ed=\E[J, el=\E[K, 
-	home=\E[H, ht=^I, ind=\E[S, kbs=^H, kcub1=\E[D, kcud1=\E[V, 
-	kcuf1=\E[C, kcuu1=\E[A, nel=\r\E[S, rc=\E[u, rev=\E[7m, 
-	ri=\E[T, rmso=\E[m, sc=\E[s, sgr0=\E[0m, smso=\E[7m, 
 
 #### ANSI console types
 #
@@ -1143,7 +1133,6 @@ ibmpc3|pc3-bold|IBM PC BSD/386 Console with bold instead of underline,
 #
 # (The <acsc>, <rmacs>, and <smacs> capabilities aren't in DEC's official
 # entry -- esr)
-
 vt52|dec vt52, 
 	cols#80, it#8, lines#24, 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
@@ -1431,6 +1420,35 @@ vt220-8|dec vt220 8 bit terminal,
 	rmacs=^O, rmam=\E[?7l, rmir=\E[4l, rmso=\E[27m, 
 	rmul=\E[24m, rs1=\E[?3l, sc=\E7, sgr0=\E[m, smacs=^N, 
 	smam=\E[?7h, smir=\E[4h, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
+
+# vt220 termcap written Tue Oct 25 20:41:10 1988 by Alex Latzko
+# (not an official DEC entry!)
+# The problem with real vt220 terminals is they don't send escapes when in
+# in vt220 mode.  This can be gotten around two ways.  1> don't send
+# escapes or 2> put the vt220 into vt100 mode and use all the nifty
+# features of vt100 advanced video which it then has.
+#
+# This entry takes the view of putting a vt220 into vt100 mode so
+# you can use the escape key in emacs and everything else which needs it.
+#
+# You probably don't want to use this on a VMS machine since VMS will think
+# it has a vt220 and will get fouled up coming out of emacs
+#
+# From: Alexander Latzko <latzko@marsenius.rutgers.edu>, 30 Dec 1996
+vt200-js|vt220-js|dec vt200 series with jump scroll, 
+	am, 
+	cols#80, 
+	bel=^G, clear=\E[H\E[J, cr=^M, csr=\E[%i%p1%d;%p2%dr, 
+	cub1=^H, cud1=^J, cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, 
+	dch1=\E[P, dl1=\E[M, ed=\E[J, el=\E[K, home=\E[H, ht=^I, 
+	il1=\E[L, ind=\ED, 
+	is2=\E[61"p\E[H\E[?3l\E[?4l\E[?1l\E[?5l\E[?6l\E[?7h\E[?8h\E[?25h\E>\E[m, 
+	kbs=^H, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
+	kf1=\EOP, kf2=\EOQ, kf3=\EOR, kf4=\EOS, nel=^M\ED, 
+	rf=/usr/lib/tabset/vt100, ri=\EM, rmdc=, rmir=\E[4l, 
+	rmkx=\E[?1l\E>, rmso=\E[27m$<5/>, rmul=\E[24m, 
+	rs1=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h, smdc=, 
+	smir=\E[4h, smkx=\E[?1h\E=, smso=\E[7m$<5/>, smul=\E[4m, 
 
 # This was DEC's vt320.  Use the purpose-built one below instead 
 #vt320|DEC VT320 in vt100 emulation mode,
@@ -2107,7 +2125,7 @@ xterm-pcolor|xterm with color used for highlights and status line,
 
 # HP ships this, except for the pb#9600 which was merged in from BSD termcap.
 # (hpterm: added empty <acsc>, we have no idea what ACS chars look like --esr)
-xhpterm|X-hpterm|hp X11 terminal emulator, 
+hpterm|X-hpterm|hp X11 terminal emulator, 
 	am, da, db, mir, xhp, 
 	cols#80, lh#2, lines#24, lm#0, lw#8, nlab#8, pb#9600, xmc#0, 
 	acsc=, bel=^G, bold=\E&dB, cbt=\Ei, clear=\E&a0y0C\EJ, cr=^M, 
@@ -2214,7 +2232,7 @@ mgr-linux|Mgr window with Linux keyboard,
 	khome=\E[1~, knp=\E[6~, kpp=\E[5~, 
 	use=mgr, 
 
-######## UNIX VIRTUAL TERMINALS AND VIRTUAL CONSOLES
+######## UNIX VIRTUAL TERMINALS, VIRTUAL CONSOLES, AND TELNET CLIENTS
 #
 
 # Columbus UNIX virtual terminal. This terminal also appears in 
@@ -2232,6 +2250,7 @@ cbunix|cb unix virtual terminal,
 vremote|virtual remote terminal, 
 	am@, 
 	cols#79, use=cbunix, 
+
 pty|4bsd pseudo teletype, 
 	cup=\EG%p1%{32}%+%c%p2%{32}%+%c, rmso=\Eb$, rmul=\Eb!, 
 	smso=\Ea$, smul=\Ea!, 
@@ -2312,6 +2331,17 @@ screen3|VT 100/ANSI X3.64 virtual terminal,
 	rmir=\E[4l, rmkx=\E>, rmso=\E[23m, rmul=\E[24m, rs1=\Ec, 
 	sc=\E7, sgr0=\E[m, smir=\E[4h, smkx=\E=, smso=\E[3m, 
 	smul=\E[4m, tbc=\E[3g, 
+
+#### Pilot Pro Palm-Top
+#
+# From: Jason Downs <downsj@downsj.com>, 15 Jun 1997 (Top Gun Telnet's author)
+pilot|tgtelnet|Top Gun Telnet on the Palm Pilot Professional, 
+	am, xenl, 
+	cols#39, lines#16, 
+	bel=^G, clear=\Ec, cr=^M, cub1=^H, cud1=^J, 
+	cup=\Em%p1%{32}%+%c%p2%{32}%+%c, home=\Em\s\s, ht=^I, 
+	ind=^J, kbs=^H, kcub1=^H, kcud1=^J, knp=^L, kpp=^K, nel=\Em~\s, 
+	rmso=\EB, smso=\Eb, 
 
 ######## WORKSTATION CONSOLES
 #
@@ -2466,7 +2496,7 @@ nextshell|NeXT Shell application,
 	bel=^G, cr=^M, cub1=^H, cud1=^J, ht=^I, kbs=^H, kcub1=^H, 
 	kcud1=^J, nel=^M^J, 
 
-### Common Desktop Environment
+#### Common Desktop Environment
 #
 
 # This ships with Sun's CDE in Solaris 2.5
@@ -2498,6 +2528,96 @@ dtterm|CDE desktop terminal,
 	sgr=\E[0%?%p1%t;2;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p6%t;1%;%?%p7%t;8%;m%?%p9%t\016%e\017%;, 
 	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smir=\E[4h, 
 	smso=\E[2;7m, smul=\E[4m, tbc=\E[3g, 
+
+### Non-Unix Consoles
+
+# Except for the "-emx" suffixes, these are as distributed with EMX 0.9b,
+# a Unix-style environment used on OS/2.  (Note that the suffix makes some
+# names longer than 14 characters, the nominal maximum).
+ansi-emx|ANSI.SYS color, 
+	am, bce, eo, mir, msgr, xenl, xon, 
+	colors#16, cols#80, it#8, lines#25, pairs#64, 
+	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
+	clear=\E[1;33;44m\E[H\E[J, cnorm=\E[?25h, cr=^M, cub1=^H, 
+	cud1=^J, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, 
+	dch=\E[%p1%dp, ed=\E[J, el=\E[K, flash=\E[?5h\E[?5l, 
+	home=\E[H, ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, ind=^J, 
+	kb2=\E[G, kbs=^H, kcub1=\200K, kcud1=\200P, kcuf1=\200M, 
+	kcuu1=\200H, kf0=\200D, kf1=\200;, kf2=\200<, kf3=\200=, 
+	kf4=\200>, kf5=\200?, kf6=\200@, kf7=\200A, kf8=\200B, 
+	kf9=\200C, khome=\200G, kich1=\200R, kll=\200O, knp=\200Q, 
+	kpp=\200I, kspd=^Z, nel=^M^J, rev=\E[5;37;41m, 
+	rmacs=\E[10m, rmir=\E[4l, rmpch=\E[10m, 
+	rmso=\E[0;44m\E[1;33m, rmul=\E[0;44m\E[1;33m, rs1=\Ec, 
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
+	sgr0=\E[0m\E[1;33;44m, smacs=\E[11m, smir=\E[4h, 
+	smpch=\E[11m, smso=\E[0;31;47m, smul=\E[1;31;44m, 
+	tbc=\E[3g, u8=\E[?6c, u9=\E[c, 
+ansi-color-2-emx|ANSI.SYS color 2, 
+	am, bce, eo, mir, msgr, xenl, xon, 
+	colors#16, cols#80, it#8, lines#25, pairs#64, 
+	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
+	clear=\E[0;37;44m\E[H\E[J, cnorm=\E[?25h, cr=^M, cub1=^H, 
+	cud1=^J, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, 
+	dch=\E[%p1%dp, ed=\E[J, el=\E[K, flash=\E[?5h\E[?5l, 
+	home=\E[H, ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, ind=^J, 
+	kb2=\E[G, kbs=^H, kcub1=\200K, kcud1=\200P, kcuf1=\200M, 
+	kcuu1=\200H, kf0=\200D, kf1=\200;, kf2=\200<, kf3=\200=, 
+	kf4=\200>, kf5=\200?, kf6=\200@, kf7=\200A, kf8=\200B, 
+	kf9=\200C, khome=\200G, kich1=\200R, kll=\200O, knp=\200Q, 
+	kpp=\200I, kspd=^Z, nel=^M^J, rev=\E[1;37;46m, 
+	rmacs=\E[10m, rmir=\E[4l, rmpch=\E[10m, rmso=\E[0;37;44m, 
+	rmul=\E[0;37;44m, rs1=\Ec, setab=\E[4%p1%dm, 
+	setaf=\E[3%p1%dm, sgr0=\E[0;37;44m, smacs=\E[11m, 
+	smir=\E[4h, smpch=\E[11m, smso=\E[1;37;46m, 
+	smul=\E[1;36;44m, tbc=\E[3g, u8=\E[?6c, u9=\E[c, 
+ansi-color-3-emx|ANSI.SYS color 3, 
+	am, bce, eo, mir, msgr, xenl, xon, 
+	colors#16, cols#80, it#8, lines#25, pairs#64, 
+	bel=^G, blink=\E[5m, bold=\E[1m, civis=\E[?25l, 
+	clear=\E[0;37;40m\E[H\E[J, cnorm=\E[?25h, cr=^M, cub1=^H, 
+	cud1=^J, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, 
+	dch=\E[%p1%dp, ed=\E[J, el=\E[K, flash=\E[?5h\E[?5l, 
+	home=\E[H, ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, ind=^J, 
+	kb2=\E[G, kbs=^H, kcub1=\200K, kcud1=\200P, kcuf1=\200M, 
+	kcuu1=\200H, kf0=\200D, kf1=\200;, kf2=\200<, kf3=\200=, 
+	kf4=\200>, kf5=\200?, kf6=\200@, kf7=\200A, kf8=\200B, 
+	kf9=\200C, khome=\200G, kich1=\200R, kll=\200O, knp=\200Q, 
+	kpp=\200I, kspd=^Z, nel=^M^J, rev=\E[1;37;46m, 
+	rmacs=\E[10m, rmir=\E[4l, rmpch=\E[10m, rmso=\E[0;37;40m, 
+	rmul=\E[0;37;40m, rs1=\Ec, setab=\E[4%p1%dm, 
+	setaf=\E[3%p1%dm, sgr0=\E[0;10m, smacs=\E[11m, 
+	smir=\E[4h, smpch=\E[11m, smso=\E[1;37;46m, 
+	smul=\E[0;36;40m, tbc=\E[3g, u8=\E[?6c, u9=\E[c, 
+mono-emx|stupid monochrome ansi terminal with only one kind of emphasis, 
+	am, 
+	cols#80, it#8, lines#24, 
+	clear=\E[H\E[2J$<50>, cub1=\E[D, cud1=\E[B, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, el=\E[K, home=\E[H, 
+	ht=^I, kb2=\E[G, kbs=^H, kcub1=\200K, kcud1=\200P, 
+	kcuf1=\200M, kcuu1=\200H, kf0=\200D, kf1=\200;, kf2=\200<, 
+	kf3=\200=, kf4=\200>, kf5=\200?, kf6=\200@, kf7=\200A, 
+	kf8=\200B, kf9=\200C, khome=\200G, kich1=\200R, kll=\200O, 
+	knp=\200Q, kpp=\200I, nel=^M^J, rev=\E[7m, sgr0=\E[0m, 
+
+# This entry fits the Windows NT console when the _POSIX_TERM environment
+# variable is set to 'on'.  While the Windows NT POSIX console is seldom used,
+# the Telnet client supplied with both the Windows for WorkGroup 3.11 TCP/IP
+# stack and the Win32 (i.e., Windows 95 and Windows NT 3.1 or later) operating
+# systems is not, and (surprise!) they match very well.
+#
+# See:  MS Knowledge Base item Q108581, dated 13-MAY-1997, titled "Setting Up
+# VI POSIX Editor for Windows NT 3.1".
+#
+# From: Federico Bianchi <bianchi@magna.cisid.unipi.it>, 15 Jan 1997
+ansi-nt|psx_ansi|Microsoft Windows NT console POSIX ANSI mode, 
+	am, bw, msgr, 
+	cols#80, it#8, lines#25, 
+	bel=^G, clear=\E[2J, cr=^M, cub1=^H, cud1=^J, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, ed=\E[J, el=\E[K, 
+	home=\E[H, ht=^I, ind=\E[S, kbs=^H, kcub1=\E[D, kcud1=\E[V, 
+	kcuf1=\E[C, kcuu1=\E[A, nel=\r\E[S, rc=\E[u, rev=\E[7m, 
+	ri=\E[T, rmso=\E[m, sc=\E[s, sgr0=\E[0m, smso=\E[7m, 
 
 ######## COMMON TERMINAL TYPES
 #
@@ -3244,13 +3364,11 @@ dku7003|Honeywell Bull DKU 7003 all features described,
 # emulations (usually their stupidest, and usually labeled adm3, though
 # these `adm3' emulations normally have adm3a+ capabilities).
 #
-# WARNING: Some early ADM terminals (including the ADM3 and ADM5) are 
-# reputed to have had the weird `feature' that sending them a ^G would trigger
-# a diagnostic dump to screen if one of the more obscure RS-232 pins
-# (variously reported as 22 or as `Ring Indicator') was being held high during
-# receipt of the ^G.  If you have a real ADM and think you've run into this,
-# check it out with a breakout box and tell us if this rumor is correct!
-# A quick fix might be to drop back to a cheesy 4-wire cable.
+# WARNING: Some early ADM terminals (including the ADM3 and ADM5) had a 
+# `diagnostic feature' that sending them a ^G while pin 22 (`Ring Indicator')
+# was being held to ground would trigger a send of the top line on the screen.
+# A quick fix might be to drop back to a cheesy 4-wire cable with pin 22
+# hanging in the air.
 #
 
 adm1a|adm1|lsi adm1a, 
@@ -4674,10 +4792,11 @@ wy30-mc|wyse30-mc|wyse 30 with magic cookies,
 	msgr@, 
 	ma@, xmc#1, 
 	blink=\EG2, dim=\EGp, prot=\EG0\E), rmacs=\EG0\EH\003, 
-	rmcup=\EG0, 
+	rmcup=\EG0, rmso=\EG0, 
 	sgr=\EG%'0'%?%p2%p6%|%t%{8}%|%;%?%p1%p3%|%p6%|%t%{4}%|%;%?%p4%t%{2}%|%;%?%p1%p5%|%t%{64}%|%;%?%p7%t%{1}%|%;%c%?%p8%t\E)%e\E(%;%?%p9%t\EH\002%e\EH\003%;, 
 	sgr0=\EG0\E(\EH\003, smacs=\EG0\EH\002, smcup=, 
-	use=wy30, use=adm+sgr, 
+	smso=\EG4, use=wy30, 
+	use=adm+sgr, 
 #	The mandatory pause used by <flash> does not work with
 #	older versions of terminfo.  If you see this effect then
 #	unset xon and delete the / from the delay.
@@ -4729,8 +4848,8 @@ wy50|wyse50|Wyse 50,
 wy50-mc|wyse50-mc|wyse 50 with magic cookies, 
 	msgr@, 
 	ma@, xmc#1, 
-	blink=\EG2, dim=\EGp, prot=\EG0\E), rmacs=\EG0\EH\003, 
-	rmcup=\EG0, rmso=\EG0, 
+	blink=\EG2, dim=\EGp, prot=\EG0\E), rev=\EG4, 
+	rmacs=\EG0\EH\003, rmcup=\EG0, rmso=\EG0, 
 	sgr=\EG%'0'%?%p2%p6%|%t%{8}%|%;%?%p1%p3%|%p6%|%t%{4}%|%;%?%p4%t%{2}%|%;%?%p1%p5%|%t%{64}%|%;%?%p7%t%{1}%|%;%c%?%p8%t\E)%e\E(%;%?%p9%t\EH\002%e\EH\003%;, 
 	sgr0=\EG0\E(\EH\003, smacs=\EG0\EH\002, smcup=, 
 	smso=\EGt, use=wy50, 
@@ -5727,7 +5846,7 @@ wy520-48wpc|wyse520-48wpc|wyse 520 with 48 data lines,
 # From: John Gilmore <hoptoad!gnu@lll-crg.arpa>
 # (wyse-vp: removed <if=/usr/share/tabset/wyse-adds>, there's no such
 # file and we don't know what <hts> is -- esr)
-wyse-vp|wyse|Wyse 50 in ADDS Viewpoint emulation mode with "enhance" on, 
+wyse-vp|Wyse 50 in ADDS Viewpoint emulation mode with "enhance" on, 
 	am, 
 	cols#80, it#8, lines#24, 
 	bel=^G, clear=^L, cr=^M, cub1=^H, cud1=^J, cuf1=^F, 
@@ -5929,6 +6048,41 @@ avatar|avatar1|avatar terminal emulator level 1,
 	civis=^V'^B, cnorm=^V'^A, cvvis=^V^C, dl1=^V-, il1=^V+, 
 	rmam=^V", rmir=^V^P, smam=^V$, 
 	use=avatar0+, 
+
+#### RBcomm
+#
+# RBComm is a lean and mean terminal emulator written by the Interrupt List
+# maintainer, Ralf Brown. It was fairly popular in the late DOS years (early
+# '90s), especially in the BBS world, and still has some loyal users due to
+# its very small memory footprint and to a cute macro language.
+rbcomm|IBM PC with RBcomm and EMACS keybindings, 
+	am, bw, mir, msgr, xenl, 
+	cols#80, it#8, lines#25, 
+	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, civis=\E[?25l, 
+	clear=^L, cnorm=\E[?25h, cr=^M, csr=\E[%i%p1%d;%p2%dr, 
+	cub1=^H, cud1=^C, cuf1=^B, 
+	cup=\037%p2%{32}%+%c%p1%{32}%+%c, cuu1=^^, 
+	cvvis=\E[?25h, dch1=^W, dl=\E[%p1%dM, dl1=^Z, 
+	ech=\E[%p1%dX, ed=^F5, el=^P^P, ht=^I, il=\E[%p1%dL, il1=^K, 
+	ind=\ED, invis=\E[8m, 
+	is2=\017\035\E(B\E)0\E[?7h\E[?3l\E[>8g, kbs=^H, 
+	kcub1=^B, kcud1=^N, kcuf1=^F, kcuu1=^P, khome=^A, nel=^M\ED, 
+	rc=\E8, rep=\030%p1%c%p2%c, rev=^R, ri=\EM, rmcup=, rmdc=, 
+	rmir=^], rmkx=\E>, rmso=^U, rmul=^U, 
+	rs1=\017\E(B\E)0\025\E[?3l\E[>8g, sc=\E7, sgr0=\E[m, 
+	smcup=, smdc=, smir=^\, smkx=\E=, smso=^R, smul=^T, 
+rbcomm-nam|IBM PC with RBcomm, no autowrap, 
+	am@, 
+	bel=^G, cr=^M, cud1=^J, ht=^I, ind=^J, 
+	is2=\017\035\E(B\E)0\E[?7l\E[?3l\E[>8g, kbs=^H, 
+	kcub1=^H, kcud1=^J, nel=^M^J, 
+	use=rbcomm, 
+rbcomm-w|IBM PC with RBcomm, 132 column mode, 
+	cols#132, 
+	bel=^G, cr=^M, cud1=^J, ht=^I, ind=^J, 
+	is2=\017\035\E(B\E)0\E[?7h\E[?3h\E[>8g, kbs=^H, 
+	kcub1=^H, kcud1=^J, nel=^M^J, 
+	use=rbcomm, 
 
 ######## OLDER TERMINAL TYPES
 #
@@ -7985,6 +8139,283 @@ c100-rv|c100-rv-4p|concept100-rv|c100 rev video,
 oc100|oconcept|c100-1p|old 1 page concept 100, 
 	in, 
 	is3@, use=c100, 
+
+# From: Walter Skorski <walt@genetics1.JMP.TJU.EDU>, 16-oct-1996.
+# Lots of notes, originally inline, but ncurses doesn't grok that.
+#
+# am: 	not available in power on mode, but turned on with \E[=107;207h in
+#	is2=.  Also, \E=124l in is2= could have been used to prevent needing
+#	to specify xenl:, but that would have rendered the last space on the
+#	last line useless.
+# bw:	Not available in power on mode, but turned on with \E[=107;207h in
+#	is2=.
+# clear: Could be done with \E[2J alone, except that vi (and probably most
+#	other programs) assume that this also homes the cursor.
+# dsl:	Go to window 2, go to the beginning of the line, use a line feed to
+#	scroll the window, and go back to window 1.
+# is2:	the string may cause a warning to be issued by tic that it
+#	found a very long line and that it suspects that a comma is missing
+#	somewhere.  This warning can be ignored (unless it comes up more than
+#	once).  The initialization string contains the following commands:
+#
+#	 [Setup mode items changed from factory defaults:]
+#		\E)0			set alternate character set to
+#						graphics
+#		^O			set character set to default
+#	 [In case it wasn't]
+#		\E[m			turn off all attributes
+#	 [In case they weren't off]
+#		\E[=107;		cursor wrap and
+#			207h			character wrap on
+#		\E[90;3u		set Fkey definitions to "transmit"
+#						defaults
+#		\E[92;3u		set cursor key definitions to
+#						"transmit" defaults
+#		\E[43;1u		set shift F13 to transmit...
+#		\177\E$P\177
+#		\E[44;1u		set shift F14 to transmit...
+#			\177\E$Q\177
+#		\E[45;1u		set shift F15 to transmit...
+#			\177\E$R\177
+#		\E[46;1u		set shift F16 to transmit...
+#			\177\E$S\177
+#		\E[200;1u		set shift up to transmit...
+#			\177\E$A\177
+#		\E[201;1u		set shift down to transmit...
+#			\177\E$B\177
+#		\E[202;1u		set shift right to transmit...
+#			\177\E$C\177
+#		\E[203;1u		set shift left to transmit...
+#			\177\E$D\177
+#		\E[204;1u		set shift home to transmit...
+#			\177\E$H\177
+#		\E[212;1u		set backtab to transmit...
+#			\177\E$I\177
+#		\E[213;1u		set shift backspace to transmit...
+#			\177\E$^H\177
+#		\E[214;1u		set shift del to transmit...
+#			"\E$\177"
+#	 [Necessary items not mentioned in setup mode:]
+#		\E[2!w			move to window 2
+#		\E[25;25w		define window as line 25 of memory
+#		\E[!w			move to window 1
+#		\E[2*w			show current line of window 2 as
+#						status line
+#		\E[2+x			set meta key to use high bit
+#		\E[;3+}			move underline to bottom of character
+#
+#	All Fkeys are set to their default transmit definitions with \E[90;3u
+#	in is2=.  IMPORTANT:  to use this terminal definition, the "quit" stty
+#	setting MUST be redefined or deactivated, because the default is
+#	contained in almost all of this terminal's Fkey strings!  If for some
+#	reason "quit" cannot be altered, the Fkeys can, but it would be
+#	necessary to change ^| to ^] in all of these definitions, and add
+#	\E[2;029!t to is2.
+# lines: is set to 24 because this terminal refuses to treat the 25th
+#	line normally.
+# ll:	Not available in power on mode, but turned on with \E[=107;207h in
+#	is2=.
+# lm:	Pointless, given that this definition locks a single screen of
+#	memory into view, but what the hey...
+# rmso: Could use \E[1;7!{ to turn off only bold and reverse (leaving any
+#	other attributes alone), but some programs expect this to turn off
+#	everything.
+# rmul: Could use \E[4!{ to turn off only underline (leaving any other
+#	attributes alone), but some programs expect this to turn off
+#	everything.
+# sgr:	Attributes are set on this terminal with the string \E[ followed by
+#	a list of attribute code numbers (in decimal, separated by
+#	semicolons), followed by the character m.  The attribute code
+#	numbers are:
+#		  1 for bold;
+#		  2 for dim (which is ignored in power on mode);
+#		  4 for underline;
+#		  5 for blinking;
+#		  7 for inverse;
+#		  8 for not displayable; and
+#		=99 for protected (except that there are strange side
+#		effects to protected characters which make them inadvisable).
+#	 The mapping of terminfo parameters to attributes is as follows:
+#		%p1 (standout) = bold and inverse together;
+#		%p2 (underline) = underline;
+#		%p3 (reverse) = inverse;
+#		%p4 (blink) = blinking;
+#		%p5 (dim) is ignored;
+#		%p6 (bold) = bold;
+#		%p7 (invisible) = not displayable;
+#		%p8 (protected) is ignored; and
+#		%p9 (alt char set) = alt char set.
+#	 The code to do this is:
+#		\E[0		OUTPUT	\E[0
+#		%?%p1%p6%O	IF	(standout; bold) OR
+#		%t;1		THEN	OUTPUT	;1
+#		%;		ENDIF
+#		%?%p2		IF	underline
+#		%t;4		THEN	OUTPUT	;4
+#		%;		ENDIF
+#		%?%p4		IF	blink
+#		%t;5		THEN	OUTPUT	;5
+#		%;		ENDIF
+#		%?%p1%p3%O	IF	(standout; reverse) OR
+#		%t;7		THEN	OUTPUT	;7
+#		%;		ENDIF
+#		%?%p7		IF	invisible
+#		%t;8		THEN	OUTPUT	;8
+#		%;		ENDIF
+#		m		OUTPUT	m
+#		%?%p9		IF	altcharset
+#		%t^N		THEN	OUTPUT	^N
+#		%e^O		ELSE	OUTPUT	^O
+#		%;		ENDIF
+# sgr0: Everything is turned off (including alternate character set), since
+#	there is no way of knowing what it is that the program wants turned
+#	off.
+# smul: The "underline" attribute is reconfigurable to an overline or
+#	strikethru, or (as done with \E[;3+} in is2=), to a line at the true
+#	bottom of the character cell.  This was done to allow for more readable
+#	underlined characters, and to be able to distinguish between an
+#	underlined space, an underscore, and an underlined underscore.
+# xenl: Terminal can be configured to not need this, but this "glitch"
+#	behavior is actually preferable with autowrap terminals.
+#
+# Parameters kf31= thru kf53= actually contain the strings sent by the shifted
+# Fkeys.  There are no parameters for shifted Fkeys in terminfo.  The is2
+# string modifies the 'O' in kf43 to kf46 to a '$'.
+#
+# kcbt was originally ^I but redefined in is2=.
+# kHOM was \E[H originally but redefined in is2=, as were a number of
+# other keys.
+# kDC was originally \177 but redefined in is2=.
+#
+# kbs:	Shift was also ^H originally but redefined as \E$^H in is2=.
+# tsl:	Go to window 2, then do an hpa=.
+#
+#------- flash=\E[8;3!}^G\E[3;3!}
+#------- flash=\E[?5h$<100>\E[?5l
+# There are two ways to flash the screen, both of which have their drawbacks. 
+# The first is to set the bell mode to video, transmit a bell character, and
+# set the bell mode back - but to what?  There is no way of knowing what the
+# user's old bell setting was before we messed with it.  Worse, the command to
+# set the bell mode also sets the key click volume, and there is no way to say
+# "leave that alone", or to know what it's set to, either.
+# The second way to do a flash is to set the screen to inverse video, pad for a
+# tenth of a second, and set it back - but like before, there's no way to know
+# that the screen wasn't ALREADY in inverse video, or that the user may prefer
+# it that way.  The point is moot anyway, since vi (and probably other
+# programs) assume that by defining flash=, you want the computer to use it
+# INSTEAD of bel=, rather than as a secondary type of signal.
+#
+#------- cvvis=\E[+{
+# The is the power on setting, which is also as visible as the cursor
+# gets.
+#-------  wind=\E[%i%p1%d;%p2%d;%p3%{1}%+%d;%p4%{1}%+%dw
+# Windowing is possible, but not defined here because it is also used to
+# emulate status line functions.  Allowing a program to set a window could
+# clobber the status line or render it unusable.  There is additional memory,
+# but screen scroll functions are destructive and do not make use of it.
+#
+#-------   dim=			Not available in power on mode.
+# You have a choice of defining low intensity characters as "half bright" and
+# high intensity as "normal", or defining low as "normal" and high as "bold". 
+# No matter which you choose, only one of either "half bright" or "bold" is
+# available at any time, so taking the time to override the default is
+# pointless.
+#
+#-------  prot=\E[=0;99m
+# Not defined, because it appears to have some strange side effects.
+#------- pfkey=%?%p1%{24}%<%p1%{30}%>%p1%{54}%<%A%O%t\E[%p1%du\177%p2%s\177%;
+#------- pfloc=%?%p1%{24}%<%p1%{30}%>%p1%{54}%<%A%O%t\E[%p1%du\177%p2%s\177%;
+#-------   pfx=%?%p1%{24}%<%p1%{30}%>%p1%{54}%<%A%O%t\E[%p1%d;1u\177%p2%s\177%;
+#	 Available, but making them available to programs is inadvisable.
+#	 The code to do this is:
+#		%?%p1%{24}%<	IF	((key; 24) <;
+#		%p1%{30}%>		 ((key; 30) >;
+#		%p1%{54}%<		  (key; 54) <
+#		%A			 ) AND
+#		%O		  	) OR
+#	 [that is, "IF key < 24 OR (key > 30 AND key < 54)",]
+#		%t\E[		THEN	OUTPUT	\E[
+#		%p1%d			OUTPUT	(key) as decimal
+#	 [next line applies to pfx only]
+#		;1			OUTPUT	;1
+#		u			OUTPUT	u
+#		\177			OUTPUT	\177
+#		%p2%s			OUTPUT	(string) as string
+#		\177			OUTPUT	\177
+#	 [DEL chosen as delimiter, but could be any character]
+#	 [implied:		ELSE	do nothing]
+#		%;		ENDIF
+#	
+#-------   rs2=
+# Not defined since anything it might do could be done faster and easier with
+# either Meta-Shift-Reset or the main power switch.
+#
+#-------  smkx=\E[1!z
+#-------  rmkx=\E[!z
+# These sequences apply to the cursor and setup keys only, not to the
+# numeric keypad.  But it doesn't matter anyway, since making these
+# available to programs is inadvisable.
+# For the key definitions below, all sequences beginning with \E$ are
+# custom and programmed into the terminal via is2.  \E$ also has no
+# meaning to any other terminal.
+#
+#------- cmdch=\E[;%p1%d!t
+# Available, but making it available to programs is inadvisable.
+#------- smxon=\E[1*q
+# Available, but making it available to programs is inadvisable.
+# Terminal will send XON/XOFF on buffer overflow.
+#------- rmxon=\E[*q
+# Available, but making it available to programs is inadvisable.
+# Terminal will not notify on buffer overflow.
+#-------   smm=\E[2+x
+#-------   rmm=\E[+x
+# Available, but making them available to programs is inadvisable.
+#
+# Printing:
+#	 It's not made clear in the manuals, but based on other ansi/vt type
+#	 terminals, it's a good guess that this terminal is capable of both
+#	 "transparent print" (which doesn't copy data to the screen, and
+#	 therefore needs mc5i: specified to say so) and "auxilliary print"
+#	 (which does duplicate printed data on the screen, in which case mc4=
+#	 and mc5= should use the \E[?4i and \E[?5i strings instead).
+
+hds200|Human Designed Systems HDS200, 
+	am, bw, eslok, hs, km, mc5i, mir, msgr, xenl, xon, 
+	cols#80, it#8, lines#24, lm#0, 
+	acsc=``aaffggjjkkllmmnnooqqssttuuvvwwxx~~, bel=^G, 
+	blink=\E[0;5m, bold=\E[0;1m, cbt=\E[Z, civis=\E[6+{, 
+	clear=\E[H\E[J, cnorm=\E[+{, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=\E[D, 
+	cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, 
+	dsl=\E[2!w\r\n\E[!w, ed=\E[J, el=\E[K, el1=\E[1K, 
+	fsl=\E[!w, home=\E[H, hpa=\E[%i%p1%dG, ht=^I, hts=\EH, 
+	ich=\E[%p1%d@, il=\E[%p1%dL, il1=\E[L, ind=\ED, 
+	invis=\E[0;8m, 
+	is2=\E)0\017\E[m\E[=107;207h\E[90;3u\E[92;3u\E[43;1u\177\E$P\177\E[44;1u\177\E$Q\177\E[45;1u\177\E$R\177\E[46;1u\177\E$S\177\E[200;1u\177\E$A\177\E[201;1u\177\E$B\177\E[202;1u\177\E$C\177\E[203;1u\177\E$D\177\E[204;1u\177\E$H\177\E[212;1u\177\E$I\177\E[213;1u\177\E$\010\177\E[214;1u"\E$\177"\E[2!w\E[25;25w\E[!w\E[2*w\E[2+x\E[;3+}, 
+	kDC=\E$\177, kHOM=\E$H, kLFT=\E$D, kRIT=\E$C, kbs=^H, 
+	kcbt=\E$I, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
+	kdch1=\177, kent=^M, kf1=^\001\r, kf10=^\010\r, 
+	kf11=^\011\r, kf12=^\012\r, kf13=\EOP, kf14=\EOQ, 
+	kf15=\EOR, kf16=\EOS, kf17=^\017\r, kf18=^\018\r, 
+	kf19=^\019\r, kf2=^\002\r, kf20=^\020\r, kf21=^\021\r, 
+	kf22=^\022\r, kf23=^\023\r, kf3=^\003\r, kf31=^\031\r, 
+	kf32=^\032\r, kf33=^\033\r, kf34=^\034\r, kf35=^\035\r, 
+	kf36=^\036\r, kf37=^\037\r, kf38=^\038\r, kf39=^\039\r, 
+	kf4=^\004\r, kf40=^\040\r, kf41=^\041\r, kf42=^\042\r, 
+	kf43=\E$P, kf44=\E$Q, kf45=\E$R, kf46=\E$S, kf47=^\047\r, 
+	kf48=^\048\r, kf49=^\049\r, kf5=^\005\r, kf50=^\050\r, 
+	kf51=^\051\r, kf52=^\052\r, kf53=^\053\r, kf6=^\006\r, 
+	kf7=^\007\r, kf8=^\008\r, kf9=^\009\r, khome=\E[H, 
+	kind=\E[T, knp=\E[U, kpp=\E[V, kri=\E[S, ll=\E[H\E[A, 
+	mc0=\E[i, mc4=\E[4i, mc5=\E[5i, nel=\E[E, rc=\E8, 
+	rev=\E[0;7m, ri=\EM, rmacs=^O, rmir=\E[4l, rmso=\E[m\017, 
+	rmul=\E[m\017, sc=\E7, 
+	sgr=\E[0%?%p1%p6%O%t;1%;%?%p2%t;4%;%?%p4%t;5%;%?%p1%p3%O%t;7%;%?%p7%t;8%;m%?%p9%t\016%e\017%;, 
+	sgr0=\E[m\017, smacs=^N, smir=\E[4h, smso=\E[0;1;7m, 
+	smul=\E[0;4m, tbc=\E[3g, tsl=\E[2!w\E[%i%p1%dG, 
+	vpa=\E[%i%p1%dd, 
 
 # <ht> through <el> included to specify padding needed in raw mode.
 # (avt-ns: added empty <acsc> to suppress a tic warning --esr)
@@ -11294,6 +11725,49 @@ dp3360|datapoint|datapoint 3360,
 	bel=^G, clear=^]^_, cr=^M, cub1=^H, cud1=^J, cuf1=^X, cuu1=^Z, 
 	ed=^_, el=^^, home=^], ind=^J, 
 
+# From: Jan Willem Stumpel <jw.stumpel@inter.nl.net>, 11 May 1997
+# The Datapoint 8242 Workstation was sold at least between 1985 
+# and 1989. To make the terminal work with this entry, press 
+# CONTROL-INT-INT to take the terminal off-line, and type (opt). 
+# Set the options AUTO ROLL, ROLL DN, and ESC KBD on, and AUTO 
+# CR/LF off. Use control-shift-[] as escape key, control-I as tab, 
+# shift-F1 to shift-F5 as F6 to F10 (unshifted F1 to F5 are in
+# fact unusable because the strings sent by the terminal conflict
+# with other keys).
+# The terminal is capable of displaying "box draw" characters.
+# For each graphic character you must send 2 ESC's (\E\E) followed 
+# by a control character as follows: 
+#         character        meaning
+#         =========        =======
+#         ctrl-E           top tee
+#         ctrl-F           right tee
+#         ctrl-G           bottom tee
+#         ctrl-H           left tee
+#         ctrl-I           cross
+#         ctrl-J           top left corner
+#         ctrl-K           top right corner
+#         ctrl-L           bottom left corner
+#         ctrl-M           bottom right corner
+#         ctrl-N           horizontal line
+#         ctrl-O           vertical line
+# Unfortunately this cannot be fitted into the termcap/terminfo 
+# description scheme. 
+dp8242|datapoint 8242, 
+	msgr, 
+	cols#80, lines#25, 
+	bel=^G, civis=^Y, clear=\025\E\004\027\030, cnorm=^X, 
+	cr=^M, cub1=^H, cud1=^J, 
+	cup=\011%p2%'\200'%+%c%p1%'\200'%+%c, dl1=\E^Z, ed=^W, 
+	el=^V, home=^U, ht=^I, il1=\E^T, ind=^C, 
+	is1=\E\014\E\016\200\230\200\317\025\027\030\E\004, 
+	kbs=^H, kcub1=^D, kcud1=^B, kcuf1=^F, kcuu1=^E, kf1=^G\Ee, 
+	kf10=\EK\Ea, kf2=^I\Ed, kf3=^J\Ec, kf4=^J\Eb, kf5=^S\Ea, 
+	kf6=\EO\Ee, kf7=\EN\Ed, kf8=\EM\Ec, kf9=\EL\Eb, nel=^M^J, 
+	rep=\E\023%p1%c%p2%c, ri=^K, rmso=\E^D, rmul=\E^D, 
+	rs1=\E\014\E\016\200\230\200\317\025\027\030\E\004, 
+	smso=\E^E, smul=\E^F, 
+	wind=\E\014\E\016%p1%'\200'%+%c%p2%'\200'%+%c%p3%'\200'%+%c%p4%'\200'%+%c\025, 
+
 #### DEC terminals (Obsolete types: DECwriter and vt40/42/50)
 #
 # These entries are DEC's official terminfos for its older terminals.
@@ -11810,7 +12284,13 @@ graphos-30|graphos III with 30 lines,
 #	Vox: (617)-890-5796.
 #
 # However, if you call that number today you'll get an insurance company.
-# I think Modgraph is long gone.
+# I have mail from "Michael Berman, V.P. Sales, Modgraph" dated 
+# 26 Feb 1997 that says:
+#
+# Modgraph GX-1000, replaced by GX-2000.  Both are out of production, have been
+# for ~7 years.  Modgraph still in business.  Products are rugged laptop and
+# portable PC's and specialized CRT and LCD monitors (rugged, rack-mount
+# panel-mount etc).  I can be emailed at sonfour@aol.com
 #
 
 modgraph|mod24|modgraph terminal emulating vt100, 
@@ -14120,6 +14600,13 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* add entry for xterm-xf86-v39t
 # 10.1.13 (Sat Nov  8 13:43:33 EST 1997)
 #	* add u8,u9 to sun-il description
+# 10.1.14 (Sat Nov 22 19:59:03 EST 1997)
+#	* add vt220-js, pilot, rbcomm, datapoint entries from esr's 27-jun-97
+#	  version.
+#	* add hds200 description (Walter Skorski)
+#	* add EMX 0.9b descriptions
+#	* correct rmso/smso capabilities in wy30-mc and wy50-mc (Daniel Weaver)
+#	* rename xhpterm back to hpterm.
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

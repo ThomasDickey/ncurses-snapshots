@@ -22,12 +22,13 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.1 $
+--  $Revision: 1.2 $
 ------------------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
 with Terminal_Interface.Curses.Aux;
 
 package Terminal_Interface.Curses.Forms.Field_Types.User.Choice is
+   pragma Preelaborate (Choice);
 
    type User_Defined_Field_Type_With_Choice is abstract new
      User_Defined_Field_Type with null record;
@@ -58,6 +59,8 @@ package Terminal_Interface.Curses.Forms.Field_Types.User.Choice is
    --  |
 private
    use type Interfaces.C.Int;
+
+   function C_Generic_Choice return C_Field_Type;
 
    function Generic_Next (Fld : Field;
                           Usr : System.Address) return C_Int;

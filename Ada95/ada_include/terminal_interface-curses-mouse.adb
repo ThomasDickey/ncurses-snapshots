@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.6 $
+--  $Revision: 1.7 $
 ------------------------------------------------------------------------------
 with System;
 
@@ -164,8 +164,4 @@ package body Terminal_Interface.Curses.Mouse is
       return Natural (Mouseinterval (C_Int (Msec)));
    end Mouse_Interval;
 
-begin
-   if Generation_Bit_Order /= System.Default_Bit_Order then
-      raise Constraint_Error;
-   end if;
 end Terminal_Interface.Curses.Mouse;

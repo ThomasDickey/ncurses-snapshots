@@ -22,13 +22,13 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.5 $
+--  $Revision: 1.6 $
 ------------------------------------------------------------------------------
 with System;
 
 package body Terminal_Interface.Curses.Text_IO is
 
-   Default_Window : Window;
+   Default_Window : Window := Null_Window;
 
    procedure Set_Window (Win : in Window)
    is
@@ -320,8 +320,5 @@ package body Terminal_Interface.Curses.Text_IO is
    begin
       Put_Line (Get_Window, Item);
    end Put_Line;
-
-begin
-   Default_Window := Null_Window;
 
 end Terminal_Interface.Curses.Text_IO;

@@ -22,9 +22,10 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.1 $
+--  $Revision: 1.2 $
 ------------------------------------------------------------------------------
 package Terminal_Interface.Curses.Forms.Field_Types.IPV4_Address is
+   pragma Preelaborate (IPV4_Address);
 
    type Internet_V4_Address_Field is new Field_Type with null record;
 

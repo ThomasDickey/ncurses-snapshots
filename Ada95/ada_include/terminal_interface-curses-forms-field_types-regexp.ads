@@ -22,9 +22,10 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.1 $
+--  $Revision: 1.2 $
 ------------------------------------------------------------------------------
 package Terminal_Interface.Curses.Forms.Field_Types.RegExp is
+   pragma Preelaborate (RegExp);
 
    type String_Access is access String;
 

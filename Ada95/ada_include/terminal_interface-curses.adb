@@ -22,7 +22,7 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.10 $
+--  $Revision: 1.11 $
 ------------------------------------------------------------------------------
 with System;
 
@@ -2294,8 +2294,4 @@ package body Terminal_Interface.Curses is
       end if;
    end Transform_Coordinates;
 
-begin
-   if Generation_Bit_Order /= System.Default_Bit_Order then
-      raise Constraint_Error;
-   end if;
 end Terminal_Interface.Curses;

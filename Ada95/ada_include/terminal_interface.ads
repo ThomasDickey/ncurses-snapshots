@@ -22,10 +22,13 @@
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.4 $
+--  $Revision: 1.5 $
 ------------------------------------------------------------------------------
 package Terminal_Interface is
+   pragma Preelaborate (Terminal_Interface);
 --
 --  Everything is in the child units
 --
 end Terminal_Interface;
+
+

@@ -25,7 +25,7 @@ include(M4MACRO)dnl
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
 --  Version Control:
---  $Revision: 1.8 $
+--  $Revision: 1.9 $
 ------------------------------------------------------------------------------
 include(`Menu_Base_Defs')
 with System;
@@ -33,7 +33,7 @@ with Interfaces.C;
 with Ada.Characters.Latin_1;
 
 package Terminal_Interface.Curses.Menus is
-
+   pragma Preelaborate (Menus);
 include(`Menu_Linker_Options')
 
 
@@ -106,16 +106,17 @@ include(`Menu_Linker_Options')
 
 include(`Menu_Opt_Rep')
 
-   Default_Menu_Options : Menu_Option_Set;
+   function Default_Menu_Options return Menu_Option_Set;
    --  Initial default options for a menu.
-
+   pragma Inline (Default_Menu_Options);
    --
    --  Item options
    --
 include(`Item_Rep')
 
-   Default_Item_Options : Item_Option_Set;
+   function Default_Item_Options return Item_Option_Set;
    --  Initial default options for an item.
+   pragma Inline (Default_Item_Options);
 
    --
    --  Item Array
@@ -516,8 +517,5 @@ private
 
    Null_Item : constant Item := Item (System.Null_Address);
    Null_Menu : constant Menu := Menu (System.Null_Address);
-
-   Generation_Bit_Order : constant System.Bit_Order := System.M4_BIT_ORDER;
-   --  This constant may be different on your system.
 
 end Terminal_Interface.Curses.Menus;

@@ -1,8 +1,8 @@
 ------------------------------------------------------------------------------
 --                                                                          --
---                           GNAT ncurses Binding                           --
+--                       GNAT ncurses Binding Samples                       --
 --                                                                          --
---            Terminal_Interface.Curses.Forms.Field_Types.IntField          --
+--                                   Rain                                   --
 --                                                                          --
 --                                 S P E C                                  --
 --                                                                          --
@@ -21,20 +21,9 @@
 --                                                                          --
 --  This binding comes AS IS with no warranty, implied or expressed.        --
 ------------------------------------------------------------------------------
---  Version Control:
---  $Revision: 1.2 $
+--  Version Control
+--  $Revision: 1.1 $
 ------------------------------------------------------------------------------
-package Terminal_Interface.Curses.Forms.Field_Types.IntField is
-   pragma Preelaborate (IntField);
-
-   type Integer_Field is new Field_Type with
-      record
-         Precision   : Natural;
-         Lower_Limit : Integer;
-         Upper_Limit : Integer;
-      end record;
-
-   procedure Set_Field_Type (Fld : in Field;
-                             Typ : in Integer_Field);
-
-end Terminal_Interface.Curses.Forms.Field_Types.IntField;
+--  This package has been contributed by Laurent Pautet <pautet@gnat.com>   --
+--                                                                          --
+procedure Rain;

@@ -197,6 +197,8 @@
 ./Ada95/samples/Makefile.in
 ./Ada95/samples/README
 ./Ada95/samples/explain.txt
+./Ada95/samples/rain.adb
+./Ada95/samples/rain.ads
 ./Ada95/samples/sample-curses_demo-attributes.adb
 ./Ada95/samples/sample-curses_demo-attributes.ads
 ./Ada95/samples/sample-curses_demo-mouse.adb
@@ -232,6 +234,8 @@
 ./Ada95/samples/sample-text_io_demo.ads
 ./Ada95/samples/sample.adb
 ./Ada95/samples/sample.ads
+./Ada95/samples/status.adb
+./Ada95/samples/status.ads
 ./Ada95/samples/tour.adb
 ./Ada95/samples/tour.ads
 ./INSTALL
