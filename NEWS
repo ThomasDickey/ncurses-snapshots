@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.643 2001/09/02 00:42:20 tom Exp $
+-- $Id: NEWS,v 1.644 2001/09/08 23:53:48 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010908
+	+ modify tgetent() to check if exit_attribute_mode resets the alternate
+	  character set, and if so, attempt to adjust the copy of the termcap
+	  "me" string which it will return to eliminate that part.  In
+	  particular, 'screen' would lose track of line-drawing characters
+	  (report by Frederic L W Meunier <0@pervalidus.net>, analysis by
+	  Michael Schroeder).
 
 20010901
 	+ specify DOCTYPE in html manpages.
