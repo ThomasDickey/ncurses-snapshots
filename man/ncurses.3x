@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.54 2002/03/10 01:00:52 tom Exp $
+.\" $Id: ncurses.3x,v 1.57 2002/03/10 23:51:16 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
@@ -293,6 +293,7 @@ hline_set/\fBcurs_border_set\fR(3X)
 idcok/\fBcurs_outopts\fR(3X)
 idlok/\fBcurs_outopts\fR(3X)
 immedok/\fBcurs_outopts\fR(3X)
+in_wch/\fBcurs_in_wch\fR(3X)
 inch/\fBcurs_inch\fR(3X)
 inchnstr/\fBcurs_inchstr\fR(3X)
 inchstr/\fBcurs_inchstr\fR(3X)
@@ -301,6 +302,9 @@ init_pair/\fBcurs_color\fR(3X)
 initscr/\fBcurs_initscr\fR(3X)
 innstr/\fBcurs_instr\fR(3X)
 innwstr/\fBcurs_inwstr\fR(3X)
+ins_nwstr/\fBcurs_ins_wstr\fR(3X)
+ins_wch/\fBcurs_ins_wch\fR(3X)
+ins_wstr/\fBcurs_ins_wstr\fR(3X)
 insch/\fBcurs_insch\fR(3X)
 insdelln/\fBcurs_deleteln\fR(3X)
 insertln/\fBcurs_deleteln\fR(3X)
@@ -345,11 +349,15 @@ mvgetnstr/\fBcurs_getstr\fR(3X)
 mvgetstr/\fBcurs_getstr\fR(3X)
 mvhline/\fBcurs_border\fR(3X)
 mvhline_set/\fBcurs_border_set\fR(3X)
+mvin_wch/\fBcurs_in_wch\fR(3X)
 mvinch/\fBcurs_inch\fR(3X)
 mvinchnstr/\fBcurs_inchstr\fR(3X)
 mvinchstr/\fBcurs_inchstr\fR(3X)
 mvinnstr/\fBcurs_instr\fR(3X)
 mvinnwstr/\fBcurs_inwstr\fR(3X)
+mvins_nwstr/\fBcurs_ins_wstr\fR(3X)
+mvins_wch/\fBcurs_ins_wch\fR(3X)
+mvins_wstr/\fBcurs_ins_wstr\fR(3X)
 mvinsch/\fBcurs_insch\fR(3X)
 mvinsnstr/\fBcurs_insstr\fR(3X)
 mvinsstr/\fBcurs_insstr\fR(3X)
@@ -377,11 +385,15 @@ mvwgetstr/\fBcurs_getstr\fR(3X)
 mvwhline/\fBcurs_border\fR(3X)
 mvwhline_set/\fBcurs_border_set\fR(3X)
 mvwin/\fBcurs_window\fR(3X)
+mvwin_wch/\fBcurs_in_wch\fR(3X)
 mvwinch/\fBcurs_inch\fR(3X)
 mvwinchnstr/\fBcurs_inchstr\fR(3X)
 mvwinchstr/\fBcurs_inchstr\fR(3X)
 mvwinnstr/\fBcurs_instr\fR(3X)
 mvwinnwstr/\fBcurs_inwstr\fR(3X)
+mvwins_nwstr/\fBcurs_ins_wstr\fR(3X)
+mvwins_wch/\fBcurs_ins_wch\fR(3X)
+mvwins_wstr/\fBcurs_ins_wstr\fR(3X)
 mvwinsch/\fBcurs_insch\fR(3X)
 mvwinsnstr/\fBcurs_insstr\fR(3X)
 mvwinsstr/\fBcurs_insstr\fR(3X)
@@ -534,11 +546,15 @@ wgetnstr/\fBcurs_getstr\fR(3X)
 wgetstr/\fBcurs_getstr\fR(3X)
 whline/\fBcurs_border\fR(3X)
 whline_set/\fBcurs_border_set\fR(3X)
+win_wch/\fBcurs_in_wch\fR(3X)
 winch/\fBcurs_inch\fR(3X)
 winchnstr/\fBcurs_inchstr\fR(3X)
 winchstr/\fBcurs_inchstr\fR(3X)
 winnstr/\fBcurs_instr\fR(3X)
 winnwstr/\fBcurs_inwstr\fR(3X)
+wins_nwstr/\fBcurs_ins_wstr\fR(3X)
+wins_wch/\fBcurs_ins_wch\fR(3X)
+wins_wstr/\fBcurs_ins_wstr\fR(3X)
 winsch/\fBcurs_insch\fR(3X)
 winsdelln/\fBcurs_deleteln\fR(3X)
 winsertln/\fBcurs_deleteln\fR(3X)
@@ -817,31 +833,19 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBget_wch\fP,
 \fBget_wstr\fP,
 \fBgetn_wstr\fP,
-\fBin_wch\fP,
 \fBin_wchnstr\fP,
 \fBin_wchstr\fP,
-\fBins_nwstr\fP,
-\fBins_wch\fP,
-\fBins_wstr\fP,
 \fBkillwchar\fP,
 \fBmvget_wch\fP,
 \fBmvget_wstr\fP,
 \fBmvgetn_wstr\fP,
-\fBmvin_wch\fP,
 \fBmvin_wchnstr\fP,
 \fBmvin_wchstr\fP,
-\fBmvins_nwstr\fP,
-\fBmvins_wch\fP,
-\fBmvins_wstr\fP,
 \fBmvwget_wch\fP,
 \fBmvwget_wstr\fP,
 \fBmvwgetn_wstr\fP,
-\fBmvwin_wch\fP,
 \fBmvwin_wchnstr\fP,
 \fBmvwin_wchstr\fP,
-\fBmvwins_nwstr\fP,
-\fBmvwins_wch\fP,
-\fBmvwins_wstr\fP,
 \fBpecho_wchar\fP,
 \fBslk_wset\fP,
 \fBterm_attrs\fP,
@@ -850,12 +854,8 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBwget_wch\fP,
 \fBwget_wstr\fP,
 \fBwgetn_wstr\fP,
-\fBwin_wch\fP,
 \fBwin_wchnstr\fP,
 \fBwin_wchstr\fP,
-\fBwins_nwstr\fP,
-\fBwins_wch\fP,
-\fBwins_wstr\fP,
 .PP
 A small number of local differences (that is, individual differences between
 the XSI Curses and \fBncurses\fR calls) are described in \fBPORTABILITY\fR

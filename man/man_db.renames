@@ -1,4 +1,4 @@
-# $Id: man_db.renames,v 0.27 2002/03/10 00:57:42 tom Exp $
+# $Id: man_db.renames,v 0.28 2002/03/10 23:46:56 tom Exp $
 # Manual-page renamings for the man_db program
 #
 # Files:
@@ -25,10 +25,13 @@ curs_getcchar.3x		getcchar.3ncurses
 curs_getch.3x			getch.3ncurses
 curs_getstr.3x			getstr.3ncurses
 curs_getyx.3x			getyx.3ncurses
+curs_in_wch.3x			in_wch.3ncurses
 curs_inch.3x			inch.3ncurses
 curs_inchstr.3x			inchstr.3ncurses
 curs_initscr.3x			initscr.3ncurses
 curs_inopts.3x			inopts.3ncurses
+curs_ins_wch.3x			ins_wch.3ncurses
+curs_ins_wstr.3x		ins_wstr.3ncurses
 curs_insch.3x			insch.3ncurses
 curs_insstr.3x			insstr.3ncurses
 curs_instr.3x			instr.3ncurses
@@ -127,6 +130,6 @@ wresize.3x			wresize.3ncurses
 # Other cross-references:
 addch.3x			addch.3ncurses
 can_change_color.3x		can_change_color.3ncurses
-curs_attr_get.3x		curs_attr_get.3ncurses
+curs_attr_get.3x		attr_get.3ncurses
 dup_field.3x			dup_field.3ncurses
 init_pair.3x			init_pair.3ncurses

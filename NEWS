@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.673 2002/03/10 00:26:14 tom Exp $
+-- $Id: NEWS,v 1.674 2002/03/10 23:47:58 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020310
+	+ regenerated html manpages.
+	+ add manpages: curs_in_wch.3x, curs_ins_wch.3x, curs_ins_wstr.3x
+	+ implement wins_wch().
+	+ implement win_wch().
+	+ implement wins_nwstr(), wins_wstr().
 
 20020309
 	+ add manpages: curs_addwstr.3x, curs_winwstr.3x
