@@ -43,7 +43,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_insch.c,v 1.16 2002/11/03 00:52:23 tom Exp $")
+MODULE_ID("$Id: lib_insch.c,v 1.17 2002/11/17 00:01:07 Philippe.Blain Exp $")
 
 /*
  * Insert the given character, updating the current location to simplify
@@ -70,7 +70,7 @@ _nc_insert_ch(WINDOW *win, chtype ch)
 	if (is7bits(ch) && iscntrl(ch)) {
 	    _nc_insert_ch(win, '^');
 	    _nc_insert_ch(win, '@' + (ch));
-	} else {
+	} else if (win->_curx <= win->_maxx) {
 	    struct ldat *line = &(win->_line[win->_cury]);
 	    NCURSES_CH_T *end = &(line->text[win->_curx]);
 	    NCURSES_CH_T *temp1 = &(line->text[win->_maxx]);
@@ -85,8 +85,6 @@ _nc_insert_ch(WINDOW *win, chtype ch)
 	    *temp1 = _nc_render(win, wch);
 
 	    win->_curx++;
-	    if (win->_curx > win->_maxx)
-		win->_curx = win->_maxx;
 	}
 	break;
     }
