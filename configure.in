@@ -17,10 +17,10 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.91 1997/09/20 23:50:12 tom Exp $
+dnl $Id: configure.in,v 1.94 1997/09/27 23:44:12 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12)
-AC_REVISION($Revision: 1.91 $)
+AC_REVISION($Revision: 1.94 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 CF_SUBST_NCURSES_VERSION
@@ -87,15 +87,18 @@ fi
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
 AC_ISC_POSIX
+AC_PATH_PROG(LDCONFIG,ldconfig,,$PATH:/sbin:/usr/sbin)
 
 dnl DEFECT in autoconf 2.12:	an attempt to set policy, this breaks the
 dnl				configure script by not letting us test if C++
 dnl				is present, making this option necessary.
 AC_MSG_CHECKING(if you want to build with C++)
 AC_ARG_WITH(cxx,
-	[  --without-cxx           suppress check for C++, don't build demo])
-AC_MSG_RESULT($withval)
-if test "X$withval" != Xno ; then
+	[  --without-cxx           suppress check for C++, don't build demo],
+	[cf_with_cxx=$withval],
+	[cf_with_cxx=yes])
+AC_MSG_RESULT($cf_with_cxx)
+if test "X$cf_with_cxx" != Xno ; then
 AC_PROG_CXX
 fi
 changequote(,)dnl
@@ -104,14 +107,17 @@ changequote([,])dnl
 
 AC_MSG_CHECKING(if you want to build programs such as tic)
 AC_ARG_WITH(progs,
-	[  --without-progs         suppress build with programs (e.g., tic)])
+	[  --without-progs         suppress build with programs (e.g., tic)],
+	[cf_with_progs=$withval],
+	[cf_with_progs=yes])
+AC_MSG_RESULT($cf_with_progs)
+
 modules_to_build="ncurses"
-if test "X$withval" != Xno ; then
+if test "X$cf_with_progs" != Xno ; then
 modules_to_build="$modules_to_build progs"
 fi
 modules_to_build="$modules_to_build panel menu form"
 
-AC_MSG_RESULT($withval)
 AC_PROG_AWK
 AC_PROG_MAKE_SET
 CF_PROG_INSTALL
@@ -714,12 +720,14 @@ else
    fi
 fi
 if test	"$ac_cv_prog_gnat_correct" = yes; then
+   ADAFLAGS="-O3 $ADAFLAGS"
    cf_ada_compiler=gcc
    cf_ada_package=terminal_interface
    AC_SUBST(cf_ada_make)
    AC_SUBST(cf_ada_compiler)
    AC_SUBST(cf_ada_package)
    AC_SUBST(ADAFLAGS)
+   AC_SUBST(cf_compile_generics)
 fi
 
 ### It's not possible to appease gcc 2.6.3's conversion-warnings if we're
@@ -799,6 +807,7 @@ if test -z "\$SYS_NAME"; then SYS_NAME=unknown;fi
 AWK="$AWK"
 CF_LIST_MODELS="$cf_list_models"
 DFT_LWR_MODEL="$DFT_LWR_MODEL"
+LDCONFIG="$LDCONFIG"
 SRC_SUBDIRS="$SRC_SUBDIRS"
 WITH_ECHO="$with_echo"
 WITH_OVERWRITE="$with_overwrite"

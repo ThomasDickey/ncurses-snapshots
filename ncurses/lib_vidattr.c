@@ -52,7 +52,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.16 1997/06/27 10:12:46 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.17 1997/09/28 00:23:21 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -77,7 +77,8 @@ int pair, current_pair;
 	T(("previous attribute was %s", _traceattr(previous_attr)));
 
 #if !USE_XMC_SUPPORT
-	newmode &= ~SP->_xmc_suppress;
+	if (magic_cookie_glitch > 0)
+		newmode &= ~(SP->_xmc_suppress);
 #endif
 	if (newmode == previous_attr)
 		returnCode(OK);

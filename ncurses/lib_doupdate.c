@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.84 1997/09/20 20:59:59 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.86 1997/09/28 00:23:45 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -240,7 +240,7 @@ static void PutCharLR(chtype const ch)
 	/* we can suppress automargin */
 	TPUTS_TRACE("exit_am_mode");
 	putp(exit_am_mode);
-	
+
 	PutAttrChar(ch);
 
 	TPUTS_TRACE("enter_am_mode");
@@ -297,7 +297,7 @@ static inline void PutChar(chtype const ch)
 	PutCharLR(ch);
     else
 	PutAttrChar(ch);
-    
+
     if (SP->_curscol >= screen_columns)
 	wrap_cursor();
 
@@ -980,6 +980,59 @@ bool	attrchanged = FALSE;
 		GoTo(lineno, firstChar);
 		ClrToEOL(ClrBlank(curscr));
 		PutRange(oldLine, newLine, lineno, 0, (screen_columns-1));
+#if USE_XMC_SUPPORT
+
+#define NEW(r,c) newscr->_line[r].text[c]
+#define xmc_turn_on(a,b) ((((a)^(b)) & ~(a) & SP->_xmc_triggers) != 0)
+#define xmc_turn_off(a,b) xmc_turn_on(b,a)
+
+	/*
+	 * This is a very simple loop to paint characters which may have the
+	 * magic cookie glitch embedded.  It doesn't know much about video
+	 * attributes which are continued from one line to the next.  It
+	 * assumes that we have filtered out requests for attribute changes
+	 * that do not get mapped to blank positions.
+	 *
+	 * FIXME: we are not keeping track of where we put the cookies, so this
+	 * will work properly only once, since we may overwrite a cookie in a
+	 * following operation.
+	 */
+	} else if (magic_cookie_glitch > 0) {
+		GoTo(lineno, firstChar);
+		for (n = 0; n < screen_columns; n++) {
+			int m = n + magic_cookie_glitch;
+
+			/* check for turn-on:
+			 * If we are writing an attributed blank, where the
+			 * previous cell is not attributed.
+			 */
+			if (TextOf(newLine[n]) == ' '
+			 && ((n > 0
+			   && xmc_turn_on(newLine[n-1], newLine[n]))
+			  || (n == 0
+			   && lineno > 0
+			   && xmc_turn_on(NEW(lineno-1,screen_columns-1), newLine[n])))) {
+				n = m;
+			}
+
+			PutChar(newLine[n]);
+
+			/* check for turn-off:
+			 * If we are writing an attributed non-blank, where the
+			 * next cell is blank, and not attributed.
+			 */
+			if (TextOf(newLine[n]) != ' '
+			 && ((n+1 < screen_columns
+			   && xmc_turn_off(newLine[n], newLine[n+1]))
+			  || (n+1 >= screen_columns
+			   && lineno+1 < screen_lines
+			   && xmc_turn_off(newLine[n], NEW(lineno+1,0))))) {
+				n = m;
+			}
+
+		}
+#undef NEW
+#endif
 	} else {
 		chtype blank;
 
@@ -1020,7 +1073,7 @@ bool	attrchanged = FALSE;
 				TPUTS_TRACE("clr_bol");
 				putp(clr_bol);
 			    }
-			    
+
 			    while (firstChar < nFirstChar)
 				oldLine[firstChar++] = blank;
 
@@ -1309,7 +1362,7 @@ void _nc_outstr(const char *str)
  * necessary to add some conditions to scroll_csr_forward/backward.
  */
 
-/* Try to scroll up assuming given csr (miny, maxy). Returns ERR on failure */ 
+/* Try to scroll up assuming given csr (miny, maxy). Returns ERR on failure */
 static int scroll_csr_forward(int n, int top, int bot, int miny, int maxy, chtype blank)
 {
     int i;
@@ -1364,7 +1417,7 @@ static int scroll_csr_forward(int n, int top, int bot, int miny, int maxy, chtyp
     }
     else
 	return ERR;
-    
+
     return OK;
 }
 
@@ -1424,7 +1477,7 @@ static int scroll_csr_backward(int n, int top, int bot, int miny, int maxy, chty
     }
     else
 	return ERR;
-	
+
     return OK;
 }
 
@@ -1478,7 +1531,7 @@ static int scroll_idl(int n, int del, int ins, chtype blank)
 	    tputs(insert_line, 0, _nc_outch);
 	}
     }
-    
+
     return OK;
 }
 
@@ -1491,6 +1544,15 @@ int _nc_scrolln(int n, int top, int bot, int maxy)
     int res;
 
     TR(TRACE_MOVE, ("mvcur_scrolln(%d, %d, %d, %d)", n, top, bot, maxy));
+
+#if USE_XMC_SUPPORT
+    /*
+     * If we scroll, we might remove a cookie.
+     */
+    if (magic_cookie_glitch > 0) {
+	return (ERR);
+    }
+#endif
 
     if (n > 0) /* scroll up (forward) */
     {
@@ -1507,7 +1569,7 @@ int _nc_scrolln(int n, int top, int bot, int maxy)
 	}
 
 	res = scroll_csr_forward(n, top, bot, 0, maxy, blank);
-	
+
 	if (res == ERR && change_scroll_region)
 	{
 	    if ((((n==1 && scroll_forward) || parm_index)
@@ -1536,7 +1598,7 @@ int _nc_scrolln(int n, int top, int bot, int maxy)
 	    tputs(tparm(change_scroll_region, 0, maxy), 0, _nc_outch);
 	    SP->_cursrow = SP->_curscol = -1;
 	}
-	
+
 	if (res == ERR && _nc_idlok)
 	    res = scroll_idl(n, top, bot-n+1, blank);
     }
@@ -1564,7 +1626,7 @@ int _nc_scrolln(int n, int top, int bot, int maxy)
 	}
 
 	res = scroll_csr_backward(-n, top, bot, 0, maxy, blank);
-	
+
 	if (res == ERR && change_scroll_region)
 	{
 	    if (top != 0 && (SP->_cursrow == top || SP->_cursrow == top-1)
@@ -1592,7 +1654,7 @@ int _nc_scrolln(int n, int top, int bot, int maxy)
 	    tputs(tparm(change_scroll_region, 0, maxy), 0, _nc_outch);
 	    SP->_cursrow = SP->_curscol = -1;
 	}
-	
+
 	if (res == ERR && _nc_idlok)
 	    res = scroll_idl(-n, bot+n+1, top, blank);
     }
@@ -1642,3 +1704,20 @@ void _nc_screen_wrap()
 {
     UpdateAttrs(A_NORMAL);
 }
+
+#if USE_XMC_SUPPORT
+void _nc_do_xmc_glitch(attr_t previous)
+{
+	attr_t chg = XMC_CHANGES(previous ^ SP->_current_attr);
+
+	while (chg != 0) {
+		if (chg & 1) {
+			SP->_curscol += magic_cookie_glitch;
+			if (SP->_curscol >= SP->_columns)
+				wrap_cursor();
+			T(("bumped to %d,%d after cookie", SP->_cursrow, SP->_curscol));
+		}
+		chg >>= 1;
+	}
+}
+#endif /* USE_XMC_SUPPORT */

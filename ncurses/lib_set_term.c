@@ -32,7 +32,7 @@
 
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_set_term.c,v 1.26 1997/09/06 22:47:16 tom Exp $")
+MODULE_ID("$Id: lib_set_term.c,v 1.28 1997/09/28 00:21:36 tom Exp $")
 
 /*
  * If the output file descriptor is connected to a tty (the typical case) it
@@ -203,7 +203,6 @@ size_t	i;
 	SP->_ofp         = output;
 	SP->_cursor      = -1;	/* cannot know real cursor shape */
 
-#if !USE_XMC_SUPPORT
 	/*
 	 * If we've no magic cookie support, we suppress attributes that xmc
 	 * would affect, i.e., the attributes that affect the rendition of a
@@ -211,17 +210,31 @@ size_t	i;
 	 * as well.
 	 */
 	if (magic_cookie_glitch > 0) {
-		SP->_xmc_suppress = (
-			A_ALTCHARSET |
-			A_BLINK |
-			A_REVERSE |
-			A_STANDOUT |
-			A_UNDERLINE
-			);
+
+		SP->_xmc_triggers = termattrs() & (
+				A_ALTCHARSET |
+				A_BLINK |
+				A_BOLD |
+				A_REVERSE |
+				A_STANDOUT |
+				A_UNDERLINE
+				);
+		SP->_xmc_suppress = SP->_xmc_triggers & ~(A_BOLD);
+
+		T(("magic cookie attributes %s", _traceattr(SP->_xmc_suppress)));
+#if USE_XMC_SUPPORT
+		/*
+		 * To keep this simple, suppress all of the optimization hooks
+		 * except for clear_screen and the cursor addressing.
+		 */
+		clr_eol = 0;
+		clr_eos = 0;
+		set_attributes = 0;
+#else
 		magic_cookie_glitch = -1;
 		acs_chars = 0;
-	}
 #endif
+	}
 	init_acs();
 	memcpy(SP->_acs_map, acs_map, sizeof(chtype)*ACS_LEN);
 

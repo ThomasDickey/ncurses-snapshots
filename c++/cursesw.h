@@ -2,7 +2,7 @@
 #ifndef _CURSESW_H
 #define _CURSESW_H
 
-// $Id: cursesw.h,v 1.10 1997/09/09 00:14:40 juergen Exp $
+// $Id: cursesw.h,v 1.11 1997/09/26 11:51:32 juergen Exp $
 
 #include <etip.h>
 #include <stdio.h>
@@ -77,6 +77,20 @@ inline int UNDEF(border)(chtype ls, chtype rs, chtype ts, chtype bs, chtype tl, 
 inline int UNDEF(box)(WINDOW *win, int v, int h) { return box(win, v, h); }
 #undef box
 #define box UNDEF(box)
+#endif
+
+#ifdef mvwhline
+inline int UNDEF(mvwhline)(WINDOW *win,int y,int x,chtype c,int n) {
+  return mvwhline(win,y,x,c,n); }
+#undef mvwhline
+#define mvwhline UNDEF(mvwhline)
+#endif
+
+#ifdef mvwvline
+inline int UNDEF(mvwvline)(WINDOW *win,int y,int x,chtype c,int n) {
+  return mvwvline(win,y,x,c,n); }
+#undef mvwvline
+#define mvwvline UNDEF(mvwvline)
 #endif
 
 #ifdef clear
@@ -981,7 +995,7 @@ public:
   // you pass zero for the character, curses will try to find a "nice" one. 
 
   int            hline(int y, int x, int len, chtype ch=0) {
-    return mvwhline(w,y,x,ch,len); }
+    return ::mvwhline(w,y,x,ch,len); }
   // Move the cursor to the requested position and then draw a horizontal line.
 
   int            vline(int len, chtype ch=0) { return ::wvline(w, ch, len); }
@@ -989,7 +1003,7 @@ public:
   // you pass zero for the character, curses will try to find a "nice" one.
 
   int            vline(int y, int x, int len, chtype ch=0) {
-    return mvwvline(w,y,x,ch,len); }
+    return ::mvwvline(w,y,x,ch,len); }
   // Move the cursor to the requested position and then draw a vertical line.
   
   // -------------------------------------------------------------------------
@@ -1042,7 +1056,7 @@ public:
   // Otherwise do it in software.
 
 
-  void            idcok(bool bf) { ::idcok(w, bf); }
+  void           idcok(bool bf) { ::idcok(w, bf); }
   // If bf is TRUE, use insert/delete character hardware support if possible.
   // Otherwise do it in software.
 
@@ -1163,7 +1177,7 @@ public:
   // Get my parent.
 
   bool isDescendant(NCursesWindow& win);
-  // Return TRUE if win is a descendant of me.
+  // Return TRUE if win is a descendant of this.
 };
 
 // -------------------------------------------------------------------------

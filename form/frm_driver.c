@@ -65,7 +65,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.26 1997/09/14 00:05:21 Tony.Hoffmann Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.27 1997/09/26 10:08:55 juergen Exp $")
 
 /*
 Some options that may effect compatibility in behavior to SVr4 forms,
@@ -549,7 +549,7 @@ static bool Field_Grown(FIELD * field, int amount)
 |   Facility      :  libnform  
 |   Function      :  static int Position_Form_Cursor(FORM * form)
 |   
-|   Description   :  Position the currsor in the window for the current
+|   Description   :  Position the cursor in the window for the current
 |                    field to be in sync. with the currow and curcol 
 |                    values.
 |

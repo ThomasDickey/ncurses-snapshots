@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.24 1997/09/06 23:40:02 tom Exp $
+# $Id: Makefile.in,v 1.25 1997/09/27 20:09:35 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -100,9 +100,11 @@ DEPS_CURSES = ../lib/libncurses@DFT_DEP_SUFFIX@
 all:	$(AUTO_SRC) $(PROGS) 
 
 install: install.progs 
+deinstall: deinstall.progs 
 
 # this line simplifies the configure-script
 install.libs:
+deinstall.libs:
 
 install.progs: $(PROGS) $(INSTALL_PREFIX)$(bindir)
 	$(INSTALL_PROGRAM) tic     $(INSTALL_PREFIX)$(bindir)/tic
@@ -120,6 +122,17 @@ install.progs: $(PROGS) $(INSTALL_PREFIX)$(bindir)
 	@echo "linking reset to tset"
 	-@rm -f $(INSTALL_PREFIX)$(bindir)/reset
 	(cd $(INSTALL_PREFIX)$(bindir) && $(LN_S) tset reset)
+
+deinstall.progs:
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/tic
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/toe
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/infocmp
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/clear
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/tput
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/tset
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/captoinfo
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/infotocap
+	-@rm -f $(INSTALL_PREFIX)$(bindir)/reset
 
 $(INSTALL_PREFIX)$(bindir) :
 	$(srcdir)/../mkinstalldirs $@
