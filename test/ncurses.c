@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.207 2004/04/24 21:42:54 tom Exp $
+$Id: ncurses.c,v 1.208 2004/05/16 15:45:54 tom Exp $
 
 ***************************************************************************/
 
@@ -4325,6 +4325,8 @@ demo_forms(void)
     free_form(form);
     for (c = 0; f[c] != 0; c++)
 	free_field(f[c]);
+    free_fieldtype(fty_middle);
+    free_fieldtype(fty_passwd);
     noraw();
     nl();
 }

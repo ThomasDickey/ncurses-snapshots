@@ -30,16 +30,13 @@
  *   Author:  Juergen Pfeifer, 1995,1997                                    *
  ****************************************************************************/
 
-/* $Id: form.priv.h,v 0.16 2004/05/08 21:45:56 tom Exp $ */
+/* $Id: form.priv.h,v 0.18 2004/05/15 22:36:26 tom Exp $ */
 
 #ifndef FORM_PRIV_H
 #define FORM_PRIV_H 1
 
-#define FIELD_CELL char		/* FIXME: this should be NCURSES_CH_T */
-
 #include "curses.priv.h"
 #include "mf_common.h"
-#include "form.h"
 
 #if USE_WIDEC_SUPPORT
 #include <wchar.h>
@@ -49,7 +46,20 @@
 #define MB_LEN_MAX 8 /* should be >= MB_CUR_MAX, but that may be a function */
 #endif
 
+#define FIELD_CELL NCURSES_CH_T
+
+#define NCURSES_FIELD_INTERNALS char** expanded; WINDOW *working;
+#define NCURSES_FIELD_EXTENSION , (char **)0, (WINDOW *)0
+
+#else
+
+#define FIELD_CELL char
+
+#define NCURSES_FIELD_EXTENSION /* nothing */
+
 #endif
+
+#include "form.h"
 
 /* form  status values */
 #define _OVLMODE         (0x04) /* Form is in overlay mode                */
