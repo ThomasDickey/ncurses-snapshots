@@ -1,18 +1,19 @@
 
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
 *                ncurses is copyright (C) 1992-1995                        *
-*                          by Zeyd M. Ben-Halim                            *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
@@ -27,7 +28,7 @@
  */
 
 #include "curses.priv.h"
-#include "terminfo.h"
+#include "term.h"	/* beep, flash */
 
 /*
  *	beep()
@@ -37,15 +38,21 @@
  *
  */
 
-int beep()
+int beep(void)
 {
 	T(("beep() called"));
 
 	/* should make sure that we are not in altchar mode */
 	if (bell)
+	{
+		TPUTS_TRACE("bell");
 		return(putp(bell));
+	}
 	else if (flash_screen)
+	{
+		TPUTS_TRACE("flash_screen");
 		return(putp(flash_screen));
+	}
 	else
 		return(ERR);
 }
@@ -58,15 +65,21 @@ int beep()
  *
  */
 
-int flash()
+int flash(void)
 {
 	T(("flash() called"));
 
 	/* should make sure that we are not in altchar mode */
 	if (flash_screen)
+	{
+		TPUTS_TRACE("flash_screen");
 		return(putp(flash_screen));
+	}
 	else if (bell)
+	{
+		TPUTS_TRACE("bell");
 		return(putp(bell));
+	}
 	else
 		return(ERR);
 }

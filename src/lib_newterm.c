@@ -1,22 +1,24 @@
 
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
 *                ncurses is copyright (C) 1992-1995                        *
-*                          by Zeyd M. Ben-Halim                            *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
 ***************************************************************************/
+
 
 
 /*
@@ -28,7 +30,14 @@
 
 #include <stdlib.h>
 #include "curses.priv.h"
-#include "terminfo.h"	/* enter_ca_mode */
+#include "term.h"	/* clear_screen, cup & friends, cur_term */
+
+static filter_mode = 0;
+
+void filter(void)
+{
+    filter_mode = 1;
+}
 
 SCREEN * newterm(char *term, FILE *ofp, FILE *ifp)
 {
@@ -43,9 +52,38 @@ int	errret;
 	if (setupterm(term, fileno(ofp), &errret) != 1)
 	    	return NULL;
 
+	/* implement filter mode */
+	if (filter_mode)
+	{
+	    LINES = 1;
+
+#ifdef clear_screen
+	    clear_screen = (char *)NULL;
+	    cursor_down = parm_down_cursor = (char *)NULL;
+	    cursor_address = (char *)NULL;
+	    cursor_up = parm_up_cursor = (char *)NULL;
+	    row_address = (char *)NULL;
+
+	    cursor_home = carriage_return;
+#endif /* clear_screen */
+	}
+
+	/* if we must simulate soft labels, grab off the line to be used */
+#ifdef num_labels
+	if (num_labels <= 0)
+#endif /* num_labels */
+	    if (_slk_init)
+		ripoffline(-1, slk_initialize);
+
 	/* this actually allocates the screen structure */
 	if (setupscreen(LINES, COLS) == ERR)
 	    	return NULL;
+
+#ifdef num_labels
+	/* if the terminal type has real soft labels, set those up */
+	if (_slk_init && num_labels > 0)
+	    slk_initialize(stdscr, COLS);
+#endif /* num_labels */
 
 	SP->_ifd        = fileno(ifp);
 	SP->_checkfd	= fileno(ifp);
@@ -59,13 +97,18 @@ int	errret;
 #endif
 	SP->_endwin	= FALSE;
 
-#ifdef enter_ca_mode
-	if (enter_ca_mode)
-	    	putp(enter_ca_mode);
-#endif /* enter_ca_mode */
-
 	baudrate();	/* sets a field in the SP structure */
 
+	/* compute movement costs so we can do better move optimization */
+	mvcur_init(SP);
+#if 0
+	/* initialize soft labels */
+	if (_slk_init)
+	    if (num_labels <= 0)
+		ripoffline(-1, slk_initialize);
+	    else
+		slk_initialize(stdscr, COLS);
+#endif
 	curses_signal_handler(TRUE);
 
 	T(("newterm returns %p", SP));

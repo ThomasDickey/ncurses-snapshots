@@ -2,21 +2,22 @@
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*                ncurses is copyright (C) 1992, 1993, 1994                 *
-*                          by Zeyd M. Ben-Halim                            *
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
 ***************************************************************************/
-
 
 /*
 **	lib_getch.c
@@ -48,6 +49,7 @@ static int fifo_peek(void)
 	return SP->_fifo[++peek];
 }
 
+#ifdef TRACE
 static inline void fifo_dump(void)
 {
 int i;
@@ -55,6 +57,7 @@ int i;
 	for (i = 0; i < 10; i++)
 		T(("char %d = %d (%c)", i, SP->_fifo[i], (unsigned char)SP->_fifo[i]));
 }
+#endif /* TRACE */
 
 static inline int fifo_pull(void)
 {
@@ -64,7 +67,7 @@ int ch;
 
 	h_inc();
 #ifdef TRACE
-	if (_tracing & TRACE_DETAILS) fifo_dump();
+	if (_tracing & TRACE_FIFO) fifo_dump();
 #endif
 	return ch;
 }
@@ -82,7 +85,7 @@ int ungetch(int ch)
 	SP->_fifo[head] = ch;
 	T(("ungetch ok"));
 #ifdef TRACE
-	if (_tracing & TRACE_DETAILS) fifo_dump();
+	if (_tracing & TRACE_FIFO) fifo_dump();
 #endif
 	return OK;
 }
@@ -103,7 +106,7 @@ again:
 	t_inc();
 	T(("pushed %#x at %d", ch, tail));
 #ifdef TRACE
-	if (_tracing & TRACE_DETAILS) fifo_dump();
+	if (_tracing & TRACE_FIFO) fifo_dump();
 #endif
 	return ch;
 }
@@ -117,6 +120,31 @@ int i;
 }
 
 static int kgetch(WINDOW *);
+
+void backspace(WINDOW *win)
+{
+	if (win->_curx == 0)
+	{
+	    beep();
+	    return;
+	}
+
+	mvwaddstr(curscr, win->_begy + win->_cury, win->_begx + win->_curx,
+		 "\b \b");
+	waddstr(win, "\b \b");
+
+	/*
+	 * This used to do the equivalent of outstr("\b \b"), which
+	 * would fail on terminals with a non-backspace cursor_left
+	 * character.
+	 */
+	mvcur(win->_begy + win->_cury, win->_begx + win->_curx,
+	      win->_begy + win->_cury, win->_begx + win->_curx - 1);
+	outstr(" ");
+	mvcur(win->_begy + win->_cury, win->_begx + win->_curx,
+	      win->_begy + win->_cury, win->_begx + win->_curx - 1);
+	SP->_curscol--; 
+}
 
 int
 wgetch(WINDOW *win)
@@ -165,21 +193,31 @@ int	ch;
 		ch = fifo_pull();
 	}
 
-	/* strip 8th-bit is so desired */
+	/* strip 8th-bit if so desired */
 	if (ch & 0x80)
 		if (!SP->_use_meta)
 			ch &= 0x7f;
 
-	/* there must be a simpler way of doing this */
-	if (!(win->_flags & _ISPAD) && SP->_echo  &&  ch < KEY_MIN) {
-		mvwaddch(curscr, win->_begy + win->_cury,
-                         win->_begx + win->_curx, ch | win->_attrs);
-		waddch(win, ch | win->_attrs);
+        if (!(win->_flags & _ISPAD) && SP->_echo) {
+	    /* there must be a simpler way of doing this */
+	    if (ch == erasechar() || ch == KEY_BACKSPACE || ch == KEY_LEFT)
+		backspace(win);
+	    else if (ch < KEY_MIN) {
+		mvwaddch(curscr,
+			 win->_begy + win->_cury,
+                         win->_begx + win->_curx,
+			 (chtype)(ch | win->_attrs));
+		waddch(win, (chtype)(ch | win->_attrs));
+	    }
+	    else
+		beep();
 	}
 	if (setHere)
 	    nocbreak();
 
-	T(("wgetch returning : '%c', '0x%x'", ch, ch));
+	T(("wgetch returning : 0x%x = %s",
+	   ch,
+	   (ch > KEY_MIN) ? keyname(ch) : unctrl(ch)));
 
 	return(ch);
 }

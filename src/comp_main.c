@@ -2,16 +2,18 @@
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*                ncurses is copyright (C) 1992, 1993, 1994                 *
-*                          by Zeyd M. Ben-Halim                            *
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
@@ -30,7 +32,7 @@
 #endif
 #include "tic.h"
 #include "version.h"
-#include "terminfo.h"
+#include "term.h"
 #include "dump_entry.h"
 #include "term_entry.h"
 
@@ -153,18 +155,18 @@ ENTRY	*qp;
 
 		for_entry_list(qp)
 		{
-		    int	i = qp->cend - qp->cstart;
+		    int	j = qp->cend - qp->cstart;
 
 		    (void) fseek(stdin, qp->cstart, SEEK_SET); 
-		    while (i-- )
+		    while (j-- )
 			(void) putchar(getchar());
 
 		    dump_entry(&qp->tterm, NULL);
-		    for (i = 0; i < qp->nuses; i++)
+		    for (j = 0; j < qp->nuses; j++)
 			if (infodump)
-			    (void) printf("use=%s,", qp->uses[i]);
+			    (void) printf("use=%s,", qp->uses[j]);
 			else
-			    (void) printf("tc=%s:", qp->uses[i]);
+			    (void) printf("tc=%s:", qp->uses[j]);
 		    (void) putchar('\n');
 		}
 		(void) fseek(stdin, tail->cend, SEEK_SET);

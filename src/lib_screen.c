@@ -1,26 +1,34 @@
 
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
 *                ncurses is copyright (C) 1992-1995                        *
-*                          by Zeyd M. Ben-Halim                            *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
 ***************************************************************************/
 
 
+
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <time.h>
+#include "term.h"	/* exit_ca_mode, non_rev_rmcup */
 #include "curses.priv.h"
+
+static time_t	dumptime;
 
 WINDOW *getwin(FILE *filep)
 {
@@ -121,6 +129,7 @@ int scr_dump(char *file)
 	{
 	    (void) putwin(newscr, fp);
 	    (void) fclose(fp);
+	    dumptime = time((time_t *)0);
 	    return OK;
 	}
 }
@@ -128,8 +137,16 @@ int scr_dump(char *file)
 int scr_init(char *file)
 {
 	FILE	*fp;
+	struct stat	stb;
+
+#ifdef exit_ca_mode
+	if (exit_ca_mode && non_rev_rmcup)
+	    return(ERR);
+#endif /* exit_ca_mode */
 
 	if ((fp = fopen(file, "r")) == (FILE *)NULL)
+	    return ERR;
+	else if (fstat(STDOUT_FILENO, &stb) || stb.st_mtime > dumptime)
 	    return ERR;
 	else
 	{

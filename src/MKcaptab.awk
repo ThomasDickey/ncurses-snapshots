@@ -1,8 +1,4 @@
 
-#  This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for
-#  details. If they are missing then this copy is in violation of 
-#  the copyright conditions.           
-
 cat <<'EOF'
 /*
  *	comp_captab.c -- The names of the capabilities in a form ready for
@@ -12,14 +8,14 @@ cat <<'EOF'
 
 
 #include "tic.h"
-#include "terminfo.h"
+#include "term.h"
 #include "hashsize.h"
 
 struct name_table_entry	info_table[] =
 {
 EOF
 
-awk <Caps '
+awk <Caps.filtered '
 BEGIN		{
 		    tablesize = 0;
 		}
@@ -43,11 +39,25 @@ $3 == "str"	{
 cat <<'EOF'
 };
 
+struct alias alias_table[] =
+{
+EOF
+
+awk <Caps.filtered '
+$1 == "alias"	{
+		    printf "\t{%s, %s},\t /* %s */\n", $2, $3, $4
+		}
+'
+
+cat <<'EOF'
+	{(char *)NULL, (char *)NULL}
+};
+
 struct name_table_entry	cap_table[] =
 {
 EOF
 
-awk <Caps '
+awk <Caps.filtered '
 BEGIN		{
 		    tablesize = 0;
 		    BoolCount = NumCount = StrCount = 0;
@@ -67,6 +77,7 @@ $3 == "num"	{
 $3 == "str"	{
 		    printf "\t{ 0,%15s,\tSTRING,\t\t%3d },\n", $4, StrCount++
 		}
+
 END	{
 	    print  "};"
 	    print  ""
@@ -75,7 +86,7 @@ END	{
 	    print  ""
 	    printf "#if (BOOLCOUNT!=%d)||(NUMCOUNT!=%d)||(STRCOUNT!=%d)\n",\
 						BoolCount, NumCount, StrCount
-	    print  "#error	--> terminfo.h and comp_captab.c disagree about the <--"
+	    print  "#error	--> term.h and comp_captab.c disagree about the <--"
 	    print  "#error	--> numbers of booleans, numbers and/or strings <--"
 	    print  "#endif"
 	}

@@ -1,11 +1,11 @@
 # change to -ldcurses if you want to do any debugging
 
 # Use these flags to debug with the production library
-# LDFLAGS = -L$(LIB) -lncurses
+LDFLAGS = -L$(LIB) -lncurses
 
 # Use these flags to debug with the source directory library
-CFLAGS = -g -I../src
-LDFLAGS = -L../src ../src/libdcurses.a
+#CFLAGS = -g -I../src
+#LDFLAGS = -L../src ../src/libdcurses.a
 
 TESTS = \
 	battle \

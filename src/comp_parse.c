@@ -1,22 +1,24 @@
 
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
 *                ncurses is copyright (C) 1992-1995                        *
-*                          by Zeyd M. Ben-Halim                            *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
 ***************************************************************************/
+
 
 
 /*
@@ -31,9 +33,6 @@
  *	want use-resolution, call resolve_uses().  To free the list storage,
  *	do free_entries().
  *
- * This software is Copyright (C) 1994 by Eric S. Raymond, all rights reserved.
- * It is issued with ncurses under the same terms and conditions as the ncurses
- * library sources.
  */
 
 #include <stdio.h>
@@ -41,7 +40,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "tic.h"
-#include "terminfo.h"
+#include "term.h"
 #include "term_entry.h"
 
 /****************************************************************************
@@ -136,12 +135,41 @@ void read_entry_source(FILE *fp, int literal)
     DEBUG(1, ("tail = %s", tail->tterm.term_names));
 }
 
+bool entry_match(char *n1, char *n2)
+/* do any of the aliases in a pair of terminal names match? */
+{
+    char	*pstart, *qstart, *pend, *qend;
+    char	nc1[NAMESIZE+1], nc2[NAMESIZE+1];
+
+    if (strchr(n1, '|') == NULL)
+    {
+	(void) strcpy(nc1, n1);
+	(void) strcat(nc1, "|");
+	n1 = nc1;
+    }
+
+    if (strchr(n2, '|') == NULL)
+    {
+	(void) strcpy(nc2, n2);
+	(void) strcat(nc2, "|");
+	n2 = nc2;
+    }
+
+    for (pstart = n1; (pend = strchr(pstart, '|')); pstart = pend + 1)
+	for (qstart = n2; (qend = strchr(qstart, '|')); qstart = qend + 1)
+	    if ((pend-pstart == qend-qstart)
+	     && memcmp(pstart, qstart, (size_t)(pend-pstart)) == 0)
+		return(TRUE);
+
+    	return(FALSE);
+}
+
 int resolve_uses(void)
 /* try to resolve all use capabilities */
 {
     ENTRY	*qp, *rp;
     bool	keepgoing;
-    int		unresolved;
+    int		unresolved, multiples;
 
     do {
 	keepgoing = FALSE;
@@ -150,6 +178,8 @@ int resolve_uses(void)
 	    if (qp->nuses > 0)
 	    {
 		char	*lookfor = qp->uses[qp->nuses - 1];
+
+		DEBUG(2, ("%s: attempting resolution",first_name(&qp->tterm)));
 
 		/* first, try to resolve from in-core records */
 		for_entry_list(rp)
@@ -208,7 +238,27 @@ int resolve_uses(void)
 	    unresolved++;
     }
 
-    return(unresolved == 0);
+    multiples = 0;
+    for_entry_list(qp)
+    {
+	int matchcount = 0;
+
+	for_entry_list(rp)
+	    if (entry_match(qp->tterm.term_names, rp->tterm.term_names))
+	    {
+		if (matchcount == 2)
+		{
+		    (void) fprintf(stderr, "Name collision:\n\t%s\n",
+			   qp->tterm.term_names);
+		    multiples++;
+		}
+		if (matchcount >= 2)
+		    (void) fprintf(stderr, "\t%s\n", rp->tterm.term_names);
+		matchcount++;
+	    }
+    }
+
+    return(unresolved == 0 && multiples == 0);
 }
 
 void free_entries(void)

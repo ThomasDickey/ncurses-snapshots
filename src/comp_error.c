@@ -1,20 +1,22 @@
 
 /***************************************************************************
-*	                        COPYRIGHT NOTICE                           *
+*                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*	            ncurses is copyright (C) 1992-1995                     *
-*	                      by Zeyd M. Ben-Halim                         *
-*	                      zmbenhal@netcom.com                          *
-*	                                                                   *
-*	 Permission is hereby granted to reproduce and distribute ncurses  *
-*	 by any means and for any fee, whether alone or as part of a       *
-*	 larger distribution, in source or in binary form, PROVIDED        *
-*	 this notice is included with any such distribution, not removed   *
-*	 from header files, and is reproduced in any documentation         *
-*	 accompanying it or the applications linked with it.               *
-*	                                                                   *
-*	 ncurses comes AS IS with no warranty, implied or expressed.       *
-*	                                                                   *
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
+*                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
 ***************************************************************************/
 
 
@@ -52,7 +54,8 @@ va_list argp;
 
 	va_start(argp,fmt);
 	fprintf (stderr, "\"%s\", line %d: ", sourcename, curr_line);
-	fprintf (stderr, "terminal '%s', ", termtype);
+	if (termtype[0])
+		fprintf (stderr, "terminal '%s', ", termtype);
 	vfprintf (stderr, fmt, argp);
 	fprintf (stderr, "\n");
 	va_end(argp);

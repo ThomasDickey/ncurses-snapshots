@@ -1,18 +1,19 @@
 
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
 *                ncurses is copyright (C) 1992-1995                        *
-*                          by Zeyd M. Ben-Halim                            *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
@@ -32,7 +33,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "tic.h"
-#include "terminfo.h"
+#include "term.h"
 #include "term_entry.h"
 #include "parametrized.h"
 
@@ -105,6 +106,29 @@ int parse_entry(struct entry *entryp, int literal)
 	} else {
 	    entry_ptr = find_entry(curr_token.tk_name,
 	    				syntax ? cap_hash_table : info_hash_table);
+
+	    /*
+	     * Our kluge to handle aliasing.  The reason it's done
+	     * this ugly way, with a linear search, is so the hashing
+	     * machinery doesn't have to be made really complicated
+	     * (also we get better warnings this way).  No point in
+	     * making this case fast, aliased caps aren't common now
+	     * and will get rarer.
+	     */
+	    if (syntax && entry_ptr == NOTFOUND)
+	    {
+		struct alias	*ap;
+
+		for (ap = alias_table; ap->from; ap++)
+		    if (strcmp(ap->from, curr_token.tk_name) == 0)
+		    {
+			entry_ptr = find_entry(ap->to, cap_hash_table);
+			if (entry_ptr)
+			    warning("%s aliased to %s", ap->from, ap->to);
+			break;
+		    }
+	    }
+
 	    if (entry_ptr == NOTFOUND) {
 		warning("Unknown Capability - '%s'",
 			curr_token.tk_name);

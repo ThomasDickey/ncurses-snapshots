@@ -31,11 +31,10 @@ The \fBkeyname\fR routine returns a character string corresponding to
 the key \fIc\fR.
 
 The \fBfilter\fR routine, if used, must be called before \fBinitscr\fR or
-\fBnewterm\fR are called.  It makes \fBncurses\fR think that there is a
-one-line screen.  \fBncurses\fR does not use any terminal capabilities
-that assume that they know on what line of the screen the cursor is
-positioned (that is, all cursor motion capabilities except \fBcr\fR,
-\fBcub\fR, \fBcub1\fR, \fBhpa\fR).
+\fBnewterm\fR are called.  The effect is that, during those calls, \fBLINES\fR
+is set to 1; the capabilities \fBclear\fR, \fBcup\fR, \fBcud\fR, \fBcud1\fR,
+\fBcuu1\fR, \fBcuu\fR, \fBvpa\fR are disabled; and the \fBhome\fR string is
+set to the value of \fBcr\fR.
 
 The \fBuse_env\fR routine, if used, is called before \fBinitscr\fR or
 \fBnewterm\fR are called.  When called with \fBFALSE\fR as an
@@ -68,10 +67,12 @@ upon failure and \fBOK\fR (SVr4 specifies only "an integer value other than
 \fBflushinp\fR always returns \fBOK\fR.
 
 Routines that return pointers return \fBNULL\fR on error.
-.SH BUGS
-The \fBfilter\fR entry point is not yet supported in \fIncurses\fR(3X).
 .SH PORTABILITY
-The XSI Curses draft describes these functions.
+The XSI Curses standard, Issue 4 describes these functions.
+
+The SVr4 documentation describes the action of \fBfilter\fR only in the vaguest
+terms.  The description here is adapted from the XSI Curses standard (which
+erroneously fails to describe the disabling of \fBcuu\fR).
 .SH NOTES
 Note that \fBunctrl\fR is a macro, which is defined in <\fBunctrl.h\fR>.
 .SH SEE ALSO

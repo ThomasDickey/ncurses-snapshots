@@ -2,16 +2,18 @@
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*                ncurses is copyright (C) 1992, 1993, 1994                 *
-*                          by Zeyd M. Ben-Halim                            *
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
@@ -27,25 +29,6 @@
 
 #include "unctrl.h"
 #include "curses.priv.h"
-
-inline void backspace(WINDOW *win)
-{
-	mvwaddstr(curscr, win->_begy + win->_cury, win->_begx + win->_curx,
-		 "\b \b");
-	waddstr(win, "\b \b");
-
-	/*
-	 * This used to do the equivalent of outstr("\b \b"), which
-	 * would fail on terminals with a non-backspace cursor_left
-	 * character.
-	 */
-	mvcur(win->_begy + win->_cury, win->_begx + win->_curx,
-	      win->_begy + win->_cury, win->_begx + win->_curx - 1);
-	outstr(" ");
-	mvcur(win->_begy + win->_cury, win->_begx + win->_curx,
-	      win->_begy + win->_cury, win->_begx + win->_curx - 1);
-	SP->_curscol--; 
-}
 
 int wgetnstr(WINDOW *win, char *str, int maxlen)
 {
@@ -103,8 +86,8 @@ int ch;
 				waddstr(win, glyph);
 				outstr(glyph);
 				SP->_curscol += strlen(glyph);
-			} else
-				*str++ = ch;
+			} 
+			*str++ = ch;
 	   	}
 	}
 

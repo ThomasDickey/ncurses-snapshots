@@ -114,6 +114,7 @@ main()
 	char szChar[10];
 	
 	initscr();
+	noecho();
 
 	cx=39;
 	cy=12;

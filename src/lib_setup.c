@@ -2,16 +2,18 @@
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*                ncurses is copyright (C) 1992, 1993, 1994                 *
-*                          by Zeyd M. Ben-Halim                            *
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
@@ -24,14 +26,14 @@
  *		setup_sizes(void)
  *		use_env(bool)
  *		setupterm(char *, int, int *)
- *		int set_curterm(TERMINAL *)
+ *		TERMINAL *set_curterm(TERMINAL *)
  *		int del_curterm(TERMINAL *)
  */
 
 #include <stdlib.h>
 #include <string.h>
 #include "curses.priv.h"
-#include "terminfo.h"
+#include "term.h"	/* lines, columns, cur_term */
 
 /****************************************************************************
  *
@@ -129,6 +131,11 @@ char 		*rows, *cols;
  
 int def_shell_mode()
 {
+    /*
+     *	Turn off the XTABS bit in the tty structure if it was on
+     *	If XTABS was on, remove the tab and backtab capabilities.
+     */
+
 	T(("def_shell_mode() called"));
 
 #ifdef TERMIOS
@@ -208,8 +215,6 @@ char ttytype[NAMESIZE];
  *
  *	Find and read the appropriate object file for the terminal
  *	Make cur_term point to the structure.
- *	Turn off the XTABS bit in the tty structure if it was on
- *	If XTABS was on, remove the tab and backtab capabilities.
  *
  */
 
@@ -241,7 +246,7 @@ static void do_prototype(void);
 			del_curterm(cur_term);
 		}
 
-       	term_ptr = TypeAllocN(struct term, 1);
+       		term_ptr = (struct term *) malloc(sizeof(struct term));
 
 		if (term_ptr == NULL)
 	    		ret_error0(-1, "Not enough memory to create terminal structure.\n") ;
@@ -252,6 +257,15 @@ static void do_prototype(void);
 				  termname);
 
 		cur_term = term_ptr;
+		if (generic_type)
+		    	ret_error(-1,
+				  "'%s': I need something more specific.\n",
+				  termname);
+		if (hard_copy)
+		    	ret_error(-1,
+				  "'%s': I can't handle hardcopy terminals.\n",
+				  termname);
+
 		if (command_character  &&  getenv("CC"))
 		    	do_prototype();
 	
@@ -304,11 +318,12 @@ int savenl = SP->_nl;
 	return(OK);
 }
 
-int set_curterm(TERMINAL *term)
+TERMINAL *set_curterm(TERMINAL *term)
 {
+	TERMINAL	*oldterm = cur_term;
 
 	cur_term = term;
-	return OK;
+	return oldterm;
 }
 
 int del_curterm(TERMINAL *term)

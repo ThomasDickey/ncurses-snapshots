@@ -461,7 +461,9 @@ static void slk_test(void)
 	case '1': case '2': case '3': case '4':
 	case '5': case '6': case '7': case '8':
 	    (void) mvaddstr(20, 0, "Please enter the label value: ");
+	    echo();
 	    wgetnstr(stdscr, buf, 8);
+	    noecho();
 	    slk_set((c - '0'), buf, fmt);
 	    slk_refresh();
 	    break;
@@ -598,7 +600,7 @@ int	uli, ulj, lri, lrj;	/* co-ordinates of corners */
 static WINDOW *getwindow(void)
 /* Ask user for a window definition */
 {
-    WINDOW	*rwindow, *bwindow;
+    WINDOW	*rwindow;
     pair	ul, lr, *tmp;
 
     move(0, 0); clrtoeol();
@@ -607,7 +609,7 @@ static WINDOW *getwindow(void)
     if ((tmp = selectcell(1,    0,    LINES-BOTLINES, COLS-1)) == (pair *)NULL)
 	return((WINDOW *)NULL);
     memcpy(&ul, tmp, sizeof(pair));
-    addch(ACS_ULCORNER);
+    mvaddch(ul.y-1, ul.x-1, ACS_ULCORNER);
     move(0, 0); clrtoeol();
     addstr("Use arrows to move cursor, anything else to mark corner 2");
     refresh();
@@ -615,13 +617,16 @@ static WINDOW *getwindow(void)
 	return((WINDOW *)NULL);
     memcpy(&lr, tmp, sizeof(pair));
 
-    rwindow = newwin(lr.y - ul.y + 1, lr.x - ul.x + 1, ul.y, ul.x);
+    rwindow = subwin(stdscr, lr.y - ul.y + 1, lr.x - ul.x + 1, ul.y, ul.x);
 
-    bwindow = newwin(lr.y - ul.y + 3, lr.x - ul.x + 3, ul.y - 1, ul.x - 1);
-    wborder(bwindow, ACS_VLINE, ACS_VLINE, ACS_HLINE, ACS_HLINE,
-		0, 0, 0, 0);
-    wrefresh(bwindow);
-    delwin(bwindow);
+    mvaddch(ul.y-1, lr.x+1, ACS_URCORNER);
+    mvaddch(lr.y+1, lr.x+1, ACS_LRCORNER);
+    mvaddch(lr.y+1, ul.x-1, ACS_LLCORNER);
+    move(ul.y-1, ul.x);   hline(ACS_HLINE, lr.x - ul.x + 1);
+    move(ul.y,   ul.x-1); vline(ACS_VLINE, lr.y - ul.y + 1);
+    move(lr.y+1, ul.x);   hline(ACS_HLINE, lr.x - ul.x + 1);
+    move(ul.y,   lr.x+1); vline(ACS_VLINE, lr.y - ul.y + 1);
+    refresh();
 
     scrollok(rwindow, TRUE);
 /*    immedok(rwindow);	*/
@@ -679,11 +684,11 @@ static void acs_and_scroll()
 	    neww = (struct frame *) malloc(sizeof(struct frame));
 	    if ((neww->wind = getwindow()) == (WINDOW *)NULL)
 		goto breakout;
+
 	    if (current == NULL)	/* First element,  */
 	    {
 		neww->next = neww; /*   so point it at itself */
 		neww->last = neww;
-		current = neww;
 	    }
 	    else
 	    {
@@ -692,6 +697,7 @@ static void acs_and_scroll()
 		neww->last->next = neww;
 		neww->next->last = neww;
 	    }
+	    current = neww;
 	    keypad(neww->wind, TRUE);
 	    break;
 
@@ -746,7 +752,7 @@ static void acs_and_scroll()
 		neww->last->next = neww;
 		neww->next->last = neww;
 
-		neww->wind  = getwin(fp);
+		neww->wind = getwin(fp);
 		(void) fclose(fp);
 
 		wrefresh(neww->wind);
@@ -779,7 +785,7 @@ static void acs_and_scroll()
 
 #define GRIDSIZE	5
 
-static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(void))
+static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 {
     static int porty, portx, basex = 0, basey = 0;
     int pxmax, pymax, c;
@@ -879,32 +885,15 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(void))
 	    break;
 	}
 
+	mvaddch(porty - 1, portx - 1, ACS_LRCORNER);
+	wnoutrefresh(stdscr);
 	prefresh(pad,
 		 basey, basex,
 		 0, 0,
 		 porty - (hscroll != (WINDOW *)NULL) - 1,
 		 portx - (vscroll != (WINDOW *)NULL) - 1); 
-	if (vscroll)
-        {
-	    int lowend, i, highend;
-
-	    lowend = basey * ((float)porty / (float)pymax);
-	    highend = (basey + porty) * ((float)porty / (float)pymax);
-
-	    touchwin(vscroll);
-	    for (i = 0; i < lowend; i++)
-		mvwaddch(vscroll, i, 0, ACS_VLINE);
-	    wattron(vscroll, A_REVERSE);
-	    for (i = lowend; i <= highend; i++)
-		mvwaddch(vscroll, i, 0, ' ');
-	    wattroff(vscroll, A_REVERSE);
-	    for (i = highend + 1; i < porty; i++)
-		mvwaddch(vscroll, i, 0, ACS_VLINE);
-	    wrefresh(vscroll);
-        }
-	if (hscroll)
-        {
-	    int lowend, j, highend;
+	if (hscroll) {
+	int lowend, j, highend;
 
 	    lowend = basex * ((float)portx / (float)pxmax);
 	    highend = (basex + portx) * ((float)portx / (float)pxmax);
@@ -918,19 +907,36 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(void))
 	    wattroff(hscroll, A_REVERSE);
 	    for (j = highend + 1; j < portx; j++)
 		mvwaddch(hscroll, 0, j, ACS_HLINE);
-	    wrefresh(hscroll);
+	    wnoutrefresh(hscroll);
         }
-	mvaddch(porty - 1, portx - 1, ACS_LRCORNER);
+	if (vscroll) {
+	int lowend, i, highend;
+
+	    lowend = basey * ((float)porty / (float)pymax);
+	    highend = (basey + porty) * ((float)porty / (float)pymax);
+
+	    touchwin(vscroll);
+	    for (i = 0; i < lowend; i++)
+		mvwaddch(vscroll, i, 0, ACS_VLINE);
+	    wattron(vscroll, A_REVERSE);
+	    for (i = lowend; i <= highend; i++)
+		mvwaddch(vscroll, i, 0, ' ');
+	    wattroff(vscroll, A_REVERSE);
+	    for (i = highend + 1; i < porty; i++)
+		mvwaddch(vscroll, i, 0, ACS_VLINE);
+	    wnoutrefresh(vscroll);
+        }
+	doupdate();
 
     } while
-	((c = pgetc()) != KEY_EXIT);
+	((c = pgetc(pad)) != KEY_EXIT);
 }
 
-int padgetch(void)
+int padgetch(WINDOW *win)
 {
     int	c;
 
-    switch(c = getch())
+    switch(c = wgetch(win))
     {
     case 'u': return(KEY_UP);
     case 'd': return(KEY_DOWN);
@@ -971,6 +977,8 @@ static void demo_pad(void)
     mvprintw(LINES - 3, 0, "Use arrow keys to pan over the test pattern");
     mvprintw(LINES - 2, 0, "Use +,- to grow/shrink the panner vertically.");
     mvprintw(LINES - 1, 0, "Use <,> to grow/shrink the panner horizontally.");
+
+    keypad(panpad, TRUE);
     panner(panpad, LINES - 4, COLS, padgetch);
 
     endwin();
@@ -995,8 +1003,10 @@ static void input_test(WINDOW *win)
 /* Input test, adapted from John Burnell's PDCurses tester */
 {
     int w, h, bx, by, sw, sh, i;
+
     WINDOW *subWin;
     wclear (win);
+
 #ifdef FOO
     char buffer [80];
     int num;
@@ -1151,7 +1161,7 @@ int main(const int argc, const char *argv[])
     char	buf[BUFSIZ];
 
     /* enable debugging */
-    trace(TRACE_MAXIMUM);
+    trace(TRACE_ORDINARY);
 
     /* tell it we're going to play with soft keys */
     slk_init(1);

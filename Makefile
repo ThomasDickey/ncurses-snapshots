@@ -4,7 +4,7 @@
 all:
 	more INSTALL
 
-PKG = ncurses-1.8.8
+PKG = ncurses-1.9
 
 $(PKG).tar:
 	(cd ..; tar -cvf $(PKG)/$(PKG).tar `sed <$(PKG)/MANIFEST 's/^./$(PKG)/'`)
@@ -13,6 +13,11 @@ $(PKG).tar.gz: $(PKG).tar
 	gzip $(PKG).tar
 
 dist: $(PKG).tar.gz
+
+vcprepare:
+	find . -type f -exec chmod -w {} \;
+	find . -type d -exec mkdir {}/RCS \;
+#	for x in . src man test; do cd $$x; ci -u -t- </dev/null *; done
 
 clean:
 	rm -f $(PKG).tar*

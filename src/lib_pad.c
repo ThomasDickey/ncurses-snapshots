@@ -2,16 +2,18 @@
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*                ncurses is copyright (C) 1992, 1993, 1994                 *
-*                          by Zeyd M. Ben-Halim                            *
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
@@ -46,7 +48,7 @@ int i, j;
 	win->_flags |= _ISPAD;
 
 	for (i = 0; i < l; i++) {
-	    if ((win->_line[i].text = TypeAllocN(chtype, c)) == NULL) {
+	    if ((win->_line[i].text = (chtype *) calloc((size_t)c, sizeof(chtype))) == NULL) {
 			for (j = 0; j < i; j++)
 			    free(win->_line[j].text);
 
@@ -149,10 +151,17 @@ int	m, n;
 	    newscr->_clear = TRUE;
 	}
 
+#if 0
+	/*
+	 * This code causes problems if the pad is larger than the
+	 * terminal screen -- doupdate may try taking the newscr
+	 * cursor to a non-existent location.
+	 */
 	if (! win->_leave) {
 	    newscr->_cury = win->_cury + win->_begy;
 	    newscr->_curx = win->_curx + win->_begx;
 	}
+#endif /* 0 */
 	return OK;
 }
 

@@ -1,6 +1,23 @@
-/* This work is copyrighted. See COPYRIGHT.NEW for                   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
+*                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
 
 /* lib_color.c 
  *  
@@ -10,7 +27,7 @@
 
 #include <stdlib.h>
 #include "curses.priv.h"
-#include "terminfo.h"
+#include "term.h"
 
 int COLOR_PAIRS;
 int COLORS;
@@ -26,39 +43,42 @@ static color_t	*color_table;
 static const color_t cga_palette[] =
 {
     /*  R	G	B */
-	0,	0,	0,	/* COLOR_BLACK */
-	1000,	0,	0,	/* COLOR_RED */
-	0,	1000,	0,	/* COLOR_GREEN */
-	1000,	1000,	0,	/* COLOR_YELLOW */
-	0,	0,	1000,	/* COLOR_BLUE */
-	1000,	0,	1000,	/* COLOR_MAGENTA */
-	0,	1000,	1000,	/* COLOR_CYAN */
-	1000,	1000,	1000,	/* COLOR_WHITE */
+	{0,	0,	0},	/* COLOR_BLACK */
+	{1000,	0,	0},	/* COLOR_RED */
+	{0,	1000,	0},	/* COLOR_GREEN */
+	{1000,	1000,	0},	/* COLOR_YELLOW */
+	{0,	0,	1000},	/* COLOR_BLUE */
+	{1000,	0,	1000},	/* COLOR_MAGENTA */
+	{0,	1000,	1000},	/* COLOR_CYAN */
+	{1000,	1000,	1000},	/* COLOR_WHITE */
 };
 static const color_t hls_palette[] =
 {
     /*  H	L	S */
-	0,	0,	0,	/* COLOR_BLACK */
-	120,	50,	100,	/* COLOR_RED */
-	240,	50,	100,	/* COLOR_GREEN */
-	180,	50,	100,	/* COLOR_YELLOW */
-	330,	50,	100,	/* COLOR_BLUE */
-	60,	50,	100,	/* COLOR_MAGENTA */
-	300,	50,	100,	/* COLOR_CYAN */
-	0,	50,	100,	/* COLOR_WHITE */
+	{0,	0,	0},	/* COLOR_BLACK */
+	{120,	50,	100},	/* COLOR_RED */
+	{240,	50,	100},	/* COLOR_GREEN */
+	{180,	50,	100},	/* COLOR_YELLOW */
+	{330,	50,	100},	/* COLOR_BLUE */
+	{60,	50,	100},	/* COLOR_MAGENTA */
+	{300,	50,	100},	/* COLOR_CYAN */
+	{0,	50,	100},	/* COLOR_WHITE */
 };
 
-int start_color()
+int start_color(void)
 {
 	T(("start_color() called."));
 
 	if (orig_pair != NULL)
+	{
+		TPUTS_TRACE("orig_pair");
 		putp(orig_pair);
+	}
 	else return ERR;
 	if (max_pairs != -1)
 		COLOR_PAIRS = max_pairs;
 	else return ERR;
-	color_pairs = TypeAllocN(unsigned char, max_pairs);
+	color_pairs = calloc(sizeof(char), max_pairs);
 	if (max_colors != -1)
 		COLORS = max_colors;
 	else
@@ -67,7 +87,7 @@ int start_color()
 
 	if (can_change)
 	{
-	    color_table = TypeAllocN(color_t, COLORS);
+	    color_table = malloc(sizeof(color_t) * COLORS);
 	    if (hue_lightness_saturation)
 		memcpy(color_table, hls_palette, sizeof(color_t) * COLORS);
 	    else
@@ -157,6 +177,7 @@ int init_color(short color, short r, short g, short b)
 			color_table[color].blue = b;
 		}
 
+		TPUTS_TRACE("initialize_color");
 		putp(tparm(initialize_color, color, r, g, b));
 		return OK;
 	}
@@ -164,12 +185,12 @@ int init_color(short color, short r, short g, short b)
 	return ERR;
 }
 
-bool can_change_color()
+bool can_change_color(void)
 {
 	return can_change;
 }
 
-int has_colors()
+int has_colors(void)
 {
 	return ((orig_pair != NULL) && (max_colors != -1) && (max_pairs != -1)
 		&& 

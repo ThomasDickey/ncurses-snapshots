@@ -2,16 +2,18 @@
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*                ncurses is copyright (C) 1992, 1993, 1994                 *
-*                          by Zeyd M. Ben-Halim                            *
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
@@ -27,14 +29,14 @@
  *-----------------------------------------------------------------*/
  
 #include <stdlib.h>
+#include <sys/types.h>
 #include <sys/time.h>
 #ifdef SYS_SELECT
 #include <sys/select.h>
 #endif
 #include <string.h>
-#include <termcap.h>
 #include "curses.priv.h"
-#include "terminfo.h"
+#include "term.h"
 
 /*
  * Enable checking to see if doupdate and friends are tracking the true
@@ -86,8 +88,45 @@ void position_check(int expected_y, int expected_x, char *legend)
  *
  ****************************************************************************/
 
+static inline void GoTo(int row, int col)
+{
+	chtype	oldattr = SP->_current_attr;
+	bool	must_restore;
+
+	TR(TRACE_MOVE, ("GoTo(%d, %d) from (%d, %d)",
+			row, col, SP->_cursrow, SP->_curscol));
+
+#ifdef POSITION_DEBUG
+	position_check(SP->_cursrow, SP->_curscol, "GoTo");
+#endif /* POSITION_DEBUG */
+
+	/*
+	 * Force restore even if msgr is on when we're in an alternate
+	 * character set -- these have a strong tendency to screw up the
+	 * CR & LF used for local character motions!
+	 */
+	must_restore = ((oldattr & A_ALTCHARSET)
+#ifdef A_PCCHARSET
+			|| (oldattr & A_PCCHARSET)
+#endif /* A_PCCHARSET */
+			|| (oldattr && !move_standout_mode));
+
+	if (must_restore)
+		vidattr(A_NORMAL);
+
+	mvcur(SP->_cursrow, SP->_curscol, row, col); 
+	SP->_cursrow = row; 
+	SP->_curscol = col; 
+
+	if (must_restore)
+		vidattr(oldattr);
+}
+
 static inline void PutAttrChar(chtype ch)
 {
+	if (tilde_glitch && ((ch & A_CHARTEXT) == '~'))
+		ch = ('`' | (ch & A_ATTRIBUTES));
+
 	TR(TRACE_CHARPUT, ("PutAttrChar(%s, %s) at (%d, %d)",
 			  _tracechar(ch & A_CHARTEXT),
 			  _traceattr((ch & (chtype)A_ATTRIBUTES)),
@@ -97,6 +136,11 @@ static inline void PutAttrChar(chtype ch)
 		vidputs(curscr->_attrs, _outch);
 	}
 	putc(ch & A_CHARTEXT, SP->_ofp);
+	if (char_padding)
+	{
+		TPUTS_TRACE("char_padding");
+		putp("char_padding");
+	}
 }
 
 static int LRCORNER = FALSE;
@@ -114,17 +158,27 @@ static inline void PutChar(chtype ch)
 		} else if (SP->_curscol == screen_columns-1) {
 		int i = screen_lines;
 		int j = screen_columns -1;
-			if (cursor_left)
-				putp(cursor_left);
-			else
-				mvcur(-1, -1, i-1, j);
+			GoTo(i-1, j);
 			if (enter_insert_mode && exit_insert_mode) {
+				TPUTS_TRACE("enter_insert_mode");
 				putp(enter_insert_mode);
 				PutAttrChar(newscr->_line[i-1].text[j]);
+				if (insert_padding)
+				{
+					TPUTS_TRACE("insert_padding");
+					putp("insert_padding");
+				}
+				TPUTS_TRACE("exit_insert_mode");
 				putp(exit_insert_mode);
 			} else if (insert_character) {
+				TPUTS_TRACE("insert_character");
 				putp(insert_character);
 				PutAttrChar(newscr->_line[i-1].text[j]);
+				if (insert_padding)
+				{
+					TPUTS_TRACE("insert_padding");
+					putp("insert_padding");
+				}
 			}
 			return;
 		}
@@ -144,19 +198,7 @@ static inline void PutChar(chtype ch)
 #endif /* POSITION_DEBUG */
 }	
 
-static inline void GoTo(int row, int col)
-{
-	TR(TRACE_MOVE, ("Goto(%d, %d) from (%d, %d)",
-			row, col, SP->_cursrow, SP->_curscol));
-#ifdef POSITION_DEBUG
-	position_check(SP->_cursrow, SP->_curscol, "GoTo");
-#endif /* POSITION_DEBUG */
-	mvcur(SP->_cursrow, SP->_curscol, row, col); 
-	SP->_cursrow = row; 
-	SP->_curscol = col; 
-}
-
-int _outch(char ch)
+int _outch(int ch)
 {
 	if (SP != NULL)
 		putc(ch, SP->_ofp);
@@ -188,7 +230,20 @@ int	i;
 		T(("coming back from shell mode"));
 		reset_prog_mode();
 		if (enter_ca_mode)
+		{
+			TPUTS_TRACE("enter_ca_mode");
 			putp(enter_ca_mode);
+		}
+		/*
+		 * Undo the effects of terminal init strings that assume
+		 * they know the screen size.  Useful when you're running
+		 * a vt100 emulation through xterm.
+		 */
+		if (change_scroll_region)
+		{
+			TPUTS_TRACE("change_scroll_region");
+			putp(tparm("change_scroll_region", 0, lines - 1));
+		}
 		newscr->_clear = TRUE;
 		SP->_endwin = FALSE;
 	}
@@ -291,15 +346,12 @@ int	inspace;
 			}
 
 		inspace = 0;
-		memset(SP->_curscr->_line[i].text,
-		       BLANK,
-		       sizeof(chtype) * lastNonBlank);
 		for (j = 0; j <= min(lastNonBlank, screen_columns); j++) {
 			if ((scr->_line[i].text[j]) == BLANK) {
 				inspace++;
 				continue;
 			} else if (inspace) {
-				mvcur(i, j - inspace, i, j);
+				GoTo(i, j);
 				inspace = 0;
 			}
 			PutChar(scr->_line[i].text[j]);
@@ -312,6 +364,41 @@ int	inspace;
 			for (j = 0; j < screen_columns; j++)
 				curscr->_line[i].text[j] = scr->_line[i].text[j];
 	}
+}
+
+/*
+**	ClrToEOL()
+**
+**	Clear to EOL.  Deal with background color erase if terminal has this
+**	glitch.  This code forces the current color and highlight to A_NORMAL
+**	before emitting the erase sequence, then restores the current 
+**	attribute.
+*/
+
+static void ClrToEOL(void)
+{
+	if (back_color_erase)
+	{
+		TPUTS_TRACE("orig_pair");
+		putp(orig_pair);
+	}
+	TPUTS_TRACE("clr_eol");
+	putp(clr_eol);
+	if (back_color_erase)
+		vidattr(SP->_current_attr);
+}
+
+static void ClrToBOL(void)
+{
+	if (back_color_erase)
+	{
+		TPUTS_TRACE("orig_pair");
+		putp(orig_pair);
+	}
+	TPUTS_TRACE("clr_bol");
+	putp(clr_bol);
+	if (back_color_erase)
+		vidattr(SP->_current_attr);
 }
 
 /*
@@ -376,7 +463,7 @@ int	attrchanged = 0;
 		lastChar = screen_columns - 1;
 		GoTo(lineno, firstChar);
 		if(clr_eol)
-			putp(clr_eol);		
+			ClrToEOL();
 	} else {
 		lastChar = screen_columns - 1;
 		while (lastChar > firstChar  &&  newLine[lastChar] == oldLine[lastChar])
@@ -441,7 +528,7 @@ int	attrchanged = 0;
 	
 	if (attrchanged) {
 		GoTo(lineno, firstChar);
-		putp(clr_eol);		
+		ClrToEOL();
 		for( k = 0 ; k <= (screen_columns-1) ; k++ )
 			PutChar(newLine[k]);
 	} else {
@@ -451,6 +538,28 @@ int	attrchanged = 0;
 		
 		if (firstChar >= screen_columns)
 			return;
+
+		if (clr_bol)
+		{
+			int oFirstChar, nFirstChar;
+
+			oFirstChar = 0;
+			while (oldLine[oFirstChar] == BLANK)
+				oFirstChar++;
+
+			nFirstChar = 0;
+			while (oldLine[nFirstChar] == BLANK)
+				nFirstChar++;
+
+			if (nFirstChar > oFirstChar + strlen(clr_bol))
+			{
+			    GoTo(lineno, nFirstChar - 1);
+			    ClrToBOL();
+
+			    if (nFirstChar > firstChar)
+				firstChar = nFirstChar;
+			}
+		}
 
 		oLastChar = screen_columns - 1;
 		while (oLastChar > firstChar  &&  oldLine[oLastChar] == BLANK)
@@ -462,7 +571,7 @@ int	attrchanged = 0;
 
 		if((nLastChar == firstChar) && clr_eol) {
 			GoTo(lineno, firstChar);
-			putp(clr_eol);
+			ClrToEOL();
 			if(newLine[firstChar] != BLANK )
 				PutChar(newLine[firstChar]);
 		} else if( newLine[nLastChar] != oldLine[oLastChar] ) {
@@ -509,6 +618,7 @@ static void ClearScreen()
 	T(("ClearScreen() called"));
 
 	if (clear_screen) {
+		TPUTS_TRACE("clear_screen");
 		putp(clear_screen);
 		SP->_cursrow = SP->_curscol = 0;
 #ifdef POSITION_DEBUG
@@ -518,12 +628,14 @@ static void ClearScreen()
 		SP->_cursrow = SP->_curscol = -1;
 		GoTo(0,0);
 
+		TPUTS_TRACE("clr_eos");
 		putp(clr_eos);
 	} else if (clr_eol) {
 		SP->_cursrow = SP->_curscol = -1;
 
 		while (SP->_cursrow < screen_lines) {
 			GoTo(SP->_cursrow, 0);
+			TPUTS_TRACE("clr_eol");
 			putp(clr_eol);
 		}
 		GoTo(0,0);
@@ -544,14 +656,17 @@ static void InsStr(chtype *line, int count)
 	T(("InsStr(%p,%d) called", line, count));
 
 	if (enter_insert_mode  &&  exit_insert_mode) {
+		TPUTS_TRACE("enter_insert_mode");
 		putp(enter_insert_mode);
 		while (count) {
 			PutChar(*line);
 			line++;
 			count--;
 		}
+		TPUTS_TRACE("exit_insert_mode");
 		putp(exit_insert_mode);
 	} else if (parm_ich) {
+		TPUTS_TRACE("parm_ich");
 		tputs(tparm(parm_ich, count), count, _outch);
 		while (count) {
 			PutChar(*line);
@@ -560,8 +675,14 @@ static void InsStr(chtype *line, int count)
 		}
 	} else {
 		while (count) {
+			TPUTS_TRACE("insert_character");
 			putp(insert_character);
 			PutChar(*line);
+			if (insert_padding)
+			{
+				TPUTS_TRACE("insert_padding");
+				putp("insert_padding");
+			}
 			line++;
 			count--;
 		}
@@ -580,10 +701,14 @@ static void DelChar(int count)
 	T(("DelChar(%d) called", count));
 
 	if (parm_dch) {
+		TPUTS_TRACE("parm_dch");
 		tputs(tparm(parm_dch, count), count, _outch);
 	} else {
 		while (count--)
+		{
+			TPUTS_TRACE("delete_character");
 			putp(delete_character);
+		}
 	}
 }
 

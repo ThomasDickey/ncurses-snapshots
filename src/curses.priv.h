@@ -1,7 +1,24 @@
 
-/* This work is copyrighted. See COPYRIGHT.OLD & COPYRIGHT.NEW for   *
-*  details. If they are missing then this copy is in violation of    *
-*  the copyright conditions.                                        */
+/***************************************************************************
+*                            COPYRIGHT NOTICE                              *
+****************************************************************************
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
+*                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
+*                                                                          *
+*        Permission is hereby granted to reproduce and distribute ncurses  *
+*        by any means and for any fee, whether alone or as part of a       *
+*        larger distribution, in source or in binary form, PROVIDED        *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
+*                                                                          *
+*        ncurses comes AS IS with no warranty, implied or expressed.       *
+*                                                                          *
+***************************************************************************/
+
 
 /*
  *	curses.priv.h
@@ -19,9 +36,6 @@
 
 #ifndef NOACTION
 #include <unistd.h>
-typedef struct sigaction sigaction_t;
-#else
-#include "SigAction.h"
 #endif
 
 #include "curses.h"
@@ -46,22 +60,34 @@ typedef struct sigaction sigaction_t;
 
 #define CHANGED     -1
 
-#define TypeAllocN(type,n)  (type *)calloc((size_t)n, sizeof(type))
+/*
+ * ht/cbt expansion flakes out randomly under Linux 1.1.47, but only when
+ * we're throwing control codes at the screen at high volume.  To see this, 
+ * re-enable TABS_OK and run worm for a while.  Other systems probably don't
+ * want to define this either due to uncertainties about tab delays and
+ * expansion in raw mode. 
+ */
+#undef TABS_OK	/* OK to use tab/backtab for local motions? */
 
 #ifdef TRACE
 #define T(a)	if (_tracing & TRACE_CALLS) _tracef a 
 #define TR(n, a)	if (_tracing & (n)) _tracef a 
+#define TPUTS_TRACE(s)	_tputs_trace = s;
 extern int _tracing;
+extern char *_tputs_trace;
 extern char *visbuf(const char *);
 #else	
 #define T(a)
 #define TR(n, a)
+#define TPUTS_TRACE(s)
 #endif
 
 extern int setupscreen(int, int);
+extern void mvcur_init(SCREEN *sp);
+extern void mvcur_wrap(void);
 extern void get_screensize(void);
 extern void curses_signal_handler(bool);
-extern int _outch(char);
+extern int _outch(int);
 extern void init_acs(void);
 extern WINDOW *makenew(int, int, int, int);
 extern int timed_wait(int fd, int wait, int *timeleft);
@@ -70,6 +96,8 @@ extern void scroll_optimize(void);
 extern void scroll_window(WINDOW *, int, int, int);
 extern void wchangesync(WINDOW *win);
 extern void outstr(char *str);
+extern void backspace(WINDOW *win);
+extern chtype wrenderchar(WINDOW *, chtype, chtype, bool);
 
 struct try {
         struct try      *child;     /* ptr to child.  NULL if none          */
@@ -126,6 +154,27 @@ struct screen {
 	bool		_use_meta;      /* use the meta key?		    */
  	SLK		*_slk;	    	/* ptr to soft key struct / NULL    */
 	int		_baudrate;	/* used to compute padding	    */
+
+	/* cursor movement costs; units are 10ths of milliseconds */
+	int		_char_padding;	/* cost of character put	    */
+	int		_cr_cost;	/* cost of (carriage_return)	    */
+	int		_cup_cost;	/* cost of (cursor_address)	    */
+	int		_home_cost;	/* cost of (cursor_home)	    */
+	int		_ll_cost;	/* cost of (cursor_to_ll)	    */
+#ifdef TABS_OK
+	int		_ht_cost;	/* cost of (tab)		    */
+	int		_cbt_cost;	/* cost of (backtab)		    */
+#endif /* TABS_OK */
+	int		_cub1_cost;	/* cost of (cursor_left)	    */
+	int		_cuf1_cost;	/* cost of (cursor_right)	    */
+	int		_cud1_cost;	/* cost of (cursor_down)	    */
+	int		_cuu1_cost;	/* cost of (cursor_up)		    */
+	int		_cub_cost;	/* cost of (parm_cursor_left)	    */
+	int		_cuf_cost;	/* cost of (parm_cursor_right)	    */
+	int		_cud_cost;	/* cost of (parm_cursor_down)	    */
+	int		_cuu_cost;	/* cost of (parm_cursor_up)	    */
+	int		_hpa_cost;	/* cost of (column_address)	    */
+	int		_vpa_cost;	/* cost of (row_address)	    */
 };
 
 /*
@@ -139,7 +188,8 @@ struct screen {
 
 extern struct screen	*SP;
 
-extern int _slk_format;			/* format specified in slk_init() */
+extern int _slk_init;			/* TRUE if slk_init() called */
+extern int slk_initialize(WINDOW *, int);
 
 #define MAXCOLUMNS    135
 #define MAXLINES      66

@@ -1,22 +1,24 @@
 
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
 *                ncurses is copyright (C) 1992-1995                        *
-*                          by Zeyd M. Ben-Halim                            *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
 ***************************************************************************/
+
 
 
 /*
@@ -28,6 +30,11 @@
 #include <ctype.h>
 #include <fcntl.h>
 #include <errno.h>
+
+#ifndef TRACE
+#define TRACE			/* turn on internal defs for this module */
+#endif
+
 #include "curses.priv.h"
 
 #if defined(BRAINDEAD)
@@ -35,6 +42,7 @@ extern int errno;
 #endif
 
 int _tracing = 0;  
+char *_tputs_trace;
 
 static int	tracefd = 2;	/* default to writing to stderr */
 
@@ -64,7 +72,7 @@ void trace(const unsigned int tracelevel)
 }
 
 
-char *_traceattr(chtype newmode)
+char *_traceattr(attr_t newmode)
 {
 static char	buf[BUFSIZ];
 struct {unsigned int val; char *name;}
@@ -148,7 +156,7 @@ char *tp = vbuf;
 		} else if (*buf == '\033') {
 	    		*tp++ = '\\'; *tp++ = 'e';
 	    		buf++;
-		} else if (*buf < ' ') {
+		} else if (iscntrl(*buf)) {
 	    		*tp++ = '\\'; *tp++ = '^'; *tp++ = '@' + *buf;
 	    		buf++;
 		} else {
@@ -180,13 +188,14 @@ char *_tracechar(const unsigned char ch)
 
 void _tracedump(char *name, WINDOW *win)
 {
-    int	n;
+    int	i, n;
 
     for (n = 0; n <= win->_maxy; n++)
     {
 	char	buf[BUFSIZ], *ep;
-	int j;
+	int j, haveattrs, havecolors;
 
+	/* dump A_CHARTEXT part */
 	(void) sprintf(buf, "%s[%2d]='", name, n);
 	ep = buf + strlen(buf);
 	for (j = 0; j <= win->_maxx; j++)
@@ -194,6 +203,49 @@ void _tracedump(char *name, WINDOW *win)
 	ep[j] = '\'';
 	ep[j+1] = '\0';
 	_tracef(buf);
+
+	/* dump A_COLOR part, will screw up if there are more than 96 */
+	havecolors = 0;
+	for (j = 0; j <= win->_maxx; j++)
+	    if (win->_line[n].text[j] & A_COLOR)
+	    {
+		havecolors = 1;
+		break;
+	    }
+	if (havecolors)
+	{
+	    (void) sprintf(buf, "%*s[%2d]='", strlen(name), "colors", n);
+	    ep = buf + strlen(buf);
+	    for (j = 0; j <= win->_maxx; j++)
+		ep[j] = ((win->_line[n].text[j] >> 8) & 0xff) + ' ';
+	    ep[j] = '\'';
+	    ep[j+1] = '\0';
+	    _tracef(buf);
+	}
+
+	for (i = 0; i < 4; i++)
+	{
+	    const char	*hex = " 123456789ABCDEF";
+	    chtype	mask = (0xf << ((i + 4) * 4));
+
+	    haveattrs = 0;
+	    for (j = 0; j <= win->_maxx; j++)
+		if (win->_line[n].text[j] & mask)
+		{
+		    haveattrs = 1;
+		    break;
+		}
+	    if (haveattrs)
+	    {
+		(void) sprintf(buf, "%*s%d[%2d]='", strlen(name)-1, "attrs", i, n);
+		ep = buf + strlen(buf);
+		for (j = 0; j <= win->_maxx; j++)
+		    ep[j] = hex[(win->_line[n].text[j] & mask) >> ((i + 4) * 4)];
+		ep[j] = '\'';
+		ep[j+1] = '\0';
+		_tracef(buf);
+	    }
+	}
     }
 }
 
@@ -201,7 +253,7 @@ void
 _tracef(char *fmt, ...)
 {
 va_list ap;
-char buffer[256];
+char buffer[BUFSIZ];
 
 	va_start(ap, fmt);
 	vsprintf(buffer, fmt, ap);

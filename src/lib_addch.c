@@ -2,21 +2,22 @@
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*                ncurses is copyright (C) 1992, 1993, 1994                 *
-*                          by Zeyd M. Ben-Halim                            *
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
 ***************************************************************************/
-
 
 /*
 **	lib_addch.c
@@ -25,6 +26,7 @@
 **
 */
 
+#include <ctype.h>
 #include "unctrl.h"
 #include "curses.priv.h"
 
@@ -61,6 +63,24 @@ int wattroff(WINDOW *win, const attr_t at)
 	}
 	T(("new attribute is %s", _traceattr(win->_attrs)));
 	return OK;
+}
+
+chtype wrenderchar(WINDOW *win, chtype oldch, chtype newch, bool erase)
+/* compute a rendition of the given char correct for the current context */
+{
+	if ((oldch & A_CHARTEXT) == ' ')
+		newch |= win->_bkgd;
+	else
+		newch |= (win->_bkgd & A_ATTRIBUTES);
+	TR(TRACE_VIRTPUT, ("bkg = %lx -> ch = %lx", win->_bkgd, newch));
+
+	if (!erase)
+	{
+		TR(TRACE_VIRTPUT, ("win attr = %s", _traceattr(win->_attrs)));
+		newch |= win->_attrs;
+	}
+
+	return(newch);
 }
 
 static int
@@ -106,19 +126,12 @@ chtype	ch = c;
 		    	x = 0;
 		break;
     	default:
-		if (ch < ' ')
+		if (iscntrl(ch & A_CHARTEXT))
 		    	return(waddstr(win, unctrl(ch)));
 
 		/* FALL THROUGH */
         noctrl:
-        	TR(TRACE_VIRTPUT, ("win attr = %lx", win->_attrs));
-		ch |= win->_attrs;
-
-		if (win->_line[y].text[x]&A_CHARTEXT == ' ')
-			ch |= win->_bkgd;
-		else
-			ch |= (win->_bkgd&A_ATTRIBUTES);
-		TR(TRACE_VIRTPUT, ("bkg = %lx -> ch = %lx", win->_bkgd, ch));
+		ch = wrenderchar(win, win->_line[y].text[x], ch, FALSE);
 
 		if (win->_line[y].text[x] != ch) {
 		    	if (win->_line[y].firstchar == _NOCHANGE)
@@ -131,7 +144,10 @@ chtype	ch = c;
 		}
 
 		win->_line[y].text[x++] = ch;
-		TR(TRACE_VIRTPUT, ("char %d of line %d is %lx", x, y, ch));
+		TR(TRACE_VIRTPUT, ("(%d, %d) = %s | %s", 
+				   y, x,
+				   _tracechar(ch & A_CHARTEXT),
+				   _traceattr((ch & (chtype)A_ATTRIBUTES))));
 		if (x > win->_maxx) {
 		    	x = 0;
 do_newline:
@@ -156,13 +172,17 @@ do_newline:
 
 int waddch(WINDOW *win, const chtype ch)
 {
-	TR(TRACE_VIRTPUT, ("waddch(%p,%c (%lx)) called", win, (int)(ch&A_CHARTEXT), ch));
+	TR(TRACE_VIRTPUT, ("waddch(%p, %s | %s) called", win,
+			  _tracechar(ch & A_CHARTEXT),
+			  _traceattr((ch & (chtype)A_ATTRIBUTES))));
 	return wladdch(win, ch, FALSE);
 }
 
 int wechochar(WINDOW *win, chtype ch)
 {
-	TR(TRACE_VIRTPUT, ("wechochar(%p,%c (%lx)) called", win, (int)(ch&A_CHARTEXT), ch));
+	TR(TRACE_VIRTPUT, ("wechochar(%p,%s (%s)) called", win,
+			  _tracechar(ch & A_CHARTEXT),
+			  _traceattr((ch & (chtype)A_ATTRIBUTES))));
 
 	return wladdch(win, ch, TRUE);
 }

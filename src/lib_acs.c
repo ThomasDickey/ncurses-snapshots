@@ -1,18 +1,19 @@
 
-
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
 *                ncurses is copyright (C) 1992-1995                        *
-*                          by Zeyd M. Ben-Halim                            *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
@@ -21,12 +22,14 @@
 
 
 #include "curses.priv.h"
-#include "terminfo.h"	/* ena_acs, acs_chars */
+#include "term.h"	/* ena_acs, acs_chars */
 #include <string.h>
 
 #define ASCII(c)	((chtype)(c) & A_CHARTEXT)
-#define PCCHAR(c)	((chtype)(c) & A_CHARTEXT) | A_PCCHARSET
 #define ALTCHAR(c)	((chtype)(c) & A_CHARTEXT) | A_ALTCHARSET
+#ifdef A_PCCHARSET
+#define PCCHAR(c)	((chtype)(c) & A_CHARTEXT) | A_PCCHARSET
+#endif
 
 chtype acs_map[128];
 
@@ -65,7 +68,9 @@ void init_acs(void)
 	ACS_BLOCK    = ASCII('#');	/* should be solid square block */
 
 #ifdef __i386__
+#ifdef enter_pc_charset_mode
 	if (enter_pc_charset_mode)
+#endif /* enter_pc_charset_mode */
 	{
 	/*
 	 * IBM high-half and literal control characters to use if we have them
@@ -80,8 +85,8 @@ void init_acs(void)
 	ACS_LLCORNER = ALTCHAR('@');	/* IBM lower left corner */
 	ACS_URCORNER = ALTCHAR('?');	/* IBM upper right corner */
 	ACS_LRCORNER = ALTCHAR('Y');	/* IBM lower right corner */
-	ACS_RTEE     = ALTCHAR('C');	/* IBM tee pointing right */
-	ACS_LTEE     = ALTCHAR('4');	/* IBM tee pointing left */
+	ACS_LTEE     = ALTCHAR('C');	/* IBM tee pointing right */
+	ACS_RTEE     = ALTCHAR('4');	/* IBM tee pointing left */
 	ACS_BTEE     = ALTCHAR('A');	/* IBM tee pointing up */
 	ACS_TTEE     = ALTCHAR('B');	/* IBM tee pointing down */
 	ACS_HLINE    = ALTCHAR('D');	/* IBM horizontal line */
@@ -89,15 +94,19 @@ void init_acs(void)
 	ACS_PLUS     = ALTCHAR('E');	/* IBM large plus or crossover */
 	ACS_S1       = ASCII('~');	/* should be scan line 1 */
 	ACS_S9       = ASCII('_');	/* should be scan line 9 */
+#ifdef A_PCCHARSET
 	ACS_DIAMOND  = PCCHAR(4);	/* IBM diamond */
+#endif /* A_PCCCHARSET */
 	ACS_CKBOARD  = ALTCHAR('2');	/* IBM checker board (stipple) */
 	ACS_DEGREE   = ALTCHAR('x');	/* IBM degree symbol */
 	ACS_PLMINUS  = ALTCHAR('q');	/* IBM plus/minus */
 	ACS_BULLET   = ALTCHAR('~');	/* IBM bullet (actually small block) */
+#ifdef A_PCCHARSET
 	ACS_LARROW   = PCCHAR(17);	/* IBM arrow pointing left */
 	ACS_RARROW   = PCCHAR(16);	/* IBM arrow pointing right */
 	ACS_DARROW   = PCCHAR(25);	/* IBM arrow pointing down */
 	ACS_UARROW   = PCCHAR(24);	/* IBM arrow pointing up */
+#endif /* A_PCCCHARSET */
 	ACS_BOARD    = ALTCHAR('0');	/* IBM board of squares */
 	ACS_LANTERN  = ASCII('#');	/* should be lantern symbol */
 	ACS_BLOCK    = ALTCHAR('[');	/* IBM solid square block */
@@ -106,7 +115,10 @@ void init_acs(void)
 
 #ifdef ena_acs
 	if (ena_acs != NULL)
+	{
+		TPUTS_TRACE("ena_acs");
 		putp(ena_acs);
+	}
 #endif /* ena_acs */
 
 #ifdef acs_chars
@@ -135,6 +147,6 @@ void init_acs(void)
 		T(("acsc not defined, using default mapping"));
 	}
 #endif /* TRACE */
-#endif acs_char
+#endif /* acs_char */
 }
 

@@ -1,21 +1,6 @@
 # nothing below this line should need changing. If you absolutely have to,
 # drop me a note including your changes. zmbenhal@netcom.com
 
-SRCS=	comp_main.c comp_hash.c comp_captab.c comp_scan.c comp_error.c \
-	comp_parse.c alloc_entry.c read_entry.c dump_entry.c write_entry.c \
-	parse_entry.c names.c strerror.c \
-	lib_setup.c lib_kernel.c lib_tparm.c lib_tputs.c lib_slk.c lib_pad.c\
-	lib_unctrl.c lib_raw.c lib_vidattr.c lib_trace.c lib_ti.c lib_keyname.c\
-	lib_beep.c lib_doupdate.c lib_refresh.c lib_initscr.c lib_newwin.c \
-	lib_addch.c lib_addstr.c lib_scroll.c lib_clreol.c lib_touch.c \
-	lib_mvcur.c lib_delwin.c lib_endwin.c lib_clrbot.c lib_move.c \
-	lib_printw.c lib_scanw.c lib_erase.c lib_getch.c lib_options.c \
-	lib_box.c lib_clear.c lib_delch.c lib_insch.c lib_ti.c lib_bkgd.c \
-	lib_insdel.c lib_getstr.c lib_mvwin.c lib_longname.c lib_tstp.c \
-	lib_newterm.c lib_set_term.c lib_overlay.c lib_screen.c lib_scrreg.c \
-	lib_color.c lib_instr.c lib_insstr.c lib_termcap.c lib_twait.c \
-	hardscroll.c sigaction.c lib_window.c
-
 # Normal, optimised object files
 LIBOBJS= lib_setup.o lib_kernel.o lib_tparm.o read_entry.o lib_tputs.o lib_pad.o\
 	lib_unctrl.o lib_raw.o lib_vidattr.o lib_trace.o lib_beep.o names.o\
@@ -27,7 +12,7 @@ LIBOBJS= lib_setup.o lib_kernel.o lib_tparm.o read_entry.o lib_tputs.o lib_pad.o
 	lib_insdel.o lib_getstr.o lib_mvwin.o lib_longname.o lib_tstp.o \
 	lib_newterm.o lib_set_term.o lib_overlay.o lib_screen.o lib_scrreg.o \
 	lib_color.o lib_instr.o lib_insstr.o lib_termcap.o lib_twait.o \
-	hardscroll.o sigaction.o strerror.o lib_window.o names.o \
+	hardscroll.o sigaction.o lib_window.o names.o \
 	read_termcap.o names.o captoinfo.o comp_captab.o comp_hash.o \
 	comp_scan.o comp_error.o comp_parse.o alloc_entry.o parse_entry.o
 
@@ -42,7 +27,7 @@ DLIBOBJS= lib_setup.d lib_kernel.d lib_tparm.d read_entry.d lib_tputs.d lib_pad.
 	lib_insdel.d lib_getstr.d lib_mvwin.d lib_longname.d lib_tstp.d \
 	lib_newterm.d lib_set_term.d lib_overlay.d lib_screen.d lib_scrreg.d \
 	lib_color.d lib_instr.d lib_insstr.d lib_termcap.d lib_twait.d \
-	hardscroll.d sigaction.d strerror.d lib_window.d names.d \
+	hardscroll.d sigaction.d lib_window.d names.d \
 	read_termcap.d names.d captoinfo.d comp_captab.d comp_hash.d \
 	comp_scan.d comp_error.d comp_parse.d alloc_entry.d parse_entry.d
 
@@ -59,12 +44,12 @@ DLIBOBJS= lib_setup.d lib_kernel.d lib_tparm.d read_entry.d lib_tputs.d lib_pad.
 
 CMDS = tic infocmp clear tput
 
-all: terminfo.h comp_captab.c hashsize.h termsort.c $(LIBS) $(CMDS)
+all: term.h comp_captab.c hashsize.h termsort.c $(LIBS) $(CMDS)
 
 libs:	$(LIBS)
 
 install:
-	echo "Choose one or more of the follwing options:"
+	echo "Choose one or more of the following options:"
 	echo "install.libs install.man install.cmds install.data"
 	echo "or use install.all"
 
@@ -72,11 +57,11 @@ install.all:	install.libs install.man install.cmds install.data
 
 BIN=$(INSTALL_DIR)/bin
 
-$(INCLUDE) $(LIB) $(SRCDIR) $(BIN):
+$(INCLUDE) $(LIB) $(TERMINFO) $(BIN):
 	mkdir -p $@
 
-install.libs: terminfo.h $(LIBS) $(INCLUDE) $(LIB)
-	$(INSTALL) -c -m 0644 -o bin -g bin terminfo.h $(INCLUDE)/term.h
+install.libs: term.h $(LIBS) $(INCLUDE) $(LIB)
+	$(INSTALL) -c -m 0644 -o bin -g bin term.h $(INCLUDE)/term.h
 	$(INSTALL) -c -m 0644 -o bin -g bin curses.h $(INCLUDE)/curses.h
 	$(INSTALL) -c -m 0644 -o bin -g bin unctrl.h $(INCLUDE)/unctrl.h
 	$(INSTALL) -c -m 0644 -o bin -g bin termcap.h $(INCLUDE)/termcap.h
@@ -88,7 +73,7 @@ install.libs: terminfo.h $(LIBS) $(INCLUDE) $(LIB)
 	@echo "Make sure you delete any old header files!"
 
 install.man:
-	(cd ../man; make SRCDIR=$(SRCDIR) INSTALL=$(INSTALL) MAN=$(MAN) )
+	(cd ../man; make TERMINFO=$(TERMINFO) INSTALL=$(INSTALL) MAN=$(MAN) )
 
 install.cmds: $(CMDS) $(BIN)
 	$(INSTALL) -c -s -m 755 -o bin -g bin tic $(BIN)/tic
@@ -103,47 +88,48 @@ install.cmds: $(CMDS) $(BIN)
 # Installation production for replacing the stock libraries on Linux systems
 SYSINCLUDE = /usr/include
 SYSLIB = /usr/lib
-install.sys: # terminfo.h $(LIBS) $(INCLUDE) $(LIB)
-	$(INSTALL) -c -m 0644 -o bin -g bin terminfo.h $(SYSINCLUDE)/term.h
+install.sys: # term.h $(LIBS) $(INCLUDE) $(LIB)
+	$(INSTALL) -c -m 0644 -o bin -g bin term.h $(SYSINCLUDE)/term.h
 	$(INSTALL) -c -m 0644 -o bin -g bin curses.h $(SYSINCLUDE)/curses.h
 	$(INSTALL) -c -m 0644 -o bin -g bin unctrl.h $(SYSINCLUDE)/unctrl.h
 	$(INSTALL) -c -m 0644 -o bin -g bin termcap.h $(SYSINCLUDE)/termcap.h
 	$(INSTALL) -c -m 0644 -o bin -g bin libncurses.a $(SYSLIB)/libcurses.a
 	$(INSTALL) -c -m 0644 -o bin -g bin libdcurses.a $(SYSLIB)/libdcurses.a
 
-install.data: $(SRCDIR) 
-	@for e in ../data/*; do \
-		echo compiling $$e entry;\
-		$(BIN)/tic $$e;\
-	done
+install.data: $(TERMINFO) 
+	rm -fr $(TERMINFO)/[0-9A-Za-z]		# Avoid use loops due to old entries.
+	$(BIN)/tic ../misc/terminfo.src
 
-lib:	terminfo.h libncurses.a	
+lib:	term.h libncurses.a	
 libncurses.a:	${LIBOBJS}
 	ar rv libncurses.a $?
 	ranlib libncurses.a
 
-dlib:	terminfo.h libdcurses.a	
+dlib:	term.h libdcurses.a	
 libdcurses.a:	${DLIBOBJS}
 	ar rv libdcurses.a $?
 	ranlib libdcurses.a
 
 tic: comp_main.o dump_entry.o write_entry.o libncurses.a
-	$(CC) $(FLAGS) comp_main.o dump_entry.o write_entry.o libncurses.a -o tic
+	$(CC) $(CFLAGS) comp_main.o dump_entry.o write_entry.o libncurses.a -o tic
 
 clear: clear.c libncurses.a 
-	$(CC) $(FLAGS) clear.c libncurses.a -o clear
+	$(CC) $(CFLAGS) clear.c libncurses.a -o clear
 
 tput: tput.c libncurses.a 
-	$(CC) $(FLAGS) tput.c libncurses.a -o tput
+	$(CC) $(CFLAGS) tput.c libncurses.a -o tput
 
 infocmp: infocmp.o dump_entry.o libncurses.a
-	$(CC) $(FLAGS) infocmp.o dump_entry.o libncurses.a -o infocmp
+	$(CC) $(CFLAGS) infocmp.o dump_entry.o libncurses.a -o infocmp
 
+# Use -g for debugging but -O if you're profiling with intent to
+# determine COMPUTE_OVERHEAD.
+MVFLAGS = -O
 mvcur: lib_mvcur.c comp_captab.o comp_hash.o dump_entry.o libdcurses.a
-	$(CC) $(FLAGS) -DTRACE -DMAIN -g lib_mvcur.c comp_captab.o comp_hash.o dump_entry.o libdcurses.a -o mvcur
+	$(CC) $(CFLAGS) -DTRACE -DMAIN $(MVFLAGS) lib_mvcur.c comp_captab.o comp_hash.o dump_entry.o libdcurses.a -o mvcur
 
 tctest: captoinfo.c libdcurses.a
-	$(CC) $(FLAGS) -DTRACE -DMAIN -g captoinfo.c libdcurses.a -o tctest
+	$(CC) $(CFLAGS) -DTRACE -DMAIN -g captoinfo.c libdcurses.a -o tctest
 
 hardscroll: hardscroll.c
 	$(CC) -g -DMAINDEBUG hardscroll.c -o hardscroll
@@ -151,56 +137,64 @@ hardscroll: hardscroll.c
 keys.tries: keys.list
 	awk -f MKkeys.awk keys.list > keys.tries
 
-lib_options.o: keys.tries lib_options.c terminfo.h
+lib_options.o: keys.tries lib_options.c term.h
 
-terminfo.h: Caps MKterm.h.awk
-	awk -f MKterm.h.awk Caps > terminfo.h
+# For binary compatibility with SVr4, use GETMEXCLUDE=bool.  For strict
+# conformance with the gratuitous and stupid change made in the XSI Curses
+# standard, use GETMEXCLUDE=str 
+GETMEXCLUDE=bool
 
-hashsize.h: Caps MKhashsize.sh
+Caps.filtered: Caps
+	grep -v '"getm"	*$(GETMEXCLUDE)' Caps >Caps.filtered
+
+term.h: Caps.filtered MKterm.h.awk
+	awk -f MKterm.h.awk Caps.filtered > term.h
+
+hashsize.h: Caps.filtered MKhashsize.sh
 	sh MKhashsize.sh >hashsize.h
 
-comp_captab.c: hashsize.h Caps MKcaptab.awk
-	sh MKcaptab.awk Caps > comp_captab.c
+comp_captab.c: hashsize.h Caps.filtered MKcaptab.awk
+	sh MKcaptab.awk > comp_captab.c
 
-infocmp.o: infocmp.c terminfo.h tic.h dump_entry.h
-	$(CC) $(CFLAGS) -DSRCDIR=\"$(SRCDIR)\" -o infocmp.o -c infocmp.c
+infocmp.o: infocmp.c term.h tic.h dump_entry.h
+	$(CC) $(CFLAGS) -DTERMINFO=\"$(TERMINFO)\" -o infocmp.o -c infocmp.c
 
-dump_entry.o: dump_entry.c terminfo.h tic.h dump_entry.h termsort.c parametrized.h
+dump_entry.o: dump_entry.c term.h tic.h dump_entry.h termsort.c parametrized.h
 	$(CC) $(CFLAGS) -o dump_entry.o -c dump_entry.c
 
-dump_entry.d: dump_entry.c terminfo.h tic.h dump_entry.h termsort.c parametrized.h capdefaults.c
+dump_entry.d: dump_entry.c term.h tic.h dump_entry.h termsort.c parametrized.h capdefaults.c
 	$(CC) $(CFLAGS) -o dump_entry.d -c dump_entry.c
 
-read_entry.o: read_entry.c terminfo.h tic.h object.h
-	$(CC) $(CFLAGS) -DSRCDIR=\"$(SRCDIR)\" -o read_entry.o -c read_entry.c
+read_entry.o: read_entry.c term.h tic.h object.h
+	$(CC) $(CFLAGS) -DTERMINFO=\"$(TERMINFO)\" -o read_entry.o -c read_entry.c
 
-read_entry.d: read_entry.c terminfo.h tic.h object.h
-	$(CC) $(CFLAGS) -DSRCDIR=\"$(SRCDIR)\" -o read_entry.d -c read_entry.c
+read_entry.d: read_entry.c term.h tic.h object.h
+	$(CC) $(CFLAGS) -DTERMINFO=\"$(TERMINFO)\" -o read_entry.d -c read_entry.c
 
-parse_entry.o: parse_entry.c terminfo.h tic.h term_entry.h parametrized.h
+parse_entry.o: parse_entry.c term.h tic.h term_entry.h parametrized.h
 	$(CC) $(CFLAGS) -o parse_entry.o -c parse_entry.c
 
-parse_entry.d: parse_entry.c terminfo.h tic.h term_entry.h parametrized.h
+parse_entry.d: parse_entry.c term.h tic.h term_entry.h parametrized.h
 	$(CC) $(CFLAGS) -o parse_entry.d -c parse_entry.c
 
-write_entry.o: write_entry.c terminfo.h tic.h object.h
-	$(CC) $(CFLAGS) -DSRCDIR=\"$(SRCDIR)\" -o write_entry.o -c write_entry.c
+write_entry.o: write_entry.c term.h tic.h object.h
+	$(CC) $(CFLAGS) -DTERMINFO=\"$(TERMINFO)\" -o write_entry.o -c write_entry.c
 
-write_entry.d: write_entry.c terminfo.h tic.h object.h
-	$(CC) $(CFLAGS) -DSRCDIR=\"$(SRCDIR)\" -o write_entry.d -c write_entry.c
+write_entry.d: write_entry.c term.h tic.h object.h
+	$(CC) $(CFLAGS) -DTERMINFO=\"$(TERMINFO)\" -o write_entry.d -c write_entry.c
 
 lib_keyname.c: keys.list MKkeyname.awk
 	awk -f MKkeyname.awk keys.list > lib_keyname.c
 
-names.c: Caps MKnames.awk
-	awk -f MKnames.awk Caps
+names.c: Caps.filtered MKnames.awk
+	awk -f MKnames.awk Caps.filtered
 	cat boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes> names.c
 	rm -f boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes
 
-termsort.c: Caps termsort.sh
+termsort.c: Caps.filtered termsort.sh
 	sh termsort.sh >termsort.c
 
-parametrized.h: Caps termsort.sh
+parametrized.h: Caps.filtered termsort.sh
 	sh parametrized.sh >parametrized.h
 
 TAGS:
@@ -210,6 +204,6 @@ clean:
 	rm -f *.[aod] comp_captab.c tags lib_keyname.c keys.tries names.c TAGS
 
 clobber: clean
-	rm -f clear tput tic infocmp mvcur tctest hardscroll Config.* termsort.c parametrized.h hashsize.h terminfo.h Makefile 
+	rm -f clear tput tic infocmp mvcur tctest hardscroll Config.* termsort.c parametrized.h hashsize.h term.h Makefile Caps.filtered
 
 

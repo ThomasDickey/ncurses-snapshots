@@ -2,16 +2,18 @@
 /***************************************************************************
 *                            COPYRIGHT NOTICE                              *
 ****************************************************************************
-*                ncurses is copyright (C) 1992, 1993, 1994                 *
-*                          by Zeyd M. Ben-Halim                            *
+*                ncurses is copyright (C) 1992-1995                        *
+*                          Zeyd M. Ben-Halim                               *
 *                          zmbenhal@netcom.com                             *
+*                          Eric S. Raymond                                 *
+*                          esr@snark.thyrsus.com                           *
 *                                                                          *
 *        Permission is hereby granted to reproduce and distribute ncurses  *
 *        by any means and for any fee, whether alone or as part of a       *
 *        larger distribution, in source or in binary form, PROVIDED        *
-*        this notice is included with any such distribution, not removed   *
-*        from header files, and is reproduced in any documentation         *
-*        accompanying it or the applications linked with it.               *
+*        this notice is included with any such distribution, and is not    *
+*        removed from any of its header files. Mention of ncurses in any   *
+*        applications linked with it is highly appreciated.                *
 *                                                                          *
 *        ncurses comes AS IS with no warranty, implied or expressed.       *
 *                                                                          *
@@ -36,7 +38,7 @@
  */
 
 #include "curses.priv.h"
-#include "terminfo.h"
+#include "term.h"	/* cur_term, pad_char */
 
 int reset_prog_mode()
 {
@@ -67,46 +69,24 @@ int reset_shell_mode()
 	return OK; 
 }
 
-
-int curs_set(int vis)
-{
-int cursor = SP->_cursor;
-
-	T(("curs_set(%d)", vis));
-
-	if (vis < 0 || vis > 2)
-		return ERR;
-
-	switch(vis) {
-	case 2:
-		if (cursor_visible)
-			putp(cursor_visible);
-		break;
-	case 1:
-		if (cursor_normal)
-			putp(cursor_normal);
-		break;
-	case 0:
-		if (cursor_invisible)
-			putp(cursor_invisible);
-		break;
-	}
-	SP->_cursor = vis;
-	return cursor;	
-}
-
 int delay_output(float ms)
 {
 	T(("delay_output(%f) called", ms));
 
     	if (SP->_baudrate == ERR)
 		return(ERR);
-    	else {
+#ifdef no_pad_char
+    	else if (no_pad_char)
+		timed_wait(0, ms, (int *)NULL);
+#endif /* no_pad_char */
+	else {
 		register int	nullcount;
 		char	null = '\0';
 
+#ifdef pad_char
 		if (pad_char)
 	    		null = pad_char[0];
+#endif /* pad_char */
 
 		for (nullcount = ms * 1000 / SP->_baudrate; nullcount > 0; nullcount--)
 		    	putc(null, SP->_ofp);

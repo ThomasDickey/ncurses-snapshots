@@ -24,6 +24,7 @@ Options:
 	-n <n>			set number of worms
 	-t			make worms leave droppings
 	-T <start> <end>	set trace interval
+	-S			set single-stepping during trace interval
 	-N			suppress cursor-movement optimization
 
   This program makes a good torture-test for the ncurses cursor-optimization
@@ -37,7 +38,10 @@ Options:
 
 #define cursor(col,row) move(row,col)
 
-int Wrap;
+#ifdef TRACE
+extern no_optimize;
+#endif /* TRACE */
+
 short *ref[128];
 static char flavor[]={
     'O', '*', '#', '$', '%', '0'
@@ -54,7 +58,7 @@ static struct worm {
 static char *field;
 static int length=16, number=3, trail=' ';
 #ifdef TRACE
-int generation, trace_start, trace_end;
+int generation, trace_start, trace_end, singlestep;
 #endif /* TRACE */
 static struct options {
     int nopts;
@@ -183,6 +187,9 @@ int last, bottom;
 		    trail='.';
 		    break;
 #ifdef TRACE
+		case 'S':
+		    singlestep = TRUE;
+		    break;
 		case 'T':
 		    trace_start = atoi(argv[++x]);
 		    trace_end   = atoi(argv[++x]);
@@ -215,7 +222,12 @@ int last, bottom;
 		ref[n++]=ip; ip+=COLS;
     }
     for (ip=ref[0],n=LINES*COLS;--n>=0;) *ip++=0;
+
+#ifdef BADCORNER
+    /* if addressing the lower right corner doesn't work in your curses */
     ref[bottom][last]=1;
+#endif /* BADCORNER */
+
     for (n=number, w= &worm[0];--n>=0;w++) {
 		w->orientation=w->head=0;
 		if (!(ip=(short *)malloc(length+1*sizeof (short)))) {
@@ -250,7 +262,7 @@ int last, bottom;
 		{
 		    if (generation == trace_start)
 		    {
-			trace(TRACE_MOVE);
+			trace(TRACE_MAXIMUM);
 			getch();
 		    }
 		    else if (generation == trace_end)
@@ -258,6 +270,12 @@ int last, bottom;
 			trace(0);
 			getch();
 		    }
+
+		    if (singlestep && 
+				generation > trace_start &&
+				generation < trace_end)
+			getch();
+
 		    generation++;
 		}
 #endif /* TRACE */
@@ -292,8 +310,9 @@ int last, bottom;
 				w->orientation=op->opts[(int)(ranf()*(float)op->nopts)];
 		    }
 		    cursor(x+=xinc[w->orientation], y+=yinc[w->orientation]);
+
 		    if (y < 0 ) y = 0;
-		    if (!Wrap||x!=last||y!=bottom) addch(flavor[n%6]);
+		    addch(flavor[n%6]);
 		    ref[w->ypos[h]=y][w->xpos[h]=x]++;
 		}
 		refresh();

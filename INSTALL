@@ -7,7 +7,7 @@
 
 You should be reading the file INSTALL in a directory called:
 ncurses-d.d.d, where d.d.d is the current version number (see README).
-There are several subdirectories, called 'src', 'test', 'data',
+There are several subdirectories, called 'src', 'test', 'misc', 'doc',
 and 'man'.
 
 REQUIREMENTS:
@@ -22,7 +22,7 @@ You will need the following in order to build and install ncurses under UNIX:
 
 INSTALLATION PROCEDURE:
 
-1.  Run Configure.
+1.  Change directory to src/, run Configure.
     
     Tell it the OS you are using.  It will create your Makefile.
     If your operating system is not supported, read the PORTABILITY section
@@ -48,15 +48,12 @@ INSTALLATION PROCEDURE:
 	   in your root filesystem so that programs which use terminfo
 	   can be used even when the system is only up single-user.
 
-	b. Change the value of the entry for SRCDIR in src/matrix
+	b. Change the value of the entry for TERMINFO in src/matrix
 	   to the name of the directory you've chosen.
 
 	c. Return to step 1 (running Configure).
 
 2.  Read and (if necessary) edit src/Makefile to suit your local setup.
-
-    This step will probably not be necessary if your operating system is
-    one of those supported by Configure.  In this case, the 
 
     Note that any changes made to src/Makefile will disappear when you
     re-run src/Configure. If you want these changes to be permanent make them
@@ -78,7 +75,25 @@ INSTALLATION PROCEDURE:
 	'make install.data' installs the terminfo database. You can skip this
 		part if your system already has such a database.
 
+	CAVEAT EMPTOR: install.data or install.all will NUKE any existing
+	terminfo database. If you have any custom or unusual entries SAVE them
+	before you install ncurses.
+
 	'make install.all' will do all the above.
+
+5a. If you're running under Linux, you must either (a) tell Linux that the
+    console terminal type is `linux', or (b) make a link to or copy of the 
+    linux entry in the appropriate place under your terminfo directory,
+    named `console'.
+
+    The way to change the wired-in console type is by editing /etc/inittab.
+    Warning: this is not for the fainthearted, if you mess up your console
+    getty entries you can make your system unusable!  However, if you are
+    a Linux distribution maker, this is the right thing to do.
+
+    The easier way is to link or copy l/linux to c/console under your terminfo
+    directory.  Note: this will go away next time you do `make install.data'
+    and you'll have to redo it. 
 
 TESTING:
 
@@ -91,7 +106,7 @@ TESTING:
 7.  Run ncurses and several other test programs.
 
     The ncurses program is designed specifically to test the ncurses library.
-    You can useit to verify that the screen highlights work correctly, that
+    You can use it to verify that the screen highlights work correctly, that
     cursor addressing and window scrolling works OK, etc.
 
 NOTES:

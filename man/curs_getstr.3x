@@ -45,10 +45,11 @@ giving details.  It lies.  The actual behavior is like that of ncurses.
 .SH NOTES
 Note that \fBgetstr\fR, \fBmvgetstr\fR, and \fBmvwgetstr\fR may be macros.
 .SH PORTABILITY
-These functions are described in the XSI Curses draft.  They read single-byte
-characters only.  The draft specifies that they return \fBERR\fR on failure,
-but the single error condition \fBEOVERFLOW\fR is not yet returned (the
-XSI curses support for multi-byte characters is not yet present).
+These functions are described in the XSI Curses standard, Issue 4.  They read
+single-byte characters only.  The standard specifies that they return \fBERR\fR
+on failure, but the single error condition \fBEOVERFLOW\fR associated with
+extended-level conformance is not yet returned (the XSI curses support for
+multi-byte characters is not yet present).
 
 The functions \fBgetnstr\fR, \fBmvgetnstr\fR, and \fBmvwgetnstr\fR were
 present but not documented in SVr4.
