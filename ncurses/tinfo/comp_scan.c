@@ -50,7 +50,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.65 2003/11/23 00:26:52 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.66 2003/12/14 00:32:40 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -84,6 +84,7 @@ _nc_curr_token =
  *****************************************************************************/
 
 static bool first_column;	/* See 'next_char()' below */
+static bool had_newline;
 static char separator;		/* capability separator */
 static int pushtype;		/* type of pushback token */
 static char *pushname;
@@ -185,8 +186,11 @@ _nc_get_token(bool silent)
 
   start_token:
     token_start = stream_pos();
-    while ((ch = next_char()) == '\n' || iswhite(ch))
+    while ((ch = next_char()) == '\n' || iswhite(ch)) {
+	if (ch == '\n')
+	    had_newline = TRUE;
 	continue;
+    }
 
     ch = eat_escaped_newline(ch);
 
@@ -342,6 +346,10 @@ _nc_get_token(bool silent)
 	    _nc_curr_token.tk_name = buffer;
 	    type = NAMES;
 	} else {
+	    if (had_newline && _nc_syntax == SYN_TERMCAP) {
+		_nc_warning("Missing backslash before newline");
+		had_newline = FALSE;
+	    }
 	    while ((ch = next_char()) != EOF) {
 		if (!isalnum(ch)) {
 		    if (_nc_syntax == SYN_TERMINFO) {
@@ -818,6 +826,8 @@ next_char(void)
     }
 
     first_column = (bufptr == bufstart);
+    if (first_column)
+	had_newline = FALSE;
 
     _nc_curr_col++;
     return (*bufptr++);

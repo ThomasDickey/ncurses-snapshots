@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey 1996-on                                        *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.145 2003/06/15 23:42:18 tom Exp $ */
+/* $Id: curses.h.in,v 1.146 2003/12/13 19:36:11 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -139,6 +139,8 @@ typedef @cf_cv_type_of_bool@ NCURSES_BOOL;
 typedef NCURSES_BOOL bool;
 #endif
 
+#else
+#define bool NCURSES_BOOL
 #endif /* !__cplusplus, etc. */
 
 #ifdef __cplusplus

@@ -1,10 +1,22 @@
--- $Id: NEWS,v 1.778 2003/12/07 01:03:30 tom Exp $
+-- $Id: NEWS,v 1.779 2003/12/14 00:35:55 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20031213
+	+ add a check for tic to flag missing backslashes for termcap
+	  continuation lines.  ncurses reads the whole entry, but termcap
+	  applications do not.
+	+ add configure option "--with-manpage-aliases" extending
+	  "--with-manpage-aliases" to provide the option of generating ".so"
+	  files rather than symbolic links for manpage aliases.
+	+ add bool definition in include/curses.h.in for configurations with no
+	  usable C++ compiler (cf: 20030607).
+	+ fix pathname of SigAction.h for building with --srcdir (reported by
+	  Mike Castle).
 
 20031206
 	+ folded ncurses/base/sigaction.c into includes of ncurses/SigAction.h,

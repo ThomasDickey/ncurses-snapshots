@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.320 2003/12/07 01:53:00 tom Exp $
+dnl $Id: aclocal.m4,v 1.321 2003/12/13 23:03:45 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1810,21 +1810,47 @@ AC_MSG_RESULT($MANPAGE_RENAMES)
 AC_SUBST(MANPAGE_RENAMES)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MANPAGE_SYMLINKS version: 3 updated: 2002/01/19 22:51:32
+dnl CF_MANPAGE_SYMLINKS version: 4 updated: 2003/12/13 18:01:58
 dnl -------------------
 dnl Some people expect each tool to make all aliases for manpages in the
 dnl man-directory.  This accommodates the older, less-capable implementations
 dnl of 'man', and is optional.
 AC_DEFUN([CF_MANPAGE_SYMLINKS],
 [
-AC_MSG_CHECKING(for manpage symlinks)
+AC_MSG_CHECKING(if manpage aliases will be installed)
+
+AC_ARG_WITH(manpage-aliases,
+	[  --with-manpage-aliases  specify manpage-aliases using .so],
+	[MANPAGE_ALIASES=$withval],
+	[MANPAGE_ALIASES=yes])
+
+AC_MSG_RESULT($MANPAGE_ALIASES)
+
+if test "$LN_S" = "ln -s"; then
+	cf_use_symlinks=yes
+else
+	cf_use_symlinks=no
+fi
+
+MANPAGE_SYMLINKS=no
+if test "$MANPAGE_ALIASES" = yes ; then
+AC_MSG_CHECKING(if manpage symlinks should be used)
 
 AC_ARG_WITH(manpage-symlinks,
-	[  --with-manpage-symlinks specify manpage-symlinks],
+	[  --with-manpage-symlinks specify manpage-aliases using symlinks],
 	[MANPAGE_SYMLINKS=$withval],
-	[MANPAGE_SYMLINKS=yes])
+	[MANPAGE_SYMLINKS=$cf_use_symlinks])
+
+if test "$$cf_use_symlinks" = no; then
+if test "$MANPAGE_SYMLINKS" = yes ; then
+	AC_MSG_WARN(cannot make symlinks, will use .so files)
+	MANPAGE_SYMLINKS=no
+fi
+fi
 
 AC_MSG_RESULT($MANPAGE_SYMLINKS)
+fi
+
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl CF_MANPAGE_TBL version: 3 updated: 2002/01/19 22:51:32
@@ -1843,7 +1869,7 @@ AC_ARG_WITH(manpage-tbl,
 AC_MSG_RESULT($MANPAGE_TBL)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_MAN_PAGES version: 24 updated: 2003/10/18 18:52:41
+dnl CF_MAN_PAGES version: 25 updated: 2003/12/13 18:01:58
 dnl ------------
 dnl Try to determine if the man-pages on the system are compressed, and if
 dnl so, what format is used.  Use this information to construct a script that
@@ -1917,7 +1943,7 @@ case \$i in #(vi
 		continue
 	fi
 CF_EOF
-if test "$MANPAGE_SYMLINKS" = yes ; then
+if test "$MANPAGE_ALIASES" != no ; then
 cat >>man/edit_man.sh <<CF_EOF
 	aliases=\`sed -f \$srcdir/manlinks.sed \$inalias | sort -u\`
 CF_EOF
@@ -1993,27 +2019,32 @@ cat >>man/edit_man.sh <<CF_EOF
 	mv \$TMP.out \$TMP
 CF_EOF
 fi
+cf_so_strip=
 case "$MANPAGE_FORMAT" in #(vi
 *compress*) #(vi
+	cf_so_strip="Z"
+	cf_compress=compress
 cat >>man/edit_man.sh <<CF_EOF
 	if test \$verb = installing ; then
 	if ( compress -f \$TMP )
 	then
-		mv \$TMP.Z \$TMP
+		mv \$TMP.$cf_so_strip \$TMP
 	fi
 	fi
-	target="\$target.Z"
+	target="\$target.$cf_so_strip"
 CF_EOF
   ;;
 *gzip*) #(vi
+	cf_so_strip="gz"
+	cf_compress=gzip
 cat >>man/edit_man.sh <<CF_EOF
 	if test \$verb = installing ; then
 	if ( gzip -f \$TMP )
 	then
-		mv \$TMP.gz \$TMP
+		mv \$TMP.$cf_so_strip \$TMP
 	fi
 	fi
-	target="\$target.gz"
+	target="\$target.$cf_so_strip"
 CF_EOF
   ;;
 *BSDI*)
@@ -2030,6 +2061,8 @@ cat >>man/edit_man.sh <<CF_EOF
 		\$INSTALL_DATA \$TMP \$target
 		test -n "\$aliases" && (
 			cd $cf_subdir\${section} && (
+				source=\`echo \$target |sed -e 's%^.*/\([[^/]][[^/]]*/[[^/]][[^/]]*$\)%\1%'\`
+				test -n "$cf_so_strip" && source=\`echo \$source |sed -e 's%\.$cf_so_strip\$%%'\`
 				target=\`basename \$target\`
 				for cf_alias in \$aliases
 				do
@@ -2037,19 +2070,25 @@ cat >>man/edit_man.sh <<CF_EOF
 						cf_alias=\`echo \$cf_alias|sed "\${transform}"\`
 					fi
 
-					if test -f \$cf_alias\${suffix} ; then
-						if ( cmp -s \$target \$cf_alias\${suffix} )
-						then
-							:
-						else
-							echo .. \$verb alias \$cf_alias\${suffix}
-							rm -f \$cf_alias\${suffix}
-							$LN_S \$target \$cf_alias\${suffix}
+					if test "$MANPAGE_SYMLINKS" = yes ; then
+						if test -f \$cf_alias\${suffix} ; then
+							if ( cmp -s \$target \$cf_alias\${suffix} )
+							then
+								continue
+							fi
 						fi
-					else
 						echo .. \$verb alias \$cf_alias\${suffix}
 						rm -f \$cf_alias\${suffix}
 						$LN_S \$target \$cf_alias\${suffix}
+					elif test "\$target" != "\$cf_alias\${suffix}" ; then
+						echo ".so \$source" >\$TMP
+						if test -n "$cf_so_strip" ; then
+							$cf_compress -f \$TMP
+							mv \$TMP.$cf_so_strip \$TMP
+						fi
+						echo .. \$verb alias \$cf_alias\${suffix}
+						rm -f \$cf_alias\${suffix}
+						\$INSTALL_DATA \$TMP \$cf_alias\${suffix}
 					fi
 				done
 			)

@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.67 2003/12/06 22:52:14 tom Exp $
+-- $Id: INSTALL,v 1.68 2003/12/14 00:01:19 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -561,6 +561,14 @@ SUMMARY OF CONFIGURE OPTIONS:
 	If a parameter value is given, it must be the full pathname of the
 	particular version of libtool, e.g.,
 		/usr/bin/libtool-1.2.3
+
+    --with-manpage-aliases
+	Tell the configure script you wish to create entries in the
+	man-directory for aliases to manpages which list them, e.g., the
+	functions in the panel manpage.  This is the default.  You can disable
+	it if your man program does this.  You can also disable
+	--with-manpage-symlinks to install files containing a ".so" command
+	rather than symbolic links.
 
     --with-manpage-format=XXX
 	Tell the configure script how you would like to install man-pages.  The
