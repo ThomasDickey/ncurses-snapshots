@@ -1,0 +1,7 @@
+#! /bin/sh
+
+TERMINFO=@TERMINFO@
+rm -fr @TERMINFO@/[0-9A-Za-z]
+sed -n <@SRCDIR@/terminfo.src -e '1,/SPLIT HERE/w tsplit01' -e '/SPLIT HERE/,$w tsplit02' 2>/dev/null
+for x in tsplit*; do @BINDIR@/tic -v $x; done
+rm tsplit*

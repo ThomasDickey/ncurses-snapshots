@@ -37,7 +37,7 @@
 void _nc_scroll_window(WINDOW *win, int n, int top, int bottom)
 {
 int	line, j;
-chtype	blank = _nc_render(win, ' ', BLANK, TRUE);
+chtype	blank = _nc_render(win, ' ', BLANK);
 
 	TR(TRACE_MOVE, ("_nc_scroll_window(%p, %d, %d, %d)", win, n, top,bottom)); 
 

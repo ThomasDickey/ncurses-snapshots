@@ -101,40 +101,6 @@ int	errret;
 	/* compute movement costs so we can do better move optimization */
 	_nc_mvcur_init(SP);
 
-	/* optional optimization hack */
-#if defined(HAVE_SETVBUF) || defined(HAVE_SETBUFFER)
-	{
-	    /* 
-	     * If the output file descriptor is connected to a tty
-	     * (the typical case) it will probably be line-buffered.
-	     * Keith Bostic pointed out that we don't want this; it
-	     * hoses people running over networks by forcing out a
-	     * bunch of small packets instead of one big one, so
-	     * screen updates on ptys look jerky.  Restore block
-	     * buffering to prevent this minor lossage.
-	     *
-	     * The buffer size is a compromise.  Ideally we'd like a
-	     * buffer that can hold the maximum possible update size
-	     * (the whole screen plus cup commands to change lines as
-	     * it's painted).  On a modern 66-line xterm this can
-	     * become excessive.  So we min it with the amount of data
-	     * we think we can get through one Ethernet packet
-	     * (maximum packet size - 100 for TCP/IP overhead), This
-	     * is the largest update we're likely to be able to send
-	     * atomically (it also protects against the rare case of
-	     * no cursor addressing).
-	     */
-	    unsigned int bufsiz = min(LINES * (COLS + SP->_cup_cost), 1400);
-
-#if HAVE_SETVBUF
-	    (void) setvbuf(SP->_ofp, malloc(bufsiz), _IOFBF, bufsiz);
-#endif /* HAVE_SETVBUF */
-#if HAVE_SETBUFFER
-	    (void) setbuffer(SP->_ofp, malloc(bufsiz), (int)bufsiz);
-#endif /* HAVE_SETBUFFER */
-	}
-#endif /* defined(HAVE_SETVBUF) || defined(HAVE_SETBUFFER) */
-
 #if 0
 	/* initialize soft labels */
 	if (_slk_init)

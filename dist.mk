@@ -5,7 +5,7 @@ SHELL = /bin/sh
 
 # This is the master version number.  If you change it here and do a configure,
 # this value will be patched in everywhere a version is needed.
-VERSION = 1.9.3
+VERSION = 1.9.4
 
 dist: ANNOUNCE INTRO
 	(cd ..;  tar cvf ncurses-$(VERSION).tar `sed <ncurses-$(VERSION)/MANIFEST 's/^./ncurses-$(VERSION)/'`;  gzip ncurses-$(VERSION).tar)

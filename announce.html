@@ -5,10 +5,10 @@
 <link rev=made href=mailto:esr@snark.thyrsus.com>
 </HEAD>
 <BODY>
-<TITLE>Announcing ncurses 1.9.3</TITLE>
-<H1>Announcing ncurses 1.9.3</H1>
+<TITLE>Announcing ncurses 1.9.4</TITLE>
+<H1>Announcing ncurses 1.9.4</H1>
 
-<H2>Overview of ncurses 1.9.3</H2>
+<H2>Overview of ncurses 1.9.4</H2>
 
 The ncurses library is a freeware emulation of System V Release 4.0 curses.
 It uses terminfo format, supports color and multiple highlights and forms
@@ -20,12 +20,8 @@ considered 4.4BSD curses obsolete, and is encouraging the keepers of
 Unix releases such as BSD/OS, freeBSD and netBSD to switch over to
 ncurses. <P>
 
-The ncurses code was developed under Linux.  It is highly portable to any
-ANSI/POSIX-conforming unix system using the FSF's autoconf software to 
-generate a configure script.
-The following platforms are reported to work: 386BSD, SunOS, HP-UX, Ultrix,
-NeXTSTEP 3.0, System V Release 4, BSDI BSD/OS, Apollo, AIX 3.2.5, Solaris
-2.3, NeXTSTEP 3.2..<P>
+The ncurses code was developed under Linux.  It should port easily to
+any ANSI/POSIX-conforming UNIX.<P>
 
 The distribution includes the library and support utilities, including a
 terminfo compiler tic(1), a decompiler infocmp(1), clear(1), tput(1), and a
@@ -61,6 +57,8 @@ for screen-line movements.  This algorithm is more powerful than
 the 4.4BSD curses quickch() routine.  <P>
 <LI> An emulation of the System V Release 4 panels library, supporting 
 a stack of windows with backing store, is included. <P>
+<LI> An emulation of the System V Release 4 menus library, supporting 
+a uniform but flexible interface for menu programming, is included. <P>
 <LI> (PC-clone boxes only) Support for access to the IBM PC ROM characters
 through a new highlight, A_PCCHARSET. <P>
 <LI> Automatic fallback to the /etc/termcap file can be compiled in

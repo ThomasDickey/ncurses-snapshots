@@ -23,7 +23,7 @@
 /*
 **	lib_tstp.c
 **
-**	The routines tstp() and _nc_signal_handler().
+**	The routine _nc_signal_handler().
 **
 */
 
@@ -42,6 +42,49 @@ typedef struct sigaction sigaction_t;
 #endif
 #include <signal.h>
 #include <stdlib.h>
+
+/*
+ * Note: This code is fragile!  Its problem is that different OSs
+ * handle restart of system calls interrupted by signals differently.
+ * The ncurses code needs signal-call restart to happen -- otherwise,
+ * interrupted wgetch() calls will return FAIL, probably making the
+ * application think the input stream has ended and it should
+ * terminate.  In particular, you know you have this problem if, when
+ * you suspend an ncurses-using lynx with ^Z and resume, it dies
+ * immediately.
+ *
+ * Default behavior of POSIX sigaction(2) is not to restart
+ * interrupted system calls, but Linux's sigaction does it anyway (at
+ * least, on and after the 1.1.47 I (esr) use).  Thus this code works
+ * OK under Linux.  The 4.4BSD sigaction(2) supports a (non-portable)
+ * SA_RESTART flag that forces the right behavior.  Thus, this code
+ * should work OK under BSD/OS, NetBSD, and FreeBSD (let us know if it
+ * does not).
+ *
+ * Stock System Vs (and anything else using a strict-POSIX
+ * sigaction(2) without SA_RESTART) may have a problem.  Possible
+ * solutions:
+ *
+ *    sigvec      restarts by default (SV_INTERRUPT flag to not restart)
+ *    signal      restarts by default in SVr4 (assuming you link with -lucb)
+ *                and BSD, but not SVr3.
+ *    sigset      restarts, but is only available under SVr4/Solaris.
+ *
+ * The signal(3) call is mandated by the ANSI standard, and its
+ * interaction with sigaction(2) is described in the POSIX standard
+ * (3.3.4.2, page 72,line 934).  According to section 8.1, page 191,
+ * however, signal(3) itself is not required by POSIX.1.  And POSIX is
+ * silent on whether it is required to restart signals.
+ *
+ * So.  The present situation is, we use sigaction(2) with no
+ * guarantee of restart anywhere but on Linux and BSD.  We could
+ * switch to signal(3) and collar Linux, BSD, and SVr4.  Any way
+ * we slice it, System V UNIXes older than SVr4 will probably lose
+ * (this may include XENIX).
+ *
+ * This implementation will probably be changed to use signal(3) in
+ * the future.  If nothing else, it's simpler...
+ */
 
 static void tstp(int dummy)
 {
@@ -82,6 +125,9 @@ static void tstp(int dummy)
 	act.sa_handler = SIG_DFL;
 	sigemptyset(&act.sa_mask);
 	act.sa_flags = 0;
+#ifdef SA_RESTART
+	act.sa_flags |= SA_RESTART;
+#endif /* SA_RESTART */
 	sigaction(SIGTSTP, &act, &oact);
 	kill(getpid(), SIGTSTP);
 
@@ -121,8 +167,6 @@ static void cleanup(int sig)
 		act.sa_flags = 0;
 		act.sa_handler = SIG_IGN;
 		if (sigaction(sig, &act, (sigaction_t *)0) == 0) {
-			if (stdscr->_use_keypad)
-				keypad(stdscr, FALSE);
 			endwin();
 		}
 	}
@@ -137,6 +181,9 @@ static int CatchIfDefault(int sig, sigaction_t *act)
 {
 	sigaction_t old_act;
 
+#ifdef SA_RESTART
+	act->sa_flags |= SA_RESTART;
+#endif /* SA_RESTART */
 	if (sigaction(sig, (sigaction_t *)0, &old_act) == 0
 	 && old_act.sa_handler == SIG_DFL) {
 		(void)sigaction(sig, act, (sigaction_t *)0);
@@ -176,6 +223,9 @@ static int ignore;
 		{
 			sigemptyset(&act.sa_mask);
 			act.sa_flags = 0;
+#ifdef SA_RESTART
+			act.sa_flags |= SA_RESTART;
+#endif /* SA_RESTART */
 
 			act.sa_handler = cleanup;
 			CatchIfDefault(SIGINT,  &act);

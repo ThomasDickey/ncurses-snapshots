@@ -46,12 +46,13 @@ int code = ERR;
 
 		while((n-- > 0) && (*str != '\0')) {
 			TR(TRACE_VIRTPUT, ("*str = %x", *str));
-			if (waddch(win, (unsigned char)*str++) == ERR) {
+			if (_nc_waddch_nosync(win, (unsigned char)*str++, FALSE) == ERR) {
 				code = ERR;
 				break;
 			}
 		}
 	}
+	_nc_synchook(win);
 	TR(TRACE_VIRTPUT, ("waddnstr returns %d", code));
 	return code;
 }
@@ -74,7 +75,7 @@ int code = OK;
 	}
 
 	while(n-- > 0) {
-		if (waddch(win, *str++) == ERR) {
+		if (_nc_waddch_nosync(win, *str++, FALSE) == ERR) {
 			code = ERR;
 			break;
 		}
@@ -82,5 +83,6 @@ int code = OK;
 
 	win->_curx = ox;
 	win->_cury = oy;
+	_nc_synchook(win);
 	return code;
 }

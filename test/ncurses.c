@@ -1224,10 +1224,10 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 	    break;
 	}
 
-	if (pxmax > portx) {
+	if (pxmax > portx - 1) {
 
-	    lowend = basex * ((float)portx / (float)pxmax);
-	    highend = (basex + portx) * ((float)portx / (float)pxmax);
+	    lowend = basex * ((float)(portx - 1) / (float)pxmax);
+	    highend = (basex + portx - 1) * ((float)(portx - 1) / (float)pxmax);
 
 	    for (j = 0; j < lowend; j++)
 		mvaddch(porty - 1, j, ACS_HLINE);
@@ -1238,10 +1238,10 @@ static void panner(WINDOW *pad, int iy, int ix, int (*pgetc)(WINDOW *))
 	    for (j = highend + 1; j < portx; j++)
 		mvaddch(porty - 1, j, ACS_HLINE);
         }
-	if (pymax > porty) {
+	if (pymax > porty - 1) {
 
-	    lowend = basey * ((float)porty / (float)pymax);
-	    highend = (basey + porty) * ((float)porty / (float)pymax);
+	    lowend = basey * ((float)(porty - 1) / (float)pymax);
+	    highend = (basey + porty - 1) * ((float)(porty - 1) / (float)pymax);
 
 	    for (i = 0; i < lowend; i++)
 		mvaddch(i, portx - 1, ACS_VLINE);
@@ -1616,7 +1616,7 @@ int main(const int argc, const char *argv[])
 	(void) puts("o = exercise panels library");
 	(void) puts("p = exercise pad features");
 	(void) puts("i = subwindow input test");
-	(void) puts("? = get help");
+	(void) puts("? = repeat this command summary");
 
 	(void) fputs("> ", stdout);
 	(void) fflush(stdout);		/* necessary under SVr4 curses */

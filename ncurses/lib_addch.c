@@ -80,7 +80,17 @@ int wchgat(WINDOW *win, int n, attr_t attr, short color, void *const opts)
     return OK;
 }
 
-inline chtype _nc_render(WINDOW *win, chtype oldch, chtype newch, bool erase)
+/*
+ * Ugly microtweaking alert.  Everything from here to end of module is
+ * likely to be speed-critical -- profiling data sure says it is!
+ * Most of the important screen-painting functions are shells around
+ * waddch().  So we make every effort to reduce function-call overhead
+ * by inlining stuff, even at the cost of making wrapped copies for
+ * export.  Also we supply some internal versions that don't call the
+ * window sync hook, for use by string-put functions.
+ */
+
+static inline chtype render_char(WINDOW *win, chtype oldch, chtype newch)
 /* compute a rendition of the given char correct for the current context */
 {
 	if ((oldch & A_CHARTEXT) == ' ')
@@ -89,25 +99,37 @@ inline chtype _nc_render(WINDOW *win, chtype oldch, chtype newch, bool erase)
 		newch |= (win->_bkgd & A_ATTRIBUTES);
 	TR(TRACE_VIRTPUT, ("bkg = %lx -> ch = %lx", win->_bkgd, newch));
 
-	if (!erase) {
-		TR(TRACE_VIRTPUT, ("win attr = %s", _traceattr(win->_attrs)));
-		newch |= win->_attrs;
-	}
-
 	return(newch);
 }
 
-static inline int
-wladdch(WINDOW *win, const chtype c, const bool literal)
+chtype _nc_render(WINDOW *win, chtype oldch, chtype newch)
+/* make render_char() visible while still allowing us to inline it below */
 {
-int	x, y;
-int	newx;
-chtype	ch = c;
+    return(render_char(win, oldch, newch));
+}
+
+/* actions needed to process a newline within addch_nosync() */
+#define DO_NEWLINE	x = 0; \
+			win->_flags &= ~_NEED_WRAP; \
+			y++; \
+			if (y > win->_regbottom) { \
+				y--; \
+				if (win->_scroll) \
+					scroll(win); \
+			}
+
+static inline
+int waddch_nosync(WINDOW *win, const chtype c, const bool literal)
+/* the workhorse function -- add a character to the given window */
+{
+register chtype	ch = c;
+register int	x, y;
+int		newx;
 
 	x = win->_curx;
 	y = win->_cury;
 
-	if (y > win->_maxy  ||  x > win->_maxx  ||  y < 0  ||  x < 0)
+	if (y > win->_maxy || x > win->_maxx || y < 0 || x < 0)
 	    	return(ERR);
 
 #ifdef A_PCCHARSET
@@ -124,20 +146,27 @@ chtype	ch = c;
 
 	switch (ch&A_CHARTEXT) {
     	case '\t':
-		for (newx = x + (TABSIZE - (x % TABSIZE)); x < newx; x++)
-	    		if (waddch(win, ' ') == ERR)
+		if (win->_flags & _NEED_WRAP)
+			newx = TABSIZE;
+		else
+			newx = min(x + (TABSIZE-(x%TABSIZE)), win->_maxx+1);
+		for (; x < newx; x++)
+	    		if (waddch_nosync(win, ' ' | (ch&A_ATTRIBUTES), TRUE) == ERR)
 				return(ERR);
-		return(OK);
+		goto finish;
     	case '\n':
 		wclrtoeol(win);
-		x = 0;
-		goto do_newline;
+		DO_NEWLINE
+		break;
     	case '\r':
 		x = 0;
+		win->_flags &= ~_NEED_WRAP;
 		break;
     	case '\b':
-		if (--x < 0)
-		    	x = 0;
+		if (win->_flags & _NEED_WRAP)
+			win->_flags &= ~_NEED_WRAP;
+		else if (--x < 0)
+			x = 0;
 		break;
     	default:
 		if (is7bits(ch & A_CHARTEXT) && iscntrl(ch & A_CHARTEXT))
@@ -145,7 +174,13 @@ chtype	ch = c;
 
 		/* FALL THROUGH */
         noctrl:
-		ch = _nc_render(win, win->_line[y].text[x], ch, FALSE);
+		if (win->_flags & _NEED_WRAP) {
+			TR(TRACE_MOVE, ("new char when NEED_WRAP set at %d,%d",y,x));
+			DO_NEWLINE
+		}
+		ch = render_char(win, win->_line[y].text[x], ch);
+		TR(TRACE_VIRTPUT, ("win attr = %s", _traceattr(win->_attrs)));
+		ch |= win->_attrs;
 
 		if (win->_line[y].text[x] != ch) {
 		    	if (win->_line[y].firstchar == _NOCHANGE)
@@ -163,26 +198,48 @@ chtype	ch = c;
 				   _tracechar((unsigned char)(ch & A_CHARTEXT)),
 				   _traceattr((ch & (chtype)A_ATTRIBUTES))));
 		if (x > win->_maxx) {
-		    	x = 0;
-do_newline:
-		    	y++;
-		    	if (y > win->_regbottom) {
-				y--;
-				if (win->_scroll)
-				    	scroll(win);
-		    	}
+			TR(TRACE_MOVE, ("NEED_WRAP set at %d,%d",y,x));
+			win->_flags |= _NEED_WRAP;
+			x--;
 		}
 		break;
 	}
 
+ finish:
 	win->_curx = x;
 	win->_cury = y;
 
-	TR(TRACE_VIRTPUT, ("waddch() is done"));
-
-	_nc_synchook(win);
 	return(OK);
 }
+
+#undef DO_NEWLINE
+
+int _nc_waddch_nosync(WINDOW *win, const chtype c, const bool literal)
+/* export copy of waddch_nosync() so the string-put functions can use it */
+{
+    return(waddch_nosync(win, c, literal));
+}
+
+/*
+ * The versions below call _nc_synhook().  We wanted to avoid this in the
+ * version exported for string puts; they'll call _nc_synchook once at end
+ * of run.
+ */
+
+static inline int
+wladdch(WINDOW *win, const chtype c, const bool literal)
+{
+    if (waddch_nosync(win, c, literal) == ERR)
+	return(ERR);
+    else
+    {
+	_nc_synchook(win);
+	TR(TRACE_VIRTPUT, ("wladdch() is done"));
+	return(OK);
+    }
+}
+
+/* These are actual entry points */
 
 int waddch(WINDOW *win, const chtype ch)
 {

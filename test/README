@@ -2,16 +2,16 @@ The programs in this directory are designed to test your newest toy :-)
 Check the sources for any further details.
 
 blue       - Blue Moon, a nifty solitaire (uses color)
-bs.c       - the game of battleship (uses color)
+bs.c       - the game of Battleships (uses color)
 firework.c - multi-colored fireworks (uses color)
 gdc.c      - Great Digital Clock (uses color)
 hanoi.c    - the game of hanoi (uses color essentially)
-knight.c   - the game of Knight's Tour
+knight.c   - the game of Knight's Tour (uses color)
 ncurses.c  - multi-test program (uses color)
-newdemo.c  -  another test from PDCurses
-rain.c     - rain drops are falling on my head...
+newdemo.c  - another test from PDCurses (uses color)
+rain.c     - rain drops keep falling on my head...
 tclock.c   - analog/digital clock
 testcurs.c - a test from the PDCurses people (uses color)
-worm.c     - worms run all over your screen
+worm.c     - worms run all over your screen (uses color)
 xmas.c     - Xmas greeting card
-tracemunch - Perl script to postprocess trace scripts to make them easier to read
+tracemunch - Perl script to crunch trace scripts to make them easier to read

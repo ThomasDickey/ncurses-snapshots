@@ -28,6 +28,10 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <errno.h>
+#if !HAVE_EXTERN_ERRNO
+extern int errno;
+#endif
 
 #ifdef HAVE_EXTERN_ERRNO
 #include <errno.h>

@@ -1,7 +1,7 @@
 
-                           ANNOUNCING NCURSES 1.9.3
+                           ANNOUNCING NCURSES 1.9.4
                                        
-Overview of ncurses 1.9.3
+Overview of ncurses 1.9.4
 
    The ncurses library is a freeware emulation of System V Release 4.0
    curses. It uses terminfo format, supports color and multiple
@@ -13,11 +13,8 @@ Overview of ncurses 1.9.3
    Unix releases such as BSD/OS, freeBSD and netBSD to switch over to
    ncurses.
    
-   The ncurses code was developed under Linux. It is highly portable to
-   any ANSI/POSIX-conforming unix system using the FSF's autoconf
-   software to generate a configure script. The following platforms are
-   reported to work: 386BSD, SunOS, HP-UX, Ultrix, NeXTSTEP 3.0, System V
-   Release 4, BSDI BSD/OS, Apollo, AIX 3.2.5, Solaris 2.3, NeXTSTEP 3.2..
+   The ncurses code was developed under Linux. It should port easily to
+   any ANSI/POSIX-conforming UNIX.
    
    The distribution includes the library and support utilities, including
    a terminfo compiler tic(1), a decompiler infocmp(1), clear(1),
@@ -61,6 +58,9 @@ Overview of ncurses 1.9.3
        
      * An emulation of the System V Release 4 panels library, supporting
        a stack of windows with backing store, is included.
+       
+     * An emulation of the System V Release 4 menus library, supporting a
+       uniform but flexible interface for menu programming, is included.
        
      * (PC-clone boxes only) Support for access to the IBM PC ROM
        characters through a new highlight, A_PCCHARSET.

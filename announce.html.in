@@ -20,12 +20,8 @@ considered 4.4BSD curses obsolete, and is encouraging the keepers of
 Unix releases such as BSD/OS, freeBSD and netBSD to switch over to
 ncurses. <P>
 
-The ncurses code was developed under Linux.  It is highly portable to any
-ANSI/POSIX-conforming unix system using the FSF's autoconf software to 
-generate a configure script.
-The following platforms are reported to work: 386BSD, SunOS, HP-UX, Ultrix,
-NeXTSTEP 3.0, System V Release 4, BSDI BSD/OS, Apollo, AIX 3.2.5, Solaris
-2.3, NeXTSTEP 3.2..<P>
+The ncurses code was developed under Linux.  It should port easily to
+any ANSI/POSIX-conforming UNIX.<P>
 
 The distribution includes the library and support utilities, including a
 terminfo compiler tic(1), a decompiler infocmp(1), clear(1), tput(1), and a

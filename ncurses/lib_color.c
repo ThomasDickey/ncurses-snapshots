@@ -233,3 +233,32 @@ int pair_content(short pair, short *f, short *b)
 	return OK;
 }
 
+
+void _nc_do_color(int pair, int  (*outc)(int))
+{
+short fg, bg;
+
+	if ( pair == 0 ) {
+		TPUTS_TRACE("orig_pair");
+		tputs(orig_pair, 1, outc);
+	} else {
+		pair_content(pair, &fg, &bg);
+
+		T(("setting colors: pair = %d, fg = %d, bg = %d\n", pair, fg, bg));
+
+		if (set_a_foreground) {
+		    TPUTS_TRACE("set_a_foreground");
+		    tputs(tparm(set_a_foreground, fg), 1, outc);
+		} else {
+		    TPUTS_TRACE("set_foreground");
+		    tputs(tparm(set_foreground, fg), 1, outc);
+		}
+		if (set_a_background) {
+		    TPUTS_TRACE("set_a_background");
+		    tputs(tparm(set_a_background, bg), 1, outc);
+		} else {
+		    TPUTS_TRACE("set_background");
+		    tputs(tparm(set_background, bg), 1, outc);
+		}
+	}
+}

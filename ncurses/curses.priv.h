@@ -92,9 +92,11 @@ extern void _nc_mvcur_wrap(void);
 extern int _nc_mvcur_scrolln(int, int, int, int);
 
 /* elsewhere ... */
+extern int _nc_keypad(bool flag);
 extern WINDOW *_nc_makenew(int, int, int, int);
 extern int _nc_outch(int);
-extern chtype _nc_render(WINDOW *, chtype, chtype, bool);
+extern chtype _nc_render(WINDOW *, chtype, chtype);
+extern int _nc_waddch_nosync(WINDOW *, chtype, bool);
 extern void _nc_scroll_optimize(void);
 extern void _nc_scroll_window(WINDOW *, int, int, int);
 extern int _nc_setupscreen(int, int);
@@ -103,6 +105,7 @@ extern void _nc_outstr(char *str);
 extern void _nc_signal_handler(bool);
 extern void _nc_synchook(WINDOW *win);
 extern int _nc_timed_wait(int fd, int wait, int *timeleft);
+extern void _nc_do_color(int, int (*)(int));
 
 struct try {
         struct try      *child;     /* ptr to child.  NULL if none          */
@@ -192,9 +195,11 @@ struct screen {
 
 #if BROKEN_LINKER
 #define SP _nc_screen()
+extern SCREEN *_nc_screen(void);
 extern int _nc_alloc_screen(void);
 extern void _nc_set_screen(SCREEN *);
 #else
+extern SCREEN *SP;
 #define _nc_alloc_screen() ((SP = (SCREEN *) calloc(sizeof(*SP), 1)) != NULL)
 #define _nc_set_screen(sp) SP = sp
 #endif
@@ -207,8 +212,6 @@ extern void _nc_set_screen(SCREEN *);
  */
 #define screen_lines	SP->_lines
 #define screen_columns	SP->_columns
-
-extern SCREEN *SP;
 
 extern int _slk_init;			/* TRUE if slk_init() called */
 extern int slk_initialize(WINDOW *, int);

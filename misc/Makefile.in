@@ -36,17 +36,10 @@ install: install.data
 # use csplit -k -f tsplit $(srcdir)/terminfo.src '/SPLIT HERE/' '{99}' to split
 # the file (permitting any number of cut marks), but BSD systems don't have it.
 install.data: $(ticdir)
-	-rm -f do.tic
-	echo "TERMINFO=$(ticdir)">do.tic
-	echo "export TERMINFO">>do.tic
-	echo "rm -fr $(ticdir)/[0-9A-Za-z]">>do.tic
-	echo "sed -n <$(srcdir)/terminfo.src -e '1,/SPLIT HERE/w tsplit01' -e '/SPLIT HERE/,"'$$'"w tsplit02' 2>/dev/null">>do.tic
-	echo "for x in tsplit*; do $(bindir)/tic "'$$'"x; done">>do.tic
-	echo "rm tsplit*">>do.tic
-	(sh do.tic)
-	rm do.tic
+	sed <$(srcdir)/dotic.in -e's,@TERMINFO@,$(ticdir),' -e 's,@SRCDIR@,$(srcdir),' -e 's,@BINDIR@,$(bindir),' >dotic.sh
+	sh dotic.sh
 
-# On machines with kots of memory, this is simpler and faster
+# On machines with lots of memory, this is simpler and faster
 install.bigmem: $(ticdir)
 	-rm -f do.tic
 	echo "TERMINFO=$(ticdir)">do.tic

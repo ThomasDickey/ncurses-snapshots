@@ -96,7 +96,7 @@ c c c c
 l l l l.
 \fBVariable	Cap-	I.	Description\fR
 \fBBooleans	name	Code\fR
-.TH
+.\".TH
 \s-1auto_left_margin,	bw	bw	cub1 wraps from column 0 to last 
 			column\s+1
 \s-1auto_right_margin,	am	am	Terminal has automatic margins\s+1
@@ -183,7 +183,7 @@ c c c c
 l l l l.
 \fBVariable	Cap-	I.	Description\fR
 \fBBooleans	name	Code\fR
-.TH
+.\".TH
 \s-1get_mouse,	getm	Gm	Curses should get button events\s+1
 .TE
 
@@ -198,7 +198,7 @@ c c c c
 l l l l.
 \fBVariable	Cap-	I.	Description\fR
 \fBBooleans	name	Code\fR
-.TH
+.\".TH
 \s-1bit_image_type,	bitype	Yp	Type of bit-image device\s+1
 \s-1buttons,	btns	BT	Number of mouse buttons\s+1
 \s-1max_attributes,	ma	ma	Max combined attributes terminal can handle\s+1
@@ -579,7 +579,7 @@ c c c c
 l l l l.
 \fBVariable	Cap-	I.	Description\fR
 \fBBooleans	name	Code\fR
-.TH
+.\".TH
 \s-1label_format,	fln	Lf	??\s+1
 \s-1set_clock,	sclk	SC	Set time-of-day clock\s+1
 \s-1display_clock,	dclk	DK	Display time-of-day clock\s+1
@@ -614,12 +614,12 @@ l l l l.
 
 .TS
 center;
-c c c c
-c c c c
-l l l l.
-\fBVariable	Cap-	I.	Description\fR
-\fBBooleans	name	Code\fR
-.TH
+c c c c c
+c c c c c
+l l l l l.
+\fBVariable	Cap-	Cap-	I.	Description\fR
+\fBBooleans	name	type	Code\fR
+.\".TH
 \s-1enter_horizontal_hl_mode,	ehhlm	str	Xh	Enter horizontal highlight mode\s+1
 \s-1enter_left_hl_mode,	elhlm	str	Xl	Enter left highlight mode\s+1
 \s-1enter_low_hl_mode,	elohlm	str	Xo	Enter low highlight mode\s+1
@@ -1522,9 +1522,9 @@ center;
 c c c c
 c c c c
 l l l l.
-.TH
-Glyph	ACS	Ascii	VT100
-Name	Name	Default	Name
+.\".TH
+\fBGlyph	ACS	Ascii	VT100
+Name	Name	Default	Name\fR
 upper left corner	ACS_ULCORNER	+	l
 lower left corner	ACS_LLCORNER	+	m
 upper right corner	ACS_URCORNER	+	k
@@ -1835,7 +1835,7 @@ c c c c
 l l l l.
 Nonstd	Std	From	Terminfo
 name	name		capability
-.TH
+.\".TH
 BO	mr	AT&T	enter_reverse_mode
 CI	vi	AT&T	cursor_invisible
 CV	ve	AT&T	cursor_normal

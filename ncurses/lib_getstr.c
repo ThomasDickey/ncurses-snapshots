@@ -93,6 +93,7 @@ int ch;
 	}
 
     	win->_curx = 0;
+	win->_flags &= ~_NEED_WRAP;
     	if (win->_cury < win->_maxy)
        		win->_cury++;
 	wrefresh(win);

@@ -22,9 +22,6 @@ exec_prefix	= @exec_prefix@
 libdir		= $(exec_prefix)/lib
 includedir	= @includedir@
 
-# We'd put terminfo in /usr/share/terminfo, but that's not the convention...
-ticdir		= @datadir@
-
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
 
@@ -34,7 +31,7 @@ CC		= @CC@
 CFLAGS		= @CFLAGS@
 
 CPPFLAGS	= @INCLUDES@ \
-		  -DHAVE_CONFIG_H -DTERMINFO=\"$(ticdir)\"
+		  -DHAVE_CONFIG_H 
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 
@@ -55,18 +52,18 @@ RANLIB		= @RANLIB@
 LIBRARIES	= @LIBS_TO_MAKE@
 
 ################################################################################
-all ::	../include/menu.h $(LIBRARIES)
+all ::	../include/menu.h ../include/eti.h $(LIBRARIES)
 
 install :: install.libs
 
 install.libs: $(LIBRARIES) $(includedir) $(libdir)
 	$(INSTALL_DATA) $(srcdir)/menu.h $(includedir)/menu.h
+	$(INSTALL_DATA) $(srcdir)/eti.h $(includedir)/eti.h
 	@for lib in $(LIBRARIES); do \
 		echo installing $${lib} as $(libdir)/$${lib}; \
 		$(INSTALL_DATA) $${lib} $(libdir)/$${lib}; \
 		$(RANLIB) $(libdir)/$${lib}; \
 	done
-	@echo "Make sure you delete any old header files!"
 
 $(includedir) \
 $(libdir) :
@@ -77,6 +74,9 @@ $(libdir) :
 ../include/menu.h : $(srcdir)/menu.h
 	-rm -f $@
 	cp $(srcdir)/menu.h $@
+../include/eti.h : $(srcdir)/eti.h
+	-rm -f $@
+	cp $(srcdir)/eti.h $@
 
 tags:
 	ctags *.[ch]
@@ -85,7 +85,7 @@ TAGS:
 	etags *.[ch]
 
 clean ::
-	-rm -f tags TAGS *~ ../include/menu.h
+	-rm -f tags TAGS *~ ../include/menu.h ../include/eti.h
 
 distclean: clean
 	-rm -f Makefile

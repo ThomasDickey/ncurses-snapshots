@@ -47,7 +47,7 @@ int	minx;
 		    	maxx = sp;
 		    	if (minx == _NOCHANGE)
 					minx = sp - start;
-			*sp = _nc_render(win, *sp, BLANK, TRUE);
+			*sp = _nc_render(win, *sp, BLANK);
 	    	}
 
 	    	if (minx != _NOCHANGE) {
@@ -60,6 +60,7 @@ int	minx;
 	    	}
 	}
 	win->_curx = win->_cury = 0;
+	win->_flags &= ~_NEED_WRAP;
 	_nc_synchook(win);
 	return OK;
 }

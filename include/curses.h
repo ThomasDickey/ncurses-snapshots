@@ -24,7 +24,7 @@
 #define __NCURSES_H
 #define CURSES 1
 #define CURSES_H 1
-#define NCURSES_VERSION "1.9.3"
+#define NCURSES_VERSION "1.9.4"
 
 #include <stdio.h>   
 #include <unctrl.h>
@@ -44,8 +44,8 @@
 
 #undef TRUE
 #undef FALSE
-#define CXX_BUILTIN_BOOL 0
-#define CXX_TYPE_OF_BOOL unsigned
+#define CXX_BUILTIN_BOOL 1
+#define CXX_TYPE_OF_BOOL char
 
 #if defined(__cplusplus) && CXX_BUILTIN_BOOL
 #define TRUE    ((CXX_TYPE_OF_BOOL)true)
@@ -168,6 +168,7 @@ extern 	chtype acs_map[];
 #define _SCROLLWIN      0x08	/* bottom edge is at screen bottom? */
 #define _ISPAD	        0x10	/* is this window a pad? */
 #define _HASMOVED       0x20	/* has cursor moved since last refresh? */
+#define _NEED_WRAP	0x40	/* cursor wrap pending */
 
 /*
  * this value is used in the firstchar and lastchar fields to mark 
@@ -406,6 +407,7 @@ extern int werase(WINDOW *);
 extern int wgetch(WINDOW *);
 extern int wgetnstr(WINDOW *,char *,int maxlen);
 extern int whline(WINDOW *,chtype,int);
+extern int winchnstr(WINDOW*, chtype*, int);
 extern int winsch(WINDOW *,chtype);
 extern int winsdelln(WINDOW *,int);
 extern int winnstr(WINDOW *win,char *str,int n);
@@ -778,26 +780,5 @@ extern int slk_attroff(attr_t);
 #define KEY_SUSPEND	0627		/* Suspend */
 #define KEY_UNDO	0630		/* Undo */
 #define KEY_MAX		0777		/* Maximum key value */
-
-/*
- * SVr4 ETI error values.  The curses library itself does not use these, 
- * but its forms and menus extension libraries do.  We park them here
- * in order to avoid having a separate eti.h or etierrno.h file.
- */
-#define	E_OK			(0)
-#define	E_SYSTEM_ERROR	 	(-1)
-#define	E_BAD_ARGUMENT	 	(-2)
-#define	E_POSTED	 	(-3)
-#define	E_CONNECTED	 	(-4)
-#define	E_BAD_STATE	 	(-5)
-#define	E_NO_ROOM	 	(-6)
-#define	E_NOT_POSTED		(-7)
-#define	E_UNKNOWN_COMMAND	(-8)
-#define	E_NO_MATCH		(-9)
-#define	E_NOT_SELECTABLE	(-10)
-#define	E_NOT_CONNECTED	        (-11)
-#define	E_REQUEST_DENIED	(-12)
-#define	E_INVALID_FIELD	        (-13)
-#define	E_CURRENT		(-14)
 
 #endif /* __NCURSES_H */

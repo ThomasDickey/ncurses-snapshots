@@ -38,13 +38,16 @@ int	y, x, minx;
 
 	y = win->_cury;
 	x = win->_curx;
+	if (y > win->_maxy
+	 || x > win->_maxx)
+	 	return ERR;
 
 	end = &win->_line[y].text[win->_maxx];
 	minx = _NOCHANGE;
 	maxx = &win->_line[y].text[x];
 
 	for (ptr = maxx; ptr <= end; ptr++) {
-	    int blank = _nc_render(win, win->_line[y].text[x], BLANK, TRUE);
+	    int blank = _nc_render(win, win->_line[y].text[x], BLANK);
 
 	    if (*ptr != blank) {
 			maxx = ptr;

@@ -57,35 +57,6 @@
 #include <string.h>
 #include "term.h"
 
-static void do_color(int pair, int  (*outc)(int))
-{
-short fg, bg;
-
-	if ( pair == 0 ) {
-		TPUTS_TRACE("orig_pair");
-		tputs(orig_pair, 1, outc);
-	} else {
-		pair_content(pair, &fg, &bg);
-
-		T(("setting colors: pair = %d, fg = %d, bg = %d\n", pair, fg, bg));
-
-		if (set_a_foreground) {
-		    TPUTS_TRACE("set_a_foreground");
-		    tputs(tparm(set_a_foreground, fg), 1, outc);
-		} else {
-		    TPUTS_TRACE("set_foreground");
-		    tputs(tparm(set_foreground, fg), 1, outc);
-		}
-		if (set_a_background) {
-		    TPUTS_TRACE("set_a_background");
-		    tputs(tparm(set_a_background, bg), 1, outc);
-		} else {
-		    TPUTS_TRACE("set_background");
-		    tputs(tparm(set_background, bg), 1, outc);
-		}
-	}
-}
-
 #define previous_attr SP->_current_attr
 
 int vidputs(attr_t newmode, int  (*outc)(int))
@@ -285,8 +256,8 @@ chtype	turn_on  = (newmode & ~previous_attr) & (chtype)(~A_COLOR);
 	int current_pair = PAIR_NUMBER(previous_attr);
 
    		T(("old pair = %d -- new pair = %d", current_pair, pair));
-   		if (pair != current_pair || turn_off) {
-			do_color(pair, outc);
+   		if (pair != current_pair || (turn_off && pair)) {
+			_nc_do_color(pair, outc);
 		}
    	}
 

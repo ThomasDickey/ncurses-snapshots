@@ -755,6 +755,8 @@ static void DelChar(int count)
 
 void _nc_outstr(char *str)
 {
-    (void) fputs(str, stdout);
-    (void) fflush(stdout);
+    FILE *ofp = SP ? SP->_ofp : stdout;
+
+    (void) fputs(str, ofp);
+    (void) fflush(ofp);
 }

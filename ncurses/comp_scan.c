@@ -178,7 +178,11 @@ long		token_start;
 			 * 3. If the last character before the newline is
 			 *    a ',', it's a terminfo entry.
 			 *
-			 * 4. Anything else is an error.
+			 * 4. If the last character before the newline is
+			 *    none of the above, but the first line does
+			 *    contain a comma, it's a one-line terminfo entry.
+			 *
+			 * 5. Anything else is an error.
 			 *
 			 */
 			while ((ch = next_char()) != '\n' && ch != EOF)
@@ -196,15 +200,20 @@ long		token_start;
 			    reset_to(separator = ':');
 			    --ptr;
 			}
-			else if (ptr[0] == ':')
+			else if (ptr[0] == ':')	/* one-line termcap */
 			{
 			    _nc_syntax = SYN_TERMCAP;
 			    reset_to(separator = ':');
 			}
-			else if (ptr[0] == ',')
+			else if (ptr[0] == ',')	/* normal terminfo */
 			{
 			    _nc_syntax = SYN_TERMINFO;
 			    separator = ',';
+			}
+			else if (strchr(buffer, ','))	/* one-line terminfo */
+			{
+			    _nc_syntax = SYN_TERMINFO;
+			    reset_to(separator = ',');
 			}
 			else
 			    _nc_err_abort("Can't determine the entry format");
