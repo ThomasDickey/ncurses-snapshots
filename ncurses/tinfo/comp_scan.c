@@ -50,7 +50,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.54 2001/02/04 01:09:26 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.55 2001/03/03 21:20:41 Todd.C.Miller Exp $");
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -143,7 +143,7 @@ eat_escaped_newline(int ch)
  */
 
 NCURSES_EXPORT(int)
-_nc_get_token(void)
+_nc_get_token(bool silent)
 {
     static const char terminfo_punct[] = "@%&*!#";
     long number;
@@ -211,8 +211,9 @@ _nc_get_token(void)
 	    && !(ch == '.' && _nc_disable_period)
 #endif
 	    && !strchr(terminfo_punct, (char) ch)) {
-	    _nc_warning("Illegal character (expected alphanumeric or %s) - %s",
-			terminfo_punct, unctrl((chtype) ch));
+	    if (!silent)
+		_nc_warning("Illegal character (expected alphanumeric or %s) - %s",
+			    terminfo_punct, unctrl((chtype) ch));
 	    _nc_panic_mode(separator);
 	    goto start_token;
 	}
@@ -286,7 +287,7 @@ _nc_get_token(void)
 	     * field for syntax-checking purposes.
 	     */
 	    desc = strrchr(buffer, '|');
-	    if (desc) {
+	    if (!silent && desc) {
 		if (*desc == '\0')
 		    _nc_warning("empty longname field");
 		else if (strchr(desc, ' ') == (char *) NULL)
@@ -302,13 +303,16 @@ _nc_get_token(void)
 	     */
 	    for (ptr = buffer; ptr < desc; ptr++) {
 		if (isspace(CharOf(*ptr))) {
-		    _nc_warning("whitespace in name or alias field");
+		    if (!silent)
+			_nc_warning("whitespace in name or alias field");
 		    break;
 		} else if (*ptr == '/') {
-		    _nc_warning("slashes aren't allowed in names or aliases");
+		    if (!silent)
+			_nc_warning("slashes aren't allowed in names or aliases");
 		    break;
 		} else if (strchr("$[]!*?", *ptr)) {
-		    _nc_warning("dubious character `%c' in name or alias field", *ptr);
+		    if (!silent)
+			_nc_warning("dubious character `%c' in name or alias field", *ptr);
 		    break;
 		}
 	    }
@@ -341,7 +345,7 @@ _nc_get_token(void)
 		type = BOOLEAN;
 		break;
 	    case '@':
-		if ((ch = next_char()) != separator)
+		if ((ch = next_char()) != separator && !silent)
 		    _nc_warning("Missing separator after `%s', have %s",
 				buffer, unctrl((chtype) ch));
 		_nc_curr_token.tk_name = buffer;
@@ -357,10 +361,12 @@ _nc_get_token(void)
 		}
 		numbuf[found] = '\0';
 		number = strtol(numbuf, &numchk, 0);
-		if (numchk == numbuf)
-		    _nc_warning("no value given for `%s'", buffer);
-		if ((*numchk != '\0') || (ch != separator))
-		    _nc_warning("Missing separator");
+		if (!silent) {
+		    if (numchk == numbuf)
+			_nc_warning("no value given for `%s'", buffer);
+		    if ((*numchk != '\0') || (ch != separator))
+			_nc_warning("Missing separator");
+		}
 		_nc_curr_token.tk_name = buffer;
 		_nc_curr_token.tk_valnumber = number;
 		type = NUMBER;
@@ -368,7 +374,7 @@ _nc_get_token(void)
 
 	    case '=':
 		ch = _nc_trans_string(ptr, buffer + sizeof(buffer));
-		if (ch != separator)
+		if (!silent && ch != separator)
 		    _nc_warning("Missing separator");
 		_nc_curr_token.tk_name = buffer;
 		_nc_curr_token.tk_valstring = ptr;
@@ -381,7 +387,8 @@ _nc_get_token(void)
 	    default:
 		/* just to get rid of the compiler warning */
 		type = UNDEF;
-		_nc_warning("Illegal character - %s", unctrl((chtype) ch));
+		if (!silent)
+		    _nc_warning("Illegal character - %s", unctrl((chtype) ch));
 	    }
 	}			/* end else (first_column == FALSE) */
     }				/* end else (ch != EOF) */
@@ -433,7 +440,7 @@ _nc_get_token(void)
 #endif
 
     if (dot_flag == TRUE)	/* if commented out, use the next one */
-	type = _nc_get_token();
+	type = _nc_get_token(silent);
 
     DEBUG(3, ("token: `%s', class %d",
 	      _nc_curr_token.tk_name != 0 ? _nc_curr_token.tk_name :

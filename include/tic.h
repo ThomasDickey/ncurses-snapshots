@@ -32,7 +32,7 @@
  ****************************************************************************/
 
 /*
- * $Id: tic.h,v 1.36 2000/12/10 02:03:28 tom Exp $
+ * $Id: tic.h,v 1.37 2001/03/03 21:13:09 Todd.C.Miller Exp $
  *	tic.h - Global variables and structures for the terminfo
  *			compiler.
  */
@@ -247,7 +247,7 @@ extern NCURSES_EXPORT(struct name_table_entry const *) _nc_find_type_entry
 	(const char *, int, const struct name_table_entry *);
 
 /* comp_scan.c: lexical analysis */
-extern NCURSES_EXPORT(int)  _nc_get_token (void);
+extern NCURSES_EXPORT(int)  _nc_get_token (bool);
 extern NCURSES_EXPORT(void) _nc_panic_mode (char);
 extern NCURSES_EXPORT(void) _nc_push_token (int);
 extern NCURSES_EXPORT(void) _nc_reset_input (FILE *, char *);
