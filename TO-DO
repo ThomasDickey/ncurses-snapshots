@@ -37,7 +37,7 @@ Known Problems:
   capability to the mouse-report prefix.  As a result, the kmous sequence is
   eaten even when mouse recognition is disabled.  This could be fixed if 
   necessary with special code that pokes the kmous value back into the
-  input fifo when KEY_MOUSE is seen and the mousemask is zero, but that would
+  input FIFO when KEY_MOUSE is seen and the mousemask is zero, but that would
   be kind of ugly.
 
 * The window classes defined in the c++ subdirectory need documentation.
@@ -71,6 +71,13 @@ Portability (or lack thereof):
 
 * Under Ultrix, configure craps out (Ultrix sh is lame).  Run it under ksh.
 
+* We've not tested the configure script with cross-compilers.  The autoconf
+  tests are supposed to be able to support this (please report bugs).  You will
+  have to configure and build in two steps.  The first step must create the
+  automatically-generated sources (e.g., comp_captab.c) on your host machine. 
+  Then, run "make mostlyclean", remove config.* from the top-level directory
+  and configure for the cross-compiler.
+
 Untested features:
 
 * The rep optimization in lib_doupdate.c is not yet thoroughly tested.
@@ -97,7 +104,7 @@ status in this implementation:
 
 	Page 1 (1.1.2) New Features discussion of internationalization.
 	Page 12 (2.4): Definition of cchar_t, wchar_t.
-	Page 16 (3.3.2): Introduction of multi-column characts.
+	Page 16 (3.3.2): Introduction of multi-column characters.
 	Page 17-18 (3.3.5): Description of non-spacing characters.
 	Page 19-21 (3.4.2): Basic character operations.
 	Page 34 (addnstr): These should now call underlying wide-

@@ -18,15 +18,21 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.39 1997/01/18 23:07:40 tom Exp $ */
+/* $Id: curses.h.in,v 1.40 1997/02/08 21:39:07 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
 #define CURSES 1
 #define CURSES_H 1
 
+/* These are defined only in curses.h, and are used for conditional compiles */
+#define NCURSES_VERSION_MAJOR @NCURSES_MAJOR@
+#define NCURSES_VERSION_MINOR @NCURSES_MINOR@
+#define NCURSES_VERSION_PATCH @NCURSES_PATCH@
+
+/* This is defined in more than one ncurses header, for identification */
 #undef  NCURSES_VERSION
-#define NCURSES_VERSION "@VERSION@"
+#define NCURSES_VERSION "@NCURSES_MAJOR@.@NCURSES_MINOR@"
 
 #ifndef _UNCTRL_H
 typedef unsigned long  chtype;
@@ -50,8 +56,8 @@ typedef unsigned long  chtype;
 
 #undef TRUE
 #undef FALSE
-#define CXX_BUILTIN_BOOL 1
-#define CXX_TYPE_OF_BOOL char
+#define CXX_BUILTIN_BOOL @nc_cv_builtin_bool@
+#define CXX_TYPE_OF_BOOL @nc_cv_type_of_bool@
 
 #if defined(__cplusplus) && CXX_BUILTIN_BOOL
 #define TRUE    ((CXX_TYPE_OF_BOOL)true)
@@ -1246,6 +1252,7 @@ extern void trace(const unsigned int);
 #define TRACE_VIRTPUT	0x0040	/* trace virtual character puts */
 #define TRACE_IEVENT	0x0080	/* trace low-level input processing */
 #define TRACE_BITS	0x0100	/* trace state of TTY control bits */
+#define TRACE_ICALLS	0x0200	/* trace internal/nested calls */
 #define TRACE_MAXIMUM	0xffff	/* maximum trace level */
 
 #if defined(TRACE) || defined(NCURSES_TEST)

@@ -52,7 +52,12 @@ extern int errno;
 
 #include <nc_alloc.h>
 
-#define MODULE_ID(id) /* nothing */
+#ifdef USE_RCS_IDS
+#define MODULE_ID(id) static const char Ident[] = id;
+#else
+#define MODULE_ID(id) /*nothing*/
+#endif
+
 
 /* Maximum regular 8-bit character code */
 #define MAX_REGULAR_CHARACTER (0xff)

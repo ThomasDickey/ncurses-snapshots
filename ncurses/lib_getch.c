@@ -28,7 +28,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.21 1997/02/02 01:38:08 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.22 1997/02/09 00:49:41 tom Exp $")
 
 #define head	SP->_fifohead
 #define tail	SP->_fifotail
@@ -310,7 +310,7 @@ int	ch;
 		beep();
 	}
 
-	T(("wgetch returning : 0x%x = %s",
+	T(("wgetch returning : %#x = %s",
 	   ch,
 	   (ch > KEY_MIN) ? keyname(ch) : unctrl(ch)));
 

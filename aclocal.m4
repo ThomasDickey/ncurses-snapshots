@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.43 1997/02/01 21:09:03 tom Exp $
+dnl $Id: aclocal.m4,v 1.44 1997/02/08 22:36:19 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -63,11 +63,11 @@ else	AC_MSG_RESULT(no)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl Test for the size of 'bool' in the configured C++ compiler.
+dnl Test for the size of 'bool' in the configured C++ compiler (e.g., a type).
 AC_DEFUN([NC_BOOL_SIZE],
 [
 AC_MSG_CHECKING([for size of c++ bool])
-AC_CACHE_VAL(nc_cv_sizeof_bool,[
+AC_CACHE_VAL(nc_cv_type_of_bool,[
 	rm -f nc_test.out
 	AC_TRY_RUN([
 #include <stdio.h>
@@ -85,12 +85,12 @@ main()
 	exit(0);
 }
 		],
-		[nc_cv_sizeof_bool=`cat nc_test.out`],
-		[nc_cv_sizeof_bool=unsigned],
-		[nc_cv_sizeof_bool=unknown])
+		[nc_cv_type_of_bool=`cat nc_test.out`],
+		[nc_cv_type_of_bool=unsigned],
+		[nc_cv_type_of_bool=unknown])
 	])
 	rm -f nc_test.out
-AC_MSG_RESULT($nc_cv_sizeof_bool)
+AC_MSG_RESULT($nc_cv_type_of_bool)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Determine the default configuration into which we'll install ncurses.  This
@@ -1160,14 +1160,21 @@ dnl Get the version-number for use in shared-library naming, etc.
 AC_DEFUN([NC_VERSION],
 [
 changequote(,)dnl
-nc_cv_rel_version=`egrep 'VERSION[ 	]*=' $srcdir/dist.mk | sed -e 's/^[^0-9]*//'`
-nc_cv_abi_version=`egrep 'SHARED_ABI[ 	]*=' $srcdir/dist.mk | sed -e 's/^[^0-9]*//'`
+NCURSES_MAJOR="`egrep '^NCURSES_MAJOR[ 	]*=' $srcdir/dist.mk | sed -e 's/^[^0-9]*//'`"
+NCURSES_MINOR="`egrep '^NCURSES_MINOR[ 	]*=' $srcdir/dist.mk | sed -e 's/^[^0-9]*//'`"
+NCURSES_PATCH="`egrep '^NCURSES_PATCH[ 	]*=' $srcdir/dist.mk | sed -e 's/^[^0-9]*//'`"
 changequote([,])dnl
+nc_cv_abi_version=${NCURSES_MAJOR}
+nc_cv_rel_version=${NCURSES_MAJOR}.${NCURSES_MINOR}
 dnl Show the computed version, for logging
 AC_MSG_RESULT(Configuring NCURSES $nc_cv_rel_version ABI $nc_cv_abi_version (`date`))
+dnl We need these values in the generated headers
+AC_SUBST(NCURSES_MAJOR)
+AC_SUBST(NCURSES_MINOR)
+AC_SUBST(NCURSES_PATCH)
 dnl We need these values in the generated makefiles
 AC_SUBST(nc_cv_rel_version)
 AC_SUBST(nc_cv_abi_version)
 AC_SUBST(nc_cv_builtin_bool)
-AC_SUBST(nc_cv_sizeof_bool)
+AC_SUBST(nc_cv_type_of_bool)
 ])dnl

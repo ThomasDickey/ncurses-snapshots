@@ -30,16 +30,27 @@
  * before calling unctrl() again.
  *
  */
+
+/* $Id: unctrl.h.in,v 1.4 1997/02/08 21:53:35 tom Exp $ */
+
 #ifndef _UNCTRL_H
 #define _UNCTRL_H	1
 
 #undef  NCURSES_VERSION
-#define NCURSES_VERSION "@VERSION@"
+#define NCURSES_VERSION "@NCURSES_MAJOR@.@NCURSES_MINOR@"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #ifndef __NCURSES_H
 typedef unsigned long  chtype;
 #endif
 
 extern char *unctrl(chtype);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _UNCTRL_H */

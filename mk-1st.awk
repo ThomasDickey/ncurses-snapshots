@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.17 1997/02/01 22:13:56 tom Exp $
+# $Id: mk-1st.awk,v 1.18 1997/02/09 01:33:37 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -122,6 +122,7 @@ END	{
 				printf "\t- ldconfig\n"
 				if ( rmSoLocs == "yes" ) {
 					print  ""
+					print  "mostlyclean \\"
 					print  "clean ::"
 					printf "\t@-rm -f so_locations\n"
 				}
@@ -147,6 +148,7 @@ END	{
 				printf "\t$(RANLIB) $(INSTALL_PREFIX)$(libdir)/%s\n", lib_name
 			}
 			print ""
+			print "mostlyclean \\"
 			print "clean ::"
 			printf "\trm -f ../lib/%s\n", lib_name
 			printf "\trm -f $(%s_OBJS)\n", MODEL
@@ -155,6 +157,7 @@ END	{
 		else if ( found == 2 )
 		{
 			print ""
+			print "mostlyclean \\"
 			print "clean ::"
 			printf "\trm -f $(%s_OBJS)\n", MODEL
 		}

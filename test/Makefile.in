@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.20 1996/12/29 23:38:06 tom Exp $
+# $Id: Makefile.in,v 1.22 1997/02/09 00:12:26 tom Exp $
 ################################################################################
-# Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
+# Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
 #                                                                              #
 # Permission to use, copy, modify, and distribute this software and its        #
@@ -22,6 +22,7 @@
 
 SHELL		= /bin/sh
 
+MODEL		= ../@DFT_OBJ_SUBDIR@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
@@ -31,15 +32,16 @@ includedir	= @includedir@
 CC		= @CC@
 
 CFLAGS		= @CFLAGS@
+CPPFLAGS	=  -I../test -I$(srcdir) @CPPFLAGS@ -DHAVE_CONFIG_H
 
-CFLAGS_NORMAL	=
-CFLAGS_DEBUG	= @CC_G_OPT@ -DTRACE
-CFLAGS_PROFILE	= -pg
-CFLAGS_SHARED	= @CC_SHARED_OPTS@
+CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 
-CPPFLAGS	= @CPPFLAGS@ -DHAVE_CONFIG_H -I$(srcdir)
+CFLAGS_NORMAL	= $(CCFLAGS)
+CFLAGS_DEBUG	= $(CCFLAGS) @CC_G_OPT@ -DTRACE
+CFLAGS_PROFILE	= $(CCFLAGS) -pg
+CFLAGS_SHARED	= $(CCFLAGS) @CC_SHARED_OPTS@
 
-CCFLAGS		= $(CFLAGS) $(CPPFLAGS) $(CFLAGS_@DFT_UPR_MODEL@)
+CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
 LOCAL_LIBS	= @TEST_DEPS@
 
@@ -68,47 +70,44 @@ TESTS = \
 	worm \
 	xmas 
 
-.c.o:
-	$(CC) -c $(CCFLAGS) $<
-
 all: $(TESTS) 
 
-blue: $(srcdir)/blue.c $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-bs: $(srcdir)/bs.c $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-firework: $(srcdir)/firework.c $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-gdc: $(srcdir)/gdc.c $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-hanoi: $(srcdir)/hanoi.c $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-hashtest: $(srcdir)/hashtest.c $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-knight: $(srcdir)/knight.c $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-lrtest: $(srcdir)/lrtest.c $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-ncurses: $(srcdir)/ncurses.c $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-newdemo: $(srcdir)/newdemo.c $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-rain: $(srcdir)/rain.c $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-tclock: $(srcdir)/tclock.c $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -lm -o $@
-testcurs: $(srcdir)/testcurs.c $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-view: $(srcdir)/view.c $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-worm: $(srcdir)/worm.c $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
-xmas: $(srcdir)/xmas.c $(LOCAL_LIBS)
-	@ECHO_LINK@ $(LINK) $(CCFLAGS) $(srcdir)/$@.c $(LD_FLAGS) -o $@
+blue: $(MODEL)/blue.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(MODEL)/$@.o $(LD_FLAGS) -o $@
+bs: $(MODEL)/bs.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(MODEL)/$@.o $(LD_FLAGS) -o $@
+firework: $(MODEL)/firework.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(MODEL)/$@.o $(LD_FLAGS) -o $@
+gdc: $(MODEL)/gdc.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(MODEL)/$@.o $(LD_FLAGS) -o $@
+hanoi: $(MODEL)/hanoi.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(MODEL)/$@.o $(LD_FLAGS) -o $@
+hashtest: $(MODEL)/hashtest.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(MODEL)/$@.o $(LD_FLAGS) -o $@
+knight: $(MODEL)/knight.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(MODEL)/$@.o $(LD_FLAGS) -o $@
+lrtest: $(MODEL)/lrtest.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(MODEL)/$@.o $(LD_FLAGS) -o $@
+ncurses: $(MODEL)/ncurses.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(MODEL)/$@.o $(LD_FLAGS) -o $@
+newdemo: $(MODEL)/newdemo.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(MODEL)/$@.o $(LD_FLAGS) -o $@
+rain: $(MODEL)/rain.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(MODEL)/$@.o $(LD_FLAGS) -o $@
+tclock: $(MODEL)/tclock.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(MODEL)/$@.o $(LD_FLAGS) -lm -o $@
+testcurs: $(MODEL)/testcurs.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(MODEL)/$@.o $(LD_FLAGS) -o $@
+view: $(MODEL)/view.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(MODEL)/$@.o $(LD_FLAGS) -o $@
+worm: $(MODEL)/worm.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(MODEL)/$@.o $(LD_FLAGS) -o $@
+xmas: $(MODEL)/xmas.o $(LOCAL_LIBS)
+	@ECHO_LINK@ $(LINK) $(CFLAGS_DEFAULT) $(MODEL)/$@.o $(LD_FLAGS) -o $@
 
 install:
 
-clean:
+clean ::
 	-rm -rf *.o trace screendump t $(TESTS)
 
 distclean :: clean

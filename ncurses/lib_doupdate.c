@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.52 1997/02/02 02:08:18 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.53 1997/02/09 00:38:50 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -161,7 +161,7 @@ static inline void GoTo(int const row, int const col)
 	if ((oldattr & A_ALTCHARSET)
 	    || (oldattr && !move_standout_mode))
 	{
-		TR(TRACE_CHARPUT, ("turning off (%lx) %s before move",
+		TR(TRACE_CHARPUT, ("turning off (%#lx) %s before move",
 		   oldattr, _traceattr(oldattr)));
 		vidattr(A_NORMAL);
 	}
@@ -968,7 +968,7 @@ bool	attrchanged = FALSE;
 		firstChar++;
 	}
 
-	T(("first char at %d is %lx", firstChar, newLine[firstChar]));
+	T(("first char at %d is %#lx", firstChar, newLine[firstChar]));
 	if (firstChar > screen_columns)
 		return;
 

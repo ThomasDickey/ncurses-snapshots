@@ -1,4 +1,4 @@
-/* $Id: panel.priv.h,v 1.2 1996/12/21 15:31:02 tom Exp $ */
+/* $Id: panel.priv.h,v 1.3 1997/02/08 21:57:07 tom Exp $ */
 
 #ifndef _PANEL_PRIV_H
 #define _PANEL_PRIV_H
@@ -40,7 +40,11 @@ typedef struct panelcons
 #  define dBug(x)
 #endif
 
-#define MODULE_ID(s)
+#ifdef USE_RCS_IDS
+#define MODULE_ID(id) static const char Ident[] = id;
+#else
+#define MODULE_ID(id) /*nothing*/
+#endif
 
 #define P_TOUCH  (0)
 #define P_UPDATE (1)

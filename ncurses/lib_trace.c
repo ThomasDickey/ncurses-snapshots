@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.15 1997/02/02 00:04:27 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.16 1997/02/09 00:45:37 tom Exp $")
 
 #include <ctype.h>
 #if HAVE_FCNTL_H
@@ -41,7 +41,7 @@ const char *_nc_tputs_trace = "";
 long _nc_outchars;
 int _nc_optimize_enable = OPTIMIZE_ALL;
 
-static int	tracefd = 2;	/* default to writing to stderr */
+static FILE *	tracefp;	/* default to writing to stderr */
 
 void trace(const unsigned int tracelevel)
 {
@@ -50,10 +50,19 @@ static bool	been_here = FALSE;
 	if (! been_here && tracelevel) {
 		been_here = TRUE;
 
-		if ((tracefd = creat("trace", 0644)) < 0) {
+		if ((tracefp = fopen("trace", "w")) == 0) {
 			perror("curses: Can't open 'trace' file: ");
 			exit(EXIT_FAILURE);
 		}
+		/* Try to set line-buffered mode, or (failing that) unbuffered,
+		 * so that the trace-output gets flushed automatically at the
+		 * end of each line.  This is useful in case the program dies. 
+		 */
+#if HAVE_SETVBUF	/* ANSI */
+		(void) setvbuf(tracefp, (char *)0, _IOLBF, 0);
+#elif HAVE_SETBUF	/* POSIX */
+		(void) setbuffer(tracefp, (char *)0);
+#endif
 		_tracef("TRACING NCURSES version %s", NCURSES_VERSION);
 	}
 
@@ -112,15 +121,47 @@ char *tp = vbuf;
 void
 _tracef(const char *fmt, ...)
 {
+static const char Called[] = T_CALLED("");
+static const char Return[] = T_RETURN("");
+static int level;
 va_list ap;
-char buffer[BUFSIZ];
+bool	before = FALSE;
+bool	after = FALSE;
+int	doit = _nc_tracing;
 
-	if (_nc_tracing) {
-		va_start(ap, fmt);
-		vsprintf(buffer, fmt, ap);
-		write(tracefd, buffer, strlen(buffer));
-		write(tracefd, "\n", 1);
+	if (strlen(fmt) > sizeof(Called)) {
+		if (!strncmp(fmt, Called, sizeof(Called)-1)) {
+			before = TRUE;
+			level++;
+		} else if (!strncmp(fmt, Return, sizeof(Return)-1)) {
+			after = TRUE;
+		}
+		if (before || after) {
+			if ((level <= 1)
+			 || (doit & TRACE_ICALLS) != 0)
+				doit &= TRACE_CALLS;
+			else
+				doit = 0;
+		}
 	}
+
+	if (doit != 0) {
+		if (tracefp == 0)
+			tracefp = stderr;
+		if (before || after) {
+			int n;
+			for (n = 1; n < level; n++)
+				fputs("+ ", tracefp);
+		}
+		va_start(ap, fmt);
+		vfprintf(tracefp, fmt, ap);
+		fputc('\n', tracefp);
+		va_end(ap);
+		fflush(tracefp);
+	}
+
+	if (after && level)
+		level--;
 }
 
 /* Trace 'int' return-values */
