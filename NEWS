@@ -1,10 +1,30 @@
--- $Id: NEWS,v 1.589 2000/09/10 01:31:50 tom Exp $
+-- $Id: NEWS,v 1.590 2000/09/16 22:57:14 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000916
+	+ update xterm terminfo entries to match XFree86 xterm patch #146 -TD
+	+ add Matrix Orbital terminfo entries (from Eric Z Ayers
+	  <eric@ale.org>).
+	+ add special case to lib_tparm.c to allow 'screen' program to use a
+	  termcap-style parameter "%." to tgoto() for switching character sets.
+	+ use LN_S substitution in run_tic.in, to work on OS/2 EMX which has
+	  no symbolic links.
+	+ updated notes in README.emx regarding autoconf patches.
+	+ replace a lookup table in lib_vidattr.c used to decode no_color_video
+	  with a logic expression (suggested by Philippe Blain).
+	+ add a/A toggle to ncurses.c 'b' test, which clears/sets alternate
+	  character set attribute from the displayed text.
+	+ correct inequality in parameter analysis of rewritten lib_tparm.c
+	  which had the effect of ignoring p9 in set_attributes (sgr), breaking
+	  alternate character set (reported by Piotr Majka <charvel@link.pl>).
+	+ correct ifdef'ing for GCC_PRINTF, GCC_SCANF which would not compile
+	  with Sun WorkShop compilers since these tokens were empty (cf: 
+	  20000902, reported by Albert Chin-A-Young).
 
 20000909
 	+ correct an uninitialized parameter to open_tempfile() in tic.c which

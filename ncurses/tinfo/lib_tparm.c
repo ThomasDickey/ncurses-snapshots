@@ -42,7 +42,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.42 2000/09/10 00:37:36 tom Exp $");
+MODULE_ID("$Id: lib_tparm.c,v 1.43 2000/09/16 21:24:24 tom Exp $")
 
 /*
  *	char *
@@ -114,6 +114,8 @@ typedef struct {
 
 static stack_frame stack[STACKSIZE];
 static int stack_ptr;
+static bool is_tgoto = FALSE;
+
 #ifdef TRACE
 static const char *tname;
 #endif /* TRACE */
@@ -233,6 +235,7 @@ spop(void)
 static inline const char *
 parse_format(const char *s, char *format, int *len)
 {
+    char *base = format;
     bool done = FALSE;
     bool allowminus = FALSE;
     bool dot = FALSE;
@@ -253,8 +256,10 @@ parse_format(const char *s, char *format, int *len)
 	    done = TRUE;
 	    break;
 	case '.':
-	    *format++ = *s++;
-	    dot = TRUE;
+	    if (!is_tgoto || (format != base)) {
+		*format++ = *s++;
+		dot = TRUE;
+	    }
 	    break;
 	case '#':
 	    *format++ = *s++;
@@ -360,7 +365,8 @@ tparam_internal(const char *string, va_list ap)
 	    case 'o':		/* FALLTHRU */
 	    case 'x':		/* FALLTHRU */
 	    case 'X':		/* FALLTHRU */
-	    case 'c':
+	    case 'c':		/* FALLTHRU */
+	    case '.':		/* tgoto special-case */
 		number++;
 		lastpop = -1;
 		break;
@@ -375,7 +381,7 @@ tparam_internal(const char *string, va_list ap)
 	    case 'p':
 		cp++;
 		i = (*cp - '0');
-		if (i >= 0 && i < 9) {
+		if (i >= 0 && i <= 9) {
 		    lastpop = i;
 		    if (lastpop > popcount)
 			popcount = lastpop;
@@ -487,7 +493,8 @@ tparam_internal(const char *string, va_list ap)
 	    case 'o':		/* FALLTHRU */
 	    case 'x':		/* FALLTHRU */
 	    case 'X':		/* FALLTHRU */
-	    case 'c':
+	    case 'c':		/* FALLTHRU */
+	    case '.':		/* tgoto special-case */
 		save_number(format, npop(), len);
 		break;
 
@@ -711,4 +718,28 @@ tparm(NCURSES_CONST char *string,...)
     result = tparam_internal(string, ap);
     va_end(ap);
     return result;
+}
+
+/*
+ * Retained solely for upward compatibility.  Note the intentional reversing of
+ * the last two arguments.
+ *
+ * The 'is_tgoto' flag provides a workaround for a configuration mismatch on
+ * FreeBSD, which installs 'screen' with termcap, which in turn compiles-in a
+ * hardcoded escape sequence in termcap format for switching character sets,
+ * i.e., "\033(%.".  The "%." is analogous to terminfo's "%c", and for the given
+ * purpose is identical.  Normally tgoto() would be called using strings that
+ * come from the terminfo database, but there is no defined capability for this
+ * particular string.
+ */
+char *
+tgoto(const char *string, int x, int y)
+{
+    char *result;
+
+    T((T_CALLED("tgoto(%s,%d,%d)"), string, x, y));
+    is_tgoto = TRUE;
+    result = tparm((NCURSES_CONST char *) string, y, x);
+    is_tgoto = FALSE;
+    returnPtr(result);
 }

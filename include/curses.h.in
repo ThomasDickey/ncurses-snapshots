@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.95 2000/09/02 19:47:42 Pavel.Roskin Exp $ */
+/* $Id: curses.h.in,v 1.96 2000/09/16 16:11:01 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -357,13 +357,13 @@ extern int wresize (WINDOW *, int, int);
  * We cannot define these in ncurses_cfg.h, since they require parameters to be
  * passed (that's non-portable).
  */
-#if	defined(GCC_PRINTF) && GCC_PRINTF
+#ifdef GCC_PRINTF
 #define GCC_PRINTFLIKE(fmt,var) __attribute__((format(printf,fmt,var)))
 #else
 #define GCC_PRINTFLIKE(fmt,var) /*nothing*/
 #endif
 
-#if	defined(GCC_SCANF) && GCC_SCANF
+#ifdef GCC_SCANF
 #define GCC_SCANFLIKE(fmt,var)  __attribute__((format(scanf,fmt,var)))
 #else
 #define GCC_SCANFLIKE(fmt,var)  /*nothing*/
