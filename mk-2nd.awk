@@ -1,6 +1,6 @@
-# $Id: mk-2nd.awk,v 1.15 2003/11/01 22:42:50 tom Exp $
+# $Id: mk-2nd.awk,v 1.17 2004/02/15 01:31:16 tom Exp $
 ##############################################################################
-# Copyright (c) 1998-2000,2003 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -40,6 +40,8 @@
 #	MODEL (uppercase version of "model"; toupper is not portable)
 #	echo (yes iff we will show the $(CC) lines)
 #	subset ("none", "base", "base+ext_funcs" or "termlib")
+#	crenames ("yes" or "no", flag to control whether -c & -o options are used)
+#	cxxrenames ("yes" or "no", flag to control whether -c & -o options are used)
 #
 # Fields in src/modules:
 #	$1 = module name
@@ -83,9 +85,11 @@ BEGIN	{
 				if ( $2 == "c++" ) {
 					compile="CXX"
 					suffix=".cc"
+					use_c_o=cxxrenames
 				} else {
 					compile="CC"
 					suffix=".c"
+					use_c_o=crenames
 				}
 				printf "../%s/%s$o :\t%s/%s%s", model, $1, $3, $1, suffix
 				for (n = 4; n <= NF; n++) printf " \\\n\t\t\t%s", $n
@@ -96,13 +100,22 @@ BEGIN	{
 					atsign="@"
 					printf "\t@echo 'compiling %s (%s)'\n", $1, model
 				}
+				printf "\t%s", atsign;
+				if ( use_c_o != "yes" ) {
+					printf "cd ../%s; ", model;
+				}
+				printf "$(LIBTOOL_COMPILE) $(%s) $(CFLAGS_%s) -c ", compile, MODEL
 				if ( $3 == "." || srcdir == "." ) {
 					dir = $3 "/"
 					sub("^\\$\\(srcdir\\)/","",dir);
 					sub("^\\./","",dir);
-					printf "\t%scd ../%s; $(LIBTOOL_COMPILE) $(%s) $(CFLAGS_%s) -c ../%s/%s%s%s", atsign, model, compile, MODEL, name, dir, $1, suffix
-				} else
-					printf "\t%scd ../%s; $(LIBTOOL_COMPILE) $(%s) $(CFLAGS_%s) -c %s/%s%s", atsign, model, compile, MODEL, $3, $1, suffix
+					printf "../%s/%s%s%s", name, dir, $1, suffix
+				} else {
+					printf "%s/%s%s", $3, $1, suffix
+				}
+				if ( use_c_o == "yes" ) {
+					printf " -o ../%s/%s$o", model, $1
+				}
 			} else {
 				printf "%s", $1
 				for (n = 2; n <= NF; n++) printf " %s", $n

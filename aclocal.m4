@@ -26,9 +26,9 @@ dnl sale, use or other dealings in this Software without prior written       *
 dnl authorization.                                                           *
 dnl***************************************************************************
 dnl
-dnl Author: Thomas E. Dickey 1995-2003
+dnl Author: Thomas E. Dickey 1995-2004
 dnl
-dnl $Id: aclocal.m4,v 1.333 2004/01/30 20:59:56 tom Exp $
+dnl $Id: aclocal.m4,v 1.336 2004/02/15 01:32:10 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1138,7 +1138,7 @@ ifelse($1,,,[$1=$LIB_PREFIX])
 	AC_SUBST(LIB_PREFIX)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_LIB_RULES version: 30 updated: 2004/01/10 15:50:50
+dnl CF_LIB_RULES version: 33 updated: 2004/02/14 20:31:27
 dnl ------------
 dnl Append definitions and rules for the given models to the subdirectory
 dnl Makefiles, and the recursion rule for the top-level Makefile.  If the
@@ -1199,7 +1199,7 @@ do
 			cf_subsets="$LIB_SUBSETS"
 			cf_termlib=`echo "$cf_subsets" |sed -e 's/ .*$//'`
 			if test "$cf_termlib" != "$cf_subsets" ; then
-				cf_item=`echo $LIBS_TO_MAKE |sed -e s%$LIB_NAME%$TINFO_NAME%g`
+				cf_item=`echo $LIBS_TO_MAKE |sed -e s%${LIB_NAME}${LIB_SUFFIX}%${TINFO_LIB_SUFFIX}%g`
 				LIBS_TO_MAKE="$cf_item $LIBS_TO_MAKE"
 			fi
 		else
@@ -1226,6 +1226,22 @@ do
 			CF_LIB_SUFFIX($cf_item,cf_suffix)
 			CF_OBJ_SUBDIR($cf_item,cf_subdir)
 
+			# Test for case where we build libinfo with a different name.
+			cf_libname=$cf_dir
+			if test $cf_dir = ncurses ; then
+				case $cf_subset in
+				*base*)
+					;;
+				termlib*)
+					cf_libname=$TINFO_LIB_SUFFIX
+					if test -n "${DFT_ARG_SUFFIX}" ; then
+						# undo $LIB_SUFFIX add-on in CF_LIB_SUFFIX
+						cf_suffix=`echo $cf_suffix |sed -e "s%^${LIB_SUFFIX}%%"`
+					fi
+				;;
+				esac
+			fi
+
 			# These dependencies really are for development, not
 			# builds, but they are useful in porting, too.
 			cf_depend="../include/ncurses_cfg.h"
@@ -1242,7 +1258,7 @@ do
 			fi
 
 			$AWK -f $srcdir/mk-1st.awk \
-				name=$cf_dir \
+				name=$cf_libname \
 				traces=$LIB_TRACING \
 				MODEL=$CF_ITEM \
 				model=$cf_subdir \
@@ -1271,6 +1287,8 @@ do
 				subset=$cf_subset \
 				srcdir=$srcdir \
 				echo=$WITH_ECHO \
+				crenames=$cf_cv_prog_CC_c_o \
+				cxxrenames=$cf_cv_prog_CXX_c_o \
 				$srcdir/$cf_dir/modules >>$cf_dir/Makefile
 			cf_subdirs="$cf_subdirs $cf_subdir"
 			done
@@ -2462,6 +2480,45 @@ make an error
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl CF_PROG_CC_C_O version: 1 updated: 2004/02/14 15:00:43
+dnl --------------
+dnl Analogous to AC_PROG_CC_C_O, but more useful: tests only $CC, ensures that
+dnl the output file can be renamed, and allows for a shell variable that can
+dnl be used later.  The parameter is either CC or CXX.  The result is the
+dnl cache variable:
+dnl	$cf_cv_prog_CC_c_o
+dnl	$cf_cv_prog_CXX_c_o
+AC_DEFUN([CF_PROG_CC_C_O],
+[AC_REQUIRE([AC_PROG_CC])dnl
+AC_MSG_CHECKING([whether [$]$1 understands -c and -o together])
+AC_CACHE_VAL(cf_cv_prog_$1_c_o,
+[
+cat > conftest.$ac_ext <<CF_EOF
+#include <stdio.h>
+int main()
+{
+	return 0;
+}
+CF_EOF
+# We do the test twice because some compilers refuse to overwrite an
+# existing .o file with -o, though they will create one.
+ac_try='[$]$1 -c conftest.$ac_ext -o conftest2.$ac_objext >&AC_FD_CC'
+if AC_TRY_EVAL(ac_try) &&
+  test -f conftest2.$ac_objext && AC_TRY_EVAL(ac_try);
+then
+  eval cf_cv_prog_$1_c_o=yes
+else
+  eval cf_cv_prog_$1_c_o=no
+fi
+rm -f conftest*
+])dnl
+if test $cf_cv_prog_$1_c_o = yes; then
+  AC_MSG_RESULT([yes])
+else
+  AC_MSG_RESULT([no])
+fi
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl CF_PROG_EXT version: 10 updated: 2004/01/03 19:28:18
 dnl -----------
 dnl Compute $PROG_EXT, used for non-Unix ports, such as OS/2 EMX.
@@ -2904,7 +2961,7 @@ if test "$cf_cv_sizechange" != no ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SRC_MODULES version: 15 updated: 2004/01/10 16:05:16
+dnl CF_SRC_MODULES version: 16 updated: 2004/02/14 20:18:37
 dnl --------------
 dnl For each parameter, test if the source-directory exists, and if it contains
 dnl a 'modules' file.  If so, add to the list $cf_cv_src_modules which we'll
@@ -2925,7 +2982,7 @@ else
 fi
 
 # dependencies and linker-arguments for utility-programs
-test "$with_termlib" != yes && PROG_ARGS="$TEST_ARGS"
+test "$with_termlib" = no && PROG_ARGS="$TEST_ARGS"
 
 cf_cv_src_modules=
 for cf_dir in $1
@@ -3356,33 +3413,39 @@ $1_ABI=$cf_cv_abi_version
 ])
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_DBMALLOC version: 2 updated: 2002/12/29 21:11:45
+dnl CF_WITH_DBMALLOC version: 3 updated: 2004/01/19 13:06:01
 dnl ----------------
-dnl Configure-option for dbmalloc
+dnl Configure-option for dbmalloc.  The optional parameter is used to override
+dnl the updating of $LIBS, e.g., to avoid conflict with subsequent tests.
 AC_DEFUN([CF_WITH_DBMALLOC],[
 AC_MSG_CHECKING(if you want to link with dbmalloc for testing)
 AC_ARG_WITH(dbmalloc,
-	[  --with-dbmalloc         test: use Conor Cahill's dbmalloc library],
+	[  --with-dbmalloc         use Conor Cahill's dbmalloc library],
 	[with_dbmalloc=$withval],
 	[with_dbmalloc=no])
 AC_MSG_RESULT($with_dbmalloc)
 if test $with_dbmalloc = yes ; then
-	AC_CHECK_LIB(dbmalloc,debug_malloc)
+	AC_CHECK_HEADER(dbmalloc.h,
+		[AC_CHECK_LIB(dbmalloc,debug_malloc
+			ifelse($1,,[],[,$1]))])
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_DMALLOC version: 2 updated: 2002/12/29 21:11:45
+dnl CF_WITH_DMALLOC version: 3 updated: 2004/01/19 13:06:01
 dnl ---------------
-dnl Configure-option for dmalloc
+dnl Configure-option for dmalloc.  The optional parameter is used to override
+dnl the updating of $LIBS, e.g., to avoid conflict with subsequent tests.
 AC_DEFUN([CF_WITH_DMALLOC],[
 AC_MSG_CHECKING(if you want to link with dmalloc for testing)
 AC_ARG_WITH(dmalloc,
-	[  --with-dmalloc          test: use Gray Watson's dmalloc library],
+	[  --with-dmalloc          use Gray Watson's dmalloc library],
 	[with_dmalloc=$withval],
 	[with_dmalloc=no])
 AC_MSG_RESULT($with_dmalloc)
 if test $with_dmalloc = yes ; then
-	AC_CHECK_LIB(dmalloc,dmalloc_debug)
+	AC_CHECK_HEADER(dmalloc.h,
+		[AC_CHECK_LIB(dmalloc,dmalloc_debug
+			ifelse($1,,[],[,$1]))])
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
