@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2004
 dnl
-dnl $Id: aclocal.m4,v 1.340 2004/08/07 20:19:00 tom Exp $
+dnl $Id: aclocal.m4,v 1.341 2004/08/21 23:03:33 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -1052,10 +1052,43 @@ fi
 AC_SUBST(EXTRA_CFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_GNAT_TRY_RUN version: 2 updated: 1998/07/19 00:25:18
+dnl CF_GNAT_TRY_LINK version: 1 updated: 2004/08/21 19:02:08
+dnl ----------------
+dnl Verify that a test program compiles/links with GNAT.
+dnl $cf_ada_make is set to the program that compiles/links
+dnl $ADAFLAGS may be set to the GNAT flags.
+dnl
+dnl $1 is the text of the spec
+dnl $2 is the text of the body
+dnl $3 is the shell command to execute if successful
+dnl $4 is the shell command to execute if not successful
+AC_DEFUN([CF_GNAT_TRY_LINK],
+[
+rm -f conftest*
+cat >>conftest.ads <<CF_EOF
+$1
+CF_EOF
+cat >>conftest.adb <<CF_EOF
+$2
+CF_EOF
+if ( $cf_ada_make $ADAFLAGS conftest 1>&AC_FD_CC 2>&1 ) ; then
+ifelse($3,,      :,[      $3])
+ifelse($4,,,[else
+   $4])
+fi
+rm -f conftest*
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl CF_GNAT_TRY_RUN version: 3 updated: 2004/08/21 19:02:08
 dnl ---------------
 dnl Verify that a test program compiles and runs with GNAT
 dnl $cf_ada_make is set to the program that compiles/links
+dnl $ADAFLAGS may be set to the GNAT flags.
+dnl
+dnl $1 is the text of the spec
+dnl $2 is the text of the body
+dnl $3 is the shell command to execute if successful
+dnl $4 is the shell command to execute if not successful
 AC_DEFUN([CF_GNAT_TRY_RUN],
 [
 rm -f conftest*
@@ -1065,7 +1098,7 @@ CF_EOF
 cat >>conftest.adb <<CF_EOF
 $2
 CF_EOF
-if ( $cf_ada_make conftest 1>&AC_FD_CC 2>&1 ) ; then
+if ( $cf_ada_make $ADAFLAGS conftest 1>&AC_FD_CC 2>&1 ) ; then
    if ( ./conftest 1>&AC_FD_CC 2>&1 ) ; then
 ifelse($3,,      :,[      $3])
 ifelse($4,,,[   else

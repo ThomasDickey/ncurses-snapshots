@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.831 2004/08/14 22:43:58 tom Exp $
+-- $Id: NEWS,v 1.833 2004/08/22 00:59:23 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040821
+	+ fixes to build with Ada95 binding with gnat 3.4 (all warnings are
+	  fatal, and gnat does not follow the guidelines for pragmas).
+	  However that did find a coding error in Assume_Default_Colors().
+	+ modify several terminfo entries to ensure xterm mouse and cursor
+	  visibility are reset in rs2 string:  hurd, putty, gnome,
+	  konsole-base, mlterm, Eterm, screen (Debian #265784, #55637).  The
+	  xterm entries are left alone - old ones for compatibility, and the
+	  new ones do not require this change. -TD
 
 20040814
 	+ fake a SIGWINCH in newterm() to accommodate buggy terminal emulators
@@ -6254,7 +6264,8 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ added has_key()
 	+ added 't' to ncurses.c test.
 	+ moved delay_output() to lib_tputs.c
-	+ removed tparam().
+	+ removed tparam() (was added in 1.9.9, but conflicts with emacs and
+	  is not part of X/Open Curses).
 	+ misc cursor & optimization fixes.
 
 960504	- snapshot
