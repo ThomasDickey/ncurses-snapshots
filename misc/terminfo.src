@@ -10,7 +10,7 @@
 #
 #------------------------------------------------------------------------------
 #	Version 10.2.1
-#	$Date: 2003/09/27 22:11:33 $
+#	$Date: 2003/10/04 23:16:06 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -4387,6 +4387,172 @@ cygwinDBG|Debug Version for Cygwin,
 	sgr0=\E[0;10m, smacs=\E[11m, smir=\E[4h, smso=\E[7m, 
 	smul=\E[4m, tbc=\E[2g, u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?6c, 
 	u9=\E[c, vpa=\E[%i%p1%dd, 
+
+# Key definitions:
+# The encodings for unshifted arrow keys, F1-F12, Home, Insert, etc.  match the
+# encodings used by other x86 environments.  All others are invented for DJGPP.
+# Oddly enough, while several combinations of modifiers are tabulated, there is
+# none for shifted cursor keys.
+#
+#	F1			\E[[A
+#	F2			\E[[B
+#	F3			\E[[C
+#	F4			\E[[D
+#	F5			\E[[E
+#	F6			\E[17~
+#	F7			\E[18~
+#	F8			\E[19~
+#	F9			\E[20~
+#	F10			\E[21~
+#	F11			\E[23~
+#	F12			\E[24~
+#
+#	Delete			\E[3~
+#	Down Arrow		\E[B
+#	End			\E[4~
+#	Home			\E[1~
+#	Insert			\E[2~
+#	Left Arrow		\E[D
+#	Page Down		\E[6~
+#	Page Up			\E[5~
+#	Right Arrow		\E[C
+#	Up Arrow		\E[A
+#
+#	Shift-F1		\E[25~
+#	Shift-F2		\E[26~
+#	Shift-F3		\E[27~
+#	Shift-F4		\E[28~
+#	Shift-F5		\E[29~
+#	Shift-F6		\E[30~
+#	Shift-F7		\E[31~
+#	Shift-F8		\E[32~
+#	Shift-F9		\E[33~
+#	Shift-F10		\E[34~
+#	Shift-F11		\E[35~
+#	Shift-F12		\E[36~
+#
+#	Ctrl-F1			\E[47~
+#	Ctrl-F2			\E[48~
+#	Ctrl-F3			\E[49~
+#	Ctrl-F4			\E[50~
+#	Ctrl-F5			\E[51~
+#	Ctrl-F6			\E[52~
+#	Ctrl-F7			\E[53~
+#	Ctrl-F8			\E[54~
+#	Ctrl-F9			\E[55~
+#	Ctrl-F10		\E[56~
+#	Ctrl-F11		\E[57~
+#	Ctrl-F12		\E[58~
+#
+#	Ctrl-Delete		\E[43~
+#	Ctrl-Down Arrow		\E[38~
+#	Ctrl-End		\E[44~
+#	Ctrl-Home		\E[41~
+#	Ctrl-Insert		\E[42~
+#	Ctrl-Left Arrow		\E[39~
+#	Ctrl-Page Down		\E[46~
+#	Ctrl-Page Up		\E[45~
+#	Ctrl-Right Arrow	\E[40~
+#	Ctrl-Up Arrow		\E[37~
+#
+#	Alt-F1			\E[59~
+#	Alt-F2			\E[60~
+#	Alt-F3			\E[61~
+#	Alt-F4			\E[62~
+#	Alt-F5			\E[63~
+#	Alt-F6			\E[64~
+#	Alt-F7			\E[65~
+#	Alt-F8			\E[66~
+#	Alt-F9			\E[67~
+#	Alt-F10			\E[68~
+#	Alt-F11			\E[79~
+#	Alt-F12			\E[80~
+#
+#	Alt-Delete		\E[65~
+#	Alt-Down Arrow		\E[60~
+#	Alt-End			\E[66~
+#	Alt-Home		\E[41~
+#	Alt-Insert		\E[64~
+#	Alt-Left Arrow		\E[61~
+#	Alt-Page Down		\E[68~
+#	Alt-Page Up		\E[67~
+#	Alt-Right Arrow		\E[62~
+#	Alt-Up Arrow		\E[59~
+#
+# Also:
+#	Alt-A			\E[82~
+#	Alt-B			\E[82~
+#	Alt-C			\E[83~
+#	Alt-D			\E[84~
+#	Alt-E			\E[85~
+#	Alt-F			\E[86~
+#	Alt-G			\E[87~
+#	Alt-H			\E[88~
+#	Alt-I			\E[89~
+#	Alt-J			\E[90~
+#	Alt-K			\E[91~
+#	Alt-L			\E[92~
+#	Alt-M			\E[93~
+#	Alt-N			\E[94~
+#	Alt-O			\E[95~
+#	Alt-P			\E[96~
+#	Alt-Q			\E[97~
+#	Alt-R			\E[98~
+#	Alt-S			\E[99~
+#	Alt-T			\E[100~
+#	Alt-U			\E[101~
+#	Alt-V			\E[102~
+#	Alt-W			\E[103~
+#	Alt-X			\E[104~
+#	Alt-Y			\E[105~
+#	Alt-Z			\E[106~
+djgpp|ansi emulation for DJGPP alpha, 
+	am, bce, msgr, xhp, xon, xt, 
+	colors#8, it#8, pairs#64, 
+	acsc=+\020\,\021-\030.^Y0\333`\004a\261f\370g\361h\260j\331k\277l\332m\300n\305o~p\304q\304r\304s_t\303u\264v\301w\302x\263y\363z\362{\343|\330}\234~\376, 
+	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, civis=\E[1v, 
+	clear=\E[H\E[J, cnorm=\E[v, cr=^M, cub=\E[%p1%dD, cub1=^H, 
+	cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	cvvis=\E[2v, dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, 
+	dl1=\E[M, ech=\E[%p1%dX, ed=\E[J, el=\E[K, el1=\E[1K, 
+	home=\E[H, hpa=\E[%i%p1%dG, ht=^I, ich=\E[%p1%d@, 
+	ich1=\E[@, il=\E[%p1%dL, il1=\E[L, ind=\E[S, 
+	indn=\E[%p1%dS, invis=\E[8m, kbs=^H, kcub1=\E[D, 
+	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\E[3~, 
+	kend=\E[4~, kf1=\E[[A, kf10=\E[21~, kf11=\E[23~, 
+	kf12=\E[24~, kf2=\E[[B, kf3=\E[[C, kf4=\E[[D, kf5=\E[[E, 
+	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
+	khome=\E[1~, kich1=\E[2~, knp=\E[6~, kpp=\E[5~, nel=^M^J, 
+	op=\E[37;40m, rev=\E[7m, ri=\E[T, rin=\E[%p1%dT, rmso=\E[m, 
+	setab=\E[4%p1%dm, setaf=\E[3%p1%dm, 
+	sgr=\E[0%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%e;25%;%?%p6%t;1%;%?%p7%t;8%;m, 
+	sgr0=\E[m, smso=\E[7m, smul=\E[4m, vpa=\E[%i%p1%dd, 
+
+djgpp203|Entry for DJGPP 2.03, 
+	OTbs, am, 
+	cols#80, it#8, lines#25, 
+	bel=^G, cr=^M, cub1=^H, cud1=^J, ht=^I, ind=^J, kbs=^H, kcub1=^H, 
+	kcud1=^J, nel=^M^J, 
+
+djgpp204|Entry for DJGPP 2.04, 
+	OTbs, am, AX, 
+	colors#8, cols#80, it#8, lines#25, ncv#3, pairs#64, 
+	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, civis=\E[1v, 
+	clear=\E[H\E[2J, cnorm=\E[v, cr=^M, cub=\E[%p1%dD, 
+	cub1=\E[D, cud=\E[%p1%dB, cud1=\E[B, cuf=\E[%p1%dC, 
+	cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, 
+	cuu1=\E[A, cvvis=\E[2v, dch=\E[%p1%dP, dch1=\E[P, 
+	dl=\E[%p1%dM, dl1=\E[M, ech=\E[%p1%dX, ed=\E[J, el=\E[K, 
+	home=\E[H, ht=^I, ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, 
+	il1=\E[L, ind=\E[S, indn=\E[%p1%dS, invis=\E[8m, kbs=^H, 
+	kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, 
+	kdch1=\E[3~, kf0=\E[21~, kf1=\E[[A, kf10=\E[21~, kf2=\E[[B, 
+	kf3=\E[[C, kf4=\E[[D, kf5=\E[[E, kf6=\E[17~, kf7=\E[18~, 
+	kf8=\E[19~, kf9=\E[20~, khome=\E[1~, kich1=\E[2~, 
+	kll=\E[4~, knp=\E[6~, kpp=\E[5~, nel=^M^J, rev=\E[7m, 
+	ri=\E[T, rin=\E[%p1%dT, rmso=\E[m, setab=\E[4%p1%dm, 
+	setaf=\E[3%p1%dm, sgr0=\E[m, smso=\E[7m, smul=\E[4m, 
 
 # This entry fits the Windows NT console when the _POSIX_TERM environment
 # variable is set to 'on'.  While the Windows NT POSIX console is seldom used,
@@ -19804,6 +19970,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	  (cygwinDBG): ditto.
 # 2003-09-27
 #	* update gnome terminal entries -TD
+# 2003-10-04
+#	* add entries for djgpp 2.03 and 2.04 -TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
