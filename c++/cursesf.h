@@ -31,7 +31,7 @@
  *   Author: Juergen Pfeifer <Juergen.Pfeifer@T-Online.de> 1997             *
  ****************************************************************************/
 
-// $Id: cursesf.h,v 1.7 1998/05/23 21:31:32 tom Exp $
+// $Id: cursesf.h,v 1.8 1999/03/18 02:29:04 tom Exp $
 
 #ifndef _CURSESF_H
 #define _CURSESF_H
@@ -255,7 +255,7 @@ public:
 
   // Return the index of the field in the field array of a form
   // or -1 if the field is not associated to a form
-  inline int index() const {
+  inline int (index)() const {
     return ::field_index(field);
   }
 

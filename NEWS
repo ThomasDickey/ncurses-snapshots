@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.442 1999/03/16 11:48:54 tom Exp $
+-- $Id: NEWS,v 1.443 1999/03/18 02:40:52 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990318	pre-release
+	+ parenthesize and undef 'index' symbol in c++ binding and demo, to
+	  accommodate its definition on NeXT (reported by Francisco A. Tomei
+	  Torres).
+	+ add sigismember() to base/sigaction.c compatibility to link on NeXT
+	  (reported by Francisco A. Tomei Torres).
+	+ further refinements to inequality in hashmap.c to cover a case with
+	  ^U in nvi (patch by Alexander Lukyanov).
 
 990316	pre-release
 	+ add fallback definition for getcwd, to link on NeXT.

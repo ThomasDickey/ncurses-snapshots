@@ -6,7 +6,7 @@
  *   Demo code for NCursesMenu and NCursesForm written by
  *   Juergen Pfeifer <Juergen.Pfeifer@T-Online.de>
  *
- * $Id: demo.cc,v 1.14 1998/11/29 01:03:27 Rick.Ohnemus Exp $
+ * $Id: demo.cc,v 1.15 1999/03/18 02:35:31 tom Exp $
  */
 
 #include "cursesapp.h"
@@ -18,6 +18,8 @@
 #endif
 
 extern "C" unsigned int sleep(unsigned int);
+
+#undef index	// needed for NeXT
 
 //
 // -------------------------------------------------------------------------

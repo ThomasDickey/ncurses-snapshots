@@ -40,7 +40,7 @@
 #include <signal.h>
 #include <SigAction.h>
 
-MODULE_ID("$Id: sigaction.c,v 1.7 1998/02/11 12:13:53 tom Exp $")
+MODULE_ID("$Id: sigaction.c,v 1.8 1999/03/18 02:12:04 tom Exp $")
 
 int
 sigaction (int sig, sigaction_t * sigact, sigaction_t * osigact)
@@ -57,7 +57,7 @@ sigemptyset (sigset_t * mask)
 
 int
 sigprocmask (int mode, sigset_t * mask, sigset_t * omask)
-   {
+{
    sigset_t current = sigsetmask(0);
 
    if (omask) *omask = current;
@@ -71,7 +71,7 @@ sigprocmask (int mode, sigset_t * mask, sigset_t * omask)
 
    sigsetmask(current);
    return 0;
-   }
+}
 
 int
 sigsuspend (sigset_t * mask)
@@ -91,6 +91,12 @@ sigaddset (sigset_t * mask, int sig)
 {
   *mask |= sigmask (sig);
   return 0;
+}
+
+int
+sigismember (sigset_t * mask, int sig)
+{
+  return (*mask & sigmask (sig)) != 0;
 }
 #else
 extern void _nc_sigaction(void);	/* quiet's gcc warning */
