@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright (c) 1998,1999,2001,2002 Free Software Foundation, Inc.         *
+.\" Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.63 2002/08/10 21:56:07 tom Exp $
+.\" $Id: ncurses.3x,v 1.64 2003/03/08 23:11:23 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
@@ -322,6 +322,7 @@ inwstr/\fBcurs_inwstr\fR(3X)
 is_linetouched/\fBcurs_touch\fR(3X)
 is_wintouched/\fBcurs_touch\fR(3X)
 isendwin/\fBcurs_initscr\fR(3X)
+key_defined/\fBkey_defined\fR(3X)*
 key_name/\fBcurs_util\fR(3X)
 keybound/\fBkeybound\fR(3X)*
 keyname/\fBcurs_util\fR(3X)
@@ -848,6 +849,7 @@ The \fBncurses\fR library extends the fixed set of function key capabilities
 of terminals by allowing the application designer to define additional
 key sequences at runtime.
 See the \fBdefine_key\fR(3X)
+\fBkey_defined\fR(3X),
 and \fBkeyok\fR(3X) manual pages for details.
 
 The \fBncurses\fR library can exploit the capabilities of terminals which

@@ -1,4 +1,4 @@
-# $Id: modules,v 1.93 2002/12/14 23:22:37 tom Exp $
+# $Id: modules,v 1.94 2003/03/08 20:36:00 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -144,6 +144,7 @@ lib_wunctrl	lib		$(wide)
 @ ext_funcs
 define_key	lib		$(base)
 expanded	lib		.
+key_defined	lib		$(base)
 keybound	lib		$(base)
 keyok		lib		$(base)
 lib_dft_fgbg	lib		$(base)		../include/term.h

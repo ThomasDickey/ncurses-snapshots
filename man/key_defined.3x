@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1999-2002,2003 Free Software Foundation, Inc.              *
+.\" Copyright (c) 2003 Free Software Foundation, Inc.                        *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,34 +26,30 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" Author: Thomas E. Dickey <dickey@clark.net> 1999
+.\" Author: Thomas E. Dickey 2003
 .\"
-.\" $Id: keybound.3x,v 1.4 2003/03/08 19:08:33 tom Exp $
-.TH keyok 3X ""
+.\" $Id: key_defined.3x,v 1.1 2003/03/08 22:01:08 tom Exp $
+.TH key_defined 3X ""
 .SH NAME
-\fBkeybound\fP \- return definition of keycode
+\fBdefine_key\fP \- define a keycode
 .SH SYNOPSIS
 \fB#include <curses.h>\fP
 
-\fBchar * keybound(int keycode, int count);\fP
+\fBint key_defined(char *definition);\fP
 .SH DESCRIPTION
 This is an extension to the curses library.
-It permits an application to determine the string which is defined
-in the terminfo for specific keycodes.
+It permits an application to determine if a string is currently bound
+to any keycode.
 .SH RETURN VALUE
-The \fIkeycode\fP parameter must be greater than zero, else NULL is returned.
-If it does not correspond to a defined key, then NULL is returned.
-The \fIcount\fP parameter is used to allow the application to iterate
-through multiple definitions, counting from zero.
-When successful,
-the function returns a string which must be freed by the caller.
+If the string is bound to a keycode, its value (greater than zero) is returned.
+If no keycode is bound, zero is returned.
+If the string conflicts with longer strings which are bound to keys, -1 is returned.
 .SH PORTABILITY
 These routines are specific to ncurses.  They were not supported on
 Version 7, BSD or System V implementations.  It is recommended that
 any code depending on them be conditioned using NCURSES_VERSION.
 .SH SEE ALSO
-\fBdefine_key\fR(3X),
-\fBkeyok\fR(3X).
+\fBdefine_key\fR(3X).
 .SH AUTHOR
 Thomas Dickey.
 .\"#

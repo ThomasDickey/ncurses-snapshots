@@ -591,6 +591,7 @@
 ./man/form_win.3x
 ./man/infocmp.1m
 ./man/infotocap.1m
+./man/key_defined.3x
 ./man/keybound.3x
 ./man/keyok.3x
 ./man/make_sed.sh
@@ -705,6 +706,7 @@
 ./ncurses/base/MKunctrl.awk
 ./ncurses/base/README
 ./ncurses/base/define_key.c
+./ncurses/base/key_defined.c
 ./ncurses/base/keybound.c
 ./ncurses/base/keyok.c
 ./ncurses/base/lib_addch.c
