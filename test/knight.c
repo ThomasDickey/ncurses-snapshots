@@ -7,11 +7,10 @@
  * added September 20th 1995.
  */
 
-#include <curses.h>
+#include "test.priv.h"
+
 #include <ctype.h>
 #include <signal.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 
 /* board size */
@@ -68,7 +67,9 @@ static bool chkmoves(void);
 static bool chksqr(int, int);
 static int  iabs(int);
 
-int main(int argc, char *argv[])
+int main(
+	int argc __attribute__((unused)),
+	char *argv[] __attribute__((unused)))
 {
     init();
 

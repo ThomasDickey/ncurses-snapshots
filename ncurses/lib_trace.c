@@ -52,7 +52,7 @@ static bool	been_here = FALSE;
 
 	   	if ((tracefd = creat("trace", 0644)) < 0) {
 			perror("curses: Can't open 'trace' file: ");
-			exit(1);
+			exit(EXIT_FAILURE);
 	   	}
 	   	_tracef("TRACING NCURSES version %s", NCURSES_VERSION);
 	}

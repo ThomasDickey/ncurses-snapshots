@@ -39,7 +39,8 @@ endwin(void)
 
 	_nc_mouse_wrap(SP);
 
-	mvcur(-1, -1, screen_lines - 1, 0);
+	/* SP->_curs{row,col} may be used later in _nc_mvcur_wrap,save_curs */
+	mvcur(-1, -1, SP->_cursrow = screen_lines - 1, SP->_curscol = 0);
 
 	curs_set(1);	/* set cursor to normal mode */
 

@@ -78,6 +78,14 @@
 #define STDERR_FILENO 2
 #endif
 
+#ifndef EXIT_SUCCESS
+#define EXIT_SUCCESS 0
+#endif
+
+#ifndef EXIT_FAILURE
+#define EXIT_FAILURE 1
+#endif
+
 #ifndef R_OK
 #define	R_OK	4		/* Test for read permission.  */
 #endif
@@ -138,6 +146,7 @@ extern void _nc_mouse_resume(SCREEN *);
 extern int _nc_max_click_interval;
 
 /* elsewhere ... */
+extern void _nc_get_screensize(void);
 extern int _nc_keypad(bool flag);
 extern WINDOW *_nc_makenew(int, int, int, int);
 extern int _nc_outch(int);

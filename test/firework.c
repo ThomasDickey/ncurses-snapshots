@@ -1,8 +1,8 @@
+#include "test.priv.h"
+
 #include <stdio.h>
-#include <stdlib.h>
 #include <sys/types.h>
 #include <signal.h>
-#include <curses.h>
 #include <ctype.h>
 #include <time.h>
 
@@ -10,7 +10,9 @@ static int get_colour(void);
 static void explode(int row, int col);
 static void showit(void);
 
-int main(int argc, char *argv[])
+int main(
+	int argc __attribute__((unused)),
+	char *argv[] __attribute__((unused)))
 {
 int start,end,row,diff,flag = 0,direction;
 unsigned seed;

@@ -70,14 +70,13 @@ AUTO_SRC = \
 	keys.tries \
 	lib_keyname.c \
 	lib_gen.c \
+	codes.c \
 	names.c
 
 ################################################################################
 all ::	../lib $(AUTO_SRC) $(LIBRARIES)
 
 ../lib : ; mkdir $@
-
-install :: install.libs
 
 $(libdir) \
 $(ticdir) :
@@ -98,17 +97,17 @@ make_hash : $(srcdir)/comp_hash.c
 comp_captab.c: \
 		make_hash \
 		../include/hashsize.h \
-		../include/Caps.filtered \
 		$(srcdir)/MKcaptab.awk
-	sh $(srcdir)/MKcaptab.awk $(AWK) ../include/Caps.filtered > $@
+	sh $(srcdir)/MKcaptab.awk $(AWK) $(srcdir)/../include/Caps > $@
 
 lib_keyname.c: $(srcdir)/keys.list $(srcdir)/MKkeyname.awk
 	$(AWK) -f $(srcdir)/MKkeyname.awk $(srcdir)/keys.list > $@
 
-names.c: ../include/Caps.filtered $(srcdir)/MKnames.awk
-	$(AWK) -f $(srcdir)/MKnames.awk ../include/Caps.filtered
-	cat boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes> $@
-	-rm -f boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes
+names.c codes.c: $(srcdir)/MKnames.awk
+	$(AWK) -f $(srcdir)/MKnames.awk $(srcdir)/../include/Caps
+	cat namehdr boolnames boolfnames numnames numfnames strnames strfnames >names.c
+	cat namehdr boolcodes numcodes strcodes >codes.c
+	-rm -f namehdr boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes
 
 tags:
 	ctags *.[ch]
@@ -131,8 +130,7 @@ realclean: distclean
 # These rules are used to allow "make -n" to work on a clean directory-tree
 ../include/hashsize.h \
 ../include/parametrized.h \
-../include/term.h \
-../include/Caps.filtered :
+../include/term.h :
 	cd ../include; $(MAKE) $(NC_MFLAGS)
 
 ###############################################################################

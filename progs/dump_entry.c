@@ -40,6 +40,10 @@ static int column;		/* current column, limited by 'width' */
 static int oldcol;		/* last value of column before wrap */
 static int tracelevel;		/* level of debug output */
 
+static char *outbuf;		/* the output-buffer */
+static size_t out_used;		/* ...its current length */
+static size_t out_size;		/* ...and its allocated length */
+
 /* indirection pointers for implementing sort and display modes */
 static const int *bool_indirect, *num_indirect, *str_indirect;
 static char * const *bool_names, * const *num_names, * const *str_names;
@@ -172,8 +176,8 @@ void dump_init(char *version, int mode, int sort, int twidth, int traceval)
 
     if (traceval)
 	(void) fprintf(stderr,
-		       "%s: width = %d, outform = %d\n",
-		       _nc_progname, width, outform);
+		       "%s: width = %d, tversion = %d, outform = %d\n",
+		       _nc_progname, width, tversion, outform);
 }
 
 /* this deals with differences over whether 0x7f and 0x80..0x9f are controls */
@@ -332,51 +336,111 @@ static bool version_filter(int type, int idx)
 }
 
 static
-void force_wrap(char *dst)
+void append_output (const char *src)
+{
+	if (src == 0) {
+		out_used = 0;
+		append_output("");
+	} else {
+		size_t need = strlen(src);
+		size_t want = need + out_used + 1;
+		if (want > out_size) {
+			out_size += want;	/* be generous */
+			if (outbuf == 0)
+				outbuf = malloc(out_size);
+			else
+				outbuf = realloc(outbuf, out_size);
+		}
+		(void)strcpy(outbuf + out_used, src);
+		out_used += need;
+	}
+}
+
+static
+void force_wrap(void)
 {
 	oldcol = column;
-	(void) strcat(dst, trailer);
+	append_output(trailer);
 	column = INDENT;
 }
 
 static
-void wrap_concat(char *dst, const char *src)
+void wrap_concat(const char *src)
 {
 	int need = strlen(src);
 	int want = strlen(separator) + need;
 
 	if (column > INDENT
 	 && column + want > width) {
-		force_wrap(dst);
+		force_wrap();
 	}
-	(void) strcat(dst, src);
-	(void) strcat(dst, separator);
+	append_output(src);
+	append_output(separator);
 	column += need;
 }
 
+#define IGNORE_SEP_TRAIL(first,last,sep_trail) \
+	if ((size_t)(last - first) > sizeof(sep_trail)-1 \
+	 && !strncmp(first, sep_trail, sizeof(sep_trail)-1)) \
+	 	first += sizeof(sep_trail)-2
+
+/* Returns the nominal length of the buffer assuming it is termcap format,
+ * i.e., the continuation sequence is treated as a single character ":".
+ *
+ * There are several implementations of termcap which read the text into a
+ * fixed-size buffer.  Generally they strip the newlines from the text, but may
+ * not do it until after the buffer is read.  Also, "tc=" resolution may be
+ * expanded in the same buffer.  This function is useful for measuring the size
+ * of the best fixed-buffer implementation; the worst case may be much worse.
+ */
+#ifdef TEST_TERMCAP_LENGTH
+static int termcap_length(const char *src)
+{
+	static const char pattern[] = ":\\\n\t:";
+
+	int len = 0;
+	const char *const t = src + strlen(src);
+
+	while (*src != '\0') {
+		IGNORE_SEP_TRAIL(src, t, pattern);
+		src++;
+		len++;
+	}
+	return len;
+}
+#else
+#define termcap_length(src) strlen(src)
+#endif
+
 int fmt_entry(TERMTYPE *tterm,
 			   int (*pred)(int type, int idx),
-			   char *outbuf, bool suppress_untranslatable,
+			   bool suppress_untranslatable,
 			   bool infodump)
 {
 int	i, j;
 char    buffer[MAX_TERMINFO_LENGTH];
-int	predval, len = 0;
+int	predval, len;
+int	num_bools = 0;
+int	num_values = 0;
+int	num_strings = 0;
 bool	outcount = 0;
 
 #define WRAP_CONCAT	\
-	wrap_concat(outbuf, buffer); \
+	wrap_concat(buffer); \
 	outcount = TRUE
+
+    len = 12;			/* terminfo file-header */
 
     if (pred == NULL) {
 	cur_type = tterm;
 	pred = dump_predicate;
     }
 
-    (void) strcpy(outbuf, tterm->term_names);
-    (void) strcat(outbuf, separator);
-    column = strlen(outbuf);
-    force_wrap(outbuf);
+    append_output(NULL);
+    append_output(tterm->term_names);
+    append_output(separator);
+    column = out_used;
+    force_wrap();
 
     for (j=0; j < BOOLCOUNT; j++) {
 	if (sortmode == S_NOSORT)
@@ -395,12 +459,14 @@ bool	outcount = 0;
 	    (void) strcpy(buffer, bool_names[i]);
 	    if (predval <= 0)
 		(void) strcat(buffer, "@");
+	    else if (i + 1 > num_bools)
+		num_bools = i + 1;
 	    WRAP_CONCAT;
 	}
     }
 
     if (column != INDENT)
-	force_wrap(outbuf);
+	force_wrap();
 
     for (j=0; j < NUMCOUNT; j++) {
 	if (sortmode == S_NOSORT)
@@ -416,18 +482,26 @@ bool	outcount = 0;
 
 	predval = pred(NUMBER, i);
 	if (predval != FAIL) {
-	    if (tterm->Numbers[i] < 0)
+	    if (tterm->Numbers[i] < 0) {
 		sprintf(buffer, "%s@", num_names[i]);
-	    else
+	    } else {
 		sprintf(buffer, "%s#%d", num_names[i], tterm->Numbers[i]);
+		if (i + 1 > num_values)
+		    num_values = i + 1;
+	    }
 	    WRAP_CONCAT;
 	}
     }
 
     if (column != INDENT)
-	force_wrap(outbuf);
+	force_wrap();
 
-    len = strlen(tterm->term_names) + 1;
+    len += num_bools
+    	+ num_values * 2
+    	+ strlen(tterm->term_names) + 1;
+    if (len & 1)
+    	len++;
+
     for (j=0; j < STRCOUNT; j++) {
 	if (sortmode == S_NOSORT)
 	    i = j;
@@ -454,7 +528,6 @@ bool	outcount = 0;
 		    && enter_insert_mode == ABSENT_STRING)
 		{
 		    (void) strcpy(buffer, "im=");
-		    len++;
 		    goto catenate;
 		}
 
@@ -462,7 +535,6 @@ bool	outcount = 0;
 		    && exit_insert_mode == ABSENT_STRING)
 		{
 		    (void) strcpy(buffer, "ei=");
-		    len++;
 		    goto catenate;
 		}
 	    }
@@ -470,7 +542,11 @@ bool	outcount = 0;
 	predval = pred(STRING, i);
 	buffer[0] = '\0';
 	if (predval != FAIL) {
-	    if (tterm->Strings[i] == ABSENT_STRING || tterm->Strings[i] == CANCELLED_STRING)
+	    if (tterm->Strings[i] != ABSENT_STRING
+	     && i + 1 > num_strings)
+		num_strings = i + 1;
+	    if (tterm->Strings[i] == ABSENT_STRING
+	     || tterm->Strings[i] == CANCELLED_STRING)
 		sprintf(buffer, "%s@", str_names[i]);
 	    else if (outform == F_TERMCAP || outform == F_TCONVERR)
 	    {
@@ -500,6 +576,7 @@ bool	outcount = 0;
 	    WRAP_CONCAT;
 	}
     }
+    len += num_strings * 2;
 
     /*
      * This piece of code should be an effective inverse of the functions
@@ -557,35 +634,44 @@ bool	outcount = 0;
      */
     if (outcount)
     {
-	j = strlen(outbuf);
-	if (outbuf[j-1] == '\t' && outbuf[j-2] == '\n')
-	    outbuf[j-2] = '\0';
-	if (outbuf[j-1] == ':' && outbuf[j-2] == '\t'
-	    		&& outbuf[j-3] == '\n' && outbuf[j-4] == '\\')
-	    outbuf[j-4] = '\0';
+	j = out_used;
+	if (j >= 2
+	 && outbuf[j-1] == '\t'
+	 && outbuf[j-2] == '\n') {
+	    out_used -= 2;
+	} else if (j >= 4
+	 && outbuf[j-1] == ':'
+	 && outbuf[j-2] == '\t'
+	 && outbuf[j-3] == '\n'
+	 && outbuf[j-4] == '\\') {
+	    out_used -= 4;
+	}
+	outbuf[out_used] = '\0';
 	column = oldcol;
     }
 
 #if 0
+    fprintf(stderr, "num_bools = %d\n", num_bools);
+    fprintf(stderr, "num_values = %d\n", num_values);
+    fprintf(stderr, "num_strings = %d\n", num_strings);
     fprintf(stderr, "term_names=%s, len=%d, strlen(outbuf)=%d, outbuf=%s\n",
-	    tterm->term_names, len, strlen(outbuf), outbuf);
+	    tterm->term_names, len, out_used, outbuf);
 #endif
     /*
      * Here's where we use infodump to trigger a more stringent length check
      * for termcap-translation purposes.
-     * strlen(outbuf) is the length of the raw entry, without tc= expansions,
-     * and (incorrectly) counting backslash-newlines.
+     * Return the length of the raw entry, without tc= expansions,
      * It gives an idea of which entries are deadly to even *scan past*,
      * as opposed to *use*.
      */
-    return(infodump ? len : strlen(outbuf));
+    return(infodump ? len : termcap_length(outbuf));
 }
 
-void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int idx))
+int dump_entry(TERMTYPE *tterm, bool limited, int (*pred)(int type, int idx))
 /* dump a single entry */
 {
     int	len, critlen;
-    char	*legend, outbuf[MAX_TERMINFO_LENGTH * 2];
+    char	*legend;
     bool	infodump;
 
     if (outform==F_TERMCAP || outform==F_TCONVERR)
@@ -602,11 +688,11 @@ void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int idx))
 	infodump = TRUE;
     }
 
-    if ((len = fmt_entry(tterm, pred, outbuf, FALSE, infodump)) > critlen)
+    if (((len = fmt_entry(tterm, pred, FALSE, infodump)) > critlen) && limited)
     {
 	(void) printf("# (untranslatable capabilities removed to fit entry within %d bytes)\n",
 		      critlen);
-	if ((len = fmt_entry(tterm, pred, outbuf, TRUE, infodump)) > critlen)
+	if ((len = fmt_entry(tterm, pred, TRUE, infodump)) > critlen)
 	{
 	    /*
 	     * We pick on sgr because it's a nice long string capability that
@@ -616,15 +702,15 @@ void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int idx))
 	    set_attributes = ABSENT_STRING; 
 	    (void) printf("# (sgr removed to fit entry within %d bytes)\n",
 			  critlen);
-	    if ((len=fmt_entry(tterm, pred, outbuf, TRUE, infodump)) > critlen)
+	    if ((len = fmt_entry(tterm, pred, TRUE, infodump)) > critlen)
 	    {
-
 		int oldversion = tversion;
+
 		tversion = V_BSD;
 		(void) printf("# (terminfo-only capabilities suppressed to fit entry within %d bytes)\n",
 			      critlen);
 
-		if ((len=fmt_entry(tterm, pred, outbuf, TRUE, infodump)) > critlen)
+		if ((len = fmt_entry(tterm, pred, TRUE, infodump)) > critlen)
 		{
 		    (void) fprintf(stderr,
 			       "warning: %s entry is %d bytes long\n",
@@ -641,19 +727,19 @@ void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int idx))
     }
 
     (void) fputs(outbuf, stdout);
+    return len;
 }
 
-void dump_uses(const char *name, bool infodump)
+int dump_uses(const char *name, bool infodump)
 /* dump "use=" clauses in the appropriate format */
 {
     char buffer[MAX_TERMINFO_LENGTH];
-    char outbuf[MAX_TERMINFO_LENGTH];
 
-    *outbuf = '\0';
-    (void)strcpy(buffer, infodump ? "use=" : "tc=");
-    (void)strcat(buffer, name);
-    wrap_concat(outbuf, buffer);
+    append_output(NULL);
+    (void)sprintf(buffer, "%s%s", infodump ? "use=" : "tc=", name);
+    wrap_concat(buffer);
     (void) fputs(outbuf, stdout);
+    return out_used;
 }
 
 void compare_entry(void (*hook)(int t, int i, const char *name))

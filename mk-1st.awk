@@ -80,6 +80,7 @@ END	{
 				printf "\t$(MK_SHARED_LIB) $(%s_OBJS)\n", MODEL
 				sharedlinks("../lib")
 				print  ""
+				print  "install \\"
 				print  "install.libs \\"
 				printf "install.%s :: $(libdir) ../lib/%s\n", name, end_name
 				printf "\t@echo installing ../lib/%s as $(libdir)/%s \n", lib_name, end_name
@@ -98,6 +99,7 @@ END	{
 				printf "\tar rv $@ $?\n"
 				printf "\t$(RANLIB) $@\n"
 				print  ""
+				print  "install \\"
 				print  "install.libs \\"
 				printf "install.%s :: $(libdir) ../lib/%s\n", name, lib_name
 				printf "\t@echo installing ../lib/%s as $(libdir)/%s \n", lib_name, lib_name

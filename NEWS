@@ -2,13 +2,39 @@ This is a log of changes that ncurses has gone through since I
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
+
+* use autoconf 2.9
 * fixes for NeXT, ISC and HPUX auto-configure
+* fix for AIX 3.2.5 (must define _POSIX_SOURCE to get termios struct
+  definitions via <termios.h>, modified macros in lib_raw.c to avoid
+  K&R-style substitution)
 * autogenerate development header-dependencies (config.h, *.priv.h)
 * corrected single-column formatting of "use=" (e.g., in tic)
 * modify tic to read full terminfo-names
 * corrected divide-by-zero that caused hang (or worse) when redirecting output
 * modify tic to generate directories only as-needed (and corrected instance
   of use of data from function that had already returned).
+* split lib_kernel.c, lib_setup.c and names.c in order to reduce overhead for
+  programs that use only termcap features.
+* change ncurses 'a' test to run in raw mode.
+* make TIOCGWINSZ configure test less stringent, in case user configures via
+  terminal that cannot get screen size.
+* implemented logic to support terminals with background color erase (e.g.,
+  rxvt and the newer color xterm).
+* improved screen update logic (off-by-one logic error; use clr_eos if possible)
+* protect wrefresh, wnoutrefresh from invocation with pad argument.
+* corrected default CCFLAGS in test/Makefile.
+* don't use fixed buffer-size in fmt_entry() or tparm().
+* added usage-message to 'infocmp'.
+* modified install.includes rules to prepend subdirectory-name to "#include"
+  if needed.
+* modified tic to create terminfo directory if it doesn't exist.
+* added -T options to tic and infocmp (for testing/analysis)
+* refined the length criteria for termcap and terminfo
+* removed tparam() from ABI to satisfy hardcoded configuration requirement of
+  GNU Emacs.
+* optimize lib_doupdate with memcpy, PutRange
+* implement TERMINFO_DIRS, and -o option of tic
 
 ### ncurses-1.9.8a -> 1.9.9e
 

@@ -35,8 +35,8 @@ Options:
   input at the beginning and end of the interval.
 */
 
-#include <curses.h>
-#include <stdlib.h>
+#include "test.priv.h"
+
 #include <signal.h>
 
 #define cursor(col,row) move(row,col)

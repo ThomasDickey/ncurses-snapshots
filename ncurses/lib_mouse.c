@@ -79,7 +79,7 @@ void _nc_mouse_init(SCREEN *sp)
 {
     int i;
 
-    T(("_nc_mouse_init() called"));
+    TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_init() called"));
 
     for (i = 0; i < EV_MAX; i++)
 	events[i].id = INVALID_EVENT;
@@ -102,7 +102,7 @@ bool _nc_mouse_event(SCREEN *sp)
 bool _nc_mouse_inline(SCREEN *sp)
 /* mouse report received in the keyboard stream -- parse its info */
 {
-    T(("_nc_mouse_inline() called"));
+    TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_inline() called"));
 
     if (mousetype == M_XTERM)
     {
@@ -139,9 +139,7 @@ bool _nc_mouse_inline(SCREEN *sp)
 	(void) read(sp->_ifd, &kbuf, 3);
 	kbuf[3] = '\0';
 
-#ifdef MOUSEDEBUG
-	T(("_nc_mouse_inline sees the following xterm data: '%s'", kbuf));
-#endif /* MOUSEDEBUG */
+	TR(TRACE_IEVENT, ("_nc_mouse_inline sees the following xterm data: '%s'", kbuf));
 
 	eventp->id = 0;		/* there's only one mouse... */
 
@@ -198,7 +196,7 @@ bool _nc_mouse_inline(SCREEN *sp)
 
 	eventp->x = (kbuf[1] - ' ') - 1; 
 	eventp->y = (kbuf[2] - ' ') - 1; 
-	T(("_nc_mouse_inline: primitive mouse-event %s has slot %d", _tracemouse(eventp), eventp - events));
+	TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_inline: primitive mouse-event %s has slot %d", _tracemouse(eventp), eventp - events));
 
 	/* bump the next-free pointer into the circular list */
 	eventp = NEXT(eventp);
@@ -238,7 +236,7 @@ bool _nc_mouse_parse(int runcount)
     int		n;
     bool	merge;
 
-    T(("_nc_mouse_parse() called"));
+    TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_parse() called"));
     /*
      * When we enter this routine, the event list next-free pointer
      * points just past a run of mouse events that we know were separated
@@ -262,7 +260,7 @@ bool _nc_mouse_parse(int runcount)
      */
     if (runcount == 1)
     {
-	T(("_nc_mouse_parse: returning simple mouse event %s at slot %d",
+	TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_parse: returning simple mouse event %s at slot %d",
 	   _tracemouse(prev), prev-events));
 	return(PREV(prev)->bstate & eventmask);
     }
@@ -272,13 +270,17 @@ bool _nc_mouse_parse(int runcount)
     for (n = runcount; n > 0; n--)
 	runp = PREV(runp);
 
-#ifdef MOUSEDEBUG
-    T(("before mouse press/release merge:"));
-    for (ep = events; ep < events + EV_MAX; ep++)
-      T(("mouse event queue slot %d = %s", ep-events, _tracemouse(ep)));
-    T(("_nc_mouse_parse: run starts at %d, ends at %d, count %d",
-       runp-events, ((eventp - events) + (EV_MAX - 1)) % EV_MAX, runcount));
-#endif /* MOUSEDEBUG */
+#ifdef TRACE
+    if (_nc_tracing & TRACE_IEVENT)
+    {
+	_tracef("before mouse press/release merge:");
+	for (ep = events; ep < events + EV_MAX; ep++)
+	    _tracef("mouse event queue slot %d = %s",
+					ep-events, _tracemouse(ep));
+	_tracef("_nc_mouse_parse: run starts at %d, ends at %d, count %d",
+	    runp-events, ((eventp - events) + (EV_MAX-1)) % EV_MAX, runcount);
+    }
+#endif /* TRACE */
 
     /* first pass; merge press/release pairs */
     do {
@@ -323,13 +325,17 @@ bool _nc_mouse_parse(int runcount)
     } while
 	(merge);
     
-#ifdef MOUSEDEBUG
-    T(("before mouse click merges:"));
-    for (ep = events; ep < events + EV_MAX; ep++)
-      T(("mouse event queue slot %d = %s", ep-events, _tracemouse(ep)));
-    T(("_nc_mouse_parse: run starts at %d, ends at %d, count %d",
-       runp-events, ((eventp - events) + (EV_MAX - 1)) % EV_MAX, runcount));
-#endif /* MOUSEDEBUG */
+#ifdef TRACE
+    if (_nc_tracing & TRACE_IEVENT)
+    {
+	_tracef("before mouse click merge:");
+	for (ep = events; ep < events + EV_MAX; ep++)
+	    _tracef("mouse event queue slot %d = %s",
+					ep-events, _tracemouse(ep));
+	_tracef("_nc_mouse_parse: run starts at %d, ends at %d, count %d",
+	    runp-events, ((eventp - events) + (EV_MAX-1)) % EV_MAX, runcount);
+    }
+#endif /* TRACE */
 
     /* 
      * Second pass; merge click runs.  At this point, click events are
@@ -427,13 +433,17 @@ bool _nc_mouse_parse(int runcount)
     } while
 	(merge);
 
-#ifdef MOUSEDEBUG
-    T(("before mouse event queue compaction:"));
-    for (ep = events; ep < events + EV_MAX; ep++)
-      T(("mouse event queue slot %d = %s", ep-events, _tracemouse(ep)));
-    T(("_nc_mouse_parse: uncompacted run starts at %d, ends at %d, count %d",
-       runp-events, ((eventp - events) + (EV_MAX - 1)) % EV_MAX, runcount));
-#endif /* MOUSEDEBUG */
+#ifdef TRACE
+    if (_nc_tracing & TRACE_IEVENT)
+    {
+	_tracef("before mouse event queue compaction:");
+	for (ep = events; ep < events + EV_MAX; ep++)
+	    _tracef("mouse event queue slot %d = %s",
+					ep-events, _tracemouse(ep));
+	_tracef("_nc_mouse_parse: run starts at %d, ends at %d, count %d",
+	    runp-events, ((eventp - events) + (EV_MAX-1)) % EV_MAX, runcount);
+    }
+#endif /* TRACE */
 
     /*
      * Now try to throw away trailing events flagged invalid, or that
@@ -444,16 +454,18 @@ bool _nc_mouse_parse(int runcount)
 	    eventp = prev;
 
 #ifdef TRACE
-#ifdef MOUSEDEBUG
-    T(("after mouse event queue compaction:"));
-    for (ep = events; ep < events + EV_MAX; ep++)
-      T(("mouse event queue slot %d = %s", ep-events, _tracemouse(ep)));
-    T(("_nc_mouse_parse: compacted run starts at %d, ends at %d, count %d",
-       runp-events, ((eventp - events) + (EV_MAX - 1)) % EV_MAX, runcount));
-#endif /* MOUSEDEBUG */
+    if (_nc_tracing & TRACE_IEVENT)
+    {
+	_tracef("after mouse event queue compaction:");
+	for (ep = events; ep < events + EV_MAX; ep++)
+	    _tracef("mouse event queue slot %d = %s",
+					ep-events, _tracemouse(ep));
+	_tracef("_nc_mouse_parse: run starts at %d, ends at %d, count %d",
+	    runp-events, ((eventp - events) + (EV_MAX-1)) % EV_MAX, runcount);
+    }
     for (ep = runp; ep != eventp; ep = NEXT(ep))
 	if (ep->id != INVALID_EVENT)
-	    T(("_nc_mouse_parse: returning composite mouse event %s at slot %d",
+	    TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_parse: returning composite mouse event %s at slot %d",
 		_tracemouse(ep), ep-events));
 #endif /* TRACE */
 
@@ -464,7 +476,7 @@ bool _nc_mouse_parse(int runcount)
 void _nc_mouse_wrap(SCREEN *sp)
 /* release mouse -- called by endwin() before shellout/exit */
 {
-    T(("_nc_mouse_wrap() called"));
+    TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_wrap() called"));
 
     /* xterm: turn off reporting */
     if (mousetype == M_XTERM && eventmask)
@@ -476,7 +488,7 @@ void _nc_mouse_wrap(SCREEN *sp)
 void _nc_mouse_resume(SCREEN *sp)
 /* re-connect to mouse -- called by doupdate() after shellout */
 {
-    T(("_nc_mouse_resume() called"));
+    TR(TRACE_CALLS|TRACE_IEVENT, ("_nc_mouse_resume() called"));
 
     /* xterm: re-enable reporting */
     if (mousetype == M_XTERM && eventmask)
@@ -502,10 +514,8 @@ int getmouse(MEVENT *aevent)
 	/* copy the event we find there */
 	*aevent = *prev;
 
-#ifdef MOUSEDEBUG
-	T(("getmouse: returning event %s from slot %d",
+	TR(TRACE_IEVENT, ("getmouse: returning event %s from slot %d",
 	    _tracemouse(prev), prev-events));
-#endif /* MOUSEDEBUG */
 
 	prev->id = INVALID_EVENT;	/* so the queue slot becomes free */
 	return(OK);

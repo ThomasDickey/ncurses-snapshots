@@ -91,10 +91,9 @@
 /*                                                                            */
 /******************************************************************************/
 
-#include <curses.h>
+#include "test.priv.h"
+
 #include <signal.h>
-#include <stdlib.h>
-#include <unistd.h>
 
 #define FROMWHO "Mark Hessling - (M.Hessling@gu.edu.au)"
 
@@ -125,9 +124,11 @@ int strng4(void);
 int strng5(void);
 int reindeer(void);
 int blinkit(void);
-void done(int sig);
+void done(int sig) __attribute__((noreturn)) ;
 
-int main(int argc, char **argv)
+int main(
+	int argc __attribute__((unused)),
+	char **argv __attribute__((unused)))
 {
 int loopy;
 
@@ -1052,7 +1053,7 @@ int reindeer(void)
 	return( 0 );
 }
 
-void done(int sig)
+void done(int sig __attribute__((unused)))
 {
 	signal(SIGINT,done);
 	signal(SIGTERM,done);

@@ -17,14 +17,10 @@ library source.
 ***************************************************************************/
 /*LINTLIBRARY */
 
-#if HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "test.priv.h"
 
 #include <stdio.h>
 #include <ctype.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 #include <assert.h>
 
@@ -36,8 +32,6 @@ library source.
 #include <sys/select.h>
 #endif
 #endif
-
-#include <curses.h>
 
 #if HAVE_PANEL_H
 #include <panel.h>
@@ -114,6 +108,7 @@ int y, x;
      }
  
      c = '?';
+     raw();
      for (;;)
      {
 	if (firsttime++)
@@ -336,7 +331,8 @@ static void color_edit(void)
         {
 	    mvprintw(2 + i, 0, "%c %-8s:",
 		     (i == current ? '>' : ' '), 
-		     (i < sizeof(colors)/sizeof(colors[0]) ? colors[i] : ""));
+		     (i < (int)(sizeof(colors)/sizeof(colors[0]))
+		     	? colors[i] : ""));
 	    attrset(COLOR_PAIR(i));
 	    addstr("        ");
 	    attrset(A_NORMAL);
@@ -967,7 +963,7 @@ char *mod[] =
 	wait_a_while(msec)
 --------------------------------------------------------------------------*/
 static void
-wait_a_while(unsigned long msec)
+wait_a_while(unsigned long msec __attribute__((unused)))
 {
 #ifdef NONAP
 	if(nap_msec == 1)
@@ -1664,8 +1660,8 @@ static void input_test(WINDOW *win)
 
 #if HAVE_MENU_H
 
-#define MENU_Y	4
-#define MENU_X	4
+#define MENU_Y	8
+#define MENU_X	8
 
 static int menu_virtualize(int c)
 {
@@ -1675,6 +1671,8 @@ static int menu_virtualize(int c)
 	return(REQ_NEXT_ITEM);
     else if (c == 'p' || c == KEY_UP)
 	return(REQ_PREV_ITEM);
+    else if (c == ' ')
+	return(REQ_TOGGLE_ITEM);
     else
 	return(c);
 }
@@ -1684,7 +1682,24 @@ static char *animals[] =
     "Lions", "Tigers", "Bears", "(Oh my!)", "Newts", "Platypi", "Lemurs",
     (char *)NULL
 };
-static ITEM *items[sizeof(animals)/sizeof(char *)];
+
+static char *levels[] =
+{
+    "TRACE_DISABLE",
+    "TRACE_TPUTS",
+    "TRACE_UPDATE",
+    "TRACE_MOVE",
+    "TRACE_CHARPUT",
+    "TRACE_ORDINARY",
+    "TRACE_CALLS",
+    "TRACE_VIRTPUT",
+    "TRACE_IEVENT",
+    "TRACE_BITS",
+    "TRACE_MAXIMUM",
+    (char *)NULL
+};
+
+static ITEM *items[sizeof(levels)/sizeof(char *)];
 
 static void menu_test(void)
 {
@@ -1694,7 +1709,10 @@ static void menu_test(void)
     int		mrows, mcols;
     WINDOW	*menuwin;
 
-    mvaddstr(LINES - 3, 0, "This is the menu test.");
+    mvaddstr(0, 0, "This is the menu test:");
+    mvaddstr(2, 0, "  Use up and down arrow to move the select bar.");
+    mvaddstr(3, 0, "  Press return to exit.");
+    refresh();
 
     for (ap = animals; *ap; ap++)
 	*ip++ = new_item(*ap, "");
@@ -1728,6 +1746,105 @@ static void menu_test(void)
 	free_item(*ip);
     free_menu(m);
 }
+
+#ifdef TRACE
+static int masks[] =	/* must parallel the array above */
+{
+    TRACE_DISABLE,
+    TRACE_TPUTS,
+    TRACE_UPDATE,
+    TRACE_MOVE,
+    TRACE_CHARPUT,
+    TRACE_ORDINARY,
+    TRACE_CALLS,
+    TRACE_VIRTPUT,
+    TRACE_IEVENT,
+    TRACE_BITS,
+    TRACE_MAXIMUM,
+};
+
+static char *tracetrace(int tlevel)
+{
+    static char	buf[BUFSIZ];
+    char	**sp;
+
+    sprintf(buf, "0x%02x = {", tlevel);
+    for (sp = levels + 1; *sp; sp++)
+	if ((tlevel & masks[sp - levels]) == masks[sp - levels])
+	{
+	    strcat(buf, *sp);
+	    strcat(buf, ", ");
+	}
+    if (tlevel == 0)
+	strcat(buf, "TRACE_DISABLE, ");
+    if (buf[strlen(buf) - 2] == ',')
+	buf[strlen(buf) - 2] = '\0';
+    return(strcat(buf,"}"));
+}
+
+static void trace_set(void)
+/* interactively set the trace level */
+{
+    extern int	_nc_tracing;
+    MENU	*m;
+    ITEM	**ip = items;
+    char	**ap;
+    int		mrows, mcols, newtrace;
+    WINDOW	*menuwin;
+
+    mvaddstr(0, 0, "Interactively set trace level:");
+    mvaddstr(2, 0, "  Press space bar to toggle a selection.");
+    mvaddstr(3, 0, "  Use up and down arrow to move the select bar.");
+    mvaddstr(4, 0, "  Press return to set the trace level.");
+    mvprintw(6, 0, "(Current trace level is %s)", tracetrace(_nc_tracing)); 
+
+    refresh();
+
+    for (ap = levels; *ap; ap++)
+	*ip++ = new_item(*ap, "");
+    *ip = (ITEM *)NULL;
+
+    m = new_menu(items);
+
+    scale_menu(m, &mrows, &mcols);
+
+    menu_opts_off(m, O_ONEVALUE);
+    menuwin = newwin(mrows + 2, mcols +  2, MENU_Y, MENU_X);
+    set_menu_win(m, menuwin);
+    keypad(menuwin, TRUE);
+    box(menuwin, 0, 0);
+
+    set_menu_sub(m, derwin(menuwin, mrows, mcols, 1, 1));
+
+    post_menu(m);
+
+    for (ip = menu_items(m); *ip; ip++)
+	if ((masks[item_index(*ip)] & _nc_tracing) == masks[item_index(*ip)])
+	    set_item_value(*ip, TRUE);
+
+    while (menu_driver(m, menu_virtualize(wgetch(menuwin))) != E_UNKNOWN_COMMAND)
+	continue;
+
+    newtrace = 0;
+    for (ip = menu_items(m); *ip; ip++)
+	if (item_value(*ip))
+	    newtrace |= masks[item_index(*ip)];
+    trace(newtrace);
+    _tracef("trace level interactively set to 0x%02x", _nc_tracing);
+
+    (void) mvprintw(LINES - 2, 0,
+		     "Trace level is %s\n", tracetrace(_nc_tracing));
+    (void) addstr("Press any key to continue...");
+    wgetch(stdscr);
+
+    unpost_menu(m);
+    delwin(menuwin);
+
+    for (ip = items; *ip; ip++)
+	free_item(*ip);
+    free_menu(m);    
+}
+#endif /* TRACE */
 #endif /* HAVE_MENU_H */
 
 /****************************************************************************
@@ -2141,6 +2258,12 @@ do_single_test(const char c)
         overlap_test();
 	return(TRUE);
 
+#if defined(HAVE_MENU_H) && defined(TRACE)
+    case 't':
+        trace_set();
+	return(TRUE);
+#endif
+
     case '?':
 	(void) puts("This is the ncurses capability tester.");
 	(void) puts("You may select a test from the main menu by typing the");
@@ -2152,14 +2275,18 @@ do_single_test(const char c)
     return(FALSE);
 }
 
-int main(const int argc, const char *argv[])
+int main(
+	int argc __attribute__((unused)),
+	char *argv[] __attribute__((unused)))
 {
     char	buf[BUFSIZ];
 
 #ifdef TRACE
     /* enable debugging */
-    trace(TRACE_CALLS);
-#endif
+#ifndef HAVE_MENU_H
+    trace(TRACE_ORDINARY|TRACE_CALLS);
+#endif /* HAVE_MENU_H */
+#endif /* TRACE */
  
     /* tell it we're going to play with soft keys */
     slk_init(1);
@@ -2203,6 +2330,9 @@ int main(const int argc, const char *argv[])
 	(void) puts("r = exercise forms code");
 #endif
 	(void) puts("s = overlapping-refresh test");
+#if defined(HAVE_MENU_H) && defined(TRACE)
+	(void) puts("t = set trace level");
+#endif
 	(void) puts("? = repeat this command summary");
 
 	(void) fputs("> ", stdout);

@@ -60,6 +60,9 @@
  */
 /* #define POSITION_DEBUG */
 
+static inline chtype ClrBlank ( WINDOW *win );
+static inline chtype ClrSetup ( WINDOW *scr );
+static int ClrBottom(int total);
 static void ClrUpdate( WINDOW *scr );
 static void TransformLine( int const lineno );
 static void NoIDcTransformLine( int const lineno );
@@ -262,12 +265,55 @@ static inline void PutChar(chtype const ch)
 #endif /* POSITION_DEBUG */
 }
 
+/*
+ * Output the line in the given range [first .. last]
+ *
+ * If there's a run of identical characters that's long enough to justify
+ * cursor movement, use that also.
+ */
+static void PutRange(
+	const chtype *otext,
+	const chtype *ntext,
+	int row,
+	int first, int last)
+{
+	int j, k, run;
+	int cost = min(SP->_cup_cost, SP->_hpa_cost);
+
+	if (otext != ntext
+	 && (last-first+1) > cost) {
+		for (j = first, run = 0; j <= last; j++) {
+			if (otext[j] == ntext[j]) {
+				run++;
+			} else {
+				if (run > cost) {
+					int before_run = (j - run);
+					for (k = first; k < before_run; k++)
+						PutChar(ntext[k]);
+					(void) mvcur(row, before_run, row, j);
+					first = j;
+				}
+				run = 0;
+			}
+		}
+	}
+	for (j = first; j <= last; j++)
+		PutChar(ntext[j]);
+}
+
 #if CC_HAS_INLINE_FUNCS
 static void callPutChar(chtype const ch)
 {
 	PutChar(ch);
 }
 #endif
+
+#define MARK_NOCHANGE(win,row) \
+	{ \
+		win->_line[row].firstchar = _NOCHANGE; \
+		win->_line[row].lastchar = _NOCHANGE; \
+		win->_line[row].oldindex = row; \
+	}
 
 int doupdate(void)
 {
@@ -334,14 +380,15 @@ int	i;
 			newscr->_clear = FALSE;
 		} else {
 			int changedlines;
+			int total = min(screen_lines, newscr->_maxy+1);
 
 		        _nc_scroll_optimize();
 
+			if (clr_eos)
+				total = ClrBottom(total);
+
 			T(("Transforming lines"));
-			for (i = changedlines = 0;
-			     i < min(screen_lines,newscr->_maxy+1);
-			     i++)
-			{
+			for (i = changedlines = 0; i < total; i++) {
 				/*
 				 * newscr->line[i].firstchar is normally set
 				 * by wnoutrefresh.  curscr->line[i].firstchar
@@ -357,17 +404,9 @@ int	i;
 
 				/* mark line changed successfully */
 				if (i <= newscr->_maxy)
-				{
-					newscr->_line[i].firstchar = _NOCHANGE;
-					newscr->_line[i].lastchar = _NOCHANGE;
-					newscr->_line[i].oldindex = i;
-				}
+					MARK_NOCHANGE(newscr,i)
 				if (i <= curscr->_maxy)
-				{
-					curscr->_line[i].firstchar = _NOCHANGE;
-					curscr->_line[i].lastchar = _NOCHANGE;
-					curscr->_line[i].oldindex = i;
-				}
+					MARK_NOCHANGE(curscr,i)
 
 				/*
 				 * Here is our line-breakout optimization.
@@ -381,17 +420,9 @@ int	i;
 
 	/* this code won't be executed often */
 	for (i = screen_lines; i <= newscr->_maxy; i++)
-	{
-		newscr->_line[i].firstchar = _NOCHANGE;
-		newscr->_line[i].lastchar = _NOCHANGE;
-		newscr->_line[i].oldindex = i;
-	}
+		MARK_NOCHANGE(newscr,i)
 	for (i = screen_lines; i <= curscr->_maxy; i++)
-	{
-		curscr->_line[i].firstchar = _NOCHANGE;
-		curscr->_line[i].lastchar = _NOCHANGE;
-		curscr->_line[i].oldindex = i;
-	}
+		MARK_NOCHANGE(curscr,i)
 
 	curscr->_curx = newscr->_curx;
 	curscr->_cury = newscr->_cury;
@@ -410,6 +441,43 @@ int	i;
 }
 
 /*
+ *	ClrBlank(win)
+ *
+ *	Returns the attributed character that corresponds to the "cleared"
+ *	screen.  If the terminal has the back-color-erase feature, this will be
+ *	colored according to the wbkgd() call.  (Other attributes are
+ *	unspecified, hence assumed to be reset in accordance with
+ *	'ClrSetup()').
+ *
+ *	We treat 'curscr' specially because it isn't supposed to be set directly
+ *	in the wbkgd() call.  Assume 'stdscr' for this case.
+ */
+#define BCE_ATTRS (A_NORMAL|A_COLOR)
+#define BCE_BKGD(win) (((win) == curscr ? stdscr : (win))->_bkgd)
+
+static inline chtype ClrBlank (WINDOW *win)
+{
+chtype	blank = BLANK;
+	if (back_color_erase)
+		blank |= (BCE_BKGD(win) & BCE_ATTRS);
+	return blank;
+}
+
+/*
+ *	ClrSetup(win)
+ *
+ *	Ensures that if the terminal recognizes back-color-erase, that we
+ *	set the video attributes to match the window's background color
+ *	before an erase operation.
+ */
+static inline chtype ClrSetup (WINDOW *win)
+{
+	if (back_color_erase)
+		vidattr(win->_attrs = (BCE_BKGD(win) & BCE_ATTRS));
+	return ClrBlank(win);
+}
+
+/*
 **	ClrUpdate(scr)
 **
 **	Update by clearing and redrawing the entire screen.
@@ -420,88 +488,154 @@ static void ClrUpdate(WINDOW *scr)
 {
 int	i = 0, j = 0;
 int	lastNonBlank;
+chtype	blank = ClrSetup(scr);
 
 	T(("ClrUpdate(%p) called", scr));
-	if (back_color_erase) {
-		T(("back_color_erase, turning attributes off"));
-		vidattr(A_NORMAL);
-	}
 	ClearScreen();
 
 	if (scr != curscr) {
 		for (i = 0; i < screen_lines ; i++)
 			for (j = 0; j < screen_columns; j++)
-				curscr->_line[i].text[j] = ' '; /* shouldn't this include the bkgd? */
+				curscr->_line[i].text[j] = blank;
 	}
 
 	T(("updating screen from scratch"));
 	for (i = 0; i < min(screen_lines, scr->_maxy + 1); i++) {
-		GoTo(i, 0);
 		lastNonBlank = scr->_maxx;
 
-		while (scr->_line[i].text[lastNonBlank] == BLANK && lastNonBlank > 0)
+		while (lastNonBlank >= 0
+		  &&   scr->_line[i].text[lastNonBlank] == blank)
 			lastNonBlank--;
 
-		for (j = 0; j <= min(lastNonBlank, screen_columns); j++) {
-			PutChar(scr->_line[i].text[j]);
+		if (lastNonBlank >= 0) {
+			if (lastNonBlank > screen_columns)
+				lastNonBlank = screen_columns;
+			GoTo(i, 0);
+			PutRange(curscr->_line[i].text,
+				    scr->_line[i].text, i, 0, lastNonBlank);
 		}
 	}
 
-
 	if (scr != curscr) {
 		for (i = 0; i < screen_lines ; i++)
-			for (j = 0; j < screen_columns; j++)
-				curscr->_line[i].text[j] = scr->_line[i].text[j];
+			memcpy(curscr->_line[i].text,
+			          scr->_line[i].text,
+				  screen_columns * sizeof(chtype));
 	}
 }
 
 /*
 **	ClrToEOL()
 **
-**	Clear to EOL.  Deal with background color erase if terminal has this
-**	glitch.  This code forces the current color and highlight to A_NORMAL
-**	before emitting the erase sequence, then restores the current
-**	attribute.
+**	Clear to end of current line, starting at the cursor position
 */
 
 static void ClrToEOL(void)
 {
 int	j;
-attr_t	oldcolor = 0;	/* initialization pacifies -Wall */
-
-	if (back_color_erase) {
-		TPUTS_TRACE("orig_pair");
-		putp(orig_pair);
-		oldcolor = SP->_current_attr & A_COLOR;
-		SP->_current_attr &=~ A_COLOR;
-	}
-	TPUTS_TRACE("clr_eol");
-	putp(clr_eol);
-	if (back_color_erase)
-		vidattr(SP->_current_attr | oldcolor);
+chtype	blank = ClrSetup(curscr);
+bool	needclear = FALSE;
 
 	for (j = SP->_curscol; j < screen_columns; j++)
-	    curscr->_line[SP->_cursrow].text[j] = ' ';
+	{
+	    chtype *cp = &(curscr->_line[SP->_cursrow].text[j]);
+
+	    if (*cp != blank)
+	    {
+		*cp = blank;
+		needclear = TRUE;
+	    }
+	}
+
+	if (needclear)
+	{
+	    TPUTS_TRACE("clr_eol");
+	    putp(clr_eol);
+	}
 }
+
+/*
+**	ClrToBOL()
+**
+**	Clear to beginning of current line, counting the cursor position
+*/
 
 static void ClrToBOL(void)
 {
-int j;
-attr_t	oldcolor = 0;	/* initialization pacifies -Wall */
-
-	if (back_color_erase) {
-		TPUTS_TRACE("orig_pair");
-		putp(orig_pair);
-		oldcolor = SP->_current_attr & A_COLOR;
-		SP->_current_attr &=~ A_COLOR;
-	}
-	TPUTS_TRACE("clr_bol");
-	putp(clr_bol);
-	if (back_color_erase)
-		vidattr(SP->_current_attr | oldcolor);
+int	j;
+chtype	blank = ClrSetup(curscr);
+bool	needclear = FALSE;
 
 	for (j = 0; j <= SP->_curscol; j++)
-	    curscr->_line[SP->_cursrow].text[j] = ' ';
+	{
+	    chtype *cp = &(curscr->_line[SP->_cursrow].text[j]);
+
+	    if (*cp != blank)
+	    {
+		*cp = blank;
+		needclear = TRUE;
+	    }
+	}
+
+	if (needclear)
+	{
+	    TPUTS_TRACE("clr_bol");
+	    putp(clr_bol);
+	}
+}
+
+/*
+ *	ClrBottom(total)
+ *
+ *	Test if clearing the end of the screen would satisfy part of the
+ *	screen-update.  Do this by scanning backwards through the lines in the
+ *	screen, checking if each is blank, and one or more are changed.
+ */
+static int ClrBottom(int total)
+{
+static	chtype	*tstLine;
+static	size_t	lenLine;
+
+int	row, col;
+int	top    = total;
+chtype	blank  = ClrBlank(curscr);
+int	last   = min(screen_columns, newscr->_maxx+1);
+size_t	length = sizeof(chtype) * last;
+
+	if (tstLine == 0)
+		tstLine = (chtype *)malloc(length);
+	else if (length > lenLine)
+		tstLine = (chtype *)realloc(tstLine, length);
+
+	if (tstLine != 0) {
+		lenLine = length;
+		for (col = 0; col < last; col++)
+			tstLine[col] = blank;
+
+		for (row = total-1; row >= 0; row--) {
+			if (memcmp(tstLine, newscr->_line[row].text, length))
+				break;
+			if (newscr->_line[row].firstchar != _NOCHANGE)
+				top = row;
+		}
+
+		if (top < total) {
+			(void) ClrSetup (curscr);
+			GoTo(top,0);
+			TPUTS_TRACE("clr_eos");
+			putp(clr_eos);
+			while (total-- > top) {
+				for (col = 0; col <= curscr->_maxx; col++)
+					curscr->_line[total].text[col] = blank;
+				if (total <= curscr->_maxy)
+					MARK_NOCHANGE(curscr,total)
+				if (total <= newscr->_maxy)
+					MARK_NOCHANGE(newscr,total)
+			}
+			total++;
+		}
+	}
+	return total;
 }
 
 /*
@@ -543,8 +677,7 @@ static void NoIDcTransformLine(int const lineno)
 int	firstChar, lastChar;
 chtype	*newLine = newscr->_line[lineno].text;
 chtype	*oldLine = curscr->_line[lineno].text;
-int	k;
-int	attrchanged = 0;
+bool	attrchanged = FALSE;
 
 	T(("NoIDcTransformLine(%d) called", lineno));
 
@@ -552,7 +685,7 @@ int	attrchanged = 0;
 	while (firstChar < screen_columns - 1 &&  newLine[firstChar] == oldLine[firstChar]) {
 		if(ceol_standout_glitch) {
 			if(AttrOf(newLine[firstChar]) != AttrOf(oldLine[firstChar]))
-			attrchanged = 1;
+			attrchanged = TRUE;
 		}
 		firstChar++;
 	}
@@ -575,10 +708,12 @@ int	attrchanged = 0;
 	}
 
 	T(("updating chars %d to %d", firstChar, lastChar));
-	for (k = firstChar; k <= lastChar; k++) {
-		PutChar(newLine[k]);
-		oldLine[k] = newLine[k];
-	}
+	PutRange(oldLine, newLine, lineno, firstChar, lastChar);
+
+	if (lastChar >= firstChar)
+		memcpy(oldLine + firstChar,
+		       newLine + firstChar,
+		       (lastChar - firstChar + 1) * sizeof(chtype));
 }
 
 /*
@@ -604,8 +739,8 @@ static void IDcTransformLine(int const lineno)
 int	firstChar, oLastChar, nLastChar;
 chtype	*newLine = newscr->_line[lineno].text;
 chtype	*oldLine = curscr->_line[lineno].text;
-int	k, n;
-int	attrchanged = 0;
+int	n;
+bool	attrchanged = FALSE;
 
 	T(("IDcTransformLine(%d) called", lineno));
 
@@ -613,7 +748,7 @@ int	attrchanged = 0;
 		firstChar = 0;
 		while(firstChar < screen_columns) {
 			if(AttrOf(newLine[firstChar]) != AttrOf(oldLine[firstChar]))
-				attrchanged = 1;
+				attrchanged = TRUE;
 			firstChar++;
 		}
 	}
@@ -623,9 +758,10 @@ int	attrchanged = 0;
 	if (attrchanged) {
 		GoTo(lineno, firstChar);
 		ClrToEOL();
-		for( k = 0 ; k <= (screen_columns-1) ; k++ )
-			PutChar(newLine[k]);
+		PutRange(oldLine, newLine, lineno, 0, (screen_columns-1));
 	} else {
+		chtype blank = ClrBlank(curscr);
+
 		while (firstChar < screen_columns  &&
 				newLine[firstChar] == oldLine[firstChar])
 			firstChar++;
@@ -638,10 +774,10 @@ int	attrchanged = 0;
 			int oFirstChar, nFirstChar;
 
 			for (oFirstChar = 0; oFirstChar < screen_columns; oFirstChar++)
-				if (oldLine[oFirstChar] != BLANK)
+				if (oldLine[oFirstChar] != blank)
 					break;
 			for (nFirstChar = 0; nFirstChar < screen_columns; nFirstChar++)
-				if (newLine[nFirstChar] != BLANK)
+				if (newLine[nFirstChar] != blank)
 					break;
 
 			if (nFirstChar > oFirstChar + (int)strlen(clr_bol))
@@ -658,26 +794,25 @@ int	attrchanged = 0;
 		}
 
 		oLastChar = screen_columns - 1;
-		while (oLastChar > firstChar  &&  oldLine[oLastChar] == BLANK)
+		while (oLastChar > firstChar  &&  oldLine[oLastChar] == blank)
 			oLastChar--;
 
 		nLastChar = screen_columns - 1;
-		while (nLastChar > firstChar  &&  newLine[nLastChar] == BLANK)
+		while (nLastChar > firstChar  &&  newLine[nLastChar] == blank)
 			nLastChar--;
 
 		if((nLastChar == firstChar)
 		 && clr_eol
-		 && (curscr->_attrs == A_NORMAL)) {
+		 && ((curscr->_attrs | BLANK) == blank)) {
 			GoTo(lineno, firstChar);
 			ClrToEOL();
-			if(newLine[firstChar] != BLANK )
+			if(newLine[firstChar] != blank )
 				PutChar(newLine[firstChar]);
 		} else if( newLine[nLastChar] != oldLine[oLastChar] ) {
 			n = max( nLastChar , oLastChar );
 
 			GoTo(lineno, firstChar);
-			for( k=firstChar ; k <= n ; k++ )
-				PutChar(newLine[k]);
+			PutRange(oldLine, newLine, lineno, firstChar, n);
 		} else {
 			while (newLine[nLastChar] == oldLine[oLastChar]) {
 				if (nLastChar != 0
@@ -692,11 +827,10 @@ int	attrchanged = 0;
 			n = min(oLastChar, nLastChar);
 			GoTo(lineno, firstChar);
 
-			for (k=firstChar; k <= n; k++)
-				PutChar(newLine[k]);
+			PutRange(oldLine, newLine, lineno, firstChar, n);
 
 			if (oLastChar < nLastChar)
-				InsStr(&newLine[k], nLastChar - oLastChar);
+				InsStr(&newLine[n], nLastChar - oLastChar);
 
 			else if (oLastChar > nLastChar ) {
 				/*
@@ -711,8 +845,10 @@ int	attrchanged = 0;
 			}
 		}
 	}
-	for (k = firstChar; k < screen_columns; k++)
-		oldLine[k] = newLine[k];
+	if (screen_columns > firstChar)
+		memcpy( oldLine + firstChar,
+			newLine + firstChar,
+			(screen_columns - firstChar) * sizeof(chtype));
 }
 
 /*

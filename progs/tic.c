@@ -34,7 +34,32 @@
 #include "dump_entry.h"
 #include "term_entry.h"
 
-char	*_nc_progname;
+char	*_nc_progname = "tic";
+
+static	const	char usage_string[] = "[-hc] [-v[n]] [-e names] [-ICNRrw1] source-file\n";
+
+static void help(void)
+{
+#define P	printf
+  P("Usage is: %s %s\n", _nc_progname, usage_string);
+  P("-h         display this help message\n");
+  P("-c         check only, validate input without compiling or translating\n");
+  P("-v[n]      set verbosity level\n");
+  P("-e<names>  translate/compile only entries named by comma-separated list\n");
+  P("-o         set output directory for compiled entry writes\n");
+  P("-I         translate entries to terminfo source form\n");
+  P("-C         translate entries to termcap source form\n");
+  P("-N         disable smart defaults for source translation\n");
+  P("-R         restrict translation to given terminfo/termcap version\n");
+  P("-r         force resolution of all use entries in source translation\n");
+  P("-w[n]      set format width for translation output\n");
+  P("-1         format translation output one capability per line\n");
+  P("-T         remove size-restrictions on compiled description\n");
+
+  P("\n<file>     file to translate or compile\n");
+#undef P
+  exit(EXIT_SUCCESS);
+}
 
 static bool immedhook(ENTRY *ep)
 /* write out entries with no use capabilities immediately to save storage */
@@ -150,10 +175,35 @@ static void put_translate(int c)
     }
 }
 
+static bool matches(const char *needle, const char *haystack)
+/* does comma-separated field in needle match |-separated field in haystack? */
+{
+	int code = FALSE;
+	char *cp, *s, *np;
+
+	if (needle != 0)
+	{
+		s = malloc(strlen(needle) + 1);
+		(void) strcpy(s, needle);
+		(void) strcat(s, ",");
+		for (cp = s; (np = strchr(cp, ',')) != 0; cp = np + 1)
+		{
+			*np = '\0';
+			if (_nc_name_match(haystack, cp, "|"))
+			{
+				code = TRUE;
+				break;
+			}
+		}
+		free(s);
+	}
+	else
+		code = TRUE;
+	return(code);
+}
+
 int main (int argc, char *argv[])
 {
-static	const	char usage_string[] = "[-c] [-v[n]] [-ICNRrw1] source-file\n";
-
 int	i, debug_level = 0;
 int	argflag = FALSE, smart_defaults = TRUE;
 char    *termcap;
@@ -163,8 +213,11 @@ int	width = 60;
 bool	infodump = FALSE;	/* running as captoinfo? */
 bool	capdump = FALSE;	/* running as infotocap? */
 bool	forceresolve = FALSE;	/* force resolution */
+bool	limited = TRUE;
 char	*tversion = (char *)NULL;
 char	*source_file = "terminfo";
+char	*namelst = (char *)NULL;
+char	*outdir = (char *)NULL;
 bool	check_only = FALSE;
 
 	if ((_nc_progname = strrchr(argv[0], '/')) == NULL)
@@ -178,12 +231,22 @@ bool	check_only = FALSE;
 	for (i = 1; i < argc; i++) {
 	    	if (argv[i][0] == '-') {
 			switch (argv[i][1]) {
+			case '?':
+			case 'h':
+				help();
+				break;
 		    	case 'c':
 				check_only = TRUE;
 				break;
 		    	case 'v':
 				debug_level = argv[i][2] ? atoi(&argv[i][2]):1;
 				_nc_tracing = (1 << debug_level) - 1;
+				break;
+			case 'o':
+			        if (argv[i][2])
+				    outdir = &argv[i][2];
+				else
+				    outdir = argv[++i];
 				break;
 		    	case 'I':
 				infodump = TRUE;
@@ -195,7 +258,16 @@ bool	check_only = FALSE;
 				smart_defaults = FALSE;
 				break;
 			case 'R':
-				tversion = &argv[i][2];
+			        if (argv[i][2])
+				    tversion = &argv[i][2];
+				else
+				    tversion = argv[++i];
+				break;
+			case 'e':
+			        if (argv[i][2])
+				    namelst = &argv[i][2];
+				else
+				    namelst = argv[++i];
 				break;
 			case 'r':
 				forceresolve = TRUE;
@@ -206,16 +278,19 @@ bool	check_only = FALSE;
 		    	case 'V':
 				(void) fputs(NCURSES_VERSION, stdout);
 				putchar('\n');
-				exit(0);
+				exit(EXIT_SUCCESS);
 		    	case '1':
 		    		width = 0;
 		    		break;
+			case 'T':
+				limited = FALSE;
+				break;
 		    	default:
 				fprintf (stderr, 
 					"%s: Unknown option. Usage is:\n\t%s",
 					_nc_progname,
 				        usage_string);
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 	    	} else if (argflag) {
 			fprintf (stderr, 
@@ -223,7 +298,7 @@ bool	check_only = FALSE;
 				_nc_progname,
 				_nc_progname,
 				usage_string);
-			exit(1);
+			exit(EXIT_FAILURE);
 		} else {
 			argflag = TRUE;
 			source_file = argv[i];
@@ -233,7 +308,7 @@ bool	check_only = FALSE;
 	if (argflag == FALSE) {
 		if (infodump == TRUE) {
 			/* captoinfo's no-argument case */
-			termcap = "/etc/termcap";
+			source_file = "/etc/termcap";
 			if ((termcap = getenv("TERMCAP")) != NULL) {
 				if (access(termcap, F_OK) == 0) {
 					/* file exists */
@@ -247,13 +322,13 @@ bool	check_only = FALSE;
 				_nc_progname,
 				_nc_progname,
 				usage_string);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 	}
 
 	if (freopen(source_file, "r", stdin) == NULL) {
 		fprintf (stderr, "%s: Can't open %s\n", _nc_progname, source_file);
-		exit (1);
+		exit (EXIT_FAILURE);
 	}
 
 	if (infodump)
@@ -266,6 +341,10 @@ bool	check_only = FALSE;
 
 	/* parse entries out of the source file */
 	_nc_set_source(source_file);
+#ifndef HAVE_BIG_CORE
+	if (!(check_only || infodump || capdump))
+	    _nc_set_writedir(outdir);
+#endif /* HAVE_BIG_CORE */
 	_nc_read_entry_source(stdin, (char *)NULL,
 			      !smart_defaults, FALSE,
 			      (check_only || infodump || capdump) ? NULLHOOK : immedhook);
@@ -273,32 +352,53 @@ bool	check_only = FALSE;
 	/* do use resolution */
 	if (check_only || (!infodump && !capdump) || forceresolve)
 	    if (!_nc_resolve_uses() && !check_only)
-		exit(1);
+		exit(EXIT_FAILURE);
+
+#ifndef HAVE_BIG_CORE
+	/*
+	 * Aaargh! immedhook seriously hoses us!
+	 *
+	 * One problem with immedhook is it means we can't do -e.  Problem
+	 * is that we can't guarantee that for each terminal listed, all the 
+	 * terminals it depends on will have been kept in core for reference
+	 * resolution -- in fact it's certain the primitive types at the end
+	 * of reference chains *won't* be in core unless they were explicitly
+	 * in the select list themselves.
+	 */
+	if (namelst && (!infodump && !capdump))
+	{
+	    (void) fprintf(stderr,
+			   "Sorry, -e can't be used without -I or -C\n");
+	    exit(EXIT_FAILURE);
+	}
+#endif /* HAVE_BIG_CORE */
 
 	/* length check */
 	if (check_only && (capdump || infodump))
 	    for_entry_list(qp)
-	    {
-		char	outbuf[MAX_TERMINFO_LENGTH * 2];
-		int	len = fmt_entry(&qp->tterm, NULL,outbuf,TRUE,infodump);
+		if (matches(namelst, qp->tterm.term_names))
+		{
+		    int	len = fmt_entry(&qp->tterm, NULL, TRUE, infodump);
 
-		if (len > (infodump?MAX_TERMINFO_LENGTH:MAX_TERMCAP_LENGTH))
+		    if (len>(infodump?MAX_TERMINFO_LENGTH:MAX_TERMCAP_LENGTH))
 		    	    (void) fprintf(stderr,
 			   "warning: resolved %s entry is %d bytes long\n",
 			   _nc_first_name(qp->tterm.term_names),
 			   len);
-	    }
+		}
 
 	/* write or dump all entries */
 	if (!check_only)
 	    if (!infodump && !capdump)
 	    {
+		_nc_set_writedir(outdir);
 		for_entry_list(qp)
-		{
-		    _nc_set_type(_nc_first_name(qp->tterm.term_names));
-		    _nc_curr_line = qp->startline;
-		    _nc_write_entry(&qp->tterm);
-		}
+		    if (matches(namelst, qp->tterm.term_names))
+		    {
+			_nc_set_type(_nc_first_name(qp->tterm.term_names));
+			_nc_curr_line = qp->startline;
+			_nc_write_entry(&qp->tterm);
+		    }
 	    }
 	    else
 	    {
@@ -306,32 +406,39 @@ bool	check_only = FALSE;
 		int	c, oldc = '\0';
 
 		for_entry_list(qp)
-		{
-		    int	j = qp->cend - qp->cstart;
+		    if (matches(namelst, qp->tterm.term_names))
+		    {
+			int	j = qp->cend - qp->cstart;
+			int	len = 0;
 
-		    (void) fseek(stdin, qp->cstart, SEEK_SET); 
-		    while (j-- )
-			if (infodump)
-			    (void) putchar(getchar());
-			else
-			    put_translate(getchar());
+			(void) fseek(stdin, qp->cstart, SEEK_SET); 
+			while (j-- )
+			    if (infodump)
+				(void) putchar(getchar());
+			    else
+				put_translate(getchar());
 
-		    dump_entry(&qp->tterm, NULL);
-		    for (j = 0; j < qp->nuses; j++)
-			dump_uses((char *)(qp->uses[j]), infodump);
-		    (void) putchar('\n');
-		}
-		(void) fseek(stdin, _nc_tail->cend, SEEK_SET);
-		while ((c = getchar()) != EOF)
+			len = dump_entry(&qp->tterm, limited, NULL);
+			for (j = 0; j < qp->nuses; j++)
+			    len += dump_uses((char *)(qp->uses[j]), infodump);
+			(void) putchar('\n');
+			if (debug_level != 0 && !limited)
+			    printf("# length=%d\n", len);
+		    }
+		if (!namelst)
 		{
-		    if (oldc == '\n' && c == '#')
-			trailing_comment = TRUE;
-		    if (trailing_comment)
-			putchar(c);
-		    oldc = c;
+		    (void) fseek(stdin, _nc_tail->cend, SEEK_SET);
+		    while ((c = getchar()) != EOF)
+		    {
+			if (oldc == '\n' && c == '#')
+			    trailing_comment = TRUE;
+			if (trailing_comment)
+			    putchar(c);
+			oldc = c;
+		    }
 		}
 	    }
-
+	
 	return(0);
 }
 

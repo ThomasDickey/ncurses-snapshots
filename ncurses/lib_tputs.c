@@ -22,6 +22,9 @@
 
 /*
  *	tputs.c
+ *		delay_output()
+ *		_nc_outch()
+ *		tputs()
  *
  */
 
@@ -29,6 +32,33 @@
 #include <string.h>
 #include <ctype.h>
 #include "term.h"	/* padding_baud_rate, xon_xoff */
+
+int delay_output(float ms)
+{
+	T(("delay_output(%f) called", ms));
+
+    	if (SP == 0 || SP->_baudrate <= 0)
+		return(ERR);
+#ifdef no_pad_char
+    	else if (no_pad_char)
+		_nc_timed_wait(0, (int)ms, (int *)NULL);
+#endif /* no_pad_char */
+	else {
+		register int	nullcount;
+		char	null = '\0';
+
+#ifdef pad_char
+		if (pad_char)
+	    		null = pad_char[0];
+#endif /* pad_char */
+
+		for (nullcount = ms * 1000 / SP->_baudrate; nullcount > 0; nullcount--)
+		    	putc(null, SP->_ofp);
+		(void) fflush(SP->_ofp);
+    	}
+
+    	return OK;
+}
 
 int _nc_outch(int ch)
 {
@@ -107,7 +137,8 @@ char	addrbuf[17];
 			string++;
 			if (*string != '<') {
 			    	(*outc)('$');
-			    	(*outc)(*string);
+				if (*string)
+				    (*outc)(*string);
 			} else {
 				bool mandatory;
 

@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 9.13.2
+#	Version 9.13.4
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -46,13 +46,12 @@
 # you have ncurses `tic -I' is nicer.
 #
 # The termcap version is generated automatically from the master version
-# using tic -C -RBSD.  This filtering leaves in the OT capabilities under 
-# their original termcap names.  All translated entries fit within the
-# 1023-byte string-table limit of archaic termcap libraries except where
-# explicitly noted below.  Note that the termcap translation assumes that
-# your termcap library can handle multiple tc capabilities in an entry.
-# 4.4BSD has this capability.  Older versions of GNU termcap, through 1.3, do
-# not. 
+# using tic -C.  This filtering leaves in the OT capabilities under their
+# original termcap names.  All translated entries fit within the 1023-byte
+# string-table limit of archaic termcap libraries except where explicitly
+# noted below.  Note that the termcap translation assumes that your termcap
+# library can handle multiple tc capabilities in an entry. 4.4BSD has this
+# capability.  Older versions of GNU termcap, through 1.3, do not. 
 #
 # For details on these formats, see terminfo(5) in the ncurses distribution,
 # and termcap(5) in the 4.4BSD Unix Programmer's Manual.  Be aware that 4.4BSD
@@ -94,11 +93,6 @@
 # use reorder).  Minor sections usually correspond to manufacturers or
 # standard terminal classes.  Parenthesized words following manufacturer
 # names are type prefixes or product line names used by that manufacturers.
-#
-# Finally, because this file is released in both terminfo and termcap formats,
-# most references to termcap names in comments are bracketed with colons (the
-# termcap separator) so they can be distinguished from terminfo capability
-# names.
 #
 # HOW TO READ THE ENTRIES:
 #
@@ -207,8 +201,10 @@
 # of heaviest use, popularity, and interesting features.
 #
 # I'm especially interested in identifying the obscure entries listed under
-# `Manufacturer unknown' and `Utter unknowns', before the tribal wisdom 
-# about them gets lost.
+# `Miscellaneous obsolete terminals, manufacturers unknown' before the tribal
+# wisdom about them gets lost.  If you know a lot about obscure old terminals,
+# please go to the terminfo resource page, grab the file ufo.ti, and eyeball
+# it for things you can identify. 
 #
 # If you have been around long enough to contribute, please read the file
 # with this in mind and send me your annotations.
@@ -309,6 +305,12 @@ klone+color|color control for ansi.sys and ISO6429-compatible displays,
 	colors#8, ncv#3, pairs#64, 
 	op=\E[37;40m, setb=\E[4%p1%dm, setf=\E[3%p1%dm, 
 
+# This is better than klone+color, it doesn't assume white-on-black as the
+# default color pair,  but many `ANSI' terminals don't grok the <op> cap.
+ecma+color|color control for ECMA-48-compatible terminals, 
+	colors#8, ncv#3, pairs#64, 
+	op=\E[39;49m, setb=\E[4%p1%dm, setf=\E[3%p1%dm, 
+
 # For comparison, here are all the capabilities implied by the Intel
 # Binary Compatibility Standard (level 2) that fit within terminfo.
 # For more detail on this rather pathetic standard, see the comments
@@ -389,13 +391,12 @@ ansi-m|ansi-mono|ANSI X3.64-1979 terminal with ANSI.SYS compatible attributes,
 	vpa=\E[%i%p1%dd, use=pcansi-m, 
 
 # ansi -- this terminfo expresses the largest subset of X3.64 that will fit in
-# standard terminfo.  Assumes ANSI.SYS-compatible attributes and color
+# standard terminfo.  Assumes ANSI.SYS-compatible attributes and color.
 # From: Eric S. Raymond <esr@snark.thyrsus.com> Nov 6 1995
 ansi|ansi/pc-term compatible with color, 
 	u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?%[;0123456789]c, 
 	u9=\E[c, 
-	use=klone+color, use=klone+acs, use=klone+sgr, 
-	use=ansi-m, 
+	use=ecma+color, use=klone+acs, use=klone+sgr, use=ansi-m, 
 
 #
 # ANSI.SYS entries
@@ -479,22 +480,23 @@ nansi.sysk|nansisysk|PC-DOS Public Domain NANSI.SYS with keypad redefined for vi
 # The 1.3.x kernels add color-change capabilities; if yours doesn't have this
 # and it matters, turn off <ccc>.  The %02x escape used to implement this is
 # not back-portable to SV curses and not supported in ncurses versions before
-# 1.9.9.
+# 1.9.9. All linux kernels since 1.2.13 (at least) set the screen size
+# themselves; this entry assumes that capability.
 #
 # From: Eric S. Raymond <esr@snark.thyrsus.com> 15 Dec 1995
 linux|linux console, 
 	am, bce, ccc, eo, mir, msgr, xenl, xon, 
-	cols#80, it#8, lines#25, 
+	it#8, 
 	bel=^G, civis=\E[?25l, clear=\E[H\E[J, cnorm=\E[?25h, 
 	cr=^M, csr=\E[%i%p1%d;%p2%dr, cub1=^H, cud1=^J, cuf1=\E[C, 
 	cup=\E[%i%p1%d;%p2%dH, cuu1=\E[A, dch=\E[%p1%dP, 
-	dch1=\E[P, dim=\E[2m, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, 
-	el=\E[K, flash=\E[?5h\E[?5l$<200/>, home=\E[H, 
-	hpa=\E[%i%p1%dG, ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, 
-	il=\E[%p1%dL, il1=\E[L, ind=^J, 
-	initc=\E]P%p1%x%p2%02x%p3%02x%p4%02x, kb2=\E[G, 
-	kbs=\177, kcbt=\E[Z, kcub1=\E[D, kcud1=\E[B, kcuf1=\E[C, 
-	kcuu1=\E[A, kdch1=\E[3~, kend=\E[4~, kf1=\E[[A, 
+	dch1=\E[P, dim=\E[2m, dl=\E[%p1%dM, dl1=\E[M, 
+	ech=\E[%p1%dX, ed=\E[J, el=\E[K, 
+	flash=\E[?5h\E[?5l$<200/>, home=\E[H, hpa=\E[%i%p1%dG, 
+	ht=^I, hts=\EH, ich=\E[%p1%d@, ich1=\E[@, il=\E[%p1%dL, 
+	il1=\E[L, ind=^J, initc=\E]P%p1%x%p2%02x%p3%02x%p4%02x, 
+	kb2=\E[G, kbs=\177, kcbt=\E[Z, kcub1=\E[D, kcud1=\E[B, 
+	kcuf1=\E[C, kcuu1=\E[A, kdch1=\E[3~, kend=\E[4~, kf1=\E[[A, 
 	kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, kf13=\E[25~, 
 	kf14=\E[26~, kf15=\E[28~, kf16=\E[29~, kf17=\E[31~, 
 	kf18=\E[32~, kf19=\E[33~, kf2=\E[[B, kf20=\E[34~, 
@@ -505,7 +507,7 @@ linux|linux console,
 	sgr=\E[0;10%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p6%t;1%;%?%p7%t;8%;%?%p9%t;11%;m, 
 	smir=\E[4h, tbc=\E[3g, u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?6c, 
 	u9=\E[c, vpa=\E[%i%p1%dd, 
-	use=klone+sgr, use=klone+color, use=klone+acs, 
+	use=klone+sgr, use=ecma+color, use=klone+acs, 
 linux-m|Linux console no color, 
 	colors@, pairs@, 
 	setab@, setaf@, setb@, setf@, use=linux, 
@@ -514,6 +516,9 @@ linux-m|Linux console no color,
 linux-nic|linux with ich/ich1 suppressed for non-curses programs, 
 	ich@, ich1@, 
 	use=linux, 
+
+linux-old|linux console with hardwired screen size, 
+	cols#80, lines#25, use=linux, 
 
 # SCO console and SOS-Syscons console for 386bsd
 # (scoansi: had unknown capabilities
@@ -780,7 +785,7 @@ qnx|qnx4|qnx console,
 	sgr=%?%p1%t\E<%;%p2%t\E[%;%p3%t\E(%;%p4%t\E{%;%p6%t\E<%;, 
 	sgr0=\E}\E]\E>\E), smso=\E(, smul=\E[, 
 
-#### FreeBSD and NetBSD consoles
+#### NetBSD consoles
 #
 # pcvt termcap database entries (corresponding to release 3.31)
 # Author's last edit-date: [Fri Sep 15 20:29:10 1995]
@@ -861,6 +866,13 @@ pcvt50w|dec vt220 emulation with 50 lines and 132 cols,
 	cols#132, lines#50, 
 	is2=\E[1;50r\E[50;1H, use=pcvtXX, 
 
+# NetBSD/x68k console vt200 emulator. This port runs on a 68K machine
+# manufactured by Sharp for the Japenese market.
+# From Minoura Makoto <minoura@netlaputa.or.jp>, 12 May 1996
+x68k|x68k-ite|NetBSD/x68k ITE, 
+	cols#96, lines#32, 
+	kclr=\E[9~, khlp=\E[28~, use=vt220, 
+
 #### FreeBSD console entries
 #
 # From: Andrew Chernov <ache@astral.msk.su> 29 Mar 1996
@@ -873,7 +885,7 @@ pcvt50w|dec vt220 emulation with 50 lines and 132 cols,
 # for syscons
 # common entry without semigraphics
 # Bug: The <op> capability resets attributes.
-cons25w|ansiw|ansi80x25-raw, 
+cons25w|ansiw|ansi80x25-raw|freebsd console (25-line raw mode), 
 	am, bce, bw, eo, msgr, npc, 
 	colors#8, cols#80, it#8, lines#25, pairs#64, 
 	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, clear=\E[H\E[J, 
@@ -892,54 +904,56 @@ cons25w|ansiw|ansi80x25-raw,
 	rin=\E[%p1%dT, rmso=\E[m, rs1=\E[x\E[m\Ec, 
 	setb=\E[4%p1%dm, setf=\E[3%p1%dm, sgr0=\E[m, smso=\E[7m, 
 	vpa=\E[%i%p1%dd, 
-cons25|ansis|ansi80x25, 
-	acsc=l\332m\300k\277j\331u\264t\303v\301w\302q\304x\263n\305`\004a\260f\370g\361~\371.\031-\030h\261I^U0\333y\363z\362, use=cons25w, 
-cons25-m|ansis-mono|ansi80x25-mono, 
+cons25|ansis|ansi80x25|freebsd console (25-line ansi mode), 
+	acsc=l\332m\300k\277j\331u\264t\303v\301w\302q\304x\263n\305`\004a\260f\370g\361~\371.\031-\030h\261I^U0\333y\363z\362, 
+	use=cons25w, 
+cons25-m|ansis-mono|ansi80x25-mono|freebsd console (25-line mono ansi mode), 
 	colors@, pairs@, 
 	bold@, dim@, op@, rmul=\E[m, setb@, setf@, smul=\E[4m, use=cons25, 
-cons30|ansi80x30, 
+cons30|ansi80x30|freebsd console (30-line ansi mode), 
 	lines#30, use=cons25, 
-cons30-m|ansi80x30-mono, 
+cons30-m|ansi80x30-mono|freebsd console (30-line mono ansi mode), 
 	lines#30, use=cons25-m, 
-cons43|ansi80x43, 
+cons43|ansi80x43|freebsd console (43-line ansi mode), 
 	lines#43, use=cons25, 
-cons43-m|ansi80x43-mono, 
+cons43-m|ansi80x43-mono|freebsd console (43-line mono ansi mode), 
 	lines#43, use=cons25-m, 
-cons50|ansil|ansi80x50, 
+cons50|ansil|ansi80x50|freebsd console (50-line ansi mode), 
 	lines#50, use=cons25, 
-cons50-m|ansil-mono|ansi80x50-mono, 
+cons50-m|ansil-mono|ansi80x50-mono|freebsd console (50-line mono ansi mode), 
 	lines#50, use=cons25-m, 
-cons60|ansi80x60, 
+cons60|ansi80x60|freebsd console (60-line ansi mode), 
 	lines#60, use=cons25, 
-cons60-m|ansi80x60-mono, 
+cons60-m|ansi80x60-mono|freebsd console (60-line mono ansi mode), 
 	lines#60, use=cons25-m, 
-# Syscons console with koi8-r russian code table.
-cons25r|pc3r|ibmpc3r|cons25-koi8-r, 
-	acsc=q\200x\201m\204v\211j\205t\206n\212u\207l\202w\210k\203y\230z\231f\234~\225a\220h\221`\004.\031-\030I^U0\215, use=cons25w, 
-cons25r-m|pc3r-m|ibmpc3r-mono|cons25-koi8-r-mono, 
+cons25r|pc3r|ibmpc3r|cons25-koi8-r|freebsd console w/koi8-r cyrillic, 
+	acsc=q\200x\201m\204v\211j\205t\206n\212u\207l\202w\210k\203y\230z\231f\234~\225a\220h\221`\004.\031-\030I^U0\215, 
+	use=cons25w, 
+cons25r-m|pc3r-m|ibmpc3r-mono|cons25-koi8r-m|freebsd console w/koi8-r cyrillic (mono), 
 	colors@, pairs@, 
 	op@, rmul=\E[m, setb@, setf@, smul=\E[4m, use=cons25r, 
-cons50r|cons50-koi8-r, 
+cons50r|cons50-koi8r|freebsd console w/koi8-r cyrillic (50 lines), 
 	lines#50, use=cons25r, 
-cons50r-m|cons50-koi8-r-mono, 
+cons50r-m|cons50-koi8r-m|freebsd console w/koi8-r cyrillic (50-line mono), 
 	lines#50, use=cons25r-m, 
-cons60r|cons60-koi8-r, 
+cons60r|cons60-koi8r|freebsd console w/koi8-r cyrillic (60 lines), 
 	lines#60, use=cons25r, 
-cons60r-m|cons60-koi8-r-mono, 
+cons60r-m|cons60-koi8r-m|freebsd console w/koi8-r cyrillic (60-line mono), 
 	lines#60, use=cons25r-m, 
 # ISO 8859-1 FreeBSD console
-cons25l1|cons25-iso8859-1, 
-	acsc=l\215m\216k\214j\213u\226t\225v\227w\230q\222x\231n\217o\220s\224p\221r\223`\201a\202f\207g\210~\237.\031-\030+\253\054\273I\247y\232z\233, use=cons25w, 
-cons25l1-m|cons25-iso8859-1-mono, 
+cons25l1|cons25-iso8859|freebsd console w/iso 8859-1 chars, 
+	acsc=l\215m\216k\214j\213u\226t\225v\227w\230q\222x\231n\217o\220s\224p\221r\223`\201a\202f\207g\210~\237.\031-\030+\253\054\273I\247y\232z\233, 
+	use=cons25w, 
+cons25l1-m|cons25-iso-m|freebsd console w/iso 8859-1 chars (mono), 
 	colors@, pairs@, 
 	bold@, dim@, op@, rmul=\E[m, setb@, setf@, smul=\E[4m, use=cons25l1, 
-cons50l1|cons50-iso8859-1, 
+cons50l1|cons50-iso8859|freebsd console w/iso 8859-1 chars (50 lines), 
 	lines#50, use=cons25l1, 
-cons50l1-m|cons50-iso8859-1-mono, 
+cons50l1-m|cons50-iso-m|freebsd console w/iso 8859-1 chars (50-line mono), 
 	lines#50, use=cons25l1-m, 
-cons60l1|cons60-iso8859-1, 
+cons60l1|cons60-iso|freebsd console w/iso 8859-1 chars (60 lines), 
 	lines#60, use=cons25l1, 
-cons60l1-m|cons60-iso8859-1-mono, 
+cons60l1-m|cons60-iso-m|freebsd console w/iso 8859-1 chars (60-line mono), 
 	lines#60, use=cons25l1-m, 
 
 #### 386BSD and BSD/OS Consoles
@@ -1092,7 +1106,7 @@ vt52|dec vt52,
 # (and even then, whenever it can be arranged!) you should set
 #	INTERLACE_OFF
 #
-# (I added <rmam>/<smam> based on the init string -- esr)
+# (I added <rmam>/<smam> based on the init string, also <OTbs> -- esr)
 vt100|vt100-am|dec vt100 (w/advanced video), 
 	am, msgr, xenl, xon, 
 	cols#80, it#8, lines#24, vt#3, 
@@ -1180,7 +1194,7 @@ vt125|vt125 graphics terminal,
 	clear=\E[H\E[2J\EPpS(E)\E\\$<50>, use=vt100, 
 
 # This isn't a DEC entry, it came from University of Wisconsin.
-# (vt131: I added <rmam>/<smam> based on the init string -- esr)
+# (vt131: I added <rmam>/<smam> based on the init string, also <OTbs> -- esr)
 vt131|dec vt131, 
 	am, xenl, 
 	cols#80, it#8, lines#24, vt#3, 
@@ -1649,6 +1663,7 @@ x10term|vs100-x10|xterm terminal emulator (X10 window system),
 # xterm's internal mouse-tracking facility; ncurses will interpret the
 # following three bytes of mouse status information.
 # From: Eric S. Raymond <esr@snark.thyrsus.com> 14 Dec 1995
+# Updated: T.Dickey <dickey@clark.net> 12 May 1996, for XFree86 3.1.2E
 xterm|vs100|xterm terminal emulator (X11R6 Window System), 
 	am, km, mir, msgr, xenl, xon, 
 	cols#80, it#8, lines#65, 
@@ -1661,12 +1676,14 @@ xterm|vs100|xterm terminal emulator (X11R6 Window System),
 	el=\E[K, enacs=\E(B\E)0, home=\E[H, ht=^I, ich=\E[%p1%d@, 
 	ich1=\E[@, il=\E[%p1%dL, il1=\E[L, ind=^J, 
 	is2=\E[r\E[m\E[H\E[2J\E[?7h\E[?1;3;4;6l\E[4l, kbs=^H, 
-	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kend=\EOe, 
-	kent=\EOM, kf1=\E[11~, kf10=\E[21~, kf11=\E[23~, 
-	kf12=\E[24~, kf2=\E[12~, kf3=\E[13~, kf4=\E[14~, 
-	kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
-	khome=\EO\200, kich1=\E[2~, kmous=\E[M, knp=\E[6~, 
-	kpp=\E[5~, rc=\E8, rev=\E[7m, ri=\EM, rmacs=^O, rmam=\E[?7l, 
+	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kdch1=\177, 
+	kend=\EOF, kent=\EOM, kf1=\E[11~, kf10=\E[21~, kf11=\E[23~, 
+	kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, kf15=\E28~, 
+	kf16=\E29~, kf17=\E[31~, kf18=\E[32~, kf19=\E33~, 
+	kf2=\E[12~, kf20=\E34~, kf3=\E[13~, kf4=\E[14~, kf5=\E[15~, 
+	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, khome=\EOH, 
+	kich1=\E[2~, kmous=\E[M, knp=\E[6~, kpp=\E[5~, rc=\E8, 
+	rev=\E[7m, ri=\EM, rmacs=^O, rmam=\E[?7l, 
 	rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, rmkx=\E[?1l\E>, 
 	rmso=\E[m, rmul=\E[m, rs1=^O, 
 	rs2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l\E<, 
@@ -1690,17 +1707,21 @@ xterm-nic|xterm with ich/ich1 suppressed for non-curses programs,
 	ich@, ich1@, 
 	use=xterm, 
 
-# Should work with the color xterm on the X11R6 contrib tape.
-# Assumes the xterm attribute default is black on white.
-# From: Eric S. Raymond <esr@snark.thyrsus.com> March 4 1996
-xterm-color|xterm with color support, 
-	use=xterm, use=klone+color, 
+xterm-old|vs100-old|xterm for XFree86 versions previous to 3.1.2E, 
+	kend=\EOe, khome=\EO\200, 
+	use=xterm, 
+
+# From: T.Dickey <dickey@clark.net> 12 May 1996, for XFree86 3.1.2E
+# Note: older versions don't have <bce> or the ECMA <op> capability.
+xterm-color|xfree86 3.1.2E xterm with color support, 
+	bce, use=xterm, use=ecma+color, 
 
 # From: Mark Sheppard <kimble@mistral.co.uk>, 4 May 1996 
 xterm1|xterm terminal emulator ignoring the alternate screen buffer, 
 	rmcup@, smcup@, 
 	use=xterm, 
 
+# Sigh...this ought to grok ecma+color, but it doesn't.
 # From: Thomas Dickey <dickey@clark.net> 13 Dec 1995
 rxvt|rxvt terminal emulator, 
 	kend=\EOw, khome=\E[H, kmous@, use=xterm, use=klone+color, 
@@ -1827,28 +1848,32 @@ eterm|gnu emacs term.el terminal emulation,
 	smul=\E[4m, 
 
 # Entries for use by the FSF's `screen' program.  The screen and
-# screen-w came with version 3.6.2.  The screen2 and screen3 entries
+# screen-w came with version 3.7.1.  The screen2 and screen3 entries
 # come from University of Wisconsin and may be older.
 
 screen|VT 100/ANSI X3.64 virtual terminal, 
 	am, km, mir, msgr, xenl, 
-	cols#80, it#8, lines#24, 
+	colors#8, cols#80, it#8, lines#24, pairs#64, 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~..--++\054\054hhII00, 
-	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, clear=\E[H\E[J, 
-	cr=^M, csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
-	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
-	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\EM, 
-	dch=\E[%p1%dP, dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, 
-	el=\E[K, home=\E[H, ht=^I, hts=\EH, ich=\E[%p1%d@, 
-	il=\E[%p1%dL, il1=\E[L, ind=^J, is2=\E)0, kbs=^H, kcub1=\EOD, 
-	kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kdch1=\E[3~, kf1=\EOP, 
-	kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, kf2=\EOQ, kf3=\EOR, 
-	kf4=\EOS, kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, 
-	kf9=\E[20~, khome=\E[1~, kich1=\E[2~, kll=\E[4~, knp=\E[6~, 
-	kpp=\E[5~, nel=\EE, rc=\E8, rev=\E[7m, ri=\EM, rmacs=^O, 
-	rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[23m, rmul=\E[24m, 
-	rs2=\Ec, sc=\E7, sgr0=\E[m, smacs=^N, smir=\E[4h, 
-	smkx=\E[?1h\E=, smso=\E[3m, smul=\E[4m, tbc=\E[3g, 
+	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, civis=\E[?25l, 
+	clear=\E[H\E[J, cr=^M, csr=\E[%i%p1%d;%p2%dr, 
+	cub=\E[%p1%dD, cub1=^H, cud=\E[%p1%dB, cud1=^J, 
+	cuf=\E[%p1%dC, cuf1=\E[C, cup=\E[%i%p1%d;%p2%dH, 
+	cuu=\E[%p1%dA, cuu1=\EM, cvvis=\E[34l, dch=\E[%p1%dP, 
+	dch1=\E[P, dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, 
+	enacs=\E(B\E)0, flash=\Eg, home=\E[H, ht=^I, hts=\EH, 
+	ich=\E[%p1%d@, il=\E[%p1%dL, il1=\E[L, ind=^J, is2=\E)0, 
+	kbs=^H, kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, 
+	kdch1=\E[3~, kf1=\EOP, kf10=\E[21~, kf11=\E[23~, 
+	kf12=\E[24~, kf2=\EOQ, kf3=\EOR, kf4=\EOS, kf5=\E[15~, 
+	kf6=\E[17~, kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, 
+	khome=\E[1~, kich1=\E[2~, kll=\E[4~, knp=\E[6~, kpp=\E[5~, 
+	nel=\EE, rc=\E8, rev=\E[7m, ri=\EM, rmacs=^O, rmir=\E[4l, 
+	rmkx=\E[?1l\E>, rmso=\E[23m, rmul=\E[24m, rs2=\Ec, sc=\E7, 
+	sgr0=\E[m, smacs=^N, smir=\E[4h, smkx=\E[?1h\E=, 
+	smso=\E[3m, smul=\E[4m, tbc=\E[3g, 
+	use=ecma+color, 
+
 screen-w|VT 100/ANSI X3.64 virtual terminal with 132 cols, 
 	cols#132, use=screen, 
 
@@ -4030,6 +4055,7 @@ vi603|visual603|visual 603,
 #	San Jose, CA 95134
 #	Vox: (408)-473-1200
 #	Fax: (408) 473-1222
+#	Web: http://www.wyse.com
 #
 # Wyse sales can be reached by phone at 1-800-GET-WYSE.  Tech support is at
 # (800)-800-WYSE (option 5 gets you a human).
@@ -4037,10 +4063,15 @@ vi603|visual603|visual 603,
 # Wyse bought out Link Technology, Inc. in 1990 and closed it down in 1995.
 # So these are the people to talk with about all Link terminals.
 #
-# All the following entries until (but not including) wy100q are direct from
+# All the following entries until (but not including) wy520 are direct from
 # Wyse technical support and represent their best knowledge as of January 1995.
 # I canceled the bel capacities in the vb entries.
 # I made two trivial syntax fixes in the wyse30 entry.
+#
+# Wyse has a BBS containing termcap and terminfo stuff for their
+# terminals.  According to their tech support, at 800-800-9973, it's
+# at 408-922-4400 thru 4405.  The 4400 modem is flaky as of 5/96, so
+# call 4401 etc.  Come in at 9600 hard; don't use autospeed sense.
 #
 # Note: The wyse75, wyse85, and wyse99 have been discontinued.
 
@@ -4957,6 +4988,178 @@ wy370-tek|Wyse 370 Tektronix 4010/4014 emulator,
 	nel=^M^J, u0=\E[?38h\E8, u1=\E[?38l\E)0, 
 
 # Vendor-supplied Wyse entries end here.
+
+#
+#TITLE:  TERMINFO ENTRY WY520
+#DATE:   8/5/93
+# The WY520 terminfo is based on the WY285 entry published on the WYSE 
+# BBS with the addition of more function keys and special keys.
+#
+#               rs1 -> set personality
+#               rs2 -> set number of columns
+#               rs3 -> set number of lines
+#               is1 -> select the proper font
+#               is2 -> do the initialization
+#               is3 -> If this string is empty then rs3 gets sent.
+#
+#       Wyse 520 emulating a vt420 7 bit mode with default ANSI keyboard
+#       - The BS key is programmed to generate BS in smcup since
+#         is2 doesn't seem to work.
+#       - Remove and shift/Remove: delete a character
+#       - Insert : enter insert mode
+#       - Find   : delete to end of file
+#       - Select : clear a line
+#       - F11, F12, F13: send default sequences (not ESC, BS, LF)
+#       - F14 : Home key
+#       - Bottom status line (host writable line) is used.
+#       - smkx,rmkx are removed because this would put the numeric
+#         keypad in Dec application mode which doesn't seem to work
+#         with SCO applications.
+#
+wy520|wyse520|wyse 520, 
+	am, hs, km, mc5i, mir, xenl, xon, 
+	cols#80, it#8, lines#24, wsl#80, 
+	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
+	bel=^G, blink=\E[5m, bold=\E[1m, cbt=\E[Z, civis=\E[?25l, 
+	clear=\E[H\E[J$<40>, cnorm=\E[34h\E[?25h, cr=^M, 
+	csr=\E[%i%p1%d;%p2%dr$<20>, cub=\E[%p1%dD, cub1=^H, 
+	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
+	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
+	cvvis=\E[?25h\E[34l, dch=\E[%p1%dP$<3>, dch1=\E[P$<30>, 
+	dim=\E[2m, dl=\E[%p1%dM$<2*>, dl1=\E[M$<2>, dsl=\E[0$~, 
+	ech=\E[%p1%dX, ed=\E[J$<40>, el=\E[K, el1=\E[1K, 
+	enacs=\E)0, fsl=\E[0$}, home=\E[H, hpa=\E[%i%p1%d`, ht=^I, 
+	hts=\EH, ich=\E[%p1%d@$<2>, il=\E[%p1%dL$<3*>, 
+	il1=\E[L$<3>, ind=\n$<2>, invis=\E[8m, ip=$<4>, is1=\E[?5W, 
+	is2=\E[2;4;20;30l\E[?1;4;10;16l\E[12h\E[?7;8;25;67h, 
+	is3=\E>\E(B\E)0\017\E[m, ka1=\EOw, ka3=\EOu, kb2=\EOy, 
+	kbs=^H, kc1=\EOq, kc3=\EOs, kcbt=\E[Z, kcub1=\E[D, 
+	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\E[3~, ked=\E[1~, 
+	kel=\E[4~, kent=\EOM, kf1=\EOP, kf10=\E[21~, kf11=\E[23~, 
+	kf12=\E[24~, kf13=\E[25~, kf14=\E[26~, kf15=\E[28~, 
+	kf16=\E[29~, kf17=\E[31~, kf18=\E[32~, kf19=\E[33~, 
+	kf2=\EOQ, kf20=\E[34~, kf3=\EOR, kf4=\EOS, kf6=\E[17~, 
+	kf7=\E[18~, kf8=\E[19~, kf9=\E[20~, kfnd=\E[1~, 
+	khlp=\E[28~, khome=\E[26~, kich1=\E[2~, knp=\E[6~, 
+	kpp=\E[5~, kslt=\E[4~, lf1=PF1, lf2=PF2, lf3=PF3, lf4=PF4, 
+	mc0=\E[0i, mc4=\E[4i, mc5=\E[5i, rc=\E8, rev=\E[7m, 
+	ri=\EM$<2>, rmacs=^O, rmam=\E[?7l, rmcup=\E[ R, rmir=\E[4l, 
+	rmso=\E[m, rmul=\E[24m, 
+	rs1=\E[13l\E[3l\E\\\E[63;1"p\E[!p, rs2=\E[35h\E[?3l, 
+	rs3=\E[?5l\E[47h\E[40l\E[r, sc=\E7, 
+	sgr=\E[0%?%p2%t;4%;%?%p3%p1%|%t;7%;%?%p4%t;5%;%?%p5%t;2%;%?%p6%t;1%;%?%p7%t;8%;m%?%p9%t\016%e\017%;, 
+	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, 
+	smcup=\E[ Q\E[?67;8h, smir=\E[4h, smso=\E[7m, smul=\E[4m, 
+	tbc=\E[3g, tsl=\E[2$~\E[1$}\E[%i%p1%d`, 
+	vpa=\E[%i%p1%dd, 
+#
+#       Wyse 520 with 24 data lines and status (terminal status)
+wy520-24|wyse520-24|wyse 520 with 24 data lines, 
+	hs@, 
+	dsl@, fsl@, rs3=\E[?5l\E[47h\E[40l\E[1;24r, tsl@, use=wy520, 
+#
+#       Wyse 520 with visual bell.
+wy520-vb|wyse520-vb|wyse 520 with visible bell, 
+	flash=\E[30h\E\\\054\E[30l$<100>, use=wy520, 
+#
+#       Wyse 520 in 132-column mode.
+wy520-w|wyse520-w|wyse 520 in 132-column mode, 
+	cols#132, wsl#132, 
+	dch=\E[%p1%dP$<7>, dch1=\E[P$<7>, ich=\E[%p1%d@$<7>, 
+	ip=$<7>, rs2=\E[35h\E[?3h, 
+	use=wy520, 
+#
+#       Wyse 520 in 132-column mode with visual bell.
+wy520-wvb|wyse520-wvb|wyse 520 with visible bell 132-columns, 
+	flash=\E[30h\E\\\054\E[30l$<100>, 
+	use=wy520-w, 
+#
+#
+#       Wyse 520 emulating a vt420 7 bit mode.
+#       The DEL key is programmed to generate BS in is2.
+#       With EPC keyboard.
+#       - 'End' key will clear till end of line on EPC keyboard
+#       - Shift/End : ignored.
+#       - Insert : enter insert mode.
+#       - Delete : delete a character (have to change interrupt character
+#                  to CTRL-C: stty intr '^c') for it to work since the
+#                  Delete key sends 7FH.
+wy520-epc|wyse520-epc|wyse 520 with EPC kb, 
+	kdch1=\177, kel=\E[4~, kend=\E[4~, kf0=\E[21~, kf1=\E[11~, 
+	kf2=\E[12~, kf3=\E[13~, kf4=\E[14~, kf5=\E[15~, khome=\E[H, 
+	use=wy520, 
+#
+#       Wyse 520 with 24 data lines and status (terminal status)
+#       with EPC keyboard.
+wy520-epc-24|wyse520-pc-24|wyse 520 with 24 data lines, 
+	hs@, 
+	dsl@, fsl@, rs3=\E[?5l\E[47h\E[40l\E[1;24r, tsl@, use=wy520-epc, 
+#
+#       Wyse 520 with visual bell.
+wy520-epc-vb|wyse520-pc-vb|wyse 520 with visible bell, 
+	flash=\E[30h\E\\\054\E[30l$<100>, 
+	use=wy520-epc, 
+#
+#       Wyse 520 in 132-column mode.
+wy520-epc-w|wyse520-epc-w|wyse 520 in 132-column mode, 
+	cols#132, wsl#132, 
+	dch=\E[%p1%dP$<7>, dch1=\E[P$<7>, ich=\E[%p1%d@$<7>, 
+	ip=$<7>, rs2=\E[35h\E[?3h, 
+	use=wy520-epc, 
+#
+#       Wyse 520 in 132-column mode with visual bell.
+wy520-epc-wvb|wyse520-p-wvb|wyse 520 with visible bell 132-columns, 
+	flash=\E[30h\E\\\054\E[30l$<100>, 
+	use=wy520-epc-w, 
+#
+#       Wyse 520 in 80-column, 36 lines
+wy520-36|wyse520-36|wyse 520 with 36 data lines, 
+	hs@, 
+	lines#36, 
+	dsl@, fsl@, rs3=\E[?5l\E[36*|\E[36t\E[40l\E[1;36r, tsl@, use=wy520, 
+#
+#       Wyse 520 in 80-column, 48 lines
+wy520-48|wyse520-48|wyse 520 with 48 data lines, 
+	hs@, 
+	lines#48, 
+	dsl@, fsl@, rs3=\E[?5l\E[48*|\E[48t\E[40l\E[1;48r, tsl@, use=wy520, 
+#
+#       Wyse 520 in 132-column, 36 lines
+wy520-36w|wyse520-36w|wyse 520 with 36 data lines, 
+	cols#132, wsl#132, 
+	rs2=\E[?3h, 
+	rs3=\E[?5l\E[36*|\E[36t\E[40l\E[1;36r\E[132$|, use=wy520-36, 
+#
+#       Wyse 520 in 132-column, 48 lines
+wy520-48w|wyse520-48w|wyse 520 with 48 data lines, 
+	cols#132, wsl#132, 
+	rs2=\E[?3h, 
+	rs3=\E[?5l\E[48*|\E[48t\E[40l\E[1;48r\E[132$|, use=wy520-48, 
+#
+#
+#       Wyse 520 in 80-column, 36 lines with EPC keyboard
+wy520-36pc|wyse520-36pc|wyse 520 with 36 data lines, 
+	hs@, 
+	lines#36, 
+	dsl@, fsl@, rs3=\E[?5l\E[36*|\E[36t\E[40l\E[1;36r, tsl@, use=wy520-epc, 
+#
+#       Wyse 520 in 80-column, 48 lines with EPC keyboard
+wy520-48pc|wyse520-48pc|wyse 520 with 48 data lines, 
+	hs@, 
+	lines#48, 
+	dsl@, fsl@, rs3=\E[?5l\E[48*|\E[48t\E[40l\E[1;48r, tsl@, use=wy520-epc, 
+#
+#       Wyse 520 in 132-column, 36 lines with EPC keyboard
+wy520-36wpc|wyse520-36wpc|wyse 520 with 36 data lines, 
+	cols#132, wsl#132, 
+	rs2=\E[?3h, 
+	rs3=\E[?5l\E[36*|\E[36t\E[40l\E[1;36r\E[132$|, use=wy520-36pc, 
+#
+#       Wyse 520 in 132-column, 48 lines with EPC keyboard
+wy520-48wpc|wyse520-48wpc|wyse 520 with 48 data lines, 
+	cols#132, wsl#132, 
+	rs2=\E[?3h, 
+	rs3=\E[?5l\E[48*|\E[48t\E[40l\E[1;48r\E[132$|, use=wy520-48pc, 
 
 # From: John Gilmore <hoptoad!gnu@lll-crg.arpa>
 # (wyse-vp: removed <if=/usr/share/tabset/wyse-adds>, there's no such
@@ -8289,6 +8492,8 @@ ergo4000|microterm ergo 4000,
 #
 # NCR's terminal group was merged with AT&T's when AT&T bought the company.
 # For what happened to that group, see the ADDS section.
+#
+# There is an NCR4103 terminal that's just a re-badged Wyse-50.
 #
 
 # NCR7900 DIP switches:
@@ -11894,7 +12099,7 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 	* Added st52 from Per Persson.
 #	* Added eterm from the GNU Emacs 19.30 distribution.
 #	* Freeze for 1.9.9.
-# 9.13.1 (Fri Mar 29 14:06:46 EST 1996)
+# 9.13.1 (Fri Mar 29 14:06:46 EST 1996):
 #	* FreeBSD console entries from Andrew Chernov.
 #	* Removed duplicate Atari st52 name.
 # 9.13.2 (Tue May  7 16:10:06 EDT 1996)
@@ -11904,6 +12109,17 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #	* Added xterm1.
 #	* Removed mechanically-generated junk capabilities from cons* entries.
 #	* Added color support to bsdos.
+# 9.13.3 (Thu May  9 10:35:51 EDT 1996):
+#	* Added Wyse 520 entries from Wm. Randolph Franklin <wrf@ecse.rpi.edu>.
+#	* Created ecma+color, linux can use it.  Also added ech to linux.
+#	* Teach xterm about more keys. Add Thomas Dickey's 3.1.2E updates.
+#	* Add descriptions to FreeBSD console entries.  Also shorten
+#	  some aliases to <= 14 chars for portability.
+#	* Added x68k console
+#	* Added OTbs to several VT-series entries.
+#
+# 9.13.4 (Wed May 22 10:54:09 EDT 1996):
+#	* screen entry update for 3.7.1 from Michael Alan Dorfman.
 #
 
 ######## REORDER

@@ -26,7 +26,7 @@
  *
  */
 
-#include <config.h>
+#include <curses.priv.h>
 
 #include <string.h>
 #include "tic.h"
@@ -243,7 +243,7 @@ int main(int argc, char **argv)
 	 || (column >= MAX_COLUMNS)
 	 || *(root_name = argv[2]) == 0) {
 		fprintf(stderr, "usage: make_hash column root_name\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	/*
@@ -269,7 +269,7 @@ int main(int argc, char **argv)
 			name_table[n].nte_index = StrCount++;
 		} else {
 			fprintf(stderr, "Unknown type: %s\n", list[2]);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 		n++;
 	}

@@ -6,7 +6,7 @@
 # orders for each of the three different classes of terminfo capabilities.
 #
 AWK=${1-awk}
-DATA=${2-../include/Caps.filtered}
+DATA=${2-../include/Caps}
 
 echo "/*";
 echo " * termsort.c --- sort order arrays for use by infocmp.";

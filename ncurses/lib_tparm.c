@@ -26,6 +26,7 @@
  */
 
 #include "curses.priv.h"
+#include <stdlib.h>
 #include <string.h>
 #include <term.h>
 
@@ -91,6 +92,9 @@
  *	resulting in x mod y, not the reverse.
  */
 
+#define L_BRACE '{'
+#define R_BRACE '}'
+
 #define STACKSIZE	20
 
 typedef union {
@@ -103,6 +107,40 @@ static	int	stack_ptr;
 #ifdef TRACE
 static char *tname;
 #endif /* TRACE */
+
+static char  *out_buff;
+static size_t out_size;
+static size_t out_used;
+
+static void save_text(char *s)
+{
+	size_t	want = strlen(s);
+	size_t	need = want + out_used + 1;
+
+	if (need > out_size) {
+		out_size = need * 2;
+		if (out_buff == 0)
+			out_buff = malloc(out_size);
+		else
+			out_buff = realloc(out_buff, out_size);
+	}
+	(void)strcpy(out_buff + out_used, s);
+	out_used += want;
+}
+
+static void save_number(const char *fmt, int number)
+{
+	char temp[80];
+	(void)sprintf(temp, fmt, number);
+	save_text(temp);
+}
+
+static inline void save_char(int c)
+{
+	static char text[2];
+	text[0] = c;
+	save_text(text);
+}
 
 static inline void npush(int x)
 {
@@ -122,13 +160,10 @@ static inline char *spop(void)
 	return   (stack_ptr > 0  ?  stack[--stack_ptr].str  :  0);
 }
 
-static inline char *tparam_internal(const char *string,
-				    char *buffer, int bufsiz,
-				    va_list ap)
+static inline char *tparam_internal(const char *string, va_list ap)
 {
 int	param[9];
 int	popcount;
-char	*bufptr;
 int	variable[26];
 char	len;
 int	number;
@@ -137,6 +172,7 @@ int	x, y;
 int	i;
 register char	*cp;
 
+	out_used = 0;
 	if (string == NULL)
 		return NULL;
 
@@ -193,288 +229,272 @@ register char	*cp;
 
 #ifdef TRACE
 	if (_nc_tracing & TRACE_CALLS) {
-		*(cp = buffer) = '\0';
-		for (i = 0; i < popcount; i++) {
-			(void)sprintf(cp, ", %d", param[i]);
-			cp += strlen(cp);
-		}
-		_tracef("%s(\"%s\"%s) called", tname, _nc_visbuf(string), buffer);
+		for (i = 0; i < popcount; i++)
+			save_number(", %d", param[i]);
+		_tracef("%s(\"%s\"%s) called", tname, _nc_visbuf(string), out_buff);
+		out_used = 0;
  	}
 #endif /* TRACE */
 
 	stack_ptr = 0;
-	bufptr = buffer;
-
-	/* FIXME: bufsiz should be used to do an overrun check */
 
 	while (*string) {
-	    if (*string != '%')
-			*(bufptr++) = *string;
-	    else {
+		if (*string != '%')
+			save_char(*string);
+		else {
 			string++;
 			switch (*string) {
-		    default:
+			default:
 				break;
-		    case '%':
-				*(bufptr++) = '%';
-				break;
-
-		    case 'd':
-				sprintf(bufptr, "%d", npop());
-				bufptr += strlen(bufptr);
+			case '%':
+				save_char('%');
 				break;
 
-		    case '0':
+			case 'd':
+				save_number("%d", npop());
+				break;
+
+			case '0':
 				string++;
 				len = *string;
 				if (len == '2'  ||  len == '3')
 				{
-				    ++string;
-				    if (*string == 'd') {
-				        if (len == '2')
-					    sprintf(bufptr, "%02d", npop());
-					else
-					    sprintf(bufptr, "%03d", npop());
-			    
-					bufptr += strlen(bufptr);
-				    }
-				    else if (*string == 'x') {
-				        if (len == '2')
-					    sprintf(bufptr, "%02x", npop());
-					else
-					    sprintf(bufptr, "%03x", npop());
-			    
-					bufptr += strlen(bufptr);
-				    }
+					++string;
+					if (*string == 'd') {
+						if (len == '2')
+							save_number("%02d", npop());
+						else
+							save_number("%03d", npop());
+					}
+					else if (*string == 'x') {
+						if (len == '2')
+							save_number("%02x", npop());
+						else
+							save_number("%03x", npop());
+					}
 				}
 				break;
 
-		    case '2':
+			case '2':
 				string++;
 				if (*string == 'd') {
-				    sprintf(bufptr, "%2d", npop());
-				    bufptr += strlen(bufptr);
+					save_number("%2d", npop());
 				}
 				else if (*string == 'x') {
-				    sprintf(bufptr, "%2x", npop());
-				    bufptr += strlen(bufptr);
+					save_number("%2x", npop());
 				}
 				break;
 
-		    case '3':
+			case '3':
 				string++;
 				if (*string == 'd') {
-				    sprintf(bufptr, "%3d", npop());
-				    bufptr += strlen(bufptr);
+					save_number("%3d", npop());
 				}
 				else if (*string == 'x') {
-				    sprintf(bufptr, "%3x", npop());
-				    bufptr += strlen(bufptr);
+					save_number("%3x", npop());
 				}
 				break;
 
-		    case 'c':
-				*(bufptr++) = (char) npop();
+			case 'c':
+				save_char(npop());
 				break;
 
-		    case 's':
-				strcpy(bufptr, spop());
-				bufptr += strlen(bufptr);
+			case 's':
+				save_text(spop());
 				break;
 
-		    case 'p':
+			case 'p':
 				string++;
 				if (*string >= '1'  &&  *string <= '9')
-				    npush(param[*string - '1']);
+					npush(param[*string - '1']);
 				break;
 
-		    case 'P':
+			case 'P':
 				string++;
 				if (*string >= 'a'  &&  *string <= 'z')
-				    variable[*string - 'a'] = npop();
+					variable[*string - 'a'] = npop();
 				break;
 
-		    case 'g':
+			case 'g':
 				string++;
 				if (*string >= 'a'  &&  *string <= 'z')
-				    npush(variable[*string - 'a']);
+					npush(variable[*string - 'a']);
 				break;
 
-		    case '\'':
+			case '\'':
 				string++;
 				npush(*string);
 				string++;
 				break;
 
-		    case '{':
+			case L_BRACE:
 				number = 0;
 				string++;
 				while (*string >= '0'  &&  *string <= '9') {
-				    number = number * 10 + *string - '0';
-				    string++;
+					number = number * 10 + *string - '0';
+					string++;
 				}
 				npush(number);
 				break;
 
-		    case '+':
+			case '+':
 				npush(npop() + npop());
 				break;
 
-		    case '-':
+			case '-':
 				y = npop();
 				x = npop();
 				npush(x - y);
 				break;
 
-		    case '*':
+			case '*':
 				npush(npop() * npop());
 				break;
 
-		    case '/':
+			case '/':
 				y = npop();
 				x = npop();
 				npush(x / y);
 				break;
 
-		    case 'm':
+			case 'm':
 				y = npop();
 				x = npop();
 				npush(x % y);
 				break;
 
-		    case 'A':
+			case 'A':
 				npush(npop() && npop());
 				break;
 
-		    case 'O':
+			case 'O':
 				npush(npop() || npop());
 				break;
-	
-		    case '&':
+
+			case '&':
 				npush(npop() & npop());
 				break;
 
-		    case '|':
+			case '|':
 				npush(npop() | npop());
 				break;
-	
-		    case '^':
+
+			case '^':
 				npush(npop() ^ npop());
 				break;
 
-		    case '=':
+			case '=':
 				y = npop();
 				x = npop();
 				npush(x == y);
 				break;
 
-		    case '<':
+			case '<':
 				y = npop();
 				x = npop();
 				npush(x < y);
 				break;
 
-		    case '>':
+			case '>':
 				y = npop();
 				x = npop();
 				npush(x > y);
 				break;
 
-		    case '!':
+			case '!':
 				npush(! npop());
 				break;
 
-		    case '~':
+			case '~':
 				npush(~ npop());
 				break;
 
-		    case 'i':
+			case 'i':
 				param[0]++;
 				param[1]++;
 				break;
 
-		    case '?':
+			case '?':
 				break;
 
-		    case 't':
+			case 't':
 				x = npop();
 				if (x) {
-				    /* do nothing; keep executing */
+					/* do nothing; keep executing */
 				} else {
-				    /* scan forward for %e or %; at level zero */
+					/* scan forward for %e or %; at level zero */
 					string++;
 					level = 0;
 					while (*string) {
-					    if (*string == '%') {
+						if (*string == '%') {
 							string++;
 							if (*string == '?')
-							    level++;
+								level++;
 							else if (*string == ';') {
-							  if (level > 0)
+								if (level > 0)
 									level--;
-							  else
+								else
 									break;
 							}
 							else if (*string == 'e'  && level == 0)
-							  break;
-					    }
+								break;
+						}
 
-					    if (*string)
-						string++;
+						if (*string)
+							string++;
 					}
 				}
 				break;
 
-		    case 'e':
+			case 'e':
 				/* scan forward for a %; at level zero */
-			    string++;
-			    level = 0;
-			    while (*string) {
+				string++;
+				level = 0;
+				while (*string) {
 					if (*string == '%') {
-					  string++;
-					  if (*string == '?')
+						string++;
+						if (*string == '?')
 							level++;
-					  else if (*string == ';') {
+						else if (*string == ';') {
 							if (level > 0)
-							    level--;
+								level--;
 							else
-						    	break;
-					 	}
+								break;
+						}
 					}
 
 					if (*string)
-					    string++;
-			  }
+						string++;
+				}
 				break;
 
-		    case ';':
+			case ';':
 				break;
 
 			} /* endswitch (*string) */
-	  } /* endelse (*string == '%') */
+		} /* endelse (*string == '%') */
 
-	  if (*string == '\0')
+		if (*string == '\0')
 			break;
-	    
-	  string++;
+
+		string++;
 	} /* endwhile (*string) */
 
-	*bufptr = '\0';
-	return(buffer);
+	return(out_buff);
 }
 
 char *tparm(const char *string, ...)
 {
 va_list	ap;
-static char	buffer[256];
 
 	va_start(ap, string);
 #ifdef TRACE
 	tname = "tparm";
 #endif /* TRACE */
-	return(tparam_internal(string, buffer, sizeof(buffer) - 1, ap));
+	return(tparam_internal(string, ap));
 }
 
+#ifdef __UNUSED__	/* we never documented this, and it confuses Emacs */
 char *tparam(const char *string, char *buffer, int bufsiz, ...)
 {
 va_list	ap;
@@ -483,6 +503,9 @@ va_list	ap;
 #ifdef TRACE
 	tname = "tparam";
 #endif /* TRACE */
-	return(tparam_internal(string, buffer, bufsiz, ap));
+	if (tparam_internal(string, ap) != 0
+	 && (int)out_used < bufsiz)
+	 	return strcpy(buffer, out_buff);
+	return 0;
 }
-
+#endif /* __UNUSED */

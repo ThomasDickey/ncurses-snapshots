@@ -5,6 +5,7 @@
 # The output of this script is C source for an array specifying whether
 # termcap strings should undergo parameter and padding translation.
 #
+CAPS="${1-Caps}"
 cat <<EOF
 /*
  * parametrized.h --- is a termcap capability parametrized?
@@ -23,7 +24,7 @@ EOF
 # XENIX acs_* capabilities.  Maybe someday we'll dedicate a flag field for
 # this, that would be cleaner....
 
-awk <Caps.filtered '
+awk <$CAPS '
 $3 != "str"	{next;}
 $1 ~ /^acs_/	{print "-1,\t/* ", $2, " */"; count++; next;}
 $0 ~ /#[0-9]/	{print "1,\t/* ", $2, " */"; count++; next;}

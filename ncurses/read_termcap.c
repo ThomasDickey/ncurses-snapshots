@@ -762,6 +762,7 @@ _nc_nfcmp(char *nf, char *rec)
 int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
 {
     ENTRY	*ep;
+    char	*thisdir;
 #ifndef USE_GETCAP
     /*
      * Here is what the 4.4BSD termcap(3) page prescribes:
@@ -904,35 +905,38 @@ int _nc_read_termcap_entry(const char *const tn, TERMTYPE *const tp)
     _nc_resolve_uses();
 
     /* find a terminal matching tn, if we can */
-    for_entry_list(ep)
-	if (_nc_name_match(ep->tterm.term_names, tn, "|:"))
-	{
-	    /*
-	     * Make a local copy of the terminal capabilities.  free
-	     * all entry storage except the string table for the
-	     * loaded type (which we disconnected from the list by
-	     * NULLing out ep->tterm.str_table above).
-	     */
-	    memcpy(tp, &ep->tterm, sizeof(TERMTYPE));
-	    ep->tterm.str_table = (char *)NULL;
-	    _nc_free_entries(_nc_head);
+    if ((thisdir = getcwd(pathbuf, sizeof(pathbuf))))
+    {
+        _nc_set_writedir((char *)NULL);	/* note: this does a chdir */
+	for_entry_list(ep)
+	    if (_nc_name_match(ep->tterm.term_names, tn, "|:"))
+	    {
+		/*
+       		 * Make a local copy of the terminal capabilities.  free
+		 * all entry storage except the string table for the
+		 * loaded type (which we disconnected from the list by
+		 * NULLing out ep->tterm.str_table above).
+		 */
+		memcpy(tp, &ep->tterm, sizeof(TERMTYPE));
+		ep->tterm.str_table = (char *)NULL;
+		_nc_free_entries(_nc_head);
 
-	    /*
-	     * OK, now try to write the type to user's terminfo directory.
-	     * Next time he loads this, it will come through terminfo.
-	     *
-	     * Advantage: Second and subsequent fetches of this entry
-	     * will be very fast.
-	     *
-	     * Disadvantage: After the first time a termcap type is loaded
-	     * by its user, editing it in the /etc/termcap file, or in TERMCAP,
-	     * or in a local ~/.termcap, will be ineffective unless the
-	     * terminfo entry is explicitly removed.
-	     */
-	    (void) _nc_write_entry(tp);
-
-	    return(1);
-	}
+		/*
+		 * OK, now try to write the type to user's terminfo directory.
+		 * Next time he loads this, it will come through terminfo.
+		 *
+		 * Advantage: Second and subsequent fetches of this entry
+		 * will be very fast.
+		 *
+		 * Disadvantage: After the first time a termcap type is loaded
+		 * by its user, editing it in the /etc/termcap file, or in
+		 * TERMCAP, or in a local ~/.termcap, will be ineffective
+		 * unless the terminfo entry is explicitly removed.
+		 */
+		(void) _nc_write_entry(tp);
+	    }
+	chdir(thisdir);
+    }
 
     _nc_free_entries(_nc_head);
     return(0);

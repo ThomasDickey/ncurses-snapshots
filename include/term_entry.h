@@ -58,6 +58,7 @@ extern int _nc_parse_entry(ENTRY *, int, bool);
 extern int _nc_capcmp(const char *, const char *);
 
 /* write_entry.c: writing an entry to the file system */
+extern void _nc_set_writedir(char *);
 extern void _nc_write_entry(TERMTYPE *const);
 
 /* comp_parse.c: entry list handling */

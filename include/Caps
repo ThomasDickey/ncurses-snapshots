@@ -230,19 +230,6 @@ cpi_changes_res 	cpix	bool	YF	-----	changing character pitch changes resolution
 lpi_changes_res 	lpix	bool	YG	-----	changing line pitch changes resolution
 #%.TE
 #%
-#%This capability is described as a boolean in the XSI Curses standard, but is
-#%an (undocumented) string capability in SVr4.
-#%
-#%.TS H
-#%center;
-#%c c c c
-#%c c c c
-#%l l l l.
-#%\fBVariable	Cap-	Termcap	Description\fR
-#%\fBBooleans	name	Code\fR
-get_mouse       	getm	bool	Gm	-----	Curses should get button events
-#%.TE
-#%
 #%These are the numeric capabilities:
 #%
 #%.TS H

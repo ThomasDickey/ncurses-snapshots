@@ -10,7 +10,7 @@
 The \fBcurses\fR library routines give the user a terminal-independent method
 of updating character screens with reasonable optimization.  This
 implementation is ``new curses'' (ncurses) and is the approved replacement for
-4.4BSD classic curses, which is being discontinued.
+4.4BSD classic curses, which has been discontinued.
 
 The \fBncurses\fR routines emulate the \fBcurses\fR(3X) library of System V
 Release 4 UNIX, and the XPG4 curses standard (XSI curses) but the \fBncurses\fR
@@ -21,6 +21,8 @@ pages.
 
 A program using these routines must be linked with the \fB-lncurses\fR option,
 or (if it has been generated) with the debugging library \fB-lncurses_g\fR. 
+(Your system integrator may also have installed these libraries under
+the names \fB-lcurses\fR and \fB-lcurses_g\fR.)
 The ncurses_g library generates trace logs (in a file called 'trace' in the
 current directory) that describe curses actions.
 
@@ -217,6 +219,7 @@ halfdelay              curs_inopts(3X)
 has_colors             curs_color(3X)
 has_ic                 curs_termattrs(3X)
 has_il                 curs_termattrs(3X)
+has_key                curs_getch(3X)*
 hline                  curs_border(3X)
 idcok                  curs_outopts(3X)
 idlok                  curs_outopts(3X)
@@ -243,6 +246,7 @@ keypad                 curs_inopts(3X)
 killchar               curs_termattrs(3X)
 leaveok                curs_outopts(3X)
 longname               curs_termattrs(3X)
+mcprint                curs_print(3X)*
 meta                   curs_inopts(3X)
 mouseinterval          curs_mouse(3X)*
 mousemask              curs_mouse(3X)*
@@ -466,6 +470,14 @@ Versions of \fBcurses\fR compiled on PC clones support display of the PC ROM
 characters (including ROM characters 0-31, which stock SVr4 curses cannot
 display). See the EXTENSIONS sections of \fBcurs_addch\fR(3x) and
 \fBcurs_attr\fR(3x).
+
+The \fBcurses\fR library includes facilities for capturing mouse events on
+certain terminals (including xterm). See the \fBcurs_mouse\fR(3X)
+manual page for details.
+
+The \fBcurses\fR library includes a function for directing application output
+to a printer attached to the terminal device.  See the \fBcurs_print\fR(3X)
+manual page for details.
 .SH PORTABILITY
 The \fBcurses\fR library is intended to be BASE-level conformant with the XSI
 Curses standard.  Certain portions of the EXTENDED XSI Curses functionality
@@ -561,17 +573,16 @@ A small number of local differences (that is, individual differences between
 the XSI Curses and \fBcurses\fR calls) are described in \fBPORTABILITY\fR
 sections of the library man pages.
 .PP
-The terminfo format supported by \fBcurses\fR is binary-compatible with SVr4,
-but not conformant with XSI curses.  This is because the XSI Curses drafters,
-in a remarkable fit of braindamage, changed the undocumented SVr4 capability
-\fBgetm\fR from a string to a boolean, changing the binary offsets of all
-capabilities after it in the SVr4 order and making it impossible for any
-SVr4-compatible implementation to be fully conformant.
+The routine \fBhas_key\fR is not part of XPG4, nor is it present in SVr4.  See
+the \fBcurs_getch\fR(3X) manual page for details.
 .PP
 The routines \fBgetmouse\fR, \fBmousemask\fR, \fBungetmouse\fR,
 \fBmouseinterval\fR, and \fBwenclose\fR relating to mouse interfacing are not
 part of XPG4, nor are they present in SVr4.  See the \fBcurs_mouse\fR(3X)
 manual page for details.
+.PP
+The routine \fBmcprint\fR was not present in any previous curses
+implementation.  See the \fBcurs_print\fR(3X) manual page for details.
 .PP
 The routine \fBwresize\fR is not part of XPG4, nor is it present in SVr4.  See
 the \fBcurs_resize\fR(3X) manual page for details.

@@ -48,7 +48,7 @@ short	y, x, minx;
 	maxx = &win->_line[y].text[x];
 
 	for (ptr = maxx; ptr <= end; ptr++) {
-	    int blank = _nc_render(win, win->_line[y].text[x], BLANK);
+	    chtype blank = _nc_render(win, win->_line[y].text[x], BLANK);
 
 	    if (*ptr != blank) {
 			maxx = ptr;

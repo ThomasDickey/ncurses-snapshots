@@ -355,11 +355,12 @@ and <TT>read_entry.c</TT>.  These are likely to need revision only if
 ncurses is being ported to an environment without an underlying
 terminfo capability representation. <P>
 
-The files <TT>lib_kernel.c</TT>, <TT>lib_raw.c</TT>,
+The files <TT>lib_kernel.c</TT>, <TT>lib_baudrate.c</TT>, <TT>lib_raw.c</TT>,
 <TT>lib_tstp.c</TT>, and <TT>lib_twait.c</TT> have serious hooks into
 the tty driver and signal facilities.  If you run into porting snafus
 moving the package to another UNIX, the problem is likely to be in one
-of these files. <P>
+of these files.  The file <TT>lib_print.c</TT> uses sleep(2) and also
+falls in this category.<P>
 
 Almost all of the real work is done in the files <TT>hardscroll.c</TT>,
 <TT>lib_addch.c</TT>, <TT>lib_doupdate.c</TT>, <TT>lib_mvcur.c</TT>,
@@ -785,10 +786,11 @@ lib_initscr.c	-- getenv()
 	initscr()		-- initialize curses functions
 lib_newterm.c
 	newterm()		-- set up new terminal screen
+lib_baudrate.c
+	baudrate()		-- return the baudrate
 lib_kernel.c	-- various tty-manipulation and system calls
 	reset_prog_mode()	-- reset ccurses-raw mode
 	reset_shell_mode()	-- reset cooked mode
-	baudrate()		-- return the baudrate
 	erasechar()		-- return the erase char
 	killchar()		-- return the kill character
 	flushinp()		-- flush pending input
@@ -807,6 +809,8 @@ lib_raw.c	-- various tty-manipulation calls
 	nocbreak()
 lib_setup.c	-- various tty-manipulation calls
 	use_env()
+	setupterm()
+lib_restart.c	-- various tty-manipulation calls
 	def_shell_mode()
 	def_prog_mode()
 	set_curterm()

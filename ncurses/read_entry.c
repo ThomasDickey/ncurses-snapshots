@@ -211,10 +211,12 @@ char		ttn[MAX_ALIAS + 1];
 		(void) sprintf(filename, "%s/%c/%s", terminfo, ttn[0], ttn);
 		if (_nc_read_file_entry(filename, tp) == 1)
 			return(1);
+		else
+			return(0);
 	}
 
 	/* this is an ncurses extension */
-	else if ((envp = getenv("HOME")) != NULL)
+	if ((envp = getenv("HOME")) != NULL)
 	{
 		char	home[MAX_TPATH + 1];
 
@@ -224,6 +226,26 @@ char		ttn[MAX_ALIAS + 1];
 		(void) sprintf(filename + strlen(filename), "/%c/%s",ttn[0],ttn);
 		if (_nc_read_file_entry(filename, tp) == 1)
 			return(1);
+	}
+
+	/* this is an ncurses extension */
+	if ((envp = getenv("TERMINFO_DIRS")) != NULL)
+	{
+	    char	*cp = strtok(envp, ":");
+
+	    do {
+		char	terminfo[PATH_MAX];
+
+		if (cp[0] == '\0')
+		    cp = TERMINFO;
+		(void) strncpy(terminfo, cp, MAX_TPATH);
+		terminfo[MAX_TPATH] = '\0';
+		(void) sprintf(filename, "%s/%c/%s", terminfo, ttn[0], ttn);
+		if (_nc_read_file_entry(filename, tp) == 1)
+			return(1);
+	    } while
+		((cp = strtok(NULL, ":")) != (char *)NULL);
+	    return(0);
 	}
 
 	/* try the system directory */
@@ -258,7 +280,7 @@ char *_nc_first_name(const char *const sp)
  *	Is the given name matched in namelist?
  */
 
-int _nc_name_match(char *const namelst, const char *const name, const char *const delim)
+int _nc_name_match(const char *const namelst, const char *const name, const char *const delim)
 /* microtune this, it occurs in several critical loops */
 {
 char namecopy[MAX_ENTRY_SIZE];	/* this may get called on a TERMCAP value */
@@ -277,4 +299,3 @@ register char *cp;
 
     	return(FALSE);
 }
-

@@ -181,7 +181,7 @@ AUTHOR
 
 *****************************************************************************/
 
-#include "curses.priv.h"
+#include <curses.priv.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -391,7 +391,7 @@ main()
 
 	/* grab the test vector */
 	if (fgets(line, sizeof(line), stdin) == (char *)NULL)
-	    exit(0);
+	    exit(EXIT_SUCCESS);
 
 	/* parse it */
 	n = 0;

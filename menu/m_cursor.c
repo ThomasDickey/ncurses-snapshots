@@ -66,7 +66,6 @@ int pos_menu_cursor(const MENU * menu)
       if ( win != sub )
 	{
 	  wcursyncup(sub);
-	  touchwin(sub);
 	  wsyncup(sub);
 	  untouchwin(sub);
 	} 

@@ -4,13 +4,11 @@
  *  	 		the use of colours for text output.
  */
 
-#include <stdio.h>
+#include "test.priv.h"
+
 #include <signal.h>
 #include <time.h>
 #include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <curses.h>
 
 int SubWinTest(WINDOW *win);
 int WaitForUser(void);
@@ -58,7 +56,9 @@ char    *messages[] =
  *  Main driver
  */
 int
-main(int argc, char **argv)
+main(
+	int argc __attribute__((unused)),
+	char *argv[] __attribute__((unused)))
 {
 WINDOW  *win;
 int     w, x, y, i, j, len;

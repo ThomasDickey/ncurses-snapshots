@@ -40,13 +40,17 @@ int wredrawln(WINDOW *win, int beg, int num)
 
 int wrefresh(WINDOW *win)
 {
+int code;
+
 	T(("wrefresh(%p) called", win));
 
-	if (win == curscr)
+	if (win == curscr) {
 	    	curscr->_clear = TRUE;
-	else
-	    	wnoutrefresh(win);
-	return(doupdate());
+		code = doupdate();
+	} else if ((code = wnoutrefresh(win)) == OK) {
+		code = doupdate();
+	}
+	return(code);
 }
 
 int wnoutrefresh(WINDOW *win)
@@ -58,6 +62,13 @@ short	m, n;
 bool	wide;
 
 	T(("wnoutrefresh(%p) called", win));
+
+	/*
+	 * This function will break badly if we try to refresh a pad.
+	 */
+	if ((win == 0)
+	 || (win->_flags & _ISPAD))
+		return ERR;
 
 	/*
 	 * If 'newscr' has a different background than the window that we're

@@ -19,8 +19,9 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  */
-#include <curses.h>
-#include <stdlib.h>
+
+#include "test.priv.h"
+
 #include <string.h>
 #include <ctype.h>
 #include <signal.h>

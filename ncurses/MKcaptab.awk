@@ -1,6 +1,6 @@
 
 AWK=${1-awk}
-DATA=${2-../include/Caps.filtered}
+DATA=${2-../include/Caps}
 
 cat <<'EOF'
 /*

@@ -30,6 +30,11 @@
 
 #include "curses.priv.h"
 #include <stdlib.h>
+
+#ifdef SVR4_TERMIO
+#define _POSIX_SOURCE
+#endif
+
 #include "term.h"	/* clear_screen, cup & friends, cur_term */
 
 /* This should moved to TERMINAL */

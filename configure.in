@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_PREREQ(2.0)
+AC_PREREQ(2.9)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
@@ -168,7 +168,10 @@ then
 	# -Wmissing-declarations
 	if test -n "$with_warnings"
 	then
-		CFLAGS="$CFLAGS -Wall -Winline -Wshadow -Wstrict-prototypes -Wmissing-prototypes"
+		CFLAGS="$CFLAGS -W -Wall -Winline -Wshadow -Wstrict-prototypes -Wmissing-prototypes"
+		case `gcc --version` in
+		2.6.*|2.7.*) CFLAGS="$CFLAGS -Wbad-function-cast -Wmissing-declarations" ;;
+		esac
 	fi
 fi
 
@@ -275,8 +278,31 @@ AC_MSG_CHECKING(whether sigaction needs _POSIX_SOURCE)
 AC_TRY_COMPILE([#include <sys/types.h>
 #include <signal.h>], [struct sigaction act;],
   sigact_bad=no, sigact_bad=yes AC_DEFINE(SVR4_ACTION))
-fi
 AC_MSG_RESULT($sigact_bad)
+fi
+
+# some machines require _POSIX_SOURCE to completely define struct termios
+if test $ac_cv_header_termios_h = yes ; then
+	case "$CFLAGS" in
+	*-D_POSIX_SOURCE*)
+		termios_bad=dunno ;;
+	*)	termios_bad=maybe ;;
+	esac
+	if test $termios_bad = maybe ; then
+	AC_MSG_CHECKING(whether termios.h needs _POSIX_SOURCE)
+	AC_TRY_COMPILE([#include <termios.h>],
+		[struct termios foo; int x = foo.c_iflag],
+		termios_bad=no, [
+		AC_TRY_COMPILE([
+#define _POSIX_SOURCE
+#include <termios.h>],
+			[struct termios foo; int x = foo.c_iflag],
+			termios_bad=unknown,
+			termios_bad=yes AC_DEFINE(SVR4_TERMIO))
+			])
+	AC_MSG_RESULT($termios_bad)
+	fi
+fi
 
 NC_TYPE_SIGACTION
 NC_TIOCGWINSZ

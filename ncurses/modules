@@ -6,6 +6,7 @@ lib_addch	lib		$(srcdir)
 lib_addstr	lib		$(srcdir)
 lib_beep	lib		$(srcdir)	../include/term.h
 lib_bkgd	lib		$(srcdir)
+lib_baudrate	lib		$(srcdir)	../include/term.h
 lib_box 	lib		$(srcdir)
 lib_clear	lib		$(srcdir)
 lib_clrbot	lib		$(srcdir)
@@ -39,9 +40,11 @@ lib_newwin	lib		$(srcdir)
 lib_options	lib		$(srcdir)	../include/term.h keys.tries
 lib_overlay	lib		$(srcdir)
 lib_pad 	lib		$(srcdir)
+lib_print	lib		$(srcdir)	../include/term.h
 lib_printw	lib		$(srcdir)
 lib_raw 	lib		$(srcdir)	../include/term.h
 lib_refresh	lib		$(srcdir)
+lib_restart	lib		$(srcdir)
 lib_resize	lib		$(srcdir)	../include/term.h
 lib_scanw	lib		$(srcdir)
 lib_screen	lib		$(srcdir)	../include/term.h
@@ -66,6 +69,7 @@ lib_unctrl	lib		$(srcdir)
 lib_vidattr	lib		$(srcdir)	../include/term.h
 lib_window	lib		$(srcdir)
 names		lib		.
+codes		lib		.
 read_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h
 read_termcap	lib		$(srcdir)	../include/term.h
 write_entry	lib		$(srcdir)	../include/term.h $(INCDIR)/tic.h

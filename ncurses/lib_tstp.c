@@ -88,7 +88,7 @@ typedef struct sigaction sigaction_t;
  */
 
 #ifdef SIGTSTP
-static void tstp(int dummy)
+static void tstp(int dummy __attribute__((unused)))
 {
 	sigset_t mask, omask;
 	sigaction_t act, oact;
@@ -173,7 +173,7 @@ static void cleanup(int sig)
 			endwin();
 		}
 	}
-	exit(1);
+	exit(EXIT_FAILURE);
 }
 
 /*
