@@ -28,8 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1996,1997,1998,1999,2000
 dnl
-dnl $Id: aclocal.m4,v 1.232 2000/10/01 00:01:25 tom Exp $
+dnl $Id: aclocal.m4,v 1.233 2000/10/04 09:18:40 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
+dnl
+dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 dnl ---------------------------------------------------------------------------

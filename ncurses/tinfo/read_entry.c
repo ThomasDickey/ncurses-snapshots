@@ -41,7 +41,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.67 2000/03/11 12:35:45 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.68 2000/10/04 02:32:04 tom Exp $")
 
 #if !HAVE_TELL
 #define tell(fd) 0		/* lseek() is POSIX, but not tell() - odd... */
@@ -471,19 +471,22 @@ _nc_read_entry(const char *const tn, char *const filename, TERMTYPE * const tp)
 	&& _nc_read_tic_entry(filename, _nc_tic_dir(0), ttn, tp) == 1)
 	return 1;
 
-    if ((envp = getenv("TERMINFO")) != 0
-	&& _nc_read_tic_entry(filename, _nc_tic_dir(envp), ttn, tp) == 1)
-	return 1;
+    if (use_terminfo_vars()) {
+	if ((envp = getenv("TERMINFO")) != 0
+	    && _nc_read_tic_entry(filename, _nc_tic_dir(envp), ttn, tp) == 1)
+	    return 1;
 
-    if ((envp = _nc_home_terminfo()) != 0) {
-	if (_nc_read_tic_entry(filename, envp, ttn, tp) == 1) {
-	    return (1);
+	/* this is an ncurses extension */
+	if ((envp = _nc_home_terminfo()) != 0) {
+	    if (_nc_read_tic_entry(filename, envp, ttn, tp) == 1) {
+		return (1);
+	    }
 	}
-    }
 
-    /* this is an ncurses extension */
-    if ((envp = getenv("TERMINFO_DIRS")) != 0)
-	return _nc_read_terminfo_dirs(envp, filename, ttn, tp);
+	/* this is an ncurses extension */
+	if ((envp = getenv("TERMINFO_DIRS")) != 0)
+	    return _nc_read_terminfo_dirs(envp, filename, ttn, tp);
+    }
 
     /* Try the system directory.  Note that the TERMINFO_DIRS value, if
      * defined by the configure script, begins with a ":", which will be

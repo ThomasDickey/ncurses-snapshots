@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.43 2000/10/01 00:21:43 tom Exp $
+-- $Id: INSTALL,v 1.44 2000/10/04 09:53:10 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -247,6 +247,15 @@ SUMMARY OF CONFIGURE OPTIONS:
     The other options are specific to this package.  We list them in alphabetic
     order.
 
+    --disable-assumed-color
+	With ncurses 5.1, we introduced a new function, assume_default_colors()
+	which allows applications to specify what the default foreground and
+	background color are assumed to be.  Most color applications use
+	full-screen color; but a few do not color the background.  While the
+	assumed values can be overridden by invoking assume_default_colors(),
+	you may find it useful to set the assumed values to the pre-5.1
+	convention, using this configure option.
+
     --disable-big-core
 	Assume machine has little memory.  The configure script attempts to
 	determine if your machine has enough memory (about 6Mb) to compile the
@@ -264,6 +273,10 @@ SUMMARY OF CONFIGURE OPTIONS:
 	Disable function-extensions.  Configure ncurses without the functions
 	that are not specified by XSI.  See ncurses/modules for the exact
 	list of library modules that would be suppressed.
+
+    --disable-hashmap
+	Compile without hashmap scrolling-optimization code.  This algorithm is
+	the default.
 
     --disable-leaks
 	For testing, compile-in code that frees memory that normally would not
@@ -283,6 +296,12 @@ SUMMARY OF CONFIGURE OPTIONS:
 	installed into a subdirectory, e.g., /usr/local/include/ncurses,
 	rather than the include directory.  This makes it simpler to avoid
 	compile-time conflicts with other versions of curses.h
+
+    --disable-root-environ
+	Compile with environment restriction, so certain environment variables
+	are not available when running as root.  These are (for example
+	$TERMINFO) those that allow the search path for the terminfo or termcap
+	entry to be customized.
 
     --disable-scroll-hints
 	Compile without scroll-hints code.  This option is ignored when
@@ -369,10 +388,6 @@ SUMMARY OF CONFIGURE OPTIONS:
 	this a standard feature except for the concern that the terminfo entry
 	may not be accurate, or that your stty settings have disabled the use
 	of tabs.
-
-    --enable-hashmap
-	Compile with hashmap scrolling-optimization code.  This is the default,
-	replacing an older scrolling-hints algorithm.
 
     --enable-no-padding
 	Compile-in support for the $NCURSES_NO_PADDING environment variable,

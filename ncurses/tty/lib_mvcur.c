@@ -152,7 +152,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.69 2000/10/03 08:52:48 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.70 2000/10/03 21:21:44 tom Exp $")
 
 #define CURRENT_ROW	SP->_cursrow	/* phys cursor row */
 #define CURRENT_COLUMN	SP->_curscol	/* phys cursor column */
@@ -214,12 +214,12 @@ _nc_msec_cost(const char *const cap, int affcnt)
 	return (INFINITY);
     else {
 	const char *cp;
-	float cum_cost = 0;
+	float cum_cost = 0.0;
 
 	for (cp = cap; *cp; cp++) {
 	    /* extract padding, either mandatory or required */
 	    if (cp[0] == '$' && cp[1] == '<' && strchr(cp, '>')) {
-		float number = 0;
+		float number = 0.0;
 
 		for (cp += 2; *cp != '>'; cp++) {
 		    if (isdigit(*cp))
@@ -1079,7 +1079,7 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	 * is winning.
 	 */
 	else if (sscanf(buf, "t %d", &n) == 1) {
-	    float cumtime = 0, perchar;
+	    float cumtime = 0.0, perchar;
 	    int speeds[] =
 	    {2400, 9600, 14400, 19200, 28800, 38400, 0};
 

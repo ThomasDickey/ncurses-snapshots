@@ -42,7 +42,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.46 2000/10/01 00:32:16 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.47 2000/10/04 00:57:13 tom Exp $")
 
 /*
  *	char *
@@ -73,6 +73,8 @@ MODULE_ID("$Id: lib_tparm.c,v 1.46 2000/10/01 00:32:16 tom Exp $")
  *	     %s        print pop() like %s in printf()
  *           %[[:]flags][width[.precision]][doxXs]
  *                     as in printf, flags are [-+#] and space
+ *                     The ':' is used to avoid making %+ or %-
+ *                     patterns (see below).
  *
  *	     %p[1-9]   push ith parm
  *	     %P[a-z]   set dynamic variable [a-z] to pop()
@@ -237,8 +239,11 @@ parse_format(const char *s, char *format, int *len)
     bool done = FALSE;
     bool allowminus = FALSE;
     bool dot = FALSE;
+    bool err = FALSE;
+    char *fmt = format;
     int prec = 0;
     int width = 0;
+    int value = 0;
 
     *len = 0;
     *format++ = '%';
@@ -255,7 +260,13 @@ parse_format(const char *s, char *format, int *len)
 	    break;
 	case '.':
 	    *format++ = *s++;
-	    dot = TRUE;
+	    if (dot) {
+		err = TRUE;
+	    } else {
+		dot = TRUE;
+		prec = value;
+	    }
+	    value = 0;
 	    break;
 	case '#':
 	    *format++ = *s++;
@@ -276,16 +287,31 @@ parse_format(const char *s, char *format, int *len)
 	    break;
 	default:
 	    if (isdigit(*s)) {
-		if (dot)
-		    prec = (prec * 10) + (*s - '0');
-		else
-		    width = (width * 10) + (*s - '0');
+		value = (value * 10) + (*s - '0');
+		if (value > 10000)
+		    err = TRUE;
 		*format++ = *s++;
 	    } else {
 		done = TRUE;
 	    }
 	}
     }
+
+    /*
+     * If we found an error, ignore (and remove) the flags.
+     */
+    if (err) {
+	prec = width = value = 0;
+	format = fmt;
+	*format++ = '%';
+	*format++ = *s;
+    }
+
+    if (dot)
+	width = value;
+    else
+	prec = value;
+
     *format = '\0';
     /* return maximum string length in print */
     *len = (prec > width) ? prec : width;

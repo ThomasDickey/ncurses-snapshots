@@ -1,4 +1,4 @@
--- $Id: NEWS,v 1.596 2000/10/03 10:21:21 tom Exp $
+-- $Id: NEWS,v 1.597 2000/10/05 01:24:51 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
@@ -6,11 +6,25 @@ working with Pavel Curtis' original work, pcurses, in 1992.
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
 
-20001003
+20001004
+	+ add configure option --disable-assumed-color, to allow pre-5.1
+	  convention of default colors used for color-pair 0 to be configured
+	  (see assume_default_colors()).
+	+ rename configure option --enable-hashmap --disable-hashmap, and
+	  reorder the configure options, splitting the experimental and
+	  development 
+	+ add configure option --disable-root-environ, which tells ncurses to
+	  disregard $TERMINFO and similar environment variables if the current
+	  user is root (based on discussion with several people).
+	+ modified misc/run_tic.in to use tic -o, to eliminate dependency on
+	  $TERMINFO variable for installs.
+	+ add table entry for plab_norm to tput, so it passes in strings
+	  for that capability.
+	+ modify parse_format() in lib_tparm.c to ignore precision if it is
+	  longer than 10000 (report by Jouko Pynnonen).
 	+ rewrote limit checks in lib_mvcur.c using new functions
 	  _nc_safe_strcat(), etc.  Made other related changes to check lengths
-	  used for strcat/strcpy (based on report by Jouko Pynnonen
-	  <jouko@solutions.fi>).
+	  used for strcat/strcpy (report by Jouko Pynnonen <jouko@solutions.fi>).
 
 20000930
 	+ modify several descriptions, including those for setaf, setab, in
