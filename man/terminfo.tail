@@ -1,4 +1,4 @@
-.\" $Id: terminfo.tail,v 1.38 2003/01/05 22:47:05 tom Exp $
+.\" $Id: terminfo.tail,v 1.39 2004/03/27 22:28:17 tom Exp $
 .\" Beginning of terminfo.tail file
 .ps +1
 .PP
@@ -801,6 +801,12 @@ Putting this all together into the sgr sequence gives:
 .fi
 .PP
 Remember that if you specify sgr, you must also specify sgr0.
+Also, some implementations rely on sgr being given if sgr0 is,
+Not all terminfo entries necessarily have an sgr string, however.
+Many terminfo entries are derived from termcap entries
+which have no sgr string.
+The only drawback to adding an sgr string is that termcap also
+assumes that sgr0 does not exit alternate character set mode.
 .PP
 Terminals with the ``magic cookie'' glitch
 .RB ( xmc )
@@ -1479,18 +1485,18 @@ user preferences.
 .SS Pitfalls of Long Entries
 .PP
 Long terminfo entries are unlikely to be a problem; to date, no entry has even
-approached terminfo's 4K string-table maximum.
+approached terminfo's 4096-byte string-table maximum.
 Unfortunately, the termcap
-translations are much more strictly limited (to 1K), thus termcap translations
+translations are much more strictly limited (to 1023 bytes), thus termcap translations
 of long terminfo entries can cause problems.
 .PP
-The man pages for 4.3BSD and older versions of tgetent() instruct the user to
-allocate a 1K buffer for the termcap entry.
+The man pages for 4.3BSD and older versions of \fBtgetent()\fP instruct the user to
+allocate a 1024-byte buffer for the termcap entry.
 The entry gets null-terminated by
 the termcap library, so that makes the maximum safe length for a termcap entry
 1k-1 (1023) bytes.
 Depending on what the application and the termcap library
-being used does, and where in the termcap file the terminal type that tgetent()
+being used does, and where in the termcap file the terminal type that \fBtgetent()\fP
 is searching for is, several bad things can happen.
 .PP
 Some termcap libraries print a warning message or exit if they find an
@@ -1511,7 +1517,7 @@ The "before tc expansion" length is the most important one, because it
 affects more than just users of that particular terminal.
 This is the
 length of the entry as it exists in /etc/termcap, minus the
-backslash-newline pairs, which tgetent() strips out while reading it.
+backslash-newline pairs, which \fBtgetent()\fP strips out while reading it.
 Some termcap libraries strip off the final newline, too (GNU termcap does not).
 Now suppose:
 .TP 5
@@ -1527,12 +1533,12 @@ the whole entry into the buffer, no matter what its length, to see
 if it's the entry it wants,
 .TP 5
 *
-and tgetent() is searching for a terminal type that either is the
+and \fBtgetent()\fP is searching for a terminal type that either is the
 long entry, appears in the termcap file after the long entry, or
-doesn't appear in the file at all (so that tgetent() has to search
+doesn't appear in the file at all (so that \fBtgetent()\fP has to search
 the whole termcap file).
 .PP
-Then tgetent() will overwrite memory, perhaps its stack, and probably core dump
+Then \fBtgetent()\fP will overwrite memory, perhaps its stack, and probably core dump
 the program.
 Programs like telnet are particularly vulnerable; modern telnets
 pass along values like the terminal type automatically.
@@ -1545,7 +1551,7 @@ here but will return incorrect data for the terminal.
 .PP
 The "after tc expansion" length will have a similar effect to the
 above, but only for people who actually set TERM to that terminal
-type, since tgetent() only does "tc" expansion once it's found the
+type, since \fBtgetent()\fP only does "tc" expansion once it's found the
 terminal type it was looking for, not while searching.
 .PP
 In summary, a termcap entry that is longer than 1023 bytes can cause,

@@ -32,7 +32,7 @@
  ****************************************************************************/
 
 /*
- * $Id: tic.h,v 1.46 2003/12/27 19:05:32 tom Exp $
+ * $Id: tic.h,v 1.48 2004/03/27 21:51:24 tom Exp $
  *	tic.h - Global variables and structures for the terminfo
  *			compiler.
  */
@@ -216,18 +216,18 @@ extern NCURSES_EXPORT(const struct name_table_entry * const *) _nc_get_hash_tabl
 #define NOTFOUND	((struct name_table_entry *) 0)
 
 /* out-of-band values for representing absent capabilities */
-#define ABSENT_BOOLEAN		(char)(-1)	/* 255 */
+#define ABSENT_BOOLEAN		((signed char)-1)	/* 255 */
 #define ABSENT_NUMERIC		(-1)
 #define ABSENT_STRING		(char *)0
 
 /* out-of-band values for representing cancels */
-#define CANCELLED_BOOLEAN	(char)(-2)	/* 254 */
+#define CANCELLED_BOOLEAN	((signed char)-2)	/* 254 */
 #define CANCELLED_NUMERIC	(-2)
 #define CANCELLED_STRING	(char *)(-1)
 
 #define VALID_BOOLEAN(s) ((unsigned char)(s) <= 1) /* reject "-1" */
 #define VALID_NUMERIC(s) ((s) >= 0)
-#define VALID_STRING(s) ((s) != CANCELLED_STRING && (s) != ABSENT_STRING)
+#define VALID_STRING(s)  ((s) != CANCELLED_STRING && (s) != ABSENT_STRING)
 
 /* termcap entries longer than this may break old binaries */
 #define MAX_TERMCAP_LENGTH	1023

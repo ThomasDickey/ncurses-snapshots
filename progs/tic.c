@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -45,7 +45,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.109 2003/12/06 17:36:57 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.110 2004/03/27 22:31:07 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -1326,6 +1326,8 @@ check_termtype(TERMTYPE * tp)
 	free(zero);
 	if (tparm_errs)
 	    _nc_warning("stack error in sgr string");
+    } else if (PRESENT(exit_attribute_mode)) {
+	_nc_warning("missing sgr string");
     }
 
     /*
