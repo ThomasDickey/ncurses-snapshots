@@ -1,5 +1,5 @@
 .\"***************************************************************************
-.\" Copyright (c) 1998,2001 Free Software Foundation, Inc.                   *
+.\" Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_inopts.3x,v 1.9 2002/08/10 22:29:49 tom Exp $
+.\" $Id: curs_inopts.3x,v 1.10 2003/05/10 20:33:49 jmc Exp $
 .TH curs_inopts 3X ""
 .SH NAME
 \fBcbreak\fR, \fBnocbreak\fR, \fBecho\fR,
@@ -163,9 +163,9 @@ had not occurred, after the handler exits.
 
 The \fBtimeout\fR and \fBwtimeout\fR routines set blocking or
 non-blocking read for a given window.  If \fIdelay\fR is negative,
-blocking read is used (\fIi\fR.\fIe\fR., waits indefinitely for
+blocking read is used (i.e., waits indefinitely for
 input).  If \fIdelay\fR is zero, then non-blocking read is used
-(\fIi\fR.\fIe\fR., read returns \fBERR\fR if no input is waiting).  If
+(i.e., read returns \fBERR\fR if no input is waiting).  If
 \fIdelay\fR is positive, then read blocks for \fIdelay\fR
 milliseconds, and returns \fBERR\fR if there is still no input.
 Hence, these routines provide the same functionality as \fBnodelay\fR,
@@ -193,7 +193,7 @@ The ncurses library obeys the XPG4 standard and the historical practice of the
 AT&T curses implementations, in that the echo bit is cleared when curses
 initializes the terminal state.  BSD curses differed from this slightly; it
 left the echo bit on at initialization, but the BSD \fBraw\fR call turned it
-off as a side-effect.  For best portability, set echo or noecho explicitly 
+off as a side-effect.  For best portability, set echo or noecho explicitly
 just after initialization, even if your program remains in cooked mode.
 .SH NOTES
 Note that \fBecho\fR, \fBnoecho\fR, \fBhalfdelay\fR, \fBintrflush\fR,

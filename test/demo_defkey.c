@@ -1,5 +1,5 @@
 /*
- * $Id: demo_defkey.c,v 1.9 2003/03/08 23:31:03 tom Exp $
+ * $Id: demo_defkey.c,v 1.10 2003/05/11 01:12:46 tom Exp $
  *
  * Demonstrate the define_key() function.
  * Thomas Dickey - 2002/11/23
@@ -68,7 +68,7 @@ visichar(int ch)
 static char *
 visible(const char *string)
 {
-    char *result = "";
+    char *result = 0;
     unsigned need = 1;
     int pass;
     int n;
@@ -86,6 +86,8 @@ visible(const char *string)
 	    if (!pass)
 		result = calloc(need, 1);
 	}
+    } else {
+	result = calloc(1, 1);
     }
     return result;
 }
