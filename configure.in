@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.233 2001/04/07 22:09:57 tom Exp $
+dnl $Id: configure.in,v 1.235 2001/05/26 20:35:09 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20000819)
-AC_REVISION($Revision: 1.233 $)
+AC_REVISION($Revision: 1.235 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -739,7 +739,17 @@ AC_MSG_RESULT($with_widec)
 if test "$with_widec" = yes ; then
 	LIB_SUFFIX="w${LIB_SUFFIX}"
 	AC_DEFINE(USE_WIDEC_SUPPORT)
+	with_overwrite=no
 fi
+
+AC_MSG_CHECKING(for terminal capabilities file)
+AC_ARG_WITH(caps,
+	[   --with-caps=alt        compile with experimental alternate Caps file],
+	[TERMINFO_CAPS=Caps.$withval],
+	[TERMINFO_CAPS=Caps])
+test -f ${srcdir}/include/${TERMINFO_CAPS} || TERMINFO_CAPS=Caps
+AC_MSG_RESULT($TERMINFO_CAPS)
+AC_SUBST(TERMINFO_CAPS)
 
 ###############################################################################
 CF_HELP_MESSAGE(Testing/development Options:)

@@ -466,6 +466,7 @@
 ./form/llib-lform
 ./form/modules
 ./include/Caps
+./include/Caps.aix4
 ./include/MKhashsize.sh
 ./include/MKncurses_def.sh
 ./include/MKparametrized.sh

@@ -5,7 +5,7 @@
 #	bug-ncurses@gnu.org
 #
 #	Version 10.2.1
-#	$Date: 2001/05/19 20:56:45 $
+#	$Date: 2001/05/19 20:52:11 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -2967,6 +2967,7 @@ rxvt|rxvt terminal emulator (X Window System),
 # From: Michael Jennings <mej@valinux.com>
 # removed kf0 which conflicts with kf10 -TD
 # remove cvvis which conflicts with cnorm -TD
+# There's no u6 because Eterm appears to lack CPR (cursor position report).
 Eterm|Eterm-color|Eterm with xterm-style color support (X Window System), 
 	am, bce, bw, eo, km, mc5i, mir, msgr, xenl, xon, 
 	btns#5, cols#80, it#8, lines#24, lm#0, ncv@, 
@@ -3002,8 +3003,8 @@ Eterm|Eterm-color|Eterm with xterm-style color support (X Window System),
 	sgr=\E[0%?%p1%p6%|%t;1%;%?%p2%t;4%;%?%p1%p3%|%t;7%;%?%p4%t;5%;m%?%p9%t\016%e\017%;, 
 	sgr0=\E[m\017, smacs=^N, smam=\E[?7h, smcup=\E7\E[?47h, 
 	smir=\E[4h, smkx=, smso=\E[7m, smul=\E[4m, tbc=\E[3g, 
-	u6=\E[%i%d;%dR, u7=\E[6n, u8=\E[?1;2c, u9=\E[c, 
-	vpa=\E[%i%p1%dd, use=ecma+color, 
+	u7=\E[6n, u8=\E[?1;2c, u9=\E[c, vpa=\E[%i%p1%dd, 
+	use=ecma+color, 
 
 # These (xtermc and xtermm) are distributed with Solaris.  They refer to a
 # variant of xterm which is apparently no longer supported, but are interesting
@@ -18820,7 +18821,6 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 2001-05-19
 #	* ELKS descriptions, from Federico Bianchi
-#	* add u6 (CSR) to Eterm (Michael Jennings).
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
