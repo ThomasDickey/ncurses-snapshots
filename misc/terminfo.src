@@ -3,7 +3,7 @@
 # This version of terminfo.src is distributed with ncurses.
 #
 #	Version 10.2.1
-#	$Date: 1999/07/04 02:24:20 $
+#	$Date: 1999/07/10 21:19:26 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -583,6 +583,7 @@ beterm|BeOS Terminal,
 #
 # The 2.x kernels add a private mode that sets the cursor type; use that to
 # get a block cursor for cvvis.
+# reported by Frank Heckenbach <frank@g-n-u.de>.
 linux|linux console, 
 	am, bce, eo, mir, msgr, xenl, xon, 
 	it#8, ncv#2, 

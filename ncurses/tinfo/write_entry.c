@@ -54,7 +54,7 @@
 #define TRACE_OUT(p) /*nothing*/
 #endif
 
-MODULE_ID("$Id: write_entry.c,v 1.46 1999/03/06 22:48:21 tom Exp $")
+MODULE_ID("$Id: write_entry.c,v 1.47 1999/07/10 20:29:22 tom Exp $")
 
 static int total_written;
 
@@ -126,12 +126,10 @@ void  _nc_set_writedir(char *dir)
 	char	*home = _nc_home_terminfo();
 
 	if (home != 0) {
-
+	    destination = home;
 	    if (make_directory(destination) < 0)
 		_nc_err_abort("%s: permission denied (errno %d)",
 			destination, errno);
-
-	    destination = home;
 	}
     }
 
