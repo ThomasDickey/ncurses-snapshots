@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: ncurses.3x,v 1.47 2001/09/15 20:20:34 tom Exp $
+.\" $Id: ncurses.3x,v 1.48 2001/11/04 02:08:10 tom Exp $
 .hy 0
 .TH ncurses 3X ""
 .ds n 5
@@ -209,6 +209,7 @@ _tracechtype2/\fBcurs_trace\fR(3X)*
 _tracedump/\fBcurs_trace\fR(3X)*
 _tracef/\fBcurs_trace\fR(3X)*
 _tracemouse/\fBcurs_trace\fR(3X)*
+add_wch/\fBcurs_add_wch\fR(3X)
 addch/\fBcurs_addch\fR(3X)
 addchnstr/\fBcurs_addchstr\fR(3X)
 addchstr/\fBcurs_addchstr\fR(3X)
@@ -253,6 +254,7 @@ derwin/\fBcurs_window\fR(3X)
 doupdate/\fBcurs_refresh\fR(3X)
 dupwin/\fBcurs_window\fR(3X)
 echo/\fBcurs_inopts\fR(3X)
+echo_wchar/\fBcurs_add_wch\fR(3X)
 echochar/\fBcurs_addch\fR(3X)
 endwin/\fBcurs_initscr\fR(3X)
 erase/\fBcurs_clear\fR(3X)
@@ -262,6 +264,7 @@ flash/\fBcurs_beep\fR(3X)
 flushinp/\fBcurs_util\fR(3X)
 getbegyx/\fBcurs_getyx\fR(3X)
 getbkgd/\fBcurs_bkgd\fR(3X)
+getcchar/\fBcurs_getcchar\fR(3X)
 getch/\fBcurs_getch\fR(3X)
 getmaxyx/\fBcurs_getyx\fR(3X)
 getmouse/\fBcurs_mouse\fR(3X)*
@@ -310,6 +313,7 @@ mouse_trafo/\fBcurs_mouse\fR(3X)*
 mouseinterval/\fBcurs_mouse\fR(3X)*
 mousemask/\fBcurs_mouse\fR(3X)*
 move/\fBcurs_move\fR(3X)
+mvadd_wch/\fBcurs_add_wch\fR(3X)
 mvaddch/\fBcurs_addch\fR(3X)
 mvaddchnstr/\fBcurs_addchstr\fR(3X)
 mvaddchstr/\fBcurs_addchstr\fR(3X)
@@ -334,6 +338,7 @@ mvinstr/\fBcurs_instr\fR(3X)
 mvprintw/\fBcurs_printw\fR(3X)
 mvscanw/\fBcurs_scanw\fR(3X)
 mvvline/\fBcurs_border\fR(3X)
+mvwadd_wch/\fBcurs_add_wch\fR(3X)
 mvwaddch/\fBcurs_addch\fR(3X)
 mvwaddchnstr/\fBcurs_addchstr\fR(3X)
 mvwaddchstr/\fBcurs_addchstr\fR(3X)
@@ -399,6 +404,7 @@ scroll/\fBcurs_scroll\fR(3X)
 scrollok/\fBcurs_outopts\fR(3X)
 set_curterm/\fBcurs_terminfo\fR(3X)
 set_term/\fBcurs_initscr\fR(3X)
+setcchar/\fBcurs_getcchar\fR(3X)
 setscrreg/\fBcurs_outopts\fR(3X)
 setsyx/\fBcurs_kernel\fR(3X)
 setterm/\fBcurs_terminfo\fR(3X)
@@ -457,6 +463,7 @@ vw_printw/\fBcurs_printw\fR(3X)
 vw_scanw/\fBcurs_scanw\fR(3X)
 vwprintw/\fBcurs_printw\fR(3X)
 vwscanw/\fBcurs_scanw\fR(3X)
+wadd_wch/\fBcurs_add_wch\fR(3X)
 waddch/\fBcurs_addch\fR(3X)
 waddchnstr/\fBcurs_addchstr\fR(3X)
 waddchstr/\fBcurs_addchstr\fR(3X)
@@ -480,6 +487,7 @@ wcolor_set/\fBcurs_attr\fR(3X)
 wcursyncup/\fBcurs_window\fR(3X)
 wdelch/\fBcurs_delch\fR(3X)
 wdeleteln/\fBcurs_deleteln\fR(3X)
+wecho_wchar/\fBcurs_add_wch\fR(3X)
 wechochar/\fBcurs_addch\fR(3X)
 wenclose/\fBcurs_mouse\fR(3X)*
 werase/\fBcurs_clear\fR(3X)
@@ -762,7 +770,6 @@ The \fBncurses\fR library is intended to be BASE-level conformant with the XSI
 Curses standard.  Certain portions of the EXTENDED XSI Curses functionality
 (including color support) are supported.  The following EXTENDED XSI Curses
 calls in support of wide (multibyte) characters are not yet implemented:
-\fBadd_wch\fP,
 \fBadd_wchnstr\fP,
 \fBadd_wchstr\fP,
 \fBaddnwstr\fP,
@@ -771,12 +778,10 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBbkgrndset\fP,
 \fBborder_set\fP,
 \fBbox_set\fP,
-\fBecho_wchar\fP,
 \fBerasewchar\fP,
 \fBget_wch\fP,
 \fBget_wstr\fP,
 \fBgetbkgrnd\fP,
-\fBgetcchar\fP,
 \fBgetn_wstr\fP,
 \fBgetwchtype\fP,
 \fBhline_set\fP,
@@ -792,7 +797,6 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBinwstr\fP,
 \fBkey_name\fP,
 \fBkillwchar\fP,
-\fBmvadd_wch\fP,
 \fBmvadd_wchnstr\fP,
 \fBmvadd_wchstr\fP,
 \fBmvaddnwstr\fP,
@@ -811,7 +815,6 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBmvinwchstr\fP,
 \fBmvinwstr\fP,
 \fBmvvline_set\fP,
-\fBmvwadd_wch\fP,
 \fBmvwadd_wchnstr\fP,
 \fBmvwadd_wchstr\fP,
 \fBmvwaddnwstr\fP,
@@ -832,7 +835,6 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBmvwinwstr\fP,
 \fBmvwvline_set\fP,
 \fBpecho_wchar\fP,
-\fBsetcchar\fP,
 \fBslk_wset\fP,
 \fBterm_attrs\fP,
 \fBunget_wch\fP,
@@ -840,7 +842,6 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBvid_attr\fP,
 \fBvid_puts\fP,
 \fBvline_set\fP,
-\fBwadd_wch\fP,
 \fBwadd_wchnstr\fP,
 \fBwadd_wchstr\fP,
 \fBwaddnwstr\fP,
@@ -850,8 +851,6 @@ calls in support of wide (multibyte) characters are not yet implemented:
 \fBwbkgrndset\fP,
 \fBwbkgrndset\fP,
 \fBwborder_set\fP,
-\fBwecho_wchar\fP,
-\fBwecho_wchar\fP,
 \fBwget_wch\fP,
 \fBwget_wstr\fP,
 \fBwgetbkgrnd\fP,

@@ -1,4 +1,4 @@
-# $Id: modules,v 1.77 2001/10/20 19:02:28 tom Exp $
+# $Id: modules,v 1.78 2001/11/03 20:11:23 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -39,7 +39,6 @@ lib_addstr	lib		$(base)
 lib_beep	lib		$(base)		../include/term.h
 lib_bkgd	lib		$(base)
 lib_box 	lib		$(base)
-lib_cchar	lib		$(base)
 lib_chgat	lib		$(base)
 lib_clear	lib		$(base)
 lib_clearok	lib		$(base)
@@ -110,7 +109,6 @@ lib_wattroff	lib		$(base)
 lib_wattron	lib		$(base)
 lib_winch	lib		$(base)
 lib_window	lib		$(base)
-lib_wunctrl	lib		$(base)
 nc_panel	lib		$(base)
 safe_sprintf	lib		$(base)
 tty_update	lib		$(serial)	../include/term.h
@@ -120,6 +118,11 @@ varargs		lib		$(trace)
 memmove		lib		$(base)
 sigaction	lib		$(base)
 vsscanf 	lib		$(base)
+
+# XSI extensions to the base library (wide-character)
+@ widechar
+lib_cchar	lib		$(wide)
+lib_wunctrl	lib		$(wide)
 
 # Extensions to the base library
 @ ext_funcs

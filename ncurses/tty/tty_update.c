@@ -70,7 +70,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.169 2001/09/23 00:29:40 skimo Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.170 2001/11/01 23:32:40 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -964,6 +964,7 @@ ClrBottom(int total)
     return total;
 }
 
+#if USE_XMC_SUPPORT
 #if USE_WIDEC_SUPPORT
 static inline bool
 check_xmc_transition(NCURSES_CH_T * a, NCURSES_CH_T * b)
@@ -980,6 +981,7 @@ check_xmc_transition(NCURSES_CH_T * a, NCURSES_CH_T * b)
 
 #define xmc_new(r,c) newscr->_line[r].text[c]
 #define xmc_turn_off(a,b) xmc_turn_on(b,a)
+#endif /* USE_XMC_SUPPORT */
 
 /*
 **	TransformLine(lineno)

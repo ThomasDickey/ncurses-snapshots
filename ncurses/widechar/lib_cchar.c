@@ -37,7 +37,7 @@
 
 #if USE_WIDEC_SUPPORT
 
-MODULE_ID("$Id: lib_cchar.c,v 1.1 2001/06/18 18:23:18 skimo Exp $")
+MODULE_ID("$Id: lib_cchar.c,v 1.2 2001/11/02 19:58:14 tom Exp $")
 
 /* 
  * The SuSv2 description leaves some room for interpretation.
@@ -51,25 +51,39 @@ NCURSES_EXPORT(int)
 setcchar(cchar_t * wcval, const wchar_t * wch, const attr_t attrs,
 	 short color_pair, const void *opts)
 {
-    int i, len;
+    int i;
+    int len;
+    int code = OK;
+
+    TR(TRACE_CCALLS, (T_CALLED("setcchar(%p,%s,%ld,%d,%p)"),
+		      wcval, _nc_viswbuf(wch), attrs, color_pair, opts));
 
     if (opts != NULL || (len = wcslen(wch)) > CCHARW_MAX
-	|| (len > 0 && wcwidth(wch[0]) < 0))
-	returnCode(ERR);
+	|| (len > 0 && wcwidth(wch[0]) < 0)) {
+	code = ERR;
+    } else {
 
-    for (i = 1; i < len; ++i)
-	if (wcwidth(wch[i]) != 0)
-	    returnCode(ERR);
+	for (i = 1; i < len; ++i) {
+	    if (wcwidth(wch[i]) != 0) {
+		code = ERR;
+		break;
+	    }
+	}
 
-    memset(wcval, 0, sizeof(*wcval));
+	if (code != ERR) {
+	    memset(wcval, 0, sizeof(*wcval));
 
-    if (len == 0)
-	returnCode(OK);
+	    if (len != 0) {
+		SetAttr(*wcval, attrs | color_pair);
+		memcpy(&wcval->chars, wch, len * sizeof(wchar_t));
+		TR(TRACE_CCALLS, ("copy %d wchars, first is %s", len,
+				  _tracecchar_t(wcval)));
+	    }
+	}
+    }
 
-    SetAttr(*wcval, attrs | color_pair);
-    memcpy(&wcval->chars, wch, len * sizeof(wchar_t));
-
-    returnCode(OK);
+    TR(TRACE_CCALLS, (T_RETURN("%d"), code));
+    return (code);
 }
 
 NCURSES_EXPORT(int)
@@ -78,22 +92,31 @@ getcchar(const cchar_t * wcval, wchar_t * wch, attr_t * attrs,
 {
     wchar_t *wp;
     int len;
+    int code;
 
-    if (opts != NULL)
-	returnCode(ERR);
+    TR(TRACE_CCALLS, (T_CALLED("getcchar(%p,%p,%p,%p,%p)"),
+		      wcval, wch, attrs, color_pair, opts));
 
-    len = (wp = wmemchr(wcval->chars, L'\0', CCHARW_MAX)) ? wp - wcval->chars
-	: CCHARW_MAX;
+    if (opts != NULL) {
+	code = ERR;
+    } else {
+	len = (wp = wmemchr(wcval->chars, L'\0', CCHARW_MAX))
+	    ? wp - wcval->chars
+	    : CCHARW_MAX;
 
-    if (wch == NULL)
-	return len + 1;
+	if (wch == NULL) {
+	    code = len + 1;
+	} else {
+	    *attrs = AttrOf(*wcval) & A_ATTRIBUTES;
+	    *color_pair = AttrOf(*wcval) & A_COLOR;
+	    wmemcpy(wch, wcval->chars, len);
+	    wch[len] = L'\0';
+	    code = OK;
+	}
+    }
 
-    *attrs = AttrOf(*wcval) & A_ATTRIBUTES;
-    *color_pair = AttrOf(*wcval) & A_COLOR;
-    wmemcpy(wch, wcval->chars, len);
-    wch[len] = L'\0';
-
-    returnCode(OK);
+    TR(TRACE_CCALLS, (T_RETURN("%d"), code));
+    return (code);
 }
 
 #endif

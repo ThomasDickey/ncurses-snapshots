@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <!-- 
   ****************************************************************************
-  * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+  * Copyright (c) 1998,2000,2001 Free Software Foundation, Inc.              *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
   * copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: curs_refresh.3x,v 1.8 2000/07/01 20:06:14 tom Exp @
+  * @Id: curs_refresh.3x,v 1.10 2001/11/03 18:57:12 tom Exp @
 -->
 <HTML>
 <HEAD>
@@ -41,8 +41,8 @@
 
 </PRE>
 <H2>NAME</H2><PRE>
-       <STRONG>refresh</STRONG>, <STRONG>wrefresh</STRONG>, <STRONG>wnoutrefresh</STRONG>, <STRONG>doupdate</STRONG>, <STRONG>redrawwin</STRONG>, <STRONG>wre-</STRONG>
-       <STRONG>drawln</STRONG> - refresh <STRONG>curses</STRONG> windows and lines
+       <STRONG>doupdate</STRONG>,  <STRONG>redrawwin</STRONG>,  <STRONG>refresh</STRONG>,  <STRONG>wnoutrefresh</STRONG>,  <STRONG>wredrawln</STRONG>,
+       <STRONG>wrefresh</STRONG> - refresh <STRONG>curses</STRONG> windows and lines
 
 
 </PRE>
@@ -64,11 +64,11 @@
        minal, as other routines  merely  manipulate  data  struc-
        tures.   The  routine  <STRONG>wrefresh</STRONG> copies the named window to
        the physical terminal screen, taking into account what  is
-       already  there  in order to do optimizations.  The <STRONG>refresh</STRONG>
-       routine is the same, using <STRONG>stdscr</STRONG> as the  default  window.
-       Unless  <STRONG>leaveok</STRONG>  has  been enabled, the physical cursor of
-       the terminal is left at the location  of  the  cursor  for
-       that window.
+       already there to do optimizations.  The <STRONG>refresh</STRONG> routine is
+       the same, using <STRONG>stdscr</STRONG>  as  the  default  window.   Unless
+       <STRONG>leaveok</STRONG>  has been enabled, the physical cursor of the ter-
+       minal is left at the location of the cursor for that  win-
+       dow.
 
        The  <STRONG>wnoutrefresh</STRONG>  and  <STRONG>doupdate</STRONG>  routines  allow multiple
        updates with more  efficiency  than  <STRONG>wrefresh</STRONG>  alone.   In

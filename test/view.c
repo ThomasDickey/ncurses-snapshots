@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.46 2001/09/29 23:58:18 tom Exp $
+ * $Id: view.c,v 1.47 2001/11/02 19:55:16 tom Exp $
  */
 
 #include <string.h>
@@ -88,13 +88,12 @@ usage(void)
 	," -i       ignore INT, QUIT, TERM signals"
 	," -n NUM   specify maximum number of lines (default 1000)"
 #if defined(KEY_RESIZE)
-	," -r       use old-style signwinch handler rather than KEY_RESIZE"
+	," -r       use old-style sigwinch handler rather than KEY_RESIZE"
 #endif
 #ifdef TRACE
 	," -t       trace screen updates"
 	," -T NUM   specify trace mask"
 #endif
-	," -u       translate UTF-8 data"
     };
     size_t n;
     for (n = 0; n < SIZEOF(msg); n++)
@@ -204,7 +203,7 @@ main(int argc, char *argv[])
     (void) signal(SIGINT, finish);	/* arrange interrupts to terminate */
 #endif
 
-    while ((i = getopt(argc, argv, "cin:rtT:u")) != EOF) {
+    while ((i = getopt(argc, argv, "cin:rtT:")) != EOF) {
 	switch (i) {
 	case 'c':
 	    try_color = TRUE;

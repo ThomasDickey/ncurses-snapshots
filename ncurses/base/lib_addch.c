@@ -26,11 +26,6 @@
  * authorization.                                                           *
  ****************************************************************************/
 
-/****************************************************************************
- *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
- *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- ****************************************************************************/
-
 /*
 **	lib_addch.c
 **
@@ -41,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.61 2001/07/08 00:54:50 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.62 2001/11/03 23:50:54 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -273,25 +268,6 @@ _nc_waddch_nosync(WINDOW *win, const NCURSES_CH_T c)
 
 /* These are actual entry points */
 
-#if USE_WIDEC_SUPPORT
-NCURSES_EXPORT(int)
-wadd_wch(WINDOW *win, const cchar_t * wch)
-{
-    int code = ERR;
-
-    TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_CALLED("wadd_wch(%p, %s)"), win,
-				      _tracech_t(wch)));
-
-    if (win && (waddch_nosync(win, *wch) != ERR)) {
-	_nc_synchook(win);
-	code = OK;
-    }
-
-    TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_RETURN("%d"), code));
-    return (code);
-}
-#endif
-
 NCURSES_EXPORT(int)
 waddch(WINDOW *win, const chtype ch)
 {
@@ -331,3 +307,41 @@ wechochar(WINDOW *win, const chtype ch)
     TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_RETURN("%d"), code));
     return (code);
 }
+
+#if USE_WIDEC_SUPPORT
+NCURSES_EXPORT(int)
+wadd_wch(WINDOW *win, const cchar_t * wch)
+{
+    int code = ERR;
+
+    TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_CALLED("wadd_wch(%p, %s)"), win,
+				      _tracech_t(wch)));
+
+    if (win && (waddch_nosync(win, *wch) != ERR)) {
+	_nc_synchook(win);
+	code = OK;
+    }
+
+    TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_RETURN("%d"), code));
+    return (code);
+}
+
+NCURSES_EXPORT(int)
+wecho_wchar(WINDOW *win, const cchar_t * wch)
+{
+    int code = ERR;
+
+    TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_CALLED("wecho_wchar(%p, %s)"), win,
+				      _tracech_t(wch)));
+
+    if (win && (waddch_nosync(win, *wch) != ERR)) {
+	bool save_immed = win->_immed;
+	win->_immed = TRUE;
+	_nc_synchook(win);
+	win->_immed = save_immed;
+	code = OK;
+    }
+    TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_RETURN("%d"), code));
+    return (code);
+}
+#endif /* USE_WIDEC_SUPPORT */

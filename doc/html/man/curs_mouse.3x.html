@@ -148,27 +148,29 @@
        stdscr-relative coordinates are not  always  identical  to
        screen-relative   coordinates  due  to  the  mechanism  to
        reserve lines on top or bottom of  the  screen  for  other
-       purposes  (ripoff() call, see also slk_...  functions). If
+       purposes (ripoff() call, see also slk_...  functions).  If
        the parameter <STRONG>to_screen</STRONG> is <STRONG>TRUE</STRONG>, the pointers <STRONG>pY,</STRONG> <STRONG>pX</STRONG>  must
        reference  the coordinates of a location inside the window
-       <STRONG>win</STRONG>. They are converted to screen-relative coordinates and
-       returned  through the pointers. If the conversion was suc-
-       cessful, the function returns <STRONG>TRUE</STRONG>. If one of the  parame-
-       ters  was  NULL  or the location is not inside the window,
-       <STRONG>FALSE</STRONG> is returned. If <STRONG>to_screen</STRONG> is <STRONG>FALSE</STRONG>, the pointers <STRONG>pY,</STRONG>
-       <STRONG>pX</STRONG>  must  reference  screen-relative coordinates. They are
-       converted to stdscr-relative coordinates if the window <STRONG>win</STRONG>
-       encloses  this  point.  In  this case the function returns
-       <STRONG>TRUE</STRONG>. If one of the parameters is NULL or the point is not
-       inside  the window, <STRONG>FALSE</STRONG> is returned. Please notice, that
-       the referenced coordinates are only replaced by  the  con-
-       verted coordinates if the transformation was successful.
+       <STRONG>win</STRONG>.  They are converted  to  screen-relative  coordinates
+       and  returned through the pointers.  If the conversion was
+       successful, the function returns  <STRONG>TRUE</STRONG>.   If  one  of  the
+       parameters was NULL or the location is not inside the win-
+       dow, <STRONG>FALSE</STRONG> is returned.  If <STRONG>to_screen</STRONG> is <STRONG>FALSE</STRONG>, the point-
+       ers  <STRONG>pY,</STRONG>  <STRONG>pX</STRONG>  must  reference screen-relative coordinates.
+       They are converted to stdscr-relative coordinates  if  the
+       window <STRONG>win</STRONG> encloses this point.  In this case the function
+       returns <STRONG>TRUE</STRONG>.  If one of the parameters  is  NULL  or  the
+       point is not inside the window, <STRONG>FALSE</STRONG> is returned.  Please
+       notice, that the referenced coordinates are only  replaced
+       by  the  converted  coordinates  if the transformation was
+       successful.
 
        The <STRONG>mouseinterval</STRONG> function sets the maximum time (in thou-
-       sands of a second)  that  can  elapse  between  press  and
-       release  events  in  order  for them to be recognized as a
-       click.  This function returns the previous interval value.
-       The default is one fifth of a second.
+       sands  of  a  second)  that  can  elapse between press and
+       release events for them to be recognized as a click.   Use
+       <STRONG>mouseinterval(-1)</STRONG> to disable click resolution.  This func-
+       tion returns the previous interval value.  The default  is
+       one sixth of a second.
 
        Note  that  mouse  events will be ignored when input is in
        cooked mode, and will cause an error beep when cooked mode
@@ -180,7 +182,7 @@
 </PRE>
 <H2>RETURN VALUE</H2><PRE>
        <STRONG>getmouse</STRONG>, <STRONG>ungetmouse</STRONG> and <STRONG>mouseinterval</STRONG> return the  integer
-       <STRONG>ERR</STRONG>  upon failure or <STRONG>OK</STRONG> upon successful completion. <STRONG>mouse-</STRONG>
+       <STRONG>ERR</STRONG> upon failure or <STRONG>OK</STRONG> upon successful completion.  <STRONG>mouse-</STRONG>
        <STRONG>mask</STRONG> returns the mask of reportable events.  <STRONG>wenclose</STRONG>  and
        <STRONG>wmouse_trafo</STRONG> are boolean functions returning <STRONG>TRUE</STRONG> or <STRONG>FALSE</STRONG>
        depending on their test result.
@@ -208,7 +210,6 @@
        than  xterm  and  there  is  no gpm daemon running on your
        machine, mouse events will not be visible  to  <STRONG><A HREF="ncurses.3x.html">ncurses(3x)</A></STRONG>
        (and the <STRONG>wmousemask</STRONG> function will always return <STRONG>0</STRONG>).
-
        The z member in the event structure is not presently used.
        It is intended for use with touch screens  (which  may  be
        pressure-sensitive)   or   with   3D-mice/trackballs/power
@@ -239,7 +240,6 @@
 </PRE>
 <H2>SEE ALSO</H2><PRE>
        <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>.
-
 
 
 
