@@ -45,7 +45,7 @@
 #endif
 #include <transform.h>
 
-MODULE_ID("$Id: tput.c,v 1.23 2000/10/01 01:26:25 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.24 2000/10/05 00:05:04 tom Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -98,24 +98,18 @@ check_aliases(const char *name)
 static TParams
 tparm_type(char *name)
 {
+#define TD(code, longname, ti, tc) {code,longname},{code,ti},{code,tc}
     TParams result = Numbers;
     /* *INDENT-OFF* */
     static const struct {
 	TParams code;
 	const char *name;
     } table[] = {
-	{ Num_Str,	"pfkey" },
-	{ Num_Str,	"pfloc" },
-	{ Num_Str,	"pfx" },
-	{ Num_Str,	"pk" },
-	{ Num_Str,	"pkey_key" },
-	{ Num_Str,	"pkey_local" },
-	{ Num_Str,	"pkey_xmit" },
-	{ Num_Str,	"pl" },
-	{ Num_Str,	"px" },
-	{ Num_Str_Str,	"pfxl" },
-	{ Num_Str_Str,	"pkey_plab" },
-	{ Num_Str_Str,	"xl" },
+	TD(Num_Str,	"pkey_key",	"pfkey",	"pk"),
+	TD(Num_Str,	"pkey_local",	"pfloc",	"pl"),
+	TD(Num_Str,	"pkey_xmit",	"pfx",		"px"),
+	TD(Num_Str,	"plab_norm",	"pln",		"pn"),
+	TD(Num_Str_Str, "pkey_plab",	"pfxl",		"xl"),
     };
     /* *INDENT-ON* */
 

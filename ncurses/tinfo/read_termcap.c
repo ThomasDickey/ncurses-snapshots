@@ -55,7 +55,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.48 2000/09/02 18:16:42 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.49 2000/10/05 00:37:19 tom Exp $")
 
 #if !PURE_TERMINFO
 
@@ -777,6 +777,7 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
     char *pathvec[PVECSIZ];	/* to point to names in pathbuf */
     char **pvec;		/* holds usable tail of path vector */
     char *termpath;
+    string_desc desc;
 
     fname = pathvec;
     pvec = pathvec;
@@ -793,22 +794,30 @@ _nc_tgetent(char *bp, char **sourcename, int *lineno, const char *name)
      * instead.  The path is found in the TERMPATH variable, or becomes
      * "$HOME/.termcap /etc/termcap" if no TERMPATH exists.
      */
+    _nc_str_init(&desc, pathbuf, sizeof(pathbuf));
     if (!is_pathname(cp)) {	/* no TERMCAP or it holds an entry */
-	if ((termpath = getenv("TERMPATH")) != 0) {
-	    strncpy(pathbuf, termpath, PBUFSIZ - 1);
+	if (use_terminfo_vars()
+	 && (termpath = getenv("TERMPATH")) != 0) {
+	    _nc_safe_strcat(&desc, termpath);
 	} else {
-	    if ((home = getenv("HOME")) != 0 &&
-		strlen(home) < PBUFSIZ) {	/* setup path */
-		p += strlen(home);	/* path, looking in */
-		strcpy(pathbuf, home);	/* $HOME first */
-		*p++ = '/';
-	    }			/* if no $HOME look in current directory */
-#define	MY_PATH_DEF	".termcap /etc/termcap /usr/share/misc/termcap"
-	    strncpy(p, MY_PATH_DEF, (size_t) (PBUFSIZ - (p - pathbuf) - 1));
+	    if (use_terminfo_vars()) {
+		char temp[PBUFSIZ];
+		temp[0] = 0;
+		if ((home = getenv("HOME")) != 0
+		 && strchr(home, ' ') == 0
+		 && strlen(home) < sizeof(temp) - 10) {	/* setup path */
+		    sprintf(temp, "%s/", home);	/* $HOME first */
+		}
+		/* if no $HOME look in current directory */
+		strcat(temp, ".termcap");
+		_nc_safe_strcat(&desc, temp);
+	    }
+	    _nc_safe_strcat(&desc, " /etc/termcap");
+	    _nc_safe_strcat(&desc, " /usr/share/misc/termcap");
 	}
-    } else			/* user-defined name in TERMCAP */
-	strncpy(pathbuf, cp, PBUFSIZ - 1);	/* still can be tokenized */
-    pathbuf[PBUFSIZ - 1] = '\0';
+    } else {			/* user-defined name in TERMCAP */
+	_nc_safe_strcat(&desc, cp);	/* still can be tokenized */
+    }
 
     *fname++ = pathbuf;		/* tokenize path into vector of names */
     while (*++p) {

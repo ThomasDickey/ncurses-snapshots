@@ -33,7 +33,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.166 2000/10/03 02:08:37 tom Exp $
+ * $Id: curses.priv.h,v 1.167 2000/10/04 21:49:44 tom Exp $
  *
  *	curses.priv.h
  *
@@ -142,6 +142,16 @@ extern int errno;
 #define USE_SIZECHANGE 1
 #else
 #undef USE_SIGWINCH
+#endif
+
+/*
+ * If desired, one can configure this disabling environment variables that
+ * point to custom terminfo/termcap locations.
+ */
+#ifdef USE_ROOT_ENVIRON
+#define use_terminfo_vars() 1
+#else
+#define use_terminfo_vars() (getuid() != 0)
 #endif
 
 /*
