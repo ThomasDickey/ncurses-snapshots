@@ -39,7 +39,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include <parametrized.h>	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.64 2002/09/01 17:54:43 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.65 2003/03/22 23:41:21 tom Exp $")
 
 #define INDENT			8
 #define DISCARD(string) string = ABSENT_STRING
@@ -913,15 +913,24 @@ dump_entry(TERMTYPE * tterm,
 	     */
 	    char *oldsgr = set_attributes;
 	    char *oldacsc = acs_chars;
-	    set_attributes = ABSENT_STRING;
-	    SHOW_WHY("# (sgr removed to fit entry within %d bytes)\n",
-		     critlen);
-	    if ((len = FMT_ENTRY()) > critlen) {
-		acs_chars = ABSENT_STRING;
-		SHOW_WHY("# (acsc removed to fit entry within %d bytes)\n",
+	    bool changed = FALSE;
+
+	    if (VALID_STRING(set_attributes)) {
+		set_attributes = ABSENT_STRING;
+		SHOW_WHY("# (sgr removed to fit entry within %d bytes)\n",
 			 critlen);
+		changed = TRUE;
 	    }
-	    if ((len = FMT_ENTRY()) > critlen) {
+	    if (!changed || ((len = FMT_ENTRY()) > critlen)) {
+		if (VALID_STRING(acs_chars)) {
+		    acs_chars = ABSENT_STRING;
+		    SHOW_WHY("# (acsc removed to fit entry within %d bytes)\n",
+			     critlen);
+		    SHOW_WHY("# acsc:%s\n", oldacsc);
+		    changed = TRUE;
+		}
+	    }
+	    if (!changed || ((len = FMT_ENTRY()) > critlen)) {
 		int oldversion = tversion;
 
 		tversion = V_BSD;

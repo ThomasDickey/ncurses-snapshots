@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.738 2003/03/16 01:07:20 tom Exp $
+-- $Id: NEWS,v 1.739 2003/03/23 00:15:29 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030322
+	+ improved warnings in tic when suppressing items to fit in termcap's
+	  1023-byte limit.
+	+ built a list in test/README showing which externals are being used
+	  by either programs in the test-directory or via internal library
+	  calls.
+	+ adjust include-options in CF_ETIP_DEFINES to avoid missing
+	  ncurses_dll.h, fixing special definitions that may be needed for
+	  etip.h (reported by Greg Schafer <gschafer@zip.com.au>).
 
 20030315
 	+ minor fixes for cardfile.c, to make it write the updated fields to
