@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -45,7 +45,7 @@
 #endif
 #include <transform.h>
 
-MODULE_ID("$Id: tput.c,v 1.33 2003/02/22 22:10:34 tom Exp $")
+MODULE_ID("$Id: tput.c,v 1.34 2004/01/16 23:23:11 Daniel.Jacobowitz Exp $")
 
 #define PUTS(s)		fputs(s, stdout)
 #define PUTCHAR(c)	putchar(c)
@@ -67,6 +67,7 @@ quit(int status, const char *fmt,...)
     va_list argp;
 
     va_start(argp, fmt);
+    fprintf(stderr, "%s: ", prg_name);
     vfprintf(stderr, fmt, argp);
     fprintf(stderr, "\n");
     va_end(argp);
@@ -292,7 +293,7 @@ tput(int argc, char *argv[])
 	(void) printf("%d\n", status);
 	return exit_code(NUMBER, 0);
     } else if ((s = tigetstr(name)) == CANCELLED_STRING) {
-	quit(4, "%s: unknown terminfo capability '%s'", prg_name, name);
+	quit(4, "unknown terminfo capability '%s'", name);
     } else if (s != ABSENT_STRING) {
 	token = STRING;
 	if (argc > 1) {

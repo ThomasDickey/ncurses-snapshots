@@ -21,7 +21,7 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: color.c,v 1.4 2003/09/27 21:11:21 tom Exp $")
+MODULE_ID("$Id: color.c,v 1.5 2004/01/16 23:14:25 Jochen.Voss Exp $")
 
 /*
  * Color terminal tests.  Has only one entry point: test_color().
@@ -597,7 +597,7 @@ color_matrix(
 				reset_colors();
 				put_crlf();
 				if (brightness) {
-					tc_putp(exit_standout_mode);
+					tc_putp(exit_attribute_mode);
 				}
 				(void) sprintf(temp, "%-8s", def_colors[j / matrix_size].name);
 				put_str(temp);

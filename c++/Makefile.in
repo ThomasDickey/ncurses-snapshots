@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.71 2003/11/01 22:53:12 tom Exp $
+# $Id: Makefile.in,v 1.72 2004/01/16 22:44:56 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -148,7 +148,8 @@ LIB_OBJS = \
 	$(RANLIB) $@
 
 ../lib/$(LIBNAME_LIBTOOL) : $(LIB_OBJS)
-	cd ../lib && $(LIBTOOL_LINK) $(CXX) -o $(LIBNAME) $(LIB_OBJS:$o=.lo) \
+	cd ../lib && $(LIBTOOL_LINK) $(CXX) $(CXXFLAGS) \
+		-o $(LIBNAME) $(LIB_OBJS:$o=.lo) \
 		-rpath $(INSTALL_PREFIX)$(libdir) \
 		-version-info $(NCURSES_MAJOR):$(NCURSES_MINOR) $(SHLIB_LIST)
 

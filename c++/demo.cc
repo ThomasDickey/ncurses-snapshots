@@ -6,7 +6,7 @@
  *   Demo code for NCursesMenu and NCursesForm written by
  *   Juergen Pfeifer
  *
- * $Id: demo.cc,v 1.23 2003/10/25 14:53:13 tom Exp $
+ * $Id: demo.cc,v 1.24 2004/01/15 00:21:27 tom Exp $
  */
 
 #include "cursesapp.h"
@@ -204,7 +204,7 @@ private:
   Integer_Field *ift;
   Enumeration_Field *eft;
 
-  static char *weekdays[];
+  static const char *weekdays[];
 
 public:
   TestForm() : NCursesForm(13,51,(lines()-15)/2,(cols()-53)/2) {
@@ -246,9 +246,9 @@ public:
   }
 };
 
-char* TestForm::weekdays[] = {
+const char* TestForm::weekdays[] = {
     "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
-    "Friday", "Saturday", (char *)0 };
+    "Friday", "Saturday", (const char *)0 };
 //
 // -------------------------------------------------------------------------
 //

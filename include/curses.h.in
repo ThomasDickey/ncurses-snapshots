@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey 1996-on                                        *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.146 2003/12/13 19:36:11 tom Exp $ */
+/* $Id: curses.h.in,v 1.148 2004/01/14 23:50:12 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -125,22 +125,23 @@ typedef unsigned @cf_cv_typeof_chtype@ chtype;
 
 typedef @cf_cv_type_of_bool@ NCURSES_BOOL;
 
-#if @USE_CXX_BOOL@ /* !__cplusplus, etc. */
+#if @USE_CXX_BOOL@	/* __cplusplus, etc. */
+
+/* use the C++ compiler's bool type */
+#define NCURSES_BOOL bool
+
+#else			/* c89, c99, etc. */
 
 #if @cf_cv_header_stdbool_h@
 #include <stdbool.h>
-#endif
-
+/* use whatever the C compiler decides bool really is */
+#define NCURSES_BOOL bool
+#else
+/* there is no predefined bool - use our own */
 #undef bool
-
-#if @cf_cv_header_stdbool_h@
 #define bool NCURSES_BOOL
-#else
-typedef NCURSES_BOOL bool;
 #endif
 
-#else
-#define bool NCURSES_BOOL
 #endif /* !__cplusplus, etc. */
 
 #ifdef __cplusplus
