@@ -32,7 +32,7 @@
 typedef struct entry {
 	TERMTYPE	tterm;
 	int		nuses;
-	char		*uses[MAX_USES];
+	void		*uses[MAX_USES];	/* (char *) or (ENTRY *) */
 	long		cstart, cend;
 	struct entry	*next;
 	struct entry	*last;
@@ -52,6 +52,7 @@ extern void _nc_wrap_entry(ENTRY *ep);
 
 /* parse_entry.c: entry-parsing code */
 extern int _nc_parse_entry(ENTRY *, int, bool);
+extern int _nc_capcmp(const char *, const char *);
 
 /* write_entry.c: writing an entry to the file system */
 extern void _nc_write_entry(TERMTYPE *tp);

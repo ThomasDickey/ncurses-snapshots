@@ -33,14 +33,12 @@
 |   Description   :  Set the pointer that is reserved in any item to store
 |                    application relevant informations.  
 |
-|   Return Values :  E_OK               - on success (always)
-|
+|   Return Values :  E_OK               - success
 +--------------------------------------------------------------------------*/
 int set_item_userptr(ITEM * item, char * userptr)
 {
-    CDEFITEM(item);
-    item->userptr = userptr;
-    RETURN( E_OK );
+  Normalize_Item(item)->userptr = userptr;
+  RETURN( E_OK );
 }
 
 /*---------------------------------------------------------------------------
@@ -52,12 +50,10 @@ int set_item_userptr(ITEM * item, char * userptr)
 |
 |   Return Values :  Value of the pointer. If no such pointer has been set,
 |                    NULL is returned.
-|
 +--------------------------------------------------------------------------*/
 char *item_userptr(const ITEM * item)
 {
-    CDEFITEM(item);
-    return( item->userptr );
+  return Normalize_Item(item)->userptr;
 }
 
-/* menu_item_use.c */
+/* m_item_use.c */

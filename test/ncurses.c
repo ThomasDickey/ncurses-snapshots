@@ -25,6 +25,7 @@ library source.
 #include <curses.h>
 #include <panel.h>
 #include <menu.h>
+#include <form.h>
 
 #define P(string)	printw("%s\n", string)
 #ifndef CTRL
@@ -570,7 +571,7 @@ static void acs_display(void)
     attroff(A_BOLD);
     refresh();
 
-#define ACSY	2
+#define ACSY	1
     mvaddstr(ACSY + 0, 0, "ACS_ULCORNER: "); addch(ACS_ULCORNER);
     mvaddstr(ACSY + 1, 0, "ACS_LLCORNER: "); addch(ACS_LLCORNER);
     mvaddstr(ACSY + 2, 0, "ACS_URCORNER: "); addch(ACS_URCORNER);
@@ -584,25 +585,32 @@ static void acs_display(void)
     mvaddstr(ACSY + 10,0, "ACS_PLUS: "); addch(ACS_PLUS);
     mvaddstr(ACSY + 11,0, "ACS_S1: "); addch(ACS_S1);
     mvaddstr(ACSY + 12,0, "ACS_S9: "); addch(ACS_S9);
+    mvaddstr(ACSY + 13,0, "ACS_DIAMOND: "); addch(ACS_DIAMOND);
+    mvaddstr(ACSY + 14,0, "ACS_CKBOARD: "); addch(ACS_CKBOARD);
+    mvaddstr(ACSY + 15,0, "ACS_DEGREE: "); addch(ACS_DEGREE);
 
-    mvaddstr(ACSY + 0, 40, "ACS_DIAMOND: "); addch(ACS_DIAMOND);
-    mvaddstr(ACSY + 1, 40, "ACS_CKBOARD: "); addch(ACS_CKBOARD);
-    mvaddstr(ACSY + 2, 40, "ACS_DEGREE: "); addch(ACS_DEGREE);
-    mvaddstr(ACSY + 3, 40, "ACS_PLMINUS: "); addch(ACS_PLMINUS);
-    mvaddstr(ACSY + 4, 40, "ACS_BULLET: "); addch(ACS_BULLET);
-    mvaddstr(ACSY + 5, 40, "ACS_LARROW: "); addch(ACS_LARROW);
-    mvaddstr(ACSY + 6, 40, "ACS_RARROW: "); addch(ACS_RARROW);
-    mvaddstr(ACSY + 7, 40, "ACS_DARROW: "); addch(ACS_DARROW);
-    mvaddstr(ACSY + 8, 40, "ACS_UARROW: "); addch(ACS_UARROW);
-    mvaddstr(ACSY + 9, 40, "ACS_BOARD: "); addch(ACS_BOARD);
-    mvaddstr(ACSY + 10,40, "ACS_LANTERN: "); addch(ACS_LANTERN);
-    mvaddstr(ACSY + 11,40, "ACS_BLOCK: "); addch(ACS_BLOCK);
+    mvaddstr(ACSY + 0, 40, "ACS_PLMINUS: "); addch(ACS_PLMINUS);
+    mvaddstr(ACSY + 1, 40, "ACS_BULLET: "); addch(ACS_BULLET);
+    mvaddstr(ACSY + 2, 40, "ACS_LARROW: "); addch(ACS_LARROW);
+    mvaddstr(ACSY + 3, 40, "ACS_RARROW: "); addch(ACS_RARROW);
+    mvaddstr(ACSY + 4, 40, "ACS_DARROW: "); addch(ACS_DARROW);
+    mvaddstr(ACSY + 5, 40, "ACS_UARROW: "); addch(ACS_UARROW);
+    mvaddstr(ACSY + 6, 40, "ACS_BOARD: "); addch(ACS_BOARD);
+    mvaddstr(ACSY + 7, 40, "ACS_LANTERN: "); addch(ACS_LANTERN);
+    mvaddstr(ACSY + 8, 40, "ACS_BLOCK: "); addch(ACS_BLOCK);
+    mvaddstr(ACSY + 9,40,  "ACS_S3: "); addch(ACS_S3);
+    mvaddstr(ACSY + 10,40, "ACS_S7: "); addch(ACS_S7);
+    mvaddstr(ACSY + 11,40, "ACS_LEQUAL: "); addch(ACS_LEQUAL);
+    mvaddstr(ACSY + 12,40, "ACS_GEQUAL: "); addch(ACS_GEQUAL);
+    mvaddstr(ACSY + 13,40, "ACS_PI: "); addch(ACS_PI);
+    mvaddstr(ACSY + 14,40, "ACS_NEQUAL: "); addch(ACS_NEQUAL);
+    mvaddstr(ACSY + 15,40, "ACS_STERLING: "); addch(ACS_STERLING);
 
-#define HYBASE 	(ACSY + 13)    
-    mvprintw(HYBASE + 1, 0, "High-half characters via echochar:\n");
+#define HYBASE 	(ACSY + 17)    
+    mvprintw(HYBASE, 0, "High-half characters via echochar:\n");
     for (i = 0; i < 4; i++)
     {
-	move(HYBASE + i + 3, 24);
+	move(HYBASE + 1 + i, 24);
 	for (j = 0; j < 32; j++)
 	    echochar((chtype)(128 + 32 * i + j));
     }
@@ -1483,7 +1491,7 @@ static void input_test(WINDOW *win)
 #define MENU_Y	4
 #define MENU_X	4
 
-static int input_virtualize(int c)
+static int menu_virtualize(int c)
 {
     if (c == '\n' || c == KEY_EXIT)
 	return(MAX_COMMAND + 1);
@@ -1529,7 +1537,7 @@ static void menu_test(void)
 
     post_menu(m);
 
-    while (menu_driver(m, input_virtualize(wgetch(menuwin))) != E_UNKNOWN_COMMAND)
+    while (menu_driver(m, menu_virtualize(wgetch(menuwin))) != E_UNKNOWN_COMMAND)
 	continue;
 
     (void) mvprintw(LINES - 2, 0,
@@ -1543,6 +1551,232 @@ static void menu_test(void)
     for (ip = items; *ip; ip++)
 	free_item(*ip);
     free_menu(m);
+}
+
+/****************************************************************************
+ *
+ * Forms test
+ *
+ ****************************************************************************/
+
+static FIELD *make_label(int frow, int fcol, char *label)
+{
+    FIELD	*f = new_field(1, strlen(label), frow, fcol, 0, 0);
+
+    if (f)
+    {
+	set_field_buffer(f, 0, label);
+	set_field_opts(f, field_opts(f) & ~O_ACTIVE);
+    }
+    return(f);
+}
+
+static FIELD *make_field(int frow, int fcol, int rows, int cols)
+{
+    FIELD	*f = new_field(rows, cols, frow, fcol, 0, 0);
+
+    if (f)
+	set_field_back(f, A_UNDERLINE);
+    return(f);
+}
+
+static void display_form(FORM *f)
+{
+    WINDOW	*w;
+    int rows, cols;
+
+    scale_form(f, &rows, &cols);
+
+    if ((w =newwin(rows+2, cols+4, 0, 0)) != (WINDOW *)NULL)
+    {
+	set_form_win(f, w);
+	set_form_sub(f, derwin(w, rows, cols, 1, 2));
+	box(w, 0, 0);
+	keypad(w, TRUE);
+    }
+
+    if (post_form(f) != E_OK)
+	wrefresh(w);
+}
+
+static void erase_form(FORM *f)
+{
+    WINDOW	*w = form_win(f);
+    WINDOW	*s = form_sub(f);
+
+    unpost_form(f);
+    werase(w);
+    wrefresh(w);
+    delwin(s);
+    delwin(w);
+}
+
+static int form_virtualize(WINDOW *w)
+{
+    static int	mode = REQ_INS_MODE;
+    int		c = wgetch(w);
+
+    switch(c)
+    {
+    case CTRL('Q'):
+	return(MAX_FORM_COMMAND + 1);
+
+    /* demo doesn't use these three, leave them in anyway as sample code */
+    case KEY_NPAGE:
+    case CTRL('F'):
+	return(REQ_NEXT_PAGE);
+    case KEY_PPAGE:
+	return(REQ_PREV_PAGE);
+
+    case KEY_NEXT:
+    case CTRL('N'):
+	return(REQ_NEXT_FIELD);
+    case KEY_PREVIOUS:
+    case CTRL('P'):
+	return(REQ_PREV_FIELD);
+
+    case KEY_HOME:
+	return(REQ_FIRST_FIELD);
+    case KEY_END:
+    case KEY_LL:
+	return(REQ_LAST_FIELD);
+
+    case CTRL('L'):
+	return(REQ_LEFT_FIELD);
+    case CTRL('R'):
+	return(REQ_RIGHT_FIELD);
+    case CTRL('U'):
+	return(REQ_UP_FIELD);
+    case CTRL('D'):
+	return(REQ_DOWN_FIELD);
+
+    case CTRL('W'):
+	return(REQ_NEXT_WORD);
+    case CTRL('T'):
+	return(REQ_PREV_WORD);
+    case CTRL('S'):
+	return(REQ_BEG_FIELD);
+    case CTRL('E'):
+	return(REQ_END_FIELD);
+
+    case KEY_LEFT:
+	return(REQ_LEFT_CHAR);
+    case KEY_RIGHT:
+	return(REQ_RIGHT_CHAR);
+    case KEY_UP:
+	return(REQ_UP_CHAR);
+    case KEY_DOWN:
+	return(REQ_DOWN_CHAR);
+
+    case CTRL('M'):
+	return(REQ_NEW_LINE);
+    case CTRL('I'):
+	return(REQ_INS_CHAR);
+    case CTRL('O'):
+	return(REQ_INS_LINE);
+    case CTRL('V'):
+	return(REQ_DEL_CHAR);
+
+    case CTRL('H'):
+	return(REQ_DEL_PREV);
+    case CTRL('Y'):
+	return(REQ_DEL_LINE);
+    case CTRL('G'):
+	return(REQ_DEL_WORD);
+
+    case CTRL('C'):
+	return(REQ_CLR_EOL);
+    case CTRL('K'):
+	return(REQ_CLR_EOF);
+    case CTRL('X'):
+	return(REQ_CLR_FIELD);
+    case CTRL('A'):
+	return(REQ_NEXT_CHOICE);
+    case CTRL('Z'):
+	return(REQ_PREV_CHOICE);
+
+    case CTRL(']'):
+	if (mode == REQ_INS_MODE)
+	    return(mode = REQ_OVL_MODE);
+	else
+	    return(mode = REQ_INS_MODE);	
+
+    default:
+	return(c);
+    }
+}
+
+static int my_form_driver(FORM *form, int c)
+{
+    if (c == (MAX_FORM_COMMAND + 1)
+		&& form_driver(form, REQ_VALIDATION) == E_OK)
+	return(TRUE);
+    else
+    {
+	beep();
+	return(FALSE);
+    }
+}
+
+static void demo_forms(void)
+{
+    WINDOW	*w;
+    FORM	*form;
+    FIELD	*f[9];
+    int		finished = 0, c;
+
+    mvaddstr(10, 57, "Forms Entry Test");
+
+    move(18, 0);
+    addstr("Defined form-traversal keys:   ^Q   -- exit form\n");
+    addstr("^N   -- go to next field       ^P  -- go to previous field\n");
+    addstr("Home -- go to first field      End -- go to last field\n");
+    addstr("^L   -- go to field to left    ^R  -- go to field to right\n");
+    addstr("^U   -- move upward to field   ^D  -- move downard to field\n");
+    addstr("^W   -- go to next word        ^T  -- go to previous word\n");
+    addstr("^S   -- go to start of field   ^E  -- go to end of field\n");
+    addstr("^H   -- delete previous char   ^Y  -- delete line\n");
+    addstr("^G   -- delete previous word   ^C  -- clear to end of line\n");
+    addstr("^K   -- clear to end of field  ^X  -- clear field\n");
+    addstr("Arrow keys move within a field as you would expect.");
+    refresh();
+
+    /* describe the form */
+    f[0] = make_label(0, 15, "Sample Form");
+    f[1] = make_label(2, 0, "Last Name");
+    f[2] = make_field(3, 0, 1, 18);
+    f[3] = make_label(2, 20, "First Name");
+    f[4] = make_field(3, 20, 1, 12);
+    f[5] = make_label(2, 34, "Middle Name");
+    f[6] = make_field(3, 34, 1, 12);
+    f[7] = make_label(5, 0, "Comments");
+    f[8] = make_field(6, 0, 4, 46);
+    f[9] = (FIELD *)NULL;
+
+    form = new_form(f);
+
+    display_form(form);
+
+    w = form_win(form);
+    raw();
+    while (!finished)
+    {
+	switch(form_driver(form, c = form_virtualize(w)))
+	{
+	case E_OK:
+	    break;
+	case E_UNKNOWN_COMMAND:
+	    finished = my_form_driver(form, c);
+	    break;
+	default:
+	    beep();
+	    break;
+	}       
+    }
+
+    erase_form(form);
+
+    free_form(form);
 }
 
 /****************************************************************************
@@ -1605,6 +1839,10 @@ do_single_test(const char c)
 	demo_pad();
 	return(TRUE);
 
+    case 'r':
+	demo_forms();
+	return(TRUE);
+
     case 'i':
 	input_test(stdscr);
 	return(TRUE);
@@ -1650,7 +1888,7 @@ int main(const int argc, const char *argv[])
 
     do {
 	(void) puts("This is the ncurses main menu");
-	(void) puts("a = character input test");
+	(void) puts("a = keyboard and mouse input test");
 	(void) puts("b = character attribute test");
 	(void) puts("c = color test pattern");
 	(void) puts("d = edit RGB color values");
@@ -1660,6 +1898,7 @@ int main(const int argc, const char *argv[])
 	(void) puts("m = menu code test");
 	(void) puts("o = exercise panels library");
 	(void) puts("p = exercise pad features");
+	(void) puts("r = exercise forms code");
 	(void) puts("i = subwindow input test");
 	(void) puts("? = repeat this command summary");
 

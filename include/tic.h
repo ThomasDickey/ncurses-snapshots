@@ -90,7 +90,7 @@ struct alias
 
 extern struct name_table_entry	*_nc_info_hash_table[];
 extern struct name_table_entry	*_nc_cap_hash_table[];
-extern struct alias _nc_alias_table[];
+extern const struct alias _nc_alias_table[];
 
 extern struct name_table_entry	*_nc_get_table(bool);
 
@@ -115,9 +115,9 @@ extern struct name_table_entry	*_nc_get_table(bool);
 /* comp_hash.c: name lookup */
 extern void _nc_make_hash_table(struct name_table_entry *,
 			    struct name_table_entry **);
-struct name_table_entry	*_nc_find_entry(char *,
+struct name_table_entry	*_nc_find_entry(const char *,
 				    struct name_table_entry **);
-struct name_table_entry *_nc_find_type_entry(char *,
+struct name_table_entry *_nc_find_type_entry(const char *,
 					 int,
 					 struct name_table_entry *);
 

@@ -25,6 +25,10 @@
 #include <curses.h>
 #include <eti.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef int Menu_Options;
 typedef int Item_Options;
 
@@ -131,14 +135,13 @@ typedef struct tagMENU
 #define REQ_BACK_PATTERN        (KEY_MAX + 15)
 #define REQ_NEXT_MATCH          (KEY_MAX + 16)
 #define REQ_PREV_MATCH          (KEY_MAX + 17)
+#define MAX_MENU_COMMAND        (KEY_MAX + 17)
 
-#ifndef MAX_COMMAND
-#  define MAX_COMMAND (REQ_PREV_MATCH + 1)
-#endif
-
-#ifdef __cplusplus
-   extern "C" {
-#endif
+/*
+ * Some AT&T code expects MAX_COMMAND to be out-of-band not
+ * just for meny commands but for forms ones as well.
+ */
+#define MAX_COMMAND             (KEY_MAX + 128)
 
 /* --------- prototypes for libmenu functions ----------------------------- */
 
@@ -177,8 +180,6 @@ extern int      free_item(ITEM *),
                 item_index(const ITEM *),
                 item_opts_off(ITEM *,Item_Options),
                 item_opts_on(ITEM *,Item_Options),
-                item_value(const ITEM *),
-                item_visible(const ITEM *),
                 menu_driver(MENU *,int),
                 menu_opts_off(MENU *,Menu_Options),
                 menu_opts_on(MENU *,Menu_Options),
@@ -191,7 +192,7 @@ extern int      free_item(ITEM *),
                 set_item_opts(ITEM *,Item_Options),
                 set_item_term(MENU *,void(*)(MENU *)),
                 set_item_userptr(ITEM *, char *),
-                set_item_value(ITEM *,int),
+                set_item_value(ITEM *,bool),
                 set_menu_back(MENU *,chtype),
                 set_menu_fore(MENU *,chtype),
                 set_menu_format(MENU *,int,int),
@@ -209,6 +210,9 @@ extern int      free_item(ITEM *),
                 set_top_row(MENU *,int),
                 top_row(const MENU *),
                 unpost_menu(MENU *);
+
+extern bool     item_value(const ITEM *),
+                item_visible(const ITEM *);
 
 void            menu_format(const MENU *,int *,int *);
 

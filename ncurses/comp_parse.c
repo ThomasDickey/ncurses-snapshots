@@ -188,9 +188,10 @@ int _nc_resolve_uses(void)
 	for_entry_list(qp)
 	    if (qp->nuses > 0)
 	    {
-		char	*lookfor = qp->uses[qp->nuses - 1];
+		char	*lookfor = (char *)(qp->uses[qp->nuses - 1]);
 
-		DEBUG(2, ("%s: attempting resolution",first_name(&qp->tterm)));
+		DEBUG(2, ("%s: attempting resolution of %s",
+			  first_name(&qp->tterm), lookfor));
 
 		/* first, try to resolve from in-core records */
 		for_entry_list(rp)

@@ -28,14 +28,9 @@
 
 /* "Template" macro to generate function to set application specific hook */
 #define GEN_HOOK_SET_FUNCTION( typ, name ) \
-int set_ ## typ ## _ ## name \
-(\
- MENU *menu,\
- Menu_Hook func\
-)\
+int set_ ## typ ## _ ## name (MENU *menu, Menu_Hook func )\
 {\
-   CDEFMENU( menu );\
-   (menu -> typ ## name ) = func;\
+   (Normalize_Menu(menu) -> typ ## name = func );\
    RETURN(E_OK);\
 }
 
@@ -43,8 +38,7 @@ int set_ ## typ ## _ ## name \
 #define GEN_HOOK_GET_FUNCTION( typ, name ) \
 Menu_Hook typ ## _ ## name ( const MENU *menu )\
 {\
-   CDEFMENU( menu );\
-   return ( menu -> typ ## name );\
+   return (Normalize_Menu(menu) -> typ ## name);\
 }
 
 /*---------------------------------------------------------------------------
@@ -54,8 +48,7 @@ Menu_Hook typ ## _ ## name ( const MENU *menu )\
 |   Description   :  Set user-exit which is called when menu is posted
 |                    or just after the top row changes.
 |
-|   Return Values :  E_OK               - on success (always)
-|
+|   Return Values :  E_OK               - success
 +--------------------------------------------------------------------------*/
 GEN_HOOK_SET_FUNCTION( menu, init )		  
 
@@ -67,8 +60,7 @@ GEN_HOOK_SET_FUNCTION( menu, init )
 |                    when a menu is posted or just after the top row 
 |                    changes.
 |
-|   Return Values :  ...
-|
+|   Return Values :  Menu init function address or NULL
 +--------------------------------------------------------------------------*/
 GEN_HOOK_GET_FUNCTION( menu, init )
 
@@ -79,8 +71,7 @@ GEN_HOOK_GET_FUNCTION( menu, init )
 |   Description   :  Set user-exit which is called when menu is unposted
 |                    or just before the top row changes.
 |
-|   Return Values :  E_OK               - on success (always)
-|
+|   Return Values :  E_OK               - success
 +--------------------------------------------------------------------------*/
 GEN_HOOK_SET_FUNCTION( menu, term )		  
 
@@ -92,8 +83,7 @@ GEN_HOOK_SET_FUNCTION( menu, term )
 |                    when a menu is unposted or just before the top row 
 |                    changes.
 |
-|   Return Values :  ...
-|
+|   Return Values :  Menu finalization function address or NULL
 +--------------------------------------------------------------------------*/
 GEN_HOOK_GET_FUNCTION( menu, term )
 
@@ -104,8 +94,7 @@ GEN_HOOK_GET_FUNCTION( menu, term )
 |   Description   :  Set user-exit which is called when menu is posted
 |                    or just after the current item changes.
 |
-|   Return Values :  E_OK               - on success (always)
-|
+|   Return Values :  E_OK               - success
 +--------------------------------------------------------------------------*/
 GEN_HOOK_SET_FUNCTION( item, init )		  
 
@@ -117,8 +106,7 @@ GEN_HOOK_SET_FUNCTION( item, init )
 |                    when a menu is posted or just after the current item 
 |                    changes.
 |
-|   Return Values :  ...
-|
+|   Return Values :  Item init function address or NULL
 +--------------------------------------------------------------------------*/
 GEN_HOOK_GET_FUNCTION( item, init )
 
@@ -129,8 +117,7 @@ GEN_HOOK_GET_FUNCTION( item, init )
 |   Description   :  Set user-exit which is called when menu is unposted
 |                    or just before the current item changes.
 |
-|   Return Values :  E_OK               - on success (always)
-|
+|   Return Values :  E_OK               - success
 +--------------------------------------------------------------------------*/
 GEN_HOOK_SET_FUNCTION( item, term )		  
 
@@ -142,9 +129,8 @@ GEN_HOOK_SET_FUNCTION( item, term )
 |                    when a menu is unposted or just before the current item 
 |                    changes.
 |
-|   Return Values :  ...
-|
+|   Return Values :  Item finalization function address or NULL
 +--------------------------------------------------------------------------*/
 GEN_HOOK_GET_FUNCTION( item, term )
 
-/* menu_hook.c ends here */
+/* m_hook.c ends here */

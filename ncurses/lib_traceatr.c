@@ -46,9 +46,6 @@ names[] =
 	{A_DIM,		"A_DIM, ",},
 	{A_BOLD,	"A_BOLD, ",},	
 	{A_ALTCHARSET,	"A_ALTCHARSET, ",},	
-#ifdef A_PCCHARSET
-	{A_PCCHARSET,	"A_PCCHARSET, ",},
-#endif /* A_PCCHARSET */
 	{A_INVIS,	"A_INVIS, ",},
 	{A_PROTECT,	"A_PROTECT, ",},
 	{A_CHARTEXT,	"A_CHARTEXT, ",},	

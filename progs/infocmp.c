@@ -155,39 +155,6 @@ static int use_predicate(int type, int idx)
 	return(FALSE);	/* pacify compiler */
 }
 
-static int capcmp(const char *s, const char *t)
-/* compare two string capabilities */
-{
-    if (!s && !t)
-	return(0);
-    else if (!s || !t)
-	return(1);
-
-    for (; *s == '\0' || *t == '\0'; s++, t++)
-    {
-	if (s[0] == '$' && s[1] == '<')
-	{
-	    for (s += 2; ; s++)
-		if (!(isdigit(*s) || *s=='.' || *s=='*' || *s=='/' || *s=='>'))
-		    break;
-	    --s;
-	}
-
-	if (t[0] == '$' && t[1] == '<')
-	{
-	    for (t += 2; ; t++)
-		if (!(isdigit(*t) || *t=='.' || *t=='*' || *t=='/' || *t=='>'))
-		    break;
-	    --t;
-	}
-
-	if (*s != *t)
-	    return(*t - *s);
-    }
-
-    return(strlen(s) != strlen(t));
-}
-
 static bool entryeq(TERMTYPE *t1, TERMTYPE *t2)
 /* are two terminal types equal */
 {
@@ -202,13 +169,13 @@ static bool entryeq(TERMTYPE *t1, TERMTYPE *t2)
 	    return(FALSE);
 
     for (i = 0; i < STRCOUNT; i++)
-	if (capcmp(t1->Strings[i], t2->Strings[i]))
+	if (_nc_capcmp(t1->Strings[i], t2->Strings[i]))
 	    return(FALSE);
 
     return(TRUE);
 }
 
-static void compare_predicate(int type, int idx, char *name)
+static void compare_predicate(int type, int idx, const char *name)
 /* predicate function to use for ordinary decompilation */
 {
 	register TERMTYPE *t1 = &term[0];
@@ -268,7 +235,7 @@ static void compare_predicate(int type, int idx, char *name)
 		switch(compare)
 		{
 		case C_DIFFERENCE:
-			if (capcmp(s1, s2))
+			if (_nc_capcmp(s1, s2))
 			{
 				char	buf1[BUFSIZ], buf2[BUFSIZ];
 
@@ -296,7 +263,7 @@ static void compare_predicate(int type, int idx, char *name)
 			break;
 
 		case C_COMMON:
-			if (s1 && s2 && !capcmp(s1, s2))
+			if (s1 && s2 && !_nc_capcmp(s1, s2))
 				(void) printf("\t%s= '%s'.\n",name,expand(s1));
 			break;
 
@@ -560,9 +527,8 @@ int main(int argc, char *argv[])
 
 	    for (saveoptind = optind; optind < argc; optind++)
 	    {
-		if (freopen(argv[optind], "r", stdin) == NULL) {
+		if (freopen(argv[optind], "r", stdin) == NULL)
 		    _nc_err_abort("Can't open %s", argv[optind]);
-		}
 
 		_nc_head = _nc_tail = (ENTRY *)NULL;
 
@@ -606,20 +572,16 @@ int main(int argc, char *argv[])
 		    if (_nc_entry_match(qp->tterm.term_names,rp->tterm.term_names))
 		    {
 			/*
-			 * This is a kluge.  We should be OK stuffing entry
-			 * pointers into (char *) slots because char* pointers
-			 * are are either the same size (on byte-oriented
-			 * machines) or bigger than (on word-oriented machines)
-			 * struct pointers.  Someday, we'll turn the uses 
-			 * slots into (void *) holders and do all the right
-			 * casting throughout.
+			 * This is why the uses[] array is (void *) -- so we
+			 * can have either (char *) for names or entry 
+			 * structure pointers in them and still be type-safe.
 			 */
 			if (qp->nuses < MAX_USES)
-			    qp->uses[qp->nuses] = (char *)rp;
+			    qp->uses[qp->nuses] = (void *)rp;
 			qp->nuses++;
 			
 			if (rp->nuses < MAX_USES)
-			    rp->uses[rp->nuses] = (char *)qp;
+			    rp->uses[rp->nuses] = (void *)qp;
 			rp->nuses++;
 		    }
 	    }
@@ -632,9 +594,11 @@ int main(int argc, char *argv[])
 		if (qp->nuses > 1)
 		{
 		    (void) fprintf(stderr,
-				   "%s in file 1 has %d matches:\n",
+				   "%s in file 1 (%s) has %d matches in file 2 (%s):\n",
 				   canonical_name(qp->tterm.term_names, NULL),
-				   qp->nuses);
+				   argv[saveoptind],
+				   qp->nuses,
+				   argv[saveoptind+1]);
 		    for (i = 0; i < qp->nuses; i++)
 			(void) fprintf(stderr,
 				       "\t%s\n",
@@ -644,22 +608,24 @@ int main(int argc, char *argv[])
 		if (rp->nuses > 1)
 		{
 		    (void) fprintf(stderr,
-				   "%s in file 2 has %d matches:\n",
+				   "%s in file 2 (%s) has %d matches in file 1 (%s):\n",
 				   canonical_name(rp->tterm.term_names, NULL),
-				   rp->nuses);
+				   argv[saveoptind+1],
+				   rp->nuses,
+				   argv[saveoptind]);
 		    for (i = 0; i < rp->nuses; i++)
 			(void) fprintf(stderr,
 				       "\t%s\n",
 				       canonical_name(((ENTRY *)rp->uses[i])->tterm.term_names, NULL));
 		}
 
-	    (void) printf("In file 1 only:\n");
+	    (void) printf("In file 1 (%s) only:\n", argv[saveoptind]);
 	    for (qp = heads[0]; qp; qp = qp->next)
 		if (qp->nuses == 0)
 		    (void) printf("\t%s\n",
 				  canonical_name(qp->tterm.term_names, NULL));
 
-	    (void) printf("In file 2 only:\n");
+	    (void) printf("In file 2 (%s) only:\n", argv[saveoptind+1]);
 	    for (rp = heads[1]; rp; rp = rp->next)
 		if (rp->nuses == 0)
 		    (void) printf("\t%s\n",

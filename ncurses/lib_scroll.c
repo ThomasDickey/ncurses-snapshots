@@ -63,7 +63,7 @@ chtype	blank = _nc_render(win, ' ', BLANK);
 		for (line = top; line < top-n; line++) {
 			for (j = 0; j <= win->_maxx; j ++)
 				win->_line[line].text[j] = blank;
-			win->_line[line].oldindex = NEWINDEX;
+			win->_line[line].oldindex = _NEWINDEX;
 			win->_line[line].firstchar = 0;
 			win->_line[line].lastchar = win->_maxx;
 		}
@@ -80,7 +80,7 @@ chtype	blank = _nc_render(win, ' ', BLANK);
 		for (line = bottom; line > bottom-n; line--) {
 			for (j = 0; j <= win->_maxx; j ++)
 				win->_line[line].text[j] = blank;
-			win->_line[line].oldindex = NEWINDEX;
+			win->_line[line].oldindex = _NEWINDEX;
 			win->_line[line].firstchar = 0;
 			win->_line[line].lastchar = win->_maxx;
 		}

@@ -535,7 +535,7 @@ found:	if ((p = getenv("TERMCAP")) != NULL && *p != '/') {
 
 #define	CHK(val, dft)	(val <= 0 ? dft : val)
 
-static int	set_tabs (void);
+static bool	set_tabs (void);
 
 /*
  * Reset the terminal mode bits to a sensible state.  Very useful after
@@ -674,7 +674,7 @@ set_control_chars(void)
 		terasechar = (bs_char != 0) ? bs_char : CTRL('h');
 #else
   	/* the real erasechar logic used now */
- 	char bs_char = 0;
+	char bs_char = 0;
 
 	if (key_backspace != (char *)NULL)
 		bs_char = key_backspace[0];
@@ -765,7 +765,7 @@ static void
 set_init(void)
 {
 	char	*p;
-	int settle;
+	bool settle;
 
 #ifdef __OBSOLETE__
 	if (pad_char != (char *)NULL)		/* Get/set pad character. */
@@ -783,11 +783,11 @@ set_init(void)
 	if (isreset) {
 		if ((p = reset_1string) || (p = reset_2string)) {
 			tputs(p, 0, outc);
-			settle = 1;
+			settle = TRUE;
 		}
 		if ((p = reset_file) || (p = init_file)) {
 			cat(p);
-			settle = 1;
+			settle = TRUE;
 		}
 	}
 
@@ -802,41 +802,33 @@ set_init(void)
  * Set the hardware tabs on the terminal, using the ct (clear all tabs),
  * st (set one tab) and ch (horizontal cursor addressing) capabilities.
  * This is done before if and is, so they can patch in case we blow this.
- * Return nonzero if we set any tab stops, zero if not.
+ * Return TRUE if we set any tab stops, FALSE if not.
  */
-static int
+static bool
 set_tabs()
 {
-	int c;
-	char *set_pos, *tg_out = 0;
-
 	if (set_tab && clear_all_tabs) {
+		int c;
+
 		(void)putc('\r', stderr);	/* Force to left margin. */
 		tputs(clear_all_tabs, 0, outc);
-	}
 
-	set_pos = column_address ? NULL : cursor_address;
-
-	if (set_tab) {
 		for (c = 8; c < tcolumns; c += 8) {
-			/*
-			 * Get to the right column.
-			 */
-			if (column_address)
-				tg_out = tgoto(column_address, 0, c);
-			if (tg_out == (char *)NULL && set_pos)
-				tg_out = tgoto(set_pos, c, tlines - 1);
-			if (tg_out != (char *)NULL)
-				tputs(tg_out, 1, outc);
-			else
-				(void)fprintf(stderr, "%s", "        ");
-			/* Set the tab. */
+			/* Get to the right column.  In BSD tset, this
+			 * used to try a bunch of half-clever things
+			 * with cup and hpa, for an average saving of
+			 * somewhat less than two character times per
+			 * tab stop, less that .01 sec at 2400cps. We
+			 * lost all this cruft because it seemed to be
+			 * introducing some odd bugs.
+			 * ----------12345678----------- */
+			(void)fputs("        ", stderr);
 			tputs(set_tab, 0, outc);
 		}
 		putc('\r', stderr);
-		return (1);
+		return (TRUE);
 	}
-	return (0);
+	return (FALSE);
 }
 
 /**************************************************************************
@@ -902,7 +894,12 @@ obsolete(char **argv)
 }
 
 static void
+#if __STDC__
 usage(const char* pname)
+#else
+usage(void)
+    char* pname;
+#endif
 {
 	(void)fprintf(stderr,
 "usage: %s [-IQrs] [-] [-e ch] [-i ch] [-k ch] [-m mapping] [terminal]\n", pname);

@@ -44,7 +44,7 @@ chtype	*end;
 	while (temp1 > end)
 	    *temp1-- = *temp2--;
 
-	*temp1 = c | win->_attrs;
+	*temp1 = _nc_render(win, c, c | win->_attrs);
 
 	win->_line[win->_cury].lastchar = win->_maxx;
 	if (win->_line[win->_cury].firstchar == _NOCHANGE

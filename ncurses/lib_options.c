@@ -89,7 +89,7 @@ int leaveok(WINDOW *win, bool flag)
 {
 	T(("leaveok(%p,%d) called", win, flag));
 
-   	win->_leave = flag;
+   	win->_leaveok = flag;
    	if (flag == TRUE)
    		curs_set(0);
    	else

@@ -26,8 +26,6 @@
 ***************************************************************************/
 
 #include "menu.priv.h"
-#include <ctype.h>
-#include <string.h>
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -38,18 +36,17 @@
 |
 |   Return Values :  TRUE     - if string is printable
 |                    FALSE    - if string contains non-printable characters
-|
 +--------------------------------------------------------------------------*/
 static bool Is_Printable_String(const char *s)
 {
-    assert(s);
-    while(*s)
+  assert(s);
+  while(*s)
     {
-	if (!isprint(*s))
-	    return FALSE;
-	s++;
+      if (!isprint((unsigned char)*s))
+	return FALSE;
+      s++;
     }
-    return TRUE;
+  return TRUE;
 }
 
 /*---------------------------------------------------------------------------
@@ -61,37 +58,40 @@ static bool Is_Printable_String(const char *s)
 |                    N.B.: an item must(!) have a name.
 |
 |   Return Values :  The item pointer or NULL if creation failed.
-|
 +--------------------------------------------------------------------------*/
 ITEM *new_item(char *name, char *description)
 {
-    ITEM *item;
+  ITEM *item;
   
-    if ( !name || (*name == '\0') || !Is_Printable_String(name) )
-	item = (ITEM *)0;
-    else
+  if ( !name || (*name == '\0') || !Is_Printable_String(name) )
     {
-	item = (ITEM *)calloc(1,sizeof(ITEM));
-	if (item)
+      item = (ITEM *)0;
+      SET_ERROR( E_BAD_ARGUMENT );
+    }
+  else
+    {
+      item = (ITEM *)calloc(1,sizeof(ITEM));
+      if (item)
 	{
-	    *item  = _nc_Default_Item; /* hope we have struct assignment */
+	  *item  = _nc_Default_Item; /* hope we have struct assignment */
 	  
-	    item->name.str 	   = name;
-	    item->name.length	   = strlen(name);
-      
-	    item->description.str    = description;
-	    if (description && Is_Printable_String(description))
-		item->description.length = strlen(description);
-	    else
+	  item->name.str 	   = name;
+	  item->name.length	   = strlen(name);
+	  
+	  item->description.str    = description;
+	  if (description && Is_Printable_String(description))
+	    item->description.length = strlen(description);
+	  else
 	    {
-		item->description.length = 0;
-		item->description.str    = (char *)0;
+	      item->description.length = 0;
+	      item->description.str    = (char *)0;
 	    }
 	}
+      else
+	SET_ERROR( E_SYSTEM_ERROR );
     }  
-    return(item);
+  return(item);
 }
-
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -100,18 +100,20 @@ ITEM *new_item(char *name, char *description)
 |   Description   :  Free the allocated storage for this item. 
 |                    N.B.: a connected item can't be freed.
 |
-|   Return Values :  E_OK              - on success
+|   Return Values :  E_OK              - success
 |                    E_BAD_ARGUMENT    - invalid value has been passed
 |                    E_CONNECTED       - item is still connected to a menu    
-|
 +--------------------------------------------------------------------------*/
 int free_item(ITEM * item)
 {
-    if (!item)        RETURN( E_BAD_ARGUMENT );
-    if (item->imenu)  RETURN( E_CONNECTED );
+  if (!item)
+    RETURN( E_BAD_ARGUMENT );
+
+  if (item->imenu)
+    RETURN( E_CONNECTED );
   
-    free(item);
-    RETURN( E_OK );
+  free(item);
+  RETURN( E_OK );
 }
 
 /*---------------------------------------------------------------------------
@@ -127,50 +129,48 @@ int free_item(ITEM * item)
 |                    affect the geometry of the menu, which we don't allow 
 |                    if it is already posted.
 |
-|   Return Values :  E_OK               - on success
+|   Return Values :  E_OK               - success
 |                    E_BAD_ARGUMENT     - an invalid value has been passed
-|
 +--------------------------------------------------------------------------*/
 int set_menu_mark(MENU * menu, char * mark)
 {
-    int l;
+  int l;
   
-    if ( mark && *mark && Is_Printable_String(mark) )
-	l = strlen(mark);
-    else
-	l = 0;
+  if ( mark && *mark && Is_Printable_String(mark) )
+    l = strlen(mark);
+  else
+    l = 0;
   
-    if ( menu )
+  if ( menu )
     {
-	if (menu->status & _POSTED)
+      if (menu->status & _POSTED)
 	{
-	    /* If the menu is already posted, the geometry is fixed. Then
-	       we can only accept a mark with exactly the same length */
-	    if (menu->marklen != l) 
-		RETURN(E_BAD_ARGUMENT);
+	  /* If the menu is already posted, the geometry is fixed. Then
+	     we can only accept a mark with exactly the same length */
+	  if (menu->marklen != l) 
+	    RETURN(E_BAD_ARGUMENT);
 	}	
-	menu->mark    = l ? mark : (char *)0;
-	menu->marklen = l;
+      menu->mark    = l ? mark : (char *)0;
+      menu->marklen = l;
       
-	if (menu->status & _POSTED)
+      if (menu->status & _POSTED)
 	{
-	    _nc_Draw_Menu( menu );
-	    _nc_Show_Menu( menu );
+	  _nc_Draw_Menu( menu );
+	  _nc_Show_Menu( menu );
 	}
-	else
+      else
 	{
-	    /* Recalculate the geometry */
-	    _nc_Calculate_Item_Length_and_Width( menu );			
+	  /* Recalculate the geometry */
+	  _nc_Calculate_Item_Length_and_Width( menu );			
 	}
     }
-    else
+  else
     {
-	_nc_Default_Menu.mark    = l ? mark : (char *)0;
-	_nc_Default_Menu.marklen = l;
+      _nc_Default_Menu.mark    = l ? mark : (char *)0;
+      _nc_Default_Menu.marklen = l;
     }
-    RETURN(E_OK);
+  RETURN(E_OK);
 }
-
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -179,12 +179,10 @@ int set_menu_mark(MENU * menu, char * mark)
 |   Description   :  Return a pointer to the marker string
 |
 |   Return Values :  The marker string pointer or NULL if no marker defined
-|
 +--------------------------------------------------------------------------*/
 char *menu_mark(const MENU * menu)
 {
-    CDEFMENU( menu );
-    return menu->mark;
+  return Normalize_Menu( menu )->mark;
 }
 
-/* menu_item_new.c */
+/* m_item_new.c */

@@ -1,5 +1,8 @@
-# Makefile for creating ncurses distribution.
-# This only needs to be used by developers
+# Makefile for creating ncurses distributions.
+#
+# This only needs to be used directly as a makefile by developers, but
+# configure mines the current version number out of here.  To move
+# to a new version number, just edit this file and run configure.
 #
 SHELL = /bin/sh
 
@@ -18,11 +21,6 @@ SHARED_ABI = 1.9
 dist: ANNOUNCE INTRO
 	(cd ..;  tar cvf ncurses-$(VERSION).tar `sed <ncurses-$(VERSION)/MANIFEST 's/^./ncurses-$(VERSION)/'`;  gzip ncurses-$(VERSION).tar)
 
-stamp:
-	(cd include; \
-	 for N in MKterm.h.awk termcap.h curses.h unctrl.h; do \
-	 rm -f $$N; sed 's,@VERSION@,$(VERSION),' <$$N.in >$$N; done)
-
 # Don't mess with announce.html.in unless you have lynx available!
 ANNOUNCE: announce.html
 	lynx -dump $^ >ANNOUNCE
@@ -37,8 +35,11 @@ vcprepare:
 	find . -type d -exec mkdir {}/RCS \;
 
 # Write-lock almost all files not under version control.
-EXCEPTIONS = "announce.html\\|ANNOUNCE\\|src/curses.h\\|misc/ncurses-intro.doc"
+EXCEPTIONS = "announce.html\\|ANNOUNCE\\|misc/ncurses-intro.doc"
 writelock:
 	for x in `grep -v $(EXCEPTIONS) MANIFEST`; do if [ ! -f `dirname $$x`/RCS/`basename $$x`,v ]; then chmod a-w $${x}; fi; done
+
+TAGS:
+	etags */*.[ch]
 
 # Makefile ends here

@@ -59,12 +59,14 @@ the 4.4BSD curses quickch() routine.  <P>
 a stack of windows with backing store, is included. <P>
 <LI> An emulation of the System V Release 4 menus library, supporting 
 a uniform but flexible interface for menu programming, is included. <P>
+<LI> An emulation of the System V Release 4 form library, supporting 
+data collection through on-screen forms, is included. <P>
 <LI> (PC-clone boxes only) Support for access to the IBM PC ROM characters
-through a new highlight, A_PCCHARSET. <P>
+0-32 through the highlight A_ALTCHARSET. <P>
 <LI> Support for mouse event reporting under xterm (requires terminfo
 master file version 9.9.0 or greater).
 <LI> Automatic fallback to the /etc/termcap file can be compiled in
-for systems without a terminfo tree.  This feature is neither
+for systems withould a terminfo tree.  This feature is neither
 fast nor cheap, you don't want to use it unless you have to,
 but it's there. <P>
 <LI> An HTML "Introduction to Programming with NCURSES" document. <P>
@@ -92,7 +94,7 @@ including: <P>
 <DT> vh-1.6
 <DD> Volks-Hypertext browser for the Jargon File
 <DT> blue
-<DD> Blue Moon solitaire game
+<DD> Blue Moon solitare game
 <DT> u386mon
 <DD> System performance monitor for SVr4
 <DT> nvi
@@ -136,8 +138,8 @@ database maintained by Eric Raymond.  This database (which is the
 official descendant of the 4.4BSD termcap file) changes faster than this
 code does, so you probably want to pick up new copies occasionally. <P>
 
-You can download either the <A HREF="terminfo/termcap.gz">termcap</A> or
-<A HREF="terminfo/terminfo.gz">terminfo</A> versions of the terminal-type
+You can download either the <A HREF="terminfo/termcap.src.gz">termcap</A> or
+<A HREF="terminfo/terminfo.src.gz">terminfo</A> versions of the terminal-type
 database from Eric's ncurses resource page, 
 <A HREF="http://www.ccil.org/~esr/ncurses.html">http://www.ccil.org/~esr/ncurses.html</A>. <P>
 

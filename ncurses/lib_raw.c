@@ -41,6 +41,42 @@
 #include "curses.priv.h"
 #include "term.h"	/* cur_term */
 
+/* 
+ * COOKED_INPUT defines the collection of input mode bits to be
+ * cleared when entering raw mode, then re-set by noraw().  
+ *
+ * We used to clear ISTRIP and INPCK when going to raw mode.  Keith
+ * Bostic says that's wrong, because those are hardware bits that the
+ * user has to get right in his/her initial environment -- he says
+ * curses can't do any good by clearing these, and may do harm.  In
+ * 1995's world of 8N1 connections over error-correcting modems, all
+ * the parity-check stuff is pretty nearly irrelevant anyway.
+ *
+ * What's supposed to happen when noraw() executes has never been very
+ * well-defined.  Yes, it should reset ISIG/ICANON/OPOST (historical
+ * practice is for it to attempt to take the driver back to cooked
+ * mode, rather going to some half-baked cbreak-like intermediate
+ * level).
+ *
+ * We make a design choice here to turn off CR/LF translation a la BSD
+ * when raw() is enabled, on the theory that a programmer requesting
+ * raw() ideally wants an 8-bit data stream that's been messed with as
+ * little as possible.  The man pages document this.
+ *
+ * We originally opted for the simplest way to handle noraw(); just set all
+ * the flags we cleared.  Unfortunately, having noraw() set IGNCR
+ * turned out to be too painful.  So raw() now clears the COOKED_INPUT
+ * flags, but also clears (ICRNL|INLCR|IGNCR) which noraw() doesn't
+ * restore.
+ *
+ * Unfortunately, this means noraw() may still force some COOKED_INPUT
+ * flags on that the user had initially cleared via stty.  It'll all
+ * come out in the wash when endwin() restores the user's original
+ * input bits (we hope...)
+ *
+ */
+#define COOKED_INPUT	(IXON|IGNBRK|BRKINT|PARMRK)
+
 int raw()
 {
 	T(("raw() called"));
@@ -49,8 +85,8 @@ int raw()
 	SP->_cbreak = TRUE;
 
 #ifdef TERMIOS
-	cur_term->Nttyb.c_lflag &= ~(ICANON|ISIG);
-	cur_term->Nttyb.c_iflag &= ~(INPCK|ISTRIP|IXON);
+	cur_term->Nttyb.c_lflag &= ~(ICANON|ISIG|IEXTEN);
+	cur_term->Nttyb.c_iflag &= ~(COOKED_INPUT|ICRNL|INLCR|IGNCR);
 	cur_term->Nttyb.c_oflag &= ~(OPOST);
 	cur_term->Nttyb.c_cc[VMIN] = 1;
 	cur_term->Nttyb.c_cc[VTIME] = 0;
@@ -114,7 +150,8 @@ int nl()
 	SP->_nl = TRUE;
 
 #ifdef TERMIOS
-	cur_term->Nttyb.c_iflag |= IXON|ICRNL|IXOFF;
+	/* the code used to set IXON|IXOFF here, Ghod knows why... */
+	cur_term->Nttyb.c_iflag |= ICRNL;
 	cur_term->Nttyb.c_oflag |= OPOST|ONLCR;
 	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
 		return ERR;
@@ -157,8 +194,8 @@ int noraw()
 	SP->_cbreak = FALSE;
 
 #ifdef TERMIOS
-	cur_term->Nttyb.c_lflag |= ISIG|ICANON;
-	cur_term->Nttyb.c_iflag |= IXON;
+	cur_term->Nttyb.c_lflag |= ISIG|ICANON|IEXTEN;
+	cur_term->Nttyb.c_iflag |= COOKED_INPUT;
 	cur_term->Nttyb.c_oflag |= OPOST;
 	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
 		return ERR;
@@ -199,7 +236,11 @@ int noecho()
 	SP->_echo = FALSE;
 	
 #ifdef TERMIOS
-	cur_term->Nttyb.c_lflag &= ~(ECHO);
+	/* 
+	 * Turn off ECHONL to avoid having \n still be echoed when
+	 * cooked mode is in effect (that is, ICANON is on).
+	 */
+	cur_term->Nttyb.c_lflag &= ~(ECHO|ECHONL);
 	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
 		return ERR;
 	else

@@ -22,10 +22,18 @@ INSTALL_DATA	= @INSTALL_DATA@
 
 AWK		= @AWK@
 
+VERSION		= @nc_cv_rel_version@
+BUILTIN_BOOL	= @nc_cv_builtin_bool@
+TYPE_OF_BOOL	= @nc_cv_sizeof_bool@
+
 AUTO_SRC = \
+	MKterm.h.awk \
+	curses.h \
+	termcap.h \
 	Caps.filtered \
 	hashsize.h \
 	parametrized.h \
+	unctrl.h \
 	term.h
 
 ################################################################################
@@ -43,6 +51,25 @@ install.includes : term.h $(includedir)
 $(includedir) :
 	$(srcdir)/../mkinstalldirs $@
 
+# These productions arrange for the files with embedded version numbers to be
+# rebuilt whenever the source tree is re-configured (which will make Makefile
+# newer than their ancestors). 
+MKterm.h.awk: $(srcdir)/MKterm.h.awk.in Makefile
+	-@rm -f $@
+	sed <$(srcdir)/$@.in >$@ -e "/@VERSION@/s//$(VERSION)/"
+
+curses.h: $(srcdir)/MKcurses.sh Makefile
+	-@rm -f $@
+	sh $(srcdir)/MKcurses.sh $(VERSION) $(BUILTIN_BOOL) $(TYPE_OF_BOOL) $(srcdir)
+
+termcap.h: $(srcdir)/termcap.h.in Makefile
+	-@rm -f $@
+	sed <$(srcdir)/$@.in >$@ -e "/@VERSION@/s//$(VERSION)/"
+
+unctrl.h: $(srcdir)/unctrl.h.in Makefile
+	-@rm -f $@
+	sed <$(srcdir)/$@.in >$@ -e "/@VERSION@/s//$(VERSION)/"
+
 # For binary compatibility with SVr4, use GETMEXCLUDE=bool.  For strict
 # conformance with the gratuitous and stupid change made in the XSI Curses
 # standard, use GETMEXCLUDE=str
@@ -51,8 +78,8 @@ GETMEXCLUDE=bool
 Caps.filtered: ${srcdir}/Caps
 	grep -v '"getm"	*$(GETMEXCLUDE)' ${srcdir}/Caps >$@
 
-term.h: Caps.filtered $(srcdir)/MKterm.h.awk
-	$(AWK) -f $(srcdir)/MKterm.h.awk Caps.filtered > $@
+term.h: Caps.filtered MKterm.h.awk
+	$(AWK) -f MKterm.h.awk Caps.filtered > $@
 	sh $(srcdir)/edit_cfg.sh ../include/config.h $@
 
 hashsize.h: Caps.filtered $(srcdir)/MKhashsize.sh

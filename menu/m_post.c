@@ -34,78 +34,77 @@
 |                    window position 
 |
 |   Return Values :  -
-|
 +--------------------------------------------------------------------------*/
 void _nc_Post_Item(const MENU * menu, const ITEM * item)
 {
-    int i;
-    chtype ch;
-    bool isfore = FALSE, isback=FALSE, isgrey = FALSE;
-
-    assert(menu->win);
-
-    /* First we have to calculate the attribute depending on selectability
-       and selection status
-       */
-    if (!(item->opt & O_SELECTABLE))
-    {
-	wattron(menu->win,menu->grey);
-	isgrey = TRUE;
-    }
-    else
-    {
-	if (item->value || item==menu->curitem)
-	{
-	    wattron(menu->win,menu->fore);
-	    isfore = TRUE;
-	}
-	else
-	{
-	    wattron(menu->win,menu->back);
-	    isback = TRUE;
-	}
-    }
-
-    /* We need a marker iff
-       - it is a onevalued menu and it is the current item
-       - or it has a selection value
-       */
-    if (item->value || ((menu->opt&O_ONEVALUE) && (item==menu->curitem))	)
-    {
-	if (menu->marklen) 
-	    waddstr(menu->win,menu->mark);
-    }
-    else			/* otherwise we have to wipe out the marker area */ 
-	for(ch=menu->pad,i=menu->marklen;i>0;i--) 
-	    waddch(menu->win,ch);
+  int i;
+  chtype ch;
+  bool isfore = FALSE, isback=FALSE, isgrey = FALSE;
   
-    waddnstr(menu->win,item->name.str,item->name.length);
-    for(ch=menu->pad,i=menu->namelen-item->name.length;i>0;i--)
-    {
-	waddch(menu->win,ch);
-    }
+  assert(menu->win);
   
-    /* Show description if required and available */
-    if ( (menu->opt & O_SHOWDESC) && menu->desclen>0 )
+  /* First we have to calculate the attribute depending on selectability
+     and selection status
+     */
+  if (!(item->opt & O_SELECTABLE))
     {
-	waddch(menu->win,menu->pad);
-	if (item->description.length)
-	    waddnstr(menu->win,item->description.str,item->description.length);
-	for(ch=menu->pad,i=menu->desclen-item->description.length; i>0; i--)
+      wattron(menu->win,menu->grey);
+      isgrey = TRUE;
+    }
+  else
+    {
+      if (item->value || item==menu->curitem)
 	{
-	    waddch(menu->win,ch);
+	  wattron(menu->win,menu->fore);
+	  isfore = TRUE;
+	}
+      else
+	{
+	  wattron(menu->win,menu->back);
+	  isback = TRUE;
 	}
     }
   
-    /* Remove attributes */
-    if (isfore)
-	wattroff(menu->win,menu->fore);
-    if (isback)
-	wattroff(menu->win,menu->back);
-    if (isgrey)
-	wattroff(menu->win,menu->grey);
+  /* We need a marker iff
+     - it is a onevalued menu and it is the current item
+     - or it has a selection value
+     */
+  if (item->value || ((menu->opt&O_ONEVALUE) && (item==menu->curitem))	)
+    {
+      if (menu->marklen) 
+	waddstr(menu->win,menu->mark);
+    }
+  else			/* otherwise we have to wipe out the marker area */ 
+    for(ch=menu->pad,i=menu->marklen;i>0;i--) 
+      waddch(menu->win,ch);
+  
+  waddnstr(menu->win,item->name.str,item->name.length);
+  for(ch=menu->pad,i=menu->namelen-item->name.length;i>0;i--)
+    {
+      waddch(menu->win,ch);
+    }
+  
+  /* Show description if required and available */
+  if ( (menu->opt & O_SHOWDESC) && menu->desclen>0 )
+    {
+      waddch(menu->win,menu->pad);
+      if (item->description.length)
+	waddnstr(menu->win,item->description.str,item->description.length);
+      for(ch=menu->pad,i=menu->desclen-item->description.length; i>0; i--)
+	{
+	  waddch(menu->win,ch);
+	}
+    }
+  
+  /* Remove attributes */
+  if (isfore)
+    wattroff(menu->win,menu->fore);
+  if (isback)
+    wattroff(menu->win,menu->back);
+  if (isgrey)
+    wattroff(menu->win,menu->grey);
 }	
-
+
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
 |   Function      :  void _nc_Draw_Menu(const MENU *)
@@ -113,41 +112,39 @@ void _nc_Post_Item(const MENU * menu, const ITEM * item)
 |   Description   :  Display the menu in its windows
 |
 |   Return Values :  -
-|
 +--------------------------------------------------------------------------*/
 void _nc_Draw_Menu(const MENU * menu)
 {
-    ITEM *item = menu->items[0];
-    ITEM *lasthor, *lastvert;
-    ITEM *hitem;
-    int y = 0;
-
-    assert(item);
-    assert(menu->win);
-
-    lastvert = (menu->opt & O_NONCYCLIC) ? (ITEM *)0 : item;  
-
-    do
+  ITEM *item = menu->items[0];
+  ITEM *lasthor, *lastvert;
+  ITEM *hitem;
+  int y = 0;
+  
+  assert(item && menu->win);
+  
+  lastvert = (menu->opt & O_NONCYCLIC) ? (ITEM *)0 : item;  
+  
+  do
     {  
-	wmove(menu->win,y++,0);
-    
-	hitem   = item;
-	lasthor = (menu->opt & O_NONCYCLIC) ? (ITEM *)0 : hitem;
-    
-	do
+      wmove(menu->win,y++,0);
+      
+      hitem   = item;
+      lasthor = (menu->opt & O_NONCYCLIC) ? (ITEM *)0 : hitem;
+      
+      do
 	{
-	    _nc_Post_Item( menu, hitem);
-	    if ( ((hitem = hitem->right) != lasthor) && hitem )
+	  _nc_Post_Item( menu, hitem);
+	  if ( ((hitem = hitem->right) != lasthor) && hitem )
 	    {
-		waddch( menu->win,menu->pad);
+	      waddch( menu->win,menu->pad);
 	    }
 	} while (hitem && (hitem != lasthor));
-    
-	item = item->down;
-    
+      
+      item = item->down;
+      
     } while( item && (item != lastvert) );	
 }
-
+
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
 |   Function      :  int post_menu(MENU *)
@@ -161,66 +158,67 @@ void _nc_Draw_Menu(const MENU * menu)
 |                    E_NOT_CONNECTED     - No items connected to menu
 |                    E_BAD_STATE         - Menu in userexit routine
 |                    E_POSTED            - Menu already posted
-|
 +--------------------------------------------------------------------------*/
 int post_menu(MENU * menu)
 {
-    WINDOW *w;
-    ITEM **items;
-    int maxy, maxx;
-    int y;
+  if (!menu)
+    RETURN(E_BAD_ARGUMENT);
   
-    if (!menu)
-	RETURN(E_BAD_ARGUMENT);
+  if ( menu->status & _IN_DRIVER )
+    RETURN(E_BAD_STATE);
 
-    ASSERT_NOT_IN_HOOK( menu );
-    ASSERT_NOT_POSTED( menu );
+  if ( menu->status & _POSTED )
+    RETURN(E_POSTED);
   
-    if (menu->items && *(menu->items))
+  if (menu->items && *(menu->items))
     {
-	w = CDEFWIN(menu);
-	maxy = getmaxy(w);
-	maxx = getmaxx(w);
-    
-	if (maxx < menu->width || maxy < menu->height)
-	    RETURN(E_NO_ROOM);
-    
-	if ( (menu->win = newwin(menu->rows,menu->width,0,0)) )
+      int y;
+      WINDOW *win = Get_Menu_Window(menu);
+      int maxy = getmaxy(win);
+      int maxx = getmaxx(win);
+      
+      if (maxx < menu->width || maxy < menu->height)
+	RETURN(E_NO_ROOM);
+      
+      if ( (menu->win = newwin(menu->rows,menu->width,0,0)) )
 	{
-	    y = (maxy >= menu->rows) ? menu->rows : maxy;
-	    if (y>=menu->height) 
-		y = menu->height;
-	    if(!(menu->sub = derwin(menu->win,y,menu->width,0,0)))
-		RETURN(E_SYSTEM_ERROR);
+	  y = (maxy >= menu->rows) ? menu->rows : maxy;
+	  if (y>=menu->height) 
+	    y = menu->height;
+	  if(!(menu->sub = derwin(menu->win,y,menu->width,0,0)))
+	    RETURN(E_SYSTEM_ERROR);
 	}
-	else 
-	    RETURN(E_SYSTEM_ERROR);	
-    
-	if (menu->status & _LINK_NEEDED) 
-	    _nc_Link_Items(menu);
+      else 
+	RETURN(E_SYSTEM_ERROR);	
+      
+      if (menu->status & _LINK_NEEDED) 
+	_nc_Link_Items(menu);
     }
-    else
-	RETURN(E_NOT_CONNECTED);
+  else
+    RETURN(E_NOT_CONNECTED);
   
-    menu->status |= _POSTED;
-    if (!(menu->opt&O_ONEVALUE))
+  menu->status |= _POSTED;
+
+  if (!(menu->opt&O_ONEVALUE))
     {
-	for(items=menu->items;*items;items++)
+      ITEM **items;
+  
+      for(items=menu->items;*items;items++)
 	{
-	    (*items)->value = 0;
+	  (*items)->value = FALSE;
 	}
     }
   
-    _nc_Draw_Menu(menu);
+  _nc_Draw_Menu(menu);
   
-    CALL_HANDLER(menu,menuinit);
-    CALL_HANDLER(menu,iteminit);
+  Call_Hook(menu,menuinit);
+  Call_Hook(menu,iteminit);
   
-    _nc_Show_Menu(menu);
+  _nc_Show_Menu(menu);
   
-    RETURN(E_OK);
+  RETURN(E_OK);
 }
-
+
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
 |   Function      :  int unpost_menu(MENU *)
@@ -234,32 +232,35 @@ int post_menu(MENU * menu)
 +--------------------------------------------------------------------------*/
 int unpost_menu(MENU * menu)
 {
-    WINDOW *w;
+  WINDOW *win;
   
-    if (!menu)
-	RETURN(E_BAD_ARGUMENT);
+  if (!menu)
+    RETURN(E_BAD_ARGUMENT);
+  
+  if ( menu->status & _IN_DRIVER )
+    RETURN(E_BAD_STATE);
 
-    ASSERT_NOT_IN_HOOK( menu );
-    ASSERT_POSTED( menu );
+  if ( !( menu->status & _POSTED ) )
+    RETURN(E_NOT_POSTED);
   
-    CALL_HANDLER(menu,itemterm);
-    CALL_HANDLER(menu,menuterm);	
+  Call_Hook(menu,itemterm);
+  Call_Hook(menu,menuterm);	
   
-    w = CDEFWIN(menu);
-    werase(w);
-    wsyncup(w);
+  win = Get_Menu_Window(menu);
+  werase(win);
+  wsyncup(win);
   
-    assert(menu->sub);
-    delwin(menu->sub);
-    menu->sub = (WINDOW *)0;
+  assert(menu->sub);
+  delwin(menu->sub);
+  menu->sub = (WINDOW *)0;
   
-    assert(menu->win);
-    delwin(menu->win);
-    menu->win = (WINDOW *)0;
+  assert(menu->win);
+  delwin(menu->win);
+  menu->win = (WINDOW *)0;
   
-    menu->status &= ~_POSTED;
+  menu->status &= ~_POSTED;
   
-    RETURN(E_OK);
+  RETURN(E_OK);
 }
 
-/* menu_post.c ends here */
+/* m_post.c ends here */

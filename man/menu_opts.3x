@@ -5,11 +5,11 @@
 .SH SYNOPSIS
 \fB#include <menu.h>\fR
 .br
-set_menu_opts(MENU *menu, OPTIONS opts);
+int set_menu_opts(MENU *menu, OPTIONS opts);
 .br
-menu_opts_on(MENU *menu, OPTIONS opts);
+int menu_opts_on(MENU *menu, OPTIONS opts);
 .br
-menu_opts_off(MENU *menu, OPTIONS opts);
+int menu_opts_off(MENU *menu, OPTIONS opts);
 .br
 OPTIONS menu_opts(MENU *menu);
 .br
@@ -53,11 +53,11 @@ The routine succeeded.
 .TP 5
 \fBE_SYSTEM_ERROR\fR
 System error occurred (see \fBerrno\fR).
-.SH SEE ALSO
-\fBcurses\fR(3X), \fBmenu\fR(3X).
 .TP 5
 \fBE_POSTED\fR
 The menu is already posted.
+.SH SEE ALSO
+\fBcurses\fR(3X), \fBmenu\fR(3X).
 .SH NOTES
 The header file \fB<menu.h>\fR automatically includes the header file
 \fB<curses.h>\fR.

@@ -13,7 +13,8 @@ menus, display menus on the screen, and handle interaction with the user.
 
 The \fBmenus\fR library uses the \fBcurses\fR libraries, and a curses
 initialization routine such as \fBinitscr\fR must be called before using any of
-these functions.
+these functions.  To use the \Bmenus\fR library, link with the options 
+\fB-lmenu -lcurses\fR.
 
 .SS Current Default Values for Item Attributes
 
@@ -109,7 +110,7 @@ Routine detected an incorrect or out-of-range argument.
 The menu is already posted.
 .TP 5
 \fBE_BAD_STATE\fR
-Routine was called from an initialization and termination function.
+Routine was called from an initialization or termination function.
 .TP 5
 \fBE_NO_ROOM\fR
 Menu is too large for its window.

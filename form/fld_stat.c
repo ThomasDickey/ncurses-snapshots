@@ -19,22 +19,42 @@
 *                                                                          *
 ***************************************************************************/
 
-/*
- * unctrl.h
- *
- * Display a printable version of a control character.
- * Control characters are displayed in caret notation (^x), DELETE is displayed
- * as ^?. Printable characters are displayed as is.
- *
- * The returned pointer points to a static buffer which gets overwritten by
- * each call. Therefore, you must copy the resulting string to a safe place
- * before calling unctrl() again.
- *
- */
-#ifndef _UNCTRL_H
-#define _UNCTRL_H	1
-#define NCURSES_VERSION "1.9.5"
+#include "form.priv.h"
 
-extern char *unctrl(unsigned char);
+/*---------------------------------------------------------------------------
+|   Facility      :  libnform  
+|   Function      :  int set_field_status(FIELD *field, bool status)
+|   
+|   Description   :  Set or clear the 'changed' indication flag for that
+|                    fields primary buffer.
+|
+|   Return Values :  E_OK            - success
++--------------------------------------------------------------------------*/
+int set_field_status(FIELD * field, bool status)
+{
+  Normalize_Field( field );
 
-#endif /* _UNCTRL_H */
+  if (status)
+    field->status |= _CHANGED;
+  else
+    field->status &= ~_CHANGED;
+
+  return(E_OK);
+}
+
+/*---------------------------------------------------------------------------
+|   Facility      :  libnform  
+|   Function      :  bool field_status(const FIELD *field)
+|   
+|   Description   :  Retrieve the value of the 'changed' indication flag
+|                    for that fields primary buffer. 
+|
+|   Return Values :  TRUE  - buffer has been changed
+|                    FALSE - buffer has not been changed
++--------------------------------------------------------------------------*/
+bool field_status(const FIELD * field)
+{
+  return ((Normalize_Field(field)->status & _CHANGED) ? TRUE : FALSE);
+}
+
+/* fld_stat.c ends here */

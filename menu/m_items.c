@@ -38,28 +38,27 @@
 |                                     to another menu.
 |                    E_BAD_ARGUMENT - An incorrect menu or item array was
 |                                     passed to the function
-|
 +--------------------------------------------------------------------------*/
 int set_menu_items(MENU * menu, ITEM ** items)
 {
-    if (!menu || (items && !(*items)))
-	RETURN(E_BAD_ARGUMENT);
+  if (!menu || (items && !(*items)))
+    RETURN(E_BAD_ARGUMENT);
   
-    ASSERT_NOT_POSTED( menu );
-
-    if (menu->items)
-	_nc_Disconnect_Items(menu);
+  if ( menu->status & _POSTED )
+    RETURN(E_POSTED);
   
-    if (items)
+  if (menu->items)
+    _nc_Disconnect_Items(menu);
+  
+  if (items)
     {
-	if(!_nc_Connect_Items( menu, items )) 
-	    RETURN(E_CONNECTED);
+      if(!_nc_Connect_Items( menu, items )) 
+	RETURN(E_CONNECTED);
     }
-
-    menu->items = items;
-    RETURN(E_OK);
+  
+  menu->items = items;
+  RETURN(E_OK);
 }		
-
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -68,13 +67,11 @@ int set_menu_items(MENU * menu, ITEM ** items)
 |   Description   :  Returns a pointer to the item pointer arry of the menu
 |
 |   Return Values :  NULL on error
-|
 +--------------------------------------------------------------------------*/
 ITEM **menu_items(const MENU *menu)
 {
-    return(menu ? menu->items : (ITEM **)0);
+  return(menu ? menu->items : (ITEM **)0);
 }
-
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -83,12 +80,11 @@ ITEM **menu_items(const MENU *menu)
 |   Description   :  Get the number of items connected to the menu. If the
 |                    menu pointer is NULL we return -1.         
 |
-|   Return Values :  ...
-|
+|   Return Values :  Number of items or -1 to indicate error.
 +--------------------------------------------------------------------------*/
 int item_count(const MENU *menu)
 {
-    return(menu ? menu->nitems : -1);
+  return(menu ? menu->nitems : -1);
 }
 
-/* menu_items.c ends here */
+/* m_items.c ends here */

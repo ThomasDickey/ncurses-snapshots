@@ -40,9 +40,9 @@ just after the top row on the menu changes once it is posted.  \fBmenu_init\fR
 returns the current menu init hook, if any (\fBNULL\fR if there is no such
 hook).
 
-The function \fBset_menu_init\fR sets a hook to be called at menu-unpost time
+The function \fBset_menu_term\fR sets a hook to be called at menu-unpost time
 and just before the top row on the menu changes once it is posted.
-\fBmenu_init\fR returns the current menu term hook, if any (\fBNULL\fR if there
+\fBmenu_term\fR returns the current menu term hook, if any (\fBNULL\fR if there
 is no such hook).
 .SH RETURN VALUE
 Routines that return pointers return \fBNULL\fR on error.  Other routines

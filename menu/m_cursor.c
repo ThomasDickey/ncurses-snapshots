@@ -38,38 +38,39 @@
 +--------------------------------------------------------------------------*/
 int pos_menu_cursor(const MENU * menu)
 {
-    if (!menu)
-	RETURN(E_BAD_ARGUMENT);
-    else
+  if (!menu)
+    RETURN(E_BAD_ARGUMENT);
+  else
     {
-	ITEM *item;
-	int x, y;
-	WINDOW *w, *s;
-	  
-	ASSERT_POSTED(menu);
+      ITEM *item;
+      int x, y;
+      WINDOW *win, *sub;
       
-	item = menu->curitem;
-	assert(item);
-
-	x = item->x * (1 + menu->itemlen);
-	y = item->y - menu->toprow;
-	w = menu->userwin ? menu->userwin : stdscr;
-	s = menu->usersub ? menu->usersub : w;
-	assert(w && s);
-	  
-	if ((menu->opt & O_SHOWMATCH) && (menu->pindex > 0))
-	    x += ( menu->pindex + menu->marklen - 1);
+      if ( !( menu->status & _POSTED ) )
+	RETURN(E_NOT_POSTED);
       
-	wmove(s,y,x);
+      item = menu->curitem;
+      assert(item);
       
-	if ( w != s )
+      x = item->x * (1 + menu->itemlen);
+      y = item->y - menu->toprow;
+      win = menu->userwin ? menu->userwin : stdscr;
+      sub = menu->usersub ? menu->usersub : win;
+      assert(win && sub);
+      
+      if ((menu->opt & O_SHOWMATCH) && (menu->pindex > 0))
+	x += ( menu->pindex + menu->marklen - 1);
+      
+      wmove(sub,y,x);
+      
+      if ( win != sub )
 	{
-	    wcursyncup(s);
-	    wsyncup(s);
-	    untouchwin(s);
+	  wcursyncup(sub);
+	  wsyncup(sub);
+	  untouchwin(sub);
 	} 
     }
-    RETURN(E_OK);
+  RETURN(E_OK);
 }
 
-/* menu_cursor.c ends here */
+/* m_cursor.c ends here */

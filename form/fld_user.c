@@ -19,33 +19,36 @@
 *                                                                          *
 ***************************************************************************/
 
-#ifndef _TERMCAP_H
-#define _TERMCAP_H	1
-#define NCURSES_VERSION "1.9.5"
+#include "form.priv.h"
 
-#ifdef __cplusplus
-extern "C" 
+/*---------------------------------------------------------------------------
+|   Facility      :  libnform  
+|   Function      :  int set_field_userptr(FIELD *field, void *usrptr)
+|   
+|   Description   :  Set the pointer that is reserved in any field to store
+|                    application relevant informations
+|
+|   Return Values :  E_OK         - on success
++--------------------------------------------------------------------------*/
+int set_field_userptr(FIELD * field, void  *usrptr)
 {
-#endif /* __cplusplus */
-
-#include <sys/types.h>
-
-extern char PC;
-extern char *UP;
-extern char *BC;
-extern int ospeed;
-
-extern int tgetent(char *, const char *);
-extern int tgetflag(const char *);
-extern int tgetnum(const char *);
-extern char *tgetstr(const char *, char **);
-
-extern int tputs(const char *, int, int (*)(int));
-
-extern char *tgoto(const char *, int, int);
-
-#ifdef __cplusplus
+  Normalize_Field( field )->usrptr = usrptr;
+  RETURN(E_OK);
 }
-#endif
 
-#endif /* _TERMCAP_H */
+/*---------------------------------------------------------------------------
+|   Facility      :  libnform  
+|   Function      :  void *field_userptr(const FIELD *field)
+|   
+|   Description   :  Return the pointer that is reserved in any field to
+|                    store application relevant informations.
+|
+|   Return Values :  Value of pointer. If no such pointer has been set,
+|                    NULL is returned
++--------------------------------------------------------------------------*/
+void *field_userptr(const FIELD *field)
+{
+  return Normalize_Field( field )->usrptr;
+}
+
+/* fld_user.c ends here */

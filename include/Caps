@@ -282,6 +282,10 @@ key_b2                  	"kb2"	str	"K2"	YB-GE	center of keypad
 key_c1                  	"kc1"	str	"K4"	YB-GE	lower left of keypad
 key_c3                  	"kc3"	str	"K5"	YB-GE	lower right of keypad
 prtr_non                	"mc5p"	str	"pO"	-B-G-*	turn on printer for #1 bytes
+#
+# SVr1 capabilities stop here.  IBM's version of terminfo is the same as
+# SVr4 up to this point, but has a different set afterwards.
+#
 char_padding            	"rmp"	str	"rP"	-----	like ip but when in insert mode
 acs_chars               	"acsc"	str	"ac"	-----	graphics charset pairs - def=vt100
 plab_norm               	"pln"	str	"pn"	-----	program label #1 to show string #2
@@ -411,8 +415,8 @@ clear_margins           	"mgc"	str	"MC"	-----	clear right and left soft margins
 set_left_margin         	"smgl"	str	"ML"	-----	set left soft margin
 set_right_margin        	"smgr"	str	"MR"	-----	set right soft margin
 label_format            	"fln"	str	"Lf"	-----	label format
-set_clock               	"sclk"	str	"SC"	-----	set clock
-display_clock           	"dclk"	str	"DK"	-----	display clock
+set_clock               	"sclk"	str	"SC"	-----	set clock, #1 hrs #2 mins #3 secs
+display_clock           	"dclk"	str	"DK"	-----	display clock at (#1,#2)
 remove_clock            	"rmclk"	str	"RC"	-----	remove clock
 create_window           	"cwin"	str	"CW"	-----	define a window #1 from #2, #3 to #4, #5
 goto_window             	"wingo"	str	"WG"	-----	go to window #1
@@ -609,6 +613,9 @@ gnu_has_meta_key		"OTMT"	bool	"MT"	----E	(not used)
 # There is one conflict with terminfo; "ma" is in both.  This conflict is
 # resolved by type information.
 #
+# The `ko' capability is translated by special code.  It should contain a
+# comma-separated list of capabilities for which there are corresponding keys.
+#
 linefeed_is_newline     	"OTNL"	bool	"NL"	YB---	(used)
 # even_parity			"OTEP"	bool	"EP"	-B---	(not used)
 # odd_parity			"OTOP"	bool	"OP"	-B---	(not used)
@@ -620,7 +627,7 @@ backspace_delay			"OTdB"	num	"dB"	YB-G-	(used)
 horizontal_tab_delay		"OTdT"	num	"dT"	YB-G-	(used)
 # vertical_tab_delay		"OTdV"	num	"dV"	-B---	(not used)
 # number_of_function_keys	"OTkn"	num	"kn"	-B-G-	(not used)
-# other_non_function_keys 	"OTko"	str	"ko"	-B-G-	(not used)
+other_non_function_keys 	"OTko"	str	"ko"	-B-G-	(not used)
 arrow_key_map           	"OTma"	str	"ma"	YBC--	(not used)
 # memory_lock_above       	"OTml"	str	"ml"	-B---	(not used)
 # memory_unlock           	"OTmu"	str	"mu"	-B---	(not used)
@@ -655,6 +662,10 @@ return_does_clr_eol        	"OTxr"	bool	"xr"	YB---	(used)
 #
 # Alias declarations.  Here we set up aliases for translating extensions 
 # into standard terminfo.
+#
+# This is a common error in many termcap files.  We'll get notified during
+# translation when this (or any other alias) fires.
+alias	"sb"	"sr"	BSD	scroll text down
 #
 # AT&T extensions:
 #
@@ -703,3 +714,155 @@ alias	"PS"	"pf"	XENIX	prtr_on
 alias	"PU"	"kP"	XENIX	key_ppage
 alias	"RT"	"@8"	XENIX	kent
 alias	"UP"	"ku"	XENIX	kcuu1
+#
+# IBM extensions
+#
+# These extensions follow ptr_non (replacing everything after it) in IBM
+# terminfo files.
+#
+#box_chars_1    	"box1"	str	"bx"	-----	box chars primary set
+#box_chars_2          	"box2"	str	"by"	-----	box chars secondary set
+#box_attr_1     	"batt1"	str	"Bx"	-----	attributes for box1
+#box_attr_2     	"batt2"	str	"By"	-----	attributes for box2
+#color_bg_0     	"colb0"	str	"d0"	-----	background color 0
+#color_bg_1     	"colb1"	str	"d1"	-----	background color 1
+#color_bg_2     	"colb2"	str	"d2"	-----	background color 2
+#color_bg_3     	"colb3"	str	"d3"	-----	background color 3
+#color_bg_4     	"colb4"	str	"d4"	-----	background color 4
+#color_bg_5     	"colb5"	str	"d5"	-----	background color 5
+#color_bg_6     	"colb6"	str	"d6"	-----	background color 6
+#color_bg_7     	"colb7"	str	"d7"	-----	background color 7
+#color_fg_0     	"colf0"	str	"c0"	-----	foreground color 0
+#color_fg_1     	"colf1"	str	"c1"	-----	foreground color 1
+#color_fg_2     	"colf2"	str	"c2"	-----	foreground color 2
+#color_fg_3     	"colf3"	str	"c3"	-----	foreground color 3
+#color_fg_4     	"colf4"	str	"c4"	-----	foreground color 4
+#color_fg_5     	"colf5"	str	"c5"	-----	foreground color 5
+#color_fg_6     	"colf6"	str	"c6"	-----	foreground color 6
+#color_fg_7     	"colf7"	str	"c7"	-----	foreground color 7
+#font_0         	"font0"	str	"f0"	-----	select font 0
+#font_1         	"font1"	str	"f1"	-----	select font 1
+#font_2         	"font2"	str	"f2"	-----	select font 2
+#font_3         	"font3"	str	"f3"	-----	select font 3
+#font_4         	"font4"	str	"f4"	-----	select font 4
+#font_5         	"font5"	str	"f5"	-----	select font 5
+#font_6         	"font6"	str	"f6"	-----	select font 6
+#font_7         	"font7"	str	"f7"	-----	select font 7
+#key_back_tab   	"kbtab"	str	"k0"	-----	backtab key
+#key_do         	"kdo"	str	"ki"	-----	do request key
+#key_command    	"kcmd"	str	"kd"	-----	command-request key
+#key_command_pane	"kcpn"	str	"kW"	-----	command-pane key
+#key_end        	"kend"	str	"kw"	-----	end key
+#key_help       	"khlp"	str	"kq"	-----	help key
+#key_newline		"knl"	str	"nl"	-----	newline key
+#key_next_pane  	"knpn"	str	"kv"	-----	next-pane key
+#key_prev_cmd   	"kppn"	str	"kp"	-----	previous-command key
+#key_prev_pane  	"kppn"	str	"kV"	-----	previous-pance key
+#key_quit       	"kquit"	str	"kQ"	-----	quit key
+#key_select     	"ksel"	str	"kU"	-----	select key
+#key_scroll_left	"kscl"	str	"kz"	-----	scroll left
+#key_scroll_right	"kscr"	str	"kZ"	-----	scroll right
+#key_tab        	"ktab"	str	"ko"	-----	tab key
+#key_smap_in1   	"kmpf1"	str	"kv"	-----	special mapped key 1 input
+#key_smap_out1  	"kmpt1"	str	"KV"	-----	special mapped key 1 output
+#key_smap_in2   	"kmpf2"	str	"kw"	-----	special mapped key 2 input
+#key_smap_out2  	"kmpt2"	str	"KW"	-----	special mapped key 2 output
+#key_smap_in3   	"kmpf3"	str	"kx"	-----	special mapped key 3 input
+#key_smap_out3  	"kmpt3"	str	"KX"	-----	special mapped key 3 output
+#key_smap_in4   	"kmpf4"	str	"ky"	-----	special mapped key 4 input
+#key_smap_out4  	"kmpt4"	str	"KY"	-----	special mapped key 4 output
+#key_smap_in5   	"kmpf5"	str	"kz"	-----	special mapped key 5 input
+#key_smap_out5  	"kmpt5"	str	"KZ"	-----	special mapped key 5 output
+#appl_defined_str      	"apstr"	str	"za"	-----	application-defined string
+# The key_smap_in[6789] and key_smap_out[6789] capabilities aren't described in
+# the IBM manual pages, so the cap name strings are guesses.  The terminfo
+# names are almost certainly right, the termcap ones almost certainly wrong.
+#key_smap_in6   	"kmpf6"	str	"k!"	-----	special mapped key 6 input
+#key_smap_out6  	"kmpt6"	str	"K@"	-----	special mapped key 6 output
+#key_smap_in7   	"kmpf7"	str	"k#"	-----	special mapped key 7 input
+#key_smap_out7  	"kmpt7"	str	"K$"	-----	special mapped key 7 output
+#key_smap_in8   	"kmpf8"	str	"k%"	-----	special mapped key 8 input
+#key_smap_out8  	"kmpt8"	str	"K^"	-----	special mapped key 8 output
+#key_smap_in9   	"kmpf9"	str	"k&"	-----	special mapped key 9 input
+#key_smap_out9  	"kmpt9"	str	"K*"	-----	special mapped key 9 output
+# Undocumented capabilities end here
+#key_sf1        	"ksf1"	str	"S1"	-----	special function key 1
+#key_sf2        	"ksf2"	str	"S2"	-----	special function key 1
+#key_sf3        	"ksf3"	str	"S3"	-----	special function key 1
+#key_sf4        	"ksf4"	str	"S4"	-----	special function key 1
+#key_sf5        	"ksf5"	str	"S5"	-----	special function key 1
+#key_sf6        	"ksf6"	str	"S6"	-----	special function key 1
+#key_sf7        	"ksf7"	str	"S7"	-----	special function key 1
+#key_sf8        	"ksf8"	str	"S8"	-----	special function key 1
+#key_sf9        	"ksf9"	str	"S9"	-----	special function key 1
+#key_sf10        	"ksf10"	str	"SA"	-----	special function key 1
+#key_f11        	"kf11"	str	"k<"	-----	function key 11
+#key_f12        	"kf12"	str	"k>"	-----	function key 12
+# The key_f13 through key_f64 capabilities aren't described in
+# the IBM manual pages, so the cap name strings are guesses.  The terminfo
+# names are almost certainly right, the termcap ones certainly wrong.
+#key_f13        	"kf13"	str	"k+"	-----	function key 13
+#key_f14        	"kf14"	str	"k+"	-----	function key 14
+#key_f15        	"kf15"	str	"k+"	-----	function key 15
+#key_f16        	"kf16"	str	"k+"	-----	function key 16
+#key_f17        	"kf17"	str	"k+"	-----	function key 17
+#key_f18        	"kf18"	str	"k+"	-----	function key 18
+#key_f19        	"kf19"	str	"k+"	-----	function key 19
+#key_f20        	"kf20"	str	"k+"	-----	function key 20
+#key_f21        	"kf21"	str	"k+"	-----	function key 21
+#key_f22        	"kf22"	str	"k+"	-----	function key 22
+#key_f23        	"kf23"	str	"k+"	-----	function key 23
+#key_f24        	"kf24"	str	"k+"	-----	function key 24
+#key_f25        	"kf25"	str	"k+"	-----	function key 25
+#key_f26        	"kf26"	str	"k+"	-----	function key 26
+#key_f27        	"kf26"	str	"k+"	-----	function key 26
+#key_f28        	"kf28"	str	"k+"	-----	function key 28
+#key_f29        	"kf29"	str	"k+"	-----	function key 29
+#key_f30        	"kf30"	str	"k+"	-----	function key 30
+#key_f31        	"kf31"	str	"k+"	-----	function key 31
+#key_f32        	"kf31"	str	"k+"	-----	function key 32
+#key_f33        	"kf33"	str	"k+"	-----	function key 33
+#key_f34        	"kf34"	str	"k+"	-----	function key 34
+#key_f35        	"kf35"	str	"k+"	-----	function key 35
+#key_f36        	"kf36"	str	"k+"	-----	function key 36
+#key_f37        	"kf37"	str	"k+"	-----	function key 37
+#key_f38        	"kf38"	str	"k+"	-----	function key 38
+#key_f39        	"kf39"	str	"k+"	-----	function key 39
+#key_f40        	"kf40"	str	"k+"	-----	function key 40
+#key_f41        	"kf41"	str	"k+"	-----	function key 41
+#key_f42        	"kf42"	str	"k+"	-----	function key 42
+#key_f43        	"kf43"	str	"k+"	-----	function key 43
+#key_f44        	"kf44"	str	"k+"	-----	function key 44
+#key_f45        	"kf45"	str	"k+"	-----	function key 45
+#key_f46        	"kf46"	str	"k+"	-----	function key 46
+#key_f47        	"kf47"	str	"k+"	-----	function key 47
+#key_f48        	"kf48"	str	"k+"	-----	function key 48
+#key_f49        	"kf49"	str	"k+"	-----	function key 49
+#key_f50        	"kf50"	str	"k+"	-----	function key 50
+#key_f51        	"kf51"	str	"k+"	-----	function key 51
+#key_f52        	"kf52"	str	"k+"	-----	function key 52
+#key_f53        	"kf53"	str	"k+"	-----	function key 53
+#key_f54        	"kf54"	str	"k+"	-----	function key 54
+#key_f55        	"kf55"	str	"k+"	-----	function key 55
+#key_f56        	"kf56"	str	"k+"	-----	function key 56
+#key_f57        	"kf57"	str	"k+"	-----	function key 57
+#key_f58        	"kf58"	str	"k+"	-----	function key 58
+#key_f59        	"kf59"	str	"k+"	-----	function key 59
+#key_f60        	"kf60"	str	"k+"	-----	function key 60
+#key_f61        	"kf61"	str	"k+"	-----	function key 61
+#key_f62        	"kf62"	str	"k+"	-----	function key 62
+#key_f63        	"kf63"	str	"k+"	-----	function key 63
+# Undocumented capabilities end here.
+#key_action     	"kact"	str	"kJ"	-----	sent by action key
+# The IBM docs say these capabilities are for table-drawing, and are
+# valid only for aixterm descriptions.
+#enter_topline_mode	"topl"	str	"tp"	-----	start top-line mode
+#enter_bottom_mode	"btml"	str	"bm"	-----	start bottom-line mode
+#enter_rvert_mode	"rvert"	str	"rv"	-----	start right-vertical mode
+#enter_lvert_mode	"lvert"	str	"lv"	-----	start left-vertical mode
+#
+# Some of these are identical: kcmd, kend, khlp, kf11...kf63
+# Some of these could be translated, but we're not ready to do this yet.
+#
+#alias	"kbtab"	"kcbt"	IBM	key_backtab
+#alias	"ksel"	"kslt"	IBM	key_select

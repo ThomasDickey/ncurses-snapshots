@@ -28,27 +28,26 @@
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
-|   Function      :  int item_visible(const ITEM *item)
+|   Function      :  bool item_visible(const ITEM *item)
 |   
 |   Description   :  A item is visible if it currently appears in the
 |                    subwindow of a posted menu.
 |
 |   Return Values :  TRUE  if visible
 |                    FALSE if invisible
-|
 +--------------------------------------------------------------------------*/
-int item_visible(const ITEM * item)
+bool item_visible(const ITEM * item)
 {
-    MENU *menu;
+  MENU *menu;
   
-    if ( item                                                && 
-	(menu=item->imenu)                                  && 
-	(menu->status & _POSTED)                            &&
-	( (menu->toprow + menu->height - 1) >= (item->y) )  &&
-	( item->y >= menu->toprow) )
-	return TRUE;
-    else
-	return FALSE;
+  if ( item                                               && 
+      (menu=item->imenu)                                  && 
+      (menu->status & _POSTED)                            &&
+      ( (menu->toprow + menu->height - 1) >= (item->y) )  &&
+      ( item->y >= menu->toprow) )
+    return TRUE;
+  else
+    return FALSE;
 }
 
-/* menu_item_vis.c */
+/* m_item_vis.c ends here */

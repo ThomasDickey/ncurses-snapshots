@@ -7,8 +7,8 @@
 
 You should be reading the file INSTALL in a directory called
 ncurses-d.d.d, where d.d.d is the current version number.  There
-should be several subdirectories, including 'c++', 'man', 'menu',
-'misc', 'ncurses', 'panel', 'progs', and 'test'.  See the README file
+should be several subdirectories, including `c++', `form', `man', `menu',
+'misc', `ncurses', `panel', `progs', and `test'.  See the README file
 for a roadmap to the package.
 
 If you are a Linux or FreeBSD or NetBSD distribution integrator or packager,
@@ -36,7 +36,7 @@ INSTALLATION PROCEDURE:
 
     The --prefix option to configure changes the root directory for installing
     ncurses; the default is in subdirectories of /usr/, unless the
-    configure script finds the 'tic' program installed in a different place
+    configure script finds the `tic' program installed in a different place
     within your path (e.g., finding /usr/bin/tic makes the default prefix
     /usr/bin):
 
@@ -48,21 +48,21 @@ INSTALLATION PROCEDURE:
 
     If you want to put the terminal descriptions in, for example,
     /usr/share/lib/terminfo, you can either make that a symbolic link to
-    /usr/lib/terminfo, or type 'configure --with-datadir=/usr/share/lib/terminfo'.
+    /usr/lib/terminfo, or type `configure --with-datadir=/usr/share/lib/terminfo'.
     This is particularly useful if your system already has a terminfo database.
     This option allows you to place ncurses' terminfo in an alternate location.
     You can use TERMINFO to point to the appropriate directory.
 
-2.  Type 'configure' to configure ncurses for your operating system and create
+2.  Type `configure' to configure ncurses for your operating system and create
     the Makefiles.  You can optionally give configure options, such as
-    '--prefix=/usr/local'.  Use `configure --help' to list the available
+    `--prefix=/usr/local'.  Use `configure --help' to list the available
     options.
 
     It will create your Makefiles.  If your operating system is not supported,
     read the PORTABILITY section in the file ncurses/README for information on
     how to create a configuration file for your system.
 
-    The 'configure' script generates makefile rules for one or more object
+    The `configure' script generates makefile rules for one or more object
     models and their associated libraries:
 
 	libncurses.a (normal)
@@ -89,33 +89,33 @@ INSTALLATION PROCEDURE:
     significantly smaller because the initialization code doesn't have to 
     carry around the entire termcap-to-terminfo compiler.
 
-3.  Type 'make'.  Ignore any warnings, no error messages should be produced. 
+3.  Type `make'.  Ignore any warnings, no error messages should be produced. 
     This should compile the library, the terminfo compiler (tic), the infocmp,
     clear and tput programs (see the man pages for explanation of what they
     do), some test programs, and the panels and menus libraries.
     Read the file test/README for details on the test programs.
 
-4.  IF YOU HAVE ROOT: You can type 'make install' to install the libraries,
+4.  IF YOU HAVE ROOT: You can type `make install' to install the libraries,
     the programs, the terminfo database and the man pages.  Alternately, you
-    can type 'make install' in each directory you want to install.  In the
+    can type `make install' in each directory you want to install.  In the
     top-level directory, you can do a partial install using these commands:
  
 	'make install.progs'    installs tic, infocmp, clear and tput.
   	'make install.includes' installs the headers.
   	'make install.libs'     installs the libraries.
-  	'make install.data'     installs the terminfo data. (Note: 'tic' must
+  	'make install.data'     installs the terminfo data. (Note: `tic' must
 	                        be installed before the terminfo data can be
 			        compiled).
 	'make install.man'      installs the man pages.
 
   ############################################################################
-  #     CAVEAT EMPTOR: 'install.data' run as root will NUKE any existing     #
+  #     CAVEAT EMPTOR: `install.data' run as root will NUKE any existing     #
   #  terminfo database. If you have any custom or unusual entries SAVE them  #
   #  before you install ncurses.  I have a file called terminfo.custom for   #
   #  this purpose.  Don't forget to run tic on the file once you're done.    #
   ############################################################################
 
-    Also note that 'tic misc/terminfo.src' uses large amounts of core.
+    Also note that `tic misc/terminfo.src' uses large amounts of core.
     on machines with less than 16 megabytes of physical RAM and slow disks,
     paging overhead has been known to slow the running time from a few
     minutes to a couple of hours!

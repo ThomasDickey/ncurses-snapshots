@@ -201,9 +201,9 @@ static int oldnums[LINES], reallines[LINES];
 #include <curses.h>
 #define OLDNUM(n)	newscr->_line[n].oldindex
 #define REAL(m)		curscr->_line[m].oldindex
-#ifndef NEWINDEX
-#define NEWINDEX	-1
-#endif /* NEWINDEX */
+#ifndef _NEWINDEX
+#define _NEWINDEX	-1
+#endif /* _NEWINDEX */
 #endif /* MAINDEBUG */
 
 static bool all_discarded(int top, int bottom, int disp)
@@ -212,7 +212,7 @@ static bool all_discarded(int top, int bottom, int disp)
     int		n;
 
     for (n = top + disp; n <= bottom + disp; n++)
-	if (REAL(n) != NEWINDEX && !(REAL(n) <= bottom && REAL(n) >= top))
+	if (REAL(n) != _NEWINDEX && !(REAL(n) <= bottom && REAL(n) >= top))
 	    return(FALSE);
 
     return(TRUE);
@@ -229,15 +229,15 @@ void _nc_scroll_optimize(void)
 
     T(("_nc_scroll_optimize() begins"));
 
-    /* mark any line not carried over with NEWINDEX */
+    /* mark any line not carried over with _NEWINDEX */
     for (n = 0; n < LINES; n++)
 	REAL(n) += (MAXLINES + 1);
     for (n = 0; n < LINES; n++)
-	if (OLDNUM(n) != NEWINDEX)
+	if (OLDNUM(n) != _NEWINDEX)
 	    REAL(OLDNUM(n)) -= (MAXLINES + 1);
     for (n = 0; n < LINES; n++)    
 	if (REAL(n) > MAXLINES)
-	    REAL(n) = NEWINDEX;
+	    REAL(n) = _NEWINDEX;
 
 #ifdef TRACE
     TR(TRACE_UPDATE | TRACE_MOVE, ("After real line marking:"));
@@ -261,7 +261,7 @@ void _nc_scroll_optimize(void)
 	while (first < LINES)
 	{
 	    /* find the beginning of a hunk */
-	    while (first < LINES && OLDNUM(first) == NEWINDEX)
+	    while (first < LINES && OLDNUM(first) == _NEWINDEX)
 		first++;
 	    if (first >= LINES)
 		break;
@@ -299,9 +299,9 @@ void _nc_scroll_optimize(void)
 #endif /* MAINDEBUG */		    
 
 		    for (m = ofirst; m <= olast; m++)
-			REAL(m) = NEWINDEX;
+			REAL(m) = _NEWINDEX;
 		    for (m = first; m <= last; m++)
-			OLDNUM(m) = NEWINDEX;
+			OLDNUM(m) = _NEWINDEX;
 
 		    no_hunk_moved = FALSE;
 		}
@@ -345,7 +345,7 @@ main()
 	for (n = 0; n < LINES; n++)
 	{
 	    reallines[n] = n;
-	    oldnums[n] = NEWINDEX;
+	    oldnums[n] = _NEWINDEX;
 	}
 
 	/* grab the test vector */

@@ -14,16 +14,16 @@ the input is a menu navigation request or it's a printable ASCII character.
 The menu driver requests are as follows:
 .TP 5
 REQ_LEFT_ITEM
-Move left to an item
+Move left to an item.
 .TP 5
 REQ_RIGHT_ITEM
-Move right to an item
+Move right to an item.
 .TP 5
 REQ_UP_ITEM
-Move up to an item
+Move up to an item.
 .TP 5
 REQ_DOWN_ITEM
-Move down to an item
+Move down to an item.
 .TP 5
 REQ_SCR_ULINE
 Scroll up a line.
@@ -69,6 +69,9 @@ it to the pattern buffer and attempts to move to the next item matching
 the new pattern.  If there is no such match, \fBmenu_driver\fR returns
 \fBE_NO_MATCH\fR and deletes the appended character from the buffer.
 .PP
+If the second argument is one of the above pre-defined requests, the
+corresponding action is performed.
+.PP
 If the second argument is neither printable ASCII nor one of the above
 pre-defined menu requests, the drive asumes it is an application-specific
 command and returns \fBE_UNKNOWN_COMMAND\fR.  Application-defined commands
@@ -87,7 +90,7 @@ System error occurred (see \fBerrno\fR).
 Routine detected an incorrect or out-of-range argument.
 .TP 5
 \fBE_BAD_STATE\fR
-Routine was called from an initialization and termination function.
+Routine was called from an initialization or termination function.
 .TP 5
 \fBE_NOT_POSTED\fR
 The menu has not been posted.

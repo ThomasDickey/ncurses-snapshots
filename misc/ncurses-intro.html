@@ -1,4 +1,4 @@
-<TITLE>mitem_attribs(3x)</TITLE>
+sk<TITLE>mitem_attribs(3x)</TITLE>
 <HTML>
 <HEAD>
 <TITLE>Writing Programs with NCURSES</TITLE>
@@ -31,6 +31,7 @@ by Zeyd M. ben-Halim and Eric S. Raymond<BR>
 <LI> <A HREF="#input">Input</A>
 <LI> <A HREF="#formschars">Using Forms Characters</A>
 <LI> <A HREF="#attributes">Character Attributes and Color</A>
+<LI> <A HREF="#mouse">Mouse Interfacing</A>
 <LI> <A HREF="#finishing">Finishing Up</A>
 </UL>
 <LI> <A HREF="#functions">Function Descriptions</A>
@@ -59,13 +60,21 @@ by Zeyd M. ben-Halim and Eric S. Raymond<BR>
 <LI> <A HREF="#pmisc">Miscellaneous Other Facilities</A>
 </UL>
 <LI> <A HREF="#menu">The Menu Library</A>
-<LI> <A HREF="#mcompile">Compiling With the menu Library</A>
+<UL>
+<LI> <A HREF="#mcompile">Compiling with the menu Library</A>
 <LI> <A HREF="#moverview">Overview of Menus</A>
-<LI> <A HREF="#select">Selecting items</A>
+<LI> <A HREF="#mselect">Selecting items</A>
 <LI> <A HREF="#mdisplay">Menu Display</A>
 <LI> <A HREF="#mwindows">Menu Windows</A>
 <LI> <A HREF="#minput">Processing Menu Input</A>
 <LI> <A HREF="#mmisc">Miscellaneous Other Features</A>
+</UL>
+<LI> <A HREF="#form">The Forms Library</A>
+<UL>
+<LI> <A HREF="#fcompile">Compiling with the forms Library</A>
+<LI> <A HREF="#foverview">Overview of Forms</A>
+<LI> <A HREF="#fcreate">Creating Forms</A>
+</UL>
 </UL>
 
 <HR>
@@ -115,6 +124,10 @@ features of terminals so equipped, and determines how to optimally use these
 features with no help from the programmer.  It allows arbitrary combinations of
 video attributes to be displayed, even on terminals that leave ``magic
 cookies'' on the screen to mark changes in attributes. <P>
+
+The <TT>ncurses</TT> package can also capture and use event reports from a
+mouse in some environments (notably, xterm under the X window system).  This
+document includes tips for using the mouse.
 
 The <TT>ncurses</TT> package was originated by Pavel Curtis.  The primary
 maintainer of the package is Zeyd ben-Halim &lt;zmbenhal@netcom.com&gt;.
@@ -468,6 +481,70 @@ use <TT>COLOR_PAIR(N)</TT> as a highlight that invokes that particular
 color combination.  Note that <TT>COLOR_PAIR(N)</TT>, for constant N,
 is itself a compile-time constant and can be used in initializers. <P>
 
+<H2><A NAME="mouse">Mouse Interfacing</A></H2>
+
+The <TT>ncurses</TT> library also provides a mouse interface.  Note:
+his facility is original to <TT>ncurses</TT>, it is not part of either
+the XSI Curses standard, nor of System V Release 4, nor BSD curses.
+Thus, we recommend that you wrap mouse-related code in an #ifdef using the
+feature macro NCURSES_MOUSE_VERSION so it will not be compiled and linked
+on non-ncurses systems.  <P>
+
+Presently, mouse event reporting works only under xterm.  In the
+future, ncurses will detect the presence of \fBgpm\fR(1), Alessandro
+Rubini's freeware mouse server for Linux systems, and accept mouse
+reports through it. <P>
+
+The mouse interface is very simple.  To activate it, you use the function
+<TT>mousemask</TT>, passing it as first argument a bit-mask that specifies
+what kinds of events you want your program to be able to see.  It will 
+return the bit-mask of events that actually become visible, which may differ
+from the argument if the mouse device is not capable of reporting some of
+the event types you specify. <P>
+
+Once the mouse is active, your application's command loop should watch
+for a return value of <TT>KEY_MOUSE</TT> from <TT>wgetch</TT>.  When
+you see this, a mouse event report has been queued.  To pick it off
+the queue, use the function <TT>getmouse</TT> (you must do this before
+the next <TT>wgetch</TT>, otherwise another mouse event might come
+in and make the first one inaccessible). <P>
+
+Each call to <TT>getmouse</TT> fills a structure (the address of which you'll
+pass it) with mouse event data.  The event data includes zero-origin,
+screen-relative character-cell coordinates of the mouse pointer.  It also
+includes an event mask.  Bits in this mask will be set, corresponding 
+to the event type being reported. <P>
+
+The mouse structure contains two additional fields which may be
+significant in the future as ncurses interfaces to new kinds of
+pointing device.  In addition to x and y coordinates, there is a slot
+for a z coordinate; this might be useful with touchscreens that can 
+return a pressure or duration parameter.  There is also a device ID
+field, which could be used to distinguish between multiple pointing
+devices. <P>
+
+The class of visible events may be changed at any time via <TT>getmouse</TT>.
+Events that can be reported include presses, releases, single-, double- and
+triple-clicks (you can set the maximum button-down time for clicks).  If
+you don't make clicks visible, they will be reported as press-release
+pairs.  In some environments, the event mask may include bits reporting
+the state of shift, alt, and ctrl keys on the keyboard during the event. <P>
+
+A function to check whether a mouse event fell within a given window is
+also supplied.  You can use this to see whether a given window should
+consider a mouse event relevant to it. <P>
+
+Because mouse event reporting will not be available in all
+environments, it would be unwise to build <TT>ncurses</TT>
+applications that <EM>require</EM> the use of a mouse.  Rather, you should
+use the mouse as a shortcut for point-and-shoot commands your application
+would normally accept from the keyboard.  Two of the test games in the
+<TT>ncurses</TT> distribution (<TT>bs</TT> and <TT>knight</TT>) contain
+code that illustrates how this can be done. <P>
+
+See the manual page <TT>curs_mouse(3X)</TT> for full details of the
+mouse-interface functions. <P>
+
 <H2><A NAME="finishing">Finishing Up</A></H2>
 
 In order to clean up after the <TT>ncurses</TT> routines, the routine
@@ -603,6 +680,15 @@ may not be obvious from the manual page descriptions. <P>
 
 <H2><A NAME="caution">Some Notes of Caution</A></H2>
 
+If you find yourself thinking you need to use <TT>noraw</TT> or
+<TT>nocbreak<TT>, think again and move carefully.  It's probably
+better design to use <TT>getstr</TT> or one of its relatives to
+simulate cooked mode.  The <TT>noraw</TT> and <TT>nocbreak</TT>
+functions try to restore cooked mode, but they may end up clobbering
+some control bits set before you started your application.  Also, they
+have always been poorly documented, and are likely to hurt your
+application's usability with other curses libraries.
+
 Bear in mind that <TT>refresh()</TT> is a synonym for
 <TT>wrefresh(stdscr)</TT>,
 and don't try to mix use of <TT>stdscr</TT> with use of windows declared
@@ -698,10 +784,10 @@ screens.  Don't use the <TT>immedok()</TT> option! <P>
 
 <H2><A NAME="special">Special Features of <TT>ncurses</TT></A></H2>
 
-When running on PC-clones, <TT>ncurses</TT> has enhanced support for the
-IBM high-half and ROM characters.  A new highlight, <TT>A_PCCHARSET</TT>,
-enables display of the PC ROM graphics 0-31 that are normally interpreted
-as control characters.
+When running on PC-clones, <TT>ncurses</TT> has enhanced support for
+the IBM high-half and ROM characters.  The <TT>A_ALTCHARSET</TT> highlight,
+enables display of both high-half ACS graphics and the PC ROM graphics
+0-31 that are normally interpreted as control characters.
 
 <H1><A NAME="panels">The <CODE>panels</CODE> Library</A></H1>
 
@@ -820,11 +906,11 @@ details. <P>
 A menu is a screen display that assists the user to choose some subset
 of a given set of items.  The <CODE>menu</CODE> library is a curses
 extension that supports easy programming of menu hierarchies with a
-uniform but flexible interface.
+uniform but flexible interface. <P>
 
 The <CODE>menu</CODE> library first appeared in AT&amp;T System V.  The
 version documented here is the freeware <CODE>menu</CODE> code distributed
-with <CODE>ncurses</CODE>.
+with <CODE>ncurses</CODE>. <P>
 
 <H2><A NAME="mcompile">Compiling With the menu Library</A></H2>
 
@@ -873,7 +959,7 @@ The general flow of control of a menu program looks like this:
 <LI> Terminate <CODE>curses</CODE>.
 </OL>
 
-<H2><A NAME="select">Selecting items</A></H2>
+<H2><A NAME="mselect">Selecting items</A></H2>
 
 Menus may be multi-valued or (the default) single-valued (see the manual
 page <CODE>mitem_opts(3x)</CODE> to see how to change the default).
@@ -1028,6 +1114,120 @@ wrapup time, and whenever the selected item changes.  See
 Each item, and each menu, has an associated user pointer on which you
 can hang application data.  See <CODE>mitem_userptr(3x)</CODE> and
 <CODE>menu_userptr(3x)</CODE>. <P>
+
+<H1><A HREF="forms">The Form Library</A></H1>
+
+The <CODE>form</CODE> library is a curses extension that supports easy
+programming of on-screen forms for data entry and program control. <P>
+
+The <CODE>form</CODE> library first appeared in AT&amp;T System V.  The
+version documented here is the freeware <CODE>form</CODE> code distributed
+with <CODE>ncurses</CODE>. <P>
+
+<H2><A NAME="fcompile">Compiling With the form Library</A></H2>
+
+Your form-using modules must import the form library declarations with
+
+<PRE>
+	  #include <TT>&lg;form.h&tg;</TT>
+</PRE>
+
+and must be linked explicitly with the forms library using an
+<CODE>-lform</CODE> argument.  Note that they must also link the
+<TT>ncurses</TT> library with <CODE>-lcurses</CODE>.  Most modern linkers
+are two-pass and will accept either order, but it is still good practice
+to put <CODE>-lform</CODE> first and <CODE>-lcurses</CODE> second. <P>
+
+<H2><A NAME="foverview">Overview of Forms</A></H2>
+
+A form is a collection of fields; each field may be either a label
+(explanatory text) or a data-entry location.  Long forms may be
+segmented into pages; each entry to a new page clears the screen. <P>
+To make forms, you create groups of fields and connect them with form
+frame objects; the form library makes this relatively simple. <P>
+
+Once defined, a form can be <DFN>posted</DFN>, that is written to an
+associated window.  Actually, each form has two associated windows; a
+containing window in which the programmer can scribble titles or
+borders, and a subwindow in which the form fields proper are displayed. <P>
+
+As the form user fills out the posted form, navigation and editing
+keys support movement between fields, editing keys support modifying
+field, and plain text adds to or changes data in a current field.  The
+form library allows you (the forms designer) to bind each navigation
+and editing key to any keystroke accepted by <TT>curses</TT>
+
+Fields may have validation conditions on them, so that they check input
+data for type and value.  The form library supplies a rich set of 
+pre-defined field types, and makes it relatively easy to define new ones. <P>
+
+Once its transaction is completed (or aborted), a form may be
+<DFN>unposted</DFN> (that is, undisplayed), and finally freed to make
+the storage associated with it and its items available for re-use. <P>
+
+The general flow of control of a form program looks like this:
+
+<OL>
+<LI> Initialize <CODE>curses</CODE>.
+<LI> Create the form fields, using <CODE>new_field()</CODE>.
+<LI> Create the form using <CODE>new_form()</CODE>.
+<LI> Post the form using <CODE>form_post()</CODE>.
+<LI> Refresh the screen.
+<LI> Process user requests via an input loop.
+<LI> Unpost the form using <CODE>form_unpost()</CODE>.
+<LI> Free the form, using <CODE>free_form()</CODE>.
+<LI> Free the fields using <CODE>free_field()</CODE>.
+<LI> Terminate <CODE>curses</CODE>.
+</OL>
+
+That this looks much like a menu program; the form library handles
+tasks which are in many ways similar, and its interface was obviously
+designed to resemble that of the <A HREF="#menu">menu library</A>
+wherever possible. <P>
+
+In forms programs, however, the `process user requests' is somewhat more
+complicated than for menus.  Besides menu-like navigation operations, 
+the menu driver loop has to support field editing and data validation. <P>
+
+<LI> <A NAME="#fcreate">Creating Forms</A>
+
+The basic function for creating fields is <TT>new_field()</TT>: <P>
+
+<PRE>
+FIELD *new_field(int height, int width,   /* size */ 
+                int top, int left,        /* upper left corner */
+                int offscreen,            /* number of offscreen rows */
+                int nbuf);                /* number of working buffers */
+</PRE>
+
+When creating a form, you specify a height and width (the first two
+arguments). <P>
+
+Menu items always occupy a single row, but forms fields may have
+multiple rows.  So <TT>new_field()</TT> requires you to specify a
+width and height (the second two arguments).  Note that these
+coordinates are relative to the form subwindow, which will coincide
+with <TT>stdscr</TT> by default but need not be <TT>stdscr</TT> if
+you've done an explicit <TT>set_form_window()</TT> call. <P>
+
+The fifth argument allows you to specify a number of offscreen rows.  If
+this is zero, the entire field will always be displayed.  If it is 
+nonzero, the form will be scrollable, with only one screen-full (initially 
+the top part) displayed at any given time.  If you make a field dynamic
+and grow it so it will no longer fit on the screen, the form will become
+scrollable even if the \fBoffscreen\fR argument was initially zero. <P>
+
+The forms library allocates one working buffer per field; the size of
+each buffer is <TT>((height + offscreen)*width + 1</TT>, one character
+for each position in the field plus a NUL terminator.  The sixth
+argument is the number of additional data buffers to allocate for the
+field; your application can use them for its own purposes. <P>
+
+<HR>
+
+THIS DOCUMENT IS STILL UNDER CONSTRUCTION.  Full descriptions of the menu
+library entry are available in the form_*.3x manual pages included with 
+the <TT>ncurses</TT> distributions. <P>
 
 <HR>
 <ADDRESS>Eric S. Raymond &lt;esr@snark.thyrsus.com&gt;</ADDRESS> </BODY>

@@ -112,6 +112,22 @@ then
 	fi
 fi
 
+###	use option --with-assertions to turn on generation of assertion code
+AC_ARG_ENABLE(assertions,
+	[  --enable-assertions     turn on generation of assertion code],
+	[with_assertions=$enableval])
+if test -n "$GCC"
+then
+	# gcc 2.5.8 doesn't recognize some other useful options that could
+	# be configured if you have gcc 2.6.3:
+	# -Wbad-function-cast
+	# -Wmissing-declarations
+	if test -z "$with_assertions"
+	then
+		CFLAGS="$CFLAGS -DNDEBUG"
+	fi
+fi
+
 ###	Checks for libraries.
 AC_CHECK_LIB(bsd, gettimeofday)dnl CLIX: bzero, select, gettimeofday
 
@@ -120,7 +136,16 @@ AC_STDC_HEADERS
 
 dnl These are some other potentially nonportable headers.
 dnl AC_CHECK_HEADERS(fcntl.h sys/time.h)
-AC_CHECK_HEADERS(termios.h sys/ioctl.h sys/select.h libc.h unistd.h values.h getopt.h)
+AC_CHECK_HEADERS( \
+getopt.h \
+libc.h \
+regex.h \
+sys/ioctl.h \
+sys/select.h \
+termios.h \
+unistd.h \
+values.h \
+)
 
 ###	checks for compiler characteristics
 AC_LANG_C
@@ -187,7 +212,7 @@ NC_INCLUDE_DIRS
 
 ### Construct the list of subdirectories for which we'll customize makefiles
 ### with the appropriate compile-rules.
-NC_SRC_MODULES(ncurses progs panel menu forms)
+NC_SRC_MODULES(ncurses progs panel menu form)
 NC_DIRS_TO_MAKE
 
 ################################################################################
@@ -216,39 +241,8 @@ sed	-e '/^ -D/!d' \
 	include/config_h | sort >>include/config.h
 echo "
 #endif /* NC_CONFIG_H */" >> include/config.h
-### We comment-out rather than remove, just so config.h shows what we did
-echo commenting-out CXX_BOOL defs
-sed -e 's/^\(#define CXX_[A-Z][A-Z_]*[        ]*.*\)/\/* curses.h: \1 *\//' include/config.h > include/config.tmp
-if cmp -s include/config.h include/config.tmp 2>/dev/null; then
-	echo include/config.h is unchanged
-	rm -f include/config.tmp
-else
-	echo updating include/config.h
-	rm include/config.h
-	mv include/config.tmp include/config.h
-fi
 echo removing include/config_h
 rm include/config_h
-
-### Edit curses.h in-place
-sed \
-	-e "s/#\\(define\\)[ 	][ 	]*\\(CXX_BUILTIN_BOOL\\).*/#\\1 \\2 $BUILTIN_BOOL/" \
-	-e "s/#\\(define\\)[ 	][ 	]*\\(CXX_TYPE_OF_BOOL\\).*/#\\1 \\2 $TYPE_OF_BOOL/" \
-	$ac_given_srcdir/include/curses.h >conftest.tmp
-if test `cd $ac_given_srcdir;pwd` != `pwd`; then
-	echo creating include/curses.h
-	rm -f include/curses.h~
-	if test -f include/curses.h; then mv include/curses.h include/curses.h~; fi
-	mv conftest.tmp include/curses.h
-elif cmp -s $ac_given_srcdir/include/curses.h conftest.tmp 2>/dev/null; then
-	echo include/curses.h is unchanged
-	rm -f conftest.tmp
-else
-	echo updating include/curses.h
-	rm -f include/curses.h~
-	if test -f include/curses.h; then mv include/curses.h include/curses.h~; fi
-	mv conftest.tmp include/curses.h
-fi
 },{
 ### Special initialization commands, used to pass information from the
 ### configuration-run into config.status

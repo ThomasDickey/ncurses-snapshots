@@ -41,7 +41,7 @@ that are not translatable are left in the entry under their terminfo names
 but commented out with two preceding dots.
 .TP
 \fB-p\fR
-Ignore pad prefixes when comparing strings.
+Ignore padding specifications when comparing strings.
 .TP
 \fB-N\fR
 Disable smart defaults.  
@@ -120,6 +120,9 @@ capabilities. This implementation of \fBtic\fR will find use targets
 anywhere in the source file, or anywhere in the system's file tree of
 compiled entries, or anywhere in the file tree routed at \fBTERMINFO\fR
 (if \fBTERMINFO\fR is defined).
+
+The error messages from this \fBtic\fR have the same format as GNU C
+error messages, and can be parsed by GNU Emacs's compile facility.
 
 The -I, -C, and -p options are not supported under SVr4.
 .SH FILES

@@ -74,15 +74,15 @@ static chtype letters[] =
     'c' | COLOR_PAIR(COLOR_GREEN),	/* clubs */
 };
 
-#if defined(__i386__) && defined(A_PCCHARSET)
+#if defined(__i386__)
 static chtype glyphs[] =
 {
-    '\003' | A_PCCHARSET | COLOR_PAIR(COLOR_RED),	/* hearts */
-    '\006' | A_PCCHARSET | COLOR_PAIR(COLOR_GREEN),	/* spades */
-    '\004' | A_PCCHARSET | COLOR_PAIR(COLOR_RED),	/* diamonds */
-    '\005' | A_PCCHARSET | COLOR_PAIR(COLOR_GREEN),	/* clubs */
+    '\003' | A_ALTCHARSET | COLOR_PAIR(COLOR_RED),	/* hearts */
+    '\006' | A_ALTCHARSET | COLOR_PAIR(COLOR_GREEN),	/* spades */
+    '\004' | A_ALTCHARSET | COLOR_PAIR(COLOR_RED),	/* diamonds */
+    '\005' | A_ALTCHARSET | COLOR_PAIR(COLOR_GREEN),	/* clubs */
 };
-#endif /* __i386__ && A_PCCHARSET */
+#endif /* __i386__ */
 
 static chtype *suits = letters;	/* this may change to glyphs below */
 
@@ -374,10 +374,10 @@ int main(int argc, char *argv[])
     init_pair(COLOR_BLUE,    COLOR_BLUE,  COLOR_WHITE);
     init_pair(COLOR_GREEN,   COLOR_BLACK, COLOR_WHITE);
 
-#if defined(__i386__) && defined(A_PCCHARSET)
+#if defined(__i386__) && defined(A_ALTCHARSET)
     if (tigetstr("smpch"))
 	suits = glyphs;
-#endif /* __i386__ && A_PCCHARSET */
+#endif /* __i386__ && A_ALTCHARSET */
 
     cbreak();
 

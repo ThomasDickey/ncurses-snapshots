@@ -81,11 +81,6 @@ typedef unsigned long  chtype;
 #define COLOR_PAIR(n)	(n << 8) 
 #define PAIR_NUMBER(a)	((a & A_COLOR) >> 8)
 
-/* extended attributes unique to ncurses */
-#ifdef __i386__
-#define A_PCCHARSET	A_PROTECT	/* corresponds to smpch/rmpch */
-#endif /* __i386__ */
-
 /*
  * XSI attributes.  In the ncurses implementation, they are identical to the
  * A_ attributes because attr_t is just an int.  The XSI Curses attr_* and
@@ -127,6 +122,7 @@ extern unsigned char *color_pairs;
 
 extern 	chtype acs_map[];
 
+/* VT100 symbols begin here */
 #define ACS_ULCORNER	(acs_map['l'])	/* upper left corner */
 #define ACS_LLCORNER	(acs_map['m'])	/* lower left corner */
 #define ACS_URCORNER	(acs_map['k'])	/* upper right corner */
@@ -145,6 +141,7 @@ extern 	chtype acs_map[];
 #define ACS_DEGREE	(acs_map['f'])	/* degree symbol */
 #define ACS_PLMINUS	(acs_map['g'])	/* plus/minus */
 #define ACS_BULLET	(acs_map['~'])	/* bullet */
+/* Teletype 5410v1 symbols begin here */
 #define ACS_LARROW	(acs_map[','])	/* arrow pointing left */
 #define ACS_RARROW	(acs_map['+'])	/* arrow pointing right */
 #define ACS_DARROW	(acs_map['.'])	/* arrow pointing down */
@@ -152,6 +149,19 @@ extern 	chtype acs_map[];
 #define ACS_BOARD	(acs_map['h'])	/* board of squares */
 #define ACS_LANTERN	(acs_map['I'])	/* lantern symbol */
 #define ACS_BLOCK	(acs_map['0'])	/* solid square block */
+/*
+ * These aren't documented, but a lot of System Vs have them anyway
+ * (you can spot pprryyzz{{||}} in a lot of AT&T terminfo strings).
+ * The ACS_names may not match AT&T's, our source didn't know them.
+ */
+#define ACS_S3		(acs_map['p'])	/* scan line 3 */
+#define ACS_S7		(acs_map['r'])	/* scan line 7 */
+#define ACS_LEQUAL	(acs_map['y'])	/* less/equal */
+#define ACS_GEQUAL	(acs_map['z'])	/* greater/equal */
+#define ACS_PI		(acs_map['{'])	/* Pi */
+#define ACS_NEQUAL	(acs_map['|'])	/* not equal */
+#define ACS_STERLING	(acs_map['}'])	/* UK pound sign */
+
 
 #if	!defined(ERR) || ((ERR) != -1)
 #define ERR     (-1)
@@ -180,7 +190,7 @@ extern 	chtype acs_map[];
  * this value is used in the oldindex field to mark lines created by insertions
  * and scrolls.
  */
-#define NEWINDEX	-1
+#define _NEWINDEX	-1
 
 typedef struct screen  SCREEN;
 typedef struct _win_st WINDOW;
@@ -220,7 +230,7 @@ struct _win_st {
 	/* option values set by user */
 	bool	_notimeout;	/* no time out on function-key entry? */
 	bool    _clear;		/* consider all data in the window invalid? */
-	bool    _leave;		/* OK to not reset cursor on exit? */
+	bool    _leaveok;	/* OK to not reset cursor on exit? */
 	bool    _scroll;	/* OK to scroll this window? */
 	bool    _idlok;		/* OK to use insert/delete line? */
 	bool    _idcok;		/* OK to use insert/delete char? */
@@ -821,11 +831,11 @@ extern int wresize (WINDOW *, int, int);
 #define	REPORT_MOUSE_POSITION	001000000000L
 
 /* macros to extract single event-bits from masks */
-#define	BUTTON_RELEASED(e, x)		((e) & (001 << (6 * ((x) - 1))))
-#define	BUTTON_PRESSED(e, x)		((e) & (002 << (6 * ((x) - 1))))
-#define	BUTTON_CLICKED(e, x)		((e) & (004 << (6 * ((x) - 1))))
-#define	BUTTON_DOUBLE_CLICKED(e, x)	((e) & (010 << (6 * ((x) - 1))))
-#define	BUTTON_TRIPLE_CLICKED(e, x)	((e) & (020 << (6 * ((x) - 1))))
+#define	BUTTON_RELEASE(e, x)		((e) & (001 << (6 * ((x) - 1))))
+#define	BUTTON_PRESS(e, x)		((e) & (002 << (6 * ((x) - 1))))
+#define	BUTTON_CLICK(e, x)		((e) & (004 << (6 * ((x) - 1))))
+#define	BUTTON_DOUBLE_CLICK(e, x)	((e) & (010 << (6 * ((x) - 1))))
+#define	BUTTON_TRIPLE_CLICK(e, x)	((e) & (020 << (6 * ((x) - 1))))
 #define	BUTTON_RESERVED_EVENT(e, x)	((e) & (040 << (6 * ((x) - 1))))
 
 typedef unsigned long mmask_t;

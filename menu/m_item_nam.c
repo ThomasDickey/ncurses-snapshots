@@ -33,11 +33,10 @@
 |   Description   :  Return name of menu item
 |
 |   Return Values :  See above; returns NULL if item is invalid
-|
 +--------------------------------------------------------------------------*/
 char *item_name(const ITEM * item) 
 {
-    return ((item) ? item->name.str : (char *)0);
+  return ((item) ? item->name.str : (char *)0);
 }
 		
 /*---------------------------------------------------------------------------
@@ -47,11 +46,10 @@ char *item_name(const ITEM * item)
 |   Description   :  Returns description of item
 |
 |   Return Values :  See above; Returns NULL if item is invalid
-|
 +--------------------------------------------------------------------------*/
 char *item_description(const ITEM * item)
 {
-    return ((item) ? item->description.str : (char *)0);
+  return ((item) ? item->description.str : (char *)0);
 }
 
-/* menu_item_nam.c ends here */
+/* m_item_nam.c ends here */
