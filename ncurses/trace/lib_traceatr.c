@@ -39,7 +39,7 @@
 #include <curses.priv.h>
 #include <term.h>		/* acs_chars */
 
-MODULE_ID("$Id: lib_traceatr.c,v 1.46 2003/06/21 21:49:47 tom Exp $")
+MODULE_ID("$Id: lib_traceatr.c,v 1.47 2003/06/28 23:20:26 tom Exp $")
 
 #define COLOR_OF(c) (c < 0 || c > 7 ? "default" : colors[c].name)
 
@@ -265,8 +265,7 @@ _tracecchar_t2 (int bufnum, const cchar_t *ch)
 	    PUTC_DATA;
 	    int n;
 
-	    memset (&PUT_st, '\0', sizeof (PUT_st));
-	    PUTC_i = 0;
+	    PUTC_INIT;
 	    (void) _nc_trace_bufcat(bufnum, "{ ");
 	    do {
 		PUTC_ch = PUTC_i < CCHARW_MAX ? ch->chars[PUTC_i] : L'\0';

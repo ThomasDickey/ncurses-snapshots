@@ -41,7 +41,7 @@
 #include <tic.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: visbuf.c,v 1.7 2003/03/15 21:53:56 tom Exp $")
+MODULE_ID("$Id: visbuf.c,v 1.8 2003/06/28 23:20:37 tom Exp $")
 
 static char *
 _nc_vischar(char *tp, unsigned c)
@@ -220,8 +220,7 @@ _nc_viscbuf2(int bufnum, const cchar_t * buf, int len)
 	    } else if (!isnac(CHDEREF(buf))) {
 		PUTC_DATA;
 
-		memset(&PUT_st, '\0', sizeof(PUT_st));
-		PUTC_i = 0;
+		PUTC_INIT;
 		do {
 		    PUTC_ch = PUTC_i < CCHARW_MAX ? buf->chars[PUTC_i] : L'\0';
 		    PUTC_n = wcrtomb(PUTC_buf, buf->chars[PUTC_i], &PUT_st);

@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.753 2003/06/16 00:25:46 tom Exp $
+-- $Id: NEWS,v 1.754 2003/06/28 23:18:54 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030628
+	+ rewrite wadd_wch() and wecho_wchar() to call waddch() and wechochar()
+	  respectively, to avoid calling waddch_noecho() with wide-character
+	  data, since that function assumes its input is 8-bit data.  Similarly,
+	  modify waddnwstr() to call wadd_wch().
+	+ remove logic from waddnstr() which transformed multibyte character
+	  strings into wide-characters.  Rewrite of waddch_literal() from
+	  20030621 assumes its input is raw multibyte data rather than wide
+	  characters (report by Tomohiro KUBOTA <kubota@debian.org>).
 
 20030621
 	+ write getyx() and related 2-return macros in terms of getcury(),

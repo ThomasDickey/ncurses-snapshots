@@ -36,7 +36,7 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_addch.c,v 1.74 2003/06/21 22:28:45 tom Exp $")
+MODULE_ID("$Id: lib_addch.c,v 1.75 2003/06/28 23:10:46 tom Exp $")
 
 /*
  * Ugly microtweaking alert.  Everything from here to end of module is
@@ -100,8 +100,8 @@ _nc_render(WINDOW *win, NCURSES_CH_T ch)
 #endif
 
 static
-#if !USE_WIDEC_SUPPORT
-inline
+#if !USE_WIDEC_SUPPORT		/* cannot be inline if it is recursive */
+  inline
 #endif
 int
 waddch_literal(WINDOW *win, NCURSES_CH_T ch)
@@ -135,10 +135,6 @@ waddch_literal(WINDOW *win, NCURSES_CH_T ch)
 
     /*
      * Build up multibyte characters until we have a wide-character.
-     *
-     * Note that waddnstr() splits up multibyte characters into bytes to call
-     * this function.  It is also possible that an application will do that
-     * too.  (dialog does, to work around bugs in old curses libraries).
      */
     if_WIDEC({
 	if (Charable(ch)) {
@@ -395,14 +391,30 @@ wechochar(WINDOW *win, const chtype ch)
 NCURSES_EXPORT(int)
 wadd_wch(WINDOW *win, const cchar_t * wch)
 {
+    PUTC_DATA;
+    int n;
     int code = ERR;
 
     TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_CALLED("wadd_wch(%p, %s)"), win,
 				      _tracech_t(wch)));
 
-    if (win && (waddch_nosync(win, *wch) != ERR)) {
-	_nc_synchook(win);
-	code = OK;
+    if (win != 0) {
+	PUTC_INIT;
+	while (PUTC_i < CCHARW_MAX) {
+	    if ((PUTC_ch = wch->chars[PUTC_i++]) == L'\0')
+		break;
+	    if ((PUTC_n = wcrtomb(PUTC_buf, PUTC_ch, &PUT_st)) <= 0) {
+		code = ERR;
+		break;
+	    }
+	    for (n = 0; n < PUTC_n; n++) {
+		if ((code = waddch(win, PUTC_buf[n])) == ERR) {
+		    break;
+		}
+	    }
+	    if (code == ERR)
+		break;
+	}
     }
 
     TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_RETURN("%d"), code));
@@ -412,18 +424,32 @@ wadd_wch(WINDOW *win, const cchar_t * wch)
 NCURSES_EXPORT(int)
 wecho_wchar(WINDOW *win, const cchar_t * wch)
 {
+    PUTC_DATA;
+    int n;
     int code = ERR;
 
     TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_CALLED("wecho_wchar(%p, %s)"), win,
 				      _tracech_t(wch)));
 
-    if (win && (waddch_nosync(win, *wch) != ERR)) {
-	bool save_immed = win->_immed;
-	win->_immed = TRUE;
-	_nc_synchook(win);
-	win->_immed = save_immed;
-	code = OK;
+    if (win != 0) {
+	PUTC_INIT;
+	while (PUTC_i < CCHARW_MAX) {
+	    if ((PUTC_ch = wch->chars[PUTC_i++]) == L'\0')
+		break;
+	    if ((PUTC_n = wcrtomb(PUTC_buf, PUTC_ch, &PUT_st)) <= 0) {
+		code = ERR;
+		break;
+	    }
+	    for (n = 0; n < PUTC_n; n++) {
+		if ((code = wechochar(win, PUTC_buf[n])) == ERR) {
+		    break;
+		}
+	    }
+	    if (code == ERR)
+		break;
+	}
     }
+
     TR(TRACE_VIRTPUT | TRACE_CCALLS, (T_RETURN("%d"), code));
     return (code);
 }
