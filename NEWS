@@ -1,10 +1,15 @@
--- $Id: NEWS,v 1.665 2002/01/20 01:45:46 tom Exp $
+-- $Id: NEWS,v 1.666 2002/01/26 17:53:08 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020126
+	+ update config.guess, config.sub
+	+ finish changes needed to build dll's on cygwin.
+	+ fix a typo in mvwchat() macro (reported by Cy <yam@homerow.net).
 
 20020119
 	+ add case in lib_baudrate.c for B921600 (patch by Andrey A Chernov).

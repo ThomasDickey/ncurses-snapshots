@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.122 2002/01/19 20:21:47 tom Exp $ */
+/* $Id: curses.h.in,v 1.123 2002/01/22 12:45:22 Leland Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -868,7 +868,7 @@ extern NCURSES_EXPORT(int) wvline (WINDOW *,chtype,int);		/* implemented */
 #define mvwaddnstr(win,y,x,str,n)	(wmove(win,y,x) == ERR ? ERR : waddnstr(win,str,n))
 #define mvwaddstr(win,y,x,str)		(wmove(win,y,x) == ERR ? ERR : waddnstr(win,str,-1))
 #define mvwdelch(win,y,x)		(wmove(win,y,x) == ERR ? ERR : wdelch(win))
-#define mvwchgat(win,y,x,n,a,c,o)	(wmove(win,y,x) == ERR ? ERR : wchgat(stdscr,n,a,c,o))
+#define mvwchgat(win,y,x,n,a,c,o)	(wmove(win,y,x) == ERR ? ERR : wchgat(win,n,a,c,o))
 #define mvwgetch(win,y,x)		(wmove(win,y,x) == ERR ? ERR : wgetch(win))
 #define mvwgetnstr(win,y,x,str,n)	(wmove(win,y,x) == ERR ? ERR : wgetnstr(win,str,n))
 #define mvwgetstr(win,y,x,str)		(wmove(win,y,x) == ERR ? ERR : wgetstr(win,str))
