@@ -42,7 +42,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.72 2004/05/01 22:07:43 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.73 2004/07/03 19:32:22 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -245,7 +245,7 @@ useeq(ENTRY * e1, ENTRY * e2)
 }
 
 static bool
-entryeq(TERMTYPE * t1, TERMTYPE * t2)
+entryeq(TERMTYPE *t1, TERMTYPE *t2)
 /* are two entries equivalent? */
 {
     unsigned i;
@@ -533,7 +533,7 @@ static const assoc ecma_highlights[] =
 };
 
 static void
-analyze_string(const char *name, const char *cap, TERMTYPE * tp)
+analyze_string(const char *name, const char *cap, TERMTYPE *tp)
 {
     char buf[MAX_TERMINFO_LENGTH];
     char buf2[MAX_TERMINFO_LENGTH];
@@ -923,6 +923,9 @@ usage(void)
 	,"  -u    produce source with 'use='"
 	,"  -v number  (verbose)"
 	,"  -w number  (width)"
+#if NCURSES_XNAMES
+	,"  -x    treat unknown capabilities as user-defined"
+#endif
     };
     const size_t first = 3;
     const size_t last = SIZEOF(tbl);
@@ -973,7 +976,7 @@ string_variable(const char *type)
 
 /* dump C initializers for the terminal type */
 static void
-dump_initializers(TERMTYPE * term)
+dump_initializers(TERMTYPE *term)
 {
     unsigned n;
     int size;
@@ -1056,9 +1059,9 @@ dump_initializers(TERMTYPE * term)
     }
     (void) printf("%s;\n", R_CURL);
 
-    size = sizeof(TERMTYPE)
-	+ (NUM_BOOLEANS(term) * sizeof(term->Booleans[0]))
-	+ (NUM_NUMBERS(term) * sizeof(term->Numbers[0]));
+    size = (sizeof(TERMTYPE)
+	    + (NUM_BOOLEANS(term) * sizeof(term->Booleans[0]))
+	    + (NUM_NUMBERS(term) * sizeof(term->Numbers[0])));
 
     (void) printf("static char * %s[] = %s\n", name_initializer("string"), L_CURL);
 
@@ -1101,7 +1104,7 @@ dump_initializers(TERMTYPE * term)
 
 /* dump C initializers for the terminal type */
 static void
-dump_termtype(TERMTYPE * term)
+dump_termtype(TERMTYPE *term)
 {
     (void) printf("\t%s\n\t\t%s,\n", L_CURL, name_initializer("alias"));
     (void) printf("\t\t(char *)0,\t/* pointer to string table */\n");

@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.56 2004/05/30 00:34:26 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.57 2004/07/03 19:04:52 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -3994,7 +3994,7 @@ set_field_buffer(FIELD *field, int buffer, const char *value)
 
   if (buffer == 0)
     {
-      for (i = 0; i < len; ++i)
+      for (i = 0; (value[i] != '\0') && (i < len); ++i)
 	{
 	  if (iscntrl(UChar(value[i])))
 	    RETURN(E_BAD_ARGUMENT);
