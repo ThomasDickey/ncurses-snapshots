@@ -1,4 +1,4 @@
-# $Id: mk-1st.awk,v 1.62 2004/01/10 20:48:43 tom Exp $
+# $Id: mk-1st.awk,v 1.63 2004/01/31 23:40:12 tom Exp $
 ##############################################################################
 # Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -116,7 +116,6 @@ BEGIN	{
 				using = 1
 			}
 			if ( subset == "termlib" || subset == "termlib+ext_tinfo" ) {
-				name  = "tinfo"
 				OBJS  = MODEL "_T"
 			} else {
 				OBJS  = MODEL

@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.71 2004/02/07 21:06:05 tom Exp $
+-- $Id: INSTALL,v 1.73 2004/02/15 01:26:09 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -45,7 +45,7 @@ do anything else.
 REQUIREMENTS:
 ------------
 
-You will need the following in order to build and install ncurses under UNIX:
+You will need the following to build and install ncurses under UNIX:
 
 	* ANSI C compiler  (gcc, for instance)
 	* sh               (bash will do)
@@ -64,9 +64,10 @@ INSTALLATION PROCEDURE:
     with it.
 
     The --prefix option to configure changes the root directory for installing
-    ncurses.  The default is in subdirectories of /usr/local.  Use
-    --prefix=/usr to replace your default curses distribution.  This is the
-    default for Linux and BSD/OS users.
+    ncurses.  The default is normally in subdirectories of /usr/local, except
+    for systems where ncurses is normally installed as a system library, e.g.,
+    Linux, the various BSD systems and Cygwin.  Use --prefix=/usr to replace
+    your default curses distribution.
 
     The package gets installed beneath the --prefix directory as follows:
 
@@ -77,9 +78,20 @@ INSTALLATION PROCEDURE:
     In $(prefix)/include:      C header files
     Under $(prefix)/man:       the manual pages
 
-    Note however that the configure script attempts to locate previous
-    installation of ncurses, and will set the default prefix according to where
-    it finds the ncurses headers.
+    Note that the configure script attempts to locate previous installation of
+    ncurses, and will set the default prefix according to where it finds the
+    ncurses headers.
+
+    Do not use commands such as
+
+    	make install prefix=XXX
+
+    to change the prefix after configuration, since the prefix value is used
+    for some absolute pathnames such as TERMINFO.  Instead do this
+
+    	make install DESTDIR=XXX
+
+    See also the discussion of --with-install-prefix.
 
 2.  Type `./configure' in the top-level directory of the distribution to
     configure ncurses for your operating system and create the Makefiles.
@@ -551,7 +563,11 @@ SUMMARY OF CONFIGURE OPTIONS:
     --with-install-prefix=XXX
 	Allows you to specify an alternate location for installing ncurses
 	after building it.  The value you specify is prepended to the "real"
-	install location.  This simplifies making binary packages.
+	install location.  This simplifies making binary packages.  The
+	makefile variable DESTDIR is set by this option.  It is also possible
+	to use
+		make install DESTDIR=XXX
+	since the makefiles pass that variable to subordinate makes.
 
 	NOTE:  a few systems build shared libraries with fixed pathnames; this
 	option probably will not work for those configurations.
@@ -657,11 +673,18 @@ SUMMARY OF CONFIGURE OPTIONS:
 	Specify a search-list of terminfo directories which will be compiled
 	into the ncurses library (default: DATADIR/terminfo)
 
-    --with-termlib
+    --with-termlib[=XXX]
 	When building the ncurses library, organize this as two parts:  the
 	curses library (libncurses) and the low-level terminfo library
 	(libtinfo).  This is done to accommodate applications that use only
 	the latter.  The terminfo library is about half the size of the total.
+
+	If an option value is given, that overrides the name of the terminfo
+	library.  For instance, if the wide-character version is built, the
+	terminfo library would be named libtinfow.  But the libtinfow interface
+	is upward compatible from libtinfo, so it would be possible to overlay
+	libtinfo.so with a "wide" version of libtinfow.so by renaming it with
+	this option.
 
     --with-termpath=XXX
 	Specify a search-list of termcap files which will be compiled into the

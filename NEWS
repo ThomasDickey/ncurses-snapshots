@@ -1,10 +1,22 @@
--- $Id: NEWS,v 1.797 2004/02/08 21:15:26 tom Exp $
+-- $Id: NEWS,v 1.798 2004/02/15 01:29:21 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040214
+	+ modify configure --with-termlib option to accept a value which sets
+	  the name of the terminfo library.  This would allow a packager to
+	  build libtinfow.so renamed to coincide with libtinfo.so (discussion
+	  with Stanislav Ievlev).
+	+ improve documentation of --with-install-prefix, --prefix and
+	  $(DESTDIR) in INSTALL (prompted by discussion with Paul Lew).
+	+ add configure check if the compiler can use -c -o options to rename
+	  its output file, use that to omit the 'cd' command which was used to
+	  ensure object files are created in a separate staging directory
+	  (prompted by comments by Johnny Wezel, Martin Mokrejs).
 
 20040208 5.4 release for upload to ftp.gnu.org
 	+ update TO-DO.
