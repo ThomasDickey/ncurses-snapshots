@@ -38,9 +38,9 @@
 #include <curses.priv.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_slkset.c,v 1.4 2000/11/04 23:29:07 tom Exp $")
+MODULE_ID("$Id: lib_slkset.c,v 1.6 2000/12/10 02:43:27 tom Exp $")
 
-int
+NCURSES_EXPORT(int)
 slk_set(int i, const char *astr, int format)
 {
     SLK *slk = SP->_slk;

@@ -41,7 +41,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.70 2000/11/25 21:13:20 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.72 2000/12/10 02:55:08 tom Exp $")
 
 #if !HAVE_TELL
 #define tell(fd) 0		/* lseek() is POSIX, but not tell() - odd... */
@@ -70,7 +70,7 @@ static bool keep_tic_directory = FALSE;
  * Record the "official" location of the terminfo directory, according to
  * the place where we're writing to, or the normal default, if not.
  */
-const char *
+NCURSES_EXPORT(const char *)
 _nc_tic_dir(const char *path)
 {
     static const char *result = TERMINFO;
@@ -93,7 +93,7 @@ _nc_tic_dir(const char *path)
  * has chdir'd to it.  If we let it be changed, then if $TERMINFO has a
  * relative path, we'll lose track of the actual directory.
  */
-void
+NCURSES_EXPORT(void)
 _nc_keep_tic_dir(const char *path)
 {
     _nc_tic_dir(path);
@@ -373,8 +373,9 @@ read_termtype(int fd, TERMTYPE * ptr)
     return (1);
 }
 
-int
-_nc_read_file_entry(const char *const filename, TERMTYPE * ptr)
+NCURSES_EXPORT(int)
+_nc_read_file_entry
+(const char *const filename, TERMTYPE * ptr)
 /* return 1 if read, 0 if not found or garbled */
 {
     int code, fd = -1;
@@ -456,8 +457,9 @@ _nc_read_terminfo_dirs(const char *dirs, char *const filename, const char *const
  *	overrun the file buffer.
  */
 
-int
-_nc_read_entry(const char *const tn, char *const filename, TERMTYPE * const tp)
+NCURSES_EXPORT(int)
+_nc_read_entry
+(const char *const tn, char *const filename, TERMTYPE * const tp)
 {
     char *envp;
     char ttn[MAX_ALIAS + 3];

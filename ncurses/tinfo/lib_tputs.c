@@ -45,16 +45,18 @@
 #include <termcap.h>		/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.53 2000/11/05 01:12:41 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.55 2000/12/10 02:55:08 tom Exp $");
 
-char PC = 0;			/* used by termcap library */
-NCURSES_OSPEED ospeed = 0;	/* used by termcap library */
+NCURSES_EXPORT_VAR(char)
+PC = 0;				/* used by termcap library */
+NCURSES_EXPORT_VAR(NCURSES_OSPEED) ospeed = 0;	/* used by termcap library */
 
-int _nc_nulls_sent = 0;		/* used by 'tack' program */
+NCURSES_EXPORT_VAR(int)
+_nc_nulls_sent = 0;		/* used by 'tack' program */
 
-static int (*my_outch) (int c) = _nc_outch;
+     static int (*my_outch) (int c) = _nc_outch;
 
-int
+NCURSES_EXPORT(int)
 delay_output(int ms)
 {
     T((T_CALLED("delay_output(%d)"), ms));
@@ -75,13 +77,13 @@ delay_output(int ms)
     returnCode(OK);
 }
 
-void
+NCURSES_EXPORT(void)
 _nc_flush(void)
 {
     (void) fflush(NC_OUTPUT);
 }
 
-int
+NCURSES_EXPORT(int)
 _nc_outch(int ch)
 {
 #ifdef TRACE
@@ -109,7 +111,7 @@ _nc_outch(int ch)
  * No surrogates supported (we're storing only one 16-bit Unicode value per
  * cell).
  */
-int
+NCURSES_EXPORT(int)
 _nc_utf8_outch(int ch)
 {
     static const unsigned byteMask = 0xBF;
@@ -168,14 +170,15 @@ _nc_utf8_outch(int ch)
 }
 #endif
 
-int
+NCURSES_EXPORT(int)
 putp(const char *string)
 {
     return tputs(string, 1, _nc_outch);
 }
 
-int
-tputs(const char *string, int affcnt, int (*outc) (int))
+NCURSES_EXPORT(int)
+tputs
+(const char *string, int affcnt, int (*outc) (int))
 {
     bool always_delay;
     bool normal_delay;

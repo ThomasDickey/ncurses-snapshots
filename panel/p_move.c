@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -36,10 +36,10 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_move.c,v 1.5 1999/11/25 13:49:26 juergen Exp $")
+MODULE_ID("$Id: p_move.c,v 1.6 2000/12/10 02:20:44 tom Exp $")
 
-int
-move_panel(PANEL *pan, int starty, int startx)
+NCURSES_EXPORT(int)
+move_panel (PANEL *pan, int starty, int startx)
 {
   if(!pan)
     return(ERR);

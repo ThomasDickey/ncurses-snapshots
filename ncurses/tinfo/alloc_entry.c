@@ -47,7 +47,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.32 2000/03/12 00:16:31 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.34 2000/12/10 02:55:07 tom Exp $")
 
 #define ABSENT_OFFSET    -1
 #define CANCELLED_OFFSET -2
@@ -57,7 +57,7 @@ MODULE_ID("$Id: alloc_entry.c,v 1.32 2000/03/12 00:16:31 tom Exp $")
 static char stringbuf[MAX_STRTAB];	/* buffer for string capabilities */
 static size_t next_free;	/* next free character in stringbuf */
 
-void
+NCURSES_EXPORT(void)
 _nc_init_entry(TERMTYPE * const tp)
 /* initialize a terminal type data block */
 {
@@ -90,7 +90,7 @@ _nc_init_entry(TERMTYPE * const tp)
     next_free = 0;
 }
 
-ENTRY *
+NCURSES_EXPORT(ENTRY *)
 _nc_copy_entry(ENTRY * oldp)
 {
     ENTRY *newp = typeCalloc(ENTRY, 1);
@@ -102,7 +102,7 @@ _nc_copy_entry(ENTRY * oldp)
     return newp;
 }
 
-char *
+NCURSES_EXPORT(char *)
 _nc_save_str(const char *const string)
 /* save a copy of string in the string buffer */
 {
@@ -118,7 +118,7 @@ _nc_save_str(const char *const string)
     return (stringbuf + old_next_free);
 }
 
-void
+NCURSES_EXPORT(void)
 _nc_wrap_entry(ENTRY * const ep)
 /* copy the string parts to allocated storage, preserving pointers to it */
 {
@@ -182,8 +182,9 @@ _nc_wrap_entry(ENTRY * const ep)
     }
 }
 
-void
-_nc_merge_entry(TERMTYPE * const to, TERMTYPE * const from)
+NCURSES_EXPORT(void)
+_nc_merge_entry
+(TERMTYPE * const to, TERMTYPE * const from)
 /* merge capabilities from `from' entry into `to' entry */
 {
     int i;

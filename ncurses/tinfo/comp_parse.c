@@ -52,10 +52,10 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: comp_parse.c,v 1.44 2000/11/04 22:50:16 tom Exp $")
+MODULE_ID("$Id: comp_parse.c,v 1.46 2000/12/10 02:55:07 tom Exp $")
 
 static void sanity_check(TERMTYPE *);
-void (*_nc_check_termtype) (TERMTYPE *) = sanity_check;
+NCURSES_IMPEXP void NCURSES_API(*_nc_check_termtype) (TERMTYPE *) = sanity_check;
 
 /****************************************************************************
  *
@@ -78,10 +78,11 @@ void (*_nc_check_termtype) (TERMTYPE *) = sanity_check;
  *	   _nc_head                _nc_tail
  */
 
-ENTRY *_nc_head = 0, *_nc_tail = 0;
+NCURSES_EXPORT_VAR(ENTRY *) _nc_head = 0;
+NCURSES_EXPORT_VAR(ENTRY *) _nc_tail = 0;
 
-static void
-enqueue(ENTRY * ep)
+     static void
+       enqueue(ENTRY * ep)
 /* add an entry to the in-core list */
 {
     ENTRY *newp = _nc_copy_entry(ep);
@@ -97,7 +98,7 @@ enqueue(ENTRY * ep)
 	newp->last->next = newp;
 }
 
-void
+NCURSES_EXPORT(void)
 _nc_free_entries(ENTRY * headp)
 /* free the allocated storage consumed by list entries */
 {
@@ -136,7 +137,7 @@ force_bar(char *dst, char *src)
     return src;
 }
 
-bool
+NCURSES_EXPORT(bool)
 _nc_entry_match(char *n1, char *n2)
 /* do any of the aliases in a pair of terminal names match? */
 {
@@ -161,7 +162,7 @@ _nc_entry_match(char *n1, char *n2)
  *
  ****************************************************************************/
 
-void
+NCURSES_EXPORT(void)
 _nc_read_entry_source(FILE * fp, char *buf,
 		      int literal, bool silent,
 		      bool(*hook) (ENTRY *))
@@ -209,7 +210,7 @@ _nc_read_entry_source(FILE * fp, char *buf,
     _nc_suppress_warnings = oldsuppress;
 }
 
-int
+NCURSES_EXPORT(int)
 _nc_resolve_uses(bool fullresolve)
 /* try to resolve all use capabilities */
 {

@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_getstr.c,v 1.21 2000/10/28 22:06:10 tom Exp $")
+MODULE_ID("$Id: lib_getstr.c,v 1.23 2000/12/10 02:43:27 tom Exp $")
 
 /*
  * This wipes out the last character, no matter whether it was a tab, control
@@ -69,7 +69,7 @@ WipeOut(WINDOW *win, int y, int x, char *first, char *last, bool echoed)
     return last;
 }
 
-int
+NCURSES_EXPORT(int)
 wgetnstr(WINDOW *win, char *str, int maxlen)
 {
     TTY buf;

@@ -1,10 +1,16 @@
--- $Id: NEWS,v 1.608 2000/12/02 22:42:33 tom Exp $
+-- $Id: NEWS,v 1.609 2000/12/10 03:30:30 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20001209
+	+ add ncurses_dll.h and related definitions to support generating DLL's
+	  with cygwin (adapted from a patch by Charles Wilson
+	  <cwilson@ece.gatech.edu>, changed NCURSES_EXPORT macro to make it
+	  work with 'indent').
 
 20001202
 	+ correct prototypes for some functions in curs_termcap.3x, matching

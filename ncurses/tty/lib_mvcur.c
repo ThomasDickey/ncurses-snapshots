@@ -152,7 +152,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.75 2000/11/05 01:13:42 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.77 2000/12/10 03:04:30 tom Exp $")
 
 #define CURRENT_ROW	SP->_cursrow	/* phys cursor row */
 #define CURRENT_COLUMN	SP->_curscol	/* phys cursor column */
@@ -206,8 +206,9 @@ trace_normalized_cost(const char *capname, const char *cap, int affcnt)
 
 #endif
 
-int
-_nc_msec_cost(const char *const cap, int affcnt)
+NCURSES_EXPORT(int)
+_nc_msec_cost
+(const char *const cap, int affcnt)
 /* compute the cost of a given operation */
 {
     if (cap == 0)
@@ -262,7 +263,7 @@ reset_scroll_region(void)
     }
 }
 
-void
+NCURSES_EXPORT(void)
 _nc_mvcur_resume(void)
 /* what to do at initialization time and after each shellout */
 {
@@ -292,7 +293,7 @@ _nc_mvcur_resume(void)
     }
 }
 
-void
+NCURSES_EXPORT(void)
 _nc_mvcur_init(void)
 /* initialize the cost structure */
 {
@@ -406,7 +407,7 @@ _nc_mvcur_init(void)
     _nc_mvcur_resume();
 }
 
-void
+NCURSES_EXPORT(void)
 _nc_mvcur_wrap(void)
 /* wrap up cursor-addressing mode */
 {
@@ -828,8 +829,9 @@ onscreen_mvcur(int yold, int xold, int ynew, int xnew, bool ovw)
 	return (ERR);
 }
 
-int
-mvcur(int yold, int xold, int ynew, int xnew)
+NCURSES_EXPORT(int)
+mvcur
+(int yold, int xold, int ynew, int xnew)
 /* optimized cursor move from (yold, xold) to (ynew, xnew) */
 {
     TR(TRACE_MOVE, ("mvcur(%d,%d,%d,%d) called", yold, xold, ynew, xnew));
@@ -883,7 +885,7 @@ mvcur(int yold, int xold, int ynew, int xnew)
 }
 
 #if defined(TRACE) || defined(NCURSES_TEST)
-int _nc_optimize_enable = OPTIMIZE_ALL;
+NCURSES_EXPORT_VAR(int) _nc_optimize_enable = OPTIMIZE_ALL;
 #endif
 
 #if defined(MAIN) || defined(NCURSES_TEST)
@@ -896,13 +898,15 @@ int _nc_optimize_enable = OPTIMIZE_ALL;
 #include <tic.h>
 #include <dump_entry.h>
 
-const char *_nc_progname = "mvcur";
+NCURSES_EXPORT_VAR(const char *)
+_nc_progname = "mvcur";
 
-static unsigned long xmits;
+     static unsigned long xmits;
 
 /* these override lib_tputs.c */
-int
-tputs(const char *string, int affcnt GCC_UNUSED, int (*outc) (int) GCC_UNUSED)
+NCURSES_EXPORT(int)
+tputs
+(const char *string, int affcnt GCC_UNUSED, int (*outc) (int) GCC_UNUSED)
 /* stub tputs() that dumps sequences in a visible form */
 {
     if (profiling)
@@ -912,24 +916,25 @@ tputs(const char *string, int affcnt GCC_UNUSED, int (*outc) (int) GCC_UNUSED)
     return (OK);
 }
 
-int
+NCURSES_EXPORT(int)
 putp(const char *string)
 {
     return (tputs(string, 1, _nc_outch));
 }
 
-int
+NCURSES_EXPORT(int)
 _nc_outch(int ch)
 {
     putc(ch, stdout);
     return OK;
 }
 
-char PC = 0;			/* used by termcap library */
-NCURSES_OSPEED ospeed = 0;	/* used by termcap library */
-int _nc_nulls_sent = 0;		/* used by 'tack' program */
+NCURSES_EXPORT_VAR(char) PC = 0;	/* used by termcap library */
+NCURSES_EXPORT_VAR(NCURSES_OSPEED) ospeed = 0;	/* used by termcap library */
+NCURSES_EXPORT_VAR(int)
+_nc_nulls_sent = 0;		/* used by 'tack' program */
 
-int
+NCURSES_EXPORT(int)
 delay_output(int ms GCC_UNUSED)
 {
     return OK;

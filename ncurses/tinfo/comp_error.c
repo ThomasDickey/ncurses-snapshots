@@ -40,22 +40,24 @@
 
 #include <tic.h>
 
-MODULE_ID("$Id: comp_error.c,v 1.19 2000/11/12 01:30:55 tom Exp $")
+MODULE_ID("$Id: comp_error.c,v 1.21 2000/12/10 02:55:07 tom Exp $")
 
-bool _nc_suppress_warnings = FALSE;
-int _nc_curr_line = 0;		/* current line # in input */
-int _nc_curr_col = 0;		/* current column # in input */
+NCURSES_EXPORT_VAR(bool) _nc_suppress_warnings = FALSE;
+NCURSES_EXPORT_VAR(int)
+_nc_curr_line = 0;		/* current line # in input */
+NCURSES_EXPORT_VAR(int)
+_nc_curr_col = 0;		/* current column # in input */
 
-static const char *sourcename;
-static char termtype[MAX_NAME_SIZE + 1];
+     static const char *sourcename;
+     static char termtype[MAX_NAME_SIZE + 1];
 
-void
+NCURSES_EXPORT(void)
 _nc_set_source(const char *const name)
 {
     sourcename = name;
 }
 
-void
+NCURSES_EXPORT(void)
 _nc_set_type(const char *const name)
 {
     termtype[0] = '\0';
@@ -63,7 +65,7 @@ _nc_set_type(const char *const name)
 	strncat(termtype, name, sizeof(termtype) - 1);
 }
 
-void
+NCURSES_EXPORT(void)
 _nc_get_type(char *name)
 {
     strcpy(name, termtype);
@@ -83,7 +85,7 @@ where_is_problem(void)
     fputc(' ', stderr);
 }
 
-void
+NCURSES_EXPORT(void)
 _nc_warning(const char *const fmt,...)
 {
     va_list argp;
@@ -98,7 +100,7 @@ _nc_warning(const char *const fmt,...)
     va_end(argp);
 }
 
-void
+NCURSES_EXPORT(void)
 _nc_err_abort(const char *const fmt,...)
 {
     va_list argp;
@@ -111,7 +113,7 @@ _nc_err_abort(const char *const fmt,...)
     exit(EXIT_FAILURE);
 }
 
-void
+NCURSES_EXPORT(void)
 _nc_syserr_abort(const char *const fmt,...)
 {
     va_list argp;

@@ -43,9 +43,9 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_touch.c,v 1.7 2000/10/28 22:07:22 tom Exp $")
+MODULE_ID("$Id: lib_touch.c,v 1.9 2000/12/10 02:43:27 tom Exp $")
 
-bool
+NCURSES_EXPORT(bool)
 is_linetouched(WINDOW *win, int line)
 {
     T((T_CALLED("is_linetouched(%p,%d)"), win, line));
@@ -57,7 +57,7 @@ is_linetouched(WINDOW *win, int line)
     returnCode(win->_line[line].firstchar != _NOCHANGE ? TRUE : FALSE);
 }
 
-bool
+NCURSES_EXPORT(bool)
 is_wintouched(WINDOW *win)
 {
     int i;
@@ -71,7 +71,7 @@ is_wintouched(WINDOW *win)
     returnCode(FALSE);
 }
 
-int
+NCURSES_EXPORT(int)
 wtouchln(WINDOW *win, int y, int n, int changed)
 {
     int i;

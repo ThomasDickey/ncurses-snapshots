@@ -37,10 +37,10 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_tracedmp.c,v 1.14 2000/11/05 01:02:34 tom Exp $")
+MODULE_ID("$Id: lib_tracedmp.c,v 1.16 2000/12/10 03:02:45 tom Exp $")
 
 #ifdef TRACE
-void
+NCURSES_EXPORT(void)
 _tracedump(const char *name, WINDOW *win)
 {
     int i, j, n, width;
@@ -119,8 +119,10 @@ _tracedump(const char *name, WINDOW *win)
     }
 }
 #else
-extern void _nc_lib_tracedmp(void);
-void
+extern
+NCURSES_EXPORT(void)
+_nc_lib_tracedmp(void);
+NCURSES_EXPORT(void)
 _nc_lib_tracedmp(void)
 {
 }

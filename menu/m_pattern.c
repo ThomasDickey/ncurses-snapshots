@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_pattern.c,v 1.5 2000/11/04 22:54:31 tom Exp $")
+MODULE_ID("$Id: m_pattern.c,v 1.6 2000/12/10 02:16:48 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -50,7 +50,8 @@ MODULE_ID("$Id: m_pattern.c,v 1.5 2000/11/04 22:54:31 tom Exp $")
 |                                    pattern is stored
 |                    PatternString - as expected
 +--------------------------------------------------------------------------*/
-char *menu_pattern(const MENU * menu)
+NCURSES_EXPORT(char *)
+menu_pattern (const MENU * menu)
 {
   return (menu ? (menu->pattern ? menu->pattern : "") : (char *)0);
 }
@@ -68,7 +69,8 @@ char *menu_pattern(const MENU * menu)
 |                    E_BAD_STATE       - menu in user hook routine
 |                    E_NO_MATCH        - no item matches pattern
 +--------------------------------------------------------------------------*/
-int set_menu_pattern(MENU *menu, const char *p)
+NCURSES_EXPORT(int)
+set_menu_pattern (MENU *menu, const char *p)
 {
   ITEM *matchitem;
   int   matchpos;

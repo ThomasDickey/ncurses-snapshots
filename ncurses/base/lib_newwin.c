@@ -40,9 +40,9 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.25 2000/10/28 22:12:24 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.27 2000/12/10 02:43:27 tom Exp $")
 
-int
+NCURSES_EXPORT(int)
 _nc_freewin(WINDOW *win)
 {
     WINDOWLIST *p, *q;
@@ -81,8 +81,9 @@ _nc_freewin(WINDOW *win)
     return result;
 }
 
-WINDOW *
-newwin(int num_lines, int num_columns, int begy, int begx)
+NCURSES_EXPORT(WINDOW *)
+newwin
+(int num_lines, int num_columns, int begy, int begx)
 {
     WINDOW *win;
     chtype *ptr;
@@ -120,8 +121,9 @@ newwin(int num_lines, int num_columns, int begy, int begx)
     returnWin(win);
 }
 
-WINDOW *
-derwin(WINDOW *orig, int num_lines, int num_columns, int begy, int begx)
+NCURSES_EXPORT(WINDOW *)
+derwin
+(WINDOW *orig, int num_lines, int num_columns, int begy, int begx)
 {
     WINDOW *win;
     int i;
@@ -167,8 +169,9 @@ derwin(WINDOW *orig, int num_lines, int num_columns, int begy, int begx)
     returnWin(win);
 }
 
-WINDOW *
-subwin(WINDOW *w, int l, int c, int y, int x)
+NCURSES_EXPORT(WINDOW *)
+subwin
+(WINDOW *w, int l, int c, int y, int x)
 {
     T((T_CALLED("subwin(%p, %d, %d, %d, %d)"), w, l, c, y, x));
     T(("parent has begy = %d, begx = %d", w->_begy, w->_begx));
@@ -183,8 +186,9 @@ dimension_limit(int value)
     return (test == value && value > 0);
 }
 
-WINDOW *
-_nc_makenew(int num_lines, int num_columns, int begy, int begx, int flags)
+NCURSES_EXPORT(WINDOW *)
+_nc_makenew
+(int num_lines, int num_columns, int begy, int begx, int flags)
 {
     int i;
     WINDOWLIST *wp;

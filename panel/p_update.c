@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998 Free Software Foundation, Inc.                        *
+ * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -36,10 +36,10 @@
  */
 #include "panel.priv.h"
 
-MODULE_ID("$Id: p_update.c,v 1.5 1999/11/25 13:49:26 juergen Exp $")
+MODULE_ID("$Id: p_update.c,v 1.6 2000/12/10 02:20:44 tom Exp $")
 
-void
-update_panels(void)
+NCURSES_EXPORT(void)
+update_panels (void)
 {
   PANEL *pan;
 

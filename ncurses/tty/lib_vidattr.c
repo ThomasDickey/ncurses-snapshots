@@ -64,7 +64,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.34 2000/10/28 21:24:14 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.36 2000/12/10 03:05:48 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -86,8 +86,9 @@ MODULE_ID("$Id: lib_vidattr.c,v 1.34 2000/10/28 21:24:14 tom Exp $")
 		} \
 	}
 
-int
-vidputs(attr_t newmode, int (*outc) (int))
+NCURSES_EXPORT(int)
+vidputs
+(attr_t newmode, int (*outc) (int))
 {
     static attr_t previous_attr = A_NORMAL;
     attr_t turn_on, turn_off;
@@ -139,7 +140,8 @@ vidputs(attr_t newmode, int (*outc) (int))
 				   | ((value & 192) << 1)
 				   | ((value & 256) >> 2), 8);
 
-	if (mask & A_REVERSE && newmode & A_REVERSE) {
+	if ((mask & A_REVERSE) != 0
+	    && (newmode & A_REVERSE) != 0) {
 	    reverse = TRUE;
 	    mask &= ~A_REVERSE;
 	}
@@ -249,7 +251,7 @@ vidputs(attr_t newmode, int (*outc) (int))
     returnCode(OK);
 }
 
-int
+NCURSES_EXPORT(int)
 vidattr(attr_t newmode)
 {
     T((T_CALLED("vidattr(%s)"), _traceattr(newmode)));
@@ -257,7 +259,7 @@ vidattr(attr_t newmode)
     returnCode(vidputs(newmode, _nc_outch));
 }
 
-chtype
+NCURSES_EXPORT(chtype)
 termattrs(void)
 {
     chtype attrs = A_NORMAL;
