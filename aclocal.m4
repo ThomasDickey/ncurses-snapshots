@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.124 1998/03/21 23:18:57 tom Exp $
+dnl $Id: aclocal.m4,v 1.125 1998/04/04 00:13:34 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -175,6 +175,9 @@ AC_DEFUN([CF_CHECK_ERRNO],
 AC_MSG_CHECKING([declaration of $1])
 AC_CACHE_VAL(cf_cv_dcl_$1,[
     AC_TRY_COMPILE([
+#if HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 #include <stdio.h>
 #include <sys/types.h>
 #include <errno.h> ],
