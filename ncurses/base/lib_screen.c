@@ -34,7 +34,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_screen.c,v 1.23 2002/08/18 00:13:08 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.24 2002/08/24 20:38:27 tom Exp $")
 
 NCURSES_EXPORT(WINDOW *)
 getwin(FILE * filep)
@@ -44,6 +44,7 @@ getwin(FILE * filep)
 
     T((T_CALLED("getwin(%p)"), filep));
 
+    clearerr(filep);
     (void) fread(&tmp, sizeof(WINDOW), 1, filep);
     if (ferror(filep))
 	returnWin(0);
@@ -80,6 +81,7 @@ getwin(FILE * filep)
     nwin->_regbottom = tmp._regbottom;
 
     for (n = 0; n <= nwin->_maxy; n++) {
+	clearerr(filep);
 	(void) fread(nwin->_line[n].text,
 		     sizeof(chtype), (size_t) (nwin->_maxx + 1), filep);
 	if (ferror(filep)) {
@@ -101,15 +103,17 @@ putwin(WINDOW *win, FILE * filep)
     T((T_CALLED("putwin(%p,%p)"), win, filep));
 
     if (win) {
-	(void) fwrite(win, sizeof(WINDOW), 1, filep);
-	if (ferror(filep))
-	    returnCode(code);
+	clearerr(filep);
+	if (fwrite(win, sizeof(WINDOW), 1, filep) != 1
+	    || ferror(filep))
+	      returnCode(code);
 
 	for (n = 0; n <= win->_maxy; n++) {
-	    (void) fwrite(win->_line[n].text,
-			  sizeof(chtype), (size_t) (win->_maxx + 1), filep);
-	    if (ferror(filep))
-		returnCode(code);
+	    size_t len = (win->_maxx + 1);
+	    clearerr(filep);
+	    if (fwrite(win->_line[n].text, sizeof(chtype), len, filep) != len
+		|| ferror(filep))
+		  returnCode(code);
 	}
 	code = OK;
     }
@@ -181,7 +185,7 @@ scr_set(const char *file)
 	returnCode(ERR);
     } else {
 	delwin(newscr);
-	newscr = dupwin(curscr);
+	SP->_newscr = newscr = dupwin(curscr);
 	returnCode(OK);
     }
 }

@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.702 2002/08/18 00:28:17 tom Exp $
+-- $Id: NEWS,v 1.703 2002/08/24 22:10:38 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020824
+	+ add a check in kgetch() for cooked characters in the fifo to avoid
+	  calling fifo_push() when a KEY_RESIZE is available (report/analysis
+	  by Sam Varshavchik <mrsam@courier-mta.com>).
+	+ fix an overlooked case for bugzilla #68199 (Philippe Blain).
+	+ ensure clearerr() is called before using ferror() e.g., in
+	  lib_screen.c (report by Philippe Blain).
 
 20020817
 	+ modify lib_screen.c and lib_newwin.c to maintain the SCREEN-specific

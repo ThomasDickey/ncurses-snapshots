@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_getch.c,v 1.62 2002/07/13 18:01:18 tom Exp $")
+MODULE_ID("$Id: lib_getch.c,v 1.63 2002/08/24 22:07:04 tom Exp $")
 
 #include <fifo_defs.h>
 
@@ -352,7 +352,9 @@ kgetch(void)
     ptr = SP->_keytry;
 
     for (;;) {
-	if (!raw_key_in_fifo()) {
+	if (cooked_key_in_fifo()) {
+	    return fifo_pull();
+	} else if (!raw_key_in_fifo()) {
 	    if (fifo_push() == ERR) {
 		peek = head;	/* the keys stay uninterpreted */
 		return ERR;

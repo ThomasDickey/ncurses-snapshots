@@ -1,4 +1,4 @@
-# $Id: ncurses_defs,v 1.14 2002/05/11 19:18:32 tom Exp $
+# $Id: ncurses_defs,v 1.15 2002/08/24 23:13:43 tom Exp $
 ##############################################################################
 # Copyright (c) 2000-2001,2002 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -80,6 +80,7 @@ HAVE_NC_ALLOC_H
 HAVE_PANEL_H
 HAVE_POLL
 HAVE_POLL_H
+HAVE_PURIFY
 HAVE_REGEXPR_H_FUNCS
 HAVE_REGEXP_H_FUNCS
 HAVE_REGEX_H_FUNCS
