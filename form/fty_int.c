@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_int.c,v 1.13 2003/10/25 14:54:48 tom Exp $")
+MODULE_ID("$Id: fty_int.c,v 1.14 2004/04/03 23:00:47 tom Exp $")
 
 typedef struct {
   int precision;
@@ -106,7 +106,7 @@ static bool Check_Integer_Field(FIELD * field, const void * argp)
       if (*bp=='-') bp++;
       while (*bp)
 	{
-	  if (!isdigit(*bp)) break;
+	  if (!isdigit(UChar(*bp))) break;
 	  bp++;
 	}
       while(*bp && *bp==' ') bp++;
@@ -138,7 +138,7 @@ static bool Check_Integer_Field(FIELD * field, const void * argp)
 +--------------------------------------------------------------------------*/
 static bool Check_Integer_Character(int c, const void * argp GCC_UNUSED)
 {
-  return ((isdigit(c) || (c=='-')) ? TRUE : FALSE);
+  return ((isdigit(UChar(c)) || (c=='-')) ? TRUE : FALSE);
 }
 
 static FIELDTYPE typeINTEGER = {

@@ -1,6 +1,6 @@
-# $Id: mk-0th.awk,v 1.14 2002/08/31 21:36:54 tom Exp $
+# $Id: mk-0th.awk,v 1.15 2004/04/04 00:07:38 tom Exp $
 ##############################################################################
-# Copyright (c) 1998-2001 Free Software Foundation, Inc.                     #
+# Copyright (c) 1998-2002,2004 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -84,7 +84,7 @@ END	{
 			printf "\trm -f llib-l%s\n", libname
 			print  ""
 			printf "llib-l%s : $(C_SRC)\n", libname
-			printf "\tcproto -a -l -DLINT $(CPPFLAGS) $(C_SRC) >$@\n"
+			printf "\tcproto -a -l -DNCURSES_ENABLE_STDBOOL_H=0 -DLINT $(CPPFLAGS) $(C_SRC) >$@\n"
 			print  ""
 			print  "lintlib :"
 			printf "\tsh $(srcdir)/../misc/makellib %s $(CPPFLAGS)", libname

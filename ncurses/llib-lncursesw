@@ -1036,12 +1036,6 @@ int	winsertln(
 		WINDOW	*z)
 		{ return(*(int *)0); }
 
-#undef winsstr
-int	winsstr(
-		WINDOW	*a1,
-		const char *z)
-		{ return(*(int *)0); }
-
 #undef winstr
 int	winstr(
 		WINDOW	*a1,
@@ -1592,11 +1586,10 @@ int	winsch(
 		chtype	c)
 		{ return(*(int *)0); }
 
-#undef winsnstr
-int	winsnstr(
+#undef winsstr
+int	winsstr(
 		WINDOW	*win,
-		const char *s,
-		int	n)
+		const char *s)
 		{ return(*(int *)0); }
 
 /* ./base/lib_insdel.c */
@@ -1604,6 +1597,15 @@ int	winsnstr(
 #undef winsdelln
 int	winsdelln(
 		WINDOW	*win,
+		int	n)
+		{ return(*(int *)0); }
+
+/* ./base/lib_insnstr.c */
+
+#undef winsnstr
+int	winsnstr(
+		WINDOW	*win,
+		const char *s,
 		int	n)
 		{ return(*(int *)0); }
 
@@ -2797,12 +2799,6 @@ int	_nc_remove_string(
 		const char *string)
 		{ return(*(int *)0); }
 
-/* ./base/version.c */
-
-#undef curses_version
-const char *curses_version(void)
-		{ return(*(const char **)0); }
-
 /* ./base/wresize.c */
 
 #undef wresize
@@ -3066,10 +3062,10 @@ int	_nc_get_token(
 		{ return(*(int *)0); }
 
 #undef _nc_trans_string
-char	_nc_trans_string(
+int	_nc_trans_string(
 		char	*ptr,
 		char	*last)
-		{ return(*(char *)0); }
+		{ return(*(int *)0); }
 
 #undef _nc_push_token
 void	_nc_push_token(
@@ -3840,3 +3836,9 @@ void	_nc_write_entry(
 #undef _nc_tic_written
 int	_nc_tic_written(void)
 		{ return(*(int *)0); }
+
+/* ./base/version.c */
+
+#undef curses_version
+const char *curses_version(void)
+		{ return(*(const char **)0); }

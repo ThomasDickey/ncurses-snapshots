@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_ipv4.c,v 1.4 2000/12/09 23:46:12 tom Exp $")
+MODULE_ID("$Id: fty_ipv4.c,v 1.5 2004/04/03 23:00:47 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnform  
@@ -32,13 +32,13 @@ static bool Check_IPV4_Field(FIELD * field, const void * argp GCC_UNUSED)
   int num = 0, len;
   unsigned int d1, d2, d3, d4;
 
-  if(isdigit((unsigned char)*bp)) /* Must start with digit */
+  if(isdigit(UChar(*bp))) /* Must start with digit */
     {
       num = sscanf(bp, "%u.%u.%u.%u%n", &d1, &d2, &d3, &d4, &len);
       if (num == 4)
         {
           bp += len;            /* Make bp point to what sscanf() left */
-          while (*bp && isspace((unsigned char)*bp))
+          while (*bp && isspace(UChar(*bp)))
             bp++;               /* Allow trailing whitespace */
         }
     }
@@ -59,7 +59,7 @@ static bool Check_IPV4_Field(FIELD * field, const void * argp GCC_UNUSED)
 +--------------------------------------------------------------------------*/
 static bool Check_IPV4_Character(int c, const void * argp GCC_UNUSED)
 {
-  return ((isdigit(c) || (c=='.')) ? TRUE : FALSE);
+  return ((isdigit(UChar(c)) || (c=='.')) ? TRUE : FALSE);
 }
 
 static FIELDTYPE typeIPV4 = {

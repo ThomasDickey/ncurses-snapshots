@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -50,7 +50,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: comp_scan.c,v 1.66 2003/12/14 00:32:40 tom Exp $")
+MODULE_ID("$Id: comp_scan.c,v 1.67 2004/04/03 20:27:02 tom Exp $")
 
 /*
  * Maximum length of string capability we'll accept before raising an error.
@@ -219,7 +219,7 @@ _nc_get_token(bool silent)
 	}
 
 	/* have to make some punctuation chars legal for terminfo */
-	if (!isalnum(ch)
+	if (!isalnum(UChar(ch))
 #if NCURSES_EXT_FUNCS
 	    && !(ch == '.' && _nc_disable_period)
 #endif
@@ -351,7 +351,7 @@ _nc_get_token(bool silent)
 		had_newline = FALSE;
 	    }
 	    while ((ch = next_char()) != EOF) {
-		if (!isalnum(ch)) {
+		if (!isalnum(UChar(ch))) {
 		    if (_nc_syntax == SYN_TERMINFO) {
 			if (ch != '_')
 			    break;
@@ -497,7 +497,7 @@ _nc_get_token(bool silent)
  *
  */
 
-NCURSES_EXPORT(char)
+NCURSES_EXPORT(int)
 _nc_trans_string(char *ptr, char *last)
 {
     int count = 0;
@@ -755,6 +755,8 @@ last_char(void)
 static int
 next_char(void)
 {
+    int the_char;
+
     if (!yyin) {
 	/*
 	 * An string with an embedded null will truncate the input.  This is
@@ -830,7 +832,8 @@ next_char(void)
 	had_newline = FALSE;
 
     _nc_curr_col++;
-    return (*bufptr++);
+    the_char = *bufptr++;
+    return UChar(the_char);
 }
 
 static void

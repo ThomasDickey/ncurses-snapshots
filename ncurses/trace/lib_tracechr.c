@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -38,21 +38,21 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_tracechr.c,v 1.10 2003/06/14 11:05:42 tom Exp $")
+MODULE_ID("$Id: lib_tracechr.c,v 1.11 2004/04/03 22:45:03 tom Exp $")
 
 #ifdef TRACE
 NCURSES_EXPORT(char *)
 _tracechar(int ch)
 {
     static char result[40];
-    char *name;
+    NCURSES_CONST char *name;
 
     if (ch > KEY_MIN || ch < 0) {
 	name = keyname(ch);
 	if (name == 0 || *name == '\0')
 	    name = "NULL";
 	(void) sprintf(result, "'%.30s' = %#03o", name, ch);
-    } else if (!isprint(ch) || ch > 255) {
+    } else if (!is8bits(ch) || !isprint(UChar(ch))) {
 	/*
 	 * workaround for glibc bug:
 	 * sprintf changes the result from unctrl() to an empty string if it

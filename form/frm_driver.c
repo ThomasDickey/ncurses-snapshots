@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.46 2004/02/22 01:11:00 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.47 2004/04/03 23:03:29 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -811,7 +811,7 @@ static bool Check_Char(FIELDTYPE * typ, int ch, TypeArgument *argp)
 	    return typ->ccheck(ch,(void *)argp);
 	}
     }
-  return (!iscntrl((unsigned char)ch) ? TRUE : FALSE);
+  return (!iscntrl(UChar(ch)) ? TRUE : FALSE);
 }
 
 /*---------------------------------------------------------------------------
@@ -3730,9 +3730,9 @@ form_driver (FORM * form, int  c)
        * FIXME: the wide-character branch should also use Check_Char().
        */
 #if USE_WIDEC_SUPPORT
-      if (!iscntrl((unsigned char)c))
+      if (!iscntrl(UChar(c)))
 #else
-      if (isprint((unsigned char)c) &&
+      if (isprint(UChar(c)) &&
 	  Check_Char(form->current->type,c,
 		     (TypeArgument *)(form->current->arg)))
 #endif
@@ -3785,7 +3785,7 @@ set_field_buffer (FIELD * field, int buffer, const char * value)
 
       for(v=value; *v && (i<len); v++,i++)
 	{
-	  if (iscntrl((unsigned char)*v))
+	  if (iscntrl(UChar(*v)))
 	    RETURN(E_BAD_ARGUMENT);
 	}
     }
@@ -3809,7 +3809,7 @@ set_field_buffer (FIELD * field, int buffer, const char * value)
 	      unsigned int i;
 
 	      for(i=len; i<vlen; i++)
-		if (iscntrl((unsigned char)value[i]))
+		if (iscntrl(UChar(value[i])))
 		  RETURN(E_BAD_ARGUMENT);
 	    }
 	  len = vlen;

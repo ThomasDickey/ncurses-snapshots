@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -38,7 +38,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_item_new.c,v 1.14 2003/10/25 15:23:42 tom Exp $")
+MODULE_ID("$Id: m_item_new.c,v 1.16 2004/04/03 23:09:47 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -50,12 +50,13 @@ MODULE_ID("$Id: m_item_new.c,v 1.14 2003/10/25 15:23:42 tom Exp $")
 |   Return Values :  TRUE     - if string is printable
 |                    FALSE    - if string contains non-printable characters
 +--------------------------------------------------------------------------*/
-static bool Is_Printable_String(const char *s)
+static bool
+Is_Printable_String(const char *s)
 {
   assert(s);
-  while(*s)
+  while (*s)
     {
-      if (!isprint((unsigned char)*s))
+      if (!isprint(UChar(*s)))
 	return FALSE;
       s++;
     }
@@ -73,41 +74,41 @@ static bool Is_Printable_String(const char *s)
 |   Return Values :  The item pointer or NULL if creation failed.
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(ITEM *)
-new_item (const char *name, const char *description)
+new_item(const char *name, const char *description)
 {
   ITEM *item;
-  
-  if ( !name || (*name == '\0') || !Is_Printable_String(name) )
+
+  if (!name || (*name == '\0') || !Is_Printable_String(name))
     {
-      item = (ITEM *)0;
-      SET_ERROR( E_BAD_ARGUMENT );
+      item = (ITEM *) 0;
+      SET_ERROR(E_BAD_ARGUMENT);
     }
   else
     {
-      item = (ITEM *)calloc(1,sizeof(ITEM));
+      item = (ITEM *) calloc(1, sizeof(ITEM));
       if (item)
 	{
-	  *item  = _nc_Default_Item; /* hope we have struct assignment */
-	  
-	  item->name.length	   = strlen(name);
-	  item->name.str 	   = name;
+	  *item = _nc_Default_Item;	/* hope we have struct assignment */
 
-	  if (description && (*description != '\0') && 
+	  item->name.length = strlen(name);
+	  item->name.str = name;
+
+	  if (description && (*description != '\0') &&
 	      Is_Printable_String(description))
 	    {
-	      item->description.length = strlen(description);	      
-	      item->description.str    = description;
+	      item->description.length = strlen(description);
+	      item->description.str = description;
 	    }
 	  else
 	    {
 	      item->description.length = 0;
-	      item->description.str    = (char *)0;
+	      item->description.str = (char *)0;
 	    }
 	}
       else
-	SET_ERROR( E_SYSTEM_ERROR );
-    }  
-  return(item);
+	SET_ERROR(E_SYSTEM_ERROR);
+    }
+  return (item);
 }
 
 /*---------------------------------------------------------------------------
@@ -122,17 +123,17 @@ new_item (const char *name, const char *description)
 |                    E_CONNECTED       - item is still connected to a menu    
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-free_item (ITEM * item)
+free_item(ITEM * item)
 {
   if (!item)
-    RETURN( E_BAD_ARGUMENT );
+    RETURN(E_BAD_ARGUMENT);
 
   if (item->imenu)
-    RETURN( E_CONNECTED );
-  
+    RETURN(E_CONNECTED);
+
   free(item);
 
-  RETURN( E_OK );
+  RETURN(E_OK);
 }
 
 /*---------------------------------------------------------------------------
@@ -153,16 +154,16 @@ free_item (ITEM * item)
 |                    E_SYSTEM_ERROR     - no memory to store mark
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-set_menu_mark (MENU * menu, const char * mark)
+set_menu_mark(MENU * menu, const char *mark)
 {
   int l;
 
-  if ( mark && (*mark != '\0') && Is_Printable_String(mark) )
+  if (mark && (*mark != '\0') && Is_Printable_String(mark))
     l = strlen(mark);
   else
     l = 0;
 
-  if ( menu )
+  if (menu)
     {
       char *old_mark = menu->mark;
       unsigned short old_status = menu->status;
@@ -171,13 +172,13 @@ set_menu_mark (MENU * menu, const char * mark)
 	{
 	  /* If the menu is already posted, the geometry is fixed. Then
 	     we can only accept a mark with exactly the same length */
-	  if (menu->marklen != l) 
+	  if (menu->marklen != l)
 	    RETURN(E_BAD_ARGUMENT);
-	}	
+	}
       menu->marklen = l;
       if (l)
 	{
-	  menu->mark = (char *)malloc(l+1);
+	  menu->mark = (char *)malloc(l + 1);
 	  if (menu->mark)
 	    {
 	      strcpy(menu->mark, mark);
@@ -192,19 +193,19 @@ set_menu_mark (MENU * menu, const char * mark)
 	}
       else
 	menu->mark = (char *)0;
-      
+
       if ((old_status & _MARK_ALLOCATED) && old_mark)
 	free(old_mark);
 
       if (menu->status & _POSTED)
 	{
-	  _nc_Draw_Menu( menu );
-	  _nc_Show_Menu( menu );
+	  _nc_Draw_Menu(menu);
+	  _nc_Show_Menu(menu);
 	}
       else
 	{
 	  /* Recalculate the geometry */
-	  _nc_Calculate_Item_Length_and_Width( menu );			
+	  _nc_Calculate_Item_Length_and_Width(menu);
 	}
     }
   else
@@ -223,9 +224,9 @@ set_menu_mark (MENU * menu, const char * mark)
 |   Return Values :  The marker string pointer or NULL if no marker defined
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(const char *)
-menu_mark (const MENU * menu)
+menu_mark(const MENU * menu)
 {
-  return Normalize_Menu( menu )->mark;
+  return Normalize_Menu(menu)->mark;
 }
 
 /* m_item_new.c */

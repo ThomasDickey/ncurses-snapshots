@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,2000 Free Software Foundation, Inc.                   *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_pad.c,v 1.7 2003/10/25 14:54:48 tom Exp $")
+MODULE_ID("$Id: m_pad.c,v 1.8 2004/04/03 23:08:49 tom Exp $")
 
 /* Macro to redraw menu if it is posted and changed */
 #define Refresh_Menu(menu) \
@@ -59,18 +59,18 @@ MODULE_ID("$Id: m_pad.c,v 1.7 2003/10/25 14:54:48 tom Exp $")
 |                    E_BAD_ARGUMENT    - an invalid value has been passed
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-set_menu_pad (MENU *menu, int pad)
+set_menu_pad(MENU * menu, int pad)
 {
-  bool do_refresh = (menu != (MENU*)0);
+  bool do_refresh = (menu != (MENU *) 0);
 
-  if (!isprint((unsigned char)pad))
+  if (!isprint(UChar(pad)))
     RETURN(E_BAD_ARGUMENT);
-  
-  Normalize_Menu( menu );
+
+  Normalize_Menu(menu);
   menu->pad = pad;
-  
+
   if (do_refresh)
-      Refresh_Menu( menu );
+    Refresh_Menu(menu);
 
   RETURN(E_OK);
 }
@@ -84,9 +84,9 @@ set_menu_pad (MENU *menu, int pad)
 |   Return Values :  The pad character
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-menu_pad (const MENU * menu)
+menu_pad(const MENU * menu)
 {
-  return (Normalize_Menu( menu ) -> pad);
+  return (Normalize_Menu(menu)->pad);
 }
 
 /* m_pad.c ends here */

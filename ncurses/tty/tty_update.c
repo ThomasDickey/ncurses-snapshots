@@ -74,7 +74,7 @@
 #include <ctype.h>
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.206 2004/03/21 00:53:07 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.207 2004/04/03 22:33:43 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -201,8 +201,9 @@ PutAttrChar(CARG_CH_T ch)
     if ((chlen = wcwidth(CharOf(CHDEREF(ch)))) <= 0) {
 	static NCURSES_CH_T blank = NewChar(BLANK_TEXT);
 
-	if (isprint(CharOf(CHDEREF(ch)))
-	    || (SP->_posix_locale && CharOf(CHDEREF(ch)) >= 160)) {
+	if (is8bits(CharOf(CHDEREF(ch)))
+	    && (isprint(CharOf(CHDEREF(ch)))
+		|| (SP->_posix_locale && CharOf(CHDEREF(ch)) >= 160))) {
 	    ;
 	} else {
 	    ch = CHREF(blank);

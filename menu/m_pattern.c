@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_pattern.c,v 1.9 2003/12/06 17:22:10 tom Exp $")
+MODULE_ID("$Id: m_pattern.c,v 1.11 2004/04/03 23:09:47 tom Exp $")
 
 /*---------------------------------------------------------------------------
 |   Facility      :  libnmenu  
@@ -51,7 +51,7 @@ MODULE_ID("$Id: m_pattern.c,v 1.9 2003/12/06 17:22:10 tom Exp $")
 |                    PatternString - as expected
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(char *)
-menu_pattern (const MENU * menu)
+menu_pattern(const MENU * menu)
 {
   return (char *)(menu ? (menu->pattern ? menu->pattern : "") : 0);
 }
@@ -70,49 +70,49 @@ menu_pattern (const MENU * menu)
 |                    E_NO_MATCH        - no item matches pattern
 +--------------------------------------------------------------------------*/
 NCURSES_EXPORT(int)
-set_menu_pattern (MENU *menu, const char *p)
+set_menu_pattern(MENU * menu, const char *p)
 {
   ITEM *matchitem;
-  int   matchpos;
-  
-  if (!menu || !p)	
+  int matchpos;
+
+  if (!menu || !p)
     RETURN(E_BAD_ARGUMENT);
-  
+
   if (!(menu->items))
     RETURN(E_NOT_CONNECTED);
-  
-  if ( menu->status & _IN_DRIVER )
+
+  if (menu->status & _IN_DRIVER)
     RETURN(E_BAD_STATE);
-  
+
   Reset_Pattern(menu);
-  
+
   if (!(*p))
     {
       pos_menu_cursor(menu);
       RETURN(E_OK);
     }
-  
-  if (menu->status & _LINK_NEEDED) 
+
+  if (menu->status & _LINK_NEEDED)
     _nc_Link_Items(menu);
-  
-  matchpos  = menu->toprow;
+
+  matchpos = menu->toprow;
   matchitem = menu->curitem;
   assert(matchitem);
-  
-  while(*p)
+
+  while (*p)
     {
-      if ( !isprint((unsigned char)(*p)) || 
-	  (_nc_Match_Next_Character_In_Item_Name(menu,*p,&matchitem) != E_OK) )
+      if (!isprint(UChar(*p)) ||
+	  (_nc_Match_Next_Character_In_Item_Name(menu, *p, &matchitem) != E_OK))
 	{
 	  Reset_Pattern(menu);
 	  pos_menu_cursor(menu);
 	  RETURN(E_NO_MATCH);
 	}
       p++;
-    }			
-  
+    }
+
   /* This is reached if there was a match. So we position to the new item */
-  Adjust_Current_Item(menu,matchpos,matchitem);
+  Adjust_Current_Item(menu, matchpos, matchitem);
   RETURN(E_OK);
 }
 
