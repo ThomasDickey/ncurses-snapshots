@@ -1,10 +1,16 @@
 #!/bin/sh
-# $Id: MKtermsort.sh,v 1.5 1999/12/04 21:45:35 tom Exp $
+# $Id: MKtermsort.sh,v 1.6 2000/01/25 11:35:36 tom Exp $
 #
 # MKtermsort.sh -- generate indirection vectors for the various sort methods
 #
 # The output of this script is C source for nine arrays that list three sort
 # orders for each of the three different classes of terminfo capabilities.
+#
+# keep the order independent of locale:
+LANGUAGE=C
+LC_ALL=C
+export LANGUAGE
+export LC_ALL
 #
 AWK=${1-awk}
 DATA=${2-../include/Caps}

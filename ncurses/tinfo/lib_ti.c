@@ -36,7 +36,7 @@
 #include <term_entry.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_ti.c,v 1.18 2000/01/01 16:58:30 tom Exp $")
+MODULE_ID("$Id: lib_ti.c,v 1.19 2000/01/15 20:47:37 tom Exp $")
 
 int
 tigetflag(NCURSES_CONST char *str)
@@ -72,7 +72,7 @@ tigetnum(NCURSES_CONST char *str)
 	    const char *capname = ExtNumname(tp, i, numnames);
 	    if (!strcmp(str, capname)) {
 		if (!VALID_NUMERIC(tp->Numbers[i]))
-		    return ABSENT_NUMERIC;
+		    returnCode(ABSENT_NUMERIC);
 		returnCode(tp->Numbers[i]);
 	    }
 	}

@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.122 1999/11/27 21:29:05 tom Exp $
+$Id: ncurses.c,v 1.123 2000/01/15 23:23:05 tom Exp $
 
 ***************************************************************************/
 
@@ -2411,6 +2411,7 @@ static struct {
 	T_TBL(TRACE_BITS),
 	T_TBL(TRACE_ICALLS),
 	T_TBL(TRACE_CCALLS),
+	T_TBL(TRACE_DATABASE),
 	T_TBL(TRACE_MAXIMUM),
 	{ (char *)0, 0 }
 };
