@@ -1,10 +1,13 @@
--- $Id: NEWS,v 1.796 2004/02/07 20:52:27 tom Exp $
+-- $Id: NEWS,v 1.797 2004/02/08 21:15:26 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040208 5.4 release for upload to ftp.gnu.org
+	+ update TO-DO.
 
 20040207 pre-release
 	+ minor fixes to _nc_tparm_analyze(), i.e., do not count %i as a param,
