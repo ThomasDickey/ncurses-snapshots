@@ -19,7 +19,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.36 1996/11/16 21:55:54 tom Exp $ */
+/* $Id: curses.h.in,v 1.37 1996/12/30 01:00:35 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -1224,7 +1224,7 @@ extern int has_key(int);		/* do we have given key? */
 /* Debugging : use with libncurses_g.a */
 
 extern void _tracef(const char *, ...) GCC_PRINTFLIKE(1,2);
-extern void _tracedump(char *, WINDOW *);
+extern void _tracedump(const char *, WINDOW *);
 extern char *_traceattr(attr_t);
 extern char *_tracebits(void);
 extern char *_tracechar(const unsigned char);

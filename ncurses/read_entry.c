@@ -36,7 +36,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.28 1996/12/21 21:52:57 florian Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.29 1996/12/30 00:46:01 tom Exp $")
 
 TERMINAL *cur_term;
 
@@ -256,7 +256,7 @@ char		ttn[MAX_ALIAS + 3];
 	{
 	    /* strtok modifies its argument, so we must copy */
 	    char *list = strcpy(malloc(strlen(envp)+1), envp);
-	    char *cp = strtok(list, ":");
+	    const char *cp = strtok(list, ":");
 	    int code = 0;
 
 	    do {

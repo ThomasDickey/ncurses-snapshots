@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.42 1996/12/21 19:02:11 tom Exp $
+ * $Id: curses.priv.h,v 1.46 1996/12/30 01:39:55 tom Exp $
  *
  *	curses.priv.h
  *
@@ -76,10 +76,18 @@ extern int errno;
 
 #include <nc_alloc.h>
 
+/* Some systems have a broken 'select()', but workable 'poll()'.  Use that */
 #if defined(HAVE_POLL) && defined(HAVE_SYS_STROPTS_H) && defined(HAVE_POLL_H)
 #define USE_FUNC_POLL 1
 #else
 #define USE_FUNC_POLL 0
+#endif
+
+/* Alessandro Rubini's GPM (general-purpose mouse) */
+#if defined(HAVE_LIBGPM) && defined(HAVE_GPM_H)
+#define USE_GPM_SUPPORT 1
+#else
+#define USE_GPM_SUPPORT 0
 #endif
 
 /*
@@ -287,8 +295,8 @@ typedef	struct {
 #define TR(n, a)	if (_nc_tracing & (n)) _tracef a
 #define TPUTS_TRACE(s)	_nc_tputs_trace = s;
 extern unsigned _nc_tracing;
-extern char *_nc_tputs_trace;
-extern char *_nc_visbuf(const char *);
+extern const char *_nc_tputs_trace;
+extern const char *_nc_visbuf(const char *);
 extern long _nc_outchars;
 #else
 #define T(a)
@@ -348,6 +356,7 @@ extern bool _nc_mouse_parse(int);
 extern void _nc_mouse_wrap(SCREEN *);
 extern void _nc_mouse_resume(SCREEN *);
 extern int _nc_max_click_interval;
+extern int _nc_mouse_fd(void);
 
 /* elsewhere ... */
 extern WINDOW *_nc_makenew(int, int, int, int, int);
@@ -366,7 +375,7 @@ extern void _nc_free_and_exit(int);
 extern void _nc_freewin(WINDOW *win);
 extern void _nc_get_screensize(void);
 extern void _nc_hash_map(void);
-extern void _nc_outstr(char *str);
+extern void _nc_outstr(const char *str);
 extern void _nc_scroll_optimize(void);
 extern void _nc_scroll_window(WINDOW *, int const, short const, short const);
 extern void _nc_set_buffer(FILE *ofp, bool buffered);

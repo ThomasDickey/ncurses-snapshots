@@ -1,6 +1,6 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
-#	Version 9.13.22
+#	Version 10.1.0
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -27,6 +27,8 @@
 # be found at <http://www.ccil.org/terminfo>.
 #
 # INTERNATIONALIZATION:
+#
+# This file uses only the US-ASCII character set (no ISO8859 characters).
 #
 # This file assumes a US-ASCII character set. If you need to fix this, start
 # by global-replacing \E(B and \E)B with the appropriate ISO 6429 enablers
@@ -1723,11 +1725,10 @@ vt525|DEC VT525,
 
 # John Hawkinson <jhawk@MIT.EDU> tells us that the EWAN telnet for Windows
 # (the best Windows telnet as of September 1995) presents the name `dec-vt100'
-# to telnetd.  We'll guess that it's vt102-like but doesn't grok ^N/^O.
-# Following a report that this doesn't play well with Emacs, we'll try 
-# shutting off automargins.
+# to telnetd.   Michael Deutschmann <ldeutsch@mail.netshop.net> informs us
+# that this works best with a stock vt100 entry.
 dec-vt100|EWAN telnet's vt100 emulation, 
-	am@, use=vt102-nsgr, 
+	use=vt100, 
 
 # From: Adrian Garside <94ajg2@eng.cam.ac.uk>, 19 Nov 1996
 dec-vt220|DOS tnvt200 terminal emulator, 
@@ -1781,11 +1782,12 @@ x10term|vs100-x10|xterm terminal emulator (X10 window system),
 	rmir=\E[4l, rmkx=\E[?1l\E>, rmso=\E[m, rmul=\E[m, 
 	sgr0=\E[m, smam=\E[?7h, smir=\E[4h, smkx=\E[?1h\E=, 
 	smso=\E[7m, smul=\E[4m, 
-# Compatible with the R5 xterm (straight from the XFree86 3.2 distribution)
+# Compatible with the R5 xterm 
+# (from the XFree86 3.2 distribution, <blink=@> removed)
 xterm-r5|xterm R5 version, 
 	am, km, msgr, xenl, 
 	cols#80, it#8, lines#24, 
-	bel=^G, blink=@, bold=\E[1m, clear=\E[H\E[2J, cr=^M, 
+	bel=^G, bold=\E[1m, clear=\E[H\E[2J, cr=^M, 
 	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
 	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
 	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
@@ -1802,12 +1804,13 @@ xterm-r5|xterm R5 version,
 	rs1=\E>\E[1;3;4;5;6l\E[?7h\E[m\E[r\E[2J\E[H, sc=\E7, 
 	sgr=\E[%?%p1%t;7%;%?%p2%t;4%;%?%p3%t;7%;%?%p4%t;5%;%?%p6%t;1%;m, 
 	sgr0=\E[m, smkx=\E[?1h\E=, smso=\E[7m, tbc=\E[3g, 
-# Compatible with the R6 xterm (from XFree86 3.2 distribution, <acsc> added)
+# Compatible with the R6 xterm
+# (from XFree86 3.2 distribution, <acsc> and <it> added, <blink@> removed)
 xterm-r6|xterm-old|xterm X11R6 version, 
 	am, km, mir, msgr, xenl, 
-	cols#80, lines#24, 
+	cols#80, it#8, lines#24, 
 	acsc=``aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~, 
-	bel=^G, blink@, bold=\E[1m, clear=\E[H\E[2J, cr=^M, 
+	bel=^G, bold=\E[1m, clear=\E[H\E[2J, cr=^M, 
 	csr=\E[%i%p1%d;%p2%dr, cub=\E[%p1%dD, cub1=^H, 
 	cud=\E[%p1%dB, cud1=^J, cuf=\E[%p1%dC, cuf1=\E[C, 
 	cup=\E[%i%p1%d;%p2%dH, cuu=\E[%p1%dA, cuu1=\E[A, 
@@ -13187,7 +13190,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 
 # Here is a description of the color and attribute controls supported in the
 # the ANSI.SYS driver under MS-DOS.  Most console drivers and ANSI
-# terminal emulators for Intel boxes obey these.
+# terminal emulators for Intel boxes obey these.  They are a proper subset
+# of the ECMA-48 escapes.
 #
 # 0	all attributes off
 # 1	foreground bright
@@ -13215,11 +13219,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #   braindamage (this is required by iBCS2).
 #
 # * Some older versions of ANSI.SYS have a bug that causes thems to require
-#   ESC [ Pn k as EL rather than the ANSI ESC [ Pn K.
-#
-# The entries following are not standalone.  They are meant to be included
-# via use= in other entries.
-#
+#   ESC [ Pn k as EL rather than the ANSI ESC [ Pn K.  (This is not ECMA-48
+#   compatible.)
 
 #### Intel Binary Compatibility Standard
 #
@@ -13451,6 +13452,8 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # the purpose.  Unless the ncurses tic implementation and the Lisp code were
 # making perfectly synchronized mistakes which I then failed to catch by
 # eyeball, the translation was correct and perfectly information-preserving.
+#
+# Major version number bumps correspond to major version changes in ncurses.
 #
 # Here is a log of the changes since then:
 #
@@ -13889,34 +13892,12 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 9.13.21 (Mon Nov 18 12:43:42 EST 1996):
 #	* Back off the xterm entry to use r6 as a base.
 # 9.13.22 (Sat Nov 30 11:51:31 EST 1996):
-#	* Added dec-vt220 at Adrian Garside's address.
+#	* Added dec-vt220 at Adrian Garside's request.
 #
-
-######## REORDER
-#
-# Older termcap distributions featured a kluge called `reorder' intended to
-# time-optimize access to selected terminals by moving them to the front of
-# the file.  This is obsolete under terminfo, but for completeness's sake
-# we give a reorder script generator here (strip off the leading #s to use).
-#
-#: mkreorder --  generate script to optimize access to given terminal types
-#:
-#: entries named on command line will be sorted to the front in reverse order
-#echo "ed -- termcap <<EOF"
-#for x in $*
-#do
-#	echo "/^$x[|:]/;.,/^[a-z#]/-1m0"
-#done
-#echo "0a"
-#echo "."
-#echo "w termcap.sorted"
-#echo "q"
-#echo "EOF"
-#:end of script
-#
-# Invoke this script like this:
-#
-#	mkreorder h19 wy60 vt100 >reorder
+# 10.1.0 (Sun Dec 29 02:36:31 EST 1996):
+#	* Minor corrections to xterm entries.
+#	* Replaced EWAN telnet entry.
+#	* Dropped the reorder script generator.  It was a fossil.
 #
 # The following sets edit modes for GNU EMACS
 # Local Variables:

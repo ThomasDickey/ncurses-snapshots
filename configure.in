@@ -1,5 +1,5 @@
 dnl*****************************************************************************
-dnl Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                      *
+dnl Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                 *
 dnl All Rights Reserved.                                                       *
 dnl                                                                            *
 dnl Permission to use, copy, modify, and distribute this software and its      *
@@ -17,10 +17,10 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.44 1996/12/21 22:37:49 tom Exp $
+dnl $Id: configure.in,v 1.47 1997/01/04 23:53:33 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
-AC_PREREQ(2.9)
-AC_REVISION($Revision: 1.44 $)
+AC_PREREQ(2.12)
+AC_REVISION($Revision: 1.47 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
@@ -57,9 +57,16 @@ fi
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
 AC_ISC_POSIX
-dnl PROBLEM ON NEXT MACHINES:  g++ exists but is called cc++.  AC_PROG_CXX doesn't check
-dnl                            for that name,
+
+dnl DEFECT in autoconf 2.12:	an attempt to set policy, this breaks the
+dnl				configure script by not letting us test if C++
+dnl				is present, making this option necessary.
+AC_ARG_WITH(cxx,
+	[  --without-cxx           suppress check for C++])
+if test "X$withval" != Xno ; then
 AC_PROG_CXX
+fi
+
 AC_PROG_AWK
 AC_PROG_MAKE_SET
 NC_PROG_INSTALL
@@ -111,6 +118,15 @@ AC_ARG_WITH(dbmalloc,
 AC_ARG_WITH(dmalloc,
 	[  --with-dmalloc          use Gray Watson's dmalloc library],
 	[AC_CHECK_LIB(dmalloc,dmalloc_debug)])
+AC_ARG_WITH(gpm,
+	[  --with-gpm              use Alessandro Rubini's GPM library],
+	[AC_CHECK_LIB(gpm,Gpm_Open,[
+		EXTRA_LIBS="$EXTRA_LIBS -lgpm"
+		AC_DEFINE(HAVE_LIBGPM)
+		AC_CHECK_HEADERS(gpm.h)
+	],,-lcurses -ltermcap)])
+
+AC_SUBST(EXTRA_LIBS)
 
 AC_MSG_CHECKING(for specified models)
 test -z "$nc_list_models" && nc_list_models=normal
@@ -405,7 +421,11 @@ if test -z "$nc_user_CFLAGS" ; then
 fi
 
 dnl Check for C++ compiler characteristics (and ensure that it's there!)
-AC_CHECK_PROG(CXX_EXISTS, $CXX, yes, no)
+if test -n "$CXX" ; then
+	AC_CHECK_PROG(CXX_EXISTS, $CXX, yes, no)
+else
+	ac_cv_prog_CXX_EXISTS=no
+fi
 if test "$ac_cv_prog_CXX_EXISTS" = yes; then
 	AC_LANG_CPLUSPLUS
 	NC_CXX_LIBRARY
@@ -416,6 +436,7 @@ else
 	AC_CACHE_VAL(nc_cv_builtin_bool,[nc_cv_builtin_bool=0])
 	AC_CACHE_VAL(nc_cv_sizeof_bool,[nc_cv_sizeof_bool=int])
 fi
+AC_SUBST(CXXLIBS)
 
 dnl Check for availability of GNU Ada Translator (GNAT).
 dnl At the moment we support no other Ada95 compiler.

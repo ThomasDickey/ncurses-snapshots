@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.18 1996/12/21 23:25:29 tom Exp $
+# $Id: Makefile.in,v 1.19 1996/12/29 23:36:50 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -71,7 +71,7 @@ CFLAGS_SHARED	= $(CCFLAGS) @CC_SHARED_OPTS@
 CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
 LINK		= $(CC)
-LDFLAGS		= -L../lib -lncurses@DFT_ARG_SUFFIX@ @LDFLAGS@ @LD_MODEL@ @LIBS@ 
+LDFLAGS		= -L../lib -lncurses@DFT_ARG_SUFFIX@ @LDFLAGS@ @LD_MODEL@ @LIBS@ @EXTRA_LIBS@
 
 LINT		= @LINT@
 LINT_OPTS	= @LINT_OPTS@

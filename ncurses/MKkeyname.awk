@@ -1,4 +1,4 @@
-# $Id: MKkeyname.awk,v 1.4 1996/07/30 23:37:27 tom Exp $
+# $Id: MKkeyname.awk,v 1.5 1996/12/30 00:32:51 tom Exp $
 BEGIN {
 	print ""
 	print "#include <config.h>"
@@ -7,7 +7,7 @@ BEGIN {
 	print "#include <curses.h>"
 	print ""
 	print "struct kn {"
-	print "\tchar *name;"
+	print "\tconst char *name;"
 	print "\tint code;"
 	print "};"
 	print ""

@@ -92,14 +92,14 @@ char *ttyname(int fd);
 #define __INTERNAL_CAPS_VISIBLE	/* we need to see has_hardware_tabs */
 #include <dump_entry.h>
 
-MODULE_ID("$Id: tset.c,v 0.18 1996/12/21 21:57:48 florian Exp $")
+MODULE_ID("$Id: tset.c,v 0.19 1997/01/01 23:25:50 tom Exp $")
 
 extern char **environ;
 
 #undef CTRL
 #define CTRL(x)	((x) & 0x1f)
 
-char *_nc_progname = "tset";
+const char *_nc_progname = "tset";
 
 static TTY mode, oldmode;
 

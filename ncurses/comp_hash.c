@@ -37,7 +37,7 @@
 #define DEBUG(level, params) /*nothing*/
 #endif
 
-MODULE_ID("$Id: comp_hash.c,v 1.11 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: comp_hash.c,v 1.12 1996/12/30 01:37:26 tom Exp $")
 
 static  int hash_function(const char *);
 
@@ -224,7 +224,7 @@ int main(int argc, char **argv)
 {
 	struct name_table_entry *name_table = typeCalloc(struct name_table_entry, CAPTABSIZE);
 	struct name_table_entry **hash_table = typeCalloc(struct name_table_entry *, HASHTABSIZE);
-	char *root_name = "";
+	const char *root_name = "";
 	int  column = 0;
 	int  n;
 	char buffer[BUFSIZ];

@@ -33,7 +33,7 @@
 #include <term.h>	/* padding_baud_rate, xon_xoff */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.16 1996/12/21 14:24:06 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.17 1997/01/02 01:10:46 tom Exp $")
 
 int delay_output(int ms)
 {
@@ -43,7 +43,7 @@ int delay_output(int ms)
 		return(ERR);
 #ifdef no_pad_char
 	else if (no_pad_char)
-		_nc_timed_wait(0, ms, (int *)NULL);
+		napms(ms);
 #endif /* no_pad_char */
 	else {
 		register int	nullcount;

@@ -69,7 +69,7 @@
 #define DEBUG(n, a)	if (_nc_tracing & (1 << (n - 1))) _tracef a 
 extern unsigned _nc_tracing;
 extern void _nc_tracef(char *, ...) GCC_PRINTFLIKE(1,2);
-extern char *_nc_visbuf(const char *);
+extern const char *_nc_visbuf(const char *);
 
 /*
  * These are the types of tokens returned by the scanner.  The first
@@ -110,7 +110,7 @@ extern	struct token	_nc_curr_token;
 
 struct name_table_entry
 {
-	char	*nte_name;	/* name to hash on */
+	const char *nte_name;	/* name to hash on */
 	int	nte_type;	/* BOOLEAN, NUMBER or STRING */
 	short	nte_index;	/* index of associated variable in its array */
 	short	nte_link;	/* index in table of next hash, or -1 */
@@ -118,9 +118,9 @@ struct name_table_entry
 
 struct alias
 {
-    char	*from;
-    char	*to;
-    char	*source;
+	const char	*from;
+	const char	*to;
+	const char	*source;
 };
 
 extern const struct name_table_entry * const _nc_info_hash_table[];
@@ -188,7 +188,7 @@ extern char *_nc_captoinfo(char *const, char *, int const);
 extern char *_nc_infotocap(char *const, char *, int const);
 
 /* comp_main.c: compiler main */
-extern char	*_nc_progname;
+extern const char *_nc_progname;
 
 /* read_entry.c */
 extern char *_nc_tic_dir(char *);

@@ -32,9 +32,9 @@
 #include <dump_entry.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: tic.c,v 1.20 1996/12/21 17:34:36 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.21 1996/12/30 02:24:15 tom Exp $")
 
-char	*_nc_progname = "tic";
+const char *_nc_progname = "tic";
 
 static	FILE	*log_fp;
 static	bool	showsummary = FALSE;
@@ -299,7 +299,7 @@ bool	capdump = FALSE;	/* running as infotocap? */
 bool	forceresolve = FALSE;	/* force resolution */
 bool	limited = TRUE;
 char	*tversion = (char *)NULL;
-char	*source_file = "terminfo";
+const	char	*source_file = "terminfo";
 const	char	**namelst = 0;
 char	*outdir = (char *)NULL;
 bool	check_only = FALSE;

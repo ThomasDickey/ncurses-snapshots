@@ -29,7 +29,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.12 1996/12/21 18:09:22 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.13 1996/12/30 01:35:02 tom Exp $")
 
 /*
  *	char *
@@ -106,7 +106,7 @@ typedef union {
 static  stack_frame	stack[STACKSIZE];
 static	int	stack_ptr;
 #ifdef TRACE
-static char *tname;
+static const char *tname;
 #endif /* TRACE */
 
 static char  *out_buff;

@@ -32,7 +32,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.24 1996/12/21 21:53:58 florian Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.25 1996/12/30 02:28:12 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -41,7 +41,7 @@ MODULE_ID("$Id: infocmp.c,v 1.24 1996/12/21 21:53:58 florian Exp $")
 
 #define MAXTERMS	32	/* max # terminal arguments we can handle */
 
-char *_nc_progname = "infocmp";
+const char *_nc_progname = "infocmp";
 
 typedef char	path[PATH_MAX];
 
@@ -56,7 +56,7 @@ static char *tname[MAXTERMS];	/* terminal type names */
 static TERMTYPE term[MAXTERMS];	/* terminfo entries */
 static int termcount;		/* count of terminal entries */
 
-static char *tversion;		/* terminfo version selected */
+static const char *tversion;	/* terminfo version selected */
 static int outform;		/* output format */
 static int sortmode;		/* sort_mode */
 static int itrace;		/* trace flag for debugging */
@@ -320,7 +320,7 @@ static void compare_predicate(int type, int idx, const char *name)
  *
  ***************************************************************************/
 
-typedef struct {char *from; char *to;} assoc;
+typedef struct {const char *from; const char *to;} assoc;
 
 static const assoc std_caps[] =
 {
@@ -414,7 +414,7 @@ static void analyze_string(const char *name, const char *cap, TERMTYPE *tp)
     {
 	int	i;
 	size_t	len = 0;
-	char	*expansion = (char *)NULL;
+	const char *expansion = 0;
 
 	/* first, check other capabilities in this entry */
 	for (i = 0; i < STRCOUNT; i++)
@@ -943,7 +943,7 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-		    char	*directory = termcount ? restdir : firstdir;
+		    const char	*directory = termcount ? restdir : firstdir;
 		    int		status;
 
 		    tname[termcount] = argv[optind];
@@ -989,7 +989,7 @@ int main(int argc, char *argv[])
 	    if (initdump)
 	    {
 		int	n;
-		char	*str = 0;
+		const char *str = 0;
 		int	size;
 
 		(void) printf("\t%s\n\t\t\"%s\",\n",
@@ -1035,7 +1035,8 @@ int main(int argc, char *argv[])
 			str = "CANCELLED_NUMERIC";
 			break;
 		    default:
-			sprintf(str = buf, "%d", term->Numbers[n]);
+			sprintf(buf, "%d", term->Numbers[n]);
+			str = buf;
 			break;
 		    }
 		    (void) printf("\t\t/* %s */\t%s%s,\n",

@@ -1,6 +1,53 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970104
+	+ workaround defect in autoconf 2.12 (which terminates configuration
+	  if no C++ compiler is found) by adding an option --without-cxx.
+	+ modify several man-pages to use tbl, where .nf/.fi was used (reported
+	  by Jesse Thilo).
+	+ correct font-codes in some man-pages (patch by Jesse Thilo
+	  <Jesse.Thilo@pobox.com>)
+	+ use configure script's knowledge of existence of g++ library for the
+	  c++ Makefile (reported by Paul Jackson).
+	+ correct misleading description of --datadir configuration option
+	  (reported by Paul Jackson <pj@sam.engr.sgi.com>)
+
+970101
+	+ several corrections to _nc_mvcur_scrolln(), prompted by a bug report
+	  from Peter Wemm:
+	> the logic for non_dest_scroll_region was interchanged between the
+	  forward & reverse scrolling cases.
+	> multiple returns from the function allowed certain conditions to do
+	  part of an operation before discovering that it couldn't be
+	  completed, returning an error without restoring the cursor.
+	> some returns were ERR, where the function had completed the
+	  operation, because the insert/delete line logic was improperly
+	  tested (this was probably the case Peter saw).
+	> contrary to comments, some scrolling cases were tested after the
+	  insert/delete line method.
+	+ modify _tracedump() to show first/last changes.
+	+ modify param of ClrUpdate() in lib_doupdate.c to 'curscr', fixes
+	  refresh problem (reported by Peter Wemm) that caused nvi to not show
+	  result of ":r !ls" until a ^L was typed.
+
+961229	(internal alpha)
+	+ correct some of the writable-strings warnings (reported by Gary
+	  Johnson <gjohnson@season.com>).  Note that most of the remaining ones
+	  are part of the XSI specification, and can't be "fixed".
+	+ improve include-dependencies in form, menu, panel directories.
+	+ correct logic of delay_output(), which would return early if
+	  there is data on stdin.
+	+ modify interface & logic of _nc_timed_wait() to support 2 file
+	  descriptors, needed for GPM.
+	+ integrate patch by Andrew Kuchling <amk@magnet.com> for GPM (mouse)
+	  support, correcting logic in wgetch() and _nc_mouse_parse() which
+	  prevented patch from working properly.
+	+ improve performance of panel algorithm (Juergen Pfeifer 961203).
+	+ strip RCS id's from generated .html files in Ada95 subtree.
+	+ resync with generated .html files (Juergen Pfeifer 961223).
+	+ terminfo.src 10.1.0 from Eric.
+
 961224	4.0 release
 	+ release as 4.0 to accommodate Linux ld.so.1.8.5
 	+ correct syntax/spelling, regenerated .doc files from .html using

@@ -1168,6 +1168,10 @@ void	_nc_mouse_init(
 		SCREEN	*sp)
 		{ /* void */ }
 
+#undef _nc_mouse_fd
+int	_nc_mouse_fd(void)
+		{ return(*(int *)0); }
+
 #undef _nc_mouse_event
 bool	_nc_mouse_event(
 		SCREEN	*sp)
@@ -2090,7 +2094,7 @@ void	_nc_signal_handler(
 
 #undef _nc_timed_wait
 int	_nc_timed_wait(
-		int	fd, 
+		int	mode, 
 		int	milliseconds, 
 		int	*timeleft)
 		{ return(*(int *)0); }

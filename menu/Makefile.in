@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.14 1996/12/22 19:00:08 juergen Exp $
+# $Id: Makefile.in,v 1.15 1996/12/30 00:22:45 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -99,7 +99,12 @@ $(INSTALL_PREFIX)$(libdir) :
 	-rm -f $@
 	cp $(srcdir)/mf_common.h $@
 
-$(srcdir)/menu.priv.h:	$(srcdir)/menu.h $(srcdir)/mf_common.h $(srcdir)/eti.h
+MENU_PRIV_H = \
+	$(srcdir)/menu.priv.h \
+	$(srcdir)/menu.h \
+	$(srcdir)/mf_common.h \
+	../include/curses.h \
+	$(srcdir)/eti.h
 
 tags:
 	ctags *.[ch]
