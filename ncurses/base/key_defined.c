@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1999-2000,2003 Free Software Foundation, Inc.              *
+ * Copyright (c) 2003 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,21 +27,50 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Thomas E. Dickey <dickey@clark.net> 1999                        *
+ *  Author: Thomas E. Dickey, 2003                                          *
  ****************************************************************************/
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: keybound.c,v 1.4 2003/03/08 19:39:31 tom Exp $")
+MODULE_ID("$Id: key_defined.c,v 1.2 2003/03/08 22:43:05 tom Exp $")
+
+static int
+find_definition(struct tries *tree, char *str)
+{
+    struct tries *ptr;
+    int result = 0;
+
+    if (str != 0 && *str != '\0') {
+	for (ptr = tree; ptr != 0; ptr = ptr->sibling) {
+	    if (UChar(*str) == UChar(ptr->ch)) {
+		if (str[1] == '\0' && ptr->child != 0) {
+		    result = -1;
+		} else if ((result = find_definition(ptr->child, str + 1)) == 0) {
+		    result = ptr->value;
+		} else if (str[1] == '\0') {
+		    result = -1;
+		}
+	    }
+	    if (result != 0)
+		break;
+	}
+    }
+    return (result);
+}
 
 /*
- * Returns the count'th string definition which is associated with the
- * given keycode.  The result is malloc'd, must be freed by the caller.
+ * Returns the keycode associated with the given string.  If none is found,
+ * return 0.  If the string is only a prefix to other strings, return -1.
  */
-
-NCURSES_EXPORT(char *)
-keybound(int code, int count)
+NCURSES_EXPORT(int)
+key_defined(char *str)
 {
-    T((T_CALLED("keybound(%d,%d)"), code, count));
-    returnPtr(_nc_expand_try(SP->_keytry, code, &count, 0));
+    int code = ERR;
+
+    T((T_CALLED("key_defined(%s)"), _nc_visbuf(str)));
+    if (SP != 0 && str != 0) {
+	code = find_definition(SP->_keytry, str);
+    }
+
+    returnCode(code);
 }

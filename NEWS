@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.736 2003/03/02 00:33:41 tom Exp $
+-- $Id: NEWS,v 1.737 2003/03/08 22:47:46 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030308
+	+ correct a case in _nc_remove_string(), used by define_key(), to avoid
+	  infinite loop if the given string happens to be a substring of other
+	  strings which are assigned to keys (report by John McCutchan).
+	+ add key_defined() function, to tell which keycode a string is bound
+	  to (discussion with John McCutchan <ttb@tentacle.dhs.org>).
+	+ correct keybound(), which reported definitions in the wrong table,
+	  i.e., the list of definitions which are disabled by keyok().
+	+ modify demo_keydef.c to show the details it changes, and to check
+	  for errors.
 
 20030301
 	+ restructured test/configure script, make it work for libncursesw.

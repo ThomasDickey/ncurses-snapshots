@@ -1,5 +1,5 @@
 /*
- * $Id: demo_defkey.c,v 1.2 2002/12/14 23:28:15 tom Exp $
+ * $Id: demo_defkey.c,v 1.9 2003/03/08 23:31:03 tom Exp $
  *
  * Demonstrate the define_key() function.
  * Thomas Dickey - 2002/11/23
@@ -11,8 +11,142 @@
 
 #include <term.h>
 
+#define MY_LOGFILE "demo_defkey.log"
+
+/*
+ * Log the most recently-written line to our logfile
+ */
 static void
-duplicate(char *name, int code)
+log_last_line(WINDOW *win)
+{
+    FILE *fp;
+    int y, x, n;
+    char temp[256];
+
+    if ((fp = fopen(MY_LOGFILE, "a")) != 0) {
+	getyx(win, y, x);
+	wmove(win, y - 1, 0);
+	n = winnstr(win, temp, sizeof(temp));
+	while (n-- > 0) {
+	    if (isspace(temp[n]))
+		temp[n] = '\0';
+	    else
+		break;
+	}
+	wmove(win, y, x);
+	fprintf(fp, "%s\n", temp);
+	fclose(fp);
+    }
+}
+
+/*
+ * Convert a character to visible form.
+ */
+static char *
+visichar(int ch)
+{
+    static char temp[10];
+
+    ch = UChar(ch);
+    if (ch == '\\') {
+	strcpy(temp, "\\\\");
+    } else if (ch == '\033') {
+	strcpy(temp, "\\E");
+    } else if (ch < ' ') {
+	sprintf(temp, "\\%03o", ch);
+    } else if (ch >= 127) {
+	sprintf(temp, "\\%03o", ch);
+    } else {
+	sprintf(temp, "%c", ch);
+    }
+    return temp;
+}
+
+/*
+ * Convert a string to visible form.
+ */
+static char *
+visible(const char *string)
+{
+    char *result = "";
+    unsigned need = 1;
+    int pass;
+    int n;
+
+    if (string != 0 && *string != '\0') {
+	for (pass = 0; pass < 2; ++pass) {
+	    for (n = 0; string[n] != '\0'; ++n) {
+		char temp[80];
+		strcpy(temp, visichar(string[n]));
+		if (pass)
+		    strcat(result, temp);
+		else
+		    need += strlen(temp);
+	    }
+	    if (!pass)
+		result = calloc(need, 1);
+	}
+    }
+    return result;
+}
+
+static void
+really_define_key(WINDOW *win, char *new_string, int code)
+{
+    int rc;
+    char *code_name = keyname(code);
+    char *old_string;
+    char *vis_string = 0;
+    char temp[80];
+
+    if (code_name == 0) {
+	sprintf(temp, "Keycode %d", code);
+	code_name = temp;
+    }
+
+    if ((old_string = keybound(code, 0)) != 0) {
+	wprintw(win, "%s is %s\n",
+		code_name,
+		vis_string = visible(old_string));
+    } else {
+	wprintw(win, "%s is not bound\n",
+		code_name);
+    }
+    log_last_line(win);
+    if (vis_string != 0) {
+	free(vis_string);
+	vis_string = 0;
+    }
+
+    vis_string = visible(new_string);
+    if ((rc = key_defined(new_string)) > 0) {
+	wprintw(win, "%s was bound to %s\n", vis_string, keyname(rc));
+	log_last_line(win);
+    } else if (new_string != 0 && rc < 0) {
+	wprintw(win, "%s conflicts with longer strings\n", vis_string);
+	log_last_line(win);
+    }
+    rc = define_key(new_string, code);
+    if (rc == ERR) {
+	wprintw(win, "%s unchanged\n", code_name);
+	log_last_line(win);
+    } else if (new_string != 0) {
+	wprintw(win, "%s is now bound to %s\n",
+		vis_string,
+		code_name);
+	log_last_line(win);
+    } else if (old_string != 0) {
+	wprintw(win, "%s deleted\n", code_name);
+	log_last_line(win);
+    }
+    if (vis_string != 0 && *vis_string != 0)
+	free(vis_string);
+    if (old_string != 0)
+	free(old_string);
+}
+
+static void
+duplicate(WINDOW *win, char *name, int code)
 {
     char *value = tigetstr(name);
 
@@ -27,9 +161,21 @@ duplicate(char *name, int code)
 	}
 	if (prefix != 0) {
 	    sprintf(temp, "%s%s", prefix, value + 2);
-	    define_key(temp, code);
+	    really_define_key(win, temp, code);
 	}
     }
+}
+
+static void
+redefine(WINDOW *win, char *string, int code)
+{
+    really_define_key(win, string, code);
+}
+
+static void
+remove_definition(WINDOW *win, int code)
+{
+    really_define_key(win, 0, code);
 }
 
 int
@@ -40,16 +186,18 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
     int ch;
     WINDOW *win;
 
+    unlink(MY_LOGFILE);
+
     initscr();
     (void) cbreak();		/* take input chars one at a time, no wait for \n */
     (void) noecho();		/* don't echo input */
 
     printw("This demo is best on xterm: it reverses the definitions for f1-f12,\n");
-    printw("adds duplicate definitions for cursor application and normal modes,");
-    printw("and removes any definitions for the mini keypad.  Type any of those:");
+    printw("adds duplicate definitions for cursor application and normal modes,\n");
+    printw("and removes any definitions for the mini keypad.  Type any of those:\n");
     refresh();
 
-    win = newwin(LINES - 2, COLS, 2, 0);
+    win = newwin(LINES - 3, COLS, 3, 0);
     scrollok(win, TRUE);
     keypad(win, TRUE);
     wmove(win, 0, 0);
@@ -61,28 +209,30 @@ main(int argc GCC_UNUSED, char *argv[]GCC_UNUSED)
 	char name[10];
 	sprintf(name, "kf%d", n + 1);
 	fkeys[n] = tigetstr(name);
-	define_key(0, KEY_F(n + 1));
     }
     for (n = 0; n < 12; ++n) {
-	define_key(fkeys[11 - n], KEY_F(n + 1));
+	redefine(win, fkeys[11 - n], KEY_F(n + 1));
     }
 
-    duplicate("kcub1", KEY_LEFT);
-    duplicate("kcuu1", KEY_UP);
-    duplicate("kcud1", KEY_DOWN);
-    duplicate("kcuf1", KEY_RIGHT);
+    duplicate(win, "kcub1", KEY_LEFT);
+    duplicate(win, "kcuu1", KEY_UP);
+    duplicate(win, "kcud1", KEY_DOWN);
+    duplicate(win, "kcuf1", KEY_RIGHT);
 
-    define_key(0, KEY_A1);
-    define_key(0, KEY_A3);
-    define_key(0, KEY_B2);
-    define_key(0, KEY_C1);
-    define_key(0, KEY_C3);
+    remove_definition(win, KEY_A1);
+    remove_definition(win, KEY_A3);
+    remove_definition(win, KEY_B2);
+    remove_definition(win, KEY_C1);
+    remove_definition(win, KEY_C3);
+
+    really_define_key(win, "\033O", 1023);
 
     while ((ch = wgetch(win)) != ERR) {
 	char *name = keyname(ch);
 	wprintw(win, "Keycode %d, name %s\n",
 		ch,
 		name != 0 ? name : "<null>");
+	log_last_line(win);
 	wclrtoeol(win);
     }
     endwin();
