@@ -59,7 +59,7 @@ void use_env(bool f)
 	_use_env = f;
 }
 
-int LINES, COLS;
+int LINES, COLS, TABSIZE;
 
 static void get_screensize(void)
 /* set LINES and COLS from the environment and/or terminfo entry */
@@ -134,6 +134,15 @@ char 		*rows, *cols;
 	}
 
 	T(("screen size is %dx%d", LINES, COLS));
+
+#ifdef init_tabs
+	if (init_tabs != -1)
+		TABSIZE = init_tabs;
+	else
+#endif /* init_tabs */
+		TABSIZE = 8;
+	T(("TABSIZE = %d", TABSIZE));
+
 }
 
 /****************************************************************************
@@ -246,7 +255,7 @@ static int grab_entry(const char *tn, TERMTYPE *tp)
 	 * links the entire terminfo/termcap compiler into the startup code.
 	 * It's preferable to build a real terminfo database and use that.
 	 */
-	return(_nc_read_termcap_entry(tn, tp));
+	status = _nc_read_termcap_entry(tn, tp);
 #endif /* PURE_TERMINFO */
 
 	return(status);

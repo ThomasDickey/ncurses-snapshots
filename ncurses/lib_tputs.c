@@ -75,6 +75,7 @@ char	addrbuf[17];
 			    	(*outc)('$');
 			    	(*outc)(*string);
 			} else {
+				bool mandatory;
 
 			    	number = 0;
 			    	string++;
@@ -97,13 +98,21 @@ char	addrbuf[17];
 					}
 			    	}
 
-			    	if (*string == '*') {
-					number *= affcnt;
-					string++;
+				mandatory = !xon_xoff;
+				while (*string == '*' || *string == '/')
+				{
+					if (*string == '*') {
+						number *= affcnt;
+						string++;
+					}
+					else /* if (*string == '/') */ {
+						mandatory = TRUE;
+						string++;
+					}
 			    	}
 
 #ifdef padding_baud_rate
-			    	if (!xon_xoff && padding_baud_rate && (!SP || SP->_baudrate >= padding_baud_rate))
+			    	if (mandatory && padding_baud_rate && (!SP || SP->_baudrate >= padding_baud_rate))
 					delay_output((float)number);
 #endif /* padding_baud_rate */
 

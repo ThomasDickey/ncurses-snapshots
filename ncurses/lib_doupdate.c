@@ -28,7 +28,7 @@
  *	so all physcal output is concentrated here.
  *
  *-----------------------------------------------------------------*/
- 
+
 #include "curses.priv.h"
 #include <stdlib.h>
 #include <sys/types.h>
@@ -120,9 +120,9 @@ static inline void GoTo(int row, int col)
 		curscr->_attrs = A_NORMAL;
 	}
 
-	mvcur(SP->_cursrow, SP->_curscol, row, col); 
-	SP->_cursrow = row; 
-	SP->_curscol = col; 
+	mvcur(SP->_cursrow, SP->_curscol, row, col);
+	SP->_cursrow = row;
+	SP->_curscol = col;
 }
 
 static inline void PutAttrChar(chtype ch)
@@ -139,6 +139,7 @@ static inline void PutAttrChar(chtype ch)
 		vidputs(curscr->_attrs, _nc_outch);
 	}
 	putc(ch & A_CHARTEXT, SP->_ofp);
+	SP->_curscol++;
 	if (char_padding) {
 		TPUTS_TRACE("char_padding");
 		putp(char_padding);
@@ -173,7 +174,6 @@ static inline void PutChar(chtype ch)
     else if (InsStr(&ch, 1) == ERR)		/* try inserting the char */
 	return;
 
-    SP->_curscol++; 
     if (SP->_curscol >= screen_columns)
     {
 	if (eat_newline_glitch)
@@ -186,7 +186,7 @@ static inline void PutChar(chtype ch)
 	     * *next* graphic char is emitted.  The c100 way is
 	     * to ignore LF received just after an am wrap.
 	     *
-	     * An aggressive way to handle this would be to 
+	     * An aggressive way to handle this would be to
 	     * emit CR/LF after the char and then assume the wrap
 	     * is done, you're on the first position of the next
 	     * line, and the terminal out of its weird state.
@@ -194,12 +194,12 @@ static inline void PutChar(chtype ch)
 	     * cursor is in hyperspace and let the next mvcur()
 	     * call straighten things out.
 	     */
-	    SP->_curscol = -1;	   
+	    SP->_curscol = -1;
 	    SP->_cursrow = -1;
 	}
 	else if (auto_right_margin)
-	{ 
-	    SP->_curscol = 0;	   
+	{
+	    SP->_curscol = 0;
 	    SP->_cursrow++;
 	}
 	else
@@ -210,12 +210,12 @@ static inline void PutChar(chtype ch)
 #ifdef POSITION_DEBUG
     position_check(SP->_cursrow, SP->_curscol, "PutChar");
 #endif /* POSITION_DEBUG */
-}	
+}
 
 int doupdate(void)
 {
 int	i;
-	
+
 	T(("doupdate() called"));
 
 #ifdef TRACE
@@ -316,7 +316,7 @@ int	i;
 		vidattr(curscr->_attrs = A_NORMAL);
 
 	GoTo(curscr->_cury, curscr->_curx);
-	
+
 	fflush(SP->_ofp);
 
 	_nc_signal_handler(TRUE);
@@ -353,7 +353,7 @@ int	lastNonBlank;
 	for (i = 0; i < min(screen_lines, scr->_maxy + 1); i++) {
 		GoTo(i, 0);
 		lastNonBlank = scr->_maxx;
-		
+
 		while (scr->_line[i].text[lastNonBlank] == BLANK && lastNonBlank > 0)
 			lastNonBlank--;
 
@@ -375,7 +375,7 @@ int	lastNonBlank;
 **
 **	Clear to EOL.  Deal with background color erase if terminal has this
 **	glitch.  This code forces the current color and highlight to A_NORMAL
-**	before emitting the erase sequence, then restores the current 
+**	before emitting the erase sequence, then restores the current
 **	attribute.
 */
 
@@ -460,7 +460,7 @@ chtype	*newLine = newscr->_line[lineno].text;
 chtype	*oldLine = curscr->_line[lineno].text;
 int	k;
 int	attrchanged = 0;
-	
+
 	T(("NoIDcTransformLine(%d) called", lineno));
 
 	firstChar = 0;
@@ -468,7 +468,7 @@ int	attrchanged = 0;
 		if(ceol_standout_glitch) {
 			if((newLine[firstChar] & (chtype)A_ATTRIBUTES) != (oldLine[firstChar] & (chtype)A_ATTRIBUTES))
 			attrchanged = 1;
-		}			
+		}
 		firstChar++;
 	}
 
@@ -487,7 +487,7 @@ int	attrchanged = 0;
 		while (lastChar > firstChar  &&  newLine[lastChar] == oldLine[lastChar])
 			lastChar--;
 		GoTo(lineno, firstChar);
-	}			
+	}
 
 	T(("updating chars %d to %d", firstChar, lastChar));
 	for (k = firstChar; k <= lastChar; k++) {
@@ -521,7 +521,7 @@ chtype	*newLine = newscr->_line[lineno].text;
 chtype	*oldLine = curscr->_line[lineno].text;
 int	k, n;
 int	attrchanged = 0;
-	
+
 	T(("IDcTransformLine(%d) called", lineno));
 
 	if(ceol_standout_glitch && clr_eol) {
@@ -529,10 +529,10 @@ int	attrchanged = 0;
 		while(firstChar < screen_columns) {
 			if((newLine[firstChar] & (chtype)A_ATTRIBUTES) != (oldLine[firstChar] & (chtype)A_ATTRIBUTES))
 				attrchanged = 1;
-			firstChar++;			
+			firstChar++;
 		}
 	}
-	
+
 	firstChar = 0;
 
 	if (attrchanged) {
@@ -544,7 +544,7 @@ int	attrchanged = 0;
 		while (firstChar < screen_columns  &&
 				newLine[firstChar] == oldLine[firstChar])
 			firstChar++;
-		
+
 		if (firstChar >= screen_columns)
 			return;
 
@@ -572,7 +572,7 @@ int	attrchanged = 0;
 		oLastChar = screen_columns - 1;
 		while (oLastChar > firstChar  &&  oldLine[oLastChar] == BLANK)
 			oLastChar--;
-	
+
 		nLastChar = screen_columns - 1;
 		while (nLastChar > firstChar  &&  newLine[nLastChar] == BLANK)
 			nLastChar--;
@@ -584,7 +584,7 @@ int	attrchanged = 0;
 				PutChar(newLine[firstChar]);
 		} else if( newLine[nLastChar] != oldLine[oLastChar] ) {
 			n = max( nLastChar , oLastChar );
-			
+
 			GoTo(lineno, firstChar);
 			for( k=firstChar ; k <= n ; k++ )
 				PutChar(newLine[k]);
@@ -598,10 +598,10 @@ int	attrchanged = 0;
 					break;
 				 }
 			}
-	
+
 			n = min(oLastChar, nLastChar);
 			GoTo(lineno, firstChar);
-	
+
 			for (k=firstChar; k <= n; k++)
 				PutChar(newLine[k]);
 
@@ -698,10 +698,9 @@ static int InsStr(chtype *line, int count)
 			}
 			line++;
 			count--;
-		return(OK);
 		}
+		return(OK);
 	}
-	return(ERR);
 }
 
 /*

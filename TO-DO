@@ -1,6 +1,16 @@
 SHORT-TERM TO-DO ITEMS:
 
-Bugs:
+Known Problems:
+
+* The code for function-key recognition doesn't deal gracefully with NULs
+  in the input stream.  This creates a problem for some target environments 
+  (such as OS/2 Warp) using the raw PC BIOS; it uses NUL as a leader character
+  for function-key codes, so normally we translate input NULs into \200 (the
+  character used as a stand-in for NUL in capability strings).  In order to
+  preserve 8-bit cleanliness, we disable this translation when meta() is on.
+  So you can have 8-bit characters, or recognize NULs in function keys, but
+  not both.  The real fix for this would be to remove NUL-sentinel dependencies
+  in the function-key matcher.
 
 * Users of older System V UNIXes (but not Solaris, and probably not SVr4)
   may trip over a known problem with the signal-handling code which causes
@@ -10,8 +20,14 @@ Bugs:
   like FreeBSD, NetBSD, or BSDI.  For details, see the analysis in the
   header comment of ncurses/lib_tstp.c.
 
-* We need a portable vsscanf() implementation.  Currently the library links
-  a stub.
+* If you're using a BSD earlier than 4.4BSD, or a Linux old enough not to
+  have a native vsscanf(3) in its library, vwscanw() will not work.  You lose.
+  (It should work on any System V, however).  If you want to fix this, add
+  an implementation to ncurses/vsscanf.c.
+
+* The demo build for the c++ library craps out with many link errors under gcc
+  2.6.3.  We're told the C++ support in 2.6.3 is broken and that the right
+  fix is to upgrade to 2.7.0.
 
 * The window classes defined in the c++ subdirectory need documentation.
 

@@ -327,7 +327,18 @@ void _nc_scroll_optimize(void)
 #endif /* MAINDEBUG */		    
 
 		    for (m = ofirst; m <= olast; m++)
+		    {
 			REAL(m) = _NEWINDEX;
+#ifndef MAINDEBUG
+			/*
+			 * This will tell the second stage of the optimizer
+			 * that every line in the hunk on the real screen has
+			 * been changed.
+			 */
+			curscr->_line[m].firstchar = 0;
+			curscr->_line[m].lastchar = curscr->_maxx;
+#endif /* MAINDEBUG */		    
+		    }
 		    for (m = first; m <= last; m++)
 			OLDNUM(m) = _NEWINDEX;
 
@@ -348,12 +359,12 @@ static void linedump(void)
     int	n;
     char	buf[BUFSIZ];
 
-    (void) strcpy(buf, "real:");
+    (void) strcpy(buf, "real");
     for (n = 0; n < LINES; n++)
 	(void) sprintf(buf + strlen(buf), " %02d", REAL(n)); 
     TR(TRACE_UPDATE | TRACE_MOVE, (buf));
 
-    (void) strcpy(buf, "virt:");
+    (void) strcpy(buf, "virt");
     for (n = 0; n < LINES; n++)
 	(void) sprintf(buf + strlen(buf), " %02d", OLDNUM(n));
     TR(TRACE_UPDATE | TRACE_MOVE, (buf));

@@ -29,13 +29,6 @@
 #include "curses.priv.h"
 #include <ctype.h>
 #include "unctrl.h"
-#include "term.h"	/* init_tabs */
-
-#ifdef init_tabs
-#define TABSIZE	init_tabs
-#else
-#define TABSIZE	8
-#endif /* TABSIZE */
 
 #define ALL_BUT_COLOR ((chtype)~(A_COLOR))
 
@@ -123,8 +116,72 @@ chtype _nc_render(WINDOW *win, chtype oldch, chtype newch)
 					scroll(win); \
 			}
 
+/* check if position is legal; if not, return error */
+#define CHECK_POSITION(win, x, y) \
+	if (y > win->_maxy || x > win->_maxx || y < 0 || x < 0) { \
+		TR(TRACE_VIRTPUT, ("Alert! win _curx = %d, _cury = %d " \
+				   "(_maxx = %d, _maxy = %d)", x, y, \
+				   win->_maxx, win->_maxy)); \
+	  	win->_curx = win->_cury = 0; \
+		win->_flags &= ~_NEED_WRAP; \
+	    	return(ERR); \
+	}
+
 static inline
-int waddch_nosync(WINDOW *win, const chtype c, const bool literal)
+int waddch_literal(WINDOW *win, chtype ch)
+{
+register int x, y;
+
+	x = win->_curx;
+	y = win->_cury;
+
+	CHECK_POSITION(win, x, y);
+
+	if (win->_flags & _NEED_WRAP) {
+		TR(TRACE_MOVE, ("new char when NEED_WRAP set at %d,%d",y,x));
+		DO_NEWLINE
+	}
+
+	/*
+	 * We used to pass in
+	 *	win->_line[y].text[x]
+	 * as a second argument, but the value of the old character
+	 * is not relevant here.
+	 */
+	ch = render_char(win, 0, ch);
+
+	TR(TRACE_VIRTPUT, ("win attr = %s", _traceattr(win->_attrs)));
+	ch |= win->_attrs;
+
+	if (win->_line[y].text[x] != ch) {
+		if (win->_line[y].firstchar == _NOCHANGE)
+			win->_line[y].firstchar = win->_line[y].lastchar = x;
+		else if (x < win->_line[y].firstchar)
+			win->_line[y].firstchar = x;
+		else if (x > win->_line[y].lastchar)
+			win->_line[y].lastchar = x;
+
+	}
+
+	win->_line[y].text[x++] = ch;
+	TR(TRACE_VIRTPUT, ("(%d, %d) = %s | %s", 
+			   y, x,
+			   _tracechar((unsigned char)(ch & A_CHARTEXT)),
+			   _traceattr((ch & (chtype)A_ATTRIBUTES))));
+	if (x > win->_maxx) {
+		TR(TRACE_MOVE, ("NEED_WRAP set at %d,%d",y,x));
+		win->_flags |= _NEED_WRAP;
+		x--;
+	}
+
+	win->_curx = x;
+	win->_cury = y;
+
+	return OK;
+}
+
+static inline
+int waddch_nosync(WINDOW *win, const chtype c)
 /* the workhorse function -- add a character to the given window */
 {
 register chtype	ch = c;
@@ -134,23 +191,10 @@ int		newx;
 	x = win->_curx;
 	y = win->_cury;
 
-	if (y > win->_maxy || x > win->_maxx || y < 0 || x < 0) {
-		TR(TRACE_VIRTPUT, ("Alert! win _curx = %d, _cury = %d "
-				   "(_maxx = %d, _maxy = %d)", x, y,
-				   win->_maxx, win->_maxy));
-	  	/* seems that window's data got corrupt, so it 
-		   requires sanitation */
-	  	win->_curx = win->_cury = 0;
-		win->_flags &= ~_NEED_WRAP;
-	    	return(ERR);
-	}
+	CHECK_POSITION(win, x, y);
 
 	if (ch & A_ALTCHARSET)
 		goto noctrl;
-
-	/* ugly, but necessary --- and, bizarrely enough, even portable! */
-	if (literal)
-	    	goto noctrl;
 
 	switch (ch&A_CHARTEXT) {
     	case '\t':
@@ -159,9 +203,10 @@ int		newx;
 			newx = min(TABSIZE, win->_maxx+1);
 		} else
 			newx = min(x + (TABSIZE-(x%TABSIZE)), win->_maxx+1);
-		for (; x < newx; x++)
-	    		if (waddch_nosync(win, ' ' | (ch&A_ATTRIBUTES), TRUE) == ERR)
+		while (win->_curx < newx) {
+	    		if (waddch_literal(win, ' ' | (ch&A_ATTRIBUTES)) == ERR)
 				return(ERR);
+		}
 		return(OK);
     	case '\n':
 		wclrtoeol(win);
@@ -183,43 +228,8 @@ int		newx;
 
 		/* FALL THROUGH */
         noctrl:
-		if (win->_flags & _NEED_WRAP) {
-			TR(TRACE_MOVE, ("new char when NEED_WRAP set at %d,%d",y,x));
-			DO_NEWLINE
-		}
-
-		/*
-		 * We used to pass in
-		 *	win->_line[y].text[x]
-		 * as a second argument, but the value of the old character
-		 * is not relevant here.
-		 */
-		ch = render_char(win, 0, ch);
-
-		TR(TRACE_VIRTPUT, ("win attr = %s", _traceattr(win->_attrs)));
-		ch |= win->_attrs;
-
-		if (win->_line[y].text[x] != ch) {
-		    	if (win->_line[y].firstchar == _NOCHANGE)
-				win->_line[y].firstchar = win->_line[y].lastchar = x;
-		    	else if (x < win->_line[y].firstchar)
-				win->_line[y].firstchar = x;
-		    	else if (x > win->_line[y].lastchar)
-				win->_line[y].lastchar = x;
-
-		}
-
-		win->_line[y].text[x++] = ch;
-		TR(TRACE_VIRTPUT, ("(%d, %d) = %s | %s", 
-				   y, x,
-				   _tracechar((unsigned char)(ch & A_CHARTEXT)),
-				   _traceattr((ch & (chtype)A_ATTRIBUTES))));
-		if (x > win->_maxx) {
-			TR(TRACE_MOVE, ("NEED_WRAP set at %d,%d",y,x));
-			win->_flags |= _NEED_WRAP;
-			x--;
-		}
-		break;
+		waddch_literal(win, ch);
+		return(OK);
 	}
 
 	win->_curx = x;
@@ -230,10 +240,10 @@ int		newx;
 
 #undef DO_NEWLINE
 
-int _nc_waddch_nosync(WINDOW *win, const chtype c, const bool literal)
+int _nc_waddch_nosync(WINDOW *win, const chtype c)
 /* export copy of waddch_nosync() so the string-put functions can use it */
 {
-    return(waddch_nosync(win, c, literal));
+    return(waddch_nosync(win, c));
 }
 
 /*
@@ -242,19 +252,6 @@ int _nc_waddch_nosync(WINDOW *win, const chtype c, const bool literal)
  * of run.
  */
 
-static inline int
-wladdch(WINDOW *win, const chtype c, const bool literal)
-{
-    if (waddch_nosync(win, c, literal) == ERR)
-	return(ERR);
-    else
-    {
-	_nc_synchook(win);
-	TR(TRACE_VIRTPUT, ("wladdch() is done"));
-	return(OK);
-    }
-}
-
 /* These are actual entry points */
 
 int waddch(WINDOW *win, const chtype ch)
@@ -262,7 +259,15 @@ int waddch(WINDOW *win, const chtype ch)
 	TR(TRACE_VIRTPUT, ("waddch(%p, %s | %s) called", win,
 			  _tracechar((unsigned char)(ch & A_CHARTEXT)),
 			  _traceattr((ch & (chtype)A_ATTRIBUTES))));
-	return wladdch(win, ch, FALSE);
+
+	if (waddch_nosync(win, ch) == ERR)
+		return(ERR);
+	else
+	{
+		_nc_synchook(win);
+		TR(TRACE_VIRTPUT, ("waddch() is done"));
+		return(OK);
+	}
 }
 
 int wechochar(WINDOW *win, chtype ch)
@@ -271,5 +276,12 @@ int wechochar(WINDOW *win, chtype ch)
 			  _tracechar((unsigned char)(ch & A_CHARTEXT)),
 			  _traceattr((ch & (chtype)A_ATTRIBUTES))));
 
-	return wladdch(win, ch, TRUE);
+	if (waddch_literal(win, ch) == ERR)
+		return(ERR);
+	else
+	{
+		_nc_synchook(win);
+		TR(TRACE_VIRTPUT, ("wechochar() is done"));
+		return(OK);
+	}
 }

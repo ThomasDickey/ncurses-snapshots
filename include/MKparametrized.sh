@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# parameterized.sh -- generate indirection vectors for the various sort methods
+# MKparametrized.sh -- generate indirection vectors for various sort methods
 #
 # The output of this script is C source for an array specifying whether
 # termcap strings should undergo parameter and padding translation.

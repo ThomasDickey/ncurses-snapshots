@@ -33,6 +33,7 @@ install: install.data
 
 install.data: $(ticdir)
 	rm -fr $(ticdir)/[0-9A-Za-z]
+	@echo "Building terminfo database, please wait..."
 	TERMINFO=$(ticdir) $(bindir)/tic $(srcdir)/terminfo.src
 
 $(ticdir) :

@@ -94,3 +94,12 @@ extern int optind;
 #ifndef F_OK
 #define	F_OK	0		/* Test for existence.  */
 #endif
+
+/* usually in <unistd.h> */
+#ifndef STDOUT_FILENO
+#define STDOUT_FILENO 1
+#endif
+
+#ifndef STDERR_FILENO
+#define STDERR_FILENO 2
+#endif

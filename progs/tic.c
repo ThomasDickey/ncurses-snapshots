@@ -20,7 +20,7 @@
 ***************************************************************************/
 
 /*
- *	comp_main.c --- Main program for terminfo compiler
+ *	tic.c --- Main program for terminfo compiler
  *			by Eric S. Raymond
  *
  */
@@ -143,6 +143,7 @@ bool	check_only = FALSE;
 				break;
 		    	case 'V':
 				(void) fputs(NCURSES_VERSION, stdout);
+				putchar('\n');
 				exit(0);
 		    	default:
 				fprintf (stderr, 

@@ -60,23 +60,7 @@ gives the value `80' for ansi.
 .PP
 Finally, string valued capabilities, such as \fBel\fR (clear to end of line
 sequence) are given by the two-character code, an `=', and then a string
-ending at the next following `,'.  A delay in milliseconds may appear
-anywhere in such a capability, enclosed in $<..> brackets,
-as in \fBel\fP=\eEK$<5>,
-and padding characters are supplied by
-.I tputs
-to provide this delay.
-The delay can be either a number, e.g., `20', or a number followed by
-an `*', i.e., `5*'.  A `*' indicates that the padding required is proportional
-to the number of lines affected by the operation, and the amount given is
-the per-affected-unit padding required.
-(In the case of insert character, the factor is still the number of
-.IR lines
-affected.
-This is always one unless the terminal has \fBxenl\fP and the software uses it.)
-When a `*' is specified, it is sometimes useful to give a delay of the form
-`3.5' to specify a delay per unit to tenths of milliseconds.
-(Only one decimal place is allowed.)
+ending at the next following `,'.
 .PP
 A number of escape sequences are provided in the string valued capabilities
 for easy encoding of characters there.  Both \fB\eE\fR and \fB\ee\fR
@@ -89,6 +73,22 @@ and \e0 for null.
 (\e0 will produce \e200, which does not terminate a string but behaves
 as a null character on most terminals.)
 Finally, characters may be given as three octal digits after a \fB\e\fR.
+.PP
+A delay in milliseconds may appear anywhere in a string capability, enclosed in
+$<..> brackets, as in \fBel\fP=\eEK$<5>, and padding characters are supplied by
+.I tputs
+to provide this delay.  The delay must be a number with at most one decimal
+place of precision; it may be followed by suffixes `*' or '/' or both.  A `*'
+indicates that the padding required is proportional to the number of lines
+affected by the operation, and the amount given is the per-affected-unit
+padding required.  (In the case of insert character, the factor is still the
+number of
+.IR lines
+affected.)  Normally, padding is advisory if the decice has the \fBxon\fR
+capability; it is used for cost computation but does not trigger delays.  A `/'
+suffix indicates that the padding is mandatory and forces a delay of the given
+number of milliseconds even on devices for which \fBxon\fR is present to
+indicate flow control.
 .PP
 Sometimes individual capabilities must be commented out.
 To do this, put a period before the capability name.

@@ -21,7 +21,7 @@
 */
 
 #if !defined(lint)
-static char vcid[] = "@Id: cursesw.cc,v 1.3 1994/02/04 22:05:45 anatoly Exp @";
+static char vcid[] = "$Id: cursesw.cc,v 1.2 1995/11/29 23:11:43 esr Exp $";
 #endif // !lint
 
 
@@ -37,6 +37,9 @@ int NCursesWindow::count = 0;
 int
 NCursesWindow::scanw(const char* fmt, ...)
 {
+#if defined(__SUNPRO_CC)
+    return ERR;
+#else
     va_list args;
     va_start(args, fmt);
     char buf[BUFSIZ];
@@ -47,12 +50,16 @@ NCursesWindow::scanw(const char* fmt, ...)
     }
     va_end(args);
     return result;
+#endif
 }
 
 
 int
 NCursesWindow::scanw(int y, int x, const char* fmt, ...)
 {
+#if defined(__SUNPRO_CC)
+    return ERR;
+#else
     va_list args;
     va_start(args, fmt);
     char buf[BUFSIZ];
@@ -66,6 +73,7 @@ NCursesWindow::scanw(int y, int x, const char* fmt, ...)
     }
     va_end(args);
     return result;
+#endif
 }
 
 
@@ -106,6 +114,15 @@ NCursesWindow::init(void)
     keypad(1);
 }
 
+void
+NCursesWindow::err_handler(const char *msg)
+{
+#if defined(__SUNPRO_CC)
+    genericerror(1, (char *)msg);
+#else
+    (*lib_error_handler)("NCursesWindow", msg);
+#endif
+}
 
 NCursesWindow::NCursesWindow(int lines, int cols, int begin_y, int begin_x)
 {
@@ -114,7 +131,7 @@ NCursesWindow::NCursesWindow(int lines, int cols, int begin_y, int begin_x)
 
     w = newwin(lines, cols, begin_y, begin_x);
     if (w == 0) {
-	(*lib_error_handler)("NCursesWindow", "Cannot construct window");
+	err_handler("Cannot construct window");
     }
     init();
 
@@ -153,7 +170,7 @@ NCursesWindow::NCursesWindow(NCursesWindow& win, int l, int c,
 
     w = subwin(root->w, l, c, by, bx);
     if (w == 0) {
-	(*lib_error_handler)("NCursesWindow", "Cannot construct subwindow");
+	err_handler("Cannot construct subwindow");
     }
 
     par = &win;
@@ -210,7 +227,7 @@ NCursesWindow::~NCursesWindow()
     if (count == 0)
 	endwin();
     else if (count < 0) { // cannot happen!
-	(*lib_error_handler)("NCursesWindow", "Too many windows destroyed");
+	err_handler("Too many windows destroyed");
     }
 }
 

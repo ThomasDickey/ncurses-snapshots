@@ -33,42 +33,41 @@ You will need the following in order to build and install ncurses under UNIX:
 
 INSTALLATION PROCEDURE:
 
-1.  IF YOU HAVE ROOT: First, decide where you want to put the object files of
-    terminal descriptions. (If you don't have root, you may skip this step.)
-    The default is /usr/lib/terminfo.  If your system already has a
-    terminfo database, you can put it somewhere else.
+1.  First, decide whether you want ncurses to replace your existing library (in
+    which case you'll need super-user privilages) or be installed in parallel 
+    with it.  
 
     The --prefix option to configure changes the root directory for installing
-    ncurses; the default is in subdirectories of /usr/, unless the
-    configure script finds the `tic' program installed in a different place
-    within your path (e.g., finding /usr/bin/tic makes the default prefix
-    /usr/bin):
+    ncurses.  The default is in subdirectories of /usr/local. Use --prefix=/usr
+    to replace your default curses distribution. This will be the case for 
+    Linux and BSD/OS users.
 
-    bin - tic, infocmp, clear, tput
-    lib - libncurses*.*
-    lib/terminfo - compiled terminal descriptions
-    man - man pages
-    include - C header files
+    The package gets installed beneath the --prefix directory as
+    follows:
 
-    If you want to put the terminal descriptions in, for example,
-    /usr/share/lib/terminfo, you can either make that a symbolic link to
-    /usr/lib/terminfo, or type `./configure --with-datadir=/usr/share/lib/terminfo'.
-    This is particularly useful if your system already has a terminfo database.
-    This option allows you to place ncurses' terminfo in an alternate location.
-    You can use TERMINFO to point to the appropriate directory.
+    In $(prefix)/bin:          tic, infocmp, captoinfo, tset, 
+    				reset, clear, tput, toe
+    In $(prefix)/lib:          libncurses*.* libcurses.a
+    In $(prefix)/lib/terminfo: compiled terminal descriptions
+    In $(prefix)/include:      C header files
+    Under $(prefix)/man:       the manual pages
 
-2.  Type `./configure' to configure ncurses for your operating system and create
-    the Makefiles.  Various configuration options are available to customize
+2.  Type `./configure' in the top-level directory of the distribution to
+    configure ncurses for your operating system and create the Makefiles.
+    Besides --prefix, various configuration options are available to customize
     the installation; use `./configure --help' to list the available options.
 
-    It will create your Makefiles.  If your operating system is not supported,
-    read the PORTABILITY section in the file ncurses/README for information on
-    how to create a configuration file for your system.
+    If your operating system is not supported, read the PORTABILITY section in
+    the file ncurses/README for information on how to create a configuration
+    file for your system.
 
     The `configure' script generates makefile rules for one or more object
     models and their associated libraries:
 
 	libncurses.a (normal)
+
+	libcurses.a (normal, a link to libncurses.a)
+    	This gets left out if you use the --disable-overwrite
 
 	libncurses.so (shared)
 
@@ -88,42 +87,32 @@ INSTALLATION PROCEDURE:
 
     If you have the capability to make a publicly accessible terminfo database,
     use the --disable-termcap switch.  This removes the automatic fallback to
-    the termcap file normally compiled in, making the curses library 
+    the termcap file normally compiled in, making the ncurses library 
     significantly smaller because the initialization code doesn't have to 
     carry around the entire termcap-to-terminfo compiler.
 
 3.  Type `make'.  Ignore any warnings, no error messages should be produced. 
-    This should compile the library, the terminfo compiler (tic), the infocmp,
-    clear and tput programs (see the man pages for explanation of what they
-    do), some test programs, and the panels and menus libraries.
-    Read the file test/README for details on the test programs.
+    This should compile the ncurses library, the terminfo compiler tic(1), 
+    captoinfo(1), infocmp(1), toe(1), clear(1) tset(1), reset(1), and tput(1) 
+    programs (see the man pages for explanation of what they do), some test 
+    programs, and the panels, menus, and forms libraries.
 
 4.  Run ncurses and several other test programs in the test directory to
-    verify that ncurses functions correctly before overwriting any system
-    files.
+    verify that ncurses functions correctly before doing an install that
+    may overwrite system files.  Read the file test/README for details on
+    the test programs.
 
     The ncurses program is designed specifically to test the ncurses library.
     You can use it to verify that the screen highlights work correctly, that
     cursor addressing and window scrolling works OK, etc.
 
-5.  If you are running SLS, Slackware, or any Linux distribution based on
-    them, you may already have an older version of ncurses installed.  If so,
-    you must remove the old files from /usr/include and the old libraries
-    from /usr/lib before installing ncurses.  Otherwise, you may have
-    compilation errors or linkage problems because you're picking up the old
-    files.
-
-    If you have BSD curses installed in your system and you accidentally
-    compile using its curses.h you'll end up with a large number of
-    undefined symbols at link time. _waddbytes is one of them.
-
-6.  IF YOU HAVE ROOT: You can type `make install' to install the libraries,
+5.  Once you've tested, you can type `make install' to install libraries,
     the programs, the terminfo database and the man pages.  Alternately, you
     can type `make install' in each directory you want to install.  In the
     top-level directory, you can do a partial install using these commands:
  
-	'make install.progs'    installs tic, infocmp, clear and tput.
-  	'make install.includes' installs the headers.
+	'make install.progs'    installs tic, infocmp, etc...
+  	'make install.include' installs the headers.
   	'make install.libs'     installs the libraries.
   	'make install.data'     installs the terminfo data. (Note: `tic' must
 	                        be installed before the terminfo data can be
@@ -148,6 +137,10 @@ INSTALLATION PROCEDURE:
     directories (/usr/include and /usr/lib) then all your users will need
     to use the -I option to compile programs and -L to link them.
 
+    If you have BSD curses installed in your system and you accidentally
+    compile using its curses.h you'll end up with a large number of
+    undefined symbols at link time. _waddbytes is one of them.
+
     IF YOU DO NOT HAVE ROOT: Change directory to the `progs' subdirectory
     and run the `capconvert' script.  This script will deduce various things
     about your environment and use them to build you a private terminfo tree,
@@ -159,16 +152,20 @@ INSTALLATION PROCEDURE:
 
     See the BSD CONVERSION NOTES section below for a few more details.
 
-7.  The c++ directory has C++ classes that are built on top of ncurses and
+6.  The c++ directory has C++ classes that are built on top of ncurses and
     panels.  You need to have c++ (and its libraries) installed before you can
     compile and run the demo.
 
-8.  If you're running under Linux, you must either (a) tell Linux that the
-    console terminal type is `linux', or (b) make a link to or copy of the 
-    linux entry in the appropriate place under your terminfo directory,
-    named `console'.
+7.  If you're running an older Linux, you must either (a) tell Linux that the
+    console terminal type is `linux' or (b) make a link to or copy of the
+    linux entry in the appropriate place under your terminfo directory, named
+    `console'.  All 1.3 and many 1.2 distributions (including Yggdrasil and
+    Red Hat) already have the console type set to `linux'.
 
-    The way to change the wired-in console type is by editing /etc/inittab.
+    The way to change the wired-in console type depends on the configuration
+    of your system. This may involve editing /etc/inittab, /etc/ttytype,
+    /etc/profile and other such files.
+
     Warning: this is not for the fainthearted, if you mess up your console
     getty entries you can make your system unusable!  However, if you are
     a distribution maker, this is the right thing to do (see the note for
@@ -176,7 +173,8 @@ INSTALLATION PROCEDURE:
 
     The easier way is to link or copy l/linux to c/console under your terminfo
     directory.  Note: this will go away next time you do `make install.data'
-    and you'll have to redo it. 
+    and you'll have to redo it. There is no need to have entries for all 
+    possible screen sizes, ncurses will figure out the size automatically.
 
 IF YOU ARE A SYSTEM INTEGRATOR:
 
@@ -189,7 +187,7 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 	--data-dir=/usr/share/misc/terminfo 
 
 	Please configure the ncurses library in a pure-terminfo mode; that
-	is, with the --disable-termcap option.   This will make the curses 
+	is, with the --disable-termcap option.   This will make the ncurses 
 	library smaller and faster. The ncurses library includes a termcap 
 	emulation that queries the terminfo database, so even applications 
 	that use raw termcap to query terminal characteristics will win 
@@ -203,19 +201,10 @@ IF YOU ARE A SYSTEM INTEGRATOR:
 
     Keyboard Mapping:
 
-	Some Linux console keyboard mappings as of 1995 are sub-optimal; a
-	bit of tweaking would allow terminfo to make useful distinctions and
-	conform better to the ANSI/ECMA-48 standard.  The following specific
-	things should be changed:
+	The terminfo master file assumes that Shift-Tab generates \E[Z
+        (the ECMA-48 reverse-tabulation sequence) rather than ^I.  Here are
+	the loadkeys -d	mappings that will set this up:
 
-	* Backspace should generate ^H, not ^?.
-	* Shift-tab should generate \E[Z, not ^I.
-
-	The terminfo master file assumes these mappings from version 9.11.3 up.
-	Here are the loadkeys -d mappings that will set these up:
-
-		keycode  14 = BackSpace       BackSpace
-			alt     keycode  14 = Meta_BackSpace
 		keycode  15 = Tab             Tab             
 			alt     keycode  15 = Meta_Tab        
 			shift	keycode  15 = F26
@@ -346,43 +335,19 @@ USING NCURSES WITH EMACS:
 	GNU Emacs has its own termcap support.  By default, it uses a mixture
 	of those functions and code linked from the host system's libraries.  
 	You need to foil this and shut out the GNU termcap library entirely.
-	The following patch to the linux config file will accomplish this:
 
-Diffs between last version checked in and current workfile(s):
+	In order to do this, hack the Linux config file (s/linux.h) to contain
+	a #define TERMINFO and set the symbol LIBS_TERMCAP to "-lncurses".
 
---- 1.1	1995/11/20 23:37:28
-+++ src/s/linux.h	1995/11/25 00:40:52
-@@ -192,7 +192,6 @@
- 
- /* Best not to include -lg, unless it is last on the command line */
- #define LIBS_DEBUG
--#define LIBS_TERMCAP -ltermcap -lcurses /* save some space with shared libs*/
- #ifndef __ELF__
- #define LIB_STANDARD -lc /* avoid -lPW */
- #else
-@@ -207,6 +206,13 @@
- #ifdef THIS_IS_CONFIGURE
- #define C_DEBUG_SWITCH
- #endif
-+
-+/* Use terminfo, not termcap, and pick up the ncurses library. 
-+   Note: in the future the standard base name of the library will
-+   probably become libcurses rather than libncurses.  At that point,
-+   the LIBS_TERMCAP line below can go away.  */
-+#define TERMINFO
-+#define LIBS_TERMCAP	"-lncurses"
- 
- /* Let's try this out, just in case.
-    Nah.  Rik Faith <faith@cs.unc.edu> says it doesn't work well.  */
-
-End of diffs.
-
-	We have submitted it for the 19.30 release, so it may already be
-	applied in your sources -- check for the #define TERMINFO.
+	We have submitted such a change for the 19.30 release, so it may
+	already be applied in your sources -- check for the #define TERMINFO.
 
 BUGS:
 	Send any feedback to the ncurses mailing list at
 	ncurses-list@netcom.com. To subscribe send mail to
 	listserv@netcom.com with body that reads:
 	subscribe ncurses-list <your-email-address-here>
+
+	The Hacker's Guide in the misc directory includes some guidelines
+	on how to report bugs in ways that will get them fixed most quickly.
 

@@ -81,7 +81,7 @@ char *tp = vbuf;
 	    return("(null)");
 
     	while (*buf) {
-		if (is7bits(*buf) && isgraph(*buf))
+		if (is7bits(*buf) && (isgraph(*buf) || *buf == ' '))
 	    		*tp++ = *buf++;
 		else if (*buf == '\n') {
 	    		*tp++ = '\\'; *tp++ = 'n';

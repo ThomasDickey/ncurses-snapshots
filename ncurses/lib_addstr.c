@@ -46,7 +46,7 @@ int code = ERR;
 
 		while((n-- > 0) && (*str != '\0')) {
 			TR(TRACE_VIRTPUT, ("*str = %x", *str));
-			if (_nc_waddch_nosync(win, (unsigned char)*str++, FALSE) == ERR) {
+			if (_nc_waddch_nosync(win, (unsigned char)*str++) == ERR) {
 				code = ERR;
 				break;
 			}
@@ -75,7 +75,7 @@ int code = OK;
 	}
 
 	while(n-- > 0) {
-		if (_nc_waddch_nosync(win, *str++, FALSE) == ERR) {
+		if (_nc_waddch_nosync(win, *str++) == ERR) {
 			code = ERR;
 			break;
 		}

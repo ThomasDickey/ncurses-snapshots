@@ -151,3 +151,5 @@ suggesting improvements, and generally whining about ncurses :-)
 
 BUGS:
 	See the INSTALL file for bug and developer-list addresses.
+	The Hacker's Guide in the misc directory includes some guidelines
+	on how to report bugs in ways that will get them fixed most quickly.

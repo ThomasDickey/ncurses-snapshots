@@ -404,7 +404,7 @@ extern int ins_nwstr(const wchar_t *, int);		/* missing */
 extern int ins_wch(const cchar_t *);			/* missing */
 extern int ins_wstr(const wchar_t *);			/* missing */
 #endif /* XPG4_EXTENDED */
-extern int intrflush(WINDOW *,bool);
+extern int intrflush(WINDOW *,bool);			/* implemented */
 #ifdef XPG4_EXTENDED
 extern int inwstr(wchar_t *);				/* missing */
 extern int in_wch(const cchar_t *);			/* missing */
@@ -425,7 +425,7 @@ extern int killwchar(wchar_t *);			/* missing */
 #endif /* XPG4_EXTENDED */	
 extern int leaveok(WINDOW *,bool);			/* implemented */
 extern char *longname(void);				/* implemented */
-extern int meta(WINDOW *,bool);
+extern int meta(WINDOW *,bool);				/* implemented */
 extern int move(int, int);				/* generated */
 extern int mvaddch(int, int, const chtype);		/* generated */
 extern int mvaddchnstr(int, int, const chtype *, int);	/* generated */

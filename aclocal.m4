@@ -157,6 +157,7 @@ do
 				suffix=$nc_suffix \
 				DoLinks=$nc_cv_do_symlinks \
 				rmSoLocs=$nc_cv_rm_so_locs \
+				overwrite=$WITH_OVERWRITE \
 				$srcdir/$nc_dir/modules >>$nc_dir/Makefile
 			$AWK -f $srcdir/mk-2nd.awk \
 				name=$nc_dir \
@@ -175,13 +176,24 @@ do
 	if test -f $srcdir/$nc_dir/modules; then
 cat >> Makefile <<NC_EOF
 
-install.libs ::
+install.libs \\
+install.$nc_dir ::
 	cd $nc_dir; \$(MAKE) \$(NC_MFLAGS) \[$]@
 NC_EOF
 fi
 done
 
 cat >> Makefile <<NC_EOF
+
+install.libs \\
+install.include ::
+	cd include; \$(MAKE) \$(NC_MFLAGS) \[$]@
+
+install.data ::
+	cd misc; \$(MAKE) \$(NC_MFLAGS) \[$]@
+
+install.man ::
+	cd man; \$(MAKE) \$(NC_MFLAGS) \[$]@
 
 distclean ::
 	rm -f config.cache config.log config.status Makefile include/config.h
@@ -473,6 +485,10 @@ do
 	SUB_MAKEFILES="$SUB_MAKEFILES $nc_dir/Makefile"
 done
 ])dnl
+dnl ---------------------------------------------------------------------------
+dnl	Remove "-g" option from the compiler options
+AC_DEFUN([NC_STRIP_G_OPT],
+[$1=`echo ${$1} | sed -e 's/-g //' -e 's/-g$//'`])dnl
 dnl ---------------------------------------------------------------------------
 dnl	Check for declarion of sys_errlist in one of stdio.h and errno.h.  
 dnl	Declaration of sys_errlist on BSD4.4 interferes with our declaration.

@@ -25,7 +25,7 @@ install install.std : terminfo.5
 	$(srcdir)/../mkinstalldirs $(mandir)
 	@cd $(srcdir); for i in *.[0-9]*; do \
 		section=`expr "$$i" : '.*\\.\\([0-9]\\)[xm]*'`; \
-		if [ ! -d $(mandir)/man$${section} ]; then $(srcdir)/../mkinstalldirs $(mandir)/man$$section]; fi; \
+		if [ ! -d $(mandir)/man$${section} ]; then $(srcdir)/../mkinstalldirs $(mandir)/man$$section; fi; \
 		sed -e 's,@TERMINFO@,$(datadir),' < $$i >/tmp/man.tmp; \
 		echo installing man page $$i;\
 		$(INSTALL_DATA) /tmp/man.tmp $(mandir)/man$${section}/$$i; \
@@ -49,7 +49,7 @@ install.man_db : terminfo.5
 
 # We compose terminfo.5 from the real sources...
 CAPLIST=$(srcdir)/../include/Caps
-terminfo.5: terminfo.head $(CAPLIST) terminfo.tail Makefile MKterminfo.sh
+terminfo.5: $(srcdir)/terminfo.head $(CAPLIST) $(srcdir)/terminfo.tail Makefile $(srcdir)/MKterminfo.sh
 	sh $(srcdir)/MKterminfo.sh $(srcdir)/terminfo.head $(CAPLIST) $(srcdir)/terminfo.tail >terminfo.5
 
 clean mostlyclean:

@@ -2,7 +2,9 @@
 #ifndef _CURSESP_H
 #define _CURSESP_H
 
+#if 0
 #pragma interface
+#endif
 
 #include "cursesw.h"
 extern "C" {

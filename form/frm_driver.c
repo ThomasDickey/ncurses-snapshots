@@ -3973,7 +3973,7 @@ int set_field_buffer(FIELD * field, int buffer, const char * value)
 #if HAVE_MEMCCPY
   s = memccpy(p,value,0,len);
 #else
-  for(s=value;*s && (s<value+len);s++) p[s-value]=*s;
+  for(s=(char *)value;*s && (s<value+len);s++) p[s-value]=*s;
   if (s<value+len) p[s-value]=*s++; else s=0;
 #endif
 

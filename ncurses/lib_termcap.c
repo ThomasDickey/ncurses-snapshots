@@ -83,15 +83,13 @@ int errcode;
 	else
 	{
 		short *sp, speeds[] = {
-#ifdef			B115200
+#ifdef B115200
 			B115200,
 #endif
-#ifdef			B57600
+#ifdef B57600
 			B57600,
 #endif
-#ifdef			B38400
 			B38400,
-#endif
 			B19200,
 			B9600,
 			B4800,
