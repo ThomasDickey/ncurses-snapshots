@@ -1,4 +1,4 @@
-# $Id: ncurses_defs,v 1.13 2002/03/23 23:19:55 tom Exp $
+# $Id: ncurses_defs,v 1.14 2002/05/11 19:18:32 tom Exp $
 ##############################################################################
 # Copyright (c) 2000-2001,2002 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -140,6 +140,7 @@ SVR4_TERMIO
 SYSTEM_NAME	"unknown"
 TERMINFO	"none"
 TERMPATH	"none"
+TIME_WITH_SYS_TIME
 TYPEOF_CHTYPE
 USE_COLORFGBG
 USE_DATABASE

@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.265 2002/02/16 18:59:15 tom Exp $
+dnl $Id: configure.in,v 1.266 2002/05/11 19:47:55 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20000819)
-AC_REVISION($Revision: 1.265 $)
+AC_REVISION($Revision: 1.266 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -914,6 +914,7 @@ AC_SUBST(MATH_LIB)
 CF_GNU_SOURCE
 AC_STDC_HEADERS
 AC_HEADER_DIRENT
+AC_HEADER_TIME
 CF_REGEX
 
 dnl These are some other potentially nonportable headers.

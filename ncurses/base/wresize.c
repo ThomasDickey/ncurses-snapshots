@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
+ * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +32,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: wresize.c,v 1.20 2001/12/19 01:07:07 tom Exp $")
+MODULE_ID("$Id: wresize.c,v 1.21 2002/05/11 19:36:29 tom Exp $")
 
 /*
  * Reallocate a curses WINDOW struct to either shrink or grow to the specified
@@ -130,7 +130,7 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 		win->_line[row].text = s = c_ALLOC(s, ToCols + 1);
 		if (win->_line[row].text == 0)
 		    returnCode(ERR);
-	    } else if (s == 0) {
+	    } else {
 		win->_line[row].text = s =
 		    &pline[win->_pary + row].text[win->_parx];
 	    }
@@ -138,14 +138,15 @@ wresize(WINDOW *win, int ToLines, int ToCols)
 	    if (end >= begin) {	/* growing */
 		if (win->_line[row].firstchar < begin)
 		    win->_line[row].firstchar = begin;
-		win->_line[row].lastchar = ToCols;
-		do {
-		    s[end] = blank;
-		} while (--end >= begin);
+		if (!(win->_flags & _SUBWIN)) {
+		    do {
+			s[end] = blank;
+		    } while (--end >= begin);
+		}
 	    } else {		/* shrinking */
 		win->_line[row].firstchar = 0;
-		win->_line[row].lastchar = ToCols;
 	    }
+	    win->_line[row].lastchar = ToCols;
 	}
     }
 

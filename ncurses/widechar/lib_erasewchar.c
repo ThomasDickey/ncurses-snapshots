@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 2002 Free Software Foundation, Inc.                        *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -27,128 +27,51 @@
  ****************************************************************************/
 
 /****************************************************************************
- *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
- *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
- *     and: Thomas E. Dickey 2002                                           *
+ *  Author: Thomas E. Dickey 2002                                           *
  ****************************************************************************/
 
-/*
- *	lib_kernel.c
- *
- *	Misc. low-level routines:
- *		erasechar()
- *		killchar()
- *		flushinp()
- *
- * The baudrate() and delay_output() functions could logically live here,
- * but are in other modules to reduce the static-link size of programs
- * that use only these facilities.
- */
-
 #include <curses.priv.h>
-#include <term.h>		/* cur_term */
 
-MODULE_ID("$Id: lib_kernel.c,v 1.22 2002/05/11 20:32:18 tom Exp $")
-
-static int
-_nc_vdisable(void)
-{
-    int value;
-#if defined(_POSIX_VDISABLE) && defined(HAVE_UNISTD_H)
-    value = _POSIX_VDISABLE;
-#endif
-#if defined(_PC_VDISABLE)
-    if (value == -1) {
-	value = fpathconf(0, _PC_VDISABLE);
-	if (value == -1) {
-	    value = 0377;
-	}
-    }
-#elif defined(VDISABLE)
-    if (value == -1)
-	value = VDISABLE;
-#endif
-    return value;
-}
+MODULE_ID("$Id: lib_erasewchar.c,v 1.1 2002/05/11 20:38:06 tom Exp $")
 
 /*
- *	erasechar()
+ *	erasewchar()
  *
  *	Return erase character as given in cur_term->Ottyb.
  *
  */
 
-NCURSES_EXPORT(char)
-erasechar(void)
+NCURSES_EXPORT(int)
+erasewchar(wchar_t * wch)
 {
+    int value;
     int result = ERR;
-    T((T_CALLED("erasechar()")));
 
-    if (cur_term != 0) {
-#ifdef TERMIOS
-	result = cur_term->Ottyb.c_cc[VERASE];
-	if (result == _nc_vdisable())
-	    result = ERR;
-#else
-	result = cur_term->Ottyb.sg_erase;
-#endif
+    T((T_CALLED("erasewchar()")));
+    if ((value = erasechar()) != ERR) {
+	*wch = value;
+	result = OK;
     }
     returnCode(result);
 }
 
 /*
- *	killchar()
+ *	killwchar()
  *
  *	Return kill character as given in cur_term->Ottyb.
  *
  */
 
-NCURSES_EXPORT(char)
-killchar(void)
+NCURSES_EXPORT(int)
+killwchar(wchar_t * wch)
 {
+    int value;
     int result = ERR;
-    T((T_CALLED("killchar()")));
 
-    if (cur_term != 0) {
-#ifdef TERMIOS
-	result = cur_term->Ottyb.c_cc[VKILL];
-	if (result == _nc_vdisable())
-	    result = ERR;
-#else
-	result = cur_term->Ottyb.sg_kill;
-#endif
+    T((T_CALLED("killwchar()")));
+    if ((value = killchar()) != ERR) {
+	*wch = value;
+	result = OK;
     }
     returnCode(result);
-}
-
-/*
- *	flushinp()
- *
- *	Flush any input on cur_term->Filedes
- *
- */
-
-NCURSES_EXPORT(int)
-flushinp(void)
-{
-    T((T_CALLED("flushinp()")));
-
-    if (cur_term != 0) {
-#ifdef TERMIOS
-	tcflush(cur_term->Filedes, TCIFLUSH);
-#else
-	errno = 0;
-	do {
-	    ioctl(cur_term->Filedes, TIOCFLUSH, 0);
-	} while
-	    (errno == EINTR);
-#endif
-	if (SP) {
-	    SP->_fifohead = -1;
-	    SP->_fifotail = 0;
-	    SP->_fifopeek = 0;
-	}
-	returnCode(OK);
-    }
-    returnCode(ERR);
 }

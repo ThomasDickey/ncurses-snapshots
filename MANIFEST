@@ -859,6 +859,7 @@
 ./ncurses/tty/tty_update.c
 ./ncurses/widechar/lib_box_set.c
 ./ncurses/widechar/lib_cchar.c
+./ncurses/widechar/lib_erasewchar.c
 ./ncurses/widechar/lib_get_wch.c
 ./ncurses/widechar/lib_get_wstr.c
 ./ncurses/widechar/lib_hline_set.c
@@ -868,6 +869,7 @@
 ./ncurses/widechar/lib_ins_wch.c
 ./ncurses/widechar/lib_inwstr.c
 ./ncurses/widechar/lib_unget_wch.c
+./ncurses/widechar/lib_vid_attr.c
 ./ncurses/widechar/lib_vline_set.c
 ./ncurses/widechar/lib_wacs.c
 ./ncurses/widechar/lib_wunctrl.c
