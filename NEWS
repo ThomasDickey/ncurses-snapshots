@@ -1,10 +1,15 @@
--- $Id: NEWS,v 1.638 2001/07/22 00:22:24 tom Exp $
+-- $Id: NEWS,v 1.639 2001/07/29 00:43:05 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010728
+	+ add a _nc_access() check before opening files listed via $TERMPATH.
+	+ using modified man2html, regenerate some of the html manpages to fix
+	  broken HREF's where the link was hyphenated.
 
 20010721
 	+ add some limit/pointer checks to -S option of tputs.
