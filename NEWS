@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.688 2002/05/26 00:57:21 tom Exp $
+-- $Id: NEWS,v 1.689 2002/06/01 22:59:54 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020601
+	+ add logic to dump_entry.c to remove function-key definitions that do
+	  not fit into the 1023-byte limit for generated termcaps.  This makes
+	  hds200 fit.
+	+ more improvements to tic's warnings, including logic to ignore
+	  differences between delay values in sgr strings.
+	+ move definition of KEY_RESIZE into MKkeydefs.sh script, to
+	  accommodate Caps.osf1r5 which introduced a conflicting definition.
 
 20020525
 	+ add simple resize-handling in test/ncurses.c 'a' menu.
