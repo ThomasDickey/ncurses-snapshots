@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.32 2001/08/26 00:24:14 tom Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.33 2001/12/19 01:06:30 tom Exp $")
 
 NCURSES_EXPORT(int)
 _nc_freewin(WINDOW *win)
@@ -153,7 +153,7 @@ derwin(WINDOW *orig, int num_lines, int num_columns, int begy, int begx)
     win->_pary = begy;
     win->_parx = begx;
     win->_attrs = orig->_attrs;
-    win->_bkgrnd = orig->_bkgrnd;
+    win->_nc_bkgd = orig->_nc_bkgd;
 
     for (i = 0; i < num_lines; i++)
 	win->_line[i].text = &orig->_line[begy++].text[begx];
@@ -212,7 +212,7 @@ _nc_makenew(int num_lines, int num_columns, int begy, int begx, int flags)
 
     win->_flags = flags;
     win->_attrs = A_NORMAL;
-    SetChar(win->_bkgrnd, BLANK_TEXT, BLANK_ATTR);
+    SetChar(win->_nc_bkgd, BLANK_TEXT, BLANK_ATTR);
 
     win->_clear = is_pad ? FALSE : (num_lines == screen_lines
 				    && num_columns == screen_columns);

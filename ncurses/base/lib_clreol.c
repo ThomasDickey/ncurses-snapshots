@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_clreol.c,v 1.20 2001/06/03 00:52:07 skimo Exp $")
+MODULE_ID("$Id: lib_clreol.c,v 1.21 2001/12/19 01:06:04 tom Exp $")
 
 NCURSES_EXPORT(int)
 wclrtoeol(WINDOW *win)
@@ -74,7 +74,7 @@ wclrtoeol(WINDOW *win)
 	    || x > win->_maxx)
 	    returnCode(ERR);
 
-	blank = _nc_background(win);
+	blank = win->_nc_bkgd;
 	line = &win->_line[y];
 	CHANGED_TO_EOL(line, x, win->_maxx);
 

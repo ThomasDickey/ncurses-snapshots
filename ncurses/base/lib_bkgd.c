@@ -33,8 +33,11 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_bkgd.c,v 1.25 2001/06/09 23:47:38 skimo Exp $")
+MODULE_ID("$Id: lib_bkgd.c,v 1.26 2001/12/19 01:36:58 tom Exp $")
 
+/*
+ * Set the window's background information.
+ */
 #if USE_WIDEC_SUPPORT
 NCURSES_EXPORT(void)
 #else
@@ -45,16 +48,33 @@ wbkgrndset(WINDOW *win, const ARG_CH_T ch)
     T((T_CALLED("wbkgdset(%p,%s)"), win, _tracech_t(ch)));
 
     if (win) {
-	attr_t off = AttrOf(win->_bkgrnd);
+	attr_t off = AttrOf(win->_nc_bkgd);
 	attr_t on = AttrOf(CHDEREF(ch));
 
 	toggle_attr_off(win->_attrs, off);
 	toggle_attr_on(win->_attrs, on);
 
 	if (CharOf(CHDEREF(ch)) == L('\0'))
-	    SetChar(win->_bkgrnd, BLANK_TEXT, AttrOf(CHDEREF(ch)));
+	    SetChar(win->_nc_bkgd, BLANK_TEXT, AttrOf(CHDEREF(ch)));
 	else
-	    win->_bkgrnd = CHDEREF(ch);
+	    win->_nc_bkgd = CHDEREF(ch);
+#if USE_WIDEC_SUPPORT
+	/*
+	 * If we're compiled for wide-character support, _bkgrnd is the
+	 * preferred location for the background information since it stores
+	 * more than _bkgd.  Update _bkgd each time we modify _bkgrnd, so the
+	 * macro getbkgd() will work.
+	 */
+	{
+	    cchar_t wch;
+	    int tmp;
+
+	    wgetbkgrnd(win, &wch);
+	    tmp = wctob(CharOf(wch));
+
+	    win->_bkgd = ((tmp == EOF) ? ' ' : (chtype) tmp) | AttrOf(wch);
+	}
+#endif
     }
     returnVoid;
 }
@@ -67,6 +87,9 @@ wbkgdset(WINDOW *win, chtype ch)
     wbkgrndset(win, CHREF(wch));
 }
 
+/*
+ * Set the window's background information and apply it to each cell.
+ */
 #if USE_WIDEC_SUPPORT
 NCURSES_EXPORT(int)
 #else
@@ -86,12 +109,12 @@ wbkgrnd(WINDOW *win, const ARG_CH_T ch)
 	wgetbkgrnd(win, &old_bkgrnd);
 
 	wbkgrndset(win, CHREF(new_bkgd));
-	wattrset(win, AttrOf(win->_bkgrnd));
+	wattrset(win, AttrOf(win->_nc_bkgd));
 
 	for (y = 0; y <= win->_maxy; y++) {
 	    for (x = 0; x <= win->_maxx; x++) {
 		if (CharEq(win->_line[y].text[x], old_bkgrnd))
-		    win->_line[y].text[x] = win->_bkgrnd;
+		    win->_line[y].text[x] = win->_nc_bkgd;
 		else {
 		    NCURSES_CH_T wch = win->_line[y].text[x];
 		    RemAttr(wch, ~A_ALTCHARSET);
@@ -113,17 +136,3 @@ wbkgd(WINDOW *win, const chtype ch)
     SetChar2(wch, ch);
     return wbkgrnd(win, CHREF(wch));
 }
-
-#if USE_WIDEC_SUPPORT
-NCURSES_EXPORT(chtype)
-getbkgd(WINDOW *win)
-{
-    cchar_t wch;
-    int ch;
-
-    wgetbkgrnd(win, &wch);
-    ch = wctob(CharOf(wch));
-
-    return ((ch == EOF) ? ' ' : (chtype) ch) | AttrOf(wch);
-}
-#endif

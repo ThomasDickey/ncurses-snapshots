@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_clrbot.c,v 1.18 2001/06/03 00:52:03 skimo Exp $")
+MODULE_ID("$Id: lib_clrbot.c,v 1.19 2001/12/19 01:05:59 tom Exp $")
 
 NCURSES_EXPORT(int)
 wclrtobot(WINDOW *win)
@@ -52,7 +52,7 @@ wclrtobot(WINDOW *win)
     if (win) {
 	NCURSES_SIZE_T y;
 	NCURSES_SIZE_T startx = win->_curx;
-	NCURSES_CH_T blank = _nc_background(win);
+	NCURSES_CH_T blank = win->_nc_bkgd;
 
 	T(("clearing from y = %d to y = %d with maxx =  %d",
 	   win->_cury, win->_maxy, win->_maxx));

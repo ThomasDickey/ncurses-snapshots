@@ -32,7 +32,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: wresize.c,v 1.19 2001/06/03 00:52:14 skimo Exp $")
+MODULE_ID("$Id: wresize.c,v 1.20 2001/12/19 01:07:07 tom Exp $")
 
 /*
  * Reallocate a curses WINDOW struct to either shrink or grow to the specified
@@ -117,7 +117,7 @@ wresize(WINDOW *win, int ToLines, int ToCols)
     /*
      * Adjust the width of the columns:
      */
-    blank = _nc_background(win);
+    blank = win->_nc_bkgd;
     for (row = 0; row <= ToLines; row++) {
 	NCURSES_CH_T *s = win->_line[row].text;
 	int begin = (s == 0) ? 0 : size_x + 1;

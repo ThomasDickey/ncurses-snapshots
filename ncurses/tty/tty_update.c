@@ -70,7 +70,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: tty_update.c,v 1.170 2001/11/01 23:32:40 tom Exp $")
+MODULE_ID("$Id: tty_update.c,v 1.171 2001/12/19 01:07:24 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -813,7 +813,7 @@ doupdate(void)
  *	in the wbkgd() call.  Assume 'stdscr' for this case.
  */
 #define BCE_ATTRS (A_NORMAL|A_COLOR)
-#define BCE_BKGD(win) (((win) == curscr ? stdscr : (win))->_bkgrnd)
+#define BCE_BKGD(win) (((win) == curscr ? stdscr : (win))->_nc_bkgd)
 
 static inline NCURSES_CH_T
 ClrBlank(WINDOW *win)

@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_delch.c,v 1.11 2001/06/03 00:51:54 skimo Exp $")
+MODULE_ID("$Id: lib_delch.c,v 1.12 2001/12/19 01:06:09 tom Exp $")
 
 NCURSES_EXPORT(int)
 wdelch(WINDOW *win)
@@ -50,7 +50,7 @@ wdelch(WINDOW *win)
     T((T_CALLED("wdelch(%p)"), win));
 
     if (win) {
-	NCURSES_CH_T blank = _nc_background(win);
+	NCURSES_CH_T blank = win->_nc_bkgd;
 	struct ldat *line = &(win->_line[win->_cury]);
 	NCURSES_CH_T *end = &(line->text[win->_maxx]);
 	NCURSES_CH_T *temp2 = &(line->text[win->_curx + 1]);

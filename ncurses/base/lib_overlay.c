@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_overlay.c,v 1.19 2001/06/03 01:53:41 skimo Exp $")
+MODULE_ID("$Id: lib_overlay.c,v 1.20 2001/12/19 01:06:37 tom Exp $")
 
 static int
 overlap(const WINDOW *const s, WINDOW *const d, int const flag)
@@ -109,7 +109,7 @@ copywin
 {
     int sx, sy, dx, dy;
     bool touched;
-    attr_t bk = AttrOf(dst->_bkgrnd);
+    attr_t bk = AttrOf(dst->_nc_bkgd);
     attr_t mask = ~(attr_t) ((bk & A_COLOR) ? A_COLOR : 0);
 
     T((T_CALLED("copywin(%p, %p, %d, %d, %d, %d, %d, %d, %d)"),

@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.30 2001/11/02 21:34:40 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.31 2001/12/19 01:05:52 tom Exp $")
 
 #if USE_WIDEC_SUPPORT
 #define CONV_DATA   mbstate_t state; wchar_t cached; int clen = 0
@@ -191,7 +191,7 @@ wadd_wchnstr(WINDOW *win, const cchar_t * const astr, int n)
     start = x;
     end = x + n - 1;
     if (isnac(line->text[x])) {
-	line->text[x - 1] = _nc_background(win);
+	line->text[x - 1] = win->_nc_bkgd;
 	--start;
     }
     for (i = 0; i < n && x <= win->_maxx; ++i) {
@@ -200,11 +200,11 @@ wadd_wchnstr(WINDOW *win, const cchar_t * const astr, int n)
 	    if (x <= win->_maxx)
 		AddAttr(line->text[x++], WA_NAC);
 	    else
-		line->text[x - 1] = _nc_background(win);
+		line->text[x - 1] = win->_nc_bkgd;
 	}
     }
     if (x <= win->_maxx && isnac(line->text[x])) {
-	line->text[x] = _nc_background(win);
+	line->text[x] = win->_nc_bkgd;
 	++end;
     }
     CHANGED_RANGE(line, start, end);

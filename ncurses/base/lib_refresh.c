@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.30 2001/06/03 01:53:41 skimo Exp $")
+MODULE_ID("$Id: lib_refresh.c,v 1.31 2001/12/19 01:06:41 tom Exp $")
 
 NCURSES_EXPORT(int)
 wrefresh(WINDOW *win)
@@ -96,7 +96,7 @@ wnoutrefresh(WINDOW *win)
     begx = win->_begx;
     begy = win->_begy;
 
-    newscr->_bkgrnd = win->_bkgrnd;
+    newscr->_nc_bkgd = win->_nc_bkgd;
     newscr->_attrs = win->_attrs;
 
     /* merge in change information from all subwindows of this window */

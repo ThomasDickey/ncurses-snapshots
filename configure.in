@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.255 2001/12/08 21:34:43 tom Exp $
+dnl $Id: configure.in,v 1.256 2001/12/19 00:14:11 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20000819)
-AC_REVISION($Revision: 1.255 $)
+AC_REVISION($Revision: 1.256 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -783,9 +783,6 @@ fi
 
 ###   use option --enable-widec to turn on use of wide-character support
 NCURSES_CH_T=chtype
-NCURSES_getbkgd_gen=generated
-NCURSES_getbkgd_def="#define getbkgd(win)                    ((win)->_bkgd)"
-NCURSES_bkgd_field="chtype  _bkgd;"
 NCURSES_libutf8_h=""
 AC_MSG_CHECKING(if you want experimental wide-character code)
 AC_ARG_ENABLE(widec,
@@ -799,9 +796,6 @@ if test "$with_widec" = yes ; then
 	CPPFLAGS="$CPPFLAGS -D_XOPEN_SOURCE_EXTENDED"
 	with_overwrite=no
 	NCURSES_CH_T=cchar_t
-	NCURSES_getbkgd_gen=implemented
-	NCURSES_getbkgd_def=""
-	NCURSES_bkgd_field=""
 	AC_CHECK_FUNC(putwc)
 if test "$ac_cv_func_putwc" != yes ; then
 	AC_MSG_CHECKING(for putwc in libutf8)
@@ -816,9 +810,6 @@ AC_TRY_LINK([
 fi
 fi
 AC_SUBST(NCURSES_CH_T)
-AC_SUBST(NCURSES_getbkgd_gen)
-AC_SUBST(NCURSES_getbkgd_def)
-AC_SUBST(NCURSES_bkgd_field)
 AC_SUBST(NCURSES_libutf8_h)
 
 AC_MSG_CHECKING(for terminal capabilities file)
@@ -947,7 +938,6 @@ AC_C_INLINE
 test "$ac_cv_c_inline" != no && AC_DEFINE(CC_HAS_INLINE_FUNCS)
 
 CF_TYPEOF_CHTYPE
-CF_WIDEC_SHIFT
 
 ###	Checks for external-data
 CF_ERRNO
