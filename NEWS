@@ -1,10 +1,44 @@
--- $Id: NEWS,v 1.785 2004/01/11 01:26:57 tom Exp $
+-- $Id: NEWS,v 1.791 2004/01/18 01:14:10 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040117 pre-release
+	+ modify lib_get_wch.c to prefer mblen/mbtowc over mbrlen/mbrtowc to
+	  work around core dump in Solaris 8's locale support, e.g., for
+	  zh_CN.GB18030 (report by Saravanan Bellan).
+	+ add includes for <stdarg.h> and <stdio.h> in configure script macro
+	  to make <wchar.h> check work with Tru64 4.0d.
+	+ add terminfo entry for U/Win -TD
+	+ add terminfo entries for SFU aka Interix aka OpenNT (Federico
+	  Bianchi).
+	+ modify tput's error messages to prefix them with the program name
+	  (report by Vincent Lefevre, patch by Daniel Jacobowitz, Debian
+	  #227586).
+	+ correct a place in tack where exit_standout_mode was used instead of
+	  exit_attribute_mode (patch by Jochen Voss, Debian #224443).
+	+ modify c++/cursesf.h to use const in the Enumeration_Field method.
+	+ remove an ambiguous (actually redundant) method from c++/cursesf.h
+	+ make $HOME/.terminfo update optional (suggested by Stanislav Ievlev).
+	+ improve sed script which extracts libtool's version in the
+	  CF_WITH_LIBTOOL macro.
+	+ add ifdef'd call to AC_PROG_LIBTOOL to CF_WITH_LIBTOOL macro (to
+	  simplify local patch for Albert Chin-A-Young)..
+	+ add $(CXXFLAGS) to link command in c++/Makefile.in (adapted from
+	  patch by Albert Chin-A-Young)..
+	+ fix a missing substitution in configure.in for "$target" needed for
+	  HPUX .so/.sl case.
+	+ resync CF_XOPEN_SOURCE configure macro with lynx; fixes IRIX64 and
+	  NetBSD 1.6 conflicts with _XOPEN_SOURCE.
+	+ make check for stdbool.h more specific, to ensure that including it
+	  will actually define/declare bool for the configured compiler.
+	+ rewrite ifdef's in curses.h relating NCURSES_BOOL and bool.  The
+	  intention of that is to #define NCURSES_BOOL as bool when the
+	  compiler declares bool, and to #define bool as NCURSES_BOOL when it
+	  does not (reported by Jim Gifford, Sam Varshavchik, cf: 20031213).
 
 20040110 pre-release
 	+ change minor version to 4, i.e., ncurses 5.4
@@ -252,25 +286,25 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ correct prototype for wunctrl() in manpage.
 	+ add configure --with-abi-version option (discussion with Charles
 	  Wilson).
- 	> cygwin changes from Charles Wilson:
+	> cygwin changes from Charles Wilson:
 	  + aclocal.m4: on cygwin, use autodetected prefix for import
 	    and static lib, but use "cyg" for DLL.
 	  + include/ncurses_dll.h: correct the comments to reflect current
 	    status of cygwin/mingw port.  Fix compiler warning.
 	  + misc/run_tic.in: ensure that tic.exe can find the uninstalled
 	    DLL, by adding the lib-directory to the PATH variable.
- 	  + misc/terminfo.src (nxterm|xterm-color): make xterm-color
- 	    primary instead of nxterm, to match XFree86's xterm.terminfo
- 	    usage and to prevent circular links.
- 	    (rxvt): add additional codes from rxvt.org.
- 	    (rxvt-color): new alias
- 	    (rxvt-xpm): new alias
- 	    (rxvt-cygwin): like rxvt, but with special acsc codes.
- 	    (rxvt-cygwin-native): ditto.  rxvt may be run under XWindows, or
- 	    with a "native" MSWin GUI.  Each takes different acsc codes,
- 	    which are both different from the "normal" rxvt's acsc.
- 	    (cygwin): cygwin-in-cmd.exe window.  Lots of fixes.
- 	    (cygwinDBG): ditto.
+	  + misc/terminfo.src (nxterm|xterm-color): make xterm-color
+	    primary instead of nxterm, to match XFree86's xterm.terminfo
+	    usage and to prevent circular links.
+	    (rxvt): add additional codes from rxvt.org.
+	    (rxvt-color): new alias
+	    (rxvt-xpm): new alias
+	    (rxvt-cygwin): like rxvt, but with special acsc codes.
+	    (rxvt-cygwin-native): ditto.  rxvt may be run under XWindows, or
+	    with a "native" MSWin GUI.	Each takes different acsc codes,
+	    which are both different from the "normal" rxvt's acsc.
+	    (cygwin): cygwin-in-cmd.exe window.	 Lots of fixes.
+	    (cygwinDBG): ditto.
 	  + mk-1st.awk: use "cyg" for the DLL prefix, but "lib" for import
 	    and static libs.
 
@@ -478,7 +512,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ modify tput to use the same parameter analysis as tparm() does, to
 	  provide for user-defined strings, e.g., for xterm title, a
 	  corresponding capability might be
-	  	title=\E]2;%p1%s^G,
+		title=\E]2;%p1%s^G,
 	+ modify MKlib_gen.sh to avoid passing "#" tokens through the C
 	  preprocessor.  This works around Mac OS X's preprocessor, which
 	  insists on adding a blank on each side of the token (report/analysis

@@ -432,12 +432,12 @@
 
 Who's Who and What's What
 
-   [17]Zeyd Ben-Halim started it from a previous package pcurses, written
-   by  Pavel  Curtis.  [18]Eric  S. Raymond continued development. Jürgen
-   Pfeifer  wrote  most  of  the  form and menu libraries Ongoing work is
-   being  done by [19]Thomas Dickey. Thomas Dickey acts as the maintainer
-   for  the  Free  Software  Foundation,  which  holds  the  copyright on
-   ncurses. Contact the current maintainers at [20]bug-ncurses@gnu.org.
+   Zeyd  Ben-Halim started it from a previous package pcurses, written by
+   Pavel  Curtis.  Eric  S. Raymond continued development. Jürgen Pfeifer
+   wrote  most of the form and menu libraries. Ongoing work is being done
+   by  [17]Thomas  Dickey.  Thomas  Dickey acts as the maintainer for the
+   Free  Software  Foundation,  which  holds  the  copyright  on ncurses.
+   Contact the current maintainers at [18]bug-ncurses@gnu.org.
 
    To   join   the   ncurses   mailing   list,   please  write  email  to
    bug-ncurses-request@gnu.org containing the line:
@@ -447,7 +447,7 @@ Who's Who and What's What
    and testing of this package.
 
    Beta  versions  of ncurses and patches to the current release are made
-   available at [21]ftp://invisible-island.net/ncurses/ .
+   available at [19]ftp://invisible-island.net/ncurses/ .
 
 Future Plans
 
@@ -460,12 +460,13 @@ Future Plans
 
 Other Related Resources
 
-   The  distribution  includes  and uses a version of the terminfo-format
-   terminal    description    file    maintained    by    Eric   Raymond.
-   [22]http://www.tuxedo.org/~esr/terminfo/ .
+   The  distribution  provides  a  newer  version  of the terminfo-format
+   terminal  description file maintained by [20]Eric Raymond . Unlike the
+   older  version, the termcap and terminfo data are provided in the same
+   file.
 
    You  can  find  lots  of  information  on  terminal-related topics not
-   covered in the terminfo file at [23]Richard Shuford's archive .
+   covered in the terminfo file at [21]Richard Shuford's archive .
 
 References
 
@@ -485,10 +486,8 @@ References
   14. http://www.debian.org/Packages/unstable/text/vh.html
   15. http://www.netsonic.fi/~walker/minicom.html
   16. http://invisible-island.net/vile/
-  17. mailto:zmbenhal@netcom.com
-  18. http://www.tuxedo.org/~esr/
-  19. mailto:dickey@invisible-island.net
-  20. mailto:bug-ncurses@gnu.org
-  21. ftp://invisible-island.net/ncurses/
-  22. http://www.tuxedo.org/~esr/terminfo/
-  23. http://www.cs.utk.edu/~shuford/terminal_index.html
+  17. mailto:dickey@invisible-island.net
+  18. mailto:bug-ncurses@gnu.org
+  19. ftp://invisible-island.net/ncurses/
+  20. http://www.catb.org/~esr/terminfo/
+  21. http://www.cs.utk.edu/~shuford/terminal_index.html

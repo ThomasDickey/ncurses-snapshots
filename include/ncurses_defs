@@ -1,6 +1,6 @@
-# $Id: ncurses_defs,v 1.19 2003/12/07 01:07:45 tom Exp $
+# $Id: ncurses_defs,v 1.21 2004/01/18 01:03:24 tom Exp $
 ##############################################################################
-# Copyright (c) 2000-2002,2003 Free Software Foundation, Inc.                #
+# Copyright (c) 2000-2003,2004 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -75,6 +75,9 @@ HAVE_LIMITS_H
 HAVE_LINK
 HAVE_LOCALE_H
 HAVE_LONG_FILE_NAMES
+HAVE_MBLEN
+HAVE_MBRLEN
+HAVE_MBRTOWC
 HAVE_MBTOWC
 HAVE_MEMCCPY
 HAVE_MENU_H
@@ -157,6 +160,7 @@ USE_GETCAP
 USE_GETCAP_CACHE
 USE_HARD_TABS
 USE_HASHMAP
+USE_HOME_TERMINFO
 USE_LINKS
 USE_MY_MEMMOVE
 USE_OK_BCOPY

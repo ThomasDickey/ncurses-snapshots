@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.68 2003/12/14 00:01:19 tom Exp $
+-- $Id: INSTALL,v 1.69 2004/01/14 02:28:44 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -287,6 +287,12 @@ SUMMARY OF CONFIGURE OPTIONS:
     --disable-hashmap
 	Compile without hashmap scrolling-optimization code.  This algorithm is
 	the default.
+
+    --disable-home-terminfo
+	The $HOME/.terminfo directory is normally added to ncurses' search
+	list for reading/writing terminfo entries, since that directory is
+	more likely writable than the system terminfo database.  Use this
+	option to disable the feature altogether.
 
     --disable-leaks
 	For testing, compile-in code that frees memory that normally would not

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.328 2004/01/10 21:06:26 tom Exp $
+dnl $Id: aclocal.m4,v 1.332 2004/01/18 00:22:00 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -167,7 +167,7 @@ You have the following choices:
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_BOOL_DECL version: 6 updated: 2001/12/02 01:39:28
+dnl CF_BOOL_DECL version: 7 updated: 2004/01/14 19:12:46
 dnl ------------
 dnl Test if 'bool' is a builtin type in the configured C++ compiler.  Some
 dnl older compilers (e.g., gcc 2.5.8) don't support 'bool' directly; gcc
@@ -175,12 +175,26 @@ dnl 2.6.3 does, in anticipation of the ANSI C++ standard.
 dnl
 dnl Treat the configuration-variable specially here, since we're directly
 dnl substituting its value (i.e., 1/0).
+dnl
+dnl $1 is the shell variable to store the result in, if not $cv_cv_builtin_bool
 AC_DEFUN([CF_BOOL_DECL],
 [
-AC_CHECK_HEADER(stdbool.h,
-	cf_cv_header_stdbool_h=1,
-	cf_cv_header_stdbool_h=0)
+AC_MSG_CHECKING(if we should include stdbool.h)
+
+AC_CACHE_VAL(cf_cv_header_stdbool_h,[
+	AC_TRY_COMPILE([],[bool foo = false],
+		[cf_cv_header_stdbool_h=0],
+		[AC_TRY_COMPILE([#include <stdbool.h>],[bool foo = false],
+			[cf_cv_header_stdbool_h=1],
+			[cf_cv_header_stdbool_h=0])])])
+
+if test "$cf_cv_header_stdbool_h" = 1
+then	AC_MSG_RESULT(yes)
+else	AC_MSG_RESULT(no)
+fi
+
 AC_MSG_CHECKING([for builtin bool type])
+
 AC_CACHE_VAL(ifelse($1,,cf_cv_builtin_bool,[$1]),[
 	AC_TRY_COMPILE([
 #include <stdio.h>
@@ -189,6 +203,7 @@ AC_CACHE_VAL(ifelse($1,,cf_cv_builtin_bool,[$1]),[
 		[ifelse($1,,cf_cv_builtin_bool,[$1])=1],
 		[ifelse($1,,cf_cv_builtin_bool,[$1])=0])
 	])
+
 if test "$ifelse($1,,cf_cv_builtin_bool,[$1])" = 1
 then	AC_MSG_RESULT(yes)
 else	AC_MSG_RESULT(no)
@@ -3264,7 +3279,7 @@ AC_DEFUN([CF_VERBOSE],
 [test -n "$verbose" && echo "	$1" 1>&AC_FD_MSG
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WCHAR_TYPE version: 1 updated: 2003/03/22 19:13:43
+dnl CF_WCHAR_TYPE version: 2 updated: 2004/01/17 19:18:20
 dnl -------------
 dnl Check if type wide-character type $1 is declared, and if so, which header
 dnl file is needed.  The second parameter is used to set a shell variable when
@@ -3276,6 +3291,8 @@ AC_DEFUN([CF_WCHAR_TYPE],
 AC_CACHE_CHECK(if we must include wchar.h to declare $1,cf_cv_$1,[
 AC_TRY_COMPILE([
 #include <stdlib.h>
+#include <stdarg.h>
+#include <stdio.h>
 #ifdef HAVE_LIBUTF8_H
 #include <libutf8.h>
 #endif],
@@ -3283,6 +3300,8 @@ AC_TRY_COMPILE([
 	[cf_cv_$1=no],
 	[AC_TRY_COMPILE([
 #include <stdlib.h>
+#include <stdarg.h>
+#include <stdio.h>
 #include <wchar.h>
 #ifdef HAVE_LIBUTF8_H
 #include <libutf8.h>
@@ -3360,14 +3379,45 @@ if test $with_dmalloc = yes ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_LIBTOOL version: 8 updated: 2003/09/06 19:15:56
+dnl CF_WITH_LIBTOOL version: 9 updated: 2004/01/16 14:55:37
 dnl ---------------
 dnl Provide a configure option to incorporate libtool.  Define several useful
 dnl symbols for the makefile rules.
+dnl
+dnl The reference to AC_PROG_LIBTOOL does not normally work, since it uses
+dnl macros from libtool.m4 which is in the aclocal directory of automake.
+dnl Following is a simple script which turns on the AC_PROG_LIBTOOL macro.
+dnl But that still does not work properly since the macro is expanded outside
+dnl the CF_WITH_LIBTOOL macro:
+dnl
+dnl	#!/bin/sh
+dnl	ACLOCAL=`aclocal --print-ac-dir`
+dnl	if test -z "$ACLOCAL" ; then
+dnl		echo cannot find aclocal directory
+dnl		exit 1
+dnl	elif test ! -f $ACLOCAL/libtool.m4 ; then
+dnl		echo cannot find libtool.m4 file
+dnl		exit 1
+dnl	fi
+dnl	
+dnl	LOCAL=aclocal.m4
+dnl	ORIG=aclocal.m4.orig
+dnl	
+dnl	trap "mv $ORIG $LOCAL" 0 1 2 5 15
+dnl	rm -f $ORIG
+dnl	mv $LOCAL $ORIG
+dnl	
+dnl	# sed the LIBTOOL= assignment to omit the current directory?
+dnl	sed -e 's/^LIBTOOL=.*/LIBTOOL=${LIBTOOL-libtool}/' $ACLOCAL/libtool.m4 >>$LOCAL
+dnl	cat $ORIG >>$LOCAL
+dnl	
+dnl	autoconf-257 $*
+dnl
 AC_DEFUN([CF_WITH_LIBTOOL],
 [
+ifdef([AC_PROG_LIBTOOL],,[
 LIBTOOL=
-
+])
 # common library maintenance symbols that are convenient for libtool scripts:
 LIB_CREATE='$(AR) -cr'
 LIB_OBJECT='$(OBJECTS)'
@@ -3389,16 +3439,21 @@ AC_ARG_WITH(libtool,
 	[with_libtool=no])
 AC_MSG_RESULT($with_libtool)
 if test "$with_libtool" != "no"; then
-	if test "$with_libtool" != "yes" ; then
+ifdef([AC_PROG_LIBTOOL],[
+	# missing_content_AC_PROG_LIBTOOL{{
+	AC_PROG_LIBTOOL
+	# missing_content_AC_PROG_LIBTOOL}}
+],[
+ 	if test "$with_libtool" != "yes" ; then
 		CF_PATH_SYNTAX(with_libtool)
 		LIBTOOL=$with_libtool
 	else
-		AC_PATH_PROG(LIBTOOL,libtool)
-	fi
-	if test -z "$LIBTOOL" ; then
-		AC_MSG_ERROR(Cannot find libtool)
-	fi
-
+ 		AC_PATH_PROG(LIBTOOL,libtool)
+ 	fi
+ 	if test -z "$LIBTOOL" ; then
+ 		AC_MSG_ERROR(Cannot find libtool)
+ 	fi
+])dnl
 	LIB_CREATE='$(LIBTOOL) --mode=link $(CC) -rpath $(DESTDIR)$(libdir) -version-info `cut -f1 $(srcdir)/VERSION` -o'
 	LIB_OBJECT='$(OBJECTS:.o=.lo)'
 	LIB_SUFFIX=.la
@@ -3415,7 +3470,7 @@ if test "$with_libtool" != "no"; then
 	# Save the version in a cache variable - this is not entirely a good
 	# thing, but the version string from libtool is very ugly, and for
 	# bug reports it might be useful to have the original string.
-	cf_cv_libtool_version=`$LIBTOOL --version 2>&1 | sed -e '2,$d' -e 's/^[[^1-9]]*//' -e 's/[[^0-9.]].*//'`
+	cf_cv_libtool_version=`$LIBTOOL --version 2>&1 | sed -e '2,$d' -e 's/([[^)]]*)//g' -e 's/^[[^1-9]]*//' -e 's/[[^0-9.]].*//'`
 	AC_MSG_RESULT($cf_cv_libtool_version)
 	if test -z "$cf_cv_libtool_version" ; then
 		AC_MSG_ERROR(This is not libtool)
@@ -3569,9 +3624,10 @@ test "$cf_with_sysmouse" = yes && AC_DEFINE(USE_SYSMOUSE)
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_XOPEN_SOURCE version: 7 updated: 2003/12/29 21:33:30
+dnl CF_XOPEN_SOURCE version: 9 updated: 2004/01/12 20:45:17
 dnl ---------------
-dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions.
+dnl Try to get _XOPEN_SOURCE defined properly that we can use POSIX functions,
+dnl or adapt to the vendor's definitions to get equivalent functionality.
 AC_DEFUN([CF_XOPEN_SOURCE],[
 case $host_os in #(vi
 freebsd*) #(vi
@@ -3580,11 +3636,17 @@ freebsd*) #(vi
 hpux*) #(vi
 	CPPFLAGS="$CPPFLAGS -D_HPUX_SOURCE"
 	;;
+irix6.*) #(vi
+	CPPFLAGS="$CPPFLAGS -D_SGI_SOURCE"
+	;;
 linux*) #(vi
 	CF_GNU_SOURCE
 	;;
+netbsd*) #(vi
+	# setting _XOPEN_SOURCE breaks IPv6 for lynx on NetBSD 1.6, breaks xterm, is not needed for ncursesw
+	;;
 openbsd*) #(vi
-	# setting _XOPEN_SOURCE breaks xterm on OpenBSD 2.8, is not needed for ncurses
+	# setting _XOPEN_SOURCE breaks xterm on OpenBSD 2.8, is not needed for ncursesw
 	;;
 osf[[45]]*) #(vi
 	CPPFLAGS="$CPPFLAGS -D_OSF_SOURCE"
