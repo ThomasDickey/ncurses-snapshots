@@ -1,10 +1,17 @@
--- $Id: NEWS,v 1.457 1999/06/12 23:08:25 tom Exp $
+-- $Id: NEWS,v 1.458 1999/06/15 01:20:23 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990614	pre-release
+	> patch by Juergen Pfeifer:
+	+ use pragma PreElaborate in several places.
+	+ change a few System.Address uses to more specific types.
+	+ change interface version-number to 1.0
+	+ regenerate Ada95 HTML files.
 
 990612	pre-release
 	+ modify lib_endwin.c to avoid calling reset_shell_mode(), return ERR

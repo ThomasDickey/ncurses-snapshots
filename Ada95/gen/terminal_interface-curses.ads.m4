@@ -37,14 +37,15 @@ include(M4MACRO)----------------------------------------------------------------
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.23 $
---  Binding Version 00.93
+--  $Revision: 1.25 $
+--  Binding Version 01.00
 ------------------------------------------------------------------------------
 include(`Base_Defs')
 with System.Storage_Elements;
 with Interfaces.C;   --  We need this for some assertions.
 
 package Terminal_Interface.Curses is
+   pragma Preelaborate (Terminal_Interface.Curses);
 include(`Linker_Options')
 include(`Version_Info')
    type Window is private;
@@ -121,9 +122,9 @@ include(`Character_Attribute_Set_Rep')
 
    type Attributed_Character is
       record
-         Attr  : Character_Attribute_Set := Normal_Video;
-         Color : Color_Pair := 0;
-         Ch    : Character  := ' ';
+         Attr  : Character_Attribute_Set;
+         Color : Color_Pair;
+         Ch    : Character;
       end record;
    pragma Convention (C, Attributed_Character);
    --  This is the counterpart for the chtype in C.
@@ -132,7 +133,7 @@ include(`AC_Rep')
    Default_Character : constant Attributed_Character
      := (Ch    => Character'First,
          Color => Color_Pair'First,
-         Attr  => Normal_Video);
+         Attr  => (others => False));  --  preelaboratable Normal_Video
 
    type Attributed_String is array (Positive range <>) of Attributed_Character;
    pragma Pack (Attributed_String);

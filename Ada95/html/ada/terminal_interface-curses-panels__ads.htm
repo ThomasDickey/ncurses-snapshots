@@ -40,12 +40,13 @@
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
 <FONT COLOR=green><EM>--  <A HREF="http://home.t-online.de/home/Juergen.Pfeifer">J&uuml;rgen Pfeifer</A> (<A HREF="mailto:juergen.pfeifer@gmx.net">juergen.pfeifer@gmx.net</A>) 1996                          --</EM></FONT>
 <FONT COLOR=green><EM>--  Version Control:</EM></FONT>
-<FONT COLOR=green><EM>--  @Revision: 1.12 @</EM></FONT>
+<FONT COLOR=green><EM>--  @Revision: 1.13 @</EM></FONT>
 <FONT COLOR=green><EM>--  Binding Version 00.93</EM></FONT>
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
 <b>with</b> System;
 
 <b>package</b> Terminal_Interface.Curses.Panels <b>is</b>
+   <b>pragma</b> Preelaborate (Terminal_Interface.Curses.Panels);
    <b>pragma</b> Linker_Options ("-lpanel");
    <b>pragma</b> Linker_Options ("-lAdaCurses");
    <b>pragma</b> Linker_Options ("-lncurses");
@@ -112,14 +113,14 @@
    <b>pragma</b> Inline (Panel_Window);
 
   <FONT COLOR=green><EM>--  <A NAME="AFU_10">|</EM></FONT>
-   <b>procedure</b> Replace (<FONT COLOR=red><A NAME="111_23">Pan</A></FONT> : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#56_9">Panel</A>;
+   <b>procedure</b> Replace (<FONT COLOR=red><A NAME="112_23">Pan</A></FONT> : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#57_9">Panel</A>;
                       Win : <b>in</b> Window);
   <FONT COLOR=green><EM>--  AKA: <A HREF="../man/panel.3x.html">replace_panel()</A></EM></FONT>
    <b>pragma</b> Inline (Replace);
 
   <FONT COLOR=green><EM>--  <A NAME="AFU_11">|</EM></FONT>
-   <b>procedure</b> Move (Pan    : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#59_9">Panel</A>;
-                   Line   : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#60_9">Line_Position</A>;
+   <b>procedure</b> Move (Pan    : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#60_9">Panel</A>;
+                   Line   : <b>in</b> <A HREF="terminal_interface-curses__ads.htm#61_9">Line_Position</A>;
                    Column : <b>in</b> Column_Position);
   <FONT COLOR=green><EM>--  AKA: <A HREF="../man/panel.3x.html">move_panel()</A></EM></FONT>
    <b>pragma</b> Inline (Move);
@@ -145,8 +146,8 @@
    <b>pragma</b> Inline (Delete);
 
    <b>private</b>
-      <b>type</b> Panel <b>is</b> <b>new</b> System.Address;
-      Null_Panel : <b>constant</b> Panel := Panel (System.Null_Address);
+      <b>type</b> Panel <b>is</b> <b>new</b> System.Storage_Elements.Integer_Address;
+      Null_Panel : <b>constant</b> Panel := 0;
 
 <b>end</b> Terminal_Interface.Curses.Panels;
 </PRE></BODY></HTML>

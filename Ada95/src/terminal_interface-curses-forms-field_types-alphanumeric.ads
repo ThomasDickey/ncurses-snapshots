@@ -35,10 +35,12 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.7 $
---  Binding Version 00.93
+--  $Revision: 1.9 $
+--  Binding Version 01.00
 ------------------------------------------------------------------------------
 package Terminal_Interface.Curses.Forms.Field_Types.AlphaNumeric is
+   pragma Preelaborate
+     (Terminal_Interface.Curses.Forms.Field_Types.AlphaNumeric);
 
    type AlphaNumeric_Field is new Field_Type
      with record

@@ -38,14 +38,15 @@ include(M4MACRO)dnl
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.10 $
---  Binding Version 00.93
+--  $Revision: 1.12 $
+--  Binding Version 01.00
 ------------------------------------------------------------------------------
 
 generic
    type User is limited private;
    type User_Access is access User;
 package Terminal_Interface.Curses.Menus.Item_User_Data is
+   pragma Preelaborate (Terminal_Interface.Curses.Menus.Item_User_Data);
 
    --  The binding uses the same user pointer for menu items
    --  as the low level C implementation. So you can safely

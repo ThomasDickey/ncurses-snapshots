@@ -35,8 +35,8 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control
---  $Revision: 1.6 $
---  Binding Version 00.93
+--  $Revision: 1.7 $
+--  Binding Version 01.00
 ------------------------------------------------------------------------------
 --  Poor mans help system. This scans a sequential file for key lines and
 --  then reads the lines up to the next key. Those lines are presented in

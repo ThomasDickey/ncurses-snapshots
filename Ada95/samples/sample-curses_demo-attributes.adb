@@ -35,8 +35,8 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control
---  $Revision: 1.9 $
---  Binding Version 00.93
+--  $Revision: 1.10 $
+--  Binding Version 01.00
 ------------------------------------------------------------------------------
 with Terminal_Interface.Curses; use Terminal_Interface.Curses;
 with Terminal_Interface.Curses.Panels;  use Terminal_Interface.Curses.Panels;

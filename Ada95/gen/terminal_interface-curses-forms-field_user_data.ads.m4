@@ -38,14 +38,15 @@ include(M4MACRO)dnl
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.11 $
---  Binding Version 00.93
+--  $Revision: 1.13 $
+--  Binding Version 01.00
 ------------------------------------------------------------------------------
 
 generic
    type User is limited private;
    type User_Access is access User;
 package Terminal_Interface.Curses.Forms.Field_User_Data is
+   pragma Preelaborate (Terminal_Interface.Curses.Forms.Field_User_Data);
 
    --  MANPAGE(`form_field_userptr.3x')
 

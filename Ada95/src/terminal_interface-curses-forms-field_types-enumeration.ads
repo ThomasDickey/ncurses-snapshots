@@ -35,12 +35,14 @@
 ------------------------------------------------------------------------------
 --  Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1996
 --  Version Control:
---  $Revision: 1.7 $
---  Binding Version 00.93
+--  $Revision: 1.9 $
+--  Binding Version 01.00
 ------------------------------------------------------------------------------
 with Interfaces.C.Strings;
 
 package Terminal_Interface.Curses.Forms.Field_Types.Enumeration is
+   pragma Preelaborate
+     (Terminal_Interface.Curses.Forms.Field_Types.Enumeration);
 
    type String_Access is access String;
 
