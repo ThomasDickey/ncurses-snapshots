@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_clreol.c,v 1.10 1997/05/28 09:01:48 J.T.Conklin Exp $")
+MODULE_ID("$Id: lib_clreol.c,v 1.11 1997/08/02 23:10:08 tom Exp $")
 
 int  wclrtoeol(WINDOW *win)
 {
@@ -43,8 +43,17 @@ short	y, x, minx;
 	x = win->_curx;
 
 	/*
-	 * We don't want to clear if we just wrapped the cursor.  There's no
-	 * point in clearing if we're not on a legal position, either.
+	 * If we have just wrapped the cursor, the clear applies to the new
+	 * line, unless we are at the lower right corner.
+	 */
+	if (win->_flags & _WRAPPED
+	 && y < win->_maxy) {
+		win->_flags &= ~_WRAPPED;
+	}
+
+	/*
+	 * There's no point in clearing if we're not on a legal position,
+	 * either.
 	 */
 	if (win->_flags & _WRAPPED
 	 || y > win->_maxy

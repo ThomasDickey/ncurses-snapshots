@@ -26,7 +26,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include "parametrized.h"	/* so is this */
 
-MODULE_ID("$Id: dump_entry.c,v 1.18 1997/05/24 22:18:17 tom Exp $")
+MODULE_ID("$Id: dump_entry.c,v 1.19 1997/08/02 22:20:44 tom Exp $")
 
 #define INDENT			8
 
@@ -202,7 +202,7 @@ static int trailing_spaces(const char *src)
 
 char *expand(char *srcp)
 {
-static char	buffer[1024];
+static char	buffer[BUFSIZ];
 int		bufp;
 const char	*ptr, *str = (srcp == ABSENT_STRING
 			   || srcp == CANCELLED_STRING) ? "" : srcp;

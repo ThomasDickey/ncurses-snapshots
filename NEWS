@@ -1,7 +1,20 @@
--- $Id: NEWS,v 1.227 1997/07/27 00:45:17 tom Exp $
+-- $Id: NEWS,v 1.229 1997/08/03 00:42:13 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+970802
+	+ add '-s' (single-step) option too test/hashtest.c, correct an error
+	  in loop limit for '-f' (footer option), toggle scrollok() when
+	  writing footer to avoid wrap at lower-right corner.
+	+ correct behavior of clrtoeol() immediately after wrapping cursor,
+	  which was not clearing the line at the cursor position (reported by
+	  Liviu Daia <daia@stoilow.imar.ro>).
+	+ corrected mapping for ACS_LANTERN, which was 'I' rather than 'i'
+	  (reported by Klaus Weide <kweide@tezcat.com>).
+	+ many corrections to make progs/capconvert work, as well as make it
+	  reasonably portable and integrated with ncurses 4.1 (reported by Dave
+	  Furstenau <df@ravine.binary.net>).
 
 970726
 	+ add flag SP->_fifohold, corresponding logic to modify the behavior of

@@ -3,7 +3,7 @@
  *
  * Generate timing statistics for vertical-motion optimization.
  *
- * $Id: hashtest.c,v 1.10 1997/07/05 16:49:22 tom Exp $
+ * $Id: hashtest.c,v 1.11 1997/08/03 00:24:49 tom Exp $
  */
 
 #define NCURSES_TRACE
@@ -27,6 +27,7 @@
 
 static bool continuous = FALSE;
 static bool reverse_loops = FALSE;
+static bool single_step = FALSE;
 static bool extend_corner = FALSE;
 static int foot_lines = 0;
 static int head_lines = 0;
@@ -56,6 +57,12 @@ static void genlines(int base)
 		Trace(("Painting `%c' screen", base));
 #endif
 
+	/* Do this so writes to lower-right corner don't cause a spurious
+	 * scrolling operation.  This _shouldn't_ break the scrolling
+	 * optimization, since that's computed in the refresh() call.
+	 */
+	scrollok(stdscr, FALSE);
+
 	move(0,0);
 	for (i = 0; i < head_lines; i++)
 		for (j = 0; j < COLS; j++)
@@ -69,11 +76,16 @@ static void genlines(int base)
 			addch(c);
 	}
 
-	move(LINES - foot_lines, 0);
-	for (i = LINES - foot_lines; i < LINES; i++)
-		for (j = 0; j < extend_corner ? COLS : COLS - 1; j++)
+	for (i = LINES - foot_lines; i < LINES; i++) {
+		move(i, 0);
+		for (j = 0; j < (extend_corner ? COLS : COLS - 1); j++)
 			addch((j % 8 == 0) ? ('A' + j/8) : '-');
+	}
+
+	scrollok(stdscr, TRUE);
 	refresh();
+	if (single_step)
+		getch();
 }
 
 static void one_cycle(int ch)
@@ -123,6 +135,7 @@ static void usage(void)
 		,"  -n      test the normal optimizer"
 		,"  -o      test the hashed optimizer"
 		,"  -r      reverse the loops"
+		,"  -s      single-step"
 		,"  -x      assume lower-right corner extension"
 	};
 	size_t n;
@@ -139,7 +152,7 @@ int main(int argc, char *argv[])
 	int test_normal = FALSE;
 	int test_optimize = FALSE;
 
-	while ((c = getopt(argc, argv, "cf:h:l:norx")) != EOF) {
+	while ((c = getopt(argc, argv, "cf:h:l:norsx")) != EOF) {
 		switch (c) {
 		case 'c':
 			continuous = TRUE;
@@ -161,6 +174,9 @@ int main(int argc, char *argv[])
 			break;
 		case 'r':
 			reverse_loops = TRUE;
+			break;
+		case 's':
+			single_step = TRUE;
 			break;
 		case 'x':
 			extend_corner = TRUE;
