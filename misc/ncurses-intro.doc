@@ -2,6 +2,7 @@
                          Writing Programs with NCURSES
                                        
      by Eric S. Raymond and Zeyd M. Ben-Halim
+     updates since release 1.9.9e by Thomas Dickey
      
                                    Contents
                                        
@@ -173,7 +174,7 @@ Scope of This Document
    This document includes tips for using the mouse.
    
    The ncurses package was originated by Pavel Curtis. The original
-   maintainer of the package is Zeyd Ben-Halim <zmbenhal@netcom.com>.
+   maintainer of this package is Zeyd Ben-Halim <zmbenhal@netcom.com>.
    Eric S. Raymond <esr@snark.thyrsus.com> wrote many of the new features
    in versions after 1.8.1 and wrote most of this introduction. Jürgen
    Pfeifer wrote all of the menu and forms code as well as the Ada95
@@ -513,13 +514,18 @@ static void finish(int sig)
    
   Mouse Interfacing
   
-   The ncurses library also provides a mouse interface. Note: this
-   facility is original to ncurses, it is not part of either the XSI
-   Curses standard, nor of System V Release 4, nor BSD curses. Thus, we
-   recommend that you wrap mouse-related code in an #ifdef using the
-   feature macro NCURSES_MOUSE_VERSION so it will not be compiled and
-   linked on non-ncurses systems.
+   The ncurses library also provides a mouse interface.
    
+     NOTE: this facility is specific to ncurses, it is not part of
+     either the XSI Curses standard, nor of System V Release 4, nor BSD
+     curses. System V Release 4 curses contains code with similar
+     interface definitions, however it is not documented. Other than by
+     disassembling the library, we have no way to determine exactly how
+     that mouse code works. Thus, we recommend that you wrap
+     mouse-related code in an #ifdef using the feature macro
+     NCURSES_MOUSE_VERSION so it will not be compiled and linked on
+     non-ncurses systems.
+     
    Presently, mouse event reporting works in the following environments:
      * xterm and similar programs such as rxvt.
      * Linux console, when configured with gpm(1), Alessandro Rubini's
@@ -693,8 +699,8 @@ Function Descriptions
           
   Debugging
   
-   NOTE: These functions are not part of the standard curses API!
-   
+     NOTE: These functions are not part of the standard curses API!
+     
    trace()
           This function can be used to explicitly set a trace level. If
           the trace level is nonzero, execution of your program will
@@ -736,13 +742,13 @@ Hints, Tips, and Tricks
    likely to hurt your application's usability with other curses
    libraries.
    
-   Bear in mind that refresh() is a synonym for wrefresh(stdscr), and
-   don't try to mix use of stdscr with use of windows declared by
-   newwin(); a refresh() call will blow them off the screen. The right
-   way to handle this is to use subwin(), or not touch stdscr at all and
-   tile your screen with declared windows which you then wnoutrefresh()
-   somewhere in your program event loop, with a single doupdate() call to
-   trigger actual repainting.
+   Bear in mind that refresh() is a synonym for wrefresh(stdscr). Don't
+   try to mix use of stdscr with use of windows declared by newwin(); a
+   refresh() call will blow them off the screen. The right way to handle
+   this is to use subwin(), or not touch stdscr at all and tile your
+   screen with declared windows which you then wnoutrefresh() somewhere
+   in your program event loop, with a single doupdate() call to trigger
+   actual repainting.
    
    You are much less likely to run into problems if you design your
    screen layouts to use tiled rather than overlapping windows.
@@ -759,7 +765,7 @@ Hints, Tips, and Tricks
    in an environment with window resizes, in which case several screens
    could be open with different sizes.
    
-  Temporarily Leaving ncurses Mode
+  Temporarily Leaving NCURSES Mode
   
    Sometimes you will want to write a program that spends most of its
    time in screen mode, but occasionally returns to ordinary `cooked'
@@ -784,13 +790,13 @@ Hints, Tips, and Tricks
     addstr("returned.\n");     /* prepare return message */
     refresh();                 /* restore save modes, repaint screen */
 
-  Using ncurses Under xterm
+  Using NCURSES under XTERM
   
    A resize operation in X sends SIGWINCH to the application running
    under xterm. The ncurses library provides an experimental signal
    handler, but in general does not catch this signal, because it cannot
-   know how you want the screen re-painted. You will have to write the
-   SIGWINCH handler yourself.
+   know how you want the screen re-painted. You will usually have to
+   write the SIGWINCH handler yourself. Ncurses can give you some help.
    
    The easiest way to code your SIGWINCH handler is to have it do an
    endwin, followed by an refresh and a screen repaint you code yourself.
@@ -804,6 +810,9 @@ Hints, Tips, and Tricks
    resizeterm function. That function ensures that all windows are
    limited to the new screen dimensions, and pads stdscr with blanks if
    the screen is larger.
+   
+   Finally, ncurses can be configured to provide its own SIGWINCH
+   handler, based on resizeterm.
    
   Handling Multiple Terminal Screens
   
@@ -838,14 +847,25 @@ Hints, Tips, and Tricks
    Try to make attribute changes infrequent on your screens. Don't use
    the immedok() option!
    
-  Special Features of ncurses
+  Special Features of NCURSES
   
-   When running on PC-clones, ncurses has enhanced support for the IBM
-   high-half and ROM characters. The A_ALTCHARSET highlight, enables
-   display of both high-half ACS graphics and the PC ROM graphics 0-31
-   that are normally interpreted as control characters.
+   The wresize() function allows you to resize a window in place. The
+   associated resizeterm() function simplifies the construction of
+   SIGWINCH handlers, for resizing all windows.
    
-   The wresize() function allows you to resize a window in place.
+   The define_key() function allows you to define at runtime function-key
+   control sequences which are not in the terminal description. The
+   keyok() function allows you to temporarily enable or disable
+   interpretation of any function-key control sequence.
+   
+   The use_default_colors() function allows you to construct applications
+   which can use the terminal's default foreground and background colors
+   as an additional "default" color. Several terminal emulators support
+   this feature, which is based on ISO 6429.
+   
+   Ncurses supports up 16 colors, unlike SVr4 curses which defines only
+   8. While most terminals which provide color allow only 8 colors, about
+   a quarter (including XFree86 xterm) support 16 colors.
    
 Compatibility with Older Versions
 
@@ -1418,7 +1438,7 @@ int field_info(FIELD *field,              /* field from which to fetch */
    
   Changing the Field Location
   
-   If is possible to move a field's location on the screen:
+   It is possible to move a field's location on the screen:
    
 int move_field(FIELD *field,              /* field to alter */
                int top, int left);        /* new upper-left corner */

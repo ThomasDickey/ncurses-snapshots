@@ -572,6 +572,7 @@
 ./ncurses/base/lib_printw.c
 ./ncurses/base/lib_redrawln.c
 ./ncurses/base/lib_refresh.c
+./ncurses/base/lib_restart.c
 ./ncurses/base/lib_scanw.c
 ./ncurses/base/lib_screen.c
 ./ncurses/base/lib_scroll.c
@@ -638,7 +639,6 @@
 ./ncurses/tinfo/lib_options.c
 ./ncurses/tinfo/lib_print.c
 ./ncurses/tinfo/lib_raw.c
-./ncurses/tinfo/lib_restart.c
 ./ncurses/tinfo/lib_setup.c
 ./ncurses/tinfo/lib_termcap.c
 ./ncurses/tinfo/lib_termname.c

@@ -47,7 +47,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_restart.c,v 1.18 1998/12/27 14:40:04 tom Exp $")
+MODULE_ID("$Id: lib_restart.c,v 1.1 1998/12/27 14:40:04 tom Exp $")
 
 int restartterm(NCURSES_CONST char *term, int filenum, int *errret)
 {

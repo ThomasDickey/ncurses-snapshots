@@ -127,6 +127,7 @@ libncurses-routines	= \
 			base/lib_printw \
 			base/lib_redrawln \
 			base/lib_refresh \
+			base/lib_restart \
 			base/lib_scanw \
 			base/lib_screen \
 			base/lib_scroll \
@@ -191,7 +192,6 @@ libncurses-routines	= \
 			tinfo/lib_options \
 			tinfo/lib_print \
 			tinfo/lib_raw \
-			tinfo/lib_restart \
 			tinfo/lib_setup \
 			tinfo/lib_termcap \
 			tinfo/lib_termname \

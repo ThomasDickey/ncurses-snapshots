@@ -46,10 +46,11 @@
 #include <termcap.h>	/* ospeed */
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tputs.c,v 1.37 1999/01/03 03:27:26 tom Exp $")
+MODULE_ID("$Id: lib_tputs.c,v 1.38 1999/01/10 00:57:41 tom Exp $")
 
 #define OUTPUT ((SP != 0) ? SP->_ofp : stdout)
 
+char PC;		/* used by termcap library */
 speed_t ospeed;		/* used by termcap library */
 
 int _nc_nulls_sent;	/* used by 'tack' program */
@@ -64,14 +65,10 @@ int delay_output(int ms)
 		napms(ms);
 	else {
 		register int	nullcount;
-		char	null = '\0';
-
-		if (pad_char)
-			null = pad_char[0];
 
 		nullcount = (ms * _nc_baudrate(ospeed)) / 10000;
 		for (_nc_nulls_sent += nullcount; nullcount > 0; nullcount--)
-			my_outch(null);
+			my_outch(PC);
 		if (my_outch == _nc_outch)
 			(void) fflush(OUTPUT);
 	}

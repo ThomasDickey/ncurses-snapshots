@@ -37,7 +37,7 @@
 
 #include "menu.priv.h"
 
-MODULE_ID("$Id: m_driver.c,v 1.14 1999/01/02 20:31:56 tom Exp $")
+MODULE_ID("$Id: m_driver.c,v 1.15 1999/01/07 23:23:04 juergen Exp $")
 
 /* Macros */
 
@@ -445,7 +445,7 @@ int menu_driver(MENU * menu, int   c)
 		WINDOW* sub = Get_Menu_Window(menu);
 		int ry = event.y, rx = event.x; /* screen coordinates */
 
-		result = E_NOT_SELECTABLE;
+		result = E_REQUEST_DENIED;
 		if (mouse_trafo(&ry,&rx,FALSE))
 		  { /* rx, ry are now "curses" coordinates */
 		    if (ry < sub->_begy)
@@ -514,7 +514,7 @@ int menu_driver(MENU * menu, int   c)
 		  }
 	      }
 	    else
-	        result = E_NOT_SELECTABLE;
+	        result = E_REQUEST_DENIED;
 	  }
 #endif /* NCURSES_MOUSE_VERSION */
 	else

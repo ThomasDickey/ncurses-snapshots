@@ -1,7 +1,7 @@
 ######## TERMINAL TYPE DESCRIPTIONS SOURCE FILE
 #
 #	Version 10.2.1
-#	$Date: 1998/12/29 16:00:57 $
+#	$Date: 1999/01/10 00:35:17 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -864,8 +864,39 @@ att7300|unixpc|pc7300|3b1|s4|AT&T UNIX PC Model 7300,
 	rmso=\E[m, rmul=\E[m, sgr0=\E[0;10m, smso=\E[7m, 
 	smul=\E[4m, 
 
-# From: Stefan Stapelberg <stefan@rent-a-guru.de>, 24 Feb 1997
+# Sent by Stefan Stapelberg <stefan@rent-a-guru.de>, 24 Feb 1997, this is
+# from SGI's terminfo database.  SGI's entry shows F9-F12 with the codes
+# for the application keypad mode.  We have added iris-ansi-ap rather than
+# change the original to keypad mode.
+#
 # (iris-ansi: added rmam/smam based on init string -- esr)
+#
+# This entry, and those derived from it, is used in xwsh (also known as
+# winterm).  Some capabilities that do not fit into the terminfo model
+# include the shift- and control-functionkeys:
+#
+# F1-F12 generate different codes when shift or control modifiers are used.
+# For example:
+#	F1      	\E[001q
+#	shift F1	\E[013q
+#	control-F1	\E[025q
+#
+# In application keypad mode, F9-F12 generate codes like vt100 PF1-PF4, i.e.,
+# \EOP to \EOS.  The shifted and control modifiers still do the same thing.
+#
+# The cursor keys also have different codes:
+#	control-up	\E[162q
+#	control-down	\E[165q
+#	control-left	\E[159q
+#	control-right	\E[168q
+#
+#	shift-up	\E[161q
+#	shift-down	\E[164q
+#	shift-left	\E[158q
+#	shift-right	\E[167q
+#
+#	control-tab	\[072q
+#
 iris-ansi|IRIS emulating 40 line ANSI terminal (almost VT100), 
 	am, 
 	cols#80, it#8, lines#40, 
@@ -880,18 +911,18 @@ iris-ansi|IRIS emulating 40 line ANSI terminal (almost VT100),
 	kEND=\E[147q, kHOM=\E[143q, kLFT=\E[158q, kPRT=\E[210q, 
 	kRIT=\E[167q, kSPD=\E[218q, kbs=^H, kcbt=\E[Z, kcub1=\E[D, 
 	kcud1=\E[B, kcuf1=\E[C, kcuu1=\E[A, kdch1=\177, 
-	kend=\E[146q, kent=^M, kf1=\E[001q, kf10=\EOQ, kf11=\EOR, 
-	kf12=\EOS, kf2=\E[002q, kf3=\E[003q, kf4=\E[004q, 
-	kf5=\E[005q, kf6=\E[006q, kf7=\E[007q, kf8=\E[008q, 
-	kf9=\EOP, khome=\E[H, kich1=\E[139q, knp=\E[154q, 
-	kpp=\E[150q, kprt=\E[209q, krmir=\E[146q, kspd=\E[217q, 
-	nel=\EE, pfkey=\EP101;%p1%d.y%p2%s\E\\, rc=\E8, 
-	rev=\E[7m, ri=\EM, rmam=\E[?7l, rmso=\E[m, rmul=\E[m, sc=\E7, 
-	sgr0=\E[m, smam=\E[?7h, smso=\E[1;7m, smul=\E[4m, 
+	kend=\E[146q, kent=^M, kf1=\E[001q, kf10=\E[010q, 
+	kf11=\E[011q, kf12=\E[012q, kf2=\E[002q, kf3=\E[003q, 
+	kf4=\E[004q, kf5=\E[005q, kf6=\E[006q, kf7=\E[007q, 
+	kf8=\E[008q, kf9=\E[009q, khome=\E[H, kich1=\E[139q, 
+	knp=\E[154q, kpp=\E[150q, kprt=\E[209q, krmir=\E[146q, 
+	kspd=\E[217q, nel=\EE, pfkey=\EP101;%p1%d.y%p2%s\E\\, 
+	rc=\E8, rev=\E[7m, ri=\EM, rmam=\E[?7l, rmso=\E[m, rmul=\E[m, 
+	sc=\E7, sgr0=\E[m, smam=\E[?7h, smso=\E[1;7m, smul=\E[4m, 
 	tbc=\E[3g, 
 iris-ansi-ap|IRIS ANSI in application-keypad mode, 
-	is2=\E[?1l\E>\E[?7h, kf10=\E[010q, kf11=\E[011q, 
-	kf12=\E[012q, rmkx=\E>, smkx=\E=, 
+	is2=\E[?1l\E=\E[?7h, kent=\EOM, kf10=\E[010q, 
+	kf11=\E[011q, kf12=\E[012q, kf9=\E[009q, 
 	use=iris-ansi, 
 
 # From the man-page, this is a quasi-vt100 emulator that runs on SGI's IRIX
@@ -17052,6 +17083,11 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 1998/12/19
 #	* change linux to use ncv#2, since underline does not work with color - TD
+#
+# 1999/1/9
+#	* add kbt to iris-ansi, document other shift/control functionkeys - TD
+#	* correct iris-ansi and iris-ansi-ap with respect to normal vs keypad
+#	  application modes, change kent to use the correct keypad code - TD
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:

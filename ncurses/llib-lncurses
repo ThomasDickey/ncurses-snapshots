@@ -274,44 +274,6 @@ int	delwin(
 		WINDOW	*win)
 		{ return(*(int *)0); }
 
-/* ./base/lib_doupdate.c */
-
-#include <sys/time.h>
-
-#undef doupdate
-int	doupdate(void)
-		{ return(*(int *)0); }
-
-#undef _nc_outstr
-void	_nc_outstr(
-		const char *str)
-		{ /* void */ }
-
-#undef _nc_scrolln
-int	_nc_scrolln(
-		int	n, 
-		int	top, 
-		int	bot, 
-		int	maxy)
-		{ return(*(int *)0); }
-
-#undef _nc_screen_resume
-void	_nc_screen_resume(void)
-		{ /* void */ }
-
-#undef _nc_screen_init
-void	_nc_screen_init(void)
-		{ /* void */ }
-
-#undef _nc_screen_wrap
-void	_nc_screen_wrap(void)
-		{ /* void */ }
-
-#undef _nc_do_xmc_glitch
-void	_nc_do_xmc_glitch(
-		attr_t	previous)
-		{ /* void */ }
-
 /* ./base/lib_echo.c */
 
 #undef echo
@@ -1041,6 +1003,13 @@ int	wstandend(
 		WINDOW	*z)
 		{ return(*(int *)0); }
 
+#undef mouse_trafo
+bool	mouse_trafo(
+		int	*a1, 
+		int	*a2, 
+		bool	z)
+		{ return(*(bool *)0); }
+
 /* ./base/lib_getch.c */
 
 #include <fifo_defs.h>
@@ -1095,10 +1064,6 @@ int	winchnstr(
 #undef initscr
 WINDOW	*initscr(void)
 		{ return(*(WINDOW **)0); }
-
-#undef termname
-char	*termname(void)
-		{ return(*(char **)0); }
 
 /* ./base/lib_insch.c */
 
@@ -1181,6 +1146,14 @@ int	mouseinterval(
 #undef _nc_has_mouse
 int	_nc_has_mouse(void)
 		{ return(*(int *)0); }
+
+#undef wmouse_trafo
+bool	wmouse_trafo(
+		const WINDOW *win, 
+		int	*pY, 
+		int	*pX, 
+		bool	to_screen)
+		{ return(*(bool *)0); }
 
 /* ./base/lib_move.c */
 
@@ -1584,6 +1557,15 @@ int	_nc_slk_initialize(
 int	slk_restore(void)
 		{ return(*(int *)0); }
 
+/* ./base/lib_slkatr_set.c */
+
+#undef slk_attr_set
+int	slk_attr_set(
+		const attr_t attr, 
+		short	color_pair_number, 
+		void	*opts)
+		{ return(*(int *)0); }
+
 /* ./base/lib_slkatrof.c */
 
 #undef slk_attroff
@@ -1663,15 +1645,6 @@ int	slk_set(
 int	slk_touch(void)
 		{ return(*(int *)0); }
 
-/* ./base/lib_slkatr_set.c */
-
-#undef slk_attr_set
-int	slk_attr_set(
-		const attr_t attr, 
-		short	color_pair_number, 
-		void	*opts)
-		{ return(*(int *)0); }
-
 /* ./base/lib_touch.c */
 
 #undef is_linetouched
@@ -1707,10 +1680,9 @@ void	_nc_lib_tracedmp(void)
 
 /* ./trace/lib_tracemse.c */
 
-#undef _tracemouse
-char	*_tracemouse(
-		MEVENT const *ep)
-		{ return(*(char **)0); }
+#undef _nc_lib_tracemouse
+void	_nc_lib_tracemouse(void)
+		{ /* void */ }
 
 /* ./tty/lib_tstp.c */
 
@@ -1835,6 +1807,44 @@ char	*_nc_printf_string(
 		va_list	ap)
 		{ return(*(char **)0); }
 
+/* ./tty/tty_update.c */
+
+#include <sys/time.h>
+
+#undef doupdate
+int	doupdate(void)
+		{ return(*(int *)0); }
+
+#undef _nc_outstr
+void	_nc_outstr(
+		const char *str)
+		{ /* void */ }
+
+#undef _nc_scrolln
+int	_nc_scrolln(
+		int	n, 
+		int	top, 
+		int	bot, 
+		int	maxy)
+		{ return(*(int *)0); }
+
+#undef _nc_screen_resume
+void	_nc_screen_resume(void)
+		{ /* void */ }
+
+#undef _nc_screen_init
+void	_nc_screen_init(void)
+		{ /* void */ }
+
+#undef _nc_screen_wrap
+void	_nc_screen_wrap(void)
+		{ /* void */ }
+
+#undef _nc_do_xmc_glitch
+void	_nc_do_xmc_glitch(
+		attr_t	previous)
+		{ /* void */ }
+
 /* ./base/memmove.c */
 
 #undef _nc_memmove
@@ -1938,14 +1948,6 @@ int	_nc_ada_isscroll(
 		const WINDOW *win)
 		{ return(*(int *)0); }
 
-#undef _nc_ada_coord_transform
-int	_nc_ada_coord_transform(
-		const WINDOW *win, 
-		int	*Y, 
-		int	*X, 
-		int	dir)
-		{ return(*(int *)0); }
-
 #undef _nc_ada_mouse_event
 void	_nc_ada_mouse_event(
 		mmask_t	m, 
@@ -1974,19 +1976,8 @@ int	use_default_colors(void)
 
 /* ./base/lib_freeall.c */
 
-#undef _nc_free_termtype
-void	_nc_free_termtype(
-		struct termtype *p, 
-		int	base)
-		{ /* void */ }
-
 #undef _nc_freeall
 void	_nc_freeall(void)
-		{ /* void */ }
-
-#undef _nc_free_and_exit
-void	_nc_free_and_exit(
-		int	code)
 		{ /* void */ }
 
 /* ./tinfo/lib_print.c */
@@ -2282,10 +2273,22 @@ void	init_acs(void)
 
 /* ./tinfo/lib_baudrate.c */
 
+#include <termcap.h>
+
 struct speed {
 	speed_t s;
 	int sp;
 };
+
+#undef _nc_baudrate
+int	_nc_baudrate(
+		int	OSpeed)
+		{ return(*(int *)0); }
+
+#undef _nc_ospeed
+int	_nc_ospeed(
+		int	BaudRate)
+		{ return(*(int *)0); }
 
 #undef baudrate
 int	baudrate(void)
@@ -2295,16 +2298,6 @@ int	baudrate(void)
 
 #undef cur_term
 TERMINAL *cur_term;
-
-#undef _nc_get_curterm
-int	_nc_get_curterm(
-		struct termios *buf)
-		{ return(*(int *)0); }
-
-#undef _nc_set_curterm
-int	_nc_set_curterm(
-		struct termios *buf)
-		{ return(*(int *)0); }
 
 #undef set_curterm
 TERMINAL *set_curterm(
@@ -2329,6 +2322,16 @@ SCREEN	*_nc_screen_chain;
 #undef SP
 SCREEN	*SP;
 
+/* ./tinfo/lib_has_cap.c */
+
+#undef has_ic
+bool	has_ic(void)
+		{ return(*(bool *)0); }
+
+#undef has_il
+bool	has_il(void)
+		{ return(*(bool *)0); }
+
 /* ./lib_keyname.c */
 
 #include <stdlib.h>
@@ -2350,14 +2353,6 @@ char	*keyname(
 
 /* ./tinfo/lib_kernel.c */
 
-#undef reset_prog_mode
-int	reset_prog_mode(void)
-		{ return(*(int *)0); }
-
-#undef reset_shell_mode
-int	reset_shell_mode(void)
-		{ return(*(int *)0); }
-
 #undef erasechar
 char	erasechar(void)
 		{ return(*(char *)0); }
@@ -2368,14 +2363,6 @@ char	killchar(void)
 
 #undef flushinp
 int	flushinp(void)
-		{ return(*(int *)0); }
-
-#undef savetty
-int	savetty(void)
-		{ return(*(int *)0); }
-
-#undef resetty
-int	resetty(void)
 		{ return(*(int *)0); }
 
 /* ./tinfo/lib_longname.c */
@@ -2392,14 +2379,6 @@ int	napms(
 		{ return(*(int *)0); }
 
 /* ./tinfo/lib_options.c */
-
-#undef has_ic
-bool	has_ic(void)
-		{ return(*(bool *)0); }
-
-#undef has_il
-bool	has_il(void)
-		{ return(*(bool *)0); }
 
 #undef idlok
 int	idlok(
@@ -2508,17 +2487,9 @@ int	intrflush(
 
 /* ./tinfo/lib_restart.c */
 
-#undef def_shell_mode
-int	def_shell_mode(void)
-		{ return(*(int *)0); }
-
-#undef def_prog_mode
-int	def_prog_mode(void)
-		{ return(*(int *)0); }
-
 #undef restartterm
 int	restartterm(
-		const char *term, 
+		char	*term, 
 		int	filenum, 
 		int	*errret)
 		{ return(*(int *)0); }
@@ -2548,14 +2519,12 @@ char	ttytype[256 ];
 
 #undef setupterm
 int	setupterm(
-		const char *tname, 
+		char	*tname, 
 		int	Filedes, 
 		int	*errret)
 		{ return(*(int *)0); }
 
 /* ./tinfo/lib_termcap.c */
-
-#include <termcap.h>
 
 #undef PC
 char	PC;
@@ -2563,8 +2532,6 @@ char	PC;
 char	*UP;
 #undef BC
 char	*BC;
-#undef ospeed
-speed_t	ospeed;
 
 #undef tgetent
 int	tgetent(
@@ -2580,17 +2547,17 @@ int	tgetent(
 
 #undef tgetflag
 int	tgetflag(
-		const char *id)
+		char	*id)
 		{ return(*(int *)0); }
 
 #undef tgetnum
 int	tgetnum(
-		const char *id)
+		char	*id)
 		{ return(*(int *)0); }
 
 #undef tgetstr
 char	*tgetstr(
-		const char *id, 
+		char	*id, 
 		char	**area)
 		{ return(*(char **)0); }
 
@@ -2599,6 +2566,12 @@ char	*tgoto(
 		const char *string, 
 		int	x, 
 		int	y)
+		{ return(*(char **)0); }
+
+/* ./tinfo/lib_termname.c */
+
+#undef termname
+char	*termname(void)
 		{ return(*(char **)0); }
 
 /* ./tinfo/lib_ti.c */
@@ -2625,10 +2598,6 @@ typedef union {
 	char	       *str;
 } stack_frame;
 
-#undef _nc_free_tparm
-void	_nc_free_tparm(void)
-		{ /* void */ }
-
 #undef tparm
 char	*tparm(
 		char	*string, 
@@ -2637,6 +2606,8 @@ char	*tparm(
 
 /* ./tinfo/lib_tputs.c */
 
+#undef ospeed
+speed_t	ospeed;
 #undef _nc_nulls_sent
 int	_nc_nulls_sent;
 
@@ -2699,7 +2670,43 @@ char	*_tracechar(
 		const unsigned char ch)
 		{ return(*(char **)0); }
 
-/* ./tinfo/lib_twait.c */
+/* ./tinfo/lib_ttyflags.c */
+
+#undef _nc_get_tty_mode
+int	_nc_get_tty_mode(
+		struct termios *buf)
+		{ return(*(int *)0); }
+
+#undef _nc_set_tty_mode
+int	_nc_set_tty_mode(
+		struct termios *buf)
+		{ return(*(int *)0); }
+
+#undef def_shell_mode
+int	def_shell_mode(void)
+		{ return(*(int *)0); }
+
+#undef def_prog_mode
+int	def_prog_mode(void)
+		{ return(*(int *)0); }
+
+#undef reset_prog_mode
+int	reset_prog_mode(void)
+		{ return(*(int *)0); }
+
+#undef reset_shell_mode
+int	reset_shell_mode(void)
+		{ return(*(int *)0); }
+
+#undef savetty
+int	savetty(void)
+		{ return(*(int *)0); }
+
+#undef resetty
+int	resetty(void)
+		{ return(*(int *)0); }
+
+/* ./tty/lib_twait.c */
 
 #undef _nc_timed_wait
 int	_nc_timed_wait(
@@ -2762,6 +2769,11 @@ typedef struct {const char *from; const char *to;} assoc;
 const char *_nc_tic_dir(
 		const char *path)
 		{ return(*(const char **)0); }
+
+#undef _nc_keep_tic_dir
+void	_nc_keep_tic_dir(
+		const char *path)
+		{ /* void */ }
 
 #undef _nc_read_file_entry
 int	_nc_read_file_entry(

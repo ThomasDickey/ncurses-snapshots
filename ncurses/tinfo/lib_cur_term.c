@@ -40,7 +40,7 @@
 #include <term.h>	/* TTY, cur_term */
 #include <termcap.h>	/* ospeed */
 
-MODULE_ID("$Id: lib_cur_term.c,v 1.5 1999/01/03 01:38:34 tom Exp $")
+MODULE_ID("$Id: lib_cur_term.c,v 1.6 1999/01/10 00:48:44 tom Exp $")
 
 TERMINAL *cur_term;
 
@@ -50,6 +50,7 @@ TERMINAL *set_curterm(TERMINAL *term)
 
 	if ((cur_term = term) != 0) {
 		ospeed = _nc_ospeed(cur_term->_baudrate);
+		PC = (pad_char != NULL) ? pad_char[0] : 0; 
 	}
 	return oldterm;
 }

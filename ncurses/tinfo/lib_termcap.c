@@ -39,14 +39,13 @@
 #define __INTERNAL_CAPS_VISIBLE
 #include <term.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.24 1999/01/03 01:31:58 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.25 1999/01/10 00:48:11 tom Exp $")
 
 /*
    some of the code in here was contributed by:
    Magnus Bengtsson, d6mbeng@dtek.chalmers.se
 */
 
-char PC;
 char *UP;
 char *BC;
 

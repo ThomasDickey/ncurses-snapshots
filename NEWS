@@ -1,10 +1,31 @@
--- $Id: NEWS,v 1.402 1999/01/03 02:48:05 tom Exp $
+-- $Id: NEWS,v 1.406 1999/01/10 03:46:03 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990109
+	+ reviewed/corrected macros in curses.h as per XSI document.
+	+ provide support for termcap PC variable by copying it from terminfo
+	  data and using it as the padding character in tputs (reported by
+	  Alexander Lukyanov).
+	+ corrected iris-ansi and iris-ansi-ap terminfo entries for kent and
+	  kf9-kf12 capabilities, as well as adding kcbt.
+	+ document the mouse handling mechanism in menu_driver and make a small
+	  change in menu_driver's return codes to provide more consistency
+	  (patch by Juergen Pfeifer).
+	+ add fallback definition for NCURSES_CONST to termcap.h.in (reported
+	  by Uchiyama Yasushi <uch@nop.or.jp>).
+	+ move lib_restart.c to ncurses/base, since it uses curses functions
+	  directly, and therefore cannot be used in libtinfo.so
+	+ rename micro_char_size to micro_col_size, adding #define to retain
+	  old name.
+	+ add set_a_attributes and set_pglen_inch to terminfo structure, as per
+	  XSI and Solaris 2.5.
+	+ minor makefile files to build ncurses test_progs
+	+ update html files in misc directory to reflect changes since 4.2
 
 990102
 	+ disable scroll hints when hashmap is enabled (patch by Alexander
