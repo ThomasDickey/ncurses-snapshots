@@ -38,7 +38,7 @@
 #include <time.h>
 #include <term.h>	/* exit_ca_mode, non_rev_rmcup */
 
-MODULE_ID("$Id: lib_screen.c,v 1.14 1999/01/02 22:56:17 tom Exp $")
+MODULE_ID("$Id: lib_screen.c,v 1.15 1999/07/24 20:05:29 tom Exp $")
 
 static time_t	dumptime;
 
@@ -125,7 +125,7 @@ int putwin(WINDOW *win, FILE *filep)
 
 int scr_restore(const char *file)
 {
-	FILE	*fp;
+	FILE	*fp = 0;
 
 	T((T_CALLED("scr_restore(%s)"), _nc_visbuf(file)));
 
@@ -143,7 +143,7 @@ int scr_restore(const char *file)
 
 int scr_dump(const char *file)
 {
-	FILE	*fp;
+	FILE	*fp = 0;
 
 	T((T_CALLED("scr_dump(%s)"), _nc_visbuf(file)));
 
@@ -161,7 +161,7 @@ int scr_dump(const char *file)
 
 int scr_init(const char *file)
 {
-	FILE	*fp;
+	FILE	*fp = 0;
 	struct stat	stb;
 
 	T((T_CALLED("scr_init(%s)"), _nc_visbuf(file)));

@@ -1,6 +1,6 @@
-# $Id: modules,v 1.68 1999/03/08 02:47:11 tom Exp $
+# $Id: modules,v 1.69 1999/07/18 02:38:37 tom Exp $
 ##############################################################################
-# Copyright (c) 1998 Free Software Foundation, Inc.                          #
+# Copyright (c) 1998,1999 Free Software Foundation, Inc.                     #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -33,7 +33,7 @@
 @ base
 # Library objects
 hardscroll	lib		$(serial)
-hashmap		lib		$(serial)
+hashmap		lib		$(serial)	../include/term.h
 lib_addch	lib		$(base)
 lib_addstr	lib		$(base)
 lib_beep	lib		$(base)		../include/term.h
@@ -49,7 +49,7 @@ lib_colorset	lib		$(base)
 lib_delch	lib		$(base)
 lib_delwin	lib		$(base)
 lib_echo	lib		$(base)
-lib_endwin	lib		$(base)
+lib_endwin	lib		$(base)		../include/term.h
 lib_erase	lib		$(base)
 lib_flash	lib		$(base)		../include/term.h
 lib_gen 	lib		.		../include/curses.h
@@ -77,7 +77,7 @@ lib_pad 	lib		$(base)
 lib_printw	lib		$(base)
 lib_redrawln	lib		$(base)
 lib_refresh	lib		$(base)
-lib_restart	lib		$(base)
+lib_restart	lib		$(base)		../include/term.h
 lib_scanw	lib		$(base)
 lib_screen	lib		$(base)		../include/term.h
 lib_scroll	lib		$(base)
@@ -98,7 +98,7 @@ lib_slkrefr	lib		$(base)		../include/term.h
 lib_slkset	lib		$(base)
 lib_slktouch	lib		$(base)
 lib_touch	lib		$(base)
-lib_traceatr	lib		$(trace)
+lib_traceatr	lib		$(trace)	../include/term.h
 lib_tracedmp	lib		$(trace)
 lib_tracemse	lib		$(trace)
 lib_tstp	lib		$(serial)
@@ -124,7 +124,7 @@ define_key	lib		$(base)
 expanded	lib		.
 keybound	lib		$(base)
 keyok		lib		$(base)
-lib_dft_fgbg	lib		$(base)
+lib_dft_fgbg	lib		$(base)		../include/term.h
 lib_freeall	lib		$(base)
 lib_print	lib		$(tinfo)	../include/term.h
 resizeterm	lib		$(base)		../include/term.h
@@ -154,7 +154,7 @@ home_terminfo	lib		$(tinfo)
 init_keytry	lib		$(tinfo)	../include/term.h $(INCDIR)/tic.h init_keytry.h
 lib_acs 	lib		$(tinfo)	../include/term.h
 lib_baudrate	lib		$(tinfo)	../include/term.h
-lib_cur_term	lib		$(tinfo)	../include/term.h $(INCDIR)/term_entry.h 
+lib_cur_term	lib		$(tinfo)	../include/term.h $(INCDIR)/term_entry.h
 lib_data	lib		$(tinfo)
 lib_has_cap	lib		$(tinfo)	../include/term.h
 lib_kernel	lib		$(tinfo)	../include/term.h
@@ -163,14 +163,14 @@ lib_longname	lib		$(tinfo)
 lib_napms	lib		$(tinfo)
 lib_options	lib		$(tinfo)	../include/term.h
 lib_raw 	lib		$(tinfo)	../include/term.h
-lib_setup	lib		$(tinfo)	../include/term.h $(INCDIR)/term_entry.h 
+lib_setup	lib		$(tinfo)	../include/term.h $(INCDIR)/term_entry.h
 lib_termcap	lib		$(tinfo)	../include/term.h $(INCDIR)/term_entry.h $(INCDIR)/tic.h
 lib_termname	lib		$(tinfo)	$(INCDIR)/tic.h
 lib_ti		lib		$(tinfo)	../include/term.h $(INCDIR)/term_entry.h $(INCDIR)/tic.h
 lib_tparm	lib		$(tinfo)	../include/term.h $(INCDIR)/tic.h
 lib_tputs	lib		$(tinfo)	../include/term.h $(INCDIR)/tic.h
 lib_trace	lib		$(trace)	$(INCDIR)/tic.h
-lib_tracebits	lib		$(trace)
+lib_tracebits	lib		$(trace)	../include/term.h
 lib_tracechr	lib		$(trace)
 lib_ttyflags	lib		$(tinfo)	../include/term.h
 lib_twait	lib		$(serial)

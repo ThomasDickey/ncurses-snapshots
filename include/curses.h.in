@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.83 1999/06/16 00:25:26 tom Exp $ */
+/* $Id: curses.h.in,v 1.84 1999/07/24 20:15:42 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -327,8 +327,19 @@ extern char ttytype[];		/* needed for backward compatibility */
  * function calls.  Just in case '__attribute__' isn't defined, make a dummy.
  * G++ doesn't accept it anyway.
  */
-#if defined(__cplusplus) || (!defined(__GNUC__) && !defined(__attribute__))
+#if !defined(__GNUC__) && !defined(__attribute__)
 #define __attribute__(p) /* nothing */
+#endif
+
+/*
+ * For g++, turn off our macros that use __attribute__ (g++ recognizes some
+ * of them, but not at the same version levels as gcc).
+ */
+#ifdef __cplusplus
+#undef GCC_NORETURN
+#undef GCC_PRINTF
+#undef GCC_SCANF
+#undef GCC_UNUSED
 #endif
 
 /*
