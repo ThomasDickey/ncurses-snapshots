@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.33 1997/10/27 00:08:42 tom Exp $
+# $Id: Makefile.in,v 1.35 1997/11/15 21:14:33 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -51,7 +51,7 @@ CCFLAGS		= $(CPPFLAGS) $(CXXFLAGS)
 CFLAGS_NORMAL	= $(CCFLAGS)
 CFLAGS_DEBUG	= $(CCFLAGS) @CXX_G_OPT@ -DTRACE
 CFLAGS_PROFILE	= $(CCFLAGS) -pg
-CFLAGS_SHARED	= $(CCFLAGS) @CC_SHARED_OPTS@
+CFLAGS_SHARED	= $(CCFLAGS) # @CC_SHARED_OPTS@
 
 CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
@@ -62,7 +62,7 @@ LINK		= $(CXX)
 LIBROOT	= ncurses++
 LIBNAME	= ../lib/lib$(LIBROOT).a
 
-LDFLAGS		= -L../lib \
+LDFLAGS		= @EXTRA_LDFLAGS@ -L../lib -L$(libdir) \
 	-l$(LIBROOT) \
 	-lform@DFT_ARG_SUFFIX@  \
 	-lmenu@DFT_ARG_SUFFIX@  \

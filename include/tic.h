@@ -64,7 +64,7 @@
  * The "maximum" here is misleading; XSI guarantees minimum values, which a
  * given implementation may exceed.
  */
-#define MAX_NAME_SIZE	127	/* maximum legal name field size */
+#define MAX_NAME_SIZE	512	/* maximum legal name field size (XSI:127) */
 #define MAX_ENTRY_SIZE	4096	/* maximum legal entry size */
 
 /* The maximum size of individual name or alias is guaranteed in XSI to

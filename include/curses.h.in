@@ -18,7 +18,7 @@
 *                                                                          *
 ***************************************************************************/
 
-/* $Id: curses.h.in,v 1.58 1997/10/25 19:08:05 tom Exp $ */
+/* $Id: curses.h.in,v 1.59 1997/11/15 22:02:42 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -826,32 +826,32 @@ extern int wvline_set(WINDOW *, const cchar_t *, int);	/* missing */
 
 /* attributes */
 
-#define NCURSES_BITS(mask,shift) ((mask) << (shift + @cf_cv_widec_shift@))
+#define NCURSES_BITS(mask,shift) ((mask) << ((shift) + @cf_cv_widec_shift@))
 
 #define A_NORMAL	0L
-#define A_ATTRIBUTES	NCURSES_BITS(~0L,0)
-#define A_CHARTEXT	(NCURSES_BITS(1L,0)-1)
-#define A_COLOR		NCURSES_BITS(0xffL,0)
-#define A_STANDOUT	NCURSES_BITS(1L,8)
-#define A_UNDERLINE	NCURSES_BITS(1L,9)
-#define A_REVERSE	NCURSES_BITS(1L,10)
-#define A_BLINK		NCURSES_BITS(1L,11)
-#define A_DIM		NCURSES_BITS(1L,12)
-#define A_BOLD		NCURSES_BITS(1L,13)
-#define A_ALTCHARSET	NCURSES_BITS(1L,14)
-#define A_INVIS		NCURSES_BITS(1L,15)
+#define A_ATTRIBUTES	NCURSES_BITS(~(@cf_cv_1UL@ - @cf_cv_1UL@),0)
+#define A_CHARTEXT	(NCURSES_BITS(@cf_cv_1UL@,0) - @cf_cv_1UL@)
+#define A_COLOR		NCURSES_BITS(((@cf_cv_1UL@) << 8) - @cf_cv_1UL@,0)
+#define A_STANDOUT	NCURSES_BITS(@cf_cv_1UL@,8)
+#define A_UNDERLINE	NCURSES_BITS(@cf_cv_1UL@,9)
+#define A_REVERSE	NCURSES_BITS(@cf_cv_1UL@,10)
+#define A_BLINK		NCURSES_BITS(@cf_cv_1UL@,11)
+#define A_DIM		NCURSES_BITS(@cf_cv_1UL@,12)
+#define A_BOLD		NCURSES_BITS(@cf_cv_1UL@,13)
+#define A_ALTCHARSET	NCURSES_BITS(@cf_cv_1UL@,14)
+#define A_INVIS		NCURSES_BITS(@cf_cv_1UL@,15)
 
 /* Tradeoff on 32-bit machines ('protect' vs widec).  The others (e.g., left
  * highlight are not implemented in any terminal descriptions, anyway.
  */
 #if ((16 + @cf_cv_widec_shift@) < @cf_cv_shift_limit@)
-#define A_PROTECT	NCURSES_BITS(1L,16)
-#define A_HORIZONTAL	NCURSES_BITS(1L,17)
-#define A_LEFT		NCURSES_BITS(1L,18)
-#define A_LOW		NCURSES_BITS(1L,19)
-#define A_RIGHT		NCURSES_BITS(1L,20)
-#define A_TOP		NCURSES_BITS(1L,21)
-#define A_VERTICAL	NCURSES_BITS(1L,22)
+#define A_PROTECT	NCURSES_BITS(@cf_cv_1UL@,16)
+#define A_HORIZONTAL	NCURSES_BITS(@cf_cv_1UL@,17)
+#define A_LEFT		NCURSES_BITS(@cf_cv_1UL@,18)
+#define A_LOW		NCURSES_BITS(@cf_cv_1UL@,19)
+#define A_RIGHT		NCURSES_BITS(@cf_cv_1UL@,20)
+#define A_TOP		NCURSES_BITS(@cf_cv_1UL@,21)
+#define A_VERTICAL	NCURSES_BITS(@cf_cv_1UL@,22)
 #else
 #define A_PROTECT	0L
 #define A_HORIZONTAL	0L

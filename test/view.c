@@ -22,7 +22,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.25 1997/11/01 19:38:38 tom Exp $
+ * $Id: view.c,v 1.26 1997/11/15 22:36:41 tom Exp $
  */
 
 #include <test.priv.h>
@@ -44,7 +44,7 @@
 #endif
 
 /* This is needed to compile 'struct winsize' */
-#if SYSTEM_LOOKS_LIKE_SCO
+#if NEED_PTEM_H
 #include <sys/stream.h>
 #include <sys/ptem.h>
 #endif

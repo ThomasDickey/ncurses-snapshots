@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.27 1997/11/01 20:39:51 tom Exp $
+# $Id: Makefile.in,v 1.29 1997/11/15 21:14:16 tom Exp $
 ################################################################################
 # Copyright 1996,1997 by Thomas E. Dickey <dickey@clark.net>                   #
 # All Rights Reserved.                                                         #
@@ -67,13 +67,16 @@ CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 CFLAGS_NORMAL	= $(CCFLAGS)
 CFLAGS_DEBUG	= $(CCFLAGS) @CC_G_OPT@ -DTRACE
 CFLAGS_PROFILE	= $(CCFLAGS) -pg
-CFLAGS_SHARED	= $(CCFLAGS) @CC_SHARED_OPTS@
+CFLAGS_SHARED	= $(CCFLAGS) # @CC_SHARED_OPTS@
 
 CFLAGS_DEFAULT	= $(CFLAGS_@DFT_UPR_MODEL@)
 
 LD		= @LD@
 LINK		= $(CC)
-LDFLAGS		= -L../lib -lncurses@DFT_ARG_SUFFIX@ @LDFLAGS@ @LD_MODEL@ @LIBS@ @EXTRA_LIBS@
+LDFLAGS		= @EXTRA_LDFLAGS@ \
+		-L../lib \
+		-L$(libdir) \
+		-lncurses@DFT_ARG_SUFFIX@ @LDFLAGS@ @LD_MODEL@ @LIBS@ @EXTRA_LIBS@
 
 LDFLAGS_NORMAL	= $(LDFLAGS)
 LDFLAGS_DEBUG	= $(LDFLAGS) @CC_G_OPT@

@@ -7,7 +7,7 @@
  * v2.0 featuring strict ANSI/POSIX conformance, November 1993.
  * v2.1 with ncurses mouse support, September 1995
  *
- * $Id: bs.c,v 1.20 1997/11/01 19:35:14 tom Exp $
+ * $Id: bs.c,v 1.21 1997/11/15 22:28:54 tom Exp $
  */
 
 #include <test.priv.h>
@@ -120,7 +120,7 @@ typedef struct
     char *name;			/* name of the ship type */
     unsigned hits;		/* how many times has this ship been hit? */
     char symbol;		/* symbol for game purposes */
-    unsigned char length;	/* length of ship */
+    int length;			/* length of ship */
     char x, y;			/* coordinates of ship start point */
     unsigned char dir;		/* direction of `bow' */
     bool placed;		/* has it been placed on the board? */

@@ -17,7 +17,7 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: aclocal.m4,v 1.98 1997/11/09 00:11:38 tom Exp $
+dnl $Id: aclocal.m4,v 1.103 1997/11/15 22:56:05 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -1106,7 +1106,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 	linux*)
 		# tested with Linux 2.0.29 and gcc 2.7.2 (ELF)
 		CC_SHARED_OPTS='-fPIC'
- 		MK_SHARED_LIB='gcc -o $[@].$(REL_VERSION) -L../lib -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)`,-stats,$(SHLIB_LIST)-lc'
+ 		MK_SHARED_LIB='gcc -o $[@].$(REL_VERSION) -L../lib -L\$(libdir) -shared -Wl,-soname,`basename $[@].$(ABI_VERSION)`,-stats,$(SHLIB_LIST)-lc'
 		test $cf_cv_ld_rpath = yes && cf_ld_rpath_opt="-Wl,-rpath,"
 		if test $DFT_LWR_MODEL = "shared" ; then
  			LOCAL_LDFLAGS='-Wl,-rpath,../lib'
@@ -1116,7 +1116,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		;;
 	openbsd*|netbsd*|freebsd*)
 		CC_SHARED_OPTS='-fpic -DPIC'
-		MK_SHARED_LIB='$(LD) -Bshareable -o $[@].$(REL_VERSION)'
+		MK_SHARED_LIB='$(LD) -Bshareable -o $[@]'
 		;;
 	osf*|mls+*)
 		# tested with OSF/1 V3.2 and 'cc'
@@ -1155,7 +1155,10 @@ AC_DEFUN([CF_SHARED_OPTS],
 			CC_SHARED_OPTS='-KPIC'
 		fi
 		MK_SHARED_LIB='$(LD) -dy -G -h `basename $[@].$(ABI_VERSION)` -o $[@].$(REL_VERSION)'
-		test $cf_cv_ld_rpath = yes && cf_ld_rpath_opt="-R"
+		if test $cf_cv_ld_rpath = yes ; then
+			cf_ld_rpath_opt="-R"
+			EXTRA_LDFLAGS="-R ../lib:\$(libdir) $EXTRA_LDFLAGS"
+		fi
 		cf_cv_do_symlinks=yes
 		;;
 	unix_sv*)
@@ -1183,6 +1186,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 	AC_SUBST(CC_SHARED_OPTS)
 	AC_SUBST(LD_SHARED_OPTS)
 	AC_SUBST(MK_SHARED_LIB)
+	AC_SUBST(EXTRA_LDFLAGS)
 	AC_SUBST(LOCAL_LDFLAGS)
 	AC_SUBST(LOCAL_LDFLAGS2)
 ])dnl
@@ -1298,7 +1302,7 @@ do
 	fi
 done
 AC_MSG_RESULT($cf_cv_src_modules)
-TEST_ARGS="-L${LIB_DIR} $TEST_ARGS"
+TEST_ARGS="-L${LIB_DIR} -L\$(libdir) $TEST_ARGS"
 AC_SUBST(TEST_DEPS)
 AC_SUBST(TEST_ARGS)
 
@@ -1425,12 +1429,33 @@ AC_SUBST(cf_cv_builtin_bool)
 AC_SUBST(cf_cv_type_of_bool)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Check if we can include <sys/time.h> with <sys/select.h>; this breaks on
+dnl older SCO configurations.
+AC_DEFUN([CF_SYS_TIME_SELECT],
+[
+AC_MSG_CHECKING(if sys/time.h conflicts with sys/select.h)
+AC_CACHE_VAL(cf_cv_sys_time_select,[
+AC_TRY_COMPILE([
+#if HAVE_SYS_TIME_H
+#include <sys/time.h>
+#endif
+#if HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif
+],[],[cf_cv_sys_time_select=yes],
+     [cf_cv_sys_time_select=no])
+     ])
+AC_MSG_RESULT($cf_cv_sys_time_select)
+test $cf_cv_sys_time_select = yes && AC_DEFINE(HAVE_SYS_TIME_SELECT)
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Determine the type we should use for chtype (and attr_t, which is treated
 dnl as the same thing).  We want around 32 bits, so on most machines want a
 dnl long, but on newer 64-bit machines, probably want an int.  If we're using
 dnl wide characters, we have to have a type compatible with that, as well.
 AC_DEFUN([CF_TYPEOF_CHTYPE],
 [
+AC_REQUIRE([CF_UNSIGNED_LITERALS])
 AC_MSG_CHECKING([for type of chtype])
 AC_CACHE_VAL(cf_cv_typeof_chtype,[
 		AC_TRY_RUN([
@@ -1482,8 +1507,15 @@ int main()
 		rm -f cf_test.out
 	])
 AC_MSG_RESULT($cf_cv_typeof_chtype)
+
 AC_SUBST(cf_cv_typeof_chtype)
 AC_DEFINE_UNQUOTED(TYPEOF_CHTYPE,$cf_cv_typeof_chtype)
+
+cf_cv_1UL="1"
+test "$cf_cv_unsigned_literals" = yes && cf_cv_1UL="${cf_cv_1UL}U"
+test "$cf_cv_typeof_chtype"    = long && cf_cv_1UL="${cf_cv_1UL}L"
+AC_SUBST(cf_cv_1UL)
+
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl
@@ -1498,6 +1530,19 @@ AC_CACHE_VAL(cf_cv_type_sigaction,[
 		[cf_cv_type_sigaction=no])])
 AC_MSG_RESULT($cf_cv_type_sigaction)
 test $cf_cv_type_sigaction = yes && AC_DEFINE(HAVE_TYPE_SIGACTION)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Test if the compiler supports 'U' and 'L' suffixes.  Only old compilers
+dnl won't, but they're still there.
+AC_DEFUN([CF_UNSIGNED_LITERALS],
+[
+AC_MSG_CHECKING([if unsigned literals are legal])
+AC_CACHE_VAL(cf_cv_unsigned_literals,[
+	AC_TRY_COMPILE([],[long x = 1L + 1UL + 1U + 1],
+		[cf_cv_unsigned_literals=yes],
+		[cf_cv_unsigned_literals=no])
+	])
+AC_MSG_RESULT($cf_cv_unsigned_literals)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Make an uppercase version of a variable
