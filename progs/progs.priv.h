@@ -30,7 +30,7 @@
  *  Author: Thomas E. Dickey <dickey@clark.net> 1997,1998                   *
  ****************************************************************************/
 /*
- * $Id: progs.priv.h,v 1.23 2000/09/02 18:25:32 tom Exp $
+ * $Id: progs.priv.h,v 1.24 2000/10/01 01:33:34 tom Exp $
  *
  *	progs.priv.h
  *
@@ -170,3 +170,5 @@ extern int optind;
 #  define isascii(c) 1	/* not really ascii anyway */
 # endif
 #endif
+
+#define SIZEOF(v) (sizeof(v)/sizeof(v[0]))

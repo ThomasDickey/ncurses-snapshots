@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.42 2000/08/27 00:05:52 tom Exp $
+-- $Id: INSTALL,v 1.43 2000/10/01 00:21:43 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -381,8 +381,9 @@ SUMMARY OF CONFIGURE OPTIONS:
 	extended functions.
 
     --enable-rpath
-	Use rpath option when generating shared libraries.  This applies mainly
-	to systems using the GNU linker (read the manpage).
+	Use rpath option when generating shared libraries, and with some
+	restrictions when linking the corresponding programs.  This applies
+	mainly to systems using the GNU linker (read the manpage).
 
     --enable-safe-sprintf
 	Compile with experimental safe-sprintf code.  You may consider using

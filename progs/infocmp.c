@@ -41,7 +41,7 @@
 #include <term_entry.h>
 #include <dump_entry.h>
 
-MODULE_ID("$Id: infocmp.c,v 1.56 2000/09/23 18:37:44 tom Exp $")
+MODULE_ID("$Id: infocmp.c,v 1.57 2000/10/01 01:26:25 tom Exp $")
 
 #define L_CURL "{"
 #define R_CURL "}"
@@ -924,7 +924,7 @@ usage(void)
 	,"  -w number  (width)"
     };
     const size_t first = 3;
-    const size_t last = sizeof(tbl) / sizeof(tbl[0]);
+    const size_t last = SIZEOF(tbl);
     const size_t left = (last - first + 1) / 2 + first;
     size_t n;
 

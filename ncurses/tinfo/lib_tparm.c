@@ -42,7 +42,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.45 2000/09/23 20:40:30 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.46 2000/10/01 00:32:16 tom Exp $")
 
 /*
  *	char *
@@ -234,7 +234,6 @@ spop(void)
 static inline const char *
 parse_format(const char *s, char *format, int *len)
 {
-    const char *base = s;
     bool done = FALSE;
     bool allowminus = FALSE;
     bool dot = FALSE;
