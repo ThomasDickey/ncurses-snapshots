@@ -41,7 +41,7 @@
 #include <curses.priv.h>
 #include <term.h>	/* cur_term */
 
-MODULE_ID("$Id: lib_raw.c,v 1.18 1997/07/05 18:00:36 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.19 1997/08/09 18:39:33 tom Exp $")
 
 #ifdef SVR4_TERMIO
 #define _POSIX_SOURCE
@@ -116,8 +116,10 @@ cflags[] =
     {
 	{CLOCAL,	"CLOCAL"},
 	{CREAD, 	"CREAD"},
-	{CSIZE, 	"CSIZE"},
 	{CSTOPB,	"CSTOPB"},
+#if !defined(CS5) || !defined(CS8)
+	{CSIZE, 	"CSIZE"},
+#endif
 	{HUPCL, 	"HUPCL"},
 	{PARENB,	"PARENB"},
 	{PARODD|PARENB,	"PARODD"},	/* concession to readability */
@@ -144,7 +146,8 @@ lflags[] =
     	8 + sizeof(iflags) +
     	8 + sizeof(oflags) +
     	8 + sizeof(cflags) +
-    	8 + sizeof(lflags));
+    	8 + sizeof(lflags) +
+	8);
 
     if (cur_term->Nttyb.c_iflag & ALLIN)
 	lookup_bits(buf, iflags, "iflags", cur_term->Nttyb.c_iflag);
@@ -154,6 +157,16 @@ lflags[] =
 
     if (cur_term->Nttyb.c_cflag & ALLCTRL)
 	lookup_bits(buf, cflags, "cflags", cur_term->Nttyb.c_cflag);
+
+#if defined(CS5) && defined(CS8)
+    switch (cur_term->Nttyb.c_cflag & CSIZE) {
+    case CS5:	strcat(buf, "CS5 ");	break;
+    case CS6:	strcat(buf, "CS6 ");	break;
+    case CS7:	strcat(buf, "CS7 ");	break;
+    case CS8:	strcat(buf, "CS8 ");	break;
+    default:	strcat(buf, "CSIZE? ");	break;
+    }
+#endif
 
     if (cur_term->Nttyb.c_lflag & ALLLOCAL)
 	lookup_bits(buf, lflags, "lflags", cur_term->Nttyb.c_lflag);

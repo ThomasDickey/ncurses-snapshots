@@ -531,6 +531,7 @@
 ./ncurses/read_termcap.c
 ./ncurses/resizeterm.c
 ./ncurses/sigaction.c
+./ncurses/softscroll.c
 ./ncurses/tries.c
 ./ncurses/vsscanf.c
 ./ncurses/wresize.c
@@ -580,6 +581,7 @@
 ./test/rain.c
 ./test/tclock.c
 ./test/test.priv.h
+./test/testaddch.c
 ./test/testcurs.c
 ./test/tracemunch
 ./test/view.c

@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.67 1997/07/26 23:39:11 tom Exp $
+ * $Id: curses.priv.h,v 1.69 1997/08/09 17:21:44 tom Exp $
  *
  *	curses.priv.h
  *
@@ -90,6 +90,23 @@ extern int errno;
 #define USE_GPM_SUPPORT 1
 #else
 #define USE_GPM_SUPPORT 0
+#endif
+
+/*
+ * As currently coded, hashmap relies on the scroll-hints logic.
+ */
+#ifndef USE_SCROLL_HINTS
+#if USE_HASHMAP
+#define USE_SCROLL_HINTS 1
+#else
+#define USE_SCROLL_HINTS 0
+#endif
+#endif
+
+#if USE_SCROLL_HINTS
+#define if_USE_SCROLL_HINTS(stmt) stmt
+#else
+#define if_USE_SCROLL_HINTS(stmt) /*nothing*/
 #endif
 
 /*
@@ -467,6 +484,16 @@ extern void _nc_expanded(void);
 
 #endif
 
+/* hardscroll.c */
+#if defined(TRACE) || defined(SCROLLDEBUG)
+extern void _nc_linedump(void);
+#endif
+
+/* hardscroll.c */
+#if defined(TRACE) || defined(SCROLLDEBUG)
+extern void _nc_linedump(void);
+#endif
+
 /* lib_acs.c */
 extern void init_acs(void);	/* no prefix, this name is traditional */
 
@@ -487,6 +514,12 @@ extern void _nc_mouse_wrap(SCREEN *);
 extern void _nc_mouse_resume(SCREEN *);
 extern int _nc_max_click_interval;
 extern int _nc_mouse_fd(void);
+
+/* softscroll.c */
+extern void _nc_setup_scroll(void);
+
+/* softscroll.c */
+extern void _nc_setup_scroll(void);
 
 /* tries.c */
 extern void _nc_add_to_try(struct tries **tree, char *str, unsigned short code);

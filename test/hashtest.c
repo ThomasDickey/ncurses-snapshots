@@ -3,7 +3,7 @@
  *
  * Generate timing statistics for vertical-motion optimization.
  *
- * $Id: hashtest.c,v 1.11 1997/08/03 00:24:49 tom Exp $
+ * $Id: hashtest.c,v 1.12 1997/08/09 14:25:18 tom Exp $
  */
 
 #define NCURSES_TRACE
@@ -83,9 +83,11 @@ static void genlines(int base)
 	}
 
 	scrollok(stdscr, TRUE);
-	refresh();
-	if (single_step)
+	if (single_step) {
+		move(LINES-1, 0);
 		getch();
+	} else
+		refresh();
 }
 
 static void one_cycle(int ch)

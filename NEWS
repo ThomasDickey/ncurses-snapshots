@@ -1,7 +1,28 @@
--- $Id: NEWS,v 1.229 1997/08/03 00:42:13 tom Exp $
+-- $Id: NEWS,v 1.231 1997/08/10 00:02:51 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
+
+970809
+	+ modify _tracebits() to show the character size (e.g., CS8).
+	+ modify tparm() to emit '\200' where the generated string would have a
+	  null (reported by From:  Ian Dall <Ian.Dall@dsto.defence.gov.au> for
+	  terminal type ncr7900).
+	+ modify install process so that ldconfig is not invoked if the
+	  package is built with an install-prefix.
+	+ correct test program for chtype size (reported by Tim Mooney).
+	+ add configure option --disable-scroll-hints, using this to ifdef the
+	  logic that computes indices for _nc_scroll_optimize().
+	+ add module ncurses/softscroll.c, to perform single-stage computation
+	  of scroll indices used in _nc_scroll_optimize().  This is faster than
+	  the existing scrolling algorithm, but tends to make too-small hunks.
+	+ eliminate fixed buffer size in _nc_linedump().
+	+ minor fixes to lib_doupdate.c to add tradeoff between clr_eol (el)
+	  and clr_bol (el1), refine logic in ClrUpdate() and ClrBottom() (patch
+	  by Alexander V. Lukyanov).
+	+ add test/testaddch.c, from a pending patch by Alexander V. Lukyanov.
+	+ correct processing of "configure --enable-assertions" option (patch
+	  by Juergen Pfeifer).
 
 970802
 	+ add '-s' (single-step) option too test/hashtest.c, correct an error

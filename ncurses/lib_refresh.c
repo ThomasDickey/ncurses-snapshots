@@ -30,7 +30,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.14 1997/02/02 01:05:26 tom Exp $")
+MODULE_ID("$Id: lib_refresh.c,v 1.15 1997/08/09 17:21:49 tom Exp $")
 
 int wredrawln(WINDOW *win, int beg, int num)
 {
@@ -153,14 +153,16 @@ bool	wide;
 
 		}
 
+#if USE_SCROLL_HINTS
 		if (wide) {
 		    int	oind = oline->oldindex;
 
 		    nline->oldindex = (oind == _NEWINDEX) ? _NEWINDEX : begy + oind + win->_yoffset;
 		}
+#endif /* USE_SCROLL_HINTS */
 
 		oline->firstchar = oline->lastchar = _NOCHANGE;
-		oline->oldindex = i;
+		if_USE_SCROLL_HINTS(oline->oldindex = i);
 	}
 
 	if (win->_clear) {

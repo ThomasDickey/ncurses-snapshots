@@ -1,4 +1,4 @@
--- $Id: TO-DO,v 1.35 1997/07/13 01:23:53 tom Exp $
+-- $Id: TO-DO,v 1.36 1997/08/09 18:19:13 tom Exp $
 
 SHORT-TERM TO-DO ITEMS:
 
@@ -34,11 +34,10 @@ Known Problems:
   activates them), and a touchwin can apparently also force them to be
   displayed.
 
-* The code departs from perfect 8-bit cleanness in one respect; you cannot
++ The code departs from perfect 8-bit cleanness in one respect; you cannot
   specify a character \200 as part of a capability string, because the terminfo
-  library interprets \200 as a request to embed NUL (\000) at that point (the
-  actual code that does this is in ncurses/lib_options.c:add_keytry().
-  This is a legacy terminfo property we can't mess with.
+  library interprets \200 as a request to embed NUL (\000) at that point.  This
+  is a legacy terminfo property we can't mess with.
 
 * The window classes defined in the c++ subdirectory need documentation.
   Some C++ programmer could earn a lot of good karma by doing this...
@@ -78,6 +77,10 @@ Portability (or lack thereof):
   automatically-generated sources (e.g., comp_captab.c) on your host machine. 
   Then, run "make mostlyclean", remove config.* from the top-level directory
   and configure for the cross-compiler.
+
++ terminfo.5 does not format with the SunOS (and most other platform's) tbl
+  utility because it relies on a diversion for each table entry.  Get the groff
+  package.
 
 Untested features:
 

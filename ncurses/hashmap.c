@@ -59,7 +59,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hashmap.c,v 1.15 1997/07/15 18:12:23 Alexander.V.Lukyanov Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.16 1997/08/09 12:48:02 tom Exp $")
 
 #ifdef HASHDEBUG
 #define LINES	24
@@ -318,7 +318,6 @@ void _nc_hash_map(void)
 int
 main(int argc GCC_UNUSED, char *argv[] GCC_UNUSED)
 {
-    extern void	_nc_linedump(void);
     char	line[BUFSIZ], *st;
     int		n;
 

@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.71 1997/07/27 00:31:53 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.74 1997/08/09 20:53:36 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -430,7 +430,7 @@ static void callPutChar(chtype const ch)
 	{ \
 		win->_line[row].firstchar = _NOCHANGE; \
 		win->_line[row].lastchar = _NOCHANGE; \
-		win->_line[row].oldindex = row; \
+		if_USE_SCROLL_HINTS(win->_line[row].oldindex = row); \
 	}
 
 int doupdate(void)
@@ -656,6 +656,8 @@ struct tms before, after;
 		if (_nc_optimize_enable & OPTIMIZE_HASHMAP)
 #endif /*TRACE */
 			_nc_hash_map();
+#elif !USE_SCROLL_HINTS
+		_nc_setup_scroll();
 #endif
 #if defined(TRACE) || defined(NCURSES_TEST)
 		if (_nc_optimize_enable & OPTIMIZE_SCROLL)
@@ -767,25 +769,29 @@ chtype	blank = BLANK;
 
 static void ClrUpdate(WINDOW *win)
 {
-	int i, j;
+	int i;
 	chtype blank = ClrBlank(win);
+	int nonempty = min(screen_lines, newscr->_maxy+1);
 
 	T(("ClrUpdate() called"));
 
-	ClearScreen(blank);
-
-	for (i = 0; i < screen_lines ; i++) {
-		if (win == curscr)
+	if (win == curscr) {
+		/* discard updates */
+		for (i = 0; i < screen_lines ; i++) {
 			memcpy( newscr->_line[i].text,
 				curscr->_line[i].text,
 				screen_columns * sizeof(chtype));
-		for (j = 0; j < screen_columns; j++) {
-			curscr->_line[i].text[j] = blank;
 		}
 	}
 
+	ClearScreen(blank);
+
 	T(("updating screen from scratch"));
-	for (i = 0; i < min(screen_lines, newscr->_maxy + 1); i++)
+
+	if (clr_eos)
+		nonempty = ClrBottom(nonempty);
+
+	for (i = 0; i < nonempty; i++)
 		TransformLine(i);
 }
 
@@ -885,7 +891,7 @@ chtype	blank  = newscr->_line[total-1].text[last-1]; /* lower right char */
 		for (row = total-1; row >= 0; row--) {
 			if (memcmp(tstLine, newscr->_line[row].text, length))
 				break;
-			if (newscr->_line[row].firstchar != _NOCHANGE)
+			if (memcmp(tstLine, curscr->_line[row].text, length))
 				top = row;
 		}
 
@@ -971,11 +977,21 @@ bool	attrchanged = FALSE;
 
 			if (nFirstChar > oFirstChar + SP->_el1_cost)
 			{
-			    GoTo(lineno, nFirstChar - 1);
-			    UpdateAttrs(blank);
-			    TPUTS_TRACE("clr_bol");
-			    putp(clr_bol);
-
+			    if (nFirstChar >= screen_columns && SP->_el_cost <= SP->_el1_cost)
+			    {
+				GoTo(lineno, 0);
+				UpdateAttrs(blank);
+				TPUTS_TRACE("clr_eol");
+				putp(clr_eol);
+			    }
+			    else
+			    {
+				GoTo(lineno, nFirstChar - 1);
+				UpdateAttrs(blank);
+				TPUTS_TRACE("clr_bol");
+				putp(clr_bol);
+			    }
+			    
 			    while (firstChar < nFirstChar)
 				oldLine[firstChar++] = blank;
 
@@ -1101,7 +1117,7 @@ bool	attrchanged = FALSE;
 
 static void ClearScreen(chtype blank)
 {
-	int	i;
+	int	i, j;
 
 	T(("ClearScreen() called"));
 
@@ -1133,6 +1149,11 @@ static void ClearScreen(chtype blank)
 	} else {
 		T(("cannot clear screen"));
 		return;
+	}
+
+	for (i = 0; i < screen_lines; i++) {
+		for (j = 0; j < screen_columns; j++)
+			curscr->_line[i].text[j] = blank;
 	}
 
 	T(("screen cleared"));

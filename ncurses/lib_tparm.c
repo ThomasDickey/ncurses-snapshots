@@ -29,7 +29,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.19 1997/07/05 16:49:22 tom Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.20 1997/08/09 18:07:47 tom Exp $")
 
 /*
  *	char *
@@ -150,6 +150,8 @@ static void save_number(const char *fmt, int number)
 static inline void save_char(int c)
 {
 	static char text[2];
+	if (c == 0)
+		c = 0200;
 	text[0] = c;
 	save_text(text);
 }
