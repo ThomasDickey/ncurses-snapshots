@@ -23,7 +23,7 @@
  * scroll operation worked, and the refresh() code only had to do a
  * partial repaint.
  *
- * $Id: view.c,v 1.36 2001/06/18 18:29:38 skimo Exp $
+ * $Id: view.c,v 1.38 2001/06/23 23:49:10 tom Exp $
  */
 
 #include <test.priv.h>
@@ -139,7 +139,7 @@ ch_dup(char *src)
     for (j = k = 0; j < len; j++) {
 #if USE_WIDEC_SUPPORT
 	rc = mbrtowc(&wch, src + j, len - j, &state);
-	if (rc == -1 || rc == -2)
+	if (rc == (size_t)-1 || rc == (size_t)-2)
 	    break;
 	j += rc - 1;
 	if ((width = wcwidth(wch)) < 0)
@@ -252,11 +252,11 @@ main(int argc, char *argv[])
 #if USE_WIDEC_SUPPORT
 		col++, d++;
 #else
-	    if (isprint(CharOf(*d))) {
+	    if (isprint(UChar(*d))) {
 		col++;
 		d++;
 	    } else {
-		sprintf(d, "\\%03o", CharOf(*s));
+		sprintf(d, "\\%03o", UChar(*s));
 		d += strlen(d);
 		col = (d - temp);
 	    }
