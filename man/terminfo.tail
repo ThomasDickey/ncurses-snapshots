@@ -1,4 +1,4 @@
-.\" $Id: terminfo.tail,v 1.21 1998/11/01 01:02:42 tom Exp $
+.\" $Id: terminfo.tail,v 1.22 1998/12/26 19:59:23 tom Exp $
 .\" Beginning of terminfo.tail file
 .ps +1
 .PP
@@ -715,8 +715,8 @@ If the keypad can be set to transmit or not transmit,
 give these codes as \fBsmkx\fR and \fBrmkx\fR.
 Otherwise the keypad is assumed to always transmit.
 The codes sent by the left arrow, right arrow, up arrow, down arrow,
-and home keys can be given as \fBkcub1, kcuf1, kcuu1, kcud1,
-\fRand\fB khome\fR respectively.
+and home keys can be given as
+\fBkcub1, kcuf1, kcuu1, kcud1, \fRand\fB khome\fR respectively.
 If there are function keys such as f0, f1, ..., f10, the codes they send
 can be given as \fBkf0, kf1, ..., kf10\fR.
 If these keys have labels other than the default f0 through f10, the labels
@@ -968,8 +968,8 @@ c l l c
 c l l c
 lw28 lw6 lw2 lw20.
 .\".TH
-\fBGlyph	ACS	Ascii	VT100
-Name	Name	Default	Name\fR
+\fBGlyph	ACS	Ascii	VT100\fR
+\fBName	Name	Default	Name\fR
 UK pound sign        	ACS_STERLING	f	}
 arrow pointing down	ACS_DARROW	v	.
 arrow pointing left	ACS_LARROW	<	,
@@ -1238,7 +1238,7 @@ Note that in older terminfo versions, this capability was called
 `beehive_glitch'; it is now `no_esc_ctl_c'.
 .PP
 Other specific terminal problems may be corrected by adding more
-capabilities of the form \fBx\fIx\fR.
+capabilities of the form \fBx\fR\fIx\fR.
 .PP
 .SS Similar Terminals
 .PP

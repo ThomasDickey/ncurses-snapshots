@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: tset.1,v 1.7 1998/03/11 21:12:53 juergen Exp $
+.\" $Id: tset.1,v 1.8 1998/12/26 01:44:41 tom Exp $
 .TH tset 1 ""
 .SH NAME
 \fBtset\fR - terminal initialization
@@ -195,7 +195,7 @@ can set \fBTERM\fR appropriately for each dial-up line; this obviates what was
 tset, with a few exceptions specified here.
 .PP
 The -S option of BSD tset no longer works; it prints an error message to stderr
-and dies.  The -s option only sets \fBTERM\fR, not \fBTERMCAP\fB.  Both these
+and dies.  The -s option only sets \fBTERM\fR, not \fBTERMCAP\fP.  Both these
 changes are because the \fBTERMCAP\fR variable is no longer supported under
 terminfo-based \fBncurses\fR, which makes \fBtset -S\fR useless (we made it die
 noisily rather than silently induce lossage).

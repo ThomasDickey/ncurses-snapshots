@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_window.3x,v 1.6 1998/03/11 21:12:53 juergen Exp $
+.\" $Id: curs_window.3x,v 1.7 1998/12/26 20:11:01 tom Exp $
 .TH curs_window 3X ""
 .SH NAME
 \fBnewwin\fR, \fBdelwin\fR, \fBmvwin\fR,
@@ -43,11 +43,11 @@ create \fBcurses\fR windows
 .br
 \fBint mvwin(WINDOW *win, int y, int x);\fR
 .br
-\fBWINDOW *subwin(WINDOW *orig, int nlines, int ncols,
-      int begin_y, int begin_x);\fR
+\fBWINDOW *subwin(WINDOW *orig, int nlines, int ncols,\fR
+      \fBint begin_y, int begin_x);\fR
 .br
-\fBWINDOW *derwin(WINDOW *orig, int nlines, int ncols,
-      int begin_y, int begin_x);\fR
+\fBWINDOW *derwin(WINDOW *orig, int nlines, int ncols,\fR
+      \fBint begin_y, int begin_x);\fR
 .br
 \fBint mvderwin(WINDOW *win, int par_y, int par_x);\fR
 .br
