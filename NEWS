@@ -1,10 +1,14 @@
--- $Id: NEWS,v 1.377 1998/09/26 23:33:32 tom Exp $
+-- $Id: NEWS,v 1.378 1998/10/03 19:11:15 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+981003
+	+ remove unnecessary portion of OS/2 EMX mouse change from
+	  check_pending() (reported by Alexander V Lukyanov).
 
 980926
 	+ implement mouse support for OS/2 EMX (adapted from patch against
