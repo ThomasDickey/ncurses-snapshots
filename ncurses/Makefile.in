@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.74 2001/05/26 17:36:29 tom Exp $
+# $Id: Makefile.in,v 1.75 2001/06/16 16:46:09 tom Exp $
 ##############################################################################
 # Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.           #
 #                                                                            #
@@ -27,7 +27,7 @@
 # authorization.                                                             #
 ##############################################################################
 #
-# Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
+# Author: Thomas E. Dickey 1996-2001
 #
 # Makefile for ncurses source code.
 #
@@ -55,6 +55,7 @@ CF_MFLAGS 	= @cf_cv_makeflags@
 
 MODEL		= @DFT_LWR_MODEL@
 DESTDIR		= @DESTDIR@
+top_srcdir	= @top_srcdir@
 srcdir		= @srcdir@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
@@ -120,17 +121,20 @@ LINT_LIBS	= -lncurses @LIBS@
 
 FALLBACK_LIST	= @FALLBACK_LIST@
 
+TERMINFO_CAPS	= $(top_srcdir)/include/@TERMINFO_CAPS@
+
 AUTO_SRC = \
 	../include/nomacros.h \
-	./comp_captab.c \
-	./expanded.c \
-	./fallback.c \
+	codes.c \
+	comp_captab.c \
+	expanded.c \
+	fallback.c \
 	init_keytry.h \
-	./lib_keyname.c \
-	./lib_gen.c \
-	./codes.c \
-	./names.c \
-	./unctrl.c
+	keys.list \
+	lib_gen.c \
+	lib_keyname.c \
+	names.c \
+	unctrl.c
 
 TEST_DEPS	= ../lib/@LIB_PREFIX@ncurses@DFT_DEP_SUFFIX@
 TEST_ARGS	= -L../lib -lncurses@DFT_ARG_SUFFIX@
@@ -158,22 +162,25 @@ $(DESTDIR)$(libdir) :
 
 ../lib : ; mkdir $@
 
-./fallback.c : $(tinfo)/MKfallback.sh
+fallback.c : $(tinfo)/MKfallback.sh
 	sh $(tinfo)/MKfallback.sh $(FALLBACK_LIST) >$@
 
-./lib_gen.c : $(base)/MKlib_gen.sh ../include/curses.h
+lib_gen.c : $(base)/MKlib_gen.sh ../include/curses.h
 	sh $(base)/MKlib_gen.sh "$(CPP)" "$(AWK)" <../include/curses.h >$@
 
 ../include/nomacros.h : $(base)/MKlib_gen.sh ../include/curses.h
 	sh $(base)/MKlib_gen.sh "$(CPP)" "$(AWK)" <../include/curses.h | \
 		fgrep undef >$@
 
-init_keytry.h: make_keys$x $(tinfo)/keys.list
-	./make_keys $(tinfo)/keys.list > $@
+init_keytry.h: make_keys$x keys.list
+	./make_keys keys.list > $@
+
+keys.list :	$(tinfo)/MKkeys_list.sh
+	AWK=$(AWK) $(SHELL) $(tinfo)/MKkeys_list.sh $(TERMINFO_CAPS) | sort >$@
 
 make_keys$x : \
 		$(tinfo)/make_keys.c \
-		./names.c
+		names.c
 	$(HOSTCC) -o $@ $(HOSTCCFLAGS) $(tinfo)/make_keys.c $(HOSTLDFLAGS)
 
 make_hash$x : \
@@ -181,25 +188,25 @@ make_hash$x : \
 		../include/hashsize.h
 	$(HOSTCC) -o $@ $(HOSTCCFLAGS) -DMAIN_PROGRAM $(tinfo)/comp_hash.c $(HOSTLDFLAGS)
 
-./expanded.c : $(serial)/MKexpanded.sh
+expanded.c : $(serial)/MKexpanded.sh
 	sh $(serial)/MKexpanded.sh "$(CPP)" $(CPPFLAGS) > $@
 
-./comp_captab.c: \
+comp_captab.c: \
 		make_hash$x \
 		../include/hashsize.h \
 		$(tinfo)/MKcaptab.awk
 	sh $(tinfo)/MKcaptab.awk $(AWK) $(srcdir)/../include/@TERMINFO_CAPS@ > $@
 
-./lib_keyname.c: $(tinfo)/keys.list $(base)/MKkeyname.awk
-	$(AWK) -f $(base)/MKkeyname.awk $(tinfo)/keys.list > $@
+lib_keyname.c: keys.list $(base)/MKkeyname.awk
+	$(AWK) -f $(base)/MKkeyname.awk keys.list > $@
 
-./names.c ./codes.c: $(tinfo)/MKnames.awk
+names.c codes.c: $(tinfo)/MKnames.awk
 	$(AWK) -f $(tinfo)/MKnames.awk $(srcdir)/../include/@TERMINFO_CAPS@
-	cat namehdr boolnames boolfnames numnames numfnames strnames strfnames nameftr >./names.c
-	cat namehdr boolcodes numcodes strcodes codeftr >./codes.c
+	cat namehdr boolnames boolfnames numnames numfnames strnames strfnames nameftr >names.c
+	cat namehdr boolcodes numcodes strcodes codeftr >codes.c
 	-rm -f namehdr nameftr codeftr boolnames boolfnames boolcodes numnames numfnames numcodes strnames strfnames strcodes
 
-./unctrl.c: $(base)/MKunctrl.awk
+unctrl.c: $(base)/MKunctrl.awk
 	echo | $(AWK) -f $(base)/MKunctrl.awk >$@
 
 tags:

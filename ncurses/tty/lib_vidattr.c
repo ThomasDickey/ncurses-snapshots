@@ -64,7 +64,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.36 2000/12/10 03:05:48 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.37 2001/06/16 17:51:45 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -230,12 +230,24 @@ vidputs
 	TurnOn(A_PROTECT,	enter_protected_mode);
 	TurnOn(A_INVIS,		enter_secure_mode);
 	TurnOn(A_UNDERLINE,	enter_underline_mode);
+#ifdef enter_horizontal_hl_mode
 	TurnOn(A_HORIZONTAL,	enter_horizontal_hl_mode);
+#endif
+#ifdef enter_left_hl_mode
 	TurnOn(A_LEFT,		enter_left_hl_mode);
+#endif
+#ifdef enter_low_hl_mode
 	TurnOn(A_LOW,		enter_low_hl_mode);
+#endif
+#ifdef enter_right_hl_mode
 	TurnOn(A_RIGHT,		enter_right_hl_mode);
+#endif
+#ifdef enter_top_hl_mode
 	TurnOn(A_TOP,		enter_top_hl_mode);
+#endif
+#ifdef enter_vertical_hl_mode
 	TurnOn(A_VERTICAL,	enter_vertical_hl_mode);
+#endif
 	/* *INDENT-ON* */
 
     }

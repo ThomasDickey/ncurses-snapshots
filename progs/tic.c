@@ -44,7 +44,7 @@
 #include <term_entry.h>
 #include <transform.h>
 
-MODULE_ID("$Id: tic.c,v 1.90 2001/04/15 00:21:31 tom Exp $")
+MODULE_ID("$Id: tic.c,v 1.91 2001/06/16 11:00:44 tom Exp $")
 
 const char *_nc_progname = "tic";
 
@@ -445,7 +445,7 @@ main(int argc, char *argv[])
 
     log_fp = stderr;
 
-    _nc_progname = _nc_basename(argv[0]);
+    _nc_progname = _nc_rootname(argv[0]);
 
     if ((infodump = (strcmp(_nc_progname, PROG_CAPTOINFO) == 0)) != FALSE) {
 	outform = F_TERMINFO;

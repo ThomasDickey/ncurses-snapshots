@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.631 2001/06/10 00:08:33 tom Exp $
+-- $Id: NEWS,v 1.632 2001/06/16 18:02:54 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20010616
+	+ add parentheses in macros for malloc in test.priv.h, fixes an
+	  expression in view.c (report by Wolfgang Gutjahr <gutw@knapp.co.at>).
+	+ add Caps.uwin, as an example.
+	+ change the way curses.h is generated, making the list of function
+	  key definitions extracted from the Caps file.
+	+ add #undef's before possible redefinition of ERR and OK in curses.h
+	+ modify logic in tic, toe, tput and tset which checks for basename of
+	  argv[0] to work properly on systems such as OS/2 which have
+	  case-independent filenames and/or program suffixes, e.g., ".ext".
 
 20010609
 	+ add a configure check, if --enable-widec is specified, for putwc(),

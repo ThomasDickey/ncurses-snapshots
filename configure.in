@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.240 2001/06/10 00:37:46 tom Exp $
+dnl $Id: configure.in,v 1.241 2001/06/16 11:46:06 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://dickey.his.com/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20000819)
-AC_REVISION($Revision: 1.240 $)
+AC_REVISION($Revision: 1.241 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -1186,7 +1186,7 @@ CFLAGS="$CFLAGS $EXTRA_CFLAGS"
 ################################################################################
 AC_OUTPUT( \
 	include/MKterm.h.awk \
-	include/curses.h \
+	include/curses.head:include/curses.h.in \
 	include/termcap.h \
 	include/unctrl.h \
 	misc/run_tic.sh:misc/run_tic.in \

@@ -21,7 +21,7 @@
 
 #include <tack.h>
 
-MODULE_ID("$Id: charset.c,v 1.6 2000/11/05 00:22:00 tom Exp $")
+MODULE_ID("$Id: charset.c,v 1.7 2001/06/16 17:53:57 tom Exp $")
 
 /*
 	Menu definitions for alternate character set and SGR tests.
@@ -285,10 +285,12 @@ charset_sgr(
 	}
 	put_crlf();
 
+#ifdef max_attributes 
 	if (max_attributes >= 0) {
 		sprintf(temp, "(ma) Maximum attributes %d  ", max_attributes);
 		ptext(temp);
 	}
+#endif
 	generic_done_message(t, state, ch);
 }
 
