@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.686 2002/05/18 21:26:10 tom Exp $
+-- $Id: NEWS,v 1.688 2002/05/26 00:57:21 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20020525
+	+ add simple resize-handling in test/ncurses.c 'a' menu.
+	+ fixes in keyname() and _tracechar() to handle negative values.
+	+ make tic's warnings about mismatches in sgr strings easier to follow.
+	+ correct tic checks for number of parameters in smgbp and smglp.
+	+ improve scoansi terminfo entry, and add scoansi-new entry -TD
+	+ add pcvt25-color terminfo entry -TD
+	+ add kf13-kf48 strings to cons25w terminfo entry (reported by Stephen
+	  Hurd <deuce@lordlegacy.org> in newsgroup lucky.freebsd.bugs) -TD
+	+ add entrypoint _nc_trace_ttymode(), use this to distinguish the
+	  Ottyb and Nttyb members of terminal (aka cur_term), for tracing.
+
+20020523
+	+ correct and simplify logic for lib_pad.c change in 20020518 (reported
+	  by Mike Castle).
 
 20020518
 	+ fix lib_pad.c for case of drawing a double-width character which

@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.170 2002/04/21 21:08:07 tom Exp $
+$Id: ncurses.c,v 1.171 2002/05/26 00:47:24 tom Exp $
 
 ***************************************************************************/
 
@@ -104,13 +104,13 @@ extern int _nc_tracing;
 #define ACS_NEQUAL      (CURSES_ACS_ARRAY['|'])		/* not equal */
 #define ACS_STERLING    (CURSES_ACS_ARRAY['}'])		/* UK pound sign */
 #else
-#define ACS_S3          (A_ALTCHARSET + 'p')		/* scan line 3 */
-#define ACS_S7          (A_ALTCHARSET + 'r')		/* scan line 7 */
-#define ACS_LEQUAL      (A_ALTCHARSET + 'y')		/* less/equal */
-#define ACS_GEQUAL      (A_ALTCHARSET + 'z')		/* greater/equal */
-#define ACS_PI          (A_ALTCHARSET + '{')		/* Pi */
-#define ACS_NEQUAL      (A_ALTCHARSET + '|')		/* not equal */
-#define ACS_STERLING    (A_ALTCHARSET + '}')		/* UK pound sign */
+#define ACS_S3          (A_ALTCHARSET + 'p')	/* scan line 3 */
+#define ACS_S7          (A_ALTCHARSET + 'r')	/* scan line 7 */
+#define ACS_LEQUAL      (A_ALTCHARSET + 'y')	/* less/equal */
+#define ACS_GEQUAL      (A_ALTCHARSET + 'z')	/* greater/equal */
+#define ACS_PI          (A_ALTCHARSET + '{')	/* Pi */
+#define ACS_NEQUAL      (A_ALTCHARSET + '|')	/* not equal */
+#define ACS_STERLING    (A_ALTCHARSET + '}')	/* UK pound sign */
 #endif
 
 #ifdef CURSES_WACS_ARRAY
@@ -359,7 +359,7 @@ wgetch_wrap(WINDOW *win, int first_y)
 }
 
 static void
-wgetch_test(WINDOW *win, int delay)
+wgetch_test(WINDOW *parent, WINDOW *win, int delay)
 {
     char buf[BUFSIZ];
     int first_y, first_x;
@@ -434,7 +434,7 @@ wgetch_test(WINDOW *win, int delay)
 		box(wb, 0, 0);
 		wrefresh(wb);
 		wmove(wi, 0, 0);
-		wgetch_test(wi, delay);
+		wgetch_test(wb, wi, delay);
 		delwin(wi);
 		delwin(wb);
 
@@ -462,6 +462,16 @@ wgetch_test(WINDOW *win, int delay)
 	    } else
 #endif /* NCURSES_MOUSE_VERSION */
 	    if (c >= KEY_MIN) {
+#ifdef KEY_RESIZE
+		if (c == KEY_RESIZE) {
+		    if (parent != 0) {
+			wresize(win, getmaxy(parent) - 2, getmaxx(parent) - 2);
+			werase(win);
+			box(parent, 0, 0);
+			wrefresh(parent);
+		    }
+		}
+#endif
 		(void) waddstr(win, keyname(c));
 	    } else if (c > 0x80) {
 		int c2 = (c & 0x7f);
@@ -528,13 +538,13 @@ static void
 getch_test(void)
 {
     int delay = begin_getch_test();
-    wgetch_test(stdscr, delay);
+    wgetch_test(0, stdscr, delay);
     finish_getch_test();
 }
 
 #if USE_WIDEC_SUPPORT
 static void
-wget_wch_test(WINDOW *win, int delay)
+wget_wch_test(WINDOW *parent, WINDOW *win, int delay)
 {
     char buf[BUFSIZ];
     int first_y, first_x;
@@ -609,7 +619,7 @@ wget_wch_test(WINDOW *win, int delay)
 		box_set(wb, 0, 0);
 		wrefresh(wb);
 		wmove(wi, 0, 0);
-		wget_wch_test(wi, delay);
+		wget_wch_test(wb, wi, delay);
 		delwin(wi);
 		delwin(wb);
 
@@ -637,6 +647,16 @@ wget_wch_test(WINDOW *win, int delay)
 	    } else
 #endif /* NCURSES_MOUSE_VERSION */
 	    if (code == KEY_CODE_YES) {
+#ifdef KEY_RESIZE
+		if (c == KEY_RESIZE) {
+		    if (parent != 0) {
+			wresize(win, getmaxy(parent) - 2, getmaxx(parent) - 2);
+			werase(win);
+			box_set(parent, 0, 0);
+			wrefresh(parent);
+		    }
+		}
+#endif
 		(void) waddstr(win, key_name(c));
 	    } else {
 		if (c < 256 && iscntrl(c)) {
@@ -658,7 +678,7 @@ static void
 get_wch_test(void)
 {
     int delay = begin_getch_test();
-    wget_wch_test(stdscr, delay);
+    wget_wch_test(0, stdscr, delay);
     finish_getch_test();
 }
 #endif
