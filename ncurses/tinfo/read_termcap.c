@@ -55,7 +55,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.55 2000/12/10 02:55:08 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.56 2001/07/29 00:29:45 tom Exp $")
 
 #if !PURE_TERMINFO
 
@@ -1038,7 +1038,8 @@ _nc_read_termcap_entry
 	for (i = 0; i < filecount; i++) {
 
 	    T(("Looking for %s in %s", tn, termpaths[i]));
-	    if ((fp = fopen(termpaths[i], "r")) != (FILE *) 0) {
+	    if (_nc_access(termpaths[i], R_OK) == 0
+		&& (fp = fopen(termpaths[i], "r")) != (FILE *) 0) {
 		_nc_set_source(termpaths[i]);
 
 		/*
