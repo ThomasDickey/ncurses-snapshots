@@ -76,7 +76,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_mouse.c,v 1.65 2003/01/26 00:24:25 tom Exp $")
+MODULE_ID("$Id: lib_mouse.c,v 1.66 2003/02/01 22:38:36 tom Exp $")
 
 #include <term.h>
 #include <tic.h>
@@ -336,15 +336,18 @@ initialize_mousetype(void)
 
     /* Try gpm first, because gpm may be configured to run in xterm */
 #if USE_GPM_SUPPORT
-    /* GPM: initialize connection to gpm server */
-    gpm_connect.eventMask = GPM_DOWN | GPM_UP;
-    gpm_connect.defaultMask = ~(gpm_connect.eventMask | GPM_HARD);
-    gpm_connect.minMod = 0;
-    gpm_connect.maxMod = ~((1 << KG_SHIFT) | (1 << KG_SHIFTL) | (1 << KG_SHIFTR));
-    if (Gpm_Open(&gpm_connect, 0) >= 0) {	/* returns the file-descriptor */
-	SP->_mouse_type = M_GPM;
-	SP->_mouse_fd = gpm_fd;
-	return;
+    /* GPM does printf's without checking if stdout is a terminal */
+    if (isatty(fileno(stdout))) {
+	/* GPM: initialize connection to gpm server */
+	gpm_connect.eventMask = GPM_DOWN | GPM_UP;
+	gpm_connect.defaultMask = ~(gpm_connect.eventMask | GPM_HARD);
+	gpm_connect.minMod = 0;
+	gpm_connect.maxMod = ~((1 << KG_SHIFT) | (1 << KG_SHIFTL) | (1 << KG_SHIFTR));
+	if (Gpm_Open(&gpm_connect, 0) >= 0) {	/* returns the file-descriptor */
+	    SP->_mouse_type = M_GPM;
+	    SP->_mouse_fd = gpm_fd;
+	    return;
+	}
     }
 #endif
 

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -42,7 +42,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_entry.c,v 1.73 2002/11/03 01:13:58 tom Exp $")
+MODULE_ID("$Id: read_entry.c,v 1.74 2003/02/02 02:33:48 tom Exp $")
 
 #if !HAVE_TELL
 #define tell(fd) 0		/* lseek() is POSIX, but not tell() - odd... */
@@ -157,7 +157,8 @@ read_termtype(int fd, TERMTYPE * ptr)
 {
     int name_size, bool_count, num_count, str_count, str_size;
     int i;
-    char buf[MAX_ENTRY_SIZE];
+    char buf[MAX_ENTRY_SIZE + 1];
+    unsigned want, have;
 
     TR(TRACE_DATABASE, ("READ termtype header @%d", tell(fd)));
 
@@ -198,16 +199,19 @@ read_termtype(int fd, TERMTYPE * ptr)
 	str_count = 0;
     }
 
-    /* grab the name (a null-terminate string) */
-    read(fd, buf, min(MAX_NAME_SIZE, (unsigned) name_size));
-    buf[MAX_NAME_SIZE] = '\0';
+    /* grab the name (a null-terminated string) */
+    want = min(MAX_NAME_SIZE, (unsigned) name_size);
+    if ((have = read(fd, buf, want)) != want) {
+	memset(buf + have, 0, want - have);
+    }
+    buf[want] = '\0';
     ptr->term_names = typeCalloc(char, strlen(buf) + 1);
     if (ptr->term_names == NULL) {
 	return (0);
     }
     (void) strcpy(ptr->term_names, buf);
-    if (name_size > MAX_NAME_SIZE)
-	lseek(fd, (off_t) (name_size - MAX_NAME_SIZE), 1);
+    if (have > MAX_NAME_SIZE)
+	lseek(fd, (off_t) (have - MAX_NAME_SIZE), 1);
 
     /* grab the booleans */
     if ((ptr->Booleans = typeCalloc(char, max(BOOLCOUNT, bool_count))) == 0
@@ -466,7 +470,7 @@ _nc_read_entry(const char *const tn, char *const filename, TERMTYPE * const tp)
     if (strlen(tn) == 0
 	|| strcmp(tn, ".") == 0
 	|| strcmp(tn, "..") == 0
-	|| _nc_basename((char *)tn) != tn) {
+	|| _nc_basename((char *) tn) != tn) {
 	T(("illegal or missing entry name '%s'", tn));
 	return 0;
     }

@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.59 2003/01/25 23:14:36 tom Exp $
+-- $Id: INSTALL,v 1.60 2003/02/02 02:10:45 tom Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -167,6 +167,11 @@ INSTALLATION PROCEDURE:
     database before running the test programs.  Not all vendors' terminfo
     databases are SVr4-compatible, but most seem to be.  Exceptions include
     DEC's Digital Unix (formerly known as OSF/1).
+
+    If you run the test programs WITHOUT installing terminfo, ncurses may
+    read the termcap file and cache that in $HOME/.terminfo, which will
+    thereafter be used instead of the terminfo database.  See the comments
+    on "--enable-getcap-cache", to see why this is a Bad Thing.
 
     It is possible to configure ncurses to use other terminfo database formats.
     A few are provided as examples in the include-directory (see --with-caps).
