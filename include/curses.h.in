@@ -32,7 +32,7 @@
  *     and: Thomas E. Dickey 1996-on                                        *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.141 2003/05/31 22:23:08 tom Exp $ */
+/* $Id: curses.h.in,v 1.144 2003/06/07 22:49:02 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -125,7 +125,7 @@ typedef unsigned @cf_cv_typeof_chtype@ chtype;
 
 typedef @cf_cv_type_of_bool@ NCURSES_BOOL;
 
-#if (!defined(__cplusplus) || !@cf_cv_builtin_bool@) && (!@cf_cv_cc_bool_type@)
+#if @USE_CXX_BOOL@ /* !__cplusplus, etc. */
 
 #if @cf_cv_header_stdbool_h@
 #include <stdbool.h>
@@ -136,7 +136,7 @@ typedef @cf_cv_type_of_bool@ NCURSES_BOOL;
 #if @cf_cv_header_stdbool_h@
 #define bool NCURSES_BOOL
 #else
-typedef @cf_cv_type_of_bool@ bool;
+typedef NCURSES_BOOL bool;
 #endif
 
 #endif /* !__cplusplus, etc. */
@@ -189,45 +189,47 @@ extern NCURSES_EXPORT_VAR(chtype*) _nc_acs_map(void);
 extern NCURSES_EXPORT_VAR(chtype) acs_map[];
 #endif
 
+#define NCURSES_ACS(c)	(acs_map[(unsigned char)c])
+
 /* VT100 symbols begin here */
-#define ACS_ULCORNER	(acs_map['l'])	/* upper left corner */
-#define ACS_LLCORNER	(acs_map['m'])	/* lower left corner */
-#define ACS_URCORNER	(acs_map['k'])	/* upper right corner */
-#define ACS_LRCORNER	(acs_map['j'])	/* lower right corner */
-#define ACS_LTEE	(acs_map['t'])	/* tee pointing right */
-#define ACS_RTEE	(acs_map['u'])	/* tee pointing left */
-#define ACS_BTEE	(acs_map['v'])	/* tee pointing up */
-#define ACS_TTEE	(acs_map['w'])	/* tee pointing down */
-#define ACS_HLINE	(acs_map['q'])	/* horizontal line */
-#define ACS_VLINE	(acs_map['x'])	/* vertical line */
-#define ACS_PLUS	(acs_map['n'])	/* large plus or crossover */
-#define ACS_S1		(acs_map['o'])	/* scan line 1 */
-#define ACS_S9		(acs_map['s'])	/* scan line 9 */
-#define ACS_DIAMOND	(acs_map['`'])	/* diamond */
-#define ACS_CKBOARD	(acs_map['a'])	/* checker board (stipple) */
-#define ACS_DEGREE	(acs_map['f'])	/* degree symbol */
-#define ACS_PLMINUS	(acs_map['g'])	/* plus/minus */
-#define ACS_BULLET	(acs_map['~'])	/* bullet */
+#define ACS_ULCORNER	NCURSES_ACS('l') /* upper left corner */
+#define ACS_LLCORNER	NCURSES_ACS('m') /* lower left corner */
+#define ACS_URCORNER	NCURSES_ACS('k') /* upper right corner */
+#define ACS_LRCORNER	NCURSES_ACS('j') /* lower right corner */
+#define ACS_LTEE	NCURSES_ACS('t') /* tee pointing right */
+#define ACS_RTEE	NCURSES_ACS('u') /* tee pointing left */
+#define ACS_BTEE	NCURSES_ACS('v') /* tee pointing up */
+#define ACS_TTEE	NCURSES_ACS('w') /* tee pointing down */
+#define ACS_HLINE	NCURSES_ACS('q') /* horizontal line */
+#define ACS_VLINE	NCURSES_ACS('x') /* vertical line */
+#define ACS_PLUS	NCURSES_ACS('n') /* large plus or crossover */
+#define ACS_S1		NCURSES_ACS('o') /* scan line 1 */
+#define ACS_S9		NCURSES_ACS('s') /* scan line 9 */
+#define ACS_DIAMOND	NCURSES_ACS('`') /* diamond */
+#define ACS_CKBOARD	NCURSES_ACS('a') /* checker board (stipple) */
+#define ACS_DEGREE	NCURSES_ACS('f') /* degree symbol */
+#define ACS_PLMINUS	NCURSES_ACS('g') /* plus/minus */
+#define ACS_BULLET	NCURSES_ACS('~') /* bullet */
 /* Teletype 5410v1 symbols begin here */
-#define ACS_LARROW	(acs_map[','])	/* arrow pointing left */
-#define ACS_RARROW	(acs_map['+'])	/* arrow pointing right */
-#define ACS_DARROW	(acs_map['.'])	/* arrow pointing down */
-#define ACS_UARROW	(acs_map['-'])	/* arrow pointing up */
-#define ACS_BOARD	(acs_map['h'])	/* board of squares */
-#define ACS_LANTERN	(acs_map['i'])	/* lantern symbol */
-#define ACS_BLOCK	(acs_map['0'])	/* solid square block */
+#define ACS_LARROW	NCURSES_ACS(',') /* arrow pointing left */
+#define ACS_RARROW	NCURSES_ACS('+') /* arrow pointing right */
+#define ACS_DARROW	NCURSES_ACS('.') /* arrow pointing down */
+#define ACS_UARROW	NCURSES_ACS('-') /* arrow pointing up */
+#define ACS_BOARD	NCURSES_ACS('h') /* board of squares */
+#define ACS_LANTERN	NCURSES_ACS('i') /* lantern symbol */
+#define ACS_BLOCK	NCURSES_ACS('0') /* solid square block */
 /*
  * These aren't documented, but a lot of System Vs have them anyway
  * (you can spot pprryyzz{{||}} in a lot of AT&T terminfo strings).
  * The ACS_names may not match AT&T's, our source didn't know them.
  */
-#define ACS_S3		(acs_map['p'])	/* scan line 3 */
-#define ACS_S7		(acs_map['r'])	/* scan line 7 */
-#define ACS_LEQUAL	(acs_map['y'])	/* less/equal */
-#define ACS_GEQUAL	(acs_map['z'])	/* greater/equal */
-#define ACS_PI		(acs_map['{'])	/* Pi */
-#define ACS_NEQUAL	(acs_map['|'])	/* not equal */
-#define ACS_STERLING	(acs_map['}'])	/* UK pound sign */
+#define ACS_S3		NCURSES_ACS('p') /* scan line 3 */
+#define ACS_S7		NCURSES_ACS('r') /* scan line 7 */
+#define ACS_LEQUAL	NCURSES_ACS('y') /* less/equal */
+#define ACS_GEQUAL	NCURSES_ACS('z') /* greater/equal */
+#define ACS_PI		NCURSES_ACS('{') /* Pi */
+#define ACS_NEQUAL	NCURSES_ACS('|') /* not equal */
+#define ACS_STERLING	NCURSES_ACS('}') /* UK pound sign */
 
 /*
  * Line drawing ACS names are of the form ACS_trbl, where t is the top, r

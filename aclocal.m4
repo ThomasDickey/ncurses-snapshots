@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-2003
 dnl
-dnl $Id: aclocal.m4,v 1.304 2003/05/24 19:14:30 tom Exp $
+dnl $Id: aclocal.m4,v 1.306 2003/06/07 21:07:09 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
@@ -2853,7 +2853,7 @@ cf_cv_subst_$2=[$]$2])
 $2=${cf_cv_subst_$2}
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_SUBST_NCURSES_VERSION version: 6 updated: 2001/12/19 00:50:10
+dnl CF_SUBST_NCURSES_VERSION version: 7 updated: 2003/06/07 16:22:51
 dnl ------------------------
 dnl Get the version-number for use in shared-library naming, etc.
 AC_DEFUN([CF_SUBST_NCURSES_VERSION],
@@ -2873,7 +2873,6 @@ AC_SUBST(NCURSES_PATCH)
 dnl We need these values in the generated makefiles
 AC_SUBST(cf_cv_rel_version)
 AC_SUBST(cf_cv_abi_version)
-AC_SUBST(cf_cv_cc_bool_type)
 AC_SUBST(cf_cv_builtin_bool)
 AC_SUBST(cf_cv_header_stdbool_h)
 AC_SUBST(cf_cv_type_of_bool)dnl
@@ -3096,7 +3095,7 @@ if test $with_dmalloc = yes ; then
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
-dnl CF_WITH_LIBTOOL version: 5 updated: 2003/04/18 22:19:54
+dnl CF_WITH_LIBTOOL version: 6 updated: 2003/06/07 17:05:45
 dnl ---------------
 dnl Provide a configure option to incorporate libtool.  Define several useful
 dnl symbols for the makefile rules.
@@ -3108,6 +3107,7 @@ LIB_OBJECT='$(OBJECTS)'
 LIB_SUFFIX=.a
 LIB_INSTALL=
 LIB_UNINSTALL=
+LIB_PREP="$RANLIB"
 
 AC_MSG_CHECKING(if you want to build libraries with libtool)
 AC_ARG_WITH(libtool,
@@ -3126,7 +3126,7 @@ if test "$with_libtool" = "yes"; then
 	LIB_SUFFIX=.la
 	LIB_INSTALL='$(LIBTOOL) --mode=install'
 	LIB_UNINSTALL='$(LIBTOOL) --mode=uninstall'
-	RANLIB=:
+	LIB_PREP=:
 
 	# Show the version of libtool
 	AC_MSG_CHECKING(version of libtool)
@@ -3151,6 +3151,7 @@ AC_SUBST(LIB_OBJECT)
 AC_SUBST(LIB_SUFFIX)
 AC_SUBST(LIB_INSTALL)
 AC_SUBST(LIB_UNINSTALL)
+AC_SUBST(LIB_PREP)
 
 ])dnl
 dnl ---------------------------------------------------------------------------

@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.290 2003/05/24 19:13:50 tom Exp $
+dnl $Id: configure.in,v 1.291 2003/06/07 20:15:23 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.290 $)
+AC_REVISION($Revision: 1.291 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -997,8 +997,10 @@ if test -z "$cf_user_CFLAGS" ; then
 	CF_STRIP_G_OPT(CXXFLAGS)
 fi
 
-dnl Check for C++ compiler characteristics (and ensure that it's there!)
-CF_BOOL_DECL(cf_cv_cc_bool_type)
+# Just in case, check if the C compiler has a bool type.
+CF_BOOL_DECL(cv_cv_cc_bool_type)
+
+# Check for C++ compiler characteristics (and ensure that it's there!)
 if test -n "$CXX" ; then
 	AC_LANG_CPLUSPLUS
 	CF_STDCPP_LIBRARY
@@ -1075,6 +1077,26 @@ else
 fi
 AC_SUBST(CXXLIBS)
 
+# If the C compiler did not declare bool, and we did not determine that the C++
+# compiler does not declare bool, turn on an ifdef in curses.h that makes the
+# ncurses library use the same type as C++ bool.  Note that this allows one to
+# specify the type of bool in a configure-script option and postpone
+# integration with the C++ compiler provided that the types are compatible.
+USE_CXX_BOOL=1
+if test $cv_cv_cc_bool_type = 1
+then
+	# oops: C has a bool.  Unlikely, but C++ could differ.
+	USE_CXX_BOOL=0
+elif test $cf_cv_builtin_bool = 0
+then
+	# C++ has no bool
+	USE_CXX_BOOL=0
+else
+	# this is the normal case
+	USE_CXX_BOOL='!defined(__cplusplus)'
+fi
+AC_SUBST(USE_CXX_BOOL)
+
 CF_HELP_MESSAGE(Ada95 Binding Options:)
 
 dnl Check for availability of GNU Ada Translator (GNAT).
@@ -1137,22 +1159,6 @@ if test	"$cf_cv_prog_gnat_correct" = yes; then
    AC_SUBST(ADA_OBJECTS)
 
 fi
-fi
-
-### It's not possible to appease gcc 2.6.3's conversion-warnings if we're
-### using a 'char' for bools.  gcc 2.7.0's conversion-warnings are broken too
-### badly to consider using for development purposes, but 2.5.8 is okay.
-if test -n "$with_warnings"; then
-	case $GCC_VERSION in
-	2.6.3)
-		if test "$cf_cv_type_of_bool" != "char"; then
-			EXTRA_CFLAGS="$EXTRA_CFLAGS -Wconversion"
-		fi
-		;;
-	2.5*)
-		EXTRA_CFLAGS="$EXTRA_CFLAGS -Wconversion"
-		;;
-	esac
 fi
 
 ### Construct the library-subsets, if any, from this set of keywords:

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,10 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *                                                                          *
+ *  Rewritten 2001-2002 to support wide-characters by                       *
+ *	Sven Verdoolaege                                                    *
+ *	Thomas Dickey                                                       *
  ****************************************************************************/
 
 /*
@@ -40,7 +44,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.34 2002/10/06 00:25:25 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.35 2003/06/07 22:22:01 tom Exp $")
 
 #if USE_WIDEC_SUPPORT
 #define CONV_DATA   mbstate_t state; wchar_t cached; int clen = 0
@@ -84,7 +88,7 @@ MODULE_ID("$Id: lib_addstr.c,v 1.34 2002/10/06 00:25:25 tom Exp $")
 NCURSES_EXPORT(int)
 waddnstr(WINDOW *win, const char *astr, int n)
 {
-    unsigned const char *str = (unsigned const char *) astr;
+    const char *str = astr;
     int code = ERR;
     CONV_DATA;
 
@@ -100,7 +104,7 @@ waddnstr(WINDOW *win, const char *astr, int n)
 	CONV_INIT;
 	while ((n > 0) && (*str != '\0')) {
 	    NCURSES_CH_T ch;
-	    TR(TRACE_VIRTPUT, ("*str = %#x", *str));
+	    TR(TRACE_VIRTPUT, ("*str = %#x", UChar(*str)));
 	    NEXT_CHAR(str, ch, n);
 	    if (_nc_waddch_nosync(win, ch) == ERR) {
 		code = ERR;
@@ -114,7 +118,7 @@ waddnstr(WINDOW *win, const char *astr, int n)
 }
 
 NCURSES_EXPORT(int)
-waddchnstr(WINDOW *win, const chtype * astr, int n)
+waddchnstr(WINDOW *win, const chtype *astr, int n)
 {
     NCURSES_SIZE_T y = win->_cury;
     NCURSES_SIZE_T x = win->_curx;
@@ -219,7 +223,7 @@ waddnwstr(WINDOW *win, const wchar_t * str, int n)
     int code = ERR;
     int i;
 
-    T((T_CALLED("waddnwstr(%p,%s,%d)"), win, _nc_viswbufn(str,n), n));
+    T((T_CALLED("waddnwstr(%p,%s,%d)"), win, _nc_viswbufn(str, n), n));
 
     if (win && (str != 0)) {
 	TR(TRACE_VIRTPUT | TRACE_ATTRS, ("... current %s", _traceattr(win->_attrs)));
