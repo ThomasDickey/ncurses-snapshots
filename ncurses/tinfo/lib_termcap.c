@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -44,7 +44,7 @@
 
 #include <term_entry.h>
 
-MODULE_ID("$Id: lib_termcap.c,v 1.47 2004/11/28 01:06:38 tom Exp $")
+MODULE_ID("$Id: lib_termcap.c,v 1.48 2005/02/26 23:25:53 tom Exp $")
 
 #define CSI       233
 #define ESC       033		/* ^[ */
@@ -54,7 +54,7 @@ MODULE_ID("$Id: lib_termcap.c,v 1.47 2004/11/28 01:06:38 tom Exp $")
 NCURSES_EXPORT_VAR(char *) UP = 0;
 NCURSES_EXPORT_VAR(char *) BC = 0;
 
-static char *fix_me = 0;
+static char *fix_me = 0;	/* this holds the filtered sgr0 string */
 
 static char *
 set_attribute_9(int flag)
@@ -86,6 +86,33 @@ skip_zero(char *s)
 	    s += 1;
     }
     return s;
+}
+
+/*
+ * Improve similar_sgr a little by moving the attr-string from the beginning
+ * to the end of the s-string.
+ */
+static bool
+rewrite_sgr(char *s, char *attr)
+{
+    if (s != 0) {
+	if (attr != 0) {
+	    int len_s = strlen(s);
+	    int len_a = strlen(attr);
+
+	    if (len_s > len_a && !strncmp(attr, s, len_a)) {
+		int n;
+		TR(TRACE_DATABASE, ("rewrite:\n\t%s", s));
+		for (n = 0; n < len_s - len_a; ++n) {
+		    s[n] = s[n + len_a];
+		}
+		strcpy(s + n, attr);
+		TR(TRACE_DATABASE, ("to:\n\t%s", s));
+	    }
+	}
+	return TRUE;
+    }
+    return FALSE;		/* oops */
 }
 
 static bool
@@ -161,7 +188,7 @@ tgetent(char *bufp GCC_UNUSED, const char *name)
     PC = 0;
     UP = 0;
     BC = 0;
-    fix_me = 0;
+    fix_me = 0;			/* don't free it - application may still use */
 
     if (errcode == 1) {
 
@@ -190,15 +217,23 @@ tgetent(char *bufp GCC_UNUSED, const char *name)
 	    bool found = FALSE;
 	    char *on = set_attribute_9(1);
 	    char *off = set_attribute_9(0);
+	    char *end = strdup(exit_attribute_mode);
 	    char *tmp;
 	    size_t i, j, k;
 
 	    TR(TRACE_DATABASE, ("checking if we can trim sgr0 based on sgr"));
-	    TR(TRACE_DATABASE, ("sgr0       %s", _nc_visbuf(exit_attribute_mode)));
+	    TR(TRACE_DATABASE, ("sgr0       %s", _nc_visbuf(end)));
 	    TR(TRACE_DATABASE, ("sgr(9:off) %s", _nc_visbuf(off)));
 	    TR(TRACE_DATABASE, ("sgr(9:on)  %s", _nc_visbuf(on)));
-	    if (similar_sgr(off, exit_attribute_mode)
-		&& !similar_sgr(off, on)) {
+
+	    if (!rewrite_sgr(on, enter_alt_charset_mode)
+		|| !rewrite_sgr(off, exit_alt_charset_mode)
+		|| !rewrite_sgr(end, exit_alt_charset_mode)) {
+		FreeIfNeeded(on);
+		FreeIfNeeded(off);
+		FreeIfNeeded(end);
+	    } else if (similar_sgr(off, end)
+		       && !similar_sgr(off, on)) {
 		TR(TRACE_DATABASE, ("adjusting sgr0 : %s", _nc_visbuf(off)));
 		FreeIfNeeded(fix_me);
 		fix_me = off;
@@ -239,10 +274,10 @@ tgetent(char *bufp GCC_UNUSED, const char *name)
 		    }
 		}
 		if (!found
-		    && (tmp = strstr(exit_attribute_mode, off)) != 0) {
-		    i = tmp - exit_attribute_mode;
+		    && (tmp = strstr(end, off)) != 0) {
+		    i = tmp - end;
 		    j = strlen(off);
-		    tmp = strdup(exit_attribute_mode);
+		    tmp = strdup(end);
 		    chop_out(tmp, i, j);
 		    free(off);
 		    fix_me = tmp;
@@ -260,6 +295,7 @@ tgetent(char *bufp GCC_UNUSED, const char *name)
 		 */
 		free(off);
 	    }
+	    free(end);
 	    free(on);
 	} else {
 	    /*

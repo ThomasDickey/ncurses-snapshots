@@ -13,7 +13,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: fty_alpha.c,v 1.15 2004/12/04 16:30:36 tom Exp $")
+MODULE_ID("$Id: fty_alpha.c,v 1.16 2005/02/26 15:21:27 tom Exp $")
 
 typedef struct
   {
@@ -128,6 +128,7 @@ Check_Alpha_Field(FIELD *field, const void *argp)
 
       if (list != 0)
 	{
+	  result = TRUE;
 	  for (n = 0; n < len; ++n)
 	    {
 	      if (blank)
