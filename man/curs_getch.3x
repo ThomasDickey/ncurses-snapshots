@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+.\" Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_getch.3x,v 1.21 2002/03/17 14:36:21 tom Exp $
+.\" $Id: curs_getch.3x,v 1.22 2003/05/10 20:33:49 jmc Exp $
 .TH curs_getch 3X ""
 .SH NAME
 \fBgetch\fR,
@@ -82,7 +82,7 @@ If \fBkeypad\fR is \fBTRUE\fR, and a function key is pressed, the token for
 that function key is returned instead of the raw characters.
 Possible function
 keys are defined in \fB<curses.h>\fR as macros with values outside the range
-of 8-bit characters whose names begin with \fBKEY_.\fR Thus, a variable
+of 8-bit characters whose names begin with \fBKEY_\fR. Thus, a variable
 intended to hold the return value of a function key must be of short size or
 larger.
 
@@ -143,7 +143,7 @@ KEY_ENTER/Enter or send
 KEY_SRESET/Soft (partial) reset
 KEY_RESET/Reset or hard reset
 KEY_PRINT/Print or copy
-KEY_LL/Home down or bottom (lower left).
+KEY_LL/Home down or bottom (lower left)
 KEY_A1/Upper left of keypad
 KEY_A3/Upper right of keypad
 KEY_B2/Center of keypad
@@ -238,7 +238,7 @@ Some curses implementations may differ according to whether they
 treat these control keys specially (and ignore the terminfo), or
 use the terminfo definitions.
 \fBNcurses\fR uses the terminfo definition.
-If it says that KEY_ENTER is control/M, \fBgetch\fR, will return KEY_ENTER
+If it says that KEY_ENTER is control/M, \fBgetch\fR will return KEY_ENTER
 when you press control/M.
 
 When using \fBgetch\fR, \fBwgetch\fR, \fBmvgetch\fR, or

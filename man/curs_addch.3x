@@ -1,6 +1,6 @@
 '\" t
 .\"***************************************************************************
-.\" Copyright (c) 1998-2000,2002 Free Software Foundation, Inc.              *
+.\" Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
 .\"                                                                          *
 .\" Permission is hereby granted, free of charge, to any person obtaining a  *
 .\" copy of this software and associated documentation files (the            *
@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: curs_addch.3x,v 1.20 2002/08/10 22:12:36 tom Exp $
+.\" $Id: curs_addch.3x,v 1.21 2003/05/10 20:33:49 jmc Exp $
 .TH curs_addch 3X ""
 .SH NAME
 \fBaddch\fR, \fBwaddch\fR, \fBmvaddch\fR, \fBmvwaddch\fR,
@@ -62,7 +62,7 @@ Backspace moves the cursor one character left; at the left
 edge of a window it does nothing.
 Newline does a \fBclrtoeol\fR,
 then moves the cursor to the window left margin on the next line,
-scrolling the window if on the last line).
+scrolling the window if on the last line.
 Tabs are considered to be at every eighth column.
 The tab interval may be altered by setting the \fBTABSIZE\fR variable.
 
@@ -74,7 +74,7 @@ the ^-representation of the control character.
 Video attributes can be combined with a character argument passed to
 \fBaddch\fR or related functions by logical-ORing them into the character.
 (Thus, text, including attributes, can be copied from one place to another
-using \fBinch\fR and \fBaddch\fR.).  See the \fBcurs_attr\fR(3X) page for
+using \fBinch\fR and \fBaddch\fR.)  See the \fBcurs_attr\fR(3X) page for
 values of predefined video attribute constants that can be usefully OR'ed
 into characters.
 

@@ -27,7 +27,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: form_fieldtype.3x,v 1.11 2003/03/01 21:52:41 tom Exp $
+.\" $Id: form_fieldtype.3x,v 1.12 2003/05/10 20:33:49 jmc Exp $
 .TH form_fieldtype 3X ""
 .SH NAME
 \fBform_fieldtype\fR - define validation-field types
@@ -57,7 +57,7 @@ FIELDTYPE *link_fieldtype(FIELDTYPE *type1,
 .SH DESCRIPTION
 The function \fBnew_fieldtype\fR creates a new field type usable for data
 validation.  You supply it with \fIfield_check\fR, a predicate to check the
-validity of an entered data string whenever the user attempt to leave a field.
+validity of an entered data string whenever the user attempts to leave a field.
 The (FIELD *) argument is passed in so the validation predicate can see the
 field's buffer, sizes and other attributes; the second argument is an
 argument-block structure, about which more below.
