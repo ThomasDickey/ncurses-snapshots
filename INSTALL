@@ -1,4 +1,4 @@
--- $Id: INSTALL,v 1.28 1998/02/12 23:43:24 tom Exp $
+-- $Id: INSTALL,v 1.29 1998/08/27 21:21:04 Rick.Ohnemus Exp $
 ---------------------------------------------------------------------
              How to install Ncurses/Terminfo on your system
 ---------------------------------------------------------------------
@@ -468,8 +468,8 @@ an offset of -11 lines.
 
 BUGS:
 	Send any feedback to the ncurses mailing list at
-	ncurses@bsdi.com. To subscribe send mail to
-	ncurses-request@mailgate.bsdi.com with body that reads:
+	bug-ncurses@gnu.org. To subscribe send mail to 
+	bug-ncurses-request@gnu.org with body that reads: 
 	subscribe ncurses <your-email-address-here>
 
 	The Hacker's Guide in the misc directory includes some guidelines
