@@ -14,7 +14,7 @@ AUTHOR
 It is issued with ncurses under the same terms and conditions as the ncurses
 library source.
 
-$Id: ncurses.c,v 1.62 1996/10/05 23:28:49 tom Exp $
+$Id: ncurses.c,v 1.63 1996/10/20 00:58:36 tom Exp $
 
 ***************************************************************************/
 
@@ -237,7 +237,7 @@ int y, x;
 	    addstr("returned from shellout.\n");
 	    refresh();
 	}
-	if (c == 'x' || c == 'q')
+	if (c == 'x' || c == 'q' || (c == ERR && blocking))
 	    break;
 	if (c == '?')
 	{
@@ -251,6 +251,10 @@ int y, x;
 	while ((c = Getchar()) == ERR)
 	    if (!blocking)
 		(void) printw("%05d: input timed out\n", incount++);
+	    else {
+		(void) printw("%05d: input error\n", incount++);
+	    	break;
+	    }
     }
 
 #ifdef NCURSES_VERSION
@@ -1856,6 +1860,7 @@ int padgetch(WINDOW *win)
     case '-': return(KEY_DL);
     case '>': return(KEY_IC);
     case '<': return(KEY_DC);
+    case ERR: /* FALLTHRU */
     case 'q': return(KEY_EXIT);
     default: return(c);
     }
@@ -2734,8 +2739,7 @@ static void announce_sig(int sig)
 int
 main(int argc, char *argv[])
 {
-    char	buf[BUFSIZ];
-    int		c;
+    int		command, c;
 
     while ((c = getopt(argc, argv, "s:t:")) != EOF) {
 	switch (c) {
@@ -2761,6 +2765,9 @@ main(int argc, char *argv[])
     /* enable debugging */
 #if !USE_LIBMENU
     trace(save_trace);
+#else
+    if (!isatty(fileno(stdin)))
+    	trace(save_trace);
 #endif /* USE_LIBMENU */
 #endif /* TRACE */
 
@@ -2819,9 +2826,24 @@ main(int argc, char *argv[])
 
 	(void) fputs("> ", stdout);
 	(void) fflush(stdout);		/* necessary under SVr4 curses */
-	(void) fgets(buf, sizeof(buf), stdin);
 
-	if (do_single_test(buf[0])) {
+	/*
+	 * This used to be an 'fgets()' call.  However (on Linux, at least)
+	 * mixing stream I/O and 'read()' (used in the library) causes the
+	 * input stream to be flushed when switching between the two.
+	 */
+	command = 'q';
+	for(;;) {
+		char ch;
+		if (read(fileno(stdin), &ch, 1) <= 0)
+			break;
+		else if (!isspace(ch))
+			command = ch;
+		else if (ch == '\n' || ch == '\r')
+			break;
+	}
+
+	if (do_single_test(command)) {
 		/*
 		 * This may be overkill; it's intended to reset everything back
 		 * to the initial terminal modes so that tests don't get in
@@ -2836,7 +2858,7 @@ main(int argc, char *argv[])
 		continue;
 	}
     } while
-	(buf[0] != 'q');
+	(command != 'q');
 
     exit(0);
 }

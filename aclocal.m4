@@ -1,6 +1,22 @@
-dnl $Id: aclocal.m4,v 1.33 1996/10/05 21:32:09 tom Exp $
+dnl $Id: aclocal.m4,v 1.34 1996/10/19 20:25:59 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
+dnl ---------------------------------------------------------------------------
+dnl Construct the list of include-options for the C programs in the Ada95
+dnl binding.
+AC_DEFUN([NC_ADA_INCLUDE_DIRS],
+[
+ACPPFLAGS="$ACPPFLAGS -I. -I../../include"
+if test "$srcdir" != "."; then
+	ACPPFLAGS="$ACPPFLAGS -I\$(srcdir)/../../include"
+fi
+if test -z "$GCC"; then
+	ACPPFLAGS="$ACPPFLAGS -I\$(includedir)"
+elif test "$includedir" = "/usr/include"; then
+	ACPPFLAGS="$ACPPFLAGS -I\$(includedir)"
+fi
+AC_SUBST(ACPPFLAGS)
+])dnl
 dnl ---------------------------------------------------------------------------
 dnl Test if 'bool' is a builtin type in the configured C++ compiler.  Some
 dnl older compilers (e.g., gcc 2.5.8) don't support 'bool' directly; gcc
@@ -50,6 +66,51 @@ main()
 	])
 	rm -f nc_test.out
 AC_MSG_RESULT($nc_cv_sizeof_bool)
+])dnl
+dnl ---------------------------------------------------------------------------
+dnl Determine the default configuration into which we'll install ncurses.  This
+dnl can be overridden by the user's command-line options.  There's two items to
+dnl look for:
+dnl	1. the prefix (e.g., /usr)
+dnl	2. the header files (e.g., /usr/include/ncurses)
+dnl We'll look for a previous installation of ncurses and use the same defaults.
+dnl
+dnl We don't use AC_PREFIX_DEFAULT, because it gets evaluated too soon, and
+dnl we don't use AC_PREFIX_PROGRAM, because we cannot distinguish ncurses's
+dnl programs from a vendor's.
+AC_DEFUN([NC_CFG_DEFAULTS],
+[
+AC_MSG_CHECKING(for prefix)
+if test "x$prefix" = "xNONE" ; then
+	case "$nc_cv_systype" in
+		# non-vendor systems don't have a conflict
+	NetBSD|FreeBSD|Linux)	prefix=/usr
+		;;
+	*)	prefix=$ac_default_prefix
+		;;
+	esac
+fi
+AC_MSG_RESULT($prefix)
+AC_MSG_CHECKING(for default include-directory)
+for nc_symbol in \
+	$includedir \
+	$includedir/ncurses \
+	$prefix/include \
+	$prefix/include/ncurses \
+	/usr/include \
+	/usr/include/ncurses \
+	/usr/local/include \
+	/usr/local/include/ncurses
+do
+	nc_dir=`eval echo $nc_symbol`
+	if test -f $nc_dir/curses.h ; then
+	if ( fgrep NCURSES_VERSION $nc_dir/curses.h 2>&1 >/dev/null ) ; then
+		includedir="$nc_symbol"
+		break
+	fi
+	fi
+done
+AC_MSG_RESULT($includedir)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl If we're trying to use g++, test if libg++ is installed (a rather common
@@ -220,6 +281,23 @@ EOF
 fi
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Verify Version of GNAT.
+AC_DEFUN([NC_GNAT_VERSION],
+[
+changequote(<<, >>)dnl
+nc_cv_gnat_version=`$nc_ada_make -v 2>&1 | grep '[0-9].[0-9][0-9]*' |\
+  sed -e 's/[^0-9 \.]//g' | $AWK '{print $<<1>>;}'`
+case $nc_cv_gnat_version in
+  3.0[5-9]|3.[1-9]*|[4-9].*)
+    ac_cv_prog_gnat_correct=yes
+    ;;
+  *) echo Unsupported GNAT version $nc_cv_gnat_version. Disabling Ada95 binding.
+     ac_cv_prog_gnat_correct=no
+     ;;
+esac
+changequote([, ])dnl
+])
+dnl ---------------------------------------------------------------------------
 dnl Construct the list of include-options according to whether we're building
 dnl in the source directory or using '--srcdir=DIR' option.  If we're building
 dnl with gcc, don't append the includedir if it happens to be /usr/include,
@@ -236,21 +314,6 @@ elif test "$includedir" = "/usr/include"; then
 	CPPFLAGS="$CPPFLAGS -I\$(includedir)"
 fi
 AC_SUBST(CPPFLAGS)
-])dnl
-dnl Construct the list of include-options for the C programs in the Ada95
-dnl binding.
-AC_DEFUN([NC_ADA_INCLUDE_DIRS],
-[
-ACPPFLAGS="$ACPPFLAGS -I. -I../../include"
-if test "$srcdir" != "."; then
-	ACPPFLAGS="$ACPPFLAGS -I\$(srcdir)/../../include"
-fi
-if test -z "$GCC"; then
-	ACPPFLAGS="$ACPPFLAGS -I\$(includedir)"
-elif test "$includedir" = "/usr/include"; then
-	ACPPFLAGS="$ACPPFLAGS -I\$(includedir)"
-fi
-AC_SUBST(ACPPFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
 dnl Append definitions and rules for the given models to the subdirectory
@@ -949,23 +1012,6 @@ if test -n "$ADA_SUBDIRS"; then
    AC_SUBST(ADA_SUBDIRS)
 fi
 ])dnl
-dnl ---------------------------------------------------------------------------
-dnl Verify Version of GNAT.
-AC_DEFUN([NC_GNAT_VERSION],
-[
-changequote(<<, >>)dnl
-nc_cv_gnat_version=`$nc_ada_make -v 2>&1 | grep '[0-9].[0-9][0-9]*' |\
-  sed -e 's/[^0-9 \.]//g' | $AWK '{print $<<1>>;}'`
-case $nc_cv_gnat_version in
-  3.0[5-9]|3.[1-9]*|[4-9].*)
-    ac_cv_prog_gnat_correct=yes
-    ;;
-  *) echo Unsupported GNAT version $nc_cv_gnat_version. Disabling Ada95 binding.
-     ac_cv_prog_gnat_correct=no
-     ;;
-esac
-changequote([, ])dnl
-])
 dnl ---------------------------------------------------------------------------
 dnl	Remove "-g" option from the compiler options
 AC_DEFUN([NC_STRIP_G_OPT],

@@ -3,6 +3,23 @@ started working with Pavel Curtis' original work, pcurses, in 1992:
 
 ### ncurses-1.9.9e -> 1.9.9?
 
+961019	- snapshot
+	+ correct loop-limit in wnoutrefresh(), bug exposed during pipe-testing
+	  had '.lastchar' entry one beyond '._maxx'.
+	+ modify ncurses test-program to work with data piped to it.
+	+ corrected pathname computation in run_tic.sh, removing extra "../"
+	  (reported by Tim Mooney).
+	+ modified configure script to use previous install's location for
+	  curses.h
+	+ added NetBSD and FreeBSD to platforms that use --prefix=/usr as
+	  a default.
+
+961013
+	+ revised xterm terminfo descriptions to reflect the several versions
+	  that are available.
+	+ corrected a pointer reference in dump_entry.c that didn't test if
+	  the pointer was -1.
+
 961005	- snapshot
 	+ correct _nc_mvcur_scrolln for terminals w/o scrolling region.
 	+ add -x option to hashtest to control whether it allows writes to the
