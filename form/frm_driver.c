@@ -32,7 +32,7 @@
 
 #include "form.priv.h"
 
-MODULE_ID("$Id: frm_driver.c,v 1.65 2005/02/13 00:09:24 tom Exp $")
+MODULE_ID("$Id: frm_driver.c,v 1.66 2005/02/19 21:58:25 tom Exp $")
 
 /*----------------------------------------------------------------------------
   This is the core module of the form library. It contains the majority
@@ -255,7 +255,7 @@ cell_base(WINDOW *win, int y, int x)
     {
       cchar_t *data = &(win->_line[y].text[x]);
 
-      if (isWidecBase(CHDEREF(data)))
+      if (isWidecBase(CHDEREF(data)) || !isWidecExt(CHDEREF(data)))
 	{
 	  result = x;
 	  break;

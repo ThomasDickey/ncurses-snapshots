@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.870 2005/02/13 00:13:13 tom Exp $
+-- $Id: NEWS,v 1.871 2005/02/19 21:58:16 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20050219
+	+ fix a bug in editing wide-characters in form library: deleting a
+	  nonwide character modified the previous wide-character.
+	+ update manpage to describe NCURSES_MOUSE_VERSION 2.
+	+ correct manpage description of mouseinterval() (Debian #280687).
+	+ add a note to default_colors.3x explaining why this extension was
+	  added (Debian #295083).
+	+ add traces to panel library.
 
 20050212
 	+ improve editing of wide-characters in form library:  left/right

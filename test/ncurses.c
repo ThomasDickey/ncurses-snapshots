@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.241 2005/02/05 23:46:47 tom Exp $
+$Id: ncurses.c,v 1.242 2005/02/19 21:27:15 tom Exp $
 
 ***************************************************************************/
 
@@ -5585,7 +5585,7 @@ main(int argc, char *argv[])
 #endif
 #ifdef TRACE
 	case 't':
-	    save_trace = atoi(optarg);
+	    save_trace = strtol(optarg, 0, 0);
 	    break;
 #endif
 	default:

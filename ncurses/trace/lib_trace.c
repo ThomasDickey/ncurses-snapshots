@@ -41,7 +41,7 @@
 
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.56 2005/01/16 01:04:13 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.57 2005/02/19 17:13:49 tom Exp $")
 
 NCURSES_EXPORT_VAR(unsigned) _nc_tracing = 0; /* always define this */
 
@@ -188,11 +188,19 @@ _nc_retrace_cptr(const char *code)
     return code;
 }
 
+/* Trace 'NCURSES_CONST void*' return-values */
+NCURSES_EXPORT(NCURSES_CONST void *)
+_nc_retrace_cvoid_ptr(NCURSES_CONST void *code)
+{
+    T((T_RETURN("%p"), code));
+    return code;
+}
+
 /* Trace 'void*' return-values */
 NCURSES_EXPORT(void *)
 _nc_retrace_void_ptr(void *code)
 {
-    T((T_RETURN("%p"), _nc_visbuf((const char *) code)));
+    T((T_RETURN("%p"), code));
     return code;
 }
 
