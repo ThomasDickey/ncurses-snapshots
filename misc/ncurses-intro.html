@@ -9,7 +9,7 @@
 
 <BLOCKQUOTE>
 by Zeyd M. ben-Halim and Eric S. Raymond<BR>
-(version 1.8.7, 21 Dec 1994)
+(version 1.9, 1 May 1995)
 </BLOCKQUOTE>
 
 <HR>
@@ -421,14 +421,24 @@ may not be obvious from the manual page descriptions. <P>
 
 <H3>Some Notes of Caution</H3>
 
+Bear in mind that <TT>refresh()</TT> is a synonym for
+<TT>wrefresh(stdscr)</TT>,
+and don't try to mix use of <TT>stdscr</TT> with use of windows declared
+by <TT>newwin</TT>; a <TT>refresh()</TT> call will blow them off the
+screen.  The right way to handle this is to use <TT>subwin</TT>, or
+not touch <TT>stdscr</TT> at all and tile your screen with declared
+windows which you then <TT>wnoutrefresh<TT> somewhere in your program
+event loop, with a single <TT>doupdate</TT> call to trigger actual
+repainting. <P>
+
 You are much less likely to run into problems if you design your screen
 layouts to use tiled rather than overlapping windows.  Historically,
 curses support for overlapping windows has been weak, fragile, and poorly
-documented.  The \fBncurses\fR library is not yet an exception to this
+documented.  The <TT>ncurses</TT> library is not yet an exception to this
 rule. <P>
 
-There is a freeware panels library available available for use withn
-<TT>curses</TT> that does a pretty good job of strengthening the 
+There is a freeware panels library included in the <TT>ncurses</TT>
+distribution that does a pretty good job of strengthening the
 overlapping-windows facilities. <P>
 
 Try to avoid using the global variables LINES and COLS.  Use
@@ -501,7 +511,7 @@ screens.  Don't use the <TT>immedok()</TT> option! <P>
 When running on PC-clones, <TT>ncurses</TT> has enhanced support for the
 IBM high-half and ROM characters.  The ACS forms characters default not to
 the ugly ASCII makeshifts but to a set picked out of the IBM high-half and
-ROM graphics.  A new highlight, \fBA_PCCHARSET\fR, enables display of the
+ROM graphics.  A new highlight, <TT>A_PCCHARSET</TT>, enables display of the
 PC ROM graphics 0-31 that are normally interpreted as control characters.
 
 <HR>

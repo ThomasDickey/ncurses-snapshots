@@ -302,7 +302,7 @@ int vidattr(attr_t newmode)
 
 	T(("vidattr(%lx) called", newmode));
 
-	return(vidputs(newmode, _outch));
+	return(vidputs(newmode, _nc_outch));
 }
 
 attr_t termattrs(void)

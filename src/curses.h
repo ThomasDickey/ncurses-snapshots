@@ -214,7 +214,7 @@ struct _win_st {
 
 extern WINDOW   *stdscr, *curscr, *newscr;
 
-extern int	LINES, COLS;
+extern int	LINES, COLS, TABSIZE;
 
 #ifdef __cplusplus
 extern "C" {
@@ -278,6 +278,8 @@ extern int flash(void);
 extern int flushinp(void);
 extern WINDOW *getwin(FILE *fp);
 extern int halfdelay(int);
+extern int has_ic(void);
+extern int has_il(void);
 extern int idcok(WINDOW *, bool);
 extern int idlok(WINDOW *, bool);
 extern int immedok(WINDOW *, bool);
@@ -419,9 +421,6 @@ extern int slk_attroff(attr_t);
 #define nocrmode()		nocbreak()
 #define gettmode()		
 
-#define has_ic()		(insert_character && delete_character)
-#define has_il()		(insert_line && delete_line)
-
 #define getyx(win,y,x)   	(y = (win)->_cury, x = (win)->_curx)
 #define getbegyx(win,y,x)	(y = (win)->_begy, x = (win)->_begx)
 #define getmaxyx(win,y,x)	(y = (win)->_maxy + 1, x = (win)->_maxx + 1)
@@ -440,9 +439,9 @@ extern int slk_attroff(attr_t);
 #define wattr_set(win, a)	attrset(win, a)
 
 #define attr_get()		wattr_get(stdscr)
-#define attr_off(a)		wattr_off(strdscr, a)
-#define attr_on(a)		wattr_on(strdscr, a)
-#define attr_set(a)		wattr_set(strdscr, a)
+#define attr_off(a)		wattr_off(stdscr, a)
+#define attr_on(a)		wattr_on(stdscr, a)
+#define attr_set(a)		wattr_set(stdscr, a)
 
 /*
  * XSI curses deprecates SVr4 vwprintw/vwscanw, which are supposed to use
@@ -666,4 +665,4 @@ extern int slk_attroff(attr_t);
 #define KEY_UNDO	0630	/* undo key */
 #define KEY_MAX		0777	/* Maximum curses key */
 
-#endif 
+#endif /* __NCURSES_H */

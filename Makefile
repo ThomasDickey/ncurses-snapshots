@@ -4,7 +4,7 @@
 all:
 	more INSTALL
 
-PKG = ncurses-1.9
+PKG = ncurses-1.9.1
 
 $(PKG).tar:
 	(cd ..; tar -cvf $(PKG)/$(PKG).tar `sed <$(PKG)/MANIFEST 's/^./$(PKG)/'`)

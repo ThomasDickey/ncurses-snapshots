@@ -64,7 +64,7 @@ struct ripoff_t
 }
 rippedoff[5], *rsp = rippedoff;
 
-int setupscreen(int slines, int scolumns)
+int _nc_setupscreen(int slines, int scolumns)
 /* OS-independent screen initializations */
 {
 int	stolen, topstolen;

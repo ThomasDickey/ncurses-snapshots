@@ -22,7 +22,7 @@
 /*
 **	lib_twait.c
 **
-**	The routine timed_wait().
+**	The routine _nc_timed_wait().
 **
 */
 
@@ -47,7 +47,7 @@ struct timeval tval;
 }
 #endif
 
-int timed_wait(int fd, int wait, int *timeleft)
+int _nc_timed_wait(int fd, int wait, int *timeleft)
 {
 int result;
 struct timeval timeout;

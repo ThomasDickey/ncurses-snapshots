@@ -31,7 +31,7 @@
 **
 **		void mvcur_wrap(void)
 **
-**		int scrolln(int n, int top, int bot, int maxy)
+**		int mvcur_scrolln(int n, int top, int bot, int maxy)
 **
 ** Comparisons with older movement optimizers:  
 **    SVr3 curses mvcur() can't use cursor_to_ll or auto_left_margin.
@@ -139,7 +139,7 @@
 #define CURRENT_ROW	SP->_cursrow		/* phys cursor row */
 #define CURRENT_COLUMN	SP->_curscol		/* phys cursor column */
 #define REAL_ATTR	SP->_current_attr	/* phys current attribute */
-#define REAL_CHAR(y, x)	SP->_curscr->_line[y].text[x]	/* phys screen data */
+#define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
 #define BAUDRATE	SP->_baudrate		/* bits per secound */
 
 /****************************************************************************
@@ -343,7 +343,7 @@ int mvcur(int yold, int xold, int ynew, int xnew)
 		if (newline)
 		{
 		    TPUTS_TRACE("newline");
-		    tputs(newline, 0, _outch);
+		    tputs(newline, 0, _nc_outch);
 		}
 		else
 		    putchar('\n');
@@ -367,7 +367,7 @@ int mvcur(int yold, int xold, int ynew, int xnew)
      */
     if (ynew >= screen_lines)
     {
-	if (scrolln((ynew - (screen_lines - 1)), 0, screen_lines - 1, screen_lines - 1) == OK)
+	if (mvcur_scrolln((ynew - (screen_lines - 1)), 0, screen_lines - 1, screen_lines - 1) == OK)
 	    ynew = screen_lines - 1;
 	else
 	    return(ERR);
@@ -482,8 +482,11 @@ static int onscreen_mvcur(int yold, int xold, int ynew, int xnew, bool ovw)
 	usecost = SP->_ll_cost + newcost;
     }
 
-    /* tactic #5: use left margin for wrap to right-hand side */
-    if (auto_margin && yold > 0 && yold < screen_lines - 1 && cursor_left
+    /*
+     * tactic #5: use left margin for wrap to right-hand side,
+     * unless strange wrap behavior indicated by xenl might hose us.
+     */
+    if (auto_margin && !eat_newline_glitch && yold > 0 && yold < screen_lines - 1 && cursor_left
 	&& ((newcost=relative_move(move, yold-1, screen_columns-1, ynew, xnew, ovw)) != INFINITY)
 	&& SP->_cr_cost + SP->_cub1_cost + newcost + newcost < usecost)
     {
@@ -509,7 +512,7 @@ static int onscreen_mvcur(int yold, int xold, int ynew, int xnew, bool ovw)
     if (usecost != INFINITY)
     {
 	TPUTS_TRACE("mvcur");
-	tputs(use, 1, _outch);
+	tputs(use, 1, _nc_outch);
 	return(OK);
     }
     else
@@ -646,13 +649,13 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 		}
 #endif /* TABS_OK */
 
-#if defined(REAL_ATTR) && defined(REAL_CHAR)
+#if defined(REAL_ATTR) && defined(WANT_CHAR)
 		/*
 		 * If we have no attribute changes, overwrite is cheaper.
 		 * Note: must suppress this by passing in ovw = FALSE whenever
-		 * REAL_CHAR would return invalid data.  In particular, this 
+		 * WANT_CHAR would return invalid data.  In particular, this 
 		 * is true between the time a hardware scroll has been done
-		 * and the time the structure REAL_CHAR would access has been
+		 * and the time the structure WANT_CHAR would access has been
 		 * updated.
 		 */
 		if (ovw)
@@ -660,7 +663,7 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 		    int	i;
 
 		    for (i = 0; i < n; i++)
-			if ((REAL_CHAR(to_y, from_x + i) & A_ATTRIBUTES) != CURRENT_ATTR)
+			if ((WANT_CHAR(to_y, from_x + i) & A_ATTRIBUTES) != CURRENT_ATTR)
 			{
 			    ovw = FALSE;
 			    break;
@@ -674,12 +677,12 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 		    sp2 = try + strlen(try);
 
 		    for (i = 0; i < n; i++)
-			*sp2++ = REAL_CHAR(to_y, from_x + i);
+			*sp2++ = WANT_CHAR(to_y, from_x + i);
 		    *sp2 = '\0';
 		    lhcost += n * SP->_char_padding;
 	        }
 		else
-#endif /* defined(REAL_ATTR) && defined(REAL_CHAR) */
+#endif /* defined(REAL_ATTR) && defined(WANT_CHAR) */
 		{
 		    lhcost += (n * SP->_cuf1_cost);
 		    while (n--)
@@ -756,7 +759,7 @@ static int relative_move(char *move, int from_y,int from_x,int to_y,int to_x, bo
 
 /* assumption: src/rc is faster than cursor addressing */
 
-static int	oy, ox;		/* ugh, scrolln() needs to see this */
+static int	oy, ox;		/* ugh, mvcur_scrolln() needs to see this */
 
 static void save_curs(void)
 {
@@ -781,12 +784,12 @@ static void restore_curs(void)
 	onscreen_mvcur(-1, -1, oy, ox, FALSE);
 }
 
-int scrolln(int n, int top, int bot, int maxy)
+int mvcur_scrolln(int n, int top, int bot, int maxy)
 /* scroll region from top to bot by n lines */
 {
     int i;
 
-    TR(TRACE_MOVE, ("scrolln(%d, %d, %d, %d)", n, top, bot, maxy)); 
+    TR(TRACE_MOVE, ("mvcur_scrolln(%d, %d, %d, %d)", n, top, bot, maxy)); 
 
     save_curs();
 
@@ -824,7 +827,7 @@ int scrolln(int n, int top, int bot, int maxy)
 	    {
 		mvcur(-1, -1, lines - n, 0);
 		TPUTS_TRACE("clr_eos");
-		tputs(clr_eos, n, _outch);
+		tputs(clr_eos, n, _nc_outch);
 	    }
 	    else if (clr_eol)
 	    {
@@ -832,7 +835,7 @@ int scrolln(int n, int top, int bot, int maxy)
 		{
 		    mvcur(-1, -1, lines - n + i, 0);
 		    TPUTS_TRACE("clr_eol");
-		    tputs(clr_eol, n, _outch);
+		    tputs(clr_eol, n, _nc_outch);
 		}
 	    }
 	}
@@ -840,21 +843,21 @@ int scrolln(int n, int top, int bot, int maxy)
 	if (change_scroll_region && (scroll_forward || parm_index))
 	{
 	    TPUTS_TRACE("change_scroll_region");
-	    tputs(tparm(change_scroll_region, top, bot), 0, _outch);
+	    tputs(tparm(change_scroll_region, top, bot), 0, _nc_outch);
 	    onscreen_mvcur(-1, -1, bot, 0, TRUE);
 	    if (parm_index != NULL)
 	    {
 		TPUTS_TRACE("parm_index");
-		tputs(tparm(parm_index, n, 0), n, _outch);
+		tputs(tparm(parm_index, n, 0), n, _nc_outch);
 	    }
 	    else
 		for (i = 0; i < n; i++)
 		{
 		    TPUTS_TRACE("scroll_forward");
-		    tputs(scroll_forward, 0, _outch);
+		    tputs(scroll_forward, 0, _nc_outch);
 		}
 	    TPUTS_TRACE("change_scroll_region");
-	    tputs(tparm(change_scroll_region, 0, maxy), 0, _outch);
+	    tputs(tparm(change_scroll_region, 0, maxy), 0, _nc_outch);
 	    restore_curs();
 	    return(OK);
 	}
@@ -864,13 +867,13 @@ int scrolln(int n, int top, int bot, int maxy)
 	{
 	    onscreen_mvcur(oy, ox, bot, 0, TRUE);
 	    TPUTS_TRACE("parm_index");
-	    tputs(tparm(parm_index, n, 0), n, _outch);
+	    tputs(tparm(parm_index, n, 0), n, _nc_outch);
 	}
 	else if (parm_delete_line)
 	{
 	    onscreen_mvcur(oy, ox, top, 0, TRUE);
 	    TPUTS_TRACE("parm_delete_line");
-	    tputs(tparm(parm_delete_line, n, 0), n, _outch);
+	    tputs(tparm(parm_delete_line, n, 0), n, _nc_outch);
 	}
 	else if (delete_line)
 	{
@@ -878,7 +881,7 @@ int scrolln(int n, int top, int bot, int maxy)
 	    for (i = 0; i < n; i++)
 	    {
 		TPUTS_TRACE("parm_index");
-		tputs(delete_line, 0, _outch);
+		tputs(delete_line, 0, _nc_outch);
 	    }
 	}
 	else if (scroll_forward && top == 0)
@@ -887,7 +890,7 @@ int scrolln(int n, int top, int bot, int maxy)
 	    for (i = 0; i < n; i++)
 	    {
 		TPUTS_TRACE("scroll_forward");
-		tputs(scroll_forward, 0, _outch);
+		tputs(scroll_forward, 0, _nc_outch);
 	    }
 	}
 	else
@@ -898,7 +901,7 @@ int scrolln(int n, int top, int bot, int maxy)
 	{
 	    onscreen_mvcur(top, 0, bot - n + 1, 0, FALSE);
 	    TPUTS_TRACE("parm_insert_line");
-	    tputs(tparm(parm_insert_line, n, 0), n, _outch);
+	    tputs(tparm(parm_insert_line, n, 0), n, _nc_outch);
 	}
 	else if (insert_line)
 	{
@@ -906,7 +909,7 @@ int scrolln(int n, int top, int bot, int maxy)
 	    for (i = 0; i < n; i++)
 	    {
 		TPUTS_TRACE("insert_line");
-		tputs(insert_line, 0, _outch);
+		tputs(insert_line, 0, _nc_outch);
 	    }
 	}
 	else
@@ -924,27 +927,27 @@ int scrolln(int n, int top, int bot, int maxy)
 	    {
 		mvcur(-1, -1, i, 0);
 		TPUTS_TRACE("clr_eol");
-		tputs(clr_eol, n, _outch);
+		tputs(clr_eol, n, _nc_outch);
 	    }
 
 	if (change_scroll_region && (scroll_reverse || parm_rindex))
 	{
 	    TPUTS_TRACE("change_scroll_region");
-	    tputs(tparm(change_scroll_region, top, bot), 0, _outch);
+	    tputs(tparm(change_scroll_region, top, bot), 0, _nc_outch);
 	    onscreen_mvcur(-1, -1, top, 0, TRUE);
 	    if (parm_rindex)
 	    {
 		TPUTS_TRACE("parm_rindex");
-		tputs(tparm(parm_rindex, -n, 0), -n, _outch);
+		tputs(tparm(parm_rindex, -n, 0), -n, _nc_outch);
 	    }
 	    else
 		for (i = n; i < 0; i++)
 		{
 		    TPUTS_TRACE("scroll_reverse");
-		    tputs(scroll_reverse, 0, _outch);
+		    tputs(scroll_reverse, 0, _nc_outch);
 		}
 	    TPUTS_TRACE("change_scroll_region");
-	    tputs(tparm(change_scroll_region, 0, maxy), 0, _outch);
+	    tputs(tparm(change_scroll_region, 0, maxy), 0, _nc_outch);
 	    restore_curs();
 	    return(OK);
 	}
@@ -954,24 +957,24 @@ int scrolln(int n, int top, int bot, int maxy)
 	if (parm_rindex && bot == maxy)
 	{
 	    TPUTS_TRACE("parm_rindex");
-	    tputs(tparm(parm_rindex, -n, 0), -n, _outch);
+	    tputs(tparm(parm_rindex, -n, 0), -n, _nc_outch);
 	}
 	else if (parm_delete_line)
 	{
 	    TPUTS_TRACE("parm_delete_line");
-	    tputs(tparm(parm_delete_line, -n, 0), -n, _outch);
+	    tputs(tparm(parm_delete_line, -n, 0), -n, _nc_outch);
 	}
 	else if (delete_line)
 	    for (i = n; i < 0; i++)
 	    {
 		TPUTS_TRACE("delete_line");
-		tputs(delete_line, 0, _outch);
+		tputs(delete_line, 0, _nc_outch);
 	    }
 	else if (scroll_reverse && bot == maxy)
 	    for (i = n; i < 0; i++)
 	    {
 		TPUTS_TRACE("scroll_reverse");
-		tputs(scroll_reverse, 0, _outch);
+		tputs(scroll_reverse, 0, _nc_outch);
 	    }
 	else
 	    return(ERR);
@@ -981,7 +984,7 @@ int scrolln(int n, int top, int bot, int maxy)
 	{
 	    onscreen_mvcur(bot + n + 1, 0, top, 0, FALSE);
 	    TPUTS_TRACE("parm_insert_line");
-	    tputs(tparm(parm_insert_line, -n, 0), -n, _outch);
+	    tputs(tparm(parm_insert_line, -n, 0), -n, _nc_outch);
 	}
 	else if (insert_line)
 	{
@@ -989,7 +992,7 @@ int scrolln(int n, int top, int bot, int maxy)
 	    for (i = n; i < 0; i++)
 	    {
 		TPUTS_TRACE("insert_line");
-		tputs(insert_line, 0, _outch);
+		tputs(insert_line, 0, _nc_outch);
 	    }
 	}
 	else
@@ -1019,7 +1022,7 @@ int tputs(const char *string, int affcnt, int (*outc)(int))
 
 int putp(char *string)
 {
-    return(tputs(string, 1, _outch));
+    return(tputs(string, 1, _nc_outch));
 }
 
 static char	tname[BUFSIZ];
@@ -1049,7 +1052,7 @@ int main(int argc, char *argv[])
 {
     (void) strcpy(tname, getenv("TERM"));
     load_term();
-    setupscreen(lines, columns);
+    _nc_setupscreen(lines, columns);
     make_hash_table(info_table, info_hash_table);
 
     (void) puts("The mvcur tester.  Type ? for help");
@@ -1102,7 +1105,7 @@ int main(int argc, char *argv[])
 	    putchar('"');
 
 	    gettimeofday(&before, NULL);
-	    scrolln(fy, fx, ty, tx);
+	    mvcur_scrolln(fy, fx, ty, tx);
 	    gettimeofday(&after, NULL);
 
 	    printf("\" (%ld msec)\n",

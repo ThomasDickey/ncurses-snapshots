@@ -32,7 +32,7 @@
 
 int putp(char *string)
 {
-	return tputs(string, 1, _outch);
+	return tputs(string, 1, _nc_outch);
 }
 
 int tputs(const char *string, int affcnt, int (*outc)(int))

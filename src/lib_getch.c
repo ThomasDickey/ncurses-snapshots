@@ -121,7 +121,7 @@ int i;
 
 static int kgetch(WINDOW *);
 
-void backspace(WINDOW *win)
+void _nc_backspace(WINDOW *win)
 {
 	if (win->_curx == 0)
 	{
@@ -134,13 +134,13 @@ void backspace(WINDOW *win)
 	waddstr(win, "\b \b");
 
 	/*
-	 * This used to do the equivalent of outstr("\b \b"), which
+	 * This used to do the equivalent of _nc_outstr("\b \b"), which
 	 * would fail on terminals with a non-backspace cursor_left
 	 * character.
 	 */
 	mvcur(win->_begy + win->_cury, win->_begx + win->_curx,
 	      win->_begy + win->_cury, win->_begx + win->_curx - 1);
-	outstr(" ");
+	_nc_outstr(" ");
 	mvcur(win->_begy + win->_cury, win->_begx + win->_curx,
 	      win->_begy + win->_cury, win->_begx + win->_curx - 1);
 	SP->_curscol--; 
@@ -180,7 +180,7 @@ int	ch;
 		T(("delay is %d microseconds", delay));
 
 		if (head == -1)	/* fifo is empty */
-			if (timed_wait(SP->_ifd, delay, NULL) == 0)
+			if (_nc_timed_wait(SP->_ifd, delay, NULL) == 0)
 				return ERR;
 		/* else go on to read data available */
 	}
@@ -201,7 +201,7 @@ int	ch;
         if (!(win->_flags & _ISPAD) && SP->_echo) {
 	    /* there must be a simpler way of doing this */
 	    if (ch == erasechar() || ch == KEY_BACKSPACE || ch == KEY_LEFT)
-		backspace(win);
+		_nc_backspace(win);
 	    else if (ch < KEY_MIN) {
 		mvwaddch(curscr,
 			 win->_begy + win->_cury,
@@ -266,7 +266,7 @@ int timeleft = 1000;
 					break;
 
 	    			T(("waiting for rest of sequence"));
-   				if (timed_wait(SP->_ifd, timeleft, &timeleft) < 1) {
+   				if (_nc_timed_wait(SP->_ifd, timeleft, &timeleft) < 1) {
 					T(("ran out of time"));
 					return(fifo_pull());
    				} else {

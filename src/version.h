@@ -21,5 +21,5 @@
 
 
 
-#define NCURSES_VERSION "1.9.0c"
+#define NCURSES_VERSION "1.9.1"
 

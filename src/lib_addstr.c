@@ -31,7 +31,7 @@
 int
 waddnstr(WINDOW *win, char *const astr, int n)
 {
-char *str = astr;
+unsigned char *str = astr;
 int code = ERR;
 
 	T(("waddnstr(%p,\"%s\",%d) called %s", win, visbuf(str), n, _traceattr(win->_attrs)));
@@ -45,7 +45,7 @@ int code = ERR;
 
 		while((n-- > 0) && (*str != '\0')) {
 			TR(TRACE_VIRTPUT, ("*str = %x", *str));
-			if (waddch(win, *str++) == ERR) {
+			if (waddch(win, (unsigned char)*str++) == ERR) {
 				code = ERR;
 				break;
 			}

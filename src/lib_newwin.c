@@ -47,7 +47,7 @@ int	i, j;
 	if (num_columns + begx > SP->_columns || num_lines + begy > SP->_lines)
 		return NULL;
 
-	if ((win = makenew(num_lines, num_columns, begy, begx)) == NULL)
+	if ((win = _nc_makenew(num_lines, num_columns, begy, begx)) == NULL)
 		return NULL;
 
 	for (i = 0; i < num_lines; i++) {
@@ -92,7 +92,7 @@ int	i;
 	if (num_columns == 0)
 	    num_columns = orig->_maxx - orig->_begx - begx;
 
-	if ((win = makenew(num_lines, num_columns, orig->_begy + begy, orig->_begx + begx)) == NULL)
+	if ((win = _nc_makenew(num_lines, num_columns, orig->_begy + begy, orig->_begx + begx)) == NULL)
 	    return NULL;
 
 	win->_pary = begy;
@@ -121,12 +121,12 @@ WINDOW *subwin(WINDOW *w, int l, int c, int y, int x)
 }
 
 WINDOW *
-makenew(int num_lines, int num_columns, int begy, int begx)
+_nc_makenew(int num_lines, int num_columns, int begy, int begx)
 {
 int	i;
 WINDOW	*win;
 
-	T(("makenew(%d,%d,%d,%d)", num_lines, num_columns, begy, begx));
+	T(("_nc_makenew(%d,%d,%d,%d)", num_lines, num_columns, begy, begx));
 
 	if (num_lines <= 0 || num_columns <= 0)
 	 	return NULL;

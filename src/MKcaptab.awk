@@ -66,20 +66,23 @@ BEGIN		{
 
 $3 == "bool"	{
 		    printf "\t{ 0,%15s,\tBOOLEAN,\t%3d },\n", $4, BoolCount++
+		    tablesize++;
 		}
 
 
 $3 == "num"	{
 		    printf "\t{ 0,%15s,\tNUMBER,\t\t%3d },\n", $4, NumCount++
+		    tablesize++;
 		}
 
 
 $3 == "str"	{
 		    printf "\t{ 0,%15s,\tSTRING,\t\t%3d },\n", $4, StrCount++
+		    tablesize++;
 		}
 
 END	{
-	    print  "};"
+	    print  "} /* " tablesize " entries */;"
 	    print  ""
 	    print  "struct name_table_entry *info_hash_table[HASHTABSIZE];"
 	    print  "struct name_table_entry *cap_hash_table[HASHTABSIZE];"

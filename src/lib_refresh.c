@@ -60,13 +60,14 @@ bool	wide;
 	T(("wnoutrefresh(%p) called", win));
 
 	/*
-	 * If 'newscr' has a different background than the window that we're trying
-	 * to refresh, we'll have to copy the whole thing.
+	 * If 'newscr' has a different background than the window that we're
+	 * trying to refresh, we'll have to copy the whole thing.
 	 */
 	if (win->_bkgd != newscr->_bkgd) {
 		touchwin(win);
 		newscr->_bkgd = win->_bkgd;
 	}
+
 	/* merge in change information from all subwindows of this window */
 	wsyncdown(win);
 
@@ -87,33 +88,42 @@ bool	wide;
 	wide = (begx <= 1 && win->_maxx >= (newscr->_maxx - 1));
 
 	win->_flags &= ~_HASMOVED;
-	for (i = 0, m = begy; i <= win->_maxy && m <= newscr->_maxy; i++, m++) {
-		if (win->_line[i].firstchar != _NOCHANGE) {
-			j = win->_line[i].firstchar;
-			n = j + begx;
-			for (; j <= win->_line[i].lastchar; j++, n++) {
-		    		if (win->_line[i].text[j] != newscr->_line[m].text[n]) {
-					newscr->_line[m].text[n] = win->_line[i].text[j];
 
-					if (newscr->_line[m].firstchar == _NOCHANGE)
-			   			newscr->_line[m].firstchar = newscr->_line[m].lastchar = n;
-					else if (n < newscr->_line[m].firstchar)
-			   			newscr->_line[m].firstchar = n;
-					else if (n > newscr->_line[m].lastchar)
-			   			newscr->_line[m].lastchar = n;
+	/*
+	 * Microtweaking alert!  This double loop is one of the genuine
+	 * hot spots in the code.  Even gcc doesn't seem to do enough
+	 * common-subexpression chunking to make it really tense,
+	 * so we'll force the issue.
+	 */
+	for (i = 0, m = begy; i <= win->_maxy && m <= newscr->_maxy; i++, m++) {
+		register struct ldat	*nline = &newscr->_line[m];
+		register struct ldat	*oline = &win->_line[i];
+
+		if (oline->firstchar != _NOCHANGE) {
+
+			for (j = oline->firstchar, n = j + begx; j <= oline->lastchar; j++, n++) {
+		    		if (oline->text[j] != nline->text[n]) {
+					nline->text[n] = oline->text[j];
+
+					if (nline->firstchar == _NOCHANGE)
+			   			nline->firstchar = nline->lastchar = n;
+					else if (n < nline->firstchar)
+			   			nline->firstchar = n;
+					else if (n > nline->lastchar)
+			   			nline->lastchar = n;
 		    		}
 			}
 		}
 
 		if (wide) {
-		    int	oind = win->_line[i].oldindex;
+		    int	oind = oline->oldindex;
 
-		    newscr->_line[m].oldindex 
+		    nline->oldindex 
 			= (oind == NEWINDEX) ? NEWINDEX : begy + oind;
 		}
 
-		win->_line[i].firstchar = win->_line[i].lastchar = _NOCHANGE;
-		win->_line[i].oldindex = i;
+		oline->firstchar = oline->lastchar = _NOCHANGE;
+		oline->oldindex = i;
 	}
 
 	if (win->_clear) {

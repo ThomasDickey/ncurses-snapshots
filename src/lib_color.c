@@ -69,15 +69,18 @@ int start_color(void)
 {
 	T(("start_color() called."));
 
+#ifdef orig_pair
 	if (orig_pair != NULL)
 	{
 		TPUTS_TRACE("orig_pair");
 		putp(orig_pair);
 	}
 	else return ERR;
+#endif /* orig_pair */
 	if (max_pairs != -1)
 		COLOR_PAIRS = max_pairs;
-	else return ERR;
+	else
+		return ERR;
 	color_pairs = calloc(sizeof(char), max_pairs);
 	if (max_colors != -1)
 		COLORS = max_colors;
@@ -85,20 +88,20 @@ int start_color(void)
 		return ERR;
 	SP->_coloron = 1;
 
-	if (can_change)
-	{
-	    color_table = malloc(sizeof(color_t) * COLORS);
-	    if (hue_lightness_saturation)
-		memcpy(color_table, hls_palette, sizeof(color_t) * COLORS);
-	    else
-		memcpy(color_table, cga_palette, sizeof(color_t) * COLORS);
-	}
+#ifdef hue_lightness_saturation
+	color_table = malloc(sizeof(color_t) * COLORS);
+	if (hue_lightness_saturation)
+	    memcpy(color_table, hls_palette, sizeof(color_t) * COLORS);
+	else
+#endif /* hue_lightness_saturation */
+	    memcpy(color_table, cga_palette, sizeof(color_t) * COLORS);
 
 	T(("started color: COLORS = %d, COLOR_PAIRS = %d", COLORS, COLOR_PAIRS));
 
 	return OK;
 }
 
+#ifdef hue_lightness_saturation
 static void rgb2hls(short r, short g, short b, short *h, short *l, short *s)
 /* convert RGB to HLS system */
 {
@@ -133,6 +136,7 @@ static void rgb2hls(short r, short g, short b, short *h, short *l, short *s)
 
     *h = t % 360;
 }
+#endif /* hue_lightness_saturation */
 
 int init_pair(short pair, short f, short b)
 {
@@ -155,34 +159,41 @@ int init_pair(short pair, short f, short b)
 
 int init_color(short color, short r, short g, short b)
 {
-	if (initialize_color != NULL) {
-		if (color < 0 || color >= COLORS)
-			return ERR;
-		if (hue_lightness_saturation == TRUE)
-			if (r < 0 || r > 360 || g < 0 || g > 100 || b < 0 || b > 100)
-				return ERR;	
-		if (hue_lightness_saturation == FALSE)
-			if (r < 0 || r > 1000 || g < 0 ||  g > 1000 || b < 0 || b > 1000)
-				return ERR;
-				
-		if (hue_lightness_saturation)
-		    rgb2hls(r, g, b,
-			      &color_table[color].red,
-			      &color_table[color].green,
-			      &color_table[color].blue);
-		else
-		{
-			color_table[color].red = r;
-			color_table[color].green = g;
-			color_table[color].blue = b;
-		}
+#ifdef initialize_color
+	if (initialize_color == NULL)
+		return ERR;
+#endif /* initialize_color */
 
-		TPUTS_TRACE("initialize_color");
-		putp(tparm(initialize_color, color, r, g, b));
-		return OK;
+	if (color < 0 || color >= COLORS)
+		return ERR;
+#ifdef hue_lightness_saturation
+	if (hue_lightness_saturation == TRUE)
+		if (r < 0 || r > 360 || g < 0 || g > 100 || b < 0 || b > 100)
+			return ERR;	
+	if (hue_lightness_saturation == FALSE)
+#endif /* hue_lightness_saturation */
+		if (r < 0 || r > 1000 || g < 0 ||  g > 1000 || b < 0 || b > 1000)
+			return ERR;
+				
+#ifdef hue_lightness_saturation
+	if (hue_lightness_saturation)
+	    rgb2hls(r, g, b,
+		      &color_table[color].red,
+		      &color_table[color].green,
+		      &color_table[color].blue);
+	else
+#endif /* hue_lightness_saturation */
+	{
+		color_table[color].red = r;
+		color_table[color].green = g;
+		color_table[color].blue = b;
 	}
-	
-	return ERR;
+
+	TPUTS_TRACE("initialize_color");
+#ifdef initialize_color
+	putp(tparm(initialize_color, color, r, g, b));
+#endif /* initialize_color */
+	return OK;
 }
 
 bool can_change_color(void)

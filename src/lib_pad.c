@@ -42,7 +42,7 @@ int i, j;
 	if (l <= 0 || c <= 0)
 		return NULL;
 
-	if ((win = makenew(l,c,0,0)) == NULL)
+	if ((win = _nc_makenew(l,c,0,0)) == NULL)
 		return NULL;
 
 	win->_flags |= _ISPAD;
@@ -139,9 +139,9 @@ int	m, n;
 			    newscr->_line[m].lastchar = n;
 		    }
 		}
+		win->_line[i].firstchar = win->_line[i].lastchar = _NOCHANGE;
 	}
 
-	win->_line[i].firstchar = win->_line[i].lastchar = _NOCHANGE;
 
 	win->_begx = smincol;
 	win->_begy = sminrow;

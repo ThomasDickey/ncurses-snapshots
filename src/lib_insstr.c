@@ -39,22 +39,17 @@ char	*cp;
 
 	T(("winsstr(%p,'%s',%d) called", win, str, n));
 
-	for (cp = str; *cp && (n > 0 || (cp - str) >= n); cp++)
-	{
+	for (cp = str; *cp && (n > 0 || (cp - str) >= n); cp++) {
 		if (*cp == '\n' || *cp == '\r' || *cp == '\t' || *cp == '\b')
 			addch(*cp);
-		else if (iscntrl(*cp))
-		{
+		else if (isascii(*cp) && iscntrl(*cp)) {
 			winsch(win, ' ' + *cp);
 			winsch(win, '^');
 			win->_curx += 2;
-		}
-		else
-		{
+		} else {
 			winsch(win, *cp);
 			win->_curx++;
 		}
-
 		if (win->_curx > win->_maxx)
 			win->_curx = win->_maxx;
 	}

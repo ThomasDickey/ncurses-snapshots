@@ -77,7 +77,7 @@ int delay_output(float ms)
 		return(ERR);
 #ifdef no_pad_char
     	else if (no_pad_char)
-		timed_wait(0, ms, (int *)NULL);
+		_nc_timed_wait(0, ms, (int *)NULL);
 #endif /* no_pad_char */
 	else {
 		register int	nullcount;

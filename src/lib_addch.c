@@ -32,6 +32,8 @@
 
 #define ALL_BUT_COLOR ((chtype)~(A_COLOR))
 
+int TABSIZE = 8; /* default size of a TAB */
+
 int wattron(WINDOW *win, const attr_t at)
 {
 	T(("wattron(%p,%s) current = %s", win, _traceattr(at), _traceattr(win->_attrs)));
@@ -65,17 +67,16 @@ int wattroff(WINDOW *win, const attr_t at)
 	return OK;
 }
 
-chtype wrenderchar(WINDOW *win, chtype oldch, chtype newch, bool erase)
+inline chtype _nc_render(WINDOW *win, chtype oldch, chtype newch, bool erase)
 /* compute a rendition of the given char correct for the current context */
 {
 	if ((oldch & A_CHARTEXT) == ' ')
 		newch |= win->_bkgd;
-	else
+	else if (!(newch & A_ATTRIBUTES))
 		newch |= (win->_bkgd & A_ATTRIBUTES);
 	TR(TRACE_VIRTPUT, ("bkg = %lx -> ch = %lx", win->_bkgd, newch));
 
-	if (!erase)
-	{
+	if (!erase) {
 		TR(TRACE_VIRTPUT, ("win attr = %s", _traceattr(win->_attrs)));
 		newch |= win->_attrs;
 	}
@@ -83,7 +84,7 @@ chtype wrenderchar(WINDOW *win, chtype oldch, chtype newch, bool erase)
 	return(newch);
 }
 
-static int
+static inline int
 wladdch(WINDOW *win, const chtype c, const bool literal)
 {
 int	x, y;
@@ -126,12 +127,12 @@ chtype	ch = c;
 		    	x = 0;
 		break;
     	default:
-		if (iscntrl(ch & A_CHARTEXT))
+		if (isascii(ch & A_CHARTEXT) && iscntrl(ch & A_CHARTEXT))
 		    	return(waddstr(win, unctrl(ch)));
 
 		/* FALL THROUGH */
         noctrl:
-		ch = wrenderchar(win, win->_line[y].text[x], ch, FALSE);
+		ch = _nc_render(win, win->_line[y].text[x], ch, FALSE);
 
 		if (win->_line[y].text[x] != ch) {
 		    	if (win->_line[y].firstchar == _NOCHANGE)
@@ -166,7 +167,7 @@ do_newline:
 
 	TR(TRACE_VIRTPUT, ("waddch() is done"));
 
-	wchangesync(win);
+	_nc_synchook(win);
 	return(OK);
 }
 

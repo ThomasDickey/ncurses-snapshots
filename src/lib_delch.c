@@ -50,6 +50,6 @@ chtype	*end;
 				   || win->_line[win->_cury].firstchar > win->_curx)
 	    win->_line[win->_cury].firstchar = win->_curx;
 
-	wchangesync(win);
+	_nc_synchook(win);
 	return OK;
 }

@@ -30,7 +30,7 @@
 #include "termsort.c"		/* this C file is generated */
 #include "parametrized.h"	/* so is this */
 
-#define INDENT	8
+#define INDENT			8
 
 static int outform;		/* output format to use */
 static int sortmode;		/* sort mode to use */
@@ -176,6 +176,22 @@ bool		islong = (strlen(srcp) > 3);
     	return(buffer);
 }
 
+char *canonical_name(char *ptr, char *buf)
+/* extract the terminal type's primary name */
+{
+    static char	mycopy[NAMESIZE];
+    char	*bp;
+
+    if (buf == (char *)NULL)
+	buf = mycopy;
+
+    (void) strcpy(buf, ptr);
+    if ((bp = strchr(buf, '|')) != (char *)NULL)
+	*bp = '\0';
+
+    return(buf);
+}
+
 static TERMTYPE	*cur_type;
 
 static int dump_predicate(int type, int index)
@@ -200,25 +216,23 @@ static int dump_predicate(int type, int index)
 
 static void set_obsolete_termcaps(TERMTYPE *tp);
 
-void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int index))
-/* dump a single entry */
+int fmt_entry(TERMTYPE *tterm,
+			   int (*pred)(int type, int index),
+			   char *outbuf, bool suppress_untranslatable)
 {
 int	i, j;
 int	column;
-char	buffer[1024];
-int	predval;
+char    buffer[MAX_TERMINFO_LENGTH];
+int	predval, len = 0;
 
     if (pred == NULL) {
 	cur_type = tterm;
 	pred = dump_predicate;
     }
 
-    if (outform==F_TERMCAP || outform==F_TCONVERT || outform==F_TCONVERR)
-	set_obsolete_termcaps(tterm);
-
-    (void) fputs(tterm->term_names, stdout);
-    (void) fputs(separator, stdout);
-    (void) fputs(trailer, stdout);
+    (void) strcpy(outbuf, tterm->term_names);
+    (void) strcat(outbuf, separator);
+    (void) strcat(outbuf, trailer);
     column = INDENT;
 
     for (j=0; j < BOOLCOUNT; j++) {
@@ -240,17 +254,17 @@ int	predval;
 		(void) strcat(buffer, "@");
 	    (void) strcat(buffer, separator);
 	    if (column > INDENT &&  column + strlen(buffer) > width) {
-		(void) fputs(trailer, stdout);
+		(void) strcat(outbuf, trailer);
 		column = INDENT;
 	    }
-	    (void) fputs(buffer, stdout);	
+	    (void) strcat(outbuf, buffer);	
 	    column += strlen(buffer);
 	}
     }
 
     if (column != INDENT)
     {
-	(void) fputs(trailer, stdout);
+	(void) strcat(outbuf, trailer);
 	column = INDENT;
     }
 
@@ -275,19 +289,20 @@ int	predval;
 	    (void) strcat(buffer, separator);
 	    if (column > INDENT &&  column + strlen(buffer) > width)
 	    {
-		(void) fputs(trailer, stdout);
+		(void) strcat(outbuf, trailer);
 		column = INDENT;
 	    }
-	    (void) fputs(buffer, stdout);
+	    (void) strcat(outbuf, buffer);
 	    column += strlen(buffer);
 	}
     }
     if (column != INDENT)
     {
-	(void) fputs(trailer, stdout);
+	(void) strcat(outbuf, trailer);
 	column = INDENT;
     }
 
+    len = strlen(tterm->term_names) + 1;
     for (j=0; j < STRCOUNT; j++) {
 	if (sortmode == S_NOSORT)
 	    i = j;
@@ -300,9 +315,35 @@ int	predval;
 		 && (OBSOLETE(str_names[i]) && outform != F_LITERAL))
 	    continue;
 
+	/*
+	 * Some older versions of vi want rmir/smir to be defined
+	 * for ich/ich1 to work.  If they're not defined, force
+	 * them to be output as defined and empty.
+	 */
+	if (outform==F_TERMCAP || outform==F_TCONVERT || outform==F_TCONVERR)
+#undef CUR
+#define CUR tterm->
+	    if (insert_character || parm_ich)
+	    {
+		if (&tterm->Strings[i] == &enter_insert_mode
+		    && enter_insert_mode == ABSENT_STRING)
+		{
+		    (void) strcpy(buffer, "im=");
+		    goto catenate;
+		}
+
+		if (&tterm->Strings[i] == &exit_insert_mode
+		    && exit_insert_mode == ABSENT_STRING)
+		{
+		    (void) strcpy(buffer, "ei=");
+		    goto catenate;
+		}
+	    }
+
 	predval = pred(STRING, i);
+	buffer[0] = '\0';
 	if (predval != FAIL) {
-	    if (tterm->Strings[i] == (char *)NULL || tterm->Strings[i] == CANCELLED_STRING)
+	    if (tterm->Strings[i] == ABSENT_STRING || tterm->Strings[i] == CANCELLED_STRING)
 		sprintf(buffer, "%s@", str_names[i]);
 	    else if ((outform == F_TCONVERT || outform == F_TCONVERR))
 	    {
@@ -313,7 +354,7 @@ int	predval;
 		{
 		    if (outform == F_TCONVERR)
 			sprintf(buffer, "%s=!!! %s WILL NOT CONVERT !!!", str_names[i], srccap);
-		    else
+		    else if (!suppress_untranslatable)
 			sprintf(buffer, "..%s=%s", str_names[i], srccap);
 		}
 		else
@@ -321,16 +362,57 @@ int	predval;
 	    }
 	    else
 		sprintf(buffer, "%s=%s", str_names[i], expand(tterm->Strings[i]));
+	catenate:
 	    (void) strcat(buffer, separator);
+	    len += strlen(buffer) + 1;
 	    if (column > INDENT  &&  column + strlen(buffer) > width)
 	    {
-		(void) fputs(trailer, stdout);
+		(void) strcat(outbuf, trailer);
 		column = INDENT;
 	    }
-	    (void) fputs(buffer, stdout);
+	    (void) strcat(outbuf, buffer);
 	    column += strlen(buffer);
 	}
     }
+
+    return(len);
+}
+
+void dump_entry(TERMTYPE *tterm, int (*pred)(int type, int index))
+/* dump a single entry */
+{
+    int	len, critlen;
+    char	*legend, outbuf[MAX_TERMINFO_LENGTH * 2];
+
+    if (outform==F_TERMCAP || outform==F_TCONVERT || outform==F_TCONVERR)
+    {
+	critlen = MAX_TERMCAP_LENGTH;
+	legend = "older termcap";
+	set_obsolete_termcaps(tterm);
+    }
+    else
+    {
+	critlen = MAX_TERMINFO_LENGTH;
+	legend = "terminfo";
+    }
+
+    if ((len = fmt_entry(tterm, pred, outbuf, FALSE)) > critlen)
+    {
+	(void) printf("# (untranslatable capabilities removed to fit entry within %d bytes)\n",
+		      critlen);
+	if ((len = fmt_entry(tterm, pred, outbuf, TRUE)) > critlen)
+	{
+	    (void) fprintf(stderr,
+			   "warning: %s entry string table is %d bytes long\n",
+			   canonical_name(tterm->term_names, (char *)NULL),
+			   len);
+	    (void) printf(
+			  "# WARNING: this entry, %d bytes long, may core-dump %s libraries!\n",
+			  len, legend);
+	}
+    }
+
+    (void) fputs(outbuf, stdout);
 }
 
 void compare_entry(void (*hook)(int t, int i, char *name))

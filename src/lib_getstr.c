@@ -56,7 +56,6 @@ int ch;
 
 	oldstr = str;
 
-	vidattr(win->_attrs);
 	if (is_wintouched(win) || (win->_flags & _HASMOVED))
 		wrefresh(win);
 
@@ -67,13 +66,13 @@ int ch;
 			if (str > oldstr) {
 		    		str--;
 		    		if (oldecho == TRUE)
-			    		backspace(win);
+			    		_nc_backspace(win);
 			}
 	 	} else if (ch == killc) {
 			while (str > oldstr) {
 			    	str--;
 		    		if (oldecho == TRUE)
-		    			backspace(win);
+		    			_nc_backspace(win);
 			}
 		} else if (maxlen >= 0 && str - oldstr >= maxlen) {
 		    beep();
@@ -84,7 +83,7 @@ int ch;
 				mvwaddstr(curscr, win->_begy + win->_cury,
 				  	win->_begx + win->_curx, glyph);
 				waddstr(win, glyph);
-				outstr(glyph);
+				_nc_outstr(glyph);
 				SP->_curscol += strlen(glyph);
 			} 
 			*str++ = ch;

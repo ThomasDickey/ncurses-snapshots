@@ -23,7 +23,7 @@
 /*
 **	lib_tstp.c
 **
-**	The routines tstp() and curses_signal_handler().
+**	The routines tstp() and _nc_signal_handler().
 **
 */
 
@@ -108,7 +108,7 @@ static void cleanup(int sig)
 	exit(1);
 }
 
-void curses_signal_handler(bool enable)
+void _nc_signal_handler(bool enable)
 {
 static sigaction_t act, oact;
 

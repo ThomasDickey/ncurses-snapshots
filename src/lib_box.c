@@ -50,14 +50,14 @@ int endx, endy;
 	if (bl == 0) bl = ACS_LLCORNER;
 	if (br == 0) br = ACS_LRCORNER;
 
-	ls |= win->_attrs;
-	rs |= win->_attrs;
-	ts |= win->_attrs;
-	bs |= win->_attrs;
-	tl |= win->_attrs;
-	tr |= win->_attrs;
-	bl |= win->_attrs;
-	br |= win->_attrs;
+	ls |= (win->_attrs ? win->_attrs : (win->_bkgd & A_ATTRIBUTES));
+	rs |= (win->_attrs ? win->_attrs : (win->_bkgd & A_ATTRIBUTES));
+	ts |= (win->_attrs ? win->_attrs : (win->_bkgd & A_ATTRIBUTES));
+	bs |= (win->_attrs ? win->_attrs : (win->_bkgd & A_ATTRIBUTES));
+	tl |= (win->_attrs ? win->_attrs : (win->_bkgd & A_ATTRIBUTES));
+	tr |= (win->_attrs ? win->_attrs : (win->_bkgd & A_ATTRIBUTES));
+	bl |= (win->_attrs ? win->_attrs : (win->_bkgd & A_ATTRIBUTES));
+	br |= (win->_attrs ? win->_attrs : (win->_bkgd & A_ATTRIBUTES));
 
 	T(("using %lx, %lx, %lx, %lx, %lx, %lx, %lx, %lx", ls, rs, ts, bs, tl, tr, bl, br));
 
@@ -82,12 +82,7 @@ int endx, endy;
 	win->_line[endy].text[0] = bl;
 	win->_line[endy].text[endx] = br;
 
-#if 0
-	if (! win->_scroll  &&  (win->_flags & _SCROLLWIN))
-	    fp[0] = fp[endx] = lp[0] = lp[endx] = ' ';
-#endif
-
-	wchangesync(win);
+	_nc_synchook(win);
 	return OK;
 }
 
@@ -145,7 +140,7 @@ int end;
 		end--;
 	}
 
-	wchangesync(win);
+	_nc_synchook(win);
 	return OK;
 }
 	

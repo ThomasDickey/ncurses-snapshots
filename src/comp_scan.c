@@ -155,6 +155,8 @@ long		token_start;
 	    *(ptr++) = ch;
 
 	    if (first_column) {
+	    		char	*endptr;
+
 			comment_start = token_start;
 			comment_end = curr_file_pos;
 
@@ -205,6 +207,22 @@ long		token_start;
 			else
 			    err_abort("Can't determine the entry format");
 			ptr[0] = '\0';
+
+			/*
+			 * Whitespace in a name field other than the long name
+			 * can confuse rdist and some termcap tools.
+			 */
+			endptr = strrchr(buffer, '|');
+			if (!endptr)
+			    endptr = buffer + strlen(buffer);
+			else if (endptr[1] == '\0')
+			    warning("empty longname field");
+			for (ptr = buffer; ptr < endptr; ptr++)
+			    if (isspace(*ptr))
+			    {
+				warning("whitespace in shortname field");
+				break;
+			    }
 
 			ptr = buffer;
 

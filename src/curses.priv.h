@@ -82,22 +82,26 @@ extern char *visbuf(const char *);
 #define TPUTS_TRACE(s)
 #endif
 
-extern int setupscreen(int, int);
+/* lib_acs.c */
+extern void init_acs(void);	/* no prefix, this name is traditional */
+
+/* lib_mvcur.c */
 extern void mvcur_init(SCREEN *sp);
 extern void mvcur_wrap(void);
-extern void get_screensize(void);
-extern void curses_signal_handler(bool);
-extern int _outch(int);
-extern void init_acs(void);
-extern WINDOW *makenew(int, int, int, int);
-extern int timed_wait(int fd, int wait, int *timeleft);
-extern int scrolln(int, int, int, int);
-extern void scroll_optimize(void);
-extern void scroll_window(WINDOW *, int, int, int);
-extern void wchangesync(WINDOW *win);
-extern void outstr(char *str);
-extern void backspace(WINDOW *win);
-extern chtype wrenderchar(WINDOW *, chtype, chtype, bool);
+extern int mvcur_scrolln(int, int, int, int);
+
+/* elsewhere ... */
+extern WINDOW *_nc_makenew(int, int, int, int);
+extern int _nc_outch(int);
+extern inline chtype _nc_render(WINDOW *, chtype, chtype, bool);
+extern void _nc_scroll_optimize(void);
+extern void _nc_scroll_window(WINDOW *, int, int, int);
+extern int _nc_setupscreen(int, int);
+extern void _nc_backspace(WINDOW *win);
+extern void _nc_outstr(char *str);
+extern void _nc_signal_handler(bool);
+extern void _nc_synchook(WINDOW *win);
+extern int _nc_timed_wait(int fd, int wait, int *timeleft);
 
 struct try {
         struct try      *child;     /* ptr to child.  NULL if none          */

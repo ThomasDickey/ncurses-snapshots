@@ -44,7 +44,7 @@ int	y, x, minx;
 	maxx = &win->_line[y].text[x];
 
 	for (ptr = maxx; ptr <= end; ptr++) {
-	    int blank = wrenderchar(win, win->_line[y].text[x], BLANK, TRUE);
+	    int blank = _nc_render(win, win->_line[y].text[x], BLANK, TRUE);
 
 	    if (*ptr != blank) {
 			maxx = ptr;
@@ -61,6 +61,6 @@ int	y, x, minx;
 	    if (win->_line[y].lastchar < maxx - win->_line[y].text)
 			win->_line[y].lastchar = maxx - win->_line[y].text;
 	}
-	wchangesync(win);
+	_nc_synchook(win);
 	return(OK);
 }

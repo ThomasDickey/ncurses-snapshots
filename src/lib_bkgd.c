@@ -35,7 +35,7 @@ int x, y;
 			else
 				win->_line[y].text[x] |= (ch&A_ATTRIBUTES);
 	touchwin(win);
-	wchangesync(win);
+	_nc_synchook(win);
 	return OK;
 }
 

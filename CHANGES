@@ -355,7 +355,8 @@ traceon(); in your code and link with -ldcurses.
    compile entries on another machine. Volunteers to hunt this bug are welcome.
 *) wbkgd() and wbkgdset() can be used to set a windows background to color.
    wclear()/werase() DO NOT use the current attribute to clear the screen.
-   This is the way SVR4 curses works. PDCurses is broken in this respect.
+   This is the way SVR4 curses works. PDCurses 2.1 is broken in this respect,
+   though PDCurses 2.2 has been fixed.
 *) cleaned up the test/ directory.    
 *) test/worm will segfault after quite a while.
 *) many spelling corrections courtesy of Thomas E. Dickey 

@@ -15,8 +15,12 @@ overrides the default).  The compiled format is necessary for use with
 the library routines in \fBncurses\fR(3X).
 .TP
 \fB-c\fR
-specifies to check only \fIfile\fR for errors.  Errors in \fBuse=\fR links
-are not detected.
+specifies to only check \fIfile\fR for errors, including syntax problems and
+bad use links.  If you specify \fB-C\fR (\fB-I\fR) with this option, the code
+will print warnings about entries which, after use resolution, are more than
+1023 (4096) bytes long.  Due to a fixed buffer length in older termcap
+libraries (and a documented limit in terminfo), these entries may cause core
+dumps.
 .TP
 \fB-v\fR\fIn\fR
 specifies that (verbose) output be written to standard error trace
