@@ -1,10 +1,24 @@
--- $Id: NEWS,v 1.413 1999/01/31 03:06:44 tom Exp $
+-- $Id: NEWS,v 1.415 1999/02/06 12:53:43 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990206
+	+ suppress sc/rc capabilities from terminal description if they appear
+	  in smcup/rmcup.  This affects only scrolling optimization, to fix a
+	  problem reported by several people with xterm's alternate screen,
+	  though the problem is more general.
+	> patch by Juergen Pfeifer, for Ada95 binding:
+	+ removed all pragma Preelaborate() stuff, because the just released
+	  gnat-3.11p complains on some constructs. 
+	+ fixed some upper/lower case notations because gnat-3.11p found
+	  inconsistent use. 
+	+ used a new method to generate the HTML documentation of the Ada95
+	  binding.  This invalidates nearly the whole ./Ada95/html subtree. 
+	  Nearly all current files in this subtree are removed
 
 990130
 	+ cache last result from _nc_baudrate, for performance (suggested by
