@@ -4,13 +4,15 @@
 # Report bugs and new terminal descriptions to
 #	bug-ncurses@gnu.org
 #
+#	$Revision: 1.222 $
+#	$Date: 2003/11/23 01:29:10 $
+#
 # The original header is preserved below for reference.  It is noted that there
 # is a newer version which differs in some cosmetic details; we have decided
 # to not change the header unless there is also a change in content.
 #
 #------------------------------------------------------------------------------
 #	Version 10.2.1
-#	$Date: 2003/10/25 23:09:21 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -755,6 +757,14 @@ linux-koi8r|linux with koi8-r alternate character set,
 linux-lat|linux with latin1 or latin2 alternate character set, 
 	acsc=+\020\,\021-\030.^Y0\333`\004a\013f\370g\361h\260i\316j\211k\214l\206m\203n\305o~p\304q\212r\304s_t\207u\215v\301w\302x\205y\363z\362{\343|\330}\234~\376, 
 	use=linux, 
+
+# This uses graphics from VT codeset instead of from cp437.
+# reason: cp437 (aka "straight to font") is not functional under luit.
+# from: Andrey V Lukyanov <land@long.yar.ru>.
+linux-vt|linux console using VT codes for graphics, 
+	acsc=++\,\,--..00``aaffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz~~, 
+	rmacs=\E(K, rmpch@, sgr@, sgr0=\E[0m\E(K\017, smacs=\E(0, 
+	smpch@, use=linux, 
 
 #### Mach
 #
@@ -19984,6 +19994,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 # 2003-10-25
 #	* add alias for vtnt -TD
 #	* update xterm-xfree86 for XFree86 4.4 -TD
+#
+# 2003-11-22
+#	* add linux-vt (Andrey V Lukyanov)
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
