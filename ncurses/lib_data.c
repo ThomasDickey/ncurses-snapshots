@@ -28,10 +28,24 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_data.c,v 1.5 1996/08/06 00:24:06 esr Exp $")
+MODULE_ID("$Id: lib_data.c,v 1.7 1996/12/07 21:19:35 tom Exp $")
 
 WINDOW *stdscr, *curscr, *newscr;
-bool _nc_idcok, _nc_idlok;
+
+/*
+ * Linked-list of all windows, to support '_nc_resizeall()' and '_nc_freeall()'
+ */
+WINDOWLIST *_nc_windows;
+
+/*
+ * These data correspond to the state of the idcok() and idlok() functions.  A
+ * caveat is in order here:  the XSI and SVr4 documentation specify that these
+ * functions apply to the window which is given as an argument.  However,
+ * ncurses implements this logic only for the newscr/curscr update process,
+ * _not_ per-window.
+ */
+bool _nc_idcok = TRUE;
+bool _nc_idlok = FALSE;
 
 /*
  * The variable 'SP' will be defined as a function on systems that cannot link

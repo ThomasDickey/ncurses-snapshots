@@ -57,7 +57,7 @@
 #include <string.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.44 1996/11/10 00:32:36 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.45 1996/12/07 23:23:43 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -482,8 +482,21 @@ struct tms before, after;
 	_nc_signal_handler(FALSE);
 
 	if (SP->_endwin == TRUE) {
+
 		T(("coming back from shell mode"));
 		reset_prog_mode();
+
+		/*
+		 * This is a transparent extension:  XSI does not address it,
+		 * and applications need not know that ncurses can do it. 
+		 *
+		 * Check if the terminal size has changed while curses was off
+		 * (this can happen in an xterm, for example), and resize the
+		 * ncurses data structures accordingly.
+		 */
+		_nc_get_screensize();
+		resizeterm(LINES, COLS);
+
 		_nc_mvcur_resume();
 		_nc_mouse_resume(SP);
 		newscr->_clear = TRUE;

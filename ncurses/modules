@@ -1,4 +1,4 @@
-# $Id: modules,v 1.20 1996/11/07 00:34:16 tom Exp $
+# $Id: modules,v 1.21 1996/12/07 21:35:44 tom Exp $
 ################################################################################
 # Copyright 1996 by Thomas E. Dickey <dickey@clark.net>                        #
 # All Rights Reserved.                                                         #
@@ -109,7 +109,7 @@ comp_scan	lib		$(srcdir)
 parse_entry	lib		$(srcdir)	../include/term.h ../include/parametrized.h
 
 # Extensions
+lib_freeall	lib		$(srcdir)
 resizeterm	lib		$(srcdir)	../include/term.h
 wresize		lib		$(srcdir)	../include/term.h
 lib_adabind	lib		$(srcdir)
-

@@ -17,10 +17,10 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.37 1996/11/17 00:10:16 tom Exp $
+dnl $Id: configure.in,v 1.38 1996/12/07 18:30:57 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.9)
-AC_REVISION($Revision: 1.37 $)
+AC_REVISION($Revision: 1.38 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
@@ -126,17 +126,18 @@ LIB_PREFIX=../lib/lib
 AC_SUBST(LIB_PREFIX)
 
 dnl Not all ports of gcc support the -g option
+dnl autoconf 2.12 uses different symbol for -g option than autoconf 2.10, etc.
 
 if test X"$CC_G_OPT" = X"" ; then
 	CC_G_OPT='-g'
-	test -n "$GCC" && test "$ac_cv_prog_gcc_g" != yes && CC_G_OPT=''
+	test -n "$GCC" && test "${ac_cv_prog_cc_g}${ac_cv_prog_gcc_g}" != yes && CC_G_OPT=''
 	test -n "$GCC" && CC_G_OPT="$CC_G_OPT -Dinline="
 fi
 AC_SUBST(CC_G_OPT)
 
 if test X"$CXX_G_OPT" = X"" ; then
 	CXX_G_OPT='-g'
-	test -n "$GXX" && test "$ac_cv_prog_gxx_g" != yes && CXX_G_OPT=''
+	test -n "$GXX" && test "${ac_cv_prog_cxx_g}${ac_cv_prog_gxx_g}" != yes && CXX_G_OPT=''
 fi
 AC_SUBST(CXX_G_OPT)
 

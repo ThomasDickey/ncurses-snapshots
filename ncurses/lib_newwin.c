@@ -30,19 +30,32 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_newwin.c,v 1.12 1996/10/28 10:31:39 Thomas.Fehr Exp $")
+MODULE_ID("$Id: lib_newwin.c,v 1.13 1996/12/08 00:52:52 tom Exp $")
 
 void _nc_freewin(WINDOW *win)
 {
+WINDOWLIST *p, *q;
 int	i;
 
 	if (win != 0) {
-		if (! (win->_flags & _SUBWIN)) {
-			for (i = 0; i <= win->_maxy && win->_line[i].text; i++)
-				free(win->_line[i].text);
+		for (p = _nc_windows, q = 0; p != 0; q = p, p = p->next) {
+			if (p->win == win) {
+				if (q == 0)
+					_nc_windows = p->next;
+				else
+					q->next = p->next;
+				free(p);
+
+				if (! (win->_flags & _SUBWIN)) {
+					for (i = 0; i <= win->_maxy && win->_line[i].text; i++)
+						free(win->_line[i].text);
+				}
+				free(win->_line);
+				free(win);
+				T(("...deleted win=%p", win));
+				break;
+			}
 		}
-		free(win->_line);
-		free(win);
 	}
 }
 
@@ -139,6 +152,7 @@ WINDOW *
 _nc_makenew(int num_lines, int num_columns, int begy, int begx, int flags)
 {
 int	i;
+WINDOWLIST *wp;
 WINDOW	*win;
 bool    is_pad = (flags & _ISPAD);
 
@@ -146,6 +160,9 @@ bool    is_pad = (flags & _ISPAD);
 
 	if (num_lines <= 0 || num_columns <= 0)
 		return NULL;
+
+	if ((wp = (WINDOWLIST *) calloc(1, sizeof(WINDOWLIST))) == 0)
+		return 0;
 
 	if ((win = (WINDOW *) calloc(1, sizeof(WINDOW))) == NULL)
 		return NULL;
@@ -226,6 +243,11 @@ bool    is_pad = (flags & _ISPAD);
 		if (begy + num_lines == screen_lines)
 			win->_flags |= _SCROLLWIN;
 	}
+
+	wp->next = _nc_windows;
+	wp->win  = win;
+	_nc_windows = wp;
+	T(("...created win=%p", win));
 
 	return(win);
 }
