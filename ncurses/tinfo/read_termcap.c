@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -55,7 +55,7 @@
 #include <tic.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: read_termcap.c,v 1.56 2001/07/29 00:29:45 tom Exp $")
+MODULE_ID("$Id: read_termcap.c,v 1.57 2001/09/08 20:38:43 tom Exp $")
 
 #if !PURE_TERMINFO
 
@@ -125,13 +125,7 @@ static int _nc_nfcmp(const char *, char *);
 
 #define	BFRAG		1024
 #define	BSIZE		1024
-#define	ESC		('[' & 037)	/* ASCII ESC */
 #define	MAX_RECURSION	32	/* maximum getent recursion */
-#define	SFRAG		100	/* cgetstr mallocs in SFRAG chunks */
-
-#define RECOK	(char)0
-#define TCERR	(char)1
-#define	SHADOW	(char)2
 
 static size_t topreclen;	/* toprec length */
 static char *toprec;		/* Additional record specified by cgetset() */
@@ -918,8 +912,7 @@ add_tc(char *termpaths[], char *path, int count)
 #endif /* !USE_GETCAP */
 
 NCURSES_EXPORT(int)
-_nc_read_termcap_entry
-(const char *const tn, TERMTYPE * const tp)
+_nc_read_termcap_entry(const char *const tn, TERMTYPE * const tp)
 {
     int found = FALSE;
     ENTRY *ep;
