@@ -1,5 +1,5 @@
 dnl***************************************************************************
-dnl Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+dnl Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
 dnl                                                                          *
 dnl Permission is hereby granted, free of charge, to any person obtaining a  *
 dnl copy of this software and associated documentation files (the            *
@@ -28,14 +28,14 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey 1995-on
 dnl
-dnl $Id: configure.in,v 1.324 2004/10/09 18:12:27 tom Exp $
+dnl $Id: configure.in,v 1.327 2005/01/02 01:29:08 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl See http://invisible-island.net/autoconf/ for additional information.
 dnl
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.13.20020210)
-AC_REVISION($Revision: 1.324 $)
+AC_REVISION($Revision: 1.327 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -519,7 +519,16 @@ AC_ARG_ENABLE(home-terminfo,
 	[  --disable-home-terminfo drop ~/.terminfo from terminfo search-path],
 	[with_home_terminfo=$enableval],
 	[with_home_terminfo=yes])
+AC_MSG_RESULT($with_home_terminfo)
 test "$with_home_terminfo" = "yes" && AC_DEFINE(USE_HOME_TERMINFO)
+
+AC_MSG_CHECKING(if you want to use restrict environment when running as root)
+AC_ARG_ENABLE(root-environ,
+	[  --disable-root-environ  limit environment when running as root],
+	[with_root_environ=$enableval],
+	[with_root_environ=yes])
+AC_MSG_RESULT($with_root_environ)
+test "$with_root_environ" = yes && AC_DEFINE(USE_ROOT_ENVIRON)
 
 ###   Use option --enable-symlinks to make tic use symlinks, not hard links
 ###   to reduce storage requirements for the terminfo database.
@@ -607,7 +616,6 @@ AC_MSG_RESULT($with_widec)
 if test "$with_widec" = yes ; then
 	LIB_SUFFIX="w${LIB_SUFFIX}"
 	AC_DEFINE(USE_WIDEC_SUPPORT)
-	CF_PREDEFINE(_XOPEN_SOURCE,500)
 	CF_PREDEFINE(_XOPEN_SOURCE_EXTENDED)
 	# with_overwrite=no
 	NCURSES_CH_T=cchar_t
@@ -621,6 +629,10 @@ if test "$with_widec" = yes ; then
 	CF_WCHAR_TYPE(mbstate_t, NCURSES_MBSTATE_T)
 	CF_WCHAR_TYPE(wchar_t,   NCURSES_WCHAR_T,   NCURSES_OK_WCHAR_T)
 	CF_WCHAR_TYPE(wint_t,    NCURSES_WINT_T,    NCURSES_OK_WINT_T)
+
+	if test "$NCURSES_MBSTATE_T" != 0; then
+		AC_DEFINE(NEED_MBSTATE_T_DEF)
+	fi
 fi
 AC_SUBST(NCURSES_CH_T)
 AC_SUBST(NCURSES_LIBUTF8)
@@ -764,14 +776,6 @@ AC_ARG_ENABLE(hard-tabs,
 	[with_hardtabs=$with_develop])
 AC_MSG_RESULT($with_hardtabs)
 test "$with_hardtabs" = yes && AC_DEFINE(USE_HARD_TABS)
-
-AC_MSG_CHECKING(if you want to use restrict environment when running as root)
-AC_ARG_ENABLE(root-environ,
-	[  --disable-root-environ  limit environment when running as root],
-	[with_root_environ=$enableval],
-	[with_root_environ=yes])
-AC_MSG_RESULT($with_root_environ)
-test "$with_root_environ" = yes && AC_DEFINE(USE_ROOT_ENVIRON)
 
 ###   use option --enable-xmc-glitch to turn on use of magic-cookie optimize
 AC_MSG_CHECKING(if you want limited support for xmc)

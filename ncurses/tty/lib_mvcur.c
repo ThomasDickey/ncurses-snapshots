@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2003,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996-on                 *
  ****************************************************************************/
 
 /*
@@ -154,7 +155,7 @@
 #include <term.h>
 #include <ctype.h>
 
-MODULE_ID("$Id: lib_mvcur.c,v 1.98 2004/04/03 22:32:24 tom Exp $")
+MODULE_ID("$Id: lib_mvcur.c,v 1.100 2005/01/02 01:32:55 tom Exp $")
 
 #define WANT_CHAR(y, x)	SP->_newscr->_line[y].text[x]	/* desired state */
 #define BAUDRATE	cur_term->_baudrate	/* bits per second */
@@ -608,7 +609,7 @@ relative_move(string_desc * target, int from_y, int from_x, int to_y, int
 
 		    for (i = 0; i < n; i++) {
 			NCURSES_CH_T ch = WANT_CHAR(to_y, from_x + i);
-			if (AttrOf(ch) != SP->_current_attr
+			if (!SameAttrOf(ch, SP->_current_attr)
 #if USE_WIDEC_SUPPORT
 			    || !Charable(ch)
 #endif
@@ -847,7 +848,7 @@ NCURSES_EXPORT(int)
 mvcur(int yold, int xold, int ynew, int xnew)
 /* optimized cursor move from (yold, xold) to (ynew, xnew) */
 {
-    attr_t oldattr;
+    NCURSES_CH_T oldattr;
     int code;
 
     TR(TRACE_CALLS | TRACE_MOVE, (T_CALLED("mvcur(%d,%d,%d,%d)"),
@@ -875,11 +876,11 @@ mvcur(int yold, int xold, int ynew, int xnew)
 	 * LF used for local character motions!
 	 */
 	oldattr = SP->_current_attr;
-	if ((oldattr & A_ALTCHARSET)
-	    || (oldattr && !move_standout_mode)) {
+	if ((AttrOf(oldattr) & A_ALTCHARSET)
+	    || (AttrOf(oldattr) && !move_standout_mode)) {
 	    TR(TRACE_CHARPUT, ("turning off (%#lx) %s before move",
-			       oldattr, _traceattr(oldattr)));
-	    (void) vidattr(A_NORMAL);
+			       AttrOf(oldattr), _traceattr(AttrOf(oldattr))));
+	    (void) VIDATTR(A_NORMAL, 0);
 	}
 
 	if (xold >= screen_columns) {
@@ -929,10 +930,10 @@ mvcur(int yold, int xold, int ynew, int xnew)
 	/*
 	 * Restore attributes if we disabled them before moving.
 	 */
-	if (oldattr != SP->_current_attr) {
+	if (!SameAttrOf(oldattr, SP->_current_attr)) {
 	    TR(TRACE_CHARPUT, ("turning on (%#lx) %s after move",
-			       oldattr, _traceattr(oldattr)));
-	    (void) vidattr(oldattr);
+			       AttrOf(oldattr), _traceattr(AttrOf(oldattr))));
+	    (void) VIDATTR(AttrOf(oldattr), GetPair(oldattr));
 	}
     }
     returnCode(code);

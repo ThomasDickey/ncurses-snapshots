@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2004 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2004,2005 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,6 +29,7 @@
 /****************************************************************************
  *  Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995               *
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
+ *     and: Thomas E. Dickey                        1996 on                 *
  ****************************************************************************/
 
 /*
@@ -64,7 +65,7 @@
 #include <curses.priv.h>
 #include <term.h>
 
-MODULE_ID("$Id: lib_vidattr.c,v 1.40 2004/10/23 20:30:31 tom Exp $")
+MODULE_ID("$Id: lib_vidattr.c,v 1.42 2005/01/02 01:25:58 tom Exp $")
 
 #define doPut(mode) TPUTS_TRACE(#mode); tputs(mode, 1, outc)
 
@@ -87,8 +88,7 @@ MODULE_ID("$Id: lib_vidattr.c,v 1.40 2004/10/23 20:30:31 tom Exp $")
 	}
 
 NCURSES_EXPORT(int)
-vidputs
-(chtype newmode, int (*outc) (int))
+vidputs(chtype newmode, int (*outc) (int))
 {
     static attr_t previous_attr = A_NORMAL;
     attr_t turn_on, turn_off;
@@ -105,7 +105,7 @@ vidputs
 
     /* this allows us to go on whether or not newterm() has been called */
     if (SP)
-	previous_attr = SP->_current_attr;
+	previous_attr = AttrOf(SP->_current_attr);
 
     TR(TRACE_ATTRS, ("previous attribute was %s", _traceattr(previous_attr)));
 
@@ -177,7 +177,7 @@ vidputs
 		    TurnOff(A_STANDOUT, exit_standout_mode);
 		}
 	    }
-	    previous_attr &= ~A_COLOR;
+	    previous_attr &= ALL_BUT_COLOR;
 	}
 
 	SetColorsIf((pair != 0) || fix_pair0, previous_attr);
@@ -194,7 +194,7 @@ vidputs
 			(newmode & A_INVIS) != 0,
 			(newmode & A_PROTECT) != 0,
 			(newmode & A_ALTCHARSET) != 0), 1, outc);
-	    previous_attr &= ~A_COLOR;
+	    previous_attr &= ALL_BUT_COLOR;
 	}
 	SetColorsIf((pair != 0) || fix_pair0, previous_attr);
     } else {
@@ -213,8 +213,8 @@ vidputs
 
 	if (turn_off && exit_attribute_mode) {
 	    doPut(exit_attribute_mode);
-	    turn_on |= (newmode & (chtype) (~A_COLOR));
-	    previous_attr &= ~A_COLOR;
+	    turn_on |= (newmode & ALL_BUT_COLOR);
+	    previous_attr &= ALL_BUT_COLOR;
 	}
 	SetColorsIf((pair != 0) || fix_pair0, previous_attr);
 
@@ -245,7 +245,7 @@ vidputs
 	newmode |= A_REVERSE;
 
     if (SP)
-	SP->_current_attr = newmode;
+	SetAttr(SP->_current_attr, newmode);
     else
 	previous_attr = newmode;
 
