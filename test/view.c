@@ -58,6 +58,7 @@ char        **lptr, **olptr;
     (void) nonl();         /* tell curses not to do NL->CR/NL on output */
     (void) cbreak();       /* take input chars one at a time, no wait for \n */
     (void) noecho();       /* don't echo input */
+    idlok(stdscr, TRUE);   /* allow use of insert/delete line */
     scrollok(stdscr, TRUE);
 
     /* slurp the file */

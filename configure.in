@@ -1,7 +1,7 @@
-dnl $Id: configure.in,v 1.25 1996/07/14 01:06:54 tom Exp $
+dnl $Id: configure.in,v 1.26 1996/08/08 22:39:56 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.9)
-AC_REVISION($Revision: 1.25 $)
+AC_REVISION($Revision: 1.26 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
@@ -103,13 +103,18 @@ LIB_PREFIX=../lib/lib
 AC_SUBST(LIB_PREFIX)
 
 dnl Not all ports of gcc support the -g option
-CC_G_OPT='-g'
-test -n "$GCC" && test "$ac_cv_prog_gcc_g" != yes && CC_G_OPT=''
-test -n "$GCC" && CC_G_OPT="$CC_G_OPT -Dinline="
+
+if test X"$CC_G_OPT" = X"" ; then
+	CC_G_OPT='-g'
+	test -n "$GCC" && test "$ac_cv_prog_gcc_g" != yes && CC_G_OPT=''
+	test -n "$GCC" && CC_G_OPT="$CC_G_OPT -Dinline="
+fi
 AC_SUBST(CC_G_OPT)
 
-CXX_G_OPT='-g'
-test -n "$GXX" && test "$ac_cv_prog_gxx_g" != yes && CXX_G_OPT=''
+if test X"$CXX_G_OPT" = X"" ; then
+	CXX_G_OPT='-g'
+	test -n "$GXX" && test "$ac_cv_prog_gxx_g" != yes && CXX_G_OPT=''
+fi
 AC_SUBST(CXX_G_OPT)
 
 case $DFT_LWR_MODEL in

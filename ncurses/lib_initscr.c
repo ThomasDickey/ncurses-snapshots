@@ -35,7 +35,7 @@
 #include <sys/termio.h>	/* needed for ISC */
 #endif
 
-MODULE_ID("$Id: lib_initscr.c,v 1.10 1996/07/31 01:20:21 tom Exp $")
+MODULE_ID("$Id: lib_initscr.c,v 1.11 1996/08/06 00:24:06 esr Exp $")
 
 /*
  * SVr4/XSI Curses specify that hardware echo is turned off in initscr, and not
@@ -71,6 +71,7 @@ char	*name;
 	/* Portable applications must not call initscr() more than once */
 	if (!initialized) {
 		initialized = TRUE;
+		_nc_idcok = TRUE;
 
 		if ((name = getenv("TERM")) == 0)
 			name = "unknown";

@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.27 1996/07/31 01:17:47 tom Exp $
+ * $Id: curses.priv.h,v 1.28 1996/08/06 00:24:06 esr Exp $
  *
  *	curses.priv.h
  *
@@ -357,5 +357,7 @@ extern int _nc_slk_initialize(WINDOW *, int);
 extern int _nc_ripoffline(int line, int (*init)(WINDOW *,int));
 
 #define UNINITIALISED ((struct try * ) -1)
+
+extern bool _nc_idlok, _nc_idcok;
 
 #endif /* CURSES_PRIV_H */

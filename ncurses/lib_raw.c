@@ -43,7 +43,7 @@
 
 #include <string.h>
 
-MODULE_ID("$Id: lib_raw.c,v 1.9 1996/07/28 00:36:48 tom Exp $")
+MODULE_ID("$Id: lib_raw.c,v 1.10 1996/08/10 20:52:40 tom Exp $")
 
 #ifdef __QNX__		/* Allows compilation under the QNX 4.2 OS */
 #define ONLCR 0
@@ -315,7 +315,6 @@ int cbreak(void)
 	BEFORE("cbreak");
 	cur_term->Nttyb.c_lflag &= ~ICANON;
 	cur_term->Nttyb.c_lflag |= ISIG;
-	cur_term->Nttyb.c_iflag &= ~ICRNL;
 	cur_term->Nttyb.c_cc[VMIN] = 1;
 	cur_term->Nttyb.c_cc[VTIME] = 0;
 	AFTER("cbreak");
@@ -346,21 +345,7 @@ int nl(void)
 
 	SP->_nl = TRUE;
 
-#ifdef TERMIOS
-	BEFORE("nl");
-	/* the code used to set IXON|IXOFF here, Ghod knows why... */
-	cur_term->Nttyb.c_iflag |= ICRNL;
-	cur_term->Nttyb.c_oflag |= OPOST|ONLCR;
-	AFTER("nl");
-	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
-		return ERR;
-	else
-		return OK;
-#else
-	cur_term->Nttyb.sg_flags |= CRMOD;
-	stty(cur_term->Filedes, &cur_term->Nttyb);
 	return OK;
-#endif
 }
 
 
@@ -422,7 +407,6 @@ int nocbreak(void)
 #ifdef TERMIOS
 	BEFORE("nocbreak");
 	cur_term->Nttyb.c_lflag |= ICANON;
-	cur_term->Nttyb.c_iflag |= ICRNL;
 	AFTER("nocbreak");
 	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
 		return ERR;
@@ -449,20 +433,7 @@ int nonl(void)
 
 	SP->_nl = FALSE;
 
-#ifdef TERMIOS
-	BEFORE("nonl");
-	cur_term->Nttyb.c_iflag &= ~ICRNL;
-	cur_term->Nttyb.c_oflag &= ~ONLCR;
-	AFTER("nonl");
-	if((tcsetattr(cur_term->Filedes, TCSANOW, &cur_term->Nttyb)) == -1)
-		return ERR;
-	else
-		return OK;
-#else
-	cur_term->Nttyb.sg_flags &= ~CRMOD;
-	stty(cur_term->Filedes, &cur_term->Nttyb);
 	return OK;
-#endif
 }
 
 int noqiflush(void)

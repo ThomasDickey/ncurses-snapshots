@@ -43,7 +43,13 @@ arguments as for TYPE_INTEGER data.
 TYPE_REGEXP
 Regular expression data.  Requires a regular expression third argument;
 the data is valid if the regular expression matches it.  Regular expressions
-are in the format of \fBregcomp\fR(3x) and \fBregexec\fR(3X).
+are in the format of \fBregcomp\fR(3x) and \fBregexec\fR(3X). Please notice
+that the regular expression must match the whole field. If you have for
+example an eight character wide field, a regular expression "^[0-9]*$" always
+means that you have to fill all eight positions with digits. If you want to
+allow fewer digits, you may use for example "^[0-9]* *$" which is good for
+trailing spaces (up to an empty field), or "^ *[0-9]* *$" which is good for
+leading and trailing spaces around the digits.
 
 It is possible to set up new programmer-defined field types.  See the
 \fBform_fieldtype\fR(3X) manual page.
