@@ -1,10 +1,21 @@
--- $Id: NEWS,v 1.762 2003/08/09 21:59:25 tom Exp $
+-- $Id: NEWS,v 1.763 2003/08/17 00:13:27 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20030816
+	+ modify logic in waddch_literal() to take into account zh_TW.Big5
+	  whose multibyte sequences may contain "printable" characters, e.g.,
+	  a "g" in the sequence "\247g" (Debian #204889, cf: 20030621).
+	+ improve storage used by _nc_safe_strcpy() by ensuring that the size
+	  is reset based on the initialization call, in case it were called
+	  after other strcpy/strcat calls (report by Philippe Blain).
+	> Philippe Blain:
+	+ remove an unused ifdef for REAL_ATTR & WANT_CHAR
+	+ correct a place where _cup_cost was used rather than _cuu_cost
 
 20030809
 	+ fix a small memory leak in _nc_free_termtype().

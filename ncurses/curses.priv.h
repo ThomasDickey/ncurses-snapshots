@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.250 2003/08/02 22:49:28 Philippe.Blain Exp $
+ * $Id: curses.priv.h,v 1.251 2003/08/16 23:52:22 tom Exp $
  *
  *	curses.priv.h
  *
@@ -961,9 +961,10 @@ extern NCURSES_EXPORT(void) _nc_init_wacs(void);
 #endif
 
 typedef struct {
-    char *s_head;
-    char *s_tail;
-    size_t s_size;
+    char *s_head;	/* beginning of the string (may be null) */
+    char *s_tail;	/* end of the string (may be null) */
+    size_t s_size;	/* current remaining size available */
+    size_t s_init;	/* total size available */
 } string_desc;
 
 /* strings.c */

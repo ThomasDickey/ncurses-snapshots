@@ -36,7 +36,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: strings.c,v 1.4 2003/08/02 22:46:31 Philippe.Blain Exp $")
+MODULE_ID("$Id: strings.c,v 1.5 2003/08/16 23:46:00 tom Exp $")
 
 /****************************************************************************
  * Useful string functions (especially for mvcur)
@@ -62,7 +62,9 @@ _nc_strstr(const char *haystack, const char *needle)
 #endif
 
 /*
- * Initialize the descriptor so we can append to it.
+ * Initialize the descriptor so we can append to it.  Note that 'src' may
+ * be a null pointer (see _nc_str_null), so the corresponding strcat and
+ * strcpy calls have to allow for this.
  */
 NCURSES_EXPORT(string_desc *)
 _nc_str_init(string_desc * dst, char *src, size_t len)
@@ -71,6 +73,7 @@ _nc_str_init(string_desc * dst, char *src, size_t len)
 	dst->s_head = src;
 	dst->s_tail = src;
 	dst->s_size = len - 1;
+	dst->s_init = dst->s_size;
 	if (src != 0)
 	    *src = 0;
     }
@@ -109,9 +112,9 @@ _nc_safe_strcat(string_desc * dst, const char *src)
 	    if (dst->s_tail != 0) {
 		strcpy(dst->s_tail, src);
 		dst->s_tail += len;
-		dst->s_size -= len;
-		return TRUE;
 	    }
+	    dst->s_size -= len;
+	    return TRUE;
 	}
     }
     return FALSE;
@@ -131,7 +134,7 @@ _nc_safe_strcpy(string_desc * dst, const char *src)
 		strcpy(dst->s_head, src);
 		dst->s_tail = dst->s_head + len;
 	    }
-	    dst->s_size -= len;
+	    dst->s_size = dst->s_init - len;
 	    return TRUE;
 	}
     }
