@@ -27,11 +27,12 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.'" $Id: curs_mouse.3x,v 1.10 1998/11/29 01:04:45 Rick.Ohnemus Exp $
+.'" $Id: curs_mouse.3x,v 1.12 1999/01/09 22:53:22 tom Exp $
 .TH curs_mouse 3X ""
 .SH NAME
 \fBgetmouse\fR, \fBungetmouse\fR,
-\fBmousemask\fR - mouse interface through curses
+\fBmousemask\fR, \fBwenclose\fR,
+\fBwmouse_trafo\fR, \fBmouseinterval\fR - mouse interface through curses
 .SH SYNOPSIS
 .nf
 \fB#include <curses.h>\fR
@@ -53,9 +54,11 @@ MEVENT;\fR
 .br
 \fBmmask_t mousemask(mmask_t newmask, mmask_t *oldmask);\fR
 .br
-\fBbool wenclose(WINDOW *win, int y, int x)\fR
+\fBbool wenclose(WINDOW *win, int y, int x);\fR
 .br
-\fBint mouseinterval(int erval)\fR
+\fBbool wmouse_trafo(const WINDOW* win, int* pY, int* pX, bool to_screen);\fR
+.br
+\fBint mouseinterval(int erval);\fR
 .br
 .SH DESCRIPTION
 These functions provide an interface to mouse events from
@@ -127,6 +130,25 @@ character-cell coordinates is enclosed by a given window, returning TRUE
 if it is and FALSE otherwise.  It is useful for determining what subset of
 the screen windows enclose the location of a mouse event.
 
+The \fBwmouse_trafo\fR function transforms a given pair of coordinates from
+stdscr-relative coordinates to screen-relative coordinates or vice versa.
+Please remember, that stdscr-relative coordinates are not always identical
+to screen-relative coordinates due to the mechanism to reserve lines on top
+or bottom of the screen for other purposes (ripoff() call, see also slk_...
+functions). If the parameter \fBto_screen\fR is \fBTRUE\fR, the pointers 
+\fBpY, pX\fR must reference the coordinates of a location inside the window 
+\fBwin\fR. They are converted to screen-relative coordinates and returned
+through the pointers. If the conversion was successful, the function
+returns \fBTRUE\fR. If one of the parameters was NULL or the location is
+not inside the window, \fBFALSE\fR is returned. If \fBto_screen\fR is
+\fBFALSE\fR, the pointers \fBpY, pX\fR must reference screen-relative
+coordinates. They are converted to stdscr-relative coordinates if the
+window \fBwin\fR encloses this point. In this case the function returns
+\fBTRUE\fR. If one of the parameters is NULL or the point is not inside the
+window, \fBFALSE\fR is returned. Please notice, that the referenced coordinates
+are only replaced by the converted coordinates if the transformation was
+successful.
+ 
 The \fBmouseinterval\fR function sets the maximum time (in thousands of a
 second) that can elapse between press and release events in order for them to
 be recognized as a click.  This function returns the previous interval value.
@@ -138,8 +160,12 @@ function such as \fBgetstr\fR that expects a linefeed for input-loop
 termination.
 
 .SH RETURN VALUE
-All routines return the integer \fBERR\fR upon failure or \fBOK\fR
-upon successful completion.
+\fBgetmouse\fR, \fBungetmouse\fR and \fBmouseinterval\fR
+return the integer \fBERR\fR upon failure or \fBOK\fR
+upon successful completion. \fBmousemask\fR returns the
+mask of reportable events. \fBwenclose\fR and \fBwmouse_trafo\fR
+are boolean functions returning \fBTRUE\fR or \fBFALSE\fR depending
+on their test result.
 .SH PORTABILITY
 These calls were designed for \fBncurses\fR(3X), and are not found in SVr4
 curses, 4.4BSD curses, or any other previous version of curses.

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.59 1998/12/20 01:24:04 Uchiyama.Yasushi Exp $
+# $Id: Makefile.in,v 1.60 1999/01/03 19:29:54 tom Exp $
 ##############################################################################
 # Copyright (c) 1998 Free Software Foundation, Inc.                          #
 #                                                                            #
@@ -234,11 +234,11 @@ hardscroll$x : $(serial)/hardscroll.c $(TEST_DEPS)
 	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DSCROLLDEBUG $(serial)/hardscroll.c $(TEST_LDFLAGS)
 
 hashmap$x : $(serial)/hashmap.c $(TEST_DEPS)
-	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DHASHDEBUG $(serial)/hardscroll.c $(TEST_LDFLAGS)
+	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DHASHDEBUG $(serial)/hashmap.c $(TEST_LDFLAGS)
 
 lib_mvcur$x : $(serial)/lib_mvcur.c $(TEST_DEPS) \
 		../@DFT_OBJ_SUBDIR@/dump_entry.o
-	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DNCURSES_TEST -I$(serial)/../progs $(serial)/lib_mvcur.c ../@DFT_OBJ_SUBDIR@/dump_entry.o $(TEST_LDFLAGS)
+	@ECHO_LINK@ $(CC) -o $@ $(CFLAGS_DEFAULT) -DNCURSES_TEST -I$(serial)/../../progs $(serial)/lib_mvcur.c ../@DFT_OBJ_SUBDIR@/dump_entry.o $(TEST_LDFLAGS)
 
 ../@DFT_OBJ_SUBDIR@/dump_entry.o:
 	cd ../progs && $(MAKE) ../@DFT_OBJ_SUBDIR@/dump_entry.o

@@ -31,7 +31,7 @@
  *     and: Eric S. Raymond <esr@snark.thyrsus.com>                         *
  ****************************************************************************/
 
-/* $Id: curses.h.in,v 1.76 1998/12/27 13:46:13 tom Exp $ */
+/* $Id: curses.h.in,v 1.78 1999/01/10 03:21:11 tom Exp $ */
 
 #ifndef __NCURSES_H
 #define __NCURSES_H
@@ -1038,14 +1038,14 @@ extern bool mouse_trafo(int*, int*, bool);              /* generated */
  * winnwstr(), wins_nwstr(), wins_wch(), win_wch(), win_wchnstr().
  * Except for wchgat(), these are not yet implemented.  They will be someday.
  */
-#define add_wch(c)			wadd_wch(stsdscr,c)
+#define add_wch(c)			wadd_wch(stdscr,c)
 #define addnwstr(wstr,n)		waddnwstr(stdscr,wstr,n)
 #define addwstr(wstr,n)			waddnwstr(stdscr,wstr,-1)
 #define attr_get(a,pair,opts)		wattr_get(stdscr,a,pair,opts)
 #define attr_off(a,opts)		wattr_off(stdscr,a,opts)
 #define attr_on(a,opts)			wattr_on(stdscr,a,opts)
 #define attr_set(a,pair,opts)		wattr_set(stdscr,a,pair,opts)
-#define box_set(w,v,h)			wborder_set(w,v,v,h,h,0,0,0,9)
+#define box_set(w,v,h)			wborder_set(w,v,v,h,h,0,0,0,0)
 #define chgat(n,a,c,o)			wchgat(stdscr,n,a,c,o)
 #define echo_wchar(c)			wecho_wchar(stdscr,c)
 #define getbkgd(win)			((win)->_bkgd)
@@ -1080,11 +1080,11 @@ extern bool mouse_trafo(int*, int*, bool);              /* generated */
 #define mvinwstr(y,x,c)			mvwinnwstr(stdscr,y,x,c,-1)
 #define mvvline_set(y,x,c,n)		mvwvline_set(stdscr,y,x,c,n)
 
-#define mvwadd_wch(y,x,win,c)		(wmove(win,y,x) == ERR ? ERR : wadd_wch(stsdscr,c))
-#define mvwaddnwstr(y,x,win,wstr,n)	(wmove(win,y,x) == ERR ? ERR : waddnwstr(stdscr,wstr,n))
-#define mvwaddwstr(y,x,win,wstr,n)	(wmove(win,y,x) == ERR ? ERR : waddnwstr(stdscr,wstr,-1))
+#define mvwadd_wch(win,y,x,c)		(wmove(win,y,x) == ERR ? ERR : wadd_wch(stdscr,c))
+#define mvwaddnwstr(win,y,x,wstr,n)	(wmove(win,y,x) == ERR ? ERR : waddnwstr(stdscr,wstr,n))
+#define mvwaddwstr(win,y,x,wstr,n)	(wmove(win,y,x) == ERR ? ERR : waddnwstr(stdscr,wstr,-1))
 #define mvwchgat(win,y,x,n,a,c,o)	(wmove(win,y,x) == ERR ? ERR : wchgat(win,n,a,c,o))
-#define mvwget_wch(win,y,x,c)		(wmove(win,y,x) == ERR ? ERR : wget_wch(win,n))
+#define mvwget_wch(win,y,x,c)		(wmove(win,y,x) == ERR ? ERR : wget_wch(win,c))
 #define mvwget_wstr(win,y,x,t)		(wmove(win,y,x) == ERR ? ERR : wgetn_wstr(win,t,-1))
 #define mvwgetn_wstr(win,y,x,t,n)	(wmove(win,y,x) == ERR ? ERR : wgetn_wstr(win,t,n))
 #define mvwhline_set(win,y,x,c,n)	(wmove(win,y,x) == ERR ? ERR : whline_set(win,c,n))
@@ -1093,7 +1093,7 @@ extern bool mouse_trafo(int*, int*, bool);              /* generated */
 #define mvwin_wchstr(win,y,x,c)		(wmove(win,y,x) == ERR ? ERR : win_wchnstr(stdscr,c,-1))
 #define mvwinnwstr(win,y,x,c,n)		(wmove(win,y,x) == ERR ? ERR : winnwstr(stdscr,c,n))
 #define mvwins_nwstr(win,y,x,t,n)	(wmove(win,y,x) == ERR ? ERR : wins_nwstr(stdscr,t,n))
-#define mvwins_wch(win,y,x,c)		(wmove(win,y,x) == ERR ? ERR : wins_wch(c))
+#define mvwins_wch(win,y,x,c)		(wmove(win,y,x) == ERR ? ERR : wins_wch(stdscr,c))
 #define mvwins_wstr(win,y,x,t)		(wmove(win,y,x) == ERR ? ERR : wins_nwstr(stdscr,t,-1))
 #define mvwinwstr(win,y,x,c)		(wmove(win,y,x) == ERR ? ERR : winnwstr(stdscr,c,-1))
 #define mvwvline_set(win,y,x,c,n)	(wmove(win,y,x) == ERR ? ERR : wvline_set(win,c,n))
@@ -1102,7 +1102,7 @@ extern bool mouse_trafo(int*, int*, bool);              /* generated */
 #define slk_attr_on(a,v)		((v) ? ERR : slk_attron(a))
 
 #define vid_attr(a,pair,opts)		vidattr(a)
-#define vline_set(c,n)			vhline_set(stdscr,c,n)
+#define vline_set(c,n)			wvline_set(stdscr,c,n)
 #define waddwstr(win,wstr,n)		waddnwstr(win,wstr,-1)
 #define wattr_get(win,a,p,opts)		((void)((a) != 0 && (*(a) = (win)->_attrs)), \
 					 (void)((p) != 0 && (*(p) = PAIR_NUMBER((win)->_attrs))), \

@@ -60,10 +60,9 @@
      * Unlike SVr4 curses, ncurses can write to the rightmost-bottommost
        corner of the screen if your terminal has an insert-character
        capability.
-     * (PC-clone boxes only) Support for access to the IBM PC ROM
-       characters 0-32 through the highlight A_ALTCHARSET.
      * Ada95 and C++ bindings.
-     * Support for mouse event reporting under xterm.
+     * Support for mouse event reporting with X Window xterm and OS/2
+       console windows.
      * Extended mouse support via Alessandro Rubini's gpm package.
      * The function wresize() allows you to resize windows, preserving
        their data.

@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
 <!--
-  $Id: ncurses-intro.html,v 1.27 1998/11/01 01:32:16 tom Exp $
+  $Id: ncurses-intro.html,v 1.29 1999/01/03 16:26:24 tom Exp $
 -->
 <HTML>
 <HEAD>
@@ -13,6 +13,7 @@
 
 <BLOCKQUOTE>
 by Eric S. Raymond and Zeyd M. Ben-Halim<BR>
+updates since release 1.9.9e by Thomas Dickey
 </BLOCKQUOTE>
 
 <H1>Contents</H1>
@@ -213,7 +214,7 @@ mouse in some environments (notably, xterm under the X window system).  This
 document includes tips for using the mouse. <P>
 
 The <CODE>ncurses</CODE> package was originated by Pavel Curtis.  The original
-maintainer of the package is
+maintainer of this package is
 <A HREF="mailto:zmbenhal@netcom.com">Zeyd Ben-Halim</A>
 &lt;zmbenhal@netcom.com&gt;.
 <A HREF="mailto:esr@snark.thyrsus.com">Eric S. Raymond</A>
@@ -587,12 +588,18 @@ is itself a compile-time constant and can be used in initializers. <P>
 
 <H3><A NAME="mouse">Mouse Interfacing</A></H3>
 
-The <CODE>ncurses</CODE> library also provides a mouse interface.  Note:
-this facility is original to <CODE>ncurses</CODE>, it is not part of either
+The <CODE>ncurses</CODE> library also provides a mouse interface.
+<!-- The 'note' tag is not portable enough -->
+<blockquote>
+<strong>NOTE:</strong> this facility is specific to <CODE>ncurses</CODE>, it is not part of either
 the XSI Curses standard, nor of System V Release 4, nor BSD curses.
+System V Release 4 curses contains code with similar interface definitions,
+however it is not documented.  Other than by disassembling the library, we
+have no way to determine exactly how that mouse code works.
 Thus, we recommend that you wrap mouse-related code in an #ifdef using the
 feature macro NCURSES_MOUSE_VERSION so it will not be compiled and linked
-on non-ncurses systems.  <P>
+on non-ncurses systems.
+</blockquote>
 
 Presently, mouse event reporting works in the following environments:
 <ul>
@@ -769,7 +776,10 @@ yourself if need be.
 
 <H3><A NAME="debugging">Debugging</A></H3>
 
-NOTE: These functions are not part of the standard curses API! <P>
+<!-- The 'note' tag is not portable enough -->
+<blockquote>
+<strong>NOTE:</strong> These functions are not part of the standard curses API!
+</blockquote>
 
 <DL>
 <DT> <CODE>trace()</CODE>
@@ -814,8 +824,8 @@ some control bits set before you started your application.  Also, they
 have always been poorly documented, and are likely to hurt your
 application's usability with other curses libraries. <P>
 
-Bear in mind that <CODE>refresh()</CODE> is a synonym for <CODE>wrefresh(stdscr)</CODE>,
-and don't try to mix use of <CODE>stdscr</CODE> with use of windows declared
+Bear in mind that <CODE>refresh()</CODE> is a synonym for <CODE>wrefresh(stdscr)</CODE>.
+Don't try to mix use of <CODE>stdscr</CODE> with use of windows declared
 by <CODE>newwin()</CODE>; a <CODE>refresh()</CODE> call will blow them off the
 screen.  The right way to handle this is to use <CODE>subwin()</CODE>, or
 not touch <CODE>stdscr</CODE> at all and tile your screen with declared
@@ -838,7 +848,7 @@ Try to avoid using the global variables LINES and COLS.  Use
 your code may be ported to run in an environment with window resizes,
 in which case several screens could be open with different sizes. <P>
 
-<H3><A NAME="leaving">Temporarily Leaving <CODE>ncurses</CODE> Mode</A></H3>
+<H3><A NAME="leaving">Temporarily Leaving NCURSES Mode</A></H3>
 
 Sometimes you will want to write a program that spends most of its time in
 screen mode, but occasionally returns to ordinary `cooked' mode.  A common
@@ -867,13 +877,13 @@ Here is some sample code for shellout:
     refresh();                 /* restore save modes, repaint screen */
 </PRE>
 
-<H3><A NAME="xterm">Using <CODE>ncurses</CODE> Under <CODE>xterm</CODE></A></H3>
+<H3><A NAME="xterm">Using NCURSES under XTERM</A></H3>
 
 A resize operation in X sends SIGWINCH to the application running under xterm.
 The <CODE>ncurses</CODE> library provides an experimental signal
 handler, but in general does not catch this signal, because it cannot
-know how you want the screen re-painted.  You will have to write the
-SIGWINCH handler yourself. <P>
+know how you want the screen re-painted.  You will usually have to write the
+SIGWINCH handler yourself.  Ncurses can give you some help. <P>
 
 The easiest way to code your SIGWINCH handler is to have it do an
 <CODE>endwin</CODE>, followed by an <CODE>refresh</CODE> and a screen repaint you code
@@ -887,7 +897,10 @@ not resize subwindows which must be shrunk.
 <CODE>Ncurses</CODE> provides an extension which works better, the
 <CODE>resizeterm</CODE> function.  That function ensures that all windows
 are limited to the new screen dimensions, and pads <CODE>stdscr</CODE>
-with blanks if the screen is larger.
+with blanks if the screen is larger. <P>
+
+Finally, ncurses can be configured to provide its own SIGWINCH handler,
+based on <CODE>resizeterm</CODE>.
 
 <H3><A NAME="screens">Handling Multiple Terminal Screens</A></H3>
 
@@ -923,14 +936,26 @@ screen-painting of text when you know the text doesn't contain any
 control characters.  Try to make attribute changes infrequent on your
 screens.  Don't use the <CODE>immedok()</CODE> option! <P>
 
-<H3><A NAME="special">Special Features of <CODE>ncurses</CODE></A></H3>
+<H3><A NAME="special">Special Features of NCURSES</A></H3>
 
-When running on PC-clones, <CODE>ncurses</CODE> has enhanced support for
-the IBM high-half and ROM characters.  The <CODE>A_ALTCHARSET</CODE> highlight,
-enables display of both high-half ACS graphics and the PC ROM graphics
-0-31 that are normally interpreted as control characters. <P>
+The <CODE>wresize()</CODE> function allows you to resize a window in place.
+The associated <CODE>resizeterm()</CODE> function simplifies the construction
+of <a HREF="#xterm">SIGWINCH</a> handlers, for resizing all windows.  <P>
 
-The <CODE>wresize()</CODE> function allows you to resize a window in place. <P>
+The <CODE>define_key()</CODE> function allows you
+to define at runtime function-key control sequences which are not in the
+terminal description.
+The <CODE>keyok()</CODE> function allows you to temporarily
+enable or disable interpretation of any function-key control sequence. <P>
+
+The <CODE>use_default_colors()</CODE> function allows you to construct
+applications which can use the terminal's default foreground and
+background colors as an additional "default" color.
+Several terminal emulators support this feature, which is based on ISO 6429. <P>
+
+Ncurses supports up 16 colors, unlike SVr4 curses which defines only 8.
+While most terminals which provide color allow only 8 colors, about
+a quarter (including XFree86 xterm) support 16 colors.
 
 <H2><A NAME="compat">Compatibility with Older Versions</A></H2>
 
@@ -1544,7 +1569,7 @@ from an existing one.  <P>
 
 <H3><A NAME="flocation">Changing the Field Location</A></H3>
 
-If is possible to move a field's location on the screen:  <P>
+It is possible to move a field's location on the screen:  <P>
 
 <PRE>
 int move_field(FIELD *field,              /* field to alter */
