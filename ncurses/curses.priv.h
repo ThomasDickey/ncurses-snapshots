@@ -34,7 +34,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.247 2003/06/16 00:10:05 tom Exp $
+ * $Id: curses.priv.h,v 1.248 2003/06/28 22:59:30 tom Exp $
  *
  *	curses.priv.h
  *
@@ -604,13 +604,14 @@ extern NCURSES_EXPORT_VAR(SCREEN *) _nc_screen_chain;
 #define CARG_CH_T	const NCURSES_CH_T *
 #define PUTC_DATA	char PUTC_buf[MB_LEN_MAX]; int PUTC_i, PUTC_n; \
 			mbstate_t PUT_st; wchar_t PUTC_ch
+#define PUTC_INIT	memset (&PUT_st, '\0', sizeof (PUT_st));		    \
+			PUTC_i = 0
 #define PUTC(ch,b)	do { if(!isnac(ch)) { 					    \
 			if (Charable(ch)) {					    \
 			    fputc(CharOf(ch), b);				    \
 			    TRACE_OUTCHARS(1);					    \
 			} else {						    \
-			    memset (&PUT_st, '\0', sizeof (PUT_st));		    \
-			    PUTC_i = 0;						    \
+			    PUTC_INIT;						    \
 			    do {						    \
 				PUTC_ch = PUTC_i < CCHARW_MAX ?			    \
 					    (ch).chars[PUTC_i] : L'\0';		    \
