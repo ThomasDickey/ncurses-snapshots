@@ -1,10 +1,18 @@
--- $Id: NEWS,v 1.462 1999/06/19 23:10:44 tom Exp $
+-- $Id: NEWS,v 1.463 1999/06/26 22:25:50 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990626	pre-release
+	+ use TTY definition in tack/sysdep.c rather than struct termios
+	  (reported by Philippe De Muyter).
+	+ add a fallback for strstr, used in lib_mvcur.c and tack/edit.c,
+	  not present on sysV68 (reported by Philippe De Muyter).
+	+ correct definition in comp_hash.c to build with configure
+	  --with-rcs-ids option.
 
 990619	pre-release
 	+ modified ifdef's for sigaction and sigvec to ensure we do not try to

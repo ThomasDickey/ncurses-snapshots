@@ -39,7 +39,7 @@
 #endif
 #endif
 
-MODULE_ID("$Id: sysdep.c,v 1.3 1999/06/16 00:48:35 tom Exp $")
+MODULE_ID("$Id: sysdep.c,v 1.4 1999/06/26 22:20:38 tom Exp $")
 
 #if DECL_ERRNO
 extern int errno;
@@ -57,7 +57,7 @@ int nodelay_read;		/* TRUE if NDELAY is set */
 #define TTY_WAS_CS8 ((old_modes.c_cflag & CSIZE) == CS8)
 #define TTY_WAS_XON_XOFF (old_modes.c_iflag & (IXON|IXOFF))
 
-struct termios old_modes, new_modes;
+static TTY old_modes, new_modes;
 
 void catchsig(void);
 

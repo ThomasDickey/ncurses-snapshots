@@ -19,7 +19,7 @@
 ** Boston, MA 02111-1307, USA.
 */
 
-/* $Id: tack.h,v 1.4 1999/06/16 00:47:06 tom Exp $ */
+/* $Id: tack.h,v 1.5 1999/06/26 22:14:07 tom Exp $ */
 
 #ifndef _TACK_H
 #define _TACK_H 1
@@ -53,6 +53,11 @@
 #define MODULE_ID(id) static const char Ident[] = id;
 #else
 #define MODULE_ID(id) /*nothing*/
+#endif
+
+#if !HAVE_STRSTR
+extern char *_nc_strstr(const char *, const char *);
+#define strstr(h,n) _nc_strstr(h,n)
 #endif
 
 extern FILE *log_fp;
