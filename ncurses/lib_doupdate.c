@@ -56,7 +56,7 @@
 
 #include <term.h>
 
-MODULE_ID("$Id: lib_doupdate.c,v 1.55 1997/02/15 18:53:46 tom Exp $")
+MODULE_ID("$Id: lib_doupdate.c,v 1.56 1997/03/15 22:30:18 tom Exp $")
 
 /*
  * This define controls the line-breakout optimization.  Every once in a
@@ -86,23 +86,6 @@ static void DelChar( int count );
 static void IDcTransformLine( int const lineno );
 static void NoIDcTransformLine( int const lineno );
 static void TransformLine( int const lineno );
-
-#define DelCharCost(count) \
-		((parm_dch != 0) \
-		? SP->_dch_cost \
-		: ((delete_character != 0) \
-			? (SP->_dch1_cost * count) \
-			: INFINITY))
-
-#define InsCharCost(count) \
-		((parm_ich != 0) \
-		? SP->_ich_cost \
-		: ((insert_character != 0) \
-			? (SP->_ich1_cost * count) \
-			: INFINITY))
-
-#define UpdateAttrs(c)	if (SP->_current_attr != AttrOf(c)) \
-				vidattr(AttrOf(c));
 
 #ifdef POSITION_DEBUG
 /****************************************************************************
@@ -304,16 +287,6 @@ static inline void PutChar(chtype const ch)
     position_check(SP->_cursrow, SP->_curscol, "PutChar");
 #endif /* POSITION_DEBUG */
 }
-
-/*
- * Check whether the given character can be output by clearing commands.  This
- * includes test for being a space and not including any 'bad' attributes, such
- * as A_REVERSE.  All attribute flags which don't affect appearance of a space
- * or can be output by clearing (A_COLOR in case of bce-terminal) are excluded.
- */
-#define NONBLANK_ATTR (A_BOLD|A_DIM|A_BLINK)
-#define can_clear_with(ch) \
-	((ch & ~(NONBLANK_ATTR|(back_color_erase ? A_COLOR:0))) == BLANK)
 
 /*
  * Issue a given span of characters from an array.

@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.56 1997/03/09 00:34:36 tom Exp $
+ * $Id: curses.priv.h,v 1.57 1997/03/15 22:33:22 tom Exp $
  *
  *	curses.priv.h
  *
@@ -377,6 +377,33 @@ extern long _nc_outchars;
    }\
    T(("new attribute is %s", _traceattr((S))));
 
+#define DelCharCost(count) \
+		((parm_dch != 0) \
+		? SP->_dch_cost \
+		: ((delete_character != 0) \
+			? (SP->_dch1_cost * count) \
+			: INFINITY))
+
+#define InsCharCost(count) \
+		((parm_ich != 0) \
+		? SP->_ich_cost \
+		: ((insert_character != 0) \
+			? (SP->_ich1_cost * count) \
+			: INFINITY))
+
+#define UpdateAttrs(c)	if (SP->_current_attr != AttrOf(c)) \
+				vidattr(AttrOf(c));
+
+/*
+ * Check whether the given character can be output by clearing commands.  This
+ * includes test for being a space and not including any 'bad' attributes, such
+ * as A_REVERSE.  All attribute flags which don't affect appearance of a space
+ * or can be output by clearing (A_COLOR in case of bce-terminal) are excluded.
+ */
+#define NONBLANK_ATTR (A_BOLD|A_DIM|A_BLINK)
+#define can_clear_with(ch) \
+	((ch & ~(NONBLANK_ATTR|(back_color_erase ? A_COLOR:0))) == BLANK)
+
 #ifdef NCURSES_EXPANDED
 
 #undef  ch_or_attr
@@ -390,6 +417,26 @@ extern void _nc_toggle_attr_on(attr_t *, attr_t);
 #undef  toggle_attr_off
 #define toggle_attr_off(S,at) _nc_toggle_attr_off(&(S), at)
 extern void _nc_toggle_attr_off(attr_t *, attr_t);
+
+#undef  can_clear_with
+#define can_clear_with(ch) _nc_can_clear_with(ch)
+extern int _nc_can_clear_with(chtype);
+
+#undef  DelCharCost
+#define DelCharCost(count) _nc_DelCharCost(count)
+extern int _nc_DelCharCost(int);
+
+#undef  InsCharCost
+#define InsCharCost(count) _nc_InsCharCost(count)
+extern int _nc_InsCharCost(int);
+
+#undef  UpdateAttrs
+#define UpdateAttrs(c) _nc_UpdateAttrs(c)
+extern void _nc_UpdateAttrs(chtype);
+
+#else
+
+extern void _nc_expanded(void);
 
 #endif
 

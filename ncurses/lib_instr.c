@@ -29,17 +29,28 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_instr.c,v 1.4 1997/03/01 21:56:17 tom Exp $")
+MODULE_ID("$Id: lib_instr.c,v 1.5 1997/03/15 21:34:53 tom Exp $")
 
 int winnstr(WINDOW *win, char *str, int n)
 {
-	int	i;
+	int	i, row, col;
 
 	T((T_CALLED("winnstr(%p,%p,%d)"), win, str, n));
 
-	for (i = 0; (n < 0 || (i < n)) && (win->_curx + i <= win->_maxx); i++)
-	    str[i] = TextOf(win->_line[win->_cury].text[win->_curx + i]);
-	str[i] = '\0';
+	getyx(win, row, col);
+
+	if (n < 0)
+		n = win->_maxx - win->_curx + 1;
+
+	for (i = 0; i < n; i++) {
+		str[i] = TextOf(win->_line[row].text[col]);
+		if (++col > win->_maxx) {
+			col = 0;
+			if (++row > win->_maxy)
+				break;
+		}
+	}
+	str[i] = '\0';	/* SVr4 does not seem to count the null */
 
 	returnCode(i);
 }
