@@ -29,7 +29,7 @@
 # Author: Zeyd M. Ben-Halim <zmbenhal@netcom.com> 1992,1995
 #    and: Eric S. Raymond <esr@snark.thyrsus.com>
 #
-# $Id: Caps,v 1.16 1998/02/11 12:13:45 tom Exp $
+# $Id: Caps,v 1.21 1998/06/30 01:07:56 tom Exp $
 #
 # This is the master termcap/terminfo capability table.
 #
@@ -257,11 +257,11 @@ lpi_changes_res 	lpix	bool	YG	-----	changing line pitch changes resolution
 #%lw25 lw6 lw2 lw20.
 #%\fBVariable	Cap-	TCap	Description\fR
 #%\fBNumeric	name	Code\fR
-columns         	cols	num	co	YBCGE	number of columns in aline
+columns         	cols	num	co	YBCGE	number of columns in a line
 init_tabs       	it	num	it	YB-G-	tabs initially every # spaces
 lines           	lines	num	li	YBCGE	number of lines on screen or page
 lines_of_memory 	lm	num	lm	YB-G-	lines of memory if > line. 0 => varies
-magic_cookie_glitch	xmc	num	sg	YBCGE	number of blank chars left by smso or rmso
+magic_cookie_glitch	xmc	num	sg	YBCGE	number of blank characters left by smso or rmso
 padding_baud_rate	pb	num	pb	YB-GE	lowest baud rate where padding needed
 virtual_terminal	vt	num	vt	YB---	virtual terminal number (CB/unix)
 width_status_line	wsl	num	ws	YB-G-	columns in status line
@@ -269,9 +269,9 @@ num_labels      	nlab	num	Nl	-----	number of labels on screen
 label_height    	lh	num	lh	-----	rows in each label
 label_width     	lw	num	lw	-----	columns in each label
 max_attributes  	ma	num	ma	YBC--	maximum combined attributes terminal can handle
-maximum_windows 	wnum	num	MW	-----	maxumum number of defineable windows
+maximum_windows 	wnum	num	MW	-----	maximum number of defineable windows
 # These came in with SVr4's color support
-max_colors      	colors	num	Co	-----	maximum numbers of colors on screen
+max_colors      	colors	num	Co	-----	maximum number of colors on screen
 max_pairs       	pairs	num	pa	-----	maximum number of color-pairs on the screen
 no_color_video  	ncv	num	NC	-----	video attributes that can't be used with colors
 #%.TE
@@ -301,10 +301,10 @@ output_res_char 	orc	num	Yi	-----	horizontal resolution in units per line
 output_res_line 	orl	num	Yj	-----	vertical resolution in units per line
 output_res_horz_inch	orhi	num	Yk	-----	horizontal resolution in units per inch
 output_res_vert_inch	orvi	num	Yl	-----	vertical resolution in units per inch
-print_rate      	cps	num	Ym	-----	print rate in chars per second
+print_rate      	cps	num	Ym	-----	print rate in characters per second
 wide_char_size  	widcs	num	Yn	-----	character step size when in double wide mode
 buttons         	btns	num	BT	-----	number of buttons on mouse
-bit_image_entwining	bitwin	num	Yo	-----	number of passed for each bit-image row
+bit_image_entwining	bitwin	num	Yo	-----	number of passes for each bit-image row
 bit_image_type  	bitype	num	Yp	-----	type of bit-image device
 #%.TE
 #%.ad
@@ -322,7 +322,7 @@ bit_image_type  	bitype	num	Yp	-----	type of bit-image device
 back_tab        	cbt	str	bt	YBCGE	back tab (P)
 bell            	bel	str	bl	YB-GE	audible signal (bell) (P)
 carriage_return 	cr	str	cr	YBCGE	carriage return (P*) (P*)
-change_scroll_region	csr	str	cs	YBCGE	change region to line #1 to line #2 (P) (P)
+change_scroll_region	csr	str	cs	YBCGE	change region to line #1 to line #2 (P)
 clear_all_tabs  	tbc	str	ct	YB-G-	clear all tab stops (P)
 clear_screen    	clear	str	cl	YBCGE	clear screen and home cursor (P*)
 clr_eol         	el	str	ce	YBCGE	clear to end of line (P)
@@ -393,15 +393,15 @@ key_f4          	kf4	str	k4	YBCGE	F4 function key
 key_f5          	kf5	str	k5	YBCGE	F5 function key
 key_f6          	kf6	str	k6	YBCGE	F6 function key
 key_f7          	kf7	str	k7	YBCGE	F7 function key
-key_f8          	kf8	str	k8	YBCGE	F8 fucntion key
+key_f8          	kf8	str	k8	YBCGE	F8 function key
 key_f9          	kf9	str	k9	YBCGE	F9 function key
 key_home        	khome	str	kh	YBCGE	home key
 key_ic          	kich1	str	kI	YB-GE	insert-character key
 key_il          	kil1	str	kA	-B-G-*	insert-line key
 key_left        	kcub1	str	kl	YBCGE	left-arrow key
-key_ll          	kll	str	kH	YB-G-	last-line key
+key_ll          	kll	str	kH	YB-G-	lower-left key (home down)
 key_npage        	knp	str	kN	YB-GE	next-page key
-key_ppage       	kpp	str	kP	YB-GE	prev-page key
+key_ppage       	kpp	str	kP	YB-GE	previous-page key
 key_right       	kcuf1	str	kr	YBCGE	right-arrow key
 key_sf          	kind	str	kF	-B-G-*	scroll-forward key
 key_sr          	kri	str	kR	-B-G-*	scroll-backward key
@@ -415,7 +415,7 @@ lab_f10          	lf10	str	la	-----	label on function key f10 if not f10
 lab_f2          	lf2	str	l2	-B-G-*	label on function key f2 if not f2
 lab_f3          	lf3	str	l3	-B-G-*	label on function key f3 if not f3
 lab_f4          	lf4	str	l4	-B-G-*	label on function key f4 if not f4
-lab_f5          	lf5	str	l5	-B-G-*	lable on function key f5 if not f5
+lab_f5          	lf5	str	l5	-B-G-*	label on function key f5 if not f5
 lab_f6          	lf6	str	l6	-B-G-*	label on function key f6 if not f6
 lab_f7          	lf7	str	l7	-B-G-*	label on function key f7 if not f7
 lab_f8          	lf8	str	l8	-B-G-*	label on function key f8 if not f8
@@ -424,14 +424,14 @@ meta_off          	rmm	str	mo	YB-G-*	turn off meta mode
 meta_on         	smm	str	mm	YB-G-*	turn on meta mode (8th-bit on)
 newline         	nel	str	nw	YB-G-*	newline (behave like cr followed by lf)
 pad_char          	pad	str	pc	YBCGE	padding char (instead of null)
-parm_dch          	dch	str	DC	YB-GE	delete #1 chars (P*)
+parm_dch          	dch	str	DC	YB-GE	delete #1 characters (P*)
 parm_delete_line	dl	str	DL	YBCGE	delete #1 lines (P*)
 parm_down_cursor	cud	str	DO	YBCGE	down #1 lines (P*)
-parm_ich          	ich	str	IC	YB-GE	insert #1 chars (P*)
+parm_ich          	ich	str	IC	YB-GE	insert #1 characters (P*)
 parm_index          	indn	str	SF	YBCG-	scroll forward #1 lines (P)
 parm_insert_line	il	str	AL	YBCGE	insert #1 lines (P*)
-parm_left_cursor	cub	str	LE	YBCGE	move #1 chars to the left (P)
-parm_right_cursor	cuf	str	RI	YBCGE	move #1 chars to the right (P*)
+parm_left_cursor	cub	str	LE	YBCGE	move #1 characters to the left (P)
+parm_right_cursor	cuf	str	RI	YBCGE	move #1 characters to the right (P*)
 parm_rindex          	rin	str	SR	YBCG-	scroll back #1 lines (P)
 parm_up_cursor  	cuu	str	UP	YBCGE	up #1 lines (P*)
 pkey_key        	pfkey	str	pk	-B---	program function key #1 to type string #2
@@ -445,7 +445,7 @@ reset_1string          	rs1	str	r1	-B---	reset string
 reset_2string          	rs2	str	r2	-B---	reset string
 reset_3string          	rs3	str	r3	-B---	reset string
 reset_file          	rf	str	rf	-B---	name of reset file
-restore_cursor        	rc	str	rc	YBCG-	restore cursor to last position of sc
+restore_cursor        	rc	str	rc	YBCG-	restore cursor to position of last save_cursor
 row_address          	vpa	str	cv	-B-GE**	vertical position #1 absolute (P)
 save_cursor          	sc	str	sc	YBCG-	save current cursor position (P)
 scroll_forward        	ind	str	sf	YBCGE	scroll text up (P)
@@ -469,7 +469,7 @@ prtr_non        	mc5p	str	pO	-B-G-*	turn on printer for #1 bytes
 # SVr4 up to this point, but has a different set afterwards.
 #
 char_padding    	rmp	str	rP	-----	like ip but when in insert mode
-acs_chars       	acsc	str	ac	-----	graphics charset pairs - def=vt100
+acs_chars       	acsc	str	ac	-----	graphics charset pairs, based on vt100
 plab_norm       	pln	str	pn	-----	program label #1 to show string #2
 key_btab        	kcbt	str	kB	-----	back-tab key
 enter_xon_mode  	smxon	str	SX	-----	turn on xon/xoff handshaking
@@ -509,35 +509,35 @@ key_resume          	kres	str	&5	-----	resume key
 key_save          	ksav	str	&6	-----	save key
 key_suspend          	kspd	str	&7	-----	suspend key
 key_undo        	kund	str	&8	-----	undo key
-key_sbeg        	kBEG	str	&9	-----	shifted key
-key_scancel     	kCAN	str	&0	-----	shifted key
-key_scommand    	kCMD	str	*1	-----	shifted key
-key_scopy       	kCPY	str	*2	-----	shifted key
-key_screate     	kCRT	str	*3	-----	shifted key
-key_sdc         	kDC	str	*4	-----	shifted key
-key_sdl          	kDL	str	*5	-----	shifted key
+key_sbeg        	kBEG	str	&9	-----	shifted begin key
+key_scancel     	kCAN	str	&0	-----	shifted cancel key
+key_scommand    	kCMD	str	*1	-----	shifted command key
+key_scopy       	kCPY	str	*2	-----	shifted copy key
+key_screate     	kCRT	str	*3	-----	shifted create key
+key_sdc         	kDC	str	*4	-----	shifted delete-character key
+key_sdl          	kDL	str	*5	-----	shifted delete-line key
 key_select      	kslt	str	*6	-----	select key
-key_send        	kEND	str	*7	-----	shifted key
-key_seol          	kEOL	str	*8	-----	shifted key
-key_sexit          	kEXT	str	*9	-----	shifted key
-key_sfind          	kFND	str	*0	-----	shifted key
-key_shelp          	kHLP	str	#1	-----	shifted key
-key_shome          	kHOM	str	#2	-----	shifted key
-key_sic          	kIC	str	#3	-----	shifted key
-key_sleft          	kLFT	str	#4	-----	shifted key
-key_smessage          	kMSG	str	%a	-----	shifted key
-key_smove          	kMOV	str	%b	-----	shifted key
-key_snext          	kNXT	str	%c	-----	shifted key
-key_soptions          	kOPT	str	%d	-----	shifted key
-key_sprevious          	kPRV	str	%e	-----	shifted key
-key_sprint          	kPRT	str	%f	-----	shifted key
-key_sredo          	kRDO	str	%g	-----	shifted key
-key_sreplace          	kRPL	str	%h	-----	shifted key
-key_sright      	kRIT	str	%i	-----	shifted key
-key_srsume      	kRES	str	%j	-----	shifted key
-key_ssave       	kSAV	str	!1	-----	shifted key
-key_ssuspend    	kSPD	str	!2	-----	shifted key
-key_sundo       	kUND	str	!3	-----	shifted key
+key_send        	kEND	str	*7	-----	shifted end key
+key_seol          	kEOL	str	*8	-----	shifted clear-to-end-of-line key
+key_sexit          	kEXT	str	*9	-----	shifted exit key
+key_sfind          	kFND	str	*0	-----	shifted find key
+key_shelp          	kHLP	str	#1	-----	shifted help key
+key_shome          	kHOM	str	#2	-----	shifted home key
+key_sic          	kIC	str	#3	-----	shifted insert-character key
+key_sleft          	kLFT	str	#4	-----	shifted left-arrow key
+key_smessage          	kMSG	str	%a	-----	shifted message key
+key_smove          	kMOV	str	%b	-----	shifted move key
+key_snext          	kNXT	str	%c	-----	shifted next key
+key_soptions          	kOPT	str	%d	-----	shifted options key
+key_sprevious          	kPRV	str	%e	-----	shifted previous key
+key_sprint          	kPRT	str	%f	-----	shifted print key
+key_sredo          	kRDO	str	%g	-----	shifted redo key
+key_sreplace          	kRPL	str	%h	-----	shifted replace key
+key_sright      	kRIT	str	%i	-----	shifted right-arrow key
+key_srsume      	kRES	str	%j	-----	shifted resume key
+key_ssave       	kSAV	str	!1	-----	shifted save key
+key_ssuspend    	kSPD	str	!2	-----	shifted suspend key
+key_sundo       	kUND	str	!3	-----	shifted undo key
 req_for_input   	rfi	str	RF	-----	send next input char (for ptys)
 key_f11         	kf11	str	F1	----E	F11 function key
 key_f12         	kf12	str	F2	----E	F12 function key
@@ -594,19 +594,19 @@ key_f62         	kf62	str	Fq	----E	F62 function key
 key_f63         	kf63	str	Fr	----E	F63 function key
 clr_bol         	el1	str	cb	-----	Clear to beginning of line
 clear_margins    	mgc	str	MC	-----	clear right and left soft margins
-set_left_margin    	smgl	str	ML	-----	set left soft margin
-set_right_margin	smgr	str	MR	-----	set right soft margin
+set_left_margin    	smgl	str	ML	-----	set left soft margin at current column
+set_right_margin	smgr	str	MR	-----	set right soft margin at current column
 label_format    	fln	str	Lf	-----	label format
 set_clock       	sclk	str	SC	-----	set clock, #1 hrs #2 mins #3 secs
 display_clock   	dclk	str	DK	-----	display clock at (#1,#2)
 remove_clock    	rmclk	str	RC	-----	remove clock
-create_window   	cwin	str	CW	-----	define a window #1 from #2, #3 to #4, #5
+create_window   	cwin	str	CW	-----	define a window #1 from #2,#3 to #4,#5
 goto_window     	wingo	str	WG	-----	go to window #1
 hangup           	hup	str	HU	-----	hang-up phone
 dial_phone      	dial	str	DI	-----	dial number #1
 quick_dial      	qdial	str	QD	-----	dial number #1 without checking
 tone             	tone	str	TO	-----	select touch tone dialing
-pulse           	pulse	str	PU	-----	select pulse dialling
+pulse           	pulse	str	PU	-----	select pulse dialing
 flash_hook      	hook	str	fh	-----	flash switch hook
 fixed_pause     	pause	str	PA	-----	pause for 2-3 seconds
 wait_tone       	wait	str	WA	-----	wait for dial-tone
@@ -644,7 +644,7 @@ enter_italics_mode	sitm	str	ZH	-----	Enter italic mode
 enter_leftward_mode	slm	str	ZI	-----	Start leftward carriage motion
 enter_micro_mode	smicm	str	ZJ	-----	Start micro-motion mode
 enter_near_letter_quality	snlq	str	ZK	-----	Enter NLQ mode
-enter_normal_quality	snrmq	str	ZL	-----	Wnter normal-quality mode
+enter_normal_quality	snrmq	str	ZL	-----	Enter normal-quality mode
 enter_shadow_mode	sshm	str	ZM	-----	Enter shadow-print mode
 enter_subscript_mode	ssubm	str	ZN	-----	Enter subscript mode
 enter_superscript_mode	ssupm	str	ZO	-----	Enter superscript mode
@@ -675,19 +675,19 @@ set_left_margin_parm	smglp	str	Zm	-----	Set left (right) margin at column #1 (#2
 set_right_margin_parm	smgrp	str	Zn	-----	Set right margin at column #1
 set_top_margin  	smgt	str	Zo	-----	Set top margin at current line
 set_top_margin_parm	smgtp	str	Zp	-----	Set top (bottom) margin at row #1 (#2)
-start_bit_image 	sbim	str	Zq	-----	Start printing bit image braphics
+start_bit_image 	sbim	str	Zq	-----	Start printing bit image graphics
 start_char_set_def	scsd	str	Zr	-----	Start character set definition
 stop_bit_image  	rbim	str	Zs	-----	Stop printing bit image graphics
-stop_char_set_def	rcsd	str	Zt	-----	End definition of character aet
+stop_char_set_def	rcsd	str	Zt	-----	End definition of character set
 subscript_characters	subcs	str	Zu	-----	List of subscriptable characters
 superscript_characters	supcs	str	Zv	-----	List of superscriptable characters
-these_cause_cr  	docr	str	Zw	-----	Printing any of these chars causes CR
+these_cause_cr  	docr	str	Zw	-----	Printing any of these characters causes CR
 zero_motion     	zerom	str	Zx	-----	No motion for subsequent character
 #%.TE
 #%.ad
 #%
 #%The following string capabilities are present in the SVr4.0 term structure,
-#%but are not documented in the man page.
+#%but were originally not documented in the man page.
 #%
 #%.na
 #%.TS H
@@ -702,8 +702,8 @@ key_mouse       	kmous	str	Km	-----	Mouse event has occurred
 mouse_info      	minfo	str	Mi	-----	Mouse status information
 req_mouse_pos   	reqmp	str	RQ	-----	Request mouse position
 get_mouse       	getm	str	Gm	-----	Curses should get button events
-set_a_foreground	setaf	str	AF	-----	Set ANSI foreground color
-set_a_background	setab	str	AB	-----	Set ANSI background color
+set_a_foreground	setaf	str	AF	-----	Set foreground color using ANSI escape
+set_a_background	setab	str	AB	-----	Set background color using ANSI escape
 pkey_plab       	pfxl	str	xl	-----	Program function key #1 to type string #2 and show string #3
 device_type     	devt	str	dv	-----	Indicate language/codeset support
 code_set_init   	csin	str	ci	-----	Init sequence for multiple codesets
@@ -789,7 +789,7 @@ enter_vertical_hl_mode	evhlm	str	Xv	-----	Enter vertical highlight mode
 #
 # This group of codes is not marked obsolete in 4.4BSD, but have no direct
 # terminfo equivalents.  The rs capability is specially translated to terminfo
-# r1, and vice versa, if an entry does not already have an r1.  Similarly,
+# r2, and vice versa, if an entry does not already have an r2.  Similarly,
 # i2 is translated to r3 if there is no r3 (because SV terminfo maps is to i2).
 # The ug capability is thrown away, but assumed to be whatever sg is if the
 # latter is nonzero and we're dumping in termcap format.
@@ -882,7 +882,7 @@ return_does_clr_eol	OTxr	bool	xr	YB---	return clears the line
 # University of Waterloo termcap extensions (as described in mytinfo).
 # The `xl' termcap file clashes with a terminfo name; this ambiguity cannot
 # be resolved by a type check.  The descriptions are guesses from what was
-# in the nytinfo tables. 
+# in the mytinfo tables. 
 #
 # key_interrupt_char    OTki	str	ki	-----	string set by interrupt key (?)
 # key_kill_char         OTkk	str	kk	-----	string set by kill key (?)
@@ -896,8 +896,8 @@ return_does_clr_eol	OTxr	bool	xr	YB---	return clears the line
 #
 # scroll_left          	OTsl1	str	Sl	-----	scroll screen leftward
 # scroll_right         	OTsr1	str	Sr	-----	scroll screen rightward
-# parm_scroll_left     	OTsl	str	SL	-----	scroll screen leftward #1 chars
-# parm_scroll_right    	OTsr	str	SR	-----	scroll screen rightward #1 chars
+# parm_scroll_left     	OTsl	str	SL	-----	scroll screen leftward #1 characters
+# parm_scroll_right    	OTsr	str	SR	-----	scroll screen rightward #1 characters
 #
 # The mytinfo capabilities end here.
 #
@@ -1028,7 +1028,7 @@ memory_unlock    	memu	str	mu	----K	memory unlock
 # These extensions follow ptr_non (replacing everything after it) in IBM
 # terminfo files.
 #
-# The places in the box[12] capabilities correspond to acsc chars, here is
+# The places in the box[12] capabilities correspond to acsc characters, here is
 # the mapping:
 #
 #	box1[0]  = ACS_ULCORNER
@@ -1045,8 +1045,8 @@ memory_unlock    	memu	str	mu	----K	memory unlock
 #
 # The box2 characters are the double-line versions of these forms graphics.
 #
-box_chars_1    	box1	str	bx	----K	box chars primary set
-#box_chars_2          	box2	str	by	----K	box chars secondary set
+box_chars_1    	box1	str	bx	----K	box characters primary set
+#box_chars_2          	box2	str	by	----K	box characters secondary set
 #box_attr_1     	batt1	str	Bx	----K	attributes for box1
 #box_attr_2     	batt2	str	By	----K	attributes for box2
 #color_bg_0     	colb0	str	d0	----K	background color 0
@@ -1288,7 +1288,7 @@ capalias	FC	Sf	Tek	set_foreground
 #	WL	key_word_left
 #	WR	key_word_right
 #
-# If you know what any of the questionmarked ones mean, please tell us.
+# If you know what any of the question-marked ones mean, please tell us.
 #
 #--------------------------------- Terminfo aliases ------------------------
 #

@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.135 1998/05/31 00:25:01 tom Exp $
+dnl $Id: aclocal.m4,v 1.138 1998/07/11 22:42:37 tom Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -370,6 +370,34 @@ AC_DEFUN([CF_ERRNO],
 CF_CHECK_ERRNO(errno)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Test for conflicting definitions of exception in gcc 2.8.0, etc., between
+dnl math.h and builtin.h, only for ncurses
+AC_DEFUN([CF_ETIP_DEFINES],
+[
+AC_MSG_CHECKING(for special defines needed for etip.h)
+cf_save_CXXFLAGS="$CXXFLAGS"
+cf_result="none"
+for cf_math in "" MATH_H
+do
+for cf_excp in "" MATH_EXCEPTION
+do
+	CXXFLAGS="$cf_save_CXXFLAGS -I${srcdir}/c++ -I${srcdir}/menu"
+	test -n "$cf_math" && CXXFLAGS="$CXXFLAGS -DETIP_NEEDS_${cf_math}"
+	test -n "$cf_excp" && CXXFLAGS="$CXXFLAGS -DETIP_NEEDS_${cf_excp}"
+AC_TRY_COMPILE([
+#include <etip.h.in>
+],[],[
+	test -n "$cf_math" && AC_DEFINE(ETIP_NEEDS_${cf_math})
+	test -n "$cf_excp" && AC_DEFINE(ETIP_NEEDS_${cf_excp})
+	cf_result="$cf_math $cf_excp"
+	break
+],[])
+done
+done
+AC_MSG_RESULT($cf_result)
+CXXFLAGS="$cf_save_CXXFLAGS"
+])
+dnl ---------------------------------------------------------------------------
 dnl Test for availability of useful gcc __attribute__ directives to quiet
 dnl compiler warnings.  Though useful, not all are supported -- and contrary
 dnl to documentation, unrecognized directives cause older compilers to barf.
@@ -496,6 +524,29 @@ fi
 AC_SUBST(EXTRA_CFLAGS)
 ])dnl
 dnl ---------------------------------------------------------------------------
+dnl Verify that a test program compiles and runs with GNAT
+dnl $cf_ada_make is set to the program that compiles/links
+AC_DEFUN([CF_GNAT_TRY_RUN],
+[
+rm -f conftest*
+cat >>conftest.ads <<CF_EOF
+$1
+CF_EOF
+cat >>conftest.adb <<CF_EOF
+$2
+CF_EOF
+if ( $cf_ada_make conftest 1>&AC_FD_CC 2>&1 ) ; then
+   if ( ./conftest 1>&AC_FD_CC 2>&1 ) ; then
+ifelse($3,,      :,[      $3])
+ifelse($4,,,[   else
+      $4])
+   fi
+ifelse($4,,,[else
+   $4])
+fi
+rm -f conftest*
+])dnl
+dnl ---------------------------------------------------------------------------
 dnl Verify Version of GNAT.
 AC_DEFUN([CF_GNAT_VERSION],
 [
@@ -504,10 +555,10 @@ cf_cv_gnat_version=`$cf_ada_make -v 2>&1 | grep '[0-9].[0-9][0-9]*' |\
   sed -e 's/[^0-9 \.]//g' | $AWK '{print $<<1>>;}'`
 case $cf_cv_gnat_version in
   3.[1-9]*|[4-9].*)
-    ac_cv_prog_gnat_correct=yes
+    cf_cv_prog_gnat_correct=yes
     ;;
   *) echo Unsupported GNAT version $cf_cv_gnat_version. Required is 3.10 or better. Disabling Ada95 binding.
-     ac_cv_prog_gnat_correct=no
+     cf_cv_prog_gnat_correct=no
      ;;
 esac
 case $cf_cv_gnat_version in
@@ -1266,7 +1317,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 			LD_SHARED_OPTS='-Xlinker +b -Xlinker $(libdir)'
 		else
 			CC_SHARED_OPTS='+Z'
-			LD_SHARED_OPTS='+b $(libdir)'
+			LD_SHARED_OPTS='-Wl,+b,$(libdir)' 
 		fi
 		MK_SHARED_LIB='$(LD) +b $(libdir) -b +h `basename $[@]` -o $[@]'
 		# HP-UX shared libraries must be executable, and should be
@@ -1281,7 +1332,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 			LD_SHARED_OPTS='-Xlinker +b -Xlinker $(libdir)'
 		else
 			CC_SHARED_OPTS='+Z'
-			LD_SHARED_OPTS='+b $(libdir)'
+			LD_SHARED_OPTS='-Wl,+b,$(libdir)' 
 		fi
 		MK_SHARED_LIB='$(LD) +b $(libdir) -b -o $[@]'
 		# HP-UX shared libraries must be executable, and should be
@@ -1559,7 +1610,7 @@ SRC_SUBDIRS="$SRC_SUBDIRS misc test"
 test $cf_cxx_library != no && SRC_SUBDIRS="$SRC_SUBDIRS c++"
 
 ADA_SUBDIRS=
-if test "$ac_cv_prog_gnat_correct" = yes && test -d $srcdir/Ada95; then
+if test "$cf_cv_prog_gnat_correct" = yes && test -d $srcdir/Ada95; then
    SRC_SUBDIRS="$SRC_SUBDIRS Ada95"
    ADA_SUBDIRS="gen ada_include samples"
 fi

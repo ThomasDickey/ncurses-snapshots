@@ -68,7 +68,7 @@ AUTHOR
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: hashmap.c,v 1.24 1998/02/11 12:13:55 tom Exp $")
+MODULE_ID("$Id: hashmap.c,v 1.25 1998/06/06 17:40:06 tom Exp $")
 
 #ifdef HASHDEBUG
 #define TEXTWIDTH	1
@@ -100,7 +100,7 @@ static inline unsigned long hash(chtype *text)
     for (i = TEXTWIDTH; i>0; i--)
     {
 	ch = *text++;
-	result += (result<<5) + ch + (ch>>16);
+	result += (result<<5) + ch;
     }
     return result;
 }

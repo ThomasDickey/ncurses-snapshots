@@ -34,7 +34,7 @@ Options:
   traces will be dumped.  The program stops and waits for one character of
   input at the beginning and end of the interval.
 
-  $Id: worm.c,v 1.21 1998/01/30 10:17:59 tom Exp $
+  $Id: worm.c,v 1.22 1998/06/28 00:47:41 tom Exp $
 */
 
 #include <test.priv.h>
@@ -289,6 +289,7 @@ int last, bottom;
             addch('\n');
         }
     }
+    napms(10);
     refresh();
 
     for (;;) {
@@ -345,6 +346,7 @@ int last, bottom;
 		    addch(flavor[n % MAXWORMS]);
 		    ref[w->ypos[h]=y][w->xpos[h]=x]++;
 		}
+		napms(10);
 		refresh();
     }
 }

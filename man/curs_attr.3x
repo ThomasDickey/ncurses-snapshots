@@ -27,7 +27,7 @@
 .\"***************************************************************************
 .\"
 '\" t
-.\" $Id: curs_attr.3x,v 1.15 1998/03/11 21:12:53 juergen Exp $
+.\" $Id: curs_attr.3x,v 1.16 1998/06/13 22:59:17 tom Exp $
 .TH curs_attr 3X ""
 .SH NAME
 \fBattroff\fR, \fBwattroff\fR, \fBattron\fR, \fBwattron\fR,
@@ -52,7 +52,7 @@
 \fBint color_set(short color_pair_number, void* opts);\fR
 .br
 \fBint wcolor_set(WINDOW *win, short color_pair_number,
-        void* opts);\fR
+      void* opts);\fR
 .br
 \fBint standend(void);\fR
 .br
@@ -62,33 +62,34 @@
 .br
 \fBint wstandout(WINDOW *win);\fR
 .br
-\fBattr_t attr_get(void);\fR
+\fBint attr_get(attr_t *attrs, short *pair, void *opts);\fR
 .br
-\fBattr_t wattr_get(WINDOW *);\fR
+\fBint wattr_get(WINDOW *win, attr_t *attrs, short *pair,
+       void *opts);\fR
 .br
-\fBint attr_off(attr_t attrs);\fR
+\fBint attr_off(attr_t attrs, void *opts);\fR
 .br
-\fBint wattr_off(WINDOW *, attr_t attrs);\fR
+\fBint wattr_off(WINDOW *win, attr_t attrs, void *opts);\fR
 .br
-\fBint attr_on(attr_t attrs);\fR
+\fBint attr_on(attr_t attrs, void *opts);\fR
 .br
-\fBint wattr_on(WINDOW *, attr_t attrs);\fR
+\fBint wattr_on(WINDOW *win, attr_t attrs, void *opts);\fR
 .br
-\fBint attr_set(attr_t attrs);\fR
+\fBint attr_set(attr_t attrs, void *opts);\fR
 .br
-\fBint wattr_set(WINDOW *, attr_t attrs);\fR
+\fBint wattr_set(WINDOW *win, attr_t attrs, void *opts);\fR
 .br
 \fBint chgat(int n, attr_t attr, short color,
-	const void *opts)\fR
+      const void *opts)\fR
 .br
-\fBint wchgat(WINDOW *, int n, attr_t attr,
+\fBint wchgat(WINDOW *win, int n, attr_t attr,
       short color, const void *opts)\fR
 .br
 \fBint mvchgat(int y, int x, int n, attr_t attr,
       short color, const void *opts)\fR
 .br
-\fBint mvwchgat(WINDOW *, int y, int x, int n, attr_t attr,
-      short color, const void *opts)\fR
+\fBint mvwchgat(WINDOW *win, int y, int x, int n,
+      attr_t attr, short color, const void *opts)\fR
 .br
 .SH DESCRIPTION
 These routines manipulate the current attributes of the named window.  The
@@ -112,8 +113,9 @@ foreground/background combination described by the color_pair_number. The
 parameter opts is reserved for future use, applications must supply a null
 pointer.
 
-The routine \fBwattr_get\fR returns the current attribute for the given
-window; \fBattr_get\fR returns the current attribute for \fBstdscr\fR.
+The routine \fBwattr_get\fR returns the current attribute and color pair for
+the given window; \fBattr_get\fR returns the current attribute and color pair
+for \fBstdscr\fR.
 The remaining \fBattr_\fR* functions operate exactly like the corresponding
 \fBattr\fR* functions, except that they take arguments of type \fBattr_t\fR
 rather than \fBint\fR.

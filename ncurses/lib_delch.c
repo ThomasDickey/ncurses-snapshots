@@ -40,35 +40,29 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_delch.c,v 1.7 1998/02/11 12:13:53 tom Exp $")
+MODULE_ID("$Id: lib_delch.c,v 1.8 1998/06/28 00:28:17 tom Exp $")
 
 int wdelch(WINDOW *win)
 {
 int     code = ERR;
-chtype	*temp1, *temp2;
-chtype	*end;
-chtype	blank = _nc_background(win);
 
 	T((T_CALLED("wdelch(%p)"), win));
 
 	if (win) {
-	  end = &win->_line[win->_cury].text[win->_maxx];
-	  temp2 = &win->_line[win->_cury].text[win->_curx + 1];
-	  temp1 = temp2 - 1;
-	  
-	  while (temp1 < end)
-	    *temp1++ = *temp2++;
-	  
-	  *temp1 = blank;
-	  
-	  win->_line[win->_cury].lastchar = win->_maxx;
-	  
-	  if (win->_line[win->_cury].firstchar == _NOCHANGE
-	      || win->_line[win->_cury].firstchar > win->_curx)
-	    win->_line[win->_cury].firstchar = win->_curx;
-	  
-	  _nc_synchook(win);
-	  code = OK;
+		chtype	blank = _nc_background(win);
+		struct ldat *line = &(win->_line[win->_cury]);
+		chtype *end   = &(line->text[win->_maxx]);
+		chtype *temp2 = &(line->text[win->_curx + 1]);
+		chtype *temp1 = temp2 - 1;
+
+		CHANGED_TO_EOL(line, win->_curx, win->_maxx);
+		while (temp1 < end)
+			*temp1++ = *temp2++;
+
+		*temp1 = blank;
+
+		_nc_synchook(win);
+		code = OK;
 	}
 	returnCode(code);
 }

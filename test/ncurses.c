@@ -39,7 +39,7 @@ DESCRIPTION
 AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
 
-$Id: ncurses.c,v 1.108 1998/02/28 01:11:47 tom Exp $
+$Id: ncurses.c,v 1.109 1998/07/11 23:07:10 tom Exp $
 
 ***************************************************************************/
 
@@ -1559,7 +1559,7 @@ int y,x;
 static void demo_panels(void)
 {
 int itmp;
-register y,x;
+register int y,x;
 
 	refresh();
 

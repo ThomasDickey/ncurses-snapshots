@@ -63,31 +63,24 @@
 #define select check_select
 #endif
 
-MODULE_ID("$Id: lib_twait.c,v 1.30 1998/02/11 12:14:01 tom Exp $")
+MODULE_ID("$Id: lib_twait.c,v 1.32 1998/06/06 22:44:14 tom Exp $")
 
-/*
- * We want to define GOOD_SELECT if the last argument of select(2) is
- * modified to indicate time left.  The code will deal gracefully with
- * the other case, this is just an optimization to reduce the number
- * of system calls per input event.
- *
- * In general, expect System-V-like UNIXes to have this behavior and BSD-like
- * ones to not have it.  Check your manual page.  If it doesn't explicitly
- * say the last argument is modified, assume it's not.
- *
- * (We'd really like configure to autodetect this, but writing a proper test
- * turns out to be hard.)
- */
+static int _nc_gettime(void)
+{
+	int res;
 
 #if HAVE_GETTIMEOFDAY
-#if (defined(TRACE) && !HAVE_USLEEP) || ! GOOD_SELECT
-static void _nc_gettime(struct timeval *tp)
-{
-	gettimeofday(tp, (struct timezone *)0);
-	T(("time: %ld.%06ld", (long) tp->tv_sec, (long) tp->tv_usec));
+# define PRECISE_GETTIME 1
+	struct timeval t;
+	gettimeofday(&t, (struct timezone *)0);
+	res = t.tv_sec*1000 + t.tv_usec/1000;
+#else
+# define PRECISE_GETTIME 0
+	res = time(0)*1000;
+#endif
+	T(("time: %d msec", res));
+	return res;
 }
-#endif
-#endif
 
 /*
  * Wait a specified number of milliseconds, returning nonzero if the timer
@@ -105,12 +98,9 @@ static void _nc_gettime(struct timeval *tp)
 int _nc_timed_wait(int mode, int milliseconds, int *timeleft)
 {
 int	fd;
-int	count = 0;
-long	whole_secs = milliseconds / 1000;
-long	micro_secs = (milliseconds % 1000) * 1000;
+int	count;
 
-int result = 0;
-struct timeval ntimeout;
+int result;
 
 #if USE_FUNC_POLL
 struct pollfd fds[2];
@@ -118,119 +108,83 @@ struct pollfd fds[2];
 static fd_set set;
 #endif
 
-#if !GOOD_SELECT && HAVE_GETTIMEOFDAY
-struct timeval starttime, returntime;
-long delta;
+int starttime, returntime;
 
-	_nc_gettime(&starttime);
+	T(("start twait: %d milliseconds, mode: %d", milliseconds, mode));
+
+#if PRECISE_GETTIME
+retry:
 #endif
+	starttime = _nc_gettime();
 
-	if (milliseconds >= 0) {
-		ntimeout.tv_sec  = whole_secs;
-		ntimeout.tv_usec = micro_secs;
-	} else {
-		ntimeout.tv_sec  = 0;
-		ntimeout.tv_usec = 0;
+	count = 0;
+
+#if USE_FUNC_POLL
+	if (mode & 1) {
+		fds[count].fd     = SP->_ifd;
+		fds[count].events = POLLIN;
+		count++;
+	}
+	if ((mode & 2)
+	 && (fd = SP->_mouse_fd) >= 0) {
+		fds[count].fd     = fd;
+		fds[count].events = POLLIN;
+		count++;
+	}
+	result = poll(fds, count, milliseconds);
+
+#elif HAVE_SELECT
+	/*
+	 * select() modifies the fd_set arguments; do this in the
+	 * loop.
+	 */
+	FD_ZERO(&set);
+
+	if (mode & 1) {
+		FD_SET(SP->_ifd, &set);
+		count = SP->_ifd + 1;
+	}
+	if ((mode & 2)
+	 && (fd = SP->_mouse_fd) >= 0) {
+		FD_SET(fd, &set);
+		count = max(fd, count) + 1;
 	}
 
-	T(("start twait: %lu.%06lu secs, mode: %d", (long) ntimeout.tv_sec, (long) ntimeout.tv_usec, mode));
+	if (milliseconds >= 0) {
+		struct timeval ntimeout;
+		ntimeout.tv_sec  = milliseconds / 1000;
+		ntimeout.tv_usec = (milliseconds % 1000) * 1000;
+		result = select(count, &set, NULL, NULL, &ntimeout);
+	} else {
+		result = select(count, &set, NULL, NULL, NULL);
+	}
+#endif
 
-#ifdef HIDE_EINTR
+	returntime = _nc_gettime();
+
+	if (milliseconds >= 0)
+		milliseconds -= returntime-starttime;
+
+#if PRECISE_GETTIME
 	/*
-	 * The do loop tries to make it look like we have restarting signals,
-	 * even if we don't.
+	 * If the timeout hasn't expired, and we've gotten no data,
+	 * this is probably a system where 'select()' needs to be left
+	 * alone so that it can complete.  Make this process sleep,
+	 * then come back for more.
 	 */
-	do {
-#endif /* HIDE_EINTR */
-#if !GOOD_SELECT && HAVE_GETTIMEOFDAY
-	retry:
-#endif
-		count = 0;
-#if USE_FUNC_POLL
-
-		if (mode & 1) {
-			fds[count].fd     = SP->_ifd;
-			fds[count].events = POLLIN;
-			count++;
-		}
-		if ((mode & 2)
-		 && (fd = SP->_mouse_fd) >= 0) {
-			fds[count].fd     = fd;
-			fds[count].events = POLLIN;
-			count++;
-		}
-		result = poll(fds, count, milliseconds);
-#elif HAVE_SELECT
-		/*
-		 * Some systems modify the fd_set arguments; do this in the
-		 * loop.
-		 */
-		FD_ZERO(&set);
-
-		if (mode & 1) {
-			FD_SET(SP->_ifd, &set);
-			count = SP->_ifd + 1;
-		}
-		if ((mode & 2)
-		 && (fd = SP->_mouse_fd) >= 0) {
-			FD_SET(fd, &set);
-			count = max(fd, count) + 1;
-		}
-
-		errno = 0;
-		result = select(count, &set, NULL, NULL, milliseconds >= 0 ? &ntimeout : 0);
+	if (result == 0 && milliseconds > 100) {
+		napms(100);
+		milliseconds -= 100;
+		goto retry;
+	}
 #endif
 
-#if !GOOD_SELECT && HAVE_GETTIMEOFDAY
-		_nc_gettime(&returntime);
-
-		/* The contents of ntimeout aren't guaranteed after return from
-		 * 'select()', so we disregard its contents.  Also, note that
-		 * on some systems, tv_sec and tv_usec are unsigned.
-		 */
-		ntimeout.tv_sec  = whole_secs;
-		ntimeout.tv_usec = micro_secs;
-
-#define DELTA(f) (long)ntimeout.f - (long)returntime.f + (long)starttime.f
-
-		delta = DELTA(tv_sec);
-		if (delta < 0)
-			delta = 0;
-		ntimeout.tv_sec = delta;
-
-		delta = DELTA(tv_usec);
-		while (delta < 0 && ntimeout.tv_sec != 0) {
-			ntimeout.tv_sec--;
-			delta += 1000000;
-		}
-		ntimeout.tv_usec = delta;
-		if (delta < 0)
-			ntimeout.tv_sec = ntimeout.tv_usec = 0;
-
-		/*
-		 * If the timeout hasn't expired, and we've gotten no data,
-		 * this is probably a system where 'select()' needs to be left
-		 * alone so that it can complete.  Make this process sleep,
-		 * then come back for more.
-		 */
-		if (result == 0
-		 && (ntimeout.tv_sec != 0 || ntimeout.tv_usec > 100000)) {
-			napms(100);
-			goto retry;
-		}
-#endif
-#ifdef HIDE_EINTR
-	} while (result == -1 && errno == EINTR);
-#endif
-
-	/* return approximate time left on the ntimeout, in milliseconds */
+	/* return approximate time left in milliseconds */
 	if (timeleft)
-		*timeleft = (ntimeout.tv_sec * 1000) + (ntimeout.tv_usec / 1000);
+		*timeleft = milliseconds;
 
-	T(("end twait: returned %d (%d), remaining time %lu.%06lu secs (%d msec)",
-		result, errno,
-		(long) ntimeout.tv_sec, (long) (ntimeout.tv_usec / 1000),
-		timeleft ? *timeleft : -1));
+	T(("end twait: returned %d (%d), remaining time %d msec",
+		result, errno, milliseconds));
 
 	/*
 	 * Both 'poll()' and 'select()' return the number of file descriptors

@@ -41,54 +41,51 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_clreol.c,v 1.14 1998/02/11 12:13:55 tom Exp $")
+MODULE_ID("$Id: lib_clreol.c,v 1.15 1998/06/28 00:32:20 tom Exp $")
 
 int  wclrtoeol(WINDOW *win)
 {
 int     code = ERR;
-chtype	blank;
-chtype	*ptr, *end;
-short	y, x;
 
 	T((T_CALLED("wclrtoeol(%p)"), win));
 
 	if (win) {
+		chtype	blank;
+		chtype	*ptr, *end;
+		struct ldat *line;
+		short y = win->_cury;
+		short x = win->_curx;
 
-	  y = win->_cury;
-	  x = win->_curx;
+		/*
+		 * If we have just wrapped the cursor, the clear applies to the
+		 * new line, unless we are at the lower right corner.
+		 */
+		if (win->_flags & _WRAPPED
+		 && y < win->_maxy) {
+			win->_flags &= ~_WRAPPED;
+		}
 
-	  /*
-	   * If we have just wrapped the cursor, the clear applies to the new
-	   * line, unless we are at the lower right corner.
-	   */
-	  if (win->_flags & _WRAPPED
-	      && y < win->_maxy) {
-	    win->_flags &= ~_WRAPPED;
-	  }
-	  
-	  /*
-	   * There's no point in clearing if we're not on a legal position,
-	   * either.
-	   */
-	  if (win->_flags & _WRAPPED
-	      || y > win->_maxy
-	      || x > win->_maxx)
-	    returnCode(ERR);
-	  
-	  blank = _nc_background(win);
-	  end = &win->_line[y].text[win->_maxx];
-	  
-	  for (ptr = &win->_line[y].text[x]; ptr <= end; ptr++)
-	    *ptr = blank;
-	  
-	  if (win->_line[y].firstchar > win->_curx
-	      || win->_line[y].firstchar == _NOCHANGE)
-	    win->_line[y].firstchar = win->_curx;
-	  
-	  win->_line[y].lastchar = win->_maxx;
-	  
-	  _nc_synchook(win);
-	  code = OK;
+		/*
+		 * There's no point in clearing if we're not on a legal
+		 * position, either.
+		 */
+		if (win->_flags & _WRAPPED
+		 || y > win->_maxy
+		 || x > win->_maxx)
+			returnCode(ERR);
+
+		blank = _nc_background(win);
+		line = &win->_line[y];
+		CHANGED_TO_EOL(line, x, win->_maxx);
+
+		ptr = &(line->text[x]);
+		end = &(line->text[win->_maxx]);
+
+		while (ptr <= end)
+			*ptr++ = blank;
+
+		_nc_synchook(win);
+		code = OK;
 	}
 	returnCode(code);
 }

@@ -40,7 +40,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_addstr.c,v 1.14 1998/02/11 12:13:54 tom Exp $")
+MODULE_ID("$Id: lib_addstr.c,v 1.16 1998/06/28 00:38:29 tom Exp $")
 
 int
 waddnstr(WINDOW *win, const char *const astr, int n)
@@ -76,11 +76,12 @@ waddchnstr(WINDOW *win, const chtype *const astr, int n)
 short y = win->_cury;
 short x = win->_curx;
 int code = OK;
+struct ldat *line;
 
 	T((T_CALLED("waddchnstr(%p,%p,%d)"), win, astr, n));
 
 	if (!win)
-	  returnCode(ERR);
+		returnCode(ERR);
 
 	if (n < 0) {
 		const chtype *str;
@@ -93,20 +94,9 @@ int code = OK;
 	if (n == 0)
 		returnCode(code);
 
-	if (win->_line[y].firstchar == _NOCHANGE)
-	{
-		win->_line[y].firstchar = x;
-		win->_line[y].lastchar = x+n-1;
-	}
-	else
-	{
-		if (x < win->_line[y].firstchar)
-			win->_line[y].firstchar = x;
-		if (x+n-1 > win->_line[y].lastchar)
-			win->_line[y].lastchar = x+n-1;
-	}
-	
-	memcpy(win->_line[y].text+x, astr, n*sizeof(*astr));
+	line = &(win->_line[y]);
+	memcpy(line->text+x, astr, n*sizeof(*astr));
+	CHANGED_RANGE(line, x, x+n-1);
 
 	_nc_synchook(win);
 	returnCode(code);

@@ -42,7 +42,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_vline.c,v 1.2 1998/02/11 12:13:55 tom Exp $")
+MODULE_ID("$Id: lib_vline.c,v 1.4 1998/06/28 00:10:12 tom Exp $")
 
 int wvline(WINDOW *win, chtype ch, int n)
 {
@@ -64,13 +64,9 @@ short end;
 		ch = _nc_render(win, ch);
 
 		while(end >= row) {
-			win->_line[end].text[col] = ch;
-			if (win->_line[end].firstchar == _NOCHANGE
-			 || win->_line[end].firstchar > col)
-				win->_line[end].firstchar = col;
-			if (win->_line[end].lastchar == _NOCHANGE
-			 || win->_line[end].lastchar < col)
-				win->_line[end].lastchar = col;
+			struct ldat *line = &(win->_line[end]);
+			line->text[col] = ch;
+			CHANGED_CELL(line, col);
 			end--;
 		}
 

@@ -391,22 +391,29 @@ int	attrset(
 		{ return(*(int *)0); }
 
 #undef attr_get
-int	attr_get(void)
+int	attr_get(
+		attr_t	*a1, 
+		short	*a2, 
+		void	*z)
 		{ return(*(int *)0); }
 
 #undef attr_off
 int	attr_off(
-		NCURSES_ATTR_T	z)
+		attr_t	a1, 
+		void	*z)
 		{ return(*(int *)0); }
 
 #undef attr_on
 int	attr_on(
-		NCURSES_ATTR_T	z)
+		attr_t	a1, 
+		void	*z)
 		{ return(*(int *)0); }
 
 #undef attr_set
 int	attr_set(
-		NCURSES_ATTR_T	z)
+		attr_t	a1, 
+		short	a2, 
+		void	*z)
 		{ return(*(int *)0); }
 
 #undef bkgd
@@ -920,9 +927,9 @@ int	standend(void)
 		{ return(*(int *)0); }
 
 #undef timeout
-int	timeout(
+void	timeout(
 		int	z)
-		{ return(*(int *)0); }
+		{ /* void */ }
 
 #undef untouchwin
 int	untouchwin(
@@ -938,14 +945,14 @@ int	vline(
 #undef vw_printw
 int	vw_printw(
 		WINDOW	*a1, 
-		const char *a2, 
+		char	*a2, 
 		va_list	z)
 		{ return(*(int *)0); }
 
 #undef vw_scanw
 int	vw_scanw(
 		WINDOW	*a1, 
-		const char *a2, 
+		char	*a2, 
 		va_list	z)
 		{ return(*(int *)0); }
 
@@ -980,14 +987,19 @@ int	wattrset(
 		{ return(*(int *)0); }
 
 #undef wattr_get
-attr_t	wattr_get(
-		WINDOW	*z)
-		{ return(*(attr_t *)0); }
+int	wattr_get(
+		WINDOW	*a1, 
+		attr_t	*a2, 
+		short	*a3, 
+		void	*z)
+		{ return(*(int *)0); }
 
 #undef wattr_set
 int	wattr_set(
 		WINDOW	*a1, 
-		attr_t	z)
+		attr_t	a2, 
+		short	a3, 
+		void	*z)
 		{ return(*(int *)0); }
 
 #undef wdeleteln
@@ -1135,8 +1147,8 @@ int	winnstr(
 /* ./lib_isendwin.c */
 
 #undef isendwin
-int	isendwin(void)
-		{ return(*(int *)0); }
+bool	isendwin(void)
+		{ return(*(bool *)0); }
 
 /* ./lib_leaveok.c */
 
@@ -1240,7 +1252,7 @@ void	filter(void)
 
 #undef newterm
 SCREEN	*newterm(
-		const char *term, 
+		char	*term, 
 		FILE	*ofp, 
 		FILE	*ifp)
 		{ return(*(SCREEN **)0); }
@@ -1369,26 +1381,18 @@ int	pechochar(
 		const chtype ch)
 		{ return(*(int *)0); }
 
-/* ./lib_print.c */
-
-#undef mcprint
-int	mcprint(
-		char	*data, 
-		int	len)
-		{ return(*(int *)0); }
-
 /* ./lib_printw.c */
 
 #undef printw
 int	printw(
-		const char *fmt, 
+		char	*fmt, 
 		...)
 		{ return(*(int *)0); }
 
 #undef wprintw
 int	wprintw(
 		WINDOW	*win, 
-		const char *fmt, 
+		char	*fmt, 
 		...)
 		{ return(*(int *)0); }
 
@@ -1396,7 +1400,7 @@ int	wprintw(
 int	mvprintw(
 		int	y, 
 		int	x, 
-		const char *fmt, 
+		char	*fmt, 
 		...)
 		{ return(*(int *)0); }
 
@@ -1405,14 +1409,14 @@ int	mvwprintw(
 		WINDOW	*win, 
 		int	y, 
 		int	x, 
-		const char *fmt, 
+		char	*fmt, 
 		...)
 		{ return(*(int *)0); }
 
 #undef vwprintw
 int	vwprintw(
 		WINDOW	*win, 
-		const char *fmt, 
+		char	*fmt, 
 		va_list	argp)
 		{ return(*(int *)0); }
 
@@ -1459,20 +1463,20 @@ int	restartterm(
 #undef vwscanw
 int	vwscanw(
 		WINDOW	*win, 
-		const char *fmt, 
+		char	*fmt, 
 		va_list	argp)
 		{ return(*(int *)0); }
 
 #undef scanw
 int	scanw(
-		const char *fmt, 
+		char	*fmt, 
 		...)
 		{ return(*(int *)0); }
 
 #undef wscanw
 int	wscanw(
 		WINDOW	*win, 
-		const char *fmt, 
+		char	*fmt, 
 		...)
 		{ return(*(int *)0); }
 
@@ -1480,7 +1484,7 @@ int	wscanw(
 int	mvscanw(
 		int	y, 
 		int	x, 
-		const char *fmt, 
+		char	*fmt, 
 		...)
 		{ return(*(int *)0); }
 
@@ -1489,7 +1493,7 @@ int	mvwscanw(
 		WINDOW	*win, 
 		int	y, 
 		int	x, 
-		const char *fmt, 
+		char	*fmt, 
 		...)
 		{ return(*(int *)0); }
 
@@ -1710,15 +1714,15 @@ int	slk_attr_set(
 /* ./lib_touch.c */
 
 #undef is_linetouched
-int	is_linetouched(
+bool	is_linetouched(
 		WINDOW	*win, 
 		int	line)
-		{ return(*(int *)0); }
+		{ return(*(bool *)0); }
 
 #undef is_wintouched
-int	is_wintouched(
+bool	is_wintouched(
 		WINDOW	*win)
-		{ return(*(int *)0); }
+		{ return(*(bool *)0); }
 
 #undef wtouchln
 int	wtouchln(
@@ -1796,7 +1800,8 @@ int	wvline(
 #undef wattr_off
 int	wattr_off(
 		WINDOW	*win, 
-		const attr_t at)
+		attr_t	at, 
+		void	*opts)
 		{ return(*(int *)0); }
 
 /* ./lib_wattron.c */
@@ -1804,7 +1809,8 @@ int	wattr_off(
 #undef wattr_on
 int	wattr_on(
 		WINDOW	*win, 
-		const attr_t at)
+		attr_t	at, 
+		void	*opts)
 		{ return(*(int *)0); }
 
 /* ./lib_window.c */
@@ -2026,6 +2032,14 @@ void	_nc_freeall(void)
 void	_nc_free_and_exit(
 		int	code)
 		{ /* void */ }
+
+/* ./lib_print.c */
+
+#undef mcprint
+int	mcprint(
+		char	*data, 
+		int	len)
+		{ return(*(int *)0); }
 
 /* ./resizeterm.c */
 
@@ -2347,9 +2361,9 @@ struct kn {
 const struct kn key_names[] = {0};
 
 #undef keyname
-const char *keyname(
+char	*keyname(
 		int	c)
-		{ return(*(const char **)0); }
+		{ return(*(char **)0); }
 
 /* ./lib_napms.c */
 
@@ -2361,12 +2375,12 @@ int	napms(
 /* ./lib_options.c */
 
 #undef has_ic
-int	has_ic(void)
-		{ return(*(int *)0); }
+bool	has_ic(void)
+		{ return(*(bool *)0); }
 
 #undef has_il
-int	has_il(void)
-		{ return(*(int *)0); }
+bool	has_il(void)
+		{ return(*(bool *)0); }
 
 #undef idlok
 int	idlok(
@@ -2398,10 +2412,10 @@ int	notimeout(
 		{ return(*(int *)0); }
 
 #undef wtimeout
-int	wtimeout(
+void	wtimeout(
 		WINDOW	*win, 
 		int	delay)
-		{ return(*(int *)0); }
+		{ /* void */ }
 
 #undef keypad
 int	keypad(
@@ -2452,8 +2466,8 @@ int	cbreak(void)
 		{ return(*(int *)0); }
 
 #undef qiflush
-int	qiflush(void)
-		{ return(*(int *)0); }
+void	qiflush(void)
+		{ /* void */ }
 
 #undef noraw
 int	noraw(void)
@@ -2464,8 +2478,8 @@ int	nocbreak(void)
 		{ return(*(int *)0); }
 
 #undef noqiflush
-int	noqiflush(void)
-		{ return(*(int *)0); }
+void	noqiflush(void)
+		{ /* void */ }
 
 #undef intrflush
 int	intrflush(
@@ -2555,17 +2569,17 @@ char	*tgoto(
 
 #undef tigetflag
 int	tigetflag(
-		const char *str)
+		char	*str)
 		{ return(*(int *)0); }
 
 #undef tigetnum
 int	tigetnum(
-		const char *str)
+		char	*str)
 		{ return(*(int *)0); }
 
 #undef tigetstr
 char	*tigetstr(
-		const char *str)
+		char	*str)
 		{ return(*(char **)0); }
 
 /* ./lib_tparm.c */
@@ -2577,7 +2591,7 @@ typedef union {
 
 #undef tparm
 char	*tparm(
-		const char *string, 
+		char	*string, 
 		...)
 		{ return(*(char **)0); }
 

@@ -26,7 +26,7 @@
 .\" authorization.                                                           *
 .\"***************************************************************************
 .\"
-.\" $Id: term.7,v 1.8 1998/03/11 21:12:53 juergen Exp $
+.\" $Id: term.7,v 1.9 1998/06/20 20:00:28 tom Exp $
 .TH TERM 7
 .ds n 5
 .ds d @DATADIR@/terminfo
@@ -55,7 +55,7 @@ can almost always be avoided by explicitly exporting `vt100' (assuming you
 are in fact using a VT100-superset console, terminal, or terminal emulator.)
 .PP
 In any case, you are free to override the system \fBTERM\fR setting to your
-taste in your shell profile.  The \fBtset\fB(1) utility may be of assistance;
+taste in your shell profile.  The \fBtset\fP(1) utility may be of assistance;
 you can give it a set of rules for deducing or requesting a terminal type based
 on the tty device and baud rate.
 .PP
@@ -175,7 +175,7 @@ model 2317 terminal in 30-line mode with reverse video, best form would be
 \fBfubar-30-rv\fR (rather than, say, `fubar-rv-30').
 .PP
 Terminal types that are written not as standalone entries, but rather as
-components to be plugged into other entries via \fBuse\fB capabilities,
+components to be plugged into other entries via \fBuse\fP capabilities,
 are distinguished by using embedded plus signs rather than dashes.
 .PP
 Commands which use a terminal type to control display often accept a -T

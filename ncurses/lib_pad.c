@@ -41,7 +41,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_pad.c,v 1.25 1998/02/11 12:13:55 tom Exp $")
+MODULE_ID("$Id: lib_pad.c,v 1.27 1998/06/28 00:10:16 tom Exp $")
 
 WINDOW *newpad(int l, int c)
 {
@@ -178,13 +178,7 @@ bool	wide;
 		for (j = pmincol, n = smincol; j <= pmaxcol; j++, n++) {
 			if (oline->text[j] != nline->text[n]) {
 				nline->text[n] = oline->text[j];
-
-				if (nline->firstchar == _NOCHANGE)
-					nline->firstchar = nline->lastchar = n;
-				else if (n < nline->firstchar)
-					nline->firstchar = n;
-				else if (n > nline->lastchar)
-					nline->lastchar = n;
+				CHANGED_CELL(nline,n);
 			}
 		}
 

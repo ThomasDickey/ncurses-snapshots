@@ -1,10 +1,85 @@
--- $Id: NEWS,v 1.339 1998/05/31 00:34:58 tom Exp $
+-- $Id: NEWS,v 1.349 1998/07/12 00:00:25 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+980711
+	+ modify Ada95 'gen' program to use appropriate library suffix (e.g.,
+	  "_g" for a debug build).
+	+ update Ada95 'make clean' rule to include generics .ali files
+	+ add a configure test to ensure that if GNAT is found, that it can
+	  compile/link working Ada95 program.
+	+ flush output in beep and flash functions, fixing a problem with
+	  getstr (patch by Alexander V Lukyanov)
+	+ fix egcs 1.0.2 warning for etip.h (patch by Chris Johns).
+	+ correct ifdef/brace nesting in lib_sprintf.c (patch by Bernhard
+	  Rosenkraenzer <bero@Pool.Informatik.RWTH-Aachen.DE>).
+	+ correct typo in wattr_get macro from 980509 fixes (patch by Dan
+	  Nelson).
+
+980704
+	+ merge changes from current XFree86 xterm terminfo descriptions.
+	+ add configure option '--without-ada'.
+	+ add a smart-default for termcap 'ac' to terminfo 'acs_chars' which
+	  corresponds to vt100.
+	+ change translation for termcap 'rs' to terminfo 'rs2', which is
+	  the documented equivalent, rather than 'rs1'.
+
+980627
+	+ slow 'worm' down a little, for very fast machines.
+	+ corrected firstchar/lastchar computation in lib_hline.c
+	+ simplify some expressions with CHANGED_CELL, CHANGED_RANGE and
+	  CHANGED_TO_EOL macros.
+	+ modify init_pair so that if a color-pair is reinitialized, we will
+	  repaint the areas of the screen whose color changes, like SVr4 curses
+	  (reported by Christian Maurer <maurer@inf.fu-berlin.de>).
+	+ modify getsyx/setsyx macros to comply with SVr4 man-page which
+	  says that leaveok() affects their behavior (report by Darryl Miles,
+	  patch by Alexander V Lukyanov).
+
+980620
+	+ review terminfo.5 against Solaris 2.6 curses version, corrected
+	  several minor errors/omissions.
+	+ implement tparm %l format.
+	+ implement tparm printf-style width and precision for %s, %d, %x, %o
+	  as per XSI.
+	+ implement tparm dynamic variables (reported by Xiaodan Tang).
+
+980613
+	+ update man-page for for wattr_set, wattr_get (cf:  980509)
+	+ correct limits in hashtest, which would cause nonprinting characters
+	  to be written to large screens.
+	+ correct configure script, when --without-cxx was specified:  the
+	  wrong variable was used for cf_cv_type_of_bool.  Compilers up to gcc
+	  2.8 tolerated the missing 'int'.
+	+ remove the hardcoded name "gcc" for the GNU Ada compiler.  The
+	  compiler's name might be something like "egcs" (patch by Juergen
+	  Pfeifer).
+	+ correct curs_addch.3x, which implied that echochar could directly
+	  display control characters (patch by Alexander V Lukyanov).
+	+ fix typos in ncurses-intro.html (patch by Sidik Isani
+	  <isani@cfht.hawaii.edu>)
+
+980606
+	+ add configure test for conflicting use of exception in math.h and
+	  other headers.
+	+ minor optimization to 'hash()' function in hashmap.c, reduces its
+	  time by 10%.
+	+ correct form of LD_SHARED_OPTS for HP-UX 10.x (patch by Tim Mooney).
+	+ fix missing quotes for 'print' in MKunctrl.awk script (reported by
+	  Mihai Budiu <mihaib@gs41.sp.cs.cmu.edu>).
+	> patch by Alexander V Lukyanov:
+	+ correct problem on Solaris (with poll() function) where getch could
+	  hang indefinitely even if timeout(x) was called.  This turned out to
+	  be because milliseconds was not updated before 'goto retry' in
+	  _nc_timed_wait.
+	+ simplified the function _nc_timed_wait and fixed another bug, which
+	  was the assumption of !GOOD_SELECT && HAVE_GETTIMEOFDAY in *timeleft
+	  assignment.
+	+ removed the cycle on EINTR, as it seems to be useless.
 
 980530
 	+ add makefile-rule for test/keynames
@@ -20,7 +95,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 
 980523
 	+ correct maxx/maxy expression for num_columns/num_lines in derwin
-	  (patch by Alexander V.  Lukyanov).
+	  (patch by Alexander V Lukyanov).
 	+ add /usr/share/lib/terminfo and /usr/lib/terminfo as compatibilty
 	  fallbacks to _nc_read_entry(), along with --with-terminfo-dirs
 	  configure option (suggested by Mike Hopkirk).
@@ -82,7 +157,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ remove restriction that forces ncurses to use setaf/setab if the
 	  number of colors is greater than 8.  (see 970524 for xterm-16color).
 	+ change order of -L options (so that $(libdir) is searched first) when
-	  linking tic and other programs, to workaround HP's linker. 
+	  linking tic and other programs, to workaround HP's linker.
 	  Otherwise, the -L../lib is embedded when linking against shared
 	  libraries and the installed program does not run (reported by Ralf
 	  Hildebrandt).
@@ -152,7 +227,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	  Zimmerman).
 
 980314
-	+ correct limits and window in wredrawln function (reported/analysis by 
+	+ correct limits and window in wredrawln function (reported/analysis by
 	  Alexander V. Lukyanov).
 	+ correct sed expression in configure script for --with-fallback
 	  option (patch by Jesse Thilo).
@@ -166,11 +241,11 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ add copyright notices (and rcs id's) on remaining man-pages.
 	+ corrected prototypes for slk_* functions, using chtype rather than
 	  attr_t.
-	+ implemented the wcolor_set() and slk_color() functions 
+	+ implemented the wcolor_set() and slk_color() functions
 	+ the slk_attr_{set,off,on} functions need an additional void*
-	  parameter according to XSI. 
-	+ fix the C++ and Ada95 binding as well as the man pages to 
-    	  reflect above enhancements. 
+	  parameter according to XSI.
+	+ fix the C++ and Ada95 binding as well as the man pages to
+    	  reflect above enhancements.
 
 980307
 	+ use 'stat()' rather than 'access()' in toe.c to check for the
@@ -267,7 +342,7 @@ Changes since 1.9.9e are recorded by Thomas Dickey.
 	+ remove sgr string from qnx terminfo entry since it is reported to
 	  turn off attributes inconsistently.
 
-980124 
+980124
 	+ add f/F/b/B commands to ncurses 'b' test to toggle colors, providing
 	  test for no_color_video.
 	+ adjusted emx.src to use no_color_video, now works with ncurses 'b'

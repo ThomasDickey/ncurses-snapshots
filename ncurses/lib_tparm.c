@@ -39,9 +39,11 @@
 
 #include <curses.priv.h>
 
+#include <ctype.h>
 #include <term.h>
+#include <tic.h>
 
-MODULE_ID("$Id: lib_tparm.c,v 1.28 1998/05/30 23:31:32 Todd.Miller Exp $")
+MODULE_ID("$Id: lib_tparm.c,v 1.31 1998/06/21 00:55:35 tom Exp $")
 
 /*
  *	char *
@@ -68,22 +70,17 @@ MODULE_ID("$Id: lib_tparm.c,v 1.28 1998/05/30 23:31:32 Todd.Miller Exp $")
  *	     The % encodings have the following meanings:
  *
  *	     %%        outputs `%'
- *	     %02d      print pop() like %02d in printf()
- *	     %02x      print pop() like %02x in printf()
- *	     %03d      print pop() like %03d in printf()
- *	     %03x      print pop() like %03x in printf()
- *	     %2d       print pop() like %2d in printf()
- *	     %2x       print pop() like %2x in printf()
- *	     %3d       print pop() like %3d in printf()
- *	     %3x       print pop() like %3x in printf()
  *	     %c        print pop() like %c in printf()
- *	     %d        print pop() like %d in printf()
  *	     %s        print pop() like %s in printf()
- *	     %x        print pop() like %x in printf()
+ *           %[[:]flags][width[.precision]][doxXs]
+ *                     as in printf, flags are [-+#] and space
  *
  *	     %p[1-9]   push ith parm
- *	     %P[a-z]   set variable [a-z] to pop()
- *	     %g[a-z]   get variable [a-z] and push it
+ *	     %P[a-z]   set dynamic variable [a-z] to pop()
+ *	     %g[a-z]   get dynamic variable [a-z] and push it
+ *	     %P[A-Z]   set static variable [A-Z] to pop()
+ *	     %g[A-Z]   get static variable [A-Z] and push it
+ *	     %l        push strlen(pop)
  *	     %'c'      push char constant c
  *	     %{nn}     push integer constant nn
  *
@@ -137,9 +134,9 @@ void _nc_free_tparm(void)
 }
 #endif
 
-static void save_text(char *s)
+static void save_text(size_t limit, char *s)
 {
-	size_t	want = strlen(s);
+	size_t	want = strlen(s) + limit;
 	size_t	need = want + out_used + 1;
 
 	if (need > out_size) {
@@ -159,7 +156,7 @@ static void save_number(const char *fmt, int number)
 {
 	char temp[80];
 	(void)sprintf(temp, fmt, number);
-	save_text(temp);
+	save_text(0, temp);
 }
 
 static inline void save_char(int c)
@@ -168,7 +165,7 @@ static inline void save_char(int c)
 	if (c == 0)
 		c = 0200;
 	text[0] = c;
-	save_text(text);
+	save_text(0, text);
 }
 
 static inline void npush(int x)
@@ -186,22 +183,86 @@ static inline int npop(void)
 
 static inline char *spop(void)
 {
-	return   (stack_ptr > 0  ?  stack[--stack_ptr].str  :  0);
+	return   (stack_ptr > 0  ?  stack[--stack_ptr].str  :  "");
 }
+
+static inline const char *parse_format(const char *s, char *format, int *len)
+{
+	bool done = FALSE;
+	bool allowminus = FALSE;
+	bool dot = FALSE;
+	int maxlen = 0;
+	int minlen = 0;
+
+	*len = 0;
+	*format++ = '%';
+	while (*s != '\0' && !done) {
+		switch (*s) {
+		case 'c':	/* FALLTHRU */
+		case 'd':	/* FALLTHRU */
+		case 'o':	/* FALLTHRU */
+		case 'x':	/* FALLTHRU */
+		case 'X':	/* FALLTHRU */
+		case 's':
+			*format++ = *s;
+			done = TRUE;
+			break;
+		case '.':
+			*format++ = *s++;
+			dot = TRUE;
+			break;
+		case '#':
+			*format++ = *s++;
+			break;
+		case ' ':
+			*format++ = *s++;
+			break;
+		case ':':
+			s++;
+			allowminus = TRUE;
+			break;
+		case '-':
+			if (allowminus) {
+				*format++ = *s++;
+			} else {
+				done = TRUE;
+			}
+			break;
+		default:
+			if (isdigit(*s)) {
+				if (dot)
+					maxlen = (maxlen * 10) + (*s - '0');
+				else
+					minlen = (minlen * 10) + (*s - '0');
+				*format++ = *s++;
+			} else {
+				done = TRUE;
+			}
+		}
+	}
+	*format = '\0';
+	*len = (maxlen > minlen) ? maxlen : minlen;
+	return s;
+}
+
+#define isUPPER(c) ((c) >= 'A' && (c) <= 'Z')
+#define isLOWER(c) ((c) >= 'a' && (c) <= 'z')
 
 static inline char *tparam_internal(const char *string, va_list ap)
 {
 #define NUM_VARS 26
 int	param[9];
 int	popcount;
-int	variable[NUM_VARS];
-char	len;
 int	number;
+int	len;
 int	level;
 int	x, y;
 int	i;
-int	varused = -1;
 register const char *cp;
+static	size_t len_fmt;
+static	char *format;
+static	int dynamic_var[NUM_VARS];
+static	int static_vars[NUM_VARS];
 
 	out_used = 0;
 	if (string == NULL)
@@ -238,6 +299,12 @@ register const char *cp;
 			}
 		}
 	}
+	if ((size_t)(cp - string) > len_fmt) {
+		len_fmt = (cp - string) + len_fmt + 2;
+		format = format ? realloc(format, len_fmt) : malloc(len_fmt);
+		if (format == 0)
+			return 0;
+	}
 
 	if (number > 9) number = 9;
 	for (i = 0; i < max(popcount, number); i++) {
@@ -272,10 +339,11 @@ register const char *cp;
 #endif /* TRACE */
 
 	while (*string) {
-		if (*string != '%')
+		if (*string != '%') {
 			save_char(*string);
-		else {
+		} else {
 			string++;
+			string = parse_format(string, format, &len);
 			switch (*string) {
 			default:
 				break;
@@ -283,61 +351,20 @@ register const char *cp;
 				save_char('%');
 				break;
 
-			case 'd':
-				save_number("%d", npop());
-				break;
-
-			case 'x':
-				save_number("%x", npop());
-				break;
-
-			case '0':
-				string++;
-				len = *string;
-				if (len == '2'  ||  len == '3')
-				{
-					++string;
-					if (*string == 'd') {
-						if (len == '2')
-							save_number("%02d", npop());
-						else
-							save_number("%03d", npop());
-					}
-					else if (*string == 'x') {
-						if (len == '2')
-							save_number("%02x", npop());
-						else
-							save_number("%03x", npop());
-					}
-				}
-				break;
-
-			case '2':
-				string++;
-				if (*string == 'd') {
-					save_number("%2d", npop());
-				}
-				else if (*string == 'x') {
-					save_number("%2x", npop());
-				}
-				break;
-
-			case '3':
-				string++;
-				if (*string == 'd') {
-					save_number("%3d", npop());
-				}
-				else if (*string == 'x') {
-					save_number("%3x", npop());
-				}
-				break;
-
+			case 'd':	/* FALLTHRU */
+			case 'o':	/* FALLTHRU */
+			case 'x':	/* FALLTHRU */
+			case 'X':	/* FALLTHRU */
 			case 'c':
-				save_char(npop());
+				save_number(format, npop());
+				break;
+
+			case 'l':
+				save_number("%d", strlen(spop()));
 				break;
 
 			case 's':
-				save_text(spop());
+				save_text(len, spop());
 				break;
 
 			case 'p':
@@ -348,21 +375,23 @@ register const char *cp;
 
 			case 'P':
 				string++;
-				i = (*string - 'a');
-				if (i >= 0 && i < NUM_VARS) {
-					while (varused < i)
-						variable[++varused] = 0;
-					variable[i] = npop();
+				if (isUPPER(*string)) {
+					i = (*string - 'A');
+					static_vars[i] = npop();
+				} else if (isLOWER(*string)) {
+					i = (*string - 'a');
+					dynamic_var[i] = npop();
 				}
 				break;
 
 			case 'g':
 				string++;
-				i = (*string - 'a');
-				if (i >= 0 && i < NUM_VARS) {
-					while (varused < i)
-						variable[++varused] = 0;
-					npush(variable[i]);
+				if (isUPPER(*string)) {
+					i = (*string - 'A');
+					npush(static_vars[i]);
+				} else if (isLOWER(*string)) {
+					i = (*string - 'a');
+					npush(dynamic_var[i]);
 				}
 				break;
 

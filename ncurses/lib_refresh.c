@@ -42,7 +42,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_refresh.c,v 1.21 1998/05/09 14:59:56 tom Exp $")
+MODULE_ID("$Id: lib_refresh.c,v 1.23 1998/06/28 00:10:14 tom Exp $")
 
 int wrefresh(WINDOW *win)
 {
@@ -153,13 +153,7 @@ bool	wide;
 			for (j = oline->firstchar, n = j + begx; j <= last; j++, n++) {
 				if (oline->text[j] != nline->text[n]) {
 					nline->text[n] = oline->text[j];
-
-					if (nline->firstchar == _NOCHANGE)
-						nline->firstchar = nline->lastchar = n;
-					else if (n < nline->firstchar)
-						nline->firstchar = n;
-					else if (n > nline->lastchar)
-						nline->lastchar = n;
+					CHANGED_CELL(nline, n);
 				}
 			}
 

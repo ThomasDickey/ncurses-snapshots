@@ -42,31 +42,26 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_insch.c,v 1.9 1998/02/11 12:13:54 tom Exp $")
+MODULE_ID("$Id: lib_insch.c,v 1.10 1998/06/28 00:26:52 tom Exp $")
 
 int  winsch(WINDOW *win, chtype c)
 {
 int code = ERR;
-chtype	*temp1, *temp2;
-chtype	*end;
 
 	T((T_CALLED("winsch(%p, %s)"), win, _tracechtype(c)));
 
 	if (win) {
-	  end = &win->_line[win->_cury].text[win->_curx];
-	  temp1 = &win->_line[win->_cury].text[win->_maxx];
-	  temp2 = temp1 - 1;
+		struct ldat *line = &(win->_line[win->_cury]);
+		chtype *end = &(line->text[win->_curx]);
+		chtype *temp1 = &(line->text[win->_maxx]);
+		chtype *temp2 = temp1 - 1;
 
-	  while (temp1 > end)
-	    *temp1-- = *temp2--;
-	  
-	  *temp1 = _nc_render(win, c);
-	  
-	  win->_line[win->_cury].lastchar = win->_maxx;
-	  if (win->_line[win->_cury].firstchar == _NOCHANGE
-	      ||  win->_line[win->_cury].firstchar > win->_curx)
-	    win->_line[win->_cury].firstchar = win->_curx;
-	  code = OK;
+		CHANGED_TO_EOL(line, win->_curx, win->_maxx);
+		while (temp1 > end)
+			*temp1-- = *temp2--;
+
+		*temp1 = _nc_render(win, c);
+		code = OK;
 	}
 	returnCode(code);
 }

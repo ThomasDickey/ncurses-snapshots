@@ -48,7 +48,10 @@
 #include <term.h>
 #include <term_entry.h>
 
-MODULE_ID("$Id: alloc_entry.c,v 1.13 1998/02/11 12:13:53 tom Exp $")
+MODULE_ID("$Id: alloc_entry.c,v 1.14 1998/07/04 23:17:42 tom Exp $")
+
+#define ABSENT_OFFSET    -1
+#define CANCELLED_OFFSET -2
 
 #define MAX_STRTAB	4096	/* documented maximum entry size */
 
@@ -61,13 +64,13 @@ void _nc_init_entry(TERMTYPE *const tp)
 int	i;
 
 	for (i=0; i < BOOLCOUNT; i++)
-		    tp->Booleans[i] = FALSE;
+		tp->Booleans[i] = FALSE; /* FIXME: why not ABSENT_BOOLEAN? */
 
 	for (i=0; i < NUMCOUNT; i++)
-		    tp->Numbers[i] = -1;
+		tp->Numbers[i] = ABSENT_NUMERIC;
 
 	for (i=0; i < STRCOUNT; i++)
-		    tp->Strings[i] = (char *)NULL;
+		tp->Strings[i] = ABSENT_STRING;
 
 	next_free = 0;
 }
@@ -96,35 +99,35 @@ int	i, n;
 
 	n = ep->tterm.term_names - stringbuf;
 	for (i=0; i < STRCOUNT; i++)
-		if (ep->tterm.Strings[i] == (char *)NULL)
-			offsets[i] = -1;
+		if (ep->tterm.Strings[i] == ABSENT_STRING)
+			offsets[i] = ABSENT_OFFSET;
 		else if (ep->tterm.Strings[i] == CANCELLED_STRING)
-			offsets[i] = -2;
+			offsets[i] = CANCELLED_OFFSET;
 		else
 			offsets[i] = ep->tterm.Strings[i] - stringbuf;
 
 	for (i=0; i < ep->nuses; i++)
-		if (ep->uses[i].parent == (void *)NULL)
-			useoffsets[i] = -1;
+		if (ep->uses[i].parent == (void *)0)
+			useoffsets[i] = ABSENT_OFFSET;
 		else
 			useoffsets[i] = (char *)(ep->uses[i].parent) - stringbuf;
 
-	if ((ep->tterm.str_table = (char *)malloc(next_free)) == (char *)NULL)
+	if ((ep->tterm.str_table = (char *)malloc(next_free)) == (char *)0)
 		_nc_err_abort("Out of memory");
 	(void) memcpy(ep->tterm.str_table, stringbuf, next_free);
 
 	ep->tterm.term_names = ep->tterm.str_table + n;
 	for (i=0; i < STRCOUNT; i++)
-		if (offsets[i] == -1)
-			ep->tterm.Strings[i] = (char *)NULL;
-		else if (offsets[i] == -2)
+		if (offsets[i] == ABSENT_OFFSET)
+			ep->tterm.Strings[i] = ABSENT_STRING;
+		else if (offsets[i] == CANCELLED_OFFSET)
 			ep->tterm.Strings[i] = CANCELLED_STRING;
 		else
 			ep->tterm.Strings[i] = ep->tterm.str_table + offsets[i];
 
 	for (i=0; i < ep->nuses; i++)
-		if (useoffsets[i] == -1)
-			ep->uses[i].parent = (void *)NULL;
+		if (useoffsets[i] == ABSENT_OFFSET)
+			ep->uses[i].parent = (void *)0;
 		else
 			ep->uses[i].parent = (char *)(ep->tterm.str_table + useoffsets[i]);
 }
