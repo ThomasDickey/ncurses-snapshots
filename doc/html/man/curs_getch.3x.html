@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>getch</B>,  <B>wgetch</B>,  <B>mvgetch</B>, <B>mvwgetch</B>, <B>ungetch</B> - get (or push
        back) characters from <B>curses</B> terminal keyboard
 
@@ -30,10 +33,10 @@
        waits  until a character is typed or the specified timeout
        has been reached.
 
-       If <B>noecho</B> has been set, then the character  will  also  be
-       echoed into the designated window according to the follow-
-       ing rules: If the character is the current  erase  charac-
-       ter,  left  arrow,  or  backspace, the cursor is moved one
+       Unless <B>noecho</B> has been set, then the character  will  also
+       be echoed into the designated window according to the fol-
+       lowing rules: If the character is the current erase  char-
+       acter,  left  arrow, or backspace, the cursor is moved one
        space to the left and that screen position is erased as if
        <B>delch</B>  had  been  called.   If  the character value is any
        other <B>KEY_</B> define, the user is alerted with a  <B>beep</B>  call.
@@ -58,6 +61,8 @@
        time,  the  character  is  passed  through; otherwise, the
        function key value is returned.   For  this  reason,  many
        terminals  experience  a  delay  between  the  time a user
+       presses the escape key and the escape is returned  to  the
+       program.
 
        The <B>ungetch</B> routine places <I>ch</I> back onto the input queue to
        be returned by the next call to <B>wgetch</B>.  Note  that  there
@@ -110,6 +115,8 @@
            KEY_BTAB        Back tab key
            KEY_BEG         Beg(inning) key
            KEY_CANCEL      Cancel key
+
+           KEY_CLOSE       Close key
            KEY_COMMAND     Cmd (command) key
            KEY_COPY        Copy key
            KEY_CREATE      Create key
@@ -162,6 +169,8 @@
            KEY_SSAVE       Shifted save key
            KEY_SSUSPEND    Shifted suspend key
            KEY_SUNDO       Shifted undo key
+
+           KEY_SUSPEND     Suspend key
            KEY_UNDO        Undo key
 
        Keypad is arranged like this:
@@ -220,6 +229,8 @@
 
        The echo behavior of these functions on input of  <B>KEY_</B>  or
        backspace  characters  was not specified in the SVr4 docu-
+       mentation.  This  description  is  adopted  from  the  XSI
+       Curses standard.
 
        The  behavior of <B>getch</B> and friends in the presence of han-
        dled signals is unspecified in the  SVr4  and  XSI  Curses
@@ -246,6 +257,7 @@
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>,        <B><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></B>,        <B><A HREF="curs_mouse.3x.html">curs_mouse(3x)</A></B>,
        <B><A HREF="curs_move.3x.html">curs_move(3x)</A></B>, <B><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></B>.  <B><A HREF="resizeterm.3x.html">resizeterm(3x)</A></B>.
+
 
 
 

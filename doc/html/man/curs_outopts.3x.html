@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>clearok</B>,   <B>idlok</B>,   <B>idcok</B>   <B>immedok</B>,  <B>leaveok</B>,  <B>setscrreg</B>,
        <B>wsetscrreg</B>, <B>scrollok</B>, <B>nl</B>, <B>nonl</B> - <B>curses</B> output options
 
@@ -58,6 +61,8 @@
        tion and deletion.
 
        If  <B>immedok</B> is called with <B>TRUE</B> <B>as</B> <B>argument</B>, any change in
+       the window image, such  as  the  ones  caused  by  <B>waddch,</B>
+       <B>wclrtobot,</B> <B>wscrl</B>, <I>etc</I>., automatically cause a call to <B>wre-</B>
        <B>fresh</B>.  However, it may degrade performance  considerably,
        due  to  repeated  calls  to  <B>wrefresh</B>.  It is disabled by
        default.
@@ -112,6 +117,10 @@
        The functions <B>setscrreg</B> and <B>wsetscrreg</B> return <B>OK</B> upon suc-
        cess  and <B>ERR</B> upon failure. All other routines that return
        an integer always return <B>OK</B>.
+
+
+</PRE>
+<H2>PORTABILITY</H2><PRE>
        These functions are described in the XSI Curses  standard,
        Issue 4.
 
@@ -154,6 +163,7 @@
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>,        <B><A HREF="curs_addch.3x.html">curs_addch(3x)</A></B>,         <B><A HREF="curs_clear.3x.html">curs_clear(3x)</A></B>,
        <B><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></B>, <B><A HREF="curs_scroll.3x.html">curs_scroll(3x)</A></B>, <B><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></B>
+
 
 
 

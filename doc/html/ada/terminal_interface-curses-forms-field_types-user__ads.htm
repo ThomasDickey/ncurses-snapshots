@@ -1,4 +1,4 @@
-<HEAD><TITLE>terminal_interface-curses-forms-field_types-user.ads</TITLE></HEAD>
+<HTML><HEAD><TITLE>terminal_interface-curses-forms-field_types-user.ads</TITLE></HEAD>
 <BODY>
 <HR><DIV ALIGN="center"><H1> File : terminal_interface-curses-forms-field_types-user.ads </H1></DIV><HR>
 <PRE>
@@ -54,7 +54,7 @@
    <FONT COLOR=green><EM>--  Ada95. You should your own type derive from this one and implement</EM></FONT>
    <FONT COLOR=green><EM>--  the Field_Check and Character_Check functions for your own type.</EM></FONT>
 
-   <b>type</b> <FONT COLOR=red><A NAME="53_9">User_Defined_Field_Type_Access</A></FONT> <b>is</b> <b>access</b> <b>all</b>
+   <b>type</b> User_Defined_Field_Type_Access <b>is</b> <b>access</b> <b>all</b>
      <A HREF="terminal_interface-curses-forms-field_types-user__ads.htm#48_9">User_Defined_Field_Type</A>'Class;
 
    <b>function</b> <FONT COLOR=red><A NAME="56_13">Field_Check</A></FONT>
@@ -82,7 +82,7 @@
 <b>private</b>
    <b>use</b> <b>type</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.int;
 
-   <b>function</b> <A HREF="terminal_interface-curses-forms-field_types-user__adb.htm#107_13">C_Generic_Type</A><FONT COLOR=red><A NAME="81_13"></A></FONT>   <b>return</b> <A HREF="terminal_interface-curses-forms-field_types__ads.htm#132_9">C_Field_Type</A>;
+   <b>function</b> <A HREF="terminal_interface-curses-forms-field_types-user__adb.htm#107_13">C_Generic_Type</A><FONT COLOR=red><A NAME="81_13"></A></FONT>   <b>return</b> C_Field_Type;
 
    <b>function</b> <A HREF="terminal_interface-curses-forms-field_types-user__adb.htm#83_13">Generic_Field_Check</A><FONT COLOR=red><A NAME="83_13"></A></FONT> (<FONT COLOR=red><A NAME="83_34">Fld</A></FONT> : <A HREF="terminal_interface-curses-forms__ads.htm#56_9">Field</A>;
                                  <FONT COLOR=red><A NAME="84_34">Usr</A></FONT> : System.Address) <b>return</b> <A HREF="terminal_interface-curses-forms-field_types-user__ads.htm#46_12">C_Int</A>;

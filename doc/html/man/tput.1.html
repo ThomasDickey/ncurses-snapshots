@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>tput</B> - initialize a terminal or query terminfo database
 
 
@@ -58,6 +61,8 @@
               CODES section).
 
        <B>init</B>   If  the  <B>terminfo</B>  database is present and an entry
+              for the user's terminal exists (see <B>-T</B><I>type</I>, above),
+              the  following will occur: (1) if present, the ter-
               minal's initialization strings will be output (<B>is1</B>,
               <B>is2</B>,  <B>is3</B>,  <B>if</B>,  <B>iprog</B>), (2) any delays (e.g., new-
               line) specified in the entry will be set in the tty
@@ -112,6 +117,8 @@
        <B>tput</B> <B>-T450</B> <B>cols</B>
             Print the number of columns for the 450 terminal.
 
+
+       <B>bold=`tput</B> <B>smso`</B> <B>offbold=`tput</B> <B>rmso`</B>
             Set the shell variables <B>bold</B>, to begin stand-out mode
             sequence, and <B>offbold</B>, to end standout mode sequence,
             for the current terminal.  This might be followed  by
@@ -168,6 +175,10 @@
        <B><A HREF="clear.1.html">clear(1)</A></B>, <B><A HREF="stty.1.html">stty(1)</A></B>, <B><A HREF="tabs.5.html">tabs(5)</A></B>.   <B><A HREF="profile.5.html">profile(5)</A></B>,  <B><A HREF="terminfo.4.html">terminfo(4)</A></B>  in
        the  <I>System</I>  <I>Administrator</I>'<I>s</I> <I>Reference</I> <I>Manual</I>.  Chapter 10
        of the <I>Programmer</I>'<I>s</I> <I>Guide</I>.
+
+
+</PRE>
+<H2>EXIT CODES</H2><PRE>
        If <I>capname</I> is of type boolean, a value of  <B>0</B>  is  set  for
        TRUE and <B>1</B> for FALSE unless the <B>-S</B> option is used.
 
@@ -214,6 +225,7 @@
        The <B>longname</B> and <B>-S</B> options, and  the  parameter-substitu-
        tion  features  used in the <B>cup</B> example, are not supported
        in BSD curses or in AT&amp;T/USL curses before SVr4.
+
 
 
 

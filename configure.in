@@ -28,10 +28,10 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997
 dnl
-dnl $Id: configure.in,v 1.192 2000/05/28 01:20:53 tom Exp $
+dnl $Id: configure.in,v 1.193 2000/06/17 18:38:21 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12.971230)
-AC_REVISION($Revision: 1.192 $)
+AC_REVISION($Revision: 1.193 $)
 AC_INIT(ncurses/base/lib_initscr.c)
 AC_CONFIG_HEADER(include/ncurses_cfg.h:include/ncurses_cfg.hin)
 
@@ -115,7 +115,11 @@ if test "X$cf_with_cxx" = Xno ; then
 	CXX=""
 	GXX=""
 else
+	pushdef([AC_MSG_ERROR],
+		[AC_MSG_RESULT([You don't have any C++ compiler, too bad]); dnl
+		cf_with_cxx=no; CXX=""; GXX="";])dnl
 	AC_PROG_CXX
+	popdef([AC_MSG_ERROR])dnl
 fi
 changequote(,)dnl
 if test -n "$GXX" ; then case "`${CXX-g++} --version`" in 1*|2.[0-6]*) GXX=""; CXX=""; ac_cv_prog_gxx=no; cf_cxx_library=no ; echo No: templates do not work;; esac; fi

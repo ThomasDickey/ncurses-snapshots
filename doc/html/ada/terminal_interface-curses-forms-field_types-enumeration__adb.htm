@@ -1,4 +1,4 @@
-<HEAD><TITLE>terminal_interface-curses-forms-field_types-enumeration.adb</TITLE></HEAD>
+<HTML><HEAD><TITLE>terminal_interface-curses-forms-field_types-enumeration.adb</TITLE></HEAD>
 <BODY>
 <HR><DIV ALIGN="center"><H1> File : terminal_interface-curses-forms-field_types-enumeration.adb </H1></DIV><HR>
 <PRE>
@@ -47,7 +47,7 @@
 <b>with</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.Strings; <b>use</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.Strings;
 <b>with</b> <A HREF="terminal_interface__ads.htm#41_9">Terminal_Interface</A>.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A>.<A HREF="terminal_interface-curses-aux__ads.htm#50_35">Aux</A>; <b>use</b> <A HREF="terminal_interface__ads.htm#41_9">Terminal_Interface</A>.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A>.<A HREF="terminal_interface-curses-aux__ads.htm#50_35">Aux</A>;
 
-<b>package</b> <b>body</b> <A HREF="terminal_interface__ads.htm#41_9">Terminal_Interface</A>.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A>.<A HREF="terminal_interface-curses-forms__ads.htm#49_35">Forms</A>.<A HREF="terminal_interface-curses-forms-field_types__ads.htm#43_41">Field_Types</A>.<A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#43_53">Enumeration</A><FONT COLOR=red><A NAME="46_58"></A></FONT> <b>is</b>
+<b>package</b> <b>body</b> Terminal_Interface.Curses.Forms.Field_Types.<A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#43_53">Enumeration</A><FONT COLOR=red><A NAME="46_58"></A></FONT> <b>is</b>
 
    <b>function</b> <A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#64_13">Create</A><FONT COLOR=red><A NAME="48_13"></A></FONT> (<A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#64_21">Info</A>               : <A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#55_9">Enumeration_Info</A>;
                     <A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#65_21">Auto_Release_Names</A> : Boolean := False)
@@ -85,7 +85,7 @@
       <b>loop</b>
          <A HREF="terminal_interface-curses-forms-field_types-enumeration__adb.htm#79_7">P</A> := <A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#77_23">Enum</A>.<A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#95_10">Arr</A> (<A HREF="terminal_interface-curses-forms-field_types-enumeration__adb.htm#78_7">I</A>);
          <b>exit</b> <b>when</b> <A HREF="terminal_interface-curses-forms-field_types-enumeration__adb.htm#79_7">P</A> = Null_Ptr;
-         Free (<A HREF="terminal_interface-curses-forms-field_types-enumeration__adb.htm#79_7">P</A>);
+         <A HREF="terminal_interface-curses-forms__ads.htm#138_14">Free</A> (<A HREF="terminal_interface-curses-forms-field_types-enumeration__adb.htm#79_7">P</A>);
          <A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#77_23">Enum</A>.<A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#95_10">Arr</A> (<A HREF="terminal_interface-curses-forms-field_types-enumeration__adb.htm#78_7">I</A>) := Null_Ptr;
          <A HREF="terminal_interface-curses-forms-field_types-enumeration__adb.htm#78_7">I</A> := <A HREF="terminal_interface-curses-forms-field_types-enumeration__adb.htm#78_7">I</A> + 1;
       <b>end</b> <b>loop</b>;
@@ -95,11 +95,11 @@
    <b>procedure</b> <A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#84_14">Set_Field_Type</A><FONT COLOR=red><A NAME="91_14"></A></FONT> (<A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#84_30">Fld</A> : <b>in</b> <A HREF="terminal_interface-curses-forms__ads.htm#56_9">Field</A>;
                              <A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#85_30">Typ</A> : <b>in</b> <A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#62_9">Enumeration_Field</A>)
    <b>is</b>
-      <FONT COLOR=red><A NAME="94_7">C_Enum_Type</A></FONT> : <A HREF="terminal_interface-curses-forms-field_types__ads.htm#132_9">C_Field_Type</A>;
-      <b>pragma</b> Import (C, <A HREF="terminal_interface-curses-forms-field_types-enumeration__adb.htm#94_7">C_Enum_Type</A>, "TYPE_ENUM");
+      C_Enum_Type : C_Field_Type;
+      <b>pragma</b> Import (C, C_Enum_Type, "TYPE_ENUM");
 
       <b>function</b> <FONT COLOR=red><A NAME="97_16">Set_Fld_Type</A></FONT> (<FONT COLOR=red><A NAME="97_30">F</A></FONT>    : <A HREF="terminal_interface-curses-forms__ads.htm#56_9">Field</A> := <A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#84_30">Fld</A>;
-                             <FONT COLOR=red><A NAME="98_30">Cft</A></FONT>  : <A HREF="terminal_interface-curses-forms-field_types__ads.htm#132_9">C_Field_Type</A> := <A HREF="terminal_interface-curses-forms-field_types-enumeration__adb.htm#94_7">C_Enum_Type</A>;
+                             Cft  : C_Field_Type := C_Enum_Type;
                              <FONT COLOR=red><A NAME="99_30">Arg1</A></FONT> : chars_ptr_array;
                              <FONT COLOR=red><A NAME="100_30">Arg2</A></FONT> : <A HREF="terminal_interface-curses-forms-field_types__ads.htm#46_12">C_Int</A>;
                              <FONT COLOR=red><A NAME="101_30">Arg3</A></FONT> : <A HREF="terminal_interface-curses-forms-field_types__ads.htm#46_12">C_Int</A>) <b>return</b> <A HREF="terminal_interface-curses-forms-field_types__ads.htm#46_12">C_Int</A>;

@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>attroff</B>,  <B>wattroff</B>,  <B>attron</B>,  <B>wattron</B>,  <B>attrset</B>, <B>wattrset</B>,
        <B>color_set</B>,  <B>wcolor_set</B>,  <B>standend</B>,  <B>wstandend</B>,   <B>standout</B>,
        <B>wstandout</B>  - <B>curses</B> character and window attribute control
@@ -58,6 +61,8 @@
 
        The  routine  <B>attrset</B>  sets  the current attributes of the
        given window to <I>attrs</I>.  The routine <B>attroff</B> turns off  the
+       named  attributes  without turning any other attributes on
+       or off.  The routine <B>attron</B> turns on the named  attributes
        without affecting any others.  The routine <B>standout</B> is the
        same as <B>attron(A_STANDOUT)</B>.  The routine <B>standend</B>  is  the
        same as <B>attrset(A_NORMAL)</B> or <B>attrset(0)</B>, that is, it turns
@@ -111,6 +116,7 @@
        <B>PAIR_NUMBER(</B><I>attrs</I>) Returns the pair number associated
                           with the <B>COLOR_PAIR(</B><I>n</I><B>)</B> attribute.
 
+       The  return values of many of these routines are not mean-
        ingful (they are implemented as macro-expanded assignments
        and  simply  return their argument).  The SVr4 manual page
        claims (falsely) that these routines always return <B>1</B>.
@@ -167,6 +173,7 @@
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>,        <B><A HREF="curs_addch.3x.html">curs_addch(3x)</A></B>,        <B><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></B>,
        <B><A HREF="curs_printw.3x.html">curs_printw(3x)</A></B>
+
 
 
 </PRE>

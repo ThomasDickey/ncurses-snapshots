@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>getmouse</B>,  <B>ungetmouse</B>,  <B>mousemask</B>, <B>wenclose</B>, <B>wmouse_trafo</B>,
        <B>mouseinterval</B> - mouse interface through curses
 
@@ -58,6 +61,8 @@
        BUTTON1_TRIPLE_CLICKED   mouse button 1 triple clicked
        BUTTON2_PRESSED          mouse button 2 down
        BUTTON2_RELEASED         mouse button 2 up
+
+       BUTTON2_CLICKED          mouse button 2 clicked
        BUTTON2_DOUBLE_CLICKED   mouse button 2 double clicked
        BUTTON2_TRIPLE_CLICKED   mouse button 2 triple clicked
        BUTTON3_PRESSED          mouse button 3 down
@@ -110,6 +115,8 @@
        reference  the coordinates of a location inside the window
        <B>win</B>. They are converted to screen-relative coordinates and
        returned  through the pointers. If the conversion was suc-
+       cessful,  the  function  returns  <B>TRUE</B>.  If  one  of   the
+       parameters was NULL or the location is not inside the win-
        dow, <B>FALSE</B> is returned. If <B>to_screen</B> is <B>FALSE</B>, the  point-
        ers  <B>pY,</B>  <B>pX</B>  must  reference screen-relative coordinates.
        They are converted to stdscr-relative coordinates  if  the
@@ -166,6 +173,8 @@
        (and the <B>wmousemask</B> function will always return <B>0</B>).
 
        The z member in the event structure is not presently used.
+       It  is  intended  for use with touch screens (which may be
+       pressure-sensitive)   or   with   3D-mice/trackballs/power
        gloves.
 
 
@@ -193,6 +202,7 @@
 </PRE>
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>.
+
 
 
 

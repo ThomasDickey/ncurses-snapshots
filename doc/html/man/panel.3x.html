@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        panel - panel stack extension for curses
 
 
@@ -60,6 +63,8 @@
        <B>void</B> <B>update_panels()</B>
               refreshes the virtual screen to reflect  the  rela-
               tions between the panels in the stack, but does not
+              call doupdate() to  refresh  the  physical  screen.
+              Use this function and not wrefresh or wnoutrefresh.
               update_panels() may be called more than once before
               a  call  to doupdate(), but doupdate() is the func-
               tion responsible for updating the physical  screen.
@@ -112,6 +117,8 @@
 
        <B>set_panel_userptr(pan,ptr)</B>
               sets the panel's user pointer.
+
+       <B>panel_userptr(pan)</B>
               returns the user pointer for a given panel.
 
        <B>panel_window(pan)</B>
@@ -171,6 +178,7 @@
        park.ga.us&gt;, primarily to assist  in  porting  u386mon  to
        systems  without  a native panels library.  Repackaged for
        ncurses by Zeyd ben-Halim.
+
 
 
 

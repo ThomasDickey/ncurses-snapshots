@@ -1,4 +1,4 @@
-<HEAD><TITLE>terminal_interface-curses-forms-field_types-enumeration.ads</TITLE></HEAD>
+<HTML><HEAD><TITLE>terminal_interface-curses-forms-field_types-enumeration.ads</TITLE></HEAD>
 <BODY>
 <HR><DIV ALIGN="center"><H1> File : terminal_interface-curses-forms-field_types-enumeration.ads </H1></DIV><HR>
 <PRE>
@@ -51,7 +51,7 @@
    <b>type</b> <FONT COLOR=red><A NAME="47_9">String_Access</A></FONT> <b>is</b> <b>access</b> String;
 
    <FONT COLOR=green><EM>--  Type_Set is used by the child package Ada</EM></FONT>
-   <b>type</b> <FONT COLOR=red><A NAME="50_9">Type_Set</A></FONT> <b>is</b> (<FONT COLOR=red><A NAME="50_22">Lower_Case</A></FONT>, <FONT COLOR=red><A NAME="50_34">Upper_Case</A></FONT>, <FONT COLOR=red><A NAME="50_46">Mixed_Case</A></FONT>);
+   <b>type</b> <FONT COLOR=red><A NAME="50_9">Type_Set</A></FONT> <b>is</b> (Lower_Case, Upper_Case, Mixed_Case);
 
    <b>type</b> <FONT COLOR=red><A NAME="52_9">Enum_Array</A></FONT> <b>is</b> <b>array</b> (Positive <b>range</b> &lt;&gt;)
      <b>of</b> <A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#47_9">String_Access</A>;
@@ -87,7 +87,7 @@
 
    <b>procedure</b> <A HREF="terminal_interface-curses-forms-field_types-enumeration__adb.htm#91_14">Set_Field_Type</A><FONT COLOR=red><A NAME="84_14"></A></FONT> (<FONT COLOR=red><A NAME="84_30">Fld</A></FONT> : <b>in</b> <A HREF="terminal_interface-curses-forms__ads.htm#56_9">Field</A>;
                              <FONT COLOR=red><A NAME="85_30">Typ</A></FONT> : <b>in</b> <A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#62_9">Enumeration_Field</A>);
-   <b>pragma</b> Inline (Set_Field_Type);
+   <b>pragma</b> Inline (<A HREF="terminal_interface-curses-forms-field_types-enumeration__ads.htm#84_14">Set_Field_Type</A>);
 
 <b>private</b>
    <b>type</b> <FONT COLOR=red><A NAME="89_9">CPA_Access</A></FONT> <b>is</b> <b>access</b> <A HREF="interfac__ads.htm#23_9">Interfaces</A>.C.Strings.chars_ptr_array;

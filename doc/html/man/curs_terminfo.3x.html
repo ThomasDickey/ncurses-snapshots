@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>setupterm</B>, <B>setterm</B>, <B>set_curterm</B>, <B>del_curterm</B>, <B>restartterm</B>,
        <B>tparm</B>, <B>tputs</B>, <B>putp</B>, <B>vidputs</B>,  <B>vidattr</B>,  <B>mvcur</B>,  <B>tigetflag</B>,
        <B>tigetnum</B>,   <B>tigetstr</B>   -  <B>curses</B>  interfaces  to  terminfo
@@ -58,6 +61,8 @@
        passed  through  <B>tparm</B>  to instantiate them.  All <B>terminfo</B>
        strings [including the output of <B>tparm</B>] should be  printed
        with  <B>tputs</B> or <B>putp</B>.  Call the <B>reset_shell_mode</B> to restore
+       the  tty  modes  before  exiting  [see   <B><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></B>].
+       Programs   which   use  cursor  addressing  should  output
        <B>enter_ca_mode</B> upon startup and should output  <B>exit_ca_mode</B>
        before  exiting.   Programs  desiring shell escapes should
        call
@@ -110,6 +115,8 @@
        the old value of <B>cur_term</B>.
 
        The  <B>del_curterm</B>  routine  frees  the  space pointed to by
+       <I>oterm</I> and makes it available for further use.  If <I>oterm</I> is
+       the  same  as  <B>cur_term</B>, references to any of the <B>terminfo</B>
        boolean, numeric,  and  string  variables  thereafter  may
        refer  to invalid memory locations until another <B>setupterm</B>
        has been called.
@@ -162,6 +169,8 @@
        not  a  numeric  capability,  or  <B>-1</B>  if it is canceled or
        absent from the terminal description.
 
+       The <B>tigetstr</B> routine  returns  the  value  <B>(char</B>  <B>*)-1</B>  if
+       <I>capname</I> is not a string capability, or <B>0</B> if it is canceled
        or absent from the terminal description.
 
        The <I>capname</I> for each capability is given in the table col-
@@ -220,6 +229,8 @@
        tion  should  touch and refresh the window before resuming
        normal curses calls.  Both ncurses and System V Release  4
        curses  implement <B>mvcur</B> using the SCREEN data allocated in
+       either <B>initscr</B> or <B>newterm</B>.  So though it is documented  as
+       a  terminfo  function,  <B>mvcur</B>  is really a curses function
        which is not well specified.
 
 
@@ -227,6 +238,7 @@
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></B>, <B><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></B>,  <B>curs_term-</B>
        <B><A HREF="cap.3x.html">cap(3x)</A></B>, <B><A HREF="putc.3S.html">putc(3S)</A></B>, <B><A HREF="terminfo.5.html">terminfo(5)</A></B>
+
 
 
 

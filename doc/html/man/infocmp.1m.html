@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>infocmp</B> - compare or print out <I>terminfo</I> descriptions
 
 
@@ -58,6 +61,8 @@
 
       <B>-I</B>   use the <B>terminfo</B> names
       <B>-L</B>   use the long C variable name listed in &lt;<B>term.h</B>&gt;
+
+      <B>-C</B>   use the <B>termcap</B> names
       <B>-r</B>   when using <B>-C</B>, put out all capabilities in <B>termcap</B> form
 
        If  no  <I>termnames</I> are given, the environment variable <B>TERM</B>
@@ -110,6 +115,8 @@
        the first terminal <I>termname</I> which is relative to  the  sum
        of  the  descriptions  given  by the entries for the other
        terminals <I>termnames</I>.  It does this by analyzing  the  dif-
+       ferences   between   the  first  <I>termname</I>  and  the  other
+       <I>termnames</I> and producing a description with <B>use=</B> fields for
        the  other  terminals.   In this manner, it is possible to
        retrofit  generic  terminfo  entries  into  a   terminal's
        description.  Or, if two similar terminals exist, but were
@@ -162,6 +169,8 @@
        two  different  databases.   This  is useful for comparing
        descriptions for the same terminal  created  by  different
        people.
+
+   <B>Other</B>  <B>Options</B>  <B>[-s</B> <B>d|i|l|c]</B> <B>[-1FTVefip]</B> <B>[-Rsubset]</B> <B>[-v</B> <I>n</I>] [-w
        <I>width</I>]
        The <B>-s</B> option sorts the fields within each type  according
        to the argument below:
@@ -214,6 +223,8 @@
             Restrict  output  to  a given subset.  This option is
             for use with archaic versions of terminfo like  those
             on  SVr1,  Ultrix,  or  HP/UX that do not support the
+            full set of SVR4/XSI Curses  terminfo;  and  variants
+            such as AIX that have their own extensions incompati-
             ble with SVr4/XSI.  Available  terminfo  subsets  are
             "SVr1",  "Ultrix",  "HP",  and "AIX"; see <B><A HREF="terminfo.5.html">terminfo(5)</A></B>
             for details.  You can also choose  the  subset  "BSD"
@@ -266,6 +277,8 @@
             line  consists  of the capability name, followed by a
             colon and space, followed by a printable expansion of
             the  capability  string with sections matching recog-
+            nized   actions    translated    into    {}-bracketed
+            descriptions.  Here is a list of the DEC/ANSI special
             sequences recognized:
 
                   Action        Meaning
@@ -320,6 +333,10 @@
        @DATADIR@/terminfo  Compiled     terminal      description
                            database.
 
+
+
+</PRE>
+<H2>EXTENSIONS</H2><PRE>
        The  <B>-E</B>,  <B>-F</B>,  <B>-G</B>,  <B>-R</B>, <B>-T</B>, <B>-a</B>, <B>-e</B>, <B>-f</B>, <B>-g</B>, <B>-i</B>, <B>-p</B>, and <B>-q</B>
        options are not supported in SVr4 curses.
 
@@ -344,6 +361,7 @@
 <H2>AUTHOR</H2><PRE>
        Eric S.  Raymond  &lt;esr@snark.thyrsus.com&gt;  and  Thomas  E.
        Dickey &lt;dickey@herndon4.his.com&gt;
+
 
 
 

@@ -1,4 +1,4 @@
-# $Id: dist.mk,v 1.203 2000/06/11 02:01:55 tom Exp $
+# $Id: dist.mk,v 1.205 2000/06/18 00:22:56 tom Exp $
 # Makefile for creating ncurses distributions.
 #
 # This only needs to be used directly as a makefile by developers, but
@@ -10,7 +10,7 @@ SHELL = /bin/sh
 # These define the major/minor/patch versions of ncurses.
 NCURSES_MAJOR = 5
 NCURSES_MINOR = 0
-NCURSES_PATCH = 20000610
+NCURSES_PATCH = 20000617
 
 # We don't append the patch to the version, since this only applies to releases
 VERSION = $(NCURSES_MAJOR).$(NCURSES_MINOR)
@@ -19,7 +19,13 @@ DUMP	= lynx -dump
 DUMP2	= $(DUMP) -nolist
 
 GNATHTML= `type -p gnathtml || type -p gnathtml.pl`
-MAN2HTML= man2html -cgiurl '$$title.$$section$$subsection.html'
+
+# man2html 3.0.1 is a Perl script which assumes that pages are fixed size.
+# Not all man programs agree with this assumption; some use half-spacing, which
+# has the effect of lengthening the text portion of the page -- so man2html
+# would remove some text.  The man program on Redhat 6.1 appears to work with
+# man2html if we set the top/bottom margins to 6 (the default is 7).
+MAN2HTML= man2html -botm=6 -topm=6 -cgiurl '$$title.$$section$$subsection.html'
 
 ALL	= ANNOUNCE doc/html/announce.html doc/ncurses-intro.doc doc/hackguide.doc manhtml adahtml
 
@@ -43,6 +49,8 @@ doc/ncurses-intro.doc: doc/html/ncurses-intro.html
 doc/hackguide.doc: doc/html/hackguide.html
 	$(DUMP2) doc/html/hackguide.html > $@
 
+# Note that this rule assumes the manpages were installed - it does not use
+# the copies in the build tree except to get the list of names.
 manhtml: MANIFEST
 	@rm -f doc/html/man/*.html
 	@mkdir -p doc/html/man

@@ -1,4 +1,4 @@
-<HEAD><TITLE>terminal_interface-curses-text_io-float_io.adb</TITLE></HEAD>
+<HTML><HEAD><TITLE>terminal_interface-curses-text_io-float_io.adb</TITLE></HEAD>
 <BODY>
 <HR><DIV ALIGN="center"><H1> File : terminal_interface-curses-text_io-float_io.adb </H1></DIV><HR>
 <PRE>
@@ -45,7 +45,7 @@
 <b>with</b> Ada.Text_IO;
 <b>with</b> <A HREF="terminal_interface__ads.htm#41_9">Terminal_Interface</A>.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A>.<A HREF="terminal_interface-curses-text_io__ads.htm#44_35">Text_IO</A>.<A HREF="terminal_interface-curses-text_io-aux__ads.htm#41_51">Aux</A>;
 
-<b>package</b> <b>body</b> <A HREF="terminal_interface__ads.htm#41_9">Terminal_Interface</A>.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A>.<A HREF="terminal_interface-curses-text_io__ads.htm#44_35">Text_IO</A>.<A HREF="terminal_interface-curses-text_io-float_io__ads.htm#44_43">Float_IO</A> <b>is</b>
+<b>package</b> <b>body</b> Terminal_Interface.Curses.Text_IO.<A HREF="terminal_interface-curses-text_io-float_io__ads.htm#44_43">Float_IO</A> <b>is</b>
 
    <b>package</b> <FONT COLOR=red><A NAME="46_12">Aux</A></FONT> <b>renames</b> <A HREF="terminal_interface__ads.htm#41_9">Terminal_Interface</A>.<A HREF="terminal_interface-curses__ads.htm#48_28">Curses</A>.<A HREF="terminal_interface-curses-text_io__ads.htm#44_35">Text_IO</A>.<A HREF="terminal_interface-curses-text_io-aux__ads.htm#41_51">Aux</A>;
    <b>package</b> <FONT COLOR=red><A NAME="47_12">FIO</A></FONT> <b>is</b> <b>new</b> Ada.Text_IO.Float_IO (<A HREF="terminal_interface-curses-text_io-float_io__ads.htm#42_9">Num</A>);
@@ -74,7 +74,7 @@
       <A HREF="terminal_interface-curses-text_io-float_io__ads.htm#61_7">Exp</A>  : <b>in</b> <A HREF="terminal_interface-curses-text_io__ads.htm#50_12">Field</A> := <A HREF="terminal_interface-curses-text_io-float_io__ads.htm#48_4">Default_Exp</A>)
    <b>is</b>
    <b>begin</b>
-      <A HREF="terminal_interface-curses-text_io-float_io__ads.htm#50_14">Put</A> (<A HREF="terminal_interface-curses-text_io__ads.htm#62_13">Get_Window</A>, <A HREF="terminal_interface-curses-text_io-float_io__ads.htm#58_7">Item</A>, <A HREF="terminal_interface-curses-text_io-float_io__ads.htm#59_7">Fore</A>, <A HREF="terminal_interface-curses-text_io-float_io__ads.htm#60_7">Aft</A>, <A HREF="terminal_interface-curses-text_io-float_io__ads.htm#61_7">Exp</A>);
+      <A HREF="terminal_interface-curses-text_io-float_io__ads.htm#57_14">Put</A> (<A HREF="terminal_interface-curses-text_io__ads.htm#62_13">Get_Window</A>, <A HREF="terminal_interface-curses-text_io-float_io__ads.htm#58_7">Item</A>, <A HREF="terminal_interface-curses-text_io-float_io__ads.htm#59_7">Fore</A>, <A HREF="terminal_interface-curses-text_io-float_io__ads.htm#60_7">Aft</A>, <A HREF="terminal_interface-curses-text_io-float_io__ads.htm#61_7">Exp</A>);
    <b>end</b> Put;
 
 <b>end</b> Terminal_Interface.Curses.Text_IO.Float_IO;

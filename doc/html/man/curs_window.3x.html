@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>newwin</B>,  <B>delwin</B>,  <B>mvwin</B>, <B>subwin</B>, <B>derwin</B>, <B>mvderwin</B>, <B>dupwin</B>,
        <B>wsyncup</B>, <B>syncok</B>, <B>wcursyncup</B>,  <B>wsyncdown</B>  -  create  <B>curses</B>
        windows
@@ -58,6 +61,8 @@
        essary  to call <B>touchwin</B> or <B>touchline</B> on <I>orig</I> before call-
        ing <B>wrefresh</B> on the subwindow.
 
+       Calling <B>derwin</B> is the same as calling <B>subwin,</B> except  that
+       <I>begin</I>_<I>y</I> and <I>begin</I>_<I>x</I> are relative to the origin of the win-
        dow <I>orig</I> rather than the screen.  There is  no  difference
        between the subwindows and the derived windows.
 
@@ -116,6 +121,8 @@
        that they are only supposed to touch exactly  those  lines
        that are affected by ancestor changes.  The language here,
        and the behavior of the  <B>curses</B>  implementation,  is  pat-
+       terned  on the XPG4 curses standard.  The weaker XPG4 spec
+       may result in slower updates.
 
 
 </PRE>
@@ -127,6 +134,7 @@
 </PRE>
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></B>, <B><A HREF="curs_touch.3x.html">curs_touch(3x)</A></B>
+
 
 
 

@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>start_color</B>,     <B>init_pair</B>,     <B>init_color</B>,    <B>has_colors</B>,
        <B>can_change_color</B>,  <B>color_content</B>,  <B>pair_content</B>  -  <B>curses</B>
        color manipulation routines
@@ -58,6 +61,8 @@
        terminal to the values they had when the terminal was just
        turned on.
 
+       The <B>init_pair</B> routine changes the definition of  a  color-
+       pair.   It takes three arguments: the number of the color-
        pair to be changed, the foreground color number,  and  the
        background  color number.  The value of the first argument
        must be between <B>1</B> and <B>COLOR_PAIRS-1</B>.   The  value  of  the
@@ -110,6 +115,8 @@
        ments are between 0 and <B>COLORS</B>.
 
    <B>Colors</B>
+       In <B>&lt;curses.h&gt;</B> the following macros are defined.  These are
+       the  default colors.  <B>curses</B> also assumes that <B>COLOR_BLACK</B>
        is the default background color for all terminals.
 
              <B>COLOR_BLACK</B>
@@ -168,6 +175,8 @@
 <H2>PORTABILITY</H2><PRE>
        This implementation satisfies XSI Curses's  minimum  maxi-
        mums for <B>COLORS</B> and <B>COLOR_PAIRS</B>.
+
+       The  <B>init_pair</B>  routine  accepts  negative values of fore-
        ground   and   background    color    to    support    the
        <B>use_default_colors</B> extension, but only if that routine has
        been first invoked.
@@ -176,6 +185,7 @@
 </PRE>
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></B>, <B><A HREF="curs_attr.3x.html">curs_attr(3x)</A></B>, <B><A HREF="dft_fgbg.3x.html">dft_fgbg(3x)</A></B>
+
 
 
 

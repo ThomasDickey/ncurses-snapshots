@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>form_fieldtype</B> - define validation-field types
 
 
@@ -58,6 +61,8 @@
        memory  but simply loads the argument into a single scalar
        value.
 
+       The   form    driver    requests    <B>REQ_NEXT_CHOICE</B>    and
+       <B>REQ_PREV_CHOICE</B> assume that the possible values of a field
        form an ordered set, and provide the forms user with a way
        to  move  through the set.  The <B>set_fieldtype_choice</B> func-
        tion allows forms programmers to define successor and pre-
@@ -111,6 +116,7 @@
 <H2>AUTHORS</H2><PRE>
        Juergen  Pfeifer.   Manual  pages  and  adaptation for new
        curses by Eric S. Raymond.
+
 
 
 

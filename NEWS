@@ -1,10 +1,26 @@
--- $Id: NEWS,v 1.562 2000/06/11 03:00:30 tom Exp $
+-- $Id: NEWS,v 1.564 2000/06/18 02:08:18 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20000617
+	+ update config.guess, config.sub (reference version used in PCRE 3.2).
+	+ resync changes to gnathtml against version 1.22, regenerated html
+	  files under doc/html/ada using this (1.22.1.1).
+	+ regenerated html files under doc/html/man after correcting top and
+	  bottom margin options for man2html in dist.mk
+	+ minor fixes to test programs ncurses 'i' and testcurs program to make
+	  the subwindow's background color cover the subwindow.
+	+ modify configure script so AC_MSG_ERROR is temporarily defined to a
+	  warning in AC_PROG_CXX to make it recover from a missing C++ compiler
+	  without requiring user to add --without-cxx option (from comment by
+	  Akim Demaille <akim@epita.fr> to autoconf mailing list).
+	+ modify headers.sh to avoid creating temporary files in the build
+	  directory when installing headers (reported by Sergei Pokrovsky
+	  <pok@nbsp.nsk.su>)
 
 20000610
 	+ regenerated the html files under doc/html/ada/files and

@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>ncurses</B> - CRT screen handling and optimization package
 
 
@@ -58,6 +61,8 @@
              <B>keypad(stdscr,</B> <B>TRUE);</B>
 
        Before a <B>curses</B> program is run, the tab stops of the  ter-
+       minal  should  be  set  and its initialization strings, if
+       defined, must be output.  This can be  done  by  executing
        the <B>tput</B> <B>init</B> command after the shell environment variable
        <B>TERM</B> has been exported.  <B>tset(1)</B>  is  usually  responsible
        for doing this.  [See <B><A HREF="terminfo.5.html">terminfo(5)</A></B> for further details.]
@@ -110,6 +115,8 @@
        if  the program is executing in a window environment, line
        and column information in the  environment  will  override
        information read by <I>terminfo</I>.  This would effect a program
+       running in an AT&amp;T 630 layer, for example, where the  size
+       of a screen is changeable (see <B>ENVIRONMENT</B>).
 
        If  the environment variable <B>TERMINFO</B> is defined, any pro-
        gram using <B>curses</B> checks for a local  terminal  definition
@@ -162,6 +169,8 @@
        specified before the coordinates.
 
        In  each  case, <I>win</I> is the window affected, and <I>pad</I> is the
+       pad affected; <I>win</I> and <I>pad</I>  are  always  pointers  to  type
+       <B>WINDOW</B>.
 
        Option setting routines require a Boolean flag <I>bf</I> with the
        value <B>TRUE</B> or <B>FALSE</B>; <I>bf</I> is always of type <B>bool</B>.  The vari-
@@ -214,6 +223,8 @@
                def_shell_mode          <B><A HREF="curs_kernel.3x.html">curs_kernel(3x)</A></B>
                define_key              <B><A HREF="define_key.3x.html">define_key(3x)</A></B>*
                del_curterm             <B><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></B>
+
+               delay_output            <B><A HREF="curs_util.3x.html">curs_util(3x)</A></B>
                delch                   <B><A HREF="curs_delch.3x.html">curs_delch(3x)</A></B>
                deleteln                <B><A HREF="curs_deleteln.3x.html">curs_deleteln(3x)</A></B>
                delscreen               <B><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></B>
@@ -266,6 +277,8 @@
                is_linetouched          <B><A HREF="curs_touch.3x.html">curs_touch(3x)</A></B>
                is_wintouched           <B><A HREF="curs_touch.3x.html">curs_touch(3x)</A></B>
                isendwin                <B><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></B>
+
+               keybound                <B><A HREF="keybound.3x.html">keybound(3x)</A></B>*
                keyname                 <B><A HREF="curs_util.3x.html">curs_util(3x)</A></B>
                keyok                   <B><A HREF="keyok.3x.html">keyok(3x)</A></B>*
                keypad                  <B><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></B>
@@ -318,6 +331,8 @@
                mvwinnstr               <B><A HREF="curs_instr.3x.html">curs_instr(3x)</A></B>
                mvwinsch                <B><A HREF="curs_insch.3x.html">curs_insch(3x)</A></B>
                mvwinsnstr              <B><A HREF="curs_insstr.3x.html">curs_insstr(3x)</A></B>
+
+               mvwinsstr               <B><A HREF="curs_insstr.3x.html">curs_insstr(3x)</A></B>
                mvwinstr                <B><A HREF="curs_instr.3x.html">curs_instr(3x)</A></B>
                mvwprintw               <B><A HREF="curs_printw.3x.html">curs_printw(3x)</A></B>
                mvwscanw                <B><A HREF="curs_scanw.3x.html">curs_scanw(3x)</A></B>
@@ -370,6 +385,8 @@
                setupterm               <B><A HREF="curs_terminfo.3x.html">curs_terminfo(3x)</A></B>
                slk_attr                <B><A HREF="curs_slk.3x.html">curs_slk(3x)</A></B>*
                slk_attr_off            <B><A HREF="curs_slk.3x.html">curs_slk(3x)</A></B>
+
+               slk_attr_on             <B><A HREF="curs_slk.3x.html">curs_slk(3x)</A></B>
                slk_attr_set            <B><A HREF="curs_slk.3x.html">curs_slk(3x)</A></B>
                slk_attroff             <B><A HREF="curs_slk.3x.html">curs_slk(3x)</A></B>
                slk_attron              <B><A HREF="curs_slk.3x.html">curs_slk(3x)</A></B>
@@ -422,6 +439,8 @@
                vwscanw                 <B><A HREF="curs_scanw.3x.html">curs_scanw(3x)</A></B>
                waddch                  <B><A HREF="curs_addch.3x.html">curs_addch(3x)</A></B>
                waddchnstr              <B><A HREF="curs_addchstr.3x.html">curs_addchstr(3x)</A></B>
+
+               waddchstr               <B><A HREF="curs_addchstr.3x.html">curs_addchstr(3x)</A></B>
                waddnstr                <B><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></B>
                waddstr                 <B><A HREF="curs_addstr.3x.html">curs_addstr(3x)</A></B>
                wattr_get               <B><A HREF="curs_attr.3x.html">curs_attr(3x)</A></B>
@@ -474,6 +493,8 @@
                wsyncdown               <B><A HREF="curs_window.3x.html">curs_window(3x)</A></B>
                wsyncup                 <B><A HREF="curs_window.3x.html">curs_window(3x)</A></B>
                wtimeout                <B><A HREF="curs_inopts.3x.html">curs_inopts(3x)</A></B>
+
+               wtouchln                <B><A HREF="curs_touch.3x.html">curs_touch(3x)</A></B>
                wvline                  <B><A HREF="curs_border.3x.html">curs_border(3x)</A></B>
 
 
@@ -530,6 +551,8 @@
 
             Either  COLUMNS  or  LINES  symbols  may be specified
             independently.  This is mainly useful  to  circumvent
+            legacy  misfeatures  of  terminal descriptions, e.g.,
+            xterm which commonly specifies a 65 line screen.  For
             best  results, <B>lines</B> and <B>cols</B> should not be specified
             in a terminal description for terminals which are run
             as emulations.
@@ -582,6 +605,8 @@
             123  or  321.   If  it is not specified, <B>ncurses</B> uses
             132.
 
+
+       NCURSES_NO_PADDING
             Most of the terminal  descriptions  in  the  terminfo
             database  are  written for real "hardware" terminals.
             Many people use terminal emulators  which  run  in  a
@@ -634,6 +659,8 @@
 
        TERMCAP
             If the <B>ncurses</B> library has been configured with <I>term-</I>
+            <I>cap</I>  support,  <B>ncurses</B>  will  check  for a terminal's
+            description in termcap form if it is not available in
             the terminfo database.
 
             The   TERMCAP   symbol  contains  either  a  terminal
@@ -690,6 +717,10 @@
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="terminfo.5.html">terminfo(5)</A></B>  and  3x  pages  whose names begin "curs_" for
        detailed routine descriptions.
+
+
+</PRE>
+<H2>EXTENSIONS</H2><PRE>
        The  <B>ncurses</B>  library  can  be  compiled  with  an  option
        (<B>-DUSE_GETCAP</B>) that falls back to the old-style /etc/term-
        cap file if the terminal setup code cannot find a terminfo
@@ -744,6 +775,8 @@
        <B>wchar</B>, <B>mvadd_wch</B>, <B>mvadd_wchnstr</B>, <B>mvadd_wchstr</B>, <B>mvaddnwstr</B>,
        <B>mvaddwstr</B>,   <B>mvget_wch</B>,   <B>mvget_wstr</B>,   <B>mvgetn_wstr</B>,  <B>mvh-</B>
        <B>line_set</B>,  <B>mvin_wch</B>,  <B>mvinnwstr</B>,  <B>mvins_nwstr</B>,  <B>mvins_wch</B>,
+       <B>mvins_wstr</B>, <B>mvinwchnstr</B>, <B>mvinwchstr</B>, <B>mvinwchstr</B>, <B>mvinwstr</B>,
+       <B>mvvline_set</B>,  <B>mvwadd_wch</B>,  <B>mvwadd_wchnstr</B>,  <B>mvwadd_wchstr</B>,
        <B>mvwaddnwstr</B>,     <B>mvwaddwstr</B>,     <B>mvwget_ch</B>,    <B>mvwget_wch</B>,
        <B>mvwget_wstr</B>,   <B>mvwgetn_wstr</B>,   <B>mvwhline_set</B>,    <B>mvwin_wch</B>,
        <B>mvwin_wchnstr</B>,   <B>mvwin_wchstr</B>,  <B>mvwinnwstr</B>,  <B>mvwins_nwstr</B>,
@@ -796,6 +829,8 @@
        (see  section  3.5.4.1), these declarations are either (a)
        meaningless, or (b) meaningless and illegal.  The declara-
        tion <B>const</B> <B>char</B> <B>*x</B> is a modifiable pointer to unmodifiable
+       data, but <B>char</B> <B>*const</B> <B>x</B>' is  an  unmodifiable  pointer  to
+       modifiable  data.  Given that C passes arguments by value,
        <B>&lt;type&gt;</B> <B>*const</B> as a formal type is at best  dubious.   Some
        compilers  choke  on  the  prototypes.  Therefore, in this
        implementation, they have been changed to <B>const</B>  <B>&lt;type&gt;</B>  <B>*</B>
@@ -817,6 +852,7 @@
 <H2>AUTHORS</H2><PRE>
        Zeyd  M.  Ben-Halim,  Eric  S.  Raymond, Thomas E. Dickey.
        Based on pcurses by Pavel Curtis.
+
 
 
 

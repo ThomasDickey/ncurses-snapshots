@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>newpad</B>, <B>subpad</B>, <B>prefresh</B>, <B>pnoutrefresh</B>, <B>pechochar</B> - create
        and display <B>curses</B> pads
 
@@ -58,6 +61,8 @@
        corner of the rectangle to be displayed in the pad is cal-
        culated from the screen coordinates, since the  rectangles
        must  be  the same size.  Both rectangles must be entirely
+       contained within their  respective  structures.   Negative
+       values  of  <I>pminrow</I>,  <I>pmincol</I>,  <I>sminrow</I>,  or  <I>smincol</I>  are
        treated as if they were zero.
 
        The <B>pechochar</B> routine is functionally equivalent to a call
@@ -97,6 +102,7 @@
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>,        <B><A HREF="curs_refresh.3x.html">curs_refresh(3x)</A></B>,       <B><A HREF="curs_touch.3x.html">curs_touch(3x)</A></B>,
        <B><A HREF="curs_addch.3x.html">curs_addch(3x)</A></B>.
+
 
 
 

@@ -2,6 +2,9 @@
 <BODY>
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
        <B>unctrl</B>,   <B>keyname</B>,   <B>filter</B>,   <B>use_env</B>,   <B>putwin</B>,  <B>getwin</B>,
        <B>delay_output</B>, <B>flushinp</B> - miscellaneous <B>curses</B> utility rou-
        tines
@@ -58,6 +61,8 @@
        The  <B>delay_output</B>  routine inserts an <I>ms</I> millisecond pause
        in output.  This routine should not  be  used  extensively
        because  padding  characters  are  used  rather than a CPU
+       pause.
+       The <B>flushinp</B> routine throws away any  typeahead  that  has
        been  typed  by  the user and has not yet been read by the
        program.
 
@@ -93,6 +98,7 @@
 </PRE>
 <H2>SEE ALSO</H2><PRE>
        <B><A HREF="ncurses.3x.html">curses(3x)</A></B>, <B><A HREF="curs_initscr.3x.html">curs_initscr(3x)</A></B>, <B><A HREF="curs_scr_dump.3x.html">curs_scr_dump(3x)</A></B>.
+
 
 
 
