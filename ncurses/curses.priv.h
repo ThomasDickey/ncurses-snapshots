@@ -21,7 +21,7 @@
 
 
 /*
- * $Id: curses.priv.h,v 1.55 1997/02/16 01:19:02 tom Exp $
+ * $Id: curses.priv.h,v 1.56 1997/03/09 00:34:36 tom Exp $
  *
  *	curses.priv.h
  *
@@ -238,6 +238,10 @@ struct screen {
 /* Ncurses' public interface follows the internal types */
 #include <curses.h>	/* we'll use -Ipath directive to get the right one! */
 
+#ifdef NCURSES_NOMACROS
+#include <nomacros.h>
+#endif
+
 #define WINDOWLIST struct _win_list
 	WINDOWLIST {
 	WINDOWLIST *next;
@@ -319,10 +323,12 @@ typedef	struct {
 #define TPUTS_TRACE(s)	_nc_tputs_trace = s;
 #define TRACE_RETURN(value,type) return _nc_retrace_##type(value)
 #define returnWin(code)  TRACE_RETURN(code,win)
+#define returnPtr(code)  TRACE_RETURN(code,ptr)
 #define returnCode(code) TRACE_RETURN(code,int)
 #define returnVoid       T((T_RETURN(""))); return
 extern unsigned _nc_tracing;
 extern WINDOW * _nc_retrace_win(WINDOW *);
+extern char *_nc_retrace_ptr(char *);
 extern const char *_nc_tputs_trace;
 extern const char *_nc_visbuf(const char *);
 extern int _nc_retrace_int(int);

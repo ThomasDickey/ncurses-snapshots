@@ -29,7 +29,7 @@
 
 #include <curses.priv.h>
 
-MODULE_ID("$Id: lib_trace.c,v 1.18 1997/03/01 21:00:17 tom Exp $")
+MODULE_ID("$Id: lib_trace.c,v 1.19 1997/03/09 03:27:26 tom Exp $")
 
 #include <ctype.h>
 #if HAVE_FCNTL_H
@@ -123,7 +123,7 @@ bool	before = FALSE;
 bool	after = FALSE;
 int	doit = _nc_tracing;
 
-	if (strlen(fmt) > sizeof(Called)) {
+	if (strlen(fmt) >= sizeof(Called) - 1) {
 		if (!strncmp(fmt, Called, sizeof(Called)-1)) {
 			before = TRUE;
 			level++;
@@ -162,6 +162,13 @@ int	doit = _nc_tracing;
 int _nc_retrace_int(int code)
 {
 	T((T_RETURN("%d"), code));
+	return code;
+}
+
+/* Trace 'char*' return-values */
+char * _nc_retrace_ptr(char * code)
+{
+	T((T_RETURN("%s"), _nc_visbuf(code)));
 	return code;
 }
 

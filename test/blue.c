@@ -13,7 +13,7 @@
  * results, use the portable freeware ncurses(3) library.  On non-Intel
  * machines, SVr4 curses is just as good.
  *
- * $Id: blue.c,v 1.14 1996/11/17 00:22:23 tom Exp $
+ * $Id: blue.c,v 1.15 1997/03/09 00:47:41 tom Exp $
  */
 
 #include <test.priv.h>
@@ -78,21 +78,25 @@ static chtype ranks[SUIT_LENGTH][2] =
    Color values should not be or'ed in. This
    only works, because the characters used here
    are plain and have no color attribute themselves. */
-static chtype letters[] =
+static chtype letters[4] =
 {
+#ifdef COLOR_PAIR
     'h' | COLOR_PAIR(RED_ON_WHITE),	/* hearts */
     's' | COLOR_PAIR(BLACK_ON_WHITE),	/* spades */
     'd' | COLOR_PAIR(RED_ON_WHITE),	/* diamonds */
     'c' | COLOR_PAIR(BLACK_ON_WHITE),	/* clubs */
+#endif
 };
 
 #if defined(__i386__)
 static chtype glyphs[] =
 {
+#ifdef COLOR_PAIR
     '\003' | A_ALTCHARSET | COLOR_PAIR(RED_ON_WHITE),	/* hearts */
     '\006' | A_ALTCHARSET | COLOR_PAIR(BLACK_ON_WHITE),	/* spades */
     '\004' | A_ALTCHARSET | COLOR_PAIR(RED_ON_WHITE),	/* diamonds */
     '\005' | A_ALTCHARSET | COLOR_PAIR(BLACK_ON_WHITE),	/* clubs */
+#endif
 };
 #endif /* __i386__ */
 
@@ -385,6 +389,19 @@ int main(int argc, char *argv[])
     init_pair(RED_ON_WHITE,    COLOR_RED,   COLOR_WHITE);
     init_pair(BLUE_ON_WHITE,   COLOR_BLUE,  COLOR_WHITE);
     init_pair(BLACK_ON_WHITE,  COLOR_BLACK, COLOR_WHITE);
+
+#ifndef COLOR_PAIR
+    letters[0] = 'h' | COLOR_PAIR(RED_ON_WHITE);	/* hearts */
+    letters[1] = 's' | COLOR_PAIR(BLACK_ON_WHITE);	/* spades */
+    letters[2] = 'd' | COLOR_PAIR(RED_ON_WHITE);	/* diamonds */
+    letters[3] = 'c' | COLOR_PAIR(BLACK_ON_WHITE);	/* clubs */
+#if defined(__i386__) && defined(A_ALTCHARSET)
+    glyphs[0]  = '\003' | A_ALTCHARSET | COLOR_PAIR(RED_ON_WHITE);	/* hearts */
+    glyphs[1]  = '\006' | A_ALTCHARSET | COLOR_PAIR(BLACK_ON_WHITE);	/* spades */
+    glyphs[2]  = '\004' | A_ALTCHARSET | COLOR_PAIR(RED_ON_WHITE);	/* diamonds */
+    glyphs[3]  = '\005' | A_ALTCHARSET | COLOR_PAIR(BLACK_ON_WHITE);	/* clubs */
+#endif
+#endif
 
 #if defined(__i386__) && defined(A_ALTCHARSET)
     if (tigetstr("smpch"))

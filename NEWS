@@ -1,6 +1,13 @@
 This is a log of changes that ncurses has gone through since Zeyd
 started working with Pavel Curtis' original work, pcurses, in 1992:
 
+970308
+	+ modify script that generates lib_gen.c to support traces of called &
+	  return.
+	+ add new configure option "--disable-macros", for testing calls within
+	  lib_gen.c
+	+ corrected logic that screens level-checking of called/return traces.
+
 970301
 	+ use new configure macro NC_SUBST to replace AC_PATH_PROG, better
 	  addressing request by Ward Horner.

@@ -17,10 +17,10 @@ dnl RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF       *
 dnl CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN        *
 dnl CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.                   *
 dnl*****************************************************************************
-dnl $Id: configure.in,v 1.53 1997/03/01 23:09:57 tom Exp $
+dnl $Id: configure.in,v 1.54 1997/03/09 00:26:32 tom Exp $
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.12)
-AC_REVISION($Revision: 1.53 $)
+AC_REVISION($Revision: 1.54 $)
 AC_INIT(ncurses/lib_initscr.c)
 
 NC_VERSION
@@ -287,6 +287,11 @@ AC_DEFINE(HAVE_NC_ALLOC_H)
 AC_ARG_ENABLE(expanded,
 	[  --enable-expanded       test: generate functions for certain macros],
 	[test $enableval = yes && AC_DEFINE(NCURSES_EXPANDED)])
+
+###	use option --disable-macros to suppress macros in favor of functions
+AC_ARG_ENABLE(macros,
+	[  --disable-macros        test: use functions rather than macros],
+	[test $enableval = no && AC_DEFINE(NCURSES_NOMACROS)])
 
 ###	Checks for libraries.
 AC_CHECK_FUNC(gettimeofday,

@@ -2,7 +2,7 @@
 #
 # MKlib_gen.sh -- generate sources from curses.h macro definitions
 #
-# ($Id: MKlib_gen.sh,v 1.4 1996/07/30 22:54:45 tom Exp $)
+# ($Id: MKlib_gen.sh,v 1.5 1997/03/09 03:39:43 tom Exp $)
 #
 # The XSI Curses standard requires all curses entry points to exist as
 # functions, even though many definitions would normally be shadowed
@@ -68,18 +68,59 @@ sed -n -e "/^extern.*generated/s/^extern \([^;]*\);.*/\1/p" \
 		if (substr($0, i, 1) == ",")
 			argcount++;
 	++argcount;
+
+	call = "%%T((T_CALLED(\""
+	args = ""
+	comma = ""
+	for (i = num = s = pointer = 0; i <= length($0); i++) {
+		ch = substr($0, i, 1);
+		if (ch == " ")
+			s++;
+		else {
+			if ( ch == "*" )
+				pointer = 1;
+			if ( ch == "," || ch == ")" ) {
+				if (pointer) {
+					call = call "%p"
+				} else if (!match($0, "\\(void\\)")) {
+					call = call "%#lx"
+					comma = comma "(long)"
+				}
+				if (ch == ",")
+					args = args comma "a" ++num;
+				else if (!match($0, "\\(void\\)"))
+					args = args comma "z"
+				pointer = 0;
+				call = call ch
+				if (args != "")
+					comma = ", "
+			}
+			if ( s == 1 || ch == "(" )
+				call = call ch
+		}
+	}
+	call = call "\")"
+	if (args != "")
+		call = call ", " args
+	call = call ")); "
+	printf "%s", call
+
 	if (match($0, "^void"))
-		call = "%%"
+		call = ""
 	else
-		call = "%%return ";
+		call = "returnCode( ";
 	call = call $2 "(";
 	for (i = 1; i < argcount; i++)
-		call = call " a" i ", ";
-	if (match($0, "\\(void\\)"))
-		call = call ");";
-	else
-		call = call "z);";
+		call = call "a" i ", ";
+	if (!match($0, "\\(void\\)"))
+		call = call "z";
+	if (!match($0, "^void"))
+		call = call ") ";
+	call = call ");";
 	print call
+
+	if (match($0, "^void"))
+		print "%%returnVoid;"
 	print "}";
 }
 ' ) \
@@ -103,7 +144,7 @@ BEGIN		{
 	print " * pull most of the rest of the library into your link image."
 	print " * Cope with it."
 	print " */"
-	print "#include <curses.h>"
+	print "#include <curses.priv.h>"
 	print ""
 		}
 /^DECLARATIONS/	{start = 1; next;}
@@ -114,5 +155,8 @@ BEGIN		{
 	-e 's/  */ /g' \
 	-e 's/ gen_/ /' \
 	-e 's/^M_/#undef /' \
-	-e '/^%%/s//	/'
+	-e '/^%%/s//	/' \
+| sed \
+	-e 's/^.*T_CALLED.*returnCode( \([a-z].*) \));/	return \1;/' \
+	-e 's/^.*T_CALLED.*returnCode( \((wmove.*) \));/	return \1;/'
 

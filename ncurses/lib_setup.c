@@ -35,7 +35,7 @@
 
 #include <term.h>	/* lines, columns, cur_term */
 
-MODULE_ID("$Id: lib_setup.c,v 1.23 1997/02/15 18:29:30 tom Exp $")
+MODULE_ID("$Id: lib_setup.c,v 1.24 1997/03/08 21:25:44 tom Exp $")
 
 /****************************************************************************
  *
@@ -263,8 +263,10 @@ int status;
 
 	if (errret)
 		*errret = 1;
-	returnCode(OK);
 
+	T((T_CREATE("screen %s %dx%d"), tname, LINES, COLS));
+
+	returnCode(OK);
 }
 
 /*
