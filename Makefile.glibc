@@ -284,7 +284,7 @@ tset-objs = tset.o dump_entry.o
 extra-objs = $(tic-objs) $(toe-objs) $(infocmp-objs) $(clear-objs) \
 		$(tput-objs) $(tset-objs)
 
-test-srcs = blue bs ditto firework firstlast gdc hanoi hashtest knight \
+test-srcs = blue bs cardfile ditto firework firstlast gdc hanoi hashtest knight \
 		lrtest ncurses newdemo rain tclock testaddch testcurs \
 		testscanw view worm xmas
 

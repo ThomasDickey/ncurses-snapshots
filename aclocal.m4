@@ -28,7 +28,7 @@ dnl***************************************************************************
 dnl
 dnl Author: Thomas E. Dickey <dickey@clark.net> 1996,1997,1998
 dnl
-dnl $Id: aclocal.m4,v 1.156 1999/02/17 01:08:11 juergen Exp $
+dnl $Id: aclocal.m4,v 1.157 1999/04/10 20:57:46 Mark.Kettenis Exp $
 dnl Macros used in NCURSES auto-configuration script.
 dnl
 dnl ---------------------------------------------------------------------------
@@ -593,7 +593,7 @@ esac
 case $cf_cv_gnat_version in
   3.1*|[4-9].*)
       cf_compile_generics=generics
-      cf_generic_objects="\$(GENOBJS)"	
+      cf_generic_objects="\$(GENOBJS)"
       ;;
   *)  cf_compile_generics=
       cf_generic_objects=
@@ -912,7 +912,7 @@ AC_DEFUN([CF_LIB_SUFFIX],
 	profile) $2='_p.a' ;;
 	shared)
 		case $cf_cv_system_name in
-		openbsd*|netbsd*|freebsd*|gnu*)
+		openbsd*|netbsd*|freebsd*)
 			$2='.so.$(REL_VERSION)' ;;
 		hpux*)	$2='.sl'  ;;
 		*)	$2='.so'  ;;
@@ -1425,7 +1425,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		MK_SHARED_LIB='$(LD) -shared -rdata_shared -soname `basename $[@]` -o $[@]'
 		cf_cv_rm_so_locs=yes
 		;;
-	linux*)
+	linux*|gnu*)
 		# tested with Linux 2.0.29 and gcc 2.7.2 (ELF)
 		CC_SHARED_OPTS='-fpic'
 		test $cf_cv_ld_rpath = yes && cf_ld_rpath_opt="-Wl,-rpath,"
@@ -1444,7 +1444,7 @@ AC_DEFUN([CF_SHARED_OPTS],
 		CC_SHARED_OPTS='-fpic -DPIC'
 		MK_SHARED_LIB='$(LD) -Bshareable -soname,`basename $[@].$(ABI_VERSION)` -o $[@]'
 		;;
-	openbsd*|netbsd*|freebsd*|gnu*)
+	openbsd*|netbsd*|freebsd*)
 		CC_SHARED_OPTS='-fpic -DPIC'
 		MK_SHARED_LIB='$(LD) -Bshareable -o $[@]'
 		;;

@@ -1,10 +1,20 @@
--- $Id: NEWS,v 1.446 1999/04/03 23:41:41 tom Exp $
+-- $Id: NEWS,v 1.448 1999/04/11 02:20:58 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+990410	pre-release
+	+ add a simple test program cardfile.c to illustrate how to read form
+	  fields, and showing forms within panels.
+	+ change shared-library versioning for the Hurd to be like Linux rather
+	  than *BSD (patch by Mark Kettenis <kettenis@wins.uva.nl>).
+	+ add linux-lat terminfo entry.
+	+ back-out _nc_access check in read_termcap.c (both incorrect and
+	  unnecessary, except to guard against a small window where the file's
+	  ownership may change).
 
 990403	pre-release
 	+ remove conflicting _nc_free_termtype() function from test module

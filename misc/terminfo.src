@@ -3,7 +3,7 @@
 # This version of terminfo.src is distributed with ncurses.
 #
 #	Version 10.2.1
-#	$Date: 1999/03/28 01:09:50 $
+#	$Date: 1999/04/10 21:27:26 $
 #	terminfo syntax
 #
 #	Eric S. Raymond		(current maintainer)
@@ -657,6 +657,11 @@ mach|Mach Console,
 mach-bold|Mach Console with bold instead of underline, 
 	rmul=\E[0m, smul=\E[1m, 
 	use=mach, 
+
+# Entry for the latin1 and latin2 fonts
+linux-lat|linux with latin1 or latin2 alternate character set, 
+	acsc=+\020\,\021-\030.^Y0\333`\004a\013f\370g\361h\260i\316j\211k\214l\206m\203n\305o~p\304q\212r\304s_t\207u\215v\301w\302x\205y\363z\362{\343|\330}\234~\376, 
+	use=linux, 
 
 # SCO console and SOS-Syscons console for 386bsd
 # (scoansi: had unknown capabilities
@@ -17191,6 +17196,9 @@ v3220|LANPAR Vision II model 3220/3221/3222,
 #
 # 1999/3/27
 #	* adjust xterm-xfree86 miscellaneous keypad keys, as per patch #94.
+#
+# 1999/4/10
+#	# add linux-lat, from RedHat patches to ncurses 4.2
 #
 # The following sets edit modes for GNU EMACS.
 # Local Variables:
