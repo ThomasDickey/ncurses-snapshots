@@ -1,6 +1,6 @@
 // * This makes emacs happy -*-Mode: C++;-*-
 /****************************************************************************
- * Copyright (c) 1998,1999,2000 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998,1999,2000,2001 Free Software Foundation, Inc.         *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -31,7 +31,7 @@
  *   Author: Juergen Pfeifer <juergen.pfeifer@gmx.net> 1997                 *
  ****************************************************************************/
 
-// $Id: cursesf.h,v 1.13 2000/12/10 03:08:05 tom Exp $
+// $Id: cursesf.h,v 1.14 2001/03/10 23:54:44 tom Exp $
 
 #ifndef _CURSESF_H
 #define _CURSESF_H
@@ -712,8 +712,8 @@ private:
 public:
   Regular_Expression_Field(const char *expr)
     : NCursesFieldType(TYPE_REGEXP) {
-      regex = new char[1+::strlen(expr)];
-      (strcpy)(regex,expr);
+      regex = new char[1 + ::strlen(expr)];
+      (::strcpy)(regex,expr);
   }
 
   ~Regular_Expression_Field() {

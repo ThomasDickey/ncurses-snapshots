@@ -25,7 +25,7 @@
 #include "cursesw.h"
 #include "internal.h"
 
-MODULE_ID("$Id: cursesw.cc,v 1.18 2001/01/28 01:17:41 tom Exp $")
+MODULE_ID("$Id: cursesw.cc,v 1.19 2001/03/10 21:37:06 tom Exp $")
 
 #define COLORS_NEED_INITIALIZATION  -1
 #define COLORS_NOT_INITIALIZED       0
@@ -45,43 +45,52 @@ bool NCursesWindow::b_initialized = FALSE;
 int
 NCursesWindow::scanw(const char* fmt, ...)
 {
+    int result = ERR;
 #if defined(__GNUG__)
-    va_list args;
-    va_start(args, fmt);
     char buf[BUFSIZ];
-    int result = wgetstr(w, buf);
-    if (result == OK) {
+
+    if (::wgetnstr(w, buf, sizeof(buf)) != ERR) {
+	va_list args;
+	va_start(args, fmt);
+#if defined(_CPP_CSTDIO)
+	if (::vscanf(fmt, args) != -1)
+	    result = OK;
+#else	/* assume pre-gcc 3.0 */
 	strstreambuf ss(buf, sizeof(buf));
-	result = ss.vscan(fmt, (_IO_va_list)args);
-    }
-    va_end(args);
-    return result;
-#else
-    return ERR;
+	if (ss.vscan(fmt, (_IO_va_list)args) != -1)
+	    result = OK;
 #endif
+	va_end(args);
+    }
+#endif
+    return result;
 }
 
 
 int
 NCursesWindow::scanw(int y, int x, const char* fmt, ...)
 {
+    int result = ERR;
 #if defined(__GNUG__)
-    va_list args;
-    va_start(args, fmt);
     char buf[BUFSIZ];
-    int result = wmove(w, y, x);
-    if (result == OK) {
-	result = wgetstr(w, buf);
-	if (result == OK) {
+
+    if (::wmove(w, y, x) != ERR) {
+	if (::wgetnstr(w, buf, sizeof(buf)) != ERR) {
+	    va_list args;
+	    va_start(args, fmt);
+#if defined(_CPP_CSTDIO)
+	    if (::vscanf(fmt, args) != -1)
+		result = OK;
+#else	/* assume pre-gcc 3.0 */
 	    strstreambuf ss(buf, sizeof(buf));
-	    result = ss.vscan(fmt, (_IO_va_list)args);
+	    if (ss.vscan(fmt, (_IO_va_list)args) != -1)
+		result = OK;
+#endif
+	    va_end(args);
 	}
     }
-    va_end(args);
-    return result;
-#else
-    return ERR;
 #endif
+    return result;
 }
 
 
@@ -91,7 +100,7 @@ NCursesWindow::printw(const char * fmt, ...)
     va_list args;
     va_start(args, fmt);
     char buf[BUFSIZ];
-    vsprintf(buf, fmt, args);
+    ::vsprintf(buf, fmt, args);
     va_end(args);
     return waddstr(w, buf);
 }
@@ -102,10 +111,10 @@ NCursesWindow::printw(int y, int x, const char * fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    int result = wmove(w, y, x);
+    int result = ::wmove(w, y, x);
     if (result == OK) {
 	char buf[BUFSIZ];
-	vsprintf(buf, fmt, args);
+	::vsprintf(buf, fmt, args);
 	result = waddstr(w, buf);
     }
     va_end(args);
@@ -323,7 +332,7 @@ NCursesWindow::~NCursesWindow()
     }
 
     if (alloced && w != 0)
-	delwin(w);
+	::delwin(w);
 
     if (alloced) {
       --count;
@@ -364,7 +373,7 @@ NCursesWindow::getcolor(int getback) const
     short fore, back;
 
     if (colorInitialized==COLORS_ARE_REALLY_THERE) {
-      if (pair_content((short)PAIR_NUMBER(w->_attrs), &fore, &back))
+      if (::pair_content((short)PAIR_NUMBER(w->_attrs), &fore, &back))
 	err_handler("Can't get color pair");
     }
     else {
@@ -396,7 +405,7 @@ int
 NCursesWindow::setpalette(short fore, short back, short pair)
 {
   if (colorInitialized==COLORS_ARE_REALLY_THERE)
-    return init_pair(pair, fore, back);
+    return ::init_pair(pair, fore, back);
   else
     return OK;
 }
