@@ -1,10 +1,19 @@
--- $Id: NEWS,v 1.814 2004/05/16 15:55:41 tom Exp $
+-- $Id: NEWS,v 1.816 2004/05/23 01:15:28 tom Exp $
 
 This is a log of changes that ncurses has gone through since Zeyd started
 working with Pavel Curtis' original work, pcurses, in 1992.
 
 Changes through 1.9.9e are recorded by Zeyd M. Ben-Halim.
 Changes since 1.9.9e are recorded by Thomas Dickey.
+
+20040522
+	+ improve description of terminfo if-then-else expressions (suggested
+	  by Arne Thomassen).
+	+ improve test/ncurses.c 'd' test, allow it to use external file for
+	  initial palette (added xterm-16color.dat and linux-color.dat), and
+	  reset colors to the initial palette when starting/ending the test.
+	+ change limit-check in init_color() to allow r/g/b component to
+	  reach 1000 (cf: 20020928).
 
 20040516
 	+ modify form library to use cchar_t's rather than char's in the

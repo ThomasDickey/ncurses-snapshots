@@ -40,7 +40,7 @@ AUTHOR
    Author: Eric S. Raymond <esr@snark.thyrsus.com> 1993
            Thomas E. Dickey (beginning revision 1.27 in 1996).
 
-$Id: ncurses.c,v 1.208 2004/05/16 15:45:54 tom Exp $
+$Id: ncurses.c,v 1.212 2004/05/22 23:50:54 tom Exp $
 
 ***************************************************************************/
 
@@ -117,6 +117,14 @@ static int max_colors;		/* the actual number of colors we'll use */
 
 #undef max_pairs
 static int max_pairs;		/* ...and the number of color pairs */
+
+typedef struct {
+    short red;
+    short green;
+    short blue;
+} RGB_DATA;
+
+static RGB_DATA *all_colors;
 
 /* The behavior of mvhline, mvvline for negative/zero length is unspecified,
  * though we can rely on negative x/y values to stop the macro.
@@ -1243,8 +1251,15 @@ color_test(void)
 	    attron((attr_t) COLOR_PAIR(i));
 	    if (base)
 		attron((attr_t) A_BOLD);
-	    mvaddstr(top + 3 + (i / max_colors), (i % max_colors + 1) *
-		     width, hello);
+#if 1
+	    mvaddstr(top + 3 + (i / max_colors),
+		     (i % max_colors + 1) * width,
+		     hello);
+#else
+	    mvprintw(top + 3 + (i / max_colors),
+		     (i % max_colors + 1) * width,
+		     "{%d}", i);
+#endif
 	    attrset(A_NORMAL);
 	}
 	if ((max_colors > 8) || base)
@@ -1282,12 +1297,26 @@ change_color(int current, int field, int value, int usebase)
 }
 
 static void
+init_all_colors(void)
+{
+    int c;
+    for (c = 0; c < max_colors; ++c)
+	init_color(c,
+		   all_colors[c].red,
+		   all_colors[c].green,
+		   all_colors[c].blue);
+}
+
+#define scaled_rgb(n) ((255 * (n)) / 1000)
+
+static void
 color_edit(void)
 /* display the color test pattern, without trying to edit colors */
 {
     int i, this_c = 0, value = 0, current = 0, field = 0;
     int last_c;
 
+    init_all_colors();
     refresh();
 
     for (i = 0; i < max_colors; i++)
@@ -1311,14 +1340,6 @@ color_edit(void)
 	    addstr("        ");
 	    attrset(A_NORMAL);
 
-	    /*
-	     * Note: this refresh should *not* be necessary!  It works around
-	     * a bug in attribute handling that apparently causes the A_NORMAL
-	     * attribute sets to interfere with the actual emission of the
-	     * color setting somehow.  This needs to be fixed.
-	     */
-	    refresh();
-
 	    color_content(i, &red, &green, &blue);
 	    addstr("   R = ");
 	    if (current == i && field == 0)
@@ -1339,7 +1360,10 @@ color_edit(void)
 	    if (current == i && field == 2)
 		attrset(A_NORMAL);
 	    attrset(A_NORMAL);
-	    addstr(")");
+	    printw(" ( %3d %3d %3d )",
+		   scaled_rgb(red),
+		   scaled_rgb(green),
+		   scaled_rgb(blue));
 	}
 
 	mvaddstr(max_colors + 3, 0,
@@ -1429,6 +1453,12 @@ color_edit(void)
 	(this_c != 'x' && this_c != 'q');
 
     erase();
+
+    /*
+     * ncurses does not reset each color individually when calling endwin().
+     */
+    init_all_colors();
+
     endwin();
 }
 
@@ -4579,6 +4609,7 @@ usage(void)
 	,"  -e fmt   specify format for soft-keys test (e)"
 	,"  -f       rip-off footer line (can repeat)"
 	,"  -h       rip-off header line (can repeat)"
+	,"  -p file  rgb values to use in 'd' rather than ncurses's builtin"
 #if USE_LIBPANEL
 	,"  -s msec  specify nominal time for panel-demo (default: 1, to hold)"
 #endif
@@ -4637,6 +4668,9 @@ rip_header(WINDOW *win, int cols)
 	main(argc,argv)
 --------------------------------------------------------------------------*/
 
+#define okCOLOR(n) ((n) >= 0 && (n) < max_colors)
+#define okRGB(n)   ((n) >= 0 && (n) <= 1000)
+
 int
 main(int argc, char *argv[])
 {
@@ -4648,10 +4682,11 @@ main(int argc, char *argv[])
     bool assumed_colors = FALSE;
     bool default_colors = FALSE;
 #endif
+    char *palette_file = 0;
 
     setlocale(LC_ALL, "");
 
-    while ((c = getopt(argc, argv, "a:de:fhs:t:")) != EOF) {
+    while ((c = getopt(argc, argv, "a:de:fhp:s:t:")) != EOF) {
 	switch (c) {
 #ifdef NCURSES_VERSION
 	case 'a':
@@ -4677,6 +4712,9 @@ main(int argc, char *argv[])
 	    break;
 	case 'h':
 	    ripoffline(1, rip_header);
+	    break;
+	case 'p':
+	    palette_file = optarg;
 	    break;
 #if USE_LIBPANEL
 	case 's':
@@ -4736,9 +4774,43 @@ main(int argc, char *argv[])
 #else /* normal SVr4 curses */
 	max_colors = COLORS > 8 ? 8 : COLORS;
 #endif
-	max_pairs = (max_colors * max_colors);
-	if (max_pairs < COLOR_PAIRS)
-	    max_pairs = COLOR_PAIRS;
+	max_pairs = COLOR_PAIRS > 256 ? 256 : COLOR_PAIRS;
+
+	if (can_change_color()) {
+	    all_colors = (RGB_DATA *) malloc(max_colors * sizeof(RGB_DATA));
+	    for (c = 0; c < max_colors; ++c) {
+		color_content(c,
+			      &all_colors[c].red,
+			      &all_colors[c].green,
+			      &all_colors[c].blue);
+	    }
+	    if (palette_file != 0) {
+		FILE *fp = fopen(palette_file, "r");
+		if (fp != 0) {
+		    char buffer[BUFSIZ];
+		    int red, green, blue;
+		    int scale = 1000;
+		    while (fgets(buffer, sizeof(buffer), fp) != 0) {
+			if (sscanf(buffer, "scale:%d", &c) == 1) {
+			    scale = c;
+			} else if (sscanf(buffer, "%d:%d %d %d",
+					  &c,
+					  &red,
+					  &green,
+					  &blue) == 4
+				   && okCOLOR(c)
+				   && okRGB(red)
+				   && okRGB(green)
+				   && okRGB(blue)) {
+			    all_colors[c].red = (red * 1000) / scale;
+			    all_colors[c].green = (green * 1000) / scale;
+			    all_colors[c].blue = (blue * 1000) / scale;
+			}
+		    }
+		    fclose(fp);
+		}
+	    }
+	}
     }
     set_terminal_modes();
     def_prog_mode();

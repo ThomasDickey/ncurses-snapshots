@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2001,2002 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2002,2003 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -41,7 +41,7 @@
 #include <term.h>
 #include <tic.h>
 
-MODULE_ID("$Id: lib_color.c,v 1.62 2002/09/28 20:40:05 tom Exp $")
+MODULE_ID("$Id: lib_color.c,v 1.63 2004/05/22 19:14:29 tom Exp $")
 
 /*
  * These should be screen structure members.  They need to be globals for
@@ -374,7 +374,7 @@ init_pair(short pair, short f, short b)
     returnCode(OK);
 }
 
-#define okRGB(n) ((n) >= 0 && (n) < 1000)
+#define okRGB(n) ((n) >= 0 && (n) <= 1000)
 
 NCURSES_EXPORT(int)
 init_color(short color, short r, short g, short b)
